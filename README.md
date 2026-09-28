@@ -48,8 +48,9 @@ Also included: English claims checked against Japanese documents with a glossary
 
 ## Use
 ```bash
-pip install fugashi unidic-lite
+pip install vera-ja
 ```
+The Codex sentence corpus (about 1.16M sentences, 33 MB) is on the [v0.1.0 release](https://github.com/Ag3497120/vera/releases/tag/v0.1.0) and is fetched on first use by `vera_base.corpus.fetch()`.
 ```python
 import vera_base
 chat = vera_base.Chat([{"title": "営業案内", "ja": "定休日は毎週水曜日です。"}], tree=True)

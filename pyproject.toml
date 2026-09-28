@@ -11,6 +11,9 @@ license = { text = "MIT" }
 requires-python = ">=3.10"
 dependencies = ["fugashi>=1.3", "unidic-lite>=1.0.8"]
 
+[project.urls]
+Homepage = "https://github.com/Ag3497120/vera"
+
 [project.scripts]
 vera-server = "vera_base.server:main"
 vera-bot = "vera_base.cli:main"

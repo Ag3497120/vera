@@ -8,7 +8,7 @@ import urllib.request
 from pathlib import Path
 from typing import Iterator
 
-URL = os.environ.get("VERA_CORPUS_URL", "https://github.com/{owner}/{repo}/releases/download/v0.1.0/codex_sentences_ja.jsonl.gz")
+URL = os.environ.get("VERA_CORPUS_URL", "https://github.com/Ag3497120/vera/releases/download/v0.1.0/codex_sentences_ja.jsonl.gz")
 CACHE = Path(os.environ.get("VERA_HOME", Path.home() / ".cache" / "vera")) / "codex_sentences_ja.jsonl.gz"
 
 
