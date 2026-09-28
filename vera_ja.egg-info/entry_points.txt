@@ -1,3 +1,0 @@
-[console_scripts]
-vera-bot = vera_base.cli:main
-vera-server = vera_base.server:main
