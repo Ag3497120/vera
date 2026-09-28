@@ -85,6 +85,14 @@ class Base:
         if self.root is None and not self.flat:
             self.build()
         t = time.perf_counter()
+        # a claim written in the records word for word is supported by that sentence (sentences with no verb,
+        # such as 「休館日は毎週月曜日です」, have no frame to match)
+        norm = lambda x: re.sub(r"[。、\s]", "", x)
+        for name, d in self.docs.items():
+            for sent in d["sentences"]:
+                if norm(claim) and norm(claim) == norm(sent):
+                    return {"verdict": "SUPPORTED", "evidence": [sent], "leaf": name, "path": "exact",
+                            "ms": round(1000 * (time.perf_counter() - t), 3)}
         leaf = self.lower(claim)
         path = "tree"
         v = judge_items(self.items[leaf], claim) if leaf else None

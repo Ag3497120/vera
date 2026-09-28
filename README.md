@@ -29,6 +29,23 @@ It runs on a CPU in Python, answers in about 0.1–5 ms, and every answer either
 ## What it refuses (measured, and by design)
 Metaphor meanings, commonsense effects and uses, haiku and poems: two sealed rounds each failed (the most frequent thing in a corpus is the literal, not the intended meaning), so Vera says it does not know. Stories are only offered as a labelled passage from its corpus, never as new writing. Across 120 abilities taken from LLM benchmark taxonomies (JGLUE, llm-jp-eval, BIG-bench, HELM), about 45 fit this design (one right answer by rule, arithmetic or checking) and about 63 do not (open generation, dialogue, social and ethical judgment) — those belong to an LLM.
 
+## A bot for your documents
+Put `.txt` / `.md` files in a folder (sub-folders become sovereigns: separate trees under one root) and you have a bot that answers from them, in Japanese or English, with the sentence it answered from — or says the documents do not say.
+```bash
+vera-bot ./docs                        # ask in the terminal; "/judge <claim>" checks a claim
+vera-server --docs ./docs --port 11435 # Ollama-compatible /api/chat and OpenAI-compatible /v1/chat/completions
+```
+```python
+import vera_base
+bot = vera_base.Bot.from_dir("docs")
+bot.reply("何冊まで借りられますか。")      # 貸出は一人5冊までで、期間は2週間です。（「利用案内.txt」より）
+bot.reply("How many books can I borrow?")  # Each person may borrow five books. (from guide_en.txt)
+bot.judge("The library is not closed every Monday.")  # CONTRADICTED (negation)
+```
+Questions are matched to document sentences by content words, counters (何冊 ↔ 5冊), conditions (〜したら ↔ 場合は, if/when) and question type (いつ / when ↔ days and times), after the stereo cross narrows the documents. Paraphrases a dictionary would bridge (お弁当を食べた ↔ 飲食) are not bridged.
+
+Also included: English claims checked against Japanese documents with a glossary (`vera_base.crossverify`), and a two-stage check that sends only undecided claims to a local LLM and verifies its quotes in code (`vera_base.two_stage`, off unless a local server is running).
+
 ## Use
 ```bash
 pip install fugashi unidic-lite

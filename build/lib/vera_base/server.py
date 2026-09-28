@@ -15,11 +15,18 @@ MODEL = "vera-base-ja"
 _chat = None
 
 
+DOCS = None
+
+
 def chat():
     global _chat
     if _chat is None:
-        from vera_base import Chat
-        _chat = Chat([])
+        if DOCS:
+            from vera_base import Bot
+            _chat = Bot.from_dir(DOCS)      # a bot for these documents
+        else:
+            from vera_base import Chat
+            _chat = Chat([])
     return _chat
 
 
@@ -74,7 +81,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--port", type=int, default=11435)
+    ap.add_argument("--docs", default=None, help="folder of .txt/.md documents: serve a bot for them")
     a = ap.parse_args()
+    global DOCS
+    DOCS = a.docs
     print("vera-base-ja on http://%s:%d (Ollama /api/chat, OpenAI /v1/chat/completions)" % (a.host, a.port))
     ThreadingHTTPServer((a.host, a.port), H).serve_forever()
 
