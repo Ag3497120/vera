@@ -222,6 +222,18 @@ class Vera:
         self._semantic_view = document_view(originals, sovereigns=getattr(self.bot, 'original_sovereigns', {}))
         self._semantic_generation = getattr(self.bot, '_semantic_generation', 0)
 
+    def _routed_semantic_view(self, request, trace):
+        """The semantic view, narrowed to the leaves the question can reach (stereo-cross tree), or the whole view."""
+        from .semantic_route import LeafTree
+        view = self._semantic_view
+        tree = getattr(self, '_leaf_tree', None)
+        if tree is None or tree.view is not view:
+            tree = self._leaf_tree = LeafTree(view)
+        routed, info = tree.restrict(request)
+        info = dict(info); info['part'] = info.pop('part'); info.setdefault('status', 'ran')
+        trace.append(info)
+        return routed if routed is not None else view
+
     def _round5_multigrain_navigation(self, raw_question: str) -> dict | None:
         """Expose bounded structural candidates for a later source-span join.
 
@@ -376,10 +388,10 @@ class Vera:
                             candidate_verdict=selected_result.get('verdict'),
                             full_original_view_required=True,
                         )]
-                        result = answer(request, [self._semantic_view], trace=fallback_trace)
+                        result = answer(request, [self._routed_semantic_view(request, fallback_trace)], trace=fallback_trace)
                         result['_round5_joint_view_answer'] = False
                 else:
-                    result = answer(request, [self._semantic_view], trace=trace)
+                    result = answer(request, [self._routed_semantic_view(request, trace)], trace=trace)
                     result['_round5_joint_view_answer'] = False
             door = 'semantic_document'
         else:

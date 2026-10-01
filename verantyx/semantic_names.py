@@ -23,7 +23,11 @@ def name_split_in(cover, value):
     last = cover[-1]
     if last[1] != '名詞' or last[2] != '固有名詞': return None
     if any(t[1] not in ('名詞', '接尾辞') or t[2] == '固有名詞' for t in cover[:-1]): return None
-    return ''.join(t[0] for t in cover[:-1]), last[0]
+    descriptor = ''.join(t[0] for t in cover[:-1])
+    # A title is a kanji common noun (技師, 店長, 研究員). Katakana/other strings in front of a "proper noun" token are
+    # usually one unknown name cut by the tagger (コカカル -> コカ + カル): never split those, or a fragment gets answered.
+    if not all('一' <= ch <= '鿿' or ch == '々' for ch in descriptor): return None
+    return descriptor, last[0]
 
 
 def is_past_aux(word) -> bool:

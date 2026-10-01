@@ -171,3 +171,19 @@ def test_past_da_verbs_keep_their_tense(doc, q, expected):
 ])
 def test_tense_mismatch_does_not_answer(doc, q):
     assert ask(doc, q)["verdict"] != "ANSWER"
+
+
+# ---- the appositive name split must never cut an unknown name into a fragment ----
+@pytest.mark.parametrize("name", ["コカカル", "サカカン", "ミナト", "ルカカン", "ソウタロウ"])
+def test_unknown_katakana_names_are_answered_whole(name):
+    a = ask(f"{name}は青鍵をリクに渡した。", "誰が青鍵をリクに渡した？")
+    # the old Frame reader may itself cut a name (ソウタロウ -> タロウ); then the uncovered rest makes the clause abstain
+    assert a["verdict"] != "ANSWER" or a["values"] == [name]
+
+
+@pytest.mark.parametrize("doc,q,expected", [
+    ("ミナは青い鍵を倉庫Cから技師ユンへ運んだ。", "誰へ運んだ？", ["ユン"]),
+    ("新人マキが青鍵をリクに渡した。", "誰が青鍵をリクに渡した？", ["マキ"]),
+])
+def test_kanji_title_before_a_name_is_split(doc, q, expected):
+    assert val(ask(doc, q)) == ("ANSWER", expected)
