@@ -118,7 +118,7 @@ def test_source_license_and_reverse_atom_mapping_reject_single_mutation(kind):
         assert voiced["verdict"] == "DIAGNOSTIC_REALIZATION"
         assert [r["text"] for r in voiced["realizations"]] == ["マキが手紙を読んだ。"]
         plain = source_event_realizations({"notes": "マキが手紙を読む。"})
-        assert [r["text"] for r in plain["realizations"]] == ["マキが手紙を読む。"
+        assert [r["text"] for r in plain["realizations"]] == ["マキが手紙を読む。"]
     with pytest.raises(BridgeError):
         bridge_source_event(View(view.sources, (changed,)))
     with pytest.raises(BridgeError, match="mapping changed"):
