@@ -196,3 +196,9 @@ def test_name_cut_by_the_tagger_is_never_answered_as_a_fragment(name):
     assert a["verdict"] != "ANSWER" or a["values"] == [name]
     b = ask(f"リクは白紙を{name}に渡した。", "リクは白紙を誰に渡した？")
     assert b["verdict"] != "ANSWER" or b["values"] == [name]
+
+
+@pytest.mark.parametrize("name", ["ノシカル", "ノシカン", "ヘノヘノ"])
+def test_name_starting_with_an_ascii_art_token_is_not_cut(name):
+    a = ask(f"{name}は銀鍵をハシカンに渡した。", "誰が銀鍵をハシカンに渡した？")
+    assert a["verdict"] != "ANSWER" or a["values"] == [name]

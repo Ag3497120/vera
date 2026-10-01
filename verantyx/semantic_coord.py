@@ -65,16 +65,20 @@ def topic_phrase(tagged, pred_idx):
     return None
 
 
-_LEFT_OK = ('助詞', '補助記号')
-_RIGHT_OK = ('助詞', '補助記号', '助動詞', '動詞', '接続詞', '形容詞')
+_RIGHT_OK = ('助詞', '助動詞', '動詞', '接続詞', '形容詞')
+
+
+def _punctuation(token):
+    """Real punctuation only: the tagger also labels katakana strings like ノシ as 補助記号 (ascii-art), which are letters."""
+    return token[1] == '補助記号' and not any(ch.isalnum() for ch in token[0])
 
 
 def phrase_bounded(tagged, start, end):
     """A role phrase must start after a particle/punctuation (or at the chunk start) and end before a particle,
-    punctuation or the predicate. A tagger that cuts one word (クククル -> クク + クル) leaves a stray neighbour,
-    and the phrase would then answer only a fragment of the written name."""
+    punctuation or the predicate. A tagger that cuts one word (クククル -> クク + クル, ノシカル -> ノシ + カル)
+    leaves a stray neighbour, and the phrase would then answer only a fragment of the written name."""
     left = [t for t in tagged if t[5] == start]
-    if left and left[0][1] not in _LEFT_OK: return False
+    if left and not (left[0][1] == '助詞' or _punctuation(left[0])): return False
     right = [t for t in tagged if t[4] == end]
-    if right and right[0][1] not in _RIGHT_OK: return False
+    if right and not (right[0][1] in _RIGHT_OK or _punctuation(right[0])): return False
     return True
