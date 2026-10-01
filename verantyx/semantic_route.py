@@ -121,7 +121,7 @@ class LeafTree:
             return None, visited
         return found, visited
 
-    def restrict(self, request, *, anchor_cap: int = 64, expand_cap: int = 8, max_rounds: int = 8):
+    def restrict(self, request, *, anchor_cap: int = 64, expand_cap: int = 8, unread_cap: int = 1024, max_rounds: int = 8):
         """(routed View | None, trace). None means: keep the whole view (no usable anchor, or too few leaves).
 
         Round 1: for every Bind pattern, the leaves that hold ALL of its anchors (a clause binding the pattern, or a
@@ -141,26 +141,30 @@ class LeafTree:
             return None, {**trace, 'status': 'skipped', 'reason': 'request has no entity anchor'}
         visited = 0; common = set(); cache = {}
         def held(term, cap):
-            """Leaves that can mention `term`: an exact clause value, or unread text containing it. None = common."""
+            """Leaves with a clause value equal to `term`. None = common (more than `cap` leaves)."""
             nonlocal visited
-            key = (term, cap)
-            if key in cache: return cache[key]
-            found, n = self.reach({term}, cap); visited += n
-            leaves = None
-            if found is not None:
-                leaves = set(found)
+            key = ('clause', term, cap)
+            if key not in cache:
+                found, n = self.reach({term}, cap); visited += n
+                cache[key] = found
+            return cache[key]
+
+        def unread_held(term):
+            """Leaves whose UNREAD text can contain `term` (every bigram of it present). None = cannot locate cheaply.
+
+            Unread text is opaque, so it gates when it mentions ANY anchor, not only when it mentions all of them:
+            a fragment about the object alone may be exactly the sentence that contradicts the clause.
+            """
+            nonlocal visited
+            key = ('unread', term)
+            if key not in cache:
                 inter = None
                 for gram in _grams(term):
-                    g, n = self.reach({gram}, cap); visited += n
+                    g, n = self.reach({gram}, unread_cap); visited += n
                     if g is None: continue                      # a common gram does not narrow
                     inter = g if inter is None else inter & g
                     if not inter: break
-                if inter is None:
-                    # every gram of the anchor is common: unread mentions cannot be located cheaply
-                    leaves = None
-                else:
-                    leaves |= inter
-            cache[key] = None if leaves is None or len(leaves) > cap else leaves
+                cache[key] = inter if inter is not None else None
             return cache[key]
         reached = set()
         for terms in patterns:
@@ -173,6 +177,13 @@ class LeafTree:
                 return None, {**trace, 'status': 'skipped', 'reason': 'every anchor of a pattern is common',
                               'common_anchors': sorted(common)}
             reached |= leaves
+        for terms in patterns:
+            for term in terms:
+                u = unread_held(term)
+                if u is None:
+                    return None, {**trace, 'status': 'skipped', 'reason': 'unread mentions of an anchor cannot be located',
+                                  'anchor': term}
+                reached |= u
         # A join needs one more hop per extra Bind pattern; a guard (condition/exception) needs its own fact, which
         # may sit in another document, for a few more hops. Nothing else is followed.
         binds = max((sum(1 for n in p.nodes if n.pattern is not None) for p in request.plans), default=1)
@@ -188,7 +199,9 @@ class LeafTree:
                 seen_terms.add(term)
                 found = held(term, expand_cap)
                 if found is None: common.add(term); continue
-                followed += 1; frontier |= found - reached
+                u = unread_held(term)
+                if u is None: return None, {**trace, 'status': 'skipped', 'reason': 'unread mentions of a followed entity cannot be located'}
+                followed += 1; frontier |= (found | u) - reached
             if not frontier: break
             reached |= frontier; used += 1
         clauses = tuple(c for leaf in sorted(reached) for c in self.by_leaf.get(leaf, ()))

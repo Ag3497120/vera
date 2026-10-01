@@ -66,6 +66,12 @@ two of its cases encoded a wrong spec (injected instruction) and were corrected)
   one verb/name dependence of the old Frame reader (recipient of 送る or of the name ソウ is dropped, so those clauses abstain), and no implementation bug. Codex also ran the whole `tests/` directory on the base and on this copy: no regression (2 pre-existing failures in both).
 - Full semantic/goal/frame suites: 469 pass.
 
+## Step 6: stereo-cross routing of the document path (2026-10-02)
+See `docs/ROUND5A_STEREO_ROUTE_2026-10-02.md`. The semantic path now narrows the documents to the reach of the question's anchors through a `conduct_tree` over the documents (a document = one leaf;
+unread text indexed by character bigrams; per-pattern intersection for clauses, union for unread; rare-entity expansion for joins/guards). Synthetic scale: flat view 0/40 from 300 documents (budget), routed 88-92/100 with 0 wrong
+at 300/1,000/4,000 documents and a constant 0.77 ms median. Public dev80 unchanged (17 correct / 0 wrong; single documents are below the routing threshold).
+The scale run also found two real fragment-answer bugs (name split, tagger-cut names) — fixed in reader and checker. Whole `tests/` directory: see the final count in the run log of this step.
+
 ## Not done / next
 - r36 (discourse difference), r35/r59/r60 (multiply/divide kernel ops), r37 (equal values answered as 同じ), r38 (clock-time ordering).
 - Totals over more than two measures (needs an aggregate over all matching clauses, with the checker verifying completeness).
