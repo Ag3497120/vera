@@ -111,10 +111,14 @@ def test_source_license_and_reverse_atom_mapping_reject_single_mutation(kind):
     else:
         changed = replace(clause, time="nonpast")
         atom = replace(envelope.atom, tense="present")
-        # A's current voiced-past reading is incomplete. It may not silently
-        # become a nonpast realization even when reader/checker agree.
+        # The voiced past (読んだ) used to be read as nonpast by A, so this test held it as UNKNOWN_MEANING_TENSE.
+        # A now decides the past auxiliary by lemma (phase 2); the intent stays: a voiced past must never
+        # silently become a nonpast realization, and the nonpast must stay nonpast.
         voiced = source_event_realizations({"notes": "マキが手紙を読んだ。"})
-        assert voiced["verdict"] == "UNKNOWN_MEANING_TENSE"
+        assert voiced["verdict"] == "DIAGNOSTIC_REALIZATION"
+        assert [r["text"] for r in voiced["realizations"]] == ["マキが手紙を読んだ。"]
+        plain = source_event_realizations({"notes": "マキが手紙を読む。"})
+        assert [r["text"] for r in plain["realizations"]] == ["マキが手紙を読む。"
     with pytest.raises(BridgeError):
         bridge_source_event(View(view.sources, (changed,)))
     with pytest.raises(BridgeError, match="mapping changed"):
