@@ -12,7 +12,7 @@ from fractions import Fraction
 from typing import Any
 
 from .semantic_coord import chunk, coordination_ok, own_subject_phrase, topic_phrase, tag
-from .semantic_names import name_split_in, tokens_covering
+from .semantic_names import is_past_aux, name_split_in, tokens_covering
 from .semantic_ir import (Clause, EventValue, Limit, Meter, Nominal, Pattern,
                           Plan, Proof, ProofNode, Quantity, Request, Variable, View, typed, unit_type)
 from .semantic_validate import Invalid, occurrences, request_shape
@@ -433,7 +433,7 @@ def license_clause(clause, view, ranges=None):
         # Independently inspect raw auxiliaries after the source predicate;
         # Frame.past can omit the tail of a compound verb.
         from .typed_edges import _base
-        source_past = any(w.feature.pos1 == '助動詞' and _base(w) == 'た' for w in words[ev+1:])
+        source_past = any(is_past_aux(w) for w in words[ev+1:])
         if clause.time not in ('past', 'nonpast') or (clause.time == 'past') != source_past: raise Rejected("tense licensing")
     elif clause.rule == 'measure':
         _license_measure(clause, body, raw, view)
@@ -469,7 +469,7 @@ def _license_guard(pattern, span):
     if any('意志推量' in str(w.feature.cForm) for w in words): return False
     if re.search(r'もし|だったなら|はず|かも|だろう|らしい|[「『]', span.text):
         return False
-    past = bool(len(predicates) == 1 and any(w.feature.pos1 == '助動詞' and _base(w) == 'た'
+    past = bool(len(predicates) == 1 and any(is_past_aux(w)
                                            for w in words[predicates[0][0]+1:]))
     frames = read_all(span.text)
     for frame in frames:

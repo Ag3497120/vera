@@ -14,7 +14,7 @@ from decimal import Decimal
 from .frames import CONVERSE, canonical, read_all, _predicates
 from .question import Stage
 from .semantic_coord import chunk, coordination_ok, own_subject_phrase, topic_phrase, tag
-from .semantic_names import name_split_in, tokens_covering
+from .semantic_names import is_past_aux, name_split_in, tokens_covering
 from .semantic_ir import (Budget, Clause, Nominal, Obligation, Operator, Output,
                           Pattern, Plan, Quantity, Request, Role, Span, Test, Unread, Variable, View)
 from .typed_edges import _base, _tagger, extract
@@ -22,7 +22,8 @@ from .verdict import COND, _clause_kind, read_records
 
 _NUM = re.compile(r'([+-]?[0-9]+(?:\.[0-9]+)?)\s*([A-Za-z%]+|[一-鿿]+)')
 _WH = re.compile(r'誰|だれ|何|どこ|いつ|どちら|いくつ')
-_END = re.compile(r'(?:ですか|ますか|でしょうか|です|だ|か)?[？?。！!]*$')
+# The copula だ is dropped, but not the past auxiliary だ after a 撥音便/イ音便 stem (呼んだ, 泳いだ).
+_END = re.compile(r'(?:ですか|ますか|でしょうか|です|(?<![んい])だ|か)?[？?。！!]*$')
 _MODAL_UNSUPPORTED = re.compile(r'もし|だったなら|はず|かもしれ|だろう|らしい')
 _COMPLEX = re.compile(r'すべて|全部|それぞれ|最後|最初|同時|前後|以前|以後|最新|現在|今日|昨日|午前|午後|[0-9]+[月日時]|ただし|以外|除[くき]|のみ|だけ|必ず')
 _ROLE_WORDS = {'受取人': 'recipient', '受領者': 'recipient', '渡した人': 'agent',
@@ -65,7 +66,7 @@ def _event_time(words, predicate_index):
     # The candidate Frame stops at a compound verb's first independent verb.
     # Read the single clause's grammatical auxiliaries, including the compound
     # tail (e.g. 受け/取っ/た), instead of dropping its past tense.
-    return 'past' if any(w.feature.pos1 == '助動詞' and _base(w) == 'た'
+    return 'past' if any(is_past_aux(w)
                          for w in words[predicate_index + 1:]) else 'nonpast'
 
 
@@ -340,6 +341,9 @@ def _event_question(fragment,b,span):
     cleaned=_END.sub('',fragment).strip()
     # A relative head names the missing event role, and becomes a bound variable.
     relative=re.fullmatch(r'(.+?)(人|もの|物|箱|鍵|資料)(?:は)?',cleaned)
+    # Cleft question ("Xを呼んだのは？"): the omitted head asks for the role the clause leaves open.
+    cleft=None if relative else re.fullmatch(r'(.+?)の(?:は|が)',cleaned)
+    if cleft: relative=re.fullmatch(r'(.+?)(もの)',cleft[1]+'もの')
     core=relative[1] if relative else cleaned
     frames=read_all(core); positioned=_tokens(core); tokens=[w for w,_,_ in positioned]; preds=_predicates(tokens)
     if len(frames)!=1 or len(preds)!=1: return False
@@ -385,10 +389,11 @@ def _event_question(fragment,b,span):
         if any(k==role for k,_ in roles): return False
         value=b.variable(); roles.append((role,value if head in ('人','もの','物') else Nominal(head,value)))
         outputs.append((role,value))
-    # Noun objects in abbreviated relative questions are head restrictions.
-    if relative:
+    # Noun objects in abbreviated relative questions are head restrictions (not for a cleft: the noun is the entity itself).
+    if relative and not cleft:
         roles=[(k,Nominal(v,b.variable()) if isinstance(v,str) and k=='patient' else v) for k,v in roles]
     mod='normative' if re.search(r'てよい|てもよい|可能|できる|られる',core) else 'assert'
+    if not outputs and re.search(r'(?:の|は|が|を|に)$',cleaned): return False   # a particle-final fragment is not a yes/no question
     if outputs:
         b.bind(Pattern(f.predicate,tuple(roles),'-' if f.negated else '+',mod,_event_time(tokens,preds[0][0])),span)
         b.outputs.extend((label,value,span,'') for label,value in outputs)

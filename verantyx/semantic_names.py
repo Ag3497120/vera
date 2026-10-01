@@ -24,3 +24,8 @@ def name_split_in(cover, value):
     if last[1] != '名詞' or last[2] != '固有名詞': return None
     if any(t[1] not in ('名詞', '接尾辞') or t[2] == '固有名詞' for t in cover[:-1]): return None
     return ''.join(t[0] for t in cover[:-1]), last[0]
+
+
+def is_past_aux(word) -> bool:
+    """The past auxiliary た, including its voiced form だ after 撥音便 (呼んだ, 読んだ): decided by lemma, not surface."""
+    return word.feature.pos1 == '助動詞' and str(word.feature.lemma) == 'た'

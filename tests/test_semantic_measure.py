@@ -147,3 +147,27 @@ def test_coordinated_predicates_are_read_per_clause(doc, q, expected):
 def test_non_coordination_and_scope_leaks_do_not_answer(doc, q):
     a = ask(doc, q)
     assert a["verdict"] != "ANSWER" or a["values"] in (["いいえ"],), a
+
+
+# ---- tense of verbs whose past ends in だ (呼んだ, 読んだ, 泳いだ): past and nonpast must not be conflated ----
+@pytest.mark.parametrize("doc,q,expected", [
+    ("エンはリンを呼んだ。", "エンはリンを呼んだ？", ["はい"]),
+    ("エンはリンを呼ぶ。", "エンはリンを呼ぶ？", ["はい"]),
+    ("リンがソウを呼び、エンがリンを呼んだ。", "リンを呼んだのは？", ["エン"]),
+    ("リンがソウを呼び、エンがリンを呼んだ。", "ソウを呼んだのは？", ["リン"]),
+    ("ミオは本を読んだ。", "誰が本を読んだ？", ["ミオ"]),
+    ("ミオは水を飲んだ。", "誰が水を飲んだ？", ["ミオ"]),
+])
+def test_past_da_verbs_keep_their_tense(doc, q, expected):
+    assert val(ask(doc, q)) == ("ANSWER", expected)
+
+
+@pytest.mark.parametrize("doc,q", [
+    ("エンはリンを呼ぶ。", "エンはリンを呼んだ？"),
+    ("エンはリンを呼んだ。", "エンはリンを呼ぶ？"),
+    ("ミオは本を読む。", "誰が本を読んだ？"),
+    ("ミオは本を読んだ。", "誰が本を読む？"),
+    ("ミオは水を飲む。", "ミオは水を飲んだ？"),
+])
+def test_tense_mismatch_does_not_answer(doc, q):
+    assert ask(doc, q)["verdict"] != "ANSWER"
