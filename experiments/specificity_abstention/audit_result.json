@@ -1,0 +1,6 @@
+{
+  "verified_pairs": 600,
+  "exact_fraction_audit": "PASS",
+  "candidate_and_placement_identity": "PASS",
+  "non_answer_preservation": "PASS"
+}

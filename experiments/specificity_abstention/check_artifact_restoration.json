@@ -1,0 +1,30 @@
+{
+  "restored": [
+    {
+      "path": "experiments/guard/results_confirm10.json",
+      "before_sha256": "d2888adc7f09f1c043636d656bdc0d89e1a0d8b2ab672c138dd66e66c4046c93",
+      "after_sha256": "2410faa433210dc6d6bdd5e3189f10c4cc4740c14c113ec4ad894857fd231194"
+    },
+    {
+      "path": "experiments/guard/results_confirm2.json",
+      "before_sha256": "531678d998e39a6b6ff907866e1d44607bbefa1006c09d975e2263b165c8b80f",
+      "after_sha256": "6e800291abe79cd1300fd3275be5751f4efdbd3d6ce0711e444d6cfa9d29d913"
+    },
+    {
+      "path": "experiments/guard/results_confirm3.json",
+      "before_sha256": "fab5745accf6b05fec71560a53c0b75841136c7e210a894e0d7ef9ba6e0abf0d",
+      "after_sha256": "13dcace4cb5004cb0213b23c563e2680a5b891e659104355bca246781a3bdd88"
+    },
+    {
+      "path": "experiments/guard/results_confirm7.json",
+      "before_sha256": "c4e050257cc6c1a0bcf139a3304117179d44db0c04835fdbc8a5c1f0607df147",
+      "after_sha256": "adbeff3c29e0a7c7f8f29023fd23c3fb13407d0d66ccb671cedcd5409f2e1a05"
+    },
+    {
+      "path": "experiments/guard/results_confirm9.json",
+      "before_sha256": "6b5c43d814f04ae0241369270f3fcb5d5fa3ea6ad9b45f57c380e6f55e89e445",
+      "after_sha256": "7195e9c68da72535ddb2ba71359744690f3090082bd4ba71f2ba36306f6db8a4"
+    }
+  ],
+  "preexisting_paths_py_preserved": true
+}

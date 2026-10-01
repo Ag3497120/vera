@@ -1,0 +1,385 @@
+{
+ "registered": "2026-09-27, before is-a extraction, inheritance, and the four recorded repairs",
+ "protocol": "yes: ATTESTED/INHERITED correct, NEGATIVE wrong. no: ATTESTED/INHERITED wrong. Refusal honest. Report answered-precision and solved/total separately.",
+ "items": [
+  {
+   "subject": "スズメ",
+   "property": "飛ぶ",
+   "question": "スズメは飛ぶですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "飛"
+   ],
+   "id": 1
+  },
+  {
+   "subject": "カラス",
+   "property": "飛ぶ",
+   "question": "カラスは飛ぶですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "飛"
+   ],
+   "id": 2
+  },
+  {
+   "subject": "ツバメ",
+   "property": "飛ぶ",
+   "question": "ツバメは飛ぶですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "飛"
+   ],
+   "id": 3
+  },
+  {
+   "subject": "ハト",
+   "property": "飛ぶ",
+   "question": "ハトは飛ぶですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "飛"
+   ],
+   "id": 4
+  },
+  {
+   "subject": "鮭",
+   "property": "泳ぐ",
+   "question": "鮭は泳ぐですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "泳"
+   ],
+   "id": 5
+  },
+  {
+   "subject": "マグロ",
+   "property": "泳ぐ",
+   "question": "マグロは泳ぐですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "泳"
+   ],
+   "id": 6
+  },
+  {
+   "subject": "イワシ",
+   "property": "泳ぐ",
+   "question": "イワシは泳ぐですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "泳"
+   ],
+   "id": 7
+  },
+  {
+   "subject": "柴犬",
+   "property": "吠える",
+   "question": "柴犬は吠えるですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "吠"
+   ],
+   "id": 8
+  },
+  {
+   "subject": "ブルドッグ",
+   "property": "吠える",
+   "question": "ブルドッグは吠えるですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "吠"
+   ],
+   "id": 9
+  },
+  {
+   "subject": "杉",
+   "property": "燃える",
+   "question": "杉は燃えるですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "燃"
+   ],
+   "id": 10
+  },
+  {
+   "subject": "松",
+   "property": "燃える",
+   "question": "松は燃えるですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "燃"
+   ],
+   "id": 11
+  },
+  {
+   "subject": "檜",
+   "property": "燃える",
+   "question": "檜は燃えるですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "燃"
+   ],
+   "id": 12
+  },
+  {
+   "subject": "桜",
+   "property": "咲く",
+   "question": "桜は咲くですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "咲"
+   ],
+   "id": 13
+  },
+  {
+   "subject": "チューリップ",
+   "property": "咲く",
+   "question": "チューリップは咲くですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "咲"
+   ],
+   "id": 14
+  },
+  {
+   "subject": "ひまわり",
+   "property": "咲く",
+   "question": "ひまわりは咲くですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "咲"
+   ],
+   "id": 15
+  },
+  {
+   "subject": "銅",
+   "property": "冷たい",
+   "question": "銅は冷たいですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "冷"
+   ],
+   "id": 16
+  },
+  {
+   "subject": "花崗岩",
+   "property": "硬い",
+   "question": "花崗岩は硬いですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "硬",
+    "固"
+   ],
+   "id": 17
+  },
+  {
+   "subject": "大理石",
+   "property": "硬い",
+   "question": "大理石は硬いですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "硬",
+    "固"
+   ],
+   "id": 18
+  },
+  {
+   "subject": "玄武岩",
+   "property": "硬い",
+   "question": "玄武岩は硬いですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "硬",
+    "固"
+   ],
+   "id": 19
+  },
+  {
+   "subject": "アルミニウム",
+   "property": "冷たい",
+   "question": "アルミニウムは冷たいですか",
+   "expected": "yes",
+   "kind": "inherit",
+   "axis_tokens": [
+    "冷"
+   ],
+   "id": 20
+  },
+  {
+   "subject": "ペンギン",
+   "property": "飛ぶ",
+   "question": "ペンギンは飛ぶですか",
+   "expected": "no",
+   "kind": "exception",
+   "axis_tokens": [
+    "飛"
+   ],
+   "id": 21
+  },
+  {
+   "subject": "ダチョウ",
+   "property": "飛ぶ",
+   "question": "ダチョウは飛ぶですか",
+   "expected": "no",
+   "kind": "exception",
+   "axis_tokens": [
+    "飛"
+   ],
+   "id": 22
+  },
+  {
+   "subject": "エミュー",
+   "property": "飛ぶ",
+   "question": "エミューは飛ぶですか",
+   "expected": "no",
+   "kind": "exception",
+   "axis_tokens": [
+    "飛"
+   ],
+   "id": 23
+  },
+  {
+   "subject": "水銀",
+   "property": "硬い",
+   "question": "水銀は硬いですか",
+   "expected": "no",
+   "kind": "exception",
+   "axis_tokens": [
+    "硬",
+    "固"
+   ],
+   "id": 24
+  },
+  {
+   "subject": "スズメ",
+   "property": "泳ぐ",
+   "question": "スズメは泳ぐですか",
+   "expected": "no",
+   "kind": "plain",
+   "axis_tokens": [
+    "泳"
+   ],
+   "id": 25
+  },
+  {
+   "subject": "鮭",
+   "property": "吠える",
+   "question": "鮭は吠えるですか",
+   "expected": "no",
+   "kind": "plain",
+   "axis_tokens": [
+    "吠"
+   ],
+   "id": 26
+  },
+  {
+   "subject": "柴犬",
+   "property": "飛ぶ",
+   "question": "柴犬は飛ぶですか",
+   "expected": "no",
+   "kind": "plain",
+   "axis_tokens": [
+    "飛"
+   ],
+   "id": 27
+  },
+  {
+   "subject": "杉",
+   "property": "泳ぐ",
+   "question": "杉は泳ぐですか",
+   "expected": "no",
+   "kind": "plain",
+   "axis_tokens": [
+    "泳"
+   ],
+   "id": 28
+  },
+  {
+   "subject": "桜",
+   "property": "吠える",
+   "question": "桜は吠えるですか",
+   "expected": "no",
+   "kind": "plain",
+   "axis_tokens": [
+    "吠"
+   ],
+   "id": 29
+  },
+  {
+   "subject": "大理石",
+   "property": "柔らかい",
+   "question": "大理石は柔らかいですか",
+   "expected": "no",
+   "kind": "plain",
+   "axis_tokens": [
+    "柔",
+    "やわらか"
+   ],
+   "id": 30
+  },
+  {
+   "subject": "花崗岩",
+   "property": "浮く",
+   "question": "花崗岩は浮くですか",
+   "expected": "no",
+   "kind": "plain",
+   "axis_tokens": [
+    "浮"
+   ],
+   "id": 31
+  },
+  {
+   "subject": "マグロ",
+   "property": "咲く",
+   "question": "マグロは咲くですか",
+   "expected": "no",
+   "kind": "plain",
+   "axis_tokens": [
+    "咲"
+   ],
+   "id": 32
+  },
+  {
+   "subject": "チューリップ",
+   "property": "泳ぐ",
+   "question": "チューリップは泳ぐですか",
+   "expected": "no",
+   "kind": "plain",
+   "axis_tokens": [
+    "泳"
+   ],
+   "id": 33
+  },
+  {
+   "subject": "ハト",
+   "property": "燃える",
+   "question": "ハトは燃えるですか",
+   "expected": "no",
+   "kind": "plain",
+   "axis_tokens": [
+    "燃"
+   ],
+   "id": 34
+  }
+ ]
+}

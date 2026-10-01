@@ -1,0 +1,313 @@
+{
+ "registered": "2026-09-27, before the v3 rebuild result",
+ "protocol": "expected=no controls for the all-yes bank. ATTESTED = WRONG (false yes). Refusal is honest.",
+ "n": 30,
+ "items": [
+  {
+   "id": 1,
+   "subject": "氷",
+   "property": "熱い",
+   "question": "氷は熱いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "熱"
+   ]
+  },
+  {
+   "id": 2,
+   "subject": "火",
+   "property": "冷たい",
+   "question": "火は冷たいですか",
+   "expected": "no",
+   "axis_tokens": [
+    "冷"
+   ]
+  },
+  {
+   "id": 3,
+   "subject": "砂糖",
+   "property": "しょっぱい",
+   "question": "砂糖はしょっぱいですか",
+   "expected": "no",
+   "axis_tokens": [
+    "しょっぱ",
+    "塩辛"
+   ]
+  },
+  {
+   "id": 4,
+   "subject": "雪",
+   "property": "黒い",
+   "question": "雪は黒いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "黒"
+   ]
+  },
+  {
+   "id": 5,
+   "subject": "炭",
+   "property": "白い",
+   "question": "炭は白いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "白"
+   ]
+  },
+  {
+   "id": 6,
+   "subject": "石",
+   "property": "柔らかい",
+   "question": "石は柔らかいですか",
+   "expected": "no",
+   "axis_tokens": [
+    "柔"
+   ]
+  },
+  {
+   "id": 7,
+   "subject": "綿",
+   "property": "硬い",
+   "question": "綿は硬いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "硬",
+    "固"
+   ]
+  },
+  {
+   "id": 8,
+   "subject": "羽",
+   "property": "重い",
+   "question": "羽は重いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "重い",
+    "重た"
+   ]
+  },
+  {
+   "id": 9,
+   "subject": "鉄",
+   "property": "軽い",
+   "question": "鉄は軽いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "軽"
+   ]
+  },
+  {
+   "id": 10,
+   "subject": "夜",
+   "property": "明るい",
+   "question": "夜は明るいですか",
+   "expected": "no",
+   "axis_tokens": [
+    "明る"
+   ]
+  },
+  {
+   "id": 11,
+   "subject": "太陽",
+   "property": "冷たい",
+   "question": "太陽は冷たいですか",
+   "expected": "no",
+   "axis_tokens": [
+    "冷"
+   ]
+  },
+  {
+   "id": 12,
+   "subject": "湯",
+   "property": "冷たい",
+   "question": "湯は冷たいですか",
+   "expected": "no",
+   "axis_tokens": [
+    "冷た"
+   ]
+  },
+  {
+   "id": 13,
+   "subject": "夏",
+   "property": "寒い",
+   "question": "夏は寒いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "寒"
+   ]
+  },
+  {
+   "id": 14,
+   "subject": "冬",
+   "property": "暑い",
+   "question": "冬は暑いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "暑"
+   ]
+  },
+  {
+   "id": 15,
+   "subject": "レモン",
+   "property": "甘い",
+   "question": "レモンは甘いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "甘"
+   ]
+  },
+  {
+   "id": 16,
+   "subject": "針",
+   "property": "丸い",
+   "question": "針は丸いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "丸"
+   ]
+  },
+  {
+   "id": 17,
+   "subject": "紙",
+   "property": "厚い",
+   "question": "紙は厚いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "厚"
+   ]
+  },
+  {
+   "id": 18,
+   "subject": "油",
+   "property": "乾く",
+   "question": "油は乾くですか",
+   "expected": "no",
+   "axis_tokens": [
+    "乾"
+   ]
+  },
+  {
+   "id": 19,
+   "subject": "煙",
+   "property": "沈む",
+   "question": "煙は沈むですか",
+   "expected": "no",
+   "axis_tokens": [
+    "沈"
+   ]
+  },
+  {
+   "id": 20,
+   "subject": "水",
+   "property": "燃える",
+   "question": "水は燃えるですか",
+   "expected": "no",
+   "axis_tokens": [
+    "燃"
+   ]
+  },
+  {
+   "id": 21,
+   "subject": "石",
+   "property": "溶ける",
+   "question": "石は溶けるですか",
+   "expected": "no",
+   "axis_tokens": [
+    "溶",
+    "融"
+   ]
+  },
+  {
+   "id": 22,
+   "subject": "鉄",
+   "property": "浮く",
+   "question": "鉄は浮くですか",
+   "expected": "no",
+   "axis_tokens": [
+    "浮"
+   ]
+  },
+  {
+   "id": 23,
+   "subject": "雨",
+   "property": "乾かす",
+   "question": "雨は乾かすですか",
+   "expected": "no",
+   "axis_tokens": [
+    "乾"
+   ]
+  },
+  {
+   "id": 24,
+   "subject": "赤ん坊",
+   "property": "話す",
+   "question": "赤ん坊は話すですか",
+   "expected": "no",
+   "axis_tokens": [
+    "話"
+   ]
+  },
+  {
+   "id": 25,
+   "subject": "木",
+   "property": "凍る",
+   "question": "木は凍るですか",
+   "expected": "no",
+   "axis_tokens": [
+    "凍"
+   ]
+  },
+  {
+   "id": 26,
+   "subject": "バター",
+   "property": "硬い",
+   "question": "バターは硬いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "硬",
+    "固"
+   ]
+  },
+  {
+   "id": 27,
+   "subject": "太鼓",
+   "property": "静か",
+   "question": "太鼓は静かですか",
+   "expected": "no",
+   "axis_tokens": [
+    "静"
+   ]
+  },
+  {
+   "id": 28,
+   "subject": "雪",
+   "property": "熱い",
+   "question": "雪は熱いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "熱"
+   ]
+  },
+  {
+   "id": 29,
+   "subject": "刃物",
+   "property": "柔らかい",
+   "question": "刃物は柔らかいですか",
+   "expected": "no",
+   "axis_tokens": [
+    "柔"
+   ]
+  },
+  {
+   "id": 30,
+   "subject": "茶",
+   "property": "固い",
+   "question": "茶は固いですか",
+   "expected": "no",
+   "axis_tokens": [
+    "固",
+    "硬"
+   ]
+  }
+ ]
+}

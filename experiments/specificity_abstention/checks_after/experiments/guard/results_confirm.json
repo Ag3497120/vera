@@ -1,0 +1,65 @@
+{
+ "prereg": "experiments/guard/PREREG.md",
+ "checks": {
+  "V1a_extract_ja_en": {
+   "pass": true,
+   "detail": {
+    "candidates": 4,
+    "ja_forbid": true,
+    "en_forbid": true,
+    "ja_require": true,
+    "en_require": true
+   }
+  },
+  "V1b_retire_stops_check_keeps_list": {
+   "pass": true,
+   "detail": {
+    "hits_before": 2,
+    "hits_after": 1,
+    "todo_after_retire": false,
+    "retired_in_list": true
+   }
+  },
+  "V2_emoji_class_catches_glyph": {
+   "pass": true,
+   "detail": {
+    "caught": true,
+    "found_chars": [
+     "🎉",
+     "⭐"
+    ],
+    "false_positive_on_plain": false
+   }
+  },
+  "V3a_unreadable_yields_nothing": {
+   "pass": true,
+   "detail": {
+    "candidates": []
+   }
+  },
+  "V3b_retired_absent_from_fading": {
+   "pass": true,
+   "detail": {
+    "fading": [
+     "a"
+    ],
+    "verdict": "FADING"
+   }
+  },
+  "V4_registration_order_invariant": {
+   "pass": true,
+   "detail": {
+    "permutations": 6,
+    "texts": 4,
+    "identical": true
+   }
+  },
+  "V5_guard_cli_speed": {
+   "pass": false,
+   "detail": {
+    "error": "frozen binary not found: /Users/motonishikoudai/Projects/Verantyx/cli/VerantyxIDE/Vendor/vera-memory"
+   }
+  }
+ },
+ "summary": "6/7 passed"
+}

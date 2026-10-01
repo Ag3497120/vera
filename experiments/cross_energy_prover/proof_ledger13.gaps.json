@@ -1,0 +1,198 @@
+{
+  "gap_b8fd3c9f": {
+    "gap_id": "gap_b8fd3c9f",
+    "gap_type": "UNPROVED_GOAL",
+    "subject": "app(x, y) = app(y, x)",
+    "scope": "math:goal:F1",
+    "severity": "QUALITY",
+    "status": "DETECTED",
+    "blocks": [],
+    "caused_by": [],
+    "required_for": [
+      "math_track"
+    ],
+    "acquisition_methods": [
+      "none:false_proposition"
+    ],
+    "allowed_sources": [],
+    "max_depth": 1,
+    "resolution": null,
+    "verified_by": [],
+    "created_at": 1787236788.673623,
+    "updated_at": 1787236788.673624,
+    "role": null,
+    "failure_type": "REFUTED",
+    "input_type": null,
+    "output_type": null,
+    "expected_transition": null,
+    "observed_transition": null
+  },
+  "gap_244aa51f": {
+    "gap_id": "gap_244aa51f",
+    "gap_type": "UNPROVED_GOAL",
+    "subject": "rev(x) = x",
+    "scope": "math:goal:F2",
+    "severity": "QUALITY",
+    "status": "DETECTED",
+    "blocks": [],
+    "caused_by": [],
+    "required_for": [
+      "math_track"
+    ],
+    "acquisition_methods": [
+      "none:false_proposition"
+    ],
+    "allowed_sources": [],
+    "max_depth": 1,
+    "resolution": null,
+    "verified_by": [],
+    "created_at": 1787236788.6805792,
+    "updated_at": 1787236788.6805801,
+    "role": null,
+    "failure_type": "REFUTED",
+    "input_type": null,
+    "output_type": null,
+    "expected_transition": null,
+    "observed_transition": null
+  },
+  "gap_a6a641ef": {
+    "gap_id": "gap_a6a641ef",
+    "gap_type": "UNPROVED_GOAL",
+    "subject": "len(app(x, y)) = len(x)",
+    "scope": "math:goal:F3",
+    "severity": "QUALITY",
+    "status": "DETECTED",
+    "blocks": [],
+    "caused_by": [],
+    "required_for": [
+      "math_track"
+    ],
+    "acquisition_methods": [
+      "none:false_proposition"
+    ],
+    "allowed_sources": [],
+    "max_depth": 1,
+    "resolution": null,
+    "verified_by": [],
+    "created_at": 1787236788.6824908,
+    "updated_at": 1787236788.6824908,
+    "role": null,
+    "failure_type": "REFUTED",
+    "input_type": null,
+    "output_type": null,
+    "expected_transition": null,
+    "observed_transition": null
+  },
+  "gap_ff849e7a": {
+    "gap_id": "gap_ff849e7a",
+    "gap_type": "UNPROVED_GOAL",
+    "subject": "rev(app(x, y)) = app(rev(x), rev(y))",
+    "scope": "math:goal:F4",
+    "severity": "QUALITY",
+    "status": "DETECTED",
+    "blocks": [],
+    "caused_by": [],
+    "required_for": [
+      "math_track"
+    ],
+    "acquisition_methods": [
+      "none:false_proposition"
+    ],
+    "allowed_sources": [],
+    "max_depth": 1,
+    "resolution": null,
+    "verified_by": [],
+    "created_at": 1787236788.700329,
+    "updated_at": 1787236788.700329,
+    "role": null,
+    "failure_type": "REFUTED",
+    "input_type": null,
+    "output_type": null,
+    "expected_transition": null,
+    "observed_transition": null
+  },
+  "gap_c2403c1c": {
+    "gap_id": "gap_c2403c1c",
+    "gap_type": "UNPROVED_GOAL",
+    "subject": "le(s(a), a) = true",
+    "scope": "math:goal:QF1",
+    "severity": "QUALITY",
+    "status": "DETECTED",
+    "blocks": [],
+    "caused_by": [],
+    "required_for": [
+      "math_track"
+    ],
+    "acquisition_methods": [
+      "none:false_proposition"
+    ],
+    "allowed_sources": [],
+    "max_depth": 1,
+    "resolution": null,
+    "verified_by": [],
+    "created_at": 1787236895.866625,
+    "updated_at": 1787236895.866625,
+    "role": null,
+    "failure_type": "REFUTED",
+    "input_type": null,
+    "output_type": null,
+    "expected_transition": null,
+    "observed_transition": null
+  },
+  "gap_ce1879a9": {
+    "gap_id": "gap_ce1879a9",
+    "gap_type": "UNPROVED_GOAL",
+    "subject": "monus(a, b) = 0",
+    "scope": "math:goal:QF2",
+    "severity": "QUALITY",
+    "status": "DETECTED",
+    "blocks": [],
+    "caused_by": [],
+    "required_for": [
+      "math_track"
+    ],
+    "acquisition_methods": [
+      "none:false_proposition"
+    ],
+    "allowed_sources": [],
+    "max_depth": 1,
+    "resolution": null,
+    "verified_by": [],
+    "created_at": 1787236895.869857,
+    "updated_at": 1787236895.869857,
+    "role": null,
+    "failure_type": "REFUTED",
+    "input_type": null,
+    "output_type": null,
+    "expected_transition": null,
+    "observed_transition": null
+  },
+  "gap_e0a72c07": {
+    "gap_id": "gap_e0a72c07",
+    "gap_type": "UNPROVED_GOAL",
+    "subject": "le(add(a, b), a) = true",
+    "scope": "math:goal:QF3",
+    "severity": "QUALITY",
+    "status": "DETECTED",
+    "blocks": [],
+    "caused_by": [],
+    "required_for": [
+      "math_track"
+    ],
+    "acquisition_methods": [
+      "none:false_proposition"
+    ],
+    "allowed_sources": [],
+    "max_depth": 1,
+    "resolution": null,
+    "verified_by": [],
+    "created_at": 1787236895.871427,
+    "updated_at": 1787236895.871427,
+    "role": null,
+    "failure_type": "REFUTED",
+    "input_type": null,
+    "output_type": null,
+    "expected_transition": null,
+    "observed_transition": null
+  }
+}

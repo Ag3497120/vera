@@ -1,0 +1,418 @@
+"""A bounded, compositional Japanese reader for Round5-A.
+
+Frame/Edge/Stage/Item readings are candidates. Their roles stay clause-local;
+unknown constructions remain source-bound Unread records rather than slots.
+"""
+from __future__ import annotations
+
+import hashlib
+import re
+import time
+from dataclasses import replace
+from decimal import Decimal
+
+from .frames import CONVERSE, canonical, read_all, _predicates
+from .question import Stage
+from .semantic_ir import (Budget, Clause, Nominal, Obligation, Operator, Output,
+                          Pattern, Plan, Quantity, Request, Role, Span, Test, Unread, Variable, View)
+from .typed_edges import _base, _tagger, extract
+from .verdict import COND, _clause_kind, read_records
+
+_NUM = re.compile(r'([+-]?[0-9]+(?:\.[0-9]+)?)\s*([A-Za-z%]+|[一-鿿]+)')
+_WH = re.compile(r'誰|だれ|何|どこ|いつ|どちら|いくつ')
+_END = re.compile(r'(?:ですか|ますか|でしょうか|です|だ|か)?[？?。！!]*$')
+_MODAL_UNSUPPORTED = re.compile(r'もし|だったなら|はず|かもしれ|だろう|らしい')
+_COMPLEX = re.compile(r'すべて|全部|それぞれ|最後|最初|同時|前後|以前|以後|最新|現在|今日|昨日|午前|午後|[0-9]+[月日時]|ただし|以外|除[くき]|のみ|だけ|必ず')
+_ROLE_WORDS = {'受取人': 'recipient', '受領者': 'recipient', '渡した人': 'agent',
+               '作成者': 'agent', '起点': 'origin', '終点': 'recipient', '相手': 'recipient'}
+
+
+def _span(source, raw, start=0, end=None):
+    end = len(raw) if end is None else end
+    return Span(source, start, end, raw[start:end])
+
+
+def _tokens(text):
+    out = []; cursor = 0
+    for word in _tagger()(text):
+        at = text.find(word.surface, cursor)
+        out.append((word, at, at + len(word.surface))); cursor = at + len(word.surface)
+    return out
+
+
+def _uncovered_nominals(tokens, covered):
+    """Content omitted by a Frame must remain an explicit unread requirement."""
+    for word, start, end in tokens:
+        if word.feature.pos1 in ('名詞', '代名詞', '形容詞', '形状詞', '副詞', '接頭辞', '接尾辞'):
+            if not any(left <= start and end <= right for left, right in covered):
+                return True
+    return False
+
+
+def _predicate_coverage(tokens, ev, predicate):
+    spans = [tokens[ev][1:]]
+    # サ変 nouns belong to the parsed predicate, not to an omitted argument.
+    if ev and _base(tokens[ev][0]) == 'する':
+        noun = tokens[ev-1][0]
+        if noun.feature.pos1 == '名詞' and _base(noun)+'する' == predicate:
+            spans.append(tokens[ev-1][1:])
+    return spans
+
+
+def _event_time(words, predicate_index):
+    # The candidate Frame stops at a compound verb's first independent verb.
+    # Read the single clause's grammatical auxiliaries, including the compound
+    # tail (e.g. 受け/取っ/た), instead of dropping its past tense.
+    return 'past' if any(w.feature.pos1 == '助動詞' and _base(w) == 'た'
+                         for w in words[predicate_index + 1:]) else 'nonpast'
+
+
+def attribute(text):
+    words = list(_tagger()(text))
+    if len(words) == 2 and words[0].feature.pos1 == '形容詞' and words[1].surface == 'さ':
+        return 'nominal:' + _base(words[0])
+    return text
+
+
+def quantity(text):
+    m = _NUM.fullmatch(text.strip())
+    if not m: return None
+    value = Decimal(m[1])
+    if len(value.as_tuple().digits) > 128: return None
+    return Quantity(value, m[2])
+
+
+def _sentences(raw):
+    start = 0; quoted = 0
+    for i, ch in enumerate(raw):
+        if ch in '「『': quoted += 1
+        elif ch in '」』': quoted = max(0, quoted - 1)
+        if quoted == 0 and ch in '。！？\n':
+            if raw[start:i+1].strip(): yield start, i+1
+            start = i+1
+    if raw[start:].strip(): yield start, len(raw)
+
+
+def _piece(source, raw, start, end, sovereign, family):
+    full = _span(source, raw, start, end)
+    left = start + len(full.text) - len(full.text.lstrip()); right = end
+    # A prefix can declare a hypothesis, correction, quotation or normative
+    # scope. It is not transparent metadata. Until that scope has a typed
+    # interpretation, retain it as unread instead of asserting the suffix.
+    colon = raw.find(':', left, right)
+    if colon < 0: colon = raw.find('：', left, right)
+    if colon >= 0:
+        # Keep a complete numeric colon-valued copula (e.g. a displayed
+        # clock value) as literal text. A label ending in a digit is not that
+        # grammar and receives no exception. Nothing before a colon is cut.
+        numeric_value = re.fullmatch(
+            r'\s*[^:：。！？\n]+[はが]\s*[0-9]+(?:[:：][0-9]+)+(?:です|である|だ|ではない|でない|じゃない)?[。！？?]*\s*',
+            raw[left:right])
+        if not numeric_value:
+            return [], [Unread(full, 'uninterpreted colon scope')]
+    while left < right and raw[left] in ' 、,': left += 1
+    condition = []; guard_spans = []; unknown = []
+    text = raw[left:right]
+    if _COMPLEX.search(text): unknown.append('unsupported source quantifier/exception/time')
+    cm = COND.match(text)
+    if cm and cm.group(1).strip():
+        guard = _span(source, raw, left, left + len(cm.group(1)))
+        gc, gu = _piece(source, raw, guard.start, guard.end, sovereign, family)
+        if len(gc) == 1 and not gu and not gc[0].conditions and not gc[0].unsupported:
+            c = gc[0]
+            condition.append(Pattern(c.predicate, tuple((r.name, r.term) for r in c.roles), c.polarity, c.modality, c.time))
+            if c.modality != 'assert': unknown.append('unsupported antecedent modality')
+        else: unknown.append('unsupported antecedent')
+        guard_spans.append(guard); left += cm.end(); text = raw[left:right]
+    body = _span(source, raw, left, right)
+    tokens = _tokens(text); words = [t[0] for t in tokens]
+    if text.rstrip().endswith(('?', '？')) or any(w.feature.pos1 == '助詞' and w.surface in ('か', 'かな', 'かしら', 'かい', 'かね', 'っけ') for w in words):
+        return [], [Unread(full, 'interrogative source does not assert a fact')]
+    if any('意志推量' in str(w.feature.cForm) for w in words):
+        return [], [Unread(full, 'volitional source does not assert a fact')]
+    edges = extract(text); frames = read_all(text); records = read_records(text, 'record')
+    predicates = _predicates(words)
+    result = []
+    # Noun copulas (including explicit nominal fragments) are relational facts.
+    m = re.fullmatch(r'\s*(.+?)[はが]\s*(.*?)(?:です|である|だ|ではない|でない|じゃない)?[。！？?]*\s*', text)
+    if m and not frames and m[2] and not _WH.search(m[2]):
+        lhs, value = m[1], m[2]
+        parts = lhs.split('の'); entity = 'の'.join(parts[:-1]) if len(parts)>1 else lhs
+        attr = parts[-1] if len(parts)>1 else ''
+        entity_at = left + text.index(entity); value_at = left + m.start(2)
+        roles = [Role('entity', entity, _span(source, raw, entity_at, entity_at+len(entity)))]
+        if attr:
+            at = left + m.start(1) + len(lhs) - len(attr)
+            roles.append(Role('attribute', attribute(attr), _span(source, raw, at, at+len(attr)), 'nominal'))
+        q = quantity(value)
+        if _NUM.fullmatch(value.strip()) and q is None: unknown.append('quantity outside exact contract')
+        if entity in ('彼','彼女','それ','これ','あれ') or value in ('彼','彼女','それ','これ','あれ'):
+            unknown.append('unresolved anaphora')
+        roles.append(Role('value', q or value, _span(source, raw, value_at, value_at+len(value)), 'quantity' if q else 'literal'))
+        pol = '-' if re.search(r'(ではない|でない|じゃない)[。！？?]*$', text) else '+'
+        before = raw[:value_at]; quoted = before.count('「')>before.count('」')
+        mod = 'quote' if quoted else ('hedge' if _MODAL_UNSUPPORTED.search(text) else 'assert')
+        ident = hashlib.sha256(f'{source}:{start}:{end}:copula'.encode()).hexdigest()[:24]
+        result.append(Clause(ident, Variable('event_'+ident, 'event'), 'property' if attr else 'identity',
+            _span(source, raw, value_at, value_at+len(value)), tuple(roles), full, body,
+            polarity=pol, modality=mod, conditions=tuple(condition), condition_spans=tuple(guard_spans),
+            rule='copula', sovereign=sovereign, family=family, unsupported=tuple(unknown)))
+    elif frames:
+        if len(frames) != len(predicates): unknown.append('predicate/frame alignment')
+        if len(frames) > 1: unknown.append('multiple predicates need explicit clause scope')
+        for index, frame in enumerate(frames):
+            if index >= len(predicates): break
+            ev, surface_pred = predicates[index]; word, pstart, pend = tokens[ev]
+            roles = []; issues = list(unknown)
+            previous = predicates[index-1][0] if index else -1
+            chunk_start = tokens[previous][2] if previous >= 0 else 0
+            for role in ('agent','patient','recipient'):
+                value = getattr(frame, role)
+                if not value: continue
+                at = text.rfind(value, chunk_start, pstart)
+                if at < 0: at = text.find(value, 0, pstart)
+                if at < 0:
+                    issues.append('unlocated '+role); continue
+                if value in ('彼','彼女','それ','これ','あれ') or '彼の' in value:
+                    issues.append('unresolved anaphora')
+                roles.append(Role(role, canonical(value), _span(source, raw, left+at, left+at+len(value)), 'frame'))
+            # Additional case roles are tied to this predicate's own Edge.ev.
+            for edge in edges:
+                if edge.ev != ev: continue
+                role = {'で':'location','から':'origin'}.get(edge.rel)
+                if role and edge.dep not in (r.term for r in roles):
+                    at = text.rfind(edge.dep, chunk_start, pstart)
+                    if at >= 0: roles.append(Role(role, edge.dep, _span(source,raw,left+at,left+at+len(edge.dep))))
+            covered = [(r.span.start-left, r.span.end-left) for r in roles] + _predicate_coverage(tokens, ev, surface_pred)
+            if _uncovered_nominals(tokens, covered): issues.append('unrepresented source content')
+            if frame.ambiguous: issues.append('ambiguous frame role')
+            mod = _clause_kind(text, 'record', frame.negated)
+            mod = 'assert' if mod == 'fact' else mod
+            clause_edges = [e for e in edges if e.ev == ev]
+            if any(e.mod in ('quote','hedge','simile') for e in clause_edges): mod = clause_edges[0].mod
+            if _MODAL_UNSUPPORTED.search(text): mod = 'hedge'
+            before = raw[:left+pstart]
+            if before.count('「')>before.count('」'): mod = 'quote'
+            pol = '-' if frame.negated and mod not in ('prohibition','obligation') else '+'
+            ident = hashlib.sha256(f'{source}:{start}:{end}:{index}'.encode()).hexdigest()[:24]
+            result.append(Clause(ident, Variable('event_'+ident,'event'),frame.predicate,
+                _span(source,raw,left+pstart,left+pend),tuple(roles),full,body,polarity=pol,
+                modality=mod,time=_event_time(words,ev),conditions=tuple(condition),
+                condition_spans=tuple(guard_spans),rule='frame',sovereign=sovereign,family=family,
+                unsupported=tuple(issues)))
+    if not result:
+        return [], [Unread(full,'unsupported clause grammar')]
+    return result, []
+
+
+def document_view(documents, *, sovereigns=None, family='document'):
+    started = time.perf_counter(); sources = dict(documents); clauses = []; unread = []
+    from .bot import _INJECTED
+    for source, raw in sources.items():
+        sovereign = (sovereigns or {}).get(source, family)
+        for start, end in _sentences(raw):
+            if _INJECTED.search(raw[start:end]):
+                unread.append(Unread(_span(source,raw,start,end),'document instruction excluded')); continue
+            cs, us = _piece(source,raw,start,end,sovereign,family)
+            if re.match(r'\s*ただし',raw[start:end]):
+                if clauses and clauses[-1].span.source == source:
+                    base = clauses[-1]
+                    if cs and cs[0].conditions:
+                        clauses[-1] = replace(base,exceptions=cs[0].conditions,exception_spans=cs[0].condition_spans)
+                        cs = [replace(c,exception_of=base.id) for c in cs]
+                    else:
+                        clauses[-1] = replace(base,unsupported=(*base.unsupported,'unsupported explicit exception'))
+                        cs = [replace(c,unsupported=(*c.unsupported,'unsupported explicit exception'),exception_of=base.id) for c in cs]
+                else: us.append(Unread(_span(source,raw,start,end),'exception has no source rule'))
+            clauses.extend(cs); unread.extend(us)
+    return View(sources,tuple(clauses),tuple(unread),(time.perf_counter()-started)*1000)
+
+
+class Builder:
+    def __init__(self,text):
+        self.text=text; self.nodes=[]; self.obligations=[]; self.outputs=[]; self.roots=[]; self.number=0
+
+    def variable(self,sort='entity'):
+        self.number+=1; return Variable('v'+str(self.number),sort)
+
+    def obligation(self,node,kind,span,detail=''):
+        ident='o'+str(len(self.obligations))
+        self.obligations.append(Obligation(ident,span,kind,node,detail)); return ident
+
+    def bind(self,pattern,span,target=None,relation=''):
+        ident='n'+str(len(self.nodes)); ids=[self.obligation(ident,'relation',span,pattern.predicate)]
+        for name,term in pattern.roles: ids.append(self.obligation(ident,'role',span,name))
+        for kind,detail in (('polarity',pattern.polarity),('modality',pattern.modality)):
+            ids.append(self.obligation(ident,kind,span,detail))
+        if pattern.time:ids.append(self.obligation(ident,'time',span,pattern.time))
+        if pattern.event is not None:ids.append(self.obligation(ident,'event',span))
+        self.nodes.append(Operator(ident,'Bind',pattern=pattern,target=target,relation=relation,obligations=tuple(ids),span=span))
+        current=ident
+        for op in ('ApplyCondition','Except'):
+            next_id='n'+str(len(self.nodes)); self.nodes.append(Operator(next_id,op,inputs=(current,))); current=next_id
+        self.roots.append(current); return current
+
+    def path(self,phrase,span,sort='value'):
+        parts=phrase.split('の')
+        if any(not p for p in parts): raise ValueError('empty nominal path')
+        subject=parts[0]
+        if len(parts)==1:
+            value=self.variable(sort); self.bind(Pattern('identity',(('entity',subject),('value',value))),span); return value
+        for i,attr in enumerate(parts[1:]):
+            value=self.variable(sort if i==len(parts)-2 else 'entity')
+            self.bind(Pattern('property',(('entity',subject),('attribute',attribute(attr)),('value',value))),span)
+            subject=value
+        return subject
+
+    def finish(self):
+        if not self.roots or not self.outputs: raise ValueError('no answer obligations')
+        current=self.roots[0]
+        for root in self.roots[1:]:
+            ident='n'+str(len(self.nodes)); self.nodes.append(Operator(ident,'Join',inputs=(current,root))); current=ident
+        return current
+
+    def project(self,current):
+        ident='n'+str(len(self.nodes)); outputs=[]; ids=[]
+        for label,term,span,unit in self.outputs:
+            oid=self.obligation(ident,'output',span,label); ids.append(oid); outputs.append(Output(label,term,oid,unit,span))
+        self.nodes.append(Operator(ident,'Project',inputs=(current,),outputs=tuple(outputs),obligations=tuple(ids)))
+        return Plan(tuple(self.nodes),ident)
+
+
+def _property_question(fragment,b,span):
+    cleaned=_END.sub('',fragment).strip()
+    m=re.fullmatch(r'(.+?)(?:は|が)(?:誰|だれ|何|どこ|いつ)([A-Za-z一-鿿]*)',cleaned)
+    if m:
+        phrase=m[1]; unit=m[2]; value=b.path(phrase,span,'quantity' if unit else 'value')
+        b.outputs.append((phrase,value,span,unit)); return True
+    if cleaned.endswith('は'):
+        phrase=cleaned[:-1]
+        if read_all(phrase): return False
+        if phrase in _ROLE_WORDS:
+            value=b.variable(); b.bind(Pattern('*',((_ROLE_WORDS[phrase],value),)),span)
+        elif 'の' in phrase:
+            value=b.path(phrase,span)
+        else:
+            subject=b.variable(); value=b.variable('value')
+            b.bind(Pattern('property',(('entity',subject),('attribute',attribute(phrase)),('value',value))),span)
+        b.outputs.append((phrase,value,span,'')); return True
+    return False
+
+
+def _event_question(fragment,b,span):
+    cleaned=_END.sub('',fragment).strip()
+    # A relative head names the missing event role, and becomes a bound variable.
+    relative=re.fullmatch(r'(.+?)(人|もの|物|箱|鍵|資料)(?:は)?',cleaned)
+    core=relative[1] if relative else cleaned
+    frames=read_all(core); positioned=_tokens(core); tokens=[w for w,_,_ in positioned]; preds=_predicates(tokens)
+    if len(frames)!=1 or len(preds)!=1: return False
+    f=frames[0]; original=preds[0][1]
+    if any('意志推量' in str(w.feature.cForm) for w in tokens): return False
+    if f.ambiguous: return False
+    if any(w.feature.pos1 == '副詞' for w in tokens): return False
+    roles=[]; outputs=[]; covered=[]
+    for role in ('agent','patient','recipient'):
+        term=getattr(f,role)
+        if term and not _WH.search(term):
+            roles.append((role,canonical(term)))
+            at = core.rfind(term, 0, positioned[preds[0][0]][1])
+            if at >= 0: covered.append((at, at+len(term)))
+    for edge in extract(core):
+        if edge.ev != preds[0][0]:continue
+        role={'で':'location','から':'origin'}.get(edge.rel)
+        if role and not _WH.search(edge.dep):
+            if any(k==role for k,_ in roles):return False
+            roles.append((role,edge.dep))
+            at = core.rfind(edge.dep, 0, positioned[preds[0][0]][1])
+            if at >= 0: covered.append((at, at+len(edge.dep)))
+    passive=bool(re.search(r'(?:れ|られ)(?:た|る|ます)',core))
+    handled_wh=set()
+    for m in re.finditer(r'(誰|だれ|何|どこ)(が|は|を|に|へ|で|から)',core):
+        handled_wh.add(m.start())
+        covered.append((m.start(),m.end()))
+        role={'が':'agent','は':'agent','を':'patient','に':'recipient','へ':'recipient','で':'location','から':'origin'}[m[2]]
+        if passive and role=='agent': role='patient'
+        if original in CONVERSE:
+            role={'agent':'recipient','recipient':'agent','origin':'agent'}.get(role,role)
+        if any(k==role for k,_ in roles): return False
+        value=b.variable(); roles.append((role,value)); outputs.append((role,value))
+    if any(m.start() not in handled_wh for m in _WH.finditer(core)):return False
+    covered.extend(_predicate_coverage(positioned, preds[0][0], original))
+    if _uncovered_nominals(positioned, covered): return False
+    if relative:
+        head=relative[2]
+        if original in CONVERSE: role='recipient'
+        elif not f.agent: role='agent'
+        elif not f.patient: role='patient'
+        else: return False
+        if any(k==role for k,_ in roles): return False
+        value=b.variable(); roles.append((role,value if head in ('人','もの','物') else Nominal(head,value)))
+        outputs.append((role,value))
+    # Noun objects in abbreviated relative questions are head restrictions.
+    if relative:
+        roles=[(k,Nominal(v,b.variable()) if isinstance(v,str) and k=='patient' else v) for k,v in roles]
+    mod='normative' if re.search(r'てよい|てもよい|可能|できる|られる',core) else 'assert'
+    if outputs:
+        b.bind(Pattern(f.predicate,tuple(roles),'-' if f.negated else '+',mod,_event_time(tokens,preds[0][0])),span)
+        b.outputs.extend((label,value,span,'') for label,value in outputs)
+    else:
+        value=b.variable('value'); b.bind(Pattern(f.predicate,tuple(roles),'*',mod,_event_time(tokens,preds[0][0])),span,value,'whether-negative' if f.negated else 'whether')
+        b.outputs.append(('可否',value,span,''))
+    return True
+
+
+def read_request(text,budget=Budget()):
+    from .stage_split import split
+    raw=text; full=_span('question',raw)
+    sr=split(raw); stages=tuple(Stage(s['condition'],s['head'],s['fragment'],tuple(s['span'])) for s in sr.get('stages',()))
+    try:
+        if not raw.strip(): raise ValueError('empty request')
+        from .question import _is_generation, _ACTION
+        if _is_generation(raw) or _ACTION.search(raw):
+            raise ValueError('generation/action speech act is unsupported in semantic QA')
+        if _COMPLEX.search(raw) or _MODAL_UNSUPPORTED.search(raw): raise ValueError('unsupported mandatory scope/quantifier/time')
+        if COND.match(raw): raise ValueError('unsupported question antecedent')
+        b=Builder(raw)
+        cleaned=raw.strip()
+        # Explicit arithmetic over named nominal paths. Operands are dependency
+        # nodes, never values harvested from nearby sentences.
+        am=re.fullmatch(r'(.+?)(?:の合計|の差)(?:は|を)(?:何|いくつ)([A-Za-z一-鿿]*)(?:ですか)?[？?。]*',cleaned)
+        cmp=re.fullmatch(r'(.+?)は(.+?)より(大きい|小さい|多い|少ない)(?:ですか|か)[？?。]*',cleaned)
+        filt=re.fullmatch(r'(.+?)が([+-]?[0-9]+(?:\.[0-9]+)?\s*[^\s0-9]+?)(以上|以下)の(?:もの|物)は[？?。]*',cleaned)
+        if filt:
+            q=quantity(filt[2])
+            if q is None: raise ValueError('unread filter quantity')
+            entity=b.variable(); value=b.variable('quantity')
+            current=b.bind(Pattern('property',(('entity',entity),('attribute',attribute(filt[1])),('value',value))),full)
+            ident='n'+str(len(b.nodes)); oid=b.obligation(ident,'filter',full,'inclusive quantity threshold')
+            b.nodes.append(Operator(ident,'Filter',inputs=(current,),tests=(Test(value,'>=' if filt[3]=='以上' else '<=',q),),obligations=(oid,)))
+            b.outputs.append(('対象',entity,full,'')); plan=b.project(ident)
+        elif am or cmp:
+            phrases=am[1].split('と') if am else [cmp[1],cmp[2]]
+            if len(phrases)!=2: raise ValueError('arithmetic requires two explicit operands')
+            terms=tuple(b.path(p,full,'quantity') for p in phrases)
+            current=b.finish() if b.outputs else b.roots[0]
+            for root in b.roots[1:]:
+                ident='n'+str(len(b.nodes)); b.nodes.append(Operator(ident,'Join',inputs=(current,root))); current=ident
+            ident='n'+str(len(b.nodes)); result=b.variable('quantity' if am else 'value')
+            op='Sum' if am and 'の合計' in cleaned else ('Difference' if am else 'Compare')
+            oid=b.obligation(ident,'operation',full,op)
+            b.nodes.append(Operator(ident,op,inputs=(current,),terms=terms,target=result,unit=am[2] if am else '',
+                                   relation=('>' if cmp[3] in ('大きい','多い') else '<') if cmp else '',
+                                   absolute=op=='Difference',obligations=(oid,)))
+            # absolute is a Difference field, and is false for Sum.
+            b.outputs.append(('計算結果' if am else '比較結果',result,full,am[2] if am else '')); plan=b.project(ident)
+        else:
+            fragments=re.split(r'[、,]|と(?=[^。?？]*?の)',cleaned)
+            for fragment in fragments:
+                if not fragment.strip(): raise ValueError('empty conjunct')
+                at=raw.find(fragment); span=_span('question',raw,at,at+len(fragment))
+                if not _property_question(fragment,b,span) and not _event_question(fragment,b,span):
+                    raise ValueError('unsupported request grammar')
+            plan=b.project(b.finish())
+        from .semantic_validate import request_shape
+        request=Request(raw,(plan,),tuple(b.obligations),(full,),stages=stages,rules=('frame/edge/stage candidates','nominal-path','role-wh','relational-plan'))
+        request_shape(request,plan,budget)
+        return request
+    except (ValueError, KeyError, IndexError) as exc:
+        return Request(raw,(),(),(),(Unread(full,str(exc)),),stages,('typed unread',))
