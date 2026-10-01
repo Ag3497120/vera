@@ -11,7 +11,7 @@ from decimal import Decimal, Inexact, localcontext
 from fractions import Fraction
 from typing import Any
 
-from .semantic_coord import chunk, coordination_ok, own_subject_phrase, topic_phrase, tag
+from .semantic_coord import chunk, coordination_ok, own_subject_phrase, phrase_bounded, topic_phrase, tag
 from .semantic_names import is_past_aux, name_split_in, tokens_covering
 from .semantic_ir import (Clause, EventValue, Limit, Meter, Nominal, Pattern,
                           Plan, Proof, ProofNode, Quantity, Request, Variable, View, typed, unit_type)
@@ -419,6 +419,13 @@ def license_clause(clause, view, ranges=None):
             split = _role_split(value, clause.roles, name, raw, body, words, positions) if value else None
             role = next((r for r in clause.roles if r.name == name), None)
             if split and role: licensed.append((role.span.start - len(split[0]), role.span.start))
+        for role in clause.roles:
+            if role.name not in ('agent', 'patient', 'recipient', 'origin', 'location'): continue
+            lo_, hi_ = role.span.start - body.start, role.span.end - body.start
+            if multi and lo_ < lo: continue                       # the borrowed topic agent is checked above
+            for a0, b0 in licensed:
+                if b0 - body.start == lo_ and a0 < role.span.start: lo_ = a0 - body.start
+            if not phrase_bounded(tagged, lo_, hi_): raise Rejected('unlicensed source content')
         licensed.append((clause.predicate_span.start, clause.predicate_span.end))
         if ev and _base(words[ev]) == 'する' and words[ev-1].feature.pos1 == '名詞' and _base(words[ev-1])+'する' == predicates[index][1]:
             licensed.append((body.start+positions[ev-1], body.start+positions[ev-1]+len(words[ev-1].surface)))

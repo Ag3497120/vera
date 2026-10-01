@@ -63,3 +63,18 @@ def topic_phrase(tagged, pred_idx):
             while j > first and tagged[j - 1][1] in ('名詞', '接尾辞', '代名詞'): j -= 1
             return (tagged[j][4], tagged[k - 1][5]) if j < k else None
     return None
+
+
+_LEFT_OK = ('助詞', '補助記号')
+_RIGHT_OK = ('助詞', '補助記号', '助動詞', '動詞', '接続詞', '形容詞')
+
+
+def phrase_bounded(tagged, start, end):
+    """A role phrase must start after a particle/punctuation (or at the chunk start) and end before a particle,
+    punctuation or the predicate. A tagger that cuts one word (クククル -> クク + クル) leaves a stray neighbour,
+    and the phrase would then answer only a fragment of the written name."""
+    left = [t for t in tagged if t[5] == start]
+    if left and left[0][1] not in _LEFT_OK: return False
+    right = [t for t in tagged if t[4] == end]
+    if right and right[0][1] not in _RIGHT_OK: return False
+    return True

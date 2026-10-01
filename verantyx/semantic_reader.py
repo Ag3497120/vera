@@ -13,7 +13,7 @@ from decimal import Decimal
 
 from .frames import CONVERSE, canonical, read_all, _predicates
 from .question import Stage
-from .semantic_coord import chunk, coordination_ok, own_subject_phrase, topic_phrase, tag
+from .semantic_coord import chunk, coordination_ok, own_subject_phrase, phrase_bounded, topic_phrase, tag
 from .semantic_names import is_past_aux, name_split_in, tokens_covering
 from .semantic_ir import (Budget, Clause, Nominal, Obligation, Operator, Output,
                           Pattern, Plan, Quantity, Request, Role, Span, Test, Unread, Variable, View)
@@ -223,6 +223,12 @@ def _piece(source, raw, start, end, sovereign, family):
                 own_first, own_last = chunk(tagged, [p0 for p0, _ in predicates], index)
                 own_tokens = tokens[own_first:own_last + 1]
             if _uncovered_nominals(own_tokens, covered): issues.append('unrepresented source content')
+            for r in roles:
+                if r.name not in ('agent', 'patient', 'recipient', 'origin', 'location'): continue
+                lo_, hi_ = r.span.start - left, r.span.end - left
+                for d0, d1 in descriptors:
+                    if d1 == lo_: lo_ = d0
+                if not phrase_bounded(tagged, lo_, hi_): issues.append('unrepresented source content'); break
             if frame.ambiguous: issues.append('ambiguous frame role')
             mod = _clause_kind(text, 'record', frame.negated)
             mod = 'assert' if mod == 'fact' else mod

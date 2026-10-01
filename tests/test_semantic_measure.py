@@ -187,3 +187,12 @@ def test_unknown_katakana_names_are_answered_whole(name):
 ])
 def test_kanji_title_before_a_name_is_split(doc, q, expected):
     assert val(ask(doc, q)) == ("ANSWER", expected)
+
+
+# ---- a tagger cut inside a written name must abstain, never answer a fragment (found by the 4000-document scale run) ----
+@pytest.mark.parametrize("name", ["クククル", "ヤレキル", "ケククン", "クルクル"])
+def test_name_cut_by_the_tagger_is_never_answered_as_a_fragment(name):
+    a = ask(f"{name}は白紙をリクに渡した。", "誰が白紙をリクに渡した？")
+    assert a["verdict"] != "ANSWER" or a["values"] == [name]
+    b = ask(f"リクは白紙を{name}に渡した。", "リクは白紙を誰に渡した？")
+    assert b["verdict"] != "ANSWER" or b["values"] == [name]
