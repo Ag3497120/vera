@@ -131,7 +131,9 @@ def _piece(source, raw, start, end, sovereign, family):
         return [], [Unread(full, 'interrogative source does not assert a fact')]
     if any('意志推量' in str(w.feature.cForm) for w in words):
         return [], [Unread(full, 'volitional source does not assert a fact')]
-    if not condition and not unknown:
+    # A duration (1時間) is not a clock-time scope: judge the other complex-scope words on the text without it.
+    plain = re.sub(r'[0-9]+(?:\.[0-9]+)?(?:時間|分|秒)', '', text)
+    if not condition and not _COMPLEX.search(plain) and all(u == 'unsupported source quantifier/exception/time' for u in unknown):
         from .semantic_measure import read_measure_sentence
         measured = read_measure_sentence(source, raw, start, left, right, sovereign, family)
         if measured is not None: return measured, []
