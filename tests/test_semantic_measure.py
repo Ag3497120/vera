@@ -119,3 +119,31 @@ def test_role_only_questions_generalize(doc, q, expected):
 ])
 def test_role_only_questions_do_not_guess(doc, q):
     assert ask(doc, q)["verdict"] != "ANSWER"
+
+
+# ---- coordinated predicates (te / renyō chains) with topic-scope subject sharing ----
+@pytest.mark.parametrize("doc,q,expected", [
+    ("ユラは装置Zをカイに貸し、装置Yをメイに返した。", "何を誰に貸した？", ["装置Z", "カイ"]),
+    ("ユラは装置Zをカイに貸し、装置Yをメイに返した。", "誰が装置Yを返した？", ["ユラ"]),
+    ("リサは封筒を青棚に置き、合鍵をオウに預けた。", "合鍵を誰に預けた？", ["オウ"]),
+    ("リサは封筒を青棚に置いて、合鍵をオウに預けた。", "誰が封筒を置いた？", ["リサ"]),                  # te-form
+    ("マキは地図をトモに見せ、鍵をリョウに渡し、箱をナオに預けた。", "鍵を誰に渡した？", ["リョウ"]),     # three clauses
+    ("マキは地図をトモに見せ、鍵をリョウに渡し、箱をナオに預けた。", "誰が箱を預けた？", ["マキ"]),
+    ("マキは地図をトモに見せ、ミナは鍵をリョウに渡した。", "誰が鍵を渡した？", ["ミナ"]),               # own subject: no borrowing
+    ("マキは地図をトモに見せ、ミナは鍵をリョウに渡した。", "誰が地図を見せた？", ["マキ"]),
+])
+def test_coordinated_predicates_are_read_per_clause(doc, q, expected):
+    assert val(ask(doc, q)) == ("ANSWER", expected)
+
+
+@pytest.mark.parametrize("doc,q", [
+    ("ユキは青箱を運ばなかったが、白箱は運んだ。", "ユキが運んだ箱は？"),          # contrastive が: scope is not coordination
+    ("マキは地図をトモに見せたが、鍵をリョウに渡した。", "誰が鍵を渡した？"),        # adversative が
+    ("マキは雨だったので、鍵をリョウに渡した。", "誰が鍵を渡した？"),               # causal ので
+    ("マキは鍵が合えば、箱をナオに預けた。", "誰が箱を預けた？"),                  # conditional
+    ("マキは地図をトモに見せ、ミナは鍵をリョウに渡した。", "ミナが地図を見せた？"),   # the subject must not leak to the other clause
+    ("マキは地図をトモに見せるかもしれず、鍵をリョウに渡した。", "誰が鍵を渡した？"),   # hedge
+])
+def test_non_coordination_and_scope_leaks_do_not_answer(doc, q):
+    a = ask(doc, q)
+    assert a["verdict"] != "ANSWER" or a["values"] in (["いいえ"],), a

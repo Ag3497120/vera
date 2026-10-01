@@ -13,6 +13,7 @@ from decimal import Decimal
 
 from .frames import CONVERSE, canonical, read_all, _predicates
 from .question import Stage
+from .semantic_coord import chunk, coordination_ok, own_subject_phrase, topic_phrase, tag
 from .semantic_names import name_split_in, tokens_covering
 from .semantic_ir import (Budget, Clause, Nominal, Obligation, Operator, Output,
                           Pattern, Plan, Quantity, Request, Role, Span, Test, Unread, Variable, View)
@@ -166,7 +167,11 @@ def _piece(source, raw, start, end, sovereign, family):
             rule='copula', sovereign=sovereign, family=family, unsupported=tuple(unknown)))
     elif frames:
         if len(frames) != len(predicates): unknown.append('predicate/frame alignment')
-        if len(frames) > 1: unknown.append('multiple predicates need explicit clause scope')
+        tagged = tag([w for w, _, _ in tokens], [s0 for _, s0, _ in tokens])
+        coordinated = (len(frames) > 1 and len(frames) == len(predicates)
+                       and _clause_kind(text, 'record', False) == 'fact'
+                       and coordination_ok(tagged, [p0 for p0, _ in predicates]))
+        if len(frames) > 1 and not coordinated: unknown.append('multiple predicates need explicit clause scope')
         for index, frame in enumerate(frames):
             if index >= len(predicates): break
             ev, surface_pred = predicates[index]; word, pstart, pend = tokens[ev]
@@ -177,7 +182,15 @@ def _piece(source, raw, start, end, sovereign, family):
                 value = getattr(frame, role)
                 if not value: continue
                 at = text.rfind(value, chunk_start, pstart)
-                if at < 0: at = text.find(value, 0, pstart)
+                if at < 0:
+                    at = text.find(value, 0, pstart)
+                    if at >= 0 and at < chunk_start:       # the phrase belongs to an earlier clause: a borrowed role
+                        pidx = [p0 for p0, _ in predicates]
+                        topic = topic_phrase(tagged, pidx) if coordinated else None
+                        c_first, c_last = chunk(tagged, pidx, index) if coordinated else (0, 0)
+                        if not (coordinated and role == 'agent' and index > 0 and topic == (at, at + len(value))
+                                and not own_subject_phrase(tagged, c_first, c_last)):
+                            issues.append('unlicensed role borrowing'); continue
                 if at < 0:
                     issues.append('unlocated '+role); continue
                 if value in ('彼','彼女','それ','これ','あれ') or '彼の' in value:
@@ -204,7 +217,11 @@ def _piece(source, raw, start, end, sovereign, family):
                 if tj < ti and tokens[tj][1] >= chunk_start and not any(r.name == 'origin' for r in roles):
                     roles.append(Role('origin', text[tokens[tj][1]:tps], _span(source, raw, left+tokens[tj][1], left+tps)))
             covered = [(r.span.start-left, r.span.end-left) for r in roles] + descriptors + _predicate_coverage(tokens, ev, surface_pred)
-            if _uncovered_nominals(tokens, covered): issues.append('unrepresented source content')
+            own_tokens = tokens
+            if coordinated:        # the other clauses of a coordinated sentence are read as their own clauses
+                own_first, own_last = chunk(tagged, [p0 for p0, _ in predicates], index)
+                own_tokens = tokens[own_first:own_last + 1]
+            if _uncovered_nominals(own_tokens, covered): issues.append('unrepresented source content')
             if frame.ambiguous: issues.append('ambiguous frame role')
             mod = _clause_kind(text, 'record', frame.negated)
             mod = 'assert' if mod == 'fact' else mod

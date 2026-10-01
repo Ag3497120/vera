@@ -11,6 +11,7 @@ from decimal import Decimal, Inexact, localcontext
 from fractions import Fraction
 from typing import Any
 
+from .semantic_coord import chunk, coordination_ok, own_subject_phrase, topic_phrase, tag
 from .semantic_names import name_split_in, tokens_covering
 from .semantic_ir import (Clause, EventValue, Limit, Meter, Nominal, Pattern,
                           Plan, Proof, ProofNode, Quantity, Request, Variable, View, typed, unit_type)
@@ -353,15 +354,27 @@ def license_clause(clause, view, ranges=None):
         from .frames import _predicates
         from .typed_edges import _tagger, _base
         words = list(_tagger()(raw)); predicates = _predicates(words); all_frames = read_all(raw)
-        if len(all_frames) != 1: raise Rejected('unsupported multiple-event scope')
         cursor = 0; positions = []
         for word in words:
             at = raw.find(word.surface, cursor); positions.append(at); cursor = at+len(word.surface)
-        facts = [f for i, f in enumerate(all_frames) if i < len(predicates)
-                 and f.predicate == clause.predicate
-                 and body.start + positions[predicates[i][0]] == clause.predicate_span.start]
-        if len(facts) != 1: raise Rejected("event predicate licensing")
-        ev = predicates[0][0]
+        tagged = tag(words, positions); pidx = [p0 for p0, _ in predicates]
+        multi = len(all_frames) > 1
+        if multi:
+            # Plain te/renyō coordination only, with every predicate represented as its own clause.
+            if (len(all_frames) != len(predicates) or _clause_kind(raw, 'record', False) != 'fact'
+                    or not coordination_ok(tagged, pidx)):
+                raise Rejected('unsupported multiple-event scope')
+            sentence = sum(1 for c in view.clauses if c.rule == 'frame' and c.span == clause.span and c.body_span == clause.body_span)
+            if sentence != len(all_frames): raise Rejected('coordinated clause omitted or duplicated')
+        elif len(all_frames) != 1: raise Rejected('unsupported multiple-event scope')
+        matching = [i for i, f in enumerate(all_frames) if i < len(predicates)
+                    and f.predicate == clause.predicate
+                    and body.start + positions[predicates[i][0]] == clause.predicate_span.start]
+        if len(matching) != 1: raise Rejected("event predicate licensing")
+        index = matching[0]; facts = [all_frames[index]]
+        ev = predicates[index][0]
+        c_first, c_last = chunk(tagged, pidx, index) if multi else (0, ev)
+        lo = tagged[c_first][4] if multi and c_first < len(tagged) else 0
         if clause.predicate_span.end != body.start + positions[ev] + len(words[ev].surface):
             raise Rejected('event predicate end')
         frame = facts[0]; declared = {r.name: r.term for r in clause.roles}
@@ -372,6 +385,14 @@ def license_clause(clause, view, ranges=None):
             if split: allowed.add(canonical(split[1]))
             if value and declared.get(name) not in allowed: raise Rejected("event role assignment")
             if not value and name in declared: raise Rejected("invented event role")
+        for role in clause.roles:
+            if role.name in ('agent', 'patient', 'recipient') and multi and role.span.start - body.start < lo:
+                # a phrase outside this clause's own tokens: only the topic-scope borrow of the first clause's agent
+                topic = topic_phrase(tagged, pidx)
+                if (role.name != 'agent' or index == 0 or topic is None
+                        or (role.span.start - body.start, role.span.end - body.start) != topic
+                        or own_subject_phrase(tagged, c_first, c_last)):
+                    raise Rejected('unlicensed role borrowing')
         normalized = _clause_kind(raw, 'record', frame.negated)
         if not quoted and clause.modality not in ('quote', 'hedge', 'instruction'):
             expected = 'assert' if normalized == 'fact' else normalized
@@ -399,9 +420,10 @@ def license_clause(clause, view, ranges=None):
             role = next((r for r in clause.roles if r.name == name), None)
             if split and role: licensed.append((role.span.start - len(split[0]), role.span.start))
         licensed.append((clause.predicate_span.start, clause.predicate_span.end))
-        if ev and _base(words[ev]) == 'する' and words[ev-1].feature.pos1 == '名詞' and _base(words[ev-1])+'する' == predicates[0][1]:
+        if ev and _base(words[ev]) == 'する' and words[ev-1].feature.pos1 == '名詞' and _base(words[ev-1])+'する' == predicates[index][1]:
             licensed.append((body.start+positions[ev-1], body.start+positions[ev-1]+len(words[ev-1].surface)))
         for word, at in zip(words, positions):
+            if multi and not (lo <= at < tagged[ev][5]): continue      # other clauses are checked as their own clauses
             if word.feature.pos1 in ('名詞', '代名詞', '形容詞', '形状詞', '副詞', '接頭辞', '接尾辞'):
                 start = body.start + at
                 if not any(a <= start and start + len(word.surface) <= b for a, b in licensed):
