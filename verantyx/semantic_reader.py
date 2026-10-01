@@ -130,6 +130,10 @@ def _piece(source, raw, start, end, sovereign, family):
         return [], [Unread(full, 'interrogative source does not assert a fact')]
     if any('意志推量' in str(w.feature.cForm) for w in words):
         return [], [Unread(full, 'volitional source does not assert a fact')]
+    if not condition and not unknown:
+        from .semantic_measure import read_measure_sentence
+        measured = read_measure_sentence(source, raw, start, left, right, sovereign, family)
+        if measured is not None: return measured, []
     edges = extract(text); frames = read_all(text); records = read_records(text, 'record')
     predicates = _predicates(words)
     result = []
@@ -379,7 +383,11 @@ def read_request(text,budget=Budget()):
         am=re.fullmatch(r'(.+?)(?:の合計|の差)(?:は|を)(?:何|いくつ)([A-Za-z一-鿿]*)(?:ですか)?[？?。]*',cleaned)
         cmp=re.fullmatch(r'(.+?)は(.+?)より(大きい|小さい|多い|少ない)(?:ですか|か)[？?。]*',cleaned)
         filt=re.fullmatch(r'(.+?)が([+-]?[0-9]+(?:\.[0-9]+)?\s*[^\s0-9]+?)(以上|以下)の(?:もの|物)は[？?。]*',cleaned)
-        if filt:
+        from .semantic_measure import read_measure_request
+        measure_plan=read_measure_request(raw,b,full)
+        if measure_plan is not None:
+            plan=measure_plan
+        elif filt:
             q=quantity(filt[2])
             if q is None: raise ValueError('unread filter quantity')
             entity=b.variable(); value=b.variable('quantity')

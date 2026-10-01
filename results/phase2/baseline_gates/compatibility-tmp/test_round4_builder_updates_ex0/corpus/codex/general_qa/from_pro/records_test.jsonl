@@ -1,0 +1,2 @@
+{"split": "train", "family": "general_qa", "kind": "fact", "source": "first", "sha": "one", "q_variants": ["切符の色は何ですか？"], "answer": "切符の色は青です。"}
+{"split": "train", "family": "general_qa", "kind": "fact", "source": "second", "sha": "two", "q_variants": ["切符の色は何ですか？"], "answer": "切符の色は青です。"}

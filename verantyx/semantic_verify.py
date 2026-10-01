@@ -198,6 +198,52 @@ def _native_guard_scope(clause, body):
         raise Rejected('native body boundary')
 
 
+def _license_measure(clause, body, raw, view):
+    """Independent re-reading of a measure sentence (split-based, not the producer's pattern).
+
+    Every list segment must be represented as its own clause, the whole body must be
+    consumed, and the role set / answer label / predicate dimension must follow the rules.
+    """
+    from .semantic_ir import unit_type
+    text = re.sub(r'(?:です|だ|である)?[。！？!?]*\s*$', '', raw)
+    parts = text.split('、')
+    segment = re.compile(r'([^0-9\s：:の]+[0-9]*)(は|が|に|も)([0-9]+(?:\.[0-9]+)?)((?:[A-Za-z]+)|(?:[一-鿿]{1,2}))')
+    tail = None; cuts = []; offset = 0
+    for index, part in enumerate(parts):
+        last = index == len(parts) - 1
+        m = re.fullmatch(segment.pattern + r'(?:の([一-鿿ァ-ヶー]+))?', part) if last else segment.fullmatch(part)
+        if not m: raise Rejected('measure grammar')
+        if last and m.lastindex == 5: tail = m[5]
+        cuts.append((offset, m)); offset += len(part) + 1
+    count = sum(1 for c in view.clauses if c.rule == 'measure' and c.span == clause.span and c.body_span == clause.body_span)
+    if count != len(parts): raise Rejected('measure segment omitted or duplicated')
+    mine = [(o, m) for o, m in cuts
+            if clause.roles and body.start + o + m.start(1) == next(r for r in clause.roles if r.name == 'entity').span.start]
+    if len(mine) != 1: raise Rejected('measure segment alignment')
+    o, m = mine[0]
+    label, particle, number, unit = m[1], m[2], m[3], m[4]
+    roles = {r.name: r for r in clause.roles}
+    wanted = {'entity', 'label', 'value'}
+    split = re.fullmatch(r'(.+?)([A-Za-z]|[0-9]+)', label) if not re.search(r'[A-Za-z0-9]', label[:1]) else None
+    if split and re.search(r'[A-Za-z0-9]', split[1]): split = None
+    if split: wanted.add('kind')
+    if tail: wanted.add('substance')
+    if set(roles) != wanted: raise Rejected('measure role set')
+    if roles['entity'].term != label or roles['entity'].span.text != label: raise Rejected('measure entity')
+    if clause.predicate_span.text != particle or clause.predicate_span.start != roles['entity'].span.end:
+        raise Rejected('measure particle position')
+    expected_label = split[2] if split and split[2].isalpha() else label
+    if roles['label'].term != expected_label or roles['label'].span.text != expected_label: raise Rejected('measure label')
+    if split and (roles['kind'].term != split[1] or roles['kind'].span.text != split[1]): raise Rejected('measure kind')
+    value = roles['value']
+    if (not isinstance(value.term, Quantity) or value.term.amount != Decimal(number) or value.term.unit != unit
+            or value.span.text != number + unit): raise Rejected('measure quantity')
+    if tail and roles['substance'].term != tail: raise Rejected('measure substance')
+    if clause.predicate != 'measure.' + unit_type(unit)[0]: raise Rejected('measure dimension predicate')
+    if (clause.polarity, clause.modality, clause.time) != ('+', 'assert', ''): raise Rejected('measure polarity/modality/time')
+    if clause.conditions or clause.exceptions: raise Rejected('measure invented scope')
+
+
 def license_clause(clause, view, ranges=None):
     """Check original text, roles and grammatical scope independently of reader."""
     if clause != view.by_id.get(clause.id): raise Rejected("noncanonical source clause")
@@ -343,6 +389,8 @@ def license_clause(clause, view, ranges=None):
         from .typed_edges import _base
         source_past = any(w.feature.pos1 == '助動詞' and _base(w) == 'た' for w in words[ev+1:])
         if clause.time not in ('past', 'nonpast') or (clause.time == 'past') != source_past: raise Rejected("tense licensing")
+    elif clause.rule == 'measure':
+        _license_measure(clause, body, raw, view)
     else: raise Rejected("unrecognized source grammar rule")
     # Source metadata cannot erase an antecedent outside the body span.
     prefix = clause.span.text[:body.start - clause.span.start]
