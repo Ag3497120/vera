@@ -38,7 +38,8 @@ def test_requested_tense_must_have_matching_evidence():
         assert result['verdict'] == 'ANSWER' and result['values'] == ['はい']
 
 
-@pytest.mark.parametrize('raw', ['ナオは学校からリクに青鍵を渡した。', 'ナオはリクに青鍵を二つ渡した。'])
+# から (origin) is now read, so the unsupported example is an adverb instead
+@pytest.mark.parametrize('raw', ['ナオはリクに青鍵をそっと渡した。', 'ナオはリクに青鍵を二つ渡した。'])
 def test_checker_does_not_trust_reader_coverage_flags(raw):
     view = document_view({'d': raw})
     clause = view.clauses[0]

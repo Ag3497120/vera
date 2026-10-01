@@ -11,6 +11,7 @@ from decimal import Decimal, Inexact, localcontext
 from fractions import Fraction
 from typing import Any
 
+from .semantic_names import name_split_in, tokens_covering
 from .semantic_ir import (Clause, EventValue, Limit, Meter, Nominal, Pattern,
                           Plan, Proof, ProofNode, Quantity, Request, Variable, View, typed, unit_type)
 from .semantic_validate import Invalid, occurrences, request_shape
@@ -134,6 +135,21 @@ def _attribute(text):
     if len(words) == 2 and words[0].feature.pos1 == '形容詞' and words[1].surface == 'さ':
         return 'nominal:' + _base(words[0])
     return text
+
+
+def _role_split(value, roles, name, raw, body, words, positions):
+    """Validated (descriptor, name) split of a Frame role value, using the sentence's own tokens."""
+    role = next((r for r in roles if r.name == name), None)
+    if role is None: return None
+    tagged = [(w.surface, w.feature.pos1, w.feature.pos2, at, at + len(w.surface)) for w, at in zip(words, positions)]
+    start = 0
+    while True:
+        at = raw.find(value, start)
+        if at < 0: return None
+        split = name_split_in(tokens_covering(tagged, at, at + len(value)), value)
+        if split and role.span.text == split[1] and role.span.start - body.start == at + len(split[0]):
+            return split
+        start = at + 1
 
 
 def _literal(role):
@@ -351,7 +367,10 @@ def license_clause(clause, view, ranges=None):
         frame = facts[0]; declared = {r.name: r.term for r in clause.roles}
         for name in ('agent', 'patient', 'recipient'):
             value = getattr(frame, name)
-            if value and declared.get(name) != canonical(value): raise Rejected("event role assignment")
+            allowed = {canonical(value)} if value else set()
+            split = _role_split(value, clause.roles, name, raw, body, words, positions) if value else None
+            if split: allowed.add(canonical(split[1]))
+            if value and declared.get(name) not in allowed: raise Rejected("event role assignment")
             if not value and name in declared: raise Rejected("invented event role")
         normalized = _clause_kind(raw, 'record', frame.negated)
         if not quoted and clause.modality not in ('quote', 'hedge', 'instruction'):
@@ -374,6 +393,11 @@ def license_clause(clause, view, ranges=None):
         # Reconstruct coverage from raw positions and licensed role spans.
         # Do not trust a canonical reader's unsupported flag or Frame's subset.
         licensed = [(r.span.start, r.span.end) for r in clause.roles]
+        for name in ('agent', 'patient', 'recipient'):
+            value = getattr(frame, name)
+            split = _role_split(value, clause.roles, name, raw, body, words, positions) if value else None
+            role = next((r for r in clause.roles if r.name == name), None)
+            if split and role: licensed.append((role.span.start - len(split[0]), role.span.start))
         licensed.append((clause.predicate_span.start, clause.predicate_span.end))
         if ev and _base(words[ev]) == 'する' and words[ev-1].feature.pos1 == '名詞' and _base(words[ev-1])+'する' == predicates[0][1]:
             licensed.append((body.start+positions[ev-1], body.start+positions[ev-1]+len(words[ev-1].surface)))

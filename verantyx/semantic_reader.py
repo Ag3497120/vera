@@ -13,6 +13,7 @@ from decimal import Decimal
 
 from .frames import CONVERSE, canonical, read_all, _predicates
 from .question import Stage
+from .semantic_names import name_split_in, tokens_covering
 from .semantic_ir import (Budget, Clause, Nominal, Obligation, Operator, Output,
                           Pattern, Plan, Quantity, Request, Role, Span, Test, Unread, Variable, View)
 from .typed_edges import _base, _tagger, extract
@@ -167,7 +168,7 @@ def _piece(source, raw, start, end, sovereign, family):
         for index, frame in enumerate(frames):
             if index >= len(predicates): break
             ev, surface_pred = predicates[index]; word, pstart, pend = tokens[ev]
-            roles = []; issues = list(unknown)
+            roles = []; descriptors = []; issues = list(unknown)
             previous = predicates[index-1][0] if index else -1
             chunk_start = tokens[previous][2] if previous >= 0 else 0
             for role in ('agent','patient','recipient'):
@@ -179,7 +180,13 @@ def _piece(source, raw, start, end, sovereign, family):
                     issues.append('unlocated '+role); continue
                 if value in ('彼','彼女','それ','これ','あれ') or '彼の' in value:
                     issues.append('unresolved anaphora')
-                roles.append(Role(role, canonical(value), _span(source, raw, left+at, left+at+len(value)), 'frame'))
+                split = name_split_in(tokens_covering([(w.surface, w.feature.pos1, w.feature.pos2, a0, a1) for w, a0, a1 in tokens], at, at+len(value)), value)
+                if split:      # an appositive descriptor (技師ユン) names the person; keep it covered, not as the value
+                    desc, head = split
+                    roles.append(Role(role, canonical(head), _span(source, raw, left+at+len(desc), left+at+len(value)), 'frame'))
+                    descriptors.append((at, at+len(desc)))
+                else:
+                    roles.append(Role(role, canonical(value), _span(source, raw, left+at, left+at+len(value)), 'frame'))
             # Additional case roles are tied to this predicate's own Edge.ev.
             for edge in edges:
                 if edge.ev != ev: continue
@@ -187,7 +194,14 @@ def _piece(source, raw, start, end, sovereign, family):
                 if role and edge.dep not in (r.term for r in roles):
                     at = text.rfind(edge.dep, chunk_start, pstart)
                     if at >= 0: roles.append(Role(role, edge.dep, _span(source,raw,left+at,left+at+len(edge.dep))))
-            covered = [(r.span.start-left, r.span.end-left) for r in roles] + _predicate_coverage(tokens, ev, surface_pred)
+            # から (ablative) phrases: typed_edges has no edge for them, so read the case particle directly.
+            for ti,(tw,tps,tpe) in enumerate(tokens):
+                if not (tw.feature.pos1 == '助詞' and tw.feature.pos2 == '格助詞' and tw.surface == 'から' and chunk_start <= tps < pstart): continue
+                tj = ti
+                while tj > 0 and tokens[tj-1][0].feature.pos1 in ('名詞','接尾辞') and tokens[tj-1][2] > chunk_start - 1: tj -= 1
+                if tj < ti and tokens[tj][1] >= chunk_start and not any(r.name == 'origin' for r in roles):
+                    roles.append(Role('origin', text[tokens[tj][1]:tps], _span(source, raw, left+tokens[tj][1], left+tps)))
+            covered = [(r.span.start-left, r.span.end-left) for r in roles] + descriptors + _predicate_coverage(tokens, ev, surface_pred)
             if _uncovered_nominals(tokens, covered): issues.append('unrepresented source content')
             if frame.ambiguous: issues.append('ambiguous frame role')
             mod = _clause_kind(text, 'record', frame.negated)
@@ -384,7 +398,8 @@ def read_request(text,budget=Budget()):
         cmp=re.fullmatch(r'(.+?)は(.+?)より(大きい|小さい|多い|少ない)(?:ですか|か)[？?。]*',cleaned)
         filt=re.fullmatch(r'(.+?)が([+-]?[0-9]+(?:\.[0-9]+)?\s*[^\s0-9]+?)(以上|以下)の(?:もの|物)は[？?。]*',cleaned)
         from .semantic_measure import read_measure_request
-        measure_plan=read_measure_request(raw,b,full)
+        from .semantic_wh import read_role_list_question
+        measure_plan=read_measure_request(raw,b,full) or read_role_list_question(raw,b,full)
         if measure_plan is not None:
             plan=measure_plan
         elif filt:

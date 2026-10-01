@@ -97,3 +97,25 @@ def test_no_dev_fixture_string_is_hardcoded():
     for s in strings:
         if len(s) >= 6:
             assert s not in source, "dev string is hard-coded: " + s
+
+
+@pytest.mark.parametrize("doc,q,expected", [
+    ("ミナは青い鍵を倉庫Cから部長田中へ運んだ。", "何をどこから誰へ？", ["青い鍵", "倉庫C", "部長田中"]),   # in-sentence tokens mis-segment 長田: no split, full phrase kept
+    ("ミナは青い鍵を倉庫Cから整備士コウへ運んだ。", "何をどこから誰へ？", ["青い鍵", "倉庫C", "整備士コウ"]),   # name tagged as a common noun: no split, full phrase kept
+    ("ミナは青い鍵を倉庫Cから部長田中へ運んだ。", "誰が何をどこから？", ["ミナ", "青い鍵", "倉庫C"]),
+    ("ヒロは荷物を駅Bから店長サキへ届けた。", "何をどこから誰へ？", ["荷物", "駅B", "サキ"]),
+    ("ヒロは荷物を駅Bから店長サキへ届けた。", "誰が何を誰へ？", ["ヒロ", "荷物", "サキ"]),
+    ("ヒロは荷物を駅Bからサキへ届けた。", "物、起点、終点は？", ["荷物", "駅B", "サキ"]),
+    ("ヒロは荷物を駅Bから店長サキへ届けた。", "物、起点、終点は？", ["荷物", "駅B", "サキ"]),
+])
+def test_role_only_questions_generalize(doc, q, expected):
+    assert val(ask(doc, q)) == ("ANSWER", expected)
+
+
+@pytest.mark.parametrize("doc,q", [
+    ("ヒロは荷物を駅Bから届けた。", "何をどこから誰へ？"),                               # recipient absent: no invention
+    ("ヒロは荷物を駅Bからサキへ届けた。ユキは箱を駅Cからトウへ送った。", "何をどこから誰へ？"),  # two events: ambiguous
+    ("ヒロは荷物を駅Bからサキへ届けるかもしれない。", "何をどこから誰へ？"),                 # hedged
+])
+def test_role_only_questions_do_not_guess(doc, q):
+    assert ask(doc, q)["verdict"] != "ANSWER"
