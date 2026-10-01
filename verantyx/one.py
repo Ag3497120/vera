@@ -362,8 +362,12 @@ class Vera:
             if self._semantic_view is None:
                 result = refusal('UNKNOWN_SOURCE_ASSET', 'original document text is unavailable', phase='source', request=request)
             else:
+                unread_all = self._semantic_view.unread
+                # Serializing every unread span of the whole corpus on every ask made the answer time grow with the
+                # corpus: keep the full list for small views, a bounded sample plus the count for large ones.
                 trace.append(_step('semantic_reader.document_view', 'ran', clauses=len(self._semantic_view.clauses),
-                                   source_unread=data(self._semantic_view.unread), ingest_ms=self._semantic_view.ingest_ms))
+                                   source_unread=data(unread_all[:64]), source_unread_count=len(unread_all),
+                                   source_unread_truncated=len(unread_all) > 64, ingest_ms=self._semantic_view.ingest_ms))
                 if (type(candidate_views) in (tuple, list) and candidate_views
                         and all(type(view) is View for view in candidate_views)):
                     selected_trace = [*trace, _step(

@@ -127,3 +127,32 @@ def test_random_corpora_never_diverge_from_the_flat_view(seed):
                 assert not any(o in s and b in s for s in unread), (q, 'unread mentioning both anchors was ignored')
         else:
             assert fv != 'ANSWER' or rv.startswith('UNKNOWN'), (q, fv, rv)
+
+
+def test_one_malformed_unsupported_sentence_elsewhere_does_not_poison_every_answer():
+    # two で-phrases in one unsupported clause used to make the whole view invalid (real Wikipedia text does this)
+    docs = {'a': 'ミオは青鍵をリクに渡した。', 'b': '武蔵堆での調査では、6歳での性転換後、隔年で産卵を行う。', 'c': 'ホシはゲンに赤箱を渡した。'}
+    for floor in (10 ** 9, 7):
+        semantic_route.ROUTE_MIN_LEAVES = floor
+        v = Vera.from_texts(docs, mode='semantic')
+        a = v.ask('青鍵をリクに渡したのは？'); v.close()
+        assert a['verdict'] == 'ANSWER' and a['values'] == ['ミオ'], (floor, a['verdict'], a.get('reason'))
+    semantic_route.ROUTE_MIN_LEAVES = 7
+
+
+def test_clause_with_two_locative_phrases_is_unsupported_not_view_poisoning():
+    docs = {'a': 'ミオは青鍵をリクに渡した。', 'b': 'また、1996年の世界選手権では混合団体戦で優勝した。', 'c': 'ホシはゲンに赤箱を渡した。'}
+    for floor in (10 ** 9, 7):
+        semantic_route.ROUTE_MIN_LEAVES = floor
+        v = Vera.from_texts(docs, mode='semantic')
+        assert not v._semantic_view.invalid
+        a = v.ask('青鍵をリクに渡したのは？'); v.close()
+        assert a['verdict'] == 'ANSWER' and a['values'] == ['ミオ']
+    semantic_route.ROUTE_MIN_LEAVES = 7
+
+
+def test_over_deep_request_is_a_typed_refusal_not_an_exception():
+    v = Vera.from_texts({'d': 'ミオは青鍵をリクに渡した。'}, mode='semantic')
+    a = v.ask('甲の乙の丙の丁の戊の己の庚の辛の壬の癸の名前は？')
+    v.close()
+    assert a['verdict'].startswith('UNKNOWN') and a['verdict'] != 'ANSWER'

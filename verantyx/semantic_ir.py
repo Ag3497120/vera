@@ -290,7 +290,9 @@ class View:
                 invalid.append("duplicate clause ID: " + clause.id)
             self.by_id[clause.id] = clause
             names = [r.name for r in clause.roles]
-            if len(names) != len(set(names)):
+            # An unsupported clause can never be licensed into a proof, so a duplicated role (two で-phrases) in it must
+            # not invalidate every answer of the whole document set; a supported clause with one is still invalid.
+            if len(names) != len(set(names)) and not clause.unsupported:
                 invalid.append("duplicate role: " + clause.id)
             groups.setdefault((clause.sovereign, clause.predicate), []).append(clause)
         self.by_predicate = {k: tuple(v) for k, v in groups.items()}

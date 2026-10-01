@@ -27,6 +27,14 @@ from .semantic_ir import Nominal, View
 
 #: Below this many leaves a single routing node is no cheaper than the flat view: keep the flat behaviour.
 ROUTE_MIN_LEAVES = 7
+#: Defaults of LeafTree.restrict (module level so a tuning run can set them without changing call sites).
+ANCHOR_CAP = 128     # an anchor held by more leaves than this does not narrow (tuned on 16,000 Wikipedia leads: 64 loses mid-frequency entities, 256 adds nothing)
+EXPAND_CAP = 8       # a rare entity (held by <= this many leaves) may be followed for joins/guards
+UNREAD_CAP = 1024    # leaves whose unread text may mention one gram of an anchor
+#: Which unread spans of the EVIDENCE leaves (leaves that hold a clause matching an anchor) gate the answer:
+#: 'all' keeps every unread span of such a leaf (a correction or exception sentence in the same document);
+#: 'mention' keeps only spans that mention an anchor, like every other leaf (the router's minimal contract).
+EVIDENCE_UNREAD = 'all'
 _INSTRUCTION = 'document instruction excluded'
 
 
@@ -121,7 +129,8 @@ class LeafTree:
             return None, visited
         return found, visited
 
-    def restrict(self, request, *, anchor_cap: int = 64, expand_cap: int = 8, unread_cap: int = 1024, max_rounds: int = 8):
+    def restrict(self, request, *, anchor_cap: int | None = None, expand_cap: int | None = None,
+                 unread_cap: int | None = None, max_rounds: int = 8):
         """(routed View | None, trace). None means: keep the whole view (no usable anchor, or too few leaves).
 
         Round 1: for every Bind pattern, the leaves that hold ALL of its anchors (a clause binding the pattern, or a
@@ -132,6 +141,9 @@ class LeafTree:
         bring in the documents that continue the chain; common entities (係員 in every document) are not followed,
         which can only lose a derivation (abstention), never create one.
         """
+        anchor_cap = ANCHOR_CAP if anchor_cap is None else anchor_cap
+        expand_cap = EXPAND_CAP if expand_cap is None else expand_cap
+        unread_cap = UNREAD_CAP if unread_cap is None else unread_cap
         started = time.perf_counter()
         trace = {'part': 'semantic_route.LeafTree', 'leaves': len(self.leaves), 'nodes': self.nodes, 'arity': self.arity}
         if len(self.leaves) < ROUTE_MIN_LEAVES:
@@ -154,19 +166,26 @@ class LeafTree:
 
             Unread text is opaque, so it gates when it mentions ANY anchor, not only when it mentions all of them:
             a fragment about the object alone may be exactly the sentence that contradicts the clause.
+            The first selective gram is found through the tree; the other grams are then checked on the candidate
+            leaves directly (a dict lookup each) instead of walking the tree once per gram.
             """
             nonlocal visited
             key = ('unread', term)
-            if key not in cache:
-                inter = None
-                for gram in _grams(term):
-                    g, n = self.reach({gram}, unread_cap); visited += n
-                    if g is None: continue                      # a common gram does not narrow
-                    inter = g if inter is None else inter & g
-                    if not inter: break
-                cache[key] = inter if inter is not None else None
+            if key in cache: return cache[key]
+            grams = sorted(_grams(term))
+            base = None
+            for probe in (min(unread_cap, 32), unread_cap):
+                for gram in grams:
+                    g, n = self.reach({gram}, probe); visited += n
+                    if g is not None: base = (gram, g); break
+                if base is not None: break
+            if base is None: cache[key] = None
+            else:
+                gram0, leaves = base
+                cache[key] = {leaf for leaf in leaves if all(g in self.leaves[leaf] for g in grams)}
             return cache[key]
-        reached = set()
+
+        reached = set(); evidence = set(); mention = set(t for ts in patterns for t in ts)
         for terms in patterns:
             leaves = None
             for term in sorted(terms):
@@ -176,7 +195,7 @@ class LeafTree:
             if leaves is None:
                 return None, {**trace, 'status': 'skipped', 'reason': 'every anchor of a pattern is common',
                               'common_anchors': sorted(common)}
-            reached |= leaves
+            reached |= leaves; evidence |= leaves
         for terms in patterns:
             for term in terms:
                 u = unread_held(term)
@@ -201,11 +220,13 @@ class LeafTree:
                 if found is None: common.add(term); continue
                 u = unread_held(term)
                 if u is None: return None, {**trace, 'status': 'skipped', 'reason': 'unread mentions of a followed entity cannot be located'}
-                followed += 1; frontier |= (found | u) - reached
+                followed += 1; frontier |= (found | u) - reached; evidence |= found; mention.add(term)
             if not frontier: break
             reached |= frontier; used += 1
         clauses = tuple(c for leaf in sorted(reached) for c in self.by_leaf.get(leaf, ()))
-        unread = tuple(u for leaf in sorted(reached) for u in self.unread_by_leaf.get(leaf, ()))
+        def keep(leaf, span):
+            return (EVIDENCE_UNREAD == 'all' and leaf in evidence) or any(t in span.span.text for t in mention)
+        unread = tuple(u for leaf in sorted(reached) for u in self.unread_by_leaf.get(leaf, ()) if keep(leaf, u))
         unread += tuple(u for u in self.view.unread if u.reason == _INSTRUCTION and u.span.source in reached)
         sources = {leaf: self.view.sources[leaf] for leaf in reached if leaf in self.view.sources}
         routed = View(sources, clauses, unread, self.view.ingest_ms)

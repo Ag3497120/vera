@@ -15,7 +15,7 @@ from .frames import CONVERSE, canonical, read_all, _predicates
 from .question import Stage
 from .semantic_coord import chunk, coordination_ok, own_subject_phrase, phrase_bounded, topic_phrase, tag
 from .semantic_names import is_past_aux, name_split_in, tokens_covering
-from .semantic_ir import (Budget, Clause, Nominal, Obligation, Operator, Output,
+from .semantic_ir import (Limit, Budget, Clause, Nominal, Obligation, Operator, Output,
                           Pattern, Plan, Quantity, Request, Role, Span, Test, Unread, Variable, View)
 from .typed_edges import _base, _tagger, extract
 from .verdict import COND, _clause_kind, read_records
@@ -229,6 +229,7 @@ def _piece(source, raw, start, end, sovereign, family):
                 for d0, d1 in descriptors:
                     if d1 == lo_: lo_ = d0
                 if not phrase_bounded(tagged, lo_, hi_): issues.append('unrepresented source content'); break
+            if len({r.name for r in roles}) != len(roles): issues.append('duplicate role in clause')   # two で-phrases: not representable
             if frame.ambiguous: issues.append('ambiguous frame role')
             mod = _clause_kind(text, 'record', frame.negated)
             mod = 'assert' if mod == 'fact' else mod
@@ -469,3 +470,5 @@ def read_request(text,budget=Budget()):
         return request
     except (ValueError, KeyError, IndexError) as exc:
         return Request(raw,(),(),(),(Unread(full,str(exc)),),stages,('typed unread',))
+    except Limit as exc:     # a path/plan deeper than the budget is a typed unread request, never an exception out of ask
+        return Request(raw,(),(),(),(Unread(full,'request plan exceeds budget: '+str(exc)),),stages,('typed unread',))
