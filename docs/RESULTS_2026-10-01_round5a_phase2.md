@@ -5,9 +5,9 @@ Work copy: `~/Projects/vera-round5-run/phase2/workcopy` (base `9342f78`, phase2 
 Implementation: Claude (design, code, checker); Codex gpt-6-luna max Standard was used as hands only (adversarial test authoring, full-suite regression run).
 
 ## Public dev80 (fixtures SHA a765402a…c1c693), `one.Vera(mode="semantic")`
-| family | items | correct before | correct now | wrong now | abstain now |
+| family | items | correct (base copy) | correct now | wrong now | abstain now |
 |---|---:|---:|---:|---:|---:|
-| role_binding | 4 | 2 | 2 | 0 | 2 |
+| role_binding | 4 | 2 | 3 | 0 | 1 |
 | negation_scope | 4 | 0 | 0 | 0 | 4 |
 | condition | 4 | 0 | 0 | 0 | 4 |
 | exception | 4 | 0 | 0 | 0 | 4 |
@@ -17,7 +17,7 @@ Implementation: Claude (design, code, checker); Codex gpt-6-luna max Standard wa
 | two_hop_join | 6 | 0 | 0 | 0 | 6 |
 | multiple_requirements | 6 | 0 | 0 | 0 | 6 |
 | ambiguity | 4 | 0 | 0 | 0 | 4 |
-| multi_argument | 4 | 0 | 3 | 0 | 1 |
+| multi_argument | 4 | 0 | 4 | 0 | 0 |
 | equivalent_paraphrase | 2 | 2 | 2 | 0 | 0 |
 | insufficient_evidence | 6 | 0 | 0 | 0 | 6 |
 | conflicting_evidence | 4 | 0 | 0 | 0 | 4 |
@@ -26,12 +26,12 @@ Implementation: Claude (design, code, checker); Codex gpt-6-luna max Standard wa
 | negative_polarity | 2 | 0 | 0 | 0 | 2 |
 | conditional_exception | 2 | 0 | 0 | 0 | 2 |
 | counterfactual_scope | 2 | 0 | 0 | 0 | 2 |
-| **total** | 80 | 4 | 15 | 0 | 65 |
+| **total** | 80 | 4 | 17 | 0 | 63 |
 
 **Baseline note:** the base copy measures 4/80, not the 5/80 of the earlier report: r47 (injection, `記録:…`) abstains in the base copy because the later colon-scope safety fix
 (`uninterpreted colon scope`, added after the earlier run on review findings) turns a `記録:` heading into an unread source clause. That is a deliberate safety rule, not changed here; a typed heading-scope reading would be needed to recover r47.
 
-Wrong ANSWER stayed 0; no item lost relative to the base copy. Median ask of the answered items 1.3 ms (p95 2.7 ms, max 10.3 ms). Runs kept: `results/phase2/baseline_public80`, `run_measure01..03`.
+Wrong ANSWER stayed 0; no item lost relative to the base copy. Median ask of the answered items 1.3 ms (p95 2.7 ms, max 10.3 ms). Runs kept: `results/phase2/baseline_public80`, `run_measure01..05` (run04 contained one wrong ANSWER, r74; root-caused and fixed in step 5, kept).
 These numbers say nothing about unseen text: the rules were written over structure and checked with own paraphrase/swap tests, but the dev items are the only evaluation seen.
 
 ## What was added (structure, not words)
@@ -53,8 +53,21 @@ These numbers say nothing about unseen text: the rules were written over structu
 and `tests/test_semantic_measure_codex.py` (78 cases written by Codex from a spec, expectations computed by hand; its first run found two real bugs — durations rejected by the clock-time pattern — which were fixed;
 two of its cases encoded a wrong spec (injected instruction) and were corrected). Semantic/goal/frame suites: 347 pass.
 
+## Step 4-5: coordinated predicates, and what the first wrong answer taught
+- `semantic_coord.py`: plain te/renyō chains inside one sentence become one clause per predicate. A topic-`は` subject of the first clause is shared only by later clauses that have no は/が phrase
+  of their own (the typed rule for the sidecar's unpermitted `INTERCLAUSE_BORROW`). Adversative が, causal ので/から, conditional ば/たら/と, hedges and quotes stay refused. The checker re-derives the
+  coordination and the borrow per clause (every predicate must be a clause of the view; the borrowed phrase must be the first clause's topic NP).
+- `frame_evidence` (commit 1f9b7d8 of the original repo, already byte-identical in this copy) confirmed the structure (per-clause owner/arguments, the borrow marked unpermitted); the code path itself is not imported yet.
+- **run04 produced a wrong ANSWER (r74)**: enabling coordination made the document readable and exposed a question-side bug: the cleft question `リンを呼んだのは？` was read as a yes/no question.
+  Fixed: cleft questions ask for the open role; a particle-final fragment is never a yes/no question; the noun of a cleft is not turned into a head-noun restriction.
+- **A pre-existing tense bug found on the way**: the past auxiliary だ after 撥音便 (呼んだ, 読んだ, 飲んだ) was not recognised as past (decided by orthBase), so past and nonpast of those verbs were conflated
+  (`エンはリンを呼ぶ。` answered `呼んだ？` with はい). Now decided by lemma in reader and checker; the question normaliser no longer strips that だ. Tests for both directions added.
+- Codex (hands) wrote 97 coordination cases from a spec: 90 passed at first; the findings were two spec errors of mine (open-world: an unstated combination is UNKNOWN, never いいえ; concessive のに keeps the topic subject on the main clause),
+  one verb/name dependence of the old Frame reader (recipient of 送る or of the name ソウ is dropped, so those clauses abstain), and no implementation bug. Codex also ran the whole `tests/` directory on the base and on this copy: no regression (2 pre-existing failures in both).
+- Full semantic/goal/frame suites: 469 pass.
+
 ## Not done / next
-- r28 (coordinate predicates), r36 (discourse difference), r35/r59/r60 (multiply/divide kernel ops), r37 (equal values answered as 同じ), r38 (clock-time ordering).
+- r36 (discourse difference), r35/r59/r60 (multiply/divide kernel ops), r37 (equal values answered as 同じ), r38 (clock-time ordering).
 - Totals over more than two measures (needs an aggregate over all matching clauses, with the checker verifying completeness).
 - Exceptions/conditions/two-hop (r05–r08, r15–r16, r25–r26, r29–r32, r55–r58) need habitual-rule and relative-clause readers; the から/name work does not touch them.
 - Independent review of this diff and a new sealed run are still required before any adoption claim.
