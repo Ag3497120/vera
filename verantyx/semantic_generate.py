@@ -2,12 +2,15 @@
 
 This adapter only assembles sentences accepted by ``semantic_realize``. It
 does not add generated text to a source View, answer proof, or evidence set.
-Writer templates stay outside this path because they have no checked mapping
-from a semantic predicate/role tuple to a harvested form.
+Harvested role-slot templates are loaded from the static realization table;
+each instantiated surface is rechecked before it enters generated text.
 """
 from __future__ import annotations
 
+import json
+import re
 from dataclasses import dataclass, replace
+from pathlib import Path
 from typing import Any, Iterable
 
 from . import connective_render
@@ -195,15 +198,97 @@ def _topic_of(clause: Any, candidate: Realized) -> str:
     return ""
 
 
-def _variant(clause: Any, style: str, topic_particle: str | None = None) -> Realized | Refused:
+_SURFACE_VARIANT_DATA: dict[str, Any] | None = None
+
+
+def _surface_variant_data() -> dict[str, Any]:
+    global _SURFACE_VARIANT_DATA
+    if _SURFACE_VARIANT_DATA is None:
+        path = Path(__file__).with_name("data") / "realize_variants.json"
+        try:
+            loaded = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            loaded = {}
+        _SURFACE_VARIANT_DATA = loaded if isinstance(loaded, dict) else {}
+    return _SURFACE_VARIANT_DATA
+
+
+def _variant_key(clause: Any, style: str) -> tuple[Any, ...]:
+    return (
+        f"{getattr(clause, 'rule', '')}:{getattr(clause, 'predicate', '')}",
+        tuple(sorted(str(role.name) for role in getattr(clause, "roles", ()))),
+        str(getattr(clause, "polarity", "")),
+        str(getattr(clause, "time", "") or "none"),
+        style,
+    )
+
+
+def _corpus_variants(clause: Any) -> list[Realized]:
+    predicate_class, role_set, polarity, tense, _ = _variant_key(clause, "plain")
+    roles = {str(role.name): role for role in getattr(clause, "roles", ())}
+    expected = (predicate_class, role_set, polarity, tense)
+    result: list[Realized] = []
+    for item in _surface_variant_data().get("templates", ()):
+        if not isinstance(item, dict):
+            continue
+        try:
+            item_key = (
+                str(item["predicate_class"]), tuple(sorted(str(x) for x in item["role_set"])),
+                str(item["polarity"]), str(item["tense"]), str(item["register"]),
+            )
+            count = item["count"]
+            template = item["template"]
+        except (KeyError, TypeError):
+            continue
+        if item_key[:4] != expected or item_key[4] not in ("plain", "polite"):
+            continue
+        if type(count) is not int or count < 1 or not isinstance(template, str):
+            continue
+        slots = re.findall(r"\{([a-z_]+)\}", template)
+        if not slots or sorted(slots) != sorted(roles):
+            continue
+        text = re.sub(r"\{([a-z_]+)\}", lambda match: roles[match.group(1)].span.text, template)
+        if "{" in text or "}" in text:
+            continue
+        checks = verify_sentence(clause, text)
+        if (not checks["roundtrip"]["passed"] or not checks["term_lineage"]["passed"]
+                or len(text) > MAX_CHARS):
+            continue
+        result.append(Realized(
+            text, getattr(clause, "id", ""), _source_spans(clause), item_key[4],
+            "corpus-template", checks,
+        ))
+    return result
+
+
+def _variant(clause: Any, style: str, topic_particle: str | None = None,
+             variant_index: int = 0) -> Realized | Refused:
     failures: list[Refused] = []
+    candidates: list[Realized] = []
+    seen: set[str] = set()
+    # Prefer a matching harvested template, then retain the inverse realizer's
+    # closed surfaces as a deterministic fallback.
+    for candidate in _corpus_variants(clause):
+        if (candidate.style == style
+                and (topic_particle is None or _topic_of(clause, candidate) == topic_particle)
+                and candidate.text not in seen):
+            candidates.append(candidate)
+            seen.add(candidate.text)
     for candidate in realize_variants(clause):
         if isinstance(candidate, Refused):
             failures.append(candidate)
             continue
         if (candidate.style == style
-                and (topic_particle is None or _topic_of(clause, candidate) == topic_particle)):
-            return candidate
+                and (topic_particle is None or _topic_of(clause, candidate) == topic_particle)
+                and candidate.text not in seen):
+            candidates.append(candidate)
+            seen.add(candidate.text)
+    if 0 <= variant_index < len(candidates):
+        return candidates[variant_index]
+    if candidates:
+        return Refused("ROLE_NOT_REALIZABLE", "requested surface variant is not licensed for this clause",
+                       (getattr(clause, "id", ""),) if getattr(clause, "id", None) else (),
+                       _source_spans(clause))
     return failures[0] if failures else Refused(
         "ROLE_NOT_REALIZABLE", "no verified surface variant matches the requested policy",
         (getattr(clause, "id", ""),) if getattr(clause, "id", None) else (),
@@ -212,7 +297,8 @@ def _variant(clause: Any, style: str, topic_particle: str | None = None) -> Real
 
 
 def _sentences_for_ids(view: Any, clause_ids: Iterable[str], style: str,
-                       bucket: str, topic_particle: str | None = None) -> list[GeneratedSentence] | Refused:
+                       bucket: str, topic_particle: str | None = None,
+                       variant_index: int = 0) -> list[GeneratedSentence] | Refused:
     clauses = _licensed_source_ids(view, clause_ids)
     if isinstance(clauses, Refused):
         return clauses
@@ -221,7 +307,7 @@ def _sentences_for_ids(view: Any, clause_ids: Iterable[str], style: str,
     # Deduplicate only after independently checking the chosen surface against
     # every source clause; equal typed projections alone are not lineage.
     for clause in clauses:
-        candidate = _variant(clause, style, topic_particle)
+        candidate = _variant(clause, style, topic_particle, variant_index)
         if isinstance(candidate, Refused):
             return candidate
         checks = verify_sentence(clause, candidate.text)
@@ -358,30 +444,33 @@ def _assemble(view: Any, sentence_groups: list[tuple[str, list[GeneratedSentence
 
 def _generate_summary(view: Any, entity: str, limit: int, style: str,
                       *, topic_particle: str | None = None,
+                      variant_index: int = 0,
                       quote_unread: bool = True) -> GeneratedText | Refused:
     ids = _summary_ids(view, entity, limit, style)
     if isinstance(ids, Refused):
         return ids
-    sentences = _sentences_for_ids(view, ids, style, entity, topic_particle)
+    sentences = _sentences_for_ids(view, ids, style, entity, topic_particle, variant_index)
     if isinstance(sentences, Refused):
         return sentences
     return _assemble(view, [(entity, sentences)], style, "summary", quote_unread=quote_unread)
 
 
 def _generate_answer(view: Any, answer_result: Any, style: str,
-                     topic_particle: str | None = None) -> GeneratedText | Refused:
+                     topic_particle: str | None = None,
+                     variant_index: int = 0) -> GeneratedText | Refused:
     realized = realize_answer(view, answer_result, style)
     if isinstance(realized, Refused):
         return realized
     ids = _ids_from_realization(realized)
-    sentences = _sentences_for_ids(view, ids, style, "answer-support", topic_particle)
+    sentences = _sentences_for_ids(view, ids, style, "answer-support", topic_particle, variant_index)
     if isinstance(sentences, Refused):
         return sentences
     return _assemble(view, [("answer-support", sentences)], style, "answer")
 
 
 def _generate_compare(view: Any, entities: Iterable[Any], limit: int,
-                      style: str, topic_particle: str | None = None) -> GeneratedText | Refused:
+                      style: str, topic_particle: str | None = None,
+                      variant_index: int = 0) -> GeneratedText | Refused:
     names = list(entities)
     if len(names) != 2 or any(not isinstance(name, str) or not name for name in names) or names[0] == names[1]:
         return Refused("NOT_REALIZABLE", "comparison needs two distinct exact entity strings")
@@ -390,7 +479,7 @@ def _generate_compare(view: Any, entities: Iterable[Any], limit: int,
         ids = _summary_ids(view, entity, limit, style)
         if isinstance(ids, Refused):
             return ids
-        sentences = _sentences_for_ids(view, ids, style, entity, topic_particle)
+        sentences = _sentences_for_ids(view, ids, style, entity, topic_particle, variant_index)
         if isinstance(sentences, Refused):
             return sentences
         sentence_groups.append((entity, sentences))
@@ -406,7 +495,8 @@ def generate(view: Any, request: Any, style: str = "plain") -> GeneratedText | R
     ``kind`` equal to ``summary``/``compare``/``answer``, or a verified public
     semantic ANSWER result. Summary mappings use ``entity`` and an optional
     ``limit``. Compare mappings use exactly two names in ``entities``. Answer
-    mappings carry the upstream result in ``result``.
+    mappings carry the upstream result in ``result``. ``variant_index`` selects
+    one member of the independently verified surface set, starting at zero.
     """
     if style not in ("plain", "polite"):
         return Refused("INVALID_STYLE", "style must be plain or polite")
@@ -420,6 +510,9 @@ def generate(view: Any, request: Any, style: str = "plain") -> GeneratedText | R
     if not isinstance(request, dict):
         return Refused("NOT_REALIZABLE", "generation request must be a mapping or verified answer result")
     policy = request.get("surface_policy") or request.get("surface") or {}
+    variant_index = request.get("variant_index", 0)
+    if type(variant_index) is not int or not 0 <= variant_index <= 255:
+        return Refused("INVALID_STYLE", "variant_index must be an integer from 0 to 255")
     topic_particle = (request.get("topic_particle")
                       or (policy.get("topic_particle") if isinstance(policy, dict) else None))
     if topic_particle not in (None, "は", "が"):
@@ -427,7 +520,7 @@ def generate(view: Any, request: Any, style: str = "plain") -> GeneratedText | R
     semantic = request.get("semantic")
     if (request.get("verdict") == "ANSWER"
             or isinstance(semantic, dict) and semantic.get("verified") is True):
-        return _generate_answer(view, request, style, topic_particle)
+        return _generate_answer(view, request, style, topic_particle, variant_index)
     kind = request.get("kind") or request.get("type")
     if kind in ("summary", "entity-summary"):
         entity = request.get("entity")
@@ -436,14 +529,16 @@ def generate(view: Any, request: Any, style: str = "plain") -> GeneratedText | R
             return Refused("ROLE_NOT_REALIZABLE", "summary entity must be exact source text")
         if type(limit) is not int or limit < 1 or limit > MAX_CLAUSES:
             return Refused("BUDGET", "summary limit must be an integer from 1 to 64")
-        return _generate_summary(view, entity, limit, style, topic_particle=topic_particle)
+        return _generate_summary(view, entity, limit, style, topic_particle=topic_particle,
+                                 variant_index=variant_index)
     if kind == "compare":
         limit = request.get("limit", 8)
         if type(limit) is not int or limit < 1 or limit > MAX_CLAUSES:
             return Refused("BUDGET", "comparison limit must be an integer from 1 to 64")
-        return _generate_compare(view, request.get("entities", ()), limit, style, topic_particle)
+        return _generate_compare(view, request.get("entities", ()), limit, style,
+                                 topic_particle, variant_index)
     if kind == "answer":
-        return _generate_answer(view, request.get("result"), style, topic_particle)
+        return _generate_answer(view, request.get("result"), style, topic_particle, variant_index)
     return Refused("NOT_REALIZABLE", "unsupported generation request kind")
 
 
