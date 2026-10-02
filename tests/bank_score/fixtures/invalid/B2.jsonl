@@ -1,0 +1,7 @@
+{"id":"inv-b2-001","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"turns":[{"role":"user","text":"曜日は？"}],"expect":{"behavior":"answer","must_contain_any":["月曜","火曜"]},"rationale":"平らな must_contain_any は形が曖昧"}
+{"id":"inv-b2-002","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"turns":[{"role":"user","text":"こんにちは"},{"role":"assistant","text":"こんにちは"}],"expect":{"behavior":"social"},"rationale":"最後が assistant"}
+{"id":"inv-b2-003","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"turns":[{"role":"user","text":"a","content":"b"}],"expect":{"behavior":"answer"},"rationale":"text と content の両方"}
+{"id":"inv-b2-004","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"turns":[{"role":"user","text":"質問"}],"documents":[{"name":"規程","text":"一"},{"name":"規程.TXT","text":"二"}],"expect":{"behavior":"answer"},"rationale":"文書名が重なる（大小無視・拡張子補完後）"}
+{"id":"inv-b2-005","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"turns":[{"role":"user","text":"質問"}],"expect":{"behavior":"guess"},"rationale":"behavior が未知"}
+{"id":"inv-b2-006","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"turns":[],"expect":{"behavior":"answer"},"rationale":"turns が空"}
+{"id":"inv-b2-007","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"turns":[{"role":"user","text":"質問"}],"expect":{"behavior":"answer","max_chars":true},"rationale":"max_chars が bool"}

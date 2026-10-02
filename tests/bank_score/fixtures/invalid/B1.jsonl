@@ -1,0 +1,12 @@
+{"id":"inv-b1-001","lang":"ja"
+{"id":"inv-b1-002","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"input":"犬が走る。","expect":{"readable":true,"clauses":[{"predicate":"走る","roles":{"agent":"犬"}}],"must_not":[{"predicate":"歩く"}]}}
+{"id":"inv-b1-dup","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"input":"猫が眠る。","expect":{"readable":true,"clauses":[{"predicate":"眠る","roles":{"agent":"猫"}}],"must_not":[{"predicate":"起きる"}]},"rationale":"r"}
+{"id":"inv-b1-dup","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"input":"鳥が飛ぶ。","expect":{"readable":true,"clauses":[{"predicate":"飛ぶ","roles":{"agent":"鳥"}}],"must_not":[{"predicate":"落ちる"}]},"rationale":"r"}
+
+[1,2,3]
+{"id":"inv-b1-006","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"input":"魚が泳ぐ。","expect":{"readable":true,"clauses":[{"predicate":"泳ぐ","roles":{"agent":"魚"}}]},"rationale":"r"}
+{"id":"inv-b1-007","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"input":"馬が走る。","text":"馬が走る。","expect":{"readable":true,"clauses":[{"predicate":"走る","roles":{"agent":"馬"}}],"must_not":[{"predicate":"歩く"}]},"rationale":"r"}
+{"id":"inv-b1-008","lang":"ja","category":"c","phenomenon":"p","difficulty":true,"input":"牛が鳴く。","expect":{"readable":true,"clauses":[{"predicate":"鳴く","roles":{"agent":"牛"}}],"must_not":[{"predicate":"歌う"}]},"rationale":"r"}
+{"id":"inv-b1-009","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"input":"うー。","expect":{"readable":false,"clauses":[{"predicate":"唸る","roles":{}}],"must_not":[{"predicate":"唸る"}]},"rationale":"r"}
+{"id":"inv-b1-010","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"input":"羊が草を食べる。","expect":{"readable":true,"clauses":[{"predicate":"食べる","roles":{"agent":"羊"}}],"must_not":[{"foo":1}]},"rationale":"r"}
+{"id":"inv-b1-011","lang":"fr","category":"c","phenomenon":"p","difficulty":1,"input":"Le chat dort.","expect":{"readable":true,"clauses":[{"predicate":"dormir","roles":{"agent":"chat"}}],"must_not":[{"predicate":"manger"}]},"rationale":"r"}

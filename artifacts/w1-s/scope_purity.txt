@@ -1,0 +1,14 @@
+diff-verantyx-done(空なら verantyx 未変更)
+outside-allowed-paths: 1 (1 なら該当なし=合格)
+pycache/pytest_cache-done(何も出なければ合格)
+tools/bank_score/runner.py:70:        import verantyx
+tools/bank_score/runner.py:71:        import verantyx.cli
+verantyx import grep: 0 (BOOTSTRAP 文字列内の 2 行のみ=runner.py:70-71)
+non-stdlib imports (AST): []
+ERROR tests/attack/test_semantic_unknown_choice_paraphrase.py - NameError: na...
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+4081 tests collected, 1 error in 3.53s
+4081 tests collected in 3.55s
+phrase grep: 1 (1 なら無し=合格)
+hidden/他クローンの参照 grep done
+     224

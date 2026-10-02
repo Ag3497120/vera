@@ -1,0 +1,182 @@
+{
+ "argv": [
+  "ask",
+  "--mode",
+  "round5",
+  "--",
+  "猫が雨の日に傘を見つける、創作の短い話を二文で書いてください。"
+ ],
+ "elapsed_ms": 296.0,
+ "entry": "cli-ask-round5",
+ "exit_code": 0,
+ "id": "b3s-016",
+ "provenance": {
+  "modules": 71,
+  "outside": []
+ },
+ "reason": null,
+ "stderr": "",
+ "stdout_json": {
+  "adoption_eligible": false,
+  "budget": {
+   "accounting_complete": false,
+   "counts": {
+    "brief_chars": 31,
+    "material_chars": 0,
+    "steps": 3
+   },
+   "limits": {
+    "brief_chars": 1200,
+    "candidates": 256,
+    "depth": 8,
+    "entities": 4,
+    "events": 8,
+    "frontier": 64,
+    "material_chars": 12000,
+    "nodes": 16,
+    "output_chars": 800,
+    "parse_candidates": 32,
+    "plans": 256,
+    "steps": 4096,
+    "surfaces": 32,
+    "worlds": 4
+   },
+   "morphology_accounting": "character bounded; existing routine internals excluded",
+   "steps_known": 3,
+   "steps_total": null,
+   "stopped_at": "",
+   "uncovered": [
+    "Frame/morphology internals",
+    "material-reader internals",
+    "unmetered C comparisons and inner loops"
+   ]
+  },
+  "contract": "vera.content.v1",
+  "created": false,
+  "details": {},
+  "door": "round5_content",
+  "evidence": [],
+  "experimental": true,
+  "family": "content",
+  "how_to_resolve": "質問された事項を示す出典を追加してください。",
+  "kind": "unknown",
+  "material_records": [],
+  "material_trace": [
+   {
+    "family": "narrative",
+    "reason": "material family is not built",
+    "role": "expression_only",
+    "trace": [
+     {
+      "candidate_limit": 8,
+      "consumer_verification_required": true,
+      "elapsed_ms": 0.028833019314333797,
+      "family": "narrative",
+      "immutable": false,
+      "part": "material_source.MaterialSource",
+      "queries": 0,
+      "read_only": true,
+      "selection_is_evidence": false
+     }
+    ],
+    "verdict": "UNKNOWN_SOURCE_ASSET"
+   },
+   {
+    "family": "paraphrase_entail",
+    "reason": "material family is not built",
+    "role": "expression_only",
+    "trace": [
+     {
+      "candidate_limit": 8,
+      "consumer_verification_required": true,
+      "elapsed_ms": 0.009500014130026102,
+      "family": "paraphrase_entail",
+      "immutable": false,
+      "part": "material_source.MaterialSource",
+      "queries": 0,
+      "read_only": true,
+      "selection_is_evidence": false
+     }
+    ],
+    "verdict": "UNKNOWN_SOURCE_ASSET"
+   }
+  ],
+  "ms": 1.102,
+  "path": "constraint_plan_realize_verify",
+  "reason": "explicit fiction or evidence-only explanation mode required",
+  "remedy": {
+   "needs_registration": true,
+   "note": "no remedy recorded for this verdict",
+   "register": "質問された事項を示す出典を追加してください。",
+   "verdict": "UNKNOWN_CONTENT_PERMISSION"
+  },
+  "runtime_mode": "round5",
+  "sources": [],
+  "text": "この条件では構成を確定できません。",
+  "trace": [
+   {
+    "code_intent": false,
+    "content_intent": true,
+    "decision_input": "raw_request",
+    "fallback": false,
+    "part": "one.round5_route",
+    "status": "ran"
+   },
+   {
+    "ledger_hash": null,
+    "part": "content_reader",
+    "status": "ran"
+   },
+   {
+    "part": "content_planner",
+    "plan_hash": null,
+    "status": "ran"
+   },
+   {
+    "part": "content_realizer",
+    "status": "ran",
+    "surfaces": 0
+   },
+   {
+    "part": "content_verify",
+    "passed": false,
+    "status": "ran"
+   },
+   {
+    "how_to_resolve": "質問された事項を示す出典を追加してください。",
+    "part": "remedy.remedy",
+    "status": "ran",
+    "verdict": "UNKNOWN_CONTENT_PERMISSION"
+   },
+   {
+    "asks": "",
+    "part": "ask_back.question",
+    "reason": "verdict has no human-answerable candidate",
+    "status": "abstained"
+   },
+   {
+    "part": "coverage.document_needed",
+    "reason": "no domain witnesses",
+    "status": "abstained"
+   },
+   {
+    "part": "gap_graph.refusal_to_gap",
+    "reason": "no opt-in gap_path",
+    "status": "abstained"
+   },
+   {
+    "part": "grow.log_refusal",
+    "reason": "no queue opt-in or different verdict",
+    "status": "abstained"
+   }
+  ],
+  "values": [],
+  "verdict": "UNKNOWN_CONTENT_PERMISSION",
+  "verification": {
+   "details": {},
+   "passed": false,
+   "reason": "explicit fiction or evidence-only explanation mode required"
+  }
+ },
+ "stdout_text": null
+}

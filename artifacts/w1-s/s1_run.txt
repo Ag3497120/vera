@@ -1,0 +1,47 @@
+B1 26
+B2 25
+B3 24
+B5 26
+B1 entry=cli total=26 correct=0 wrong=0 misread=0 over_abstain=0 correct_abstain=0 false_compliance=0 unreachable=26 runtime_error=0 unscorable=0
+correct_rate=0.0 wrong_rate=0.0 false_compliance_rate=0.0
+B1 exit=0
+B2 entry=cli-ask-round5 total=25 correct=0 wrong=0 misread=0 over_abstain=17 correct_abstain=6 false_compliance=0 unreachable=2 runtime_error=0 unscorable=0
+correct_rate=0.0 wrong_rate=0.0 false_compliance_rate=0.0
+B2 exit=0
+B3 entry=cli-ask-round5 total=24 correct=0 wrong=0 misread=0 over_abstain=19 correct_abstain=5 false_compliance=0 unreachable=0 runtime_error=0 unscorable=0
+correct_rate=0.0 wrong_rate=0.0 false_compliance_rate=0.0
+B3 exit=0
+B5 entry=cli total=26 correct=0 wrong=0 misread=0 over_abstain=0 correct_abstain=0 false_compliance=0 unreachable=26 runtime_error=0 unscorable=0
+correct_rate=0.0 wrong_rate=0.0 false_compliance_rate=0.0
+B5 exit=0
+artifacts/w1-s/B1:
+baselines
+raw
+results.jsonl
+run_meta.json
+summary.json
+summary.md
+
+artifacts/w1-s/B2:
+baselines
+raw
+results.jsonl
+run_meta.json
+summary.json
+summary.md
+
+artifacts/w1-s/B3:
+baselines
+raw
+results.jsonl
+run_meta.json
+summary.json
+summary.md
+
+artifacts/w1-s/B5:
+baselines
+raw
+results.jsonl
+run_meta.json
+summary.json
+summary.md

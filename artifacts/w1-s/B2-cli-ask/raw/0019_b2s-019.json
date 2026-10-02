@@ -1,0 +1,199 @@
+{
+ "argv": [
+  "ask",
+  "--",
+  "次の文を丁寧な言い方に直してください。「資料は明日までに送れ。」"
+ ],
+ "elapsed_ms": 241.5,
+ "entry": "cli-ask",
+ "exit_code": 0,
+ "id": "b2s-019",
+ "provenance": {
+  "modules": 59,
+  "outside": []
+ },
+ "reason": null,
+ "stderr": "",
+ "stdout_json": {
+  "deictic": "明日",
+  "door": "general",
+  "evidence": [],
+  "how_to_resolve": "nothing here — resolve the deictic first",
+  "item": null,
+  "language": "ja",
+  "note": "the answer depends on when this is asked and the store has no clock; route to a source that does, then ingest its result to make it citable",
+  "remedy": {
+   "deictic": "明日",
+   "language": "ja",
+   "needs_registration": false,
+   "register": "nothing here — resolve the deictic first",
+   "terms": [
+    "文",
+    "丁寧な",
+    "言い",
+    "資料",
+    "明日",
+    "送れ"
+   ],
+   "verdict": "UNKNOWN_TIME_DEPENDENT",
+   "why": "今日 is a property of the question and the store has no clock. Registering the fact does not change the verdict; asking with the date does. Ingest the tool result with its timestamp as the source label to make the answer citable"
+  },
+  "sources": [],
+  "terms": [
+   "文",
+   "丁寧な",
+   "言い",
+   "資料",
+   "明日",
+   "送れ"
+  ],
+  "text": "",
+  "trace": [
+   {
+    "asked_slot": "what",
+    "case_frame": {
+     "arguments": [
+      "次の文",
+      "丁寧な言い方"
+     ],
+     "attribute": "",
+     "negated": false,
+     "predicates": [
+      "直す",
+      "送る"
+     ],
+     "requested_unit": "",
+     "slot": "what",
+     "subject": "資料",
+     "who_role": ""
+    },
+    "kind": "fact",
+    "part": "question.read",
+    "status": "ran"
+   },
+   {
+    "part": "stage_split.split",
+    "status": "ran",
+    "verdict": "UNKNOWN_UNSEGMENTED"
+   },
+   {
+    "part": "typo_recovery.recover",
+    "status": "abstained",
+    "verdict": "LACK_OF_ASSET"
+   },
+   {
+    "part": "meaning_assets.lattice",
+    "reason": "writer.json",
+    "status": "abstained"
+   },
+   {
+    "part": "sense_split.resolve",
+    "status": "abstained",
+    "verdict": "LACK_OF_ASSET"
+   },
+   {
+    "count": 0,
+    "part": "polarity.observe_negation",
+    "status": "ran"
+   },
+   {
+    "act": "request",
+    "part": "intent.act_by_form",
+    "status": "ran"
+   },
+   {
+    "part": "intent_frames.parse",
+    "reason": "question is not an instruction",
+    "status": "abstained",
+    "verdict": "NOT_APPLICABLE"
+   },
+   {
+    "arm": null,
+    "part": "arm_schema.classify_intent",
+    "status": "ran"
+   },
+   {
+    "kind": null,
+    "part": "skills.answer",
+    "status": "abstained"
+   },
+   {
+    "ability": null,
+    "part": "abilities.Abilities.answer",
+    "status": "abstained"
+   },
+   {
+    "held": [
+     "ja"
+    ],
+    "language": "ja",
+    "part": "polyglot.Polyglot.route",
+    "status": "ran"
+   },
+   {
+    "part": "vera.Vera.ask",
+    "status": "ran",
+    "verdict": "UNKNOWN_TIME_DEPENDENT"
+   },
+   {
+    "coverage": null,
+    "part": "graded.GradedJudge.ask",
+    "status": "abstained"
+   },
+   {
+    "part": "resolution.Ladder",
+    "reason": "graded judge builds and reads its nested ladders",
+    "status": "abstained"
+   },
+   {
+    "part": "stacked.ask",
+    "status": "abstained",
+    "verdict": "UNKNOWN_TIME_DEPENDENT"
+   },
+   {
+    "part": "consensus_store.consensus_over_store",
+    "status": "abstained",
+    "verdict": "UNKNOWN_TIME_DEPENDENT"
+   },
+   {
+    "part": "reach.reach",
+    "reached": [],
+    "status": "ran"
+   },
+   {
+    "part": "explain.explain",
+    "reason": "no writer or no supported unit landing",
+    "status": "abstained"
+   },
+   {
+    "how_to_resolve": "nothing here — resolve the deictic first",
+    "part": "remedy.remedy",
+    "status": "ran",
+    "verdict": "UNKNOWN_TIME_DEPENDENT"
+   },
+   {
+    "asks": "",
+    "part": "ask_back.question",
+    "reason": "verdict has no human-answerable candidate",
+    "status": "abstained"
+   },
+   {
+    "part": "coverage.document_needed",
+    "reason": "no domain witnesses",
+    "status": "abstained"
+   },
+   {
+    "part": "gap_graph.refusal_to_gap",
+    "reason": "no opt-in gap_path",
+    "status": "abstained"
+   },
+   {
+    "part": "grow.log_refusal",
+    "reason": "no queue opt-in or different verdict",
+    "status": "abstained"
+   }
+  ],
+  "verdict": "UNKNOWN_TIME_DEPENDENT"
+ },
+ "stdout_text": null
+}

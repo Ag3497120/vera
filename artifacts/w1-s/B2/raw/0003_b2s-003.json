@@ -1,0 +1,675 @@
+{
+ "argv": [
+  "ask",
+  "--mode",
+  "round5",
+  "--document",
+  "星見台図書室案内.txt",
+  "--",
+  "星見台図書室が休みの曜日は何曜日ですか？"
+ ],
+ "elapsed_ms": 430.0,
+ "entry": "cli-ask-round5",
+ "exit_code": 0,
+ "id": "b2s-003",
+ "provenance": {
+  "modules": 106,
+  "outside": []
+ },
+ "reason": null,
+ "stderr": "",
+ "stdout_json": {
+  "door": "semantic_document",
+  "evidence": [],
+  "how_to_resolve": "sentences about the subject — the census found nothing to count",
+  "kind": "unknown",
+  "multigrain_navigation": {
+   "authority": "source_location_hypothesis",
+   "candidate_clause_span_causal_influence_proven": false,
+   "candidate_clause_span_cited_after_full_view_check": false,
+   "candidate_clause_span_match_count": 0,
+   "candidate_document_id_cited_after_full_view_check": false,
+   "candidate_goal_status": null,
+   "candidate_limit": 8,
+   "candidate_sentence_span_cited_after_full_view_check": null,
+   "candidate_views_supplied_to_answer_verifier": true,
+   "candidates": [
+    {
+     "independent_source_count": null,
+     "item": "星見台図書室",
+     "resolution_views": [
+      "g1",
+      "g2",
+      "g3",
+      "whole"
+     ],
+     "selected_by_existing_constellation": true,
+     "selection_used_resolution_views": true,
+     "source_identity_status": "identity_unverified",
+     "source_leaf_match_count": 1,
+     "source_reference_count": 1,
+     "source_references_truncated": false,
+     "sources": [
+      {
+       "canonical_source_id": null,
+       "domain_path": [],
+       "grain_witnesses": [
+        {
+         "matched_feature_count": 1,
+         "member": "whole",
+         "rung": "whole",
+         "size": 0
+        },
+        {
+         "matched_feature_count": 4,
+         "member": "g3",
+         "rung": "g3",
+         "size": 3
+        },
+        {
+         "matched_feature_count": 5,
+         "member": "g2",
+         "rung": "g2",
+         "size": 2
+        },
+        {
+         "matched_feature_count": 6,
+         "member": "g1",
+         "rung": "g1",
+         "size": 1
+        }
+       ],
+       "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+       "identity_status": "identity_unverified",
+       "leaf": "星見台図書室案内.txt",
+       "path": [
+        "星見台図書室案内.txt"
+       ],
+       "source_label": "星見台図書室案内.txt"
+      }
+     ]
+    }
+   ],
+   "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+   "grain_trace": [
+    {
+     "grammar": "raw",
+     "independent_source_vote": false,
+     "member": "whole",
+     "member_reading": "星見台図書室",
+     "participated_with_candidate": true,
+     "role": "resolution_view",
+     "rung_readings": {
+      "whole": "星見台図書室"
+     },
+     "rungs": [
+      [
+       "whole",
+       0
+      ]
+     ],
+     "used_by_existing_candidate_selection": true
+    },
+    {
+     "grammar": "raw",
+     "independent_source_vote": false,
+     "member": "g3",
+     "member_reading": "星見台図書室",
+     "participated_with_candidate": true,
+     "role": "resolution_view",
+     "rung_readings": {
+      "g3": "星見台図書室"
+     },
+     "rungs": [
+      [
+       "g3",
+       3
+      ]
+     ],
+     "used_by_existing_candidate_selection": true
+    },
+    {
+     "grammar": "raw",
+     "independent_source_vote": false,
+     "member": "g2",
+     "member_reading": "星見台図書室",
+     "participated_with_candidate": true,
+     "role": "resolution_view",
+     "rung_readings": {
+      "g2": "星見台図書室"
+     },
+     "rungs": [
+      [
+       "g2",
+       2
+      ]
+     ],
+     "used_by_existing_candidate_selection": true
+    },
+    {
+     "grammar": "raw",
+     "independent_source_vote": false,
+     "member": "g1",
+     "member_reading": "星見台図書室",
+     "participated_with_candidate": true,
+     "role": "resolution_view",
+     "rung_readings": {
+      "g1": "星見台図書室"
+     },
+     "rungs": [
+      [
+       "g1",
+       1
+      ]
+     ],
+     "used_by_existing_candidate_selection": true
+    }
+   ],
+   "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+   "independent_source_count": null,
+   "kind": "multigrain_candidates",
+   "query_destinations": [
+    {
+     "canonical_source_id": null,
+     "domain_path": [],
+     "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+     "identity_status": "identity_unverified",
+     "leaf": "星見台図書室案内.txt",
+     "path": [
+      "星見台図書室案内.txt"
+     ],
+     "source_label": "星見台図書室案内.txt"
+    }
+   ],
+   "query_divisions_are_partial": true,
+   "query_divisions_from_constellation": [
+    "星見台図書室案内.txt"
+   ],
+   "query_terms": [
+    "星見台図書室",
+    "休",
+    "曜日",
+    "何曜日"
+   ],
+   "raw_question": "星見台図書室が休みの曜日は何曜日ですか？",
+   "resolution_agreeing": 4,
+   "resolution_as_core": [
+    "星見台図書室"
+   ],
+   "resolution_as_facet_only": [],
+   "resolution_item": "星見台図書室",
+   "resolution_missing": [
+    "休",
+    "曜日",
+    "何曜日"
+   ],
+   "resolution_of": 4,
+   "resolution_verdict": "ANSWER",
+   "selected_candidate": "星見台図書室",
+   "selector_query": "星見台図書室が休みの曜日は何曜日ですか？",
+   "selector_query_origin": "raw_question",
+   "source_binding": {
+    "candidate": "星見台図書室",
+    "goal_relation_scope": "same-owner local explicit argument spans only",
+    "independent_source_count": null,
+    "reason": "candidate leaf IDs and exact original Clause spans were rederived",
+    "registry_sha256": "c0db1eabeecf79709fa85e6ec4038846d2103fc32d84213d62290e391b119421",
+    "scope": "document identity and original-text location only",
+    "selections": [
+     {
+      "candidate": "星見台図書室",
+      "candidate_argument_span": null,
+      "candidate_role": null,
+      "candidate_spans": [
+       [
+        0,
+        6
+       ]
+      ],
+      "clause_ids": [
+       "71b643839d444df23b6c170d"
+      ],
+      "leaf_id": "星見台図書室案内.txt",
+      "leaf_path": [
+       "星見台図書室案内.txt"
+      ],
+      "original_sha256": "a55d8100bc648974c4995f69253be4859e49b8cbebe9f220199c5fb218b1f276",
+      "predicates": [
+       "identity"
+      ],
+      "request_target_anchor": null,
+      "sentence_span": {
+       "end": 17,
+       "source": "星見台図書室案内.txt",
+       "start": 0
+      },
+      "sentence_text": "星見台図書室は火曜日が休室日です。",
+      "source_assertion_status": null,
+      "source_frame_evidence_clause_id": null,
+      "source_frame_id": null,
+      "source_id": "星見台図書室案内.txt",
+      "target_argument_span": null,
+      "target_case_particle_span": null,
+      "target_role": null
+     }
+    ],
+    "source_truth_status": "UNCLASSIFIED; no truth or authority claim",
+    "status": "BOUND",
+    "version": "multigrain-source-binding-v1"
+   },
+   "source_identity_status": "identity_unverified",
+   "surface_route": {
+    "leaf": "星見台図書室案内.txt",
+    "route_kind": "single_leaf_or_unbuilt",
+    "selected_leaf": "星見台図書室案内.txt",
+    "trail": [
+     "星見台図書室案内.txt"
+    ],
+    "used_for_candidate_selection": false,
+    "verdict": "ROUTED",
+    "via_api": [
+     "Base.lower"
+    ]
+   },
+   "trace": {
+    "calls": {
+     "Base.lower": 1,
+     "FullConstellation.ask": 1,
+     "FullConstellation.ask.hierarchy.gather": 1,
+     "conduct_tree.descend": 0,
+     "resolution.Ladder.vote_for_grain_trace": 4,
+     "resolution.Ladder.vote_for_selection": 4,
+     "resolution.ask_member_reads": 4,
+     "source_tree_leaf_walk": 1,
+     "source_tree_leaves_visited": 1,
+     "source_tree_nodes_visited": 1,
+     "surface.route": 0
+    },
+    "candidate_selection": "FullConstellation.ask(raw_question); its existing resolution consensus is the selector",
+    "elapsed_ms": 3.882,
+    "query_division_note": "FullConstellation.ask exposes at most six leaf names from its gather result",
+    "selector_query": "星見台図書室が休みの曜日は何曜日ですか？",
+    "source_join": "exact candidate core key plus configured source-leaf grain features",
+    "structural_views_are_source_votes": false
+   },
+   "truth_claim": false,
+   "used_for_answer": false,
+   "used_for_goal_realization": false,
+   "verdict": "CANDIDATE_SOURCE_LEAF_MATCHED"
+  },
+  "phase": "execution",
+  "reason": "no complete supported derivation",
+  "remedy": {
+   "how": "remember / propose_ai_facts then accept_ai_fact",
+   "minimum": 3,
+   "needs_registration": true,
+   "note": "if the question names no content word at all, the honest route is a generator rather than a registration; see UNKNOWN_NO_SUBJECT",
+   "register": "sentences about the subject — the census found nothing to count",
+   "then": "rebuild the judge — measured 1.4s on 86,967 cores",
+   "verdict": "UNKNOWN_NO_EVIDENCE"
+  },
+  "runtime_mode": "round5",
+  "semantic": {
+   "budget": {
+    "candidates": 0,
+    "limits": {
+     "bindings": 64,
+     "candidates": 256,
+     "depth": 8,
+     "parse": 32,
+     "steps": 4096
+    },
+    "peak_bindings": 0,
+    "steps": 83
+   },
+   "request": {
+    "covered": [
+     {
+      "end": 20,
+      "source": "question",
+      "start": 0,
+      "text": "星見台図書室が休みの曜日は何曜日ですか？"
+     }
+    ],
+    "obligations": [
+     {
+      "detail": "property",
+      "id": "o0",
+      "kind": "relation",
+      "node": "n0",
+      "span": {
+       "end": 20,
+       "source": "question",
+       "start": 0,
+       "text": "星見台図書室が休みの曜日は何曜日ですか？"
+      }
+     },
+     {
+      "detail": "entity",
+      "id": "o1",
+      "kind": "role",
+      "node": "n0",
+      "span": {
+       "end": 20,
+       "source": "question",
+       "start": 0,
+       "text": "星見台図書室が休みの曜日は何曜日ですか？"
+      }
+     },
+     {
+      "detail": "attribute",
+      "id": "o2",
+      "kind": "role",
+      "node": "n0",
+      "span": {
+       "end": 20,
+       "source": "question",
+       "start": 0,
+       "text": "星見台図書室が休みの曜日は何曜日ですか？"
+      }
+     },
+     {
+      "detail": "value",
+      "id": "o3",
+      "kind": "role",
+      "node": "n0",
+      "span": {
+       "end": 20,
+       "source": "question",
+       "start": 0,
+       "text": "星見台図書室が休みの曜日は何曜日ですか？"
+      }
+     },
+     {
+      "detail": "+",
+      "id": "o4",
+      "kind": "polarity",
+      "node": "n0",
+      "span": {
+       "end": 20,
+       "source": "question",
+       "start": 0,
+       "text": "星見台図書室が休みの曜日は何曜日ですか？"
+      }
+     },
+     {
+      "detail": "assert",
+      "id": "o5",
+      "kind": "modality",
+      "node": "n0",
+      "span": {
+       "end": 20,
+       "source": "question",
+       "start": 0,
+       "text": "星見台図書室が休みの曜日は何曜日ですか？"
+      }
+     },
+     {
+      "detail": "星見台図書室が休みの曜日",
+      "id": "o6",
+      "kind": "output",
+      "node": "n3",
+      "span": {
+       "end": 20,
+       "source": "question",
+       "start": 0,
+       "text": "星見台図書室が休みの曜日は何曜日ですか？"
+      }
+     }
+    ],
+    "plans": [
+     {
+      "nodes": [
+       {
+        "absolute": false,
+        "choices": [],
+        "id": "n0",
+        "inputs": [],
+        "obligations": [
+         "o0",
+         "o1",
+         "o2",
+         "o3",
+         "o4",
+         "o5"
+        ],
+        "op": "Bind",
+        "outputs": [],
+        "pattern": {
+         "event": null,
+         "modality": "assert",
+         "polarity": "+",
+         "predicate": "property",
+         "roles": [
+          [
+           "entity",
+           "星見台図書室が休み"
+          ],
+          [
+           "attribute",
+           "曜日"
+          ],
+          [
+           "value",
+           {
+            "name": "v1",
+            "sort": "quantity"
+           }
+          ]
+         ],
+         "time": ""
+        },
+        "relation": "",
+        "span": {
+         "end": 20,
+         "source": "question",
+         "start": 0,
+         "text": "星見台図書室が休みの曜日は何曜日ですか？"
+        },
+        "target": null,
+        "terms": [],
+        "tests": [],
+        "unit": ""
+       },
+       {
+        "absolute": false,
+        "choices": [],
+        "id": "n1",
+        "inputs": [
+         "n0"
+        ],
+        "obligations": [],
+        "op": "ApplyCondition",
+        "outputs": [],
+        "pattern": null,
+        "relation": "",
+        "span": null,
+        "target": null,
+        "terms": [],
+        "tests": [],
+        "unit": ""
+       },
+       {
+        "absolute": false,
+        "choices": [],
+        "id": "n2",
+        "inputs": [
+         "n1"
+        ],
+        "obligations": [],
+        "op": "Except",
+        "outputs": [],
+        "pattern": null,
+        "relation": "",
+        "span": null,
+        "target": null,
+        "terms": [],
+        "tests": [],
+        "unit": ""
+       },
+       {
+        "absolute": false,
+        "choices": [],
+        "id": "n3",
+        "inputs": [
+         "n2"
+        ],
+        "obligations": [
+         "o6"
+        ],
+        "op": "Project",
+        "outputs": [
+         {
+          "label": "星見台図書室が休みの曜日",
+          "obligation": "o6",
+          "span": {
+           "end": 20,
+           "source": "question",
+           "start": 0,
+           "text": "星見台図書室が休みの曜日は何曜日ですか？"
+          },
+          "term": {
+           "name": "v1",
+           "sort": "quantity"
+          },
+          "unit": "曜日"
+         }
+        ],
+        "pattern": null,
+        "relation": "",
+        "span": null,
+        "target": null,
+        "terms": [],
+        "tests": [],
+        "unit": ""
+       }
+      ],
+      "root": "n3"
+     }
+    ],
+    "rules": [
+     "frame/edge/stage candidates",
+     "nominal-path",
+     "role-wh",
+     "relational-plan"
+    ],
+    "stages": [],
+    "text": "星見台図書室が休みの曜日は何曜日ですか？",
+    "unread": []
+   },
+   "unread": [],
+   "verified": false,
+   "version": "round5a"
+  },
+  "sources": [],
+  "text": "この要求を裏づける導出を確認できません。",
+  "trace": [
+   {
+    "code_intent": false,
+    "content_intent": false,
+    "decision_input": "raw_request",
+    "fallback": false,
+    "part": "one.round5_route",
+    "status": "ran"
+   },
+   {
+    "obligations": 7,
+    "part": "question.read_semantic",
+    "plans": 1,
+    "status": "ran",
+    "unread": []
+   },
+   {
+    "clauses": 5,
+    "ingest_ms": 58.13354198471643,
+    "part": "semantic_reader.document_view",
+    "source_unread": [],
+    "source_unread_count": 0,
+    "source_unread_truncated": false,
+    "status": "ran"
+   },
+   {
+    "candidate_verdict": "UNKNOWN_NO_EVIDENCE",
+    "full_original_view_required": true,
+    "part": "multigrain_source_binding",
+    "reason": "candidate-view pass did not return ANSWER",
+    "status": "abstained"
+   },
+   {
+    "arity": 6,
+    "leaves": 1,
+    "nodes": 1,
+    "part": "semantic_route.LeafTree",
+    "reason": "fewer leaves than one routing node",
+    "status": "skipped"
+   },
+   {
+    "candidates": 0,
+    "part": "semantic_execute.Producer",
+    "peak_bindings": 0,
+    "plan_depth": 4,
+    "proposals": 0,
+    "sovereign": "document",
+    "status": "ran",
+    "steps": 33,
+    "unresolved_alternative_derivations": []
+   },
+   {
+    "part": "semantic_verify.Checker.gate",
+    "shared_steps": 83,
+    "sovereign": "document",
+    "status": "ran",
+    "verified_answers": 0
+   },
+   {
+    "how_to_resolve": "sentences about the subject — the census found nothing to count",
+    "part": "remedy.remedy",
+    "status": "ran",
+    "verdict": "UNKNOWN_NO_EVIDENCE"
+   },
+   {
+    "asks": "",
+    "part": "ask_back.question",
+    "reason": "verdict has no human-answerable candidate",
+    "status": "abstained"
+   },
+   {
+    "part": "coverage.document_needed",
+    "reason": "no domain witnesses",
+    "status": "abstained"
+   },
+   {
+    "part": "gap_graph.refusal_to_gap",
+    "reason": "no opt-in gap_path",
+    "status": "abstained"
+   },
+   {
+    "part": "grow.log_refusal",
+    "reason": "no queue opt-in or different verdict",
+    "status": "abstained"
+   },
+   {
+    "bound_source_supplied_to_goal_consumer": false,
+    "candidate_clause_span_causal_influence_proven": false,
+    "candidate_clause_span_cited_after_full_view_check": false,
+    "candidate_clause_span_match_count": 0,
+    "candidate_document_id_cited_after_full_view_check": false,
+    "candidate_sentence_span_cited_after_full_view_check": null,
+    "candidate_views_supplied_to_answer_verifier": true,
+    "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+    "independent_source_count": null,
+    "licenses_goal_realization": false,
+    "part": "multigrain_adapter.retrieve_multigrain_candidates",
+    "selected_candidate": "星見台図書室",
+    "source_binding_reason": "candidate leaf IDs and exact original Clause spans were rederived",
+    "source_binding_status": "BOUND",
+    "source_identity_status": "identity_unverified",
+    "status": "ran",
+    "verdict": "CANDIDATE_SOURCE_LEAF_MATCHED"
+   }
+  ],
+  "values": [],
+  "verdict": "UNKNOWN_NO_EVIDENCE"
+ },
+ "stdout_text": null
+}
