@@ -212,7 +212,8 @@ def test_agreed_choice_is_cached_as_testimony_not_evidence():
         report, ["gamma"], selected="beta"
     )
     assert (second["decision"], second["option"]) == ("ADOPT", "beta")
-    assert first["alias_record"] is second["alias_record"]
+    assert first["alias_record"] == second["alias_record"]
+    assert first["alias_record"] is not second["alias_record"]
     assert len(asker.prompts) == 2
     assert first["alias_record"]["support"] == "testimony"
     assert first["evidence"] == [{

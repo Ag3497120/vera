@@ -87,12 +87,12 @@ def test_one_shot_helper_uses_injected_asker():
     assert asker.calls == 2
 
 
-def test_model_backed_asker_is_rejected():
-    with pytest.raises(TypeError, match="non-LLM"):
-        SemanticUnknownChoice(CodexAsker())
+def test_model_backed_asker_is_allowed_for_closed_choice():
+    flow = SemanticUnknownChoice(CodexAsker())
+    assert isinstance(flow, SemanticUnknownChoice)
 
 
-def test_model_backed_asker_wrapper_is_rejected_even_with_benign_source():
+def test_model_backed_asker_wrapper_is_allowed_for_closed_choice():
     class DelegatingAsker:
         source = "deterministic-rule-based"
 
@@ -102,8 +102,9 @@ def test_model_backed_asker_wrapper_is_rejected_even_with_benign_source():
         def __call__(self, prompt):
             return self.delegate(prompt)
 
-    with pytest.raises(TypeError, match="non-LLM"):
-        SemanticUnknownChoice(DelegatingAsker())
+    asker = DelegatingAsker()
+    flow = SemanticUnknownChoice(asker)
+    assert flow.resolver.asker is asker
 
 
 def test_alias_record_attributes_resolver_implementation():

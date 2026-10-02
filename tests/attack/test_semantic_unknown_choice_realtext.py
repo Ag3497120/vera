@@ -6,8 +6,6 @@ alias-storage behavior using minimal constructed reports.
 """
 import json
 
-import pytest
-
 from verantyx.semantic_unknown_choice import SemanticUnknownChoice
 
 
@@ -54,7 +52,7 @@ def test_adoption_uses_two_asks_and_is_stored_as_testimony():
     assert len(prompts) == len(result["alias_record"]["asks"]) == 2
     assert [ask["variant"] for ask in result["alias_record"]["asks"]] == [0, 1]
     assert result["alias_record"]["support"] == "testimony"
-    assert result["alias_record"]["by"] == "llm-closed-choice"
+    assert result["alias_record"]["by"] == "verantyx.semantic_unknown_choice"
 
 
 def test_candidate_term_equal_to_unknown_is_not_an_option():
@@ -103,7 +101,8 @@ def test_cached_alias_reuses_same_term_set_when_frame_order_changes():
     second = resolver.choose(report, ["kilogram", "second"])
 
     assert first["option"] == second["option"] == "kilogram"
-    assert first["alias_record"] is second["alias_record"]
+    assert first["alias_record"] == second["alias_record"]
+    assert first["alias_record"] is not second["alias_record"]
     assert len(prompts) == 2
     assert len(resolver.alias_history) == 1
 

@@ -11,8 +11,9 @@ import inspect
 import json
 from collections.abc import Iterable, Mapping
 from copy import deepcopy
-import re
+from threading import RLock
 from types import ModuleType
+import unicodedata
 from typing import Any, Literal, Optional, Protocol
 
 from .memory_frame import CodexAsker, Resolver
@@ -20,14 +21,19 @@ from .semantic_unknown import UnknownReport
 
 
 Decision = Literal["ADOPT", "NONE", "UNRESOLVED"]
-_MODEL_SOURCE = re.compile(r"\b(?:codex|gpt|llm|model|openai|claude|gemini)\b", re.I)
 _ASKER_PROVENANCE = "verantyx.semantic_unknown_choice"
+_LLM_ASKER_PROVENANCE = "llm-closed-choice"
 
 
-class NonLLMAsker(Protocol):
-    """An injected closed-choice callback."""
+class ClosedChoiceAsker(Protocol):
+    """An injected closed-choice callback, including an external LLM asker."""
 
     def __call__(self, prompt: str) -> str: ...
+
+
+# Preserve the old import while allowing this protocol to include the explicit
+# LLM closed-choice path.
+NonLLMAsker = ClosedChoiceAsker
 
 
 def _contains_codex_asker(value: Any, seen: Optional[set[int]] = None) -> bool:
@@ -61,9 +67,7 @@ def _contains_codex_asker(value: Any, seen: Optional[set[int]] = None) -> bool:
         if any(_contains_codex_asker(cell.cell_contents, seen)
                for cell in (value.__closure__ or ())):
             return True
-        return any(name in value.__globals__
-                   and _contains_codex_asker(value.__globals__[name], seen)
-                   for name in value.__code__.co_names)
+        return False
 
     try:
         state = vars(value)
@@ -87,13 +91,12 @@ def _contains_codex_asker(value: Any, seen: Optional[set[int]] = None) -> bool:
 
 
 def _asker_provenance(asker: Any) -> str:
-    if (not callable(asker) or _contains_codex_asker(asker)):
-        raise TypeError("asker must be an injected non-LLM callable")
-    # A caller-provided label is not proof of provenance. Reject explicit model
-    # labels as an additional guard, but attribute all records to this resolver.
-    source = getattr(asker, "source", None)
-    if isinstance(source, str) and _MODEL_SOURCE.search(source):
-        raise TypeError("asker must be an injected non-LLM callable")
+    if not callable(asker):
+        raise TypeError("asker must be an injected closed-choice callable")
+    if _contains_codex_asker(asker):
+        return _LLM_ASKER_PROVENANCE
+    # A caller-provided label is not proof of who answered. For unrecognized
+    # injected callbacks, attribute the recorded protocol to this resolver.
     return _ASKER_PROVENANCE
 
 
@@ -115,6 +118,20 @@ def _plain(value: Any) -> Any:
         return {name: _plain(getattr(value, name))
                 for name in value.__dataclass_fields__}
     return value
+
+
+def _constructed(candidate: Any) -> bool:
+    """Require a true construction marker, defaulting for legacy candidates."""
+    return _get(candidate, "constructed", True) is True
+
+
+def _prompt_json(value: Any) -> str:
+    """Serialize data while making invisible Unicode format controls inert."""
+    encoded = json.dumps(value, ensure_ascii=False, sort_keys=True)
+    return "".join(
+        f"\\u{ord(char):04x}" if unicodedata.category(char) == "Cf" else char
+        for char in encoded
+    )
 
 
 def _as_terms(values: Iterable[Any]) -> list[str]:
@@ -155,7 +172,7 @@ def _evidence(report: Any) -> list[dict[str, Any]]:
         result.append({
             "candidate_index": index,
             "kind": _get(candidate, "kind"),
-            "constructed": bool(_get(candidate, "constructed", True)),
+            "constructed": _constructed(candidate),
             "counts_as_evidence": False,
             "provenance": _plain(_get(candidate, "provenance", ()) or ()),
         })
@@ -169,22 +186,25 @@ class SemanticUnknownChoice:
     rejects an earlier adopted alias. All asks still go through Resolver.
     """
 
-    def __init__(self, asker: NonLLMAsker, seed: int = 7):
+    def __init__(self, asker: ClosedChoiceAsker, seed: int = 7):
         _asker_provenance(asker)
         self.resolver = Resolver(asker, seed=seed)
         self._aliases: dict[tuple[str, tuple[str, ...]], dict[str, Any]] = {}
         self._alias_history: list[dict[str, Any]] = []
         self._next_id = 1
+        self._lock = RLock()
 
     @property
     def aliases(self) -> dict[tuple[str, tuple[str, ...]], dict[str, Any]]:
         """Return a snapshot so callers cannot mutate the active cache."""
-        return deepcopy(self._aliases)
+        with self._lock:
+            return deepcopy(self._aliases)
 
     @property
     def alias_history(self) -> list[dict[str, Any]]:
         """Return a snapshot so callers cannot mutate stored testimony."""
-        return deepcopy(self._alias_history)
+        with self._lock:
+            return deepcopy(self._alias_history)
 
     @staticmethod
     def _options(report: Any, frame_vocabulary: Iterable[Any]) -> tuple[list[str], dict[str, list[str]]]:
@@ -194,6 +214,8 @@ class SemanticUnknownChoice:
         candidates = _get(report, "candidates", ()) or ()
         origins: dict[str, list[str]] = {}
         for candidate in candidates:
+            if not _constructed(candidate):
+                continue
             for term in _candidate_terms(candidate, unknown):
                 origins.setdefault(term, [])
                 if "candidate" not in origins[term]:
@@ -210,19 +232,29 @@ class SemanticUnknownChoice:
 
     def choose(self, report: UnknownReport, frame_vocabulary: Iterable[str]) -> dict[str, Any]:
         """Return a typed decision, an adopted option if any, and provenance."""
-        return self._choose(report, frame_vocabulary, supersedes=None, force=False)
+        with self._lock:
+            return self._choose(report, frame_vocabulary, supersedes=None, force=False)
 
     __call__ = choose
 
     def supersede_alias(self, report: UnknownReport,
                         frame_vocabulary: Iterable[str]) -> dict[str, Any]:
         """Re-ask after an adopted alias was judged wrong, linking its replacement."""
-        frame_terms = _as_terms(frame_vocabulary)
-        options, _ = self._options(report, frame_terms)
-        if _get(report, "status") != "CANDIDATES" or not options:
-            return self._choose(report, frame_terms, supersedes=None, force=True)
-        old = self._aliases.pop(self._key(report, options), None)
-        return self._choose(report, frame_terms, supersedes=old, force=True)
+        with self._lock:
+            frame_terms = _as_terms(frame_vocabulary)
+            self._options(report, frame_terms)
+            word = _get(report, "term", "")
+            old = None
+            for record in reversed(tuple(self._aliases.values())):
+                if record.get("word") == word:
+                    old = record
+                    break
+            # A correction retires prior choices for this unknown, including
+            # choices made with an older candidate/frame inventory.
+            for key, record in tuple(self._aliases.items()):
+                if record.get("word") == word:
+                    self._aliases.pop(key, None)
+            return self._choose(report, frame_terms, supersedes=old, force=True)
 
     def _choose(self, report: UnknownReport, frame_vocabulary: Iterable[str], *,
                 supersedes: Optional[dict[str, Any]], force: bool) -> dict[str, Any]:
@@ -249,9 +281,8 @@ class SemanticUnknownChoice:
 
         # JSON strings keep untrusted line breaks and delimiters inside one
         # displayed list item. Source spans and candidate reasons are omitted.
-        shown = [json.dumps({"term": term, "from": origins[term]}, ensure_ascii=False,
-                            sort_keys=True) for term in options]
-        query = json.dumps(_get(report, "term", ""), ensure_ascii=False)
+        shown = [_prompt_json({"term": term, "from": origins[term]}) for term in options]
+        query = _prompt_json(_get(report, "term", ""))
         source = _asker_provenance(self.resolver.asker)
         result = self.resolver.resolve(
             query, shown,
@@ -259,7 +290,9 @@ class SemanticUnknownChoice:
         )
         shown_choice = result.get("choice")
         reverse = dict(zip(shown, options))
-        option = reverse.get(shown_choice) if result.get("status") == "ADOPT" else None
+        option = (reverse.get(shown_choice)
+                  if result.get("status") == "ADOPT" and isinstance(shown_choice, str)
+                  else None)
         decision: Decision
         if result.get("status") == "ADOPT" and option is not None:
             decision = "ADOPT"
@@ -290,6 +323,6 @@ class SemanticUnknownChoice:
 
 
 def choose_unknown(report: UnknownReport, frame_vocabulary: Iterable[str],
-                   asker: NonLLMAsker, *, seed: int = 7) -> dict[str, Any]:
+                   asker: ClosedChoiceAsker, *, seed: int = 7) -> dict[str, Any]:
     """One-shot convenience wrapper; use SemanticUnknownChoice to reuse aliases."""
     return SemanticUnknownChoice(asker, seed=seed).choose(report, frame_vocabulary)

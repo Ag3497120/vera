@@ -2,8 +2,6 @@ import json
 import re
 from types import SimpleNamespace
 
-import pytest
-
 from verantyx.semantic_unknown_choice import SemanticUnknownChoice
 
 
@@ -123,7 +121,8 @@ def test_identical_request_reuses_the_testimony_without_another_ask():
     second = chooser.choose(report, [])
 
     assert first["decision"] == second["decision"] == "ADOPT"
-    assert second["alias_record"] is first["alias_record"]
+    assert second["alias_record"] == first["alias_record"]
+    assert second["alias_record"] is not first["alias_record"]
     assert len(prompts) == 2
 
 
@@ -178,10 +177,6 @@ def test_changed_candidate_set_does_not_reuse_a_different_key():
     assert len(prompts) == 4
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason="DEFECT: unconstructed candidate terms remain selectable",
-)
 def test_unconstructed_candidate_term_is_not_adopted():
     observed = []
     for _ in range(2):
@@ -193,15 +188,11 @@ def test_unconstructed_candidate_term_is_not_adopted():
             [],
         )
         observed.append(result["decision"])
-        assert len(prompts) == 2
+        assert len(prompts) == 0
 
     assert observed == ["NONE", "NONE"]
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason="DEFECT: changed option set breaks correction linkage",
-)
 def test_supersede_links_prior_alias_after_option_set_changes():
     observed_links = []
     for _ in range(2):

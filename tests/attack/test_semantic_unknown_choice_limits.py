@@ -1,7 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
-from threading import Barrier, local
-
-import pytest
+from threading import Barrier
 
 from verantyx.semantic_unknown_choice import SemanticUnknownChoice
 
@@ -82,7 +80,8 @@ def test_repeated_adoption_reuses_the_record_without_more_asks():
     second = choice.choose(unknown, ["alpha"])
 
     assert first["decision"] == second["decision"] == "ADOPT"
-    assert second["alias_record"] is first["alias_record"]
+    assert second["alias_record"] == first["alias_record"]
+    assert second["alias_record"] is not first["alias_record"]
     assert len(asks) == 2
     assert len(choice.alias_history) == 1
 
@@ -97,7 +96,8 @@ def test_cached_alias_is_independent_of_frame_term_order():
 
     assert first["decision"] == second["decision"] == "ADOPT"
     assert second["option"] == first["option"]
-    assert second["alias_record"] is first["alias_record"]
+    assert second["alias_record"] == first["alias_record"]
+    assert second["alias_record"] is not first["alias_record"]
     assert len(asks) == 2
     assert len(choice.alias_history) == 1
 
@@ -151,25 +151,26 @@ def test_supersede_forces_two_new_asks_and_links_the_prior_record():
     assert len(choice.alias_history) == 2
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason="DEFECT: simultaneous identical calls bypass the alias cache and write duplicate testimony",
-)
 def test_concurrent_identical_reads_share_one_adopted_record():
-    first_ask_barrier = Barrier(2)
-    calls_per_thread = local()
+    starting = Barrier(2)
+    asks = []
 
-    def asker(_prompt):
-        calls_per_thread.count = getattr(calls_per_thread, "count", 0) + 1
-        if calls_per_thread.count == 1:
-            first_ask_barrier.wait(timeout=3)
+    def asker(prompt):
+        asks.append(prompt)
         return '{"choice": 0}'
 
     choice = SemanticUnknownChoice(asker)
     unknown = report()
+
+    def choose(_index):
+        starting.wait(timeout=3)
+        return choice.choose(unknown, ["alpha"])
+
     with ThreadPoolExecutor(max_workers=2) as pool:
-        results = list(pool.map(lambda _index: choice.choose(unknown, ["alpha"]), range(2)))
+        results = list(pool.map(choose, range(2)))
 
     assert [result["decision"] for result in results] == ["ADOPT", "ADOPT"]
     assert len(choice.alias_history) == 1
-    assert results[0]["alias_record"] is results[1]["alias_record"]
+    assert results[0]["alias_record"] == results[1]["alias_record"]
+    assert results[0]["alias_record"] is not results[1]["alias_record"]
+    assert len(asks) == 2

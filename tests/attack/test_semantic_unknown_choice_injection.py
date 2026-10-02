@@ -2,8 +2,6 @@ import json
 import re
 from types import SimpleNamespace
 
-import pytest
-
 from verantyx.semantic_unknown_choice import SemanticUnknownChoice
 
 
@@ -182,10 +180,6 @@ def test_reused_alias_does_not_repeat_the_asks():
     assert len(calls) == 2
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason="DEFECT: cached alias is returned before the current report status gate",
-)
 def test_cached_alias_cannot_bypass_a_later_non_candidate_status():
     report = _report(candidates=[_candidate(units=("alpha",))])
     chooser = SemanticUnknownChoice(_answer_with_term("alpha"))
@@ -199,10 +193,6 @@ def test_cached_alias_cannot_bypass_a_later_non_candidate_status():
     assert second["option"] is None
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason="DEFECT: bidirectional controls remain active in rendered choice text",
-)
 def test_bidirectional_control_is_inert_in_rendered_choice_text():
     calls = []
     report = _report(candidates=[_candidate(units=("safe\u202eoption",))])

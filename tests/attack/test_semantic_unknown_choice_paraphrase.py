@@ -2,8 +2,6 @@ import json
 import re
 from types import SimpleNamespace
 
-import pytest
-
 from verantyx.semantic_unknown_choice import SemanticUnknownChoice
 
 
@@ -108,7 +106,7 @@ def test_adoption_is_testimony_and_candidate_provenance_is_not_evidence():
     result = chooser.choose(_report("flarn"), [])
 
     assert result["alias_record"]["support"] == "testimony"
-    assert result["alias_record"]["by"] == "llm-closed-choice"
+    assert result["alias_record"]["by"] == "verantyx.semantic_unknown_choice"
     assert result["evidence"][0]["counts_as_evidence"] is False
 
 
@@ -160,10 +158,6 @@ def test_surface_paraphrase_is_asked_again_but_keeps_a_consistent_verdict():
     assert '語: 「"please map flarn"」' in prompts[2]
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason="DEFECT: a cached adoption bypasses the non-CANDIDATES status gate",
-)
 def test_changed_report_status_does_not_reuse_a_stale_adoption():
     prompts = []
     chooser = SemanticUnknownChoice(_selecting("widget", prompts), seed=7)
