@@ -11,6 +11,7 @@ import json
 import re
 import time
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Callable, Mapping, Sequence
 
 from .agent_adapter import AgentAdapter
@@ -185,8 +186,28 @@ def _valid_evidence_ref(value: str) -> bool:
     if value.startswith("sha256:"):
         return bool(_DIGEST_REF.fullmatch(value[7:]))
     if value.startswith("artifact:"):
-        return bool(value[9:].strip())
+        return bool(_FILE_REF.fullmatch(value[9:]))
     return bool(_FILE_REF.fullmatch(value))
+
+
+def _check_artifact_evidence(evidence_ref: str, artifact_root: str | Path | None) -> None:
+    if not evidence_ref.startswith("artifact:"):
+        return
+    relative = evidence_ref[9:]
+    relative = re.sub(r":[1-9][0-9]*(?:-[1-9][0-9]*)?$", "", relative)
+    try:
+        root = Path.cwd() if artifact_root is None else Path(artifact_root)
+        root = root.resolve(strict=True)
+        if not root.is_dir():
+            raise ValueError("artifact root is not a directory")
+        target = (root / relative).resolve(strict=True)
+        target.relative_to(root)
+        if not target.is_file():
+            raise ValueError("artifact is not a file")
+        with target.open("rb") as stream:
+            stream.read(1)
+    except (OSError, RuntimeError, TypeError, ValueError) as exc:
+        raise ValueError("UNVERIFIED: artifact reference is missing or not inspectable within the allowed root") from exc
 
 
 def parse_verdict(events: Any) -> Verdict:
@@ -228,6 +249,7 @@ def _run_one(
     max_polls: int,
     timeout_seconds: float,
     clock: Callable[[], float],
+    artifact_root: str | Path | None,
 ) -> Verdict:
     spec = _spec_from_ask(ask)
     _validate_identity(spec, claimant_id=claimant_id, verifier_id=agent.verifier_id,
@@ -248,7 +270,9 @@ def _run_one(
                     if "timed out" in message.casefold():
                         raise TimeoutError
                     raise ValueError("UNVERIFIED: verifier adapter returned an error")
-                return parse_verdict(events)
+                verdict = parse_verdict(events)
+                _check_artifact_evidence(verdict.evidence_ref, artifact_root)
+                return verdict
         raise TimeoutError
     finally:
         if handle is not None:
@@ -267,6 +291,7 @@ def run_verifiers(
     claimant_id: str,
     claimant_session_id: str | None = None,
     claimant_adapter: AgentAdapter | None = None,
+    artifact_root: str | Path | None = None,
     max_polls: int = _MAX_POLLS,
     timeout_seconds: float = _MAX_SECONDS,
     clock: Callable[[], float] = time.monotonic,
@@ -330,7 +355,8 @@ def run_verifiers(
         try:
             verdicts.append((agent, _run_one(task_id, ask, agent, claimant_id=claimant_id,
                                              claimant_session_id=claimant_session_id,
-                                             max_polls=max_polls, timeout_seconds=float(timeout_seconds), clock=clock)))
+                                             max_polls=max_polls, timeout_seconds=float(timeout_seconds), clock=clock,
+                                             artifact_root=artifact_root)))
         except TimeoutError:
             return _escalate("UNVERIFIED: independent verifier timed out", missing="independent verifier verdict",
                              record_ids=record_ids)

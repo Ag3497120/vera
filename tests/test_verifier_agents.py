@@ -177,6 +177,26 @@ def test_unanimous_fail_is_recorded_and_escalated(tmp_path):
     assert verification["slots"]["result"] == "FAIL"
 
 
+@pytest.mark.parametrize("evidence_ref", ["artifact:../outside.json", "artifact:missing.json"])
+def test_unsafe_or_missing_artifact_cannot_complete_task(tmp_path, evidence_ref):
+    frame, ask, _ = _fixture(tmp_path)
+
+    reply = _run(frame, ask, [_agent([_verdict(evidence_ref=evidence_ref)])], artifact_root=tmp_path)
+
+    assert reply.kind == "ESCALATE"
+    assert "UNVERIFIED" in reply.reason
+    assert not any(record["kind"] == "VERIFICATION" for record in frame._active())
+
+
+def test_artifact_evidence_must_be_readable_under_allowed_root(tmp_path):
+    frame, ask, _ = _fixture(tmp_path)
+    (tmp_path / "checked.json").write_text("{}", encoding="utf-8")
+
+    reply = _run(frame, ask, [_agent([_verdict(evidence_ref="artifact:checked.json")])], artifact_root=tmp_path)
+
+    assert reply.kind == "ANSWER" and reply.answer == "done"
+
+
 def test_empty_adapter_polls_time_out_and_stop_handle(tmp_path):
     frame, ask, _ = _fixture(tmp_path)
     agent = _agent([])
@@ -269,6 +289,7 @@ def test_parse_accepts_recheckable_evidence_reference(ref):
     {"type": "VERDICT", "result": "PASS", "evidence_ref": ["source.py:1"]},
     {"type": "VERDICT", "result": "PASS", "evidence_ref": "no evidence"},
     {"type": "VERDICT", "result": "PASS", "evidence_ref": "../private.txt:1"},
+    {"type": "VERDICT", "result": "PASS", "evidence_ref": "artifact:../../private-result.json"},
     {"type": "VERDICT", "result": "PASS", "evidence_ref": ""},
     {"type": "VERDICT", "result": "PASS", "evidence_ref": GOOD_EVIDENCE, "extra": True},
 ])
