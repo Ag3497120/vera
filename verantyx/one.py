@@ -888,6 +888,60 @@ class Vera:
                                 text, trace, "library")
         return self.chat(text, query=reading, _trace=trace)
 
+    def say(self, question_text: str, style: str = 'plain') -> dict:
+        """Return a provenance-bearing, reader-verified semantic surface."""
+        from . import semantic_realize
+
+        asked = self.ask(question_text)
+        view = None
+        if self.bot is not None and self.mode == 'semantic':
+            if (self._semantic_view is None or
+                    self._semantic_generation != getattr(self.bot, '_semantic_generation', 0)):
+                self._make_semantic_view()
+            view = self._semantic_view
+
+        entity = semantic_realize.summary_entity_from_request(question_text)
+        if entity is not None:
+            spoken = semantic_realize.summarize_entity(view, entity, limit=8, style=style)
+            if isinstance(spoken, semantic_realize.Refused):
+                if spoken.text is None and spoken.spans and spoken.clause_ids:
+                    spoken = semantic_realize.refusal_sentence(
+                        spoken.reason, spoken.detail, spoken.clause_ids, spoken.spans,
+                    )
+                verdict = spoken.reason
+            else:
+                verdict = 'ANSWER'
+        elif asked.get('verdict') == 'ANSWER':
+            spoken = semantic_realize.realize_answer(view, asked, style=style)
+            if isinstance(spoken, semantic_realize.Refused):
+                if spoken.text is None and spoken.spans and spoken.clause_ids:
+                    spoken = semantic_realize.refusal_sentence(
+                        spoken.reason, spoken.detail, spoken.clause_ids, spoken.spans,
+                    )
+                verdict = spoken.reason
+            else:
+                verdict = 'ANSWER'
+        else:
+            spoken = semantic_realize.realize_refusal(asked, view)
+            verdict = asked.get('verdict', 'UNKNOWN')
+
+        if isinstance(spoken, semantic_realize.Realized):
+            output_text = spoken.text
+            provenance = [spoken.as_dict()]
+            refusals = []
+        elif isinstance(spoken, semantic_realize.RealizedGroup):
+            output_text = spoken.text
+            provenance = spoken.provenance
+            refusals = []
+        else:
+            output_text = spoken.text
+            provenance = [spoken.as_dict()] if spoken.text and spoken.spans and spoken.clause_ids else []
+            refusals = [spoken.as_dict()]
+        return {
+            'verdict': verdict, 'text': output_text, 'generated': True,
+            'provenance': provenance, 'refusals': refusals, 'ask': asked,
+        }
+
     def _round3_answer(self, text: str, reading: question.Query,
                        trace: list[dict]) -> dict | None:
         from .paths import corpus_root
