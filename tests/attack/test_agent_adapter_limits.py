@@ -247,7 +247,6 @@ def test_two_concurrent_handles_keep_their_streams_separate() -> None:
     ]
 
 
-@pytest.mark.xfail(strict=False, reason="DEFECT: non-finite floats serialize as non-standard JSON tokens")
 def test_brief_numeric_values_remain_strict_json() -> None:
     frame = Frame([{"id": "r1", "kind": "note", "slots": {"score": float("nan")}}])
     brief = compile_frame_brief(frame)
@@ -255,12 +254,11 @@ def test_brief_numeric_values_remain_strict_json() -> None:
     def reject_constant(value: str) -> None:
         raise ValueError(f"non-standard JSON constant: {value}")
 
-    json.loads(brief.split("RECORDS_JSON:\n", 1)[1], parse_constant=reject_constant)
+    records = json.loads(brief.split("RECORDS_JSON:\n", 1)[1], parse_constant=reject_constant)
+    assert records[0]["slots"]["score"] == "[OMITTED]"
 
 
-@pytest.mark.xfail(strict=False, reason="DEFECT: a brief-sized integer hits the JSON encoder digit guard")
-def test_brief_safely_serializes_integers_within_the_brief_size_budget() -> None:
+def test_brief_rejects_an_integer_over_the_record_value_budget() -> None:
     frame = Frame([{"id": "r1", "kind": "note", "slots": {"count": 10**5000}}])
-    brief = compile_frame_brief(frame)
-    assert len(brief) <= MAX_BRIEF_CHARS
-    assert _brief_records(brief)[0]["slots"]["count"] == 10**5000
+    with pytest.raises(ValueError, match="numeric value exceeded"):
+        compile_frame_brief(frame)

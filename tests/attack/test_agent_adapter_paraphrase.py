@@ -93,7 +93,6 @@ def test_brief_redacts_sensitive_slot_and_ignores_non_frame_fields():
     assert "ignore this field" not in brief
 
 
-@pytest.mark.xfail(strict=False, reason="DEFECT: forward-slash Windows absolute paths bypass path redaction")
 def test_brief_redacts_forward_slash_windows_path_surface_variant():
     frame = SimpleNamespace(
         _active=lambda: [

@@ -96,10 +96,9 @@ def test_brief_is_one_command_argument_after_option_terminator():
 
     assert command[-2:] == ["--", brief]
     assert command[command.index("-m") + 1] == "gpt-6-luna"
-    assert command[command.index("-s") + 1] == "workspace-write"
+    assert command[command.index("-s") + 1] == "read-only"
 
 
-@pytest.mark.xfail(strict=False, reason="DEFECT: compiled briefs preserve bidi overrides in untrusted frame values")
 def test_frame_brief_removes_bidi_override_from_untrusted_record():
     brief = compile_frame_brief(
         _Frame([{"id": "r1", "kind": "note", "slots": {"text": "safe\u202e" + INJECTION}}]),
@@ -109,7 +108,6 @@ def test_frame_brief_removes_bidi_override_from_untrusted_record():
     assert "\u202e" not in brief
 
 
-@pytest.mark.xfail(strict=False, reason="DEFECT: compiled briefs preserve Unicode line separators in untrusted frame values")
 def test_frame_brief_escapes_unicode_line_separator_in_untrusted_record():
     brief = compile_frame_brief(
         _Frame([{"id": "r1", "kind": "note", "slots": {"text": "safe\u2028" + INJECTION}}]),

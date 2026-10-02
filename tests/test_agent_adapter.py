@@ -100,17 +100,23 @@ def test_command_rejects_unbounded_brief():
         CodexExecAdapter().build_command("x" * 40000)
 
 
-def test_codex_tooling_builder_has_no_live_agent_lifecycle():
+def test_codex_adapter_drives_a_configured_read_only_runner():
     adapter = CodexExecAdapter()
-    runner = ScriptRunner()
     assert "exec" in adapter.build_command("brief")
-    assert not any(hasattr(adapter, method) for method in ("start", "poll", "send", "stop"))
-    with pytest.raises(TypeError):
-        CodexExecAdapter(runner)
-    with pytest.raises(TypeError):
-        CodexExecAdapter(runner=runner)
+    with pytest.raises(RuntimeError, match="runner is required"):
+        adapter.start("brief")
     assert parse_agent_output('{"type":"DONE"}') == [{"type": "DONE"}]
-    assert runner.started == []
+
+    runner = ScriptRunner(['{"type":"DONE"}\n'])
+    adapter = CodexExecAdapter(runner)
+    handle = adapter.start("brief")
+    assert adapter.poll(handle) == [{"type": "DONE"}]
+    adapter.send(handle, "continue")
+    adapter.stop(handle)
+    assert runner.commands[0][runner.commands[0].index("-s") + 1] == "read-only"
+    assert runner.messages == [(handle.runner_handle, "continue")]
+    assert runner.stopped == [handle.runner_handle]
+    assert runner.started == [handle.runner_handle]
 
 
 def test_rejects_model_override():

@@ -197,7 +197,7 @@ def test_codex_command_keeps_brief_as_single_post_separator_argument(tmp_path):
         "-c",
         'service_tier="standard"',
         "-s",
-        "workspace-write",
+        "read-only",
         "-C",
         str(tmp_path.resolve()),
         "--",
