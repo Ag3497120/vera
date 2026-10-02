@@ -1,0 +1,10 @@
+new_failures.txt has one entry: tests.bank_score.test_bs_end_to_end::test_s6_two_runs_agree_except_timing_and_recount_matches
+
+Cause: that test asserts meta["verantyx_untouched"] is True, which tools/bank_score/cli.py computes as
+`git status --porcelain -- verantyx` being empty, i.e. "no uncommitted change under verantyx/". W2-a edits verantyx/*.py
+and the tree is not committed (the task forbids committing), so the assertion is False for as long as the work is uncommitted.
+
+Check that it is not a behavioural regression: a scratch clone of this tree with the W2-a files copied in and committed
+(git status empty), then
+  env -i HOME=$HOME PATH=/usr/bin:/bin PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<clone> python -m pytest -q -p no:cacheprovider tests/bank_score/test_bs_end_to_end.py
+gave "9 passed in 5.78s". The same file at the base state (before1_failures.txt) did not fail because the tree was clean.

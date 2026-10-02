@@ -36,7 +36,8 @@ from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
 from . import conductor, memory_frame
-from .agent_adapter import validate_effort, validate_model
+from .agent_adapter import (validate_allowed_tools, validate_effort, validate_model,
+                            validate_permission_mode)
 from .memory_frame import Memory, WriteRejected
 
 
@@ -70,8 +71,14 @@ AGENT_SETTING_KEYS = (
     "claude_model",
     "claude_effort",
     "max_concurrency",
+    "agent_timeout_seconds",
+    "acceptance_timeout_seconds",
+    "claude_permission_mode",
+    "claude_allowed_tools",
 )
 _MAX_CONCURRENCY = re.compile(r"^[1-9][0-9]{0,5}$")
+_TIMEOUT_SECONDS = re.compile(r"^[1-9][0-9]{0,4}$")
+MAX_TIMEOUT_SECONDS = 86400
 _GLOB_CHARS = frozenset("*?[]")
 _ID = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
 _HEADER = re.compile(r"^\[([a-z_]+)\]$")
@@ -433,7 +440,15 @@ def validate_agent_setting(key: str, value: str) -> Optional[str]:
     if key not in AGENT_SETTING_KEYS:
         return f"unknown agent setting {key!r}; use one of {', '.join(AGENT_SETTING_KEYS)}"
     try:
-        if key.endswith("_model"):
+        if key in ("agent_timeout_seconds", "acceptance_timeout_seconds"):
+            if (not isinstance(value, str) or not _TIMEOUT_SECONDS.fullmatch(value) or
+                    int(value) > MAX_TIMEOUT_SECONDS):
+                return f"{key} must be a whole number of seconds written in digits, 1 to {MAX_TIMEOUT_SECONDS}"
+        elif key == "claude_permission_mode":
+            validate_permission_mode(value)
+        elif key == "claude_allowed_tools":
+            validate_allowed_tools(value)
+        elif key.endswith("_model"):
             validate_model(value)
         elif key.endswith("_effort"):
             validate_effort(value)

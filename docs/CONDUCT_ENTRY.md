@@ -76,7 +76,7 @@ glob 文字 `* ? [ ]`、絶対パス、`..`、`.`、空の要素、末尾の `/`
 ### 機械的な受入条件
 新しい書式は作らず、既存の `[completion_criteria]` の JSON 証人を使う:
 `C6: 文 | {"kind":"command_exit","command":["python","-m","verantyx.cli","doctor"],"expected_exit":0}`
-(`file_sha256` / `text_in_file` / `git_commit` も機械的)。**この入口(CLI)は command_runner を渡さないので、`command_exit` は
+(`file_sha256` / `text_in_file` / `git_commit` も機械的)。**(W2-a で更新: codex / claude を dry-run なしで走らせたときは、指揮者がエージェントの終了後に `command_exit` を自分で実行する。docs/CONDUCT_RUN.md。以下は fake と Python の呼び出しの話)** **この入口(CLI)は command_runner を渡さないので、`command_exit` は
 コンパイルと台帳への記録までで、実行はしない**(未実行のまま `RUN_INCOMPLETE` の理由になる)。実行は Python から
 `conduct_entry(..., command_runner=...)` を渡したときだけ。
 
@@ -103,6 +103,9 @@ brief の INVARIANT だけである。
 
 ### `[agent_settings]` — エージェントの設定
 `key: value`。key は `codex_model` `codex_effort` `claude_model` `claude_effort` `max_concurrency` のみ(未知の key と重複はエラー)。
+W2-a で次の4つを追記した(既存の key の意味は変えない): `agent_timeout_seconds` `acceptance_timeout_seconds`(桁で書いた 1〜86400 の整数)、
+`claude_permission_mode`(`acceptEdits` `default` `plan` `dontAsk` のみ。`bypassPermissions` と `auto` は拒否)、
+`claude_allowed_tools`(`,` 区切りの 1〜32 個の素の道具名。括弧つきの規則は不可)。詳細と既定値は docs/CONDUCT_RUN.md。
 - model は `[A-Za-z0-9][A-Za-z0-9._:-]{0,127}`、effort は `[a-z]{1,16}`、max_concurrency は桁で書いた正の整数。
   model と effort は引数配列の要素であり、effort は `codex -c` の TOML 文字列の中に入るので、エスケープではなくこの閉じた形で守る。
 - **優先順位は 引数(`--model` `--effort` `--max-concurrency`)> 枠**。どちらにも無ければ `AGENT_SETTING_MISSING`
@@ -156,17 +159,17 @@ runner を注入して使う読み取り専用の形として残る。`AgentRunt
 
 ## 既知の制限(隠さない)
 
-- **実起動はすぐ止まる(実測)**: 現在の `ConductorRun.run()` は `poll()` が最初に空を返した時点でループを抜け、エージェントを `stop()` する。
+- **実起動はすぐ止まる(実測)**: (W2-a で codex / claude の実行については解消: docs/CONDUCT_RUN.md。fake と Python の run_project は従来どおり) 現在の `ConductorRun.run()` は `poll()` が最初に空を返した時点でループを抜け、エージェントを `stop()` する。
   また実行全体の上限は `MAX_RUN_SECONDS = 30`。2秒眠ってから DONE を出す偽の実行ファイルを `--adapter codex` で(dry-run なしに)実行すると、
   プロセスの起動には届くが 0.58 秒で `SESSION_CANCELLED` になった。runtime の記録は
   `SESSION_CREATED, WORKTREE_CREATED, PROCESS_STARTED, SESSION_CANCELLED, ADAPTER_STOPPED`
   (`artifacts/w1-d/real_launch_limit.txt`)。この入口の範囲(起動に到達するところまで)では直さず、別の仕事に回す。
-- **Claude の書き込み権限**: `claude -p` に権限の指定(`--permission-mode` など)を付けていない。実起動を禁じた環境で確かめられないため。
+- **Claude の書き込み権限**: (W2-a で更新: 枠の `claude_permission_mode` / `claude_allowed_tools` か引数 `--permission-mode` / `--allowed-tools` で、指定したときだけ `--permission-mode` と `--allowedTools` を足す。既定値は無く、指定しなければ以下のとおり。docs/CONDUCT_RUN.md) `claude -p` に権限の指定(`--permission-mode` など)を付けていない。実起動を禁じた環境で確かめられないため。
   非対話の claude が作業ツリーに書き込めるかは、利用者の設定に依存する。許可パスの検査は終了後に行う。
 - **stderr は stdout に合流する**: supervisor は子の stderr を stdout にまとめるので、JSON でない出力は `OTHER` イベントになり、
   指揮者へ質問として渡る(`ConductorRun` が `OTHER` を質問として扱う)。進捗表示の多い codex では `OTHER` が多く出うる。
 - **`[conflict_precedence]` と `[forbidden_actions]` は実行時に強制されない**: 宣言は記録と `action_authority` に残るだけで、指揮者は参照しない(衝突時の棄権・エスカレート、禁止操作の実行時拒否は未実装)。
-- **`command_exit` の受入条件は CLI では実行されない**(上記)。人間判定の条件が残る枠は `RUN_INCOMPLETE` で終わる。
+- **`command_exit` の受入条件は CLI では実行されない**(上記)。(W2-a で codex / claude の実行については解消: docs/CONDUCT_RUN.md。fake と Python の run_project は従来どおり) 人間判定の条件が残る枠は `RUN_INCOMPLETE` で終わる。
 - **brief の秘匿処理**: `compile_frame_brief` は `secret` `token` などの語を含む値を `[REDACTED]` にする。そういう語を含む
   forbidden action や許可パスは、brief 上では伏せ字になる(許可パスだけはプロンプトの `Write allowlist` の行に別に載る)。
 - 行末が `]` の行は、既存の行読み取りが「セクション見出し」と見なすので、`dir/[ab]` のような glob も、許可パスの誤りではなく

@@ -1,0 +1,21 @@
+commit 6ff3434d23fe1019e5af1081bc1b1fa08195c520
+Author: Vera conductor <conductor@verantyx.invalid>
+Date:   Sat Oct 3 01:15:25 2026 +0900
+
+    conduct: Greeter (run ace3c0799b464717adc5aa19d181b1c2)
+    
+    acceptance: a96e0125acdc, 97a656cec0d1
+---
+ greet.py | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/greet.py b/greet.py
+new file mode 100644
+index 0000000..57eb707
+--- /dev/null
++++ b/greet.py
+@@ -0,0 +1,4 @@
++import sys
++
++name = sys.argv[1] if len(sys.argv) > 1 else ""
++print(f"Hello, {name}!")
