@@ -83,6 +83,18 @@ def test_random_supersession_graph_survives_three_way_merge(seed):
         for new in range(old + 1, count):
             if rng.random() < 0.035:
                 logs[rng.randrange(3)].append(link(f'{seed}-{old}', f'{seed}-{new}'))
+                replacement_id = f'{seed}-{new}'
+                replacement = next(
+                    event for log in logs for event in log
+                    if event.get('op') == 'write' and event['record']['id'] == replacement_id
+                )
+                supersedes = replacement['record']['supersedes']
+                if supersedes is None:
+                    replacement['record']['supersedes'] = [f'{seed}-{old}']
+                elif isinstance(supersedes, list):
+                    supersedes.append(f'{seed}-{old}')
+                else:
+                    replacement['record']['supersedes'] = [supersedes, f'{seed}-{old}']
 
     ab_c = merge_logs(merge_logs(logs[0], logs[1]), logs[2])
     a_bc = merge_logs(logs[0], merge_logs(logs[1], logs[2]))
@@ -137,10 +149,20 @@ def test_different_subject_or_attribute_does_not_conflict():
 
 
 def test_supersession_link_can_cross_input_logs():
-    old, new = fact('old', value='old value'), fact('new', value='new value')
+    old = fact('old', value='old value')
+    new = fact('new', value='new value', supersedes='old')
     merged = merge_logs([old, link('old', 'new')], [new])
     assert [record['id'] for record in active_records(merged)] == ['new']
     assert conflicts(merged) == []
+
+
+def test_supersede_event_without_matching_record_pointer_does_not_retire_old():
+    old, new = fact('old', value='old value'), fact('new', value='new value')
+    merged = merge_logs([old, link('old', 'new')], [new])
+    assert [record['id'] for record in active_records(merged)] == ['new', 'old']
+    report, = conflicts(merged)
+    assert report.record_ids == ('new', 'old')
+    assert report.values == ('new value', 'old value')
 
 
 def test_record_pointer_restores_missing_supersede_event():
@@ -154,14 +176,14 @@ def test_record_pointer_restores_missing_supersede_event():
 def test_chained_supersession_across_logs_keeps_only_leaf_active():
     events = merge_logs(
         [fact('a', value='a'), link('a', 'b')],
-        [fact('b', value='b'), fact('c', value='c'), link('b', 'c')],
+        [fact('b', value='b', supersedes='a'), fact('c', value='c', supersedes='b'), link('b', 'c')],
     )
     assert [record['id'] for record in active_records(events)] == ['c']
 
 
 def test_two_conflicts_resolve_with_one_new_record_superseding_both():
     left = [fact('red', value='red'), fact('blue', value='blue')]
-    right = [fact('resolved', value='green', supersedes='red'), link('blue', 'resolved')]
+    right = [fact('resolved', value='green', supersedes=['red', 'blue']), link('blue', 'resolved')]
     merged = merge_logs(left, right)
     assert [record['id'] for record in active_records(merged)] == ['resolved']
     assert conflicts(merged) == []
@@ -178,7 +200,8 @@ def test_conflict_remains_when_only_one_disagreement_is_superseded():
 def test_competing_superseding_branches_remain_active_and_conflict():
     merged = merge_logs(
         [fact('base', value='base'), link('base', 'left')],
-        [fact('left', value='left'), fact('right', value='right'), link('base', 'right')],
+        [fact('left', value='left', supersedes='base'), fact('right', value='right', supersedes='base'),
+         link('base', 'right')],
     )
     assert [record['id'] for record in active_records(merged)] == ['left', 'right']
     assert conflicts(merged)[0].record_ids == ('left', 'right')

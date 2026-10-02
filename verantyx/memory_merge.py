@@ -3,8 +3,9 @@
 Logs contain ``write`` records and ``supersede`` links as emitted by
 ``memory_frame.Memory``.  A merge is a canonical, duplicate-free union; it
 never chooses between active values.  Supersession references may be pending
-while partial logs are being combined, but active-state inspection requires
-all referenced records to be present.
+while partial logs are being combined. A supersede event is operative only
+when its replacement record carries the matching ``supersedes`` pointer;
+active-state inspection requires all operative references to be present.
 """
 from __future__ import annotations
 
@@ -49,6 +50,7 @@ def _state(events: Iterable[Mapping[str, Any]]):
     records: dict[str, dict] = {}
     aliases: set[str] = set()
     links: set[tuple[str, str]] = set()
+    declared_links: set[tuple[str, str]] = set()
     other: set[str] = set()
 
     for raw in events:
@@ -72,11 +74,22 @@ def _state(events: Iterable[Mapping[str, Any]]):
             old, new = event.get('id'), event.get('by')
             if not isinstance(old, str) or not old or not isinstance(new, str) or not new:
                 raise ValueError('supersede events must name non-empty id and by values')
-            links.add((old, new))
+            declared_links.add((old, new))
         elif op == 'alias':
             aliases.add(_dump(event))
         else:
             other.add(_dump(event))
+
+    # The replacement record is the authority for a supersession. A link can
+    # arrive before that record in a partial log, so retain it as pending;
+    # once the record is present, a mismatching or absent pointer makes the
+    # event non-operative. Record pointers themselves also restore missing
+    # supersede events below.
+    for old, new in declared_links:
+        if new not in records:
+            links.add((old, new))
+        elif old in _superseded_ids(records[new].get('supersedes')):
+            links.add((old, new))
 
     # Include supersede operations inferred from record pointers.  Retain
     # original event payloads (including timestamps) when supplied.
@@ -136,8 +149,10 @@ def merge_logs(left: Any, right: Any) -> list[dict]:
 
     Inputs may be event iterables or paths to JSONL logs. Exact duplicate
     writes and events are removed. A repeated id with different record data,
-    or a supersession cycle, is rejected. Links to records in a third partial
-    log are retained so that staged three-way merges remain associative.
+    or a supersession cycle, is rejected. Supersede events without their
+    replacement record remain pending so staged three-way merges stay
+    associative; a present replacement record must point back to the event's
+    target for that relation to retire a record.
     """
     _, _, merged = _state(_read_events(left) + _read_events(right))
     return merged
