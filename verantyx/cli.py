@@ -1281,6 +1281,10 @@ def cmd_conduct(args) -> int:
     codex / claude を dry-run なしで走らせたときは、エージェントの終了まで待ち、枠の
     command_exit 型の受入条件を指揮者が自分で実行し、結果の型を JSON の "outcome" に
     入れる(COMPLETE / ACCEPTANCE_FAILED / TIMED_OUT など。docs/CONDUCT_RUN.md)。
+    既定は検証を要求する: 受入条件が通ったあと、読み取り専用の検証エージェントを指揮者が立て、
+    その指摘を指揮者が再実行して確かめる(枠の verifier_* 設定 または --verifier-*)。設定が無ければ
+    VERIFIER_NOT_CONFIGURED で止まり、--verifier-adapter none のときだけ省く。結果の型は
+    VERIFICATION_FAILED / VERIFIER_FAILED など(docs/CONDUCT_VERIFY.md)。
     """
     from .conductor_run import conduct_entry
 
@@ -1290,7 +1294,10 @@ def cmd_conduct(args) -> int:
         codex_bin=args.codex_bin, claude_bin=args.claude_bin,
         agent_timeout_seconds=args.agent_timeout_seconds,
         acceptance_timeout_seconds=args.acceptance_timeout_seconds,
-        permission_mode=args.permission_mode, allowed_tools=args.allowed_tools)
+        permission_mode=args.permission_mode, allowed_tools=args.allowed_tools,
+        verifier_adapter=args.verifier_adapter, verifier_model=args.verifier_model,
+        verifier_effort=args.verifier_effort, verifier_timeout_seconds=args.verifier_timeout_seconds,
+        verification_retries=args.verification_retries, require_verification=True)
     print(json.dumps(outcome.as_dict(), ensure_ascii=False, sort_keys=True))
     return outcome.exit_code
 
@@ -1609,6 +1616,19 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--allowed-tools", default=None,
                    help="claude only: comma-separated tool names for --allowedTools, e.g. Edit,Write "
                         "(overrides the frame's claude_allowed_tools)")
+    p.add_argument("--verifier-adapter", default=None, choices=["codex", "claude", "none"],
+                   help="verification is required by default: after the acceptance commands pass, a read-only verifier "
+                        "agent of this kind is started and the conductor re-runs its claims (overrides the frame's "
+                        "verifier_adapter). With no verifier configured the run stops as VERIFIER_NOT_CONFIGURED; "
+                        "use '--verifier-adapter none' to skip verification on purpose (it is recorded)")
+    p.add_argument("--verifier-model", default=None, help="verifier model name (overrides the frame's verifier_model)")
+    p.add_argument("--verifier-effort", default=None, help="verifier reasoning effort (overrides the frame's verifier_effort)")
+    p.add_argument("--verifier-timeout-seconds", type=int, default=None,
+                   help="upper bound on the verifier's run time in seconds (overrides verifier_timeout_seconds; "
+                        "default 900 when a verifier is configured)")
+    p.add_argument("--verification-retries", type=int, default=None,
+                   help="how many times a confirmed finding sends the implementer back to redo the work, 0 to 5 "
+                        "(overrides verification_retries; default 2 when a verifier is configured)")
     p.set_defaults(fn=cmd_conduct)
 
     p = sub.add_parser(

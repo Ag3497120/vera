@@ -1,0 +1,12 @@
+base1: 124 failed, 4222 passed, 44 skipped, 82 xfailed, 68 xpassed, 37 subtests passed in 100.50s (0:01:40)
+cand1: 121 failed, 4326 passed, 44 skipped, 79 xfailed, 71 xpassed, 37 subtests passed in 113.80s (0:01:53)
+cand2: 121 failed, 4326 passed, 44 skipped, 79 xfailed, 71 xpassed, 37 subtests passed in 117.49s (0:01:57)
+base2: 124 failed, 4222 passed, 44 skipped, 82 xfailed, 68 xpassed, 37 subtests passed in 99.49s (0:01:39)
+
+pair 1 (base1 -> cand1): 100.50s -> 113.80s = +13.30s
+pair 2 (cand2 -> base2): 117.49s vs 99.49s = +18.00s
+
+base1: pool (first test that needs it)  10.09s | my 0 test items  0.00s | all other items   84.94s
+cand1: pool (first test that needs it)  19.98s | my 101 test items  6.59s | all other items   81.46s
+cand2: pool (first test that needs it)  22.17s | my 101 test items  6.46s | all other items   82.40s
+base2: pool (first test that needs it)   9.29s | my 0 test items  0.00s | all other items   84.59s

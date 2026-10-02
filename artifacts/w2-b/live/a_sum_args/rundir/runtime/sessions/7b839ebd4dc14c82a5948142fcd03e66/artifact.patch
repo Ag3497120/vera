@@ -1,0 +1,15 @@
+diff --git a/sum_args.py b/sum_args.py
+new file mode 100644
+index 0000000..f0e8a53
+--- /dev/null
++++ b/sum_args.py
+@@ -0,0 +1,9 @@
++import sys
++
++
++def main():
++    print(sum(map(int, sys.argv[1:])))
++
++
++if __name__ == "__main__":
++    main()

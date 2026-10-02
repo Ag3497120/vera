@@ -242,6 +242,7 @@ out_fd = os.open(config["output"], os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
 total = 0
 limit = config["output_limit"]
 overflow = False
+drained_once = False
 try:
     while True:
         if time.time() >= config["deadline_wall"]:
@@ -272,7 +273,12 @@ try:
                     pass
                 sys.exit(75)
         elif child.poll() is not None:
-            break
+            # The child may have written its last bytes between the select above and this poll (a loaded
+            # machine makes that window real).  Look once more before giving up on the pipe; a grandchild
+            # that keeps the pipe open and silent still ends the loop on the next pass.
+            if drained_once:
+                break
+            drained_once = True
     code = child.wait()
 finally:
     try:
@@ -364,11 +370,28 @@ class AgentRuntime:
         keep_worktree_on_accept: bool = False,
         claude_permission_mode: str | None = None,
         claude_allowed_tools: Any = None,
+        read_only: bool = False,
     ):
         self.repo = _git_root(repo)
-        self.allowed_paths = normalize_allowlist(allowed_paths)
+        if not isinstance(read_only, bool):
+            raise ValueError("read_only must be a bool")
         if backend not in _BACKENDS:
             raise ValueError("backend must be codex, command, codex-exec or claude-print")
+        self.read_only = read_only
+        if read_only:
+            # A verifier session (W2-b): it may read the worktree and change nothing.  The empty
+            # allowlist is what makes any change a "write allowlist violation" when it ends.
+            if backend not in _STDIN_FILE_BACKENDS:
+                raise ValueError("read_only applies only to the codex-exec and claude-print backends")
+            if claude_permission_mode is not None or claude_allowed_tools is not None:
+                raise ValueError("read_only sets the claude permission options itself; do not pass them")
+            if keep_worktree_on_accept:
+                raise ValueError("a read_only session's worktree is always discarded")
+            if allowed_paths is not None and len(tuple(allowed_paths)) != 0:
+                raise ValueError("a read_only session has no write allowlist")
+            self.allowed_paths: tuple[str, ...] = ()
+        else:
+            self.allowed_paths = normalize_allowlist(allowed_paths)
         self.backend = backend
         if backend in _STDIN_FILE_BACKENDS:
             self.model = validate_model(model)
@@ -480,8 +503,16 @@ class AgentRuntime:
         "Do not include prose outside those events."
     )
 
+    _VERIFIER_TEXT = (
+        "\n\nYou are a read-only verifier.  Creating, changing or deleting any file in the current "
+        "directory makes the verification fail and the directory is thrown away.  Reply with the verdict "
+        "line exactly as the brief describes, and nothing that looks like another verdict line."
+    )
+
     def _build_prompt(self, brief: str) -> str:
         """The text the agent receives; real launches and dry runs both come through here."""
+        if self.read_only:
+            return brief + self._VERIFIER_TEXT
         prompt = brief + self._PROTOCOL_TEXT
         if self.backend in _STDIN_FILE_BACKENDS:
             prompt += ("\nWrite allowlist (enforced after exit): " + ", ".join(self.allowed_paths) +
@@ -500,7 +531,14 @@ class AgentRuntime:
         if self.backend == "codex-exec":
             return codex_exec_launch(executable=self.executable, model=self.model, effort=self.effort,
                                      workdir=worktree, prompt_path=prompt_path,
-                                     last_message_path=session_dir / "last_message.txt")
+                                     last_message_path=session_dir / "last_message.txt",
+                                     sandbox="read-only" if self.read_only else "workspace-write")
+        if self.read_only:
+            return claude_print_launch(
+                executable=self.executable, model=self.model, effort=self.effort, workdir=worktree,
+                prompt_path=prompt_path, permission_mode=agent_adapter.VERIFIER_CLAUDE_PERMISSION_MODE,
+                allowed_tools=agent_adapter.VERIFIER_CLAUDE_ALLOWED_TOOLS,
+                disallowed_tools=agent_adapter.VERIFIER_CLAUDE_DISALLOWED_TOOLS)
         return claude_print_launch(executable=self.executable, model=self.model, effort=self.effort,
                                    workdir=worktree, prompt_path=prompt_path,
                                    permission_mode=self.claude_permission_mode,
@@ -818,6 +856,11 @@ class AgentRuntime:
 
     def _finalize_process(self, handle: RuntimeHandle) -> None:
         if handle.finalized:
+            return
+        # The caller read the output and only then saw the process gone; whatever the supervisor wrote
+        # in between would be dropped here.  Read once more now that the process is known to be done.
+        self._read_output(handle)
+        if handle.finalized:  # _read_output may have failed the session (output limit)
             return
         self._finish_output(handle)
         status = self._status(handle)

@@ -1,0 +1,19 @@
+..F..................................................................... [ 73%]
+..........................                                               [100%]
+=================================== FAILURES ===================================
+_ test_b2_always_hardcoded_with_the_default_two_retries_ends_as_verification_failed _
+
+runs = <test_conduct_run_support.Pool object at 0x11a89fd10>
+
+    def test_b2_always_hardcoded_with_the_default_two_retries_ends_as_verification_failed(runs):
+        run = runs["B2b_always_hardcoded_default_retries"]
+>       assert run.out["outcome"] == "VERIFICATION_FAILED" and run.out["verdict"] == "RUN_INCOMPLETE"
+E       AssertionError: assert ('VERIFIER_OUTPUT_INVALID' == 'VERIFICATION_FAILED'
+E         
+E         - VERIFICATION_FAILED
+E         + VERIFIER_OUTPUT_INVALID)
+
+tests/test_conduct_verify.py:176: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_conduct_verify.py::test_b2_always_hardcoded_with_the_default_two_retries_ends_as_verification_failed
+1 failed, 97 passed in 38.60s

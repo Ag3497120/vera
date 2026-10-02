@@ -37,3 +37,5 @@ W1: greet.py
 codex_model: gpt-6-luna
 codex_effort: low
 agent_timeout_seconds: 600
+# W2-b: the CLI requires a verifier by default; this W2-a toy frame opts out explicitly (recorded as VERIFICATION_SKIPPED).
+verifier_adapter: none

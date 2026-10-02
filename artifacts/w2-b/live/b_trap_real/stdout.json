@@ -1,0 +1,1 @@
+{"blocking": null, "ledger": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/w2b-live.RdBupD/b_trap_real/.verantyx-conduct/ledger.jsonl", "outcome": "COMPLETE", "refusal": null, "result": {"complete": true, "completed": ["MulArgs"], "interrupted": false, "outcome": "COMPLETE", "pending": []}, "run_id": "4b41c6fdfb72461f916b986cd7e1c45a", "verdict": "RUN_COMPLETE"}
