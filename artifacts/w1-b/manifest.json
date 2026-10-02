@@ -1,0 +1,2976 @@
+{
+  "counts": {
+    "excluded_by_rule": {
+      "cache": 0,
+      "measurement": 0,
+      "personal_path": 1,
+      "store_data": 0,
+      "vcs": 0,
+      "vcs_ignored": 0
+    },
+    "excluded_total": 1,
+    "files_by_origin": {
+      "generated": 1,
+      "overlay": 138,
+      "package": 315
+    },
+    "files_total_excluding_manifest": 454,
+    "note": "manifest.json is not listed in files (it cannot contain its own hash) and is not counted",
+    "untracked_included_total": 0
+  },
+  "excluded": [
+    {
+      "layer": "package",
+      "lines": [
+        22,
+        23,
+        47
+      ],
+      "reason": "contains an absolute path under a Users directory (personal environment)",
+      "rule": "personal_path",
+      "source_path": "verantyx/build_failure_eval.py"
+    }
+  ],
+  "files": [
+    {
+      "bytes": 57,
+      "dev_counterpart": "differs",
+      "origin": "overlay",
+      "path": ".gitignore",
+      "sha256": "6946ae00ff782adac65444aaa3399d4fa8bc1aa764f5001c64993f2661fb6203"
+    },
+    {
+      "bytes": 3165,
+      "dev_counterpart": "absent",
+      "origin": "overlay",
+      "path": "EVAL.md",
+      "sha256": "d0d5385c7540dc1d36ea14c388673a28c46cdeb73aef89d4b008c9cd2ea1429d"
+    },
+    {
+      "bytes": 1585,
+      "dev_counterpart": "absent",
+      "origin": "overlay",
+      "path": "KNOWN_ISSUES.md",
+      "sha256": "352ee2c4ac7258c49246de3172fcc5bb93214c8522cbc00b967823b02f894b9d"
+    },
+    {
+      "bytes": 1065,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "LICENSE",
+      "sha256": "3c3cf4d1d6db41a139f2eea53b4b4172456ddbff053c94abfef4680297ef71ff"
+    },
+    {
+      "bytes": 12809,
+      "dev_counterpart": "differs",
+      "origin": "overlay",
+      "path": "README.md",
+      "sha256": "1b70d9f4b1beb7855fb2463f34ebb3c989fc085e4d790be20de7030a77db0611"
+    },
+    {
+      "bytes": 4633,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "docs/AGENT_QUESTIONS_GEN_2026-10-02.md",
+      "sha256": "c399ca603583e02f067618c682c0eae9b247e96710102a1ab9a8302781afa70f"
+    },
+    {
+      "bytes": 5905,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "docs/CONDUCTOR_2026-10-02.md",
+      "sha256": "024b4cbab43417ca60a006df43ee75555c2c87ce4218cec676200a5f04a5d77c"
+    },
+    {
+      "bytes": 4471,
+      "dev_counterpart": "differs",
+      "origin": "overlay",
+      "path": "docs/CONSTRUCTIONS_2026-10-02.md",
+      "sha256": "713f11841d5baae078deabfa7a8a954d8163244d802af1b5380fa413505ad208"
+    },
+    {
+      "bytes": 3239,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "docs/MEMORY_FRAME_2026-10-02.md",
+      "sha256": "356ba26bd89789807b3afd139e39b2947e522a4adf61d245cf9345dc5294dbe1"
+    },
+    {
+      "bytes": 6953,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "docs/REALIZE_2026-10-02.md",
+      "sha256": "e0892f1727dba7d2aca5f05fd4383ba0c8df1cdabcf15d5542d3abdaa63da93d"
+    },
+    {
+      "bytes": 8554,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "docs/REAL_QUESTIONS_2026-10-02.md",
+      "sha256": "23c4fd96968b4c82767a6671e883a8fab035899a9944a84f0152f20193f4e4c5"
+    },
+    {
+      "bytes": 8503,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "docs/RESULTS_2026-10-01_round5a_phase2.md",
+      "sha256": "1aa85cd14daede5c76da23b2a5bb7da9acb59b32d2d4d3427727c031b76e9c10"
+    },
+    {
+      "bytes": 8736,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "docs/ROUND5A_STEREO_ROUTE_2026-10-02.md",
+      "sha256": "a50e843bdb979d23c0c3349a7dd45e175802c3675fd4dbceb18d677e09885870"
+    },
+    {
+      "bytes": 3365,
+      "dev_counterpart": "differs",
+      "origin": "overlay",
+      "path": "docs/ROUTE_FOLLOW_2026-10-02.md",
+      "sha256": "d2955bd8d11139039a0bfa9c719b02e7fe648e0ada63fc13455f33fe3093453c"
+    },
+    {
+      "bytes": 9676,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "docs/WIRING_STATUS_2026-10-03.md",
+      "sha256": "b25e995161661ec2a30363554977c6c0999701fe96d34bba2532ceea33bf324a"
+    },
+    {
+      "bytes": 4033,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "docs/frames/vera_project_frame.md",
+      "sha256": "e90c262d9a45b28c7c735869b194e29be36c930f8164cac3d5042473548e73bf"
+    },
+    {
+      "bytes": 15698,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "docs/scout/s_agents.md",
+      "sha256": "9aca041d1febd3033c56b61c6b509622a15fd44314a96eba2b4ff76c4e944af6"
+    },
+    {
+      "bytes": 13535,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "docs/scout/s_band.md",
+      "sha256": "42eeaa3e1d87b370b07ef73b4ac7463f07ed10cdf2b6c0fe40344d1b7482d0ef"
+    },
+    {
+      "bytes": 17930,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "docs/scout/s_polarity.md",
+      "sha256": "8cd08e43b45a0acec0fa290b50683e8f3a2dbeea0855331fa3ede71bc625ed62"
+    },
+    {
+      "bytes": 15041,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "docs/scout/s_senses.md",
+      "sha256": "87a7f6acea5671c40edb63e3b30ef349b45315a4d5b565319f0599f6b47a60ca"
+    },
+    {
+      "bytes": 12994,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "docs/scout/s_summary.md",
+      "sha256": "8f7bbd684c03494232651441eafc92f4c49726c26cf0854063b645a27277fdae"
+    },
+    {
+      "bytes": 12744,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "docs/scout/s_writer.md",
+      "sha256": "02803fc44aaf98f9d9c0d444beadaf05daa53cf78f746c6969d074f72d963aff"
+    },
+    {
+      "bytes": 428,
+      "dev_counterpart": "absent",
+      "origin": "overlay",
+      "path": "example.py",
+      "sha256": "41c6a1049735acaae8410d0dd9dcdd6eac91ab42a7c0e7c9dd2466b23b8c08a1"
+    },
+    {
+      "bytes": 765,
+      "dev_counterpart": "differs",
+      "kind": "CONSTRUCTED",
+      "origin": "generated",
+      "path": "pyproject.toml",
+      "sha256": "035484d471450932692b74da01815230c8ef361d7508371ab3b7c50c3d14c64f"
+    },
+    {
+      "bytes": 869,
+      "dev_counterpart": "absent",
+      "origin": "overlay",
+      "path": "release/DATA_CARD.md",
+      "sha256": "59adc3bfec03fdb8d0c31715c214eadb9646d0cd4d6ec0ea1dc9bbb3e835e605"
+    },
+    {
+      "bytes": 32,
+      "dev_counterpart": "absent",
+      "origin": "overlay",
+      "path": "requirements.txt",
+      "sha256": "ea45533eda57869e041e8e8c3ffc2dbd225cafd30adc24c73f7b72aaeba4c952"
+    },
+    {
+      "bytes": 225,
+      "dev_counterpart": "absent",
+      "origin": "overlay",
+      "path": "tests/conftest.py",
+      "sha256": "87583f700d89788143d437529a68b77809ad7fdd5b2487a867c0433c19ea2283"
+    },
+    {
+      "bytes": 3404,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/round5a_gold.py",
+      "sha256": "a1ae9ff84175d8d6c80c881ecebbe97809d73bd0ba2dba2e2b23e2150dc102bf"
+    },
+    {
+      "bytes": 11665,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_agent_adapter.py",
+      "sha256": "a49c64d264e2a7510f542b55ff6ebba596442cad446d8e9f8d577efd189ea6d5"
+    },
+    {
+      "bytes": 8178,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_answer.py",
+      "sha256": "529339f20000957796812c3999f116be2c37b1dfc216cfc300a3099bb64eb6cc"
+    },
+    {
+      "bytes": 23400,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_compositional_goal.py",
+      "sha256": "5c78a7fc7af108d9ccf19d8a3ca409122de4d2242b6b75d82701e37e151efc5c"
+    },
+    {
+      "bytes": 32896,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_conductor.py",
+      "sha256": "246a4672b029b41b8a6dfccd0c6cc33be016e15cc239845f9494dd59b07f06c4"
+    },
+    {
+      "bytes": 16358,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_conductor_escalate.py",
+      "sha256": "28ec7ea11e34bd6db658972e2eb5d0ec0aa68fe2015262f93167faeb1a701272"
+    },
+    {
+      "bytes": 10014,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_content_api.py",
+      "sha256": "7efd10002d625b54030a05361f23c477d58f9094ecd1ae2ab9842ebe899a1a60"
+    },
+    {
+      "bytes": 3049,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_content_codec.py",
+      "sha256": "67eeb752c3232ca0cd11782b94c0ae0ee034409c7a1e6f296790577e8d76e410"
+    },
+    {
+      "bytes": 6159,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_content_event_set_integration.py",
+      "sha256": "5999626e347ba5ce1d32b25eb2b981e98ba93dc711e54d5b444c122eb15e4c45"
+    },
+    {
+      "bytes": 4615,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_content_planner.py",
+      "sha256": "f0eeb2a52f156122a735b6997f163636e9ea2f45fc99a9284373dc90d46a6a67"
+    },
+    {
+      "bytes": 9349,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_content_source_composition.py",
+      "sha256": "8eb9939cba76101fef845f2d9dbccba41011210eab9fa94431eb5f69c46c64bf"
+    },
+    {
+      "bytes": 7465,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_content_verify.py",
+      "sha256": "8e41757bdc253c66ceee59ce52dd2d403eeba365b012d86496911a1ff33857b2"
+    },
+    {
+      "bytes": 12403,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_contract_batch.py",
+      "sha256": "d9baf4986333ddacd933cfcaf6801f8ec29a42fcf32e14e86d2396a0e3b88201"
+    },
+    {
+      "bytes": 13544,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_contract_cleanup.py",
+      "sha256": "8c01424f8ee14d8dbea3f80907fa8e94464bac91e600895c887b702b414c0002"
+    },
+    {
+      "bytes": 10166,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_contract_core.py",
+      "sha256": "56ecd4b990d8eeed681f9cc37a40a98bdae248e5049574bb3aa79554c2eedbda"
+    },
+    {
+      "bytes": 28506,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_contract_lower.py",
+      "sha256": "a2b5e0aff63e5e1b1984d6c8a2dabb4af8994cedd9d19c230314616f16a8f286"
+    },
+    {
+      "bytes": 16557,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_contract_r3_review.py",
+      "sha256": "f627dfbe1439ec94ca53ce5553ba98bc5b3ee71d90edc715f7bcaed59ae1c940"
+    },
+    {
+      "bytes": 5669,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_contract_review.py",
+      "sha256": "a8bf305aaa48272b10bffbabcb82f8b7748633660f706ae06dea22bfe0a053bb"
+    },
+    {
+      "bytes": 17509,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_contract_revision.py",
+      "sha256": "c75c992f81a99b7a5eebc9bfad557992689d8a5d5f80734a3b149fd19a69781d"
+    },
+    {
+      "bytes": 15519,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_contract_sandbox.py",
+      "sha256": "c6b2b52869e78a28c6366c2ddb5eb7e45f9d7a61e7fa11495ca9454f10c2a2e1"
+    },
+    {
+      "bytes": 8770,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_contract_witness_r3.py",
+      "sha256": "5d87345c762b1982fd1b4f7ec95881035ccd58c2f360a9ebb5821040737dffa5"
+    },
+    {
+      "bytes": 6717,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_family_scene_scope.py",
+      "sha256": "e83cdcadc5a70f134943bb8551ef5f948671e848bad4603fd1dab1c84e5d39eb"
+    },
+    {
+      "bytes": 15013,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_frame_evidence.py",
+      "sha256": "7d884956bb334defc00aabef4dc221217bbc2222540333c6e8ccf771a83b880d"
+    },
+    {
+      "bytes": 6971,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_library.py",
+      "sha256": "0d64129cb44cdf7d3f6c034a4d3104a0096b846f23332eee43b371f95af33a83"
+    },
+    {
+      "bytes": 3501,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_material_source.py",
+      "sha256": "3882bdd2b176ad2cb5a86a544821191c2ee695cf40ed0b9b965ec6fe6b600c80"
+    },
+    {
+      "bytes": 5497,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_material_source_immutable.py",
+      "sha256": "0bf034fdb8b0b10f1d658a75fe948679a06c184a90b6988f3127d1822e1c19e7"
+    },
+    {
+      "bytes": 13086,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_meaning_bridge.py",
+      "sha256": "99f34bc357f754da6f5fc0f4cbf698d4c853da03d12ccc0df49f7130ca99014f"
+    },
+    {
+      "bytes": 11878,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_meaning_goal_bridge.py",
+      "sha256": "542603901ac7716fcc5ed93dd04e6954c2a071fb37a3f14ab5e45e009375a545"
+    },
+    {
+      "bytes": 13117,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_memory_brief.py",
+      "sha256": "7d4b039accec5cbbcdc44e23c0856382d4474a74ef4cb4cddb64a4f11781d7a2"
+    },
+    {
+      "bytes": 8548,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_memory_frame.py",
+      "sha256": "35eb992e77995882aa13d81f929aa92f957aab4d1eafe5160ee0710b9dfefc99"
+    },
+    {
+      "bytes": 10507,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_memory_lessons.py",
+      "sha256": "8d764ccf3f0b9049915325efedd556de3eb11b2af1199ba07c0a083f6a215c80"
+    },
+    {
+      "bytes": 10818,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_memory_merge.py",
+      "sha256": "0e865a99483c59fe6995ec239af81314bbedf9771d48899e0255a018ec9ec290"
+    },
+    {
+      "bytes": 16118,
+      "dev_counterpart": "differs",
+      "origin": "overlay",
+      "path": "tests/test_memory_revalidate.py",
+      "sha256": "5f2c031607591daf4b980601b611ddf67d17243312d6c99f01915fa4eac93ffa"
+    },
+    {
+      "bytes": 7583,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_multigrain_adapter.py",
+      "sha256": "feb20a1d9862af3664f15ce8eae77b960cd213ddf5c6c3761b25c37b6aea77c9"
+    },
+    {
+      "bytes": 2999,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_multigrain_event_set_binding.py",
+      "sha256": "6bbdc98eba1bf177a1ab7536159c7e199c00ffdd6741081dca1975c8e2231f29"
+    },
+    {
+      "bytes": 5955,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_one_chat_round5.py",
+      "sha256": "4baa950f41a1c2c6c7c23db43bcf29f22019ef3dd103171e07e6654554fd9d8b"
+    },
+    {
+      "bytes": 2060,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_one_contract_revision.py",
+      "sha256": "27aa8de2e37ab52c62fc2c5e0e14e39fc05f6ce7c8a081f51c62dd4f9ae3b1e9"
+    },
+    {
+      "bytes": 11748,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_one_request_goal_route.py",
+      "sha256": "84376fc3e1da5c52a39ccc881faed2284baf1ae5a3c7ad9fc602e6663420684f"
+    },
+    {
+      "bytes": 7802,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_one_round5_router.py",
+      "sha256": "e2043abfde33136feaf7a892b4725e3d1fdb660b086d3f9ee1969e3ded39719c"
+    },
+    {
+      "bytes": 11209,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_one_trace.py",
+      "sha256": "658bc10c75efc653ea4a326d3a9be0dbc51dffe8e946bc220da88786184fcf8c"
+    },
+    {
+      "bytes": 6473,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_question.py",
+      "sha256": "62b36f1c3d589450ad372c1be4eb8a9efb6ce5946cf04ccee52b1bff2b62e17c"
+    },
+    {
+      "bytes": 2996,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_request_event_set_projection.py",
+      "sha256": "671ecf1c7d459208af34d6a4d2f3114976602e85ffd3a8504bc5961b4253823a"
+    },
+    {
+      "bytes": 8381,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_request_goal_binding.py",
+      "sha256": "b053cc84be57b5d63dd79f1d0a876ff5883e74619d2b7fa8b1d369bc9b821435"
+    },
+    {
+      "bytes": 5748,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_request_goal_route.py",
+      "sha256": "3209077ed3e4af85bd1b4ec1fdc1d7588e5cf72c69c19b3ec1116ae2e3077a9b"
+    },
+    {
+      "bytes": 2083,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_request_goal_selection.py",
+      "sha256": "bd699c16b743db64391136c3b2b3f09070741d5b5e2652c73821a88fcbc88194"
+    },
+    {
+      "bytes": 10002,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_round3.py",
+      "sha256": "f06e6559a9e9c0a4255fc111fd1b1c4c0565c27d77237cc3d68fc1d46f1d2c5a"
+    },
+    {
+      "bytes": 17518,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_semantic_coordination_codex.py",
+      "sha256": "761fcfa8daeaf4e6be9f36be9d9018b7659b0bf2a42e59e2eecfeb6f21723477"
+    },
+    {
+      "bytes": 15089,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_semantic_kernel.py",
+      "sha256": "8fabdde9e98bf33814fe754dfcf510af254083287f598bb43c1ad009ca8500d6"
+    },
+    {
+      "bytes": 11596,
+      "dev_counterpart": "differs",
+      "origin": "overlay",
+      "path": "tests/test_semantic_measure.py",
+      "sha256": "2a97118a34fa582d46e03e449af84213f7df68da984a2f83a0c51f4290be2846"
+    },
+    {
+      "bytes": 9470,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_semantic_measure_codex.py",
+      "sha256": "4c0af794bfa51fd1873c19e97c9c526ea3c1a42a023cd3eec1ce9da10cd4d280"
+    },
+    {
+      "bytes": 7838,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_semantic_public.py",
+      "sha256": "c6836d38fb3fde21a8861488403e36e66396fcfa04764cc0a38fb0d002a0a7e5"
+    },
+    {
+      "bytes": 3819,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_semantic_reader.py",
+      "sha256": "43f3b0c5c50266f1b5675d7c2a3e06fef520800f9327b8436cfc0b15ef89f6e8"
+    },
+    {
+      "bytes": 18202,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_semantic_realize.py",
+      "sha256": "57e5c7d035b1da1a74bc0762ffa1fe220300069a74e74e123d8ad3f253c9a648"
+    },
+    {
+      "bytes": 2619,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_semantic_retrieve.py",
+      "sha256": "1e037eff50ecfb41e79f80e9daef6844f5fa306f12692bf03ee961db8b1aa2e4"
+    },
+    {
+      "bytes": 7335,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_semantic_route.py",
+      "sha256": "4d262d951a1b05eac0d360e7be6e481eb019c15864c7c3af09979512aae2cdc3"
+    },
+    {
+      "bytes": 19166,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_semantic_route_codex.py",
+      "sha256": "9d3ff67109b69eb83a3543477fcac8b2fc879103a335f55210aa035787cdb876"
+    },
+    {
+      "bytes": 7213,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_semantic_route_follow.py",
+      "sha256": "16a059b96a6527a1b763e2f227f577f76704e3c08332d1bb41ae35bd0d7f7a6e"
+    },
+    {
+      "bytes": 7424,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_semantic_scope_safety.py",
+      "sha256": "6aed18a480ba474fe52dc41993aafcaf2191edbe9017d3d00907a81273700382"
+    },
+    {
+      "bytes": 3897,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_semantic_source_prefix.py",
+      "sha256": "0574d57976b78b9b9f5805d1f15423f61ca77566e041aeb9215b1def747d076f"
+    },
+    {
+      "bytes": 10666,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_semantic_unknown.py",
+      "sha256": "16a6d670a76f9736d5e9daa15fc9cdfc0f05534bb9e21cf6f8124f035abeb8d2"
+    },
+    {
+      "bytes": 14234,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tests/test_semantic_unknown_choice.py",
+      "sha256": "dfc4738fc1638eee92f52278e61ffd500ca12c25c75ec0db30f2919723002d23"
+    },
+    {
+      "bytes": 19535,
+      "dev_counterpart": "differs",
+      "origin": "overlay",
+      "path": "tests/test_verifier_agents.py",
+      "sha256": "aceaf13442f8cf6a84339c0b402524110f275a4e4b3fb5149b08533feb9a617b"
+    },
+    {
+      "bytes": 26024,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/agent_questions_gen.py",
+      "sha256": "6f2968ea51280e7b568366eb3789fc9e16cee0de3c95bd910c1d7f8dd398edd4"
+    },
+    {
+      "bytes": 6020,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/bench_fast.py",
+      "sha256": "c2e72f21853c33282ff5c2db1b541ded342a77d0dafafe53b7eb366e797bc736"
+    },
+    {
+      "bytes": 14651,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/build_case_frames.py",
+      "sha256": "c9cd2f672f055b7c06e9256ad328ae5ee59ea549233a004bdc6c481792e9c17d"
+    },
+    {
+      "bytes": 9418,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/build_variants.py",
+      "sha256": "b429f5d8c35069a87108db2f2b785c3861c267f18358246f6d9b365784cb339c"
+    },
+    {
+      "bytes": 18592,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/conductor_sim.py",
+      "sha256": "414c0cffba5d9f5170a0c9ef402023ef701747d91b4e0d81639260f2f57d3f86"
+    },
+    {
+      "bytes": 5069,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/cov_adnominal.py",
+      "sha256": "cfe1c7fe0c8bc9d0cad46947a0f345b55bc4758e63d1c91cc6147318a867eef4"
+    },
+    {
+      "bytes": 6789,
+      "dev_counterpart": "differs",
+      "origin": "overlay",
+      "path": "tools/cov_comparison.py",
+      "sha256": "903d0b4d10a81ce96a135d58c572862e40eb0ac59182eb8587484a03df8800c5"
+    },
+    {
+      "bytes": 4988,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/cov_connective_rel.py",
+      "sha256": "c31907cfa19a5896126976a2e765014a0578c8fc13b57233200bb0fc468a4b80"
+    },
+    {
+      "bytes": 4471,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/cov_diathesis.py",
+      "sha256": "c08035da8c62c0c2b75e69ddff35cfe53c2e4c96b223a01addcf4b57ba2aa7cd"
+    },
+    {
+      "bytes": 7196,
+      "dev_counterpart": "differs",
+      "origin": "overlay",
+      "path": "tools/cov_giving.py",
+      "sha256": "f8eac5497189a26573d6a5d983173e897805a0d8a5c0a7bad672a7751f449d74"
+    },
+    {
+      "bytes": 4323,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/cov_light_verb.py",
+      "sha256": "5b06ae2c3040542f8e419981cb208cbf0e6c71a20e1b2b9f04fd52a74d1ca3f1"
+    },
+    {
+      "bytes": 6046,
+      "dev_counterpart": "differs",
+      "origin": "overlay",
+      "path": "tools/cov_negation.py",
+      "sha256": "35456149d3fd0504d98c1cdbd1ea54b69e07fdf2dd74e6adb70edd6f046c9482"
+    },
+    {
+      "bytes": 6701,
+      "dev_counterpart": "differs",
+      "origin": "overlay",
+      "path": "tools/cov_np_internal.py",
+      "sha256": "90666d9d9bcc89d8a0446eecea22ff0a4d433f31a2d7d231a18b97f7e42966b6"
+    },
+    {
+      "bytes": 5118,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/cov_paren_gloss.py",
+      "sha256": "7643998401485c39d840953d24d331cfe105023a8dd6fe5ba15b2e79699a9385"
+    },
+    {
+      "bytes": 3386,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/cov_quantifier.py",
+      "sha256": "9c89fe6270843893a8133ac537decc98f2dfa195b838fa33c2c1fb24de4c57e3"
+    },
+    {
+      "bytes": 4267,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/cov_quote.py",
+      "sha256": "6355c164c6e4b0d3ede97228118774b18918f7e547a534b03fddb928cf95e463"
+    },
+    {
+      "bytes": 5450,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/cov_te_chain.py",
+      "sha256": "7afbc4be8aa5b4328e875d178c0ea9149904c6f3dc258d68b0c41428e2979543"
+    },
+    {
+      "bytes": 4643,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/cov_time_expr.py",
+      "sha256": "236ce02511c596beff49ed1027403975063c589b6b1647122fdb6d2537a3ee40"
+    },
+    {
+      "bytes": 4337,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/cov_zero_subject.py",
+      "sha256": "d320316d9f842d3e667986a2b41fb6fa554ae44a748246ccae5a224900466294"
+    },
+    {
+      "bytes": 605,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/coverage_gate.py",
+      "sha256": "89b0f769df57cda06441eb7e5b0990eea36d4e4e374a4c57def83506c0214071"
+    },
+    {
+      "bytes": 3354,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_band.py",
+      "sha256": "237052e66e780a283d34baabc2bc09c471140d995726fbeae684658b9da108eb"
+    },
+    {
+      "bytes": 11755,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_conduct.py",
+      "sha256": "b5189827cb25737de29212064fd2f4a05f9e060a8989c8310ac528f6d53fa67b"
+    },
+    {
+      "bytes": 4411,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_constructions.py",
+      "sha256": "dd44946f188b93128efdcb1cf5878202e4ade339537966db39ca0e1162be5c22"
+    },
+    {
+      "bytes": 7162,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_decision_writer.py",
+      "sha256": "b54ba637ed291efef39b4b288e61a1f6a133c2deeee5a56e3e3967605b9f3d37"
+    },
+    {
+      "bytes": 9457,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_driver.py",
+      "sha256": "dada893f11415e498186f9bfe982515626e214cbd18a8a32eeac8c8995057bb4"
+    },
+    {
+      "bytes": 5533,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_frame.py",
+      "sha256": "1cba3ea7f37c8ac02c549d909bb443999bf157d6e31cd11fc0232500e89a0ecd"
+    },
+    {
+      "bytes": 7753,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_generate.py",
+      "sha256": "e6567d731f881d6411913dee3fb554891c4e4b00e3b18df65277409fc3d29692"
+    },
+    {
+      "bytes": 6740,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_impact.py",
+      "sha256": "1fb70f00dc63f2b29395c3b420f8daf6b03e88fcb965f0f7e9d02ea522da3a46"
+    },
+    {
+      "bytes": 2819,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_names_fix.py",
+      "sha256": "133085f2fb3f1c0c206f3441bdba1ffd4ad519af0bb39e2576d4f7febbd175b4"
+    },
+    {
+      "bytes": 10721,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_outside.py",
+      "sha256": "3f54353636ec85e9f3829f6bf93408a1a3e464618af18916da86df0f77b7211f"
+    },
+    {
+      "bytes": 2077,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_polarity.py",
+      "sha256": "49d783f983ce40ffb78792af810a2a9a31e3c5b6e9753852b5b1690c9d5b168a"
+    },
+    {
+      "bytes": 10515,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_question_kinds.py",
+      "sha256": "f4b248e29051631d1af6f05249cfa582d2cddf0d884544c4636a1341daca49ee"
+    },
+    {
+      "bytes": 6653,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_runtime.py",
+      "sha256": "8f41238bda52b31a8fe00205b944c997de016214bfc40f319ed47c5bb995f702"
+    },
+    {
+      "bytes": 4476,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_system.py",
+      "sha256": "8aecbeff8565b09e5d897e649e21c64854a6dba6d807ddaf10683ccf145eab02"
+    },
+    {
+      "bytes": 5402,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_testimony.py",
+      "sha256": "30c5cd1038864655a01df4f4dcd467650373fdd948a962109bd8ef3c7bcecc4a"
+    },
+    {
+      "bytes": 7224,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_variants.py",
+      "sha256": "60e3484dd908750abafb5fd4bb1e33a362e181812f12181abced6c1033f73e91"
+    },
+    {
+      "bytes": 6288,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_verifier_evidence.py",
+      "sha256": "270ba93836b6c0e6c5ff9a7ebe9456665c8fa0a9b07daf355ba5d03364386af5"
+    },
+    {
+      "bytes": 6935,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/demo_vocab.py",
+      "sha256": "8723f8c8663c01d819cc65998a3c3bcb80a751a3b32bfd591933e3813abc8025"
+    },
+    {
+      "bytes": 5454,
+      "dev_counterpart": "absent",
+      "origin": "overlay",
+      "path": "tools/gold_probe.py",
+      "sha256": "8b0f97138619f6f15e4fa1bb2759565dc08cf462431780d5dede968a81ea96a4"
+    },
+    {
+      "bytes": 1656,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/impact_analysis.py",
+      "sha256": "1bc48a3fb92b27f200401a9194a857eade56da9881dc67fa47115c9d57cae647"
+    },
+    {
+      "bytes": 7023,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/memory_frame_demo.py",
+      "sha256": "9ffa6ad26a197fc33b561ee2d9a6f6d68ab35af6089e6f9bf99b4d04b79ace8a"
+    },
+    {
+      "bytes": 2288,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/read_coverage.py",
+      "sha256": "ec13d37bd44e6ee9534b9e690f1eea9505d1b62a54815c14fc65a7a2241a41c1"
+    },
+    {
+      "bytes": 12113,
+      "dev_counterpart": "differs",
+      "origin": "overlay",
+      "path": "tools/realize_measure.py",
+      "sha256": "872d3f32cfcb9851cf56274436c7827c182df5e2afe05bfc2edf70c01231c56b"
+    },
+    {
+      "bytes": 3416,
+      "dev_counterpart": "same",
+      "origin": "overlay",
+      "path": "tools/run_project.py",
+      "sha256": "8f53badcea01041c5d3ec3349c242fb6a8d891ff6a8fe06e97fbb09ce56715c7"
+    },
+    {
+      "bytes": 2555,
+      "dev_counterpart": "absent",
+      "origin": "overlay",
+      "path": "vera_base/__init__.py",
+      "sha256": "dd5d3892b39b76528b100477ee13b62d300ddbb969c79536d1583cbb5dca545c"
+    },
+    {
+      "bytes": 709,
+      "dev_counterpart": "absent",
+      "origin": "overlay",
+      "path": "vera_base/cli.py",
+      "sha256": "74d9c179e144369cc5db12e0c26cf43ac101a9f0519a4fbd0e216951d30b5e22"
+    },
+    {
+      "bytes": 967,
+      "dev_counterpart": "absent",
+      "origin": "overlay",
+      "path": "vera_base/corpus.py",
+      "sha256": "ee1a7a53e6ff7843746f36c9496e31cfcf2d9c999a7a26545e55c27babb4000f"
+    },
+    {
+      "bytes": 102350,
+      "dev_counterpart": "absent",
+      "origin": "overlay",
+      "path": "vera_base/data/chat_pack.json",
+      "sha256": "3d888c0750fc85b5609f87756d091d1b9cef58aa621f66ae8b8d042cead22c44"
+    },
+    {
+      "bytes": 215627,
+      "dev_counterpart": "absent",
+      "origin": "overlay",
+      "path": "vera_base/data/pun_lexicon.json",
+      "sha256": "6349e661d447989b7102315d3c70aab66f4f9b1d974c21d483bf2101c68147d9"
+    },
+    {
+      "bytes": 3714,
+      "dev_counterpart": "absent",
+      "origin": "overlay",
+      "path": "vera_base/server.py",
+      "sha256": "278bf87bf7c6403bb1cf11b25897a2dc545b4b711b901c90af5112004747c905"
+    },
+    {
+      "bytes": 2641,
+      "origin": "package",
+      "path": "vera_base/verantyx/__init__.py",
+      "sha256": "576a30a93682ce4fe81896cf988decc3d4a5e5a8ae81a57d4074f073feed5001"
+    },
+    {
+      "bytes": 104240,
+      "origin": "package",
+      "path": "vera_base/verantyx/abilities.py",
+      "sha256": "7afc3921c6010237838a60247419b3ba42b143f2d989120a96f7cf714f58576e"
+    },
+    {
+      "bytes": 3820,
+      "origin": "package",
+      "path": "vera_base/verantyx/ability_corpus.py",
+      "sha256": "2bd990b2a3a2ffe30bfa333217b8a66fcb9f6720e6e903d9a479f00c07dfa9ea"
+    },
+    {
+      "bytes": 14012,
+      "origin": "package",
+      "path": "vera_base/verantyx/action_guard.py",
+      "sha256": "7d4fa9225fc3a4b7d53fd5576dc645a7ab7ade43bbf34c0005f9a6430f25bbe6"
+    },
+    {
+      "bytes": 28482,
+      "origin": "package",
+      "path": "vera_base/verantyx/agent.py",
+      "sha256": "ef8dcd81714a262af122e3146115230ff098deb3d864933c9500bdcbd1b8a020"
+    },
+    {
+      "bytes": 23778,
+      "origin": "package",
+      "path": "vera_base/verantyx/agent_adapter.py",
+      "sha256": "33262b1b5bddf80e8242b46b1331c3bb6d2411e0073fa65cae6343a1b88a5646"
+    },
+    {
+      "bytes": 15815,
+      "origin": "package",
+      "path": "vera_base/verantyx/agent_forks.py",
+      "sha256": "4358c8401150a0afe9b89cbce2bf6ad4b160fa1496f7a870cc48c46bad835407"
+    },
+    {
+      "bytes": 39459,
+      "origin": "package",
+      "path": "vera_base/verantyx/agent_runtime.py",
+      "sha256": "17990e6e3c5d232be0cf20d4f25c1a5812cb0685df51bc23c4103f6461d51185"
+    },
+    {
+      "bytes": 17721,
+      "origin": "package",
+      "path": "vera_base/verantyx/agent_tools.py",
+      "sha256": "14d408a249e28e32c9c9bcced13380f91c9add9187d9c8ec732957dce7f5d7b8"
+    },
+    {
+      "bytes": 6788,
+      "origin": "package",
+      "path": "vera_base/verantyx/ai_ingest.py",
+      "sha256": "5a70f9b6c5e47219a466c0b3b776b5549ebd5a7b2634bba7e2709f2e791b66ae"
+    },
+    {
+      "bytes": 3754,
+      "origin": "package",
+      "path": "vera_base/verantyx/ai_ingest_forks.py",
+      "sha256": "65c1119e450eeabd1e4bd032a75540575ab237efc671007f8cffce5295bf5b36"
+    },
+    {
+      "bytes": 85644,
+      "origin": "package",
+      "path": "vera_base/verantyx/answer.py",
+      "sha256": "e4a46e97567e8e10fbfbe666e1ac5f23b5eb003fe904986412fe06320977ff4f"
+    },
+    {
+      "bytes": 15671,
+      "origin": "package",
+      "path": "vera_base/verantyx/answer_slots.py",
+      "sha256": "115f10c07eb2c123886a51ed21b8dc111fd0169eb94089bf02453d5a6f3259f0"
+    },
+    {
+      "bytes": 6936,
+      "origin": "package",
+      "path": "vera_base/verantyx/arc_env_adapter.py",
+      "sha256": "d22626cf58d91b4d54f82e1de245b2bc4ee354b56c6df74633eff9548a2d58dd"
+    },
+    {
+      "bytes": 9623,
+      "origin": "package",
+      "path": "vera_base/verantyx/arm_schema.py",
+      "sha256": "e5961cf40d009f74fd70ed6ccc6e0a5a3c88b986c3bd8efde0bc99726cfb69b2"
+    },
+    {
+      "bytes": 6841,
+      "origin": "package",
+      "path": "vera_base/verantyx/ask_back.py",
+      "sha256": "811dd0da51e9dcf1c6eb3424929e5220bb5e7c4149449820cadecbbe903e2c90"
+    },
+    {
+      "bytes": 7898,
+      "origin": "package",
+      "path": "vera_base/verantyx/assembled.py",
+      "sha256": "102516b28aac2446dfa37f3f37a0b82b3d35c6f9231432559ac6f4579e6545c1"
+    },
+    {
+      "bytes": 13815,
+      "origin": "package",
+      "path": "vera_base/verantyx/attest_llm.py",
+      "sha256": "d073f538c754cfd573caa3a95a90734c8d2585be8afc5eed0f68fe912b9ede5e"
+    },
+    {
+      "bytes": 20431,
+      "origin": "package",
+      "path": "vera_base/verantyx/audit_app.py",
+      "sha256": "b0f566b57ffed042277b6a8fff3a745f48be315315a95865ba6e7e295a01f015"
+    },
+    {
+      "bytes": 4211,
+      "origin": "package",
+      "path": "vera_base/verantyx/axis_summary.py",
+      "sha256": "0a2bdecd59923ac75b4fa038cb7c3378217699f71914b52bb9b98e899d1a7d37"
+    },
+    {
+      "bytes": 10334,
+      "origin": "package",
+      "path": "vera_base/verantyx/base.py",
+      "sha256": "3c21361f82216f812098238a8041e64acfbef0c762424c2d89a39eebf3556e97"
+    },
+    {
+      "bytes": 12030,
+      "origin": "package",
+      "path": "vera_base/verantyx/bot.py",
+      "sha256": "7716d4bea5b69274e942c7a8c3f17a423dcba3fe60c997cc404450b573128fa6"
+    },
+    {
+      "bytes": 9284,
+      "origin": "package",
+      "path": "vera_base/verantyx/boundary.py",
+      "sha256": "ba12386cc20bd02376ad3a5b15b4822cf988895c28b2c5a9d7815bc8a78a6564"
+    },
+    {
+      "bytes": 14331,
+      "origin": "package",
+      "path": "vera_base/verantyx/boundary_eval.py",
+      "sha256": "0a5749a8913cdc5387e62c2589c50d5137e32aa40c24a817c97f380322bf22d6"
+    },
+    {
+      "bytes": 4257,
+      "origin": "package",
+      "path": "vera_base/verantyx/build_en.py",
+      "sha256": "c2083c541257c9e23b848ec092c3c94b4f5720b53c9b3b4b01d2dbf725f5103e"
+    },
+    {
+      "bytes": 6840,
+      "origin": "package",
+      "path": "vera_base/verantyx/build_failure.py",
+      "sha256": "38d89bebd4f74f53da1877319b5b3ed16303f8f5e705b658148bf6b2da8cf8d1"
+    },
+    {
+      "bytes": 9478,
+      "origin": "package",
+      "path": "vera_base/verantyx/build_ja.py",
+      "sha256": "e65da1f299e953c35d11c18c8606bf91f424349a7fd4940f55e676ef7dc67558"
+    },
+    {
+      "bytes": 11142,
+      "origin": "package",
+      "path": "vera_base/verantyx/capacity_calibration.py",
+      "sha256": "12ac3d35aa40053ea1a8650f8c2cb63a6cff1a49568ae45ef58b17b127250772"
+    },
+    {
+      "bytes": 4927,
+      "origin": "package",
+      "path": "vera_base/verantyx/capacity_ingest.py",
+      "sha256": "e78a13d6ad5be4c7f125dbf78bec5a5d7155b4e63dea1dad6b105942ffe87e3f"
+    },
+    {
+      "bytes": 7958,
+      "origin": "package",
+      "path": "vera_base/verantyx/card_numbers.py",
+      "sha256": "f0775d1c2e88da08a1b94ebbf85cdb9585f2ff0f0c9be6ef667e8655796a5667"
+    },
+    {
+      "bytes": 5733,
+      "origin": "package",
+      "path": "vera_base/verantyx/cascade.py",
+      "sha256": "4a7c881bd5ee7f64b3b9fbac7a7094d75b34dfb479b1dadf02a476d93fcb0ed8"
+    },
+    {
+      "bytes": 18708,
+      "origin": "package",
+      "path": "vera_base/verantyx/catalog.py",
+      "sha256": "10dacd215c3eef3c0a969d034a6984bc7bc1b0747cb53997c5a8b31c96bab936"
+    },
+    {
+      "bytes": 16588,
+      "origin": "package",
+      "path": "vera_base/verantyx/chat.py",
+      "sha256": "1deba6387ef107a12439de9b7a357d481fc3c56433e50f243a87c47a6c07e8d3"
+    },
+    {
+      "bytes": 72120,
+      "origin": "package",
+      "path": "vera_base/verantyx/cli.py",
+      "sha256": "5c7cbe1b984017092ef7aee988ef40f9b7158c9859fbc852f3cab804266d5075"
+    },
+    {
+      "bytes": 39963,
+      "origin": "package",
+      "path": "vera_base/verantyx/code_compose.py",
+      "sha256": "f7064006f95dade6d1107c86e5aa0fe61e14bf6573937a1692cf262de307174b"
+    },
+    {
+      "bytes": 5121,
+      "origin": "package",
+      "path": "vera_base/verantyx/code_ingest.py",
+      "sha256": "672c49973f13055abe2ad940908983cbbc970b767679e7e7a58d399ae604d6a1"
+    },
+    {
+      "bytes": 15569,
+      "origin": "package",
+      "path": "vera_base/verantyx/code_spec.py",
+      "sha256": "ef65de2c4ef896bdb14bd2630e5327abf05d1ff513523e3986702a2e68d01ee8"
+    },
+    {
+      "bytes": 7338,
+      "origin": "package",
+      "path": "vera_base/verantyx/cognitive_interventions.py",
+      "sha256": "3e0c4e71ba010cf3ea3a8150d1692d3643c414ec36231509b64162f0d897d394"
+    },
+    {
+      "bytes": 15263,
+      "origin": "package",
+      "path": "vera_base/verantyx/compose.py",
+      "sha256": "9deb98330562da0db400673ff6824f640c17b53aeb16d40cd42df8885e5944f6"
+    },
+    {
+      "bytes": 10536,
+      "origin": "package",
+      "path": "vera_base/verantyx/compose_frame.py",
+      "sha256": "b822ee58814764973a781fe0096736c9eae9f251ab22b01dbfda02f692fb344e"
+    },
+    {
+      "bytes": 43893,
+      "origin": "package",
+      "path": "vera_base/verantyx/compose_ja.py",
+      "sha256": "030fbdaa174d526f7432a3d2db5992935a2fd7fd9015bf2e1b4b447615f395df"
+    },
+    {
+      "bytes": 75928,
+      "origin": "package",
+      "path": "vera_base/verantyx/compositional_goal.py",
+      "sha256": "f4b47d1665048104bc0249971007190d19ea2ee4092bdddbc4bfb7fcae9c455c"
+    },
+    {
+      "bytes": 10598,
+      "origin": "package",
+      "path": "vera_base/verantyx/conduct_tree.py",
+      "sha256": "336115a36b110b2deb3cc64af78c2eef7cb00792907085eba4e6fbb3caaef3d8"
+    },
+    {
+      "bytes": 56138,
+      "origin": "package",
+      "path": "vera_base/verantyx/conductor.py",
+      "sha256": "beb06ec5c35728497fa80bb84f6c3588c6385653cfe598f6a80dad36b4c926df"
+    },
+    {
+      "bytes": 16122,
+      "origin": "package",
+      "path": "vera_base/verantyx/conductor_escalate.py",
+      "sha256": "5c67ec1d1ba4a779da83cc01258ec06b98a04b8f7dc711dd74973e569acb9bc0"
+    },
+    {
+      "bytes": 48467,
+      "origin": "package",
+      "path": "vera_base/verantyx/conductor_run.py",
+      "sha256": "369d115c43c940d79547f550023427250418aead21ff19a9af202cb1fe207b5c"
+    },
+    {
+      "bytes": 20248,
+      "origin": "package",
+      "path": "vera_base/verantyx/conductor_vocab.py",
+      "sha256": "10faf9360e6866f24295e5cb7cd4311ee168bf3bc9fb3168b2fa9309eb2857a5"
+    },
+    {
+      "bytes": 5669,
+      "origin": "package",
+      "path": "vera_base/verantyx/config.py",
+      "sha256": "3cffce7cc40d7d40f46f99cff93fb940f9020abee356a9a47f4de652832a471e"
+    },
+    {
+      "bytes": 30760,
+      "origin": "package",
+      "path": "vera_base/verantyx/connective_render.py",
+      "sha256": "a857c563d90357b9a1cc7c53f40a1167ef3ddd7ab442a222790e0e3258642be8"
+    },
+    {
+      "bytes": 24157,
+      "origin": "package",
+      "path": "vera_base/verantyx/consensus.py",
+      "sha256": "9e96e0da306a1cdff5b9fd919a9e00f8a328dbe43cd25b8ce0f55b5074fa459f"
+    },
+    {
+      "bytes": 12814,
+      "origin": "package",
+      "path": "vera_base/verantyx/consensus_ab_eval.py",
+      "sha256": "fe0f732d42a260d96c6edd6c9a6cbd53c6a5b9001bfcb21a8f6fd7169a4ba7c1"
+    },
+    {
+      "bytes": 6912,
+      "origin": "package",
+      "path": "vera_base/verantyx/consensus_forks.py",
+      "sha256": "53d2fbf4e169c73c39beaefca04412e29336ddecb8599acd137868e8634d89d2"
+    },
+    {
+      "bytes": 45143,
+      "origin": "package",
+      "path": "vera_base/verantyx/consensus_store.py",
+      "sha256": "6c4631db02eb99aadf75ae6f49040f22708ef7492c3e7a3a54d2cee0540855fc"
+    },
+    {
+      "bytes": 9843,
+      "origin": "package",
+      "path": "vera_base/verantyx/constellation.py",
+      "sha256": "caf4d8d7d1562ea7bafb63553152ca2688da743d726b8da80d0fc8866fea5c39"
+    },
+    {
+      "bytes": 4103,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/__init__.py",
+      "sha256": "86c855d561afe0b2093631302869af22d3ee02ece2c4c5f173f5ecef94fa715b"
+    },
+    {
+      "bytes": 38667,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/adnominal.py",
+      "sha256": "d53b81d4e9efe758f5517d201f2c9939a63664fb9ad17ded749a152aa4b98728"
+    },
+    {
+      "bytes": 42578,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/comparison.py",
+      "sha256": "c7c4df4c6df43458225644d624cdaf9c1f17ee227e857f27753c3f2f47a190d7"
+    },
+    {
+      "bytes": 29618,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/connective_rel.py",
+      "sha256": "f4a0c4be7d6e4e50938c79274ba2b7b8390fbb52135bea64cf224ad469e3d319"
+    },
+    {
+      "bytes": 29161,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/diathesis.py",
+      "sha256": "9ef5789608d128e0e3fb8eea716e25809fe48dbc2fe9d6efe1c6c83869ab1510"
+    },
+    {
+      "bytes": 15856,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/giving.py",
+      "sha256": "d9926924fec3611c8e43c1330046afd0b8c96c2a8e18b30cc3e0b7c6766f8bbf"
+    },
+    {
+      "bytes": 18640,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/light_verb.py",
+      "sha256": "ae80adb85cc689b0459c1a370b7c4a6d7066b233bcfb474e2ae127f5aa715dc8"
+    },
+    {
+      "bytes": 19951,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/modality.py",
+      "sha256": "1887eedd07ec4e95f25831300d9917734bc4e68b8b4397b974f44a8c5b16a923"
+    },
+    {
+      "bytes": 30416,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/negation.py",
+      "sha256": "7a1aa31999e05afd297c072e669bf902bfd54c9bbe17df1d0c9c0622757dc784"
+    },
+    {
+      "bytes": 22551,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/np_internal.py",
+      "sha256": "bdffeee8134b903239fa5551d1ff2a5765e500524abb33d07afcf1c937ca0372"
+    },
+    {
+      "bytes": 9428,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/paren_gloss.py",
+      "sha256": "6fe0f0f77f9ce38f80e1329c4ffbbbe84ca617717cd4b84b5b48b2f572f5d147"
+    },
+    {
+      "bytes": 29871,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/quantifier.py",
+      "sha256": "2b4fd2a0966bc1a89ce0280206a30bfd1a9d5c706f6406342e5e77d78974ecc0"
+    },
+    {
+      "bytes": 10372,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/quote.py",
+      "sha256": "344ad9d7161c8c0e1f98a7e1e4616b45df7d7e1bc15b39f9a128b3223aebd9d7"
+    },
+    {
+      "bytes": 45365,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/te_chain.py",
+      "sha256": "7b7773762b9171877e7833194e3dd0b05769d3366b3b2fe7e9275a45f12d66d2"
+    },
+    {
+      "bytes": 20656,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/time_expr.py",
+      "sha256": "1da869780847ccdbc3aa7090b3700b396f1e2ae1fa14caa3ef8efda80703697f"
+    },
+    {
+      "bytes": 14952,
+      "origin": "package",
+      "path": "vera_base/verantyx/constructions/zero_subject.py",
+      "sha256": "8bb8fbc8eb35be0febbfe6139b5e6eb754e6bbc68162f367745cf8f13b6b2da6"
+    },
+    {
+      "bytes": 14933,
+      "origin": "package",
+      "path": "vera_base/verantyx/content_api.py",
+      "sha256": "9ec7735cd2ad6e25f488901ff0b393fee1b75d19183d5cfffeff10e943708b48"
+    },
+    {
+      "bytes": 6729,
+      "origin": "package",
+      "path": "vera_base/verantyx/content_codec.py",
+      "sha256": "2801b13187ac467ec4f17453f11d505dd758288c457939771d4ed4ed7336749e"
+    },
+    {
+      "bytes": 8877,
+      "origin": "package",
+      "path": "vera_base/verantyx/content_ir.py",
+      "sha256": "de84cd9650cdb15cb1970c47b9f2fb4b0aaf39a613d4222bb1b3b485beb2188b"
+    },
+    {
+      "bytes": 18204,
+      "origin": "package",
+      "path": "vera_base/verantyx/content_planner.py",
+      "sha256": "246aeb7c7091e103210edd591f66900a35cae3d82d4472f3fd87788a94575584"
+    },
+    {
+      "bytes": 32054,
+      "origin": "package",
+      "path": "vera_base/verantyx/content_reader.py",
+      "sha256": "2233389d668228a27d319d6a0c8c9762f28a7d876cdc611e0dd0c031450441b7"
+    },
+    {
+      "bytes": 7018,
+      "origin": "package",
+      "path": "vera_base/verantyx/content_realizer.py",
+      "sha256": "8e31faffae7f908cfd6e00fca9d498822133073f9c2ae5334cbd5b66cc6cfd27"
+    },
+    {
+      "bytes": 37100,
+      "origin": "package",
+      "path": "vera_base/verantyx/content_verify.py",
+      "sha256": "34ef13d153bfebbe70b6e5818aa414ab04a4cb1d8afb596aa182ccd2c83475bb"
+    },
+    {
+      "bytes": 7804,
+      "origin": "package",
+      "path": "vera_base/verantyx/contract_budget.py",
+      "sha256": "87b878d37a1358c14caaccd44caaca1649e31a89a54c224bbaa501eee5000678"
+    },
+    {
+      "bytes": 6841,
+      "origin": "package",
+      "path": "vera_base/verantyx/contract_codegen.py",
+      "sha256": "5df75c63a63cd32e74a03ff5c3fed0382cdc85a6b3e41ad77bd9462d353d5b3c"
+    },
+    {
+      "bytes": 6925,
+      "origin": "package",
+      "path": "vera_base/verantyx/contract_ir.py",
+      "sha256": "8acc9532e70c9bd9cdd02a45a608c77586a753ca0ffbb3ae8e7c3fd1c58db7b7"
+    },
+    {
+      "bytes": 49728,
+      "origin": "package",
+      "path": "vera_base/verantyx/contract_lower.py",
+      "sha256": "19a38ce5ae44bed1f207847b70c2d80cc8aa1b0cb3134c6c8f0d08dd09bae5a1"
+    },
+    {
+      "bytes": 22891,
+      "origin": "package",
+      "path": "vera_base/verantyx/contract_plan.py",
+      "sha256": "87778e1f55e8b94ceb258ce0dfcb14149a567affb33022db51b42d17b9325118"
+    },
+    {
+      "bytes": 25134,
+      "origin": "package",
+      "path": "vera_base/verantyx/contract_reader.py",
+      "sha256": "56c1e4dab1c8a7a8891b957a70a24db8b2e4c4460e7dfbe88664a8d5bc56927a"
+    },
+    {
+      "bytes": 62429,
+      "origin": "package",
+      "path": "vera_base/verantyx/contract_sandbox.py",
+      "sha256": "8e156e725958d6c00f4aa4615da20bb78b451009a67a6f202239051d2bcf42e5"
+    },
+    {
+      "bytes": 44186,
+      "origin": "package",
+      "path": "vera_base/verantyx/contract_verify.py",
+      "sha256": "129dcc302d44404726fa44303cf173072a883a6ba549ae442e4f3d8718057a18"
+    },
+    {
+      "bytes": 10773,
+      "origin": "package",
+      "path": "vera_base/verantyx/conversation.py",
+      "sha256": "918613ab1ca394405c70acc68ab8d878e30f46424fca00d6ea47ee93010144b4"
+    },
+    {
+      "bytes": 17129,
+      "origin": "package",
+      "path": "vera_base/verantyx/core_abilities.py",
+      "sha256": "385ec5bff6f9888471e044c63a8a01c6cef6ac955808cf0e77087eb087b2285d"
+    },
+    {
+      "bytes": 6708,
+      "origin": "package",
+      "path": "vera_base/verantyx/corpus_aozora.py",
+      "sha256": "7cd1ce551a44111a2a03c02b03926bc781ecbda00db259ea7c5ccb60ea8e4359"
+    },
+    {
+      "bytes": 18408,
+      "origin": "package",
+      "path": "vera_base/verantyx/corpus_audit.py",
+      "sha256": "2b14e41cf1f1a3da858092e95f6ac4ac8c0228c40b8256e057d77980a3b02322"
+    },
+    {
+      "bytes": 14515,
+      "origin": "package",
+      "path": "vera_base/verantyx/corpus_en.py",
+      "sha256": "0f0cfb3d12116e03682f0cfe97d8b1648a71a1591b85738edfed20c13408e303"
+    },
+    {
+      "bytes": 8815,
+      "origin": "package",
+      "path": "vera_base/verantyx/corpus_fetch.py",
+      "sha256": "03aa248927ddd4aab1ca957155564183b3e71274949291a984a6e0ab576e97ec"
+    },
+    {
+      "bytes": 14447,
+      "origin": "package",
+      "path": "vera_base/verantyx/corpus_wikipedia.py",
+      "sha256": "62cfd5bd33ef70f10d7afb32d86131a408105fa35ce329a881c8ffd1ab84b316"
+    },
+    {
+      "bytes": 60537,
+      "origin": "package",
+      "path": "vera_base/verantyx/covenant.py",
+      "sha256": "23e87bbe16f9cb4d5e5243fb515d678a0f1a026971265d1422c75beac65413ae"
+    },
+    {
+      "bytes": 5280,
+      "origin": "package",
+      "path": "vera_base/verantyx/coverage.py",
+      "sha256": "725f0adb4947e7d89b6df9c1b2d59bdeb26ac3cd67f7184e4d6a460069497018"
+    },
+    {
+      "bytes": 2206,
+      "origin": "package",
+      "path": "vera_base/verantyx/cross.py",
+      "sha256": "1076853a47173ba62da62c86ad84ce3f50f2efd522dbd44dae57865c210d538c"
+    },
+    {
+      "bytes": 251882,
+      "origin": "package",
+      "path": "vera_base/verantyx/cross_geometry_forks.py",
+      "sha256": "3993d1cf539db4a32db03c079b91ec97465e39a5e43a7c992af5f18771aef9c4"
+    },
+    {
+      "bytes": 20693,
+      "origin": "package",
+      "path": "vera_base/verantyx/cross_store.py",
+      "sha256": "7f1412901acf4d9064ce88fc53bf899a7a922969ff0378151a35168cbe99e34b"
+    },
+    {
+      "bytes": 2344,
+      "origin": "package",
+      "path": "vera_base/verantyx/crossverify.py",
+      "sha256": "a954a511a04595983125da3332e857443baf3dd1546de81f7d42cea805ee62ac"
+    },
+    {
+      "bytes": 169,
+      "origin": "package",
+      "path": "vera_base/verantyx/data/realize_variants.json",
+      "sha256": "ceebf616d262e1fb3776a4ff4a2244984c4953762d5ca2dce6530a118ea8cd20"
+    },
+    {
+      "bytes": 5219,
+      "origin": "package",
+      "path": "vera_base/verantyx/debug_consensus.py",
+      "sha256": "e95a472186a67904a7f6d4d4808b134fef05330e991cfef9417adafe865efe49"
+    },
+    {
+      "bytes": 7468,
+      "origin": "package",
+      "path": "vera_base/verantyx/defect_gaps.py",
+      "sha256": "dccf2c6ac52c3cea6fa44cc2d715e79579fd0051e9aa48281312c68c3b3cc947"
+    },
+    {
+      "bytes": 9258,
+      "origin": "package",
+      "path": "vera_base/verantyx/defect_report.py",
+      "sha256": "97a7419df0ba267997883343feb0ac1d56a10041991f3f9268537557b4421540"
+    },
+    {
+      "bytes": 13644,
+      "origin": "package",
+      "path": "vera_base/verantyx/doctor.py",
+      "sha256": "ee1ff3961e127cb6cb605873dc82c95692375adc5385fa259728018b9211aa2c"
+    },
+    {
+      "bytes": 26592,
+      "origin": "package",
+      "path": "vera_base/verantyx/document_ingest.py",
+      "sha256": "1d27aaf1576128421858c05977e346d1a146a27c1411b901ca27a756e0f899ae"
+    },
+    {
+      "bytes": 27239,
+      "origin": "package",
+      "path": "vera_base/verantyx/document_loaders.py",
+      "sha256": "ffd049f4aa01c934ce64a32b73e6e23fec3921f620a2047b7882747134518ce8"
+    },
+    {
+      "bytes": 77844,
+      "origin": "package",
+      "path": "vera_base/verantyx/document_structure.py",
+      "sha256": "a1e9cf6ddca877cf16527b0f85423cbf3d2585fea70508a5a5dac39c8c49b646"
+    },
+    {
+      "bytes": 7745,
+      "origin": "package",
+      "path": "vera_base/verantyx/domain_ingest.py",
+      "sha256": "b13c18ef6609c51daba6246fc49cf5b21c71dfef3612cee5e838bc559b62b480"
+    },
+    {
+      "bytes": 4812,
+      "origin": "package",
+      "path": "vera_base/verantyx/domains/__init__.py",
+      "sha256": "df427660d7187e592c25f2d2ff007944f43c11a407bd61b14c24c5a4cd02e2d3"
+    },
+    {
+      "bytes": 5061,
+      "origin": "package",
+      "path": "vera_base/verantyx/drift.py",
+      "sha256": "a305bbb29f63aff2505fcddc7991967b9470f79cc1bbe226e79e94454df7de9c"
+    },
+    {
+      "bytes": 10766,
+      "origin": "package",
+      "path": "vera_base/verantyx/egov.py",
+      "sha256": "1324bae7709f552a130c43ccc29959085ad877cd9b14a4c961dd66f55a7928f6"
+    },
+    {
+      "bytes": 25857,
+      "origin": "package",
+      "path": "vera_base/verantyx/en_decompose.py",
+      "sha256": "1a5f1040923b9acd4eb846bc462ceb882ea9bda0d55a6a13263d0a34d632090a"
+    },
+    {
+      "bytes": 19027,
+      "origin": "package",
+      "path": "vera_base/verantyx/en_frames.py",
+      "sha256": "aa728f39d93f9ad7c7a33a6b35d45f121a2f733f59f54eb320a9b758275da43f"
+    },
+    {
+      "bytes": 44080,
+      "origin": "package",
+      "path": "vera_base/verantyx/engine.py",
+      "sha256": "01afae4219eade13296bed0ada77b8c66267a563d22c33146ae103e6d6005d82"
+    },
+    {
+      "bytes": 12764,
+      "origin": "package",
+      "path": "vera_base/verantyx/events.py",
+      "sha256": "8c7e2826d299bf5fa8f7a4d44d4fa122e464673bca8d62801945e569d6b5bf63"
+    },
+    {
+      "bytes": 11378,
+      "origin": "package",
+      "path": "vera_base/verantyx/evidence_library.py",
+      "sha256": "5008a57306d9df4e99f0c6a8e4c36ec5ee89f2e9920b4a514c7ca15a61cce241"
+    },
+    {
+      "bytes": 6713,
+      "origin": "package",
+      "path": "vera_base/verantyx/experience.py",
+      "sha256": "d39698a5a2c5dfc0235289a88b5ef460cfe8526d1b21a1f4af783a0226e65ccb"
+    },
+    {
+      "bytes": 6221,
+      "origin": "package",
+      "path": "vera_base/verantyx/experience_cross.py",
+      "sha256": "23c7866ee8210f52128320d7d2930265448912bde19d6d5b7177079289f72d3a"
+    },
+    {
+      "bytes": 12568,
+      "origin": "package",
+      "path": "vera_base/verantyx/explain.py",
+      "sha256": "4b354dcb2d069fa58bcbe94c466da0b09449ab62f89be5b856b4b68aa5f5cda9"
+    },
+    {
+      "bytes": 25964,
+      "origin": "package",
+      "path": "vera_base/verantyx/export_sqlite.py",
+      "sha256": "b395c19f74767f6d07fac8b0fc6e203c3e451a4ccb1462f344e795773b7da0f0"
+    },
+    {
+      "bytes": 8718,
+      "origin": "package",
+      "path": "vera_base/verantyx/export_view3d.py",
+      "sha256": "99d6f8d49063f4147065321cb30c1996554023c5f2e5885c986cac5004f50563"
+    },
+    {
+      "bytes": 5753,
+      "origin": "package",
+      "path": "vera_base/verantyx/face_roles.py",
+      "sha256": "69aa11f02f68da1645afad9d32d9e47d4cbb97fd153505f6011b06d583823bc8"
+    },
+    {
+      "bytes": 21132,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_domains.py",
+      "sha256": "7e6c14f08c74497bcea0ab03fd3921fa73b1658adbe60357a8d265e63c405336"
+    },
+    {
+      "bytes": 4233,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_domains_eval.py",
+      "sha256": "f5a2918ca3bb87386663afe380a3f64dc04bf81c08b323eaa53be269eb6f1467"
+    },
+    {
+      "bytes": 2509,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_packs/data_pipeline.json",
+      "sha256": "069c9a894fd3b8e4bc58ea7f6255e22ce2f28ee642b2f2b3bd2f8ff6d99827d8"
+    },
+    {
+      "bytes": 2177,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_packs/decision_explain.json",
+      "sha256": "e6c909caffece38e473ee26bc58becfc7c9a291cee21bfe9538d87423fa09278"
+    },
+    {
+      "bytes": 2521,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_packs/disaster_info.json",
+      "sha256": "1b48184c4a20045ceaad959d9556fafca680faac827f9161dd0526cea72bcb06"
+    },
+    {
+      "bytes": 2365,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_packs/education_assess.json",
+      "sha256": "c11f2cae848fecc8dc9b4369110ab0a39302e26a73abffe116adc1fef23fe9f2"
+    },
+    {
+      "bytes": 2788,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_packs/game_qa.json",
+      "sha256": "bd6c5fe78ab79dd146b3bd4cc766d9b4afcaf2aae50a8751c7d19491b6be062f"
+    },
+    {
+      "bytes": 2067,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_packs/lab_automation.json",
+      "sha256": "ccacdf54ef6361720d2b09562e406927498bc85dbb894448430ba84ba77d118e"
+    },
+    {
+      "bytes": 2242,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_packs/manufacturing_qa.json",
+      "sha256": "791e6b831af85053b7e87d2082ec4c1cad3b8d6b4e933428a52b358f5460833b"
+    },
+    {
+      "bytes": 2355,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_packs/medical_evidence.json",
+      "sha256": "e4abe405f95c4b14aef61da3b1e77b2d98114c65e6712ad65e692bbefa6168e2"
+    },
+    {
+      "bytes": 2782,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_packs/research_experiment.json",
+      "sha256": "fb7ccff4b4772a08e34c13de45bec66786e89cd8eda085efb2b02aeffbd8324c"
+    },
+    {
+      "bytes": 2789,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_packs/robot_grasp.json",
+      "sha256": "957f1ff730e5d4c24b3d299ed8899be1f2b626ebac97cd244bfbe9f799b5cc39"
+    },
+    {
+      "bytes": 2449,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_packs/search_zero.json",
+      "sha256": "3a40fbc4eae8249c6cb285d09d98997e1de79779404bbbc06aa22e0ae2d4a0fc"
+    },
+    {
+      "bytes": 2238,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_packs/soc_telemetry.json",
+      "sha256": "e1dfa2151a82412896e28662cd3e04326ab517b740ebc967b91bc9fe707fb8d9"
+    },
+    {
+      "bytes": 2257,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_packs/support_kb.json",
+      "sha256": "f7783258ff24edfd76672b3846685f9200038ac9a695cf5fd96b2916063c572d"
+    },
+    {
+      "bytes": 2177,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_packs/translation_l10n.json",
+      "sha256": "8e3e5487a1670308d5de6b1e0d268d6bd43da877fa20ceb312333203f67d9b3f"
+    },
+    {
+      "bytes": 2780,
+      "origin": "package",
+      "path": "vera_base/verantyx/failure_packs/web_agent.json",
+      "sha256": "33474e4eaab6cb06cd49b965025759c5559c5f1071e20b20cd1cc6c42cecdb9f"
+    },
+    {
+      "bytes": 32750,
+      "origin": "package",
+      "path": "vera_base/verantyx/family_library.py",
+      "sha256": "e877126168552d0f4fcb33bc64f858b6fba140908ff6ac4eb4d91ea4c29e6154"
+    },
+    {
+      "bytes": 50769,
+      "origin": "package",
+      "path": "vera_base/verantyx/field_app.html",
+      "sha256": "0346f33d68de1a3d630d6183a0db0c31a7467076a0bc3cfa3a85fdd6c8b2289d"
+    },
+    {
+      "bytes": 20620,
+      "origin": "package",
+      "path": "vera_base/verantyx/field_app.py",
+      "sha256": "9487a6e3f508893cb4b1edaa89182fb873e9a568869a35d6ff0a4ccc0957c51e"
+    },
+    {
+      "bytes": 13524,
+      "origin": "package",
+      "path": "vera_base/verantyx/field_reports.py",
+      "sha256": "d89a1311141b8d2abebdf8d50f5ca5b7fe5d495abd24e14e69adfb1511011aac"
+    },
+    {
+      "bytes": 9990,
+      "origin": "package",
+      "path": "vera_base/verantyx/field_reports_eval.py",
+      "sha256": "6de7ec8a4785e4d1bcc06d8e325e97c61b87aad8e7ea13c75ff4a4e9bc9a7448"
+    },
+    {
+      "bytes": 8635,
+      "origin": "package",
+      "path": "vera_base/verantyx/field_session.py",
+      "sha256": "de28fb5a8b731c71d9c446db3753491174d41756e7eb2d16ac91c6bcff829874"
+    },
+    {
+      "bytes": 15025,
+      "origin": "package",
+      "path": "vera_base/verantyx/figurative.py",
+      "sha256": "f16ad2bd482c2df13b77dae256bab4ac6c0b4a0a1daf510229bb7d8dfcaed615"
+    },
+    {
+      "bytes": 41351,
+      "origin": "package",
+      "path": "vera_base/verantyx/frame_evidence.py",
+      "sha256": "1da601cea3693499e848c9ed71b6a63c1041f2c97d780d6af5c287309ed4fbbd"
+    },
+    {
+      "bytes": 23647,
+      "origin": "package",
+      "path": "vera_base/verantyx/frames.py",
+      "sha256": "23849274976d814e42e5e05019b00357f565ee378934e4c06f09e13ae2ddf540"
+    },
+    {
+      "bytes": 19720,
+      "origin": "package",
+      "path": "vera_base/verantyx/full_sovereign.py",
+      "sha256": "f186c5d164c0459d7dc280b09e33e7da9e83f6b0c867942231be49ba20db0d96"
+    },
+    {
+      "bytes": 17692,
+      "origin": "package",
+      "path": "vera_base/verantyx/fusion.py",
+      "sha256": "bc4ebb81fbc8429d92db5578d15fc46cea392c7b06e7cda508328420e2e99144"
+    },
+    {
+      "bytes": 11700,
+      "origin": "package",
+      "path": "vera_base/verantyx/gap_graph.py",
+      "sha256": "c1d02552eaf919eaff6613d04605c6684d91e8096297f4dfd63a787bd909d7f3"
+    },
+    {
+      "bytes": 3300,
+      "origin": "package",
+      "path": "vera_base/verantyx/gap_severity.py",
+      "sha256": "d2b8f50d10cd9c2feda95fde12af9d62a308f06e26c54d41c1c811d19e0ec668"
+    },
+    {
+      "bytes": 5316,
+      "origin": "package",
+      "path": "vera_base/verantyx/gapnode.py",
+      "sha256": "732390f2078cc7e434f70597f44a7d070be8d9f5ad419052cf85aa38ec34224f"
+    },
+    {
+      "bytes": 11834,
+      "origin": "package",
+      "path": "vera_base/verantyx/generalization_eval.py",
+      "sha256": "de6206e4a71d01884189876c383033ebddc4a3a8e6077aa254a5a6302629f80d"
+    },
+    {
+      "bytes": 17737,
+      "origin": "package",
+      "path": "vera_base/verantyx/graded.py",
+      "sha256": "2cb6b1015d31d6b67765619ff5c7fc9f4ee96c92801805a79b250a8ab8934835"
+    },
+    {
+      "bytes": 13463,
+      "origin": "package",
+      "path": "vera_base/verantyx/granularity.py",
+      "sha256": "8d8022d3e127c190fc9b16da33c6d68d0e9ed6ddb5982e53477f1d4dd3ad9375"
+    },
+    {
+      "bytes": 9624,
+      "origin": "package",
+      "path": "vera_base/verantyx/grow.py",
+      "sha256": "4979f6a73aa981421b7ab943c16d6bd3f3c183a0ce4950d8d1922536aff454fa"
+    },
+    {
+      "bytes": 7398,
+      "origin": "package",
+      "path": "vera_base/verantyx/growth_signals.py",
+      "sha256": "cc5f97cb03722088f6aafe655106f445db9aef171170eac6575554d5fa0acf35"
+    },
+    {
+      "bytes": 2278,
+      "origin": "package",
+      "path": "vera_base/verantyx/hf_store.py",
+      "sha256": "8d865ff555d5420f7703f9d84e29b890ba1cb0f572150a5a1f8c5d6b89e6f3f2"
+    },
+    {
+      "bytes": 26178,
+      "origin": "package",
+      "path": "vera_base/verantyx/hierarchy.py",
+      "sha256": "bb65b00088083b64348bac3b91244abcff0f6466ab606a9c4ecac6b7e0dd34ad"
+    },
+    {
+      "bytes": 11738,
+      "origin": "package",
+      "path": "vera_base/verantyx/hub_edges.py",
+      "sha256": "d5df42f2a9283d1757dc3403b3b9b9e205a991e1c61f5536b2fe1955355a2de6"
+    },
+    {
+      "bytes": 16439,
+      "origin": "package",
+      "path": "vera_base/verantyx/impact.py",
+      "sha256": "5f21ccf13854098c2ca974a26109c6b234480612e3b1837600ecad64366f9221"
+    },
+    {
+      "bytes": 14070,
+      "origin": "package",
+      "path": "vera_base/verantyx/index.py",
+      "sha256": "43bc77ce85bdd9ec51f599e41f4fb2774749cc6467e2ad16f4f84160eaa872e0"
+    },
+    {
+      "bytes": 11576,
+      "origin": "package",
+      "path": "vera_base/verantyx/ingest_coherence.py",
+      "sha256": "2d4d0da9605910d0f885bcc579d2116b98c2fd2d8949a978beb3232abf6b5d1b"
+    },
+    {
+      "bytes": 6175,
+      "origin": "package",
+      "path": "vera_base/verantyx/intake_quality.py",
+      "sha256": "3054cdaeeab0200cdcd9ec6e66cd513e93605553f55c663ad3152a4e2ed058ad"
+    },
+    {
+      "bytes": 13290,
+      "origin": "package",
+      "path": "vera_base/verantyx/intent.py",
+      "sha256": "042195f0398eb7359ae26d499ba95def99ee9b2a21fb089d1c983f3e98ba796b"
+    },
+    {
+      "bytes": 8083,
+      "origin": "package",
+      "path": "vera_base/verantyx/intent_chain.py",
+      "sha256": "d5537171f4221550a12d2949c1f1bc10056bc5b573fba07e29d10f1d938c2338"
+    },
+    {
+      "bytes": 11632,
+      "origin": "package",
+      "path": "vera_base/verantyx/intent_frames.py",
+      "sha256": "8e16b7d8d08e93e047452121cfbcbf16ecd6cf28cf30dfef9c5d3b64cdb7bd06"
+    },
+    {
+      "bytes": 11908,
+      "origin": "package",
+      "path": "vera_base/verantyx/ja_grammar.py",
+      "sha256": "5ae0fa4ae72e107800bcb9c279b24f39caaafc0be4cede86a08545f296d842bf"
+    },
+    {
+      "bytes": 5006,
+      "origin": "package",
+      "path": "vera_base/verantyx/ja_morph.py",
+      "sha256": "90025479b61db9c533281bd0e0c9b5c9f6cb5312f43191ea3d394030dddf275c"
+    },
+    {
+      "bytes": 10095,
+      "origin": "package",
+      "path": "vera_base/verantyx/jgen_lexicon.py",
+      "sha256": "976ecbeee11366691cc84b8004dfd0d63ca487d1005b2d1189bdecb7594ef05d"
+    },
+    {
+      "bytes": 8856,
+      "origin": "package",
+      "path": "vera_base/verantyx/kripke.py",
+      "sha256": "1427c9b3604f8406e0a09642b020e57e86818219c9c1f4601c91372208198624"
+    },
+    {
+      "bytes": 26488,
+      "origin": "package",
+      "path": "vera_base/verantyx/kripke_rewrite_forks.py",
+      "sha256": "0ab4e4d97afaf66e67e1fea3c6b4b570bf961b2122893c034a1a649fa8e8c805"
+    },
+    {
+      "bytes": 33102,
+      "origin": "package",
+      "path": "vera_base/verantyx/lang.py",
+      "sha256": "da1ebec27069befe340ae394288aa453ceca5bc8bbaef14c8a2ba8560ee5e9d4"
+    },
+    {
+      "bytes": 943,
+      "origin": "package",
+      "path": "vera_base/verantyx/lang_data/ja_domain_disaster.json",
+      "sha256": "afbb05414bdfe3e0352ddd332a0403ae206af42eec47281bf0ab1685fcf0826b"
+    },
+    {
+      "bytes": 3225,
+      "origin": "package",
+      "path": "vera_base/verantyx/lang_data/ja_grammar.json",
+      "sha256": "2be56a2f685d4818acbf26e5357aae3af2b0e4b8a2d4b16e858412a4e381167d"
+    },
+    {
+      "bytes": 704641,
+      "origin": "package",
+      "path": "vera_base/verantyx/lang_data/predicate_df.json",
+      "sha256": "872c65b136402025d0ffeeb9cf0eef6c38485292bfe4ae7946dcfa57f4478f4a"
+    },
+    {
+      "bytes": 19764,
+      "origin": "package",
+      "path": "vera_base/verantyx/lang_data/roles_learned.json",
+      "sha256": "2c6d9e57f84d75750b825826f0248b62723944bc9ee1b4bcb012485b19a8c447"
+    },
+    {
+      "bytes": 177554,
+      "origin": "package",
+      "path": "vera_base/verantyx/lang_data/transitivity.json",
+      "sha256": "b5e7013c229e792c9a68ec4f85480196927e3152742ff16d0140c812d66a6a59"
+    },
+    {
+      "bytes": 5389,
+      "origin": "package",
+      "path": "vera_base/verantyx/lang_router_forks.py",
+      "sha256": "0122bf729f5970fcff4d4bc3adbad1a64cc3ce4237852c4778acdcf1c6342072"
+    },
+    {
+      "bytes": 10061,
+      "origin": "package",
+      "path": "vera_base/verantyx/lattice.py",
+      "sha256": "6f9623f5f50d1d2f737a30fd41e6cc6b7f706f2b8d362f5599fcf112f4ff484b"
+    },
+    {
+      "bytes": 10834,
+      "origin": "package",
+      "path": "vera_base/verantyx/layer_stack.py",
+      "sha256": "384a3671f193075de1ab80f535ed5965995b1cb58e02485016ca194c2ab6a0d7"
+    },
+    {
+      "bytes": 4382,
+      "origin": "package",
+      "path": "vera_base/verantyx/lean_witness.py",
+      "sha256": "757821efa13f289e8298230b6dfa6ccd59ea9e12f325a851359eaeeffa7c0c2d"
+    },
+    {
+      "bytes": 3901,
+      "origin": "package",
+      "path": "vera_base/verantyx/lean_witness_forks.py",
+      "sha256": "217505a642311744316fccbc77cc8d876aa319b128c5bf1d7b39884bf394e224"
+    },
+    {
+      "bytes": 8037,
+      "origin": "package",
+      "path": "vera_base/verantyx/lex_filters.py",
+      "sha256": "819a6ef52c7d72111c61ac89fe49fcedbccd789c39db89de626735cbc0cf76cc"
+    },
+    {
+      "bytes": 11996,
+      "origin": "package",
+      "path": "vera_base/verantyx/library.py",
+      "sha256": "ea50f7e053278d2512bca647be00076dfda9094c291beadd4edebcd5fb07f5ef"
+    },
+    {
+      "bytes": 8468,
+      "origin": "package",
+      "path": "vera_base/verantyx/links.py",
+      "sha256": "22e74b09ae31ade0cf6ba7256a5b48c236b90c61b5aabbe05c8dd889bb237f9b"
+    },
+    {
+      "bytes": 2774,
+      "origin": "package",
+      "path": "vera_base/verantyx/llm_local.py",
+      "sha256": "0343f832809006a3cbbb7e9ed48d0a1128fcaf743030050dfc4e9fb2bb4fb601"
+    },
+    {
+      "bytes": 7039,
+      "origin": "package",
+      "path": "vera_base/verantyx/material_source.py",
+      "sha256": "ebbe9187726eaafe008bf8df63956a6b5501ffdc335b768dd737a64095ddcecc"
+    },
+    {
+      "bytes": 14261,
+      "origin": "package",
+      "path": "vera_base/verantyx/math_sim.py",
+      "sha256": "b4ba94ec40a92518f9e4dee40c599db817ef358f3c0f20dddb79d9d2d6ab81ef"
+    },
+    {
+      "bytes": 5785,
+      "origin": "package",
+      "path": "vera_base/verantyx/math_sim_forks.py",
+      "sha256": "147e00badbbe11f877b3473f832e5116f688f376466fd46d5d93cc227c0ddadc"
+    },
+    {
+      "bytes": 4657,
+      "origin": "package",
+      "path": "vera_base/verantyx/mathlib_witness.py",
+      "sha256": "f7e36d92aeef234cd6c14e5c731cf5346dcc409ed4fa812c4cd46a50a4b49696"
+    },
+    {
+      "bytes": 191258,
+      "origin": "package",
+      "path": "vera_base/verantyx/mcp_server.py",
+      "sha256": "8545e0ee9d6c9c6a6b648415a0d51d43b30a5fb271d7e38e8e75b9f564c60410"
+    },
+    {
+      "bytes": 4670,
+      "origin": "package",
+      "path": "vera_base/verantyx/meaning_assets.py",
+      "sha256": "e74c87f65d0e3987985e8ec3ad3212e56063c3586e559c9f209e4f8965ff173a"
+    },
+    {
+      "bytes": 21285,
+      "origin": "package",
+      "path": "vera_base/verantyx/meaning_bridge.py",
+      "sha256": "3a6d46288d5097863cd10df2b6bffa95aa6be37dd8085dd83f935acd42585dc2"
+    },
+    {
+      "bytes": 16883,
+      "origin": "package",
+      "path": "vera_base/verantyx/meaning_descent.py",
+      "sha256": "5e790ab87c4dfb757630adb12acbdd7dcc7ccb0640da6436ad8157d53b7e4f65"
+    },
+    {
+      "bytes": 21211,
+      "origin": "package",
+      "path": "vera_base/verantyx/meaning_goal_bridge.py",
+      "sha256": "7a0b5817f1ba4b2b543608b906eca84e6ef53088bcf4ff072544dff10dadcf04"
+    },
+    {
+      "bytes": 5053,
+      "origin": "package",
+      "path": "vera_base/verantyx/meaning_index.py",
+      "sha256": "988729d037419d0429ba0d0581430de1899c5f4746a2a3b459866553edd1c807"
+    },
+    {
+      "bytes": 6106,
+      "origin": "package",
+      "path": "vera_base/verantyx/memory_brief.py",
+      "sha256": "a7793eaaac06cbae9dcdb8a330738d5463bf471cef66027b8894f76aec7e6ba6"
+    },
+    {
+      "bytes": 22511,
+      "origin": "package",
+      "path": "vera_base/verantyx/memory_frame.py",
+      "sha256": "0a2485ea8e539a5bf96d2bb600d863268a3bd3e469943039b5533535640b01d9"
+    },
+    {
+      "bytes": 11447,
+      "origin": "package",
+      "path": "vera_base/verantyx/memory_lessons.py",
+      "sha256": "312af2e720fe7e6e00010b27796f28690a65ec487f71127a42e82e1fe1c8fd39"
+    },
+    {
+      "bytes": 10455,
+      "origin": "package",
+      "path": "vera_base/verantyx/memory_merge.py",
+      "sha256": "cba86b59a437f16d64c5441cc229cbdb79c6b77fae84f64b2c8fef29ab235464"
+    },
+    {
+      "bytes": 7938,
+      "origin": "package",
+      "path": "vera_base/verantyx/memory_revalidate.py",
+      "sha256": "9369151eed72b5d0990494969336b04ef1461741f6a5cb6541b5d15ab834097d"
+    },
+    {
+      "bytes": 16219,
+      "origin": "package",
+      "path": "vera_base/verantyx/metamorphic.py",
+      "sha256": "38b0e2051df9ad740ad0307661a2c5dc93e517f2955e02c43b990a83ccb8ba3d"
+    },
+    {
+      "bytes": 3274,
+      "origin": "package",
+      "path": "vera_base/verantyx/module_forge.py",
+      "sha256": "6d5cecfa7cc8b7396c70274afad8c90be0a582d4ff22312299d752ce2f0ec467"
+    },
+    {
+      "bytes": 3752,
+      "origin": "package",
+      "path": "vera_base/verantyx/module_ingest.py",
+      "sha256": "478069a3fd84d7a1b21de75af0b9e36ee4975af67d64355c0ce99a950fb9ff4f"
+    },
+    {
+      "bytes": 6392,
+      "origin": "package",
+      "path": "vera_base/verantyx/module_verify.py",
+      "sha256": "dc8a77c6f30195054b0965f189923945962f2e28f22c80665d9312969b46295c"
+    },
+    {
+      "bytes": 12886,
+      "origin": "package",
+      "path": "vera_base/verantyx/multi_party.py",
+      "sha256": "fbe772432936999514da47233ca1e91805f400d11e3f8d291deb040cb8c8cbe4"
+    },
+    {
+      "bytes": 20110,
+      "origin": "package",
+      "path": "vera_base/verantyx/multigrain_adapter.py",
+      "sha256": "45a7d3687839d202681486d5473d52060fc68f830598b50efcfd38e22021316e"
+    },
+    {
+      "bytes": 80861,
+      "origin": "package",
+      "path": "vera_base/verantyx/multigrain_source_binding.py",
+      "sha256": "41e5a7b1dc5c08756ddba716e792132557104dff644acd9af3ed4fa8d627ffdd"
+    },
+    {
+      "bytes": 110447,
+      "origin": "package",
+      "path": "vera_base/verantyx/multilingual_eval.py",
+      "sha256": "8cf47137039f2d5d9e82e48288dac6fa717033620878de3b3cd8b6a7b755630a"
+    },
+    {
+      "bytes": 17444,
+      "origin": "package",
+      "path": "vera_base/verantyx/obfuscate.py",
+      "sha256": "5d289237f5df388d7c73f61c79214cda304e57bb743aaa49689d5ba94e6bc601"
+    },
+    {
+      "bytes": 8375,
+      "origin": "package",
+      "path": "vera_base/verantyx/obfuscate_forks.py",
+      "sha256": "78aa555a700743460ba4f9308def780171f442d2420bf026b8366d22049bff06"
+    },
+    {
+      "bytes": 10511,
+      "origin": "package",
+      "path": "vera_base/verantyx/observation.py",
+      "sha256": "b6fe4117481e1b42989bd7f5679a5a9aad706cc5aafb1b16c7630cd50f66f347"
+    },
+    {
+      "bytes": 75730,
+      "origin": "package",
+      "path": "vera_base/verantyx/one.py",
+      "sha256": "239cf905ac4d05f5c88c5f10cf0ed19bb416f840ca55aab8123ee64c665c3761"
+    },
+    {
+      "bytes": 5122,
+      "origin": "package",
+      "path": "vera_base/verantyx/own_ai_guide.py",
+      "sha256": "4da355a9181c45d81cfa237bb35235f53d69f2ab3017cc0282699e37a9cc310e"
+    },
+    {
+      "bytes": 11359,
+      "origin": "package",
+      "path": "vera_base/verantyx/pack_authoring.py",
+      "sha256": "b7f1cf7d50b74222e57584d73dbdd970f2220cd3530bb9e54a17159e1cc7f1c3"
+    },
+    {
+      "bytes": 5513,
+      "origin": "package",
+      "path": "vera_base/verantyx/pack_ingest.py",
+      "sha256": "a59b7546ebb25ecf79b0d6ff38407cb410a76ca49c483095fbcf939215131297"
+    },
+    {
+      "bytes": 1224,
+      "origin": "package",
+      "path": "vera_base/verantyx/paths.py",
+      "sha256": "69be08d2e9da52052b04da1c53f9fcf55755bbaeb98daf0593ec5adfe10335c0"
+    },
+    {
+      "bytes": 6750,
+      "origin": "package",
+      "path": "vera_base/verantyx/phase2_forks.py",
+      "sha256": "9f9b002785c4ab0debf6422feef0121706eaf3dca0578b68ad2c302fbd3e05a4"
+    },
+    {
+      "bytes": 29382,
+      "origin": "package",
+      "path": "vera_base/verantyx/placement.py",
+      "sha256": "34aee3ba2c7a07a138631625a25e08727a5ca7705d4c9685a3937dd82b2d6c2d"
+    },
+    {
+      "bytes": 5802,
+      "origin": "package",
+      "path": "vera_base/verantyx/placement_explain.py",
+      "sha256": "e0ee412e8897e70434458628ba49b212f8a3cd2be5ff807e2550702b5e0ba907"
+    },
+    {
+      "bytes": 77446,
+      "origin": "package",
+      "path": "vera_base/verantyx/polarity.py",
+      "sha256": "6fe963e972362964916659529012501642528fbf8637555b727757c522f152e0"
+    },
+    {
+      "bytes": 4513,
+      "origin": "package",
+      "path": "vera_base/verantyx/polyglot.py",
+      "sha256": "a381c9b7dc7c45f3852e4691a68ecf66cedfe9d6b68cf3c18e6bff200e60716b"
+    },
+    {
+      "bytes": 10766,
+      "origin": "package",
+      "path": "vera_base/verantyx/pour_forks.py",
+      "sha256": "f3affdbe856a4b8baf0cd886dbdd44d0fcb7bb31ce40dfee90fe219dfd3804f4"
+    },
+    {
+      "bytes": 17452,
+      "origin": "package",
+      "path": "vera_base/verantyx/predicate_profile.py",
+      "sha256": "df1db65573a73fa7af451ba424adea413da4f332279fa6323654b6b3dc36de65"
+    },
+    {
+      "bytes": 3726,
+      "origin": "package",
+      "path": "vera_base/verantyx/preregistration.py",
+      "sha256": "5d5d19354b428b4952fa36871c6fa867f6f943ea2cd6475958f5333a12203576"
+    },
+    {
+      "bytes": 2851,
+      "origin": "package",
+      "path": "vera_base/verantyx/procedure.py",
+      "sha256": "67c56fc3cf26e170e5aeb9e39f8f1779dedfcb638588ed35da919851bc9e633d"
+    },
+    {
+      "bytes": 8230,
+      "origin": "package",
+      "path": "vera_base/verantyx/procedure_exec.py",
+      "sha256": "4544f5f0dc3ddebb82d1e002debb0fbb8991a0d1777045f15a62ddd0b0fc497e"
+    },
+    {
+      "bytes": 3621,
+      "origin": "package",
+      "path": "vera_base/verantyx/procedure_ingest.py",
+      "sha256": "fea07d50aedf00208843b65147b881acb72ad30e1c908f56ac5d8b7864e0daa0"
+    },
+    {
+      "bytes": 8905,
+      "origin": "package",
+      "path": "vera_base/verantyx/procedure_vary.py",
+      "sha256": "213e3b63df72975f5352c0e790a9d0c030b94616d712182a1fed4bbbf18bc324"
+    },
+    {
+      "bytes": 39718,
+      "origin": "package",
+      "path": "vera_base/verantyx/project_frame.py",
+      "sha256": "83eff872f85b7dadb92489484acbdef6f4a5ecd4dcad078c9548f2fee4528783"
+    },
+    {
+      "bytes": 5769,
+      "origin": "package",
+      "path": "vera_base/verantyx/proof_ledger.py",
+      "sha256": "fa9c966bb7c5d15f6369d421ab526240f564ca29cd324e1ce17bd61b43097cef"
+    },
+    {
+      "bytes": 6628,
+      "origin": "package",
+      "path": "vera_base/verantyx/proposal.py",
+      "sha256": "d23129111e3a3bab1ce7dbd561b52baf59e0ecd6838d02c2325893213c94e8f6"
+    },
+    {
+      "bytes": 7542,
+      "origin": "package",
+      "path": "vera_base/verantyx/proposal_verify.py",
+      "sha256": "19e0595b97516c24fa0dfb2bdef2c10bffb0d7cdc96dddd334411efb921f53c1"
+    },
+    {
+      "bytes": 58251,
+      "origin": "package",
+      "path": "vera_base/verantyx/prover.py",
+      "sha256": "f39987533a989a258f8dea3e13712df9d78834bd9749239373093ca3b5982f38"
+    },
+    {
+      "bytes": 5626,
+      "origin": "package",
+      "path": "vera_base/verantyx/puzzle.py",
+      "sha256": "61c8ef279556fc681c77c969a4d7334b846966d181624d774221e99b7bf16371"
+    },
+    {
+      "bytes": 15379,
+      "origin": "package",
+      "path": "vera_base/verantyx/question.py",
+      "sha256": "ae1a40dc2ac64701357cd2a4fc59adb674497965c50998563bf380b364999491"
+    },
+    {
+      "bytes": 4723,
+      "origin": "package",
+      "path": "vera_base/verantyx/reach.py",
+      "sha256": "8998f0d286c6079530c2012647984b49a190c5f0b2e137050d4d59117b89dbd4"
+    },
+    {
+      "bytes": 4980,
+      "origin": "package",
+      "path": "vera_base/verantyx/realize.py",
+      "sha256": "f92c16ef4645d289b3b1cc9f32509ea50ba4b226f735fec250e9eb531379021f"
+    },
+    {
+      "bytes": 7327,
+      "origin": "package",
+      "path": "vera_base/verantyx/release.py",
+      "sha256": "807c19d7d4300b83009cf6c7bc4ef9791c23b72c81cc3f2579045e9ebf5569ce"
+    },
+    {
+      "bytes": 7720,
+      "origin": "package",
+      "path": "vera_base/verantyx/remedy.py",
+      "sha256": "01c65733c671fdd77df57ccb412bafdfbd2b3991735d3142e05da8360ab04253"
+    },
+    {
+      "bytes": 13648,
+      "origin": "package",
+      "path": "vera_base/verantyx/request_goal_binding.py",
+      "sha256": "55acaf79b46018396b02280c9e230621b79e9019622ce9cbe9e5f74cf0c45dff"
+    },
+    {
+      "bytes": 15900,
+      "origin": "package",
+      "path": "vera_base/verantyx/request_goal_route.py",
+      "sha256": "ef81bf5ba71bd70291de23e70690cf8dba6abbdc9b9fe681987393e44142d86e"
+    },
+    {
+      "bytes": 15730,
+      "origin": "package",
+      "path": "vera_base/verantyx/resolution.py",
+      "sha256": "9b0e7b0c2df57bce4a1a159e56c29e30cf6ceb100a618b72a7ae7f9cceee597a"
+    },
+    {
+      "bytes": 7859,
+      "origin": "package",
+      "path": "vera_base/verantyx/rewrite_core.py",
+      "sha256": "0f5f52f0948dd6d8985f072f2b82dd6b9d5a27515b4591e2eb1e4b608dbe5b4b"
+    },
+    {
+      "bytes": 4745,
+      "origin": "package",
+      "path": "vera_base/verantyx/rewrite_eval.py",
+      "sha256": "b7aa9f72c0ebd151365c3b10cb239976b497fcc6355de251f1af47c40efcbb95"
+    },
+    {
+      "bytes": 12927,
+      "origin": "package",
+      "path": "vera_base/verantyx/rewrite_kernel.py",
+      "sha256": "393781ab61d5773fef0917c539c05db9441474b2a495376a0450a69a0442bc61"
+    },
+    {
+      "bytes": 4551,
+      "origin": "package",
+      "path": "vera_base/verantyx/rewrite_math.py",
+      "sha256": "a2f8a4d194291f24a7f2356f5b93cfd33f10d6d83e654cedf6d879de736fb9ef"
+    },
+    {
+      "bytes": 6600,
+      "origin": "package",
+      "path": "vera_base/verantyx/rotation_signature.py",
+      "sha256": "d2dcda413f052b37796eb8ae8a88d102ce5f8cc53416165e86dc852a65e1e7ee"
+    },
+    {
+      "bytes": 33244,
+      "origin": "package",
+      "path": "vera_base/verantyx/round3.py",
+      "sha256": "ae7b3dd8e76c327f583e1ce82fded842a6bc5e910819012c23ededde04cea766"
+    },
+    {
+      "bytes": 8673,
+      "origin": "package",
+      "path": "vera_base/verantyx/router.py",
+      "sha256": "0cbf3700cde1f27155d64a0b8148f8825c69adc5c6d213a78bba6cc93252af56"
+    },
+    {
+      "bytes": 9269,
+      "origin": "package",
+      "path": "vera_base/verantyx/rule_synthesis.py",
+      "sha256": "c7ebc2566f57f285e983718bf76813384632843848858387e75fb35915932d48"
+    },
+    {
+      "bytes": 6366,
+      "origin": "package",
+      "path": "vera_base/verantyx/say.py",
+      "sha256": "9e24051b77a459b3806620952fad04113924db34d2ca95e2f74ed0ea43b3abec"
+    },
+    {
+      "bytes": 2587,
+      "origin": "package",
+      "path": "vera_base/verantyx/scene_tree.py",
+      "sha256": "dcf9d0204e271564d4aa5d0b57ac74030e38cc05e411c7edbfa086315cd98964"
+    },
+    {
+      "bytes": 8483,
+      "origin": "package",
+      "path": "vera_base/verantyx/segmented.py",
+      "sha256": "2b6970d7ec1295f0182f54ee54ca789c546852d0e23799014896218e84013aab"
+    },
+    {
+      "bytes": 7982,
+      "origin": "package",
+      "path": "vera_base/verantyx/self_audit.py",
+      "sha256": "6986e270674af8d9bcb0bbafe20a7a5229713b5ecfb844feabb4b4a5926ab105"
+    },
+    {
+      "bytes": 17038,
+      "origin": "package",
+      "path": "vera_base/verantyx/self_evolve.py",
+      "sha256": "59572daa858b263703f71ee2ed7654b2e64db7022b3db66a4fdd00dbc43fc4ae"
+    },
+    {
+      "bytes": 5147,
+      "origin": "package",
+      "path": "vera_base/verantyx/self_harness.py",
+      "sha256": "5a0abed4da5d455b913ca82dfa865ab26640d91f7fb83aa2a93568a17608a0d1"
+    },
+    {
+      "bytes": 6179,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic.py",
+      "sha256": "3491b974fa8acf51fffe64ad0917aa830687e2de6d9cb5ba595436be014363ee"
+    },
+    {
+      "bytes": 1315,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_band.py",
+      "sha256": "bfd3c0516e78c98a58bd1d6c2dae67987862f9925b13d65acb4a2f0e57914585"
+    },
+    {
+      "bytes": 4905,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_coord.py",
+      "sha256": "c3592f7ce35c39eab98d3f89495ef483b15df7e8f5ac14926a608e98378e484c"
+    },
+    {
+      "bytes": 23004,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_execute.py",
+      "sha256": "9a6216badbd5bcb75abbc5bfb5012474b1e560bfa4f8ecd17ef9103f9729b694"
+    },
+    {
+      "bytes": 19894,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_fast.py",
+      "sha256": "5bebb8825a5ef62769759abcb1bb97fed6a24084b9c62acc23f7f1d866afac7f"
+    },
+    {
+      "bytes": 23407,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_generate.py",
+      "sha256": "71f9ef810cc56ebc381dd322c64f48ff9c6a35e64324f031601d875d9fc62950"
+    },
+    {
+      "bytes": 10032,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_ir.py",
+      "sha256": "a2acb77460a9f311c8cece24ed08467ea176b431135615fdd7ba58a6feb94a8a"
+    },
+    {
+      "bytes": 8310,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_measure.py",
+      "sha256": "efecf20b695229c7612b475c0e9b6b6c4b200019bb7d9ed367f435edfb2f7164"
+    },
+    {
+      "bytes": 2817,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_names.py",
+      "sha256": "0276c882555f3835efb726ca904948ab02ac006d35691120a0861d71ef291113"
+    },
+    {
+      "bytes": 9534,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_outside.py",
+      "sha256": "95b5b3aca78b167791e16c7c357be40760ab3b1551dd65b79a9ef2cc32022aef"
+    },
+    {
+      "bytes": 13866,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_polarity.py",
+      "sha256": "d3bae9a876ebde3988882c1ece243ab44cfc92d40f1df6c3c4bd9982ac3d7a39"
+    },
+    {
+      "bytes": 49388,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_reader.py",
+      "sha256": "b42ad2bb8b29b31dac4bd8b1e2340269af17231a0850bdc8d4db2d7c36967061"
+    },
+    {
+      "bytes": 40523,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_realize.py",
+      "sha256": "17fd0a9bc6360f2ffbef508f1b1d69d9e96753c609ba3faca28b75c82f2e524d"
+    },
+    {
+      "bytes": 5973,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_retrieve.py",
+      "sha256": "b7215a60b2ab4c84702b0debe0a396565ce717824a239af1c9c247a82e174916"
+    },
+    {
+      "bytes": 14617,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_route.py",
+      "sha256": "8a56d1a9fcba8ae184e888c67513a7b41fd01422ad8e6e78b94bb9dbddc0e493"
+    },
+    {
+      "bytes": 12734,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_unknown.py",
+      "sha256": "510448f14fe99ad78d7bec9d3ac5a0a8b8d28ecbbd2273675d86dd314f980c5c"
+    },
+    {
+      "bytes": 13210,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_unknown_choice.py",
+      "sha256": "263cf2d938346cba42b3574b73f9858be9089de6fb2bbc85464a4f5c71d75a20"
+    },
+    {
+      "bytes": 9136,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_validate.py",
+      "sha256": "2bbaeafb9eda59a53940c409c611a8383fb246284a46f591cb0ab03f2a51a29e"
+    },
+    {
+      "bytes": 59860,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_verify.py",
+      "sha256": "384bcb261e7df37b27e9261953f1b7353c5141bc87bddf59dffe541c8394ea03"
+    },
+    {
+      "bytes": 1907,
+      "origin": "package",
+      "path": "vera_base/verantyx/semantic_wh.py",
+      "sha256": "b134e5e67e77f8f4dea6db73a79c0d9edba272f260f424460b7598a8853c78cc"
+    },
+    {
+      "bytes": 21857,
+      "origin": "package",
+      "path": "vera_base/verantyx/sense_split.py",
+      "sha256": "1edcefb43dfe8bbe29c936be3b3840cf2b8d1019d974a7b45772188d43d5a3b5"
+    },
+    {
+      "bytes": 16439,
+      "origin": "package",
+      "path": "vera_base/verantyx/serve_view3d.py",
+      "sha256": "1e5431acbb4388f4c3b61005a478cbdb9aa37a32545a69c383cabf11be5b51b5"
+    },
+    {
+      "bytes": 5809,
+      "origin": "package",
+      "path": "vera_base/verantyx/settings_guide.py",
+      "sha256": "9cbde8b0ae27eea871b1ec84b7548a40b515fd2b047de167bee11b9e4cce63f9"
+    },
+    {
+      "bytes": 23986,
+      "origin": "package",
+      "path": "vera_base/verantyx/settings_registry.py",
+      "sha256": "e54ba9bc48b99fb2e2b1d08eb68051aa4c62ebbc7a8754b744ed09b3d0b28cc7"
+    },
+    {
+      "bytes": 8008,
+      "origin": "package",
+      "path": "vera_base/verantyx/settings_registry_eval.py",
+      "sha256": "87312a8cbba0aafab959907262bedf682e476f3e84e68be6b11c41d2d3c7f1d7"
+    },
+    {
+      "bytes": 17555,
+      "origin": "package",
+      "path": "vera_base/verantyx/skills.py",
+      "sha256": "19a6ce3ced456c5c5a34d37b34744928cf65052e43a61273ccc8238c803b0c3c"
+    },
+    {
+      "bytes": 20133,
+      "origin": "package",
+      "path": "vera_base/verantyx/sovereign.py",
+      "sha256": "f51e7fa5f2d9b99b550c01db367e6885e0e433db0ffe9db7c23b1886a6107563"
+    },
+    {
+      "bytes": 58425,
+      "origin": "package",
+      "path": "vera_base/verantyx/stacked.py",
+      "sha256": "1e690807d655baec11e0459c5145d5964b7461b3e11d7fde3d8cecfa1fd89d42"
+    },
+    {
+      "bytes": 17016,
+      "origin": "package",
+      "path": "vera_base/verantyx/stage_split.py",
+      "sha256": "030a1a55edd04cb1fd5b67355b42c88e2f12e42a9ddc78f422b12fe7ee96019e"
+    },
+    {
+      "bytes": 6677,
+      "origin": "package",
+      "path": "vera_base/verantyx/store_sqlite.py",
+      "sha256": "309e6cfcd012f0fff08b7b344a67345531d81a9dcd4ccfe41f490334d138a746"
+    },
+    {
+      "bytes": 24721,
+      "origin": "package",
+      "path": "vera_base/verantyx/structural_diff.py",
+      "sha256": "22106956386fee7da1ce1884ec77d4548684f6b0f49cec9e73ab665ea2d8e27a"
+    },
+    {
+      "bytes": 6558,
+      "origin": "package",
+      "path": "vera_base/verantyx/structural_similarity.py",
+      "sha256": "8a037148d430be9093df13df97eef9a32ae8c0368b44a7e9aa6f977a07c8e8fa"
+    },
+    {
+      "bytes": 13161,
+      "origin": "package",
+      "path": "vera_base/verantyx/structure_forks.py",
+      "sha256": "b7b15bee3ba573ba0e179c878e5b8a702e239026a7c864272a810ea99f73829f"
+    },
+    {
+      "bytes": 7266,
+      "origin": "package",
+      "path": "vera_base/verantyx/summarize.py",
+      "sha256": "566dd374f9026eef257c49ad2f1757d46f3303f91d00d1bde9bb145b0314aa71"
+    },
+    {
+      "bytes": 11397,
+      "origin": "package",
+      "path": "vera_base/verantyx/surface.py",
+      "sha256": "5ed709cf53d2e5ad238dca7a499041a52fc2d65f27739fcb86a3d2b0b2c33884"
+    },
+    {
+      "bytes": 12832,
+      "origin": "package",
+      "path": "vera_base/verantyx/task_bootstrap.py",
+      "sha256": "fe4790ce040a8ef9cee338730a60b77862e65619f6651a4f79bc8ae6e7b96ced"
+    },
+    {
+      "bytes": 13727,
+      "origin": "package",
+      "path": "vera_base/verantyx/task_recipes.py",
+      "sha256": "0b9134f81d67a111c413ad665089ccdd12e811f1bda1cf009984856b6c652168"
+    },
+    {
+      "bytes": 5147,
+      "origin": "package",
+      "path": "vera_base/verantyx/tool_call_quarantine.py",
+      "sha256": "107fab68eefadc6b1f6fc6826631bdc7c1a5a235529ae7e2364d666c28068929"
+    },
+    {
+      "bytes": 9524,
+      "origin": "package",
+      "path": "vera_base/verantyx/trace.py",
+      "sha256": "1c46abba138b7d069ac8cea206208426b4284d617aa19202ffc5c456f97f1905"
+    },
+    {
+      "bytes": 7388,
+      "origin": "package",
+      "path": "vera_base/verantyx/transfer_outcomes.py",
+      "sha256": "62502a36649077895831a07288ea478b27f480823369c351bc236d0f3446fce7"
+    },
+    {
+      "bytes": 8949,
+      "origin": "package",
+      "path": "vera_base/verantyx/transfer_reading.py",
+      "sha256": "b738cc6b276f24189cf9a7b5b44e3ebe0a4288bc456871ea54a7bb92d6de2896"
+    },
+    {
+      "bytes": 8823,
+      "origin": "package",
+      "path": "vera_base/verantyx/tree_witness.py",
+      "sha256": "7e290e83dbf92ce96cfd8a9375619a905076180687354937d94b970f815724e5"
+    },
+    {
+      "bytes": 7366,
+      "origin": "package",
+      "path": "vera_base/verantyx/tui.py",
+      "sha256": "a910ed26b464cb31a9bababb3b5d7ea4e162d0b782e1ba48146b3d715884e97d"
+    },
+    {
+      "bytes": 27341,
+      "origin": "package",
+      "path": "vera_base/verantyx/typed_edges.py",
+      "sha256": "77c6cb1d2c12b459e2ebfee4ad950a1ebdf8803674df9d55efe1c782ce4f2807"
+    },
+    {
+      "bytes": 7834,
+      "origin": "package",
+      "path": "vera_base/verantyx/typo_recovery.py",
+      "sha256": "de85f086ef26ed9557b9cfb7a96854cf4a272989c966c101baf24f60e19542e0"
+    },
+    {
+      "bytes": 4149,
+      "origin": "package",
+      "path": "vera_base/verantyx/ui_transition.py",
+      "sha256": "e1fe00b84a27de7460d71612bfad9b0fb7f8e8cefe6b83378a8f5b7560c99d44"
+    },
+    {
+      "bytes": 19175,
+      "origin": "package",
+      "path": "vera_base/verantyx/vera.py",
+      "sha256": "8c798151718647320b8095af2c606d003ef77f5461cbe25716af379458cf8a19"
+    },
+    {
+      "bytes": 11384,
+      "origin": "package",
+      "path": "vera_base/verantyx/vera_server.py",
+      "sha256": "020e5add0af10f43f0735af0c25cb111d998b2dc08919fc4fda05e00c5abfba9"
+    },
+    {
+      "bytes": 20555,
+      "origin": "package",
+      "path": "vera_base/verantyx/vera_system.py",
+      "sha256": "5e959a8f6d21603746f013d30544546056a9e165803b3dff6c93e0a6288f04cb"
+    },
+    {
+      "bytes": 17783,
+      "origin": "package",
+      "path": "vera_base/verantyx/verdict.py",
+      "sha256": "15fa7f2c5c1e8e37c954171f1c6c9f7bc696553b49b2850a59a3c44e472e1e3c"
+    },
+    {
+      "bytes": 32017,
+      "origin": "package",
+      "path": "vera_base/verantyx/verifier_agents.py",
+      "sha256": "2e0167a88a6d486adc928e9d932a1a29079d74dd4aff2bfb6320604de362cb4f"
+    },
+    {
+      "bytes": 18109,
+      "origin": "package",
+      "path": "vera_base/verantyx/verify.py",
+      "sha256": "da5808f15a1501b99f04457f32dbb66d2dcadddae1a84309d2dc856086c043f1"
+    },
+    {
+      "bytes": 15855,
+      "origin": "package",
+      "path": "vera_base/verantyx/vocab_growth.py",
+      "sha256": "8fae054ffe98492f31bffb93c81da578894d9ba05f6115e7a054571f731a83ef"
+    },
+    {
+      "bytes": 10421,
+      "origin": "package",
+      "path": "vera_base/verantyx/vocabulary.py",
+      "sha256": "48bcba65dedd315a0ee8cc768be0a561c5d86b100936390ddbb96c676727581a"
+    },
+    {
+      "bytes": 5275,
+      "origin": "package",
+      "path": "vera_base/verantyx/watermark.py",
+      "sha256": "dbc9f8e98c6e850e1ff05c40949e04ed5bfbc993ede948a20dc056f41e308a5f"
+    },
+    {
+      "bytes": 5212,
+      "origin": "package",
+      "path": "vera_base/verantyx/watermark_forks.py",
+      "sha256": "d8afb62cab834d34af3b435ef86763204b27ff7df56a17f842c3859760ac03eb"
+    },
+    {
+      "bytes": 12924,
+      "origin": "package",
+      "path": "vera_base/verantyx/writer.py",
+      "sha256": "fa7ee639467a20187672f6109b2f12dd12d16d95a57427e87bd9265f16209f13"
+    }
+  ],
+  "generated": [
+    {
+      "kind": "CONSTRUCTED",
+      "part": "tool.setuptools.package-data",
+      "path": "pyproject.toml"
+    }
+  ],
+  "import_check": {
+    "unparsed_python_files": []
+  },
+  "packages": [
+    "vera_base",
+    "vera_base.verantyx",
+    "vera_base.verantyx.constructions",
+    "vera_base.verantyx.domains"
+  ],
+  "rules": {
+    "collision": "if the package layer and the overlay produce the same output path, the build stops with PATH_COLLISION (no layer wins)",
+    "exclude": [
+      {
+        "id": "vcs",
+        "reason": "version-control data",
+        "test": "a path component is .git"
+      },
+      {
+        "id": "cache",
+        "reason": "interpreter / tool caches",
+        "test": "a path component is __pycache__, .pytest_cache, .mypy_cache or .ruff_cache; or the extension is .pyc/.pyo; or the name is .DS_Store"
+      },
+      {
+        "id": "store_data",
+        "reason": "real data of a Vera store (personal / environment data)",
+        "test": "the file name starts with vera_store."
+      },
+      {
+        "id": "measurement",
+        "reason": "measurement outputs and run logs (not part of the product)",
+        "test": "the extension is .log; or a path component is experiments, results or artifacts"
+      },
+      {
+        "id": "personal_path",
+        "reason": "contains an absolute path under a Users directory (personal environment)",
+        "test": "the file bytes contain the marker whose hex is 2f55736572732f; only line numbers are recorded"
+      },
+      {
+        "id": "vcs_ignored",
+        "reason": "ignored by version control: a local-only file that the author's own ignore rules name",
+        "test": "git lists the file as untracked AND ignored (git ls-files --others --ignored --exclude-standard); a tracked file is never excluded by this rule"
+      }
+    ],
+    "exclude_order": "the first matching rule in the listed order is the one recorded and counted",
+    "excluded_module_import": "if a bundled .py imports a module whose file was excluded, the build stops with EXCLUDED_MODULE_IMPORTED",
+    "include": [
+      {
+        "how": "every file found by walking verantyx/ is copied to vera_base/verantyx/<same relative path>; there is no file list",
+        "id": "package_tree"
+      },
+      {
+        "how": "every file found by walking the overlay directory is copied to <same relative path>",
+        "id": "overlay_tree"
+      },
+      {
+        "how": "pyproject.toml's [tool.setuptools.package-data] table is regenerated from the non-.py files found under vera_base/ (nearest ancestor with __init__.py = the package)",
+        "id": "package_data"
+      }
+    ],
+    "personal_path_pattern_hex": "2f55736572732f",
+    "vcs_survey": "when --src is the root of a git work tree, git is asked which files are ignored (excluded by vcs_ignored) and which are untracked (included and listed in vcs.untracked_included, package layer only). The ignore rules read are those that live with the clone: .gitignore files inside the tree (nested ones included) and .git/info/exclude (a per-clone local rule file, so two clones of the same commit can differ). The user's global git config, the default global ignore file ($XDG_CONFIG_HOME/git/ignore or $HOME/.config/git/ignore) and the system config are NOT read. Otherwise vcs.state is UNKNOWN_GIT_MISSING / UNKNOWN_NOT_A_GIT_TREE / UNKNOWN_GIT_ERROR and no file is excluded on that ground"
+  },
+  "schema": "vera_public_build_manifest_v1",
+  "vcs": {
+    "layers_not_checked": [],
+    "state": "GIT_WORK_TREE",
+    "untracked_included": [],
+    "untracked_policy": "untracked, non-ignored files of the package layer are INCLUDED and listed here; ignored ones are excluded by rule vcs_ignored; the overlay layer reports only ignored files"
+  }
+}
