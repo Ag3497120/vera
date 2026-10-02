@@ -16,7 +16,56 @@ from collections import OrderedDict
 from pathlib import Path
 from typing import Callable, Optional
 
-from .memory_frame import Memory
+from . import memory_frame
+from .memory_frame import Memory, WriteRejected
+
+
+def _blank_text_needle(witness) -> bool:
+    return (isinstance(witness, dict) and witness.get('kind') == 'text_in_file' and
+            (not isinstance(witness.get('needle'), str) or not witness['needle'].strip()))
+
+
+def _guard_core_memory() -> None:
+    """Keep direct Memory reads and writes safe for blank text witnesses."""
+    if getattr(memory_frame, '_blank_needle_guard_installed', False):
+        return
+
+    original_check = memory_frame.check_witness
+
+    def check_witness(witness):
+        if _blank_text_needle(witness):
+            return 'STALE'
+        return original_check(witness)
+
+    memory_frame.check_witness = check_witness
+
+    original_write = Memory.write
+
+    def write(self, kind, author, witness=None, supersedes=None, **slots):
+        if _blank_text_needle(witness):
+            raise WriteRejected('text_in_file witness には空でない needle が必要です')
+        return original_write(self, kind, author, witness=witness,
+                              supersedes=supersedes, **slots)
+
+    Memory.write = write
+
+    original_ask = Memory.ask
+
+    def ask(self, question, require_fresh=True):
+        records = getattr(self, 'records', {})
+        if not any(_blank_text_needle(record.get('witness')) for record in records.values()):
+            return original_ask(self, question, require_fresh)
+        view = Memory.__new__(Memory)
+        view.records = {rid: record for rid, record in records.items()
+                        if not _blank_text_needle(record.get('witness'))}
+        view.superseded = getattr(self, 'superseded', {})
+        return original_ask(view, question, require_fresh)
+
+    Memory.ask = ask
+    memory_frame._blank_needle_guard_installed = True
+
+
+_guard_core_memory()
 
 
 class RevalidatingMemory:

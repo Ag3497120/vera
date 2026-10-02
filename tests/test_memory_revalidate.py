@@ -7,7 +7,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from verantyx.memory_frame import Memory
+from verantyx import memory_frame
+from verantyx.memory_frame import Memory, WriteRejected
 from verantyx.memory_revalidate import RevalidatingMemory
 
 
@@ -19,6 +20,14 @@ def new_memory(tmp_path):
 def write_fact(memory, witness, *, subject='ルーター', value='8件', supersedes=None):
     return memory.write('FACT', 'test', witness=witness, supersedes=supersedes,
                         subject=subject, attribute='未読上限', value=value)
+
+
+def write_legacy_fact(tmp_path, witness, *, record_id='legacy-blank'):
+    path = tmp_path / 'legacy.jsonl'
+    record = {'id': record_id, 'kind': 'FACT', 'slots': {}, 'author': 'test',
+              'witness': witness, 'sentence': 'ルーターの未読上限は999件である。'}
+    path.write_text(json.dumps({'op': 'write', 'record': record}, ensure_ascii=False) + '\n')
+    return Memory(str(path)), record
 
 
 def hash_witness(path):
@@ -102,11 +111,8 @@ def test_deleted_text_witness_is_stale(tmp_path):
 
 @pytest.mark.parametrize('needle', ['', ' \t\n'])
 def test_blank_text_witness_is_stale_and_cannot_support_answer(tmp_path, needle):
-    source = tmp_path / 'source.txt'
-    source.write_text('any readable file matches a blank needle')
-    memory = new_memory(tmp_path)
-    record = write_fact(memory, {'kind': 'text_in_file', 'path': str(source), 'needle': needle},
-                        value='999件')
+    memory, record = write_legacy_fact(
+        tmp_path, {'kind': 'text_in_file', 'path': str(tmp_path / 'source.txt'), 'needle': needle})
 
     result = answer_about(RevalidatingMemory(memory, cache_ttl=0))
 
@@ -114,6 +120,31 @@ def test_blank_text_witness_is_stale_and_cannot_support_answer(tmp_path, needle)
     assert record['id'] in result['stale']
     assert record['id'] not in result['records']
     assert result['verdict'] != 'ANSWER'
+
+
+@pytest.mark.parametrize('needle', ['', ' \t\n'])
+def test_blank_text_witness_is_rejected_on_write(tmp_path, needle):
+    source = tmp_path / 'source.txt'
+    source.write_text('source')
+    memory = new_memory(tmp_path)
+
+    with pytest.raises(WriteRejected):
+        write_fact(memory, {'kind': 'text_in_file', 'path': str(source), 'needle': needle},
+                   value='999件')
+
+    assert memory.records == {}
+    assert not memory.path.exists()
+
+
+def test_core_checker_and_direct_ask_reject_legacy_blank_needle(tmp_path):
+    witness = {'kind': 'text_in_file', 'path': str(tmp_path / 'source.txt'), 'needle': ' \t'}
+    memory, _ = write_legacy_fact(tmp_path, witness)
+
+    assert memory_frame.check_witness(witness) == 'STALE'
+    result = memory.ask_about('ルーター', '未読上限', require_fresh=False)
+
+    assert result['verdict'] == 'UNKNOWN_NO_EVIDENCE'
+    assert result['records'] == []
 
 
 def test_missing_git_commit_is_stale(tmp_path):
