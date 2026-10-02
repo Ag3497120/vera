@@ -1,0 +1,11 @@
+== p1a1 base start 07:55:29 waited=60s load1=6.27 |  7:55  up 2 days,  7:08, 1 user, load averages: 6.27 34.60 33.19
+   p1a1 base end 07:57:10 load1=5.88 |  7:57  up 2 days,  7:09, 1 user, load averages: 5.88 26.38 30.14 | 124 failed, 4222 passed, 44 skipped, 82 xfailed, 68 xpassed, 37 subtests passed in 100.50s (0:01:40)
+== p1a1 cand start 07:57:10 waited=0s load1=5.88 |  7:57  up 2 days,  7:09, 1 user, load averages: 5.88 26.38 30.14
+   p1a1 cand end 07:59:05 load1=5.64 |  7:59  up 2 days,  7:11, 1 user, load averages: 5.64 19.78 27.05 | 121 failed, 4326 passed, 44 skipped, 79 xfailed, 71 xpassed, 37 subtests passed in 113.80s (0:01:53)
+VALID pair1 = p1a1
+== p2a1 cand start 07:59:05 waited=0s load1=5.64 |  7:59  up 2 days,  7:11, 1 user, load averages: 5.64 19.78 27.05
+   p2a1 cand end 08:01:03 load1=5.50 |  8:01  up 2 days,  7:13, 1 user, load averages: 5.50 14.92 24.15 | 121 failed, 4326 passed, 44 skipped, 79 xfailed, 71 xpassed, 37 subtests passed in 117.49s (0:01:57)
+== p2a1 base start 08:01:03 waited=0s load1=5.50 |  8:01  up 2 days,  7:13, 1 user, load averages: 5.50 14.92 24.15
+   p2a1 base end 08:02:43 load1=4.57 |  8:02  up 2 days,  7:15, 1 user, load averages: 4.57 12.03 22.00 | 124 failed, 4222 passed, 44 skipped, 82 xfailed, 68 xpassed, 37 subtests passed in 99.49s (0:01:39)
+VALID pair2 = p2a1
+ALLDONE

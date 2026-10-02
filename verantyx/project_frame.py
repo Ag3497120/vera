@@ -75,7 +75,14 @@ AGENT_SETTING_KEYS = (
     "acceptance_timeout_seconds",
     "claude_permission_mode",
     "claude_allowed_tools",
+    "verifier_adapter",
+    "verifier_model",
+    "verifier_effort",
+    "verifier_timeout_seconds",
+    "verification_retries",
 )
+VERIFIER_ADAPTERS = ("codex", "claude", "none")
+_VERIFICATION_RETRIES = re.compile(r"^[0-5]$")
 _MAX_CONCURRENCY = re.compile(r"^[1-9][0-9]{0,5}$")
 _TIMEOUT_SECONDS = re.compile(r"^[1-9][0-9]{0,4}$")
 MAX_TIMEOUT_SECONDS = 86400
@@ -440,10 +447,16 @@ def validate_agent_setting(key: str, value: str) -> Optional[str]:
     if key not in AGENT_SETTING_KEYS:
         return f"unknown agent setting {key!r}; use one of {', '.join(AGENT_SETTING_KEYS)}"
     try:
-        if key in ("agent_timeout_seconds", "acceptance_timeout_seconds"):
+        if key in ("agent_timeout_seconds", "acceptance_timeout_seconds", "verifier_timeout_seconds"):
             if (not isinstance(value, str) or not _TIMEOUT_SECONDS.fullmatch(value) or
                     int(value) > MAX_TIMEOUT_SECONDS):
                 return f"{key} must be a whole number of seconds written in digits, 1 to {MAX_TIMEOUT_SECONDS}"
+        elif key == "verifier_adapter":
+            if value not in VERIFIER_ADAPTERS:
+                return f"verifier_adapter must be one of {', '.join(VERIFIER_ADAPTERS)}"
+        elif key == "verification_retries":
+            if not isinstance(value, str) or not _VERIFICATION_RETRIES.fullmatch(value):
+                return "verification_retries must be a whole number written in one digit, 0 to 5"
         elif key == "claude_permission_mode":
             validate_permission_mode(value)
         elif key == "claude_allowed_tools":

@@ -1,0 +1,8 @@
+== independent verifier agent
+  "verdict": "UNKNOWN_NOT_FOUND",
+== verify agent work rerun evidence
+  "verdict": "UNKNOWN_NOT_FOUND",
+== read-only agent sandbox
+  "verdict": "UNKNOWN_NOT_FOUND",
+== retry implementer with findings
+  "verdict": "UNKNOWN_NOT_FOUND",

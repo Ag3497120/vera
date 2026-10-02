@@ -1,0 +1,27 @@
+commit eec86acbd6c180a91ada1b93f19d92f61753ba20
+Author: Vera conductor <conductor@verantyx.invalid>
+Date:   Sat Oct 3 02:39:59 2026 +0900
+
+    conduct: MulArgs (run 4b41c6fdfb72461f916b986cd7e1c45a)
+    
+    acceptance: 6b669843cf67
+---
+ mul_args.py | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/mul_args.py b/mul_args.py
+new file mode 100644
+index 0000000..f3f2332
+--- /dev/null
++++ b/mul_args.py
+@@ -0,0 +1,10 @@
++import sys
++from math import prod
++
++
++def main():
++    print(prod(map(int, sys.argv[1:])))
++
++
++if __name__ == "__main__":
++    main()

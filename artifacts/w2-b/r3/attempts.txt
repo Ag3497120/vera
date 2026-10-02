@@ -1,0 +1,2 @@
+pair1 = p1a1 (base1, cand1)
+pair2 = p2a1 (cand2, base2)

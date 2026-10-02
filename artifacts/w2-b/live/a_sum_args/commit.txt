@@ -1,0 +1,26 @@
+commit bc6b7380fd1bd689b4ff978ec4c43444fbc6c7ce
+Author: Vera conductor <conductor@verantyx.invalid>
+Date:   Sat Oct 3 02:38:33 2026 +0900
+
+    conduct: SumArgs (run 2e843b59db1f4010ae847588f38de040)
+    
+    acceptance: 4235a6f8c8e0, add14eca7254
+---
+ sum_args.py | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/sum_args.py b/sum_args.py
+new file mode 100644
+index 0000000..f0e8a53
+--- /dev/null
++++ b/sum_args.py
+@@ -0,0 +1,9 @@
++import sys
++
++
++def main():
++    print(sum(map(int, sys.argv[1:])))
++
++
++if __name__ == "__main__":
++    main()

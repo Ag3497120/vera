@@ -203,3 +203,24 @@ ACCEPTANCE_SIDE_EFFECTS], [COMMIT | COMMIT_SKIPPED | COMMIT_FAILED], RUN_FINISHE
 結果は `artifacts/w2-a/live/` に保存した。記録は `docs/CONDUCT_RUN.md` ではなく、実装報告(`impl.r1.md`)と保存物に書く
 (数値はその保存物の値だけを使うため)。題材の枠は `docs/frames/toy/greet.md`(`docs/frames/examples/` には置かない。
 例の枠を全部検査するテストがあるため)。
+
+## W2-b: 検証の段(追記)
+
+受入条件が全部通ったあと、指揮者が読み取り専用の検証エージェントを自動で立て、その主張を指揮者が再実行して確かめ、
+確かめられたときだけ完了にする。**CLI の既定は「検証を要求する」**(検証の設定が無い枠は、受入条件が通ったあとに
+`VERIFIER_NOT_CONFIGURED` で止まる。明示的に省くのは枠の `verifier_adapter: none` か `--verifier-adapter none`)。
+Python の `conduct_entry(...)` の既定は、W2-a のテストの期待値を変えないため W2-a 互換(`require_verification=False`)で、
+`RUN_LIMITS.verification.mode` が `not_requested` と残る。詳細・設定・型・台帳の行は `docs/CONDUCT_VERIFY.md`。
+
+- 上の「結果の型」の表に、検証で足した型(`VERIFIER_NOT_CONFIGURED` `VERIFICATION_FAILED` `VERIFICATION_UNCONFIRMED`
+  `VERIFICATION_UNDETERMINED` `VERIFIER_PASS_CONTRADICTED` `VERIFIER_OUTPUT_INVALID` `VERIFIER_FAILED` `VERIFIER_TIMED_OUT`
+  `VERIFIER_LIMIT_REACHED` `VERIFIER_OUTPUT_LIMIT` `VERIFIER_MODIFIED_WORKTREE` `VERIFIER_START_FAILED` `VERIFIER_INPUT_TOO_LARGE`
+  `RETRY_BRIEF_TOO_LARGE`)が加わる。W2-a の 18 個の型と順序は変わらない。
+- 「流れ」の 8(コミット)は、検証を設定した run では、検証の**前**に候補のコミットを作る形になる(`CANDIDATE_COMMIT`。検証に合格すると
+  `COMMIT` 行が同じ sha を指す)。検証を設定しない run(Python の既定、または `verifier_adapter: none`)の流れと行は、上の記述のまま。
+- 上の「台帳の行」と `RUN_FINISHED` には、新しい経路で `attempts` と `verification`(モード)の項目が加わる。`RUN_LIMITS` には `verification` が加わる。
+- 待つ処理(`AGENT_WAITING` から終わりまで)は、実装役と検証役で共通の関数(`_await_session`)になった。`AGENT_WAITING` を書く処理は
+  待ちの保護された範囲の中にある(書く処理が失敗しても、子プロセスは止められる)。
+- `docs/frames/toy/greet.md` に `verifier_adapter: none` の 1 行を足した(W2-a の例の枠を、CLI の既定の下でも従来どおり完了させるため。
+  W2-a の本物の実行の記録は `artifacts/w2-a/` と git の履歴に残っている)。
+- 「既知の制限」の「`run_project()` と `VeraSystem.conduct()` …」「fake と、Python から渡したアダプター」の経路には、検証の段は無い(変更なし)。

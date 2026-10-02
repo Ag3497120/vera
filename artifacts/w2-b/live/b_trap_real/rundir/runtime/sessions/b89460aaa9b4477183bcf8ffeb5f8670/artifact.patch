@@ -1,0 +1,16 @@
+diff --git a/mul_args.py b/mul_args.py
+new file mode 100644
+index 0000000..f3f2332
+--- /dev/null
++++ b/mul_args.py
+@@ -0,0 +1,10 @@
++import sys
++from math import prod
++
++
++def main():
++    print(prod(map(int, sys.argv[1:])))
++
++
++if __name__ == "__main__":
++    main()

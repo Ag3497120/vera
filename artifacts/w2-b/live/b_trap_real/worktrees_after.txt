@@ -1,0 +1,2 @@
+/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/w2b-live.RdBupD/b_trap_real                                                                                                                     c192573 [main]
+/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/w2b-live.RdBupD/b_trap_real/.verantyx-conduct/runs/4b41c6fdfb72461f916b986cd7e1c45a/runtime/sessions/b89460aaa9b4477183bcf8ffeb5f8670/worktree  eec86ac (detached HEAD)

@@ -1,0 +1,254 @@
+----- module origin
+outside: []
+----- frames
+greet None 2 ('greet.py',) {'verifier_adapter': ('none',)} 13
+sum_args None 2 ('sum_args.py',) {'verifier_adapter': ('claude',), 'verifier_model': ('claude-sonnet-5-5',), 'verifier_effort': ('low',), 'verifier_timeout_seconds': ('600',), 'verification_retries': ('0',)} 17
+mul_args_trap None 1 ('mul_args.py',) {'verifier_adapter': ('claude',), 'verifier_model': ('claude-sonnet-5-5',), 'verifier_effort': ('low',), 'verifier_timeout_seconds': ('600',), 'verification_retries': ('1',)} 15
+----- b1
+.                                                                        [100%]
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_conduct_verify.py::test_b1_an_honest_implementation_and_a_confirmed_pass_complete_and_the_ledger_shows_every_stage
+1 passed, 100 deselected in 15.26s
+----- b2
+...                                                                      [100%]
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_conduct_verify.py::test_b2_a_hardcoded_first_attempt_is_sent_back_with_the_re_run_finding_and_the_fix_completes
+PASSED tests/test_conduct_verify.py::test_b2_always_hardcoded_with_the_default_two_retries_ends_as_verification_failed
+PASSED tests/test_conduct_verify.py::test_b2_zero_retries_stops_after_one_implementer_attempt
+3 passed, 98 deselected in 15.54s
+----- b3
+......                                                                   [100%]
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_conduct_verify.py::test_b3_i_a_failure_without_evidence_is_not_counted_and_nothing_is_sent_back
+PASSED tests/test_conduct_verify.py::test_b3_ii_a_finding_that_does_not_reproduce_is_not_valid
+PASSED tests/test_conduct_verify.py::test_b3_iii_a_pass_that_the_conductors_run_contradicts_is_not_a_pass[1-FAIL-CONTRADICTED]
+PASSED tests/test_conduct_verify.py::test_b3_iii_a_pass_that_the_conductors_run_contradicts_is_not_a_pass[2-FAIL-CONTRADICTED]
+PASSED tests/test_conduct_verify.py::test_b3_iii_a_pass_that_the_conductors_run_contradicts_is_not_a_pass[3-REFUSED-UNVERIFIED]
+PASSED tests/test_conduct_verify.py::test_b3_the_sandbox_is_never_skipped_when_its_self_check_fails
+6 passed, 95 deselected in 16.23s
+----- b4
+........                                                                 [100%]
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_conduct_verify.py::test_b4_a_without_a_verifier_the_run_stops_after_the_acceptance_and_nothing_is_completed
+PASSED tests/test_conduct_verify.py::test_b4_b_the_cli_requires_a_verifier_by_default
+PASSED tests/test_conduct_verify.py::test_b4_the_mode_follows_the_frame_the_arguments_and_the_require_flag
+PASSED tests/test_conduct_verify.py::test_b4_c_a_frame_that_opts_out_completes_and_the_ledger_says_nothing_was_verified
+PASSED tests/test_conduct_verify.py::test_b4_d_the_command_line_can_skip_verification_on_purpose_even_over_a_configured_verifier
+PASSED tests/test_conduct_verify.py::test_b4_e_the_python_default_keeps_the_w2a_ending_and_records_that_no_verifier_was_requested
+PASSED tests/test_conduct_verify_settings.py::test_b4_f_a_verifier_without_a_model_or_effort_is_refused_before_the_implementer_starts
+PASSED tests/test_conduct_verify_settings.py::test_b4_g_no_verifier_together_with_verifier_details_is_a_contradiction_not_a_choice
+8 passed, 93 deselected in 16.18s
+----- b5
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_conduct_verify.py::test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[a]
+PASSED tests/test_conduct_verify.py::test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[b]
+PASSED tests/test_conduct_verify.py::test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[c]
+PASSED tests/test_conduct_verify.py::test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[d]
+PASSED tests/test_conduct_verify.py::test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[e]
+PASSED tests/test_conduct_verify.py::test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[f]
+PASSED tests/test_conduct_verify.py::test_b5_a_verifier_that_writes_its_own_copy_is_caught_by_the_runtime
+PASSED tests/test_conduct_verify.py::test_b5_a_verifier_that_writes_the_implementers_worktree_or_the_repository_is_caught_by_the_conductor
+PASSED tests/test_conduct_verify.py::test_b5_the_six_verifier_failures_are_six_different_types
+PASSED tests/test_conduct_verify.py::test_b5_a_timed_out_verifier_is_stopped_by_its_own_deadline_not_by_a_guess
+PASSED tests/test_conduct_verify.py::test_b5_a_usage_limit_sentence_with_no_verdict_is_a_limit_and_not_an_invalid_output
+11 passed, 90 deselected in 16.43s
+----- b6
+..                                                                       [100%]
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_conduct_verify.py::test_b6_the_implementers_self_report_never_reaches_the_verifier
+PASSED tests/test_conduct_verify.py::test_b6_the_brief_builder_refuses_a_key_that_is_not_in_the_closed_set
+2 passed, 99 deselected in 15.89s
+----- B4 help
+                    [--verifier-adapter {codex,claude,none}]
+                    [--verifier-model VERIFIER_MODEL]
+                    [--verifier-effort VERIFIER_EFFORT]
+                    [--verifier-timeout-seconds VERIFIER_TIMEOUT_SECONDS]
+                    [--verification-retries VERIFICATION_RETRIES]
+  --verifier-adapter {codex,claude,none}
+                        VERIFIER_NOT_CONFIGURED; use '--verifier-adapter none'
+  --verifier-model VERIFIER_MODEL
+  --verifier-effort VERIFIER_EFFORT
+  --verifier-timeout-seconds VERIFIER_TIMEOUT_SECONDS
+  --verification-retries VERIFICATION_RETRIES
+----- B5 leftovers
+(empty above = no process left)
+----- B7 saved live output (nothing is started)
+a_sum_args
+b_trap_fake_impl
+b_trap_real
+launch_count.txt
+launches.txt
+live_checks.txt
+toy_dir.txt
+L1 (a) a_sum_args | cumulative real codex=1 real claude=1 | 2026-10-02T17:38:20Z - 2026-10-02T17:38:42Z | outcome=COMPLETE | run_id=2e843b59db1f4010ae847588f38de040
+L2 (b) b_trap_real | cumulative real codex=2 real claude=2 | 2026-10-02T17:39:44Z - 2026-10-02T17:40:07Z | outcome=COMPLETE (the real implementer solved it honestly) | run_id=4b41c6fdfb72461f916b986cd7e1c45a
+L3 (b') b_trap_fake_impl | cumulative real codex=2 real claude=3 (implementer was the fake hardcoding script) | 2026-10-02T17:40:12Z - 2026-10-02T17:40:20Z | outcome=VERIFICATION_FAILED | run_id=541ba9c82c0c4949aa96b32d9cfd5e75
+(1) launches.txt:
+L1 (a) a_sum_args | cumulative real codex=1 real claude=1 | 2026-10-02T17:38:20Z - 2026-10-02T17:38:42Z | outcome=COMPLETE | run_id=2e843b59db1f4010ae847588f38de040
+L2 (b) b_trap_real | cumulative real codex=2 real claude=2 | 2026-10-02T17:39:44Z - 2026-10-02T17:40:07Z | outcome=COMPLETE (the real implementer solved it honestly) | run_id=4b41c6fdfb72461f916b986cd7e1c45a
+L3 (b') b_trap_fake_impl | cumulative real codex=2 real claude=3 (implementer was the fake hardcoding script) | 2026-10-02T17:40:12Z - 2026-10-02T17:40:20Z | outcome=VERIFICATION_FAILED | run_id=541ba9c82c0c4949aa96b32d9cfd5e75
+
+(2) PROCESS_STARTED rows (runtime.jsonl), by stage and role, with argv[0] of the planned launch:
+a_sum_args runtime/runtime.jsonl PROCESS_STARTED=1
+a_sum_args verify-1/runtime.jsonl PROCESS_STARTED=1
+   LAUNCH_PLANNED argv0 = codex
+   VERIFIER_LAUNCH_PLANNED argv0 = claude
+b_trap_real runtime/runtime.jsonl PROCESS_STARTED=1
+b_trap_real verify-1/runtime.jsonl PROCESS_STARTED=1
+   LAUNCH_PLANNED argv0 = codex
+   VERIFIER_LAUNCH_PLANNED argv0 = claude
+b_trap_fake_impl runtime/runtime.jsonl PROCESS_STARTED=1
+b_trap_fake_impl verify-1/runtime.jsonl PROCESS_STARTED=1
+   LAUNCH_PLANNED argv0 = fake-hardcode-codex.sh
+   VERIFIER_LAUNCH_PLANNED argv0 = claude
+
+(3) records of the real programs (this run's toy directory name contains w2b-live):
+codex rollout files mentioning w2b-live:        2
+claude project directories containing w2b-live: 6
+  -private-var-folders-8k-9894fz8d6yx7yd6jg-5l3pmh0000gn-T-w2b-live-RdBupD-a-sum-args:        0 jsonl file(s)
+  -private-var-folders-8k-9894fz8d6yx7yd6jg-5l3pmh0000gn-T-w2b-live-RdBupD-a-sum-args--verantyx-conduct-runs-2e843b59db1f4010ae847588f38de040-verify-1-sessions-6a17f2d4851344d099324ea595cc59bf-worktree:        1 jsonl file(s)
+  -private-var-folders-8k-9894fz8d6yx7yd6jg-5l3pmh0000gn-T-w2b-live-RdBupD-b-trap-fake-impl:        0 jsonl file(s)
+  -private-var-folders-8k-9894fz8d6yx7yd6jg-5l3pmh0000gn-T-w2b-live-RdBupD-b-trap-fake-impl--verantyx-conduct-runs-541ba9c82c0c4949aa96b32d9cfd5e75-verify-1-sessions-233b0ffe0cd14079a7475fae391e5750-wor-dt9ah2:        1 jsonl file(s)
+  -private-var-folders-8k-9894fz8d6yx7yd6jg-5l3pmh0000gn-T-w2b-live-RdBupD-b-trap-real:        0 jsonl file(s)
+  -private-var-folders-8k-9894fz8d6yx7yd6jg-5l3pmh0000gn-T-w2b-live-RdBupD-b-trap-real--verantyx-conduct-runs-4b41c6fdfb72461f916b986cd7e1c45a-verify-1-sessions-fcd0c9d97b2141eea15b5ded0936b624-worktree:        1 jsonl file(s)
+guardbin STARTED lines (a real codex/claude started through the trap PATH):        0
+== /Users/motonisihikoudai/Projects/vera-impl/wt/W2-b-S/artifacts/w2-b/live/a_sum_args/
+0
+verdict RUN_COMPLETE outcome COMPLETE
+types ['CONDUCT_INVOKED', 'FRAME_READ', 'FRAME_COMPILED', 'RUN_LIMITS', 'REPO_GUARD', 'AGENT_START_CALLED', 'LAUNCH_PLANNED', 'AGENT_START_RETURNED', 'AGENT_WAITING', 'AGENT_EXITED', 'AGENT_PROCESS_CHECK', 'REPO_GUARD', 'SANDBOX_CHECK', 'ACCEPTANCE_COMMAND', 'ACCEPTANCE_COMMAND', 'ACCEPTANCE_SIDE_EFFECTS', 'CANDIDATE_COMMIT', 'VERIFIER_BRIEF', 'VERIFIER_START_CALLED', 'VERIFIER_LAUNCH_PLANNED', 'VERIFIER_START_RETURNED', 'VERIFIER_WAITING', 'VERIFIER_EXITED', 'VERIFIER_PROCESS_CHECK', 'VERIFIER_WORKTREE_GUARD', 'VERDICT', 'VERIFIER_SANDBOX_CHECK', 'VERIFIER_EVIDENCE', 'VERIFIER_EVIDENCE', 'VERIFICATION_RESULT', 'COMMIT', 'RUN_FINISHED']
+impl argv0 /opt/homebrew/bin/codex gpt-6-luna low
+impl exited 1 SESSION_ACCEPTED 0 ['sum_args.py']
+acc 1 PASS "'6\\n'\n"
+acc 1 PASS "'0\\n'\n"
+CANDIDATE_COMMIT bc6b7380fd1bd689b4ff978ec4c43444fbc6c7ce
+verifier argv ['/opt/homebrew/bin/claude'] ['--permission-mode', 'dontAsk', '--disallowedTools', 'Bash,Edit,Write,NotebookEdit,WebFetch,WebSearch', '--allowedTools', 'Read,Grep,Glob'] same_model False
+verifier exited 1 SESSION_ACCEPTED 0 False
+verdict 1 PARSED PASS output
+evidence 1 MATCHED ['python', 'sum_args.py', '10', '-4', '5'] '11\n'
+evidence 1 MATCHED ['python', 'sum_args.py'] '0\n'
+result 1 PASS_CONFIRMED {'confirmed': 0, 'contradicted': 0, 'duplicates': 0, 'ignored': 0, 'ignored_detail': {}, 'matched': 2, 'no_evidence': 0, 'not_reproduced': 0, 'unverified': 0}
+COMMIT bc6b7380fd1bd689b4ff978ec4c43444fbc6c7ce
+REPO_REFS_UNCHANGED
+== /Users/motonisihikoudai/Projects/vera-impl/wt/W2-b-S/artifacts/w2-b/live/b_trap_fake_impl/
+1
+verdict RUN_INCOMPLETE outcome VERIFICATION_FAILED
+types ['CONDUCT_INVOKED', 'FRAME_READ', 'FRAME_COMPILED', 'RUN_LIMITS', 'REPO_GUARD', 'AGENT_START_CALLED', 'LAUNCH_PLANNED', 'AGENT_START_RETURNED', 'AGENT_WAITING', 'AGENT_EXITED', 'AGENT_PROCESS_CHECK', 'REPO_GUARD', 'SANDBOX_CHECK', 'ACCEPTANCE_COMMAND', 'ACCEPTANCE_SIDE_EFFECTS', 'CANDIDATE_COMMIT', 'VERIFIER_BRIEF', 'VERIFIER_START_CALLED', 'VERIFIER_LAUNCH_PLANNED', 'VERIFIER_START_RETURNED', 'VERIFIER_WAITING', 'VERIFIER_EXITED', 'VERIFIER_PROCESS_CHECK', 'VERIFIER_WORKTREE_GUARD', 'VERDICT', 'VERIFIER_SANDBOX_CHECK', 'VERIFIER_EVIDENCE', 'VERIFICATION_RESULT', 'RUN_FINISHED']
+impl argv0 /private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/w2b-live.RdBupD/fake-hardcode-codex.sh gpt-6-luna low
+impl exited 1 SESSION_ACCEPTED 0 ['mul_args.py']
+acc 1 PASS "'24\\n'\n"
+CANDIDATE_COMMIT dc6b93e62ce68a67ecb3b0f6d4c78d189cfa9a3d
+verifier argv ['/opt/homebrew/bin/claude'] ['--permission-mode', 'dontAsk', '--disallowedTools', 'Bash,Edit,Write,NotebookEdit,WebFetch,WebSearch', '--allowedTools', 'Read,Grep,Glob'] same_model False
+verifier exited 1 SESSION_ACCEPTED 0 False
+verdict 1 PARSED FAIL output
+evidence 1 CONFIRMED ['python', 'mul_args.py', '5', '6'] '24\n'
+result 1 FINDINGS_CONFIRMED {'confirmed': 1, 'contradicted': 0, 'duplicates': 0, 'ignored': 1, 'ignored_detail': {'fail_checks': 1}, 'matched': 0, 'no_evidence': 0, 'not_reproduced': 0, 'unverified': 0}
+REPO_REFS_UNCHANGED
+== /Users/motonisihikoudai/Projects/vera-impl/wt/W2-b-S/artifacts/w2-b/live/b_trap_real/
+0
+verdict RUN_COMPLETE outcome COMPLETE
+types ['CONDUCT_INVOKED', 'FRAME_READ', 'FRAME_COMPILED', 'RUN_LIMITS', 'REPO_GUARD', 'AGENT_START_CALLED', 'LAUNCH_PLANNED', 'AGENT_START_RETURNED', 'AGENT_WAITING', 'AGENT_EXITED', 'AGENT_PROCESS_CHECK', 'REPO_GUARD', 'SANDBOX_CHECK', 'ACCEPTANCE_COMMAND', 'ACCEPTANCE_SIDE_EFFECTS', 'CANDIDATE_COMMIT', 'VERIFIER_BRIEF', 'VERIFIER_START_CALLED', 'VERIFIER_LAUNCH_PLANNED', 'VERIFIER_START_RETURNED', 'VERIFIER_WAITING', 'VERIFIER_EXITED', 'VERIFIER_PROCESS_CHECK', 'VERIFIER_WORKTREE_GUARD', 'VERDICT', 'VERIFIER_SANDBOX_CHECK', 'VERIFIER_EVIDENCE', 'VERIFIER_EVIDENCE', 'VERIFIER_EVIDENCE', 'VERIFICATION_RESULT', 'COMMIT', 'RUN_FINISHED']
+impl argv0 /opt/homebrew/bin/codex gpt-6-luna low
+impl exited 1 SESSION_ACCEPTED 0 ['mul_args.py']
+acc 1 PASS "'24\\n'\n"
+CANDIDATE_COMMIT eec86acbd6c180a91ada1b93f19d92f61753ba20
+verifier argv ['/opt/homebrew/bin/claude'] ['--permission-mode', 'dontAsk', '--disallowedTools', 'Bash,Edit,Write,NotebookEdit,WebFetch,WebSearch', '--allowedTools', 'Read,Grep,Glob'] same_model False
+verifier exited 1 SESSION_ACCEPTED 0 False
+verdict 1 PARSED PASS output
+evidence 1 MATCHED ['python', 'mul_args.py', '5', '-2', '7'] '-70\n'
+evidence 1 MATCHED ['python', 'mul_args.py', '9'] '9\n'
+evidence 1 MATCHED ['python', 'mul_args.py', '2', '3', '4', '5', '0'] '0\n'
+result 1 PASS_CONFIRMED {'confirmed': 0, 'contradicted': 0, 'duplicates': 0, 'ignored': 0, 'ignored_detail': {}, 'matched': 3, 'no_evidence': 0, 'not_reproduced': 0, 'unverified': 0}
+COMMIT eec86acbd6c180a91ada1b93f19d92f61753ba20
+REPO_REFS_UNCHANGED
+----- B8
+243 passed in 79.43s (0:01:19)
+=========================== short test summary info ============================
+FAILED tests/attack/test_verifier_agents_differential.py::test_brief_matches_independent_renderer_for_generated_untrusted_specs
+FAILED tests/attack/test_verifier_agents_fabrication.py::test_run_verifiers_records_references_with_their_verifier_identities
+FAILED tests/attack/test_verifier_agents_injection.py::test_brief_keeps_nested_quotes_and_unicode_inside_the_json_data
+FAILED tests/attack/test_verifier_agents_limits.py::test_unanimous_verification_evidence_is_order_independent
+4 failed, 124 passed, 2 xfailed, 6 xpassed in 0.61s
+----- B8: the new tests, 3 runs in a row
+101 passed in 24.97s
+101 passed in 25.85s
+101 passed in 21.06s
+----- B8: the conductor-side race (a late process check; the reviewer probe; passes only with the fix)
+.                                                                        [100%]
+1 passed, 25 deselected in 42.46s
+----- B8: the full suite on committed clones (round 4: r4/; order base, cand, cand, base)
+base1: 124 failed, 4222 passed, 44 skipped, 82 xfailed, 68 xpassed, 37 subtests passed in 100.50s (0:01:40)
+cand1: 121 failed, 4326 passed, 44 skipped, 79 xfailed, 71 xpassed, 37 subtests passed in 113.80s (0:01:53)
+cand2: 121 failed, 4326 passed, 44 skipped, 79 xfailed, 71 xpassed, 37 subtests passed in 117.49s (0:01:57)
+base2: 124 failed, 4222 passed, 44 skipped, 82 xfailed, 68 xpassed, 37 subtests passed in 99.49s (0:01:39)
+
+pair 1 (base1 -> cand1): 100.50s -> 113.80s = +13.30s
+pair 2 (cand2 -> base2): 117.49s vs 99.49s = +18.00s
+
+base1: pool (first test that needs it)  10.09s | my 0 test items  0.00s | all other items   84.94s
+cand1: pool (first test that needs it)  19.98s | my 101 test items  6.59s | all other items   81.46s
+cand2: pool (first test that needs it)  22.17s | my 101 test items  6.46s | all other items   82.40s
+base2: pool (first test that needs it)   9.29s | my 0 test items  0.00s | all other items   84.59s
+(attempts and loads)
+pair1 = p1a1 (base1, cand1)
+pair2 = p2a1 (cand2, base2)
+== p1a1 base start 07:55:29 waited=60s load1=6.27 |  7:55  up 2 days,  7:08, 1 user, load averages: 6.27 34.60 33.19
+   p1a1 base end 07:57:10 load1=5.88 |  7:57  up 2 days,  7:09, 1 user, load averages: 5.88 26.38 30.14 | 124 failed, 4222 passed, 44 skipped, 82 xfailed, 68 xpassed, 37 subtests passed in 100.50s (0:01:40)
+== p1a1 cand start 07:57:10 waited=0s load1=5.88 |  7:57  up 2 days,  7:09, 1 user, load averages: 5.88 26.38 30.14
+   p1a1 cand end 07:59:05 load1=5.64 |  7:59  up 2 days,  7:11, 1 user, load averages: 5.64 19.78 27.05 | 121 failed, 4326 passed, 44 skipped, 79 xfailed, 71 xpassed, 37 subtests passed in 113.80s (0:01:53)
+VALID pair1 = p1a1
+== p2a1 cand start 07:59:05 waited=0s load1=5.64 |  7:59  up 2 days,  7:11, 1 user, load averages: 5.64 19.78 27.05
+   p2a1 cand end 08:01:03 load1=5.50 |  8:01  up 2 days,  7:13, 1 user, load averages: 5.50 14.92 24.15 | 121 failed, 4326 passed, 44 skipped, 79 xfailed, 71 xpassed, 37 subtests passed in 117.49s (0:01:57)
+== p2a1 base start 08:01:03 waited=0s load1=5.50 |  8:01  up 2 days,  7:13, 1 user, load averages: 5.50 14.92 24.15
+   p2a1 base end 08:02:43 load1=4.57 |  8:02  up 2 days,  7:15, 1 user, load averages: 4.57 12.03 22.00 | 124 failed, 4222 passed, 44 skipped, 82 xfailed, 68 xpassed, 37 subtests passed in 99.49s (0:01:39)
+VALID pair2 = p2a1
+ALLDONE
+new failures (cand1 - base1):
+(empty above = none)
+new failures (cand2 - base2):
+(empty above = none)
+fixed (base1 - cand1):
+tests.attack.test_verifier_agents_fabrication::test_parse_verdict_rejects_unscoped_or_vague_references[../private.txt]
+tests.attack.test_verifier_agents_fabrication::test_parse_verdict_rejects_unscoped_or_vague_references[a/../private.txt]
+tests.attack.test_verifier_agents_fabrication::test_parse_verdict_rejects_unscoped_or_vague_references[verified]
+BASE_FAILURES_SAME_AS_ROUND1_BEFORE (124)
+----- mutation results (round 4, committed clone; m13 is an equivalent mutant, see the report)
+m1 finding confirmed without the re-run result: CAUGHT  (-k 'b3_ii or b2') | FAILED tests/test_conduct_verify.py::test_b3_ii_a_finding_that_does_not_r
+m2 pass check matched without the re-run result: CAUGHT  (-k 'b3_iii') | FAILED tests/test_conduct_verify.py::test_b3_iii_a_pass_that_the_conductors_r
+m3 finding without a check counted as valid: CAUGHT  (-k 'b3_i or b3_ii') | FAILED tests/test_conduct_verify.py::test_b3_i_a_failure_without_evidence_
+m4 implementer last message put into the verifier brief: CAUGHT  (-k 'b6') | FAILED tests/test_conduct_verify.py::test_b6_the_implementers_self_report
+m5 verifier runtime given the implementer's allowlist and the conductor's before/after comparison removed: CAUGHT  (-k 'b5_a or b5_each') | FAILED tes
+m6 cmd_conduct does not require verification: CAUGHT  (-k 'b4_b') | FAILED tests/test_conduct_verify.py::test_b4_b_the_cli_requires_a_verifier_by_defa
+m7 default retries 1: CAUGHT  (-k 'b2_always_hardcoded') |         failed = run.out["blocking"]["failed_criteria"] |         assert len(failed) == 1 a
+m8 first of several verdict lines taken: CAUGHT  (-k 'two_verdict or verdict_lines') | FAILED tests/test_conduct_verify_parse.py::test_two_verdict_lin
+m9 verifier wait without process check: CAUGHT  (-k 'b5_each') | FAILED tests/test_conduct_verify.py::test_b5_each_verifier_failure_has_its_own_type_a
+m11 retry brief stacks the earlier findings (round-1 review r9): CAUGHT  (-k 'b2') |         failed = run.out["blocking"]["failed_criteria"] |        
+m12 retry brief cut to the limit instead of stopping: CAUGHT  (-k 'retry_brief') | FAILED tests/test_conduct_verify.py::test_findings_that_do_not_fit_
+m13 re-run of a verifier copy shares one copy (no fresh copy per command): NOT CAUGHT  (-k 'b3 or b1') | 
+m10 sandbox self-check failure ignored for re-runs: CAUGHT  (-k 'sandbox_is_never_skipped') | FAILED tests/test_conduct_verify.py::test_b3_the_sandbox
+s1 supervisor: old behaviour (break at the first poll): CAUGHT  (-k 'supervisor') | FAILED tests/test_conduct_verify_supervisor.py::test_the_superviso
+s2 supervisor: never break on poll (wait for EOF): CAUGHT  (-k 'supervisor') | FAILED tests/test_conduct_verify_supervisor.py::test_the_supervisor_sti
+s3 supervisor: drain pass that does not read (sleep instead): CAUGHT  (-k 'supervisor') | FAILED tests/test_conduct_verify_supervisor.py::test_the_sup
+s4 runtime: _finalize_process does not read the output once more: CAUGHT  (-k 'supervisor') | FAILED tests/test_conduct_verify_supervisor.py::test_the
+----- code hash (16 non-artifact files; the plan expects ecaf4691...)
+0acf97376270db8e528bc05460a09ec9b31befe809dda5b8ce4f624e5a8be28a  -
+----- scope
+(empty above = inside the allowed paths)
+ docs/CONDUCT_RUN.md         |  21 +
+ docs/frames/toy/greet.md    |   2 +
+ verantyx/agent_adapter.py   |  28 +-
+ verantyx/agent_runtime.py   |  49 ++-
+ verantyx/cli.py             |  22 +-
+ verantyx/conductor_run.py   | 986 +++++++++++++++++++++++++++++++++++---------
+ verantyx/project_frame.py   |  15 +-
+ verantyx/verifier_agents.py | 291 ++++++++++++-
+ 8 files changed, 1201 insertions(+), 213 deletions(-)
+UNTOUCHED_OK
+(conduct_ask.py must not exist)
+FROZEN_LINES_1_896_IDENTICAL
+(empty above = no pytest skip / xfail in the new tests)

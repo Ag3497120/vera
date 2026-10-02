@@ -665,10 +665,21 @@ def _launch_path(value: Any, name: str) -> str:
     return text
 
 
+CODEX_SANDBOXES = ("workspace-write", "read-only")
+# W2-b: how a verifier session is started so that it cannot change the work directory.
+VERIFIER_CLAUDE_PERMISSION_MODE = "dontAsk"
+VERIFIER_CLAUDE_ALLOWED_TOOLS = ("Read", "Grep", "Glob")
+VERIFIER_CLAUDE_DISALLOWED_TOOLS = ("Bash", "Edit", "Write", "NotebookEdit", "WebFetch", "WebSearch")
+
+
 def codex_exec_launch(*, executable: str, model: str, effort: str, workdir: str | os.PathLike[str],
                       prompt_path: str | os.PathLike[str],
-                      last_message_path: str | os.PathLike[str]) -> LaunchSpec:
+                      last_message_path: str | os.PathLike[str],
+                      sandbox: str = "workspace-write") -> LaunchSpec:
     """The working ``codex exec`` command: workspace-write sandbox, prompt from stdin.
+
+    ``sandbox="read-only"`` (a verifier session) is the only other value; the default argument
+    array is unchanged.
 
     The trailing ``-`` tells codex to read its prompt from stdin; the prompt itself is
     never put in the argument array.  ``CodexExecAdapter.build_command`` keeps its
@@ -676,10 +687,12 @@ def codex_exec_launch(*, executable: str, model: str, effort: str, workdir: str 
     """
     exe = _launch_path(executable, "executable")
     work = _launch_path(workdir, "workdir")
+    if sandbox not in CODEX_SANDBOXES:
+        raise ValueError(f"sandbox must be one of {', '.join(CODEX_SANDBOXES)}")
     return LaunchSpec(
         argv=(exe, "exec", "--ignore-user-config", "-m", validate_model(model),
               "-c", f'model_reasoning_effort="{validate_effort(effort)}"',
-              "-s", "workspace-write", "-C", work,
+              "-s", sandbox, "-C", work,
               "-o", _launch_path(last_message_path, "last_message_path"), "-"),
         cwd=work,
         stdin_path=_launch_path(prompt_path, "prompt_path"),
@@ -690,20 +703,23 @@ def codex_exec_launch(*, executable: str, model: str, effort: str, workdir: str 
 
 def claude_print_launch(*, executable: str, model: str, effort: str, workdir: str | os.PathLike[str],
                         prompt_path: str | os.PathLike[str], permission_mode: Optional[str] = None,
-                        allowed_tools: Any = None) -> LaunchSpec:
+                        allowed_tools: Any = None, disallowed_tools: Any = None) -> LaunchSpec:
     """``claude -p`` run in the work directory, prompt from stdin.
 
     A permission option is added only when one is given (frame or command line): with
     ``permission_mode`` the array ends ``--permission-mode <mode>``, and with ``allowed_tools``
     ``--allowedTools <A,B>`` (one element; the option takes a variable number of values, so it
     is always last).  With neither, the array is exactly the older one and a non-interactive
-    Claude may be unable to write.
+    Claude may be unable to write.  ``disallowed_tools`` (a verifier session) adds
+    ``--disallowedTools <A,B>`` after ``--permission-mode`` and before ``--allowedTools``.
     """
     exe = _launch_path(executable, "executable")
     work = _launch_path(workdir, "workdir")
     argv = [exe, "-p", "--model", validate_model(model), "--effort", validate_effort(effort)]
     if permission_mode is not None:
         argv += ["--permission-mode", validate_permission_mode(permission_mode)]
+    if disallowed_tools is not None:
+        argv += ["--disallowedTools", ",".join(validate_allowed_tools(disallowed_tools))]
     if allowed_tools is not None:
         argv += ["--allowedTools", ",".join(validate_allowed_tools(allowed_tools))]
     return LaunchSpec(
@@ -716,6 +732,10 @@ def claude_print_launch(*, executable: str, model: str, effort: str, workdir: st
 
 
 __all__ = [
+    "CODEX_SANDBOXES",
+    "VERIFIER_CLAUDE_ALLOWED_TOOLS",
+    "VERIFIER_CLAUDE_DISALLOWED_TOOLS",
+    "VERIFIER_CLAUDE_PERMISSION_MODE",
     "AgentAdapter",
     "AgentEvent",
     "CodexExecAdapter",

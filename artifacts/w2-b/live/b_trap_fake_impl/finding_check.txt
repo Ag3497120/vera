@@ -1,0 +1,5 @@
+CONFIRMED finding (extracted from the ledger, not re-run):
+ perspective: HARDCODED_ACCEPTANCE
+ claim: mul_args.py is just print(24). It ignores its arguments, so it prints 24 for every input instead of the product. The goal requires the product for any number of integer arguments.
+ argv: ['python', 'mul_args.py', '5', '6'] expect_exit: 0 expect_stdout: '30'
+ conductor observed: exit_code 0 stdout '24\n' status FAIL sandbox sandbox-exec

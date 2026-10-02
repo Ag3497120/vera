@@ -1,0 +1,12 @@
+== r1state round 1 05:56:53 load averages: 8.41 9.09 8.41
+serial: SUM wall 56.0 cpu 38.6 own 7.2
+pool:   POOL TOTAL 14.00s  n=24  sum=97.9
+== cand round 1 05:58:04 load averages: 8.28 8.87 8.37
+serial: SUM wall 47.6 cpu 29.0 own 4.4
+pool:   POOL TOTAL 16.42s  n=23  sum=108.7
+== r1state round 2 05:59:08 load averages: 21.56 11.95 9.52
+serial: SUM wall 78.0 cpu 47.3 own 8.6
+pool:   POOL TOTAL 18.22s  n=24  sum=120.4
+== cand round 2 06:00:45 load averages: 31.86 17.57 11.93
+serial: SUM wall 58.1 cpu 34.8 own 5.3
+pool:   POOL TOTAL 10.82s  n=23  sum=76.7

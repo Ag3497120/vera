@@ -1,0 +1,17 @@
+F.                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_the_supervisor_keeps_output_that_arrives_between_its_select_and_its_poll _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-957/test_the_supervisor_keeps_outp0')
+
+    def test_the_supervisor_keeps_output_that_arrives_between_its_select_and_its_poll(tmp_path):
+        output, status = run_supervisor(tmp_path, "echo VERA_VERDICT written-just-before-exit", wrapped=True)
+>       assert output == "VERA_VERDICT written-just-before-exit\n" and status == {"exit_code": 0, "output_limit": False}
+E       AssertionError: assert ('' == 'VERA_VERDICT...before-exit\n'
+E         
+E         - VERA_VERDICT written-just-before-exit)
+
+tests/test_conduct_verify_supervisor.py:51: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_conduct_verify_supervisor.py::test_the_supervisor_keeps_output_that_arrives_between_its_select_and_its_poll
+1 failed, 1 passed in 1.83s

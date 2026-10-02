@@ -1,0 +1,51 @@
+...................F.................................................... [ 73%]
+..........................                                               [100%]
+=================================== FAILURES ===================================
+_ test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[d] __
+
+letter = 'd', runs = <test_conduct_run_support.Pool object at 0x1071a2bd0>
+
+    @pytest.mark.parametrize("letter", list(B5))
+    def test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind(letter, runs):
+        name, expected = B5[letter]
+        run = runs[name]
+        assert run.out["outcome"] == expected, run.one("RUN_FINISHED")
+        assert run.out["verdict"] == "RUN_INCOMPLETE" and run.of("COMMIT") == []
+        assert len(worktree_lines(run)) == 1 and same_original_repository(run)
+        # a verdict that could not be read is recorded under the extraction's own name (NO_VERDICT), the others under their type
+        assert run.one("VERIFICATION_RESULT")["decision"] == ("NO_VERDICT" if letter == "f" else expected)
+        assert run.one("VERIFIER_PROCESS_CHECK")["group_alive"] is False
+        assert all(dead(pid) for pid in verifier_supervisor_pids(run))
+        if letter in "cd":
+>           pids = [int((run.pids / n).read_text()) for n in ("verifier", "vgrandchild")]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_conduct_verify.py:356: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_conduct_verify.py:356: in <listcomp>
+    pids = [int((run.pids / n).read_text()) for n in ("verifier", "vgrandchild")]
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/pathlib.py:1058: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-951/verify-B5d_verifier_exce0/pids/verifier')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-951/verify-B5d_verifier_exce0/pids/verifier'
+
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/pathlib.py:1044: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_conduct_verify.py::test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[d]
+1 failed, 97 passed in 34.01s

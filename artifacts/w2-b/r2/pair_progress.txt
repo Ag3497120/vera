@@ -1,0 +1,13 @@
+== base 05:42:03
+ 5:42  up 2 days,  4:54, 1 user, load averages: 7.37 8.72 8.13
+done base 05:43:44
+== cand 05:43:44
+ 5:43  up 2 days,  4:56, 1 user, load averages: 6.15 8.00 7.92
+done cand 05:45:36
+== cand 05:45:36
+ 5:45  up 2 days,  4:58, 1 user, load averages: 7.17 7.65 7.77
+done cand 05:47:25
+== base 05:47:25
+ 5:47  up 2 days, 5 hrs, 1 user, load averages: 6.80 7.25 7.59
+done base 05:49:04
+ALLDONE
