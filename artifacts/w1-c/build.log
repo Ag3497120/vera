@@ -1,0 +1,28 @@
+command: tools/build_p4_corpus_index.py --root /Users/motonisihikoudai/vera-codex-corpus --out /Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c --manifest artifacts/w1-c/manifest.json --jobs 4
+general_qa: 317423 rows in 28.159s
+pro: 1366290 rows in 34.886s
+figurative_commonsense: 238905 rows in 9.547s
+narrative: 146598 rows in 9.048s
+paraphrase_entail: 379574 rows in 12.55s
+conversation: 2242864 rows in 66.358s
+code_qa: 324639 rows in 44.593s
+code: 1405189 rows in 78.586s
+       79.86 real       256.98 user        25.98 sys
+           140148736  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               70627  page reclaims
+                 385  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                7798  voluntary context switches
+              115208  involuntary context switches
+          3999417760  instructions retired
+          1430692578  cycles elapsed
+            74170848  peak memory footprint
+exit_code=0

@@ -1,0 +1,161 @@
+{
+ "index": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c",
+ "limit_used": 60,
+ "rows": [
+  {
+   "sentence": "こんにちは。",
+   "spoken": "こんにちは",
+   "like_hits": 4334,
+   "norm_equal_total": 0,
+   "window60_norm_equal": 0,
+   "train_rows_removed_by_heldout_rule": 0,
+   "train_rows_kept": 0,
+   "removed_by_file": {
+    "conversation/utterances.jsonl": 0,
+    "even/conversation/utterances.jsonl": 0
+   },
+   "kept_by_file": {
+    "conversation/utterances.jsonl": 0,
+    "even/conversation/utterances.jsonl": 0
+   },
+   "reaches_supply": false,
+   "index_state": "INDEX_AVAILABLE"
+  },
+  {
+   "sentence": "どういたしまして。",
+   "spoken": "どういたしまして",
+   "like_hits": 7862,
+   "norm_equal_total": 4,
+   "window60_norm_equal": 0,
+   "train_rows_removed_by_heldout_rule": 110,
+   "train_rows_kept": 4,
+   "removed_by_file": {
+    "conversation/utterances.jsonl": 101,
+    "even/conversation/utterances.jsonl": 9
+   },
+   "kept_by_file": {
+    "conversation/utterances.jsonl": 4,
+    "even/conversation/utterances.jsonl": 0
+   },
+   "reaches_supply": false,
+   "index_state": "INDEX_AVAILABLE"
+  },
+  {
+   "sentence": "お話を聞きます。",
+   "spoken": "お話を聞きます",
+   "like_hits": 3,
+   "norm_equal_total": 0,
+   "window60_norm_equal": 0,
+   "train_rows_removed_by_heldout_rule": 0,
+   "train_rows_kept": 0,
+   "removed_by_file": {
+    "conversation/utterances.jsonl": 0,
+    "even/conversation/utterances.jsonl": 0
+   },
+   "kept_by_file": {
+    "conversation/utterances.jsonl": 0,
+    "even/conversation/utterances.jsonl": 0
+   },
+   "reaches_supply": false,
+   "index_state": "INDEX_AVAILABLE"
+  },
+  {
+   "sentence": "また、お話ししましょう。",
+   "spoken": "また、お話ししましょう",
+   "like_hits": 0,
+   "norm_equal_total": 0,
+   "window60_norm_equal": 0,
+   "train_rows_removed_by_heldout_rule": 0,
+   "train_rows_kept": 0,
+   "removed_by_file": {
+    "conversation/utterances.jsonl": 0,
+    "even/conversation/utterances.jsonl": 0
+   },
+   "kept_by_file": {
+    "conversation/utterances.jsonl": 0,
+    "even/conversation/utterances.jsonl": 0
+   },
+   "reaches_supply": false,
+   "index_state": "INDEX_AVAILABLE"
+  },
+  {
+   "sentence": "気持ちを聞かせてください。",
+   "spoken": "気持ちを聞かせてください",
+   "like_hits": 1,
+   "norm_equal_total": 0,
+   "window60_norm_equal": 0,
+   "train_rows_removed_by_heldout_rule": 0,
+   "train_rows_kept": 0,
+   "removed_by_file": {
+    "conversation/utterances.jsonl": 0,
+    "even/conversation/utterances.jsonl": 0
+   },
+   "kept_by_file": {
+    "conversation/utterances.jsonl": 0,
+    "even/conversation/utterances.jsonl": 0
+   },
+   "reaches_supply": false,
+   "index_state": "INDEX_AVAILABLE"
+  },
+  {
+   "sentence": "おはようございます。",
+   "spoken": "おはようございます",
+   "like_hits": 24561,
+   "norm_equal_total": 0,
+   "window60_norm_equal": 0,
+   "train_rows_removed_by_heldout_rule": 0,
+   "train_rows_kept": 0,
+   "removed_by_file": {
+    "conversation/utterances.jsonl": 0,
+    "even/conversation/utterances.jsonl": 0
+   },
+   "kept_by_file": {
+    "conversation/utterances.jsonl": 0,
+    "even/conversation/utterances.jsonl": 0
+   },
+   "reaches_supply": false,
+   "index_state": "INDEX_AVAILABLE"
+  },
+  {
+   "sentence": "こんばんは。",
+   "spoken": "こんばんは",
+   "like_hits": 6434,
+   "norm_equal_total": 0,
+   "window60_norm_equal": 0,
+   "train_rows_removed_by_heldout_rule": 0,
+   "train_rows_kept": 0,
+   "removed_by_file": {
+    "conversation/utterances.jsonl": 0,
+    "even/conversation/utterances.jsonl": 0
+   },
+   "kept_by_file": {
+    "conversation/utterances.jsonl": 0,
+    "even/conversation/utterances.jsonl": 0
+   },
+   "reaches_supply": false,
+   "index_state": "INDEX_AVAILABLE"
+  },
+  {
+   "sentence": "はじめまして。",
+   "spoken": "はじめまして",
+   "like_hits": 8,
+   "norm_equal_total": 0,
+   "window60_norm_equal": 0,
+   "train_rows_removed_by_heldout_rule": 0,
+   "train_rows_kept": 0,
+   "removed_by_file": {
+    "conversation/utterances.jsonl": 0,
+    "even/conversation/utterances.jsonl": 0
+   },
+   "kept_by_file": {
+    "conversation/utterances.jsonl": 0,
+    "even/conversation/utterances.jsonl": 0
+   },
+   "reaches_supply": false,
+   "index_state": "INDEX_AVAILABLE"
+  }
+ ],
+ "any_sentence_reaches_supply": false,
+ "note": "reaches_supply is true when Corpus.search(spoken, 'conversation', limit=60) holds a row whose _norm equals _norm(spoken), which is exactly what round3._conversation_supply requires",
+ "elapsed_seconds": 16.551
+}

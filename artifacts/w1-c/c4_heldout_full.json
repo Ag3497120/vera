@@ -1,0 +1,451 @@
+{
+ "manifest": "artifacts/w1-c/manifest.json",
+ "heldout_files": {
+  "walked": [
+   "code/heldout/items.jsonl",
+   "code_qa/heldout/records.jsonl",
+   "conversation/heldout/utterances.jsonl",
+   "even/code/heldout/items.jsonl",
+   "even/conversation/heldout/utterances.jsonl",
+   "figurative_commonsense/heldout/records.jsonl",
+   "general_qa/heldout/records.jsonl",
+   "narrative/heldout/records.jsonl",
+   "paraphrase_entail/heldout/records.jsonl"
+  ],
+  "builder_HELDOUT": [
+   "code/heldout/items.jsonl",
+   "code_qa/heldout/records.jsonl",
+   "conversation/heldout/utterances.jsonl",
+   "even/code/heldout/items.jsonl",
+   "even/conversation/heldout/utterances.jsonl",
+   "figurative_commonsense/heldout/records.jsonl",
+   "general_qa/heldout/records.jsonl",
+   "narrative/heldout/records.jsonl",
+   "paraphrase_entail/heldout/records.jsonl"
+  ],
+  "common_HELDOUT": [
+   "code/heldout/items.jsonl",
+   "code_qa/heldout/records.jsonl",
+   "conversation/heldout/utterances.jsonl",
+   "even/code/heldout/items.jsonl",
+   "even/conversation/heldout/utterances.jsonl",
+   "figurative_commonsense/heldout/records.jsonl",
+   "general_qa/heldout/records.jsonl",
+   "narrative/heldout/records.jsonl",
+   "paraphrase_entail/heldout/records.jsonl"
+  ],
+  "walked_equals_builder": true,
+  "walked_equals_common": true,
+  "families_of_walked": {
+   "code/heldout/items.jsonl": "code",
+   "code_qa/heldout/records.jsonl": "code_qa",
+   "conversation/heldout/utterances.jsonl": "conversation",
+   "even/code/heldout/items.jsonl": "code",
+   "even/conversation/heldout/utterances.jsonl": "conversation",
+   "figurative_commonsense/heldout/records.jsonl": "figurative_commonsense",
+   "general_qa/heldout/records.jsonl": "general_qa",
+   "narrative/heldout/records.jsonl": "narrative",
+   "paraphrase_entail/heldout/records.jsonl": "paraphrase_entail"
+  },
+  "family_matches_builder_table": true,
+  "out_has_heldout": false
+ },
+ "heldout_read": [
+  {
+   "family": "code",
+   "path": "code/heldout/items.jsonl",
+   "bytes": 38579300,
+   "lines": 73642,
+   "sha256": "75aa084034f5d0be878012cf49c1fb358be71cd84b611db97535cf7c29a0ca1b",
+   "records": 73642,
+   "unextractable": {},
+   "distinct_in_file": 73642
+  },
+  {
+   "family": "code_qa",
+   "path": "code_qa/heldout/records.jsonl",
+   "bytes": 32672820,
+   "lines": 34523,
+   "sha256": "6f5fdf928ded3740e939000e549d08855be1ef6e275f67cc25ec51036deb1db2",
+   "records": 34523,
+   "unextractable": {},
+   "distinct_in_file": 34523
+  },
+  {
+   "family": "conversation",
+   "path": "conversation/heldout/utterances.jsonl",
+   "bytes": 71035680,
+   "lines": 159676,
+   "sha256": "2b2e2a2937aa404290ae28c21c08902bfa3ce7153087e27e9600c66498395ef1",
+   "records": 159676,
+   "unextractable": {},
+   "distinct_in_file": 158673
+  },
+  {
+   "family": "code",
+   "path": "even/code/heldout/items.jsonl",
+   "bytes": 22379722,
+   "lines": 42674,
+   "sha256": "ca49d8fc5fb3171ceccb76ddd8926039d8547d144b7b3c54d14b033fb2957bc7",
+   "records": 42674,
+   "unextractable": {},
+   "distinct_in_file": 42674
+  },
+  {
+   "family": "conversation",
+   "path": "even/conversation/heldout/utterances.jsonl",
+   "bytes": 27078227,
+   "lines": 59609,
+   "sha256": "414d7896c8c84a09bc2df38847375faf61b63009adb2c50f07735a8eebdb649c",
+   "records": 59609,
+   "unextractable": {},
+   "distinct_in_file": 59458
+  },
+  {
+   "family": "figurative_commonsense",
+   "path": "figurative_commonsense/heldout/records.jsonl",
+   "bytes": 13456250,
+   "lines": 25074,
+   "sha256": "f459ff1579f8cfc855f01a34f8c0dfcff785d1ea28ccf8679f47126d0c95c82f",
+   "records": 25074,
+   "unextractable": {},
+   "distinct_in_file": 25074
+  },
+  {
+   "family": "general_qa",
+   "path": "general_qa/heldout/records.jsonl",
+   "bytes": 25354215,
+   "lines": 34171,
+   "sha256": "f941fa4f4dbd72a82bdbdff0f6e918a07730041f8d44b979eaab12034825a1a3",
+   "records": 34171,
+   "unextractable": {},
+   "distinct_in_file": 34171
+  },
+  {
+   "family": "narrative",
+   "path": "narrative/heldout/records.jsonl",
+   "bytes": 11482734,
+   "lines": 18193,
+   "sha256": "ae736cbeaf6657208fe20e081201445d9e4007b2146354c66ceb4812b547a42b",
+   "records": 18193,
+   "unextractable": {},
+   "distinct_in_file": 18193
+  },
+  {
+   "family": "paraphrase_entail",
+   "path": "paraphrase_entail/heldout/records.jsonl",
+   "bytes": 20495039,
+   "lines": 43544,
+   "sha256": "2deea92eeffdbbe3ee185ec5edabd6281acce5d00fe0f33fb01e1979fb222e50",
+   "records": 43544,
+   "unextractable": {},
+   "distinct_in_file": 43544
+  }
+ ],
+ "by_family": [
+  {
+   "family": "pro",
+   "heldout_files": [],
+   "heldout_lines": 0,
+   "heldout_records_with_body": 0,
+   "distinct_heldout_bodies": 0,
+   "same_family_index_rows_with_heldout_body": 0,
+   "other_family_index_rows_with_heldout_body": {
+    "code": 0,
+    "conversation": 0,
+    "general_qa": 0,
+    "code_qa": 0,
+    "figurative_commonsense": 0,
+    "narrative": 0,
+    "paraphrase_entail": 0
+   },
+   "other_family_examples": []
+  },
+  {
+   "family": "code",
+   "heldout_files": [
+    "code/heldout/items.jsonl",
+    "even/code/heldout/items.jsonl"
+   ],
+   "heldout_lines": 116316,
+   "heldout_records_with_body": 116316,
+   "distinct_heldout_bodies": 116316,
+   "same_family_index_rows_with_heldout_body": 0,
+   "other_family_index_rows_with_heldout_body": {
+    "pro": 0,
+    "conversation": 0,
+    "general_qa": 0,
+    "code_qa": 0,
+    "figurative_commonsense": 0,
+    "narrative": 0,
+    "paraphrase_entail": 0
+   },
+   "other_family_examples": []
+  },
+  {
+   "family": "conversation",
+   "heldout_files": [
+    "conversation/heldout/utterances.jsonl",
+    "even/conversation/heldout/utterances.jsonl"
+   ],
+   "heldout_lines": 219285,
+   "heldout_records_with_body": 219285,
+   "distinct_heldout_bodies": 217865,
+   "same_family_index_rows_with_heldout_body": 0,
+   "other_family_index_rows_with_heldout_body": {
+    "pro": 1,
+    "code": 0,
+    "general_qa": 0,
+    "code_qa": 0,
+    "figurative_commonsense": 0,
+    "narrative": 0,
+    "paraphrase_entail": 0
+   },
+   "other_family_examples": [
+    {
+     "heldout_family": "conversation",
+     "found_in_family": "pro",
+     "source_file": "out/sentences.jsonl",
+     "line": 327747,
+     "text_head": "おやすみなさい。"
+    }
+   ]
+  },
+  {
+   "family": "general_qa",
+   "heldout_files": [
+    "general_qa/heldout/records.jsonl"
+   ],
+   "heldout_lines": 34171,
+   "heldout_records_with_body": 34171,
+   "distinct_heldout_bodies": 34171,
+   "same_family_index_rows_with_heldout_body": 0,
+   "other_family_index_rows_with_heldout_body": {
+    "pro": 0,
+    "code": 0,
+    "conversation": 0,
+    "code_qa": 0,
+    "figurative_commonsense": 0,
+    "narrative": 0,
+    "paraphrase_entail": 0
+   },
+   "other_family_examples": []
+  },
+  {
+   "family": "code_qa",
+   "heldout_files": [
+    "code_qa/heldout/records.jsonl"
+   ],
+   "heldout_lines": 34523,
+   "heldout_records_with_body": 34523,
+   "distinct_heldout_bodies": 34523,
+   "same_family_index_rows_with_heldout_body": 0,
+   "other_family_index_rows_with_heldout_body": {
+    "pro": 0,
+    "code": 0,
+    "conversation": 0,
+    "general_qa": 0,
+    "figurative_commonsense": 0,
+    "narrative": 0,
+    "paraphrase_entail": 0
+   },
+   "other_family_examples": []
+  },
+  {
+   "family": "figurative_commonsense",
+   "heldout_files": [
+    "figurative_commonsense/heldout/records.jsonl"
+   ],
+   "heldout_lines": 25074,
+   "heldout_records_with_body": 25074,
+   "distinct_heldout_bodies": 25074,
+   "same_family_index_rows_with_heldout_body": 0,
+   "other_family_index_rows_with_heldout_body": {
+    "pro": 0,
+    "code": 0,
+    "conversation": 0,
+    "general_qa": 0,
+    "code_qa": 0,
+    "narrative": 0,
+    "paraphrase_entail": 0
+   },
+   "other_family_examples": []
+  },
+  {
+   "family": "narrative",
+   "heldout_files": [
+    "narrative/heldout/records.jsonl"
+   ],
+   "heldout_lines": 18193,
+   "heldout_records_with_body": 18193,
+   "distinct_heldout_bodies": 18193,
+   "same_family_index_rows_with_heldout_body": 0,
+   "other_family_index_rows_with_heldout_body": {
+    "pro": 0,
+    "code": 0,
+    "conversation": 0,
+    "general_qa": 0,
+    "code_qa": 0,
+    "figurative_commonsense": 0,
+    "paraphrase_entail": 0
+   },
+   "other_family_examples": []
+  },
+  {
+   "family": "paraphrase_entail",
+   "heldout_files": [
+    "paraphrase_entail/heldout/records.jsonl"
+   ],
+   "heldout_lines": 43544,
+   "heldout_records_with_body": 43544,
+   "distinct_heldout_bodies": 43544,
+   "same_family_index_rows_with_heldout_body": 0,
+   "other_family_index_rows_with_heldout_body": {
+    "pro": 0,
+    "code": 0,
+    "conversation": 0,
+    "general_qa": 0,
+    "code_qa": 0,
+    "figurative_commonsense": 0,
+    "narrative": 0
+   },
+   "other_family_examples": []
+  }
+ ],
+ "pass_same_family_all_zero": true,
+ "rule_recount": [
+  {
+   "family": "pro",
+   "path": "out/sentences.jsonl",
+   "lines": 1366290,
+   "would_index_without_rule": 1366290,
+   "overlap_recount": 0,
+   "manifest_heldout_body_overlap": 0,
+   "manifest_indexed": 1366290,
+   "planner_predicted": 0,
+   "recount_equals_manifest": true,
+   "manifest_equals_planner_prediction": true,
+   "identity_would_index_minus_overlap": true
+  },
+  {
+   "family": "code",
+   "path": "code/items.jsonl",
+   "lines": 1020930,
+   "would_index_without_rule": 1020930,
+   "overlap_recount": 10,
+   "manifest_heldout_body_overlap": 10,
+   "manifest_indexed": 1020920,
+   "planner_predicted": 10,
+   "recount_equals_manifest": true,
+   "manifest_equals_planner_prediction": true,
+   "identity_would_index_minus_overlap": true
+  },
+  {
+   "family": "code",
+   "path": "even/code/items.jsonl",
+   "lines": 384279,
+   "would_index_without_rule": 384279,
+   "overlap_recount": 10,
+   "manifest_heldout_body_overlap": 10,
+   "manifest_indexed": 384269,
+   "planner_predicted": 10,
+   "recount_equals_manifest": true,
+   "manifest_equals_planner_prediction": true,
+   "identity_would_index_minus_overlap": true
+  },
+  {
+   "family": "conversation",
+   "path": "conversation/utterances.jsonl",
+   "lines": 1751373,
+   "would_index_without_rule": 1751373,
+   "overlap_recount": 18461,
+   "manifest_heldout_body_overlap": 18461,
+   "manifest_indexed": 1732912,
+   "planner_predicted": 18461,
+   "recount_equals_manifest": true,
+   "manifest_equals_planner_prediction": true,
+   "identity_would_index_minus_overlap": true
+  },
+  {
+   "family": "conversation",
+   "path": "even/conversation/utterances.jsonl",
+   "lines": 514199,
+   "would_index_without_rule": 514199,
+   "overlap_recount": 4247,
+   "manifest_heldout_body_overlap": 4247,
+   "manifest_indexed": 509952,
+   "planner_predicted": 4247,
+   "recount_equals_manifest": true,
+   "manifest_equals_planner_prediction": true,
+   "identity_would_index_minus_overlap": true
+  },
+  {
+   "family": "general_qa",
+   "path": "general_qa/train/records.jsonl",
+   "lines": 317423,
+   "would_index_without_rule": 317423,
+   "overlap_recount": 0,
+   "manifest_heldout_body_overlap": 0,
+   "manifest_indexed": 317423,
+   "planner_predicted": 0,
+   "recount_equals_manifest": true,
+   "manifest_equals_planner_prediction": true,
+   "identity_would_index_minus_overlap": true
+  },
+  {
+   "family": "code_qa",
+   "path": "code_qa/train/records.jsonl",
+   "lines": 324639,
+   "would_index_without_rule": 324639,
+   "overlap_recount": 0,
+   "manifest_heldout_body_overlap": 0,
+   "manifest_indexed": 324639,
+   "planner_predicted": 0,
+   "recount_equals_manifest": true,
+   "manifest_equals_planner_prediction": true,
+   "identity_would_index_minus_overlap": true
+  },
+  {
+   "family": "figurative_commonsense",
+   "path": "figurative_commonsense/train/records.jsonl",
+   "lines": 238905,
+   "would_index_without_rule": 238905,
+   "overlap_recount": 0,
+   "manifest_heldout_body_overlap": 0,
+   "manifest_indexed": 238905,
+   "planner_predicted": 0,
+   "recount_equals_manifest": true,
+   "manifest_equals_planner_prediction": true,
+   "identity_would_index_minus_overlap": true
+  },
+  {
+   "family": "narrative",
+   "path": "narrative/train/records.jsonl",
+   "lines": 146598,
+   "would_index_without_rule": 146598,
+   "overlap_recount": 0,
+   "manifest_heldout_body_overlap": 0,
+   "manifest_indexed": 146598,
+   "planner_predicted": 0,
+   "recount_equals_manifest": true,
+   "manifest_equals_planner_prediction": true,
+   "identity_would_index_minus_overlap": true
+  },
+  {
+   "family": "paraphrase_entail",
+   "path": "paraphrase_entail/train/records.jsonl",
+   "lines": 379580,
+   "would_index_without_rule": 379580,
+   "overlap_recount": 6,
+   "manifest_heldout_body_overlap": 6,
+   "manifest_indexed": 379574,
+   "planner_predicted": 6,
+   "recount_equals_manifest": true,
+   "manifest_equals_planner_prediction": true,
+   "identity_would_index_minus_overlap": true
+  }
+ ],
+ "pass_rule_recount_equals_manifest": true,
+ "pass_heldout_files_match_tables": true,
+ "elapsed_seconds": 41.375
+}

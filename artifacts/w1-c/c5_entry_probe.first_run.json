@@ -1,0 +1,6134 @@
+{
+ "registered": "artifacts/w1-c/c5_probes.json",
+ "positive": [
+  {
+   "id": "P1",
+   "entry": "cli_default",
+   "text": "湯気の中の朝の台所の様子を一文で描写してください。",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "compose",
+     "verdict": "CREATED",
+     "ability": "generation",
+     "door": "chat",
+     "text": "創作（出典の断片を再構成）: 炊きたてのご飯の湯気が朝の台所に立った。",
+     "corpus_trace_steps": [
+      {
+       "part": "ability_corpus.search",
+       "status": "ran",
+       "family": "pro",
+       "index": "INDEX_AVAILABLE",
+       "verdict": null
+      }
+     ],
+     "corpus_path_in_trace": true,
+     "index_states": [
+      "INDEX_AVAILABLE"
+     ],
+     "generated_origin_sources": 2,
+     "generated_origin_examples": [
+      {
+       "path": "/sources[0]",
+       "family": "pro",
+       "source_file": "out/sentences.jsonl",
+       "line": 2080,
+       "text": "朝の台所に炊きたてのご飯の湯気が立ち、茶碗を持つ手まで温まった。"
+      },
+      {
+       "path": "/lines[0]/sources[0]",
+       "family": "pro",
+       "source_file": "out/sentences.jsonl",
+       "line": 2080,
+       "text": "朝の台所に炊きたてのご飯の湯気が立ち、茶碗を持つ手まで温まった。"
+      }
+     ],
+     "answered": true
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "compose",
+     "ability": "generation",
+     "verdict": "CREATED",
+     "text": "創作（出典の断片を再構成）: 炊きたてのご飯の湯気が朝の台所に立った。",
+     "evidence": [
+      "朝の台所に炊きたてのご飯の湯気が立ち、茶碗を持つ手まで温まった。"
+     ],
+     "sources": [
+      {
+       "family": "pro",
+       "source": "llm_authored:codex:pro-b00041",
+       "text": "朝の台所に炊きたてのご飯の湯気が立ち、茶碗を持つ手まで温まった。",
+       "sha": "46ac67b41de8",
+       "scene": "朝ごはん",
+       "origin": "generated",
+       "generator": "codex",
+       "source_file": "out/sentences.jsonl",
+       "line": 2080
+      }
+     ],
+     "lines": [
+      {
+       "text": "炊きたてのご飯の湯気が朝の台所に立った。",
+       "sources": [
+        {
+         "family": "pro",
+         "source": "llm_authored:codex:pro-b00041",
+         "text": "朝の台所に炊きたてのご飯の湯気が立ち、茶碗を持つ手まで温まった。",
+         "sha": "46ac67b41de8",
+         "scene": "朝ごはん",
+         "origin": "generated",
+         "generator": "codex",
+         "source_file": "out/sentences.jsonl",
+         "line": 2080
+        }
+       ],
+       "frame": {
+        "predicate": "立つ",
+        "agent": "炊きたてのご飯の湯気",
+        "patient": "",
+        "recipient": "朝の台所",
+        "negated": false,
+        "past": true,
+        "ambiguous": false,
+        "inferred": false
+       },
+       "reread": {
+        "predicate": "立つ",
+        "agent": "炊きたてのご飯の湯気",
+        "patient": "",
+        "recipient": "朝の台所",
+        "negated": false,
+        "past": true,
+        "ambiguous": false,
+        "inferred": false
+       },
+       "transform": null
+      }
+     ],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "chat",
+       "asked_slot": null,
+       "case_frame": {
+        "subject": "",
+        "predicates": [
+         "描写する"
+        ],
+        "arguments": [
+         "湯気の中の朝の台所の様子"
+        ],
+        "attribute": "",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "STAGED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "request"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "generation"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "chat",
+       "asked_slot": null,
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "ability_corpus.search",
+       "family": "pro",
+       "topic": "湯気の中の朝の台所の様子",
+       "frames": 3,
+       "index": "INDEX_AVAILABLE"
+      },
+      {
+       "status": "ran",
+       "part": "compose_frame.compose",
+       "verdict": "REJECTED"
+      },
+      {
+       "status": "ran",
+       "part": "realize.realize",
+       "reread": 1
+      }
+     ],
+     "door": "chat"
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_GENERATION_NO_STRUCTURE",
+     "ability": "generation",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [
+      {
+       "part": "ability_corpus.search",
+       "status": "ran",
+       "family": "local",
+       "index": "UNKNOWN_NO_INDEX",
+       "verdict": null
+      }
+     ],
+     "corpus_path_in_trace": true,
+     "index_states": [
+      "UNKNOWN_NO_INDEX"
+     ],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "generation",
+     "verdict": "UNKNOWN_GENERATION_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "chat",
+       "asked_slot": null,
+       "case_frame": {
+        "subject": "",
+        "predicates": [
+         "描写する"
+        ],
+        "arguments": [
+         "湯気の中の朝の台所の様子"
+        ],
+        "attribute": "",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "STAGED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "request"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "generation"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "chat",
+       "asked_slot": null,
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "ability_corpus.search",
+       "family": "local",
+       "topic": "湯気の中の朝の台所の様子",
+       "frames": 0,
+       "index": "UNKNOWN_NO_INDEX"
+      },
+      {
+       "status": "ran",
+       "part": "say.say",
+       "verdict": null
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_GENERATION_NO_STRUCTURE",
+       "how_to_resolve": "話題について述語と役割が読み取れる出典文を追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "話題について述語と役割が読み取れる出典文を追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_GENERATION_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "話題について述語と役割が読み取れる出典文を追加してください。"
+     }
+    }
+   },
+   "verdict": {
+    "corpus_path_in_trace": true,
+    "with_index_states": [
+     "INDEX_AVAILABLE"
+    ],
+    "without_index_states": [
+     "UNKNOWN_NO_INDEX"
+    ],
+    "generated_origin_sources_with_index": 2,
+    "passes": true
+   }
+  },
+  {
+   "id": "P2",
+   "entry": "api_legacy",
+   "text": "ありがとう。",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "social",
+     "verdict": "ANSWER",
+     "ability": null,
+     "door": "round3",
+     "text": "どういたしまして。",
+     "corpus_trace_steps": [
+      {
+       "part": "round3.route",
+       "status": "ran",
+       "family": "conversation",
+       "index": null,
+       "verdict": null
+      },
+      {
+       "part": "round3.family.conversation",
+       "status": "ran",
+       "family": "conversation",
+       "index": "INDEX_AVAILABLE",
+       "verdict": "ANSWER"
+      }
+     ],
+     "corpus_path_in_trace": true,
+     "index_states": [
+      "INDEX_AVAILABLE"
+     ],
+     "generated_origin_sources": 3,
+     "generated_origin_examples": [
+      {
+       "path": "/sources[0]",
+       "family": "conversation",
+       "source_file": "conversation/utterances.jsonl",
+       "line": 1075,
+       "text": "どういたしまして。"
+      },
+      {
+       "path": "/sources[1]",
+       "family": "conversation",
+       "source_file": "conversation/utterances.jsonl",
+       "line": 1095,
+       "text": "どういたしまして。"
+      },
+      {
+       "path": "/sources[2]",
+       "family": "conversation",
+       "source_file": "conversation/utterances.jsonl",
+       "line": 1885,
+       "text": "どういたしまして。"
+      }
+     ],
+     "answered": true
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "social",
+     "verdict": "ANSWER",
+     "text": "どういたしまして。",
+     "path": "speech_act_supply",
+     "evidence": [
+      "どういたしまして。"
+     ],
+     "sources": [
+      {
+       "family": "conversation",
+       "source": "llm_authored:codex:pro-conv-b00029",
+       "text": "どういたしまして。",
+       "sha": "12c7e63c32de",
+       "scene": "ユーザーとAIアシスタント（聞き返し・確認）／予定の相談／朝",
+       "origin": "generated",
+       "generator": "codex",
+       "source_file": "conversation/utterances.jsonl",
+       "line": 1075
+      },
+      {
+       "family": "conversation",
+       "source": "llm_authored:codex:pro-conv-b00029",
+       "text": "どういたしまして。",
+       "sha": "12c7e63c32de",
+       "scene": "ユーザーとAIアシスタント（聞き返し・確認）／予定の相談／朝",
+       "origin": "generated",
+       "generator": "codex",
+       "source_file": "conversation/utterances.jsonl",
+       "line": 1095
+      },
+      {
+       "family": "conversation",
+       "source": "llm_authored:codex:pro-conv-b00043",
+       "text": "どういたしまして。",
+       "sha": "12c7e63c32de",
+       "scene": "店員と客（服屋）／道案内／朝",
+       "origin": "generated",
+       "generator": "codex",
+       "source_file": "conversation/utterances.jsonl",
+       "line": 1885
+      }
+     ],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "chat",
+       "asked_slot": null,
+       "case_frame": {
+        "subject": "あり",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "thanks"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "round3.route",
+       "status": "ran",
+       "family": "conversation",
+       "slot": "social",
+       "reason": "speech_act"
+      },
+      {
+       "part": "round3.family.conversation",
+       "status": "ran",
+       "family": "conversation",
+       "role": "social_supply",
+       "index": "INDEX_AVAILABLE",
+       "verdict": "ANSWER"
+      },
+      {
+       "part": "round4.social_frame",
+       "status": "ran",
+       "act": "thanks",
+       "factual_claim": false,
+       "frame": {
+        "subject": "あり",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      }
+     ],
+     "family": "conversation",
+     "source": "llm_authored:codex:pro-conv-b00029",
+     "door": "round3"
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "social",
+     "verdict": "ANSWER",
+     "ability": null,
+     "door": "round3",
+     "text": "どういたしまして。",
+     "corpus_trace_steps": [
+      {
+       "part": "round3.route",
+       "status": "ran",
+       "family": "conversation",
+       "index": null,
+       "verdict": null
+      },
+      {
+       "part": "round3.family.conversation",
+       "status": "abstained",
+       "family": "conversation",
+       "index": "UNKNOWN_NO_INDEX",
+       "verdict": "UNKNOWN_NO_INDEX"
+      },
+      {
+       "part": "round3.family.general_qa",
+       "status": "abstained",
+       "family": "general_qa",
+       "index": null,
+       "verdict": null
+      }
+     ],
+     "corpus_path_in_trace": true,
+     "index_states": [
+      "UNKNOWN_NO_INDEX"
+     ],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": true
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "social",
+     "verdict": "ANSWER",
+     "text": "どういたしまして。",
+     "path": "speech_act_frame",
+     "evidence": [
+      "ありがとう。"
+     ],
+     "sources": [
+      {
+       "family": "conversation",
+       "source": "conversation_form:thanks",
+       "text": "どういたしまして。"
+      },
+      {
+       "family": "user",
+       "source": "user:turn",
+       "text": "ありがとう。"
+      }
+     ],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "chat",
+       "asked_slot": null,
+       "case_frame": {
+        "subject": "あり",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "thanks"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "round3.route",
+       "status": "ran",
+       "family": "conversation",
+       "slot": "social",
+       "reason": "speech_act"
+      },
+      {
+       "part": "round3.family.conversation",
+       "status": "abstained",
+       "family": "conversation",
+       "role": "social_supply",
+       "index": "UNKNOWN_NO_INDEX",
+       "verdict": "UNKNOWN_NO_INDEX"
+      },
+      {
+       "part": "round3.family.general_qa",
+       "status": "abstained",
+       "family": "general_qa",
+       "role": "social_not_factual"
+      },
+      {
+       "part": "round4.social_frame",
+       "status": "ran",
+       "act": "thanks",
+       "factual_claim": false,
+       "frame": {
+        "subject": "あり",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      }
+     ],
+     "door": "round3"
+    }
+   },
+   "verdict": {
+    "corpus_path_in_trace": true,
+    "with_index_states": [
+     "INDEX_AVAILABLE"
+    ],
+    "without_index_states": [
+     "UNKNOWN_NO_INDEX"
+    ],
+    "generated_origin_sources_with_index": 3,
+    "passes": true
+   }
+  },
+  {
+   "id": "P3_info",
+   "entry": "cli_round5",
+   "text": "ありがとう。",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_UNREAD",
+     "ability": null,
+     "door": "semantic_qa",
+     "text": "この要求を裏づける導出を確認できません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "verdict": "UNKNOWN_UNREAD",
+     "text": "この要求を裏づける導出を確認できません。",
+     "reason": "mandatory request spans remain unread",
+     "phase": "reader",
+     "values": [],
+     "evidence": [],
+     "sources": [],
+     "trace": [
+      {
+       "part": "one.round5_route",
+       "status": "ran",
+       "code_intent": false,
+       "content_intent": false,
+       "decision_input": "raw_request",
+       "fallback": false
+      },
+      {
+       "part": "question.read_semantic",
+       "status": "ran",
+       "plans": 0,
+       "obligations": 0,
+       "unread": [
+        {
+         "span": {
+          "source": "question",
+          "start": 0,
+          "end": 6,
+          "text": "ありがとう。"
+         },
+         "reason": "unsupported request grammar"
+        }
+       ]
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNREAD",
+       "how_to_resolve": "質問された事項を示す出典を追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "semantic": {
+      "version": "round5a",
+      "verified": false,
+      "request": {
+       "text": "ありがとう。",
+       "plans": [],
+       "obligations": [],
+       "covered": [],
+       "unread": [
+        {
+         "span": {
+          "source": "question",
+          "start": 0,
+          "end": 6,
+          "text": "ありがとう。"
+         },
+         "reason": "unsupported request grammar"
+        }
+       ],
+       "stages": [],
+       "rules": [
+        "typed unread"
+       ]
+      },
+      "unread": [
+       {
+        "span": {
+         "source": "question",
+         "start": 0,
+         "end": 6,
+         "text": "ありがとう。"
+        },
+        "reason": "unsupported request grammar"
+       }
+      ],
+      "budget": {
+       "limits": {
+        "parse": 32,
+        "depth": 8,
+        "candidates": 256,
+        "bindings": 64,
+        "steps": 4096
+       },
+       "steps": 0,
+       "candidates": 0,
+       "peak_bindings": 0
+      }
+     },
+     "door": "semantic_qa",
+     "remedy": {
+      "verdict": "UNKNOWN_UNREAD",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "質問された事項を示す出典を追加してください。"
+     },
+     "how_to_resolve": "質問された事項を示す出典を追加してください。",
+     "runtime_mode": "round5"
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_UNREAD",
+     "ability": null,
+     "door": "semantic_qa",
+     "text": "この要求を裏づける導出を確認できません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "verdict": "UNKNOWN_UNREAD",
+     "text": "この要求を裏づける導出を確認できません。",
+     "reason": "mandatory request spans remain unread",
+     "phase": "reader",
+     "values": [],
+     "evidence": [],
+     "sources": [],
+     "trace": [
+      {
+       "part": "one.round5_route",
+       "status": "ran",
+       "code_intent": false,
+       "content_intent": false,
+       "decision_input": "raw_request",
+       "fallback": false
+      },
+      {
+       "part": "question.read_semantic",
+       "status": "ran",
+       "plans": 0,
+       "obligations": 0,
+       "unread": [
+        {
+         "span": {
+          "source": "question",
+          "start": 0,
+          "end": 6,
+          "text": "ありがとう。"
+         },
+         "reason": "unsupported request grammar"
+        }
+       ]
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNREAD",
+       "how_to_resolve": "質問された事項を示す出典を追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "semantic": {
+      "version": "round5a",
+      "verified": false,
+      "request": {
+       "text": "ありがとう。",
+       "plans": [],
+       "obligations": [],
+       "covered": [],
+       "unread": [
+        {
+         "span": {
+          "source": "question",
+          "start": 0,
+          "end": 6,
+          "text": "ありがとう。"
+         },
+         "reason": "unsupported request grammar"
+        }
+       ],
+       "stages": [],
+       "rules": [
+        "typed unread"
+       ]
+      },
+      "unread": [
+       {
+        "span": {
+         "source": "question",
+         "start": 0,
+         "end": 6,
+         "text": "ありがとう。"
+        },
+        "reason": "unsupported request grammar"
+       }
+      ],
+      "budget": {
+       "limits": {
+        "parse": 32,
+        "depth": 8,
+        "candidates": 256,
+        "bindings": 64,
+        "steps": 4096
+       },
+       "steps": 0,
+       "candidates": 0,
+       "peak_bindings": 0
+      }
+     },
+     "door": "semantic_qa",
+     "remedy": {
+      "verdict": "UNKNOWN_UNREAD",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "質問された事項を示す出典を追加してください。"
+     },
+     "how_to_resolve": "質問された事項を示す出典を追加してください。",
+     "runtime_mode": "round5"
+    }
+   }
+  }
+ ],
+ "counterexample_search": [
+  {
+   "id": "N1",
+   "entry": "cli_default",
+   "text": "『吾輩は猫である』の作者は誰ですか？",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "answer",
+     "verdict": "ANSWER",
+     "ability": "understanding",
+     "door": "chat",
+     "text": "この文だけでは分かりません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": true
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "answer",
+     "ability": "understanding",
+     "verdict": "ANSWER",
+     "text": "この文だけでは分かりません。",
+     "evidence": [
+      "吾輩は猫である"
+     ],
+     "sources": [
+      {
+       "family": "user",
+       "source": "user:quote",
+       "text": "吾輩は猫である"
+      }
+     ],
+     "lines": [
+      {
+       "text": "この文だけでは分かりません。",
+       "sources": [
+        {
+         "family": "user",
+         "source": "user:quote",
+         "text": "吾輩は猫である"
+        }
+       ]
+      }
+     ],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "who",
+       "case_frame": {
+        "subject": "吾輩は猫である",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "who",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": "identity"
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "understanding"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "who",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "frames.read_all",
+       "frames": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.read_records",
+       "items": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.judge",
+       "verdict": "UNCONFIRMED"
+      }
+     ],
+     "door": "chat"
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "answer",
+     "verdict": "ANSWER",
+     "ability": "understanding",
+     "door": "chat",
+     "text": "この文だけでは分かりません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": true
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "answer",
+     "ability": "understanding",
+     "verdict": "ANSWER",
+     "text": "この文だけでは分かりません。",
+     "evidence": [
+      "吾輩は猫である"
+     ],
+     "sources": [
+      {
+       "family": "user",
+       "source": "user:quote",
+       "text": "吾輩は猫である"
+      }
+     ],
+     "lines": [
+      {
+       "text": "この文だけでは分かりません。",
+       "sources": [
+        {
+         "family": "user",
+         "source": "user:quote",
+         "text": "吾輩は猫である"
+        }
+       ]
+      }
+     ],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "who",
+       "case_frame": {
+        "subject": "吾輩は猫である",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "who",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": "identity"
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "understanding"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "who",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "frames.read_all",
+       "frames": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.read_records",
+       "items": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.judge",
+       "verdict": "UNCONFIRMED"
+      }
+     ],
+     "door": "chat"
+    }
+   },
+   "verdict": {
+    "answered": true,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  },
+  {
+   "id": "N1",
+   "entry": "api_legacy",
+   "text": "『吾輩は猫である』の作者は誰ですか？",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "answer",
+     "verdict": "ANSWER",
+     "ability": "understanding",
+     "door": "chat",
+     "text": "この文だけでは分かりません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": true
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "answer",
+     "ability": "understanding",
+     "verdict": "ANSWER",
+     "text": "この文だけでは分かりません。",
+     "evidence": [
+      "吾輩は猫である"
+     ],
+     "sources": [
+      {
+       "family": "user",
+       "source": "user:quote",
+       "text": "吾輩は猫である"
+      }
+     ],
+     "lines": [
+      {
+       "text": "この文だけでは分かりません。",
+       "sources": [
+        {
+         "family": "user",
+         "source": "user:quote",
+         "text": "吾輩は猫である"
+        }
+       ]
+      }
+     ],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "who",
+       "case_frame": {
+        "subject": "吾輩は猫である",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "who",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": "identity"
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "chat.Chat.reply",
+       "status": "ran",
+       "implementation": "_reply_impl"
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "understanding"
+      },
+      {
+       "part": "ability.understanding",
+       "status": "ran",
+       "verdict": "ANSWER"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "who",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "frames.read_all",
+       "frames": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.read_records",
+       "items": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.judge",
+       "verdict": "UNCONFIRMED"
+      }
+     ],
+     "door": "chat"
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "answer",
+     "verdict": "ANSWER",
+     "ability": "understanding",
+     "door": "chat",
+     "text": "この文だけでは分かりません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": true
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "answer",
+     "ability": "understanding",
+     "verdict": "ANSWER",
+     "text": "この文だけでは分かりません。",
+     "evidence": [
+      "吾輩は猫である"
+     ],
+     "sources": [
+      {
+       "family": "user",
+       "source": "user:quote",
+       "text": "吾輩は猫である"
+      }
+     ],
+     "lines": [
+      {
+       "text": "この文だけでは分かりません。",
+       "sources": [
+        {
+         "family": "user",
+         "source": "user:quote",
+         "text": "吾輩は猫である"
+        }
+       ]
+      }
+     ],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "who",
+       "case_frame": {
+        "subject": "吾輩は猫である",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "who",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": "identity"
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "chat.Chat.reply",
+       "status": "ran",
+       "implementation": "_reply_impl"
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "understanding"
+      },
+      {
+       "part": "ability.understanding",
+       "status": "ran",
+       "verdict": "ANSWER"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "who",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "frames.read_all",
+       "frames": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.read_records",
+       "items": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.judge",
+       "verdict": "UNCONFIRMED"
+      }
+     ],
+     "door": "chat"
+    }
+   },
+   "verdict": {
+    "answered": true,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  },
+  {
+   "id": "N2",
+   "entry": "cli_default",
+   "text": "あんずはどんな果物ですか？",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "あんず",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "STAGED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "what",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 6,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "あんず",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "STAGED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "what",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 0,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "verdict": {
+    "answered": false,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  },
+  {
+   "id": "N2",
+   "entry": "api_legacy",
+   "text": "あんずはどんな果物ですか？",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "あんず",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "STAGED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "chat.Chat.reply",
+       "status": "ran",
+       "implementation": "_reply_impl"
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "part": "ability.commonsense",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "what",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 6,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "あんず",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "STAGED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "chat.Chat.reply",
+       "status": "ran",
+       "implementation": "_reply_impl"
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "part": "ability.commonsense",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "what",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 0,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "verdict": {
+    "answered": false,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  },
+  {
+   "id": "N3",
+   "entry": "cli_default",
+   "text": "『吾輩は猫である』の語り手は何ですか。",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "answer",
+     "verdict": "ANSWER",
+     "ability": "understanding",
+     "door": "chat",
+     "text": "この文だけでは分かりません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": true
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "answer",
+     "ability": "understanding",
+     "verdict": "ANSWER",
+     "text": "この文だけでは分かりません。",
+     "evidence": [
+      "吾輩は猫である"
+     ],
+     "sources": [
+      {
+       "family": "user",
+       "source": "user:quote",
+       "text": "吾輩は猫である"
+      }
+     ],
+     "lines": [
+      {
+       "text": "この文だけでは分かりません。",
+       "sources": [
+        {
+         "family": "user",
+         "source": "user:quote",
+         "text": "吾輩は猫である"
+        }
+       ]
+      }
+     ],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "吾輩は猫である",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "understanding"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "what",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "frames.read_all",
+       "frames": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.read_records",
+       "items": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.judge",
+       "verdict": "UNCONFIRMED"
+      }
+     ],
+     "door": "chat"
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "answer",
+     "verdict": "ANSWER",
+     "ability": "understanding",
+     "door": "chat",
+     "text": "この文だけでは分かりません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": true
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "answer",
+     "ability": "understanding",
+     "verdict": "ANSWER",
+     "text": "この文だけでは分かりません。",
+     "evidence": [
+      "吾輩は猫である"
+     ],
+     "sources": [
+      {
+       "family": "user",
+       "source": "user:quote",
+       "text": "吾輩は猫である"
+      }
+     ],
+     "lines": [
+      {
+       "text": "この文だけでは分かりません。",
+       "sources": [
+        {
+         "family": "user",
+         "source": "user:quote",
+         "text": "吾輩は猫である"
+        }
+       ]
+      }
+     ],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "吾輩は猫である",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "understanding"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "what",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "frames.read_all",
+       "frames": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.read_records",
+       "items": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.judge",
+       "verdict": "UNCONFIRMED"
+      }
+     ],
+     "door": "chat"
+    }
+   },
+   "verdict": {
+    "answered": true,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  },
+  {
+   "id": "N3",
+   "entry": "api_legacy",
+   "text": "『吾輩は猫である』の語り手は何ですか。",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "answer",
+     "verdict": "ANSWER",
+     "ability": "understanding",
+     "door": "chat",
+     "text": "この文だけでは分かりません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": true
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "answer",
+     "ability": "understanding",
+     "verdict": "ANSWER",
+     "text": "この文だけでは分かりません。",
+     "evidence": [
+      "吾輩は猫である"
+     ],
+     "sources": [
+      {
+       "family": "user",
+       "source": "user:quote",
+       "text": "吾輩は猫である"
+      }
+     ],
+     "lines": [
+      {
+       "text": "この文だけでは分かりません。",
+       "sources": [
+        {
+         "family": "user",
+         "source": "user:quote",
+         "text": "吾輩は猫である"
+        }
+       ]
+      }
+     ],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "吾輩は猫である",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "chat.Chat.reply",
+       "status": "ran",
+       "implementation": "_reply_impl"
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "understanding"
+      },
+      {
+       "part": "ability.understanding",
+       "status": "ran",
+       "verdict": "ANSWER"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "what",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "frames.read_all",
+       "frames": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.read_records",
+       "items": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.judge",
+       "verdict": "UNCONFIRMED"
+      }
+     ],
+     "door": "chat"
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "answer",
+     "verdict": "ANSWER",
+     "ability": "understanding",
+     "door": "chat",
+     "text": "この文だけでは分かりません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": true
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "answer",
+     "ability": "understanding",
+     "verdict": "ANSWER",
+     "text": "この文だけでは分かりません。",
+     "evidence": [
+      "吾輩は猫である"
+     ],
+     "sources": [
+      {
+       "family": "user",
+       "source": "user:quote",
+       "text": "吾輩は猫である"
+      }
+     ],
+     "lines": [
+      {
+       "text": "この文だけでは分かりません。",
+       "sources": [
+        {
+         "family": "user",
+         "source": "user:quote",
+         "text": "吾輩は猫である"
+        }
+       ]
+      }
+     ],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "吾輩は猫である",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "chat.Chat.reply",
+       "status": "ran",
+       "implementation": "_reply_impl"
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "understanding"
+      },
+      {
+       "part": "ability.understanding",
+       "status": "ran",
+       "verdict": "ANSWER"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "what",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "frames.read_all",
+       "frames": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.read_records",
+       "items": 0
+      },
+      {
+       "status": "ran",
+       "part": "verdict.judge",
+       "verdict": "UNCONFIRMED"
+      }
+     ],
+     "door": "chat"
+    }
+   },
+   "verdict": {
+    "answered": true,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  },
+  {
+   "id": "N4",
+   "entry": "cli_default",
+   "text": "水切れした鉢植えに水を与えると、どうなりますか？",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "case_frame": {
+        "subject": "",
+        "predicates": [
+         "水切れする",
+         "与える"
+        ],
+        "arguments": [
+         "水",
+         "鉢植え"
+        ],
+        "attribute": "",
+        "slot": "whether",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition.conditional",
+       "family": "pro",
+       "anchor": "水を与える",
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 24,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "case_frame": {
+        "subject": "",
+        "predicates": [
+         "水切れする",
+         "与える"
+        ],
+        "arguments": [
+         "水",
+         "鉢植え"
+        ],
+        "attribute": "",
+        "slot": "whether",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 0,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "verdict": {
+    "answered": false,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  },
+  {
+   "id": "N4",
+   "entry": "api_legacy",
+   "text": "水切れした鉢植えに水を与えると、どうなりますか？",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "case_frame": {
+        "subject": "",
+        "predicates": [
+         "水切れする",
+         "与える"
+        ],
+        "arguments": [
+         "水",
+         "鉢植え"
+        ],
+        "attribute": "",
+        "slot": "whether",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "chat.Chat.reply",
+       "status": "ran",
+       "implementation": "_reply_impl"
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "part": "ability.commonsense",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition.conditional",
+       "family": "pro",
+       "anchor": "水を与える",
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 24,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "case_frame": {
+        "subject": "",
+        "predicates": [
+         "水切れする",
+         "与える"
+        ],
+        "arguments": [
+         "水",
+         "鉢植え"
+        ],
+        "attribute": "",
+        "slot": "whether",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "chat.Chat.reply",
+       "status": "ran",
+       "implementation": "_reply_impl"
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "part": "ability.commonsense",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 0,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "verdict": {
+    "answered": false,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  },
+  {
+   "id": "N5",
+   "entry": "cli_default",
+   "text": "猫は小さいですか？",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "case_frame": {
+        "subject": "猫",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "whether",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 100,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "case_frame": {
+        "subject": "猫",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "whether",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 0,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "verdict": {
+    "answered": false,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  },
+  {
+   "id": "N5",
+   "entry": "api_legacy",
+   "text": "猫は小さいですか？",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "case_frame": {
+        "subject": "猫",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "whether",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "chat.Chat.reply",
+       "status": "ran",
+       "implementation": "_reply_impl"
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "part": "ability.commonsense",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 100,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "case_frame": {
+        "subject": "猫",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "",
+        "slot": "whether",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "chat.Chat.reply",
+       "status": "ran",
+       "implementation": "_reply_impl"
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "part": "ability.commonsense",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "whether",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 0,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "verdict": {
+    "answered": false,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  },
+  {
+   "id": "N6",
+   "entry": "cli_default",
+   "text": "「彼女は花のようだった」とはどういう意味ですか？",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+     "ability": "metaphor",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "metaphor",
+     "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "definition",
+       "asked_slot": "whether",
+       "case_frame": {
+        "subject": "「彼女",
+        "predicates": [
+         "いう"
+        ],
+        "arguments": [],
+        "attribute": "definition",
+        "slot": "whether",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "meaning_descent.descend",
+       "status": "abstained",
+       "reason": "[Errno 2] No such file or directory: '/Users/motonisihikoudai/Projects/vera-corpus/build/writer.json'"
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "metaphor"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "definition",
+       "asked_slot": "whether",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "simile_property_read",
+       "vehicle": "花",
+       "properties": 42
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+       "how_to_resolve": "たとえる語の用例と、対象にも当てはまる性質の用例を追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "たとえる語の用例と、対象にも当てはまる性質の用例を追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "たとえる語の用例と、対象にも当てはまる性質の用例を追加してください。"
+     }
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+     "ability": "metaphor",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "metaphor",
+     "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "definition",
+       "asked_slot": "whether",
+       "case_frame": {
+        "subject": "「彼女",
+        "predicates": [
+         "いう"
+        ],
+        "arguments": [],
+        "attribute": "definition",
+        "slot": "whether",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "meaning_descent.descend",
+       "status": "abstained",
+       "reason": "[Errno 2] No such file or directory: '/Users/motonisihikoudai/Projects/vera-corpus/build/writer.json'"
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "metaphor"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "definition",
+       "asked_slot": "whether",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "simile_property_read",
+       "vehicle": "花",
+       "properties": 0
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+       "how_to_resolve": "たとえる語の用例と、対象にも当てはまる性質の用例を追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "たとえる語の用例と、対象にも当てはまる性質の用例を追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "たとえる語の用例と、対象にも当てはまる性質の用例を追加してください。"
+     }
+    }
+   },
+   "verdict": {
+    "answered": false,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  },
+  {
+   "id": "N6",
+   "entry": "api_legacy",
+   "text": "「彼女は花のようだった」とはどういう意味ですか？",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+     "ability": "metaphor",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "metaphor",
+     "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "definition",
+       "asked_slot": "whether",
+       "case_frame": {
+        "subject": "「彼女",
+        "predicates": [
+         "いう"
+        ],
+        "arguments": [],
+        "attribute": "definition",
+        "slot": "whether",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "chat.Chat.reply",
+       "status": "ran",
+       "implementation": "_reply_impl"
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "metaphor"
+      },
+      {
+       "part": "ability.metaphor",
+       "status": "ran",
+       "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "definition",
+       "asked_slot": "whether",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "simile_property_read",
+       "vehicle": "花",
+       "properties": 42
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+       "how_to_resolve": "たとえる語の用例と、対象にも当てはまる性質の用例を追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "たとえる語の用例と、対象にも当てはまる性質の用例を追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "たとえる語の用例と、対象にも当てはまる性質の用例を追加してください。"
+     }
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+     "ability": "metaphor",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "metaphor",
+     "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "definition",
+       "asked_slot": "whether",
+       "case_frame": {
+        "subject": "「彼女",
+        "predicates": [
+         "いう"
+        ],
+        "arguments": [],
+        "attribute": "definition",
+        "slot": "whether",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "chat.Chat.reply",
+       "status": "ran",
+       "implementation": "_reply_impl"
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "metaphor"
+      },
+      {
+       "part": "ability.metaphor",
+       "status": "ran",
+       "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "definition",
+       "asked_slot": "whether",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "simile_property_read",
+       "vehicle": "花",
+       "properties": 0
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+       "how_to_resolve": "たとえる語の用例と、対象にも当てはまる性質の用例を追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "たとえる語の用例と、対象にも当てはまる性質の用例を追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_METAPHOR_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "たとえる語の用例と、対象にも当てはまる性質の用例を追加してください。"
+     }
+    }
+   },
+   "verdict": {
+    "answered": false,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  },
+  {
+   "id": "N7",
+   "entry": "cli_default",
+   "text": "strings.HasSuffix は何をする関数ですか？",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_CODE_SPEC",
+     "ability": null,
+     "door": "round3",
+     "text": "コード仕様を確認できません: language, input shape, operation",
+     "corpus_trace_steps": [
+      {
+       "part": "round3.route",
+       "status": "ran",
+       "family": "code_qa",
+       "index": null,
+       "verdict": null
+      },
+      {
+       "part": "round3.family.code_qa",
+       "status": "abstained",
+       "family": "code_qa",
+       "index": null,
+       "verdict": null
+      }
+     ],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "verdict": "UNKNOWN_CODE_SPEC",
+     "text": "コード仕様を確認できません: language, input shape, operation",
+     "how_to_resolve": "入力の形、処理の順序、出力と境界条件を明示してください。",
+     "evidence": [],
+     "sources": [],
+     "spec": {
+      "language": "",
+      "shape": "list",
+      "name": "process_values",
+      "fields": [],
+      "operations": [],
+      "empty": null,
+      "empty_stated": false,
+      "unchanged": false,
+      "all_ties": false,
+      "stable": false,
+      "zero_division": null,
+      "table": "input_records",
+      "other_table": "other_records",
+      "issues": [
+       "language",
+       "input shape",
+       "operation"
+      ]
+     },
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "strings.HasSuffix",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "quantity",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "round3.route",
+       "status": "ran",
+       "family": "code_qa",
+       "slot": "code",
+       "reason": "code_cue"
+      },
+      {
+       "part": "round3.family.code_qa",
+       "status": "abstained",
+       "family": "code_qa",
+       "role": "spec_composer",
+       "path": null
+      },
+      {
+       "part": "code_spec.read_spec",
+       "status": "abstained",
+       "reason": "language, input shape, operation"
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_CODE_SPEC",
+       "how_to_resolve": "入力の形、処理の順序、出力と境界条件を明示してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "door": "round3",
+     "remedy": {
+      "verdict": "UNKNOWN_CODE_SPEC",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "入力の形、処理の順序、出力と境界条件を明示してください。"
+     }
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_CODE_SPEC",
+     "ability": null,
+     "door": "round3",
+     "text": "コード仕様を確認できません: language, input shape, operation",
+     "corpus_trace_steps": [
+      {
+       "part": "round3.route",
+       "status": "ran",
+       "family": "code_qa",
+       "index": null,
+       "verdict": null
+      },
+      {
+       "part": "round3.family.code_qa",
+       "status": "abstained",
+       "family": "code_qa",
+       "index": null,
+       "verdict": null
+      }
+     ],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "verdict": "UNKNOWN_CODE_SPEC",
+     "text": "コード仕様を確認できません: language, input shape, operation",
+     "how_to_resolve": "入力の形、処理の順序、出力と境界条件を明示してください。",
+     "evidence": [],
+     "sources": [],
+     "spec": {
+      "language": "",
+      "shape": "list",
+      "name": "process_values",
+      "fields": [],
+      "operations": [],
+      "empty": null,
+      "empty_stated": false,
+      "unchanged": false,
+      "all_ties": false,
+      "stable": false,
+      "zero_division": null,
+      "table": "input_records",
+      "other_table": "other_records",
+      "issues": [
+       "language",
+       "input shape",
+       "operation"
+      ]
+     },
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "strings.HasSuffix",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "quantity",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "round3.route",
+       "status": "ran",
+       "family": "code_qa",
+       "slot": "code",
+       "reason": "code_cue"
+      },
+      {
+       "part": "round3.family.code_qa",
+       "status": "abstained",
+       "family": "code_qa",
+       "role": "spec_composer",
+       "path": null
+      },
+      {
+       "part": "code_spec.read_spec",
+       "status": "abstained",
+       "reason": "language, input shape, operation"
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_CODE_SPEC",
+       "how_to_resolve": "入力の形、処理の順序、出力と境界条件を明示してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "door": "round3",
+     "remedy": {
+      "verdict": "UNKNOWN_CODE_SPEC",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "入力の形、処理の順序、出力と境界条件を明示してください。"
+     }
+    }
+   },
+   "verdict": {
+    "answered": false,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  },
+  {
+   "id": "N7",
+   "entry": "api_legacy",
+   "text": "strings.HasSuffix は何をする関数ですか？",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_CODE_SPEC",
+     "ability": null,
+     "door": "round3",
+     "text": "コード仕様を確認できません: language, input shape, operation",
+     "corpus_trace_steps": [
+      {
+       "part": "round3.route",
+       "status": "ran",
+       "family": "code_qa",
+       "index": null,
+       "verdict": null
+      },
+      {
+       "part": "round3.family.code_qa",
+       "status": "abstained",
+       "family": "code_qa",
+       "index": null,
+       "verdict": null
+      }
+     ],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "verdict": "UNKNOWN_CODE_SPEC",
+     "text": "コード仕様を確認できません: language, input shape, operation",
+     "how_to_resolve": "入力の形、処理の順序、出力と境界条件を明示してください。",
+     "evidence": [],
+     "sources": [],
+     "spec": {
+      "language": "",
+      "shape": "list",
+      "name": "process_values",
+      "fields": [],
+      "operations": [],
+      "empty": null,
+      "empty_stated": false,
+      "unchanged": false,
+      "all_ties": false,
+      "stable": false,
+      "zero_division": null,
+      "table": "input_records",
+      "other_table": "other_records",
+      "issues": [
+       "language",
+       "input shape",
+       "operation"
+      ]
+     },
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "strings.HasSuffix",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "quantity",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "round3.route",
+       "status": "ran",
+       "family": "code_qa",
+       "slot": "code",
+       "reason": "code_cue"
+      },
+      {
+       "part": "round3.family.code_qa",
+       "status": "abstained",
+       "family": "code_qa",
+       "role": "spec_composer",
+       "path": null
+      },
+      {
+       "part": "code_spec.read_spec",
+       "status": "abstained",
+       "reason": "language, input shape, operation"
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_CODE_SPEC",
+       "how_to_resolve": "入力の形、処理の順序、出力と境界条件を明示してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "door": "round3",
+     "remedy": {
+      "verdict": "UNKNOWN_CODE_SPEC",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "入力の形、処理の順序、出力と境界条件を明示してください。"
+     }
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_CODE_SPEC",
+     "ability": null,
+     "door": "round3",
+     "text": "コード仕様を確認できません: language, input shape, operation",
+     "corpus_trace_steps": [
+      {
+       "part": "round3.route",
+       "status": "ran",
+       "family": "code_qa",
+       "index": null,
+       "verdict": null
+      },
+      {
+       "part": "round3.family.code_qa",
+       "status": "abstained",
+       "family": "code_qa",
+       "index": null,
+       "verdict": null
+      }
+     ],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "verdict": "UNKNOWN_CODE_SPEC",
+     "text": "コード仕様を確認できません: language, input shape, operation",
+     "how_to_resolve": "入力の形、処理の順序、出力と境界条件を明示してください。",
+     "evidence": [],
+     "sources": [],
+     "spec": {
+      "language": "",
+      "shape": "list",
+      "name": "process_values",
+      "fields": [],
+      "operations": [],
+      "empty": null,
+      "empty_stated": false,
+      "unchanged": false,
+      "all_ties": false,
+      "stable": false,
+      "zero_division": null,
+      "table": "input_records",
+      "other_table": "other_records",
+      "issues": [
+       "language",
+       "input shape",
+       "operation"
+      ]
+     },
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "strings.HasSuffix",
+        "predicates": [],
+        "arguments": [],
+        "attribute": "quantity",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "round3.route",
+       "status": "ran",
+       "family": "code_qa",
+       "slot": "code",
+       "reason": "code_cue"
+      },
+      {
+       "part": "round3.family.code_qa",
+       "status": "abstained",
+       "family": "code_qa",
+       "role": "spec_composer",
+       "path": null
+      },
+      {
+       "part": "code_spec.read_spec",
+       "status": "abstained",
+       "reason": "language, input shape, operation"
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_CODE_SPEC",
+       "how_to_resolve": "入力の形、処理の順序、出力と境界条件を明示してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "door": "round3",
+     "remedy": {
+      "verdict": "UNKNOWN_CODE_SPEC",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "入力の形、処理の順序、出力と境界条件を明示してください。"
+     }
+    }
+   },
+   "verdict": {
+    "answered": false,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  },
+  {
+   "id": "N8",
+   "entry": "cli_default",
+   "text": "あんこは何から作られますか？",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "あんこ",
+        "predicates": [
+         "作る"
+        ],
+        "arguments": [
+         "あんこ"
+        ],
+        "attribute": "material",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "what",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 100,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "あんこ",
+        "predicates": [
+         "作る"
+        ],
+        "arguments": [
+         "あんこ"
+        ],
+        "attribute": "material",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "skills.answer",
+       "status": "abstained",
+       "kind": null
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "what",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 0,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "verdict": {
+    "answered": false,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  },
+  {
+   "id": "N8",
+   "entry": "api_legacy",
+   "text": "あんこは何から作られますか？",
+   "with_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "あんこ",
+        "predicates": [
+         "作る"
+        ],
+        "arguments": [
+         "あんこ"
+        ],
+        "attribute": "material",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "chat.Chat.reply",
+       "status": "ran",
+       "implementation": "_reply_impl"
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "part": "ability.commonsense",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "what",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 100,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "without_index": {
+    "returncode": 0,
+    "summary": {
+     "ran": true,
+     "kind": "unknown",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "ability": "commonsense",
+     "door": "chat",
+     "text": "分かりません。必要な根拠が足りません。",
+     "corpus_trace_steps": [],
+     "corpus_path_in_trace": false,
+     "index_states": [],
+     "generated_origin_sources": 0,
+     "generated_origin_examples": [],
+     "answered": false
+    },
+    "stderr_tail": "",
+    "full_result": {
+     "kind": "unknown",
+     "ability": "commonsense",
+     "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+     "text": "分かりません。必要な根拠が足りません。",
+     "evidence": [],
+     "sources": [],
+     "lines": [],
+     "trace": [
+      {
+       "part": "question.read",
+       "status": "ran",
+       "kind": "fact",
+       "asked_slot": "what",
+       "case_frame": {
+        "subject": "あんこ",
+        "predicates": [
+         "作る"
+        ],
+        "arguments": [
+         "あんこ"
+        ],
+        "attribute": "material",
+        "slot": "what",
+        "negated": false,
+        "requested_unit": "",
+        "who_role": ""
+       }
+      },
+      {
+       "part": "stage_split.split",
+       "status": "ran",
+       "verdict": "UNKNOWN_UNSEGMENTED"
+      },
+      {
+       "part": "typo_recovery.recover",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "meaning_assets.lattice",
+       "status": "abstained",
+       "reason": "writer.json"
+      },
+      {
+       "part": "sense_split.resolve",
+       "status": "abstained",
+       "verdict": "LACK_OF_ASSET"
+      },
+      {
+       "part": "polarity.observe_negation",
+       "status": "ran",
+       "count": 0
+      },
+      {
+       "part": "intent.act_by_form",
+       "status": "ran",
+       "act": "question"
+      },
+      {
+       "part": "intent_frames.parse",
+       "status": "abstained",
+       "verdict": "NOT_APPLICABLE",
+       "reason": "question is not an instruction"
+      },
+      {
+       "part": "arm_schema.classify_intent",
+       "status": "ran",
+       "arm": null
+      },
+      {
+       "part": "chat.Chat.reply",
+       "status": "ran",
+       "implementation": "_reply_impl"
+      },
+      {
+       "part": "abilities.Abilities.answer",
+       "status": "ran",
+       "ability": "commonsense"
+      },
+      {
+       "part": "ability.commonsense",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE"
+      },
+      {
+       "status": "ran",
+       "part": "question.read",
+       "kind": "fact",
+       "asked_slot": "what",
+       "observed_negations": 0
+      },
+      {
+       "status": "ran",
+       "part": "event_transition",
+       "conditions": 0,
+       "supported_outcomes": 0,
+       "minimum_sources": 2
+      },
+      {
+       "part": "remedy.remedy",
+       "status": "ran",
+       "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+       "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+      },
+      {
+       "part": "ask_back.question",
+       "status": "abstained",
+       "reason": "verdict has no human-answerable candidate",
+       "asks": ""
+      },
+      {
+       "part": "coverage.document_needed",
+       "status": "abstained",
+       "reason": "no domain witnesses"
+      },
+      {
+       "part": "gap_graph.refusal_to_gap",
+       "status": "abstained",
+       "reason": "no opt-in gap_path"
+      },
+      {
+       "part": "grow.log_refusal",
+       "status": "abstained",
+       "reason": "no queue opt-in or different verdict"
+      }
+     ],
+     "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+     "door": "chat",
+     "remedy": {
+      "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE",
+      "needs_registration": true,
+      "note": "no remedy recorded for this verdict",
+      "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。"
+     }
+    }
+   },
+   "verdict": {
+    "answered": false,
+    "generated_origin_sources": 0,
+    "corpus_path_in_trace": false,
+    "counterexample": false
+   }
+  }
+ ],
+ "summary": {
+  "positive_passed": [
+   "P1",
+   "P2"
+  ],
+  "positive_failed": [],
+  "counterexample_runs": 16,
+  "counterexamples": [],
+  "not_answered": [
+   [
+    "N2",
+    "cli_default"
+   ],
+   [
+    "N2",
+    "api_legacy"
+   ],
+   [
+    "N4",
+    "cli_default"
+   ],
+   [
+    "N4",
+    "api_legacy"
+   ],
+   [
+    "N5",
+    "cli_default"
+   ],
+   [
+    "N5",
+    "api_legacy"
+   ],
+   [
+    "N6",
+    "cli_default"
+   ],
+   [
+    "N6",
+    "api_legacy"
+   ],
+   [
+    "N7",
+    "cli_default"
+   ],
+   [
+    "N7",
+    "api_legacy"
+   ],
+   [
+    "N8",
+    "cli_default"
+   ],
+   [
+    "N8",
+    "api_legacy"
+   ]
+  ],
+  "answered_without_generated_source": [
+   [
+    "N1",
+    "cli_default"
+   ],
+   [
+    "N1",
+    "api_legacy"
+   ],
+   [
+    "N3",
+    "cli_default"
+   ],
+   [
+    "N3",
+    "api_legacy"
+   ]
+  ],
+  "probes_where_corpus_path_ran": []
+ }
+}
