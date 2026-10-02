@@ -128,8 +128,6 @@ def test_repeated_lookups_do_not_retain_unbounded_temporary_lists():
     assert retained < 256_000
 
 
-@pytest.mark.xfail(strict=False,
-                   reason="DEFECT: mixed record-key types crash the constructor's deterministic sort")
 def test_malformed_mixed_key_record_does_not_crash():
     index = LessonIndex([{"id": "bad", "kind": "LESSON",
                           "slots": {"situation": "broken route"}, 1: "unexpected key"}])

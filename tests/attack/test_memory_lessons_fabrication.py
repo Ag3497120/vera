@@ -91,10 +91,6 @@ def test_memory_like_input_applies_superseded_ids():
     assert result == [current]
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason='DEFECT: returned lesson dictionaries alias the index copy and can contaminate later lookups',
-)
 def test_mutating_a_returned_record_cannot_fabricate_later_lookup():
     observations = []
     for _ in range(2):
