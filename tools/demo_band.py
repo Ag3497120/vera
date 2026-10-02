@@ -28,40 +28,54 @@ def _beside(result, annotation):
 def main():
     # Gold is the explicit subject/value pairing used to construct the source.
     gold = tuple((f"対象{i:02d}", f"値{i:02d}") for i in range(32))
-    source = "\n".join(f"{subject}は{value}にある。" for subject, value in gold)
+    source = "\n".join(f"{subject}は{value}です。" for subject, value in gold)
     view = document_view({"constructed-source": source})
+
+    print("CLAUSES READ:")
+    for clause in view.clauses:
+        roles = tuple((role.name, role.term) for role in clause.roles)
+        print(f"{clause.span.source}: {clause.span.text!r} -> {clause.predicate} {roles}")
+
+    # Confirm the reader represented every constructed fact completely before
+    # asking any question against this view.
     assert len(view.clauses) == len(gold)
+    assert not view.unread
+    for (subject, expected_value), clause in zip(gold, view.clauses):
+        roles = {role.name: role.term for role in clause.roles}
+        assert clause.rule == "copula"
+        assert clause.predicate == "identity"
+        assert clause.polarity == "+"
+        assert clause.modality == "assert"
+        assert not clause.unsupported
+        assert roles == {"entity": subject, "value": expected_value}
 
     checked = 0
     for subject, expected_value in gold:
-        request = read_request(f"{subject}はどこにある？")
+        request = read_request(f"{subject}は何？")
         result = answer(request, [view])
         assert result["verdict"] == "ANSWER"
         assert result["semantic"]["verified"] is True
-        assert result["answer_values"] == [["recipient", expected_value]]
+        assert result["answer_values"] == [[subject, expected_value]]
 
         before = deepcopy(result)
         without_band = deepcopy(result)
         annotation = band(view, request, result)
         with_band = _beside(result, annotation)
-        assert annotation is None
+        assert annotation.status == "NO_INDEPENDENT_VIEW"
+        assert "agree" not in asdict(annotation) and "of" not in asdict(annotation)
         assert with_band["verdict"] == without_band["verdict"]
         assert _primary(with_band) == _primary(without_band)
         assert result == before
         checked += 1
 
-    # This subject is absent from the constructed source and must not get a
-    # numeric band, whether its semantic result is an answer or a refusal.
-    request = read_request("架空対象はどこにある？")
+    # An absent subject is refused, so the answer-only band path is not called.
+    request = read_request("架空対象は何？")
     result = answer(request, [view])
     assert result["verdict"] != "ANSWER"
     assert result["semantic"]["verified"] is False
     before = deepcopy(result)
-    annotation = band(view, request, result)
-    with_band = _beside(result, annotation)
-    assert annotation is None
-    assert with_band["verdict"] == result["verdict"]
-    assert _primary(with_band) == _primary(result)
+    # The agreement annotation is only queried for verified ANSWER results.
+    assert "annotations" not in result or "agreement_band" not in result["annotations"]
     assert result == before
     checked += 1
 

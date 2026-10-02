@@ -1,35 +1,35 @@
 """A non-voting agreement annotation for verified semantic answers.
 
 The semantic path currently exposes one parsed view to its producer and
-checker. Those stages share evidence and are not independent comparators; the
-route tree also only indexes that same view. Until an audited, lineage-distinct
-structure can be queried here, there is no honest numeric band to report.
+checker. Those stages share evidence, and the route tree only indexes that
+same view. No audited, lineage-distinct structure is available here, so
+``band`` returns the typed ``NO_INDEPENDENT_VIEW`` status instead of a
+numeric agreement count. This annotation never changes a semantic verdict.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Mapping, Optional, Tuple
+from typing import Any, Literal, Mapping
 
 
 @dataclass(frozen=True)
 class Band:
-    """Agreement counts and inspectable outcomes from independent structures."""
+    """A typed band outcome; unavailable outcomes contain no numeric vote."""
 
-    agree: int
-    of: int
-    matching: Tuple[str, ...] = ()
-    different: Tuple[str, ...] = ()
-    abstentions: Tuple[Tuple[str, str], ...] = ()
+    status: Literal["NO_INDEPENDENT_VIEW"]
+    reason: str
 
 
-def band(view: Any, request: Any, result: Mapping[str, Any]) -> Optional[Band]:
-    """Return an independent-structure annotation, or ``None`` if unavailable.
+def band(view: Any, request: Any, result: Mapping[str, Any]) -> Band:
+    """Report that no independent typed view exists for this result.
 
-    ``view`` and ``result`` describe the primary semantic path. The producer
-    and checker both use that path, and the view carries no audited lineage
-    registry for another typed structure. Counting either stage, rerunning the
-    same reader, or counting route-tree leaves would therefore overstate
-    independence. No candidate comparator is currently wired, so every call
-    abstains. This function is pure: it never edits the result or its verdict.
+    Call only for a verified semantic ``ANSWER``. The primary view, producer,
+    checker, and route index do not constitute independent structures.
+    Without a lineage-audited comparator there is no honest denominator or
+    agreement count. Inputs are inspected only by reference and ``result`` is
+    never changed.
     """
-    return None
+    return Band(
+        "NO_INDEPENDENT_VIEW",
+        "no audited lineage-distinct typed comparator is wired",
+    )
