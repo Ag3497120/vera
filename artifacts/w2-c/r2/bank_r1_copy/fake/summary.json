@@ -1,0 +1,236 @@
+{
+  "total": 161,
+  "false_answer": 0,
+  "wrong_answer": 0,
+  "correct": 107,
+  "over_escalate": 1,
+  "correct_escalate": 53,
+  "q1_wrong_count": 0,
+  "q1_rate": 0.0,
+  "answer_expected": 108,
+  "q2_answer_rate": 0.9907,
+  "q2_by_category": {
+    "direct": {
+      "n": 41,
+      "correct": 41,
+      "rate": 1.0
+    },
+    "combined": {
+      "n": 40,
+      "correct": 39,
+      "rate": 0.975
+    },
+    "oov": {
+      "n": 27,
+      "correct": 27,
+      "rate": 1.0
+    }
+  },
+  "escalate_expected": 53,
+  "escalate_correct": 53,
+  "escalate_correct_rate": 1.0,
+  "reason_type_match": 53,
+  "reason_type_match_rate": 1.0,
+  "by_split": {
+    "dev": {
+      "total": 119,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 76,
+      "over_escalate": 0,
+      "correct_escalate": 43,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 76,
+      "q2_answer_rate": 1.0,
+      "q2_by_category": {
+        "direct": {
+          "n": 28,
+          "correct": 28,
+          "rate": 1.0
+        },
+        "combined": {
+          "n": 29,
+          "correct": 29,
+          "rate": 1.0
+        },
+        "oov": {
+          "n": 19,
+          "correct": 19,
+          "rate": 1.0
+        }
+      },
+      "escalate_expected": 43,
+      "escalate_correct": 43,
+      "escalate_correct_rate": 1.0,
+      "reason_type_match": 43,
+      "reason_type_match_rate": 1.0
+    },
+    "holdout": {
+      "total": 42,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 31,
+      "over_escalate": 1,
+      "correct_escalate": 10,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 32,
+      "q2_answer_rate": 0.9688,
+      "q2_by_category": {
+        "direct": {
+          "n": 13,
+          "correct": 13,
+          "rate": 1.0
+        },
+        "combined": {
+          "n": 11,
+          "correct": 10,
+          "rate": 0.9091
+        },
+        "oov": {
+          "n": 8,
+          "correct": 8,
+          "rate": 1.0
+        }
+      },
+      "escalate_expected": 10,
+      "escalate_correct": 10,
+      "escalate_correct_rate": 1.0,
+      "reason_type_match": 10,
+      "reason_type_match_rate": 1.0
+    }
+  },
+  "by_lang": {
+    "ja": {
+      "total": 101,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 69,
+      "over_escalate": 1,
+      "correct_escalate": 31,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 70,
+      "q2_answer_rate": 0.9857,
+      "q2_by_category": {
+        "direct": {
+          "n": 27,
+          "correct": 27,
+          "rate": 1.0
+        },
+        "combined": {
+          "n": 26,
+          "correct": 25,
+          "rate": 0.9615
+        },
+        "oov": {
+          "n": 17,
+          "correct": 17,
+          "rate": 1.0
+        }
+      },
+      "escalate_expected": 31,
+      "escalate_correct": 31,
+      "escalate_correct_rate": 1.0,
+      "reason_type_match": 31,
+      "reason_type_match_rate": 1.0
+    },
+    "en": {
+      "total": 60,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 38,
+      "over_escalate": 0,
+      "correct_escalate": 22,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 38,
+      "q2_answer_rate": 1.0,
+      "q2_by_category": {
+        "direct": {
+          "n": 14,
+          "correct": 14,
+          "rate": 1.0
+        },
+        "combined": {
+          "n": 14,
+          "correct": 14,
+          "rate": 1.0
+        },
+        "oov": {
+          "n": 10,
+          "correct": 10,
+          "rate": 1.0
+        }
+      },
+      "escalate_expected": 22,
+      "escalate_correct": 22,
+      "escalate_correct_rate": 1.0,
+      "reason_type_match": 22,
+      "reason_type_match_rate": 1.0
+    }
+  },
+  "by_permission": {
+    "可": {
+      "n": 12,
+      "correct": 12,
+      "false_or_wrong": 0,
+      "over_escalate": 0
+    },
+    "不可": {
+      "n": 12,
+      "correct": 12,
+      "false_or_wrong": 0,
+      "over_escalate": 0
+    },
+    "上げる": {
+      "n": 14,
+      "correct": 14,
+      "false_or_wrong": 0,
+      "over_escalate": 0
+    }
+  },
+  "trap": {
+    "n": 16,
+    "correct_escalate": 16,
+    "false_answer": 0
+  },
+  "oov_none": {
+    "n": 13,
+    "correct_escalate": 13,
+    "false_answer": 0
+  },
+  "by_expected_reason": {
+    "VOCAB_UNMAPPED": {
+      "n": 13,
+      "correct_escalate": 13,
+      "reason_match": 13
+    },
+    "HUMAN_APPROVAL_REQUIRED": {
+      "n": 8,
+      "correct_escalate": 8,
+      "reason_match": 8
+    },
+    "FRAME_SILENT": {
+      "n": 16,
+      "correct_escalate": 16,
+      "reason_match": 16
+    },
+    "OUT_OF_RANGE": {
+      "n": 10,
+      "correct_escalate": 10,
+      "reason_match": 10
+    },
+    "FRAME_CONFLICT": {
+      "n": 6,
+      "correct_escalate": 6,
+      "reason_match": 6
+    }
+  },
+  "config": {
+    "vocab_llm": "fake",
+    "split": "all",
+    "subprocess": true
+  }
+}

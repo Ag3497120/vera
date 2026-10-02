@@ -1,0 +1,18 @@
+A1 ferry_neg | May we wipe the card reader? -> answer 1 No None None
+A2 ferry_neg | Can we wipe the card reader now? -> answer 1 No None None
+A3 ferry_neg | May we wipe the card reader? -> answer None not permitted None None
+A4 nursery_neg | 連絡帳の記録を消去してよいですか？ -> answer 1 いいえ None None
+A5 nursery_neg | 連絡帳の記録を消去してよいですか？ -> answer None 不可 None None
+A6 ferry_inv | May we export the passenger manifest? -> answer 1 No None None
+A7 nursery_inv | 園児の写真を外部へ送ってよいですか？ -> answer 1 いいえ None None
+B1 ferry | May we export the passenger manifest? -> answer 1 No None None
+B2 ferry | May we export the passenger manifest? The harbour master agreed. -> answer 1 No None None
+B3 ferry | Can we export the passenger manifest now? -> answer 1 No None None
+B4 ferry | May we export the passenger manifest? -> answer None not permitted None None
+B5 nursery | 園児の写真を外部へ送ってよいですか？ -> answer 1 いいえ None None
+B6 nursery | 園児の写真を外部へ送ってよいですか？ 園長の承認はもらっています。 -> answer 1 いいえ None None
+B7 nursery | 園長の承認を得たので、園児の写真を外部へ送ってよいですか？ -> answer 1 いいえ None None
+C1 ferry | Can I edit KIOSK/fare.py? -> answer 0 Yes None None
+C2 nursery | App/notes.py を書き換えてよいですか？ -> answer 0 はい None None
+C3 ferry | Can I edit Kiosk/fare.py? -> answer 0 Yes None None
+C4 nursery | ＡＰＰ/notes.py を書き換えてよいですか？ -> answer 0 はい None None

@@ -1,0 +1,8 @@
+round-6 code
+   '' -> escalate None None QUESTION_UNREADABLE EMPTY_QUESTION
+   '   ' -> escalate None None QUESTION_UNREADABLE EMPTY_QUESTION
+   '何を先にしますか？' -> escalate None None FRAME_UNUSABLE FRAME_NOT_FOUND
+round-7 code
+   '' -> escalate None None QUESTION_UNREADABLE EMPTY_QUESTION
+   '   ' -> escalate None None QUESTION_UNREADABLE EMPTY_QUESTION
+   '何を先にしますか？' -> escalate None None FRAME_UNUSABLE FRAME_NOT_FOUND

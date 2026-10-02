@@ -1,0 +1,1010 @@
+FFFFFFFFFFF.FFFFFFFFFFFFFFFFFFFFFFFFFFFF.F                               [100%]
+=================================== FAILURES ===================================
+_ test_m1_english_requirement_of_permission_is_handed_up[Is permission required for running the dockside simulator?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Is permission required for running the dockside simulator?'
+
+    @pytest.mark.parametrize("q", M1_EN)
+    def test_m1_english_requirement_of_permission_is_handed_up(frames, q):
+        res = ask(frames[0], q, H.YN_EN)
+>       assert_escalates(res, "QUESTION_UNREADABLE")
+
+tests/test_conduct_ask_traps.py:141: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'Yes', ...}
+reasons = ('QUESTION_UNREADABLE',)
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('Yes', [{'id': 'D4', 'section': 'decisions', 'line': 28, 'text': 'D4: CONFIRM | running the dockside simulator | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m1_english_requirement_of_permission_is_handed_up[Do we need permission before running the dockside simulator?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Do we need permission before running the dockside simulator?'
+
+    @pytest.mark.parametrize("q", M1_EN)
+    def test_m1_english_requirement_of_permission_is_handed_up(frames, q):
+        res = ask(frames[0], q, H.YN_EN)
+>       assert_escalates(res, "QUESTION_UNREADABLE")
+
+tests/test_conduct_ask_traps.py:141: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'Yes', ...}
+reasons = ('QUESTION_UNREADABLE',)
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('Yes', [{'id': 'D4', 'section': 'decisions', 'line': 28, 'text': 'D4: CONFIRM | running the dockside simulator | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m1_english_requirement_of_permission_is_handed_up[Is approval needed for flashing a field unit?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Is approval needed for flashing a field unit?'
+
+    @pytest.mark.parametrize("q", M1_EN)
+    def test_m1_english_requirement_of_permission_is_handed_up(frames, q):
+        res = ask(frames[0], q, H.YN_EN)
+>       assert_escalates(res, "QUESTION_UNREADABLE")
+
+tests/test_conduct_ask_traps.py:141: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'escalate', 'kind': 'OTHER', 'answer': None, ...}
+reasons = ('QUESTION_UNREADABLE',)
+
+    def assert_escalates(res, *reasons):
+        assert res["decision"] == "escalate", (res["answer"], res["basis"])
+        assert res["answer"] is None and res["answer_option_index"] is None
+        if reasons:
+>           assert res["escalate_reason"] in reasons, (res["escalate_reason"], res["escalate_detail"])
+E           AssertionError: ('FRAME_SILENT', 'NO_RECORD_DECIDES')
+E           assert 'FRAME_SILENT' in ('QUESTION_UNREADABLE',)
+
+tests/test_conduct_ask_traps.py:117: AssertionError
+_ test_m1_english_requirement_of_permission_is_handed_up[Does running the dockside simulator require authorization?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Does running the dockside simulator require authorization?'
+
+    @pytest.mark.parametrize("q", M1_EN)
+    def test_m1_english_requirement_of_permission_is_handed_up(frames, q):
+        res = ask(frames[0], q, H.YN_EN)
+>       assert_escalates(res, "QUESTION_UNREADABLE")
+
+tests/test_conduct_ask_traps.py:141: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'escalate', 'kind': 'OTHER', 'answer': None, ...}
+reasons = ('QUESTION_UNREADABLE',)
+
+    def assert_escalates(res, *reasons):
+        assert res["decision"] == "escalate", (res["answer"], res["basis"])
+        assert res["answer"] is None and res["answer_option_index"] is None
+        if reasons:
+>           assert res["escalate_reason"] in reasons, (res["escalate_reason"], res["escalate_detail"])
+E           AssertionError: ('FRAME_SILENT', 'TERM_IN_WIDER_PHRASE')
+E           assert 'FRAME_SILENT' in ('QUESTION_UNREADABLE',)
+
+tests/test_conduct_ask_traps.py:117: AssertionError
+_ test_m1_english_requirement_of_permission_is_handed_up[Is sign-off necessary to flash a field unit?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Is sign-off necessary to flash a field unit?'
+
+    @pytest.mark.parametrize("q", M1_EN)
+    def test_m1_english_requirement_of_permission_is_handed_up(frames, q):
+        res = ask(frames[0], q, H.YN_EN)
+>       assert_escalates(res, "QUESTION_UNREADABLE")
+
+tests/test_conduct_ask_traps.py:141: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'escalate', 'kind': 'OTHER', 'answer': None, ...}
+reasons = ('QUESTION_UNREADABLE',)
+
+    def assert_escalates(res, *reasons):
+        assert res["decision"] == "escalate", (res["answer"], res["basis"])
+        assert res["answer"] is None and res["answer_option_index"] is None
+        if reasons:
+>           assert res["escalate_reason"] in reasons, (res["escalate_reason"], res["escalate_detail"])
+E           AssertionError: ('FRAME_SILENT', 'NO_RECORD_DECIDES')
+E           assert 'FRAME_SILENT' in ('QUESTION_UNREADABLE',)
+
+tests/test_conduct_ask_traps.py:117: AssertionError
+_ test_m1_japanese_requirement_of_permission_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u306b\u306f\u8a31\u53ef\u304c\u5fc5\u8981\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = '館内での試験運用には許可が必要ですか？'
+
+    @pytest.mark.parametrize("q", M1_JA)
+    def test_m1_japanese_requirement_of_permission_is_handed_up(frames, q):
+        res = ask(frames[1], q, H.YN_JA)
+>       assert_escalates(res, "QUESTION_UNREADABLE")
+
+tests/test_conduct_ask_traps.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'はい', ...}
+reasons = ('QUESTION_UNREADABLE',)
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('はい', [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: CONFIRM | 館内での試験運用 | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m1_japanese_requirement_of_permission_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u306b\u306f\u8a31\u53ef\u3092\u53d6\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = '館内での試験運用には許可を取る必要がありますか？'
+
+    @pytest.mark.parametrize("q", M1_JA)
+    def test_m1_japanese_requirement_of_permission_is_handed_up(frames, q):
+        res = ask(frames[1], q, H.YN_JA)
+>       assert_escalates(res, "QUESTION_UNREADABLE")
+
+tests/test_conduct_ask_traps.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'はい', ...}
+reasons = ('QUESTION_UNREADABLE',)
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('はい', [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: CONFIRM | 館内での試験運用 | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m1_japanese_requirement_of_permission_is_handed_up[\u672c\u756a\u306e\u8cb8\u51fa\u30c7\u30fc\u30bf\u3092\u4f7f\u3063\u305f\u8a66\u9a13\u306b\u306f\u8a31\u53ef\u304c\u8981\u308a\u307e\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = '本番の貸出データを使った試験には許可が要りますか？'
+
+    @pytest.mark.parametrize("q", M1_JA)
+    def test_m1_japanese_requirement_of_permission_is_handed_up(frames, q):
+        res = ask(frames[1], q, H.YN_JA)
+>       assert_escalates(res, "QUESTION_UNREADABLE")
+
+tests/test_conduct_ask_traps.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'いいえ', ...}
+reasons = ('QUESTION_UNREADABLE',)
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('いいえ', [{'id': 'D4', 'section': 'decisions', 'line': 28, 'text': 'D4: CONFIRM | 本番の貸出データを使った試験 | not permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m1_japanese_requirement_of_permission_is_handed_up[\u672c\u756a\u306e\u8cb8\u51fa\u30c7\u30fc\u30bf\u3092\u4f7f\u3063\u305f\u8a66\u9a13\u306f\u627f\u8a8d\u304c\u5fc5\u8981\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = '本番の貸出データを使った試験は承認が必要ですか？'
+
+    @pytest.mark.parametrize("q", M1_JA)
+    def test_m1_japanese_requirement_of_permission_is_handed_up(frames, q):
+        res = ask(frames[1], q, H.YN_JA)
+>       assert_escalates(res, "QUESTION_UNREADABLE")
+
+tests/test_conduct_ask_traps.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'escalate', 'kind': 'OTHER', 'answer': None, ...}
+reasons = ('QUESTION_UNREADABLE',)
+
+    def assert_escalates(res, *reasons):
+        assert res["decision"] == "escalate", (res["answer"], res["basis"])
+        assert res["answer"] is None and res["answer_option_index"] is None
+        if reasons:
+>           assert res["escalate_reason"] in reasons, (res["escalate_reason"], res["escalate_detail"])
+E           AssertionError: ('FRAME_SILENT', 'NO_RECORD_DECIDES')
+E           assert 'FRAME_SILENT' in ('QUESTION_UNREADABLE',)
+
+tests/test_conduct_ask_traps.py:117: AssertionError
+_ test_m1_japanese_requirement_of_permission_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u306b\u306f\u4e8b\u524d\u306e\u627f\u8a8d\u304c\u3044\u308a\u307e\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = '館内での試験運用には事前の承認がいりますか？'
+
+    @pytest.mark.parametrize("q", M1_JA)
+    def test_m1_japanese_requirement_of_permission_is_handed_up(frames, q):
+        res = ask(frames[1], q, H.YN_JA)
+>       assert_escalates(res, "QUESTION_UNREADABLE")
+
+tests/test_conduct_ask_traps.py:148: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'escalate', 'kind': 'OTHER', 'answer': None, ...}
+reasons = ('QUESTION_UNREADABLE',)
+
+    def assert_escalates(res, *reasons):
+        assert res["decision"] == "escalate", (res["answer"], res["basis"])
+        assert res["answer"] is None and res["answer_option_index"] is None
+        if reasons:
+>           assert res["escalate_reason"] in reasons, (res["escalate_reason"], res["escalate_detail"])
+E           AssertionError: ('FRAME_SILENT', 'NO_RECORD_DECIDES')
+E           assert 'FRAME_SILENT' in ('QUESTION_UNREADABLE',)
+
+tests/test_conduct_ask_traps.py:117: AssertionError
+____________ test_m1_also_without_options_and_without_a_frame_term _____________
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+
+    def test_m1_also_without_options_and_without_a_frame_term(frames):
+>       assert_escalates(ask(frames[0], "Is permission required for running the dockside simulator?"))
+
+tests/test_conduct_ask_traps.py:153: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CONFIRM', 'answer': 'permitted', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('permitted', [{'id': 'D4', 'section': 'decisions', 'line': 28, 'text': 'D4: CONFIRM | running the dockside simulator | permitted'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_order_with_an_evaluative_predicate_is_handed_up[Is it too early to start the salt spray test before the sensor driver is written?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Is it too early to start the salt spray test before the sensor driver is written?'
+
+    @pytest.mark.parametrize("q", M2_ORDER_EN)
+    def test_m2_order_with_an_evaluative_predicate_is_handed_up(frames, q):
+        res = ask(frames[0], q, H.YN_EN)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps.py:200: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': 'No', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('No', [{'id': 'phase_order:P1->P4', 'section': 'phase_order', 'line': 22, 'text': 'P1 -> P4: The test needs a working driver'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_order_with_an_evaluative_predicate_is_handed_up[Would it be a mistake to start the salt spray test before the sensor driver is written?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Would it be a mistake to start the salt spray test before the sensor driver is written?'
+
+    @pytest.mark.parametrize("q", M2_ORDER_EN)
+    def test_m2_order_with_an_evaluative_predicate_is_handed_up(frames, q):
+        res = ask(frames[0], q, H.YN_EN)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps.py:200: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': 'No', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('No', [{'id': 'phase_order:P1->P4', 'section': 'phase_order', 'line': 22, 'text': 'P1 -> P4: The test needs a working driver'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_order_with_an_evaluative_predicate_is_handed_up[Is it risky to start the salt spray test before the sensor driver is written?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Is it risky to start the salt spray test before the sensor driver is written?'
+
+    @pytest.mark.parametrize("q", M2_ORDER_EN)
+    def test_m2_order_with_an_evaluative_predicate_is_handed_up(frames, q):
+        res = ask(frames[0], q, H.YN_EN)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps.py:200: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': 'No', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('No', [{'id': 'phase_order:P1->P4', 'section': 'phase_order', 'line': 22, 'text': 'P1 -> P4: The test needs a working driver'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_order_with_an_evaluative_predicate_is_handed_up[Is it wrong to start the salt spray test before the sensor driver is written?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Is it wrong to start the salt spray test before the sensor driver is written?'
+
+    @pytest.mark.parametrize("q", M2_ORDER_EN)
+    def test_m2_order_with_an_evaluative_predicate_is_handed_up(frames, q):
+        res = ask(frames[0], q, H.YN_EN)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps.py:200: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': 'No', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('No', [{'id': 'phase_order:P1->P4', 'section': 'phase_order', 'line': 22, 'text': 'P1 -> P4: The test needs a working driver'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_order_with_an_evaluative_predicate_is_handed_up[Is it a bad idea to begin the uplink scheduler before the packet encoder is implemented?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Is it a bad idea to begin the uplink scheduler before the packet encoder is implemented?'
+
+    @pytest.mark.parametrize("q", M2_ORDER_EN)
+    def test_m2_order_with_an_evaluative_predicate_is_handed_up(frames, q):
+        res = ask(frames[0], q, H.YN_EN)
+>       assert_escalates(res)
+
+tests/test_conduct_ask_traps.py:200: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': 'No', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('No', [{'id': 'phase_order:P2->P3', 'section': 'phase_order', 'line': 21, 'text': 'P2 -> P3: The scheduler sends encoded packets'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_order_with_an_evaluative_predicate_is_handed_up_ja[\u5229\u7528\u8005\u306e\u767b\u9332\u5f62\u5f0f\u3092\u6c7a\u3081\u308b\u524d\u306b\u8cb8\u51fa\u306e\u753b\u9762\u3092\u4f5c\u308b\u306e\u306f\u65e9\u3059\u304e\u307e\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = '利用者の登録形式を決める前に貸出の画面を作るのは早すぎますか？'
+
+    @pytest.mark.parametrize("q", M2_ORDER_JA)
+    def test_m2_order_with_an_evaluative_predicate_is_handed_up_ja(frames, q):
+>       assert_escalates(ask(frames[1], q, H.YN_JA))
+
+tests/test_conduct_ask_traps.py:205: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': 'いいえ', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('いいえ', [{'id': 'phase_order:P1->P2', 'section': 'phase_order', 'line': 20, 'text': 'P1 -> P2: 画面は登録形式が決まってから作る'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_order_with_an_evaluative_predicate_is_handed_up_ja[\u5229\u7528\u8005\u306e\u767b\u9332\u5f62\u5f0f\u3092\u6c7a\u3081\u308b\u524d\u306b\u8cb8\u51fa\u306e\u753b\u9762\u3092\u4f5c\u308b\u306e\u306f\u5371\u967a\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = '利用者の登録形式を決める前に貸出の画面を作るのは危険ですか？'
+
+    @pytest.mark.parametrize("q", M2_ORDER_JA)
+    def test_m2_order_with_an_evaluative_predicate_is_handed_up_ja(frames, q):
+>       assert_escalates(ask(frames[1], q, H.YN_JA))
+
+tests/test_conduct_ask_traps.py:205: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': 'いいえ', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('いいえ', [{'id': 'phase_order:P1->P2', 'section': 'phase_order', 'line': 20, 'text': 'P1 -> P2: 画面は登録形式が決まってから作る'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_order_with_an_evaluative_predicate_is_handed_up_ja[\u5229\u7528\u8005\u306e\u767b\u9332\u5f62\u5f0f\u3092\u6c7a\u3081\u308b\u524d\u306b\u8cb8\u51fa\u306e\u753b\u9762\u3092\u4f5c\u308b\u306e\u306f\u8aa4\u308a\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = '利用者の登録形式を決める前に貸出の画面を作るのは誤りですか？'
+
+    @pytest.mark.parametrize("q", M2_ORDER_JA)
+    def test_m2_order_with_an_evaluative_predicate_is_handed_up_ja(frames, q):
+>       assert_escalates(ask(frames[1], q, H.YN_JA))
+
+tests/test_conduct_ask_traps.py:205: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': 'いいえ', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('いいえ', [{'id': 'phase_order:P1->P2', 'section': 'phase_order', 'line': 20, 'text': 'P1 -> P2: 画面は登録形式が決まってから作る'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_order_with_an_evaluative_predicate_is_handed_up_ja[\u8cb8\u51fa\u306e\u753b\u9762\u3092\u4f5c\u308b\u524d\u306b\u8fd4\u5374\u306e\u901a\u77e5\u3092\u5b9f\u88c5\u3059\u308b\u306e\u306f\u554f\u984c\u304c\u5927\u304d\u3044\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = '貸出の画面を作る前に返却の通知を実装するのは問題が大きいですか？'
+
+    @pytest.mark.parametrize("q", M2_ORDER_JA)
+    def test_m2_order_with_an_evaluative_predicate_is_handed_up_ja(frames, q):
+>       assert_escalates(ask(frames[1], q, H.YN_JA))
+
+tests/test_conduct_ask_traps.py:205: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': 'いいえ', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('いいえ', [{'id': 'phase_order:P2->P3', 'section': 'phase_order', 'line': 21, 'text': 'P2 -> P3: 通知は画面の動作を前提にする'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_scope_with_an_evaluative_predicate_is_handed_up[Is it wrong to include on-board averaging?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Is it wrong to include on-board averaging?'
+
+    @pytest.mark.parametrize("q", M2_SCOPE_EN)
+    def test_m2_scope_with_an_evaluative_predicate_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[0], q, H.YN_EN))
+
+tests/test_conduct_ask_traps.py:210: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'SCOPE', 'answer': 'Yes', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('Yes', [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: SCOPE | on-board averaging | in scope'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_scope_with_an_evaluative_predicate_is_handed_up[Is it a mistake to include on-board averaging?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Is it a mistake to include on-board averaging?'
+
+    @pytest.mark.parametrize("q", M2_SCOPE_EN)
+    def test_m2_scope_with_an_evaluative_predicate_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[0], q, H.YN_EN))
+
+tests/test_conduct_ask_traps.py:210: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'SCOPE', 'answer': 'Yes', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('Yes', [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: SCOPE | on-board averaging | in scope'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_scope_with_an_evaluative_predicate_is_handed_up[Is it risky to put on-board averaging in scope?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Is it risky to put on-board averaging in scope?'
+
+    @pytest.mark.parametrize("q", M2_SCOPE_EN)
+    def test_m2_scope_with_an_evaluative_predicate_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[0], q, H.YN_EN))
+
+tests/test_conduct_ask_traps.py:210: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'SCOPE', 'answer': 'Yes', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('Yes', [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: SCOPE | on-board averaging | in scope'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_scope_with_an_evaluative_predicate_is_handed_up[Would it be too early to include on-board averaging?] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Would it be too early to include on-board averaging?'
+
+    @pytest.mark.parametrize("q", M2_SCOPE_EN)
+    def test_m2_scope_with_an_evaluative_predicate_is_handed_up(frames, q):
+>       assert_escalates(ask(frames[0], q, H.YN_EN))
+
+tests/test_conduct_ask_traps.py:210: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'SCOPE', 'answer': 'Yes', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('Yes', [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: SCOPE | on-board averaging | in scope'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_scope_with_an_evaluative_predicate_is_handed_up_ja[\u8cb8\u51fa\u5c65\u6b74\u306e\u66f8\u304d\u51fa\u3057\u3092\u7bc4\u56f2\u306b\u542b\u3081\u308b\u306e\u306f\u8aa4\u308a\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = '貸出履歴の書き出しを範囲に含めるのは誤りですか？'
+
+    @pytest.mark.parametrize("q", M2_SCOPE_JA)
+    def test_m2_scope_with_an_evaluative_predicate_is_handed_up_ja(frames, q):
+>       assert_escalates(ask(frames[1], q, H.YN_JA))
+
+tests/test_conduct_ask_traps.py:215: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'SCOPE', 'answer': 'はい', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('はい', [{'id': 'D2', 'section': 'decisions', 'line': 26, 'text': 'D2: SCOPE | 貸出履歴の書き出し | in scope'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_scope_with_an_evaluative_predicate_is_handed_up_ja[\u8cb8\u51fa\u5c65\u6b74\u306e\u66f8\u304d\u51fa\u3057\u3092\u7bc4\u56f2\u306b\u542b\u3081\u308b\u306e\u306f\u65e9\u3059\u304e\u307e\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = '貸出履歴の書き出しを範囲に含めるのは早すぎますか？'
+
+    @pytest.mark.parametrize("q", M2_SCOPE_JA)
+    def test_m2_scope_with_an_evaluative_predicate_is_handed_up_ja(frames, q):
+>       assert_escalates(ask(frames[1], q, H.YN_JA))
+
+tests/test_conduct_ask_traps.py:215: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'SCOPE', 'answer': 'はい', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('はい', [{'id': 'D2', 'section': 'decisions', 'line': 26, 'text': 'D2: SCOPE | 貸出履歴の書き出し | in scope'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m2_scope_with_an_evaluative_predicate_is_handed_up_ja[\u8cb8\u51fa\u5c65\u6b74\u306e\u66f8\u304d\u51fa\u3057\u3092\u5bfe\u8c61\u306b\u5165\u308c\u308b\u306e\u306f\u5371\u967a\u3067\u3059\u304b\uff1f] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = '貸出履歴の書き出しを対象に入れるのは危険ですか？'
+
+    @pytest.mark.parametrize("q", M2_SCOPE_JA)
+    def test_m2_scope_with_an_evaluative_predicate_is_handed_up_ja(frames, q):
+>       assert_escalates(ask(frames[1], q, H.YN_JA))
+
+tests/test_conduct_ask_traps.py:215: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'SCOPE', 'answer': 'はい', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('はい', [{'id': 'D2', 'section': 'decisions', 'line': 26, 'text': 'D2: SCOPE | 貸出履歴の書き出し | in scope'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+__________ test_m2_scope_evaluative_without_options_is_handed_up_too ___________
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+
+    def test_m2_scope_evaluative_without_options_is_handed_up_too(frames):
+>       assert_escalates(ask(frames[0], "Is it wrong to include on-board averaging?"))
+
+tests/test_conduct_ask_traps.py:219: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'SCOPE', 'answer': 'in scope', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('in scope', [{'id': 'D3', 'section': 'decisions', 'line': 27, 'text': 'D3: SCOPE | on-board averaging | in scope'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+__________________ test_m2_the_plain_predicates_still_answer ___________________
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+
+    def test_m2_the_plain_predicates_still_answer(frames):
+        en, ja = frames
+        res = ask(en, "Can the salt spray test start before the sensor driver is written?", H.YN_EN)
+>       assert (res["decision"], res["answer_option_index"]) == ("answer", 1)
+E       AssertionError: assert ('escalate', None) == ('answer', 1)
+E         
+E         At index 0 diff: 'escalate' != 'answer'
+E         Use -v to get more diff
+
+tests/test_conduct_ask_traps.py:226: AssertionError
+_ test_m3_english_left_modifier_is_not_the_frame_subject[Which backup logging format do we use?-opts0] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Which backup logging format do we use?'
+opts = ['binary frames', 'text lines']
+
+    @pytest.mark.parametrize("q,opts", M3_EN)
+    def test_m3_english_left_modifier_is_not_the_frame_subject(frames, q, opts):
+>       assert_escalates(ask(frames[0], q, opts))
+
+tests/test_conduct_ask_traps.py:261: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'binary frames', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('binary frames', [{'id': 'D2', 'section': 'decisions', 'line': 26, 'text': 'D2: logging format => binary frames'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m3_english_left_modifier_is_not_the_frame_subject[Which secondary logging format do we use?-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Which secondary logging format do we use?', opts = None
+
+    @pytest.mark.parametrize("q,opts", M3_EN)
+    def test_m3_english_left_modifier_is_not_the_frame_subject(frames, q, opts):
+>       assert_escalates(ask(frames[0], q, opts))
+
+tests/test_conduct_ask_traps.py:261: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': 'binary frames', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('binary frames', [{'id': 'D2', 'section': 'decisions', 'line': 26, 'text': 'D2: logging format => binary frames'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m3_english_left_modifier_is_not_the_frame_subject[Which spare encoder library should we pick?-opts2] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Which spare encoder library should we pick?'
+opts = ['zero-copy encoder', 'copying encoder']
+
+    @pytest.mark.parametrize("q,opts", M3_EN)
+    def test_m3_english_left_modifier_is_not_the_frame_subject(frames, q, opts):
+>       assert_escalates(ask(frames[0], q, opts))
+
+tests/test_conduct_ask_traps.py:261: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'zero-copy encoder', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('zero-copy encoder', [{'id': 'D6', 'section': 'decisions', 'line': 30, 'text': 'D6: CHOICE | encoder library | zero-copy encoder'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m3_english_left_modifier_is_not_the_frame_subject[Which legacy radio band should we use?-opts3] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Which legacy radio band should we use?', opts = ['868 MHz', '915 MHz']
+
+    @pytest.mark.parametrize("q,opts", M3_EN)
+    def test_m3_english_left_modifier_is_not_the_frame_subject(frames, q, opts):
+>       assert_escalates(ask(frames[0], q, opts))
+
+tests/test_conduct_ask_traps.py:261: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': '868 MHz', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('868 MHz', [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: radio band => 868 MHz'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m3_english_left_modifier_is_not_the_frame_subject[What is the per-site radio band?-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'What is the per-site radio band?', opts = None
+
+    @pytest.mark.parametrize("q,opts", M3_EN)
+    def test_m3_english_left_modifier_is_not_the_frame_subject(frames, q, opts):
+>       assert_escalates(ask(frames[0], q, opts))
+
+tests/test_conduct_ask_traps.py:261: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'DESIGN_PREFERENCE', 'answer': '868 MHz', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('868 MHz', [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: radio band => 868 MHz'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m3_english_left_modifier_is_not_the_frame_subject[Which experimental encoder library do we adopt?-opts5] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'Which experimental encoder library do we adopt?'
+opts = ['zero-copy encoder', 'copying encoder']
+
+    @pytest.mark.parametrize("q,opts", M3_EN)
+    def test_m3_english_left_modifier_is_not_the_frame_subject(frames, q, opts):
+>       assert_escalates(ask(frames[0], q, opts))
+
+tests/test_conduct_ask_traps.py:261: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'zero-copy encoder', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('zero-copy encoder', [{'id': 'D6', 'section': 'decisions', 'line': 30, 'text': 'D6: CHOICE | encoder library | zero-copy encoder'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m3_japanese_left_modifier_is_not_the_frame_subject[\u4e88\u5099\u306e\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f-opts0] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = '予備の保存形式はどれにしますか？', opts = ['SQLite', 'CSV']
+
+    @pytest.mark.parametrize("q,opts", M3_JA)
+    def test_m3_japanese_left_modifier_is_not_the_frame_subject(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps.py:266: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'SQLite', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('SQLite', [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m3_japanese_left_modifier_is_not_the_frame_subject[\u30d0\u30c3\u30af\u30a2\u30c3\u30d7\u306e\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f-opts1] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = 'バックアップの保存形式はどれにしますか？', opts = ['SQLite', 'CSV']
+
+    @pytest.mark.parametrize("q,opts", M3_JA)
+    def test_m3_japanese_left_modifier_is_not_the_frame_subject(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps.py:266: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'SQLite', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('SQLite', [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m3_japanese_left_modifier_is_not_the_frame_subject[\u8a66\u4f5c\u306e\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f-opts2] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = '試作の保存形式はどれにしますか？', opts = ['SQLite', 'CSV']
+
+    @pytest.mark.parametrize("q,opts", M3_JA)
+    def test_m3_japanese_left_modifier_is_not_the_frame_subject(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps.py:266: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'SQLite', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('SQLite', [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: 保存形式 => SQLite'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+_ test_m3_japanese_left_modifier_is_not_the_frame_subject[\u6d77\u5916\u7248\u306e\u65e5\u4ed8\u306e\u8868\u8a18\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f-opts3] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+q = '海外版の日付の表記はどれにしますか？', opts = ['西暦', '和暦']
+
+    @pytest.mark.parametrize("q,opts", M3_JA)
+    def test_m3_japanese_left_modifier_is_not_the_frame_subject(frames, q, opts):
+>       assert_escalates(ask(frames[1], q, opts))
+
+tests/test_conduct_ask_traps.py:266: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': '西暦', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('西暦', [{'id': 'D5', 'section': 'decisions', 'line': 29, 'text': 'D5: CHOICE | 日付の表記 | 西暦'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+________ test_m3_the_left_modifier_rule_does_not_depend_on_which_frame _________
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/buoy.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-112/traps0/library.md')
+tmp_path = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-112/test_m3_the_left_modifier_rule0')
+
+    def test_m3_the_left_modifier_rule_does_not_depend_on_which_frame(frames, tmp_path):
+        # the same words in a frame whose subject is spelled differently: only the structure counts
+        p = tmp_path / "other.md"
+        p.write_text(EN_FRAME.replace("radio band => 868 MHz", "carrier plan => narrow band"), encoding="utf-8")
+>       assert_escalates(ask(str(p), "Which fallback carrier plan do we use?", ["narrow band", "wide band"]))
+
+tests/test_conduct_ask_traps.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'narrow band', ...}
+reasons = ()
+
+    def assert_escalates(res, *reasons):
+>       assert res["decision"] == "escalate", (res["answer"], res["basis"])
+E       AssertionError: ('narrow band', [{'id': 'D1', 'section': 'decisions', 'line': 25, 'text': 'D1: carrier plan => narrow band'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps.py:114: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_conduct_ask_traps.py::test_m1_english_requirement_of_permission_is_handed_up[Is permission required for running the dockside simulator?]
+FAILED tests/test_conduct_ask_traps.py::test_m1_english_requirement_of_permission_is_handed_up[Do we need permission before running the dockside simulator?]
+FAILED tests/test_conduct_ask_traps.py::test_m1_english_requirement_of_permission_is_handed_up[Is approval needed for flashing a field unit?]
+FAILED tests/test_conduct_ask_traps.py::test_m1_english_requirement_of_permission_is_handed_up[Does running the dockside simulator require authorization?]
+FAILED tests/test_conduct_ask_traps.py::test_m1_english_requirement_of_permission_is_handed_up[Is sign-off necessary to flash a field unit?]
+FAILED tests/test_conduct_ask_traps.py::test_m1_japanese_requirement_of_permission_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u306b\u306f\u8a31\u53ef\u304c\u5fc5\u8981\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps.py::test_m1_japanese_requirement_of_permission_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u306b\u306f\u8a31\u53ef\u3092\u53d6\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps.py::test_m1_japanese_requirement_of_permission_is_handed_up[\u672c\u756a\u306e\u8cb8\u51fa\u30c7\u30fc\u30bf\u3092\u4f7f\u3063\u305f\u8a66\u9a13\u306b\u306f\u8a31\u53ef\u304c\u8981\u308a\u307e\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps.py::test_m1_japanese_requirement_of_permission_is_handed_up[\u672c\u756a\u306e\u8cb8\u51fa\u30c7\u30fc\u30bf\u3092\u4f7f\u3063\u305f\u8a66\u9a13\u306f\u627f\u8a8d\u304c\u5fc5\u8981\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps.py::test_m1_japanese_requirement_of_permission_is_handed_up[\u9928\u5185\u3067\u306e\u8a66\u9a13\u904b\u7528\u306b\u306f\u4e8b\u524d\u306e\u627f\u8a8d\u304c\u3044\u308a\u307e\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps.py::test_m1_also_without_options_and_without_a_frame_term
+FAILED tests/test_conduct_ask_traps.py::test_m2_order_with_an_evaluative_predicate_is_handed_up[Is it too early to start the salt spray test before the sensor driver is written?]
+FAILED tests/test_conduct_ask_traps.py::test_m2_order_with_an_evaluative_predicate_is_handed_up[Would it be a mistake to start the salt spray test before the sensor driver is written?]
+FAILED tests/test_conduct_ask_traps.py::test_m2_order_with_an_evaluative_predicate_is_handed_up[Is it risky to start the salt spray test before the sensor driver is written?]
+FAILED tests/test_conduct_ask_traps.py::test_m2_order_with_an_evaluative_predicate_is_handed_up[Is it wrong to start the salt spray test before the sensor driver is written?]
+FAILED tests/test_conduct_ask_traps.py::test_m2_order_with_an_evaluative_predicate_is_handed_up[Is it a bad idea to begin the uplink scheduler before the packet encoder is implemented?]
+FAILED tests/test_conduct_ask_traps.py::test_m2_order_with_an_evaluative_predicate_is_handed_up_ja[\u5229\u7528\u8005\u306e\u767b\u9332\u5f62\u5f0f\u3092\u6c7a\u3081\u308b\u524d\u306b\u8cb8\u51fa\u306e\u753b\u9762\u3092\u4f5c\u308b\u306e\u306f\u65e9\u3059\u304e\u307e\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps.py::test_m2_order_with_an_evaluative_predicate_is_handed_up_ja[\u5229\u7528\u8005\u306e\u767b\u9332\u5f62\u5f0f\u3092\u6c7a\u3081\u308b\u524d\u306b\u8cb8\u51fa\u306e\u753b\u9762\u3092\u4f5c\u308b\u306e\u306f\u5371\u967a\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps.py::test_m2_order_with_an_evaluative_predicate_is_handed_up_ja[\u5229\u7528\u8005\u306e\u767b\u9332\u5f62\u5f0f\u3092\u6c7a\u3081\u308b\u524d\u306b\u8cb8\u51fa\u306e\u753b\u9762\u3092\u4f5c\u308b\u306e\u306f\u8aa4\u308a\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps.py::test_m2_order_with_an_evaluative_predicate_is_handed_up_ja[\u8cb8\u51fa\u306e\u753b\u9762\u3092\u4f5c\u308b\u524d\u306b\u8fd4\u5374\u306e\u901a\u77e5\u3092\u5b9f\u88c5\u3059\u308b\u306e\u306f\u554f\u984c\u304c\u5927\u304d\u3044\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps.py::test_m2_scope_with_an_evaluative_predicate_is_handed_up[Is it wrong to include on-board averaging?]
+FAILED tests/test_conduct_ask_traps.py::test_m2_scope_with_an_evaluative_predicate_is_handed_up[Is it a mistake to include on-board averaging?]
+FAILED tests/test_conduct_ask_traps.py::test_m2_scope_with_an_evaluative_predicate_is_handed_up[Is it risky to put on-board averaging in scope?]
+FAILED tests/test_conduct_ask_traps.py::test_m2_scope_with_an_evaluative_predicate_is_handed_up[Would it be too early to include on-board averaging?]
+FAILED tests/test_conduct_ask_traps.py::test_m2_scope_with_an_evaluative_predicate_is_handed_up_ja[\u8cb8\u51fa\u5c65\u6b74\u306e\u66f8\u304d\u51fa\u3057\u3092\u7bc4\u56f2\u306b\u542b\u3081\u308b\u306e\u306f\u8aa4\u308a\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps.py::test_m2_scope_with_an_evaluative_predicate_is_handed_up_ja[\u8cb8\u51fa\u5c65\u6b74\u306e\u66f8\u304d\u51fa\u3057\u3092\u7bc4\u56f2\u306b\u542b\u3081\u308b\u306e\u306f\u65e9\u3059\u304e\u307e\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps.py::test_m2_scope_with_an_evaluative_predicate_is_handed_up_ja[\u8cb8\u51fa\u5c65\u6b74\u306e\u66f8\u304d\u51fa\u3057\u3092\u5bfe\u8c61\u306b\u5165\u308c\u308b\u306e\u306f\u5371\u967a\u3067\u3059\u304b\uff1f]
+FAILED tests/test_conduct_ask_traps.py::test_m2_scope_evaluative_without_options_is_handed_up_too
+FAILED tests/test_conduct_ask_traps.py::test_m2_the_plain_predicates_still_answer
+FAILED tests/test_conduct_ask_traps.py::test_m3_english_left_modifier_is_not_the_frame_subject[Which backup logging format do we use?-opts0]
+FAILED tests/test_conduct_ask_traps.py::test_m3_english_left_modifier_is_not_the_frame_subject[Which secondary logging format do we use?-None]
+FAILED tests/test_conduct_ask_traps.py::test_m3_english_left_modifier_is_not_the_frame_subject[Which spare encoder library should we pick?-opts2]
+FAILED tests/test_conduct_ask_traps.py::test_m3_english_left_modifier_is_not_the_frame_subject[Which legacy radio band should we use?-opts3]
+FAILED tests/test_conduct_ask_traps.py::test_m3_english_left_modifier_is_not_the_frame_subject[What is the per-site radio band?-None]
+FAILED tests/test_conduct_ask_traps.py::test_m3_english_left_modifier_is_not_the_frame_subject[Which experimental encoder library do we adopt?-opts5]
+FAILED tests/test_conduct_ask_traps.py::test_m3_japanese_left_modifier_is_not_the_frame_subject[\u4e88\u5099\u306e\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f-opts0]
+FAILED tests/test_conduct_ask_traps.py::test_m3_japanese_left_modifier_is_not_the_frame_subject[\u30d0\u30c3\u30af\u30a2\u30c3\u30d7\u306e\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f-opts1]
+FAILED tests/test_conduct_ask_traps.py::test_m3_japanese_left_modifier_is_not_the_frame_subject[\u8a66\u4f5c\u306e\u4fdd\u5b58\u5f62\u5f0f\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f-opts2]
+FAILED tests/test_conduct_ask_traps.py::test_m3_japanese_left_modifier_is_not_the_frame_subject[\u6d77\u5916\u7248\u306e\u65e5\u4ed8\u306e\u8868\u8a18\u306f\u3069\u308c\u306b\u3057\u307e\u3059\u304b\uff1f-opts3]
+FAILED tests/test_conduct_ask_traps.py::test_m3_the_left_modifier_rule_does_not_depend_on_which_frame
+40 failed, 2 passed in 0.80s

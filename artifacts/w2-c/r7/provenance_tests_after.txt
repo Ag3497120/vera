@@ -1,0 +1,21 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: /Users/motonisihikoudai/Projects/vera-impl/wt/W2-c-S
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 12 items
+
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[order] PASSED [  8%]
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[order_combined] PASSED [ 16%]
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[scope] PASSED [ 25%]
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[choice_options] PASSED [ 33%]
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[choice_text] PASSED [ 41%]
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[permission] PASSED [ 50%]
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[acceptance_text] PASSED [ 58%]
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[acceptance_yn] PASSED [ 66%]
+tests/test_conduct_ask_provenance.py::test_a_combined_answer_keeps_its_derivation_and_names_the_step PASSED [ 75%]
+tests/test_conduct_ask_provenance.py::test_a_question_handed_up_has_no_resolver PASSED [ 83%]
+tests/test_conduct_ask_provenance.py::test_a_refused_input_has_no_resolver PASSED [ 91%]
+tests/test_conduct_ask_provenance.py::test_the_key_comes_right_after_derivation_in_the_cli_output PASSED [100%]
+
+============================== 12 passed in 0.24s ==============================

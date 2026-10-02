@@ -1,0 +1,186 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: /Users/motonisihikoudai/Projects/vera-impl/wt/W2-c-S
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 72 items / 55 deselected / 17 selected
+
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f01-08] PASSED [  5%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f02-06] PASSED [ 11%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f03-04] PASSED [ 17%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f05-07] PASSED [ 23%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f06-07] PASSED [ 29%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f07-05] PASSED [ 35%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f08-07] PASSED [ 41%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f11-07] PASSED [ 47%]
+tests/test_conduct_ask_traps4.py::test_m3_premise_sentences_of_what_can_we_start_next_are_still_read[w2c-f04-16] PASSED [ 52%]
+tests/test_conduct_ask_traps4.py::test_m3_a_premise_sentence_with_a_qualifier_is_not_read[cold-The record schema is done in the old prototype. What can we start next?-None] FAILED [ 58%]
+tests/test_conduct_ask_traps4.py::test_m3_a_premise_sentence_with_a_qualifier_is_not_read[cold-The record schema is done for the courier app only. What can we start next?-None] FAILED [ 64%]
+tests/test_conduct_ask_traps4.py::test_m3_a_premise_sentence_with_a_qualifier_is_not_read[f01-\u65e7\u7248\u3067\u306f\u4e88\u7d04\u30c7\u30fc\u30bf\u306e\u578b\u3068\u8cb8\u51fa\u753b\u9762\u304c\u7d42\u308f\u308a\u307e\u3057\u305f\u3002\u6b21\u306b\u7740\u624b\u3067\u304d\u308b\u4f5c\u696d\u306f\u3069\u308c\u3067\u3059\u304b\uff1f-opts2] FAILED [ 70%]
+tests/test_conduct_ask_traps4.py::test_m3_a_premise_sentence_with_a_qualifier_is_not_read[f01-\u4e88\u7d04\u30c7\u30fc\u30bf\u306e\u578b\u3068\u8cb8\u51fa\u753b\u9762\u304c\u6765\u5e74\u7d42\u308f\u308a\u307e\u3059\u3002\u6b21\u306b\u7740\u624b\u3067\u304d\u308b\u4f5c\u696d\u306f\u3069\u308c\u3067\u3059\u304b\uff1f-opts3] FAILED [ 76%]
+tests/test_conduct_ask_traps4.py::test_m3_a_premise_sentence_with_a_qualifier_is_not_read[f01-\u4e88\u7d04\u30c7\u30fc\u30bf\u306e\u578b\u3068\u8cb8\u51fa\u753b\u9762\u304c\u65e7\u7248\u3067\u7d42\u308f\u308a\u307e\u3057\u305f\u3002\u6b21\u306b\u7740\u624b\u3067\u304d\u308b\u4f5c\u696d\u306f\u3069\u308c\u3067\u3059\u304b\uff1f-opts4] FAILED [ 82%]
+tests/test_conduct_ask_traps4.py::test_m3_a_premise_sentence_with_a_qualifier_is_not_read[f01-\u4e88\u7d04\u30c7\u30fc\u30bf\u306e\u578b\u3068\u8cb8\u51fa\u753b\u9762\u304c\u7d42\u308f\u308a\u307e\u3057\u305f\uff08\u65e7\u7248\uff09\u3002\u6b21\u306b\u7740\u624b\u3067\u304d\u308b\u4f5c\u696d\u306f\u3069\u308c\u3067\u3059\u304b\uff1f-opts5] FAILED [ 88%]
+tests/test_conduct_ask_traps4.py::test_m3_a_premise_sentence_with_a_discourse_word_is_still_read PASSED [ 94%]
+tests/test_conduct_ask_traps4.py::test_m3_a_plain_premise_sentence_is_still_read PASSED [100%]
+
+=================================== FAILURES ===================================
+_ test_m3_a_premise_sentence_with_a_qualifier_is_not_read[cold-The record schema is done in the old prototype. What can we start next?-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-247/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-247/traps40/clinic.md')
+fr = 'cold'
+q = 'The record schema is done in the old prototype. What can we start next?'
+opts = None
+
+    @pytest.mark.parametrize("fr,q,opts", M3_PREMISE_QUALIFIED)
+    def test_m3_a_premise_sentence_with_a_qualifier_is_not_read(frames, fr, q, opts):
+        path = frames[0] if fr == "cold" else H.frame("f01_loan")
+>       assert_escalates(ask(path, q, opts))
+
+tests/test_conduct_ask_traps4.py:363: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': 'Write the probe reader', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Write the probe reader', None, [{'id': 'phase_order:P1->P2', 'section': 'phase_order', 'line': 21, 'text': 'P1 -> P2: The reader fills the schema'}, {'id': 'P2', 'section': 'phases', 'line': 16, 'text': 'P2: Write the probe reader'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_a_premise_sentence_with_a_qualifier_is_not_read[cold-The record schema is done for the courier app only. What can we start next?-None] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-247/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-247/traps40/clinic.md')
+fr = 'cold'
+q = 'The record schema is done for the courier app only. What can we start next?'
+opts = None
+
+    @pytest.mark.parametrize("fr,q,opts", M3_PREMISE_QUALIFIED)
+    def test_m3_a_premise_sentence_with_a_qualifier_is_not_read(frames, fr, q, opts):
+        path = frames[0] if fr == "cold" else H.frame("f01_loan")
+>       assert_escalates(ask(path, q, opts))
+
+tests/test_conduct_ask_traps4.py:363: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': 'Write the probe reader', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('Write the probe reader', None, [{'id': 'phase_order:P1->P2', 'section': 'phase_order', 'line': 21, 'text': 'P1 -> P2: The reader fills the schema'}, {'id': 'P2', 'section': 'phases', 'line': 16, 'text': 'P2: Write the probe reader'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_a_premise_sentence_with_a_qualifier_is_not_read[f01-\u65e7\u7248\u3067\u306f\u4e88\u7d04\u30c7\u30fc\u30bf\u306e\u578b\u3068\u8cb8\u51fa\u753b\u9762\u304c\u7d42\u308f\u308a\u307e\u3057\u305f\u3002\u6b21\u306b\u7740\u624b\u3067\u304d\u308b\u4f5c\u696d\u306f\u3069\u308c\u3067\u3059\u304b\uff1f-opts2] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-247/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-247/traps40/clinic.md')
+fr = 'f01', q = '旧版では予約データの型と貸出画面が終わりました。次に着手できる作業はどれですか？'
+opts = ['返却通知を実装する', '受入確認をする']
+
+    @pytest.mark.parametrize("fr,q,opts", M3_PREMISE_QUALIFIED)
+    def test_m3_a_premise_sentence_with_a_qualifier_is_not_read(frames, fr, q, opts):
+        path = frames[0] if fr == "cold" else H.frame("f01_loan")
+>       assert_escalates(ask(path, q, opts))
+
+tests/test_conduct_ask_traps4.py:363: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': '返却通知を実装する', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('返却通知を実装する', 0, [{'id': 'phase_order:P2->P3', 'section': 'phase_order', 'line': 22, 'text': 'P2 -> P3: 通知は画面の動作を前提にする'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_a_premise_sentence_with_a_qualifier_is_not_read[f01-\u4e88\u7d04\u30c7\u30fc\u30bf\u306e\u578b\u3068\u8cb8\u51fa\u753b\u9762\u304c\u6765\u5e74\u7d42\u308f\u308a\u307e\u3059\u3002\u6b21\u306b\u7740\u624b\u3067\u304d\u308b\u4f5c\u696d\u306f\u3069\u308c\u3067\u3059\u304b\uff1f-opts3] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-247/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-247/traps40/clinic.md')
+fr = 'f01', q = '予約データの型と貸出画面が来年終わります。次に着手できる作業はどれですか？'
+opts = ['返却通知を実装する', '受入確認をする']
+
+    @pytest.mark.parametrize("fr,q,opts", M3_PREMISE_QUALIFIED)
+    def test_m3_a_premise_sentence_with_a_qualifier_is_not_read(frames, fr, q, opts):
+        path = frames[0] if fr == "cold" else H.frame("f01_loan")
+>       assert_escalates(ask(path, q, opts))
+
+tests/test_conduct_ask_traps4.py:363: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': '返却通知を実装する', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('返却通知を実装する', 0, [{'id': 'phase_order:P2->P3', 'section': 'phase_order', 'line': 22, 'text': 'P2 -> P3: 通知は画面の動作を前提にする'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_a_premise_sentence_with_a_qualifier_is_not_read[f01-\u4e88\u7d04\u30c7\u30fc\u30bf\u306e\u578b\u3068\u8cb8\u51fa\u753b\u9762\u304c\u65e7\u7248\u3067\u7d42\u308f\u308a\u307e\u3057\u305f\u3002\u6b21\u306b\u7740\u624b\u3067\u304d\u308b\u4f5c\u696d\u306f\u3069\u308c\u3067\u3059\u304b\uff1f-opts4] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-247/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-247/traps40/clinic.md')
+fr = 'f01', q = '予約データの型と貸出画面が旧版で終わりました。次に着手できる作業はどれですか？'
+opts = ['返却通知を実装する', '受入確認をする']
+
+    @pytest.mark.parametrize("fr,q,opts", M3_PREMISE_QUALIFIED)
+    def test_m3_a_premise_sentence_with_a_qualifier_is_not_read(frames, fr, q, opts):
+        path = frames[0] if fr == "cold" else H.frame("f01_loan")
+>       assert_escalates(ask(path, q, opts))
+
+tests/test_conduct_ask_traps4.py:363: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': '返却通知を実装する', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('返却通知を実装する', 0, [{'id': 'phase_order:P2->P3', 'section': 'phase_order', 'line': 22, 'text': 'P2 -> P3: 通知は画面の動作を前提にする'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+_ test_m3_a_premise_sentence_with_a_qualifier_is_not_read[f01-\u4e88\u7d04\u30c7\u30fc\u30bf\u306e\u578b\u3068\u8cb8\u51fa\u753b\u9762\u304c\u7d42\u308f\u308a\u307e\u3057\u305f\uff08\u65e7\u7248\uff09\u3002\u6b21\u306b\u7740\u624b\u3067\u304d\u308b\u4f5c\u696d\u306f\u3069\u308c\u3067\u3059\u304b\uff1f-opts5] _
+
+frames = ('/private/tmp/pytest-of-motonisihikoudai/pytest-247/traps40/cold.md', '/private/tmp/pytest-of-motonisihikoudai/pytest-247/traps40/clinic.md')
+fr = 'f01', q = '予約データの型と貸出画面が終わりました（旧版）。次に着手できる作業はどれですか？'
+opts = ['返却通知を実装する', '受入確認をする']
+
+    @pytest.mark.parametrize("fr,q,opts", M3_PREMISE_QUALIFIED)
+    def test_m3_a_premise_sentence_with_a_qualifier_is_not_read(frames, fr, q, opts):
+        path = frames[0] if fr == "cold" else H.frame("f01_loan")
+>       assert_escalates(ask(path, q, opts))
+
+tests/test_conduct_ask_traps4.py:363: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'ORDER', 'answer': '返却通知を実装する', ...}
+
+    def assert_escalates(res):
+>       assert res["decision"] == "escalate", (res["answer"], res["answer_option_index"], res["basis"])
+E       AssertionError: ('返却通知を実装する', 0, [{'id': 'phase_order:P2->P3', 'section': 'phase_order', 'line': 22, 'text': 'P2 -> P3: 通知は画面の動作を前提にする'}])
+E       assert 'answer' == 'escalate'
+E         
+E         - escalate
+E         + answer
+
+tests/test_conduct_ask_traps4.py:144: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_conduct_ask_traps4.py::test_m3_a_premise_sentence_with_a_qualifier_is_not_read[cold-The record schema is done in the old prototype. What can we start next?-None]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_a_premise_sentence_with_a_qualifier_is_not_read[cold-The record schema is done for the courier app only. What can we start next?-None]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_a_premise_sentence_with_a_qualifier_is_not_read[f01-\u65e7\u7248\u3067\u306f\u4e88\u7d04\u30c7\u30fc\u30bf\u306e\u578b\u3068\u8cb8\u51fa\u753b\u9762\u304c\u7d42\u308f\u308a\u307e\u3057\u305f\u3002\u6b21\u306b\u7740\u624b\u3067\u304d\u308b\u4f5c\u696d\u306f\u3069\u308c\u3067\u3059\u304b\uff1f-opts2]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_a_premise_sentence_with_a_qualifier_is_not_read[f01-\u4e88\u7d04\u30c7\u30fc\u30bf\u306e\u578b\u3068\u8cb8\u51fa\u753b\u9762\u304c\u6765\u5e74\u7d42\u308f\u308a\u307e\u3059\u3002\u6b21\u306b\u7740\u624b\u3067\u304d\u308b\u4f5c\u696d\u306f\u3069\u308c\u3067\u3059\u304b\uff1f-opts3]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_a_premise_sentence_with_a_qualifier_is_not_read[f01-\u4e88\u7d04\u30c7\u30fc\u30bf\u306e\u578b\u3068\u8cb8\u51fa\u753b\u9762\u304c\u65e7\u7248\u3067\u7d42\u308f\u308a\u307e\u3057\u305f\u3002\u6b21\u306b\u7740\u624b\u3067\u304d\u308b\u4f5c\u696d\u306f\u3069\u308c\u3067\u3059\u304b\uff1f-opts4]
+FAILED tests/test_conduct_ask_traps4.py::test_m3_a_premise_sentence_with_a_qualifier_is_not_read[f01-\u4e88\u7d04\u30c7\u30fc\u30bf\u306e\u578b\u3068\u8cb8\u51fa\u753b\u9762\u304c\u7d42\u308f\u308a\u307e\u3057\u305f\uff08\u65e7\u7248\uff09\u3002\u6b21\u306b\u7740\u624b\u3067\u304d\u308b\u4f5c\u696d\u306f\u3069\u308c\u3067\u3059\u304b\uff1f-opts5]
+================= 6 failed, 11 passed, 55 deselected in 0.10s ==================

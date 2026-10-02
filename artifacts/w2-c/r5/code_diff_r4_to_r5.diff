@@ -1,0 +1,199 @@
+--- artifacts/w2-c/r5/conduct_ask_r4.py.txt	2026-10-03 03:41:57
++++ verantyx/conduct_ask.py	2026-10-03 03:50:14
+@@ -930,6 +930,7 @@
+     lang: str
+     trace_tried: list[str] = field(default_factory=list)
+     trace_out: dict[str, str] = field(default_factory=dict)
++    premise_sents: list[tuple[int, int]] = field(default_factory=list)   # sentences a resolver read as "X is done"
+ 
+     def polarity_options(self) -> Optional[tuple[OptionInfo, OptionInfo]]:
+         yes = [o for o in self.options if o.reading == "YES"]
+@@ -1386,6 +1387,26 @@
+     return rest == ""
+ 
+ 
++_PREM_EN_ITEM = r"(?:(?:the|our|a|an)\s+)?§"
++_PREM_EN = re.compile(r"^(?:(?:so|and|then|also|ok|okay|well|now)[, ]+)?" + _PREM_EN_ITEM + r"(?:(?:\s*,\s*(?:and\s+)?|\s+and\s+)" + _PREM_EN_ITEM
++                      + r")*\s+(?:is|are|has\s+been|have\s+been)\s+(?:now\s+|all\s+|already\s+)?(?:done|finished|completed|complete)$")
++
++
++def _premise_ok(ctx: "Ctx", a: int, b: int) -> bool:
++    """A sentence that says which phases are done is read only in its closed form: "<the phases> are done" (Japanese:
++    "<the phases>が終わりました", a phase may be followed by its own verb in te-form).  A time, place or other qualifier
++    in the sentence ("done in another version", "来年…") is not read, so the sentence stays unread."""
++    sent = _blank_phases(ctx, a, b)
++    if "\x00" in sent:
++        return False
++    if not has_cjk(sent):
++        return bool(_PREM_EN.match(sent))
++    te = sorted({t for p in ctx.view.phases for v in [_ja_own_verb(p)] if v for t in _ja_verb_forms(v)[0]}, key=len, reverse=True)
++    item = "§" + (r"(?:を(?:" + "|".join(re.escape(t) for t in te) + r"))?" if te else "")
++    rx = (r"^" + _PJA_DISC + item + r"(?:(?:と、?|、)" + item + r")*(?:も|は|が)?(?:終わり|完了し|済み)(?:ました|ています)$")
++    return bool(re.match(rx, sent))
++
++
+ def _next_predicate_ok(ctx: "Ctx", a: int, b: int) -> bool:
+     sent = _blank_phases(ctx, a, b)
+     if "\x00" in sent:
+@@ -1463,7 +1484,8 @@
+ 
+ 
+ def _path_status(ctx: Ctx) -> Optional[tuple[str, list[Ref], str]]:
+-    """'ALLOWED' / 'OUTSIDE' / 'NO_ALLOWLIST' for a path-looking token in the question, else ``None``."""
++    """'ALLOWED' / 'OUTSIDE' / 'NOT_PLAIN' / 'NO_ALLOWLIST' for a path-looking token in the question, else ``None``.
++    'NOT_PLAIN': the path would match the list by prefix but has a "." or ".." part (it is not compared, it is handed up)."""
+     paths = []
+     for m in _PATH_RX.finditer(ctx.q):
+         p = m.group(0).rstrip("/")
+@@ -1477,14 +1499,19 @@
+         return "NO_ALLOWLIST", [], paths[0]
+     refs: list[Ref] = []
+     outside = False
++    not_plain = False
+     for p in paths:
+         hit = [rf for allowed, rf in ctx.view.allow if p == allowed or p.startswith(allowed.rstrip("/") + "/")]
+-        if hit:
++        if hit and not all(re.search(r"[^.]", seg) for seg in p.split("/")):
++            not_plain = True       # "a/../b" and "a/./b" are not compared with the list (no normalising: handed up)
++        elif hit:
+             refs.extend(hit)
+         else:
+             outside = True
+     if outside:
+         return "OUTSIDE", [rf for _, rf in ctx.view.allow], paths[0]
++    if not_plain:
++        return "NOT_PLAIN", [rf for _, rf in ctx.view.allow], paths[0]
+     return "ALLOWED", refs, paths[0]
+ 
+ 
+@@ -1580,18 +1607,26 @@
+     r"(?:済み|(?:を|は|も)?(?:もらい|もらっ|得|取り|取っ|いただい|頂い|受け|し)(?:ました|て(?:い)?ます|てある))(?:です|でした)?$")
+ 
+ 
+-def _perm_context_ok(ctx: "Ctx", cue_sents: Sequence[tuple[int, int]]) -> bool:
++def _sentences_unread(ctx: "Ctx", read: Sequence[tuple[int, int]]) -> list[tuple[int, int]]:
++    """The sentences of the question that are neither one that was read (``read``) nor a sentence that only says that
++    somebody approved.  Such a sentence may carry a subject, a time or a condition ("来年の話です", "for another
++    version") that no layer looked at, so an answer is not given while one exists."""
++    out: list[tuple[int, int]] = []
+     for a, b in ctx.sentences:
+-        if (a, b) in cue_sents:
++        if (a, b) in read:
+             continue
+         sent = ctx.q[a:b].strip(" \t?？!！.。")
+         if not sent:
+             continue
+         if not (_PJA_APPROVED.match(sent) if has_cjk(sent) else _PEN_APPROVED.match(sent)):
+-            return False
+-    return True
++            out.append((a, b))
++    return out
+ 
+ 
++def _perm_context_ok(ctx: "Ctx", cue_sents: Sequence[tuple[int, int]]) -> bool:
++    return not _sentences_unread(ctx, cue_sents)
++
++
+ _PERM_OP = "PERMISSION_FOR_ANOTHER_OPERATION"
+ _PERM_SUBJ = "PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION"
+ _PERM_MODAL_SUBJECT_END = frozenset("will shall must should can may".split())
+@@ -1640,12 +1675,15 @@
+     return found
+ 
+ 
+-def _perm_en_target(L: str, R: str, kind: str, restated: Sequence[tuple[list[str], list[str]]]) -> Optional[str]:
+-    """``None`` when the English sentence round one target is a closed form, else the detail of the refusal."""
++def _perm_en_target(L: str, R: str, kind: str, restated: Sequence[tuple[list[str], list[str]]],
++                    only_restated: bool = False) -> Optional[str]:
++    """``None`` when the English sentence round one target is a closed form, else the detail of the refusal.
++    ``only_restated``: the "permitted" of a forbidden operation was given by a criterion of a higher family; it holds
++    for what that criterion says (its subject, and its purpose when the question names one), not for "may we do it"."""
+     leads = _PEN_LEADS_PATH if kind == "PATH" else _PEN_LEADS_ACTION
+     tail = R.strip(" \t?!.")
+     r1 = (not tail) or bool(_PERM_TAIL_EN.match(" " + tail))
+-    if any(rx.match(L) for rx in leads):
++    if not only_restated and any(rx.match(L) for rx in leads):
+         return None if r1 else _PERM_SUBJ
+     if kind == "ACTION":
+         for subj, cont in restated:
+@@ -1656,6 +1694,8 @@
+             if r1 or r2:
+                 return None
+             return _PERM_SUBJ
++    if only_restated:
++        return _PERM_SUBJ
+     if any(rx.match(L) for rx in _PERM_EN_FRAME_ONLY):
+         return _PERM_OP      # the frame of "may we <something>" is there; the something is not on the closed list
+     return _PERM_SUBJ
+@@ -1666,10 +1706,14 @@
+     return [f[len(term):] for f in te if f.startswith(term)], [f[len(term):] for f in dic if f.startswith(term)]
+ 
+ 
+-def _perm_ja_target(L: str, R: str, kind: str, m: Optional["Mention"], index: "TermIndex") -> Optional[str]:
++def _perm_ja_target(L: str, R: str, kind: str, m: Optional["Mention"], index: "TermIndex",
++                    only_restated: bool = False) -> Optional[str]:
+     """The Japanese counterpart of ``_perm_en_target``: the part before the thing is a discourse word (and, for a
+     forbidden or protected operation, an approval clause, which does not change the answer), the part after it is the
+-    operation's own "<do>てもよいですか" / "<do>ことはできますか" / "許可されていますか"."""
++    operation's own "<do>てもよいですか" / "<do>ことはできますか" / "許可されていますか".
++    ``only_restated``: see ``_perm_en_target``; no Japanese restatement of a record is built, so it is always handed up."""
++    if only_restated:
++        return _PERM_SUBJ
+     tail = R.strip(" \t?!.。")
+     lead = L.strip()
+     llm = m is not None and m.via == "llm"
+@@ -1727,10 +1771,12 @@
+     details: list[str] = []
+     for kind, a, b, start, end, m in targets:
+         L, R = ctx.q[a:start], ctx.q[end:b]
++        # a "permitted" for a forbidden operation can only have come from a higher-ranked criterion or invariant
++        only_restated = out.polarity == "YES" and m is not None and bool(m.objs("forbidden"))
+         if has_cjk(ctx.q[a:b]):
+-            d = _perm_ja_target(L, R, kind, m, ctx.index)
++            d = _perm_ja_target(L, R, kind, m, ctx.index, only_restated)
+         else:
+-            d = _perm_en_target(L.lstrip(), R, kind, restated)
++            d = _perm_en_target(L.lstrip(), R, kind, restated, only_restated)
+         if d is not None:
+             details.append(d)
+     if not details:
+@@ -1792,8 +1838,8 @@
+     state, refs, _ = path
+     if state == "ALLOWED":
+         return _pol_answer(ctx, True, refs, "PERMISSION", "DIRECT", yes_p, no_p, "permission")
+-    return _esc("FRAME_SILENT", "OUTSIDE_ALLOWLIST" if state == "OUTSIDE" else "NO_ALLOWLIST", refs, "PERMISSION",
+-                "permission")
++    detail = {"OUTSIDE": "OUTSIDE_ALLOWLIST", "NOT_PLAIN": "PATH_NOT_PLAIN"}.get(state, "NO_ALLOWLIST")
++    return _esc("FRAME_SILENT", detail, refs, "PERMISSION", "permission")
+ 
+ 
+ def _authority_with_conflicts(ctx: Ctx, what: str, acts: list[ActionV], basis: list[Ref], family: str,
+@@ -1944,6 +1990,8 @@
+                 for m, p in pairs:
+                     if a <= m.start < b:
+                         done.add(p.id)
++                        if (a, b) not in ctx.premise_sents and _premise_ok(ctx, a, b):
++                            ctx.premise_sents.append((a, b))
+         if not done:
+             return _esc("FRAME_SILENT", "NO_STATE", [], "ORDER", "resolver")
+         workable = [p.id for p in ctx.view.phases if p.id not in done and g.pred[p.id] <= done]
+@@ -2566,11 +2614,18 @@
+             ctx.trace_out["permission_requirement"] = "ESCALATE"
+             out = _esc("QUESTION_UNREADABLE", "REQUIREMENT_OF_PERMISSION", out.basis, out.kind, "permission_requirement")
+         if out.decision == "answer":
+-            asked = [1 for a, b in ctx.sentences if q[a:b].rstrip(" \t。.!！").endswith(("?", "か")) or q[a:b].count("?")]
++            asked = [(a, b) for a, b in ctx.sentences if q[a:b].rstrip(" \t。.!！").endswith(("?", "か")) or q[a:b].count("?")]
+             if len(asked) > 1:
+                 # an answer cannot be attributed to one of several questions (the second may ask something else)
+                 ctx.trace_out["multiple_questions"] = "ESCALATE"
+                 out = _esc("QUESTION_UNREADABLE", "MULTIPLE_QUESTIONS", out.basis, out.kind, "multiple_questions")
++            elif len(ctx.sentences) > 1:
++                # what was read: the asked sentence (without one: the sentences that name a frame term) and the premises
++                # of "what can we start next"; every other sentence must only state an approval
++                read = list(asked) or [(a, b) for a, b in ctx.sentences if any(a <= m.start < b for m in ctx.mentions)]
++                if _sentences_unread(ctx, read + ctx.premise_sents):
++                    ctx.trace_out["context_sentence"] = "ESCALATE"
++                    out = _esc("FRAME_SILENT", "CONTEXT_SENTENCE_UNREAD", out.basis, out.kind, "context_sentence")
+         r = _finish(res, out, ctx, voc if voc is not None else vocab, classifier_kind, opt_info)
+         r["trace"] = {"mentions_found": len(ctx.mentions), "mentions_dropped_as_contained": dropped,
+                       "resolvers_tried": list(ctx.trace_tried), "resolver_outcomes": dict(ctx.trace_out)}

@@ -1,0 +1,6 @@
+answer   返却通知を実装する                None/None | '予約データの型と貸出画面が終わりました。次に着手できる作業はどれですか？'
+escalate None                     FRAME_SILENT/CONTEXT_SENTENCE_UNREAD | '旧版では予約データの型と貸出画面が終わりました。次に着手できる作業はどれですか？'
+escalate None                     FRAME_SILENT/CONTEXT_SENTENCE_UNREAD | '予約データの型と貸出画面が来年終わります。次に着手できる作業はどれですか？'
+escalate None                     FRAME_SILENT/CONTEXT_SENTENCE_UNREAD | '予約データの型と貸出画面が終わりました（旧版）。次に着手できる作業はどれですか？'
+escalate None                     FRAME_SILENT/CONTEXT_SENTENCE_UNREAD | '予約データの型と貸出画面が旧版で終わりました。次に着手できる作業はどれですか？'
+answer   返却通知を実装する                None/None | 'では、予約データの型と貸出画面が終わりました。次に着手できる作業はどれですか？'

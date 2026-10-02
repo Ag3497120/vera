@@ -1,0 +1,46 @@
+# calls_before.jsonl lines: 1109 distinct (frame,q,opts): 833
+# calls_after.jsonl  lines: 1109 distinct (frame,q,opts): 833 same key set: True
+# keys with more than one distinct result inside one run: 3
+# counts: {'answer->escalate': 38, 'escalate->answer': 0, 'answer value/index changed': 0, 'escalate reason/detail changed': 0}
+== answer->escalate 38
+   [test_conduct_ask_traps4.py] clinic.md@91a6dcfddcbf | clinic/../secret/key.py を書き換えてよいですか？ | ["はい", "いいえ"] | ('answer', 0, 'はい') -> ('escalate', None, None, 'FRAME_SILENT', 'PATH_NOT_PLAIN')
+   [test_conduct_ask_traps4.py] clinic.md@91a6dcfddcbf | clinic/./form.py を書き換えてよいですか？ | ["はい", "いいえ"] | ('answer', 0, 'はい') -> ('escalate', None, None, 'FRAME_SILENT', 'PATH_NOT_PLAIN')
+   [test_conduct_ask_traps4.py] clinic.md@91a6dcfddcbf | tests/../clinic/form.py を書き換えてよいですか？ | ["はい", "いいえ"] | ('answer', 0, 'はい') -> ('escalate', None, None, 'FRAME_SILENT', 'PATH_NOT_PLAIN')
+   [test_conduct_ask_traps4.py] clinic.md@91a6dcfddcbf | オンライン診療の予約は範囲に含めますか？ 来年の版の話です。 | ["はい", "いいえ"] | ('answer', 1, 'いいえ') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] clinic.md@91a6dcfddcbf | 予約の単位は何ですか？ 前の版の話です。 | null | ('answer', None, '15分') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] clinic.md@91a6dcfddcbf | 予約の単位は何ですか？ 子ども向けの場合です。 | null | ('answer', None, '15分') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] clinic.md@91a6dcfddcbf | 古い控えを破棄してもよいですか？ | ["はい", "いいえ"] | ('answer', 0, 'はい') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps4.py] clinic.md@91a6dcfddcbf | 古い控えを破棄してよいですか？ | ["はい", "いいえ"] | ('answer', 0, 'はい') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps4.py] clinic.md@91a6dcfddcbf | 古い控えを破棄することはできますか？ | ["はい", "いいえ"] | ('answer', 0, 'はい') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps4.py] clinic.md@91a6dcfddcbf | 文字の色はどれにしますか？ 子ども向けの画面の場合です。 | ["黒", "青"] | ('answer', 0, '黒') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] clinic.md@91a6dcfddcbf | 文字の色はどれにしますか？ 来年の話です。 | ["黒", "青"] | ('answer', 0, '黒') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] clinic.md@91a6dcfddcbf | 来年の承認を得たので、古い控えを破棄してよいですか？ | ["はい", "いいえ"] | ('answer', 0, 'はい') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps4.py] clinic.md@91a6dcfddcbf | 来年の話です。 文字の色はどれにしますか？ | ["黒", "青"] | ('answer', 0, '黒') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | Am I allowed to update tests/../tracker/rules.py? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PATH_NOT_PLAIN')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | Can I edit tracker/../secrets/keys.py? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PATH_NOT_PLAIN')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | Can I edit tracker/./rules.py? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PATH_NOT_PLAIN')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | Can I edit tracker/sub/../../secrets/keys.py? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PATH_NOT_PLAIN')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | Can I purge an expired sensor token? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | For the old prototype only. What is the storage engine? | null | ('answer', None, 'PostgreSQL') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | Is humidity tracking in scope? Asking about the next release. | ["Yes", "No"] | ('answer', 1, 'No') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | Is it okay for us to purge an expired sensor token? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | May I write to tracker/../tests/test_rules.py? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PATH_NOT_PLAIN')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | May we purge an expired sensor token now? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | May we purge an expired sensor token? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | The record schema is done for the courier app only. What can we start next? | null | ('answer', None, 'Write the probe reader') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | The record schema is done in the old prototype. What can we start next? | null | ('answer', None, 'Write the probe reader') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | The record schema is done. What can we start next? This is for the old prototype. | null | ('answer', None, 'Write the probe reader') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | What is the alert channel? Only on weekends. | null | ('answer', None, 'pager') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | What is the storage engine? I mean for the old prototype. | null | ('answer', None, 'PostgreSQL') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] cold.md@e150b6e48fe7 | Which time zone do we use? This is for the courier app. | ["UTC", "local time"] | ('answer', 0, 'UTC') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] f01_loan.md@e38d4768546e | app/../config/secret.yml を書き換えてよいですか？ | ["はい", "いいえ"] | ('answer', 0, 'はい') -> ('escalate', None, None, 'FRAME_SILENT', 'PATH_NOT_PLAIN')
+   [test_conduct_ask_traps4.py] f01_loan.md@e38d4768546e | 予約データの型と貸出画面が旧版で終わりました。次に着手できる作業はどれですか？ | ["返却通知を実装する", "受入確認をする"] | ('answer', 0, '返却通知を実装する') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] f01_loan.md@e38d4768546e | 予約データの型と貸出画面が来年終わります。次に着手できる作業はどれですか？ | ["返却通知を実装する", "受入確認をする"] | ('answer', 0, '返却通知を実装する') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] f01_loan.md@e38d4768546e | 予約データの型と貸出画面が終わりました（旧版）。次に着手できる作業はどれですか？ | ["返却通知を実装する", "受入確認をする"] | ('answer', 0, '返却通知を実装する') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] f01_loan.md@e38d4768546e | 旧版では予約データの型と貸出画面が終わりました。次に着手できる作業はどれですか？ | ["返却通知を実装する", "受入確認をする"] | ('answer', 0, '返却通知を実装する') -> ('escalate', None, None, 'FRAME_SILENT', 'CONTEXT_SENTENCE_UNREAD')
+   [test_conduct_ask_traps4.py] f05_retry.md@df90fd36f656 | Can I retry a non-idempotent call? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps4.py] f05_retry.md@df90fd36f656 | May we retry a non-idempotent call? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+   [test_conduct_ask_traps4.py] f08_audioguide.md@6c2e2b8db479 | Can I edit player/../store/prices.py? | ["Yes", "No"] | ('answer', 0, 'Yes') -> ('escalate', None, None, 'FRAME_SILENT', 'PATH_NOT_PLAIN')
+== escalate->answer 0
+== answer value/index changed 0
+== escalate reason/detail changed 0

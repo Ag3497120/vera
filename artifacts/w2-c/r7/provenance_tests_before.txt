@@ -1,0 +1,233 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: /Users/motonisihikoudai/Projects/vera-impl/wt/W2-c-S
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 12 items
+
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[order] FAILED [  8%]
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[order_combined] FAILED [ 16%]
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[scope] FAILED [ 25%]
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[choice_options] FAILED [ 33%]
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[choice_text] FAILED [ 41%]
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[permission] FAILED [ 50%]
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[acceptance_text] FAILED [ 58%]
+tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[acceptance_yn] FAILED [ 66%]
+tests/test_conduct_ask_provenance.py::test_a_combined_answer_keeps_its_derivation_and_names_the_step FAILED [ 75%]
+tests/test_conduct_ask_provenance.py::test_a_question_handed_up_has_no_resolver FAILED [ 83%]
+tests/test_conduct_ask_provenance.py::test_a_refused_input_has_no_resolver FAILED [ 91%]
+tests/test_conduct_ask_provenance.py::test_the_key_comes_right_after_derivation_in_the_cli_output FAILED [100%]
+
+=================================== FAILURES ===================================
+_____________ test_an_answer_names_its_step_and_its_records[order] _____________
+
+frame = 'f01_loan', question = '予約データの型を決める前に貸出画面を作ってよいですか？'
+opts = ['はい', 'いいえ'], expected = 1, resolver = ['order']
+basis_ids = ['phase_order:P1->P2']
+
+    @pytest.mark.parametrize("frame,question,opts,expected,resolver,basis_ids",
+                             [pytest.param(*r[1:], id=r[0]) for r in ANSWERED])
+    def test_an_answer_names_its_step_and_its_records(frame, question, opts, expected, resolver, basis_ids):
+        res = ask(frame, question, opts)
+        assert res["decision"] == "answer"
+        if isinstance(expected, int) and opts:
+            assert res["answer_option_index"] == expected
+        else:
+            assert res["answer"] == expected
+>       assert res["resolver"] == resolver
+               ^^^^^^^^^^^^^^^
+E       KeyError: 'resolver'
+
+tests/test_conduct_ask_provenance.py:47: KeyError
+________ test_an_answer_names_its_step_and_its_records[order_combined] _________
+
+frame = 'f01_loan', question = '貸出画面を作る前に、受入確認を始めてよいですか？', opts = ['はい', 'いいえ']
+expected = 1, resolver = ['order']
+basis_ids = ['phase_order:P2->P3', 'phase_order:P3->P4']
+
+    @pytest.mark.parametrize("frame,question,opts,expected,resolver,basis_ids",
+                             [pytest.param(*r[1:], id=r[0]) for r in ANSWERED])
+    def test_an_answer_names_its_step_and_its_records(frame, question, opts, expected, resolver, basis_ids):
+        res = ask(frame, question, opts)
+        assert res["decision"] == "answer"
+        if isinstance(expected, int) and opts:
+            assert res["answer_option_index"] == expected
+        else:
+            assert res["answer"] == expected
+>       assert res["resolver"] == resolver
+               ^^^^^^^^^^^^^^^
+E       KeyError: 'resolver'
+
+tests/test_conduct_ask_provenance.py:47: KeyError
+_____________ test_an_answer_names_its_step_and_its_records[scope] _____________
+
+frame = 'f08_audioguide', question = 'Is volume memory in scope?', opts = None
+expected = 'in scope', resolver = ['scope'], basis_ids = ['D3']
+
+    @pytest.mark.parametrize("frame,question,opts,expected,resolver,basis_ids",
+                             [pytest.param(*r[1:], id=r[0]) for r in ANSWERED])
+    def test_an_answer_names_its_step_and_its_records(frame, question, opts, expected, resolver, basis_ids):
+        res = ask(frame, question, opts)
+        assert res["decision"] == "answer"
+        if isinstance(expected, int) and opts:
+            assert res["answer_option_index"] == expected
+        else:
+            assert res["answer"] == expected
+>       assert res["resolver"] == resolver
+               ^^^^^^^^^^^^^^^
+E       KeyError: 'resolver'
+
+tests/test_conduct_ask_provenance.py:47: KeyError
+________ test_an_answer_names_its_step_and_its_records[choice_options] _________
+
+frame = 'f07_expense', question = '承認の段数はどれにしますか？', opts = ['1段', '2段', '3段']
+expected = 1, resolver = ['choice'], basis_ids = ['D6']
+
+    @pytest.mark.parametrize("frame,question,opts,expected,resolver,basis_ids",
+                             [pytest.param(*r[1:], id=r[0]) for r in ANSWERED])
+    def test_an_answer_names_its_step_and_its_records(frame, question, opts, expected, resolver, basis_ids):
+        res = ask(frame, question, opts)
+        assert res["decision"] == "answer"
+        if isinstance(expected, int) and opts:
+            assert res["answer_option_index"] == expected
+        else:
+            assert res["answer"] == expected
+>       assert res["resolver"] == resolver
+               ^^^^^^^^^^^^^^^
+E       KeyError: 'resolver'
+
+tests/test_conduct_ask_provenance.py:47: KeyError
+__________ test_an_answer_names_its_step_and_its_records[choice_text] __________
+
+frame = 'f06_sportsday', question = '雨天順延の場合はどうしますか？', opts = None
+expected = '翌日に延期', resolver = ['choice'], basis_ids = ['D1']
+
+    @pytest.mark.parametrize("frame,question,opts,expected,resolver,basis_ids",
+                             [pytest.param(*r[1:], id=r[0]) for r in ANSWERED])
+    def test_an_answer_names_its_step_and_its_records(frame, question, opts, expected, resolver, basis_ids):
+        res = ask(frame, question, opts)
+        assert res["decision"] == "answer"
+        if isinstance(expected, int) and opts:
+            assert res["answer_option_index"] == expected
+        else:
+            assert res["answer"] == expected
+>       assert res["resolver"] == resolver
+               ^^^^^^^^^^^^^^^
+E       KeyError: 'resolver'
+
+tests/test_conduct_ask_provenance.py:47: KeyError
+__________ test_an_answer_names_its_step_and_its_records[permission] ___________
+
+frame = 'f01_loan', question = 'app/booking.py を書き換えてよいですか？'
+opts = ['はい', 'いいえ'], expected = 0, resolver = ['permission']
+basis_ids = ['W1']
+
+    @pytest.mark.parametrize("frame,question,opts,expected,resolver,basis_ids",
+                             [pytest.param(*r[1:], id=r[0]) for r in ANSWERED])
+    def test_an_answer_names_its_step_and_its_records(frame, question, opts, expected, resolver, basis_ids):
+        res = ask(frame, question, opts)
+        assert res["decision"] == "answer"
+        if isinstance(expected, int) and opts:
+            assert res["answer_option_index"] == expected
+        else:
+            assert res["answer"] == expected
+>       assert res["resolver"] == resolver
+               ^^^^^^^^^^^^^^^
+E       KeyError: 'resolver'
+
+tests/test_conduct_ask_provenance.py:47: KeyError
+________ test_an_answer_names_its_step_and_its_records[acceptance_text] ________
+
+frame = '/Users/motonisihikoudai/Projects/vera-impl/wt/W2-c-S/docs/frames/examples/firmware_update_tool.md'
+question = 'Which command decides C1?', opts = None
+expected = 'make sim-rollback', resolver = ['acceptance'], basis_ids = ['C1']
+
+    @pytest.mark.parametrize("frame,question,opts,expected,resolver,basis_ids",
+                             [pytest.param(*r[1:], id=r[0]) for r in ANSWERED])
+    def test_an_answer_names_its_step_and_its_records(frame, question, opts, expected, resolver, basis_ids):
+        res = ask(frame, question, opts)
+        assert res["decision"] == "answer"
+        if isinstance(expected, int) and opts:
+            assert res["answer_option_index"] == expected
+        else:
+            assert res["answer"] == expected
+>       assert res["resolver"] == resolver
+               ^^^^^^^^^^^^^^^
+E       KeyError: 'resolver'
+
+tests/test_conduct_ask_provenance.py:47: KeyError
+_________ test_an_answer_names_its_step_and_its_records[acceptance_yn] _________
+
+frame = '/Users/motonisihikoudai/Projects/vera-impl/wt/W2-c-S/docs/frames/examples/firmware_update_tool.md'
+question = 'Is C1 judged by a human?', opts = ['Yes', 'No'], expected = 1
+resolver = ['acceptance'], basis_ids = ['C1']
+
+    @pytest.mark.parametrize("frame,question,opts,expected,resolver,basis_ids",
+                             [pytest.param(*r[1:], id=r[0]) for r in ANSWERED])
+    def test_an_answer_names_its_step_and_its_records(frame, question, opts, expected, resolver, basis_ids):
+        res = ask(frame, question, opts)
+        assert res["decision"] == "answer"
+        if isinstance(expected, int) and opts:
+            assert res["answer_option_index"] == expected
+        else:
+            assert res["answer"] == expected
+>       assert res["resolver"] == resolver
+               ^^^^^^^^^^^^^^^
+E       KeyError: 'resolver'
+
+tests/test_conduct_ask_provenance.py:47: KeyError
+________ test_a_combined_answer_keeps_its_derivation_and_names_the_step ________
+
+    def test_a_combined_answer_keeps_its_derivation_and_names_the_step():
+        res = ask("f01_loan", "貸出画面を作る前に、受入確認を始めてよいですか？", HI)
+>       assert res["derivation"] == "COMBINED" and res["resolver"] == ["order"]
+                                                   ^^^^^^^^^^^^^^^
+E       KeyError: 'resolver'
+
+tests/test_conduct_ask_provenance.py:53: KeyError
+__________________ test_a_question_handed_up_has_no_resolver ___________________
+
+    def test_a_question_handed_up_has_no_resolver():
+        res = ask("f01_loan", "app/booking.pyを消してよいですか？", HI)
+>       assert res["decision"] == "escalate" and res["resolver"] is None
+                                                 ^^^^^^^^^^^^^^^
+E       KeyError: 'resolver'
+
+tests/test_conduct_ask_provenance.py:60: KeyError
+_____________________ test_a_refused_input_has_no_resolver _____________________
+
+    def test_a_refused_input_has_no_resolver():
+        res = ask("f01_loan", "", HI)
+>       assert res["decision"] == "escalate" and res["resolver"] is None
+                                                 ^^^^^^^^^^^^^^^
+E       KeyError: 'resolver'
+
+tests/test_conduct_ask_provenance.py:65: KeyError
+_________ test_the_key_comes_right_after_derivation_in_the_cli_output __________
+
+    def test_the_key_comes_right_after_derivation_in_the_cli_output():
+        out, err = io.StringIO(), io.StringIO()
+        with redirect_stdout(out), redirect_stderr(err):
+            code = conduct_ask.main(["--frame", H.frame("f01_loan"), "--question", "app/booking.py を書き換えてよいですか？",
+                                     "--option", "はい", "--option", "いいえ"])
+        assert code == 0
+        res = json.loads(out.getvalue())
+        keys = list(res)
+>       assert "resolver" in keys and keys.index("resolver") == keys.index("derivation") + 1
+E       AssertionError: assert ('resolver' in ['schema', 'decision', 'kind', 'answer', 'answer_option_index', 'derivation', ...])
+
+tests/test_conduct_ask_provenance.py:80: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[order]
+FAILED tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[order_combined]
+FAILED tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[scope]
+FAILED tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[choice_options]
+FAILED tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[choice_text]
+FAILED tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[permission]
+FAILED tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[acceptance_text]
+FAILED tests/test_conduct_ask_provenance.py::test_an_answer_names_its_step_and_its_records[acceptance_yn]
+FAILED tests/test_conduct_ask_provenance.py::test_a_combined_answer_keeps_its_derivation_and_names_the_step
+FAILED tests/test_conduct_ask_provenance.py::test_a_question_handed_up_has_no_resolver
+FAILED tests/test_conduct_ask_provenance.py::test_a_refused_input_has_no_resolver
+FAILED tests/test_conduct_ask_provenance.py::test_the_key_comes_right_after_derivation_in_the_cli_output
+============================== 12 failed in 0.26s ==============================

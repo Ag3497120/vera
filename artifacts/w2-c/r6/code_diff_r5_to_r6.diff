@@ -1,0 +1,56 @@
+--- artifacts/w2-c/r6/conduct_ask_r5.py.txt	2026-10-03 04:09:20
++++ verantyx/conduct_ask.py	2026-10-03 04:10:31
+@@ -1607,10 +1607,22 @@
+     r"(?:済み|(?:を|は|も)?(?:もらい|もらっ|得|取り|取っ|いただい|頂い|受け|し)(?:ました|て(?:い)?ます|てある))(?:です|でした)?$")
+ 
+ 
+-def _sentences_unread(ctx: "Ctx", read: Sequence[tuple[int, int]]) -> list[tuple[int, int]]:
++# Outside the permission layer an approval changes no answer (a choice, a value, a scope or an order is read from the
++# record), so there is nothing to gain from reading an approval sentence that carries a qualifier ("来年度の承認済みです",
++# "Next year approved.", "The old greenhouse team approved."): only the bare sentence is let through there.
++_PEN_APPROVED_BARE = re.compile(r"^approved$|^approval\s+(?:is\s+|was\s+)?(?:given|granted|obtained)$")
++_PJA_APPROVED_BARE = re.compile(
++    r"^(?:承認|許可|了承|同意|許諾)(?:済み|(?:を|は|も)?(?:もらい|もらっ|得|取り|取っ|いただい|頂い|受け|し)"
++    r"(?:ました|て(?:い)?ます|てある))(?:です|でした)?$")
++
++
++def _sentences_unread(ctx: "Ctx", read: Sequence[tuple[int, int]], bare: bool = False) -> list[tuple[int, int]]:
+     """The sentences of the question that are neither one that was read (``read``) nor a sentence that only says that
+     somebody approved.  Such a sentence may carry a subject, a time or a condition ("来年の話です", "for another
+-    version") that no layer looked at, so an answer is not given while one exists."""
++    version") that no layer looked at, so an answer is not given while one exists.
++    ``bare``: the answer is not a permission (an approval changes nothing there), so only a sentence that says nothing
++    but "approved" is let through, not one with a who / when / for-what in front of it."""
++    ja_rx, en_rx = (_PJA_APPROVED_BARE, _PEN_APPROVED_BARE) if bare else (_PJA_APPROVED, _PEN_APPROVED)
+     out: list[tuple[int, int]] = []
+     for a, b in ctx.sentences:
+         if (a, b) in read:
+@@ -1618,7 +1630,7 @@
+         sent = ctx.q[a:b].strip(" \t?？!！.。")
+         if not sent:
+             continue
+-        if not (_PJA_APPROVED.match(sent) if has_cjk(sent) else _PEN_APPROVED.match(sent)):
++        if not (ja_rx.match(sent) if has_cjk(sent) else en_rx.match(sent)):
+             out.append((a, b))
+     return out
+ 
+@@ -1691,7 +1703,9 @@
+             if not lead.match(L):
+                 continue
+             r2 = bool(cont) and bool(re.fullmatch(r"\s*" + r"\s+".join(re.escape(t) for t in cont) + r"\s*", tail))
+-            if r1 or r2:
++            # a criterion that names a continuation (a condition, a time, a purpose) allows the operation only for that
++            # continuation: the question must say it (r2); a criterion with no continuation allows the plain question (r1)
++            if r2 or (r1 and not (only_restated and cont)):
+                 return None
+             return _PERM_SUBJ
+     if only_restated:
+@@ -2623,7 +2637,7 @@
+                 # what was read: the asked sentence (without one: the sentences that name a frame term) and the premises
+                 # of "what can we start next"; every other sentence must only state an approval
+                 read = list(asked) or [(a, b) for a, b in ctx.sentences if any(a <= m.start < b for m in ctx.mentions)]
+-                if _sentences_unread(ctx, read + ctx.premise_sents):
++                if _sentences_unread(ctx, read + ctx.premise_sents, bare=out.layer != "permission"):
+                     ctx.trace_out["context_sentence"] = "ESCALATE"
+                     out = _esc("FRAME_SILENT", "CONTEXT_SENTENCE_UNREAD", out.basis, out.kind, "context_sentence")
+         r = _finish(res, out, ctx, voc if voc is not None else vocab, classifier_kind, opt_info)

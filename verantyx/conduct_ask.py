@@ -1,0 +1,2896 @@
+"""Answer an agent's question from a human-written project frame, or hand it up to a human.
+
+Entry: ``python -m verantyx.conduct_ask --frame FRAME --question TEXT [--option OPT ...]``.
+The output is exactly one JSON object (schema ``conduct_ask/v1``): either an ``answer`` that cites the
+frame records it was decided from (``basis``), or an ``escalate`` with a typed ``escalate_reason``.
+Nothing is guessed: a question is answered only when the frame decides it by exact term matching; a tie,
+a missing record and a contradiction all go to a human, each with its own type.
+
+Layers, in order; the first layer that decides wins and results of different layers are never added up:
+  1 input check  2 negated question  3 escalation conditions  4 permission (forbidden / protected /
+  confirm / write allowlist, with the precedence of conflicting families)  5 resolvers (order, scope,
+  choice, acceptance)  6 state / work-request questions (out of range)  7 out-of-vocabulary term
+  (closed LLM choice, off by default)  8 the frame is silent.
+
+The frame is only read.  No file is written next to the frame or in the working directory (a ledger is
+written only when ``--vocab-ledger`` names one).  See ``docs/CONDUCT_ASK.md``.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import re
+import sys
+import unicodedata
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Callable, Iterable, Optional, Sequence
+
+from . import conductor
+from .llm_choice import (ChoiceCandidate, ChoiceLedger, ClaudeProvider, CodexProvider, LLMChooser,
+                         ProviderReply)
+from .project_frame import ConductFrame, FrameRefusal, load_conduct_frame
+
+SCHEMA = "conduct_ask/v1"
+ESCALATE_REASONS = (
+    "FRAME_SILENT", "FRAME_CONFLICT", "HUMAN_APPROVAL_REQUIRED", "OUT_OF_RANGE", "VOCAB_UNMAPPED",
+    "QUESTION_UNREADABLE", "NO_OPTION_ALLOWED", "ANSWER_FORM_UNSUPPORTED", "FRAME_UNUSABLE", "INTERNAL_ERROR",
+)
+MAX_QUESTION_CHARS = 4000
+VOCAB_MODES = ("off", "fake", "codex", "claude")
+# details of a typed refusal of the request itself (exit code 2); everything else is a decision (exit code 0)
+INPUT_REFUSALS = frozenset((
+    "EMPTY_QUESTION", "QUESTION_TOO_LONG", "OPTIONS_NOT_TEXT", "SINGLE_OPTION", "EMPTY_OPTION", "DUPLICATE_OPTIONS",
+    "BAD_VOCAB_MODE", "VOCAB_FAKE_WITHOUT_FAKE_MODE", "BAD_ARGUMENTS", "VOCAB_SCRIPT_UNUSABLE"))
+
+
+# ---------------------------------------------------------------------------------------------
+# Text utilities
+# ---------------------------------------------------------------------------------------------
+
+def nz(text: str, fold: bool = True) -> str:
+    """NFKC, case folding, quotes removed, whitespace collapsed (the one normal form used for matching).
+    ``fold=False`` keeps the case (only for comparing a path with the write allowlist)."""
+    s = unicodedata.normalize("NFKC", text)
+    if fold:
+        s = s.casefold()
+    s = re.sub(r"[「」『』“”\"]", "", s)
+    s = s.replace("’", "'").replace("‘", "'")
+    return re.sub(r"\s+", " ", s).strip()
+
+
+_ARTICLES = frozenset(("the", "a", "an"))
+_TOKEN = re.compile(r"[0-9a-z]+(?:['\-][0-9a-z]+)*")
+_PUNCT_EDGE = " \t、。，．,.?？!！;；:：「」『』()（）"
+
+
+def has_cjk(s: str) -> bool:
+    return any(ord(c) >= 0x3000 for c in s)
+
+
+def latin_tokens(s: str) -> list[tuple[str, int, int]]:
+    return [(m.group(0), m.start(), m.end()) for m in _TOKEN.finditer(s)]
+
+
+def _stems(tok: str) -> frozenset[str]:
+    """Candidate bases of a regular verb form (-s/-es/-ed/-d/-ing); the token itself is always one."""
+    out = {tok}
+    for suf in ("ing", "ed", "es", "s", "d"):
+        if tok.endswith(suf) and len(tok) - len(suf) >= 2:
+            base = tok[: -len(suf)]
+            out.add(base)
+            out.add(base + "e")
+            if len(base) >= 3 and base[-1] == base[-2]:
+                out.add(base[:-1])
+    if tok.endswith("ies") and len(tok) > 4:
+        out.add(tok[:-3] + "y")
+    if tok.endswith("ied") and len(tok) > 4:
+        out.add(tok[:-3] + "y")
+    return frozenset(out)
+
+
+def _tok_compat(a: str, b: str) -> bool:
+    return a == b or bool(_stems(a) & _stems(b))
+
+
+_U_ROW = frozenset("うくぐすずつづぬふぶぷむゆる")
+
+
+def _sentences(q: str) -> list[tuple[int, int]]:
+    """Sentence spans (start, end) in the normalised text."""
+    cuts: list[int] = []
+    for i, ch in enumerate(q):
+        if ch in "。！？!?\n":
+            cuts.append(i + 1)
+        elif ch == "." and (i + 1 == len(q) or q[i + 1] == " ") and i > 0 and q[i - 1].isalnum():
+            cuts.append(i + 1)
+    spans, start = [], 0
+    for c in cuts:
+        if q[start:c].strip(" "):
+            spans.append((start, c))
+        start = c
+    if q[start:].strip(" "):
+        spans.append((start, len(q)))
+    return spans or [(0, len(q))]
+
+
+# ---------------------------------------------------------------------------------------------
+# Closed tables (general words only; nothing here comes from a frame)
+# ---------------------------------------------------------------------------------------------
+
+_YES = frozenset(nz(x) for x in (
+    "はい", "yes", "y", "可", "許可", "許可する", "許可します", "ok", "okay", "含める", "含めます", "含む",
+    "in scope", "included", "include", "allowed", "permitted", "範囲内", "対象内", "対象に含める"))
+_NO = frozenset(nz(x) for x in (
+    "いいえ", "no", "n", "不可", "不許可", "許可しない", "許可しません", "禁止", "含めない", "含めません", "含まない",
+    "out of scope", "excluded", "exclude", "not allowed", "not permitted", "forbidden", "範囲外", "対象外",
+    "対象に含めない", "だめ"))
+_IN_VALUES = frozenset(nz(x) for x in ("in scope", "対象内", "範囲内", "含める", "included", "include", "in"))
+_OUT_VALUES = frozenset(nz(x) for x in ("out of scope", "対象外", "範囲外", "含めない", "excluded", "exclude", "out"))
+_PERMIT_VALUES = frozenset(nz(x) for x in ("permitted", "allowed", "yes", "許可", "可", "ok", "okay", "許可する"))
+_DENY_VALUES = frozenset(nz(x) for x in ("not permitted", "forbidden", "no", "不許可", "不可", "not allowed", "許可しない"))
+
+_MARKS = ("推奨", "おすすめ", "お勧め", "オススメ", "recommended", "suggested", "preferred", "default", "既定")
+_MARK_RX = re.compile(r"[（(]\s*(" + "|".join(re.escape(m) for m in _MARKS) + r")\s*[)）]", re.I)
+
+_CONNECT_JA = ("・", "、", "および", "と")
+_NEG_JA = re.compile(r"ない|ません|なかった|なく(?!とも)|ず(?![っ])")
+# words that turn "which ... ?" or "may I ...?" around without a negation word in it
+_INVERT_CUE = re.compile(
+    r"\b(?:avoid|avoiding|exclude|excluding|except|drop|dropping|reject|skip|without|unlike|instead\s+of|rather\s+than|worst|least)\b|"
+    r"避け|除外|除く|やめ|外す|外して|以外|最悪|最も不要")
+_NEG_JA_SAFE = re.compile(r"必ず|まず|ずっと|問題ない|問題ありません|構わない|かまわない|差し支えない|差し支えありません")
+_NEG_EN = re.compile(r"\b(?:not|never|no|cannot|can't|don't|doesn't|isn't|aren't|won't|shouldn't|wasn't|haven't|hasn't)\b|n't\b")
+
+_PERM_CUE = re.compile(
+    r"て(?:も)?(?:よい|いい|良い|構わない|かまわない)|よいですか|いいですか|許可(?:され|でき)|可能ですか|できますか|問題(?:ない|ありません)|"
+    r"\b(?:can|could|may|might)\s+(?:i|we|the|a|an|this|that|it|you|they)\b|\b(?:should|shall)\s+(?:i|we)\b|"
+    r"\bis\s+it\s+(?:ok|okay|fine|alright|allowed|permitted|acceptable)\b|\bam\s+i\s+allowed\b|\bare\s+we\s+allowed\b|"
+    r"\ballowed\s+to\b|\bpermitted\s+to\b|\b(?:ok|okay|fine)\s+to\b|\bpermission\s+to\b|\bgo\s+ahead\b|"
+    r"\b(?:allowed|permitted|permissible|acceptable)\b")
+# "is permission needed for X?" asks whether an approval is REQUIRED, which is the reverse of "may we X?";
+# it is handed up whatever the frame says about X (a yes/no for it would carry the opposite polarity)
+_PERM_NOUN_JA = r"(?:許可|承認|認可|許諾|承諾|了承|決裁|同意)"
+_PERM_REQ = re.compile(
+    _PERM_NOUN_JA + r"(?:を(?:取る|とる|得る|もらう|受ける|求める|取っておく))?(?:の取得)?(?:が|は|を|も)?(?:必要|要(?:り|る|ら)|いり|いる|不要|要す)|"
+    + _PERM_NOUN_JA + r"を(?:取ら|得ら|もらわ|受け)なければ|"
+    r"\b(?:permission|approval|authori[sz]ation|consent|sign-?off|clearance|go-?ahead)\b[^.?!]*\b(?:need|needs|needed|require|requires|required|"
+    r"requiring|necessary|mandatory|must|have\s+to|has\s+to)\b|"
+    r"\b(?:need|needs|needed|require|requires|required|requiring|necessary|mandatory)\b[^.?!]*\b(?:permission|approval|"
+    r"authori[sz]ation|consent|sign-?off|clearance|go-?ahead)\b")
+_SCOPE_CUE = re.compile(
+    r"範囲|スコープ|対象|含め|含ま|\bin\s+scope\b|\bout\s+of\s+scope\b|\bscope\b|\binclude\b|\bincluded\b|\bincluding\b|"
+    r"\bpart\s+of\s+(?:the|this)\b")
+_SCOPE_OUT_ASK = re.compile(r"\bout\s+of\s+scope\b|\bexclude\b|\bexcluded\b|\bleft\s+out\b|\bleave\s+out\b|範囲外|対象外|外す|除外")
+_CHOICE_ASK = re.compile(r"どれ|どちら|どの|どう|何|どこ|いつ|いくつ|いくら|どんな|\b(?:what|which|how|where|when)\b")
+_CHOICE_CUE = re.compile(
+    r"どれ|どちら|どの|にしますか|\bwhich\b|\bshould\s+(?:we|i)\s+(?:pick|use|choose|go\s+with|adopt|apply|select)\b|\bchoose\b|\bpick\b")
+_ORDER_CUE = re.compile(r"前に|先に|後に|より先|のあと|次に|次は|着手でき|\bbefore\b|\bafter\b|\bfirst\b|\bnext\b|\bmust\s+be\b|\bmust\s+finish\b")
+_PREREQ_CUE = re.compile(
+    r"終わっている(?:べき|必要)|終わってから|終わっていること|完了している(?:べき|必要)|完了してから|先に終わって|"
+    r"\bmust\s+(?:be\s+)?(?:finished|done|completed|complete)\b|\bmust\s+finish\b|\bneed(?:s)?\s+to\s+be\s+(?:finished|done|completed)\b|"
+    r"\bhave\s+to\s+be\s+(?:finished|done|completed)\b|\bneed(?:s)?\s+to\s+finish\b")
+_NEXT_CUE = re.compile(r"次に着手|次にやる|次は何|次に何|次にできる|着手できる作業|\bwhat\s+(?:can|could|should)\s+we\s+(?:start|do|work\s+on|begin)\s+next\b|\bnext\b")
+_DONE_CUE = re.compile(r"終わ|完了|済|\bdone\b|\bfinished\b|\bcompleted\b|\bcomplete\b")
+_FIRST_CUE = re.compile(r"どちらを先|どちらが先|どれを先|先に(?:する|し|作|着手|やる|始め)|最初に|\bfirst\b")
+_BEFORE_JA = re.compile(r"前に")
+_BEFORE_EN = re.compile(r"\bbefore\b")
+_STATUS_CUE = re.compile(
+    r"(?:通り|通過し|合格し|終わり|完了し|完成し)(?:ました|ます)か|(?:通っ|終わっ|完了し|一致し|進ん|完成し)(?:て(?:い)?(?:ます|る)|た)か|"
+    r"進捗(?:は|を|状況)|"
+    r"(?:^|[.?!]\s+)(?:did|does|do|is|are|has|have|was|were)\b[^?]*\b(?:pass|passed|passing|fail|failed|finished|done|complete|completed|ready|green)\b|"
+    r"\bpass\s+right\s+now\b")
+_REQUEST_CUE = re.compile(
+    r"(?:書い|作っ|実装し|直し|生成し|修正し|翻訳し|要約し|用意し|まとめ|説明し)て(?:もらえ|くれ|ください|いただ|頂|ほし|欲し)|"
+    r"\b(?:can|could|would|will)\s+you\s+(?:please\s+)?(?:write|draft|generate|compose|create|summari[sz]e|translate|implement|fix)\b|"
+    r"\bplease\s+(?:write|draft|generate|compose|create|summari[sz]e|translate)\b")
+_ACCEPT_HUMAN = re.compile(r"人が判定|人間が判定|人の判断|human[- ]judged|judged\s+by\s+a\s+human|human\s+judg")
+_ACCEPT_CMD = re.compile(r"コマンド|\bcommand\b")
+
+_BUILTIN_PROTECTED = re.compile(
+    r"\b(?:delete|deleting|erase|remove|destroy)\b|削除|消去|抹消|\b(?:publish|deploy|release|upload)\b|公開|公表|"
+    r"\b(?:spend|purchase|buy|pay|charge)\b|支出|支払|購入|課金|"
+    r"\b(?:credentials?|passwords?|tokens?|api\s+keys?)\b|パスワード|認証情報|"
+    r"\b(?:send|share)\s+externally\b|外部送信")
+
+_PATH_RX = re.compile(r"[A-Za-z0-9_\-.]+(?:/[A-Za-z0-9_\-.]+)+/?|[A-Za-z0-9_\-]*[A-Za-z][A-Za-z0-9_\-]*\.[A-Za-z][A-Za-z0-9]{0,4}\b")
+
+
+# ---------------------------------------------------------------------------------------------
+# Frame view (md and jsonl are read into the same shape; only reading, never writing)
+# ---------------------------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class Ref:
+    id: str
+    section: str
+    line: int
+    text: str
+
+    def as_dict(self) -> dict[str, Any]:
+        return {"id": self.id, "section": self.section, "line": self.line, "text": self.text}
+
+
+@dataclass(frozen=True)
+class PhaseV:
+    id: str
+    name: str
+    heads: tuple[str, ...]
+    ref: Ref
+
+
+@dataclass(frozen=True)
+class EdgeV:
+    before: str
+    after: str
+    ref: Ref
+
+
+@dataclass(frozen=True)
+class PolicyV:
+    kind: str       # CHOICE / CONFIRM / SCOPE
+    cond: str
+    value: str
+    ref: Ref
+
+
+@dataclass(frozen=True)
+class DecV:
+    subject: str
+    value: str
+    ref: Ref
+
+
+@dataclass(frozen=True)
+class AliasV:
+    alias: str
+    canonical: str
+    ref: Ref
+
+
+@dataclass(frozen=True)
+class ActionV:
+    action: str
+    ref: Ref
+
+
+@dataclass(frozen=True)
+class PrecV:
+    id: str
+    higher: str
+    lower: str
+    ref: Ref
+
+
+@dataclass(frozen=True)
+class TextV:
+    id: str
+    text: str
+    ref: Ref
+    human: Optional[bool] = None
+    command: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class EscV:
+    id: str
+    cond: str
+    scope: Optional[str]
+    ref: Ref
+
+
+@dataclass
+class FrameView:
+    phases: list[PhaseV] = field(default_factory=list)
+    edges: list[EdgeV] = field(default_factory=list)
+    policies: list[PolicyV] = field(default_factory=list)
+    decisions: list[DecV] = field(default_factory=list)
+    aliases: list[AliasV] = field(default_factory=list)
+    forbidden: list[ActionV] = field(default_factory=list)
+    protected: list[ActionV] = field(default_factory=list)
+    precedence: list[PrecV] = field(default_factory=list)
+    invariants: list[TextV] = field(default_factory=list)
+    criteria: list[TextV] = field(default_factory=list)
+    allow: list[tuple[str, Ref]] = field(default_factory=list)
+    allow_declared: bool = False
+    escalations: list[EscV] = field(default_factory=list)
+    done: set[str] = field(default_factory=set)
+    skipped_records: int = 0
+
+
+def headwords(name: str) -> tuple[str, ...]:
+    """The noun part of a phase name, used because a question names the thing, not the whole task."""
+    n = nz(name)
+    if has_cjk(n):
+        if "を" in n:
+            head, rest = n.rsplit("を", 1)
+            if head and rest and (rest.endswith("する") or rest[-1] in _U_ROW):
+                return (head,)
+        return ()
+    toks = n.split(" ")
+    if len(toks) >= 2:
+        rest = toks[1:]
+        if rest and rest[0] in _ARTICLES:
+            rest = rest[1:]
+        if rest:
+            return (" ".join(rest),)
+    return ()
+
+
+def _line_text(lines: list[str], n: int) -> str:
+    return lines[n - 1].strip() if 1 <= n <= len(lines) else ""
+
+
+def _view_from_markdown(cf: ConductFrame) -> FrameView:
+    spec = cf.spec
+    assert spec is not None
+    lines = cf.text.splitlines()
+    v = FrameView()
+
+    def ref(i: str, sec: str, line: int) -> Ref:
+        return Ref(i, sec, line, _line_text(lines, line))
+
+    for p in spec.phases:
+        v.phases.append(PhaseV(p.id, p.name, headwords(p.name), ref(p.id, "phases", p.line)))
+    for o in spec.phase_order:
+        v.edges.append(EdgeV(o.before, o.after, ref(f"phase_order:{o.before}->{o.after}", "phase_order", o.line)))
+    for d in spec.decisions:
+        r = ref(d.id, "decisions", d.line)
+        if d.question_kind:
+            v.policies.append(PolicyV(d.question_kind, d.condition or d.subject, d.choice, r))
+        else:
+            v.decisions.append(DecV(d.subject, d.choice, r))
+    for a in spec.aliases:
+        v.aliases.append(AliasV(a.alias, a.canonical, ref(f"vocabulary_aliases:L{a.line}", "vocabulary_aliases", a.line)))
+    for a in spec.forbidden_actions:
+        v.forbidden.append(ActionV(a.action, ref(f"forbidden_actions:L{a.line}", "forbidden_actions", a.line)))
+    for a in spec.protected_actions:
+        v.protected.append(ActionV(a.action, ref(f"protected_actions:L{a.line}", "protected_actions", a.line)))
+    for r_ in spec.precedence:
+        v.precedence.append(PrecV(r_.id, r_.higher, r_.lower, ref(r_.id, "conflict_precedence", r_.line)))
+    for i in spec.invariants:
+        v.invariants.append(TextV(i.id, i.text, ref(i.id, "philosophy_invariants", i.line)))
+    for c in spec.criteria:
+        cmd = None
+        if c.witness and c.witness.get("kind") == "command_exit":
+            raw = c.witness.get("command")
+            cmd = raw if isinstance(raw, str) else " ".join(str(x) for x in raw)
+        v.criteria.append(TextV(c.id, c.text, ref(c.id, "completion_criteria", c.line), c.human_judged, cmd))
+    v.allow_declared = "write_allowlist" in spec.declared_sections
+    for w in spec.write_allowlist:
+        v.allow.append((w.path, ref(w.id, "write_allowlist", w.line)))
+    for e in spec.escalations:
+        v.escalations.append(EscV(e.id, e.condition, e.question_kind, ref(e.id, "escalation_conditions", e.line)))
+    return v
+
+
+def _view_from_jsonl(cf: ConductFrame) -> FrameView:
+    v = FrameView()
+    superseded = {e["id"] for e in cf.events if e.get("op") == "supersede"}
+    recs = [e["record"] for e in cf.events if e.get("op") == "write" and e["record"]["id"] not in superseded]
+    phase_by_ref: dict[str, str] = {}
+    pending_tasks: list[tuple[str, str]] = []
+    for idx, r in enumerate(recs, 1):
+        try:
+            kind, s = r["kind"], r["slots"]
+            w = r.get("witness") if isinstance(r.get("witness"), dict) else {}
+            sec = w.get("section")
+            text = str(w.get("entry") or w.get("sentence") or " / ".join(str(x) for x in s.values()))
+            rf = Ref(r["id"], str(sec or kind.lower()), idx, text)
+            if kind == "POLICY" and w.get("question_kind") in ("CHOICE", "CONFIRM", "SCOPE"):
+                v.policies.append(PolicyV(w["question_kind"], s["subject"], s["answer"], rf))
+            elif kind == "DECISION" and sec == "decisions":
+                if not w.get("question_kind"):
+                    v.decisions.append(DecV(s["subject"], s["choice"], rf))
+            elif kind == "DECISION" and sec == "phases":
+                pid = str(w.get("phase_id") or r["id"])
+                v.phases.append(PhaseV(pid, s["choice"], headwords(s["choice"]), rf))
+                phase_by_ref[pid] = pid
+            elif kind == "ORDER" and sec == "phase_order":
+                v.edges.append(EdgeV(s["subject"], s["target"], rf))
+            elif kind == "ALIAS" and sec == "vocabulary_aliases":
+                v.aliases.append(AliasV(s["subject"], s["value"], rf))
+            elif kind == "ESCALATE" and w.get("protected_action"):
+                v.protected.append(ActionV(str(w.get("condition") or s["subject"]), rf))
+            elif kind == "ESCALATE" and sec == "escalation_conditions":
+                v.escalations.append(EscV(r["id"], str(w.get("condition") or s["subject"]), w.get("question_kind"), rf))
+            elif kind == "INVARIANT" and w.get("forbidden_action"):
+                v.forbidden.append(ActionV(str(w["forbidden_action"]), rf))
+            elif kind == "INVARIANT" and sec == "philosophy_invariants":
+                v.invariants.append(TextV(r["id"], s["rule"], rf))
+            elif kind == "ACCEPTANCE" and sec == "completion_criteria":
+                acc = w.get("acceptance") if isinstance(w.get("acceptance"), dict) else {}
+                wit = acc.get("witness") if isinstance(acc.get("witness"), dict) else {}
+                cmd = None
+                if wit.get("kind") == "command_exit":
+                    raw = wit.get("command")
+                    cmd = raw if isinstance(raw, str) else " ".join(str(x) for x in raw or [])
+                hj = acc.get("human_judged")
+                v.criteria.append(TextV(r["id"], str(acc.get("item") or s["subject"]), rf, hj if isinstance(hj, bool) else None, cmd))
+            elif kind == "DECISION" and sec == "conflict_precedence":
+                v.precedence.append(PrecV(str(w.get("precedence_id") or r["id"]), str(w["higher"]), str(w["lower"]), rf))
+            elif kind == "DECISION" and sec == "write_allowlist":
+                v.allow.append((str(w["write_path"]), rf))
+                v.allow_declared = True
+            elif kind == "TASK":
+                pending_tasks.append((s["subject"], s["state"]))
+            else:
+                v.skipped_records += 1
+        except (KeyError, TypeError, AttributeError):
+            v.skipped_records += 1
+    names = {}
+    for p in v.phases:
+        names[nz(p.id)] = p.id
+        names[nz(p.name)] = p.id
+        for h in p.heads:
+            names[h] = p.id
+    for subject, state in pending_tasks:
+        key = nz(subject.replace("phase ", "", 1)) if nz(subject).startswith("phase ") else nz(subject)
+        pid = names.get(key) or names.get(nz(subject))
+        if pid is not None and nz(state) in ("完了", "done", "finished", "completed"):
+            v.done.add(pid)
+    return v
+
+
+def build_view(cf: ConductFrame) -> FrameView:
+    return _view_from_markdown(cf) if cf.format == "markdown" else _view_from_jsonl(cf)
+
+
+# ---------------------------------------------------------------------------------------------
+# Phase graph
+# ---------------------------------------------------------------------------------------------
+
+class Graph:
+    def __init__(self, view: FrameView):
+        self.ids = [p.id for p in view.phases]
+        known = set(self.ids)
+        self.edges = [e for e in view.edges if e.before in known and e.after in known]
+        self.succ: dict[str, set[str]] = {i: set() for i in self.ids}
+        self.pred: dict[str, set[str]] = {i: set() for i in self.ids}
+        for e in self.edges:
+            self.succ[e.before].add(e.after)
+            self.pred[e.after].add(e.before)
+
+    def _reach(self, start: str, nxt: dict[str, set[str]]) -> set[str]:
+        seen: set[str] = set()
+        stack = [start]
+        while stack:
+            for m in nxt[stack.pop()]:
+                if m not in seen:
+                    seen.add(m)
+                    stack.append(m)
+        return seen
+
+    def ancestors(self, x: str) -> set[str]:
+        return self._reach(x, self.pred)
+
+    def descendants(self, x: str) -> set[str]:
+        return self._reach(x, self.succ)
+
+    def path_edges(self, a: str, b: str) -> list[EdgeV]:
+        """Every edge that lies on some path from a to b (a is an ancestor of b)."""
+        nodes = (self.descendants(a) | {a}) & (self.ancestors(b) | {b})
+        return [e for e in self.edges if e.before in nodes and e.after in nodes]
+
+
+# ---------------------------------------------------------------------------------------------
+# Term index and mentions
+# ---------------------------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class Entry:
+    group: str       # phase / policy / subject / forbidden / protected / escalation / criterion
+    obj: Any
+
+
+@dataclass
+class Mention:
+    start: int
+    end: int
+    term: str
+    entries: list[Entry]
+    via: str = "direct"         # direct / alias / llm
+    alias: Optional[str] = None
+    ambiguous: bool = False
+    wider: bool = False          # the term sits inside a longer noun phrase of the question (a different thing)
+
+    def groups(self) -> set[str]:
+        return {e.group for e in self.entries}
+
+    def objs(self, group: str) -> list[Any]:
+        out: list[Any] = []
+        for e in self.entries:
+            if e.group == group and not any(o is e.obj for o in out):
+                out.append(e.obj)
+        return out
+
+
+def _ja_action_stem(action: str) -> str:
+    a = nz(action)
+    if a.endswith("する") and len(a) - 2 >= 2:
+        return a[:-2]
+    if a and a[-1] in _U_ROW and len(a) - 1 >= 2:
+        return a[:-1]
+    return a
+
+
+class TermIndex:
+    """Normalised frame terms -> entries.  ``exact`` holds the full terms (for aliases and LLM mappings)."""
+
+    def __init__(self, view: FrameView):
+        self.view = view
+        self.exact: dict[str, list[Entry]] = {}
+        self.search: list[tuple[str, str, list[Entry]]] = []   # (search form, full term, entries)
+        phase_heads: dict[str, int] = {}
+        for p in view.phases:
+            for h in p.heads:
+                phase_heads[h] = phase_heads.get(h, 0) + 1
+        for p in view.phases:
+            self._add(p.name, Entry("phase", p))
+            for h in p.heads:
+                if phase_heads[h] == 1:
+                    self._add(h, Entry("phase", p))
+        for pol in view.policies:
+            self._add(pol.cond, Entry("policy", pol))
+        for d in view.decisions:
+            self._add(d.subject, Entry("subject", d))
+        for a in view.forbidden:
+            self._add(a.action, Entry("forbidden", a), operation=True)
+        for a in view.protected:
+            self._add(a.action, Entry("protected", a), operation=True)
+        for e in view.escalations:
+            self._add(e.cond, Entry("escalation", e), operation=True)
+        for c in view.criteria:
+            if re.fullmatch(r"[a-z][a-z0-9_\-]*", nz(c.id)):
+                self._add(c.id, Entry("criterion", c), min_len=1)
+        self.alias_forms: dict[str, str] = {}
+        self.alias_map: dict[str, str] = {}
+        for al in view.aliases:
+            self.alias_map[nz(al.alias)] = nz(al.canonical)
+        for al in view.aliases:
+            target = self.exact.get(nz(al.canonical), [])
+            if target:
+                self._add_search(nz(al.alias), nz(al.alias), [Entry(e.group, e.obj) for e in target], alias=al)
+
+    def _add(self, term: str, entry: Entry, *, operation: bool = False, min_len: int = 2) -> None:
+        t = nz(term)
+        if not t:
+            return
+        if has_cjk(t):
+            if len(t.replace(" ", "")) < 2:
+                return
+        elif len(t.replace(" ", "")) < min_len:
+            return
+        bucket = self.exact.setdefault(t, [])
+        if not any(x.obj is entry.obj and x.group == entry.group for x in bucket):
+            bucket.append(entry)
+        form = t
+        if operation and has_cjk(t):
+            form = _ja_action_stem(term)
+        self._add_search(form, t, [entry])
+
+    def _add_search(self, form: str, full: str, entries: list[Entry], alias: Optional[AliasV] = None) -> None:
+        for row in self.search:
+            if row[0] == form:
+                for e in entries:
+                    if not any(x.obj is e.obj and x.group == e.group for x in row[2]):
+                        row[2].append(e)
+                return
+        self.search.append((form, full, list(entries)))
+        if alias is not None:
+            self.alias_forms[form] = alias.alias
+
+    def alias_of(self, form: str) -> Optional[str]:
+        return self.alias_forms.get(form)
+
+
+_JA_LEFT_OK = frozenset("はがをにでとももやへの、。，,.?!！？ \t")
+_JA_RIGHT_DENY = re.compile(r"^(?:以外|を除|のみ|だけ|など|等|以降|以前|のコピー|の一部|の写し|の複製|の派生|の中身|のバックアップ)")
+_JA_RIGHT_NO = re.compile(
+    r"^の(?:前|後|次|先|直前|直後|範囲|対象|扱い|件|こと|場合|とき|方針|うち|どれ|どちら|どの|両方|いずれ|中から|ほう|と|は|が|を|に|で|も)")
+_EN_RIGHT_STOP = frozenset((
+    "is are was were be been in out of part to for with by at on as or and but if then so should shall can could may might "
+    "will would do does did we i you it they that this these those now later too also yet still first next before after until "
+    "instead rather than included include scope allowed permitted ok okay fine needed required necessary supported there here "
+    "what which how when where why not no yes from into over under between during while via about all any each every both "
+    "must have has had need needs").split())
+
+
+_EN_RIGHT_STOP = _EN_RIGHT_STOP | frozenset("start starts begin begins proceed proceeds finish finishes complete completes continue".split())
+# what may stand directly to the LEFT of a frame term without making it a different (longer) noun phrase:
+# determiners, pronouns, auxiliaries, prepositions, conjunctions, wh-words and the verbs/gerunds a question uses to
+# act on a thing.  Anything else (an adjective, a noun, a number, a hyphenated qualifier) names another thing.
+_EN_LEFT_FUNC = frozenset((
+    "the a an this that these those our my your its their his her any every each some no all both either neither "
+    "what which who whom whose when where why how whether is are was were be been am do does did can could may might will would "
+    "shall should must have has had to of in on at for with by from into about over under between during via per than as "
+    "and or but if so then nor yet because while until before after we i you it they he she us them there here also only just "
+    "even still again too please regarding concerning not").split())
+# Words that are verbs/gerunds in a question but also nouns/adjectives ("test", "build", "record" ...).  Such a word
+# before a frame term is read as "the verb that acts on the thing" ONLY in a verb position (see _en_verb_position);
+# anywhere else ("which test plan do we use") it is a modifier, i.e. another thing.
+_EN_LEFT_VERBISH = frozenset((
+    "use used using include included including exclude excluded excluding start started starting begin began beginning run running "
+    "pick picked picking choose chosen choosing adopt adopted adopting add added adding target targeted select selected selecting "
+    "take taking go going build building write writing implement implementing make making keep keeping drop dropping remove removing "
+    "count treat treating support supporting cover covering put putting need needs needed want wants plan planning ship shipping "
+    "document documenting test testing finish finishing complete completing record recording").split())
+_EN_LEFT_OK = _EN_LEFT_FUNC | _EN_LEFT_VERBISH
+_EN_SUBJ_PRON = frozenset("we i you they us".split())
+_EN_TRANSPARENT = frozenset("also just still really actually simply then even already".split())
+_EN_GERUND_PREV = frozenset(("before after by for when while without of in on about from instead via if be been being is are am "
+                             "after upon").split())
+# Japanese: the closed set of words that may stand before "の" + a frame term: demonstratives and "this time".
+# A noun that merely names a release/project/case ("リリースの", "案件の") is general only directly after one of those.
+_JA_LEFT_GENERAL = ("この", "その", "あの", "どの", "どちらの", "今回の", "今の", "本件の")
+_JA_LEFT_NOUNS = ("リリース", "プロジェクト", "案件", "版")
+_JA_LEFT_DEMONSTRATIVE = ("この", "今回の", "本", "当", "今の")
+_JA_CHUNK_DELIM = "はがをにでとももやへの、。，,.?!！？ \t"
+
+
+def _en_verb_position(q: str, at: int, word: str) -> bool:
+    """Is the word that starts at ``at`` used as a verb (so not a modifier of the next noun)?  A verb stands at the
+    start of a clause, or right after a subject pronoun / "to" / "let's" / "please"; a gerund may also follow a
+    preposition or a form of "be".  After "which", "what", an article or a possessive it is a noun modifier."""
+    pre = q[:at]
+    while True:
+        prev = re.search(r"([0-9a-z]+(?:['\-][0-9a-z]+)*)([^0-9a-z]*)$", pre)
+        if prev is None:
+            return True                                   # start of the question
+        if re.search(r"[,;:.?!(]", prev.group(2)):
+            return True                                   # start of a clause
+        pw = prev.group(1)
+        if pw in _EN_TRANSPARENT:
+            pre = pre[:prev.start(1)]
+            continue
+        if pw in _EN_SUBJ_PRON or pw in ("to", "please", "let's", "lets"):
+            return True
+        return word.endswith("ing") and pw in _EN_GERUND_PREV
+
+
+def _is_wider(q: str, m: "Mention", others: Sequence["Mention"] = ()) -> bool:
+    """True when the matched term is only a piece of a longer noun phrase in the question (a different thing):
+    something is attached to its right, or a qualifier is attached to its left."""
+    if has_cjk(m.term):
+        nxt = q[m.end:]
+        if nxt:
+            if _JA_RIGHT_DENY.match(nxt):
+                return True
+            if nxt[0] == "の" and not _JA_RIGHT_NO.match(nxt):
+                return True
+            if nxt[0] not in "はがをにでとももやへの、。，,.?!！？ \t" and not re.match(
+                    r"^(?:前に|先に|後に|より|から|まで|について|に関|でき|ます|です|だ|か|って|なら|という|ごと|別)", nxt):
+                return True
+        if m.start > 0 and q[m.start - 1] not in _JA_LEFT_OK:
+            return True
+        if m.start > 0 and q[m.start - 1] == "の":
+            pre = q[:m.start]
+            for g in _JA_LEFT_GENERAL:      # the whole word, not the tail of a longer one ("海外版の" is not "版の")
+                if pre.endswith(g) and (len(pre) == len(g) or pre[-len(g) - 1] in _JA_CHUNK_DELIM):
+                    return False
+            for n in _JA_LEFT_NOUNS:        # "このリリースの": a noun is general only right after "this / this time's"
+                if pre.endswith(n + "の"):
+                    before = pre[:-len(n) - 1]
+                    for d in _JA_LEFT_DEMONSTRATIVE:
+                        if before.endswith(d) and (len(before) == len(d) or before[-len(d) - 1] in _JA_CHUNK_DELIM):
+                            return False
+            if any(o is not m and o.end == m.start - 1 for o in others):
+                return False        # "<frame term>の<frame term>"
+            cs = m.start - 1
+            while cs > 0 and q[cs - 1] not in _JA_CHUNK_DELIM:
+                cs -= 1
+            return cs < m.start - 1  # a qualifier ("X の term") that is neither a general word nor a frame term
+        return False
+    left = re.search(r"([0-9a-z]+(?:['\-][0-9a-z]+)*)[ ]*$", q[:m.start])
+    if left is not None:
+        w = left.group(1)
+        if w in _EN_LEFT_VERBISH:
+            if not _en_verb_position(q, left.start(1), w):
+                return True
+        elif w not in _EN_LEFT_FUNC:
+            return True
+    rest = q[m.end:].lstrip(" ")
+    if not rest:
+        return False
+    first = _TOKEN.match(rest)
+    if first is None:
+        return False
+    return first.group(0) not in _EN_RIGHT_STOP
+
+
+def find_mentions(q: str, index: TermIndex) -> tuple[list[Mention], int]:
+    """All mentions of frame terms in ``q`` (normalised), with the ones inside a longer mention removed."""
+    qtoks = [t for t in latin_tokens(q) if t[0] not in _ARTICLES]
+    raw: list[Mention] = []
+    for form, full, entries in index.search:
+        if has_cjk(form):
+            pos = q.find(form)
+            while pos >= 0:
+                raw.append(Mention(pos, pos + len(form), form, [Entry(e.group, e.obj) for e in entries]))
+                pos = q.find(form, pos + 1)
+        else:
+            ttoks = [t[0] for t in latin_tokens(form) if t[0] not in _ARTICLES]
+            if not ttoks:
+                continue
+            n = len(ttoks)
+            for i in range(0, len(qtoks) - n + 1):
+                ok = _tok_compat(qtoks[i][0], ttoks[0]) if n >= 1 else False
+                if ok:
+                    for j in range(1, n):
+                        if qtoks[i + j][0] != ttoks[j]:
+                            ok = False
+                            break
+                if ok:
+                    raw.append(Mention(qtoks[i][1], qtoks[i + n - 1][2], form, [Entry(e.group, e.obj) for e in entries]))
+    for m in raw:
+        a = index.alias_of(m.term)
+        if a is not None:
+            m.via, m.alias = "alias", a
+    kept: list[Mention] = []
+    dropped = 0
+    for m in raw:
+        contained = any(o is not m and o.start <= m.start and m.end <= o.end and (o.end - o.start) > (m.end - m.start)
+                        for o in raw)
+        if contained:
+            dropped += 1
+        else:
+            kept.append(m)
+    merged: list[Mention] = []
+    for m in kept:
+        same = next((x for x in merged if x.start == m.start and x.end == m.end), None)
+        if same is None:
+            merged.append(m)
+            continue
+        for e in m.entries:
+            if not any(x.obj is e.obj and x.group == e.group for x in same.entries):
+                same.entries.append(e)
+        if m.via == "alias" and same.via != "alias":
+            same.via, same.alias = m.via, m.alias
+    for m in merged:
+        groups = m.groups()
+        # policies and subjects of the same text are read together; any other mixture is ambiguous
+        if len(groups) >= 2 and groups not in ({"policy", "subject"},):
+            m.ambiguous = True
+    for m in merged:
+        if m.groups() & {"policy", "subject", "phase"} and _is_wider(q, m, merged):
+            m.wider = True
+    merged.sort(key=lambda m: (m.start, m.end))
+    return merged, dropped
+
+
+# ---------------------------------------------------------------------------------------------
+# Options
+# ---------------------------------------------------------------------------------------------
+
+@dataclass
+class OptionInfo:
+    index: int
+    text: str
+    core: str
+    marks: list[str]
+    reading: str = "UNMAPPED"        # YES / NO / PHASES / TERM / UNMAPPED
+    phases: tuple[str, ...] = ()
+    exact: bool = False
+    maps_to: Any = None
+    groups: tuple[str, ...] = ()
+
+    def as_dict(self) -> dict[str, Any]:
+        return {"index": self.index, "text": self.text, "ignored_marks": self.marks, "reading": self.reading,
+                "maps_to": self.maps_to}
+
+
+def strip_marks(text: str) -> tuple[str, list[str]]:
+    marks = [m.group(1) for m in _MARK_RX.finditer(text)]
+    return _MARK_RX.sub("", text).strip(), marks
+
+
+def _core(text: str) -> str:
+    core, _ = strip_marks(text)
+    return nz(core).strip(_PUNCT_EDGE)
+
+
+def _split_phase_pieces(core: str) -> Optional[tuple[list[str], bool]]:
+    """Split a phase-set option into pieces and detect the 'exactly' mark."""
+    s = core
+    exact = False
+    if has_cjk(s):
+        for suf in ("だけ", "のみ"):
+            if s.endswith(suf):
+                s, exact = s[: -len(suf)], True
+        if s.endswith("の両方"):
+            s = s[: -len("の両方")]
+        elif s.endswith("両方"):
+            s = s[: -len("両方")]
+        return [s], exact   # splitting is decided by the caller against the phase names
+    toks = s.split(" ")
+    while toks and toks[0] in ("only", "just"):
+        toks, exact = toks[1:], True
+    if toks and toks[-1] in ("only", "alone"):
+        toks, exact = toks[:-1], True
+    s = " ".join(toks)
+    s = re.sub(r"\b(?:both)\b", " ", s)
+    return [s], exact
+
+
+def parse_phase_set(core: str, view: FrameView) -> Optional[tuple[tuple[str, ...], bool]]:
+    """Read an option as a set of phases (names or headwords, exact match), or ``None``."""
+    base, exact = _split_phase_pieces(core)[0][0], _split_phase_pieces(core)[1]
+    names: dict[str, str] = {}
+    amb: set[str] = set()
+    for p in view.phases:
+        for key in (nz(p.name), *p.heads):
+            if key in names and names[key] != p.id:
+                amb.add(key)
+            names[key] = p.id
+    for key in amb:
+        names.pop(key, None)
+
+    def one(piece: str) -> Optional[str]:
+        piece = piece.strip(_PUNCT_EDGE)
+        if has_cjk(piece):
+            return names.get(piece)
+        toks = [t for t in piece.split(" ") if t and t not in _ARTICLES]
+        return names.get(" ".join(toks))
+
+    got = one(base)
+    if got is not None:
+        return (got,), exact
+    if has_cjk(base):
+        parts = [base]
+        for sep in ("・", "、", "および", "と"):
+            nxt: list[str] = []
+            for part in parts:
+                nxt.extend(part.split(sep))
+            parts = nxt
+        # a name that itself contains a separator would be split wrongly; then the option is unreadable
+    else:
+        parts = [x for x in re.split(r"\s*(?:,|\band\b|&)\s*", base) if x.strip()]
+    found: list[str] = []
+    for part in parts:
+        pid = one(part)
+        if pid is None:
+            return None
+        if pid not in found:
+            found.append(pid)
+    return (tuple(found), exact) if found else None
+
+
+def read_options(options: Optional[list[str]], view: FrameView, index: TermIndex) -> list[OptionInfo]:
+    out: list[OptionInfo] = []
+    for i, text in enumerate(options or []):
+        _, marks = strip_marks(text)
+        info = OptionInfo(i, text, _core(text), marks)
+        core = info.core
+        bare = re.sub(r"(?:です|ます)$", "", core).strip(_PUNCT_EDGE)
+        if core in _YES or bare in _YES:
+            info.reading, info.maps_to = "YES", "YES"
+        elif core in _NO or bare in _NO:
+            info.reading, info.maps_to = "NO", "NO"
+        else:
+            ps = parse_phase_set(core, view)
+            if ps is not None:
+                info.reading, info.phases, info.exact = "PHASES", ps[0], ps[1]
+                info.maps_to = list(ps[0])
+            else:
+                canon = index.alias_map.get(core, core)
+                hit = index.exact.get(canon) or index.exact.get(core)
+                if hit:
+                    info.reading = "TERM"
+                    info.groups = tuple(sorted({e.group for e in hit}))
+                    info.maps_to = canon
+                elif any(nz(p.value) == canon for p in view.policies) or any(nz(d.value) == canon for d in view.decisions):
+                    info.reading, info.maps_to = "TERM", canon
+        out.append(info)
+    return out
+
+
+# ---------------------------------------------------------------------------------------------
+# Outcomes
+# ---------------------------------------------------------------------------------------------
+
+@dataclass
+class Outcome:
+    decision: str                      # answer / escalate
+    answer: Optional[str] = None
+    index: Optional[int] = None
+    derivation: Optional[str] = None
+    basis: list[Ref] = field(default_factory=list)
+    reason: Optional[str] = None
+    detail: Optional[str] = None
+    kind: Optional[str] = None
+    layer: str = ""
+    polarity: Optional[str] = None     # YES / NO when decided by polarity (used to combine resolvers)
+    resolvers: tuple[str, ...] = ()    # the step(s) whose rule gave the answer (output key "resolver")
+
+
+def _esc(reason: str, detail: str, basis: Iterable[Ref] = (), kind: Optional[str] = None, layer: str = "") -> Outcome:
+    return Outcome("escalate", reason=reason, detail=detail, basis=_uniq(basis), kind=kind, layer=layer)
+
+
+def _uniq(refs: Iterable[Ref]) -> list[Ref]:
+    out: list[Ref] = []
+    seen: set[tuple[str, int]] = set()
+    for r in refs:
+        k = (r.id, r.line)
+        if k not in seen:
+            seen.add(k)
+            out.append(r)
+    return out
+
+
+@dataclass
+class Ctx:
+    view: FrameView
+    index: TermIndex
+    graph: Graph
+    raw_q: str
+    q: str
+    options: list[OptionInfo]
+    has_options: bool
+    mentions: list[Mention]
+    dropped: int
+    sentences: list[tuple[int, int]]
+    lang: str
+    trace_tried: list[str] = field(default_factory=list)
+    trace_out: dict[str, str] = field(default_factory=dict)
+    premise_sents: list[tuple[int, int]] = field(default_factory=list)   # sentences a resolver read as "X is done"
+    q_case: str = ""      # the question in the normal form without case folding (paths only)
+
+    def polarity_options(self) -> Optional[tuple[OptionInfo, OptionInfo]]:
+        yes = [o for o in self.options if o.reading == "YES"]
+        no = [o for o in self.options if o.reading == "NO"]
+        if len(yes) == 1 and len(no) == 1:
+            return yes[0], no[0]
+        return None
+
+    def phase_mentions(self) -> list[tuple[Mention, PhaseV]]:
+        out = []
+        for m in self.mentions:
+            if m.ambiguous:
+                continue
+            ps = m.objs("phase")
+            if len(ps) == 1:
+                out.append((m, ps[0]))
+        return out
+
+
+def _pol_answer(ctx: Ctx, yes: bool, basis: list[Ref], kind: str, derivation: str, phrase_yes: str, phrase_no: str,
+                layer: str) -> Outcome:
+    """Answer a yes/no question: the YES or NO option, or a closed phrase when there are no options."""
+    pair = ctx.polarity_options()
+    if ctx.has_options:
+        if pair is None:
+            return _esc("VOCAB_UNMAPPED", "OPTION_UNMAPPED", basis, kind, layer)
+        opt = pair[0] if yes else pair[1]
+        return Outcome("answer", opt.text, opt.index, derivation, basis, kind=kind, layer=layer, polarity="YES" if yes else "NO")
+    return Outcome("answer", phrase_yes if yes else phrase_no, None, derivation, basis, kind=kind, layer=layer,
+                   polarity="YES" if yes else "NO")
+
+
+def _phrases(ctx: Ctx) -> tuple[str, str]:
+    return ("許可", "不可") if ctx.lang == "ja" else ("permitted", "not permitted")
+
+
+# ---------------------------------------------------------------------------------------------
+# Negation, sentence helpers
+# ---------------------------------------------------------------------------------------------
+
+def _negated(text: str) -> bool:
+    t = _NEG_JA_SAFE.sub("", text)
+    return bool(_NEG_JA.search(t) or _NEG_EN.search(text))
+
+
+def _sentence_of(ctx: Ctx, pos: int) -> int:
+    for i, (a, b) in enumerate(ctx.sentences):
+        if a <= pos < b or (pos == b and i == len(ctx.sentences) - 1):
+            return i
+    return len(ctx.sentences) - 1
+
+
+def layer_negation(ctx: Ctx) -> Optional[Outcome]:
+    """A negated question flips the meaning of yes/no and of 'which'; it is handed up, not guessed."""
+    for i, (a, b) in enumerate(ctx.sentences):
+        if not any(a <= m.start < b for m in ctx.mentions):
+            continue
+        if _negated(ctx.q[a:b]):
+            return _esc("QUESTION_UNREADABLE", "NEGATED_QUESTION", [], layer="negation")
+        if _INVERT_CUE.search(ctx.q[a:b]):
+            return _esc("QUESTION_UNREADABLE", "INVERTED_QUESTION", [], layer="negation")
+    return None
+
+
+# ---------------------------------------------------------------------------------------------
+# Predicates: a yes/no answer is given only when the question asks the one thing the rule decides
+# ---------------------------------------------------------------------------------------------
+# "May Y be started before X?" and "is Y in scope?" are the only predicates that the order and scope rules decide.
+# Anything else ("is it too early", "would it be a mistake", "is it risky") asks for a judgement the frame does not
+# make; the closed lists below are what IS read, everything else is handed up (no list of words to reject).
+
+_ART = r"(?:(?:the|a|an|our|this|that|its)\s+)?"
+_MAY = r"(?:can|could|may|might|should|shall)"
+_WE = r"(?:we|i|you|they)"
+# the verbs that may act on Y in "may we <verb> Y before X": a closed list of start verbs, and the phase's own verb
+# (the first word of an English phase name, the verb after the last "を" of a Japanese one).  "stop", "postpone",
+# "redesign", "freeze" ... are not on it: the frame orders the START of phases and says nothing of stopping them.
+_EN_START_VERBS = (r"(?:start(?:\s+(?:on|with|working\s+on))?|begin(?:\s+(?:on|with|working\s+on))?|work(?:ing)?\s+on|"
+                   r"proceed\s+with|get\s+started\s+(?:on|with)|tackle|kick\s+off)")
+_EN_PARTICLES = frozenset("up on with out off in over".split())
+
+
+def _en_own_verb_rx(phase: Optional["PhaseV"]) -> Optional[str]:
+    if phase is None:
+        return None
+    toks = [t[0] for t in latin_tokens(nz(phase.name))]
+    if len(toks) < 2:
+        return None
+    rx = re.escape(toks[0])
+    if toks[1] in _EN_PARTICLES:
+        rx += r"\s+" + re.escape(toks[1])
+    return rx
+
+
+def _order_pre_en(phase: Optional["PhaseV"]) -> tuple["re.Pattern[str]", ...]:
+    own = _en_own_verb_rx(phase)
+    verb = r"(?:(?:" + _EN_START_VERBS + (r"|" + own if own else "") + r")\s+)?"
+    lead = r"^(?:(?:so|and|then|also)[, ]+)?"
+    return (
+        # "can we <verb> [the] Y before X"
+        re.compile(lead + _MAY + r"\s+" + _WE + r"\s+(?:also\s+)?" + verb + _ART + r"$"),
+        # "is it ok/allowed ... to <verb> [the] Y before X"
+        re.compile(lead + r"(?:is|are)\s+it\s+(?:ok|okay|fine|alright|allowed|permitted|possible|acceptable)\s+to\s+" + verb + _ART + r"$"),
+        re.compile(lead + r"(?:am|are)\s+(?:i|we)\s+(?:allowed|able|permitted)\s+to\s+" + verb + _ART + r"$"),
+    )
+
+
+_ORDER_PRE_EN_SUBJ = tuple(re.compile(x) for x in (
+    # "can [the] Y start before X" / "is [the] Y allowed to start before X"
+    r"^(?:(?:so|and|then|also)[, ]+)?" + _MAY + r"\s+" + _ART + r"$",
+    r"^(?:(?:so|and|then|also)[, ]+)?(?:is|are)\s+" + _ART + r"$",
+))
+_ORDER_POST_EN_SUBJ = tuple(re.compile(x) for x in (
+    r"^\s*(?:start|begin|proceed|go|run|be\s+(?:started|begun|done|built|written|implemented|run|finished|completed))\s*$",
+    r"^\s*(?:allowed|permitted|able)\s+to\s+(?:start|begin|proceed|go|run)\s*$",
+))
+_JA_START_TE = ("始めて", "着手して", "取りかかって", "取り掛かって", "開始して", "スタートして", "着工して")
+_JA_START_DICT = ("始める", "着手する", "取りかかる", "取り掛かる", "開始する", "スタートする", "着工する")
+_JA_MAY_TAIL = r"(?:も)?(?:よい|いい|良い|構わない|かまわない|よろしい)(?:です)?(?:か|でしょうか)"
+_JA_CAN_TAIL = r"(?:でき|可能)(?:ます|る|です)(?:か|でしょうか)"
+_JA_TE = {"う": ("って",), "つ": ("って",), "る": ("って", "て"), "く": ("いて",), "ぐ": ("いで",), "す": ("して",),
+          "ぬ": ("んで",), "ぶ": ("んで",), "む": ("んで",)}
+_JA_REN = {"う": ("い",), "つ": ("ち",), "る": ("り", ""), "く": ("き",), "ぐ": ("ぎ",), "す": ("し",),
+           "ぬ": ("に",), "ぶ": ("び",), "む": ("み",)}
+
+
+def _ja_own_verb(phase: Optional["PhaseV"]) -> Optional[str]:
+    """The verb of a Japanese phase name ("...を<verb>"), or ``None`` when the name does not end in one."""
+    if phase is None:
+        return None
+    n = nz(phase.name)
+    if "を" not in n:
+        return None
+    rest = n.rsplit("を", 1)[1]
+    if rest and (rest.endswith("する") or rest[-1] in _U_ROW):
+        return rest
+    return None
+
+
+def _ja_verb_forms(v: str) -> tuple[list[str], list[str], list[str]]:
+    """(te-forms, continuative stems, dictionary forms) of a verb.  Ambiguous classes give both readings; a form
+    that is not a word is harmless because nobody writes it."""
+    if v.endswith("する"):
+        stem = v[:-2]
+        return [stem + "して"], [stem + "し"], [v] + ([stem] if stem else [])
+    last, base = v[-1], v[:-1]
+    return ([base + t for t in _JA_TE.get(last, ())], [base + r for r in _JA_REN.get(last, ())], [v])
+
+
+def _ja_order_may_rx(phase: Optional["PhaseV"]) -> "re.Pattern[str]":
+    te = list(_JA_START_TE)
+    ren: list[str] = []
+    dic = list(_JA_START_DICT)
+    own = _ja_own_verb(phase)
+    if own:
+        t, r, d = _ja_verb_forms(own)
+        te += t
+        ren += r
+        dic += d
+    alt_te = "|".join(re.escape(x) for x in te)
+    alt_ren = "|".join(re.escape(x) for x in ren if x)
+    alt_dic = "|".join(re.escape(x) for x in dic if x)
+    ways = [alt_te]
+    if alt_ren:
+        ways.append(r"(?:" + alt_ren + r")始めて")
+    body = r"(?:" + "|".join(ways) + r")" + _JA_MAY_TAIL
+    can = r"(?:" + alt_dic + r")(?:こと)?(?:は|が)?" + _JA_CAN_TAIL
+    return re.compile(r"^(?:を|に|は|も|が)?(?:" + body + "|" + can + r")$")
+
+
+_SCOPE_VERB = r"(?:include|exclude|cover|put|leave\s+out|keep|count|treat|have|add|take|drop|ship|support)"
+# what may follow "in scope / included": at most one closed qualifier naming THIS release or project; anything else
+# ("for the old prototype", "in the previous release", "in the price") names another thing and is handed up
+_SCOPE_THIS = r"(?:for|in|of)\s+(?:this|the|our)\s+(?:release|project|version|iteration|build|scope)(?:\s+of\s+(?:this|the|our)\s+(?:release|project|version|iteration|build))?"
+_SCOPE_PRE_EN = re.compile(
+    r"^(?:(?:so|and|then|also|ok|okay|well)[, ]+)?(?:(?:for|in)\s+(?:this|the|our)\s+(?:release|project|version|iteration|build|sprint)[, ]+)?"
+    r"(?:(?:(?:is|are)\s+it\s+(?:ok|okay|fine|alright|allowed|permitted|acceptable)\s+to\s+(?:" + _SCOPE_VERB + r"\s+)?)|"
+    r"(?:(?:is|are|will|would|do|does|should|shall|can|could|may|might)\s+(?:(?:we|you|i|they|it)\s+)?"
+    r"(?:(?:also|still|really|actually)\s+)?(?:" + _SCOPE_VERB + r"\s+)?))?(?:(?:the|a|an|this|that|our|its|these|those|any)\s+)?$")
+_SCOPE_POST_EN = re.compile(
+    r"^(?:\s*(?:to\s+be\s+|be\s+|being\s+)?(?:(?:in|out\s+of)\s+(?:the\s+)?scope|(?:in|out\s+of)\s+(?:this|the|our)\s+"
+    r"(?:release|project|version|iteration|build)|included|excluded|covered|part\s+of\s+(?:the|this|our)\s+"
+    r"(?:release|project|version|scope|work|iteration|build))(?:\s+" + _SCOPE_THIS + r")?)?\s*$")
+_SCOPE_VERB_RX = re.compile(r"\b" + _SCOPE_VERB + r"\s+(?:(?:the|a|an|this|that|our|its|these|those|any)\s+)?$")
+_SCOPE_POST_JA = re.compile(
+    r"^(?:は|を|も|が|って)?[、,]?(?:今回(?:の)?|このリリース(?:の)?|この版(?:の)?|今のリリース(?:の)?)?"
+    r"(?:(?:範囲|対象|スコープ)(?:内|外)?)?(?:は|に|には|も)?(?:含め|含まれ|入れ|入り|入る|なり|なる|する|し)?"
+    r"(?:て(?:も)?(?:よい|いい|良い)(?:です)?|ます|る|です|でしょう)?(?:か|でしょうか)?$")
+# nothing but "this time" may stand before the term in a Japanese scope question ("前の版では..." is another version)
+_SCOPE_PRE_JA = re.compile(
+    r"^(?:(?:では|それでは|さて|ちなみに|今回は|まず)[、,]?)?(?:(?:今回|このリリース|この版|今のリリース|今回のリリース|本リリース)(?:では|は|の)?[、,]?)?$")
+
+
+def _sentence_bounds(ctx: "Ctx", pos: int) -> tuple[int, int]:
+    return ctx.sentences[_sentence_of(ctx, pos)]
+
+
+def _scope_predicate_ok(ctx: "Ctx", m: "Mention") -> bool:
+    """The scope term is asked about as "is it in scope" / "do we include it" and nothing else."""
+    a, b = _sentence_bounds(ctx, m.start)
+    pre = ctx.q[a:m.start].strip()
+    post = ctx.q[m.end:b].strip(" \t?？!！.。")
+    if has_cjk(ctx.q[a:b]):
+        return bool(_SCOPE_PRE_JA.match(pre)) and bool(_SCOPE_POST_JA.match(post))
+    if not _SCOPE_PRE_EN.match(pre + " " if pre else ""):
+        return False
+    if not post:
+        return bool(_SCOPE_VERB_RX.search(pre + " "))
+    return bool(_SCOPE_POST_EN.match(post))
+
+
+def _order_may_predicate_ok(ctx: "Ctx", y: "Mention", before_start: int, y_phase: Optional["PhaseV"] = None) -> bool:
+    """"May Y be started before X?" -- the Y part is a start of Y (a start verb or Y's own verb), never a judgement
+    about doing so and never another act on Y (stop, postpone, redesign ...)."""
+    a, b = _sentence_bounds(ctx, y.start)
+    if has_cjk(ctx.q[a:b]):
+        if y.start >= before_start:                 # "X前に Y を <verb>てもよいですか": the verb follows Y
+            tail = ctx.q[y.end:b]
+        else:                                       # "Y は、X前に <verb>てもよいですか": the verb follows "前に"
+            if not re.match(r"^(?:は|も|が|を)?[、,]", ctx.q[y.end:before_start]):
+                return False
+            tail = ctx.q[before_start + len("前に"):b]
+        return bool(_ja_order_may_rx(y_phase).match(tail.strip(" \t?？!！.。")))
+    if ";" in ctx.q[a:b] or "," in ctx.q[ctx.q.find("before", a, b):b]:
+        return False
+    pre = ctx.q[a:y.start] if y.start > a else ""
+    pre = pre.lstrip(" ")
+    post = ctx.q[y.end:before_start]
+    if any(rx.match(pre) for rx in _order_pre_en(y_phase)) and post.strip() == "":
+        return True
+    return any(rx.match(pre) for rx in _ORDER_PRE_EN_SUBJ) and any(rx.match(post) for rx in _ORDER_POST_EN_SUBJ)
+
+
+# The choice predicate: a "which / what" question is answered from a decision only when it asks for THIS team's
+# present choice ("which T do we use", "what is the T", "should we use A or B for the T").  A comparison ("cheaper"),
+# another time ("did ... use", "前の版では"), another subject ("the competitor") or any other predicate is handed up.
+# The sentence is matched as a whole with the term as "¤" and each offered option as "§".
+_CH_VERB = (r"(?:want(?:\s+to\s+(?:use|pick|choose|adopt|select|go\s+with|take))?|(?:use|pick|choose|adopt|select|target|take|go\s+with))")
+_CH_AUX = r"(?:do|should|shall|will|would)\s+(?:we|i)"
+_CH_QUAL = r"(?:\s+(?:for|in|of)\s+(?:this|the|our)\s+(?:release|project|version|iteration|build|system|product|app|application))?"
+_CH_LST = r"§(?:\s*(?:,|/|or)\s*§)*"
+_CH_DISC = r"^(?:(?:so|and|then|also|ok|okay|well)[, ]+)?"
+_CH_EN = tuple(re.compile(x) for x in (
+    _CH_DISC + r"(?:which|what)\s+¤\s+" + _CH_AUX + r"\s+" + _CH_VERB + r"(?:\s*[,:]?\s*(?:of\s+)?" + _CH_LST + r")?" + _CH_QUAL + r"$",
+    _CH_DISC + r"(?:which|what)\s+¤(?:\s*[,:]?\s*(?:of\s+)?" + _CH_LST + r")?" + _CH_QUAL + r"$",
+    _CH_DISC + r"what\s*(?:is|are|'s)\s+(?:the|our)\s+¤" + _CH_QUAL + r"$",
+    _CH_DISC + _CH_AUX + r"\s+" + _CH_VERB + r"\s+(?:(?:the|our|a)\s+)?¤(?:\s*[,:]?\s*(?:of\s+)?" + _CH_LST + r")?" + _CH_QUAL + r"$",
+    _CH_DISC + _CH_AUX + r"\s+" + _CH_VERB + r"\s+" + _CH_LST + r"\s+for\s+(?:the|our)\s+¤" + _CH_QUAL + r"$",
+    # "what should the T be?" / "what should we use for the T?"
+    _CH_DISC + r"what\s+(?:should|shall|will|would)\s+(?:the|our)\s+¤\s+be" + _CH_QUAL + r"$",
+    _CH_DISC + r"what\s+" + _CH_AUX + r"\s+" + _CH_VERB + r"\s+for\s+(?:the|our)\s+¤" + _CH_QUAL + r"$",
+))
+_CH_EN_IN_OPTION = tuple(re.compile(x) for x in (
+    _CH_DISC + r"(?:which(?:\s+one)?|what)\s+" + _CH_AUX + r"\s+" + _CH_VERB + r"\s*[,:]?\s*" + _CH_LST + _CH_QUAL + r"$",
+    _CH_DISC + _CH_AUX + r"\s+" + _CH_VERB + r"\s+" + _CH_LST + _CH_QUAL + r"$",
+))
+# What follows the term (or the options) in a Japanese "which do we choose" is one of a CLOSED set of five phrases; every
+# other question word or verb ("いつ" when, "いくつ" how many, "どこに使う" where to use it, "何に使う" for what use ...)
+# asks something else and is handed up.  P5 ("どこにし…") is a question about a place and is read only when the recorded
+# subject is itself a place noun (see ``_CH_JA_PLACE_END``).
+_CH_JA_END = r"(?:か|でしょうか)"
+_CH_JA_MASU = r"(?:ます|ましょう)" + _CH_JA_END
+_CH_JA_WHICH = r"(?:どれ|どちら|何|なに)"
+_CH_JA_P1 = _CH_JA_WHICH + r"にし" + _CH_JA_MASU                                      # which / what do we make it
+_CH_JA_P2 = _CH_JA_WHICH + r"を(?:使い|使用し|採用し|選び)" + _CH_JA_MASU                # which / what do we use
+_CH_JA_P3 = r"どうし" + _CH_JA_MASU                                                    # what do we do
+_CH_JA_P4 = _CH_JA_WHICH + r"(?:です|でしょう)(?:か|かね)"                              # which / what is it
+_CH_JA_P5 = r"どこにし" + _CH_JA_MASU                                                  # where do we put it
+_CH_JA_LST = r"§(?:(?:と|か|、|または|もしくは|や)§)*"
+_CH_JA_PRE = re.compile(
+    r"^(?:(?:では|それでは|さて|ちなみに|今回は|まず)[、,]?)?(?:(?:この|その|あの|今回の|今の|本件の|(?:この|今回の|本)(?:リリース|プロジェクト|案件|版)の))?$")
+_CH_JA_PRE_WH = re.compile(r"^(?:どちらの|どの)$")
+_CH_JA_SUFFIX = r"(?:の(?:扱い|方針|件|こと|場合|とき|時)|について)?"
+_CH_JA_PLACE_END = ("場所", "置き場", "位置", "保存先", "置き先", "宛先", "送り先")
+_CH_JA_LEAD = r"^" + _CH_JA_SUFFIX + r"(?:は|って)[、,]?"
+_CH_JA_POST = tuple(re.compile(x) for x in (
+    # "T is which / what do we choose": the wh-word comes after the term (the options, if written, before it)
+    _CH_JA_LEAD + r"(?:" + _CH_JA_LST + r"[、,]?の?)?(?:" + _CH_JA_P1 + "|" + _CH_JA_P2 + ")$",
+    _CH_JA_LEAD + r"(?:" + _CH_JA_LST + r"[、,]?の?)?" + _CH_JA_P4 + "$",
+    _CH_JA_LEAD + _CH_JA_P3 + "$",                  # "どうします": no options written between
+))
+_CH_JA_POST_PLACE = re.compile(_CH_JA_LEAD + _CH_JA_P5 + "$")
+_CH_JA_POST_AFTER_WH = re.compile(r"^" + _CH_JA_SUFFIX + r"(?:を(?:使い|使用し|採用し|選び)|にし)" + _CH_JA_MASU + "$")
+_CH_JA_IN_OPTION = re.compile(r"^(?:は|って)?[、,]?" + _CH_JA_LST + r"の?(?:(?:どれ|どちら)にし|(?:どれ|どちら)を(?:使い|使用し|採用し|選び))" + _CH_JA_MASU + "$")
+
+
+def _choice_sentence_form(ctx: "Ctx", m: "Mention") -> str:
+    """The sentence of ``m`` with the term as "¤" and the offered options as "§" (the term stays if it lies inside
+    an option's own text, and then ``in_option`` forms are the only ones that can match)."""
+    a, b = _sentence_bounds(ctx, m.start)
+    q = ctx.q
+    spans: list[tuple[int, int, str]] = []
+    in_option = False
+    for o in ctx.options:
+        i = q.find(o.core) if len(o.core) >= 1 else -1
+        if i >= 0 and a <= i and i + len(o.core) <= b:
+            spans.append((i, i + len(o.core), "§"))
+            if i <= m.start and m.end <= i + len(o.core):
+                in_option = True
+    if not in_option:
+        spans.append((m.start, m.end, "¤"))
+    spans.sort(key=lambda t: t[0], reverse=True)
+    out = q
+    last = len(q) + 1
+    for x, y, tag in spans:
+        if y > last:       # overlapping spans: the sentence is not a plain "which T ... A or B"
+            return "\x00"
+        out = out[:x] + tag + out[y:]
+        last = x
+    delta = len(out) - len(q)
+    return out[a:b + delta].strip(" \t?？!！.。")
+
+
+def _choice_subject_is_place(m: "Mention") -> bool:
+    """Every recorded subject the mention stands for ends in a place noun (judged on the record, not on the alias)."""
+    subs = [nz(p.cond) for p in m.objs("policy") if p.kind == "CHOICE"] + [nz(d.subject) for d in m.objs("subject")]
+    return bool(subs) and all(x.endswith(_CH_JA_PLACE_END) for x in subs)
+
+
+def _choice_predicate_ok(ctx: "Ctx", m: "Mention") -> bool:
+    sent = _choice_sentence_form(ctx, m)
+    if "\x00" in sent:
+        return False
+    if has_cjk(sent):
+        if "¤" in sent:
+            pre, _, post = sent.partition("¤")
+            if "¤" in post:
+                return False
+            if _CH_JA_PRE_WH.match(pre):
+                return bool(_CH_JA_POST_AFTER_WH.match(post))
+            if not _CH_JA_PRE.match(pre):
+                return False
+            if any(rx.match(post) for rx in _CH_JA_POST):
+                return True
+            return bool(_CH_JA_POST_PLACE.match(post)) and _choice_subject_is_place(m)
+        return bool(_CH_JA_IN_OPTION.match(sent))
+    if "¤" in sent:
+        return any(rx.match(sent) for rx in _CH_EN)
+    return any(rx.match(sent) for rx in _CH_EN_IN_OPTION)
+
+
+# Predicates of "which comes first" and "what can we start next": the same rule as for "may we" and "which do we choose" --
+# the question is answered only when the sentence is one of the closed forms below (this team, the present, a plain
+# "first" / "next"); "which was built first last time", "which is easier to do first" and "what did the competitor start
+# next" are other questions and are handed up.
+_FW_DISC = r"^(?:(?:so|and|then|also|ok|okay|well|now)[, ]+)?"
+_FW_NOUN = r"(?:\s+(?:phase|task|step|work|one|thing|item))?"
+_FW_LST = r"(?:\s*[,:]?\s*(?:of\s+)?(?:the\s+|our\s+)?§(?:\s*(?:,|/|or|and|vs\.?|versus)\s*(?:the\s+|our\s+)?§)*)?"
+_FW_LST_REQ = r"(?:\s+(?:the\s+|our\s+)?§(?:\s*(?:,|/|or)\s*(?:the\s+|our\s+)?§)+)"
+_FW_WORK = (r"(?:do|start|begin|tackle|take\s+on|work\s+on|get\s+started\s+on|build|write|implement|run|make|create|handle|finish)")
+_FIRST_EN = tuple(re.compile(x) for x in (
+    _FW_DISC + r"(?:which|what)" + _FW_NOUN + r"\s+(?:comes|goes|is|should\s+come|should\s+go|must\s+come)\s+first" + _FW_LST + r"$",
+    _FW_DISC + r"(?:which|what)" + _FW_NOUN + r"\s+(?:do|should|shall|will)\s+(?:we|i)\s+" + _FW_WORK + r"\s+first" + _FW_LST + r"$",
+    _FW_DISC + r"(?:which|what)\s+first" + _FW_LST + r"$",
+    _FW_DISC + r"(?:do|should|shall)\s+we\s+" + _FW_WORK + _FW_LST_REQ + r"\s+first$",
+    _FW_DISC + r"(?:which|what)\s+(?:is|are)\s+(?:the\s+)?first" + _FW_NOUN + _FW_LST + r"$",
+))
+_FW_BASE = r"(?:start|begin|do|tackle|work\s+on|take\s+on|pick\s+up|get\s+started\s+on|move\s+on\s+to|proceed\s+to)"
+_NEXT_EN = tuple(re.compile(x) for x in (
+    _FW_DISC + r"(?:what|which" + _FW_NOUN + r")\s+(?:can|could|should|may|do|shall|will)\s+(?:we|i)\s+" + _FW_BASE + r"\s+next" + _FW_LST + r"$",
+    _FW_DISC + r"(?:what|which" + _FW_NOUN + r")\s*(?:is|'s)\s+next(?:\s+(?:to\s+do|for\s+us))?" + _FW_LST + r"$",
+    _FW_DISC + r"(?:what|which" + _FW_NOUN + r")\s+comes\s+next" + _FW_LST + r"$",
+    _FW_DISC + r"(?:what|which" + _FW_NOUN + r")\s+can\s+be\s+(?:started|begun|done|worked\s+on|tackled)\s+next" + _FW_LST + r"$",
+    _FW_DISC + r"(?:what|which)\s+(?:is|are)\s+the\s+next\s+(?:phase|task|step|thing|work)s?(?:\s+(?:we\s+can|to)\s+(?:start|do|begin))?" + _FW_LST + r"$",
+))
+_NW = r"(?:何|どれ|どの(?:作業|工程|フェーズ))"
+_NEXT_JA = re.compile(
+    r"^(?:では|それでは|さて)?[、,]?(?:次に着手できる(?:作業|工程|フェーズ|もの)は" + _NW + r"(?:です|でしょう)か|"
+    r"次(?:は|に)" + _NW + r"(?:に|を)?(?:着手(?:でき|し)|取りかか(?:れ|り)|取り掛か(?:れ|り)|始め(?:られ|)|やれ|やり|し|進め(?:られ|))(?:ます|る)(?:か|でしょうか)|"
+    r"次(?:は|に)(?:何|どれ)(?:です|でしょう)か|着手できる(?:作業|工程|フェーズ)は(?:何|どれ)(?:です|でしょう)か)$")
+_FJ_LST = r"§(?:(?:のと|と|か|、|および|または|や)§)*"
+_FJ_V = r"(?:し|やり|作り|着手し|始め|実装し|進め|行い|取りかかり|取り掛かり|開始し|書き|決め|組み立て|用意し|構築し)"
+_FIRST_JA_TAIL = re.compile(
+    r"^(?:どちら|どれ)(?:を|が)?(?:先|最初)に" + _FJ_V + r"(?:ます|ましょう)(?:か|でしょうか)$|"
+    r"^(?:どちら|どれ)(?:が|は)?(?:先|最初)(?:です|でしょう)(?:か|かね)$")
+
+
+def _blank_phases(ctx: "Ctx", a: int, b: int, mentions: Optional[Sequence["Mention"]] = None) -> str:
+    """The sentence [a, b) with each offered option and each given mention (default: the phase mentions) replaced
+    by "§" (stripped)."""
+    q = ctx.q
+    spans: list[tuple[int, int]] = []
+    for o in ctx.options:
+        i = q.find(o.core) if o.core else -1
+        if i >= 0 and a <= i and i + len(o.core) <= b:
+            spans.append((i, i + len(o.core)))
+    for m in (mentions if mentions is not None else [m for m, _p in ctx.phase_mentions()]):
+        if a <= m.start and m.end <= b and not any(x <= m.start and m.end <= y for x, y in spans):
+            spans.append((m.start, m.end))
+    spans.sort(reverse=True)
+    out, last = q, len(q) + 1
+    for x, y in spans:
+        if y > last:
+            return "\x00"
+        out = out[:x] + "§" + out[y:]
+        last = x
+    return out[a:b + len(out) - len(q)].strip(" \t?？!！.。")
+
+
+_SC_IS = r"(?:in\s+scope|out\s+of\s+scope|included|excluded|covered|part\s+of\s+(?:the|this|our)\s+(?:scope|release|project))"
+_SC_V = r"(?:include|cover|keep|add|put\s+in\s+scope|put\s+in|take|ship|support|count|leave\s+out|exclude|drop)"
+_SC_BE = r"(?:is|are|should\s+be|shall\s+be|will\s+be)"
+_SC_LST = r"(?:the\s+|our\s+)?§(?:\s*(?:,|/|or|and)\s*(?:the\s+|our\s+)?§)*"
+_SC_Q = r"(?:\s+" + _SCOPE_THIS + r")?"
+_SC_MULTI_EN = tuple(re.compile(x) for x in (
+    _FW_DISC + r"which(?:\s+one)?\s+" + _SC_BE + r"\s+" + _SC_IS + r"(?:\s*[,:]?\s*(?:of\s+)?" + _SC_LST + r")?" + _SC_Q + r"$",
+    _FW_DISC + r"which(?:\s+one)?\s+(?:do|should|shall|will)\s+we\s+" + _SC_V + r"(?:\s*[,:]?\s*(?:of\s+)?" + _SC_LST + r")?" + _SC_Q + r"$",
+    _FW_DISC + r"which\s+of\s+" + _SC_LST + r"\s+" + _SC_BE + r"\s+" + _SC_IS + _SC_Q + r"$",
+    _FW_DISC + r"which\s+of\s+" + _SC_LST + r"\s+(?:do|should|shall|will)\s+we\s+" + _SC_V + _SC_Q + r"$",
+    _FW_DISC + r"(?:do|should|shall|will)\s+we\s+" + _SC_V + r"\s+" + _SC_LST + _SC_Q + r"$",
+))
+_SC_JA_SCOPE = r"(?:今回(?:の)?)?(?:(?:範囲|対象|スコープ)(?:内|外)?)?"
+_SC_JA_LEAD = r"^(?:(?:では|それでは|さて|ちなみに|今回は)[、,]?)?(?:" + _FJ_LST + r"(?:のうち|の中で|では|は|で|の)?[、,]?)?"
+_SC_MULTI_JA = re.compile(
+    _SC_JA_LEAD + r"(?:" + _SC_JA_SCOPE + r"(?:に|から)?(?:含める|含まれる|入れる|入る|外す|除く)(?:の|もの)?は(?:どちら|どれ)(?:です|でしょう)か|"
+    r"(?:どちら|どれ)(?:を|が)" + _SC_JA_SCOPE + r"(?:に|から)?(?:含め|入れ|外し|除き)(?:ます|ましょう)(?:か|でしょうか)|"
+    r"(?:どちら|どれ)(?:が|は)(?:範囲|対象|スコープ)(?:内|外)(?:です|でしょう)か)$")
+
+
+def _scope_multi_predicate_ok(ctx: "Ctx", ms: Sequence["Mention"]) -> bool:
+    """Several scope terms: "which of A and B is in scope / do we include" only (not a comparison, a past, another subject)."""
+    seen: set[tuple[int, int]] = set()
+    for m in ms:
+        a, b = _sentence_bounds(ctx, m.start)
+        if (a, b) in seen:
+            continue
+        seen.add((a, b))
+        sent = _blank_phases(ctx, a, b, [x for x in ms if a <= x.start < b])
+        if "\x00" in sent:
+            return False
+        if has_cjk(sent):
+            if not _SC_MULTI_JA.match(sent):
+                return False
+        elif not any(rx.match(sent) for rx in _SC_MULTI_EN):
+            return False
+    return True
+
+
+def _first_predicate_ok(ctx: "Ctx", a: int, b: int) -> bool:
+    sent = _blank_phases(ctx, a, b)
+    if "\x00" in sent:
+        return False
+    if not has_cjk(sent):
+        return any(rx.match(sent) for rx in _FIRST_EN)
+    m = re.search(r"(?:どちら|どれ)", sent)
+    if m is None:
+        return False
+    if not _FIRST_JA_TAIL.match(sent[m.start():]):
+        return False
+    verbs = {"する"} | {v for v in (_ja_own_verb(p) for p in ctx.view.phases) if v}
+    pre = sent[:m.start()]
+    pre = re.sub(r"^(?:では|それでは|さて|ちなみに)[、,]?", "", pre)
+    rest = re.sub(r"§|のと|のは|のうち|の中で|および|または|[とのはがをにでかや、,\s]|" + "|".join(re.escape(v) for v in sorted(verbs, key=len, reverse=True)), "", pre)
+    return rest == ""
+
+
+_PREM_EN_ITEM = r"(?:(?:the|our|a|an)\s+)?§"
+_PREM_EN = re.compile(r"^(?:(?:so|and|then|also|ok|okay|well|now)[, ]+)?" + _PREM_EN_ITEM + r"(?:(?:\s*,\s*(?:and\s+)?|\s+and\s+)" + _PREM_EN_ITEM
+                      + r")*\s+(?:is|are|has\s+been|have\s+been)\s+(?:now\s+|all\s+|already\s+)?(?:done|finished|completed|complete)$")
+
+
+def _premise_ok(ctx: "Ctx", a: int, b: int) -> bool:
+    """A sentence that says which phases are done is read only in its closed form: "<the phases> are done" (Japanese:
+    "<the phases>が終わりました", a phase may be followed by its own verb in te-form).  A time, place or other qualifier
+    in the sentence ("done in another version", "来年…") is not read, so the sentence stays unread."""
+    sent = _blank_phases(ctx, a, b)
+    if "\x00" in sent:
+        return False
+    if not has_cjk(sent):
+        return bool(_PREM_EN.match(sent))
+    te = sorted({t for p in ctx.view.phases for v in [_ja_own_verb(p)] if v for t in _ja_verb_forms(v)[0]}, key=len, reverse=True)
+    item = "§" + (r"(?:を(?:" + "|".join(re.escape(t) for t in te) + r"))?" if te else "")
+    rx = (r"^" + _PJA_DISC + item + r"(?:(?:と、?|、)" + item + r")*(?:も|は|が)?(?:終わり|完了し|済み)(?:ました|ています)$")
+    return bool(re.match(rx, sent))
+
+
+def _next_predicate_ok(ctx: "Ctx", a: int, b: int) -> bool:
+    sent = _blank_phases(ctx, a, b)
+    if "\x00" in sent:
+        return False
+    cands = [sent]
+    for sep in ("、", ","):
+        if sep in sent:
+            cands.append(sent.rsplit(sep, 1)[1].strip())
+    if has_cjk(sent):
+        return any(_NEXT_JA.match(c) for c in cands)
+    return any(rx.match(c) for c in cands for rx in _NEXT_EN)
+
+
+# ---------------------------------------------------------------------------------------------
+# Layer 3 + 4: escalation conditions and permission
+# ---------------------------------------------------------------------------------------------
+
+def _closure_higher(view: FrameView, a: str, b: str) -> Optional[PrecV]:
+    """A declared rule that makes family ``a`` outrank ``b`` (directly or through a chain), or ``None``."""
+    direct = [r for r in view.precedence if r.higher == a and r.lower == b]
+    if direct:
+        return direct[0] if len(direct) == 1 else None
+    frontier, seen = [a], {a}
+    while frontier:
+        cur = frontier.pop()
+        for r in view.precedence:
+            if r.higher == cur and r.lower not in seen:
+                if r.lower == b:
+                    return r
+                seen.add(r.lower)
+                frontier.append(r.lower)
+    return None
+
+
+def _action_in_text(action: str, text: str) -> bool:
+    n = nz(text)
+    form = _ja_action_stem(action) if has_cjk(nz(action)) else nz(action)
+    if has_cjk(form):
+        return form in n
+    ttoks = [t for t in (x[0] for x in latin_tokens(form)) if t not in _ARTICLES]
+    qtoks = [t[0] for t in latin_tokens(n) if t[0] not in _ARTICLES]
+    k = len(ttoks)
+    for i in range(0, len(qtoks) - k + 1):
+        if _tok_compat(qtoks[i], ttoks[0]) and qtoks[i + 1:i + k] == ttoks[1:]:
+            return True
+    return False
+
+
+_STANCE_EN_NEG = frozenset("never not cannot can't won't don't doesn't".split())
+_STANCE_EN_AUX = frozenset("will must shall should do does".split())
+_JA_MIZEN = {"う": ("わ",), "つ": ("た",), "る": ("ら", ""), "く": ("か",), "ぐ": ("が",), "す": ("さ",),
+             "ぬ": ("な",), "ぶ": ("ば",), "む": ("ま",)}
+_STANCE_JA_SUBJ = re.compile(r"^(?:(?:私たち|我々|われわれ)(?:は|が)[、,]?)?$")
+_STANCE_OTHER_NEG = re.compile(r"禁止|許さ")
+
+
+def _en_neg_tail(pre: list[str]) -> int:
+    if len(pre) >= 2 and pre[-2:] == ["no", "longer"]:
+        k = 2
+    elif pre and pre[-1] in _STANCE_EN_NEG:
+        k = 1
+    else:
+        return 0
+    if (k == 2 or pre[-1] in ("never", "not")) and len(pre) > k and pre[-k - 1] in _STANCE_EN_AUX:
+        k += 1
+    return k
+
+
+def _record_stance(action: str, text: str) -> Optional[tuple[str, bool]]:
+    """(stance, unconditional) of a record that names the operation, or None.  stance: NEG (a closed negation stands
+    right on the operation and no other negation is in the record), POS (no negation anywhere), else UNREADABLE."""
+    if not _action_in_text(action, text):
+        return None
+    n = nz(text)
+    if has_cjk(nz(action)):
+        a = nz(action)
+        stem = _ja_action_stem(action)
+        pos = n.find(stem)
+        if pos < 0:
+            return ("UNREADABLE", False)
+        pre, after = n[:pos], n[pos + len(stem):]
+        if a.endswith("する") and len(a) - 2 >= 2:
+            negs = ["しない", "しません", "することはしない", "することはしません"]
+        elif a and a[-1] in _U_ROW and len(a) - 1 >= 2:
+            last = a[-1]
+            negs = ([m + "ない" for m in _JA_MIZEN.get(last, ())] + [r + "ません" for r in _JA_REN.get(last, ())]
+                    + [last + "ことはしない", last + "ことはしません"])
+        else:
+            negs = ["はしない", "をしない", "しない", "はしません", "をしません", "しません"]
+        hit = max((x for x in negs if after.startswith(x)), key=len, default=None)
+        if hit is not None:
+            rest = after[len(hit):]
+            if _negated(pre + "|" + rest) or _STANCE_OTHER_NEG.search(pre + rest):
+                return ("UNREADABLE", False)
+            return ("NEG", bool(_STANCE_JA_SUBJ.match(pre)) and rest.strip(" 。.") == "")
+        if _negated(n) or _STANCE_OTHER_NEG.search(n):
+            return ("UNREADABLE", False)
+        return ("POS", False)
+    toks = _TOKEN.findall(n)
+    ttoks = [t for t in _TOKEN.findall(nz(action)) if t not in _ARTICLES]
+    span = _tok_span(toks, ttoks) if ttoks else None
+    if span is None:
+        return ("UNREADABLE", False)
+    pre, cont = toks[:span[0]], toks[span[1] + 1:]
+    k = _en_neg_tail(pre)
+    if k:
+        subj = pre[:len(pre) - k]
+        if _negated(" ".join(subj + ["|"] + cont)) or _STANCE_OTHER_NEG.search(n):
+            return ("UNREADABLE", False)
+        return ("NEG", subj in ([], ["we"]) and not cont)
+    if _negated(n) or _STANCE_OTHER_NEG.search(n):
+        return ("UNREADABLE", False)
+    return ("POS", False)
+
+
+def _conflicts_for(ctx: Ctx, action: ActionV, family: str) -> list[tuple[str, TextV]]:
+    """Statements of other families about the same operation: ('negative'|'negative_conditional'|'requires'|
+    'unreadable', text record).  Invariants count for a protected operation, criteria for a forbidden one."""
+    found: list[tuple[str, TextV]] = []
+    recs = ctx.view.invariants if family == "protected_actions" else ctx.view.criteria
+    for rec in recs:
+        st = _record_stance(action.action, rec.text)
+        if st is None:
+            continue
+        stance, uncond = st
+        if stance == "UNREADABLE":
+            found.append(("unreadable", rec))
+        elif family == "protected_actions" and stance == "NEG":
+            found.append(("negative" if uncond else "negative_conditional", rec))
+        elif family == "forbidden_actions" and stance == "POS":
+            found.append(("requires", rec))
+    return found
+
+
+def layer_escalation_conditions(ctx: Ctx, kind_hint: Optional[str]) -> Optional[Outcome]:
+    hits: list[EscV] = []
+    for m in ctx.mentions:
+        if m.ambiguous:
+            continue
+        for e in m.objs("escalation"):
+            if e.scope is None or e.scope == kind_hint:
+                if not any(h is e for h in hits):
+                    hits.append(e)
+    if not hits:
+        return None
+    return _esc("HUMAN_APPROVAL_REQUIRED", "ESCALATION_CONDITION:" + "+".join(h.id for h in hits), [h.ref for h in hits],
+                layer="escalation_conditions")
+
+
+def _path_status(ctx: Ctx) -> Optional[tuple[str, list[Ref], str]]:
+    """'ALLOWED' / 'OUTSIDE' / 'NOT_PLAIN' / 'NO_ALLOWLIST' for a path-looking token in the question, else ``None``.
+    'NOT_PLAIN': the path would match the list by prefix but has a "." or ".." part (it is not compared, it is handed up)."""
+    def found(text: str) -> list[str]:
+        out = []
+        for m in _PATH_RX.finditer(text):
+            p = m.group(0).rstrip("/")
+            if p.startswith("./"):
+                p = p[2:]
+            out.append(p)
+        return [p for p in out if p and not re.fullmatch(r"[0-9.]+", p)]
+    paths = found(ctx.q)
+    if not paths:
+        return None
+    if not ctx.view.allow_declared:
+        return "NO_ALLOWLIST", [], paths[0]
+    cased = found(ctx.q_case)
+    if [c.casefold() for c in cased] != paths:
+        cased = []          # the two readings do not line up: no path is compared letter for letter
+    refs: list[Ref] = []
+    outside = False
+    not_plain = False
+    case_differs = False
+    for i, p in enumerate(paths):
+        hit = [rf for allowed, rf in ctx.view.allow if p == allowed or p.startswith(allowed.rstrip("/") + "/")]
+        if hit and not all(re.search(r"[^.]", seg) for seg in p.split("/")):
+            not_plain = True       # "a/../b" and "a/./b" are not compared with the list (no normalising: handed up)
+        elif hit:
+            c = cased[i] if cased else None
+            exact = [rf for allowed, rf in ctx.view.allow
+                     if c is not None and (c == allowed or c.startswith(allowed.rstrip("/") + "/"))]
+            if exact:
+                refs.extend(exact)
+            else:
+                case_differs = True   # equal only after case folding: a different directory on most file systems
+        else:
+            outside = True
+    if outside:
+        return "OUTSIDE", [rf for _, rf in ctx.view.allow], paths[0]
+    if not_plain:
+        return "NOT_PLAIN", [rf for _, rf in ctx.view.allow], paths[0]
+    if case_differs:
+        return "CASE_DIFFERS", [rf for _, rf in ctx.view.allow], paths[0]
+    return "ALLOWED", refs, paths[0]
+
+
+def _builtin_protected(ctx: Ctx) -> bool:
+    """A permission question about an operation that looks like deleting, publishing, spending or a credential.
+    It is used only to hand the question up (never to answer), when the frame names no such operation."""
+    return bool(_PERM_CUE.search(ctx.q) and _BUILTIN_PROTECTED.search(ctx.q))
+
+
+_PERM_PAST_EN = re.compile(
+    r"^(?:(?:so|and|then|also|ok|okay|well)[, ]+)?(?:was|were|did|had)\b|\b(?:was|were)\s+(?:it\s+)?(?:allowed|permitted|ok|okay|fine|"
+    r"acceptable|permissible)\b|\bused\s+to\b|\b(?:could|might)\s+(?:i|we)\s+have\b")
+_PERM_PAST_JA = re.compile(r"(?:よかった|いけた|でき(?:た|ました)|ました|でした|ていた|ていました|だった)(?:です)?(?:か|でしょうか|のか)?[?？。\s]*$")
+# "should we X?" asks for advice, which a record of "X is permitted" does not give (a "not permitted" still answers it)
+_PERM_SHOULD = re.compile(r"\b(?:should|shall)\s+(?:i|we)\b|べき|(?:方|ほう)が(?:よい|いい|良い)")
+
+
+def layer_permission(ctx: Ctx) -> Optional[Outcome]:
+    out = _layer_permission(ctx)
+    if out is None or out.decision != "answer":
+        return out
+    cue_sents = [ctx.q[a:b] for a, b in ctx.sentences if _PERM_CUE.search(ctx.q[a:b])]
+    if any(_PERM_PAST_EN.search(x.strip()) or _PERM_PAST_JA.search(x.strip()) for x in cue_sents):
+        return _esc("QUESTION_UNREADABLE", "PAST_TENSE_PERMISSION", out.basis, out.kind, "permission")
+    if out.polarity == "YES" and any(_PERM_SHOULD.search(x) for x in cue_sents):
+        return _esc("FRAME_SILENT", "ADVICE_NOT_PERMISSION", out.basis, out.kind, "permission")
+    detail = _perm_form_ok(ctx, out)
+    if detail is not None:
+        # the record decides whether THIS team may DO the operation (now): another operation, subject, time or purpose is not covered
+        return _esc("FRAME_SILENT", detail, out.basis, out.kind, "permission")
+    return out
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The form gate of a permission answer.
+#
+# A record about an operation ("running X: permitted", "retry Y: forbidden", "write under app/: allowed") decides one
+# thing: whether THIS team may DO that operation.  Every answer of the permission layer, "permitted" as well as
+# "not permitted", is given only when the sentence of the question is, around the thing asked about, one of the closed
+# forms below -- the plain "may we do <it>" (a discourse word before it, "now / for this release" after it).  Stopping it,
+# postponing it, documenting it, outsourcing it, another subject, another time or another purpose are other questions
+# and are handed up.  There is no list of words to reject: what is read is listed, everything else goes up.
+# ---------------------------------------------------------------------------------------------------------------------
+
+_PERM_TAIL_EN = re.compile(r"^(?:\s*(?:now|today|please|then|too|also|here)\b)*(?:\s+(?:for|in)\s+(?:this|the|our)\s+"
+                           r"(?:release|project|version|iteration|build))?\s*$")
+_PEN_DISC = r"^(?:(?:so|and|then|also|ok|okay|well|now)[, ]+)?"
+_PEN_MODAL = r"(?:can|could|may|might|should|shall)"
+_PEN_GAP = r"(?:(?:do|perform|carry\s+out|try|start|begin|continue|keep|go\s+ahead\s+and)\s+)?"
+_PEN_GAPP = r"(?:edit|modify|change|update|write\s+to|write|create|add\s+to|touch)\s+"
+_PEN_FRAMES = (
+    r"(?:{M})\s+(?:i|we)\s+",
+    r"(?:is|would)\s+it\s+(?:be\s+)?(?:ok|okay|fine|alright|allowed|permitted|acceptable)\s+(?:for\s+(?:us|me)\s+)?to\s+",
+    r"(?:am\s+i|are\s+we)\s+(?:allowed|permitted)\s+to\s+",
+)
+_PERM_EN_FRAME_ONLY = tuple(re.compile(_PEN_DISC + f.replace("{M}", _PEN_MODAL) + r"\S.*$") for f in _PEN_FRAMES)
+
+
+def _perm_en_leads(gap: str) -> list["re.Pattern[str]"]:
+    return [re.compile(_PEN_DISC + f.replace("{M}", _PEN_MODAL) + gap + "$") for f in _PEN_FRAMES]
+
+
+_PEN_LEADS_ACTION = _perm_en_leads(_PEN_GAP)
+_PEN_LEADS_PATH = _perm_en_leads(_PEN_GAPP)
+
+_PJA_DISC = r"(?:(?:では|それでは|さて|ちなみに|今回は|まず|今は|では今)[、,]?)?"
+_PJA_APPROVAL = (r"(?:[^、,。がはを\s]{1,12}の)?(?:承認|許可|了承|同意|許諾)(?:を|は|も)?"
+                 r"(?:得|もらっ|いただい|頂い|受け|取っ)た(?:ので|から|うえで|上で)[、,]?")
+_PJA_LEAD = re.compile(r"^" + _PJA_DISC + r"$")
+_PJA_LEAD_APPROVAL = re.compile(r"^" + _PJA_DISC + r"(?:" + _PJA_APPROVAL + r")?$")
+_PJA_MAY = r"(?:(?:も)?(?:よい|いい|良い|構わない|かまわない|よろしい)(?:です)?(?:か|でしょうか)|(?:も)?問題(?:ない|ありません)(?:です)?(?:か|でしょうか))"
+_PJA_CAN = r"(?:でき|可能)(?:ます|る|です)(?:か|でしょうか)"
+_PJA_DO_TE = r"(?:し|行っ|おこなっ|実施し|実行し|やっ|始め|開始し|送っ)て"
+_PJA_DO_DICT = r"(?:する|行う|おこなう|実施する|実行する|やる|始める|開始する|送る)"
+_PJA_PATH_TE = r"(?:(?:書き換え|更新し|編集し|変更し|修正し|作成し|追加し|書い)て|書き込んで)"
+_PJA_PATH_DICT = r"(?:書き換える|更新する|編集する|変更する|修正する|作成する|追加する|書く|書き込む)"
+_PJA_R_NOUN = (re.compile(r"^(?:を|は)?(?:" + _PJA_DO_TE + _PJA_MAY + r"|" + _PJA_DO_DICT + r"(?:こと)?(?:は|が)?" + _PJA_CAN + r")$"),
+               re.compile(r"^(?:は|が)?(?:許可|承認)され(?:てい)?(?:ます|る)(?:か|でしょうか)$"))
+_PJA_R_PATH = re.compile(r"^\s*(?:を|に)?(?:" + _PJA_PATH_TE + _PJA_MAY + r"|" + _PJA_PATH_DICT + r"(?:こと)?(?:は|が)?" + _PJA_CAN + r")$")
+# a term that the closed LLM choice left standing: either a noun ("<noun>をしてもよいですか") or a verb stem ("…送|ってもよいですか")
+_PJA_R_LLM_STEM = re.compile(r"^(?![をはがもにでと])[ぁ-ん]{1,2}(?:て|で)" + _PJA_MAY + r"$")
+# only for the detail of a refusal: "<one word>を<verb>てもよいですか" is another operation on the thing
+_PJA_R_ANOTHER_VERB = re.compile(r"^(?:を|は)?[^をはがもにでとの、,\s]{1,8}(?:て|で)" + _PJA_MAY + r"$")
+
+# A sentence of the question that is not the permission question itself may only state that somebody approved (which
+# changes no answer: an approval does not suspend a forbidden operation and a recorded "permitted" needs none).  Any other
+# context sentence ("only the vendor will do it", "来年の話です") may carry a subject, time or condition and is handed up.
+_PEN_APPROVED = re.compile(
+    r"^(?:(?:the|our|my)\s+)?(?:[a-z][a-z\-]*\s+){0,3}?(?:approved|agreed|signed\s+off|said\s+(?:yes|ok|okay)|gave\s+(?:the\s+)?"
+    r"(?:approval|go-?ahead|ok|okay))(?:\s+(?:it|this|that))?$|^approval\s+(?:is\s+|was\s+)?(?:given|granted|obtained)$")
+_PJA_APPROVED = re.compile(
+    r"^(?:[^。、,？?！!\s]{1,12}(?:が|から|の|に))?(?:承認|許可|了承|同意|許諾|確認)"
+    r"(?:済み|(?:を|は|も)?(?:もらい|もらっ|得|取り|取っ|いただい|頂い|受け|し)(?:ました|て(?:い)?ます|てある))(?:です|でした)?$")
+
+
+# Outside the permission layer an approval changes no answer (a choice, a value, a scope or an order is read from the
+# record), so there is nothing to gain from reading an approval sentence that carries a qualifier ("来年度の承認済みです",
+# "Next year approved.", "The old greenhouse team approved."): only the bare sentence is let through there.
+_PEN_APPROVED_BARE = re.compile(r"^approved$|^approval\s+(?:is\s+|was\s+)?(?:given|granted|obtained)$")
+_PJA_APPROVED_BARE = re.compile(
+    r"^(?:承認|許可|了承|同意|許諾)(?:済み|(?:を|は|も)?(?:もらい|もらっ|得|取り|取っ|いただい|頂い|受け|し)"
+    r"(?:ました|て(?:い)?ます|てある))(?:です|でした)?$")
+
+
+def _sentences_unread(ctx: "Ctx", read: Sequence[tuple[int, int]], bare: bool = False) -> list[tuple[int, int]]:
+    """The sentences of the question that are neither one that was read (``read``) nor a sentence that only says that
+    somebody approved.  Such a sentence may carry a subject, a time or a condition ("来年の話です", "for another
+    version") that no layer looked at, so an answer is not given while one exists.
+    ``bare``: the answer is not a permission (an approval changes nothing there), so only a sentence that says nothing
+    but "approved" is let through, not one with a who / when / for-what in front of it."""
+    ja_rx, en_rx = (_PJA_APPROVED_BARE, _PEN_APPROVED_BARE) if bare else (_PJA_APPROVED, _PEN_APPROVED)
+    out: list[tuple[int, int]] = []
+    for a, b in ctx.sentences:
+        if (a, b) in read:
+            continue
+        sent = ctx.q[a:b].strip(" \t?？!！.。")
+        if not sent:
+            continue
+        if not (ja_rx.match(sent) if has_cjk(sent) else en_rx.match(sent)):
+            out.append((a, b))
+    return out
+
+
+def _perm_context_ok(ctx: "Ctx", cue_sents: Sequence[tuple[int, int]]) -> bool:
+    return not _sentences_unread(ctx, cue_sents)
+
+
+_PERM_OP = "PERMISSION_FOR_ANOTHER_OPERATION"
+_PERM_SUBJ = "PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION"
+_PERM_MODAL_SUBJECT_END = frozenset("will shall must should can may".split())
+
+
+def _tok_span(toks: list[str], ttoks: list[str]) -> Optional[tuple[int, int]]:
+    """Where the (article-free) tokens ``ttoks`` stand in ``toks`` (articles may sit between them): (first, last)."""
+    for i, t in enumerate(toks):
+        if t in _ARTICLES or not _tok_compat(t, ttoks[0]):
+            continue
+        j, k = i, 1
+        while k < len(ttoks):
+            j += 1
+            while j < len(toks) and toks[j] in _ARTICLES:
+                j += 1
+            if j >= len(toks) or toks[j] != ttoks[k]:
+                break
+            k += 1
+        if k == len(ttoks):
+            return i, j
+    return None
+
+
+def _perm_restatements(ctx: "Ctx", out: "Outcome", actions: Sequence["ActionV"]) -> list[tuple[list[str], list[str]]]:
+    """For an operation that a record of another family (a criterion or an invariant, found in the basis of the answer)
+    restates: (the words before the operation without its auxiliary, the words after it).  Built from the record's text."""
+    found: list[tuple[list[str], list[str]]] = []
+    for rec in list(ctx.view.criteria) + list(ctx.view.invariants):
+        if rec.ref not in out.basis:
+            continue
+        toks = _TOKEN.findall(nz(rec.text))
+        for act in actions:
+            if has_cjk(nz(act.action)):
+                continue
+            ttoks = [t for t in _TOKEN.findall(nz(act.action)) if t not in _ARTICLES]
+            if not ttoks:
+                continue
+            span = _tok_span(toks, ttoks)
+            if span is None:
+                continue
+            subj, cont = toks[:span[0]], toks[span[1] + 1:]
+            if subj and subj[-1] in _PERM_MODAL_SUBJECT_END:
+                subj = subj[:-1]
+            if subj:
+                found.append((subj, cont))
+    return found
+
+
+def _perm_en_target(L: str, R: str, kind: str, restated: Sequence[tuple[list[str], list[str]]],
+                    only_restated: bool = False) -> Optional[str]:
+    """``None`` when the English sentence round one target is a closed form, else the detail of the refusal.
+    ``only_restated``: the "permitted" of a forbidden operation was given by a criterion of a higher family; it holds
+    for what that criterion says (its subject, and its purpose when the question names one), not for "may we do it"."""
+    leads = _PEN_LEADS_PATH if kind == "PATH" else _PEN_LEADS_ACTION
+    tail = R.strip(" \t?!.")
+    r1 = (not tail) or bool(_PERM_TAIL_EN.match(" " + tail))
+    if not only_restated and any(rx.match(L) for rx in leads):
+        return None if r1 else _PERM_SUBJ
+    if kind == "ACTION":
+        for subj, cont in restated:
+            lead = re.compile(_PEN_DISC + _PEN_MODAL + r"\s+" + r"\s+".join(re.escape(t) for t in subj) + r"\s+" + _PEN_GAP + "$")
+            if not lead.match(L):
+                continue
+            r2 = bool(cont) and bool(re.fullmatch(r"\s*" + r"\s+".join(re.escape(t) for t in cont) + r"\s*", tail))
+            # a criterion that names a continuation (a condition, a time, a purpose) allows the operation only for that
+            # continuation: the question must say it (r2); a criterion with no continuation allows the plain question (r1)
+            if r2 or (r1 and not (only_restated and cont)):
+                return None
+            return _PERM_SUBJ
+    if only_restated:
+        return _PERM_SUBJ
+    if any(rx.match(L) for rx in _PERM_EN_FRAME_ONLY):
+        return _PERM_OP      # the frame of "may we <something>" is there; the something is not on the closed list
+    return _PERM_SUBJ
+
+
+def _ja_action_rests(term: str, src: str) -> tuple[list[str], list[str]]:
+    te, _, dic = _ja_verb_forms(nz(src))
+    return [f[len(term):] for f in te if f.startswith(term)], [f[len(term):] for f in dic if f.startswith(term)]
+
+
+def _perm_ja_target(L: str, R: str, kind: str, m: Optional["Mention"], index: "TermIndex",
+                    only_restated: bool = False) -> Optional[str]:
+    """The Japanese counterpart of ``_perm_en_target``: the part before the thing is a discourse word (and, for a
+    forbidden or protected operation, an approval clause, which does not change the answer), the part after it is the
+    operation's own "<do>てもよいですか" / "<do>ことはできますか" / "許可されていますか".
+    ``only_restated``: see ``_perm_en_target``; no Japanese restatement of a record is built, so it is always handed up."""
+    if only_restated:
+        return _PERM_SUBJ
+    tail = R.strip(" \t?!.。")
+    lead = L.strip()
+    llm = m is not None and m.via == "llm"
+    lead_ok = bool((_PJA_LEAD_APPROVAL if kind == "ACTION" and not llm else _PJA_LEAD).match(lead))
+    if kind == "PATH":
+        r_ok = bool(_PJA_R_PATH.match(tail))
+    elif llm:
+        r_ok = any(rx.match(tail) for rx in _PJA_R_NOUN) or bool(_PJA_R_LLM_STEM.match(tail))
+    elif kind == "NOUN":
+        r_ok = any(rx.match(tail) for rx in _PJA_R_NOUN)
+    else:   # the operation's own verb: te-form + "てもよいですか", dictionary form + "ことはできますか"
+        assert m is not None
+        acts = list(m.objs("forbidden")) + list(m.objs("protected"))
+        srcs = [nz(m.alias)] if m.via == "alias" and m.alias else [a.action for a in acts]
+        r_ok = bool(srcs)
+        for src in srcs:
+            if nz(src) == m.term:      # the operation is written as a noun ("…の外部送信"): read like a confirm noun
+                ok = any(rx.match(tail) for rx in _PJA_R_NOUN)
+            else:
+                te_r, dic_r = _ja_action_rests(m.term, src)
+                ok = bool(te_r) and bool(re.match(r"^(?:" + "|".join(re.escape(x) for x in te_r) + r")" + _PJA_MAY + r"$", tail))
+                if not ok and dic_r:
+                    ok = bool(re.match(r"^(?:" + "|".join(re.escape(x) for x in dic_r) + r")(?:こと)?(?:は|が)?" + _PJA_CAN + r"$", tail))
+            r_ok = r_ok and ok
+    if lead_ok and r_ok:
+        return None
+    if lead_ok and _PJA_R_ANOTHER_VERB.match(tail):
+        return _PERM_OP
+    return _PERM_SUBJ
+
+
+def _perm_form_ok(ctx: "Ctx", out: "Outcome") -> Optional[str]:
+    """``None`` when the question has the closed form of "may we do <the operation>" round every thing the permission
+    layer read in it, else the detail of the hand-up.  Applied to every answer, "permitted" and "not permitted" alike."""
+    targets: list[tuple[str, int, int, int, int, Optional[Mention]]] = []   # kind, sentence a, b, start, end, mention
+    cue_sents = [(a, b) for a, b in ctx.sentences if _PERM_CUE.search(ctx.q[a:b])]
+    for a, b in cue_sents:
+        for m in ctx.mentions:
+            if m.ambiguous or not (a <= m.start < b):
+                continue
+            if m.objs("forbidden") or m.objs("protected"):
+                targets.append(("ACTION", a, b, m.start, m.end, m))
+            elif any(pol.kind == "CONFIRM" for pol in m.objs("policy")):
+                targets.append(("NOUN", a, b, m.start, m.end, m))
+    if not targets:
+        for a, b in cue_sents:
+            paths = [pm for pm in _PATH_RX.finditer(ctx.q, a, b) if not re.fullmatch(r"[0-9.]+", pm.group(0).rstrip("/"))]
+            if len(paths) > 1:
+                return _PERM_SUBJ
+            targets.extend(("PATH", a, b, pm.start(), pm.end(), None) for pm in paths)
+    if not targets or not _perm_context_ok(ctx, cue_sents):
+        return _PERM_SUBJ
+    actions = [x for t in targets if t[5] is not None for x in list(t[5].objs("forbidden")) + list(t[5].objs("protected"))]
+    restated = _perm_restatements(ctx, out, actions) if actions else []
+    details: list[str] = []
+    for kind, a, b, start, end, m in targets:
+        L, R = ctx.q[a:start], ctx.q[end:b]
+        # a "permitted" for a forbidden operation can only have come from a higher-ranked criterion or invariant
+        only_restated = out.polarity == "YES" and m is not None and bool(m.objs("forbidden"))
+        if has_cjk(ctx.q[a:b]):
+            d = _perm_ja_target(L, R, kind, m, ctx.index, only_restated)
+        else:
+            d = _perm_en_target(L.lstrip(), R, kind, restated, only_restated)
+        if d is not None:
+            details.append(d)
+    if not details:
+        return None
+    return _PERM_OP if all(d == _PERM_OP for d in details) else _PERM_SUBJ
+
+
+def _layer_permission(ctx: Ctx) -> Optional[Outcome]:
+    cue = bool(_PERM_CUE.search(ctx.q))
+    statuses: list[tuple[str, list[Ref], Any]] = []
+    for m in ctx.mentions:
+        if m.ambiguous:
+            continue
+        for a in m.objs("forbidden"):
+            statuses.append(("FORBIDDEN", [a.ref], a))
+        for a in m.objs("protected"):
+            statuses.append(("PROTECTED", [a.ref], a))
+        if cue and not m.wider:
+            for pol in m.objs("policy"):
+                if pol.kind == "CONFIRM":
+                    statuses.append(("CONFIRM", [pol.ref], pol))
+    path = _path_status(ctx) if cue else None
+    if not statuses and path is None:
+        return None
+    if not statuses and path is not None and _builtin_protected(ctx):
+        return _esc("HUMAN_APPROVAL_REQUIRED", "BUILTIN_PROTECTED", [], "PERMISSION", "permission")
+    kinds = {s[0] for s in statuses}
+    if "FORBIDDEN" in kinds and not cue:
+        statuses = [s for s in statuses if s[0] != "FORBIDDEN"]
+        kinds = {s[0] for s in statuses}
+        if not statuses and path is None:
+            return None
+    basis = [r for s in statuses for r in s[1]]
+    if len({s[0] for s in statuses}) > 1 or (statuses and path is not None and path[0] != "ALLOWED"):
+        if any(s[0] == "PROTECTED" for s in statuses):
+            return _esc("HUMAN_APPROVAL_REQUIRED", "MIXED_AUTHORITY", basis, "PERMISSION", "permission")
+        return _esc("FRAME_SILENT", "MIXED_AUTHORITY", basis, "PERMISSION", "permission")
+    yes_p, no_p = _phrases(ctx)
+    if statuses:
+        what = statuses[0][0]
+        if what in ("FORBIDDEN", "PROTECTED"):
+            acts = [s[2] for s in statuses]
+            fam = "forbidden_actions" if what == "FORBIDDEN" else "protected_actions"
+            return _authority_with_conflicts(ctx, what, acts, basis, fam, yes_p, no_p)
+        # CONFIRM policy
+        values = {nz(s[2].value) for s in statuses}
+        if len(values) > 1:
+            return _esc("FRAME_CONFLICT", "CONFIRM_VALUES_DIFFER", basis, "CONFIRM", "permission")
+        val = values.pop()
+        if val in _PERMIT_VALUES:
+            return _pol_answer(ctx, True, basis, "CONFIRM", "DIRECT", statuses[0][2].value, no_p, "permission")
+        if val in _DENY_VALUES:
+            return _pol_answer(ctx, False, basis, "CONFIRM", "DIRECT", yes_p, statuses[0][2].value, "permission")
+        for o in ctx.options:
+            if o.core == val:
+                return Outcome("answer", o.text, o.index, "DIRECT", _uniq(basis), kind="CONFIRM", layer="permission")
+        return _esc("FRAME_SILENT", "CONFIRM_VALUE_UNREADABLE", basis, "CONFIRM", "permission")
+    assert path is not None
+    state, refs, _ = path
+    if state == "ALLOWED":
+        return _pol_answer(ctx, True, refs, "PERMISSION", "DIRECT", yes_p, no_p, "permission")
+    detail = {"OUTSIDE": "OUTSIDE_ALLOWLIST", "NOT_PLAIN": "PATH_NOT_PLAIN", "CASE_DIFFERS": "PATH_CASE_DIFFERS"}.get(state, "NO_ALLOWLIST")
+    return _esc("FRAME_SILENT", detail, refs, "PERMISSION", "permission")
+
+
+def _authority_with_conflicts(ctx: Ctx, what: str, acts: list[ActionV], basis: list[Ref], family: str,
+                              yes_p: str, no_p: str) -> Outcome:
+    """Forbidden -> not permitted; protected -> a human; but a statement of another family on the same
+    operation is a conflict that only a declared precedence can settle."""
+    conflicts: list[tuple[str, TextV, str]] = []   # (family of the other statement, record, stance)
+    for a in acts:
+        for stance, rec in _conflicts_for(ctx, a, family):
+            if stance == "unreadable":
+                return _esc("FRAME_SILENT", "RECORD_STANCE_UNREADABLE", list(basis) + [rec.ref], "PERMISSION", "permission")
+            if stance == "requires" and what == "FORBIDDEN":
+                conflicts.append(("completion_criteria", rec, "requires"))
+            elif stance.startswith("negative") and what == "PROTECTED":
+                conflicts.append(("philosophy_invariants", rec, stance))
+    if not conflicts:
+        if what == "FORBIDDEN":
+            return _pol_answer(ctx, False, basis, "PERMISSION", "DIRECT", yes_p, no_p, "permission")
+        return _esc("HUMAN_APPROVAL_REQUIRED", "PROTECTED_ACTION", basis, "PERMISSION", "permission")
+    verdicts: list[str] = []
+    refs = list(basis)
+    for fam, rec, stance in conflicts:
+        refs.append(rec.ref)
+        rule = _closure_higher(ctx.view, family, fam)
+        rule_rev = _closure_higher(ctx.view, fam, family)
+        if rule is not None and rule_rev is None:
+            refs.append(rule.ref)
+            verdicts.append("OWN")
+        elif rule_rev is not None and rule is None:
+            refs.append(rule_rev.ref)
+            verdicts.append("OTHER")
+        else:
+            return _esc("FRAME_CONFLICT", "NO_PRECEDENCE", refs, "PERMISSION", "permission")
+    if len(set(verdicts)) != 1:
+        return _esc("FRAME_CONFLICT", "PRECEDENCE_MIXED", refs, "PERMISSION", "permission")
+    if what == "FORBIDDEN":
+        if verdicts[0] == "OWN":
+            return _pol_answer(ctx, False, refs, "PERMISSION", "COMBINED", yes_p, no_p, "permission")
+        return _pol_answer(ctx, True, refs, "PERMISSION", "COMBINED", yes_p, no_p, "permission")
+    # protected vs a negative invariant
+    if verdicts[0] == "OTHER":
+        if any(st != "negative" for _, _, st in conflicts):
+            return _esc("HUMAN_APPROVAL_REQUIRED", "INVARIANT_IS_CONDITIONAL", refs, "PERMISSION", "permission")
+        return _pol_answer(ctx, False, refs, "PERMISSION", "COMBINED", yes_p, no_p, "permission")
+    return _esc("HUMAN_APPROVAL_REQUIRED", "PROTECTED_ACTION", refs, "PERMISSION", "permission")
+
+
+# ---------------------------------------------------------------------------------------------
+# Resolvers
+# ---------------------------------------------------------------------------------------------
+
+def _first_clause_phases(ctx: Ctx) -> list[PhaseV]:
+    s0 = ctx.sentences[0]
+    seg_end = s0[1]
+    for sep in ("、", ","):
+        p = ctx.q.find(sep, s0[0], s0[1])
+        if p >= 0:
+            seg_end = min(seg_end, p)
+    out: list[PhaseV] = []
+    for m, p in ctx.phase_mentions():
+        if m.start < seg_end and not any(p is x for x in out):
+            out.append(p)
+    return out
+
+
+def _phase_set_basis(ctx: Ctx, target: str) -> list[Ref]:
+    g = ctx.graph
+    refs: list[Ref] = []
+    nodes = g.ancestors(target) | {target}
+    for e in g.edges:
+        if e.before in nodes and e.after in nodes:
+            refs.append(e.ref)
+    return refs
+
+
+def _phase_by_id(ctx: Ctx, pid: str) -> PhaseV:
+    return next(p for p in ctx.view.phases if p.id == pid)
+
+
+def _distinct_phases(pairs: list[tuple[Mention, PhaseV]]) -> list[PhaseV]:
+    out: list[PhaseV] = []
+    for _, p in pairs:
+        if not any(p is x for x in out):
+            out.append(p)
+    return out
+
+
+def _lang_ok_order_answer(ctx: Ctx, pid: str, basis: list[Ref], deriv: str) -> Outcome:
+    p = _phase_by_id(ctx, pid)
+    return Outcome("answer", p.name, None, deriv, basis + [p.ref], kind="ORDER", layer="resolver")
+
+
+def resolve_order(ctx: Ctx) -> Optional[Outcome]:
+    if not _ORDER_CUE.search(ctx.q) and not _PREREQ_CUE.search(ctx.q):
+        return None
+    pairs = ctx.phase_mentions()
+    if not pairs and not any(o.reading == "PHASES" for o in ctx.options):
+        return None
+    g = ctx.graph
+    q = ctx.q
+    phases_in_q = _distinct_phases(pairs)
+
+    # (a) prerequisites of a target phase ------------------------------------------------------
+    if _PREREQ_CUE.search(q):
+        if has_cjk(q):
+            tgt = _first_clause_phases(ctx)
+        else:
+            m_b = _BEFORE_EN.search(q)
+            tgt = []
+            if m_b:
+                for m, p in pairs:
+                    if m.start >= m_b.end() and not any(p is x for x in tgt):
+                        tgt.append(p)
+        if len(tgt) != 1:
+            return _esc("QUESTION_UNREADABLE", "TARGET_PHASE_UNCLEAR", [], "ORDER", "resolver")
+        x = tgt[0].id
+        D, A = g.pred[x], g.ancestors(x)
+        basis = _phase_set_basis(ctx, x)
+        if not A:
+            return _esc("FRAME_SILENT", "NO_PREREQUISITES", [tgt[0].ref], "ORDER", "resolver")
+        if not ctx.has_options:
+            if len(A) == 1:
+                return _lang_ok_order_answer(ctx, next(iter(A)), basis, "DIRECT")
+            return _esc("ANSWER_FORM_UNSUPPORTED", "SET_ANSWER_WITHOUT_OPTIONS", basis, "ORDER", "resolver")
+        if any(o.reading != "PHASES" for o in ctx.options):
+            return _esc("VOCAB_UNMAPPED", "OPTION_UNMAPPED", basis, "ORDER", "resolver")
+        true_opts = []
+        for o in ctx.options:
+            s = set(o.phases)
+            ok = s <= A and s >= D
+            if o.exact:
+                ok = s == D and s == A
+            if ok:
+                true_opts.append(o)
+        if len(true_opts) == 1:
+            o = true_opts[0]
+            return Outcome("answer", o.text, o.index, "COMBINED" if len(basis) > 1 else "DIRECT", basis, kind="ORDER", layer="resolver")
+        if not true_opts:
+            return _esc("NO_OPTION_ALLOWED", "NO_OPTION_MATCHES_PREREQUISITES", basis, "ORDER", "resolver")
+        return _esc("FRAME_SILENT", "TIE", basis, "ORDER", "resolver")
+
+    # (b) what can be started next -------------------------------------------------------------
+    if _NEXT_CUE.search(q):
+        done: set[str] = set(ctx.view.done)
+        q_sent = [i for i, (a, b) in enumerate(ctx.sentences) if _NEXT_CUE.search(q[a:b])]
+        if not all(_next_predicate_ok(ctx, *ctx.sentences[i]) for i in q_sent):
+            return _esc("QUESTION_UNREADABLE", "PREDICATE_UNREADABLE", [], "ORDER", "resolver")
+        for i, (a, b) in enumerate(ctx.sentences):
+            if i in q_sent:
+                continue
+            if _DONE_CUE.search(q[a:b]):
+                for m, p in pairs:
+                    if a <= m.start < b:
+                        done.add(p.id)
+                        if (a, b) not in ctx.premise_sents and _premise_ok(ctx, a, b):
+                            ctx.premise_sents.append((a, b))
+        if not done:
+            return _esc("FRAME_SILENT", "NO_STATE", [], "ORDER", "resolver")
+        workable = [p.id for p in ctx.view.phases if p.id not in done and g.pred[p.id] <= done]
+        basis = [e.ref for e in g.edges if e.after in workable or (e.before in done and e.after not in done)]
+        if not workable:
+            return _esc("FRAME_SILENT", "NOTHING_WORKABLE", basis, "ORDER", "resolver")
+        if ctx.has_options:
+            if any(o.reading != "PHASES" for o in ctx.options):
+                return _esc("VOCAB_UNMAPPED", "OPTION_UNMAPPED", basis, "ORDER", "resolver")
+            true_opts = [o for o in ctx.options if set(o.phases) <= set(workable)]
+            if not true_opts:
+                return _esc("NO_OPTION_ALLOWED", "NO_OPTION_IS_WORKABLE", basis, "ORDER", "resolver")
+            whole = [o for o in true_opts if set(o.phases) == set(workable)]
+            if len(whole) == 1 and len(true_opts) == 1:
+                o = whole[0]
+                return Outcome("answer", o.text, o.index, "COMBINED", basis, kind="ORDER", layer="resolver")
+            if len(workable) == 1 and len(true_opts) == 1:
+                o = true_opts[0]
+                return Outcome("answer", o.text, o.index, "COMBINED", basis, kind="ORDER", layer="resolver")
+            return _esc("FRAME_SILENT", "TIE", basis, "ORDER", "resolver")
+        if len(workable) == 1:
+            return _lang_ok_order_answer(ctx, workable[0], basis, "COMBINED")
+        return _esc("FRAME_SILENT", "TIE", basis, "ORDER", "resolver")
+
+    # (c) may Y be started before X is done ------------------------------------------------------
+    before_ja = list(_BEFORE_JA.finditer(q)) if has_cjk(q) else []
+    before_en = list(_BEFORE_EN.finditer(q)) if not has_cjk(q) else []
+    if before_ja or before_en:
+        if has_cjk(q):
+            if len(before_ja) != 1:
+                return _esc("QUESTION_UNREADABLE", "ORDER_CLAUSE_UNCLEAR", [], "ORDER", "resolver")
+            bpos = before_ja[0].start()
+            sa = max(a for a, b in ctx.sentences if a <= bpos)
+            seg_start = sa
+            for sep in ("、", ","):
+                p = q.rfind(sep, sa, bpos)
+                if p >= 0:
+                    seg_start = max(seg_start, p + 1)
+            xs = [p for m, p in pairs if seg_start <= m.start and m.end <= bpos]
+            sb = next(b for a, b in ctx.sentences if a <= bpos < b or b == len(q))
+            ys = [p for m, p in pairs if sa <= m.start < sb and not (seg_start <= m.start and m.end <= bpos)]
+        else:
+            if len(before_en) != 1:
+                return _esc("QUESTION_UNREADABLE", "ORDER_CLAUSE_UNCLEAR", [], "ORDER", "resolver")
+            bpos = before_en[0].end()
+            sa = max(a for a, b in ctx.sentences if a <= before_en[0].start())
+            sb = next(b for a, b in ctx.sentences if a <= before_en[0].start() < b or b == len(q))
+            xs = [p for m, p in pairs if m.start >= bpos and m.start < sb]
+            ys = [p for m, p in pairs if sa <= m.start < before_en[0].start()]
+        xs, ys = _distinct_list(xs), _distinct_list(ys)
+        if len(xs) != 1 or len(ys) != 1:
+            return _esc("QUESTION_UNREADABLE", "ORDER_PHASES_UNCLEAR", [], "ORDER", "resolver")
+        x, y = xs[0], ys[0]
+        if x.id == y.id:
+            return _esc("QUESTION_UNREADABLE", "ORDER_SAME_PHASE", [x.ref], "ORDER", "resolver")
+        if has_cjk(q):
+            y_mention = next((m for m, p in pairs if p is y and sa <= m.start < sb and not (seg_start <= m.start and m.end <= bpos)), None)
+            before_at = bpos
+        else:
+            y_mention = next((m for m, p in pairs if p is y and sa <= m.start < before_en[0].start()), None)
+            before_at = before_en[0].start()
+        if y_mention is None or not _order_may_predicate_ok(ctx, y_mention, before_at, y):
+            return _esc("QUESTION_UNREADABLE", "PREDICATE_UNREADABLE", [], "ORDER", "resolver")
+        if x.id in g.ancestors(y.id):
+            edges = g.path_edges(x.id, y.id)
+            return _pol_answer_order(ctx, False, [e.ref for e in edges], len(edges))
+        if y.id in g.ancestors(x.id):
+            edges = g.path_edges(y.id, x.id)
+            return _pol_answer_order(ctx, True, [e.ref for e in edges], len(edges))
+        return _esc("FRAME_SILENT", "UNORDERED", [x.ref, y.ref], "ORDER", "resolver")
+
+    # (d) which of two phases comes first --------------------------------------------------------
+    if _FIRST_CUE.search(q):
+        if not all(_first_predicate_ok(ctx, a, b) for a, b in ctx.sentences if _FIRST_CUE.search(q[a:b])):
+            return _esc("QUESTION_UNREADABLE", "PREDICATE_UNREADABLE", [], "ORDER", "resolver")
+        if ctx.has_options and any(o.reading != "PHASES" for o in ctx.options):
+            # an option that is not read as a phase cannot be judged: "unreadable", never "no option is allowed"
+            return _esc("VOCAB_UNMAPPED", "OPTION_UNMAPPED", [], "ORDER", "resolver")
+        cand: list[PhaseV] = []
+        if ctx.has_options and all(o.reading == "PHASES" and len(o.phases) == 1 for o in ctx.options) and len(ctx.options) == 2:
+            cand = [_phase_by_id(ctx, o.phases[0]) for o in ctx.options]
+        elif len(phases_in_q) == 2:
+            cand = phases_in_q
+        if len(cand) != 2 or cand[0].id == cand[1].id:
+            return _esc("QUESTION_UNREADABLE", "ORDER_PHASES_UNCLEAR", [], "ORDER", "resolver")
+        a, b = cand
+        if a.id in g.ancestors(b.id):
+            first, edges = a, g.path_edges(a.id, b.id)
+        elif b.id in g.ancestors(a.id):
+            first, edges = b, g.path_edges(b.id, a.id)
+        else:
+            return _esc("FRAME_SILENT", "UNORDERED", [a.ref, b.ref], "ORDER", "resolver")
+        basis = [e.ref for e in edges]
+        deriv = "DIRECT" if len(edges) == 1 else "COMBINED"
+        if ctx.has_options:
+            for o in ctx.options:
+                if o.reading == "PHASES" and o.phases == (first.id,):
+                    return Outcome("answer", o.text, o.index, deriv, basis, kind="ORDER", layer="resolver")
+            return _esc("NO_OPTION_ALLOWED", "NO_OPTION_NAMES_THE_FIRST_PHASE", basis, "ORDER", "resolver")
+        return Outcome("answer", first.name, None, deriv, basis + [first.ref], kind="ORDER", layer="resolver")
+    return None
+
+
+def _distinct_list(items: list[Any]) -> list[Any]:
+    out: list[Any] = []
+    for i in items:
+        if not any(i is o for o in out):
+            out.append(i)
+    return out
+
+
+def _pol_answer_order(ctx: Ctx, yes: bool, basis: list[Ref], edges: int) -> Outcome:
+    if not ctx.has_options:
+        return _esc("ANSWER_FORM_UNSUPPORTED", "YES_NO_WITHOUT_OPTIONS", basis, "ORDER", "resolver")
+    out = _pol_answer(ctx, yes, basis, "ORDER", "DIRECT" if edges == 1 else "COMBINED", "", "", "resolver")
+    return out
+
+
+def _polarity_of_value(value: str) -> Optional[str]:
+    v = nz(value)
+    if v in _IN_VALUES:
+        return "IN"
+    if v in _OUT_VALUES:
+        return "OUT"
+    return None
+
+
+def resolve_scope(ctx: Ctx) -> Optional[Outcome]:
+    if not _SCOPE_CUE.search(ctx.q):
+        return None
+    conds: list[tuple[str, list[PolicyV]]] = []
+    for m in ctx.mentions:
+        if m.ambiguous:
+            continue
+        pols = [p for p in m.objs("policy") if p.kind == "SCOPE"]
+        if pols and not any(c[0] == nz(pols[0].cond) for c in conds):
+            conds.append((nz(pols[0].cond), pols))
+    if not conds:
+        return None
+    ask_out = bool(_SCOPE_OUT_ASK.search(ctx.q))
+    sms = [m for m in ctx.mentions if not m.ambiguous and any(p.kind == "SCOPE" for p in m.objs("policy"))]
+    if len(conds) == 1:
+        if not sms or not all(_scope_predicate_ok(ctx, m) for m in sms):
+            return _esc("QUESTION_UNREADABLE", "PREDICATE_UNREADABLE", [p.ref for p in conds[0][1]], "SCOPE", "resolver")
+    elif not sms or not _scope_multi_predicate_ok(ctx, sms):
+        return _esc("QUESTION_UNREADABLE", "PREDICATE_UNREADABLE", [p.ref for _, ps in conds for p in ps], "SCOPE", "resolver")
+
+    def polarity(pols: list[PolicyV]) -> tuple[Optional[str], Optional[str]]:
+        pv = {_polarity_of_value(p.value) for p in pols}
+        if None in pv:
+            return None, "SCOPE_VALUE_UNREADABLE"
+        if len(pv) > 1:
+            return None, "CONFLICTING_SCOPE_VALUES"
+        return pv.pop(), None
+
+    if len(conds) == 1:
+        pol, problem = polarity(conds[0][1])
+        basis = [p.ref for p in conds[0][1]]
+        if problem == "CONFLICTING_SCOPE_VALUES":
+            return _esc("FRAME_CONFLICT", problem, basis, "SCOPE", "resolver")
+        if problem:
+            return _esc("FRAME_SILENT", problem, basis, "SCOPE", "resolver")
+        if ctx.has_options and ctx.polarity_options() is None and all(o.reading == "TERM" for o in ctx.options):
+            return None
+        if ctx.has_options:
+            yes = (pol == "OUT") if ask_out else (pol == "IN")
+            return _pol_answer(ctx, yes, basis, "SCOPE", "DIRECT", "", "", "resolver")
+        if len({nz(p.value) for p in conds[0][1]}) != 1:
+            return _esc("ANSWER_FORM_UNSUPPORTED", "SCOPE_VALUES_DIFFER_IN_FORM", basis, "SCOPE", "resolver")
+        return Outcome("answer", conds[0][1][0].value, None, "DIRECT", basis, kind="SCOPE", layer="resolver")
+    # several scope conditions: the options must name them
+    if not ctx.has_options or any(o.reading != "TERM" for o in ctx.options):
+        return _esc("FRAME_SILENT", "SEVERAL_SCOPE_TERMS_WITHOUT_OPTIONS", [p.ref for _, ps in conds for p in ps], "SCOPE", "resolver")
+    by_cond = {c: ps for c, ps in conds}
+    truths: list[tuple[OptionInfo, Optional[bool]]] = []
+    basis: list[Ref] = []
+    for o in ctx.options:
+        ps = by_cond.get(str(o.maps_to))
+        if ps is None:
+            truths.append((o, None))
+            continue
+        pol, problem = polarity(ps)
+        basis.extend(p.ref for p in ps)
+        if problem == "CONFLICTING_SCOPE_VALUES":
+            return _esc("FRAME_CONFLICT", problem, basis, "SCOPE", "resolver")
+        truths.append((o, None if pol is None else ((pol == "OUT") if ask_out else (pol == "IN"))))
+    if any(t is None for _, t in truths):
+        return _esc("FRAME_SILENT", "OPTION_SCOPE_UNKNOWN", basis, "SCOPE", "resolver")
+    true_o = [o for o, t in truths if t]
+    if len(true_o) == 1 and sum(1 for _, t in truths if not t) == len(truths) - 1:
+        o = true_o[0]
+        return Outcome("answer", o.text, o.index, "COMBINED", basis, kind="SCOPE", layer="resolver")
+    if not true_o:
+        return _esc("NO_OPTION_ALLOWED", "NO_OPTION_MATCHES_SCOPE", basis, "SCOPE", "resolver")
+    return _esc("FRAME_SILENT", "TIE", basis, "SCOPE", "resolver")
+
+
+_SUFFIX_RX = re.compile(r"(?:を|で)?(?:優先|先に|採用|使う|使用|にする|にします)$|\bfirst$")
+
+
+def _value_matches(opt: OptionInfo, value: str, ctx: Ctx) -> bool:
+    v = nz(value)
+    cands = {opt.core, ctx.index.alias_map.get(opt.core, opt.core)}
+    stripped = _SUFFIX_RX.sub("", opt.core).strip(_PUNCT_EDGE)
+    cands.add(stripped)
+    cands.add(ctx.index.alias_map.get(stripped, stripped))
+    return v in cands or ctx.index.alias_map.get(v, v) in cands
+
+
+def resolve_choice(ctx: Ctx) -> Optional[Outcome]:
+    if _SCOPE_CUE.search(ctx.q) and not _CHOICE_ASK.search(ctx.q):
+        return None
+    sources: list[tuple[str, list[str], list[Ref]]] = []
+    src_mentions: list["Mention"] = []
+    for m in ctx.mentions:
+        if m.ambiguous:
+            continue
+        vals: list[str] = []
+        refs: list[Ref] = []
+        subj_key = None
+        for pol in m.objs("policy"):
+            if pol.kind == "CHOICE":
+                vals.append(pol.value)
+                refs.append(pol.ref)
+                subj_key = nz(pol.cond)
+        for d in m.objs("subject"):
+            vals.append(d.value)
+            refs.append(d.ref)
+            subj_key = nz(d.subject)
+        if vals:
+            src_mentions.append(m)
+        if vals and not any(s[0] == subj_key for s in sources):
+            sources.append((str(subj_key), vals, refs))
+    if not sources:
+        return None
+    if not ctx.has_options and not _CHOICE_ASK.search(ctx.q):
+        return None
+    basis_all = [r for s in sources for r in s[2]]
+    # a value is read out only for the closed "which / what do we choose" forms (not a comparison, a past, another subject)
+    if not all(_choice_predicate_ok(ctx, m) for m in src_mentions):
+        if ctx.polarity_options() is not None:     # "is T = value OK?": a yes/no on a value, not a choice
+            return _esc("FRAME_SILENT", "POLARITY_QUESTION_ON_A_VALUE", basis_all, "CHOICE", "resolver")
+        return _esc("QUESTION_UNREADABLE", "PREDICATE_UNREADABLE", basis_all, "CHOICE", "resolver")
+    for _, vals, refs in sources:
+        if len({nz(v) for v in vals}) > 1:
+            return _esc("FRAME_CONFLICT", "SAME_SUBJECT_DIFFERENT_VALUES", refs, "CHOICE", "resolver")
+    if not ctx.has_options:
+        if len(sources) == 1:
+            return Outcome("answer", sources[0][1][0], None, "DIRECT", list(sources[0][2][:1]), kind="DESIGN_PREFERENCE", layer="resolver")
+        return _esc("ANSWER_FORM_UNSUPPORTED", "SEVERAL_SUBJECTS_WITHOUT_OPTIONS", basis_all, "CHOICE", "resolver")
+    chosen: list[OptionInfo] = []
+    for _, vals, refs in sources:
+        hits = [o for o in ctx.options if _value_matches(o, vals[0], ctx)]
+        if len(hits) > 1:
+            return _esc("FRAME_SILENT", "TIE", refs, "CHOICE", "resolver")
+        if not hits:
+            if ctx.polarity_options() is not None:
+                return _esc("FRAME_SILENT", "POLARITY_QUESTION_ON_A_VALUE", refs, "CHOICE", "resolver")
+            if all(o.reading == "TERM" for o in ctx.options):
+                # every option was read as a frame term and none of them is the recorded value: a judgement.  When any
+                # option could not be read, the value may be that option: unknown, not "none is allowed"
+                return _esc("NO_OPTION_ALLOWED", "VALUE_NOT_OFFERED", refs, "CHOICE", "resolver")
+            return _esc("VOCAB_UNMAPPED", "OPTION_UNMAPPED", refs, "CHOICE", "resolver")
+        chosen.append(hits[0])
+    if len({o.index for o in chosen}) != 1:
+        return _esc("FRAME_SILENT", "SOURCES_DISAGREE", basis_all, "CHOICE", "resolver")
+    o = chosen[0]
+    return Outcome("answer", o.text, o.index, "COMBINED" if len(sources) > 1 else "DIRECT", basis_all, kind="CHOICE", layer="resolver")
+
+
+def resolve_acceptance(ctx: Ctx) -> Optional[Outcome]:
+    ids = [c for m in ctx.mentions if not m.ambiguous for c in m.objs("criterion")]
+    ids = _distinct_list(ids)
+    if len(ids) != 1:
+        return None
+    c = ids[0]
+    if _ACCEPT_HUMAN.search(ctx.q) and ctx.polarity_options() is not None:
+        if c.human is None:   # the record does not say who judges: unknown, not "no"
+            return _esc("FRAME_SILENT", "HUMAN_JUDGED_NOT_STATED", [c.ref], "REQUIREMENT_CLARIFICATION", "resolver")
+        return _pol_answer(ctx, c.human, [c.ref], "REQUIREMENT_CLARIFICATION", "DIRECT", "", "", "resolver")
+    if _ACCEPT_CMD.search(ctx.q) and not ctx.has_options and c.command:
+        return Outcome("answer", c.command, None, "DIRECT", [c.ref], kind="REQUIREMENT_CLARIFICATION", layer="resolver")
+    return None
+
+
+RESOLVERS: tuple[tuple[str, Callable[[Ctx], Optional[Outcome]]], ...] = (
+    ("order", resolve_order), ("scope", resolve_scope), ("choice", resolve_choice), ("acceptance", resolve_acceptance),
+)
+
+
+def combine_resolvers(ctx: Ctx, only: Optional[str] = None) -> Optional[Outcome]:
+    results: list[tuple[str, Outcome]] = []
+    for name, fn in RESOLVERS:
+        if only is not None and name != only:
+            continue
+        ctx.trace_tried.append(name)
+        out = fn(ctx)
+        ctx.trace_out[name] = "NOT_APPLICABLE" if out is None else (
+            "ANSWER" if out.decision == "answer" else f"ESCALATE:{out.reason}:{out.detail}")
+        if out is not None:
+            if out.decision == "answer":
+                out.resolvers = (name,)
+            results.append((name, out))
+    if not results:
+        return None
+    if len(results) == 1:
+        return results[0][1]
+    outs = [o for _, o in results]
+    if all(o.decision == "answer" for o in outs):
+        keys = {(o.index, nz(o.answer or "")) if o.index is None else (o.index, "") for o in outs}
+        if len(keys) == 1:
+            first = outs[0]
+            first.derivation = "COMBINED"
+            first.basis = _uniq(r for o in outs for r in o.basis)
+            first.resolvers = tuple(n for n, _ in results)
+            return first
+        return _esc("FRAME_CONFLICT", "RESOLVERS_DISAGREE", [r for o in outs for r in o.basis], layer="resolver")
+    order = ("FRAME_CONFLICT", "HUMAN_APPROVAL_REQUIRED", "QUESTION_UNREADABLE", "NO_OPTION_ALLOWED", "VOCAB_UNMAPPED",
+             "ANSWER_FORM_UNSUPPORTED", "FRAME_SILENT")
+    escs = [o for o in outs if o.decision == "escalate"]
+    for reason in order:
+        same = [o for o in escs if o.reason == reason]
+        if same:
+            res = same[0]
+            res.basis = _uniq(r for o in outs for r in o.basis)
+            return res
+    return escs[0]
+
+
+# ---------------------------------------------------------------------------------------------
+# Out-of-vocabulary route (closed LLM choice, off by default)
+# ---------------------------------------------------------------------------------------------
+
+_JA_CUES = {
+    "SCOPE": re.compile(r"(?:今回の|このリリースの|この版の)?(?:範囲|対象|スコープ)(?:に|には|内に|内|外|として)?(?:は)?(?:含め|含まれ|入り|入れ|なり|する|します|なる)?(?:て)?(?:ます|る|ない)?(?:ですか|でしょうか|か)?"),
+    "PERMISSION": re.compile(r"(?:を|は|も)?[ぁ-ん]{0,2}(?:て|で)(?:も)?(?:よい|いい|良い|構わない|かまわない)(?:です)?(?:か|でしょうか)"),
+    "CHOICE": re.compile(r"(?:は|を)?(?:どれ|どちら|どの|何)(?:に|を)?(?:し|選び|使い|採用し|決め|選択し)?(?:ます|る)?(?:か|でしょうか)?"),
+    "ORDER": re.compile(r"(?:を)?(?:先に|前に)[^、。]*"),
+}
+_EN_LEAD = re.compile(r"^(?:is|are|do|does|did|should|shall|can|could|may|might|will|would|which|what)\b\s*|^(?:we|i|you|it|there)\b\s*")
+_EN_LEAD_VERB = re.compile(r"^(?:include|use|pick|choose|add|have|go with|support|adopt|apply|do|allow)\b\s*")
+_EN_TRAIL = re.compile(
+    r"\s+(?:be\s+)?(?:in|out of)\s+scope$|\s+part\s+of\s+(?:this|the)\s+(?:release|project|work|scope)$|"
+    r"\s+(?:should|shall|will|do|can)\s+(?:we|i)\s+(?:pick|use|choose|go\s+with|adopt|apply|select)$|"
+    r"\s+(?:be|get)\s+(?:allowed|permitted|ok|okay|fine)$")
+
+
+def _vocab_role(q: str) -> Optional[str]:
+    if _SCOPE_CUE.search(q):
+        return "SCOPE"
+    if _CHOICE_CUE.search(q):
+        return "CHOICE"
+    if _PERM_CUE.search(q):
+        return "PERMISSION"
+    if _ORDER_CUE.search(q):
+        return "ORDER"
+    return None
+
+
+def extract_term(ctx: Ctx, role: str) -> tuple[Optional[str], str]:
+    """The one remaining stretch of the question after the closed cue phrases and the options are removed."""
+    cands = [(a, b) for a, b in ctx.sentences if q_has_role(ctx.q[a:b], role)]
+    if len(cands) != 1:
+        return None, "NO_SINGLE_TERM"
+    a, b = cands[0]
+    s = ctx.q[a:b]
+    for o in sorted(ctx.options, key=lambda x: -len(x.core)):
+        if o.core and len(o.core) >= 2 and o.core in s:
+            s = s.replace(o.core, "\x00")
+    if has_cjk(s):
+        s = _JA_CUES[role].sub("\x00", s)
+        frags = [f.strip(_PUNCT_EDGE + "はをがもにのでとやへ") for f in s.split("\x00")]
+        frags = [f for f in frags if f]
+        if len(frags) != 1:
+            return None, "NO_SINGLE_TERM"
+        term = frags[0]
+    else:
+        s = s.strip(_PUNCT_EDGE)
+        prev = None
+        while prev != s:
+            prev = s
+            s = _EN_LEAD.sub("", s).strip()
+            if role in ("SCOPE", "CHOICE"):
+                s = _EN_LEAD_VERB.sub("", s).strip()
+            s = _EN_TRAIL.sub("", s).strip()
+            s = re.sub(r"^(?:a|an|the)\s+", "", s)
+        term = s.strip(_PUNCT_EDGE)
+        if "\x00" in term:
+            return None, "NO_SINGLE_TERM"
+    if len(term) < 2:
+        return None, "NO_SINGLE_TERM"
+    return term, "OK"
+
+
+def q_has_role(sentence: str, role: str) -> bool:
+    return bool({"SCOPE": _SCOPE_CUE, "PERMISSION": _PERM_CUE, "CHOICE": _CHOICE_CUE, "ORDER": _ORDER_CUE}[role].search(sentence))
+
+
+def candidates_for(ctx: Ctx, role: str) -> list[ChoiceCandidate]:
+    v = ctx.view
+    rows: list[tuple[str, str]] = []
+    if role == "SCOPE":
+        rows = [(p.cond, p.ref.text) for p in v.policies if p.kind == "SCOPE"]
+    elif role == "PERMISSION":
+        rows = [(p.cond, p.ref.text) for p in v.policies if p.kind == "CONFIRM"]
+        rows += [(a.action, a.ref.text) for a in v.forbidden] + [(a.action, a.ref.text) for a in v.protected]
+    elif role == "CHOICE":
+        rows = [(p.cond, p.ref.text) for p in v.policies if p.kind == "CHOICE"] + [(d.subject, d.ref.text) for d in v.decisions]
+    elif role == "ORDER":
+        rows = [(p.name, p.ref.text) for p in v.phases]
+    out: list[ChoiceCandidate] = []
+    for term, used in rows:
+        out.append(ChoiceCandidate(term, (used,)))
+    return out
+
+
+class _ScriptedProvider:
+    """A made-up provider for tests and the scripted CLI mode: it only echoes a scripted pick."""
+
+    name = "scripted"
+
+    def __init__(self, script: dict[str, Any]):
+        self.script = script
+        self.calls = 0
+
+    def ask(self, prompt: str) -> ProviderReply:
+        self.calls += 1
+        fail = self.script.get("fail")
+        if fail:
+            return ProviderReply.failed(str(fail), provider="scripted")
+        pick = self.script.get("pick2") if self.calls == 2 and "pick2" in self.script else self.script.get("pick")
+        terms = []
+        for m in re.finditer(r"^(\d+): (\{.*\})$", prompt, re.M):
+            try:
+                terms.append((int(m.group(1)), json.loads(m.group(2)).get("term")))
+            except (ValueError, AttributeError):
+                continue
+        if pick is not None:
+            for n, term in terms:
+                if nz(str(term)) == nz(str(pick)):
+                    return ProviderReply.success(json.dumps({"choice": n}), provider="scripted")
+        return ProviderReply.success(json.dumps({"choice": None}), provider="scripted")
+
+
+def load_fake_script(path: str) -> dict[str, Any]:
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError("the script must be a JSON object")
+    return data
+
+
+def make_chooser(mode: str, fake_script: Optional[str], ledger_path: Optional[str]) -> Optional[LLMChooser]:
+    if mode == "off":
+        return None
+    ledger = ChoiceLedger(ledger_path) if ledger_path else ChoiceLedger(None)
+    if mode == "fake":
+        script = load_fake_script(fake_script) if fake_script else {"pick": None}
+        return LLMChooser(_ScriptedProvider(script), ledger)
+    if mode == "codex":
+        return LLMChooser(CodexProvider(), ledger)
+    return LLMChooser(ClaudeProvider(), ledger)
+
+
+def _vocab_info(term: Optional[str], cands: list[ChoiceCandidate], frame_term: Optional[str], outcome: str,
+                decision_id: Optional[str] = None, asks: Optional[list[dict]] = None) -> dict[str, Any]:
+    return {"question_term": term, "candidates": [c.term for c in cands], "frame_term": frame_term,
+            "provenance": "LLM_TESTIMONY_MAPPING", "counts_as_evidence": False, "outcome": outcome,
+            "ledger_decision_id": decision_id, "asks": asks or []}
+
+
+# ---------------------------------------------------------------------------------------------
+# The pipeline
+# ---------------------------------------------------------------------------------------------
+
+def _classifier_kind(raw_q: str, options: Optional[list[str]]) -> str:
+    try:
+        k = conductor.classify_question(raw_q, options)
+        return str(k) if str(k) in conductor.QUESTION_KINDS else "OTHER"
+    except Exception:   # the classifier is a reference only
+        return "OTHER"
+
+
+def _decide(ctx: Ctx, only_role: Optional[str], kind_hint: str) -> tuple[Optional[Outcome], bool]:
+    """Layers 3-6.  Returns (outcome, hit_status_or_request)."""
+    if only_role is None:
+        out = layer_escalation_conditions(ctx, kind_hint)
+        if out:
+            ctx.trace_tried.append("escalation_conditions")
+            ctx.trace_out["escalation_conditions"] = "ESCALATE"
+            return out, False
+    wide = [m for m in ctx.mentions if m.wider]
+    if wide and not any(g in m.groups() for m in ctx.mentions for g in ("forbidden", "protected")):
+        ctx.trace_tried.append("wider_phrase")
+        ctx.trace_out["wider_phrase"] = "ESCALATE"
+        if _REQUEST_CUE.search(ctx.q) or _STATUS_CUE.search(ctx.q):
+            return _esc("OUT_OF_RANGE", "STATE_OR_REQUEST_QUESTION", [], "STATUS" if _STATUS_CUE.search(ctx.q) else "OTHER"), False
+        return _esc("FRAME_SILENT", "TERM_IN_WIDER_PHRASE", [r for m in wide for r in _mention_refs(m)], layer="wider_phrase"), False
+    ctx.trace_tried.append("permission")
+    out = layer_permission(ctx)
+    ctx.trace_out["permission"] = "NOT_APPLICABLE" if out is None else ("ANSWER" if out.decision == "answer" else f"ESCALATE:{out.reason}:{out.detail}")
+    if out:
+        if out.decision == "answer":
+            out.resolvers = ("permission",)
+        return out, False
+    res = combine_resolvers(ctx)
+    return res, False
+
+
+def _ambiguous(ctx: Ctx) -> Optional[Outcome]:
+    amb = [m for m in ctx.mentions if m.ambiguous]
+    if amb:
+        return _esc("VOCAB_UNMAPPED", "AMBIGUOUS_TERM", [], layer="mentions")
+    return None
+
+
+def _finish(res: dict[str, Any], out: Outcome, ctx: Optional[Ctx], vocab: Optional[dict], classifier_kind: str,
+            opts: list[OptionInfo]) -> dict[str, Any]:
+    res["decision"] = out.decision
+    res["kind"] = out.kind or classifier_kind
+    if out.decision == "answer":
+        res["answer"], res["answer_option_index"], res["derivation"] = out.answer, out.index, out.derivation
+        res["resolver"] = list(out.resolvers)
+        res["escalate_reason"] = res["escalate_detail"] = None
+    else:
+        res["escalate_reason"], res["escalate_detail"] = out.reason, out.detail
+    res["basis"] = [r.as_dict() for r in out.basis]
+    res["vocab"] = vocab
+    res["options"] = [o.as_dict() for o in opts]
+    return res
+
+
+def _skeleton(question: str, frame: dict[str, Any]) -> dict[str, Any]:
+    return {"schema": SCHEMA, "decision": "escalate", "kind": "OTHER", "answer": None, "answer_option_index": None,
+            "derivation": None, "resolver": None, "basis": [], "escalate_reason": None, "escalate_detail": None, "vocab": None,
+            "options": [], "trace": {"mentions_found": 0, "mentions_dropped_as_contained": 0, "resolvers_tried": [],
+                                     "resolver_outcomes": {}},
+            "frame": frame}
+
+
+def _refusal(reason: str, detail: str, frame: Optional[dict] = None, **extra: Any) -> dict[str, Any]:
+    res = _skeleton("", frame or {"path": None, "sha256": None, "format": None})
+    res["escalate_reason"], res["escalate_detail"] = reason, detail
+    res.update(extra)
+    return res
+
+
+def validate_input(question: Any, options: Any) -> Optional[tuple[str, str]]:
+    if not isinstance(question, str) or not question.strip():
+        return "QUESTION_UNREADABLE", "EMPTY_QUESTION"
+    if len(question) > MAX_QUESTION_CHARS:
+        return "QUESTION_UNREADABLE", "QUESTION_TOO_LONG"
+    if options is not None:
+        if not isinstance(options, (list, tuple)) or not all(isinstance(o, str) for o in options):
+            return "QUESTION_UNREADABLE", "OPTIONS_NOT_TEXT"
+        if len(options) == 1:
+            return "QUESTION_UNREADABLE", "SINGLE_OPTION"
+        if any(not o.strip() or not _core(o) for o in options):
+            return "QUESTION_UNREADABLE", "EMPTY_OPTION"
+        cores = [_core(o) for o in options]
+        if len(set(cores)) != len(cores):
+            return "QUESTION_UNREADABLE", "DUPLICATE_OPTIONS"
+    return None
+
+
+def answer_question(frame_path: str, question: str, options: Optional[Sequence[str]] = None, *,
+                    vocab_llm: str = "off", vocab_fake: Optional[str] = None, vocab_ledger: Optional[str] = None,
+                    chooser: Optional[LLMChooser] = None) -> dict[str, Any]:
+    """Return the ``conduct_ask/v1`` object for one question.  Bad input is a typed refusal, not an exception;
+    an unexpected failure is an ``INTERNAL_ERROR`` object (the type name only), never a traceback."""
+    try:
+        return _answer_question(frame_path, question, options, vocab_llm=vocab_llm, vocab_fake=vocab_fake,
+                                vocab_ledger=vocab_ledger, chooser=chooser)
+    except Exception as exc:
+        sys.stderr.write(f"conduct_ask: internal error {type(exc).__name__}\n")
+        return _refusal("INTERNAL_ERROR", type(exc).__name__, {"path": str(frame_path), "sha256": None, "format": None})
+
+
+def _answer_question(frame_path: str, question: str, options: Optional[Sequence[str]] = None, *,
+                     vocab_llm: str = "off", vocab_fake: Optional[str] = None, vocab_ledger: Optional[str] = None,
+                     chooser: Optional[LLMChooser] = None) -> dict[str, Any]:
+    opts_list = list(options) if options is not None else None
+    problem = validate_input(question, opts_list)
+    if problem is not None:
+        return _refusal(problem[0], problem[1], {"path": str(frame_path), "sha256": None, "format": None})
+    if vocab_llm not in VOCAB_MODES:
+        return _refusal("QUESTION_UNREADABLE", "BAD_VOCAB_MODE")
+    if vocab_fake is not None and vocab_llm != "fake":
+        return _refusal("QUESTION_UNREADABLE", "VOCAB_FAKE_WITHOUT_FAKE_MODE")
+    if vocab_llm == "fake" and vocab_fake is not None and chooser is None:
+        try:
+            load_fake_script(vocab_fake)       # only checks that the script can be read; no provider is built
+        except (OSError, ValueError) as exc:
+            return _refusal("QUESTION_UNREADABLE", "VOCAB_SCRIPT_UNUSABLE", {"path": str(frame_path), "sha256": None, "format": None},
+                            vocab_error=str(exc))
+    try:
+        cf = load_conduct_frame(frame_path)
+    except FrameRefusal as exc:
+        return _refusal("FRAME_UNUSABLE", exc.reason, {"path": str(frame_path), "sha256": None, "format": None},
+                        frame_refusal=exc.as_dict())
+    frame_info = {"path": cf.source, "sha256": cf.sha256, "format": cf.format}
+    view = build_view(cf)
+    index = TermIndex(view)
+    q = nz(question)
+    mentions, dropped = find_mentions(q, index)
+    opt_info = read_options(opts_list, view, index)
+    ctx = Ctx(view, index, Graph(view), question, q, opt_info, opts_list is not None, mentions, dropped, _sentences(q),
+              "ja" if has_cjk(q) else "en", q_case=nz(question, fold=False))
+    # a qualifier that belongs to an offered option ("a red widget or a blue widget") is the alternative being asked
+    # about, not a different subject: the term inside an option's own text is not "in a wider phrase"
+    spans = [(q.find(o.core), q.find(o.core) + len(o.core)) for o in opt_info if len(o.core) >= 2 and q.find(o.core) >= 0]
+    for m in ctx.mentions:
+        if m.wider and any(a <= m.start and m.end <= b for a, b in spans):
+            m.wider = False
+    res = _skeleton(question, frame_info)
+    classifier_kind = _classifier_kind(question, opts_list)
+    vocab: Optional[dict[str, Any]] = None
+
+    perm_req = any(_PERM_REQ.search(q[a:b]) for a, b in ctx.sentences)
+
+    def finish(out: Outcome, voc: Optional[dict] = None) -> dict[str, Any]:
+        if perm_req and (out.decision == "answer" or out.reason in ("FRAME_SILENT", "VOCAB_UNMAPPED", "NO_OPTION_ALLOWED",
+                                                                    "ANSWER_FORM_UNSUPPORTED")):
+            # "is approval needed for X?" is the reverse of "may we X?": no answer from any layer.  Typed as an
+            # unreadable question rather than "the frame is silent" (it was never the question the frame answers);
+            # a hand-up for approval or for a contradiction keeps its own, more specific, type
+            ctx.trace_out["permission_requirement"] = "ESCALATE"
+            out = _esc("QUESTION_UNREADABLE", "REQUIREMENT_OF_PERMISSION", out.basis, out.kind, "permission_requirement")
+        if out.decision == "answer":
+            asked = [(a, b) for a, b in ctx.sentences if q[a:b].rstrip(" \t。.!！").endswith(("?", "か")) or q[a:b].count("?")]
+            if len(asked) > 1:
+                # an answer cannot be attributed to one of several questions (the second may ask something else)
+                ctx.trace_out["multiple_questions"] = "ESCALATE"
+                out = _esc("QUESTION_UNREADABLE", "MULTIPLE_QUESTIONS", out.basis, out.kind, "multiple_questions")
+            elif len(ctx.sentences) > 1:
+                # what was read: the asked sentence (without one: the sentences that name a frame term) and the premises
+                # of "what can we start next"; every other sentence must only state an approval
+                read = list(asked) or [(a, b) for a, b in ctx.sentences if any(a <= m.start < b for m in ctx.mentions)]
+                if _sentences_unread(ctx, read + ctx.premise_sents, bare=out.layer != "permission"):
+                    ctx.trace_out["context_sentence"] = "ESCALATE"
+                    out = _esc("FRAME_SILENT", "CONTEXT_SENTENCE_UNREAD", out.basis, out.kind, "context_sentence")
+        r = _finish(res, out, ctx, voc if voc is not None else vocab, classifier_kind, opt_info)
+        r["trace"] = {"mentions_found": len(ctx.mentions), "mentions_dropped_as_contained": dropped,
+                      "resolvers_tried": list(ctx.trace_tried), "resolver_outcomes": dict(ctx.trace_out)}
+        return r
+
+    if view.skipped_records:
+        ctx.trace_out["view_skipped_records"] = str(view.skipped_records)
+    out = _ambiguous(ctx)
+    if out:
+        return finish(out)
+    # alias use is recorded as vocabulary evidence from the frame itself
+    aliased = [m for m in ctx.mentions if m.via == "alias"]
+    if aliased:
+        vocab = {"question_term": aliased[0].term, "candidates": [], "frame_term": index.alias_map.get(aliased[0].term),
+                 "provenance": "FRAME_ALIAS", "counts_as_evidence": True, "outcome": "ALIAS",
+                 "ledger_decision_id": None, "asks": []}
+        if len(aliased) > 1:
+            vocab["mappings"] = [{"question_term": m.term, "frame_term": index.alias_map.get(m.term)} for m in aliased]
+    ctx.trace_tried.append("negation")
+    neg = layer_negation(ctx)
+    if neg:
+        ctx.trace_out["negation"] = "ESCALATE"
+        return finish(neg)
+    out, _ = _decide(ctx, None, classifier_kind)
+    if out is not None:
+        return finish(out)
+    if _REQUEST_CUE.search(q) or _STATUS_CUE.search(q):
+        ctx.trace_tried.append("range")
+        ctx.trace_out["range"] = "OUT_OF_RANGE"
+        return finish(_esc("OUT_OF_RANGE", "STATE_OR_REQUEST_QUESTION", [], "STATUS" if _STATUS_CUE.search(q) else "OTHER"))
+    if ctx.mentions:
+        if _builtin_protected(ctx):
+            return finish(_esc("HUMAN_APPROVAL_REQUIRED", "BUILTIN_PROTECTED", [], "PERMISSION"))
+        return finish(_esc("FRAME_SILENT", "NO_RECORD_DECIDES", [m_ref for m in ctx.mentions for m_ref in _mention_refs(m)]))
+    # no frame term at all ------------------------------------------------------------------
+    def unmapped(detail: str, voc: Optional[dict] = None) -> dict[str, Any]:
+        if _builtin_protected(ctx):   # a delete / publish / spend looking permission question: a human, not "unmapped"
+            return finish(_esc("HUMAN_APPROVAL_REQUIRED", "BUILTIN_PROTECTED", [], "PERMISSION"), voc)
+        return finish(_esc("VOCAB_UNMAPPED", detail), voc)
+
+    if _path_status(ctx) is None:
+        role = _vocab_role(q)
+        if role is None:
+            return unmapped("NO_ROLE")
+        if _negated(q) or _INVERT_CUE.search(q):
+            return finish(_esc("QUESTION_UNREADABLE", "NEGATED_QUESTION" if _negated(q) else "INVERTED_QUESTION"))
+        term, why = extract_term(ctx, role)
+        cands = candidates_for(ctx, role)
+        if term is None:
+            return unmapped(why, _vocab_info(None, cands, None, "NO_TERM"))
+        if not cands:
+            return unmapped("NO_CANDIDATES", _vocab_info(term, cands, None, "NO_CANDIDATES"))
+        if chooser is None and vocab_llm != "off":
+            try:
+                chooser = make_chooser(vocab_llm, vocab_fake, vocab_ledger)
+            except (OSError, ValueError) as exc:
+                return _refusal("QUESTION_UNREADABLE", "VOCAB_SCRIPT_UNUSABLE", frame_info, vocab_error=str(exc))
+        if chooser is None:
+            return unmapped("VOCAB_LLM_OFF", _vocab_info(term, cands, None, "OFF"))
+        decision = chooser.choose(term, cands, question=question)
+        asks = [{k: a.get(k) for k in ("ask_index", "provider", "verdict", "picked_term", "failure")} for a in decision.asks]
+        if decision.status != "ADOPTED" or not decision.choice:
+            label = decision.status if not decision.reason else f"{decision.status}:{decision.reason}"
+            tag = {"ABSTAINED": "LLM_ABSTAINED", "FAILED": "LLM_FAILED", "REFUSED": "LLM_REFUSED"}.get(decision.status, "LLM_ABSTAINED")
+            detail = f"{tag}:{decision.failure or decision.reason}"
+            return unmapped(detail, _vocab_info(term, cands, None, label, decision.decision_id, asks))
+        entries = index.exact.get(nz(decision.choice))
+        info = _vocab_info(term, cands, decision.choice, "ADOPTED", decision.decision_id, asks)
+        a_, b_ = nz(term), nz(decision.choice)
+        if a_ != b_ and (a_ in b_ or b_ in a_):
+            # the question names a narrower or wider thing than the frame term: not the same thing
+            return unmapped("LLM_CHOICE_IS_NARROWER_OR_WIDER", info)
+        if not entries:
+            return unmapped("LLM_CHOICE_NOT_IN_FRAME", info)
+        at = q.find(a_) if a_ else -1
+        ctx.mentions = [Mention(max(at, 0), max(at, 0) + (len(a_) if at >= 0 else 0), nz(decision.choice),
+                                [Entry(e.group, e.obj) for e in entries], via="llm")]
+        ctx.trace_tried.append("vocab")
+        ctx.trace_out["vocab"] = "ADOPTED"
+        out2, _ = _decide(ctx, role, classifier_kind)
+        if out2 is None:
+            out2 = _esc("FRAME_SILENT", "NO_RECORD_DECIDES_AFTER_MAPPING", [])
+        return finish(out2, info)
+    return finish(_esc("FRAME_SILENT", "NO_RECORD_DECIDES", []))
+
+
+def _mention_refs(m: Mention) -> list[Ref]:
+    refs: list[Ref] = []
+    for e in m.entries:
+        o = e.obj
+        ref = getattr(o, "ref", None)
+        if isinstance(ref, Ref):
+            refs.append(ref)
+    return refs
+
+
+# ---------------------------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------------------------
+
+class _Parser(argparse.ArgumentParser):
+    def error(self, message: str) -> None:   # type: ignore[override]
+        raise _ArgError(message)
+
+
+class _ArgError(Exception):
+    pass
+
+
+def build_parser() -> argparse.ArgumentParser:
+    p = _Parser(prog="python -m verantyx.conduct_ask",
+                description="Answer an agent's question from a project frame, or escalate it with a typed reason.")
+    p.add_argument("--frame", required=True, help="frame file (Markdown or JSONL; detected from the content)")
+    p.add_argument("--question", required=True)
+    p.add_argument("--option", action="append", default=None, help="an option; repeat for each one (at least two)")
+    p.add_argument("--vocab-llm", choices=VOCAB_MODES, default="off")
+    p.add_argument("--vocab-fake", default=None, help="script file for --vocab-llm fake")
+    p.add_argument("--vocab-ledger", default=None, help="file to append the llm_choice ledger to (default: memory only)")
+    return p
+
+
+def _emit(obj: dict[str, Any]) -> None:
+    sys.stdout.write(json.dumps(obj, ensure_ascii=False, sort_keys=False) + "\n")
+    sys.stdout.flush()
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    try:
+        try:
+            args = build_parser().parse_args(argv)
+        except _ArgError as exc:
+            _emit(_refusal("QUESTION_UNREADABLE", "BAD_ARGUMENTS", argument_error=str(exc)))
+            return 2
+        except SystemExit:
+            _emit(_refusal("QUESTION_UNREADABLE", "BAD_ARGUMENTS"))
+            return 2
+        res = answer_question(args.frame, args.question, args.option, vocab_llm=args.vocab_llm,
+                              vocab_fake=args.vocab_fake, vocab_ledger=args.vocab_ledger)
+        _emit(res)
+        if res["escalate_reason"] == "INTERNAL_ERROR":
+            return 3
+        if res["escalate_reason"] == "FRAME_UNUSABLE" or res["escalate_detail"] in INPUT_REFUSALS:
+            return 2
+        return 0
+    except Exception as exc:   # never a traceback on stdout
+        sys.stderr.write(f"conduct_ask: internal error {type(exc).__name__}\n")
+        _emit(_refusal("INTERNAL_ERROR", type(exc).__name__))
+        return 3
+
+
+if __name__ == "__main__":
+    sys.exit(main())

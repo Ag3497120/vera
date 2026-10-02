@@ -1,0 +1,14 @@
+escalate QUESTION_UNREADABLE PREDICATE_UNREADABLE | 保存形式はどれが使いますか？
+escalate FRAME_SILENT POLARITY_QUESTION_ON_A_VALUE | 保存形式は何に使いますか？
+escalate QUESTION_UNREADABLE INVERTED_QUESTION | Could we skip running the dockside simulator?
+escalate FRAME_SILENT TERM_IN_WIDER_PHRASE | Can we postpone flashing a field unit?
+escalate FRAME_SILENT TERM_IN_WIDER_PHRASE | May we stop running the dockside simulator?
+escalate FRAME_SILENT TERM_IN_WIDER_PHRASE | Can the vendor run the dockside simulator?
+escalate FRAME_SILENT PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION | May we run the dockside simulator at the customer's site?
+escalate FRAME_SILENT PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION | Can we run the dockside simulator next year?
+escalate FRAME_SILENT PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION | Can we run the dockside simulator on the old prototype?
+escalate FRAME_SILENT PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION | 業者が館内での試験運用をしてもよいですか？
+escalate FRAME_SILENT PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION | 来年は館内での試験運用をしてもよいですか？
+escalate QUESTION_UNREADABLE INVERTED_QUESTION | 予約記録を削除するのをやめてもよいですか？
+escalate QUESTION_UNREADABLE INVERTED_QUESTION | Can we skip retrying a non-idempotent call?
+escalate FRAME_SILENT OUTSIDE_ALLOWLIST | Can I edit store/prices.py?

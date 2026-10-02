@@ -1,0 +1,37 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: /Users/motonisihikoudai/Projects/vera-impl/wt/W2-c-S
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 28 items
+
+tests/test_conduct_ask_traps6.py::test_handed_up[A1] PASSED              [  3%]
+tests/test_conduct_ask_traps6.py::test_handed_up[A2] PASSED              [  7%]
+tests/test_conduct_ask_traps6.py::test_handed_up[A3] PASSED              [ 10%]
+tests/test_conduct_ask_traps6.py::test_handed_up[A4] PASSED              [ 14%]
+tests/test_conduct_ask_traps6.py::test_handed_up[A5] PASSED              [ 17%]
+tests/test_conduct_ask_traps6.py::test_handed_up[A6] PASSED              [ 21%]
+tests/test_conduct_ask_traps6.py::test_handed_up[A7] PASSED              [ 25%]
+tests/test_conduct_ask_traps6.py::test_handed_up[B1] PASSED              [ 28%]
+tests/test_conduct_ask_traps6.py::test_handed_up[B2] PASSED              [ 32%]
+tests/test_conduct_ask_traps6.py::test_handed_up[B3] PASSED              [ 35%]
+tests/test_conduct_ask_traps6.py::test_handed_up[B4] PASSED              [ 39%]
+tests/test_conduct_ask_traps6.py::test_handed_up[B5] PASSED              [ 42%]
+tests/test_conduct_ask_traps6.py::test_handed_up[B6] PASSED              [ 46%]
+tests/test_conduct_ask_traps6.py::test_handed_up[B7] PASSED              [ 50%]
+tests/test_conduct_ask_traps6.py::test_handed_up[C1] PASSED              [ 53%]
+tests/test_conduct_ask_traps6.py::test_handed_up[C2] PASSED              [ 57%]
+tests/test_conduct_ask_traps6.py::test_handed_up[C3] PASSED              [ 60%]
+tests/test_conduct_ask_traps6.py::test_handed_up[C4] PASSED              [ 64%]
+tests/test_conduct_ask_traps6.py::test_a_conditional_invariant_is_not_answered_even_when_the_question_restates_its_condition PASSED [ 67%]
+tests/test_conduct_ask_traps6.py::test_unconditional_invariant_without_approval_still_gives_not_permitted_with_the_rule PASSED [ 71%]
+tests/test_conduct_ask_traps6.py::test_a_conditional_invariant_with_the_precedence_of_a_frozen_frame_goes_up_with_its_rule PASSED [ 75%]
+tests/test_conduct_ask_traps6.py::test_control_is_still_answered[K1] PASSED [ 78%]
+tests/test_conduct_ask_traps6.py::test_control_is_still_answered[K3] PASSED [ 82%]
+tests/test_conduct_ask_traps6.py::test_control_is_still_answered[K4] PASSED [ 85%]
+tests/test_conduct_ask_traps6.py::test_control_is_still_answered[K5] PASSED [ 89%]
+tests/test_conduct_ask_traps6.py::test_control_is_still_answered[K6] PASSED [ 92%]
+tests/test_conduct_ask_traps6.py::test_control_is_still_answered[K7] PASSED [ 96%]
+tests/test_conduct_ask_traps6.py::test_control_is_still_answered[K8] PASSED [100%]
+
+============================== 28 passed in 0.26s ==============================

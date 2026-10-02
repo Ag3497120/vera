@@ -1,0 +1,3 @@
+# fake: rows=161 changed=0
+# off: rows=161 changed=0
+# counts (off+fake rows): {'ans2esc': 0, 'esc2ans': 0, 'valchg': 0, 'reasonchg': 0}

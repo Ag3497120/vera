@@ -1,0 +1,2 @@
+artifacts/w2-c/bank/off: MATCH rows=161 q1_wrong=0 q2_answer_rate=0.7407 escalate_correct_rate=1.0
+artifacts/w2-c/bank/fake: MATCH rows=161 q1_wrong=0 q2_answer_rate=0.9907 escalate_correct_rate=1.0
