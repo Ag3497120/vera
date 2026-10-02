@@ -3,8 +3,6 @@ import subprocess
 from pathlib import Path
 from types import SimpleNamespace
 
-import pytest
-
 from verantyx.memory_revalidate import Memory, RevalidatingMemory
 
 
@@ -194,7 +192,6 @@ def test_ask_about_labels_testimony_as_unverifiable(monkeypatch):
     assert answer["stale"] == []
 
 
-@pytest.mark.xfail(strict=False, reason="DEFECT: circular witness crashes cache-key serialization")
 def test_circular_witness_should_be_unverifiable_on_repeated_checks():
     checker = _checker()
     witness = {}

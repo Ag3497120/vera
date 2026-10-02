@@ -80,9 +80,16 @@ class RevalidatingMemory:
     def __init__(self, memory: Memory, *, runner: Optional[Callable] = None,
                  cache_ttl: float = 1.0, cache_size: int = 256,
                  clock: Callable[[], float] = time.monotonic):
-        if not math.isfinite(cache_ttl) or cache_ttl < 0:
+        try:
+            ttl_is_finite = math.isfinite(cache_ttl)
+            ttl_is_non_negative = cache_ttl >= 0
+        except (TypeError, ValueError, OverflowError):
+            raise ValueError('cache_ttl must be a finite non-negative number') from None
+        if (isinstance(cache_ttl, bool) or not ttl_is_finite or
+                not ttl_is_non_negative):
             raise ValueError('cache_ttl must be a finite non-negative number')
-        if not isinstance(cache_size, int) or cache_size < 0:
+        if (not isinstance(cache_size, int) or isinstance(cache_size, bool) or
+                cache_size < 0):
             raise ValueError('cache_size must be a non-negative integer')
         self.memory = memory
         self.runner = runner or subprocess.run
@@ -93,8 +100,12 @@ class RevalidatingMemory:
         self._lock = threading.RLock()
 
     @staticmethod
-    def _key(witness) -> str:
-        return json.dumps(witness, ensure_ascii=False, sort_keys=True, default=str)
+    def _key(witness) -> Optional[str]:
+        try:
+            return json.dumps(witness, ensure_ascii=False, sort_keys=True, allow_nan=False)
+        except (TypeError, ValueError, OverflowError, RecursionError):
+            # Malformed or non-JSON witnesses cannot be given a stable cache key.
+            return None
 
     def _check(self, witness) -> str:
         if not witness or not isinstance(witness, dict):
@@ -126,12 +137,15 @@ class RevalidatingMemory:
 
     def _status(self, witness) -> str:
         key = self._key(witness)
+        if key is None:
+            return 'UNVERIFIABLE'
         with self._lock:
             now = self.clock()
             cached = self._cache.get(key)
             if cached is not None:
                 checked_at, status = cached
-                if self.cache_ttl > 0 and now - checked_at < self.cache_ttl:
+                age = now - checked_at
+                if self.cache_ttl > 0 and 0 <= age < self.cache_ttl:
                     self._cache.move_to_end(key)
                     return status
                 del self._cache[key]

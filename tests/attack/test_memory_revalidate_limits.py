@@ -202,10 +202,6 @@ def test_two_concurrent_asks_share_one_cached_validation(monkeypatch):
     assert len(calls) == 1
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason="DEFECT: sorting a witness with mixed key types crashes before returning UNVERIFIABLE",
-)
 def test_mixed_key_witness_is_unverifiable_instead_of_crashing():
     reader = _reader()
     assert reader._status({0: "bad-key", "kind": "testimony"}) == "UNVERIFIABLE"
