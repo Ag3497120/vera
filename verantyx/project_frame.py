@@ -13,11 +13,13 @@ canonical example and entry grammar.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
+import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping, Optional
+from typing import Any, Mapping, Optional, Sequence
 
 from . import conductor, memory_frame
 from .memory_frame import Memory, WriteRejected
@@ -99,6 +101,56 @@ class Decision:
     line: int
     question_kind: Optional[str] = None
     condition: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class DecisionDraft:
+    """A human decision with its exact value and an askable typed index record."""
+
+    subject: Optional[str]
+    attribute: str
+    value: str
+    normalized_key: str
+    question_key: str
+    session: Optional[str]
+    row: Optional[int]
+    who_decided: str
+    matched_option: Optional[str]
+    option_index: Optional[int]
+    record: dict[str, Any]
+
+    @property
+    def match_key(self) -> tuple[Optional[str], str, str, tuple[str, ...]]:
+        """Exact structural identity, scoped by session and the closed option vocabulary."""
+        options = self.record.get("witness", {}).get("options", [])
+        subject_key = _exchange_text_key(self.subject) if self.subject else self.question_key
+        option_key = tuple(sorted(_exchange_text_key(option) for option in options))
+        return (self.session, subject_key, _exchange_text_key(self.attribute), option_key)
+
+
+@dataclass(frozen=True)
+class Refusal:
+    """A typed reason an exchange cannot become a human decision record."""
+
+    reason: str
+    detail: str = ""
+
+
+class _ExchangeMemory(memory_frame.Memory):
+    """Memory writer with an in-process event log for a single draft."""
+
+    def __init__(self) -> None:
+        # Do not open or create a file for the standalone three-argument API.
+        self.path = Path("<decision-exchange-memory>")
+        self.now = lambda: "1970-01-01T00:00:00"
+        self.resolver = None
+        self.records = {}
+        self.superseded = {}
+        self.aliases = {}
+        self._view = None
+
+    def _append(self, event: dict[str, Any]) -> None:
+        self._apply(event)
 
 
 @dataclass(frozen=True)
@@ -607,8 +659,221 @@ def compile_frame(spec: ProjectFrameSpec, memory: Memory | str | Path) -> Compil
     return Compilation(spec, store, frame, records)
 
 
+def _exchange_text_key(value: str) -> str:
+    """Normalize only Unicode form, case, and whitespace for exact equality."""
+    return " ".join(unicodedata.normalize("NFKC", value).casefold().split())
+
+
+def _exchange_subject_and_attribute(question: str) -> tuple[Optional[str], str]:
+    """Take the topic and choice dimension from Japanese interrogative structure."""
+    surface = unicodedata.normalize("NFKC", question)
+    # Parentheses in these prompts are usually explanatory context, not the asked slot.
+    surface = re.sub(r"（[^（）]*）|\([^()]*\)|\[[^\[\]]*\]", " ", surface)
+    surface = re.sub(r"[「」『』\"“”]", "", surface)
+    surface = re.sub(r"\s+", "", surface).strip("?？。!！")
+    if not surface:
+        return None, "選択"
+
+    cues = (
+        ("どこから", "起点"), ("どこへ", "到達先"), ("どこに", "場所"),
+        ("どこで", "場所"), ("どこ", "場所"), ("いくつ", "数量"),
+        ("いくら", "価格"), ("いつ", "時期"), ("誰", "担当"),
+        ("だれ", "担当"), ("どの", "選択"), ("どれ", "選択"),
+        ("何を", "対象"), ("何に", "用途"), ("何が", "内容"),
+        ("何", "内容"), ("どう", "方法"),
+    )
+    cue_hit: Optional[tuple[int, str, str]] = None
+    for cue, category in cues:
+        pos = surface.rfind(cue)
+        if pos >= 0 and (cue_hit is None or pos > cue_hit[0] or
+                         (pos == cue_hit[0] and len(cue) > len(cue_hit[1]))):
+            cue_hit = (pos, cue, category)
+
+    if cue_hit is not None:
+        pos, cue, category = cue_hit
+        prefix, tail = surface[:pos], surface[pos + len(cue):]
+        # A following noun after どの/どれ identifies what is being chosen.
+        if cue == "どの":
+            target = re.match(r"([^をにはがで、。]+)", tail)
+            attribute = (target.group(1) + "選択") if target else category
+        elif cue == "どれ":
+            attribute = category
+        else:
+            action = tail.split("、", 1)[0].split("。", 1)[0]
+            action = re.sub(r"(?:に)?(?:しますか|ますか|ですか|するか|する|します|したい|できるか).*$", "", action)
+            action = action.strip("はがをにでへと、:：")
+            if cue.startswith("どこ"):
+                attribute = (action + "場所") if action else category
+                if cue == "どこから" and action and any(x in action for x in ("配布", "出", "取得")):
+                    attribute = action + "元"
+            elif category == "対象" and action:
+                attribute = action + category
+            elif category == "用途" and action:
+                attribute = action + category
+            elif category == "方法" and action:
+                attribute = action + "方"
+            else:
+                attribute = category
+    else:
+        # A yes/no prompt still has a structural choice dimension. Keep it generic
+        # when no action can be isolated without guessing.
+        prefix = surface
+        attribute = "可否" if re.search(r"(?:ます|です|よい|いい)か$", surface) else "選択"
+
+    clauses = re.split(r"[、,;；]", prefix)
+    prefix = next((clause for clause in reversed(clauses) if clause.strip()), prefix)
+    prefix = prefix.replace("として", "")
+    prefix = prefix.strip("はがをにでへと、:：?？。!！ ")
+    # Keep the last case-marked noun phrase, dropping a preceding clause.
+    markers = [m for m in re.finditer(r"[はがをへにでと]", prefix)]
+    if markers:
+        prefix = prefix[:markers[-1].start()].strip("はがをへにでと、:： ")
+    if "の" in prefix:
+        prefix = prefix.rsplit("の", 1)[-1]
+    subject = prefix.strip("はがをへにでと、:：?？。!！ \"'") or None
+    return subject, attribute or "選択"
+
+
+def _exchange_question_key(question: str, options: Sequence[str], subject: Optional[str],
+                           attribute: str) -> str:
+    payload = {
+        "question": _exchange_text_key(question),
+        "options": sorted(_exchange_text_key(option) for option in options),
+        "subject": _exchange_text_key(subject or ""),
+        "attribute": _exchange_text_key(attribute),
+    }
+    return json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def _stable_exchange_token(prefix: str, value: str) -> str:
+    digest = hashlib.sha256(value.encode("utf-8")).hexdigest()
+    return f"{prefix}_{digest}"
+
+
+def decision_from_exchange(
+    question: str,
+    options: Sequence[str],
+    human_answer: Optional[str],
+    *,
+    session: Optional[str] = None,
+    row: Optional[int] = None,
+    who_decided: str = "human",
+    memory: Optional[Memory] = None,
+) -> DecisionDraft | Refusal:
+    """Build an askable DECISION from an exchange without generating answer text.
+
+    Option labels are matched only by normalized equality. Other answers remain
+    verbatim in the draft and testimony witness. The semantic writer may reject a
+    full sentence as its canonical value; in that case the DECISION stores a stable
+    value key while the testimony retains the exact human words for exact-match
+    retrieval. Both paths pass the unchanged typed writer askability check.
+    """
+    if not isinstance(question, str) or not question.strip():
+        return Refusal("empty_question", "a question is required to scope a decision")
+    if isinstance(options, (str, bytes)) or not isinstance(options, Sequence):
+        return Refusal("invalid_options", "options must be a sequence of strings")
+    if any(not isinstance(option, str) or not option.strip() for option in options):
+        return Refusal("invalid_options", "each option must be a nonempty string")
+    if human_answer is None or not isinstance(human_answer, str) or not human_answer.strip():
+        return Refusal("no_human_answer", "an absent or empty answer is not a decision")
+    answer_key = _exchange_text_key(human_answer)
+    if answer_key in {"unknown", "不明", "わからない", "わかりません"}:
+        return Refusal("unknown_answer", "unknown is not a human decision")
+    folded_answer = unicodedata.normalize("NFKC", human_answer).casefold()
+    if "user dismissed" in folded_answer and "wait for next instruction" in folded_answer:
+        return Refusal("dismissed_exchange", "the user dismissed the question")
+    if not isinstance(who_decided, str) or not who_decided.strip():
+        return Refusal("missing_decider", "who_decided must identify the human decision maker")
+    if session is not None and (not isinstance(session, str) or not session.strip()):
+        return Refusal("invalid_session", "session must be a nonempty string when supplied")
+    if row is not None and (type(row) is not int or row < 1):
+        return Refusal("invalid_row", "row must be a positive one-based integer when supplied")
+
+    clean_options = list(options)
+    matches = [i for i, option in enumerate(clean_options)
+               if _exchange_text_key(option) == answer_key]
+    if len(matches) > 1:
+        return Refusal("ambiguous_option", "normalized answer matches more than one option")
+    option_index = matches[0] if matches else None
+    matched_option = clean_options[option_index] if option_index is not None else None
+    subject, attribute = _exchange_subject_and_attribute(question)
+    question_key = _exchange_question_key(question, clean_options, subject, attribute)
+    session_scope = session or ""
+    option_key = tuple(sorted(_exchange_text_key(option) for option in clean_options))
+    subject_key = _exchange_text_key(subject) if subject else question_key
+    record_match_key = (session_scope, subject_key, _exchange_text_key(attribute), option_key)
+    opaque_record_subject = _stable_exchange_token(
+        "exchange", json.dumps(record_match_key, ensure_ascii=False, separators=(",", ":")))
+    record_subjects: list[str] = []
+    if subject:
+        session_tag = hashlib.sha256(session_scope.encode("utf-8")).hexdigest()[:12]
+        record_subjects.append(f"{subject}{attribute}_s{session_tag}")
+    record_subjects.append(opaque_record_subject)
+    record_value_key = _stable_exchange_token("value", answer_key)
+    witness: dict[str, Any] = {
+        "kind": "testimony",
+        "by": who_decided,
+        "who_decided": who_decided,
+        "session": session,
+        "row": row,
+        "question": question,
+        "options": clean_options,
+        "subject": subject,
+        "attribute": attribute,
+        "value": human_answer,
+        "normalized_key": answer_key,
+        "question_key": question_key,
+        "matched_option": matched_option,
+        "option_index": option_index,
+        "record_value_key": record_value_key,
+    }
+    store = memory if memory is not None else _ExchangeMemory()
+    if not isinstance(store, memory_frame.Memory):
+        return Refusal("invalid_memory", "memory must be a typed project-memory writer")
+
+    record: Optional[dict[str, Any]] = None
+    last_error: Optional[Exception] = None
+    for record_subject in record_subjects:
+        if human_answer == human_answer.strip():
+            direct_witness = {**witness, "record_subject": record_subject,
+                              "writer_value": "verbatim_value"}
+            try:
+                record = store.write("DECISION", who_decided, witness=direct_witness,
+                                     subject=record_subject, choice=human_answer)
+                if record["slots"]["choice"] == human_answer:
+                    break
+                record = None
+            except (WriteRejected, KeyError, ValueError) as exc:
+                last_error = exc
+        key_witness = {**witness, "record_subject": record_subject,
+                       "writer_value": "normalized_key"}
+        try:
+            record = store.write("DECISION", who_decided, witness=key_witness,
+                                 subject=record_subject, choice=record_value_key)
+            break
+        except (WriteRejected, KeyError, ValueError) as exc:
+            last_error = exc
+    if record is None:
+        detail = getattr(last_error, "reason", str(last_error or "typed writer rejected the record"))
+        return Refusal("typed_writer_rejected", detail)
+    return DecisionDraft(
+        subject=subject,
+        attribute=attribute,
+        value=human_answer,
+        normalized_key=answer_key,
+        question_key=question_key,
+        session=session,
+        row=row,
+        who_decided=who_decided,
+        matched_option=matched_option,
+        option_index=option_index,
+        record=record,
+    )
+
+
 __all__ = [
-    "Alias", "Compilation", "Criterion", "Decision", "Escalation", "FrameCompileError",
-    "FrameError", "FrameParseError", "Invariant", "Phase", "PhaseOrder", "ProjectFrameSpec",
-    "ProtectedAction", "SECTIONS", "compile_frame", "load_frame", "parse_frame",
+    "Alias", "Compilation", "Criterion", "Decision", "DecisionDraft", "Escalation",
+    "FrameCompileError", "FrameError", "FrameParseError", "Invariant", "Phase", "PhaseOrder",
+    "ProjectFrameSpec", "ProtectedAction", "Refusal", "SECTIONS", "compile_frame",
+    "decision_from_exchange", "load_frame", "parse_frame",
 ]
