@@ -349,24 +349,35 @@ def enrich(
     )
 
 
-def _has_record(reply: Any, conductor: Any) -> bool:
+def _validated_record_ids(reply: Any, conductor: Any) -> tuple[str, ...]:
     if getattr(reply, "kind", None) != "ANSWER":
-        return False
+        return ()
     record_ids = tuple(str(record_id) for record_id in (getattr(reply, "record_ids", ()) or ()) if record_id)
     if not record_ids:
-        return False
+        return ()
     active_record = getattr(conductor, "_active_record", None)
     if callable(active_record):
-        return any(active_record(record_id) is not None for record_id in record_ids)
+        validated = []
+        for record_id in record_ids:
+            try:
+                record = active_record(record_id)
+            except Exception:
+                continue
+            if isinstance(record, Mapping) and str(record.get("id", "")) == record_id:
+                validated.append(record_id)
+        return tuple(validated)
     memory = getattr(conductor, "memory", None)
     active = getattr(memory, "active", None)
     if callable(active):
-        active_ids = {str(record.get("id")) for record in active() if isinstance(record, Mapping)}
-        return any(record_id in active_ids for record_id in record_ids)
-    # A small injected conductor may not expose its memory.  The typed reply's
-    # non-empty citation is still required; production ProjectFrame validates
-    # the ids against its active append-only records above.
-    return True
+        try:
+            active_ids = {
+                str(record.get("id")) for record in active()
+                if isinstance(record, Mapping) and record.get("id")
+            }
+        except Exception:
+            return ()
+        return tuple(record_id for record_id in record_ids if record_id in active_ids)
+    return ()
 
 
 def check_resolved(handoff: Handoff, conductor: Any) -> bool:
@@ -380,7 +391,8 @@ def check_resolved(handoff: Handoff, conductor: Any) -> bool:
     answer = conductor.answer(handoff.question)
     if handoff.protected_action:
         return False
-    if not _has_record(answer, conductor):
+    verified_record_ids = _validated_record_ids(answer, conductor)
+    if not verified_record_ids:
         return False
 
     growth_path, graph_path = Path(handoff.growth_path), Path(handoff.graph_path)
@@ -397,7 +409,7 @@ def check_resolved(handoff: Handoff, conductor: Any) -> bool:
             graph.set_status(
                 handoff.gap_id, "RESOLVED",
                 resolution="re-asked the same question; conductor returned ANSWER from active record(s)",
-                verified_by=list(answer.record_ids),
+                verified_by=list(verified_record_ids),
             )
     growth_path.parent.mkdir(parents=True, exist_ok=True)
     graph_path.parent.mkdir(parents=True, exist_ok=True)

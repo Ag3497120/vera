@@ -208,6 +208,41 @@ def test_inactive_record_id_does_not_resolve(tmp_path):
     assert check_resolved(handoff, InactiveCitation()) is False
 
 
+def test_citation_without_trusted_record_lookup_does_not_resolve(tmp_path):
+    frame = frame_at(tmp_path)
+    question, reply = refusal(frame)
+    handoff = enrich(reply, frame, question)
+
+    class CitationOnly:
+        def answer(self, asked):
+            assert asked is question
+            return Reply("ANSWER", "a result", ("fabricated-record-id",))
+
+    assert check_resolved(handoff, CitationOnly()) is False
+    growth, graph = sidecars(frame)
+    assert [event["resolved"] for event in growth.branch_outcomes] == [False]
+    assert graph.get(handoff.gap_id).status != "RESOLVED"
+
+
+def test_resolution_records_only_active_citations(tmp_path):
+    frame = frame_at(tmp_path)
+    question, reply = refusal(frame)
+    handoff = enrich(reply, frame, question)
+    active_id = "active-record-id"
+
+    class MixedCitations:
+        def answer(self, asked):
+            assert asked is question
+            return Reply("ANSWER", "a result", (active_id, "fabricated-record-id"))
+
+        def _active_record(self, record_id):
+            return {"id": record_id} if record_id == active_id else None
+
+    assert check_resolved(handoff, MixedCitations()) is True
+    _, graph = sidecars(frame)
+    assert graph.get(handoff.gap_id).verified_by == [active_id]
+
+
 def test_resolved_outcome_is_appended_without_rewriting_handoff(tmp_path):
     frame = frame_at(tmp_path)
     question, reply = refusal(frame)
