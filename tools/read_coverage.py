@@ -7,7 +7,9 @@ Usage: tools/read_coverage.py [--n 1500] [--stride 200] [--json out.json]
 """
 import argparse, collections, json, re, sys
 sys.path.insert(0, '.'); sys.path.insert(0, 'tools')
+import os
 import round5a_route_tune as T
+if os.environ.get('VERA_LEADS'): T.PATH = os.environ['VERA_LEADS']
 from verantyx.semantic_reader import document_view
 
 

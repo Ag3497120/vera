@@ -1,0 +1,686 @@
+{
+ "note": "train-lead sentences (tools/read_coverage.py --n 1500 --stride 200) that yielded a supported clause before wave 2 and do not now; keys are source:start offsets",
+ "count": 87,
+ "sentences": [
+  {
+   "key": "w42:0",
+   "text": "ツアイト・フォト・サロン (Zeit-Foto Salon) は、1978年に石原悦郎（1941年生まれ。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w65:41",
+   "text": "APG体系ではショウブ目ショウブ科のショウブ属に属する。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で"
+   ]
+  },
+  {
+   "key": "w65:144",
+   "text": "薬草、漢方薬としても用いられている。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: と",
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content"
+   ]
+  },
+  {
+   "key": "w142:82",
+   "text": "主に試験薬として用いられる。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: と",
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content"
+   ]
+  },
+  {
+   "key": "w145:119",
+   "text": "日本経済新聞社の2007年アンケート「足を延ばして訪れて見たい駅」の全国第1位にランクされた。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: に",
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content",
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w146:185",
+   "text": "1988年にブランド名に合わせて現社名へ変更した。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: に",
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w149:0",
+   "text": "K・J・ホルスティ（Kalevi J. Holsti, 1935年 - ）は、カナダ・ブリティッシュコロンビア大学政治学部名誉教授。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w151:0",
+   "text": "ジョン・ルイス・ギャディス (John Lewis Gaddis, 1941年 - )は、アメリカ合衆国の歴史学者。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w160:0",
+   "text": "紀元前621年（きげんぜん621ねん）は、西暦（ローマ暦）による年。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w160:34",
+   "text": "紀元前1世紀の共和政ローマ末期以降の古代ローマにおいては、ローマ建国紀元133年として知られていた。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: と",
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content",
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w170:0",
+   "text": "岩田 壽夫（いわた ひさお、1936年 - ）は、千葉経済大学短期大学部教授。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w174:0",
+   "text": "紀元前529年（きげんぜん529ねん）は、西暦（ローマ暦）による年。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w174:34",
+   "text": "紀元前1世紀の共和政ローマ末期以降の古代ローマにおいては、ローマ建国紀元225年として知られていた。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: と",
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content",
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w205:0",
+   "text": "周 亜夫（しゅう あふ、? - 紀元前143年）は、前漢の武将・政治家。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w229:135",
+   "text": "モントリオールは、フランス語圏ではパリに次いで2番目に夏季大会を開催した都市である。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で",
+    "ambiguous frame role"
+   ]
+  },
+  {
+   "key": "w253:0",
+   "text": "マルクス・アウレリウス・アントニヌス・アウグストゥス（、204年- 222年）は、ローマ帝国第23代皇帝で、セウェルス朝の第3代当主。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w292:217",
+   "text": "江戸時代には広く流通して読まれた。",
+   "unsupported_reasons_now": [
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content"
+   ]
+  },
+  {
+   "key": "w300:85",
+   "text": "本項では主に食品用途の乳化剤について扱う。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で",
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content"
+   ]
+  },
+  {
+   "key": "w306:101",
+   "text": "初出は1994年の漫画『機動戦士クロスボーン・ガンダム』。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w333:33",
+   "text": "高知市への通勤率は40.7%（平成17年国勢調査）。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w337:69",
+   "text": "2002 - 2004年の登録名は「カズ」。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w340:77",
+   "text": "青梅市今井付近で首都圏中央連絡自動車道青梅インターチェンジに接続している。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で"
+   ]
+  },
+  {
+   "key": "w343:0",
+   "text": "ルキウス・カエサル（Lucius Julius Caesar Vipsanianus, 紀元前17年 - 紀元2年）は、古代ローマの将軍マルクス・ウィプサニウス・アグリッパと大ユリアの息子で、初代ローマ皇帝アウグストゥスの養子。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w358:0",
+   "text": "『1973年のピンボール』 （せんきゅうひゃくななじゅうさんねんのピンボール） は、村上春樹の2作目の長編小説。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w380:63",
+   "text": "ヨウ素を1811年に発見した。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w480:51",
+   "text": "シェイクスピアの『オセロー』を、現代アメリカのハイスクールに舞台を移して描く。",
+   "unsupported_reasons_now": [
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content"
+   ]
+  },
+  {
+   "key": "w481:63",
+   "text": "1968年から20年以上にわたってチェコ・フィルハーモニー管弦楽団の首席指揮者を務め、同管弦楽団の国際的な名声を築き上げた。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: に",
+    "unrepresented source content",
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w516:52",
+   "text": "アルカロイドのストリキニーネを含み、有毒植物もしくは薬用植物として知られる。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: と",
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content"
+   ]
+  },
+  {
+   "key": "w526:30",
+   "text": "高崎市への通勤率は24.7%・前橋市への通勤率は22.1%（平成17年国勢調査）。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w557:0",
+   "text": "SH-60B シーホーク（）は、シコルスキー・エアクラフトが製造し、アメリカ海軍で使用されている哨戒ヘリコプター。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で",
+    "unrepresented source content"
+   ]
+  },
+  {
+   "key": "w617:0",
+   "text": "村山 朝偉（むらやま ともひで、1944年 - ）は新潟県中魚沼郡津南町生まれの硝子工芸家、手描友禅染色作家である。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w617:58",
+   "text": "日本工芸会正会員でもある。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で"
+   ]
+  },
+  {
+   "key": "w629:0",
+   "text": "イアン・リビングストン(Ian Livingstone, 1949年 - ）は、イギリスの企業家、ゲームデザイナー。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w634:53",
+   "text": "アメリカ発祥で、アリゾナ州フェニックスに本部を置き、世界110の国と地域に4,200軒以上のホテルを展開している世界最大規模のワールドホテルチェーンである。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で",
+    "ambiguous case role: と",
+    "unrepresented source content"
+   ]
+  },
+  {
+   "key": "w642:52",
+   "text": "代表作は映画『恋の罪』（2011年）。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w648:0",
+   "text": "磯 光雄（いそ みつお、1966年 - ）は、日本のアニメーター、アニメーション監督。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w655:0",
+   "text": "ジョセフ・シュワントナー（Joseph Schwantner、1943年 - ）は、アメリカ合衆国の作曲家、教育者。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w659:85",
+   "text": "国際音声記号では  と書く。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で"
+   ]
+  },
+  {
+   "key": "w673:42",
+   "text": "人口は13万5968人（2020年）。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w674:0",
+   "text": "寺園 敦史（てらぞの あつし、1961年 - ）は、日本のジャーナリスト。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w675:111",
+   "text": "1956年にノーム・チョムスキーが発表した。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w677:170",
+   "text": "WTAツアーでシングルス6勝を挙げた。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で"
+   ]
+  },
+  {
+   "key": "w681:0",
+   "text": "プリンスローズあるいはプランスロゼ（Prince Rose、1928-1944年）はベルギーの競走馬。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w727:56",
+   "text": "により、1846年に創業された。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w729:90",
+   "text": "1963年にビートルズによってカバーされた。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w745:112",
+   "text": "1989年、2人はコーンウォールの小さなクラブでDJをしている時に出会い、リフレックス・レコーズを立ち上げた。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で",
+    "unrepresented source content",
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w747:39",
+   "text": "1974年にデビューした。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w756:0",
+   "text": "早川（はやかわ）は、山梨県早川町から身延町にかけて流れている河川である。",
+   "unsupported_reasons_now": [
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content"
+   ]
+  },
+  {
+   "key": "w776:0",
+   "text": "紀元前596年（きげんぜん596ねん）は、西暦（ローマ暦）による年。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w776:34",
+   "text": "紀元前1世紀の共和政ローマ末期以降の古代ローマにおいては、ローマ建国紀元158年として知られていた。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: と",
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content",
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w779:86",
+   "text": "供養塔として街道に面して建てられた例が多い。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: と",
+    "multiple predicates need explicit clause scope",
+    "unlocated patient",
+    "unrepresented source content"
+   ]
+  },
+  {
+   "key": "w812:41",
+   "text": "壬申の乱（672年）において、大友皇子（弘文天皇）側の別将となり、中道で戦って敗れた。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で",
+    "ambiguous case role: と",
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content",
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w820:144",
+   "text": "軍隊技術者の中でもっとも有名な人物として知られる。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で",
+    "ambiguous case role: と",
+    "duplicate role in clause",
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content"
+   ]
+  },
+  {
+   "key": "w821:0",
+   "text": "キヤ191系は、日本国有鉄道が製造し、東日本旅客鉄道（JR東日本）および西日本旅客鉄道（JR西日本）に継承、在籍した架線・信号検測用の試験気動車である。",
+   "unsupported_reasons_now": [
+    "ambiguous frame role",
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content"
+   ]
+  },
+  {
+   "key": "w829:0",
+   "text": "関口 コオ（せきぐち こう、1937年 -2018年 ）は、日本の切り絵作家。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w846:111",
+   "text": "妻雅子（1924年 - 2004年）は政治学者蠟山政道の長女。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w850:92",
+   "text": "1979年から1989年にかけて建設された。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w855:63",
+   "text": "位置的には豊中市北部から南へ続き吹田市との境をとおり、吹田市南部で市内に入る。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で",
+    "ambiguous case role: と",
+    "unrepresented source content"
+   ]
+  },
+  {
+   "key": "w872:195",
+   "text": "2008年（平成20年度）末時点の定員は596名（事務官等510名、自衛官86名）、2011年（平成23年）度の予算は約74億円。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w886:0",
+   "text": "関西配電株式会社（かんさいはいでん かぶしきがいしゃ）は、太平洋戦争中の1942年（昭和17年）から戦後の1951年（昭和26年）にかけて、近畿地方（関西地方）を配電区域として営業していた電力会社である。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で",
+    "ambiguous case role: と",
+    "unrepresented source content",
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w928:84",
+   "text": "全線が都市計画道路として備後圏都市計画道路3・3・273号神辺高屋線に指定されている。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: と",
+    "ambiguous case role: に"
+   ]
+  },
+  {
+   "key": "w935:0",
+   "text": "杉本 研士（すぎもと けんじ、1939年 - ）は、日本の小説家・精神科医。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w954:84",
+   "text": "1960年のロードレース世界選手権250ccクラスにホンダワークスライダーとして出場した。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: と",
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w997:87",
+   "text": "付近での2校の閉校に伴って開校した青森市で最も新しい小学校。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で",
+    "ambiguous case role: に",
+    "ambiguous frame role",
+    "duplicate role in clause"
+   ]
+  },
+  {
+   "key": "w1021:64",
+   "text": "学位は理学博士（東北帝国大学・1931年）。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1055:113",
+   "text": "ローレンツ群の名前はオランダ人物理学者ヘンドリック・ローレンツに因む。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: に"
+   ]
+  },
+  {
+   "key": "w1089:108",
+   "text": "なお、女子は2000年シドニーオリンピックから導入されている。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1105:57",
+   "text": "斑尾高原は県境・市町村境が集中しており、スキー場は自らの所在地を「長野県飯山市斑尾高原」としているが、スキー場面積の大部分は新潟県妙高市にある。",
+   "unsupported_reasons_now": [
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content"
+   ]
+  },
+  {
+   "key": "w1140:139",
+   "text": "2022年、ソロシンガーとしては「奈歩」として活動している。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: と",
+    "unrepresented source content",
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1157:61",
+   "text": "NBAのユタ・ジャズなどで活躍し、2016年から2017年にかけてはフェニックス・サンズの選手育成担当コーチを務めた。",
+   "unsupported_reasons_now": [
+    "unrepresented source content",
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1159:97",
+   "text": "1948年に医学博士（岐阜薬専、名古屋大学卒）の横井公が設立。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1166:47",
+   "text": "弟兼三と共に寝技師として知られる。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: と",
+    "duplicate role in clause",
+    "multiple predicates need explicit clause scope",
+    "unrepresented source content"
+   ]
+  },
+  {
+   "key": "w1168:91",
+   "text": "人口は16万1531人（2016年統計）。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1171:0",
+   "text": "鈴木 正朝（すずき まさとも、1962年 - ）は、日本の法学者（個人情報保護法）。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1174:60",
+   "text": "2007年から実施されている。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1202:91",
+   "text": "果実を食用とし、世界各地で栽培されている。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で",
+    "ambiguous case role: と"
+   ]
+  },
+  {
+   "key": "w1216:190",
+   "text": "なお、日本国外では発売されていない。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で"
+   ]
+  },
+  {
+   "key": "w1263:156",
+   "text": "同事業は同日付でフォーサイドメディアへ譲渡された。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: で"
+   ]
+  },
+  {
+   "key": "w1266:0",
+   "text": "小野 昭（おの あきら、1946年 - ）は、日本の考古学者。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1281:0",
+   "text": "ギヨーム・シュートル（Guillaume Sutre, 1969年 - ）はフランスのヴァイオリニスト。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1305:50",
+   "text": "学位は、博士（法学）（神戸大学・論文博士・2011年）。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1342:0",
+   "text": "ジョージ・ロックハート・ライヴス（George Lockhart Rives, 1849年 - 1917年）は、アメリカ合衆国の歴史家、政治家。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1348:0",
+   "text": "オグシオとは、バドミントン元日本代表選手の小椋久美子（おぐら くみこ）と、潮田玲子（しおた れいこ）による女子ダブルスペア（2002年-2008年）の愛称。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1358:0",
+   "text": "宇山 一朗（うやま いちろう、1960年 - ）は、日本の外科医。",
+   "unsupported_reasons_now": [
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1373:78",
+   "text": "シャルル＝マリ＝ルネ・ルコント・ド・リール、シャルル・ボードレールと並んで1850年代のフランス詩を牽引し、後に高踏派の先駆者の一人として詩壇に重きをなした。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: と",
+    "ambiguous case role: に",
+    "duplicate role in clause",
+    "unrepresented source content",
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1472:72",
+   "text": "2001年から2006年にかけ、米国のオープンホイールレース選手権であるインディ・レーシング・リーグ（IRL）に参戦していた。",
+   "unsupported_reasons_now": [
+    "unrepresented source content",
+    "unsupported source quantifier/exception/time"
+   ]
+  },
+  {
+   "key": "w1481:84",
+   "text": "ワルドナーらとともに80年代後半から90年代にかけてスウェーデン卓球の黄金時代を築いた。",
+   "unsupported_reasons_now": [
+    "ambiguous case role: と",
+    "ambiguous case role: に",
+    "duplicate role in clause",
+    "unsupported source quantifier/exception/time"
+   ]
+  }
+ ]
+}
