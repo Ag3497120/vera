@@ -186,11 +186,13 @@ class LeafTree:
             return cache[key]
 
         reached = set(); evidence = set(); mention = set(t for ts in patterns for t in ts)
+        term_leaves = {}        # term -> leaves holding it as a clause value (the entity walk below goes through these only)
         for terms in patterns:
             leaves = None
             for term in sorted(terms):
                 found = held(term, anchor_cap)
                 if found is None: common.add(term); continue
+                term_leaves[term] = found
                 leaves = found if leaves is None else leaves & found
             if leaves is None:
                 return None, {**trace, 'status': 'skipped', 'reason': 'every anchor of a pattern is common',
@@ -204,16 +206,22 @@ class LeafTree:
                                   'anchor': term}
                 reached |= u
         # A join needs one more hop per extra Bind pattern; a guard (condition/exception) needs its own fact, which
-        # may sit in another document, for a few more hops. Nothing else is followed.
+        # may sit in another document, for a few more hops. Nothing else is followed. The walk is by ENTITY: only the
+        # clauses that contain a term of the current frontier hand their other terms on, never every clause of a
+        # reached document (a document that merely mentions the anchor would otherwise drag its whole vocabulary in).
         binds = max((sum(1 for n in p.nodes if n.pattern is not None) for p in request.plans), default=1)
         join_rounds = max(0, min(max_rounds, binds - 1)); guard_rounds = 3
-        frontier = set(reached); seen_terms = set(t for ts in patterns for t in ts); used = 1; followed = 0
+        predicates = {n.pattern.predicate for plan in request.plans for n in plan.nodes if n.pattern is not None}
+        if not all(isinstance(x, str) and x for x in predicates): predicates = None   # no usable predicate: follow every clause
+        frontier_terms = set(term_leaves); seen_terms = set(t for ts in patterns for t in ts); used = 1; followed = 0
         for hop in range(join_rounds + guard_rounds):
             pending = set()
-            for leaf in frontier:
-                for clause in self.by_leaf.get(leaf, ()):
-                    pending.update(_clause_terms(clause) if hop < join_rounds else _guard_terms(clause))
-            frontier = set()
+            for term in frontier_terms:
+                for leaf in term_leaves.get(term, ()):
+                    for clause in self.by_leaf.get(leaf, ()):
+                        if (predicates is None or clause.predicate in predicates) and term in _clause_terms(clause):
+                            pending.update(_clause_terms(clause) if hop < join_rounds else _guard_terms(clause))
+            frontier_terms = set(); frontier = set()
             for term in pending - seen_terms:
                 seen_terms.add(term)
                 found = held(term, expand_cap)
@@ -221,6 +229,7 @@ class LeafTree:
                 u = unread_held(term)
                 if u is None: return None, {**trace, 'status': 'skipped', 'reason': 'unread mentions of a followed entity cannot be located'}
                 followed += 1; frontier |= (found | u) - reached; evidence |= found; mention.add(term)
+                term_leaves[term] = found; frontier_terms.add(term)
             if not frontier: break
             reached |= frontier; used += 1
         clauses = tuple(c for leaf in sorted(reached) for c in self.by_leaf.get(leaf, ()))

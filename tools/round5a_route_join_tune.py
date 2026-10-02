@@ -23,7 +23,7 @@ from round5a_route_tune import load
 from verantyx import question, semantic_route
 from verantyx.semantic import answer
 from verantyx.semantic_ir import Budget, View
-from verantyx.semantic_reader import document_view
+from verantyx.semantic_reader import _tagger, document_view
 
 
 CAPS = (2, 4, 8, 32, 128)
@@ -45,13 +45,14 @@ def doc_frequency(term: str, docs: dict[str, str]) -> int:
 def entity_role_terms(view: View) -> dict[str, set[str]]:
     """Map literal clause/guard terms to the background leaves that hold them."""
     held: dict[str, set[str]] = collections.defaultdict(set)
+    entity_roles = {'entity', 'agent', 'patient', 'recipient', 'origin', 'location'}
     for clause in view.clauses:
         for role in clause.roles:
-            if role.name != 'attribute' and isinstance(role.term, str) and role.term:
+            if role.name in entity_roles and isinstance(role.term, str) and role.term:
                 held[role.term].add(clause.span.source)
         for pattern in (*clause.conditions, *clause.exceptions):
             for name, term in pattern.roles:
-                if name != 'attribute' and isinstance(term, str) and term:
+                if name in entity_roles and isinstance(term, str) and term:
                     held[term].add(clause.span.source)
     return held
 
@@ -64,6 +65,8 @@ def valid_entity(term: str) -> bool:
     if any(ch in term for ch in ('上司', '部署', '認証済み', '扉')):
         return False
     if not all(('\u3040' <= ch <= '\u30ff') or ('\u3400' <= ch <= '\u9fff') for ch in term):
+        return False
+    if not any(('\u30a0' <= ch <= '\u30ff') or ('\u3400' <= ch <= '\u9fff') for ch in term):
         return False
     return term not in {'これ', 'それ', 'あれ', 'ここ', 'そこ', 'もの', 'こと'}
 
@@ -95,55 +98,57 @@ def identity_conflicts(view: View, term: str) -> bool:
     return False
 
 
-def choose_frequency_terms(view: View, docs: dict[str, str], band: str, count: int,
-                           rng: random.Random, *, excluded: set[str], purpose: str) -> list[tuple[str, int, int]]:
-    """Choose unique background entities whose raw and clause-held DFs fit `band`.
-
-    Matching the clause-held band makes the cap sweep exercise the router's actual
-    index. Raw text DF is still the requested background mention frequency and is
-    reported separately. `purpose` removes direct target-fact confounds for chains.
-    """
+def background_entity_pool(view: View, docs: dict[str, str]) -> tuple[dict[str, set[str]], dict[str, int]]:
+    """Parsed entity surfaces with raw substring DF and clause-holder DF."""
     holders = entity_role_terms(view)
+    tagger = _tagger()
+    candidates = {}
+    for term in holders:
+        if not valid_entity(term):
+            continue
+        words = list(tagger(term))
+        if words and all(word.feature.pos1 in ('名詞', '接頭辞', '接尾辞') for word in words):
+            candidates[term] = holders[term]
+    holders = candidates
+    frequencies = {term: doc_frequency(term, docs) for term in holders}
+    return holders, frequencies
+
+
+def choose_frequency_terms(view: View, holders: dict[str, set[str]], frequencies: dict[str, int],
+                           band: str, count: int, rng: random.Random, *,
+                           excluded: set[str], purpose: str) -> list[tuple[str, int, int]]:
+    """Select by raw background text frequency and retain the router's holder DF.
+
+    Common raw mentions often do not appear as interpreted clause roles. That is a
+    behavior to measure, so holder DF is deliberately not a second selection gate.
+    Repeated entities are isolated in per-trial views and cannot cross-contaminate
+    another question's oracle or route count.
+    """
     if band == 'rare':
-        role_pred = lambda n: 1 <= n < 5
         raw_pred = lambda n: n < 5
     elif band == 'mid':
-        role_pred = lambda n: 5 <= n <= 64
         raw_pred = lambda n: 5 <= n <= 64
     elif band == 'common':
-        role_pred = lambda n: n > 128
         raw_pred = lambda n: n > 128
     else:
         raise ValueError(band)
 
-    candidates = [term for term, leaves in holders.items()
-                  if valid_entity(term) and term not in excluded and role_pred(len(leaves))]
+    boss_entities = property_subjects(view, '上司') if purpose == 'chain_e1' else set()
+    candidates = [term for term, raw_df in frequencies.items()
+                  if valid_entity(term) and term not in excluded and raw_pred(raw_df)]
     rng.shuffle(candidates)
-    department_entities = property_subjects(view, '部署')
-    boss_entities = property_subjects(view, '上司')
-    out = []
-    df_cache: dict[str, int] = {}
+    selected = []
     for term in candidates:
-        role_df = len(holders[term])
         if purpose == 'chain_e1':
-            if term in boss_entities or unread_mentions(view, term):
+            if not holders.get(term) or term in boss_entities or unread_mentions(view, term):
                 continue
-        elif purpose == 'chain_e2':
-            if term in department_entities:
-                continue
-        elif purpose == 'guard_e4':
-            if identity_conflicts(view, term):
-                continue
-        raw_df = df_cache.setdefault(term, doc_frequency(term, docs))
-        if not raw_pred(raw_df):
-            continue
-        out.append((term, raw_df, role_df))
-        if len(out) >= count:
-            return out
-    raise RuntimeError(
-        f'Only {len(out)} eligible {band} {purpose} entities; need {count}. '
-        'No entity-frequency band or question shape was silently substituted.'
-    )
+        selected.append((term, frequencies[term], len(holders.get(term, ())))
+                        )
+    if not selected:
+        raise RuntimeError(f'No eligible {band} {purpose} entity surfaces in the background.')
+    if purpose == 'chain_e1' and len(selected) < count:
+        raise RuntimeError(f'Only {len(selected)} unique rare E1 entities; need {count}.')
+    return [selected[i % len(selected)] for i in range(count)]
 
 
 def synthetic_name(kind: str, index: int) -> str:
@@ -158,10 +163,11 @@ def synthetic_name(kind: str, index: int) -> str:
     return prefix + ''.join(reversed(digits)) + 'ナ'
 
 
-def build_trials(n: int, docs: dict[str, str], view: View, seed: int) -> list[dict]:
+def build_trials(n: int, view: View, holders: dict[str, set[str]], frequencies: dict[str, int],
+                 seed: int) -> list[dict]:
     rng = random.Random(seed + n)
     total_chain_e1 = TRIALS * 3
-    rare_e1 = choose_frequency_terms(view, docs, 'rare', total_chain_e1, rng,
+    rare_e1 = choose_frequency_terms(view, holders, frequencies, 'rare', total_chain_e1, rng,
                                      excluded=set(), purpose='chain_e1')
     used = {term for term, _, _ in rare_e1}
     trials = []
@@ -172,9 +178,8 @@ def build_trials(n: int, docs: dict[str, str], view: View, seed: int) -> list[di
             e2_rows = [(synthetic_name('hop', n * 10000 + serial + i), 0, 0)
                        for i in range(TRIALS)]
         else:
-            e2_rows = choose_frequency_terms(view, docs, band, TRIALS, rng,
+            e2_rows = choose_frequency_terms(view, holders, frequencies, band, TRIALS, rng,
                                              excluded=used, purpose='chain_e2')
-            used.update(term for term, _, _ in e2_rows)
         for i in range(TRIALS):
             e1, e1_raw, e1_roles = rare_e1[len(trials) % total_chain_e1]
             e2, e2_raw, e2_roles = e2_rows[i]
@@ -192,9 +197,8 @@ def build_trials(n: int, docs: dict[str, str], view: View, seed: int) -> list[di
             serial += 1
 
     for band in ('rare', 'mid', 'common'):
-        e4_rows = choose_frequency_terms(view, docs, band, TRIALS, rng,
-                                         excluded=used, purpose='guard_e4')
-        used.update(term for term, _, _ in e4_rows)
+        e4_rows = choose_frequency_terms(view, holders, frequencies, band, TRIALS, rng,
+                                         excluded=set(), purpose='guard_e4')
         for i, (e4, e4_raw, e4_roles) in enumerate(e4_rows):
             e5 = synthetic_name('guard_actor', n * 10000 + serial)
             p = f'guard_{n}_{band}_{i:03d}_P'
@@ -237,41 +241,38 @@ def oracle_reason_counts(items: list[dict]) -> dict[str, int]:
     return dict(reasons.most_common(5))
 
 
-def make_oracles(view: View, trials: list[dict]) -> None:
+def make_oracle(view: View, injected: View, trial: dict) -> None:
     semantic_route.ROUTE_MIN_LEAVES = 10 ** 9
-    clauses_by_source: dict[str, list] = collections.defaultdict(list)
-    for clause in view.clauses:
-        clauses_by_source[clause.span.source].append(clause)
-    for trial in trials:
-        req = question.read_semantic(trial['question']).value
-        anchors_by_pattern = semantic_route.pattern_anchors(req)
-        anchors = set().union(*anchors_by_pattern) if anchors_by_pattern else set()
-        gating = tuple(u for u in view.unread
-                       if u.reason == INSTRUCTION or any(a in u.span.text for a in anchors))
-        oracle_view = View(view.sources, view.clauses, gating, view.ingest_ms)
-        result = answer(req, [oracle_view], budget=BIG)
-        trial['request'] = req
-        trial['anchors'] = sorted(anchors)
-        trial['oracle'] = {'verdict': result['verdict'], 'values': result.get('values', []),
-                           'reason': result.get('reason'), 'phase': result.get('phase')}
-        trial['oracle_gold'] = result['verdict'] == 'ANSWER' and result.get('values') == [trial['gold']]
-        trial['request_patterns'] = [
-            {'predicate': node.pattern.predicate, 'modality': node.pattern.modality,
-             'roles': [(name, str(term)) for name, term in node.pattern.roles]}
-            for plan in req.plans for node in plan.nodes if node.pattern is not None
-        ]
-        trial['source_profiles'] = [
-            {'source': source, 'clauses': [
-                {'predicate': clause.predicate, 'modality': clause.modality,
-                 'roles': [(role.name, str(role.term)) for role in clause.roles],
-                 'conditions': [{'predicate': pattern.predicate, 'modality': pattern.modality,
-                                 'roles': [(name, str(term)) for name, term in pattern.roles]}
-                                for pattern in clause.conditions],
-                 'unsupported': list(clause.unsupported)}
-                for clause in clauses_by_source.get(source, ())
-            ]}
-            for source in trial['sources']
-        ]
+    req = question.read_semantic(trial['question']).value
+    anchors_by_pattern = semantic_route.pattern_anchors(req)
+    anchors = set().union(*anchors_by_pattern) if anchors_by_pattern else set()
+    gating = tuple(u for u in view.unread
+                   if u.reason == INSTRUCTION or any(a in u.span.text for a in anchors))
+    oracle_view = View(view.sources, view.clauses, gating, view.ingest_ms)
+    result = answer(req, [oracle_view], budget=BIG)
+    trial['request'] = req
+    trial['anchors'] = sorted(anchors)
+    trial['request_unread'] = [{'text': item.span.text, 'reason': item.reason} for item in req.unread]
+    trial['oracle'] = {'verdict': result['verdict'], 'values': result.get('values', []),
+                       'reason': result.get('reason'), 'phase': result.get('phase')}
+    trial['oracle_gold'] = result['verdict'] == 'ANSWER' and result.get('values') == [trial['gold']]
+    trial['request_patterns'] = [
+        {'predicate': node.pattern.predicate, 'modality': node.pattern.modality,
+         'roles': [(name, str(term)) for name, term in node.pattern.roles]}
+        for plan in req.plans for node in plan.nodes if node.pattern is not None
+    ]
+    trial['source_profiles'] = [
+        {'source': source, 'clauses': [
+            {'predicate': clause.predicate, 'modality': clause.modality,
+             'roles': [(role.name, str(role.term)) for role in clause.roles],
+             'conditions': [{'predicate': pattern.predicate, 'modality': pattern.modality,
+                             'roles': [(name, str(term)) for name, term in pattern.roles]}
+                            for pattern in clause.conditions],
+             'unsupported': list(clause.unsupported)}
+            for clause in injected.clauses if clause.span.source == source
+        ]}
+        for source in trial['sources']
+    ]
     semantic_route.ROUTE_MIN_LEAVES = 7
 
 
@@ -315,53 +316,79 @@ def run_dataset(n: int, stride: int, seed: int) -> tuple[list[dict], dict]:
                       'unread': len(background.unread), 'seconds': round(background_parse_s, 1)},
                      ensure_ascii=False), flush=True)
 
-    trials = build_trials(n, docs, background, seed)
+    t = time.perf_counter()
+    holders, frequencies = background_entity_pool(background, docs)
+    entity_pool_s = time.perf_counter() - t
+    print(json.dumps({'stage': 'entity_pool_ready', 'n': n, 'candidate_terms': len(frequencies),
+                      'raw_common_terms': sum(df > 128 for df in frequencies.values()),
+                      'seconds': round(entity_pool_s, 1)}, ensure_ascii=False), flush=True)
+
+    trials = build_trials(n, background, holders, frequencies, seed)
     if len(trials) != 6 * TRIALS:
         raise AssertionError(f'expected {6 * TRIALS} trials, got {len(trials)}')
-    injected_docs = {}
-    for trial in trials:
-        injected_docs.update(trial['texts'])
-    t = time.perf_counter()
-    injected = document_view(injected_docs)
-    view = merge_views(background, injected)
-    injected_parse_s = time.perf_counter() - t
-    make_oracles(view, trials)
+    print(json.dumps({'stage': 'trials_ready', 'n': n, 'trials': len(trials),
+                      'unique_E1': len({t['entities']['E1'] for t in trials if t['shape'] == 'two-hop'}),
+                      'unique_E2_by_band': {band: len({t['entities']['E2'] for t in trials
+                                                       if t['shape'] == 'two-hop' and t['frequency'] == band})
+                                            for band in ('rare', 'mid', 'common')},
+                      'unique_E4_by_band': {band: len({t['entities']['E4'] for t in trials
+                                                       if t['shape'] == 'guard' and t['frequency'] == band})
+                                            for band in ('rare', 'mid', 'common')}},
+                     ensure_ascii=False), flush=True)
+
+    group_results = collections.defaultdict(list)
+    tree_build_times = []
+    leaf_counts = []
+    injected_parse_s = 0.0
+    clauses_injected = 0
+    unread_injected = 0
+    for index, trial in enumerate(trials, 1):
+        t = time.perf_counter()
+        injected = document_view(trial['texts'])
+        injected_parse_s += time.perf_counter() - t
+        clauses_injected += len(injected.clauses)
+        unread_injected += len(injected.unread)
+        view = merge_views(background, injected)
+        make_oracle(view, injected, trial)
+        t = time.perf_counter()
+        tree = semantic_route.LeafTree(view)
+        build_ms = (time.perf_counter() - t) * 1000
+        tree_build_times.append(build_ms)
+        leaf_counts.append(len(tree.leaves))
+        for evidence in EVIDENCE_MODES:
+            for cap in CAPS:
+                scored = route_and_score(tree, view, trial, cap, evidence, len(tree.leaves))
+                group_results[(trial['shape'], trial['frequency'], evidence, cap)].append((trial, scored))
+        tree.root = None
+        del tree, view, injected
+        if index % 30 == 0:
+            print(json.dumps({'stage': 'trial_progress', 'n': n, 'completed': index,
+                              'total': len(trials),
+                              'oracle_answerable': sum(x.get('oracle', {}).get('verdict') == 'ANSWER'
+                                                       for x in trials[:index])},
+                             ensure_ascii=False), flush=True)
+
     oracle_gold = sum(item['oracle_gold'] for item in trials)
     oracle_groups = []
     for shape in ('two-hop', 'guard'):
         for band in ('rare', 'mid', 'common'):
             group = [item for item in trials if item['shape'] == shape and item['frequency'] == band]
+            entity_key = 'E2' if shape == 'two-hop' else 'E4'
             oracle_groups.append({'shape': shape, 'frequency': band,
                                   'verdicts': verdict_counts(group),
                                   'gold_answers': sum(item['oracle_gold'] for item in group),
+                                  'unique_entities': len({item['entities'][entity_key] for item in group}),
                                   'abstention_reasons': oracle_reason_counts(group)})
     print(json.dumps({'stage': 'oracles_ready', 'n': n, 'trials': len(trials),
                       'oracle_answerable': sum(x['oracle']['verdict'] == 'ANSWER' for x in trials),
                       'oracle_gold': oracle_gold, 'groups': oracle_groups}, ensure_ascii=False), flush=True)
 
-    t = time.perf_counter()
-    tree = semantic_route.LeafTree(view)
-    tree_build_ms = (time.perf_counter() - t) * 1000
-    leaf_count = len(tree.leaves)
-    print(json.dumps({'stage': 'tree_ready', 'n': n, 'leaves': leaf_count,
-                      'nodes': tree.nodes, 'tree_build_ms': round(tree_build_ms, 1)}, ensure_ascii=False), flush=True)
-
     summaries = []
     for evidence in EVIDENCE_MODES:
-        semantic_route.EVIDENCE_UNREAD = evidence
         for cap in CAPS:
-            group_results = collections.defaultdict(list)
-            for index, trial in enumerate(trials, 1):
-                scored = route_and_score(tree, view, trial, cap, evidence, leaf_count)
-                group_results[(trial['shape'], trial['frequency'])].append((trial, scored))
-                if index % 120 == 0:
-                    print(json.dumps({'stage': 'sweep_progress', 'n': n, 'evidence': evidence,
-                                      'expand': cap, 'completed': index, 'total': len(trials)},
-                                     ensure_ascii=False), flush=True)
-
             for shape in ('two-hop', 'guard'):
                 for band in ('rare', 'mid', 'common'):
-                    pairs = group_results[(shape, band)]
+                    pairs = group_results[(shape, band, evidence, cap)]
                     per_trial = [score for _, score in pairs]
                     oracle_answerable = sum(s['oracle_answerable'] for s in per_trial)
                     recall_hits = sum(s['hit'] for s in per_trial)
@@ -392,19 +419,22 @@ def run_dataset(n: int, stride: int, seed: int) -> tuple[list[dict], dict]:
             print(json.dumps({'stage': 'sweep_done', 'n': n, 'evidence': evidence, 'expand': cap},
                              ensure_ascii=False), flush=True)
 
+    tree_build_ms = statistics.median(tree_build_times)
     metadata = {
         'n': n, 'stride': stride, 'loaded': len(docs),
-        'background_parse_s': background_parse_s, 'injected_parse_s': injected_parse_s,
-        'tree_build_ms': tree_build_ms, 'leaves': leaf_count, 'nodes': tree.nodes,
+        'background_parse_s': background_parse_s, 'entity_pool_s': entity_pool_s,
+        'injected_parse_s': injected_parse_s, 'tree_build_ms': tree_build_ms,
+        'tree_build_p95_ms': percentile(tree_build_times, .95), 'tree_build_count': len(tree_build_times),
+        'leaves': f'{min(leaf_counts)}–{max(leaf_counts)}',
         'clauses_background': len(background.clauses), 'unread_background': len(background.unread),
-        'clauses_injected': len(injected.clauses), 'unread_injected': len(injected.unread),
+        'clauses_injected': clauses_injected, 'unread_injected': unread_injected,
         'oracle_groups': oracle_groups, 'oracle_gold': oracle_gold,
         'total_runtime_s': time.perf_counter() - started,
-        'trials': [{key: trial[key] for key in ('shape', 'frequency', 'entities', 'background_df',
-                                                'oracle', 'oracle_gold', 'request_patterns', 'source_profiles')}
+        'trials': [{'n': n, **{key: trial[key] for key in ('shape', 'frequency', 'entities', 'background_df',
+                                                           'oracle', 'oracle_gold', 'question', 'request_unread',
+                                                           'request_patterns', 'source_profiles')}}
                    for trial in trials],
     }
-    tree.root = None
     return summaries, metadata
 
 
@@ -425,25 +455,25 @@ def report_text(summaries: list[dict], metadata: list[dict]) -> str:
         '# Round5-A join and guard route tuning', '',
         '## Setup', '',
         '- Backgrounds: `load(4000, 300)` and `load(16000, 80)` from the Wikipedia lead corpus; all synthetic docs use fresh keys.',
-        '- Trials: 60 each for two-hop × rare/mid/common E2 and guard × rare/mid/common E4, for each background (360 per background).',
-        '- Frequency bands use raw exact substring document frequency in background text: rare `<5`, mid `5–64`, common `>128`. The candidate also had to fall in the same band by background clause-holding leaves so the router cap is exercised. Both counts are retained per trial.',
-        '- To keep the chain oracle attributable to the injected join, E1 candidates have no existing readable `上司` fact or unread span mentioning E1; chain E2 candidates have no existing readable `部署` fact. Guard E4 candidates have no contrary/unrelated readable identity fact. This selection is disclosed; question/source wording was not changed.',
+        '- Trials: 60 each for two-hop × rare/mid/common E2 and guard × rare/mid/common E4, for each background (360 per background). Every trial is evaluated against the real background plus only its own two injected documents, so repeated frequency-band entities cannot contaminate another trial.',
+        '- Frequency bands use raw exact substring document frequency in background text: rare `<5`, mid `5–64`, common `>128`. Background clause-holder leaf counts are recorded separately and are not a second selection gate; the router can see fewer structured holders than raw text mentions, which is part of the measurement.',
+        '- E1 comes from a parsed background role, appears in fewer than five background documents, and has no existing readable `上司` fact or unread span mentioning E1. E2 candidates are not filtered for existing department facts, so any competing background answer remains visible to the flat oracle. Question/source wording was not changed.',
         '- Fixed caps: `ANCHOR_CAP=128`, `UNREAD_CAP=1024`; sweep `EXPAND_CAP` 2/4/8/32/128 under `EVIDENCE_UNREAD=mention` and `all`. Oracle: all clauses, unlimited `Budget(parse=32, depth=8, candidates=10^7, bindings=64, steps=10^9)`, and only unread spans mentioning a request anchor (same contract as `round5a_route_tune.py`).',
-        '- Per-question timing includes `LeafTree.restrict` plus the flat semantic answer on the selected view; shared tree construction is reported separately. Fallback counts include `skipped` route calls that use the full view.',
+        '- A `LeafTree` is built once per trial and reused across its ten cap/mode settings. Per-question timing includes `LeafTree.restrict` plus the semantic answer; per-trial tree-build median/p95 is reported separately. Fallback counts include `skipped` route calls that use the full view.',
         '', '## Dataset and oracle summary', '',
-        '| N | loaded | background clauses / unread | injected clauses / unread | leaves | tree build ms | oracle gold answers | parse + run seconds |',
+        '| N | loaded | background clauses / unread | injected clauses / unread | leaves/trial | tree build median/p95 ms | oracle gold answers | parse + run seconds |',
         '|---:|---:|---:|---:|---:|---:|---:|---:|',
     ]
     for item in metadata:
-        lines.append(f"| {item['n']} | {item['loaded']} | {item['clauses_background']} / {item['unread_background']} | {item['clauses_injected']} / {item['unread_injected']} | {item['leaves']} | {item['tree_build_ms']:.1f} | {item['oracle_gold']} / 360 | {item['total_runtime_s']:.1f} |")
+        lines.append(f"| {item['n']} | {item['loaded']} | {item['clauses_background']} / {item['unread_background']} | {item['clauses_injected']} / {item['unread_injected']} | {item['leaves']} | {item['tree_build_ms']:.1f}/{item['tree_build_p95_ms']:.1f} | {item['oracle_gold']} / 360 | {item['total_runtime_s']:.1f} |")
     lines += ['', '### Flat oracle verdicts by trial group', '',
-              '| N | shape | entity frequency | oracle verdicts | gold-matching oracle answers | top abstention reasons |',
-              '|---:|---|---|---|---:|---|']
+              '| N | shape | entity frequency | unique E2/E4 | oracle verdicts | gold-matching oracle answers | top abstention reasons |',
+              '|---:|---|---|---:|---|---:|---|']
     for item in metadata:
         for group in item['oracle_groups']:
             reasons = '; '.join(f'{k} ×{v}' for k, v in group['abstention_reasons'].items()) or '—'
             verdicts = ', '.join(f'{k} {v}' for k, v in group['verdicts'].items())
-            lines.append(f"| {item['n']} | {group['shape']} | {group['frequency']} | {verdicts} | {group['gold_answers']} / 60 | {reasons} |")
+            lines.append(f"| {item['n']} | {group['shape']} | {group['frequency']} | {group['unique_entities']} | {verdicts} | {group['gold_answers']} / 60 | {reasons} |")
     lines += ['', '## EXPAND_CAP results', '',
               'Recall is routed ANSWER with the same value as the flat oracle divided by oracle ANSWER count. Violations are routed ANSWER where the oracle abstains, or routed ANSWER with a different value. Reach reports median/p95 effective leaves; skipped routes count as the full view. Times are median/p95 milliseconds.', '',
               '| N | shape | freq | unread mode | cap | recall | violations | routed ANSWER | gold ANSWER | reach med/p95 | ms med/p95 | fallbacks |',
@@ -488,6 +518,23 @@ def report_text(summaries: list[dict], metadata: list[dict]) -> str:
         lines.append('The flat oracle answered all two-hop questions in all six N/frequency groups; the remaining recall loss is attributable to routing, not to the test reader or a missing background department fact.')
     else:
         lines.append('Some chain oracle trials abstained; see each group’s reasons. Those abstentions were retained in the denominator audit and were not repaired by changing the requested chain shape.')
+        chain_misses = [trial for item in metadata for trial in item['trials']
+                        if trial['shape'] == 'two-hop' and trial['oracle']['verdict'] != 'ANSWER']
+        grouped_misses = collections.defaultdict(list)
+        for trial in chain_misses:
+            if trial['request_unread']:
+                cause = 'request unread: ' + ', '.join(sorted({u['reason'] for u in trial['request_unread']}))
+            else:
+                unsupported = sorted({reason for profile in trial['source_profiles']
+                                      for clause in profile['clauses'] for reason in clause['unsupported']})
+                cause = ('source unsupported: ' + ', '.join(unsupported)) if unsupported else trial['oracle'].get('reason', 'oracle abstention')
+            grouped_misses[(trial['n'], trial['frequency'],
+                            trial['entities'].get('E2', ''), cause)].append(trial)
+        if grouped_misses:
+            descriptions = []
+            for (dataset_n, band, e2, cause), group in sorted(grouped_misses.items()):
+                descriptions.append(f'N={dataset_n} {band} E2 `{e2}` ×{len(group)}: {cause}')
+            lines.append('Chain oracle abstention causes from the injected/request parses: ' + '; '.join(descriptions) + '.')
 
     aggregate = collections.defaultdict(list)
     for row in summaries:
@@ -543,7 +590,7 @@ def report_text(summaries: list[dict], metadata: list[dict]) -> str:
         common128 = [r for r in summaries if r['shape'] == 'two-hop' and r['frequency'] == 'common' and
                      r['evidence'] == 'mention' and r['expand'] == 128]
         if common128 and all(r['recall_hits'] == 0 for r in common128):
-            lines.append('A cap of 128 still does not follow the `>128` common E2 terms, by design; raising this cap would be a different operating point and is outside the tested grid.')
+            lines.append('Common raw-text frequency is not the same as `LeafTree` clause-holder DF: compare both columns in the entity audit. A raw `>128` term with fewer than 129 parsed holder leaves may still be followed at cap 128. The measured common-band recall is 0 at cap 128, so that result does not establish that all raw-common terms were skipped by the cap.')
     lines.append('Read the per-band recall/fallback columns before applying the recommendation: the guard workload is currently limited by source/question modality compatibility, and the common-entity chain band is intentionally beyond cap 128.')
     lines += ['', '## Reproducibility', '',
               'Run from the work copy root with `VERA_CORPUS_ROOT=/tmp/vera-empty-materials PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=.` and the requested environment Python. No network or sealed/heldout data was used.', '']
