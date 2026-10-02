@@ -97,7 +97,7 @@ def test_exact_match_returns_record_with_id_without_calling_asker():
     assert asker.prompts == []
 
 
-def test_unmatched_situation_abstains_without_calling_injected_asker():
+def test_unmatched_index_lookup_abstains_without_calling_injected_asker():
     asker = PickTrigger('回線切断')
     index = LessonIndex([lesson('b', '認証失敗'), lesson('a', '回線切断')], asker=asker)
     assert index.lessons_for('リンク不通') == []
@@ -244,6 +244,12 @@ def test_module_level_lookup_accepts_memory_and_unknowns_abstain():
     asker = PickTrigger('回線切断')
     assert [r['id'] for r in lessons_for(memory, '回線が切断', asker=asker)] == ['a']
     assert lessons_for(memory, 'リンク不通', asker=asker) == []
+    assert asker.prompts == []
+
+
+def test_unmatched_module_lookup_abstains_without_calling_injected_asker():
+    asker = PickTrigger('回線切断')
+    assert lessons_for([lesson('a', '回線切断')], 'リンク不通', asker=asker) == []
     assert asker.prompts == []
 
 
