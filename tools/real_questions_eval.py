@@ -472,6 +472,104 @@ def _demo_assertions() -> None:
         assert reply.record_ids
 
 
+def _conduct_ask_run(rows: list[dict[str, Any]], out_dir: Path, frame_path: Path) -> dict[str, Any]:
+    """Run every row through ``python -m verantyx.conduct_ask`` (one process per row, as a user would).
+
+    Nothing here writes a question, an option or a human answer: only row ids and typed outcomes.
+    """
+    import subprocess
+
+    # the same interpreter and an explicit, minimal environment for every row (no dependence on any wrapper script)
+    base = [sys.executable]
+    child_env = {"HOME": os.environ.get("HOME", ""), "PATH": "/usr/bin:/bin", "PYTHONDONTWRITEBYTECODE": "1",
+                 "PYTHONPATH": str(ROOT), "PYTHONIOENCODING": "utf-8", "LANG": "en_US.UTF-8"}
+    out_dir.mkdir(parents=True, exist_ok=True)
+    results: list[dict[str, Any]] = []
+    for index, row in enumerate(rows):
+        argv = base + ["-m", "verantyx.conduct_ask", "--frame", str(frame_path), "--question", row["question"]]
+        for option in row["options"]:
+            argv += ["--option", option]
+        argv += ["--vocab-llm", "off"]
+        proc = subprocess.run(argv, capture_output=True, text=True, cwd=str(ROOT), timeout=120, env=child_env)
+        try:
+            reply = json.loads(proc.stdout)
+        except ValueError:
+            reply = {"decision": "escalate", "escalate_reason": "INTERNAL_ERROR", "escalate_detail": "UNPARSEABLE_STDOUT"}
+        answer = row.get("human_answer") if isinstance(row.get("human_answer"), str) and row.get("human_answer") != "" else None
+        decision = reply.get("decision")
+        if decision == "answer":
+            outcome = "ANSWERED_NO_REFERENCE" if answer is None else ("AGREED" if reply.get("answer") == answer else "WRONG")
+        else:
+            outcome = "ESCALATED"
+        results.append({
+            "row": _row_id(index), "session": _session(row), "has_human_answer": answer is not None,
+            "exact_option_answer": answer is not None and answer in row["options"], "decision": decision,
+            "answer_option_index": reply.get("answer_option_index"), "escalate_reason": reply.get("escalate_reason"),
+            "escalate_detail": reply.get("escalate_detail"), "exit": proc.returncode, "outcome": outcome,
+        })
+    with (out_dir / "results.jsonl").open("w", encoding="utf-8") as stream:
+        for item in results:
+            stream.write(json.dumps(item, ensure_ascii=False) + "\n")
+    return {"results": results}
+
+
+def _conduct_ask_summary(results: list[dict[str, Any]], out_dir: Path) -> dict[str, Any]:
+    known = [r for r in results if r["has_human_answer"]]
+    summary: dict[str, Any] = {
+        "rows": len(results), "known_answers": len(known),
+        "known_outcomes": dict(Counter(r["outcome"] for r in known)),
+        "known_escalate_reasons": dict(Counter(r["escalate_reason"] for r in known if r["outcome"] == "ESCALATED")),
+        "unknown_answer_rows": {"answered": sum(1 for r in results if not r["has_human_answer"] and r["decision"] == "answer"),
+                                "escalated": sum(1 for r in results if not r["has_human_answer"] and r["decision"] != "answer")},
+    }
+    triage_path = out_dir / "triage.jsonl"
+    triage: dict[str, dict[str, Any]] = {}
+    if triage_path.is_file():
+        for line in triage_path.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                entry = json.loads(line)
+                triage[entry["row"]] = entry
+    classes = ("NO_INFO", "FRAME_SAYS_ESCALATE", "INFO_NOT_RETRIEVED", "UNTRIAGED")
+    table: dict[str, list[str]] = {name: [] for name in classes}
+    for r in known:
+        if r["outcome"] != "ESCALATED":
+            continue
+        entry = triage.get(r["row"])
+        label = entry["class"] if entry and entry.get("class") in classes else "UNTRIAGED"
+        table[label].append(r["row"])
+    summary["triage"] = {name: {"count": len(rows_), "rows": rows_} for name, rows_ in table.items()}
+    summary["triage_judged_by"] = "implementer (hand classification; see triage.jsonl)"
+    (out_dir / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    md = ["# conduct_ask on the real questions (row ids only)", "",
+          f"Rows: {summary['rows']}; recorded human answers: {summary['known_answers']}.", "",
+          f"Outcomes on the recorded answers: {summary['known_outcomes']}.", "",
+          "| Class of an escalated known-answer row | Count | Rows |", "|---|---:|---|"]
+    for name in classes:
+        md.append(f"| {name} | {len(table[name])} | {', '.join(table[name]) or '—'} |")
+    (out_dir / "triage_table.md").write_text("\n".join(md) + "\n", encoding="utf-8")
+    return summary
+
+
+def conduct_ask_main(out_dir: str, frame: Optional[str]) -> None:
+    data_path = os.environ.get("VERA_REAL_QUESTIONS")
+    if not data_path:
+        raise RuntimeError("VERA_REAL_QUESTIONS is not set")
+    rows = read_rows(data_path)
+    known_count = sum(isinstance(row.get("human_answer"), str) and bool(row["human_answer"]) for row in rows)
+    exact_count = sum(isinstance(row.get("human_answer"), str) and bool(row["human_answer"])
+                      and row["human_answer"] in row["options"] for row in rows)
+    assert len(rows) == 130
+    assert known_count == 72
+    assert exact_count == 27
+    target = Path(out_dir)
+    ran = _conduct_ask_run(rows, target, Path(frame) if frame else FRAME_PATH)
+    summary = _conduct_ask_summary(ran["results"], target)
+    print(f"Rows: {len(rows)}; recorded human answers: {known_count}; exact option labels: {exact_count}.")
+    print(f"conduct_ask outcomes on the recorded answers: {summary['known_outcomes']}.")
+    print(f"Escalation reasons (recorded answers): {summary['known_escalate_reasons']}.")
+    print("Triage: " + ", ".join(f"{k}={v['count']}" for k, v in summary["triage"].items()))
+
+
 def main() -> None:
     _demo_assertions()
     data_path = os.environ.get("VERA_REAL_QUESTIONS")
@@ -502,4 +600,16 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 1:
+        import argparse
+
+        parser = argparse.ArgumentParser(description="Real-question experiments. With no option, run the conductor report.")
+        parser.add_argument("--conduct-ask", action="store_true", help="measure verantyx.conduct_ask on the real questions")
+        parser.add_argument("--out", help="directory for the --conduct-ask outputs (row ids and typed outcomes only)")
+        parser.add_argument("--frame", help="frame file for --conduct-ask (default docs/frames/vera_project_frame.md)")
+        cli = parser.parse_args()
+        if not cli.conduct_ask or not cli.out:
+            parser.error("--conduct-ask and --out are required together")
+        conduct_ask_main(cli.out, cli.frame)
+    else:
+        main()

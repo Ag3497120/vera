@@ -1,0 +1,5 @@
+# off: rows=161 changed=1
+# fake: rows=161 changed=1
+# counts (off+fake rows): {'ans2esc': 2, 'esc2ans': 0, 'valchg': 0, 'reasonchg': 0}
+off w2c-f08-03 ans2esc ('answer', 1, 'No', None, None) -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')
+fake w2c-f08-03 ans2esc ('answer', 1, 'No', None, None) -> ('escalate', None, None, 'FRAME_SILENT', 'PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION')

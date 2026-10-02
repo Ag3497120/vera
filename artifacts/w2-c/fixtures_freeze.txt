@@ -1,0 +1,34 @@
+2026-10-02T16:18:38Z
+tests/conduct_ask/fixtures:
+total 216
+drwxr-xr-x  13 motonisihikoudai  staff     416 Oct  3 01:12:22 2026 frames
+-rw-r--r--   1 motonisihikoudai  staff      38 Oct  3 01:18:33 2026 holdout.txt
+-rw-r--r--   1 motonisihikoudai  staff  103293 Oct  3 01:18:33 2026 items.jsonl
+
+tests/conduct_ask/fixtures/frames:
+total 88
+-rw-r--r--  1 motonisihikoudai  staff  1584 Oct  3 01:11:53 2026 f01_loan.md
+-rw-r--r--  1 motonisihikoudai  staff  1538 Oct  3 01:11:53 2026 f02_greenhouse.md
+-rw-r--r--  1 motonisihikoudai  staff  1342 Oct  3 01:11:53 2026 f03_handout.md
+-rw-r--r--  1 motonisihikoudai  staff  1440 Oct  3 01:11:53 2026 f04_stall.md
+-rw-r--r--  1 motonisihikoudai  staff  1603 Oct  3 01:12:22 2026 f05_retry.md
+-rw-r--r--  1 motonisihikoudai  staff  1399 Oct  3 01:11:53 2026 f06_sportsday.md
+-rw-r--r--  1 motonisihikoudai  staff  1346 Oct  3 01:11:53 2026 f07_expense.md
+-rw-r--r--  1 motonisihikoudai  staff  1346 Oct  3 01:15:26 2026 f08_audioguide.md
+-rw-r--r--  1 motonisihikoudai  staff  1664 Oct  3 01:12:22 2026 f09_storytime.md
+-rw-r--r--  1 motonisihikoudai  staff  1570 Oct  3 01:12:14 2026 f10_ledger.md
+-rw-r--r--  1 motonisihikoudai  staff  1551 Oct  3 01:12:14 2026 f11_bikeshop.md
+901415e005562b42c464fe7b0dd83d770486c8a1681e6fb37bb2be75b5190383  tests/conduct_ask/fixtures/items.jsonl
+d038477b234b0d0067aab9ec8815f07c56e78d05738ffd7d993f08d1af9d6b9f  tests/conduct_ask/fixtures/holdout.txt
+e38d4768546e875a3ebf60cd21c6f9926a656f75933449371249ff687124d36a  tests/conduct_ask/fixtures/frames/f01_loan.md
+b12721cf0426b9e75f2523e1c87b91d5a516876234e08f1dd15f769e8bbba6fa  tests/conduct_ask/fixtures/frames/f02_greenhouse.md
+5b0cb39dd16d5ef72d980441e42cb961458d664301dde74f2563270b0bd57b4c  tests/conduct_ask/fixtures/frames/f03_handout.md
+bbd9d1c497d3d9877d0122b6e504907ae894445990823ba91909637086121483  tests/conduct_ask/fixtures/frames/f04_stall.md
+a109fbc55415fe8144b1dd293c32b5b56035ae61094d89814944ecd16f398acd  tests/conduct_ask/fixtures/frames/f05_retry.md
+c0ff85a2df403891a8fb76423b6a5d96939728f90e523e0073f9496e2939448a  tests/conduct_ask/fixtures/frames/f06_sportsday.md
+7c810ed3f3c233974b16c82843ce681d28d021928874e8ac131bbc9cc46cf159  tests/conduct_ask/fixtures/frames/f07_expense.md
+6c2e2b8db479d3852576731a7827ac6aae1d660a36bd7cfe769779498c0ee683  tests/conduct_ask/fixtures/frames/f08_audioguide.md
+85e07160b8749889d173142d066bdcd5f8c434171214162f5816951f8877ed79  tests/conduct_ask/fixtures/frames/f09_storytime.md
+9e3d5abe653b051e1c807c191d79fd297504bb17c1de15b1d3ac599fae439bef  tests/conduct_ask/fixtures/frames/f10_ledger.md
+37ee4d70bf99a5a1e7797ed329bfbb9b7596fbcf9385265bf21833f690d849f7  tests/conduct_ask/fixtures/frames/f11_bikeshop.md
+conduct_ask.py not yet written

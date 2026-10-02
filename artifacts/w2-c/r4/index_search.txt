@@ -1,0 +1,14 @@
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "permission predicate closed form",
+  "searched": 647,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 279,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

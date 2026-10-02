@@ -1,0 +1,14 @@
+escalate None None                     FRAME_SILENT PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION | May we drain the reservoir after the yearly inspection now?
+escalate None None                     FRAME_SILENT PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION | May we drain the reservoir after the yearly inspection, please?
+escalate None None                     FRAME_SILENT PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION | Is it okay for us to drain the reservoir after the yearly inspection?
+escalate None None                     FRAME_SILENT PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION | Can we drain the reservoir before the yearly inspection?
+answer   0    Yes                      None None | May we drain the reservoir after the yearly inspection? Approved.
+answer   1    No                       None None | Is rainwater harvesting in scope? Approval was given.
+escalate None None                     FRAME_SILENT CONTEXT_SENTENCE_UNREAD | Is rainwater harvesting in scope? Approved by the owner.
+escalate None None                     FRAME_SILENT CONTEXT_SENTENCE_UNREAD | Is rainwater harvesting in scope? The owner approved it.
+escalate None None                     FRAME_SILENT CONTEXT_SENTENCE_UNREAD | What is the unit of flow? Approved for the greenhouse.
+answer   None 4週間                      None None | 献立の周期は何ですか？ 承認を得ています。
+escalate None None                     FRAME_SILENT CONTEXT_SENTENCE_UNREAD | 献立の周期は何ですか？ 校長が承認しました。
+escalate None None                     FRAME_SILENT CONTEXT_SENTENCE_UNREAD | 献立表の形式はどれにしますか？ 承認済みです。来年度の話です。
+escalate None None                     FRAME_SILENT PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION | 古い献立表を削除してよいですか？ 承認済みです。
+escalate None None                     FRAME_SILENT PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION | 年度末に古い献立表を削除してよいですか？

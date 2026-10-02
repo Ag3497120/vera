@@ -1,0 +1,4 @@
+noun_frame_terms 9 hits 0
+question_words 31 hits_total 2 hits_new_in_round_4 0
+already_in_round3_code (generic list of protected-looking operations) 削除
+already_in_round3_code (generic list of protected-looking operations) 外部送信

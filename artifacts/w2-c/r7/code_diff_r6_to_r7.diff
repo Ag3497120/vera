@@ -1,0 +1,274 @@
+--- artifacts/w2-c/r7/conduct_ask_r6.py.txt	2026-10-03 04:52:37
++++ verantyx/conduct_ask.py	2026-10-03 04:54:39
+@@ -49,9 +49,12 @@
+ # Text utilities
+ # ---------------------------------------------------------------------------------------------
+ 
+-def nz(text: str) -> str:
+-    """NFKC, case folding, quotes removed, whitespace collapsed (the one normal form used for matching)."""
+-    s = unicodedata.normalize("NFKC", text).casefold()
++def nz(text: str, fold: bool = True) -> str:
++    """NFKC, case folding, quotes removed, whitespace collapsed (the one normal form used for matching).
++    ``fold=False`` keeps the case (only for comparing a path with the write allowlist)."""
++    s = unicodedata.normalize("NFKC", text)
++    if fold:
++        s = s.casefold()
+     s = re.sub(r"[「」『』“”\"]", "", s)
+     s = s.replace("’", "'").replace("‘", "'")
+     return re.sub(r"\s+", " ", s).strip()
+@@ -898,6 +901,7 @@
+     kind: Optional[str] = None
+     layer: str = ""
+     polarity: Optional[str] = None     # YES / NO when decided by polarity (used to combine resolvers)
++    resolvers: tuple[str, ...] = ()    # the step(s) whose rule gave the answer (output key "resolver")
+ 
+ 
+ def _esc(reason: str, detail: str, basis: Iterable[Ref] = (), kind: Optional[str] = None, layer: str = "") -> Outcome:
+@@ -931,6 +935,7 @@
+     trace_tried: list[str] = field(default_factory=list)
+     trace_out: dict[str, str] = field(default_factory=dict)
+     premise_sents: list[tuple[int, int]] = field(default_factory=list)   # sentences a resolver read as "X is done"
++    q_case: str = ""      # the question in the normal form without case folding (paths only)
+ 
+     def polarity_options(self) -> Optional[tuple[OptionInfo, OptionInfo]]:
+         yes = [o for o in self.options if o.reading == "YES"]
+@@ -1455,16 +1460,89 @@
+     return False
+ 
+ 
+-def _conflicts_for(ctx: Ctx, action: ActionV, family: str) -> list[tuple[str, TextV]]:
+-    """Statements of other families about the same operation: ('negative'|'requires', text record)."""
++_STANCE_EN_NEG = frozenset("never not cannot can't won't don't doesn't".split())
++_STANCE_EN_AUX = frozenset("will must shall should do does".split())
++_JA_MIZEN = {"う": ("わ",), "つ": ("た",), "る": ("ら", ""), "く": ("か",), "ぐ": ("が",), "す": ("さ",),
++             "ぬ": ("な",), "ぶ": ("ば",), "む": ("ま",)}
++_STANCE_JA_SUBJ = re.compile(r"^(?:(?:私たち|我々|われわれ)(?:は|が)[、,]?)?$")
++_STANCE_OTHER_NEG = re.compile(r"禁止|許さ")
++
++
++def _en_neg_tail(pre: list[str]) -> int:
++    if len(pre) >= 2 and pre[-2:] == ["no", "longer"]:
++        k = 2
++    elif pre and pre[-1] in _STANCE_EN_NEG:
++        k = 1
++    else:
++        return 0
++    if (k == 2 or pre[-1] in ("never", "not")) and len(pre) > k and pre[-k - 1] in _STANCE_EN_AUX:
++        k += 1
++    return k
++
++
++def _record_stance(action: str, text: str) -> Optional[tuple[str, bool]]:
++    """(stance, unconditional) of a record that names the operation, or None.  stance: NEG (a closed negation stands
++    right on the operation and no other negation is in the record), POS (no negation anywhere), else UNREADABLE."""
++    if not _action_in_text(action, text):
++        return None
++    n = nz(text)
++    if has_cjk(nz(action)):
++        a = nz(action)
++        stem = _ja_action_stem(action)
++        pos = n.find(stem)
++        if pos < 0:
++            return ("UNREADABLE", False)
++        pre, after = n[:pos], n[pos + len(stem):]
++        if a.endswith("する") and len(a) - 2 >= 2:
++            negs = ["しない", "しません", "することはしない", "することはしません"]
++        elif a and a[-1] in _U_ROW and len(a) - 1 >= 2:
++            last = a[-1]
++            negs = ([m + "ない" for m in _JA_MIZEN.get(last, ())] + [r + "ません" for r in _JA_REN.get(last, ())]
++                    + [last + "ことはしない", last + "ことはしません"])
++        else:
++            negs = ["はしない", "をしない", "しない", "はしません", "をしません", "しません"]
++        hit = max((x for x in negs if after.startswith(x)), key=len, default=None)
++        if hit is not None:
++            rest = after[len(hit):]
++            if _negated(pre + "|" + rest) or _STANCE_OTHER_NEG.search(pre + rest):
++                return ("UNREADABLE", False)
++            return ("NEG", bool(_STANCE_JA_SUBJ.match(pre)) and rest.strip(" 。.") == "")
++        if _negated(n) or _STANCE_OTHER_NEG.search(n):
++            return ("UNREADABLE", False)
++        return ("POS", False)
++    toks = _TOKEN.findall(n)
++    ttoks = [t for t in _TOKEN.findall(nz(action)) if t not in _ARTICLES]
++    span = _tok_span(toks, ttoks) if ttoks else None
++    if span is None:
++        return ("UNREADABLE", False)
++    pre, cont = toks[:span[0]], toks[span[1] + 1:]
++    k = _en_neg_tail(pre)
++    if k:
++        subj = pre[:len(pre) - k]
++        if _negated(" ".join(subj + ["|"] + cont)) or _STANCE_OTHER_NEG.search(n):
++            return ("UNREADABLE", False)
++        return ("NEG", subj in ([], ["we"]) and not cont)
++    if _negated(n) or _STANCE_OTHER_NEG.search(n):
++        return ("UNREADABLE", False)
++    return ("POS", False)
++
++
++def _conflicts_for(ctx: Ctx, action: ActionV, family: str) -> list[tuple[str, TextV]]:
++    """Statements of other families about the same operation: ('negative'|'negative_conditional'|'requires'|
++    'unreadable', text record).  Invariants count for a protected operation, criteria for a forbidden one."""
+     found: list[tuple[str, TextV]] = []
+-    for inv in ctx.view.invariants:
+-        if _action_in_text(action.action, inv.text) and (_negated(nz(inv.text)) or re.search(r"禁止|許さ", inv.text)):
+-            found.append(("negative", inv))
+-    for crit in ctx.view.criteria:
+-        if (_action_in_text(action.action, crit.text) and not _negated(nz(crit.text))
+-                and not re.search(r"禁止|許さ", crit.text)):
+-            found.append(("requires", crit))
++    recs = ctx.view.invariants if family == "protected_actions" else ctx.view.criteria
++    for rec in recs:
++        st = _record_stance(action.action, rec.text)
++        if st is None:
++            continue
++        stance, uncond = st
++        if stance == "UNREADABLE":
++            found.append(("unreadable", rec))
++        elif family == "protected_actions" and stance == "NEG":
++            found.append(("negative" if uncond else "negative_conditional", rec))
++        elif family == "forbidden_actions" and stance == "POS":
++            found.append(("requires", rec))
+     return found
+ 
+ 
+@@ -1486,32 +1564,46 @@
+ def _path_status(ctx: Ctx) -> Optional[tuple[str, list[Ref], str]]:
+     """'ALLOWED' / 'OUTSIDE' / 'NOT_PLAIN' / 'NO_ALLOWLIST' for a path-looking token in the question, else ``None``.
+     'NOT_PLAIN': the path would match the list by prefix but has a "." or ".." part (it is not compared, it is handed up)."""
+-    paths = []
+-    for m in _PATH_RX.finditer(ctx.q):
+-        p = m.group(0).rstrip("/")
+-        if p.startswith("./"):
+-            p = p[2:]
+-        paths.append(p)
+-    paths = [p for p in paths if p and not re.fullmatch(r"[0-9.]+", p)]
++    def found(text: str) -> list[str]:
++        out = []
++        for m in _PATH_RX.finditer(text):
++            p = m.group(0).rstrip("/")
++            if p.startswith("./"):
++                p = p[2:]
++            out.append(p)
++        return [p for p in out if p and not re.fullmatch(r"[0-9.]+", p)]
++    paths = found(ctx.q)
+     if not paths:
+         return None
+     if not ctx.view.allow_declared:
+         return "NO_ALLOWLIST", [], paths[0]
++    cased = found(ctx.q_case)
++    if [c.casefold() for c in cased] != paths:
++        cased = []          # the two readings do not line up: no path is compared letter for letter
+     refs: list[Ref] = []
+     outside = False
+     not_plain = False
+-    for p in paths:
++    case_differs = False
++    for i, p in enumerate(paths):
+         hit = [rf for allowed, rf in ctx.view.allow if p == allowed or p.startswith(allowed.rstrip("/") + "/")]
+         if hit and not all(re.search(r"[^.]", seg) for seg in p.split("/")):
+             not_plain = True       # "a/../b" and "a/./b" are not compared with the list (no normalising: handed up)
+         elif hit:
+-            refs.extend(hit)
++            c = cased[i] if cased else None
++            exact = [rf for allowed, rf in ctx.view.allow
++                     if c is not None and (c == allowed or c.startswith(allowed.rstrip("/") + "/"))]
++            if exact:
++                refs.extend(exact)
++            else:
++                case_differs = True   # equal only after case folding: a different directory on most file systems
+         else:
+             outside = True
+     if outside:
+         return "OUTSIDE", [rf for _, rf in ctx.view.allow], paths[0]
+     if not_plain:
+         return "NOT_PLAIN", [rf for _, rf in ctx.view.allow], paths[0]
++    if case_differs:
++        return "CASE_DIFFERS", [rf for _, rf in ctx.view.allow], paths[0]
+     return "ALLOWED", refs, paths[0]
+ 
+ 
+@@ -1852,7 +1944,7 @@
+     state, refs, _ = path
+     if state == "ALLOWED":
+         return _pol_answer(ctx, True, refs, "PERMISSION", "DIRECT", yes_p, no_p, "permission")
+-    detail = {"OUTSIDE": "OUTSIDE_ALLOWLIST", "NOT_PLAIN": "PATH_NOT_PLAIN"}.get(state, "NO_ALLOWLIST")
++    detail = {"OUTSIDE": "OUTSIDE_ALLOWLIST", "NOT_PLAIN": "PATH_NOT_PLAIN", "CASE_DIFFERS": "PATH_CASE_DIFFERS"}.get(state, "NO_ALLOWLIST")
+     return _esc("FRAME_SILENT", detail, refs, "PERMISSION", "permission")
+ 
+ 
+@@ -1863,10 +1955,12 @@
+     conflicts: list[tuple[str, TextV, str]] = []   # (family of the other statement, record, stance)
+     for a in acts:
+         for stance, rec in _conflicts_for(ctx, a, family):
++            if stance == "unreadable":
++                return _esc("FRAME_SILENT", "RECORD_STANCE_UNREADABLE", list(basis) + [rec.ref], "PERMISSION", "permission")
+             if stance == "requires" and what == "FORBIDDEN":
+                 conflicts.append(("completion_criteria", rec, "requires"))
+-            elif stance == "negative" and what == "PROTECTED":
+-                conflicts.append(("philosophy_invariants", rec, "negative"))
++            elif stance.startswith("negative") and what == "PROTECTED":
++                conflicts.append(("philosophy_invariants", rec, stance))
+     if not conflicts:
+         if what == "FORBIDDEN":
+             return _pol_answer(ctx, False, basis, "PERMISSION", "DIRECT", yes_p, no_p, "permission")
+@@ -1893,6 +1987,8 @@
+         return _pol_answer(ctx, True, refs, "PERMISSION", "COMBINED", yes_p, no_p, "permission")
+     # protected vs a negative invariant
+     if verdicts[0] == "OTHER":
++        if any(st != "negative" for _, _, st in conflicts):
++            return _esc("HUMAN_APPROVAL_REQUIRED", "INVARIANT_IS_CONDITIONAL", refs, "PERMISSION", "permission")
+         return _pol_answer(ctx, False, refs, "PERMISSION", "COMBINED", yes_p, no_p, "permission")
+     return _esc("HUMAN_APPROVAL_REQUIRED", "PROTECTED_ACTION", refs, "PERMISSION", "permission")
+ 
+@@ -2306,6 +2402,8 @@
+         ctx.trace_out[name] = "NOT_APPLICABLE" if out is None else (
+             "ANSWER" if out.decision == "answer" else f"ESCALATE:{out.reason}:{out.detail}")
+         if out is not None:
++            if out.decision == "answer":
++                out.resolvers = (name,)
+             results.append((name, out))
+     if not results:
+         return None
+@@ -2318,6 +2416,7 @@
+             first = outs[0]
+             first.derivation = "COMBINED"
+             first.basis = _uniq(r for o in outs for r in o.basis)
++            first.resolvers = tuple(n for n, _ in results)
+             return first
+         return _esc("FRAME_CONFLICT", "RESOLVERS_DISAGREE", [r for o in outs for r in o.basis], layer="resolver")
+     order = ("FRAME_CONFLICT", "HUMAN_APPROVAL_REQUIRED", "QUESTION_UNREADABLE", "NO_OPTION_ALLOWED", "VOCAB_UNMAPPED",
+@@ -2504,6 +2603,8 @@
+     out = layer_permission(ctx)
+     ctx.trace_out["permission"] = "NOT_APPLICABLE" if out is None else ("ANSWER" if out.decision == "answer" else f"ESCALATE:{out.reason}:{out.detail}")
+     if out:
++        if out.decision == "answer":
++            out.resolvers = ("permission",)
+         return out, False
+     res = combine_resolvers(ctx)
+     return res, False
+@@ -2522,6 +2623,7 @@
+     res["kind"] = out.kind or classifier_kind
+     if out.decision == "answer":
+         res["answer"], res["answer_option_index"], res["derivation"] = out.answer, out.index, out.derivation
++        res["resolver"] = list(out.resolvers)
+         res["escalate_reason"] = res["escalate_detail"] = None
+     else:
+         res["escalate_reason"], res["escalate_detail"] = out.reason, out.detail
+@@ -2533,7 +2635,7 @@
+ 
+ def _skeleton(question: str, frame: dict[str, Any]) -> dict[str, Any]:
+     return {"schema": SCHEMA, "decision": "escalate", "kind": "OTHER", "answer": None, "answer_option_index": None,
+-            "derivation": None, "basis": [], "escalate_reason": None, "escalate_detail": None, "vocab": None,
++            "derivation": None, "resolver": None, "basis": [], "escalate_reason": None, "escalate_detail": None, "vocab": None,
+             "options": [], "trace": {"mentions_found": 0, "mentions_dropped_as_contained": 0, "resolvers_tried": [],
+                                      "resolver_outcomes": {}},
+             "frame": frame}
+@@ -2606,7 +2708,7 @@
+     mentions, dropped = find_mentions(q, index)
+     opt_info = read_options(opts_list, view, index)
+     ctx = Ctx(view, index, Graph(view), question, q, opt_info, opts_list is not None, mentions, dropped, _sentences(q),
+-              "ja" if has_cjk(q) else "en")
++              "ja" if has_cjk(q) else "en", q_case=nz(question, fold=False))
+     # a qualifier that belongs to an offered option ("a red widget or a blue widget") is the alternative being asked
+     # about, not a different subject: the term inside an option's own text is not "in a wider phrase"
+     spans = [(q.find(o.core), q.find(o.core) + len(o.core)) for o in opt_info if len(o.core) >= 2 and q.find(o.core) >= 0]

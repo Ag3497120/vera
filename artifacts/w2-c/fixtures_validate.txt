@@ -1,0 +1,4 @@
+invalid 0 total 161 {'direct': 41, 'combined': 40, 'oov': 40, 'escalate': 40}
+escalate {'HUMAN_APPROVAL_REQUIRED': 8, 'FRAME_SILENT': 16, 'OUT_OF_RANGE': 10, 'FRAME_CONFLICT': 6} traps 16 oov_none 13
+permission {'可': 12, '不可': 12, '上げる': 14}
+frames 11 min_per_frame 13

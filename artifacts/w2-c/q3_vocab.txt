@@ -1,0 +1,10 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/motonisihikoudai/Projects/vera-impl/wt/W2-c-S
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collected 13 items
+
+tests/test_conduct_ask_vocab.py .............                            [100%]
+
+============================== 13 passed in 1.58s ==============================

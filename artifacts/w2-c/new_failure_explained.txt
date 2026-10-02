@@ -1,0 +1,6 @@
+new failure vs baseline: tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+cause: it asserts 'git status --porcelain -- verantyx' is empty (tools/bank_score/cli.py:232 verantyx_untouched); the new untracked verantyx/conduct_ask.py makes it non-empty. Not a behaviour change.
+evidence (round 2): a local clone of this tree (scratchpad, not this worktree) with the same changes committed there:
+  git status --porcelain -- verantyx  -> 0 lines
+  pytest tests/bank_score/test_bs_end_to_end.py -> 9 passed
+so the failure disappears once the file is committed.  The worktree itself was not committed.

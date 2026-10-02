@@ -1,0 +1,2 @@
+['/Users/motonisihikoudai/Projects/vera-impl/wt/W2-c-S/verantyx/__init__.py', '/Users/motonisihikoudai/Projects/vera-impl/wt/W2-c-S/verantyx/agent_adapter.py', '/Users/motonisihikoudai/Projects/vera-impl/wt/W2-c-S/verantyx/answer_slots.py']
+True
