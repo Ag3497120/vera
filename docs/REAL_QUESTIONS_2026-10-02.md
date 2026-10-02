@@ -8,35 +8,43 @@ The closed-choice asker is a fake that always returns `None`; no model or networ
 
 Question text is not reproduced in this report. Row IDs refer to one-based input order. The accumulated-frame outcome is the primary leave-one-out result; Vera-only results are the baseline.
 
-The typed frame writer rejected 2677 prior-record write attempts across per-row frames. These are repeated attempts to encode the same source rows for different target rows, not unique rejected rows. Rejected text was left out rather than normalized or forced into a record.
+The typed frame writer rejected 2754 prior-record write attempts across per-row frames. These are repeated attempts to encode the same source rows for different target rows, not unique rejected rows. Rejected text was left out rather than normalized or forced into a record.
 
 ## Question-kind distribution
 
 | Kind | Count | Share |
 |---|---:|---:|
-| ORDER | 10 | 7.7% |
-| CHOICE | 18 | 13.8% |
-| CONFIRM | 3 | 2.3% |
-| SCOPE | 7 | 5.4% |
+| ORDER | 7 | 5.4% |
+| CHOICE | 78 | 60.0% |
+| CONFIRM | 0 | 0.0% |
+| SCOPE | 8 | 6.2% |
 | STATUS | 0 | 0.0% |
-| OTHER | 92 | 70.8% |
+| DESIGN_PREFERENCE | 1 | 0.8% |
+| FEATURE_SELECTION | 0 | 0.0% |
+| PERMISSION | 7 | 5.4% |
+| REQUIREMENT_CLARIFICATION | 1 | 0.8% |
+| PLAN_CONFIRMATION | 0 | 0.0% |
+| RESOURCE_CHOICE | 0 | 0.0% |
+| PRIORITY_CHOICE | 3 | 2.3% |
+| DECISION_REQUEST | 0 | 0.0% |
+| OTHER | 25 | 19.2% |
 
-`OTHER` / unclassified rate: **92/130 (70.8%)**.
+`OTHER` / unclassified rate: **25/130 (19.2%)**.
 
 Ten concrete unclassified rows (question text omitted):
 
 | Row | Session | Kind | Human answer recorded? |
 |---|---|---|---|
-| R001 | c4f2e02f | OTHER | yes |
-| R003 | bdb06f7e | OTHER | yes |
-| R004 | bdb06f7e | OTHER | yes |
-| R005 | bdb06f7e | OTHER | no |
 | R006 | bdb06f7e | OTHER | yes |
-| R007 | bdb06f7e | OTHER | yes |
 | R009 | bdb06f7e | OTHER | yes |
-| R010 | bdb06f7e | OTHER | yes |
-| R011 | bdb06f7e | OTHER | yes |
 | R012 | bdb06f7e | OTHER | no |
+| R018 | 9d818891 | OTHER | no |
+| R019 | 9d818891 | OTHER | yes |
+| R020 | 9d818891 | OTHER | yes |
+| R030 | 32c02fec | OTHER | no |
+| R031 | 0910dc3f | OTHER | no |
+| R036 | 0910dc3f | OTHER | yes |
+| R044 | 0910dc3f | OTHER | yes |
 
 ## Exact-answer outcomes
 
@@ -71,16 +79,16 @@ Available: 130; shown: 10.
 
 | Row | Kind | Earlier same-session answers | Human answer | Conductor reply | Trace |
 |---|---|---:|---|---|---|
-| R001 | OTHER | 0 | macOSメニューバーから垂らす（推奨） | ESCALATE: typed frame record | question is outside the closed question set |
+| R001 | CHOICE | 0 | macOSメニューバーから垂らす（推奨） | ESCALATE: POLICY | no active cited POLICY determines this choice |
 | R002 | CHOICE | 1 | つけて、エージェントが探索を完遂できない可能性があるということを明示してそのまま続行するか選べるようにする | ESCALATE: POLICY | no active cited POLICY determines this choice |
-| R003 | OTHER | 0 | 設定でアクセスを付与する | ESCALATE: typed frame record | question is outside the closed question set |
-| R004 | OTHER | 1 | ローカル限定・絶対に公開しない（推奨） | ESCALATE: human | outside frame authority: outward publishing |
-| R005 | OTHER | 2 | unknown | ESCALATE: typed frame record | question is outside the closed question set |
+| R003 | CHOICE | 0 | 設定でアクセスを付与する | ESCALATE: POLICY | no active cited POLICY determines this choice |
+| R004 | PERMISSION | 1 | ローカル限定・絶対に公開しない（推奨） | ESCALATE: human | outside frame authority: outward publishing |
+| R005 | CHOICE | 2 | unknown | ESCALATE: POLICY | no active cited POLICY determines this choice |
 | R006 | OTHER | 2 | [User dismissed — do not proceed, wait for next instruction] | ESCALATE: typed frame record | question is outside the closed question set |
-| R007 | OTHER | 3 | [User dismissed — do not proceed, wait for next instruction] | ESCALATE: typed frame record | question is outside the closed question set |
-| R008 | ORDER | 4 | jgenは使わずにvera-aのみを使う。llm系は触らない | ESCALATE: TASK state | predecessor or successor task state is missing |
+| R007 | CHOICE | 3 | [User dismissed — do not proceed, wait for next instruction] | ESCALATE: POLICY | no active cited POLICY determines this choice |
+| R008 | CHOICE | 4 | jgenは使わずにvera-aのみを使う。llm系は触らない | ESCALATE: POLICY | no active cited POLICY determines this choice |
 | R009 | OTHER | 5 | Vera-aをやると書いた通りそれ以外は一切やるつもりはない | ESCALATE: typed frame record | question is outside the closed question set |
-| R010 | OTHER | 6 | さっきと同じでvera-aのみに集中でそれ以外は一切やらない | ESCALATE: typed frame record | question is outside the closed question set |
+| R010 | CHOICE | 6 | さっきと同じでvera-aのみに集中でそれ以外は一切やらない | ESCALATE: POLICY | no active cited POLICY determines this choice |
 
 ## Frame-growth estimate
 
@@ -97,34 +105,63 @@ Not fixed by that frame addition: **27** escalated exact-label rows. Rows classi
 
 | Unfixed row | Kind | Why the counterfactual did not yield a correct answer |
 |---|---|---|
-| R001 | OTHER | this question kind has no generic POLICY answer path |
-| R003 | OTHER | this question kind has no generic POLICY answer path |
-| R004 | OTHER | this question kind has no generic POLICY answer path |
-| R011 | OTHER | this question kind has no generic POLICY answer path |
-| R032 | OTHER | this question kind has no generic POLICY answer path |
-| R041 | OTHER | this question kind has no generic POLICY answer path |
-| R042 | OTHER | this question kind has no generic POLICY answer path |
-| R049 | OTHER | this question kind has no generic POLICY answer path |
+| R001 | CHOICE | the typed DECISION writer rejected the recorded answer |
+| R003 | CHOICE | the typed DECISION writer rejected the recorded answer |
+| R004 | PERMISSION | this question kind has no generic POLICY answer path |
+| R011 | CHOICE | the typed POLICY writer rejected the question condition or answer |
+| R032 | CHOICE | the typed POLICY writer rejected the question condition or answer |
+| R041 | CHOICE | the typed DECISION writer rejected the recorded answer |
+| R042 | PERMISSION | this question kind has no generic POLICY answer path |
+| R049 | CHOICE | the typed POLICY writer rejected the question condition or answer |
 | R051 | SCOPE | the typed DECISION writer rejected the recorded answer |
 | R056 | CHOICE | the typed DECISION writer rejected the recorded answer |
-| R058 | SCOPE | the typed DECISION writer rejected the recorded answer |
-| R062 | OTHER | this question kind has no generic POLICY answer path |
+| R058 | CHOICE | the typed DECISION writer rejected the recorded answer |
+| R062 | SCOPE | the typed DECISION writer rejected the recorded answer |
 | R074 | OTHER | this question kind has no generic POLICY answer path |
-| R078 | OTHER | this question kind has no generic POLICY answer path |
+| R078 | CHOICE | the typed DECISION writer rejected the recorded answer |
 | R081 | ORDER | this question kind has no generic POLICY answer path |
-| R082 | OTHER | this question kind has no generic POLICY answer path |
-| R084 | OTHER | this question kind has no generic POLICY answer path |
+| R082 | SCOPE | the typed DECISION writer rejected the recorded answer |
+| R084 | CHOICE | the typed DECISION writer rejected the recorded answer |
 | R085 | CHOICE | the typed POLICY writer rejected the question condition or answer |
-| R086 | OTHER | this question kind has no generic POLICY answer path |
-| R100 | OTHER | this question kind has no generic POLICY answer path |
-| R103 | OTHER | this question kind has no generic POLICY answer path |
-| R105 | OTHER | this question kind has no generic POLICY answer path |
-| R107 | OTHER | this question kind has no generic POLICY answer path |
-| R110 | OTHER | this question kind has no generic POLICY answer path |
-| R119 | OTHER | this question kind has no generic POLICY answer path |
-| R120 | OTHER | this question kind has no generic POLICY answer path |
-| R127 | OTHER | this question kind has no generic POLICY answer path |
+| R086 | CHOICE | the typed DECISION writer rejected the recorded answer |
+| R100 | CHOICE | the typed POLICY writer rejected the question condition or answer |
+| R103 | CHOICE | the typed POLICY writer rejected the question condition or answer |
+| R105 | CHOICE | the typed DECISION writer rejected the recorded answer |
+| R107 | CHOICE | the typed DECISION writer rejected the recorded answer |
+| R110 | CHOICE | the typed POLICY writer rejected the question condition or answer |
+| R119 | CHOICE | the typed DECISION writer rejected the recorded answer |
+| R120 | PERMISSION | this question kind has no generic POLICY answer path |
+| R127 | CHOICE | the typed POLICY writer rejected the question condition or answer |
 
 ## Limits
 
 The accumulated frame is deliberately narrow: it uses earlier answers from the same session only, in source-file order. It does not merge decisions across project sessions, infer unstated policies, repair the classifier, or tune conductor behavior to this set. Frame growth is a counterfactual estimate for exact option-label answers, not a production update.
+
+## Superseded values (appended by W0-1; regenerating this report with tools/real_questions_eval.py removes this section)
+
+The sections above were regenerated on the current code (commit base `65f43da` plus the W0-1 integration) and are the values in force.
+The committed version of this file at `65f43da` (`git show 65f43da:docs/REAL_QUESTIONS_2026-10-02.md`) stated different values. They are kept here, copied verbatim from that file, and **do not reproduce on the current code**.
+The per-row kinds of that old version are in that same old file (its section "Ten concrete unclassified rows" and later tables); they were not re-measured. A line diff of the old file against the regenerated report is `artifacts/w0-1/real_questions_old_vs_new.diff`.
+
+Old question-kind distribution (from `65f43da`, section "Question-kind distribution"):
+
+| Kind | Count | Share |
+|---|---:|---:|
+| ORDER | 10 | 7.7% |
+| CHOICE | 18 | 13.8% |
+| CONFIRM | 3 | 2.3% |
+| SCOPE | 7 | 5.4% |
+| STATUS | 0 | 0.0% |
+| OTHER | 92 | 70.8% |
+
+`OTHER` / unclassified rate: **92/130 (70.8%)**.
+
+Old rejected-write sentence (from `65f43da`):
+
+> The typed frame writer rejected 2677 prior-record write attempts across per-row frames. These are repeated attempts to encode the same source rows for different target rows, not unique rejected rows. Rejected text was left out rather than normalized or forced into a record.
+
+Current values and where they come from:
+
+- Kind distribution and OTHER rate (ORDER 7, CHOICE 78, CONFIRM 0, SCOPE 8, STATUS 0, DESIGN_PREFERENCE 1, FEATURE_SELECTION 0, PERMISSION 7, REQUIREMENT_CLARIFICATION 1, PLAN_CONFIRMATION 0, RESOURCE_CHOICE 0, PRIORITY_CHOICE 3, DECISION_REQUEST 0, OTHER 25 of 130): recomputed independently by `tools/w0_1_question_kinds.py`; output `artifacts/w0-1/real_questions_kinds.txt`.
+- Whole report as generated: `artifacts/w0-1/real_questions_report_generated.md`; generator stdout `artifacts/w0-1/real_questions_eval_stdout.txt`; two consecutive generations were byte-identical and identical to the uncommitted wave3 working-tree version (`artifacts/w0-1/real_questions_determinism.txt`).
+- Command: `env -i HOME="$HOME" PATH=/usr/bin:/bin PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$PWD" VERA_CORPUS_ROOT=/tmp/vera-empty-materials VERA_REAL_QUESTIONS=<data>/real_agent_questions.jsonl <venv>/bin/python tools/real_questions_eval.py`.

@@ -5,6 +5,7 @@ these probes cover the module's closed-choice, abstention, provenance, and
 alias-storage behavior using minimal constructed reports.
 """
 import json
+import pytest
 
 from verantyx.semantic_unknown_choice import SemanticUnknownChoice
 

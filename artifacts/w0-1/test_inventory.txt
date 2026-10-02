@@ -1,0 +1,19 @@
+before (ref dev): files-with-tests=225 test definitions=2704 unique ids=2704
+after  (/Users/motonisihikoudai/Projects/vera-impl/wt/W0-1-S): files-with-tests=225 test definitions=2706 unique ids=2706
+before ids defined more than once (shadowed at runtime): 0
+after ids defined more than once (shadowed at runtime): 0
+
+only in before (2):
+  - tests/test_memory_revalidate.py::test_missing_or_unknown_witness_is_unverifiable_and_answerable  => RENAMED to tests/test_memory_revalidate.py::test_missing_or_unknown_witness_is_unverifiable_with_safe_answerability
+  - tests/test_verifier_agents.py::test_parse_accepts_recheckable_evidence_reference  => RENAMED to tests/test_verifier_agents.py::test_parse_accepts_legacy_evidence_reference_as_testimony
+
+only in after (4):
+  + tests/test_memory_revalidate.py::test_missing_or_unknown_witness_is_unverifiable_with_safe_answerability  (rename target)
+  + tests/test_verifier_agents.py::test_parse_accepts_legacy_evidence_reference_as_testimony  (rename target)
+  + tests/test_verifier_agents.py::test_passing_verdict_without_rerunnable_evidence_is_unverified  (new)
+  + tests/test_verifier_agents.py::test_reported_verdict_never_decides_completion  (new)
+
+ids defined fewer times in after than before (0):
+
+G4 before=2704 after=2706 delta=2 unexplained_missing=0 reduced=0
+exit=0

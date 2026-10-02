@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "min_count": 8,
+  "clear_majority": 0.8,
+  "frames": {}
+}

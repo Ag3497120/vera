@@ -7,6 +7,8 @@ from pathlib import Path
 
 import pytest
 
+import _vera_env
+
 
 ROOT = Path(__file__).resolve().parents[1]
 EVALUATIONS = {"vera-ja-sealed1": 16, "vera-ja-sealed2": 16, "vera-ja-dev2": 36,
@@ -39,12 +41,7 @@ def test_answerers_have_no_eight_character_dev_literal() -> None:
     listed = (ROOT / "tools/eval_dirs.txt").read_text(encoding="utf-8").splitlines()
     names = [line.strip() for line in listed if line.strip() and not line.startswith("#")]
     assert set(EVALUATIONS) <= set(names)
-    directories = []
-    for name in names:
-        if "*" in name:
-            directories.extend((Path.home() / "Projects").glob(name))
-        else:
-            directories.append(Path.home() / "Projects" / name)
+    directories = _vera_env.eval_fixture_dirs(names)
     for directory in directories:
         expected_count = EVALUATIONS.get(directory.name, 0)
         found = sorted(path for path in directory.rglob("*")
@@ -54,7 +51,7 @@ def test_answerers_have_no_eight_character_dev_literal() -> None:
             assert len(found) >= expected_count, f"evaluation files missing: {directory}"
         files.extend(found)
     if not files:
-        pytest.skip("evaluation fixtures are unavailable")
+        pytest.skip(_vera_env.reason("eval_fixtures"))
     snippets: set[str] = set()
     for path in files:
         raw = path.read_text(encoding="utf-8")

@@ -1,0 +1,6 @@
+run1 vs run2 (generated report bytes):
+IDENTICAL
+generated vs wave3 working-tree version (/Users/motonisihikoudai/vera-wiring/phase2/runs/wave3/integration/docs/REAL_QUESTIONS_2026-10-02.md):
+IDENTICAL
+generated vs dev committed (65f43da):
+artifacts/w0-1/real_questions_report_generated.md artifacts/w0-1/tmp/rq_dev.md differ: char 1216, line 11

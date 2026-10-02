@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import gc
+import os
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
+from pathlib import Path
 from weakref import ref
 
 import pytest
@@ -151,6 +153,8 @@ def test_arity_one_is_rejected_or_terminates_without_recursive_crash():
     try:
         result = subprocess.run(
             [sys.executable, "-B", "-c", code],
+            env={**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parents[2])},
+            cwd=str(Path(__file__).resolve().parents[2]),
             capture_output=True,
             text=True,
             timeout=1.0,

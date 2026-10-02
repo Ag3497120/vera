@@ -1,0 +1,14 @@
+tools/demo_case_frames.py => DEMO OK
+tools/gold_quantity.py => DEMO OK
+tools/gold_double_neg.py => DEMO OK
+tools/gold_caus_pass.py => DEMO OK
+tools/gold_scramble.py => DEMO OK
+tools/gold_passive.py => DEMO OK
+tools/gold_parallel.py => AssertionError: correct did not rise on seed 101
+tools/gold_reason.py => DEMO OK
+tools/gold_temporal.py => DEMO OK
+tools/gold_comparison.py => DEMO OK
+tools/gold_giving.py => DEMO OK
+# extra measurement: tools/gold_parallel.py run twice more in the integrated copy => AssertionError: correct did not rise on seed 101 both times (deterministic)
+# extra measurement: the same script run in a `git archive da21edc` copy (the unit's own merged commit, same env) => AssertionError: correct did not rise on seed 101
+#   => it fails at the unit's own commit in this environment too; it is not caused by the integration. The ledger records the unit as merged (its gate passed in the commander's environment).

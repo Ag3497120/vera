@@ -1,307 +1,340 @@
-"""Case frames — the same pass as predicate extraction, minus one discard.
+"""Build a small count-only case-role table from licensed train clauses.
 
-`predicate_profile` keeps `noun → predicates` and throws the 助詞 away, so
-who did what to whom never reaches the store. This keeps them.
-
-Clause assignment is deterministic and stated plainly: the case particles
-between the previous 動詞 (or the start of the sentence) and this 動詞
-belong to this 動詞. Japanese is head-final, so a verb's arguments precede
-it; a nested clause donates its own particles to its own verb because that
-verb closes the window. It is a rule, not a parser, and it is written here
-rather than tuned.
-
-C2 is enforced by construction: a case that was not observed produces no
-entry at all. There is no slot for "does not take を", because Japanese
-drops arguments freely and an unwritten を is silence, not a negative.
-
-    python3.11 tools/build_case_frames.py [N]
+The corpus reader accepts only files explicitly marked train and belonging to
+the three configured source families.  Wikipedia leads come from the existing
+read_coverage helpers.  No source sentence is written to the output table.
 """
 from __future__ import annotations
 
+import argparse
+import collections
+import inspect
 import json
-import sys
-import time
-from collections import Counter, defaultdict
+import os
+import re
 from pathlib import Path
+from typing import Iterable, Iterator, Mapping
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+ROOT = Path(__file__).resolve().parent.parent
+OUTPUT = ROOT / "verantyx" / "data" / "case_frames.json"
+DATASETS = frozenset(("paraphrase_entail", "general_qa", "narrative"))
+PARTICLES = frozenset(("に", "で", "と"))
+CASE_PARTICLES = frozenset(("が", "を", "に", "で", "と", "から", "まで", "へ"))
+BLOCKED_PARTS = frozenset(("dev", "heldout", "sealed", "round5-dev", "round5_dev",
+                           "fixture", "fixtures"))
+COMPOUNDS = ("における", "において", "について", "に対して", "によって", "による",
+             "により", "として", "と共に", "ともに", "では")
+MIN_COUNT = 8
+CLEAR_MAJORITY = 0.80
+TEXT_KEYS = ("text", "sentence", "sentences", "premise", "hypothesis", "context",
+             "passage", "paragraph", "content", "source_text", "statement",
+             "lead", "lead_text")
+ROLE_PARTICLES = {
+    "に": frozenset(("agent", "recipient", "goal", "location", "time", "purpose")),
+    "で": frozenset(("place", "means", "time", "location")),
+    "と": frozenset(("companion", "quotation")),
+}
 
-OUT = Path.home() / "Projects" / "vera-corpus" / "build" / "case_frames.json"
-FILL = Path.home() / "Projects" / "vera-corpus" / "build" / "frame_fillers.json"
 
-CASES = ("が", "を", "に", "で", "へ", "と", "から", "まで")
-
-#: C1′ (PREREGISTERED_2026-08-16_case_frames_c1). Motion verbs are out of
-#: BOTH arms: 経路の を marks a path, not a patient, so the transitivity
-#: question is malformed for them. Excluded: 流れる/届く/至る/伝わる —
-#: three of the four scored near zero and would have HELPED the test pass,
-#: which is why the exclusion is recorded as grammatical, not score-driven.
-INTRANS = ("存在する", "生まれる", "始まる", "終わる", "変わる",
-           "残る", "起こる", "異なる", "属する", "位置する")
-TRANS = ("含む", "持つ", "使う", "作る", "与える",
-         "決める", "示す", "求める", "設ける", "定める")
-#: A rate over ten examples is not a measurement. Applied BEFORE any rate
-#: is computed; 科す (10 occurrences) is what this floor exists for.
-FLOOR = 100
+def _parts(path: Path) -> set[str]:
+    return {part for part in re.split(r"[^a-z0-9]+", str(path).lower()) if part}
 
 
-def build(n: int) -> dict:
-    try:
-        import fugashi
-        import unidic_lite  # noqa: F401
-    except Exception as exc:
-        raise SystemExit("G0 UNMET: fugashi missing (%s) — run is VOID" % exc)
-
-    from verantyx.meaning_index import connection
-    from verantyx.preregistration import Gate, guard
-
-    tagger = fugashi.Tagger()
-    conn = connection()
-    rows = conn.execute("SELECT v FROM defs LIMIT ?", (n,)).fetchall()
-
-    kana_of: dict = {}          # orthBase -> kanaBase, for the grammaticalisation test
-    frames: dict = defaultdict(Counter)
-    fillers: dict = defaultdict(Counter)   # (verb, case) -> nouns
-    patterns: dict = defaultdict(Counter)  # verb -> frozenset(cases) -> n
-    topic = [0]
-    verb_seen: Counter = Counter()
-    sentences = 0
-    t0 = time.time()
-
-    for (text,) in rows:
-        s = (text or "").strip()
-        if not s:
+def _training_files(root: Path) -> Iterator[tuple[str, Path]]:
+    if not root.is_dir():
+        raise FileNotFoundError(f"training corpus directory is unavailable: {root}")
+    for path in sorted(root.rglob("*")):
+        if not path.is_file() or path.is_symlink() or path.name.lower() == "fixtures.jsonl":
             continue
-        sentences += 1
-        pending: list = []          # (case, noun) since the last verb
-        noun_run: list = []
-        prev_sahen_used = ""
-        prev_sahen = None           # 名詞,サ変可能 seen with nothing between
-        for tok in tagger(s):
-            f = tok.feature
-            pos1 = f.pos1
-            if pos1 == "助詞" and tok.surface in CASES:
-                # The noun run immediately before the particle is what it
-                # marks. `noun_run` is cleared by any non-名詞 token, so a
-                # particle with nothing before it records no filler rather
-                # than borrowing one from further left.
-                # 並立の と vs 格の と — unidic tags BOTH as 格助詞
-                # (checked: 犬と猫を飼う / 彼と結婚する both 助詞,格助詞),
-                # so the dictionary cannot decide this one and position
-                # must. A と followed by another marked noun before the
-                # verb was coordinating (AとBを含む); a と followed by the
-                # verb was a real case (彼と結婚する). Any pending と is
-                # therefore demoted the moment a later case particle
-                # arrives, and only survives if the verb comes first.
-                if tok.surface != "と":
-                    pending = [x for x in pending if x[0] != "と"]
-                pending.append((tok.surface, "".join(noun_run)))
-                noun_run = []
-                prev_sahen = None
+        parts = _parts(path)
+        if parts & BLOCKED_PARTS or not parts & DATASETS or "train" not in parts:
+            continue
+        if path.suffix.lower() not in (".jsonl", ".json", ".txt"):
+            continue
+        dataset = next((name for name in sorted(DATASETS) if name in parts), None)
+        if dataset is not None:
+            yield dataset, path
+
+
+def _record_values(value: object) -> Iterator[str]:
+    if isinstance(value, str):
+        text = value.strip()
+        if text:
+            yield text
+        return
+    if isinstance(value, list):
+        for item in value:
+            yield from _record_values(item)
+        return
+    if not isinstance(value, Mapping):
+        return
+    split = value.get("split")
+    if isinstance(split, str) and split.strip().lower() != "train":
+        return
+    for key in TEXT_KEYS:
+        if key in value:
+            yield from _record_values(value[key])
+
+
+def _file_records(path: Path) -> Iterator[object]:
+    if path.suffix.lower() == ".txt":
+        with path.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                if line.strip():
+                    yield line
+        return
+    if path.suffix.lower() == ".jsonl":
+        with path.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                if not line.strip():
+                    continue
+                try:
+                    yield json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+        return
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return
+    yield value
+
+
+def corpus_sentences(root: Path | None = None) -> Iterator[tuple[str, str]]:
+    """Yield (source family, sentence text) from the allowed train families."""
+    if root is None:
+        root = Path(os.environ.get("VERA_CORPUS_DIR", Path.home() / "vera-codex-corpus"))
+    for dataset, path in _training_files(root):
+        for record in _file_records(path):
+            for text in _record_values(record):
+                yield dataset, text
+
+
+def _helper_call(function):
+    try:
+        signature = inspect.signature(function)
+    except (TypeError, ValueError):
+        return None
+    kwargs = {}
+    for name, parameter in signature.parameters.items():
+        if parameter.kind in (parameter.VAR_POSITIONAL, parameter.VAR_KEYWORD):
+            continue
+        if parameter.default is not inspect.Parameter.empty:
+            continue
+        if name in ("split", "partition"):
+            kwargs[name] = "train"
+        elif name in ("n", "limit", "count", "max_items"):
+            kwargs[name] = 1500
+        elif name == "stride":
+            kwargs[name] = 1
+        elif name in ("path", "source", "filename") and os.environ.get("VERA_LEADS"):
+            kwargs[name] = os.environ["VERA_LEADS"]
+        else:
+            return None
+    try:
+        return function(**kwargs)
+    except (OSError, RuntimeError, TypeError, ValueError):
+        return None
+
+
+def wikipedia_leads() -> Iterator[str]:
+    """Read train Wikipedia leads through tools.read_coverage's public helpers."""
+    try:
+        from tools import read_coverage
+    except Exception as exc:
+        raise RuntimeError("could not import tools.read_coverage helpers") from exc
+
+    preferred = ("iter_train_leads", "train_leads", "read_train_leads",
+                 "load_train_leads", "iter_leads", "read_leads", "load_leads")
+    candidates = []
+    for name in preferred:
+        candidate = getattr(read_coverage, name, None)
+        if callable(candidate):
+            candidates.append((name, candidate))
+    if not candidates:
+        candidates = [
+            (name, value) for name, value in vars(read_coverage).items()
+            if not name.startswith("_") and "lead" in name.lower() and callable(value)
+            and name not in ("main",)
+        ]
+    for name, function in candidates:
+        result = _helper_call(function)
+        if result is None:
+            continue
+        if isinstance(result, Mapping):
+            rows: Iterable[object] = (result,)
+        else:
+            try:
+                rows = iter(result)
+            except TypeError:
                 continue
-            if pos1 == "助詞" and tok.surface == "は":
-                prev_sahen = None
-                noun_run = []
-                # 主題, not a case. Counted in its own field and never
-                # added to the case totals — folding a topic marker into
-                # grammatical case is the pooling mistake in a new place.
-                topic[0] += 1
+        found = False
+        for row in rows:
+            if isinstance(row, Mapping):
+                split = row.get("split")
+                if isinstance(split, str) and split.lower() != "train":
+                    continue
+                values = tuple(_record_values(row))
+            elif isinstance(row, (tuple, list)) and row:
+                # Helpers sometimes return (id, text, split) or (text, split).
+                split_values = [item.lower() for item in row if isinstance(item, str)
+                                and item.lower() in ("train", "dev", "heldout", "sealed")]
+                if split_values and any(value != "train" for value in split_values):
+                    continue
+                fields = [item for item in row if not (isinstance(item, str)
+                          and item.lower() in ("train", "dev", "heldout", "sealed"))]
+                if not fields:
+                    continue
+                if split_values:
+                    candidate = max((item for item in fields if isinstance(item, str)),
+                                    key=len, default=None)
+                    values = tuple(_record_values(candidate))
+                else:
+                    values = tuple(_record_values(row[-1]))
+            else:
+                values = tuple(_record_values(row))
+            for value in values:
+                found = True
+                yield value
+        if found:
+            return
+        if "train" in name.lower():
+            return
+    raise RuntimeError("tools.read_coverage exposed no usable train-lead helper")
+
+
+def _compound_particle(sentence: str, start: int) -> bool:
+    return any(sentence.startswith(compound, start) for compound in COMPOUNDS)
+
+
+def _licensed_observations(clause, sentence: str, tagger_tokens) -> list[tuple[str, str, str]] | None:
+    """Independently check complete source spans and one licensed phrase per case."""
+    if clause.rule != "frame" or clause.unsupported:
+        return None
+    if (clause.span.start < 0 or clause.span.end > len(sentence)
+            or clause.span.start >= clause.span.end
+            or sentence[clause.span.start:clause.span.end] != clause.span.text
+            or not (clause.span.start <= clause.predicate_span.start
+                    < clause.predicate_span.end <= clause.span.end)
+            or sentence[clause.predicate_span.start:clause.predicate_span.end]
+            != clause.predicate_span.text):
+        return None
+    for role in clause.roles:
+        if (role.span.source != clause.span.source or role.span.start < clause.span.start
+                or role.span.end > clause.span.end or role.span.start >= role.span.end
+                or sentence[role.span.start:role.span.end] != role.span.text):
+            return None
+
+    observed = []
+    for index, (word, start, end) in enumerate(tagger_tokens):
+        if (start < clause.span.start or end > clause.predicate_span.start
+                or word.feature.pos1 != "助詞" or word.feature.pos2 != "格助詞"
+                or word.surface not in PARTICLES):
+            continue
+        if _compound_particle(sentence, start):
+            continue
+        attached = [role for role in clause.roles if role.span.end == start]
+        if len(attached) != 1:
+            return None
+        role = attached[0]
+        if role.name not in ROLE_PARTICLES[word.surface]:
+            return None
+        observed.append((word.surface, role.name, role.span.text))
+    if not observed:
+        return []
+    counts = collections.Counter(particle for particle, _, _ in observed)
+    if any(number != 1 for number in counts.values()):
+        return None
+    # Every role immediately followed by one of the target particles must be
+    # represented by the same tagged token used above.
+    assigned = {(particle, phrase) for particle, _, phrase in observed}
+    for role in clause.roles:
+        for particle in PARTICLES:
+            if sentence[role.span.end:role.span.end + len(particle)] == particle:
+                if (particle, role.span.text) not in assigned:
+                    return None
+    return [(clause.predicate, particle, role) for particle, role, _ in observed]
+
+
+def build_counts(sentences: Iterable[str], *, min_count: int = MIN_COUNT,
+                 clear_majority: float = CLEAR_MAJORITY) -> dict:
+    """Read sentences and count only unambiguous, source-licensed case roles."""
+    if type(min_count) is not int or min_count < 1:
+        raise ValueError("min_count must be a positive integer")
+    if type(clear_majority) not in (float, int) or not 0.5 < float(clear_majority) <= 1.0:
+        raise ValueError("clear_majority must be greater than one half and at most one")
+    from verantyx.semantic_reader import _sentences, _tokens, document_view
+
+    totals: dict[str, dict[str, collections.Counter[str]]] = collections.defaultdict(
+        lambda: collections.defaultdict(collections.Counter))
+    previous_off = os.environ.get("VERA_CONSTRUCTIONS_OFF")
+    disabled = {item.strip() for item in (previous_off or "").split(",") if item.strip()}
+    disabled.add("case_frames")
+    os.environ["VERA_CONSTRUCTIONS_OFF"] = ",".join(sorted(disabled))
+    try:
+        serial = 0
+        for text in sentences:
+            if not isinstance(text, str):
                 continue
-            if pos1 == "動詞":
-                lemma = getattr(f, "orthBase", None) or tok.surface
-                kb = getattr(f, "kanaBase", None)
-                if kb:
-                    kana_of[lemma] = kb
-                # サ変 restoration: 存在(名詞,サ変可能) + する is one verb,
-                # and recording only the する fragment collapsed every
-                # サ変動詞 in the corpus into a single node. `prev_sahen`
-                # is cleared by any intervening token — including を — so
-                # 「勉強をする」 correctly stays bare する.
-                prev_sahen_used = ""
-                # できる is the suppletive potential of する (実装する →
-                # 実装できる), so a サ変可能 noun followed by either forms
-                # ONE verb. Restoring only する left every potential form
-                # collapsed into a bare できる node — the same defect the
-                # する restoration fixed, one form later, and it surfaced
-                # as 「データベースにデータをできる。」 in generation.
-                if lemma in ("する", "できる") and prev_sahen:
-                    lemma = prev_sahen + lemma
-                    prev_sahen_used = prev_sahen
-                verb_seen[lemma] += 1
-                # Which cases occurred TOGETHER. Counting cases
-                # independently says 科す takes に and を; it does not say
-                # they appear in the same clause. A generator that fills
-                # every case above a threshold builds sentences the corpus
-                # never contains (父がそれぞれ当該各号に父と期間を定める).
-                if pending:
-                    patterns[lemma][frozenset(c for c, _ in pending)] += 1
-                for c, noun in pending:
-                    frames[lemma][c] += 1
-                    # N4: the サ変 stem was consumed into the verb, so it
-                    # may not also be recorded as one of its own fillers.
-                    if noun and noun != prev_sahen_used:
-                        fillers[(lemma, c)][noun] += 1
-                pending = []        # the verb closes its own window
-                prev_sahen = None
-                noun_run = []
-                continue
-            if pos1 == "名詞":
-                noun_run.append(tok.surface)
-                prev_sahen = (tok.surface
-                              if getattr(f, "pos3", "") == "サ変可能" else None)
-                continue
-            prev_sahen = None
-            noun_run = []
-        # Trailing particles belong to no verb and are dropped, not guessed.
+            for start, end in _sentences(text):
+                sentence = text[start:end]
+                if not sentence.strip():
+                    continue
+                serial += 1
+                source = f"case_frame_train_{serial}"
+                view = document_view({source: sentence}, family="case_frame_build")
+                if view.unread:
+                    continue
+                tagged = _tokens(sentence)
+                for clause in view.clauses:
+                    if clause.unsupported:
+                        continue
+                    observations = _licensed_observations(clause, sentence, tagged)
+                    if observations is None:
+                        continue
+                    for predicate, particle, role in observations:
+                        if particle in PARTICLES:
+                            totals[predicate][particle][role] += 1
+    finally:
+        if previous_off is None:
+            os.environ.pop("VERA_CONSTRUCTIONS_OFF", None)
+        else:
+            os.environ["VERA_CONSTRUCTIONS_OFF"] = previous_off
 
-    # --- C1, the pass line that can fail -----------------------------------
-    # 文法化形: written in kana while a kanji spelling of the SAME reading
-    # exists in this corpus. について's つく sits beside 着く/付く; する and
-    # ある have no kanji counterpart here and survive. Not a list — the
-    # corpus's own orthography decides, and the user found this signal by
-    # noticing 机に着いて is written differently from 利用について.
-    import re as _re
-    _KANA = _re.compile(r"^[ぁ-ゖァ-ヺー]+$")
-    by_reading: dict = defaultdict(set)
-    for lem, kb in kana_of.items():
-        by_reading[kb].add(lem)
-    grammaticalised = {
-        lem for lem, kb in kana_of.items()
-        if _KANA.match(lem) and any(
-            not _KANA.match(o) and verb_seen.get(o, 0) > 0
-            for o in by_reading[kb] if o != lem)}
-    # NOT APPLIED. The rule cut 2,079 verbs including する/ある/いる/
-    # できる/なる, because 為る/在る/居る/成る exist in the corpus and the
-    # test "a kanji spelling of the same reading exists" cannot tell a
-    # grammaticalised form from a verb whose kanji spelling is merely
-    # archaic. C2 of the pre-registration failed; the removal stays
-    # computed and reported, and is not performed.
-    #
-    # The saving gate was also wrong: it hung on C1′ alone, so a run that
-    # failed C2 still wrote its files. Both C1′ and C2 now gate the save.
-
-    dropped = {v: verb_seen.get(v, 0) for v in INTRANS + TRANS
-               if verb_seen.get(v, 0) < FLOOR}
-    intrans = [v for v in INTRANS if verb_seen.get(v, 0) >= FLOOR]
-    trans = [v for v in TRANS if verb_seen.get(v, 0) >= FLOOR]
-
-    def wo_rate(v: str) -> float:
-        fr = frames.get(v)
-        tot = sum(fr.values()) if fr else 0
-        return (fr.get("を", 0) / tot) if tot else 0.0
-
-    intr = {v: round(wo_rate(v), 4) for v in intrans}
-    tran = {v: round(wo_rate(v), 4) for v in trans}
-    seen_i = {v: verb_seen.get(v, 0) for v in intrans}
-    seen_t = {v: verb_seen.get(v, 0) for v in trans}
-    max_i = max(intr.values()) if intr else 0.0
-    min_t = min(tran.values()) if tran else 0.0
-    if len(intrans) < 8 or len(trans) < 8:
-        c1 = "TEST_SET_TOO_THIN"
-    else:
-        c1 = "PASS" if min_t > max_i else "FAIL"
-
-    dist = Counter()
-    for fr in frames.values():
-        dist.update(fr)
-
-    arity = [len([c for c, k in fr.items() if k > 0]) for fr in frames.values()]
-
-    out = {
-        "C1": c1,
-        "C1_detail": {
-            "max_intransitive_wo": max_i, "min_transitive_wo": min_t,
-            "intransitive": intr, "transitive": tran,
-            "occurrences_intransitive": seen_i,
-            "occurrences_transitive": seen_t,
-        },
-        "Q1_verbs_with_a_frame": len(frames),
-        "Q2_mean_observed_arity": round(sum(arity) / max(len(arity), 1), 3),
-        "Q3_case_distribution": dist.most_common(),
-        "Q3b_topic_ha": topic[0],
-        "grammaticalised_removed": len(grammaticalised),
-        "C1_kana_cut": sorted(g for g in grammaticalised
-                              if g in ("つく", "よる", "おく", "わたる")),
-        # Measured on what the frames ACTUALLY hold, not on what the
-        # (unapplied) rule flagged. Checking the flag made C2 fail
-        # forever and permanently blocked the save.
-        "C2_kana_kept": {v: verb_seen.get(v, 0)
-                         for v in ("する", "ある", "いる", "できる", "なる")
-                         if v in frames},
-        "S1_sahen": {"存在する": verb_seen.get("存在する", 0),
-                     "位置する": verb_seen.get("位置する", 0)},
-        "S2_bare_suru": verb_seen.get("する", 0),
-        "dropped_below_floor": dropped,
-        "Q5_seconds": round(time.time() - t0, 1),
-        "sentences": sentences,
+    frames = {
+        predicate: {
+            particle: dict(sorted(counts.items()))
+            for particle, counts in sorted(by_particle.items()) if counts
+        }
+        for predicate, by_particle in sorted(totals.items()) if by_particle
     }
-    # --- N1: do the slots separate? --------------------------------------
-    def top(v, c):
-        f = fillers.get((v, c))
-        return max(f.items(), key=lambda kv: kv[1])[0] if f else None
-    n1_rows, n1_ok = {}, 0
-    for v in TRANS:
-        ni, wo = top(v, "に"), top(v, "を")
-        n1_rows[v] = {"に": ni, "を": wo}
-        if ni and wo and ni != wo:
-            n1_ok += 1
-    n4 = sorted({v for v in INTRANS + TRANS
-                 if v.endswith("する") and fillers.get((v, "が"), {}).get(v[:-2])})
-    out["N1"] = "PASS" if n1_ok >= 8 else "FAIL"
-    out["N1_detail"] = {"separated": n1_ok, "of": len(TRANS), "top": n1_rows}
-    out["N4"] = "PASS" if not n4 else "FAIL"
-    out["N4_violations"] = n4
-    tops = {v: max(c.items(), key=lambda kv: kv[1])[0]
-            for v, c in patterns.items() if c}
-    sizes = [len(p) for p in tops.values()]
-    out["P1_kasu_top_pattern"] = sorted(tops.get("科す", frozenset()))
-    out["P2_mean_pattern_size"] = round(sum(sizes) / max(len(sizes), 1), 3)
-    out["pattern_size_hist"] = sorted(
-        __import__("collections").Counter(sizes).items())
-    PAT = FILL.parent / "frame_patterns.json"
-    PAT.write_text(json.dumps(
-        {v: {"|".join(sorted(k)): n for k, n in c.most_common(6)}
-         for v, c in patterns.items()}, ensure_ascii=False), encoding="utf-8")
-    out["patterns_saved"] = str(PAT)
-    out["distinct_nouns"] = len({n for c in fillers.values() for n in c})
-    out["mean_fillers_per_slot"] = round(
-        sum(len(c) for c in fillers.values()) / max(len(fillers), 1), 2)
-    c2_ok = bool(out.get("C2_kana_kept"))
-    out["C2"] = "PASS" if c2_ok else "FAIL"
+    return {"schema_version": 1, "min_count": min_count,
+            "clear_majority": float(clear_majority), "frames": frames}
 
-    # Every pass line the pre-registrations name, declared here so the
-    # save cannot outrun them. The C2 run that wrote its files before
-    # anyone read the number is why this is code and not a comment.
-    gates = [
-        Gate("C1′", c1 == "PASS", "transitivity separates, floor applied"),
-        Gate("C2", c2_ok, "real kana verbs (する/ある/いる) survive"),
-        Gate("N1", out["N1"] == "PASS", "case slots separate"),
-        Gate("N4", out["N4"] == "PASS", "サ変 stem not double-counted"),
-    ]
 
-    def _write_frames():
-        OUT.parent.mkdir(parents=True, exist_ok=True)
-        OUT.write_text(json.dumps(
-            {v: dict(c) for v, c in frames.items()}, ensure_ascii=False),
-            encoding="utf-8")
-        return OUT
+def build_training_table(corpus_root: Path | None = None) -> dict:
+    """Combine the three train families and train Wikipedia leads."""
+    rows = list(corpus_sentences(corpus_root))
+    leads = list(wikipedia_leads())
+    return build_counts([text for _, text in rows] + leads)
 
-    def _write_fillers():
-        FILL.write_text(json.dumps(
-            {"%s\t%s" % k: dict(v) for k, v in fillers.items()},
-            ensure_ascii=False), encoding="utf-8")
-        return FILL
 
-    fr_r = guard(gates, _write_frames, what="case_frames.json")
-    fi_r = guard(gates, _write_fillers, what="frame_fillers.json")
-    out["gate_report"] = fr_r
-    out["saved"] = fr_r.get("wrote")
-    out["fillers_saved"] = fi_r.get("wrote")
-    if out["fillers_saved"]:
-        out["fillers_mb"] = round(FILL.stat().st_size / 1048576, 1)
-    return out
+def save_table(table: Mapping[str, object], output: Path = OUTPUT) -> None:
+    if output.resolve() != OUTPUT.resolve():
+        raise ValueError("case-frame output is fixed to verantyx/data/case_frames.json")
+    output.write_text(json.dumps(table, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
+                      encoding="utf-8")
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--corpus-root", type=Path, default=None)
+    args = parser.parse_args(argv)
+    table = build_training_table(args.corpus_root)
+    save_table(table)
+    print(f"wrote {sum(sum(sum(p.values()) for p in v.values()) for v in table['frames'].values())} licensed counts")
+    return 0
 
 
 if __name__ == "__main__":
-    print(json.dumps(build(int(sys.argv[1]) if len(sys.argv) > 1 else 300000),
-                     ensure_ascii=False, indent=2)[:3000])
+    raise SystemExit(main())
