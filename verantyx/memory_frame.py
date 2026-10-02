@@ -19,6 +19,7 @@ import re
 import subprocess
 import tempfile
 import time
+import unicodedata
 from pathlib import Path
 from typing import Callable, Optional
 
@@ -51,6 +52,18 @@ def normalize_np(text: str) -> str:
     return _NO_NOUN_PARTICLE.sub('', text.strip())
 
 
+def _normalize_np_in_frame(text: str) -> str:
+    """Normalize case particles while keeping a script-internal lexical の intact."""
+    chars = list(text.strip())
+    lexical_no = set()
+    for i in range(1, len(chars) - 1):
+        if chars[i] != 'の': continue
+        left, right = unicodedata.name(chars[i - 1], ''), unicodedata.name(chars[i + 1], '')
+        if ('HIRAGANA' in left and 'HIRAGANA' in right) or ('KATAKANA' in left and 'KATAKANA' in right):
+            lexical_no.add(i)
+    return ''.join(char for i, char in enumerate(chars) if char not in 'はがのをにでと' or i in lexical_no)
+
+
 class WriteRejected(Exception):
     def __init__(self, reason: str, hint: str = ''):
         super().__init__(reason); self.reason, self.hint = reason, hint
@@ -59,23 +72,35 @@ class WriteRejected(Exception):
 # ------------------------------------------------------------------ witnesses
 def _sha(path: str) -> Optional[str]:
     try: return hashlib.sha256(Path(path).expanduser().read_bytes()).hexdigest()
-    except OSError: return None
+    except (OSError, TypeError, ValueError): return None
 
 
 def check_witness(w: Optional[dict]) -> str:
     """FRESH / STALE / UNVERIFIABLE / TESTIMONY for a witness dict."""
-    if not w: return 'UNVERIFIABLE'
+    if not isinstance(w, dict): return 'UNVERIFIABLE'
     kind = w.get('kind')
     if kind == 'testimony': return 'TESTIMONY'
     if kind == 'file_sha256':
-        now = _sha(w['path']); return 'STALE' if now is None else ('FRESH' if now == w['sha256'] else 'STALE')
+        path, expected = w.get('path'), w.get('sha256')
+        if ((not isinstance(path, (str, Path)) or not str(path).strip()) or
+                not isinstance(expected, str) or not re.fullmatch(r'[0-9a-fA-F]{64}', expected)):
+            return 'UNVERIFIABLE'
+        now = _sha(path); return 'STALE' if now is None else ('FRESH' if now == expected.lower() else 'STALE')
     if kind == 'text_in_file':
-        try: return 'FRESH' if w['needle'] in Path(w['path']).expanduser().read_text() else 'STALE'
-        except OSError: return 'STALE'
+        path, needle = w.get('path'), w.get('needle')
+        if (not isinstance(path, (str, Path)) or not str(path).strip() or
+                not isinstance(needle, str) or not needle.strip()): return 'UNVERIFIABLE'
+        try: return 'FRESH' if needle in Path(path).expanduser().read_text(encoding='utf-8') else 'STALE'
+        except (OSError, TypeError, ValueError, UnicodeError): return 'STALE'
     if kind == 'git_commit':
-        r = subprocess.run(['git', '-C', str(Path(w['repo']).expanduser()), 'cat-file', '-e', w['commit'] + '^{commit}'],
-                           capture_output=True)
-        return 'FRESH' if r.returncode == 0 else 'STALE'
+        repo, commit = w.get('repo'), w.get('commit')
+        if (not isinstance(repo, (str, Path)) or not str(repo).strip() or
+                not isinstance(commit, str) or not commit.strip()): return 'UNVERIFIABLE'
+        try:
+            r = subprocess.run(['git', '-C', str(Path(repo).expanduser()), 'cat-file', '-e', commit + '^{commit}'],
+                               capture_output=True)
+            return 'FRESH' if r.returncode == 0 else 'STALE'
+        except (OSError, TypeError, ValueError): return 'UNVERIFIABLE'
     return 'UNVERIFIABLE'
 
 
@@ -102,11 +127,20 @@ class CodexAsker:
 
 def parse_choice(reply: str, n: int):
     """Index in [0, n) or None for 'none of them'; anything else is invalid (returns False)."""
-    m = re.search(r'"choice"\s*:\s*(null|-?\d+)', reply or '')
-    if not m: return False
-    if m[1] == 'null': return None
-    i = int(m[1])
-    return i if 0 <= i < n else False
+    def unique_object(pairs):
+        obj = {}
+        for key, value in pairs:
+            if key in obj: raise ValueError('duplicate JSON key')
+            obj[key] = value
+        return obj
+
+    try: data = json.loads(reply, object_pairs_hook=unique_object)
+    except (TypeError, ValueError): return False
+    if not isinstance(data, dict) or set(data) != {'choice'}: return False
+    choice = data['choice']
+    if choice is None: return None
+    if type(choice) is not int: return False
+    return choice if 0 <= choice < n else False
 
 
 class Resolver:
@@ -115,10 +149,22 @@ class Resolver:
         self.asker, self.rng = asker, random.Random(seed)
 
     def _prompt(self, word, context, options, variant):
-        lines = '\n'.join(f'{i}: {o}' for i, o in enumerate(options))
+        def escape(value):
+            out = []
+            for char in str(value):
+                category = unicodedata.category(char)
+                if char == '\\': out.append('\\\\')
+                elif char in '「」' or category in ('Cc', 'Cf', 'Zl', 'Zp'):
+                    out.append(f'\\u{ord(char):04x}')
+                else: out.append(char)
+            return ''.join(out)
+
+        safe_options = [escape(o) for o in options]
+        lines = '\n'.join(f'{i}: {o}' for i, o in enumerate(safe_options))
         head = ('次の語は、下の候補のどれに意味が最も近いですか。' if variant == 0 else
                 '候補の中から、次の語を最も自然に言い換えられるものを1つだけ選んでください。どれも合わなければ null。')
-        return (f'{head}\n語: 「{word}」\n使われた場面: {context}\n候補:\n{lines}\n'
+        shown_word, shown_context = escape(word), escape(context)
+        return (f'{head}\n語: 「{shown_word}」\n使われた場面: {shown_context}\n候補:\n{lines}\n'
                 f'答えは次のJSONだけを出力してください（説明は不要）: {{"choice": 番号 または null}}\n'
                 f'候補以外を選んだり、新しい表現を作ったりしてはいけません。')
 
@@ -190,18 +236,23 @@ class Memory:
     def sentence(kind, slots):
         names, attr = KINDS[kind]
         if kind == 'FACT': return f"{slots['subject']}の{slots['attribute']}は{slots['value']}である。"
-        return f"{slots[names[0]]}の{attr}は{slots[names[1]]}である。"
+        return f"{slots[names[0]]}の{_normalize_np_in_frame(attr)}は{slots[names[1]]}である。"
 
     @staticmethod
     def askable(sentence, slots, kind):
-        """Round trip: the semantic reader must read the sentence into one supported property clause with these values."""
+        """Round trip: the reader must recover the complete typed case frame."""
         view = document_view({'r': sentence})
+        names, attr = KINDS[kind]
+        expected = {
+            'entity': slots[names[0]],
+            'attribute': slots['attribute'] if kind == 'FACT' else _normalize_np_in_frame(attr),
+            'value': slots[names[-1]],
+        }
         for c in view.clauses:
-            if c.unsupported or c.predicate != 'property': continue
+            if c.unsupported or c.predicate != 'property' or c.polarity != '+' or c.modality != 'assert': continue
+            if c.conditions or c.exceptions or c.exception_of: continue
             roles = {r.name: r.term for r in c.roles}
-            names, attr = KINDS[kind]
-            value = slots[names[-1]]
-            if str(roles.get('value')) == value or (hasattr(roles.get('value'), 'amount') and str(roles['value']) == value): return True
+            if all(str(roles.get(name)) == value for name, value in expected.items()): return True
         return False
 
     def write(self, kind, author, witness=None, supersedes=None, **slots):
@@ -209,13 +260,20 @@ class Memory:
         names, attr = KINDS[kind]
         if set(slots) != set(names):
             raise WriteRejected(f'{kind} の項目は {list(names)} です（{sorted(slots)} が渡されました）')
+        if supersedes is not None:
+            if not isinstance(supersedes, str) or not supersedes or supersedes not in self.records:
+                raise WriteRejected(f'置き換え対象 {supersedes} がありません')
+            if supersedes in self.superseded:
+                raise WriteRejected(f'置き換え対象 {supersedes} は既に置き換えられています')
+        if witness is not None and not isinstance(witness, dict):
+            raise WriteRejected('witness の形式が不明です')
         slots = {k: str(v).strip() for k, v in slots.items()}
         for k, v in slots.items():
             if not v: raise WriteRejected(f'項目 {k} が空です')
             if _BAD.search(v): raise WriteRejected(f'項目 {k} に文の区切りや括弧が含まれています', '短い名詞句にしてください')
         normalized = {}
         for k in names[:-1]:        # the entity / attribute slots are bare compound nouns
-            n = normalize_np(slots[k])
+            n = _normalize_np_in_frame(slots[k])
             if n != slots[k]: normalized[k] = slots[k]; slots[k] = n
             if not n: raise WriteRejected(f'項目 {k} が助詞だけです')
         if kind == 'TASK':
@@ -228,12 +286,15 @@ class Memory:
         if not self.askable(sentence, slots, kind):
             raise WriteRejected('この記録は Vera が引ける文として読めません',
                                 f'値は名詞句にしてください（動詞で終わる節は引けません）: {sentence}')
-        rid = hashlib.sha256(json.dumps([kind, slots, author, self.now()], ensure_ascii=False).encode()).hexdigest()[:12]
-        record = {'id': rid, 'kind': kind, 'slots': slots, 'author': author, 'ts': self.now(), 'witness': witness,
+        ts = self.now()
+        identity = json.dumps([kind, slots, author, ts, witness, supersedes], ensure_ascii=False, sort_keys=True)
+        rid = hashlib.sha256(identity.encode()).hexdigest()[:12]
+        record = {'id': rid, 'kind': kind, 'slots': slots, 'author': author, 'ts': ts, 'witness': witness,
                   'sentence': sentence, 'supersedes': supersedes, 'normalized': normalized}
+        if rid in self.records:
+            return self.records[rid]
         self._append({'op': 'write', 'record': record})
         if supersedes:
-            if supersedes not in self.records: raise WriteRejected(f'置き換え対象 {supersedes} がありません')
             self._append({'op': 'supersede', 'id': supersedes, 'by': rid, 'ts': self.now()})
         return record
 
@@ -251,15 +312,47 @@ class Memory:
 
     def ask_about(self, subject, attribute=None, kind='FACT', require_fresh=True):
         """Ask for a slot with the same noun normalization as the writer: `ask_about('ルーター', '未読の上限')`."""
-        attr = KINDS[kind][1] or normalize_np(attribute)
-        return self.ask(f'{normalize_np(subject)}の{attr}は？', require_fresh)
+        attr = KINDS[kind][1] or _normalize_np_in_frame(attribute)
+        return self.ask(f'{_normalize_np_in_frame(subject)}の{attr}は？', require_fresh)
+
+    @staticmethod
+    def _witness_supports(record):
+        witness = record.get('witness')
+        if witness is None: return True
+        if not isinstance(witness, dict): return False
+        kind = witness.get('kind')
+        if kind == 'testimony': return True
+        if kind in ('file_sha256', 'git_commit'): return check_witness(witness) != 'UNVERIFIABLE'
+        if kind != 'text_in_file': return False
+        try:
+            source = Path(witness['path']).expanduser().read_text(encoding='utf-8')
+            evidence = witness['needle']
+            if not isinstance(evidence, str) or not evidence or evidence not in source: return False
+            names, attr = KINDS[record['kind']]
+            expected = {
+                'entity': record['slots'][names[0]],
+                'attribute': record['slots']['attribute'] if record['kind'] == 'FACT' else _normalize_np_in_frame(attr),
+                'value': record['slots'][names[-1]],
+            }
+            for clause in document_view({'witness': evidence}).clauses:
+                if clause.unsupported or clause.predicate != 'property' or clause.polarity != '+' or clause.modality != 'assert':
+                    continue
+                if clause.conditions or clause.exceptions or clause.exception_of: continue
+                roles = {role.name: role.term for role in clause.roles}
+                if all(str(roles.get(name)) == value for name, value in expected.items()): return True
+            return False
+        except (KeyError, OSError, TypeError, ValueError, UnicodeError):
+            return False
 
     def ask(self, question, require_fresh=True):
         from .one import Vera
-        docs = {f"rec:{r['id']}": r['sentence'] for r in self.active(require_fresh)}
+        docs = {f"rec:{r['id']}": r['sentence'] for r in self.active(require_fresh) if self._witness_supports(r)}
         if not docs: return {'verdict': 'UNKNOWN_NO_EVIDENCE', 'values': [], 'records': []}
         v = Vera.from_texts(docs, mode='semantic')
-        try: a = v.ask(question)
+        try:
+            a = v.ask(question)
+            numeric = re.sub(r'はいくつですか([?？])\s*$', r'は何ですか\1', question)
+            if numeric != question and a.get('verdict') != 'ANSWER': a = v.ask(numeric)
         finally: v.close()
         ids = [s['source'].split(':', 1)[1] for s in a.get('sources', [])]
         return {'verdict': a['verdict'], 'values': a.get('values', []), 'records': ids, 'reason': a.get('reason')}
