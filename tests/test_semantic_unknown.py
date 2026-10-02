@@ -26,15 +26,35 @@ def _clause(clause_id, terms, text=None):
 def _view(*term_groups):
     sources = {}
     clauses = []
-    for index, terms in enumerate(term_groups):
-        source, text, clause = _clause("c%d" % index, list(terms))
+    all_terms = set()
+    for index, group in enumerate(term_groups):
+        source, text, clause = _clause("c%d" % index, list(group))
         sources[source] = text
         clauses.append(clause)
+        all_terms.update(group)
+    # The producing sources above cannot attest their own facet words.
+    # Give the fixture a separate source with three standalone runs.
+    attestation = "source:attestation"
+    sources[attestation] = " ".join(
+        term for term in sorted(all_terms) for _ in range(3))
     return View(sources, tuple(clauses))
 
 
 def _unit_view():
     return _view(("損害保険", "賠償責任", "保険賠償", "損害", "賠償"))
+
+
+def _two_unit_view(*, producer_repeats=1, independent_repeats=0):
+    units = ("甲乙", "丙丁")
+    terms = ("甲乙戊己", "辛壬丙丁") + units
+    producer_text = " ".join(terms[:2] + tuple(
+        unit for unit in units for _ in range(producer_repeats)))
+    source, text, clause = _clause("two_units", terms, producer_text)
+    sources = {source: text}
+    if independent_repeats:
+        sources["source:independent"] = " ".join(
+            unit for unit in units for _ in range(independent_repeats))
+    return View(sources, (clause,))
 
 
 def _term_candidate(report):
@@ -60,6 +80,21 @@ def test_known_predicate_has_no_candidate():
 def test_unknown_term_gets_unit_candidate():
     candidate = _term_candidate(unknown_candidates(_unit_view(), "損害賠償"))
     assert candidate.kind == "EXPLAINED_BY_UNITS"
+
+
+@pytest.mark.parametrize("producer_repeats", [1, 3])
+def test_clause_producer_cannot_attest_its_own_units(producer_repeats):
+    report = unknown_candidates(
+        _two_unit_view(producer_repeats=producer_repeats), "甲乙丙丁")
+    assert report.status == "ABSTAIN_UNIT_NOT_A_WORD"
+    assert report.candidates == ()
+
+
+def test_independent_single_occurrence_is_below_vocabulary_threshold():
+    report = unknown_candidates(
+        _two_unit_view(producer_repeats=1, independent_repeats=1), "甲乙丙丁")
+    assert report.status == "ABSTAIN_UNIT_NOT_A_WORD"
+    assert report.candidates == ()
 
 
 def test_unit_candidate_has_constructed_marker():

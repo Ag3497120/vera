@@ -3,9 +3,13 @@
 The older reach, lattice, and explain helpers consume a small ``crosses`` /
 ``source_labels`` interface. A semantic View is not a CrossStore, so this
 module builds that interface from the View's clause roles and builds its
-lexicon from the View's own role terms and source text. It needs no external
-corpus or prebuilt CrossStore. Results are typed hand-over candidates: they
-are always marked constructed, never testimony, and never evidence.
+lexicon from the View's own role terms and source text. A source that produced
+a clause term cannot attest that same term; another source must contain the
+normal three standalone occurrences. If the View has no such attestation,
+the older explain path abstains. The lattice uses only vocabulary-approved
+terms. It needs no external corpus or prebuilt CrossStore. Results are typed
+hand-over candidates: they are always marked constructed, never testimony,
+and never evidence.
 """
 from __future__ import annotations
 
@@ -18,7 +22,7 @@ from . import explain as _explain
 from . import lattice as _lattice
 from .granularity import decompose_units
 from .semantic_ir import Span, View
-from .vocabulary import attest, runs
+from .vocabulary import Vocabulary, attest, runs
 
 
 CandidateKind = Literal[
@@ -129,6 +133,47 @@ def _view_store(view: View, role_terms: set[str]) -> _ViewCrosses:
     return _ViewCrosses(crosses, set())
 
 
+def _independent_vocabulary(
+    view: View,
+    candidates: set[str],
+    corpora: list[tuple[str, str]],
+) -> Vocabulary:
+    """Attest each term only from sources that did not produce that facet."""
+    producers: dict[str, set[str]] = {}
+    for clause in view.clauses:
+        clause_source = (clause.span.source
+                         if clause.span.source in view.sources else "")
+        for role in clause.roles:
+            if not isinstance(role.term, str) or not role.term:
+                continue
+            source = (role.span.source if role.span.source in view.sources
+                      else clause_source)
+            if source:
+                producers.setdefault(role.term, set()).add(source)
+        if isinstance(clause.predicate, str) and clause.predicate:
+            source = (clause.predicate_span.source
+                      if clause.predicate_span.source in view.sources
+                      else clause_source)
+            if source:
+                producers.setdefault(clause.predicate, set()).add(source)
+
+    grouped: dict[frozenset[str], set[str]] = {}
+    for term in candidates:
+        excluded = frozenset(producers.get(term, ()))
+        grouped.setdefault(excluded, set()).add(term)
+
+    vocab = Vocabulary()
+    for excluded, terms in sorted(
+            grouped.items(), key=lambda item: tuple(sorted(item[0]))):
+        independent = [corpus for corpus in corpora
+                       if corpus[0] not in excluded]
+        checked = attest(terms, independent)
+        for term, by_source in checked.attested.items():
+            for source, count in by_source.items():
+                vocab.add(term, source, count)
+    return vocab
+
+
 def _unit_provenance(view: View, unit: str) -> UnitProvenance:
     found: dict[tuple[str, str, int, int], ClauseSpan] = {}
     for clause in view.clauses:
@@ -227,12 +272,12 @@ def unknown_candidates(
         return _budget_refusal(term)
 
     source_words = set(source_counts)
-    vocab = attest(role_terms | source_words, corpora, min_attest=1)
+    terms = role_terms | source_words
+    vocab = _independent_vocabulary(view, terms, corpora)
 
     store = _view_store(view, role_terms)
-    terms = role_terms | source_words
     model = decompose_units(terms)
-    lat = _lattice.build(terms)
+    lat = _lattice.build(vocab.attested)
     result = _explain.explain(store, term, model=model, vocab=vocab, lat=lat)
     verdict = result.get("verdict")
 
