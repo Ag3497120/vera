@@ -1,0 +1,115 @@
+{
+ "preregistered_before_run": true,
+ "registered_by": "implementer (Sonnet 5.5), round 2 (W1-c2). No registered question was run through any entry before this file was written.",
+ "origin_of_candidates": "候補は中間職が索引 r1 で『origin: generated の出典が付くか』だけを走査して指示書に載せたもの（R/W1-c2/planner_reach_scan*.jsonl）。basis_origin 実装前の走査であり、(ii) の結果は知り得ない。実装役は追加はしてよいが削除・差し替えはしない。追加は実行前に別ファイル c5r2_probes_b.json に書く。",
+ "index_with": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c",
+ "entries": {
+  "cli_default": "サブプロセス python -m verantyx.cli ask <文> （cwd は作業ツリー W）",
+  "api_legacy": "新しいサブプロセスで verantyx.one.Vera(mode='legacy').ask(<文>)",
+  "api_legacy_docs": "同じく Vera(mode='legacy') に load_documents([W/artifacts/w1-c/c5r2_doc.txt]) してから ask"
+ },
+ "states": {
+  "with_index": "子プロセスの環境変数 VERA_P4_INDEX=IDX（IDX = /Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c）",
+  "default": "子プロセスの環境から VERA_P4_INDEX と VERA_W1C_INDEX を取り除く（存在しないディレクトリを指すのではない）。実行前に W/build/p4 が存在しないことを確かめて出力に記録する。"
+ },
+ "groups": {
+  "commonsense": {
+   "entries": [
+    "cli_default",
+    "api_legacy"
+   ],
+   "questions": [
+    "富士山の高さは？",
+    "鍋に水を入れて火にかけると、どうなりますか？",
+    "氷を日なたに置くと、どうなりますか？",
+    "ドアを開けると、どうなりますか？",
+    "電気を消すと、どうなりますか？",
+    "コーヒーをこぼすと、どうなりますか？",
+    "お湯を注ぐと、どうなりますか？",
+    "カーテンを開けると、どうなりますか？",
+    "雨が降り出したら、何をするのがよいですか？",
+    "部屋が暗くなったら、何をするのがよいですか？",
+    "水の沸点は何度ですか？"
+   ]
+  },
+  "generation": {
+   "entries": [
+    "cli_default",
+    "api_legacy"
+   ],
+   "questions": [
+    "湯気の中の朝の台所の様子を一文で描写してください。",
+    "海辺の様子を一文で描写してください。",
+    "台所の様子を一文で描写してください。",
+    "駅のホームの様子を一文で描写してください。",
+    "雨の日の窓の様子を一文で描写してください。",
+    "冬の朝の様子を一文で描写してください。",
+    "夜の街の様子を一文で描写してください。",
+    "公園の様子を一文で描写してください。",
+    "教室の様子を一文で描写してください。",
+    "森の様子を一文で描写してください。",
+    "川辺の様子を一文で描写してください。",
+    "商店街の様子を一文で描写してください。",
+    "雨上がりの公園の様子を一文で描写してください。",
+    "夕暮れの商店街の様子を一文で描写してください。",
+    "冬の朝の駅の様子を一文で描写してください。"
+   ]
+  },
+  "conversation": {
+   "entries": [
+    "api_legacy",
+    "cli_default"
+   ],
+   "questions": [
+    "ありがとう。",
+    "ありがとうございます。",
+    "どうもありがとう。",
+    "ありがとうございました。"
+   ]
+  },
+  "non_corpus": {
+   "runs": [
+    {
+     "entry": "cli_default",
+     "state": "with_index",
+     "questions": [
+      "3+4は？"
+     ]
+    },
+    {
+     "entry": "api_legacy",
+     "state": "with_index",
+     "questions": [
+      "こんにちは。",
+      "おはよう。",
+      "疲れた。",
+      "ごめんなさい。"
+     ]
+    },
+    {
+     "entry": "api_legacy_docs",
+     "state": "with_index",
+     "questions": [
+      "議長は誰ですか？",
+      "会議は何曜日に開かれますか？"
+     ]
+    }
+   ]
+  }
+ },
+ "document_file": "artifacts/w1-c/c5r2_doc.txt（api_legacy_docs が load_documents する。2 行）",
+ "definitions": {
+  "generated_sources": "結果の trace 以外の全体で origin == 'generated' の dict の数",
+  "basis_origin": "結果の最上位キー basis_origin の値（無ければ null）",
+  "corpus_trace": "trace のうち part が ability_corpus.search / ability_corpus.status / round3.family.conversation / round3.family.code の項目の family と index",
+  "answered": "kind が unknown/not_yet/cannot/unreadable/refusal でなく、verdict が UNKNOWN / TIED / ABSTAIN で始まらない",
+  "reached(q, entry)": "with_index の generated_sources > 0、または with_index と default の結果（trace を除く）が異なる。両方の旗を別々に記録する。"
+ },
+ "judgement": {
+  "(i)": "commonsense / generation / conversation の各群で、どれかの登録入口で reached になった異なる質問の数がそれぞれ 3 以上、かつ 3 群の合計が 10 以上。登録ファイルの作成時刻 < 結果ファイルの作成時刻。",
+  "(ii)": "reached かつ answered かつ generated_sources > 0 の実行はすべて basis_origin == 'generated'。加えて全実行で不変条件 (basis_origin が在る) <=> (generated_sources > 0)、値は 'generated' だけ。reached かつ answered なのに generated_sources == 0 の実行は一覧に出す。",
+  "(iii)": "non_corpus の各問が with_index で answered、generated_sources == 0、basis_origin なし。満たす問が 5 以上。",
+  "(iv)": "(i) で reached になった各（質問, 入口）の default 実行が、generated_sources == 0・basis_origin なし・corpus_trace に index == 'UNKNOWN_NO_INDEX' の項目が 1 つ以上。"
+ },
+ "expected_issue": "R1（heldout と同一本文の train 行を除外）の後、会話索引で『どういたしまして。』の全行が除外される見込みなので、conversation 群は reached が 3 未満になる可能性がある。その場合は E6 に従い『不成立（前提の衝突）』として型で報告し、検索の意味を変えて届かせない。"
+}

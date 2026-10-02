@@ -1,0 +1,3303 @@
+{
+ "seed": 20261002,
+ "sampled": 200,
+ "population": 491106,
+ "population_by_file": {
+  "code/heldout/items.jsonl": 73642,
+  "even/code/heldout/items.jsonl": 42674,
+  "conversation/heldout/utterances.jsonl": 159676,
+  "even/conversation/heldout/utterances.jsonl": 59609,
+  "general_qa/heldout/records.jsonl": 34171,
+  "code_qa/heldout/records.jsonl": 34523,
+  "figurative_commonsense/heldout/records.jsonl": 25074,
+  "narrative/heldout/records.jsonl": 18193,
+  "paraphrase_entail/heldout/records.jsonl": 43544
+ },
+ "out_dir_listing": [
+  "ledger.jsonl",
+  "sentences.jsonl"
+ ],
+ "out_has_heldout": false,
+ "per_family": {
+  "pro": {
+   "sampled": 0,
+   "extracted": 0
+  },
+  "code": {
+   "sampled": 47,
+   "extracted": 47
+  },
+  "conversation": {
+   "sampled": 88,
+   "extracted": 88
+  },
+  "general_qa": {
+   "sampled": 15,
+   "extracted": 15
+  },
+  "code_qa": {
+   "sampled": 12,
+   "extracted": 12
+  },
+  "figurative_commonsense": {
+   "sampled": 8,
+   "extracted": 8
+  },
+  "narrative": {
+   "sampled": 7,
+   "extracted": 7
+  },
+  "paraphrase_entail": {
+   "sampled": 23,
+   "extracted": 23
+  }
+ },
+ "unextractable_by_reason": {},
+ "body_sha_hits": 0,
+ "body_sha_hit_records": [],
+ "field_substring_hits": 23,
+ "field_substring_hit_records": [
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:128739",
+   "family": "conversation",
+   "kind": "conversation",
+   "fields": [
+    {
+     "field": "text",
+     "chars": 11,
+     "in_same_family": true,
+     "same_family_first": [
+      "conversation/utterances.jsonl",
+      1439360
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    }
+   ]
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:132233",
+   "family": "conversation",
+   "kind": "conversation",
+   "fields": [
+    {
+     "field": "text",
+     "chars": 7,
+     "in_same_family": true,
+     "same_family_first": [
+      "conversation/utterances.jsonl",
+      170279
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {
+      "general_qa": [
+       "general_qa/train/records.jsonl",
+       88049
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:16383",
+   "family": "conversation",
+   "kind": "conversation",
+   "fields": [
+    {
+     "field": "text",
+     "chars": 11,
+     "in_same_family": true,
+     "same_family_first": [
+      "conversation/utterances.jsonl",
+      706260
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    }
+   ]
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:1916",
+   "family": "general_qa",
+   "kind": "greeting",
+   "fields": [
+    {
+     "field": "q_variants",
+     "chars": 31,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "q_variants",
+     "chars": 19,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "q_variants",
+     "chars": 26,
+     "in_same_family": true,
+     "same_family_first": [
+      "general_qa/train/records.jsonl",
+      179225
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "answer",
+     "chars": 50,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    }
+   ]
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:30578",
+   "family": "general_qa",
+   "kind": "howto",
+   "fields": [
+    {
+     "field": "q_variants",
+     "chars": 27,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "q_variants",
+     "chars": 24,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "q_variants",
+     "chars": 29,
+     "in_same_family": true,
+     "same_family_first": [
+      "general_qa/train/records.jsonl",
+      190506
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "answer",
+     "chars": 76,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "why",
+     "chars": 35,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    }
+   ]
+  },
+  {
+   "heldout": "code_qa/heldout/records.jsonl:8074",
+   "family": "code_qa",
+   "kind": "code_qa",
+   "fields": [
+    {
+     "field": "question",
+     "chars": 24,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "answer_text",
+     "chars": 31,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "code",
+     "chars": 112,
+     "in_same_family": true,
+     "same_family_first": [
+      "code_qa/train/records.jsonl",
+      244421
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "usage",
+     "chars": 8,
+     "in_same_family": true,
+     "same_family_first": [
+      "code_qa/train/records.jsonl",
+      9435
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    }
+   ]
+  },
+  {
+   "heldout": "code_qa/heldout/records.jsonl:15391",
+   "family": "code_qa",
+   "kind": "code_qa",
+   "fields": [
+    {
+     "field": "question",
+     "chars": 53,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "answer_text",
+     "chars": 48,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "code",
+     "chars": 183,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "usage",
+     "chars": 21,
+     "in_same_family": true,
+     "same_family_first": [
+      "code_qa/train/records.jsonl",
+      1717
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    }
+   ]
+  },
+  {
+   "heldout": "figurative_commonsense/heldout/records.jsonl:878",
+   "family": "figurative_commonsense",
+   "kind": "cause_effect",
+   "fields": [
+    {
+     "field": "cause",
+     "chars": 7,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "effect",
+     "chars": 12,
+     "in_same_family": true,
+     "same_family_first": [
+      "figurative_commonsense/train/records.jsonl",
+      29182
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "phrasings",
+     "chars": 22,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "phrasings",
+     "chars": 25,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    }
+   ]
+  },
+  {
+   "heldout": "figurative_commonsense/heldout/records.jsonl:18951",
+   "family": "figurative_commonsense",
+   "kind": "cause_effect",
+   "fields": [
+    {
+     "field": "cause",
+     "chars": 6,
+     "in_same_family": true,
+     "same_family_first": [
+      "figurative_commonsense/train/records.jsonl",
+      13747
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {
+      "conversation": [
+       "conversation/utterances.jsonl",
+       702778
+      ],
+      "general_qa": [
+       "general_qa/train/records.jsonl",
+       12754
+      ]
+     }
+    },
+    {
+     "field": "effect",
+     "chars": 12,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "phrasings",
+     "chars": 34,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "phrasings",
+     "chars": 24,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    }
+   ]
+  },
+  {
+   "heldout": "figurative_commonsense/heldout/records.jsonl:19863",
+   "family": "figurative_commonsense",
+   "kind": "simile_metaphor",
+   "fields": [
+    {
+     "field": "expression",
+     "chars": 9,
+     "in_same_family": true,
+     "same_family_first": [
+      "figurative_commonsense/train/records.jsonl",
+      106078
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "plain_meaning",
+     "chars": 15,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "example",
+     "chars": 25,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    }
+   ]
+  },
+  {
+   "heldout": "narrative/heldout/records.jsonl:3897",
+   "family": "narrative",
+   "kind": "story",
+   "fields": [
+    {
+     "field": "title",
+     "chars": 6,
+     "in_same_family": true,
+     "same_family_first": [
+      "narrative/train/records.jsonl",
+      8121
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {
+      "figurative_commonsense": [
+       "figurative_commonsense/train/records.jsonl",
+       8360
+      ]
+     }
+    },
+    {
+     "field": "sentences",
+     "chars": 37,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "sentences",
+     "chars": 26,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "sentences",
+     "chars": 36,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "sentences",
+     "chars": 41,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    }
+   ]
+  },
+  {
+   "heldout": "narrative/heldout/records.jsonl:5855",
+   "family": "narrative",
+   "kind": "story",
+   "fields": [
+    {
+     "field": "title",
+     "chars": 5,
+     "in_same_family": true,
+     "same_family_first": [
+      "narrative/train/records.jsonl",
+      50408
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {
+      "pro": [
+       "out/sentences.jsonl",
+       399738
+      ]
+     }
+    },
+    {
+     "field": "sentences",
+     "chars": 29,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "sentences",
+     "chars": 29,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "sentences",
+     "chars": 37,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "sentences",
+     "chars": 30,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    }
+   ]
+  },
+  {
+   "heldout": "narrative/heldout/records.jsonl:6343",
+   "family": "narrative",
+   "kind": "poem",
+   "fields": [
+    {
+     "field": "title",
+     "chars": 4,
+     "in_same_family": true,
+     "same_family_first": [
+      "narrative/train/records.jsonl",
+      35133
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {
+      "figurative_commonsense": [
+       "figurative_commonsense/train/records.jsonl",
+       128563
+      ]
+     }
+    },
+    {
+     "field": "lines",
+     "chars": 12,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "lines",
+     "chars": 11,
+     "in_same_family": true,
+     "same_family_first": [
+      "narrative/train/records.jsonl",
+      49848
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "lines",
+     "chars": 10,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "lines",
+     "chars": 14,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    }
+   ]
+  },
+  {
+   "heldout": "narrative/heldout/records.jsonl:16885",
+   "family": "narrative",
+   "kind": "poem",
+   "fields": [
+    {
+     "field": "title",
+     "chars": 2,
+     "in_same_family": true,
+     "same_family_first": [
+      "narrative/train/records.jsonl",
+      3166
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {
+      "pro": [
+       "out/sentences.jsonl",
+       1840
+      ],
+      "conversation": [
+       "conversation/utterances.jsonl",
+       77203
+      ],
+      "general_qa": [
+       "general_qa/train/records.jsonl",
+       1144
+      ],
+      "code_qa": [
+       "code_qa/train/records.jsonl",
+       264063
+      ],
+      "figurative_commonsense": [
+       "figurative_commonsense/train/records.jsonl",
+       132
+      ],
+      "paraphrase_entail": [
+       "paraphrase_entail/train/records.jsonl",
+       47598
+      ]
+     }
+    },
+    {
+     "field": "lines",
+     "chars": 13,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "lines",
+     "chars": 12,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "lines",
+     "chars": 12,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "lines",
+     "chars": 13,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    }
+   ]
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:4763",
+   "family": "paraphrase_entail",
+   "kind": "who_did_what",
+   "fields": [
+    {
+     "field": "sentence",
+     "chars": 35,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "question",
+     "chars": 9,
+     "in_same_family": true,
+     "same_family_first": [
+      "paraphrase_entail/train/records.jsonl",
+      5374
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "answer",
+     "chars": 2,
+     "in_same_family": true,
+     "same_family_first": [
+      "paraphrase_entail/train/records.jsonl",
+      6939
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {
+      "pro": [
+       "out/sentences.jsonl",
+       4739
+      ],
+      "code": [
+       "code/items.jsonl",
+       45846
+      ],
+      "conversation": [
+       "conversation/utterances.jsonl",
+       5432
+      ],
+      "general_qa": [
+       "general_qa/train/records.jsonl",
+       4530
+      ],
+      "code_qa": [
+       "code_qa/train/records.jsonl",
+       10308
+      ],
+      "figurative_commonsense": [
+       "figurative_commonsense/train/records.jsonl",
+       10486
+      ],
+      "narrative": [
+       "narrative/train/records.jsonl",
+       931
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:9218",
+   "family": "paraphrase_entail",
+   "kind": "who_did_what",
+   "fields": [
+    {
+     "field": "sentence",
+     "chars": 21,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "question",
+     "chars": 7,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "answer",
+     "chars": 2,
+     "in_same_family": true,
+     "same_family_first": [
+      "paraphrase_entail/train/records.jsonl",
+      33587
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {
+      "pro": [
+       "out/sentences.jsonl",
+       6646
+      ],
+      "conversation": [
+       "conversation/utterances.jsonl",
+       4689
+      ],
+      "general_qa": [
+       "general_qa/train/records.jsonl",
+       20002
+      ],
+      "code_qa": [
+       "code_qa/train/records.jsonl",
+       12177
+      ],
+      "figurative_commonsense": [
+       "figurative_commonsense/train/records.jsonl",
+       6631
+      ],
+      "narrative": [
+       "narrative/train/records.jsonl",
+       3510
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:9734",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "fields": [
+    {
+     "field": "s1",
+     "chars": 11,
+     "in_same_family": true,
+     "same_family_first": [
+      "paraphrase_entail/train/records.jsonl",
+      9455
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "s2",
+     "chars": 14,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "reason",
+     "chars": 24,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    }
+   ]
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:11982",
+   "family": "paraphrase_entail",
+   "kind": "who_did_what",
+   "fields": [
+    {
+     "field": "sentence",
+     "chars": 24,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "question",
+     "chars": 12,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "answer",
+     "chars": 3,
+     "in_same_family": true,
+     "same_family_first": [
+      "paraphrase_entail/train/records.jsonl",
+      27561
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {
+      "conversation": [
+       "conversation/utterances.jsonl",
+       19956
+      ],
+      "general_qa": [
+       "general_qa/train/records.jsonl",
+       42610
+      ],
+      "figurative_commonsense": [
+       "figurative_commonsense/train/records.jsonl",
+       82412
+      ],
+      "narrative": [
+       "narrative/train/records.jsonl",
+       1569
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:19434",
+   "family": "paraphrase_entail",
+   "kind": "who_did_what",
+   "fields": [
+    {
+     "field": "sentence",
+     "chars": 23,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "question",
+     "chars": 15,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "answer",
+     "chars": 5,
+     "in_same_family": true,
+     "same_family_first": [
+      "paraphrase_entail/train/records.jsonl",
+      2624
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {
+      "pro": [
+       "out/sentences.jsonl",
+       196156
+      ],
+      "conversation": [
+       "conversation/utterances.jsonl",
+       108670
+      ],
+      "narrative": [
+       "narrative/train/records.jsonl",
+       11307
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:19947",
+   "family": "paraphrase_entail",
+   "kind": "who_did_what",
+   "fields": [
+    {
+     "field": "sentence",
+     "chars": 27,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "question",
+     "chars": 11,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "answer",
+     "chars": 3,
+     "in_same_family": true,
+     "same_family_first": [
+      "paraphrase_entail/train/records.jsonl",
+      61049
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {
+      "narrative": [
+       "narrative/train/records.jsonl",
+       1437
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:20253",
+   "family": "paraphrase_entail",
+   "kind": "who_did_what",
+   "fields": [
+    {
+     "field": "sentence",
+     "chars": 24,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "question",
+     "chars": 16,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "answer",
+     "chars": 2,
+     "in_same_family": true,
+     "same_family_first": [
+      "paraphrase_entail/train/records.jsonl",
+      10226
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {
+      "pro": [
+       "out/sentences.jsonl",
+       49179
+      ],
+      "code": [
+       "code/items.jsonl",
+       551749
+      ],
+      "conversation": [
+       "conversation/utterances.jsonl",
+       6073
+      ],
+      "code_qa": [
+       "code_qa/train/records.jsonl",
+       69951
+      ],
+      "figurative_commonsense": [
+       "figurative_commonsense/train/records.jsonl",
+       71120
+      ],
+      "narrative": [
+       "narrative/train/records.jsonl",
+       273
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:21726",
+   "family": "paraphrase_entail",
+   "kind": "who_did_what",
+   "fields": [
+    {
+     "field": "sentence",
+     "chars": 32,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "question",
+     "chars": 8,
+     "in_same_family": true,
+     "same_family_first": [
+      "paraphrase_entail/train/records.jsonl",
+      250680
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "answer",
+     "chars": 2,
+     "in_same_family": true,
+     "same_family_first": [
+      "paraphrase_entail/train/records.jsonl",
+      24362
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {
+      "pro": [
+       "out/sentences.jsonl",
+       43236
+      ],
+      "conversation": [
+       "conversation/utterances.jsonl",
+       1653330
+      ],
+      "figurative_commonsense": [
+       "figurative_commonsense/train/records.jsonl",
+       10573
+      ],
+      "narrative": [
+       "narrative/train/records.jsonl",
+       1395
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:34327",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "fields": [
+    {
+     "field": "s1",
+     "chars": 24,
+     "in_same_family": true,
+     "same_family_first": [
+      "paraphrase_entail/train/records.jsonl",
+      151577
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "s2",
+     "chars": 16,
+     "in_same_family": true,
+     "same_family_first": [
+      "paraphrase_entail/train/records.jsonl",
+      299491
+     ],
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    },
+    {
+     "field": "reason",
+     "chars": 30,
+     "in_same_family": false,
+     "same_family_first": null,
+     "same_family_candidates_capped": false,
+     "in_other_families": {}
+    }
+   ]
+  }
+ ],
+ "field_substring_hits_same_family": 23,
+ "records_with_every_field_in_same_family": 3,
+ "per_record_summary": [
+  {
+   "heldout": "code/heldout/items.jsonl:711",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    78
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:4417",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    145
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:7112",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    69
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:8414",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    99
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:10298",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    70
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:14529",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    157
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:17459",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    78
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:19521",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    161
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:19776",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    82
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:24560",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    118
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:26929",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    82
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:27293",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    70
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:30520",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    290
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:32024",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    180
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:33163",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    87
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:39462",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    84
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:39964",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    55
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:43226",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    86
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:43599",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    74
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:43682",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    84
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:49112",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    116
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:54217",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    65
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:57394",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    66
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:57964",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    118
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:59952",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    98
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:60569",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    60
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:66846",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    83
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:67258",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    83
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:69699",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    130
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "code/heldout/items.jsonl:70808",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    254
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:209",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    91
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:556",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    83
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:1505",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    97
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:2991",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    86
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:3212",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    81
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:4512",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    114
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:10760",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    116
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:14737",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    70
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:15079",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    78
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:18194",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    72
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:23257",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    180
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:24592",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    72
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:28668",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    68
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:29912",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    162
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:35459",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    209
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:38654",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    75
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/code/heldout/items.jsonl:39926",
+   "family": "code",
+   "kind": "code",
+   "field_chars": [
+    89
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:957",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    27
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:2713",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    32
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:7632",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    25
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:9156",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    31
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:14740",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    19
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:17078",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    21
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:18957",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    17
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:19776",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    27
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:20251",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    18
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:23558",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    27
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:23621",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    16
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:25998",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    34
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:26326",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    22
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:33675",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    33
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:37418",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    30
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:38836",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    25
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:49587",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    21
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:54628",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    31
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:54781",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    26
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:60509",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    33
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:60881",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    35
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:64638",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    33
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:65842",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    43
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:66387",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    34
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:68903",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    26
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:77913",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    52
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:82110",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    17
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:83205",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    25
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:84671",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    23
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:87166",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    19
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:87901",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    43
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:87908",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    24
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:88982",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    29
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:89570",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    45
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:91456",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    33
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:91761",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    37
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:94415",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    31
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:96467",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    23
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:96637",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    31
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:97070",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    26
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:97519",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    17
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:98314",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    29
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:98713",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    32
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:105972",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    26
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:106375",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    43
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:107159",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    36
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:108608",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    25
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:109886",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    9
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:113862",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    19
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:118319",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    61
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:119572",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    13
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:121761",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    30
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:125032",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    24
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:128739",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    11
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:131668",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    18
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:132233",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    7
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:133774",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    35
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:136842",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    19
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:137096",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    12
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:140041",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    33
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:141155",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    44
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:144679",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    63
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:145028",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    24
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:146955",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    19
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:147431",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    19
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:151322",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    38
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:152279",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    33
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "conversation/heldout/utterances.jsonl:154606",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    23
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:2382",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    10
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:5840",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    39
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:7821",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    26
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:8229",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    21
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:13287",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    44
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:16383",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    11
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:20546",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    27
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:22872",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    42
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:24704",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    35
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:31687",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    17
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:34610",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    34
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:43219",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    42
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:44572",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    25
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:46462",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    15
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:49795",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    30
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:49825",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    25
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:50702",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    22
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:56531",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    20
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:57092",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    24
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "even/conversation/heldout/utterances.jsonl:59104",
+   "family": "conversation",
+   "kind": "conversation",
+   "field_chars": [
+    33
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 1
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:1132",
+   "family": "general_qa",
+   "kind": "howto",
+   "field_chars": [
+    23,
+    21,
+    21,
+    65,
+    37
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 5
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:1916",
+   "family": "general_qa",
+   "kind": "greeting",
+   "field_chars": [
+    31,
+    19,
+    26,
+    50
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 4
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:5579",
+   "family": "general_qa",
+   "kind": "definition",
+   "field_chars": [
+    12,
+    19,
+    20,
+    59,
+    28
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 5
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:7647",
+   "family": "general_qa",
+   "kind": "fact",
+   "field_chars": [
+    35,
+    30,
+    33,
+    43,
+    33
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 5
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:9576",
+   "family": "general_qa",
+   "kind": "fact",
+   "field_chars": [
+    21,
+    15,
+    30,
+    54,
+    26
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 5
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:11418",
+   "family": "general_qa",
+   "kind": "comparison",
+   "field_chars": [
+    25,
+    20,
+    29,
+    63,
+    21
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 5
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:11874",
+   "family": "general_qa",
+   "kind": "advice",
+   "field_chars": [
+    17,
+    20,
+    35,
+    63,
+    28
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 5
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:19536",
+   "family": "general_qa",
+   "kind": "advice",
+   "field_chars": [
+    25,
+    19,
+    33,
+    72,
+    30
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 5
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:21657",
+   "family": "general_qa",
+   "kind": "greeting",
+   "field_chars": [
+    11,
+    10,
+    12,
+    28
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 4
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:24161",
+   "family": "general_qa",
+   "kind": "howto",
+   "field_chars": [
+    27,
+    21,
+    27,
+    68,
+    38
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 5
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:25205",
+   "family": "general_qa",
+   "kind": "definition",
+   "field_chars": [
+    16,
+    14,
+    23,
+    43,
+    30
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 5
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:29144",
+   "family": "general_qa",
+   "kind": "advice",
+   "field_chars": [
+    34,
+    27,
+    34,
+    83,
+    34
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 5
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:30578",
+   "family": "general_qa",
+   "kind": "howto",
+   "field_chars": [
+    27,
+    24,
+    29,
+    76,
+    35
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 5
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:31594",
+   "family": "general_qa",
+   "kind": "comparison",
+   "field_chars": [
+    14,
+    24,
+    28,
+    78,
+    31
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 5
+  },
+  {
+   "heldout": "general_qa/heldout/records.jsonl:31688",
+   "family": "general_qa",
+   "kind": "definition",
+   "field_chars": [
+    18,
+    25,
+    29,
+    45,
+    35
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 5
+  },
+  {
+   "heldout": "code_qa/heldout/records.jsonl:2010",
+   "family": "code_qa",
+   "kind": "code_qa",
+   "field_chars": [
+    93,
+    51,
+    314,
+    26
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 4
+  },
+  {
+   "heldout": "code_qa/heldout/records.jsonl:3568",
+   "family": "code_qa",
+   "kind": "code_qa",
+   "field_chars": [
+    126,
+    52,
+    117,
+    45
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 4
+  },
+  {
+   "heldout": "code_qa/heldout/records.jsonl:4728",
+   "family": "code_qa",
+   "kind": "code_qa",
+   "field_chars": [
+    177,
+    104,
+    249,
+    48
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 4
+  },
+  {
+   "heldout": "code_qa/heldout/records.jsonl:5412",
+   "family": "code_qa",
+   "kind": "code_qa",
+   "field_chars": [
+    68,
+    90,
+    383,
+    39
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 4
+  },
+  {
+   "heldout": "code_qa/heldout/records.jsonl:8074",
+   "family": "code_qa",
+   "kind": "code_qa",
+   "field_chars": [
+    24,
+    31,
+    112,
+    8
+   ],
+   "fields_in_same_family": 2,
+   "fields_total": 4
+  },
+  {
+   "heldout": "code_qa/heldout/records.jsonl:14370",
+   "family": "code_qa",
+   "kind": "code_qa",
+   "field_chars": [
+    104,
+    60,
+    176,
+    75
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 4
+  },
+  {
+   "heldout": "code_qa/heldout/records.jsonl:15391",
+   "family": "code_qa",
+   "kind": "code_qa",
+   "field_chars": [
+    53,
+    48,
+    183,
+    21
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 4
+  },
+  {
+   "heldout": "code_qa/heldout/records.jsonl:21503",
+   "family": "code_qa",
+   "kind": "code_qa",
+   "field_chars": [
+    46,
+    26,
+    343,
+    39
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 4
+  },
+  {
+   "heldout": "code_qa/heldout/records.jsonl:28906",
+   "family": "code_qa",
+   "kind": "code_qa",
+   "field_chars": [
+    51,
+    72,
+    310,
+    46
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 4
+  },
+  {
+   "heldout": "code_qa/heldout/records.jsonl:29004",
+   "family": "code_qa",
+   "kind": "code_qa",
+   "field_chars": [
+    77,
+    90,
+    538,
+    59
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 4
+  },
+  {
+   "heldout": "code_qa/heldout/records.jsonl:30272",
+   "family": "code_qa",
+   "kind": "code_qa",
+   "field_chars": [
+    129,
+    87,
+    269,
+    38
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 4
+  },
+  {
+   "heldout": "code_qa/heldout/records.jsonl:31391",
+   "family": "code_qa",
+   "kind": "code_qa",
+   "field_chars": [
+    104,
+    75,
+    111,
+    52
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 4
+  },
+  {
+   "heldout": "figurative_commonsense/heldout/records.jsonl:878",
+   "family": "figurative_commonsense",
+   "kind": "cause_effect",
+   "field_chars": [
+    7,
+    12,
+    22,
+    25
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 4
+  },
+  {
+   "heldout": "figurative_commonsense/heldout/records.jsonl:5223",
+   "family": "figurative_commonsense",
+   "kind": "pun",
+   "field_chars": [
+    27,
+    50
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 2
+  },
+  {
+   "heldout": "figurative_commonsense/heldout/records.jsonl:11323",
+   "family": "figurative_commonsense",
+   "kind": "simile_metaphor",
+   "field_chars": [
+    20,
+    21,
+    33
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 3
+  },
+  {
+   "heldout": "figurative_commonsense/heldout/records.jsonl:14462",
+   "family": "figurative_commonsense",
+   "kind": "pun",
+   "field_chars": [
+    15,
+    40
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 2
+  },
+  {
+   "heldout": "figurative_commonsense/heldout/records.jsonl:18951",
+   "family": "figurative_commonsense",
+   "kind": "cause_effect",
+   "field_chars": [
+    6,
+    12,
+    34,
+    24
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 4
+  },
+  {
+   "heldout": "figurative_commonsense/heldout/records.jsonl:19863",
+   "family": "figurative_commonsense",
+   "kind": "simile_metaphor",
+   "field_chars": [
+    9,
+    15,
+    25
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 3
+  },
+  {
+   "heldout": "figurative_commonsense/heldout/records.jsonl:21654",
+   "family": "figurative_commonsense",
+   "kind": "pun",
+   "field_chars": [
+    18,
+    48
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 2
+  },
+  {
+   "heldout": "figurative_commonsense/heldout/records.jsonl:23543",
+   "family": "figurative_commonsense",
+   "kind": "pun",
+   "field_chars": [
+    19,
+    49
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 2
+  },
+  {
+   "heldout": "narrative/heldout/records.jsonl:794",
+   "family": "narrative",
+   "kind": "story",
+   "field_chars": [
+    6,
+    22,
+    20,
+    36,
+    23
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 5
+  },
+  {
+   "heldout": "narrative/heldout/records.jsonl:3897",
+   "family": "narrative",
+   "kind": "story",
+   "field_chars": [
+    6,
+    37,
+    26,
+    36,
+    41
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 5
+  },
+  {
+   "heldout": "narrative/heldout/records.jsonl:5855",
+   "family": "narrative",
+   "kind": "story",
+   "field_chars": [
+    5,
+    29,
+    29,
+    37,
+    30
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 5
+  },
+  {
+   "heldout": "narrative/heldout/records.jsonl:6343",
+   "family": "narrative",
+   "kind": "poem",
+   "field_chars": [
+    4,
+    12,
+    11,
+    10,
+    14
+   ],
+   "fields_in_same_family": 2,
+   "fields_total": 5
+  },
+  {
+   "heldout": "narrative/heldout/records.jsonl:15046",
+   "family": "narrative",
+   "kind": "story",
+   "field_chars": [
+    7,
+    33,
+    21,
+    36,
+    30
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 5
+  },
+  {
+   "heldout": "narrative/heldout/records.jsonl:15292",
+   "family": "narrative",
+   "kind": "story",
+   "field_chars": [
+    9,
+    32,
+    27,
+    29,
+    27
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 5
+  },
+  {
+   "heldout": "narrative/heldout/records.jsonl:16885",
+   "family": "narrative",
+   "kind": "poem",
+   "field_chars": [
+    2,
+    13,
+    12,
+    12,
+    13
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 5
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:2487",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "field_chars": [
+    23,
+    28,
+    25
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:4763",
+   "family": "paraphrase_entail",
+   "kind": "who_did_what",
+   "field_chars": [
+    35,
+    9,
+    2
+   ],
+   "fields_in_same_family": 2,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:5407",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "field_chars": [
+    24,
+    29,
+    35
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:9218",
+   "family": "paraphrase_entail",
+   "kind": "who_did_what",
+   "field_chars": [
+    21,
+    7,
+    2
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:9734",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "field_chars": [
+    11,
+    14,
+    24
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:10616",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "field_chars": [
+    22,
+    19,
+    30
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:11982",
+   "family": "paraphrase_entail",
+   "kind": "who_did_what",
+   "field_chars": [
+    24,
+    12,
+    3
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:12648",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "field_chars": [
+    14,
+    17,
+    31
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:13811",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "field_chars": [
+    21,
+    22,
+    34
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:16523",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "field_chars": [
+    18,
+    19,
+    28
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:19434",
+   "family": "paraphrase_entail",
+   "kind": "who_did_what",
+   "field_chars": [
+    23,
+    15,
+    5
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:19947",
+   "family": "paraphrase_entail",
+   "kind": "who_did_what",
+   "field_chars": [
+    27,
+    11,
+    3
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:20253",
+   "family": "paraphrase_entail",
+   "kind": "who_did_what",
+   "field_chars": [
+    24,
+    16,
+    2
+   ],
+   "fields_in_same_family": 1,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:21726",
+   "family": "paraphrase_entail",
+   "kind": "who_did_what",
+   "field_chars": [
+    32,
+    8,
+    2
+   ],
+   "fields_in_same_family": 2,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:22855",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "field_chars": [
+    16,
+    14,
+    48
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:29857",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "field_chars": [
+    18,
+    15,
+    22
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:32173",
+   "family": "paraphrase_entail",
+   "kind": "who_did_what",
+   "field_chars": [
+    29,
+    10,
+    11
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:32654",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "field_chars": [
+    30,
+    39,
+    36
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:34003",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "field_chars": [
+    26,
+    22,
+    23
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:34239",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "field_chars": [
+    27,
+    29,
+    30
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:34327",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "field_chars": [
+    24,
+    16,
+    30
+   ],
+   "fields_in_same_family": 2,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:35431",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "field_chars": [
+    20,
+    17,
+    25
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 3
+  },
+  {
+   "heldout": "paraphrase_entail/heldout/records.jsonl:41958",
+   "family": "paraphrase_entail",
+   "kind": "pair",
+   "field_chars": [
+    15,
+    18,
+    34
+   ],
+   "fields_in_same_family": 0,
+   "fields_total": 3
+  }
+ ],
+ "note": "a field-level hit is a verbatim substring occurrence of one field string inside some indexed row text; chars gives that string's length",
+ "elapsed_seconds": 16.476
+}

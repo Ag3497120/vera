@@ -1,0 +1,147 @@
+{
+ "preregistered_before_run": true,
+ "index_with": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c",
+ "index_without": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c-DOES-NOT-EXIST",
+ "note_on_exploration": "Before registering, the implementer ran by hand (1) cli ask '湯気の中の朝の台所の様子を一文で描写してください。' with and without the index, (2) cli ask --mode round5 'こんにちは。', and (3) Vera(mode='legacy').ask on nine short social utterances to see which entry reaches the corpus. No counter-example probe below was run before registration.",
+ "entries": {
+  "cli_default": "python -m verantyx.cli ask <text>   (subprocess; the default chat door)",
+  "api_legacy": "verantyx.one.Vera(mode='legacy').ask(<text>)   (public API; reaches round3.GeneralRouter)",
+  "cli_round5": "python -m verantyx.cli ask --mode round5 <text>   (subprocess)"
+ },
+ "positive": [
+  {
+   "id": "P1",
+   "entry": "cli_default",
+   "text": "湯気の中の朝の台所の様子を一文で描写してください。",
+   "expect": "trace has ability_corpus.search with an index state; with the index every cited corpus source carries origin=generated; the result is typed as a created line"
+  },
+  {
+   "id": "P2",
+   "entry": "api_legacy",
+   "text": "ありがとう。",
+   "expect": "trace has round3.family.conversation with an index state; cited corpus rows carry origin=generated"
+  },
+  {
+   "id": "P3_info",
+   "entry": "cli_round5",
+   "text": "ありがとう。",
+   "expect": "informational only (the plan named this entry): records whether the round5 route reaches the corpus at all; no pass/fail is attached"
+  }
+ ],
+ "counterexample_search": [
+  {
+   "id": "N1",
+   "text": "『吾輩は猫である』の作者は誰ですか？",
+   "kind": "fact, question text verbatim in general_qa train (answer sentence 夏目漱石です。 is in the generated corpus)",
+   "targets": "round3 / chat fact path"
+  },
+  {
+   "id": "N2",
+   "text": "あんずはどんな果物ですか？",
+   "kind": "fact, question text verbatim in general_qa train",
+   "targets": "definition/fact path"
+  },
+  {
+   "id": "N3",
+   "text": "『吾輩は猫である』の語り手は何ですか。",
+   "kind": "fact, question text verbatim in general_qa train",
+   "targets": "round3 / chat fact path"
+  },
+  {
+   "id": "N4",
+   "text": "水切れした鉢植えに水を与えると、どうなりますか？",
+   "kind": "condition question; pro corpus holds sentences with 水を与えると",
+   "targets": "abilities._condition_examples"
+  },
+  {
+   "id": "N5",
+   "text": "猫は小さいですか？",
+   "kind": "property yes/no question; pro corpus holds 猫 ... 小さく sentences",
+   "targets": "abilities._predicable via commonsense"
+  },
+  {
+   "id": "N6",
+   "text": "「彼女は花のようだった」とはどういう意味ですか？",
+   "kind": "interpretation of a simile (not a world fact; recorded separately)",
+   "targets": "abilities._predicable via metaphor"
+  },
+  {
+   "id": "N7",
+   "text": "strings.HasSuffix は何をする関数ですか？",
+   "kind": "code fact; strings.HasSuffix is in code_qa / code corpus",
+   "targets": "round3 code route / _code_supply"
+  },
+  {
+   "id": "N8",
+   "text": "あんこは何から作られますか？",
+   "kind": "fact, question text verbatim in the first general_qa train record",
+   "targets": "round3 / chat fact path"
+  }
+ ],
+ "judgement": "A counter-example is an answer (result kind not one of unknown/not_yet/cannot/unreadable/refusal and verdict not UNKNOWN_*) to a counter-example question whose result outside its trace contains any dict with origin=generated, i.e. generated corpus text used as the basis of the answer. A question whose result is a refusal or unknown is recorded as such and is not a counter-example. Behaviour is never changed to remove a counter-example.",
+ "added_after_first_run": {
+  "why": "The first run (kept as c5_entry_probe.first_run.json) showed that none of N1-N8 reached a corpus path and every result was identical with and without the index. To attack the corpus-consuming code paths the plan names (_condition_examples, _predicable), the implementer then tried ten questions by hand (Vera(mode='legacy').ask with the real index) and kept them here as a second, post-hoc list. These ten were selected after seeing that some of them were answered; they are therefore NOT pre-registered and are labelled as such.",
+  "probes": [
+   {
+    "id": "A1",
+    "text": "毛布を敷いてやると、どうなりますか？",
+    "kind": "condition question",
+    "targets": "abilities._condition_examples"
+   },
+   {
+    "id": "A2",
+    "text": "水を与えると、どうなりますか？",
+    "kind": "condition question",
+    "targets": "abilities._condition_examples"
+   },
+   {
+    "id": "A3",
+    "text": "窓を開けると、どうなりますか？",
+    "kind": "condition question",
+    "targets": "abilities._condition_examples"
+   },
+   {
+    "id": "A4",
+    "text": "傘を差すと、どうなりますか？",
+    "kind": "condition question",
+    "targets": "abilities._condition_examples"
+   },
+   {
+    "id": "A5",
+    "text": "朝ごはんを食べると、どうなりますか？",
+    "kind": "condition question",
+    "targets": "abilities._condition_examples"
+   },
+   {
+    "id": "A6",
+    "text": "パンを焼くと、どうなりますか？",
+    "kind": "condition question",
+    "targets": "abilities._condition_examples"
+   },
+   {
+    "id": "A7",
+    "text": "手を洗うと、どうなりますか？",
+    "kind": "condition question",
+    "targets": "abilities._condition_examples"
+   },
+   {
+    "id": "A8",
+    "text": "猫は小さいですか？",
+    "kind": "property yes/no question",
+    "targets": "abilities.commonsense / _predicable"
+   },
+   {
+    "id": "A9",
+    "text": "犬は大きいですか？",
+    "kind": "property yes/no question",
+    "targets": "abilities.commonsense / _predicable"
+   },
+   {
+    "id": "A10",
+    "text": "窓は明るいですか？",
+    "kind": "property yes/no question",
+    "targets": "abilities.commonsense / _predicable"
+   }
+  ]
+ }
+}

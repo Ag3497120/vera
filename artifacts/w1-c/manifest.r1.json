@@ -1,0 +1,379 @@
+{
+ "corpus_root": "/Users/motonisihikoudai/vera-codex-corpus",
+ "index_out": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c",
+ "git_head": "65f43dac02c8ca7dec4abe936cba7dd53123c19b",
+ "python": "3.11.14",
+ "sqlite_version": "3.51.0",
+ "format": "w1c-1",
+ "started_at": "2026-10-02T23:26:31+0900",
+ "finished_at": "2026-10-02T23:27:47+0900",
+ "elapsed_seconds": 75.976,
+ "files": [
+  {
+   "path": "out/sentences.jsonl",
+   "family": "pro",
+   "indexed": 1366290,
+   "skipped": {},
+   "split_absent": 1366290,
+   "optional_absent": {},
+   "source_tag_prefixes": {
+    "pro": 1366290
+   },
+   "source_tag_unexpected": 0,
+   "bytes": 304983990,
+   "lines": 1366290,
+   "sha256": "ecceb5343a782ec0b1f7092a384e36b6b8c38dacce40d6cb2a5d1b837792a46b",
+   "final_newline": true,
+   "balanced": true
+  },
+  {
+   "path": "code/items.jsonl",
+   "family": "code",
+   "indexed": 1020930,
+   "skipped": {},
+   "split_absent": 357930,
+   "optional_absent": {},
+   "source_tag_prefixes": {
+    "pro-code": 1020930
+   },
+   "source_tag_unexpected": 0,
+   "bytes": 518597240,
+   "lines": 1020930,
+   "sha256": "feb260ef94df77de355b1e5967720217e1898ae30d46c70d3725b1f5fc41007b",
+   "final_newline": true,
+   "balanced": true
+  },
+  {
+   "path": "even/code/items.jsonl",
+   "family": "code",
+   "indexed": 384279,
+   "skipped": {},
+   "split_absent": 0,
+   "optional_absent": {},
+   "source_tag_prefixes": {
+    "pro-code": 384279
+   },
+   "source_tag_unexpected": 0,
+   "bytes": 199871186,
+   "lines": 384279,
+   "sha256": "40466f2bbb4bd0ac5bf18d848f962cf26d3cf344357834aca91b8d3785bb2cc1",
+   "final_newline": true,
+   "balanced": true
+  },
+  {
+   "path": "conversation/utterances.jsonl",
+   "family": "conversation",
+   "indexed": 1751373,
+   "skipped": {},
+   "split_absent": 319922,
+   "optional_absent": {},
+   "source_tag_prefixes": {
+    "pro-conv": 1751373
+   },
+   "source_tag_unexpected": 0,
+   "bytes": 760707818,
+   "lines": 1751373,
+   "sha256": "5c591cbd9dff76c8f5ecfe764a55f80234c3993ad58d0444b77db4050a90ea8c",
+   "final_newline": true,
+   "balanced": true
+  },
+  {
+   "path": "even/conversation/utterances.jsonl",
+   "family": "conversation",
+   "indexed": 514199,
+   "skipped": {},
+   "split_absent": 0,
+   "optional_absent": {},
+   "source_tag_prefixes": {
+    "pro-conv": 514199
+   },
+   "source_tag_unexpected": 0,
+   "bytes": 233373260,
+   "lines": 514199,
+   "sha256": "e611efafc56f3eca37d6751892a3cb46199c100ebca6f3594c2e518ca21420e7",
+   "final_newline": true,
+   "balanced": true
+  },
+  {
+   "path": "general_qa/train/records.jsonl",
+   "family": "general_qa",
+   "indexed": 317423,
+   "skipped": {},
+   "split_absent": 0,
+   "optional_absent": {
+    "fact.why": 4826,
+    "definition.why": 2112,
+    "greeting.why": 13258,
+    "needs_live_data.why": 28178,
+    "howto.why": 491,
+    "comparison.why": 248,
+    "advice.why": 270
+   },
+   "source_tag_prefixes": {
+    "pro-general_qa": 317423
+   },
+   "source_tag_unexpected": 0,
+   "bytes": 234192716,
+   "lines": 317423,
+   "sha256": "c7e85bd3441239be3fedefe3c890811765c38b7bdb24d51fc744e30c65ef985e",
+   "final_newline": true,
+   "balanced": true
+  },
+  {
+   "path": "code_qa/train/records.jsonl",
+   "family": "code_qa",
+   "indexed": 324639,
+   "skipped": {},
+   "split_absent": 0,
+   "optional_absent": {
+    "code_qa.usage": 8
+   },
+   "source_tag_prefixes": {
+    "pro-code_qa": 324639
+   },
+   "source_tag_unexpected": 0,
+   "bytes": 305158884,
+   "lines": 324639,
+   "sha256": "585ebfadf97f85281b6cd18a66a6be4a42e19aa9590e74adee23b76f06d1fdb5",
+   "final_newline": true,
+   "balanced": true
+  },
+  {
+   "path": "figurative_commonsense/train/records.jsonl",
+   "family": "figurative_commonsense",
+   "indexed": 238905,
+   "skipped": {},
+   "split_absent": 0,
+   "optional_absent": {},
+   "source_tag_prefixes": {
+    "pro-figurative_commonsense": 238905
+   },
+   "source_tag_unexpected": 0,
+   "bytes": 127829754,
+   "lines": 238905,
+   "sha256": "1ce1851c92e9c9be23e1882806d5ef8f6d7e553136b3a7afb5869c7ab72af300",
+   "final_newline": true,
+   "balanced": true
+  },
+  {
+   "path": "narrative/train/records.jsonl",
+   "family": "narrative",
+   "indexed": 146598,
+   "skipped": {},
+   "split_absent": 0,
+   "optional_absent": {},
+   "source_tag_prefixes": {
+    "pro-narrative": 146598
+   },
+   "source_tag_unexpected": 0,
+   "bytes": 92963878,
+   "lines": 146598,
+   "sha256": "4a2fbfb130fab93eb8338a6f504b3a69a0ca49014ca9fabbc17b2730160141d0",
+   "final_newline": true,
+   "balanced": true
+  },
+  {
+   "path": "paraphrase_entail/train/records.jsonl",
+   "family": "paraphrase_entail",
+   "indexed": 379580,
+   "skipped": {},
+   "split_absent": 0,
+   "optional_absent": {},
+   "source_tag_prefixes": {
+    "pro-paraphrase_entail": 379580
+   },
+   "source_tag_unexpected": 0,
+   "bytes": 176935921,
+   "lines": 379580,
+   "sha256": "76efded624774870481c1f8c14854f99ee4c5ddda386706b1192961fc553916b",
+   "final_newline": true,
+   "balanced": true
+  }
+ ],
+ "families": {
+  "pro": {
+   "state": "BUILT",
+   "db": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/pro.db",
+   "rows": 1366290,
+   "db_bytes": 812023808,
+   "elapsed_seconds": 33.585
+  },
+  "code": {
+   "state": "BUILT",
+   "db": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/code.db",
+   "rows": 1405209,
+   "db_bytes": 1443880960,
+   "elapsed_seconds": 75.497
+  },
+  "conversation": {
+   "state": "BUILT",
+   "db": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/conversation.db",
+   "rows": 2265572,
+   "db_bytes": 1619881984,
+   "elapsed_seconds": 63.929
+  },
+  "general_qa": {
+   "state": "BUILT",
+   "db": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/general_qa.db",
+   "rows": 317423,
+   "db_bytes": 507125760,
+   "elapsed_seconds": 26.806
+  },
+  "code_qa": {
+   "state": "BUILT",
+   "db": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/code_qa.db",
+   "rows": 324639,
+   "db_bytes": 861270016,
+   "elapsed_seconds": 43.315
+  },
+  "figurative_commonsense": {
+   "state": "BUILT",
+   "db": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/figurative_commonsense.db",
+   "rows": 238905,
+   "db_bytes": 231194624,
+   "elapsed_seconds": 9.319
+  },
+  "narrative": {
+   "state": "BUILT",
+   "db": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/narrative.db",
+   "rows": 146598,
+   "db_bytes": 181018624,
+   "elapsed_seconds": 8.821
+  },
+  "paraphrase_entail": {
+   "state": "BUILT",
+   "db": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/paraphrase_entail.db",
+   "rows": 379580,
+   "db_bytes": 340090880,
+   "elapsed_seconds": 12.232
+  }
+ },
+ "excluded": [
+  {
+   "path": "code/heldout/items.jsonl",
+   "reason": "heldout",
+   "bytes": 38579300,
+   "lines": 73642,
+   "sha256": "75aa084034f5d0be878012cf49c1fb358be71cd84b611db97535cf7c29a0ca1b"
+  },
+  {
+   "path": "code/overlap_dropped/items.jsonl",
+   "reason": "overlap_dropped",
+   "bytes": 142644,
+   "lines": 257,
+   "sha256": "b346035720bdd93f944ffb42f08a490b7f15f5fc70b284722cf7569f1163b975"
+  },
+  {
+   "path": "code_qa/heldout/records.jsonl",
+   "reason": "heldout",
+   "bytes": 32672820,
+   "lines": 34523,
+   "sha256": "6f5fdf928ded3740e939000e549d08855be1ef6e275f67cc25ec51036deb1db2"
+  },
+  {
+   "path": "code_qa/overlap_dropped/records.jsonl",
+   "reason": "overlap_dropped",
+   "bytes": 4500919,
+   "lines": 4352,
+   "sha256": "9cd4e67b51a4f1013bee5a29f955b50f04133c5f610c47c843c350dd86f77acd"
+  },
+  {
+   "path": "conversation/heldout/utterances.jsonl",
+   "reason": "heldout",
+   "bytes": 71035680,
+   "lines": 159676,
+   "sha256": "2b2e2a2937aa404290ae28c21c08902bfa3ce7153087e27e9600c66498395ef1"
+  },
+  {
+   "path": "conversation/overlap_dropped/utterances.jsonl",
+   "reason": "overlap_dropped",
+   "bytes": 1056147,
+   "lines": 2067,
+   "sha256": "2b28213f7f58dd893f422e65aff973ee0aa9c8d755c27b604967318699a3bb12"
+  },
+  {
+   "path": "even/code/heldout/items.jsonl",
+   "reason": "heldout",
+   "bytes": 22379722,
+   "lines": 42674,
+   "sha256": "ca49d8fc5fb3171ceccb76ddd8926039d8547d144b7b3c54d14b033fb2957bc7"
+  },
+  {
+   "path": "even/code/overlap_dropped/items.jsonl",
+   "reason": "overlap_dropped",
+   "bytes": 92206,
+   "lines": 168,
+   "sha256": "5c004ed8f9af6768aaf6768be171b1d8a0ad55d004bde8142c220d0961851fae"
+  },
+  {
+   "path": "even/conversation/heldout/utterances.jsonl",
+   "reason": "heldout",
+   "bytes": 27078227,
+   "lines": 59609,
+   "sha256": "414d7896c8c84a09bc2df38847375faf61b63009adb2c50f07735a8eebdb649c"
+  },
+  {
+   "path": "even/conversation/overlap_dropped/utterances.jsonl",
+   "reason": "overlap_dropped",
+   "bytes": 8270594,
+   "lines": 15953,
+   "sha256": "775a5d318d093e6bae8b740f28b047134b71ab93e4312541e8e7f46bc517d89d"
+  },
+  {
+   "path": "figurative_commonsense/heldout/records.jsonl",
+   "reason": "heldout",
+   "bytes": 13456250,
+   "lines": 25074,
+   "sha256": "f459ff1579f8cfc855f01a34f8c0dfcff785d1ea28ccf8679f47126d0c95c82f"
+  },
+  {
+   "path": "figurative_commonsense/overlap_dropped/records.jsonl",
+   "reason": "overlap_dropped",
+   "bytes": 869481,
+   "lines": 1431,
+   "sha256": "8e4fb5b515d0e7be200c5de5e556f713869cf432b4e15a3eafa478e41727808b"
+  },
+  {
+   "path": "general_qa/heldout/records.jsonl",
+   "reason": "heldout",
+   "bytes": 25354215,
+   "lines": 34171,
+   "sha256": "f941fa4f4dbd72a82bdbdff0f6e918a07730041f8d44b979eaab12034825a1a3"
+  },
+  {
+   "path": "general_qa/overlap_dropped/records.jsonl",
+   "reason": "overlap_dropped",
+   "bytes": 11048812,
+   "lines": 14024,
+   "sha256": "09bae451e656134aea82dfed449793030fd7d113ea6939258f4d2471f1ae410c"
+  },
+  {
+   "path": "narrative/heldout/records.jsonl",
+   "reason": "heldout",
+   "bytes": 11482734,
+   "lines": 18193,
+   "sha256": "ae736cbeaf6657208fe20e081201445d9e4007b2146354c66ceb4812b547a42b"
+  },
+  {
+   "path": "narrative/overlap_dropped/records.jsonl",
+   "reason": "overlap_dropped",
+   "bytes": 733167,
+   "lines": 941,
+   "sha256": "25670688e328e7efc9b3233601315617fcbea9ecfffe909566b9ca730f032f21"
+  },
+  {
+   "path": "paraphrase_entail/heldout/records.jsonl",
+   "reason": "heldout",
+   "bytes": 20495039,
+   "lines": 43544,
+   "sha256": "2deea92eeffdbbe3ee185ec5edabd6281acce5d00fe0f33fb01e1979fb222e50"
+  },
+  {
+   "path": "paraphrase_entail/overlap_dropped/records.jsonl",
+   "reason": "overlap_dropped",
+   "bytes": 2690717,
+   "lines": 5113,
+   "sha256": "b5b0923cd22a8c4afb2c5873e215d8da4053dc8d3a89df237f80ab2868413054"
+  }
+ ]
+}
