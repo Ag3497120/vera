@@ -1,0 +1,4 @@
+artifacts/w2-g/live/w2g2/codex_codex_r3_order/ledger.jsonl {'variant0:決まらない': 8, 'variant0:決まる': 1, 'variant1:決まらない': 4, 'variant1:決まる': 5}
+artifacts/w2-g/live/w2g2/codex_codex_r3b_order/ledger.jsonl {'variant0:決まる': 8, 'variant1:決まる': 8}
+artifacts/w2-g/live/calib_r3/run1/ledger.jsonl {'variant0:決まらない': 2, 'variant0:決まる': 9, 'variant1:決まらない': 3, 'variant1:決まる': 9}
+artifacts/w2-g/live/w2g2/codex_claude_r3b_order/ledger.jsonl {'variant0:決まる': 3, 'variant1:決まる': 3}

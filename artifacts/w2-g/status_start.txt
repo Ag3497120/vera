@@ -1,0 +1,3 @@
+?? artifacts/w2-g/py.sh
+?? artifacts/w2-g/py_live.sh
+?? artifacts/w2-g/status_start.txt

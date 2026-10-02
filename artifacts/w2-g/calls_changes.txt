@@ -1,0 +1,16 @@
+# calls_before.jsonl lines: 1527 distinct keys: 1086
+# calls_after.jsonl  lines: 1527 distinct keys: 1086
+# keys only in before: 0 / only in after: 0 (only-after = calls of the new test files; not counted as changes)
+# keys with more than one distinct result inside one run: 1
+# counts [off_or_scripted_only]: {'answer->escalate': 0, 'escalate->answer': 0, 'answer value/index changed': 0, 'escalate reason/detail changed': 0}
+# counts [other(codex/claude/map)]: {'answer->escalate': 1, 'escalate->answer': 0, 'answer value/index changed': 0, 'escalate reason/detail changed': 1}
+== [off_or_scripted_only] answer->escalate 0
+== [off_or_scripted_only] escalate->answer 0
+== [off_or_scripted_only] answer value/index changed 0
+== [off_or_scripted_only] escalate reason/detail changed 0
+== [other(codex/claude/map)] answer->escalate 1
+   [test_conduct_ask_vocab.py] f01_loan.md@e38d4768546e | 返却の延長は範囲に含めますか？ | ["含める", "含めない"] | mode=codex map=False | ('answer', 0, '含める', None, None) -> ('escalate', None, None, 'MAPPING_UNSETTLED', 'STEP1_FAILED:PROVIDER_EXCEPTION')
+== [other(codex/claude/map)] escalate->answer 0
+== [other(codex/claude/map)] answer value/index changed 0
+== [other(codex/claude/map)] escalate reason/detail changed 1
+   [test_conduct_ask_vocab.py] f01_loan.md@e38d4768546e | 備品の補修の依頼は範囲に含めますか？ | ["含める", "含めない"] | mode=codex map=False | ('escalate', None, None, 'VOCAB_UNMAPPED', 'VOCAB_LLM_OFF') -> ('escalate', None, None, 'MAPPING_UNSETTLED', 'STEP1_FAILED:PROVIDER_EXCEPTION')

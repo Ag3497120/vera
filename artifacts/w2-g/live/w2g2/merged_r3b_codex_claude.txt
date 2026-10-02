@@ -1,0 +1,6 @@
+merged 20 rows | replaced 4 | declared but not run []
+q1_wrong_count 0 q1_rate 0.0 | q2_answer_rate 0.75 (12 expected answers) | escalate_correct_rate 1.0 (8 expected escalations)
+  w2g2-x03-03 ['correct', 'answer', None, None] -> ['correct', 'answer', None, None]
+  w2g2-x03-04 ['over_escalate', 'escalate', 'QUESTION_UNREADABLE', 'NEGATED_QUESTION'] -> ['over_escalate', 'escalate', 'QUESTION_UNREADABLE', 'NEGATED_QUESTION']
+  w2g2-x06-03 ['correct', 'answer', None, None] -> ['correct', 'answer', None, None]
+  w2g2-x06-04 ['correct', 'answer', None, None] -> ['correct', 'answer', None, None]

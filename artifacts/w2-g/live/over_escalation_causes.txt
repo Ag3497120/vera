@@ -1,0 +1,27 @@
+## artifacts/w2-g/live/codex_codex: over_escalate 27
+     9  step 1 readings disagree
+     5  step 2 readings disagree/invalid/failed
+     4  rule escalation not retried: FRAME_SILENT/TERM_IN_WIDER_PHRASE
+     3  decided by rule from the mapping: ANSWER_FORM_UNSUPPORTED/MAPPING_NEEDS_OPTIONS
+     2  decided by rule from the mapping: FRAME_SILENT/MAPPED_NO_OPTION_RELATED
+     1  rule answer not corroborated: RULE_BASIS_NOT_MAPPED
+     1  rule escalation not retried: FRAME_SILENT/PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION
+     1  rule escalation not retried: FRAME_SILENT/POLARITY_QUESTION_ON_A_VALUE
+     1  rule escalation not retried: QUESTION_UNREADABLE/NEGATED_QUESTION
+## artifacts/w2-g/live/codex_codex_r2: over_escalate 26
+     9  step 1 readings disagree
+     4  rule escalation not retried: FRAME_SILENT/TERM_IN_WIDER_PHRASE
+     3  decided by rule from the mapping: ANSWER_FORM_UNSUPPORTED/MAPPING_NEEDS_OPTIONS
+     2  decided by rule from the mapping: FRAME_SILENT/MAPPED_NO_OPTION_RELATED
+     2  decided by rule from the mapping: FRAME_SILENT/MAP_RECORD_DOES_NOT_DECIDE
+     1  mapping unsettled: TOO_MANY_RECORDS
+     1  rule answer not corroborated: RULE_BASIS_NOT_MAPPED
+     1  rule escalation not retried: FRAME_SILENT/PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION
+     1  rule escalation not retried: FRAME_SILENT/POLARITY_QUESTION_ON_A_VALUE
+     1  rule escalation not retried: QUESTION_UNREADABLE/NEGATED_QUESTION
+     1  step 2 readings disagree/invalid/failed
+## artifacts/w2-g/live/codex_claude: over_escalate 5
+     2  decided by rule from the mapping: FRAME_SILENT/MAPPED_NO_OPTION_RELATED
+     1  rule escalation not retried: FRAME_SILENT/PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION
+     1  rule escalation not retried: FRAME_SILENT/TERM_IN_WIDER_PHRASE
+     1  rule escalation not retried: QUESTION_UNREADABLE/NEGATED_QUESTION
