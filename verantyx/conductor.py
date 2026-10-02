@@ -69,6 +69,9 @@ _CONDUCTOR_KINDS = {
     "ALIAS": (("subject", "value"), "語義対応"),
     "VERIFICATION": (("subject", "result"), "独立確認"),
 }
+# Recorded verification results. UNVERIFIED means "could not be confirmed" (for example, no re-runnable
+# evidence); it is a type of its own and is never read as FAIL (decision A, docs/DECISIONS_W1-g.md).
+_VERIFICATION_RESULTS = frozenset({"PASS", "FAIL", "UNVERIFIED"})
 
 
 def install_conductor_kinds() -> None:
@@ -527,8 +530,9 @@ class ProjectFrame:
         if acceptance is None or acceptance.get("kind") != "ACCEPTANCE":
             raise WriteRejected("verification must name an active ACCEPTANCE record")
         spec = acceptance.get("witness", {}).get("acceptance", {})
-        if result not in {"PASS", "FAIL"}:
-            raise WriteRejected("verification result must be PASS or FAIL")
+        # UNVERIFIED is a record type of its own: "could not be confirmed" is not "failed" (decision A).
+        if result not in _VERIFICATION_RESULTS:
+            raise WriteRejected("verification result must be PASS, FAIL or UNVERIFIED")
         if not verifier_id or not claimant_id or verifier_id == claimant_id:
             raise WriteRejected("the verifier must be identified and differ from the claimant")
         if spec.get("independent"):
@@ -788,6 +792,12 @@ class ProjectFrame:
                 failed = [v for v in checks if v["slots"].get("result") == "FAIL"]
                 if failed:
                     return self._escalate("STATUS", f"independent verification failed for {item!r}", "independent verifier", evidence_ids + [failed[-1]["id"]])
+                unverified = [v for v in checks if v["slots"].get("result") == "UNVERIFIED"]
+                if unverified:
+                    # Not a failure and not a missing record: the verification could not be confirmed
+                    # (e.g. no re-runnable evidence). It never completes the task.
+                    return self._escalate("STATUS", f"UNVERIFIED: independent verification could not be confirmed for {item!r}",
+                                          "re-runnable verifier evidence", evidence_ids + [unverified[-1]["id"]])
                 if spec.get("independent"):
                     return self._ask_verifier(task_id, item, acceptance, claimant_id, evidence_ids)
                 return self._escalate("STATUS", f"human judgment is required for {item!r}", "human verification", evidence_ids)
@@ -879,7 +889,7 @@ class ProjectFrame:
     def _valid_verification(record: dict, acceptance_spec: Mapping[str, Any], claimant_id: str) -> bool:
         witness = record.get("witness", {})
         verifier_id = witness.get("verifier_id")
-        if record.get("slots", {}).get("result") not in {"PASS", "FAIL"} or not verifier_id or verifier_id == claimant_id:
+        if record.get("slots", {}).get("result") not in _VERIFICATION_RESULTS or not verifier_id or verifier_id == claimant_id:
             return False
         if acceptance_spec.get("independent"):
             return (bool(witness.get("independent")) and not str(verifier_id).startswith("human:") and

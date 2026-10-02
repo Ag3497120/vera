@@ -6,13 +6,19 @@ never chooses between active values.  Supersession references may be pending
 while partial logs are being combined. A supersede event is operative only
 when its replacement record carries the matching ``supersedes`` pointer;
 active-state inspection requires all operative references to be present.
+
+A supersede event that is not operative is not dropped: the merged log keeps it
+(``op: "supersede"``) so the log only grows, and it retires nothing. ``merge_report``
+says, per (old, new) pair, whether the relation is OPERATIVE, PENDING or NONOPERATIVE
+and why, and counts the declared supersede events it retained and dropped.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
 import json
 from pathlib import Path
-from typing import Any, Iterable, Mapping
+from types import MappingProxyType
+from typing import Any, Iterable, Mapping, NamedTuple
 
 
 def _dump(value: Any) -> str:
@@ -45,8 +51,49 @@ def _superseded_ids(value: Any) -> tuple[str, ...]:
     return tuple(sorted(set(ids)))
 
 
+SUPERSEDE_STATUSES = ('OPERATIVE', 'PENDING', 'NONOPERATIVE')
+
+
+@dataclass(frozen=True)
+class SupersedeStatus:
+    """The typed state of one (old, new) supersession relation in a merge."""
+
+    old: str
+    new: str
+    status: str    # 'OPERATIVE' | 'PENDING' | 'NONOPERATIVE'
+    reason: str    # 'REPLACEMENT_POINTER_MATCHES' | 'RECORD_POINTER_ONLY' | 'REPLACEMENT_NOT_PRESENT'
+                   # | 'REPLACEMENT_POINTER_ABSENT' | 'REPLACEMENT_POINTER_MISMATCH'
+    declared: bool  # True when a supersede event declared it; False when derived from the record's pointer only
+
+
+@dataclass(frozen=True)
+class MergeReport:
+    """The merged log plus an account of every supersession relation it saw."""
+
+    events: tuple[dict, ...]                    # identical to merge_logs(left, right)
+    supersedes: tuple[SupersedeStatus, ...]     # ascending (old, new): a display order, no winner is chosen
+    counts: Mapping[str, int]                   # per status, 0 included
+    declared_events: int                        # distinct supersede / pending_supersede events in the input
+    retained_events: int                        # of those, how many appear in the output (matched by payload)
+    dropped_events: int                         # declared_events - retained_events
+
+
+class _Analysis(NamedTuple):
+    records: dict
+    links: set
+    canonical: list
+    statuses: tuple
+    declared_payloads: frozenset
+
+
 def _state(events: Iterable[Mapping[str, Any]]):
     """Return records, supersession edges, and canonical input events."""
+    analysis = _analyze(events)
+    return analysis.records, analysis.links, analysis.canonical
+
+
+def _analyze(events: Iterable[Mapping[str, Any]]) -> _Analysis:
+    """The one analysis behind merge_logs, merge_report, active_records and conflicts."""
     records: dict[str, dict] = {}
     aliases: set[str] = set()
     links: set[tuple[str, str]] = set()
@@ -74,6 +121,7 @@ def _state(events: Iterable[Mapping[str, Any]]):
             old, new = event.get('id'), event.get('by')
             if not isinstance(old, str) or not old or not isinstance(new, str) or not new:
                 raise ValueError('supersede events must name non-empty id and by values')
+            event['op'] = 'supersede'   # supersede and pending_supersede are one declaration
             declared_events.setdefault((old, new), set()).add(_dump(event))
         elif op == 'alias':
             aliases.add(_dump(event))
@@ -87,19 +135,29 @@ def _state(events: Iterable[Mapping[str, Any]]):
     # supersede events below.
     supersede_events: set[str] = set()
     pending_events: set[str] = set()
+    status_of: dict[tuple[str, str], tuple[str, str, bool]] = {}
     for (old, new), payloads in declared_events.items():
         if new not in records:
             links.add((old, new))
+            status_of[(old, new)] = ('PENDING', 'REPLACEMENT_NOT_PRESENT', True)
             for payload in payloads:
                 event = json.loads(payload)
                 event['op'] = 'pending_supersede'
                 pending_events.add(_dump(event))
-        elif old in _superseded_ids(records[new].get('supersedes')):
+            continue
+        pointers = _superseded_ids(records[new].get('supersedes'))
+        if old in pointers:
             links.add((old, new))
-            for payload in payloads:
-                event = json.loads(payload)
-                event['op'] = 'supersede'
-                supersede_events.add(_dump(event))
+            status_of[(old, new)] = ('OPERATIVE', 'REPLACEMENT_POINTER_MATCHES', True)
+        else:
+            # The replacement record is here but does not point back: not operative, so no link (nothing is
+            # retired, no cycle or dangling check), but the declaration stays in the log.
+            reason = 'REPLACEMENT_POINTER_ABSENT' if not pointers else 'REPLACEMENT_POINTER_MISMATCH'
+            status_of[(old, new)] = ('NONOPERATIVE', reason, True)
+        for payload in payloads:
+            event = json.loads(payload)
+            event['op'] = 'supersede'
+            supersede_events.add(_dump(event))
 
     # Record pointers are authoritative. Emit only validated operations, and
     # keep links whose replacement has not arrived in a form Memory ignores.
@@ -112,6 +170,7 @@ def _state(events: Iterable[Mapping[str, Any]]):
     }
     for old, new in sorted(operative_links - operative_explicit_links):
         supersede_events.add(_dump({'op': 'supersede', 'id': old, 'by': new}))
+        status_of.setdefault((old, new), ('OPERATIVE', 'RECORD_POINTER_ONLY', False))
 
     # A cycle is invalid even if one of its ids has not arrived in this part
     # of a distributed log yet.
@@ -148,7 +207,37 @@ def _state(events: Iterable[Mapping[str, Any]]):
     ] + [
         json.loads(event) for event in sorted(other)
     ]
-    return records, links, canonical
+    statuses = tuple(
+        SupersedeStatus(old, new, status, reason, declared)
+        for (old, new), (status, reason, declared) in sorted(status_of.items())
+    )
+    declared_payloads = frozenset(p for payloads in declared_events.values() for p in payloads)
+    return _Analysis(records, links, canonical, statuses, declared_payloads)
+
+
+def _merge(left: Any, right: Any) -> _Analysis:
+    return _analyze(_read_events(left) + _read_events(right))
+
+
+def merge_report(left: Any, right: Any) -> MergeReport:
+    """``merge_logs`` plus a typed account of every supersession relation.
+
+    ``events`` is exactly what ``merge_logs(left, right)`` returns (same code path). ``dropped_events`` is
+    measured: each declared supersede event is looked for in the output, matched by its payload with ``op``
+    ignored (merging renames a supersede whose record has not arrived to ``pending_supersede``).
+    """
+    analysis = _merge(left, right)
+    in_output = {
+        _dump({**event, 'op': 'supersede'})
+        for event in analysis.canonical if event.get('op') in ('supersede', 'pending_supersede')
+    }
+    declared = len(analysis.declared_payloads)
+    retained = len(analysis.declared_payloads & in_output)
+    counts = {status: 0 for status in SUPERSEDE_STATUSES}
+    for item in analysis.statuses:
+        counts[item.status] += 1
+    return MergeReport(tuple(analysis.canonical), analysis.statuses, MappingProxyType(counts),
+                       declared, retained, declared - retained)
 
 
 def merge_logs(left: Any, right: Any) -> list[dict]:
@@ -159,10 +248,11 @@ def merge_logs(left: Any, right: Any) -> list[dict]:
     or a supersession cycle, is rejected. Supersede events without their
     replacement record remain pending so staged three-way merges stay
     associative; a present replacement record must point back to the event's
-    target for that relation to retire a record.
+    target for that relation to retire a record. A supersede event whose present
+    replacement record does not point back is kept in the output (``op:
+    "supersede"``) and retires nothing; ``merge_report`` names it.
     """
-    _, _, merged = _state(_read_events(left) + _read_events(right))
-    return merged
+    return _merge(left, right).canonical
 
 
 def merge_files(left: Any, right: Any, output: Any) -> list[dict]:
@@ -254,4 +344,5 @@ def conflicts(events: Any) -> list[Conflict]:
     return out
 
 
-__all__ = ['Conflict', 'active_records', 'conflicts', 'merge_files', 'merge_logs']
+__all__ = ['Conflict', 'MergeReport', 'SUPERSEDE_STATUSES', 'SupersedeStatus', 'active_records', 'conflicts',
+           'merge_files', 'merge_logs', 'merge_report']

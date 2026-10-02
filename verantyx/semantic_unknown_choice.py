@@ -136,10 +136,17 @@ def _prompt_json(value: Any) -> str:
 
 
 class _JSONOptionResolver(Resolver):
-    """Keep pre-serialized closed options intact in Resolver's prompt."""
+    """Keep pre-serialized closed options and the queried word intact in Resolver's prompt.
+
+    The queried word and every option reach this class already serialized by
+    ``_prompt_json``; they are JSON text, not raw words. Escaping them again would
+    double each backslash and show the model a string that is not the serialized
+    data (the data would no longer be handed over verbatim).
+    """
 
     @staticmethod
     def _escape(value: Any) -> str:
+        """Escape a raw (not yet serialized) string such as the context text."""
         out = []
         for char in str(value):
             category = unicodedata.category(char)
@@ -151,13 +158,28 @@ class _JSONOptionResolver(Resolver):
                 out.append(char)
         return "".join(out)
 
+    @staticmethod
+    def _inert_in_json(json_text: Any) -> str:
+        """Make JSON text safe to show between 「」 without changing what it decodes to."""
+        return "".join(
+            f"\\u{ord(char):04x}"
+            if char in "「」" or unicodedata.category(char) in ("Cc", "Cf", "Zl", "Zp") else char
+            for char in str(json_text)
+        )
+
     def _prompt(self, word, context, options, variant):
         head = (
             "次の語は、下の候補のどれに意味が最も近いですか。"
             if variant == 0 else
             "候補の中から、次の語を最も自然に言い換えられるものを1つだけ選んでください。どれも合わなければ null。"
         )
-        shown_word = self._escape(word)
+        # ``word`` is JSON text (see the class docstring). Inside a JSON string,
+        # ``\uXXXX`` stands for the same character, so only the frame quotes and
+        # characters that could break a line or hide (Cc, Cf, Zl, Zp: this also
+        # covers U+0085 and U+007F, which json.dumps leaves raw) are rewritten
+        # that way. Backslashes are left alone so ``json.loads`` returns the
+        # original word.
+        shown_word = self._inert_in_json(word)
         shown_context = self._escape(context)
         # Each option is already JSON-serialized, so escaping it again would
         # turn JSON escapes such as \u000a into literal backslash text.

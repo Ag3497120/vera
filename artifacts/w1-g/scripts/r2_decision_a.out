@@ -1,0 +1,7 @@
+copy exists: /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W1-g/decision_a_copy (using a fresh numbered one)
+24 11
+9 failed, 323 passed, 11 xfailed, 12 xpassed in 1.40s
+11 failed, 321 passed, 11 xfailed, 12 xpassed in 1.42s
+new failures:        2
+FAILED tests/test_verifier_agents.py::test_passing_verdict_without_rerunnable_evidence_is_unverified
+FAILED tests/test_verifier_agents.py::test_unsafe_or_missing_artifact_cannot_complete_task[artifact:missing.json]

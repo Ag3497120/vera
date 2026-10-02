@@ -1,0 +1,9 @@
+       1
+       5
+FAILED tests/attack/test_memory_merge_differential.py::test_canonical_order_and_exact_duplicate_removal
+FAILED tests/attack/test_memory_revalidate_injection.py::test_matching_file_hash_keeps_only_the_grounded_value
+FAILED tests/attack/test_semantic_unknown_choice_paraphrase.py::test_query_delimiters_and_line_breaks_stay_inside_the_json_string
+FAILED tests/attack/test_semantic_unknown_differential.py::test_source_word_counts_toward_projection_budget
+FAILED tests/attack/test_semantic_unknown_fabrication.py::test_budget_below_clause_and_role_work_floor_refuses
+120 failed, 5011 passed, 44 skipped, 82 xfailed, 68 xpassed, 37 subtests passed in 99.99s (0:01:39)
+DONE

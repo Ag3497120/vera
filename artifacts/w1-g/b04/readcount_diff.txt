@@ -1,0 +1,52 @@
+1,3c1,3
+< file_sha256  FRESH                    Memory.ask fresh=True  verdict=ANSWER               records=1 reads=2
+< file_sha256  FRESH                    Memory.ask fresh=False verdict=ANSWER               records=1 reads=1
+< file_sha256  FRESH                    Revalidating.ask       verdict=ANSWER               records=1 reads=2
+---
+> file_sha256  FRESH                    Memory.ask fresh=True  verdict=ANSWER               records=1 reads=1
+> file_sha256  FRESH                    Memory.ask fresh=False verdict=ANSWER               records=1 reads=0
+> file_sha256  FRESH                    Revalidating.ask       verdict=ANSWER               records=1 reads=1
+5c5
+< file_sha256  STALE_CONTENT            Memory.ask fresh=False verdict=ANSWER               records=1 reads=1
+---
+> file_sha256  STALE_CONTENT            Memory.ask fresh=False verdict=ANSWER               records=1 reads=0
+8c8
+< file_sha256  FILE_MISSING             Memory.ask fresh=False verdict=ANSWER               records=1 reads=1
+---
+> file_sha256  FILE_MISSING             Memory.ask fresh=False verdict=ANSWER               records=1 reads=0
+13,15c13,15
+< file_hash    FRESH                    Memory.ask fresh=True  verdict=ANSWER               records=1 reads=2
+< file_hash    FRESH                    Memory.ask fresh=False verdict=ANSWER               records=1 reads=1
+< file_hash    FRESH                    Revalidating.ask       verdict=ANSWER               records=1 reads=1
+---
+> file_hash    FRESH                    Memory.ask fresh=True  verdict=ANSWER               records=1 reads=1
+> file_hash    FRESH                    Memory.ask fresh=False verdict=ANSWER               records=1 reads=0
+> file_hash    FRESH                    Revalidating.ask       verdict=ANSWER               records=1 reads=0
+17,18c17,18
+< file_hash    STALE_CONTENT            Memory.ask fresh=False verdict=ANSWER               records=1 reads=1
+< file_hash    STALE_CONTENT            Revalidating.ask       verdict=ANSWER               records=1 reads=1
+---
+> file_hash    STALE_CONTENT            Memory.ask fresh=False verdict=ANSWER               records=1 reads=0
+> file_hash    STALE_CONTENT            Revalidating.ask       verdict=ANSWER               records=1 reads=0
+20,21c20,21
+< file_hash    FILE_MISSING             Memory.ask fresh=False verdict=ANSWER               records=1 reads=1
+< file_hash    FILE_MISSING             Revalidating.ask       verdict=ANSWER               records=1 reads=1
+---
+> file_hash    FILE_MISSING             Memory.ask fresh=False verdict=ANSWER               records=1 reads=0
+> file_hash    FILE_MISSING             Revalidating.ask       verdict=ANSWER               records=1 reads=0
+25c25
+< text_in_file FRESH                    Memory.ask fresh=True  verdict=ANSWER               records=1 reads=2
+---
+> text_in_file FRESH                    Memory.ask fresh=True  verdict=ANSWER               records=1 reads=1
+37c37
+< text_in_file NEEDLE_NOT_THE_CLAIM     Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=2
+---
+> text_in_file NEEDLE_NOT_THE_CLAIM     Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+40c40
+< git_commit   FRESH                    Memory.ask fresh=True  verdict=ANSWER               records=1 reads=2
+---
+> git_commit   FRESH                    Memory.ask fresh=True  verdict=ANSWER               records=1 reads=1
+46c46
+< git_commit   UNVERIFIABLE_OSERROR     Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=2
+---
+> git_commit   UNVERIFIABLE_OSERROR     Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
