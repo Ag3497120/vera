@@ -6,6 +6,7 @@ The audit also detects applicable opponents and omitted alternative answers.
 from __future__ import annotations
 
 import re
+import unicodedata
 from dataclasses import dataclass
 from decimal import Decimal, Inexact, localcontext
 from fractions import Fraction
@@ -153,6 +154,39 @@ def _role_split(value, roles, name, raw, body, words, positions):
         start = at + 1
 
 
+def _case_order_predicate(clause, raw, body, words, positions, event_index):
+    """Re-read an ambiguous verb after putting its source case frame in canonical order."""
+    roles = {r.name: r for r in clause.roles}
+    agent = roles.get('agent'); recipient = roles.get('recipient')
+    if not agent or not recipient: return None
+    a0, a1 = agent.span.start - body.start, agent.span.end - body.start
+    r0, r1 = recipient.span.start - body.start, recipient.span.end - body.start
+    event_start = positions[event_index]
+    if not (0 <= r0 < r1 <= a0 < a1 <= event_start): return None
+
+    def case_end(end, allowed):
+        following = next((i for i, (word, at) in enumerate(zip(words, positions))
+                          if at == end and word.feature.pos1 == '助詞'), None)
+        if following is None or words[following].surface not in allowed: return None
+        return positions[following] + len(words[following].surface)
+
+    agent_end = case_end(a1, ('は', 'が'))
+    recipient_end = case_end(r1, ('に', 'へ'))
+    if agent_end is None or recipient_end is None or not (r1 <= recipient_end <= a0): return None
+    prefix = raw[:event_start]
+    remainder = ''.join(prefix[left:right] for left, right in (
+        (0, r0), (recipient_end, a0), (agent_end, event_start)))
+    if remainder.strip(): return None
+    normalized = prefix[a0:agent_end] + prefix[r0:recipient_end] + remainder + raw[event_start:]
+
+    from .frames import _predicates
+    from .typed_edges import _tagger
+    reordered = list(_tagger()(normalized)); predicates = _predicates(reordered)
+    surface = words[event_index].surface
+    candidates = [predicate for i, predicate in predicates if reordered[i].surface == surface]
+    return candidates[0] if len(candidates) == 1 and len(predicates) == 1 else None
+
+
 def _literal(role):
     if isinstance(role.term, Quantity):
         m = re.fullmatch(r'([+-]?[0-9]+(?:\.[0-9]+)?)\s*([^0-9\s]+)', role.span.text)
@@ -162,6 +196,13 @@ def _literal(role):
         from .frames import canonical
         return role.term == canonical(role.span.text)
     return role.term == role.span.text
+
+
+def _symbolic_atom(value):
+    """Symbolic records carry atoms, never free-form or compatibility-hidden text."""
+    return (isinstance(value, str) and bool(value)
+            and value == unicodedata.normalize('NFKC', value)
+            and all(char == '_' or char.isalnum() for char in value))
 
 
 def _ranges(raw):
@@ -299,6 +340,8 @@ def license_clause(clause, view, ranges=None):
         if clause.span.start != 0 or clause.span.end != len(view.sources[clause.span.source]):
             raise Rejected('symbolic full-source scope')
         actor = roles.get('actor'); amount = roles.get('amount')
+        if not _symbolic_atom(clause.predicate) or not _symbolic_atom(actor):
+            raise Rejected('instruction assertion: non-atomic symbolic value')
         expected = f'{clause.predicate}({actor})'
         expected += '=' + str(amount.amount) + amount.unit if isinstance(amount, Quantity) else ''
         expected += ' is false.' if clause.polarity == '-' else '.'
@@ -319,6 +362,9 @@ def license_clause(clause, view, ranges=None):
             raise Rejected('unsupported symbolic guard grammar')
         if guards:
             g = guards[0]
+            if (not _symbolic_atom(g.predicate)
+                    or any(not _symbolic_atom(value) for _, value in g.roles)):
+                raise Rejected('instruction assertion: non-atomic symbolic guard')
             if len(g.roles) != 1 or g.roles[0][0] != 'actor' or g.polarity != '+' or g.modality != 'assert' or g.time or g.event:
                 raise Rejected('symbolic guard shape')
             word = 'When ' if clause.conditions else 'Unless '
@@ -368,10 +414,13 @@ def license_clause(clause, view, ranges=None):
             if sentence != len(all_frames): raise Rejected('coordinated clause omitted or duplicated')
         elif len(all_frames) != 1: raise Rejected('unsupported multiple-event scope')
         matching = [i for i, f in enumerate(all_frames) if i < len(predicates)
-                    and f.predicate == clause.predicate
                     and body.start + positions[predicates[i][0]] == clause.predicate_span.start]
         if len(matching) != 1: raise Rejected("event predicate licensing")
-        index = matching[0]; facts = [all_frames[index]]
+        index = matching[0]
+        if all_frames[index].predicate != clause.predicate and _case_order_predicate(
+                clause, raw, body, words, positions, predicates[index][0]) != clause.predicate:
+            raise Rejected("event predicate licensing")
+        facts = [all_frames[index]]
         ev = predicates[index][0]
         c_first, c_last = chunk(tagged, pidx, index) if multi else (0, ev)
         lo = tagged[c_first][4] if multi and c_first < len(tagged) else 0
@@ -509,6 +558,43 @@ def _license_guard(pattern, span):
     return bool(m and pattern.predicate == m[1] and pattern.roles == (('actor', m[2]),) and pattern.polarity == '+')
 
 
+def _repair_prefix(clause):
+    """A repair begins with a standalone interjection and comma, before its case frame."""
+    from .typed_edges import _tagger
+    raw = (clause.body_span or clause.span).text
+    words = list(_tagger()(raw)); positions = []; cursor = 0
+    for word in words:
+        at = raw.find(word.surface, cursor); positions.append(at); cursor = at + len(word.surface)
+    tokens = [(word, at) for word, at in zip(words, positions) if not word.surface.isspace()]
+    if len(tokens) < 2: return False
+    first, second = tokens[:2]
+    if (first[0].feature.pos1 != '感動詞' or second[0].surface not in ('、', ',')
+            or raw[:first[1]].strip() or raw[first[1] + len(first[0].surface):second[1]].strip()):
+        return False
+    return True
+
+
+def _repair_replaces(prior, later, ranges):
+    """License a one-slot case-frame repair over adjacent source sentences."""
+    if (prior.rule != 'frame' or later.rule != 'frame'
+            or prior.span.source != later.span.source
+            or prior.sovereign != later.sovereign or prior.family != later.family
+            or prior.predicate != later.predicate
+            or (prior.polarity, prior.modality, prior.time) != (later.polarity, later.modality, later.time)
+            or prior.conditions or prior.exceptions or later.conditions or later.exceptions
+            or not _repair_prefix(later)):
+        return False
+    sentences = sorted(ranges)
+    try: following = sentences[sentences.index((prior.span.start, prior.span.end)) + 1]
+    except (ValueError, IndexError): return False
+    if following != (later.span.start, later.span.end): return False
+    old = {role.name: role.term for role in prior.roles}
+    new = {role.name: role.term for role in later.roles}
+    if old.keys() != new.keys(): return False
+    changed = [name for name in old if old[name] != new[name]]
+    return len(changed) == 1 and changed[0] in ('agent', 'patient', 'recipient')
+
+
 @dataclass
 class State:
     env: dict
@@ -528,6 +614,8 @@ class Checker:
         self.plan = None; self.predicates = set()
         self.effective = {}
         self.ranges = {}
+        self.superseded_ids = {}
+        self.sentence_clauses = {}
         self.fixed_request = None; self.fixed_plan = None; self.operators = None
 
     def _shape(self, request, plan):
@@ -555,8 +643,33 @@ class Checker:
                 self.ranges[source] = _ranges(self.view.sources[source])
             license_clause(clause, self.view, self.ranges.get(source)); self.licensed.add(clause.id)
 
+    def _superseded(self, clause):
+        if clause.id in self.superseded_ids: return self.superseded_ids[clause.id]
+        if clause.rule != 'frame':
+            self.superseded_ids[clause.id] = False; return False
+        source = clause.span.source; ranges = self.ranges.get(source)
+        if ranges is None:
+            self.meter.spend(len(self.view.sources[source]))
+            ranges = self.ranges[source] = _ranges(self.view.sources[source])
+        sentences = sorted(ranges)
+        try: following = sentences[sentences.index((clause.span.start, clause.span.end)) + 1]
+        except (ValueError, IndexError):
+            self.superseded_ids[clause.id] = False; return False
+        candidates = self.sentence_clauses.get((source, *following), ())
+        for later in candidates:
+            self.meter.spend()
+            if (later.rule != 'frame' or later.sovereign != clause.sovereign
+                    or later.family != clause.family or later.predicate != clause.predicate):
+                continue
+            self._source(later)
+            if _repair_replaces(clause, later, ranges):
+                self.superseded_ids[clause.id] = True; return True
+        self.superseded_ids[clause.id] = False
+        return False
+
     def _setup(self, plan):
-        self.index = {}; self.predicates = set(); self.effective = {}; self.plan = plan
+        self.index = {}; self.predicates = set(); self.effective = {}; self.superseded_ids = {}
+        self.sentence_clauses = {}; self.plan = plan
         todo = [n.pattern.predicate for n in plan.nodes if n.pattern]; seen = set(); selected = {}
         while todo:
             self.meter.spend(); pred = todo.pop()
@@ -571,6 +684,8 @@ class Checker:
                 self.meter.spend(len(c.conditions) + len(c.exceptions))
                 todo.extend(p.predicate for p in (*c.conditions, *c.exceptions))
         self.clauses = list(selected.values())
+        for c in self.clauses:
+            self.sentence_clauses.setdefault((c.span.source, c.span.start, c.span.end), []).append(c)
         if len({c.family for c in self.clauses}) > 1: raise Rejected('family splice')
         for c in self.clauses:
             self.meter.spend(); self.index.setdefault((c.predicate, c.polarity, c.modality), []).append(c)
@@ -607,6 +722,8 @@ class Checker:
         self._source(c)
         key = (c.id, tuple(sorted(env.items())), frozenset(trail))
         if key in self.effective: return self.effective[key]
+        if self._superseded(c):
+            self.effective[key] = False; return False
         for guard in c.conditions:
             if not self._guard(guard, env, trail=(*trail, c.id)):
                 self.effective[key] = False; return False
@@ -633,6 +750,7 @@ class Checker:
                     self.meter.spend(); env = _match(op.pattern, c)
                     if env is None or c.unsupported: continue
                     self._source(c)
+                    if self._superseded(c): continue
                     opposite = Pattern(op.pattern.predicate, op.pattern.roles,
                                        '-' if c.polarity == '+' else '+', op.pattern.modality, op.pattern.time, op.pattern.event)
                     if op.pattern.modality == 'normative':
@@ -670,7 +788,7 @@ class Checker:
             self.meter.states(len({tuple(sorted(a.env.items())) for a in unique.values()})); tables[op.id] = list(unique.values())
         return {s.answer for s in tables[plan.root]}
 
-    def proof(self, request: Request, plan: Plan, proof: Proof):
+    def proof(self, request: Request, plan: Plan, proof: Proof, allow_superseded=False):
         operators = self._shape(request, plan)
         if self.plan != plan: self._setup(plan)
         if proof.sovereign != self.sovereign: raise Rejected('proof sovereign')
@@ -711,6 +829,7 @@ class Checker:
                     if len(parents) != 1 or parents[0].source is None: raise Rejected('Bind source')
                     c = parents[0].source; env = _match(op.pattern, c)
                     if env is None: raise Rejected('Bind roles/polarity/time')
+                    if self._superseded(c) and not allow_superseded: raise Rejected('superseded source claim')
                     if op.relation in ('whether','whether-negative'): env[op.target.name] = c.modality == 'permission' if op.pattern.modality == 'normative' else c.polarity == ('-' if op.relation == 'whether-negative' else '+')
                     state = State(env, set(op.obligations), {c.id}, {c.id} if c.conditions else set(), {c.id} if c.exceptions else set())
                 elif op.op == 'Join':
@@ -753,14 +872,17 @@ class Checker:
     def gate(self, request, plan, proposals):
         self._shape(request, plan)
         expected = self.audit(plan)
-        if {a for a, _ in proposals} != expected: raise Rejected('producer omitted/invented alternative answers')
         checked = {}
         for answer, proof in proposals:
             self.meter.spend()
-            replayed = self.proof(request, plan, proof)
+            replayed = self.proof(request, plan, proof, allow_superseded=True)
             if replayed != answer: raise Rejected('claimed answer/proof mismatch')
+            sources = {node.clause.id for node in proof.nodes if node.op == 'Source'}
+            if sources and all(self._superseded(self.view.by_id[ident]) for ident in sources): continue
+            if answer not in expected: raise Rejected('producer omitted/invented alternative answers')
             # Validate every submitted proof; duplicates may share only the
             # final rendering, never a cached acceptance of unchecked content.
             checked.setdefault(answer, (replayed, proof))
+        if set(checked) != expected: raise Rejected('producer omitted/invented alternative answers')
         if not checked: return {}
         return checked
