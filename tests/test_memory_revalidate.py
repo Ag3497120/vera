@@ -100,6 +100,22 @@ def test_deleted_text_witness_is_stale(tmp_path):
     assert record['id'] not in result['records']
 
 
+@pytest.mark.parametrize('needle', ['', ' \t\n'])
+def test_blank_text_witness_is_stale_and_cannot_support_answer(tmp_path, needle):
+    source = tmp_path / 'source.txt'
+    source.write_text('any readable file matches a blank needle')
+    memory = new_memory(tmp_path)
+    record = write_fact(memory, {'kind': 'text_in_file', 'path': str(source), 'needle': needle},
+                        value='999件')
+
+    result = answer_about(RevalidatingMemory(memory, cache_ttl=0))
+
+    assert result['witness_status'][record['id']] == 'STALE'
+    assert record['id'] in result['stale']
+    assert record['id'] not in result['records']
+    assert result['verdict'] != 'ANSWER'
+
+
 def test_missing_git_commit_is_stale(tmp_path):
     calls = []
 

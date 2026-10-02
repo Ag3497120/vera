@@ -58,7 +58,10 @@ class RevalidatingMemory:
                 digest = hashlib.sha256(Path(witness['path']).expanduser().read_bytes()).hexdigest()
                 return 'FRESH' if digest == witness.get('sha256') else 'STALE'
             if kind == 'text_in_file':
-                return ('FRESH' if witness['needle'] in
+                needle = witness.get('needle')
+                if not isinstance(needle, str) or not needle.strip():
+                    return 'STALE'
+                return ('FRESH' if needle in
                         Path(witness['path']).expanduser().read_text() else 'STALE')
             if kind == 'git_commit':
                 result = self.runner(
