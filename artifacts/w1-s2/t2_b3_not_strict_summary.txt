@@ -1,0 +1,4 @@
+n=59
+per_rule={"must_express": 31, "must_not_relate": 9, "must_relate": 8, "new_content_words": 34, "order": 1}
+per_combo={"must_express": 14, "must_express + must_not_relate": 2, "must_express + new_content_words": 14, "must_express + new_content_words + order": 1, "must_not_relate": 1, "must_not_relate + must_relate": 6, "must_relate": 2, "new_content_words": 19}
+class_approx={"correct": 59}

@@ -336,8 +336,15 @@ def _validate_b5(raw: dict, errs: list[str], frames_dir: Path | None) -> dict | 
     return {"frame_id": fid, "question": q, "options": opts, "frame_path": frame_path}
 
 
-def validate_item(bank: str, raw: dict, frames_dir: Path | None = None) -> tuple[list[str], dict | None]:
-    """1 問を検査して (誤りの型の一覧, 正規化した入力) を返す。誤りが空なら採点できる。"""
+PROFILES = ("w1s", "v2")
+
+
+def validate_item(bank: str, raw: dict, frames_dir: Path | None = None,
+                  profile: str = "w1s") -> tuple[list[str], dict | None]:
+    """1 問を検査して (誤りの型の一覧, 正規化した入力) を返す。誤りが空なら採点できる。
+
+    profile="w1s"（既定）は W1-s の自作見本の形式、"v2" は v2 バンクの実際の形式（docs/BANK_SCORE.md §12）。
+    """
     errs: list[str] = []
     for k in COMMON_REQUIRED:
         if k not in raw:
@@ -355,6 +362,10 @@ def validate_item(bank: str, raw: dict, frames_dir: Path | None = None) -> tuple
         errs.append("BAD_TYPE:expect")
     if errs_has(errs, "expect"):
         return errs, None
+    if profile == "v2":
+        from .v2 import validate as v2_validate
+        c = v2_validate(bank, raw, errs, frames_dir)
+        return errs, (c if not errs else None)
     case = {"B1": _validate_b1, "B2": _validate_b2, "B3": _validate_b3}.get(bank)
     if case is not None:
         c = case(raw, errs)
@@ -390,11 +401,14 @@ class InputError(Exception):
     """入力ファイル自体の誤り（終了コード 2）。"""
 
 
-def read_items(path: str, bank: str, frames_dir: Path | None) -> list[dict]:
+def read_items(path: str, bank: str, frames_dir: Path | None, profile: str = "w1s") -> list[dict]:
     """items.jsonl を読み、非空の行ごとに 1 レコードを返す（不正も含む。黙って飛ばさない）。
 
     レコード: line, id, raw, errors（空なら有効）, case（正規化した入力）。
+    profile は validate_item と同じ（既定 w1s）。
     """
+    if profile not in PROFILES:
+        raise InputError(f"profile は {list(PROFILES)} のどれか（指定: {profile!r}）")
     p = Path(path)
     if not p.is_file():
         raise InputError(f"items ファイルが無い: {path}")
@@ -412,7 +426,7 @@ def read_items(path: str, bank: str, frames_dir: Path | None) -> list[dict]:
             if not isinstance(raw, dict):
                 recs.append({"line": ln, "id": rid, "raw": None, "errors": ["BAD_JSON:NOT_OBJECT"], "case": None})
                 continue
-            errs, case = validate_item(bank, raw, frames_dir)
+            errs, case = validate_item(bank, raw, frames_dir, profile)
             if is_str(raw.get("id")) and raw["id"].strip():
                 rid = raw["id"]
             recs.append({"line": ln, "id": rid, "raw": raw, "errors": errs, "case": case})
@@ -427,9 +441,18 @@ def read_items(path: str, bank: str, frames_dir: Path | None) -> list[dict]:
     return recs
 
 
-def load_quarantine(path: str | None) -> list[str]:
+def load_quarantine_info(path: str | None) -> dict:
+    """隔離リストを読む。受ける形は 3 つ（docs/BANK_SCORE.md §12）。
+
+    - `["id", ...]`（id の配列）: shape "list"
+    - `{"quarantined": [{"id": ...}, ...]}`（または要素が id の文字列）: shape "quarantined"（B1・B2・B5 の実際の形）
+    - `{"ids": ["id", ...]}`（`n_quarantined` があれば件数が一致すること）: shape "ids"（B3 の実際の形）
+    両方の鍵があって食い違う、id が文字列でない、重複する id、どの形でもない → InputError。
+    理由の文は返さない（問題文や probe がそのまま入っているので、出力に写さない）。
+    戻り値: {"ids": [...], "shape": ..., "n_declared": 件数の申告 or None}。
+    """
     if path is None:
-        return []
+        return {"ids": [], "shape": None, "n_declared": None}
     p = Path(path)
     if not p.is_file():
         raise InputError(f"quarantine ファイルが無い: {path}")
@@ -437,6 +460,48 @@ def load_quarantine(path: str | None) -> list[str]:
         data = json.loads(p.read_text(encoding="utf-8"))
     except json.JSONDecodeError as e:
         raise InputError(f"quarantine が JSON でない: {e}")
-    if not is_str_list(data):
-        raise InputError("quarantine は文字列（id）の配列でなければならない")
-    return data
+
+    def dedupe_check(ids: list[str]) -> list[str]:
+        if len(set(ids)) != len(ids):
+            raise InputError("quarantine に重複した id がある")
+        return ids
+
+    if isinstance(data, list):
+        if not is_str_list(data):
+            raise InputError("quarantine は文字列（id）の配列でなければならない")
+        return {"ids": dedupe_check(list(data)), "shape": "list", "n_declared": None}
+    if not isinstance(data, dict):
+        raise InputError("quarantine は id の配列か、quarantined / ids を持つ辞書でなければならない")
+    ids_q = ids_i = None
+    if "quarantined" in data:
+        q = data["quarantined"]
+        if not isinstance(q, list):
+            raise InputError("quarantine.quarantined は配列でなければならない")
+        ids_q = []
+        for e in q:
+            if isinstance(e, str):
+                ids_q.append(e)
+            elif isinstance(e, dict) and is_str(e.get("id")):
+                ids_q.append(e["id"])
+            else:
+                raise InputError("quarantine.quarantined の要素は id の文字列か、文字列の id を持つ辞書でなければならない")
+    if "ids" in data:
+        if not is_str_list(data["ids"]):
+            raise InputError("quarantine.ids は文字列（id）の配列でなければならない")
+        ids_i = list(data["ids"])
+    if ids_q is None and ids_i is None:
+        raise InputError("quarantine の辞書に quarantined も ids も無い")
+    if ids_q is not None and ids_i is not None and sorted(ids_q) != sorted(ids_i):
+        raise InputError("quarantine の quarantined と ids が食い違う")
+    ids = dedupe_check(ids_q if ids_q is not None else ids_i)  # type: ignore[arg-type]
+    shape = "quarantined" if ids_q is not None else "ids"
+    n_decl = data.get("n_quarantined")
+    if n_decl is not None:
+        if not is_int(n_decl) or n_decl != len(ids):
+            raise InputError("quarantine.n_quarantined が id の件数と一致しない")
+    return {"ids": ids, "shape": shape, "n_declared": n_decl}
+
+
+def load_quarantine(path: str | None) -> list[str]:
+    """隔離する id の配列（形は load_quarantine_info が判別する）。"""
+    return load_quarantine_info(path)["ids"]

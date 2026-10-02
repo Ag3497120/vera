@@ -1,0 +1,30 @@
+{
+ "args": {
+  "frames": null,
+  "items": "/Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B1_reading/v2/items.jsonl",
+  "observations": null,
+  "quarantine": "/Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B1_reading/v2/audit/quarantine.json"
+ },
+ "bank": "B1",
+ "frames_sha256": null,
+ "fugashi": "1.5.2",
+ "items_sha256": "27b93b74dfdcc0fa7090ede8f2edb2893d41cf2c31f9a5d26633647ecc8ac28a",
+ "items_without_observation": 0,
+ "mode": "judge",
+ "n_rows": 296,
+ "note": "Vera も子プロセスも起動していない。観測は probe（参考例・別解・誤答例）か --observations から作った",
+ "probe": "reference",
+ "profile": "v2",
+ "quarantine": {
+  "count": 4,
+  "ids": [
+   "u05_comparison-18",
+   "u09_ellipsis-19",
+   "u11_sequence-04",
+   "u12_polysemy_long-05"
+  ],
+  "not_in_items": [],
+  "shape": "quarantined"
+ },
+ "quarantine_sha256": "487823f51342da1cda62c2a14580f23cfa87a33fa0050402cf0c995dc45c79d5"
+}

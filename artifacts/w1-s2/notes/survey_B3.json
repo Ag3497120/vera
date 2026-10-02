@@ -1,0 +1,487 @@
+{
+ "bad_json_lines": 0,
+ "closed_values": {
+  "difficulty": {
+   "1": 44,
+   "2": 60,
+   "3": 46
+  },
+  "expect.behavior": {
+   "\"generate\"": 119,
+   "\"refuse\"": 31
+  },
+  "expect.constraints.form.alternate": {
+   "true": 1
+  },
+  "expect.constraints.form.script": {
+   "\"hiragana\"": 1
+  },
+  "expect.constraints.form.type": {
+   "\"bullet_list\"": 1,
+   "\"dialogue\"": 1,
+   "\"email\"": 1,
+   "\"haiku\"": 1,
+   "\"labeled_memo\"": 1,
+   "\"letter\"": 2,
+   "\"lines\"": 2,
+   "\"numbered_list\"": 5,
+   "\"table\"": 2
+  },
+  "expect.constraints.language": {
+   "\"en\"": 32,
+   "\"ja\"": 87
+  },
+  "expect.constraints.must_express[].polarity": {
+   "\"+\"": 46,
+   "\"-\"": 2
+  },
+  "expect.constraints.must_not_equal": {
+   "true": 119
+  },
+  "expect.constraints.must_not_relate[].rel": {
+   "\"cause\"": 6,
+   "\"greater\"": 7
+  },
+  "expect.constraints.must_relate[].rel": {
+   "\"before\"": 2,
+   "\"cause\"": 7,
+   "\"contrast\"": 2,
+   "\"greater\"": 2
+  },
+  "expect.constraints.new_content_words.allowed": {
+   "false": 5,
+   "true": 114
+  },
+  "expect.constraints.register": {
+   "\"polite\"": 1,
+   "null": 118
+  },
+  "expect.outside": {
+   "\"constructed_only\"": 16,
+   "\"derivable\"": 16,
+   "\"nothing\"": 16,
+   "null": 102
+  },
+  "expect.state": {
+   "\"answer\"": 81,
+   "\"constructed\"": 16,
+   "\"created\"": 19,
+   "\"refuse\"": 31
+  },
+  "expect.state[]": {
+   "\"answer\"": 3,
+   "\"created\"": 3
+  },
+  "lang": {
+   "\"en\"": 40,
+   "\"ja\"": 110
+  }
+ },
+ "must_not_shapes": {},
+ "n_items": 150,
+ "paths": {
+  "anti_surface": {
+   "list": 150
+  },
+  "anti_surface[]": {
+   "str": 621
+  },
+  "brief": {
+   "str": 150
+  },
+  "category": {
+   "str": 150
+  },
+  "difficulty": {
+   "int": 150
+  },
+  "domain": {
+   "str": 150
+  },
+  "expect": {
+   "dict": 150
+  },
+  "expect.behavior": {
+   "str": 150
+  },
+  "expect.constraints": {
+   "dict": 150
+  },
+  "expect.constraints.compression": {
+   "dict": 7,
+   "null": 112
+  },
+  "expect.constraints.compression.max_ratio": {
+   "float": 7
+  },
+  "expect.constraints.form": {
+   "dict": 16,
+   "null": 103
+  },
+  "expect.constraints.form.alternate": {
+   "bool": 1
+  },
+  "expect.constraints.form.body_sentences": {
+   "dict": 3
+  },
+  "expect.constraints.form.body_sentences.max": {
+   "int": 3
+  },
+  "expect.constraints.form.body_sentences.min": {
+   "int": 3
+  },
+  "expect.constraints.form.cells": {
+   "dict": 2
+  },
+  "expect.constraints.form.cells.<row>": {
+   "dict": 6
+  },
+  "expect.constraints.form.cells.<row>.<col>": {
+   "list": 12
+  },
+  "expect.constraints.form.cells_note": {
+   "str": 2
+  },
+  "expect.constraints.form.columns": {
+   "list": 2
+  },
+  "expect.constraints.form.columns[]": {
+   "str": 6
+  },
+  "expect.constraints.form.items": {
+   "int": 5
+  },
+  "expect.constraints.form.labels": {
+   "list": 1
+  },
+  "expect.constraints.form.labels[]": {
+   "str": 3
+  },
+  "expect.constraints.form.mora": {
+   "list": 1
+  },
+  "expect.constraints.form.mora[]": {
+   "int": 3
+  },
+  "expect.constraints.form.n": {
+   "int": 2
+  },
+  "expect.constraints.form.parts": {
+   "list": 3
+  },
+  "expect.constraints.form.parts[]": {
+   "str": 8
+  },
+  "expect.constraints.form.rows": {
+   "int": 2
+  },
+  "expect.constraints.form.script": {
+   "str": 1
+  },
+  "expect.constraints.form.speakers": {
+   "list": 1
+  },
+  "expect.constraints.form.speakers[]": {
+   "str": 2
+  },
+  "expect.constraints.form.starts": {
+   "list": 1
+  },
+  "expect.constraints.form.starts[]": {
+   "str": 4
+  },
+  "expect.constraints.form.subject_max_chars": {
+   "int": 1
+  },
+  "expect.constraints.form.turns": {
+   "int": 1
+  },
+  "expect.constraints.form.type": {
+   "str": 16
+  },
+  "expect.constraints.language": {
+   "str": 119
+  },
+  "expect.constraints.max_chars": {
+   "int": 38,
+   "null": 81
+  },
+  "expect.constraints.min_edit_ratio": {
+   "float": 50,
+   "null": 69
+  },
+  "expect.constraints.must_contain_all": {
+   "list": 119
+  },
+  "expect.constraints.must_contain_all[]": {
+   "str": 103
+  },
+  "expect.constraints.must_contain_any": {
+   "list": 119
+  },
+  "expect.constraints.must_contain_any[]": {
+   "list": 158
+  },
+  "expect.constraints.must_contain_any[][]": {
+   "str": 336
+  },
+  "expect.constraints.must_express": {
+   "list": 119
+  },
+  "expect.constraints.must_express[]": {
+   "dict": 48
+  },
+  "expect.constraints.must_express[].agent": {
+   "list": 36
+  },
+  "expect.constraints.must_express[].agent[]": {
+   "str": 44
+  },
+  "expect.constraints.must_express[].goal": {
+   "list": 2
+  },
+  "expect.constraints.must_express[].goal[]": {
+   "str": 2
+  },
+  "expect.constraints.must_express[].in_sentence": {
+   "int": 3,
+   "str": 3
+  },
+  "expect.constraints.must_express[].location": {
+   "list": 3
+  },
+  "expect.constraints.must_express[].location[]": {
+   "str": 3
+  },
+  "expect.constraints.must_express[].patient": {
+   "list": 29,
+   "null": 4
+  },
+  "expect.constraints.must_express[].patient[]": {
+   "str": 31
+  },
+  "expect.constraints.must_express[].polarity": {
+   "str": 48
+  },
+  "expect.constraints.must_express[].predicate": {
+   "list": 48
+  },
+  "expect.constraints.must_express[].predicate[]": {
+   "str": 60
+  },
+  "expect.constraints.must_express[].quant": {
+   "list": 6
+  },
+  "expect.constraints.must_express[].quant[]": {
+   "str": 9
+  },
+  "expect.constraints.must_express[].recipient": {
+   "list": 4
+  },
+  "expect.constraints.must_express[].recipient[]": {
+   "str": 4
+  },
+  "expect.constraints.must_express[].time": {
+   "list": 3
+  },
+  "expect.constraints.must_express[].time[]": {
+   "str": 4
+  },
+  "expect.constraints.must_not_contain": {
+   "list": 119
+  },
+  "expect.constraints.must_not_contain[]": {
+   "str": 250
+  },
+  "expect.constraints.must_not_equal": {
+   "bool": 119
+  },
+  "expect.constraints.must_not_relate": {
+   "list": 119
+  },
+  "expect.constraints.must_not_relate[]": {
+   "dict": 13
+  },
+  "expect.constraints.must_not_relate[].a": {
+   "list": 7
+  },
+  "expect.constraints.must_not_relate[].a[]": {
+   "str": 7
+  },
+  "expect.constraints.must_not_relate[].b": {
+   "list": 7
+  },
+  "expect.constraints.must_not_relate[].b[]": {
+   "str": 7
+  },
+  "expect.constraints.must_not_relate[].dim": {
+   "list": 7
+  },
+  "expect.constraints.must_not_relate[].dim[]": {
+   "str": 19
+  },
+  "expect.constraints.must_not_relate[].from": {
+   "list": 6
+  },
+  "expect.constraints.must_not_relate[].from[]": {
+   "str": 12
+  },
+  "expect.constraints.must_not_relate[].rel": {
+   "str": 13
+  },
+  "expect.constraints.must_not_relate[].to": {
+   "list": 6
+  },
+  "expect.constraints.must_not_relate[].to[]": {
+   "str": 11
+  },
+  "expect.constraints.must_relate": {
+   "list": 119
+  },
+  "expect.constraints.must_relate[]": {
+   "dict": 13
+  },
+  "expect.constraints.must_relate[].a": {
+   "list": 2
+  },
+  "expect.constraints.must_relate[].a[]": {
+   "str": 2
+  },
+  "expect.constraints.must_relate[].b": {
+   "list": 2
+  },
+  "expect.constraints.must_relate[].b[]": {
+   "str": 2
+  },
+  "expect.constraints.must_relate[].dim": {
+   "list": 2
+  },
+  "expect.constraints.must_relate[].dim[]": {
+   "str": 3
+  },
+  "expect.constraints.must_relate[].from": {
+   "list": 11
+  },
+  "expect.constraints.must_relate[].from[]": {
+   "str": 25
+  },
+  "expect.constraints.must_relate[].rel": {
+   "str": 13
+  },
+  "expect.constraints.must_relate[].to": {
+   "list": 11
+  },
+  "expect.constraints.must_relate[].to[]": {
+   "str": 19
+  },
+  "expect.constraints.new_content_words": {
+   "dict": 119
+  },
+  "expect.constraints.new_content_words.allowed": {
+   "bool": 119
+  },
+  "expect.constraints.new_content_words.min": {
+   "int": 114
+  },
+  "expect.constraints.order": {
+   "list": 119
+  },
+  "expect.constraints.order[]": {
+   "list": 42
+  },
+  "expect.constraints.order[][]": {
+   "str": 67
+  },
+  "expect.constraints.refusal_text_must_not_contain": {
+   "list": 31
+  },
+  "expect.constraints.refusal_text_must_not_contain[]": {
+   "str": 124
+  },
+  "expect.constraints.register": {
+   "null": 118,
+   "str": 1
+  },
+  "expect.constraints.sentences": {
+   "dict": 83,
+   "null": 36
+  },
+  "expect.constraints.sentences.max": {
+   "int": 83
+  },
+  "expect.constraints.sentences.min": {
+   "int": 83
+  },
+  "expect.constraints.starts_with": {
+   "list": 3,
+   "null": 116
+  },
+  "expect.constraints.starts_with[]": {
+   "str": 3
+  },
+  "expect.outside": {
+   "null": 102,
+   "str": 48
+  },
+  "expect.provenance": {
+   "str": 150
+  },
+  "expect.reference": {
+   "str": 150
+  },
+  "expect.refusal_basis": {
+   "null": 119,
+   "str": 31
+  },
+  "expect.state": {
+   "list": 3,
+   "str": 147
+  },
+  "expect.state[]": {
+   "str": 6
+  },
+  "id": {
+   "str": 150
+  },
+  "lang": {
+   "str": 150
+  },
+  "materials": {
+   "list": 150
+  },
+  "materials[]": {
+   "str": 454
+  },
+  "needs": {
+   "str": 150
+  },
+  "phenomenon": {
+   "str": 150
+  },
+  "rationale": {
+   "str": 150
+  },
+  "skeleton": {
+   "str": 150
+  },
+  "unit": {
+   "str": 150
+  }
+ },
+ "quarantine": {
+  "ids_entry_types": {
+   "str": 13
+  },
+  "ids_n": 13,
+  "keys": {
+   "bank": "str",
+   "fix_suggestions": "dict",
+   "ids": "list",
+   "n_items": "int",
+   "n_quarantined": "int",
+   "reasons": "dict",
+   "review": "str"
+  },
+  "shape": "dict"
+ }
+}

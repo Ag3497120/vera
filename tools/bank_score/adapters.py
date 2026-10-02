@@ -73,7 +73,7 @@ def build_call(bank: str, entry: str, case: dict) -> dict:
     return {"argv": argv, "files": [{"filename": d["filename"], "text": d["text"]} for d in case["docs"]]}
 
 
-def _state(raw: dict) -> str:
+def _state(raw: dict, profile: str = "w1s", bank: str | None = None) -> str:
     verdict, kind, status = raw.get("verdict"), raw.get("kind"), raw.get("status")
     if status == "PARTIAL_COMPLETENESS_UNVERIFIED" or verdict == "PARTIAL":
         return "answer"
@@ -84,15 +84,43 @@ def _state(raw: dict) -> str:
     if (isinstance(kind, str) and kind in REFUSAL_KINDS) or (
             isinstance(verdict, str) and verdict.startswith(REFUSAL_PREFIXES)):
         return "abstain"
+    if profile == "v2" and bank == "B3" and raw.get("constructed") is True:
+        # v2 の B3: 閉包外の構成物（constructed: true）で、verdict が回答でも棄権でもない型（EXPLAINED_BY_UNITS など）は
+        # 構成した答えとして扱う（型の区別は b3_state が観測の型から行う。D9）
+        return "answer"
     return "unmapped"
 
 
-def observe(bank: str, raw: dict, entry: str, argv: list[str], exit_code: int, raw_item: dict | None = None) -> dict:
+def evidence_texts(raw: dict) -> list[str]:
+    """Vera の結果から根拠の文字列を集める（v2 の B2 の根拠照合用）。形が読めないものは集めない。"""
+    out: list[str] = []
+
+    def take(x: object) -> None:
+        if isinstance(x, str):
+            out.append(x)
+        elif isinstance(x, dict):
+            if isinstance(x.get("text"), str):
+                out.append(x["text"])
+        elif isinstance(x, list):
+            for e in x:
+                take(e)
+    take(raw.get("evidence"))
+    take(raw.get("sources"))
+    return out
+
+
+def observe(bank: str, raw: dict, entry: str, argv: list[str], exit_code: int, raw_item: dict | None = None,
+            profile: str = "w1s") -> dict:
     """Vera の型つき結果 → 観測。状態は型（kind / verdict / status）だけから決める。本文の文言は見ない。"""
-    state = _state(raw)
+    state = _state(raw, profile, bank)
     verdict = raw.get("verdict") if isinstance(raw.get("verdict"), str) else None
     label_override = False
-    if (bank == "B2" and raw_item is not None and verdict == "NOT_IN_DOCS"
+    if profile == "v2":
+        if (bank == "B2" and raw_item is not None and verdict == "NOT_IN_DOCS"
+                and raw_item.get("category") == "sentence_check" and raw_item["expect"].get("behavior") != "abstain"):
+            state = "answer"  # 文のチェック問題では NOT_IN_DOCS は棄権でなく「未記載」というラベルの回答
+            label_override = True
+    elif (bank == "B2" and raw_item is not None and verdict == "NOT_IN_DOCS"
             and str(raw_item["expect"].get("reference", "")).strip().upper() in ("SUPPORTED", "REFUTED", "NOT_IN_DOCS")
             and raw_item["expect"].get("behavior") != "abstain"):
         # 文のチェック問題では NOT_IN_DOCS は棄権でなく「未記載」というラベルの回答（one.py は棄権側の接頭辞に入れている）
@@ -100,7 +128,7 @@ def observe(bank: str, raw: dict, entry: str, argv: list[str], exit_code: int, r
         label_override = True
     text = raw.get("text") if isinstance(raw.get("text"), str) else ""
     created = raw.get("created") is True or raw.get("kind") == "created" or verdict == "CREATED"
-    return {
+    obs = {
         "state": state,
         "status": raw.get("status"),
         "verdict": verdict,
@@ -116,3 +144,7 @@ def observe(bank: str, raw: dict, entry: str, argv: list[str], exit_code: int, r
         "entry": entry,
         "argv": argv,
     }
+    if profile == "v2":
+        obs["constructed"] = raw.get("constructed") is True
+        obs["evidence_texts"] = evidence_texts(raw)
+    return obs

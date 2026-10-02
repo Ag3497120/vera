@@ -37,8 +37,8 @@ def _blank(state: str, **kw: object) -> dict:
     return o
 
 
-def observe_strategy(bank: str, strategy: str, case: dict) -> dict:
-    """戦略の観測を作る。構成物の申告も根拠も付けない。"""
+def observe_strategy(bank: str, strategy: str, case: dict, profile: str = "w1s") -> dict:
+    """戦略の観測を作る。構成物の申告も根拠も付けない。profile は v2 でも戦略の定義を変えない（W1-s と同じ観測）。"""
     if bank == "B1":
         if strategy == "empty":
             return _blank("answer", readable=True, clauses=[], relations=[])

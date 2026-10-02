@@ -1,0 +1,5 @@
+recount artifacts/w1-s/B1: summary.json 一致 / summary.md 一致
+recount artifacts/w1-s/B2: summary.json 一致 / summary.md 一致
+recount artifacts/w1-s/B2-cli-ask: summary.json 一致 / summary.md 一致
+recount artifacts/w1-s/B3: summary.json 一致 / summary.md 一致
+recount artifacts/w1-s/B5: summary.json 一致 / summary.md 一致

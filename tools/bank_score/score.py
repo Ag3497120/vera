@@ -6,7 +6,11 @@ from .classify import CLASS_JA, classify
 from .schema import expected_side, unknown_expect_keys
 
 
-def score_observation(bank: str, raw: dict, case: dict, obs: dict) -> dict:
+def score_observation(bank: str, raw: dict, case: dict, obs: dict, profile: str = "w1s") -> dict:
+    """観測 1 件の採点。profile="w1s"（既定）は W1-s の規則、"v2" は v2 バンクの規則（v2/score.py）。"""
+    if profile == "v2":
+        from .v2.score import score_observation as v2_score
+        return v2_score(bank, raw, case, obs)
     side = expected_side(bank, raw["expect"])
     checks: dict = {}
     notes: list = []

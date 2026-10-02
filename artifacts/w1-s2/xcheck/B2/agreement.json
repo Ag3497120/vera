@@ -1,0 +1,58 @@
+{
+ "bank": "B2",
+ "bank_files_hashed": 58,
+ "bank_files_unchanged": true,
+ "child_loaded_verantyx": false,
+ "designer_script": "check_items.py",
+ "n_items": 286,
+ "note": "mismatches.jsonl に不一致の 1 件ずつ（id・probe・こちらの分類・設計者の判定・設計者の理由の最初の語）",
+ "probes": {
+  "alt_answers/pass": {
+   "agree": 508,
+   "by_strategy": {},
+   "disagree": 0,
+   "n": 508
+  },
+  "reference/pass": {
+   "agree": 286,
+   "by_strategy": {},
+   "disagree": 0,
+   "n": 286
+  },
+  "strategies/pass": {
+   "agree": 1430,
+   "by_strategy": {
+    "strategy:all_labels": {
+     "disagree": 0,
+     "n": 286
+    },
+    "strategy:always_abstain": {
+     "disagree": 0,
+     "n": 286
+    },
+    "strategy:echo_documents": {
+     "disagree": 0,
+     "n": 286
+    },
+    "strategy:echo_input": {
+     "disagree": 0,
+     "n": 286
+    },
+    "strategy:empty": {
+     "disagree": 0,
+     "n": 286
+    }
+   },
+   "disagree": 0,
+   "n": 1430
+  },
+  "wrong_answers/pass": {
+   "agree": 957,
+   "by_strategy": {},
+   "disagree": 0,
+   "n": 957
+  }
+ },
+ "profile": "v2",
+ "skipped": {}
+}

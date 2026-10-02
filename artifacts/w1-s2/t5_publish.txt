@@ -1,0 +1,4 @@
+publish artifacts/w1-s2/private/B1 -> artifacts/w1-s2/B1: 要約一致（非公開と公開が同じ数）。raw/ ・phenomenon・observation・notes は写していない
+publish artifacts/w1-s2/private/B2 -> artifacts/w1-s2/B2: 要約一致（非公開と公開が同じ数）。raw/ ・phenomenon・observation・notes は写していない
+publish artifacts/w1-s2/private/B3 -> artifacts/w1-s2/B3: 要約一致（非公開と公開が同じ数）。raw/ ・phenomenon・observation・notes は写していない
+publish artifacts/w1-s2/private/B5 -> artifacts/w1-s2/B5: 要約一致（非公開と公開が同じ数）。raw/ ・phenomenon・observation・notes は写していない

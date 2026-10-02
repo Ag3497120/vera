@@ -20,8 +20,13 @@ STATES = ("answer", "abstain", "social", "unmapped")
 
 def classify(*, invalid: bool = False, unreachable: bool = False, runtime_reason: str | None = None,
              misread: bool = False, side: str = "answer", state: str = "answer",
-             overall: str = "PASS") -> tuple[str, str | None]:
-    """(分類キー, 理由の型)。side は期待が回答側か棄権側か、state は観測の状態、overall は規則の総合。"""
+             overall: str = "PASS", abstain_overall: str | None = None) -> tuple[str, str | None]:
+    """(分類キー, 理由の型)。side は期待が回答側か棄権側か、state は観測の状態、overall は規則の総合。
+
+    abstain_overall（v2。既定 None = 今までどおり）: 期待が棄権側で観測も棄権のときの、棄権文の本文規則
+    （B2 の must_not_contain、B3 の refusal_text_must_not_contain）の総合。FAIL なら wrong（ABSTAIN_TEXT_RULE_FAIL）、
+    UNJUDGED なら unscorable（JUDGE_UNAVAILABLE）。
+    """
     if invalid:
         return "unscorable", "ITEM_INVALID"
     if unreachable:
@@ -34,6 +39,10 @@ def classify(*, invalid: bool = False, unreachable: bool = False, runtime_reason
         return "misread", None
     if side == "abstain":
         if state == "abstain":
+            if abstain_overall == "FAIL":
+                return "wrong", "ABSTAIN_TEXT_RULE_FAIL"
+            if abstain_overall == "UNJUDGED":
+                return "unscorable", "JUDGE_UNAVAILABLE"
             return "correct_abstain", None
         return "false_compliance", None
     if state == "abstain":
