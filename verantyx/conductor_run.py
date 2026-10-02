@@ -891,3 +891,376 @@ def run_project(frame: ProjectFrame, adapter: AgentAdapter, **kwargs: Any) -> Ru
 
 
 __all__ = ["ConductorRun", "RunResult", "JournalError", "run_project"]
+
+
+# ---------------------------------------------------------------------------
+# Conduct entry: one frame file in, an agent start (or a typed refusal) out.
+# Everything below was added after ConductorRun / run_project and does not
+# change them.  CLI: ``python -m verantyx.cli conduct``; guide: docs/CONDUCT_ENTRY.md.
+# ---------------------------------------------------------------------------
+import fcntl as _fcntl
+import re as _re
+import subprocess as _subprocess
+
+from . import agent_runtime as _agent_runtime
+from . import memory_frame as _memory_frame
+from . import project_frame as _project_frame
+from .project_frame import FrameRefusal
+
+LEDGER_SCHEMA = "conduct-ledger-v1"
+ADAPTER_NAMES = ("codex", "claude", "fake")
+_TASK_IN_BRIEF = _re.compile(r"^Current frame task:\s*(.*?)\s*$", _re.M)
+
+
+class LedgerError(ValueError):
+    """The conduct ledger cannot be extended without losing or inventing rows."""
+
+
+class ConductLedger:
+    """Append-only JSONL ledger of what the conduct entry read, refused and launched.
+
+    Every row carries ``schema``, a ledger-wide consecutive ``seq``, ``run_id`` and
+    ``type``.  A ledger whose ``seq`` jumps, or whose last line is cut off, is not
+    extended (the same discipline as the driver journal).
+    """
+
+    def __init__(self, path: str | os.PathLike[str]):
+        self.path = Path(path)
+        self.rows: list[dict[str, Any]] = self._read()
+
+    def _read(self) -> list[dict[str, Any]]:
+        if not self.path.exists():
+            return []
+        try:
+            raw = self.path.read_bytes()
+        except OSError as exc:
+            raise LedgerError("ledger cannot be read") from exc
+        if raw and not raw.endswith(b"\n"):
+            raise LedgerError("ledger ends with an incomplete row")
+        rows: list[dict[str, Any]] = []
+        try:
+            for line in raw.splitlines():
+                value = json.loads(line)
+                if (not isinstance(value, dict) or value.get("schema") != LEDGER_SCHEMA or
+                        type(value.get("seq")) is not int or value["seq"] != len(rows) or
+                        not isinstance(value.get("type"), str) or not isinstance(value.get("run_id"), str)):
+                    raise LedgerError("ledger has a malformed or out-of-sequence row")
+                rows.append(value)
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise LedgerError("ledger contains malformed JSON") from exc
+        return rows
+
+    def append(self, run_id: str, kind: str, **fields: Any) -> dict[str, Any]:
+        try:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
+        except OSError as exc:
+            raise LedgerError("ledger cannot be opened for append") from exc
+        try:
+            _fcntl.flock(fd, _fcntl.LOCK_EX)
+            self.rows = self._read()  # another writer may have appended since we last looked
+            row = {"schema": LEDGER_SCHEMA, "seq": len(self.rows), "run_id": run_id, "type": kind,
+                   "time": time.time(), **fields}
+            data = (json.dumps(row, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+                               allow_nan=False) + "\n").encode("utf-8")
+            view = memoryview(data)
+            while view:
+                view = view[os.write(fd, view):]
+            os.fsync(fd)
+        except (OSError, TypeError, ValueError, RecursionError) as exc:
+            if isinstance(exc, LedgerError):
+                raise
+            raise LedgerError("ledger row could not be made durable") from exc
+        finally:
+            os.close(fd)
+        self.rows.append(row)
+        return row
+
+    def events(self, kind: str) -> list[dict[str, Any]]:
+        return [row for row in self.rows if row.get("type") == kind]
+
+
+@dataclass(frozen=True)
+class ConductOutcome:
+    """The single result of a conduct call.  ``exit_code``: 0 ok, 1 incomplete, 2 refused, 3 internal."""
+
+    verdict: str
+    exit_code: int
+    refusal: Mapping[str, Any] | None
+    ledger: str | None
+    run_id: str
+    blocking: Mapping[str, Any] | None = None
+    result: Mapping[str, Any] | None = None
+
+    def as_dict(self) -> dict[str, Any]:
+        return {"verdict": self.verdict, "refusal": dict(self.refusal) if self.refusal else None,
+                "ledger": self.ledger, "run_id": self.run_id,
+                "blocking": dict(self.blocking) if self.blocking else None,
+                "result": dict(self.result) if self.result else None}
+
+
+class _LedgerAdapter:
+    """Wrap an adapter so the ledger shows that, and with what, ``start`` was reached."""
+
+    def __init__(self, inner: AgentAdapter, ledger: ConductLedger, run_id: str, name: str):
+        self._inner = inner
+        self._ledger = ledger
+        self._run_id = run_id
+        self._name = name
+
+    def start(self, brief: str) -> Any:
+        digest = hashlib.sha256(brief.encode("utf-8")).hexdigest() if isinstance(brief, str) else None
+        match = _TASK_IN_BRIEF.search(brief) if isinstance(brief, str) else None
+        self._ledger.append(self._run_id, "AGENT_START_CALLED", adapter=self._name, brief_sha256=digest,
+                            brief_chars=len(brief) if isinstance(brief, str) else None,
+                            task_id=match.group(1) if match else None)
+        try:
+            handle = self._inner.start(brief)
+        except Exception as exc:
+            self._ledger.append(self._run_id, "AGENT_START_FAILED", adapter=self._name,
+                                error=type(exc).__name__, message=str(exc)[:256])
+            raise
+        self._ledger.append(self._run_id, "AGENT_START_RETURNED", adapter=self._name,
+                            handle_type=type(handle).__name__, brief_sha256=digest)
+        return handle
+
+    def poll(self, handle: Any) -> Any:
+        return self._inner.poll(handle)
+
+    def send(self, handle: Any, text: str) -> None:
+        self._inner.send(handle, text)
+
+    def stop(self, handle: Any) -> None:
+        self._inner.stop(handle)
+
+    def __getattr__(self, name: str) -> Any:
+        # ConductorRun resumes only adapters that expose ``recover``; keep that honest.
+        if name == "recover":
+            inner = getattr(self._inner, "recover", None)
+            if callable(inner):
+                return inner
+        raise AttributeError(name)
+
+
+def _kind_counts(records: Sequence[Mapping[str, Any]]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for record in records:
+        counts[str(record.get("kind"))] = counts.get(str(record.get("kind")), 0) + 1
+    return dict(sorted(counts.items()))
+
+
+def _resolve_setting(frame: _project_frame.ConductFrame, key: str, cli_value: Any) -> tuple[Any, str, Any]:
+    """CLI beats the frame.  Returns (value, source, frame value overridden by the CLI)."""
+    frame_values = frame.agent_settings.get(key, ())
+    if len(frame_values) > 1:
+        raise FrameRefusal("AGENT_SETTING_INVALID",
+                           f"the frame states {len(frame_values)} different values for {key}; keep exactly one",
+                           f"{key}: {', '.join(frame_values)}", source=frame.source)
+    frame_value = frame_values[0] if frame_values else None
+    if cli_value is not None:
+        text = str(cli_value) if not isinstance(cli_value, bool) else "<bool>"
+        problem = _project_frame.validate_agent_setting(key, text)
+        if problem:
+            raise FrameRefusal("AGENT_SETTING_INVALID", f"fix the command-line value for {key}: {problem}",
+                               f"{key}={text!r}", source=frame.source)
+        return text, "cli", frame_value
+    if frame_value is not None:
+        return frame_value, "frame", None
+    return None, "unset", None
+
+
+def _check_git_repo(repo: Path) -> None:
+    try:
+        _agent_runtime._git_root(repo)
+        _agent_runtime._git(repo, "rev-parse", "HEAD")
+    except (ValueError, OSError, _subprocess.SubprocessError) as exc:
+        raise FrameRefusal("REPO_NOT_GIT",
+                           "run 'git init' in the repository and make at least one commit "
+                           "(the agent works in a git worktree created from HEAD)",
+                           f"{type(exc).__name__}: {str(exc)[:200]}", source=os.fspath(repo)) from exc
+
+
+def conduct_entry(
+    frame_path: str | os.PathLike[str],
+    repo: str | os.PathLike[str],
+    adapter: str | AgentAdapter,
+    *,
+    dry_run: bool = False,
+    state_dir: str | os.PathLike[str] | None = None,
+    model: str | None = None,
+    effort: str | None = None,
+    max_concurrency: int | None = None,
+    codex_bin: str = "codex",
+    claude_bin: str = "claude",
+    command_runner: Callable[[Mapping[str, Any]], Any] | None = None,
+) -> ConductOutcome:
+    """Read a frame, make typed records, and start (or, with ``dry_run``, plan) an agent.
+
+    ``adapter`` is ``"codex"``, ``"claude"`` or ``"fake"``; a Python caller may instead
+    pass an object implementing the ``AgentAdapter`` lifecycle (it is treated like
+    ``fake``).  Nothing is raised for a bad input (only a caller error, an unknown ``adapter`` name, raises ``ValueError``): it comes back as a ``REFUSED``
+    outcome with a typed reason and what is missing, and an unexpected exception
+    comes back as ``INTERNAL_ERROR`` (exception type only).  ``command_runner`` is
+    for Python callers; the CLI never supplies one, so a ``command_exit`` criterion
+    stays unverified there.
+    """
+    if isinstance(adapter, str) and adapter not in ADAPTER_NAMES:
+        raise ValueError(f"adapter must be one of {', '.join(ADAPTER_NAMES)} or an AgentAdapter object")
+    run_id = uuid.uuid4().hex
+    ledger: ConductLedger | None = None
+
+    def put(kind: str, **fields: Any) -> None:
+        if ledger is not None:
+            ledger.append(run_id, kind, **fields)
+
+    def refused(refusal: FrameRefusal, exit_code: int = 2) -> ConductOutcome:
+        try:
+            put("REFUSED", **refusal.as_dict())
+        except Exception:
+            pass
+        return ConductOutcome("REFUSED", exit_code, refusal.as_dict(),
+                              os.fspath(ledger.path) if ledger is not None else None, run_id)
+
+    try:
+        repo_path = Path(repo).expanduser()
+        if state_dir is not None:
+            state = Path(state_dir).expanduser()
+        elif repo_path.is_dir():
+            state = repo_path / ".verantyx-conduct"
+        else:
+            return refused(FrameRefusal(
+                "REPO_NOT_FOUND", f"give --repo an existing directory ({os.fspath(repo_path)!r} is not one); "
+                "no ledger is written because there is nowhere safe to put it (or pass --state-dir)",
+                source=os.fspath(repo_path)))
+        try:
+            ledger = ConductLedger(state / "ledger.jsonl")
+        except LedgerError as exc:
+            return refused(FrameRefusal(
+                "LEDGER_UNUSABLE", f"repair or move {os.fspath(state / 'ledger.jsonl')} (it is never overwritten) "
+                "or pass another --state-dir", str(exc), source=os.fspath(state)))
+        adapter_name = adapter if isinstance(adapter, str) else type(adapter).__name__
+        put("CONDUCT_INVOKED", frame=os.fspath(frame_path), repo=os.fspath(repo_path), adapter=adapter_name,
+            dry_run=bool(dry_run), state_dir=os.fspath(state),
+            cli={"model": model, "effort": effort, "max_concurrency": max_concurrency})
+        if not repo_path.is_dir():
+            raise FrameRefusal("REPO_NOT_FOUND",
+                               f"give --repo an existing directory ({os.fspath(repo_path)!r} is not one)",
+                               source=os.fspath(repo_path))
+
+        def on_read(info: Mapping[str, Any]) -> None:
+            put("FRAME_READ", **info)
+
+        frame = _project_frame.load_conduct_frame(frame_path, on_read=on_read)
+        shortfall = _project_frame.check_conduct_ready(frame)
+        if shortfall is not None:
+            raise shortfall
+
+        run_dir = state / "runs" / run_id
+        run_dir.mkdir(parents=True, exist_ok=True)
+        memory_path = run_dir / "memory.jsonl"
+        if frame.format == "markdown":
+            assert frame.spec is not None
+            try:
+                compilation = _project_frame.compile_frame(frame.spec, memory_path)
+            except _project_frame.FrameCompileError as exc:
+                raise FrameRefusal("FRAME_COMPILE_ERROR", f"fix {exc.source}:{exc.line}: {exc.message}",
+                                   exc.message, source=exc.source, line=exc.line) from exc
+            conductor_frame = compilation.conductor
+            compiled_records: Sequence[Mapping[str, Any]] = compilation.records
+        else:
+            # The input is copied: ConductorRun writes TASK and LESSON rows into its memory.
+            memory_path.write_text(frame.text, encoding="utf-8")
+            conductor_frame = ProjectFrame(_memory_frame.Memory(str(memory_path)))
+            compiled_records = conductor_frame.memory.active(require_fresh=False)
+        if command_runner is not None:
+            conductor_frame.command_runner = command_runner
+        put("FRAME_COMPILED", format=frame.format, record_count=len(compiled_records),
+            kinds=_kind_counts(compiled_records), memory_path=os.fspath(memory_path),
+            frame_sha256=frame.sha256, write_allowlist=list(frame.write_allowlist or ()),
+            machine_criteria=frame.machine_criteria, human_criteria=frame.human_criteria)
+
+        settings: dict[str, dict[str, Any]] = {}
+        concurrency, concurrency_source, concurrency_frame = _resolve_setting(frame, "max_concurrency", max_concurrency)
+        settings["max_concurrency"] = {"value": concurrency, "source": concurrency_source,
+                                       "overridden_frame_value": concurrency_frame}
+        real = adapter in ("codex", "claude")
+        if real:
+            missing = []
+            for name, cli_value in (("model", model), ("effort", effort)):
+                key = f"{adapter}_{name}"
+                value, source, overridden = _resolve_setting(frame, key, cli_value)
+                if value is None:
+                    missing.append(f"--{name} <value> or '{key}: <value>' under [agent_settings]")
+                settings[name] = {"value": value, "source": source, "overridden_frame_value": overridden}
+            if missing:
+                raise FrameRefusal("AGENT_SETTING_MISSING",
+                                   "set " + " and ".join(missing) + "; the entry never picks a model or effort for you",
+                                   f"{adapter} needs a model and an effort", source=frame.source)
+            _check_git_repo(repo_path)
+
+        planned: list[dict[str, Any]] = []
+        runtime: _agent_runtime.AgentRuntime | None = None
+        if real:
+            def on_plan(plan: Mapping[str, Any]) -> None:
+                planned.append(dict(plan))
+                put("LAUNCH_PLANNED", adapter=adapter, backend=plan["backend"], argv=list(plan["argv"]),
+                    cwd=plan["cwd"], cwd_created=not plan["dry_run"], stdin=dict(plan["stdin"]),
+                    prompt=plan["prompt"], allowlist=list(plan["allowlist"]), output_path=plan["output_path"],
+                    task_id=plan["task_id"], dry_run=plan["dry_run"], base_commit=plan["base_commit"],
+                    model=settings["model"], effort=settings["effort"], max_concurrency=settings["max_concurrency"],
+                    effective_concurrency=1)
+
+            runtime = _agent_runtime.AgentRuntime(
+                repo_path, frame.write_allowlist or (),
+                backend="codex-exec" if adapter == "codex" else "claude-print",
+                executable=codex_bin if adapter == "codex" else claude_bin,
+                state_dir=run_dir / "runtime", model=settings["model"]["value"],
+                effort=settings["effort"]["value"], dry_run=bool(dry_run), on_plan=on_plan)
+            inner: AgentAdapter = runtime
+        elif isinstance(adapter, str):
+            inner = agent_adapter.FakeAdapter()
+        else:
+            inner = adapter
+        wrapped = _LedgerAdapter(inner, ledger, run_id, adapter_name)
+        try:
+            run = ConductorRun(conductor_frame, wrapped, log_path=run_dir / "driver.jsonl",
+                               claimant_id=f"conduct:{adapter_name}")
+        except ValueError as exc:
+            raise FrameRefusal("FRAME_COMPILE_ERROR",
+                               "repair the frame so its ORDER records form a runnable graph with a witnessed authority",
+                               str(exc)[:300], source=frame.source) from exc
+        result = run.run()
+        blocking = dict(result.blocking_item) if result.blocking_item else None
+        result_view = {"complete": result.complete, "completed": list(result.completed),
+                       "pending": list(result.pending), "interrupted": result.interrupted}
+        put("RUN_FINISHED", complete=result.complete, completed=list(result.completed),
+            pending=list(result.pending), blocking_kind=(blocking or {}).get("kind"),
+            interrupted=result.interrupted, driver_log=os.fspath(run_dir / "driver.jsonl"),
+            effective_concurrency=1)
+        ledger_path = os.fspath(ledger.path)
+        if real and dry_run:
+            if not planned:
+                raise FrameRefusal(
+                    "NO_LAUNCH_PLANNED",
+                    "no agent start was reached, so no command was planned; resolve the blocking item "
+                    "(see 'blocking') in the frame",
+                    f"blocking: {json.dumps(blocking, ensure_ascii=False, default=str)[:300]}", source=frame.source)
+            return ConductOutcome("DRY_RUN_PLANNED", 0, None, ledger_path, run_id, blocking, result_view)
+        if result.complete:
+            return ConductOutcome("RUN_COMPLETE", 0, None, ledger_path, run_id, blocking, result_view)
+        return ConductOutcome("RUN_INCOMPLETE", 1, None, ledger_path, run_id, blocking, result_view)
+    except FrameRefusal as refusal:
+        return refused(refusal)
+    except LedgerError as exc:
+        return refused(FrameRefusal(
+            "LEDGER_UNUSABLE", "make the state directory writable (or pass another --state-dir); "
+            "the ledger is the record of what was read and launched, so the run stops without it",
+            str(exc), source=os.fspath(state_dir) if state_dir is not None else os.fspath(repo)))
+    except Exception as exc:  # the entry never lets an exception escape
+        return refused(FrameRefusal(
+            "INTERNAL_ERROR", "this is a defect in the conduct entry, not in your frame; report it with the ledger",
+            type(exc).__name__), exit_code=3)
+
+
+__all__ += ["ADAPTER_NAMES", "ConductLedger", "ConductOutcome", "LEDGER_SCHEMA", "LedgerError",
+            "conduct_entry"]

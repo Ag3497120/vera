@@ -6,6 +6,12 @@
 # Decisions use `ID: subject => choice` or `ID: KIND | condition | answer` with KIND CHOICE, CONFIRM, or SCOPE.
 # Vocabulary uses `alias => canonical`; escalation uses `ID: condition => reason => missing => scope`.
 # Escalation scope is `ANY` or a conductor question kind; protected actions use `action => reason => missing`.
+# Optional sections (each may be omitted; `none: none` states an explicit empty list) are used by `python -m verantyx.cli conduct`:
+# [write_allowlist] `ID: relative/path` lists what an agent may write. Entries are directory or file prefixes: no globs (* ? [ ]), no absolute path, no `..`, no `.git`.
+# [forbidden_actions] `action => reason` lists operations that stay forbidden even when a human approves; [protected_actions] lists operations a human approval can unlock. One action cannot be in both.
+# [conflict_precedence] `ID: HIGHER > LOWER: reason` orders rule families when they collide; families are forbidden_actions, philosophy_invariants, completion_criteria, protected_actions. Pairs left unordered stay unordered. The declaration is kept as typed records (and in action_authority) only: the conductor does not read it yet, and escalating a collision or refusing a forbidden action at run time is not implemented. protected_actions never outranks forbidden_actions, directly or through a chain of rules.
+# [agent_settings] `key: value` with key codex_model, codex_effort, claude_model, claude_effort or max_concurrency (an upper bound; the conductor runs one agent at a time). A command-line option overrides the frame.
+# A machine-checkable completion criterion is `ID: text | {"kind":"command_exit","command":["cmd","arg"],"expected_exit":0}`; conduct refuses a frame whose criteria are all `human-judged`.
 
 [goal]
 project: Vera
@@ -26,6 +32,7 @@ C2: General QA and dialogue handle unseen wording and relations instead of relyi
 C3: Code generation preserves requested inputs outputs conditions side effects and boundary cases | human-judged
 C4: Complex document QA preserves facts conditions exceptions comparisons counts negation and citation scope | human-judged
 C5: Text generation composes from structure and distinguishes supported facts from introduced creative content | human-judged
+C6: The covenant guard and standalone device self-check pass | {"kind":"command_exit","command":["python","-m","verantyx.cli","doctor"],"expected_exit":0}
 
 [phases]
 P1: Write and review the human-owned design and completion frame
@@ -63,3 +70,9 @@ delete => Human approval is required before removing records or files => human
 spend money => Human approval is required before spending => human
 enter credentials => Credentials must remain under direct human control => human
 access evaluation-only material => Human approval is required before accessing restricted evaluation material => human
+
+[write_allowlist]
+W1: verantyx
+W2: tests
+W3: docs
+W4: tools

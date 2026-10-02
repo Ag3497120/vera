@@ -1,0 +1,5 @@
+old_records=56 new_records=62 added=6
+added_by_section={"completion_criteria": 1, "goal": 1, "write_allowlist": 4}
+OK: OLD is an ordered subsequence of NEW; every added record comes from a new section or a declared added criterion
+-- control: the comparison must fail when an old record is altered
+FAIL: an OLD record is not an ordered subsequence of NEW: {"kind": "INVARIANT", "slots": {"rule": "Stack stages without pooling votes and abstain on ties", "sub
