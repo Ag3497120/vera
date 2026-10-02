@@ -1,0 +1,745 @@
+diff --git a/tests/attack/test_semantic_names_differential.py b/tests/attack/test_semantic_names_differential.py
+--- a/tests/attack/test_semantic_names_differential.py
++++ b/tests/attack/test_semantic_names_differential.py
+@@ -71,10 +71,10 @@
+ 
+ def test_tokens_covering_returns_exact_subspan():
+     tagged = [
+-        ("前", "名詞", "一般", 0, 1),
+-        ("技師", "名詞", "一般", 1, 3),
++        ("前", "名詞", "普通名詞", 0, 1),
++        ("技師", "名詞", "普通名詞", 1, 3),
+         ("ユン", "名詞", "固有名詞", 3, 5),
+-        ("後", "名詞", "一般", 5, 6),
++        ("後", "名詞", "普通名詞", 5, 6),
+     ]
+     expected = tagged[1:3]
+     assert _reference_tokens_covering(tagged, 1, 5) == expected
+@@ -83,9 +83,9 @@
+ 
+ def test_tokens_covering_rejects_gaps_and_partial_edges():
+     cases = [
+-        ([ ("a", "名詞", "一般", 0, 1), ("c", "名詞", "一般", 2, 3) ], 0, 3),
+-        ([ ("ab", "名詞", "一般", 0, 2) ], 1, 2),
+-        ([ ("bc", "名詞", "一般", 1, 3) ], 0, 2),
++        ([ ("a", "名詞", "普通名詞", 0, 1), ("c", "名詞", "普通名詞", 2, 3) ], 0, 3),
++        ([ ("ab", "名詞", "普通名詞", 0, 2) ], 1, 2),
++        ([ ("bc", "名詞", "普通名詞", 1, 3) ], 0, 2),
+     ]
+     for tagged, start, end in cases:
+         assert _reference_tokens_covering(tagged, start, end) is None
+@@ -99,12 +99,12 @@
+             for widths in _partitions(length):
+                 tagged = []
+                 if start:
+-                    tagged.append(("p" * start, "名詞", "一般", 0, start))
++                    tagged.append(("p" * start, "名詞", "普通名詞", 0, start))
+                 cursor = start
+                 for width in widths:
+-                    tagged.append(("x" * width, "名詞", "一般", cursor, cursor + width))
++                    tagged.append(("x" * width, "名詞", "普通名詞", cursor, cursor + width))
+                     cursor += width
+-                tagged.append(("z", "名詞", "一般", cursor, cursor + 1))
++                tagged.append(("z", "名詞", "普通名詞", cursor, cursor + 1))
+                 expected = _reference_tokens_covering(tagged, start, start + length)
+                 assert expected is not None
+                 assert tokens_covering(tagged, start, start + length) == expected
+@@ -114,8 +114,8 @@
+ 
+ def test_name_split_accepts_kanji_title_appositive():
+     cover = [
+-        _token("技", "名詞", "一般", 0),
+-        _token("師", "接尾辞", "一般", 1),
++        _token("技", "名詞", "普通名詞", 0),
++        _token("師", "接尾辞", "普通名詞", 1),
+         _token("ユン", "名詞", "固有名詞", 2),
+     ]
+     assert _reference_name_split(cover, "技師ユン") == ("技師", "ユン")
+@@ -124,7 +124,7 @@
+ 
+ def test_name_split_requires_one_final_proper_noun_token():
+     cover = [
+-        _token("技師", "名詞", "一般", 0),
++        _token("技師", "名詞", "普通名詞", 0),
+         _token("ユン", "名詞", "固有名詞", 2),
+         _token("さん", "名詞", "固有名詞", 4),
+     ]
+@@ -134,11 +134,11 @@
+ 
+ def test_name_split_rejects_non_kanji_title_and_bad_head_tags():
+     cases = [
+-        ([_token("コカ", "名詞", "一般", 0), _token("カル", "名詞", "固有名詞", 2)], "コカカル"),
+-        ([_token("技師", "名詞", "一般", 0), _token("ユン", "名詞", "一般", 2)], "技師ユン"),
++        ([_token("コカ", "名詞", "普通名詞", 0), _token("カル", "名詞", "固有名詞", 2)], "コカカル"),
++        ([_token("技師", "名詞", "普通名詞", 0), _token("ユン", "名詞", "普通名詞", 2)], "技師ユン"),
+         ([_token("技師", "名詞", "固有名詞", 0), _token("ユン", "名詞", "固有名詞", 2)], "技師ユン"),
+-        ([_token("技師", "名詞", "一般", 0), _token("ユン", "動詞", "固有名詞", 2)], "技師ユン"),
+-        ([_token("技師", "名詞", "一般", 0), _token("ユン", "名詞", "固有名詞", 2)], "技師ヨン"),
++        ([_token("技師", "名詞", "普通名詞", 0), _token("ユン", "動詞", "固有名詞", 2)], "技師ユン"),
++        ([_token("技師", "名詞", "普通名詞", 0), _token("ユン", "名詞", "固有名詞", 2)], "技師ヨン"),
+     ]
+     for cover, value in cases:
+         expected = _reference_name_split(cover, value)
+@@ -151,7 +151,7 @@
+     names = ("ユン", "花子", "王")
+     compared = 0
+     for title, name in product(titles, names):
+-        cover = [_token(title, "名詞", "一般", 0), _token(name, "名詞", "固有名詞", len(title))]
++        cover = [_token(title, "名詞", "普通名詞", 0), _token(name, "名詞", "固有名詞", len(title))]
+         expected = _reference_name_split(cover, title + name)
+         assert expected == (title, name)
+         assert name_split_in(cover, title + name) == expected
+@@ -177,7 +177,7 @@
+ @pytest.mark.xfail(strict=False, reason="DEFECT: supplementary-plane kanji in a common-noun title is rejected")
+ def test_supplementary_plane_kanji_title_is_accepted_by_contract():
+     cover = [
+-        _token("𠮷人", "名詞", "一般", 0),
++        _token("𠮷人", "名詞", "普通名詞", 0),
+         _token("ユン", "名詞", "固有名詞", 2),
+     ]
+     expected = _reference_name_split(cover, "𠮷人ユン")
+diff --git a/tests/attack/test_semantic_names_fabrication.py b/tests/attack/test_semantic_names_fabrication.py
+--- a/tests/attack/test_semantic_names_fabrication.py
++++ b/tests/attack/test_semantic_names_fabrication.py
+@@ -15,7 +15,7 @@
+ 
+ def test_tokens_covering_returns_exact_contiguous_cover():
+     tagged = [
+-        token("技師", "名詞", "一般", 0, 2),
++        token("技師", "名詞", "普通名詞", 0, 2),
+         token("ユン", "名詞", "固有名詞", 2, 4),
+     ]
+     assert tokens_covering(tagged, 0, 4) == tagged
+@@ -23,30 +23,30 @@
+ 
+ def test_tokens_covering_rejects_a_gap():
+     tagged = [
+-        token("技", "名詞", "一般", 0, 1),
++        token("技", "名詞", "普通名詞", 0, 1),
+         token("ユン", "名詞", "固有名詞", 2, 4),
+     ]
+     assert tokens_covering(tagged, 0, 4) is None
+ 
+ 
+ def test_tokens_covering_rejects_a_token_crossing_the_requested_start():
+-    tagged = [token("研究員", "名詞", "一般", 0, 3)]
++    tagged = [token("研究員", "名詞", "普通名詞", 0, 3)]
+     assert tokens_covering(tagged, 1, 3) is None
+ 
+ 
+ def test_tokens_covering_ignores_tokens_disjoint_from_requested_span():
+     tagged = [
+-        token("前", "名詞", "一般", 0, 1),
+-        token("技師", "名詞", "一般", 1, 3),
++        token("前", "名詞", "普通名詞", 0, 1),
++        token("技師", "名詞", "普通名詞", 1, 3),
+         token("ユン", "名詞", "固有名詞", 3, 5),
+-        token("後", "名詞", "一般", 5, 6),
++        token("後", "名詞", "普通名詞", 5, 6),
+     ]
+     assert tokens_covering(tagged, 1, 5) == tagged[1:3]
+ 
+ 
+ def test_name_split_accepts_kanji_descriptor_and_one_proper_name():
+     cover = [
+-        token("技師", "名詞", "一般", 0, 2),
++        token("技師", "名詞", "普通名詞", 0, 2),
+         token("ユン", "名詞", "固有名詞", 2, 4),
+     ]
+     assert name_split_in(cover, "技師ユン") == ("技師", "ユン")
+@@ -54,7 +54,7 @@
+ 
+ def test_name_split_rejects_non_kanji_prefix():
+     cover = [
+-        token("コカ", "名詞", "一般", 0, 2),
++        token("コカ", "名詞", "普通名詞", 0, 2),
+         token("カル", "名詞", "固有名詞", 2, 4),
+     ]
+     assert name_split_in(cover, "コカカル") is None
+@@ -62,15 +62,15 @@
+ 
+ def test_name_split_rejects_non_proper_final_token():
+     cover = [
+-        token("技師", "名詞", "一般", 0, 2),
+-        token("見習い", "名詞", "一般", 2, 5),
++        token("技師", "名詞", "普通名詞", 0, 2),
++        token("見習い", "名詞", "普通名詞", 2, 5),
+     ]
+     assert name_split_in(cover, "技師見習い") is None
+ 
+ 
+ def test_name_split_rejects_surface_mismatch():
+     cover = [
+-        token("技師", "名詞", "一般", 0, 2),
++        token("技師", "名詞", "普通名詞", 0, 2),
+         token("ユン", "名詞", "固有名詞", 2, 4),
+     ]
+     assert name_split_in(cover, "技師リン") is None
+@@ -82,7 +82,7 @@
+ )
+ def test_empty_proper_name_token_cannot_fabricate_a_name():
+     tagged = [
+-        token("技師", "名詞", "一般", 0, 2),
++        token("技師", "名詞", "普通名詞", 0, 2),
+         token("", "名詞", "固有名詞", 2, 2),
+     ]
+     cover = tokens_covering(tagged, 0, 2)
+diff --git a/tests/attack/test_semantic_names_limits.py b/tests/attack/test_semantic_names_limits.py
+--- a/tests/attack/test_semantic_names_limits.py
++++ b/tests/attack/test_semantic_names_limits.py
+@@ -14,17 +14,17 @@
+ 
+ def test_tokens_covering_exact_interval_ignores_outside_tokens():
+     tagged = [
+-        token("前", "名詞", "一般", 0, 1),
+-        token("技師", "名詞", "一般", 1, 3),
++        token("前", "名詞", "普通名詞", 0, 1),
++        token("技師", "名詞", "普通名詞", 1, 3),
+         token("ユン", "名詞", "固有名詞", 3, 5),
+-        token("後", "名詞", "一般", 5, 6),
++        token("後", "名詞", "普通名詞", 5, 6),
+     ]
+ 
+     assert tokens_covering(tagged, 1, 5) == tagged[1:3]
+ 
+ 
+ def test_tokens_covering_refuses_gaps_and_empty_ranges():
+-    tagged = [token("技", "名詞", "一般", 0, 1), token("ユン", "名詞", "固有名詞", 2, 4)]
++    tagged = [token("技", "名詞", "普通名詞", 0, 1), token("ユン", "名詞", "固有名詞", 2, 4)]
+ 
+     assert tokens_covering(tagged, 0, 4) is None
+     assert tokens_covering(tagged, 1, 1) is None
+@@ -33,7 +33,7 @@
+ 
+ @pytest.mark.xfail(strict=False, reason="DEFECT: tokens_covering depends on token iteration order")
+ def test_tokens_covering_is_independent_of_input_order():
+-    tagged = [token("技師", "名詞", "一般", 0, 2), token("ユン", "名詞", "固有名詞", 2, 4)]
++    tagged = [token("技師", "名詞", "普通名詞", 0, 2), token("ユン", "名詞", "固有名詞", 2, 4)]
+ 
+     assert tokens_covering(list(reversed(tagged)), 0, 4) == tagged
+ 
+@@ -41,21 +41,21 @@
+ @pytest.mark.xfail(strict=False, reason="DEFECT: tokens_covering ignores a token crossing the requested boundary")
+ def test_tokens_covering_rejects_a_boundary_crossing_token():
+     tagged = [
+-        token("技師", "名詞", "一般", 0, 2),
+-        token("師", "名詞", "一般", 1, 2),
++        token("技師", "名詞", "普通名詞", 0, 2),
++        token("師", "名詞", "普通名詞", 1, 2),
+     ]
+ 
+     assert tokens_covering(tagged, 1, 2) is None
+ 
+ 
+ def test_name_split_accepts_kanji_title_and_one_proper_name():
+-    cover = [token("研究", "名詞", "一般", 0, 2), token("員", "接尾辞", "名詞性名詞接続", 2, 3), token("玲", "名詞", "固有名詞", 3, 4)]
++    cover = [token("研究", "名詞", "普通名詞", 0, 2), token("員", "接尾辞", "名詞性名詞接続", 2, 3), token("玲", "名詞", "固有名詞", 3, 4)]
+ 
+     assert name_split_in(cover, "研究員玲") == ("研究員", "玲")
+ 
+ 
+ def test_name_split_refuses_non_kanji_prefixes_and_single_token_names():
+-    katakana_prefix = [token("コカ", "名詞", "一般", 0, 2), token("カル", "名詞", "固有名詞", 2, 4)]
++    katakana_prefix = [token("コカ", "名詞", "普通名詞", 0, 2), token("カル", "名詞", "固有名詞", 2, 4)]
+     one_token = [token("玲", "名詞", "固有名詞", 0, 1)]
+ 
+     assert name_split_in(katakana_prefix, "コカカル") is None
+@@ -63,7 +63,7 @@
+ 
+ 
+ def test_name_split_rejects_noncovering_text_and_invalid_prefix_pos():
+-    mismatched_text = [token("技師", "名詞", "一般", 0, 2), token("玲", "名詞", "固有名詞", 2, 3)]
++    mismatched_text = [token("技師", "名詞", "普通名詞", 0, 2), token("玲", "名詞", "固有名詞", 2, 3)]
+     proper_prefix = [token("技師", "名詞", "固有名詞", 0, 2), token("玲", "名詞", "固有名詞", 2, 3)]
+ 
+     assert name_split_in(mismatched_text, "技師別") is None
+@@ -88,7 +88,7 @@
+ 
+ def test_large_cover_and_pathological_long_nonkanji_prefix_are_bounded():
+     count = 20_000
+-    tagged = [token("技", "名詞", "一般", i, i + 1) for i in range(count)]
++    tagged = [token("技", "名詞", "普通名詞", i, i + 1) for i in range(count)]
+     tagged.append(token("玲", "名詞", "固有名詞", count, count + 1))
+     value = "技" * count + "玲"
+ 
+@@ -96,13 +96,13 @@
+     assert len(cover) == count + 1
+     assert name_split_in(cover, value) == ("技" * count, "玲")
+ 
+-    long_prefix = [token("ア", "名詞", "一般", i, i + 1) for i in range(count)]
++    long_prefix = [token("ア", "名詞", "普通名詞", i, i + 1) for i in range(count)]
+     long_prefix.append(token("玲", "名詞", "固有名詞", count, count + 1))
+     assert name_split_in(long_prefix, "ア" * count + "玲") is None
+ 
+ 
+ def test_repeated_calls_are_idempotent_and_do_not_mutate_inputs():
+-    tagged = [token("技師", "名詞", "一般", 0, 2), token("玲", "名詞", "固有名詞", 2, 3)]
++    tagged = [token("技師", "名詞", "普通名詞", 0, 2), token("玲", "名詞", "固有名詞", 2, 3)]
+     before = tagged.copy()
+     expected = ("技師", "玲")
+ 
+@@ -113,8 +113,8 @@
+ 
+ def test_concurrent_independent_readers_do_not_share_results():
+     cases = [
+-        ([token("技師", "名詞", "一般", 0, 2), token("玲", "名詞", "固有名詞", 2, 3)], "技師玲", ("技師", "玲")),
+-        ([token("店長", "名詞", "一般", 0, 2), token("葵", "名詞", "固有名詞", 2, 3)], "店長葵", ("店長", "葵")),
++        ([token("技師", "名詞", "普通名詞", 0, 2), token("玲", "名詞", "固有名詞", 2, 3)], "技師玲", ("技師", "玲")),
++        ([token("店長", "名詞", "普通名詞", 0, 2), token("葵", "名詞", "固有名詞", 2, 3)], "店長葵", ("店長", "葵")),
+     ]
+ 
+     def read_case(case):
+@@ -128,7 +128,7 @@
+ 
+ 
+ def test_repeated_calls_do_not_retain_per_call_allocations():
+-    tagged = [token("技師", "名詞", "一般", 0, 2), token("玲", "名詞", "固有名詞", 2, 3)]
++    tagged = [token("技師", "名詞", "普通名詞", 0, 2), token("玲", "名詞", "固有名詞", 2, 3)]
+     tracemalloc.start()
+     try:
+         for _ in range(100):
+diff --git a/tests/attack/test_semantic_names_long_documents.py b/tests/attack/test_semantic_names_long_documents.py
+--- a/tests/attack/test_semantic_names_long_documents.py
++++ b/tests/attack/test_semantic_names_long_documents.py
+@@ -18,11 +18,11 @@
+     value = "主任研究員ユン"
+     start = len(prefix)
+     tagged = [
+-        tok(prefix, "名詞", "一般", 0, start),
+-        tok("主任", "名詞", "一般", start, start + 2),
+-        tok("研究員", "名詞", "一般", start + 2, start + 5),
++        tok(prefix, "名詞", "普通名詞", 0, start),
++        tok("主任", "名詞", "普通名詞", start, start + 2),
++        tok("研究員", "名詞", "普通名詞", start + 2, start + 5),
+         tok("ユン", "名詞", "固有名詞", start + 5, start + len(value)),
+-        tok("後置文", "名詞", "一般", start + len(value), start + len(value) + 3),
++        tok("後置文", "名詞", "普通名詞", start + len(value), start + len(value) + 3),
+     ]
+ 
+     cover = tokens_covering(tagged, start, start + len(value))
+@@ -33,19 +33,19 @@
+ 
+ def test_covering_excludes_context_and_requires_contiguous_tokens():
+     tagged = [
+-        tok("前", "名詞", "一般", 0, 1),
+-        tok("技師", "名詞", "一般", 1, 3),
++        tok("前", "名詞", "普通名詞", 0, 1),
++        tok("技師", "名詞", "普通名詞", 1, 3),
+         tok("ユン", "名詞", "固有名詞", 3, 4),
+-        tok("後", "名詞", "一般", 4, 5),
++        tok("後", "名詞", "普通名詞", 4, 5),
+     ]
+ 
+     assert tokens_covering(tagged, 1, 4) == tagged[1:3]
+-    assert tokens_covering([tagged[1], tok("隙", "名詞", "一般", 4, 5)], 1, 5) is None
++    assert tokens_covering([tagged[1], tok("隙", "名詞", "普通名詞", 4, 5)], 1, 5) is None
+ 
+ 
+ def test_covering_rejects_overlapping_tokens():
+     tagged = [
+-        tok("技師", "名詞", "一般", 0, 3),
++        tok("技師", "名詞", "普通名詞", 0, 3),
+         tok("師ユン", "名詞", "固有名詞", 2, 5),
+     ]
+ 
+@@ -55,7 +55,7 @@
+ def test_covering_rejects_tokens_that_cross_requested_boundaries():
+     tagged = [
+         tok("技師ユン", "名詞", "固有名詞", 0, 5),
+-        tok("後", "名詞", "一般", 5, 6),
++        tok("後", "名詞", "普通名詞", 5, 6),
+     ]
+ 
+     assert tokens_covering(tagged, 1, 5) is None
+@@ -63,8 +63,8 @@
+ 
+ def test_name_split_accepts_multiple_kanji_title_tokens():
+     cover = [
+-        tok("主任", "名詞", "一般", 0, 2),
+-        tok("研究員", "名詞", "一般", 2, 5),
++        tok("主任", "名詞", "普通名詞", 0, 2),
++        tok("研究員", "名詞", "普通名詞", 2, 5),
+         tok("ユン", "名詞", "固有名詞", 5, 6),
+     ]
+ 
+@@ -73,7 +73,7 @@
+ 
+ def test_name_split_does_not_cut_katakana_unknown_name():
+     cover = [
+-        tok("コカ", "名詞", "一般", 0, 2),
++        tok("コカ", "名詞", "普通名詞", 0, 2),
+         tok("カル", "名詞", "固有名詞", 2, 4),
+     ]
+ 
+@@ -82,8 +82,8 @@
+ 
+ def test_name_split_requires_a_proper_noun_as_the_final_token():
+     cover = [
+-        tok("店長", "名詞", "一般", 0, 2),
+-        tok("ユン", "名詞", "一般", 2, 3),
++        tok("店長", "名詞", "普通名詞", 0, 2),
++        tok("ユン", "名詞", "普通名詞", 2, 3),
+     ]
+ 
+     assert name_split_in(cover, "店長ユン") is None
+@@ -100,7 +100,7 @@
+ 
+ def test_name_split_requires_surface_to_match_value():
+     cover = [
+-        tok("技師", "名詞", "一般", 0, 2),
++        tok("技師", "名詞", "普通名詞", 0, 2),
+         tok("ユン", "名詞", "固有名詞", 2, 3),
+     ]
+ 
+@@ -113,8 +113,8 @@
+         descriptor = "技師" if index % 2 == 0 else "研究員"
+         start = len(prefix)
+         tagged = [
+-            tok(prefix, "名詞", "一般", 0, start),
+-            tok(descriptor, "名詞", "一般", start, start + len(descriptor)),
++            tok(prefix, "名詞", "普通名詞", 0, start),
++            tok(descriptor, "名詞", "普通名詞", start, start + len(descriptor)),
+             tok("ユン", "名詞", "固有名詞", start + len(descriptor), start + len(descriptor) + 1),
+         ]
+ 
+diff --git a/tests/attack/test_semantic_names_negation_modality.py b/tests/attack/test_semantic_names_negation_modality.py
+--- a/tests/attack/test_semantic_names_negation_modality.py
++++ b/tests/attack/test_semantic_names_negation_modality.py
+@@ -61,7 +61,7 @@
+ 
+ def test_name_split_can_extract_exact_title_name_pair_in_negative_context():
+     tagged = [
+-        ("研究員", "名詞", "一般", 0, 3),
++        ("研究員", "名詞", "普通名詞", 0, 3),
+         ("花子", "名詞", "固有名詞", 3, 5),
+         ("は", "助詞", "係助詞", 5, 6),
+         ("来", "動詞", "自立", 6, 7),
+@@ -72,7 +72,7 @@
+ 
+ def test_name_split_does_not_treat_a_negated_clause_as_a_name():
+     tagged = [
+-        ("研究員", "名詞", "一般", 0, 3),
++        ("研究員", "名詞", "普通名詞", 0, 3),
+         ("花子", "名詞", "固有名詞", 3, 5),
+         ("は", "助詞", "係助詞", 5, 6),
+         ("来", "動詞", "自立", 6, 7),
+@@ -83,7 +83,7 @@
+ 
+ def test_name_split_does_not_treat_a_question_clause_as_a_name():
+     tagged = [
+-        ("研究員", "名詞", "一般", 0, 3),
++        ("研究員", "名詞", "普通名詞", 0, 3),
+         ("花子", "名詞", "固有名詞", 3, 5),
+         ("は", "助詞", "係助詞", 5, 6),
+         ("来る", "動詞", "自立", 6, 8),
+diff --git a/tests/attack/test_semantic_names_paraphrase.py b/tests/attack/test_semantic_names_paraphrase.py
+--- a/tests/attack/test_semantic_names_paraphrase.py
++++ b/tests/attack/test_semantic_names_paraphrase.py
+@@ -11,8 +11,8 @@
+ 
+ def test_covering_selects_exact_adjacent_span_and_ignores_context():
+     tagged = [
+-        token("前", "名詞", "一般", 0),
+-        token("技師", "名詞", "一般", 1),
++        token("前", "名詞", "普通名詞", 0),
++        token("技師", "名詞", "普通名詞", 1),
+         token("ユン", "名詞", "固有名詞", 3),
+         token("は", "助詞", "係助詞", 5),
+     ]
+@@ -22,13 +22,13 @@
+ 
+ def test_particle_and_clause_surface_changes_leave_the_name_split_unchanged():
+     plain = [
+-        token("技師", "名詞", "一般", 0),
++        token("技師", "名詞", "普通名詞", 0),
+         token("ユン", "名詞", "固有名詞", 2),
+         token("が", "助詞", "格助詞", 4),
+         token("来る", "動詞", "自立", 5),
+     ]
+     polite = [
+-        token("技師", "名詞", "一般", 0),
++        token("技師", "名詞", "普通名詞", 0),
+         token("ユン", "名詞", "固有名詞", 2),
+         token("は", "助詞", "係助詞", 4),
+         token("来ました", "動詞", "自立", 5),
+@@ -42,7 +42,7 @@
+ 
+ def test_covering_rejects_a_gap_inside_the_requested_span():
+     tagged = [
+-        token("技師", "名詞", "一般", 0),
++        token("技師", "名詞", "普通名詞", 0),
+         token("ユン", "名詞", "固有名詞", 3),
+     ]
+ 
+@@ -51,7 +51,7 @@
+ 
+ def test_covering_rejects_tokens_that_only_partially_overlap_the_span():
+     tagged = [
+-        token("技師", "名詞", "一般", 0),
++        token("技師", "名詞", "普通名詞", 0),
+         token("ユン", "名詞", "固有名詞", 2),
+     ]
+ 
+@@ -60,7 +60,7 @@
+ 
+ def test_kanji_title_and_proper_name_split():
+     cover = [
+-        token("研究員", "名詞", "一般", 0),
++        token("研究員", "名詞", "普通名詞", 0),
+         token("ユン", "名詞", "固有名詞", 3),
+     ]
+ 
+@@ -69,7 +69,7 @@
+ 
+ def test_split_accepts_a_common_noun_followed_by_a_noun_suffix():
+     cover = [
+-        token("研究", "名詞", "一般", 0),
++        token("研究", "名詞", "普通名詞", 0),
+         token("員", "接尾辞", "名詞性接尾辞", 2),
+         token("ユン", "名詞", "固有名詞", 3),
+     ]
+@@ -79,7 +79,7 @@
+ 
+ def test_split_rejects_a_katakana_prefix_that_could_be_a_cut_name():
+     cover = [
+-        token("コカ", "名詞", "一般", 0),
++        token("コカ", "名詞", "普通名詞", 0),
+         token("カル", "名詞", "固有名詞", 2),
+     ]
+ 
+@@ -94,8 +94,8 @@
+ 
+ def test_split_rejects_a_non_proper_final_token():
+     cover = [
+-        token("技師", "名詞", "一般", 0),
+-        token("ユン", "名詞", "一般", 2),
++        token("技師", "名詞", "普通名詞", 0),
++        token("ユン", "名詞", "普通名詞", 2),
+     ]
+ 
+     assert name_split_in(cover, "技師ユン") is None
+@@ -112,7 +112,7 @@
+ 
+ def test_split_requires_the_cover_to_match_the_supplied_value():
+     cover = [
+-        token("技師", "名詞", "一般", 0),
++        token("技師", "名詞", "普通名詞", 0),
+         token("ユン", "名詞", "固有名詞", 2),
+     ]
+ 
+@@ -121,11 +121,11 @@
+ 
+ def test_entity_swap_keeps_split_shape_and_returns_the_swapped_name():
+     yoon = [
+-        token("技師", "名詞", "一般", 0),
++        token("技師", "名詞", "普通名詞", 0),
+         token("ユン", "名詞", "固有名詞", 2),
+     ]
+     rin = [
+-        token("技師", "名詞", "一般", 0),
++        token("技師", "名詞", "普通名詞", 0),
+         token("リン", "名詞", "固有名詞", 2),
+     ]
+ 
+diff --git a/tests/attack/test_semantic_names_realtext.py b/tests/attack/test_semantic_names_realtext.py
+--- a/tests/attack/test_semantic_names_realtext.py
++++ b/tests/attack/test_semantic_names_realtext.py
+@@ -9,47 +9,47 @@
+ 
+ def test_tokens_covering_returns_exact_contiguous_span():
+     tokens = [
+-        token("前", "名詞", "一般", 0, 1),
+-        token("技師", "名詞", "一般", 1, 3),
++        token("前", "名詞", "普通名詞", 0, 1),
++        token("技師", "名詞", "普通名詞", 1, 3),
+         token("ユン", "名詞", "固有名詞", 3, 5),
+-        token("後", "名詞", "一般", 5, 6),
++        token("後", "名詞", "普通名詞", 5, 6),
+     ]
+ 
+     assert tokens_covering(tokens, 1, 5) == tokens[1:3]
+ 
+ 
+ def test_tokens_covering_rejects_a_gap():
+-    tokens = [token("技", "名詞", "一般", 0, 1), token("ユン", "名詞", "固有名詞", 2, 4)]
++    tokens = [token("技", "名詞", "普通名詞", 0, 1), token("ユン", "名詞", "固有名詞", 2, 4)]
+ 
+     assert tokens_covering(tokens, 0, 4) is None
+ 
+ 
+ def test_tokens_covering_rejects_a_token_crossing_the_requested_start():
+-    tokens = [token("技師", "名詞", "一般", 0, 2), token("ユン", "名詞", "固有名詞", 2, 4)]
++    tokens = [token("技師", "名詞", "普通名詞", 0, 2), token("ユン", "名詞", "固有名詞", 2, 4)]
+ 
+     assert tokens_covering(tokens, 1, 4) is None
+ 
+ 
+ def test_tokens_covering_rejects_overlapping_tokens():
+-    tokens = [token("技", "名詞", "一般", 0, 2), token("師ユン", "名詞", "固有名詞", 1, 4)]
++    tokens = [token("技", "名詞", "普通名詞", 0, 2), token("師ユン", "名詞", "固有名詞", 1, 4)]
+ 
+     assert tokens_covering(tokens, 0, 4) is None
+ 
+ 
+ def test_name_split_accepts_kanji_title_and_one_proper_name():
+-    cover = [token("技師", "名詞", "一般", 0, 2), token("ユン", "名詞", "固有名詞", 2, 3)]
++    cover = [token("技師", "名詞", "普通名詞", 0, 2), token("ユン", "名詞", "固有名詞", 2, 3)]
+ 
+     assert name_split_in(cover, "技師ユン") == ("技師", "ユン")
+ 
+ 
+ def test_name_split_keeps_katakana_name_fragment_intact():
+-    cover = [token("コカ", "名詞", "一般", 0, 2), token("カル", "名詞", "固有名詞", 2, 4)]
++    cover = [token("コカ", "名詞", "普通名詞", 0, 2), token("カル", "名詞", "固有名詞", 2, 4)]
+ 
+     assert name_split_in(cover, "コカカル") is None
+ 
+ 
+ def test_name_split_rejects_non_proper_final_token():
+-    cover = [token("技師", "名詞", "一般", 0, 2), token("ユン", "名詞", "一般", 2, 3)]
++    cover = [token("技師", "名詞", "普通名詞", 0, 2), token("ユン", "名詞", "普通名詞", 2, 3)]
+ 
+     assert name_split_in(cover, "技師ユン") is None
+ 
+@@ -62,7 +62,7 @@
+ 
+ def test_name_split_requires_multiple_tokens_and_exact_surface():
+     proper = token("ユン", "名詞", "固有名詞", 0, 1)
+-    cover = [token("技師", "名詞", "一般", 0, 2), token("ユン", "名詞", "固有名詞", 2, 3)]
++    cover = [token("技師", "名詞", "普通名詞", 0, 2), token("ユン", "名詞", "固有名詞", 2, 3)]
+ 
+     assert name_split_in([proper], "ユン") is None
+     assert name_split_in(cover, "技師ユンさん") is None
+diff --git a/tests/attack/test_semantic_names_tense_time.py b/tests/attack/test_semantic_names_tense_time.py
+--- a/tests/attack/test_semantic_names_tense_time.py
++++ b/tests/attack/test_semantic_names_tense_time.py
+@@ -52,7 +52,7 @@
+ 
+ def test_name_split_accepts_a_kanji_title_before_a_proper_name():
+     cover = [
+-        _token("店長", "名詞", "一般", 0, 2),
++        _token("店長", "名詞", "普通名詞", 0, 2),
+         _token("ユン", "名詞", "固有名詞", 2, 3),
+     ]
+ 
+@@ -61,7 +61,7 @@
+ 
+ def test_name_split_rejects_a_nonkanji_name_fragment_as_descriptor():
+     cover = [
+-        _token("コカ", "名詞", "一般", 0, 2),
++        _token("コカ", "名詞", "普通名詞", 0, 2),
+         _token("カル", "名詞", "固有名詞", 2, 4),
+     ]
+ 
+diff --git a/tests/attack/test_semantic_names_unicode_noise.py b/tests/attack/test_semantic_names_unicode_noise.py
+--- a/tests/attack/test_semantic_names_unicode_noise.py
++++ b/tests/attack/test_semantic_names_unicode_noise.py
+@@ -12,9 +12,9 @@
+ def test_tokens_covering_uses_python_codepoint_offsets_around_astral_noise():
+     tagged = [
+         _token("🙂", "記号", "絵文字", 0, 1),
+-        _token("技師", "名詞", "一般", 1, 3),
++        _token("技師", "名詞", "普通名詞", 1, 3),
+         _token("ユン", "名詞", "固有名詞", 3, 5),
+-        _token("!", "記号", "一般", 5, 6),
++        _token("!", "記号", "普通名詞", 5, 6),
+     ]
+ 
+     cover = tokens_covering(tagged, 1, 5)
+@@ -25,7 +25,7 @@
+ 
+ def test_tokens_covering_refuses_a_gap():
+     tagged = [
+-        _token("技", "名詞", "一般", 0, 1),
++        _token("技", "名詞", "普通名詞", 0, 1),
+         _token("ユン", "名詞", "固有名詞", 2, 4),
+     ]
+ 
+@@ -34,10 +34,10 @@
+ 
+ def test_tokens_covering_excludes_tokens_outside_requested_span():
+     tagged = [
+-        _token("前", "名詞", "一般", 0, 1),
+-        _token("技師", "名詞", "一般", 1, 3),
++        _token("前", "名詞", "普通名詞", 0, 1),
++        _token("技師", "名詞", "普通名詞", 1, 3),
+         _token("山田", "名詞", "固有名詞", 3, 5),
+-        _token("後", "名詞", "一般", 5, 6),
++        _token("後", "名詞", "普通名詞", 5, 6),
+     ]
+ 
+     assert tokens_covering(tagged, 1, 5) == tagged[1:3]
+@@ -45,7 +45,7 @@
+ 
+ def test_name_split_accepts_kanji_title_plus_one_proper_name():
+     cover = [
+-        _token("技師", "名詞", "一般", 0, 2),
++        _token("技師", "名詞", "普通名詞", 0, 2),
+         _token("ユン", "名詞", "固有名詞", 2, 4),
+     ]
+ 
+@@ -54,7 +54,7 @@
+ 
+ def test_name_split_refuses_non_kanji_descriptor():
+     cover = [
+-        _token("tech", "名詞", "一般", 0, 4),
++        _token("tech", "名詞", "普通名詞", 0, 4),
+         _token("ユン", "名詞", "固有名詞", 4, 6),
+     ]
+ 
+@@ -63,8 +63,8 @@
+ 
+ def test_name_split_refuses_non_proper_final_token():
+     cover = [
+-        _token("技師", "名詞", "一般", 0, 2),
+-        _token("ユン", "名詞", "一般", 2, 4),
++        _token("技師", "名詞", "普通名詞", 0, 2),
++        _token("ユン", "名詞", "普通名詞", 2, 4),
+     ]
+ 
+     assert name_split_in(cover, "技師ユン") is None
+@@ -72,7 +72,7 @@
+ 
+ def test_name_split_preserves_fullwidth_name_surface():
+     cover = [
+-        _token("技師", "名詞", "一般", 0, 2),
++        _token("技師", "名詞", "普通名詞", 0, 2),
+         _token("ＡＢＣ", "名詞", "固有名詞", 2, 5),
+     ]
+ 
+@@ -82,7 +82,7 @@
+ def test_name_split_preserves_decomposed_combining_sequence():
+     decomposed_name = "か\u3099"
+     cover = [
+-        _token("技師", "名詞", "一般", 0, 2),
++        _token("技師", "名詞", "普通名詞", 0, 2),
+         _token(decomposed_name, "名詞", "固有名詞", 2, 4),
+     ]
+ 
+@@ -92,7 +92,7 @@
+ def test_name_split_preserves_markup_and_emoji_in_tagged_name():
+     noisy_name = "😀<b>Ａ</b>"
+     cover = [
+-        _token("技師", "名詞", "一般", 0, 2),
++        _token("技師", "名詞", "普通名詞", 0, 2),
+         _token(noisy_name, "名詞", "固有名詞", 2, 11),
+     ]
+ 
+@@ -102,7 +102,7 @@
+ def test_name_split_refuses_zero_width_noise_inside_descriptor():
+     noisy_title = "技\u200b師"
+     cover = [
+-        _token(noisy_title, "名詞", "一般", 0, 3),
++        _token(noisy_title, "名詞", "普通名詞", 0, 3),
+         _token("ユン", "名詞", "固有名詞", 3, 5),
+     ]
+ 
+@@ -126,7 +126,7 @@
+ @pytest.mark.xfail(strict=False, reason="DEFECT: empty proper-name token creates a non-empty semantic split")
+ def test_name_split_refuses_empty_proper_name_token():
+     cover = [
+-        _token("技師", "名詞", "一般", 0, 2),
++        _token("技師", "名詞", "普通名詞", 0, 2),
+         _token("", "名詞", "固有名詞", 2, 2),
+     ]
+ 

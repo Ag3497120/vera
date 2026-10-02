@@ -1,0 +1,15 @@
+# commit 1e198cf7157ae7722b39c91706eb4a3840629a26
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 13 items / 12 deselected / 1 selected
+
+tests/attack/test_memory_frame_limits.py::test_empty_memory_returns_unknown_without_mutating_log PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/attack/test_memory_frame_limits.py::test_empty_memory_returns_unknown_without_mutating_log
+=== 1 passed, 12 deselected ===

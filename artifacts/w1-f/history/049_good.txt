@@ -1,0 +1,15 @@
+# commit 0d40e415fb0e8cc8e5e2ed33d98ce81c1301b981
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_memory_merge_fabrication.py::test_partial_supersession_link_stays_pending_until_target_record_arrives PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/attack/test_memory_merge_fabrication.py::test_partial_supersession_link_stays_pending_until_target_record_arrives
+=== 1 passed, 9 deselected ===

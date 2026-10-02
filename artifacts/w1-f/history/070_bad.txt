@@ -1,0 +1,33 @@
+# commit e48187093addb770477daf25b61d6686b840fe21
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 16 items / 15 deselected / 1 selected
+
+tests/attack/test_semantic_names_paraphrase.py::test_entity_swap_keeps_split_shape_and_returns_the_swapped_name FAILED [100%]
+
+=== FAILURES ===
+_______ test_entity_swap_keeps_split_shape_and_returns_the_swapped_name ________
+
+    def test_entity_swap_keeps_split_shape_and_returns_the_swapped_name():
+        yoon = [
+            token("技師", "名詞", "一般", 0),
+            token("ユン", "名詞", "固有名詞", 2),
+        ]
+        rin = [
+            token("技師", "名詞", "一般", 0),
+            token("リン", "名詞", "固有名詞", 2),
+        ]
+    
+>       assert name_split_in(yoon, "技師ユン") == ("技師", "ユン")
+E       AssertionError: assert None == ('\u6280\u5e2b', '\u30e6\u30f3')
+E        +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 4)], '\u6280\u5e2b\u30e6\u30f3')
+
+tests/attack/test_semantic_names_paraphrase.py:132: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_names_paraphrase.py::test_entity_swap_keeps_split_shape_and_returns_the_swapped_name - AssertionError: assert None == ('\u6280\u5e2b', '\u30e6\u30f3')
+ +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 4)], '\u6280\u5e2b\u30e6\u30f3')
+=== 1 failed, 15 deselected ===

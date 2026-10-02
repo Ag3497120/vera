@@ -1,0 +1,29 @@
+# commit e48187093addb770477daf25b61d6686b840fe21
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 12 items / 11 deselected / 1 selected
+
+tests/attack/test_semantic_names_tense_time.py::test_name_split_accepts_a_kanji_title_before_a_proper_name FAILED [100%]
+
+=== FAILURES ===
+__________ test_name_split_accepts_a_kanji_title_before_a_proper_name __________
+
+    def test_name_split_accepts_a_kanji_title_before_a_proper_name():
+        cover = [
+            _token("店長", "名詞", "一般", 0, 2),
+            _token("ユン", "名詞", "固有名詞", 2, 3),
+        ]
+    
+>       assert name_split_in(cover, "店長ユン") == ("店長", "ユン")
+E       AssertionError: assert None == ('\u5e97\u9577', '\u30e6\u30f3')
+E        +  where None = name_split_in([('\u5e97\u9577', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 3)], '\u5e97\u9577\u30e6\u30f3')
+
+tests/attack/test_semantic_names_tense_time.py:59: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_names_tense_time.py::test_name_split_accepts_a_kanji_title_before_a_proper_name - AssertionError: assert None == ('\u5e97\u9577', '\u30e6\u30f3')
+ +  where None = name_split_in([('\u5e97\u9577', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 3)], '\u5e97\u9577\u30e6\u30f3')
+=== 1 failed, 11 deselected ===

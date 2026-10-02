@@ -1,0 +1,16 @@
+diff --git a/tests/attack/test_conductor_escalate_realtext.py b/tests/attack/test_conductor_escalate_realtext.py
+--- a/tests/attack/test_conductor_escalate_realtext.py
++++ b/tests/attack/test_conductor_escalate_realtext.py
+@@ -29,6 +29,12 @@
+     def answer(self, question: AgentQuestion) -> Reply:
+         self.questions.append(question)
+         return self._reply
++
++    def _active_record(self, record_id):  # W1-f adapt probe: the trusted lookup check_resolved now requires
++        ids = getattr(getattr(self, "memory", None), "active", lambda: None)()
++        if ids is not None and record_id not in {r["id"] for r in ids}:
++            return None
++        return {"id": record_id}
+ 
+ 
+ def _question(text: str = "Which record supports this claim?") -> AgentQuestion:

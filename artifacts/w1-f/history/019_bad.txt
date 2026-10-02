@@ -1,0 +1,31 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 14 items / 13 deselected / 1 selected
+
+tests/attack/test_memory_brief_fabrication.py::test_same_attribute_for_two_entities_keeps_each_source_attached FAILED [100%]
+
+=== FAILURES ===
+_______ test_same_attribute_for_two_entities_keeps_each_source_attached ________
+
+    def test_same_attribute_for_two_entities_keeps_each_source_attached():
+        alice = _fact("alice-home", "Alice", "home", "Alice lives in Kyoto.", "2026-01-01")
+        bob = _fact("bob-home", "Bob", "home", "Bob lives in Sapporo.", "2026-01-02")
+    
+>       assert _brief(_TypedMemory([alice, bob])) == (
+            "[id:alice-home] Alice lives in Kyoto.\n[id:bob-home] Bob lives in Sapporo."
+        )
+E       AssertionError: assert ContextBrief(text='Dropped record ids: alice-home, bob-home', records=(), dropped_ids=('alice-home', 'bob-home')) == '[id:alice-home] Alice lives in Kyoto.\n[id:bob-home] Bob lives in Sapporo.'
+E        +  where ContextBrief(text='Dropped record ids: alice-home, bob-home', records=(), dropped_ids=('alice-home', 'bob-home')) = _brief(<test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>>)
+E        +    where <test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>> = _TypedMemory([{'id': 'alice-home', 'kind': 'FACT', 'ts': '2026-01-01', 'sentence': 'Alice lives in Kyoto.', 'slots': {'subject': 'Alice', 'attribute': 'home'}}, {'id': 'bob-home', 'kind': 'FACT', 'ts': '2026-01-02', 'sentence': 'Bob lives in Sapporo.', 'slots': {'subject': 'Bob', 'attribute': 'home'}}])
+
+tests/attack/test_memory_brief_fabrication.py:65: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_fabrication.py::test_same_attribute_for_two_entities_keeps_each_source_attached - AssertionError: assert ContextBrief(text='Dropped record ids: alice-home, bob-home', records=(), dropped_ids=('alice-home', 'bob-home')) == '[id:alice-home] Alice lives in Kyoto.\n[id:bob-home] Bob lives in Sapporo.'
+ +  where ContextBrief(text='Dropped record ids: alice-home, bob-home', records=(), dropped_ids=('alice-home', 'bob-home')) = _brief(<test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>>)
+ +    where <test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>> = _TypedMemory([{'id': 'alice-home', 'kind': 'FACT', 'ts': '2026-01-01', 'sentence': 'Alice lives in Kyoto.', 'slots': {'subject': 'Alice', 'attribute': 'home'}}, {'id': 'bob-home', 'kind': 'FACT', 'ts': '2026-01-02', 'sentence': 'Bob lives in Sapporo.', 'slots': {'subject': 'Bob', 'attribute': 'home'}}])
+=== 1 failed, 13 deselected ===

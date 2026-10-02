@@ -1,0 +1,30 @@
+# commit e48187093addb770477daf25b61d6686b840fe21
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 12 items / 11 deselected / 1 selected
+
+tests/attack/test_semantic_names_unicode_noise.py::test_name_split_preserves_markup_and_emoji_in_tagged_name FAILED [100%]
+
+=== FAILURES ===
+__________ test_name_split_preserves_markup_and_emoji_in_tagged_name ___________
+
+    def test_name_split_preserves_markup_and_emoji_in_tagged_name():
+        noisy_name = "😀<b>Ａ</b>"
+        cover = [
+            _token("技師", "名詞", "一般", 0, 2),
+            _token(noisy_name, "名詞", "固有名詞", 2, 11),
+        ]
+    
+>       assert name_split_in(cover, "技師" + noisy_name) == ("技師", noisy_name)
+E       AssertionError: assert None == ('\u6280\u5e2b', '\U0001f600<b>\uff21</b>')
+E        +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\U0001f600<b>\uff21</b>', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 11)], ('\u6280\u5e2b' + '\U0001f600<b>\uff21</b>'))
+
+tests/attack/test_semantic_names_unicode_noise.py:99: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_names_unicode_noise.py::test_name_split_preserves_markup_and_emoji_in_tagged_name - AssertionError: assert None == ('\u6280\u5e2b', '\U0001f600<b>\uff21</b>')
+ +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\U0001f600<b>\uff21</b>', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 11)], ('\u6280\u5e2b' + '\U0001f600<b>\uff21</b>'))
+=== 1 failed, 11 deselected ===

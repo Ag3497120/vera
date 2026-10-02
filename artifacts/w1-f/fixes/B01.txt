@@ -1,0 +1,8 @@
+bundle B01 test tests/test_semantic_coordination_codex.py::test_concessive_main_clause_keeps_the_topic_subject
+before FAIL
+after PASS
+apply OK
+summary 123 failed, 3685 passed, 28 skipped, 82 xfailed, 68 xpassed, 37 subtests passed
+newly_passing:
+  tests/test_semantic_coordination_codex.py::test_concessive_main_clause_keeps_the_topic_subject
+newly_failing_confirmed:

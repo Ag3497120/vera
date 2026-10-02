@@ -1,0 +1,30 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 14 items / 13 deselected / 1 selected
+
+tests/attack/test_semantic_coord_unicode_noise.py::test_te_comma_chain_is_accepted FAILED [100%]
+
+=== FAILURES ===
+_______________________ test_te_comma_chain_is_accepted ________________________
+
+    def test_te_comma_chain_is_accepted():
+        tagged = [
+            _token("猫", "名詞", "一般", "", 0),
+            _token("歩き", "動詞", "自立", "連用形", 1),
+            _token("て", "助詞", "接続助詞", "", 3),
+            _token("、", "補助記号", "読点", "", 4),
+            _token("食べ", "動詞", "自立", "連用形", 5),
+        ]
+    
+>       assert coordination_ok(tagged, [1, 4])
+E       AssertionError: assert False
+E        +  where False = coordination_ok([('\u732b', '\u540d\u8a5e', '\u4e00\u822c', '', 0, 1), ('\u6b69\u304d', '\u52d5\u8a5e', '\u81ea\u7acb', '\u9023\u7528\u5f62', 1, 3), ('\u3066', '\u52a9\u8a5e', '\u63a5\u7d9a\u52a9\u8a5e', '', 3, 4), ('\u3001', '\u88dc\u52a9\u8a18\u53f7', '\u8aad\u70b9', '', 4, 5), ('\u98df\u3079', '\u52d5\u8a5e', '\u81ea\u7acb', '\u9023\u7528\u5f62', 5, 7)], [1, 4])
+
+tests/attack/test_semantic_coord_unicode_noise.py:19: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_coord_unicode_noise.py::test_te_comma_chain_is_accepted - AssertionError: assert False
+ +  where False = coordination_ok([('\u732b', '\u540d\u8a5e', '\u4e00\u822c', '', 0, 1), ('\u6b69\u304d', '\u52d5\u8a5e', '\u81ea\u7acb', '\u9023\u7528\u5f62', 1, 3), ('\u3066', '\u52a9\u8a5e', '\u63a5\u7d9a\u52a9\u8a5e', '', 3, 4), ('\u3001', '\u88dc\u52a9\u8a18\u53f7', '\u8aad\u70b9', '', 4, 5), ('\u98df\u3079', '\u52d5\u8a5e', '\u81ea\u7acb', '\u9023\u7528\u5f62', 5, 7)], [1, 4])
+=== 1 failed, 13 deselected ===

@@ -1,0 +1,26 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 14 items / 13 deselected / 1 selected
+
+tests/attack/test_memory_brief_fabrication.py::test_negation_in_supported_sentence_is_preserved_verbatim FAILED [100%]
+
+=== FAILURES ===
+__________ test_negation_in_supported_sentence_is_preserved_verbatim ___________
+
+    def test_negation_in_supported_sentence_is_preserved_verbatim():
+        record = _fact("r1", "Aya", "mobility", "Aya does not use a cane.")
+    
+>       assert _brief(_TypedMemory([record])) == "[id:r1] Aya does not use a cane."
+E       AssertionError: assert ContextBrief(text='Dropped record ids: r1', records=(), dropped_ids=('r1',)) == '[id:r1] Aya does not use a cane.'
+E        +  where ContextBrief(text='Dropped record ids: r1', records=(), dropped_ids=('r1',)) = _brief(<test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>>)
+E        +    where <test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>> = _TypedMemory([{'id': 'r1', 'kind': 'FACT', 'ts': '2026-01-01', 'sentence': 'Aya does not use a cane.', 'slots': {'subject': 'Aya', 'attribute': 'mobility'}}])
+
+tests/attack/test_memory_brief_fabrication.py:58: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_fabrication.py::test_negation_in_supported_sentence_is_preserved_verbatim - AssertionError: assert ContextBrief(text='Dropped record ids: r1', records=(), dropped_ids=('r1',)) == '[id:r1] Aya does not use a cane.'
+ +  where ContextBrief(text='Dropped record ids: r1', records=(), dropped_ids=('r1',)) = _brief(<test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>>)
+ +    where <test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>> = _TypedMemory([{'id': 'r1', 'kind': 'FACT', 'ts': '2026-01-01', 'sentence': 'Aya does not use a cane.', 'slots': {'subject': 'Aya', 'attribute': 'mobility'}}])
+=== 1 failed, 13 deselected ===

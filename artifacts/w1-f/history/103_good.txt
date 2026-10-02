@@ -1,0 +1,15 @@
+# commit 307f9682685869b00b15bf44a3686267cdbb83f9
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 14 items / 13 deselected / 1 selected
+
+tests/attack/test_verifier_agents_fabrication.py::test_parse_verdict_rejects_unscoped_or_vague_references[../private.txt] PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/attack/test_verifier_agents_fabrication.py::test_parse_verdict_rejects_unscoped_or_vague_references[../private.txt]
+=== 1 passed, 13 deselected ===

@@ -1,0 +1,87 @@
+{
+ "apply": "PARTIAL_REJECT",
+ "commit": "3e36e08fe5e9f1a04abebbdcfb62f1b14cd99980",
+ "files": [
+  "verantyx/verifier_agents.py"
+ ],
+ "log": [
+  {
+   "apply": "PARTIAL_REJECT",
+   "rejected_files": [
+    "verantyx/verifier_agents.py.rej"
+   ],
+   "rejected_hunks": 1,
+   "step": [
+    "revert",
+    "3e36e08fe5e9f1a04abebbdcfb62f1b14cd99980"
+   ],
+   "three_way_conflict_files": [
+    "verantyx/verifier_agents.py"
+   ],
+   "total_hunks": 11
+  }
+ ],
+ "newly_failing": [
+  "tests/test_verifier_agents.py::test_artifact_evidence_must_be_readable_under_allowed_root",
+  "tests/test_verifier_agents.py::test_brief_quotes_injection_text_as_untrusted_record_data",
+  "tests/test_verifier_agents.py::test_contradicting_verifiers_abstain_without_vote_pooling[results0]",
+  "tests/test_verifier_agents.py::test_contradicting_verifiers_abstain_without_vote_pooling[results1]",
+  "tests/test_verifier_agents.py::test_contradicting_verifiers_abstain_without_vote_pooling[results2]",
+  "tests/test_verifier_agents.py::test_deterministic_witness_is_rechecked_after_verdict",
+  "tests/test_verifier_agents.py::test_missing_plain_file_evidence_cannot_complete_task",
+  "tests/test_verifier_agents.py::test_new_verifier_result_supersedes_previous_record",
+  "tests/test_verifier_agents.py::test_parse_accepts_legacy_evidence_reference_as_testimony[artifact:build/result.json]",
+  "tests/test_verifier_agents.py::test_parse_accepts_legacy_evidence_reference_as_testimony[command:pytest -q]",
+  "tests/test_verifier_agents.py::test_parse_accepts_legacy_evidence_reference_as_testimony[record:abc-123]",
+  "tests/test_verifier_agents.py::test_parse_accepts_legacy_evidence_reference_as_testimony[sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]",
+  "tests/test_verifier_agents.py::test_parse_accepts_legacy_evidence_reference_as_testimony[source.py:4]",
+  "tests/test_verifier_agents.py::test_parse_accepts_legacy_evidence_reference_as_testimony[test:test_case]",
+  "tests/test_verifier_agents.py::test_passing_independent_verifier_completes_after_conductor_recheck",
+  "tests/test_verifier_agents.py::test_passing_verdict_without_rerunnable_evidence_is_unverified",
+  "tests/test_verifier_agents.py::test_plain_file_evidence_must_be_readable_under_allowed_root",
+  "tests/test_verifier_agents.py::test_post_verification_witness_failure_prevents_done",
+  "tests/test_verifier_agents.py::test_reported_verdict_never_decides_completion[FAIL-0-True]",
+  "tests/test_verifier_agents.py::test_reported_verdict_never_decides_completion[PASS-1-False]",
+  "tests/test_verifier_agents.py::test_two_agreeing_verifiers_both_appear_in_auditable_record",
+  "tests/test_verifier_agents.py::test_unanimous_fail_is_recorded_and_escalated",
+  "tests/test_verifier_agents.py::test_unsafe_or_missing_artifact_cannot_complete_task[artifact:missing.json]",
+  "tests/test_verifier_agents.py::test_verification_output_is_stored_as_testimony_not_fact"
+ ],
+ "newly_failing_confirmed": [
+  "tests/test_verifier_agents.py::test_artifact_evidence_must_be_readable_under_allowed_root",
+  "tests/test_verifier_agents.py::test_brief_quotes_injection_text_as_untrusted_record_data",
+  "tests/test_verifier_agents.py::test_contradicting_verifiers_abstain_without_vote_pooling[results0]",
+  "tests/test_verifier_agents.py::test_contradicting_verifiers_abstain_without_vote_pooling[results1]",
+  "tests/test_verifier_agents.py::test_contradicting_verifiers_abstain_without_vote_pooling[results2]",
+  "tests/test_verifier_agents.py::test_deterministic_witness_is_rechecked_after_verdict",
+  "tests/test_verifier_agents.py::test_missing_plain_file_evidence_cannot_complete_task",
+  "tests/test_verifier_agents.py::test_new_verifier_result_supersedes_previous_record",
+  "tests/test_verifier_agents.py::test_parse_accepts_legacy_evidence_reference_as_testimony[artifact:build/result.json]",
+  "tests/test_verifier_agents.py::test_parse_accepts_legacy_evidence_reference_as_testimony[command:pytest -q]",
+  "tests/test_verifier_agents.py::test_parse_accepts_legacy_evidence_reference_as_testimony[record:abc-123]",
+  "tests/test_verifier_agents.py::test_parse_accepts_legacy_evidence_reference_as_testimony[sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]",
+  "tests/test_verifier_agents.py::test_parse_accepts_legacy_evidence_reference_as_testimony[source.py:4]",
+  "tests/test_verifier_agents.py::test_parse_accepts_legacy_evidence_reference_as_testimony[test:test_case]",
+  "tests/test_verifier_agents.py::test_passing_independent_verifier_completes_after_conductor_recheck",
+  "tests/test_verifier_agents.py::test_passing_verdict_without_rerunnable_evidence_is_unverified",
+  "tests/test_verifier_agents.py::test_plain_file_evidence_must_be_readable_under_allowed_root",
+  "tests/test_verifier_agents.py::test_post_verification_witness_failure_prevents_done",
+  "tests/test_verifier_agents.py::test_reported_verdict_never_decides_completion[FAIL-0-True]",
+  "tests/test_verifier_agents.py::test_reported_verdict_never_decides_completion[PASS-1-False]",
+  "tests/test_verifier_agents.py::test_two_agreeing_verifiers_both_appear_in_auditable_record",
+  "tests/test_verifier_agents.py::test_unanimous_fail_is_recorded_and_escalated",
+  "tests/test_verifier_agents.py::test_unsafe_or_missing_artifact_cannot_complete_task[artifact:missing.json]",
+  "tests/test_verifier_agents.py::test_verification_output_is_stored_as_testimony_not_fact"
+ ],
+ "newly_passing": [
+  "tests/attack/test_verifier_agents_differential.py::test_brief_matches_independent_renderer_for_generated_untrusted_specs",
+  "tests/attack/test_verifier_agents_fabrication.py::test_parse_verdict_rejects_unscoped_or_vague_references[../private.txt]",
+  "tests/attack/test_verifier_agents_fabrication.py::test_parse_verdict_rejects_unscoped_or_vague_references[a/../private.txt]",
+  "tests/attack/test_verifier_agents_fabrication.py::test_parse_verdict_rejects_unscoped_or_vague_references[verified]",
+  "tests/attack/test_verifier_agents_injection.py::test_brief_keeps_nested_quotes_and_unicode_inside_the_json_data"
+ ],
+ "partial_method": "git apply -R --reject（当たる hunk だけ）",
+ "still_failing_count": 119,
+ "subject": "unit x_verifier_evidence",
+ "summary_line": "143 failed, 3665 passed, 28 skipped, 79 xfailed, 71 xpassed, 37 subtests passed"
+}

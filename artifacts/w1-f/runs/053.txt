@@ -1,0 +1,30 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 13 items / 12 deselected / 1 selected
+
+tests/attack/test_memory_revalidate_injection.py::test_confusable_unknown_witness_kind_does_not_become_fresh FAILED [100%]
+
+=== FAILURES ===
+__________ test_confusable_unknown_witness_kind_does_not_become_fresh __________
+
+    def test_confusable_unknown_witness_kind_does_not_become_fresh():
+        witness = {'kind': 'file_sha256\u200b', 'path': 'source.txt',
+                   'sha256': hashlib.sha256(b'12').hexdigest()}
+        answer = _ask(_record(witness)).ask_about('router', 'unread limit')
+    
+>       assert answer['verdict'] == 'ANSWER'
+E       AssertionError: assert 'UNKNOWN_NO_EVIDENCE' == 'ANSWER'
+E         
+E         - ANSWER
+E         + UNKNOWN_NO_EVIDENCE
+
+tests/attack/test_memory_revalidate_injection.py:196: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_revalidate_injection.py::test_confusable_unknown_witness_kind_does_not_become_fresh - AssertionError: assert 'UNKNOWN_NO_EVIDENCE' == 'ANSWER'
+  
+  - ANSWER
+  + UNKNOWN_NO_EVIDENCE
+=== 1 failed, 12 deselected ===

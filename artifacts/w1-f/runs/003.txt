@@ -1,0 +1,27 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_memory_brief_differential.py::test_askable_and_unaskable_records_are_accounted_for FAILED [100%]
+
+=== FAILURES ===
+_____________ test_askable_and_unaskable_records_are_accounted_for _____________
+
+    def test_askable_and_unaskable_records_are_accounted_for():
+        records = [rec("a", subject="Ada", attribute="role"), rec("b", subject="Bryn", attribute="role")]
+        memory = memory_with_sources(records, askable_ids={"a"})
+        expected = "[id:a] Sentence a\nDropped record ids: b"
+>       assert compile_brief(memory, len(expected)) == expected
+E       AssertionError: assert ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')) == '[id:a] Sentence a\nDropped record ids: b'
+E        +  where ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')) = compile_brief(<test_memory_brief_differential.FakeMemory object at 0x<ADDR>>, 39)
+E        +    where 39 = len('[id:a] Sentence a\nDropped record ids: b')
+
+tests/attack/test_memory_brief_differential.py:151: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_differential.py::test_askable_and_unaskable_records_are_accounted_for - AssertionError: assert ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')) == '[id:a] Sentence a\nDropped record ids: b'
+ +  where ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')) = compile_brief(<test_memory_brief_differential.FakeMemory object at 0x<ADDR>>, 39)
+ +    where 39 = len('[id:a] Sentence a\nDropped record ids: b')
+=== 1 failed, 9 deselected ===

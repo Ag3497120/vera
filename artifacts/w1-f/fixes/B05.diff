@@ -1,0 +1,16 @@
+diff --git a/verantyx/semantic_unknown.py b/verantyx/semantic_unknown.py
+--- a/verantyx/semantic_unknown.py
++++ b/verantyx/semantic_unknown.py
+@@ -265,9 +265,11 @@
+         counts = runs(view.sources[source])
+         source_counts.update(counts)
+         corpora.append((source, view.sources[source]))
++    # Distinct source words: vocabulary runs plus whitespace-delimited ASCII words (runs() sees only non-ASCII runs).
++    ascii_words = {word for text in view.sources.values() for word in text.split() if word.isascii()}
+     work = (len(view.clauses)
+             + sum(len(clause.roles) for clause in view.clauses)
+-            + len(source_counts))
++            + len(set(source_counts) | ascii_words))
+     if work > budget:
+         return _budget_refusal(term)
+ 

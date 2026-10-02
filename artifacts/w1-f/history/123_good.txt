@@ -1,0 +1,15 @@
+# commit 1fd524b421abd83b4b7506042062a537002dc09c
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 60 items / 59 deselected / 1 selected
+
+tests/test_semantic_realize.py::test_reader_case_roles_are_preserved[\u30de\u30ad\u306f\u5b66\u6821\u3067\u672c\u3092\u8aad\u3093\u3060\u3002-location] PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/test_semantic_realize.py::test_reader_case_roles_are_preserved[\u30de\u30ad\u306f\u5b66\u6821\u3067\u672c\u3092\u8aad\u3093\u3060\u3002-location]
+=== 1 passed, 59 deselected ===

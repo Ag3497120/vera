@@ -1,0 +1,13 @@
+diff --git a/verantyx/semantic_unknown.py b/verantyx/semantic_unknown.py
+index a4d32b5..509e0c7 100644
+--- a/verantyx/semantic_unknown.py
++++ b/verantyx/semantic_unknown.py
+@@ -267,7 +267,7 @@ def unknown_candidates(
+         corpora.append((source, view.sources[source]))
+     work = (len(view.clauses)
+             + sum(len(clause.roles) for clause in view.clauses)
+-            + len(source_counts))
++            + len(source_counts) + 1)
+     if work > budget:
+         return _budget_refusal(term)
+ 

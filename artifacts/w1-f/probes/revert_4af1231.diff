@@ -1,0 +1,80 @@
+diff --git a/verantyx/semantic_reader.py b/verantyx/semantic_reader.py
+index 00b6338..40ecff7 100644
+--- a/verantyx/semantic_reader.py
++++ b/verantyx/semantic_reader.py
+@@ -326,10 +326,6 @@ def _piece(source, raw, start, end, sovereign, family):
+     tokens = _tokens(text); words = [t[0] for t in tokens]
+     if text.rstrip().endswith(('?', '？')) or any(w.feature.pos1 == '助詞' and w.surface in ('か', 'かな', 'かしら', 'かい', 'かね', 'っけ') for w in words):
+         return [], [Unread(full, 'interrogative source does not assert a fact')]
+-    if _DOUBLE_NEGATION.search(text):
+-        return [], [Unread(full, 'unsupported double negation')]
+-    if _NEGATIVE_ADJECTIVE.search(text):
+-        return [], [Unread(full, 'unsupported negative adjective')]
+     if any('意志推量' in str(w.feature.cForm) for w in words):
+         return [], [Unread(full, 'volitional source does not assert a fact')]
+     # A duration (1時間) is not a clock-time scope: judge the other complex-scope words on the text without it.
+@@ -702,7 +698,7 @@ def _event_question(fragment,b,span):
+     # A relative head names the missing event role, and becomes a bound variable.
+     relative=re.fullmatch(r'(.+?)(人|もの|物|箱|鍵|資料)(?:は)?',cleaned)
+     # Cleft question ("Xを呼んだのは？"): the omitted head asks for the role the clause leaves open.
+-    cleft=None if relative else re.fullmatch(r'(.+?)の(?:は|が)(?:誰|だれ|何)?',cleaned)
++    cleft=None if relative else re.fullmatch(r'(.+?)の(?:は|が)',cleaned)
+     if cleft: relative=re.fullmatch(r'(.+?)(もの)',cleft[1]+'もの')
+     core=relative[1] if relative else cleaned
+     frames=read_all(core); positioned=_tokens(core); tokens=[w for w,_,_ in positioned]; preds=_predicates(tokens)
+@@ -718,42 +714,23 @@ def _event_question(fragment,b,span):
+             roles.append((role,canonical(term)))
+             at = core.rfind(term, 0, positioned[preds[0][0]][1])
+             if at >= 0: covered.append((at, at+len(term)))
+-    case_roles, case_issues = _case_roles(core, positioned, preds[0][0], existing=roles)
+-    if case_issues: return False
+-    for role, term, (at, end_at), _kind in case_roles:
+-        if any(k==role for k,_ in roles):return False
+-        roles.append((role,term)); covered.append((at,end_at))
++    for edge in extract(core):
++        if edge.ev != preds[0][0]:continue
++        role={'で':'location','から':'origin'}.get(edge.rel)
++        if role and not _WH.search(edge.dep):
++            if any(k==role for k,_ in roles):return False
++            roles.append((role,edge.dep))
++            at = core.rfind(edge.dep, 0, positioned[preds[0][0]][1])
++            if at >= 0: covered.append((at, at+len(edge.dep)))
+     passive=bool(re.search(r'(?:れ|られ)(?:た|る|ます)',core))
+     handled_wh=set()
+-    for m in re.finditer(r'(誰|だれ|何時|いつ|何|どこ)(によって|が|は|を|に|へ|で|から|まで|と)',core):
++    for m in re.finditer(r'(誰|だれ|何|どこ)(が|は|を|に|へ|で|から)',core):
+         handled_wh.add(m.start())
+         covered.append((m.start(),m.end()))
+-        wh, particle = m[1], m[2]
+-        if particle == 'によって':
+-            role='agent'
+-        elif particle in ('が','は'):
+-            role='patient' if passive else 'agent'
+-        elif particle == 'を': role='patient'
+-        elif particle == 'に':
+-            if wh in ('いつ','何時'): role='time'
+-            elif wh in ('誰','だれ'): role='agent' if passive else 'recipient'
+-            elif wh == 'どこ':
+-                if original in _GOAL_PREDICATES: role='goal'
+-                elif original in _LOCATION_PREDICATES or original in ('いる','ある'): role='location'
+-                else: return False
+-            else: return False
+-        elif particle == 'へ': role='direction'
+-        elif particle == 'で':
+-            if wh == 'どこ': role='place'
+-            else: return False
+-        elif particle == 'から': role='time' if wh in ('いつ','何時') else 'source'
+-        elif particle == 'まで': role='limit'
+-        elif particle == 'と':
+-            if wh in ('誰','だれ'): role='companion'
+-            elif original in ('言う','話す','述べる'): role='quotation'
+-            else: return False
+-        if original in CONVERSE and particle != 'によって':
+-            role={'agent':'recipient','recipient':'agent','origin':'agent','source':'agent'}.get(role,role)
++        role={'が':'agent','は':'agent','を':'patient','に':'recipient','へ':'recipient','で':'location','から':'origin'}[m[2]]
++        if passive and role=='agent': role='patient'
++        if original in CONVERSE:
++            role={'agent':'recipient','recipient':'agent','origin':'agent'}.get(role,role)
+         if any(k==role for k,_ in roles): return False
+         value=b.variable(); roles.append((role,value)); outputs.append((role,value))
+     if any(m.start() not in handled_wh for m in _WH.finditer(core)):return False

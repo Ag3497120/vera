@@ -1,0 +1,23 @@
+{
+ "after": "PASS",
+ "apply": "OK",
+ "before": "FAIL",
+ "bundle": "B02",
+ "bundle_tests_passing_after": [
+  "tests/test_semantic_measure.py::test_kanji_title_before_a_name_is_split[\\u30df\\u30ca\\u306f\\u9752\\u3044\\u9375\\u3092\\u5009\\u5eabC\\u304b\\u3089\\u6280\\u5e2b\\u30e6\\u30f3\\u3078\\u904b\\u3093\\u3060\\u3002-\\u8ab0\\u3078\\u904b\\u3093\\u3060\\uff1f-expected0]",
+  "tests/test_semantic_measure.py::test_role_only_questions_generalize[\\u30d2\\u30ed\\u306f\\u8377\\u7269\\u3092\\u99c5B\\u304b\\u3089\\u5e97\\u9577\\u30b5\\u30ad\\u3078\\u5c4a\\u3051\\u305f\\u3002-\\u8ab0\\u304c\\u4f55\\u3092\\u8ab0\\u3078\\uff1f-expected4]"
+ ],
+ "diff": "artifacts/w1-f/fixes/B02.diff",
+ "newly_failing": [],
+ "newly_failing_confirmed": [],
+ "newly_passing": [
+  "tests/test_semantic_measure.py::test_kanji_title_before_a_name_is_split[\\u30df\\u30ca\\u306f\\u9752\\u3044\\u9375\\u3092\\u5009\\u5eabC\\u304b\\u3089\\u6280\\u5e2b\\u30e6\\u30f3\\u3078\\u904b\\u3093\\u3060\\u3002-\\u8ab0\\u3078\\u904b\\u3093\\u3060\\uff1f-expected0]",
+  "tests/test_semantic_measure.py::test_role_only_questions_generalize[\\u30d2\\u30ed\\u306f\\u8377\\u7269\\u3092\\u99c5B\\u304b\\u3089\\u5e97\\u9577\\u30b5\\u30ad\\u3078\\u5c4a\\u3051\\u305f\\u3002-\\u8ab0\\u304c\\u4f55\\u3092\\u8ab0\\u3078\\uff1f-expected4]"
+ ],
+ "only_product_files": true,
+ "summary_line": "122 failed, 3686 passed, 28 skipped, 82 xfailed, 68 xpassed, 37 subtests passed",
+ "test": "tests/test_semantic_measure.py::test_kanji_title_before_a_name_is_split[\\u30df\\u30ca\\u306f\\u9752\\u3044\\u9375\\u3092\\u5009\\u5eabC\\u304b\\u3089\\u6280\\u5e2b\\u30e6\\u30f3\\u3078\\u904b\\u3093\\u3060\\u3002-\\u8ab0\\u3078\\u904b\\u3093\\u3060\\uff1f-expected0]",
+ "touched": [
+  "verantyx/semantic_reader.py"
+ ]
+}

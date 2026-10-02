@@ -1,0 +1,45 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_memory_merge_fabrication.py::test_partial_supersession_link_stays_pending_until_target_record_arrives FAILED [100%]
+
+=== FAILURES ===
+___ test_partial_supersession_link_stays_pending_until_target_record_arrives ___
+
+    def test_partial_supersession_link_stays_pending_until_target_record_arrives():
+        old = write({'id': 'old', 'subject': 'Mika', 'attribute': 'city', 'value': 'Kyoto'})
+        pending = merge_logs([old], [{'op': 'supersede', 'id': 'old', 'by': 'new'}])
+    
+        with pytest.raises(ValueError, match='dangling supersession reference'):
+            active_records(pending)
+    
+        new = write({'id': 'new', 'subject': 'Mika', 'attribute': 'city', 'value': 'Osaka'})
+        completed = merge_logs(pending, [new])
+    
+>       assert [record['id'] for record in active_records(completed)] == ['new']
+E       AssertionError: assert ['new', 'old'] == ['new']
+E         
+E         Left contains one more item: 'old'
+E         
+E         Full diff:
+E           [
+E               'new',
+E         +     'old',
+E           ]
+
+tests/attack/test_memory_merge_fabrication.py:134: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_merge_fabrication.py::test_partial_supersession_link_stays_pending_until_target_record_arrives - AssertionError: assert ['new', 'old'] == ['new']
+  
+  Left contains one more item: 'old'
+  
+  Full diff:
+    [
+        'new',
+  +     'old',
+    ]
+=== 1 failed, 9 deselected ===

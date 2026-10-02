@@ -1,0 +1,28 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 13 items / 12 deselected / 1 selected
+
+tests/attack/test_semantic_names_long_documents.py::test_name_split_accepts_multiple_kanji_title_tokens FAILED [100%]
+
+=== FAILURES ===
+_____________ test_name_split_accepts_multiple_kanji_title_tokens ______________
+
+    def test_name_split_accepts_multiple_kanji_title_tokens():
+        cover = [
+            tok("主任", "名詞", "一般", 0, 2),
+            tok("研究員", "名詞", "一般", 2, 5),
+            tok("ユン", "名詞", "固有名詞", 5, 6),
+        ]
+    
+>       assert name_split_in(cover, "主任研究員ユン") == ("主任研究員", "ユン")
+E       AssertionError: assert None == ('\u4e3b\u4efb\u7814\u7a76\u54e1', '\u30e6\u30f3')
+E        +  where None = name_split_in([('\u4e3b\u4efb', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u7814\u7a76\u54e1', '\u540d\u8a5e', '\u4e00\u822c', 2, 5), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 5, 6)], '\u4e3b\u4efb\u7814\u7a76\u54e1\u30e6\u30f3')
+
+tests/attack/test_semantic_names_long_documents.py:71: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_names_long_documents.py::test_name_split_accepts_multiple_kanji_title_tokens - AssertionError: assert None == ('\u4e3b\u4efb\u7814\u7a76\u54e1', '\u30e6\u30f3')
+ +  where None = name_split_in([('\u4e3b\u4efb', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u7814\u7a76\u54e1', '\u540d\u8a5e', '\u4e00\u822c', 2, 5), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 5, 6)], '\u4e3b\u4efb\u7814\u7a76\u54e1\u30e6\u30f3')
+=== 1 failed, 12 deselected ===

@@ -1,0 +1,11 @@
+diff --git a/tests/attack/test_memory_frame_limits.py b/tests/attack/test_memory_frame_limits.py
+--- a/tests/attack/test_memory_frame_limits.py
++++ b/tests/attack/test_memory_frame_limits.py
+@@ -38,6 +38,7 @@
+ 
+     first = memory.ask("ルーターの未読上限は？")
+     second = memory.ask("ルーターの未読上限は？")
++    first.pop("witness_classes"), second.pop("witness_classes")  # W1-f adapt probe: additive key of 794ce88
+ 
+     assert first == {"verdict": "UNKNOWN_NO_EVIDENCE", "values": [], "records": []}
+     assert second == first

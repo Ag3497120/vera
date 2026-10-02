@@ -1,0 +1,35 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 28 items / 27 deselected / 1 selected
+
+tests/test_semantic_scope_safety.py::test_unrepresented_request_content_never_becomes_a_yes[\u30ca\u30aa\u306f\u5b66\u6821\u304b\u3089\u30ea\u30af\u306b\u9752\u9375\u3092\u6e21\u3057\u305f\u304b\uff1f] FAILED [100%]
+
+=== FAILURES ===
+_ test_unrepresented_request_content_never_becomes_a_yes[\u30ca\u30aa\u306f\u5b66\u6821\u304b\u3089\u30ea\u30af\u306b\u9752\u9375\u3092\u6e21\u3057\u305f\u304b\uff1f] _
+
+question = 'ナオは学校からリクに青鍵を渡したか？'
+
+    @pytest.mark.parametrize('question', [
+        'ナオは学校からリクに青鍵を渡したか？',
+        'ナオはリクに青鍵を二つ渡したか？',
+        'ナオはリクに青鍵を2つ渡したか？',
+        'ナオはリクからリクに青鍵を渡したか？',
+    ])
+    def test_unrepresented_request_content_never_becomes_a_yes(question):
+        result = Vera.from_texts({'d': 'ナオがリクに青鍵を渡した。'}, mode='semantic').ask(question)
+>       assert result['verdict'] == 'UNKNOWN_UNREAD'
+E       AssertionError: assert 'UNKNOWN_NO_EVIDENCE' == 'UNKNOWN_UNREAD'
+E         
+E         - UNKNOWN_UNREAD
+E         + UNKNOWN_NO_EVIDENCE
+
+tests/test_semantic_scope_safety.py:18: AssertionError
+=== short test summary info ===
+FAILED tests/test_semantic_scope_safety.py::test_unrepresented_request_content_never_becomes_a_yes[\u30ca\u30aa\u306f\u5b66\u6821\u304b\u3089\u30ea\u30af\u306b\u9752\u9375\u3092\u6e21\u3057\u305f\u304b\uff1f] - AssertionError: assert 'UNKNOWN_NO_EVIDENCE' == 'UNKNOWN_UNREAD'
+  
+  - UNKNOWN_UNREAD
+  + UNKNOWN_NO_EVIDENCE
+=== 1 failed, 27 deselected ===

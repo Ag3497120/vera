@@ -1,0 +1,62 @@
+diff --git a/tests/attack/conftest.py b/tests/attack/conftest.py
+new file mode 100644
+--- /dev/null
++++ b/tests/attack/conftest.py
+@@ -0,0 +1,57 @@
++"""W1-f adapt probe (temporary copy only; expected values in the test files are untouched).
++Adapter 4: present the typed ContextBrief of verantyx/memory_brief.py through the old plain-string contract of a9cad0a^.
++C1 + C2 + C3 + C4: also emulate the old budget accounting (a line costs its old length).
++"""
++import re
++import verantyx.memory_brief as _mb
++
++_real = _mb.compile_brief
++LEVEL = 4
++_ANN = len("; witness:UNVERIFIABLE; context-only")
++
++
++class _Memory:
++    def __init__(self, inner):
++        self._inner = inner
++        self._memo = {}
++
++    def __getattr__(self, name):
++        return getattr(self._inner, name)
++
++    def ask_about(self, *a, **k):
++        key = (a, tuple(sorted(k.items())))
++        if key not in self._memo:
++            r = dict(self._inner.ask_about(*a, **k))
++            if LEVEL >= 2 and r.get("records") and "verdict" not in r:
++                r["verdict"] = "ANSWER"
++            self._memo[key] = r
++        return self._memo[key]
++
++
++def _strip(text):
++    return re.sub(r"; witness:[A-Z_]+; context-only\]", "]", text) if LEVEL >= 3 else text
++
++
++def compile_brief(memory, budget_chars, focus=None):
++    m = _Memory(memory)
++    if LEVEL < 4 or isinstance(budget_chars, bool) or not isinstance(budget_chars, int) or budget_chars < 0:
++        return _strip(_real(m, budget_chars, focus=focus).text)
++    best = None
++    err = None
++    for k in range(0, len(m.active()) + 1):
++        try:
++            b = _real(m, budget_chars + _ANN * k, focus=focus)
++        except ValueError as e:
++            err = e
++            continue
++        text = _strip(b.text)
++        if len(text) <= budget_chars and (best is None or len(b.records) > len(best[0].records)):
++            best = (b, text)
++    if best is None:
++        if err is not None:
++            raise err
++        raise ValueError("budget_chars is too small to report all dropped record IDs")
++    return best[1]
++
++
++_mb.compile_brief = compile_brief

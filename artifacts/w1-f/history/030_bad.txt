@@ -1,0 +1,201 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 17 items / 16 deselected / 1 selected
+
+tests/attack/test_memory_brief_limits.py::test_concurrent_readers_return_the_same_brief FAILED [100%]
+
+=== FAILURES ===
+________________ test_concurrent_readers_return_the_same_brief _________________
+
+    def test_concurrent_readers_return_the_same_brief():
+        records = [row("b", "DECISION", subject="s"), row("a", subject="s")]
+        memory = MemoryStub(records)
+        expected = "[id:a] Sentence for a.\n[id:b] Sentence for b."
+    
+        with ThreadPoolExecutor(max_workers=4) as readers:
+            results = list(readers.map(lambda _: compile_brief(memory, len(expected)), range(8)))
+    
+>       assert results == [expected] * 8
+E       AssertionError: assert [ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')), ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')), ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')), ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')), ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')), ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')), ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')), ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b'))] == ['[id:a] Sentence for a.\n[id:b] Sentence for b.', '[id:a] Sentence for a.\n[id:b] Sentence for b.', '[id:a] Sentence for a.\n[id:b] Sentence for b.', '[id:a] Sentence for a.\n[id:b] Sentence for b.', '[id:a] Sentence for a.\n[id:b] Sentence for b.', '[id:a] Sentence for a.\n[id:b] Sentence for b.', '[id:a] Sentence for a.\n[id:b] Sentence for b.', '[id:a] Sentence for a.\n[id:b] Sentence for b.']
+E         
+E         At index 0 diff: ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')) != '[id:a] Sentence for a.\n[id:b] Sentence for b.'
+E         
+E         Full diff:
+E           [
+E         -     '[id:a] Sentence for a.\n'
+E         -     '[id:b] Sentence for b.',
+E         -     '[id:a] Sentence for a.\n'
+E         -     '[id:b] Sentence for b.',
+E         -     '[id:a] Sentence for a.\n'
+E         -     '[id:b] Sentence for b.',
+E         -     '[id:a] Sentence for a.\n'
+E         -     '[id:b] Sentence for b.',
+E         -     '[id:a] Sentence for a.\n'
+E         -     '[id:b] Sentence for b.',
+E         -     '[id:a] Sentence for a.\n'
+E         -     '[id:b] Sentence for b.',
+E         -     '[id:a] Sentence for a.\n'
+E         -     '[id:b] Sentence for b.',
+E         -     '[id:a] Sentence for a.\n'
+E         -     '[id:b] Sentence for b.',
+E         +     ContextBrief(
+E         +         text='Dropped record ids: a, b',
+E         +         records=(),
+E         +         dropped_ids=(
+E         +                         'a',
+E         +                         'b',
+E         +                     ),
+E         +     ),
+E         +     ContextBrief(
+E         +         text='Dropped record ids: a, b',
+E         +         records=(),
+E         +         dropped_ids=(
+E         +                         'a',
+E         +                         'b',
+E         +                     ),
+E         +     ),
+E         +     ContextBrief(
+E         +         text='Dropped record ids: a, b',
+E         +         records=(),
+E         +         dropped_ids=(
+E         +                         'a',
+E         +                         'b',
+E         +                     ),
+E         +     ),
+E         +     ContextBrief(
+E         +         text='Dropped record ids: a, b',
+E         +         records=(),
+E         +         dropped_ids=(
+E         +                         'a',
+E         +                         'b',
+E         +                     ),
+E         +     ),
+E         +     ContextBrief(
+E         +         text='Dropped record ids: a, b',
+E         +         records=(),
+E         +         dropped_ids=(
+E         +                         'a',
+E         +                         'b',
+E         +                     ),
+E         +     ),
+E         +     ContextBrief(
+E         +         text='Dropped record ids: a, b',
+E         +         records=(),
+E         +         dropped_ids=(
+E         +                         'a',
+E         +                         'b',
+E         +                     ),
+E         +     ),
+E         +     ContextBrief(
+E         +         text='Dropped record ids: a, b',
+E         +         records=(),
+E         +         dropped_ids=(
+E         +                         'a',
+E         +                         'b',
+E         +                     ),
+E         +     ),
+E         +     ContextBrief(
+E         +         text='Dropped record ids: a, b',
+E         +         records=(),
+E         +         dropped_ids=(
+E         +                         'a',
+E         +                         'b',
+E         +                     ),
+E         +     ),
+E           ]
+
+tests/attack/test_memory_brief_limits.py:134: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_limits.py::test_concurrent_readers_return_the_same_brief - AssertionError: assert [ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')), ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')), ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')), ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')), ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')), ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')), ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')), ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b'))] == ['[id:a] Sentence for a.\n[id:b] Sentence for b.', '[id:a] Sentence for a.\n[id:b] Sentence for b.', '[id:a] Sentence for a.\n[id:b] Sentence for b.', '[id:a] Sentence for a.\n[id:b] Sentence for b.', '[id:a] Sentence for a.\n[id:b] Sentence for b.', '[id:a] Sentence for a.\n[id:b] Sentence for b.', '[id:a] Sentence for a.\n[id:b] Sentence for b.', '[id:a] Sentence for a.\n[id:b] Sentence for b.']
+  
+  At index 0 diff: ContextBrief(text='Dropped record ids: a, b', records=(), dropped_ids=('a', 'b')) != '[id:a] Sentence for a.\n[id:b] Sentence for b.'
+  
+  Full diff:
+    [
+  -     '[id:a] Sentence for a.\n'
+  -     '[id:b] Sentence for b.',
+  -     '[id:a] Sentence for a.\n'
+  -     '[id:b] Sentence for b.',
+  -     '[id:a] Sentence for a.\n'
+  -     '[id:b] Sentence for b.',
+  -     '[id:a] Sentence for a.\n'
+  -     '[id:b] Sentence for b.',
+  -     '[id:a] Sentence for a.\n'
+  -     '[id:b] Sentence for b.',
+  -     '[id:a] Sentence for a.\n'
+  -     '[id:b] Sentence for b.',
+  -     '[id:a] Sentence for a.\n'
+  -     '[id:b] Sentence for b.',
+  -     '[id:a] Sentence for a.\n'
+  -     '[id:b] Sentence for b.',
+  +     ContextBrief(
+  +         text='Dropped record ids: a, b',
+  +         records=(),
+  +         dropped_ids=(
+  +                         'a',
+  +                         'b',
+  +                     ),
+  +     ),
+  +     ContextBrief(
+  +         text='Dropped record ids: a, b',
+  +         records=(),
+  +         dropped_ids=(
+  +                         'a',
+  +                         'b',
+  +                     ),
+  +     ),
+  +     ContextBrief(
+  +         text='Dropped record ids: a, b',
+  +         records=(),
+  +         dropped_ids=(
+  +                         'a',
+  +                         'b',
+  +                     ),
+  +     ),
+  +     ContextBrief(
+  +         text='Dropped record ids: a, b',
+  +         records=(),
+  +         dropped_ids=(
+  +                         'a',
+  +                         'b',
+  +                     ),
+  +     ),
+  +     ContextBrief(
+  +         text='Dropped record ids: a, b',
+  +         records=(),
+  +         dropped_ids=(
+  +                         'a',
+  +                         'b',
+  +                     ),
+  +     ),
+  +     ContextBrief(
+  +         text='Dropped record ids: a, b',
+  +         records=(),
+  +         dropped_ids=(
+  +                         'a',
+  +                         'b',
+  +                     ),
+  +     ),
+  +     ContextBrief(
+  +         text='Dropped record ids: a, b',
+  +         records=(),
+  +         dropped_ids=(
+  +                         'a',
+  +                         'b',
+  +                     ),
+  +     ),
+  +     ContextBrief(
+  +         text='Dropped record ids: a, b',
+  +         records=(),
+  +         dropped_ids=(
+  +                         'a',
+  +                         'b',
+  +                     ),
+  +     ),
+    ]
+=== 1 failed, 16 deselected ===

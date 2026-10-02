@@ -1,0 +1,31 @@
+# commit 38a91186173561db9db1deba09578e3bed1ad050
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_semantic_unknown_fabrication.py::test_budget_below_clause_and_role_work_floor_refuses FAILED [100%]
+
+=== FAILURES ===
+_____________ test_budget_below_clause_and_role_work_floor_refuses _____________
+
+    def test_budget_below_clause_and_role_work_floor_refuses() -> None:
+        # One clause, two roles, and the fixed unit of work already exceed 3.
+        report = unknown_candidates(_view(), "Alicecats", budget=3)
+    
+>       assert report.status == "BUDGET_REFUSAL"
+E       AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+E         
+E         - BUDGET_REFUSAL
+E         + CANDIDATES
+
+tests/attack/test_semantic_unknown_fabrication.py:103: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_unknown_fabrication.py::test_budget_below_clause_and_role_work_floor_refuses - AssertionError: assert 'CANDIDATES' == 'BUDGET_REFUSAL'
+  
+  - BUDGET_REFUSAL
+  + CANDIDATES
+=== 1 failed, 9 deselected ===

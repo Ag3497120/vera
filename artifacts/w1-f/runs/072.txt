@@ -1,0 +1,37 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 16 items / 15 deselected / 1 selected
+
+tests/attack/test_semantic_names_paraphrase.py::test_particle_and_clause_surface_changes_leave_the_name_split_unchanged FAILED [100%]
+
+=== FAILURES ===
+___ test_particle_and_clause_surface_changes_leave_the_name_split_unchanged ____
+
+    def test_particle_and_clause_surface_changes_leave_the_name_split_unchanged():
+        plain = [
+            token("技師", "名詞", "一般", 0),
+            token("ユン", "名詞", "固有名詞", 2),
+            token("が", "助詞", "格助詞", 4),
+            token("来る", "動詞", "自立", 5),
+        ]
+        polite = [
+            token("技師", "名詞", "一般", 0),
+            token("ユン", "名詞", "固有名詞", 2),
+            token("は", "助詞", "係助詞", 4),
+            token("来ました", "動詞", "自立", 5),
+        ]
+    
+        plain_cover = tokens_covering(plain, 0, 4)
+        polite_cover = tokens_covering(polite, 0, 4)
+>       assert name_split_in(plain_cover, "技師ユン") == ("技師", "ユン")
+E       AssertionError: assert None == ('\u6280\u5e2b', '\u30e6\u30f3')
+E        +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 4)], '\u6280\u5e2b\u30e6\u30f3')
+
+tests/attack/test_semantic_names_paraphrase.py:39: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_names_paraphrase.py::test_particle_and_clause_surface_changes_leave_the_name_split_unchanged - AssertionError: assert None == ('\u6280\u5e2b', '\u30e6\u30f3')
+ +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 4)], '\u6280\u5e2b\u30e6\u30f3')
+=== 1 failed, 15 deselected ===

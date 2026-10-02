@@ -1,0 +1,25 @@
+# commit 4af1231094f6274c0f1f684a03458c67766ee235
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 13 items / 12 deselected / 1 selected
+
+tests/attack/test_semantic_verify_negation_modality.py::test_double_negation_is_not_licensed_as_an_ordinary_negative_fact FAILED [100%]
+
+=== FAILURES ===
+______ test_double_negation_is_not_licensed_as_an_ordinary_negative_fact _______
+
+    def test_double_negation_is_not_licensed_as_an_ordinary_negative_fact():
+        view = document_view({"source": "太郎は走らなくはない。"})
+>       assert view.clauses
+E       AssertionError: assert ()
+E        +  where () = View(sources={'source': '\u592a\u90ce\u306f\u8d70\u3089\u306a\u304f\u306f\u306a\u3044\u3002'}, clauses=(), unread=(Unread(span=Span(source='source', start=0, end=11, text='\u592a\u90ce\u306f\u8d70\u3089\u306a\u304f\u306f\u306a\u3044\u3002'), reason='unsupported double negation'),), ingest_ms=<MS>, invalid=()).clauses
+
+tests/attack/test_semantic_verify_negation_modality.py:66: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_verify_negation_modality.py::test_double_negation_is_not_licensed_as_an_ordinary_negative_fact - AssertionError: assert ()
+ +  where () = View(sources={'source': '\u592a\u90ce\u306f\u8d70\u3089\u306a\u304f\u306f\u306a\u3044\u3002'}, clauses=(), unread=(Unread(span=Span(source='source', start=0, end=11, text='\u592a\u90ce\u306f\u8d70\u3089\u306a\u304f\u306f\u306a\u3044\u3002'), reason='unsupported double negation'),), ingest_ms=<MS>, invalid=()).clauses
+=== 1 failed, 12 deselected ===

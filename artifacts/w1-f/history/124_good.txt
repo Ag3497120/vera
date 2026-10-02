@@ -1,0 +1,15 @@
+# commit 1fd524b421abd83b4b7506042062a537002dc09c
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 28 items / 27 deselected / 1 selected
+
+tests/test_semantic_scope_safety.py::test_unrepresented_request_content_never_becomes_a_yes[\u30ca\u30aa\u306f\u5b66\u6821\u304b\u3089\u30ea\u30af\u306b\u9752\u9375\u3092\u6e21\u3057\u305f\u304b\uff1f] PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/test_semantic_scope_safety.py::test_unrepresented_request_content_never_becomes_a_yes[\u30ca\u30aa\u306f\u5b66\u6821\u304b\u3089\u30ea\u30af\u306b\u9752\u9375\u3092\u6e21\u3057\u305f\u304b\uff1f]
+=== 1 passed, 27 deselected ===

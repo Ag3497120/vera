@@ -1,0 +1,8 @@
+env: manifest_wave4.json の env（VERA_CORPUS_ROOT は空ディレクトリ）
+498f3c3	unit p_passive	NO_DEMO_FILE
+9c89f1e	unit w_question_forms2	DEMO OK
+da21edc	unit p_parallel	DEMO OK
+b8b9a50	unit p_reason	AssertionError: (7, {'correct': 83, 'wrong_other': 2, 'wrong_overlap': 17}, {'abstain': 2257, 'correct': 123, 'wrong_other': 3, 'wrong_overlap': 17})
+0ff2328	unit p_temporal	AssertionError: (7, {'correct': 83, 'wrong_other': 2, 'wrong_overlap': 17}, {'abstain': 2258, 'correct': 124, 'wrong_other': 3, 'wrong_overlap': 15})
+77d5699	unit p_comparison	AssertionError: (7, {'correct': 83, 'wrong_other': 2, 'wrong_overlap': 17}, {'abstain': 2257, 'correct': 125, 'wrong_other': 3, 'wrong_overlap': 15})
+57079df	unit p_giving	AssertionError: (7, {'correct': 83, 'wrong_other': 2, 'wrong_overlap': 17}, {'abstain': 2251, 'correct': 131, 'wrong_other': 3, 'wrong_overlap': 15})

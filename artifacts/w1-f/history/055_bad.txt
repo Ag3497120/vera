@@ -1,0 +1,57 @@
+# commit 7b593d8cbd8111a3845403e1ff54c71983ac4897
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 13 items / 12 deselected / 1 selected
+
+tests/attack/test_memory_revalidate_injection.py::test_matching_file_hash_keeps_only_the_grounded_value FAILED [100%]
+
+=== FAILURES ===
+____________ test_matching_file_hash_keeps_only_the_grounded_value _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x<ADDR>>
+
+    def test_matching_file_hash_keeps_only_the_grounded_value(monkeypatch):
+        content = b'router unread limit: 12'
+        read_paths = []
+    
+        def read_bytes(path):
+            read_paths.append(str(path))
+            return content
+    
+        monkeypatch.setattr('pathlib.Path.read_bytes', read_bytes)
+        digest = hashlib.sha256(content).hexdigest()
+        memory = _ask(_record({'kind': 'file_sha256', 'path': 'source.txt',
+                               'sha256': digest}))
+    
+        answer = memory.ask_about('router', 'unread limit')
+    
+        assert answer['verdict'] == 'ANSWER'
+        assert answer['values'] == ['12']
+        assert answer['witness_status'] == {'r1': 'FRESH'}
+>       assert read_paths == ['source.txt']
+E       AssertionError: assert ['source.txt', 'source.txt'] == ['source.txt']
+E         
+E         Left contains one more item: 'source.txt'
+E         
+E         Full diff:
+E           [
+E               'source.txt',
+E         +     'source.txt',
+E           ]
+
+tests/attack/test_memory_revalidate_injection.py:77: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_revalidate_injection.py::test_matching_file_hash_keeps_only_the_grounded_value - AssertionError: assert ['source.txt', 'source.txt'] == ['source.txt']
+  
+  Left contains one more item: 'source.txt'
+  
+  Full diff:
+    [
+        'source.txt',
+  +     'source.txt',
+    ]
+=== 1 failed, 12 deselected ===

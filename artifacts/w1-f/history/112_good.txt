@@ -1,0 +1,15 @@
+# commit 1fd524b421abd83b4b7506042062a537002dc09c
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 97 items / 96 deselected / 1 selected
+
+tests/test_semantic_coordination_codex.py::test_plain_predicate_coordination_answers_clause_local_roles[te_location_first] PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/test_semantic_coordination_codex.py::test_plain_predicate_coordination_answers_clause_local_roles[te_location_first]
+=== 1 passed, 96 deselected ===

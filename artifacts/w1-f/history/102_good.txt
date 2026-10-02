@@ -1,0 +1,15 @@
+# commit 307f9682685869b00b15bf44a3686267cdbb83f9
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_verifier_agents_differential.py::test_brief_matches_independent_renderer_for_generated_untrusted_specs PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/attack/test_verifier_agents_differential.py::test_brief_matches_independent_renderer_for_generated_untrusted_specs
+=== 1 passed, 9 deselected ===

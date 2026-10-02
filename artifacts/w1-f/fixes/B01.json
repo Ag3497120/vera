@@ -1,0 +1,21 @@
+{
+ "after": "PASS",
+ "apply": "OK",
+ "before": "FAIL",
+ "bundle": "B01",
+ "bundle_tests_passing_after": [
+  "tests/test_semantic_coordination_codex.py::test_concessive_main_clause_keeps_the_topic_subject"
+ ],
+ "diff": "artifacts/w1-f/fixes/B01.diff",
+ "newly_failing": [],
+ "newly_failing_confirmed": [],
+ "newly_passing": [
+  "tests/test_semantic_coordination_codex.py::test_concessive_main_clause_keeps_the_topic_subject"
+ ],
+ "only_product_files": true,
+ "summary_line": "123 failed, 3685 passed, 28 skipped, 82 xfailed, 68 xpassed, 37 subtests passed",
+ "test": "tests/test_semantic_coordination_codex.py::test_concessive_main_clause_keeps_the_topic_subject",
+ "touched": [
+  "verantyx/semantic_reader.py"
+ ]
+}

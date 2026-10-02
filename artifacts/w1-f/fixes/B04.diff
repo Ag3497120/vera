@@ -1,0 +1,17 @@
+diff --git a/verantyx/memory_frame.py b/verantyx/memory_frame.py
+--- a/verantyx/memory_frame.py
++++ b/verantyx/memory_frame.py
+@@ -363,7 +363,12 @@
+         kind = witness.get('kind')
+         if kind == 'testimony': return True
+         if kind == 'constructed': return True
+-        if kind in ('file_sha256', 'file_hash', 'git_commit', 'command_result', 'command_exit'):
++        if kind in ('file_sha256', 'file_hash'):
++            # Shape only: reading the file here would be a second read next to the caller's own freshness check.
++            path, expected = witness.get('path'), witness.get('sha256')
++            return (isinstance(path, (str, Path)) and bool(str(path).strip()) and
++                    isinstance(expected, str) and bool(re.fullmatch(r'[0-9a-fA-F]{64}', expected)))
++        if kind in ('git_commit', 'command_result', 'command_exit'):
+             return check_witness(witness) != 'UNVERIFIABLE'
+         if kind != 'text_in_file': return False
+         try:

@@ -1,0 +1,42 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_memory_brief_differential.py::test_budget_uses_python_character_length_and_reports_omissions FAILED [100%]
+
+=== FAILURES ===
+________ test_budget_uses_python_character_length_and_reports_omissions ________
+
+    def test_budget_uses_python_character_length_and_reports_omissions():
+        records = [rec("日本", sentence="猫", subject="ねこ", attribute="種類"), rec("x", subject="X", attribute="y")]
+        memory = memory_with_sources(records, askable_ids={"日本"})
+        expected = reference_brief(memory, 100)
+>       assert_matches_reference(memory, len(expected))
+
+tests/attack/test_memory_brief_differential.py:209: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+memory = <test_memory_brief_differential.FakeMemory object at 0x<ADDR>>
+budget = 31, focus = None
+
+    def assert_matches_reference(memory, budget, focus=None):
+        try:
+            expected = reference_brief(memory, budget, focus)
+        except ValueError:
+            with pytest.raises(ValueError):
+                compile_brief(memory, budget, focus)
+            return
+>       assert compile_brief(memory, budget, focus) == expected
+E       AssertionError: assert ContextBrief(text='Dropped record ids: x, \u65e5\u672c', records=(), dropped_ids=('x', '\u65e5\u672c')) == '[id:\u65e5\u672c] \u732b\nDropped record ids: x'
+E        +  where ContextBrief(text='Dropped record ids: x, \u65e5\u672c', records=(), dropped_ids=('x', '\u65e5\u672c')) = compile_brief(<test_memory_brief_differential.FakeMemory object at 0x<ADDR>>, 31, None)
+
+tests/attack/test_memory_brief_differential.py:137: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_differential.py::test_budget_uses_python_character_length_and_reports_omissions - AssertionError: assert ContextBrief(text='Dropped record ids: x, \u65e5\u672c', records=(), dropped_ids=('x', '\u65e5\u672c')) == '[id:\u65e5\u672c] \u732b\nDropped record ids: x'
+ +  where ContextBrief(text='Dropped record ids: x, \u65e5\u672c', records=(), dropped_ids=('x', '\u65e5\u672c')) = compile_brief(<test_memory_brief_differential.FakeMemory object at 0x<ADDR>>, 31, None)
+=== 1 failed, 9 deselected ===

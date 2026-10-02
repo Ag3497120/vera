@@ -1,0 +1,37 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 9 items / 8 deselected / 1 selected
+
+tests/attack/test_memory_revalidate_paraphrase.py::test_fresh_text_witness_keeps_its_record_answerable FAILED [100%]
+
+=== FAILURES ===
+_____________ test_fresh_text_witness_keeps_its_record_answerable ______________
+
+tmp_path = PosixPath('<CACHE><TMP>')
+
+    def test_fresh_text_witness_keeps_its_record_answerable(tmp_path):
+        source = tmp_path / "source.txt"
+        source.write_text("router unread limit: 24", encoding="utf-8")
+        memory, record = _memory(
+            tmp_path,
+            witness={"kind": "text_in_file", "path": str(source), "needle": "unread limit: 24"},
+        )
+    
+        answer = memory.ask_about("ルーター", "未読の上限")
+    
+>       assert answer["verdict"] == "ANSWER"
+E       AssertionError: assert 'UNKNOWN_NO_EVIDENCE' == 'ANSWER'
+E         
+E         - ANSWER
+E         + UNKNOWN_NO_EVIDENCE
+
+tests/attack/test_memory_revalidate_paraphrase.py:72: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_revalidate_paraphrase.py::test_fresh_text_witness_keeps_its_record_answerable - AssertionError: assert 'UNKNOWN_NO_EVIDENCE' == 'ANSWER'
+  
+  - ANSWER
+  + UNKNOWN_NO_EVIDENCE
+=== 1 failed, 8 deselected ===

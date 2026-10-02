@@ -1,0 +1,25 @@
+diff --git a/tests/attack/test_semantic_unknown_injection.py b/tests/attack/test_semantic_unknown_injection.py
+--- a/tests/attack/test_semantic_unknown_injection.py
++++ b/tests/attack/test_semantic_unknown_injection.py
+@@ -31,6 +31,7 @@
+         ))
+     clause = SimpleNamespace(
+         id="c0", predicate=predicate, span=clause_span, roles=role_nodes,
++        predicate_span=clause_span,  # W1-f adapt probe: the field verantyx.semantic_ir.Clause always has
+     )
+     return SimpleNamespace(sources=sources, clauses=[clause])
+ 
+diff --git a/tests/attack/test_semantic_unknown_limits.py b/tests/attack/test_semantic_unknown_limits.py
+--- a/tests/attack/test_semantic_unknown_limits.py
++++ b/tests/attack/test_semantic_unknown_limits.py
+@@ -35,6 +35,10 @@
+     predicate: str
+     span: SpanStub
+     roles: tuple[RoleStub, ...]
++
++    @property
++    def predicate_span(self):  # W1-f adapt probe: the field verantyx.semantic_ir.Clause always has
++        return self.span
+ 
+ 
+ @dataclass(frozen=True)

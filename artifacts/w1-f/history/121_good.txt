@@ -1,0 +1,15 @@
+# commit 1fd524b421abd83b4b7506042062a537002dc09c
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 22 items / 21 deselected / 1 selected
+
+tests/test_semantic_public.py::test_unhandled_wh_is_not_yes_no_and_location_is_required PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/test_semantic_public.py::test_unhandled_wh_is_not_yes_no_and_location_is_required
+=== 1 passed, 21 deselected ===

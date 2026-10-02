@@ -1,0 +1,31 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 17 items / 16 deselected / 1 selected
+
+tests/attack/test_memory_brief_limits.py::test_superseded_ids_are_excluded_from_output_and_drop_accounting FAILED [100%]
+
+=== FAILURES ===
+_______ test_superseded_ids_are_excluded_from_output_and_drop_accounting _______
+
+    def test_superseded_ids_are_excluded_from_output_and_drop_accounting():
+        records = [row("old", subject="s"), row("current", subject="s")]
+        expected = "[id:current] Sentence for current."
+    
+>       assert compile_brief(MemoryStub(records, superseded={"old": "current"}), len(expected)) == expected
+E       AssertionError: assert ContextBrief(text='Dropped record ids: current', records=(), dropped_ids=('current',)) == '[id:current] Sentence for current.'
+E        +  where ContextBrief(text='Dropped record ids: current', records=(), dropped_ids=('current',)) = compile_brief(<test_memory_brief_limits.MemoryStub object at 0x<ADDR>>, 34)
+E        +    where <test_memory_brief_limits.MemoryStub object at 0x<ADDR>> = MemoryStub([{'id': 'old', 'kind': 'INVARIANT', 'sentence': 'Sentence for old.', 'slots': {'subject': 's'}, 'ts': '2026-01-01'}, {'id': 'current', 'kind': 'INVARIANT', 'sentence': 'Sentence for current.', 'slots': {'subject': 's'}, 'ts': '2026-01-01'}], superseded={'old': 'current'})
+E        +    and   34 = len('[id:current] Sentence for current.')
+
+tests/attack/test_memory_brief_limits.py:112: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_limits.py::test_superseded_ids_are_excluded_from_output_and_drop_accounting - AssertionError: assert ContextBrief(text='Dropped record ids: current', records=(), dropped_ids=('current',)) == '[id:current] Sentence for current.'
+ +  where ContextBrief(text='Dropped record ids: current', records=(), dropped_ids=('current',)) = compile_brief(<test_memory_brief_limits.MemoryStub object at 0x<ADDR>>, 34)
+ +    where <test_memory_brief_limits.MemoryStub object at 0x<ADDR>> = MemoryStub([{'id': 'old', 'kind': 'INVARIANT', 'sentence': 'Sentence for old.', 'slots': {'subject': 's'}, 'ts': '2026-01-01'}, {'id': 'current', 'kind': 'INVARIANT', 'sentence': 'Sentence for current.', 'slots': {'subject': 's'}, 'ts': '2026-01-01'}], superseded={'old': 'current'})
+ +    and   34 = len('[id:current] Sentence for current.')
+=== 1 failed, 16 deselected ===

@@ -1,0 +1,53 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 13 items / 12 deselected / 1 selected
+
+tests/attack/test_memory_frame_limits.py::test_empty_memory_returns_unknown_without_mutating_log FAILED [100%]
+
+=== FAILURES ===
+____________ test_empty_memory_returns_unknown_without_mutating_log ____________
+
+memory_path = PosixPath('<TREE>/.memory-frame-<RND>/memory.jsonl')
+
+    def test_empty_memory_returns_unknown_without_mutating_log(memory_path):
+        memory = Memory(str(memory_path))
+    
+        first = memory.ask("ルーターの未読上限は？")
+        second = memory.ask("ルーターの未読上限は？")
+    
+>       assert first == {"verdict": "UNKNOWN_NO_EVIDENCE", "values": [], "records": []}
+E       AssertionError: assert {'verdict': 'UNKNOWN_NO_EVIDENCE', 'values': [], 'records': [], 'witness_classes': {}} == {'verdict': 'UNKNOWN_NO_EVIDENCE', 'values': [], 'records': []}
+E         
+E         Common items:
+E         {'records': [], 'values': [], 'verdict': 'UNKNOWN_NO_EVIDENCE'}
+E         Left contains 1 more item:
+E         {'witness_classes': {}}
+E         
+E         Full diff:
+E           {
+E               'verdict': 'UNKNOWN_NO_EVIDENCE',
+E               'values': [],
+E               'records': [],
+E         +     'witness_classes': {},
+E           }
+
+tests/attack/test_memory_frame_limits.py:42: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_frame_limits.py::test_empty_memory_returns_unknown_without_mutating_log - AssertionError: assert {'verdict': 'UNKNOWN_NO_EVIDENCE', 'values': [], 'records': [], 'witness_classes': {}} == {'verdict': 'UNKNOWN_NO_EVIDENCE', 'values': [], 'records': []}
+  
+  Common items:
+  {'records': [], 'values': [], 'verdict': 'UNKNOWN_NO_EVIDENCE'}
+  Left contains 1 more item:
+  {'witness_classes': {}}
+  
+  Full diff:
+    {
+        'verdict': 'UNKNOWN_NO_EVIDENCE',
+        'values': [],
+        'records': [],
+  +     'witness_classes': {},
+    }
+=== 1 failed, 12 deselected ===

@@ -1,0 +1,24 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 15 items / 14 deselected / 1 selected
+
+tests/attack/test_memory_brief_injection.py::test_record_is_omitted_when_question_path_does_not_cite_it FAILED [100%]
+
+=== FAILURES ===
+__________ test_record_is_omitted_when_question_path_does_not_cite_it __________
+
+    def test_record_is_omitted_when_question_path_does_not_cite_it():
+        memory = Memory([record("fact-1")], source_ids=set())
+    
+        brief = compile_brief(memory, 200)
+    
+>       assert brief == "Dropped record ids: fact-1"
+E       AssertionError: assert ContextBrief(text='Dropped record ids: fact-1', records=(), dropped_ids=('fact-1',)) == 'Dropped record ids: fact-1'
+
+tests/attack/test_memory_brief_injection.py:64: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_injection.py::test_record_is_omitted_when_question_path_does_not_cite_it - AssertionError: assert ContextBrief(text='Dropped record ids: fact-1', records=(), dropped_ids=('fact-1',)) == 'Dropped record ids: fact-1'
+=== 1 failed, 14 deselected ===

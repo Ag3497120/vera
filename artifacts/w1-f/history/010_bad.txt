@@ -1,0 +1,25 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_memory_brief_differential.py::test_nonaskable_records_are_never_rendered_as_answers FAILED [100%]
+
+=== FAILURES ===
+____________ test_nonaskable_records_are_never_rendered_as_answers _____________
+
+    def test_nonaskable_records_are_never_rendered_as_answers():
+        records = [rec("unsupported", sentence="Unsupported claim", subject="S", attribute="A")]
+        memory = memory_with_sources(records)
+        output = compile_brief(memory, 100)
+>       assert output == "Dropped record ids: unsupported"
+E       AssertionError: assert ContextBrief(text='Dropped record ids: unsupported', records=(), dropped_ids=('unsupported',)) == 'Dropped record ids: unsupported'
+
+tests/attack/test_memory_brief_differential.py:256: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_differential.py::test_nonaskable_records_are_never_rendered_as_answers - AssertionError: assert ContextBrief(text='Dropped record ids: unsupported', records=(), dropped_ids=('unsupported',)) == 'Dropped record ids: unsupported'
+=== 1 failed, 9 deselected ===

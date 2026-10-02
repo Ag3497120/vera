@@ -1,0 +1,15 @@
+# commit 49436fc28d368b0f29f9f7af81f0a49138c7ef03
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 12 items / 11 deselected / 1 selected
+
+tests/attack/test_semantic_names_unicode_noise.py::test_tokens_covering_uses_python_codepoint_offsets_around_astral_noise PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/attack/test_semantic_names_unicode_noise.py::test_tokens_covering_uses_python_codepoint_offsets_around_astral_noise
+=== 1 passed, 11 deselected ===

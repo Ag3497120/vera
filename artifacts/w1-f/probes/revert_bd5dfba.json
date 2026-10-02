@@ -1,0 +1,33 @@
+{
+ "apply": "PARTIAL_REJECT",
+ "commit": "bd5dfbae6225d4bcb4937b7e362f2915897ff539",
+ "files": [
+  "verantyx/semantic_verify.py"
+ ],
+ "log": [
+  {
+   "apply": "PARTIAL_REJECT",
+   "rejected_files": [
+    "verantyx/semantic_verify.py.rej"
+   ],
+   "rejected_hunks": 1,
+   "step": [
+    "revert",
+    "bd5dfbae6225d4bcb4937b7e362f2915897ff539"
+   ],
+   "three_way_conflict_files": [
+    "verantyx/semantic_verify.py"
+   ],
+   "total_hunks": 15
+  }
+ ],
+ "newly_failing": [],
+ "newly_failing_confirmed": [],
+ "newly_passing": [
+  "tests/attack/test_semantic_verify_unicode_noise.py::test_symbolic_record_licenses_unicode_actor_without_normalization"
+ ],
+ "partial_method": "git apply -R --reject（当たる hunk だけ）",
+ "still_failing_count": 123,
+ "subject": "unit fix_semantic_verify",
+ "summary_line": "123 failed, 3685 passed, 28 skipped, 88 xfailed, 62 xpassed, 37 subtests passed"
+}

@@ -1,0 +1,31 @@
+{
+ "apply": "PARTIAL_REJECT",
+ "commit": "69b826be35c2147a5b57647e2e171e9b0b96c5bd",
+ "files": [
+  "verantyx/memory_merge.py"
+ ],
+ "log": [
+  {
+   "apply": "PARTIAL_REJECT",
+   "rejected_files": [
+    "verantyx/memory_merge.py.rej"
+   ],
+   "rejected_hunks": 2,
+   "step": [
+    "revert",
+    "69b826be35c2147a5b57647e2e171e9b0b96c5bd"
+   ],
+   "three_way_conflict_files": [
+    "verantyx/memory_merge.py"
+   ],
+   "total_hunks": 4
+  }
+ ],
+ "newly_failing": [],
+ "newly_failing_confirmed": [],
+ "newly_passing": [],
+ "partial_method": "git apply -R --reject（当たる hunk だけ）",
+ "still_failing_count": 124,
+ "subject": "unit fix_w_merge_1",
+ "summary_line": "124 failed, 3684 passed, 28 skipped, 82 xfailed, 68 xpassed, 37 subtests passed"
+}

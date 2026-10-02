@@ -1,0 +1,29 @@
+diff --git a/verantyx/semantic_names.py b/verantyx/semantic_names.py
+index 53b9178..5681e94 100644
+--- a/verantyx/semantic_names.py
++++ b/verantyx/semantic_names.py
+@@ -1,8 +1,8 @@
+ """Morphological split of ``<common-noun descriptor><proper name>`` (e.g. 技師ユン -> 技師 + ユン).
+ 
+-The head needs explicit proper-noun evidence from the sentence tagger. Descriptor tokens
+-must be ordinary common nouns, so a bound prefix or suffix cannot become a name. The
+-tokens must tile the value exactly. No word list.
++The head is the final proper-noun token; every earlier token must be a common noun or a
++noun suffix. The tokens are the ones of the sentence itself (a compound can tokenize
++differently in isolation), and they must tile the value exactly. No word list.
+ """
+ from __future__ import annotations
+ 
+@@ -33,11 +33,8 @@ def name_split_in(cover, value):
+     """(descriptor, name) when the covering tokens are descriptor(s) + one proper name, else None."""
+     if not cover or len(cover) < 2 or any(not t[0] for t in cover) or ''.join(t[0] for t in cover) != value: return None
+     last = cover[-1]
+-    # Only a noun explicitly tagged as a proper noun can license this split.
+-    # In particular, common kinship compounds (叔母, 祖母, 伯父, 兄嫁) remain whole.
+     if last[1] != '名詞' or last[2] != '固有名詞': return None
+-    # Prefixes and suffixes are bound morphemes, not names or title descriptors.
+-    if any(t[1] != '名詞' or t[2] != '普通名詞' for t in cover[:-1]): return None
++    if any(t[1] not in ('名詞', '接尾辞') or t[2] in ('固有名詞', '代名詞') for t in cover[:-1]): return None
+     descriptor = ''.join(t[0] for t in cover[:-1])
+     # A title is a kanji common noun (技師, 店長, 研究員). Katakana/other strings in front of a "proper noun" token are
+     # usually one unknown name cut by the tagger (コカカル -> コカ + カル): never split those, or a fragment gets answered.

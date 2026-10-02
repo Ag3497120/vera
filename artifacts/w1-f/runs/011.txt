@@ -1,0 +1,43 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_memory_brief_differential.py::test_source_membership_and_lesson_question_shape_control_askability FAILED [100%]
+
+=== FAILURES ===
+_____ test_source_membership_and_lesson_question_shape_control_askability ______
+
+    def test_source_membership_and_lesson_question_shape_control_askability():
+        records = [
+            rec("f1", subject="same", attribute="color"),
+            rec("f2", subject="same", attribute="color"),
+            rec("lesson", kind="LESSON", situation="rain", response="carry an umbrella"),
+        ]
+        memory = memory_with_sources(records, askable_ids={"f1", "lesson"})
+>       assert_matches_reference(memory, 300)
+
+tests/attack/test_memory_brief_differential.py:199: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+memory = <test_memory_brief_differential.FakeMemory object at 0x<ADDR>>
+budget = 300, focus = None
+
+    def assert_matches_reference(memory, budget, focus=None):
+        try:
+            expected = reference_brief(memory, budget, focus)
+        except ValueError:
+            with pytest.raises(ValueError):
+                compile_brief(memory, budget, focus)
+            return
+>       assert compile_brief(memory, budget, focus) == expected
+E       AssertionError: assert ContextBrief(text='Dropped record ids: lesson, f1, f2', records=(), dropped_ids=('lesson', 'f1', 'f2')) == '[id:lesson] Sentence lesson\n[id:f1] Sentence f1\nDropped record ids: f2'
+E        +  where ContextBrief(text='Dropped record ids: lesson, f1, f2', records=(), dropped_ids=('lesson', 'f1', 'f2')) = compile_brief(<test_memory_brief_differential.FakeMemory object at 0x<ADDR>>, 300, None)
+
+tests/attack/test_memory_brief_differential.py:137: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_differential.py::test_source_membership_and_lesson_question_shape_control_askability - AssertionError: assert ContextBrief(text='Dropped record ids: lesson, f1, f2', records=(), dropped_ids=('lesson', 'f1', 'f2')) == '[id:lesson] Sentence lesson\n[id:f1] Sentence f1\nDropped record ids: f2'
+ +  where ContextBrief(text='Dropped record ids: lesson, f1, f2', records=(), dropped_ids=('lesson', 'f1', 'f2')) = compile_brief(<test_memory_brief_differential.FakeMemory object at 0x<ADDR>>, 300, None)
+=== 1 failed, 9 deselected ===

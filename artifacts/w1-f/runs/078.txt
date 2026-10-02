@@ -1,0 +1,27 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 12 items / 11 deselected / 1 selected
+
+tests/attack/test_semantic_names_unicode_noise.py::test_name_split_preserves_fullwidth_name_surface FAILED [100%]
+
+=== FAILURES ===
+_______________ test_name_split_preserves_fullwidth_name_surface _______________
+
+    def test_name_split_preserves_fullwidth_name_surface():
+        cover = [
+            _token("技師", "名詞", "一般", 0, 2),
+            _token("ＡＢＣ", "名詞", "固有名詞", 2, 5),
+        ]
+    
+>       assert name_split_in(cover, "技師ＡＢＣ") == ("技師", "ＡＢＣ")
+E       AssertionError: assert None == ('\u6280\u5e2b', '\uff21\uff22\uff23')
+E        +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\uff21\uff22\uff23', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 5)], '\u6280\u5e2b\uff21\uff22\uff23')
+
+tests/attack/test_semantic_names_unicode_noise.py:79: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_names_unicode_noise.py::test_name_split_preserves_fullwidth_name_surface - AssertionError: assert None == ('\u6280\u5e2b', '\uff21\uff22\uff23')
+ +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\uff21\uff22\uff23', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 5)], '\u6280\u5e2b\uff21\uff22\uff23')
+=== 1 failed, 11 deselected ===

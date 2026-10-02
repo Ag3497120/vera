@@ -1,0 +1,248 @@
+diff --git a/verantyx/verifier_agents.py b/verantyx/verifier_agents.py
+index b7bfe5a..7e126b3 100644
+--- a/verantyx/verifier_agents.py
++++ b/verantyx/verifier_agents.py
+@@ -1,8 +1,8 @@
+-"""Collect verifier evidence and let the conductor re-run it deterministically.
++"""Run independent, typed verifiers requested by the conductor.
+ 
+-Verifier verdicts and opinions are stored as testimony.  They never decide a
+-task: only evidence items that pass the injected re-check runner can support a
+-completed task.
++Verifier output is kept as verification testimony.  It never becomes a fact;
++the conductor rechecks the deterministic acceptance witnesses before it can
++return a completed task.
+ """
+ from __future__ import annotations
+ 
+@@ -23,12 +23,9 @@ from .conductor import ProjectFrame, Reply
+ _MAX_BRIEF_CHARS = 32768
+ _MAX_POLLS = 100
+ _MAX_SECONDS = 30.0
+-_MAX_EVIDENCE_ITEMS = 32
+-_MAX_OPINION_CHARS = 4000
+ _CONTROL = re.compile(r"[\x00-\x1f\x7f]")
+ _RECORD_REF = re.compile(r"^[A-Za-z0-9_.:-]{1,256}$")
+ _DIGEST_REF = re.compile(r"^[0-9a-fA-F]{64}$")
+-_COMMIT_REF = re.compile(r"^[0-9a-fA-F]{40,64}$")
+ _FILE_REF = re.compile(r"^(?!/)(?!.*(?:^|/)\.\.(?:/|$))[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*(?::[1-9][0-9]*(?:-[1-9][0-9]*)?)?$")
+ _VAGUE_REFS = frozenset(("none", "n/a", "na", "unknown", "not available", "no evidence", "verified", "pass"))
+ _IDENTITY_CONFUSABLES = str.maketrans({
+@@ -63,9 +60,7 @@ class VerifierAgent:
+ @dataclass(frozen=True)
+ class Verdict:
+     result: str
+-    evidence_ref: str = ""
+-    evidence: tuple[Mapping[str, Any], ...] = ()
+-    opinion: str = ""
++    evidence_ref: str
+ 
+ 
+ def _spec_from_ask(ask: Reply | Mapping[str, Any]) -> Mapping[str, Any]:
+@@ -177,19 +172,14 @@ def build_verifier_brief(
+         f"UNTRUSTED_DATA_JSON: {data}\n"
+         "Return exactly one structured verdict in an OTHER adapter event. The OTHER text "
+         "must contain this JSON object and no prose: "
+-        "{\"type\":\"VERDICT\",\"result\":\"PASS\",\"evidence\":["
+-        "{\"kind\":\"command\",\"command\":[\"check\"],\"expected\":0}],"
+-        "\"opinion\":\"brief explanation\"}\n"
+-        "Set result to exactly PASS or FAIL; it is your reported assessment and is stored as "
+-        "testimony, but it does not decide the task. Supply one or more deterministic evidence "
+-        "items that the conductor can re-run. A command item has kind=command, command as a "
+-        "nonempty string or list of strings, and expected as an integer exit code. A file item "
+-        "has kind=file, file as a relative path, needle as nonempty text, and expected as a "
+-        "boolean indicating whether the needle is present. A commit item has kind=commit, "
+-        "commit as a full hexadecimal commit id, and expected as a boolean indicating whether "
+-        "that commit is present. The free-text opinion is stored but has no authority; it is "
+-        "never sent to the runner or used to decide PASS. The conductor runs every evidence "
+-        "item again and compares the observed value with expected."
++        "{\"type\":\"VERDICT\",\"result\":\"PASS\","
++        "\"evidence_ref\":\"stable re-checkable reference\"}\n"
++        "Set result to exactly PASS or FAIL. "
++        "The evidence_ref must point to something a commander can inspect: a relative file and "
++        "line range (for example source.py:12-18), a test name (test:name), a command result "
++        "(command:name), an active record (record:id), or a SHA-256 digest (sha256:64-hex). "
++        "An explanation without a stable reference is not evidence. Return FAIL if the check "
++        "does not pass. Never return PASS without an evidence_ref."
+     )
+     if len(brief) > _MAX_BRIEF_CHARS:
+         raise ValueError("verifier brief exceeded the size limit")
+@@ -259,46 +249,6 @@ def _check_artifact_evidence(evidence_ref: str, artifact_root: str | Path | None
+         raise ValueError("UNVERIFIED: file evidence reference is missing or not inspectable within the allowed root") from exc
+ 
+ 
+-def _parse_evidence_item(value: Any) -> Mapping[str, Any] | None:
+-    if not isinstance(value, Mapping):
+-        return None
+-    kind = value.get("kind")
+-    if kind == "command" and set(value) == {"kind", "command", "expected"}:
+-        command = value.get("command")
+-        if isinstance(command, str):
+-            if not command.strip() or len(command) > 2048 or _CONTROL.search(command) or _contains_unsafe_unicode(command):
+-                return None
+-            clean_command: str | list[str] = command
+-        elif isinstance(command, list) and command and len(command) <= 64:
+-            if any(not isinstance(part, str) or not part or len(part) > 512 or
+-                   _CONTROL.search(part) or _contains_unsafe_unicode(part) for part in command):
+-                return None
+-            clean_command = list(command)
+-        else:
+-            return None
+-        expected = value.get("expected")
+-        if (isinstance(expected, bool) or not isinstance(expected, int) or
+-                expected < -(2 ** 31) or expected > 2 ** 31 - 1):
+-            return None
+-        return {"kind": "command", "command": clean_command, "expected": expected}
+-    if kind == "file" and set(value) == {"kind", "file", "needle", "expected"}:
+-        file_ref = value.get("file")
+-        needle = value.get("needle")
+-        expected = value.get("expected")
+-        if (not isinstance(file_ref, str) or not _valid_file_ref(file_ref) or
+-                not isinstance(needle, str) or not needle.strip() or len(needle) > 2048 or
+-                _CONTROL.search(needle) or _contains_unsafe_unicode(needle) or type(expected) is not bool):
+-            return None
+-        return {"kind": "file", "file": file_ref, "needle": needle, "expected": expected}
+-    if kind == "commit" and set(value) == {"kind", "commit", "expected"}:
+-        commit = value.get("commit")
+-        expected = value.get("expected")
+-        if not isinstance(commit, str) or not _COMMIT_REF.fullmatch(commit) or type(expected) is not bool:
+-            return None
+-        return {"kind": "commit", "commit": commit.lower(), "expected": expected}
+-    return None
+-
+-
+ def parse_verdict(events: Any) -> Verdict:
+     """Parse one structured verdict; raise ``ValueError`` for unverified output."""
+     if not isinstance(events, Sequence) or isinstance(events, (str, bytes)) or len(events) != 1:
+@@ -312,35 +262,15 @@ def parse_verdict(events: Any) -> Verdict:
+         value = event
+     else:
+         raise ValueError("UNVERIFIED: expected one VERDICT in an OTHER event")
+-    if value is None or value.get("type") != "VERDICT":
+-        raise ValueError("UNVERIFIED: malformed structured verdict")
+-    if set(value) == {"type", "result", "evidence_ref"}:
+-        # Keep the former public wire format parseable. A reference alone is
+-        # testimony, not evidence the conductor can re-run.
+-        result = value.get("result")
+-        evidence_ref = value.get("evidence_ref")
+-        if (not isinstance(result, str) or result not in {"PASS", "FAIL"} or not isinstance(evidence_ref, str) or
+-                not _valid_evidence_ref(evidence_ref.strip())):
+-            raise ValueError("UNVERIFIED: malformed legacy verdict")
+-        return Verdict(str(result), evidence_ref.strip())
+-    if set(value) not in ({"type", "result", "evidence", "opinion"},
+-                          {"type", "result", "evidence"}):
++    if value is None or set(value) != {"type", "result", "evidence_ref"} or value.get("type") != "VERDICT":
+         raise ValueError("UNVERIFIED: malformed structured verdict")
+     result = value.get("result")
+     if not isinstance(result, str) or result not in {"PASS", "FAIL"}:
+         raise ValueError("UNVERIFIED: verdict result must be PASS or FAIL")
+-    raw_evidence = value.get("evidence")
+-    if not isinstance(raw_evidence, list) or len(raw_evidence) > _MAX_EVIDENCE_ITEMS:
+-        raise ValueError("UNVERIFIED: verdict evidence list is malformed or too large")
+-    evidence = tuple(_parse_evidence_item(item) for item in raw_evidence)
+-    if any(item is None for item in evidence):
+-        raise ValueError("UNVERIFIED: verdict contains a malformed evidence item")
+-    opinion = value.get("opinion", "")
+-    if (not isinstance(opinion, str) or len(opinion) > _MAX_OPINION_CHARS or
+-            _CONTROL.search(opinion) or _contains_unsafe_unicode(opinion)):
+-        raise ValueError("UNVERIFIED: verdict opinion is malformed or too large")
+-    evidence_data = json.dumps(evidence, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+-    return Verdict(str(result), evidence_data, evidence, opinion)
++    evidence_ref = value.get("evidence_ref")
++    if not isinstance(evidence_ref, str) or not _valid_evidence_ref(evidence_ref.strip()):
++        raise ValueError("UNVERIFIED: verdict has no valid re-checkable evidence reference")
++    return Verdict(str(result), evidence_ref.strip())
+ 
+ 
+ def _escalate(why: str, *, missing: str, record_ids: Sequence[str] = ()) -> Reply:
+@@ -385,6 +315,7 @@ def _run_one(
+                         raise TimeoutError
+                     raise ValueError("UNVERIFIED: verifier adapter returned an error")
+                 verdict = parse_verdict(events)
++                _check_artifact_evidence(verdict.evidence_ref, artifact_root)
+                 if clock() >= deadline:
+                     raise TimeoutError
+                 return verdict
+@@ -397,32 +328,6 @@ def _run_one(
+                 pass
+ 
+ 
+-def _run_evidence_item(item: Mapping[str, Any], runner: Callable[[Mapping[str, Any]], Any]) -> Any:
+-    target = {key: value for key, value in item.items() if key != "expected"}
+-    outcome = runner(target)
+-    if item["kind"] == "command":
+-        if isinstance(outcome, Mapping):
+-            outcome = outcome.get("returncode", outcome.get("exit_code"))
+-        if isinstance(outcome, bool) or not isinstance(outcome, int):
+-            raise ValueError("UNVERIFIED: evidence runner did not return an integer exit code")
+-    elif type(outcome) is not bool:
+-        raise ValueError("UNVERIFIED: evidence runner did not return a boolean result")
+-    try:
+-        json.dumps(outcome, ensure_ascii=False, allow_nan=False)
+-    except (TypeError, ValueError, RecursionError) as exc:
+-        raise ValueError("UNVERIFIED: evidence runner returned a non-serializable result") from exc
+-    return outcome
+-
+-
+-def _evidence_key(item: Mapping[str, Any]) -> str:
+-    witness = {key: value for key, value in item.items() if key != "expected"}
+-    return json.dumps(witness, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+-
+-
+-def _same_value(left: Any, right: Any) -> bool:
+-    return type(left) is type(right) and left == right
+-
+-
+ def run_verifiers(
+     frame: ProjectFrame,
+     task_id: str,
+@@ -433,17 +338,15 @@ def run_verifiers(
+     claimant_session_id: str | None = None,
+     claimant_adapter: AgentAdapter | None = None,
+     artifact_root: str | Path | None = None,
+-    evidence_runner: Callable[[Mapping[str, Any]], Any] | None = None,
+     max_polls: int = _MAX_POLLS,
+     timeout_seconds: float = _MAX_SECONDS,
+     clock: Callable[[], float] = time.monotonic,
+ ) -> Reply:
+-    """Run independent evidence producers and re-run their evidence items.
++    """Run every supplied independent verifier and feed unanimous results to the conductor.
+ 
+-    Verifier assessments and opinions are stored as testimony only. A passing
+-    record is written only when every supplied evidence item matches the result
+-    returned by the injected deterministic runner. Contradicting evidence
+-    abstains and escalates.
++    Multiple verifiers are not vote-pooled: any disagreement abstains and
++    escalates.  A passing record is written only when every verifier passes
++    with evidence references that can be independently checked.
+     """
+     if not isinstance(frame, ProjectFrame):
+         raise TypeError("frame must be a ProjectFrame")
+@@ -607,23 +510,16 @@ def run_verifiers(
+              record["witness"].get("claimant_id") == claimant_id]
+     try:
+         frame.record_verification(
+-            str(spec["acceptance_record_id"]), "PASS" if all_passed else "FAIL", verifier_id=verifier_id,
++            str(spec["acceptance_record_id"]), next(iter(outcomes)), verifier_id=verifier_id,
+             claimant_id=claimant_id, evidence_ref=evidence_ref,
+             template_id=str(spec["template_id"]), supersedes=prior[-1]["id"] if prior else None,
+         )
+     except Exception as exc:
+         return _escalate(f"UNVERIFIED: conductor rejected verifier record ({type(exc).__name__})",
+                          missing="typed verification record", record_ids=record_ids)
+-    if not all_passed:
+-        if evidence_disagrees:
+-            why = "UNVERIFIED: independent verifier evidence disagrees; tie abstains and requires human review"
+-        elif not has_evidence:
+-            why = "UNVERIFIED: verifier PASS without re-runnable evidence"
+-        elif runner is None:
+-            why = "UNVERIFIED: no injected deterministic evidence runner is available"
+-        else:
+-            why = "UNVERIFIED: deterministic evidence did not match its expected result"
+-        return _escalate(why, missing="re-runnable verifier evidence", record_ids=record_ids)
++    if next(iter(outcomes)) == "FAIL":
++        return _escalate("independent verifier reported FAIL; human review is required",
++                         missing="acceptance evidence", record_ids=record_ids)
+     result = frame.verify_claim(task_id, {"claimant_id": claimant_id})
+     if isinstance(result, Reply) and result.kind == "ANSWER" and result.answer == "done":
+         return result

@@ -1,0 +1,31 @@
+# commit e48187093addb770477daf25b61d6686b840fe21
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 15 items / 14 deselected / 1 selected
+
+tests/attack/test_semantic_names_limits.py::test_repeated_calls_are_idempotent_and_do_not_mutate_inputs FAILED [100%]
+
+=== FAILURES ===
+_________ test_repeated_calls_are_idempotent_and_do_not_mutate_inputs __________
+
+    def test_repeated_calls_are_idempotent_and_do_not_mutate_inputs():
+        tagged = [token("技師", "名詞", "一般", 0, 2), token("玲", "名詞", "固有名詞", 2, 3)]
+        before = tagged.copy()
+        expected = ("技師", "玲")
+    
+        for _ in range(100):
+>           assert name_split_in(tokens_covering(tagged, 0, 3), "技師玲") == expected
+E           AssertionError: assert None == ('\u6280\u5e2b', '\u73b2')
+E            +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u73b2', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 3)], '\u6280\u5e2b\u73b2')
+E            +    where [('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u73b2', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 3)] = tokens_covering([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u73b2', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 3)], 0, 3)
+
+tests/attack/test_semantic_names_limits.py:110: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_names_limits.py::test_repeated_calls_are_idempotent_and_do_not_mutate_inputs - AssertionError: assert None == ('\u6280\u5e2b', '\u73b2')
+ +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u73b2', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 3)], '\u6280\u5e2b\u73b2')
+ +    where [('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u73b2', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 3)] = tokens_covering([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u73b2', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 3)], 0, 3)
+=== 1 failed, 14 deselected ===

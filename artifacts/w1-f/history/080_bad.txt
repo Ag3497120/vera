@@ -1,0 +1,34 @@
+# commit e48187093addb770477daf25b61d6686b840fe21
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 12 items / 11 deselected / 1 selected
+
+tests/attack/test_semantic_names_unicode_noise.py::test_tokens_covering_uses_python_codepoint_offsets_around_astral_noise FAILED [100%]
+
+=== FAILURES ===
+____ test_tokens_covering_uses_python_codepoint_offsets_around_astral_noise ____
+
+    def test_tokens_covering_uses_python_codepoint_offsets_around_astral_noise():
+        tagged = [
+            _token("🙂", "記号", "絵文字", 0, 1),
+            _token("技師", "名詞", "一般", 1, 3),
+            _token("ユン", "名詞", "固有名詞", 3, 5),
+            _token("!", "記号", "一般", 5, 6),
+        ]
+    
+        cover = tokens_covering(tagged, 1, 5)
+    
+        assert cover == tagged[1:3]
+>       assert name_split_in(cover, "技師ユン") == ("技師", "ユン")
+E       AssertionError: assert None == ('\u6280\u5e2b', '\u30e6\u30f3')
+E        +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 1, 3), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 3, 5)], '\u6280\u5e2b\u30e6\u30f3')
+
+tests/attack/test_semantic_names_unicode_noise.py:23: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_names_unicode_noise.py::test_tokens_covering_uses_python_codepoint_offsets_around_astral_noise - AssertionError: assert None == ('\u6280\u5e2b', '\u30e6\u30f3')
+ +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 1, 3), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 3, 5)], '\u6280\u5e2b\u30e6\u30f3')
+=== 1 failed, 11 deselected ===

@@ -1,0 +1,36 @@
+# commit e48187093addb770477daf25b61d6686b840fe21
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 15 items / 14 deselected / 1 selected
+
+tests/attack/test_semantic_names_limits.py::test_concurrent_independent_readers_do_not_share_results FAILED [100%]
+
+=== FAILURES ===
+___________ test_concurrent_independent_readers_do_not_share_results ___________
+
+    def test_concurrent_independent_readers_do_not_share_results():
+        cases = [
+            ([token("技師", "名詞", "一般", 0, 2), token("玲", "名詞", "固有名詞", 2, 3)], "技師玲", ("技師", "玲")),
+            ([token("店長", "名詞", "一般", 0, 2), token("葵", "名詞", "固有名詞", 2, 3)], "店長葵", ("店長", "葵")),
+        ]
+    
+        def read_case(case):
+            tagged, value, expected = case
+            return [name_split_in(tokens_covering(tagged, 0, 3), value) for _ in range(200)], expected
+    
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            results = list(pool.map(read_case, cases))
+    
+>       assert all(all(value == expected for value in values) for values, expected in results)
+E       assert False
+E        +  where False = all(<generator object test_concurrent_independent_readers_do_not_share_results.<locals>.<genexpr> at 0x<ADDR>>)
+
+tests/attack/test_semantic_names_limits.py:127: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_names_limits.py::test_concurrent_independent_readers_do_not_share_results - assert False
+ +  where False = all(<generator object test_concurrent_independent_readers_do_not_share_results.<locals>.<genexpr> at 0x<ADDR>>)
+=== 1 failed, 14 deselected ===

@@ -1,0 +1,29 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 22 items / 21 deselected / 1 selected
+
+tests/test_semantic_public.py::test_unhandled_wh_is_not_yes_no_and_location_is_required FAILED [100%]
+
+=== FAILURES ===
+___________ test_unhandled_wh_is_not_yes_no_and_location_is_required ___________
+
+    def test_unhandled_wh_is_not_yes_no_and_location_is_required():
+        v=Vera.from_texts({'d':'ユキが東棟で窓を開けた。'},mode='semantic')
+        assert v.ask('いつユキが窓を開けた？')['verdict']=='UNKNOWN_UNREAD'
+        assert v.ask('ユキが何個の窓を開けた？')['verdict']=='UNKNOWN_UNREAD'
+>       assert v.ask('西棟で誰が窓を開けた？')['verdict']=='UNKNOWN_NO_EVIDENCE'
+E       AssertionError: assert 'UNKNOWN_UNREAD' == 'UNKNOWN_NO_EVIDENCE'
+E         
+E         - UNKNOWN_NO_EVIDENCE
+E         + UNKNOWN_UNREAD
+
+tests/test_semantic_public.py:44: AssertionError
+=== short test summary info ===
+FAILED tests/test_semantic_public.py::test_unhandled_wh_is_not_yes_no_and_location_is_required - AssertionError: assert 'UNKNOWN_UNREAD' == 'UNKNOWN_NO_EVIDENCE'
+  
+  - UNKNOWN_NO_EVIDENCE
+  + UNKNOWN_UNREAD
+=== 1 failed, 21 deselected ===

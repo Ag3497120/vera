@@ -1,0 +1,15 @@
+# commit 49436fc28d368b0f29f9f7af81f0a49138c7ef03
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 16 items / 15 deselected / 1 selected
+
+tests/attack/test_semantic_names_negation_modality.py::test_name_split_can_extract_exact_title_name_pair_in_negative_context PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/attack/test_semantic_names_negation_modality.py::test_name_split_can_extract_exact_title_name_pair_in_negative_context
+=== 1 passed, 15 deselected ===

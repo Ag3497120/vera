@@ -1,0 +1,26 @@
+{
+ "apply": "OK",
+ "commit": "1b2e7a44d4478b38dee14d006f78d81796a929da",
+ "files": [
+  "verantyx/semantic_coord.py"
+ ],
+ "log": [
+  {
+   "apply": "OK",
+   "step": [
+    "revert",
+    "1b2e7a44d4478b38dee14d006f78d81796a929da"
+   ]
+  }
+ ],
+ "newly_failing": [],
+ "newly_failing_confirmed": [],
+ "newly_passing": [
+  "tests/attack/test_semantic_coord_negation_modality.py::test_adjectival_naku_then_te_is_structurally_accepted",
+  "tests/attack/test_semantic_coord_unicode_noise.py::test_te_comma_chain_is_accepted"
+ ],
+ "partial_method": null,
+ "still_failing_count": 122,
+ "subject": "unit fix_semantic_coord",
+ "summary_line": "122 failed, 3686 passed, 28 skipped, 104 xfailed, 46 xpassed, 37 subtests passed"
+}

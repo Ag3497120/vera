@@ -1,0 +1,63 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_memory_brief_differential.py::test_deterministic_generated_cases_match_naive_reference FAILED [100%]
+
+=== FAILURES ===
+___________ test_deterministic_generated_cases_match_naive_reference ___________
+
+    def test_deterministic_generated_cases_match_naive_reference():
+        rng = random.Random(20261002)
+        kinds = ("INVARIANT", "DECISION", "TASK", "LESSON", "FACT")
+        states = ("open", "done", "完了", "waiting")
+        for case in range(60):
+            records = []
+            for index in range(rng.randint(1, 8)):
+                kind = rng.choice(kinds)
+                slots = {"subject": f"subject-{case}-{index}"}
+                if kind == "FACT":
+                    slots["attribute"] = rng.choice(("color", "owner", "status"))
+                elif kind == "LESSON":
+                    slots.pop("subject")
+                    slots["situation"] = f"situation-{case}-{index}"
+                    slots["response"] = rng.choice(("plan", "avoid", "retry"))
+                elif kind == "TASK":
+                    slots["state"] = rng.choice(states)
+                sentence = f"case {case} item {index} " + rng.choice(("alpha", "STRASSE", "東京"))
+                records.append(rec(f"{case}-{index}", kind=kind, sentence=sentence,
+                                   ts=f"2025-01-{rng.randint(1, 4):02d}", **slots))
+            askable = {record["id"] for record in records if rng.random() < 0.7}
+            superseded = {record["id"]: "replacement" for record in records if rng.random() < 0.15}
+            memory = memory_with_sources(records, askable_ids=askable, superseded=superseded)
+            focus = rng.choice((None, "alpha", "ＳＴＲＡＳＳＥ", ["東京", "missing"]))
+            budget = rng.randint(0, 240)
+>           assert_matches_reference(memory, budget, focus)
+
+tests/attack/test_memory_brief_differential.py:249: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+memory = <test_memory_brief_differential.FakeMemory object at 0x<ADDR>>
+budget = 184, focus = ['東京', 'missing']
+
+    def assert_matches_reference(memory, budget, focus=None):
+        try:
+            expected = reference_brief(memory, budget, focus)
+        except ValueError:
+            with pytest.raises(ValueError):
+                compile_brief(memory, budget, focus)
+            return
+>       assert compile_brief(memory, budget, focus) == expected
+E       AssertionError: assert ContextBrief(text='Dropped record ids: 0-0, 0-2', records=(), dropped_ids=('0-0', '0-2')) == '[id:0-0] case 0 item 0 \u6771\u4eac\nDropped record ids: 0-2'
+E        +  where ContextBrief(text='Dropped record ids: 0-0, 0-2', records=(), dropped_ids=('0-0', '0-2')) = compile_brief(<test_memory_brief_differential.FakeMemory object at 0x<ADDR>>, 184, ['\u6771\u4eac', 'missing'])
+
+tests/attack/test_memory_brief_differential.py:137: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_differential.py::test_deterministic_generated_cases_match_naive_reference - AssertionError: assert ContextBrief(text='Dropped record ids: 0-0, 0-2', records=(), dropped_ids=('0-0', '0-2')) == '[id:0-0] case 0 item 0 \u6771\u4eac\nDropped record ids: 0-2'
+ +  where ContextBrief(text='Dropped record ids: 0-0, 0-2', records=(), dropped_ids=('0-0', '0-2')) = compile_brief(<test_memory_brief_differential.FakeMemory object at 0x<ADDR>>, 184, ['\u6771\u4eac', 'missing'])
+=== 1 failed, 9 deselected ===

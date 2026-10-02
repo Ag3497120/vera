@@ -1,0 +1,26 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 15 items / 14 deselected / 1 selected
+
+tests/attack/test_memory_brief_injection.py::test_question_path_failure_does_not_promote_record FAILED [100%]
+
+=== FAILURES ===
+______________ test_question_path_failure_does_not_promote_record ______________
+
+    def test_question_path_failure_does_not_promote_record():
+        memory = Memory([record("fact-1")], error=ValueError("unavailable"))
+    
+        brief = compile_brief(memory, 200)
+    
+>       assert brief == "Dropped record ids: fact-1"
+E       AssertionError: assert ContextBrief(text='Dropped record ids: fact-1', records=(), dropped_ids=('fact-1',)) == 'Dropped record ids: fact-1'
+
+tests/attack/test_memory_brief_injection.py:135: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_injection.py::test_question_path_failure_does_not_promote_record - AssertionError: assert ContextBrief(text='Dropped record ids: fact-1', records=(), dropped_ids=('fact-1',)) == 'Dropped record ids: fact-1'
+=== 1 failed, 14 deselected ===
