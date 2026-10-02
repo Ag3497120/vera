@@ -191,9 +191,9 @@ def _valid_evidence_ref(value: str) -> bool:
 
 
 def _check_artifact_evidence(evidence_ref: str, artifact_root: str | Path | None) -> None:
-    if not evidence_ref.startswith("artifact:"):
+    if evidence_ref.startswith(("test:", "command:", "record:", "sha256:")):
         return
-    relative = evidence_ref[9:]
+    relative = evidence_ref[9:] if evidence_ref.startswith("artifact:") else evidence_ref
     relative = re.sub(r":[1-9][0-9]*(?:-[1-9][0-9]*)?$", "", relative)
     try:
         root = Path.cwd() if artifact_root is None else Path(artifact_root)
@@ -207,7 +207,7 @@ def _check_artifact_evidence(evidence_ref: str, artifact_root: str | Path | None
         with target.open("rb") as stream:
             stream.read(1)
     except (OSError, RuntimeError, TypeError, ValueError) as exc:
-        raise ValueError("UNVERIFIED: artifact reference is missing or not inspectable within the allowed root") from exc
+        raise ValueError("UNVERIFIED: file evidence reference is missing or not inspectable within the allowed root") from exc
 
 
 def parse_verdict(events: Any) -> Verdict:

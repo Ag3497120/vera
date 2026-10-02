@@ -15,7 +15,7 @@ from verantyx.verifier_agents import (
 
 CLAIMANT = "claimant-session-agent"
 CLAIMANT_SESSION = "claim-session-1"
-GOOD_EVIDENCE = "source.py:12-18"
+GOOD_EVIDENCE = "test:test_verifier_agents"
 
 
 def _verdict(result="PASS", evidence_ref=GOOD_EVIDENCE):
@@ -69,7 +69,7 @@ def test_verification_output_is_stored_as_testimony_not_fact(tmp_path):
     records = frame._active()
     verification = next(record for record in records if record["kind"] == "VERIFICATION")
     assert verification["witness"]["kind"] == "testimony"
-    assert verification["witness"]["evidence_ref"].find("source.py:12-18") >= 0
+    assert verification["witness"]["evidence_ref"].find(GOOD_EVIDENCE) >= 0
     assert not any(record["kind"] == "FACT" for record in records)
 
 
@@ -188,11 +188,31 @@ def test_unsafe_or_missing_artifact_cannot_complete_task(tmp_path, evidence_ref)
     assert not any(record["kind"] == "VERIFICATION" for record in frame._active())
 
 
+def test_missing_plain_file_evidence_cannot_complete_task(tmp_path):
+    frame, ask, _ = _fixture(tmp_path)
+    evidence_ref = "review-missing-evidence-7d9a.py:12-18"
+
+    reply = _run(frame, ask, [_agent([_verdict(evidence_ref=evidence_ref)])], artifact_root=tmp_path)
+
+    assert reply.kind == "ESCALATE"
+    assert "UNVERIFIED" in reply.reason
+    assert not any(record["kind"] == "VERIFICATION" for record in frame._active())
+
+
 def test_artifact_evidence_must_be_readable_under_allowed_root(tmp_path):
     frame, ask, _ = _fixture(tmp_path)
     (tmp_path / "checked.json").write_text("{}", encoding="utf-8")
 
     reply = _run(frame, ask, [_agent([_verdict(evidence_ref="artifact:checked.json")])], artifact_root=tmp_path)
+
+    assert reply.kind == "ANSWER" and reply.answer == "done"
+
+
+def test_plain_file_evidence_must_be_readable_under_allowed_root(tmp_path):
+    frame, ask, _ = _fixture(tmp_path)
+    (tmp_path / "checked.py").write_text("check()\n", encoding="utf-8")
+
+    reply = _run(frame, ask, [_agent([_verdict(evidence_ref="checked.py:1")])], artifact_root=tmp_path)
 
     assert reply.kind == "ANSWER" and reply.answer == "done"
 
