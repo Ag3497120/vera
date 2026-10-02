@@ -1,0 +1,5 @@
+........................................................................ [ 57%]
+..........................s...........................                   [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/test_llm_choice_live.py:32: ENVIRONMENT_MISSING: VERA_LLM_LIVE!=1 (live provider not requested)
+125 passed, 1 skipped in 2.89s
