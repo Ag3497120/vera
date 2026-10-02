@@ -27,7 +27,8 @@ from typing import Any, Mapping, Sequence
 
 from . import agent_adapter
 from .agent_adapter import (AgentEvent, CodexExecAdapter, LaunchSpec, claude_print_launch,
-                            codex_exec_launch, validate_effort, validate_model)
+                            codex_exec_launch, validate_allowed_tools, validate_effort,
+                            validate_model, validate_permission_mode)
 
 
 RUNTIME_SCHEMA = "agent-runtime-v1"
@@ -360,6 +361,9 @@ class AgentRuntime:
         effort: str | None = None,
         dry_run: bool = False,
         on_plan: Any = None,
+        keep_worktree_on_accept: bool = False,
+        claude_permission_mode: str | None = None,
+        claude_allowed_tools: Any = None,
     ):
         self.repo = _git_root(repo)
         self.allowed_paths = normalize_allowlist(allowed_paths)
@@ -377,6 +381,19 @@ class AgentRuntime:
             raise ValueError("dry_run must be a bool")
         if on_plan is not None and not callable(on_plan):
             raise ValueError("on_plan must be callable")
+        if not isinstance(keep_worktree_on_accept, bool):
+            raise ValueError("keep_worktree_on_accept must be a bool")
+        self.keep_worktree_on_accept = keep_worktree_on_accept
+        self.claude_permission_mode: str | None = None
+        self.claude_allowed_tools: tuple[str, ...] | None = None
+        if claude_permission_mode is not None or claude_allowed_tools is not None:
+            if backend != "claude-print":
+                raise ValueError("claude_permission_mode and claude_allowed_tools apply only to the "
+                                 "claude-print backend")
+            if claude_permission_mode is not None:
+                self.claude_permission_mode = validate_permission_mode(claude_permission_mode)
+            if claude_allowed_tools is not None:
+                self.claude_allowed_tools = validate_allowed_tools(claude_allowed_tools)
         self.dry_run = dry_run
         self.on_plan = on_plan
         self.planned: list[dict[str, Any]] = []
@@ -469,6 +486,12 @@ class AgentRuntime:
         if self.backend in _STDIN_FILE_BACKENDS:
             prompt += ("\nWrite allowlist (enforced after exit): " + ", ".join(self.allowed_paths) +
                        ". A change outside these paths rejects the whole session.")
+            prompt += ("\nYour work: make the GOAL records of the current frame task true by editing files in "
+                       "the current directory, only within the write allowlist."
+                       "\nWhen you exit, the conductor runs the frame's acceptance commands itself in this "
+                       "directory; your own DONE or CLAIM events do not decide completion."
+                       "\nDo not run git commands that change history or references (commit, branch, reset, "
+                       "checkout); the conductor commits.")
         return prompt
 
     def _launch_spec(self, session_dir: Path, worktree: Path) -> LaunchSpec:
@@ -479,7 +502,9 @@ class AgentRuntime:
                                      workdir=worktree, prompt_path=prompt_path,
                                      last_message_path=session_dir / "last_message.txt")
         return claude_print_launch(executable=self.executable, model=self.model, effort=self.effort,
-                                   workdir=worktree, prompt_path=prompt_path)
+                                   workdir=worktree, prompt_path=prompt_path,
+                                   permission_mode=self.claude_permission_mode,
+                                   allowed_tools=self.claude_allowed_tools)
 
     def _plan_record(self, spec: LaunchSpec, prompt: str, task_id: str, session_id: str,
                      base_commit: str) -> dict[str, Any]:
@@ -723,6 +748,12 @@ class AgentRuntime:
             raise PermissionError("write allowlist violation: " + ", ".join(unsafe[:16]))
         return changed
 
+    def discard_worktree(self, handle: RuntimeHandle) -> None:
+        """Remove the worktree of a session accepted with ``keep_worktree_on_accept``."""
+        if not isinstance(handle, RuntimeHandle):
+            raise TypeError("handle was not created by this runtime")
+        self._remove_worktree(handle.worktree)
+
     def _remove_worktree(self, path: Path) -> None:
         if not path.exists():
             return
@@ -798,6 +829,11 @@ class AgentRuntime:
                     return
             else:
                 code = -1
+            if time.time() >= handle.deadline_wall:
+                # The supervisor kills its own group at the deadline and never writes a status:
+                # past the deadline that is a timeout, not an unexplained exit status.
+                self._fail(handle, "agent execution timed out", "SESSION_TIMED_OUT")
+                return
             status = {"exit_code": code, "output_limit": False}
         if status.get("output_limit") or handle.output_offset >= self.output_limit:
             self._kill_remaining_group(handle)
@@ -839,8 +875,10 @@ class AgentRuntime:
         self._kill_remaining_group(handle)
         self._record_terminal(handle, "SESSION_ACCEPTED", artifact_sha256=digest,
                               artifact_path=os.fspath(handle.session_dir / "artifact.patch"),
-                              changed_paths=list(changed), exit_code=status["exit_code"])
-        self._remove_worktree(handle.worktree)
+                              changed_paths=list(changed), exit_code=status["exit_code"],
+                              worktree_kept=self.keep_worktree_on_accept)
+        if not self.keep_worktree_on_accept:
+            self._remove_worktree(handle.worktree)
         handle.pending.extend(self._take_held(handle))
         handle.replay_finished = True
 
