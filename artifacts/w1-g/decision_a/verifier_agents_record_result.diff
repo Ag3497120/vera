@@ -1,0 +1,24 @@
+--- a/verantyx/verifier_agents.py
++++ b/verantyx/verifier_agents.py
+@@ -605,9 +605,20 @@
+              isinstance(record.get("witness"), Mapping) and
+              record["witness"].get("acceptance_id") == spec.get("acceptance_record_id") and
+              record["witness"].get("claimant_id") == claimant_id]
++    # Decision A: "could not be confirmed" is UNVERIFIED, not FAIL. FAIL only when evidence was re-run by a
++    # runner, the verifiers agree with each other, and at least one re-run observed a value that differs
++    # from the expected one.
++    contradicted = any("observed" in item and not item["passed"]
++                       for check in checks for item in check["items"])
++    if all_passed:
++        recorded_result = "PASS"
++    elif has_evidence and runner is not None and not evidence_disagrees and contradicted:
++        recorded_result = "FAIL"
++    else:
++        recorded_result = "UNVERIFIED"
+     try:
+         frame.record_verification(
+-            str(spec["acceptance_record_id"]), "PASS" if all_passed else "FAIL", verifier_id=verifier_id,
++            str(spec["acceptance_record_id"]), recorded_result, verifier_id=verifier_id,
+             claimant_id=claimant_id, evidence_ref=evidence_ref,
+             template_id=str(spec["template_id"]), supersedes=prior[-1]["id"] if prior else None,
+         )

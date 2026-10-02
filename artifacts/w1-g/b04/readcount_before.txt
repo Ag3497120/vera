@@ -1,0 +1,60 @@
+file_sha256  FRESH                    Memory.ask fresh=True  verdict=ANSWER               records=1 reads=2
+file_sha256  FRESH                    Memory.ask fresh=False verdict=ANSWER               records=1 reads=1
+file_sha256  FRESH                    Revalidating.ask       verdict=ANSWER               records=1 reads=2
+file_sha256  STALE_CONTENT            Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+file_sha256  STALE_CONTENT            Memory.ask fresh=False verdict=ANSWER               records=1 reads=1
+file_sha256  STALE_CONTENT            Revalidating.ask       verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+file_sha256  FILE_MISSING             Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+file_sha256  FILE_MISSING             Memory.ask fresh=False verdict=ANSWER               records=1 reads=1
+file_sha256  FILE_MISSING             Revalidating.ask       verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+file_sha256  BAD_SHAPE_63             Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=0
+file_sha256  BAD_SHAPE_63             Memory.ask fresh=False verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=0
+file_sha256  BAD_SHAPE_63             Revalidating.ask       verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+file_hash    FRESH                    Memory.ask fresh=True  verdict=ANSWER               records=1 reads=2
+file_hash    FRESH                    Memory.ask fresh=False verdict=ANSWER               records=1 reads=1
+file_hash    FRESH                    Revalidating.ask       verdict=ANSWER               records=1 reads=1
+file_hash    STALE_CONTENT            Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+file_hash    STALE_CONTENT            Memory.ask fresh=False verdict=ANSWER               records=1 reads=1
+file_hash    STALE_CONTENT            Revalidating.ask       verdict=ANSWER               records=1 reads=1
+file_hash    FILE_MISSING             Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+file_hash    FILE_MISSING             Memory.ask fresh=False verdict=ANSWER               records=1 reads=1
+file_hash    FILE_MISSING             Revalidating.ask       verdict=ANSWER               records=1 reads=1
+file_hash    BAD_SHAPE_63             Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=0
+file_hash    BAD_SHAPE_63             Memory.ask fresh=False verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=0
+file_hash    BAD_SHAPE_63             Revalidating.ask       verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=0
+text_in_file FRESH                    Memory.ask fresh=True  verdict=ANSWER               records=1 reads=2
+text_in_file FRESH                    Memory.ask fresh=False verdict=ANSWER               records=1 reads=1
+text_in_file FRESH                    Revalidating.ask       verdict=ANSWER               records=1 reads=2
+text_in_file NEEDLE_ABSENT            Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+text_in_file NEEDLE_ABSENT            Memory.ask fresh=False verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+text_in_file NEEDLE_ABSENT            Revalidating.ask       verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+text_in_file FILE_MISSING             Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+text_in_file FILE_MISSING             Memory.ask fresh=False verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+text_in_file FILE_MISSING             Revalidating.ask       verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+text_in_file BAD_SHAPE_BLANK_NEEDLE   Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=0
+text_in_file BAD_SHAPE_BLANK_NEEDLE   Memory.ask fresh=False verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=0
+text_in_file BAD_SHAPE_BLANK_NEEDLE   Revalidating.ask       verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=0
+text_in_file NEEDLE_NOT_THE_CLAIM     Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=2
+text_in_file NEEDLE_NOT_THE_CLAIM     Memory.ask fresh=False verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+text_in_file NEEDLE_NOT_THE_CLAIM     Revalidating.ask       verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=2
+git_commit   FRESH                    Memory.ask fresh=True  verdict=ANSWER               records=1 reads=2
+git_commit   FRESH                    Memory.ask fresh=False verdict=ANSWER               records=1 reads=1
+git_commit   FRESH                    Revalidating.ask       verdict=ANSWER               records=1 reads=2
+git_commit   STALE_RC1                Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+git_commit   STALE_RC1                Memory.ask fresh=False verdict=ANSWER               records=1 reads=1
+git_commit   STALE_RC1                Revalidating.ask       verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+git_commit   UNVERIFIABLE_OSERROR     Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=2
+git_commit   UNVERIFIABLE_OSERROR     Memory.ask fresh=False verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+git_commit   UNVERIFIABLE_OSERROR     Revalidating.ask       verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=2
+git_commit   BAD_SHAPE_EMPTY_COMMIT   Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=0
+git_commit   BAD_SHAPE_EMPTY_COMMIT   Memory.ask fresh=False verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=0
+git_commit   BAD_SHAPE_EMPTY_COMMIT   Revalidating.ask       verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=1
+command_exit FRESH                    Memory.ask fresh=True  verdict=ANSWER               records=1 reads=0
+command_exit FRESH                    Memory.ask fresh=False verdict=ANSWER               records=1 reads=0
+command_exit FRESH                    Revalidating.ask       verdict=ANSWER               records=1 reads=0
+command_exit STALE_EXIT1              Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=0
+command_exit STALE_EXIT1              Memory.ask fresh=False verdict=ANSWER               records=1 reads=0
+command_exit STALE_EXIT1              Revalidating.ask       verdict=ANSWER               records=1 reads=0
+command_exit BAD_SHAPE_NO_EXIT        Memory.ask fresh=True  verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=0
+command_exit BAD_SHAPE_NO_EXIT        Memory.ask fresh=False verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=0
+command_exit BAD_SHAPE_NO_EXIT        Revalidating.ask       verdict=UNKNOWN_NO_EVIDENCE  records=0 reads=0

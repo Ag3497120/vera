@@ -1,0 +1,42 @@
+--- a/verantyx/memory_merge.py
++++ b/verantyx/memory_merge.py
+@@ -84,6 +84,7 @@
+     canonical: list
+     statuses: tuple
+     declared_payloads: frozenset
++    checked_links: set
+ 
+ 
+ def _state(events: Iterable[Mapping[str, Any]]):
+@@ -174,8 +175,9 @@
+ 
+     # A cycle is invalid even if one of its ids has not arrived in this part
+     # of a distributed log yet.
++    checked_links = set(links) | {pair for pair, (status, _r, _d) in status_of.items() if status == 'NONOPERATIVE'}
+     graph: dict[str, set[str]] = {}
+-    for old, new in links:
++    for old, new in checked_links:
+         graph.setdefault(old, set()).add(new)
+     nodes = set(graph)
+     indegree: dict[str, int] = {}
+@@ -212,7 +214,7 @@
+         for (old, new), (status, reason, declared) in sorted(status_of.items())
+     )
+     declared_payloads = frozenset(p for payloads in declared_events.values() for p in payloads)
+-    return _Analysis(records, links, canonical, statuses, declared_payloads)
++    return _Analysis(records, links, canonical, statuses, declared_payloads, checked_links)
+ 
+ 
+ def _merge(left: Any, right: Any) -> _Analysis:
+@@ -268,8 +270,9 @@
+ 
+ def active_records(events: Any) -> list[dict]:
+     """Return active records in id order, rejecting incomplete or cyclic links."""
+-    records, links, _ = _state(_read_events(events))
+-    for old, new in links:
++    analysis = _analyze(_read_events(events))
++    records, links = analysis.records, analysis.links
++    for old, new in analysis.checked_links:
+         if old not in records or new not in records:
+             missing = old if old not in records else new
+             raise ValueError(f'dangling supersession reference: {missing}')

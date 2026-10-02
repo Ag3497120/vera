@@ -1,0 +1,75 @@
+## supersede 事件 merge 会計
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "supersede 事件 merge 会計",
+  "searched": 647,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 279,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## verification UNVERIFIED record
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "verification UNVERIFIED record",
+  "searched": 647,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 279,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## witness 読み取り 1回
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "witness 読み取り 1回",
+  "searched": 647,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 279,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## 作業予算 語 数える
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "作業予算 語 数える",
+  "searched": 647,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 279,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## 閉じた選択 プロンプト JSON エスケープ
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "閉じた選択 プロンプト JSON エスケープ",
+  "searched": 647,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 279,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

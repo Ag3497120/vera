@@ -1,0 +1,2 @@
+True
+['Conflict', 'MergeReport', 'SUPERSEDE_STATUSES', 'SupersedeStatus', 'active_records', 'conflicts', 'merge_files', 'merge_logs', 'merge_report']

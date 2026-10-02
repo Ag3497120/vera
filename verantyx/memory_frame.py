@@ -75,17 +75,25 @@ def _sha(path: str) -> Optional[str]:
     except (OSError, TypeError, ValueError): return None
 
 
+def _file_hash_shape_ok(w: dict) -> bool:
+    """The one rule for a well-formed file-hash witness: a non-blank path and a 64-hex-digit sha256.
+
+    `check_witness` (UNVERIFIABLE vs. readable) and `Memory._witness_supports` (shape only: the content was
+    already read by the freshness check) both use it, so the rule is written once.
+    """
+    path, expected = w.get('path'), w.get('sha256')
+    return (isinstance(path, (str, Path)) and bool(str(path).strip()) and
+            isinstance(expected, str) and re.fullmatch(r'[0-9a-fA-F]{64}', expected) is not None)
+
+
 def check_witness(w: Optional[dict]) -> str:
     """FRESH / STALE / UNVERIFIABLE / TESTIMONY for a witness dict."""
     if not isinstance(w, dict): return 'UNVERIFIABLE'
     kind = w.get('kind')
     if kind == 'testimony': return 'TESTIMONY'
     if kind in ('file_sha256', 'file_hash'):
-        path, expected = w.get('path'), w.get('sha256')
-        if ((not isinstance(path, (str, Path)) or not str(path).strip()) or
-                not isinstance(expected, str) or not re.fullmatch(r'[0-9a-fA-F]{64}', expected)):
-            return 'UNVERIFIABLE'
-        now = _sha(path); return 'STALE' if now is None else ('FRESH' if now == expected.lower() else 'STALE')
+        if not _file_hash_shape_ok(w): return 'UNVERIFIABLE'
+        now = _sha(w['path']); return 'STALE' if now is None else ('FRESH' if now == w['sha256'].lower() else 'STALE')
     if kind == 'text_in_file':
         path, needle = w.get('path'), w.get('needle')
         if (not isinstance(path, (str, Path)) or not str(path).strip() or
@@ -236,11 +244,58 @@ class Memory:
                 if line.strip(): self._apply(json.loads(line))
 
     # ---- log
+    def _supersede_state(self) -> tuple[list[dict], dict[str, list[dict]]]:
+        """The supersede accounting state: (every supersede event read with how it was settled, events waiting
+        for their replacement record by record id). Created here on first use, not in __init__, so a Memory that
+        was built without __init__ (a view with only `records`/`superseded`, or a subclass such as
+        project_frame._ExchangeMemory) works in write/_apply and supersede_accounting."""
+        d = self.__dict__
+        return d.setdefault('_supersede_log', []), d.setdefault('_waiting', {})
+
     def _apply(self, ev):
-        if ev['op'] == 'write': self.records[ev['record']['id']] = ev['record']
-        elif ev['op'] == 'supersede': self.superseded[ev['id']] = ev['by']
+        log, waiting = self._supersede_state()
+        if ev['op'] == 'write':
+            self.records[ev['record']['id']] = ev['record']
+            for entry in waiting.pop(ev['record']['id'], ()): self._settle_supersede(entry)
+        elif ev['op'] in ('supersede', 'pending_supersede'):
+            # A supersede event is operative only when its replacement record carries the matching `supersedes`
+            # pointer (the same rule memory_merge uses). The event may come before the record: it then waits.
+            entry = {'id': ev['id'], 'by': ev['by'], 'op': ev['op'], 'state': 'waiting_for_record',
+                     'reason': 'REPLACEMENT_NOT_PRESENT'}
+            log.append(entry)
+            if ev['by'] in self.records: self._settle_supersede(entry)
+            else: waiting.setdefault(ev['by'], []).append(entry)
         elif ev['op'] == 'alias': self.aliases[(ev['scope'], ev['word'])] = ev
         self._view = None
+
+    def _settle_supersede(self, entry):
+        """The replacement record is present: apply the event only if its pointer names the target."""
+        pointer = self.records[entry['by']].get('supersedes')
+        ids = pointer if isinstance(pointer, (list, tuple)) else (pointer,)
+        if pointer is None or pointer == '' or (isinstance(pointer, (list, tuple)) and not pointer):
+            entry['state'], entry['reason'] = 'nonoperative', 'REPLACEMENT_POINTER_ABSENT'
+        elif any(not isinstance(i, str) or not i for i in ids):
+            entry['state'], entry['reason'] = 'nonoperative', 'REPLACEMENT_POINTER_INVALID'
+        elif entry['id'] in ids:
+            self.superseded[entry['id']] = entry['by']
+            entry['state'], entry['reason'] = 'applied', 'REPLACEMENT_POINTER_MATCHES'
+        else:
+            entry['state'], entry['reason'] = 'nonoperative', 'REPLACEMENT_POINTER_MISMATCH'
+
+    def supersede_accounting(self) -> dict:
+        """How many supersede events were applied, kept without effect, or are waiting for their record.
+
+        Nothing is dropped silently: an event whose replacement record does not point back at its target stays
+        in the log, is not applied, and is listed here with a typed reason. Works on a Memory that only has
+        `records` and `superseded` (nothing logged: all counts 0).
+        """
+        log = self._supersede_state()[0]
+        view = lambda state: [{k: e[k] for k in ('id', 'by', 'op', 'reason')} for e in log if e['state'] == state]
+        nonoperative, waiting = view('nonoperative'), view('waiting_for_record')
+        applied = sum(e['state'] == 'applied' for e in log)
+        return {'applied': applied, 'nonoperative': nonoperative, 'waiting_for_record': waiting,
+                'counts': {'applied': applied, 'nonoperative': len(nonoperative),
+                           'waiting_for_record': len(waiting), 'events': len(log)}}
 
     def _append(self, ev):
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -356,20 +411,36 @@ class Memory:
         return self.ask(f'{_normalize_np_in_frame(subject)}の{attr}は？', require_fresh)
 
     @staticmethod
-    def _witness_supports(record):
+    def _witness_supports(record, status=None):
+        """Does the witness support this record's claim?
+
+        `status` is the result of ONE `check_witness` call the caller already made for this very question. When it
+        is given the evidence is not read a second time (a status and a support decision from two separate reads
+        could disagree); when it is None the check is made here, once, as before.
+        """
         witness = record.get('witness')
         if witness is None: return True
         if not isinstance(witness, dict): return False
         kind = witness.get('kind')
         if kind == 'testimony': return True
         if kind == 'constructed': return True
-        if kind in ('file_sha256', 'file_hash', 'git_commit', 'command_result', 'command_exit'):
-            return check_witness(witness) != 'UNVERIFIABLE'
+        if kind in ('file_sha256', 'file_hash'):
+            # The freshness read (when there is one) already hashed the file; here only the shape matters.
+            # Same rule as check_witness: a well-formed witness is never UNVERIFIABLE.
+            return _file_hash_shape_ok(witness)
+        if kind in ('git_commit', 'command_result', 'command_exit'):
+            # git_commit is not shape-only: UNVERIFIABLE also means git could not start.
+            if status is None: status = check_witness(witness)
+            return status != 'UNVERIFIABLE'
         if kind != 'text_in_file': return False
         try:
-            source = Path(witness['path']).expanduser().read_text(encoding='utf-8')
-            evidence = witness['needle']
-            if not isinstance(evidence, str) or not evidence or evidence not in source: return False
+            if status == 'FRESH':
+                # check_witness read the file and found the (non-blank) needle in it.
+                evidence = witness['needle']
+            else:
+                source = Path(witness['path']).expanduser().read_text(encoding='utf-8')
+                evidence = witness['needle']
+                if not isinstance(evidence, str) or not evidence or evidence not in source: return False
             names, attr = KINDS[record['kind']]
             expected = {
                 'entity': record['slots'][names[0]],
@@ -388,9 +459,16 @@ class Memory:
 
     def ask(self, question, require_fresh=True, evidence_only=False):
         from .one import Vera
-        candidates = [r for r in self.active(require_fresh)
-                      if self._witness_supports(r) and
-                      not (evidence_only and witness_class(r.get('witness')) in ('testimony', 'constructed'))]
+        # One check_witness call per record per question: its status both excludes STALE records and tells
+        # _witness_supports what was already read. active(False) + the check below is active(True) with the
+        # status kept instead of thrown away.
+        candidates = []
+        for r in self.active(False):
+            status = check_witness(r.get('witness')) if require_fresh else None
+            if status == 'STALE': continue
+            if self._witness_supports(r, status=status) and not (
+                    evidence_only and witness_class(r.get('witness')) in ('testimony', 'constructed')):
+                candidates.append(r)
         docs = {f"rec:{r['id']}": r['sentence'] for r in candidates}
         if not docs:
             return {'verdict': 'UNKNOWN_NO_EVIDENCE', 'values': [], 'records': [], 'witness_classes': {}}
