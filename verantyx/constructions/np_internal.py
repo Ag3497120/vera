@@ -69,6 +69,42 @@ def _coordinators(tokens):
     return found
 
 
+def _is_adverbial_part(tokens):
+    """A conjunct that is only an adverbial noun: a numeric date/clock expression, or a bare noun the tagger marks 副詞可能
+    (a relative day/week/year word, a period word), with no particle and no proper noun."""
+    text = "".join(t[0] for t in tokens)
+    if not text:
+        return False
+    if re.fullmatch(r"(?:(?:[^0-9０-９\s、]{2})?[0-9０-９]+年|[0-9０-９]+月|[0-9０-９]+日|[0-9０-９]+時|[0-9０-９]+分|[0-9０-９]+秒)+", text):
+        return True
+    from ..typed_edges import _tagger
+    words = list(_tagger()(text))
+    if not words or len(words) > 3 or any(w.feature.pos1 == "助詞" or w.feature.pos2 == "固有名詞" for w in words):
+        return False
+    return words[-1].feature.pos3 in ("副詞可能", "形状詞可能") and all(w.feature.pos1 in ("名詞", "接頭辞", "接尾辞", "連体詞") for w in words)
+
+
+def _is_person_item(text):
+    """An item that names a person (a name, a pronoun, a role/kin noun): decides whether a bare two-item comma pair is an
+    enumeration of like things or an adverbial followed by its subject."""
+    from ..frames import is_role, _PERSON_SUFFIX
+    from ..typed_edges import _tagger
+    text = text.strip()
+    head = text.split("の")[-1]
+    if not head:
+        return False
+    if is_role(head) or head.endswith(_PERSON_SUFFIX):
+        return True
+    words = list(_tagger()(head))
+    return bool(words) and (words[-1].feature.pos1 == "代名詞" or any(w.feature.pos2 == "固有名詞" and w.feature.pos3 == "人名" for w in words))
+
+
+def _heterogeneous_pair(left_text, right_text):
+    """<X>、<Y> with no と/や/・: an enumeration lists like things (two people, two places, two things). A pair of a person and a
+    non-person (普通、母 / 結局、祖父 / 先月、姉) is an adverbial word and the subject it precedes, not a coordination."""
+    return _is_person_item(left_text) != _is_person_item(right_text)
+
+
 def _head(term):
     return term.head if isinstance(term, Nominal) else term if isinstance(term, str) else ""
 
@@ -97,9 +133,16 @@ def _parse(tokens, depth=0):
         return Nominal(head=_head(right), term=left)
 
     coords = _coordinators(tokens)
+    if len(coords) == 1 and coords[0][2] == "、" and _heterogeneous_pair(
+            "".join(t[0] for t in tokens[:coords[0][0]]), "".join(t[0] for t in tokens[coords[0][1]:])):
+        return None
     if coords:
         parts, markers, begin = [], [], 0
         for a, b, marker in coords:
+            if marker == "、" and _is_adverbial_part(tokens[begin:a]):
+                # <time noun>、<person> / <place word>、<NP>: a time or relational noun (副詞可能) before a comma opens an
+                # adverbial and is followed by the subject; it is not the first item of an enumeration of participants.
+                return None
             part = _parse(tokens[begin:a], depth + 1)
             if part is None:
                 return None
@@ -363,6 +406,22 @@ def reads(ctx: ConstructionContext) -> Reading | None:
     return Reading(tuple(clauses), tuple(consumed), tuple(notes))
 
 
+def _license_adverbial(text: str) -> bool:
+    """Licensor's own test (separate from the reader's helper): a bare 副詞可能 noun or numeric date before a comma."""
+    text = text.strip()
+    if not text:
+        return False
+    if re.fullmatch(r"(?:(?:[^0-9０-９\s、]{2})?[0-9０-９]+年|[0-9０-９]+月|[0-9０-９]+日|[0-9０-９]+時|[0-9０-９]+分|[0-9０-９]+秒)+", text):
+        return True
+    from ..typed_edges import _tagger          # the shared tagger (a Tagger() per call was slow); sharing the tokenizer keeps the checker independent
+    words = list(_tagger()(text))
+    if not words or len(words) > 3:
+        return False
+    if any(str(w.feature.pos1) == "助詞" or str(w.feature.pos2) == "固有名詞" for w in words):
+        return False
+    return str(words[-1].feature.pos3) in ("副詞可能", "形状詞可能")
+
+
 def _source_tree(text, depth=0):
     """Independent character-level reconstruction for the licensor."""
     if depth > 8 or not text:
@@ -395,9 +454,13 @@ def _source_tree(text, depth=0):
             kana = lambda c: "ぁ" <= c <= "ゖ" or "ァ" <= c <= "ヺ"
             if not kana(left) and not kana(right):
                 cuts.append((i, char))
+    if len(cuts) == 1 and cuts[0][1] == "、" and _heterogeneous_pair(text[:cuts[0][0]], text[cuts[0][0] + 1:]):
+        return None
     if cuts:
         parts, markers, begin = [], [], 0
         for i, marker in cuts:
+            if marker == "、" and _license_adverbial(text[begin:i]):
+                return None            # a time/relational noun before a comma opens an adverbial, not an enumeration
             part = _source_tree(text[begin:i], depth+1)
             if part is None:
                 return None

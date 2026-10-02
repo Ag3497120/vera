@@ -27,6 +27,9 @@ _SAFE_UNSUPPORTED = frozenset((
     "unlocated patient", "unlocated agent", "unrepresented source content",
     "unlicensed role borrowing", "ambiguous case role: に", "ambiguous case role: で",
     "ambiguous case role: と", "ambiguous case role: から",
+    # The native frame hands a causative's に-phrase to `recipient`; this construction (and gold_caus_pass) is the only
+    # reader that may re-assign it, so the reader's reason is named here and nowhere else.
+    "causative frame: causer/causee unresolved",
 ))
 _MARKERS = ("によって", "により", "において", "における", "に対して", "について",
             "による", "として", "と共に", "ともに", "には", "では",
@@ -99,7 +102,7 @@ def _time_like(term: str) -> bool:
 
 def _aligned_roles(ctx: ConstructionContext, clause: Clause, mode: str,
                    predicate_start: int, predicate_end: int,
-                   potential_as_subject: bool = False) -> tuple[Role, ...] | None:
+                   potential_as_subject: bool = False, source_base: str = "") -> tuple[Role, ...] | None:
     text, base = ctx.sentence_text, ctx.sentence_span.start
     roles: list[Role] = []
     seen_cases: list[tuple[Role, str, int]] = []
@@ -121,11 +124,23 @@ def _aligned_roles(ctx: ConstructionContext, clause: Clause, mode: str,
     has_patient_case = any(marker in ("が", "は", "を") for _, marker, _ in seen_cases)
     has_passive_agent = any(marker in ("に", "によって", "により")
                             for _, marker, _ in seen_cases)
+    # A causee is the person the causer acts on, which the native frame types as `recipient`. A に-phrase the frame
+    # typed as goal/result/direction/location is an adjunct (X が Y を Z に V-させる, V intransitive): never the causee.
     has_causee_case = any(
+        marker == "に" and old.name == "recipient" and not _time_like(old.term)
+        for old, marker, _ in seen_cases
+    ) if mode == "causative" else any(
         marker == "に" and old.name not in ("time", "place", "setting", "direction")
         and not _time_like(old.term) for old, marker, _ in seen_cases
     )
 
+    if mode == "causative" and has_causee_case and any(marker == "を" for _, marker, _ in seen_cases):
+        # X が Y に Z を V-させる (V transitive: Y is the causee, Z the patient) differs from X が Y を Z に V-させる (V
+        # intransitive: Y is the causee, Z a destination). The source verb's transitivity (corpus-derived, frames.py) decides;
+        # when it does not say transitive, abstain rather than guess.
+        from ..frames import transitivity
+        if not source_base or transitivity(source_base) != "trans":
+            return None
     for old, marker, marker_end in seen_cases:
         if mode == "passive":
             if not marker and old.span.start == base+predicate_end:
@@ -146,10 +161,11 @@ def _aligned_roles(ctx: ConstructionContext, clause: Clause, mode: str,
             else:
                 continue
         elif mode == "causative":
+            if old.name in ("goal", "direction", "result", "location", "source", "means", "companion", "ambiguous"):
+                return None          # an adjunct this construction cannot represent: abstain, do not drop it
             if marker == "が" and old.name not in ("time", "place", "setting"):
                 name = "causer"
-            elif marker == "に" and old.name not in ("time", "place", "setting", "direction") \
-                    and not _time_like(old.term):
+            elif marker == "に" and old.name == "recipient" and not _time_like(old.term):
                 name = "causee"
             elif marker == "を" and has_causee_case:
                 name = "patient"
@@ -247,6 +263,52 @@ def _causative_bases(lemma: str) -> tuple[str, ...]:
     return tuple(sorted(base for base in candidates if _verb_class(base)))
 
 
+def _unrepresented_lead(tokens, lead_end: int) -> bool:
+    """A case/topic-marked phrase (<pronoun>は, <place>で) stands in this clause before its typed frame. The segment starts after the
+    previous predicate (earlier clauses of a long sentence are other clauses' business). Connective particles (が、て)
+    do not count; case, topic and focus particles do."""
+    segment = []
+    for item in tokens:
+        if item.end > lead_end:
+            break
+        feature = item.token.feature
+        if feature.pos1 in ("動詞", "形容詞") or (feature.pos1 == "助動詞" and str(feature.cForm).startswith("終止")):
+            segment = []
+            continue
+        segment.append(item)
+    return any(getattr(i.token.feature, "pos1", "") == "助詞" and getattr(i.token.feature, "pos2", "") in ("格助詞", "係助詞", "副助詞")
+               and i.token.surface != "の" for i in segment)
+
+
+def _resolve_causative_bases(ctx: ConstructionContext, p0: int, p1: int, bases: tuple[str, ...]) -> tuple[str, ...]:
+    """Settle the base verb of a causative from the source's own morphology.
+
+    食べさせる inverts to 食べる (ichidan), 食べする (suru) and 食べす (godan) when only the form is looked at. The tagger
+    already knows which verb stands in front of させ/せ: a candidate that is not that verb's lemma is dropped (so 着させた
+    does not become 着する). When the tagger gives no verb there, nothing is changed (the ambiguity stays an abstention)."""
+    if not bases:
+        return bases
+    for index, item in enumerate(ctx.tokens):
+        if item.start < p0 or item.end > ctx.sentence_span.end - ctx.sentence_span.start:
+            continue
+        if getattr(item.token, "surface", "") in ("せ", "さ せ") or (
+                getattr(item.token, "surface", "") in ("させ",) and item.start >= p0):
+            if index == 0:
+                return bases
+            before = ctx.tokens[index - 1].token
+            feature = getattr(before, "feature", None)
+            if feature is None or getattr(feature, "pos1", "") != "動詞":
+                return bases
+            lemma = getattr(feature, "orthBase", None) or getattr(feature, "lemma", None)
+            if not lemma:
+                return bases
+            lemma = str(lemma).split("-")[0]
+            if lemma == "する":                      # <サ変 noun>させる: the noun + する
+                return tuple(b for b in bases if b.endswith("する"))
+            return tuple(b for b in bases if b == lemma)
+    return bases
+
+
 def _body_span(ctx: ConstructionContext, roles: tuple[Role, ...],
                pred_start: int, pred_end: int) -> Span | None:
     sentence, text = ctx.sentence_span, ctx.sentence_text
@@ -308,7 +370,7 @@ def reads(ctx: ConstructionContext) -> Reading | None:
             matches.extend((mode, start, end, form, potential_base)
                            for mode, start, end, form in _form_at(text, p0, p1, potential_base)
                            if mode == "potential")
-        causative_bases = _causative_bases(lemma)
+        causative_bases = _resolve_causative_bases(ctx, p0, p1, _causative_bases(lemma))
         for candidate in causative_bases:
             matches.extend((mode, start, end, form, candidate)
                            for mode, start, end, form in _form_at(text, p0, p1, candidate)
@@ -361,6 +423,7 @@ def reads(ctx: ConstructionContext) -> Reading | None:
         roles = _aligned_roles(
             ctx, clause, mode, form_start, form_end,
             potential_as_subject=(mode == "potential" and new_predicate == "する" and form == "できる"),
+            source_base=(source_base if mode == "causative" else ""),
         )
         if roles is None:
             notes.append(TypedNote("ambiguous frame role", clause.predicate_span,
@@ -370,6 +433,13 @@ def reads(ctx: ConstructionContext) -> Reading | None:
         if body is None:
             notes.append(TypedNote("unrepresented source content", clause.predicate_span,
                                    "the local source span contains material outside the typed case frame and predicate"))
+            continue
+        lead_rel = body.start - base
+        if _unrepresented_lead(ctx.tokens, lead_rel):
+            # A case/topic phrase stands before the typed frame and no role holds it (an affected 私は, a で-phrase):
+            # the clause would silently drop it, so abstain.
+            notes.append(TypedNote("unrepresented source content", clause.predicate_span,
+                                   "a case-marked phrase before the typed frame is not represented by any role"))
             continue
         time = "past" if form.endswith(("た", "ていた", "できた", "できていた")) else "nonpast"
         digest = hashlib.sha256(
@@ -558,6 +628,12 @@ def licenses(clause: Clause, source: str) -> bool:
     elif mode == "causative":
         if "causee" not in names or len(names) > 3:
             return False
+        if "patient" in names:
+            # causee に + patient を is the transitive causative; an intransitive verb's を-phrase is its causee and its に-phrase
+            # a destination, so this role assignment would be the wrong one for 戻る/向かう-type bases.
+            from ..frames import transitivity
+            if transitivity(clause.predicate) != "trans":
+                return False
         if "patient" in names and not any(name == "patient" and mark == "を"
                                            for _, _, name, mark in role_marks):
             return False
@@ -584,6 +660,15 @@ def licenses(clause: Clause, source: str) -> bool:
     # this clause's body even though the evidence span is sentence-wide.
     frame_start = min([pred.start] + [a for a, _, _, _ in role_marks])
     frame_end = max([pred.end] + [b for _, b, _, _ in role_marks])
+    from ..typed_edges import _tagger
+    lead = []
+    for word in _tagger()(source[whole.start:frame_start]):
+        if word.feature.pos1 in ("動詞", "形容詞") or (word.feature.pos1 == "助動詞" and str(word.feature.cForm).startswith("終止")):
+            lead = []
+            continue
+        lead.append(word)
+    if any(word.feature.pos1 == "助詞" and word.feature.pos2 in ("格助詞", "係助詞", "副助詞") and word.surface != "の" for word in lead):
+        return False     # a case/topic phrase before the frame that no role represents (私は…盗まれた)
     covered = [False] * (frame_end-frame_start)
     for lo, hi in ((pred.start, pred.end),) + tuple((a, b) for a, b, _, _ in role_marks):
         for pos in range(lo-frame_start, hi-frame_start):

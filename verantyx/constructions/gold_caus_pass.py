@@ -23,6 +23,7 @@ _SAFE_REASONS = frozenset((
     "unlocated patient", "unlocated agent", "unrepresented source content",
     "unlicensed role borrowing", "ambiguous case role: に", "ambiguous case role: で",
     "ambiguous case role: と", "ambiguous case role: から", "duplicate role in clause",
+    "causative frame: causer/causee unresolved",     # named reason from the reader (W1-a); this rule re-assigns the roles
 ))
 _PLACE_ENDINGS = ("脇", "前", "後ろ", "裏", "中", "近く", "そば", "隣", "横", "上", "下")
 _PLACE_WORDS = frozenset(("学校", "駅", "公園", "玄関", "台所", "病院", "会社", "家", "庭"))

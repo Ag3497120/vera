@@ -1,0 +1,292 @@
+## 神社に鳥居が建てられた。
+   SUP frame 建てる + [('agent', '神社'), ('patient', '鳥居')] [] PASS
+## 教会に鐘が取り付けられた。
+   SUP frame 取り付ける + [('agent', '教会'), ('patient', '鐘')] [] PASS
+## 外部に情報が漏らされた。
+   SUP frame 漏らす + [('agent', '外部'), ('patient', '情報')] [] PASS
+## 胸部に傷がつけられた。
+   SUP frame つける + [('agent', '胸部'), ('patient', '傷')] [] PASS
+## 棚の一部に本が置かれた。
+   uns frame 置く + [('patient', '本'), ('ambiguous', '棚の一部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   SUP diathesis 置く + [('agent', '棚の一部'), ('patient', '本')] [] PASS
+## 高校に新しい体育館が建てられた。
+   SUP frame 建てる + [('agent', '高校'), ('patient', '新しい体育館')] [] PASS
+## 母が娘に着物を仕立てた。
+   SUP frame 仕立てる + [('agent', '母'), ('patient', '着物'), ('recipient', '娘')] [] PASS
+## 先生が生徒に作文を直した。
+   SUP frame 直す + [('agent', '先生'), ('patient', '作文'), ('recipient', '生徒')] [] PASS
+## 父が息子に自転車を直した。
+   SUP frame 直す + [('agent', '父'), ('patient', '自転車'), ('recipient', '息子')] [] PASS
+## このパソコンは前のより軽い。
+   SUP copula property + [('entity', 'こ'), ('attribute', 'パソコン'), ('value', '前のより軽い')] [] PASS
+## 客が茶会に招かれた。
+   SUP frame 招く + [('agent', '茶会'), ('patient', '客')] [] PASS
+## 選手が大会に招待された。
+   SUP frame 招待する + [('agent', '大会'), ('patient', '選手')] [] PASS
+## 本社に新しい看板が掲げられた。
+   SUP frame 掲げる + [('agent', '本社'), ('patient', '新しい看板')] [] PASS
+## 商社に大量の注文が寄せられた。
+   SUP frame 寄せる + [('agent', '商社'), ('patient', '大量の注文')] [] PASS
+## 叔母が姪に浴衣を仕立てた。
+   SUP frame 仕立てる + [('agent', '叔母'), ('patient', '浴衣'), ('recipient', '姪')] [] PASS
+## 祖父が孫に名前を選んだ。
+   SUP frame 選ぶ + [('agent', '祖父'), ('patient', '名前'), ('recipient', '孫')] [] PASS
+## 係長が部下に書類を整理した。
+   SUP frame 整理する + [('agent', '係長'), ('patient', '書類'), ('recipient', '部下')] [] PASS
+## この鞄は君のより重い。
+   SUP copula property + [('entity', 'こ'), ('attribute', '鞄'), ('value', '君のより重い')] [] PASS
+## 私の家は彼のより狭い。
+   SUP copula property + [('entity', '私'), ('attribute', '家'), ('value', '彼のより狭い')] [] PASS
+## 太郎の鞄に傷がつけられた。
+   SUP frame つける + [('agent', '太郎の鞄'), ('patient', '傷')] [] PASS
+## 伏見稲荷神社に鳥居が建てられた。
+   SUP frame 建てる + [('agent', '伏見稲荷神社'), ('patient', '鳥居')] [] PASS
+## 山間部に新しい道が造られた。
+   SUP frame 造る + [('agent', '山間部'), ('patient', '新しい道')] [] PASS
+## 出力部に電源が接続された。
+   SUP frame 接続する + [('agent', '出力部'), ('patient', '電源')] [] PASS
+## 全長に印が付けられた。
+   SUP frame 付ける + [('agent', '全長'), ('patient', '印')] [] PASS
+## 荷物が配達に回された。
+   SUP frame 回す + [('agent', '配達'), ('patient', '荷物')] [] PASS
+## 都市部に人口が集められた。
+   SUP frame 集める + [('agent', '都市部'), ('patient', '人口')] [] PASS
+## 野球部に新入生が迎えられた。
+   SUP frame 迎える + [('agent', '野球部'), ('patient', '新入生')] [] PASS
+## 新人が営業部に迎えられた。
+   SUP frame 迎える + [('agent', '営業部'), ('patient', '新人')] [] PASS
+## 新人が山田商事に採用された。
+   SUP frame 採用する + [('agent', '山田商事'), ('patient', '新人')] [] PASS
+## 新人が消防団に勧誘された。
+   SUP frame 勧誘する + [('agent', '消防団'), ('patient', '新人')] [] PASS
+## 運動会に生徒が招かれた。
+   SUP frame 招く + [('agent', '運動会'), ('patient', '生徒')] [] PASS
+## 社長が彼を部長に任命した。
+   uns frame 任命する + [('agent', '社長'), ('recipient', '部長')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+## 係員が乗客を三つのグループに分けた。
+   SUP frame 分ける + [('agent', '係員'), ('patient', '乗客'), ('recipient', '三つのグループ')] [] PASS
+## 姉が妹にケーキを分けた。
+   SUP frame 分ける + [('agent', '姉'), ('patient', 'ケーキ'), ('recipient', '妹')] [] PASS
+## 母が娘を医者に仕立てた。
+   SUP frame 仕立てる + [('agent', '母'), ('patient', '娘'), ('recipient', '医者')] [] PASS
+## 彼女は部下を課長に昇進させた。
+   uns frame 昇進させる + [('patient', '部下'), ('recipient', '課長')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+## 母が娘に着物を仕立ててあげた。
+   SUP frame 仕立てる + [('agent', '母'), ('patient', '着物'), ('recipient', '娘')] [] PASS
+## 会議が代表に選ばれた。
+   SUP frame 選ぶ + [('agent', '代表'), ('patient', '会議')] [] PASS
+## APIサーバーがリクエストをJSONに変換した。
+   SUP frame 変換する + [('agent', 'APIサーバー'), ('patient', 'リクエスト'), ('recipient', 'JSON')] [] PASS
+## 太郎が花子に本を渡した。
+   SUP frame 渡す + [('agent', '太郎'), ('patient', '本'), ('recipient', '花子')] [] PASS
+## このモデルは前のモデルより速い。
+   SUP copula property + [('entity', 'こ'), ('attribute', 'モデル'), ('value', '前のモデルより速い')] [] PASS
+## 彼の夢はより良い社会の実現だ。
+   uns copula property + [('entity', '彼'), ('attribute', '夢'), ('value', 'より良い社会の実現')] ['unresolved anaphora'] REJ:unsupported/ill-typed source
+## この部屋は暗い。
+   SUP copula property + [('entity', 'こ'), ('attribute', '部屋'), ('value', '暗い')] [] PASS
+## あの店の主人は親切だ。
+   SUP copula property + [('entity', 'あの店'), ('attribute', '主人'), ('value', '親切')] [] PASS
+## この車は去年のよりずっと高い。
+   SUP copula property + [('entity', 'こ'), ('attribute', '車'), ('value', '去年のよりずっと高い')] [] PASS
+## この靴は姉のより小さい。
+   SUP copula property + [('entity', 'こ'), ('attribute', '靴'), ('value', '姉のより小さい')] [] PASS
+## このスープは昨日のほど辛くない。
+   (no clauses) ['unsupported negative adjective']
+## 寺院に新しい鐘が取り付けられた。
+   SUP frame 取り付ける + [('agent', '寺院'), ('patient', '新しい鐘')] [] PASS
+## 市場に大量の野菜が運び込まれた。
+   SUP frame 運び込む + [('agent', '市場'), ('patient', '大量の野菜')] [] PASS
+## 協会に新しい会員が迎えられた。
+   SUP frame 迎える + [('agent', '協会'), ('patient', '新しい会員')] [] PASS
+## 組合に多くの要望が寄せられた。
+   SUP frame 寄せる + [('agent', '組合'), ('patient', '多くの要望')] [] PASS
+## 政府に提案書が提出された。
+   SUP frame 提出する + [('agent', '政府'), ('patient', '提案書')] [] PASS
+## 財団に巨額の寄付が寄せられた。
+   uns frame 寄せる + [('agent', '財団'), ('patient', '寄付')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+## 委員会に報告書が提出された。
+   SUP frame 提出する + [('agent', '委員会'), ('patient', '報告書')] [] PASS
+## 自治会に新しい役員が選ばれた。
+   SUP frame 選ぶ + [('agent', '自治会'), ('patient', '新しい役員')] [] PASS
+## 研究室に最新の装置が導入された。
+   uns frame 導入する + [('agent', '研究室'), ('patient', '最新の装置')] ['unsupported source quantifier/exception/time'] REJ:unsupported/ill-typed source
+## 道場に古い看板が掲げられた。
+   SUP frame 掲げる + [('agent', '道場'), ('patient', '古い看板')] [] PASS
+## 劇場に大きな幕が吊るされた。
+   uns frame 吊るす + [('agent', '劇場'), ('patient', '幕')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+   SUP np_internal 吊るす + [('agent', '劇場'), ('patient', '大きな幕')] [] PASS
+## 学会に新しい論文が発表された。
+   SUP frame 発表する + [('agent', '学会'), ('patient', '新しい論文')] [] PASS
+## 山頂に小さな祠が建てられた。
+   uns frame 建てる + [('agent', '山頂'), ('patient', '祠')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+   SUP np_internal 建てる + [('agent', '山頂'), ('patient', '小さな祠')] [] PASS
+## 前半に大量の得点が奪われた。
+   uns frame 奪う + [('patient', '大量の得点'), ('ambiguous', '前半')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   SUP diathesis 奪う + [('agent', '前半'), ('patient', '大量の得点')] [] PASS
+## 大学に新しい図書館が建てられた。
+   SUP frame 建てる + [('agent', '大学'), ('patient', '新しい図書館')] [] PASS
+## 海外に多くの製品が輸出された。
+   SUP frame 輸出する + [('agent', '海外'), ('patient', '多くの製品')] [] PASS
+## 東部に大規模な工場が建設された。
+   uns frame 建設する + [('agent', '東部'), ('patient', '工場')] ['unrepresented source content', 'unrepresented source content'] REJ:unsupported/ill-typed source
+## 中心部に高層ビルが建てられた。
+   SUP frame 建てる + [('agent', '中心部'), ('patient', '高層ビル')] [] PASS
+## 右側に目印が付けられた。
+   SUP frame 付ける + [('agent', '右側'), ('patient', '目印')] [] PASS
+## 裏口に鍵が取り付けられた。
+   SUP frame 取り付ける + [('agent', '裏口'), ('patient', '鍵')] [] PASS
+## 警察に容疑者が逮捕された。
+   SUP frame 逮捕する + [('agent', '警察'), ('patient', '容疑者')] [] PASS
+## 市に新しい条例が制定された。
+   SUP frame 制定する + [('agent', '市'), ('patient', '新しい条例')] [] PASS
+## 会社に新入社員が採用された。
+   SUP frame 採用する + [('agent', '会社'), ('patient', '新入社員')] [] PASS
+## 母が娘に着物を縫った。
+   SUP frame 縫う + [('agent', '母'), ('patient', '着物'), ('recipient', '娘')] [] PASS
+## 父が子に絵本を読んだ。
+   SUP frame 読む + [('agent', '父'), ('patient', '絵本'), ('recipient', '子')] [] PASS
+## 先生が生徒にレポートを添削した。
+   SUP frame 添削する + [('agent', '先生'), ('patient', 'レポート'), ('recipient', '生徒')] [] PASS
+## 姉が妹に宿題を手伝った。
+   SUP frame 手伝う + [('agent', '姉'), ('patient', '宿題'), ('recipient', '妹')] [] PASS
+## 店主が客に商品を包んだ。
+   SUP frame 包む + [('agent', '店主'), ('patient', '商品'), ('recipient', '客')] [] PASS
+## 医者が患者に薬を調合した。
+   SUP frame 調合する + [('agent', '医者'), ('patient', '薬'), ('recipient', '患者')] [] PASS
+## 上司が部下に仕事を割り振った。
+   SUP frame 割り振る + [('agent', '上司'), ('patient', '仕事'), ('recipient', '部下')] [] PASS
+## 店長が従業員に制服を支給した。
+   SUP frame 支給する + [('agent', '店長'), ('patient', '制服'), ('recipient', '従業員')] [] PASS
+## 新しいモデルは旧型のより安い。
+   SUP copula identity + [('entity', '新しいモデル'), ('value', '旧型のより安い')] [] PASS
+## 弟のスマホは兄のより新しい。
+   SUP copula property + [('entity', '弟'), ('attribute', 'スマホ'), ('value', '兄のより新しい')] [] PASS
+## 今年の売上は去年のより多い。
+   uns copula property + [('entity', '今年'), ('attribute', '売上'), ('value', '去年のより多い')] ['unsupported source quantifier/exception/time'] REJ:unsupported/ill-typed source
+   SUP comparison 多い + [('entity', '今年の売上'), ('standard', '去年の'), ('dimension', '<多い>'), ('direction', '<greater>')] [] REJ:role/value licensing
+## 私の部屋は妹のより広い。
+   SUP copula property + [('entity', '私'), ('attribute', '部屋'), ('value', '妹のより広い')] [] PASS
+## このカメラは前のよりずっと軽い。
+   SUP copula property + [('entity', 'こ'), ('attribute', 'カメラ'), ('value', '前のよりずっと軽い')] [] PASS
+## 彼女の成績は私のより良い。
+   uns copula property + [('entity', '彼女'), ('attribute', '成績'), ('value', '私のより良い')] ['unresolved anaphora'] REJ:unsupported/ill-typed source
+## この道は駅へ行くのより早い。
+   uns frame 行く + [('agent', '道'), ('recipient', '駅')] ['unrepresented source content', 'unrepresented source content'] REJ:unsupported/ill-typed source
+## 去年の冬は今年のより寒かった。
+   uns copula property + [('entity', '去年'), ('attribute', '冬'), ('value', '今年のより寒かった')] ['unsupported source quantifier/exception/time'] REJ:unsupported/ill-typed source
+## 隣の庭は我が家のより狭い。
+   SUP copula property + [('entity', '隣'), ('attribute', '庭'), ('value', '我が家のより狭い')] [] PASS
+## 彼が部長に選ばれた。
+   uns frame 選ぶ + [('agent', '部長')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+## 書類が部下に整理された。
+   SUP frame 整理する + [('agent', '部下'), ('patient', '書類')] [] PASS
+## 北部に新しい道路が建設された。
+   SUP frame 建設する + [('agent', '北部'), ('patient', '新しい道路')] [] PASS
+## 腹部に包帯が巻かれた。
+   SUP frame 巻く + [('agent', '腹部'), ('patient', '包帯')] [] PASS
+## 頭部に傷が付けられた。
+   SUP frame 付ける + [('agent', '頭部'), ('patient', '傷')] [] PASS
+## 患部に薬が塗られた。
+   SUP frame 塗る + [('agent', '患部'), ('patient', '薬')] [] PASS
+## 支部に資料が送られた。
+   SUP frame 送る + [('agent', '支部'), ('patient', '資料')] [] PASS
+## 細部に工夫が凝らされた。
+   SUP frame 凝らす + [('agent', '細部'), ('patient', '工夫')] [] PASS
+## 母校に記念碑が建てられた。
+   SUP frame 建てる + [('agent', '母校'), ('patient', '記念碑')] [] PASS
+## 分校に新しい教室が増設された。
+   SUP frame 増設する + [('agent', '分校'), ('patient', '新しい教室')] [] PASS
+## 総会に議案が提出された。
+   SUP frame 提出する + [('agent', '総会'), ('patient', '議案')] [] PASS
+## 議会に条例案が提出された。
+   SUP frame 提出する + [('agent', '議会'), ('patient', '条例案')] [] PASS
+## 司会に台本が渡された。
+   SUP frame 渡す + [('agent', '司会'), ('patient', '台本')] [] PASS
+## 結社に多額の資金が提供された。
+   SUP frame 提供する + [('agent', '結社'), ('patient', '多額の資金')] [] PASS
+## 集団に規則が課された。
+   SUP frame 課す + [('agent', '集団'), ('patient', '規則')] [] PASS
+## 楽団に新曲が提供された。
+   SUP frame 提供する + [('agent', '楽団'), ('patient', '新曲')] [] PASS
+## 軍団に命令が下された。
+   SUP frame 下す + [('agent', '軍団'), ('patient', '命令')] [] PASS
+## 艦隊に出動が命じられた。
+   SUP frame 命ずる + [('agent', '艦隊'), ('patient', '出動')] [] PASS
+## 課題に取り組みが行われた。
+   SUP frame 行う + [('agent', '課題'), ('patient', '取り組み')] [] PASS
+## 身長に印が付けられた。
+   SUP frame 付ける + [('agent', '身長'), ('patient', '印')] [] PASS
+## 延長に変更が加えられた。
+   SUP frame 加える + [('agent', '延長'), ('patient', '変更')] [] PASS
+## 個人に責任が負わされた。
+   SUP frame 負わす + [('agent', '個人'), ('patient', '責任')] [] PASS
+## 本人に通知が送られた。
+   SUP frame 送る + [('agent', '本人'), ('patient', '通知')] [] PASS
+## 幹部に報告書が提出された。
+   SUP frame 提出する + [('agent', '幹部'), ('patient', '報告書')] [] PASS
+## 同好会に新しい部員が迎えられた。
+   SUP frame 迎える + [('agent', '同好会'), ('patient', '新しい部員')] [] PASS
+## 保育園に新しい遊具が設置された。
+   SUP frame 設置する + [('agent', '保育園'), ('patient', '新しい遊具')] [] PASS
+## 子供達に絵本が配られた。
+   SUP frame 配る + [('agent', '子供達'), ('patient', '絵本')] [] PASS
+## 田中さんに招待状が送られた。
+   SUP frame 送る + [('agent', '田中さん'), ('patient', '招待状')] [] PASS
+## 山田氏に感謝状が贈られた。
+   SUP frame 贈る + [('agent', '山田氏'), ('patient', '感謝状')] [] PASS
+## 先生方に資料が配布された。
+   SUP frame 配布する + [('agent', '先生方'), ('patient', '資料')] [] PASS
+## 会場に垂れ幕が掲げられた。
+   SUP frame 掲げる + [('agent', '会場'), ('patient', '垂れ幕')] [] PASS
+## ホームに時刻表が掲示された。
+   SUP frame 掲示する + [('agent', 'ホーム'), ('patient', '時刻表')] [] PASS
+## 東京に新しい施設が建設された。
+   SUP frame 建設する + [('agent', '東京'), ('patient', '新しい施設')] [] PASS
+## 街角に屋台が並べられた。
+   SUP frame 並べる + [('agent', '街角'), ('patient', '屋台')] [] PASS
+## 委員会が候補を議長に選出した。
+   SUP frame 選出する + [('agent', '委員会'), ('patient', '候補'), ('recipient', '議長')] [] PASS
+## 委員会が会員を代表に選出した。
+   SUP frame 選出する + [('agent', '委員会'), ('patient', '会員'), ('recipient', '代表')] [] PASS
+## 組合が候補を議長に選出した。
+   SUP frame 選出する + [('agent', '組合'), ('patient', '候補'), ('recipient', '議長')] [] PASS
+## 社長が社員に書類を変更した。
+   SUP frame 変更する + [('agent', '社長'), ('patient', '書類'), ('recipient', '社員')] [] PASS
+## 先生が児童に絵本を編集した。
+   SUP frame 編集する + [('agent', '先生'), ('patient', '絵本'), ('recipient', '児童')] [] PASS
+## 店長がアルバイトにシフトを調整した。
+   SUP frame 調整する + [('agent', '店長'), ('patient', 'シフト'), ('recipient', 'アルバイト')] [] PASS
+## 母が赤ちゃんに服を仕立て直した。
+   SUP frame 仕立て直す + [('agent', '母'), ('patient', '服'), ('recipient', '赤ちゃん')] [] PASS
+## 看護師が老人に食事を加工した。
+   SUP frame 加工する + [('agent', '看護師'), ('patient', '食事'), ('recipient', '老人')] [] PASS
+## 教頭が教員に日程を変更した。
+   SUP frame 変更する + [('agent', '教頭'), ('patient', '日程'), ('recipient', '教員')] [] PASS
+## 彼女は髪を茶色に染めた。
+   uns frame 染める + [('patient', '髪'), ('recipient', '茶色')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+   uns gold_scramble 染める + [('unresolved_0', '彼女'), ('patient', '髪'), ('recipient', '茶色')] ['ambiguous construction readings: gold_scramble, zero_subject'] REJ:unsupported/ill-typed source
+   uns zero_subject 染める + [('agent', '彼女'), ('patient', '髪'), ('recipient', '茶色')] ['ambiguous construction readings: gold_scramble, zero_subject'] REJ:unsupported/ill-typed source
+## 校長が教頭を副校長に昇格させた。
+   uns frame 昇格させる + [('agent', '校長'), ('patient', '教頭'), ('recipient', '副校長')] ['unrepresented source content', 'unrepresented source content'] REJ:unsupported/ill-typed source
+## 町内会が男性を会長に選出した。
+   SUP frame 選出する + [('agent', '町内会'), ('patient', '男性'), ('recipient', '会長')] [] PASS
+## 会社が営業部長を取締役に抜擢した。
+   SUP frame 抜擢する + [('agent', '会社'), ('patient', '営業部長'), ('recipient', '取締役')] [] PASS
+## 父が弟を後継者に指名した。
+   SUP frame 指名する + [('agent', '父'), ('patient', '弟'), ('recipient', '後継者')] [] PASS
+## 国が研究者を委員に任命した。
+   SUP frame 任命する + [('agent', '国'), ('patient', '研究者'), ('recipient', '委員')] [] PASS
+## 母が妹の服を姉に仕立て直した。
+   uns frame 仕立て直す + [('agent', '母'), ('patient', '服'), ('recipient', '姉')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+   SUP np_internal 仕立て直す + [('agent', '母'), ('patient', '妹の服'), ('recipient', '姉')] [] PASS
+## 彼がデータを表に変換した。
+   uns frame 変換する + [('patient', 'データ'), ('recipient', '表')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+   SUP gold_scramble 変換する + [('unresolved_0', '彼'), ('patient', 'データ'), ('recipient', '表')] [] PASS
+## 翻訳者が原稿を英語に訳した。
+   SUP frame 訳す + [('agent', '翻訳者'), ('patient', '原稿'), ('recipient', '英語')] [] PASS
+## 店が商品を三つの箱に分けた。
+   SUP frame 分ける + [('agent', '店'), ('patient', '商品'), ('recipient', '三つの箱')] [] PASS
+## 兄がパンを弟たちに分けた。
+   SUP frame 分ける + [('agent', '兄'), ('patient', 'パン'), ('recipient', '弟たち')] [] PASS
+tree=/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r3/dev foreign_modules=[]

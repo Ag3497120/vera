@@ -36,6 +36,358 @@ _CONSTRUCTION_PARTICLES = {
 _TIME_DATE = r'(?:[0-9０-９]+年(?:[0-9０-９]{1,2}月(?:[0-9０-９]{1,2}日)?)?|(?:明治|大正|昭和|平成|令和)[0-9０-９]+年(?:[0-9０-９]{1,2}月(?:[0-9０-９]{1,2}日)?)?)'
 _TIME_VALUE = re.compile(r'(?:' + _TIME_DATE + r'|[0-9０-９]+\s*(?:月|日|時|分|秒|曜日)|頃|ごろ|午前|午後|朝|昼|夜)\Z')
 _TIME_COMMA_VALUE = re.compile(r'(?:' + _TIME_DATE + r'|[0-9０-９]+(?:月|日|時|分|秒|曜日))\Z')
+# ---------------------------------------------------------------------------------------------------------------------
+# W1-a: role-type checks. Written independently of semantic_reader (no import of it, none of its constants): this
+# module re-tokenizes the clause body and applies its own rules, so a reader that mis-types a role cannot also
+# mis-license it. Only the shared tokenizer and frames.read_all (already the baseline of the frame check) are used.
+# ---------------------------------------------------------------------------------------------------------------------
+_VT_NUM = r'[0-9０-９〇一二三四五六七八九十百千]'
+_VT_NOMINAL_ROLES = frozenset(('agent', 'patient', 'recipient', 'causer', 'causee', 'entity', 'attribute', 'standard', 'context', 'result'))
+_VT_EVENT_PARTICIPANTS = frozenset(('agent', 'patient', 'recipient', 'causer', 'causee'))
+_VT_TIME_ADJUNCT_ROLES = frozenset(('goal', 'location', 'direction', 'place'))
+_VT_ADDRESSEE_VERBS = frozenset((
+    '渡す', '送る', '贈る', '与える', 'あげる', 'やる', 'くれる', '差し上げる', '配る', '届ける', '返す', '貸す', '預ける', '譲る', '売る',
+    '払う', '支払う', '納める', '見せる', '示す', '伝える', '教える', '知らせる', '告げる', '言う', '話す', '語る', '尋ねる', '頼む',
+    '勧める', '薦める', '答える', '授ける', '任せる', '委ねる', '申し出る', '打ち明ける', '謝る', '聞かせる', '挨拶する',
+    '提出する', '提供する', '供給する', '支給する', '授与する', '寄付する', '寄贈する', '献上する', '配布する', '配達する', '発送する',
+    '送付する', '納品する', '譲渡する', '報告する', '連絡する', '通知する', '説明する', '相談する', '質問する', '依頼する', '命令する',
+    '申し込む', '問い合わせる', '訴える', '願い出る', '届け出る', '提案する', '提言する', '応募する', '出願する', '返信する', '回答する',
+    '紹介する', '要求する', '要請する', '申請する', '約束する', '返事する', '回答する', '忠告する', '警告する', '感謝する', '指示する',
+    '伝達する', '教授する', '貸与する', '付与する', '交付する', '通報する', '推薦する', '案内する'))
+_VT_RESULT_VERBS = frozenset((
+    '変える', '変わる', '変換する', '翻訳する', '訳す', '直す', '分ける', '分割する', 'まとめる', '整理する', '加工する', '変更する',
+    '改める', '改造する', '改名する', '転換する', '転用する', '切り替える', '置き換える', '書き換える', '作り変える', '描き直す',
+    '分類する', '区分する', '統合する', '統一する', '集約する', '要約する', '圧縮する', '変化する', '変質する', '編集する', '改訂する',
+    '編成する', '再編する', '組み替える', '言い換える', '読み替える', '縮小する', '拡大する', '単純化する', '標準化する',
+    'なる', '成る', '化す', '発展する', '昇進する', '昇格する', '降格する', '成長する', '進化する', '変貌する', '転じる', '転ずる', '移行する',
+    '染める', '塗り替える', '塗りかえる', '塗り直す', '仕立てる', '仕上げる', '改装する', '模様替えする',
+    '延期する', '延長する', '短縮する', '繰り上げる', '繰り下げる', '前倒しする', '後ろ倒しする', '先送りする', 'ずらす', '早める', '遅らせる',
+    '振り替える', '延ばす', '繰り越す',
+    '登用する', '任命する', '任用する', '起用する', '抜擢する', '選任する', '選出する', '認定する', '選ぶ', '指名する'))
+_VT_APPOINTMENT_VERBS = frozenset(('登用する', '任命する', '任用する', '起用する', '抜擢する', '選任する', '選出する', '指名する', '認定する',
+                                   '昇進する', '昇格する', '降格する'))      # confer a post/status on a person: the に-phrase is that status
+_VT_SHARING_VERBS = frozenset(('分ける', '分割する', '分配する', '配分する'))
+_VT_COUNTED_HEAD = re.compile(r'[0-9０-９〇一二三四五六七八九十百千万数]+[つ個組班人名種類グ]?の')
+_VT_LOCATIVE_VERBS = frozenset(('住む', '滞在する', '位置する', '存在する'))
+_VT_MOTION_VERBS = frozenset(('行く', '来る', '帰る', '戻る', '向かう', '着く', '入る', '出る', '進む', '移る', '渡る')) | _VT_LOCATIVE_VERBS
+_VT_ENCLOSING_VERBS = frozenset(('囲む', '含む', '覆う', '包む', '挟む', '抱く', '満たす', '占める', '隔てる', '区切る', '限る', '閉ざす', '取り巻く', '取り囲む'))
+_VT_PLACEMENT_VERBS = frozenset((
+    '置く', '入れる', '載せる', '乗せる', '積む', '掛ける', '吊るす', '貼る', '付ける', '立てる', '並べる', '差す', '挿す', '刺す', '埋める', '植える',
+    '仕舞う', '収める', '収納する', '配置する', '設置する', '保管する', '運ぶ', '移す', '持つ', '持っていく', '持ってくる', 'しまう', '詰める', '注ぐ',
+    '漬ける', '浸す', '飾る', '敷く', '留める', '結ぶ', '繋ぐ', 'つなぐ', '接続する', '投げる', '落とす',
+    '置いてくる', '置いていく', '入れてくる', '入れていく'))
+_VT_PLACE_ENDINGS = ('学校', '駅', '公園', '会社', '図書館', '病院', '市', '町', '県', '国', '室', '場', '所', '局', '館', '園', '院', '寺', '署', '店',
+                     '港', '庫', '村', '区', '島', '城', '堂', '庁', '省', '庭', '部屋', '家', '海', '山')
+_VT_PERSON_WORDS = frozenset(('甥', '姪', 'いとこ', '親', '子', '孫', '祖先', '客', '人', '男', '女', '若者', '老人', '幼児', '乳児', '赤ん坊', '赤ちゃん',
+                              '友', '友達', '仲間', '隣人', '相手', '他人', '先方', '本人', '当人', '同僚', '家族', '夫婦', '兄弟', '親子',
+                              '子ども', '子供', '大人', '住民', '市民', '国民', '村人', '町民', '観客', '聴衆', '乗客', '来場者', '全員', '皆', '誰',
+                              '警察', '企業', '当局', '軍隊', '議会', '内閣', '政権', '政府', '軍', '協会', '機関', '組合', '劇団', '財団', '役所', '役場',
+                              '国会', '政党', '与党', '野党', '検察', '部隊', '軍団', '教団', '陸軍', '海軍', '空軍', '米軍', '敵軍', '山賊', '海賊', '盗賊', '刑事', 'チーム', '理事会', '取締役会', '評議会', '母親', '父親', '両親', 'おじ', 'おば', '叔母', '伯父', '伯母',
+                              '首相', '大統領', '皇帝', '天皇', '神', '泥棒', '敵', '味方', 'クラスメート', '審判',
+                              '見習い', '来賓', '来客', '弟子', '師匠', '新人', '常連', '達人', '住職', '僧侶', '神主', '巫女', '王', '女王', '姫', '勇者', '英雄',
+                              '犬', '猫', '鳥', '猿', '熊', '鹿', '猪', '馬', '牛', '豚', '羊', '山羊', '兎', '鼠', '狐', '狸', '狼', '虎', '獅子', '象', '蛇', '蛙', '魚',
+                              '虫', '蜂', '蚊', '蟻', '烏', '鷲', '鷹', '雀', '鶏', '鳩', '燕', 'イヌ', 'ネコ', 'サル', 'クマ', 'シカ', 'ウマ', 'ウシ', 'ブタ'))
+_VT_BENEFACTIVE = frozenset(('あげる', 'やる', 'くれる', '差し上げる', 'もらう', '貰う', 'いただく', '頂く', 'くださる'))
+# A person/organisation is accepted on positive evidence only (see _vt_is_addressee); the ending characters of a word (社 会 部 校 …)
+# are shared by organisations, events, places and body/regional parts and decide nothing.
+_VT_HONORIFIC_TOKENS = ('さん', '氏', '君', '様', '殿', '達', 'たち', 'ども', 'ちゃん')
+
+
+def _vt_depths(text):
+    """Bracket depth before each character (character scan; the tagger can glue a closing bracket to a neighbour)."""
+    depth = 0; out = []
+    for ch in text:
+        out.append(depth)
+        if ch in '（(〈［[【「『《': depth += 1
+        elif ch in '）)〉］]】」』》': depth = max(0, depth - 1)
+    out.append(depth)
+    return out
+
+
+def _vt_tokens(text):
+    """(surface, pos1, pos2, pos3, start, end, lemma) per token."""
+    from .typed_edges import _tagger, _base
+    out = []; cursor = 0
+    for w in _tagger()(text):
+        at = text.find(w.surface, cursor)
+        if at < 0: at = cursor
+        out.append((w.surface, w.feature.pos1, w.feature.pos2, w.feature.pos3, at, at + len(w.surface), _base(w))); cursor = at + len(w.surface)
+    return out
+
+
+# Time-type criteria, written separately from the reader's (no import of it): a counted time (number + counter [+ tail]) or a
+# 副詞可能 noun that carries a time morpheme / is a closed deictic time word; X前/X後 only for an event noun, a time word or a
+# 後/前 suffix; a relational noun alone is never a time; a の-modified phrase is a time when its head is.
+_VT_COUNTERS = ('年代', '年度', '年間', '年', 'か月間', 'か月', 'ヶ月間', 'ヶ月', 'カ月', 'ケ月', '月間', '月', '週間', '週', '日間', '日',
+                '時間', '時', '分間', '分', '秒間', '秒', '世紀', '曜日')
+_VT_TAILS = ('半', '過ぎ', 'すぎ', '前', '後', '頃', 'ごろ', '以降', '以前', '以後', '以内', '末', '初め', '初頭', '初旬', '上旬', '中旬', '下旬', '目')
+_VT_DAYPARTS = ('午前', '午後', '早朝', '朝', '夕方', '夕', '昼', '夜', '晩', '深夜', '未明')
+_VT_ERAS = tuple(re.search(r'\(\?:([^()]*)\)\[0-9０-９\]\+年', _TIME_DATE).group(1).split('|')) + ('西暦', '紀元前')   # era names _TIME_DATE already lists
+_VT_REL_YEAR = ('同', '当', '翌', '前', '昨', '来', '今', '本', '去', '各', '毎')
+_VT_TIME_CHARS = frozenset('朝昼晩夜夕午週月年日曜期代世季春夏秋冬頃旬暮宵刻前後今昔現将初末')
+_VT_TIME_WORDS = frozenset(('最近', '近年', '近頃', '以降', '以前', '以後', '現在', '将来', '当時', '当初', '昔', '今後', '今回', '先日',
+                            '後日', '目下', '未明', '次', 'きょう', 'あした', 'あす', 'あさ', 'けさ', 'ゆうべ', 'いま', 'のち',
+                         '元日', '元旦', '大晦日', '正月', 'お盆', '彼岸', '冬至', '夏至', '春分', '秋分', '夏休み', '冬休み', '春休み', '昼休み', '放課後', '連休', '祝日', '休日', '誕生日', '記念日'))
+_VT_NOT_TIME = frozenset(('日常',))
+_VT_RELATIONAL = frozenset(('前', '後', '上', '下', '中', '外', '内', '横', '隣', '奥', '側', '辺', '辺り', '先', '間', '際', '手前', 'うち', '途中', 'とき', '時'))
+
+
+def _vt_is_num(ch):
+    return ch in '0123456789０１２３４５６７８９〇一二三四五六七八九十百千万数'
+
+
+def _vt_counted_prefix(text):
+    """Length of the leading counted time expression of `text` (0 when it does not start with one)."""
+    i = 0
+    for group in (_VT_DAYPARTS, ('約', 'およそ', 'ほぼ'), _VT_ERAS):
+        part = next((x for x in group if text.startswith(x, i)), None)
+        if part: i += len(part)
+    if i < len(text) and text[i] in _VT_REL_YEAR:
+        k = i + 1
+        if k < len(text) and text[k] in '年月' and k + 1 < len(text) and _vt_is_num(text[k + 1]): k += 1
+        if k < len(text) and _vt_is_num(text[k]): i = k
+    units = 0
+    while i < len(text) and _vt_is_num(text[i]):
+        j = i
+        while j < len(text) and _vt_is_num(text[j]): j += 1
+        unit = next((c for c in _VT_COUNTERS if text.startswith(c, j)), None)
+        if unit is None: break
+        i = j + len(unit); units += 1
+    if not units: return 0
+    while True:
+        tail = next((t for t in _VT_TAILS if text.startswith(t, i)), None)
+        if tail is None: break
+        i += len(tail)
+    return i
+
+
+_VT_FINAL_STEMS = ('明け', '末', '初め', '初頭')
+_VT_FINAL_WORDS = ('年度', '学期', '世紀', '時代', '時期', '期間')
+
+
+def _vt_time_final(surface):
+    for tail in _VT_FINAL_STEMS:
+        if surface.endswith(tail) and len(surface) > len(tail) and any(c in _VT_TIME_CHARS for c in surface[:-len(tail)]): return True
+    return surface in _VT_FINAL_WORDS
+
+
+def _vt_time_token(tok):
+    return tok[0] in _VT_TIME_WORDS or (tok[0] not in _VT_NOT_TIME and any(c in _VT_TIME_CHARS for c in tok[0]))
+
+
+def _vt_lexical_time(toks):
+    """toks: particle-free (surface, pos1, pos2, pos3, start, end) tokens."""
+    if not toks or len(toks) > 4: return False
+    if any(t[1] not in ('名詞', '接頭辞', '接尾辞', '連体詞') or t[2] in ('固有名詞', '数詞') for t in toks): return False
+    if ''.join(t[0] for t in toks) in _VT_TIME_WORDS or _vt_time_final(toks[-1][0]): return True
+    if toks[-1][0] == '日' and len(toks) >= 2: return True
+    if toks[-1][3] != '副詞可能' and toks[-1][0] != '間際': return False
+    core = [t for t in toks if t[1] not in ('接頭辞', '連体詞')]
+    if not core: return False
+    last = core[-1]
+    if last[0] == '中' or (last[0] == '間際' and len(core) >= 2):
+        return len(core) >= 2 and core[-2][3] == 'サ変可能'
+    if last[0] in ('前', '後'):
+        if len(core) < 2: return toks[0][1] == '連体詞'
+        before = core[-2]
+        return True if last[1] == '接尾辞' else (before[3] == 'サ変可能' or _vt_time_token(before))
+    if last[0] in _VT_RELATIONAL: return False
+    return any(_vt_time_token(t) for t in core)
+
+
+def _vt_time_unit(text):
+    """A particle-free piece of text that is a time (counted, counted + lexical tail, or lexical)."""
+    n = _vt_counted_prefix(text)
+    if n and n == len(text): return True
+    if n: return _vt_lexical_time(_vt_tokens(text[n:]))
+    return _vt_lexical_time(_vt_tokens(text))
+
+
+def _vt_is_time(phrase):
+    compact = phrase.replace(' ', '').replace('　', '')
+    if not compact: return False
+    n = _vt_counted_prefix(compact)
+    if n == len(compact): return True
+    toks = _vt_tokens(compact)
+    if not toks: return False
+    pieces = [[]]
+    for t in toks:
+        if t[1] == '助詞':
+            if t[0] != 'の' or not pieces[-1]: return False
+            pieces.append([]); continue
+        if t[1] in ('動詞', '助動詞', '補助記号', '記号', '副詞'): return False
+        pieces[-1].append(t)
+    if not pieces[-1]: return False
+    head = pieces[-1]
+    if len(head) == 1 and head[0][0] in ('前', '後') and len(pieces) >= 2 and pieces[-2] and pieces[-2][-1][3] == 'サ変可能':
+        return True                                      # <event noun>の前/後
+    return _vt_time_unit(compact[head[0][4]:head[-1][5]])
+
+
+def _vt_time_fused(phrase):
+    compact = phrase.replace(' ', '').replace('　', '')
+    segments = [x for x in re.split(r'[、,]', compact) if x]
+    if len(segments) > 1: return any(_vt_is_time(x) for x in segments)
+    toks = _vt_tokens(compact)
+    if len(toks) < 2 or _vt_is_time(compact) or any(t[1] not in ('名詞', '接尾辞', '接頭辞', '連体詞') for t in toks): return False
+    for k in range(1, len(toks)):
+        if toks[k][1] == '接尾辞': continue
+        if _vt_time_unit(compact[:toks[k][4]]): return True
+    return False
+
+
+def _vt_is_place(phrase):
+    compact = phrase.replace(' ', '').replace('　', '')
+    segments = compact.split('の'); head = segments[-1]
+    options = [head]
+    for tail in ('前', '内', '上', '中', '周辺', '近く', '付近', '隅', '奥', '脇', '横', '隣', '角', '裏', '先'):
+        if head.endswith(tail) and len(head) > len(tail): options.append(head[:-len(tail)])
+        if head == tail and len(segments) > 1: options.append(segments[-2])
+    if any(o.endswith(_VT_PLACE_ENDINGS) for o in options): return True
+    toks = _vt_tokens(compact)
+    return bool(toks) and toks[-1][1] == '名詞' and toks[-1][2] == '固有名詞' and toks[-1][3] == '地名'
+
+
+def _vt_is_addressee(phrase):
+    """Can the phrase be an addressee / an actor? Judged from the tagger and closed lexicons on the HEAD (after the last の) only."""
+    from .frames import is_role, ROLES, _LEARNED, _PERSON_SUFFIX
+    compact = phrase.replace(' ', '').replace('　', '')
+    head = compact.split('の')[-1]
+    if not head: return False
+    if head in _VT_PERSON_WORDS or head in ROLES or head in _LEARNED or head.endswith('客'): return True
+    toks = _vt_tokens(head)
+    if not toks: return False
+    final = toks[-1]
+    if final[1] == '代名詞': return True
+    if final[2] == '固有名詞' and final[3] in ('人名', '組織名', '一般'): return True
+    if len(toks) > 1 and toks[-2][1] in ('名詞', '代名詞'):
+        if final[1] == '接尾辞' and final[0] in _VT_HONORIFIC_TOKENS + ('団', '隊'): return True
+        if final[1] == '名詞' and final[0] in ('軍', 'チーム'): return True
+    if len(toks) > 1 and final[0] == '会' and final[1] == '名詞' and is_role(toks[-2][0]): return True
+    return head.endswith(_PERSON_SUFFIX) and final[3] != 'サ変可能'
+
+
+def _vt_following(tagged, end):
+    """The particle right after a phrase ending at `end` in tag() form; compound particles (によって, について, において,
+    に対して) are one unit and are not the plain case particle に."""
+    for index, token in enumerate(tagged):
+        if token[4] == end:
+            if token[1] != '助詞': return ''
+            tail = ''.join(t[0] for t in tagged[index:index + 4])
+            for compound in ('によって', 'について', 'において', 'に対して', 'による', 'により', 'として', 'における'):
+                if tail.startswith(compound) and token[0] == compound[0]: return compound
+            return token[0]
+        if token[4] > end: break
+    return ''
+
+
+def _vt_recipient_excluded(predicate, value, has_object, benefactive):
+    """Why a に-marked phrase cannot be this predicate's recipient, or None. Verbs of transfer/telling and a benefactive address
+    the phrase; a person is an addressee; the end point of a motion/placement/location verb is read as recipient (project
+    convention); otherwise, with an を-object, the に-phrase is a result/place/state."""
+    if predicate in _VT_ADDRESSEE_VERBS or benefactive: return None
+    person = _vt_is_addressee(value) and not _vt_is_place(value)
+    if predicate in _VT_RESULT_VERBS:
+        shares = predicate in _VT_SHARING_VERBS and person and not _VT_COUNTED_HEAD.match(value.replace(' ', '').replace('　', ''))
+        return None if shares else 'not an addressee'
+    if predicate in _VT_MOTION_VERBS or predicate in _VT_PLACEMENT_VERBS: return None
+    if person: return None
+    return 'not an addressee' if has_object else None
+
+
+def _vt_agent_excluded(value, predicate, subject, has_object=False):
+    """True when a に-phrase cannot be an agent: neither enclosing, nor a person/organisation that is not also a place, nor (for a
+    verb of transfer whose subject is a thing) anything but the recipient."""
+    if predicate in _VT_ENCLOSING_VERBS: return False
+    if not _vt_is_addressee(value) or _vt_is_place(value): return True
+    return predicate in _VT_ADDRESSEE_VERBS and not has_object and (subject is None or not _vt_is_addressee(subject))
+
+
+def _vt_intransitive(predicate):
+    from .frames import transitivity
+    return transitivity(predicate) == 'intrans'
+
+
+def _vt_origin_not_agent(value):
+    return _vt_is_time(value) or (_vt_is_place(value) and not _vt_is_addressee(value))
+
+
+def _vt_participant_excluded(name, value, tagged, end, predicate, passive, has_patient=True, benefactive=False, subject=None):
+    """Re-derive, from the source text alone, whether a Frame participant is of the wrong type for its role.
+    Returns the reason or None. A role that is excluded here must NOT be declared by the clause."""
+    follow = _vt_following(tagged, end)
+    if follow in ('に', 'は') and _vt_is_time(value): return 'time phrase'
+    if name == 'agent' and passive and follow == 'に' and _vt_agent_excluded(value, predicate, subject, has_patient): return 'not a person'
+    if name == 'agent' and passive and follow == 'から' and _vt_origin_not_agent(value): return 'an origin, not an agent'
+    if name == 'recipient' and follow == 'に': return _vt_recipient_excluded(predicate, value, has_patient, benefactive)
+    if name == 'patient' and follow == 'は' and not passive and _vt_intransitive(predicate): return 'topic of an intransitive verb'
+    return None
+
+
+def _vt_check_roles(clause):
+    """Type checks every clause must pass, whatever rule produced it."""
+    body = clause.body_span or clause.span
+    roles = [r for r in clause.roles if r.name in _VT_NOMINAL_ROLES or r.name in _VT_TIME_ADJUNCT_ROLES or r.name == 'time']
+    if not roles: return
+    toks = _vt_tokens(body.text); rdepth = _vt_depths(body.text)
+    starts = {t[4] for t in toks}; ends = {t[5] for t in toks}
+    spans = {}
+    for role in roles:
+        a, b = role.span.start - body.start, role.span.end - body.start
+        while a < b and body.text[a].isspace(): a += 1
+        while b > a and body.text[b - 1].isspace(): b -= 1
+        spans[id(role)] = (a, b)
+    follow = {k: _vt_following(toks, b) for k, (a, b) in spans.items()}
+    has_object = any(r.name == 'patient' and follow[id(r)] == 'を' for r in roles)
+    subject = next((r.span.text for r in roles if r.name == 'patient' and follow[id(r)] in ('が', 'は')), None)
+    p0 = clause.predicate_span.start - body.start
+    after = [t for t in toks if t[4] >= p0]
+    benefactive = any(after[k][0] in ('て', 'で') and k + 1 < len(after) and after[k + 1][6] in _VT_BENEFACTIVE
+                      for k in range(len(after) - 1))
+    clause_passive = len(after) > 1 and after[1][6] in ('れる', 'られる')
+    for role in roles:
+        a, b = spans[id(role)]; mark = follow[id(role)]; text = role.span.text
+        if role.name in _VT_NOMINAL_ROLES:
+            if a not in starts or b not in ends: raise Rejected('ill-typed role: span cuts a token')
+            hit = False; has_verb = False; last_content = None
+            for t in toks:
+                if t[4] < a or t[5] > b: continue
+                if rdepth[t[4]] > rdepth[a] or t[0] in '（(〈［[【「『《）)〉］]】」』》': continue
+                if t[1] == '助詞' and t[0] in ('が', 'を', 'は', 'より'): hit = True
+                if t[1] in ('動詞', '形容詞'): has_verb = True
+                if t[1] not in ('助詞', '助動詞', '補助記号', '記号'): last_content = t[0]
+            if hit and not (has_verb and last_content in ('こと', 'の', 'もの', 'ところ', 'ため', 'わけ', 'はず', 'よう', 'ほう', '方', '事', '物', 'つもり')):
+                raise Rejected('ill-typed role: phrase spans a case particle')
+        if role.name in _VT_EVENT_PARTICIPANTS:
+            if (_vt_is_time(text) and mark in ('に', 'は')) or _vt_time_fused(text):
+                raise Rejected('ill-typed role: time phrase as event participant')
+            if role.name == 'agent' and mark in ('に', 'へ') and _vt_agent_excluded(text, clause.predicate, subject, has_object):
+                raise Rejected('ill-typed role: a phrase that cannot act as agent')
+            if role.name == 'agent' and mark == 'から' and _vt_origin_not_agent(text):
+                raise Rejected('ill-typed role: an origin (place/time) as agent')
+            if role.name == 'recipient' and mark == 'に' and _vt_recipient_excluded(clause.predicate, text, has_object, benefactive):
+                raise Rejected('ill-typed role: recipient is not an addressee')
+            if role.name == 'patient' and mark == 'は' and not clause_passive and _vt_intransitive(clause.predicate):
+                raise Rejected('ill-typed role: a topic as the patient of an intransitive verb')
+            if role.name in ('agent', 'patient', 'recipient'):
+                stem = re.sub(r'^[おご御]', '', text.replace(' ', '').replace('　', ''))
+                if len(stem) >= 2 and clause.predicate.startswith(stem): raise Rejected('ill-typed role: participant repeats the predicate')
+        elif role.name in _VT_TIME_ADJUNCT_ROLES and _vt_is_time(text):
+            raise Rejected('ill-typed role: time phrase as place/goal/direction/result')
+        elif role.name == 'time' and mark == 'に' and has_object and clause.predicate in _VT_RESULT_VERBS:
+            raise Rejected('ill-typed role: time phrase of a verb of change is its new value, not when it happened')
+        elif role.name == 'result' and _vt_is_time(text) and clause.predicate not in _VT_RESULT_VERBS:
+            raise Rejected('ill-typed role: time phrase as place/goal/direction/result')
+        elif (role.name == 'result' and mark == 'に' and clause.predicate in _VT_RESULT_VERBS and not clause_passive
+              and any(r.name == 'patient' and follow[id(r)] == 'を' and spans[id(r)][0] >= b for r in roles)):
+            raise Rejected('ill-typed role: a に-phrase before the object of a verb of change is not its result')
+        elif (role.name == 'result' and mark == 'に' and clause.predicate in _VT_RESULT_VERBS and _vt_is_addressee(text)
+              and clause.predicate not in _VT_APPOINTMENT_VERBS and not _vt_is_place(text)
+              and not any(r.name == 'patient' and follow[id(r)] in (('が', 'は') if clause_passive else ('を',)) and _vt_is_addressee(r.span.text)
+                          for r in roles)):
+            raise Rejected('ill-typed role: a person as the result of a verb of change on a thing')
+
+
 _COMPOUND_SURFACES = tuple(sorted({surface for choices in _CONSTRUCTION_PARTICLES.values()
                                    for surface in choices}, key=len, reverse=True))
 
@@ -85,12 +437,14 @@ def _time_role_licensed(role, body, tagged):
     start, end = role.span.start - body.start, role.span.end - body.start
     value = role.span.text
     compact = value.replace(' ', '').replace('　', '')
-    simple = compact == '同日付' or _TIME_VALUE.fullmatch(compact)
+    simple = compact == '同日付' or _TIME_VALUE.fullmatch(compact) or _vt_is_time(compact)
     if not simple: return False
     if _token_suffix(tagged, end, ('に', 'で') if compact == '同日付' else ('に',)):
         return phrase_bounded(tagged, start, end)
+    if role.rule == 'topic' and _vt_is_time(compact) and _token_suffix(tagged, end, ('は',)):
+        return phrase_bounded(tagged, start, end)
     left = len(body.text) - len(body.text.lstrip())
-    if (start == left and _TIME_COMMA_VALUE.fullmatch(compact)
+    if (start == left and (_TIME_COMMA_VALUE.fullmatch(compact) or _vt_is_time(compact))
             and _token_suffix(tagged, end, ('、', ','))):
         return phrase_bounded(tagged, start, end)
     return False
@@ -388,7 +742,12 @@ def license_clause(clause, view, ranges=None):
     if any(not (body.start <= r.span.start < r.span.end <= body.end) for r in clause.roles): raise Rejected("role scope")
     if clause.event.sort != 'event' or clause.unsupported: raise Rejected("unsupported/ill-typed source")
     if len({r.name for r in clause.roles}) != len(clause.roles): raise Rejected("duplicate role")
-    if any(not _literal(r) for r in clause.roles): raise Rejected("role/value licensing")
+    # A comparison's dimension/direction are typed values the source does not spell out; they are admitted here only for
+    # the comparison rule, whose own licensor re-derives and checks them against the source adjective/cue.
+    if any(not (_literal(r) or (clause.rule == 'comparison' and r.rule in ('comparison_dimension', 'comparison_direction')
+                                and isinstance(r.term, str) and r.term)) for r in clause.roles):
+        raise Rejected("role/value licensing")
+    _vt_check_roles(clause)
     if len(clause.conditions) != len(clause.condition_spans) or len(clause.exceptions) != len(clause.exception_spans):
         raise Rejected("guard span count")
     if clause.rule != 'record':
@@ -452,13 +811,50 @@ def license_clause(clause, view, ranges=None):
     elif clause.rule in ('copula', 'identity'):
         if (clause.span.start, clause.span.end) not in (ranges if ranges is not None else _ranges(view.sources[clause.span.source])):
             raise Rejected('copula full-clause boundary')
-        m = re.fullmatch(r'\s*(.*?)\s*[はが]\s*(.*?)(?:です|である|だ|ではない|でない|じゃない)?[。！？?]*\s*', raw)
+        m = re.fullmatch(r'\s*(.*?)\s*(?:と(?=は))?[はが]\s*(.*?)(?:です|である|だ|ではない|でない|じゃない)?[。！？?]*\s*', raw)
         if not m: raise Rejected("copula source grammar")
         roles = {r.name: r for r in clause.roles}; entity = roles.get('entity'); value = roles.get('value')
         if not entity or not value: raise Rejected("copula roles")
+        # The sentence splits at its first は/が PARTICLE TOKEN (not at a か/は letter inside a word or a reading such as
+        # しながわ): derive the two sides from the verifier's own tokenization.
+        ctoks = _vt_tokens(raw)
+        cdepth = _vt_depths(raw); cut_index = None
+        for i, t in enumerate(ctoks):
+            if cdepth[t[4]] == 0 and t[1] == '助詞' and t[0] in ('は', 'が') and raw[:t[4]].strip():
+                cut_index = i; break
+        if cut_index is None: raise Rejected('copula split is not at a particle token')
+        cut = ctoks[cut_index]; left_end = cut[4]
+        if cut_index and ctoks[cut_index - 1][1] == '助詞' and ctoks[cut_index - 1][5] == cut[4]:
+            if ctoks[cut_index - 1][0] == 'と' and cut[0] == 'は': left_end = ctoks[cut_index - 1][4]     # X とは Y
+            elif ctoks[cut_index - 1][0] in ('で', 'に', 'から', 'へ', 'まで', 'より', 'を'): raise Rejected('copula left side ends in a particle')
+        side = re.fullmatch(r'\s*(.*?)\s*(?:です|である|だ|ではない|でない|じゃない)?[。！？?]*\s*', raw[cut[5]:])
+        if not side: raise Rejected("copula source grammar")
+        left_text, right_text = raw[:left_end].strip(), side[1]
         lhs = entity.span.text
         if 'attribute' in roles: lhs += 'の' + roles['attribute'].span.text
-        if m[1] != lhs or m[2] != value.span.text: raise Rejected("copula argument assignment")
+        if left_text != lhs.strip() or right_text != value.span.text.strip(): raise Rejected("copula argument assignment")
+        if 'attribute' in roles:
+            link = entity.span.end - body.start
+            ok = False
+            for t in ctoks:
+                if t[5] > cut[4]: break
+                if t[4] == link and t[0] == 'の' and t[1] == '助詞' and cdepth[t[4]] == 0: ok = True
+            if not ok: raise Rejected('copula attribute split is not at a particle token')
+        vend = value.span.end - body.start
+        vtoks = [t for t in ctoks if t[4] >= cut[5] and t[4] < vend and cdepth[t[4]] == 0]      # not inside a parenthetical gloss
+        while vtoks and (vtoks[-1][1] in ('助動詞', '補助記号', '記号')
+                         or (vtoks[-1][1] == '動詞' and vtoks[-1][6] == 'ある' and len(vtoks) > 1 and vtoks[-2][0] == 'で')
+                         or (vtoks[-1][1] == '助詞' and vtoks[-1][0] == 'で')):
+            vtoks.pop()                                                                          # a trailing copula is not the value's predicate
+        vcontent = [t for t in vtoks if t[1] not in ('助詞', '助動詞', '補助記号', '記号')]
+        # a comparison standard: より after a noun/pronoun/の is one whatever tag it gets (前のより軽い: the tagger says 副詞)
+        if any(t[0] == 'より' and (t[1] == '助詞' or (k > 0 and (vtoks[k - 1][1] in ('名詞', '代名詞', '数', '接尾辞')
+                                                              or (vtoks[k - 1][1] == '助詞' and vtoks[k - 1][0] == 'の'))))
+               for k, t in enumerate(vtoks)):
+            raise Rejected('copula value is a predicate phrase')
+        if (vcontent and vcontent[-1][1] in ('形容詞', '形状詞', '動詞')
+                and any(t[1] == '助詞' and t[0] in ('より', 'が', 'を', 'に', 'で', 'へ', 'から', 'まで', 'と') for t in vtoks)):
+            raise Rejected('copula value is a predicate phrase')
         negative = bool(re.search(r'(?:ではない|でない|じゃない)[。！？?]*$', raw))
         if (clause.polarity == '-') != negative: raise Rejected("copula polarity")
         if clause.predicate != ('property' if 'attribute' in roles else 'identity'): raise Rejected("copula predicate")
@@ -501,11 +897,25 @@ def license_clause(clause, view, ranges=None):
         if clause.predicate_span.end != body.start + positions[ev] + len(words[ev].surface):
             raise Rejected('event predicate end')
         frame = facts[0]; declared = {r.name: r.term for r in clause.roles}
+        passive = ev + 1 < len(words) and _base(words[ev + 1]) in ('れる', 'られる')
+        if (ev + 1 < len(words) and _base(words[ev + 1]) in ('せる', 'させる') and 'recipient' in declared
+                and frame.predicate not in _VT_ADDRESSEE_VERBS):
+            raise Rejected('causative frame: causer/causee unresolved')    # the causee is typed recipient by the frame reader
+        benefactive = any(words[k].surface in ('て', 'で') and _base(words[k + 1]) in _VT_BENEFACTIVE for k in range(ev + 1, len(words) - 1))
+        _po = raw.rfind(frame.patient, lo, positions[ev]) if frame.patient else -1
+        has_object = _po >= 0 and _vt_following(tagged, _po + len(frame.patient)) in ('を', 'が')
         for name in ('agent', 'patient', 'recipient'):
             value = getattr(frame, name)
             allowed = {canonical(value)} if value else set()
             split = _role_split(value, clause.roles, name, raw, body, words, positions) if value else None
             if split: allowed.add(canonical(split[1]))
+            if value:
+                at = raw.rfind(value, lo, positions[ev])
+                excluded = (_vt_participant_excluded(name, value, tagged, at + len(value), frame.predicate, passive, has_object, benefactive, frame.patient or None)
+                            if at >= 0 else None)
+                if excluded:      # the frame handed this phrase to the wrong role: it must not be declared as that role
+                    if name in declared: raise Rejected('ill-typed event role: ' + excluded)
+                    continue
             if value and declared.get(name) not in allowed: raise Rejected("event role assignment")
             if not value and name in declared: raise Rejected("invented event role")
         for role in clause.roles:
@@ -538,10 +948,26 @@ def license_clause(clause, view, ranges=None):
             elif compound:
                 end = role.span.end - body.start
                 if not _token_suffix(tagged, end, compound): raise Rejected('extra compound role')
+            elif role.name == 'location' and frame.predicate in _VT_LOCATIVE_VERBS and _token_suffix(
+                    tagged, role.span.end - body.start, ('に',)):
+                if not phrase_bounded(tagged, role.span.start - body.start, role.span.end - body.start): raise Rejected('location role')
             elif case and not re.search(re.escape(role.span.text) + case, raw): raise Rejected("extra case role")
             elif role.name == 'quantity' and not isinstance(role.term, Quantity): raise Rejected("quantity role")
             elif role.name == 'time' and not _time_role_licensed(role, body, tagged): raise Rejected("time role")
-            elif not case and role.name not in ('quantity', 'time'): raise Rejected("unknown event role")
+            elif role.name == 'direction':
+                if not (_token_suffix(tagged, role.span.end - body.start, ('へ',)) and
+                        phrase_bounded(tagged, role.span.start - body.start, role.span.end - body.start)): raise Rejected('direction role')
+            elif role.name == 'goal':
+                end = role.span.end - body.start
+                if not (_token_suffix(tagged, end, ('に', 'へ')) and frame.predicate in _VT_MOTION_VERBS
+                        and frame.predicate not in _VT_LOCATIVE_VERBS
+                        and phrase_bounded(tagged, role.span.start - body.start, end)): raise Rejected('goal role')
+            elif role.name == 'result':
+                end = role.span.end - body.start
+                if not (_token_suffix(tagged, end, ('に',)) and frame.predicate in _VT_RESULT_VERBS
+                        and (_vt_is_time(role.span.text) or not role.span.text.endswith(('ため', 'よう', 'ほう', '方', 'とき', '時', '際', '間', 'うち', 'もの', 'こと', 'わけ', 'はず')))
+                        and phrase_bounded(tagged, role.span.start - body.start, end)): raise Rejected('result role')
+            elif not case and role.name not in ('quantity', 'time', 'result', 'direction', 'goal'): raise Rejected("unknown event role")
         # Reconstruct coverage from raw positions and licensed role spans.
         # Do not trust a canonical reader's unsupported flag or Frame's subset.
         licensed = [(r.span.start, r.span.end) for r in clause.roles]

@@ -1,0 +1,348 @@
+## 神社に鳥居が建てられた。
+   uns frame 建てる + [('patient', '鳥居'), ('ambiguous', '神社')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 建てる + [('agent', '神社'), ('patient', '鳥居')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 教会に鐘が取り付けられた。
+   uns frame 取り付ける + [('patient', '鐘'), ('ambiguous', '教会')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 取り付ける + [('agent', '教会'), ('patient', '鐘')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 外部に情報が漏らされた。
+   uns frame 漏らす + [('patient', '情報'), ('ambiguous', '外部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns gold_caus_pass 漏らす + [('agent', '外部に'), ('patient', '情報が')] ['ill-typed role: phrase spans a case particle'] REJ:unsupported/ill-typed source
+## 胸部に傷がつけられた。
+   uns frame つける + [('patient', '傷'), ('ambiguous', '胸部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis つける + [('agent', '胸部'), ('patient', '傷')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 棚の一部に本が置かれた。
+   uns frame 置く + [('patient', '本'), ('ambiguous', '棚の一部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 置く + [('agent', '棚の一部'), ('patient', '本')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 高校に新しい体育館が建てられた。
+   uns frame 建てる + [('patient', '新しい体育館'), ('ambiguous', '高校')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 建てる + [('agent', '高校'), ('patient', '新しい体育館')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 母が娘に着物を仕立てた。
+   uns frame 仕立てる + [('agent', '母'), ('patient', '着物'), ('ambiguous', '娘')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+## 先生が生徒に作文を直した。
+   uns frame 直す + [('agent', '先生'), ('patient', '作文'), ('ambiguous', '生徒')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+## 父が息子に自転車を直した。
+   uns frame 直す + [('agent', '父'), ('patient', '自転車'), ('ambiguous', '息子')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+## このパソコンは前のより軽い。
+   uns copula identity + [('entity', 'このパソコン'), ('value', '前のより軽い')] ['copula value is a predicate phrase'] REJ:unsupported/ill-typed source
+   SUP comparison 軽い + [('entity', 'このパソコン'), ('standard', '前の'), ('dimension', '<軽い>'), ('direction', '<less>')] [] PASS
+## 客が茶会に招かれた。
+   uns frame 招く + [('patient', '客'), ('ambiguous', '茶会')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 招く + [('patient', '客'), ('agent', '茶会')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 選手が大会に招待された。
+   uns frame 招待する + [('patient', '選手'), ('ambiguous', '大会')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 招待する + [('patient', '選手'), ('agent', '大会')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 本社に新しい看板が掲げられた。
+   uns frame 掲げる + [('patient', '新しい看板'), ('ambiguous', '本社')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 掲げる + [('agent', '本社'), ('patient', '新しい看板')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 商社に大量の注文が寄せられた。
+   uns frame 寄せる + [('patient', '大量の注文'), ('ambiguous', '商社')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 寄せる + [('agent', '商社'), ('patient', '大量の注文')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 叔母が姪に浴衣を仕立てた。
+   uns frame 仕立てる + [('agent', '叔母'), ('patient', '浴衣'), ('ambiguous', '姪')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+## 祖父が孫に名前を選んだ。
+   uns frame 選ぶ + [('agent', '祖父'), ('patient', '名前'), ('ambiguous', '孫')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+## 係長が部下に書類を整理した。
+   uns frame 整理する + [('agent', '係長'), ('patient', '書類'), ('ambiguous', '部下')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+## この鞄は君のより重い。
+   uns copula identity + [('entity', 'この鞄'), ('value', '君のより重い')] ['copula value is a predicate phrase'] REJ:unsupported/ill-typed source
+   SUP comparison 重い + [('entity', 'この鞄'), ('standard', '君の'), ('dimension', '<重い>'), ('direction', '<greater>')] [] PASS
+## 私の家は彼のより狭い。
+   uns copula property + [('entity', '私'), ('attribute', '家'), ('value', '彼のより狭い')] ['copula value is a predicate phrase'] REJ:unsupported/ill-typed source
+   SUP comparison 狭い + [('entity', '私の家'), ('standard', '彼の'), ('dimension', '<狭い>'), ('direction', '<less>')] [] PASS
+## 太郎の鞄に傷がつけられた。
+   uns frame つける + [('patient', '傷'), ('ambiguous', '太郎の鞄')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis つける + [('agent', '太郎の鞄'), ('patient', '傷')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 伏見稲荷神社に鳥居が建てられた。
+   uns frame 建てる + [('patient', '鳥居'), ('ambiguous', '伏見稲荷神社')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 建てる + [('agent', '伏見稲荷神社'), ('patient', '鳥居')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 山間部に新しい道が造られた。
+   uns frame 造る + [('patient', '新しい道'), ('ambiguous', '山間部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 造る + [('agent', '山間部'), ('patient', '新しい道')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 出力部に電源が接続された。
+   uns frame 接続する + [('patient', '電源'), ('ambiguous', '出力部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 接続する + [('agent', '出力部'), ('patient', '電源')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 全長に印が付けられた。
+   SUP frame 付ける + [('agent', '全長'), ('patient', '印')] [] PASS
+## 荷物が配達に回された。
+   uns frame 回す + [('patient', '荷物'), ('ambiguous', '配達')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 回す + [('patient', '荷物'), ('agent', '配達')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 都市部に人口が集められた。
+   uns frame 集める + [('patient', '人口'), ('ambiguous', '都市部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 集める + [('agent', '都市部'), ('patient', '人口')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 野球部に新入生が迎えられた。
+   uns frame 迎える + [('patient', '新入生'), ('ambiguous', '野球部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 迎える + [('agent', '野球部'), ('patient', '新入生')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 新人が営業部に迎えられた。
+   uns frame 迎える + [('patient', '新人'), ('ambiguous', '営業部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 迎える + [('patient', '新人'), ('agent', '営業部')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 新人が山田商事に採用された。
+   uns frame 採用する + [('patient', '新人'), ('ambiguous', '山田商事')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 採用する + [('patient', '新人'), ('agent', '山田商事')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 新人が消防団に勧誘された。
+   SUP frame 勧誘する + [('agent', '消防団'), ('patient', '新人')] [] PASS
+## 運動会に生徒が招かれた。
+   uns frame 招く + [('patient', '生徒'), ('ambiguous', '運動会')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 招く + [('agent', '運動会'), ('patient', '生徒')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 社長が彼を部長に任命した。
+   uns frame 任命する + [('agent', '社長'), ('result', '部長')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+## 係員が乗客を三つのグループに分けた。
+   SUP frame 分ける + [('agent', '係員'), ('patient', '乗客'), ('result', '三つのグループ')] [] PASS
+## 姉が妹にケーキを分けた。
+   SUP frame 分ける + [('agent', '姉'), ('patient', 'ケーキ'), ('recipient', '妹')] [] PASS
+## 母が娘を医者に仕立てた。
+   SUP frame 仕立てる + [('agent', '母'), ('patient', '娘'), ('result', '医者')] [] PASS
+## 彼女は部下を課長に昇進させた。
+   uns frame 昇進させる + [('patient', '部下'), ('result', '課長')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+## 母が娘に着物を仕立ててあげた。
+   SUP frame 仕立てる + [('agent', '母'), ('patient', '着物'), ('recipient', '娘')] [] PASS
+## 会議が代表に選ばれた。
+   SUP frame 選ぶ + [('patient', '会議'), ('result', '代表')] [] PASS
+## APIサーバーがリクエストをJSONに変換した。
+   SUP frame 変換する + [('agent', 'APIサーバー'), ('patient', 'リクエスト'), ('result', 'JSON')] [] PASS
+## 太郎が花子に本を渡した。
+   SUP frame 渡す + [('agent', '太郎'), ('patient', '本'), ('recipient', '花子')] [] PASS
+## このモデルは前のモデルより速い。
+   uns copula identity + [('entity', 'このモデル'), ('value', '前のモデルより速い')] ['copula value is a predicate phrase'] REJ:unsupported/ill-typed source
+   SUP comparison 速い + [('entity', 'このモデル'), ('standard', '前のモデル'), ('dimension', '<速い>'), ('direction', '<greater>')] [] PASS
+## 彼の夢はより良い社会の実現だ。
+   uns copula property + [('entity', '彼'), ('attribute', '夢'), ('value', 'より良い社会の実現')] ['unresolved anaphora'] REJ:unsupported/ill-typed source
+## この部屋は暗い。
+   SUP copula identity + [('entity', 'この部屋'), ('value', '暗い')] [] PASS
+## あの店の主人は親切だ。
+   SUP copula property + [('entity', 'あの店'), ('attribute', '主人'), ('value', '親切')] [] PASS
+## この車は去年のよりずっと高い。
+   uns copula identity + [('entity', 'この車'), ('value', '去年のよりずっと高い')] ['copula value is a predicate phrase'] REJ:unsupported/ill-typed source
+   SUP comparison 高い + [('entity', 'この車'), ('standard', '去年の'), ('dimension', '<高い>'), ('direction', '<greater>')] [] PASS
+## この靴は姉のより小さい。
+   uns copula identity + [('entity', 'この靴'), ('value', '姉のより小さい')] ['copula value is a predicate phrase'] REJ:unsupported/ill-typed source
+   SUP comparison 小さい + [('entity', 'この靴'), ('standard', '姉の'), ('dimension', '<小さい>'), ('direction', '<less>')] [] PASS
+## このスープは昨日のほど辛くない。
+   (no clauses) ['unsupported negative adjective']
+## 寺院に新しい鐘が取り付けられた。
+   uns frame 取り付ける + [('patient', '新しい鐘'), ('ambiguous', '寺院')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 取り付ける + [('agent', '寺院'), ('patient', '新しい鐘')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 市場に大量の野菜が運び込まれた。
+   uns frame 運び込む + [('patient', '大量の野菜'), ('ambiguous', '市場')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 運び込む + [('agent', '市場'), ('patient', '大量の野菜')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 協会に新しい会員が迎えられた。
+   SUP frame 迎える + [('agent', '協会'), ('patient', '新しい会員')] [] PASS
+## 組合に多くの要望が寄せられた。
+   SUP frame 寄せる + [('agent', '組合'), ('patient', '多くの要望')] [] PASS
+## 政府に提案書が提出された。
+   uns frame 提出する + [('agent', '政府'), ('patient', '提案書')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 財団に巨額の寄付が寄せられた。
+   uns frame 寄せる + [('agent', '財団'), ('patient', '寄付')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+## 委員会に報告書が提出された。
+   uns frame 提出する + [('agent', '委員会'), ('patient', '報告書')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 自治会に新しい役員が選ばれた。
+   SUP frame 選ぶ + [('patient', '新しい役員'), ('result', '自治会')] [] PASS
+## 研究室に最新の装置が導入された。
+   uns frame 導入する + [('patient', '最新の装置'), ('ambiguous', '研究室')] ['unsupported source quantifier/exception/time', 'ambiguous case role: に'] REJ:unsupported/ill-typed source
+## 道場に古い看板が掲げられた。
+   uns frame 掲げる + [('patient', '古い看板'), ('ambiguous', '道場')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 掲げる + [('agent', '道場'), ('patient', '古い看板')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 劇場に大きな幕が吊るされた。
+   uns frame 吊るす + [('patient', '幕'), ('ambiguous', '劇場')] ['ambiguous case role: に', 'unrepresented source content'] REJ:unsupported/ill-typed source
+## 学会に新しい論文が発表された。
+   uns frame 発表する + [('patient', '新しい論文'), ('ambiguous', '学会')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 発表する + [('agent', '学会'), ('patient', '新しい論文')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 山頂に小さな祠が建てられた。
+   uns frame 建てる + [('patient', '祠'), ('ambiguous', '山頂')] ['ambiguous case role: に', 'unrepresented source content'] REJ:unsupported/ill-typed source
+## 前半に大量の得点が奪われた。
+   SUP frame 奪う + [('patient', '大量の得点'), ('time', '前半')] [] PASS
+## 大学に新しい図書館が建てられた。
+   uns frame 建てる + [('patient', '新しい図書館'), ('ambiguous', '大学')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 建てる + [('agent', '大学'), ('patient', '新しい図書館')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 海外に多くの製品が輸出された。
+   uns frame 輸出する + [('patient', '多くの製品'), ('ambiguous', '海外')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 輸出する + [('agent', '海外'), ('patient', '多くの製品')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 東部に大規模な工場が建設された。
+   uns frame 建設する + [('patient', '工場'), ('ambiguous', '東部')] ['ambiguous case role: に', 'unrepresented source content', 'unrepresented source content'] REJ:unsupported/ill-typed source
+## 中心部に高層ビルが建てられた。
+   uns frame 建てる + [('patient', '高層ビル'), ('ambiguous', '中心部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 建てる + [('agent', '中心部'), ('patient', '高層ビル')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 右側に目印が付けられた。
+   uns frame 付ける + [('patient', '目印'), ('ambiguous', '右側')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 付ける + [('agent', '右側'), ('patient', '目印')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 裏口に鍵が取り付けられた。
+   uns frame 取り付ける + [('patient', '鍵'), ('ambiguous', '裏口')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 取り付ける + [('agent', '裏口'), ('patient', '鍵')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 警察に容疑者が逮捕された。
+   SUP frame 逮捕する + [('agent', '警察'), ('patient', '容疑者')] [] PASS
+## 市に新しい条例が制定された。
+   uns frame 制定する + [('patient', '新しい条例'), ('ambiguous', '市')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 制定する + [('agent', '市'), ('patient', '新しい条例')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 会社に新入社員が採用された。
+   uns frame 採用する + [('patient', '新入社員'), ('ambiguous', '会社')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 採用する + [('agent', '会社'), ('patient', '新入社員')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 母が娘に着物を縫った。
+   SUP frame 縫う + [('agent', '母'), ('patient', '着物'), ('recipient', '娘')] [] PASS
+## 父が子に絵本を読んだ。
+   SUP frame 読む + [('agent', '父'), ('patient', '絵本'), ('recipient', '子')] [] PASS
+## 先生が生徒にレポートを添削した。
+   SUP frame 添削する + [('agent', '先生'), ('patient', 'レポート'), ('recipient', '生徒')] [] PASS
+## 姉が妹に宿題を手伝った。
+   SUP frame 手伝う + [('agent', '姉'), ('patient', '宿題'), ('recipient', '妹')] [] PASS
+## 店主が客に商品を包んだ。
+   SUP frame 包む + [('agent', '店主'), ('patient', '商品'), ('recipient', '客')] [] PASS
+## 医者が患者に薬を調合した。
+   SUP frame 調合する + [('agent', '医者'), ('patient', '薬'), ('recipient', '患者')] [] PASS
+## 上司が部下に仕事を割り振った。
+   SUP frame 割り振る + [('agent', '上司'), ('patient', '仕事'), ('recipient', '部下')] [] PASS
+## 店長が従業員に制服を支給した。
+   SUP frame 支給する + [('agent', '店長'), ('patient', '制服'), ('recipient', '従業員')] [] PASS
+## 新しいモデルは旧型のより安い。
+   uns copula identity + [('entity', '新しいモデル'), ('value', '旧型のより安い')] ['copula value is a predicate phrase'] REJ:unsupported/ill-typed source
+## 弟のスマホは兄のより新しい。
+   uns copula property + [('entity', '弟'), ('attribute', 'スマホ'), ('value', '兄のより新しい')] ['copula value is a predicate phrase'] REJ:unsupported/ill-typed source
+   SUP comparison 新しい + [('entity', '弟のスマホ'), ('standard', '兄の'), ('dimension', '<新しい>'), ('direction', '<less>')] [] PASS
+## 今年の売上は去年のより多い。
+   uns copula property + [('entity', '今年'), ('attribute', '売上'), ('value', '去年のより多い')] ['unsupported source quantifier/exception/time', 'copula value is a predicate phrase'] REJ:unsupported/ill-typed source
+   SUP comparison 多い + [('entity', '今年の売上'), ('standard', '去年の'), ('dimension', '<多い>'), ('direction', '<greater>')] [] PASS
+## 私の部屋は妹のより広い。
+   uns copula property + [('entity', '私'), ('attribute', '部屋'), ('value', '妹のより広い')] ['copula value is a predicate phrase'] REJ:unsupported/ill-typed source
+   SUP comparison 広い + [('entity', '私の部屋'), ('standard', '妹の'), ('dimension', '<広い>'), ('direction', '<greater>')] [] PASS
+## このカメラは前のよりずっと軽い。
+   uns copula identity + [('entity', 'このカメラ'), ('value', '前のよりずっと軽い')] ['copula value is a predicate phrase'] REJ:unsupported/ill-typed source
+   SUP comparison 軽い + [('entity', 'このカメラ'), ('standard', '前の'), ('dimension', '<軽い>'), ('direction', '<less>')] [] PASS
+## 彼女の成績は私のより良い。
+   uns copula property + [('entity', '彼女'), ('attribute', '成績'), ('value', '私のより良い')] ['copula value is a predicate phrase', 'unresolved anaphora'] REJ:unsupported/ill-typed source
+## この道は駅へ行くのより早い。
+   uns frame 行く + [('agent', '道'), ('recipient', '駅')] ['unrepresented source content', 'unrepresented source content'] REJ:unsupported/ill-typed source
+## 去年の冬は今年のより寒かった。
+   uns copula property + [('entity', '去年'), ('attribute', '冬'), ('value', '今年のより寒かった')] ['unsupported source quantifier/exception/time', 'copula value is a predicate phrase'] REJ:unsupported/ill-typed source
+## 隣の庭は我が家のより狭い。
+   uns copula property + [('entity', '隣'), ('attribute', '庭'), ('value', '我が家のより狭い')] ['copula value is a predicate phrase'] REJ:unsupported/ill-typed source
+   SUP comparison 狭い + [('entity', '隣の庭'), ('standard', '我が家の'), ('dimension', '<狭い>'), ('direction', '<less>')] [] PASS
+## 彼が部長に選ばれた。
+   uns frame 選ぶ + [('agent', '部長')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+## 書類が部下に整理された。
+   SUP frame 整理する + [('agent', '部下'), ('patient', '書類')] [] PASS
+## 北部に新しい道路が建設された。
+   uns frame 建設する + [('patient', '新しい道路'), ('ambiguous', '北部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 建設する + [('agent', '北部'), ('patient', '新しい道路')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 腹部に包帯が巻かれた。
+   uns frame 巻く + [('patient', '包帯'), ('ambiguous', '腹部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 巻く + [('agent', '腹部'), ('patient', '包帯')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 頭部に傷が付けられた。
+   uns frame 付ける + [('patient', '傷'), ('ambiguous', '頭部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 付ける + [('agent', '頭部'), ('patient', '傷')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 患部に薬が塗られた。
+   uns frame 塗る + [('patient', '薬'), ('ambiguous', '患部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 塗る + [('agent', '患部'), ('patient', '薬')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 支部に資料が送られた。
+   SUP frame 送る + [('patient', '資料'), ('goal', '支部')] [] REJ:goal role
+## 細部に工夫が凝らされた。
+   uns frame 凝らす + [('patient', '工夫'), ('ambiguous', '細部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns gold_caus_pass 凝らす + [('agent', '細部に'), ('patient', '工夫が')] ['ill-typed role: phrase spans a case particle'] REJ:unsupported/ill-typed source
+## 母校に記念碑が建てられた。
+   uns frame 建てる + [('patient', '記念碑'), ('ambiguous', '母校')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 建てる + [('agent', '母校'), ('patient', '記念碑')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 分校に新しい教室が増設された。
+   uns frame 増設する + [('patient', '新しい教室'), ('ambiguous', '分校')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 増設する + [('agent', '分校'), ('patient', '新しい教室')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 総会に議案が提出された。
+   uns frame 提出する + [('patient', '議案'), ('ambiguous', '総会')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 提出する + [('agent', '総会'), ('patient', '議案')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 議会に条例案が提出された。
+   uns frame 提出する + [('agent', '議会'), ('patient', '条例案')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 司会に台本が渡された。
+   uns frame 渡す + [('patient', '台本'), ('ambiguous', '司会')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 渡す + [('agent', '司会'), ('patient', '台本')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 結社に多額の資金が提供された。
+   uns frame 提供する + [('patient', '多額の資金'), ('ambiguous', '結社')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 提供する + [('agent', '結社'), ('patient', '多額の資金')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 集団に規則が課された。
+   uns frame 課す + [('patient', '規則'), ('ambiguous', '集団')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 課す + [('agent', '集団'), ('patient', '規則')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 楽団に新曲が提供された。
+   uns frame 提供する + [('patient', '新曲'), ('ambiguous', '楽団')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 提供する + [('agent', '楽団'), ('patient', '新曲')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 軍団に命令が下された。
+   SUP frame 下す + [('agent', '軍団'), ('patient', '命令')] [] PASS
+## 艦隊に出動が命じられた。
+   uns frame 命ずる + [('patient', '出動'), ('ambiguous', '艦隊')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+## 課題に取り組みが行われた。
+   uns frame 行う + [('patient', '取り組み'), ('ambiguous', '課題')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 行う + [('agent', '課題'), ('patient', '取り組み')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 身長に印が付けられた。
+   SUP frame 付ける + [('agent', '身長'), ('patient', '印')] [] PASS
+## 延長に変更が加えられた。
+   uns frame 加える + [('patient', '変更'), ('ambiguous', '延長')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 加える + [('agent', '延長'), ('patient', '変更')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 個人に責任が負わされた。
+   SUP frame 負わす + [('agent', '個人'), ('patient', '責任')] [] PASS
+## 本人に通知が送られた。
+   uns frame 送る + [('agent', '本人'), ('patient', '通知')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 幹部に報告書が提出された。
+   uns frame 提出する + [('patient', '報告書'), ('ambiguous', '幹部')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 提出する + [('agent', '幹部'), ('patient', '報告書')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 同好会に新しい部員が迎えられた。
+   uns frame 迎える + [('patient', '新しい部員'), ('ambiguous', '同好会')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 迎える + [('agent', '同好会'), ('patient', '新しい部員')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 保育園に新しい遊具が設置された。
+   uns frame 設置する + [('patient', '新しい遊具'), ('ambiguous', '保育園')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 設置する + [('agent', '保育園'), ('patient', '新しい遊具')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 子供達に絵本が配られた。
+   uns frame 配る + [('agent', '子供達'), ('patient', '絵本')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 田中さんに招待状が送られた。
+   uns frame 送る + [('agent', '田中さん'), ('patient', '招待状')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 山田氏に感謝状が贈られた。
+   uns frame 贈る + [('agent', '山田氏'), ('patient', '感謝状')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 先生方に資料が配布された。
+   uns frame 配布する + [('patient', '資料'), ('ambiguous', '先生方')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 配布する + [('agent', '先生方'), ('patient', '資料')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 会場に垂れ幕が掲げられた。
+   uns frame 掲げる + [('patient', '垂れ幕'), ('ambiguous', '会場')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 掲げる + [('agent', '会場'), ('patient', '垂れ幕')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## ホームに時刻表が掲示された。
+   uns frame 掲示する + [('patient', '時刻表'), ('ambiguous', 'ホーム')] ['ill-typed role: time phrase fused with participant', 'ambiguous case role: に'] REJ:unsupported/ill-typed source
+## 東京に新しい施設が建設された。
+   uns frame 建設する + [('patient', '新しい施設'), ('ambiguous', '東京')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 建設する + [('agent', '東京'), ('patient', '新しい施設')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 街角に屋台が並べられた。
+   uns frame 並べる + [('patient', '屋台'), ('ambiguous', '街角')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 並べる + [('agent', '街角'), ('patient', '屋台')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 委員会が候補を議長に選出した。
+   SUP frame 選出する + [('agent', '委員会'), ('patient', '候補'), ('result', '議長')] [] PASS
+## 委員会が会員を代表に選出した。
+   SUP frame 選出する + [('agent', '委員会'), ('patient', '会員'), ('result', '代表')] [] PASS
+## 組合が候補を議長に選出した。
+   SUP frame 選出する + [('agent', '組合'), ('patient', '候補'), ('result', '議長')] [] PASS
+## 社長が社員に書類を変更した。
+   uns frame 変更する + [('agent', '社長'), ('patient', '書類'), ('ambiguous', '社員')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+## 先生が児童に絵本を編集した。
+   uns frame 編集する + [('agent', '先生'), ('patient', '絵本'), ('ambiguous', '児童')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+## 店長がアルバイトにシフトを調整した。
+   uns frame 調整する + [('agent', '店長'), ('patient', 'シフト'), ('ambiguous', 'アルバイト')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+## 母が赤ちゃんに服を仕立て直した。
+   SUP frame 仕立て直す + [('agent', '母'), ('patient', '服'), ('recipient', '赤ちゃん')] [] PASS
+## 看護師が老人に食事を加工した。
+   uns frame 加工する + [('agent', '看護師'), ('patient', '食事'), ('ambiguous', '老人')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+## 教頭が教員に日程を変更した。
+   uns frame 変更する + [('agent', '教頭'), ('patient', '日程'), ('ambiguous', '教員')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+## 彼女は髪を茶色に染めた。
+   uns frame 染める + [('patient', '髪'), ('result', '茶色')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+   SUP zero_subject 染める + [('agent', '彼女'), ('patient', '髪'), ('result', '茶色')] [] REJ:construction source licensing
+## 校長が教頭を副校長に昇格させた。
+   uns frame 昇格させる + [('agent', '校長'), ('patient', '教頭'), ('result', '副校長')] ['unrepresented source content', 'unrepresented source content'] REJ:unsupported/ill-typed source
+## 町内会が男性を会長に選出した。
+   SUP frame 選出する + [('agent', '町内会'), ('patient', '男性'), ('result', '会長')] [] PASS
+## 会社が営業部長を取締役に抜擢した。
+   SUP frame 抜擢する + [('agent', '会社'), ('patient', '営業部長'), ('result', '取締役')] [] PASS
+## 父が弟を後継者に指名した。
+   SUP frame 指名する + [('agent', '父'), ('patient', '弟'), ('result', '後継者')] [] PASS
+## 国が研究者を委員に任命した。
+   SUP frame 任命する + [('agent', '国'), ('patient', '研究者'), ('result', '委員')] [] PASS
+## 母が妹の服を姉に仕立て直した。
+   uns frame 仕立て直す + [('agent', '母'), ('patient', '服'), ('recipient', '姉')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+   SUP np_internal 仕立て直す + [('agent', '母'), ('patient', '妹の服'), ('recipient', '姉')] [] PASS
+## 彼がデータを表に変換した。
+   uns frame 変換する + [('patient', 'データ'), ('result', '表')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+## 翻訳者が原稿を英語に訳した。
+   SUP frame 訳す + [('agent', '翻訳者'), ('patient', '原稿'), ('result', '英語')] [] PASS
+## 店が商品を三つの箱に分けた。
+   SUP frame 分ける + [('agent', '店'), ('patient', '商品'), ('result', '三つの箱')] [] PASS
+## 兄がパンを弟たちに分けた。
+   SUP frame 分ける + [('agent', '兄'), ('patient', 'パン'), ('recipient', '弟たち')] [] PASS
+tree=/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a-S foreign_modules=[]

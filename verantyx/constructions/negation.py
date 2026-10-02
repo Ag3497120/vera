@@ -123,13 +123,34 @@ def _copula_scope(text: str):
     if _BLOCKED.search(text):
         return None
     lhs, value, negative = match["entity"].strip(), match["value"].strip(), match["negative"]
-    if not lhs or not value or "の" in lhs or "の" in value:
+    if not lhs or not value or "の" in lhs or "の" in value or not _nominal_value(value):
         return None
     entity_at = text.find(lhs, 0, match.start("value"))
     value_at = text.find(value, match.start("value"), match.start("negative"))
     if entity_at < 0 or value_at < 0:
         return None
     return lhs, value, negative, (entity_at, entity_at + len(lhs)), (value_at, value_at + len(value)), match.span("negative")
+
+
+_CASE_PARTICLES = frozenset(("が", "を", "に", "で", "へ", "から", "より", "まで"))
+_FORMAL_NOUNS = frozenset(("わけ", "こと", "もの", "はず", "ところ", "ため", "つもり"))
+
+
+def _nominal_value(value: str) -> bool:
+    """`AはBではない` denies an identity: B must be a noun phrase. A value such as <object>を<verb>ないわけ (a clause
+    that ends in a formal noun, here inside ないわけではない) is a negated predicate, not an identity (reader side)."""
+    tagged = _tagged(value)
+    if not tagged:
+        return False
+    if any(word.feature.pos1 == "助詞" and word.surface in _CASE_PARTICLES for word, _, _ in tagged):
+        return False
+    content = [word for word, _, _ in tagged if word.feature.pos1 not in ("助詞", "助動詞", "補助記号", "記号")]
+    if not content or content[-1].feature.pos1 in ("動詞", "形容詞"):
+        return False
+    last = tagged[-1][0]
+    if last.surface in _FORMAL_NOUNS and len(tagged) > 1 and tagged[-2][0].feature.pos1 in ("動詞", "助動詞", "形容詞"):
+        return False
+    return True
 
 
 def _role_spans(text, tagged, event_index, frame):
@@ -589,6 +610,20 @@ def _licenses_copula(clause, source):
     value_right = len(prefix[:len(prefix.rstrip())])
     entity, value = prefix[entity_left:entity_right], prefix[value_left:value_right]
     if not entity or not value or "の" in entity or "の" in value or _BLOCKED.search(body):
+        return False
+    # Licensor's own noun-phrase test on the value (independent of the reader's helper): no case particle token, no
+    # adjective/verb as the last content word, no formal noun hanging off a verb/auxiliary.
+    value_tokens = _license_tokens(value)
+    if not value_tokens:
+        return False
+    if any(w.feature.pos1 == "助詞" and w.surface in ("が", "を", "に", "で", "へ", "から", "より", "まで")
+           for w, _, _ in value_tokens):
+        return False
+    heads = [w for w, _, _ in value_tokens if w.feature.pos1 not in ("助詞", "助動詞", "補助記号", "記号")]
+    if not heads or heads[-1].feature.pos1 in ("動詞", "形容詞"):
+        return False
+    if (len(value_tokens) > 1 and value_tokens[-1][0].surface in ("わけ", "こと", "もの", "はず", "ところ", "ため", "つもり")
+            and value_tokens[-2][0].feature.pos1 in ("動詞", "助動詞", "形容詞")):
         return False
     parsed = (entity, value, negative,
               (entity_left, entity_right), (value_left, value_right),

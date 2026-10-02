@@ -1,0 +1,107 @@
+== dev gold_passive
+  UNKNOWN_UNSUPPORTED_EVIDENCE / multiple predicates need explicit clause scope; ambiguous case role: に; ambiguous case role: に; unrepresented source content; unrepresented source content; duplicate role in clause: 読書会で使う資料は、参加者から司書に前日のうちに返された。 :: 誰が資料を返しましたか？
+  UNKNOWN_UNSUPPORTED_EVIDENCE / multiple predicates need explicit clause scope; unlicensed role borrowing; unrepresented source content; unrepresented source content: 農家は、畝の間に敷いたわらを整えた。 :: 何を整えた？
+  UNKNOWN_UNSUPPORTED_EVIDENCE / multiple predicates need explicit clause scope; unrepresented source content: 看護師が患者に薬を渡したあと、患者は看護師に礼を言われた。 :: 誰が礼を言った？
+  UNKNOWN_UNSUPPORTED_EVIDENCE / unrepresented source content: 合格発表の日、あおいは父に何度も抱きしめられた。 :: 誰が抱きしめた？
+  UNKNOWN_UNSUPPORTED_EVIDENCE / unsupported source quantifier/exception/time: 店主は料理人に昨日の仕入れ値を聞かれた。 :: 何を聞かれた？
+constructed passive diagnosis: ambiguous frame role, multiple predicates need explicit clause scope, unlocated patient, unrepresented source content
+seed 7 off {'correct': 7, 'wrong_other': 2, 'wrong_overlap': 2, 'abstain': 139}
+seed 7 on  {'correct': 8, 'wrong_other': 2, 'wrong_overlap': 2, 'abstain': 138}
+seed 101 off {'correct': 9, 'wrong_other': 1, 'wrong_overlap': 2, 'abstain': 138}
+seed 101 on  {'correct': 10, 'wrong_other': 1, 'wrong_overlap': 1, 'abstain': 138}
+supported_sentences off=1365 on=1365
+DEMO OK
+== dev gold_caus_pass
+authored causative-passive refusal reasons={'ambiguous frame role': 2, 'multiple predicates need explicit clause scope': 4, 'unlicensed role borrowing': 2, 'unrepresented source content': 7}
+probe seed=7 off={'correct': 4, 'wrong_other': 0, 'wrong_overlap': 0, 'abstain': 146} on={'correct': 5, 'wrong_other': 0, 'wrong_overlap': 0, 'abstain': 145}
+probe seed=101 off={'correct': 4, 'wrong_other': 1, 'wrong_overlap': 0, 'abstain': 145} on={'correct': 5, 'wrong_other': 0, 'wrong_overlap': 0, 'abstain': 145}
+supported_sentences off=1365 on=1365
+DEMO OK
+== dev gold_double_neg
+  unsupported double negation: 67
+  unlicensed role borrowing: 62
+  ambiguous frame role: 60
+  ambiguous case role: に: 30
+  ambiguous case role: で: 6
+  unlocated patient: 4
+  duplicate role in clause: 1
+GOLD seed=7 off={'correct': 0, 'wrong_other': 0, 'wrong_overlap': 0, 'abstain': 150} on={'correct': 1, 'wrong_other': 0, 'wrong_overlap': 0, 'abstain': 149}
+GOLD seed=101 off={'correct': 0, 'wrong_other': 0, 'wrong_overlap': 0, 'abstain': 150} on={'correct': 1, 'wrong_other': 0, 'wrong_overlap': 0, 'abstain': 149}
+COVERAGE supported_sentences: 1365 -> 1365
+CHECKER licenses 3/3 constructed clauses
+DEMO OK
+== dev gold_comparison
+seed=7 abstain reasons:
+  ambiguous case role: で; unrepresented source content: 1
+  ambiguous case role: に; unrepresented source content: 2
+  ambiguous case role: に; unrepresented source content; unrepresented source content: 1
+  construction source licensing: 3
+  mandatory request spans remain unread: 112
+  multiple predicates need explicit clause scope; unrepresented source content; unrepresented source content: 1
+  no complete supported derivation: 21
+  unrepresented source content: 1
+  unrepresented source content; unrepresented source content: 2
+supported_sentences off=1365 on=1365
+DEMO OK
+== dev gold_scramble
+seed 7 off  {"abstain": 138, "correct": 7, "wrong_other": 0, "wrong_overlap": 5}
+seed 7 on   {"abstain": 135, "correct": 10, "wrong_other": 0, "wrong_overlap": 5}
+seed 101 off  {"abstain": 142, "correct": 3, "wrong_other": 0, "wrong_overlap": 5}
+seed 101 on   {"abstain": 140, "correct": 5, "wrong_other": 0, "wrong_overlap": 5}
+seed 7 abstain reasons off {"UNKNOWN_INVALID_PROOF: duplicate source role": 1, "UNKNOWN_NO_EVIDENCE: no complete supported derivation": 38, "UNKNOWN_UNREAD: empty nominal path": 32, "UNKNOWN_UNREAD: unsupported request grammar": 46, "UNKNOWN_UNSUPPORTED_EVIDENCE: ambiguous case role: で": 7, "UNKNOWN_UNSUPPORTED_EVIDENCE: ambiguous case role: に": 1, "UNKNOWN_UNSUPPORTED_EVIDENCE: ambiguous case role: に; unrepresented source content": 2, "UNKNOWN_UNSUPPORTED_EVIDENCE: multiple predicates need explicit clause scope; unrepresented source content; unrepresented source content": 3, "UNKNOWN_UNSUPPORTED_EVIDENCE: unlocated agent; unrepresented source content": 1, "UNKNOWN_UNSUPPORTED_EVIDENCE: unrepresented source content": 5, "UNKNOWN_UNSUPPORTED_EVIDENCE: unsupported source quantifier/exception/time": 1, "UNKNOWN_UNSUPPORTED_EVIDENCE: unsupported source quantifier/exception/time; ambiguous case role: に; unrepresented source content": 1}
+seed 101 abstain reasons off {"UNKNOWN_INVALID_PROOF: duplicate source role": 1, "UNKNOWN_NO_EVIDENCE: no complete supported derivation": 40, "UNKNOWN_UNREAD: empty nominal path": 19, "UNKNOWN_UNREAD: unsupported mandatory scope/quantifier/time": 1, "UNKNOWN_UNREAD: unsupported request grammar": 54, "UNKNOWN_UNSUPPORTED_EVIDENCE: ambiguous case role: で": 4, "UNKNOWN_UNSUPPORTED_EVIDENCE: ambiguous case role: で; ambiguous case role: に; duplicate role in clause": 2, "UNKNOWN_UNSUPPORTED_EVIDENCE: ambiguous case role: で; unrepresented source content": 1, "UNKNOWN_UNSUPPORTED_EVIDENCE: ambiguous case role: で; unrepresented source content; unrepresented source content": 2, "UNKNOWN_UNSUPPORTED_EVIDENCE: ambiguous case role: に": 2, "UNKNOWN_UNSUPPORTED_EVIDENCE: ambiguous case role: に; unrepresented source content": 1, "UNKNOWN_UNSUPPORTED_EVIDENCE: multiple predicates need explicit clause scope; ambiguous case role: で; unrepresented source content": 1, "UNKNOWN_UNSUPPORTED_EVIDENCE: multiple predicates need explicit clause scope; unrepresented source content; unrepresented source content": 8, "UNKNOWN_UNSUPPORTED_EVIDENCE: unrepresented source content": 4, "UNKNOWN_UNSUPPORTED_EVIDENCE: unrepresented source content; unrepresented source content": 1, "UNKNOWN_UNSUPPORTED_EVIDENCE: unsupported source quantifier/exception/time": 1}
+supported_sentences {"off": 1365, "on": 1365}
+checker licensed 2/2 constructed clauses
+DEMO OK
+== after gold_passive
+  UNKNOWN_UNSUPPORTED_EVIDENCE / unrepresented source content: 合格発表の日、あおいは父に何度も抱きしめられた。 :: 誰が抱きしめた？
+  UNKNOWN_UNSUPPORTED_EVIDENCE / unsupported source quantifier/exception/time: 店主は料理人に昨日の仕入れ値を聞かれた。 :: 何を聞かれた？
+constructed passive diagnosis: ambiguous frame role, event without participant or content word, multiple predicates need explicit clause scope, unlocated patient, unrepresented source content
+seed 7 off {'correct': 6, 'wrong_other': 3, 'wrong_overlap': 2, 'abstain': 139}
+seed 7 on  {'correct': 6, 'wrong_other': 3, 'wrong_overlap': 2, 'abstain': 139}
+Traceback (most recent call last):
+  File "/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a-S/tools/gold_passive.py", line 153, in <module>
+    main()
+  File "/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a-S/tools/gold_passive.py", line 141, in main
+    assert on["correct"] > off["correct"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+== after gold_caus_pass
+authored causative-passive refusal reasons={'ambiguous frame role': 2, 'ill-typed role: a phrase that cannot act (not a person/organisation) as agent': 1, 'multiple predicates need explicit clause scope': 4, 'unlicensed role borrowing': 2, 'unrepresented source content': 7}
+probe seed=7 off={'correct': 1, 'wrong_other': 0, 'wrong_overlap': 0, 'abstain': 149} on={'correct': 3, 'wrong_other': 0, 'wrong_overlap': 0, 'abstain': 147}
+probe seed=101 off={'correct': 1, 'wrong_other': 0, 'wrong_overlap': 0, 'abstain': 149} on={'correct': 2, 'wrong_other': 0, 'wrong_overlap': 0, 'abstain': 148}
+supported_sentences off=1355 on=1355
+DEMO OK
+== after gold_double_neg
+  unlicensed role borrowing: 59
+  ambiguous frame role: 56
+  event without participant or content word: 44
+  ambiguous case role: に: 29
+  ambiguous case role: で: 4
+  unlocated patient: 3
+  causative frame: causer/causee unresolved: 1
+GOLD seed=7 off={'correct': 0, 'wrong_other': 0, 'wrong_overlap': 0, 'abstain': 150} on={'correct': 1, 'wrong_other': 0, 'wrong_overlap': 0, 'abstain': 149}
+GOLD seed=101 off={'correct': 0, 'wrong_other': 0, 'wrong_overlap': 0, 'abstain': 150} on={'correct': 1, 'wrong_other': 0, 'wrong_overlap': 0, 'abstain': 149}
+COVERAGE supported_sentences: 1355 -> 1355
+CHECKER licenses 3/3 constructed clauses
+DEMO OK
+== after gold_comparison
+seed=7 abstain reasons:
+  ambiguous case role: で; unrepresented source content: 1
+  ambiguous case role: に; unrepresented source content: 2
+  ambiguous case role: に; unrepresented source content; unrepresented source content: 1
+  construction source licensing: 3
+  mandatory request spans remain unread: 112
+  multiple predicates need explicit clause scope; unrepresented source content; unrepresented source content: 1
+  no complete supported derivation: 21
+  unrepresented source content: 1
+  unrepresented source content; unrepresented source content; ill-typed role: span cuts a token: 2
+supported_sentences off=1355 on=1355
+DEMO OK
+== after gold_scramble
+seed 7 off  {"abstain": 137, "correct": 7, "wrong_other": 0, "wrong_overlap": 6}
+seed 7 on   {"abstain": 134, "correct": 10, "wrong_other": 0, "wrong_overlap": 6}
+seed 101 off  {"abstain": 141, "correct": 3, "wrong_other": 0, "wrong_overlap": 6}
+seed 101 on   {"abstain": 136, "correct": 6, "wrong_other": 0, "wrong_overlap": 8}
+DEMO FAIL: wrong_overlap rose on seed 101
+done

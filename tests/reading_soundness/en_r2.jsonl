@@ -1,0 +1,38 @@
+{"id": "F1-01", "type": "F1", "text": "The letter Mia wrote arrived late.", "gold": {"kind": "unsupported"}, "note": "縮約関係節"}
+{"id": "F1-02", "type": "F1", "text": "Ken liked the report Lisa drafted.", "gold": {"kind": "unsupported"}, "note": "縮約関係節"}
+{"id": "F1-03", "type": "F1", "text": "The tool the team built saved hours.", "gold": {"kind": "unsupported"}, "note": "縮約関係節"}
+{"id": "F1-04", "type": "F1", "text": "Paul fixed the bug the tester found.", "gold": {"kind": "unsupported"}, "note": "縮約関係節"}
+{"id": "F1-05", "type": "F1", "text": "Mia answered the call Ken missed.", "gold": {"kind": "unsupported"}, "note": "縮約関係節"}
+{"id": "F2-01", "type": "F2", "text": "Ken signed the contract drafted by Lisa.", "gold": {"kind": "unsupported"}, "note": "分詞の後置修飾"}
+{"id": "F2-02", "type": "F2", "text": "The files stored on the server were deleted.", "gold": {"kind": "unsupported"}, "note": "分詞の後置修飾"}
+{"id": "F2-03", "type": "F2", "text": "Mia read the email sent by the client.", "gold": {"kind": "unsupported"}, "note": "分詞の後置修飾"}
+{"id": "F2-04", "type": "F2", "text": "The package delivered yesterday was damaged.", "gold": {"kind": "unsupported"}, "note": "分詞の後置修飾"}
+{"id": "F2-05", "type": "F2", "text": "Paul opened the window broken by the storm.", "gold": {"kind": "unsupported"}, "note": "分詞の後置修飾"}
+{"id": "F3-01", "type": "F3", "text": "Ken said Lisa signed the form.", "gold": {"kind": "unsupported"}, "note": "that なし補文"}
+{"id": "F3-02", "type": "F3", "text": "Mia believes the server is down.", "gold": {"kind": "unsupported"}, "note": "that なし補文"}
+{"id": "F3-03", "type": "F3", "text": "Paul knew the report was late.", "gold": {"kind": "unsupported"}, "note": "that なし補文"}
+{"id": "F3-04", "type": "F3", "text": "The clerk noticed the invoice was missing.", "gold": {"kind": "unsupported"}, "note": "that なし補文"}
+{"id": "F3-05", "type": "F3", "text": "Lisa hopes Ken sends the file.", "gold": {"kind": "unsupported"}, "note": "that なし補文"}
+{"id": "F4-01", "type": "F4", "text": "Ken called as Lisa left.", "gold": {"kind": "unsupported"}, "note": "従属節 as / so that など"}
+{"id": "F4-02", "type": "F4", "text": "The team left so that the room could be cleaned.", "gold": {"kind": "unsupported"}, "note": "従属節 as / so that など"}
+{"id": "F4-03", "type": "F4", "text": "Mia signed as soon as the invoice came.", "gold": {"kind": "unsupported"}, "note": "従属節 as / so that など"}
+{"id": "F4-04", "type": "F4", "text": "Paul waited since Lisa was late.", "gold": {"kind": "unsupported"}, "note": "従属節 as / so that など"}
+{"id": "F4-05", "type": "F4", "text": "Ken stayed provided that Lisa came.", "gold": {"kind": "unsupported"}, "note": "従属節 as / so that など"}
+{"id": "F5-01", "type": "F5", "text": "Three engineers fixed the bug.", "gold": {"kind": "unsupported"}, "note": "数・焦点の量化"}
+{"id": "F5-02", "type": "F5", "text": "Only Lisa approved the plan.", "gold": {"kind": "unsupported"}, "note": "数・焦点の量化"}
+{"id": "F5-03", "type": "F5", "text": "Even Ken signed the form.", "gold": {"kind": "unsupported"}, "note": "数・焦点の量化"}
+{"id": "F5-04", "type": "F5", "text": "Two clerks sent the invoice.", "gold": {"kind": "unsupported"}, "note": "数・焦点の量化"}
+{"id": "F5-05", "type": "F5", "text": "Just Paul answered the call.", "gold": {"kind": "unsupported"}, "note": "数・焦点の量化"}
+{"id": "F5-06", "type": "F5", "text": "Nearly fifty guests joined the party.", "gold": {"kind": "unsupported"}, "note": "数・焦点の量化"}
+{"id": "F6-01", "type": "F6", "text": "Ken kept the server running.", "gold": {"kind": "unsupported"}, "note": "補文動詞"}
+{"id": "F6-02", "type": "F6", "text": "Mia heard the alarm ringing.", "gold": {"kind": "unsupported"}, "note": "補文動詞"}
+{"id": "F6-03", "type": "F6", "text": "Paul watched the crowd gathering.", "gold": {"kind": "unsupported"}, "note": "補文動詞"}
+{"id": "F6-04", "type": "F6", "text": "Lisa saw Ken leaving the office.", "gold": {"kind": "unsupported"}, "note": "補文動詞"}
+{"id": "F6-05", "type": "F6", "text": "Ken felt the ground shake.", "gold": {"kind": "unsupported"}, "note": "補文動詞"}
+{"id": "F6-06", "type": "F6", "text": "Mia left the door unlocked.", "gold": {"kind": "unsupported"}, "note": "補文動詞"}
+{"id": "F0-01", "type": "F0", "text": "Mia returned the book to Paul.", "gold": {"kind": "frame", "frame": {"predicate": "return", "agent": "Mia", "patient": "book", "recipient": "Paul", "negated": false}}, "note": "読めてよい対照"}
+{"id": "F0-02", "type": "F0", "text": "The coach thanked the team.", "gold": {"kind": "frame", "frame": {"predicate": "thank", "agent": "coach", "patient": "team", "recipient": "", "negated": false}}, "note": "読めてよい対照"}
+{"id": "F0-03", "type": "F0", "text": "Ken wrote Lisa a letter.", "gold": {"kind": "frame", "frame": {"predicate": "write", "agent": "Ken", "patient": "letter", "recipient": "Lisa", "negated": false}}, "note": "読めてよい対照"}
+{"id": "F0-04", "type": "F0", "text": "The plan was approved by the board.", "gold": {"kind": "frame", "frame": {"predicate": "approve", "agent": "board", "patient": "plan", "recipient": "", "negated": false}}, "note": "読めてよい対照"}
+{"id": "F0-05", "type": "F0", "text": "Lisa did not answer the phone.", "gold": {"kind": "frame", "frame": {"predicate": "answer", "agent": "Lisa", "patient": "phone", "recipient": "", "negated": true}}, "note": "読めてよい対照"}
+{"id": "F0-06", "type": "F0", "text": "The tester reported the bug to Ken.", "gold": {"kind": "frame", "frame": {"predicate": "report", "agent": "tester", "patient": "bug", "recipient": "Ken", "negated": false}}, "note": "読めてよい対照"}

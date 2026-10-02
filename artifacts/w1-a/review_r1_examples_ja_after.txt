@@ -1,0 +1,49 @@
+## 6時半に姉が家を出た。
+   SUP frame 出る + [('agent', '姉'), ('patient', '家'), ('time', '6時半')] [] PASS
+## 3時過ぎに兄が店を出た。
+   SUP frame 出る + [('agent', '兄'), ('patient', '店'), ('time', '3時過ぎ')] [] PASS
+## 2時間後に救急車が病院に着いた。
+   SUP frame 着く + [('agent', '救急車'), ('recipient', '病院'), ('time', '2時間後')] [] PASS
+## 6時半に会議が開かれた。
+   SUP frame 開く + [('patient', '会議'), ('time', '6時半')] [] PASS
+## 結局、父が店で車を買った。
+   uns frame 買う + [('agent', '父'), ('patient', '車'), ('place', '店')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+## 実際、兄が駅で傘を買った。
+   uns frame 買う + [('agent', '兄'), ('patient', '傘'), ('place', '駅')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+## 一部、兄が駅で傘を買った。
+   uns frame 買う + [('agent', '兄'), ('patient', '傘'), ('place', '駅')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+   SUP quantifier 買う__quant_partial + [('agent', '兄'), ('patient', '傘'), ('place', '駅'), ('quantifier_partial__event', '一部')] [] PASS
+## 以上、兄が駅で傘を買った。
+   uns frame 買う + [('agent', '兄'), ('patient', '傘'), ('place', '駅')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+## 花壇に花が植えられた。
+   uns frame 植える + [('patient', '花'), ('ambiguous', '花壇')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 植える + [('agent', '花壇'), ('patient', '花')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 屋上に看板が設置された。
+   uns frame 設置する + [('patient', '看板'), ('ambiguous', '屋上')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 設置する + [('agent', '屋上'), ('patient', '看板')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 玄関に荷物が置かれた。
+   uns frame 置く + [('patient', '荷物'), ('ambiguous', '玄関')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 置く + [('agent', '玄関'), ('patient', '荷物')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 本棚に辞書が並べられた。
+   uns frame 並べる + [('patient', '辞書'), ('ambiguous', '本棚')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 並べる + [('agent', '本棚'), ('patient', '辞書')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 商店街に新しい店が作られた。
+   uns frame 作る + [('patient', '新しい店'), ('ambiguous', '商店街')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 作る + [('agent', '商店街'), ('patient', '新しい店')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 机の上に花瓶が置かれた。
+   uns frame 置く + [('patient', '花瓶'), ('ambiguous', '机の上')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 置く + [('agent', '机の上'), ('patient', '花瓶')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 校庭に記念樹が植えられた。
+   uns frame 植える + [('patient', '記念樹'), ('ambiguous', '校庭')] ['ambiguous case role: に'] REJ:unsupported/ill-typed source
+   uns diathesis 植える + [('agent', '校庭'), ('patient', '記念樹')] ['ill-typed role: a phrase that cannot act (not a person/organisation) as agent'] REJ:unsupported/ill-typed source
+## 部長が会議を3時に変更した。
+   SUP frame 変更する + [('agent', '部長'), ('patient', '会議'), ('result', '3時')] [] PASS
+## 母が予定を月曜日に変えた。
+   SUP frame 変える + [('agent', '母'), ('patient', '予定'), ('result', '月曜日')] [] PASS
+## 課長が会議を来週に延期した。
+   SUP frame 延期する + [('agent', '課長'), ('patient', '会議'), ('result', '来週')] [] PASS
+## 彼が部屋を青に塗った。
+   uns frame 塗る + [('patient', '部屋'), ('ambiguous', '青')] ['ambiguous case role: に', 'unrepresented source content'] REJ:unsupported/ill-typed source
+## お世話になっております。
+   uns frame 世話る + [('recipient', 'お世話')] ['ill-typed role: participant repeats the predicate itself'] REJ:unsupported/ill-typed source
+tree=/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a-S foreign_modules=[]
