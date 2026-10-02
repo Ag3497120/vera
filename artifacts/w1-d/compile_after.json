@@ -1,0 +1,1219 @@
+[
+ {
+  "id": "7fd148748ac4",
+  "kind": "DECISION",
+  "sentence": "Vera goalの決定はVera is a general chatbot that understands requests and answers or generates from structure while retaining the human-decided goal and completion frameである。",
+  "slots": {
+   "choice": "Vera is a general chatbot that understands requests and answers or generates from structure while retaining the human-decided goal and completion frame",
+   "subject": "Vera goal"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "Vera: Vera is a general chatbot that understands requests and answers or generates from structure while retaining the human-decided goal and completion frame",
+   "kind": "testimony",
+   "line": 18,
+   "section": "goal",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "1691f7226e7a",
+  "kind": "INVARIANT",
+  "sentence": "invariant I1の規則はRuntime uses no LLM or learned model to produce an answer sentence fact or decisionである。",
+  "slots": {
+   "rule": "Runtime uses no LLM or learned model to produce an answer sentence fact or decision",
+   "subject": "invariant I1"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "Runtime uses no LLM or learned model to produce an answer sentence fact or decision",
+   "kind": "testimony",
+   "line": 21,
+   "section": "philosophy_invariants",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "533930126e1e",
+  "kind": "INVARIANT",
+  "sentence": "invariant I2の規則はBase on stereo cross and fall back to case-frame predicate-argument structureである。",
+  "slots": {
+   "rule": "Base on stereo cross and fall back to case-frame predicate-argument structure",
+   "subject": "invariant I2"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "Base on stereo cross and fall back to case-frame predicate-argument structure",
+   "kind": "testimony",
+   "line": 22,
+   "section": "philosophy_invariants",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "2a34e7e03411",
+  "kind": "INVARIANT",
+  "sentence": "invariant I3の規則はStack stages without pooling votes and abstain on tiesである。",
+  "slots": {
+   "rule": "Stack stages without pooling votes and abstain on ties",
+   "subject": "invariant I3"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "Stack stages without pooling votes and abstain on ties",
+   "kind": "testimony",
+   "line": 23,
+   "section": "philosophy_invariants",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "aa1e74142944",
+  "kind": "INVARIANT",
+  "sentence": "invariant I4の規則はRefusals are typed and cite evidence and unknown is not negationである。",
+  "slots": {
+   "rule": "Refusals are typed and cite evidence and unknown is not negation",
+   "subject": "invariant I4"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "Refusals are typed and cite evidence and unknown is not negation",
+   "kind": "testimony",
+   "line": 24,
+   "section": "philosophy_invariants",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "ac8fd702c807",
+  "kind": "INVARIANT",
+  "sentence": "invariant I5の規則はConstructed outputs are typed with provenance and never become answers testimony or evidenceである。",
+  "slots": {
+   "rule": "Constructed outputs are typed with provenance and never become answers testimony or evidence",
+   "subject": "invariant I5"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "Constructed outputs are typed with provenance and never become answers testimony or evidence",
+   "kind": "testimony",
+   "line": 25,
+   "section": "philosophy_invariants",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "712c6f0d4ebc",
+  "kind": "INVARIANT",
+  "sentence": "invariant I6の規則はPreserve source clauses semantic roles scope conditions exceptions quantities and negationである。",
+  "slots": {
+   "rule": "Preserve source clauses semantic roles scope conditions exceptions quantities and negation",
+   "subject": "invariant I6"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "Preserve source clauses semantic roles scope conditions exceptions quantities and negation",
+   "kind": "testimony",
+   "line": 26,
+   "section": "philosophy_invariants",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "8f1f3676bf43",
+  "kind": "INVARIANT",
+  "sentence": "invariant I7の規則はDo not narrow the human-decided goal to pass an intermediate gateである。",
+  "slots": {
+   "rule": "Do not narrow the human-decided goal to pass an intermediate gate",
+   "subject": "invariant I7"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "Do not narrow the human-decided goal to pass an intermediate gate",
+   "kind": "testimony",
+   "line": 27,
+   "section": "philosophy_invariants",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "ce16c6488e3e",
+  "kind": "ACCEPTANCE",
+  "sentence": "Runtime does not use an LLM or learned model to produce an answer sentence fact or decisionの確認方法はhuman judgedである。",
+  "slots": {
+   "check": "human judged",
+   "subject": "Runtime does not use an LLM or learned model to produce an answer sentence fact or decision"
+  },
+  "witness": {
+   "acceptance": {
+    "human_judged": true,
+    "independent": false,
+    "item": "Runtime does not use an LLM or learned model to produce an answer sentence fact or decision",
+    "task_id": "Vera",
+    "witness": {
+     "kind": "human-judged"
+    }
+   },
+   "by": "frame author",
+   "entry": "Runtime does not use an LLM or learned model to produce an answer sentence fact or decision",
+   "kind": "testimony",
+   "line": 30,
+   "section": "completion_criteria",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "a4cf6ecb8d5b",
+  "kind": "GOAL",
+  "sentence": "Veraの完成条件はRuntime does not use an LLM or learned model to produce an answer sentence fact or decisionである。",
+  "slots": {
+   "subject": "Vera",
+   "value": "Runtime does not use an LLM or learned model to produce an answer sentence fact or decision"
+  },
+  "witness": {
+   "acceptance_record_id": "ce16c6488e3e",
+   "by": "frame author",
+   "completion_criterion_id": "C1",
+   "entry": "Vera: Vera is a general chatbot that understands requests and answers or generates from structure while retaining the human-decided goal and completion frame",
+   "kind": "testimony",
+   "line": 18,
+   "section": "goal",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "d35131ee7296",
+  "kind": "ACCEPTANCE",
+  "sentence": "General QA and dialogue handle unseen wording and relations instead of relying only on prior question matchesの確認方法はhuman judgedである。",
+  "slots": {
+   "check": "human judged",
+   "subject": "General QA and dialogue handle unseen wording and relations instead of relying only on prior question matches"
+  },
+  "witness": {
+   "acceptance": {
+    "human_judged": true,
+    "independent": false,
+    "item": "General QA and dialogue handle unseen wording and relations instead of relying only on prior question matches",
+    "task_id": "Vera",
+    "witness": {
+     "kind": "human-judged"
+    }
+   },
+   "by": "frame author",
+   "entry": "General QA and dialogue handle unseen wording and relations instead of relying only on prior question matches",
+   "kind": "testimony",
+   "line": 31,
+   "section": "completion_criteria",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "479b81f177de",
+  "kind": "GOAL",
+  "sentence": "Veraの完成条件はGeneral QA and dialogue handle unseen wording and relations instead of relying only on prior question matchesである。",
+  "slots": {
+   "subject": "Vera",
+   "value": "General QA and dialogue handle unseen wording and relations instead of relying only on prior question matches"
+  },
+  "witness": {
+   "acceptance_record_id": "d35131ee7296",
+   "by": "frame author",
+   "completion_criterion_id": "C2",
+   "entry": "Vera: Vera is a general chatbot that understands requests and answers or generates from structure while retaining the human-decided goal and completion frame",
+   "kind": "testimony",
+   "line": 18,
+   "section": "goal",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "de8253d8a94f",
+  "kind": "ACCEPTANCE",
+  "sentence": "Code generation preserves requested inputs outputs conditions side effects and boundary casesの確認方法はhuman judgedである。",
+  "slots": {
+   "check": "human judged",
+   "subject": "Code generation preserves requested inputs outputs conditions side effects and boundary cases"
+  },
+  "witness": {
+   "acceptance": {
+    "human_judged": true,
+    "independent": false,
+    "item": "Code generation preserves requested inputs outputs conditions side effects and boundary cases",
+    "task_id": "Vera",
+    "witness": {
+     "kind": "human-judged"
+    }
+   },
+   "by": "frame author",
+   "entry": "Code generation preserves requested inputs outputs conditions side effects and boundary cases",
+   "kind": "testimony",
+   "line": 32,
+   "section": "completion_criteria",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "32bb7cdd19ad",
+  "kind": "GOAL",
+  "sentence": "Veraの完成条件はCode generation preserves requested inputs outputs conditions side effects and boundary casesである。",
+  "slots": {
+   "subject": "Vera",
+   "value": "Code generation preserves requested inputs outputs conditions side effects and boundary cases"
+  },
+  "witness": {
+   "acceptance_record_id": "de8253d8a94f",
+   "by": "frame author",
+   "completion_criterion_id": "C3",
+   "entry": "Vera: Vera is a general chatbot that understands requests and answers or generates from structure while retaining the human-decided goal and completion frame",
+   "kind": "testimony",
+   "line": 18,
+   "section": "goal",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "73432d5271d8",
+  "kind": "ACCEPTANCE",
+  "sentence": "Complex document QA preserves facts conditions exceptions comparisons counts negation and citation scopeの確認方法はhuman judgedである。",
+  "slots": {
+   "check": "human judged",
+   "subject": "Complex document QA preserves facts conditions exceptions comparisons counts negation and citation scope"
+  },
+  "witness": {
+   "acceptance": {
+    "human_judged": true,
+    "independent": false,
+    "item": "Complex document QA preserves facts conditions exceptions comparisons counts negation and citation scope",
+    "task_id": "Vera",
+    "witness": {
+     "kind": "human-judged"
+    }
+   },
+   "by": "frame author",
+   "entry": "Complex document QA preserves facts conditions exceptions comparisons counts negation and citation scope",
+   "kind": "testimony",
+   "line": 33,
+   "section": "completion_criteria",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "938affd9ca8e",
+  "kind": "GOAL",
+  "sentence": "Veraの完成条件はComplex document QA preserves facts conditions exceptions comparisons counts negation and citation scopeである。",
+  "slots": {
+   "subject": "Vera",
+   "value": "Complex document QA preserves facts conditions exceptions comparisons counts negation and citation scope"
+  },
+  "witness": {
+   "acceptance_record_id": "73432d5271d8",
+   "by": "frame author",
+   "completion_criterion_id": "C4",
+   "entry": "Vera: Vera is a general chatbot that understands requests and answers or generates from structure while retaining the human-decided goal and completion frame",
+   "kind": "testimony",
+   "line": 18,
+   "section": "goal",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "5d45c533a7a3",
+  "kind": "ACCEPTANCE",
+  "sentence": "Text generation composes from structure and distinguishes supported facts from introduced creative contentの確認方法はhuman judgedである。",
+  "slots": {
+   "check": "human judged",
+   "subject": "Text generation composes from structure and distinguishes supported facts from introduced creative content"
+  },
+  "witness": {
+   "acceptance": {
+    "human_judged": true,
+    "independent": false,
+    "item": "Text generation composes from structure and distinguishes supported facts from introduced creative content",
+    "task_id": "Vera",
+    "witness": {
+     "kind": "human-judged"
+    }
+   },
+   "by": "frame author",
+   "entry": "Text generation composes from structure and distinguishes supported facts from introduced creative content",
+   "kind": "testimony",
+   "line": 34,
+   "section": "completion_criteria",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "0896e502eefc",
+  "kind": "GOAL",
+  "sentence": "Veraの完成条件はText generation composes from structure and distinguishes supported facts from introduced creative contentである。",
+  "slots": {
+   "subject": "Vera",
+   "value": "Text generation composes from structure and distinguishes supported facts from introduced creative content"
+  },
+  "witness": {
+   "acceptance_record_id": "5d45c533a7a3",
+   "by": "frame author",
+   "completion_criterion_id": "C5",
+   "entry": "Vera: Vera is a general chatbot that understands requests and answers or generates from structure while retaining the human-decided goal and completion frame",
+   "kind": "testimony",
+   "line": 18,
+   "section": "goal",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "20f85bc9f9c4",
+  "kind": "ACCEPTANCE",
+  "sentence": "The covenant guard and standalone device self-check passの確認方法はcommand exitである。",
+  "slots": {
+   "check": "command exit",
+   "subject": "The covenant guard and standalone device self-check pass"
+  },
+  "witness": {
+   "acceptance": {
+    "human_judged": false,
+    "independent": false,
+    "item": "The covenant guard and standalone device self-check pass",
+    "task_id": "Vera",
+    "witness": {
+     "command": [
+      "python",
+      "-m",
+      "verantyx.cli",
+      "doctor"
+     ],
+     "expected_exit": 0,
+     "kind": "command_exit"
+    }
+   },
+   "by": "frame author",
+   "entry": "The covenant guard and standalone device self-check pass",
+   "kind": "testimony",
+   "line": 35,
+   "section": "completion_criteria",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "9b5a0506b6c6",
+  "kind": "GOAL",
+  "sentence": "Veraの完成条件はThe covenant guard and standalone device self-check passである。",
+  "slots": {
+   "subject": "Vera",
+   "value": "The covenant guard and standalone device self-check pass"
+  },
+  "witness": {
+   "acceptance_record_id": "20f85bc9f9c4",
+   "by": "frame author",
+   "completion_criterion_id": "C6",
+   "entry": "Vera: Vera is a general chatbot that understands requests and answers or generates from structure while retaining the human-decided goal and completion frame",
+   "kind": "testimony",
+   "line": 18,
+   "section": "goal",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "5c57aa5f05c8",
+  "kind": "DECISION",
+  "sentence": "goal authorityの決定はThe human decides the design philosophy completion shape and revisionsである。",
+  "slots": {
+   "choice": "The human decides the design philosophy completion shape and revisions",
+   "subject": "goal authority"
+  },
+  "witness": {
+   "by": "frame author",
+   "decision_id": "D1",
+   "entry": "goal authority => The human decides the design philosophy completion shape and revisions",
+   "kind": "testimony",
+   "line": 49,
+   "section": "decisions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "9855f6127c56",
+  "kind": "DECISION",
+  "sentence": "runtime answer pathの決定はDeterministic structure produces answers and generated contentである。",
+  "slots": {
+   "choice": "Deterministic structure produces answers and generated content",
+   "subject": "runtime answer path"
+  },
+  "witness": {
+   "by": "frame author",
+   "decision_id": "D2",
+   "entry": "runtime answer path => Deterministic structure produces answers and generated content",
+   "kind": "testimony",
+   "line": 50,
+   "section": "decisions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "5e9afe68b86e",
+  "kind": "DECISION",
+  "sentence": "general QA and dialogueの決定はin scopeである。",
+  "slots": {
+   "choice": "in scope",
+   "subject": "general QA and dialogue"
+  },
+  "witness": {
+   "by": "frame author",
+   "decision_id": "D3",
+   "entry": "general QA and dialogue => in scope",
+   "kind": "testimony",
+   "line": 51,
+   "section": "decisions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "1de109e0c84b",
+  "kind": "POLICY",
+  "sentence": "general QA and dialogueの許可回答はin scopeである。",
+  "slots": {
+   "answer": "in scope",
+   "subject": "general QA and dialogue"
+  },
+  "witness": {
+   "authority_record_id": "5e9afe68b86e",
+   "by": "frame author",
+   "condition": "general QA and dialogue",
+   "entry": "SCOPE | general QA and dialogue | in scope",
+   "kind": "testimony",
+   "line": 51,
+   "question_kind": "SCOPE",
+   "section": "decisions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "6a7886b17fb3",
+  "kind": "DECISION",
+  "sentence": "code generationの決定はin scopeである。",
+  "slots": {
+   "choice": "in scope",
+   "subject": "code generation"
+  },
+  "witness": {
+   "by": "frame author",
+   "decision_id": "D4",
+   "entry": "code generation => in scope",
+   "kind": "testimony",
+   "line": 52,
+   "section": "decisions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "d64997132f14",
+  "kind": "POLICY",
+  "sentence": "code generationの許可回答はin scopeである。",
+  "slots": {
+   "answer": "in scope",
+   "subject": "code generation"
+  },
+  "witness": {
+   "authority_record_id": "6a7886b17fb3",
+   "by": "frame author",
+   "condition": "code generation",
+   "entry": "SCOPE | code generation | in scope",
+   "kind": "testimony",
+   "line": 52,
+   "question_kind": "SCOPE",
+   "section": "decisions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "1183cfa0d318",
+  "kind": "DECISION",
+  "sentence": "complex document QAの決定はin scopeである。",
+  "slots": {
+   "choice": "in scope",
+   "subject": "complex document QA"
+  },
+  "witness": {
+   "by": "frame author",
+   "decision_id": "D5",
+   "entry": "complex document QA => in scope",
+   "kind": "testimony",
+   "line": 53,
+   "section": "decisions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "95cb10ec7fa2",
+  "kind": "POLICY",
+  "sentence": "complex document QAの許可回答はin scopeである。",
+  "slots": {
+   "answer": "in scope",
+   "subject": "complex document QA"
+  },
+  "witness": {
+   "authority_record_id": "1183cfa0d318",
+   "by": "frame author",
+   "condition": "complex document QA",
+   "entry": "SCOPE | complex document QA | in scope",
+   "kind": "testimony",
+   "line": 53,
+   "question_kind": "SCOPE",
+   "section": "decisions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "e1b087bb4549",
+  "kind": "DECISION",
+  "sentence": "local demoの決定はpermittedである。",
+  "slots": {
+   "choice": "permitted",
+   "subject": "local demo"
+  },
+  "witness": {
+   "by": "frame author",
+   "decision_id": "D6",
+   "entry": "local demo => permitted",
+   "kind": "testimony",
+   "line": 54,
+   "section": "decisions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "5d6c7adcfa46",
+  "kind": "POLICY",
+  "sentence": "local demoの許可回答はpermittedである。",
+  "slots": {
+   "answer": "permitted",
+   "subject": "local demo"
+  },
+  "witness": {
+   "authority_record_id": "e1b087bb4549",
+   "by": "frame author",
+   "condition": "local demo",
+   "entry": "CONFIRM | local demo | permitted",
+   "kind": "testimony",
+   "line": 54,
+   "question_kind": "CONFIRM",
+   "section": "decisions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "8e084db8f988",
+  "kind": "DECISION",
+  "sentence": "基本構造の決定はstereo crossである。",
+  "slots": {
+   "choice": "stereo cross",
+   "subject": "基本構造"
+  },
+  "witness": {
+   "by": "frame author",
+   "decision_id": "D7",
+   "entry": "基本構造 => stereo cross",
+   "kind": "testimony",
+   "line": 55,
+   "section": "decisions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "2a4c9b056cdf",
+  "kind": "POLICY",
+  "sentence": "基本構造の許可回答はstereo crossである。",
+  "slots": {
+   "answer": "stereo cross",
+   "subject": "基本構造"
+  },
+  "witness": {
+   "authority_record_id": "8e084db8f988",
+   "by": "frame author",
+   "condition": "基本構造",
+   "entry": "CHOICE | 基本構造 | stereo cross",
+   "kind": "testimony",
+   "line": 55,
+   "question_kind": "CHOICE",
+   "section": "decisions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "0b181aa9c1eb",
+  "kind": "DECISION",
+  "sentence": "phase P1の決定はWrite and review the human-owned design and completion frameである。",
+  "slots": {
+   "choice": "Write and review the human-owned design and completion frame",
+   "subject": "phase P1"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "Write and review the human-owned design and completion frame",
+   "kind": "testimony",
+   "line": 38,
+   "phase_id": "P1",
+   "section": "phases",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "385b996c8b83",
+  "kind": "DECISION",
+  "sentence": "phase P2の決定はCompile the frame into typed records with source witnessesである。",
+  "slots": {
+   "choice": "Compile the frame into typed records with source witnesses",
+   "subject": "phase P2"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "Compile the frame into typed records with source witnesses",
+   "kind": "testimony",
+   "line": 39,
+   "phase_id": "P2",
+   "section": "phases",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "94dbb3a968fa",
+  "kind": "DECISION",
+  "sentence": "phase P3の決定はAnswer questions from cited records through the deterministic conductorである。",
+  "slots": {
+   "choice": "Answer questions from cited records through the deterministic conductor",
+   "subject": "phase P3"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "Answer questions from cited records through the deterministic conductor",
+   "kind": "testimony",
+   "line": 40,
+   "phase_id": "P3",
+   "section": "phases",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "5cfa703a53e1",
+  "kind": "DECISION",
+  "sentence": "phase P4の決定はReview observed answers and revise the frame only by a human decisionである。",
+  "slots": {
+   "choice": "Review observed answers and revise the frame only by a human decision",
+   "subject": "phase P4"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "Review observed answers and revise the frame only by a human decision",
+   "kind": "testimony",
+   "line": 41,
+   "phase_id": "P4",
+   "section": "phases",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "a782016490dd",
+  "kind": "DECISION",
+  "sentence": "phase order P1 to P2の決定はCompilation must preserve the human-decided design and completion shapeである。",
+  "slots": {
+   "choice": "Compilation must preserve the human-decided design and completion shape",
+   "subject": "phase order P1 to P2"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "P1 -> P2: Compilation must preserve the human-decided design and completion shape",
+   "kind": "testimony",
+   "line": 44,
+   "section": "phase_order",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "e6627e2f5899",
+  "kind": "ORDER",
+  "sentence": "P1の先行タスクはP2である。",
+  "slots": {
+   "subject": "P1",
+   "target": "P2"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "P1 -> P2: Compilation must preserve the human-decided design and completion shape",
+   "kind": "testimony",
+   "line": 44,
+   "reason_record_id": "a782016490dd",
+   "section": "phase_order",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "5c22cc1b8be3",
+  "kind": "DECISION",
+  "sentence": "phase order P2 to P3の決定はThe conductor needs typed records with witnesses before it can answer from the frameである。",
+  "slots": {
+   "choice": "The conductor needs typed records with witnesses before it can answer from the frame",
+   "subject": "phase order P2 to P3"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "P2 -> P3: The conductor needs typed records with witnesses before it can answer from the frame",
+   "kind": "testimony",
+   "line": 45,
+   "section": "phase_order",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "73e6cd0ac468",
+  "kind": "ORDER",
+  "sentence": "P2の先行タスクはP3である。",
+  "slots": {
+   "subject": "P2",
+   "target": "P3"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "P2 -> P3: The conductor needs typed records with witnesses before it can answer from the frame",
+   "kind": "testimony",
+   "line": 45,
+   "reason_record_id": "5c22cc1b8be3",
+   "section": "phase_order",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "0183a0bf2bc7",
+  "kind": "DECISION",
+  "sentence": "phase order P3 to P4の決定はReview follows observable answers and their citationsである。",
+  "slots": {
+   "choice": "Review follows observable answers and their citations",
+   "subject": "phase order P3 to P4"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "P3 -> P4: Review follows observable answers and their citations",
+   "kind": "testimony",
+   "line": 46,
+   "section": "phase_order",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "2cda553b3b44",
+  "kind": "ORDER",
+  "sentence": "P3の先行タスクはP4である。",
+  "slots": {
+   "subject": "P3",
+   "target": "P4"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "P3 -> P4: Review follows observable answers and their citations",
+   "kind": "testimony",
+   "line": 46,
+   "reason_record_id": "0183a0bf2bc7",
+   "section": "phase_order",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "bfe3dbbc4792",
+  "kind": "ALIAS",
+  "sentence": "立体十字の語義対応はstereo crossである。",
+  "slots": {
+   "subject": "立体十字",
+   "value": "stereo cross"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "立体十字 => stereo cross",
+   "kind": "testimony",
+   "line": 58,
+   "scope": "frame-vocabulary",
+   "section": "vocabulary_aliases",
+   "source": "docs/frames/vera_project_frame.md",
+   "word": "立体十字"
+  }
+ },
+ {
+  "id": "f4da0f31763f",
+  "kind": "ALIAS",
+  "sentence": "述語項構造へ後退の語義対応はcase-frame fallbackである。",
+  "slots": {
+   "subject": "述語項構造へ後退",
+   "value": "case-frame fallback"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "述語項構造への後退 => case-frame fallback",
+   "kind": "testimony",
+   "line": 59,
+   "scope": "frame-vocabulary",
+   "section": "vocabulary_aliases",
+   "source": "docs/frames/vera_project_frame.md",
+   "word": "述語項構造への後退"
+  }
+ },
+ {
+  "id": "f85d18596b53",
+  "kind": "ALIAS",
+  "sentence": "case-frame predicate argument structureの語義対応はcase-frame fallbackである。",
+  "slots": {
+   "subject": "case-frame predicate argument structure",
+   "value": "case-frame fallback"
+  },
+  "witness": {
+   "by": "frame author",
+   "entry": "case-frame predicate argument structure => case-frame fallback",
+   "kind": "testimony",
+   "line": 60,
+   "scope": "frame-vocabulary",
+   "section": "vocabulary_aliases",
+   "source": "docs/frames/vera_project_frame.md",
+   "word": "case-frame predicate argument structure"
+  }
+ },
+ {
+  "id": "16a7343bdb84",
+  "kind": "ESCALATE",
+  "sentence": "unsupported requestの人へ引継ぎはhumanである。",
+  "slots": {
+   "subject": "unsupported request",
+   "target": "human"
+  },
+  "witness": {
+   "by": "frame author",
+   "condition": "unsupported request",
+   "entry": "unsupported request",
+   "kind": "testimony",
+   "line": 63,
+   "missing": "typed evidence",
+   "question_kind": "OTHER",
+   "reason": "No supported structure is present to ground an answer",
+   "section": "escalation_conditions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "7c0c8b1fe949",
+  "kind": "ESCALATE",
+  "sentence": "conflicting evidenceの人へ引継ぎはhumanである。",
+  "slots": {
+   "subject": "conflicting evidence",
+   "target": "human"
+  },
+  "witness": {
+   "by": "frame author",
+   "condition": "conflicting evidence",
+   "entry": "conflicting evidence",
+   "kind": "testimony",
+   "line": 64,
+   "missing": "human",
+   "question_kind": null,
+   "reason": "Conflicting support must be reviewed without pooling votes",
+   "section": "escalation_conditions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "753358411ead",
+  "kind": "ESCALATE",
+  "sentence": "completion claimの人へ引継ぎはhumanである。",
+  "slots": {
+   "subject": "completion claim",
+   "target": "human"
+  },
+  "witness": {
+   "by": "frame author",
+   "condition": "completion claim",
+   "entry": "completion claim",
+   "kind": "testimony",
+   "line": 65,
+   "missing": "human",
+   "question_kind": "STATUS",
+   "reason": "Completion criteria require human judgment",
+   "section": "escalation_conditions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "8b882135ed48",
+  "kind": "INVARIANT",
+  "sentence": "protected action PA1の規則はHuman approval is required before publishである。",
+  "slots": {
+   "rule": "Human approval is required before publish",
+   "subject": "protected action PA1"
+  },
+  "witness": {
+   "authority_boundary": true,
+   "by": "frame author",
+   "entry": "publish",
+   "kind": "testimony",
+   "line": 68,
+   "protected_action": "publish",
+   "section": "protected_actions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "8f19af2fffae",
+  "kind": "ESCALATE",
+  "sentence": "publishの人へ引継ぎはhumanである。",
+  "slots": {
+   "subject": "publish",
+   "target": "human"
+  },
+  "witness": {
+   "by": "frame author",
+   "condition": "publish",
+   "entry": "publish",
+   "kind": "testimony",
+   "line": 68,
+   "missing": "human",
+   "protected_action": true,
+   "question_kind": null,
+   "reason": "Human approval is required before public release",
+   "section": "protected_actions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "b59952e5fdca",
+  "kind": "INVARIANT",
+  "sentence": "protected action PA2の規則はHuman approval is required before deleteである。",
+  "slots": {
+   "rule": "Human approval is required before delete",
+   "subject": "protected action PA2"
+  },
+  "witness": {
+   "authority_boundary": true,
+   "by": "frame author",
+   "entry": "delete",
+   "kind": "testimony",
+   "line": 69,
+   "protected_action": "delete",
+   "section": "protected_actions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "2f30ba9ecded",
+  "kind": "ESCALATE",
+  "sentence": "deleteの人へ引継ぎはhumanである。",
+  "slots": {
+   "subject": "delete",
+   "target": "human"
+  },
+  "witness": {
+   "by": "frame author",
+   "condition": "delete",
+   "entry": "delete",
+   "kind": "testimony",
+   "line": 69,
+   "missing": "human",
+   "protected_action": true,
+   "question_kind": null,
+   "reason": "Human approval is required before removing records or files",
+   "section": "protected_actions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "0a78f8807808",
+  "kind": "INVARIANT",
+  "sentence": "protected action PA3の規則はHuman approval is required before spend moneyである。",
+  "slots": {
+   "rule": "Human approval is required before spend money",
+   "subject": "protected action PA3"
+  },
+  "witness": {
+   "authority_boundary": true,
+   "by": "frame author",
+   "entry": "spend money",
+   "kind": "testimony",
+   "line": 70,
+   "protected_action": "spend money",
+   "section": "protected_actions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "74e9ff5c7404",
+  "kind": "ESCALATE",
+  "sentence": "spend moneyの人へ引継ぎはhumanである。",
+  "slots": {
+   "subject": "spend money",
+   "target": "human"
+  },
+  "witness": {
+   "by": "frame author",
+   "condition": "spend money",
+   "entry": "spend money",
+   "kind": "testimony",
+   "line": 70,
+   "missing": "human",
+   "protected_action": true,
+   "question_kind": null,
+   "reason": "Human approval is required before spending",
+   "section": "protected_actions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "d1b51e136c9c",
+  "kind": "INVARIANT",
+  "sentence": "protected action PA4の規則はHuman approval is required before enter credentialsである。",
+  "slots": {
+   "rule": "Human approval is required before enter credentials",
+   "subject": "protected action PA4"
+  },
+  "witness": {
+   "authority_boundary": true,
+   "by": "frame author",
+   "entry": "enter credentials",
+   "kind": "testimony",
+   "line": 71,
+   "protected_action": "enter credentials",
+   "section": "protected_actions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "0af6e3767e8a",
+  "kind": "ESCALATE",
+  "sentence": "enter credentialsの人へ引継ぎはhumanである。",
+  "slots": {
+   "subject": "enter credentials",
+   "target": "human"
+  },
+  "witness": {
+   "by": "frame author",
+   "condition": "enter credentials",
+   "entry": "enter credentials",
+   "kind": "testimony",
+   "line": 71,
+   "missing": "human",
+   "protected_action": true,
+   "question_kind": null,
+   "reason": "Credentials must remain under direct human control",
+   "section": "protected_actions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "9b85f36711fa",
+  "kind": "INVARIANT",
+  "sentence": "protected action PA5の規則はHuman approval is required before access evaluation-only materialである。",
+  "slots": {
+   "rule": "Human approval is required before access evaluation-only material",
+   "subject": "protected action PA5"
+  },
+  "witness": {
+   "authority_boundary": true,
+   "by": "frame author",
+   "entry": "access evaluation-only material",
+   "kind": "testimony",
+   "line": 72,
+   "protected_action": "access evaluation-only material",
+   "section": "protected_actions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "0c03a590d432",
+  "kind": "ESCALATE",
+  "sentence": "access evaluation-only materialの人へ引継ぎはhumanである。",
+  "slots": {
+   "subject": "access evaluation-only material",
+   "target": "human"
+  },
+  "witness": {
+   "by": "frame author",
+   "condition": "access evaluation-only material",
+   "entry": "access evaluation-only material",
+   "kind": "testimony",
+   "line": 72,
+   "missing": "human",
+   "protected_action": true,
+   "question_kind": null,
+   "reason": "Human approval is required before accessing restricted evaluation material",
+   "section": "protected_actions",
+   "source": "docs/frames/vera_project_frame.md"
+  }
+ },
+ {
+  "id": "843b79576e13",
+  "kind": "DECISION",
+  "sentence": "write allowlist W1の決定はverantyxである。",
+  "slots": {
+   "choice": "verantyx",
+   "subject": "write allowlist W1"
+  },
+  "witness": {
+   "allowlist_id": "W1",
+   "by": "frame author",
+   "entry": "W1: verantyx",
+   "kind": "testimony",
+   "line": 75,
+   "section": "write_allowlist",
+   "source": "docs/frames/vera_project_frame.md",
+   "write_path": "verantyx"
+  }
+ },
+ {
+  "id": "1bedd1c1b76a",
+  "kind": "DECISION",
+  "sentence": "write allowlist W2の決定はtestsである。",
+  "slots": {
+   "choice": "tests",
+   "subject": "write allowlist W2"
+  },
+  "witness": {
+   "allowlist_id": "W2",
+   "by": "frame author",
+   "entry": "W2: tests",
+   "kind": "testimony",
+   "line": 76,
+   "section": "write_allowlist",
+   "source": "docs/frames/vera_project_frame.md",
+   "write_path": "tests"
+  }
+ },
+ {
+  "id": "f901859fb88e",
+  "kind": "DECISION",
+  "sentence": "write allowlist W3の決定はdocsである。",
+  "slots": {
+   "choice": "docs",
+   "subject": "write allowlist W3"
+  },
+  "witness": {
+   "allowlist_id": "W3",
+   "by": "frame author",
+   "entry": "W3: docs",
+   "kind": "testimony",
+   "line": 77,
+   "section": "write_allowlist",
+   "source": "docs/frames/vera_project_frame.md",
+   "write_path": "docs"
+  }
+ },
+ {
+  "id": "f8c7d3ce3e08",
+  "kind": "DECISION",
+  "sentence": "write allowlist W4の決定はtoolsである。",
+  "slots": {
+   "choice": "tools",
+   "subject": "write allowlist W4"
+  },
+  "witness": {
+   "allowlist_id": "W4",
+   "by": "frame author",
+   "entry": "W4: tools",
+   "kind": "testimony",
+   "line": 78,
+   "section": "write_allowlist",
+   "source": "docs/frames/vera_project_frame.md",
+   "write_path": "tools"
+  }
+ }
+]
