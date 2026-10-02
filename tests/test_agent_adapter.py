@@ -66,6 +66,12 @@ def test_command_rejects_writable_sandbox():
         CodexExecAdapter(sandbox="workspace-write")
 
 
+def test_codex_command_does_not_request_workspace_write():
+    command = CodexExecAdapter().build_command("brief")
+    assert command[command.index("-s") + 1] == "read-only"
+    assert "workspace-write" not in command
+
+
 def test_command_sets_project_directory(tmp_path):
     command = CodexExecAdapter(project_dir=tmp_path).build_command("brief")
     assert command[command.index("-C") + 1] == str(tmp_path)
@@ -101,6 +107,9 @@ def test_codex_tooling_builder_has_no_live_agent_lifecycle():
     assert not any(hasattr(adapter, method) for method in ("start", "poll", "send", "stop"))
     with pytest.raises(TypeError):
         CodexExecAdapter(runner)
+    with pytest.raises(TypeError):
+        CodexExecAdapter(runner=runner)
+    assert parse_agent_output('{"type":"DONE"}') == [{"type": "DONE"}]
     assert runner.started == []
 
 
