@@ -80,7 +80,7 @@ def check_witness(w: Optional[dict]) -> str:
     if not isinstance(w, dict): return 'UNVERIFIABLE'
     kind = w.get('kind')
     if kind == 'testimony': return 'TESTIMONY'
-    if kind == 'file_sha256':
+    if kind in ('file_sha256', 'file_hash'):
         path, expected = w.get('path'), w.get('sha256')
         if ((not isinstance(path, (str, Path)) or not str(path).strip()) or
                 not isinstance(expected, str) or not re.fullmatch(r'[0-9a-fA-F]{64}', expected)):
@@ -101,7 +101,43 @@ def check_witness(w: Optional[dict]) -> str:
                                capture_output=True)
             return 'FRESH' if r.returncode == 0 else 'STALE'
         except (OSError, TypeError, ValueError): return 'UNVERIFIABLE'
+    if kind in ('command_result', 'command_exit'):
+        command, result = w.get('command'), w.get('exit_code', w.get('result'))
+        expected = w.get('expected_exit', 0)
+        command_ok = (isinstance(command, str) and bool(command.strip()) or
+                      isinstance(command, (list, tuple)) and bool(command) and
+                      all(isinstance(part, str) and part for part in command))
+        if (not command_ok or type(result) is not int or type(expected) is not int):
+            return 'UNVERIFIABLE'
+        return 'FRESH' if result == expected else 'STALE'
     return 'UNVERIFIABLE'
+
+
+def witness_class(witness: Optional[dict]) -> str:
+    """Return the stable provenance class attached to an answer's supporting record."""
+    if not isinstance(witness, dict): return 'constructed'
+    kind = witness.get('kind')
+    if kind in ('file_sha256', 'file_hash'): return 'file_hash'
+    if kind == 'text_in_file': return 'text_in_file'
+    if kind == 'git_commit': return 'git_commit'
+    if kind in ('command_result', 'command_exit'): return 'command_result'
+    if kind == 'testimony': return 'testimony'
+    # Unknown or explicitly constructed sources are never promoted to evidence.
+    return 'constructed'
+
+
+def _claims_constructed_source(witness: Optional[dict]) -> bool:
+    """Recognize explicit generated-output markers so they cannot be relabeled as evidence."""
+    if not isinstance(witness, dict): return False
+    if witness.get('kind') in ('constructed', 'generated'): return True
+    if witness.get('constructed') is True or witness.get('generated') is True: return True
+    for key in ('source', 'origin', 'provenance', 'output_kind', 'source_kind'):
+        value = witness.get(key)
+        if isinstance(value, str) and re.search(r'\b(?:constructed|generated)\b|生成', value.casefold()):
+            return True
+    if witness.get('generated_by') or witness.get('constructed_by'):
+        return True
+    return False
 
 
 # ------------------------------------------------------------------ closed-choice resolution
@@ -279,9 +315,13 @@ class Memory:
         if kind == 'TASK':
             slots['state'] = self._alias('TASK.state', slots['state'], list(STATES), f'タスク「{slots["subject"]}」の状態')
         if kind in NEEDS_WITNESS and not witness:
-            raise WriteRejected(f'{kind} には確かめ方（witness）が必要です', "witness={'kind': 'file_sha256'|'git_commit'|'text_in_file'|'testimony', ...}")
-        if witness and witness.get('kind') not in ('file_sha256', 'git_commit', 'text_in_file', 'testimony'):
+            raise WriteRejected(f'{kind} には確かめ方（witness）が必要です',
+                                "witness={'kind': 'file_hash'|'text_in_file'|'git_commit'|'command_result'|'testimony'|'constructed', ...}")
+        if witness and witness.get('kind') not in ('file_sha256', 'file_hash', 'git_commit', 'text_in_file',
+                                                    'command_result', 'command_exit', 'testimony', 'constructed'):
             raise WriteRejected('witness の種類が不明です')
+        if kind in ('FACT', 'DECISION', 'INVARIANT') and _claims_constructed_source(witness) and witness_class(witness) != 'constructed':
+            raise WriteRejected(f'{kind} の生成物は constructed witness として記録してください')
         sentence = self.sentence(kind, slots)
         if not self.askable(sentence, slots, kind):
             raise WriteRejected('この記録は Vera が引ける文として読めません',
@@ -322,7 +362,9 @@ class Memory:
         if not isinstance(witness, dict): return False
         kind = witness.get('kind')
         if kind == 'testimony': return True
-        if kind in ('file_sha256', 'git_commit'): return check_witness(witness) != 'UNVERIFIABLE'
+        if kind == 'constructed': return True
+        if kind in ('file_sha256', 'file_hash', 'git_commit', 'command_result', 'command_exit'):
+            return check_witness(witness) != 'UNVERIFIABLE'
         if kind != 'text_in_file': return False
         try:
             source = Path(witness['path']).expanduser().read_text(encoding='utf-8')
@@ -344,10 +386,14 @@ class Memory:
         except (KeyError, OSError, TypeError, ValueError, UnicodeError):
             return False
 
-    def ask(self, question, require_fresh=True):
+    def ask(self, question, require_fresh=True, evidence_only=False):
         from .one import Vera
-        docs = {f"rec:{r['id']}": r['sentence'] for r in self.active(require_fresh) if self._witness_supports(r)}
-        if not docs: return {'verdict': 'UNKNOWN_NO_EVIDENCE', 'values': [], 'records': []}
+        candidates = [r for r in self.active(require_fresh)
+                      if self._witness_supports(r) and
+                      not (evidence_only and witness_class(r.get('witness')) in ('testimony', 'constructed'))]
+        docs = {f"rec:{r['id']}": r['sentence'] for r in candidates}
+        if not docs:
+            return {'verdict': 'UNKNOWN_NO_EVIDENCE', 'values': [], 'records': [], 'witness_classes': {}}
         v = Vera.from_texts(docs, mode='semantic')
         try:
             a = v.ask(question)
@@ -355,4 +401,7 @@ class Memory:
             if numeric != question and a.get('verdict') != 'ANSWER': a = v.ask(numeric)
         finally: v.close()
         ids = [s['source'].split(':', 1)[1] for s in a.get('sources', [])]
-        return {'verdict': a['verdict'], 'values': a.get('values', []), 'records': ids, 'reason': a.get('reason')}
+        by_id = {r['id']: r for r in candidates}
+        classes = {rid: witness_class(by_id[rid].get('witness')) for rid in ids if rid in by_id}
+        return {'verdict': a['verdict'], 'values': a.get('values', []), 'records': ids,
+                'witness_classes': classes, 'reason': a.get('reason')}
