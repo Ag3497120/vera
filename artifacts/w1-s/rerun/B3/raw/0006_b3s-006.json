@@ -1,0 +1,141 @@
+{
+ "argv": [
+  "ask",
+  "--mode",
+  "round5",
+  "--",
+  "ミナという少女が箱を開ける短い話を、二文から三文で書いてください。ミナは箱を開けてから、窓を閉めます。「手紙」という語は使わないでください。"
+ ],
+ "elapsed_ms": 306.5,
+ "entry": "cli-ask-round5",
+ "exit_code": 0,
+ "id": "b3s-006",
+ "provenance": {
+  "modules": 73,
+  "outside": []
+ },
+ "reason": null,
+ "stderr": "",
+ "stdout_json": {
+  "door": "semantic_qa",
+  "evidence": [],
+  "how_to_resolve": "質問された事項を示す出典を追加してください。",
+  "kind": "unknown",
+  "phase": "reader",
+  "reason": "mandatory request spans remain unread",
+  "remedy": {
+   "needs_registration": true,
+   "note": "no remedy recorded for this verdict",
+   "register": "質問された事項を示す出典を追加してください。",
+   "verdict": "UNKNOWN_UNREAD"
+  },
+  "runtime_mode": "round5",
+  "semantic": {
+   "budget": {
+    "candidates": 0,
+    "limits": {
+     "bindings": 64,
+     "candidates": 256,
+     "depth": 8,
+     "parse": 32,
+     "steps": 4096
+    },
+    "peak_bindings": 0,
+    "steps": 0
+   },
+   "request": {
+    "covered": [],
+    "obligations": [],
+    "plans": [],
+    "rules": [
+     "typed unread"
+    ],
+    "stages": [],
+    "text": "ミナという少女が箱を開ける短い話を、二文から三文で書いてください。ミナは箱を開けてから、窓を閉めます。「手紙」という語は使わないでください。",
+    "unread": [
+     {
+      "reason": "generation/action speech act is unsupported in semantic QA",
+      "span": {
+       "end": 70,
+       "source": "question",
+       "start": 0,
+       "text": "ミナという少女が箱を開ける短い話を、二文から三文で書いてください。ミナは箱を開けてから、窓を閉めます。「手紙」という語は使わないでください。"
+      }
+     }
+    ]
+   },
+   "unread": [
+    {
+     "reason": "generation/action speech act is unsupported in semantic QA",
+     "span": {
+      "end": 70,
+      "source": "question",
+      "start": 0,
+      "text": "ミナという少女が箱を開ける短い話を、二文から三文で書いてください。ミナは箱を開けてから、窓を閉めます。「手紙」という語は使わないでください。"
+     }
+    }
+   ],
+   "verified": false,
+   "version": "round5a"
+  },
+  "sources": [],
+  "text": "この要求を裏づける導出を確認できません。",
+  "trace": [
+   {
+    "code_intent": false,
+    "content_intent": false,
+    "decision_input": "raw_request",
+    "fallback": false,
+    "part": "one.round5_route",
+    "status": "ran"
+   },
+   {
+    "obligations": 0,
+    "part": "question.read_semantic",
+    "plans": 0,
+    "status": "ran",
+    "unread": [
+     {
+      "reason": "generation/action speech act is unsupported in semantic QA",
+      "span": {
+       "end": 70,
+       "source": "question",
+       "start": 0,
+       "text": "ミナという少女が箱を開ける短い話を、二文から三文で書いてください。ミナは箱を開けてから、窓を閉めます。「手紙」という語は使わないでください。"
+      }
+     }
+    ]
+   },
+   {
+    "how_to_resolve": "質問された事項を示す出典を追加してください。",
+    "part": "remedy.remedy",
+    "status": "ran",
+    "verdict": "UNKNOWN_UNREAD"
+   },
+   {
+    "asks": "",
+    "part": "ask_back.question",
+    "reason": "verdict has no human-answerable candidate",
+    "status": "abstained"
+   },
+   {
+    "part": "coverage.document_needed",
+    "reason": "no domain witnesses",
+    "status": "abstained"
+   },
+   {
+    "part": "gap_graph.refusal_to_gap",
+    "reason": "no opt-in gap_path",
+    "status": "abstained"
+   },
+   {
+    "part": "grow.log_refusal",
+    "reason": "no queue opt-in or different verdict",
+    "status": "abstained"
+   }
+  ],
+  "values": [],
+  "verdict": "UNKNOWN_UNREAD"
+ },
+ "stdout_text": null
+}

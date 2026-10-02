@@ -1,0 +1,128 @@
+[
+ {
+  "name": "oos1_inflection",
+  "state": "with_index",
+  "command": "VERA_P4_INDEX=/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c PYTHONPATH=<ツリー> PYTHONDONTWRITEBYTECODE=1 python -m verantyx.cli ask \"窓を開けると、どうなりますか？\"",
+  "kind": "answer",
+  "verdict": "ANSWER",
+  "ability": "commonsense",
+  "text": "窓を開けると、入ってくった例が複数あります。",
+  "basis_origin": "generated",
+  "corpus_trace": [
+   {
+    "part": "ability_corpus.status",
+    "family": "local",
+    "index": "UNKNOWN_FAMILY_DB_MISSING",
+    "frames": null
+   },
+   {
+    "part": "ability_corpus.status",
+    "family": "pro",
+    "index": "INDEX_AVAILABLE",
+    "frames": null
+   }
+  ],
+  "first_sources": [
+   {
+    "family": "user",
+    "origin": null,
+    "source_file": null,
+    "line": null,
+    "text": "窓を開けると、どうなりますか？"
+   },
+   {
+    "family": "pro",
+    "origin": "generated",
+    "source_file": "out/sentences.jsonl",
+    "line": 881,
+    "text": "お母さんが窓を開けると、朝の冷たい風がほこりっぽい部屋に入ってきた。"
+   }
+  ]
+ },
+ {
+  "name": "oos2_scene_family_tie",
+  "state": "default",
+  "command": "env -u VERA_P4_INDEX PYTHONPATH=<ツリー> PYTHONDONTWRITEBYTECODE=1 python -m verantyx.cli ask \"湯気の中の朝の台所の様子を一文で描写してください。\"",
+  "kind": "unknown",
+  "verdict": "UNKNOWN_GENERATION_NO_STRUCTURE",
+  "ability": "generation",
+  "text": "分かりません。必要な根拠が足りません。",
+  "basis_origin": null,
+  "corpus_trace": [
+   {
+    "part": "ability_corpus.search",
+    "family": "local",
+    "index": "UNKNOWN_NO_INDEX",
+    "frames": 0
+   }
+  ],
+  "first_sources": []
+ },
+ {
+  "name": "oos2b_scene_family_tie_with_index",
+  "state": "with_index",
+  "command": "VERA_P4_INDEX=/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c PYTHONPATH=<ツリー> PYTHONDONTWRITEBYTECODE=1 python -m verantyx.cli ask \"湯気の中の朝の台所の様子を一文で描写してください。\"",
+  "kind": "compose",
+  "verdict": "CREATED",
+  "ability": "generation",
+  "text": "創作（出典の断片を再構成）: 炊きたてのご飯の湯気が朝の台所に立った。",
+  "basis_origin": "generated",
+  "corpus_trace": [
+   {
+    "part": "ability_corpus.search",
+    "family": "pro",
+    "index": "INDEX_AVAILABLE",
+    "frames": 3
+   }
+  ],
+  "first_sources": [
+   {
+    "family": "pro",
+    "origin": "generated",
+    "source_file": "out/sentences.jsonl",
+    "line": 2080,
+    "text": "朝の台所に炊きたてのご飯の湯気が立ち、茶碗を持つ手まで温まった。"
+   }
+  ]
+ },
+ {
+  "name": "oos3_fact_question_answered_from_generated",
+  "state": "with_index",
+  "command": "VERA_P4_INDEX=/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c PYTHONPATH=<ツリー> PYTHONDONTWRITEBYTECODE=1 python -m verantyx.cli ask \"富士山の高さは？\"",
+  "kind": "answer",
+  "verdict": "ANSWER",
+  "ability": "commonsense",
+  "text": "その条件に続く場面では、冷たい水が出た。",
+  "basis_origin": "generated",
+  "corpus_trace": [
+   {
+    "part": "ability_corpus.status",
+    "family": "local",
+    "index": "UNKNOWN_FAMILY_DB_MISSING",
+    "frames": null
+   },
+   {
+    "part": "ability_corpus.status",
+    "family": "pro",
+    "index": "INDEX_AVAILABLE",
+    "frames": null
+   }
+  ],
+  "first_sources": [
+   {
+    "family": "pro",
+    "origin": "generated",
+    "source_file": "out/sentences.jsonl",
+    "line": 177055,
+    "text": "壁の富士山は青と朱色が朝の灯りに映えていた。"
+   },
+   {
+    "family": "pro",
+    "origin": "generated",
+    "source_file": "out/sentences.jsonl",
+    "line": 177056,
+    "text": "蛇口をひねると、最初に冷たい水が勢いよく出た。"
+   }
+  ]
+ }
+]

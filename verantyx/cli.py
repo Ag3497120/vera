@@ -20,6 +20,11 @@ Lab:
   vera lab                     run the fork self-test suites
   vera mcp                     start the MCP server (see docs/MCP.md)
 
+Conductor:
+  vera conduct --frame F --repo R --adapter codex|claude|fake [--dry-run]
+                               read a project frame and start (or plan) an agent
+                               (see docs/CONDUCT_ENTRY.md)
+
 Default store: ./vera_store.json (override with --store).
 """
 from __future__ import annotations
@@ -1268,6 +1273,28 @@ def cmd_push_store(args) -> int:
     return 0
 
 
+def cmd_conduct(args) -> int:
+    """枠(Markdown / JSONL)を読み、型付き記録にして、実装エージェントの起動へ進む。
+
+    標準出力には JSON を1つだけ出す。終了コード: 0 = dry-run の起動予定を記録した／
+    実行が完了した、1 = 実行したが未完了、2 = 型付きの拒否、3 = 想定外の内部エラー。
+    codex / claude を dry-run なしで走らせたときは、エージェントの終了まで待ち、枠の
+    command_exit 型の受入条件を指揮者が自分で実行し、結果の型を JSON の "outcome" に
+    入れる(COMPLETE / ACCEPTANCE_FAILED / TIMED_OUT など。docs/CONDUCT_RUN.md)。
+    """
+    from .conductor_run import conduct_entry
+
+    outcome = conduct_entry(
+        args.frame, args.repo, args.adapter, dry_run=args.dry_run, state_dir=args.state_dir,
+        model=args.model, effort=args.effort, max_concurrency=args.max_concurrency,
+        codex_bin=args.codex_bin, claude_bin=args.claude_bin,
+        agent_timeout_seconds=args.agent_timeout_seconds,
+        acceptance_timeout_seconds=args.acceptance_timeout_seconds,
+        permission_mode=args.permission_mode, allowed_tools=args.allowed_tools)
+    print(json.dumps(outcome.as_dict(), ensure_ascii=False, sort_keys=True))
+    return outcome.exit_code
+
+
 def cmd_guard(args) -> int:
     """番人の高速経路 — 連邦を読まず covenants.json だけを読む。
 
@@ -1554,6 +1581,35 @@ def main(argv: Optional[list] = None) -> int:
 
     p = sub.add_parser("stats", help="store statistics")
     p.set_defaults(fn=cmd_stats)
+
+    p = sub.add_parser(
+        "conduct",
+        help="read a project frame (.md or .jsonl) and start an implementation agent; "
+             "exit 0 ok/planned, 1 incomplete, 2 typed refusal, 3 internal error")
+    p.add_argument("--frame", required=True, help="project frame: Markdown DSL or JSONL memory log")
+    p.add_argument("--repo", required=True, help="git repository the agent works in (a worktree is made from HEAD)")
+    p.add_argument("--adapter", required=True, choices=["codex", "claude", "fake"])
+    p.add_argument("--dry-run", action="store_true",
+                   help="codex/claude: write the command that would start to the ledger and start nothing")
+    p.add_argument("--state-dir", default=None, help="ledger and run files (default: <repo>/.verantyx-conduct)")
+    p.add_argument("--model", default=None, help="model name (overrides the frame's agent_settings)")
+    p.add_argument("--effort", default=None, help="reasoning effort level (overrides the frame)")
+    p.add_argument("--max-concurrency", type=int, default=None,
+                   help="upper bound on simultaneous agents (overrides the frame; the conductor runs one at a time)")
+    p.add_argument("--codex-bin", default="codex", help="codex executable (default: codex from PATH)")
+    p.add_argument("--claude-bin", default="claude", help="claude executable (default: claude from PATH)")
+    p.add_argument("--agent-timeout-seconds", type=int, default=None,
+                   help="upper bound on the agent's run time in seconds (overrides the frame's "
+                        "agent_timeout_seconds; default 1800 when neither is given)")
+    p.add_argument("--acceptance-timeout-seconds", type=int, default=None,
+                   help="upper bound on each acceptance command in seconds (overrides the frame; default 600)")
+    p.add_argument("--permission-mode", default=None,
+                   help="claude only: --permission-mode passed to claude -p, e.g. acceptEdits "
+                        "(overrides the frame's claude_permission_mode; bypassPermissions and auto are refused)")
+    p.add_argument("--allowed-tools", default=None,
+                   help="claude only: comma-separated tool names for --allowedTools, e.g. Edit,Write "
+                        "(overrides the frame's claude_allowed_tools)")
+    p.set_defaults(fn=cmd_conduct)
 
     p = sub.add_parser(
         "guard",

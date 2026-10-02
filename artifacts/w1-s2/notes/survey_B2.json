@@ -1,0 +1,237 @@
+{
+ "bad_json_lines": 0,
+ "closed_values": {
+  "difficulty": {
+   "1": 88,
+   "2": 121,
+   "3": 91
+  },
+  "expect.behavior": {
+   "\"abstain\"": 75,
+   "\"answer\"": 170,
+   "\"social\"": 18,
+   "\"transform\"": 37
+  },
+  "expect.evidence_required": {
+   "false": 140,
+   "true": 160
+  },
+  "expect.format.bullets": {
+   "true": 10
+  },
+  "expect.format.plain": {
+   "true": 2
+  },
+  "expect.format.polite": {
+   "true": 3
+  },
+  "expect.format.target_lang": {
+   "\"en\"": 5,
+   "\"ja\"": 3
+  },
+  "expect.label": {
+   "\"NOT_IN_DOCS\"": 11,
+   "\"REFUTED\"": 11,
+   "\"SUPPORTED\"": 11
+  },
+  "expect.reply_lang": {
+   "\"en\"": 121,
+   "\"ja\"": 179
+  },
+  "lang": {
+   "\"en\"": 120,
+   "\"ja\"": 180
+  }
+ },
+ "must_not_shapes": {},
+ "n_items": 300,
+ "paths": {
+  "alt_answers": {
+   "list": 300
+  },
+  "alt_answers[]": {
+   "str": 534
+  },
+  "anti_surface": {
+   "str": 300
+  },
+  "category": {
+   "str": 300
+  },
+  "check_claim": {
+   "str": 33
+  },
+  "difficulty": {
+   "int": 300
+  },
+  "documents": {
+   "list": 300
+  },
+  "documents[]": {
+   "dict": 351
+  },
+  "documents[].name": {
+   "str": 351
+  },
+  "documents[].text": {
+   "str": 351
+  },
+  "domain": {
+   "str": 300
+  },
+  "expect": {
+   "dict": 300
+  },
+  "expect.behavior": {
+   "str": 300
+  },
+  "expect.choice": {
+   "dict": 10
+  },
+  "expect.choice.answer": {
+   "int": 10
+  },
+  "expect.choice.options": {
+   "list": 10
+  },
+  "expect.choice.options[]": {
+   "list": 25
+  },
+  "expect.choice.options[][]": {
+   "str": 39
+  },
+  "expect.evidence": {
+   "list": 300
+  },
+  "expect.evidence[]": {
+   "str": 283
+  },
+  "expect.evidence_required": {
+   "bool": 300
+  },
+  "expect.format": {
+   "dict": 37
+  },
+  "expect.format.bullets": {
+   "bool": 10
+  },
+  "expect.format.lines": {
+   "list": 10
+  },
+  "expect.format.lines[]": {
+   "int": 20
+  },
+  "expect.format.max_chars": {
+   "int": 22
+  },
+  "expect.format.plain": {
+   "bool": 2
+  },
+  "expect.format.polite": {
+   "bool": 3
+  },
+  "expect.format.sentences": {
+   "list": 3
+  },
+  "expect.format.sentences[]": {
+   "int": 6
+  },
+  "expect.format.target_lang": {
+   "str": 8
+  },
+  "expect.label": {
+   "str": 33
+  },
+  "expect.max_chars": {
+   "int": 300
+  },
+  "expect.must_contain_all": {
+   "list": 300
+  },
+  "expect.must_contain_all[]": {
+   "str": 3
+  },
+  "expect.must_contain_any": {
+   "list": 300
+  },
+  "expect.must_contain_any[]": {
+   "list": 339
+  },
+  "expect.must_contain_any[][]": {
+   "str": 1407
+  },
+  "expect.must_not_contain": {
+   "list": 300
+  },
+  "expect.must_not_contain[]": {
+   "str": 1913
+  },
+  "expect.must_not_equal": {
+   "list": 300
+  },
+  "expect.must_not_equal[]": {
+   "str": 169
+  },
+  "expect.reference": {
+   "str": 300
+  },
+  "expect.reply_lang": {
+   "str": 300
+  },
+  "id": {
+   "str": 300
+  },
+  "lang": {
+   "str": 300
+  },
+  "phenomenon": {
+   "str": 300
+  },
+  "rationale": {
+   "str": 300
+  },
+  "skeleton": {
+   "str": 300
+  },
+  "turns": {
+   "list": 300
+  },
+  "turns[]": {
+   "dict": 521
+  },
+  "turns[].content": {
+   "str": 521
+  },
+  "turns[].role": {
+   "str": 521
+  },
+  "wrong_answers": {
+   "list": 300
+  },
+  "wrong_answers[]": {
+   "dict": 1004
+  },
+  "wrong_answers[].state": {
+   "str": 1004
+  },
+  "wrong_answers[].text": {
+   "str": 1004
+  },
+  "wrong_answers[].why": {
+   "str": 1004
+  }
+ },
+ "quarantine": {
+  "keys": {
+   "bank": "str",
+   "quarantined": "list",
+   "reviewed": "str",
+   "rule": "str"
+  },
+  "quarantined_entry_types": {
+   "dict": 14
+  },
+  "quarantined_n": 14,
+  "shape": "dict"
+ }
+}

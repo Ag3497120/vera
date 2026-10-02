@@ -1,0 +1,10 @@
+$ git diff verantyx/conductor_vocab.py | grep -c "^-[^-]"
+7
+$ git diff verantyx/conductor_vocab.py | grep "^-[^-]"
+-from dataclasses import dataclass
+-    def resolve(self, surface: str, context: str = "") -> VocabularyResolution:
+-                                         asset_status=statuses)
+-    def resolve_options(self, options: list[str], context: str = "") -> tuple[VocabularyResolution, ...]:
+-        return tuple(self.resolve(option, context) for option in options)
+-        self.memory._append({
+-        })

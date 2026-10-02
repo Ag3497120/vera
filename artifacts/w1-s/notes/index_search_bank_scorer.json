@@ -1,0 +1,14 @@
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "bank scorer",
+  "searched": 643,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 39,
+    "module": 277,
+    "prereg": 63,
+    "results": 43
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

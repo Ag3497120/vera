@@ -1,0 +1,10 @@
+recount artifacts/w1-s2/B1: summary.json 一致 / summary.md 一致
+recount artifacts/w1-s2/B2: summary.json 一致 / summary.md 一致
+recount artifacts/w1-s2/B3: summary.json 一致 / summary.md 一致
+recount artifacts/w1-s2/B5: summary.json 一致 / summary.md 一致
+recount artifacts/w1-s2/judge/judge_B1_reference: summary.json 一致 / summary.md 一致
+recount artifacts/w1-s2/judge/judge_B2_alt_answers: summary.json 一致 / summary.md 一致
+recount artifacts/w1-s2/judge/judge_B2_reference: summary.json 一致 / summary.md 一致
+recount artifacts/w1-s2/judge/judge_B2_wrong_answers: summary.json 一致 / summary.md 一致
+recount artifacts/w1-s2/judge/judge_B3_reference: summary.json 一致 / summary.md 一致
+recount artifacts/w1-s2/judge/judge_B5_reference: summary.json 一致 / summary.md 一致

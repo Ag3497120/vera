@@ -1,0 +1,509 @@
+{
+ "seed": 20261002,
+ "preregistered_before_search": true,
+ "rule": "C2 pre-registration: fix the phrases BEFORE searching (writes c2_phrases.json).\n\nRule (fixed in advance, plan section D11):\n  * seed 20261002, one random.Random for the whole run, families in the order of FAMS;\n  * per family 5 train rows drawn uniformly by id from its database; from the stored body a\n    substring of random length 6..12 at a random position; a piece containing a newline or only\n    whitespace is redrawn (the redraws are counted); a repeated phrase is redrawn too;\n  * negative control per family: a 6..12 character piece of a random *heldout* record body\n    (extracted by the builder's own extract_body), accepted only if it occurs in NO train row of\n    that family (checked by FTS LIKE + exact verification); candidates found in train are redrawn\n    and counted. `pro` has no heldout file, so it has no negative control (stated in the output).",
+ "ticket": [
+  {
+   "phrase": "冷えた頬をマフラー",
+   "expected_families": [
+    "pro"
+   ],
+   "ticket_requires": "at least one hit with provenance",
+   "prior_observation": "none; the implementer ran no search before registration"
+  },
+  {
+   "phrase": "湯気の中に青菜",
+   "expected_families": [
+    "pro"
+   ],
+   "ticket_requires": "at least one hit with provenance",
+   "prior_observation": "none; the implementer ran no search before registration"
+  },
+  {
+   "phrase": "葉柄と葉身",
+   "expected_families": [
+    "general_qa"
+   ],
+   "ticket_requires": "at least one hit with provenance",
+   "prior_observation": "none; the implementer ran no search before registration"
+  },
+  {
+   "phrase": "Wi-Fiなし 携帯データ",
+   "expected_families": [
+    "general_qa"
+   ],
+   "ticket_requires": "at least one hit with provenance",
+   "prior_observation": "the plan (middle role) states its own grep found this phrase absent from every corpus file; the implementer ran no search before registration"
+  },
+  {
+   "phrase": "strings.HasSuffix",
+   "expected_families": [
+    "code_qa",
+    "code"
+   ],
+   "ticket_requires": "at least one hit with provenance",
+   "prior_observation": "none; the implementer ran no search before registration"
+  },
+  {
+   "phrase": "重複部分文字列",
+   "expected_families": [
+    "code_qa",
+    "code"
+   ],
+   "ticket_requires": "at least one hit with provenance",
+   "prior_observation": "none; the implementer ran no search before registration"
+  },
+  {
+   "phrase": "脱水機の異音",
+   "expected_families": [
+    "conversation"
+   ],
+   "ticket_requires": "at least one hit with provenance",
+   "prior_observation": "the plan (middle role) states its own grep found this phrase absent from every corpus file; the implementer ran no search before registration"
+  },
+  {
+   "phrase": "改札を出て左",
+   "expected_families": [
+    "conversation"
+   ],
+   "ticket_requires": "at least one hit with provenance",
+   "prior_observation": "none; the implementer ran no search before registration"
+  }
+ ],
+ "self_chosen": [
+  {
+   "family": "pro",
+   "phrase": "が肌を滑ると、泡の白さ",
+   "row_id": 337608,
+   "source_file": "out/sentences.jsonl",
+   "line": 337608,
+   "kind": "pro"
+  },
+  {
+   "family": "pro",
+   "phrase": "私は背もたれに体",
+   "row_id": 1135252,
+   "source_file": "out/sentences.jsonl",
+   "line": 1135252,
+   "kind": "pro"
+  },
+  {
+   "family": "pro",
+   "phrase": "る気がした。",
+   "row_id": 740875,
+   "source_file": "out/sentences.jsonl",
+   "line": 740875,
+   "kind": "pro"
+  },
+  {
+   "family": "pro",
+   "phrase": "と、濡れた毛先か",
+   "row_id": 1045375,
+   "source_file": "out/sentences.jsonl",
+   "line": 1045375,
+   "kind": "pro"
+  },
+  {
+   "family": "pro",
+   "phrase": "教えてほしいとせがん",
+   "row_id": 1000358,
+   "source_file": "out/sentences.jsonl",
+   "line": 1000358,
+   "kind": "pro"
+  },
+  {
+   "family": "code",
+   "phrase": "ます。`float` は",
+   "row_id": 1282253,
+   "source_file": "even/code/items.jsonl",
+   "line": 261323,
+   "kind": "code"
+  },
+  {
+   "family": "code",
+   "phrase": "`git merge",
+   "row_id": 28448,
+   "source_file": "code/items.jsonl",
+   "line": 28448,
+   "kind": "code"
+  },
+  {
+   "family": "code",
+   "phrase": "onal_fil",
+   "row_id": 436401,
+   "source_file": "code/items.jsonl",
+   "line": 436401,
+   "kind": "code"
+  },
+  {
+   "family": "code",
+   "phrase": "きに報告され",
+   "row_id": 1083685,
+   "source_file": "even/code/items.jsonl",
+   "line": 62755,
+   "kind": "code"
+  },
+  {
+   "family": "code",
+   "phrase": "Motor",
+   "row_id": 1330091,
+   "source_file": "even/code/items.jsonl",
+   "line": 309161,
+   "kind": "code"
+  },
+  {
+   "family": "conversation",
+   "phrase": "た。直して入",
+   "row_id": 1414595,
+   "source_file": "conversation/utterances.jsonl",
+   "line": 1414595,
+   "kind": "conversation"
+  },
+  {
+   "family": "conversation",
+   "phrase": "。では一件目から参りまし",
+   "row_id": 215430,
+   "source_file": "conversation/utterances.jsonl",
+   "line": 215430,
+   "kind": "conversation"
+  },
+  {
+   "family": "conversation",
+   "phrase": "すし、急ブレーキも",
+   "row_id": 1904612,
+   "source_file": "even/conversation/utterances.jsonl",
+   "line": 153239,
+   "kind": "conversation"
+  },
+  {
+   "family": "conversation",
+   "phrase": "領収書も一緒にお渡",
+   "row_id": 1367552,
+   "source_file": "conversation/utterances.jsonl",
+   "line": 1367552,
+   "kind": "conversation"
+  },
+  {
+   "family": "conversation",
+   "phrase": "べながら、もう一度連絡し",
+   "row_id": 2059763,
+   "source_file": "even/conversation/utterances.jsonl",
+   "line": 308390,
+   "kind": "conversation"
+  },
+  {
+   "family": "general_qa",
+   "phrase": "倍率を標準に",
+   "row_id": 102310,
+   "source_file": "general_qa/train/records.jsonl",
+   "line": 102310,
+   "kind": "howto"
+  },
+  {
+   "family": "general_qa",
+   "phrase": "）は清とイギリスの",
+   "row_id": 119029,
+   "source_file": "general_qa/train/records.jsonl",
+   "line": 119029,
+   "kind": "comparison"
+  },
+  {
+   "family": "general_qa",
+   "phrase": "ものへの支出の違いを教",
+   "row_id": 4417,
+   "source_file": "general_qa/train/records.jsonl",
+   "line": 4417,
+   "kind": "comparison"
+  },
+  {
+   "family": "general_qa",
+   "phrase": "食べる種類もいるため、",
+   "row_id": 76854,
+   "source_file": "general_qa/train/records.jsonl",
+   "line": 76854,
+   "kind": "fact"
+  },
+  {
+   "family": "general_qa",
+   "phrase": "ーンは、住宅や自",
+   "row_id": 123948,
+   "source_file": "general_qa/train/records.jsonl",
+   "line": 123948,
+   "kind": "comparison"
+  },
+  {
+   "family": "code_qa",
+   "phrase": "E で辺をたどり、到",
+   "row_id": 30520,
+   "source_file": "code_qa/train/records.jsonl",
+   "line": 30520,
+   "kind": "code_qa"
+  },
+  {
+   "family": "code_qa",
+   "phrase": "UNIX時刻を",
+   "row_id": 260995,
+   "source_file": "code_qa/train/records.jsonl",
+   "line": 260995,
+   "kind": "code_qa"
+  },
+  {
+   "family": "code_qa",
+   "phrase": "WithPath",
+   "row_id": 54217,
+   "source_file": "code_qa/train/records.jsonl",
+   "line": 54217,
+   "kind": "code_qa"
+  },
+  {
+   "family": "code_qa",
+   "phrase": "に並べてから、上",
+   "row_id": 245055,
+   "source_file": "code_qa/train/records.jsonl",
+   "line": 245055,
+   "kind": "code_qa"
+  },
+  {
+   "family": "code_qa",
+   "phrase": "定だと分かる形に整",
+   "row_id": 204224,
+   "source_file": "code_qa/train/records.jsonl",
+   "line": 204224,
+   "kind": "code_qa"
+  },
+  {
+   "family": "figurative_commonsense",
+   "phrase": "ライアングルは曲のきらめ",
+   "row_id": 173510,
+   "source_file": "figurative_commonsense/train/records.jsonl",
+   "line": 173510,
+   "kind": "simile_metaphor"
+  },
+  {
+   "family": "figurative_commonsense",
+   "phrase": "れたことに、空模様を",
+   "row_id": 232043,
+   "source_file": "figurative_commonsense/train/records.jsonl",
+   "line": 232043,
+   "kind": "pun"
+  },
+  {
+   "family": "figurative_commonsense",
+   "phrase": "どう」と「自",
+   "row_id": 120674,
+   "source_file": "figurative_commonsense/train/records.jsonl",
+   "line": 120674,
+   "kind": "pun"
+  },
+  {
+   "family": "figurative_commonsense",
+   "phrase": "イヤの空気がへると",
+   "row_id": 58637,
+   "source_file": "figurative_commonsense/train/records.jsonl",
+   "line": 58637,
+   "kind": "cause_effect"
+  },
+  {
+   "family": "figurative_commonsense",
+   "phrase": "／ゆびわをみがく／布の上",
+   "row_id": 171624,
+   "source_file": "figurative_commonsense/train/records.jsonl",
+   "line": 171624,
+   "kind": "haiku"
+  },
+  {
+   "family": "narrative",
+   "phrase": "くして風が吹いたが、信は",
+   "row_id": 30285,
+   "source_file": "narrative/train/records.jsonl",
+   "line": 30285,
+   "kind": "story"
+  },
+  {
+   "family": "narrative",
+   "phrase": "は、隣人のおばあさん",
+   "row_id": 356,
+   "source_file": "narrative/train/records.jsonl",
+   "line": 356,
+   "kind": "story"
+  },
+  {
+   "family": "narrative",
+   "phrase": "撮り、母へ「咲いたよ」と",
+   "row_id": 2966,
+   "source_file": "narrative/train/records.jsonl",
+   "line": 2966,
+   "kind": "story"
+  },
+  {
+   "family": "narrative",
+   "phrase": "和樹はリードにつな",
+   "row_id": 119253,
+   "source_file": "narrative/train/records.jsonl",
+   "line": 119253,
+   "kind": "story"
+  },
+  {
+   "family": "narrative",
+   "phrase": "その小さな月を持",
+   "row_id": 102880,
+   "source_file": "narrative/train/records.jsonl",
+   "line": 102880,
+   "kind": "poem"
+  },
+  {
+   "family": "paraphrase_entail",
+   "phrase": "の案内を読んでから、美",
+   "row_id": 227321,
+   "source_file": "paraphrase_entail/train/records.jsonl",
+   "line": 227321,
+   "kind": "pair"
+  },
+  {
+   "family": "paraphrase_entail",
+   "phrase": "どり着くことができ",
+   "row_id": 158486,
+   "source_file": "paraphrase_entail/train/records.jsonl",
+   "line": 158486,
+   "kind": "pair"
+  },
+  {
+   "family": "paraphrase_entail",
+   "phrase": "たと明記され",
+   "row_id": 312786,
+   "source_file": "paraphrase_entail/train/records.jsonl",
+   "line": 312786,
+   "kind": "pair"
+  },
+  {
+   "family": "paraphrase_entail",
+   "phrase": "は患者に病室",
+   "row_id": 156383,
+   "source_file": "paraphrase_entail/train/records.jsonl",
+   "line": 156383,
+   "kind": "pair"
+  },
+  {
+   "family": "paraphrase_entail",
+   "phrase": "ろってから、目的地",
+   "row_id": 49845,
+   "source_file": "paraphrase_entail/train/records.jsonl",
+   "line": 49845,
+   "kind": "who_did_what"
+  }
+ ],
+ "negative_controls": [
+  {
+   "family": "pro",
+   "phrase": null,
+   "state": "UNKNOWN_NO_HELDOUT_FOR_FAMILY",
+   "note": "out/ has no heldout file; no negative control can be drawn"
+  },
+  {
+   "family": "code",
+   "phrase": "は強制モードを指定する",
+   "heldout_file": "even/code/heldout/items.jsonl",
+   "heldout_line": 38871,
+   "heldout_pool": 116316,
+   "checked_absent_in": "train rows of the same family (FTS LIKE + exact)"
+  },
+  {
+   "family": "conversation",
+   "phrase": "前回と変更はあ",
+   "heldout_file": "conversation/heldout/utterances.jsonl",
+   "heldout_line": 104039,
+   "heldout_pool": 219285,
+   "checked_absent_in": "train rows of the same family (FTS LIKE + exact)"
+  },
+  {
+   "family": "general_qa",
+   "phrase": "として織り込む布づくり",
+   "heldout_file": "general_qa/heldout/records.jsonl",
+   "heldout_line": 2472,
+   "heldout_pool": 34171,
+   "checked_absent_in": "train rows of the same family (FTS LIKE + exact)"
+  },
+  {
+   "family": "code_qa",
+   "phrase": "xByte` を使い",
+   "heldout_file": "code_qa/heldout/records.jsonl",
+   "heldout_line": 26730,
+   "heldout_pool": 34523,
+   "checked_absent_in": "train rows of the same family (FTS LIKE + exact)"
+  },
+  {
+   "family": "figurative_commonsense",
+   "phrase": "峰は焼きたてのパンのよう",
+   "heldout_file": "figurative_commonsense/heldout/records.jsonl",
+   "heldout_line": 18679,
+   "heldout_pool": 25074,
+   "checked_absent_in": "train rows of the same family (FTS LIKE + exact)"
+  },
+  {
+   "family": "narrative",
+   "phrase": "戻す係になった。",
+   "heldout_file": "narrative/heldout/records.jsonl",
+   "heldout_line": 5969,
+   "heldout_pool": 18193,
+   "checked_absent_in": "train rows of the same family (FTS LIKE + exact)"
+  },
+  {
+   "family": "paraphrase_entail",
+   "phrase": "トル以上切り取っ",
+   "heldout_file": "paraphrase_entail/heldout/records.jsonl",
+   "heldout_line": 16146,
+   "heldout_pool": 43544,
+   "checked_absent_in": "train rows of the same family (FTS LIKE + exact)"
+  }
+ ],
+ "redraws": {
+  "pro": {
+   "too_short_body": 0,
+   "newline_or_blank_piece": 0,
+   "duplicate": 0,
+   "neg_found_in_train": 0
+  },
+  "code": {
+   "too_short_body": 0,
+   "newline_or_blank_piece": 0,
+   "duplicate": 0,
+   "neg_found_in_train": 1
+  },
+  "conversation": {
+   "too_short_body": 0,
+   "newline_or_blank_piece": 0,
+   "duplicate": 0,
+   "neg_found_in_train": 0
+  },
+  "general_qa": {
+   "too_short_body": 0,
+   "newline_or_blank_piece": 4,
+   "duplicate": 0,
+   "neg_found_in_train": 3
+  },
+  "code_qa": {
+   "too_short_body": 0,
+   "newline_or_blank_piece": 2,
+   "duplicate": 0,
+   "neg_found_in_train": 2
+  },
+  "figurative_commonsense": {
+   "too_short_body": 0,
+   "newline_or_blank_piece": 2,
+   "duplicate": 0,
+   "neg_found_in_train": 1
+  },
+  "narrative": {
+   "too_short_body": 0,
+   "newline_or_blank_piece": 10,
+   "duplicate": 0,
+   "neg_found_in_train": 1
+  },
+  "paraphrase_entail": {
+   "too_short_body": 0,
+   "newline_or_blank_piece": 2,
+   "duplicate": 0,
+   "neg_found_in_train": 0
+  }
+ }
+}

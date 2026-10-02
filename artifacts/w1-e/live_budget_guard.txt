@@ -1,0 +1,23 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________________________ test_live_codex_closed_choice _________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-625/test_live_codex_closed_choice0')
+
+    def test_live_codex_closed_choice(tmp_path):
+        if os.environ.get("VERA_LLM_LIVE") != "1":
+            pytest.skip("ENVIRONMENT_MISSING: VERA_LLM_LIVE!=1 (live provider not requested)")
+    
+        budget = min(int(os.environ.get("VERA_LLM_LIVE_MAX_ASKS", HARD_CAP)), HARD_CAP)
+        ledger_path = Path(os.environ.get("VERA_LLM_LIVE_LEDGER", ROOT / "artifacts" / "w1-e" / "live_ledger.jsonl"))
+        ledger = ChoiceLedger(ledger_path)
+        existing = sum(1 for e in ledger.entries() if e.get("type") == "ask")
+        planned = 2 * len(WORDS)
+        if existing + planned > budget:
+>           pytest.fail(f"LIVE_BUDGET: {existing} ask rows already in {ledger_path} + {planned} planned > {budget}")
+E           Failed: LIVE_BUDGET: 6 ask rows already in /Users/motonisihikoudai/Projects/vera-impl/wt/W1-e-S/artifacts/w1-e/live_ledger.jsonl + 6 planned > 6
+
+tests/test_llm_choice_live.py:40: Failed
+=========================== short test summary info ============================
+FAILED tests/test_llm_choice_live.py::test_live_codex_closed_choice - Failed:...
+1 failed in 0.17s

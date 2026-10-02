@@ -1,0 +1,193 @@
+{
+ "bad_json_lines": 0,
+ "closed_values": {
+  "difficulty": {
+   "1": 42,
+   "2": 60,
+   "3": 42
+  },
+  "expect.decision": {
+   "\"answer\"": 96,
+   "\"escalate\"": 48
+  },
+  "expect.escalate_type": {
+   "\"approval\"": 9,
+   "\"contradiction\"": 9,
+   "\"oov_none\"": 12,
+   "\"out_of_scope\"": 9,
+   "\"silence\"": 9
+  },
+  "expect.kind": {
+   "\"CHOICE\"": 27,
+   "\"CONFIRM\"": 8,
+   "\"DESIGN_PREFERENCE\"": 17,
+   "\"ORDER\"": 25,
+   "\"PERMISSION\"": 29,
+   "\"PRIORITY_CHOICE\"": 4,
+   "\"REQUIREMENT_CLARIFICATION\"": 6,
+   "\"RESOURCE_CHOICE\"": 6,
+   "\"SCOPE\"": 21,
+   "\"STATUS\"": 1
+  },
+  "expect.polarity": {
+   "\"no\"": 28,
+   "\"yes\"": 26,
+   "null": 75
+  },
+  "expect.surface.escalate_cue_answerable": {
+   "false": 117,
+   "true": 27
+  },
+  "expect.surface.protected_keyword_permitted": {
+   "false": 138,
+   "true": 6
+  },
+  "expect.surface.recommended_marker": {
+   "\"correct\"": 12,
+   "\"escalate\"": 12,
+   "\"none\"": 108,
+   "\"wrong\"": 12
+  },
+  "expect.trap": {
+   "false": 132,
+   "true": 12
+  },
+  "expect.vocab.out_of_vocabulary": {
+   "true": 36
+  },
+  "lang": {
+   "\"en\"": 64,
+   "\"ja\"": 80
+  }
+ },
+ "must_not_shapes": {},
+ "n_items": 144,
+ "paths": {
+  "category": {
+   "str": 144
+  },
+  "difficulty": {
+   "int": 144
+  },
+  "expect": {
+   "dict": 144
+  },
+  "expect.answer": {
+   "str": 96
+  },
+  "expect.answer_option_index": {
+   "int": 84,
+   "null": 5
+  },
+  "expect.decision": {
+   "str": 144
+  },
+  "expect.escalate_type": {
+   "str": 48
+  },
+  "expect.evidence": {
+   "str": 144
+  },
+  "expect.frame_id": {
+   "str": 144
+  },
+  "expect.kind": {
+   "str": 144
+  },
+  "expect.must_contain_any": {
+   "list": 12
+  },
+  "expect.must_contain_any[]": {
+   "list": 14
+  },
+  "expect.must_contain_any[][]": {
+   "str": 36
+  },
+  "expect.must_not_contain": {
+   "list": 12
+  },
+  "expect.must_not_contain[]": {
+   "str": 49
+  },
+  "expect.options": {
+   "list": 144
+  },
+  "expect.options[]": {
+   "str": 297
+  },
+  "expect.polarity": {
+   "null": 75,
+   "str": 54
+  },
+  "expect.question": {
+   "str": 144
+  },
+  "expect.surface": {
+   "dict": 144
+  },
+  "expect.surface.escalate_cue_answerable": {
+   "bool": 144
+  },
+  "expect.surface.protected_keyword_permitted": {
+   "bool": 144
+  },
+  "expect.surface.recommended_marker": {
+   "str": 144
+  },
+  "expect.trap": {
+   "bool": 144
+  },
+  "expect.vocab": {
+   "dict": 36,
+   "null": 108
+  },
+  "expect.vocab.candidates": {
+   "list": 36
+  },
+  "expect.vocab.candidates[]": {
+   "str": 151
+  },
+  "expect.vocab.distractors": {
+   "list": 36
+  },
+  "expect.vocab.distractors[]": {
+   "str": 127
+  },
+  "expect.vocab.nearest_frame_term": {
+   "null": 12,
+   "str": 24
+  },
+  "expect.vocab.out_of_vocabulary": {
+   "bool": 36
+  },
+  "expect.vocab.question_term": {
+   "str": 36
+  },
+  "id": {
+   "str": 144
+  },
+  "lang": {
+   "str": 144
+  },
+  "phenomenon": {
+   "str": 144
+  },
+  "rationale": {
+   "str": 144
+  }
+ },
+ "quarantine": {
+  "keys": {
+   "bank": "str",
+   "n_items": "int",
+   "n_quarantined": "int",
+   "not_quarantined_but_noted": "dict",
+   "quarantined": "list",
+   "released": "dict",
+   "review": "str"
+  },
+  "quarantined_entry_types": {},
+  "quarantined_n": 0,
+  "shape": "dict"
+ }
+}

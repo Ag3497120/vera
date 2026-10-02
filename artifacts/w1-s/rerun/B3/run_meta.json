@@ -1,0 +1,60 @@
+{
+ "args": {
+  "corpus_root": null,
+  "entry_option": null,
+  "frames": null,
+  "items": "tests/bank_score/fixtures/B3/items.jsonl",
+  "quarantine": null,
+  "timeout_s": 60.0
+ },
+ "bank": "B3",
+ "child_argv_template": [
+  "<python>",
+  "-c",
+  "<BOOTSTRAP: runpy.run_module('verantyx.cli', run_name='__main__')>",
+  "run",
+  "ask",
+  "[--mode round5] [--document <file>...] -- <query>"
+ ],
+ "child_env": {
+  "BANK_SCORE_PROVENANCE": "<WORK>/prov/N.json",
+  "HOME": "<WORK>/home",
+  "LANG": "C.UTF-8",
+  "PATH": "/Users/motonisihikoudai/.local/bin:/Users/motonisihikoudai/.antigravity-ide/antigravity-ide/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/Applications/VMware Fusion.app/Contents/Public:/opt/homebrew/bin:/Users/motonisihikoudai/.lmstudio/bin",
+  "PYTHONDONTWRITEBYTECODE": "1",
+  "PYTHONIOENCODING": "utf-8",
+  "PYTHONPATH": "/Users/motonisihikoudai/Projects/vera-impl/wt/W1-s-S",
+  "VERA_CORPUS_ROOT": "<WORK>/empty_corpus"
+ },
+ "entry": "cli-ask-round5",
+ "entry_note": "既定: README が最初に案内する vera CLI のうち、そのバンクの入力を受け取り型つきの結果を返す最初のサブコマンド",
+ "precheck": {
+  "exit_code": 0,
+  "import_error": null,
+  "modules": 22,
+  "outside": [],
+  "status": "ok",
+  "stderr_tail": ""
+ },
+ "provenance_total": {
+  "outside_count": 0,
+  "processes_checked": 25,
+  "processes_unverified": 0
+ },
+ "python": "/Users/motonisihikoudai/vera-wiring/env/bin/python",
+ "quarantine": {
+  "count": 0,
+  "ids": [],
+  "not_in_items": []
+ },
+ "raw_path_redactions": 0,
+ "timing": {
+  "precheck_ms": 99.8,
+  "vera_calls_ms_total": 9321.3
+ },
+ "tree_head": "65f43dac02c8ca7dec4abe936cba7dd53123c19b",
+ "tree_realpath": "/Users/motonisihikoudai/Projects/vera-impl/wt/W1-s-S",
+ "unreachable_not_called": 0,
+ "vera_calls": 24,
+ "verantyx_untouched": true
+}

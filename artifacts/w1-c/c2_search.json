@@ -1,0 +1,2099 @@
+{
+ "index": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c",
+ "registered": "artifacts/w1-c/c2_phrases.json",
+ "ticket": [
+  {
+   "phrase": "冷えた頬をマフラー",
+   "expected_families": [
+    "pro"
+   ],
+   "by_family": [
+    {
+     "family": "pro",
+     "state": "FOUND",
+     "hits": 17,
+     "limit": 1000,
+     "limit_reached": false,
+     "first": {
+      "family": "pro",
+      "source_file": "out/sentences.jsonl",
+      "line": 214792,
+      "sha": "b48f48590ea8",
+      "origin": "generated",
+      "generator": "codex",
+      "kind": "pro"
+     },
+     "round_trip": {
+      "source_line_found": true,
+      "sha_equal": true,
+      "phrase_in_witness_text": true,
+      "phrase_in_source_record_body": true,
+      "origin_is_generated": true,
+      "ok": true
+     }
+    }
+   ],
+   "all_families_diagnostic": [
+    {
+     "family": "pro",
+     "state": "FOUND",
+     "hits": 17
+    },
+    {
+     "family": "code",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "conversation",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "general_qa",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "code_qa",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "figurative_commonsense",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "narrative",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "paraphrase_entail",
+     "state": "NO_MATCH",
+     "hits": 0
+    }
+   ],
+   "satisfied": true
+  },
+  {
+   "phrase": "湯気の中に青菜",
+   "expected_families": [
+    "pro"
+   ],
+   "by_family": [
+    {
+     "family": "pro",
+     "state": "FOUND",
+     "hits": 1,
+     "limit": 1000,
+     "limit_reached": false,
+     "first": {
+      "family": "pro",
+      "source_file": "out/sentences.jsonl",
+      "line": 113617,
+      "sha": "dc4b2a44e3ad",
+      "origin": "generated",
+      "generator": "codex",
+      "kind": "pro"
+     },
+     "round_trip": {
+      "source_line_found": true,
+      "sha_equal": true,
+      "phrase_in_witness_text": true,
+      "phrase_in_source_record_body": true,
+      "origin_is_generated": true,
+      "ok": true
+     }
+    }
+   ],
+   "all_families_diagnostic": [
+    {
+     "family": "pro",
+     "state": "FOUND",
+     "hits": 1
+    },
+    {
+     "family": "code",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "conversation",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "general_qa",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "code_qa",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "figurative_commonsense",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "narrative",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "paraphrase_entail",
+     "state": "NO_MATCH",
+     "hits": 0
+    }
+   ],
+   "satisfied": true
+  },
+  {
+   "phrase": "葉柄と葉身",
+   "expected_families": [
+    "general_qa"
+   ],
+   "by_family": [
+    {
+     "family": "general_qa",
+     "state": "FOUND",
+     "hits": 3,
+     "limit": 1000,
+     "limit_reached": false,
+     "first": {
+      "family": "general_qa",
+      "source_file": "general_qa/train/records.jsonl",
+      "line": 13569,
+      "sha": "8957270a83943488",
+      "origin": "generated",
+      "generator": "codex",
+      "kind": "comparison"
+     },
+     "round_trip": {
+      "source_line_found": true,
+      "sha_equal": true,
+      "phrase_in_witness_text": true,
+      "phrase_in_source_record_body": true,
+      "origin_is_generated": true,
+      "ok": true
+     }
+    }
+   ],
+   "all_families_diagnostic": [
+    {
+     "family": "pro",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "code",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "conversation",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "general_qa",
+     "state": "FOUND",
+     "hits": 3
+    },
+    {
+     "family": "code_qa",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "figurative_commonsense",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "narrative",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "paraphrase_entail",
+     "state": "NO_MATCH",
+     "hits": 0
+    }
+   ],
+   "satisfied": true
+  },
+  {
+   "phrase": "Wi-Fiなし 携帯データ",
+   "expected_families": [
+    "general_qa"
+   ],
+   "by_family": [
+    {
+     "family": "general_qa",
+     "state": "NO_MATCH",
+     "hits": 0,
+     "limit": 1000,
+     "limit_reached": false,
+     "first": null
+    }
+   ],
+   "all_families_diagnostic": [
+    {
+     "family": "pro",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "code",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "conversation",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "general_qa",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "code_qa",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "figurative_commonsense",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "narrative",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "paraphrase_entail",
+     "state": "NO_MATCH",
+     "hits": 0
+    }
+   ],
+   "satisfied": false
+  },
+  {
+   "phrase": "strings.HasSuffix",
+   "expected_families": [
+    "code_qa",
+    "code"
+   ],
+   "by_family": [
+    {
+     "family": "code_qa",
+     "state": "FOUND",
+     "hits": 169,
+     "limit": 1000,
+     "limit_reached": false,
+     "first": {
+      "family": "code_qa",
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 171,
+      "sha": "f77a5452e1b393ff",
+      "origin": "generated",
+      "generator": "codex",
+      "kind": "code_qa"
+     },
+     "round_trip": {
+      "source_line_found": true,
+      "sha_equal": true,
+      "phrase_in_witness_text": true,
+      "phrase_in_source_record_body": true,
+      "origin_is_generated": true,
+      "ok": true
+     }
+    },
+    {
+     "family": "code",
+     "state": "FOUND",
+     "hits": 30,
+     "limit": 1000,
+     "limit_reached": false,
+     "first": {
+      "family": "code",
+      "source_file": "code/items.jsonl",
+      "line": 49896,
+      "sha": "3a464336e44e",
+      "origin": "generated",
+      "generator": "codex",
+      "kind": "code"
+     },
+     "round_trip": {
+      "source_line_found": true,
+      "sha_equal": true,
+      "phrase_in_witness_text": true,
+      "phrase_in_source_record_body": true,
+      "origin_is_generated": true,
+      "ok": true
+     }
+    }
+   ],
+   "all_families_diagnostic": [
+    {
+     "family": "pro",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "code",
+     "state": "FOUND",
+     "hits": 30
+    },
+    {
+     "family": "conversation",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "general_qa",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "code_qa",
+     "state": "FOUND",
+     "hits": 169
+    },
+    {
+     "family": "figurative_commonsense",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "narrative",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "paraphrase_entail",
+     "state": "NO_MATCH",
+     "hits": 0
+    }
+   ],
+   "satisfied": true
+  },
+  {
+   "phrase": "重複部分文字列",
+   "expected_families": [
+    "code_qa",
+    "code"
+   ],
+   "by_family": [
+    {
+     "family": "code_qa",
+     "state": "FOUND",
+     "hits": 1,
+     "limit": 1000,
+     "limit_reached": false,
+     "first": {
+      "family": "code_qa",
+      "source_file": "code_qa/train/records.jsonl",
+      "line": 92858,
+      "sha": "c9ff551604b4e1a9",
+      "origin": "generated",
+      "generator": "codex",
+      "kind": "code_qa"
+     },
+     "round_trip": {
+      "source_line_found": true,
+      "sha_equal": true,
+      "phrase_in_witness_text": true,
+      "phrase_in_source_record_body": true,
+      "origin_is_generated": true,
+      "ok": true
+     }
+    },
+    {
+     "family": "code",
+     "state": "NO_MATCH",
+     "hits": 0,
+     "limit": 1000,
+     "limit_reached": false,
+     "first": null
+    }
+   ],
+   "all_families_diagnostic": [
+    {
+     "family": "pro",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "code",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "conversation",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "general_qa",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "code_qa",
+     "state": "FOUND",
+     "hits": 1
+    },
+    {
+     "family": "figurative_commonsense",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "narrative",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "paraphrase_entail",
+     "state": "NO_MATCH",
+     "hits": 0
+    }
+   ],
+   "satisfied": true
+  },
+  {
+   "phrase": "脱水機の異音",
+   "expected_families": [
+    "conversation"
+   ],
+   "by_family": [
+    {
+     "family": "conversation",
+     "state": "NO_MATCH",
+     "hits": 0,
+     "limit": 1000,
+     "limit_reached": false,
+     "first": null
+    }
+   ],
+   "all_families_diagnostic": [
+    {
+     "family": "pro",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "code",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "conversation",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "general_qa",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "code_qa",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "figurative_commonsense",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "narrative",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "paraphrase_entail",
+     "state": "NO_MATCH",
+     "hits": 0
+    }
+   ],
+   "satisfied": false
+  },
+  {
+   "phrase": "改札を出て左",
+   "expected_families": [
+    "conversation"
+   ],
+   "by_family": [
+    {
+     "family": "conversation",
+     "state": "FOUND",
+     "hits": 436,
+     "limit": 1000,
+     "limit_reached": false,
+     "first": {
+      "family": "conversation",
+      "source_file": "conversation/utterances.jsonl",
+      "line": 2080,
+      "sha": "ed833657e862",
+      "origin": "generated",
+      "generator": "codex",
+      "kind": "conversation"
+     },
+     "round_trip": {
+      "source_line_found": true,
+      "sha_equal": true,
+      "phrase_in_witness_text": true,
+      "phrase_in_source_record_body": true,
+      "origin_is_generated": true,
+      "ok": true
+     }
+    }
+   ],
+   "all_families_diagnostic": [
+    {
+     "family": "pro",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "code",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "conversation",
+     "state": "FOUND",
+     "hits": 436
+    },
+    {
+     "family": "general_qa",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "code_qa",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "figurative_commonsense",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "narrative",
+     "state": "NO_MATCH",
+     "hits": 0
+    },
+    {
+     "family": "paraphrase_entail",
+     "state": "NO_MATCH",
+     "hits": 0
+    }
+   ],
+   "satisfied": true
+  }
+ ],
+ "self_chosen": [
+  {
+   "family": "pro",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "pro",
+    "source_file": "out/sentences.jsonl",
+    "line": 337608,
+    "sha": "2153fb8357a4",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "pro"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "が肌を滑ると、泡の白さ",
+   "registered_row": {
+    "row_id": 337608,
+    "source_file": "out/sentences.jsonl",
+    "line": 337608
+   },
+   "satisfied": true
+  },
+  {
+   "family": "pro",
+   "state": "FOUND",
+   "hits": 10,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "pro",
+    "source_file": "out/sentences.jsonl",
+    "line": 104525,
+    "sha": "0794468c1c76",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "pro"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "私は背もたれに体",
+   "registered_row": {
+    "row_id": 1135252,
+    "source_file": "out/sentences.jsonl",
+    "line": 1135252
+   },
+   "satisfied": true
+  },
+  {
+   "family": "pro",
+   "state": "FOUND",
+   "hits": 1000,
+   "limit": 1000,
+   "limit_reached": true,
+   "first": {
+    "family": "pro",
+    "source_file": "out/sentences.jsonl",
+    "line": 4462,
+    "sha": "1d4aedc2ae9c",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "pro"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "る気がした。",
+   "registered_row": {
+    "row_id": 740875,
+    "source_file": "out/sentences.jsonl",
+    "line": 740875
+   },
+   "satisfied": true
+  },
+  {
+   "family": "pro",
+   "state": "FOUND",
+   "hits": 17,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "pro",
+    "source_file": "out/sentences.jsonl",
+    "line": 39906,
+    "sha": "1b15074dfe06",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "pro"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "と、濡れた毛先か",
+   "registered_row": {
+    "row_id": 1045375,
+    "source_file": "out/sentences.jsonl",
+    "line": 1045375
+   },
+   "satisfied": true
+  },
+  {
+   "family": "pro",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "pro",
+    "source_file": "out/sentences.jsonl",
+    "line": 1000358,
+    "sha": "a461473e025f",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "pro"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "教えてほしいとせがん",
+   "registered_row": {
+    "row_id": 1000358,
+    "source_file": "out/sentences.jsonl",
+    "line": 1000358
+   },
+   "satisfied": true
+  },
+  {
+   "family": "code",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "code",
+    "source_file": "even/code/items.jsonl",
+    "line": 261323,
+    "sha": "dc094e8a8e60",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "code"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "ます。`float` は",
+   "registered_row": {
+    "row_id": 1282253,
+    "source_file": "even/code/items.jsonl",
+    "line": 261323
+   },
+   "satisfied": true
+  },
+  {
+   "family": "code",
+   "state": "FOUND",
+   "hits": 1000,
+   "limit": 1000,
+   "limit_reached": true,
+   "first": {
+    "family": "code",
+    "source_file": "code/items.jsonl",
+    "line": 27482,
+    "sha": "938c1b51824f",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "code"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "`git merge",
+   "registered_row": {
+    "row_id": 28448,
+    "source_file": "code/items.jsonl",
+    "line": 28448
+   },
+   "satisfied": true
+  },
+  {
+   "family": "code",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "code",
+    "source_file": "code/items.jsonl",
+    "line": 436401,
+    "sha": "6c7fcc55b9c6",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "code"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "onal_fil",
+   "registered_row": {
+    "row_id": 436401,
+    "source_file": "code/items.jsonl",
+    "line": 436401
+   },
+   "satisfied": true
+  },
+  {
+   "family": "code",
+   "state": "FOUND",
+   "hits": 133,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "code",
+    "source_file": "code/items.jsonl",
+    "line": 3652,
+    "sha": "429a990a7ce5",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "code"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "きに報告され",
+   "registered_row": {
+    "row_id": 1083685,
+    "source_file": "even/code/items.jsonl",
+    "line": 62755
+   },
+   "satisfied": true
+  },
+  {
+   "family": "code",
+   "state": "FOUND",
+   "hits": 153,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "code",
+    "source_file": "code/items.jsonl",
+    "line": 784744,
+    "sha": "2e601cb22ecb",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "code"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "Motor",
+   "registered_row": {
+    "row_id": 1330091,
+    "source_file": "even/code/items.jsonl",
+    "line": 309161
+   },
+   "satisfied": true
+  },
+  {
+   "family": "conversation",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "conversation",
+    "source_file": "conversation/utterances.jsonl",
+    "line": 1414595,
+    "sha": "f5ae0f76ba6b",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "conversation"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "た。直して入",
+   "registered_row": {
+    "row_id": 1414595,
+    "source_file": "conversation/utterances.jsonl",
+    "line": 1414595
+   },
+   "satisfied": true
+  },
+  {
+   "family": "conversation",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "conversation",
+    "source_file": "conversation/utterances.jsonl",
+    "line": 215430,
+    "sha": "0333b3b3f7f8",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "conversation"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "。では一件目から参りまし",
+   "registered_row": {
+    "row_id": 215430,
+    "source_file": "conversation/utterances.jsonl",
+    "line": 215430
+   },
+   "satisfied": true
+  },
+  {
+   "family": "conversation",
+   "state": "FOUND",
+   "hits": 2,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "conversation",
+    "source_file": "conversation/utterances.jsonl",
+    "line": 559946,
+    "sha": "a8a5276c3f30",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "conversation"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "すし、急ブレーキも",
+   "registered_row": {
+    "row_id": 1904612,
+    "source_file": "even/conversation/utterances.jsonl",
+    "line": 153239
+   },
+   "satisfied": true
+  },
+  {
+   "family": "conversation",
+   "state": "FOUND",
+   "hits": 5,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "conversation",
+    "source_file": "conversation/utterances.jsonl",
+    "line": 854295,
+    "sha": "da09cc8dd14c",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "conversation"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "領収書も一緒にお渡",
+   "registered_row": {
+    "row_id": 1367552,
+    "source_file": "conversation/utterances.jsonl",
+    "line": 1367552
+   },
+   "satisfied": true
+  },
+  {
+   "family": "conversation",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "conversation",
+    "source_file": "even/conversation/utterances.jsonl",
+    "line": 308390,
+    "sha": "cb05d79e82bd",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "conversation"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "べながら、もう一度連絡し",
+   "registered_row": {
+    "row_id": 2059763,
+    "source_file": "even/conversation/utterances.jsonl",
+    "line": 308390
+   },
+   "satisfied": true
+  },
+  {
+   "family": "general_qa",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "general_qa",
+    "source_file": "general_qa/train/records.jsonl",
+    "line": 102310,
+    "sha": "a03f5e29762e1e06",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "howto"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "倍率を標準に",
+   "registered_row": {
+    "row_id": 102310,
+    "source_file": "general_qa/train/records.jsonl",
+    "line": 102310
+   },
+   "satisfied": true
+  },
+  {
+   "family": "general_qa",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "general_qa",
+    "source_file": "general_qa/train/records.jsonl",
+    "line": 119029,
+    "sha": "aa1e0224946d0c48",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "comparison"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "）は清とイギリスの",
+   "registered_row": {
+    "row_id": 119029,
+    "source_file": "general_qa/train/records.jsonl",
+    "line": 119029
+   },
+   "satisfied": true
+  },
+  {
+   "family": "general_qa",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "general_qa",
+    "source_file": "general_qa/train/records.jsonl",
+    "line": 4417,
+    "sha": "9dd3f22c7c249685",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "comparison"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "ものへの支出の違いを教",
+   "registered_row": {
+    "row_id": 4417,
+    "source_file": "general_qa/train/records.jsonl",
+    "line": 4417
+   },
+   "satisfied": true
+  },
+  {
+   "family": "general_qa",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "general_qa",
+    "source_file": "general_qa/train/records.jsonl",
+    "line": 76854,
+    "sha": "33f9a3a0d575e47c",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "fact"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "食べる種類もいるため、",
+   "registered_row": {
+    "row_id": 76854,
+    "source_file": "general_qa/train/records.jsonl",
+    "line": 76854
+   },
+   "satisfied": true
+  },
+  {
+   "family": "general_qa",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "general_qa",
+    "source_file": "general_qa/train/records.jsonl",
+    "line": 123948,
+    "sha": "9dd9ecdda6fa0767",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "comparison"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "ーンは、住宅や自",
+   "registered_row": {
+    "row_id": 123948,
+    "source_file": "general_qa/train/records.jsonl",
+    "line": 123948
+   },
+   "satisfied": true
+  },
+  {
+   "family": "code_qa",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "code_qa",
+    "source_file": "code_qa/train/records.jsonl",
+    "line": 30520,
+    "sha": "6211e43111870e2f",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "code_qa"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "E で辺をたどり、到",
+   "registered_row": {
+    "row_id": 30520,
+    "source_file": "code_qa/train/records.jsonl",
+    "line": 30520
+   },
+   "satisfied": true
+  },
+  {
+   "family": "code_qa",
+   "state": "FOUND",
+   "hits": 275,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "code_qa",
+    "source_file": "code_qa/train/records.jsonl",
+    "line": 1877,
+    "sha": "5b0406defc0113a1",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "code_qa"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "UNIX時刻を",
+   "registered_row": {
+    "row_id": 260995,
+    "source_file": "code_qa/train/records.jsonl",
+    "line": 260995
+   },
+   "satisfied": true
+  },
+  {
+   "family": "code_qa",
+   "state": "FOUND",
+   "hits": 1000,
+   "limit": 1000,
+   "limit_reached": true,
+   "first": {
+    "family": "code_qa",
+    "source_file": "code_qa/train/records.jsonl",
+    "line": 350,
+    "sha": "b785141600d1ed37",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "code_qa"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "WithPath",
+   "registered_row": {
+    "row_id": 54217,
+    "source_file": "code_qa/train/records.jsonl",
+    "line": 54217
+   },
+   "satisfied": true
+  },
+  {
+   "family": "code_qa",
+   "state": "FOUND",
+   "hits": 5,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "code_qa",
+    "source_file": "code_qa/train/records.jsonl",
+    "line": 3549,
+    "sha": "d61adcf8fe1b7e5a",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "code_qa"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "に並べてから、上",
+   "registered_row": {
+    "row_id": 245055,
+    "source_file": "code_qa/train/records.jsonl",
+    "line": 245055
+   },
+   "satisfied": true
+  },
+  {
+   "family": "code_qa",
+   "state": "FOUND",
+   "hits": 2,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "code_qa",
+    "source_file": "code_qa/train/records.jsonl",
+    "line": 191049,
+    "sha": "30fbe9c072e5b4d9",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "code_qa"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "定だと分かる形に整",
+   "registered_row": {
+    "row_id": 204224,
+    "source_file": "code_qa/train/records.jsonl",
+    "line": 204224
+   },
+   "satisfied": true
+  },
+  {
+   "family": "figurative_commonsense",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "figurative_commonsense",
+    "source_file": "figurative_commonsense/train/records.jsonl",
+    "line": 173510,
+    "sha": "4026fb3e95e08d7c",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "simile_metaphor"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "ライアングルは曲のきらめ",
+   "registered_row": {
+    "row_id": 173510,
+    "source_file": "figurative_commonsense/train/records.jsonl",
+    "line": 173510
+   },
+   "satisfied": true
+  },
+  {
+   "family": "figurative_commonsense",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "figurative_commonsense",
+    "source_file": "figurative_commonsense/train/records.jsonl",
+    "line": 232043,
+    "sha": "9fe85872a796526f",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "pun"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "れたことに、空模様を",
+   "registered_row": {
+    "row_id": 232043,
+    "source_file": "figurative_commonsense/train/records.jsonl",
+    "line": 232043
+   },
+   "satisfied": true
+  },
+  {
+   "family": "figurative_commonsense",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "figurative_commonsense",
+    "source_file": "figurative_commonsense/train/records.jsonl",
+    "line": 120674,
+    "sha": "d1eb29faac481a9f",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "pun"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "どう」と「自",
+   "registered_row": {
+    "row_id": 120674,
+    "source_file": "figurative_commonsense/train/records.jsonl",
+    "line": 120674
+   },
+   "satisfied": true
+  },
+  {
+   "family": "figurative_commonsense",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "figurative_commonsense",
+    "source_file": "figurative_commonsense/train/records.jsonl",
+    "line": 58637,
+    "sha": "80f8943a73d8b752",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "cause_effect"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "イヤの空気がへると",
+   "registered_row": {
+    "row_id": 58637,
+    "source_file": "figurative_commonsense/train/records.jsonl",
+    "line": 58637
+   },
+   "satisfied": true
+  },
+  {
+   "family": "figurative_commonsense",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "figurative_commonsense",
+    "source_file": "figurative_commonsense/train/records.jsonl",
+    "line": 171624,
+    "sha": "e5977f15d0e50f8c",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "haiku"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "／ゆびわをみがく／布の上",
+   "registered_row": {
+    "row_id": 171624,
+    "source_file": "figurative_commonsense/train/records.jsonl",
+    "line": 171624
+   },
+   "satisfied": true
+  },
+  {
+   "family": "narrative",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "narrative",
+    "source_file": "narrative/train/records.jsonl",
+    "line": 30285,
+    "sha": "437ee8b6e48249cf",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "story"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "くして風が吹いたが、信は",
+   "registered_row": {
+    "row_id": 30285,
+    "source_file": "narrative/train/records.jsonl",
+    "line": 30285
+   },
+   "satisfied": true
+  },
+  {
+   "family": "narrative",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "narrative",
+    "source_file": "narrative/train/records.jsonl",
+    "line": 356,
+    "sha": "78405544e47e23d2",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "story"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "は、隣人のおばあさん",
+   "registered_row": {
+    "row_id": 356,
+    "source_file": "narrative/train/records.jsonl",
+    "line": 356
+   },
+   "satisfied": true
+  },
+  {
+   "family": "narrative",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "narrative",
+    "source_file": "narrative/train/records.jsonl",
+    "line": 2966,
+    "sha": "bcb57a7fb615f5ab",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "story"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "撮り、母へ「咲いたよ」と",
+   "registered_row": {
+    "row_id": 2966,
+    "source_file": "narrative/train/records.jsonl",
+    "line": 2966
+   },
+   "satisfied": true
+  },
+  {
+   "family": "narrative",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "narrative",
+    "source_file": "narrative/train/records.jsonl",
+    "line": 119253,
+    "sha": "6e20d26b7c8b761c",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "story"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "和樹はリードにつな",
+   "registered_row": {
+    "row_id": 119253,
+    "source_file": "narrative/train/records.jsonl",
+    "line": 119253
+   },
+   "satisfied": true
+  },
+  {
+   "family": "narrative",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "narrative",
+    "source_file": "narrative/train/records.jsonl",
+    "line": 102880,
+    "sha": "ae1321203b09b3c0",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "poem"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "その小さな月を持",
+   "registered_row": {
+    "row_id": 102880,
+    "source_file": "narrative/train/records.jsonl",
+    "line": 102880
+   },
+   "satisfied": true
+  },
+  {
+   "family": "paraphrase_entail",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "paraphrase_entail",
+    "source_file": "paraphrase_entail/train/records.jsonl",
+    "line": 227321,
+    "sha": "437183a5ff66b330",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "pair"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "の案内を読んでから、美",
+   "registered_row": {
+    "row_id": 227321,
+    "source_file": "paraphrase_entail/train/records.jsonl",
+    "line": 227321
+   },
+   "satisfied": true
+  },
+  {
+   "family": "paraphrase_entail",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "paraphrase_entail",
+    "source_file": "paraphrase_entail/train/records.jsonl",
+    "line": 158486,
+    "sha": "5e7e4540dbc406f8",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "pair"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "どり着くことができ",
+   "registered_row": {
+    "row_id": 158486,
+    "source_file": "paraphrase_entail/train/records.jsonl",
+    "line": 158486
+   },
+   "satisfied": true
+  },
+  {
+   "family": "paraphrase_entail",
+   "state": "FOUND",
+   "hits": 566,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "paraphrase_entail",
+    "source_file": "paraphrase_entail/train/records.jsonl",
+    "line": 5108,
+    "sha": "3a916f4150f75318",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "pair"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "たと明記され",
+   "registered_row": {
+    "row_id": 312786,
+    "source_file": "paraphrase_entail/train/records.jsonl",
+    "line": 312786
+   },
+   "satisfied": true
+  },
+  {
+   "family": "paraphrase_entail",
+   "state": "FOUND",
+   "hits": 60,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "paraphrase_entail",
+    "source_file": "paraphrase_entail/train/records.jsonl",
+    "line": 22786,
+    "sha": "f74ba067172b0345",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "pair"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "は患者に病室",
+   "registered_row": {
+    "row_id": 156383,
+    "source_file": "paraphrase_entail/train/records.jsonl",
+    "line": 156383
+   },
+   "satisfied": true
+  },
+  {
+   "family": "paraphrase_entail",
+   "state": "FOUND",
+   "hits": 1,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": {
+    "family": "paraphrase_entail",
+    "source_file": "paraphrase_entail/train/records.jsonl",
+    "line": 49845,
+    "sha": "d657956dc0e1b57f",
+    "origin": "generated",
+    "generator": "codex",
+    "kind": "who_did_what"
+   },
+   "round_trip": {
+    "source_line_found": true,
+    "sha_equal": true,
+    "phrase_in_witness_text": true,
+    "phrase_in_source_record_body": true,
+    "origin_is_generated": true,
+    "ok": true
+   },
+   "phrase": "ろってから、目的地",
+   "registered_row": {
+    "row_id": 49845,
+    "source_file": "paraphrase_entail/train/records.jsonl",
+    "line": 49845
+   },
+   "satisfied": true
+  }
+ ],
+ "negative_controls": [
+  {
+   "family": "pro",
+   "state": "UNKNOWN_NO_HELDOUT_FOR_FAMILY"
+  },
+  {
+   "family": "code",
+   "state": "NO_MATCH",
+   "hits": 0,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": null,
+   "phrase": "は強制モードを指定する",
+   "heldout_file": "even/code/heldout/items.jsonl",
+   "heldout_line": 38871,
+   "satisfied": true
+  },
+  {
+   "family": "conversation",
+   "state": "NO_MATCH",
+   "hits": 0,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": null,
+   "phrase": "前回と変更はあ",
+   "heldout_file": "conversation/heldout/utterances.jsonl",
+   "heldout_line": 104039,
+   "satisfied": true
+  },
+  {
+   "family": "general_qa",
+   "state": "NO_MATCH",
+   "hits": 0,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": null,
+   "phrase": "として織り込む布づくり",
+   "heldout_file": "general_qa/heldout/records.jsonl",
+   "heldout_line": 2472,
+   "satisfied": true
+  },
+  {
+   "family": "code_qa",
+   "state": "NO_MATCH",
+   "hits": 0,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": null,
+   "phrase": "xByte` を使い",
+   "heldout_file": "code_qa/heldout/records.jsonl",
+   "heldout_line": 26730,
+   "satisfied": true
+  },
+  {
+   "family": "figurative_commonsense",
+   "state": "NO_MATCH",
+   "hits": 0,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": null,
+   "phrase": "峰は焼きたてのパンのよう",
+   "heldout_file": "figurative_commonsense/heldout/records.jsonl",
+   "heldout_line": 18679,
+   "satisfied": true
+  },
+  {
+   "family": "narrative",
+   "state": "NO_MATCH",
+   "hits": 0,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": null,
+   "phrase": "戻す係になった。",
+   "heldout_file": "narrative/heldout/records.jsonl",
+   "heldout_line": 5969,
+   "satisfied": true
+  },
+  {
+   "family": "paraphrase_entail",
+   "state": "NO_MATCH",
+   "hits": 0,
+   "limit": 1000,
+   "limit_reached": false,
+   "first": null,
+   "phrase": "トル以上切り取っ",
+   "heldout_file": "paraphrase_entail/heldout/records.jsonl",
+   "heldout_line": 16146,
+   "satisfied": true
+  }
+ ],
+ "unmatched_ticket_phrases": [
+  "Wi-Fiなし 携帯データ",
+  "脱水機の異音"
+ ],
+ "raw_corpus_absence_evidence": {
+  "files_scanned": 56,
+  "searched_forms": "UTF-8 text and the JSON \\uXXXX-escaped form of each term",
+  "lines_containing": {
+   "携帯データ": {
+    "lines": 0,
+    "files": []
+   },
+   "脱水機": {
+    "lines": 22,
+    "files": [
+     {
+      "path": "conversation/utterances.jsonl",
+      "lines": 2
+     },
+     {
+      "path": "even/conversation/utterances.jsonl",
+      "lines": 2
+     },
+     {
+      "path": "general_qa/train/records.jsonl",
+      "lines": 1
+     },
+     {
+      "path": "out/sentences.jsonl",
+      "lines": 17
+     }
+    ]
+   },
+   "異音": {
+    "lines": 508,
+    "files": [
+     {
+      "path": "conversation/heldout/utterances.jsonl",
+      "lines": 4
+     },
+     {
+      "path": "conversation/overlap_dropped/utterances.jsonl",
+      "lines": 4
+     },
+     {
+      "path": "conversation/utterances.jsonl",
+      "lines": 69
+     },
+     {
+      "path": "even/conversation/heldout/utterances.jsonl",
+      "lines": 4
+     },
+     {
+      "path": "even/conversation/overlap_dropped/utterances.jsonl",
+      "lines": 4
+     },
+     {
+      "path": "even/conversation/utterances.jsonl",
+      "lines": 41
+     },
+     {
+      "path": "figurative_commonsense/heldout/records.jsonl",
+      "lines": 13
+     },
+     {
+      "path": "figurative_commonsense/train/records.jsonl",
+      "lines": 85
+     },
+     {
+      "path": "general_qa/heldout/records.jsonl",
+      "lines": 18
+     },
+     {
+      "path": "general_qa/overlap_dropped/records.jsonl",
+      "lines": 13
+     },
+     {
+      "path": "general_qa/train/records.jsonl",
+      "lines": 114
+     },
+     {
+      "path": "narrative/heldout/records.jsonl",
+      "lines": 5
+     },
+     {
+      "path": "narrative/train/records.jsonl",
+      "lines": 29
+     },
+     {
+      "path": "out/sentences.jsonl",
+      "lines": 71
+     },
+     {
+      "path": "paraphrase_entail/heldout/records.jsonl",
+      "lines": 2
+     },
+     {
+      "path": "paraphrase_entail/train/records.jsonl",
+      "lines": 32
+     }
+    ]
+   },
+   "Wi-Fiなし 携帯データ": {
+    "lines": 0,
+    "files": []
+   },
+   "脱水機の異音": {
+    "lines": 0,
+    "files": []
+   }
+  },
+  "lines_with_both_脱水機_and_異音": {
+   "lines": 0,
+   "files": []
+  },
+  "dialogue_ids_with_both_脱水機_and_異音_by_file": {
+   "conversation/heldout/utterances.jsonl": 0,
+   "conversation/overlap_dropped/utterances.jsonl": 0,
+   "conversation/utterances.jsonl": 0,
+   "even/conversation/heldout/utterances.jsonl": 0,
+   "even/conversation/overlap_dropped/utterances.jsonl": 0,
+   "even/conversation/utterances.jsonl": 0
+  },
+  "dialogue_ids_with_脱水機": {
+   "conversation/heldout/utterances.jsonl": 0,
+   "conversation/overlap_dropped/utterances.jsonl": 0,
+   "conversation/utterances.jsonl": 2,
+   "even/conversation/heldout/utterances.jsonl": 0,
+   "even/conversation/overlap_dropped/utterances.jsonl": 0,
+   "even/conversation/utterances.jsonl": 2
+  },
+  "dialogue_ids_with_異音": {
+   "conversation/heldout/utterances.jsonl": 4,
+   "conversation/overlap_dropped/utterances.jsonl": 4,
+   "conversation/utterances.jsonl": 69,
+   "even/conversation/heldout/utterances.jsonl": 4,
+   "even/conversation/overlap_dropped/utterances.jsonl": 3,
+   "even/conversation/utterances.jsonl": 41
+  }
+ },
+ "summary": {
+  "ticket_phrases": 8,
+  "ticket_satisfied": 6,
+  "self_chosen": 40,
+  "self_chosen_satisfied": 40,
+  "self_chosen_satisfied_per_family": {
+   "pro": 5,
+   "code": 5,
+   "conversation": 5,
+   "general_qa": 5,
+   "code_qa": 5,
+   "figurative_commonsense": 5,
+   "narrative": 5,
+   "paraphrase_entail": 5
+  },
+  "negative_controls_drawn": 7,
+  "negative_controls_no_match": 7,
+  "elapsed_seconds": 25.749
+ }
+}

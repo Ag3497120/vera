@@ -1,0 +1,8 @@
+一致: 7 ファイル（除いた欄: results ['elapsed_ms'], raw ['elapsed_ms', 'ingest_ms', 'ms'], run_meta ['timing']）
+B1 compare exit=0
+一致: 32 ファイル（除いた欄: results ['elapsed_ms'], raw ['elapsed_ms', 'ingest_ms', 'ms'], run_meta ['timing']）
+B2 compare exit=0
+一致: 32 ファイル（除いた欄: results ['elapsed_ms'], raw ['elapsed_ms', 'ingest_ms', 'ms'], run_meta ['timing']）
+B3 compare exit=0
+一致: 10 ファイル（除いた欄: results ['elapsed_ms'], raw ['elapsed_ms', 'ingest_ms', 'ms'], run_meta ['timing']）
+B5 compare exit=0

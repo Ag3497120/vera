@@ -1,0 +1,1 @@
+{"blocking": null, "ledger": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/w2a-live.Y6rvEC/rehearsal/.verantyx-conduct/ledger.jsonl", "outcome": "COMPLETE", "refusal": null, "result": {"complete": true, "completed": ["Greeter"], "interrupted": false, "outcome": "COMPLETE", "pending": []}, "run_id": "d8b29b2f8f8e428d934734b9c47d3435", "verdict": "RUN_COMPLETE"}

@@ -4,8 +4,13 @@ from __future__ import annotations
 import json
 import os
 import re
+import sys
 import tempfile
 from pathlib import Path
+
+# Run from any directory with any interpreter path: load verantyx from this checkout,
+# never from a same-named package that happens to be installed in the environment.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 os.environ.setdefault("VERA_CORPUS_ROOT", "/tmp/vera-empty-materials")
 os.environ.setdefault("PYTHONDONTWRITEBYTECODE", "1")
@@ -63,6 +68,8 @@ class ScriptedAgent:
                 {"type": "DONE"},
                 {"type": "DONE"},
             ]
+        elif task_id == "foundation":
+            events = [{"type": "DONE"}]
         else:
             raise AssertionError(f"unexpected task {task_id}")
         return {"task_id": task_id, "events": events, "cursor": 0, "last_type": ""}
@@ -151,7 +158,11 @@ def _build_frame(root: Path, ready: dict[str, bool], asker: ClosedChoiceAsker,
         frame.add_policy("SCOPE", condition, "in scope", authority["id"])
     frame.add_policy("CHOICE", "artifact format", "structured record", format_choice["id"])
 
-    for task_id, item in (("project-a", "first completion witness"),
+    # ORDER's predecessor must be a GOAL task with a witnessed DONE (the order gate in
+    # conductor_run), so "foundation" is declared as a task with its own acceptance witness
+    # instead of being a bare TASK record.
+    for task_id, item in (("foundation", "foundation completion witness"),
+                          ("project-a", "first completion witness"),
                           ("project-b", "second completion witness")):
         acceptance = frame.add_acceptance(
             task_id, item, witness_kind="command_exit",
@@ -159,7 +170,6 @@ def _build_frame(root: Path, ready: dict[str, bool], asker: ClosedChoiceAsker,
         )
         frame.add_goal(task_id, item)
 
-    frame.add_task("foundation", "完了")
     frame.add_task("project-a", "進行中")
     frame.add_task("project-b", "進行中")
     frame.add_order("foundation", "project-a", sequence["id"])
@@ -189,7 +199,7 @@ def _assert_questions(outcomes, gold, frame):
 
 def main() -> None:
     questions, gold = _make_questions()
-    ready = {"project-a": False, "project-b": False}
+    ready = {"foundation": True, "project-a": False, "project-b": False}
     witness_checks: list[tuple[str, bool]] = []
     asker = ClosedChoiceAsker()
     with tempfile.TemporaryDirectory(prefix=".demo-conduct-", dir=ROOT) as temp:
@@ -201,7 +211,7 @@ def main() -> None:
         first = run_project(frame, adapter, log_path=log_path, claimant_id="scripted-worker")
         assert first.interrupted
         assert not first.complete
-        assert first.completed == ("project-a",)
+        assert first.completed == ("foundation", "project-a")
         assert "project-b" in first.pending
         assert adapter.starts.get("project-a") == 1
         assert not _task_state_done(frame, "project-b")
@@ -211,7 +221,7 @@ def main() -> None:
         claim_results = [item for item in first.outcomes
                          if item["event"].get("type") == "CLAIM"]
         assert claim_results and claim_results[0]["reply"]["kind"] == "ESCALATE"
-        assert witness_checks[0] == ("project-a", False)
+        assert next(check for check in witness_checks if check[0] == "project-a") == ("project-a", False)
         journal_rows = [json.loads(line) for line in log_path.read_text().splitlines()]
         failed_claim_seq = next(row["seq"] for row in journal_rows
                                 if row.get("type") == "CLAIM_RESULT"
@@ -237,7 +247,7 @@ def main() -> None:
         second = run_project(frame, adapter, log_path=log_path, claimant_id="scripted-worker")
         assert second.resumed
         assert second.complete
-        assert set(second.completed) == {"project-a", "project-b"}
+        assert set(second.completed) == {"foundation", "project-a", "project-b"}
         assert not second.pending
         assert adapter.starts.get("project-a") == 1
         assert adapter.starts.get("project-b") == 1
@@ -245,9 +255,9 @@ def main() -> None:
         assert sum(item["event"].get("type") == "CLAIM" for item in all_outcomes) == 1
         assert ("project-b", False) in witness_checks
         assert ("project-b", True) in witness_checks
-        assert all(_task_state_done(frame, task_id) for task_id in ("project-a", "project-b"))
+        assert all(_task_state_done(frame, task_id) for task_id in ("foundation", "project-a", "project-b"))
         assert all(frame.verify_claim(task_id, {"claimant_id": "scripted-worker"}).answer == "done"
-                   for task_id in ("project-a", "project-b"))
+                   for task_id in ("foundation", "project-a", "project-b"))
     print("DEMO OK")
 
 

@@ -1,0 +1,66 @@
+{
+ "args": {
+  "corpus_root": null,
+  "entry_option": null,
+  "frames": "/Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/frames",
+  "items": "/Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/items.jsonl",
+  "quarantine": "/Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/audit/quarantine.json",
+  "timeout_s": 60.0
+ },
+ "bank": "B5",
+ "child_argv_template": [
+  "<python>",
+  "-c",
+  "<BOOTSTRAP: runpy.run_module('verantyx.cli', run_name='__main__')>",
+  "run",
+  "ask",
+  "[--mode round5] [--document <file>...] -- <query>"
+ ],
+ "child_env": {
+  "BANK_SCORE_PROVENANCE": "<WORK>/prov/N.json",
+  "HOME": "<WORK>/home",
+  "LANG": "C.UTF-8",
+  "PATH": "/Users/motonisihikoudai/.local/bin:/Users/motonisihikoudai/.antigravity-ide/antigravity-ide/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/Applications/VMware Fusion.app/Contents/Public:/opt/homebrew/bin:/Users/motonisihikoudai/.lmstudio/bin",
+  "PYTHONDONTWRITEBYTECODE": "1",
+  "PYTHONIOENCODING": "utf-8",
+  "PYTHONPATH": "/Users/motonisihikoudai/Projects/vera-impl/wt/W1-s2-S",
+  "VERA_CORPUS_ROOT": "<WORK>/empty_corpus"
+ },
+ "entry": "cli",
+ "entry_note": "既定: README が最初に案内する vera CLI のうち、そのバンクの入力を受け取り型つきの結果を返す最初のサブコマンド",
+ "frames_sha256": "d20b25a16a61d8884b24ac33cc84d9ae56aa7d3887f804989888ddcc94b9a57e",
+ "fugashi": "1.5.2",
+ "items_sha256": "3067f29f0cc163be6f4b1890b7fc4cdd0af945d027291c40fd8f60970a291d49",
+ "precheck": {
+  "exit_code": 0,
+  "import_error": null,
+  "modules": 22,
+  "outside": [],
+  "status": "ok",
+  "stderr_tail": ""
+ },
+ "profile": "v2",
+ "provenance_total": {
+  "outside_count": 0,
+  "processes_checked": 1,
+  "processes_unverified": 0
+ },
+ "python": "/Users/motonisihikoudai/vera-wiring/env/bin/python",
+ "quarantine": {
+  "count": 0,
+  "ids": [],
+  "not_in_items": [],
+  "shape": "quarantined"
+ },
+ "quarantine_sha256": "71d33b80b577cd34d0cff016185ae103890e747b904b9857ac248d3f98fb2f7f",
+ "raw_path_redactions": 0,
+ "timing": {
+  "precheck_ms": 99.3,
+  "vera_calls_ms_total": 0.0
+ },
+ "tree_head": "57a52182e408a67de841b87954b0494128c40209",
+ "tree_realpath": "/Users/motonisihikoudai/Projects/vera-impl/wt/W1-s2-S",
+ "unreachable_not_called": 144,
+ "vera_calls": 0,
+ "verantyx_untouched": true
+}

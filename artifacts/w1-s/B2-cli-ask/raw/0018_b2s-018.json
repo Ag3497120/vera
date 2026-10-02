@@ -1,0 +1,177 @@
+{
+ "argv": [
+  "ask",
+  "--",
+  "Please shorten this to at most 60 characters: \"The quarterly review meeting has been moved from Tuesday morning to Thursday afternoon because the main conference room is being repainted.\""
+ ],
+ "elapsed_ms": 241.7,
+ "entry": "cli-ask",
+ "exit_code": 0,
+ "id": "b2s-018",
+ "provenance": {
+  "modules": 59,
+  "outside": []
+ },
+ "reason": null,
+ "stderr": "",
+ "stdout_json": {
+  "door": "general",
+  "evidence": [],
+  "have": [
+   "ja"
+  ],
+  "how_to_resolve": "documents in that language, as their own sovereign",
+  "language": "en",
+  "remedy": {
+   "how": "build a store and Polyglot.add(lang, store)",
+   "language": "en",
+   "needs_registration": true,
+   "register": "documents in that language, as their own sovereign",
+   "then": "questions in that language route to it and never pool with the others",
+   "verdict": "UNKNOWN_LANGUAGE_NOT_HELD"
+  },
+  "sources": [],
+  "text": "",
+  "trace": [
+   {
+    "asked_slot": "whether",
+    "case_frame": {
+     "arguments": [],
+     "attribute": "",
+     "negated": false,
+     "predicates": [],
+     "requested_unit": "",
+     "slot": "whether",
+     "subject": "",
+     "who_role": ""
+    },
+    "kind": "fact",
+    "part": "question.read",
+    "status": "ran"
+   },
+   {
+    "part": "stage_split.split",
+    "status": "ran",
+    "verdict": "UNKNOWN_UNSEGMENTED"
+   },
+   {
+    "part": "typo_recovery.recover",
+    "status": "abstained",
+    "verdict": "LACK_OF_ASSET"
+   },
+   {
+    "part": "meaning_assets.lattice",
+    "reason": "writer.json",
+    "status": "abstained"
+   },
+   {
+    "part": "sense_split.resolve",
+    "status": "abstained",
+    "verdict": "LACK_OF_ASSET"
+   },
+   {
+    "count": 0,
+    "part": "polarity.observe_negation",
+    "status": "ran"
+   },
+   {
+    "act": "statement",
+    "part": "intent.act_by_form",
+    "status": "ran"
+   },
+   {
+    "part": "intent_frames.parse",
+    "reason": "question is not an instruction",
+    "status": "abstained",
+    "verdict": "NOT_APPLICABLE"
+   },
+   {
+    "arm": null,
+    "part": "arm_schema.classify_intent",
+    "status": "ran"
+   },
+   {
+    "kind": null,
+    "part": "skills.answer",
+    "status": "abstained"
+   },
+   {
+    "ability": null,
+    "part": "abilities.Abilities.answer",
+    "status": "abstained"
+   },
+   {
+    "held": [
+     "ja"
+    ],
+    "language": "en",
+    "part": "polyglot.Polyglot.route",
+    "status": "ran"
+   },
+   {
+    "part": "vera.Vera.ask",
+    "status": "ran",
+    "verdict": "UNKNOWN_LANGUAGE_NOT_HELD"
+   },
+   {
+    "coverage": null,
+    "part": "graded.GradedJudge.ask",
+    "status": "abstained"
+   },
+   {
+    "part": "resolution.Ladder",
+    "reason": "graded judge builds and reads its nested ladders",
+    "status": "abstained"
+   },
+   {
+    "part": "stacked.ask",
+    "status": "abstained",
+    "verdict": "UNKNOWN_LANGUAGE_NOT_HELD"
+   },
+   {
+    "part": "consensus_store.consensus_over_store",
+    "status": "abstained",
+    "verdict": "UNKNOWN_LANGUAGE_NOT_HELD"
+   },
+   {
+    "part": "reach.reach",
+    "reached": [],
+    "status": "ran"
+   },
+   {
+    "part": "explain.explain",
+    "reason": "no writer or no supported unit landing",
+    "status": "abstained"
+   },
+   {
+    "how_to_resolve": "documents in that language, as their own sovereign",
+    "part": "remedy.remedy",
+    "status": "ran",
+    "verdict": "UNKNOWN_LANGUAGE_NOT_HELD"
+   },
+   {
+    "asks": "",
+    "part": "ask_back.question",
+    "reason": "verdict has no human-answerable candidate",
+    "status": "abstained"
+   },
+   {
+    "part": "coverage.document_needed",
+    "reason": "no domain witnesses",
+    "status": "abstained"
+   },
+   {
+    "part": "gap_graph.refusal_to_gap",
+    "reason": "no opt-in gap_path",
+    "status": "abstained"
+   },
+   {
+    "part": "grow.log_refusal",
+    "reason": "no queue opt-in or different verdict",
+    "status": "abstained"
+   }
+  ],
+  "verdict": "UNKNOWN_LANGUAGE_NOT_HELD"
+ },
+ "stdout_text": null
+}

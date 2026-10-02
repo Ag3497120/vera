@@ -1,0 +1,33 @@
+ M docs/BANK_SCORE.md
+ M tools/bank_score/adapters.py
+ M tools/bank_score/classify.py
+ M tools/bank_score/cli.py
+ M tools/bank_score/recount.py
+ M tools/bank_score/report.py
+ M tools/bank_score/schema.py
+ M tools/bank_score/score.py
+ M tools/bank_score/strategies.py
+?? artifacts/w1-s2/
+?? docs/READING_CONVENTIONS.md
+?? tests/bank_score/fixtures/v2/
+?? tests/bank_score/test_bs_v2_b1.py
+?? tests/bank_score/test_bs_v2_b2.py
+?? tests/bank_score/test_bs_v2_b3.py
+?? tests/bank_score/test_bs_v2_b5.py
+?? tests/bank_score/test_bs_v2_not_strict.py
+?? tests/bank_score/test_bs_v2_publish_leak.py
+?? tests/bank_score/test_bs_v2_quarantine.py
+?? tests/bank_score/test_bs_v2_report_judge.py
+?? tests/bank_score/test_bs_v2_unknown_keys.py
+?? tests/bank_score/test_bs_v2_xcheck.py
+?? tests/bank_score/v2_util.py
+?? tools/bank_score/baseline_compare.py
+?? tools/bank_score/judge.py
+?? tools/bank_score/leakcheck.py
+?? tools/bank_score/not_strict.py
+?? tools/bank_score/publish.py
+?? tools/bank_score/sanitize.py
+?? tools/bank_score/survey.py
+?? tools/bank_score/v2/
+?? tools/bank_score/xcheck.py
+!! artifacts/w1-s2/private/

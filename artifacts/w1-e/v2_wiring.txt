@@ -1,0 +1,10 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/motonisihikoudai/Projects/vera-impl/wt/W1-e-S
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collected 27 items
+
+tests/test_conductor_vocab_llm.py ...........................            [100%]
+
+============================== 27 passed in 0.33s ==============================

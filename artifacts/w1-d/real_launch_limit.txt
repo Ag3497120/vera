@@ -1,0 +1,10 @@
+verantyx from: /Users/motonisihikoudai/Projects/vera-impl/wt/W1-d-S/verantyx/__init__.py
+frame: docs/frames/examples/firmware_update_tool.md (model/effort from the frame's [agent_settings])
+elapsed_seconds=0.58
+verdict: RUN_INCOMPLETE exit_code: 1
+blocking: {"kind": "acceptance", "task_id": "SensorUpdater", "acceptance_items": ["The rollback simulation passes", "The signature check rejects the tampered fixture"], "missing": "command_exit", "reason": "acceptance witness failed for 'The rollback simulation passes': no injected command runner is available", "record_ids": ["a743ed1d9767", "449b7e08e5e2", "b236896da77b"]}
+result: {'complete': False, 'completed': [], 'pending': ['SensorUpdater'], 'interrupted': False}
+ledger_row_types: ['CONDUCT_INVOKED', 'FRAME_READ', 'FRAME_COMPILED', 'AGENT_START_CALLED', 'LAUNCH_PLANNED', 'AGENT_START_RETURNED', 'RUN_FINISHED']
+launch_row: dry_run=False cwd_created=True argv=['/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/w1d-real-limit-fe1ua4t2/slow-agent.sh', 'exec', '...', '-o', '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/w1d-real-limit-fe1ua4t2/repo/.verantyx-conduct/runs/7d3ad6694f4943fdb3dd1beacb8de129/runtime/sessions/4c4e7e99262146c4b360bf372660abc9/last_message.txt', '-']
+runtime_event_types: ['SESSION_CREATED', 'WORKTREE_CREATED', 'PROCESS_STARTED', 'SESSION_CANCELLED', 'ADAPTER_STOPPED']
+ConductorRun MAX_RUN_SECONDS (upper bound of the whole run): 30.0

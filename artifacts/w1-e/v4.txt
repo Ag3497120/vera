@@ -1,0 +1,10 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/motonisihikoudai/Projects/vera-impl/wt/W1-e-S
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collected 98 items / 88 deselected / 10 selected
+
+tests/test_llm_choice.py ..........                                      [100%]
+
+====================== 10 passed, 88 deselected in 2.60s =======================

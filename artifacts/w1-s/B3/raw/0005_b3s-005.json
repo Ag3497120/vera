@@ -1,0 +1,445 @@
+{
+ "argv": [
+  "ask",
+  "--mode",
+  "round5",
+  "--document",
+  "material_1.txt",
+  "--",
+  "In one sentence, say how long a laptop can be borrowed."
+ ],
+ "elapsed_ms": 416.9,
+ "entry": "cli-ask-round5",
+ "exit_code": 0,
+ "id": "b3s-005",
+ "provenance": {
+  "modules": 104,
+  "outside": []
+ },
+ "reason": null,
+ "stderr": "",
+ "stdout_json": {
+  "door": "semantic_document",
+  "evidence": [],
+  "how_to_resolve": "質問された事項を示す出典を追加してください。",
+  "kind": "unknown",
+  "multigrain_navigation": {
+   "authority": "navigation_only_unverified",
+   "candidate_clause_span_causal_influence_proven": false,
+   "candidate_clause_span_cited_after_full_view_check": false,
+   "candidate_clause_span_match_count": 0,
+   "candidate_document_id_cited_after_full_view_check": false,
+   "candidate_goal_status": null,
+   "candidate_limit": 8,
+   "candidate_sentence_span_cited_after_full_view_check": null,
+   "candidate_views_supplied_to_answer_verifier": false,
+   "candidates": [
+    {
+     "independent_source_count": null,
+     "item": "laptops",
+     "resolution_views": [
+      "g2",
+      "g3"
+     ],
+     "selected_by_existing_constellation": true,
+     "selection_used_resolution_views": true,
+     "source_identity_status": "identity_unverified",
+     "source_leaf_match_count": 1,
+     "source_reference_count": 1,
+     "source_references_truncated": false,
+     "sources": [
+      {
+       "canonical_source_id": null,
+       "domain_path": [],
+       "grain_witnesses": [
+        {
+         "matched_feature_count": 4,
+         "member": "g3",
+         "rung": "g3",
+         "size": 3
+        },
+        {
+         "matched_feature_count": 5,
+         "member": "g2",
+         "rung": "g2",
+         "size": 2
+        }
+       ],
+       "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+       "identity_status": "identity_unverified",
+       "leaf": "material_1.txt",
+       "path": [
+        "material_1.txt"
+       ],
+       "source_label": "material_1.txt"
+      }
+     ]
+    },
+    {
+     "independent_source_count": null,
+     "item": "marlow_library#p",
+     "resolution_views": [
+      "g1"
+     ],
+     "selected_by_existing_constellation": false,
+     "selection_used_resolution_views": true,
+     "source_identity_status": "identity_unverified",
+     "source_leaf_match_count": 1,
+     "source_reference_count": 1,
+     "source_references_truncated": false,
+     "sources": [
+      {
+       "canonical_source_id": null,
+       "domain_path": [],
+       "grain_witnesses": [
+        {
+         "matched_feature_count": 8,
+         "member": "g1",
+         "rung": "g1",
+         "size": 1
+        }
+       ],
+       "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+       "identity_status": "identity_unverified",
+       "leaf": "material_1.txt",
+       "path": [
+        "material_1.txt"
+       ],
+       "source_label": "material_1.txt"
+      }
+     ]
+    }
+   ],
+   "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+   "grain_trace": [
+    {
+     "grammar": "raw",
+     "independent_source_vote": false,
+     "member": "whole",
+     "member_reading": null,
+     "participated_with_candidate": false,
+     "role": "resolution_view",
+     "rung_readings": {
+      "whole": null
+     },
+     "rungs": [
+      [
+       "whole",
+       0
+      ]
+     ],
+     "used_by_existing_candidate_selection": true
+    },
+    {
+     "grammar": "raw",
+     "independent_source_vote": false,
+     "member": "g3",
+     "member_reading": "laptops",
+     "participated_with_candidate": true,
+     "role": "resolution_view",
+     "rung_readings": {
+      "g3": "laptops"
+     },
+     "rungs": [
+      [
+       "g3",
+       3
+      ]
+     ],
+     "used_by_existing_candidate_selection": true
+    },
+    {
+     "grammar": "raw",
+     "independent_source_vote": false,
+     "member": "g2",
+     "member_reading": "laptops",
+     "participated_with_candidate": true,
+     "role": "resolution_view",
+     "rung_readings": {
+      "g2": "laptops"
+     },
+     "rungs": [
+      [
+       "g2",
+       2
+      ]
+     ],
+     "used_by_existing_candidate_selection": true
+    },
+    {
+     "grammar": "raw",
+     "independent_source_vote": false,
+     "member": "g1",
+     "member_reading": "marlow_library#p",
+     "participated_with_candidate": true,
+     "role": "resolution_view",
+     "rung_readings": {
+      "g1": "marlow_library#p"
+     },
+     "rungs": [
+      [
+       "g1",
+       1
+      ]
+     ],
+     "used_by_existing_candidate_selection": true
+    }
+   ],
+   "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+   "independent_source_count": null,
+   "kind": "multigrain_candidates",
+   "query_destinations": [],
+   "query_divisions_are_partial": true,
+   "query_divisions_from_constellation": [],
+   "query_terms": [
+    "In",
+    "one",
+    "sentence",
+    "say",
+    "how",
+    "long",
+    "a",
+    "laptop",
+    "can",
+    "be",
+    "borrowed."
+   ],
+   "raw_question": "In one sentence, say how long a laptop can be borrowed.",
+   "resolution_agreeing": 2,
+   "resolution_as_core": [],
+   "resolution_as_facet_only": [],
+   "resolution_item": "laptops",
+   "resolution_missing": [
+    "In",
+    "one",
+    "sentence",
+    "say",
+    "how",
+    "long",
+    "a",
+    "laptop",
+    "can",
+    "be",
+    "borrowed."
+   ],
+   "resolution_of": 4,
+   "resolution_verdict": "ANSWER_BY_COARSENING",
+   "selected_candidate": "laptops",
+   "selector_query": "In one sentence, say how long a laptop can be borrowed.",
+   "selector_query_origin": "raw_question",
+   "source_binding": {
+    "candidate": "laptops",
+    "goal_relation_scope": "same-owner local explicit argument spans only",
+    "independent_source_count": null,
+    "reason": "selected candidate has no exact occurrence in a source-reader Clause span",
+    "registry_sha256": "9de18353ae48f6fb56d43cdd47c6b0937aa3e9a70240ddf782fa9bfb59bf87a0",
+    "scope": "document identity and original-text location only",
+    "selections": [],
+    "source_truth_status": "UNCLASSIFIED; no truth or authority claim",
+    "status": "HOLD",
+    "version": "multigrain-source-binding-v1"
+   },
+   "source_identity_status": "identity_unverified",
+   "surface_route": {
+    "leaf": "material_1.txt",
+    "route_kind": "single_leaf_or_unbuilt",
+    "selected_leaf": "material_1.txt",
+    "trail": [
+     "material_1.txt"
+    ],
+    "used_for_candidate_selection": false,
+    "verdict": "ROUTED",
+    "via_api": [
+     "Base.lower"
+    ]
+   },
+   "trace": {
+    "calls": {
+     "Base.lower": 1,
+     "FullConstellation.ask": 1,
+     "FullConstellation.ask.hierarchy.gather": 1,
+     "conduct_tree.descend": 0,
+     "resolution.Ladder.vote_for_grain_trace": 4,
+     "resolution.Ladder.vote_for_selection": 4,
+     "resolution.ask_member_reads": 4,
+     "source_tree_leaf_walk": 1,
+     "source_tree_leaves_visited": 1,
+     "source_tree_nodes_visited": 1,
+     "surface.route": 0
+    },
+    "candidate_selection": "FullConstellation.ask(raw_question); its existing resolution consensus is the selector",
+    "elapsed_ms": 0.34,
+    "query_division_note": "FullConstellation.ask exposes at most six leaf names from its gather result",
+    "selector_query": "In one sentence, say how long a laptop can be borrowed.",
+    "source_join": "exact candidate core key plus configured source-leaf grain features",
+    "structural_views_are_source_votes": false
+   },
+   "truth_claim": false,
+   "used_for_answer": false,
+   "used_for_goal_realization": false,
+   "verdict": "CANDIDATE_SOURCE_LEAF_MATCHED"
+  },
+  "phase": "reader",
+  "reason": "mandatory request spans remain unread",
+  "remedy": {
+   "needs_registration": true,
+   "note": "no remedy recorded for this verdict",
+   "register": "質問された事項を示す出典を追加してください。",
+   "verdict": "UNKNOWN_UNREAD"
+  },
+  "runtime_mode": "round5",
+  "semantic": {
+   "budget": {
+    "candidates": 0,
+    "limits": {
+     "bindings": 64,
+     "candidates": 256,
+     "depth": 8,
+     "parse": 32,
+     "steps": 4096
+    },
+    "peak_bindings": 0,
+    "steps": 0
+   },
+   "request": {
+    "covered": [],
+    "obligations": [],
+    "plans": [],
+    "rules": [
+     "typed unread"
+    ],
+    "stages": [],
+    "text": "In one sentence, say how long a laptop can be borrowed.",
+    "unread": [
+     {
+      "reason": "unsupported request grammar",
+      "span": {
+       "end": 55,
+       "source": "question",
+       "start": 0,
+       "text": "In one sentence, say how long a laptop can be borrowed."
+      }
+     }
+    ]
+   },
+   "unread": [
+    {
+     "reason": "unsupported request grammar",
+     "span": {
+      "end": 55,
+      "source": "question",
+      "start": 0,
+      "text": "In one sentence, say how long a laptop can be borrowed."
+     }
+    }
+   ],
+   "verified": false,
+   "version": "round5a"
+  },
+  "sources": [],
+  "text": "この要求を裏づける導出を確認できません。",
+  "trace": [
+   {
+    "code_intent": false,
+    "content_intent": false,
+    "decision_input": "raw_request",
+    "fallback": false,
+    "part": "one.round5_route",
+    "status": "ran"
+   },
+   {
+    "obligations": 0,
+    "part": "question.read_semantic",
+    "plans": 0,
+    "status": "ran",
+    "unread": [
+     {
+      "reason": "unsupported request grammar",
+      "span": {
+       "end": 55,
+       "source": "question",
+       "start": 0,
+       "text": "In one sentence, say how long a laptop can be borrowed."
+      }
+     }
+    ]
+   },
+   {
+    "clauses": 0,
+    "ingest_ms": 60.82070799311623,
+    "part": "semantic_reader.document_view",
+    "source_unread": [
+     {
+      "reason": "unsupported clause grammar",
+      "span": {
+       "end": 88,
+       "source": "material_1.txt",
+       "start": 0,
+       "text": "The Marlow Library lends tablets for seven days. Laptops can be borrowed for three days."
+      }
+     }
+    ],
+    "source_unread_count": 1,
+    "source_unread_truncated": false,
+    "status": "ran"
+   },
+   {
+    "arity": 6,
+    "leaves": 1,
+    "nodes": 1,
+    "part": "semantic_route.LeafTree",
+    "reason": "fewer leaves than one routing node",
+    "status": "skipped"
+   },
+   {
+    "how_to_resolve": "質問された事項を示す出典を追加してください。",
+    "part": "remedy.remedy",
+    "status": "ran",
+    "verdict": "UNKNOWN_UNREAD"
+   },
+   {
+    "asks": "",
+    "part": "ask_back.question",
+    "reason": "verdict has no human-answerable candidate",
+    "status": "abstained"
+   },
+   {
+    "part": "coverage.document_needed",
+    "reason": "no domain witnesses",
+    "status": "abstained"
+   },
+   {
+    "part": "gap_graph.refusal_to_gap",
+    "reason": "no opt-in gap_path",
+    "status": "abstained"
+   },
+   {
+    "part": "grow.log_refusal",
+    "reason": "no queue opt-in or different verdict",
+    "status": "abstained"
+   },
+   {
+    "bound_source_supplied_to_goal_consumer": false,
+    "candidate_clause_span_causal_influence_proven": false,
+    "candidate_clause_span_cited_after_full_view_check": false,
+    "candidate_clause_span_match_count": 0,
+    "candidate_document_id_cited_after_full_view_check": false,
+    "candidate_sentence_span_cited_after_full_view_check": null,
+    "candidate_views_supplied_to_answer_verifier": false,
+    "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+    "independent_source_count": null,
+    "licenses_goal_realization": false,
+    "part": "multigrain_adapter.retrieve_multigrain_candidates",
+    "selected_candidate": "laptops",
+    "source_binding_reason": "selected candidate has no exact occurrence in a source-reader Clause span",
+    "source_binding_status": "HOLD",
+    "source_identity_status": "identity_unverified",
+    "status": "ran",
+    "verdict": "CANDIDATE_SOURCE_LEAF_MATCHED"
+   }
+  ],
+  "values": [],
+  "verdict": "UNKNOWN_UNREAD"
+ },
+ "stdout_text": null
+}

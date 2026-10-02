@@ -44,6 +44,20 @@ _KNOWN_TOKEN = re.compile(r"\b(?:sk-[A-Za-z0-9_-]{12,}|gh[pousr]_[A-Za-z0-9_]{20
 _CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
 _BIDI_CONTROLS = frozenset("\u061c\u200e\u200f\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069")
 _RECORD_KEY = re.compile(r"[A-Za-z0-9_.:-]{1,128}")
+# A model name and an effort level are passed as argument-array elements, and the
+# effort is embedded in a TOML string by ``codex -c``.  Closed patterns keep a quote
+# or a space from ever reaching either place.
+_MODEL_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,127}")
+_EFFORT_LEVEL = re.compile(r"[a-z]{1,16}")
+# Claude Code ``--permission-mode`` choices a frame may select.  ``bypassPermissions`` (turns
+# every confirmation off) and ``auto`` are refused on purpose: a frame never removes all checks.
+PERMISSION_MODES = ("acceptEdits", "default", "plan", "dontAsk")
+_REFUSED_PERMISSION_MODES = {
+    "bypassPermissions": "it switches every confirmation off",
+    "auto": "it lets the model decide which confirmations to skip",
+}
+_TOOL_NAME = re.compile(r"[A-Z][A-Za-z0-9]{0,63}")
+MAX_ALLOWED_TOOLS = 32
 
 
 class AgentAdapter(Protocol):
@@ -578,13 +592,143 @@ class FakeAdapter:
         handle.stopped = True
 
 
+def validate_model(value: Any) -> str:
+    """Return ``value`` if it is a model name that is safe to put in an argument array."""
+    if not isinstance(value, str) or _MODEL_NAME.fullmatch(value) is None:
+        raise ValueError("model must be 1-128 characters of letters, digits, '.', '_', ':' or '-', "
+                         "starting with a letter or digit")
+    return value
+
+
+def validate_effort(value: Any) -> str:
+    """Return ``value`` if it is a lowercase effort level such as ``high``."""
+    if not isinstance(value, str) or _EFFORT_LEVEL.fullmatch(value) is None:
+        raise ValueError("effort must be 1-16 lowercase letters")
+    return value
+
+
+def validate_permission_mode(value: Any) -> str:
+    """Return ``value`` if it is a Claude permission mode a frame or the CLI may select."""
+    if isinstance(value, str) and value in _REFUSED_PERMISSION_MODES:
+        raise ValueError(f"permission mode {value!r} is not allowed ({_REFUSED_PERMISSION_MODES[value]}); "
+                         f"use one of {', '.join(PERMISSION_MODES)}")
+    if not isinstance(value, str) or value not in PERMISSION_MODES:
+        raise ValueError(f"permission mode must be one of {', '.join(PERMISSION_MODES)}")
+    return value
+
+
+def validate_allowed_tools(value: Any) -> tuple[str, ...]:
+    """Normalise a comma-separated tool list (or a sequence of names) into a tuple of plain tool names.
+
+    Only bare names such as ``Edit`` or ``Write`` are accepted: 1-32 distinct names.  A parenthesised
+    rule such as ``Bash(git *)`` is not accepted here (it would need its own grammar and review).
+    """
+    if isinstance(value, str):
+        names = value.split(",")
+    elif isinstance(value, (tuple, list)):
+        names = list(value)
+    else:
+        raise ValueError("allowed tools must be a comma-separated list of tool names")
+    if not 1 <= len(names) <= MAX_ALLOWED_TOOLS:
+        raise ValueError(f"allowed tools must name 1-{MAX_ALLOWED_TOOLS} tools")
+    for name in names:
+        if not isinstance(name, str) or _TOOL_NAME.fullmatch(name) is None:
+            raise ValueError("each allowed tool must be a bare name of letters and digits starting with a "
+                             "capital letter (for example Edit,Write); rules with parentheses are not accepted")
+    if len(set(names)) != len(names):
+        raise ValueError("allowed tools must not repeat a tool")
+    return tuple(names)
+
+
+@dataclass(frozen=True)
+class LaunchSpec:
+    """How to start an external agent: an argument array, never a shell string.
+
+    ``stdin_path`` is a file whose content is the prompt.  The child receives it as
+    its standard input and sees end-of-file after the last byte, so a program that
+    reads its prompt from stdin cannot wait forever for more input.
+    """
+
+    argv: tuple[str, ...]
+    cwd: str
+    stdin_path: str
+    output_path: Optional[str]
+    backend: str
+
+
+def _launch_path(value: Any, name: str) -> str:
+    if not isinstance(value, (str, os.PathLike)) or not os.fspath(value):
+        raise ValueError(f"{name} must be a non-empty path")
+    text = os.fspath(value)
+    if "\x00" in text:
+        raise ValueError(f"{name} contains a NUL")
+    return text
+
+
+def codex_exec_launch(*, executable: str, model: str, effort: str, workdir: str | os.PathLike[str],
+                      prompt_path: str | os.PathLike[str],
+                      last_message_path: str | os.PathLike[str]) -> LaunchSpec:
+    """The working ``codex exec`` command: workspace-write sandbox, prompt from stdin.
+
+    The trailing ``-`` tells codex to read its prompt from stdin; the prompt itself is
+    never put in the argument array.  ``CodexExecAdapter.build_command`` keeps its
+    read-only, runner-injected shape and is not this function.
+    """
+    exe = _launch_path(executable, "executable")
+    work = _launch_path(workdir, "workdir")
+    return LaunchSpec(
+        argv=(exe, "exec", "--ignore-user-config", "-m", validate_model(model),
+              "-c", f'model_reasoning_effort="{validate_effort(effort)}"',
+              "-s", "workspace-write", "-C", work,
+              "-o", _launch_path(last_message_path, "last_message_path"), "-"),
+        cwd=work,
+        stdin_path=_launch_path(prompt_path, "prompt_path"),
+        output_path=_launch_path(last_message_path, "last_message_path"),
+        backend="codex-exec",
+    )
+
+
+def claude_print_launch(*, executable: str, model: str, effort: str, workdir: str | os.PathLike[str],
+                        prompt_path: str | os.PathLike[str], permission_mode: Optional[str] = None,
+                        allowed_tools: Any = None) -> LaunchSpec:
+    """``claude -p`` run in the work directory, prompt from stdin.
+
+    A permission option is added only when one is given (frame or command line): with
+    ``permission_mode`` the array ends ``--permission-mode <mode>``, and with ``allowed_tools``
+    ``--allowedTools <A,B>`` (one element; the option takes a variable number of values, so it
+    is always last).  With neither, the array is exactly the older one and a non-interactive
+    Claude may be unable to write.
+    """
+    exe = _launch_path(executable, "executable")
+    work = _launch_path(workdir, "workdir")
+    argv = [exe, "-p", "--model", validate_model(model), "--effort", validate_effort(effort)]
+    if permission_mode is not None:
+        argv += ["--permission-mode", validate_permission_mode(permission_mode)]
+    if allowed_tools is not None:
+        argv += ["--allowedTools", ",".join(validate_allowed_tools(allowed_tools))]
+    return LaunchSpec(
+        argv=tuple(argv),
+        cwd=work,
+        stdin_path=_launch_path(prompt_path, "prompt_path"),
+        output_path=None,
+        backend="claude-print",
+    )
+
+
 __all__ = [
     "AgentAdapter",
     "AgentEvent",
     "CodexExecAdapter",
     "FakeAdapter",
     "FakeHandle",
+    "LaunchSpec",
+    "claude_print_launch",
+    "codex_exec_launch",
     "compile_frame_brief",
     "parse_agent_output",
     "to_conductor_question",
+    "validate_allowed_tools",
+    "validate_effort",
+    "validate_model",
+    "validate_permission_mode",
 ]

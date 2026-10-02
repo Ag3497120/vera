@@ -1,0 +1,8 @@
+e11d33d1e89107c4b4a102b0f3494c4e8e13311e7b894ce1e42b394614495976  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B1_reading/v2/audit/baseline_check.py
+5d76b4e8706164cc868d76c1392459748d765f35226ab50976f169126016d3b6  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B1_reading/v2/audit/check_bank.py
+dad5590e94cfb33ccb27f625dfda170ff60b4758c8d519cb574caf10c9490839  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B1_reading/v2/audit/score.py
+d6302472bdb0e73dd5ac3e8301b26fd934ecaa083ba26450718b50dbe82688b4  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B2_chat/v2/audit/baseline_check.py
+c1ea45925c585202c5416b071869a9cd09bd82501f6253436729a5eb6047d25f  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B3_generation/v2/audit/baseline_check.py
+8a0d9e6611457b3047c6e0f048cabc1c8355cea28577c6773a57c4af2d587037  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/audit/baseline_check.py
+9a762608dd1963b5b3669a1e9574127570ee64c8b6f750eea8107251159c577e  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/audit/baseline_r3.py
+0b9291331bf3f43ebd29526485aa4bbdaeb9c08f61e52fb6d86b8d00a38c4128  /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B2_chat/v2/tools/check_items.py

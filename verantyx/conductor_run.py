@@ -891,3 +891,983 @@ def run_project(frame: ProjectFrame, adapter: AgentAdapter, **kwargs: Any) -> Ru
 
 
 __all__ = ["ConductorRun", "RunResult", "JournalError", "run_project"]
+
+
+# ---------------------------------------------------------------------------
+# Conduct entry: one frame file in, an agent start (or a typed refusal) out.
+# Everything below was added after ConductorRun / run_project and does not
+# change them.  CLI: ``python -m verantyx.cli conduct``; guide: docs/CONDUCT_ENTRY.md.
+# ---------------------------------------------------------------------------
+import fcntl as _fcntl
+import re as _re
+import subprocess as _subprocess
+
+from . import agent_runtime as _agent_runtime
+from . import memory_frame as _memory_frame
+from . import project_frame as _project_frame
+from .project_frame import FrameRefusal
+
+LEDGER_SCHEMA = "conduct-ledger-v1"
+ADAPTER_NAMES = ("codex", "claude", "fake")
+_TASK_IN_BRIEF = _re.compile(r"^Current frame task:\s*(.*?)\s*$", _re.M)
+
+
+class LedgerError(ValueError):
+    """The conduct ledger cannot be extended without losing or inventing rows."""
+
+
+class ConductLedger:
+    """Append-only JSONL ledger of what the conduct entry read, refused and launched.
+
+    Every row carries ``schema``, a ledger-wide consecutive ``seq``, ``run_id`` and
+    ``type``.  A ledger whose ``seq`` jumps, or whose last line is cut off, is not
+    extended (the same discipline as the driver journal).
+    """
+
+    def __init__(self, path: str | os.PathLike[str]):
+        self.path = Path(path)
+        self.rows: list[dict[str, Any]] = self._read()
+
+    def _read(self) -> list[dict[str, Any]]:
+        if not self.path.exists():
+            return []
+        try:
+            raw = self.path.read_bytes()
+        except OSError as exc:
+            raise LedgerError("ledger cannot be read") from exc
+        if raw and not raw.endswith(b"\n"):
+            raise LedgerError("ledger ends with an incomplete row")
+        rows: list[dict[str, Any]] = []
+        try:
+            for line in raw.splitlines():
+                value = json.loads(line)
+                if (not isinstance(value, dict) or value.get("schema") != LEDGER_SCHEMA or
+                        type(value.get("seq")) is not int or value["seq"] != len(rows) or
+                        not isinstance(value.get("type"), str) or not isinstance(value.get("run_id"), str)):
+                    raise LedgerError("ledger has a malformed or out-of-sequence row")
+                rows.append(value)
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise LedgerError("ledger contains malformed JSON") from exc
+        return rows
+
+    def append(self, run_id: str, kind: str, **fields: Any) -> dict[str, Any]:
+        try:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
+        except OSError as exc:
+            raise LedgerError("ledger cannot be opened for append") from exc
+        try:
+            _fcntl.flock(fd, _fcntl.LOCK_EX)
+            self.rows = self._read()  # another writer may have appended since we last looked
+            row = {"schema": LEDGER_SCHEMA, "seq": len(self.rows), "run_id": run_id, "type": kind,
+                   "time": time.time(), **fields}
+            data = (json.dumps(row, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+                               allow_nan=False) + "\n").encode("utf-8")
+            view = memoryview(data)
+            while view:
+                view = view[os.write(fd, view):]
+            os.fsync(fd)
+        except (OSError, TypeError, ValueError, RecursionError) as exc:
+            if isinstance(exc, LedgerError):
+                raise
+            raise LedgerError("ledger row could not be made durable") from exc
+        finally:
+            os.close(fd)
+        self.rows.append(row)
+        return row
+
+    def events(self, kind: str) -> list[dict[str, Any]]:
+        return [row for row in self.rows if row.get("type") == kind]
+
+
+@dataclass(frozen=True)
+class ConductOutcome:
+    """The single result of a conduct call.  ``exit_code``: 0 ok, 1 incomplete, 2 refused, 3 internal."""
+
+    verdict: str
+    exit_code: int
+    refusal: Mapping[str, Any] | None
+    ledger: str | None
+    run_id: str
+    blocking: Mapping[str, Any] | None = None
+    result: Mapping[str, Any] | None = None
+    outcome: str | None = None  # the typed end of a real-agent run (PROCESS_OUTCOMES); null otherwise
+
+    def as_dict(self) -> dict[str, Any]:
+        return {"verdict": self.verdict, "refusal": dict(self.refusal) if self.refusal else None,
+                "ledger": self.ledger, "run_id": self.run_id,
+                "blocking": dict(self.blocking) if self.blocking else None,
+                "result": dict(self.result) if self.result else None,
+                "outcome": self.outcome}
+
+
+class _LedgerAdapter:
+    """Wrap an adapter so the ledger shows that, and with what, ``start`` was reached."""
+
+    def __init__(self, inner: AgentAdapter, ledger: ConductLedger, run_id: str, name: str):
+        self._inner = inner
+        self._ledger = ledger
+        self._run_id = run_id
+        self._name = name
+
+    def start(self, brief: str) -> Any:
+        digest = hashlib.sha256(brief.encode("utf-8")).hexdigest() if isinstance(brief, str) else None
+        match = _TASK_IN_BRIEF.search(brief) if isinstance(brief, str) else None
+        self._ledger.append(self._run_id, "AGENT_START_CALLED", adapter=self._name, brief_sha256=digest,
+                            brief_chars=len(brief) if isinstance(brief, str) else None,
+                            task_id=match.group(1) if match else None)
+        try:
+            handle = self._inner.start(brief)
+        except Exception as exc:
+            self._ledger.append(self._run_id, "AGENT_START_FAILED", adapter=self._name,
+                                error=type(exc).__name__, message=str(exc)[:256])
+            raise
+        self._ledger.append(self._run_id, "AGENT_START_RETURNED", adapter=self._name,
+                            handle_type=type(handle).__name__, brief_sha256=digest)
+        return handle
+
+    def poll(self, handle: Any) -> Any:
+        return self._inner.poll(handle)
+
+    def send(self, handle: Any, text: str) -> None:
+        self._inner.send(handle, text)
+
+    def stop(self, handle: Any) -> None:
+        self._inner.stop(handle)
+
+    def __getattr__(self, name: str) -> Any:
+        # ConductorRun resumes only adapters that expose ``recover``; keep that honest.
+        if name == "recover":
+            inner = getattr(self._inner, "recover", None)
+            if callable(inner):
+                return inner
+        raise AttributeError(name)
+
+
+def _kind_counts(records: Sequence[Mapping[str, Any]]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for record in records:
+        counts[str(record.get("kind"))] = counts.get(str(record.get("kind")), 0) + 1
+    return dict(sorted(counts.items()))
+
+
+def _resolve_setting(frame: _project_frame.ConductFrame, key: str, cli_value: Any) -> tuple[Any, str, Any]:
+    """CLI beats the frame.  Returns (value, source, frame value overridden by the CLI)."""
+    frame_values = frame.agent_settings.get(key, ())
+    if len(frame_values) > 1:
+        raise FrameRefusal("AGENT_SETTING_INVALID",
+                           f"the frame states {len(frame_values)} different values for {key}; keep exactly one",
+                           f"{key}: {', '.join(frame_values)}", source=frame.source)
+    frame_value = frame_values[0] if frame_values else None
+    if cli_value is not None:
+        text = str(cli_value) if not isinstance(cli_value, bool) else "<bool>"
+        problem = _project_frame.validate_agent_setting(key, text)
+        if problem:
+            raise FrameRefusal("AGENT_SETTING_INVALID", f"fix the command-line value for {key}: {problem}",
+                               f"{key}={text!r}", source=frame.source)
+        return text, "cli", frame_value
+    if frame_value is not None:
+        return frame_value, "frame", None
+    return None, "unset", None
+
+
+def _check_git_repo(repo: Path) -> None:
+    try:
+        _agent_runtime._git_root(repo)
+        _agent_runtime._git(repo, "rev-parse", "HEAD")
+    except (ValueError, OSError, _subprocess.SubprocessError) as exc:
+        raise FrameRefusal("REPO_NOT_GIT",
+                           "run 'git init' in the repository and make at least one commit "
+                           "(the agent works in a git worktree created from HEAD)",
+                           f"{type(exc).__name__}: {str(exc)[:200]}", source=os.fspath(repo)) from exc
+
+
+# ---------------------------------------------------------------------------
+# W2-a: run a real agent to its end, then check the acceptance commands ourselves.
+# Used by ``conduct_entry`` for ``--adapter codex|claude`` without ``--dry-run``.
+# ``ConductorRun`` is not used to run (it treats every prose line as a question and a
+# first empty poll as the end); only its constructor checks, ``_compile_brief`` and
+# ORDER graph are reused.  Guide: docs/CONDUCT_RUN.md.
+# ---------------------------------------------------------------------------
+import shutil as _shutil
+import signal as _signal
+import threading as _threading
+
+from . import conductor as _conductor
+
+DEFAULT_AGENT_TIMEOUT_SECONDS = 1800        # design value; frame [agent_settings] / --agent-timeout-seconds override
+DEFAULT_ACCEPTANCE_TIMEOUT_SECONDS = 600    # design value; per acceptance command
+DEFAULT_AGENT_OUTPUT_LIMIT = 8 * 1024 * 1024  # design value; the runtime's own default is 64 KiB
+GUARD_GRACE_SECONDS = 30.0                  # conductor-side deadline = timeout + this
+POLL_INTERVAL_SECONDS = 0.2
+TEXT_CAP_BYTES = 65536                      # per stdout / stderr kept in one ledger row
+TAIL_BYTES = 4096
+SANDBOX_EXEC = "/usr/bin/sandbox-exec"      # the only way acceptance commands run; no switch turns it off
+SANDBOX_PROFILE = (
+    '(version 1)(allow default)(deny network*)'
+    '(deny file-write* (require-all (require-not (subpath (param "WT"))) '
+    '(require-not (subpath (param "TMPD"))) (require-not (subpath "/dev"))))'
+)
+COMMIT_IDENTITY = ("Vera conductor", "conductor@verantyx.invalid")
+
+PROCESS_OUTCOMES = (
+    "COMPLETE", "ACCEPTANCE_FAILED", "ACCEPTANCE_UNVERIFIED", "HUMAN_JUDGMENT_PENDING", "TIMED_OUT",
+    "AGENT_FAILED", "AGENT_LIMIT_REACHED", "ALLOWLIST_VIOLATION", "AGENT_COMMITTED", "REPO_CHANGED",
+    "OUTPUT_LIMIT", "WORKTREE_CHECK_FAILED", "STOPPED", "AGENT_START_FAILED", "ORDER_BLOCKED",
+    "MULTIPLE_TASKS_UNSUPPORTED", "NO_TASK", "COMMIT_FAILED",
+)
+ACCEPTANCE_STATUSES = ("PASS", "FAIL", "REFUSED", "ERROR", "NOT_EVALUATED", "HUMAN")
+# Where the wording comes from (read from the program files, nothing was launched):
+#   codex   "You’ve hit your usage limit..."   (apostrophe U+2019)
+#   claude  "You've hit your <name> limit"      (ASCII apostrophe; name is session / fast / ...)
+# One closed pattern covers both apostrophes; it is matched against the whole agent output and
+# against codex's last-message file.
+LIMIT_TEXT = _re.compile("You(?:'|’)ve hit your\\b[^\\n]{0,40}?\\blimit")
+_NETWORK_PROGRAMS = frozenset({"curl", "wget", "ssh", "scp", "sftp", "rsync", "nc", "ncat", "netcat",
+                               "telnet", "ftp", "aria2c", "gh", "brew"})
+_NETWORK_SUBCOMMANDS = {
+    "git": frozenset({"clone", "fetch", "pull", "push", "ls-remote", "submodule", "remote"}),
+    "pip": frozenset({"install", "download"}), "pip3": frozenset({"install", "download"}),
+    "npm": frozenset({"install", "i", "ci", "add", "publish"}),
+    "yarn": frozenset({"install", "i", "ci", "add", "publish"}),
+    "pnpm": frozenset({"install", "i", "ci", "add", "publish"}),
+}
+_PYTHON_PROGRAM = _re.compile(r"python[0-9.]*")
+
+
+def _capped_text(data: bytes) -> tuple[str, int, bool]:
+    return data[:TEXT_CAP_BYTES].decode("utf-8", "replace"), len(data), len(data) > TEXT_CAP_BYTES
+
+
+def _tail_text(data: bytes, size: int = TAIL_BYTES) -> str:
+    return data[-size:].decode("utf-8", "replace")
+
+
+def _task_acceptance_snapshot(frame: ProjectFrame, task_id: str) -> list[dict[str, Any]]:
+    """The acceptance records of one task, copied before the agent starts (frame order)."""
+    key = _conductor._term_key(task_id)
+    items: list[dict[str, Any]] = []
+    for record in frame._active():
+        if record.get("kind") != "ACCEPTANCE":
+            continue
+        spec = record.get("witness", {}).get("acceptance", {})
+        if _conductor._term_key(str(spec.get("task_id", ""))) != key:
+            continue
+        items.append(json.loads(json.dumps({
+            "record_id": record.get("id"), "item": spec.get("item", record.get("slots", {}).get("subject")),
+            "witness": spec.get("witness", {}), "human_judged": bool(spec.get("human_judged"))})))
+    return items
+
+
+def _command_policy(argv: Sequence[str], worktree: str, frame: ProjectFrame) -> str | None:
+    """Why a command is refused before it runs (a closed reason), or ``None``.
+
+    This is a static look at an argument array, not an interpretation of any shell: what is
+    actually enforced is the sandbox (no network, no writes outside the worktree).
+    """
+    program = os.path.basename(argv[0])
+    rest = list(argv[1:])
+    if program in _NETWORK_PROGRAMS:
+        return "NETWORK_PROGRAM"
+    subcommands = _NETWORK_SUBCOMMANDS.get(program)
+    if subcommands is not None and any(arg in subcommands for arg in rest):
+        return "NETWORK_SUBCOMMAND"
+    if _PYTHON_PROGRAM.fullmatch(program):
+        for index, arg in enumerate(rest[:-1]):
+            if arg == "-m" and rest[index + 1] in ("pip", "pip3"):
+                if any(later in ("install", "download") for later in rest[index + 2:]):
+                    return "NETWORK_SUBCOMMAND"
+    if any("://" in arg for arg in rest):
+        return "NETWORK_URL"
+    root = os.path.realpath(worktree)
+    for arg in rest:
+        candidates = [arg]
+        if arg.startswith("-") and "=" in arg:
+            candidates.append(arg.split("=", 1)[1])
+        for text in candidates:
+            if ".." in text.split("/"):
+                return "PATH_OUTSIDE_WORKTREE"
+            if text.startswith(("/", "~")):
+                target = os.path.realpath(os.path.expanduser(text))
+                if target != root and not target.startswith(root + os.sep):
+                    return "PATH_OUTSIDE_WORKTREE"
+    if frame._protected_action(" ".join(argv)):
+        return "PROTECTED_ACTION"
+    return None
+
+
+def _sandbox_argv(argv: Sequence[str], worktree: str, tmp_dir: str) -> list[str]:
+    return [SANDBOX_EXEC, "-D", f"WT={os.path.realpath(worktree)}", "-D", f"TMPD={os.path.realpath(tmp_dir)}",
+            "-p", SANDBOX_PROFILE, "--", *argv]
+
+
+def _sandbox_selfcheck(worktree: str, tmp_dir: str) -> dict[str, Any]:
+    """Run ``/usr/bin/true`` under the sandbox once; a failure means no command runs at all."""
+    if not os.path.exists(SANDBOX_EXEC):
+        return {"ok": False, "error": "SANDBOX_NOT_FOUND", "sandbox": SANDBOX_EXEC}
+    try:
+        done = _subprocess.run(_sandbox_argv(["/usr/bin/true"], worktree, tmp_dir), stdin=_subprocess.DEVNULL,
+                               capture_output=True, timeout=30, check=False)
+    except (OSError, _subprocess.SubprocessError) as exc:
+        return {"ok": False, "error": type(exc).__name__, "sandbox": SANDBOX_EXEC}
+    return {"ok": done.returncode == 0, "exit_code": done.returncode, "sandbox": SANDBOX_EXEC,
+            "stderr": done.stderr[-512:].decode("utf-8", "replace"),
+            "error": None if done.returncode == 0 else "SANDBOX_SELFCHECK_FAILED"}
+
+
+def _kill_group(pgid: int) -> None:
+    try:
+        os.killpg(pgid, _signal.SIGKILL)
+    except (ProcessLookupError, PermissionError, OSError):
+        pass
+
+
+def _run_acceptance_command(argv: list[str], worktree: str, tmp_dir: Path, timeout: float) -> dict[str, Any]:
+    """Run one allowed command under the sandbox; always returns a dict with ``status`` set later."""
+    env = os.environ.copy()
+    env.update({"PYTHONDONTWRITEBYTECODE": "1", "GIT_TERMINAL_PROMPT": "0", "TMPDIR": os.fspath(tmp_dir)})
+    first = argv[0]
+    path_arg = os.path.join(worktree, first) if "/" in first and not os.path.isabs(first) else first
+    if _shutil.which(path_arg, path=env.get("PATH", os.defpath)) is None:
+        return {"error": "PROGRAM_NOT_FOUND", "exit_code": None}
+    out_path, err_path = tmp_dir / "stdout.bin", tmp_dir / "stderr.bin"
+    started = time.monotonic()
+
+    def limits() -> None:  # a runaway command cannot fill the disk
+        import resource
+        resource.setrlimit(resource.RLIMIT_FSIZE, (256 * 1024 * 1024, 256 * 1024 * 1024))
+
+    try:
+        with out_path.open("wb") as out, err_path.open("wb") as err:
+            proc = _subprocess.Popen(_sandbox_argv(argv, worktree, os.fspath(tmp_dir)), cwd=worktree,
+                                     stdin=_subprocess.DEVNULL, stdout=out, stderr=err, env=env,
+                                     start_new_session=True, preexec_fn=limits)
+            try:
+                code = proc.wait(timeout=timeout)
+                error = None
+            except _subprocess.TimeoutExpired:
+                _kill_group(proc.pid)
+                proc.wait()
+                code, error = None, "COMMAND_TIMED_OUT"
+            _kill_group(proc.pid)  # anything the command left behind
+    except OSError as exc:
+        return {"error": "OSError", "error_detail": f"{type(exc).__name__}: {exc.strerror or exc}", "exit_code": None}
+    result: dict[str, Any] = {"error": error, "exit_code": code, "duration_seconds": round(time.monotonic() - started, 3)}
+    stdout = out_path.read_bytes() if out_path.exists() else b""
+    stderr = err_path.read_bytes() if err_path.exists() else b""
+    result["stdout"], result["stdout_bytes"], out_cut = _capped_text(stdout)
+    result["stderr"], result["stderr_bytes"], err_cut = _capped_text(stderr)
+    result["truncated"] = out_cut or err_cut
+    return result
+
+
+def _git_text(repo: os.PathLike[str] | str, *args: str, timeout: float = 30.0) -> tuple[int, str]:
+    env = os.environ.copy()
+    env["GIT_TERMINAL_PROMPT"] = "0"
+    env["GIT_OPTIONAL_LOCKS"] = "0"
+    done = _subprocess.run(["git", "-C", os.fspath(repo), *args], capture_output=True, env=env,
+                           timeout=timeout, check=False)
+    return done.returncode, done.stdout.decode("utf-8", "replace")
+
+
+def _repo_guard(repo: Path, state: Path) -> dict[str, Any]:
+    """What the original repository looks like: refs, HEAD, symbolic HEAD and working-tree status."""
+    exclude: list[str] = []
+    try:
+        relative = os.path.relpath(os.path.realpath(state), os.path.realpath(repo))
+        if not relative.startswith(".."):
+            exclude = ["--", ".", f":(exclude){relative}"]
+    except ValueError:
+        pass
+    snapshot: dict[str, Any] = {}
+    for name, args in (("refs", ("for-each-ref", "--format=%(refname) %(objectname)")),
+                       ("head", ("rev-parse", "HEAD")), ("symbolic_head", ("symbolic-ref", "-q", "HEAD")),
+                       ("status", ("status", "--porcelain=v1", "--untracked-files=all", *exclude))):
+        code, text = _git_text(repo, *args)
+        snapshot[name] = text if name == "symbolic_head" or code == 0 else f"<git exit {code}>"
+    return snapshot
+
+
+class _StopFlag:
+    """SIGTERM / SIGINT turn into a flag while the agent is awaited (main thread only)."""
+
+    def __init__(self) -> None:
+        self.source: str | None = None
+        self.installed = False
+        self._previous: dict[int, Any] = {}
+
+    def _handler(self, signum: int, frame: Any) -> None:
+        self.source = "signal"
+
+    def __enter__(self) -> "_StopFlag":
+        if _threading.current_thread() is _threading.main_thread():
+            try:
+                for signum in (_signal.SIGTERM, _signal.SIGINT):
+                    self._previous[signum] = _signal.signal(signum, self._handler)
+                self.installed = True
+            except (ValueError, OSError):
+                self.installed = False
+        return self
+
+    def __exit__(self, *exc: Any) -> None:
+        for signum, previous in self._previous.items():
+            try:
+                _signal.signal(signum, previous)
+            except (ValueError, OSError):
+                pass
+
+
+def _group_alive(pgid: int) -> bool:
+    try:
+        os.killpg(pgid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
+def _process_check(handle: Any) -> dict[str, Any]:
+    """After the agent ended: has the whole process group (supervisor, agent, children) gone?"""
+    process = getattr(handle, "process", None)
+    reaped = None
+    if process is not None:
+        try:
+            reaped = process.wait(timeout=2)
+        except _subprocess.TimeoutExpired:
+            reaped = None
+    pgid = handle.pid
+    deadline = time.monotonic() + 1.0
+    alive = _group_alive(pgid)
+    while alive and time.monotonic() < deadline:  # members being reaped take a moment to vanish
+        time.sleep(0.02)
+        alive = _group_alive(pgid)
+    check: dict[str, Any] = {"supervisor_pid": handle.pid, "pgid": pgid, "supervisor_exit": reaped,
+                             "group_alive": alive, "group_alive_after_retry": None}
+    if alive:
+        _kill_group(pgid)
+        deadline = time.monotonic() + 1.0
+        while time.monotonic() < deadline and _group_alive(pgid):
+            time.sleep(0.02)
+        check["group_alive_after_retry"] = _group_alive(pgid)
+    return check
+
+
+def _terminal_row(runtime: Any, session_id: str) -> dict[str, Any]:
+    rows = [row for row in runtime.session_rows() if row.get("session_id") == session_id and
+            row.get("type") in _agent_runtime._TERMINAL_EVENTS]
+    return rows[-1] if rows else {}
+
+
+def _commit_in_worktree(worktree: Path, base: str, allowlist: Sequence[str], run_id: str, task_id: str,
+                        record_ids: Sequence[str]) -> dict[str, Any]:
+    """Commit the staged index inside the worktree (detached HEAD: no branch moves)."""
+    code, text = _git_text(worktree, "diff", "--cached", "--name-only", "-z", base)
+    if code != 0:
+        return {"status": "FAILED", "reason": "staged paths could not be listed"}
+    staged = [path for path in text.split("\0") if path]
+    outside = [path for path in staged if not _agent_runtime._allowed_path(path, allowlist)]
+    if outside:
+        return {"status": "ALLOWLIST_VIOLATION", "paths": outside[:16]}
+    if not staged:
+        return {"status": "SKIPPED", "reason": "no changes"}
+    env = os.environ.copy()
+    env["GIT_TERMINAL_PROMPT"] = "0"
+    done = _subprocess.run(
+        ["git", "-C", os.fspath(worktree), "-c", f"user.name={COMMIT_IDENTITY[0]}",
+         "-c", f"user.email={COMMIT_IDENTITY[1]}", "-c", "commit.gpgsign=false", "-c", "core.hooksPath=/dev/null",
+         "commit", "--no-verify", "-q", "-m", f"conduct: {task_id} (run {run_id})",
+         "-m", "acceptance: " + ", ".join(str(r) for r in record_ids)],
+        capture_output=True, env=env, timeout=60, check=False)
+    if done.returncode != 0:
+        return {"status": "FAILED", "reason": done.stderr[-256:].decode("utf-8", "replace")}
+    _, sha = _git_text(worktree, "rev-parse", "HEAD")
+    _, shown = _git_text(worktree, "show", "--name-only", "--format=", "HEAD")
+    return {"status": "COMMITTED", "sha": sha.strip(), "parent": base,
+            "paths": [line for line in shown.splitlines() if line]}
+
+
+def _run_agent_process(
+    *, run: ConductorRun, runtime: _agent_runtime.AgentRuntime, ledger: ConductLedger, run_id: str,
+    adapter_name: str, frame: _project_frame.ConductFrame, conductor_frame: ProjectFrame, run_dir: Path,
+    repo: Path, state: Path, settings: Mapping[str, Mapping[str, Any]], executable: str,
+    allowlist: Sequence[str], put: Callable[..., None],
+) -> ConductOutcome:
+    """One real agent, awaited to its end; acceptance is run by the conductor, never reported."""
+    ledger_path = os.fspath(ledger.path)
+    agent_timeout = float(settings["agent_timeout_seconds"]["value"])
+    acceptance_timeout = float(settings["acceptance_timeout_seconds"]["value"])
+    stop_file = run_dir / "STOP"
+
+    def conclude(outcome: str, reason: str, task_id: str | None, *, failed: Sequence[str] = (),
+                 kept: bool = False, interrupted: bool = False, completed: Sequence[str] = ()) -> ConductOutcome:
+        assert outcome in PROCESS_OUTCOMES
+        pending = [] if outcome == "COMPLETE" else list(run.task_ids)
+        put("RUN_FINISHED", complete=outcome == "COMPLETE", completed=list(completed), pending=pending,
+            blocking_kind=None if outcome == "COMPLETE" else outcome, interrupted=interrupted,
+            driver_log=None, effective_concurrency=1, outcome=outcome, worktree_kept=kept, reason=reason)
+        blocking = None if outcome == "COMPLETE" else {
+            "kind": outcome, "task_id": task_id, "reason": reason, "failed_criteria": list(failed)}
+        view = {"complete": outcome == "COMPLETE", "completed": list(completed), "pending": pending,
+                "interrupted": interrupted, "outcome": outcome}
+        if outcome == "COMPLETE":
+            return ConductOutcome("RUN_COMPLETE", 0, None, ledger_path, run_id, None, view, outcome)
+        return ConductOutcome("RUN_INCOMPLETE", 1, None, ledger_path, run_id, blocking, view, outcome)
+
+    tasks = list(run.task_ids)
+    if not tasks:
+        return conclude("NO_TASK", "the frame has no GOAL task to run", None)
+    if len(tasks) > 1:
+        return conclude("MULTIPLE_TASKS_UNSUPPORTED",
+                        f"the frame has {len(tasks)} GOAL tasks; this path runs exactly one", None)
+    task_id = tasks[0]
+    if run.order_predecessors.get(_task_key(task_id)):
+        return conclude("ORDER_BLOCKED", "the task has ORDER predecessors; this path does not run predecessors",
+                        task_id)
+    try:
+        brief = run._compile_brief(task_id)
+    except ValueError as exc:
+        raise FrameRefusal("FRAME_COMPILE_ERROR", "shorten the frame so its brief fits the adapter limit",
+                           str(exc)[:300], source=frame.source) from exc
+    snapshot = _task_acceptance_snapshot(conductor_frame, task_id)  # taken before the agent can touch memory
+    put("RUN_LIMITS", agent_timeout_seconds=dict(settings["agent_timeout_seconds"]),
+        acceptance_timeout_seconds=dict(settings["acceptance_timeout_seconds"]),
+        output_limit_bytes=runtime.output_limit, poll_interval=runtime.poll_interval,
+        stop_file=os.fspath(stop_file), guard_grace_seconds=GUARD_GRACE_SECONDS,
+        acceptance_items=[{"record_id": s["record_id"], "item": s["item"], "kind": s["witness"].get("kind"),
+                           "human_judged": s["human_judged"]} for s in snapshot])
+    if _shutil.which(executable) is None:
+        put("AGENT_START_FAILED", adapter=adapter_name, error="ExecutableNotFound",
+            message=f"{executable!r} is not an executable on PATH or at that path")
+        return conclude("AGENT_START_FAILED", f"{executable!r} was not found or is not executable", task_id)
+    guard_before = _repo_guard(repo, state)
+    put("REPO_GUARD", when="before", **guard_before)
+    wrapped = _LedgerAdapter(runtime, ledger, run_id, adapter_name)
+    try:
+        handle = wrapped.start(brief)
+    except Exception as exc:
+        return conclude("AGENT_START_FAILED", f"start raised {type(exc).__name__}", task_id)
+    started = time.monotonic()
+    guard_deadline = started + agent_timeout + GUARD_GRACE_SECONDS
+    events_seen: dict[str, int] = {}
+    stop_source: str | None = None
+    guard_used = False
+    wait_error: str | None = None
+    with _StopFlag() as flag:
+        put("AGENT_WAITING", session_id=handle.session_id, pid=handle.pid, pgid=handle.pid,
+            worktree=os.fspath(handle.worktree), stop_file=os.fspath(stop_file),
+            signal_handlers=flag.installed, deadline_wall=handle.deadline_wall)
+        try:
+            while True:
+                if not handle.finalized:
+                    if flag.source is None and stop_file.exists():
+                        flag.source = "file"
+                    if flag.source is not None:
+                        stop_source = flag.source
+                        runtime.stop(handle)
+                        break
+                    if time.monotonic() >= guard_deadline:
+                        guard_used = True
+                        runtime.stop(handle)
+                        break
+                for event in runtime.poll(handle):
+                    kind = str(event.get("type"))
+                    events_seen[kind] = events_seen.get(kind, 0) + 1
+                if handle.finalized and not handle.pending:
+                    break
+        except Exception as exc:  # the wait itself failed: never leave the child running
+            wait_error = f"{type(exc).__name__}: {str(exc)[:200]}"
+        finally:
+            if not handle.finalized:
+                try:
+                    runtime.stop(handle)
+                except Exception:
+                    pass
+    elapsed = round(time.monotonic() - started, 3)
+
+    terminal = _terminal_row(runtime, handle.session_id)
+    kind = handle.final_kind
+    created = next((row for row in runtime.session_rows() if row.get("session_id") == handle.session_id and
+                    row.get("type") == "SESSION_CREATED"), {})
+    base = str(created.get("base_commit", ""))
+    session_dir = handle.session_dir
+    output_file = session_dir / "agent.output"
+    output = output_file.read_bytes() if output_file.exists() else b""
+    last_file = session_dir / "last_message.txt"
+    last = last_file.read_bytes() if last_file.exists() else b""
+    limit_seen = bool(LIMIT_TEXT.search(output.decode("utf-8", "replace")) or
+                      LIMIT_TEXT.search(last.decode("utf-8", "replace")))
+    changed = list(terminal.get("changed_paths", ())) if kind == "SESSION_ACCEPTED" else None
+    exit_code = terminal.get("exit_code")
+    put("AGENT_EXITED", runtime_terminal=kind, terminal_message=handle.final_message, exit_code=exit_code,
+        elapsed_seconds=elapsed, changed_paths=changed, output_path=os.fspath(output_file),
+        output_bytes=len(output), output_sha256=hashlib.sha256(output).hexdigest(), output_tail=_tail_text(output),
+        last_message_path=os.fspath(last_file) if last_file.exists() else None, last_message_tail=_tail_text(last),
+        limit_text_seen=limit_seen, events_seen=dict(sorted(events_seen.items())),
+        guard_deadline_used=guard_used, stop_source=stop_source, wait_error=wait_error,
+        session_id=handle.session_id)
+    put("AGENT_PROCESS_CHECK", **_process_check(handle))
+    after = _repo_guard(repo, state)
+    repo_changed = any(after[name] != guard_before.get(name) for name in ("refs", "head", "symbolic_head", "status"))
+    put("REPO_GUARD", when="after", changed=repo_changed, **after)
+    worktree = handle.worktree
+    committed_by_agent = False
+    if kind == "SESSION_ACCEPTED" and worktree.exists():
+        _, head_now = _git_text(worktree, "rev-parse", "HEAD")
+        committed_by_agent = head_now.strip() != base
+
+    def discard() -> None:
+        if worktree.exists():
+            try:
+                runtime.discard_worktree(handle)
+            except Exception:
+                pass
+
+    message = handle.final_message
+    early: tuple[str, str] | None = None
+    if stop_source is not None:
+        early = ("STOPPED", f"stopped by {stop_source}")
+    elif guard_used or kind == "SESSION_TIMED_OUT":
+        early = ("TIMED_OUT", f"the agent did not finish within {int(agent_timeout)} seconds")
+    elif wait_error is not None:
+        early = ("AGENT_FAILED", f"waiting for the agent failed: {wait_error}")
+    elif kind == "SESSION_OUTPUT_LIMIT":
+        early = ("OUTPUT_LIMIT", f"agent output exceeded {runtime.output_limit} bytes")
+    elif limit_seen and (kind == "SESSION_PROCESS_FAILED" or (kind == "SESSION_ACCEPTED" and not changed)):
+        early = ("AGENT_LIMIT_REACHED", "the agent reported a usage limit and did no work")
+    elif kind == "SESSION_PROCESS_FAILED":
+        early = ("AGENT_FAILED", f"agent exited with status {exit_code}")
+    elif kind == "SESSION_REJECTED" and message.startswith("write allowlist violation"):
+        early = ("ALLOWLIST_VIOLATION", message)
+    elif kind == "SESSION_REJECTED":
+        early = ("WORKTREE_CHECK_FAILED", message)
+    elif kind != "SESSION_ACCEPTED":
+        early = ("AGENT_FAILED", f"agent ended without an accepted result ({kind or 'no terminal'})")
+    elif repo_changed:
+        early = ("REPO_CHANGED", "the original repository's refs, HEAD or working tree changed during the run")
+    elif committed_by_agent:
+        early = ("AGENT_COMMITTED", "the agent moved the worktree HEAD; only the conductor commits")
+    if early is not None:
+        discard()
+        return conclude(early[0], early[1], task_id, interrupted=stop_source is not None)
+
+    # ---- acceptance: the conductor runs the frame's commands itself, in the worktree
+    work = os.path.realpath(worktree)
+    acc_dir = run_dir / "acceptance-tmp"
+    acc_dir.mkdir(parents=True, exist_ok=True)
+    _, before_status = _git_text(worktree, "status", "--porcelain=v1", "--untracked-files=all")
+    command_items = [s for s in snapshot if not s["human_judged"] and s["witness"].get("kind") == "command_exit"]
+    check: dict[str, Any] | None = None
+    sandbox_dir = acc_dir / "selfcheck"
+    sandbox_dir.mkdir(exist_ok=True)
+    if any(isinstance(s["witness"].get("command"), list) for s in command_items):
+        check = _sandbox_selfcheck(work, os.fspath(sandbox_dir))
+        put("SANDBOX_CHECK", **check)
+    statuses: list[dict[str, Any]] = []
+    for number, item in enumerate(snapshot):
+        witness = item["witness"]
+        common = {"acceptance_record_id": item["record_id"], "item": item["item"]}
+        if item["human_judged"]:
+            statuses.append({**common, "status": "HUMAN"})
+            put("ACCEPTANCE_ITEM", witness_kind="human-judged", status="HUMAN", **common)
+            continue
+        if witness.get("kind") != "command_exit":
+            statuses.append({**common, "status": "NOT_EVALUATED"})
+            put("ACCEPTANCE_ITEM", witness_kind=witness.get("kind"), status="NOT_EVALUATED",
+                reason="only command_exit witnesses are evaluated by the conductor", **common)
+            continue
+        raw = witness.get("command")
+        expected = witness.get("expected_exit", 0)
+        row: dict[str, Any] = {**common, "argv": None, "command_text": None, "cwd": work, "refusal_reason": None,
+                               "error": None, "exit_code": None, "expected_exit": expected, "stdout": None,
+                               "stderr": None, "stdout_bytes": None, "stderr_bytes": None, "truncated": False,
+                               "duration_seconds": None, "sandbox": None}
+        if not isinstance(raw, list):
+            row.update(status="REFUSED", refusal_reason="SHELL_STRING", command_text=str(raw),
+                       missing="write the command as a JSON array of strings; the conductor never uses a shell")
+        else:
+            argv = [str(part) for part in raw]
+            row["argv"] = argv
+            reason = _command_policy(argv, work, conductor_frame)
+            if reason is not None:
+                row.update(status="REFUSED", refusal_reason=reason)
+            elif check is None or not check.get("ok"):
+                row.update(status="ERROR", error="SANDBOX_UNAVAILABLE")
+            else:
+                tmp = acc_dir / str(number)
+                tmp.mkdir(exist_ok=True)
+                result = _run_acceptance_command(argv, work, tmp, acceptance_timeout)
+                row.update({k: v for k, v in result.items() if k != "error_detail"})
+                row["sandbox"] = "sandbox-exec"
+                if result.get("error"):
+                    row.update(status="ERROR", error=result["error"])
+                    if result.get("error_detail"):
+                        row["error_detail"] = result["error_detail"]
+                else:
+                    row["status"] = "PASS" if result["exit_code"] == expected else "FAIL"
+        statuses.append({**common, "status": row["status"]})
+        put("ACCEPTANCE_COMMAND", **row)
+    _, after_status = _git_text(worktree, "status", "--porcelain=v1", "--untracked-files=all")
+    side_effects = sorted(set(after_status.splitlines()) - set(before_status.splitlines()))
+    put("ACCEPTANCE_SIDE_EFFECTS", paths=side_effects, count=len(side_effects),
+        note="listed, not committed: only the index the runtime staged is committed")
+
+    failed = [f"{s['acceptance_record_id']}: {s['item']}" for s in statuses if s["status"] == "FAIL"]
+    unverified = [f"{s['acceptance_record_id']}: {s['item']} ({s['status']})" for s in statuses
+                  if s["status"] in ("REFUSED", "ERROR", "NOT_EVALUATED")]
+    human = [s for s in statuses if s["status"] == "HUMAN"]
+    if failed:
+        discard()
+        return conclude("ACCEPTANCE_FAILED", "acceptance criteria failed: " + "; ".join(failed), task_id, failed=failed)
+    if unverified or not statuses:
+        discard()
+        return conclude("ACCEPTANCE_UNVERIFIED",
+                        "acceptance could not be verified: " + ("; ".join(unverified) or "the task has no acceptance records"),
+                        task_id, failed=unverified)
+    if human:
+        return conclude("HUMAN_JUDGMENT_PENDING", "the machine-checked criteria passed; human judgment remains",
+                        task_id, kept=True)
+    commit = _commit_in_worktree(worktree, base, allowlist, run_id, task_id, [s["acceptance_record_id"] for s in statuses])
+    if commit["status"] == "ALLOWLIST_VIOLATION":
+        discard()
+        return conclude("ALLOWLIST_VIOLATION", "staged paths outside the allowlist: " + ", ".join(commit["paths"]), task_id)
+    if commit["status"] == "FAILED":
+        put("COMMIT_FAILED", reason=commit["reason"], worktree=os.fspath(worktree))
+        discard()
+        return conclude("COMMIT_FAILED", "the conductor could not commit: " + commit["reason"], task_id)
+    if commit["status"] == "SKIPPED":
+        put("COMMIT_SKIPPED", reason=commit["reason"], worktree=os.fspath(worktree))
+        discard()
+        return conclude("COMPLETE", "all machine-checked criteria passed; no changes to commit", task_id,
+                        completed=[task_id])
+    put("COMMIT", sha=commit["sha"], parent=commit["parent"], paths=commit["paths"], worktree=os.fspath(worktree))
+    return conclude("COMPLETE", "all machine-checked criteria passed and the conductor committed", task_id,
+                    kept=True, completed=[task_id])
+
+
+def conduct_entry(
+    frame_path: str | os.PathLike[str],
+    repo: str | os.PathLike[str],
+    adapter: str | AgentAdapter,
+    *,
+    dry_run: bool = False,
+    state_dir: str | os.PathLike[str] | None = None,
+    model: str | None = None,
+    effort: str | None = None,
+    max_concurrency: int | None = None,
+    codex_bin: str = "codex",
+    claude_bin: str = "claude",
+    command_runner: Callable[[Mapping[str, Any]], Any] | None = None,
+    agent_timeout_seconds: int | None = None,
+    acceptance_timeout_seconds: int | None = None,
+    permission_mode: str | None = None,
+    allowed_tools: str | None = None,
+    agent_output_limit: int | None = None,
+    poll_interval: float | None = None,
+) -> ConductOutcome:
+    """Read a frame, make typed records, and start (or, with ``dry_run``, plan) an agent.
+
+    ``adapter`` is ``"codex"``, ``"claude"`` or ``"fake"``; a Python caller may instead
+    pass an object implementing the ``AgentAdapter`` lifecycle (it is treated like
+    ``fake``).  Nothing is raised for a bad input (only a caller error, an unknown ``adapter`` name, raises ``ValueError``): it comes back as a ``REFUSED``
+    outcome with a typed reason and what is missing, and an unexpected exception
+    comes back as ``INTERNAL_ERROR`` (exception type only).  ``command_runner`` is
+    for Python callers and only affects the ``fake`` / object adapters; ``codex`` and
+    ``claude`` (without ``dry_run``) take the real-agent path: the agent is awaited to its
+    end, the frame's ``command_exit`` criteria are run by the conductor itself (sandboxed),
+    and the typed end is ``ConductOutcome.outcome`` (docs/CONDUCT_RUN.md).
+    """
+    if isinstance(adapter, str) and adapter not in ADAPTER_NAMES:
+        raise ValueError(f"adapter must be one of {', '.join(ADAPTER_NAMES)} or an AgentAdapter object")
+    run_id = uuid.uuid4().hex
+    ledger: ConductLedger | None = None
+
+    def put(kind: str, **fields: Any) -> None:
+        if ledger is not None:
+            ledger.append(run_id, kind, **fields)
+
+    def refused(refusal: FrameRefusal, exit_code: int = 2) -> ConductOutcome:
+        try:
+            put("REFUSED", **refusal.as_dict())
+        except Exception:
+            pass
+        return ConductOutcome("REFUSED", exit_code, refusal.as_dict(),
+                              os.fspath(ledger.path) if ledger is not None else None, run_id)
+
+    try:
+        repo_path = Path(repo).expanduser()
+        if state_dir is not None:
+            state = Path(state_dir).expanduser()
+        elif repo_path.is_dir():
+            state = repo_path / ".verantyx-conduct"
+        else:
+            return refused(FrameRefusal(
+                "REPO_NOT_FOUND", f"give --repo an existing directory ({os.fspath(repo_path)!r} is not one); "
+                "no ledger is written because there is nowhere safe to put it (or pass --state-dir)",
+                source=os.fspath(repo_path)))
+        try:
+            ledger = ConductLedger(state / "ledger.jsonl")
+        except LedgerError as exc:
+            return refused(FrameRefusal(
+                "LEDGER_UNUSABLE", f"repair or move {os.fspath(state / 'ledger.jsonl')} (it is never overwritten) "
+                "or pass another --state-dir", str(exc), source=os.fspath(state)))
+        adapter_name = adapter if isinstance(adapter, str) else type(adapter).__name__
+        put("CONDUCT_INVOKED", frame=os.fspath(frame_path), repo=os.fspath(repo_path), adapter=adapter_name,
+            dry_run=bool(dry_run), state_dir=os.fspath(state),
+            cli={"model": model, "effort": effort, "max_concurrency": max_concurrency,
+                 "agent_timeout_seconds": agent_timeout_seconds,
+                 "acceptance_timeout_seconds": acceptance_timeout_seconds,
+                 "permission_mode": permission_mode, "allowed_tools": allowed_tools})
+        if not repo_path.is_dir():
+            raise FrameRefusal("REPO_NOT_FOUND",
+                               f"give --repo an existing directory ({os.fspath(repo_path)!r} is not one)",
+                               source=os.fspath(repo_path))
+
+        def on_read(info: Mapping[str, Any]) -> None:
+            put("FRAME_READ", **info)
+
+        frame = _project_frame.load_conduct_frame(frame_path, on_read=on_read)
+        shortfall = _project_frame.check_conduct_ready(frame)
+        if shortfall is not None:
+            raise shortfall
+
+        run_dir = state / "runs" / run_id
+        run_dir.mkdir(parents=True, exist_ok=True)
+        memory_path = run_dir / "memory.jsonl"
+        if frame.format == "markdown":
+            assert frame.spec is not None
+            try:
+                compilation = _project_frame.compile_frame(frame.spec, memory_path)
+            except _project_frame.FrameCompileError as exc:
+                raise FrameRefusal("FRAME_COMPILE_ERROR", f"fix {exc.source}:{exc.line}: {exc.message}",
+                                   exc.message, source=exc.source, line=exc.line) from exc
+            conductor_frame = compilation.conductor
+            compiled_records: Sequence[Mapping[str, Any]] = compilation.records
+        else:
+            # The input is copied: ConductorRun writes TASK and LESSON rows into its memory.
+            memory_path.write_text(frame.text, encoding="utf-8")
+            conductor_frame = ProjectFrame(_memory_frame.Memory(str(memory_path)))
+            compiled_records = conductor_frame.memory.active(require_fresh=False)
+        if command_runner is not None:
+            conductor_frame.command_runner = command_runner
+        put("FRAME_COMPILED", format=frame.format, record_count=len(compiled_records),
+            kinds=_kind_counts(compiled_records), memory_path=os.fspath(memory_path),
+            frame_sha256=frame.sha256, write_allowlist=list(frame.write_allowlist or ()),
+            machine_criteria=frame.machine_criteria, human_criteria=frame.human_criteria)
+
+        settings: dict[str, dict[str, Any]] = {}
+        concurrency, concurrency_source, concurrency_frame = _resolve_setting(frame, "max_concurrency", max_concurrency)
+        settings["max_concurrency"] = {"value": concurrency, "source": concurrency_source,
+                                       "overridden_frame_value": concurrency_frame}
+        real = adapter in ("codex", "claude")
+        if real:
+            missing = []
+            for name, cli_value in (("model", model), ("effort", effort)):
+                key = f"{adapter}_{name}"
+                value, source, overridden = _resolve_setting(frame, key, cli_value)
+                if value is None:
+                    missing.append(f"--{name} <value> or '{key}: <value>' under [agent_settings]")
+                settings[name] = {"value": value, "source": source, "overridden_frame_value": overridden}
+            if missing:
+                raise FrameRefusal("AGENT_SETTING_MISSING",
+                                   "set " + " and ".join(missing) + "; the entry never picks a model or effort for you",
+                                   f"{adapter} needs a model and an effort", source=frame.source)
+            for key, cli_value, default in (
+                    ("agent_timeout_seconds", agent_timeout_seconds, DEFAULT_AGENT_TIMEOUT_SECONDS),
+                    ("acceptance_timeout_seconds", acceptance_timeout_seconds, DEFAULT_ACCEPTANCE_TIMEOUT_SECONDS)):
+                value, source, overridden = _resolve_setting(frame, key, cli_value)
+                settings[key] = {"value": default if value is None else int(value),
+                                 "source": "default" if value is None else source}
+            if adapter == "codex" and (permission_mode is not None or allowed_tools is not None):
+                raise FrameRefusal("AGENT_SETTING_INVALID",
+                                   "--permission-mode and --allowed-tools apply to the claude adapter only; "
+                                   "remove them for codex", "codex has its own sandbox flag", source=frame.source)
+            for key, cli_value in (("claude_permission_mode", permission_mode), ("claude_allowed_tools", allowed_tools)):
+                if adapter == "codex":
+                    value, source = None, "unset"
+                else:
+                    value, source, _overridden = _resolve_setting(frame, key, cli_value)
+                settings[key] = {"value": value, "source": source}
+            _check_git_repo(repo_path)
+
+        planned: list[dict[str, Any]] = []
+        runtime: _agent_runtime.AgentRuntime | None = None
+        if real:
+            def on_plan(plan: Mapping[str, Any]) -> None:
+                planned.append(dict(plan))
+                put("LAUNCH_PLANNED", adapter=adapter, backend=plan["backend"], argv=list(plan["argv"]),
+                    cwd=plan["cwd"], cwd_created=not plan["dry_run"], stdin=dict(plan["stdin"]),
+                    prompt=plan["prompt"], allowlist=list(plan["allowlist"]), output_path=plan["output_path"],
+                    task_id=plan["task_id"], dry_run=plan["dry_run"], base_commit=plan["base_commit"],
+                    model=settings["model"], effort=settings["effort"], max_concurrency=settings["max_concurrency"],
+                    effective_concurrency=1, agent_timeout_seconds=settings["agent_timeout_seconds"],
+                    acceptance_timeout_seconds=settings["acceptance_timeout_seconds"],
+                    permission_mode=settings["claude_permission_mode"], allowed_tools=settings["claude_allowed_tools"])
+
+            runtime = _agent_runtime.AgentRuntime(
+                repo_path, frame.write_allowlist or (),
+                backend="codex-exec" if adapter == "codex" else "claude-print",
+                executable=codex_bin if adapter == "codex" else claude_bin,
+                state_dir=run_dir / "runtime", model=settings["model"]["value"],
+                effort=settings["effort"]["value"], dry_run=bool(dry_run), on_plan=on_plan,
+                timeout_seconds=float(settings["agent_timeout_seconds"]["value"]),
+                output_limit=agent_output_limit if agent_output_limit is not None else DEFAULT_AGENT_OUTPUT_LIMIT,
+                poll_interval=poll_interval if poll_interval is not None else POLL_INTERVAL_SECONDS,
+                keep_worktree_on_accept=not dry_run,
+                claude_permission_mode=settings["claude_permission_mode"]["value"] if adapter == "claude" else None,
+                claude_allowed_tools=settings["claude_allowed_tools"]["value"] if adapter == "claude" else None)
+            inner: AgentAdapter = runtime
+        elif isinstance(adapter, str):
+            inner = agent_adapter.FakeAdapter()
+        else:
+            inner = adapter
+        wrapped = _LedgerAdapter(inner, ledger, run_id, adapter_name)
+        try:
+            run = ConductorRun(conductor_frame, wrapped, log_path=run_dir / "driver.jsonl",
+                               claimant_id=f"conduct:{adapter_name}")
+        except ValueError as exc:
+            raise FrameRefusal("FRAME_COMPILE_ERROR",
+                               "repair the frame so its ORDER records form a runnable graph with a witnessed authority",
+                               str(exc)[:300], source=frame.source) from exc
+        if real and not dry_run:
+            assert runtime is not None
+            return _run_agent_process(
+                run=run, runtime=runtime, ledger=ledger, run_id=run_id, adapter_name=adapter_name, frame=frame,
+                conductor_frame=conductor_frame, run_dir=run_dir, repo=repo_path, state=state, settings=settings,
+                executable=codex_bin if adapter == "codex" else claude_bin, allowlist=runtime.allowed_paths,
+                put=put)
+        result = run.run()
+        blocking = dict(result.blocking_item) if result.blocking_item else None
+        result_view = {"complete": result.complete, "completed": list(result.completed),
+                       "pending": list(result.pending), "interrupted": result.interrupted}
+        put("RUN_FINISHED", complete=result.complete, completed=list(result.completed),
+            pending=list(result.pending), blocking_kind=(blocking or {}).get("kind"),
+            interrupted=result.interrupted, driver_log=os.fspath(run_dir / "driver.jsonl"),
+            effective_concurrency=1)
+        ledger_path = os.fspath(ledger.path)
+        if real and dry_run:
+            if not planned:
+                raise FrameRefusal(
+                    "NO_LAUNCH_PLANNED",
+                    "no agent start was reached, so no command was planned; resolve the blocking item "
+                    "(see 'blocking') in the frame",
+                    f"blocking: {json.dumps(blocking, ensure_ascii=False, default=str)[:300]}", source=frame.source)
+            return ConductOutcome("DRY_RUN_PLANNED", 0, None, ledger_path, run_id, blocking, result_view)
+        if result.complete:
+            return ConductOutcome("RUN_COMPLETE", 0, None, ledger_path, run_id, blocking, result_view)
+        return ConductOutcome("RUN_INCOMPLETE", 1, None, ledger_path, run_id, blocking, result_view)
+    except FrameRefusal as refusal:
+        return refused(refusal)
+    except LedgerError as exc:
+        return refused(FrameRefusal(
+            "LEDGER_UNUSABLE", "make the state directory writable (or pass another --state-dir); "
+            "the ledger is the record of what was read and launched, so the run stops without it",
+            str(exc), source=os.fspath(state_dir) if state_dir is not None else os.fspath(repo)))
+    except Exception as exc:  # the entry never lets an exception escape
+        return refused(FrameRefusal(
+            "INTERNAL_ERROR", "this is a defect in the conduct entry, not in your frame; report it with the ledger",
+            type(exc).__name__), exit_code=3)
+
+
+__all__ += ["ADAPTER_NAMES", "ConductLedger", "ConductOutcome", "LEDGER_SCHEMA", "LedgerError",
+            "LIMIT_TEXT", "PROCESS_OUTCOMES", "conduct_entry"]

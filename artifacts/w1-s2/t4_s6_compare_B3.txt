@@ -1,0 +1,2 @@
+一致: 145 ファイル（除いた欄: results ['elapsed_ms'], raw ['elapsed_ms', 'ingest_ms', 'ms'], run_meta ['timing']）
+compare exit=0

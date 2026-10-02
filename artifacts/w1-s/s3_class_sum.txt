@@ -1,0 +1,5 @@
+B1 26 {'unreachable': 26} total==sum OK
+B2 25 {'correct_abstain': 6, 'over_abstain': 17, 'unreachable': 2} total==sum OK
+B3 24 {'correct_abstain': 5, 'over_abstain': 19} total==sum OK
+B5 26 {'unreachable': 26} total==sum OK
+B2-cli-ask 25 {'correct_abstain': 2, 'over_abstain': 5, 'unreachable': 17, 'wrong': 1} total==sum OK

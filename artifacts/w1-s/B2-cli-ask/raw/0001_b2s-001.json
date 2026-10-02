@@ -1,0 +1,112 @@
+{
+ "argv": [
+  "ask",
+  "--",
+  "おはようございます！今日もよろしくお願いします。"
+ ],
+ "elapsed_ms": 231.8,
+ "entry": "cli-ask",
+ "exit_code": 0,
+ "id": "b2s-001",
+ "provenance": {
+  "modules": 56,
+  "outside": []
+ },
+ "reason": null,
+ "stderr": "",
+ "stdout_json": {
+  "door": "chat",
+  "evidence": [],
+  "kind": "social",
+  "sources": [],
+  "text": "こんにちは。このサイトのことや、簡単な質問にお答えします。",
+  "trace": [
+   {
+    "asked_slot": "what",
+    "case_frame": {
+     "arguments": [],
+     "attribute": "",
+     "negated": false,
+     "predicates": [
+      "ござる",
+      "願う"
+     ],
+     "requested_unit": "",
+     "slot": "what",
+     "subject": "お",
+     "who_role": ""
+    },
+    "kind": "fact",
+    "part": "question.read",
+    "status": "ran"
+   },
+   {
+    "part": "stage_split.split",
+    "status": "ran",
+    "verdict": "UNKNOWN_UNSEGMENTED"
+   },
+   {
+    "part": "typo_recovery.recover",
+    "status": "abstained",
+    "verdict": "LACK_OF_ASSET"
+   },
+   {
+    "part": "meaning_assets.lattice",
+    "reason": "writer.json",
+    "status": "abstained"
+   },
+   {
+    "part": "sense_split.resolve",
+    "status": "abstained",
+    "verdict": "LACK_OF_ASSET"
+   },
+   {
+    "count": 0,
+    "part": "polarity.observe_negation",
+    "status": "ran"
+   },
+   {
+    "act": "request",
+    "part": "intent.act_by_form",
+    "status": "ran"
+   },
+   {
+    "part": "intent_frames.parse",
+    "reason": "question is not an instruction",
+    "status": "abstained",
+    "verdict": "NOT_APPLICABLE"
+   },
+   {
+    "arm": null,
+    "part": "arm_schema.classify_intent",
+    "status": "ran"
+   },
+   {
+    "implementation": "_reply_impl",
+    "part": "chat.Chat.reply",
+    "status": "ran"
+   },
+   {
+    "ability": null,
+    "part": "abilities.Abilities.answer",
+    "status": "abstained"
+   },
+   {
+    "part": "skills.answer",
+    "reason": "ability dispatcher yielded no answer",
+    "status": "abstained"
+   },
+   {
+    "part": "core_abilities.answer",
+    "reason": "exact legacy ability yielded no answer",
+    "status": "abstained"
+   },
+   {
+    "act": "request",
+    "part": "chat.social",
+    "status": "ran"
+   }
+  ]
+ },
+ "stdout_text": null
+}
