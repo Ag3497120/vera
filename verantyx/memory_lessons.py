@@ -1,16 +1,15 @@
 """Exact trigger index for typed LESSON records.
 
-Known situations are matched after the same noun-phrase normalization used by
-``memory_frame``. An unmatched situation can be sent to its closed-choice
-resolver; only an agreed choice from the existing trigger vocabulary is used.
-Lesson text is never included in that choice prompt.
+Situations are matched after the same noun-phrase normalization used by
+``memory_frame``. Unknown situations abstain; lesson lookup does not resolve
+terms or invoke an asker at runtime.
 """
 from __future__ import annotations
 
 from copy import deepcopy
 from typing import Optional
 
-from .memory_frame import Asker, Resolver, normalize_np
+from .memory_frame import Asker, normalize_np
 
 
 def normalize_trigger(situation: str) -> str:
@@ -47,7 +46,8 @@ class LessonIndex:
         # when the index is built from a plain record collection.
         dead.update(r['supersedes'] for r in records if r.get('supersedes'))
 
-        self.resolver = Resolver(asker) if asker is not None else None
+        # Keep the old keyword accepted for callers, but never call an asker
+        # from runtime lookup. An unknown situation must abstain deterministically.
         self._by_trigger = {}
         self._by_id = {}
         # Sorting before insertion makes a repeated id deterministic too.
@@ -75,23 +75,13 @@ class LessonIndex:
         self.triggers = tuple(sorted(self._by_trigger))
 
     def lessons_for(self, situation: str) -> list[dict]:
-        """Return lessons for an exact normalized trigger, or an agreed choice.
-
-        If there is no exact trigger, the injected asker is offered only the
-        trigger vocabulary. With no asker, a disagreement, a tie/none, or an
-        invalid answer, the method abstains with an empty list.
-        """
+        """Return exact normalized-trigger matches, or abstain if none exist."""
         trigger = normalize_trigger(situation)
         if not trigger:
             return []
         if trigger in self._by_trigger:
-            return list(self._by_trigger[trigger])
-        if self.resolver is None or not self.triggers:
-            return []
-        resolution = self.resolver.resolve(trigger, self.triggers, context='LESSON の状況 trigger')
-        if resolution['status'] != 'ADOPT':
-            return []
-        return list(self._by_trigger.get(resolution['choice'], ()))
+            return [deepcopy(record) for record in self._by_trigger[trigger]]
+        return []
 
 
 def lessons_for(records, situation: str, asker: Optional[Asker] = None, superseded=()) -> list[dict]:
