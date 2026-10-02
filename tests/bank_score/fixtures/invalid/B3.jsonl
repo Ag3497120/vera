@@ -1,0 +1,6 @@
+{"id":"inv-b3-001","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"expect":{"behavior":"generate"},"rationale":"brief が無い"}
+{"id":"inv-b3-002","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"brief":"書いて","materials":5,"expect":{"behavior":"generate"},"rationale":"materials の型が不正"}
+{"id":"inv-b3-003","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"brief":"書いて","expect":{"behavior":"maybe"},"rationale":"behavior が未知"}
+{"id":"inv-b3-004","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"brief":"書いて","expect":{"behavior":"generate","outside":"unknown_kind"},"rationale":"outside が未知"}
+{"id":"inv-b3-005","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"brief":"書いて","expect":{"behavior":"generate","constraints":{"order":"開ける"}},"rationale":"order が list でない"}
+{"id":"inv-b3-006","lang":"ja","category":"c","phenomenon":"p","difficulty":1,"brief":"書いて","expect":{"behavior":"generate","constraints":{"sentences":{"min":3,"max":1}}},"rationale":"min > max"}

@@ -1,0 +1,141 @@
+{
+ "argv": [
+  "ask",
+  "--mode",
+  "round5",
+  "--",
+  "Please shorten this to at most 60 characters: \"The quarterly review meeting has been moved from Tuesday morning to Thursday afternoon because the main conference room is being repainted.\""
+ ],
+ "elapsed_ms": 313.9,
+ "entry": "cli-ask-round5",
+ "exit_code": 0,
+ "id": "b2s-018",
+ "provenance": {
+  "modules": 75,
+  "outside": []
+ },
+ "reason": null,
+ "stderr": "",
+ "stdout_json": {
+  "door": "semantic_qa",
+  "evidence": [],
+  "how_to_resolve": "質問された事項を示す出典を追加してください。",
+  "kind": "unknown",
+  "phase": "reader",
+  "reason": "mandatory request spans remain unread",
+  "remedy": {
+   "needs_registration": true,
+   "note": "no remedy recorded for this verdict",
+   "register": "質問された事項を示す出典を追加してください。",
+   "verdict": "UNKNOWN_UNREAD"
+  },
+  "runtime_mode": "round5",
+  "semantic": {
+   "budget": {
+    "candidates": 0,
+    "limits": {
+     "bindings": 64,
+     "candidates": 256,
+     "depth": 8,
+     "parse": 32,
+     "steps": 4096
+    },
+    "peak_bindings": 0,
+    "steps": 0
+   },
+   "request": {
+    "covered": [],
+    "obligations": [],
+    "plans": [],
+    "rules": [
+     "typed unread"
+    ],
+    "stages": [],
+    "text": "Please shorten this to at most 60 characters: \"The quarterly review meeting has been moved from Tuesday morning to Thursday afternoon because the main conference room is being repainted.\"",
+    "unread": [
+     {
+      "reason": "unsupported request grammar",
+      "span": {
+       "end": 187,
+       "source": "question",
+       "start": 0,
+       "text": "Please shorten this to at most 60 characters: \"The quarterly review meeting has been moved from Tuesday morning to Thursday afternoon because the main conference room is being repainted.\""
+      }
+     }
+    ]
+   },
+   "unread": [
+    {
+     "reason": "unsupported request grammar",
+     "span": {
+      "end": 187,
+      "source": "question",
+      "start": 0,
+      "text": "Please shorten this to at most 60 characters: \"The quarterly review meeting has been moved from Tuesday morning to Thursday afternoon because the main conference room is being repainted.\""
+     }
+    }
+   ],
+   "verified": false,
+   "version": "round5a"
+  },
+  "sources": [],
+  "text": "この要求を裏づける導出を確認できません。",
+  "trace": [
+   {
+    "code_intent": false,
+    "content_intent": false,
+    "decision_input": "raw_request",
+    "fallback": false,
+    "part": "one.round5_route",
+    "status": "ran"
+   },
+   {
+    "obligations": 0,
+    "part": "question.read_semantic",
+    "plans": 0,
+    "status": "ran",
+    "unread": [
+     {
+      "reason": "unsupported request grammar",
+      "span": {
+       "end": 187,
+       "source": "question",
+       "start": 0,
+       "text": "Please shorten this to at most 60 characters: \"The quarterly review meeting has been moved from Tuesday morning to Thursday afternoon because the main conference room is being repainted.\""
+      }
+     }
+    ]
+   },
+   {
+    "how_to_resolve": "質問された事項を示す出典を追加してください。",
+    "part": "remedy.remedy",
+    "status": "ran",
+    "verdict": "UNKNOWN_UNREAD"
+   },
+   {
+    "asks": "",
+    "part": "ask_back.question",
+    "reason": "verdict has no human-answerable candidate",
+    "status": "abstained"
+   },
+   {
+    "part": "coverage.document_needed",
+    "reason": "no domain witnesses",
+    "status": "abstained"
+   },
+   {
+    "part": "gap_graph.refusal_to_gap",
+    "reason": "no opt-in gap_path",
+    "status": "abstained"
+   },
+   {
+    "part": "grow.log_refusal",
+    "reason": "no queue opt-in or different verdict",
+    "status": "abstained"
+   }
+  ],
+  "values": [],
+  "verdict": "UNKNOWN_UNREAD"
+ },
+ "stdout_text": null
+}

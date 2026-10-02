@@ -1,0 +1,448 @@
+{
+ "argv": [
+  "ask",
+  "--mode",
+  "round5",
+  "--document",
+  "ホシノ化学研修案内.txt",
+  "--",
+  "研修で名古屋支社に配属された人は何人いますか？"
+ ],
+ "elapsed_ms": 426.6,
+ "entry": "cli-ask-round5",
+ "exit_code": 0,
+ "id": "b2s-011",
+ "provenance": {
+  "modules": 105,
+  "outside": []
+ },
+ "reason": null,
+ "stderr": "",
+ "stdout_json": {
+  "door": "semantic_document",
+  "evidence": [],
+  "how_to_resolve": "質問された事項を示す出典を追加してください。",
+  "kind": "unknown",
+  "multigrain_navigation": {
+   "authority": "navigation_only_unverified",
+   "candidate_clause_span_causal_influence_proven": false,
+   "candidate_clause_span_cited_after_full_view_check": false,
+   "candidate_clause_span_match_count": 0,
+   "candidate_document_id_cited_after_full_view_check": false,
+   "candidate_goal_status": null,
+   "candidate_limit": 8,
+   "candidate_sentence_span_cited_after_full_view_check": null,
+   "candidate_views_supplied_to_answer_verifier": false,
+   "candidates": [
+    {
+     "independent_source_count": null,
+     "item": "新入社員研修",
+     "resolution_views": [
+      "g1"
+     ],
+     "selected_by_existing_constellation": false,
+     "selection_used_resolution_views": true,
+     "source_identity_status": "identity_unverified",
+     "source_leaf_match_count": 1,
+     "source_reference_count": 1,
+     "source_references_truncated": false,
+     "sources": [
+      {
+       "canonical_source_id": null,
+       "domain_path": [],
+       "grain_witnesses": [
+        {
+         "matched_feature_count": 3,
+         "member": "g1",
+         "rung": "g1",
+         "size": 1
+        }
+       ],
+       "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+       "identity_status": "identity_unverified",
+       "leaf": "ホシノ化学研修案内.txt",
+       "path": [
+        "ホシノ化学研修案内.txt"
+       ],
+       "source_label": "ホシノ化学研修案内.txt"
+      }
+     ]
+    },
+    {
+     "independent_source_count": null,
+     "item": "配属",
+     "resolution_views": [
+      "g3",
+      "whole"
+     ],
+     "selected_by_existing_constellation": true,
+     "selection_used_resolution_views": true,
+     "source_identity_status": "identity_unverified",
+     "source_leaf_match_count": 1,
+     "source_reference_count": 1,
+     "source_references_truncated": false,
+     "sources": [
+      {
+       "canonical_source_id": null,
+       "domain_path": [],
+       "grain_witnesses": [
+        {
+         "matched_feature_count": 1,
+         "member": "whole",
+         "rung": "whole",
+         "size": 0
+        },
+        {
+         "matched_feature_count": 1,
+         "member": "g3",
+         "rung": "g3",
+         "size": 3
+        }
+       ],
+       "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+       "identity_status": "identity_unverified",
+       "leaf": "ホシノ化学研修案内.txt",
+       "path": [
+        "ホシノ化学研修案内.txt"
+       ],
+       "source_label": "ホシノ化学研修案内.txt"
+      }
+     ]
+    }
+   ],
+   "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+   "grain_trace": [
+    {
+     "grammar": "raw",
+     "independent_source_vote": false,
+     "member": "whole",
+     "member_reading": "配属",
+     "participated_with_candidate": true,
+     "role": "resolution_view",
+     "rung_readings": {
+      "whole": "配属"
+     },
+     "rungs": [
+      [
+       "whole",
+       0
+      ]
+     ],
+     "used_by_existing_candidate_selection": true
+    },
+    {
+     "grammar": "raw",
+     "independent_source_vote": false,
+     "member": "g3",
+     "member_reading": "配属",
+     "participated_with_candidate": true,
+     "role": "resolution_view",
+     "rung_readings": {
+      "g3": "配属"
+     },
+     "rungs": [
+      [
+       "g3",
+       3
+      ]
+     ],
+     "used_by_existing_candidate_selection": true
+    },
+    {
+     "grammar": "raw",
+     "independent_source_vote": false,
+     "member": "g2",
+     "member_reading": null,
+     "participated_with_candidate": false,
+     "role": "resolution_view",
+     "rung_readings": {
+      "g2": null
+     },
+     "rungs": [
+      [
+       "g2",
+       2
+      ]
+     ],
+     "used_by_existing_candidate_selection": true
+    },
+    {
+     "grammar": "raw",
+     "independent_source_vote": false,
+     "member": "g1",
+     "member_reading": "新入社員研修",
+     "participated_with_candidate": true,
+     "role": "resolution_view",
+     "rung_readings": {
+      "g1": "新入社員研修"
+     },
+     "rungs": [
+      [
+       "g1",
+       1
+      ]
+     ],
+     "used_by_existing_candidate_selection": true
+    }
+   ],
+   "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+   "independent_source_count": null,
+   "kind": "multigrain_candidates",
+   "query_destinations": [
+    {
+     "canonical_source_id": null,
+     "domain_path": [],
+     "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+     "identity_status": "identity_unverified",
+     "leaf": "ホシノ化学研修案内.txt",
+     "path": [
+      "ホシノ化学研修案内.txt"
+     ],
+     "source_label": "ホシノ化学研修案内.txt"
+    }
+   ],
+   "query_divisions_are_partial": true,
+   "query_divisions_from_constellation": [
+    "ホシノ化学研修案内.txt"
+   ],
+   "query_terms": [
+    "研修",
+    "名古屋支社",
+    "配属",
+    "人",
+    "何人い"
+   ],
+   "raw_question": "研修で名古屋支社に配属された人は何人いますか？",
+   "resolution_agreeing": 2,
+   "resolution_as_core": [
+    "配属"
+   ],
+   "resolution_as_facet_only": [],
+   "resolution_item": "配属",
+   "resolution_missing": [
+    "研修",
+    "名古屋支社",
+    "人",
+    "何人い"
+   ],
+   "resolution_of": 4,
+   "resolution_verdict": "ANSWER",
+   "selected_candidate": "配属",
+   "selector_query": "研修で名古屋支社に配属された人は何人いますか？",
+   "selector_query_origin": "raw_question",
+   "source_binding": {
+    "candidate": "配属",
+    "goal_relation_scope": "same-owner local explicit argument spans only",
+    "independent_source_count": null,
+    "reason": "candidate sentence contains an unsupported or nonasserted clause",
+    "registry_sha256": "392ca3eb02c125d595c3f951fef1ebcb6380f5a960a4c3671b17c6f6586edfbf",
+    "scope": "document identity and original-text location only",
+    "selections": [],
+    "source_truth_status": "UNCLASSIFIED; no truth or authority claim",
+    "status": "HOLD",
+    "version": "multigrain-source-binding-v1"
+   },
+   "source_identity_status": "identity_unverified",
+   "surface_route": {
+    "leaf": "ホシノ化学研修案内.txt",
+    "route_kind": "single_leaf_or_unbuilt",
+    "selected_leaf": "ホシノ化学研修案内.txt",
+    "trail": [
+     "ホシノ化学研修案内.txt"
+    ],
+    "used_for_candidate_selection": false,
+    "verdict": "ROUTED",
+    "via_api": [
+     "Base.lower"
+    ]
+   },
+   "trace": {
+    "calls": {
+     "Base.lower": 1,
+     "FullConstellation.ask": 1,
+     "FullConstellation.ask.hierarchy.gather": 1,
+     "conduct_tree.descend": 0,
+     "resolution.Ladder.vote_for_grain_trace": 4,
+     "resolution.Ladder.vote_for_selection": 4,
+     "resolution.ask_member_reads": 4,
+     "source_tree_leaf_walk": 1,
+     "source_tree_leaves_visited": 1,
+     "source_tree_nodes_visited": 1,
+     "surface.route": 0
+    },
+    "candidate_selection": "FullConstellation.ask(raw_question); its existing resolution consensus is the selector",
+    "elapsed_ms": 0.265,
+    "query_division_note": "FullConstellation.ask exposes at most six leaf names from its gather result",
+    "selector_query": "研修で名古屋支社に配属された人は何人いますか？",
+    "source_join": "exact candidate core key plus configured source-leaf grain features",
+    "structural_views_are_source_votes": false
+   },
+   "truth_claim": false,
+   "used_for_answer": false,
+   "used_for_goal_realization": false,
+   "verdict": "CANDIDATE_SOURCE_LEAF_MATCHED"
+  },
+  "phase": "reader",
+  "reason": "mandatory request spans remain unread",
+  "remedy": {
+   "needs_registration": true,
+   "note": "no remedy recorded for this verdict",
+   "register": "質問された事項を示す出典を追加してください。",
+   "verdict": "UNKNOWN_UNREAD"
+  },
+  "runtime_mode": "round5",
+  "semantic": {
+   "budget": {
+    "candidates": 0,
+    "limits": {
+     "bindings": 64,
+     "candidates": 256,
+     "depth": 8,
+     "parse": 32,
+     "steps": 4096
+    },
+    "peak_bindings": 0,
+    "steps": 0
+   },
+   "request": {
+    "covered": [],
+    "obligations": [],
+    "plans": [],
+    "rules": [
+     "typed unread"
+    ],
+    "stages": [],
+    "text": "研修で名古屋支社に配属された人は何人いますか？",
+    "unread": [
+     {
+      "reason": "unsupported request grammar",
+      "span": {
+       "end": 23,
+       "source": "question",
+       "start": 0,
+       "text": "研修で名古屋支社に配属された人は何人いますか？"
+      }
+     }
+    ]
+   },
+   "unread": [
+    {
+     "reason": "unsupported request grammar",
+     "span": {
+      "end": 23,
+      "source": "question",
+      "start": 0,
+      "text": "研修で名古屋支社に配属された人は何人いますか？"
+     }
+    }
+   ],
+   "verified": false,
+   "version": "round5a"
+  },
+  "sources": [],
+  "text": "この要求を裏づける導出を確認できません。",
+  "trace": [
+   {
+    "code_intent": false,
+    "content_intent": false,
+    "decision_input": "raw_request",
+    "fallback": false,
+    "part": "one.round5_route",
+    "status": "ran"
+   },
+   {
+    "obligations": 0,
+    "part": "question.read_semantic",
+    "plans": 0,
+    "status": "ran",
+    "unread": [
+     {
+      "reason": "unsupported request grammar",
+      "span": {
+       "end": 23,
+       "source": "question",
+       "start": 0,
+       "text": "研修で名古屋支社に配属された人は何人いますか？"
+      }
+     }
+    ]
+   },
+   {
+    "clauses": 3,
+    "ingest_ms": 58.19579100352712,
+    "part": "semantic_reader.document_view",
+    "source_unread": [
+     {
+      "reason": "interrogative source does not assert a fact",
+      "span": {
+       "end": 61,
+       "source": "ホシノ化学研修案内.txt",
+       "start": 40,
+       "text": "配属は東京本社と大阪支社のいずれかである。"
+      }
+     }
+    ],
+    "source_unread_count": 1,
+    "source_unread_truncated": false,
+    "status": "ran"
+   },
+   {
+    "arity": 6,
+    "leaves": 1,
+    "nodes": 1,
+    "part": "semantic_route.LeafTree",
+    "reason": "fewer leaves than one routing node",
+    "status": "skipped"
+   },
+   {
+    "how_to_resolve": "質問された事項を示す出典を追加してください。",
+    "part": "remedy.remedy",
+    "status": "ran",
+    "verdict": "UNKNOWN_UNREAD"
+   },
+   {
+    "asks": "",
+    "part": "ask_back.question",
+    "reason": "verdict has no human-answerable candidate",
+    "status": "abstained"
+   },
+   {
+    "part": "coverage.document_needed",
+    "reason": "no domain witnesses",
+    "status": "abstained"
+   },
+   {
+    "part": "gap_graph.refusal_to_gap",
+    "reason": "no opt-in gap_path",
+    "status": "abstained"
+   },
+   {
+    "part": "grow.log_refusal",
+    "reason": "no queue opt-in or different verdict",
+    "status": "abstained"
+   },
+   {
+    "bound_source_supplied_to_goal_consumer": false,
+    "candidate_clause_span_causal_influence_proven": false,
+    "candidate_clause_span_cited_after_full_view_check": false,
+    "candidate_clause_span_match_count": 0,
+    "candidate_document_id_cited_after_full_view_check": false,
+    "candidate_sentence_span_cited_after_full_view_check": null,
+    "candidate_views_supplied_to_answer_verifier": false,
+    "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+    "independent_source_count": null,
+    "licenses_goal_realization": false,
+    "part": "multigrain_adapter.retrieve_multigrain_candidates",
+    "selected_candidate": "配属",
+    "source_binding_reason": "candidate sentence contains an unsupported or nonasserted clause",
+    "source_binding_status": "HOLD",
+    "source_identity_status": "identity_unverified",
+    "status": "ran",
+    "verdict": "CANDIDATE_SOURCE_LEAF_MATCHED"
+   }
+  ],
+  "values": [],
+  "verdict": "UNKNOWN_UNREAD"
+ },
+ "stdout_text": null
+}

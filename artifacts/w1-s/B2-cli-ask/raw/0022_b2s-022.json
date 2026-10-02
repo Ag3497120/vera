@@ -1,0 +1,207 @@
+{
+ "argv": [
+  "ask",
+  "--",
+  "電車は午前八時四十分に出発し、五十五分かかります。到着は何時何分ですか？"
+ ],
+ "elapsed_ms": 271.7,
+ "entry": "cli-ask",
+ "exit_code": 0,
+ "id": "b2s-022",
+ "provenance": {
+  "modules": 63,
+  "outside": []
+ },
+ "reason": null,
+ "stderr": "",
+ "stdout_json": {
+  "as_core": null,
+  "as_facet_only": null,
+  "core": null,
+  "coverage": 0.0,
+  "door": "general",
+  "evidence": [],
+  "grain": {
+   "agree": 0,
+   "of": 6
+  },
+  "how_to_resolve": "sentences about the subject, in the register the corpus is judged in",
+  "language": "ja",
+  "missing": [
+   "電車",
+   "午前八時四十分",
+   "出発",
+   "五十五分",
+   "到着",
+   "何時何分"
+  ],
+  "note": "a yes/no question about a subject the store does not hold cannot be attested either way",
+  "remedy": {
+   "how": "remember / propose_ai_facts then accept_ai_fact",
+   "language": "ja",
+   "minimum": 3,
+   "missing": [
+    "電車",
+    "午前八時四十分",
+    "出発",
+    "五十五分",
+    "到着",
+    "何時何分"
+   ],
+   "needs_registration": true,
+   "register": "sentences about the subject, in the register the corpus is judged in",
+   "subject": "電車",
+   "then": "rebuild the judge — measured 1.4s on 54,244 cores",
+   "verdict": "UNKNOWN_NOT_PRESENT"
+  },
+  "sources": [],
+  "subject": "電車",
+  "text": "",
+  "trace": [
+   {
+    "asked_slot": "when",
+    "case_frame": {
+     "arguments": [
+      "午前八時四十分"
+     ],
+     "attribute": "time",
+     "negated": false,
+     "predicates": [
+      "出発する",
+      "かかる"
+     ],
+     "requested_unit": "時",
+     "slot": "when",
+     "subject": "電車",
+     "who_role": ""
+    },
+    "kind": "fact",
+    "part": "question.read",
+    "status": "ran"
+   },
+   {
+    "part": "stage_split.split",
+    "status": "ran",
+    "verdict": "UNKNOWN_UNSEGMENTED"
+   },
+   {
+    "part": "typo_recovery.recover",
+    "status": "abstained",
+    "verdict": "LACK_OF_ASSET"
+   },
+   {
+    "part": "meaning_assets.lattice",
+    "reason": "writer.json",
+    "status": "abstained"
+   },
+   {
+    "part": "sense_split.resolve",
+    "status": "abstained",
+    "verdict": "LACK_OF_ASSET"
+   },
+   {
+    "count": 0,
+    "part": "polarity.observe_negation",
+    "status": "ran"
+   },
+   {
+    "act": "question",
+    "part": "intent.act_by_form",
+    "status": "ran"
+   },
+   {
+    "part": "intent_frames.parse",
+    "reason": "question is not an instruction",
+    "status": "abstained",
+    "verdict": "NOT_APPLICABLE"
+   },
+   {
+    "arm": null,
+    "part": "arm_schema.classify_intent",
+    "status": "ran"
+   },
+   {
+    "kind": null,
+    "part": "skills.answer",
+    "status": "abstained"
+   },
+   {
+    "ability": null,
+    "part": "abilities.Abilities.answer",
+    "status": "abstained"
+   },
+   {
+    "held": [
+     "ja"
+    ],
+    "language": "ja",
+    "part": "polyglot.Polyglot.route",
+    "status": "ran"
+   },
+   {
+    "part": "vera.Vera.ask",
+    "status": "ran",
+    "verdict": "UNKNOWN_NOT_PRESENT"
+   },
+   {
+    "coverage": 0.0,
+    "part": "graded.GradedJudge.ask",
+    "status": "ran"
+   },
+   {
+    "part": "resolution.Ladder",
+    "reason": "graded judge builds and reads its nested ladders",
+    "status": "ran"
+   },
+   {
+    "part": "stacked.ask",
+    "status": "ran",
+    "verdict": "UNKNOWN_NOT_PRESENT"
+   },
+   {
+    "part": "consensus_store.consensus_over_store",
+    "status": "ran",
+    "verdict": "UNKNOWN_NOT_PRESENT"
+   },
+   {
+    "part": "reach.reach",
+    "reached": [],
+    "status": "ran"
+   },
+   {
+    "part": "explain.explain",
+    "reason": "no writer or no supported unit landing",
+    "status": "abstained"
+   },
+   {
+    "how_to_resolve": "sentences about the subject, in the register the corpus is judged in",
+    "part": "remedy.remedy",
+    "status": "ran",
+    "verdict": "UNKNOWN_NOT_PRESENT"
+   },
+   {
+    "asks": "",
+    "part": "ask_back.question",
+    "reason": "verdict has no human-answerable candidate",
+    "status": "abstained"
+   },
+   {
+    "part": "coverage.document_needed",
+    "reason": "no domain witnesses",
+    "status": "abstained"
+   },
+   {
+    "part": "gap_graph.refusal_to_gap",
+    "reason": "no opt-in gap_path",
+    "status": "abstained"
+   },
+   {
+    "part": "grow.log_refusal",
+    "reason": "no queue opt-in or different verdict",
+    "status": "abstained"
+   }
+  ],
+  "verdict": "UNKNOWN_NOT_PRESENT"
+ },
+ "stdout_text": null
+}

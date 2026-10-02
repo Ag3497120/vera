@@ -1,0 +1,233 @@
+{
+ "argv": [
+  "ask",
+  "--mode",
+  "round5",
+  "--document",
+  "lantern_freight_schedule.txt",
+  "--document",
+  "orrin_bay_arrivals.txt",
+  "--",
+  "If I want my parcel to arrive in Orrin Bay by Saturday, what is the latest day I can drop it off at the depot?"
+ ],
+ "elapsed_ms": 396.9,
+ "entry": "cli-ask-round5",
+ "exit_code": 0,
+ "id": "b2s-007",
+ "provenance": {
+  "modules": 97,
+  "outside": []
+ },
+ "reason": null,
+ "stderr": "",
+ "stdout_json": {
+  "door": "semantic_document",
+  "evidence": [],
+  "how_to_resolve": "質問された事項を示す出典を追加してください。",
+  "kind": "unknown",
+  "multigrain_navigation": {
+   "authority": "navigation_only_unverified",
+   "candidate_clause_span_causal_influence_proven": false,
+   "candidate_clause_span_cited_after_full_view_check": false,
+   "candidate_clause_span_match_count": 0,
+   "candidate_document_id_cited_after_full_view_check": false,
+   "candidate_goal_status": null,
+   "candidate_sentence_span_cited_after_full_view_check": null,
+   "candidate_views_supplied_to_answer_verifier": false,
+   "candidates": [],
+   "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+   "independent_source_count": null,
+   "kind": "multigrain_candidates",
+   "raw_question": "If I want my parcel to arrive in Orrin Bay by Saturday, what is the latest day I can drop it off at the depot?",
+   "reason": "no source-ID navigation leaves could be bound; no hierarchy was built",
+   "selected_candidate": null,
+   "source_binding": {
+    "candidate": "",
+    "goal_relation_scope": "same-owner local explicit argument spans only",
+    "independent_source_count": null,
+    "reason": "navigation or source registry is unavailable",
+    "registry_sha256": "",
+    "scope": "document identity and original-text location only",
+    "selections": [],
+    "source_truth_status": "UNCLASSIFIED; no truth or authority claim",
+    "status": "HOLD",
+    "version": "multigrain-source-binding-v1"
+   },
+   "source_identity_status": "identity_unverified",
+   "used_for_answer": false,
+   "used_for_goal_realization": false,
+   "verdict": "UNKNOWN_NO_HIERARCHY"
+  },
+  "phase": "reader",
+  "reason": "mandatory request spans remain unread",
+  "remedy": {
+   "needs_registration": true,
+   "note": "no remedy recorded for this verdict",
+   "register": "質問された事項を示す出典を追加してください。",
+   "verdict": "UNKNOWN_UNREAD"
+  },
+  "runtime_mode": "round5",
+  "semantic": {
+   "budget": {
+    "candidates": 0,
+    "limits": {
+     "bindings": 64,
+     "candidates": 256,
+     "depth": 8,
+     "parse": 32,
+     "steps": 4096
+    },
+    "peak_bindings": 0,
+    "steps": 0
+   },
+   "request": {
+    "covered": [],
+    "obligations": [],
+    "plans": [],
+    "rules": [
+     "typed unread"
+    ],
+    "stages": [],
+    "text": "If I want my parcel to arrive in Orrin Bay by Saturday, what is the latest day I can drop it off at the depot?",
+    "unread": [
+     {
+      "reason": "unsupported request grammar",
+      "span": {
+       "end": 110,
+       "source": "question",
+       "start": 0,
+       "text": "If I want my parcel to arrive in Orrin Bay by Saturday, what is the latest day I can drop it off at the depot?"
+      }
+     }
+    ]
+   },
+   "unread": [
+    {
+     "reason": "unsupported request grammar",
+     "span": {
+      "end": 110,
+      "source": "question",
+      "start": 0,
+      "text": "If I want my parcel to arrive in Orrin Bay by Saturday, what is the latest day I can drop it off at the depot?"
+     }
+    }
+   ],
+   "verified": false,
+   "version": "round5a"
+  },
+  "sources": [],
+  "text": "この要求を裏づける導出を確認できません。",
+  "trace": [
+   {
+    "code_intent": false,
+    "content_intent": false,
+    "decision_input": "raw_request",
+    "fallback": false,
+    "part": "one.round5_route",
+    "status": "ran"
+   },
+   {
+    "obligations": 0,
+    "part": "question.read_semantic",
+    "plans": 0,
+    "status": "ran",
+    "unread": [
+     {
+      "reason": "unsupported request grammar",
+      "span": {
+       "end": 110,
+       "source": "question",
+       "start": 0,
+       "text": "If I want my parcel to arrive in Orrin Bay by Saturday, what is the latest day I can drop it off at the depot?"
+      }
+     }
+    ]
+   },
+   {
+    "clauses": 0,
+    "ingest_ms": 60.634916997514665,
+    "part": "semantic_reader.document_view",
+    "source_unread": [
+     {
+      "reason": "unsupported clause grammar",
+      "span": {
+       "end": 130,
+       "source": "lantern_freight_schedule.txt",
+       "start": 0,
+       "text": "The Lantern Freight depot ships parcels to Orrin Bay on Wednesdays. Parcels must be dropped off at least two days before shipping."
+      }
+     },
+     {
+      "reason": "unsupported clause grammar",
+      "span": {
+       "end": 92,
+       "source": "orrin_bay_arrivals.txt",
+       "start": 0,
+       "text": "Shipments from Lantern Freight take three days to reach Orrin Bay once they leave the depot."
+      }
+     }
+    ],
+    "source_unread_count": 2,
+    "source_unread_truncated": false,
+    "status": "ran"
+   },
+   {
+    "arity": 6,
+    "leaves": 2,
+    "nodes": 1,
+    "part": "semantic_route.LeafTree",
+    "reason": "fewer leaves than one routing node",
+    "status": "skipped"
+   },
+   {
+    "how_to_resolve": "質問された事項を示す出典を追加してください。",
+    "part": "remedy.remedy",
+    "status": "ran",
+    "verdict": "UNKNOWN_UNREAD"
+   },
+   {
+    "asks": "",
+    "part": "ask_back.question",
+    "reason": "verdict has no human-answerable candidate",
+    "status": "abstained"
+   },
+   {
+    "part": "coverage.document_needed",
+    "reason": "no domain witnesses",
+    "status": "abstained"
+   },
+   {
+    "part": "gap_graph.refusal_to_gap",
+    "reason": "no opt-in gap_path",
+    "status": "abstained"
+   },
+   {
+    "part": "grow.log_refusal",
+    "reason": "no queue opt-in or different verdict",
+    "status": "abstained"
+   },
+   {
+    "bound_source_supplied_to_goal_consumer": false,
+    "candidate_clause_span_causal_influence_proven": false,
+    "candidate_clause_span_cited_after_full_view_check": false,
+    "candidate_clause_span_match_count": 0,
+    "candidate_document_id_cited_after_full_view_check": false,
+    "candidate_sentence_span_cited_after_full_view_check": null,
+    "candidate_views_supplied_to_answer_verifier": false,
+    "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+    "independent_source_count": null,
+    "licenses_goal_realization": false,
+    "part": "multigrain_adapter.retrieve_multigrain_candidates",
+    "selected_candidate": null,
+    "source_binding_reason": "navigation or source registry is unavailable",
+    "source_binding_status": "HOLD",
+    "source_identity_status": "identity_unverified",
+    "status": "abstained",
+    "verdict": "UNKNOWN_NO_HIERARCHY"
+   }
+  ],
+  "values": [],
+  "verdict": "UNKNOWN_UNREAD"
+ },
+ "stdout_text": null
+}

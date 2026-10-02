@@ -1,0 +1,145 @@
+{
+ "argv": [
+  "ask",
+  "--",
+  "What was the closing price of Tessellate Corp shares yesterday?"
+ ],
+ "elapsed_ms": 231.9,
+ "entry": "cli-ask",
+ "exit_code": 0,
+ "id": "b2s-012",
+ "provenance": {
+  "modules": 57,
+  "outside": []
+ },
+ "reason": null,
+ "stderr": "",
+ "stdout_json": {
+  "ability": "commonsense",
+  "door": "chat",
+  "evidence": [],
+  "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+  "kind": "unknown",
+  "lines": [],
+  "remedy": {
+   "needs_registration": true,
+   "note": "no remedy recorded for this verdict",
+   "register": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+   "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE"
+  },
+  "sources": [],
+  "text": "分かりません。必要な根拠が足りません。",
+  "trace": [
+   {
+    "asked_slot": "what",
+    "case_frame": {
+     "arguments": [],
+     "attribute": "",
+     "negated": false,
+     "predicates": [],
+     "requested_unit": "",
+     "slot": "what",
+     "subject": "",
+     "who_role": ""
+    },
+    "kind": "fact",
+    "part": "question.read",
+    "status": "ran"
+   },
+   {
+    "part": "stage_split.split",
+    "status": "ran",
+    "verdict": "UNKNOWN_UNSEGMENTED"
+   },
+   {
+    "part": "typo_recovery.recover",
+    "status": "abstained",
+    "verdict": "LACK_OF_ASSET"
+   },
+   {
+    "part": "meaning_assets.lattice",
+    "reason": "writer.json",
+    "status": "abstained"
+   },
+   {
+    "part": "sense_split.resolve",
+    "status": "abstained",
+    "verdict": "LACK_OF_ASSET"
+   },
+   {
+    "count": 0,
+    "part": "polarity.observe_negation",
+    "status": "ran"
+   },
+   {
+    "act": "question",
+    "part": "intent.act_by_form",
+    "status": "ran"
+   },
+   {
+    "part": "intent_frames.parse",
+    "reason": "question is not an instruction",
+    "status": "abstained",
+    "verdict": "NOT_APPLICABLE"
+   },
+   {
+    "arm": null,
+    "part": "arm_schema.classify_intent",
+    "status": "ran"
+   },
+   {
+    "kind": null,
+    "part": "skills.answer",
+    "status": "abstained"
+   },
+   {
+    "ability": "commonsense",
+    "part": "abilities.Abilities.answer",
+    "status": "ran"
+   },
+   {
+    "asked_slot": "what",
+    "kind": "fact",
+    "observed_negations": 0,
+    "part": "question.read",
+    "status": "ran"
+   },
+   {
+    "conditions": 0,
+    "minimum_sources": 2,
+    "part": "event_transition",
+    "status": "ran",
+    "supported_outcomes": 0
+   },
+   {
+    "how_to_resolve": "条件と結果を結ぶ独立した出典を二つ以上追加してください。",
+    "part": "remedy.remedy",
+    "status": "ran",
+    "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE"
+   },
+   {
+    "asks": "",
+    "part": "ask_back.question",
+    "reason": "verdict has no human-answerable candidate",
+    "status": "abstained"
+   },
+   {
+    "part": "coverage.document_needed",
+    "reason": "no domain witnesses",
+    "status": "abstained"
+   },
+   {
+    "part": "gap_graph.refusal_to_gap",
+    "reason": "no opt-in gap_path",
+    "status": "abstained"
+   },
+   {
+    "part": "grow.log_refusal",
+    "reason": "no queue opt-in or different verdict",
+    "status": "abstained"
+   }
+  ],
+  "verdict": "UNKNOWN_COMMONSENSE_NO_STRUCTURE"
+ },
+ "stdout_text": null
+}
