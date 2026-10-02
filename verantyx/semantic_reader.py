@@ -24,10 +24,17 @@ _NUM = re.compile(r'([+-]?[0-9]+(?:\.[0-9]+)?)\s*([A-Za-z%]+|[一-鿿]+)')
 _WH = re.compile(r'誰|だれ|何|どこ|いつ|どちら|いくつ')
 # The copula だ is dropped, but not the past auxiliary だ after a 撥音便/イ音便 stem (呼んだ, 泳いだ).
 _END = re.compile(r'(?:ですか|ますか|でしょうか|です|(?<![んい])だ|か)?[？?。！!]*$')
-_MODAL_UNSUPPORTED = re.compile(r'もし|だったなら|はず|かもしれ|だろう|らしい')
-_COMPLEX = re.compile(r'すべて|全部|それぞれ|最後|最初|同時|前後|以前|以後|最新|現在|今日|昨日|午前|午後|[0-9]+[月日時]|ただし|以外|除[くき]|のみ|だけ|必ず')
+_MODAL_UNSUPPORTED = re.compile(r'もし|だったなら|はず|かもしれ|だろう|らしい|そう(?:だ|です|だった|でした)')
+_COMPLEX = re.compile(r'すべて|全部|それぞれ|最後|最初|同時|前後|以前|以後|最新|現在|今日|昨日|今年|午前|午後|[0-9]+[年月日時]|ただし|以外|除[くき]|のみ|だけ|必ず')
 _ROLE_WORDS = {'受取人': 'recipient', '受領者': 'recipient', '渡した人': 'agent',
                '作成者': 'agent', '起点': 'origin', '終点': 'recipient', '相手': 'recipient'}
+_DOUBLE_NEGATION = re.compile(r'(?:ない|なく|ぬ)(?:わけ|こと|もの)(?:では|じゃ|は|も)|なくはない|ないとは限らない')
+_NEGATIVE_ADJECTIVE = re.compile(r'(?:くない|くありません|くなかった|くありませんでした)[。！？?]*$')
+_TIME_NOMINAL = re.compile(r'(?:[0-9０-９]+\s*)?(?:年|月|日|時|分|秒|曜日|頃|ごろ|午前|午後|朝|昼|夜)$')
+_GOAL_PREDICATES = frozenset(('行く','来る','帰る','戻る','向かう','着く','入る','出る','進む','移る','渡る','送る','届ける'))
+_LOCATION_PREDICATES = frozenset(('住む','滞在する','位置する','存在する'))
+_MEANS_NOMINALS = frozenset(('車','電車','バス','飛行機','船','自転車','徒歩','手','指','箸','包丁','ペン','鉛筆','電話','メール','日本語','英語','道具','方法','手段'))
+_PLACE_NOMINALS = frozenset(('学校','家','駅','公園','部屋','店','会社','図書館','病院','工場','東京','大阪','京都','日本','教室','庭','海','山'))
 
 
 def _span(source, raw, start=0, end=None):
@@ -68,6 +75,92 @@ def _event_time(words, predicate_index):
     # tail (e.g. 受け/取っ/た), instead of dropping its past tense.
     return 'past' if any(is_past_aux(w)
                          for w in words[predicate_index + 1:]) else 'nonpast'
+
+
+def _case_phrase(text, tokens, particle_index, lower=0):
+    """Return the source-bounded nominal phrase immediately before a case particle."""
+    j = particle_index - 1
+    while j >= 0 and tokens[j][2] > lower:
+        word = tokens[j][0]
+        pos = word.feature.pos1
+        if pos in ('名詞','代名詞','形容詞','形状詞','接頭辞','接尾辞','数'):
+            j -= 1; continue
+        if pos == '助詞' and word.surface == 'の':
+            j -= 1; continue
+        break
+    first = j + 1
+    if first >= particle_index: return None
+    start, end = tokens[first][1], tokens[particle_index - 1][2]
+    phrase = text[start:end]
+    return start, end, phrase
+
+
+def _case_role(particle, phrase, predicate, *, quoted=False, person=False):
+    """Map only morphologically or syntactically resolved cases; label the rest."""
+    compact = phrase.replace(' ', '').replace('　', '')
+    if particle == 'に':
+        if _TIME_NOMINAL.search(compact): return 'time', 'case'
+        if predicate in _GOAL_PREDICATES: return 'goal', 'case'
+        if predicate in _LOCATION_PREDICATES: return 'location', 'case'
+        return 'ambiguous', 'case:に:location|goal|time'
+    if particle == 'で':
+        head = compact.split('の')[-1]
+        if head in _PLACE_NOMINALS or any(head.endswith(x) for x in ('学校','駅','公園','会社','図書館','病院','市','町','県','国','室')):
+            return 'place', 'case'
+        if head in _MEANS_NOMINALS or head.endswith('語'):
+            return 'means', 'case'
+        return 'ambiguous', 'case:で:place|means'
+    if particle == 'と':
+        if quoted: return 'quotation', 'case'
+        if person: return 'companion', 'case'
+        return 'ambiguous', 'case:と:companion|quotation'
+    if particle == 'から':
+        return ('time' if _TIME_NOMINAL.search(compact) else 'source'), 'case'
+    if particle == 'まで': return 'limit', 'case'
+    if particle == 'へ': return 'direction', 'case'
+    return None, 'case'
+
+
+def _case_roles(text, tokens, predicate_index, lower=0, existing=(), offset=0):
+    """Read case adjuncts attached before this predicate and preserve ambiguity."""
+    predicate = _base(tokens[predicate_index][0]) if predicate_index < len(tokens) else ''
+    roles = []; issues = []
+    existing_spans = set(); existing_terms = set()
+    for item in existing:
+        if hasattr(item, 'span'):
+            existing_spans.add((item.span.start-offset, item.span.end-offset))
+            existing_terms.add(str(item.term))
+        elif isinstance(item, tuple) and len(item) == 2:
+            existing_terms.add(str(item[1]))
+    for ti, (word, start, end) in enumerate(tokens):
+        if start < lower or ti >= predicate_index: continue
+        if word.feature.pos1 != '助詞' or word.feature.pos2 != '格助詞' or word.surface not in ('に','で','と','から','まで','へ'):
+            continue
+        located = _case_phrase(text, tokens, ti, lower)
+        if located is None: continue
+        pstart, pend, phrase = located
+        # A frame's recipient is already a better typed reading of this に phrase.
+        if (pstart, pend) in existing_spans or phrase in existing_terms: continue
+        # Wh-bearing phrases are variables in requests, not asserted case adjuncts.
+        if _WH.search(phrase): continue
+        quoted = word.surface == 'と' and text[:start].rstrip().endswith('」')
+        if quoted:
+            close = text.rfind('」', 0, start)
+            opening = text.rfind('「', 0, close)
+            if opening >= 0:
+                pstart, pend = opening + 1, close
+                phrase = text[pstart:pend]
+        person = False
+        if word.surface == 'と':
+            prior = tokens[ti - 1][0] if ti else None
+            person = bool(prior and (prior.feature.pos3 == '人名' or phrase.endswith('さん') or phrase.endswith('氏')))
+        role, kind = _case_role(word.surface, phrase, predicate, quoted=quoted, person=person)
+        if role is None: continue
+        span = (pstart, pend)
+        if span in existing_spans: continue
+        roles.append((role, phrase, span, kind))
+        if role == 'ambiguous': issues.append('ambiguous case role: '+word.surface)
+    return roles, issues
 
 
 def attribute(text):
@@ -131,6 +224,10 @@ def _piece(source, raw, start, end, sovereign, family):
     tokens = _tokens(text); words = [t[0] for t in tokens]
     if text.rstrip().endswith(('?', '？')) or any(w.feature.pos1 == '助詞' and w.surface in ('か', 'かな', 'かしら', 'かい', 'かね', 'っけ') for w in words):
         return [], [Unread(full, 'interrogative source does not assert a fact')]
+    if _DOUBLE_NEGATION.search(text):
+        return [], [Unread(full, 'unsupported double negation')]
+    if _NEGATIVE_ADJECTIVE.search(text):
+        return [], [Unread(full, 'unsupported negative adjective')]
     if any('意志推量' in str(w.feature.cForm) for w in words):
         return [], [Unread(full, 'volitional source does not assert a fact')]
     # A duration (1時間) is not a clock-time scope: judge the other complex-scope words on the text without it.
@@ -143,9 +240,15 @@ def _piece(source, raw, start, end, sovereign, family):
     predicates = _predicates(words)
     result = []
     # Noun copulas (including explicit nominal fragments) are relational facts.
-    m = re.fullmatch(r'\s*(.+?)[はが]\s*(.*?)(?:です|である|だ|ではない|でない|じゃない)?[。！？?]*\s*', text)
+    m = re.fullmatch(r'\s*(.+?)[はが]\s*(.*?)[。！？?]*\s*', text)
     if m and not frames and m[2] and not _WH.search(m[2]):
-        lhs, value = m[1], m[2]
+        lhs, raw_value = m[1], m[2]
+        suffix = re.search(r'(ではなかった|でなかった|じゃなかった|ではない|でない|じゃない|でした|だった|である|です|だ)$', raw_value)
+        copula = suffix[1] if suffix else ''
+        value = raw_value[:suffix.start()] if suffix else raw_value
+        value = value.rstrip()
+        if not value:
+            return [], [Unread(full, 'unsupported empty copula value')]
         parts = lhs.split('の'); entity = 'の'.join(parts[:-1]) if len(parts)>1 else lhs
         attr = parts[-1] if len(parts)>1 else ''
         entity_at = left + text.index(entity); value_at = left + m.start(2)
@@ -158,13 +261,13 @@ def _piece(source, raw, start, end, sovereign, family):
         if entity in ('彼','彼女','それ','これ','あれ') or value in ('彼','彼女','それ','これ','あれ'):
             unknown.append('unresolved anaphora')
         roles.append(Role('value', q or value, _span(source, raw, value_at, value_at+len(value)), 'quantity' if q else 'literal'))
-        pol = '-' if re.search(r'(ではない|でない|じゃない)[。！？?]*$', text) else '+'
+        pol = '-' if copula in ('ではなかった','でなかった','じゃなかった','ではない','でない','じゃない') else '+'
         before = raw[:value_at]; quoted = before.count('「')>before.count('」')
         mod = 'quote' if quoted else ('hedge' if _MODAL_UNSUPPORTED.search(text) else 'assert')
         ident = hashlib.sha256(f'{source}:{start}:{end}:copula'.encode()).hexdigest()[:24]
         result.append(Clause(ident, Variable('event_'+ident, 'event'), 'property' if attr else 'identity',
             _span(source, raw, value_at, value_at+len(value)), tuple(roles), full, body,
-            polarity=pol, modality=mod, conditions=tuple(condition), condition_spans=tuple(guard_spans),
+            polarity=pol, modality=mod, time='past' if copula in ('ではなかった','でなかった','じゃなかった','でした','だった') else '', conditions=tuple(condition), condition_spans=tuple(guard_spans),
             rule='copula', sovereign=sovereign, family=family, unsupported=tuple(unknown)))
     elif frames:
         if len(frames) != len(predicates): unknown.append('predicate/frame alignment')
@@ -203,20 +306,13 @@ def _piece(source, raw, start, end, sovereign, family):
                     descriptors.append((at, at+len(desc)))
                 else:
                     roles.append(Role(role, canonical(value), _span(source, raw, left+at, left+at+len(value)), 'frame'))
-            # Additional case roles are tied to this predicate's own Edge.ev.
-            for edge in edges:
-                if edge.ev != ev: continue
-                role = {'で':'location','から':'origin'}.get(edge.rel)
-                if role and edge.dep not in (r.term for r in roles):
-                    at = text.rfind(edge.dep, chunk_start, pstart)
-                    if at >= 0: roles.append(Role(role, edge.dep, _span(source,raw,left+at,left+at+len(edge.dep))))
-            # から (ablative) phrases: typed_edges has no edge for them, so read the case particle directly.
-            for ti,(tw,tps,tpe) in enumerate(tokens):
-                if not (tw.feature.pos1 == '助詞' and tw.feature.pos2 == '格助詞' and tw.surface == 'から' and chunk_start <= tps < pstart): continue
-                tj = ti
-                while tj > 0 and tokens[tj-1][0].feature.pos1 in ('名詞','接尾辞') and tokens[tj-1][2] > chunk_start - 1: tj -= 1
-                if tj < ti and tokens[tj][1] >= chunk_start and not any(r.name == 'origin' for r in roles):
-                    roles.append(Role('origin', text[tokens[tj][1]:tps], _span(source, raw, left+tokens[tj][1], left+tps)))
+            # Case adjuncts stay attached to this predicate and retain their exact source span.
+            case_roles, case_issues = _case_roles(text, tokens, ev, chunk_start, roles, left)
+            issues.extend(case_issues)
+            for role, term, (at, end_at), kind in case_roles:
+                roles.append(Role(role, term, _span(source, raw, left+at, left+end_at), kind))
+                if term in ('彼','彼女','それ','これ','あれ') or '彼の' in term:
+                    issues.append('unresolved anaphora')
             covered = [(r.span.start-left, r.span.end-left) for r in roles] + descriptors + _predicate_coverage(tokens, ev, surface_pred)
             own_tokens = tokens
             if coordinated:        # the other clauses of a coordinated sentence are read as their own clauses
@@ -224,7 +320,7 @@ def _piece(source, raw, start, end, sovereign, family):
                 own_tokens = tokens[own_first:own_last + 1]
             if _uncovered_nominals(own_tokens, covered): issues.append('unrepresented source content')
             for r in roles:
-                if r.name not in ('agent', 'patient', 'recipient', 'origin', 'location'): continue
+                if r.name not in ('agent','patient','recipient','origin','source','location','goal','time','place','means','companion','quotation','limit','direction','ambiguous'): continue
                 lo_, hi_ = r.span.start - left, r.span.end - left
                 for d0, d1 in descriptors:
                     if d1 == lo_: lo_ = d0
@@ -349,7 +445,7 @@ def _event_question(fragment,b,span):
     # A relative head names the missing event role, and becomes a bound variable.
     relative=re.fullmatch(r'(.+?)(人|もの|物|箱|鍵|資料)(?:は)?',cleaned)
     # Cleft question ("Xを呼んだのは？"): the omitted head asks for the role the clause leaves open.
-    cleft=None if relative else re.fullmatch(r'(.+?)の(?:は|が)',cleaned)
+    cleft=None if relative else re.fullmatch(r'(.+?)の(?:は|が)(?:誰|だれ|何)?',cleaned)
     if cleft: relative=re.fullmatch(r'(.+?)(もの)',cleft[1]+'もの')
     core=relative[1] if relative else cleaned
     frames=read_all(core); positioned=_tokens(core); tokens=[w for w,_,_ in positioned]; preds=_predicates(tokens)
@@ -365,23 +461,42 @@ def _event_question(fragment,b,span):
             roles.append((role,canonical(term)))
             at = core.rfind(term, 0, positioned[preds[0][0]][1])
             if at >= 0: covered.append((at, at+len(term)))
-    for edge in extract(core):
-        if edge.ev != preds[0][0]:continue
-        role={'で':'location','から':'origin'}.get(edge.rel)
-        if role and not _WH.search(edge.dep):
-            if any(k==role for k,_ in roles):return False
-            roles.append((role,edge.dep))
-            at = core.rfind(edge.dep, 0, positioned[preds[0][0]][1])
-            if at >= 0: covered.append((at, at+len(edge.dep)))
+    case_roles, case_issues = _case_roles(core, positioned, preds[0][0], existing=roles)
+    if case_issues: return False
+    for role, term, (at, end_at), _kind in case_roles:
+        if any(k==role for k,_ in roles):return False
+        roles.append((role,term)); covered.append((at,end_at))
     passive=bool(re.search(r'(?:れ|られ)(?:た|る|ます)',core))
     handled_wh=set()
-    for m in re.finditer(r'(誰|だれ|何|どこ)(が|は|を|に|へ|で|から)',core):
+    for m in re.finditer(r'(誰|だれ|何時|いつ|何|どこ)(によって|が|は|を|に|へ|で|から|まで|と)',core):
         handled_wh.add(m.start())
         covered.append((m.start(),m.end()))
-        role={'が':'agent','は':'agent','を':'patient','に':'recipient','へ':'recipient','で':'location','から':'origin'}[m[2]]
-        if passive and role=='agent': role='patient'
-        if original in CONVERSE:
-            role={'agent':'recipient','recipient':'agent','origin':'agent'}.get(role,role)
+        wh, particle = m[1], m[2]
+        if particle == 'によって':
+            role='agent'
+        elif particle in ('が','は'):
+            role='patient' if passive else 'agent'
+        elif particle == 'を': role='patient'
+        elif particle == 'に':
+            if wh in ('いつ','何時'): role='time'
+            elif wh in ('誰','だれ'): role='agent' if passive else 'recipient'
+            elif wh == 'どこ':
+                if original in _GOAL_PREDICATES: role='goal'
+                elif original in _LOCATION_PREDICATES or original in ('いる','ある'): role='location'
+                else: return False
+            else: return False
+        elif particle == 'へ': role='direction'
+        elif particle == 'で':
+            if wh == 'どこ': role='place'
+            else: return False
+        elif particle == 'から': role='time' if wh in ('いつ','何時') else 'source'
+        elif particle == 'まで': role='limit'
+        elif particle == 'と':
+            if wh in ('誰','だれ'): role='companion'
+            elif original in ('言う','話す','述べる'): role='quotation'
+            else: return False
+        if original in CONVERSE and particle != 'によって':
+            role={'agent':'recipient','recipient':'agent','origin':'agent','source':'agent'}.get(role,role)
         if any(k==role for k,_ in roles): return False
         value=b.variable(); roles.append((role,value)); outputs.append((role,value))
     if any(m.start() not in handled_wh for m in _WH.finditer(core)):return False
