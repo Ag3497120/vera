@@ -35,7 +35,6 @@ class AccuracyAsker:
     def __init__(self, target="router", accuracy=1.0):
         self.target = target
         self.accuracy = accuracy
-        self.source = "deterministic-test"
         self.calls = 0
         self.prompts = []
 
@@ -59,7 +58,6 @@ class AccuracyAsker:
 class FixedAsker:
     def __init__(self, replies):
         self.replies = list(replies)
-        self.source = "scripted-test"
         self.prompts = []
 
     def __call__(self, prompt):
@@ -94,10 +92,24 @@ def test_model_backed_asker_is_rejected():
         SemanticUnknownChoice(CodexAsker())
 
 
-def test_alias_record_names_the_injected_non_llm_source():
+def test_model_backed_asker_wrapper_is_rejected_even_with_benign_source():
+    class DelegatingAsker:
+        source = "deterministic-rule-based"
+
+        def __init__(self):
+            self.delegate = CodexAsker()
+
+        def __call__(self, prompt):
+            return self.delegate(prompt)
+
+    with pytest.raises(TypeError, match="non-LLM"):
+        SemanticUnknownChoice(DelegatingAsker())
+
+
+def test_alias_record_attributes_resolver_implementation():
     flow = SemanticUnknownChoice(FixedAsker(['{"choice": 0}', '{"choice": 0}']))
     result = flow.choose(make_report(units=("router",)), [])
-    assert result["alias_record"]["by"] == "scripted-test"
+    assert result["alias_record"]["by"] == "verantyx.semantic_unknown_choice"
 
 
 @pytest.mark.parametrize("accuracy, expected", [(1.0, "ADOPT"), (0.8, "ADOPT"), (0.5, "UNRESOLVED")])

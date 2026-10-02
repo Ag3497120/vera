@@ -6,10 +6,13 @@ the ask. An adopted mapping is stored as testimony, not as semantic evidence.
 """
 from __future__ import annotations
 
+import functools
+import inspect
 import json
 from collections.abc import Iterable, Mapping
 from copy import deepcopy
 import re
+from types import ModuleType
 from typing import Any, Literal, Optional, Protocol
 
 from .memory_frame import CodexAsker, Resolver
@@ -18,23 +21,80 @@ from .semantic_unknown import UnknownReport
 
 Decision = Literal["ADOPT", "NONE", "UNRESOLVED"]
 _MODEL_SOURCE = re.compile(r"\b(?:codex|gpt|llm|model|openai|claude|gemini)\b", re.I)
+_ASKER_PROVENANCE = "verantyx.semantic_unknown_choice"
 
 
 class NonLLMAsker(Protocol):
-    """A closed-choice asker that declares its non-LLM source."""
-
-    source: str
+    """An injected closed-choice callback."""
 
     def __call__(self, prompt: str) -> str: ...
 
 
-def _asker_source(asker: Any) -> str:
+def _contains_codex_asker(value: Any, seen: Optional[set[int]] = None) -> bool:
+    """Find a CodexAsker wrapped by a callable, closure, or delegated object."""
+    if value is CodexAsker or isinstance(value, CodexAsker):
+        return True
+    if value is None or isinstance(value, (str, bytes, int, float, bool)):
+        return False
+    if isinstance(value, (ModuleType, type)):
+        return False
+
+    seen = seen if seen is not None else set()
+    identity = id(value)
+    if identity in seen:
+        return False
+    seen.add(identity)
+
+    if isinstance(value, Mapping):
+        return any(_contains_codex_asker(item, seen)
+                   for pair in value.items() for item in pair)
+    if isinstance(value, (tuple, list, set, frozenset)):
+        return any(_contains_codex_asker(item, seen) for item in value)
+    if isinstance(value, functools.partial):
+        return (_contains_codex_asker(value.func, seen)
+                or _contains_codex_asker(value.args, seen)
+                or _contains_codex_asker(value.keywords, seen))
+    if inspect.ismethod(value):
+        return (_contains_codex_asker(value.__self__, seen)
+                or _contains_codex_asker(value.__func__, seen))
+    if inspect.isfunction(value):
+        if any(_contains_codex_asker(cell.cell_contents, seen)
+               for cell in (value.__closure__ or ())):
+            return True
+        return any(name in value.__globals__
+                   and _contains_codex_asker(value.__globals__[name], seen)
+                   for name in value.__code__.co_names)
+
+    try:
+        state = vars(value)
+    except TypeError:
+        state = {}
+    if any(_contains_codex_asker(item, seen) for item in state.values()):
+        return True
+    for cls in type(value).__mro__:
+        slots = cls.__dict__.get("__slots__", ())
+        if isinstance(slots, str):
+            slots = (slots,)
+        for name in slots:
+            try:
+                item = object.__getattribute__(value, name)
+            except (AttributeError, TypeError):
+                continue
+            if _contains_codex_asker(item, seen):
+                return True
+    call_impl = getattr(type(value), "__call__", None)
+    return call_impl is not None and _contains_codex_asker(call_impl, seen)
+
+
+def _asker_provenance(asker: Any) -> str:
+    if (not callable(asker) or _contains_codex_asker(asker)):
+        raise TypeError("asker must be an injected non-LLM callable")
+    # A caller-provided label is not proof of provenance. Reject explicit model
+    # labels as an additional guard, but attribute all records to this resolver.
     source = getattr(asker, "source", None)
-    if (isinstance(asker, CodexAsker) or not callable(asker)
-            or not isinstance(source, str) or not source.strip()
-            or _MODEL_SOURCE.search(source)):
-        raise TypeError("asker must be a callable non-LLM asker with a declared source")
-    return source.strip()
+    if isinstance(source, str) and _MODEL_SOURCE.search(source):
+        raise TypeError("asker must be an injected non-LLM callable")
+    return _ASKER_PROVENANCE
 
 
 def _get(value: Any, name: str, default: Any = None) -> Any:
@@ -110,7 +170,7 @@ class SemanticUnknownChoice:
     """
 
     def __init__(self, asker: NonLLMAsker, seed: int = 7):
-        _asker_source(asker)
+        _asker_provenance(asker)
         self.resolver = Resolver(asker, seed=seed)
         self._aliases: dict[tuple[str, tuple[str, ...]], dict[str, Any]] = {}
         self._alias_history: list[dict[str, Any]] = []
@@ -192,7 +252,7 @@ class SemanticUnknownChoice:
         shown = [json.dumps({"term": term, "from": origins[term]}, ensure_ascii=False,
                             sort_keys=True) for term in options]
         query = json.dumps(_get(report, "term", ""), ensure_ascii=False)
-        source = _asker_source(self.resolver.asker)
+        source = _asker_provenance(self.resolver.asker)
         result = self.resolver.resolve(
             query, shown,
             "Choose only among these constructed terms and question-frame terms.",
