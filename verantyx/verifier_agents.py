@@ -586,6 +586,7 @@ def run_verifiers(
             verifier_check["items"].append(checked)
         checks.append(verifier_check)
 
+    checks.sort(key=lambda item: (item["verifier_id"], item["session_id"]))
     all_passed = bool(verdicts) and has_evidence and all_items_passed and not evidence_disagrees
     evidence = {
         "schema": "verifier_evidence_v1",

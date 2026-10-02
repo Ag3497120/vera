@@ -1,0 +1,5 @@
+tests/test_verifier_agents.py::test_invalid_poll_limit_is_rejected
+tests/test_verifier_agents.py::test_post_verification_witness_failure_prevents_done
+
+3974 tests collected in 2.88s
+exit=0

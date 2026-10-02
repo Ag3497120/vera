@@ -2,6 +2,8 @@ import json
 import re
 from types import SimpleNamespace
 
+import pytest
+
 from verantyx.semantic_unknown_choice import SemanticUnknownChoice
 
 

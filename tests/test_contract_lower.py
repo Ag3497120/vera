@@ -6,8 +6,11 @@ import json
 import os
 import sqlite3
 import subprocess
+import shutil
 import tempfile
 import unittest
+
+import _vera_env
 
 from verantyx.contract_budget import Budget
 from verantyx.contract_ir import Boundary, ContractError, Goal, InputBinding, Interface, PlanNode, ProgramContract, TypedProgramPlan, ValueType
@@ -60,13 +63,18 @@ def python_call(c, p, args, kwargs=None):
     return result, fn
 
 
+def _node():
+    _vera_env.require("node_jitless_quiet")
+    return shutil.which("node")
+
+
 def js_call(c, p, args):
     artifact = lower(c, p, Budget())
     payload = json.dumps(args)
     script = artifact.source + "\nconst supplied = " + payload + ";\nconst before = JSON.stringify(supplied);\nconst result = module.exports[" + json.dumps(c.interface.name) + "](...supplied);\nif (JSON.stringify(supplied) !== before) throw Error('mutation');\nconsole.log(JSON.stringify(result));\n"
     # This generous diagnostic timeout isolates emitter meaning from runtime
     # startup under concurrent load. It is not the registered 200ms runner.
-    completed = subprocess.run(["/opt/homebrew/bin/node", "--jitless", "--no-warnings", "-e", script], capture_output=True, text=True, timeout=10)
+    completed = subprocess.run([_node(), "--jitless", "--no-warnings", "-e", script], capture_output=True, text=True, timeout=10)
     if completed.returncode or completed.stderr:
         raise AssertionError(completed.stderr)
     return json.loads(completed.stdout)
@@ -79,7 +87,7 @@ def js_batch(tasks):
         artifact = lower(c, p, Budget())
         prepared.append({"source": artifact.source, "name": c.interface.name, "args": args})
     script = "const vm = require('node:vm'); const tasks = " + json.dumps(prepared) + ";\nconst outputs = [];\nfor (const t of tasks) { const ctx = vm.createContext({module:{exports:{}}}); vm.runInContext(t.source, ctx, {timeout:1000}); const before = JSON.stringify(t.args); outputs.push(ctx.module.exports[t.name](...t.args)); if (JSON.stringify(t.args) !== before) throw Error('mutation'); }\nconsole.log(JSON.stringify(outputs));"
-    completed = subprocess.run(["/opt/homebrew/bin/node", "--jitless", "--no-warnings", "-e", script], capture_output=True, text=True, timeout=10)
+    completed = subprocess.run([_node(), "--jitless", "--no-warnings", "-e", script], capture_output=True, text=True, timeout=10)
     if completed.returncode or completed.stderr:
         raise AssertionError(completed.stderr)
     return json.loads(completed.stdout)

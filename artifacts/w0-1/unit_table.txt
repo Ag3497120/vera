@@ -1,0 +1,136 @@
+## wave4  ledger=/Users/motonisihikoudai/vera-wiring/phase2/runs/wave4/ledger.jsonl  branch=origin/src/wave4  units=19
+unit=w_case_lexicon
+  events=launch>finished>retry>launch>finished>merged
+  last_event=merged
+  merged_commit=ff71279  on_branch=yes
+  tree_files_equal_to_branch_tip=4/4
+  rule=R3  verdict=IMPORTED  why=merged with a commit that is on the branch
+unit=w_question_forms
+  events=launch>finished>retry>launch>finished>hold>merged
+  last_event=merged
+  merged_commit=-  on_branch=-
+  rule=R2  verdict=NOT_IMPORTED  why=merged without a commit; no change exists to import: DEPENDENCY WAIVED by the conductor owner: held unit superseded by w_question_forms2; phenomenon units do not touch semantic_wh.py
+unit=w_question_forms2
+  events=add_unit>launch>finished>merged
+  last_event=merged
+  merged_commit=9c89f1e  on_branch=yes
+  tree_files_equal_to_branch_tip=0/2  differing=tools/demo_question_forms.py,verantyx/semantic_wh.py
+  rule=R4  verdict=NOT_IMPORTED  why=merged with a commit, but adding it makes previously-passing tests fail; see artifacts/w0-1/qf2_trial_compare.txt
+unit=p_parallel
+  events=launch>finished>merged
+  last_event=merged
+  merged_commit=da21edc  on_branch=yes
+  tree_files_equal_to_branch_tip=2/2
+  rule=R3  verdict=IMPORTED  why=merged with a commit that is on the branch
+unit=p_double_neg
+  events=launch>finished>merged
+  last_event=merged
+  merged_commit=ffe079e  on_branch=yes
+  tree_files_equal_to_branch_tip=2/2
+  rule=R3  verdict=IMPORTED  why=merged with a commit that is on the branch
+unit=p_causative
+  events=launch>finished>retry>launch
+  last_event=launch
+  merged_commit=-  on_branch=-
+  rule=R1  verdict=NOT_IMPORTED  why=no merged event in the ledger (no terminal event)
+unit=p_caus_pass
+  events=launch>finished>merged
+  last_event=merged
+  merged_commit=17e6d4f  on_branch=yes
+  tree_files_equal_to_branch_tip=2/2
+  rule=R3  verdict=IMPORTED  why=merged with a commit that is on the branch
+unit=p_passive
+  events=launch>finished>merged
+  last_event=merged
+  merged_commit=498f3c3  on_branch=yes
+  tree_files_equal_to_branch_tip=2/2
+  rule=R3  verdict=IMPORTED  why=merged with a commit that is on the branch
+unit=p_potential
+  events=launch>finished>retry>launch>finished>hold
+  last_event=hold
+  merged_commit=-  on_branch=-
+  rule=R1  verdict=NOT_IMPORTED  why=no merged event in the ledger (hold)
+unit=p_negation
+  events=launch>finished>retry>launch>finished>hold
+  last_event=hold
+  merged_commit=-  on_branch=-
+  rule=R1  verdict=NOT_IMPORTED  why=no merged event in the ledger (hold)
+unit=p_giving
+  events=launch>finished>merged
+  last_event=merged
+  merged_commit=57079df  on_branch=yes
+  tree_files_equal_to_branch_tip=2/2
+  rule=R3  verdict=IMPORTED  why=merged with a commit that is on the branch
+unit=p_quantity
+  events=launch>finished>merged
+  last_event=merged
+  merged_commit=e6b2952  on_branch=yes
+  tree_files_equal_to_branch_tip=2/2
+  rule=R3  verdict=IMPORTED  why=merged with a commit that is on the branch
+unit=p_temporal
+  events=launch>finished>merged
+  last_event=merged
+  merged_commit=0ff2328  on_branch=yes
+  tree_files_equal_to_branch_tip=2/2
+  rule=R3  verdict=IMPORTED  why=merged with a commit that is on the branch
+unit=p_conditional
+  events=launch>finished>retry>launch
+  last_event=launch
+  merged_commit=-  on_branch=-
+  rule=R1  verdict=NOT_IMPORTED  why=no merged event in the ledger (no terminal event)
+unit=p_comparison
+  events=launch>finished>merged
+  last_event=merged
+  merged_commit=77d5699  on_branch=yes
+  tree_files_equal_to_branch_tip=2/2
+  rule=R3  verdict=IMPORTED  why=merged with a commit that is on the branch
+unit=p_reason
+  events=launch>finished>merged
+  last_event=merged
+  merged_commit=b8b9a50  on_branch=yes
+  tree_files_equal_to_branch_tip=2/2
+  rule=R3  verdict=IMPORTED  why=merged with a commit that is on the branch
+unit=p_scramble
+  events=launch>finished>merged
+  last_event=merged
+  merged_commit=6546002  on_branch=yes
+  tree_files_equal_to_branch_tip=2/2
+  rule=R3  verdict=IMPORTED  why=merged with a commit that is on the branch
+unit=p_adnominal
+  events=launch>finished>retry>launch>finished>hold
+  last_event=hold
+  merged_commit=-  on_branch=-
+  rule=R1  verdict=NOT_IMPORTED  why=no merged event in the ledger (hold)
+unit=p_synonym
+  events=launch>finished>retry>launch>finished>hold
+  last_event=hold
+  merged_commit=-  on_branch=-
+  rule=R1  verdict=NOT_IMPORTED  why=no merged event in the ledger (hold)
+## wave5  ledger=/Users/motonisihikoudai/vera-wiring/phase2/runs/wave5/ledger.jsonl  branch=origin/src/wave5  units=5
+unit=r_reader_regress
+  events=launch>finished>retry>launch>adopt>finished>retry>launch>finished>retry>launch>finished>hold
+  last_event=hold
+  merged_commit=-  on_branch=-
+  rule=R1  verdict=NOT_IMPORTED  why=no merged event in the ledger (hold)
+unit=r_verifier
+  events=launch>finished>retry>launch>finished>hold>retry>launch>finished>merged
+  last_event=merged
+  merged_commit=d25a73a  on_branch=yes
+  tree_files_equal_to_branch_tip=2/2
+  rule=R3  verdict=IMPORTED  why=merged with a commit that is on the branch
+unit=r_memory
+  events=launch>finished>retry>launch>finished>hold>retry>launch>finished>merged
+  last_event=merged
+  merged_commit=6febe16  on_branch=yes
+  tree_files_equal_to_branch_tip=2/2
+  rule=R3  verdict=IMPORTED  why=merged with a commit that is on the branch
+unit=r_demos
+  events=launch>finished>retry>launch>finished>retry>launch>finished>retry>launch
+  last_event=launch
+  merged_commit=-  on_branch=-
+  rule=R1  verdict=NOT_IMPORTED  why=no merged event in the ledger (no terminal event)
+unit=r_reader_regress2
+  events=add_unit>launch
+  last_event=launch
+  merged_commit=-  on_branch=-
+  rule=R1  verdict=NOT_IMPORTED  why=no merged event in the ledger (no terminal event)

@@ -1,0 +1,92 @@
+before: testcases=3956 passed=3699 failed=164 error(non-collection)=0 xfailed=82 skipped=11 collection_errors=1
+  skipped by resource: {'UNCLASSIFIED': 11}
+  COLLECTION_ERROR module: tests.attack.test_semantic_unknown_choice_paraphrase
+  pytest summary line: 164 failed, 3631 passed, 11 skipped, 82 xfailed, 68 xpassed, 1 error, 37 subtests passed in 18.94s
+after: testcases=3974 passed=3740 failed=124 error(non-collection)=0 xfailed=82 skipped=28 collection_errors=0
+  skipped by resource: {'eval_fixtures': 1, 'ja_sealed1_dev_fixtures': 1, 'node': 8, 'node_jitless_quiet': 9, 'round5_dev_fixtures': 1, 'sandbox_integration': 8}
+  pytest summary line: 124 failed, 3672 passed, 28 skipped, 82 xfailed, 68 xpassed, 37 subtests passed in 19.87s
+
+NEW_FAIL (0):
+
+AFTER_FAILED_BUT_BEFORE_COLLECTION_ERROR (counted on the before-failed side) (1):
+  tests.attack.test_semantic_unknown_choice_paraphrase::test_query_delimiters_and_line_breaks_stay_inside_the_json_string
+
+AFTER_COLLECTION_ERROR_BUT_BEFORE_COLLECTION_ERROR (counted on the before-failed side) (0):
+
+PASS_TO_SKIP (0):
+
+PASS_TO_XFAIL (0):
+
+FAIL_TO_SKIP (failed before, classified skip after: these are the failures moved into ENV_MISSING) (17):
+  tests.test_contract_lower.ContractLowerTests::test_all_global_aggregate_subkinds_empty_and_float_type [ENV_MISSING[node_jitless_quiet]] before=failed
+  tests.test_contract_lower.ContractLowerTests::test_group_typed_key_aggregate_and_post_filter [ENV_MISSING[node_jitless_quiet]] before=failed
+  tests.test_contract_lower.ContractLowerTests::test_join_projection_multiplicity_and_antijoin [ENV_MISSING[node_jitless_quiet]] before=failed
+  tests.test_contract_lower.ContractLowerTests::test_js_text_diff_all_ties_and_group_mean_subkinds [ENV_MISSING[node_jitless_quiet]] before=failed
+  tests.test_contract_lower.ContractLowerTests::test_ratio_float_zero_and_extrema_ties [ENV_MISSING[node_jitless_quiet]] before=failed
+  tests.test_contract_lower.ContractLowerTests::test_record_map_stable_descending_and_first_dedupe [ENV_MISSING[node_jitless_quiet]] before=failed
+  tests.test_contract_lower.ContractLowerTests::test_requested_function_names_can_shadow_builtins [ENV_MISSING[node_jitless_quiet]] before=failed
+  tests.test_contract_lower.ContractLowerTests::test_text_subkinds_ascii_space_and_literal_escaping [ENV_MISSING[node_jitless_quiet]] before=failed
+  tests.test_contract_lower.ContractLowerTests::test_three_valued_not_and_or_keep_only_true [ENV_MISSING[node_jitless_quiet]] before=failed
+  tests.test_round4::test_code_binds_the_requested_key_and_record_map[JavaScript] [ENV_MISSING[node]] before=failed
+  tests.test_round4::test_code_is_composed_and_executed[\u6570\u5024\u30ea\u30b9\u30c8\u304b\u3089None\u3092\u9664\u5916\u3059\u308b\u95a2\u6570\u30020\u306f\u6b8b\u3059\u3002-JavaScript] [ENV_MISSING[node]] before=failed
+  tests.test_round4::test_code_is_composed_and_executed[\u6570\u5024\u30ea\u30b9\u30c8\u306e\u5e73\u5747\u3092\u8fd4\u3059\u95a2\u6570\u3002\u7a7a\u306a\u3089None\u3002\u5143\u306e\u5165\u529b\u306f\u5909\u66f4\u3057\u306a\u3044\u3002-JavaScript] [ENV_MISSING[node]] before=failed
+  tests.test_round4::test_code_is_composed_and_executed[\u6570\u5024\u30ea\u30b9\u30c8\u306e\u91cd\u8907\u3092\u9664\u53bb\u3057\u3001\u96a3\u63a5\u3059\u308b\u5dee\u3092\u8fd4\u3059\u95a2\u6570\u3002-JavaScript] [ENV_MISSING[node]] before=failed
+  tests.test_round4::test_code_is_composed_and_executed[\u6570\u5024\u30ea\u30b9\u30c8\u3092\u964d\u9806\u3067\u30bd\u30fc\u30c8\u3059\u308b\u95a2\u6570\u3002\u5143\u306e\u5165\u529b\u306f\u5909\u66f4\u3057\u306a\u3044\u3002-JavaScript] [ENV_MISSING[node]] before=failed
+  tests.test_round4::test_code_is_composed_and_executed[\u6574\u6570\u30ea\u30b9\u30c8\u304b\u3089\u5076\u6570\u3092\u53d6\u308a\u51fa\u3057\u3001\u4e8c\u4e57\u3057\u3066\u5408\u8a08\u3059\u308b\u95a2\u6570\u3002\u7a7a\u306a\u30890\u3002-JavaScript] [ENV_MISSING[node]] before=failed
+  tests.test_round4::test_code_is_composed_and_executed[\u6587\u5b57\u5217\u30ea\u30b9\u30c8\u3092\u5927\u6587\u5b57\u306b\u5909\u63db\u3059\u308b\u95a2\u6570\u3002-JavaScript] [ENV_MISSING[node]] before=failed
+  tests.test_round4::test_code_new_fields_groups_sql_and_shell [ENV_MISSING[node]] before=failed
+
+MISSING_IN_AFTER (0):
+
+FIXED (24):
+  tests.attack.test_semantic_unknown_choice_differential::test_candidate_and_frame_duplicates_keep_both_origins_and_escape_terms
+  tests.attack.test_semantic_unknown_choice_fabrication::test_embedded_newline_and_delimiter_stay_inside_one_option
+  tests.attack.test_semantic_unknown_choice_injection::test_candidate_line_break_cannot_create_a_new_prompt_option
+  tests.attack.test_semantic_unknown_choice_limits::test_non_string_frame_term_raises_type_error_before_asking
+  tests.attack.test_semantic_unknown_choice_realtext::test_line_breaks_in_untrusted_options_stay_inside_json_item
+  tests.attack.test_semantic_unknown_choice_realtext::test_non_string_frame_terms_fail_before_asking
+  tests.test_memory_revalidate::test_missing_or_unknown_witness_is_unverifiable_with_safe_answerability[witness1-False]
+  tests.test_memory_revalidate::test_text_witness_is_checked_against_current_file[needle is here-FRESH]
+  tests.test_memory_revalidate::test_text_witness_is_checked_against_current_file[needle moved-FRESH]
+  tests.test_semantic_unknown_choice::test_option_newlines_are_escaped_inside_a_single_closed_choice
+  tests.test_verifier_agents::test_artifact_evidence_must_be_readable_under_allowed_root
+  tests.test_verifier_agents::test_brief_quotes_injection_text_as_untrusted_record_data
+  tests.test_verifier_agents::test_contradicting_verifiers_abstain_without_vote_pooling[results0]
+  tests.test_verifier_agents::test_contradicting_verifiers_abstain_without_vote_pooling[results1]
+  tests.test_verifier_agents::test_contradicting_verifiers_abstain_without_vote_pooling[results2]
+  tests.test_verifier_agents::test_deterministic_witness_is_rechecked_after_verdict
+  tests.test_verifier_agents::test_missing_plain_file_evidence_cannot_complete_task
+  tests.test_verifier_agents::test_new_verifier_result_supersedes_previous_record
+  tests.test_verifier_agents::test_passing_independent_verifier_completes_after_conductor_recheck
+  tests.test_verifier_agents::test_plain_file_evidence_must_be_readable_under_allowed_root
+  tests.test_verifier_agents::test_post_verification_witness_failure_prevents_done
+  tests.test_verifier_agents::test_two_agreeing_verifiers_both_appear_in_auditable_record
+  tests.test_verifier_agents::test_unsafe_or_missing_artifact_cannot_complete_task[artifact:missing.json]
+  tests.test_verifier_agents::test_verification_output_is_stored_as_testimony_not_fact
+
+ONLY_IN_AFTER (3):
+  tests.test_verifier_agents::test_passing_verdict_without_rerunnable_evidence_is_unverified [passed]
+  tests.test_verifier_agents::test_reported_verdict_never_decides_completion[FAIL-0-True] [passed]
+  tests.test_verifier_agents::test_reported_verdict_never_decides_completion[PASS-1-False] [passed]
+
+RECONCILIATION by exact id (before failed/error ids vs after failed/error ids):
+  before failed/error ids: 164  (+ 1 module collection error(s) not counted as ids)
+  after  failed/error ids: 124
+  failed in both: 123
+  failed before, not failed after: 41  = passed 23 + skipped 17 + xfailed 0 + id absent in after 1
+  failed after, not failed before (exact id): 1
+
+RENAMED (case counts may differ because parameter ids changed) (10):
+  tests.test_verifier_agents::test_parse_accepts_recheckable_evidence_reference (6 cases) -> tests.test_verifier_agents::test_parse_accepts_legacy_evidence_reference_as_testimony (6 cases)
+  tests.test_memory_revalidate::test_missing_or_unknown_witness_is_unverifiable_and_answerable (2 cases) -> tests.test_memory_revalidate::test_missing_or_unknown_witness_is_unverifiable_with_safe_answerability (2 cases)
+    case: tests.test_memory_revalidate::test_missing_or_unknown_witness_is_unverifiable_and_answerable[None] -> tests.test_memory_revalidate::test_missing_or_unknown_witness_is_unverifiable_with_safe_answerability[None-True]
+    case: tests.test_memory_revalidate::test_missing_or_unknown_witness_is_unverifiable_and_answerable[witness1] -> tests.test_memory_revalidate::test_missing_or_unknown_witness_is_unverifiable_with_safe_answerability[witness1-False]
+    case: tests.test_verifier_agents::test_parse_accepts_recheckable_evidence_reference[artifact:build/result.json] -> tests.test_verifier_agents::test_parse_accepts_legacy_evidence_reference_as_testimony[artifact:build/result.json]
+    case: tests.test_verifier_agents::test_parse_accepts_recheckable_evidence_reference[command:pytest -q] -> tests.test_verifier_agents::test_parse_accepts_legacy_evidence_reference_as_testimony[command:pytest -q]
+    case: tests.test_verifier_agents::test_parse_accepts_recheckable_evidence_reference[record:abc-123] -> tests.test_verifier_agents::test_parse_accepts_legacy_evidence_reference_as_testimony[record:abc-123]
+    case: tests.test_verifier_agents::test_parse_accepts_recheckable_evidence_reference[sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa] -> tests.test_verifier_agents::test_parse_accepts_legacy_evidence_reference_as_testimony[sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]
+    case: tests.test_verifier_agents::test_parse_accepts_recheckable_evidence_reference[source.py:4] -> tests.test_verifier_agents::test_parse_accepts_legacy_evidence_reference_as_testimony[source.py:4]
+    case: tests.test_verifier_agents::test_parse_accepts_recheckable_evidence_reference[test:test_case] -> tests.test_verifier_agents::test_parse_accepts_legacy_evidence_reference_as_testimony[test:test_case]
+G3 GATES MISSING_IN_AFTER=0 PASS_TO_XFAIL=0 PASS_TO_SKIP_UNCLASSIFIED=0
+G3 NEW_FAIL=0
+exit=0

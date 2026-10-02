@@ -1,6 +1,8 @@
 from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier
 
+import pytest
+
 from verantyx.semantic_unknown_choice import SemanticUnknownChoice
 
 

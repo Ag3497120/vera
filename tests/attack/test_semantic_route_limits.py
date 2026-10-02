@@ -4,6 +4,7 @@ import os
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 
 import pytest
 
@@ -248,7 +249,8 @@ LeafTree(View(sources, tuple(clauses)), arity=1)
     try:
         result = subprocess.run(
             [sys.executable, "-B", "-c", code],
-            env=os.environ.copy(),
+            env={**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parents[2])},
+            cwd=str(Path(__file__).resolve().parents[2]),
             capture_output=True,
             text=True,
             timeout=2,

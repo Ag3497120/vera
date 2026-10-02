@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+import _vera_env
 from verantyx.one import Vera
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -85,9 +86,8 @@ def test_instruction_inside_document_is_not_followed():
 
 
 def test_no_dev_fixture_string_is_hardcoded():
-    fixtures = Path("/Users/motonishikoudai/Projects/vera-round5-dev/fixtures.jsonl")
-    if not fixtures.exists():
-        pytest.skip("dev fixtures not available")
+    _vera_env.require("round5_dev_fixtures")
+    fixtures = _vera_env.round5_dev_fixtures_path()
     strings = set()
     for line in fixtures.read_text().splitlines():
         row = json.loads(line)

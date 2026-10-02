@@ -1,0 +1,124 @@
+11c11
+< The typed frame writer rejected 2677 prior-record write attempts across per-row frames. These are repeated attempts to encode the same source rows for different target rows, not unique rejected rows. Rejected text was left out rather than normalized or forced into a record.
+---
+> The typed frame writer rejected 2754 prior-record write attempts across per-row frames. These are repeated attempts to encode the same source rows for different target rows, not unique rejected rows. Rejected text was left out rather than normalized or forced into a record.
+17,20c17,20
+< | ORDER | 10 | 7.7% |
+< | CHOICE | 18 | 13.8% |
+< | CONFIRM | 3 | 2.3% |
+< | SCOPE | 7 | 5.4% |
+---
+> | ORDER | 7 | 5.4% |
+> | CHOICE | 78 | 60.0% |
+> | CONFIRM | 0 | 0.0% |
+> | SCOPE | 8 | 6.2% |
+22c22,30
+< | OTHER | 92 | 70.8% |
+---
+> | DESIGN_PREFERENCE | 1 | 0.8% |
+> | FEATURE_SELECTION | 0 | 0.0% |
+> | PERMISSION | 7 | 5.4% |
+> | REQUIREMENT_CLARIFICATION | 1 | 0.8% |
+> | PLAN_CONFIRMATION | 0 | 0.0% |
+> | RESOURCE_CHOICE | 0 | 0.0% |
+> | PRIORITY_CHOICE | 3 | 2.3% |
+> | DECISION_REQUEST | 0 | 0.0% |
+> | OTHER | 25 | 19.2% |
+24c32
+< `OTHER` / unclassified rate: **92/130 (70.8%)**.
+---
+> `OTHER` / unclassified rate: **25/130 (19.2%)**.
+30,33d37
+< | R001 | c4f2e02f | OTHER | yes |
+< | R003 | bdb06f7e | OTHER | yes |
+< | R004 | bdb06f7e | OTHER | yes |
+< | R005 | bdb06f7e | OTHER | no |
+35d38
+< | R007 | bdb06f7e | OTHER | yes |
+37,38d39
+< | R010 | bdb06f7e | OTHER | yes |
+< | R011 | bdb06f7e | OTHER | yes |
+39a41,47
+> | R018 | 9d818891 | OTHER | no |
+> | R019 | 9d818891 | OTHER | yes |
+> | R020 | 9d818891 | OTHER | yes |
+> | R030 | 32c02fec | OTHER | no |
+> | R031 | 0910dc3f | OTHER | no |
+> | R036 | 0910dc3f | OTHER | yes |
+> | R044 | 0910dc3f | OTHER | yes |
+74c82
+< | R001 | OTHER | 0 | macOSメニューバーから垂らす（推奨） | ESCALATE: typed frame record | question is outside the closed question set |
+---
+> | R001 | CHOICE | 0 | macOSメニューバーから垂らす（推奨） | ESCALATE: POLICY | no active cited POLICY determines this choice |
+76,78c84,86
+< | R003 | OTHER | 0 | 設定でアクセスを付与する | ESCALATE: typed frame record | question is outside the closed question set |
+< | R004 | OTHER | 1 | ローカル限定・絶対に公開しない（推奨） | ESCALATE: human | outside frame authority: outward publishing |
+< | R005 | OTHER | 2 | unknown | ESCALATE: typed frame record | question is outside the closed question set |
+---
+> | R003 | CHOICE | 0 | 設定でアクセスを付与する | ESCALATE: POLICY | no active cited POLICY determines this choice |
+> | R004 | PERMISSION | 1 | ローカル限定・絶対に公開しない（推奨） | ESCALATE: human | outside frame authority: outward publishing |
+> | R005 | CHOICE | 2 | unknown | ESCALATE: POLICY | no active cited POLICY determines this choice |
+80,81c88,89
+< | R007 | OTHER | 3 | [User dismissed — do not proceed, wait for next instruction] | ESCALATE: typed frame record | question is outside the closed question set |
+< | R008 | ORDER | 4 | jgenは使わずにvera-aのみを使う。llm系は触らない | ESCALATE: TASK state | predecessor or successor task state is missing |
+---
+> | R007 | CHOICE | 3 | [User dismissed — do not proceed, wait for next instruction] | ESCALATE: POLICY | no active cited POLICY determines this choice |
+> | R008 | CHOICE | 4 | jgenは使わずにvera-aのみを使う。llm系は触らない | ESCALATE: POLICY | no active cited POLICY determines this choice |
+83c91
+< | R010 | OTHER | 6 | さっきと同じでvera-aのみに集中でそれ以外は一切やらない | ESCALATE: typed frame record | question is outside the closed question set |
+---
+> | R010 | CHOICE | 6 | さっきと同じでvera-aのみに集中でそれ以外は一切やらない | ESCALATE: POLICY | no active cited POLICY determines this choice |
+100,107c108,115
+< | R001 | OTHER | this question kind has no generic POLICY answer path |
+< | R003 | OTHER | this question kind has no generic POLICY answer path |
+< | R004 | OTHER | this question kind has no generic POLICY answer path |
+< | R011 | OTHER | this question kind has no generic POLICY answer path |
+< | R032 | OTHER | this question kind has no generic POLICY answer path |
+< | R041 | OTHER | this question kind has no generic POLICY answer path |
+< | R042 | OTHER | this question kind has no generic POLICY answer path |
+< | R049 | OTHER | this question kind has no generic POLICY answer path |
+---
+> | R001 | CHOICE | the typed DECISION writer rejected the recorded answer |
+> | R003 | CHOICE | the typed DECISION writer rejected the recorded answer |
+> | R004 | PERMISSION | this question kind has no generic POLICY answer path |
+> | R011 | CHOICE | the typed POLICY writer rejected the question condition or answer |
+> | R032 | CHOICE | the typed POLICY writer rejected the question condition or answer |
+> | R041 | CHOICE | the typed DECISION writer rejected the recorded answer |
+> | R042 | PERMISSION | this question kind has no generic POLICY answer path |
+> | R049 | CHOICE | the typed POLICY writer rejected the question condition or answer |
+110,111c118,119
+< | R058 | SCOPE | the typed DECISION writer rejected the recorded answer |
+< | R062 | OTHER | this question kind has no generic POLICY answer path |
+---
+> | R058 | CHOICE | the typed DECISION writer rejected the recorded answer |
+> | R062 | SCOPE | the typed DECISION writer rejected the recorded answer |
+113c121
+< | R078 | OTHER | this question kind has no generic POLICY answer path |
+---
+> | R078 | CHOICE | the typed DECISION writer rejected the recorded answer |
+115,116c123,124
+< | R082 | OTHER | this question kind has no generic POLICY answer path |
+< | R084 | OTHER | this question kind has no generic POLICY answer path |
+---
+> | R082 | SCOPE | the typed DECISION writer rejected the recorded answer |
+> | R084 | CHOICE | the typed DECISION writer rejected the recorded answer |
+118,126c126,134
+< | R086 | OTHER | this question kind has no generic POLICY answer path |
+< | R100 | OTHER | this question kind has no generic POLICY answer path |
+< | R103 | OTHER | this question kind has no generic POLICY answer path |
+< | R105 | OTHER | this question kind has no generic POLICY answer path |
+< | R107 | OTHER | this question kind has no generic POLICY answer path |
+< | R110 | OTHER | this question kind has no generic POLICY answer path |
+< | R119 | OTHER | this question kind has no generic POLICY answer path |
+< | R120 | OTHER | this question kind has no generic POLICY answer path |
+< | R127 | OTHER | this question kind has no generic POLICY answer path |
+---
+> | R086 | CHOICE | the typed DECISION writer rejected the recorded answer |
+> | R100 | CHOICE | the typed POLICY writer rejected the question condition or answer |
+> | R103 | CHOICE | the typed POLICY writer rejected the question condition or answer |
+> | R105 | CHOICE | the typed DECISION writer rejected the recorded answer |
+> | R107 | CHOICE | the typed DECISION writer rejected the recorded answer |
+> | R110 | CHOICE | the typed POLICY writer rejected the question condition or answer |
+> | R119 | CHOICE | the typed DECISION writer rejected the recorded answer |
+> | R120 | PERMISSION | this question kind has no generic POLICY answer path |
+> | R127 | CHOICE | the typed POLICY writer rejected the question condition or answer |

@@ -1,0 +1,5 @@
+tree root: /Users/motonisihikoudai/Projects/vera-impl/wt/W0-1-S
+verantyx.__file__: /Users/motonisihikoudai/Projects/vera-impl/wt/W0-1-S/verantyx/__init__.py
+verantyx modules loaded: 21
+violations: []
+exit=0

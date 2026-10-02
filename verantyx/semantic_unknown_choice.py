@@ -126,12 +126,47 @@ def _constructed(candidate: Any) -> bool:
 
 
 def _prompt_json(value: Any) -> str:
-    """Serialize data while making invisible Unicode format controls inert."""
+    """Serialize data while making invisible Unicode separators inert."""
     encoded = json.dumps(value, ensure_ascii=False, sort_keys=True)
     return "".join(
-        f"\\u{ord(char):04x}" if unicodedata.category(char) == "Cf" else char
+        f"\\u{ord(char):04x}"
+        if unicodedata.category(char) in ("Cf", "Zl", "Zp") else char
         for char in encoded
     )
+
+
+class _JSONOptionResolver(Resolver):
+    """Keep pre-serialized closed options intact in Resolver's prompt."""
+
+    @staticmethod
+    def _escape(value: Any) -> str:
+        out = []
+        for char in str(value):
+            category = unicodedata.category(char)
+            if char == "\\":
+                out.append("\\\\")
+            elif char in "「」" or category in ("Cc", "Cf", "Zl", "Zp"):
+                out.append(f"\\u{ord(char):04x}")
+            else:
+                out.append(char)
+        return "".join(out)
+
+    def _prompt(self, word, context, options, variant):
+        head = (
+            "次の語は、下の候補のどれに意味が最も近いですか。"
+            if variant == 0 else
+            "候補の中から、次の語を最も自然に言い換えられるものを1つだけ選んでください。どれも合わなければ null。"
+        )
+        shown_word = self._escape(word)
+        shown_context = self._escape(context)
+        # Each option is already JSON-serialized, so escaping it again would
+        # turn JSON escapes such as \u000a into literal backslash text.
+        lines = "\n".join(f"{i}: {option}" for i, option in enumerate(options))
+        return (
+            f"{head}\n語: 「{shown_word}」\n使われた場面: {shown_context}\n候補:\n{lines}\n"
+            f"答えは次のJSONだけを出力してください（説明は不要）: {{\"choice\": 番号 または null}}\n"
+            f"候補以外を選んだり、新しい表現を作ったりしてはいけません。"
+        )
 
 
 def _as_terms(values: Iterable[Any]) -> list[str]:
@@ -188,7 +223,7 @@ class SemanticUnknownChoice:
 
     def __init__(self, asker: ClosedChoiceAsker, seed: int = 7):
         _asker_provenance(asker)
-        self.resolver = Resolver(asker, seed=seed)
+        self.resolver = _JSONOptionResolver(asker, seed=seed)
         self._aliases: dict[tuple[str, tuple[str, ...]], dict[str, Any]] = {}
         self._alias_history: list[dict[str, Any]] = []
         self._next_id = 1

@@ -93,7 +93,9 @@ def test_text_witness_is_checked_against_current_file(tmp_path, text, expected):
     result = answer_about(RevalidatingMemory(memory, cache_ttl=0))
 
     assert result['witness_status'][record['id']] == expected
-    assert (record['id'] in result['records']) == (expected == 'FRESH')
+    # Needle presence alone does not make unrelated file text evidence for the stored fact.
+    assert record['id'] not in result['records']
+    assert result['verdict'] != 'ANSWER'
 
 
 def test_deleted_text_witness_is_stale(tmp_path):
@@ -216,8 +218,11 @@ def test_testimony_is_unverifiable_but_answerable(tmp_path):
     assert record['id'] not in result['stale']
 
 
-@pytest.mark.parametrize('witness', [None, {'kind': 'unknown'}])
-def test_missing_or_unknown_witness_is_unverifiable_and_answerable(tmp_path, witness):
+@pytest.mark.parametrize('witness, answerable', [
+    (None, True), ({'kind': 'unknown'}, False),
+])
+def test_missing_or_unknown_witness_is_unverifiable_with_safe_answerability(
+        tmp_path, witness, answerable):
     path = tmp_path / 'legacy.jsonl'
     record = {'id': 'legacy', 'sentence': 'ルーターの未読上限は8件である。'}
     if witness is not None:
@@ -226,7 +231,8 @@ def test_missing_or_unknown_witness_is_unverifiable_and_answerable(tmp_path, wit
     result = answer_about(RevalidatingMemory(Memory(str(path)), cache_ttl=0))
 
     assert result['witness_status']['legacy'] == 'UNVERIFIABLE'
-    assert 'legacy' in result['records']
+    # An unsupported witness kind cannot support an answer; absence keeps legacy behavior.
+    assert ('legacy' in result['records']) is answerable
 
 
 def test_stale_record_is_excluded_even_if_freshness_flag_is_false(tmp_path):

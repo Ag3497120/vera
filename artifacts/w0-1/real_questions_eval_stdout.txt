@@ -1,0 +1,4 @@
+Rows: 130; recorded human answers: 72; exact option labels: 27.
+Accumulated-frame exact outcomes: agreed 0, wrong 0, escalated 72.
+DEMO OK
+exit=0

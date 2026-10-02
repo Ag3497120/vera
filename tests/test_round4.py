@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 
+import _vera_env
 from verantyx.answer_slots import calculate, qualifies, read_slot, select
 from verantyx.code_compose import answer, python_code, read_spec, verify
 from verantyx.evidence_library import EvidenceLibrary
@@ -127,7 +128,7 @@ def test_jawiki_extracts_only_first_paragraph_and_preserves_redirects(tmp_path):
     assert rows[1]["redirect"] == "本称"
 
 
-@pytest.mark.parametrize("language", ["Python", "JavaScript"])
+@pytest.mark.parametrize("language", ["Python", pytest.param("JavaScript", marks=pytest.mark.needs_resource("node"))])
 @pytest.mark.parametrize("task", [
     "整数リストから偶数を取り出し、二乗して合計する関数。空なら0。",
     "数値リストの平均を返す関数。空ならNone。元の入力は変更しない。",
@@ -145,14 +146,17 @@ def test_code_is_composed_and_executed(language, task):
 
 def test_code_new_fields_groups_sql_and_shell():
     for language in ("Python", "JavaScript", "SQL"):
+        if language == "JavaScript" and not _vera_env.available("node"):
+            continue
         result = answer(language + "で、キー `region` と `amount` のレコードをregionごとにamountの合計にする。")
         assert result["verdict"] == "ANSWER", result
         assert result["verification"]["passed"]
     shell = answer("POSIX shellで、数値リストを昇順にソートして重複を除去する。")
     assert shell["verdict"] == "ANSWER" and shell["verification"]["syntax"] == "sh -n"
+    _vera_env.require("node")
 
 
-@pytest.mark.parametrize("language", ["Python", "JavaScript"])
+@pytest.mark.parametrize("language", ["Python", pytest.param("JavaScript", marks=pytest.mark.needs_resource("node"))])
 def test_code_binds_the_requested_key_and_record_map(language):
     result = answer(language + "でキー `age` と `score` のレコードからage >= 18を絞り込み、scoreを降順でソートする関数。")
     assert result["verdict"] == "ANSWER", result

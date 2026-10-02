@@ -1,0 +1,9 @@
+# tests/test_semantic_measure.py::test_no_dev_fixture_string_is_hardcoded with VERA_ROUND5_DEV_FIXTURES pointing at a synthetic 1-row file (proves the ENV_MISSING[round5_dev_fixtures] test RUNS when the resource exists; not the real fixtures)
+# without the variable:
+ENV_MISSING[round5_dev_fixtures]: 1 skipped
+=========================== short test summary info ============================
+SKIPPED [1] tests/_vera_env.py:106: ENV_MISSING[round5_dev_fixtures]: $VERA_ROUND5_DEV_FIXTURES or ~/Projects/vera-round5-dev/fixtures.jsonl
+1 skipped in 0.11s
+# with the variable:
+.                                                                        [100%]
+1 passed in 0.11s

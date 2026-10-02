@@ -13,12 +13,14 @@ from pathlib import Path
 
 import pytest
 
+import _vera_env
+
 from verantyx.library import Library
 from verantyx.one import Vera
 from verantyx.bot import Bot
 
 
-DATA = Path.home() / "Projects/vera-ja-sealed1"
+DATA = _vera_env.sealed1_dir()
 
 # Module/API names match the per-part trace, not an import list.
 REQUIRED = {
@@ -113,7 +115,7 @@ def _ran(result: dict) -> set[str]:
 
 def test_every_default_integration_part_has_a_trace(tmp_path: Path):
     if len(list(DATA.glob("doc_*.json"))) != 10 or len(list(DATA.glob("ab_*.json"))) != 6:
-        pytest.skip("spent vera-ja-sealed1 development fixtures are not installed")
+        pytest.skip(_vera_env.reason("ja_sealed1_dev_fixtures"))
     seen: set[str] = set()
     ran: set[str] = set()
     doc_rows = [json.loads(path.read_text(encoding="utf-8"))

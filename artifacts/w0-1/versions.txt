@@ -1,0 +1,19 @@
+# env -i HOME=$HOME PATH=/usr/bin:/bin PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<tree> /Users/motonisihikoudai/vera-wiring/env/bin/python ...
+Python 3.11.14
+pytest 9.1.1
+fugashi                   1.5.2
+pytest                    9.1.1
+unidic-lite               1.0.8
+# node (only on PATH in the *_with_node runs):
+v22.17.0
+# /usr/local/bin/node --jitless --no-warnings -e 'console.log(1)' >out 2>err  => exit=0
+#   stdout: 2 bytes ("1\n")
+#   stderr: 63 bytes: Warning: disabling flag --expose_wasm due to conflicting flags
+# git:
+65f43da unit z_audit
+57079dfdd5af3be75f970d82fba802911091bcbb
+d25a73a605e67054becc9ac0384796d90a97234f
+Darwin arm64
+ProductName:		macOS ProductVersion:		26.5.2 BuildVersion:		25F84 
+# external verantyx the venv would otherwise resolve (no PYTHONPATH, cwd=/):
+/Users/motonisihikoudai/Downloads/simureal/reference-verantyx-bdcd218/engine/verantyx/__init__.py
