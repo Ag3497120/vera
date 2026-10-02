@@ -1,0 +1,33 @@
+diff --git a/verantyx/semantic_reader.py b/verantyx/semantic_reader.py
+--- a/verantyx/semantic_reader.py
++++ b/verantyx/semantic_reader.py
+@@ -115,7 +115,7 @@
+         head = compact.split('の')[-1]
+         if compact == '同日付': return 'time', 'case'
+         if head in _PLACE_NOMINALS or any(head.endswith(x) for x in ('学校','駅','公園','会社','図書館','病院','市','町','県','国','室')):
+-            return 'place', 'case'
++            return 'location', 'case'
+         if head in _MEANS_NOMINALS or head.endswith('語'):
+             return 'means', 'case'
+         return 'ambiguous', 'case:で:place|means'
+@@ -125,7 +125,7 @@
+         return 'ambiguous', 'case:と:companion|quotation'
+     if particle == 'から':
+         if _TIME_NOMINAL.fullmatch(compact): return 'ambiguous', 'case:から:source|time-range'
+-        return 'source', 'case'
++        return 'origin', 'case'
+     if particle == 'まで': return 'limit', 'case'
+     if particle == 'へ': return 'direction', 'case'
+     return None, 'case'
+@@ -744,9 +744,9 @@
+             else: return False
+         elif particle == 'へ': role='direction'
+         elif particle == 'で':
+-            if wh == 'どこ': role='place'
++            if wh == 'どこ': role='location'
+             else: return False
+-        elif particle == 'から': role='time' if wh in ('いつ','何時') else 'source'
++        elif particle == 'から': role='time' if wh in ('いつ','何時') else 'origin'
+         elif particle == 'まで': role='limit'
+         elif particle == 'と':
+             if wh in ('誰','だれ'): role='companion'

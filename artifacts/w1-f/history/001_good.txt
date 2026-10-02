@@ -1,0 +1,15 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 11 items / 10 deselected / 1 selected
+
+tests/attack/test_conductor_escalate_realtext.py::test_reask_citation_must_name_an_active_record_and_then_closes PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/attack/test_conductor_escalate_realtext.py::test_reask_citation_must_name_an_active_record_and_then_closes
+=== 1 passed, 10 deselected ===

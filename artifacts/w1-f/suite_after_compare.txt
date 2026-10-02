@@ -1,0 +1,2 @@
+SAME
+failed_lines=124 matched_baseline=124 baseline_size=124

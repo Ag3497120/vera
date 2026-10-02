@@ -1,0 +1,34 @@
+{
+ "apply": "PARTIAL_REJECT",
+ "commit": "4af1231094f6274c0f1f684a03458c67766ee235",
+ "files": [
+  "verantyx/semantic_reader.py"
+ ],
+ "log": [
+  {
+   "apply": "PARTIAL_REJECT",
+   "rejected_files": [
+    "verantyx/semantic_reader.py.rej"
+   ],
+   "rejected_hunks": 6,
+   "step": [
+    "revert",
+    "4af1231094f6274c0f1f684a03458c67766ee235"
+   ],
+   "three_way_conflict_files": [
+    "verantyx/semantic_reader.py"
+   ],
+   "total_hunks": 9
+  }
+ ],
+ "newly_failing": [],
+ "newly_failing_confirmed": [],
+ "newly_passing": [
+  "tests/attack/test_semantic_verify_negation_modality.py::test_double_negation_is_not_licensed_as_an_ordinary_negative_fact",
+  "tests/test_semantic_scope_safety.py::test_unrepresented_request_content_never_becomes_a_yes[\\u30ca\\u30aa\\u306f\\u5b66\\u6821\\u304b\\u3089\\u30ea\\u30af\\u306b\\u9752\\u9375\\u3092\\u6e21\\u3057\\u305f\\u304b\\uff1f]"
+ ],
+ "partial_method": "git apply -R --reject（当たる hunk だけ）",
+ "still_failing_count": 122,
+ "subject": "unit fix_semantic_reader",
+ "summary_line": "122 failed, 3686 passed, 28 skipped, 84 xfailed, 66 xpassed, 37 subtests passed"
+}

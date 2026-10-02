@@ -1,0 +1,46 @@
+{
+ "apply": "OK",
+ "commit": "e48187093addb770477daf25b61d6686b840fe21",
+ "files": [
+  "verantyx/semantic_names.py"
+ ],
+ "log": [
+  {
+   "apply": "OK",
+   "step": [
+    "revert",
+    "e48187093addb770477daf25b61d6686b840fe21"
+   ]
+  }
+ ],
+ "newly_failing": [],
+ "newly_failing_confirmed": [],
+ "newly_passing": [
+  "tests/attack/test_semantic_names_differential.py::test_generated_name_splits_match_independent_reference",
+  "tests/attack/test_semantic_names_differential.py::test_name_split_accepts_kanji_title_appositive",
+  "tests/attack/test_semantic_names_fabrication.py::test_name_split_accepts_kanji_descriptor_and_one_proper_name",
+  "tests/attack/test_semantic_names_limits.py::test_concurrent_independent_readers_do_not_share_results",
+  "tests/attack/test_semantic_names_limits.py::test_large_cover_and_pathological_long_nonkanji_prefix_are_bounded",
+  "tests/attack/test_semantic_names_limits.py::test_name_split_accepts_kanji_title_and_one_proper_name",
+  "tests/attack/test_semantic_names_limits.py::test_repeated_calls_are_idempotent_and_do_not_mutate_inputs",
+  "tests/attack/test_semantic_names_long_documents.py::test_covering_selects_exact_span_from_a_long_sentence",
+  "tests/attack/test_semantic_names_long_documents.py::test_name_split_accepts_multiple_kanji_title_tokens",
+  "tests/attack/test_semantic_names_long_documents.py::test_repeated_entities_and_conflicting_titles_stay_document_local",
+  "tests/attack/test_semantic_names_negation_modality.py::test_name_split_can_extract_exact_title_name_pair_in_negative_context",
+  "tests/attack/test_semantic_names_paraphrase.py::test_entity_swap_keeps_split_shape_and_returns_the_swapped_name",
+  "tests/attack/test_semantic_names_paraphrase.py::test_kanji_title_and_proper_name_split",
+  "tests/attack/test_semantic_names_paraphrase.py::test_particle_and_clause_surface_changes_leave_the_name_split_unchanged",
+  "tests/attack/test_semantic_names_paraphrase.py::test_split_accepts_a_common_noun_followed_by_a_noun_suffix",
+  "tests/attack/test_semantic_names_realtext.py::test_name_split_accepts_kanji_title_and_one_proper_name",
+  "tests/attack/test_semantic_names_tense_time.py::test_name_split_accepts_a_kanji_title_before_a_proper_name",
+  "tests/attack/test_semantic_names_unicode_noise.py::test_name_split_accepts_kanji_title_plus_one_proper_name",
+  "tests/attack/test_semantic_names_unicode_noise.py::test_name_split_preserves_decomposed_combining_sequence",
+  "tests/attack/test_semantic_names_unicode_noise.py::test_name_split_preserves_fullwidth_name_surface",
+  "tests/attack/test_semantic_names_unicode_noise.py::test_name_split_preserves_markup_and_emoji_in_tagged_name",
+  "tests/attack/test_semantic_names_unicode_noise.py::test_tokens_covering_uses_python_codepoint_offsets_around_astral_noise"
+ ],
+ "partial_method": null,
+ "still_failing_count": 102,
+ "subject": "unit g_names_fix",
+ "summary_line": "102 failed, 3706 passed, 28 skipped, 81 xfailed, 69 xpassed, 37 subtests passed"
+}

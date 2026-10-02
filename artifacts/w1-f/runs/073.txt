@@ -1,0 +1,28 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 16 items / 15 deselected / 1 selected
+
+tests/attack/test_semantic_names_paraphrase.py::test_split_accepts_a_common_noun_followed_by_a_noun_suffix FAILED [100%]
+
+=== FAILURES ===
+__________ test_split_accepts_a_common_noun_followed_by_a_noun_suffix __________
+
+    def test_split_accepts_a_common_noun_followed_by_a_noun_suffix():
+        cover = [
+            token("研究", "名詞", "一般", 0),
+            token("員", "接尾辞", "名詞性接尾辞", 2),
+            token("ユン", "名詞", "固有名詞", 3),
+        ]
+    
+>       assert name_split_in(cover, "研究員ユン") == ("研究員", "ユン")
+E       AssertionError: assert None == ('\u7814\u7a76\u54e1', '\u30e6\u30f3')
+E        +  where None = name_split_in([('\u7814\u7a76', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u54e1', '\u63a5\u5c3e\u8f9e', '\u540d\u8a5e\u6027\u63a5\u5c3e\u8f9e', 2, 3), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 3, 5)], '\u7814\u7a76\u54e1\u30e6\u30f3')
+
+tests/attack/test_semantic_names_paraphrase.py:77: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_names_paraphrase.py::test_split_accepts_a_common_noun_followed_by_a_noun_suffix - AssertionError: assert None == ('\u7814\u7a76\u54e1', '\u30e6\u30f3')
+ +  where None = name_split_in([('\u7814\u7a76', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u54e1', '\u63a5\u5c3e\u8f9e', '\u540d\u8a5e\u6027\u63a5\u5c3e\u8f9e', 2, 3), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 3, 5)], '\u7814\u7a76\u54e1\u30e6\u30f3')
+=== 1 failed, 15 deselected ===

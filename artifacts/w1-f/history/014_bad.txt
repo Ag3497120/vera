@@ -1,0 +1,34 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 14 items / 13 deselected / 1 selected
+
+tests/attack/test_memory_brief_fabrication.py::test_closed_task_is_not_emitted_and_its_id_is_reported FAILED [100%]
+
+=== FAILURES ===
+____________ test_closed_task_is_not_emitted_and_its_id_is_reported ____________
+
+    def test_closed_task_is_not_emitted_and_its_id_is_reported():
+        task = {
+            "id": "task1",
+            "kind": "TASK",
+            "ts": "2026-01-01",
+            "sentence": "Submit the application.",
+            "slots": {"subject": "Aya", "state": "completed"},
+        }
+    
+>       assert _brief(_TypedMemory([task])) == "Dropped record ids: task1"
+E       AssertionError: assert ContextBrief(text='Dropped record ids: task1', records=(), dropped_ids=('task1',)) == 'Dropped record ids: task1'
+E        +  where ContextBrief(text='Dropped record ids: task1', records=(), dropped_ids=('task1',)) = _brief(<test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>>)
+E        +    where <test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>> = _TypedMemory([{'id': 'task1', 'kind': 'TASK', 'ts': '2026-01-01', 'sentence': 'Submit the application.', 'slots': {'subject': 'Aya', 'state': 'completed'}}])
+
+tests/attack/test_memory_brief_fabrication.py:109: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_fabrication.py::test_closed_task_is_not_emitted_and_its_id_is_reported - AssertionError: assert ContextBrief(text='Dropped record ids: task1', records=(), dropped_ids=('task1',)) == 'Dropped record ids: task1'
+ +  where ContextBrief(text='Dropped record ids: task1', records=(), dropped_ids=('task1',)) = _brief(<test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>>)
+ +    where <test_memory_brief_fabrication._TypedMemory object at 0x<ADDR>> = _TypedMemory([{'id': 'task1', 'kind': 'TASK', 'ts': '2026-01-01', 'sentence': 'Submit the application.', 'slots': {'subject': 'Aya', 'state': 'completed'}}])
+=== 1 failed, 13 deselected ===

@@ -1,0 +1,26 @@
+# commit 4af1231094f6274c0f1f684a03458c67766ee235
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 13 items / 12 deselected / 1 selected
+
+tests/attack/test_semantic_verify_negation_modality.py::test_hearsay_clause_is_not_licensed_as_an_assertion FAILED [100%]
+
+=== FAILURES ===
+_____________ test_hearsay_clause_is_not_licensed_as_an_assertion ______________
+
+    def test_hearsay_clause_is_not_licensed_as_an_assertion():
+        view = document_view({"source": "太郎は来るそうだ。"})
+        assert view.clauses
+>       assert all(clause.modality == "assert" for clause in view.clauses)
+E       assert False
+E        +  where False = all(<generator object test_hearsay_clause_is_not_licensed_as_an_assertion.<locals>.<genexpr> at 0x<ADDR>>)
+
+tests/attack/test_semantic_verify_negation_modality.py:83: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_verify_negation_modality.py::test_hearsay_clause_is_not_licensed_as_an_assertion - assert False
+ +  where False = all(<generator object test_hearsay_clause_is_not_licensed_as_an_assertion.<locals>.<genexpr> at 0x<ADDR>>)
+=== 1 failed, 12 deselected ===

@@ -1,0 +1,37 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 14 items / 13 deselected / 1 selected
+
+tests/attack/test_verifier_agents_fabrication.py::test_run_verifiers_records_references_with_their_verifier_identities FAILED [100%]
+
+=== FAILURES ===
+_____ test_run_verifiers_records_references_with_their_verifier_identities _____
+
+    def test_run_verifiers_records_references_with_their_verifier_identities():
+        first = _agent("zeta", "record:acceptance-z")
+        second = _agent("alpha", "sha256:" + "a" * 64)
+        frame = _frame()
+        reply = run_verifiers(
+            frame, "task-1", _ask(), [first, second], claimant_id="claimant",
+            claimant_session_id="claimant-session",
+        )
+        assert reply.kind == "ESCALATE"
+        assert len(frame.written) == 1
+        acceptance_id, result, kwargs = frame.written[0]
+        assert acceptance_id == "accept-1"
+>       assert result == "PASS"
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/attack/test_verifier_agents_fabrication.py:188: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_verifier_agents_fabrication.py::test_run_verifiers_records_references_with_their_verifier_identities - AssertionError: assert 'FAIL' == 'PASS'
+  
+  - PASS
+  + FAIL
+=== 1 failed, 13 deselected ===

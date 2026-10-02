@@ -1,0 +1,52 @@
+# commit 4af1231094f6274c0f1f684a03458c67766ee235
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 97 items / 96 deselected / 1 selected
+
+tests/test_semantic_coordination_codex.py::test_plain_predicate_coordination_answers_clause_local_roles[te_location_first] FAILED [100%]
+
+=== FAILURES ===
+_ test_plain_predicate_coordination_answers_clause_local_roles[te_location_first] _
+
+case = 'te_location_first', doc = 'ソラは工具Pを工房Fで使って、箱Qをナオに渡した。'
+question = '工具Pをどこで使った？', expected = ['工房F']
+
+    @pytest.mark.parametrize("case,doc,question,expected", ANSWER_CASES, ids=[r[0] for r in ANSWER_CASES])
+    def test_plain_predicate_coordination_answers_clause_local_roles(case, doc, question, expected):
+>       assert val(ask(doc, question)) == ("ANSWER", expected)
+E       AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['工房F'])
+E         
+E         At index 0 diff: 'UNKNOWN_NO_EVIDENCE' != 'ANSWER'
+E         
+E         Full diff:
+E           (
+E         +     'UNKNOWN_NO_EVIDENCE',
+E         -     'ANSWER',
+E         -     [
+E         -         '工房F',
+E         -     ],
+E         +     [],
+E         ?     +
+E           )
+
+tests/test_semantic_coordination_codex.py:96: AssertionError
+=== short test summary info ===
+FAILED tests/test_semantic_coordination_codex.py::test_plain_predicate_coordination_answers_clause_local_roles[te_location_first] - AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['工房F'])
+  
+  At index 0 diff: 'UNKNOWN_NO_EVIDENCE' != 'ANSWER'
+  
+  Full diff:
+    (
+  +     'UNKNOWN_NO_EVIDENCE',
+  -     'ANSWER',
+  -     [
+  -         '工房F',
+  -     ],
+  +     [],
+  ?     +
+    )
+=== 1 failed, 96 deselected ===

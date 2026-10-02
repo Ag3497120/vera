@@ -1,0 +1,12 @@
+diff --git a/verantyx/semantic_reader.py b/verantyx/semantic_reader.py
+--- a/verantyx/semantic_reader.py
++++ b/verantyx/semantic_reader.py
+@@ -176,6 +176,8 @@
+         pstart, pend, phrase = located
+         # A frame's recipient is already a better typed reading of this に phrase.
+         if (pstart, pend) in existing_spans or phrase in existing_terms: continue
++        # A span already read as a frame role (e.g. ユン of 技師ユンへ) is not read again as a case adjunct.
++        if any(pstart < e and s < pend for s, e in existing_spans): continue
+         # Wh-bearing phrases are variables in requests, not asserted case adjuncts.
+         if _WH.search(phrase): continue
+         quoted = word.surface == 'と' and text[:start].rstrip().endswith('」')

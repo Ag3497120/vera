@@ -1,0 +1,34 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 15 items / 14 deselected / 1 selected
+
+tests/attack/test_memory_brief_paraphrase.py::test_focus_precedes_kind_priority FAILED [100%]
+
+=== FAILURES ===
+______________________ test_focus_precedes_kind_priority _______________________
+
+    def test_focus_precedes_kind_priority():
+        focused_fact = fact("fact", "会議の場所は東京です。")
+        other_invariant = {
+            "id": "invariant",
+            "kind": "INVARIANT",
+            "sentence": "毎朝は水を飲みます。",
+            "slots": {"subject": "朝", "value": "水"},
+            "ts": "2020-01-01",
+        }
+    
+        brief = compile_brief(Memory([other_invariant, focused_fact]), 500, focus="会議の場所")
+    
+>       assert brief.startswith("[id:fact]")
+               ^^^^^^^^^^^^^^^^
+E       AttributeError: 'ContextBrief' object has no attribute 'startswith'
+
+tests/attack/test_memory_brief_paraphrase.py:101: AttributeError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_paraphrase.py::test_focus_precedes_kind_priority - AttributeError: 'ContextBrief' object has no attribute 'startswith'
+=== 1 failed, 14 deselected ===

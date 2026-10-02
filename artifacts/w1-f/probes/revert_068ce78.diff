@@ -1,0 +1,23 @@
+diff --git a/verantyx/conductor_escalate.py b/verantyx/conductor_escalate.py
+index 3ea4fe5..e15e2b2 100644
+--- a/verantyx/conductor_escalate.py
++++ b/verantyx/conductor_escalate.py
+@@ -380,8 +380,7 @@ def check_resolved(handoff: Handoff, conductor: Any) -> bool:
+     answer = conductor.answer(handoff.question)
+     if handoff.protected_action:
+         return False
+-    verified_record_ids = _validated_record_ids(answer, conductor)
+-    if not verified_record_ids:
++    if not _has_record(answer, conductor):
+         return False
+ 
+     growth_path, graph_path = Path(handoff.growth_path), Path(handoff.graph_path)
+@@ -398,7 +397,7 @@ def check_resolved(handoff: Handoff, conductor: Any) -> bool:
+             graph.set_status(
+                 handoff.gap_id, "RESOLVED",
+                 resolution="re-asked the same question; conductor returned ANSWER from active record(s)",
+-                verified_by=list(verified_record_ids),
++                verified_by=list(answer.record_ids),
+             )
+     growth_path.parent.mkdir(parents=True, exist_ok=True)
+     graph_path.parent.mkdir(parents=True, exist_ok=True)

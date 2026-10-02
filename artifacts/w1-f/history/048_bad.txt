@@ -1,0 +1,119 @@
+# commit 9dbeea6e515f26096f8f15012b2beb3761933ba2
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_memory_merge_differential.py::test_canonical_order_and_exact_duplicate_removal FAILED [100%]
+
+=== FAILURES ===
+_______________ test_canonical_order_and_exact_duplicate_removal _______________
+
+    def test_canonical_order_and_exact_duplicate_removal():
+        events = [
+            {"op": "note", "z": 1},
+            {"op": "alias", "target": "b", "name": "z"},
+            {"op": "write", "record": _record("z")},
+            {"op": "supersede", "id": "a", "by": "z", "at": 5},
+            {"op": "write", "record": _record("a")},
+            {"op": "alias", "name": "z", "target": "b"},
+            {"op": "note", "z": 1},
+        ]
+>       assert merge_logs(events, []) == [
+            {"op": "write", "record": _record("a")},
+            {"op": "write", "record": _record("z")},
+            {"op": "alias", "name": "z", "target": "b"},
+            {"op": "supersede", "id": "a", "by": "z", "at": 5},
+            {"op": "note", "z": 1},
+        ]
+E       AssertionError: assert [{'op': 'write', 'record': {'id': 'a', 'subject': 'p', 'attribute': 'color', 'value': 'blue'}}, {'op': 'write', 'record': {'id': 'z', 'subject': 'p', 'attribute': 'color', 'value': 'blue'}}, {'name': 'z', 'op': 'alias', 'target': 'b'}, {'op': 'note', 'z': 1}] == [{'op': 'write', 'record': {'id': 'a', 'subject': 'p', 'attribute': 'color', 'value': 'blue'}}, {'op': 'write', 'record': {'id': 'z', 'subject': 'p', 'attribute': 'color', 'value': 'blue'}}, {'op': 'alias', 'name': 'z', 'target': 'b'}, {'op': 'supersede', 'id': 'a', 'by': 'z', 'at': 5}, {'op': 'note', 'z': 1}]
+E         
+E         At index 3 diff: {'op': 'note', 'z': 1} != {'op': 'supersede', 'id': 'a', 'by': 'z', 'at': 5}
+E         Right contains one more item: {'op': 'note', 'z': 1}
+E         
+E         Full diff:
+E           [
+E               {
+E                   'op': 'write',
+E                   'record': {
+E                       'id': 'a',
+E                       'subject': 'p',
+E                       'attribute': 'color',
+E                       'value': 'blue',
+E                   },
+E               },
+E               {
+E                   'op': 'write',
+E                   'record': {
+E                       'id': 'z',
+E                       'subject': 'p',
+E                       'attribute': 'color',
+E                       'value': 'blue',
+E                   },
+E               },
+E               {
+E         +         'name': 'z',
+E                   'op': 'alias',
+E         -         'name': 'z',
+E                   'target': 'b',
+E         -     },
+E         -     {
+E         -         'op': 'supersede',
+E         -         'id': 'a',
+E         -         'by': 'z',
+E         -         'at': 5,
+E               },
+E               {
+E                   'op': 'note',
+E                   'z': 1,
+E               },
+E           ]
+
+tests/attack/test_memory_merge_differential.py:186: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_merge_differential.py::test_canonical_order_and_exact_duplicate_removal - AssertionError: assert [{'op': 'write', 'record': {'id': 'a', 'subject': 'p', 'attribute': 'color', 'value': 'blue'}}, {'op': 'write', 'record': {'id': 'z', 'subject': 'p', 'attribute': 'color', 'value': 'blue'}}, {'name': 'z', 'op': 'alias', 'target': 'b'}, {'op': 'note', 'z': 1}] == [{'op': 'write', 'record': {'id': 'a', 'subject': 'p', 'attribute': 'color', 'value': 'blue'}}, {'op': 'write', 'record': {'id': 'z', 'subject': 'p', 'attribute': 'color', 'value': 'blue'}}, {'op': 'alias', 'name': 'z', 'target': 'b'}, {'op': 'supersede', 'id': 'a', 'by': 'z', 'at': 5}, {'op': 'note', 'z': 1}]
+  
+  At index 3 diff: {'op': 'note', 'z': 1} != {'op': 'supersede', 'id': 'a', 'by': 'z', 'at': 5}
+  Right contains one more item: {'op': 'note', 'z': 1}
+  
+  Full diff:
+    [
+        {
+            'op': 'write',
+            'record': {
+                'id': 'a',
+                'subject': 'p',
+                'attribute': 'color',
+                'value': 'blue',
+            },
+        },
+        {
+            'op': 'write',
+            'record': {
+                'id': 'z',
+                'subject': 'p',
+                'attribute': 'color',
+                'value': 'blue',
+            },
+        },
+        {
+  +         'name': 'z',
+            'op': 'alias',
+  -         'name': 'z',
+            'target': 'b',
+  -     },
+  -     {
+  -         'op': 'supersede',
+  -         'id': 'a',
+  -         'by': 'z',
+  -         'at': 5,
+        },
+        {
+            'op': 'note',
+            'z': 1,
+        },
+    ]
+=== 1 failed, 9 deselected ===

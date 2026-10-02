@@ -1,0 +1,9 @@
+bundle B05 test tests/attack/test_semantic_unknown_differential.py::test_source_word_counts_toward_projection_budget
+before FAIL
+after PASS
+apply OK
+summary 122 failed, 3686 passed, 28 skipped, 82 xfailed, 68 xpassed, 37 subtests passed
+newly_passing:
+  tests/attack/test_semantic_unknown_differential.py::test_source_word_counts_toward_projection_budget
+  tests/attack/test_semantic_unknown_fabrication.py::test_budget_below_clause_and_role_work_floor_refuses
+newly_failing_confirmed:

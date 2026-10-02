@@ -1,0 +1,71 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 18 items / 17 deselected / 1 selected
+
+tests/attack/test_semantic_verify_unicode_noise.py::test_symbolic_record_licenses_unicode_actor_without_normalization FAILED [100%]
+
+=== FAILURES ===
+______ test_symbolic_record_licenses_unicode_actor_without_normalization _______
+
+    def test_symbolic_record_licenses_unicode_actor_without_normalization():
+        actor = "Ａe\u0301👩\u200d💻אב"
+        clause, view = _symbolic_source(actor)
+    
+>       license_clause(clause, view)
+
+tests/attack/test_semantic_verify_unicode_noise.py:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+clause = namespace(id='clause-0', sovereign='s0', span=<test_semantic_verify_unicode_noise._SourceSpan object at 0x<ADDR>>, ...=namespace(sort='event'), unsupported=False, rule='record', predicate='owns', polarity='+', modality='assert', time='')
+view = namespace(by_id={'clause-0': namespace(id='clause-0', sovereign='s0', span=<test_semantic_verify_unicode_noise._Source...e='record', predicate='owns', polarity='+', modality='assert', time='')}, sources={'source-0': 'owns(Ａé👩\u200d💻אב).'})
+ranges = None
+
+    def license_clause(clause, view, ranges=None):
+        """Check original text, roles and grammatical scope independently of reader."""
+        if clause != view.by_id.get(clause.id): raise Rejected("noncanonical source clause")
+        spans = [clause.span, clause.predicate_span, *(r.span for r in clause.roles),
+                 *clause.condition_spans, *clause.exception_spans]
+        if clause.body_span: spans.append(clause.body_span)
+        if any(not s.valid(view.sources) for s in spans): raise Rejected("source span mismatch")
+        if any(s.source != clause.span.source for s in spans): raise Rejected("cross-source span")
+        body = clause.body_span or clause.span
+        if not (clause.span.start <= body.start < body.end <= clause.span.end): raise Rejected("body scope")
+        if any(not (body.start <= r.span.start < r.span.end <= body.end) for r in clause.roles): raise Rejected("role scope")
+        if clause.event.sort != 'event' or clause.unsupported: raise Rejected("unsupported/ill-typed source")
+        if len({r.name for r in clause.roles}) != len(clause.roles): raise Rejected("duplicate role")
+        if any(not _literal(r) for r in clause.roles): raise Rejected("role/value licensing")
+        if len(clause.conditions) != len(clause.condition_spans) or len(clause.exceptions) != len(clause.exception_spans):
+            raise Rejected("guard span count")
+        if clause.rule != 'record':
+            _native_guard_scope(clause, body)
+        raw = body.text
+        if clause.rule in ('frame', 'copula', 'identity'):
+            from .typed_edges import _tagger
+            significant = list(_tagger()(raw))
+            if raw.rstrip().endswith(('?', '？')) or any(w.feature.pos1 == '助詞' and w.surface in ('か', 'かな', 'かしら', 'かい', 'かね', 'っけ') for w in significant):
+                raise Rejected('interrogative source is not an assertion')
+            if any('意志推量' in str(w.feature.cForm) for w in significant):
+                raise Rejected('volitional source is not an assertion')
+        before = clause.span.text[:clause.predicate_span.start - clause.span.start]
+        quoted = before.count('「') > before.count('」') or before.count('『') > before.count('』')
+        from .bot import _INJECTED
+        if _INJECTED.search(clause.span.text) and clause.modality != 'instruction': raise Rejected("instruction assertion")
+        if quoted and clause.modality != 'quote': raise Rejected("quoted assertion")
+        if clause.rule == 'record':
+            # Explicit symbolic axioms are a kernel-only input format, not a natural
+            # language success. Their full formula, polarity and guard must agree.
+            roles = {r.name: r.term for r in clause.roles}
+            if clause.span.start != 0 or clause.span.end != len(view.sources[clause.span.source]):
+                raise Rejected('symbolic full-source scope')
+            actor = roles.get('actor'); amount = roles.get('amount')
+            if not _symbolic_atom(clause.predicate) or not _symbolic_atom(actor):
+>               raise Rejected('instruction assertion: non-atomic symbolic value')
+E               verantyx.semantic_verify.Rejected: instruction assertion: non-atomic symbolic value
+
+verantyx/semantic_verify.py:417: Rejected
+=== short test summary info ===
+FAILED tests/attack/test_semantic_verify_unicode_noise.py::test_symbolic_record_licenses_unicode_actor_without_normalization - verantyx.semantic_verify.Rejected: instruction assertion: non-atomic symbolic value
+=== 1 failed, 17 deselected ===

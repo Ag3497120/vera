@@ -1,0 +1,30 @@
+# commit e48187093addb770477daf25b61d6686b840fe21
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 11 items / 10 deselected / 1 selected
+
+tests/attack/test_semantic_names_differential.py::test_name_split_accepts_kanji_title_appositive FAILED [100%]
+
+=== FAILURES ===
+________________ test_name_split_accepts_kanji_title_appositive ________________
+
+    def test_name_split_accepts_kanji_title_appositive():
+        cover = [
+            _token("技", "名詞", "一般", 0),
+            _token("師", "接尾辞", "一般", 1),
+            _token("ユン", "名詞", "固有名詞", 2),
+        ]
+        assert _reference_name_split(cover, "技師ユン") == ("技師", "ユン")
+>       assert name_split_in(cover, "技師ユン") == ("技師", "ユン")
+E       AssertionError: assert None == ('\u6280\u5e2b', '\u30e6\u30f3')
+E        +  where None = name_split_in([('\u6280', '\u540d\u8a5e', '\u4e00\u822c', 0, 1), ('\u5e2b', '\u63a5\u5c3e\u8f9e', '\u4e00\u822c', 1, 2), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 4)], '\u6280\u5e2b\u30e6\u30f3')
+
+tests/attack/test_semantic_names_differential.py:122: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_names_differential.py::test_name_split_accepts_kanji_title_appositive - AssertionError: assert None == ('\u6280\u5e2b', '\u30e6\u30f3')
+ +  where None = name_split_in([('\u6280', '\u540d\u8a5e', '\u4e00\u822c', 0, 1), ('\u5e2b', '\u63a5\u5c3e\u8f9e', '\u4e00\u822c', 1, 2), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 4)], '\u6280\u5e2b\u30e6\u30f3')
+=== 1 failed, 10 deselected ===

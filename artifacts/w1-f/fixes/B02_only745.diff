@@ -1,0 +1,12 @@
+diff --git a/verantyx/semantic_reader.py b/verantyx/semantic_reader.py
+--- a/verantyx/semantic_reader.py
++++ b/verantyx/semantic_reader.py
+@@ -742,7 +742,7 @@
+                 elif original in _LOCATION_PREDICATES or original in ('いる','ある'): role='location'
+                 else: return False
+             else: return False
+-        elif particle == 'へ': role='direction'
++        elif particle == 'へ': role='recipient' if wh in ('誰','だれ') else 'direction'  # 誰へ asks the recipient the frame reader gives 〜へ+person
+         elif particle == 'で':
+             if wh == 'どこ': role='place'
+             else: return False

@@ -1,0 +1,15 @@
+# commit 5e50fa683a3204512146fce7dfaf3b9ad0a699a2
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 17 items / 16 deselected / 1 selected
+
+tests/attack/test_semantic_unknown_limits.py::test_two_concurrent_readers_return_the_same_report PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/attack/test_semantic_unknown_limits.py::test_two_concurrent_readers_return_the_same_report
+=== 1 passed, 16 deselected ===

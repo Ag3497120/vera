@@ -1,0 +1,27 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 97 items / 96 deselected / 1 selected
+
+tests/test_semantic_coordination_codex.py::test_concessive_main_clause_keeps_the_topic_subject FAILED [100%]
+
+=== FAILURES ===
+_____________ test_concessive_main_clause_keeps_the_topic_subject ______________
+
+    def test_concessive_main_clause_keeps_the_topic_subject():
+        a = ask("ユラは疲れていたのに、箱をナオに預けた。", "誰が箱をナオに預けた？")
+>       assert a["verdict"] == "ANSWER" and a["values"] == ["ユラ"]
+E       AssertionError: assert ('UNKNOWN_UNSUPPORTED_EVIDENCE' == 'ANSWER'
+E         
+E         - ANSWER
+E         + UNKNOWN_UNSUPPORTED_EVIDENCE)
+
+tests/test_semantic_coordination_codex.py:173: AssertionError
+=== short test summary info ===
+FAILED tests/test_semantic_coordination_codex.py::test_concessive_main_clause_keeps_the_topic_subject - AssertionError: assert ('UNKNOWN_UNSUPPORTED_EVIDENCE' == 'ANSWER'
+  
+  - ANSWER
+  + UNKNOWN_UNSUPPORTED_EVIDENCE)
+=== 1 failed, 96 deselected ===

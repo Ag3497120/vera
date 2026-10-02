@@ -1,0 +1,14 @@
+diff --git a/verantyx/semantic_unknown_choice.py b/verantyx/semantic_unknown_choice.py
+--- a/verantyx/semantic_unknown_choice.py
++++ b/verantyx/semantic_unknown_choice.py
+@@ -157,7 +157,9 @@
+             if variant == 0 else
+             "候補の中から、次の語を最も自然に言い換えられるものを1つだけ選んでください。どれも合わなければ null。"
+         )
+-        shown_word = self._escape(word)
++        # `word` is already a JSON string (see _prompt_json): only the 「」 delimiters still need neutralising;
++        # escaping its backslashes again would show the model a different string than the one serialised.
++        shown_word = word.replace("「", "\\u300c").replace("」", "\\u300d")
+         shown_context = self._escape(context)
+         # Each option is already JSON-serialized, so escaping it again would
+         # turn JSON escapes such as \u000a into literal backslash text.

@@ -1,0 +1,48 @@
+# commit 3e36e08fe5e9f1a04abebbdcfb62f1b14cd99980
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 15 items / 14 deselected / 1 selected
+
+tests/attack/test_verifier_agents_limits.py::test_unanimous_verification_evidence_is_order_independent FAILED [100%]
+
+=== FAILURES ===
+__________ test_unanimous_verification_evidence_is_order_independent ___________
+
+    def test_unanimous_verification_evidence_is_order_independent() -> None:
+        def run(order: list[VerifierAgent]) -> tuple[Reply, dict]:
+            frame = _MemoryFrame()
+            result = run_verifiers(
+                frame,
+                "task-1",
+                _ask(),
+                order,
+                claimant_id="claimant-1",
+                claimant_session_id="claimant-session-1",
+            )
+            assert len(frame.verification_calls) == 1
+            return result, frame.verification_calls[0]
+    
+        first = _agent("agent-z", "session-z")
+        second = _agent("agent-a", "session-a")
+        result_forward, record_forward = run([first, second])
+        result_reverse, record_reverse = run([second, first])
+    
+        expected = (
+            '{"verifiers":[{"evidence_ref":"test:acceptance","result":"PASS",'
+            '"session_id":"session-a","verifier_id":"agent-a"},'
+            '{"evidence_ref":"test:acceptance","result":"PASS",'
+            '"session_id":"session-z","verifier_id":"agent-z"}]}'
+        )
+>       assert result_forward.answer == result_reverse.answer == "done"
+E       AssertionError: assert None == 'done'
+E        +  where None = Reply(kind='ESCALATE', answer=None, record_ids=('acceptance-1',), why='UNVERIFIED: verifier PASS without re-runnable evidence', reason='UNVERIFIED: verifier PASS without re-runnable evidence', missing='re-runnable verifier evidence', question_kind='STATUS', template_id=None, target=None, spec=None).answer
+
+tests/attack/test_verifier_agents_limits.py:205: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_verifier_agents_limits.py::test_unanimous_verification_evidence_is_order_independent - AssertionError: assert None == 'done'
+ +  where None = Reply(kind='ESCALATE', answer=None, record_ids=('acceptance-1',), why='UNVERIFIED: verifier PASS without re-runnable evidence', reason='UNVERIFIED: verifier PASS without re-runnable evidence', missing='re-runnable verifier evidence', question_kind='STATUS', template_id=None, target=None, spec=None).answer
+=== 1 failed, 14 deselected ===

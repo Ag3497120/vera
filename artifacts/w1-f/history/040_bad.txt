@@ -1,0 +1,28 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 15 items / 14 deselected / 1 selected
+
+tests/attack/test_memory_brief_paraphrase.py::test_entity_swap_is_reflected_in_the_rendered_record FAILED [100%]
+
+=== FAILURES ===
+_____________ test_entity_swap_is_reflected_in_the_rendered_record _____________
+
+    def test_entity_swap_is_reflected_in_the_rendered_record():
+        tokyo = Memory([fact("place", "会議の場所は東京です。", value="東京")])
+        osaka = Memory([fact("place", "会議の場所は大阪です。", value="大阪")])
+    
+        tokyo_brief = compile_brief(tokyo, 200)
+        osaka_brief = compile_brief(osaka, 200)
+    
+>       assert tokyo_brief == "[id:place] 会議の場所は東京です。"
+E       AssertionError: assert ContextBrief(text='Dropped record ids: place', records=(), dropped_ids=('place',)) == '[id:place] \u4f1a\u8b70\u306e\u5834\u6240\u306f\u6771\u4eac\u3067\u3059\u3002'
+
+tests/attack/test_memory_brief_paraphrase.py:142: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_paraphrase.py::test_entity_swap_is_reflected_in_the_rendered_record - AssertionError: assert ContextBrief(text='Dropped record ids: place', records=(), dropped_ids=('place',)) == '[id:place] \u4f1a\u8b70\u306e\u5834\u6240\u306f\u6771\u4eac\u3067\u3059\u3002'
+=== 1 failed, 14 deselected ===

@@ -1,0 +1,8 @@
+bundle B04 test tests/attack/test_memory_revalidate_injection.py::test_matching_file_hash_keeps_only_the_grounded_value
+before FAIL
+after PASS
+apply OK
+summary 123 failed, 3685 passed, 28 skipped, 82 xfailed, 68 xpassed, 37 subtests passed
+newly_passing:
+  tests/attack/test_memory_revalidate_injection.py::test_matching_file_hash_keeps_only_the_grounded_value
+newly_failing_confirmed:

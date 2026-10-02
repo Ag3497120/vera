@@ -1,0 +1,29 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 11 items / 10 deselected / 1 selected
+
+tests/attack/test_semantic_names_differential.py::test_generated_name_splits_match_independent_reference FAILED [100%]
+
+=== FAILURES ===
+____________ test_generated_name_splits_match_independent_reference ____________
+
+    def test_generated_name_splits_match_independent_reference():
+        titles = ("技師", "店長", "研究員", "町々")
+        names = ("ユン", "花子", "王")
+        compared = 0
+        for title, name in product(titles, names):
+            cover = [_token(title, "名詞", "一般", 0), _token(name, "名詞", "固有名詞", len(title))]
+            expected = _reference_name_split(cover, title + name)
+            assert expected == (title, name)
+>           assert name_split_in(cover, title + name) == expected
+E           AssertionError: assert None == ('\u6280\u5e2b', '\u30e6\u30f3')
+E            +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 4)], ('\u6280\u5e2b' + '\u30e6\u30f3'))
+
+tests/attack/test_semantic_names_differential.py:157: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_names_differential.py::test_generated_name_splits_match_independent_reference - AssertionError: assert None == ('\u6280\u5e2b', '\u30e6\u30f3')
+ +  where None = name_split_in([('\u6280\u5e2b', '\u540d\u8a5e', '\u4e00\u822c', 0, 2), ('\u30e6\u30f3', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 2, 4)], ('\u6280\u5e2b' + '\u30e6\u30f3'))
+=== 1 failed, 10 deselected ===

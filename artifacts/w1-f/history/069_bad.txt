@@ -1,0 +1,31 @@
+# commit e48187093addb770477daf25b61d6686b840fe21
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 16 items / 15 deselected / 1 selected
+
+tests/attack/test_semantic_names_negation_modality.py::test_name_split_can_extract_exact_title_name_pair_in_negative_context FAILED [100%]
+
+=== FAILURES ===
+____ test_name_split_can_extract_exact_title_name_pair_in_negative_context _____
+
+    def test_name_split_can_extract_exact_title_name_pair_in_negative_context():
+        tagged = [
+            ("研究員", "名詞", "一般", 0, 3),
+            ("花子", "名詞", "固有名詞", 3, 5),
+            ("は", "助詞", "係助詞", 5, 6),
+            ("来", "動詞", "自立", 6, 7),
+            ("ない", "助動詞", "*", 7, 9),
+        ]
+>       assert name_split_in(tagged[:2], "研究員花子") == ("研究員", "花子")
+E       AssertionError: assert None == ('\u7814\u7a76\u54e1', '\u82b1\u5b50')
+E        +  where None = name_split_in([('\u7814\u7a76\u54e1', '\u540d\u8a5e', '\u4e00\u822c', 0, 3), ('\u82b1\u5b50', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 3, 5)], '\u7814\u7a76\u54e1\u82b1\u5b50')
+
+tests/attack/test_semantic_names_negation_modality.py:70: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_names_negation_modality.py::test_name_split_can_extract_exact_title_name_pair_in_negative_context - AssertionError: assert None == ('\u7814\u7a76\u54e1', '\u82b1\u5b50')
+ +  where None = name_split_in([('\u7814\u7a76\u54e1', '\u540d\u8a5e', '\u4e00\u822c', 0, 3), ('\u82b1\u5b50', '\u540d\u8a5e', '\u56fa\u6709\u540d\u8a5e', 3, 5)], '\u7814\u7a76\u54e1\u82b1\u5b50')
+=== 1 failed, 15 deselected ===

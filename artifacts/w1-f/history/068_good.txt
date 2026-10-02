@@ -1,0 +1,15 @@
+# commit 49436fc28d368b0f29f9f7af81f0a49138c7ef03
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 13 items / 12 deselected / 1 selected
+
+tests/attack/test_semantic_names_long_documents.py::test_repeated_entities_and_conflicting_titles_stay_document_local PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/attack/test_semantic_names_long_documents.py::test_repeated_entities_and_conflicting_titles_stay_document_local
+=== 1 passed, 12 deselected ===

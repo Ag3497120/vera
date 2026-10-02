@@ -1,0 +1,26 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 15 items / 14 deselected / 1 selected
+
+tests/attack/test_memory_brief_paraphrase.py::test_empty_memory_returns_empty_string FAILED [100%]
+
+=== FAILURES ===
+____________________ test_empty_memory_returns_empty_string ____________________
+
+    def test_empty_memory_returns_empty_string():
+>       assert compile_brief(Memory(), 0) == ""
+E       AssertionError: assert ContextBrief(text='', records=(), dropped_ids=()) == ''
+E        +  where ContextBrief(text='', records=(), dropped_ids=()) = compile_brief(<test_memory_brief_paraphrase.Memory object at 0x<ADDR>>, 0)
+E        +    where <test_memory_brief_paraphrase.Memory object at 0x<ADDR>> = Memory()
+
+tests/attack/test_memory_brief_paraphrase.py:69: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_paraphrase.py::test_empty_memory_returns_empty_string - AssertionError: assert ContextBrief(text='', records=(), dropped_ids=()) == ''
+ +  where ContextBrief(text='', records=(), dropped_ids=()) = compile_brief(<test_memory_brief_paraphrase.Memory object at 0x<ADDR>>, 0)
+ +    where <test_memory_brief_paraphrase.Memory object at 0x<ADDR>> = Memory()
+=== 1 failed, 14 deselected ===

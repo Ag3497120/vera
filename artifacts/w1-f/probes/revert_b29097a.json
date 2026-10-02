@@ -1,0 +1,46 @@
+{
+ "apply": "OK",
+ "commit": "b29097a4ee96fe00f0afc31bd59d5bc3df949565",
+ "files": [
+  "verantyx/semantic_unknown.py"
+ ],
+ "log": [
+  {
+   "apply": "OK",
+   "step": [
+    "revert",
+    "b29097a4ee96fe00f0afc31bd59d5bc3df949565"
+   ]
+  }
+ ],
+ "newly_failing": [
+  "tests/test_semantic_unknown.py::test_clause_producer_cannot_attest_its_own_units[1]",
+  "tests/test_semantic_unknown.py::test_clause_producer_cannot_attest_its_own_units[3]",
+  "tests/test_semantic_unknown.py::test_independent_single_occurrence_is_below_vocabulary_threshold"
+ ],
+ "newly_failing_confirmed": [
+  "tests/test_semantic_unknown.py::test_clause_producer_cannot_attest_its_own_units[1]",
+  "tests/test_semantic_unknown.py::test_clause_producer_cannot_attest_its_own_units[3]",
+  "tests/test_semantic_unknown.py::test_independent_single_occurrence_is_below_vocabulary_threshold"
+ ],
+ "newly_passing": [
+  "tests/attack/test_semantic_unknown_fabrication.py::test_constructed_neighbour_candidate_is_not_answer_or_evidence",
+  "tests/attack/test_semantic_unknown_injection.py::test_any_provenance_returned_for_hostile_source_is_a_valid_source_slice",
+  "tests/attack/test_semantic_unknown_injection.py::test_document_instruction_cannot_expand_candidate_authority",
+  "tests/attack/test_semantic_unknown_injection.py::test_question_instruction_does_not_count_as_a_held_ir_term",
+  "tests/attack/test_semantic_unknown_injection.py::test_quoted_nested_agent_message_remains_typed_data",
+  "tests/attack/test_semantic_unknown_injection.py::test_repeated_attacks_are_deterministic_and_do_not_mutate_input",
+  "tests/attack/test_semantic_unknown_injection.py::test_unicode_instruction_variants_do_not_add_result_types",
+  "tests/attack/test_semantic_unknown_limits.py::test_clause_and_role_order_do_not_change_report_json",
+  "tests/attack/test_semantic_unknown_limits.py::test_constructed_outputs_are_typed_and_never_evidence",
+  "tests/attack/test_semantic_unknown_limits.py::test_exact_projection_budget_is_not_refused",
+  "tests/attack/test_semantic_unknown_limits.py::test_repeated_calls_are_idempotent",
+  "tests/attack/test_semantic_unknown_limits.py::test_two_concurrent_readers_return_the_same_report",
+  "tests/attack/test_semantic_unknown_paraphrase.py::test_changed_compound_meaning_changes_the_constructed_route",
+  "tests/attack/test_semantic_unknown_paraphrase.py::test_entity_swap_changes_the_available_neighbourhood"
+ ],
+ "partial_method": null,
+ "still_failing_count": 110,
+ "subject": "unit fix_w_unknown_1",
+ "summary_line": "113 failed, 3695 passed, 28 skipped, 82 xfailed, 68 xpassed, 37 subtests passed"
+}

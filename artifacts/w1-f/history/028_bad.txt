@@ -1,0 +1,29 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 15 items / 14 deselected / 1 selected
+
+tests/attack/test_memory_brief_injection.py::test_superseded_record_is_excluded_from_brief_and_accounting FAILED [100%]
+
+=== FAILURES ===
+_________ test_superseded_record_is_excluded_from_brief_and_accounting _________
+
+    def test_superseded_record_is_excluded_from_brief_and_accounting():
+        memory = Memory([
+            record("old", sentence="Old version."),
+            record("current", sentence="Current version."),
+        ], superseded={"old": "current"})
+    
+        brief = compile_brief(memory, 200)
+    
+>       assert brief == "[id:current] Current version."
+E       AssertionError: assert ContextBrief(text='Dropped record ids: current', records=(), dropped_ids=('current',)) == '[id:current] Current version.'
+
+tests/attack/test_memory_brief_injection.py:98: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_injection.py::test_superseded_record_is_excluded_from_brief_and_accounting - AssertionError: assert ContextBrief(text='Dropped record ids: current', records=(), dropped_ids=('current',)) == '[id:current] Current version.'
+=== 1 failed, 14 deselected ===

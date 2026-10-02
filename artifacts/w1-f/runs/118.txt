@@ -1,0 +1,62 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 77 items / 76 deselected / 1 selected
+
+tests/test_semantic_measure.py::test_role_only_questions_generalize[\u30df\u30ca\u306f\u9752\u3044\u9375\u3092\u5009\u5eabC\u304b\u3089\u6574\u5099\u58eb\u30b3\u30a6\u3078\u904b\u3093\u3060\u3002-\u4f55\u3092\u3069\u3053\u304b\u3089\u8ab0\u3078\uff1f-expected1] FAILED [100%]
+
+=== FAILURES ===
+_ test_role_only_questions_generalize[\u30df\u30ca\u306f\u9752\u3044\u9375\u3092\u5009\u5eabC\u304b\u3089\u6574\u5099\u58eb\u30b3\u30a6\u3078\u904b\u3093\u3060\u3002-\u4f55\u3092\u3069\u3053\u304b\u3089\u8ab0\u3078\uff1f-expected1] _
+
+doc = 'ミナは青い鍵を倉庫Cから整備士コウへ運んだ。', q = '何をどこから誰へ？'
+expected = ['青い鍵', '倉庫C', '整備士コウ']
+
+    @pytest.mark.parametrize("doc,q,expected", [
+        ("ミナは青い鍵を倉庫Cから部長田中へ運んだ。", "何をどこから誰へ？", ["青い鍵", "倉庫C", "部長田中"]),   # in-sentence tokens mis-segment 長田: no split, full phrase kept
+        ("ミナは青い鍵を倉庫Cから整備士コウへ運んだ。", "何をどこから誰へ？", ["青い鍵", "倉庫C", "整備士コウ"]),   # name tagged as a common noun: no split, full phrase kept
+        ("ミナは青い鍵を倉庫Cから部長田中へ運んだ。", "誰が何をどこから？", ["ミナ", "青い鍵", "倉庫C"]),
+        ("ヒロは荷物を駅Bから店長サキへ届けた。", "何をどこから誰へ？", ["荷物", "駅B", "サキ"]),
+        ("ヒロは荷物を駅Bから店長サキへ届けた。", "誰が何を誰へ？", ["ヒロ", "荷物", "サキ"]),
+        ("ヒロは荷物を駅Bからサキへ届けた。", "物、起点、終点は？", ["荷物", "駅B", "サキ"]),
+        ("ヒロは荷物を駅Bから店長サキへ届けた。", "物、起点、終点は？", ["荷物", "駅B", "サキ"]),
+    ])
+    def test_role_only_questions_generalize(doc, q, expected):
+>       assert val(ask(doc, q)) == ("ANSWER", expected)
+E       AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['青い鍵', '倉庫C', '整備士コウ'])
+E         
+E         At index 0 diff: 'UNKNOWN_NO_EVIDENCE' != 'ANSWER'
+E         
+E         Full diff:
+E           (
+E         +     'UNKNOWN_NO_EVIDENCE',
+E         -     'ANSWER',
+E         -     [
+E         -         '青い鍵',
+E         -         '倉庫C',
+E         -         '整備士コウ',
+E         -     ],
+E         +     [],
+E         ?     +
+E           )
+
+tests/test_semantic_measure.py:112: AssertionError
+=== short test summary info ===
+FAILED tests/test_semantic_measure.py::test_role_only_questions_generalize[\u30df\u30ca\u306f\u9752\u3044\u9375\u3092\u5009\u5eabC\u304b\u3089\u6574\u5099\u58eb\u30b3\u30a6\u3078\u904b\u3093\u3060\u3002-\u4f55\u3092\u3069\u3053\u304b\u3089\u8ab0\u3078\uff1f-expected1] - AssertionError: assert ('UNKNOWN_NO_EVIDENCE', []) == ('ANSWER', ['青い鍵', '倉庫C', '整備士コウ'])
+  
+  At index 0 diff: 'UNKNOWN_NO_EVIDENCE' != 'ANSWER'
+  
+  Full diff:
+    (
+  +     'UNKNOWN_NO_EVIDENCE',
+  -     'ANSWER',
+  -     [
+  -         '青い鍵',
+  -         '倉庫C',
+  -         '整備士コウ',
+  -     ],
+  +     [],
+  ?     +
+    )
+=== 1 failed, 76 deselected ===

@@ -1,0 +1,30 @@
+# commit a9cad0ab448b649dc6c71584f14d203a5200289d
+# status FAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_memory_brief_differential.py::test_later_short_candidate_can_fit_after_earlier_long_candidate_is_skipped FAILED [100%]
+
+=== FAILURES ===
+__ test_later_short_candidate_can_fit_after_earlier_long_candidate_is_skipped __
+
+    def test_later_short_candidate_can_fit_after_earlier_long_candidate_is_skipped():
+        records = [
+            rec("long", kind="INVARIANT", sentence="x" * 90, subject="L"),
+            rec("s", kind="DECISION", sentence="short", subject="S"),
+        ]
+        memory = memory_with_sources(records, askable_ids={"long", "s"})
+        budget = len("[id:s] short\nDropped record ids: long")
+>       assert compile_brief(memory, budget) == "[id:s] short\nDropped record ids: long"
+E       AssertionError: assert ContextBrief(text='Dropped record ids: long, s', records=(), dropped_ids=('long', 's')) == '[id:s] short\nDropped record ids: long'
+E        +  where ContextBrief(text='Dropped record ids: long, s', records=(), dropped_ids=('long', 's')) = compile_brief(<test_memory_brief_differential.FakeMemory object at 0x<ADDR>>, 37)
+
+tests/attack/test_memory_brief_differential.py:220: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_memory_brief_differential.py::test_later_short_candidate_can_fit_after_earlier_long_candidate_is_skipped - AssertionError: assert ContextBrief(text='Dropped record ids: long, s', records=(), dropped_ids=('long', 's')) == '[id:s] short\nDropped record ids: long'
+ +  where ContextBrief(text='Dropped record ids: long, s', records=(), dropped_ids=('long', 's')) = compile_brief(<test_memory_brief_differential.FakeMemory object at 0x<ADDR>>, 37)
+=== 1 failed, 9 deselected ===

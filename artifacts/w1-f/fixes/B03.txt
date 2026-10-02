@@ -1,0 +1,8 @@
+bundle B03 test tests/attack/test_semantic_unknown_choice_paraphrase.py::test_query_delimiters_and_line_breaks_stay_inside_the_json_string
+before FAIL
+after PASS
+apply OK
+summary 123 failed, 3685 passed, 28 skipped, 82 xfailed, 68 xpassed, 37 subtests passed
+newly_passing:
+  tests/attack/test_semantic_unknown_choice_paraphrase.py::test_query_delimiters_and_line_breaks_stay_inside_the_json_string
+newly_failing_confirmed:

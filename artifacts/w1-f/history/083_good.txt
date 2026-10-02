@@ -1,0 +1,14 @@
+# commit 1b2e7a44d4478b38dee14d006f78d81796a929da
+# status XFAIL
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 10 items / 9 deselected / 1 selected
+
+tests/attack/test_semantic_unknown_differential.py::test_source_word_counts_toward_projection_budget XFAILsal) [100%]
+
+=== short test summary info ===
+XFAIL tests/attack/test_semantic_unknown_differential.py::test_source_word_counts_toward_projection_budget - DEFECT: a source word does not trigger the documented work-budget refusal
+=== 9 deselected, 1 xfailed ===

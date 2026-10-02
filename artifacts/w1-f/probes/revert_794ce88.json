@@ -1,0 +1,25 @@
+{
+ "apply": "OK",
+ "commit": "794ce889640d186a07c90b411f6b3bd75061b91f",
+ "files": [
+  "verantyx/memory_frame.py"
+ ],
+ "log": [
+  {
+   "apply": "OK",
+   "step": [
+    "revert",
+    "794ce889640d186a07c90b411f6b3bd75061b91f"
+   ]
+  }
+ ],
+ "newly_failing": [],
+ "newly_failing_confirmed": [],
+ "newly_passing": [
+  "tests/attack/test_memory_frame_limits.py::test_empty_memory_returns_unknown_without_mutating_log"
+ ],
+ "partial_method": null,
+ "still_failing_count": 123,
+ "subject": "unit x_testimony",
+ "summary_line": "123 failed, 3685 passed, 28 skipped, 82 xfailed, 68 xpassed, 37 subtests passed"
+}

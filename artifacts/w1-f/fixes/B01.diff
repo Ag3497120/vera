@@ -1,0 +1,12 @@
+diff --git a/verantyx/semantic_reader.py b/verantyx/semantic_reader.py
+--- a/verantyx/semantic_reader.py
++++ b/verantyx/semantic_reader.py
+@@ -98,6 +98,8 @@
+         break
+     first = j + 1
+     if first >= particle_index: return None
++    # A bare の (e.g. the のに of a concessive clause) is a particle, not a nominal phrase.
++    if not any(t[0].feature.pos1 in ('名詞','代名詞','形状詞','数') for t in tokens[first:particle_index]): return None
+     start, end = tokens[first][1], tokens[particle_index - 1][2]
+     phrase = text[start:end]
+     return start, end, phrase

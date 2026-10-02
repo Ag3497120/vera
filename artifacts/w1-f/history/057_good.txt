@@ -1,0 +1,15 @@
+# commit b51a3963d86b920b338905d22a1f573fb426d99a
+# status PASS
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 16 items / 15 deselected / 1 selected
+
+tests/attack/test_semantic_coord_negation_modality.py::test_adjectival_naku_then_te_is_structurally_accepted PASSED [100%]
+
+=== PASSES ===
+=== short test summary info ===
+PASSED tests/attack/test_semantic_coord_negation_modality.py::test_adjectival_naku_then_te_is_structurally_accepted
+=== 1 passed, 15 deselected ===

@@ -1,0 +1,33 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: <TREE>
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 12 items / 11 deselected / 1 selected
+
+tests/attack/test_semantic_unknown_paraphrase.py::test_entity_swap_changes_the_available_neighbourhood FAILED [100%]
+
+=== FAILURES ===
+_____________ test_entity_swap_changes_the_available_neighbourhood _____________
+
+    def test_entity_swap_changes_the_available_neighbourhood():
+        roles = (("place", "house"), ("object", "boat"))
+        boat_view = _view("house and boat", roles)
+        car_view = _view("house and car", (("place", "house"), ("object", "car")))
+    
+        boat_report = unknown_candidates(boat_view, "houseboat")
+        car_report = unknown_candidates(car_view, "houseboat")
+    
+>       assert boat_report.candidates[0].kind == "KIN_NEIGHBOURHOOD"
+E       AssertionError: assert 'NO_REACH' == 'KIN_NEIGHBOURHOOD'
+E         
+E         - KIN_NEIGHBOURHOOD
+E         + NO_REACH
+
+tests/attack/test_semantic_unknown_paraphrase.py:132: AssertionError
+=== short test summary info ===
+FAILED tests/attack/test_semantic_unknown_paraphrase.py::test_entity_swap_changes_the_available_neighbourhood - AssertionError: assert 'NO_REACH' == 'KIN_NEIGHBOURHOOD'
+  
+  - KIN_NEIGHBOURHOOD
+  + NO_REACH
+=== 1 failed, 11 deselected ===
