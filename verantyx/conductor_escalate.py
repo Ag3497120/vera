@@ -366,17 +366,6 @@ def _validated_record_ids(reply: Any, conductor: Any) -> tuple[str, ...]:
             if isinstance(record, Mapping) and str(record.get("id", "")) == record_id:
                 validated.append(record_id)
         return tuple(validated)
-    memory = getattr(conductor, "memory", None)
-    active = getattr(memory, "active", None)
-    if callable(active):
-        try:
-            active_ids = {
-                str(record.get("id")) for record in active()
-                if isinstance(record, Mapping) and record.get("id")
-            }
-        except Exception:
-            return ()
-        return tuple(record_id for record_id in record_ids if record_id in active_ids)
     return ()
 
 

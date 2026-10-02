@@ -224,6 +224,37 @@ def test_citation_without_trusted_record_lookup_does_not_resolve(tmp_path):
     assert graph.get(handoff.gap_id).status != "RESOLVED"
 
 
+def test_stale_default_active_memory_record_does_not_resolve(tmp_path):
+    frame = frame_at(tmp_path)
+    question, reply = refusal(frame)
+    handoff = enrich(reply, frame, question)
+    stale_id = "stale-witnessed-record-id"
+
+    class DefaultFreshnessMemory:
+        def __init__(self):
+            self.calls = []
+
+        def active(self, require_fresh=False):
+            self.calls.append(require_fresh)
+            return [{"id": stale_id}]
+
+    class StaleMemoryCitation:
+        def __init__(self):
+            self.memory = DefaultFreshnessMemory()
+
+        def answer(self, asked):
+            assert asked is question
+            return Reply("ANSWER", "a result", (stale_id,))
+
+    checker = StaleMemoryCitation()
+    assert check_resolved(handoff, checker) is False
+    assert checker.memory.calls == []
+    growth, graph = sidecars(frame)
+    assert [event["resolved"] for event in growth.branch_outcomes] == [False]
+    assert graph.get(handoff.gap_id).status != "RESOLVED"
+    assert graph.get(handoff.gap_id).verified_by == []
+
+
 def test_resolution_records_only_active_citations(tmp_path):
     frame = frame_at(tmp_path)
     question, reply = refusal(frame)
