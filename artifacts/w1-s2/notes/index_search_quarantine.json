@@ -1,0 +1,80 @@
+{
+  "verdict": "ANSWER",
+  "query": "quarantine",
+  "searched": 646,
+  "hits": [
+    {
+      "kind": "module",
+      "name": "tool_call_quarantine",
+      "about": "Milestone R4 — mutating-tool approval for the Vera-harness (HTTP) path,",
+      "where": "verantyx/tool_call_quarantine.py"
+    },
+    {
+      "kind": "door",
+      "name": "accept_ai_fact",
+      "about": "Promote one pending AI-proposed fact (by index from",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "accept_domain_module",
+      "about": "Promote one pending domain module (by index from",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "adopt_covenant",
+      "about": "Adopt a quarantined candidate into enforcement — the gate.",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "heartbeat",
+      "about": "Milestone M's autonomous growth tick (closed-domain modules,",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "list_pending_tool_calls",
+      "about": "Milestone R4: mutating tool calls the Vera-harness chat (IDE)",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "propose_ai_facts",
+      "about": "Quarantine sentence-level fact candidates split out of an",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "propose_covenant",
+      "about": "Put a covenant CANDIDATE in quarantine. Meant for the LLM-handoff",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "propose_domain_module",
+      "about": "Manually quarantine a hand- or externally-drafted domain module",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "propose_web_evidence",
+      "about": "Quarantine ONE raw web-search excerpt, verbatim, for human review",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "record_code_change",
+      "about": "Record a code change (file path + what changed) as a structured",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "record_verified_url",
+      "about": "Register a human- or agent-confirmed URL for a named destination",
+      "where": "verantyx/mcp_server.py"
+    }
+  ],
+  "total_hits": 28
+}

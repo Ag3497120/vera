@@ -1,0 +1,9 @@
+既定の profile（w1s）で v2 バンクの全問（隔離前）を検証だけ通した結果。--profile v2 との比較用（Vera は呼んでいない）
+B1 w1s total 296 ITEM_INVALID 259 unknown_expect_keys(w1s の表)で採点不能になる有効問題 37 理由の型の上位 ['BAD_MUST_NOT', 'BAD_TYPE']
+B1 v2 total 296 ITEM_INVALID 0 unknown_expect_keys(w1s の表)で採点不能になる有効問題 None 理由の型の上位 []
+B2 w1s total 286 ITEM_INVALID 0 unknown_expect_keys(w1s の表)で採点不能になる有効問題 286 理由の型の上位 []
+B2 v2 total 286 ITEM_INVALID 0 unknown_expect_keys(w1s の表)で採点不能になる有効問題 None 理由の型の上位 []
+B3 w1s total 137 ITEM_INVALID 121 unknown_expect_keys(w1s の表)で採点不能になる有効問題 16 理由の型の上位 ['BAD_TYPE', 'BAD_VALUE']
+B3 v2 total 137 ITEM_INVALID 0 unknown_expect_keys(w1s の表)で採点不能になる有効問題 None 理由の型の上位 []
+B5 w1s total 144 ITEM_INVALID 15 unknown_expect_keys(w1s の表)で採点不能になる有効問題 129 理由の型の上位 ['BAD_TYPE']
+B5 v2 total 144 ITEM_INVALID 0 unknown_expect_keys(w1s の表)で採点不能になる有効問題 None 理由の型の上位 []

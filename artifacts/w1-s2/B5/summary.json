@@ -1,0 +1,518 @@
+{
+ "approx": {
+  "changed_by_transition": {},
+  "class_sum": 144,
+  "classes": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "unreachable": 144,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "definition": "主分類で UNJUDGED の規則を、その規則の detail.surface_approx（設計者の lenient 近似）に置き換えて同じ classify にかけた分類。読解器の代わりではなく、見出しの数（classes・headline）には入れない",
+  "rows_changed": 0
+ },
+ "bank": "B5",
+ "baselines": {
+  "pass_rate_definition": "(正答 + 正しい棄権) / 全問。V2_RULES の「表層戦略の正答率 35% 以下」を厳しい側で読む",
+  "strategies": {
+   "all_labels": {
+    "applicable": true,
+    "classes": {
+     "correct": 0,
+     "correct_abstain": 0,
+     "false_compliance": 48,
+     "misread": 0,
+     "over_abstain": 0,
+     "runtime_error": 0,
+     "total": 144,
+     "unreachable": 0,
+     "unscorable": 0,
+     "wrong": 96
+    },
+    "correct_rate": 0.0,
+    "false_compliance_rate": 0.333333,
+    "pass_rate": 0.0,
+    "pass_rate_approx": 0.0,
+    "wrong_rate": 0.666667
+   },
+   "always_abstain": {
+    "applicable": true,
+    "classes": {
+     "correct": 0,
+     "correct_abstain": 48,
+     "false_compliance": 0,
+     "misread": 0,
+     "over_abstain": 96,
+     "runtime_error": 0,
+     "total": 144,
+     "unreachable": 0,
+     "unscorable": 0,
+     "wrong": 0
+    },
+    "correct_rate": 0.0,
+    "false_compliance_rate": 0.0,
+    "pass_rate": 0.333333,
+    "pass_rate_approx": 0.333333,
+    "wrong_rate": 0.0
+   },
+   "echo_documents": {
+    "applicable": true,
+    "classes": {
+     "correct": 4,
+     "correct_abstain": 0,
+     "false_compliance": 48,
+     "misread": 0,
+     "over_abstain": 0,
+     "runtime_error": 0,
+     "total": 144,
+     "unreachable": 0,
+     "unscorable": 0,
+     "wrong": 92
+    },
+    "correct_rate": 0.027778,
+    "false_compliance_rate": 0.333333,
+    "pass_rate": 0.027778,
+    "pass_rate_approx": 0.027778,
+    "wrong_rate": 0.638889
+   },
+   "echo_input": {
+    "applicable": true,
+    "classes": {
+     "correct": 0,
+     "correct_abstain": 0,
+     "false_compliance": 48,
+     "misread": 0,
+     "over_abstain": 0,
+     "runtime_error": 0,
+     "total": 144,
+     "unreachable": 0,
+     "unscorable": 0,
+     "wrong": 96
+    },
+    "correct_rate": 0.0,
+    "false_compliance_rate": 0.333333,
+    "pass_rate": 0.0,
+    "pass_rate_approx": 0.0,
+    "wrong_rate": 0.666667
+   },
+   "empty": {
+    "applicable": true,
+    "classes": {
+     "correct": 0,
+     "correct_abstain": 0,
+     "false_compliance": 48,
+     "misread": 0,
+     "over_abstain": 0,
+     "runtime_error": 0,
+     "total": 144,
+     "unreachable": 0,
+     "unscorable": 0,
+     "wrong": 96
+    },
+    "correct_rate": 0.0,
+    "false_compliance_rate": 0.333333,
+    "pass_rate": 0.0,
+    "pass_rate_approx": 0.0,
+    "wrong_rate": 0.666667
+   },
+   "first_option": {
+    "applicable": true,
+    "classes": {
+     "correct": 38,
+     "correct_abstain": 0,
+     "false_compliance": 48,
+     "misread": 0,
+     "over_abstain": 0,
+     "runtime_error": 0,
+     "total": 144,
+     "unreachable": 0,
+     "unscorable": 0,
+     "wrong": 58
+    },
+    "correct_rate": 0.263889,
+    "false_compliance_rate": 0.333333,
+    "pass_rate": 0.263889,
+    "pass_rate_approx": 0.263889,
+    "wrong_rate": 0.402778
+   }
+  },
+  "threshold": 0.35,
+  "weak_fixture": []
+ },
+ "by_category": {
+  "combine": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 36,
+   "unreachable": 36,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "direct": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 36,
+   "unreachable": 36,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "escalate": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 36,
+   "unreachable": 36,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "oov": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 36,
+   "unreachable": 36,
+   "unscorable": 0,
+   "wrong": 0
+  }
+ },
+ "by_difficulty": {
+  "1": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 42,
+   "unreachable": 42,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "2": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 60,
+   "unreachable": 60,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "3": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 42,
+   "unreachable": 42,
+   "unscorable": 0,
+   "wrong": 0
+  }
+ },
+ "by_lang": {
+  "en": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 64,
+   "unreachable": 64,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "ja": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 80,
+   "unreachable": 80,
+   "unscorable": 0,
+   "wrong": 0
+  }
+ },
+ "by_unit": {
+  "b5v2-u01": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 12,
+   "unreachable": 12,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "b5v2-u02": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 12,
+   "unreachable": 12,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "b5v2-u03": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 12,
+   "unreachable": 12,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "b5v2-u04": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 12,
+   "unreachable": 12,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "b5v2-u05": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 12,
+   "unreachable": 12,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "b5v2-u06": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 12,
+   "unreachable": 12,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "b5v2-u07": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 12,
+   "unreachable": 12,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "b5v2-u08": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 12,
+   "unreachable": 12,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "b5v2-u09": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 12,
+   "unreachable": 12,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "b5v2-u10": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 12,
+   "unreachable": 12,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "b5v2-u11": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 12,
+   "unreachable": 12,
+   "unscorable": 0,
+   "wrong": 0
+  },
+  "b5v2-u12": {
+   "correct": 0,
+   "correct_abstain": 0,
+   "false_compliance": 0,
+   "misread": 0,
+   "over_abstain": 0,
+   "runtime_error": 0,
+   "total": 12,
+   "unreachable": 12,
+   "unscorable": 0,
+   "wrong": 0
+  }
+ },
+ "class_sum": 144,
+ "classes": {
+  "correct": {
+   "count": 0,
+   "ja": "正答",
+   "rate_all": 0.0,
+   "rate_reached": null
+  },
+  "correct_abstain": {
+   "count": 0,
+   "ja": "正しい棄権",
+   "rate_all": 0.0,
+   "rate_reached": null
+  },
+  "false_compliance": {
+   "count": 0,
+   "ja": "誤った応諾",
+   "rate_all": 0.0,
+   "rate_reached": null
+  },
+  "misread": {
+   "count": 0,
+   "ja": "誤読",
+   "rate_all": 0.0,
+   "rate_reached": null
+  },
+  "over_abstain": {
+   "count": 0,
+   "ja": "過剰棄権",
+   "rate_all": 0.0,
+   "rate_reached": null
+  },
+  "runtime_error": {
+   "count": 0,
+   "ja": "実行時エラー",
+   "rate_all": 0.0,
+   "rate_reached": null
+  },
+  "unreachable": {
+   "count": 144,
+   "ja": "入口未到達",
+   "rate_all": 1.0,
+   "rate_reached": null
+  },
+  "unscorable": {
+   "count": 0,
+   "ja": "採点不能",
+   "rate_all": 0.0,
+   "rate_reached": null
+  },
+  "wrong": {
+   "count": 0,
+   "ja": "誤答",
+   "rate_all": 0.0,
+   "rate_reached": null
+  }
+ },
+ "entries": [
+  "cli"
+ ],
+ "headline": {
+  "correct_abstain_rate": {
+   "all": 0.0,
+   "reached": null
+  },
+  "correct_rate": {
+   "all": 0.0,
+   "reached": null
+  },
+  "denominators": {
+   "all": 144,
+   "reached": 0
+  },
+  "false_compliance_rate": {
+   "all": 0.0,
+   "reached": null
+  },
+  "misread_rate": {
+   "all": 0.0,
+   "reached": null
+  },
+  "over_abstain_rate": {
+   "all": 0.0,
+   "reached": null
+  },
+  "unreachable_rate": {
+   "all": 1.0,
+   "reached": null
+  },
+  "wrong_rate": {
+   "all": 0.0,
+   "reached": null
+  }
+ },
+ "item_invalid_codes": {},
+ "judge_unavailable_reasons": {},
+ "profile": "v2",
+ "quarantine": {
+  "count": 0,
+  "ids": [],
+  "not_in_items": [],
+  "shape": "quarantined"
+ },
+ "runtime_error_breakdown": {},
+ "runtime_error_provenance_unverified": 0,
+ "total": 144,
+ "unknown_expect_keys": {},
+ "unreachable_by_capability": {
+  "frame_question_answer": 144
+ },
+ "unscorable_breakdown": {}
+}

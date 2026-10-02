@@ -1,0 +1,32 @@
+# B1（こちら: artifacts/w1-s2/B1/summary.json / 設計者: /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B1_reading/v2/audit/baseline.json、全問 296）
+こちらの戦略 | 設計者の戦略 | こちら | 設計者 | 差（ポイント） | 判定 | 定義の違い
+always_abstain | BL-F | 15.54% | 15.54% | +0.00 | OK | どちらも常に棄権（こちらの値: 通過率（pass_rate））
+empty | BL-EMPTY | 0.00% | 0.00% | +0.00 | OK | どちらも readable:true・節なし（こちらの値: 通過率（pass_rate））
+echo_input | BL-COPY | 0.00% | 0.00% | +0.00 | OK | こちらは述語＝入力、設計者は entity＝入力・述語＝文末の語（どちらも正答 0 の見込み）（こちらの値: 通過率（pass_rate））
+OK 3 / 3（5 ポイント以内）。要説明 0。
+# B2（こちら: artifacts/w1-s2/B2/summary.json / 設計者: /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B2_chat/v2/audit/baseline.json、全問 286）
+こちらの戦略 | 設計者の戦略 | こちら | 設計者 | 差（ポイント） | 判定 | 定義の違い
+always_abstain | S2_always_abstain | 22.38% | 22.40% | -0.02 | OK | どちらも空本文・棄権状態（こちらの値: 通過率（pass_rate））
+empty | S1_empty | 0.00% | 0.00% | +0.00 | OK | どちらも空本文・回答状態（こちらの値: 通過率（pass_rate））
+echo_input | S3_echo_last_user | 0.00% | 0.00% | +0.00 | OK | 最後の user 発話の丸写し（こちらの値: 通過率（pass_rate））
+echo_documents | S4_all_docs_or_users | 0.00% | 0.00% | +0.00 | OK | 設計者は文書が無ければ全 user 発話、こちらは空（こちらの値: 通過率（pass_rate））
+all_labels | S8_all_three_labels | 0.00% | 0.00% | +0.00 | OK | 3 ラベルの列挙（こちらの値: 通過率（pass_rate））
+OK 5 / 5（5 ポイント以内）。要説明 0。
+# B3（こちら: artifacts/w1-s2/B3/summary.json / 設計者: /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B3_generation/v2/audit/baseline.json、全問 137）
+こちらの戦略 | 設計者の戦略 | こちら | 設計者 | 差（ポイント） | 判定 | 定義の違い
+empty | SB0/lenient | 0.00% | 0.00% | +0.00 | OK | どちらも空本文（こちらの値: 近似を当てた通過率（pass_rate_approx））
+empty | SB0/upper | 0.00% | 0.00% | +0.00 | OK | どちらも空本文（こちらの値: 主分類の通過率（UNJUDGED は通過に数えない））
+always_abstain | SB1/lenient | 22.63% | 22.63% | -0.00 | OK | どちらも常に拒否（こちらの値: 近似を当てた通過率（pass_rate_approx））
+always_abstain | SB1/upper | 22.63% | 22.63% | -0.00 | OK | どちらも常に拒否（こちらの値: 主分類の通過率（UNJUDGED は通過に数えない））
+echo_documents | SB2/lenient | 0.00% | 0.00% | +0.00 | OK | 設計者は材料が空なら依頼文、こちらは空（こちらの値: 近似を当てた通過率（pass_rate_approx））
+echo_documents | SB2/upper | 0.00% | 0.00% | +0.00 | OK | 設計者は材料が空なら依頼文、こちらは空（こちらの値: 主分類の通過率（UNJUDGED は通過に数えない））
+echo_input | SB5/lenient | 0.00% | 0.00% | +0.00 | OK | 依頼文の丸写し（こちらの値: 近似を当てた通過率（pass_rate_approx））
+echo_input | SB5/upper | 0.00% | 0.00% | +0.00 | OK | 依頼文の丸写し（こちらの値: 主分類の通過率（UNJUDGED は通過に数えない））
+OK 8 / 8（5 ポイント以内）。要説明 0。
+# B5（こちら: artifacts/w1-s2/B5/summary.json / 設計者: /Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B5_conductor/v2/audit/sim/r3_fix_baseline.json、全問 144）
+こちらの戦略 | 設計者の戦略 | こちら | 設計者 | 差（ポイント） | 判定 | 定義の違い
+always_abstain | s_always_escalate | 33.33% | 33.33% | +0.00 | OK | どちらも常に escalate（こちらの値: 通過率（pass_rate））
+first_option | s_first | 26.39% | 26.39% | -0.00 | OK | 設計者は自由記述に質問文を返す、こちらは空（こちらの値: 通過率（pass_rate））
+empty | s_empty_output | 0.00% | 0.00% | +0.00 | OK | どちらも空出力（こちらの値: 通過率（pass_rate））
+all_labels | s_enumerate_labels | 0.00% | 2.78% | -2.78 | OK | 設計者は自由記述に全相名と決定値を返す（設計者 4 問正答）、こちらは選択肢の列挙で自由記述は空（こちらの値: 通過率（pass_rate））
+OK 4 / 4（5 ポイント以内）。要説明 0。

@@ -14,10 +14,14 @@ def recompute(out: Path) -> tuple[dict, str]:
     meta = json.loads((out / "run_meta.json").read_text(encoding="utf-8"))
     bank = meta["bank"]
     strat = {}
-    for s in STRATEGIES:
-        if not_applicable(bank, s) is None:
-            strat[s] = read_jsonl(out / "baselines" / s / "results.jsonl")
-    summ = build_summary(bank, rows, strat, meta["quarantine"])
+    if meta.get("mode") != "judge":  # judge の出力（Vera を呼ばない判定だけ）に戦略は無い
+        for s in STRATEGIES:
+            if not_applicable(bank, s) is None:
+                strat[s] = read_jsonl(out / "baselines" / s / "results.jsonl")
+    summ = build_summary(bank, rows, strat, meta["quarantine"], meta.get("profile", "w1s"))
+    if meta.get("mode") == "judge":
+        from .judge import probes_block
+        summ["probes"] = probes_block(rows)
     return summ, render_md(summ)
 
 

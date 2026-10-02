@@ -1,0 +1,15 @@
+LEAK file=tests/bank_score/fixtures/B2/items.jsonl line≈17 item=B2J-MTN-14 field=turns.content
+LEAK file=tests/bank_score/fixtures/B3/items.jsonl line≈16 item=ja_create-10 field=brief
+LEAK file=tests/bank_score/fixtures/B3/items.jsonl line≈18 item=B2J-TRF-06 field=turns.content
+LEAK file=tests/bank_score/fixtures/B3/items.jsonl line≈None item=B2J-TRF-17 field=turns.content
+LEAK file=tests/bank_score/fixtures/B5/frames/en_tidegauge.md line≈4 item=frame:b5v2-u06 field=frame
+LEAK file=tests/bank_score/fixtures/B5/frames/ja_ledger.md line≈2 item=frame:b5v2-u02 field=frame
+LEAK file=tests/bank_score/fixtures/B5/frames/ja_ledger.md line≈4 item=frame:b5v2-u07 field=frame
+LEAK file=tests/bank_score/fixtures/B5/frames/ja_ledger.md line≈13 item=frame:b5v2-u08 field=frame
+LEAK file=tests/bank_score/fixtures/B5/frames/ja_ledger.md line≈38 item=frame:b5v2-u01 field=frame
+LEAK file=tests/bank_score/fixtures/B5/items.jsonl line≈6 item=frame:b5v2-u01 field=frame
+LEAK file=tests/bank_score/fixtures/B5/items.jsonl line≈11 item=b5v2-u06-02 field=expect.evidence
+LEAK file=tests/bank_score/fixtures/B5/items.jsonl line≈None item=frame:b5v2-u08 field=frame
+LEAK file=tests/bank_score/fixtures/invalid/B2.jsonl line≈None item=B2J-MTN-04 field=phenomenon
+leakcheck: scanned_files=10 leaks=13
+exit=1

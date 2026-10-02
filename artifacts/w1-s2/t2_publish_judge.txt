@@ -1,0 +1,6 @@
+publish artifacts/w1-s2/private/judge_B1_reference -> artifacts/w1-s2/judge/judge_B1_reference: 要約一致（非公開と公開が同じ数）。raw/ ・phenomenon・observation・notes は写していない
+publish artifacts/w1-s2/private/judge_B2_alt_answers -> artifacts/w1-s2/judge/judge_B2_alt_answers: 要約一致（非公開と公開が同じ数）。raw/ ・phenomenon・observation・notes は写していない
+publish artifacts/w1-s2/private/judge_B2_reference -> artifacts/w1-s2/judge/judge_B2_reference: 要約一致（非公開と公開が同じ数）。raw/ ・phenomenon・observation・notes は写していない
+publish artifacts/w1-s2/private/judge_B2_wrong_answers -> artifacts/w1-s2/judge/judge_B2_wrong_answers: 要約一致（非公開と公開が同じ数）。raw/ ・phenomenon・observation・notes は写していない
+publish artifacts/w1-s2/private/judge_B3_reference -> artifacts/w1-s2/judge/judge_B3_reference: 要約一致（非公開と公開が同じ数）。raw/ ・phenomenon・observation・notes は写していない
+publish artifacts/w1-s2/private/judge_B5_reference -> artifacts/w1-s2/judge/judge_B5_reference: 要約一致（非公開と公開が同じ数）。raw/ ・phenomenon・observation・notes は写していない

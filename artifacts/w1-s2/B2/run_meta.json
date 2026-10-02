@@ -1,0 +1,81 @@
+{
+ "args": {
+  "corpus_root": null,
+  "entry_option": null,
+  "frames": null,
+  "items": "/Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B2_chat/v2/items.jsonl",
+  "quarantine": "/Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B2_chat/v2/audit/quarantine.json",
+  "timeout_s": 60.0
+ },
+ "bank": "B2",
+ "child_argv_template": [
+  "<python>",
+  "-c",
+  "<BOOTSTRAP: runpy.run_module('verantyx.cli', run_name='__main__')>",
+  "run",
+  "ask",
+  "[--mode round5] [--document <file>...] -- <query>"
+ ],
+ "child_env": {
+  "BANK_SCORE_PROVENANCE": "<WORK>/prov/N.json",
+  "HOME": "<WORK>/home",
+  "LANG": "C.UTF-8",
+  "PATH": "/Users/motonisihikoudai/.local/bin:/Users/motonisihikoudai/.antigravity-ide/antigravity-ide/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/Applications/VMware Fusion.app/Contents/Public:/opt/homebrew/bin:/Users/motonisihikoudai/.lmstudio/bin",
+  "PYTHONDONTWRITEBYTECODE": "1",
+  "PYTHONIOENCODING": "utf-8",
+  "PYTHONPATH": "/Users/motonisihikoudai/Projects/vera-impl/wt/W1-s2-S",
+  "VERA_CORPUS_ROOT": "<WORK>/empty_corpus"
+ },
+ "entry": "cli-ask-round5",
+ "entry_note": "既定: README が最初に案内する vera CLI のうち、そのバンクの入力を受け取り型つきの結果を返す最初のサブコマンド",
+ "frames_sha256": null,
+ "fugashi": "1.5.2",
+ "items_sha256": "6885ee6cc5630fb0f74e1be3696a8daaeab90e094d3e2fbc703607222c439e16",
+ "precheck": {
+  "exit_code": 0,
+  "import_error": null,
+  "modules": 22,
+  "outside": [],
+  "status": "ok",
+  "stderr_tail": ""
+ },
+ "profile": "v2",
+ "provenance_total": {
+  "outside_count": 0,
+  "processes_checked": 236,
+  "processes_unverified": 0
+ },
+ "python": "/Users/motonisihikoudai/vera-wiring/env/bin/python",
+ "quarantine": {
+  "count": 14,
+  "ids": [
+   "B2E-DQA-12",
+   "B2E-DQA-18",
+   "B2E-DQA-27",
+   "B2E-DQA-29",
+   "B2E-OPS-26",
+   "B2E-RSN-08",
+   "B2E-RSN-16",
+   "B2E-RSN-22",
+   "B2J-ABS-13",
+   "B2J-ABS-21",
+   "B2J-CAL-17",
+   "B2J-DRC-05",
+   "B2J-MDQ-17",
+   "B2J-MDQ-18"
+  ],
+  "not_in_items": [],
+  "shape": "quarantined"
+ },
+ "quarantine_sha256": "cd7535a5d8a741d7c05e24f61c72fe5a75429fa603e8444b96ce46ed7ae6f434",
+ "raw_path_redactions": 0,
+ "timing": {
+  "precheck_ms": 98.0,
+  "vera_calls_ms_total": 100540.1
+ },
+ "tree_head": "57a52182e408a67de841b87954b0494128c40209",
+ "tree_realpath": "/Users/motonisihikoudai/Projects/vera-impl/wt/W1-s2-S",
+ "unreachable_not_called": 51,
+ "vera_calls": 235,
+ "verantyx_untouched": true
+}

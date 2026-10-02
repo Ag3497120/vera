@@ -1,0 +1,71 @@
+{
+ "args": {
+  "corpus_root": null,
+  "entry_option": null,
+  "frames": null,
+  "items": "/Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B1_reading/v2/items.jsonl",
+  "quarantine": "/Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B1_reading/v2/audit/quarantine.json",
+  "timeout_s": 60.0
+ },
+ "bank": "B1",
+ "child_argv_template": [
+  "<python>",
+  "-c",
+  "<BOOTSTRAP: runpy.run_module('verantyx.cli', run_name='__main__')>",
+  "run",
+  "ask",
+  "[--mode round5] [--document <file>...] -- <query>"
+ ],
+ "child_env": {
+  "BANK_SCORE_PROVENANCE": "<WORK>/prov/N.json",
+  "HOME": "<WORK>/home",
+  "LANG": "C.UTF-8",
+  "PATH": "/Users/motonisihikoudai/.local/bin:/Users/motonisihikoudai/.antigravity-ide/antigravity-ide/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/Applications/VMware Fusion.app/Contents/Public:/opt/homebrew/bin:/Users/motonisihikoudai/.lmstudio/bin",
+  "PYTHONDONTWRITEBYTECODE": "1",
+  "PYTHONIOENCODING": "utf-8",
+  "PYTHONPATH": "/Users/motonisihikoudai/Projects/vera-impl/wt/W1-s2-S",
+  "VERA_CORPUS_ROOT": "<WORK>/empty_corpus"
+ },
+ "entry": "cli",
+ "entry_note": "既定: README が最初に案内する vera CLI のうち、そのバンクの入力を受け取り型つきの結果を返す最初のサブコマンド",
+ "frames_sha256": null,
+ "fugashi": "1.5.2",
+ "items_sha256": "27b93b74dfdcc0fa7090ede8f2edb2893d41cf2c31f9a5d26633647ecc8ac28a",
+ "precheck": {
+  "exit_code": 0,
+  "import_error": null,
+  "modules": 22,
+  "outside": [],
+  "status": "ok",
+  "stderr_tail": ""
+ },
+ "profile": "v2",
+ "provenance_total": {
+  "outside_count": 0,
+  "processes_checked": 1,
+  "processes_unverified": 0
+ },
+ "python": "/Users/motonisihikoudai/vera-wiring/env/bin/python",
+ "quarantine": {
+  "count": 4,
+  "ids": [
+   "u05_comparison-18",
+   "u09_ellipsis-19",
+   "u11_sequence-04",
+   "u12_polysemy_long-05"
+  ],
+  "not_in_items": [],
+  "shape": "quarantined"
+ },
+ "quarantine_sha256": "487823f51342da1cda62c2a14580f23cfa87a33fa0050402cf0c995dc45c79d5",
+ "raw_path_redactions": 0,
+ "timing": {
+  "precheck_ms": 97.2,
+  "vera_calls_ms_total": 0.0
+ },
+ "tree_head": "57a52182e408a67de841b87954b0494128c40209",
+ "tree_realpath": "/Users/motonisihikoudai/Projects/vera-impl/wt/W1-s2-S",
+ "unreachable_not_called": 296,
+ "vera_calls": 0,
+ "verantyx_untouched": true
+}

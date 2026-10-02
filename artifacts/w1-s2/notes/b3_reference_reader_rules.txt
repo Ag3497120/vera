@@ -1,0 +1,3 @@
+B3 参考例（生成が正解の 106 問）で UNJUDGED の規則と理由（件数。1 問が複数に数えられる）: {('must_express', 'NEEDS_READER'): 31, ('new_content_words', 'NEEDS_READER'): 34, ('must_relate', 'NEEDS_READER'): 8, ('must_not_relate', 'NEEDS_READER'): 9, ('order', 'LEMMA_NOT_FOUND'): 1}
+UNJUDGED の規則の組み合わせ別の問題数: {'must_express': 14, '(なし=決定的に正答)': 47, 'new_content_words': 19, 'must_relate': 2, 'must_not_relate + must_relate': 6, 'must_express + must_not_relate': 2, 'must_express + new_content_words': 14, 'must_not_relate': 1, 'must_express + new_content_words + order': 1}
+surface_approx が PASS 以外の規則: []

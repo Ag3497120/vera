@@ -1,0 +1,40 @@
+{
+ "args": {
+  "frames": null,
+  "items": "/Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B2_chat/v2/items.jsonl",
+  "observations": null,
+  "quarantine": "/Users/motonisihikoudai/Projects/vera-impl/hidden/banks/B2_chat/v2/audit/quarantine.json"
+ },
+ "bank": "B2",
+ "frames_sha256": null,
+ "fugashi": "1.5.2",
+ "items_sha256": "6885ee6cc5630fb0f74e1be3696a8daaeab90e094d3e2fbc703607222c439e16",
+ "items_without_observation": 0,
+ "mode": "judge",
+ "n_rows": 286,
+ "note": "Vera も子プロセスも起動していない。観測は probe（参考例・別解・誤答例）か --observations から作った",
+ "probe": "reference",
+ "profile": "v2",
+ "quarantine": {
+  "count": 14,
+  "ids": [
+   "B2E-DQA-12",
+   "B2E-DQA-18",
+   "B2E-DQA-27",
+   "B2E-DQA-29",
+   "B2E-OPS-26",
+   "B2E-RSN-08",
+   "B2E-RSN-16",
+   "B2E-RSN-22",
+   "B2J-ABS-13",
+   "B2J-ABS-21",
+   "B2J-CAL-17",
+   "B2J-DRC-05",
+   "B2J-MDQ-17",
+   "B2J-MDQ-18"
+  ],
+  "not_in_items": [],
+  "shape": "quarantined"
+ },
+ "quarantine_sha256": "cd7535a5d8a741d7c05e24f61c72fe5a75429fa603e8444b96ce46ed7ae6f434"
+}

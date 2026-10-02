@@ -1,0 +1,6 @@
+judge_B1_reference answer_side 250 strict 250 approx_only 0 rate_strict 1.0 rate_with_approx 1.0 OK not_correct [] abstain_side 46 abstain_correct 46
+judge_B2_reference answer_side 222 strict 222 approx_only 0 rate_strict 1.0 rate_with_approx 1.0 OK not_correct [] abstain_side 64 abstain_correct 64
+judge_B3_reference answer_side 106 strict 47 approx_only 59 rate_strict 0.443396 rate_with_approx 1.0 OK not_correct [] abstain_side 31 abstain_correct 31
+judge_B5_reference answer_side 96 strict 96 approx_only 0 rate_strict 1.0 rate_with_approx 1.0 OK not_correct [] abstain_side 48 abstain_correct 48
+B2 alt_answers {'correct': 508, 'not_correct': [], 'probes': 508}
+B2 wrong_answers {'passed_wrongly': [], 'probes': 957}

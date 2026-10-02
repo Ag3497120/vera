@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -34,6 +35,8 @@ class InvalidRun(Exception):
 def _parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="python -m tools.bank_score",
                                  description="評価バンクの採点器。Vera は既定の入口だけから別プロセスで呼ぶ。")
+    ap.add_argument("--profile", default="w1s", choices=list(schema.PROFILES),
+                    help="問題の形式と採点の意味（w1s: W1-s の自作見本、v2: v2 バンクの実際の形式。既定 w1s）")
     ap.add_argument("--bank", required=True, choices=list(schema.BANKS))
     ap.add_argument("--items", required=True)
     ap.add_argument("--quarantine")
@@ -59,6 +62,18 @@ def _git(tree: str, *args: str) -> str | None:
     return cp.stdout.decode("utf-8", "replace").strip() if cp.returncode == 0 else None
 
 
+def _unit_of(bank: str, rec: dict) -> str | None:
+    """v2 の by_unit 用: B1・B3 は raw の unit、B2 は id の先頭 2 区切り（例 B2J-ABS）、B5 は frame_id。"""
+    raw = rec["raw"] or {}
+    if bank in ("B1", "B3"):
+        return raw.get("unit") if isinstance(raw.get("unit"), str) else None
+    if bank == "B2":
+        i = rec["id"]
+        return "-".join(i.split("-")[:2]) if isinstance(i, str) and "-" in i else None
+    exp = raw.get("expect") if isinstance(raw.get("expect"), dict) else {}
+    return exp.get("frame_id") if isinstance(exp.get("frame_id"), str) else None
+
+
 def _meta_fields(rec: dict) -> dict:
     raw = rec["raw"] or {}
 
@@ -69,21 +84,45 @@ def _meta_fields(rec: dict) -> dict:
             "phenomenon": pick("phenomenon", (str,)), "difficulty": pick("difficulty", (int,))}
 
 
-def _row(rec: dict, bank: str, entry: str | None, **kw: object) -> dict:
+def _row(rec: dict, bank: str, entry: str | None, profile: str = "w1s", **kw: object) -> dict:
     row = {"id": rec["id"], "line": rec["line"], "bank": bank, **_meta_fields(rec),
            "class": None, "class_ja": None, "reason": None, "reason_detail": [], "entry": entry,
            "capability": None, "observation": None, "checks": {}, "notes": [], "unknown_expect_keys": [],
            "elapsed_ms": 0}
+    if profile == "v2":
+        row.update({"unit": _unit_of(bank, rec), "class_approx": None, "evidence_match": None})
     row.update(kw)
     if row["class"]:
         row["class_ja"] = CLASS_JA[row["class"]]
+    if profile == "v2" and row["class_approx"] is None:
+        row["class_approx"] = row["class"]  # 採点していない行（未到達・実行時エラー・不正）は近似でも同じ分類
     return row
 
 
 def _scored(row: dict, sc: dict) -> dict:
     row.update({"class": sc["class"], "class_ja": sc["class_ja"], "reason": sc["reason"], "checks": sc["checks"],
                 "notes": sc["notes"], "unknown_expect_keys": sc["unknown_expect_keys"]})
+    if "class_approx" in sc:
+        row["class_approx"] = sc["class_approx"]
+        row["evidence_match"] = sc.get("evidence_match")
     return row
+
+
+def _sha256_files(paths: list[Path]) -> str:
+    h = hashlib.sha256()
+    for p in paths:
+        h.update(p.read_bytes())
+    return h.hexdigest()
+
+
+def _inputs_meta(args: argparse.Namespace, frames: Path | None) -> dict:
+    """入力ファイルのハッシュ（バンクが変わったことに気づくため）。frames はファイル名順の連結のハッシュ。"""
+    out: dict = {"items_sha256": _sha256_files([Path(args.items)]),
+                 "quarantine_sha256": _sha256_files([Path(args.quarantine)]) if args.quarantine else None,
+                 "frames_sha256": None}
+    if frames is not None:
+        out["frames_sha256"] = _sha256_files(sorted(p for p in frames.iterdir() if p.is_file()))
+    return out
 
 
 def _check_provenance(sess: Session, stage: str) -> None:
@@ -114,9 +153,11 @@ def run(args: argparse.Namespace) -> int:
     if frames is not None and not frames.is_dir():
         print(f"入力の誤り: --frames がディレクトリでない: {args.frames}", file=sys.stderr)
         return EXIT_INPUT
+    profile = args.profile
     try:
-        quarantine_ids = schema.load_quarantine(args.quarantine)
-        recs = schema.read_items(args.items, bank, frames)
+        qinfo = schema.load_quarantine_info(args.quarantine)
+        quarantine_ids = qinfo["ids"]
+        recs = schema.read_items(args.items, bank, frames, profile)
     except schema.InputError as e:
         print(f"入力の誤り: {e}", file=sys.stderr)
         return EXIT_INPUT
@@ -136,6 +177,8 @@ def run(args: argparse.Namespace) -> int:
     kept = [r for r in recs if r["id"] not in qset]
     quarantine = {"count": len(recs) - len(kept), "ids": sorted(r["id"] for r in recs if r["id"] in qset),
                   "not_in_items": sorted(qset - ids_present)}
+    if profile == "v2":
+        quarantine["shape"] = qinfo["shape"]  # 理由の文は写さない（問題の中身が入っている）
 
     sess = Session(args.python, args.tree, args.corpus_root, args.timeout)
     rows: list[dict] = []
@@ -148,13 +191,13 @@ def run(args: argparse.Namespace) -> int:
             raise InvalidRun("precheck", {"outside": pre["outside"] or [], "precheck": pre})
         for seq, rec in enumerate(kept, start=1):
             if rec["errors"]:
-                rows.append(_row(rec, bank, entry, **{"class": "unscorable", "reason": "ITEM_INVALID",
+                rows.append(_row(rec, bank, entry, profile=profile, **{"class": "unscorable", "reason": "ITEM_INVALID",
                                                       "reason_detail": rec["errors"]}))
                 continue
             reach = adapters.reachability(bank, entry, rec["case"])
             if not reach["reachable"]:
                 unreachable_n += 1
-                rows.append(_row(rec, bank, entry, **{"class": "unreachable", "capability": reach["capability"],
+                rows.append(_row(rec, bank, entry, profile=profile, **{"class": "unreachable", "capability": reach["capability"],
                                                       "reason_detail": reach["reasons"]}))
                 continue
             call = adapters.build_call(bank, entry, rec["case"])
@@ -178,17 +221,18 @@ def run(args: argparse.Namespace) -> int:
                 # ただし出自を確かめられなかったことは行に残す（summary の runtime_error_provenance_unverified）。
                 if r["provenance"] is None:
                     row_kw["reason_detail"] = ["PROVENANCE_UNVERIFIED"]
-                row = _row(rec, bank, entry, **{"class": "runtime_error", "reason": r["reason"],
+                row = _row(rec, bank, entry, profile=profile, **{"class": "runtime_error", "reason": r["reason"],
                                                 "observation": {"exit_code": r["exit_code"], "entry": entry,
                                                                 "argv": call["argv"]}, **row_kw})
             else:
-                obs = adapters.observe(bank, r["stdout_json"], entry, call["argv"], r["exit_code"], rec["raw"])
+                obs = adapters.observe(bank, r["stdout_json"], entry, call["argv"], r["exit_code"], rec["raw"],
+                                    profile=profile)
                 if obs["state"] == "unmapped":
-                    row = _row(rec, bank, entry, **{"class": "runtime_error", "reason": "UNMAPPED_RESULT_TYPE",
+                    row = _row(rec, bank, entry, profile=profile, **{"class": "runtime_error", "reason": "UNMAPPED_RESULT_TYPE",
                                                     "observation": obs, **row_kw})
                 else:
-                    row = _row(rec, bank, entry, observation=obs, **row_kw)
-                    _scored(row, score_observation(bank, rec["raw"], rec["case"], obs))
+                    row = _row(rec, bank, entry, profile=profile, observation=obs, **row_kw)
+                    _scored(row, score_observation(bank, rec["raw"], rec["case"], obs, profile))
             rows.append(row)
         strat_rows: dict[str, list[dict]] = {}
         for s in STRATEGIES:
@@ -197,12 +241,12 @@ def run(args: argparse.Namespace) -> int:
             srows = []
             for rec in kept:
                 if rec["errors"]:
-                    srows.append(_row(rec, bank, f"strategy:{s}", **{"class": "unscorable", "reason": "ITEM_INVALID",
+                    srows.append(_row(rec, bank, f"strategy:{s}", profile=profile, **{"class": "unscorable", "reason": "ITEM_INVALID",
                                                                      "reason_detail": rec["errors"]}))
                     continue
-                obs = observe_strategy(bank, s, rec["case"])
-                srows.append(_scored(_row(rec, bank, f"strategy:{s}", observation=obs),
-                                     score_observation(bank, rec["raw"], rec["case"], obs)))
+                obs = observe_strategy(bank, s, rec["case"], profile)
+                srows.append(_scored(_row(rec, bank, f"strategy:{s}", profile=profile, observation=obs),
+                                     score_observation(bank, rec["raw"], rec["case"], obs, profile)))
             strat_rows[s] = srows
     except InvalidRun as e:
         if rows:
@@ -222,6 +266,7 @@ def run(args: argparse.Namespace) -> int:
         sess.close()  # 一時ディレクトリは異常終了でも残さない（close は何度呼んでもよい）
     meta = {
         "bank": bank,
+        "profile": profile,
         "entry": entry,
         "entry_note": "既定: README が最初に案内する vera CLI のうち、そのバンクの入力を受け取り型つきの結果を返す最初のサブコマンド",
         "python": args.python,
@@ -243,13 +288,17 @@ def run(args: argparse.Namespace) -> int:
         "quarantine": quarantine,
         "timing": timing,
     }
+    if profile == "v2":
+        from .v2.b3_approx import fugashi_version
+        meta.update(_inputs_meta(args, frames))
+        meta["fugashi"] = fugashi_version()
     sess.close()
     write_jsonl(out / "results.jsonl", rows)
     for s, srows in strat_rows.items():
         write_jsonl(out / "baselines" / s / "results.jsonl", srows)
     (out / "run_meta.json").write_text(json.dumps(meta, ensure_ascii=False, sort_keys=True, indent=1) + "\n",
                                        encoding="utf-8")
-    summary = build_summary(bank, rows, strat_rows, quarantine)
+    summary = build_summary(bank, rows, strat_rows, quarantine, profile)
     (out / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, sort_keys=True, indent=1) + "\n",
                                       encoding="utf-8")
     (out / "summary.md").write_text(render_md(summary) + "\n", encoding="utf-8")

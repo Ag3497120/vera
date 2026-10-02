@@ -1,0 +1,71 @@
+{
+ "bank": "B3",
+ "bank_files_hashed": 54,
+ "bank_files_unchanged": true,
+ "child_loaded_verantyx": false,
+ "designer_script": "baseline_check.py",
+ "n_items": 137,
+ "note": "mismatches.jsonl に不一致の 1 件ずつ（id・probe・こちらの分類・設計者の判定・設計者の理由の最初の語）",
+ "probes": {
+  "reference/b3_lenient": {
+   "agree": 137,
+   "by_strategy": {},
+   "disagree": 0,
+   "n": 137
+  },
+  "reference/b3_upper": {
+   "agree": 137,
+   "by_strategy": {},
+   "disagree": 0,
+   "n": 137
+  },
+  "strategies/b3_lenient": {
+   "agree": 548,
+   "by_strategy": {
+    "strategy:always_abstain": {
+     "disagree": 0,
+     "n": 137
+    },
+    "strategy:echo_documents": {
+     "disagree": 0,
+     "n": 137
+    },
+    "strategy:echo_input": {
+     "disagree": 0,
+     "n": 137
+    },
+    "strategy:empty": {
+     "disagree": 0,
+     "n": 137
+    }
+   },
+   "disagree": 0,
+   "n": 548
+  },
+  "strategies/b3_upper": {
+   "agree": 547,
+   "by_strategy": {
+    "strategy:always_abstain": {
+     "disagree": 0,
+     "n": 137
+    },
+    "strategy:echo_documents": {
+     "disagree": 1,
+     "n": 137
+    },
+    "strategy:echo_input": {
+     "disagree": 0,
+     "n": 137
+    },
+    "strategy:empty": {
+     "disagree": 0,
+     "n": 137
+    }
+   },
+   "disagree": 1,
+   "n": 548
+  }
+ },
+ "profile": "v2",
+ "skipped": {}
+}
