@@ -81,7 +81,7 @@ def _naive_early_result(view: _View, term: object, budget: object):
                     for word in raw.split() if word}
     projected_work = (len(view.clauses)
                        + sum(len(clause.roles) for clause in view.clauses)
-                       + len(source_words) + 1)
+                       + len(source_words))
     if projected_work > budget:
         return ("BUDGET_REFUSAL",
                 "the View projection exceeds the non-negative integer work budget")
@@ -135,13 +135,9 @@ def test_predicate_is_known_before_projection_budget_is_checked() -> None:
     _assert_matches_reference(view, "met", 1)
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason="DEFECT: a source word does not trigger the documented work-budget refusal",
-)
 def test_source_word_counts_toward_projection_budget() -> None:
-    view = _view({"s": "alpha"})
-    # One source word plus the queried term requires two units of work.
+    view = _view({"s": "alpha beta"})
+    # Two distinct source words exceed a budget of one.
     _assert_matches_reference(view, "unseen", 1)
 
 

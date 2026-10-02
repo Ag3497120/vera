@@ -192,10 +192,6 @@ def test_repeated_empty_reads_do_not_retain_unbounded_memory():
     assert current < 1_000_000
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason="DEFECT: the work budget counts one extra item beyond the documented projection",
-)
 def test_exact_projection_budget_is_not_refused():
     # The projection contains one source clause, no role terms, and no source words.
     # The documented budget covers those projected items, so a budget of one fits.

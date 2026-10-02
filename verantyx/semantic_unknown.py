@@ -267,7 +267,7 @@ def unknown_candidates(
         corpora.append((source, view.sources[source]))
     work = (len(view.clauses)
             + sum(len(clause.roles) for clause in view.clauses)
-            + len(source_counts) + 1)
+            + len(source_counts))
     if work > budget:
         return _budget_refusal(term)
 
