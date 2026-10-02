@@ -91,6 +91,7 @@ _ORDER_CUES = re.compile(
 )
 _CONFIRM_CUES = re.compile(
     r"\b(may i|can i|could i|should i|is it (?:okay|acceptable)|do i have permission)\b|"
+    r"\bwould\b.{0,120}\b(?:okay|acceptable)\b|"
     r"してよい|してもよい|してもいい|して(?:も)?大丈夫|許可(?:され|が)|実行可能",
     re.I,
 )
@@ -169,6 +170,14 @@ _PROTECTED_PATTERNS = (
     ("credential entry", _CREDENTIAL_ACTION),
     ("sealed or held-out data", _SEALED_ACTION),
 )
+# A recipient with an explicit public/external scope is an outward transfer
+# target, regardless of which communication verb occupies the action slot.
+# This is a case-frame check (destination + scope), not an action-word list.
+_OUTWARD_RECIPIENT = re.compile(
+    r"\b(?:to|onto|via)\s+(?:(?:an?|the)\s+)?"
+    r"(?:external|public|outside|third[ -]party)\b",
+    re.I,
+)
 _ALLOW_WORDS = frozenset(("yes", "allow", "allowed", "approve", "approved", "in scope", "true", "許可", "可", "対象内", "範囲内"))
 _DENY_WORDS = frozenset(("no", "deny", "denied", "disallow", "forbidden", "out of scope", "false", "不許可", "不可", "対象外", "範囲外"))
 
@@ -179,6 +188,69 @@ def _term_key(value: str) -> str:
 
 def _text_key(value: str) -> str:
     return _term_key(value)
+
+
+_POLICY_TOKEN = re.compile(r"[a-z0-9]+|[\u3040-\u30ff\u3400-\u9fff]+", re.I)
+_POLICY_BOUNDARY = re.compile(r"[.!?。！？\r\n]+")
+_POLICY_NEGATION = re.compile(
+    r"^(?:not|never|no|cannot|can't|won't|don't|doesn't|didn't|isn't|aren't|"
+    r"shouldn't|wouldn't|couldn't|ない|ません|ず)$",
+    re.I,
+)
+
+
+def _policy_token_clauses(value: str) -> list[list[str]]:
+    normalized = _text_key(value)
+    return [tokens for piece in _POLICY_BOUNDARY.split(normalized)
+            if (tokens := _POLICY_TOKEN.findall(piece))]
+
+
+def _policy_tokens(value: str) -> list[str]:
+    return [token for clause in _policy_token_clauses(value) for token in clause]
+
+
+def _same_policy_token(expected: str, actual: str, *, predicate: bool) -> bool:
+    if expected == actual:
+        return True
+    if (re.fullmatch(r"[\u3040-\u30ff\u3400-\u9fff]+", expected) and
+            actual.startswith(expected)):
+        # Japanese particles attach to noun phrases without whitespace.
+        return True
+    if not predicate:
+        return False
+    # Normalize regular English predicate inflections only. Noun arguments
+    # stay exact, so draft and drafts remain different entities.
+    if expected.endswith("e"):
+        forms = {expected[:-1] + "ing", expected + "d", expected + "s"}
+    else:
+        forms = {expected + "ing", expected + "ed", expected + "s"}
+        if expected.endswith(("s", "x", "z", "ch", "sh", "o")):
+            forms.add(expected + "es")
+    return actual in forms
+
+
+def _policy_phrase_matches(condition: str, question: str) -> bool:
+    """Match a policy condition as an ordered, bounded case-frame phrase."""
+    expected = _policy_tokens(condition)
+    question_clauses = _policy_token_clauses(question)
+    if not expected:
+        return False
+    expected_negative = any(_POLICY_NEGATION.fullmatch(token) for token in expected)
+    width = len(expected)
+    for actual in question_clauses:
+        for start in range(len(actual) - width + 1):
+            if not all(_same_policy_token(word, actual[start + offset], predicate=(offset == 0))
+                       for offset, word in enumerate(expected)):
+                continue
+            # Include a negator near the predicate, or between a broad modal
+            # condition and its action, in the local polarity frame.
+            frame_start = max(0, start - 3)
+            frame_end = min(len(actual), start + width + 4)
+            actual_negative = any(_POLICY_NEGATION.fullmatch(token)
+                                  for token in actual[frame_start:frame_end])
+            if expected_negative == actual_negative:
+                return True
+    return False
 
 
 def _unique(ids: list[str] | tuple[str, ...]) -> tuple[str, ...]:
@@ -421,7 +493,7 @@ class ProjectFrame:
                          _term_key(record["slots"]["target"]) in conflict_keys)]
             return self._escalate("ORDER", "multiple active TASK records share a task identity", "TASK supersession",
                                   [record["id"] for record in conflicted] + edge_ids)
-        tasks = {r["slots"]["subject"]: r for r in active if r["kind"] == "TASK"}
+        tasks = {_term_key(r["slots"]["subject"]): r for r in active if r["kind"] == "TASK"}
         edges = []
         missing_reason = []
         for edge in active:
@@ -431,8 +503,8 @@ class ProjectFrame:
             reason = self._active_record(witness.get("reason_record_id", ""))
             if reason is None or reason.get("kind") not in {"DECISION", "INVARIANT"} or not self._authority_unconflicted(reason):
                 continue
-            before = edge["slots"]["subject"]
-            after = edge["slots"]["target"]
+            before = _term_key(edge["slots"]["subject"])
+            after = _term_key(edge["slots"]["target"])
             task = tasks.get(before)
             if task is None:
                 missing_reason.append(edge["id"])
@@ -454,7 +526,8 @@ class ProjectFrame:
             ids.extend(item[2]["id"] for item in chosen)
             ids.extend(item[3]["id"] for item in chosen)
             ids.extend(item[4]["id"] for item in chosen)
-            return Reply("ANSWER", target, _unique(ids), "the active ORDER and TASK records identify one ready successor")
+            canonical_target = chosen[0][3]["slots"]["subject"]
+            return Reply("ANSWER", canonical_target, _unique(ids), "the active ORDER and TASK records identify one ready successor")
         if len(targets) > 1:
             return self._escalate("ORDER", "more than one successor is ready; ties abstain", "ORDER priority", 
                                   [entry[1]["id"] for entry in edges] + [entry[4]["id"] for entry in edges])
@@ -691,13 +764,13 @@ class ProjectFrame:
             return False
         if acceptance_spec.get("independent"):
             return (bool(witness.get("independent")) and not str(verifier_id).startswith("human:") and
-                    witness.get("template_id") == "acceptance_independent_v1")
+                    witness.get("template_id") == "acceptance_independent_v1" and
+                    isinstance(witness.get("evidence_ref"), str) and bool(witness["evidence_ref"].strip()))
         if acceptance_spec.get("human_judged"):
             return bool(witness.get("human_judged")) and str(verifier_id).startswith("human:")
         return False
 
     def _matching_policy(self, text: str, question_kind: str) -> Optional[dict] | Reply:
-        query = _text_key(text)
         active = {r["id"]: r for r in self._active()}
         hits = []
         for record in active.values():
@@ -713,7 +786,7 @@ class ProjectFrame:
                 continue
             condition = str(witness.get("condition", record["slots"]["subject"]))
             key = _text_key(condition)
-            if not key or key not in query:
+            if not key or not _policy_phrase_matches(condition, text):
                 continue
             hits.append((len(key), record, authority))
         if not hits:
@@ -817,10 +890,12 @@ class ProjectFrame:
         return str(result["choice"]), (alias_record["id"],)
 
     def _protected_action(self, *parts: Any) -> Optional[str]:
-        text = " ".join(str(part) for part in parts if part is not None)
+        text = _text_key(" ".join(str(part) for part in parts if part is not None))
         for label, pattern in _PROTECTED_PATTERNS:
             if pattern.search(text):
                 return label
+        if _OUTWARD_RECIPIENT.search(text):
+            return "outward sharing"
         return None
 
     def _authority_record_ids(self) -> list[str]:
