@@ -8,13 +8,33 @@ from __future__ import annotations
 
 import json
 from collections.abc import Iterable, Mapping
-from typing import Any, Callable, Literal, Optional
+from copy import deepcopy
+import re
+from typing import Any, Literal, Optional, Protocol
 
-from .memory_frame import Resolver
+from .memory_frame import CodexAsker, Resolver
 from .semantic_unknown import UnknownReport
 
 
 Decision = Literal["ADOPT", "NONE", "UNRESOLVED"]
+_MODEL_SOURCE = re.compile(r"\b(?:codex|gpt|llm|model|openai|claude|gemini)\b", re.I)
+
+
+class NonLLMAsker(Protocol):
+    """A closed-choice asker that declares its non-LLM source."""
+
+    source: str
+
+    def __call__(self, prompt: str) -> str: ...
+
+
+def _asker_source(asker: Any) -> str:
+    source = getattr(asker, "source", None)
+    if (isinstance(asker, CodexAsker) or not callable(asker)
+            or not isinstance(source, str) or not source.strip()
+            or _MODEL_SOURCE.search(source)):
+        raise TypeError("asker must be a callable non-LLM asker with a declared source")
+    return source.strip()
 
 
 def _get(value: Any, name: str, default: Any = None) -> Any:
@@ -89,11 +109,22 @@ class SemanticUnknownChoice:
     rejects an earlier adopted alias. All asks still go through Resolver.
     """
 
-    def __init__(self, asker: Callable[[str], str], seed: int = 7):
+    def __init__(self, asker: NonLLMAsker, seed: int = 7):
+        _asker_source(asker)
         self.resolver = Resolver(asker, seed=seed)
-        self.aliases: dict[tuple[str, tuple[str, ...]], dict[str, Any]] = {}
-        self.alias_history: list[dict[str, Any]] = []
+        self._aliases: dict[tuple[str, tuple[str, ...]], dict[str, Any]] = {}
+        self._alias_history: list[dict[str, Any]] = []
         self._next_id = 1
+
+    @property
+    def aliases(self) -> dict[tuple[str, tuple[str, ...]], dict[str, Any]]:
+        """Return a snapshot so callers cannot mutate the active cache."""
+        return deepcopy(self._aliases)
+
+    @property
+    def alias_history(self) -> list[dict[str, Any]]:
+        """Return a snapshot so callers cannot mutate stored testimony."""
+        return deepcopy(self._alias_history)
 
     @staticmethod
     def _options(report: Any, frame_vocabulary: Iterable[Any]) -> tuple[list[str], dict[str, list[str]]]:
@@ -128,7 +159,9 @@ class SemanticUnknownChoice:
         """Re-ask after an adopted alias was judged wrong, linking its replacement."""
         frame_terms = _as_terms(frame_vocabulary)
         options, _ = self._options(report, frame_terms)
-        old = self.aliases.pop(self._key(report, options), None)
+        if _get(report, "status") != "CANDIDATES" or not options:
+            return self._choose(report, frame_terms, supersedes=None, force=True)
+        old = self._aliases.pop(self._key(report, options), None)
         return self._choose(report, frame_terms, supersedes=old, force=True)
 
     def _choose(self, report: UnknownReport, frame_vocabulary: Iterable[str], *,
@@ -137,11 +170,6 @@ class SemanticUnknownChoice:
         evidence = _evidence(report)
         key = self._key(report, options)
 
-        if not force and key in self.aliases:
-            record = self.aliases[key]
-            return {"decision": "ADOPT", "option": record["choice"],
-                    "alias_record": record, "evidence": evidence}
-
         if _get(report, "status") != "CANDIDATES":
             return {"decision": "NONE", "option": None,
                     "alias_record": None, "evidence": evidence}
@@ -149,11 +177,22 @@ class SemanticUnknownChoice:
             return {"decision": "NONE", "option": None,
                     "alias_record": None, "evidence": evidence}
 
+        if not force and key in self._aliases:
+            record = self._aliases[key]
+            choice = record.get("choice")
+            if (record.get("status") == "ADOPT" and isinstance(choice, str)
+                    and choice in options):
+                return {"decision": "ADOPT", "option": choice,
+                        "alias_record": deepcopy(record), "evidence": evidence}
+            # A corrupted or obsolete cache entry cannot widen the closed list.
+            self._aliases.pop(key, None)
+
         # JSON strings keep untrusted line breaks and delimiters inside one
         # displayed list item. Source spans and candidate reasons are omitted.
         shown = [json.dumps({"term": term, "from": origins[term]}, ensure_ascii=False,
                             sort_keys=True) for term in options]
         query = json.dumps(_get(report, "term", ""), ensure_ascii=False)
+        source = _asker_source(self.resolver.asker)
         result = self.resolver.resolve(
             query, shown,
             "Choose only among these constructed terms and question-frame terms.",
@@ -177,20 +216,20 @@ class SemanticUnknownChoice:
             "choice": option,
             "status": decision,
             "asks": _plain(result.get("asks", [])),
-            "by": "llm-closed-choice",
+            "by": source,
             "support": "testimony",
             "supersedes": supersedes.get("id") if supersedes else None,
         }
         self._next_id += 1
-        self.alias_history.append(record)
+        self._alias_history.append(deepcopy(record))
         if decision == "ADOPT":
-            self.aliases[key] = record
+            self._aliases[key] = deepcopy(record)
 
         return {"decision": decision, "option": option,
-                "alias_record": record, "evidence": evidence}
+                "alias_record": deepcopy(record), "evidence": evidence}
 
 
 def choose_unknown(report: UnknownReport, frame_vocabulary: Iterable[str],
-                   asker: Callable[[str], str], *, seed: int = 7) -> dict[str, Any]:
+                   asker: NonLLMAsker, *, seed: int = 7) -> dict[str, Any]:
     """One-shot convenience wrapper; use SemanticUnknownChoice to reuse aliases."""
     return SemanticUnknownChoice(asker, seed=seed).choose(report, frame_vocabulary)

@@ -4,6 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from verantyx.memory_frame import CodexAsker
 from verantyx.semantic_unknown import UnknownCandidate, UnknownReport
 from verantyx.semantic_unknown_choice import SemanticUnknownChoice, choose_unknown
 
@@ -34,6 +35,7 @@ class AccuracyAsker:
     def __init__(self, target="router", accuracy=1.0):
         self.target = target
         self.accuracy = accuracy
+        self.source = "deterministic-test"
         self.calls = 0
         self.prompts = []
 
@@ -57,6 +59,7 @@ class AccuracyAsker:
 class FixedAsker:
     def __init__(self, replies):
         self.replies = list(replies)
+        self.source = "scripted-test"
         self.prompts = []
 
     def __call__(self, prompt):
@@ -84,6 +87,17 @@ def test_one_shot_helper_uses_injected_asker():
     result = choose_unknown(make_report(), ["switch"], asker)
     assert result["decision"] == "ADOPT"
     assert asker.calls == 2
+
+
+def test_model_backed_asker_is_rejected():
+    with pytest.raises(TypeError, match="non-LLM"):
+        SemanticUnknownChoice(CodexAsker())
+
+
+def test_alias_record_names_the_injected_non_llm_source():
+    flow = SemanticUnknownChoice(FixedAsker(['{"choice": 0}', '{"choice": 0}']))
+    result = flow.choose(make_report(units=("router",)), [])
+    assert result["alias_record"]["by"] == "scripted-test"
 
 
 @pytest.mark.parametrize("accuracy, expected", [(1.0, "ADOPT"), (0.8, "ADOPT"), (0.5, "UNRESOLVED")])
@@ -200,7 +214,46 @@ def test_adopted_alias_is_reused_without_another_ask():
     first = flow.choose(report, ["switch"])
     second = flow.choose(report, ["switch"])
     assert second["option"] == first["option"]
-    assert second["alias_record"] is first["alias_record"]
+    assert second["alias_record"] == first["alias_record"]
+    assert second["alias_record"] is not first["alias_record"]
+    assert len(asker.prompts) == 2
+
+
+def test_returned_alias_mutation_cannot_poison_cached_choice():
+    flow, asker = chooser()
+    report = make_report()
+    first = flow.choose(report, ["switch"])
+    first["alias_record"]["choice"] = "invented-term"
+    first["alias_record"]["asks"].clear()
+    second = flow.choose(report, ["switch"])
+    assert second["decision"] == "ADOPT"
+    assert second["option"] == "router"
+    assert second["alias_record"]["choice"] == "router"
+    assert len(second["alias_record"]["asks"]) == 2
+    assert len(asker.prompts) == 2
+
+
+def test_corrupt_cached_choice_is_rejected_and_reasked():
+    flow, asker = chooser()
+    report = make_report()
+    flow.choose(report, ["switch"])
+    key = (report.term, tuple(sorted(["router", "red", "switch"])))
+    flow._aliases[key]["choice"] = "invented-term"
+    result = flow.choose(report, ["switch"])
+    assert result["decision"] == "ADOPT"
+    assert result["option"] == "router"
+    assert len(asker.prompts) == 4
+
+
+def test_refusal_status_cannot_reuse_eligible_report_alias():
+    flow, asker = chooser()
+    report = make_report()
+    flow.choose(report, ["switch"])
+    refusal = UnknownReport("BUDGET_REFUSAL", report.term, report.candidates)
+    result = flow.choose(refusal, ["switch"])
+    assert result["decision"] == "NONE"
+    assert result["option"] is None
+    assert result["alias_record"] is None
     assert len(asker.prompts) == 2
 
 
@@ -240,7 +293,8 @@ def test_superseded_alias_is_not_reused():
     replacement = flow.supersede_alias(report, ["switch"])
     count = len(asker.prompts)
     reused = flow.choose(report, ["switch"])
-    assert reused["alias_record"] is replacement["alias_record"]
+    assert reused["alias_record"] == replacement["alias_record"]
+    assert reused["alias_record"] is not replacement["alias_record"]
     assert len(asker.prompts) == count
 
 
