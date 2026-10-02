@@ -4,10 +4,9 @@ from __future__ import annotations
 import json
 import os
 import re
-import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Mapping, Optional, Protocol, Sequence, TypeAlias
+from typing import Any, Mapping, Optional, Protocol, Sequence, TypeAlias
 
 from .conductor import AgentQuestion, ProjectFrame
 
@@ -46,18 +45,6 @@ class AgentAdapter(Protocol):
     def start(self, brief: str) -> Any: ...
 
     def poll(self, handle: Any) -> list[AgentEvent]: ...
-
-    def send(self, handle: Any, text: str) -> None: ...
-
-    def stop(self, handle: Any) -> None: ...
-
-
-class Runner(Protocol):
-    """Injected transport; ``poll`` returns new text, or None after exit."""
-
-    def start(self, command: Sequence[str]) -> Any: ...
-
-    def poll(self, handle: Any) -> str | bytes | None: ...
 
     def send(self, handle: Any, text: str) -> None: ...
 
@@ -316,44 +303,25 @@ def compile_frame_brief(frame: ProjectFrame, *, project_root: str | os.PathLike[
     return brief
 
 
-@dataclass(eq=False)
-class _CodexHandle:
-    runner_handle: Any
-    started_at: float
-    pending: str = ""
-    output_chars: int = 0
-    event_count: int = 0
-    closed: bool = False
-    stop_called: bool = False
-
-
 class CodexExecAdapter:
-    """Build a Codex command and delegate all process work to an injected runner."""
+    """Tooling-only command builder; it cannot start or control an agent process."""
 
     def __init__(
         self,
-        runner: Optional[Runner] = None,
         *,
         executable: str = "codex",
         model: str = "gpt-6-luna",
-        sandbox: str = "workspace-write",
+        sandbox: str = "read-only",
         project_dir: str | os.PathLike[str] | None = None,
-        timeout_seconds: float = 300.0,
-        clock: Callable[[], float] = time.monotonic,
     ):
         if model != "gpt-6-luna":
             raise ValueError("CodexExecAdapter is fixed to model gpt-6-luna")
-        if sandbox not in {"read-only", "workspace-write"}:
-            raise ValueError("unsupported sandbox mode")
-        if not isinstance(timeout_seconds, (int, float)) or timeout_seconds <= 0:
-            raise ValueError("timeout_seconds must be positive")
-        self.runner = runner
+        if sandbox != "read-only":
+            raise ValueError("Codex command tooling only supports the read-only sandbox")
         self.executable = executable
         self.model = model
         self.sandbox = sandbox
         self.project_dir = os.path.abspath(os.fspath(project_dir) if project_dir is not None else os.getcwd())
-        self.timeout_seconds = float(timeout_seconds)
-        self.clock = clock
 
     def build_command(self, brief: str) -> list[str]:
         if not isinstance(brief, str) or len(brief) > MAX_BRIEF_CHARS:
@@ -373,101 +341,6 @@ class CodexExecAdapter:
             "--",
             brief,
         ]
-
-    def start(self, brief: str) -> _CodexHandle:
-        if self.runner is None:
-            raise RuntimeError("CodexExecAdapter requires an injected runner")
-        command = self.build_command(brief)
-        runner_handle = self.runner.start(command)
-        return _CodexHandle(runner_handle, self.clock())
-
-    def _stop_runner(self, handle: _CodexHandle) -> None:
-        if not handle.stop_called and self.runner is not None:
-            self.runner.stop(handle.runner_handle)
-            handle.stop_called = True
-
-    def poll(self, handle: Any) -> list[AgentEvent]:
-        if not isinstance(handle, _CodexHandle):
-            raise TypeError("handle was not created by this adapter")
-        if handle.closed:
-            return []
-        if self.runner is None:
-            raise RuntimeError("CodexExecAdapter requires an injected runner")
-        if self.clock() - handle.started_at >= self.timeout_seconds:
-            handle.closed = True
-            try:
-                self._stop_runner(handle)
-            finally:
-                return [_error("agent execution timed out")]
-
-        chunk = self.runner.poll(handle.runner_handle)
-        finished = chunk is None
-        if chunk is None:
-            raw = ""
-        elif isinstance(chunk, bytes):
-            raw = chunk.decode("utf-8", "replace")
-        elif isinstance(chunk, str):
-            raw = chunk
-        else:
-            handle.closed = True
-            self._stop_runner(handle)
-            return [_error("runner returned a non-text output chunk")]
-
-        room = MAX_OUTPUT_CHARS - handle.output_chars
-        exceeded = len(raw) > room
-        raw = raw[:max(0, room)]
-        handle.output_chars += len(raw)
-        handle.pending += raw
-        if exceeded:
-            handle.closed = True
-            self._stop_runner(handle)
-            events = self._parse_chunk(handle, final=True)
-            if len(events) < MAX_EVENTS:
-                events.append(_error("agent output exceeded the total size limit"))
-            return events
-
-        events = self._parse_chunk(handle, final=finished)
-        if finished:
-            handle.closed = True
-        handle.event_count += len(events)
-        if handle.event_count > MAX_EVENTS:
-            handle.closed = True
-            self._stop_runner(handle)
-            return events[:MAX_EVENTS] + [_error("agent output exceeded the event limit")]
-        return events
-
-    @staticmethod
-    def _parse_chunk(handle: _CodexHandle, *, final: bool) -> list[AgentEvent]:
-        lines = handle.pending.split("\n")
-        handle.pending = "" if final else lines.pop()
-        if final and lines and lines[-1] == "":
-            lines.pop()
-        events: list[AgentEvent] = []
-        for line in lines:
-            event = _parse_line(line.rstrip("\r"), max_line_chars=MAX_LINE_CHARS)
-            if event is not None:
-                events.append(event)
-        if len(events) > MAX_EVENTS:
-            return events[:MAX_EVENTS] + [_error("agent output exceeded the event limit")]
-        return events
-
-    def send(self, handle: Any, text: str) -> None:
-        if not isinstance(handle, _CodexHandle):
-            raise TypeError("handle was not created by this adapter")
-        if handle.closed:
-            raise RuntimeError("agent handle is closed")
-        if self.runner is None:
-            raise RuntimeError("CodexExecAdapter requires an injected runner")
-        if not isinstance(text, str) or len(text) > MAX_LINE_CHARS:
-            raise ValueError("message must be bounded text")
-        self.runner.send(handle.runner_handle, text)
-
-    def stop(self, handle: Any) -> None:
-        if not isinstance(handle, _CodexHandle):
-            raise TypeError("handle was not created by this adapter")
-        if self.runner is not None:
-            self._stop_runner(handle)
-        handle.closed = True
 
 
 @dataclass(eq=False)
@@ -529,7 +402,6 @@ __all__ = [
     "CodexExecAdapter",
     "FakeAdapter",
     "FakeHandle",
-    "Runner",
     "compile_frame_brief",
     "parse_agent_output",
     "to_conductor_question",

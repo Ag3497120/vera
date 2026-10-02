@@ -38,14 +38,6 @@ class ScriptRunner:
         self.stopped.append(handle)
 
 
-class FakeClock:
-    def __init__(self):
-        self.value = 0.0
-
-    def __call__(self):
-        return self.value
-
-
 def test_command_uses_codex_exec():
     command = CodexExecAdapter().build_command("brief")
     assert command[:2] == ["codex", "exec"]
@@ -64,9 +56,14 @@ def test_command_pins_standard_tier():
     assert 'service_tier="standard"' in CodexExecAdapter().build_command("brief")
 
 
-def test_command_uses_workspace_write_sandbox():
+def test_command_defaults_to_read_only_sandbox():
     command = CodexExecAdapter().build_command("brief")
-    assert command[command.index("-s") + 1] == "workspace-write"
+    assert command[command.index("-s") + 1] == "read-only"
+
+
+def test_command_rejects_writable_sandbox():
+    with pytest.raises(ValueError, match="read-only"):
+        CodexExecAdapter(sandbox="workspace-write")
 
 
 def test_command_sets_project_directory(tmp_path):
@@ -97,19 +94,14 @@ def test_command_rejects_unbounded_brief():
         CodexExecAdapter().build_command("x" * 40000)
 
 
-def test_start_requires_injected_runner():
+def test_codex_tooling_builder_has_no_live_agent_lifecycle():
     adapter = CodexExecAdapter()
-    assert "exec" in adapter.build_command("brief")
-    with pytest.raises(RuntimeError, match="injected runner"):
-        adapter.start("brief")
-
-
-def test_start_delegates_argv_to_injected_runner():
     runner = ScriptRunner()
-    adapter = CodexExecAdapter(runner)
-    handle = adapter.start("frame only")
-    assert runner.commands[0][-1] == "frame only"
-    assert handle.runner_handle is runner.started[0]
+    assert "exec" in adapter.build_command("brief")
+    assert not any(hasattr(adapter, method) for method in ("start", "poll", "send", "stop"))
+    with pytest.raises(TypeError):
+        CodexExecAdapter(runner)
+    assert runner.started == []
 
 
 def test_rejects_model_override():
@@ -240,61 +232,6 @@ def test_does_not_extract_structured_json_from_prose():
 
 def test_bytes_output_is_decoded():
     assert parse_agent_output(b'{"type":"DONE"}\n') == [{"type": "DONE"}]
-
-
-def test_runner_poll_streams_only_complete_lines():
-    runner = ScriptRunner(['{"type":"DO', 'NE"}\n'])
-    adapter = CodexExecAdapter(runner)
-    handle = adapter.start("brief")
-    assert adapter.poll(handle) == []
-    assert adapter.poll(handle) == [{"type": "DONE"}]
-
-
-def test_runner_poll_flushes_unterminated_line_at_exit():
-    runner = ScriptRunner(['{"type":"DONE"}', None])
-    adapter = CodexExecAdapter(runner)
-    handle = adapter.start("brief")
-    assert adapter.poll(handle) == []
-    assert adapter.poll(handle) == [{"type": "DONE"}]
-
-
-def test_timeout_stops_runner_and_emits_error():
-    clock = FakeClock()
-    runner = ScriptRunner()
-    adapter = CodexExecAdapter(runner, timeout_seconds=5, clock=clock)
-    handle = adapter.start("brief")
-    clock.value = 5
-    events = adapter.poll(handle)
-    assert events[0]["type"] == "ERROR"
-    assert "timed out" in events[0]["message"]
-    assert runner.stopped == [handle.runner_handle]
-
-
-def test_poll_after_timeout_is_empty():
-    clock = FakeClock()
-    adapter = CodexExecAdapter(ScriptRunner(), timeout_seconds=1, clock=clock)
-    handle = adapter.start("brief")
-    clock.value = 1
-    adapter.poll(handle)
-    assert adapter.poll(handle) == []
-
-
-def test_send_delegates_to_runner():
-    runner = ScriptRunner()
-    adapter = CodexExecAdapter(runner)
-    handle = adapter.start("brief")
-    adapter.send(handle, "continue")
-    assert runner.messages == [(handle.runner_handle, "continue")]
-
-
-def test_stop_is_idempotent():
-    runner = ScriptRunner()
-    adapter = CodexExecAdapter(runner)
-    handle = adapter.start("brief")
-    adapter.stop(handle)
-    adapter.stop(handle)
-    assert runner.stopped == [handle.runner_handle]
-    assert adapter.poll(handle) == []
 
 
 def test_fake_adapter_returns_scripted_json_events():
