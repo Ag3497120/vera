@@ -38,13 +38,17 @@ EVIDENCE_UNREAD = 'all'
 _INSTRUCTION = 'document instruction excluded'
 
 
+def _without_whitespace(text):
+    return ''.join(ch for ch in text if not ch.isspace())
+
+
 def _grams(text):
     """Character bigrams (unigrams for one-character text) of an unread span, in their own namespace.
 
     Substring containment is complete: if an anchor occurs inside the text, every bigram of the anchor does,
     so a leaf whose unread text mentions the anchor is never missed, whatever the tokenizer did to it.
     """
-    text = ''.join(ch for ch in text if not ch.isspace())
+    text = _without_whitespace(text)
     if len(text) == 1: return {'§§' + text}
     return {'§' + text[i:i + 2] for i in range(len(text) - 1)}
 
@@ -52,7 +56,7 @@ def _grams(text):
 def _pattern_terms(pattern):
     for name, term in pattern.roles:
         if name == 'attribute': continue
-        if isinstance(term, Nominal): yield term.head
+        if isinstance(term, Nominal) and isinstance(term.head, str) and term.head: yield term.head
         elif isinstance(term, str) and term: yield term
 
 
@@ -65,6 +69,7 @@ def _guard_terms(clause):
 def _clause_terms(clause):
     for role in clause.roles:
         if isinstance(role.term, str) and role.term: yield role.term
+        elif isinstance(role.term, Nominal) and isinstance(role.term.head, str) and role.term.head: yield role.term.head
     for pattern in (*clause.conditions, *clause.exceptions):
         yield from _pattern_terms(pattern)
 
@@ -84,7 +89,7 @@ def pattern_anchors(request):
 class LeafTree:
     def __init__(self, view: View, arity: int = conduct_tree.ARITY):
         started = time.perf_counter()
-        self.view = view; self.arity = arity
+        self.view = view; self.arity = max(2, arity)
         self.by_leaf = defaultdict(list)             # source -> clauses
         crosses = {}
         for clause in view.clauses:
@@ -100,7 +105,7 @@ class LeafTree:
             for core in _grams(unread.span.text):
                 leaf.setdefault(core, {}); leaf[core]['<unread>'] = leaf[core].get('<unread>', 0) + 1
         self.leaves = crosses
-        self.root = conduct_tree.build(crosses, arity=arity) if crosses else None
+        self.root = conduct_tree.build(crosses, arity=self.arity) if crosses else None
         self.nodes = self._count(self.root)
         self.build_ms = (time.perf_counter() - started) * 1000
 
@@ -234,7 +239,10 @@ class LeafTree:
             reached |= frontier; used += 1
         clauses = tuple(c for leaf in sorted(reached) for c in self.by_leaf.get(leaf, ()))
         def keep(leaf, span):
-            return (EVIDENCE_UNREAD == 'all' and leaf in evidence) or any(t in span.span.text for t in mention)
+            compact_text = _without_whitespace(span.span.text)
+            return (EVIDENCE_UNREAD == 'all' and leaf in evidence) or any(
+                _without_whitespace(term) in compact_text for term in mention
+            )
         unread = tuple(u for leaf in sorted(reached) for u in self.unread_by_leaf.get(leaf, ()) if keep(leaf, u))
         unread += tuple(u for u in self.view.unread if u.reason == _INSTRUCTION and u.span.source in reached)
         sources = {leaf: self.view.sources[leaf] for leaf in reached if leaf in self.view.sources}
