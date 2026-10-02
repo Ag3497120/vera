@@ -27,6 +27,75 @@ class Conflict(Rejected):
     pass
 
 
+_CONSTRUCTION_PARTICLES = {
+    'capacity': ('として',), 'topic': ('について', 'では'),
+    'by': ('によって', 'による', 'により'),
+    'setting': ('における', 'において'), 'target': ('に対して',),
+    'accompaniment': ('と共に', 'ともに'),
+}
+_TIME_DATE = r'(?:[0-9０-９]+年(?:[0-9０-９]{1,2}月(?:[0-9０-９]{1,2}日)?)?|(?:明治|大正|昭和|平成|令和)[0-9０-９]+年(?:[0-9０-９]{1,2}月(?:[0-9０-９]{1,2}日)?)?)'
+_TIME_VALUE = re.compile(r'(?:' + _TIME_DATE + r'|[0-9０-９]+\s*(?:月|日|時|分|秒|曜日)|頃|ごろ|午前|午後|朝|昼|夜)\Z')
+_TIME_COMMA_VALUE = re.compile(r'(?:' + _TIME_DATE + r'|[0-9０-９]+(?:月|日|時|分|秒|曜日))\Z')
+_COMPOUND_SURFACES = tuple(sorted({surface for choices in _CONSTRUCTION_PARTICLES.values()
+                                   for surface in choices}, key=len, reverse=True))
+
+
+def _compound_predicate_indices(words, positions):
+    """Independent token scan for verbs that are parts of closed particles."""
+    indices = set()
+    for first, start in enumerate(positions):
+        for surface in _COMPOUND_SURFACES:
+            cursor = start; joined = ''; covered = []
+            for index in range(first, len(words)):
+                if positions[index] != cursor: break
+                joined += words[index].surface
+                cursor += len(words[index].surface)
+                covered.append(index)
+                if joined == surface:
+                    indices.update(covered); break
+                if not surface.startswith(joined): break
+            if any(index in indices for index in covered): break
+    return indices
+
+
+def _filter_compound_predicates(words, positions, predicates, frames=None):
+    indices = _compound_predicate_indices(words, positions)
+    filtered = [item for item in predicates if item[0] not in indices]
+    if frames is not None and len(frames) == len(predicates):
+        frames = [frame for frame, item in zip(frames, predicates) if item[0] not in indices]
+    return filtered, frames
+
+
+def _token_suffix(tagged, end, choices):
+    """Return a closed particle surface exactly tokenized at a role boundary."""
+    starts = [i for i, token in enumerate(tagged) if token[4] == end]
+    for first in starts:
+        for choice in sorted(choices, key=len, reverse=True):
+            cursor = end; pieces = []
+            for token in tagged[first:]:
+                if token[4] != cursor: break
+                pieces.append(token[0]); cursor = token[5]
+                joined = ''.join(pieces)
+                if joined == choice: return choice
+                if not choice.startswith(joined): break
+    return None
+
+
+def _time_role_licensed(role, body, tagged):
+    start, end = role.span.start - body.start, role.span.end - body.start
+    value = role.span.text
+    compact = value.replace(' ', '').replace('　', '')
+    simple = compact == '同日付' or _TIME_VALUE.fullmatch(compact)
+    if not simple: return False
+    if _token_suffix(tagged, end, ('に', 'で') if compact == '同日付' else ('に',)):
+        return phrase_bounded(tagged, start, end)
+    left = len(body.text) - len(body.text.lstrip())
+    if (start == left and _TIME_COMMA_VALUE.fullmatch(compact)
+            and _token_suffix(tagged, end, ('、', ','))):
+        return phrase_bounded(tagged, start, end)
+    return False
+
+
 def _number(q, unit):
     """Independent scaled rational arithmetic; no ambient Decimal context."""
     if not typed(q, "quantity"):
@@ -182,6 +251,10 @@ def _case_order_predicate(clause, raw, body, words, positions, event_index):
     from .frames import _predicates
     from .typed_edges import _tagger
     reordered = list(_tagger()(normalized)); predicates = _predicates(reordered)
+    repositions = []; cursor = 0
+    for word in reordered:
+        at = normalized.find(word.surface, cursor); repositions.append(at); cursor = at + len(word.surface)
+    predicates, _ = _filter_compound_predicates(reordered, repositions, predicates)
     surface = words[event_index].surface
     candidates = [predicate for i, predicate in predicates if reordered[i].surface == surface]
     return candidates[0] if len(candidates) == 1 and len(predicates) == 1 else None
@@ -403,6 +476,7 @@ def license_clause(clause, view, ranges=None):
         cursor = 0; positions = []
         for word in words:
             at = raw.find(word.surface, cursor); positions.append(at); cursor = at+len(word.surface)
+        predicates, all_frames = _filter_compound_predicates(words, positions, predicates, all_frames)
         tagged = tag(words, positions); pidx = [p0 for p0, _ in predicates]
         multi = len(all_frames) > 1
         if multi:
@@ -455,10 +529,18 @@ def license_clause(clause, view, ranges=None):
             raise Rejected('invented hedge modality')
         for role in clause.roles:
             if role.name in ('agent', 'patient', 'recipient'): continue
-            case = {'location': 'で', 'origin': 'から', 'instrument': 'で'}.get(role.name)
-            if case and not re.search(re.escape(role.span.text) + case, raw): raise Rejected("extra case role")
+            case = {'location': 'で', 'place': 'で', 'origin': 'から', 'source': 'から', 'instrument': 'で'}.get(role.name)
+            compound = _CONSTRUCTION_PARTICLES.get(role.name)
+            if role.name == 'setting':
+                end = role.span.end - body.start
+                if not _token_suffix(tagged, end, _CONSTRUCTION_PARTICLES['setting']):
+                    raise Rejected('extra compound role')
+            elif compound:
+                end = role.span.end - body.start
+                if not _token_suffix(tagged, end, compound): raise Rejected('extra compound role')
+            elif case and not re.search(re.escape(role.span.text) + case, raw): raise Rejected("extra case role")
             elif role.name == 'quantity' and not isinstance(role.term, Quantity): raise Rejected("quantity role")
-            elif role.name == 'time' and role.span.text not in raw: raise Rejected("time role")
+            elif role.name == 'time' and not _time_role_licensed(role, body, tagged): raise Rejected("time role")
             elif not case and role.name not in ('quantity', 'time'): raise Rejected("unknown event role")
         # Reconstruct coverage from raw positions and licensed role spans.
         # Do not trust a canonical reader's unsupported flag or Frame's subset.
@@ -469,7 +551,8 @@ def license_clause(clause, view, ranges=None):
             role = next((r for r in clause.roles if r.name == name), None)
             if split and role: licensed.append((role.span.start - len(split[0]), role.span.start))
         for role in clause.roles:
-            if role.name not in ('agent', 'patient', 'recipient', 'origin', 'location'): continue
+            if role.name not in ('agent', 'patient', 'recipient', 'origin', 'location',
+                                 'place', 'time', 'capacity', 'topic', 'by', 'setting', 'target', 'accompaniment'): continue
             lo_, hi_ = role.span.start - body.start, role.span.end - body.start
             if multi and lo_ < lo: continue                       # the borrowed topic agent is checked above
             for a0, b0 in licensed:
@@ -493,7 +576,19 @@ def license_clause(clause, view, ranges=None):
         if clause.time not in ('past', 'nonpast') or (clause.time == 'past') != source_past: raise Rejected("tense licensing")
     elif clause.rule == 'measure':
         _license_measure(clause, body, raw, view)
-    else: raise Rejected("unrecognized source grammar rule")
+    else:
+        from .constructions import licensor
+        construction = licensor(clause.rule)
+        if construction is None: raise Rejected('unrecognized source grammar rule')
+        source = view.sources[clause.span.source]
+        boundaries = ranges if ranges is not None else _ranges(source)
+        if (clause.span.start, clause.span.end) not in boundaries:
+            raise Rejected('construction full-clause boundary')
+        try:
+            licensed = construction.licenses(clause, source)
+        except Exception as exc:
+            raise Rejected('construction licensor failure') from exc
+        if licensed is not True: raise Rejected('construction source licensing')
     # Source metadata cannot erase an antecedent outside the body span.
     prefix = clause.span.text[:body.start - clause.span.start]
     if re.search(r'場合|なら(?!な)|たら|れば|ときは', prefix) and not clause.conditions:
@@ -520,6 +615,10 @@ def _license_guard(pattern, span):
     from .frames import canonical, read_all, _predicates
     from .typed_edges import _tagger, _base
     words = list(_tagger()(span.text)); predicates = _predicates(words)
+    positions = []; cursor = 0
+    for word in words:
+        at = span.text.find(word.surface, cursor); positions.append(at); cursor = at + len(word.surface)
+    predicates, _ = _filter_compound_predicates(words, positions, predicates)
     if any(w.feature.pos1 == '助詞' and w.surface in ('か', 'かな', 'かしら', 'かい', 'かね', 'っけ') for w in words):
         return False
     if any('意志推量' in str(w.feature.cForm) for w in words): return False
@@ -528,6 +627,10 @@ def _license_guard(pattern, span):
     past = bool(len(predicates) == 1 and any(is_past_aux(w)
                                            for w in words[predicates[0][0]+1:]))
     frames = read_all(span.text)
+    if len(frames) == len(_predicates(words)):
+        original = _predicates(words)
+        indices = _compound_predicate_indices(words, positions)
+        frames = [frame for frame, item in zip(frames, original) if item[0] not in indices]
     for frame in frames:
         roles = tuple((k, canonical(getattr(frame, k))) for k in ('agent', 'patient', 'recipient') if getattr(frame, k))
         if pattern.predicate == frame.predicate and pattern.roles == roles and pattern.polarity == ('-' if frame.negated else '+'):

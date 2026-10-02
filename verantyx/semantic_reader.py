@@ -30,7 +30,15 @@ _ROLE_WORDS = {'受取人': 'recipient', '受領者': 'recipient', '渡した人
                '作成者': 'agent', '起点': 'origin', '終点': 'recipient', '相手': 'recipient'}
 _DOUBLE_NEGATION = re.compile(r'(?:ない|なく|ぬ)(?:わけ|こと|もの)(?:では|じゃ|は|も)|なくはない|ないとは限らない')
 _NEGATIVE_ADJECTIVE = re.compile(r'(?:くない|くありません|くなかった|くありませんでした)[。！？?]*$')
-_TIME_NOMINAL = re.compile(r'(?:[0-9０-９]+\s*)?(?:年|月|日|時|分|秒|曜日|頃|ごろ|午前|午後|朝|昼|夜)$')
+_TIME_DATE = r'(?:[0-9０-９]+年(?:[0-9０-９]{1,2}月(?:[0-9０-９]{1,2}日)?)?|(?:明治|大正|昭和|平成|令和)[0-9０-９]+年(?:[0-9０-９]{1,2}月(?:[0-9０-９]{1,2}日)?)?)'
+_TIME_NOMINAL = re.compile(r'(?:' + _TIME_DATE + r'|[0-9０-９]+\s*(?:月|日|時|分|秒|曜日)|頃|ごろ|午前|午後|朝|昼|夜)\Z')
+_TIME_ADVERBIAL = re.compile(r'(' + _TIME_DATE + r'|[0-9０-９]+(?:月|日|時|分|秒|曜日))\s*[、,]')
+_COMPOUND_PARTICLES = (
+    ('における', 'setting'), ('において', 'setting'), ('について', 'topic'),
+    ('に対して', 'target'), ('では', 'topic'),
+    ('として', 'capacity'), ('と共に', 'accompaniment'), ('ともに', 'accompaniment'),
+    ('によって', 'by'), ('による', 'by'), ('により', 'by'),
+)
 _GOAL_PREDICATES = frozenset(('行く','来る','帰る','戻る','向かう','着く','入る','出る','進む','移る','渡る','送る','届ける'))
 _LOCATION_PREDICATES = frozenset(('住む','滞在する','位置する','存在する'))
 _MEANS_NOMINALS = frozenset(('車','電車','バス','飛行機','船','自転車','徒歩','手','指','箸','包丁','ペン','鉛筆','電話','メール','日本語','英語','道具','方法','手段'))
@@ -99,12 +107,13 @@ def _case_role(particle, phrase, predicate, *, quoted=False, person=False):
     """Map only morphologically or syntactically resolved cases; label the rest."""
     compact = phrase.replace(' ', '').replace('　', '')
     if particle == 'に':
-        if _TIME_NOMINAL.search(compact): return 'time', 'case'
+        if _TIME_NOMINAL.fullmatch(compact): return 'time', 'case'
         if predicate in _GOAL_PREDICATES: return 'goal', 'case'
         if predicate in _LOCATION_PREDICATES: return 'location', 'case'
         return 'ambiguous', 'case:に:location|goal|time'
     if particle == 'で':
         head = compact.split('の')[-1]
+        if compact == '同日付': return 'time', 'case'
         if head in _PLACE_NOMINALS or any(head.endswith(x) for x in ('学校','駅','公園','会社','図書館','病院','市','町','県','国','室')):
             return 'place', 'case'
         if head in _MEANS_NOMINALS or head.endswith('語'):
@@ -115,7 +124,8 @@ def _case_role(particle, phrase, predicate, *, quoted=False, person=False):
         if person: return 'companion', 'case'
         return 'ambiguous', 'case:と:companion|quotation'
     if particle == 'から':
-        return ('time' if _TIME_NOMINAL.search(compact) else 'source'), 'case'
+        if _TIME_NOMINAL.fullmatch(compact): return 'ambiguous', 'case:から:source|time-range'
+        return 'source', 'case'
     if particle == 'まで': return 'limit', 'case'
     if particle == 'へ': return 'direction', 'case'
     return None, 'case'
@@ -132,9 +142,34 @@ def _case_roles(text, tokens, predicate_index, lower=0, existing=(), offset=0):
             existing_terms.add(str(item.term))
         elif isinstance(item, tuple) and len(item) == 2:
             existing_terms.add(str(item[1]))
+    compound_spans = []
     for ti, (word, start, end) in enumerate(tokens):
         if start < lower or ti >= predicate_index: continue
-        if word.feature.pos1 != '助詞' or word.feature.pos2 != '格助詞' or word.surface not in ('に','で','と','から','まで','へ'):
+        if any(left < start < right for left, right in compound_spans): continue
+        compound = None
+        for surface, role_name in _COMPOUND_PARTICLES:
+            cursor = start; pieces = []
+            for part, part_start, part_end in tokens[ti:predicate_index]:
+                if part_start != cursor: break
+                pieces.append(part.surface); cursor = part_end
+                joined = ''.join(pieces)
+                if joined == surface:
+                    compound = (surface, role_name, cursor); break
+                if not surface.startswith(joined): break
+            if compound: break
+        if compound:
+            surface, role_name, compound_end = compound
+            compound_spans.append((start, compound_end))
+            located = _case_phrase(text, tokens, ti, lower)
+            if located is None: continue
+            pstart, pend, phrase = located
+            if (pstart, pend) in existing_spans or phrase in existing_terms or _WH.search(phrase): continue
+            span = (pstart, pend)
+            if span in existing_spans: continue
+            roles.append((role_name, phrase, span, 'case'))
+            continue
+        if (word.feature.pos1 != '助詞' or word.feature.pos2 != '格助詞'
+                or word.surface not in ('に','で','と','から','まで','へ')):
             continue
         located = _case_phrase(text, tokens, ti, lower)
         if located is None: continue
@@ -161,6 +196,72 @@ def _case_roles(text, tokens, predicate_index, lower=0, existing=(), offset=0):
         roles.append((role, phrase, span, kind))
         if role == 'ambiguous': issues.append('ambiguous case role: '+word.surface)
     return roles, issues
+
+
+def _compound_token_indices(tokens):
+    """Indices inside an exact closed particle sequence, including tokenized し."""
+    indices = set()
+    surfaces = sorted((surface for surface, _ in _COMPOUND_PARTICLES), key=len, reverse=True)
+    for first, (_, start, _) in enumerate(tokens):
+        for surface in surfaces:
+            cursor = start; joined = ''; covered = []
+            for index in range(first, len(tokens)):
+                word, at, end = tokens[index]
+                if at != cursor: break
+                joined += word.surface; cursor = end; covered.append(index)
+                if joined == surface:
+                    indices.update(covered); break
+                if not surface.startswith(joined): break
+            if any(index in indices for index in covered): break
+    return indices
+
+
+def _time_adverbial(text, tokens, predicate_index, lower=0, existing=(), offset=0):
+    """Recognize one exact, sentence-initial numeric time adverbial before a comma."""
+    if lower or predicate_index <= 0 or any(getattr(item, 'name', None) == 'time' for item in existing):
+        return None
+    match = _TIME_ADVERBIAL.match(text)
+    if not match: return None
+    start, end = match.span(1); cursor = start; pieces = []
+    for word, at, right in tokens:
+        if right <= start: continue
+        if at != cursor or right > end: return None
+        pieces.append(word.surface); cursor = right
+        if cursor == end: break
+    if cursor != end or ''.join(pieces) != match[1]: return None
+    return ('time', match[1], (start, end), 'adverbial')
+
+
+def _unresolved_complex(text, roles, offset):
+    """Keep scope markers ambiguous unless an exact date is already role-bound."""
+    found = False
+    for match in _COMPLEX.finditer(text):
+        found = True
+        if not re.fullmatch(r'[0-9]+[年月日時]', match[0]): return True
+        before = text[max(0, match.start() - 24):match.start()]
+        after = text[match.end():match.end() + 12]
+        if re.search(r'[0-9０-９]+(?:年|月|日)?\s*[-‐‑‒–—〜～]\s*$', before): return True
+        if re.match(r'(?:以上|以下|前後|ごろ|頃|から|まで|にかけ|にわた|以降|以後|以前|時点)', after): return True
+        absolute_start, absolute_end = offset + match.start(), offset + match.end()
+        if re.match(r'\s*[-‐‑‒–—〜～]', after):
+            tail = re.match(r'\s*[-‐‑‒–—〜～]\s*[)）]', after)
+            opening = max(text.rfind('（', 0, match.start()), text.rfind('(', 0, match.start()))
+            closing = max(text.rfind('）', 0, match.start()), text.rfind(')', 0, match.start()))
+            close_end = offset + match.end() + tail.end() if tail else absolute_end
+            open_designator = bool(tail and opening > closing and any(
+                role.name == 'entity' and role.span.start <= offset + opening
+                and role.span.end >= close_end for role in roles))
+            if not open_designator: return True
+        if not any(role.span.start <= absolute_start and absolute_end <= role.span.end for role in roles):
+            return True
+    return not found
+
+
+def _without_resolved_date_guard(unknown, text, roles, offset, preserve=False):
+    reason = 'unsupported source quantifier/exception/time'
+    if reason in unknown and not preserve and not _unresolved_complex(text, roles, offset):
+        return [item for item in unknown if item != reason]
+    return list(unknown)
 
 
 def attribute(text):
@@ -207,11 +308,12 @@ def _piece(source, raw, start, end, sovereign, family):
         if not numeric_value:
             return [], [Unread(full, 'uninterpreted colon scope')]
     while left < right and raw[left] in ' 、,': left += 1
-    condition = []; guard_spans = []; unknown = []
+    condition = []; guard_spans = []; unknown = []; complex_guard = False
     text = raw[left:right]
     if _COMPLEX.search(text): unknown.append('unsupported source quantifier/exception/time')
     cm = COND.match(text)
     if cm and cm.group(1).strip():
+        complex_guard = bool(_COMPLEX.search(text[:cm.end()]))
         guard = _span(source, raw, left, left + len(cm.group(1)))
         gc, gu = _piece(source, raw, guard.start, guard.end, sovereign, family)
         if len(gc) == 1 and not gu and not gc[0].conditions and not gc[0].unsupported:
@@ -238,6 +340,12 @@ def _piece(source, raw, start, end, sovereign, family):
         if measured is not None: return measured, []
     edges = extract(text); frames = read_all(text); records = read_records(text, 'record')
     predicates = _predicates(words)
+    compound_indices = _compound_token_indices(tokens)
+    filtered = [item for item in predicates if item[0] not in compound_indices]
+    if len(frames) == len(predicates):
+        frames = [frame for frame, predicate in zip(frames, predicates)
+                  if predicate[0] not in compound_indices]
+    predicates = filtered
     result = []
     # Noun copulas (including explicit nominal fragments) are relational facts.
     m = re.fullmatch(r'\s*(.+?)[はが]\s*(.*?)[。！？?]*\s*', text)
@@ -268,7 +376,8 @@ def _piece(source, raw, start, end, sovereign, family):
         result.append(Clause(ident, Variable('event_'+ident, 'event'), 'property' if attr else 'identity',
             _span(source, raw, value_at, value_at+len(value)), tuple(roles), full, body,
             polarity=pol, modality=mod, time='past' if copula in ('ではなかった','でなかった','じゃなかった','でした','だった') else '', conditions=tuple(condition), condition_spans=tuple(guard_spans),
-            rule='copula', sovereign=sovereign, family=family, unsupported=tuple(unknown)))
+            rule='copula', sovereign=sovereign, family=family,
+            unsupported=tuple(_without_resolved_date_guard(unknown, text, roles, left, complex_guard))))
     elif frames:
         if len(frames) != len(predicates): unknown.append('predicate/frame alignment')
         tagged = tag([w for w, _, _ in tokens], [s0 for _, s0, _ in tokens])
@@ -308,6 +417,10 @@ def _piece(source, raw, start, end, sovereign, family):
                     roles.append(Role(role, canonical(value), _span(source, raw, left+at, left+at+len(value)), 'frame'))
             # Case adjuncts stay attached to this predicate and retain their exact source span.
             case_roles, case_issues = _case_roles(text, tokens, ev, chunk_start, roles, left)
+            if index == 0:
+                adverbial = _time_adverbial(text, tokens, ev, chunk_start, roles, left)
+                if adverbial:
+                    case_roles.append(adverbial)
             issues.extend(case_issues)
             for role, term, (at, end_at), kind in case_roles:
                 roles.append(Role(role, term, _span(source, raw, left+at, left+end_at), kind))
@@ -320,7 +433,7 @@ def _piece(source, raw, start, end, sovereign, family):
                 own_tokens = tokens[own_first:own_last + 1]
             if _uncovered_nominals(own_tokens, covered): issues.append('unrepresented source content')
             for r in roles:
-                if r.name not in ('agent','patient','recipient','origin','source','location','goal','time','place','means','companion','quotation','limit','direction','ambiguous'): continue
+                if r.name not in ('agent','patient','recipient','origin','source','location','goal','time','place','means','companion','accompaniment','quotation','limit','direction','ambiguous','setting','topic','target','capacity','by'): continue
                 lo_, hi_ = r.span.start - left, r.span.end - left
                 for d0, d1 in descriptors:
                     if d1 == lo_: lo_ = d0
@@ -336,6 +449,7 @@ def _piece(source, raw, start, end, sovereign, family):
             if before.count('「')>before.count('」'): mod = 'quote'
             pol = '-' if frame.negated and mod not in ('prohibition','obligation') else '+'
             ident = hashlib.sha256(f'{source}:{start}:{end}:{index}'.encode()).hexdigest()[:24]
+            issues = _without_resolved_date_guard(issues, text, roles, left, complex_guard)
             result.append(Clause(ident, Variable('event_'+ident,'event'),frame.predicate,
                 _span(source,raw,left+pstart,left+pend),tuple(roles),full,body,polarity=pol,
                 modality=mod,time=_event_time(words,ev),conditions=tuple(condition),
@@ -344,6 +458,138 @@ def _piece(source, raw, start, end, sovereign, family):
     if not result:
         return [], [Unread(full,'unsupported clause grammar')]
     return result, []
+
+
+def _construction_signature(reading):
+    return tuple(sorted((
+        clause.rule, clause.predicate,
+        (clause.predicate_span.start, clause.predicate_span.end, clause.predicate_span.text),
+        tuple((role.name, repr(role.term), role.span.start, role.span.end, role.rule)
+              for role in clause.roles),
+        clause.polarity, clause.modality, clause.time,
+        tuple((pattern.predicate, repr(pattern.roles), pattern.polarity,
+               pattern.modality, pattern.time) for pattern in clause.conditions),
+    ) for clause in reading.clauses))
+
+
+def _refines(first, second, registry):
+    todo = list(first.refines); seen = set()
+    while todo:
+        name = todo.pop()
+        if name == second.name: return True
+        if name in seen: continue
+        seen.add(name)
+        target = registry.get(name)
+        if target: todo.extend(target.refines)
+    return False
+
+
+def _read_constructions(source, raw, start, end, prior_clauses):
+    from .constructions import ConstructionContext, Reading, TokenSpan, TypedNote, enabled
+    sentence = raw[start:end]
+    sentence_span = _span(source, raw, start, end)
+    token_spans = tuple(TokenSpan(word, left, right) for word, left, right in _tokens(sentence))
+    constructors = enabled()
+    if len(token_spans) > 256 or len(constructors) > 64: return [], []
+    context = ConstructionContext(sentence, sentence_span, token_spans, source,
+                                  tuple(prior_clauses))
+    results = []
+    for construction in constructors:
+        try:
+            reading = construction.reads(context)
+        except Exception:
+            continue
+        if reading is None: continue
+        if (not isinstance(reading, Reading) or not isinstance(reading.clauses, tuple)
+                or not isinstance(reading.consumed_spans, tuple)
+                or not isinstance(reading.notes, tuple) or not reading.consumed_spans
+                or len(reading.clauses) > context.budget.max_clauses
+                or any(not isinstance(note, TypedNote) for note in reading.notes)):
+            continue
+        valid = True
+        for span in reading.consumed_spans:
+            if (not isinstance(span, Span) or span.source != source
+                    or span.start < start or span.end > end or span.start >= span.end
+                    or raw[span.start:span.end] != span.text):
+                valid = False; break
+        for note in reading.notes:
+            span = note.span
+            if span is not None and (not isinstance(span, Span) or span.source != source
+                    or span.start < start or span.end > end or span.start >= span.end
+                    or raw[span.start:span.end] != span.text):
+                valid = False; break
+        if not valid: continue
+        known_ids = {old.id for old in prior_clauses}
+        for clause in reading.clauses:
+            if not isinstance(clause, Clause):
+                valid = False; break
+            if (not isinstance(clause.id, str) or not isinstance(clause.span, Span)
+                    or clause.rule != construction.name or clause.span.source != source
+                    or clause.span.start < start
+                    or clause.span.end > end or clause.span.start >= clause.span.end
+                    or raw[clause.span.start:clause.span.end] != clause.span.text
+                    or clause.id in known_ids):
+                valid = False; break
+            if (not isinstance(clause.roles, tuple) or any(not isinstance(role, Role) for role in clause.roles)
+                    or not isinstance(clause.condition_spans, tuple)
+                    or not isinstance(clause.exception_spans, tuple)):
+                valid = False; break
+            parts = [clause.predicate_span, *(role.span for role in clause.roles),
+                     *clause.condition_spans, *clause.exception_spans]
+            if clause.body_span is not None: parts.append(clause.body_span)
+            if any(not isinstance(part, Span) or part.source != source
+                   or part.start < start or part.end > end or part.start >= part.end
+                   or raw[part.start:part.end] != part.text for part in parts):
+                valid = False; break
+            body_span = clause.body_span or clause.span
+            if (not (body_span.start <= clause.predicate_span.start
+                     and clause.predicate_span.end <= body_span.end)
+                    or any(not (body_span.start <= role.span.start < role.span.end <= body_span.end)
+                           for role in clause.roles)):
+                valid = False; break
+            if any(not any(consumed.source == part.source and consumed.start <= part.start
+                           and part.end <= consumed.end for consumed in reading.consumed_spans)
+                   for part in parts):
+                valid = False; break
+            known_ids.add(clause.id)
+        if valid:
+            cost = (len(reading.consumed_spans) + len(reading.notes)
+                    + sum(1 + len(clause.roles) + len(clause.conditions) + len(clause.exceptions)
+                          for clause in reading.clauses))
+            if cost > context.budget.max_steps: valid = False
+        if valid and reading.clauses: results.append((construction, reading))
+
+    if not results: return [], []
+    registry = {construction.name: construction for construction in constructors}
+    suppressed = set(); unresolved = []
+    signatures = [_construction_signature(reading) for _, reading in results]
+    keys = [set((span.source, span.start, span.end) for span in reading.consumed_spans)
+            for _, reading in results]
+    for i, (first, _) in enumerate(results):
+        for j in range(i + 1, len(results)):
+            if not keys[i].intersection(keys[j]) or signatures[i] == signatures[j]: continue
+            second = results[j][0]
+            first_refines = _refines(first, second, registry)
+            second_refines = _refines(second, first, registry)
+            if first_refines != second_refines:
+                suppressed.add(j if first_refines else i)
+            else:
+                unresolved.append((i, j))
+    ambiguous = set()
+    for i, j in unresolved:
+        if i not in suppressed and j not in suppressed: ambiguous.update((i, j))
+    names = sorted({results[i][0].name for i in ambiguous})
+    reason = 'ambiguous construction readings: ' + ', '.join(names)
+    clauses = []; consumed = []
+    for index, (_, reading) in enumerate(results):
+        if index in suppressed: continue
+        if index in ambiguous:
+            clauses.extend(replace(clause, unsupported=(*clause.unsupported, reason))
+                           for clause in reading.clauses)
+        else:
+            clauses.extend(reading.clauses)
+            consumed.append(reading)
+    return clauses, consumed
 
 
 def document_view(documents, *, sovereigns=None, family='document'):
@@ -365,6 +611,17 @@ def document_view(documents, *, sovereigns=None, family='document'):
                         clauses[-1] = replace(base,unsupported=(*base.unsupported,'unsupported explicit exception'))
                         cs = [replace(c,unsupported=(*c.unsupported,'unsupported explicit exception'),exception_of=base.id) for c in cs]
                 else: us.append(Unread(_span(source,raw,start,end),'exception has no source rule'))
+            if us or any(clause.unsupported for clause in cs):
+                constructed, readings = _read_constructions(source, raw, start, end, (*clauses, *cs))
+                seen = {clause.id for clause in (*clauses, *cs)}
+                for clause in constructed:
+                    if clause.id not in seen:
+                        cs.append(clause); seen.add(clause.id)
+                for reading in readings:
+                    for consumed in reading.consumed_spans:
+                        us = [item for item in us if not (
+                            item.span.source == consumed.source
+                            and consumed.start <= item.span.start and item.span.end <= consumed.end)]
             clauses.extend(cs); unread.extend(us)
     return View(sources,tuple(clauses),tuple(unread),(time.perf_counter()-started)*1000)
 
