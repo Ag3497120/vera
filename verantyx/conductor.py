@@ -10,7 +10,7 @@ from __future__ import annotations
 import hashlib
 import re
 import unicodedata
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Callable, Literal, Mapping, Optional
 
@@ -19,9 +19,43 @@ from .memory_frame import Memory, WriteRejected, check_witness, normalize_np
 from .question import is_content_request
 
 
-QuestionKind = Literal["ORDER", "CHOICE", "CONFIRM", "SCOPE", "STATUS", "OTHER"]
+QuestionKind = Literal[
+    "ORDER", "CHOICE", "CONFIRM", "SCOPE", "STATUS", "DESIGN_PREFERENCE",
+    "FEATURE_SELECTION", "PERMISSION", "REQUIREMENT_CLARIFICATION",
+    "PLAN_CONFIRMATION", "RESOURCE_CHOICE", "PRIORITY_CHOICE", "DECISION_REQUEST", "OTHER",
+]
 ReplyKind = Literal["ANSWER", "ESCALATE", "ASK_VERIFIER"]
-QUESTION_KINDS: tuple[str, ...] = ("ORDER", "CHOICE", "CONFIRM", "SCOPE", "STATUS", "OTHER")
+QUESTION_KINDS: tuple[str, ...] = (
+    "ORDER", "CHOICE", "CONFIRM", "SCOPE", "STATUS", "DESIGN_PREFERENCE",
+    "FEATURE_SELECTION", "PERMISSION", "REQUIREMENT_CLARIFICATION",
+    "PLAN_CONFIRMATION", "RESOURCE_CHOICE", "PRIORITY_CHOICE", "DECISION_REQUEST", "OTHER",
+)
+
+# Answer paths are deliberately narrower than the classifier. New surface
+# kinds can reuse an existing policy only when it cites an active decision.
+# Kinds without a fitting typed record always escalate.
+QUESTION_ANSWERABILITY = {
+    "ORDER": "ORDER + TASK + cited DECISION or INVARIANT",
+    "CHOICE": "POLICY[CHOICE] + cited DECISION or INVARIANT + closed option mappings",
+    "CONFIRM": "POLICY[CONFIRM] + cited DECISION or INVARIANT",
+    "SCOPE": "POLICY[SCOPE] + cited DECISION or INVARIANT",
+    "STATUS": "TASK, GOAL, ACCEPTANCE, and required VERIFICATION records",
+    "DESIGN_PREFERENCE": "POLICY[CHOICE] + cited DECISION or INVARIANT + closed option mappings",
+    "FEATURE_SELECTION": "POLICY[CHOICE] + cited DECISION or INVARIANT + closed option mappings",
+    "PERMISSION": "POLICY[CONFIRM] + cited DECISION or INVARIANT; protected actions still escalate",
+    "PLAN_CONFIRMATION": "POLICY[CONFIRM] + cited DECISION or INVARIANT",
+    "REQUIREMENT_CLARIFICATION": "ALWAYS_ESCALATE: human requirement decision",
+    "RESOURCE_CHOICE": "ALWAYS_ESCALATE: no typed resource allocation record",
+    "PRIORITY_CHOICE": "ALWAYS_ESCALATE: no typed priority decision record",
+    "DECISION_REQUEST": "ALWAYS_ESCALATE: explicit human decision",
+    "OTHER": "ALWAYS_ESCALATE: outside the closed question set",
+}
+_ALWAYS_ESCALATE = {
+    "REQUIREMENT_CLARIFICATION": "human requirement decision",
+    "RESOURCE_CHOICE": "resource allocation decision",
+    "PRIORITY_CHOICE": "priority decision",
+    "DECISION_REQUEST": "human decision",
+}
 
 
 # All Memory extensions go through this closed table and installer.  These
@@ -85,8 +119,67 @@ class Reply:
 # Patterns classify the outer speech act.  They intentionally do not try to
 # extract an answer or to understand arbitrary prose.
 _ORDER_CUES = re.compile(
-    r"\b(next|follow(?:s|ing)?|upcoming|sequence|priority|proceed|order of work)\b|"
-    r"次|順番|先行|後続|優先順位|どこから進め|何から進め",
+    r"\b(next|follow(?:s|ing)?|upcoming|sequence|proceed|order of work)\b|"
+    r"次|順番|先行|後続|どこから進め|何から進め",
+    re.I,
+)
+_DESIGN_PREFERENCE_CUES = re.compile(
+    r"\b(prefer(?:s|red|ence)?|rather|favorite|favourite|design preference|"
+    r"which\s+(?:design|approach|style|layout|look))\b|"
+    r"好み|好まし|どの(?:デザイン|設計|方式|見た目)|どちらがよい",
+    re.I,
+)
+_FEATURE_CUES = re.compile(
+    r"\b(feature|option|capability|setting|toggle|functionality)\b|"
+    r"機能|オプション|設定",
+    re.I,
+)
+_SELECT_CUES = re.compile(
+    r"\b(which|what|choose|select|pick|enable|include|turn on|decide between)\b|"
+    r"どれ|どちら|選んで|選択|有効に|含め",
+    re.I,
+)
+_EXPLICIT_PERMISSION_CUES = re.compile(
+    r"\b(permission to|have permission|permitted to|authorized to|allowed to)\b|"
+    r"許可(?:を|が|されて)|認められて|"
+    r"[\u3040-\u30ff\u3400-\u9fff]{1,12}(?:ても)?(?:よい|いい)(?:ですか|でしょうか)?",
+    re.I,
+)
+_REQUIREMENT_CLARIFICATION_CUES = re.compile(
+    r"\b(clarify|clarification|unclear|ambiguity|expectation|expectations|what do you mean|"
+    r"requirement(?:s)?|specification(?:s)?)\b|"
+    r"要件|仕様|期待(?:値|する|している)?|明確に|どういう意味|不明点|確認したい",
+    re.I,
+)
+_PLAN_CONFIRMATION_CUES = re.compile(
+    r"\b(?:plan|proposal|approach)\b.{0,100}\b(?:okay|ok|acceptable|approved?|confirm|correct|right)\b|"
+    r"\b(?:okay|ok|acceptable|approved?|confirm|correct|right)\b.{0,100}\b(?:plan|proposal|approach)\b|"
+    r"\b(?:should (?:i|we) proceed|would you like me to proceed|can we proceed with (?:this|the))\b|"
+    r"(?:この|その)?(?:計画|案|方針).{0,40}(?:よい|いい|大丈夫|確認|承認|合って)",
+    re.I,
+)
+_RESOURCE_CUES = re.compile(
+    r"\b(resource|budget|staff|personnel|hardware|compute|capacity|time allocation|quota|storage|disk space)\b|"
+    r"資源|リソース|予算|人員|計算資源|割当|利用枠|空き容量|容量",
+    re.I,
+)
+_PRIORITY_CUES = re.compile(
+    r"\b(priorit(?:y|ize|ise|izing|ising)|rank(?:ing)?|first priority)\b|"
+    r"優先順位|優先する|順位づけ|どれから|何から対処|どの原因から|タイミング|時期",
+    re.I,
+)
+_DECISION_REQUEST_CUES = re.compile(
+    r"\b(what should (?:i|we)|how should (?:i|we)|where should (?:the|this|it)|"
+    r"what do you think|what would you (?:like|choose|prefer)|"
+    r"what to do with|what about|which (?:one|way|method|model|design|store)|"
+    r"how to (?:handle|manage|deal with|proceed|validate)|should we share|should i keep|should we keep|retain)\b|"
+    r"どうしますか|どう進め|どう扱|どう対応|どう対処|どう選|どう決め|どう上げ|どうする|どう操作|どうやって|"
+    r"どこ.{0,50}(?:しますか|配置|保存|表示|開|置|配布)|"
+    r"どの.{0,50}(?:にしますか|を選|を使|方法|方式|形|範囲|進め方)|"
+    r"どちら.{0,40}(?:にします|を選|がよい|がいい)|"
+    r"何を.{0,40}(?:しますか|記録|選び|含め|主役)|何に.{0,30}しますか|"
+    r"何から.{0,40}対処|(?:の扱い|の境界|の保存先|方針)は(?:\?|？)|"
+    r"はどう(?:しますか|する|扱いますか)|どういう形にしたい",
     re.I,
 )
 _CONFIRM_CUES = re.compile(
@@ -97,7 +190,7 @@ _CONFIRM_CUES = re.compile(
 )
 _SCOPE_CUES = re.compile(
     r"\b(scope|in scope|out of scope|within scope|included in)\b|"
-    r"対象(?:内|外)?|範囲(?:内|外)?|含まれ(?:る|ます)?|スコープ",
+    r"対象(?:内|外)?|範囲(?:内|外)?|含まれ(?:る|ます)?|スコープ|どこまで|どの範囲",
     re.I,
 )
 _STATUS_CUES = re.compile(
@@ -117,6 +210,24 @@ def classify_question(text: str, options: Optional[list[str]] = None) -> Questio
     raw = (text or "").strip()
     if not raw:
         return "OTHER"
+    if _REQUIREMENT_CLARIFICATION_CUES.search(raw):
+        return "REQUIREMENT_CLARIFICATION"
+    if _PLAN_CONFIRMATION_CUES.search(raw):
+        return "PLAN_CONFIRMATION"
+    if _EXPLICIT_PERMISSION_CUES.search(raw):
+        return "PERMISSION"
+    if _PRIORITY_CUES.search(raw):
+        return "PRIORITY_CHOICE"
+    if _RESOURCE_CUES.search(raw) and _SELECT_CUES.search(raw):
+        return "RESOURCE_CHOICE"
+    if _DESIGN_PREFERENCE_CUES.search(raw):
+        return "DESIGN_PREFERENCE"
+    if _FEATURE_CUES.search(raw) and _SELECT_CUES.search(raw):
+        return "FEATURE_SELECTION"
+    if _DECISION_REQUEST_CUES.search(raw):
+        if options:
+            return "CHOICE"
+        return "DECISION_REQUEST"
     if is_content_request(raw):
         return "OTHER"
     if _ORDER_CUES.search(raw):
@@ -139,7 +250,7 @@ def classify_question(text: str, options: Optional[list[str]] = None) -> Questio
 
 
 _DELETE_ACTION = re.compile(
-    r"\b(delete|deleting|erase|remove|destroy|drop\s+(?:table|database|branch)|rm\s+-)\b|"
+    r"\b(delete|deleting|deletion|deletions|erase|remove|destroy|drop\s+(?:table|database|branch)|rm\s+-)\b|"
     r"削除|消去|消す|消して|抹消",
     re.I,
 )
@@ -470,12 +581,20 @@ class ProjectFrame:
 
         if kind == "ORDER":
             return self._answer_order()
-        if kind == "CHOICE":
-            return self._answer_choice(question)
+        if kind in {"CHOICE", "DESIGN_PREFERENCE", "FEATURE_SELECTION"}:
+            return self._answer_choice(question, kind=kind)
         if kind in {"CONFIRM", "SCOPE"}:
             return self._answer_policy(question, kind)
+        if kind == "PERMISSION":
+            return self._answer_policy(question, kind, policy_kind="CONFIRM")
+        if kind == "PLAN_CONFIRMATION":
+            return self._answer_policy(question, kind, policy_kind="CONFIRM")
         if kind == "STATUS":
             return self._answer_status(question)
+        if kind in _ALWAYS_ESCALATE:
+            missing = _ALWAYS_ESCALATE[kind]
+            return self._escalate(kind, f"this question needs an explicit {missing}", missing,
+                                  self._no_guess_record_ids())
         return self._escalate(kind, "question is outside the closed question set", "typed frame record",
                               self._no_guess_record_ids())
 
@@ -537,14 +656,14 @@ class ProjectFrame:
         return self._escalate("ORDER", "predecessor or successor task state is missing", "TASK state",
                               order_ids + missing_reason)
 
-    def _answer_choice(self, question: AgentQuestion) -> Reply:
+    def _answer_choice(self, question: AgentQuestion, *, kind: str = "CHOICE") -> Reply:
         if not question.options:
-            return self._escalate("CHOICE", "choice question has no closed option list", "vocabulary")
+            return self._escalate(kind, "choice question has no closed option list", "vocabulary")
         policy = self._matching_policy(question.text, "CHOICE")
         if isinstance(policy, Reply):
-            return policy
+            return replace(policy, question_kind=kind)
         if policy is None:
-            return self._escalate("CHOICE", "no active cited POLICY determines this choice", "POLICY",
+            return self._escalate(kind, "no active cited POLICY determines this choice", "POLICY",
                                   self._no_guess_record_ids())
         target = policy["answer"]
         mapped: list[tuple[str, str, tuple[str, ...]]] = []
@@ -557,25 +676,25 @@ class ProjectFrame:
             canonical, ids = resolved
             mapped.append((option, canonical, ids))
         if unresolved:
-            return self._escalate("CHOICE", unresolved[0].reason, "vocabulary",
+            return self._escalate(kind, unresolved[0].reason, "vocabulary",
                                   list(policy["record_ids"]) + [rid for _, _, ids in mapped for rid in ids] +
                                   [rid for result in unresolved for rid in result.record_ids])
         matching = [item for item in mapped if _term_key(item[1]) == _term_key(target)]
         if len(matching) != 1:
             why = "no listed option matches the policy answer" if not matching else "multiple listed options normalize to the same policy answer"
-            return self._escalate("CHOICE", why, "unique option mapping", list(policy["record_ids"]))
+            return self._escalate(kind, why, "unique option mapping", list(policy["record_ids"]))
         option, canonical, term_ids = matching[0]
         all_option_ids = [record_id for _, _, ids in mapped for record_id in ids]
         if self._protected_action(option):
-            return self._escalate("CHOICE", "the selected option invokes an outside-authority action", "human",
+            return self._escalate(kind, "the selected option invokes an outside-authority action", "human",
                                   list(policy["record_ids"]) + all_option_ids + list(self._authority_record_ids()))
         return Reply("ANSWER", option, _unique(list(policy["record_ids"]) + all_option_ids),
-                     f"the active POLICY selects the unique option mapped to {canonical!r}")
+                     f"the active POLICY selects the unique option mapped to {canonical!r}", question_kind=kind)
 
-    def _answer_policy(self, question: AgentQuestion, kind: str) -> Reply:
-        policy = self._matching_policy(question.text, kind)
+    def _answer_policy(self, question: AgentQuestion, kind: str, *, policy_kind: Optional[str] = None) -> Reply:
+        policy = self._matching_policy(question.text, policy_kind or kind)
         if isinstance(policy, Reply):
-            return policy
+            return replace(policy, question_kind=kind)
         if policy is None:
             return self._escalate(kind, "no active cited POLICY covers this condition", "POLICY",
                                   self._no_guess_record_ids())
@@ -584,7 +703,7 @@ class ProjectFrame:
             return self._escalate(kind, "the POLICY answer names an outside-authority action", "human",
                                   list(policy["record_ids"]) + list(self._authority_record_ids()))
         return Reply("ANSWER", value, _unique(list(policy["record_ids"])),
-                     "the active POLICY is tied to an active DECISION or INVARIANT record")
+                     "the active POLICY is tied to an active DECISION or INVARIANT record", question_kind=kind)
 
     def _answer_status(self, question: AgentQuestion) -> Reply:
         claim = question.claimed_state
@@ -803,12 +922,19 @@ class ProjectFrame:
     def _matching_escalation(self, text: str, question_kind: str) -> Optional[dict] | Reply:
         query = _text_key(text)
         hits = []
+        compatible_kinds = {question_kind}
+        compatible_kinds.update({
+            "DESIGN_PREFERENCE": {"CHOICE"},
+            "FEATURE_SELECTION": {"CHOICE"},
+            "PERMISSION": {"CONFIRM"},
+            "PLAN_CONFIRMATION": {"CONFIRM"},
+        }.get(question_kind, set()))
         for record in self._active():
             if record["kind"] != "ESCALATE":
                 continue
             witness = record.get("witness") or {}
             scope = witness.get("question_kind")
-            if scope not in (None, question_kind):
+            if scope is not None and scope not in compatible_kinds:
                 continue
             condition = _text_key(str(witness.get("condition", record["slots"]["subject"])))
             if condition and condition in query:
@@ -916,6 +1042,6 @@ class ProjectFrame:
 
 
 __all__ = [
-    "AgentQuestion", "ProjectFrame", "Reply", "QUESTION_KINDS", "classify_question",
+    "AgentQuestion", "ProjectFrame", "Reply", "QUESTION_KINDS", "QUESTION_ANSWERABILITY", "classify_question",
     "install_conductor_kinds",
 ]

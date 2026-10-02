@@ -79,7 +79,9 @@ class SemanticDisagreeAsker:
 @pytest.mark.parametrize("kind,forms,options", [
     ("ORDER", ["What comes next?", "Which stage follows this one?", "Where should work proceed?"], None),
     ("CHOICE", ["Which route should I pick?", "Choose one route.", "Select a route now."], ["a", "b"]),
-    ("CONFIRM", ["May I run this?", "Is it acceptable to do this?", "Do I have permission?"], None),
+    ("CONFIRM", ["May I run this?", "Is it acceptable to do this?", "Would this be acceptable?"], None),
+    # Explicit permission wording now has its own kind and reuses CONFIRM POLICY records.
+    ("PERMISSION", ["Do I have permission?", "Am I allowed to run this?"], None),
     ("SCOPE", ["Is this within scope?", "Does this belong in scope?", "Is this covered by scope?"], None),
     ("STATUS", ["Is the task complete?", "What is the current progress?", "Has this finished?"], None),
     ("OTHER", ["Tell me a story.", "What color is the sky?", "Write a greeting."], None),
