@@ -115,8 +115,10 @@ def read_records(text: str, doc_kind: str = "record") -> List[Item]:
     prev: Optional[Item] = None
     for raw in [x for x in re.split(r"(?<=。)", text) if x.strip()]:
         s = raw.strip()
-        exception = s.startswith("ただし")
-        body = re.sub(r"^ただし[、,]?", "", s)
+        exception = bool(re.match(r"^ただし(?:書き)?[、,]?", s) or
+                         re.search(r"この限り(?:で|では)ない", s) or
+                         re.match(r"^[^、。]{1,30}を除き[、,]", s))
+        body = re.sub(r"^ただし(?:書き)?[、,]?", "", s)
         cond = ""
         m = COND.match(body)
         main = body
@@ -129,6 +131,15 @@ def read_records(text: str, doc_kind: str = "record") -> List[Item]:
         frames = [f for f in read_all(main_r if main_r.endswith("。") else main_r + "。")
                   if f.predicate not in _AUX_PRED and f.agent != "場合"]
         if not frames:
+            if exception and re.search(r"この限り(?:で|では)ない", s):
+                # A proviso can refer to the previous rule without repeating
+                # its verb. Keep a typed link even when the clause has no frame.
+                for j in range(len(items) - 1, -1, -1):
+                    rule = items[j]
+                    if rule.kind != "fact" and (prev is None or rule.sentence == prev.sentence):
+                        items.append(Item(rule.frame, "permission", s, cond,
+                                          exception_of=j, inferred_from=[rule.sentence]))
+                        break
             continue
         for f in frames:
             kind = _clause_kind(s, doc_kind, f.negated)
@@ -146,10 +157,12 @@ def read_records(text: str, doc_kind: str = "record") -> List[Item]:
             if used and prev is not None:
                 it.inferred_from = [prev.sentence]
             if exception and items:
-                # attach to the nearest earlier rule on the same predicate; take its missing roles
+                # An explicit exception can change the predicate ("use is banned;
+                # however, written consent is allowed"). Keep its nearby rule.
                 for j in range(len(items) - 1, -1, -1):
                     r = items[j]
-                    if r.kind != "fact" and canonical(r.frame.predicate) == canonical(f.predicate):
+                    if r.sentence != s and r.kind != "fact" and prev is not None and \
+                            r.sentence == prev.sentence:
                         it.exception_of = j
                         it.frame = Frame(f.predicate, f.agent or r.frame.agent, f.patient or r.frame.patient,
                                          f.recipient or r.frame.recipient, f.negated)

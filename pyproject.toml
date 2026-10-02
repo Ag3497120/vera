@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vera-ja"
-version = "0.1.0"
+version = "0.2.0a1"
 description = "Vera base for Japanese: a chat and checker with no weights (rules + stereo-cross routing over predicate-argument records)"
 readme = "README.md"
 license = { text = "MIT" }
@@ -23,4 +23,4 @@ include = ["vera_base*"]
 
 [tool.setuptools.package-data]
 "vera_base" = ["data/*.json"]
-"vera_base.verantyx" = ["lang_data/*.json"]
+"vera_base.verantyx" = ["lang_data/*.json", "data/*.json"]

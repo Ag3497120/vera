@@ -165,6 +165,7 @@ def distinct_faces(stores: Dict[str, Any], k: int = 4) -> Dict[str, List[str]]:
     from collections import Counter
 
     prof: Dict[str, Counter] = {}
+    owners: Counter = Counter()
     for arm, st in stores.items():
         agg: Counter = Counter()
         for cr in st.values():
@@ -172,19 +173,16 @@ def distinct_faces(stores: Dict[str, Any], k: int = 4) -> Dict[str, List[str]]:
                 if len(f) >= 2 and not f[0].isdigit():
                     agg[f] += n
         prof[arm] = agg
+        owners.update(agg.keys())
     out: Dict[str, List[str]] = {}
     for arm in stores:
-        others = set()
-        for a2 in stores:
-            if a2 != arm:
-                others |= set(prof[a2])
-        out[arm] = [f for f, _n in prof[arm].most_common(200)
-                    if f not in others][:k]
+        out[arm] = sorted((f for f in prof[arm] if owners[f] == 1),
+                          key=lambda f: (-prof[arm][f], f))[:k]
     return out
 
 
 def route(stores: Dict[str, Any], faces: Dict[str, List[str]],
-          term: str) -> Optional[str]:
+          term: str | Sequence[str]) -> Optional[str]:
     """Which arm a term belongs to, by surface conduction. Ties abstain.
 
     Faces alone route 0 of 52 off-face terms — beyond the faces, a term
@@ -202,16 +200,42 @@ def route(stores: Dict[str, Any], faces: Dict[str, List[str]],
     any arm, so the router says nothing rather than guessing — the same
     behaviour the subject gate enforces at the answer level.
     """
-    score: Dict[str, int] = {}
+    # A question can supply several content terms. They are readings of the
+    # same question, not independent witnesses: add their surface connections
+    # at this node and require a strict leader, just as for a single term.
+    terms = (term,) if isinstance(term, str) else tuple(dict.fromkeys(term))
+    question_terms = not isinstance(term, str)
+    weighted = all(hasattr(st, "surface_mass") and hasattr(st, "surface_score")
+                   for st in stores.values())
+    totals = ({word: sum(st.surface_mass(word) for st in stores.values())
+               for word in terms} if weighted else {})
+    score: Dict[str, float] = {}
     for arm, st in stores.items():
-        cr = st.get(term) or {}
-        n = sum(1 for f in faces.get(arm, ()) if f in cr or f == term)
-        if not n and cr:
-            for f in faces.get(arm, ()):
-                if any(f in cr2 and any(g in cr2 for g in cr)
-                       for cr2 in st.values()):
-                    n += 1
-                    break
+        if weighted:
+            # Mass is measured on the same attested cross surface as the
+            # connections. Normalize each word across sibling arms so a
+            # common word contributes equally instead of rewarding a large
+            # branch merely for holding more sentences.
+            n = sum(st.surface_score(word) * st.surface_mass(word) / totals[word]
+                    for word in terms if totals[word])
+            if n:
+                score[arm] = n
+            continue
+        n = 0
+        for word in terms:
+            cr = st.get(word) or {}
+            direct = sum(1 for f in faces.get(arm, ()) if f in cr or f == word)
+            if not direct and cr:
+                for f in faces.get(arm, ()):
+                    if any(f in cr2 and any(g in cr2 for g in cr)
+                           for cr2 in st.values()):
+                        direct = 1
+                        break
+            if not direct and cr and question_terms:
+                # A held core is a zero-step surface connection. Shared words
+                # tie; only a strict lead may choose an arm.
+                direct = 1
+            n += direct
         if n:
             score[arm] = n
     ranked = sorted(score.items(), key=lambda kv: (-kv[1], kv[0]))

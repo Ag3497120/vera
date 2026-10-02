@@ -1,0 +1,634 @@
+"""Source-bounded quantifier constructions for semantic clauses.
+
+Quantification is retained as a typed clause role.  The ordinary argument
+roles remain source-bound; the extra role records which argument or event the
+operator scopes over, so an approximate or partial term is not an exact value.
+"""
+from __future__ import annotations
+
+import re
+from hashlib import sha256
+from dataclasses import dataclass, replace
+from typing import Any
+
+from ..semantic_ir import Clause, Role, Span
+from . import Construction, ConstructionContext, Reading, TypedNote, register
+
+
+@dataclass(frozen=True)
+class Quantification:
+    kind: str
+    scope: str
+    marker: str
+    relation: str = ""
+
+
+def _quantifier_role(spec: Quantification, span: Span) -> Role:
+    return Role("quantifier_" + spec.kind + "__" + spec.scope,
+                spec.marker, span, "literal")
+
+
+def _typed_scope(scope: str, kind: str) -> str:
+    return scope if scope == "event" else scope + "__" + kind
+
+
+def _scope_base(scope: str, kind: str) -> str:
+    suffix = "__" + kind
+    return scope[:-len(suffix)] if scope.endswith(suffix) else ""
+
+
+def _spec_from_role(role: Role) -> Quantification | None:
+    if not role.name.startswith("quantifier_") or role.rule != "literal" or not isinstance(role.term, str):
+        return None
+    encoded = role.name[len("quantifier_"):]
+    if "__" not in encoded:
+        return None
+    kind, scope = encoded.split("__", 1)
+    marker = role.term
+    if marker not in _KINDS or _KINDS[marker] != kind or not scope:
+        return None
+    relation = "at_least" if marker == "以上" else "at_most" if marker == "以下" else ""
+    return Quantification(kind, scope, marker, relation)
+
+
+_KINDS = {
+    "多く": "existential",
+    "一部": "partial",
+    "すべて": "universal",
+    "全て": "universal",
+    "ほとんど": "partial",
+    "主に": "frequency",
+    "一般に": "frequency",
+    "一般には": "frequency",
+    "約": "approximate",
+    "およそ": "approximate",
+    "以上": "approximate",
+    "以下": "approximate",
+}
+_NUMERAL = re.compile(r"[0-9０-９一二三四五六七八九十百千万億兆〇零]")
+_QUANT_REASON = "unsupported source quantifier/exception/time"
+_UNREPRESENTED = "unrepresented source content"
+_SAFE_REASONS = frozenset((_QUANT_REASON, _UNREPRESENTED, "multiple predicates need explicit clause scope"))
+_IGNORED_POS = frozenset(("助詞", "助動詞", "補助記号", "記号"))
+_ROLE_NAMES = frozenset(("agent", "patient", "recipient", "source", "place", "setting",
+                         "instrument", "by", "topic", "capacity", "attribute", "value",
+                         "entity", "time", "accompaniment", "manner"))
+
+
+def _surface(item: Any) -> str:
+    token = getattr(item, "token", item)
+    return str(getattr(token, "surface", token))
+
+
+def _pos(item: Any) -> str:
+    token = getattr(item, "token", item)
+    feature = getattr(token, "feature", None)
+    return str(getattr(feature, "pos1", ""))
+
+
+def _feature(item: Any, name: str) -> str:
+    token = getattr(item, "token", item)
+    feature = getattr(token, "feature", None)
+    return str(getattr(feature, name, ""))
+
+
+def _span(ctx: ConstructionContext, start: int, end: int) -> Span:
+    return Span(ctx.sentence_span.source,
+                ctx.sentence_span.start + start,
+                ctx.sentence_span.start + end,
+                ctx.sentence_text[start:end])
+
+
+def _derived_id(clause: Clause, start: int, end: int) -> str:
+    material = f"{clause.id}|quantifier|{clause.span.source}|{start}|{end}"
+    return sha256(material.encode("utf-8")).hexdigest()[:24]
+
+
+def _sentence_clause(ctx: ConstructionContext, clause: Clause) -> bool:
+    s = ctx.sentence_span
+    return (clause.span.source == s.source and s.start <= clause.span.start < clause.span.end <= s.end)
+
+
+def _markers(ctx: ConstructionContext) -> tuple[tuple[int, int, str, int], ...]:
+    found = []
+    words = sorted(_KINDS, key=lambda word: (-len(word), word))
+    for i, item in enumerate(ctx.tokens):
+        for word in words:
+            start, end = item.start, item.start + len(word)
+            if not ctx.sentence_text.startswith(word, start):
+                continue
+            parts = []
+            for j in range(i, len(ctx.tokens)):
+                token = ctx.tokens[j]
+                if token.start < start or token.end > end:
+                    break
+                parts.append(_surface(token))
+                if token.end == end:
+                    if "".join(parts) == word:
+                        found.append((start, end, word, i))
+                    break
+            break
+    by_start = {}
+    for mark in found:
+        prior = by_start.get(mark[0])
+        if prior is None or len(mark[2]) > len(prior[2]):
+            by_start[mark[0]] = mark
+    return tuple(by_start[start] for start in sorted(by_start))
+
+
+def _number_near(ctx: ConstructionContext, start: int, end: int, *, after: bool) -> bool:
+    if after:
+        text = ctx.sentence_text[end:end + 48]
+    else:
+        text = ctx.sentence_text[max(0, start - 48):start]
+    return bool(_NUMERAL.search(text))
+
+
+def _scope_for(ctx: ConstructionContext, clause: Clause, marker: tuple[int, int, str, int]):
+    start, end, word, index = marker
+    absolute_start = ctx.sentence_span.start + start
+    absolute_end = ctx.sentence_span.start + end
+    if word in ("約", "およそ"):
+        if not _number_near(ctx, start, end, after=True):
+            return None
+    elif word in ("以上", "以下"):
+        if not _number_near(ctx, start, end, after=False):
+            return None
+    if word in ("主に", "一般に", "一般には"):
+        return Quantification("frequency", "event", word)
+    target = next((r for r in clause.roles
+                   if r.name != "ambiguous" and r.span.start <= absolute_start
+                   and absolute_end <= r.span.end), None)
+    if target is not None:
+        if word in ("多く", "一部", "すべて", "全て", "ほとんど"):
+            following = ctx.tokens[index + 1:index + 3]
+            if not any(_surface(t) in ("の", "が", "は") for t in following):
+                return None
+        return Quantification(_KINDS[word], target.name, word,
+                              "at_least" if word == "以上" else "at_most" if word == "以下" else "")
+    if word in ("多く", "一部", "ほとんど"):
+        # Bare degree adverbs can scope an event, but a bare list heading or
+        # incomplete nominal is left typed as unsupported.
+        if clause.predicate_span.start >= absolute_start and clause.predicate_span.start - absolute_end <= 12:
+            return Quantification(_KINDS[word], "event", word)
+    return None
+
+
+def _predicate_tokens(ctx: ConstructionContext, clause: Clause) -> set[int]:
+    """Return token indices in the native predicate's inflectional cluster."""
+    local_start = clause.predicate_span.start - ctx.sentence_span.start
+    local_end = clause.predicate_span.end - ctx.sentence_span.start
+    hits = [i for i, t in enumerate(ctx.tokens) if t.start < local_end and local_start < t.end]
+    if not hits:
+        return set()
+    first, last = min(hits), max(hits)
+    keep = set(hits)
+    # Native spans can point at the final inflection of a verbal noun such as
+    # 称賛される.  Admit that noun only when the clause predicate is a suru
+    # predicate and the morphology is directly adjacent.
+    if clause.predicate.endswith("する") and first > 0:
+        prior = ctx.tokens[first - 1]
+        stem = clause.predicate[:-2]
+        if (_pos(prior) == "名詞" and stem.endswith(_surface(prior))
+                and prior.end == ctx.tokens[first].start):
+            keep.add(first - 1)
+    i = last + 1
+    while i < len(ctx.tokens) and _pos(ctx.tokens[i]) == "助動詞" and ctx.tokens[i - 1].end == ctx.tokens[i].start:
+        keep.add(i)
+        i += 1
+    return keep
+
+
+def _covered(ctx: ConstructionContext, clause: Clause, quant_span: tuple[int, int]) -> bool:
+    base = ctx.sentence_span.start
+    covered = [(r.span.start - base, r.span.end - base) for r in clause.roles]
+    covered.append((clause.predicate_span.start - base, clause.predicate_span.end - base))
+    covered.append(quant_span)
+    for i in _predicate_tokens(ctx, clause):
+        t = ctx.tokens[i]
+        covered.append((t.start, t.end))
+    # Compound case particles are grammatical spans, not stray predicates.
+    for sequence in ("として", "について", "による", "によって", "により", "における",
+                     "において", "に対して", "と共に", "ともに", "では"):
+        at = ctx.sentence_text.find(sequence)
+        while at >= 0:
+            covered.append((at, at + len(sequence)))
+            at = ctx.sentence_text.find(sequence, at + 1)
+    for token in ctx.tokens:
+        absolute_start = base + token.start
+        absolute_end = base + token.end
+        if not (clause.span.start <= absolute_start < absolute_end <= clause.span.end):
+            continue
+        if _pos(token) in _IGNORED_POS:
+            continue
+        if any(a <= token.start and token.end <= b for a, b in covered):
+            continue
+        return False
+    return True
+
+
+def _locative_reading(ctx: ConstructionContext, clause: Clause,
+                      marker: tuple[int, int, str, int], spec: Quantification) -> Reading | None:
+    """Recover a topic-bound measured locative before an appositive tail."""
+    if (spec.kind != "approximate" or spec.scope != "recipient"
+            or spec.marker not in ("約", "およそ") or clause.predicate != "位置する"
+            or not _sentence_clause(ctx, clause) or not clause.unsupported
+            or not set(clause.unsupported) <= _SAFE_REASONS
+            or clause.polarity != "+" or clause.modality != "assert"
+            or clause.time not in ("", "past", "nonpast")
+            or clause.conditions or clause.exceptions or clause.exception_of):
+        return None
+    if any(r.name == "ambiguous" for r in clause.roles):
+        return None
+    source_role = next((r for r in clause.roles if r.name == "source"), None)
+    recipient = next((r for r in clause.roles if r.name == "recipient"), None)
+    if source_role is None or recipient is None:
+        return None
+    qstart, qend, word, _ = marker
+    absolute_qstart = ctx.sentence_span.start + qstart
+    absolute_qend = ctx.sentence_span.start + qend
+    if not (recipient.span.start <= absolute_qstart < absolute_qend <= recipient.span.end):
+        return None
+    topic_idx = next((i for i, t in enumerate(ctx.tokens[:32])
+                      if _surface(t) == "は" and _pos(t) == "助詞"), None)
+    if topic_idx is None or topic_idx == 0 or ctx.tokens[topic_idx].start >= qstart:
+        return None
+    topic_start = next((t.start for t in ctx.tokens[:topic_idx] if _surface(t).strip()), 0)
+    topic_end = ctx.tokens[topic_idx].start
+    while topic_end > topic_start and ctx.sentence_text[topic_end - 1] in " 、,\t":
+        topic_end -= 1
+    if topic_start >= topic_end:
+        return None
+    predicate_indices = _predicate_tokens(ctx, clause)
+    if not predicate_indices:
+        return None
+    predicate_start = min(ctx.tokens[i].start for i in predicate_indices)
+    predicate_end = max(ctx.tokens[i].end for i in predicate_indices)
+    if not (absolute_qend <= ctx.sentence_span.start + predicate_start):
+        return None
+    # Source marking binds the reference point; に locates the quantified
+    # distance, and the predicate ends the extracted clause.
+    between = ctx.sentence_text[source_role.span.end - ctx.sentence_span.start:
+                                recipient.span.start - ctx.sentence_span.start]
+    if "から" not in between:
+        return None
+    boundary = ctx.sentence_text[predicate_end:predicate_end + 1]
+    if boundary not in ("", "、", ",", "。", ".", "!", "?", "！", "？"):
+        return None
+    topic_span = _span(ctx, topic_start, topic_end)
+    qspan = _span(ctx, qstart, qend)
+    tail_start = predicate_end
+    while tail_start < len(ctx.sentence_text) and ctx.sentence_text[tail_start] in " 、,，\t":
+        tail_start += 1
+    tail_end = len(ctx.sentence_text.rstrip("。.!?！？ \t\n"))
+    typed_spec = replace(spec, scope=_typed_scope(spec.scope, spec.kind))
+    roles = [Role("entity", topic_span.text, topic_span, "literal")]
+    roles.extend(replace(r, name=typed_spec.scope) if r.name == spec.scope else r for r in clause.roles)
+    if tail_start < tail_end:
+        tail_span = _span(ctx, tail_start, tail_end)
+        roles.append(Role("attribute", tail_span.text, tail_span, "literal"))
+    roles.append(_quantifier_role(typed_spec, qspan))
+    roles = tuple(roles)
+    if len({r.name for r in roles}) != len(roles):
+        return None
+    full_span = _span(ctx, 0, len(ctx.sentence_text))
+    built = replace(clause, id=_derived_id(clause, full_span.start, full_span.end),
+                    predicate_span=_span(ctx, predicate_start, predicate_end),
+                    roles=roles, span=full_span, body_span=full_span,
+                    rule="quantifier", unsupported=())
+    if not _covered(ctx, built, (qstart, qend)):
+        return None
+    return Reading((built,), (full_span,),
+                   (TypedNote("quantification", qspan, "approximate scope=recipient"),))
+
+
+def _native_reading(ctx: ConstructionContext, clause: Clause,
+                    marker: tuple[int, int, str, int], spec: Quantification) -> Reading | None:
+    if (clause.polarity != "+" or clause.modality != "assert" or clause.time not in ("", "past", "nonpast")
+            or clause.conditions or clause.exceptions or clause.exception_of
+            or not clause.unsupported or not set(clause.unsupported) <= _SAFE_REASONS):
+        return None
+    if not _sentence_clause(ctx, clause):
+        return None
+    start, end, word, _ = marker
+    if not _covered(ctx, clause, (start, end)):
+        return None
+    absolute_start = ctx.sentence_span.start + start
+    absolute_end = ctx.sentence_span.start + end
+    qspan = _span(ctx, start, end)
+    typed_spec = replace(spec, scope=_typed_scope(spec.scope, spec.kind))
+    qrole = _quantifier_role(typed_spec, qspan)
+    if spec.scope == "event" and not any(r.name in ("entity", "agent", "patient") for r in clause.roles):
+        return None
+    if (clause.predicate == "property" and spec.scope == "value"
+            and any(r.name == "entity" and re.search(r"(?:年|月|日|現在|時点|当時)", r.span.text)
+                    for r in clause.roles)):
+        return None
+    roles = tuple(replace(r, name=typed_spec.scope) if r.name == spec.scope and spec.scope != "event"
+                  else r for r in clause.roles
+                  if not (spec.scope == "event" and qspan.start <= r.span.start < r.span.end <= qspan.end))
+    if any(r.name.startswith("quantifier_") for r in roles):
+        return None
+    predicate = (clause.predicate + "__quant_" + spec.kind
+                 if spec.scope == "event" else clause.predicate)
+    built = replace(clause, id=_derived_id(clause, absolute_start, absolute_end),
+                    predicate=predicate, roles=roles + (qrole,), rule="quantifier", unsupported=())
+    return Reading((built,), (clause.span,),
+                   (TypedNote("quantification", qspan, spec.kind + " scope=" + spec.scope),))
+
+
+def _appositive_reading(ctx: ConstructionContext, clause: Clause,
+                        markers: tuple[tuple[int, int, str, int], ...]) -> Reading | None:
+    """Read an explicit entity + locative frame + quantified nominal attribute.
+
+    The nominal form is [attribute] [approximate number and unit] の [kind].
+    A preceding topic and a native locative frame bind the attribute to one
+    entity; all lexical source tokens must be accounted for by those spans.
+    """
+    if len(markers) != 1:
+        return None
+    mstart, mend, word, midx = markers[0]
+    if word not in ("約", "およそ") or not _number_near(ctx, mstart, mend, after=True):
+        return None
+    if not _sentence_clause(ctx, clause) or clause.predicate not in ("ある", "位置する", "存在する"):
+        return None
+    if (clause.polarity != "+" or clause.modality != "assert" or clause.conditions
+            or clause.exceptions or clause.exception_of):
+        return None
+    if any(reason not in _SAFE_REASONS for reason in clause.unsupported):
+        return None
+    if any(r.name == "ambiguous" for r in clause.roles):
+        return None
+
+    # One explicit topic marker must bind the measured noun phrase.
+    topic_idx = next((i for i, t in enumerate(ctx.tokens[:32])
+                      if _surface(t) == "は" and _pos(t) == "助詞"), None)
+    if topic_idx is None or topic_idx == 0 or topic_idx >= midx:
+        return None
+    topic_end = ctx.tokens[topic_idx].start
+    topic_start = next((t.start for t in ctx.tokens[:topic_idx] if _surface(t).strip()), 0)
+    while topic_start < topic_end and ctx.sentence_text[topic_start].isspace():
+        topic_start += 1
+    while topic_end > topic_start and ctx.sentence_text[topic_end - 1] in " 、,\t":
+        topic_end -= 1
+    if topic_start >= topic_end:
+        return None
+
+    # The quantity ends at a genitive particle followed by a nominal head.
+    link_idx = next((i for i in range(midx + 1, len(ctx.tokens))
+                     if _surface(ctx.tokens[i]) == "の" and _pos(ctx.tokens[i]) == "助詞"), None)
+    if link_idx is None:
+        return None
+    has_number = False
+    for token in ctx.tokens[midx + 1:link_idx]:
+        surface = _surface(token)
+        if _feature(token, "pos2") == "数詞" or _NUMERAL.fullmatch(surface):
+            has_number = True
+            continue
+        if _pos(token) in ("接尾辞", "補助記号"):
+            continue
+        if _pos(token) == "記号" and surface in (",", "，", ".", "．"):
+            continue
+        return None
+    if not has_number:
+        return None
+    value_start, value_end = mstart, ctx.tokens[link_idx].start
+    number_text = ctx.sentence_text[mend:value_end]
+    if not _NUMERAL.search(number_text) or not number_text.strip():
+        return None
+    head_start = ctx.tokens[link_idx].end
+    head_end = len(ctx.sentence_text.rstrip("。.!?！？ \t\n"))
+    if head_start >= head_end:
+        return None
+    head = ctx.sentence_text[head_start:head_end]
+    if not any(_pos(t) in ("名詞", "接尾辞") for t in ctx.tokens[link_idx + 1:]):
+        return None
+
+    # The measured attribute is the adjacent nominal compound before 約/およそ.
+    attr_idx = midx - 1
+    while attr_idx >= 0 and _pos(ctx.tokens[attr_idx]) in ("名詞", "接頭辞", "接尾辞"):
+        attr_idx -= 1
+    attr_start = ctx.tokens[attr_idx + 1].start if attr_idx + 1 < midx else mstart
+    if attr_start >= mstart:
+        return None
+
+    qspan = _span(ctx, mstart, mend)
+    spec = Quantification("approximate", _typed_scope("value", "approximate"), word)
+    locative_roles = tuple(r for r in clause.roles
+                           if r.name in ("source", "recipient", "place", "setting"))
+    if any(r.span.start < ctx.sentence_span.start + topic_end
+           or r.span.end > ctx.sentence_span.end for r in locative_roles):
+        return None
+    roles = (
+        Role("entity", ctx.sentence_text[topic_start:topic_end],
+             _span(ctx, topic_start, topic_end), "literal"),
+        Role("attribute", ctx.sentence_text[attr_start:mstart],
+             _span(ctx, attr_start, mstart), "literal"),
+        Role(spec.scope, ctx.sentence_text[value_start:value_end],
+             _span(ctx, value_start, value_end), "literal"),
+        *locative_roles,
+        Role("capacity", head, _span(ctx, head_start, head_end), "literal"),
+        _quantifier_role(spec, qspan),
+    )
+    if len({r.name for r in roles}) != len(roles):
+        return None
+    absolute_start = ctx.sentence_span.start
+    absolute_end = ctx.sentence_span.end
+    predicate_indices = _predicate_tokens(ctx, clause)
+    predicate_span = clause.predicate_span
+    if predicate_indices:
+        predicate_start = min(ctx.tokens[i].start for i in predicate_indices)
+        predicate_end = max(ctx.tokens[i].end for i in predicate_indices)
+        predicate_span = _span(ctx, predicate_start, predicate_end)
+    built = replace(clause, id=_derived_id(clause, absolute_start, absolute_end),
+                    predicate="property", predicate_span=predicate_span,
+                    roles=roles, rule="quantifier",
+                    span=_span(ctx, 0, len(ctx.sentence_text)),
+                    body_span=_span(ctx, 0, len(ctx.sentence_text)),
+                    unsupported=(), conditions=(), condition_spans=(), exceptions=(),
+                    exception_spans=(), exception_of="")
+    local_marker = (mstart, mend)
+    if not _covered(ctx, built, local_marker):
+        return None
+    return Reading((built,), (built.span,),
+                   (TypedNote("quantification", qspan, "approximate scope=value"),))
+
+
+def reads(ctx: ConstructionContext) -> Reading | None:
+    if len(ctx.tokens) > ctx.budget.max_tokens or len(ctx.sentence_text) > 4096:
+        return None
+    markers = _markers(ctx)
+    if len(markers) != 1:
+        return None
+    local = tuple(c for c in ctx.clauses if _sentence_clause(ctx, c))
+    if not local or len(local) > ctx.budget.max_clauses or len(local) != 1:
+        return None
+    clause = local[0]
+    marker = markers[0]
+    word = marker[2]
+    spec = _scope_for(ctx, clause, marker)
+    if spec is not None:
+        reading = _native_reading(ctx, clause, marker, spec)
+        if reading is not None:
+            return reading
+        reading = _locative_reading(ctx, clause, marker, spec)
+        if reading is not None:
+            return reading
+    return _appositive_reading(ctx, clause, markers)
+
+
+def _matches_marker(spec: Quantification, text: str) -> bool:
+    if spec.marker not in _KINDS or _KINDS[spec.marker] != spec.kind:
+        return False
+    if spec.marker in ("約", "およそ"):
+        return spec.scope == "value" or spec.scope not in ("event", "")
+    if spec.marker in ("以上", "以下"):
+        return spec.relation == ("at_least" if spec.marker == "以上" else "at_most")
+    return True
+
+
+def licenses(clause: Clause, source: str) -> bool:
+    """Independently license the typed operator, scope, and source positions."""
+    if clause.rule != "quantifier" or clause.unsupported or clause.polarity != "+" or clause.modality != "assert":
+        return False
+    if clause.time not in ("", "past", "nonpast") or clause.conditions or clause.exceptions or clause.exception_of:
+        return False
+    if not clause.span.valid({clause.span.source: source}):
+        return False
+    qroles = [r for r in clause.roles if r.name.startswith("quantifier_")]
+    if len(qroles) != 1:
+        return False
+    qrole = qroles[0]
+    q = _spec_from_role(qrole)
+    if q is None:
+        return False
+    if not qrole.span.valid({qrole.span.source: source}) or qrole.span.text != q.marker:
+        return False
+    if not _matches_marker(q, clause.span.text):
+        return False
+    if q.scope != "event" and not any(r.name == q.scope and r is not qrole for r in clause.roles):
+        return False
+    if q.scope == "event":
+        if any(r.span.start <= qrole.span.start < r.span.end for r in clause.roles if r is not qrole):
+            return False
+        if q.marker not in ("主に", "一般に", "一般には", "多く", "一部", "ほとんど"):
+            return False
+        if not clause.predicate.endswith("__quant_" + q.kind):
+            return False
+        if not any(r.name in ("entity", "agent", "patient") for r in clause.roles):
+            return False
+    else:
+        if _scope_base(q.scope, q.kind) not in _ROLE_NAMES:
+            return False
+        target = next((r for r in clause.roles if r.name == q.scope and r is not qrole), None)
+        if target is None or not (target.span.start <= qrole.span.start < qrole.span.end <= target.span.end):
+            return False
+        if q.marker in ("多く", "一部", "すべて", "全て", "ほとんど"):
+            after = source[qrole.span.end:clause.span.end]
+            if not after.startswith(("の", "が", "は")):
+                return False
+        if q.marker in ("約", "およそ"):
+            if not _NUMERAL.match(source[qrole.span.end:target.span.end]):
+                return False
+        if q.marker in ("以上", "以下"):
+            if not _NUMERAL.search(source[target.span.start:qrole.span.start]):
+                return False
+    if _scope_base(q.scope, q.kind) == "recipient" and clause.predicate == "位置する":
+        entity = next((r for r in clause.roles if r.name == "entity"), None)
+        source_role = next((r for r in clause.roles if r.name == "source"), None)
+        recipient = next((r for r in clause.roles if r.name == q.scope), None)
+        if entity is None or source_role is None or recipient is None:
+            return False
+        if entity.span.start != clause.span.start or clause.predicate_span.end > clause.span.end:
+            return False
+        gap = source[source_role.span.end:recipient.span.start]
+        if "から" not in gap or qrole.span.start < recipient.span.start or qrole.span.end > recipient.span.end:
+            return False
+        if source[recipient.span.end:clause.predicate_span.start].find("に") < 0:
+            return False
+        tail_roles = [r for r in clause.roles if r.name == "attribute"
+                      and r.span.start >= clause.predicate_span.end]
+        if len(tail_roles) > 1:
+            return False
+        tail_markers = " 、,，。.!?！？\t\n"
+        if tail_roles:
+            tail_role = tail_roles[0]
+            if (source[clause.predicate_span.end:tail_role.span.start].strip(tail_markers)
+                    or source[tail_role.span.end:clause.span.end].strip(tail_markers)):
+                return False
+        elif source[clause.predicate_span.end:clause.span.end].strip(tail_markers):
+            return False
+    if any(not r.span.valid({r.span.source: source}) for r in clause.roles):
+        return False
+    if clause.predicate == "property" and _scope_base(q.scope, q.kind) == "value":
+        entity = next((r for r in clause.roles if r.name == "entity"), None)
+        attr = next((r for r in clause.roles if r.name == "attribute"), None)
+        value = next((r for r in clause.roles if r.name == q.scope), None)
+        capacity = next((r for r in clause.roles if r.name == "capacity"), None)
+        if entity is None or attr is None or value is None:
+            return False
+        if re.search(r"(?:年|月|日|現在|時点|当時)", entity.span.text):
+            return False
+        if qrole.span.start < value.span.start or qrole.span.end > value.span.end:
+            return False
+        if capacity is not None:
+            if (entity.span.start != clause.span.start or attr.span.end != qrole.span.start
+                    or value.span.start != qrole.span.start or value.span.end >= capacity.span.start
+                    or source[value.span.end:capacity.span.start] != "の"
+                    or source[entity.span.end:attr.span.start].find("は") < 0
+                    or clause.predicate_span.text not in ("ある", "位置する", "存在する")):
+                return False
+        elif not (clause.predicate_span.start < value.span.end
+                  and value.span.start < clause.predicate_span.end):
+            return False
+    # A quantity property recovered from a nominal apposition must keep its
+    # explicit topic, attribute, value, and nominal head as distinct roles.
+    # Re-tokenize only this bounded clause.  Every content token must be
+    # covered by an independently source-bound role, the predicate, or the
+    # quantifier marker; particles and inflections are grammar, not evidence.
+    fragment = source[clause.span.start:clause.span.end]
+    try:
+        from fugashi import Tagger
+        tagger = Tagger()
+        surfaces = list(tagger(fragment))
+    except Exception:
+        return False
+    covers = []
+    for role in clause.roles:
+        if not role.name.startswith("quantifier_"):
+            covers.append((role.span.start - clause.span.start, role.span.end - clause.span.start))
+    covers.append((clause.predicate_span.start - clause.span.start,
+                   clause.predicate_span.end - clause.span.start))
+    covers.append((qrole.span.start - clause.span.start, qrole.span.end - clause.span.start))
+    cursor = 0
+    token_spans = []
+    for token in surfaces:
+        start = fragment.find(token.surface, cursor)
+        if start < 0:
+            return False
+        end = start + len(token.surface)
+        cursor = end
+        token_spans.append((token, start, end))
+    for i, (token, start, end) in enumerate(token_spans):
+        if token.feature.pos1 in _IGNORED_POS or any(a <= start and end <= b for a, b in covers):
+            continue
+        # Native readers sometimes anchor a suru predicate at its inflection.
+        if (clause.predicate.endswith("する") and i + 1 < len(token_spans)
+                and (token_spans[i + 1][0].surface in ("し", "さ", "せ", "する"))
+                and clause.predicate[:-2].endswith(token.surface)
+                and token_spans[i + 1][1] <= (clause.predicate_span.start - clause.span.start)
+                < token_spans[i + 1][2]):
+            continue
+        if "として" in fragment and token.surface == "し":
+            at = fragment.find("として")
+            if at <= start < at + len("として"):
+                continue
+        return False
+    return True
+
+
+register(Construction(name="quantifier", priority=25, reads=reads, licenses=licenses,
+                      refines=("copula", "frame", "measure")))
+
+
+__all__ = ("Quantification", "licenses", "reads")

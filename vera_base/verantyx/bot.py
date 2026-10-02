@@ -7,13 +7,16 @@
 Japanese and English documents and questions (detected per text). Answers are sentences from the
 documents, found through the base (stereo cross + flat fallback + sovereigns) and scored by content
 words, counters (何冊 ↔ 5冊, how many ↔ five), conditions (〜したら ↔ 場合は, if/when) and the kind of
-question (いつ/when ↔ days and times). What the documents do not say is answered with "I don't know".
+question (いつ/when ↔ days and times). Document answers require a cited sentence carrying the asked slot.
 Greetings, exact skills (arithmetic, conversion, …) and puns come from the chat underneath."""
 from __future__ import annotations
 
 import re
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional
+
+if TYPE_CHECKING:
+    from verantyx.question import Query
 
 JA = re.compile(r"[぀-ヿ一-鿿]")
 COUNTERS = "冊|人|日|時|分|秒|円|週間|か月|ヶ月|年|回|個|枚|本|台|匹|歳|才|名|件|ページ|点|km|kg|m|g|%|パーセント|割"
@@ -66,40 +69,68 @@ def _counters(text: str) -> set:
     return {m.group(2) for m in re.finditer(r"(\d+|[%s]+)\s*(%s)" % (KANJI_NUM, COUNTERS), text)}
 
 
+_INJECTED = re.compile(
+    r"(?:この文書を読んだ|文書を読んだ).{0,20}AI|AIへの命令として|AI向けの命令|"
+    r"以後すべての質問に.{0,60}答えること|回答を変える必要はない|"
+    r"注意書きとして誤って混入|AI.{0,8}指示", re.I)
+
+
 class Bot:
     def __init__(self):
         from verantyx.base import Base
         self.base = Base()
         self.sents: List[dict] = []
+        self.safe_texts: Dict[str, str] = {}
+        self.original_texts: Dict[str, str] = {}
+        self.original_sovereigns: Dict[str, str] = {}
+        self._semantic_generation = 0
         self._chat = None
+        self._one = None
 
     # --- building ------------------------------------------------------------------
     def add(self, name: str, text: str, sovereign: str = "", kind: str = "") -> "Bot":
+        self._one = None
+        self.original_texts[name] = text
+        self.original_sovereigns[name] = sovereign or 'document'
+        self._semantic_generation += 1
         text = text.replace("\r", "")
         lg = lang(text)
         kind = kind or ("rules" if re.search(r"(てはいけな|てはならな|禁止|しなければならな|ものとする|てよい|できます|できません|must|may not|prohibited|shall)", text) else "record")
         if lg == "ja":
-            self.base.add(name, text, kind, sovereign)
             parts = [s.strip() for s in re.split(r"(?<=[。！？])|\n+", text) if s.strip()]
+            safe = [s for s in parts if not _INJECTED.search(s)]
+            self.base.add(name, "".join(safe), kind, sovereign)
         else:
+            parts = [s.strip() for s in re.split(r"(?<=[.!?])\s+|\n+", text) if s.strip()]
+            safe = [s for s in parts if not _INJECTED.search(s)]
             self.base.docs[name] = {"text": text, "kind": kind, "sovereign": sovereign or kind,
-                                    "sentences": [s.strip() for s in re.split(r"(?<=[.!?])\s+|\n+", text) if s.strip()]}
+                                    "sentences": safe}
             self.base.items[name] = []
-            parts = self.base.docs[name]["sentences"]
             # "It is closed every Monday.": a leading It / They stands for the previous sentence's subject
             from verantyx import en_frames as en
             prev = ""
             for i, p in enumerate(parts):
+                if _INJECTED.search(p):
+                    continue
                 m = re.match(r"^(It|They)\b", p)
                 if m and prev:
                     parts[i] = re.sub(r"^(It|They)\b", "The " + prev if not prev[0].isupper() else prev, p, count=1)
                 subj = _en_subject(parts[i])
                 if subj and subj.lower() not in ("it", "they"):
                     prev = subj
-        for s in parts:
+        # Verbatim headings/labels need their line breaks. Keep a separate
+        # injection-filtered structural view; Base's frame text stays compact.
+        structured = text
+        for sentence in parts:
+            if _INJECTED.search(sentence):
+                structured = structured.replace(sentence, "", 1)
+        self.safe_texts[name] = structured
+        for i, s in enumerate(parts):
             if len(s) < 2 or s.startswith("#") and len(s) < 4:
                 continue
-            self.sents.append({"doc": name, "text": s, "lang": lg,
+            injected = bool(_INJECTED.search(s))
+            self.sents.append({"doc": name, "index": i, "text": s, "lang": lg,
+                               "injected": injected,
                                "words": _ja_words(s) if lg == "ja" else _en_words(s),
                                "counters": _counters(s) if lg == "ja" else ({w for w in re.findall(r"[a-z]+", s.lower()) if w in EN_NUM} | set(re.findall(r"\d+", s))),
                                "cond": bool(re.search(r"(場合|たら|ならば|際は|ときは|if |when |unless )", s)),
@@ -124,6 +155,7 @@ class Bot:
         return b.build()
 
     def build(self) -> "Bot":
+        self._one = None
         ja_docs = {n: d for n, d in self.base.docs.items() if self.base.items.get(n)}
         if ja_docs:
             self.base.build()
@@ -137,78 +169,73 @@ class Bot:
             self._chat = Chat([])
         return self._chat
 
-    def find(self, q: str) -> Optional[dict]:
-        lg = lang(q)
-        qw = _ja_words(q) if lg == "ja" else _en_words(q)
-        if not qw:
+    def find(self, q: str, *, query: Optional["Query"] = None) -> Optional[dict]:
+        if not self.sents:
             return None
-        pool = [s for s in self.sents if s["lang"] == lg]
-        leaf = None
-        if lg == "ja" and self.base.root is not None:
-            leaf = self.base.lower(q)
-            if leaf:
-                narrowed = [s for s in pool if s["doc"] == leaf]
-                pool = narrowed or pool
-        asks_count = bool(re.search(r"何(%s)|いくつ|いくら|how many|how much|how long" % COUNTERS, q.lower()))
-        asks_when = bool(re.search(r"いつ|何時|何曜|何日|when|what time|which day", q.lower()))
-        asks_cond = bool(re.search(r"(したら|すると|した場合|だったら|なら|if |what happens)", q.lower()))
-        qcount = {m.group(1) for m in re.finditer(r"何(%s)" % COUNTERS, q)}
-        qw = qw - qcount - {"何" + c for c in qcount}
-        best, best_score = None, 0.0
-        for s in pool:
-            hit = qw & s["words"]
-            counter_hit = bool(qcount and s["counters"] & qcount)
-            if not hit and not counter_hit:
-                continue
-            # 何冊 ↔ 5冊: the counter alone can pick the sentence the words do not (借りる ↔ 貸出)
-            score = len(hit) / (len(qw) ** 0.5 * max(len(s["words"]), 1) ** 0.5) + (0.3 if counter_hit and not hit else 0)
-            if asks_count and (s["counters"] & qcount or (lg == "en" and s["counters"])):
-                score += 0.35
-            if asks_when and s["when"]:
-                score += 0.25
-            if asks_cond and s["cond"]:
-                score += 0.25
-            if score > best_score:
-                best, best_score = s, score
-        # one shared content word is enough only when the question is that specific
-        if best is None or best_score < 0.28:
-            return None
-        return {**best, "score": round(best_score, 2), "leaf": leaf}
+        from verantyx import question as question_reader
+        from verantyx.answer import compose
+        return compose(self, query or question_reader.read(q))
+
+    def _one_entry(self):
+        if self._one is None:
+            from verantyx.one import Vera
+            self._one = Vera(bot=self)
+        return self._one
 
     def reply(self, q: str) -> Dict:
-        q = q.strip()
+        return self._one_entry().ask(q)
+
+    def _reply_impl(self, q: str) -> Dict:
+        from verantyx import question
+        query = question.read(q)
+        q = query.surface.value
         from verantyx.skills import answer as skill
         sk = skill(q)
         if sk:
-            return sk
+            return {**sk, "evidence": sk.get("evidence", []),
+                    "trace": [{"part": "question.read", "kind": query.kind.value},
+                              {"part": "skills.answer", "kind": sk.get("kind")}]}
         from verantyx.chat import BYE, GREET
-        from verantyx.intent import act_by_form
-        act, _ = act_by_form(q)
+        act = query.speech_act.value.act
         if GREET.search(q) or BYE.search(q) or act in ("thanks", "apology"):
-            return self.chat.reply(q)
-        hit = self.find(q)
+            r = self.chat.reply(q, query=query)
+            return {**r, "evidence": r.get("evidence", []),
+                    "trace": r.get("trace", [{"part": "question.read", "kind": query.kind.value},
+                                           {"part": "chat.reply", "kind": r.get("kind")}])}
+        hit = self.find(q, query=query)
         if hit:
-            src = hit["doc"]
-            text = ("%s（「%s」より）" % (hit["text"], src)) if hit["lang"] == "ja" else ("%s (from %s)" % (hit["text"], src))
-            return {"text": text, "kind": "answer", "source": src, "evidence": [hit["text"]]}
+            return hit
         if lang(q) == "en":
-            return {"text": "Sorry, the documents do not say.", "kind": "unknown"}
-        r = self.chat.reply(q)
+            return {"text": "Sorry, the documents do not say.", "kind": "unknown",
+                    "verdict": "NOT_IN_DOCS", "evidence": [],
+                    "how_to_resolve": "Add a document stating the requested fact.",
+                    "trace": [{"part": "question.read", "kind": query.kind.value},
+                              {"part": "bot.find", "verdict": "NOT_IN_DOCS"}]}
+        r = self.chat.reply(q, query=query)
         if r.get("kind") in ("ack", "answer", "compose"):
             # the documents are what this bot knows; general-store answers are marked as such
             if r.get("kind") == "ack":
-                return {"text": "ごめんなさい、文書には書かれていないようです。", "kind": "unknown"}
+                return {"text": "文書には書かれていません。", "kind": "unknown",
+                        "verdict": "NOT_IN_DOCS", "evidence": [],
+                        "how_to_resolve": "質問された事項を明記した文書を追加してください。",
+                        "trace": [{"part": "question.read", "kind": query.kind.value},
+                                  {"part": "bot.find", "verdict": "NOT_IN_DOCS"}]}
             r["text"] = r["text"] + "（文書ではなく一般の知識から）"
-        return r
+        return {**r, "evidence": r.get("evidence", []),
+                "trace": r.get("trace", [{"part": "question.read", "kind": query.kind.value},
+                                       {"part": "chat.reply", "kind": r.get("kind")}])}
 
     def judge(self, claim: str) -> Dict:
+        return self._one_entry().judge(claim)
+
+    def _judge_impl(self, claim: str) -> Dict:
         if lang(claim) == "ja":
             return self.base.judge(claim)
         from verantyx import en_frames as en
         from verantyx.crossverify import judge as xjudge
         rows = []
         for s in self.sents:
-            if s["lang"] == "en":
+            if s["lang"] == "en" and not s["injected"]:
                 k = en.key(en.read(s["text"]))
                 if k:
                     rows.append({"key": k, "sentence": s["text"]})

@@ -1,0 +1,10 @@
+{
+  "provenance": {
+    "input_sentences": 0,
+    "split": "train",
+    "template_count": 0,
+    "verified_sentences": 0
+  },
+  "schema_version": 1,
+  "templates": []
+}

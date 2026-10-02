@@ -8,10 +8,12 @@ from __future__ import annotations
 import re
 import sqlite3
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
+
+if TYPE_CHECKING:
+    from verantyx.question import Query
 
 from verantyx.frames import read_all
-from verantyx.intent import act_by_form
 from verantyx.typed_edges import _tagger
 
 import os
@@ -95,6 +97,14 @@ class Chat:
                                 "HAVING n>=2 ORDER BY n DESC LIMIT 6", (x,)).fetchall()
         return [r for r in rows if r[0] not in ("もの", "物", "こと", "事", "人", "方", "一つ", "ひとつ", "一種", "種類", "存在")][:3]
 
+    def isa_sources(self, x: str, y: str) -> List[dict]:
+        if self.con is None:
+            return []
+        return [{"family": "general", "source": src, "text": sentence}
+                for sentence, src in self.con.execute(
+                    "SELECT s.text,i.src FROM isa i JOIN tsent s ON s.sha=i.sha "
+                    "WHERE i.x=? AND i.y=? GROUP BY i.src LIMIT 3", (x, y))]
+
     def events(self, topic: str, k: int = 3) -> List[tuple]:
         """(predicate, sources, short sentence 「topicがpredicate。」, shortest witness) for events
         with the topic as subject, attested by >= 2 sources."""
@@ -124,12 +134,20 @@ class Chat:
                 self._say_cache.update(json.loads(pack.read_text()))
         if topic not in self._say_cache and self.con is None:
             return {"text": "", "evidence": [], "sources": []}
-        if topic not in self._say_cache:
+        # A prebuilt pack carries only counts and the first witness. With the
+        # live general store available, reread the indexed frames so each
+        # generated sentence retains both source identities and texts.
+        if self.con is not None and (topic not in self._say_cache or
+                                     not self._say_cache[topic].get("_live")):
             from verantyx.say import say
             r = say(topic, k=k, db=self.general, scan=600, via_index=True)
-            self._say_cache[topic] = {"text": r.get("text", ""),
-                                      "evidence": [ln["witnesses"][0]["text"] for ln in r.get("lines", []) if ln["witnesses"]],
-                                      "sources": [ln["sources"] for ln in r.get("lines", [])]}
+            self._say_cache[topic] = {"text": r.get("text", ""), "_live": True,
+                                      "evidence": [w["text"] for ln in r.get("lines", []) for w in ln["witnesses"]],
+                                      "sources": [{"family": "general", **w} for ln in r.get("lines", [])
+                                                  for w in ln["witnesses"]],
+                                      "lines": [{"text": ln["sentence"],
+                                                 "sources": [{"family": "general", **w} for w in ln["witnesses"]]}
+                                                for ln in r.get("lines", [])]}
         return self._say_cache[topic]
 
     def can(self, subject: str, verb: str) -> Optional[Dict[str, Any]]:
@@ -141,17 +159,46 @@ class Chat:
         r = ask_property(self.general, subject, [verb])
         v = r["verdict"]
         if v == "ATTESTED":
-            return {"text": "はい、%sは%sようです（出典 %d件）。" % (subject, verb, r.get("pos_sources", 2)),
-                    "source": "general"}
+            sentence = "はい、%sは%sようです（出典 %d件）。" % (subject, verb, r.get("pos_sources", 2))
+            srcs = [{"family": "general", "source": e["src"], "text": e["text"]}
+                    for e in r.get("evidence", []) if e.get("text")]
+            return {"text": sentence, "source": "general", "sources": srcs,
+                    "evidence": [s["text"] for s in srcs],
+                    "lines": [{"text": sentence, "sources": srcs}]} if srcs else None
         if v == "NEGATIVE_ATTESTED":
-            return {"text": "いいえ、%sは%sないようです（出典 %d件）。" % (subject, verb, max(r.get("neg_sources", 0), 2)),
-                    "source": "general"}
+            sentence = "いいえ、%sは%sないようです（出典 %d件）。" % (subject, verb, max(r.get("neg_sources", 0), 2))
+            srcs = [{"family": "general", "source": e["src"], "text": e["text"]}
+                    for e in r.get("evidence", []) if e.get("text")]
+            return {"text": sentence, "source": "general", "sources": srcs,
+                    "evidence": [s["text"] for s in srcs],
+                    "lines": [{"text": sentence, "sources": srcs}]} if srcs else None
         return None
 
     # --- reply ---------------------------------------------------------------
-    def reply(self, u: str, context: str = "") -> Dict[str, Any]:
-        u = u.strip()
-        act, _ = act_by_form(u)
+    def reply(self, u: str, context: str = "", *, query: Optional["Query"] = None) -> Dict[str, Any]:
+        from verantyx.one import Vera
+        return Vera(chat=self).chat(u, context=context, query=query)
+
+    def _reply_impl(self, u: str, context: str = "", *, query: Optional["Query"] = None) -> Dict[str, Any]:
+        from verantyx import question
+        query = query if query is not None else question.read(u)
+        u = query.surface.value
+        act = query.speech_act.value.act
+        if act == "request" and (question.is_content_request(u) or
+                                 (query.kind.value != "instruction" and
+                                  re.search(r"か[。？?]*$|[？?]$", u))):
+            # Explanations, rewrites, and other text to produce are answer
+            # requests. Keep their form reading in Query for the trace.
+            act = "question"
+        # Six open text abilities share the typed question reading and a
+        # source-preserving structural composer. The legacy skill dispatcher
+        # remains for exact calculations and social requests.
+        from verantyx.abilities import Abilities
+        if not hasattr(self, "_abilities"):
+            self._abilities = Abilities(general=Path(self.general))
+        ability = self._abilities.answer(u, query)
+        if ability is not None:
+            return ability
         from verantyx.skills import answer as skill_answer
         sk = skill_answer(u, context or " ".join(x[1] for x in self.sents if x[0] == "文章"))
         if sk:
@@ -195,11 +242,23 @@ class Chat:
             g = self.grounded(x)
             if ups or g["text"]:
                 parts = []
+                lines = []
                 if ups:
-                    parts.append("%sは%sの一種です（出典 %d件）。" % (x, ups[0][0], ups[0][1]))
+                    isa_text = "%sは%sの一種です（出典 %d件）。" % (x, ups[0][0], ups[0][1])
+                    isa_sources = self.isa_sources(x, ups[0][0])
+                    if isa_sources:
+                        parts.append(isa_text)
+                        lines.append({"text": isa_text, "sources": isa_sources})
                 parts.append(g["text"])
+                lines.extend(g.get("lines", []))
+                if not any(parts):
+                    return {"text": "ごめんなさい、%sについては分かりません。" % x, "kind": "unknown"}
+                all_sources = [s for ln in lines for s in ln["sources"]]
                 return {"text": "".join(parts), "kind": "answer", "source": "general",
-                        "evidence": g["evidence"]}
+                        "evidence": [s["text"] for s in all_sources], "sources": all_sources,
+                        "lines": lines,
+                        "trace": [{"part": "question.read", "kind": query.kind.value},
+                                  {"part": "say.say", "topic": x, "lines": len(g.get("lines", []))}]}
             return {"text": "ごめんなさい、%sについては分かりません。" % x, "kind": "unknown"}
         m = YESNO.match(u)
         if m and act == "question":
@@ -212,7 +271,7 @@ class Chat:
             return {"text": "ごめんなさい、確かなことは分かりません。", "kind": "unknown"}
         frs = read_all(u if u.endswith(("。", "？", "?")) else u + "。")
         if not frs:
-            return {"text": "ごめんなさい、うまく読めませんでした。言い換えてもらえますか。", "kind": "unreadable"}
+            return {"text": "ごめんなさい、うまく読めませんでした。別の言い方でお願いします。", "kind": "unreadable"}
         if act == "question":
             return {"text": "ごめんなさい、確かなことは分かりません。", "kind": "unknown"}
         return {"text": "そうなんですね。", "kind": "ack"}

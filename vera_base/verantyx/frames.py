@@ -112,10 +112,12 @@ def attested(verb: str, rel: str, noun: str) -> bool:
     gap (玄関に置いた傘: 傘を置く is written) or is an outer head (電車が走る
     音: 音を走る is not)."""
     global _GEN_CON
+    import os
     import sqlite3
     from pathlib import Path
     if _GEN_CON is None:
-        p = Path.home() / "Projects" / "vera-corpus" / "build" / "general.db"
+        p = Path(os.environ.get("VERA_GENERAL", Path.home() / "Projects" /
+                                "vera-corpus" / "build" / "general.db"))
         if not p.exists():
             return False
         _GEN_CON = sqlite3.connect(f"file:{p}?mode=ro", uri=True, check_same_thread=False)
