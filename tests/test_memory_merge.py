@@ -9,6 +9,7 @@ from verantyx.memory_merge import (
     merge_files,
     merge_logs,
 )
+from verantyx.memory_frame import Memory
 
 
 def fact(rid, subject='router', attribute='limit', value='10', **extra):
@@ -163,6 +164,23 @@ def test_supersede_event_without_matching_record_pointer_does_not_retire_old():
     report, = conflicts(merged)
     assert report.record_ids == ('new', 'old')
     assert report.values == ('new value', 'old value')
+
+
+def test_mismatched_supersede_stays_nonoperative_after_serialize_and_reopen(tmp_path):
+    left = tmp_path / 'left.jsonl'
+    right = tmp_path / 'right.jsonl'
+    output = tmp_path / 'merged.jsonl'
+    left.write_text(
+        ''.join(json.dumps(event) + '\n' for event in (fact('old', value='old value'), link('old', 'new'))),
+        encoding='utf-8',
+    )
+    right.write_text(json.dumps(fact('new', value='new value')) + '\n', encoding='utf-8')
+
+    merge_files(left, right, output)
+    reopened = Memory(str(output))
+
+    assert sorted(record['id'] for record in reopened.active()) == ['new', 'old']
+    assert [record['id'] for record in active_records(output)] == ['new', 'old']
 
 
 def test_record_pointer_restores_missing_supersede_event():

@@ -50,7 +50,7 @@ def _state(events: Iterable[Mapping[str, Any]]):
     records: dict[str, dict] = {}
     aliases: set[str] = set()
     links: set[tuple[str, str]] = set()
-    declared_links: set[tuple[str, str]] = set()
+    declared_events: dict[tuple[str, str], set[str]] = {}
     other: set[str] = set()
 
     for raw in events:
@@ -70,11 +70,11 @@ def _state(events: Iterable[Mapping[str, Any]]):
             records[rid] = record
             for parent in _superseded_ids(record.get('supersedes')):
                 links.add((parent, rid))
-        elif op == 'supersede':
+        elif op in ('supersede', 'pending_supersede'):
             old, new = event.get('id'), event.get('by')
             if not isinstance(old, str) or not old or not isinstance(new, str) or not new:
                 raise ValueError('supersede events must name non-empty id and by values')
-            declared_links.add((old, new))
+            declared_events.setdefault((old, new), set()).add(_dump(event))
         elif op == 'alias':
             aliases.add(_dump(event))
         else:
@@ -85,25 +85,32 @@ def _state(events: Iterable[Mapping[str, Any]]):
     # once the record is present, a mismatching or absent pointer makes the
     # event non-operative. Record pointers themselves also restore missing
     # supersede events below.
-    for old, new in declared_links:
+    supersede_events: set[str] = set()
+    pending_events: set[str] = set()
+    for (old, new), payloads in declared_events.items():
         if new not in records:
             links.add((old, new))
+            for payload in payloads:
+                event = json.loads(payload)
+                event['op'] = 'pending_supersede'
+                pending_events.add(_dump(event))
         elif old in _superseded_ids(records[new].get('supersedes')):
             links.add((old, new))
+            for payload in payloads:
+                event = json.loads(payload)
+                event['op'] = 'supersede'
+                supersede_events.add(_dump(event))
 
-    # Include supersede operations inferred from record pointers.  Retain
-    # original event payloads (including timestamps) when supplied.
-    explicit_links = {
-        (event.get('id'), event.get('by'))
-        for event in events
-        if event.get('op') == 'supersede'
+    # Record pointers are authoritative. Emit only validated operations, and
+    # keep links whose replacement has not arrived in a form Memory ignores.
+    # A later merge can still promote that pending event when its record arrives.
+    explicit_links = set(declared_events)
+    operative_links = {(old, new) for old, new in links if new in records}
+    operative_explicit_links = {
+        (old, new) for old, new in explicit_links
+        if new in records and old in _superseded_ids(records[new].get('supersedes'))
     }
-    supersede_events = {
-        _dump(dict(event))
-        for event in events
-        if event.get('op') == 'supersede'
-    }
-    for old, new in sorted(links - explicit_links):
+    for old, new in sorted(operative_links - operative_explicit_links):
         supersede_events.add(_dump({'op': 'supersede', 'id': old, 'by': new}))
 
     # A cycle is invalid even if one of its ids has not arrived in this part
@@ -137,7 +144,7 @@ def _state(events: Iterable[Mapping[str, Any]]):
     canonical = write_events + [
         json.loads(event) for event in sorted(aliases)
     ] + [
-        json.loads(event) for event in sorted(supersede_events)
+        json.loads(event) for event in sorted(supersede_events | pending_events)
     ] + [
         json.loads(event) for event in sorted(other)
     ]
