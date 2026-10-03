@@ -1,0 +1,18 @@
+--- a/tests/test_semantic_read_w3b2.py
++++ b/tests/test_semantic_read_w3b2.py
+@@ -180,7 +180,7 @@
+         return {n.name: ast.get_source_segment(src, n) for n in ast.parse(src).body if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
+     b, n = fns(base_src), fns(now)
+     assert [k for k in b if k not in n] == []
+-    assert [k for k in b if b[k] != n[k]] == ['_typed_reread_ja']
++    assert [k for k in b if b[k] != n[k]] == ['_read_ja', '_typed_reread_ja']    # W3-b3 (docs/READING_SOUNDNESS.md 10C K114): the two lines of `_read_ja` that call the typed re-reading and, when it refuses, the path of two predicates
+     assert set(n) - set(b) >= {'typed_explain_ja'}
+ 
+ 
+--- a/tests/test_question_cross.py
++++ b/tests/test_question_cross.py
+@@ -259,3 +259,3 @@
+     'main': 'a2208d1ed1e6882b96e701cd4ef8836f54876e715bebd4adbe34d25a3dcc367e',
+-    '_read_ja': 'caac7ccd5cb1cda7bb166f60e7788e8ea1ee8f500150011c2f098895d96d7a98',
++    '_read_ja': '6d9d64a8e7f0788081a3d5daaeb042de89f9a2e35ec81c8f7b159b3e73620e5e',
+     '_read_en': '015499340163651d39d5ef4b9c930d6edf3b260553fcd62346947c9f9480ff3d',

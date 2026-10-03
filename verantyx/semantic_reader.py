@@ -2285,3 +2285,322 @@ def _s4_demonstrative_roles(text, toks, clause, query, role_map, covered):
         basis[name] = 'placement_%s%s:%s' % (kind, '_head' if head else '', '+'.join(payload))
         flags[name] = {'determiner': toks[k][0].surface}
     return {'mode': 'extra', 'roles': [], 'predicate_basis': None, 'role_basis': basis, 'role_flags': flags, 'clause': replace(clause, unsupported=())}, None
+
+
+# ===================================================================================================================================
+# W3-b3: embedded crosses. docs/READING_SOUNDNESS.md section 10C (K114-K122).
+# Nothing above this line is changed. What is added: the closed list of cuts (a table of parts of speech and forms: no list of words), the pure functions that decide, from a
+# SNAPSHOT of the tokens (their features copied at once: the nodes of the tagger are valid only until the next parse), the groups of predicates, the cuts, the gates that need no
+# question, the text of each clause and the head noun phrase of a relative clause. The entry (semantic_read.py) reads each clause with its own rules and asks the placement.
+# ===================================================================================================================================
+from collections import namedtuple as _w3b3_namedtuple
+
+# K115 / K119. kind, the tokens of its connective, 'finite' | 'nonfinite' (how the text of the clause before it is written), the relation of the convention (or the name of the edge the
+# diagnosis holds), and whether the clause before it keeps the tense the entry read (False: null, convention section 5).
+W3B3_CUTS = (
+    ('relative', (), 'finite', 'relative', True),
+    ('ので', ('ので',), 'finite', 'cause', True),
+    ('から', ('から',), 'finite', 'cause', True),
+    ('が', ('が',), 'finite', 'contrast', True),
+    ('けれど', ('けれど', 'けれども', 'けど'), 'finite', 'contrast', True),
+    ('と', ('と',), 'finite', 'condition', True),
+    ('なら', ('なら',), 'finite', 'condition', False),
+    ('ば', ('ば',), 'nonfinite', 'condition', False),
+    ('たら', ('たら', 'だら'), 'nonfinite', 'condition', False),
+    ('ても', ('ても', 'でも'), 'nonfinite', 'concession', False),
+    ('ながら', ('ながら',), 'nonfinite', 'simultaneous', False),
+    ('て', ('て', 'で'), 'nonfinite', 'TE_UNDETERMINED', False),
+    ('並列', ('、',), 'nonfinite', 'PARALLEL_UNDETERMINED', False),
+)
+W3B3_QUOTE_VERBS = ('言う', '思う', '話す', '伝える', '聞く', '尋ねる', '答える', '考える')          # K119: W1-a4's list of verbs of quotation, copied
+W3B3_PERMISSION_WORDS = ('いい', 'よい', 'かまう')                                               # K115: ても + one of these is a permission, not a cut (W1-a4's K42, copied)
+W3B3_OUTER_TYPES = ('ABSTRACT', 'EVENT_ACT', 'STATE_PROPERTY')                                    # K118 8: a head of these types may be a content clause / an outer relation
+W3B3_QUOTE_TYPES = ('P_COMMUNICATE', 'P_COGNITION', 'P_CREATE', 'P_PERCEIVE')                      # K119: a main predicate of these types makes a quotation と possible
+W3B3_REASON_NAMES = ('W3B3_NOT_TRIGGERED', 'CLAUSE_SCOPE_NOT_LISTED', 'CLAUSE_SCOPE_AMBIGUOUS', 'CLAUSE_FORM_NOT_READ', 'CLAUSE_TOKENS_DIFFER', 'CLAUSE_UNREAD',
+                     'HEAD_ROLE_UNDETERMINED', 'HEAD_NOT_IN_HOST', 'RELATION_TYPE_UNDETERMINED', 'ELLIPSIS_UNDETERMINED')
+W3B3_PRODUCED_WITH_PLACEMENT = {                                                                   # K121: what the entry writes with a placement that it never wrote without one
+    'relation:relative': 'with a placement, when K118 holds; the relation holds the key `head`',
+    'relation:cause': 'with a placement only (the connectives of the cut table that mean a cause)',
+    'relation:contrast': 'with a placement only (the connectives that mean a contrast)',
+    'relation:concession': 'with a placement only (the connective that means a concession)',
+    'relation:condition': 'with a placement only (the connectives that mean a condition)',
+    'relation:simultaneous': 'with a placement only (the connective that means simultaneity)',
+    'relation_key:head': 'only in a relation of type relative: from_role, to_role; outside the keys of the convention',
+    'tense:null': 'the clause before the connectives whose clause the convention writes with a null tense',
+}
+W3B3Tok = _w3b3_namedtuple('W3B3Tok', 'surface start end pos1 pos2 pos3 lemma ctype cform base marker is_pred')
+
+
+def w3b3_snapshot(toks, preds):
+    """The tokens of `_tokens` as plain values (copied at once), with the mark of `_w3b1_marker` and whether the entry counts the token as a head of a predicate (`preds`)."""
+    out = []
+    for (w, a, b), p in zip(toks, preds):
+        f = w.feature
+        out.append(W3B3Tok(w.surface, a, b, f.pos1, f.pos2, f.pos3, getattr(f, 'lemma', None) or w.surface, f.cType or '', f.cForm or '', _base(w), _w3b1_marker((w, a, b)), bool(p)))
+    return tuple(out)
+
+
+def _w3b3_at(snap, i):
+    return snap[i] if 0 <= i < len(snap) else None
+
+
+def _w3b3_aspect_te(snap, i):
+    """A te / de particle between a verb and a verb that is not independent (the progressive, the completive): inside the predicate, not a connective."""
+    t, nxt, prev = snap[i], _w3b3_at(snap, i + 1), _w3b3_at(snap, i - 1)
+    return (t.pos1 == '助詞' and t.pos2 == '接続助詞' and t.surface in ('て', 'で') and prev is not None and prev.pos1 == '動詞'
+            and nxt is not None and nxt.pos1 == '動詞' and nxt.pos2 == '非自立可能')
+
+
+def w3b3_groups(snap):
+    """K115: the groups of predicate tokens (lists of indices): a token that the entry counts as a head of a predicate joins the group of the token before it (a compound verb), or of
+    the token two before it when a te / de particle stands between. The copula that follows a nominalising particle is the connective of a cut, not a predicate."""
+    groups = []
+    for i, t in enumerate(snap):
+        if not t.is_pred: continue
+        if t.pos1 == '助動詞' and t.lemma == 'だ' and i > 0 and snap[i - 1].pos2 == '準体助詞': continue      # the copula of a nominalised predicate (the で of ので): the connective, not a predicate
+        if groups and groups[-1][-1] == i - 1: groups[-1].append(i)
+        elif groups and i >= 2 and snap[i - 1].pos1 == '助詞' and snap[i - 1].surface in ('て', 'で') and groups[-1][-1] == i - 2: groups[-1].append(i)
+        else: groups.append([i])
+    return groups
+
+
+def _w3b3_comma(snap, i):
+    t = _w3b3_at(snap, i)
+    return t is not None and t.pos1 == '補助記号' and t.pos2 == '読点'
+
+
+def _w3b3_cut(kind, snap, tokens, a_end, aux_before=False, comma=None):
+    row = next(r for r in W3B3_CUTS if r[0] == kind)
+    last = max(list(tokens) + ([comma] if comma is not None else []) + [a_end])
+    connective = ''.join(snap[i].surface for i in tokens) if tokens else (snap[comma].surface if comma is not None else '')
+    return {'kind': kind, 'connective': connective, 'tokens': tuple(tokens), 'comma': comma, 'a_end': a_end, 'b_start': last + 1, 'aux_before': aux_before,
+            'clause_kind': row[2], 'relation': row[3], 'tense_kept': row[4]}
+
+
+def w3b3_unlisted(snap):
+    """K115: the forms outside the list, as the surface of what stands there (nominaliser + ni, te + kara, an auxiliary stem after a verb, a time noun before which a verb stands)."""
+    out = []
+    for i, t in enumerate(snap):
+        nxt, prev = _w3b3_at(snap, i + 1), _w3b3_at(snap, i - 1)
+        if t.pos1 == '助詞' and t.pos2 == '準体助詞' and t.surface == 'の' and nxt is not None and nxt.pos1 == '助詞' and nxt.pos2 == '格助詞' and nxt.surface == 'に':
+            out.append(t.surface + nxt.surface)
+        elif t.pos1 == '助詞' and t.pos2 == '接続助詞' and t.surface in ('て', 'で') and nxt is not None and nxt.pos1 == '助詞' and nxt.pos2 == '格助詞' and nxt.surface == 'から':
+            out.append(t.surface + nxt.surface)
+        elif t.pos2 == '助動詞語幹' and prev is not None and prev.pos1 in ('動詞', '助動詞'):
+            out.append(t.surface)
+        elif (t.pos1 in ('名詞', '接尾辞') and t.pos3 in W3B2_HEAD_RELATIONAL_POS3 and prev is not None
+              and ((prev.pos1 == '動詞' and prev.cform.startswith(('終止形', '連体形'))) or (prev.pos1 == '助動詞' and prev.lemma == 'た' and prev.cform.startswith('連体形')))):
+            out.append(t.surface)
+    return out
+
+
+def w3b3_cuts(snap):
+    """K115: every cut of the closed list, found by the part of speech and the form of the token and of its neighbours. A list of dicts (see `_w3b3_cut`)."""
+    cuts = []
+    n = len(snap)
+    for i, t in enumerate(snap):
+        prev, nxt = _w3b3_at(snap, i - 1), _w3b3_at(snap, i + 1)
+        after = i + 1
+        verb_or_ta = prev is not None and (prev.pos1 == '動詞' or (prev.pos1 == '助動詞' and prev.lemma == 'た'))
+        verb_or_aux = prev is not None and prev.pos1 in ('動詞', '助動詞')
+        aux_before = prev is not None and prev.pos1 == '助動詞'
+        conj = t.pos1 == '助詞' and t.pos2 == '接続助詞'
+        # relative: a verb (the same form as the final one) or verb + た (attributive), then a noun
+        if t.pos1 == '動詞' and t.cform.startswith(('終止形', '連体形')) and nxt is not None and nxt.pos1 in ('名詞', '接頭辞'):
+            aspect = prev is not None and prev.pos1 == '助詞' and prev.surface in ('て', 'で') and t.pos2 == '非自立可能'
+            if not aspect and nxt.pos3 not in W3B2_HEAD_RELATIONAL_POS3: cuts.append(_w3b3_cut('relative', snap, (), i))
+        if (t.pos1 == '助動詞' and t.lemma == 'た' and t.cform.startswith('連体形') and prev is not None and prev.pos1 == '動詞' and prev.cform.startswith('連用形')
+                and nxt is not None and nxt.pos1 in ('名詞', '接頭辞') and nxt.pos3 not in W3B2_HEAD_RELATIONAL_POS3):
+            before = _w3b3_at(snap, i - 2)
+            aspect = before is not None and before.pos1 == '助詞' and before.surface in ('て', 'で') and prev.pos2 == '非自立可能'
+            if not aspect: cuts.append(_w3b3_cut('relative', snap, (), i))
+        # ので: 準体助詞 の + 助動詞 で
+        if (t.pos1 == '助詞' and t.pos2 == '準体助詞' and t.surface == 'の' and nxt is not None and nxt.pos1 == '助動詞' and nxt.lemma == 'だ' and nxt.surface == 'で' and verb_or_ta):
+            comma = i + 2 if _w3b3_comma(snap, i + 2) else None
+            cuts.append(_w3b3_cut('ので', snap, (i, i + 1), i - 1, comma=comma))
+        if conj and t.surface == 'から' and verb_or_ta:
+            cuts.append(_w3b3_cut('から', snap, (i,), i - 1, comma=i + 1 if _w3b3_comma(snap, i + 1) else None))
+        if conj and t.surface == 'が':
+            cuts.append(_w3b3_cut('が', snap, (i,), i - 1, comma=i + 1 if _w3b3_comma(snap, i + 1) else None))
+        if conj and t.lemma == 'けれど':
+            tokens = (i, i + 1) if nxt is not None and nxt.pos1 == '助詞' and nxt.pos2 == '係助詞' and nxt.surface == 'も' else (i,)
+            cuts.append(_w3b3_cut('けれど', snap, tokens, i - 1, comma=tokens[-1] + 1 if _w3b3_comma(snap, tokens[-1] + 1) else None))
+        if (conj and t.surface == 'と' and prev is not None
+                and ((prev.pos1 == '動詞' and prev.cform.startswith('終止形')) or (prev.pos1 == '助動詞' and prev.lemma in ('た', 'ない') and prev.cform.startswith('終止形')))):
+            cuts.append(_w3b3_cut('と', snap, (i,), i - 1, comma=i + 1 if _w3b3_comma(snap, i + 1) else None))
+        if (t.pos1 == '助動詞' and t.lemma == 'だ' and t.surface == 'なら' and t.cform.startswith('仮定形') and prev is not None
+                and prev.pos1 == '動詞' and prev.cform.startswith('終止形')):
+            cuts.append(_w3b3_cut('なら', snap, (i,), i - 1, comma=i + 1 if _w3b3_comma(snap, i + 1) else None))
+        if conj and t.surface == 'ば' and verb_or_aux and prev.cform.startswith('仮定形'):
+            cuts.append(_w3b3_cut('ば', snap, (i,), i - 1, aux_before=aux_before, comma=i + 1 if _w3b3_comma(snap, i + 1) else None))
+        if t.pos1 == '助動詞' and t.lemma == 'た' and t.surface in ('たら', 'だら') and t.cform.startswith('仮定形') and verb_or_aux:
+            cuts.append(_w3b3_cut('たら', snap, (i,), i - 1, aux_before=aux_before, comma=i + 1 if _w3b3_comma(snap, i + 1) else None))
+        if conj and t.surface in ('て', 'で') and nxt is not None and nxt.pos1 == '助詞' and nxt.pos2 == '係助詞' and nxt.surface == 'も' and verb_or_aux:
+            follower = _w3b3_at(snap, i + 2)
+            permission = follower is not None and (follower.base in W3B3_PERMISSION_WORDS or follower.surface in W3B3_PERMISSION_WORDS)
+            if not permission:
+                cuts.append(_w3b3_cut('ても', snap, (i, i + 1), i - 1, aux_before=aux_before, comma=i + 2 if _w3b3_comma(snap, i + 2) else None))
+        if conj and t.surface == 'ながら' and verb_or_aux:
+            cuts.append(_w3b3_cut('ながら', snap, (i,), i - 1, aux_before=aux_before, comma=i + 1 if _w3b3_comma(snap, i + 1) else None))
+        if conj and t.surface in ('て', 'で') and verb_or_aux and not _w3b3_aspect_te(snap, i):
+            if nxt is not None and (_w3b3_comma(snap, after) or nxt.pos1 in ('名詞', '代名詞', '副詞', '連体詞', '接頭辞')):
+                cuts.append(_w3b3_cut('て', snap, (i,), i - 1, aux_before=aux_before, comma=i + 1 if _w3b3_comma(snap, i + 1) else None))
+        if t.pos1 == '動詞' and t.cform.startswith('連用形-一般') and _w3b3_comma(snap, i + 1):
+            cuts.append(_w3b3_cut('並列', snap, (), i, comma=i + 1))
+    return cuts
+
+
+def w3b3_scope(snap):
+    """K114 2: (cut, None) for a sentence of exactly two groups of predicates and exactly one cut of the list (the cut is a dict with `groups`: the group before and the group after), else
+    (None, the reason). Decided by the tokens alone; no question to the placement."""
+    groups = w3b3_groups(snap)
+    if len(groups) != 2: return None, 'W3B3_NOT_TRIGGERED:groups=%d' % len(groups)
+    unlisted = w3b3_unlisted(snap)
+    if unlisted: return None, 'CLAUSE_SCOPE_NOT_LISTED:' + unlisted[0]
+    cuts = w3b3_cuts(snap)
+    if len(cuts) != 1: return None, 'CLAUSE_SCOPE_AMBIGUOUS:cuts=%d' % len(cuts)
+    cut = cuts[0]
+    before = [g for g in groups if g[-1] <= cut['a_end']]
+    after = [g for g in groups if g[0] >= cut['b_start']]
+    if len(before) != 1 or len(after) != 1: return None, 'W3B3_NOT_TRIGGERED:groups_not_split'
+    return dict(cut, groups=(before[0], after[0])), None
+
+
+_W3B3_QUOTE_MARKS = ('「', '」', '『', '』', '“', '”', '"')
+
+
+def w3b3_form_gate(snap, cut):
+    """K116 1: the gates of the whole sentence (no position: a mark in either clause stops it): an imperative, a quotation mark, a question, a connective outside the cut. The reason or None.
+    `cut` is the cut dict, or None (then no token is set aside)."""
+    aside = set()
+    if cut is not None:
+        aside = set(cut['tokens'])
+        if cut['comma'] is not None: aside.add(cut['comma'])
+    if any(t.cform.startswith('命令形') for t in snap): return 'CLAUSE_FORM_NOT_READ:imperative'
+    if any(ch in t.surface for t in snap for ch in _W3B3_QUOTE_MARKS): return 'CLAUSE_FORM_NOT_READ:quote'
+    if any(t.surface in ('？', '?') or (t.pos1 == '助詞' and t.pos2 == '終助詞' and t.surface == 'か') for t in snap): return 'CLAUSE_FORM_NOT_READ:question'
+    for i, t in enumerate(snap):
+        if i in aside or t.marker != 'conn': continue
+        if _w3b3_aspect_te(snap, i): continue
+        return 'CLAUSE_FORM_NOT_READ:connective_outside_cut'
+    return None
+
+
+def w3b3_focus_gate(snap, cut):
+    """Section 10C, 4th round (review r3, M1-r3): the gate (12) of K122, after the ellipsis (11) and just before "read". The reason or None.
+    A particle of the focus or adverbial sub-class (the tagger's pos2 kakari-joshi and fuku-joshi, decided by the part of speech, not by the surface) anywhere in the sentence stops the two-clause path,
+    unless it is (a) a token of the connective of the cut (the focus particle that ends a concessive connective) or (b) the topic marker right after a noun or pronoun (the form K120 uses).
+    So a focus or adverbial particle stacked on a case particle is never read: the entry reads the single clause and drops it, and the output has no field for it.
+    No list of particles: the sub-class decides. The rule is registered in docs/READING_SOUNDNESS.md, change record of the 4th round; the position is in review-impl/W3-b3-2/plan.md section 3.
+    (ASCII only: the test of the section of this file scans every non-ASCII literal, docstrings included.)"""
+    aside = set(cut['tokens'])
+    for i, t in enumerate(snap):
+        if i in aside or t.pos1 != '助詞' or t.pos2 not in ('係助詞', '副助詞'): continue
+        prev = _w3b3_at(snap, i - 1)
+        if t.surface == 'は' and prev is not None and prev.pos1 in ('名詞', '代名詞'): continue
+        return 'CLAUSE_FORM_NOT_READ:focus_particle'
+    return None
+
+def _w3b3_phrase_particle(t):
+    return t.pos1 == '助詞' and t.pos2 not in ('接続助詞', '準体助詞') and not (t.pos2 == '格助詞' and t.surface == 'の')
+
+
+def w3b3_phrases(snap, lo, hi):
+    """K116 2: the tokens [lo, hi) cut after a run of particles (a connecting no does not end a phrase). Each phrase: lo, hi, plo (where its particles begin) and particle (the surface
+    of the run, None when the phrase has none)."""
+    out, start, i = [], lo, lo
+    while i < hi:
+        if _w3b3_phrase_particle(snap[i]):
+            j = i
+            while j < hi and _w3b3_phrase_particle(snap[j]): j += 1
+            out.append({'lo': start, 'hi': j, 'plo': i, 'particle': ''.join(snap[k].surface for k in range(i, j))})
+            start = i = j
+        else:
+            i += 1
+    if start < hi: out.append({'lo': start, 'hi': hi, 'plo': hi, 'particle': None})
+    return out
+
+
+def _w3b3_topic(p):
+    return p['particle'] is not None and p['particle'].endswith('は')
+
+
+def _w3b3_broken(phrases):
+    return sum(1 for p in phrases if p['particle'] == 'が') >= 2 or sum(1 for p in phrases if p['particle'] == 'を') >= 2
+
+
+def w3b3_sides(snap, cut):
+    """The phrases of the part before the predicate of the first clause and of the part before the predicate of the second clause."""
+    ga, gb = cut['groups']
+    return w3b3_phrases(snap, 0, ga[0]), w3b3_phrases(snap, cut['b_start'], gb[0])
+
+
+def w3b3_unique(snap, cut):
+    """K116 3-5: the reason (CLAUSE_SCOPE_AMBIGUOUS:...) or None. The alternative cuts are counted by structure only (a subject marker or an object marker repeated breaks a clause; no other particle does)."""
+    a_phr, b_phr = w3b3_sides(snap, cut)
+    if cut['kind'] == 'relative':
+        if any(_w3b3_topic(p) for p in a_phr): return 'CLAUSE_SCOPE_AMBIGUOUS:topic_in_relative'
+        pa = a_phr
+    else:
+        if any(_w3b3_topic(p) for p in b_phr) or any(_w3b3_topic(p) for p in a_phr[1:]): return 'CLAUSE_SCOPE_AMBIGUOUS:topic_position'
+        pa = a_phr[1:] if a_phr and _w3b3_topic(a_phr[0]) else a_phr
+    for k in range(1, len(pa) + 1):
+        if not _w3b3_broken(pa[k:]) and not _w3b3_broken(pa[:k] + b_phr): return 'CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=%d' % k
+    if _w3b3_broken(pa) or _w3b3_broken(b_phr): return 'CLAUSE_SCOPE_AMBIGUOUS:noncontiguous'
+    return None
+
+
+def _w3b3_body_end(snap):
+    last = len(snap) - 1
+    while last >= 0 and snap[last].pos1 == '補助記号' and snap[last].pos2 == '句点': last -= 1
+    return last
+
+
+def w3b3_texts(snap, text, cut):
+    """K117 1-2: ({'a', 'b', 'a_span', 'b_span', 'last'}, None) or (None, the reason). The clause before the cut is written as it is (finite) or with the dictionary form of its verb as
+    written (non-finite); the clause after the cut is written as it is; the tokens of the connective and the comma are in neither."""
+    ga, gb = cut['groups']
+    last = _w3b3_body_end(snap)
+    if cut['clause_kind'] == 'nonfinite':
+        if cut['aux_before']: return None, 'CLAUSE_FORM_NOT_READ:aux_in_nonfinite'
+        a = text[snap[0].start:snap[cut['a_end']].start] + snap[cut['a_end']].base + '。'
+    else:
+        a = text[snap[0].start:snap[cut['a_end']].end] + '。'
+    b = text[snap[cut['b_start']].start:snap[last].end] + '。'
+    return {'a': a, 'b': b, 'a_span': (snap[ga[0]].start, snap[cut['a_end']].end), 'b_span': (snap[gb[0]].start, snap[last].end), 'last': last}, None
+
+
+def _w3b3_same_token(x, y):
+    return (x.surface, x.pos1, x.pos2, x.lemma, x.cform) == (y.surface, y.pos1, y.pos2, y.lemma, y.cform)
+
+
+def w3b3_tokens_match(snap, clause_snap, cut, which):
+    """K117 3: the tokens of the clause text against the tokens of the sentence they come from: None, or CLAUSE_TOKENS_DIFFER:<position>. Only the last token of the clause before the cut
+    may differ (a finite clause: attributive -> final; a non-finite clause: the verb is written as its dictionary form: same base, a verb)."""
+    last = _w3b3_body_end(snap)
+    ref = list(snap[:cut['a_end'] + 1]) if which == 'a' else list(snap[cut['b_start']:last + 1])
+    end = clause_snap[-1] if clause_snap else None
+    if end is None or not (end.pos1 == '補助記号' and end.pos2 == '句点'): return 'CLAUSE_TOKENS_DIFFER:end'
+    body = list(clause_snap[:-1])
+    if len(body) != len(ref): return 'CLAUSE_TOKENS_DIFFER:%d' % min(len(body), len(ref))
+    for i, (x, y) in enumerate(zip(ref, body)):
+        if _w3b3_same_token(x, y): continue
+        if which == 'a' and i == len(ref) - 1:
+            if cut['clause_kind'] == 'finite' and (x.surface, x.pos1, x.pos2, x.lemma) == (y.surface, y.pos1, y.pos2, y.lemma) and x.cform.startswith('連体形') and y.cform.startswith('終止形'): continue
+            if cut['clause_kind'] == 'nonfinite' and x.pos1 == '動詞' and y.pos1 == '動詞' and x.base == y.base: continue
+        return 'CLAUSE_TOKENS_DIFFER:%d' % i
+    return None
+
+
+def w3b3_head(snap, cut):
+    """K118 1: the head noun phrase of a relative clause: ({'start', 'end', 'surface', 'last_pos3'}, None) or (None, the reason). The tokens from the one after the relative clause up to
+    the first particle: all nouns (not numerals), prefixes or suffixes; the particle is not the connecting no; the last token is not of a class that does not decide the type of its phrase."""
+    n = len(snap)
+    j = cut['b_start']
+    k = j
+    while k < n and snap[k].pos1 != '助詞': k += 1
+    head = snap[j:k]
+    if not head or k >= n or k > cut['groups'][1][0] or snap[k].surface == 'の': return None, 'HEAD_ROLE_UNDETERMINED:head_not_simple'
+    if any(t.pos1 not in ('名詞', '接頭辞', '接尾辞') or t.pos2 == '数詞' for t in head): return None, 'HEAD_ROLE_UNDETERMINED:head_not_simple'
+    if head[-1].pos3 in W3B2_HEAD_RELATIONAL_POS3: return None, 'HEAD_ROLE_UNDETERMINED:head_relational'
+    return {'start': head[0].start, 'end': head[-1].end, 'surface': ''.join(t.surface for t in head), 'particle_index': k}, None

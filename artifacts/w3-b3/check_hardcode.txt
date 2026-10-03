@@ -1,0 +1,147 @@
+added lines: 603
+PROPER/NUMERIC (must be empty): []
+ENGLISH NAMES (must be empty): []
+common nouns found in added lines (list only): ['命令', '答え']
+verb lemmas found in added lines (list only): ['伝える', '思う', '答える', '聞く', '言う', '話す']
+english lowercase words found in added lines (list only; each with the added lines that hold it, so a reader can judge): ['after', 'all', 'answer', 'asked', 'built', 'closed', 'def', 'each', 'every', 'exactly', 'file', 'form', 'found', 'gave', 'got', 'handed', 'just', 'let', 'never', 'none', 'not', 'only', 'outside', 'patient', 'plan', 'read', 'report', 'run', 'said', 'that', 'the', 'this', 'two', 'types', 'unless', 'update', 'was', 'when', 'which', 'while', 'writes', 'written', 'wrote']
+  [after] 12 added line(s):
+      """K115: the forms outside the list, as the surface of what stands there (nominaliser + ni, te + kara, an auxiliary stem after a verb, a time noun before which 
+      after = i + 1
+      if nxt is not None and (_w3b3_comma(snap, after) or nxt.pos1 in ('名詞', '代名詞', '副詞', '連体詞', '接頭辞')):
+  [all] 2 added line(s):
+      """W3-b3: the reasons for which the `head` of a relation is not well formed (RELATION_HEAD_NOT_WELL_FORMED:<one of RELATION_HEAD_REASONS>); empty when there is 
+      the first particle: all nouns (not numerals), prefixes or suffixes; the particle is not the connecting no; the last token is not of a class that does not decide
+  [answer] 3 added line(s):
+      answer = query.query(c0['predicate'])
+      ptype, why = R.placement_type(answer)
+      fkind, finfo = R.predicate_frame(answer)
+  [asked] 1 added line(s):
+      # from here on the placement is asked: one cache for the whole path
+  [built] 1 added line(s):
+      """W3-b3: for every relation that holds a `head`, the filler of the arm `to_role` of the cross `to` holds the cross `from` (as it was built: no head of its own,
+  [closed] 3 added line(s):
+      # clause}. Not a key of the convention (the scorer reads type, from, to only); the closed list of what `_check` can say is wrong about it.
+      # Nothing above this line is changed. What is added: the closed list of cuts (a table of parts of speech and forms: no list of words), the pure functions that d
+      """K115: every cut of the closed list, found by the part of speech and the form of the token and of its neighbours. A list of dicts (see `_w3b3_cut`)."""
+  [def] 40 added line(s):
+      def _check_heads(relations: List[Any], clauses: List[Any]) -> List[str]:
+      def _embed(crosses: Tuple[EventCross, ...], relations: List[Any]) -> Tuple[EventCross, ...]:
+      def _w3b3_blank():
+  [each] 3 added line(s):
+      # uniqueness, the gates of the whole sentence, the text of each clause) are the reader's (R.w3b3_*, on a snapshot of the tokens); what is done here is to read e
+      """W3-b3: wraps a placement for `clause_scope_explain_ja`: the same questions go through, and `w3b3_trace` is where `_w3b3_read_ja` writes what each gate decide
+      # question, the text of each clause and the head noun phrase of a relative clause. The entry (semantic_read.py) reads each clause with its own rules and asks th
+  [every] 4 added line(s):
+      """W3-b3: for every relation that holds a `head`, the filler of the arm `to_role` of the cross `to` holds the cross `from` (as it was built: no head of its own,
+      """The reading `a` is the reading `b` apart from the arm `role` of `a` (the predicate, the polarity, the tense, the modality, the voice and every other role).""
+      """K115: every cut of the closed list, found by the part of speech and the form of the token and of its neighbours. A list of dicts (see `_w3b3_cut`)."""
+  [exactly] 2 added line(s):
+      """(out, None) when the clause text is read as exactly one clause with no relation and the two existing gates (the ending, the derived verb) let it through; els
+      """K114 2: (cut, None) for a sentence of exactly two groups of predicates and exactly one cut of the list (the cut is a dict with `groups`: the group before and
+  [file] 1 added line(s):
+      (ASCII only: the test of the section of this file scans every non-ASCII literal, docstrings included.)"""
+  [form] 5 added line(s):
+      """K115: every cut of the closed list, found by the part of speech and the form of the token and of its neighbours. A list of dicts (see `_w3b3_cut`)."""
+      # relative: a verb (the same form as the final one) or verb + た (attributive), then a noun
+      unless it is (a) a token of the connective of the cut (the focus particle that ends a concessive connective) or (b) the topic marker right after a noun or prono
+  [found] 1 added line(s):
+      """K115: every cut of the closed list, found by the part of speech and the form of the token and of its neighbours. A list of dicts (see `_w3b3_cut`)."""
+  [gave] 1 added line(s):
+      """K117 5: the ending gate and the derived-verb gate (W3-b1, K63) on the clause text and the predicate range the entry gave it. The reason or None."""
+  [got] 4 added line(s):
+      got, why = _w3b3_clause(texts[which], query, R, number)
+      if got is None:
+      reads.append(got)
+  [handed] 1 added line(s):
+      # the output it was handed back, the same object; the reason is in the diagnosis (`clause_scope_explain_ja`), not in the output.
+  [just] 1 added line(s):
+      """Section 10C, 4th round (review r3, M1-r3): the gate (12) of K122, after the ellipsis (11) and just before "read". The reason or None.
+  [let] 1 added line(s):
+      """(out, None) when the clause text is read as exactly one clause with no relation and the two existing gates (the ending, the derived verb) let it through; els
+  [never] 3 added line(s):
+      PARALLEL_UNDETERMINED: not relations of the convention, never in the output), 'reason': None | a reason of K122, 'read': bool}. When the path was not reached (n
+      W3B3_PRODUCED_WITH_PLACEMENT = {                                                                   # K121: what the entry writes with a placement that it never 
+      So a focus or adverbial particle stacked on a case particle is never read: the entry reads the single clause and drops it, and the output has no field for it.
+  [none] 2 added line(s):
+      """W3-b3: the reasons for which the `head` of a relation is not well formed (RELATION_HEAD_NOT_WELL_FORMED:<one of RELATION_HEAD_REASONS>); empty when there is 
+      of the run, None when the phrase has none)."""
+  [not] 77 added line(s):
+      import dataclasses    # W3-b3: dataclasses.replace for the embedded cross (the import line below is not changed)
+      if self.embedded is not None: d['embedded'] = self.embedded.to_dict()
+      """W3-b3: the reasons for which the `head` of a relation is not well formed (RELATION_HEAD_NOT_WELL_FORMED:<one of RELATION_HEAD_REASONS>); empty when there is 
+  [only] 15 added line(s):
+      # clause}. Not a key of the convention (the scorer reads type, from, to only); the closed list of what `_check` can say is wrong about it.
+      embedded: Optional['EventCross'] = None    # W3-b3: the cross of the relative clause whose head this filler is (the last field; written only when there is one)
+      """The tokens of `text` as plain values, taken at once (the features of the tagger's nodes are valid only until the next parse)."""
+  [outside] 3 added line(s):
+      'relation_key:head': 'only in a relation of type relative: from_role, to_role; outside the keys of the convention',
+      """K115: the forms outside the list, as the surface of what stands there (nominaliser + ni, te + kara, an auxiliary stem after a verb, a time noun before which 
+      """K116 1: the gates of the whole sentence (no position: a mark in either clause stops it): an imperative, a quotation mark, a question, a connective outside th
+  [patient] 2 added line(s):
+      return 'agent' in c['roles'] or 'entity' in c['roles'] or (c['voice'] == 'passive' and 'patient' in c['roles'])
+      if c['voice'] == 'active' and 'patient' not in c['roles'] and transitivity(c['predicate']) != 'intrans':
+  [plan] 1 added line(s):
+      No list of particles: the sub-class decides. The rule is registered in docs/READING_SOUNDNESS.md, change record of the 4th round; the position is in review-impl
+  [read] 15 added line(s):
+      # W3-b3: a sentence of two predicates read as two crosses and an edge (docs/READING_SOUNDNESS.md section 10C, K114-K122). The decisions that need no question (t
+      # uniqueness, the gates of the whole sentence, the text of each clause) are the reader's (R.w3b3_*, on a snapshot of the tokens); what is done here is to read e
+      # entry's own rules (`_read_ja`), to ask the placement, to decide the arm of the head of a relative clause by type, and to write the output. A sentence this pat
+  [report] 2 added line(s):
+      def _w3b3_read_ja(text, R, placement, out, report):
+      return _answer('ja', [c0, c1], [relation], meta, report)
+  [run] 3 added line(s):
+      """K117 4: one clause text through the entry itself (a placement is given, so the typed readings of W3-b1 / W3-b2 run as they always do). The path is switched o
+      """K116 2: the tokens [lo, hi) cut after a run of particles (a connecting no does not end a phrase). Each phrase: lo, hi, plo (where its particles begin) and pa
+      of the run, None when the phrase has none)."""
+  [said] 1 added line(s):
+      if not (_is_index(rel.get('from'), len(clauses)) and _is_index(rel.get('to'), len(clauses))): continue      # said already: RELATION_INDEX_OUT_OF_RANGE
+  [that] 17 added line(s):
+      """W3-b3: for every relation that holds a `head`, the filler of the arm `to_role` of the cross `to` holds the cross `from` (as it was built: no head of its own,
+      # W3-b3: a sentence of two predicates read as two crosses and an edge (docs/READING_SOUNDNESS.md section 10C, K114-K122). The decisions that need no question (t
+      ni_filled = 'recipient' in c0['roles']    # round 2 (review r1 M1): this arm is filled only by a recipient that the entry read; a case-marked noun read as a tim
+  [the] 71 added line(s):
+      import dataclasses    # W3-b3: dataclasses.replace for the embedded cross (the import line below is not changed)
+      # W3-b3: the `head` of a relation of type `relative` (docs/EVENT_CROSS.md, W3-b3 の追記): {from_role: the arm of the relative clause the head fills, to_role: the r
+      # clause}. Not a key of the convention (the scorer reads type, from, to only); the closed list of what `_check` can say is wrong about it.
+  [this] 6 added line(s):
+      embedded: Optional['EventCross'] = None    # W3-b3: the cross of the relative clause whose head this filler is (the last field; written only when there is one)
+      # uniqueness, the gates of the whole sentence, the text of each clause) are the reader's (R.w3b3_*, on a snapshot of the tokens); what is done here is to read e
+      # entry's own rules (`_read_ja`), to ask the placement, to decide the arm of the head of a relative clause by type, and to write the output. A sentence this pat
+  [two] 7 added line(s):
+      # W3-b3: a sentence of two predicates read as two crosses and an edge (docs/READING_SOUNDNESS.md section 10C, K114-K122). The decisions that need no question (t
+      """(out, None) when the clause text is read as exactly one clause with no relation and the two existing gates (the ending, the derived verb) let it through; els
+      """The path of two predicates (K114-K122). Returns a reading when the whole chain of gates lets the sentence through, else `out` itself (the refusal it was give
+  [types] 2 added line(s):
+      W3B3_OUTER_TYPES = ('ABSTRACT', 'EVENT_ACT', 'STATE_PROPERTY')                                    # K118 8: a head of these types may be a content clause / an o
+      W3B3_QUOTE_TYPES = ('P_COMMUNICATE', 'P_COGNITION', 'P_CREATE', 'P_PERCEIVE')                      # K119: a main predicate of these types makes a quotation と p
+  [unless] 1 added line(s):
+      unless it is (a) a token of the connective of the cut (the focus particle that ends a concessive connective) or (b) the topic marker right after a noun or prono
+  [update] 2 added line(s):
+      note['head'].update({'arm': row[0], 'basis': 'placement_%s:%s' % (kind, '+'.join(payload)), 'candidates': list(payload)})
+      note.update(_w3b3_blank())
+  [was] 4 added line(s):
+      """W3-b3: for every relation that holds a `head`, the filler of the arm `to_role` of the cross `to` holds the cross `from` (as it was built: no head of its own,
+      # the output it was handed back, the same object; the reason is in the diagnosis (`clause_scope_explain_ja`), not in the output.
+      """The path of two predicates (K114-K122). Returns a reading when the whole chain of gates lets the sentence through, else `out` itself (the refusal it was give
+  [when] 7 added line(s):
+      embedded: Optional['EventCross'] = None    # W3-b3: the cross of the relative clause whose head this filler is (the last field; written only when there is one)
+      """W3-b3: the reasons for which the `head` of a relation is not well formed (RELATION_HEAD_NOT_WELL_FORMED:<one of RELATION_HEAD_REASONS>); empty when there is 
+      """(out, None) when the clause text is read as exactly one clause with no relation and the two existing gates (the ending, the derived verb) let it through; els
+  [which] 12 added line(s):
+      """W3-b3: the reasons for which the `head` of a relation is not well formed (RELATION_HEAD_NOT_WELL_FORMED:<one of RELATION_HEAD_REASONS>); empty when there is 
+      The arms keep their order, their kind and their agreement; the counts are the counts of the crosses, which are the same."""
+      for which in ('a', 'b'):
+  [while] 5 added line(s):
+      _W3B3_DEPTH = [0]       # > 0 while a clause is being read: the path does not start again inside a clause (K114 2)
+      while i < hi:
+      while j < hi and _w3b3_phrase_particle(snap[j]): j += 1
+  [writes] 3 added line(s):
+      """W3-b3: wraps a placement for `clause_scope_explain_ja`: the same questions go through, and `w3b3_trace` is where `_w3b3_read_ja` writes what each gate decide
+      W3B3_PRODUCED_WITH_PLACEMENT = {                                                                   # K121: what the entry writes with a placement that it never 
+      'tense:null': 'the clause before the connectives whose clause the convention writes with a null tense',
+  [written] 6 added line(s):
+      embedded: Optional['EventCross'] = None    # W3-b3: the cross of the relative clause whose head this filler is (the last field; written only when there is one)
+      the entry or a typed reading read the input alone) the reason is W3B3_NOT_TRIGGERED:not_reached. It runs `read` itself: no second decision is written here."""
+      # K115 / K119. kind, the tokens of its connective, 'finite' | 'nonfinite' (how the text of the clause before it is written), the relation of the convention (or 
+  [wrote] 1 added line(s):
+      W3B3_PRODUCED_WITH_PLACEMENT = {                                                                   # K121: what the entry writes with a placement that it never 

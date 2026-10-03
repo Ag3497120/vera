@@ -1,0 +1,25 @@
+ABST  母が昼に話した人を兄が呼んだ。 | HEAD_ROLE_UNDETERMINED:empty_arms=2 | ['patient', 'NI_UNDECIDED']
+ABST  父が夕方に頼んだ友達を弟が待った。 | HEAD_ROLE_UNDETERMINED:empty_arms=2 | ['patient', 'NI_UNDECIDED']
+ABST  先生が朝に言った生徒を母が呼んだ。 | HEAD_ROLE_UNDETERMINED:empty_arms=2 | ['patient', 'NI_UNDECIDED']
+ABST  兄が夜に話した先生を姉が待った。 | HEAD_ROLE_UNDETERMINED:empty_arms=2 | ['patient', 'NI_UNDECIDED']
+ABST  母が三時に頼んだ人を先生が呼んだ。 | HEAD_ROLE_UNDETERMINED:empty_arms=2 | ['patient', 'NI_UNDECIDED']
+ABST  姉が会議に話した人を兄が呼んだ。 | CLAUSE_UNREAD:0:RECIPIENT_TYPE_UNDETERMINED:会議 | None
+ABST  父が駅に言った人を母が待った。 | CLAUSE_UNREAD:0:RECIPIENT_TYPE_UNDETERMINED:駅 | None
+ABST  母が学校に頼んだ先生を兄が呼んだ。 | CLAUSE_UNREAD:0:RECIPIENT_TYPE_UNDETERMINED:学校 | None
+ABST  兄が今日に話した友達を弟が見た。 | CLAUSE_UNREAD:0:NO_SUPPORTED_CLAUSE | None
+READ  姉が昼に弟に話した友達を先生が呼んだ。 | None | ['patient']
+       [('話す', {'agent': '姉', 'patient': '友達', 'recipient': '弟', 'time': '昼'}), ('呼ぶ', {'agent': '先生', 'patient': '友達'})] [{'type': 'relative', 'from': 0, 'to': 1, 'head': {'from_role': 'patient', 'to_role': 'patient'}}]
+READ  母が弟に昼に頼んだ本を姉が読んだ。 | None | ['patient']
+       [('頼む', {'agent': '母', 'patient': '本', 'recipient': '弟', 'time': '昼'}), ('読む', {'agent': '姉', 'patient': '本'})] [{'type': 'relative', 'from': 0, 'to': 1, 'head': {'from_role': 'patient', 'to_role': 'patient'}}]
+ABST  父が来週に言った人を兄が待った。 | HEAD_ROLE_UNDETERMINED:empty_arms=2 | ['patient', 'NI_UNDECIDED']
+ABST  母が昨日に話した人を兄が呼んだ。 | CLAUSE_UNREAD:0:NO_SUPPORTED_CLAUSE | None
+ABST  兄が弟と話した人を母が呼んだ。 | CLAUSE_UNREAD:0:NO_SUPPORTED_CLAUSE | None
+READ  母が弟に話した人を兄が呼んだ。 | None | ['patient']
+       [('話す', {'agent': '母', 'patient': '人', 'recipient': '弟'}), ('呼ぶ', {'agent': '兄', 'patient': '人'})] [{'type': 'relative', 'from': 0, 'to': 1, 'head': {'from_role': 'patient', 'to_role': 'patient'}}]
+READ  姉が妹に頼んだ友達を先生が呼んだ。 | None | ['patient']
+       [('頼む', {'agent': '姉', 'patient': '友達', 'recipient': '妹'}), ('呼ぶ', {'agent': '先生', 'patient': '友達'})] [{'type': 'relative', 'from': 0, 'to': 1, 'head': {'from_role': 'patient', 'to_role': 'patient'}}]
+READ  母が先生に話した生徒を兄が呼んだ。 | None | ['patient']
+       [('話す', {'agent': '母', 'patient': '生徒', 'recipient': '先生'}), ('呼ぶ', {'agent': '兄', 'patient': '生徒'})] [{'type': 'relative', 'from': 0, 'to': 1, 'head': {'from_role': 'patient', 'to_role': 'patient'}}]
+ABST  兄が三時に歩いた町を弟が見た。 | HEAD_ROLE_UNDETERMINED:empty_arms=2 | ['goal', 'source']
+ABST  父が昼に来た客を母が待った。 | HEAD_ROLE_UNDETERMINED:empty_arms=2 | ['goal', 'source']
+ABST  母が夜に言った人を兄が見た。 | HEAD_ROLE_UNDETERMINED:empty_arms=2 | ['patient', 'NI_UNDECIDED']

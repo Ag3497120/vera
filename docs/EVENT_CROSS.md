@@ -438,3 +438,158 @@ NOT_CHECKED の理由別: ARM_TIE 0, ESTIMATED_GENERATED 0, ESTIMATED_NEAR 0, LO
 
 測定の時刻: 2026-10-04 01:22:30 +0900。出力はすべて `artifacts/w5-d/r2/`（ファイル名を添える）。中間職のレビュー r1（`review-impl/W5-d2/review.r1.md`）の M1〜M4（改訂したテストの前後の全文・測定の区間・失敗集合のファイル・報告）に応えてこの区間と `w5d2-amended` 区間を書いた。製品とテストのコードはレビューのあとに変えていない（`code_sha_r2b_start.txt` と `code_sha_r2b_end.txt` が同じ）。受入の測定はこのとき全部流し直した（`g1_rerun_r2b.txt`・`g2_rerun_r2b.txt`・`g3_rerun_r2b.txt`・`q1_observe_cmp_r2b.txt`・`g4_compare_r2b.txt`・`q5_r7_verify_r2b.txt`・`k5_check_r2b.txt`。出力は前の流しと byte 一致。違いが無かったことの確認なので前の流しのファイルも残す）。
 <!-- w5d2-measured:end -->
+
+## W3-b3 の追記(埋め込みの十字。事前登録)
+
+<!-- w3b3-ec-prereg:begin -->
+登録日時: 2026-10-03 23:17:09 +0900（`docs/READING_SOUNDNESS.md` §10C と同じ。記録は `artifacts/w3-b3/prereg_time.txt`）。この時点で `verantyx/event_cross.py` は基点 `c875ed3` のまま。既存の節の文は変えていない（追記だけ）。
+
+1. **`Filler.embedded`**: `Filler` に欄 `embedded: Optional[EventCross] = None`（最後の欄）を足す。`to_dict` は `embedded` が `None` でないときだけ、鍵 `embedded`（中身は `EventCross.to_dict()`）を **最後に** 足す（`None` のときは今とバイト一致）。意味: 連体修飾節（`relative`）の主辞 = 主節の腕の充填物の中に、関係節の十字が入る。
+2. **関係の `head` 欄**: `relative` の関係は鍵 `head`（`{"from_role": <関係節での腕>, "to_role": <主節での役割>}`）を持ちうる。規約 §1.2 の鍵の外（採点器は読まない。`_relation_dict` が今も余分な鍵を残す）。`_check` は `head` があれば次を確かめ、反すれば `RELATION_HEAD_NOT_WELL_FORMED:<何が>`（入力の拒否 `INPUT_REJECTED`。`<何が>` は定数 `RELATION_HEAD_REASONS` の閉じた一覧）。`head` の無い関係は今と同じ。
+
+<!-- BEGIN table:w3b3_head_reasons -->
+| 何が | 検査 |
+|---|---|
+| `not_a_mapping` | `head` が写像でない |
+| `keys` | `head` の鍵が `from_role`・`to_role` の 2 つだけでない |
+| `type_not_relative` | 関係の `type` が `relative` でない |
+| `role_not_in_convention` | `from_role`・`to_role` が `ROLE_NAMES` の文字列でない |
+| `values_differ` | `clauses[from].roles[from_role]` と `clauses[to].roles[to_role]` が同じ空でない文字列でない |
+| `duplicate_target` | 同じ `(to, to_role)` を指す `head` が 2 つ以上ある |
+| `nested` | `from` の節自身がほかの `head` の `to` になっている（入れ子は 1 段まで） |
+<!-- END table:w3b3_head_reasons -->
+
+3. **`build_crosses`**: 十字を今と同じに作った後、`head` のある関係ごとに、`crosses[to]` の腕 `to_role`（`FILLER`）の充填物を `embedded=crosses[from]` にした十字に置き換える（`dataclasses.replace`）。腕の型一致・`counts` は変えない（`counts` に埋め込みを数え足さない）。`crosses` の並びと番号は今と同じ（関係節の十字は `crosses[from]` としても残る）。
+4. **`TE_UNDETERMINED`・`PARALLEL_UNDETERMINED` は規約の関係の型ではなく、`CrossReading` には入らない**。て形・連用中止の文は入口（`semantic_read.read`）では棄権のままで、この 2 つの辺は診断 `semantic_read.clause_scope_explain_ja` の `edges` にだけ書く。`_check` の `RELATION_TYPE_NOT_IN_CONVENTION` は変えない。
+5. 変えないもの: `ROLE_NAMES`・`RELATION_TYPES`・`EXPECTED_TYPES`・`VERDICTS`・`_agreement`・`counts` の形・`StubLookup`/`CoarseLookup`。観測 `observe.py` は変えない（`EDGE(relation)` は規約の 11 種だけ。升の鍵 `content_of_cross` は充填物の `embedded` を含めない）。
+<!-- w3b3-ec-prereg:end -->
+
+### W3-b3 の追記: `--events` の出力例（実行出力の抜粋。連体修飾節の文。`embedded` の入った形）
+コマンド: `cd <木> && VERA_PLACEMENT=<配置 r6> PYTHONPATH=<木> python -m verantyx.semantic_read --text='母が弟に話した人を兄が呼んだ。' --events`（出力全体は `artifacts/w3-b3/entry_examples.txt` と、`events` だけの抜粋を下に貼る。`crosses[1]` の腕 `patient` の充填物 `人` の中に、関係節の十字 `crosses[0]`（話す）が入っている。`counts` は埋め込みを数え足していない）:
+
+```json
+{
+ "status": "CROSSED",
+ "relations": [
+  {
+   "type": "relative",
+   "from": 0,
+   "to": 1,
+   "head": {
+    "from_role": "patient",
+    "to_role": "patient"
+   }
+  }
+ ],
+ "counts": {
+  "crosses": 2,
+  "arms": 5,
+  "arm_ties": 0,
+  "agreement": {
+   "AGREE": 3,
+   "DISAGREE": 0,
+   "NOT_CHECKED": 2
+  },
+  "not_checked_by_reason": {
+   "ARM_TIE": 0,
+   "ROLE_NOT_IN_TABLE": 2,
+   "LOOKUP_RESULT_INVALID": 0,
+   "NO_PLACEMENT": 0,
+   "UNKNOWN": 0,
+   "UNPLACED": 0,
+   "ESTIMATED_NEAR": 0,
+   "ESTIMATED_GENERATED": 0,
+   "MULTIPLE": 0
+  }
+ },
+ "crosses[1].arms.patient.fillers[0]": {
+  "surface": "人",
+  "head": "人",
+  "head_basis": "surface",
+  "keys": [
+   "surface",
+   "head",
+   "head_basis",
+   "place",
+   "flags",
+   "embedded"
+  ],
+  "embedded": {
+   "index": 0,
+   "center": {
+    "predicate": "話す",
+    "polarity": "+",
+    "tense": "past",
+    "modality": null,
+    "voice": "active"
+   },
+   "arms": {
+    "agent": {
+     "kind": "FILLER",
+     "surfaces": [
+      "母"
+     ],
+     "agreement": "AGREE"
+    },
+    "patient": {
+     "kind": "FILLER",
+     "surfaces": [
+      "人"
+     ],
+     "agreement": "NOT_CHECKED"
+    },
+    "recipient": {
+     "kind": "FILLER",
+     "surfaces": [
+      "弟"
+     ],
+     "agreement": "AGREE"
+    }
+   }
+  }
+ },
+ "crosses[0]": {
+  "index": 0,
+  "center": {
+   "predicate": "話す",
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active"
+  },
+  "arms": {
+   "agent": {
+    "kind": "FILLER",
+    "surfaces": [
+     "母"
+    ],
+    "agreement": "AGREE"
+   },
+   "patient": {
+    "kind": "FILLER",
+    "surfaces": [
+     "人"
+    ],
+    "agreement": "NOT_CHECKED"
+   },
+   "recipient": {
+    "kind": "FILLER",
+    "surfaces": [
+     "弟"
+    ],
+    "agreement": "AGREE"
+   }
+  }
+ }
+}
+```
+
+### W3-b3 の追記: 測定（出典は `artifacts/w3-b3/`。数値は `tests/reading_soundness/w3b3_recompute.py` の出力と同じ行で、`docs/READING_SOUNDNESS.md` §10C の K123 の節にも貼った）
+- 埋め込みの数・`RELATION_HEAD_NOT_WELL_FORMED`・E1 は、K123 の節の次の行（`十字（…）`・`十字の E1（…）`）。この節に同じ行を貼る:
+
+<!-- w3b3-measured-events:begin -->
+- 十字（`entry_r6.jsonl` の読めた 490 文を `StubLookup` で十字にした）: `head` を持つ関係の文 13・埋め込みの十字 13・十字にできなかった文（INPUT_REJECTED を含む）0
+- 十字の E1（`e1.txt`）: E1_SAME, E1_SAME_WITH_PLACEMENT, E1_EQUALS_DEV_RUN, E1_EQUALS_DEV_RUN_WITH_PLACEMENT, E1_CODES_EQUAL_DEV
+<!-- w3b3-measured-events:end -->
+
+- 観測（W3-c）: `EDGE` の移動が、この経路が書いた関係（cause・contrast・condition・concession・simultaneous・relative）で動く。関係節の文は、`crosses[to]` の腕の充填物に `embedded` が入った形になるが、観測の升の鍵 `content_of_cross`（`observe.py` 80〜91 行）は充填物の `embedded` を含めないので、升の同一性は変わらない。`TE_UNDETERMINED`・`PARALLEL_UNDETERMINED` は `CrossReading` に入らず、観測の `EDGE` の対象にならない。

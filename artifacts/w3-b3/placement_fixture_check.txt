@@ -1,0 +1,6 @@
+tests/reading_soundness/w3b3_placement_fixture.json: OK
+tests/reading_soundness/w3b3_fakes.py: OK
+tests/reading_soundness/w3b3_placement_fixture.py: OK
+tests/reading_soundness/w3b3_test_inputs.txt: OK
+tests/reading_soundness/w3b3_common.py: OK
+tests/reading_soundness/w3b3_data_check.py: OK

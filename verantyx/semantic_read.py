@@ -262,7 +262,8 @@ def _read_ja(text, placement=None):
         clauses, relations, meta = _map_ja(text, toks, view, R)
     except _Abstain as stop:
         if placement is not None:
-            return _typed_reread_ja(text, toks, view, R, placement, stop, unsupported_report)
+            out = _typed_reread_ja(text, toks, view, R, placement, stop, unsupported_report)
+            return out if out['readable'] else _w3b3_read_ja(text, R, placement, out, unsupported_report)
         return _refusal('ja', stop.kind, [stop.reason], unsupported_report)
     return _answer('ja', clauses, relations, meta, unsupported_report)
 
@@ -396,6 +397,234 @@ def typed_explain_ja(text, placement):
     probe = _ExplainQuery(query)
     _read_ja(text, probe)
     return dict(blank, **probe.w3b2_trace) if probe.w3b2_trace else blank
+
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# W3-b3: a sentence of two predicates read as two crosses and an edge (docs/READING_SOUNDNESS.md section 10C, K114-K122). The decisions that need no question (the cut, its
+# uniqueness, the gates of the whole sentence, the text of each clause) are the reader's (R.w3b3_*, on a snapshot of the tokens); what is done here is to read each clause with this
+# entry's own rules (`_read_ja`), to ask the placement, to decide the arm of the head of a relative clause by type, and to write the output. A sentence this path does not read gets
+# the output it was handed back, the same object; the reason is in the diagnosis (`clause_scope_explain_ja`), not in the output.
+# ---------------------------------------------------------------------------------------------------------------------------------
+_W3B3_DEPTH = [0]       # > 0 while a clause is being read: the path does not start again inside a clause (K114 2)
+
+
+def _w3b3_blank():
+    return {'triggered': False, 'cut': None, 'clause_texts': [], 'clause_reads': [], 'head': None, 'edges': [], 'reason': 'W3B3_NOT_TRIGGERED:not_reached', 'read': False}
+
+
+def _w3b3_snapshot(text, R):
+    """The tokens of `text` as plain values, taken at once (the features of the tagger's nodes are valid only until the next parse)."""
+    toks = R._tokens(text)
+    preds = [_is_predicate_token(toks, i) for i in range(len(toks))]
+    return R.w3b3_snapshot(toks, preds)
+
+
+def _w3b3_read_clause(string, query, R):
+    """K117 4: one clause text through the entry itself (a placement is given, so the typed readings of W3-b1 / W3-b2 run as they always do). The path is switched off inside."""
+    _W3B3_DEPTH[0] += 1
+    try:
+        return _read_ja(string, query)
+    finally:
+        _W3B3_DEPTH[0] -= 1
+
+
+def _w3b3_clause(string, query, R, number):
+    """(out, None) when the clause text is read as exactly one clause with no relation and the two existing gates (the ending, the derived verb) let it through; else (None, reason)."""
+    out = _w3b3_read_clause(string, query, R)
+    if not out['readable'] or len(out['clauses']) != 1 or out['relations']:
+        return None, 'CLAUSE_UNREAD:%d:%s' % (number, out['abstain']['reasons'][0] if not out['readable'] else 'not one clause')
+    why = _w3b3_gates(string, out, R)
+    if why: return None, 'CLAUSE_FORM_NOT_READ:' + why
+    return out, None
+
+
+def _w3b3_gates(string, out, R):
+    """K117 5: the ending gate and the derived-verb gate (W3-b1, K63) on the clause text and the predicate range the entry gave it. The reason or None."""
+    span = out['clause_meta'][0]['span']
+    clause = SimpleNamespace(predicate_span=SimpleNamespace(start=span[0], end=span[1]))
+    toks = R._tokens(string)
+    return R.typed_tail_ja(toks, clause) or R.typed_head_derived_ja(toks, clause)
+
+
+def _w3b3_has_subject(c):
+    return 'agent' in c['roles'] or 'entity' in c['roles'] or (c['voice'] == 'passive' and 'patient' in c['roles'])
+
+
+def _w3b3_same_but(a, b, role):
+    """The reading `a` is the reading `b` apart from the arm `role` of `a` (the predicate, the polarity, the tense, the modality, the voice and every other role)."""
+    keep = lambda c: {k: c[k] for k in ('predicate', 'polarity', 'tense', 'modality', 'voice')}
+    return keep(a) == keep(b) and {k: v for k, v in a['roles'].items() if k != role} == b['roles']
+
+
+def _w3b3_head_arm(snap, cut, text, texts, a_out, b_out, query, R, note):
+    """K118 (relative only): (the reading of the relative clause with the head in its arm, the relation, None) or (None, None, reason)."""
+    head, why = R.w3b3_head(snap, cut)
+    if why: return None, None, why
+    c0 = a_out['clauses'][0]
+    if c0['voice'] != 'active': return None, None, 'HEAD_ROLE_UNDETERMINED:voice'
+    answer = query.query(c0['predicate'])
+    ptype, why = R.placement_type(answer)
+    if why or ptype not in R.TYPED_FRAMES: return None, None, 'HEAD_ROLE_UNDETERMINED:frame_not_read:' + (why or ptype)
+    rows = R.TYPED_FRAMES[ptype]
+    if set(c0['roles']) - ({r[0] for r in rows} | {'recipient'}): return None, None, 'HEAD_ROLE_UNDETERMINED:role_outside_frame'
+    empty = [r for r in rows if r[3] == 'arg' and r[0] not in c0['roles']]
+    ni_filled = 'recipient' in c0['roles']    # round 2 (review r1 M1): this arm is filled only by a recipient that the entry read; a case-marked noun read as a time or a place leaves it empty
+    undecided = ptype == 'P_COMMUNICATE' and not ni_filled
+    note['head'] = {'arm': None, 'basis': None, 'empty_arms': [r[0] for r in empty] + (['NI_UNDECIDED'] if undecided else []), 'candidates': []}
+    if len(empty) + (1 if undecided else 0) != 1: return None, None, 'HEAD_ROLE_UNDETERMINED:empty_arms=%d' % (len(empty) + (1 if undecided else 0))
+    if not empty: return None, None, 'HEAD_ROLE_UNDETERMINED:undecided_arm'
+    row = empty[0]
+    head_answer = query.query(head['surface'])
+    kind, payload = R.placement_fit(head_answer, row[2])
+    if kind == 'mismatch': return None, None, 'HEAD_ROLE_UNDETERMINED:type:mismatch:' + payload[0]
+    if kind is None: return None, None, 'HEAD_ROLE_UNDETERMINED:type:' + payload
+    fkind, finfo = R.predicate_frame(answer)
+    if fkind is None: return None, None, 'HEAD_ROLE_UNDETERMINED:type:' + finfo
+    if fkind == 'confirmed':
+        if row[1][0] not in finfo: return None, None, 'HEAD_ROLE_UNDETERMINED:type:PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:%s:%s' % (ptype, row[1][0])
+        if not set(payload) <= finfo[row[1][0]]: return None, None, 'HEAD_ROLE_UNDETERMINED:type:PLACEMENT_FRAME_TYPE_NOT_CONFIRMED:%s:%s:%s' % (ptype, row[1][0], '+'.join(payload))
+    note['head'].update({'arm': row[0], 'basis': 'placement_%s:%s' % (kind, '+'.join(payload)), 'candidates': list(payload)})
+    for adjunct in rows:
+        if adjunct[3] != 'adjunct' or adjunct[0] in c0['roles']: continue
+        k2, _ = R.placement_fit(head_answer, adjunct[2], adjunct=True)
+        if k2 in ('direct', 'all_candidates'): return None, None, 'HEAD_ROLE_UNDETERMINED:adjunct_tie'
+    if set(payload) & set(R.W3B3_OUTER_TYPES): return None, None, 'HEAD_ROLE_UNDETERMINED:outer_relation_type'
+    # the head put in its arm, read again by the entry (its gates are the clause's)
+    refill = head['surface'] + row[1][0] + texts['a']
+    again, why = _w3b3_clause(refill, query, R, 0)
+    if again is None: return None, None, 'HEAD_ROLE_UNDETERMINED:refill_reread'
+    r0 = again['clauses'][0]
+    if r0['roles'].get(row[0]) != head['surface'] or not _w3b3_same_but(r0, c0, row[0]): return None, None, 'HEAD_ROLE_UNDETERMINED:refill_reread'
+    hosts = [name for name, value in b_out['clauses'][0]['roles'].items() if value == head['surface']]
+    if len(hosts) != 1: return None, None, 'HEAD_NOT_IN_HOST'
+    c0 = dict(r0)
+    if not c0.get('predicate_basis'): c0['predicate_basis'] = 'placement_direct:' + ptype
+    c0['role_basis'] = dict(c0.get('role_basis') or {}, **{row[0]: 'placement_%s:%s' % (kind, '+'.join(payload))})
+    return c0, {'type': 'relative', 'from': 0, 'to': 1, 'head': {'from_role': row[0], 'to_role': hosts[0]}}, None
+
+
+def _w3b3_relation(cut, c1, query, R):
+    """K119: (the relation, None) or (None, the reason)."""
+    relation = cut['relation']
+    if relation in ('TE_UNDETERMINED', 'PARALLEL_UNDETERMINED'): return None, 'RELATION_TYPE_UNDETERMINED:' + relation
+    if relation == 'condition':
+        if c1['tense'] == 'past': return None, 'RELATION_TYPE_UNDETERMINED:condition_past_main'
+        if cut['kind'] == 'と':
+            ptype, why = R.placement_type(query.query(c1['predicate']))
+            if c1['predicate'] in R.W3B3_QUOTE_VERBS or why or ptype in R.W3B3_QUOTE_TYPES: return None, 'RELATION_TYPE_UNDETERMINED:quote_possible'
+    return {'type': relation, 'from': 0, 'to': 1}, None
+
+
+def _w3b3_ellipsis(snap, cut, texts, c0, c1, b_out, query, R):
+    """K120: (the second clause, None) or (None, the reason). The only fill is the topic into a main clause that has no subject and no phrase of its own with が / は."""
+    from .frames import transitivity
+    a_phr, b_phr = R.w3b3_sides(snap, cut)
+    subject = lambda ps: any(p['particle'] == 'が' or (p['particle'] is not None and p['particle'].endswith('は')) for p in ps)
+    if (cut['kind'] != 'relative' and a_phr and a_phr[0]['particle'] == 'は' and c0['voice'] == 'active' and c1['voice'] == 'active' and 'agent' not in c1['roles']
+            and not subject(b_phr)):
+        topic = ''.join(snap[k].surface for k in range(a_phr[0]['lo'], a_phr[0]['plo']))
+        if c0['roles'].get('agent') == topic:
+            again, why = _w3b3_clause(topic + 'は' + texts['b'], query, R, 1)
+            if again is None or again['clauses'][0]['roles'].get('agent') != topic or not _w3b3_same_but(again['clauses'][0], c1, 'agent'): return None, 'ELLIPSIS_UNDETERMINED:subject'
+            c1 = again['clauses'][0]
+    sides = ((c0, c1, a_phr, b_phr), (c1, c0, b_phr, a_phr))
+    for c, other, own, others in sides:
+        if not _w3b3_has_subject(c) and subject(others): return None, 'ELLIPSIS_UNDETERMINED:subject'
+    for c, other, own, others in sides:
+        if c['voice'] == 'active' and 'patient' not in c['roles'] and transitivity(c['predicate']) != 'intrans':
+            if any(value != c['roles'].get('agent') for value in other['roles'].values()): return None, 'ELLIPSIS_UNDETERMINED:object'
+    for c, other, own, others in sides:
+        for role in ('goal', 'source', 'place', 'recipient', 'instrument', 'companion', 'time'):
+            if role in other['roles'] and role not in c['roles']:
+                if c['predicate'] == other['predicate'] or (role in ('goal', 'source') and (c['predicate'] in R._GOAL_PREDICATES or c['predicate'] in _PATH_VERBS)):
+                    return None, 'ELLIPSIS_UNDETERMINED:' + role
+    return c1, None
+
+
+def _w3b3_read_ja(text, R, placement, out, report):
+    """The path of two predicates (K114-K122). Returns a reading when the whole chain of gates lets the sentence through, else `out` itself (the refusal it was given)."""
+    note = getattr(placement, 'w3b3_trace', None)
+    if note is None: note = {}
+    note.update(_w3b3_blank())
+
+    def stop(why):
+        note['reason'] = why
+        return out
+    if _W3B3_DEPTH[0]: return stop('W3B3_NOT_TRIGGERED:depth')
+    if len(list(R._sentences(text))) != 1: return stop('W3B3_NOT_TRIGGERED:sentences')
+    snap = _w3b3_snapshot(text, R)
+    cut, why = R.w3b3_scope(snap)
+    if cut is None: return stop(why)
+    note['triggered'] = True
+    note['cut'] = {'kind': cut['kind'], 'connective': cut['connective'], 'token_span': [snap[(cut['tokens'] or (cut['a_end'],))[0]].start, snap[(cut['tokens'] or (cut['a_end'],))[-1]].end]}
+    why = R.w3b3_form_gate(snap, cut) or R.w3b3_unique(snap, cut)
+    if why: return stop(why)
+    texts, why = R.w3b3_texts(snap, text, cut)
+    if why: return stop(why)
+    note['clause_texts'] = [texts['a'], texts['b']]
+    for which in ('a', 'b'):
+        why = R.w3b3_tokens_match(snap, _w3b3_snapshot(texts[which], R), cut, which)
+        if why: return stop(why)
+    # from here on the placement is asked: one cache for the whole path
+    query = _CachedQuery(placement)
+    reads = []
+    for number, which in enumerate(('a', 'b')):
+        got, why = _w3b3_clause(texts[which], query, R, number)
+        if got is None:
+            note['clause_reads'].append({'text': texts[which], 'readable': False, 'clause': None, 'reason': why})
+            return stop(why)
+        reads.append(got)
+        note['clause_reads'].append({'text': texts[which], 'readable': True, 'clause': dict(got['clauses'][0]), 'reason': None})
+    c0, c1 = dict(reads[0]['clauses'][0]), dict(reads[1]['clauses'][0])
+    relation = None
+    if cut['kind'] == 'relative':
+        c0, relation, why = _w3b3_head_arm(snap, cut, text, texts, reads[0], reads[1], query, R, note)
+        if why: return stop(why)
+        note['clause_reads'][0]['clause'] = dict(c0)
+    if not cut['tense_kept']:
+        c0 = dict(c0, tense=None)
+        note['clause_reads'][0]['clause'] = dict(c0)
+    if relation is None:
+        relation, why = _w3b3_relation(cut, c1, query, R)
+        if why:
+            if why.split(':')[1] in ('TE_UNDETERMINED', 'PARALLEL_UNDETERMINED'): note['edges'] = [{'type': why.split(':')[1], 'from': 0, 'to': 1}]
+            return stop(why)
+    c1, why = _w3b3_ellipsis(snap, cut, texts, c0, c1, reads[1], query, R)
+    if why: return stop(why)
+    note['clause_reads'][1]['clause'] = dict(c1)
+    why = R.w3b3_focus_gate(snap, cut)
+    if why: return stop(why)
+    meta = [{'rule': reads[0]['clause_meta'][0]['rule'], 'span': list(texts['a_span'])}, {'rule': reads[1]['clause_meta'][0]['rule'], 'span': list(texts['b_span'])}]
+    note['reason'] = None
+    note['read'] = True
+    return _answer('ja', [c0, c1], [relation], meta, report)
+
+
+class _Explain3Query:
+    """W3-b3: wraps a placement for `clause_scope_explain_ja`: the same questions go through, and `w3b3_trace` is where `_w3b3_read_ja` writes what each gate decided."""
+    def __init__(self, inner):
+        self.inner, self.w3b3_trace = inner, {}
+
+    def query(self, term):
+        return self.inner.query(term)
+
+    @property
+    def id(self):
+        return getattr(self.inner, 'id', None)
+
+
+def clause_scope_explain_ja(text, placement):
+    """W3-b3, for tests and measurements: what the path of two predicates decided for a Japanese input, the output of `read` unchanged. {'triggered': bool, 'cut': {kind, connective,
+    token_span} | None, 'clause_texts': [...], 'clause_reads': [{text, readable, clause, reason}], 'head': {arm, basis, empty_arms, candidates} | None, 'edges': [...] (TE_UNDETERMINED /
+    PARALLEL_UNDETERMINED: not relations of the convention, never in the output), 'reason': None | a reason of K122, 'read': bool}. When the path was not reached (no placement, English,
+    the entry or a typed reading read the input alone) the reason is W3B3_NOT_TRIGGERED:not_reached. It runs `read` itself: no second decision is written here."""
+    blank = _w3b3_blank()
+    chosen = check_input(text, None)
+    query = _placement_query(placement)
+    if chosen != 'ja' or query is None: return blank
+    probe = _Explain3Query(query)
+    _read_ja(text, probe)
+    return dict(blank, **probe.w3b3_trace) if probe.w3b3_trace else blank
 
 
 def _map_ja(text, toks, view, R, typed=None):
