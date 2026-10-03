@@ -1,0 +1,7 @@
+.                                                                        [100%]
+1 passed in 3.17s
+
+## explanation (written by the implementer)
+- test_s6_two_runs_agree_...: asserts 'git status --porcelain -- verantyx' is empty (tools/bank_score/cli.py:278). With the verantyx changes uncommitted it fails; in a scratch clone (scratchpad/w2h-base) with the same verantyx files committed it passes (output above). Not a behaviour regression.
+- test_speech_act_drafts_fill_new_roles_and_reread: fails deterministically in a clean clone of b471f5a (round 2 measurement: 3 of 3 runs failed, 0.23 s / 0.25 s / 0.44 s, output in artifacts/w2-h/f5_base_speech_act.txt; verantyx loaded from the clone). It is not in baseline_failures.txt (114 entries); why it is missing from that list has not been investigated. It fails without any of this ticket's changes, so routing did not cause it. (Round 2 correction: the round-1 text called it environment/load dependent; there was no evidence for that.)
+- test_dsl_existing_frame_text_...: was caused by my comment lines before [goal] shifting witness line numbers; fixed by moving the note to the end of docs/frames/vera_project_frame.md; passes 3/3 alone and in the group run.

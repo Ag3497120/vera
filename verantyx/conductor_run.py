@@ -902,7 +902,9 @@ import fcntl as _fcntl
 import re as _re
 import subprocess as _subprocess
 
+from . import agent_routing as _agent_routing
 from . import agent_runtime as _agent_runtime
+from . import llm_choice as _llm_choice
 from . import memory_frame as _memory_frame
 from . import project_frame as _project_frame
 from .project_frame import FrameRefusal
@@ -2209,10 +2211,142 @@ def _resolve_verification(frame: _project_frame.ConductFrame, implementer: str, 
     return view
 
 
+# ---------------------------------------------------------------------------
+# W2-h: with an [agents] table in the frame, the agents are chosen by the router from the
+# frame's records (verantyx/agent_routing.py), one decision per ledger row.  A frame without
+# [agents] keeps the [agent_settings] path above, unchanged.  Guide: docs/AGENT_ROUTING.md.
+# ---------------------------------------------------------------------------
+ROUTED_FORBIDDEN_ARGUMENTS = ("adapter", "model", "effort", "verifier_adapter", "verifier_model", "verifier_effort")
+
+
+def _testimony_chooser_factory(table: _agent_routing.RoutingTable, base: Mapping[str, Any], *, state: Path,
+                               codex_bin: str, claude_bin: str, routing_chooser: Any,
+                               put: Callable[..., None]) -> Callable[[], Any]:
+    """The closed LLM question is put only when the earlier stages leave a tie.
+
+    The asker is the frame's own ``answer`` / ``closed_choice`` agent, chosen by rules and precedence only
+    (no testimony stage, so the question cannot ask itself); a fake agent, or none, means unavailable.
+    """
+    if routing_chooser is not None:
+        return (lambda: routing_chooser) if hasattr(routing_chooser, "choose") else routing_chooser
+
+    def factory() -> Any:
+        asker = _agent_routing.route(table, _agent_routing.RoutingRequest(role="answer", kind="closed_choice", **base))
+        put("ROUTING_DECISION", **asker.ledger_fields())
+        agent = table.agent(asker.agent_id) if asker.agent_id is not None else None
+        if agent is None or agent.model is None or agent.effort is None:
+            return None       # no asker, or one whose model / effort the human did not say: unavailable, typed
+        if agent.adapter == "codex":
+            provider: Any = _llm_choice.CodexProvider(agent.model, agent.effort, binary=codex_bin)
+        elif agent.adapter == "claude":
+            provider = _llm_choice.ClaudeProvider(agent.model, agent.effort, binary=claude_bin)
+        else:
+            return None
+        return _llm_choice.LLMChooser(provider, _llm_choice.ChoiceLedger(state / "routing_choice.jsonl"))
+
+    return factory
+
+
+def _require_declared_launch_values(frame: _project_frame.ConductFrame, agent: _agent_routing.AgentRecord) -> None:
+    """An agent that is to be started needs the model and effort the human wrote; none is made up here."""
+    absent = [name for name in ("model", "effort") if getattr(agent, name) is None]
+    if absent:
+        raise FrameRefusal(
+            "AGENT_SETTING_MISSING",
+            f"agent {agent.id} was chosen but its record gives no {' and no '.join(absent)}; add "
+            + " and ".join(f"{name}=" for name in absent) + f" to the {agent.id} row of [agents] (or describe it)",
+            f"agent {agent.id}: {', '.join(absent)} not declared", source=frame.source)
+
+
+def _route_conduct_agents(
+    frame: _project_frame.ConductFrame, *, run_id: str, put: Callable[..., None], arguments: Mapping[str, Any],
+    task_kind: str | None, routing_chooser: Any, codex_bin: str, claude_bin: str, state: Path,
+    verifier_timeout_seconds: int | None, verification_retries: int | None, require: bool,
+) -> dict[str, Any]:
+    """Choose the implementer (and, for a real one, the verifier) from the frame's routing records.
+
+    Every decision is one ``ROUTING_DECISION`` row, written before anything is started.  A decision that
+    names no agent ends in the typed refusal ``ROUTING_UNDECIDED``.  Returns the implementer's agent record
+    and the verification settings in the same shape ``_resolve_verification`` makes.
+    """
+    table = frame.routing
+    assert table is not None
+    given = [name for name in ROUTED_FORBIDDEN_ARGUMENTS if arguments.get(name) is not None]
+    if given:
+        raise FrameRefusal("AGENT_SETTING_INVALID",
+                           "this frame has an [agents] table, which chooses the agents; remove "
+                           + ", ".join("--" + name.replace("_", "-") for name in given),
+                           f"{', '.join(given)} given with an [agents] table", source=frame.source)
+    kind, kind_source, _overridden = _resolve_setting(frame, "task_kind", task_kind)
+    if kind is None:
+        raise FrameRefusal("AGENT_SETTING_MISSING",
+                           "set --task-kind <" + "|".join(_agent_routing.TASK_KINDS) + "> or 'task_kind: <value>' "
+                           "under [agent_settings]; the router never guesses what kind of job this is",
+                           "an [agents] table needs a task kind", source=frame.source)
+    size, size_basis = _agent_routing.size_of(len(frame.write_allowlist or ()),
+                                              frame.machine_criteria + frame.human_criteria)
+    base = {"job_id": run_id, "size": size, "size_basis": {**size_basis, "task_kind_source": kind_source}}
+    factory = _testimony_chooser_factory(table, base, state=state, codex_bin=codex_bin, claude_bin=claude_bin,
+                                         routing_chooser=routing_chooser, put=put)
+
+    def decide(role: str, role_kind: str,
+               used_agents: Mapping[str, Any] | None = None) -> _agent_routing.RoutingDecision:
+        decision = _agent_routing.route(table, _agent_routing.RoutingRequest(
+            role=role, kind=role_kind, used_agents=used_agents or {}, **base), chooser_factory=factory)
+        put("ROUTING_DECISION", **decision.ledger_fields())
+        if not decision.decided:
+            raise FrameRefusal(
+                "ROUTING_UNDECIDED",
+                f"the router could not choose an agent for role {role} ({decision.undecided_reason}); "
+                "see the ROUTING_DECISION row for the candidates and why each was excluded, then change the "
+                "[agents] / [routing] / [routing_precedence] records", f"{role}: {decision.undecided_reason}",
+                source=frame.source, code=decision.undecided_reason)
+        return decision
+
+    chosen = decide("implement", kind)
+    agent = table.agent(chosen.agent_id)
+    assert agent is not None
+    view: dict[str, Any] = {"agent": agent, "decision": chosen, "task_kind": kind, "verification": None}
+    if agent.adapter == "fake":
+        return view
+    _require_declared_launch_values(frame, agent)
+    if not _agent_routing.routable(table, _agent_routing.RoutingRequest(role="verify", kind="verification", **base)):
+        view["verification"] = {"mode": "required_unconfigured" if require else "not_requested"}
+        return view
+    verdict = decide("verify", "verification", {"implement": (agent.id,)})
+    verifier = table.agent(verdict.agent_id)
+    assert verifier is not None
+    if verifier.adapter not in ("codex", "claude"):
+        raise FrameRefusal("AGENT_SETTING_INVALID",
+                           f"the verify role was routed to {verifier.id}, whose adapter is {verifier.adapter}; "
+                           "a verifier must be a codex or claude agent", f"{verifier.id}: adapter {verifier.adapter}",
+                           source=frame.source)
+    _require_declared_launch_values(frame, verifier)
+    from_routing = {"source": "routing", "overridden_frame_value": None, "agent_id": verifier.id}
+    resolved: dict[str, Any] = {"adapter": {"value": verifier.adapter, **from_routing},
+                                "model": {"value": verifier.model, **from_routing},
+                                "effort": {"value": verifier.effort, **from_routing}}
+    for name, key, cli_value, default in (
+            ("timeout_seconds", "verifier_timeout_seconds", verifier_timeout_seconds, DEFAULT_VERIFIER_TIMEOUT_SECONDS),
+            ("retries", "verification_retries", verification_retries, DEFAULT_VERIFICATION_RETRIES)):
+        value, source, overridden = _resolve_setting(frame, key, cli_value)
+        resolved[name] = {"value": default if value is None else int(value),
+                          "source": "default" if value is None else source, "overridden_frame_value": overridden}
+    same_adapter = verifier.adapter == agent.adapter
+    view["verification"] = {
+        "mode": "configured", **resolved, "same_adapter_as_implementer": same_adapter,
+        "same_model_as_implementer": bool(same_adapter and verifier.model == agent.model),
+        # None when the records do not say whether they are one lineage (no true / false made up)
+        "same_lineage_as_implementer": {"same": True, "distinct": False, "undeclared": None}[
+            _agent_routing.lineage_relation(table, verifier.id, agent.id).verdict],
+        "executable": codex_bin if verifier.adapter == "codex" else claude_bin}
+    return view
+
+
 def conduct_entry(
     frame_path: str | os.PathLike[str],
     repo: str | os.PathLike[str],
-    adapter: str | AgentAdapter,
+    adapter: str | AgentAdapter | None,
     *,
     dry_run: bool = False,
     state_dir: str | os.PathLike[str] | None = None,
@@ -2234,6 +2368,8 @@ def conduct_entry(
     verifier_timeout_seconds: int | None = None,
     verification_retries: int | None = None,
     require_verification: bool = False,
+    task_kind: str | None = None,
+    routing_chooser: Any = None,
 ) -> ConductOutcome:
     """Read a frame, make typed records, and start (or, with ``dry_run``, plan) an agent.
 
@@ -2254,6 +2390,13 @@ def conduct_entry(
     configured" into the typed end ``VERIFIER_NOT_CONFIGURED``; the Python default ``False`` keeps the
     W2-a ending and records ``mode: not_requested``.  ``verifier_adapter="none"`` skips verification
     on purpose (recorded as ``VERIFICATION_SKIPPED``).
+
+    W2-h (docs/AGENT_ROUTING.md): a frame with an ``[agents]`` table is routed: pass ``adapter=None`` (and no
+    model / effort / verifier arguments) and the router chooses the implementer and the verifier from the
+    frame's records, writing one ``ROUTING_DECISION`` row each; ``task_kind`` (or ``task_kind:`` in
+    ``[agent_settings]``) says what kind of job this is.  ``routing_chooser`` (an ``LLMChooser`` or a function
+    returning one) is the asker for a tie the records cannot settle; the command line builds its own from
+    the frame's ``answer`` agent.  A frame without ``[agents]`` needs ``adapter`` and runs as before.
     """
     if isinstance(adapter, str) and adapter not in ADAPTER_NAMES:
         raise ValueError(f"adapter must be one of {', '.join(ADAPTER_NAMES)} or an AgentAdapter object")
@@ -2289,7 +2432,8 @@ def conduct_entry(
             return refused(FrameRefusal(
                 "LEDGER_UNUSABLE", f"repair or move {os.fspath(state / 'ledger.jsonl')} (it is never overwritten) "
                 "or pass another --state-dir", str(exc), source=os.fspath(state)))
-        adapter_name = adapter if isinstance(adapter, str) else type(adapter).__name__
+        adapter_name = (adapter if isinstance(adapter, str) else
+                        None if adapter is None else type(adapter).__name__)
         put("CONDUCT_INVOKED", frame=os.fspath(frame_path), repo=os.fspath(repo_path), adapter=adapter_name,
             dry_run=bool(dry_run), state_dir=os.fspath(state),
             cli={"model": model, "effort": effort, "max_concurrency": max_concurrency,
@@ -2298,7 +2442,8 @@ def conduct_entry(
                  "permission_mode": permission_mode, "allowed_tools": allowed_tools,
                  "verifier_adapter": verifier_adapter, "verifier_model": verifier_model,
                  "verifier_effort": verifier_effort, "verifier_timeout_seconds": verifier_timeout_seconds,
-                 "verification_retries": verification_retries, "require_verification": bool(require_verification)})
+                 "verification_retries": verification_retries, "require_verification": bool(require_verification),
+                 "task_kind": task_kind})
         if not repo_path.is_dir():
             raise FrameRefusal("REPO_NOT_FOUND",
                                f"give --repo an existing directory ({os.fspath(repo_path)!r} is not one)",
@@ -2311,6 +2456,15 @@ def conduct_entry(
         shortfall = _project_frame.check_conduct_ready(frame)
         if shortfall is not None:
             raise shortfall
+        routed = frame.routing is not None
+        if routed and adapter is not None:
+            raise FrameRefusal("AGENT_SETTING_INVALID",
+                               "this frame has an [agents] table, which chooses the agents; omit --adapter",
+                               "an adapter was given with an [agents] table", source=frame.source)
+        if not routed and adapter is None:
+            raise FrameRefusal("AGENT_SETTING_MISSING",
+                               "give --adapter <codex|claude|fake>, or add an [agents] table (and [routing]) to the frame",
+                               "no adapter and no [agents] table", source=frame.source)
 
         run_dir = state / "runs" / run_id
         run_dir.mkdir(parents=True, exist_ok=True)
@@ -2334,17 +2488,33 @@ def conduct_entry(
         put("FRAME_COMPILED", format=frame.format, record_count=len(compiled_records),
             kinds=_kind_counts(compiled_records), memory_path=os.fspath(memory_path),
             frame_sha256=frame.sha256, write_allowlist=list(frame.write_allowlist or ()),
-            machine_criteria=frame.machine_criteria, human_criteria=frame.human_criteria)
+            machine_criteria=frame.machine_criteria, human_criteria=frame.human_criteria,
+            routing="routed" if routed else "legacy_agent_settings")
 
         settings: dict[str, dict[str, Any]] = {}
         concurrency, concurrency_source, concurrency_frame = _resolve_setting(frame, "max_concurrency", max_concurrency)
         settings["max_concurrency"] = {"value": concurrency, "source": concurrency_source,
                                        "overridden_frame_value": concurrency_frame}
+        routing_view: dict[str, Any] | None = None
+        if routed:
+            routing_view = _route_conduct_agents(
+                frame, run_id=run_id, put=put, task_kind=task_kind, routing_chooser=routing_chooser,
+                codex_bin=codex_bin, claude_bin=claude_bin, state=state, require=bool(require_verification),
+                verifier_timeout_seconds=verifier_timeout_seconds, verification_retries=verification_retries,
+                arguments={"adapter": adapter, "model": model, "effort": effort, "verifier_adapter": verifier_adapter,
+                           "verifier_model": verifier_model, "verifier_effort": verifier_effort})
+            adapter = routing_view["agent"].adapter
+            adapter_name = adapter
         real = adapter in ("codex", "claude")
         if real:
             missing = []
             for name, cli_value in (("model", model), ("effort", effort)):
                 key = f"{adapter}_{name}"
+                if routing_view is not None:
+                    chosen_agent = routing_view["agent"]
+                    settings[name] = {"value": getattr(chosen_agent, name), "source": "routing",
+                                      "overridden_frame_value": None, "agent_id": chosen_agent.id}
+                    continue
                 value, source, overridden = _resolve_setting(frame, key, cli_value)
                 if value is None:
                     missing.append(f"--{name} <value> or '{key}: <value>' under [agent_settings]")
@@ -2369,11 +2539,11 @@ def conduct_entry(
                 else:
                     value, source, _overridden = _resolve_setting(frame, key, cli_value)
                 settings[key] = {"value": value, "source": source}
-            verification = _resolve_verification(
+            verification = (routing_view["verification"] if routing_view is not None else _resolve_verification(
                 frame, adapter, settings["model"]["value"], require=bool(require_verification),
                 codex_bin=codex_bin, claude_bin=claude_bin,
                 cli={"adapter": verifier_adapter, "model": verifier_model, "effort": verifier_effort,
-                     "timeout_seconds": verifier_timeout_seconds, "retries": verification_retries})
+                     "timeout_seconds": verifier_timeout_seconds, "retries": verification_retries}))
             _check_git_repo(repo_path)
 
         planned: list[dict[str, Any]] = []
@@ -2415,13 +2585,25 @@ def conduct_entry(
             raise FrameRefusal("FRAME_COMPILE_ERROR",
                                "repair the frame so its ORDER records form a runnable graph with a witnessed authority",
                                str(exc)[:300], source=frame.source) from exc
+        started = time.monotonic()
+
+        def measured(outcome_name: str) -> None:
+            """The end of a routed run, stored beside its decisions; the router never reads it."""
+            if routing_view is None:
+                return
+            rounds = sum(1 for row in ledger.rows if row.get("run_id") == run_id and row["type"] == "AGENT_START_CALLED")
+            put("ROUTING_MEASURED", **_agent_routing.measured_fields(
+                run_id, outcome_name, rounds, time.monotonic() - started))
+
         if real and not dry_run:
             assert runtime is not None
-            return _run_agent_process(
+            finished = _run_agent_process(
                 run=run, runtime=runtime, ledger=ledger, run_id=run_id, adapter_name=adapter_name, frame=frame,
                 conductor_frame=conductor_frame, run_dir=run_dir, repo=repo_path, state=state, settings=settings,
                 executable=codex_bin if adapter == "codex" else claude_bin, allowlist=runtime.allowed_paths,
                 put=put, verification=verification)
+            measured(finished.outcome or finished.verdict)
+            return finished
         result = run.run()
         blocking = dict(result.blocking_item) if result.blocking_item else None
         result_view = {"complete": result.complete, "completed": list(result.completed),
@@ -2431,6 +2613,8 @@ def conduct_entry(
             interrupted=result.interrupted, driver_log=os.fspath(run_dir / "driver.jsonl"),
             effective_concurrency=1)
         ledger_path = os.fspath(ledger.path)
+        if not (real and dry_run):
+            measured("RUN_COMPLETE" if result.complete else "RUN_INCOMPLETE")
         if real and dry_run:
             if not planned:
                 raise FrameRefusal(

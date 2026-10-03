@@ -18,7 +18,10 @@ opposed to ``[protected_actions]`` which a human may approve),
 ``[conflict_precedence]`` (a closed partial order for conflicts between rule
 families) and ``[agent_settings]`` (model, effort and concurrency).  A machine
 checkable acceptance criterion is a ``[completion_criteria]`` entry with a JSON
-witness such as ``command_exit``.
+witness such as ``command_exit``.  ``[agents]``, ``[routing]`` and ``[routing_precedence]`` declare
+which agent does which job; this module only reads their rows into the records of
+``verantyx.agent_routing`` (one producer of them), which checks their meaning
+(docs/AGENT_ROUTING.md).
 
 The conduct entry (``load_conduct_frame`` and the typed ``FrameRefusal``) reads
 a frame file of either format, decides the format from its content, and refuses
@@ -35,7 +38,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
-from . import conductor, memory_frame
+from . import agent_routing, conductor, memory_frame
 from .agent_adapter import (validate_allowed_tools, validate_effort, validate_model,
                             validate_permission_mode)
 from .memory_frame import Memory, WriteRejected
@@ -57,6 +60,9 @@ OPTIONAL_SECTIONS = (
     "forbidden_actions",
     "conflict_precedence",
     "agent_settings",
+    "agents",
+    "routing",
+    "routing_precedence",
 )
 # The closed set of rule families a [conflict_precedence] entry may order.
 PRECEDENCE_FAMILIES = (
@@ -80,7 +86,11 @@ AGENT_SETTING_KEYS = (
     "verifier_effort",
     "verifier_timeout_seconds",
     "verification_retries",
+    "task_kind",
 )
+# With an [agents] table the agent and its model come from the table, so these have no second meaning.
+ROUTED_CONFLICTING_SETTINGS = ("codex_model", "codex_effort", "claude_model", "claude_effort",
+                               "verifier_adapter", "verifier_model", "verifier_effort")
 VERIFIER_ADAPTERS = ("codex", "claude", "none")
 _VERIFICATION_RETRIES = re.compile(r"^[0-5]$")
 _MAX_CONCURRENCY = re.compile(r"^[1-9][0-9]{0,5}$")
@@ -111,6 +121,16 @@ class FrameParseError(FrameError):
 
 class FrameCompileError(FrameError):
     """A valid frame entry could not be encoded as a typed record."""
+
+
+class RoutingParseError(FrameParseError):
+    """An [agents] / [routing] / [routing_precedence] problem; ``code`` is a RECORD_ERRORS or DSL_ERRORS code."""
+
+    def __init__(self, source: str, line: int, message: str, code: str):
+        if code not in agent_routing.RECORD_ERRORS + agent_routing.DSL_ERRORS:
+            raise ValueError(f"unknown routing error code {code!r}")
+        self.code = code
+        super().__init__(source, line, f"[{code}] {message}")
 
 
 @dataclass(frozen=True)
@@ -284,6 +304,8 @@ class ProjectFrameSpec:
     precedence: tuple[PrecedenceRule, ...] = ()
     agent_settings: tuple[AgentSetting, ...] = ()
     declared_sections: tuple[str, ...] = ()
+    # The agent table and routing rules as records (docs/AGENT_ROUTING.md); None when the frame has none.
+    routing: Optional[agent_routing.RoutingTable] = None
 
 
 @dataclass
@@ -454,6 +476,9 @@ def validate_agent_setting(key: str, value: str) -> Optional[str]:
         elif key == "verifier_adapter":
             if value not in VERIFIER_ADAPTERS:
                 return f"verifier_adapter must be one of {', '.join(VERIFIER_ADAPTERS)}"
+        elif key == "task_kind":
+            if value not in agent_routing.TASK_KINDS:
+                return f"task_kind must be one of {', '.join(agent_routing.TASK_KINDS)}"
         elif key == "verification_retries":
             if not isinstance(value, str) or not _VERIFICATION_RETRIES.fullmatch(value):
                 return "verification_retries must be a whole number written in one digit, 0 to 5"
@@ -549,6 +574,121 @@ def _check_precedence_graph(rules: Sequence[PrecedenceRule], source: str) -> Non
         if cycle:
             line = next((rule.line for rule in rules if rule.higher == cycle), rules[0].line)
             _fail(source, line, f"[conflict_precedence] contains a cycle through {cycle!r}")
+
+
+# In this row form the rule named DEFAULT is the role's "otherwise" (the record's ``fallback`` field is true).
+_FALLBACK_ROW_ID = "DEFAULT"
+_LINEAGE_TOKEN = re.compile(r"^[A-Za-z][A-Za-z0-9_.-]*$")
+_AGENT_FIELDS = ("adapter", "model", "effort", "roles", "kinds", "lineage", "concurrency", "note")
+_AGENT_REQUIRED = ("adapter", "model", "effort", "roles", "kinds", "lineage", "concurrency")
+
+
+def _routing_fail(source: str, line: int, code: str, message: str) -> None:
+    raise RoutingParseError(source, line, message, code)
+
+
+def _name_list(value: str, source: str, line: int, field: str) -> list[str]:
+    items = [piece.strip() for piece in value.split(",")]
+    if any(not piece for piece in items) or len(set(items)) != len(items):
+        _routing_fail(source, line, "MALFORMED_ROW", f"{field} is a comma-separated list of distinct names")
+    return items
+
+
+def _agent_record(line: int, row: str, source: str) -> agent_routing.AgentRecord:
+    """The DSL form ``ID: key=value key=value ...``.  Only the shape of the row is checked here."""
+    head, colon, rest = row.partition(":")
+    if not colon:
+        _routing_fail(source, line, "MALFORMED_ROW", "an agent row is 'ID: adapter=... model=... ...'")
+    agent_id = head.strip()
+    # The token form of an id and of a lineage is a limit of this row format (a row is cut at spaces, ':' and
+    # ',').  A producer of prose keeps the human's own words; the record layer does not require this form.
+    if not _ID.fullmatch(agent_id):
+        _routing_fail(source, line, "MALFORMED_ROW",
+                      f"an agent id in a row is letters, digits, '_' or '-', starting with a letter, not {agent_id!r}")
+    fields: dict[str, str] = {}
+    for token in rest.split():
+        key, equals, value = token.partition("=")
+        if not equals or not key or not value or "=" in value:
+            _routing_fail(source, line, "MALFORMED_ROW", f"agent fields are written key=value without spaces, not {token!r}")
+        if key not in _AGENT_FIELDS:
+            _routing_fail(source, line, "UNKNOWN_FIELD", f"unknown agent field {key!r}; use {', '.join(_AGENT_FIELDS)}")
+        if key in fields:
+            _routing_fail(source, line, "DUPLICATE_FIELD", f"agent field {key!r} is written twice")
+        fields[key] = value
+    for key in _AGENT_REQUIRED:
+        if key not in fields:
+            _routing_fail(source, line, "MISSING_FIELD", f"agent {agent_id or '?'} needs the field {key}=")
+    if not _LINEAGE_TOKEN.fullmatch(fields["lineage"]):
+        _routing_fail(source, line, "MALFORMED_ROW",
+                      f"a lineage in a row is letters, digits, '_', '.' or '-', starting with a letter, not {fields['lineage']!r}")
+    concurrency: Any = int(fields["concurrency"]) if fields["concurrency"].isdigit() else fields["concurrency"]
+    return agent_routing.AgentRecord(
+        id=agent_id, adapter=fields["adapter"], roles=frozenset(_name_list(fields["roles"], source, line, "roles")),
+        kinds=frozenset(_name_list(fields["kinds"], source, line, "kinds")), lineage=fields["lineage"],
+        basis=agent_routing.Basis.dsl(source, line, row), model=fields["model"], effort=fields["effort"],
+        concurrency=concurrency, note=fields.get("note"))
+
+
+def _routing_rule(line: int, row: str, source: str) -> agent_routing.RoutingRule:
+    """The DSL form ``ID: cond & cond => A1, A2: reason``."""
+    head, colon, body = row.partition(":")
+    if not colon or "=>" not in body or body.count("=>") != 1:
+        _routing_fail(source, line, "MALFORMED_ROW", "a routing rule is 'ID: condition & condition => AGENT, AGENT: reason'")
+    when, _, tail = body.partition("=>")
+    prefer, colon, reason = tail.partition(":")
+    if not colon:
+        _routing_fail(source, line, "MALFORMED_ROW", "a routing rule ends with ': reason' after its agent list")
+    conditions = []
+    for piece in when.split("&"):
+        name, equals, value = piece.strip().partition("=")
+        if not equals or not name.strip() or not value.strip():
+            _routing_fail(source, line, "MALFORMED_ROW", f"a condition is written name=value, not {piece.strip()!r}")
+        conditions.append(agent_routing.Condition(name.strip(), value.strip()))
+    if not reason.strip():     # a row of this form always says why; a prose reader may leave it out
+        _routing_fail(source, line, "MISSING_FIELD", "a routing rule row gives its reason after the agent list")
+    return agent_routing.RoutingRule(
+        head.strip(), tuple(conditions), tuple(_name_list(prefer, source, line, "the agent list")),
+        reason.strip(), agent_routing.Basis.dsl(source, line, row), head.strip() == _FALLBACK_ROW_ID)
+
+
+def _routing_precedence(line: int, row: str, source: str) -> agent_routing.RoutingPrecedence:
+    """The DSL form ``ID: HIGHER > LOWER: reason`` (the same shape as [conflict_precedence])."""
+    head, colon, body = row.partition(":")
+    relation, colon2, reason = body.partition(":")
+    if not colon or not colon2 or relation.count(">") != 1:
+        _routing_fail(source, line, "MALFORMED_ROW", "routing precedence is 'ID: HIGHER_RULE > LOWER_RULE: reason'")
+    higher, lower = (piece.strip() for piece in relation.split(">", 1))
+    if not reason.strip():
+        _routing_fail(source, line, "MISSING_FIELD", "a routing precedence row gives its reason after the relation")
+    return agent_routing.RoutingPrecedence(head.strip(), higher, lower, reason.strip(),
+                                           agent_routing.Basis.dsl(source, line, row))
+
+
+def _routing_from_sections(sections: Mapping[str, list[tuple[int, str]]], seen: set[str], settings: Sequence[AgentSetting],
+                           source: str, eof: int) -> Optional[agent_routing.RoutingTable]:
+    """The DSL producer of the routing records: rows in, a checked table out (or a RoutingParseError)."""
+    names = ("agents", "routing", "routing_precedence")
+    declared = [name for name in names if name in seen]
+    if not declared:
+        return None
+    for name in ("agents", "routing"):
+        if name not in seen:
+            _routing_fail(source, eof, "MISSING_SECTION",
+                          f"[{name}] is missing: a frame with {' / '.join('[' + d + ']' for d in declared)} also needs [{name}]")
+    for item in settings:
+        if item.key in ROUTED_CONFLICTING_SETTINGS:
+            _routing_fail(source, item.line, "AGENT_SETTINGS_CONFLICT",
+                          f"[agent_settings] {item.key} cannot be used with an [agents] table; "
+                          "write the model and effort on the agent's row")
+    agents = [_agent_record(line, row, source) for line, row in _rows("agents", sections, source, eof)]
+    rules = [_routing_rule(line, row, source) for line, row in _rows("routing", sections, source, eof)]
+    precedence = ([_routing_precedence(line, row, source) for line, row in _rows("routing_precedence", sections, source, eof)]
+                  if "routing_precedence" in seen else [])
+    try:
+        return agent_routing.build_routing_table(agents, rules, precedence)
+    except agent_routing.RoutingRecordError as exc:
+        line = exc.basis.line if exc.basis is not None and exc.basis.line is not None else eof
+        raise RoutingParseError(source, line, exc.message, exc.code) from exc
 
 
 def parse_frame(text: str, *, source: str = "<frame>") -> ProjectFrameSpec:
@@ -789,10 +929,12 @@ def parse_frame(text: str, *, source: str = "<frame>") -> ProjectFrameSpec:
                 _fail(source, line_no, f"duplicate agent setting {key!r}")
             settings.append(AgentSetting(key, value, line_no))
 
+    routing = _routing_from_sections(sections, seen_sections, settings, source, eof)
+
     spec = ProjectFrameSpec(project, goal, goal_line, source, tuple(invariants), tuple(criteria), tuple(phases),
                             tuple(phase_order), tuple(decisions), tuple(aliases), tuple(escalations),
                             tuple(protected_actions), tuple(write_paths), tuple(forbidden), tuple(precedence),
-                            tuple(settings), declared)
+                            tuple(settings), declared, routing)
     _check_order_graph(spec.phases, spec.phase_order, source, eof)
     return spec
 
@@ -1214,6 +1356,7 @@ REFUSAL_REASONS = (
     "FRAME_JSONL_INVALID", "FRAME_COMPILE_ERROR", "WRITE_ALLOWLIST_MISSING", "WRITE_ALLOWLIST_EMPTY",
     "MACHINE_ACCEPTANCE_MISSING", "REPO_NOT_FOUND", "REPO_NOT_GIT", "AGENT_SETTING_MISSING",
     "AGENT_SETTING_INVALID", "NO_LAUNCH_PLANNED", "LEDGER_UNUSABLE", "INTERNAL_ERROR",
+    "ROUTING_INVALID", "ROUTING_UNDECIDED",
 )
 _JSONL_OPS = frozenset(("write", "supersede", "alias"))
 
@@ -1222,7 +1365,7 @@ class FrameRefusal(Exception):
     """A typed refusal.  ``missing`` always says what to add or fix; nothing is guessed."""
 
     def __init__(self, reason: str, missing: str, detail: str = "", source: Optional[str] = None,
-                 line: Optional[int] = None):
+                 line: Optional[int] = None, code: Optional[str] = None):
         if reason not in REFUSAL_REASONS:
             raise ValueError(f"unknown refusal reason {reason!r}")
         self.reason = reason
@@ -1230,11 +1373,15 @@ class FrameRefusal(Exception):
         self.detail = detail
         self.source = source
         self.line = line
+        self.code = code
         super().__init__(f"{reason}: {missing}")
 
     def as_dict(self) -> dict[str, Any]:
-        return {"reason": self.reason, "missing": self.missing, "detail": self.detail,
+        view = {"reason": self.reason, "missing": self.missing, "detail": self.detail,
                 "source": self.source, "line": self.line}
+        if self.code is not None:  # only the routing refusals carry a finer code; the older shape is unchanged
+            view["code"] = self.code
+        return view
 
 
 @dataclass(frozen=True)
@@ -1255,6 +1402,7 @@ class ConductFrame:
     machine_criteria: int
     human_criteria: int
     text: str = ""
+    routing: Optional[agent_routing.RoutingTable] = None
 
 
 def read_frame_bytes(path: str | Path) -> bytes:
@@ -1403,6 +1551,9 @@ def load_conduct_frame(path: str | Path, *, on_read: Any = None) -> ConductFrame
     if fmt == "markdown":
         try:
             spec = parse_frame(text, source=source)
+        except RoutingParseError as exc:
+            raise FrameRefusal("ROUTING_INVALID", f"fix {source}:{exc.line}: {exc.message}", exc.message,
+                               source=source, line=exc.line, code=exc.code) from exc
         except FrameParseError as exc:
             raise FrameRefusal("FRAME_PARSE_ERROR", f"fix {source}:{exc.line}: {exc.message}", exc.message,
                                source=source, line=exc.line) from exc
@@ -1412,7 +1563,7 @@ def load_conduct_frame(path: str | Path, *, on_read: Any = None) -> ConductFrame
         machine = sum(1 for item in spec.criteria if not item.human_judged)
         human = sum(1 for item in spec.criteria if item.human_judged)
         return ConductFrame(source, digest, len(raw), fmt, blank, comments, spec, (), allowlist, settings,
-                            machine, human, text)
+                            machine, human, text, spec.routing)
     events = _validate_jsonl(text, source)
     active = _jsonl_active(events)
     paths = tuple(sorted({str(r["witness"]["write_path"]) for r in active
@@ -1473,7 +1624,7 @@ def check_conduct_ready(frame: ConductFrame) -> Optional[FrameRefusal]:
 __all__ = [
     "AGENT_SETTING_KEYS", "Alias", "AgentSetting", "Compilation", "ConductFrame", "Criterion", "Decision",
     "DecisionDraft", "Escalation", "ForbiddenAction", "FrameCompileError", "FrameError", "FrameParseError",
-    "FrameRefusal", "Invariant", "OPTIONAL_SECTIONS", "PRECEDENCE_FAMILIES", "Phase", "PhaseOrder",
+    "FrameRefusal", "Invariant", "OPTIONAL_SECTIONS", "PRECEDENCE_FAMILIES", "Phase", "PhaseOrder", "RoutingParseError",
     "PrecedenceRule", "ProjectFrameSpec", "ProtectedAction", "REFUSAL_REASONS", "Refusal", "SECTIONS",
     "WritePath", "action_authority", "check_conduct_ready", "compile_frame", "decision_from_exchange",
     "decode_frame", "detect_frame_format", "load_conduct_frame", "load_frame", "parse_frame",

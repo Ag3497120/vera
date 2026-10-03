@@ -76,3 +76,9 @@ W1: verantyx
 W2: tests
 W3: docs
 W4: tools
+
+# Agent routing sections (optional, see docs/AGENT_ROUTING.md; this note sits at the end so that the line numbers above stay as they were):
+# [agents] `ID: adapter=<codex|claude|fake> model=<m> effort=<e> roles=<implement|verify|review|generate|read|answer,...> kinds=<small_fix|feature|large_refactor|test_authoring|review|verification|attack|bulk_generation|read_large_file|closed_choice,...> lineage=<name> concurrency=<n> [note=<identifier>]` declares one agent per line; the values are what the human says about the agent (testimony), not measurements. See docs/AGENT_ROUTING.md.
+# [routing] `ID: role=<role> [& kind=<kind>] [& size=<small|medium|large>] [& independent_of=<role|none>] => AGENT, AGENT: reason` says who does which job (the first agent in the list that nothing excludes); every used role needs a `DEFAULT: role=<role> => AGENT, ...: reason` row. A verify rule is independent of implement unless it says independent_of=none. Needs [agents]; with both, `conduct` takes no --adapter.
+# [routing_precedence] `ID: HIGHER_RULE_ID > LOWER_RULE_ID: reason` resolves two routing rules that name different agents (same shape as [conflict_precedence]; DEFAULT cannot be named).
+# [agent_settings] task_kind: <small_fix|feature|large_refactor|test_authoring|review|verification|attack|bulk_generation|read_large_file|closed_choice> says what kind of job the frame is (needed with [agents]; --task-kind overrides). With [agents], codex_model, codex_effort, claude_model, claude_effort and verifier_adapter, verifier_model, verifier_effort are not allowed.

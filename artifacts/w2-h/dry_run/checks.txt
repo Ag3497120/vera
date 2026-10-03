@@ -1,0 +1,9 @@
+FRAME_COMPILED routing = routed
+ROUTING_DECISION {"agent_id": "CodexImpl", "candidates": ["CodexImpl"], "decided_by": "rule:IMPL_FEATURE", "excluded": [], "independence": {}, "job_id": "04cc16be52fb46089cfbd93b0fd0922a", "matched_rules": ["IMPL_FEATURE"], "role": "implement", "size": "small", "stage": "rule", "task_kind": "feature", "undecided_reason": null, "values": "declared"}
+   agent_basis: {"kind": "declared_dsl", "line": 53, "source": "docs/frames/examples/routing_two_lineages.md", "witness": "CodexImpl: adapter=codex model=gpt-6-luna effort=low roles=implement kinds=small_fix,feature,large_refactor,test_authoring lineage=openai concurrency=1"}
+ROUTING_DECISION {"agent_id": "ClaudeVerify", "candidates": ["ClaudeVerify"], "decided_by": "rule:VERIFY_ANY", "excluded": [], "independence": {"implement": "distinct_lineage"}, "job_id": "04cc16be52fb46089cfbd93b0fd0922a", "matched_rules": ["VERIFY_ANY"], "role": "verify", "size": "small", "stage": "rule", "task_kind": "verification", "undecided_reason": null, "values": "declared"}
+   agent_basis: {"kind": "declared_dsl", "line": 54, "source": "docs/frames/examples/routing_two_lineages.md", "witness": "ClaudeVerify: adapter=claude model=claude-sonnet-5-5 effort=low roles=verify kinds=verification lineage=anthropic concurrency=1"}
+AGENT_START_CALLED adapter = codex
+LAUNCH_PLANNED adapter = codex argv[0] = /opt/homebrew/bin/codex model = {"agent_id": "CodexImpl", "overridden_frame_value": null, "source": "routing", "value": "gpt-6-luna"} effort = {"agent_id": "CodexImpl", "overridden_frame_value": null, "source": "routing", "value": "low"}
+RUN_FINISHED {"code": null, "complete": false, "outcome": null, "reason": null, "verification": null}
+rows: 9 ROUTING_DECISION rows: 2

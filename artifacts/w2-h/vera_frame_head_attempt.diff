@@ -1,0 +1,15 @@
+diff --git a/docs/frames/vera_project_frame.md b/docs/frames/vera_project_frame.md
+index 9dc24d2..c96dea7 100644
+--- a/docs/frames/vera_project_frame.md
++++ b/docs/frames/vera_project_frame.md
+@@ -11,6 +11,10 @@
+ # [forbidden_actions] `action => reason` lists operations that stay forbidden even when a human approves; [protected_actions] lists operations a human approval can unlock. One action cannot be in both.
+ # [conflict_precedence] `ID: HIGHER > LOWER: reason` orders rule families when they collide; families are forbidden_actions, philosophy_invariants, completion_criteria, protected_actions. Pairs left unordered stay unordered. The declaration is kept as typed records (and in action_authority) only: the conductor does not read it yet, and escalating a collision or refusing a forbidden action at run time is not implemented. protected_actions never outranks forbidden_actions, directly or through a chain of rules.
+ # [agent_settings] `key: value` with key codex_model, codex_effort, claude_model, claude_effort or max_concurrency (an upper bound; the conductor runs one agent at a time). A command-line option overrides the frame.
++# [agents] `ID: adapter=<codex|claude|fake> model=<m> effort=<e> roles=<implement|verify|review|generate|read|answer,...> kinds=<small_fix|feature|large_refactor|test_authoring|review|verification|attack|bulk_generation|read_large_file|closed_choice,...> lineage=<name> concurrency=<n> [note=<identifier>]` declares one agent per line; the values are what the human says about the agent (testimony), not measurements. See docs/AGENT_ROUTING.md.
++# [routing] `ID: role=<role> [& kind=<kind>] [& size=<small|medium|large>] [& independent_of=<role|none>] => AGENT, AGENT: reason` says who does which job (the first agent in the list that nothing excludes); every used role needs a `DEFAULT: role=<role> => AGENT, ...: reason` row. A verify rule is independent of implement unless it says independent_of=none. Needs [agents]; with both, `conduct` takes no --adapter.
++# [routing_precedence] `ID: HIGHER_RULE_ID > LOWER_RULE_ID: reason` resolves two routing rules that name different agents (same shape as [conflict_precedence]; DEFAULT cannot be named).
++# [agent_settings] task_kind: <small_fix|feature|large_refactor|test_authoring|review|verification|attack|bulk_generation|read_large_file|closed_choice> says what kind of job the frame is (needed with [agents]; --task-kind overrides). With [agents], codex_model, codex_effort, claude_model, claude_effort and verifier_adapter, verifier_model, verifier_effort are not allowed.
+ # A machine-checkable completion criterion is `ID: text | {"kind":"command_exit","command":["cmd","arg"],"expected_exit":0}`; conduct refuses a frame whose criteria are all `human-judged`.
+ 
+ [goal]

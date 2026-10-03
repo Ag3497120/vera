@@ -1,0 +1,52 @@
+## エージェントの振り分け 経路づけ routing
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "エージェントの振り分け 経路づけ routing",
+  "searched": 648,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 280,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## agent routing
+{
+  "verdict": "ANSWER",
+  "query": "agent routing",
+  "searched": 648,
+  "hits": [
+    {
+      "kind": "fork",
+      "name": "a_timeless_store_must_refuse_a_question_about_now_fork",
+      "about": "The store answered 「今日の天気は」 with 今日.",
+      "where": "verantyx/cross_geometry_forks.py",
+      "registered": "yes"
+    }
+  ],
+  "total_hits": 1
+}
+## lineage
+{
+  "verdict": "ANSWER",
+  "query": "lineage",
+  "searched": 648,
+  "hits": [
+    {
+      "kind": "module",
+      "name": "semantic_band",
+      "about": "A non-voting agreement annotation for verified semantic answers.",
+      "where": "verantyx/semantic_band.py"
+    },
+    {
+      "kind": "module",
+      "name": "semantic_realize",
+      "about": "Rule-bound inverse surfaces for the source-bound semantic reader.",
+      "where": "verantyx/semantic_realize.py"
+    }
+  ],
+  "total_hits": 2
+}

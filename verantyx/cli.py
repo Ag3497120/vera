@@ -23,7 +23,8 @@ Lab:
 Conductor:
   vera conduct --frame F --repo R --adapter codex|claude|fake [--dry-run]
                                read a project frame and start (or plan) an agent
-                               (see docs/CONDUCT_ENTRY.md)
+                               (see docs/CONDUCT_ENTRY.md); a frame with an [agents]
+                               table is routed: omit --adapter (docs/AGENT_ROUTING.md)
 
 Default store: ./vera_store.json (override with --store).
 """
@@ -1301,6 +1302,9 @@ def cmd_conduct(args) -> int:
     その指摘を指揮者が再実行して確かめる(枠の verifier_* 設定 または --verifier-*)。設定が無ければ
     VERIFIER_NOT_CONFIGURED で止まり、--verifier-adapter none のときだけ省く。結果の型は
     VERIFICATION_FAILED / VERIFIER_FAILED など(docs/CONDUCT_VERIFY.md)。
+    枠に [agents] 表があれば、実装役・検証役は経路づけ器が枠の記録から選ぶ(--adapter / --model /
+    --effort / --verifier-adapter / --verifier-model / --verifier-effort は付けない)。仕事の種類は
+    --task-kind か枠の task_kind。決定は 1 件ずつ ROUTING_DECISION として台帳に残る(docs/AGENT_ROUTING.md)。
     """
     from .conductor_run import conduct_entry
 
@@ -1313,7 +1317,8 @@ def cmd_conduct(args) -> int:
         permission_mode=args.permission_mode, allowed_tools=args.allowed_tools,
         verifier_adapter=args.verifier_adapter, verifier_model=args.verifier_model,
         verifier_effort=args.verifier_effort, verifier_timeout_seconds=args.verifier_timeout_seconds,
-        verification_retries=args.verification_retries, require_verification=True)
+        verification_retries=args.verification_retries, require_verification=True,
+        task_kind=args.task_kind)
     print(json.dumps(outcome.as_dict(), ensure_ascii=False, sort_keys=True))
     return outcome.exit_code
 
@@ -1614,13 +1619,20 @@ def main(argv: Optional[list] = None) -> int:
     p = sub.add_parser("stats", help="store statistics")
     p.set_defaults(fn=cmd_stats)
 
+    from .agent_routing import TASK_KINDS
+
     p = sub.add_parser(
         "conduct",
         help="read a project frame (.md or .jsonl) and start an implementation agent; "
              "exit 0 ok/planned, 1 incomplete, 2 typed refusal, 3 internal error")
     p.add_argument("--frame", required=True, help="project frame: Markdown DSL or JSONL memory log")
     p.add_argument("--repo", required=True, help="git repository the agent works in (a worktree is made from HEAD)")
-    p.add_argument("--adapter", required=True, choices=["codex", "claude", "fake"])
+    p.add_argument("--adapter", default=None, choices=["codex", "claude", "fake"],
+                   help="required unless the frame has an [agents] table; with one, omit it (the router chooses "
+                        "the agents from the frame's records; docs/AGENT_ROUTING.md)")
+    p.add_argument("--task-kind", default=None,
+                   choices=list(TASK_KINDS),
+                   help="what kind of job this is, for a frame with an [agents] table (overrides the frame's task_kind)")
     p.add_argument("--dry-run", action="store_true",
                    help="codex/claude: write the command that would start to the ledger and start nothing")
     p.add_argument("--state-dir", default=None, help="ledger and run files (default: <repo>/.verantyx-conduct)")

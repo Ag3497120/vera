@@ -1,0 +1,6 @@
+## C0
+outside: []
+exit 0
+## R0 import
+[]
+('declared_dsl', 'declared_text')
