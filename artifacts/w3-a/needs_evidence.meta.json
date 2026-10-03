@@ -1,0 +1,31 @@
+{
+ "boundary_freq": 68,
+ "by_evidence_status": {
+  "BELOW_THRESHOLD": 35900,
+  "NO_EVIDENCE": 22150,
+  "SPLIT": 2332
+ },
+ "by_kind": {
+  "paren_alias": 106,
+  "title": 6721,
+  "token": 53555
+ },
+ "by_ns": {
+  "N": 57587,
+  "NP": 41,
+  "P": 2754
+ },
+ "by_state": {
+  "MULTIPLE": 2332,
+  "UNPLACED": 58050
+ },
+ "content_sha256": "ce65b9c2081e8554c170a9984024e5230d410959c361495832c92effe7189bf3",
+ "last_freq": 68,
+ "n_at_boundary": 663,
+ "n_requested": 60000,
+ "out": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/needs_evidence.jsonl",
+ "out_sha256": "a5fe23b9aef9f46449f0b16c4bbb0ce49d80b50afe38978d2bf99930071610af",
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r3c/run1",
+ "rule": "headwords with state UNPLACED or MULTIPLE (nouns, predicates and NP alike), ordered by n_seen descending; every word whose n_seen equals that of the n-th is included; display order inside one frequency = string order; n_seen is a sum used only to rank, never a vote for a type; no test data is read",
+ "total": 60382
+}

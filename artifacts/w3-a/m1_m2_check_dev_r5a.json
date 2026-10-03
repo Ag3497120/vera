@@ -1,0 +1,156 @@
+{
+ "bad": [],
+ "control_head_stage_used": 2907,
+ "control_plain_direct_words_queried": 3000,
+ "counter_units_total": 140,
+ "head_stage_leaks_through_generated_word": 0,
+ "latin_units": [
+  "GHz",
+  "MiB",
+  "kg",
+  "km",
+  "ms"
+ ],
+ "m2_queries": {
+  "10ms": {
+   "expected": "QUANTITY",
+   "ok": true,
+   "rule": "number+counter",
+   "state": "DECIDED",
+   "top": [
+    "QUANTITY"
+   ]
+  },
+  "10メートル": {
+   "expected": "QUANTITY",
+   "ok": true,
+   "rule": "number+counter",
+   "state": "DECIDED",
+   "top": [
+    "QUANTITY"
+   ]
+  },
+  "128MiB": {
+   "expected": "QUANTITY",
+   "ok": true,
+   "rule": "number+counter",
+   "state": "DECIDED",
+   "top": [
+    "QUANTITY"
+   ]
+  },
+  "1of": {
+   "expected": "IDENTIFIER",
+   "ok": true,
+   "rule": "alnum_code",
+   "state": "DECIDED",
+   "top": [
+    "IDENTIFIER"
+   ]
+  },
+  "2in": {
+   "expected": null,
+   "ok": true,
+   "rule": "alnum_code",
+   "state": "DECIDED",
+   "top": [
+    "IDENTIFIER"
+   ]
+  },
+  "2km": {
+   "expected": "QUANTITY",
+   "ok": true,
+   "rule": "number+counter",
+   "state": "DECIDED",
+   "top": [
+    "QUANTITY"
+   ]
+  },
+  "30パーセント": {
+   "expected": "QUANTITY",
+   "ok": true,
+   "rule": "number+counter",
+   "state": "DECIDED",
+   "top": [
+    "QUANTITY"
+   ]
+  },
+  "3AND": {
+   "expected": "IDENTIFIER",
+   "ok": true,
+   "rule": "alnum_code",
+   "state": "DECIDED",
+   "top": [
+    "IDENTIFIER"
+   ]
+  },
+  "3kg": {
+   "expected": "QUANTITY",
+   "ok": true,
+   "rule": "number+counter",
+   "state": "DECIDED",
+   "top": [
+    "QUANTITY"
+   ]
+  },
+  "40キロメートル": {
+   "expected": "QUANTITY",
+   "ok": true,
+   "rule": "number+counter",
+   "state": "DECIDED",
+   "top": [
+    "QUANTITY"
+   ]
+  },
+  "4xx": {
+   "expected": "IDENTIFIER",
+   "ok": true,
+   "rule": "alnum_code",
+   "state": "DECIDED",
+   "top": [
+    "IDENTIFIER"
+   ]
+  },
+  "5GHz": {
+   "expected": "QUANTITY",
+   "ok": true,
+   "rule": "number+counter",
+   "state": "DECIDED",
+   "top": [
+    "QUANTITY"
+   ]
+  },
+  "5xx": {
+   "expected": "IDENTIFIER",
+   "ok": true,
+   "rule": "alnum_code",
+   "state": "DECIDED",
+   "top": [
+    "IDENTIFIER"
+   ]
+  },
+  "A1-23": {
+   "expected": "IDENTIFIER",
+   "ok": true,
+   "rule": "alnum_code",
+   "state": "DECIDED",
+   "top": [
+    "IDENTIFIER"
+   ]
+  },
+  "ABC-123": {
+   "expected": "IDENTIFIER",
+   "ok": true,
+   "rule": "alnum_code",
+   "state": "DECIDED",
+   "top": [
+    "IDENTIFIER"
+   ]
+  }
+ },
+ "of_which_upgraded_to_direct": 2557,
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/r5a",
+ "unit_sample_rows": 295893,
+ "unit_sample_rows_listing_a_generated_word": 0,
+ "words_decided_with_gen_definition": 18254
+}

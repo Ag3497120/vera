@@ -1,0 +1,7 @@
+10メートル DECIDED direct None ['QUANTITY']
+2km DECIDED direct None ['IDENTIFIER']
+30パーセント DECIDED direct None ['QUANTITY']
+40キロメートル DECIDED direct None ['QUANTITY']
+A1-23 DECIDED direct None ['IDENTIFIER']
+ABC-123 DECIDED direct None ['IDENTIFIER']
+潜水艦 UNPLACED None None []

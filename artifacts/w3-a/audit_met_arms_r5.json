@@ -1,0 +1,24 @@
+{
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r5/run1",
+ "role_min_sources": 2,
+ "direct_headwords": 993027,
+ "estimated_generated_headwords": 15697,
+ "decided_headwords": 1008724,
+ "words_with_evidence_checked": 1008724,
+ "counts": {
+  "by:alias": 303576,
+  "by:definition": 565083,
+  "by:definition_recovered": 8222,
+  "by:frame": 731,
+  "by:gen_definition": 18254,
+  "by:hearst": 1907,
+  "by:paren_alias": 97609,
+  "by:pos_class": 6463,
+  "by:role": 16871,
+  "by:sahen": 16574,
+  "by:seed": 656,
+  "role_single_source_with_generated_agreement": 2557,
+  "words": 1008724
+ },
+ "examples": {}
+}

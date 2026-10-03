@@ -1,0 +1,60 @@
+### codex 並列 生成 台帳 再開
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "codex 並列 生成 台帳 再開",
+  "searched": 650,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 281,
+    "prereg": 64,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 上位語 連鎖 伝播
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "上位語 連鎖 伝播",
+  "searched": 650,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 281,
+    "prereg": 64,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 助数詞 単位 数量
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "助数詞 単位 数量",
+  "searched": 650,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 281,
+    "prereg": 64,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 定義文 生成 出所
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "定義文 生成 出所",
+  "searched": 650,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 281,
+    "prereg": 64,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

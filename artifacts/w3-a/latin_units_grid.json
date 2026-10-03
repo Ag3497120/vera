@@ -1,0 +1,494 @@
+{
+ "N": [
+  "AND",
+  "URL",
+  "and",
+  "app",
+  "for",
+  "has",
+  "in",
+  "is",
+  "mas",
+  "mis",
+  "of",
+  "sum",
+  "xx"
+ ],
+ "Q": [
+  "km",
+  "kg",
+  "GHz",
+  "ms",
+  "MiB",
+  "mm"
+ ],
+ "grid": [
+  {
+   "K": 5,
+   "n_kept": [
+    "xx"
+   ],
+   "q_kept": [
+    "km",
+    "kg",
+    "GHz",
+    "ms",
+    "MiB"
+   ],
+   "score": 4,
+   "theta": 10,
+   "units": [
+    "GHz",
+    "MiB",
+    "kg",
+    "km",
+    "ms",
+    "xx"
+   ]
+  },
+  {
+   "K": 6,
+   "n_kept": [],
+   "q_kept": [
+    "km",
+    "kg",
+    "GHz",
+    "ms",
+    "MiB"
+   ],
+   "score": 5,
+   "theta": 10,
+   "units": [
+    "GHz",
+    "MiB",
+    "kg",
+    "km",
+    "ms"
+   ]
+  },
+  {
+   "K": 8,
+   "n_kept": [],
+   "q_kept": [
+    "km",
+    "kg",
+    "ms",
+    "MiB"
+   ],
+   "score": 4,
+   "theta": 10,
+   "units": [
+    "MiB",
+    "kg",
+    "km",
+    "ms"
+   ]
+  },
+  {
+   "K": 12,
+   "n_kept": [],
+   "q_kept": [
+    "km",
+    "kg",
+    "ms",
+    "MiB"
+   ],
+   "score": 4,
+   "theta": 10,
+   "units": [
+    "MiB",
+    "kg",
+    "km",
+    "ms"
+   ]
+  },
+  {
+   "K": 5,
+   "n_kept": [
+    "xx"
+   ],
+   "q_kept": [
+    "km",
+    "kg",
+    "GHz",
+    "MiB"
+   ],
+   "score": 3,
+   "theta": 20,
+   "units": [
+    "GHz",
+    "MiB",
+    "kg",
+    "km",
+    "xx"
+   ]
+  },
+  {
+   "K": 6,
+   "n_kept": [],
+   "q_kept": [
+    "km",
+    "kg",
+    "GHz",
+    "MiB"
+   ],
+   "score": 4,
+   "theta": 20,
+   "units": [
+    "GHz",
+    "MiB",
+    "kg",
+    "km"
+   ]
+  },
+  {
+   "K": 8,
+   "n_kept": [],
+   "q_kept": [
+    "km",
+    "kg",
+    "MiB"
+   ],
+   "score": 3,
+   "theta": 20,
+   "units": [
+    "MiB",
+    "kg",
+    "km"
+   ]
+  },
+  {
+   "K": 12,
+   "n_kept": [],
+   "q_kept": [
+    "km",
+    "kg",
+    "MiB"
+   ],
+   "score": 3,
+   "theta": 20,
+   "units": [
+    "MiB",
+    "kg",
+    "km"
+   ]
+  },
+  {
+   "K": 5,
+   "n_kept": [
+    "xx"
+   ],
+   "q_kept": [
+    "km",
+    "kg",
+    "GHz",
+    "MiB"
+   ],
+   "score": 3,
+   "theta": 33,
+   "units": [
+    "GHz",
+    "MiB",
+    "kg",
+    "km",
+    "xx"
+   ]
+  },
+  {
+   "K": 6,
+   "n_kept": [],
+   "q_kept": [
+    "km",
+    "kg",
+    "GHz",
+    "MiB"
+   ],
+   "score": 4,
+   "theta": 33,
+   "units": [
+    "GHz",
+    "MiB",
+    "kg",
+    "km"
+   ]
+  },
+  {
+   "K": 8,
+   "n_kept": [],
+   "q_kept": [
+    "km",
+    "kg",
+    "MiB"
+   ],
+   "score": 3,
+   "theta": 33,
+   "units": [
+    "MiB",
+    "kg",
+    "km"
+   ]
+  },
+  {
+   "K": 12,
+   "n_kept": [],
+   "q_kept": [
+    "km",
+    "kg",
+    "MiB"
+   ],
+   "score": 3,
+   "theta": 33,
+   "units": [
+    "MiB",
+    "kg",
+    "km"
+   ]
+  }
+ ],
+ "no_rule_units": [
+  "AND",
+  "GHz",
+  "MiB",
+  "URL",
+  "and",
+  "app",
+  "em",
+  "for",
+  "has",
+  "in",
+  "is",
+  "kg",
+  "km",
+  "mm",
+  "ms",
+  "of",
+  "sum",
+  "xx"
+ ],
+ "per_source": {
+  "AND": {
+   "codex:code": {
+    "after_numeral": 132,
+    "distinct_numerals": 28,
+    "noun_occurrences": 4720
+   },
+   "codex:code_qa": {
+    "after_numeral": 130,
+    "distinct_numerals": 23,
+    "noun_occurrences": 2260
+   }
+  },
+  "GHz": {
+   "codex:general_qa": {
+    "after_numeral": 270,
+    "distinct_numerals": 6,
+    "noun_occurrences": 5
+   },
+   "jawiki": {
+    "after_numeral": 80,
+    "distinct_numerals": 24,
+    "noun_occurrences": 14
+   }
+  },
+  "MiB": {
+   "codex:code": {
+    "after_numeral": 170,
+    "distinct_numerals": 21,
+    "noun_occurrences": 104
+   },
+   "codex:code_qa": {
+    "after_numeral": 424,
+    "distinct_numerals": 12,
+    "noun_occurrences": 156
+   }
+  },
+  "URL": {
+   "codex:code": {
+    "after_numeral": 83,
+    "distinct_numerals": 13,
+    "noun_occurrences": 17660
+   },
+   "codex:code_qa": {
+    "after_numeral": 131,
+    "distinct_numerals": 7,
+    "noun_occurrences": 34018
+   }
+  },
+  "and": {
+   "codex:code": {
+    "after_numeral": 181,
+    "distinct_numerals": 15,
+    "noun_occurrences": 4720
+   },
+   "codex:code_qa": {
+    "after_numeral": 112,
+    "distinct_numerals": 19,
+    "noun_occurrences": 2260
+   }
+  },
+  "app": {
+   "codex:code": {
+    "after_numeral": 1633,
+    "distinct_numerals": 32,
+    "noun_occurrences": 12760
+   },
+   "codex:code_qa": {
+    "after_numeral": 458,
+    "distinct_numerals": 13,
+    "noun_occurrences": 9639
+   }
+  },
+  "em": {
+   "codex:code": {
+    "after_numeral": 638,
+    "distinct_numerals": 1,
+    "noun_occurrences": 641
+   },
+   "jawiki": {
+    "after_numeral": 531,
+    "distinct_numerals": 10,
+    "noun_occurrences": 101
+   }
+  },
+  "for": {
+   "codex:code": {
+    "after_numeral": 132,
+    "distinct_numerals": 16,
+    "noun_occurrences": 20199
+   },
+   "codex:code_qa": {
+    "after_numeral": 120,
+    "distinct_numerals": 14,
+    "noun_occurrences": 12075
+   }
+  },
+  "has": {
+   "codex:code": {
+    "after_numeral": 350,
+    "distinct_numerals": 10,
+    "noun_occurrences": 6058
+   },
+   "codex:code_qa": {
+    "after_numeral": 150,
+    "distinct_numerals": 6,
+    "noun_occurrences": 3315
+   }
+  },
+  "in": {
+   "codex:code": {
+    "after_numeral": 100,
+    "distinct_numerals": 32,
+    "noun_occurrences": 20366
+   },
+   "jawiki": {
+    "after_numeral": 162,
+    "distinct_numerals": 32,
+    "noun_occurrences": 5084
+   }
+  },
+  "is": {
+   "codex:code": {
+    "after_numeral": 407,
+    "distinct_numerals": 32,
+    "noun_occurrences": 29694
+   },
+   "codex:code_qa": {
+    "after_numeral": 88,
+    "distinct_numerals": 11,
+    "noun_occurrences": 15923
+   }
+  },
+  "kg": {
+   "codex:code_qa": {
+    "after_numeral": 105,
+    "distinct_numerals": 30,
+    "noun_occurrences": 100
+   },
+   "jawiki": {
+    "after_numeral": 8238,
+    "distinct_numerals": 32,
+    "noun_occurrences": 4579
+   }
+  },
+  "km": {
+   "codex:code_qa": {
+    "after_numeral": 211,
+    "distinct_numerals": 32,
+    "noun_occurrences": 289
+   },
+   "jawiki": {
+    "after_numeral": 12742,
+    "distinct_numerals": 32,
+    "noun_occurrences": 5649
+   }
+  },
+  "mm": {
+   "codex:code_qa": {
+    "after_numeral": 81,
+    "distinct_numerals": 32,
+    "noun_occurrences": 7037
+   },
+   "jawiki": {
+    "after_numeral": 2402,
+    "distinct_numerals": 32,
+    "noun_occurrences": 725
+   }
+  },
+  "ms": {
+   "codex:code": {
+    "after_numeral": 111,
+    "distinct_numerals": 22,
+    "noun_occurrences": 1075
+   },
+   "codex:code_qa": {
+    "after_numeral": 295,
+    "distinct_numerals": 32,
+    "noun_occurrences": 740
+   }
+  },
+  "of": {
+   "codex:code": {
+    "after_numeral": 607,
+    "distinct_numerals": 14,
+    "noun_occurrences": 32306
+   },
+   "codex:code_qa": {
+    "after_numeral": 118,
+    "distinct_numerals": 8,
+    "noun_occurrences": 11328
+   }
+  },
+  "sum": {
+   "codex:code": {
+    "after_numeral": 168,
+    "distinct_numerals": 1,
+    "noun_occurrences": 2891
+   },
+   "codex:code_qa": {
+    "after_numeral": 106,
+    "distinct_numerals": 5,
+    "noun_occurrences": 11834
+   }
+  },
+  "xx": {
+   "codex:code": {
+    "after_numeral": 840,
+    "distinct_numerals": 5,
+    "noun_occurrences": 78
+   },
+   "codex:code_qa": {
+    "after_numeral": 966,
+    "distinct_numerals": 9,
+    "noun_occurrences": 100
+   }
+  }
+ },
+ "selected": {
+  "K": 6,
+  "theta": 10
+ },
+ "stage": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/stage_full8.pkl",
+ "undecided": [
+  "em"
+ ]
+}

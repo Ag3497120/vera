@@ -1,0 +1,2 @@
+n 60382 boundary freq 68 last freq 68 n at boundary 663
+{'dev_unknown': 0, 'dev_vocab': 193, 'predicate_check': 72, 'typed_vocab': 436, 'unknown_words': 0}

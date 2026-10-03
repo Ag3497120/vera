@@ -1,0 +1,16 @@
+#!/bin/sh
+# usage: run_build_w3a2.sh <out dir under build/coarse-W3a> <log name> [extra args...]
+# (W3-a2) the same inputs as run_build.sh, --jobs 5 as the ticket says; stride 1
+W=/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S
+B=/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a
+OUT=$1; LOG=$2; shift 2
+mkdir -p "$B/$(dirname "$OUT")"
+exec "$W/artifacts/w3-a/py.sh" "$W/tools/build_coarse_placement.py" build \
+  --jawiki /Users/motonisihikoudai/vera-wiring/data/jawiki_leads.full.jsonl \
+  --codex-dir /Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c \
+  --out "$B/$OUT" --jobs 5 \
+  --exclude-terms "$W/tests/coarse_place/data/unknown_words.jsonl" \
+  --exclude-terms "$W/tests/coarse_place/data/dev_unknown.jsonl" \
+  --holdout "$W/artifacts/w3-a/holdout_2000.jsonl" \
+  --holdout "$W/artifacts/w3-a/dev_l1_1000.jsonl" \
+  --frozen "$W/artifacts/w3-a/FROZEN.json" "$@" > "$W/artifacts/w3-a/$LOG" 2>&1

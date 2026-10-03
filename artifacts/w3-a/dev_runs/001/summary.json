@@ -1,0 +1,8846 @@
+{
+ "builder_sha256": "a244c9670d7436a760a96d248cd70ae8859c8b50bed26352ccf41350c81e55e5",
+ "by_category": {
+  "daily": {
+   "correct": 6,
+   "correct(non-direct)": 2,
+   "other(non-direct)": 215,
+   "wrong_single": 1,
+   "wrong_single(non-direct)": 1
+  },
+  "polysemous": {
+   "correct": 4,
+   "other(non-direct)": 27
+  },
+  "proper": {
+   "correct": 2,
+   "correct(non-direct)": 8,
+   "other(non-direct)": 70,
+   "wrong_single": 1,
+   "wrong_single(non-direct)": 2
+  },
+  "technical": {
+   "correct": 12,
+   "correct(non-direct)": 22,
+   "other(non-direct)": 159,
+   "wrong_single": 2
+  },
+  "time_quantity": {
+   "correct": 30,
+   "other(non-direct)": 16
+  }
+ },
+ "by_decisive_arm": {
+  "-": {
+   "other(non-direct)": 487
+  },
+  "est:morphology:head": {
+   "correct(non-direct)": 25,
+   "wrong_single(non-direct)": 3
+  },
+  "est:morphology:head+morphology:kin": {
+   "correct(non-direct)": 3
+  },
+  "est:morphology:kin": {
+   "correct(non-direct)": 4
+  },
+  "notation": {
+   "correct": 41,
+   "wrong_single": 2
+  },
+  "role": {
+   "correct": 2
+  },
+  "sahen": {
+   "correct": 10,
+   "wrong_single": 1
+  },
+  "title_qualifier": {
+   "correct": 1,
+   "wrong_single": 1
+  }
+ },
+ "by_gold_type": {
+  "ABSTRACT": {
+   "correct(non-direct)": 6,
+   "other(non-direct)": 27
+  },
+  "ANIMAL": {
+   "other(non-direct)": 24
+  },
+  "ARTIFACT": {
+   "correct(non-direct)": 2,
+   "other(non-direct)": 30,
+   "wrong_single(non-direct)": 1
+  },
+  "BODY_PART": {
+   "correct(non-direct)": 1,
+   "other(non-direct)": 25
+  },
+  "EVENT_ACT": {
+   "correct": 6,
+   "correct(non-direct)": 3,
+   "other(non-direct)": 35,
+   "wrong_single": 1
+  },
+  "EVENT_ACT,INFO_LANGUAGE": {
+   "correct": 4,
+   "other(non-direct)": 1
+  },
+  "GROUP_ORG": {
+   "correct(non-direct)": 5,
+   "other(non-direct)": 27,
+   "wrong_single(non-direct)": 1
+  },
+  "IDENTIFIER": {
+   "correct": 11,
+   "wrong_single": 1
+  },
+  "INFO_LANGUAGE": {
+   "correct(non-direct)": 3,
+   "other(non-direct)": 22,
+   "wrong_single(non-direct)": 1
+  },
+  "INFO_LANGUAGE,WORK": {
+   "other(non-direct)": 2
+  },
+  "NATURAL_PHENOMENON": {
+   "other(non-direct)": 28
+  },
+  "NATURAL_PHENOMENON,PLACE": {
+   "other(non-direct)": 2
+  },
+  "PERSON": {
+   "correct(non-direct)": 2,
+   "other(non-direct)": 38
+  },
+  "PLACE": {
+   "correct(non-direct)": 1,
+   "other(non-direct)": 44
+  },
+  "PLACE,GROUP_ORG": {
+   "other(non-direct)": 11
+  },
+  "PLANT": {
+   "other(non-direct)": 20
+  },
+  "PLANT,SUBSTANCE_FOOD": {
+   "other(non-direct)": 8
+  },
+  "QUANTITY": {
+   "correct": 15,
+   "other(non-direct)": 40,
+   "wrong_single": 1
+  },
+  "STATE_PROPERTY": {
+   "correct(non-direct)": 3,
+   "other(non-direct)": 26,
+   "wrong_single": 1
+  },
+  "SUBSTANCE_FOOD": {
+   "other(non-direct)": 36
+  },
+  "TIME": {
+   "correct": 17,
+   "correct(non-direct)": 4,
+   "other(non-direct)": 29
+  },
+  "TIME,EVENT_ACT": {
+   "other(non-direct)": 3
+  },
+  "WORK": {
+   "correct": 1,
+   "correct(non-direct)": 2,
+   "other(non-direct)": 9
+  }
+ },
+ "by_state": {
+  "DECIDED": 93,
+  "UNKNOWN": 265,
+  "UNPLACED": 222
+ },
+ "by_trap_unit_suggest": {
+  "ANIMAL": {
+   "other(non-direct)": 4
+  },
+  "ARTIFACT": {
+   "other(non-direct)": 1
+  },
+  "BODY_PART": {
+   "other(non-direct)": 3
+  },
+  "EVENT_ACT": {
+   "other(non-direct)": 2
+  },
+  "GROUP_ORG": {
+   "other(non-direct)": 5
+  },
+  "INFO_LANGUAGE": {
+   "other(non-direct)": 2
+  },
+  "PERSON": {
+   "correct": 1,
+   "other(non-direct)": 6
+  },
+  "PLACE": {
+   "other(non-direct)": 7
+  },
+  "PLANT": {
+   "other(non-direct)": 2
+  },
+  "STATE_PROPERTY": {
+   "other(non-direct)": 1
+  },
+  "SUBSTANCE_FOOD": {
+   "other(non-direct)": 1
+  },
+  "TIME": {
+   "other(non-direct)": 2
+  }
+ },
+ "coarse_types_sha256": "3a77789cbd51b6b24dfaec3d1940d750c6ec36d68aec8f3fab501a6778eef74b",
+ "command": [
+  "l2",
+  "--placement",
+  "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/sample/run1",
+  "--data",
+  "dev"
+ ],
+ "config_sha256": "f7b47d37f4f0517127a6e85e94ca5d6a009734452fdde9cd3b4926716c69ed7e",
+ "content_sha256": "6590365c1d54a6a574b1c82389309377d96ffaf6e72b77ddaf1676e5ce418707",
+ "correct_direct": 54,
+ "correct_rate": 0.0931,
+ "data": "dev",
+ "direct_n": 58,
+ "errors": [
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0001",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "祖父",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0002",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "祖母",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0003",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "叔父",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0004",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "孫",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0005",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "恋人",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0006",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "店主",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0007",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "配達員",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0008",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "美容師",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0009",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "運転士",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0010",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "通行人",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0011",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "観客",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0012",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "作業員",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0013",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "泥酔者",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0014",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "旅人",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0015",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "町会",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0016",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "自衛隊",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "correct",
+   "decided_by": "est:morphology:head+morphology:kin",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0017",
+   "neighbors": [
+    "head:議会@R",
+    "kin:議会@R",
+    "kin:議会@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "市議会",
+   "top": [
+    "GROUP_ORG"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0018",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "理事会",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0019",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "労働党",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0020",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "教団",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0021",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "商店会",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0022",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "取締役会",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0023",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "国連軍",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0024",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "蛇",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0025",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "鳩",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0026",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "鷲",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0027",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "烏",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0028",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "蟹",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0029",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "海老",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0030",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "蚊",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0031",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "蝿",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0032",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "鮫",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0033",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "鯨",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0034",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "蕨",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0035",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "菖蒲",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0036",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "蓬",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0037",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "杜若",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0038",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "蔦",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0039",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "柊",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0040",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "楠",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0041",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "樫",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0042",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "電卓",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0043",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "金槌",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0044",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ヘルメット",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0045",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "手帳",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0046",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "電気ストーブ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0047",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "扇子",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0048",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "懐中電灯",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0049",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "風呂敷",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0050",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "乳母車",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0051",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ラジオ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0052",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "電子ピアノ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0053",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ストロー",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0054",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "醤",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0055",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "小麦粉",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0056",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "片栗粉",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0057",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "鰹節",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0058",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "蒟蒻",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0059",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "練乳",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0060",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "豆乳",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0061",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ジャム",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0062",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ココア",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0063",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "軽石",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0064",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "粘土",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0065",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "砂鉄",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0066",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "重曹",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0067",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "改札口",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0068",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "待合室",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0069",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "玄関先",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0070",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "路地",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0071",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "交差点",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0072",
+   "neighbors": [
+    "head:施設@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "商業施設",
+   "top": [
+    "PLACE"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0073",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "河原",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0074",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "渓谷",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0075",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "小島",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0076",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "海岸",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0077",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "屋敷",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0078",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "神殿",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0079",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "団地",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0080",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "牧場",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0081",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "温泉",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0082",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "年始",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0083",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "週明け",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0084",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "月末",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0085",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "年度末",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0087",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "梅雨",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0088",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "盛夏",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0089",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "初夏",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0090",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "厳冬",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0091",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "一昨日",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0092",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "来月",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0093",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "再来年",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0094",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "毎年",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0095",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "夕暮れ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0096",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "全額",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0097",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "小数点",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0098",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "半径",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0099",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "直径",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0100",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "出生率",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0101",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "失業率",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0102",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "得点",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0103",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "最高気温",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0104",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "賞金",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0105",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "売上高",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0106",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "月額",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0107",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "総数",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0108",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "差額",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0109",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "朝礼",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0110",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "遠足",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0111",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "修学旅行",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0112",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "花見",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0116",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "脱走",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0118",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "見送り",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0119",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "手続き",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0120",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "参拝",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0121",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "面談",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0123",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "便秘",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0124",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "下痢",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0125",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "発熱",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0126",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "痙攣",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0127",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "鬱病",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0128",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "湿疹",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0129",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "筋肉痛",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0130",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "不眠",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "wrong_single",
+   "decided_by": "title_qualifier",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0131",
+   "neighbors": [],
+   "origin": "direct",
+   "state": "DECIDED",
+   "term": "めまい",
+   "top": [
+    "WORK"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0132",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "動悸",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0133",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "むくみ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0134",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "水ぼうそう",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0135",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "食中毒",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0136",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "熱中症",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0137",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "信念",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0138",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "偏見",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0139",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "教養",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0140",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "美徳",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0141",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "良心",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0142",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "理想",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0143",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "現実",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0144",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "概論",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0145",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "哲理",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0146",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "人権",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0147",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "国益",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0148",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "宿命",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0149",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "礼儀",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0150",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "注意書き",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0151",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "請求書",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0152",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "年賀状",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0153",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "台本",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0154",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "見積書",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0155",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "履修要項",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0156",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "標語",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "wrong_single",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0157",
+   "neighbors": [
+    "head:コピー@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "キャッチコピー",
+   "top": [
+    "EVENT_ACT"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0158",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "方針書",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0159",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "議事録",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0160",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "遺言書",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0161",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "通知表",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0162",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "前歯",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0163",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "奥歯",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0164",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "足の裏",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0165",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "くるぶし",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0166",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "脇腹",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0167",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "鎖骨",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0168",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "肋骨",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0169",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "眼球",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0170",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "喉仏",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0171",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "臍",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0172",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "骨盤",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0173",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "頭蓋骨",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0174",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "毛穴",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0175",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "汗腺",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0176",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "朧月",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0177",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "氷柱",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0178",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "霰",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0179",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "雹",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0180",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "陽炎",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0181",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "凪",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0182",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "疾風",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0183",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "小春日和",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0184",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "時化",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0185",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "氷雨",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0186",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "初雪",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0187",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "木枯らし",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0188",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "夕立",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0189",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "荒天",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0190",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "放射線技師",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0191",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "臨床検査技師",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0192",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "公認会計士",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0193",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "裁判官",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0194",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "検察官",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0195",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "保育士",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0196",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "社会福祉士",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0197",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "航海士",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0198",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "気象予報士",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0199",
+   "neighbors": [
+    "head:学者@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "言語学者",
+   "top": [
+    "PERSON"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0200",
+   "neighbors": [
+    "head:学者@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "物理学者",
+   "top": [
+    "PERSON"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head+morphology:kin",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0201",
+   "neighbors": [
+    "head:会社@R",
+    "kin:会社@R",
+    "kin:会社@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "合同会社",
+   "top": [
+    "GROUP_ORG"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0202",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "有限責任事業組合",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0203",
+   "neighbors": [
+    "head:法人@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "社団法人",
+   "top": [
+    "GROUP_ORG"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:kin",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0204",
+   "neighbors": [
+    "kin:師会@R",
+    "kin:師会@R",
+    "kin:師会@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "医師会",
+   "top": [
+    "GROUP_ORG"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0205",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "弁護士会",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0206",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "国税局",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0207",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "市場調査会社",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0208",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "地方裁判所",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0209",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "管区警察局",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0210",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "特許庁",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0211",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "アルマジロ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0212",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ナマケモノ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0213",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "オオサンショウウオ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0214",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ヤモリ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0215",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "イモリ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0216",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "スズメバチ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0217",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "アリクイ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0218",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "シャチ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0219",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ウミガメ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0220",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "カマキリ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0221",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ワラビ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0222",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ゼンマイ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0223",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ヨモギ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0224",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "クローバー",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0225",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ラベンダー",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0226",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ミズゴケ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0227",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ハイビスカス",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0228",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ガジュマル",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0229",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ブナ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0230",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ケヤキ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0231",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "分光器",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0232",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "遠心分離機",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0233",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "超音波洗浄機",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0234",
+   "neighbors": [
+    "head:工具@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "電動工具",
+   "top": [
+    "ARTIFACT"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0235",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ドローン",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0236",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "測量機",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0237",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "圧力鍋",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0238",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "炊飯器",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0239",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "乾燥機",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0240",
+   "neighbors": [
+    "head:自動車@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "電気自動車",
+   "top": [
+    "ARTIFACT"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0241",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ロボット掃除機",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0242",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "タービン",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0243",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "アンモニア",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0244",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "塩酸",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0245",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "水酸化ナトリウム",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0246",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ポリ塩化ビニル",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0247",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "酸化チタン",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0248",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ステンレス",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0249",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "黄銅",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0250",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "石英",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0251",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "玄武岩",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0252",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "砂糖水",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0253",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "重油",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0254",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ラード",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0255",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "酢酸",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0256",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "植物園",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0257",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "研究所",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0258",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "診療所",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0259",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "保健所",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0260",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "迎賓館",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0261",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "霊園",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0262",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "発着場",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0263",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "操車場",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0264",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "貯水池",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0265",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "水門",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0266",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "堤防",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0267",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "塔",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0268",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "灯篭",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0269",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "旧石器時代",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0270",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "新石器時代",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0271",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "青銅器時代",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0272",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "大航海時代",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0273",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "産業革命期",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0274",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "日没後",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0275",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "満月",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0276",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "新月",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0277",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "立夏",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0278",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "立秋",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0279",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "秋分",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0280",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "彼岸",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0281",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "お盆",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0282",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "パスカル",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0283",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ニュートン",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0284",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "カロリー",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0285",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ビット",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0286",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "バイト",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0287",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ヘクトパスカル",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0288",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "平方メートル",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0289",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "立方センチ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0290",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "光速",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0291",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "縮尺",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0292",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "変動率",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0293",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "標準偏差",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "wrong_single",
+   "decided_by": "sahen@codex:code+sahen@codex:general_qa",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0294",
+   "neighbors": [],
+   "origin": "direct",
+   "state": "DECIDED",
+   "term": "分散",
+   "top": [
+    "EVENT_ACT"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0295",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "合成",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0296",
+   "neighbors": [
+    "head:分解@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "電気分解",
+   "top": [
+    "EVENT_ACT"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0297",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "中和",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0298",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "凝固",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0299",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "蒸留",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0300",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "遺伝",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0301",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "突然変異",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0302",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "自然淘汰",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0303",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "減数分裂",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0304",
+   "neighbors": [
+    "head:反応@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "免疫反応",
+   "top": [
+    "EVENT_ACT"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0305",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "クーデタ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0306",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "侵略",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0307",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "併合",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0309",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "条約調印",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0310",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "胃潰瘍",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0311",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "脳梗塞",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0312",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "心筋梗塞",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0313",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "緑内障",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0314",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "花粉アレルギー",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0315",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "虫垂炎",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0316",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "気管支炎",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0317",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "乾癬",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0318",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "痛風",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0319",
+   "neighbors": [
+    "head:状態@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "うつ状態",
+   "top": [
+    "STATE_PROPERTY"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0320",
+   "neighbors": [
+    "head:障害@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "睡眠障害",
+   "top": [
+    "STATE_PROPERTY"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0321",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "栄養失調",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0322",
+   "neighbors": [
+    "head:症状@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "脱水症状",
+   "top": [
+    "STATE_PROPERTY"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0323",
+   "neighbors": [
+    "head:主義@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "実証主義",
+   "top": [
+    "ABSTRACT"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0324",
+   "neighbors": [
+    "head:主義@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "自由主義",
+   "top": [
+    "ABSTRACT"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0325",
+   "neighbors": [
+    "head:主義@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "保守主義",
+   "top": [
+    "ABSTRACT"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0326",
+   "neighbors": [
+    "head:主義@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "功績主義",
+   "top": [
+    "ABSTRACT"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0327",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "倫理学",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0328",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "美学",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0329",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "天文学",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0330",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "言語学",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0331",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "物理学",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0332",
+   "neighbors": [
+    "head:理論@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "ゲーム理論",
+   "top": [
+    "ABSTRACT"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0333",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "進化論",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0334",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "無政府主義",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0335",
+   "neighbors": [
+    "head:主義@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "共産主義",
+   "top": [
+    "ABSTRACT"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0336",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ギリシャ語",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0337",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ヘブライ語",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0338",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ペルシア語",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0339",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "梵字",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0340",
+   "neighbors": [
+    "head:文字@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "ルーン文字",
+   "top": [
+    "INFO_LANGUAGE"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0341",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "手話",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0342",
+   "neighbors": [
+    "head:文字@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "絵文字",
+   "top": [
+    "INFO_LANGUAGE"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0343",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "約款",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0344",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "論文要旨",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0345",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "仕様書",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0346",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "設計図",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0347",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "暗号表",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0348",
+   "neighbors": [
+    "head:用語@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "公用語",
+   "top": [
+    "INFO_LANGUAGE"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0349",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "十二指腸",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0350",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "虫垂",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0351",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "副腎",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0352",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "甲状腺",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0353",
+   "neighbors": [
+    "head:神経@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "視神経",
+   "top": [
+    "BODY_PART"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0354",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "三半規管",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0355",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "前立腺",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0356",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "脾臓",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0357",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "胆嚢",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0358",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "食道",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0359",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "喉頭",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "BODY_PART"
+   ],
+   "id": "D0360",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "大腿骨",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0362",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "流星群",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0363",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "極光",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0364",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "衝撃波",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0365",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "地磁気",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0366",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "活断層",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0367",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "海流",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0368",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "偏西風",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0369",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "台風の目",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0370",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "貿易風",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0371",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "光環",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0372",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "月暈",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0373",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "日暈",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "technical",
+   "cls": "wrong_single",
+   "decided_by": "notation",
+   "gold": [
+    "IDENTIFIER"
+   ],
+   "id": "D0382",
+   "neighbors": [],
+   "origin": "direct",
+   "state": "DECIDED",
+   "term": "10.0.0.1",
+   "top": [
+    "QUANTITY"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0386",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ゲーテ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0387",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "シェイクスピア",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0388",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "葛飾北斎",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0389",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "徳川家康",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0390",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "与謝野晶子",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0391",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "樋口一葉",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0392",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "石川啄木",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0393",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ピカソ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0394",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ダーウィン",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0395",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "西郷隆盛",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0396",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "伊藤博文",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0397",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "小林一茶",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0398",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "スズキ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "wrong_single",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0399",
+   "neighbors": [
+    "head:自動車@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "日産自動車",
+   "top": [
+    "ARTIFACT"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0400",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "日立製作所",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0401",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "阪神タイガース",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0402",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "日本共産党",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "correct",
+   "decided_by": "est:morphology:kin",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0403",
+   "neighbors": [
+    "kin:連盟@R",
+    "kin:連盟@R",
+    "kin:連盟@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "国際連盟",
+   "top": [
+    "GROUP_ORG"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0404",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "世界保健機関",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0405",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "吉本興業",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0406",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "毎日新聞社",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0407",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "大阪",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0408",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "横浜",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0409",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "札幌",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0410",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "瀬戸大橋",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0411",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "浅草寺",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0412",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "清水寺",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0413",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "東京駅",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0414",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "皇居外苑",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0415",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "大阪城",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0416",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "伊勢神宮",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0417",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "屋久島",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0418",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "大井川",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0419",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "浜名湖",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0420",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "筑波山",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0421",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ロンドン",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0422",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "アマゾン川",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE"
+   ],
+   "id": "D0423",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "太平洋",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "WORK"
+   ],
+   "id": "D0425",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "風の谷のナウシカ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "WORK"
+   ],
+   "id": "D0426",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "天空の城ラピュタ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "WORK"
+   ],
+   "id": "D0427",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "魔女の宅急便",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "WORK"
+   ],
+   "id": "D0428",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "椿三十郎",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "correct",
+   "decided_by": "est:morphology:kin",
+   "gold": [
+    "WORK"
+   ],
+   "id": "D0429",
+   "neighbors": [
+    "kin:物語@R",
+    "kin:物語@R",
+    "kin:物語@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "東京物語",
+   "top": [
+    "WORK"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "WORK"
+   ],
+   "id": "D0430",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "君の名は",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "WORK"
+   ],
+   "id": "D0431",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ファイナルファンタジー",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "WORK"
+   ],
+   "id": "D0432",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "テトリス",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "correct",
+   "decided_by": "est:morphology:kin",
+   "gold": [
+    "WORK"
+   ],
+   "id": "D0433",
+   "neighbors": [
+    "kin:物語@R",
+    "kin:物語@R",
+    "kin:物語@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "平家物語",
+   "top": [
+    "WORK"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "WORK"
+   ],
+   "id": "D0434",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "徒然草",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "WORK"
+   ],
+   "id": "D0435",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "万葉集",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0436",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "壬申の乱",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0437",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "島原の乱",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "correct",
+   "decided_by": "est:morphology:head+morphology:kin",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0438",
+   "neighbors": [
+    "head:戦争@R",
+    "kin:戦争@R",
+    "kin:戦争@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "日清戦争",
+   "top": [
+    "EVENT_ACT"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0439",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "関東大震災",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0440",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "桶狭間の戦い",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "wrong_single",
+   "decided_by": "notation",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0441",
+   "neighbors": [],
+   "origin": "direct",
+   "state": "DECIDED",
+   "term": "明治六年政変",
+   "top": [
+    "TIME"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0442",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "冬季オリンピック",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0443",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "先進国首脳会議",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "wrong_single",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0444",
+   "neighbors": [
+    "head:ボーイ@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "ゲームボーイ",
+   "top": [
+    "WORK"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0445",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "青函連絡船",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0446",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ポルシェ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0447",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ジェットスキー",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0448",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "宇治茶",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0449",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "越後味噌",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0450",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "神戸牛",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0451",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "薩摩焼酎",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0452",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "京漬物",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0453",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ヒンドゥー教",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0454",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "道教",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0455",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "社会民主主義",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0456",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "新自由主義",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0457",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ストア派",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0458",
+   "neighbors": [
+    "head:時代@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "大正時代",
+   "top": [
+    "TIME"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0459",
+   "neighbors": [
+    "head:初期@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "昭和初期",
+   "top": [
+    "TIME"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0460",
+   "neighbors": [
+    "head:時代@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "飛鳥時代",
+   "top": [
+    "TIME"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "correct",
+   "decided_by": "est:morphology:head",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0461",
+   "neighbors": [
+    "head:時代@R"
+   ],
+   "origin": "estimated",
+   "state": "DECIDED",
+   "term": "奈良時代",
+   "top": [
+    "TIME"
+   ],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0463",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ニホンカモシカ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0464",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "アムールトラ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0465",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ジャイアントパンダ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ANIMAL"
+   ],
+   "id": "D0466",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "タスマニアデビル",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0467",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "ヤマザクラ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "proper",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT"
+   ],
+   "id": "D0468",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "ニホンスイセン",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0485",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "半月",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0486",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "数年",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME"
+   ],
+   "id": "D0487",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "一昼夜",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0489",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "20キロ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0490",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "8メートル",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0491",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "5リットル",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0492",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "50パーセント",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0494",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "10匹",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0497",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "25ミリ",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0498",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "1.5倍",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0507",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "4台",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0508",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "12歳",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0509",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "200グラム",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0510",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "60ドル",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0511",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "3割",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "time_quantity",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0512",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "5冊",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0515",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "手綱",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "PERSON"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0516",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "手帳?",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "PERSON"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0517",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "足場",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "BODY_PART"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0518",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "目盛り",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "BODY_PART"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ARTIFACT"
+   ],
+   "id": "D0519",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "虫網",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "ANIMAL"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0520",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "着手",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "PERSON"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0521",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "入場",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "PLACE"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0522",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "退社",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "GROUP_ORG"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0523",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "閉会",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "GROUP_ORG"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0524",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "入国",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "PLACE"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0525",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "出国",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "PLACE"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0526",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "発育",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "PERSON"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT"
+   ],
+   "id": "D0527",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "退職",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "PERSON"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0528",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "字数",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "INFO_LANGUAGE"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "QUANTITY"
+   ],
+   "id": "D0531",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "水量",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "SUBSTANCE_FOOD"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0532",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "機能",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "ARTIFACT"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "ABSTRACT"
+   ],
+   "id": "D0533",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "官能",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "PERSON"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0534",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "苦境",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "PLACE"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0535",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "逆境",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "PLACE"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "STATE_PROPERTY"
+   ],
+   "id": "D0536",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "病弱",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "STATE_PROPERTY"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0537",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "児童会",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "EVENT_ACT"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0538",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "生徒会",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "EVENT_ACT"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0539",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "将棋部",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "BODY_PART"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0540",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "事務局",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "PLACE"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "GROUP_ORG"
+   ],
+   "id": "D0541",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "議院",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "PLACE"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0542",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "牛脂",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "ANIMAL"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0543",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "鶏卵",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "ANIMAL"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0544",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "魚油",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "ANIMAL"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0545",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "木炭",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "PLANT"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0546",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "花蜜",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "PLANT"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0547",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "会長?",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "GROUP_ORG"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0548",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "社長?",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "GROUP_ORG"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PERSON"
+   ],
+   "id": "D0549",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "組員",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "GROUP_ORG"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0550",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "字幕",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "INFO_LANGUAGE"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0551",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "日射",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "TIME"
+  },
+  {
+   "category": "daily",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON"
+   ],
+   "id": "D0552",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "月光",
+   "top": [],
+   "trap": true,
+   "trap_suggests": "TIME"
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE",
+    "GROUP_ORG"
+   ],
+   "id": "D0553",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "銀行支店",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE",
+    "GROUP_ORG"
+   ],
+   "id": "D0554",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "郵便局支所",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE",
+    "GROUP_ORG"
+   ],
+   "id": "D0555",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "駅前交番",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE",
+    "GROUP_ORG"
+   ],
+   "id": "D0556",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "出張所",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE",
+    "GROUP_ORG"
+   ],
+   "id": "D0557",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "領事館",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE",
+    "GROUP_ORG"
+   ],
+   "id": "D0558",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "保育園",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE",
+    "GROUP_ORG"
+   ],
+   "id": "D0559",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "幼稚園",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE",
+    "GROUP_ORG"
+   ],
+   "id": "D0560",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "美容院",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE",
+    "GROUP_ORG"
+   ],
+   "id": "D0561",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "居酒屋",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE",
+    "GROUP_ORG"
+   ],
+   "id": "D0562",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "食堂",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLACE",
+    "GROUP_ORG"
+   ],
+   "id": "D0563",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "旅館",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT",
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0564",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "梨",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT",
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0565",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "栗",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT",
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0566",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "西瓜",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT",
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0567",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "牛蒡",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT",
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0568",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "生姜",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT",
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0569",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "唐辛子",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT",
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0570",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "蓮根",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "PLANT",
+    "SUBSTANCE_FOOD"
+   ],
+   "id": "D0571",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "胡麻",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "EVENT_ACT",
+    "INFO_LANGUAGE"
+   ],
+   "id": "D0575",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "回答",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME",
+    "EVENT_ACT"
+   ],
+   "id": "D0577",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNKNOWN",
+   "term": "お盆休み",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME",
+    "EVENT_ACT"
+   ],
+   "id": "D0578",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "冬休み",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "TIME",
+    "EVENT_ACT"
+   ],
+   "id": "D0579",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "春休み",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE",
+    "WORK"
+   ],
+   "id": "D0580",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "詩集",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "INFO_LANGUAGE",
+    "WORK"
+   ],
+   "id": "D0581",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "年表",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON",
+    "PLACE"
+   ],
+   "id": "D0582",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "宇宙",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  },
+  {
+   "category": "polysemous",
+   "cls": "other",
+   "decided_by": "-",
+   "gold": [
+    "NATURAL_PHENOMENON",
+    "PLACE"
+   ],
+   "id": "D0583",
+   "neighbors": [],
+   "origin": null,
+   "state": "UNPLACED",
+   "term": "大気",
+   "top": [],
+   "trap": false,
+   "trap_suggests": null
+  }
+ ],
+ "len_top_distribution": {
+  "0": 487,
+  "1": 93
+ },
+ "n": 580,
+ "non_direct": {
+  "None/other": 487,
+  "estimated/correct": 32,
+  "estimated/wrong_single": 3
+ },
+ "pass": {
+  "correct>=0.85": false,
+  "n>=800": true,
+  "trap_n>=100": true,
+  "trap_wrong<=0.05": true,
+  "wrong<=0.08": true
+ },
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/sample/run1",
+ "time_utc": "2026-10-02T20:58:27Z",
+ "trap_n": 37,
+ "trap_wrong_single_direct": 0,
+ "trap_wrong_single_rate": 0.0,
+ "wrong_single_direct": 4,
+ "wrong_single_rate": 0.0069
+}

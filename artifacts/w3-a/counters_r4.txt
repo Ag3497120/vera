@@ -1,0 +1,3 @@
+units 155
+4+ chars: ['キログラム', 'キロメートル', 'テキスト', 'ハッシュ', 'パーセント', 'ファイル', 'フィールド', 'メートル', 'リットル']
+Latin: ['AND', 'GHz', 'MiB', 'URL', 'and', 'app', 'em', 'for', 'has', 'in', 'is', 'kg', 'km', 'mas', 'mis', 'mm', 'ms', 'of', 'sum', 'xx']

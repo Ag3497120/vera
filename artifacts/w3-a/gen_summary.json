@@ -1,0 +1,31 @@
+{
+ "batch_size": 40,
+ "batches_failed": 0,
+ "batches_ok": 1510,
+ "batches_total": 1510,
+ "calls": 1510,
+ "calls_per_word_answered": 0.02501,
+ "calls_per_word_requested": 0.02501,
+ "effort": "low",
+ "end_status": {
+  "ok": 1510
+ },
+ "failure_reasons": {},
+ "ledger_sha256": "42de32b510ae3bf1a4fe09f0756aac70f126f1480c45413a2064bdc321ab7910",
+ "max_calls": 2000,
+ "max_retries": 2,
+ "model": "gpt-6-luna",
+ "not_run_cap": 0,
+ "not_run_other": 0,
+ "ok_rate": 1.0,
+ "prompt_template_sha256": "ded30f48c0a596575d061e75aa0768beb3008969a587a01d2ec39807af031f65",
+ "slots": 12,
+ "sum_call_sec": 47145.6,
+ "wall_sec": 3995.4,
+ "words_abstained": 5371,
+ "words_answered": 60382,
+ "words_dup_dropped": 0,
+ "words_foreign_dropped": 0,
+ "words_missing": 0,
+ "words_requested": 60382
+}

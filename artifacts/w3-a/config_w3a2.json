@@ -1,0 +1,10 @@
+{
+ "counter_latin_numerals_min": 6,
+ "counter_latin_share_pct": 10,
+ "counter_max_chars": 3,
+ "counter_max_chars_single": 6,
+ "donor_contra_min": 5,
+ "donor_stage_b": true,
+ "gen_upgrade_on_agreement": true,
+ "recovered_decides": true
+}

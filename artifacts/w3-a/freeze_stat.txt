@@ -1,0 +1,8 @@
+1790974002 Oct  3 05:46:42 2026 tests/coarse_place/data/typed_vocab.jsonl
+1790974003 Oct  3 05:46:43 2026 tests/coarse_place/data/unknown_words.jsonl
+1790974002 Oct  3 05:46:42 2026 tests/coarse_place/data/dev_vocab.jsonl
+1790974003 Oct  3 05:46:43 2026 tests/coarse_place/data/dev_unknown.jsonl
+1790974003 Oct  3 05:46:43 2026 tests/coarse_place/data/predicate_check.jsonl
+1790974046 Oct  3 05:47:26 2026 artifacts/w3-a/holdout_2000.jsonl
+1790974064 Oct  3 05:47:44 2026 artifacts/w3-a/PREREG.md
+1790973771 Oct  3 05:42:51 2026 verantyx/coarse_types.py
