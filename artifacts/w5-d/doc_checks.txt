@@ -1,0 +1,18 @@
+== tests/observe/question/recompute_q.py --check
+           ^^^^^^^^^^^^^^^^^^^
+AssertionError: ('FILLED', 'NO_TYPED_CANDIDATE')
+exit 
+== tests/routing_from_text/recompute.py --check
+OK
+exit 
+== tests/event_cross/recompute.py --check
+recompute: OK (the document block equals the text rebuilt from artifacts/w3-b; 3 output examples equal their lines of events_all.jsonl)
+exit 
+== tests/observe/recompute.py --check
+recompute --check: the block of the document equals the artifacts
+exit 
+== tests/reading_soundness/recompute.py --check
+usage: recompute.py [-h] [--dir DIR]
+recompute.py: error: unrecognized arguments: --check
+exit 
+OK

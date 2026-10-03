@@ -1,0 +1,8 @@
+# r7/run1 CoarseLookup answers (round 2b, 2026-10-04 01:20:27 +0900)
+ハル MULTIPLE direct ('ANIMAL', 'GROUP_ORG', 'PERSON')
+セキ UNPLACED None ()
+チーム DECIDED direct ('GROUP_ORG',)
+委員会 DECIDED estimated ('GROUP_ORG',)
+先生 DECIDED direct ('PERSON',)
+校長 DECIDED direct ('PERSON',)
+花子 MULTIPLE direct ('ANIMAL', 'PERSON')

@@ -1,0 +1,17 @@
+prereg time: 2026-10-04 00:31:06 +0900
+w5d2-prereg region sha256:
+BASIS_POLICY.md w5d2-prereg 8e6c49d059eb54abedc247af9b4d8c4ec22e6987cd5ae85098f8e8fd416a3429
+COARSE_PLACEMENT.md w5d2-prereg 3b77823ac6d6143d7a0cf1486e350840662671e5bfcada047132cb66d9039219
+EVENT_CROSS.md w5d2-prereg 151c978314ae28d9ed51cda18781798ef56b142c4bcffddce98837a04415045d
+OBSERVATION.md w5d2-prereg c3b1718b87bcbbe6d66a1f6ca843131cfe4e1d4016081e3c7e6d020ff58af5a2
+ROUTING_FROM_TEXT.md w5d2-prereg 452651e1cf35dfdf596657d124025cc5809f433fbae0f456307abf88bc94f4b0
+--- git diff --stat -- verantyx tools tests (must equal round-1 end):
+ tests/test_basis_policy_confirm.py |   7 ++-
+ tools/build_coarse_placement.py    |  16 +++--
+ verantyx/basis_policy.py           |  78 +++++++++++++++++++-----
+ verantyx/coarse_place.py           |  77 ++++++++++++++++++++---
+ verantyx/observe.py                |  23 +++++--
+ verantyx/routing_from_text.py      | 122 +++++++++++++++++++++++++++++++------
+ 6 files changed, 270 insertions(+), 53 deletions(-)
+--- non-docs tracked/untracked status unchanged vs status_start:
+same

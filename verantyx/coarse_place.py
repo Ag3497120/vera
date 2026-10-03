@@ -71,6 +71,16 @@ of its arguments backed -- the arm ``gen_frame`` in ``decided_by``, ``generated_
 and for a confirmed frame ``frame_unconfirmed`` (what the model wrote beyond it; display only).  See
 docs/COARSE_PLACEMENT.md section 12.
 
+W5-d (docs section 13) narrows ``CONFIRMED``: a generated frame is confirmed only when no particle of it
+CONTRADICTS the distribution that backed it -- a particle the frame lists whose significant noun types in a
+backing ``role_distribution`` arm do not meet the frame's types (``frame_type_disagreement``, one pure
+function used by the query and by the builder's count).  Such a predicate stays ``DECIDED`` / ``direct`` (its
+predicate type is not changed) with ``frame_status`` ``NOT_CONFIRMED`` and ``frame`` null, and a last key
+``frame_disagreement`` (``{particle: {"generated": [types], "distribution": {arm: [types]}}}``) is added;
+an answer without a contradiction has no such key.  The tail of an answer is, in this order:
+``spelling`` (if any), ``generated_frame``, ``frame_status``, ``frame``, then ``frame_unconfirmed`` (a
+confirmed frame) or ``frame_disagreement`` (a contradicted one).
+
 Evidence arms are never added to each other and sources (``jawiki`` and each
 codex family) never pool their counts; a conclusion is an overlay of the arms
 that met their thresholds (agree -> DECIDED, split -> MULTIPLE).  Types listed
@@ -280,6 +290,47 @@ def _pl_info(pl: _Placement) -> Dict[str, Any]:
     return {"path": pl.path, "content_sha256": pl.sha, "reason": None}
 
 
+def frame_type_disagreement(ev, decided_by, dec, cfg) -> Dict[str, Any]:
+    """W5-d (docs section 13): the particles on which a generated predicate frame contradicts the
+    distribution that backed it.  Pure: the same function is used by the query (``_direct``) and by the
+    builder's count (``tools/build_coarse_placement._count_gen_frame``).
+
+    ``ev`` = the word's evidence rows ``(arm, src, type, n, base)``, ``decided_by`` = the decision's
+    ``by`` list, ``dec`` = ``coarse_types.decide_word`` of ``ev``, ``cfg`` = the placement's configuration.
+    Only a predicate placed DIRECT by the generated frame (``gen_frame`` in ``decided_by``) can have a
+    contradiction; any other word returns ``{}``.  For each ``role_distribution`` arm that took part in the
+    decision, the significant noun types per particle (``coarse_types.rd_analyze``, the rule the decision
+    itself used) are compared with the types the frame wrote for the same particle: when the frame has the
+    particle, the distribution has significant types for it and the two sets do not meet, the particle
+    contradicts.  A particle the distribution has no significant type for, or the frame does not list, is not
+    a contradiction.  Returns ``{particle: {"generated": [types], "distribution": {arm key: [types]}}}``
+    in ``ROLE_PARTICLES`` order (empty when nothing contradicts)."""
+    if not (dec.get("origin") == "direct" and dec.get("state") == "DECIDED"
+            and ct.GEN_FRAME_ARM in decided_by):
+        return {}
+    gen_map: Dict[str, List[str]] = {}
+    for (a, _s, t, _n, _b) in ev:
+        if a == "gen_frame_slot":
+            part, _bar, typ = t.partition("|")
+            gen_map.setdefault(part, []).append(typ)
+    found: Dict[str, Dict[str, Any]] = {}
+    for k in decided_by:
+        arm = dec["arms"].get(k)
+        if arm is None or arm["arm"] != "role_distribution":
+            continue
+        base = None
+        for (a, s, _t, _n, b) in ev:
+            if a == "role_distribution" and ct.arm_key(a, s) == k and b is not None:
+                base = b
+        types = ct.rd_analyze(dict(arm["counts"]), cfg, base)["types"]
+        for p, dt in types.items():
+            if dt and p in gen_map and not (set(gen_map[p]) & set(dt)):
+                found.setdefault(p, {"generated": sorted(set(gen_map[p])), "distribution": {}})[
+                    "distribution"][k] = list(dt)
+    order = [p for p in ct.ROLE_PARTICLES if p in found]
+    return {p: found[p] for p in order}
+
+
 def _direct(pl: _Placement, term: str, row, role, pred) -> Dict[str, Any]:
     ns, state, origin, top, kind, n_seen, by = row
     tops = [t for t in top.split(",") if t]
@@ -338,6 +389,7 @@ def _direct(pl: _Placement, term: str, row, role, pred) -> Dict[str, Any]:
         extra["namespace_votes"] = {s: dict(sorted(v.items())) for s, v in sorted(nsv.items())}
     extra["generated_frame"] = ct.GEN_FRAME_ARM in decided_by
     frame = unconfirmed = None
+    disagreement: Dict[str, Any] = {}
     if (dec.get("origin") == "direct" and dec["state"] == "DECIDED" and ct.GEN_FRAME_ARM in decided_by):
         # the frame the answer stands on: the particles the distribution arms that backed it found
         # significant (a union of sets; no count is added), each with the types the model wrote
@@ -353,6 +405,10 @@ def _direct(pl: _Placement, term: str, row, role, pred) -> Dict[str, Any]:
         order = [p for p in ct.ROLE_PARTICLES if p in gen_map]
         frame = {p: sorted(set(gen_map[p])) for p in order if p in sig}
         unconfirmed = {p: sorted(set(gen_map[p])) for p in order if p not in sig}
+        # W5-d: a particle on which the frame contradicts the distribution leaves the frame unconfirmed
+        disagreement = frame_type_disagreement(ev, decided_by, dec, pl.cfg)
+        if disagreement:
+            frame = unconfirmed = None
     if dec.get("origin") == "estimated":
         # placed by a generated definition (or frame) ALONE: a construction, marked as such
         if ct.GEN_FRAME_ARM in decided_by:
@@ -368,11 +424,12 @@ def _direct(pl: _Placement, term: str, row, role, pred) -> Dict[str, Any]:
     else:
         r = _result(term, ns, state, "direct", False, _order(tops), cands, axes, [],
                     True, role, pred, _pl_info(pl), extra)
-    return _set_frame(pl, r, frame, unconfirmed)
+    return _set_frame(pl, r, frame, unconfirmed, disagreement)
 
 
-def _frame_status_of(pl: Optional[_Placement], r: Dict[str, Any]) -> str:
-    """The closed list of ``frame_status`` values (docs section 12.10)."""
+def _frame_status_of(pl: Optional[_Placement], r: Dict[str, Any], disagreement=None) -> str:
+    """The closed list of ``frame_status`` values (docs section 12.10; ``disagreement`` -- W5-d, section 13 --
+    is the non-empty result of ``frame_type_disagreement``: a contradicted frame is ``NOT_CONFIRMED``)."""
     st = r["state"]
     if st == "NO_PLACEMENT":
         return "NO_PLACEMENT"
@@ -385,18 +442,24 @@ def _frame_status_of(pl: Optional[_Placement], r: Dict[str, Any]) -> str:
         return "NOT_PREDICATE"
     if pl is None or not pl.has_generated_frames:
         return "NO_FRAME_TABLE"
+    if disagreement:
+        return "NOT_CONFIRMED"
     return "CONFIRMED" if ct.GEN_FRAME_ARM in (r.get("decided_by") or []) else "NOT_CONFIRMED"
 
 
-def _set_frame(pl: Optional[_Placement], r: Dict[str, Any], frame=None, unconfirmed=None) -> Dict[str, Any]:
+def _set_frame(pl: Optional[_Placement], r: Dict[str, Any], frame=None, unconfirmed=None,
+               disagreement=None) -> Dict[str, Any]:
     """Append the W3-a3 keys (last, after every existing key): ``frame_status`` and ``frame`` (the
     particle -> noun types of a CONFIRMED predicate, else null); ``frame_unconfirmed`` only with a
-    CONFIRMED frame (what the model wrote beyond it: shown, never read by a reader)."""
-    status = _frame_status_of(pl, r)
+    CONFIRMED frame (what the model wrote beyond it: shown, never read by a reader); W5-d: for a frame
+    that contradicts its distribution, ``frame_disagreement`` (last; ``NOT_CONFIRMED``, ``frame`` null)."""
+    status = _frame_status_of(pl, r, disagreement)
     r["frame_status"] = status
     r["frame"] = frame if status == "CONFIRMED" else None
     if status == "CONFIRMED":
         r["frame_unconfirmed"] = unconfirmed or {}
+    elif disagreement:
+        r["frame_disagreement"] = disagreement
     return r
 
 
@@ -597,7 +660,7 @@ def query(term: str, *, context_role: Optional[str] = None,
     # integration (auditor, W5-b + W3-a3): both tickets append their keys at the end; the contract keeps the
     # W3-a3 frame keys LAST and places W5-b's ``spelling`` just before them (values untouched).
     if "spelling" in r:
-        tail = [k for k in ("generated_frame", "frame_status", "frame", "frame_unconfirmed") if k in r]
+        tail = [k for k in ("generated_frame", "frame_status", "frame", "frame_unconfirmed", "frame_disagreement") if k in r]
         if tail and list(r).index(tail[0]) < list(r).index("spelling"):
             sp = r.pop("spelling")
             items = list(r.items()); cut = next(i for i, (k, _) in enumerate(items) if k == tail[0])

@@ -776,3 +776,497 @@ def test_w5c_known_hole_a_source_outside_the_index_families_without_origin_is_st
 - (g) 事実を主張しない依頼（`--request-kind creative` など）で出所不明の出典は、今も「生成と同じ側」（`CONSTRUCTED`）で元の本文が残る（W5-c の穴 8 のまま）。第 3 ラウンドの合成・テストは事実の問いが中心。
 - (h) 実装前に通った 10 件（`r3_tests_before_passed.txt`）は基点で既に成り立つ性質で、新しい能力の証拠ではない。
 - (i) `ORIGIN_UNMARKED_ROUND3_EVIDENCE` の実データでの件数は、この環境に `build/round3` が無いので `UNMEASURED_NO_ROUND3_BUILD` のまま。
+
+## W5-d の事前登録: 文書の出典の本文の照合・確認記録の文面の一致
+<!-- w5d-prereg:begin -->
+事前登録の時刻: 2026-10-03 23:07:22 +0900（`date '+%F %T %z'` の出力）。
+
+- **B-J1（A1）**: `apply_to_ask` で `mode == "round5" and documents` のとき、渡された文書を `one.py` の `load_documents` と同じ読み込み（`document_loaders.load_directory`／`load_paths`）で読み、本文の列を作る。`family == "document"` で `origin` が無い出典は、(a) `text` が空白でない文字列で `NFKC(text)` が渡した文書のどれかの `NFKC(本文)` の部分文字列、または (b) `text` の鍵が無く `sha256` が文字列で渡した文書のどれかの本文の sha256 と等しい、のときだけ `human`。それ以外は `unknown_origin`（文書が読めない・存在しないときも）。`classify_sources`・`_class_of`・`_unknown_origin_sources` に `document_texts` を足し、`apply_to_ask` は全部の呼び出しで同じ本文の列を渡す。`document_texts is None` は旧い契約（呼び手が自分で確かめた）のまま。`CLASSIFY_VERSION` は 3 のまま（既存テストが `== 3` を固定しているため。申し送り）。
+- **B-J2（D1）**: 同じ問いの はい の記録 `mine` の claim が 2 種類以上 → 今どおり `AMBIGUOUS_CONFIRMED_RECORDS`（照合より先に見る）。1 種類でその claim が今の `claim` と **文字列として完全に等しい（正規化しない）** → 格上げ。1 種類で等しくない → 格上げせず、`notes` に `confirmed_records_claim_differs` を足す。**チケットの「NFKC 正規化後の完全一致」から外れる**: NFKC で比べると `コードはＡＢＣです。` と `コードはABCです。` が等しくなり攻撃 `[nfkc]` が落ちるため、より狭い（棄権側の）「正規化しない完全一致」にする。
+- **B-J3 改訂（許可の範囲）**: `tests/test_basis_policy_confirm.py::test_two_confirmed_records_with_the_same_claim_are_not_a_split` だけを、名前を変えず、記録の claim を今の生成の claim にして改訂する。前後の全文は測定の節に写す。K4（`test_r3_a_recorded_yes_still_lifts_a_generated_answer`）は当てず、改訂案の全文を測定の節に書く。
+
+### 宣言する規則どうしの衝突（実装役は解かずに宣言する。判断は監査役）
+チケットの規則を字面どおりに入れると、旧い振る舞いをそのまま固定した既存テストが落ちる。実装役はチケットの規則どおりに作り、テストの期待は変えず（改訂が許された 1 関数を除く）、落ちた id を全部宣言する。
+
+| # | 衝突 | 落ちる見込みのもの |
+|---|---|---|
+| K1 | W3-c2「型を確かめられない充填物は候補から外す」 × 配置なしで FILLED/TIE を期待する既存テスト・攻撃の外れ | `tests/test_question_cross_observe.py` の一部、攻撃の写しの 2 件 |
+| K2 | R1「配置が無い日本語の名前は命名の文で導入されたものだけ」 × 配置なし（スタブ）の名前で振る既存テスト・R2 の攻撃テスト | `tests/test_routing_from_text*.py` の多数、攻撃の写しの R2 の 1 件 |
+| K3 | A1「出典の本文が渡した文書の中にある」 × 存在しない文書を渡して `family: document` を人とする既存テスト | `tests/test_basis_policy_form.py`・`tests/test_basis_policy_w5c_r3.py` の一部 |
+| K4 | D1「文面が同じときだけ格上げ」 × 別の文の記録で格上げすることを固定した既存テスト（改訂許可の 2 件の外） | `tests/test_basis_policy_w5c_r3.py::test_r3_a_recorded_yes_still_lifts_a_generated_answer` |
+| K5 | W3-a3 A1「枠の確認は助詞ごとの型の一致」 × 攻撃の写しの不変条件「gen_frame の格上げ語は全部 CONFIRMED」 | `tests/attack/w3a3/test_attack_w3a3_r6.py::test_all_r6_generated_frame_upgrades` |
+| D1-改訂 | 許可された 2 件のうち設計上落ちる 1 件 | `tests/test_basis_policy_confirm.py::test_two_confirmed_records_with_the_same_claim_are_not_a_split`（名前不変で改訂。前後の全文は BASIS_POLICY の測定の節） |
+
+### 受入基準の測り方（G1〜G7。測る前に固定）
+- G1: 攻撃の写し 5 本（`tests/attack/w3c2`・`test_attack_w5b_wave2.py`・`test_attack_w5c_*.py` 2 本・`tests/attack/w3a3/test_attack_w3a3_r6.py`）。落ちてよいのは宣言した K1(2)・K2(1)・K5(1) の 4 id だけ。A02・R2・W3-a3 A1 は新しいテストで確かめる。
+- G2: `artifacts/w5-d/scripts/run_questions_both.py`（実装役の 185 問、配置あり／なし）。誤答 0、型未確認の充填物を持つ FILLED/TIE 0。正答の減少は変更前（`artifacts/w5-d/before/q185_*.json`）との差を数で。
+- G3: 経路づけの凍結 4 本（`run_bank.py`、配置なし・r7）の misroutes と、自作の合成（`artifacts/w5-d/g3_synth/`、入力と期待を先に書き sha256 を凍結）。
+- G4: `artifacts/w5-d/scripts/g4_probe.py`（入力を先に凍結）。自己申告の文書・文面違いの確認記録から `ANSWER_*` が 0。対照（本当に渡した文書の文・完全一致の記録）では答えが出ること。
+- G5: r7 を cache なしで 2 回作り `verify` が両方 OK、`content_sha256` が run1 = run2 = r6（`5c969d45…`）。L1〜L3・動詞 300 語を `measure_w5d.py` で r6 と r7 で測り同じ。
+- G7: `pytest tests`（最後に 1 回）の失敗集合が基線 `dev_c875ed3_failures.txt` から増えない。増えた分は 1 件ずつ K1〜K5 または環境由来に当てる。当たらないものはコードを直す。
+- 基線（変更前）の測定は `artifacts/w5-d/before/` に保存済み（この事前登録より前）。製品コードの差分はこの時点で空。
+
+<!-- w5d-prereg:end -->
+
+## W5-d の測定: 文書の出典の本文の照合・確認記録の文面の一致
+<!-- w5d-measured:begin -->
+
+測定の時刻: 2026-10-03 23:34:53 +0900。出典はすべて `artifacts/w5-d/` のファイル（下に名前を書く）。全体テスト: `pytest_full.txt` の最終行 `198 failed, 11889 passed, 45 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 341.39s (0:05:41)`。基線 `dev_c875ed3_failures.txt` に無い新しい失敗は 83 件（`new_failures.txt`）で、1 件ずつ `new_failures_explained.txt` に K1〜K5・改訂・環境由来のどれかを書いた。どれにも当たらないものは 0 件（`grep -v -E 'K[1-5]|D1-改訂|環境由来' new_failures_explained.txt` が空）。基線から直った失敗は 0 件（`fixed_failures.txt`）。
+
+### 方針（G4。`g4_inputs.json`・`g4_inputs.sha256`（先に凍結）・`scripts/g4_probe.py`・`g4_result.json`）
+- 自己申告の文書 16 通り（存在しない文書・本文に無い文・空のファイル・言い換え・sha256 不一致・空白だけ・数値や配列の text・別の文書の本文・round5 以外のモード ほか）から `ANSWER_*` が **0**（変更前の木では 14。変更前は空白だけの text で `borrow_form` が例外を出す 1 件を含む。`before/g4_at_base.json`）。対照（本当に渡した文書の文・NFKC だけ違う文・ディレクトリの中の文・本文の sha256）4 通りは全部が答えになる（4）。
+- 文面違いの確認記録 15 通り（空白・全角空白・NBSP・末尾の空白と改行・タブ・句読点・ゼロ幅空白・BOM・NFKC・全角数字ほか）から `ANSWER_*` が **0**、旧い文が回答された数 0（変更前の木では 15 と 15）。対照（完全一致・同じ文の記録が 2 件）2 通りは答えになる（2）。
+- 本物の入口 `vera ask --mode round5 --document`（`a1_cli.txt`）: 答えのある文書（ファイル・ディレクトリ）は `ANSWER_HUMAN_BASIS` のまま、答えの無い文書・存在しないパスは棄権。
+
+### 改訂した 1 件（B-J3。`tests/test_basis_policy_confirm.py::test_two_confirmed_records_with_the_same_claim_are_not_a_split`。名前は不変。`frozen_tests_amended.txt`）
+改訂前の全文（`amended_before.txt`）:
+```python
+def test_two_confirmed_records_with_the_same_claim_are_not_a_split(tmp_path, monkeypatch, capsys):
+    root, sid = _world(tmp_path, monkeypatch)
+    sov.append_basis_confirmation(root, sid, _payload(confirm_id="aaa", claim="主張A"))
+    sov.append_basis_confirmation(root, sid, _payload(confirm_id="bbb", claim="主張A"))
+    rc, out = _ask(tmp_path, capsys)
+    assert rc == 0 and out["verdict"] == "ANSWER" and out["text"] == "主張A"
+```
+改訂後の全文（`amended_after.txt`）:
+```python
+def test_two_confirmed_records_with_the_same_claim_are_not_a_split(tmp_path, monkeypatch, capsys):
+    root, sid = _world(tmp_path, monkeypatch)
+    claim = _ask(tmp_path, capsys, "--human-present")[1]["confirm"]["claim"]    # W5-d (D1, amended): the sentence generated now
+    sov.append_basis_confirmation(root, sid, _payload(confirm_id="aaa", claim=claim))
+    sov.append_basis_confirmation(root, sid, _payload(confirm_id="bbb", claim=claim))
+    rc, out = _ask(tmp_path, capsys)
+    assert rc == 0 and out["verdict"] == "ANSWER" and out["text"] == claim
+```
+理由: 同じ claim の記録が 2 件あっても割れない、という意図は変えず、記録の claim を「今の生成の claim」にした（D1 は今の文と一致しない記録では格上げしない）。
+
+### 宣言した衝突 K3（文書の出典の本文の照合）の実際の失敗 id（10 件）
+- `tests/test_basis_policy_form.py::test_a_document_answer_gets_a_borrowed_form_and_keeps_its_text_and_sources`
+- `tests/test_basis_policy_form.py::test_a_failed_borrowing_leaves_the_human_answer_as_it_was`
+- `tests/test_basis_policy_form.py::test_the_borrowing_takes_no_role_from_the_generated_sentence_end_to_end`
+- `tests/test_basis_policy_w5c_r3.py::test_r3_a_document_the_user_handed_over_is_answered_unchanged[origin-'MISSING']`
+- `tests/test_basis_policy_w5c_r3.py::test_r3_a_document_the_user_handed_over_is_answered_unchanged[origin-None]`
+- `tests/test_basis_policy_w5c_r3.py::test_r3_a_generated_sentence_next_to_the_users_document_is_mixed_not_unknown_origin`
+- `tests/test_basis_policy_w5c_r3.py::test_r3_the_users_own_document_answer_is_kept_and_the_record_is_not_used`
+- `tests/test_basis_policy_w5c_r3.py::test_r3_the_withheld_count_is_the_classified_count[round5-documents4-sources4]`
+- `tests/test_basis_policy_w5c_r3.py::test_r3_the_withheld_count_is_the_classified_count[round5-documents5-sources5]`
+- `tests/test_basis_policy_w5c_r3.py::test_r3_the_withheld_count_is_the_classified_count[round5-documents7-sources7]`
+
+### 宣言した衝突 K4（確認記録の文面の一致）の実際の失敗 id（4 件）
+- `tests/test_basis_policy_w5c_r3.py::test_r3_a_recorded_yes_still_lifts_a_generated_answer[False-False]`
+- `tests/test_basis_policy_w5c_r3.py::test_r3_a_recorded_yes_still_lifts_a_generated_answer[False-True]`
+- `tests/test_basis_policy_w5c_r3.py::test_r3_a_recorded_yes_still_lifts_a_generated_answer[True-False]`
+- `tests/test_basis_policy_w5c_r3.py::test_r3_a_recorded_yes_still_lifts_a_generated_answer[True-True]`
+
+K4 の改訂案（**当てていない**。監査役が許可すれば当てる。`k4_proposal.diff`）: `test_r3_a_recorded_yes_still_lifts_a_generated_answer` は「別の文（`OTHER_CLAIM`）の記録で生成の答えが格上げされる」ことを固定しており D1 そのものと矛盾する。確認した claim を今の結果が持つ文にする:
+```diff
+229c229
+< def _sovereign_with_yes(tmp_path, monkeypatch, query=Q):
+---
+> def _sovereign_with_yes(tmp_path, monkeypatch, query=Q, claim=OTHER_CLAIM):
+234c234
+<               "confirm_id": "abc", "query": query, "claim": OTHER_CLAIM, "generated_sources": [],
+---
+>               "confirm_id": "abc", "query": query, "claim": claim, "generated_sources": [],
+277c277,279
+<     root = _sovereign_with_yes(tmp_path, monkeypatch)
+---
+>     # W5-d (D1) proposal: the human confirmed THE SENTENCE the result now carries (the claim of the result is its ``text``)
+>     claim = _synthetic("answer", "ANSWER", [])["text"]
+>     root = _sovereign_with_yes(tmp_path, monkeypatch, claim=claim)
+281c283
+<     assert out["text"] == OTHER_CLAIM and out["kind"] == "answer"
+---
+>     assert out["text"] == claim and out["kind"] == "answer"
+```
+K3・K4 が、文書が本文に実際にその文を持つ／確認した文が今の文であれば通ることの証拠: `k3k4_probe.txt`。
+```
+K3/K4 probe (scratchpad copy of c875ed3 + the changed verantyx files):
+ K3: the test files are NOT changed; tests/conftest.py of the copy gets an autouse fixture that makes the cwd of each test hold a real memo.txt containing the sentences the tests give as the document's text (k3_probe_rewrite.diff).
+ K4: tests/test_basis_policy_w5c_r3.py of the copy gets the revision proposed in k4_proposal.diff (the confirmed claim is the sentence the result now carries); the real tree's file is NOT changed.
+
+result: tests/test_basis_policy_form.py + tests/test_basis_policy_w5c_r3.py: 167 passed, 0 failed.
+   => the 10 K3 tests (form 3 + w5c_r3 documents 7) and the 4 K4 tests all pass once the document really holds the sentence / the confirmed sentence is the present one.
+
+Also in the real tree: the two end-to-end tests that hand over a real memo.txt through main() pass unchanged:
+   tests/test_basis_policy_form.py::test_from_the_command_line_a_document_answer_carries_the_borrowed_form
+   tests/test_basis_policy_w5c_r3.py::test_r3_through_main_the_users_document_is_still_a_human_basis
+```
+
+### 既知の穴（隠さない）
+1. **`document_texts=None` の直接呼び**: `classify_sources(..., user_documents=True)` だけを渡す直接の呼び手は、旧い契約のまま自己申告が通る（製品の中でそう呼ぶ所は無い。`tests/test_basis_policy_w5c_r3.py` の直接呼び 5 件を守るため）。
+2. **改行をまたぐ文は見つからない**: 出典の `text` が文書の改行をまたぐ（部分文字列にならない）と `unknown_origin` に倒れる（棄権側の損失。`tests/test_basis_policy_w5d.py::test_a1_a_sentence_across_a_line_break_is_not_found_a_loss_on_the_safe_side`）。
+3. **`CLASSIFY_VERSION` は 3 のまま**: 規則 7 の条件が狭くなったが版は上げていない（既存テストが `== 3` を固定）。出力に版が残らないので、A1 の前後を版で見分けられない（監査役への申し送り）。
+4. **D1 は NFKC 正規化をしない**: チケットの文言（NFKC 正規化後の完全一致）より狭い（正規化しない完全一致）。NFKC で比べると攻撃 `[nfkc]` が落ちるため。`コードはＡＢＣです。` と `コードはABCです。` は別の文として再確認を求める（格上げしない）。
+
+<!-- w5d-measured:end -->
+
+## W5-d 第 2 ラウンド（W5-d2）の事前登録
+<!-- w5d2-prereg:begin -->
+事前登録の時刻: 2026-10-04 00:31:06 +0900（`date '+%F %T %z'` の出力。第 2 ラウンドの製品コード・テストの変更より前）。ベースは `dev` = `c875ed3`。第 1 ラウンドの `w5d-prereg`・`w5d-measured` 区間は 1 文字も変えない（第 1 ラウンドの記録）。この節が置き換えるものは、後ろの `w5d2-measured` 区間の「置き換わった記述」に列挙する。
+
+**監査役の裁定（2026-10-04 00:05）**: B1 規則の衝突で落ちる既存テスト 78 件＋攻撃の写し 4 件は改訂を許可（K1・K2 は偽の `PlacementLookup` の注入、K3・K4・K5 は期待の改訂。名前は変えず、前後の全文を docs に）。B2 D1 の比較は正規化しない完全一致を追認（チケットの文言「NFKC 正規化後」は撤回）。B3 `recompute_q.py --check` と `w3c2-entry` 区間の例は、配置を与えた例に取り直してよい（区間の規則の本文は変えない）。追加 9 質問の観測が `VERA_PLACEMENT` を読まないのは、この後では「本番では質問がほぼ全部棄権」を意味するので、`observe.py` の question の経路で、`--placement` が無く `VERA_PLACEMENT` があるときは `event_cross.default_lookup()` の lookup を使う（収まらなければ既知の穴として次のチケットへ）。
+
+**第 2 ラウンドの判断（中間職の指示書 D2-1〜D2-8）**
+- D2-1 K1（質問の十字 15 件）: 配置の JSON（穴の充填物だけに direct の型。穴の型と食い違う型は付けない）または `O.FilePlacement` を注入する。例外 1 件（`test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun`）は「配置なしで FILLED」が主題で新しい契約と正反対なので、期待を新しい契約（配置なし → `NO_TYPED_CANDIDATE`・`TYPE_UNCHECKED`・`hole_type_check` が `NOT_CHECKED/NO_PLACEMENT`）に改訂。配置あり／なしの対のテストを足す。
+- D2-2 K2（自由文→記録 52 件）: テストの中だけの `FakePlacement`（固定の名前は `UNPLACED`、列挙した普通名詞は direct の型）を注入。配置なしが主題の 3 件は期待を新しい契約（配置なし → 棄権）に改訂。**裁定の申し送り（並列の名前の過剰棄権は直さず既知の穴）からの逸脱**: 偽の配置（全語 UNPLACED）を注入しても 11 件は `ハルとセキは同じ会社だ。` の部分名 `ハル`・`セキ` に配置の答えが無く `NAME_UNVERIFIED` → `INCOMPLETE_READING` で通らない。期待を書き換えれば「弱体化」になるので、`routing_from_text.py` だけで、日本語の並列の充填物の部分名それぞれを同じ lookup に問う（R-J1 の同じ規則を部分名の配置の答えに当てるだけ。新しい規則は足さない。英語は変えない）。配置が無ければ今どおり `NAME_UNVERIFIED`。
+- D2-3 K3（10 件）: 期待の値は変えず、渡した文書を実在させる（`tmp_path` の `memo.txt` に出典の `text` を書く）。K4: `artifacts/w5-d/k4_proposal.diff` をそのまま当てる。K5: 48 語の導出・バイト一致・各条件は不変、`frame_status` は `CONFIRMED` か `NOT_CONFIRMED`（後者は `frame is None`・`frame_disagreement`・助詞ごとの型が交わらない）、数は assert せず出力に一覧。
+- D2-4 攻撃の写し 3 本の先頭行を `revised in W5-d2` に。G1-b は「先頭行と改訂した関数を除いて同一」。`data/` は同一。
+- D2-5 D1: コードは変えない（正規化しない完全一致）。BASIS_POLICY に追認の理由を書く。
+- D2-6 B3: `recompute_q.py` の `EXAMPLES` を 4 つ組（期待, 文書, 問い, 配置ファイル名）にし、`QD02`『どの人が客に切符を渡した？』（FILLED）と `QD01`『誰が生徒に地図を渡した？』（TIE）を `placement_q.json` つきに、`NO_ATTESTED_CELL` の例は今のまま。`--write` は 1 回だけ。凍結データは変えない。
+- D2-7 追加 9: 製品の変更は `observe.py` の `_observe_question` の中だけ。`--placement` が無い（`StubLookup`）ときだけ `EC.default_lookup()`。充填物の型の確かめは同じ lookup に `surface` を問い直した答え。出力の `structure.placement` は実際に使った lookup の id。新しい鍵は足さない。**門**（どれか 1 つでも破れたらこの変更だけを戻して既知の穴に書く）: (1) r7 で 185 問の誤答 0・型未確認の FILLED/TIE 0、攻撃 120 問でも型未確認 0 で A01 が FILLED/TIE にならない、(2) `VERA_PLACEMENT` なしの 185 問の出力が第 1 ラウンドと byte 一致、(3) 平叙文の観測（`o1_bytes.py --child`）が基点と byte 一致（配置なしと r7 の 2 通り）。FALSE_NONE の増分と TIE が FILLED に縮む件は数えて書くが門にしない。
+- D2-8 置き場所: 本区間（事前登録）、`w5d2-measured`（測定）、`w5d2-amended`（改訂したテストの前後の全文。`artifacts/w5-d/r2/scripts/amended_texts.py` で生成）。K1・B3・D2-7 → OBSERVATION、K2・D2-2 → ROUTING_FROM_TEXT、K3・K4・D1 → BASIS_POLICY、K5 → COARSE_PLACEMENT、EVENT_CROSS には穴の型の節への 1 段落。
+
+**測り方（測る前に固定。出力はすべて `artifacts/w5-d/r2/`）**
+- G1: 攻撃の写し 36 本が全部通る（`tests/attack/w3c2`・`test_attack_w5b_wave2.py`・`test_attack_w5c_*.py` 2 本・`tests/attack/w3a3/test_attack_w3a3_r6.py`）、K の 82 id が全部通る、G1-b は上のとおり。
+- G2: 実装役の 185 問を（配置なしの環境 × place/noplace）と（`VERA_PLACEMENT=r7` × place/noplace）、攻撃 120 問を r7 で。誤答 0、型未確認の充填物を持つ FILLED/TIE 0。
+- G3: 経路づけの凍結 4 本（配置なし）と 2 本（r7）の misroutes 0、合成 `g3_synth` を同じ入力で流し直して配置なしで誤って振った数 0。r7 は第 1 ラウンドの 1 から増えない。D2-2 の影響として r7 の 2 本の単位ごとの状態を第 1 ラウンドと比べる。
+- G4: `g4_probe` の写しを流し、入力の sha256 と `summary` が第 1 ラウンドと同じ（`basis_policy.py` は第 2 ラウンドで変えない）。
+- G5: r7 は作り直さない。`verify` が `OK`、`content_sha256` が第 1 ラウンドと同じ。
+- G7: `pytest tests`（最後に 1 回）の失敗集合が基線から増えない。基線に無い失敗は環境由来だけ。K の id が残れば改訂を見直す。
+
+**この文書の担当**: K3・K4・D1（B2）。
+
+**B2 の追認**: 監査役は D1 の比較を **正規化しない完全一致** と追認した（2026-10-04 00:05）。チケットの文言「NFKC 正規化後の完全一致」は撤回する。理由: 攻撃 `tests/attack/test_attack_w5c_confirmation_text_binding.py` の `[nfkc]` の反例（`コードはＡＢＣです。` の確認で `コードはABCです。` を格上げすると、表記が違う＝別の文を人が確かめたことになる）。安全側に倒す。第 1 ラウンドの `w5d-prereg` 区間の B-J2 の文言は残し、この節が置き換える。コードは変えない。
+
+<!-- w5d2-prereg:end -->
+
+<!-- w5d2-amended:begin -->
+#### `tests/test_basis_policy_form.py` (before = git show c875ed3:tests/test_basis_policy_form.py)
+
+Added (helpers / tests, not amendments): `_hand_over_memo`
+
+##### `test_a_document_answer_gets_a_borrowed_form_and_keeps_its_text_and_sources` — before
+
+```python
+def test_a_document_answer_gets_a_borrowed_form_and_keeps_its_text_and_sources(tmp_path, monkeypatch):
+    _index(tmp_path, {"local": ["次郎が花子に本を渡した。"]})
+    monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
+    monkeypatch.delenv("VERA_SOVEREIGN_ROOT", raising=False)
+    monkeypatch.delenv("VERA_SOVEREIGN_STORE", raising=False)
+    original = _doc_answer()
+    out, rc = bp.apply_to_ask(original, bp.AskPolicy(), query="花子は太郎に資料を渡しましたか？",
+                              mode="round5", documents=["memo.txt"])
+    assert rc == 0
+    assert out["text"] == "可否: はい" and out["sources"] == original["sources"]
+    assert out["form_text"] == FORM and out["form_source"] == "generated"
+    assert out["form_witnesses"][0]["origin"] == "generated"
+    assert "basis_origin" not in out
+    assert ac.basis_origin(out["sources"]) is None
+    assert out["basis_policy"]["outcome"] == "ANSWER_FORM_FROM_GENERATED"
+    assert out["basis_policy"]["form"]["state"] == "FORM_BORROWED"
+    assert out["basis_policy"]["basis"] == "HUMAN"
+```
+
+##### `test_a_document_answer_gets_a_borrowed_form_and_keeps_its_text_and_sources` — after
+
+```python
+def test_a_document_answer_gets_a_borrowed_form_and_keeps_its_text_and_sources(tmp_path, monkeypatch):
+    _hand_over_memo(tmp_path, monkeypatch, HUMAN)      # W5-d2 (K3)
+    _index(tmp_path, {"local": ["次郎が花子に本を渡した。"]})
+    monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
+    monkeypatch.delenv("VERA_SOVEREIGN_ROOT", raising=False)
+    monkeypatch.delenv("VERA_SOVEREIGN_STORE", raising=False)
+    original = _doc_answer()
+    out, rc = bp.apply_to_ask(original, bp.AskPolicy(), query="花子は太郎に資料を渡しましたか？",
+                              mode="round5", documents=["memo.txt"])
+    assert rc == 0
+    assert out["text"] == "可否: はい" and out["sources"] == original["sources"]
+    assert out["form_text"] == FORM and out["form_source"] == "generated"
+    assert out["form_witnesses"][0]["origin"] == "generated"
+    assert "basis_origin" not in out
+    assert ac.basis_origin(out["sources"]) is None
+    assert out["basis_policy"]["outcome"] == "ANSWER_FORM_FROM_GENERATED"
+    assert out["basis_policy"]["form"]["state"] == "FORM_BORROWED"
+    assert out["basis_policy"]["basis"] == "HUMAN"
+```
+
+##### `test_a_failed_borrowing_leaves_the_human_answer_as_it_was` — before
+
+```python
+def test_a_failed_borrowing_leaves_the_human_answer_as_it_was(tmp_path, monkeypatch):
+    _index(tmp_path, {"local": ["次郎が花子に本を渡さなかった。"]})
+    monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
+    original = _doc_answer()
+    out, rc = bp.apply_to_ask(original, bp.AskPolicy(), query="q", mode="round5", documents=["memo.txt"])
+    assert rc == 0 and "form_text" not in out and "form_source" not in out
+    assert {k: v for k, v in out.items() if k != "basis_policy"} == original
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"
+    assert out["basis_policy"]["form"]["state"] == "FORM_NO_CANDIDATE"
+    assert out["basis_policy"]["form"]["reasons"]["CAND_CENTER_DIFFERS"] == 1
+```
+
+##### `test_a_failed_borrowing_leaves_the_human_answer_as_it_was` — after
+
+```python
+def test_a_failed_borrowing_leaves_the_human_answer_as_it_was(tmp_path, monkeypatch):
+    _hand_over_memo(tmp_path, monkeypatch, HUMAN)      # W5-d2 (K3)
+    _index(tmp_path, {"local": ["次郎が花子に本を渡さなかった。"]})
+    monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
+    original = _doc_answer()
+    out, rc = bp.apply_to_ask(original, bp.AskPolicy(), query="q", mode="round5", documents=["memo.txt"])
+    assert rc == 0 and "form_text" not in out and "form_source" not in out
+    assert {k: v for k, v in out.items() if k != "basis_policy"} == original
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"
+    assert out["basis_policy"]["form"]["state"] == "FORM_NO_CANDIDATE"
+    assert out["basis_policy"]["form"]["reasons"]["CAND_CENTER_DIFFERS"] == 1
+```
+
+##### `test_the_borrowing_takes_no_role_from_the_generated_sentence_end_to_end` — before
+
+```python
+def test_the_borrowing_takes_no_role_from_the_generated_sentence_end_to_end(tmp_path, monkeypatch):
+    # the human document has two roles; the only generated row has three: nothing is added
+    _index(tmp_path, {"local": ["次郎が花子に本を渡した。"]})
+    monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
+    human = "花子は資料を渡した。"
+    out, _rc = bp.apply_to_ask(_doc_answer(human), bp.AskPolicy(), query="q", mode="round5",
+                               documents=["memo.txt"])
+    assert "form_text" not in out and out["basis_policy"]["form"]["reasons"]["CAND_ROLES_DIFFER"] == 1
+```
+
+##### `test_the_borrowing_takes_no_role_from_the_generated_sentence_end_to_end` — after
+
+```python
+def test_the_borrowing_takes_no_role_from_the_generated_sentence_end_to_end(tmp_path, monkeypatch):
+    # the human document has two roles; the only generated row has three: nothing is added
+    _index(tmp_path, {"local": ["次郎が花子に本を渡した。"]})
+    monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
+    human = "花子は資料を渡した。"
+    _hand_over_memo(tmp_path, monkeypatch, human)      # W5-d2 (K3)
+    out, _rc = bp.apply_to_ask(_doc_answer(human), bp.AskPolicy(), query="q", mode="round5",
+                               documents=["memo.txt"])
+    assert "form_text" not in out and out["basis_policy"]["form"]["reasons"]["CAND_ROLES_DIFFER"] == 1
+```
+
+#### `tests/test_basis_policy_w5c_r3.py` (before = git show c875ed3:tests/test_basis_policy_w5c_r3.py)
+
+Added (helpers / tests, not amendments): `_hand_over_memo`
+
+##### `test_r3_a_document_the_user_handed_over_is_answered_unchanged` — before
+
+```python
+@pytest.mark.parametrize("origin", ORIGINS_UNSET, ids=lambda o: f"origin-{o!r}")
+def test_r3_a_document_the_user_handed_over_is_answered_unchanged(origin):
+    src = _fsrc("document", origin, source="memo.txt")
+    result = _synthetic("answer", "ANSWER", [src], text=BODY)
+    before = copy.deepcopy(result)
+    out, rc = bp.apply_to_ask(result, bp.AskPolicy(), query=Q, mode="round5", documents=MEMO_ARG)
+    assert rc == 0 and result == before
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS" and out["basis_policy"]["basis"] == "HUMAN"
+    assert out["basis_policy"]["counts"]["human"] == 1 and out["basis_policy"]["counts"]["unknown_origin"] == 0
+    assert {k: v for k, v in out.items() if k != "basis_policy"} == before
+    assert out["kind"] == "answer" and out["verdict"] == "ANSWER"
+```
+
+##### `test_r3_a_document_the_user_handed_over_is_answered_unchanged` — after
+
+```python
+@pytest.mark.parametrize("origin", ORIGINS_UNSET, ids=lambda o: f"origin-{o!r}")
+def test_r3_a_document_the_user_handed_over_is_answered_unchanged(origin, tmp_path, monkeypatch):
+    _hand_over_memo(tmp_path, monkeypatch, BODY)      # W5-d2 (K3): the document exists and holds the source's text
+    src = _fsrc("document", origin, source="memo.txt")
+    result = _synthetic("answer", "ANSWER", [src], text=BODY)
+    before = copy.deepcopy(result)
+    out, rc = bp.apply_to_ask(result, bp.AskPolicy(), query=Q, mode="round5", documents=MEMO_ARG)
+    assert rc == 0 and result == before
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS" and out["basis_policy"]["basis"] == "HUMAN"
+    assert out["basis_policy"]["counts"]["human"] == 1 and out["basis_policy"]["counts"]["unknown_origin"] == 0
+    assert {k: v for k, v in out.items() if k != "basis_policy"} == before
+    assert out["kind"] == "answer" and out["verdict"] == "ANSWER"
+```
+
+##### `test_r3_a_generated_sentence_next_to_the_users_document_is_mixed_not_unknown_origin` — before
+
+```python
+def test_r3_a_generated_sentence_next_to_the_users_document_is_mixed_not_unknown_origin():
+    out, _rc = bp.apply_to_ask(_doc_result(extra=[GEN]), bp.AskPolicy(), query=Q, mode="round5", documents=MEMO_ARG)
+    assert out["basis_policy"]["basis"] == "MIXED" and out["verdict"] == "UNKNOWN_BASIS_NOT_IN_TABLE"
+    assert out["basis_policy"]["outcome"] == "ABSTAIN" and _state(out) == "abstain"
+    assert out["withheld"]["unknown_origin_source_count"] == 0
+```
+
+##### `test_r3_a_generated_sentence_next_to_the_users_document_is_mixed_not_unknown_origin` — after
+
+```python
+def test_r3_a_generated_sentence_next_to_the_users_document_is_mixed_not_unknown_origin(tmp_path, monkeypatch):
+    _hand_over_memo(tmp_path, monkeypatch, BODY)      # W5-d2 (K3)
+    out, _rc = bp.apply_to_ask(_doc_result(extra=[GEN]), bp.AskPolicy(), query=Q, mode="round5", documents=MEMO_ARG)
+    assert out["basis_policy"]["basis"] == "MIXED" and out["verdict"] == "UNKNOWN_BASIS_NOT_IN_TABLE"
+    assert out["basis_policy"]["outcome"] == "ABSTAIN" and _state(out) == "abstain"
+    assert out["withheld"]["unknown_origin_source_count"] == 0
+```
+
+##### `test_r3_the_withheld_count_is_the_classified_count` — before
+
+```python
+@pytest.mark.parametrize("mode, documents, sources", [
+    ("legacy", [], [_fsrc("local", None)]),
+    ("legacy", [], [_fsrc("local", "zzz")]),
+    ("legacy", [], [_fsrc("general", None), _fsrc("jawiki", "MISSING")]),
+    ("legacy", [], [_fsrc("document", None), GEN]),
+    ("round5", MEMO_ARG, [_fsrc("document", None), GEN]),
+    ("round5", MEMO_ARG, [_fsrc("document", None), _fsrc("general", None)]),
+    ("round5", MEMO_ARG, [_fsrc("document", ""), GEN]),
+    ("round5", MEMO_ARG, [_fsrc("document", None), _fsrc("document", "zzz"), _fsrc("local", None)]),
+    ("round5", [], [_fsrc("document", None), GEN]),
+    ("engine", MEMO_ARG, [_fsrc("document", None), _fsrc("MISSING", None)]),
+], ids=lambda v: None)
+def test_r3_the_withheld_count_is_the_classified_count(mode, documents, sources):
+    result = _synthetic("answer", "ANSWER", copy.deepcopy(sources))
+    out, _rc = bp.apply_to_ask(result, bp.AskPolicy(), query=Q, mode=mode, documents=list(documents))
+    user_documents = mode == "round5" and bool(documents)
+    assert "withheld" in out
+    assert out["withheld"]["unknown_origin_source_count"] == len(bp._unknown_origin_sources(sources, user_documents))
+    sc = bp.classify_sources(sources, user_documents=user_documents)
+    assert out["withheld"]["unknown_origin_source_count"] == sc.unknown_origin + sum(sc.unknown_origin_values.values())
+```
+
+##### `test_r3_the_withheld_count_is_the_classified_count` — after
+
+```python
+@pytest.mark.parametrize("mode, documents, sources", [
+    ("legacy", [], [_fsrc("local", None)]),
+    ("legacy", [], [_fsrc("local", "zzz")]),
+    ("legacy", [], [_fsrc("general", None), _fsrc("jawiki", "MISSING")]),
+    ("legacy", [], [_fsrc("document", None), GEN]),
+    ("round5", MEMO_ARG, [_fsrc("document", None), GEN]),
+    ("round5", MEMO_ARG, [_fsrc("document", None), _fsrc("general", None)]),
+    ("round5", MEMO_ARG, [_fsrc("document", ""), GEN]),
+    ("round5", MEMO_ARG, [_fsrc("document", None), _fsrc("document", "zzz"), _fsrc("local", None)]),
+    ("round5", [], [_fsrc("document", None), GEN]),
+    ("engine", MEMO_ARG, [_fsrc("document", None), _fsrc("MISSING", None)]),
+], ids=lambda v: None)
+def test_r3_the_withheld_count_is_the_classified_count(mode, documents, sources, tmp_path, monkeypatch):
+    if documents:      # W5-d2 (K3): the document that is handed over exists and holds the text of each document source (the comparison side below keeps the self-reporting call)
+        _hand_over_memo(tmp_path, monkeypatch, *[s["text"] for s in sources if s.get("family") == "document"])
+    result = _synthetic("answer", "ANSWER", copy.deepcopy(sources))
+    out, _rc = bp.apply_to_ask(result, bp.AskPolicy(), query=Q, mode=mode, documents=list(documents))
+    user_documents = mode == "round5" and bool(documents)
+    assert "withheld" in out
+    assert out["withheld"]["unknown_origin_source_count"] == len(bp._unknown_origin_sources(sources, user_documents))
+    sc = bp.classify_sources(sources, user_documents=user_documents)
+    assert out["withheld"]["unknown_origin_source_count"] == sc.unknown_origin + sum(sc.unknown_origin_values.values())
+```
+
+##### `_sovereign_with_yes` — before
+
+```python
+def _sovereign_with_yes(tmp_path, monkeypatch, query=Q):
+    root = tmp_path / "sov"
+    assert sov.create(str(root), "s1", "o", consent_promote=True)["verdict"] == "CREATED"
+    _use(monkeypatch, root, "s1")
+    record = {"record": "basis_confirmation", "status": "HUMAN_CONFIRMED", "witness": "user_confirmation",
+              "confirm_id": "abc", "query": query, "claim": OTHER_CLAIM, "generated_sources": [],
+              "table_version": 1, "origin": "human_confirmed"}
+    assert sov.append_basis_confirmation(str(root), "s1", record)["verdict"] == "APPENDED"
+    return root
+```
+
+##### `_sovereign_with_yes` — after
+
+```python
+def _sovereign_with_yes(tmp_path, monkeypatch, query=Q, claim=OTHER_CLAIM):
+    root = tmp_path / "sov"
+    assert sov.create(str(root), "s1", "o", consent_promote=True)["verdict"] == "CREATED"
+    _use(monkeypatch, root, "s1")
+    record = {"record": "basis_confirmation", "status": "HUMAN_CONFIRMED", "witness": "user_confirmation",
+              "confirm_id": "abc", "query": query, "claim": claim, "generated_sources": [],
+              "table_version": 1, "origin": "human_confirmed"}
+    assert sov.append_basis_confirmation(str(root), "s1", record)["verdict"] == "APPENDED"
+    return root
+```
+
+##### `test_r3_a_recorded_yes_still_lifts_a_generated_answer` — before
+
+```python
+@pytest.mark.parametrize("human", [False, True])
+@pytest.mark.parametrize("ref", [False, True])
+def test_r3_a_recorded_yes_still_lifts_a_generated_answer(tmp_path, monkeypatch, human, ref):
+    root = _sovereign_with_yes(tmp_path, monkeypatch)
+    before = _snapshot(root)
+    out, rc = _ask_with_record([GEN], "answer", "ANSWER", human=human, ref=ref)
+    assert rc == 0 and out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"
+    assert out["text"] == OTHER_CLAIM and out["kind"] == "answer"
+    assert out["basis_policy"]["sovereign"]["confirmed_records_used"] == 1
+    assert out["basis_policy"]["sovereign"]["confirmed_records_not_used"] == 0
+    assert _snapshot(root) == before
+```
+
+##### `test_r3_a_recorded_yes_still_lifts_a_generated_answer` — after
+
+```python
+@pytest.mark.parametrize("human", [False, True])
+@pytest.mark.parametrize("ref", [False, True])
+def test_r3_a_recorded_yes_still_lifts_a_generated_answer(tmp_path, monkeypatch, human, ref):
+    # W5-d (D1) proposal: the human confirmed THE SENTENCE the result now carries (the claim of the result is its ``text``)
+    claim = _synthetic("answer", "ANSWER", [])["text"]
+    root = _sovereign_with_yes(tmp_path, monkeypatch, claim=claim)
+    before = _snapshot(root)
+    out, rc = _ask_with_record([GEN], "answer", "ANSWER", human=human, ref=ref)
+    assert rc == 0 and out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"
+    assert out["text"] == claim and out["kind"] == "answer"
+    assert out["basis_policy"]["sovereign"]["confirmed_records_used"] == 1
+    assert out["basis_policy"]["sovereign"]["confirmed_records_not_used"] == 0
+    assert _snapshot(root) == before
+```
+
+##### `test_r3_the_users_own_document_answer_is_kept_and_the_record_is_not_used` — before
+
+```python
+def test_r3_the_users_own_document_answer_is_kept_and_the_record_is_not_used(tmp_path, monkeypatch):
+    root = _sovereign_with_yes(tmp_path, monkeypatch)
+    before = _snapshot(root)
+    out, rc = _ask_with_record([DOC], "answer", "ANSWER", human=False, ref=False, mode="round5", documents=MEMO_ARG)
+    assert rc == 0 and out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"
+    assert out["text"] == "窓が光ります。" and OTHER_CLAIM not in json.dumps(out, ensure_ascii=False)
+    assert out["basis_policy"]["sovereign"]["confirmed_records_used"] == 0
+    assert out["basis_policy"]["sovereign"]["confirmed_records_not_used"] == 1
+    assert _snapshot(root) == before
+```
+
+##### `test_r3_the_users_own_document_answer_is_kept_and_the_record_is_not_used` — after
+
+```python
+def test_r3_the_users_own_document_answer_is_kept_and_the_record_is_not_used(tmp_path, monkeypatch):
+    root = _sovereign_with_yes(tmp_path, monkeypatch)
+    _hand_over_memo(tmp_path, monkeypatch, BODY)      # W5-d2 (K3)
+    before = _snapshot(root)
+    out, rc = _ask_with_record([DOC], "answer", "ANSWER", human=False, ref=False, mode="round5", documents=MEMO_ARG)
+    assert rc == 0 and out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"
+    assert out["text"] == "窓が光ります。" and OTHER_CLAIM not in json.dumps(out, ensure_ascii=False)
+    assert out["basis_policy"]["sovereign"]["confirmed_records_used"] == 0
+    assert out["basis_policy"]["sovereign"]["confirmed_records_not_used"] == 1
+    assert _snapshot(root) == before
+```
+
+<!-- w5d2-amended:end -->
+
+## W5-d 第 2 ラウンド（W5-d2）の測定
+<!-- w5d2-measured:begin -->
+測定の時刻: 2026-10-04 01:22:30 +0900。出力はすべて `artifacts/w5-d/r2/`（ファイル名を添える）。中間職のレビュー r1（`review-impl/W5-d2/review.r1.md`）の M1〜M4（改訂したテストの前後の全文・測定の区間・失敗集合のファイル・報告）に応えてこの区間と `w5d2-amended` 区間を書いた。製品とテストのコードはレビューのあとに変えていない（`code_sha_r2b_start.txt` と `code_sha_r2b_end.txt` が同じ）。受入の測定はこのとき全部流し直した（`g1_rerun_r2b.txt`・`g2_rerun_r2b.txt`・`g3_rerun_r2b.txt`・`q1_observe_cmp_r2b.txt`・`g4_compare_r2b.txt`・`q5_r7_verify_r2b.txt`・`k5_check_r2b.txt`。出力は前の流しと byte 一致。違いが無かったことの確認なので前の流しのファイルも残す）。
+
+**受入基準**（第 2 ラウンド）
+- **G1**（`g1_rerun_r2b.txt`）: 攻撃の写し 36 本が `36 passed`、K の 72 関数（82 id）が全部通る（`102 passed`）、新しいテスト（第 1 ラウンドの 5 本＋第 2 ラウンドの追記）が `113 passed`。G1-b: 写しと原本の差は先頭行と改訂した関数・足したヘルパの中だけ（`g1b_hunks.txt`、`attack_copy_revisions.diff`。w5c の 2 本は原本と同一、`data/` も同一）。
+- **G2**（`g2_185_*.json(l)`・`g2_attack120_r7.json(l)`・`g2_rerun_r2b.txt`）: `VERA_PLACEMENT` なしの 185 問は第 1 ラウンドの出力と byte 一致（place: 正答/誤答/FALSE_NONE/棄権 = 38 / 0 / 4 / 143、noplace: 26 / 0 / 4 / 155）。`VERA_PLACEMENT=r7`: place 73 / 0 / 6 / 106、noplace 66 / 0 / 8 / 111。誤答 0、型未確認の FILLED/TIE 0（4 通りとも `unchecked_fillers_in_FILLED_TIE` は 0・0・0・0）。正答は減っていない（第 1 ラウンドと同じか、r7 で増える）。攻撃の 120 問（r7、116 問は正解なしで採点されない）: FILLED 29・TIE 5、型未確認の FILLED/TIE 0、`wrong` 0 件。A01（`EN08-01`）は `NO_TYPED_CANDIDATE`（`letter`・`note` は `TYPE_UNCHECKED`）で FILLED/TIE にならない（`g2_r7_notes.txt`）。中間職の凍結 64 問・56 問は実装役が開かない約束なので測っていない（中間職が測る）。
+- **G3**（`g3_rerun_r2b.txt`・`g3_*`）: 経路づけの凍結 4 本（配置なし）の misroutes は 0, 0, 0, 0、r7 の 2 本は 0, 0。合成 `g3_synth`（入力の sha256 は `g3_synth_inputs_check.txt` で第 1 ラウンドの凍結と一致）: 配置なし misroutes 0・普通名詞に振った数 0、r7 misroutes 1（第 1 ラウンドと同じ 1 件。`委員会` が推定の GROUP_ORG で通る既知の穴）、基点 1（`g3_synth_results/g3_synth_counts.json`）。D2-2 の影響: r7 の 2 本の 118 件を、D2-2 の呼び出しを外した写しと単位ごとに比べて変化した件数は 0（`g3_r7_diff.txt`）。
+- **G4**（`g4_result.json`・`g4_compare_r2b.txt`）: 入力の sha256 と `summary` が第 1 ラウンドと同じ（自己申告の文書 16 件で `ANSWER` 0、文面違いの確認記録 15 件で `ANSWER` 0・旧文が返った 0、対照は 4/4 と 2/2 で答える）。`verantyx/basis_policy.py` は第 2 ラウンドで変えていない（sha256 が `files_start.sha256` と同じ）。
+- **G5**（`q5_r7_verify_r2b.txt`・`k5_check_r2b.txt`）: r7 は作り直していない。`verify` が run1・run2 とも `OK`、`content_sha256` は第 1 ラウンドと同じ。`coarse_place.py`・`tools/build_coarse_placement.py` は第 2 ラウンドで変えていない。K5 の写しが通り、r6_audit_summary.json not_confirmed: 13 words; invariant_errors [] byte_differences []、第 1 ラウンドの 13 語と同じ集合（`命じる` を含む）。
+- **平叙文の観測**（`q1_observe_cmp_r2b.txt`）: `o1_bytes.py --child` の出力が、配置なしと `VERA_PLACEMENT=r7` の 2 通りとも基点と byte 一致（`same: base vs now` が 2 行。この流しは前の流しとも byte 一致）。
+- **G7**（`pytest_full.txt`・`after_failures.txt`・`new_failures.txt`・`fixed_failures.txt`・`new_failures_explained.txt`）: 全体テストの最終行 `117 failed, 11981 passed, 45 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 362.65s (0:06:02)`。失敗は一意に 117 件、基線に無い失敗は 2 件（`tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches`、`tests/test_gen_coarse_evidence.py::test_the_stop_signal_ends_the_run_with_an_interrupted_record`）、基線にあって今は通る失敗は 0 件。基線に無い失敗の理由は `new_failures_explained.txt`（環境由来だけ）。K の id は失敗集合に 0 件。
+
+**K3（存在しない文書を人の出典にする 10 件）の改訂**（裁定 B1。前後の全文は上の `w5d2-amended` 区間。`changed_functions_k3k4k5.txt`）: `tests/test_basis_policy_form.py` の 3 関数と `tests/test_basis_policy_w5c_r3.py` の 4 関数（パラメタ化を含めて 10 id）。期待の値は変えていない。「存在しない `memo.txt` を人の出典にする」こと自体が退役した振る舞い（A1: 出典の本文が実際に渡した文書の中にあること）で、期待を `unknown_origin` に変えると攻撃 A1 と同じテストになって主題「ユーザーが渡した文書の答えは保たれる」が消えるので、渡した文書を実在させた: 各モジュールに足したヘルパ `_hand_over_memo(tmp_path, monkeypatch, *texts)` が `tmp_path/memo.txt` に出典の `text` を 1 行ずつ書いて `monkeypatch.chdir(tmp_path)` する（conftest の autouse にはしていない。木の中に `memo.txt` は作らない）。memo の中身は出典の `text` だけで、余計な文は入れていない。
+
+**K4（別の文の記録で格上げ 4 件）の改訂**: `tests/test_basis_policy_w5c_r3.py::test_r3_a_recorded_yes_still_lifts_a_generated_answer`（パラメタ 4 id）の補助関数 `_sovereign_with_yes` に、既定 `OTHER_CLAIM` の `claim` 引数を足し、関数の中で今の生成文を claim にした（`artifacts/w5-d/k4_proposal.diff` を `patch -p0` でそのまま当てた。`k4_patch_output.txt`）。D1 の規則（確認済みの文と現在の生成文が違えば格上げしない）の下で「確認記録が今の文を確かめたもの」になる。
+
+**D1（B2）の追認**: 監査役は D1 の比較を正規化しない完全一致と追認した（2026-10-04 00:05。上の `w5d2-prereg` 区間）。チケットの文言「NFKC 正規化後の完全一致」は撤回。理由: 攻撃 `tests/attack/test_attack_w5c_confirmation_text_binding.py` の `[nfkc]` の反例（`コードはＡＢＣです。` の確認で `コードはABCです。` を格上げすると、表記が違う＝別の文を人が確かめたことになる）。安全側に倒す。コードは変えていない（`basis_policy.py` の sha256 は第 1 ラウンドの終わりと同じ）。確かめ: W5-c の写し 2 本（`[nfkc]` を含む）が通る（`g1_rerun_r2b.txt`）、`tests/test_basis_policy_w5d.py` の `nfkc` の変種が格上げしない（既存）。
+
+**G4**（`g4_result.json`・`g4_compare_r2b.txt`）: 入力の sha256 と `summary` が第 1 ラウンドと同じ。自己申告の文書の `ANSWER` 0（16 件）、文面違いの確認記録の `ANSWER` 0（15 件、旧文が返った 0）。
+
+**第 2 ラウンドで置き換わった第 1 ラウンドの記述**（第 1 ラウンドの `w5d-*` 区間の中は 1 文字も変えていない。元の行は残し、この一覧が上書きする）
+- 「B-J2 / チケットの文言: D1 は NFKC 正規化後の完全一致」と、第 1 ラウンドの既知の穴 4 の書きぶり「チケットの文言より狭い」→ 裁定 B2 でチケットの文言のほうが撤回された（正規化しない完全一致が正）。
+- 「K3・K4 は宣言した衝突」→ 裁定 B1 で改訂が許可され、上のとおり改訂した。
+
+**既知の穴**: 確認済みの文と現在の生成文が表記だけ違うとき（空白・句読点・NFKC の違い）は格上げされず、再確認を求める（安全側の過剰棄権）。
+**この文書の担当の測定は上のとおり。全体の受入と判断は `artifacts/w5-d/DECISIONS.md` の「第 2 ラウンド（W5-d2）」と `artifacts/w5-d/r2/`。**
+<!-- w5d2-measured:end -->

@@ -1,0 +1,80 @@
+{
+  "placement_mode": "absent",
+  "questions": 120,
+  "status_counts": {
+    "FILLED": 34,
+    "HOLE_TYPE_UNDETERMINED": 7,
+    "NO_ATTESTED_CELL": 12,
+    "POLAR_QUESTION": 6,
+    "QUESTION_NOT_READ": 51,
+    "TIE": 10
+  },
+  "explicit_truth_wrong": [
+    {
+      "id": "EN08-01",
+      "text": "Who did the girl write?",
+      "truth": {
+        "kind": "NONE",
+        "fillers": [],
+        "evidence": []
+      },
+      "actual": {
+        "id": "EN08-01",
+        "doc": "EN08",
+        "text": "Who did the girl write?",
+        "attack_axis": "stranded-preposition/object-hole",
+        "exit_code": 0,
+        "status": "TIE",
+        "fillers": [
+          {
+            "surface": "letter",
+            "evidence": [
+              "EN08-S01"
+            ],
+            "hole_type_check": {
+              "verdict": "NOT_CHECKED",
+              "reason": "NO_PLACEMENT",
+              "expected": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "observed": null
+            }
+          },
+          {
+            "surface": "note",
+            "evidence": [
+              "EN08-S02"
+            ],
+            "hole_type_check": {
+              "verdict": "NOT_CHECKED",
+              "reason": "NO_PLACEMENT",
+              "expected": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "observed": null
+            }
+          }
+        ],
+        "excluded": [],
+        "reasons": [
+          "UNREAD_SENTENCES:1"
+        ],
+        "question": {
+          "hole_role": "patient",
+          "hole_type": [
+            "GROUP_ORG",
+            "PERSON"
+          ],
+          "wh": "who",
+          "kind": "WH_QUESTION",
+          "restrictor": null,
+          "hole_mark": "X"
+        },
+        "error": null
+      }
+    }
+  ],
+  "output": "results/absent.jsonl"
+}

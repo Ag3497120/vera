@@ -1,0 +1,3 @@
+r6_audit_summary.json not_confirmed: 13 words; round 1 (r6_query_after.txt): 13
+same set: True
+byte_differences [] invariant_errors [] disjoint_slot_conflicts []

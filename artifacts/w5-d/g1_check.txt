@@ -1,0 +1,19 @@
+## G1-a
+..FF.......F......................F.                                     [100%]
+=========================== short test summary info ============================
+FAILED tests/attack/w3c2/test_attack_w3c2_question_cross.py::test_tied_agent_witnesses_remain_a_tie
+FAILED tests/attack/w3c2/test_attack_w3c2_question_cross.py::test_negative_question_does_not_match_affirmative_crosses
+FAILED tests/attack/test_attack_w5b_wave2.py::test_yappari_sonomama_does_not_turn_an_addendum_into_replacement
+FAILED tests/attack/w3a3/test_attack_w3a3_r6.py::test_all_r6_generated_frame_upgrades
+4 failed, 32 passed in 1.33s
+## G1-b
+same w3c2/test_attack_w3c2_question_cross.py
+same test_attack_w5b_wave2.py
+same test_attack_w5c_confirmation_text_binding.py
+same test_attack_w5c_classification_binding.py
+same w3a3/test_attack_w3a3_r6.py
+data-same
+## G1-c
+........................................................................ [ 70%]
+..............................                                           [100%]
+102 passed in 3.50s

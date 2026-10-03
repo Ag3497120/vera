@@ -12,6 +12,7 @@ import sys
 import pytest
 
 from verantyx import routing_from_text as rt
+from test_routing_from_text import FakePlacement      # W5-d2 (K2): the made-up placement of the tests (UNPLACED for a fixed name); the product keeps its own default
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REVIEW = {"role": "review", "kind": "review", "size": "medium"}
@@ -19,12 +20,12 @@ IMPLEMENT = {"role": "implement", "kind": "feature", "size": "medium"}
 TEST = {"role": "implement", "kind": "test_authoring", "size": "medium"}
 
 
-def run(text, job):
-    return rt.route_task(rt.explain(text, "probe.md"), dict(job))
+def run(text, job, lookup=None):      # W5-d2: ``lookup`` (default None = as before) is the placement
+    return rt.route_task(rt.explain(text, "probe.md", lookup=lookup), dict(job))
 
 
-def statuses(text):
-    return [(u.status, u.reasons) for u in rt.explain(text, "probe.md").extraction.units]
+def statuses(text, lookup=None):      # W5-d2: ``lookup`` (default None = as before) is the placement
+    return [(u.status, u.reasons) for u in rt.explain(text, "probe.md", lookup=lookup).extraction.units]
 
 
 # M1: "X is Y" between two names is another name or a predicate; it is never merged into one agent
@@ -32,9 +33,9 @@ M1_TEXT = "ハルが実装をやる。\nセキがレビューをやる。\nハ�
 
 
 def test_M1_two_agents_that_are_each_east_co_are_not_merged_and_nobody_is_routed():
-    assert [s for s, _ in statuses(M1_TEXT)] == ["MAPPED", "MAPPED", "AMBIGUOUS_RELATION", "AMBIGUOUS_RELATION"]
+    assert [s for s, _ in statuses(M1_TEXT, lookup=FakePlacement())] == ["MAPPED", "MAPPED", "AMBIGUOUS_RELATION", "AMBIGUOUS_RELATION"]
     for job in (REVIEW, IMPLEMENT):
-        got = run(M1_TEXT, job)
+        got = run(M1_TEXT, job, lookup=FakePlacement())
         assert got["decision"] == "undecided" and got["agent"] is None and got["undecided_reason"] == "ABSTAINED"
         assert got["abstention"]["type"] == "INCOMPLETE_READING" and got["abstention"]["by_status"]["AMBIGUOUS_RELATION"] == 2
         assert got["records"]["aliases"] == [] and [a["id"] for a in got["records"]["agents"]] == ["ハル", "セキ"]
@@ -90,7 +91,7 @@ def test_M3_a_past_sentence_is_not_an_assignment(text, job):
 
 
 def test_M3_the_non_past_sentence_of_the_same_form_is_still_routed():
-    got = run("ハルが実装をやる。\n", IMPLEMENT)
+    got = run("ハルが実装をやる。\n", IMPLEMENT, lookup=FakePlacement())
     assert (got["decision"], got["agent"]) == ("route", "ハル")
-    got = run("Rook reviews the code.\n", REVIEW)
+    got = run("Rook reviews the code.\n", REVIEW, lookup=FakePlacement())
     assert (got["decision"], got["agent"]) == ("route", "Rook")

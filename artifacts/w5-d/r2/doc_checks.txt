@@ -1,0 +1,19 @@
+== tests/observe/question/recompute_q.py --check
+
+exit 0
+== tests/routing_from_text/recompute.py --check
+OK
+exit 0
+== tests/event_cross/recompute.py --check
+recompute: OK (the document block equals the text rebuilt from artifacts/w3-b; 3 output examples equal their lines of events_all.jsonl)
+exit 0
+== tests/observe/recompute.py --check
+recompute --check: the block of the document equals the artifacts
+exit 0
+== tests/reading_soundness/recompute.py --check
+usage: recompute.py [-h] [--dir DIR]
+recompute.py: error: unrecognized arguments: --check
+exit 2
+== artifacts/w3-a3/render_w3a3.py --check
+OK
+exit 0

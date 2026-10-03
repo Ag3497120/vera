@@ -1,0 +1,8 @@
+def test_two_confirmed_records_with_the_same_claim_are_not_a_split(tmp_path, monkeypatch, capsys):
+    root, sid = _world(tmp_path, monkeypatch)
+    claim = _ask(tmp_path, capsys, "--human-present")[1]["confirm"]["claim"]    # W5-d (D1, amended): the sentence generated now
+    sov.append_basis_confirmation(root, sid, _payload(confirm_id="aaa", claim=claim))
+    sov.append_basis_confirmation(root, sid, _payload(confirm_id="bbb", claim=claim))
+    rc, out = _ask(tmp_path, capsys)
+    assert rc == 0 and out["verdict"] == "ANSWER" and out["text"] == claim
+

@@ -1,0 +1,11 @@
+# Frozen before the first execution against the implementation; expectations are registered in PREREG.md.
+9de3cfb3b1c1906535892e25de4d66cddbcf56a73b97759464de37833a65865e  attacks/W5-c/PREREG.md
+22604ba5fcd4bc9992bc4a37a780b63c38b13484a81fbc856d2f496ed586da97  attacks/W5-c/test_attack_confirmation_text_binding.py
+e444308c8ef26d499cb0d015492f7882287269f634007d0d30f9a861a6235b64  attacks/W5-c/test_attack_classification_binding.py
+# AMENDED after the first run: replaced the direct event insert with the real ask -> confirm yes flow; assertions and inputs are unchanged.
+28057cd179eaa8ea81a68ec9284c8410ac0c1f5437c74fa73619c95c21f275a0  attacks/W5-c/test_attack_confirmation_text_binding.py
+# AMENDED 2026-10-03 22:22 +0900: preregistered the round5 document-content binding probe before adding it.
+fbe6f4034ee32bfabf0990bffeb49b565a4f374fd2f8962d5fb4527a65eb16bd  attacks/W5-c/PREREG.md
+d64368f44d8df6c296e956aa55e1807aa1a71288003754a2f54a60f8bcb05ed8  attacks/W5-c/test_attack_classification_binding.py
+# AMENDED 2026-10-03 22:23 +0900: expanded the fake-document assertion message to retain the complete observed output; expectation and fixture unchanged.
+d088f101e0634dbe79a657a7505b9026d5722479168f766ef1e785cef487906c  attacks/W5-c/test_attack_classification_binding.py

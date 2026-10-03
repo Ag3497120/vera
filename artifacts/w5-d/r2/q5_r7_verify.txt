@@ -1,0 +1,17 @@
+== verify run1
+{"state": "OK", "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1", "content_sha256": "5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1", "counts": {"headwords": 1758845, "evidence": 1864292, "unit_kin": 618648, "unit_sample": 295849, "atoms": 7403, "ctx": 166701, "counters": 140, "meta": 4, "generated": 52270, "generated_frames": 4788}, "bad": []}
+== verify run2
+{"state": "OK", "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run2", "content_sha256": "5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1", "counts": {"headwords": 1758845, "evidence": 1864292, "unit_kin": 618648, "unit_sample": 295849, "atoms": 7403, "ctx": 166701, "counters": 140, "meta": 4, "generated": 52270, "generated_frames": 4788}, "bad": []}
+== round 1 (q5_determinism_r7.txt) for reference:
+== verify r7/run1
+{"state": "OK", "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1", "content_sha256": "5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1", "counts": {"headwords": 1758845, "evidence": 1864292, "unit_kin": 618648, "unit_sample": 295849, "atoms": 7403, "ctx": 166701, "counters": 140, "meta": 4, "generated": 52270, "generated_frames": 4788}, "bad": []}
+exit 0
+== verify r7/run2
+{"state": "OK", "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run2", "content_sha256": "5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1", "counts": {"headwords": 1758845, "evidence": 1864292, "unit_kin": 618648, "unit_sample": 295849, "atoms": 7403, "ctx": 166701, "counters": 140, "meta": 4, "generated": 52270, "generated_frames": 4788}, "bad": []}
+exit 0
+content_sha256 run1 == run2 == r6/run1: True 5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1
+generated_frames.outcomes run1: {"DISTRIBUTION_DISAGREES": 743, "FRAME_PARTICLES_NOT_COVERED": 54, "decided_direct_upgrade": 48, "decided_direct_upgrade_all_sources_codex": 30, "decided_direct_upgrade_with_jawiki": 18, "decided_estimated_generated": 4740, "frame_confirmed": 35, "frame_types_disagree": 13}
+outcomes run1 == run2: True
+r6 outcomes (no new keys): {"DISTRIBUTION_DISAGREES": 743, "FRAME_PARTICLES_NOT_COVERED": 54, "decided_direct_upgrade": 48, "decided_direct_upgrade_all_sources_codex": 30, "decided_direct_upgrade_with_jawiki": 18, "decided_estimated_generated": 4740}
+excluded_terms_total run1/run2/r6: 359 359 359
+frame_types_disagree: 13 frame_confirmed: 35

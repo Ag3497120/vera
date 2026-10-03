@@ -1,0 +1,10 @@
+K3/K4 probe (scratchpad copy of c875ed3 + the changed verantyx files):
+ K3: the test files are NOT changed; tests/conftest.py of the copy gets an autouse fixture that makes the cwd of each test hold a real memo.txt containing the sentences the tests give as the document's text (k3_probe_rewrite.diff).
+ K4: tests/test_basis_policy_w5c_r3.py of the copy gets the revision proposed in k4_proposal.diff (the confirmed claim is the sentence the result now carries); the real tree's file is NOT changed.
+
+result: tests/test_basis_policy_form.py + tests/test_basis_policy_w5c_r3.py: 167 passed, 0 failed.
+   => the 10 K3 tests (form 3 + w5c_r3 documents 7) and the 4 K4 tests all pass once the document really holds the sentence / the confirmed sentence is the present one.
+
+Also in the real tree: the two end-to-end tests that hand over a real memo.txt through main() pass unchanged:
+   tests/test_basis_policy_form.py::test_from_the_command_line_a_document_answer_carries_the_borrowed_form
+   tests/test_basis_policy_w5c_r3.py::test_r3_through_main_the_users_document_is_still_a_human_basis

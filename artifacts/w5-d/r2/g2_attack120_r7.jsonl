@@ -1,0 +1,120 @@
+{"id": "JA01-01", "status": "TIE", "class": "CORRECT", "fillers": [{"surface": "先生", "verdict": "AGREE"}, {"surface": "校長", "verdict": "AGREE"}], "excluded": [], "reasons": ["EXTENDING_CROSSES_NOT_MATCHED:1"], "unchecked_fillers": 0}
+{"id": "JA01-02", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "生徒", "verdict": "AGREE"}], "excluded": [], "reasons": [], "unchecked_fillers": 0}
+{"id": "JA01-03", "status": "TIE", "class": "UNSCORED", "fillers": [{"surface": "地図", "verdict": "AGREE"}, {"surface": "薬", "verdict": "AGREE"}], "excluded": [], "reasons": ["EXTENDING_CROSSES_NOT_MATCHED:1"], "unchecked_fillers": 0}
+{"id": "JA01-04", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "校長", "verdict": "AGREE"}], "excluded": [], "reasons": [], "unchecked_fillers": 0}
+{"id": "JA01-05", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "校長", "verdict": "AGREE"}], "excluded": [], "reasons": [], "unchecked_fillers": 0}
+{"id": "JA01-06", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "校長", "verdict": "AGREE"}], "excluded": [], "reasons": [], "unchecked_fillers": 0}
+{"id": "JA01-07", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "地図", "verdict": "AGREE"}], "excluded": [], "reasons": [], "unchecked_fillers": 0}
+{"id": "JA01-08", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA01-09", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA01-10", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA01-11", "status": "NO_ATTESTED_CELL", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES"], "unchecked_fillers": 0}
+{"id": "JA01-12", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA02-01", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "本", "verdict": "AGREE"}], "excluded": [{"surface": "新聞", "reason": "TYPE_UNCHECKED"}, {"surface": "毎日本", "reason": "TYPE_UNCHECKED"}], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "JA02-02", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA02-03", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA02-04", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "本", "verdict": "AGREE"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "JA02-05", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA02-06", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA02-07", "status": "TYPE_EXCLUDED_ALL", "class": "UNSCORED", "fillers": [], "excluded": [{"surface": "新聞", "reason": "HOLE_TYPE_NOT_CHECKED"}, {"surface": "本", "reason": "SAME_AS_RESTRICTOR"}, {"surface": "毎日本", "reason": "HOLE_TYPE_NOT_CHECKED"}], "reasons": ["EVERY_CANDIDATE_EXCLUDED_BY_THE_TYPE_OF_THE_HOLE", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "JA02-08", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "本", "verdict": "AGREE"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "JA02-09", "status": "POLAR_QUESTION", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["POLAR_QUESTION_NOT_OBSERVED"], "unchecked_fillers": 0}
+{"id": "JA02-10", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA02-11", "status": "NO_ATTESTED_CELL", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "JA02-12", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA03-01", "status": "TIE", "class": "UNSCORED", "fillers": [{"surface": "弁当", "verdict": "AGREE"}, {"surface": "料理", "verdict": "AGREE"}], "excluded": [], "reasons": ["EXTENDING_CROSSES_NOT_MATCHED:1", "UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "JA03-02", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA03-03", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA03-04", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "料理", "verdict": "AGREE"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "JA03-05", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "料理", "verdict": "AGREE"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "JA03-06", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA03-07", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA03-08", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA03-09", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "弁当", "verdict": "AGREE"}], "excluded": [{"surface": "料理", "reason": "SAME_AS_RESTRICTOR"}], "reasons": ["EXTENDING_CROSSES_NOT_MATCHED:1", "UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "JA03-10", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "料理", "verdict": "AGREE"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "JA03-11", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA03-12", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA04-01", "status": "TIE", "class": "UNSCORED", "fillers": [{"surface": "医師", "verdict": "AGREE"}, {"surface": "看護師", "verdict": "AGREE"}], "excluded": [], "reasons": ["EXTENDING_CROSSES_NOT_MATCHED:1"], "unchecked_fillers": 0}
+{"id": "JA04-02", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "患者", "verdict": "AGREE"}], "excluded": [], "reasons": [], "unchecked_fillers": 0}
+{"id": "JA04-03", "status": "TIE", "class": "UNSCORED", "fillers": [{"surface": "手紙", "verdict": "AGREE"}, {"surface": "薬", "verdict": "AGREE"}], "excluded": [], "reasons": ["EXTENDING_CROSSES_NOT_MATCHED:1"], "unchecked_fillers": 0}
+{"id": "JA04-04", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "医師", "verdict": "AGREE"}], "excluded": [], "reasons": [], "unchecked_fillers": 0}
+{"id": "JA04-05", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "医師", "verdict": "AGREE"}], "excluded": [], "reasons": [], "unchecked_fillers": 0}
+{"id": "JA04-06", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "医師", "verdict": "AGREE"}], "excluded": [], "reasons": [], "unchecked_fillers": 0}
+{"id": "JA04-07", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA04-08", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA04-09", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA04-10", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "薬", "verdict": "AGREE"}], "excluded": [], "reasons": [], "unchecked_fillers": 0}
+{"id": "JA04-11", "status": "NO_ATTESTED_CELL", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES"], "unchecked_fillers": 0}
+{"id": "JA04-12", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA05-01", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "生徒", "verdict": "AGREE"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:4"], "unchecked_fillers": 0}
+{"id": "JA05-02", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "太郎", "verdict": "AGREE"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:4"], "unchecked_fillers": 0}
+{"id": "JA05-03", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA05-04", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA05-05", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA05-06", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA05-07", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA05-08", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA05-09", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA05-10", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA05-11", "status": "TYPE_EXCLUDED_ALL", "class": "UNSCORED", "fillers": [], "excluded": [{"surface": "生徒", "reason": "SAME_AS_RESTRICTOR"}], "reasons": ["EVERY_CANDIDATE_EXCLUDED_BY_THE_TYPE_OF_THE_HOLE", "UNREAD_SENTENCES:4"], "unchecked_fillers": 0}
+{"id": "JA05-12", "status": "NO_ATTESTED_CELL", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:4"], "unchecked_fillers": 0}
+{"id": "JA06-01", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "校長", "verdict": "AGREE"}], "excluded": [], "reasons": ["EXTENDING_CROSSES_NOT_MATCHED:1"], "unchecked_fillers": 0}
+{"id": "JA06-02", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "地図", "verdict": "AGREE"}], "excluded": [], "reasons": ["EXTENDING_CROSSES_NOT_MATCHED:1"], "unchecked_fillers": 0}
+{"id": "JA06-03", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "校長", "verdict": "AGREE"}], "excluded": [], "reasons": ["EXTENDING_CROSSES_NOT_MATCHED:1"], "unchecked_fillers": 0}
+{"id": "JA06-04", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA06-05", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "本", "verdict": "AGREE"}], "excluded": [], "reasons": [], "unchecked_fillers": 0}
+{"id": "JA06-06", "status": "POLAR_QUESTION", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["POLAR_QUESTION_NOT_OBSERVED"], "unchecked_fillers": 0}
+{"id": "JA06-07", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "生徒", "verdict": "AGREE"}], "excluded": [], "reasons": [], "unchecked_fillers": 0}
+{"id": "JA06-08", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA06-09", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "校長", "verdict": "AGREE"}], "excluded": [], "reasons": ["EXTENDING_CROSSES_NOT_MATCHED:1"], "unchecked_fillers": 0}
+{"id": "JA06-10", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "地図", "verdict": "AGREE"}], "excluded": [], "reasons": ["EXTENDING_CROSSES_NOT_MATCHED:1"], "unchecked_fillers": 0}
+{"id": "JA06-11", "status": "POLAR_QUESTION", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["POLAR_QUESTION_NOT_OBSERVED"], "unchecked_fillers": 0}
+{"id": "JA06-12", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA07-01", "status": "NO_TYPED_CANDIDATE", "class": "UNSCORED", "fillers": [], "excluded": [{"surface": "花子", "reason": "TYPE_UNCHECKED"}], "reasons": ["NO_TYPED_CANDIDATE"], "unchecked_fillers": 0}
+{"id": "JA07-02", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "先生", "verdict": "AGREE"}], "excluded": [], "reasons": [], "unchecked_fillers": 0}
+{"id": "JA07-03", "status": "NO_ATTESTED_CELL", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "EXTENDING_CROSSES_NOT_MATCHED:1"], "unchecked_fillers": 0}
+{"id": "JA07-04", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "生徒", "verdict": "AGREE"}], "excluded": [], "reasons": [], "unchecked_fillers": 0}
+{"id": "JA07-05", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA07-06", "status": "FILLED", "class": "UNSCORED", "fillers": [{"surface": "薬", "verdict": "AGREE"}], "excluded": [], "reasons": [], "unchecked_fillers": 0}
+{"id": "JA07-07", "status": "NO_TYPED_CANDIDATE", "class": "UNSCORED", "fillers": [], "excluded": [{"surface": "花子", "reason": "TYPE_UNCHECKED"}], "reasons": ["NO_TYPED_CANDIDATE"], "unchecked_fillers": 0}
+{"id": "JA07-08", "status": "NO_ATTESTED_CELL", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES"], "unchecked_fillers": 0}
+{"id": "JA07-09", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA07-10", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA07-11", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "JA07-12", "status": "NO_ATTESTED_CELL", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "EXTENDING_CROSSES_NOT_MATCHED:1"], "unchecked_fillers": 0}
+{"id": "EN08-01", "status": "NO_TYPED_CANDIDATE", "class": "ABSTAINED", "fillers": [], "excluded": [{"surface": "letter", "reason": "TYPE_UNCHECKED"}, {"surface": "note", "reason": "TYPE_UNCHECKED"}], "reasons": ["NO_TYPED_CANDIDATE", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "EN08-02", "status": "NO_TYPED_CANDIDATE", "class": "UNSCORED", "fillers": [], "excluded": [{"surface": "letter", "reason": "TYPE_UNCHECKED"}, {"surface": "note", "reason": "TYPE_UNCHECKED"}], "reasons": ["NO_TYPED_CANDIDATE", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "EN08-03", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "EN08-04", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "EN08-05", "status": "HOLE_TYPE_UNDETERMINED", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "EN08-06", "status": "NO_TYPED_CANDIDATE", "class": "UNSCORED", "fillers": [], "excluded": [{"surface": "girl", "reason": "TYPE_UNCHECKED"}], "reasons": ["NO_TYPED_CANDIDATE", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "EN08-07", "status": "NO_TYPED_CANDIDATE", "class": "UNSCORED", "fillers": [], "excluded": [{"surface": "letter", "reason": "TYPE_UNCHECKED"}], "reasons": ["NO_TYPED_CANDIDATE", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "EN08-08", "status": "POLAR_QUESTION", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["POLAR_QUESTION_NOT_OBSERVED"], "unchecked_fillers": 0}
+{"id": "EN08-09", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "EN08-10", "status": "NO_TYPED_CANDIDATE", "class": "UNSCORED", "fillers": [], "excluded": [{"surface": "letter", "reason": "TYPE_UNCHECKED"}], "reasons": ["NO_TYPED_CANDIDATE", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "EN08-11", "status": "NO_ATTESTED_CELL", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "EXTENDING_CROSSES_NOT_MATCHED:1", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "EN08-12", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "EN09-01", "status": "NO_TYPED_CANDIDATE", "class": "UNSCORED", "fillers": [], "excluded": [{"surface": "patient", "reason": "TYPE_UNCHECKED"}, {"surface": "student", "reason": "TYPE_UNCHECKED"}], "reasons": ["NO_TYPED_CANDIDATE", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "EN09-02", "status": "NO_ATTESTED_CELL", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "EN09-03", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "EN09-04", "status": "NO_TYPED_CANDIDATE", "class": "UNSCORED", "fillers": [], "excluded": [{"surface": "nurse", "reason": "TYPE_UNCHECKED"}], "reasons": ["NO_TYPED_CANDIDATE", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "EN09-05", "status": "POLAR_QUESTION", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["POLAR_QUESTION_NOT_OBSERVED"], "unchecked_fillers": 0}
+{"id": "EN09-06", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "EN09-07", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "EN09-08", "status": "HOLE_TYPE_UNDETERMINED", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "EN09-09", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "EN09-10", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "EN09-11", "status": "NO_TYPED_CANDIDATE", "class": "UNSCORED", "fillers": [], "excluded": [{"surface": "nurse", "reason": "TYPE_UNCHECKED"}], "reasons": ["NO_TYPED_CANDIDATE", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "EN09-12", "status": "NO_TYPED_CANDIDATE", "class": "UNSCORED", "fillers": [], "excluded": [{"surface": "patient", "reason": "TYPE_UNCHECKED"}, {"surface": "student", "reason": "TYPE_UNCHECKED"}], "reasons": ["NO_TYPED_CANDIDATE", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "EN10-01", "status": "HOLE_TYPE_UNDETERMINED", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "EN10-02", "status": "NO_ATTESTED_CELL", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:4"], "unchecked_fillers": 0}
+{"id": "EN10-03", "status": "HOLE_TYPE_UNDETERMINED", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "EN10-04", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "EN10-05", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "EN10-06", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "EN10-07", "status": "POLAR_QUESTION", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["POLAR_QUESTION_NOT_OBSERVED"], "unchecked_fillers": 0}
+{"id": "EN10-08", "status": "NO_ATTESTED_CELL", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:4"], "unchecked_fillers": 0}
+{"id": "EN10-09", "status": "NO_ATTESTED_CELL", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:4"], "unchecked_fillers": 0}
+{"id": "EN10-10", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "EN10-11", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "EN10-12", "status": "QUESTION_NOT_READ", "class": "UNSCORED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}

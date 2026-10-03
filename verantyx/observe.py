@@ -21,6 +21,9 @@ Nothing in this module is an ANSWER: an observed sentence is `OBSERVED_OCCUPIED`
 answer to a question (an answer needs a record as evidence, which is outside this ticket).
 Only the path of an anchor of kind `question` returns an `answer` (W3-c2): the fillers of the hole of a question, each with the ids of the structure's
 own sentences that attest it. The anchor's reading and the index are never evidence (docs/OBSERVATION.md, 質問の観測).
+A filler is a candidate only when the hole's type was checked against a placement and agrees (W5-d): one that cannot be checked is TYPE_UNCHECKED, and with
+nothing else left the answer is NO_TYPED_CANDIDATE (docs/OBSERVATION.md, W5-d).
+Without `--placement`, a question reads the coarse placement of VERA_PLACEMENT (`event_cross.default_lookup`; unset or empty = no placement) to check that type (W5-d2).
 """
 from __future__ import annotations
 
@@ -1192,8 +1195,9 @@ def run_entry(*, anchor_text: Optional[str] = None, anchor_record: Optional[str]
 # ---------------------------------------------------------------------------------------------------------------------------------
 ANSWER_SCHEMA = 'verantyx.question_answer/1'
 ANSWER_STATUSES: Tuple[str, ...] = ('FILLED', 'TIE', 'NO_ATTESTED_CELL', 'TYPE_EXCLUDED_ALL', 'HOLE_TYPE_UNDETERMINED', 'POLAR_QUESTION',
-                                    'DIRECTION_NOT_APPLIED', 'QUESTION_NOT_READ', 'ANCHOR_CROSS_INDEX_OUT_OF_RANGE', 'INCOMPLETE_BY_EXTENSION')
-HOLE_EXCLUSION_REASONS: Tuple[str, ...] = ('HOLE_TYPE_DISAGREE', 'HOLE_TYPE_NOT_CHECKED', 'SAME_AS_RESTRICTOR')
+                                    'DIRECTION_NOT_APPLIED', 'QUESTION_NOT_READ', 'ANCHOR_CROSS_INDEX_OUT_OF_RANGE', 'INCOMPLETE_BY_EXTENSION',
+                                    'NO_TYPED_CANDIDATE')
+HOLE_EXCLUSION_REASONS: Tuple[str, ...] = ('HOLE_TYPE_DISAGREE', 'HOLE_TYPE_NOT_CHECKED', 'SAME_AS_RESTRICTOR', 'TYPE_UNCHECKED')
 
 
 def _nfkc(surface: str) -> str:
@@ -1247,7 +1251,9 @@ def _valid_place(lookup: Any, word: str) -> Optional[EC.PlaceResult]:
 
 def _hole_type_check(place: Any, expected: Sequence[str]) -> Dict[str, Any]:
     """The rules 3-7 of docs/EVENT_CROSS.md (型一致の決め方), in that order, against the types the HOLE expects (rules 1 and 2 do not apply: a filler of an
-    ARM_TIE arm is a candidate of its own, and the hole's expected types are not the role table's)."""
+    ARM_TIE arm is a candidate of its own, and the hole's expected types are not the role table's).
+    W5-d: a MULTIPLE answer whose every candidate type is among the hole's types is an AGREE (reason MULTIPLE_ALL_IN_HOLE: whichever of its types the word has,
+    the hole accepts it); one type outside is still NOT_CHECKED. Only the question's path calls this function."""
     want = tuple(sorted(expected))
     if not isinstance(place, EC.PlaceResult) or place.invariant_problems():
         return {'verdict': 'NOT_CHECKED', 'reason': 'LOOKUP_RESULT_INVALID', 'expected': list(want), 'observed': None}
@@ -1256,6 +1262,8 @@ def _hole_type_check(place: Any, expected: Sequence[str]) -> Dict[str, Any]:
     if place.origin == 'estimated':
         return {'verdict': 'NOT_CHECKED', 'reason': 'ESTIMATED_NEAR' if place.estimate_basis == 'proximity' else 'ESTIMATED_GENERATED',
                 'expected': list(want), 'observed': list(place.types)}
+    if place.state == 'MULTIPLE' and place.types and all(t in want for t in place.types):
+        return {'verdict': 'AGREE', 'reason': 'MULTIPLE_ALL_IN_HOLE', 'expected': list(want), 'observed': list(place.types)}
     if place.state == 'MULTIPLE':
         return {'verdict': 'NOT_CHECKED', 'reason': 'MULTIPLE', 'expected': list(want), 'observed': list(place.types)}
     return {'verdict': 'AGREE' if place.types[0] in want else 'DISAGREE', 'reason': None, 'expected': list(want), 'observed': list(place.types)}
@@ -1275,7 +1283,13 @@ def _question_answer(status: str, question: Mapping[str, Any], cross: Optional[E
 
 def _observe_question(viewpoint: Viewpoint, structure: Structure, lookup: Any, neighbors: Any, ledger: Any) -> Optional[QuestionObservation]:
     """The observation of an anchor that is a QUESTION (kind `question`, read by `semantic_read.read_question` to a cross with a hole). None when the anchor
-    is not one: a seed, a record, or a text that is not a question (the reader says so by returning no `question` key) go the way they always went."""
+    is not one: a seed, a record, or a text that is not a question (the reader says so by returning no `question` key) go the way they always went.
+    W5-d: a filler is a candidate only when the hole's type was CHECKED and agrees (`_hole_type_check` AGREE: a direct answer, or a MULTIPLE all of whose types fit the
+    hole); one whose type cannot be checked is excluded as TYPE_UNCHECKED, and when nothing else is left the status is NO_TYPED_CANDIDATE (an abstention: not
+    TYPE_EXCLUDED_ALL, which says the types were checked and did not fit).
+    W5-d2: without a placement of the caller's (`--placement` / an explicit lookup) the placement is `EC.default_lookup()` = the coarse placement of VERA_PLACEMENT, the
+    one the event cross uses (nothing set: the stub, as before). When that lookup is not the one the structure was read with, a filler's type is checked by asking it
+    about the filler's surface, and the output names it (`structure.placement`)."""
     a = viewpoint.anchor
     if not (isinstance(a, AnchorText) and a.kind == 'question'): return None
     if a.reading is not None:
@@ -1289,11 +1303,14 @@ def _observe_question(viewpoint: Viewpoint, structure: Structure, lookup: Any, n
             return None
         if 'question' not in read_out: return None
     lookup = lookup if lookup is not None else structure.lookup
+    if isinstance(lookup, EC.StubLookup): lookup = EC.default_lookup()      # W5-d2: no `--placement`: the coarse placement of VERA_PLACEMENT (a new StubLookup when it is empty or unset)
+    relook = not isinstance(lookup, EC.StubLookup) and lookup is not structure.lookup
     state = ledger if ledger is not None else viewpoint.state
     state_info = _state_info(state)
     vp_json = viewpoint_to_dict(viewpoint, state_info)
     counts = _new_counts()
     info = structure.info()
+    if relook: info = dict(info, placement=_source_id(lookup))              # only this output's copy: `structure.info()` itself is shared with the declarative path
     trace = SAL.rank([], state).trace
     question = read_out['question']
     crossed_read = [r for r in structure.readings if r.status == 'CROSSED']
@@ -1366,11 +1383,12 @@ def _observe_question(viewpoint: Viewpoint, structure: Structure, lookup: Any, n
     kept: List[Dict[str, Any]] = []
     dropped: List[Dict[str, Any]] = []
     def judge(f: EC.Filler) -> Tuple[Dict[str, Any], Optional[str]]:
-        check = _hole_type_check(f.place, expected)
+        check = _hole_type_check(_valid_place(lookup, f.surface) if relook else f.place, expected)     # W5-d2: relook = the lookup is not the one the structure was read with: ask it about the filler
         reason: Optional[str] = None
         if restrictor and _nfkc(f.surface) == _nfkc(restrictor): reason = 'SAME_AS_RESTRICTOR'
         elif check['verdict'] == 'DISAGREE': reason = 'HOLE_TYPE_DISAGREE'
         elif strict and check['verdict'] != 'AGREE': reason = 'HOLE_TYPE_NOT_CHECKED'
+        elif check['verdict'] != 'AGREE': reason = 'TYPE_UNCHECKED'    # W5-d: a filler whose type cannot be checked is not a candidate (it stays in `excluded`)
         return check, reason
 
     for r, i, d in sorted(matched, key=lambda t: (t[0].id, t[1])):
@@ -1400,6 +1418,10 @@ def _observe_question(viewpoint: Viewpoint, structure: Structure, lookup: Any, n
         return out
 
     fillers, excluded = group(kept, False), group(dropped, True)
+    if not kept and any(it['reason'] == 'TYPE_UNCHECKED' for it in dropped):
+        # W5-d: "no candidate whose type was checked" is not "every candidate's type is wrong": something could not be checked (no placement, UNPLACED, UNKNOWN, an estimate)
+        return finish('NO_TYPED_CANDIDATE', NoMoveLicensed({'FILL_HOLE:NO_TYPED_CANDIDATE': 1}), qcross, fillers, excluded,
+                      reasons=['NO_TYPED_CANDIDATE'] + extending_reasons + unread_reasons)
     if not kept:
         reasons_count: Dict[str, int] = {}
         for it in dropped: reasons_count['FILL_HOLE:candidate:%s' % it['reason']] = reasons_count.get('FILL_HOLE:candidate:%s' % it['reason'], 0) + 1

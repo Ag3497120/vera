@@ -1,0 +1,45 @@
+=== 並列の名前 部分 配置
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "並列の名前 部分 配置",
+  "searched": 680,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 72,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+=== 質問 粗い配置 VERA_PLACEMENT
+{
+  "verdict": "ANSWER",
+  "query": "質問 粗い配置 VERA_PLACEMENT",
+  "searched": 680,
+  "hits": [
+    {
+      "kind": "prereg",
+      "name": "PREREG",
+      "about": "W3-c2 attack preregistration",
+      "where": "attacks/W3-c2/PREREG.md"
+    }
+  ],
+  "total_hits": 1
+}
+=== recompute 例 配置
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "recompute 例 配置",
+  "searched": 680,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 72,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

@@ -1,0 +1,185 @@
+{"id": "Q001", "status": "TIE", "class": "CORRECT", "fillers": [{"surface": "先生", "verdict": "NOT_CHECKED"}, {"surface": "校長", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 2}
+{"id": "Q002", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q003", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q004", "status": "NO_ATTESTED_CELL", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "Q005", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "生徒", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q006", "status": "NO_ATTESTED_CELL", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "Q007", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "地図", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q008", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "手紙", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q009", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "地図", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q010", "status": "NO_ATTESTED_CELL", "class": "FALSE_NONE", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "EXTENDING_CROSSES_NOT_MATCHED:1", "UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "Q011", "status": "NO_ATTESTED_CELL", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "Q012", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "本", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q013", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q014", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q015", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q016", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q017", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q018", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q019", "status": "POLAR_QUESTION", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["POLAR_QUESTION_NOT_OBSERVED"], "unchecked_fillers": 0}
+{"id": "Q020", "status": "HOLE_TYPE_UNDETERMINED", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "Q021", "status": "HOLE_TYPE_UNDETERMINED", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "Q022", "status": "QUESTION_NOT_READ", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q023", "status": "QUESTION_NOT_READ", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q024", "status": "QUESTION_NOT_READ", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q025", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "駅員", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:3"], "unchecked_fillers": 1}
+{"id": "Q026", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "駅員", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:3"], "unchecked_fillers": 1}
+{"id": "Q027", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "運転手", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:3"], "unchecked_fillers": 1}
+{"id": "Q028", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "社長", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:3"], "unchecked_fillers": 1}
+{"id": "Q029", "status": "TIE", "class": "CORRECT", "fillers": [{"surface": "カメラ", "verdict": "NOT_CHECKED"}, {"surface": "車", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:3"], "unchecked_fillers": 2}
+{"id": "Q030", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "切符", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:3"], "unchecked_fillers": 1}
+{"id": "Q031", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "切符", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:3"], "unchecked_fillers": 1}
+{"id": "Q032", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q033", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q034", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q035", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q036", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q037", "status": "HOLE_TYPE_UNDETERMINED", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "Q038", "status": "HOLE_TYPE_UNDETERMINED", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "Q039", "status": "HOLE_TYPE_UNDETERMINED", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "Q040", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q041", "status": "POLAR_QUESTION", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["POLAR_QUESTION_NOT_OBSERVED"], "unchecked_fillers": 0}
+{"id": "Q042", "status": "QUESTION_NOT_READ", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q043", "status": "TIE", "class": "CORRECT", "fillers": [{"surface": "A社", "verdict": "NOT_CHECKED"}, {"surface": "Ａ社", "verdict": "NOT_CHECKED"}, {"surface": "Ｘ", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 3}
+{"id": "Q044", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "弟", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 1}
+{"id": "Q045", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "兄", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 1}
+{"id": "Q046", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "PC", "verdict": "NOT_CHECKED"}, {"surface": "ＰＣ", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 2}
+{"id": "Q047", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "地図", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 1}
+{"id": "Q048", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "本", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 1}
+{"id": "Q049", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q050", "status": "HOLE_TYPE_UNDETERMINED", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "Q051", "status": "NO_ATTESTED_CELL", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "Q052", "status": "QUESTION_NOT_READ", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q053", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q054", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q055", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q056", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q057", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q058", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "絵", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["EXTENDING_CROSSES_NOT_MATCHED:1", "UNREAD_SENTENCES:3"], "unchecked_fillers": 1}
+{"id": "Q059", "status": "NO_ATTESTED_CELL", "class": "FALSE_NONE", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "EXTENDING_CROSSES_NOT_MATCHED:1", "UNREAD_SENTENCES:3"], "unchecked_fillers": 0}
+{"id": "Q060", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "馬", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:3"], "unchecked_fillers": 1}
+{"id": "Q061", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "歌", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:3"], "unchecked_fillers": 1}
+{"id": "Q062", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "港", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:3"], "unchecked_fillers": 1}
+{"id": "Q063", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q064", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q065", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q066", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q067", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q068", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q069", "status": "QUESTION_NOT_READ", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q070", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q071", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q072", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q073", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q074", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q075", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q076", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q077", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q078", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q079", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "本", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 1}
+{"id": "Q080", "status": "INCOMPLETE_BY_EXTENSION", "class": "ABSTAINED", "fillers": [{"surface": "弁当", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["EXTENDING_CROSS_NAMES_ANOTHER_FILLER:1", "EXTENDING_CROSSES_NOT_MATCHED:1", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "Q081", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "料理", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 1}
+{"id": "Q082", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "服", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 1}
+{"id": "Q083", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "新聞", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 1}
+{"id": "Q084", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q085", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "看護師", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 1}
+{"id": "Q086", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q087", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q088", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q089", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q090", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q091", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q092", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q093", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q094", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "会社", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q095", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "病院", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q096", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "駅", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q097", "status": "NO_ATTESTED_CELL", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "Q098", "status": "NO_ATTESTED_CELL", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "Q099", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "社長", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q100", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "店員", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q101", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "店員", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q102", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q103", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "袋", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q104", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "手紙", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q105", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "薬", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q106", "status": "HOLE_TYPE_UNDETERMINED", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "Q107", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q108", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q109", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q110", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q111", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q112", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q113", "status": "QUESTION_NOT_READ", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q114", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q115", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "兄", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q116", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "弟", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q117", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "医者", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q118", "status": "NO_ATTESTED_CELL", "class": "FALSE_NONE", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "EXTENDING_CROSSES_NOT_MATCHED:2", "UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "Q119", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q120", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "本", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q121", "status": "NO_ATTESTED_CELL", "class": "FALSE_NONE", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "EXTENDING_CROSSES_NOT_MATCHED:2", "UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "Q122", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "鉛筆", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q123", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "手紙", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q124", "status": "NO_ATTESTED_CELL", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "Q125", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "薬", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q126", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q127", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q128", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q129", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q130", "status": "HOLE_TYPE_UNDETERMINED", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "Q131", "status": "HOLE_TYPE_UNDETERMINED", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "Q132", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q133", "status": "POLAR_QUESTION", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["POLAR_QUESTION_NOT_OBSERVED"], "unchecked_fillers": 0}
+{"id": "Q134", "status": "POLAR_QUESTION", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["POLAR_QUESTION_NOT_OBSERVED"], "unchecked_fillers": 0}
+{"id": "Q135", "status": "TIE", "class": "CORRECT", "fillers": [{"surface": "principal", "verdict": "NOT_CHECKED"}, {"surface": "teacher", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 2}
+{"id": "Q136", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "X", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 1}
+{"id": "Q137", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q138", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "farmer", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 1}
+{"id": "Q139", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "clerk", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 1}
+{"id": "Q140", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "horse", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 1}
+{"id": "Q141", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "letter", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 1}
+{"id": "Q142", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "newspaper", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:1"], "unchecked_fillers": 1}
+{"id": "Q143", "status": "NO_ATTESTED_CELL", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:1"], "unchecked_fillers": 0}
+{"id": "Q144", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q145", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q146", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q147", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q148", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q149", "status": "HOLE_TYPE_UNDETERMINED", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "Q150", "status": "HOLE_TYPE_UNDETERMINED", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "Q151", "status": "POLAR_QUESTION", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["POLAR_QUESTION_NOT_OBSERVED"], "unchecked_fillers": 0}
+{"id": "Q152", "status": "POLAR_QUESTION", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["POLAR_QUESTION_NOT_OBSERVED"], "unchecked_fillers": 0}
+{"id": "Q153", "status": "QUESTION_NOT_READ", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q154", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "mayor", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q155", "status": "NO_ATTESTED_CELL", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "Q156", "status": "NO_ATTESTED_CELL", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "Q157", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "student", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q158", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "nurse", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q159", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q160", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "plane", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q161", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "wall", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q162", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "letter", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q163", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "map", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q164", "status": "NO_ATTESTED_CELL", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["NO_MATCHING_CROSS_IN_READ_SENTENCES", "UNREAD_SENTENCES:2"], "unchecked_fillers": 0}
+{"id": "Q165", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q166", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q167", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q168", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q169", "status": "POLAR_QUESTION", "class": "CORRECT", "fillers": [], "excluded": [], "reasons": ["POLAR_QUESTION_NOT_OBSERVED"], "unchecked_fillers": 0}
+{"id": "Q170", "status": "HOLE_TYPE_UNDETERMINED", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "Q171", "status": "TIE", "class": "CORRECT", "fillers": [{"surface": "principal", "verdict": "NOT_CHECKED"}, {"surface": "student", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 2}
+{"id": "Q172", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q173", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "newspaper", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q174", "status": "FILLED", "class": "CORRECT", "fillers": [{"surface": "letter", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["UNREAD_SENTENCES:2"], "unchecked_fillers": 1}
+{"id": "Q175", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q176", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q177", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q178", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q179", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q180", "status": "HOLE_TYPE_UNDETERMINED", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["RESTRICTOR_TYPE_NOT_DECIDED"], "unchecked_fillers": 0}
+{"id": "Q181", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q182", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q183", "status": "QUESTION_NOT_READ", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["READER_ABSTAINED"], "unchecked_fillers": 0}
+{"id": "Q184", "status": "DIRECTION_NOT_APPLIED", "class": "ABSTAINED", "fillers": [], "excluded": [], "reasons": ["DIRECTION_NOT_APPLIED"], "unchecked_fillers": 0}
+{"id": "Q185", "status": "INCOMPLETE_BY_EXTENSION", "class": "ABSTAINED", "fillers": [{"surface": "校長", "verdict": "NOT_CHECKED"}], "excluded": [], "reasons": ["EXTENDING_CROSS_NAMES_ANOTHER_FILLER:1", "EXTENDING_CROSSES_NOT_MATCHED:1", "UNREAD_SENTENCES:2"], "unchecked_fillers": 0}

@@ -1,0 +1,120 @@
+{"id": "JA01-01", "doc": "JA01", "lang": "ja", "text": "誰が生徒に地図を渡した？", "attack_axis": "agent/tie", "truth": {"kind": "SPLIT", "fillers": ["校長", "先生"], "evidence": ["JA01-S01", "JA01-S02"]}}
+{"id": "JA01-02", "doc": "JA01", "lang": "ja", "text": "誰が校長に地図を渡した？", "attack_axis": "agent/role-swap"}
+{"id": "JA01-03", "doc": "JA01", "lang": "ja", "text": "校長は生徒に何を渡した？", "attack_axis": "patient/tie"}
+{"id": "JA01-04", "doc": "JA01", "lang": "ja", "text": "誰が生徒に薬を渡した？", "attack_axis": "patient-filter"}
+{"id": "JA01-05", "doc": "JA01", "lang": "ja", "text": "誰が生徒に地図を渡さなかった？", "attack_axis": "polarity", "truth": {"kind": "ONE", "fillers": ["校長"], "evidence": ["JA01-S04"]}}
+{"id": "JA01-06", "doc": "JA01", "lang": "ja", "text": "誰が駅で生徒に地図を渡した？", "attack_axis": "place"}
+{"id": "JA01-07", "doc": "JA01", "lang": "ja", "text": "校長は駅で生徒に何を渡した？", "attack_axis": "place/patient"}
+{"id": "JA01-08", "doc": "JA01", "lang": "ja", "text": "校長は誰に地図を渡した？", "attack_axis": "recipient-hole"}
+{"id": "JA01-09", "doc": "JA01", "lang": "ja", "text": "昨日誰が生徒に地図を渡した？", "attack_axis": "time-adverb"}
+{"id": "JA01-10", "doc": "JA01", "lang": "ja", "text": "何人が生徒に地図を渡した？", "attack_axis": "quantity"}
+{"id": "JA01-11", "doc": "JA01", "lang": "ja", "text": "誰が生徒に手紙を渡した？", "attack_axis": "no-match"}
+{"id": "JA01-12", "doc": "JA01", "lang": "ja", "text": "誰が何を生徒に渡した？", "attack_axis": "multiple-wh"}
+{"id": "JA02-01", "doc": "JA02", "lang": "ja", "text": "花子は何を読んだ？", "attack_axis": "patient/tie"}
+{"id": "JA02-02", "doc": "JA02", "lang": "ja", "text": "誰が本を読んだ？", "attack_axis": "agent"}
+{"id": "JA02-03", "doc": "JA02", "lang": "ja", "text": "誰が本を読まなかった？", "attack_axis": "polarity"}
+{"id": "JA02-04", "doc": "JA02", "lang": "ja", "text": "花子は何を読まなかった？", "attack_axis": "polarity/patient"}
+{"id": "JA02-05", "doc": "JA02", "lang": "ja", "text": "昨日花子は何を読んだ？", "attack_axis": "time-adverb"}
+{"id": "JA02-06", "doc": "JA02", "lang": "ja", "text": "毎日花子は何を読んだ？", "attack_axis": "frequency"}
+{"id": "JA02-07", "doc": "JA02", "lang": "ja", "text": "花子はどの本を読んだ？", "attack_axis": "which-n"}
+{"id": "JA02-08", "doc": "JA02", "lang": "ja", "text": "先生は何を読んだ？", "attack_axis": "patient"}
+{"id": "JA02-09", "doc": "JA02", "lang": "ja", "text": "花子は新聞を読んだ？", "attack_axis": "polar"}
+{"id": "JA02-10", "doc": "JA02", "lang": "ja", "text": "誰が新聞を読んだ？", "attack_axis": "agent/patient-swap"}
+{"id": "JA02-11", "doc": "JA02", "lang": "ja", "text": "花子は何を読んでいる？", "attack_axis": "aspect"}
+{"id": "JA02-12", "doc": "JA02", "lang": "ja", "text": "誰が本を読み始めた？", "attack_axis": "aspect/agent"}
+{"id": "JA03-01", "doc": "JA03", "lang": "ja", "text": "母は何を作った？", "attack_axis": "patient/tie"}
+{"id": "JA03-02", "doc": "JA03", "lang": "ja", "text": "誰が料理を作った？", "attack_axis": "agent/tie"}
+{"id": "JA03-03", "doc": "JA03", "lang": "ja", "text": "誰が弁当を作った？", "attack_axis": "agent"}
+{"id": "JA03-04", "doc": "JA03", "lang": "ja", "text": "母は何を作らなかった？", "attack_axis": "polarity"}
+{"id": "JA03-05", "doc": "JA03", "lang": "ja", "text": "母は台所で何を作った？", "attack_axis": "place"}
+{"id": "JA03-06", "doc": "JA03", "lang": "ja", "text": "昨日母は何を作った？", "attack_axis": "time-adverb"}
+{"id": "JA03-07", "doc": "JA03", "lang": "ja", "text": "母は三つの料理を作った？", "attack_axis": "quantity/polar"}
+{"id": "JA03-08", "doc": "JA03", "lang": "ja", "text": "母は何個作った？", "attack_axis": "quantity-wh"}
+{"id": "JA03-09", "doc": "JA03", "lang": "ja", "text": "母はどの料理を作った？", "attack_axis": "which-n"}
+{"id": "JA03-10", "doc": "JA03", "lang": "ja", "text": "父は何を作った？", "attack_axis": "patient"}
+{"id": "JA03-11", "doc": "JA03", "lang": "ja", "text": "母は何を作り始めた？", "attack_axis": "aspect"}
+{"id": "JA03-12", "doc": "JA03", "lang": "ja", "text": "誰が料理を作らなかった？", "attack_axis": "polarity/agent"}
+{"id": "JA04-01", "doc": "JA04", "lang": "ja", "text": "誰が患者に薬を送った？", "attack_axis": "agent/tie"}
+{"id": "JA04-02", "doc": "JA04", "lang": "ja", "text": "誰が医師に薬を送った？", "attack_axis": "role-swap"}
+{"id": "JA04-03", "doc": "JA04", "lang": "ja", "text": "医師は患者に何を送った？", "attack_axis": "patient/tie"}
+{"id": "JA04-04", "doc": "JA04", "lang": "ja", "text": "誰が患者に手紙を送った？", "attack_axis": "patient-filter"}
+{"id": "JA04-05", "doc": "JA04", "lang": "ja", "text": "誰が患者に薬を送らなかった？", "attack_axis": "polarity"}
+{"id": "JA04-06", "doc": "JA04", "lang": "ja", "text": "誰が病院で患者に薬を送った？", "attack_axis": "place"}
+{"id": "JA04-07", "doc": "JA04", "lang": "ja", "text": "医師はどこで患者に薬を送った？", "attack_axis": "place-hole"}
+{"id": "JA04-08", "doc": "JA04", "lang": "ja", "text": "医師は誰に薬を送った？", "attack_axis": "recipient-hole"}
+{"id": "JA04-09", "doc": "JA04", "lang": "ja", "text": "誰が昨日患者に薬を送った？", "attack_axis": "time-adverb"}
+{"id": "JA04-10", "doc": "JA04", "lang": "ja", "text": "看護師は患者に何を送る？", "attack_axis": "tense"}
+{"id": "JA04-11", "doc": "JA04", "lang": "ja", "text": "誰が患者に本を送った？", "attack_axis": "no-match"}
+{"id": "JA04-12", "doc": "JA04", "lang": "ja", "text": "誰が何を患者に送った？", "attack_axis": "multiple-wh"}
+{"id": "JA05-01", "doc": "JA05", "lang": "ja", "text": "誰が先生に褒められた？", "attack_axis": "passive"}
+{"id": "JA05-02", "doc": "JA05", "lang": "ja", "text": "誰が次郎に叱られた？", "attack_axis": "passive"}
+{"id": "JA05-03", "doc": "JA05", "lang": "ja", "text": "母は子に何を読ませた？", "attack_axis": "causative"}
+{"id": "JA05-04", "doc": "JA05", "lang": "ja", "text": "誰が生徒に本を読ませた？", "attack_axis": "causative"}
+{"id": "JA05-05", "doc": "JA05", "lang": "ja", "text": "誰が本を読んだ？", "attack_axis": "active-vs-causative"}
+{"id": "JA05-06", "doc": "JA05", "lang": "ja", "text": "誰が薬を飲まされた？", "attack_axis": "passive-causative"}
+{"id": "JA05-07", "doc": "JA05", "lang": "ja", "text": "母は何を子に読ませた？", "attack_axis": "role-swap"}
+{"id": "JA05-08", "doc": "JA05", "lang": "ja", "text": "誰が母に本を読ませた？", "attack_axis": "causative-agent"}
+{"id": "JA05-09", "doc": "JA05", "lang": "ja", "text": "先生は生徒に本を読んだ？", "attack_axis": "argument-structure"}
+{"id": "JA05-10", "doc": "JA05", "lang": "ja", "text": "誰が先生に褒めた？", "attack_axis": "voice-inversion"}
+{"id": "JA05-11", "doc": "JA05", "lang": "ja", "text": "どの生徒が先生に褒められた？", "attack_axis": "which-n/passive"}
+{"id": "JA05-12", "doc": "JA05", "lang": "ja", "text": "誰が先生に褒められなかった？", "attack_axis": "negative-passive"}
+{"id": "JA06-01", "doc": "JA06", "lang": "ja", "text": "誰が地図を渡した？", "attack_axis": "topic/agent"}
+{"id": "JA06-02", "doc": "JA06", "lang": "ja", "text": "校長は何を渡した？", "attack_axis": "topic/patient"}
+{"id": "JA06-03", "doc": "JA06", "lang": "ja", "text": "地図は誰が渡した？", "attack_axis": "topic-focus"}
+{"id": "JA06-04", "doc": "JA06", "lang": "ja", "text": "誰が本を読んだ？", "attack_axis": "topic/agent-read"}
+{"id": "JA06-05", "doc": "JA06", "lang": "ja", "text": "先生は何を読んだ？", "attack_axis": "topic/patient-read"}
+{"id": "JA06-06", "doc": "JA06", "lang": "ja", "text": "校長が地図を渡した？", "attack_axis": "case-particle"}
+{"id": "JA06-07", "doc": "JA06", "lang": "ja", "text": "誰が先生に本を渡した？", "attack_axis": "subject-object"}
+{"id": "JA06-08", "doc": "JA06", "lang": "ja", "text": "先生は誰に本を渡した？", "attack_axis": "recipient-hole"}
+{"id": "JA06-09", "doc": "JA06", "lang": "ja", "text": "誰は地図を渡した？", "attack_axis": "wa-topic"}
+{"id": "JA06-10", "doc": "JA06", "lang": "ja", "text": "何は校長が渡した？", "attack_axis": "wa-topic/object"}
+{"id": "JA06-11", "doc": "JA06", "lang": "ja", "text": "校長は生徒に地図を渡さなかった？", "attack_axis": "negative-polar"}
+{"id": "JA06-12", "doc": "JA06", "lang": "ja", "text": "誰が昨日地図を渡した？", "attack_axis": "time-adverb"}
+{"id": "JA07-01", "doc": "JA07", "lang": "ja", "text": "誰が駅で友達に手紙を渡した？", "attack_axis": "agent/place"}
+{"id": "JA07-02", "doc": "JA07", "lang": "ja", "text": "誰が教室で生徒に本を渡した？", "attack_axis": "agent/place"}
+{"id": "JA07-03", "doc": "JA07", "lang": "ja", "text": "母は台所で何を渡した？", "attack_axis": "place/patient"}
+{"id": "JA07-04", "doc": "JA07", "lang": "ja", "text": "誰が駅で先生に地図を渡した？", "attack_axis": "agent/place"}
+{"id": "JA07-05", "doc": "JA07", "lang": "ja", "text": "先生はどこで生徒に本を渡した？", "attack_axis": "place-hole"}
+{"id": "JA07-06", "doc": "JA07", "lang": "ja", "text": "母は父に何を渡さなかった？", "attack_axis": "negative/patient"}
+{"id": "JA07-07", "doc": "JA07", "lang": "ja", "text": "誰が友達に手紙を渡す？", "attack_axis": "tense"}
+{"id": "JA07-08", "doc": "JA07", "lang": "ja", "text": "誰が駅で友達に本を渡した？", "attack_axis": "no-match"}
+{"id": "JA07-09", "doc": "JA07", "lang": "ja", "text": "母は誰に薬を渡した？", "attack_axis": "no-match/recipient"}
+{"id": "JA07-10", "doc": "JA07", "lang": "ja", "text": "いつ花子は友達に手紙を渡した？", "attack_axis": "time-hole"}
+{"id": "JA07-11", "doc": "JA07", "lang": "ja", "text": "誰が何を友達に渡した？", "attack_axis": "multiple-wh"}
+{"id": "JA07-12", "doc": "JA07", "lang": "ja", "text": "花子は駅で何を渡した？", "attack_axis": "topic/place"}
+{"id": "EN08-01", "doc": "EN08", "lang": "en", "text": "Who did the girl write?", "attack_axis": "stranded-preposition/object-hole", "truth": {"kind": "NONE", "fillers": [], "evidence": []}}
+{"id": "EN08-02", "doc": "EN08", "lang": "en", "text": "What did the girl write?", "attack_axis": "patient/tie"}
+{"id": "EN08-03", "doc": "EN08", "lang": "en", "text": "Who did the girl write to?", "attack_axis": "stranded-preposition/to"}
+{"id": "EN08-04", "doc": "EN08", "lang": "en", "text": "Who did the girl send a letter to?", "attack_axis": "stranded-preposition/recipient", "truth": {"kind": "ONE", "fillers": ["student"], "evidence": ["EN08-S05"]}}
+{"id": "EN08-05", "doc": "EN08", "lang": "en", "text": "Which letter did the girl write?", "attack_axis": "which-n"}
+{"id": "EN08-06", "doc": "EN08", "lang": "en", "text": "Who writes a report?", "attack_axis": "does/subject"}
+{"id": "EN08-07", "doc": "EN08", "lang": "en", "text": "Who did the boy write?", "attack_axis": "did/object-hole"}
+{"id": "EN08-08", "doc": "EN08", "lang": "en", "text": "Does the girl write a report?", "attack_axis": "does/polar"}
+{"id": "EN08-09", "doc": "EN08", "lang": "en", "text": "Was a letter written by the girl?", "attack_axis": "was/passive"}
+{"id": "EN08-10", "doc": "EN08", "lang": "en", "text": "What did the boy write?", "attack_axis": "patient"}
+{"id": "EN08-11", "doc": "EN08", "lang": "en", "text": "Who did the girl send?", "attack_axis": "did/recipient-vs-patient"}
+{"id": "EN08-12", "doc": "EN08", "lang": "en", "text": "Who did the girl write a report for?", "attack_axis": "preposition/for"}
+{"id": "EN09-01", "doc": "EN09", "lang": "en", "text": "Who did the nurse help?", "attack_axis": "did/person"}
+{"id": "EN09-02", "doc": "EN09", "lang": "en", "text": "Who does the nurse help?", "attack_axis": "does/person"}
+{"id": "EN09-03", "doc": "EN09", "lang": "en", "text": "Who was helped by the nurse?", "attack_axis": "was/passive"}
+{"id": "EN09-04", "doc": "EN09", "lang": "en", "text": "Who did the patient help?", "attack_axis": "did/role-swap"}
+{"id": "EN09-05", "doc": "EN09", "lang": "en", "text": "Did the nurse help a patient?", "attack_axis": "polar"}
+{"id": "EN09-06", "doc": "EN09", "lang": "en", "text": "Who did the nurse not help?", "attack_axis": "negation"}
+{"id": "EN09-07", "doc": "EN09", "lang": "en", "text": "What did the nurse treat?", "attack_axis": "type-mismatch"}
+{"id": "EN09-08", "doc": "EN09", "lang": "en", "text": "Which patient did the nurse help?", "attack_axis": "which-n"}
+{"id": "EN09-09", "doc": "EN09", "lang": "en", "text": "Who did the nurse give a book to?", "attack_axis": "preposition/recipient"}
+{"id": "EN09-10", "doc": "EN09", "lang": "en", "text": "Who did the nurse help yesterday?", "attack_axis": "time-adverb"}
+{"id": "EN09-11", "doc": "EN09", "lang": "en", "text": "Who helped a student?", "attack_axis": "subject-wh"}
+{"id": "EN09-12", "doc": "EN09", "lang": "en", "text": "Who did the nurse help?", "attack_axis": "tie-repeat"}
+{"id": "EN10-01", "doc": "EN10", "lang": "en", "text": "Which book did the girl read?", "attack_axis": "which-n"}
+{"id": "EN10-02", "doc": "EN10", "lang": "en", "text": "What did the girl read?", "attack_axis": "patient/tie"}
+{"id": "EN10-03", "doc": "EN10", "lang": "en", "text": "Which novel did the girl read?", "attack_axis": "which-n/restrictor"}
+{"id": "EN10-04", "doc": "EN10", "lang": "en", "text": "Who did the girl send a letter to?", "attack_axis": "stranded-preposition"}
+{"id": "EN10-05", "doc": "EN10", "lang": "en", "text": "Who did the girl send the letter?", "attack_axis": "did/object-vs-recipient"}
+{"id": "EN10-06", "doc": "EN10", "lang": "en", "text": "Who was given a book?", "attack_axis": "was/passive"}
+{"id": "EN10-07", "doc": "EN10", "lang": "en", "text": "Did the girl read a book?", "attack_axis": "polar"}
+{"id": "EN10-08", "doc": "EN10", "lang": "en", "text": "Who did the boy read?", "attack_axis": "did/person-hole"}
+{"id": "EN10-09", "doc": "EN10", "lang": "en", "text": "What did the boy read?", "attack_axis": "patient"}
+{"id": "EN10-10", "doc": "EN10", "lang": "en", "text": "Who did the girl read to?", "attack_axis": "stranded-preposition/to"}
+{"id": "EN10-11", "doc": "EN10", "lang": "en", "text": "Who did not read a book?", "attack_axis": "negation/subject"}
+{"id": "EN10-12", "doc": "EN10", "lang": "en", "text": "What did the girl not read?", "attack_axis": "negation/patient"}

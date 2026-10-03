@@ -995,7 +995,7 @@ def stable_json(o) -> str:
     return json.dumps(o, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
 
-from verantyx.coarse_place import cuts_for  # noqa: E402
+from verantyx.coarse_place import cuts_for, frame_type_disagreement  # noqa: E402
 
 
 def build_unit_tables(words_placed: Dict[str, str], attested: Iterable[str], cfg):
@@ -1161,8 +1161,11 @@ SLOT_PLACE_MARKS = ("で", "に")
 SLOT_PLACE_PTYPES = ("P_MOVE", "P_EXIST")
 
 
-def _count_gen_frame(gfstat: Counter, dec: dict, garm: dict) -> None:
-    """Count what became of a word that has a generated predicate frame (by outcome and reason)."""
+def _count_gen_frame(gfstat: Counter, dec: dict, garm: dict, ev=(), cfg: Optional[dict] = None) -> None:
+    """Count what became of a word that has a generated predicate frame (by outcome and reason).
+    W5-d: of the words upgraded to direct, ``frame_confirmed`` (no particle of the frame contradicts the
+    distribution that backed it) and ``frame_types_disagree`` (some particle does: the query answers
+    ``NOT_CONFIRMED``), by the same function the query uses (``coarse_place.frame_type_disagreement``)."""
     why = garm.get("why")
     if dec.get("origin") == "estimated":
         gfstat["decided_estimated_generated"] += 1
@@ -1175,6 +1178,11 @@ def _count_gen_frame(gfstat: Counter, dec: dict, garm: dict) -> None:
             gfstat["decided_direct_upgrade_all_sources_codex"] += 1
         else:
             gfstat["decided_direct_upgrade_with_jawiki"] += 1
+        if cfg is not None:
+            if frame_type_disagreement(ev, dec["by"], dec, cfg):
+                gfstat["frame_types_disagree"] += 1
+            else:
+                gfstat["frame_confirmed"] += 1
     elif why == "GENERATED_NOT_DECIDING":
         gfstat["base_decided_generated_ignored"] += 1
     elif why == "GENERATED_SPLIT":
@@ -1619,7 +1627,7 @@ def _resolve_stage(ex: dict, cfg: dict, allow=None, use_gen: bool = False,
         origin = dec.get("origin")
         garm_f = dec["arms"].get(ct.GEN_FRAME_ARM)
         if garm_f is not None:
-            _count_gen_frame(gfstat, dec, garm_f)
+            _count_gen_frame(gfstat, dec, garm_f, [(a_, s_, t_, n_, b_) for (_w, a_, s_, t_, n_, b_) in ev], cfg)
         elif origin == "estimated":
             gstat["decided_estimated_generated"] += 1
         elif ct.GEN_ARM in dec["arms"]:

@@ -1,0 +1,64 @@
+--- attacks/W3-a3/test_attack_w3a3.py
++++ tests/attack/w3a3/test_attack_w3a3_r6.py (minus its first line)
+@@ -15,6 +15,10 @@
+ 
+ 
+ def test_all_r6_generated_frame_upgrades():
++    # W5-d2 (auditor's ruling B1, K5): the invariants follow the rule of W5-d (docs/COARSE_PLACEMENT.md section 13): a predicate that a generated frame placed direct
++    # is CONFIRMED only when no particle of the frame contradicts the distribution that backed it; a contradicted one is NOT_CONFIRMED (frame null, the contradiction
++    # in frame_disagreement). The derivation of the 48 words, the byte identity of two queries, state/origin/generated_frame/namespace/top, the type of the
++    # generated frame, and the verdict of every distribution arm are as they were; the number of NOT_CONFIRMED words is not asserted (it is written to the summary).
+     pl, why = cp._open(PLACEMENT)
+     assert pl is not None, why
+     rows = pl.con.execute(
+@@ -23,7 +27,7 @@
+     words = [row[0] for row in rows]
+     assert len(words) == 48
+ 
+-    results, frame_conflicts, invariant_errors, byte_diffs = [], [], [], []
++    results, frame_conflicts, invariant_errors, byte_diffs, not_confirmed = [], [], [], [], []
+     for word in words:
+         answer = cp.query(word, placement=PLACEMENT)
+         again = cp.query(word, placement=PLACEMENT)
+@@ -33,7 +37,7 @@
+ 
+         if not (answer["state"] == "DECIDED" and answer["origin"] == "direct"
+                 and answer.get("generated_frame") is True
+-                and answer["frame_status"] == "CONFIRMED"
++                and answer["frame_status"] in ("CONFIRMED", "NOT_CONFIRMED")
+                 and answer["namespace"] == "P" and answer["top"]):
+             invariant_errors.append({"word": word, "answer": answer})
+             continue
+@@ -58,6 +62,23 @@
+             if ct.arm_verdict("role_distribution", counts, pl.cfg, base) != answer["top"]:
+                 invariant_errors.append({"word": word, "arm": key, "reason": "arm_top_differs"})
+ 
++        if answer["frame_status"] == "NOT_CONFIRMED":
++            not_confirmed.append(word)
++            disagreement = answer.get("frame_disagreement")
++            if answer["frame"] is not None or "frame_unconfirmed" in answer \
++                    or not isinstance(disagreement, dict) or not disagreement:
++                invariant_errors.append({"word": word, "reason": "not_confirmed_shape", "frame": answer["frame"],
++                                         "frame_disagreement": disagreement,
++                                         "has_frame_unconfirmed": "frame_unconfirmed" in answer})
++                continue
++            for particle, entry in disagreement.items():
++                gen_types = set(entry.get("generated") or [])
++                arms = entry.get("distribution") or {}
++                if not gen_types or not arms or any(gen_types & set(dt) for dt in arms.values()):
++                    invariant_errors.append({"word": word, "reason": "disagreement_types_meet",
++                                             "particle": particle, "entry": entry})
++            continue
++
+         expected = {p: sorted(set(generated.get(p, []))) for p in ct.ROLE_PARTICLES
+                     if p in sig_particles and generated.get(p)}
+         if answer["frame"] != expected:
+@@ -79,7 +100,7 @@
+         encoding="utf-8")
+     summary = {"derived_words": len(words), "queried": len(results),
+                "byte_differences": byte_diffs, "invariant_errors": invariant_errors,
+-               "disjoint_slot_conflicts": frame_conflicts}
++               "disjoint_slot_conflicts": frame_conflicts, "not_confirmed": not_confirmed}
+     (OUT / "r6_audit_summary.json").write_text(
+         json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+     print(json.dumps(summary, ensure_ascii=False, indent=2))

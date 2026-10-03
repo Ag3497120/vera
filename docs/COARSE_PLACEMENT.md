@@ -1816,3 +1816,291 @@ extraction_from_cache present: [False, False]
 <!-- w3a3-measure:end -->
 
 > **統合の注記（監査役、2026-10-03）**: W5-b の `spelling` と W3-a3 の `frame_status`/`frame` はどちらも「答えの最後」に足されたので、統合後の順は 既存の鍵 → `generated_frame` の前に `spelling` → `frame_status` → `frame`（→ `frame_unconfirmed`）とする。値は変えていない。
+
+## 13. W5-d: 述語の枠の確認を「助詞ごとの型の一致」にする（事前登録）
+<!-- w5d-prereg:begin -->
+事前登録の時刻: 2026-10-03 23:07:22 +0900（`date '+%F %T %z'` の出力）。§12.10 の `frame_status` の意味の追記であり、§12 の区間（`w3a3-prereg`・`w3a3-measure`）の中は変えない。
+
+- **P-J1**: 述語の型を direct にする条件（§12.6、`coarse_types._apply_gen_frame`）は変えない（`coarse_types.py` は許可パスの外）。変えるのは枠の確認（`frame_status == CONFIRMED` と `frame` を出す条件）だけ。結果として `命じる` は `DECIDED`・`direct`・`P_COMMUNICATE`・`generated_frame: true` のまま `frame_status: NOT_CONFIRMED`・`frame: null` になる。
+- **P-J2 条件**: 格上げに加わった `role_distribution` の腕それぞれについて、`coarse_types.rd_analyze(その腕の数, cfg, base)["types"]` の各助詞 p（有意な型が空でないもの）と、生成の枠の p の型（`gen_frame_slot`）を比べる。生成の枠に p があり、両者の型の集合が交わらない → その助詞は矛盾。矛盾が 1 つでもあれば `NOT_CONFIRMED`。分布に有意な型が無い助詞・生成の枠に無い助詞は矛盾に数えない。「一致」を交わりで取る理由: チケットの文言は「矛盾する助詞」で、攻撃役の定義と同じ。包含・等号は r6 の 48 語のうち 43 語を外す（`frame_defs.py` の実測）。
+- **P-J3 形**: 判定は `coarse_place.py` の純粋関数 1 つ（`frame_type_disagreement`）にまとめ、問い合わせ（`_direct`）と builder の数えの両方が呼ぶ。矛盾があるとき `frame`・`frame_unconfirmed` を出さず `frame_status = NOT_CONFIRMED`、答えの最後に `frame_disagreement` を足す（矛盾が無い答えには鍵を出さない）。`query()` の末尾の並びは `spelling` → `frame_status` → `frame`（→ `frame_unconfirmed` | `frame_disagreement`）。
+- **P-J4 builder**: 配置の表は変えない。manifest の `generated_frames.outcomes` に `frame_confirmed`・`frame_types_disagree` を足すだけ。したがって r7 の `content_sha256` は r6 と同じになるはず（`5c969d45…`）。違えば止めて調べる。
+- **P-J5 r7**: codex を呼ばない。r6 と同じ入力で cache なしで 2 回（`/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1`・`run2`）。`r6` には何も書かない。
+
+### 宣言する規則どうしの衝突（実装役は解かずに宣言する。判断は監査役）
+チケットの規則を字面どおりに入れると、旧い振る舞いをそのまま固定した既存テストが落ちる。実装役はチケットの規則どおりに作り、テストの期待は変えず（改訂が許された 1 関数を除く）、落ちた id を全部宣言する。
+
+| # | 衝突 | 落ちる見込みのもの |
+|---|---|---|
+| K1 | W3-c2「型を確かめられない充填物は候補から外す」 × 配置なしで FILLED/TIE を期待する既存テスト・攻撃の外れ | `tests/test_question_cross_observe.py` の一部、攻撃の写しの 2 件 |
+| K2 | R1「配置が無い日本語の名前は命名の文で導入されたものだけ」 × 配置なし（スタブ）の名前で振る既存テスト・R2 の攻撃テスト | `tests/test_routing_from_text*.py` の多数、攻撃の写しの R2 の 1 件 |
+| K3 | A1「出典の本文が渡した文書の中にある」 × 存在しない文書を渡して `family: document` を人とする既存テスト | `tests/test_basis_policy_form.py`・`tests/test_basis_policy_w5c_r3.py` の一部 |
+| K4 | D1「文面が同じときだけ格上げ」 × 別の文の記録で格上げすることを固定した既存テスト（改訂許可の 2 件の外） | `tests/test_basis_policy_w5c_r3.py::test_r3_a_recorded_yes_still_lifts_a_generated_answer` |
+| K5 | W3-a3 A1「枠の確認は助詞ごとの型の一致」 × 攻撃の写しの不変条件「gen_frame の格上げ語は全部 CONFIRMED」 | `tests/attack/w3a3/test_attack_w3a3_r6.py::test_all_r6_generated_frame_upgrades` |
+| D1-改訂 | 許可された 2 件のうち設計上落ちる 1 件 | `tests/test_basis_policy_confirm.py::test_two_confirmed_records_with_the_same_claim_are_not_a_split`（名前不変で改訂。前後の全文は BASIS_POLICY の測定の節） |
+
+### 受入基準の測り方（G1〜G7。測る前に固定）
+- G1: 攻撃の写し 5 本（`tests/attack/w3c2`・`test_attack_w5b_wave2.py`・`test_attack_w5c_*.py` 2 本・`tests/attack/w3a3/test_attack_w3a3_r6.py`）。落ちてよいのは宣言した K1(2)・K2(1)・K5(1) の 4 id だけ。A02・R2・W3-a3 A1 は新しいテストで確かめる。
+- G2: `artifacts/w5-d/scripts/run_questions_both.py`（実装役の 185 問、配置あり／なし）。誤答 0、型未確認の充填物を持つ FILLED/TIE 0。正答の減少は変更前（`artifacts/w5-d/before/q185_*.json`）との差を数で。
+- G3: 経路づけの凍結 4 本（`run_bank.py`、配置なし・r7）の misroutes と、自作の合成（`artifacts/w5-d/g3_synth/`、入力と期待を先に書き sha256 を凍結）。
+- G4: `artifacts/w5-d/scripts/g4_probe.py`（入力を先に凍結）。自己申告の文書・文面違いの確認記録から `ANSWER_*` が 0。対照（本当に渡した文書の文・完全一致の記録）では答えが出ること。
+- G5: r7 を cache なしで 2 回作り `verify` が両方 OK、`content_sha256` が run1 = run2 = r6（`5c969d45…`）。L1〜L3・動詞 300 語を `measure_w5d.py` で r6 と r7 で測り同じ。
+- G7: `pytest tests`（最後に 1 回）の失敗集合が基線 `dev_c875ed3_failures.txt` から増えない。増えた分は 1 件ずつ K1〜K5 または環境由来に当てる。当たらないものはコードを直す。
+- 基線（変更前）の測定は `artifacts/w5-d/before/` に保存済み（この事前登録より前）。製品コードの差分はこの時点で空。
+
+<!-- w5d-prereg:end -->
+
+## 13.x W5-d の測定: 述語の枠の確認
+<!-- w5d-measured:begin -->
+
+測定の時刻: 2026-10-03 23:34:53 +0900。出典はすべて `artifacts/w5-d/` のファイル（下に名前を書く）。全体テスト: `pytest_full.txt` の最終行 `198 failed, 11889 passed, 45 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 341.39s (0:05:41)`。基線 `dev_c875ed3_failures.txt` に無い新しい失敗は 83 件（`new_failures.txt`）で、1 件ずつ `new_failures_explained.txt` に K1〜K5・改訂・環境由来のどれかを書いた。どれにも当たらないものは 0 件（`grep -v -E 'K[1-5]|D1-改訂|環境由来' new_failures_explained.txt` が空）。基線から直った失敗は 0 件（`fixed_failures.txt`）。
+
+### 配置 r7（G5。`q5_determinism_r7.txt`・`g5_compare.txt`・`r6_query_after.txt`・`r7_inputs.sha256`）
+- r7 を codex なし・cache なしで 2 回作った（`scripts/run_full_r7.sh`、ログ `build_full_r7_run1.log`・`build_full_r7_run2.log`）。`verify` は両方 `state OK`。`content_sha256` は run1 = run2 = r6/run1 = `5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1`。表は変わっていない（枠の確認は問い合わせの規則と manifest の数えだけ）。manifest の `generated_frames.outcomes`: `decided_direct_upgrade` 48 = `frame_confirmed` 35 ＋ `frame_types_disagree` 13。`excluded_terms_total` は 359（r6 と同じ）。
+- r6 に新しい `query()` を当てても CONFIRMED 35・NOT_CONFIRMED 13（`r6_query_after.txt`。`うたう たたえる みせる 交わす 命じる 問い合わせる 潜める 示せる 薦める 見せ合う 言い換える 訴える 謳う` の 13 語は攻撃役の 13 語と一致、独立の再計算 `frame_defs.py` の式と一致）。`命じる` は `DECIDED`・`direct`・`P_COMMUNICATE`・`generated_frame: true` のまま `frame_status: NOT_CONFIRMED`・`frame: null`・`frame_disagreement: {"を": {"generated": ["GROUP_ORG","PERSON"], "distribution": {"role_distribution@jawiki": ["EVENT_ACT"]}}}`。
+- 悪化なし（`g5_compare.txt`）: L1・L2・L3・動詞 300 語を r6（変更前のコード）と r7 で測り、`items.jsonl` は byte 一致、`summary.json` は出所の欄（builder の sha・配置のパス・時刻）を除いて一致。動詞 300 語: direct の誤決定 1・direct 5・型を返す率 0.0238（未知語）は r6 と同じ。述語の型の決定は変えていない。凍結 300 語は `verb_check_300.jsonl`。中間職の 100 語（`W3-a3/mid_frozen`）は実装役は開いていない。
+- `tests/attack/w3a3/test_w5d_r7_frame_types.py`（r7 の路を固定。skip しない）5 件が通る。
+
+### 宣言した衝突 K5（攻撃の写し）の実際の失敗 id
+- `tests/attack/w3a3/test_attack_w3a3_r6.py::test_all_r6_generated_frame_upgrades`: 落ち方は `invariant_errors` に 13 語（`frame_status` が NOT_CONFIRMED）、`byte_differences` は空（`k5_check.txt`）。
+
+### §12.10 の `frame_status` の意味の追記（§12 の区間は変えていない）
+`CONFIRMED` は「生成の枠が分布に裏づけられ、**かつ**どの助詞も分布の有意な型と矛盾しない」。矛盾する助詞が 1 つでもある述語は `NOT_CONFIRMED`（述語の型は変えない）で、答えの最後に `frame_disagreement`。`query()` の末尾の鍵の並びは `spelling`（あれば）→ `generated_frame` → `frame_status` → `frame` →（`frame_unconfirmed` | `frame_disagreement`）。
+
+### 既知の穴（隠さない）
+1. 「一致」を交わりで取ったので、生成の枠が分布の型と**交わるが一部の型は分布に裏づけられない**枠は `CONFIRMED` に残る（r6 の 48 語のうち 43 − 13 = 30 語。`frame_defs_r6.txt`: 交わらない 13・生成の型が分布の型の部分集合でない 43・集合が等しくない 43。包含・等号を要求すると 48 語のうち 43 語が外れるため、より厳しい規則にはしなかった）。
+2. 述語の型の決定（§12.6）は変えていない（`coarse_types.py` は許可パスの外）ので、`命じる` は `P_COMMUNICATE` の direct のまま（枠だけが未確認）。
+3. r7 の manifest の `coarse_types_sha256` は r6 と違う（基点の dev の `coarse_types.py` が r6 を作った木のものと違うため。`coarse_types.py` は変更していない。`content_sha256` は同じ）。
+
+<!-- w5d-measured:end -->
+
+## W5-d 第 2 ラウンド（W5-d2）の事前登録
+<!-- w5d2-prereg:begin -->
+事前登録の時刻: 2026-10-04 00:31:06 +0900（`date '+%F %T %z'` の出力。第 2 ラウンドの製品コード・テストの変更より前）。ベースは `dev` = `c875ed3`。第 1 ラウンドの `w5d-prereg`・`w5d-measured` 区間は 1 文字も変えない（第 1 ラウンドの記録）。この節が置き換えるものは、後ろの `w5d2-measured` 区間の「置き換わった記述」に列挙する。
+
+**監査役の裁定（2026-10-04 00:05）**: B1 規則の衝突で落ちる既存テスト 78 件＋攻撃の写し 4 件は改訂を許可（K1・K2 は偽の `PlacementLookup` の注入、K3・K4・K5 は期待の改訂。名前は変えず、前後の全文を docs に）。B2 D1 の比較は正規化しない完全一致を追認（チケットの文言「NFKC 正規化後」は撤回）。B3 `recompute_q.py --check` と `w3c2-entry` 区間の例は、配置を与えた例に取り直してよい（区間の規則の本文は変えない）。追加 9 質問の観測が `VERA_PLACEMENT` を読まないのは、この後では「本番では質問がほぼ全部棄権」を意味するので、`observe.py` の question の経路で、`--placement` が無く `VERA_PLACEMENT` があるときは `event_cross.default_lookup()` の lookup を使う（収まらなければ既知の穴として次のチケットへ）。
+
+**第 2 ラウンドの判断（中間職の指示書 D2-1〜D2-8）**
+- D2-1 K1（質問の十字 15 件）: 配置の JSON（穴の充填物だけに direct の型。穴の型と食い違う型は付けない）または `O.FilePlacement` を注入する。例外 1 件（`test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun`）は「配置なしで FILLED」が主題で新しい契約と正反対なので、期待を新しい契約（配置なし → `NO_TYPED_CANDIDATE`・`TYPE_UNCHECKED`・`hole_type_check` が `NOT_CHECKED/NO_PLACEMENT`）に改訂。配置あり／なしの対のテストを足す。
+- D2-2 K2（自由文→記録 52 件）: テストの中だけの `FakePlacement`（固定の名前は `UNPLACED`、列挙した普通名詞は direct の型）を注入。配置なしが主題の 3 件は期待を新しい契約（配置なし → 棄権）に改訂。**裁定の申し送り（並列の名前の過剰棄権は直さず既知の穴）からの逸脱**: 偽の配置（全語 UNPLACED）を注入しても 11 件は `ハルとセキは同じ会社だ。` の部分名 `ハル`・`セキ` に配置の答えが無く `NAME_UNVERIFIED` → `INCOMPLETE_READING` で通らない。期待を書き換えれば「弱体化」になるので、`routing_from_text.py` だけで、日本語の並列の充填物の部分名それぞれを同じ lookup に問う（R-J1 の同じ規則を部分名の配置の答えに当てるだけ。新しい規則は足さない。英語は変えない）。配置が無ければ今どおり `NAME_UNVERIFIED`。
+- D2-3 K3（10 件）: 期待の値は変えず、渡した文書を実在させる（`tmp_path` の `memo.txt` に出典の `text` を書く）。K4: `artifacts/w5-d/k4_proposal.diff` をそのまま当てる。K5: 48 語の導出・バイト一致・各条件は不変、`frame_status` は `CONFIRMED` か `NOT_CONFIRMED`（後者は `frame is None`・`frame_disagreement`・助詞ごとの型が交わらない）、数は assert せず出力に一覧。
+- D2-4 攻撃の写し 3 本の先頭行を `revised in W5-d2` に。G1-b は「先頭行と改訂した関数を除いて同一」。`data/` は同一。
+- D2-5 D1: コードは変えない（正規化しない完全一致）。BASIS_POLICY に追認の理由を書く。
+- D2-6 B3: `recompute_q.py` の `EXAMPLES` を 4 つ組（期待, 文書, 問い, 配置ファイル名）にし、`QD02`『どの人が客に切符を渡した？』（FILLED）と `QD01`『誰が生徒に地図を渡した？』（TIE）を `placement_q.json` つきに、`NO_ATTESTED_CELL` の例は今のまま。`--write` は 1 回だけ。凍結データは変えない。
+- D2-7 追加 9: 製品の変更は `observe.py` の `_observe_question` の中だけ。`--placement` が無い（`StubLookup`）ときだけ `EC.default_lookup()`。充填物の型の確かめは同じ lookup に `surface` を問い直した答え。出力の `structure.placement` は実際に使った lookup の id。新しい鍵は足さない。**門**（どれか 1 つでも破れたらこの変更だけを戻して既知の穴に書く）: (1) r7 で 185 問の誤答 0・型未確認の FILLED/TIE 0、攻撃 120 問でも型未確認 0 で A01 が FILLED/TIE にならない、(2) `VERA_PLACEMENT` なしの 185 問の出力が第 1 ラウンドと byte 一致、(3) 平叙文の観測（`o1_bytes.py --child`）が基点と byte 一致（配置なしと r7 の 2 通り）。FALSE_NONE の増分と TIE が FILLED に縮む件は数えて書くが門にしない。
+- D2-8 置き場所: 本区間（事前登録）、`w5d2-measured`（測定）、`w5d2-amended`（改訂したテストの前後の全文。`artifacts/w5-d/r2/scripts/amended_texts.py` で生成）。K1・B3・D2-7 → OBSERVATION、K2・D2-2 → ROUTING_FROM_TEXT、K3・K4・D1 → BASIS_POLICY、K5 → COARSE_PLACEMENT、EVENT_CROSS には穴の型の節への 1 段落。
+
+**測り方（測る前に固定。出力はすべて `artifacts/w5-d/r2/`）**
+- G1: 攻撃の写し 36 本が全部通る（`tests/attack/w3c2`・`test_attack_w5b_wave2.py`・`test_attack_w5c_*.py` 2 本・`tests/attack/w3a3/test_attack_w3a3_r6.py`）、K の 82 id が全部通る、G1-b は上のとおり。
+- G2: 実装役の 185 問を（配置なしの環境 × place/noplace）と（`VERA_PLACEMENT=r7` × place/noplace）、攻撃 120 問を r7 で。誤答 0、型未確認の充填物を持つ FILLED/TIE 0。
+- G3: 経路づけの凍結 4 本（配置なし）と 2 本（r7）の misroutes 0、合成 `g3_synth` を同じ入力で流し直して配置なしで誤って振った数 0。r7 は第 1 ラウンドの 1 から増えない。D2-2 の影響として r7 の 2 本の単位ごとの状態を第 1 ラウンドと比べる。
+- G4: `g4_probe` の写しを流し、入力の sha256 と `summary` が第 1 ラウンドと同じ（`basis_policy.py` は第 2 ラウンドで変えない）。
+- G5: r7 は作り直さない。`verify` が `OK`、`content_sha256` が第 1 ラウンドと同じ。
+- G7: `pytest tests`（最後に 1 回）の失敗集合が基線から増えない。基線に無い失敗は環境由来だけ。K の id が残れば改訂を見直す。
+
+**この文書の担当**: K5（攻撃の写し `tests/attack/w3a3/test_attack_w3a3_r6.py::test_all_r6_generated_frame_upgrades`）。r7・r6・`coarse_place.py`・`tools/build_coarse_placement.py` は第 2 ラウンドで変えない。
+<!-- w5d2-prereg:end -->
+
+<!-- w5d2-amended:begin -->
+#### `tests/attack/w3a3/test_attack_w3a3_r6.py` (before = the attack original attacks/W3-a3/test_attack_w3a3.py (first line dropped))
+
+Added (helpers / tests, not amendments): none
+
+##### `test_all_r6_generated_frame_upgrades` — before
+
+```python
+def test_all_r6_generated_frame_upgrades():
+    pl, why = cp._open(PLACEMENT)
+    assert pl is not None, why
+    rows = pl.con.execute(
+        "SELECT word FROM headwords WHERE origin='direct' AND by LIKE '%gen_frame%' ORDER BY word"
+    ).fetchall()
+    words = [row[0] for row in rows]
+    assert len(words) == 48
+
+    results, frame_conflicts, invariant_errors, byte_diffs = [], [], [], []
+    for word in words:
+        answer = cp.query(word, placement=PLACEMENT)
+        again = cp.query(word, placement=PLACEMENT)
+        if _json_bytes(answer) != _json_bytes(again):
+            byte_diffs.append(word)
+        results.append(answer)
+
+        if not (answer["state"] == "DECIDED" and answer["origin"] == "direct"
+                and answer.get("generated_frame") is True
+                and answer["frame_status"] == "CONFIRMED"
+                and answer["namespace"] == "P" and answer["top"]):
+            invariant_errors.append({"word": word, "answer": answer})
+            continue
+
+        gf = pl.generated_frame(word)
+        generated = gf[5] if gf else {}
+        if not gf or gf[4] != answer["top"][0]:
+            invariant_errors.append({"word": word, "reason": "generated_type_differs",
+                                     "generated_type": gf[4] if gf else None,
+                                     "answer_top": answer["top"]})
+        sig_particles, typed_sig = set(), []
+        for key, arm in answer["axes"].items():
+            if not key.startswith("role_distribution@") or not arm["met"]:
+                continue
+            raw = [r for r in pl.evidence(word)
+                   if r[0] == "role_distribution" and key.endswith("@" + r[1])]
+            counts = {r[2]: r[3] for r in raw}
+            base = raw[0][4] if raw else None
+            analysis = ct.rd_analyze(counts, pl.cfg, base)
+            sig_particles.update(analysis["sig"])
+            typed_sig.append((key, analysis["types"]))
+            if ct.arm_verdict("role_distribution", counts, pl.cfg, base) != answer["top"]:
+                invariant_errors.append({"word": word, "arm": key, "reason": "arm_top_differs"})
+
+        expected = {p: sorted(set(generated.get(p, []))) for p in ct.ROLE_PARTICLES
+                    if p in sig_particles and generated.get(p)}
+        if answer["frame"] != expected:
+            invariant_errors.append({"word": word, "reason": "frame_projection_differs",
+                                     "expected": expected, "got": answer["frame"]})
+
+        for key, by_particle in typed_sig:
+            for particle, dist_types in by_particle.items():
+                if not dist_types:
+                    continue
+                frame_types = set(answer["frame"].get(particle, []))
+                if not frame_types or not frame_types.intersection(dist_types):
+                    frame_conflicts.append({"word": word, "source": key, "particle": particle,
+                                            "distribution_types": dist_types,
+                                            "confirmed_frame_types": sorted(frame_types)})
+
+    (OUT / "r6_48_queries.jsonl").write_text(
+        "".join(json.dumps(x, ensure_ascii=False, separators=(",", ":")) + "\n" for x in results),
+        encoding="utf-8")
+    summary = {"derived_words": len(words), "queried": len(results),
+               "byte_differences": byte_diffs, "invariant_errors": invariant_errors,
+               "disjoint_slot_conflicts": frame_conflicts}
+    (OUT / "r6_audit_summary.json").write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    assert not byte_diffs
+    assert not invariant_errors
+    assert not frame_conflicts, "confirmed frame slot types contradict significant distribution types"
+```
+
+##### `test_all_r6_generated_frame_upgrades` — after
+
+```python
+def test_all_r6_generated_frame_upgrades():
+    # W5-d2 (auditor's ruling B1, K5): the invariants follow the rule of W5-d (docs/COARSE_PLACEMENT.md section 13): a predicate that a generated frame placed direct
+    # is CONFIRMED only when no particle of the frame contradicts the distribution that backed it; a contradicted one is NOT_CONFIRMED (frame null, the contradiction
+    # in frame_disagreement). The derivation of the 48 words, the byte identity of two queries, state/origin/generated_frame/namespace/top, the type of the
+    # generated frame, and the verdict of every distribution arm are as they were; the number of NOT_CONFIRMED words is not asserted (it is written to the summary).
+    pl, why = cp._open(PLACEMENT)
+    assert pl is not None, why
+    rows = pl.con.execute(
+        "SELECT word FROM headwords WHERE origin='direct' AND by LIKE '%gen_frame%' ORDER BY word"
+    ).fetchall()
+    words = [row[0] for row in rows]
+    assert len(words) == 48
+
+    results, frame_conflicts, invariant_errors, byte_diffs, not_confirmed = [], [], [], [], []
+    for word in words:
+        answer = cp.query(word, placement=PLACEMENT)
+        again = cp.query(word, placement=PLACEMENT)
+        if _json_bytes(answer) != _json_bytes(again):
+            byte_diffs.append(word)
+        results.append(answer)
+
+        if not (answer["state"] == "DECIDED" and answer["origin"] == "direct"
+                and answer.get("generated_frame") is True
+                and answer["frame_status"] in ("CONFIRMED", "NOT_CONFIRMED")
+                and answer["namespace"] == "P" and answer["top"]):
+            invariant_errors.append({"word": word, "answer": answer})
+            continue
+
+        gf = pl.generated_frame(word)
+        generated = gf[5] if gf else {}
+        if not gf or gf[4] != answer["top"][0]:
+            invariant_errors.append({"word": word, "reason": "generated_type_differs",
+                                     "generated_type": gf[4] if gf else None,
+                                     "answer_top": answer["top"]})
+        sig_particles, typed_sig = set(), []
+        for key, arm in answer["axes"].items():
+            if not key.startswith("role_distribution@") or not arm["met"]:
+                continue
+            raw = [r for r in pl.evidence(word)
+                   if r[0] == "role_distribution" and key.endswith("@" + r[1])]
+            counts = {r[2]: r[3] for r in raw}
+            base = raw[0][4] if raw else None
+            analysis = ct.rd_analyze(counts, pl.cfg, base)
+            sig_particles.update(analysis["sig"])
+            typed_sig.append((key, analysis["types"]))
+            if ct.arm_verdict("role_distribution", counts, pl.cfg, base) != answer["top"]:
+                invariant_errors.append({"word": word, "arm": key, "reason": "arm_top_differs"})
+
+        if answer["frame_status"] == "NOT_CONFIRMED":
+            not_confirmed.append(word)
+            disagreement = answer.get("frame_disagreement")
+            if answer["frame"] is not None or "frame_unconfirmed" in answer \
+                    or not isinstance(disagreement, dict) or not disagreement:
+                invariant_errors.append({"word": word, "reason": "not_confirmed_shape", "frame": answer["frame"],
+                                         "frame_disagreement": disagreement,
+                                         "has_frame_unconfirmed": "frame_unconfirmed" in answer})
+                continue
+            for particle, entry in disagreement.items():
+                gen_types = set(entry.get("generated") or [])
+                arms = entry.get("distribution") or {}
+                if not gen_types or not arms or any(gen_types & set(dt) for dt in arms.values()):
+                    invariant_errors.append({"word": word, "reason": "disagreement_types_meet",
+                                             "particle": particle, "entry": entry})
+            continue
+
+        expected = {p: sorted(set(generated.get(p, []))) for p in ct.ROLE_PARTICLES
+                    if p in sig_particles and generated.get(p)}
+        if answer["frame"] != expected:
+            invariant_errors.append({"word": word, "reason": "frame_projection_differs",
+                                     "expected": expected, "got": answer["frame"]})
+
+        for key, by_particle in typed_sig:
+            for particle, dist_types in by_particle.items():
+                if not dist_types:
+                    continue
+                frame_types = set(answer["frame"].get(particle, []))
+                if not frame_types or not frame_types.intersection(dist_types):
+                    frame_conflicts.append({"word": word, "source": key, "particle": particle,
+                                            "distribution_types": dist_types,
+                                            "confirmed_frame_types": sorted(frame_types)})
+
+    (OUT / "r6_48_queries.jsonl").write_text(
+        "".join(json.dumps(x, ensure_ascii=False, separators=(",", ":")) + "\n" for x in results),
+        encoding="utf-8")
+    summary = {"derived_words": len(words), "queried": len(results),
+               "byte_differences": byte_diffs, "invariant_errors": invariant_errors,
+               "disjoint_slot_conflicts": frame_conflicts, "not_confirmed": not_confirmed}
+    (OUT / "r6_audit_summary.json").write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    assert not byte_diffs
+    assert not invariant_errors
+    assert not frame_conflicts, "confirmed frame slot types contradict significant distribution types"
+```
+
+<!-- w5d2-amended:end -->
+
+## W5-d 第 2 ラウンド（W5-d2）の測定
+<!-- w5d2-measured:begin -->
+測定の時刻: 2026-10-04 01:22:30 +0900。出力はすべて `artifacts/w5-d/r2/`（ファイル名を添える）。中間職のレビュー r1（`review-impl/W5-d2/review.r1.md`）の M1〜M4（改訂したテストの前後の全文・測定の区間・失敗集合のファイル・報告）に応えてこの区間と `w5d2-amended` 区間を書いた。製品とテストのコードはレビューのあとに変えていない（`code_sha_r2b_start.txt` と `code_sha_r2b_end.txt` が同じ）。受入の測定はこのとき全部流し直した（`g1_rerun_r2b.txt`・`g2_rerun_r2b.txt`・`g3_rerun_r2b.txt`・`q1_observe_cmp_r2b.txt`・`g4_compare_r2b.txt`・`q5_r7_verify_r2b.txt`・`k5_check_r2b.txt`。出力は前の流しと byte 一致。違いが無かったことの確認なので前の流しのファイルも残す）。
+
+**受入基準**（第 2 ラウンド）
+- **G1**（`g1_rerun_r2b.txt`）: 攻撃の写し 36 本が `36 passed`、K の 72 関数（82 id）が全部通る（`102 passed`）、新しいテスト（第 1 ラウンドの 5 本＋第 2 ラウンドの追記）が `113 passed`。G1-b: 写しと原本の差は先頭行と改訂した関数・足したヘルパの中だけ（`g1b_hunks.txt`、`attack_copy_revisions.diff`。w5c の 2 本は原本と同一、`data/` も同一）。
+- **G2**（`g2_185_*.json(l)`・`g2_attack120_r7.json(l)`・`g2_rerun_r2b.txt`）: `VERA_PLACEMENT` なしの 185 問は第 1 ラウンドの出力と byte 一致（place: 正答/誤答/FALSE_NONE/棄権 = 38 / 0 / 4 / 143、noplace: 26 / 0 / 4 / 155）。`VERA_PLACEMENT=r7`: place 73 / 0 / 6 / 106、noplace 66 / 0 / 8 / 111。誤答 0、型未確認の FILLED/TIE 0（4 通りとも `unchecked_fillers_in_FILLED_TIE` は 0・0・0・0）。正答は減っていない（第 1 ラウンドと同じか、r7 で増える）。攻撃の 120 問（r7、116 問は正解なしで採点されない）: FILLED 29・TIE 5、型未確認の FILLED/TIE 0、`wrong` 0 件。A01（`EN08-01`）は `NO_TYPED_CANDIDATE`（`letter`・`note` は `TYPE_UNCHECKED`）で FILLED/TIE にならない（`g2_r7_notes.txt`）。中間職の凍結 64 問・56 問は実装役が開かない約束なので測っていない（中間職が測る）。
+- **G3**（`g3_rerun_r2b.txt`・`g3_*`）: 経路づけの凍結 4 本（配置なし）の misroutes は 0, 0, 0, 0、r7 の 2 本は 0, 0。合成 `g3_synth`（入力の sha256 は `g3_synth_inputs_check.txt` で第 1 ラウンドの凍結と一致）: 配置なし misroutes 0・普通名詞に振った数 0、r7 misroutes 1（第 1 ラウンドと同じ 1 件。`委員会` が推定の GROUP_ORG で通る既知の穴）、基点 1（`g3_synth_results/g3_synth_counts.json`）。D2-2 の影響: r7 の 2 本の 118 件を、D2-2 の呼び出しを外した写しと単位ごとに比べて変化した件数は 0（`g3_r7_diff.txt`）。
+- **G4**（`g4_result.json`・`g4_compare_r2b.txt`）: 入力の sha256 と `summary` が第 1 ラウンドと同じ（自己申告の文書 16 件で `ANSWER` 0、文面違いの確認記録 15 件で `ANSWER` 0・旧文が返った 0、対照は 4/4 と 2/2 で答える）。`verantyx/basis_policy.py` は第 2 ラウンドで変えていない（sha256 が `files_start.sha256` と同じ）。
+- **G5**（`q5_r7_verify_r2b.txt`・`k5_check_r2b.txt`）: r7 は作り直していない。`verify` が run1・run2 とも `OK`、`content_sha256` は第 1 ラウンドと同じ。`coarse_place.py`・`tools/build_coarse_placement.py` は第 2 ラウンドで変えていない。K5 の写しが通り、r6_audit_summary.json not_confirmed: 13 words; invariant_errors [] byte_differences []、第 1 ラウンドの 13 語と同じ集合（`命じる` を含む）。
+- **平叙文の観測**（`q1_observe_cmp_r2b.txt`）: `o1_bytes.py --child` の出力が、配置なしと `VERA_PLACEMENT=r7` の 2 通りとも基点と byte 一致（`same: base vs now` が 2 行。この流しは前の流しとも byte 一致）。
+- **G7**（`pytest_full.txt`・`after_failures.txt`・`new_failures.txt`・`fixed_failures.txt`・`new_failures_explained.txt`）: 全体テストの最終行 `117 failed, 11981 passed, 45 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 362.65s (0:06:02)`。失敗は一意に 117 件、基線に無い失敗は 2 件（`tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches`、`tests/test_gen_coarse_evidence.py::test_the_stop_signal_ends_the_run_with_an_interrupted_record`）、基線にあって今は通る失敗は 0 件。基線に無い失敗の理由は `new_failures_explained.txt`（環境由来だけ）。K の id は失敗集合に 0 件。
+
+**K5（攻撃の写し 1 件）の改訂**（裁定 B1。前後の全文は上の `w5d2-amended` 区間。`changed_functions_k3k4k5.txt`）: `tests/attack/w3a3/test_attack_w3a3_r6.py::test_all_r6_generated_frame_upgrades`。48 語の導出・2 回の問い合わせのバイト一致・`state`/`origin`/`generated_frame`/`namespace`/`top` の条件・`generated_type_differs`・`arm_top_differs` は変えていない。`frame_status` は `CONFIRMED` か `NOT_CONFIRMED`: `CONFIRMED` の語は今までどおり `frame_projection_differs`・`frame_conflicts` が空であること。`NOT_CONFIRMED` の語は `frame is None`・`frame_disagreement` が空でない辞書・その各助詞で `generated` と（どれかの腕の）`distribution` の型の集合が交わらないこと・`frame_unconfirmed` の鍵が無いこと（違えば `invariant_errors`）。数（13）は assert せず、出力 `r6_audit_summary.json` の `not_confirmed` に語の一覧を書いた。`assert len(words) == 48` は元のまま。この写しは実行のたびに隣に 3 ファイル（`r6_48_queries.jsonl`・`r6_audit_summary.json`・`state_probes.json`）を書く。最後の実行のものを残してある（sha256: `r6_48_queries.jsonl` 213856af…、`r6_audit_summary.json` 962492c2…、`state_probes.json` c27484e4…）。
+
+**G5**（`q5_r7_verify_r2b.txt`・`k5_check_r2b.txt`）: r7 は作り直していない。`verify` が run1・run2 とも `OK`、`content_sha256` は `5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1`（第 1 ラウンドと同じ）。`r6_audit_summary.json not_confirmed: 13 words; invariant_errors [] byte_differences []`、第 1 ラウンドの `r6_query_after.txt` の 13 語と同じ集合。`NOT_CONFIRMED` の 13 語は `うたう`・`たたえる`・`みせる`・`交わす`・`命じる`・`問い合わせる`・`潜める`・`示せる`・`薦める`・`見せ合う`・`言い換える`・`訴える`・`謳う`。`coarse_place.py`・`tools/build_coarse_placement.py` は第 2 ラウンドで変えていない。
+
+**第 2 ラウンドで置き換わった第 1 ラウンドの記述**（第 1 ラウンドの `w5d-*` 区間の中は 1 文字も変えていない。元の行は残し、この一覧が上書きする）
+- 「K5 は宣言した衝突（攻撃の写し 1 件）」→ 裁定 B1 で改訂が許可され、上のとおり改訂した。第 1 ラウンドの記述の `frame_status` は全部 `CONFIRMED` という不変条件は、`CONFIRMED` か `NOT_CONFIRMED` に置き換わった。
+**この文書の担当の測定は上のとおり。全体の受入と判断は `artifacts/w5-d/DECISIONS.md` の「第 2 ラウンド（W5-d2）」と `artifacts/w5-d/r2/`。**
+<!-- w5d2-measured:end -->

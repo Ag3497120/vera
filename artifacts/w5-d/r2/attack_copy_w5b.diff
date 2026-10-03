@@ -1,0 +1,35 @@
+--- attacks/W5-b/test_attack_w5b_wave2.py
++++ tests/attack/test_attack_w5b_wave2.py (minus its first line)
+@@ -194,17 +194,29 @@
+             "relations": [], "abstain": None, "unsupported": [], "clause_meta": [{"rule": "injected", "span": [0, 1]}]}
+ 
+ 
++class _AllUnplaced:
++    """W5-d2 (auditor's ruling B1, K2): a made-up placement written in the test: it answers, and every word is UNPLACED (it says nothing about the word)."""
++    id = "w5d2-all-unplaced/1"
++
++    def lookup(self, _lemma):
++        from verantyx.event_cross import PlaceResult
++        return PlaceResult("UNPLACED", provenance={"fake": True})
++
++
+ def test_yappari_sonomama_does_not_turn_an_addendum_into_replacement():
++    # W5-d2 (K2): the expectation is the result of W5-d's R-J2. The marker `やっぱり` is followed by a fragment of its own (`そのまま`); the fragment is read by the same
++    # reader, and this reader answers every sentence with the affirmative assignment, so the fragment is not a maintenance and the unit is AMBIGUOUS_RELATION:
++    # nothing is replaced (superseded_by stays None, auto_resolved 0) and nothing is added. The point of the attack (it must not be a replacement) is kept.
+     first = "実装はハルに任せる。"
+     second = "やっぱりそのまま、実装はハルに任せる。"
+-    explained = rt.explain(f"{first}\n追記：{second}\n", "attack.md", reader=_reading_for_assignment)
++    explained = rt.explain(f"{first}\n追記：{second}\n", "attack.md", reader=_reading_for_assignment, lookup=_AllUnplaced())
+     actual = {"statuses": [unit.status for unit in explained.extraction.units],
+               "auto_resolved": explained.extraction.auto_resolved,
+               "superseded_by": [relation.superseded_by for relation in explained.extraction.relations],
+               "additions_kept": explained.extraction.additions_kept}
+     print(f"OBS R2 {json.dumps(actual, ensure_ascii=False, sort_keys=True)}")
+-    assert actual == {"statuses": ["MAPPED", "MAPPED"], "auto_resolved": 0,
+-                      "superseded_by": [None, None], "additions_kept": 1}
++    assert actual == {"statuses": ["MAPPED", "AMBIGUOUS_RELATION"], "auto_resolved": 0,
++                      "superseded_by": [None], "additions_kept": 0}
+ 
+ 
+ LEDGER_FRAME = """# Ledger service

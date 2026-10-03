@@ -182,7 +182,16 @@ def _doc_answer(text: str = HUMAN) -> dict:
                          "clause": 0, "text": text, "span": [0, len(text)]}]}
 
 
+def _hand_over_memo(tmp_path, monkeypatch, *texts):
+    """W5-d2 (auditor's ruling B1, K3): the test hands over a document that EXISTS. Since W5-d a ``family: document`` source is a human source only when its text is
+    found (NFKC) in a document that was really handed over; ``documents=["memo.txt"]`` used to be enough, and a file that is not there is not a document. Writes
+    ``memo.txt`` (one line per text) under ``tmp_path`` and makes it the working directory for the test (the relative name now names a real file)."""
+    (tmp_path / "memo.txt").write_text("\n".join(texts) + "\n", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+
+
 def test_a_document_answer_gets_a_borrowed_form_and_keeps_its_text_and_sources(tmp_path, monkeypatch):
+    _hand_over_memo(tmp_path, monkeypatch, HUMAN)      # W5-d2 (K3)
     _index(tmp_path, {"local": ["次郎が花子に本を渡した。"]})
     monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
     monkeypatch.delenv("VERA_SOVEREIGN_ROOT", raising=False)
@@ -202,6 +211,7 @@ def test_a_document_answer_gets_a_borrowed_form_and_keeps_its_text_and_sources(t
 
 
 def test_a_failed_borrowing_leaves_the_human_answer_as_it_was(tmp_path, monkeypatch):
+    _hand_over_memo(tmp_path, monkeypatch, HUMAN)      # W5-d2 (K3)
     _index(tmp_path, {"local": ["次郎が花子に本を渡さなかった。"]})
     monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
     original = _doc_answer()
@@ -245,6 +255,7 @@ def test_the_borrowing_takes_no_role_from_the_generated_sentence_end_to_end(tmp_
     _index(tmp_path, {"local": ["次郎が花子に本を渡した。"]})
     monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
     human = "花子は資料を渡した。"
+    _hand_over_memo(tmp_path, monkeypatch, human)      # W5-d2 (K3)
     out, _rc = bp.apply_to_ask(_doc_answer(human), bp.AskPolicy(), query="q", mode="round5",
                                documents=["memo.txt"])
     assert "form_text" not in out and out["basis_policy"]["form"]["reasons"]["CAND_ROLES_DIFFER"] == 1

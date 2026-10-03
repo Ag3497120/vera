@@ -1,0 +1,90 @@
+=== 疑問文の穴の型 型未確認を候補から外す
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "疑問文の穴の型 型未確認を候補から外す",
+  "searched": 680,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 72,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+=== 普通名詞を呼び名にしない 命名の文
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "普通名詞を呼び名にしない 命名の文",
+  "searched": 680,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 72,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+=== 追記 置き換え 維持
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "追記 置き換え 維持",
+  "searched": 680,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 72,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+=== 文書の出典 本文の照合
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "文書の出典 本文の照合",
+  "searched": 680,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 72,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+=== 確認記録 文面の一致
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "確認記録 文面の一致",
+  "searched": 680,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 72,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+=== 述語の枠 助詞の型 分布 確認
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "述語の枠 助詞の型 分布 確認",
+  "searched": 680,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 72,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

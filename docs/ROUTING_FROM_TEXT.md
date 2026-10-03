@@ -795,3 +795,1770 @@ def test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replac
 ## 21. 作業上の正直な記録
 
 - 凍結の順序（7 章）、全体試験の前後の負荷、止めた実行は `impl.r1.md`（第 1 ラウンド）と `impl.r2.md`（第 2 ラウンド）に書いた。
+
+## W5-d の事前登録: 普通名詞を呼び名にしない・置き換えの標識の後ろの「維持」
+<!-- w5d-prereg:begin -->
+事前登録の時刻: 2026-10-03 23:07:22 +0900（`date '+%F %T %z'` の出力）。
+
+- **R-J1（R1）**: `_common_noun_stop` に 1 つ足す。日本語（`reading.lang == "ja"`）で、名前が命名の文で導入されていないとき: 配置の答えが使えて `origin == "direct"`・`state in ("DECIDED","MULTIPLE")` で、型のどれかが `event_cross.NOUN_TYPE_IDS`（17 型）にある → `COMMON_NOUN_SUBJECT:<名>:PLACEMENT_DIRECT:<型>`。配置の答えが使えない（答えが無い・`NO_PLACEMENT`）→ `NAME_UNVERIFIED:<名>:NO_PLACEMENT`（単位の状態は既存の `NAME_UNRESOLVED`。`UNIT_STATUSES` を増やさない）。配置が使えて UNPLACED・UNKNOWN・推定 → 今どおり名前として通す。17 型に無い型だけの direct は止めない。英語は変えない。`common_noun_check` の辞書に鍵を足さない。
+- **R-J2（R2）**: 置き換えの標識の後ろの扱い（語の一覧を使わない）。標識の位置（日本語は NFKC の文で `REPLACEMENT_MARKERS["ja"]` の最初の出現、英語は語として最初の出現）の後ろを `rest` とする。(1) `rest` の先頭（空白を除く）が節の区切り、または `rest` が文末記号だけ → 置き換え（今どおり）。(2) `rest` に文末より前の節の区切りが無い → 標識が節を直接導く → 置き換え（今どおり）。(3) それ以外（標識と次の区切りの間に独立した断片 `head`）→ `head` を同じ reader で読む。読めて節がちょうど 1 つで極性が `-` → **維持**（置き換えにしない。`additions_kept` に数え、理由 `MAINTAINED_AFTER_MARKER`）。読めない・節が 0 か 2 以上・極性 `+` → `AMBIGUOUS_RELATION`（理由 `MARKER_SCOPE_UNDETERMINED:<head>`。置き換えも足しもしない）。`UnitResult.replaces` と `Extraction` の出力の鍵の並びは変えない。
+- 本物の reader では `そのまま`・`変えない` などは読めないので AMBIGUOUS_RELATION に倒れる（「そのまま類」を見分ける語の一覧を作らないことの代価。既知の穴として書く）。
+
+### 宣言する規則どうしの衝突（実装役は解かずに宣言する。判断は監査役）
+チケットの規則を字面どおりに入れると、旧い振る舞いをそのまま固定した既存テストが落ちる。実装役はチケットの規則どおりに作り、テストの期待は変えず（改訂が許された 1 関数を除く）、落ちた id を全部宣言する。
+
+| # | 衝突 | 落ちる見込みのもの |
+|---|---|---|
+| K1 | W3-c2「型を確かめられない充填物は候補から外す」 × 配置なしで FILLED/TIE を期待する既存テスト・攻撃の外れ | `tests/test_question_cross_observe.py` の一部、攻撃の写しの 2 件 |
+| K2 | R1「配置が無い日本語の名前は命名の文で導入されたものだけ」 × 配置なし（スタブ）の名前で振る既存テスト・R2 の攻撃テスト | `tests/test_routing_from_text*.py` の多数、攻撃の写しの R2 の 1 件 |
+| K3 | A1「出典の本文が渡した文書の中にある」 × 存在しない文書を渡して `family: document` を人とする既存テスト | `tests/test_basis_policy_form.py`・`tests/test_basis_policy_w5c_r3.py` の一部 |
+| K4 | D1「文面が同じときだけ格上げ」 × 別の文の記録で格上げすることを固定した既存テスト（改訂許可の 2 件の外） | `tests/test_basis_policy_w5c_r3.py::test_r3_a_recorded_yes_still_lifts_a_generated_answer` |
+| K5 | W3-a3 A1「枠の確認は助詞ごとの型の一致」 × 攻撃の写しの不変条件「gen_frame の格上げ語は全部 CONFIRMED」 | `tests/attack/w3a3/test_attack_w3a3_r6.py::test_all_r6_generated_frame_upgrades` |
+| D1-改訂 | 許可された 2 件のうち設計上落ちる 1 件 | `tests/test_basis_policy_confirm.py::test_two_confirmed_records_with_the_same_claim_are_not_a_split`（名前不変で改訂。前後の全文は BASIS_POLICY の測定の節） |
+
+### 受入基準の測り方（G1〜G7。測る前に固定）
+- G1: 攻撃の写し 5 本（`tests/attack/w3c2`・`test_attack_w5b_wave2.py`・`test_attack_w5c_*.py` 2 本・`tests/attack/w3a3/test_attack_w3a3_r6.py`）。落ちてよいのは宣言した K1(2)・K2(1)・K5(1) の 4 id だけ。A02・R2・W3-a3 A1 は新しいテストで確かめる。
+- G2: `artifacts/w5-d/scripts/run_questions_both.py`（実装役の 185 問、配置あり／なし）。誤答 0、型未確認の充填物を持つ FILLED/TIE 0。正答の減少は変更前（`artifacts/w5-d/before/q185_*.json`）との差を数で。
+- G3: 経路づけの凍結 4 本（`run_bank.py`、配置なし・r7）の misroutes と、自作の合成（`artifacts/w5-d/g3_synth/`、入力と期待を先に書き sha256 を凍結）。
+- G4: `artifacts/w5-d/scripts/g4_probe.py`（入力を先に凍結）。自己申告の文書・文面違いの確認記録から `ANSWER_*` が 0。対照（本当に渡した文書の文・完全一致の記録）では答えが出ること。
+- G5: r7 を cache なしで 2 回作り `verify` が両方 OK、`content_sha256` が run1 = run2 = r6（`5c969d45…`）。L1〜L3・動詞 300 語を `measure_w5d.py` で r6 と r7 で測り同じ。
+- G7: `pytest tests`（最後に 1 回）の失敗集合が基線 `dev_c875ed3_failures.txt` から増えない。増えた分は 1 件ずつ K1〜K5 または環境由来に当てる。当たらないものはコードを直す。
+- 基線（変更前）の測定は `artifacts/w5-d/before/` に保存済み（この事前登録より前）。製品コードの差分はこの時点で空。
+
+<!-- w5d-prereg:end -->
+
+## W5-d の測定: 普通名詞を呼び名にしない・置き換えの標識の後ろ
+<!-- w5d-measured:begin -->
+
+測定の時刻: 2026-10-03 23:34:53 +0900。出典はすべて `artifacts/w5-d/` のファイル（下に名前を書く）。全体テスト: `pytest_full.txt` の最終行 `198 failed, 11889 passed, 45 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 341.39s (0:05:41)`。基線 `dev_c875ed3_failures.txt` に無い新しい失敗は 83 件（`new_failures.txt`）で、1 件ずつ `new_failures_explained.txt` に K1〜K5・改訂・環境由来のどれかを書いた。どれにも当たらないものは 0 件（`grep -v -E 'K[1-5]|D1-改訂|環境由来' new_failures_explained.txt` が空）。基線から直った失敗は 0 件（`fixed_failures.txt`）。
+
+### 自由文→記録（G3）
+- 経路づけの凍結 4 本（`run_bank.py`、配置なし）: `g3_noplace_*/summary.txt`。誤って振った数（misroutes）はすべて 0（変更前 `before/rb_*.summary.txt` も 0）。`items`・`items_mid` の要約は変更前と同一（説明文が reader に読めず全部 UNREAD のため）。`items_reader_shaped`・`items_mid_reader_shaped` は r1 の「読めて写せた単位」が 6 → 0（`NAME_UNRESOLVED` 6）に減った（配置なしで日本語の名前が `NAME_UNVERIFIED` で止まるため）。「正しく振れた問い」の数は 3 と 2 のまま。r7 の配置あり（`g3_r7_*/summary.txt`、`items`・`items_mid`）も misroutes 0。
+- B6 の形の合成（`g3_synth/`、入力と期待は先に書いて `g3_synth_inputs.sha256` に凍結。`g3_synth_results/`）: 14 問。誤って振った数は 変更前 1（`委員会` に振った）→ 変更後・配置なし 0、普通名詞の主語に振った数 1 → 0。r7 の配置ありでは 1（変更前と同じ 1 件: r7 は `委員会` を「推定」としか答えず、推定は名前として通す規則のため）。
+- 「追記」の標識の後ろ（R2）は、本物の reader では `やっぱり…` を含む文が読めない（UNREAD）ので、経路づけの凍結データでは動かない。断片を読む偽 reader のテスト（`tests/test_routing_from_text_w5d.py`）でだけ維持・未確定の経路に到達する。
+
+### 宣言した衝突 K2（自由文→記録）の実際の失敗 id（既存 51 件と攻撃の写しの R2 の 1 件。`k2_check.txt`）
+- `tests/attack/test_attack_w5b_wave2.py::test_yappari_sonomama_does_not_turn_an_addendum_into_replacement`
+- `tests/test_routing_from_text.py::test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replacement`
+- `tests/test_routing_from_text.py::test_M1_a_copula_between_two_names_is_ambiguous_and_makes_no_alias_and_no_merge`
+- `tests/test_routing_from_text.py::test_M3_a_nonpast_centre_is_read_and_a_reading_without_a_tense_is_rejected_by_the_cross_as_unread`
+- `tests/test_routing_from_text.py::test_T3_a_conditional_role_rule_without_the_roles_fallback_is_refused`
+- `tests/test_routing_from_text.py::test_T3_a_role_less_conditional_rule_needs_no_fallback_and_a_size_word_before_an_unknown_head_stops`
+- `tests/test_routing_from_text.py::test_T3_an_unconditional_assignment_is_the_fallback_and_nothing_else_is_made_one`
+- `tests/test_routing_from_text.py::test_T3_only_says_roles_or_kinds_and_otherwise_they_stay_unsaid`
+- `tests/test_routing_from_text.py::test_T3_records_are_declared_text_with_witnesses_that_are_substrings_and_say_only_what_was_said`
+- `tests/test_routing_from_text.py::test_T3_the_same_content_as_a_hand_written_table_gives_the_same_decisions`
+- `tests/test_routing_from_text.py::test_T3_two_unconditional_assignments_of_one_role_are_refused_by_the_record_layer_and_not_made_one`
+- `tests/test_routing_from_text.py::test_constraint_human_and_wait_scopes_and_residual_and_conflict`
+- `tests/test_routing_from_text.py::test_constraint_independence_veto_for_two_other_roles`
+- `tests/test_routing_from_text.py::test_constraint_prohibition_veto_does_not_try_the_next_agent`
+- `tests/test_routing_from_text.py::test_gate_one_unread_unit_stops_every_job_and_the_router_is_not_called`
+- `tests/test_routing_from_text.py::test_handoff2_a_role_less_attack_rule_and_a_verify_job_do_not_make_an_independence_cycle`
+- `tests/test_routing_from_text.py::test_handoff3_a_role_less_closed_choice_rule_is_chosen_for_an_answer_job`
+- `tests/test_routing_from_text.py::test_output_keys_order_and_basis_kinds`
+- `tests/test_routing_from_text.py::test_relation_alias_first_called_is_by_the_order_of_the_explanation_not_by_the_alias_direction`
+- `tests/test_routing_from_text.py::test_relation_alias_returns_the_first_name_and_task_names_are_mapped_to_it`
+- `tests/test_routing_from_text.py::test_relation_comparison_keeps_one_agent_only_and_comparison_only_does_not_stop`
+- `tests/test_routing_from_text.py::test_relation_condition_from_a_size_word_and_head_by_concatenation`
+- `tests/test_routing_from_text.py::test_relation_human_and_wait_with_scope_and_residual`
+- `tests/test_routing_from_text.py::test_relation_independence_same_negated_distinct_and_a_different_phrase_is_held_as_ambiguous`
+- `tests/test_routing_from_text.py::test_relation_override_replaces_exactly_the_same_scope_and_counts_it`
+- `tests/test_routing_from_text.py::test_relation_override_that_overlaps_only_partly_is_held_as_ambiguous`
+- `tests/test_routing_from_text.py::test_relation_precedence_maps_to_one_pair_of_rules_and_resolves_the_tie`
+- `tests/test_routing_from_text.py::test_relation_precedence_that_cannot_be_written_as_one_pair_is_held_as_ambiguous`
+- `tests/test_routing_from_text.py::test_relation_prohibition_by_polarity_and_by_modality`
+- `tests/test_routing_from_text.py::test_relation_quantity_sets_concurrency_and_other_quantifier_forms_stop`
+- `tests/test_routing_from_text.py::test_relation_roles_independence_is_the_routers_default_r3_and_makes_no_record`
+- `tests/test_routing_from_text.py::test_relation_suitability_assign_recipient_and_perform_agent_and_role_verb`
+- `tests/test_routing_from_text.py::test_router_call_passes_used_agents_only_no_chooser_and_the_first_names`
+- `tests/test_routing_from_text.py::test_router_reasons_are_written_through_from_the_routers_types`
+- `tests/test_routing_from_text.py::test_router_unknown_task_names_abstain_with_their_own_type`
+- `tests/test_routing_from_text.py::test_stop_contradiction_and_conflicting_values`
+- `tests/test_routing_from_text.py::test_stops_have_their_own_typed_status[\u30cf\u30eb\u306f\u5b9f\u88c5\u3060\u3002-reading13-MAPPED]`
+- `tests/test_routing_from_text_entry.py::test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader`
+- `tests/test_routing_from_text_regress.py::test_M1_two_agents_that_are_each_east_co_are_not_merged_and_nobody_is_routed`
+- `tests/test_routing_from_text_regress.py::test_M3_the_non_past_sentence_of_the_same_form_is_still_routed`
+- `tests/test_routing_from_text_w5b.py::test_C3_without_a_marker_an_override_of_another_kind_about_another_name_is_held_not_a_replacement_both_statements_stand`
+- `tests/test_routing_from_text_w5b.py::test_C3_without_a_marker_relation_override_replaces_exactly_the_same_scope_and_counts_it_both_statements_stand`
+- `tests/test_routing_from_text_w5b.py::test_C3_without_a_marker_relation_override_that_overlaps_only_partly_is_held_as_ambiguous_both_declarations_stand`
+- `tests/test_routing_from_text_w5b.py::test_a_japanese_addendum_with_a_replacement_word_replaces[\u3084\u3063\u3071\u308a\u5b9f\u88c5\u306f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002-\u30eb\u30ca]`
+- `tests/test_routing_from_text_w5b.py::test_a_japanese_addendum_with_a_replacement_word_replaces[\u5b9f\u88c5\u306f\u30df\u30e9\u3067\u306f\u306a\u304f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002-\u30eb\u30ca]`
+- `tests/test_routing_from_text_w5b.py::test_a_japanese_addendum_without_a_marker_keeps_both_statements[\u8ffd\u4f38\uff1a]`
+- `tests/test_routing_from_text_w5b.py::test_a_japanese_addendum_without_a_marker_keeps_both_statements[\u8ffd\u8a18\uff08\u7fcc\u65e5\uff09\uff1a]`
+- `tests/test_routing_from_text_w5b.py::test_a_japanese_addendum_without_a_marker_keeps_both_statements[\u8ffd\u8a18\uff1a]`
+- `tests/test_routing_from_text_w5b.py::test_the_determiner_test_is_for_english_only_and_not_for_a_naming_sentence`
+- `tests/test_routing_from_text_w5b.py::test_the_other_labels_replace_as_before_without_any_marker[\u66f4\u65b0\uff1a-\u5b9f\u88c5\u306f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002]`
+- `tests/test_routing_from_text_w5b.py::test_the_other_labels_replace_as_before_without_any_marker[\u8a02\u6b63\uff1a-\u5b9f\u88c5\u306f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002]`
+- `tests/test_routing_from_text_w5b.py::test_without_a_placement_nothing_is_checked_and_that_is_counted_not_hidden`
+
+配置を与えれば K2 の既存テストの意図が満たせることの証拠と、残る分の理由: `k2_probe.txt`。
+```
+K2 probe (scratchpad copy of c875ed3 + the changed verantyx files; the test files are NOT changed; only tests/conftest.py of the copy gets the mechanical rewrite in k2_probe_rewrite.diff:
+the default lookup of routing_from_text.explain is a placement that answers UNPLACED for every word).
+
+K2 failing existing tests in the real tree:       51
+of those, still failing with the rewrite:       14  => pass with a placement that knows the names: 37
+  still failing: tests/test_routing_from_text.py::test_T3_the_same_content_as_a_hand_written_table_gives_the_same_decisions
+  still failing: tests/test_routing_from_text.py::test_constraint_human_and_wait_scopes_and_residual_and_conflict
+  still failing: tests/test_routing_from_text.py::test_constraint_independence_veto_for_two_other_roles
+  still failing: tests/test_routing_from_text.py::test_constraint_prohibition_veto_does_not_try_the_next_agent
+  still failing: tests/test_routing_from_text.py::test_gate_one_unread_unit_stops_every_job_and_the_router_is_not_called
+  still failing: tests/test_routing_from_text.py::test_output_keys_order_and_basis_kinds
+  still failing: tests/test_routing_from_text.py::test_relation_comparison_keeps_one_agent_only_and_comparison_only_does_not_stop
+  still failing: tests/test_routing_from_text.py::test_relation_independence_same_negated_distinct_and_a_different_phrase_is_held_as_ambiguous
+  still failing: tests/test_routing_from_text.py::test_relation_roles_independence_is_the_routers_default_r3_and_makes_no_record
+  still failing: tests/test_routing_from_text.py::test_router_call_passes_used_agents_only_no_chooser_and_the_first_names
+  still failing: tests/test_routing_from_text.py::test_router_reasons_are_written_through_from_the_routers_types
+  still failing: tests/test_routing_from_text.py::test_router_unknown_task_names_abstain_with_their_own_type
+  still failing: tests/test_routing_from_text_entry.py::test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader
+  still failing: tests/test_routing_from_text_w5b.py::test_without_a_placement_nothing_is_checked_and_that_is_counted_not_hidden
+tests that fail only because of the rewrite:        0
+
+Reasons of the still-failing ones (from --tb=short): (a) assertions on the lookup id 'stub-no-placement/1' / the not_checked count / byte-exact output (tests that are ABOUT the no-placement stub: 4);
+(b) a sentence whose names come from splitting a parallel filler ('ハルとセキは同じ会社だ。'): the parts 'ハル' and 'セキ' have no placement answer of their own (the placement is asked about the filler 'ハルとセキ'), so R-J1 stops them as NAME_UNVERIFIED even with a placement (the gate then reads 6 mapped units instead of 7, and every test built on that text changes). This is a KNOWN HOLE of R-J1 as specified (over-abstention: the safe side) and is written in the docs; it is the main reason that K2 is not purely an 'old test gives no placement' conflict.
+```
+
+### 既知の穴（隠さない）
+1. **並列の名前は配置があっても止まる**: `ハルとセキは…` の名前 `ハル`・`セキ` は、配置の答えが充填物 `ハルとセキ` 全体にしか付かず部分ごとの答えが無いので、日本語では `NAME_UNVERIFIED` になる（棄権側の過剰）。直すには `extract` に lookup を渡して部分ごとに引く必要がある（許可範囲の外）。
+2. **R2 の「維持」は本物の reader ではほぼ到達しない**: `そのまま。`・`変えない。`・`No change.` は reader が節に読めず `AMBIGUOUS_RELATION` に倒れる。「そのまま類」を見分ける語の一覧は作らなかった代価。到達するのは断片を読む偽 reader のテストだけ。
+3. **断片の述語は解釈しない**: 断片が節 1 つで極性 `-` なら（述語が何であれ）維持になる。変化の述語かどうかは見ない。維持は足す扱いなので、両方が並んで未確定になる側（棄権側）。
+4. **標識の後ろに読点がある文は未確定になりうる**: `やっぱり実装はルナに、レビューはミラに任せる。` のように標識の後ろに節の区切りがあると断片（`実装はルナに`）を読むことになり、読めなければ `AMBIGUOUS_RELATION`（以前は置き換え）。
+5. **推定の普通名詞は通る**: 配置が「推定」としか答えない普通名詞（r7 の `委員会`）は名前として通る（指示書のとおり）。
+
+<!-- w5d-measured:end -->
+
+## W5-d 第 2 ラウンド（W5-d2）の事前登録
+<!-- w5d2-prereg:begin -->
+事前登録の時刻: 2026-10-04 00:31:06 +0900（`date '+%F %T %z'` の出力。第 2 ラウンドの製品コード・テストの変更より前）。ベースは `dev` = `c875ed3`。第 1 ラウンドの `w5d-prereg`・`w5d-measured` 区間は 1 文字も変えない（第 1 ラウンドの記録）。この節が置き換えるものは、後ろの `w5d2-measured` 区間の「置き換わった記述」に列挙する。
+
+**監査役の裁定（2026-10-04 00:05）**: B1 規則の衝突で落ちる既存テスト 78 件＋攻撃の写し 4 件は改訂を許可（K1・K2 は偽の `PlacementLookup` の注入、K3・K4・K5 は期待の改訂。名前は変えず、前後の全文を docs に）。B2 D1 の比較は正規化しない完全一致を追認（チケットの文言「NFKC 正規化後」は撤回）。B3 `recompute_q.py --check` と `w3c2-entry` 区間の例は、配置を与えた例に取り直してよい（区間の規則の本文は変えない）。追加 9 質問の観測が `VERA_PLACEMENT` を読まないのは、この後では「本番では質問がほぼ全部棄権」を意味するので、`observe.py` の question の経路で、`--placement` が無く `VERA_PLACEMENT` があるときは `event_cross.default_lookup()` の lookup を使う（収まらなければ既知の穴として次のチケットへ）。
+
+**第 2 ラウンドの判断（中間職の指示書 D2-1〜D2-8）**
+- D2-1 K1（質問の十字 15 件）: 配置の JSON（穴の充填物だけに direct の型。穴の型と食い違う型は付けない）または `O.FilePlacement` を注入する。例外 1 件（`test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun`）は「配置なしで FILLED」が主題で新しい契約と正反対なので、期待を新しい契約（配置なし → `NO_TYPED_CANDIDATE`・`TYPE_UNCHECKED`・`hole_type_check` が `NOT_CHECKED/NO_PLACEMENT`）に改訂。配置あり／なしの対のテストを足す。
+- D2-2 K2（自由文→記録 52 件）: テストの中だけの `FakePlacement`（固定の名前は `UNPLACED`、列挙した普通名詞は direct の型）を注入。配置なしが主題の 3 件は期待を新しい契約（配置なし → 棄権）に改訂。**裁定の申し送り（並列の名前の過剰棄権は直さず既知の穴）からの逸脱**: 偽の配置（全語 UNPLACED）を注入しても 11 件は `ハルとセキは同じ会社だ。` の部分名 `ハル`・`セキ` に配置の答えが無く `NAME_UNVERIFIED` → `INCOMPLETE_READING` で通らない。期待を書き換えれば「弱体化」になるので、`routing_from_text.py` だけで、日本語の並列の充填物の部分名それぞれを同じ lookup に問う（R-J1 の同じ規則を部分名の配置の答えに当てるだけ。新しい規則は足さない。英語は変えない）。配置が無ければ今どおり `NAME_UNVERIFIED`。
+- D2-3 K3（10 件）: 期待の値は変えず、渡した文書を実在させる（`tmp_path` の `memo.txt` に出典の `text` を書く）。K4: `artifacts/w5-d/k4_proposal.diff` をそのまま当てる。K5: 48 語の導出・バイト一致・各条件は不変、`frame_status` は `CONFIRMED` か `NOT_CONFIRMED`（後者は `frame is None`・`frame_disagreement`・助詞ごとの型が交わらない）、数は assert せず出力に一覧。
+- D2-4 攻撃の写し 3 本の先頭行を `revised in W5-d2` に。G1-b は「先頭行と改訂した関数を除いて同一」。`data/` は同一。
+- D2-5 D1: コードは変えない（正規化しない完全一致）。BASIS_POLICY に追認の理由を書く。
+- D2-6 B3: `recompute_q.py` の `EXAMPLES` を 4 つ組（期待, 文書, 問い, 配置ファイル名）にし、`QD02`『どの人が客に切符を渡した？』（FILLED）と `QD01`『誰が生徒に地図を渡した？』（TIE）を `placement_q.json` つきに、`NO_ATTESTED_CELL` の例は今のまま。`--write` は 1 回だけ。凍結データは変えない。
+- D2-7 追加 9: 製品の変更は `observe.py` の `_observe_question` の中だけ。`--placement` が無い（`StubLookup`）ときだけ `EC.default_lookup()`。充填物の型の確かめは同じ lookup に `surface` を問い直した答え。出力の `structure.placement` は実際に使った lookup の id。新しい鍵は足さない。**門**（どれか 1 つでも破れたらこの変更だけを戻して既知の穴に書く）: (1) r7 で 185 問の誤答 0・型未確認の FILLED/TIE 0、攻撃 120 問でも型未確認 0 で A01 が FILLED/TIE にならない、(2) `VERA_PLACEMENT` なしの 185 問の出力が第 1 ラウンドと byte 一致、(3) 平叙文の観測（`o1_bytes.py --child`）が基点と byte 一致（配置なしと r7 の 2 通り）。FALSE_NONE の増分と TIE が FILLED に縮む件は数えて書くが門にしない。
+- D2-8 置き場所: 本区間（事前登録）、`w5d2-measured`（測定）、`w5d2-amended`（改訂したテストの前後の全文。`artifacts/w5-d/r2/scripts/amended_texts.py` で生成）。K1・B3・D2-7 → OBSERVATION、K2・D2-2 → ROUTING_FROM_TEXT、K3・K4・D1 → BASIS_POLICY、K5 → COARSE_PLACEMENT、EVENT_CROSS には穴の型の節への 1 段落。
+
+**測り方（測る前に固定。出力はすべて `artifacts/w5-d/r2/`）**
+- G1: 攻撃の写し 36 本が全部通る（`tests/attack/w3c2`・`test_attack_w5b_wave2.py`・`test_attack_w5c_*.py` 2 本・`tests/attack/w3a3/test_attack_w3a3_r6.py`）、K の 82 id が全部通る、G1-b は上のとおり。
+- G2: 実装役の 185 問を（配置なしの環境 × place/noplace）と（`VERA_PLACEMENT=r7` × place/noplace）、攻撃 120 問を r7 で。誤答 0、型未確認の充填物を持つ FILLED/TIE 0。
+- G3: 経路づけの凍結 4 本（配置なし）と 2 本（r7）の misroutes 0、合成 `g3_synth` を同じ入力で流し直して配置なしで誤って振った数 0。r7 は第 1 ラウンドの 1 から増えない。D2-2 の影響として r7 の 2 本の単位ごとの状態を第 1 ラウンドと比べる。
+- G4: `g4_probe` の写しを流し、入力の sha256 と `summary` が第 1 ラウンドと同じ（`basis_policy.py` は第 2 ラウンドで変えない）。
+- G5: r7 は作り直さない。`verify` が `OK`、`content_sha256` が第 1 ラウンドと同じ。
+- G7: `pytest tests`（最後に 1 回）の失敗集合が基線から増えない。基線に無い失敗は環境由来だけ。K の id が残れば改訂を見直す。
+
+**この文書の担当**: K2・D2-2（並列の名前の部分の問い合わせ。製品の変更は `verantyx/routing_from_text.py` の `read_units`・`_read_one`・`UnitReading`・`_places_of` だけ）。
+<!-- w5d2-prereg:end -->
+
+<!-- w5d2-amended:begin -->
+#### `tests/test_routing_from_text.py` (before = git show c875ed3:tests/test_routing_from_text.py)
+
+Added (helpers / tests, not amendments): `FakePlacement`, `std_placed`
+
+##### `explain_lines` — before
+
+```python
+def explain_lines(*pairs, source="x.md"):
+    """pairs: (sentence, reading).  The text is the sentences, one per line."""
+    table = {sentence: reading for sentence, reading in pairs}
+    text = "\n".join(sentence for sentence, _ in pairs) + "\n"
+    return rt.explain(text, source, reader=lambda s: table[s]), text
+```
+
+##### `explain_lines` — after
+
+```python
+def explain_lines(*pairs, source="x.md", lookup=None):
+    """pairs: (sentence, reading).  The text is the sentences, one per line.  ``lookup`` (W5-d2, default None = as before) is the placement."""
+    table = {sentence: reading for sentence, reading in pairs}
+    text = "\n".join(sentence for sentence, _ in pairs) + "\n"
+    return rt.explain(text, source, reader=lambda s: table[s], lookup=lookup), text
+```
+
+##### `test_relation_suitability_assign_recipient_and_perform_agent_and_role_verb` — before
+
+```python
+def test_relation_suitability_assign_recipient_and_perform_agent_and_role_verb(std):
+    explained, _ = explain_lines(("実装はハルに任せる。", rd("ja", cl("任せる", {"recipient": "ハル", "patient": "実装"}))),
+                                 ("モモがコードを読む。", rd("ja", cl("読む", {"agent": "モモ", "patient": "コード"}))))
+    assert kinds_of(explained) == [("SUITABILITY", ("ハル",), {"role": "implement"}),
+                                   ("SUITABILITY", ("モモ",), {"role": "read"})]
+    assert [r.fallback for r in explained.records.rules] == [True, True]      # an unconditional assignment is the role's fallback
+    assert out_of(explained)["agent"] == "ハル" and out_of(explained, role="read", kind="read_large_file")["agent"] == "モモ"
+```
+
+##### `test_relation_suitability_assign_recipient_and_perform_agent_and_role_verb` — after
+
+```python
+def test_relation_suitability_assign_recipient_and_perform_agent_and_role_verb(std_placed):
+    explained, _ = explain_lines(("実装はハルに任せる。", rd("ja", cl("任せる", {"recipient": "ハル", "patient": "実装"}))),
+                                 ("モモがコードを読む。", rd("ja", cl("読む", {"agent": "モモ", "patient": "コード"}))), lookup=FakePlacement())
+    assert kinds_of(explained) == [("SUITABILITY", ("ハル",), {"role": "implement"}),
+                                   ("SUITABILITY", ("モモ",), {"role": "read"})]
+    assert [r.fallback for r in explained.records.rules] == [True, True]      # an unconditional assignment is the role's fallback
+    assert out_of(explained)["agent"] == "ハル" and out_of(explained, role="read", kind="read_large_file")["agent"] == "モモ"
+```
+
+##### `test_relation_prohibition_by_polarity_and_by_modality` — before
+
+```python
+def test_relation_prohibition_by_polarity_and_by_modality(std):
+    for kw in ({"pol": "-"}, {"pol": "+", "mod": "prohibition"}):
+        explained, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")),
+                                     ("モモは検証をやってはいけない。", do("モモ", "検証", **kw)))
+        assert [(r.kind, r.names) for r in explained.extraction.relations] == [("SUITABILITY", ("ハル",)), ("PROHIBITION", ("モモ",))]
+        assert explained.records.constraints[0]["kind"] == "prohibit"
+        assert len(explained.records.rules) == 1       # a prohibition is not a record
+```
+
+##### `test_relation_prohibition_by_polarity_and_by_modality` — after
+
+```python
+def test_relation_prohibition_by_polarity_and_by_modality(std_placed):
+    for kw in ({"pol": "-"}, {"pol": "+", "mod": "prohibition"}):
+        explained, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")),
+                                     ("モモは検証をやってはいけない。", do("モモ", "検証", **kw)), lookup=FakePlacement())
+        assert [(r.kind, r.names) for r in explained.extraction.relations] == [("SUITABILITY", ("ハル",)), ("PROHIBITION", ("モモ",))]
+        assert explained.records.constraints[0]["kind"] == "prohibit"
+        assert len(explained.records.rules) == 1       # a prohibition is not a record
+```
+
+##### `test_relation_comparison_keeps_one_agent_only_and_comparison_only_does_not_stop` — before
+
+```python
+def test_relation_comparison_keeps_one_agent_only_and_comparison_only_does_not_stop(std):
+    explained, _ = explain_lines(("モモはハルより検証に向く。",
+                                  rd("ja", cl("向く", {"entity": "モモ", "goal": "検証", "standard": "ハル"}, comparison="comparative"))),
+                                 ("ハルは実装をやる。", do("ハル", "実装")))
+    (rule,) = [r for r in explained.records.rules if r.role == "verify"]
+    assert rule.preference == ("モモ",)                # not (モモ, ハル): "ハルでもよい" was not said
+    assert explained.extraction.units[0].status == "MAPPED"
+    assert [u.status for u in std.extraction.units][-1] == "COMPARISON_ONLY"
+    assert std.abstention is None                       # a comparison of two names that routes nothing does not stop the gate
+```
+
+##### `test_relation_comparison_keeps_one_agent_only_and_comparison_only_does_not_stop` — after
+
+```python
+def test_relation_comparison_keeps_one_agent_only_and_comparison_only_does_not_stop(std_placed):
+    explained, _ = explain_lines(("モモはハルより検証に向く。",
+                                  rd("ja", cl("向く", {"entity": "モモ", "goal": "検証", "standard": "ハル"}, comparison="comparative"))),
+                                 ("ハルは実装をやる。", do("ハル", "実装")), lookup=FakePlacement())
+    (rule,) = [r for r in explained.records.rules if r.role == "verify"]
+    assert rule.preference == ("モモ",)                # not (モモ, ハル): "ハルでもよい" was not said
+    assert explained.extraction.units[0].status == "MAPPED"
+    assert [u.status for u in std_placed.extraction.units][-1] == "COMPARISON_ONLY"
+    assert std_placed.abstention is None                       # a comparison of two names that routes nothing does not stop the gate
+```
+
+##### `test_relation_condition_from_a_size_word_and_head_by_concatenation` — before
+
+```python
+def test_relation_condition_from_a_size_word_and_head_by_concatenation():
+    explained, _ = explain_lines(("大きなリファクタリングはクイルに任せる。",
+                                  rd("ja", cl("任せる", {"recipient": "クイル", "patient": "大きなリファクタリング"}))),
+                                 ("実装はルナに任せる。", rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))))
+    rule = next(r for r in explained.records.rules if r.preference == ("クイル",))
+    assert {(c.field, c.value) for c in rule.conditions} == {("kind", "large_refactor"), ("size", "large")} and not rule.fallback
+    assert out_of(explained, kind="large_refactor", size="large")["agent"] == "クイル"
+    assert out_of(explained, kind="feature", size="small")["agent"] == "ルナ"
+```
+
+##### `test_relation_condition_from_a_size_word_and_head_by_concatenation` — after
+
+```python
+def test_relation_condition_from_a_size_word_and_head_by_concatenation():
+    explained, _ = explain_lines(("大きなリファクタリングはクイルに任せる。",
+                                  rd("ja", cl("任せる", {"recipient": "クイル", "patient": "大きなリファクタリング"}))),
+                                 ("実装はルナに任せる。", rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))), lookup=FakePlacement())
+    rule = next(r for r in explained.records.rules if r.preference == ("クイル",))
+    assert {(c.field, c.value) for c in rule.conditions} == {("kind", "large_refactor"), ("size", "large")} and not rule.fallback
+    assert out_of(explained, kind="large_refactor", size="large")["agent"] == "クイル"
+    assert out_of(explained, kind="feature", size="small")["agent"] == "ルナ"
+```
+
+##### `test_relation_independence_same_negated_distinct_and_a_different_phrase_is_held_as_ambiguous` — before
+
+```python
+def test_relation_independence_same_negated_distinct_and_a_different_phrase_is_held_as_ambiguous():
+    same, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")), ("セキは検証をやる。", do("セキ", "検証")),
+                            ("ハルとセキは同じ会社だ。", rd("ja", cl("だ", {"entity": "ハルとセキ", "value": "同じ会社"}))))
+    assert [(r.a, r.b, r.relation) for r in same.records.lineage_relations] == [("ハル", "セキ", "same")]
+    en, _ = explain_lines(("Rook does the review.", rd("en", cl("do", {"agent": "Rook", "patient": "review"}))),
+                          ("Lark reviews the code.", rd("en", cl("review", {"agent": "Lark", "patient": "code"}))),
+                          ("Rook and Lark are not the same family.",
+                           rd("en", cl("be", {"entity": "Rook and Lark", "value": "same family"}, "-"))))
+    assert [(r.a, r.b, r.relation) for r in en.records.lineage_relations] == [("Rook", "Lark", "distinct")]
+    amb, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")),
+                           ("ハルとセキは別の会社だ。", rd("ja", cl("だ", {"entity": "ハルとセキ", "value": "別の会社"}))))
+    assert amb.extraction.units[1].status == "AMBIGUOUS_RELATION" and amb.records.lineage_relations == ()
+    held = [r for r in rt.route_task(amb, task())["relations"] if r["held"]]
+    assert len(held) == 2 and {h["data"]["reading"] for h in held} == {"EACH_OTHER_DIFFERENT", "BOTH_DIFFERENT_FROM_A_THIRD"}
+    assert out_of(amb)["abstention"]["type"] == "INCOMPLETE_READING"
+```
+
+##### `test_relation_independence_same_negated_distinct_and_a_different_phrase_is_held_as_ambiguous` — after
+
+```python
+def test_relation_independence_same_negated_distinct_and_a_different_phrase_is_held_as_ambiguous():
+    same, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")), ("セキは検証をやる。", do("セキ", "検証")),
+                            ("ハルとセキは同じ会社だ。", rd("ja", cl("だ", {"entity": "ハルとセキ", "value": "同じ会社"}))), lookup=FakePlacement())
+    assert [(r.a, r.b, r.relation) for r in same.records.lineage_relations] == [("ハル", "セキ", "same")]
+    en, _ = explain_lines(("Rook does the review.", rd("en", cl("do", {"agent": "Rook", "patient": "review"}))),
+                          ("Lark reviews the code.", rd("en", cl("review", {"agent": "Lark", "patient": "code"}))),
+                          ("Rook and Lark are not the same family.",
+                           rd("en", cl("be", {"entity": "Rook and Lark", "value": "same family"}, "-"))), lookup=FakePlacement())
+    assert [(r.a, r.b, r.relation) for r in en.records.lineage_relations] == [("Rook", "Lark", "distinct")]
+    amb, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")),
+                           ("ハルとセキは別の会社だ。", rd("ja", cl("だ", {"entity": "ハルとセキ", "value": "別の会社"}))), lookup=FakePlacement())
+    assert amb.extraction.units[1].status == "AMBIGUOUS_RELATION" and amb.records.lineage_relations == ()
+    held = [r for r in rt.route_task(amb, task())["relations"] if r["held"]]
+    assert len(held) == 2 and {h["data"]["reading"] for h in held} == {"EACH_OTHER_DIFFERENT", "BOTH_DIFFERENT_FROM_A_THIRD"}
+    assert out_of(amb)["abstention"]["type"] == "INCOMPLETE_READING"
+```
+
+##### `test_relation_roles_independence_is_the_routers_default_r3_and_makes_no_record` — before
+
+```python
+def test_relation_roles_independence_is_the_routers_default_r3_and_makes_no_record():
+    explained, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")),
+                                 ("作った者と確かめる者は別の会社だ。",
+                                  rd("ja", cl("だ", {"entity": "作った者と確かめる者", "value": "別の会社"}))))
+    (rel,) = [r for r in explained.extraction.relations if r.kind == "INDEPENDENCE"]
+    assert rel.represented_by == "ROUTER_DEFAULT_R3" and explained.records.lineage_relations == ()
+    assert explained.records.constraints == () and explained.extraction.units[1].status == "MAPPED"
+```
+
+##### `test_relation_roles_independence_is_the_routers_default_r3_and_makes_no_record` — after
+
+```python
+def test_relation_roles_independence_is_the_routers_default_r3_and_makes_no_record():
+    explained, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")),
+                                 ("作った者と確かめる者は別の会社だ。",
+                                  rd("ja", cl("だ", {"entity": "作った者と確かめる者", "value": "別の会社"}))), lookup=FakePlacement())
+    (rel,) = [r for r in explained.extraction.relations if r.kind == "INDEPENDENCE"]
+    assert rel.represented_by == "ROUTER_DEFAULT_R3" and explained.records.lineage_relations == ()
+    assert explained.records.constraints == () and explained.extraction.units[1].status == "MAPPED"
+```
+
+##### `test_relation_quantity_sets_concurrency_and_other_quantifier_forms_stop` — before
+
+```python
+def test_relation_quantity_sets_concurrency_and_other_quantifier_forms_stop():
+    explained, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")),
+                                 ("ハルは同時に二つまで動かす。",
+                                  rd("ja", cl("動かす", {"agent": "ハル"}, quantifiers={"event": "at_most:2"}))))
+    assert explained.records.agents[0].concurrency == 2
+    assert out_of(explained, running={"ハル": 2})["undecided_reason"] == "ALL_EXCLUDED"
+    assert out_of(explained, running={"ハル": 1})["agent"] == "ハル"
+    bad, _ = explain_lines(("ハルは全部動かす。", rd("ja", cl("動かす", {"agent": "ハル"}, quantifiers={"event": "universal"}))))
+    assert bad.extraction.units[0].status == "UNREPRESENTABLE"
+```
+
+##### `test_relation_quantity_sets_concurrency_and_other_quantifier_forms_stop` — after
+
+```python
+def test_relation_quantity_sets_concurrency_and_other_quantifier_forms_stop():
+    explained, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")),
+                                 ("ハルは同時に二つまで動かす。",
+                                  rd("ja", cl("動かす", {"agent": "ハル"}, quantifiers={"event": "at_most:2"}))), lookup=FakePlacement())
+    assert explained.records.agents[0].concurrency == 2
+    assert out_of(explained, running={"ハル": 2})["undecided_reason"] == "ALL_EXCLUDED"
+    assert out_of(explained, running={"ハル": 1})["agent"] == "ハル"
+    bad, _ = explain_lines(("ハルは全部動かす。", rd("ja", cl("動かす", {"agent": "ハル"}, quantifiers={"event": "universal"}))), lookup=FakePlacement())
+    assert bad.extraction.units[0].status == "UNREPRESENTABLE"
+```
+
+##### `two_rules_and_a_precedence` — before
+
+```python
+def two_rules_and_a_precedence(prefer_arms):
+    return explain_lines(
+        ("実装はハルに任せる。", rd("ja", cl("任せる", {"recipient": "ハル", "patient": "実装"}))),
+        ("大きな修正はハルに任せる。", rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きな修正"}))),
+        ("大きな修正はルナに任せる。", rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "大きな修正"}))),
+        ("ルナをハルより優先する。", rd("ja", cl("優先する", prefer_arms))),
+    )[0]
+```
+
+##### `two_rules_and_a_precedence` — after
+
+```python
+def two_rules_and_a_precedence(prefer_arms, lookup=None):      # W5-d2: ``lookup`` (default None = as before) is the placement
+    return explain_lines(
+        ("実装はハルに任せる。", rd("ja", cl("任せる", {"recipient": "ハル", "patient": "実装"}))),
+        ("大きな修正はハルに任せる。", rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きな修正"}))),
+        ("大きな修正はルナに任せる。", rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "大きな修正"}))),
+        ("ルナをハルより優先する。", rd("ja", cl("優先する", prefer_arms))),
+        lookup=lookup,
+    )[0]
+```
+
+##### `test_relation_precedence_maps_to_one_pair_of_rules_and_resolves_the_tie` — before
+
+```python
+def test_relation_precedence_maps_to_one_pair_of_rules_and_resolves_the_tie():
+    # two non-fallback rules with the same conditions and different agents tie; the human's precedence decides between them
+    explained = two_rules_and_a_precedence({"patient": "ルナ", "standard": "ハル"})
+    assert explained.extraction.units[3].status == "MAPPED" and len(explained.records.precedence) == 1
+    got = out_of(explained, kind="small_fix", size="large")
+    assert got["decision"] == "route" and got["agent"] == "ルナ" and got["decided_by"] == "precedence"
+    assert got["basis_kind"] == "precedence"
+```
+
+##### `test_relation_precedence_maps_to_one_pair_of_rules_and_resolves_the_tie` — after
+
+```python
+def test_relation_precedence_maps_to_one_pair_of_rules_and_resolves_the_tie():
+    # two non-fallback rules with the same conditions and different agents tie; the human's precedence decides between them
+    explained = two_rules_and_a_precedence({"patient": "ルナ", "standard": "ハル"}, lookup=FakePlacement())
+    assert explained.extraction.units[3].status == "MAPPED" and len(explained.records.precedence) == 1
+    got = out_of(explained, kind="small_fix", size="large")
+    assert got["decision"] == "route" and got["agent"] == "ルナ" and got["decided_by"] == "precedence"
+    assert got["basis_kind"] == "precedence"
+```
+
+##### `test_relation_precedence_that_cannot_be_written_as_one_pair_is_held_as_ambiguous` — before
+
+```python
+def test_relation_precedence_that_cannot_be_written_as_one_pair_is_held_as_ambiguous():
+    assert two_rules_and_a_precedence({"patient": "ルナ"}).extraction.units[3].status == "AMBIGUOUS_RELATION"
+    lone, _ = explain_lines(("大きな修正はハルに任せる。", rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きな修正"}))),
+                            ("実装はハルに任せる。", rd("ja", cl("任せる", {"recipient": "ハル", "patient": "実装"}))),
+                            ("ルナをハルより優先する。", rd("ja", cl("優先する", {"patient": "ルナ", "standard": "ハル"}))))
+    assert lone.extraction.units[2].status == "AMBIGUOUS_RELATION" and lone.records.precedence == ()
+```
+
+##### `test_relation_precedence_that_cannot_be_written_as_one_pair_is_held_as_ambiguous` — after
+
+```python
+def test_relation_precedence_that_cannot_be_written_as_one_pair_is_held_as_ambiguous():
+    assert two_rules_and_a_precedence({"patient": "ルナ"}, lookup=FakePlacement()).extraction.units[3].status == "AMBIGUOUS_RELATION"
+    lone, _ = explain_lines(("大きな修正はハルに任せる。", rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きな修正"}))),
+                            ("実装はハルに任せる。", rd("ja", cl("任せる", {"recipient": "ハル", "patient": "実装"}))),
+                            ("ルナをハルより優先する。", rd("ja", cl("優先する", {"patient": "ルナ", "standard": "ハル"}))), lookup=FakePlacement())
+    assert lone.extraction.units[2].status == "AMBIGUOUS_RELATION" and lone.records.precedence == ()
+```
+
+##### `test_relation_override_replaces_exactly_the_same_scope_and_counts_it` — before
+
+```python
+def test_relation_override_replaces_exactly_the_same_scope_and_counts_it():
+    text = "実装はハルに任せる。\n追記：やっぱり実装はルナに任せる。\n"
+    table = {"実装はハルに任せる。": OV[0][1], "やっぱり実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
+    explained = rt.explain(text, "x.md", reader=lambda s: table[s])
+    assert explained.extraction.auto_resolved == 1
+    assert [r.superseded_by for r in explained.extraction.relations] == ["R002", None]
+    assert [r.preference for r in explained.records.rules] == [("ルナ",)]
+    result = rt.route_task(explained, task())
+    assert result["agent"] == "ルナ" and result["reading"]["auto_resolved"] == 1
+    assert [r["superseded_by"] for r in result["relations"]] == ["R002", None]      # the replaced relation is kept and says by what
+```
+
+##### `test_relation_override_replaces_exactly_the_same_scope_and_counts_it` — after
+
+```python
+def test_relation_override_replaces_exactly_the_same_scope_and_counts_it():
+    text = "実装はハルに任せる。\n追記：やっぱり実装はルナに任せる。\n"
+    table = {"実装はハルに任せる。": OV[0][1], "やっぱり実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
+    explained = rt.explain(text, "x.md", reader=lambda s: table[s], lookup=FakePlacement())
+    assert explained.extraction.auto_resolved == 1
+    assert [r.superseded_by for r in explained.extraction.relations] == ["R002", None]
+    assert [r.preference for r in explained.records.rules] == [("ルナ",)]
+    result = rt.route_task(explained, task())
+    assert result["agent"] == "ルナ" and result["reading"]["auto_resolved"] == 1
+    assert [r["superseded_by"] for r in result["relations"]] == ["R002", None]      # the replaced relation is kept and says by what
+```
+
+##### `test_relation_override_that_overlaps_only_partly_is_held_as_ambiguous` — before
+
+```python
+def test_relation_override_that_overlaps_only_partly_is_held_as_ambiguous():
+    table = {"大きな実装はハルに任せる。": rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きな実装"})),
+             "実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
+    # "大きな実装" is a size word before a head that is not a kind: the first sentence stops, so use a kind head instead
+    table = {"大きなリファクタリングはハルに任せる。": rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きなリファクタリング"})),
+             "やっぱり実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
+    text = "大きなリファクタリングはハルに任せる。\n追記：やっぱり実装はルナに任せる。\n"
+    explained = rt.explain(text, "x.md", reader=lambda s: table[s])
+    assert explained.extraction.units[1].status == "AMBIGUOUS_RELATION" and explained.extraction.auto_resolved == 0
+    assert out_of(explained)["abstention"]["type"] == "INCOMPLETE_READING"
+```
+
+##### `test_relation_override_that_overlaps_only_partly_is_held_as_ambiguous` — after
+
+```python
+def test_relation_override_that_overlaps_only_partly_is_held_as_ambiguous():
+    table = {"大きな実装はハルに任せる。": rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きな実装"})),
+             "実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
+    # "大きな実装" is a size word before a head that is not a kind: the first sentence stops, so use a kind head instead
+    table = {"大きなリファクタリングはハルに任せる。": rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きなリファクタリング"})),
+             "やっぱり実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
+    text = "大きなリファクタリングはハルに任せる。\n追記：やっぱり実装はルナに任せる。\n"
+    explained = rt.explain(text, "x.md", reader=lambda s: table[s], lookup=FakePlacement())
+    assert explained.extraction.units[1].status == "AMBIGUOUS_RELATION" and explained.extraction.auto_resolved == 0
+    assert out_of(explained)["abstention"]["type"] == "INCOMPLETE_READING"
+```
+
+##### `test_relation_alias_returns_the_first_name_and_task_names_are_mapped_to_it` — before
+
+```python
+def test_relation_alias_returns_the_first_name_and_task_names_are_mapped_to_it():
+    # another name comes from a CALL sentence only (a copula "X is Y" with two names is held as ambiguous: see the M1 tests below)
+    explained, _ = explain_lines(("ルナは実装をやる。", do("ルナ", "実装")),
+                                 ("ルナをクイルと呼ぶ。", rd("ja", cl("呼ぶ", {"patient": "ルナ", "result": "クイル"}))),
+                                 ("ソラがコードを確かめる。", rd("ja", cl("確かめる", {"agent": "ソラ", "patient": "コード"}))))
+    assert [{"canonical": g["canonical"], "aliases": g["aliases"]} for g in explained.records.aliases] == [{"canonical": "ルナ", "aliases": ["クイル"]}]
+    got = rt.route_task(explained, task(role="implement", running={"クイル": 1}))
+    # the alias in the task is read as the first name (ルナ, who declares no concurrency and is busy): not TASK_NAME_UNKNOWN
+    assert got["agent"] is None and got["undecided_reason"] == "ALL_EXCLUDED" and got["abstention"] is None
+    assert out_of(explained)["agent"] == "ルナ"
+```
+
+##### `test_relation_alias_returns_the_first_name_and_task_names_are_mapped_to_it` — after
+
+```python
+def test_relation_alias_returns_the_first_name_and_task_names_are_mapped_to_it():
+    # another name comes from a CALL sentence only (a copula "X is Y" with two names is held as ambiguous: see the M1 tests below)
+    explained, _ = explain_lines(("ルナは実装をやる。", do("ルナ", "実装")),
+                                 ("ルナをクイルと呼ぶ。", rd("ja", cl("呼ぶ", {"patient": "ルナ", "result": "クイル"}))),
+                                 ("ソラがコードを確かめる。", rd("ja", cl("確かめる", {"agent": "ソラ", "patient": "コード"}))), lookup=FakePlacement())
+    assert [{"canonical": g["canonical"], "aliases": g["aliases"]} for g in explained.records.aliases] == [{"canonical": "ルナ", "aliases": ["クイル"]}]
+    got = rt.route_task(explained, task(role="implement", running={"クイル": 1}))
+    # the alias in the task is read as the first name (ルナ, who declares no concurrency and is busy): not TASK_NAME_UNKNOWN
+    assert got["agent"] is None and got["undecided_reason"] == "ALL_EXCLUDED" and got["abstention"] is None
+    assert out_of(explained)["agent"] == "ルナ"
+```
+
+##### `test_relation_alias_first_called_is_by_the_order_of_the_explanation_not_by_the_alias_direction` — before
+
+```python
+def test_relation_alias_first_called_is_by_the_order_of_the_explanation_not_by_the_alias_direction():
+    explained, _ = explain_lines(("クイルは実装をやる。", do("クイル", "実装")),
+                                 ("クイルをルナと呼ぶ。", rd("ja", cl("呼ぶ", {"patient": "クイル", "result": "ルナ"}))))
+    assert out_of(explained)["agent"] == "クイル" and agent_ids(explained) == ["クイル"]
+    explained, _ = explain_lines(("クイルは実装をやる。", do("クイル", "実装")),
+                                 ("ルナをクイルと呼ぶ。", rd("ja", cl("呼ぶ", {"patient": "ルナ", "result": "クイル"}))))
+    assert out_of(explained)["agent"] == "クイル" and agent_ids(explained) == ["クイル"]
+```
+
+##### `test_relation_alias_first_called_is_by_the_order_of_the_explanation_not_by_the_alias_direction` — after
+
+```python
+def test_relation_alias_first_called_is_by_the_order_of_the_explanation_not_by_the_alias_direction():
+    explained, _ = explain_lines(("クイルは実装をやる。", do("クイル", "実装")),
+                                 ("クイルをルナと呼ぶ。", rd("ja", cl("呼ぶ", {"patient": "クイル", "result": "ルナ"}))), lookup=FakePlacement())
+    assert out_of(explained)["agent"] == "クイル" and agent_ids(explained) == ["クイル"]
+    explained, _ = explain_lines(("クイルは実装をやる。", do("クイル", "実装")),
+                                 ("ルナをクイルと呼ぶ。", rd("ja", cl("呼ぶ", {"patient": "ルナ", "result": "クイル"}))), lookup=FakePlacement())
+    assert out_of(explained)["agent"] == "クイル" and agent_ids(explained) == ["クイル"]
+```
+
+##### `test_M1_a_copula_between_two_names_is_ambiguous_and_makes_no_alias_and_no_merge` — before
+
+```python
+def test_M1_a_copula_between_two_names_is_ambiguous_and_makes_no_alias_and_no_merge():
+    for left, right in (("ハル", "東社"), ("クイル", "ルナ")):
+        explained, _ = explain_lines((f"{left}は実装をやる。", do(left, "実装")),
+                                     (f"{left}は{right}だ。", rd("ja", cl("だ", {"entity": left, "value": right}))))
+        unit = explained.extraction.units[1]
+        assert unit.status == "AMBIGUOUS_RELATION" and unit.reasons == ["COPULA_ALIAS_OR_PREDICATION"]
+        assert explained.records.aliases == ()
+        got = out_of(explained)
+        assert got["decision"] == "undecided" and got["abstention"]["type"] == "INCOMPLETE_READING" and got["router"] is None
+        held = [r for r in got["relations"] if r["held"]]
+        assert {h["data"]["reading"] for h in held} == {"COPULA_IS_ANOTHER_NAME", "COPULA_IS_A_PREDICATE_OF_THE_FIRST"}
+    # two agents that "are" the same third name stay two agents: nobody is routed on the strength of a merge
+    explained, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")),
+                                 ("セキはレビューをやる。", do("セキ", "レビュー")),
+                                 ("ハルは東社だ。", rd("ja", cl("だ", {"entity": "ハル", "value": "東社"}))),
+                                 ("セキは東社だ。", rd("ja", cl("だ", {"entity": "セキ", "value": "東社"}))))
+    assert agent_ids(explained) == ["セキ", "ハル"] and explained.records.aliases == ()
+    for job in (task(), task(role="review", kind="review")):
+        assert rt.route_task(explained, job)["decision"] == "undecided"
+```
+
+##### `test_M1_a_copula_between_two_names_is_ambiguous_and_makes_no_alias_and_no_merge` — after
+
+```python
+def test_M1_a_copula_between_two_names_is_ambiguous_and_makes_no_alias_and_no_merge():
+    for left, right in (("ハル", "東社"), ("クイル", "ルナ")):
+        explained, _ = explain_lines((f"{left}は実装をやる。", do(left, "実装")),
+                                     (f"{left}は{right}だ。", rd("ja", cl("だ", {"entity": left, "value": right}))), lookup=FakePlacement())
+        unit = explained.extraction.units[1]
+        assert unit.status == "AMBIGUOUS_RELATION" and unit.reasons == ["COPULA_ALIAS_OR_PREDICATION"]
+        assert explained.records.aliases == ()
+        got = out_of(explained)
+        assert got["decision"] == "undecided" and got["abstention"]["type"] == "INCOMPLETE_READING" and got["router"] is None
+        held = [r for r in got["relations"] if r["held"]]
+        assert {h["data"]["reading"] for h in held} == {"COPULA_IS_ANOTHER_NAME", "COPULA_IS_A_PREDICATE_OF_THE_FIRST"}
+    # two agents that "are" the same third name stay two agents: nobody is routed on the strength of a merge
+    explained, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")),
+                                 ("セキはレビューをやる。", do("セキ", "レビュー")),
+                                 ("ハルは東社だ。", rd("ja", cl("だ", {"entity": "ハル", "value": "東社"}))),
+                                 ("セキは東社だ。", rd("ja", cl("だ", {"entity": "セキ", "value": "東社"}))), lookup=FakePlacement())
+    assert agent_ids(explained) == ["セキ", "ハル"] and explained.records.aliases == ()
+    for job in (task(), task(role="review", kind="review")):
+        assert rt.route_task(explained, job)["decision"] == "undecided"
+```
+
+##### `test_M3_a_nonpast_centre_is_read_and_a_reading_without_a_tense_is_rejected_by_the_cross_as_unread` — before
+
+```python
+def test_M3_a_nonpast_centre_is_read_and_a_reading_without_a_tense_is_rejected_by_the_cross_as_unread():
+    explained, _ = explain_lines(("ハルが実装をやる。", do("ハル", "実装")))
+    assert explained.extraction.units[0].status == "MAPPED"
+    clause = cl("やる", {"agent": "ハル", "patient": "実装"})
+    del clause["tense"]
+    explained, _ = explain_lines(("ハルが実装をやる。", rd("ja", clause)))
+    assert explained.extraction.units[0].status == "UNREAD"       # the cross requires the key (INPUT_REJECTED): never a silent default
+```
+
+##### `test_M3_a_nonpast_centre_is_read_and_a_reading_without_a_tense_is_rejected_by_the_cross_as_unread` — after
+
+```python
+def test_M3_a_nonpast_centre_is_read_and_a_reading_without_a_tense_is_rejected_by_the_cross_as_unread():
+    explained, _ = explain_lines(("ハルが実装をやる。", do("ハル", "実装")), lookup=FakePlacement())
+    assert explained.extraction.units[0].status == "MAPPED"
+    clause = cl("やる", {"agent": "ハル", "patient": "実装"})
+    del clause["tense"]
+    explained, _ = explain_lines(("ハルが実装をやる。", rd("ja", clause)), lookup=FakePlacement())
+    assert explained.extraction.units[0].status == "UNREAD"       # the cross requires the key (INPUT_REJECTED): never a silent default
+```
+
+##### `test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replacement` — before
+
+```python
+def test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replacement():
+    ov, text = explain_lines(("ハルはテストを書く。", rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"}))),
+                             ("セキもテストを書く。", rd("ja", cl("書く", {"agent": "セキ", "patient": "テスト"}))))
+    # the same kind (A does it -> B does it) replaces; a different kind and a different name (A does it -> B does not) is held
+    table = {"ハルはテストを書く。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"})),
+             "やっぱりモモはテストを書かない。": rd("ja", cl("書く", {"agent": "モモ", "patient": "テスト"}, "-"))}
+    explained = rt.explain("ハルはテストを書く。\n追記：やっぱりモモはテストを書かない。\n", "x.md", reader=lambda sentence: table[sentence])
+    unit = explained.extraction.units[1]
+    assert unit.status == "AMBIGUOUS_RELATION" and unit.reasons[0].startswith("OVERRIDE_OTHER_KIND_AND_NAME:")
+    assert explained.extraction.auto_resolved == 0 and out_of(explained, kind="test_authoring")["abstention"]["type"] == "INCOMPLETE_READING"
+    same_name = {"ハルはテストを書く。": table["ハルはテストを書く。"],
+                 "やっぱりハルはテストを書かない。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"}, "-"))}
+    explained = rt.explain("ハルはテストを書く。\n追記：やっぱりハルはテストを書かない。\n", "x.md", reader=lambda sentence: same_name[sentence])
+    assert explained.extraction.units[1].status == "MAPPED" and explained.extraction.auto_resolved == 1
+```
+
+##### `test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replacement` — after
+
+```python
+def test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replacement():
+    ov, text = explain_lines(("ハルはテストを書く。", rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"}))),
+                             ("セキもテストを書く。", rd("ja", cl("書く", {"agent": "セキ", "patient": "テスト"}))), lookup=FakePlacement())
+    # the same kind (A does it -> B does it) replaces; a different kind and a different name (A does it -> B does not) is held
+    table = {"ハルはテストを書く。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"})),
+             "やっぱりモモはテストを書かない。": rd("ja", cl("書く", {"agent": "モモ", "patient": "テスト"}, "-"))}
+    explained = rt.explain("ハルはテストを書く。\n追記：やっぱりモモはテストを書かない。\n", "x.md", reader=lambda sentence: table[sentence], lookup=FakePlacement())
+    unit = explained.extraction.units[1]
+    assert unit.status == "AMBIGUOUS_RELATION" and unit.reasons[0].startswith("OVERRIDE_OTHER_KIND_AND_NAME:")
+    assert explained.extraction.auto_resolved == 0 and out_of(explained, kind="test_authoring")["abstention"]["type"] == "INCOMPLETE_READING"
+    same_name = {"ハルはテストを書く。": table["ハルはテストを書く。"],
+                 "やっぱりハルはテストを書かない。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"}, "-"))}
+    explained = rt.explain("ハルはテストを書く。\n追記：やっぱりハルはテストを書かない。\n", "x.md", reader=lambda sentence: same_name[sentence], lookup=FakePlacement())
+    assert explained.extraction.units[1].status == "MAPPED" and explained.extraction.auto_resolved == 1
+```
+
+##### `test_relation_human_and_wait_with_scope_and_residual` — before
+
+```python
+def test_relation_human_and_wait_with_scope_and_residual():
+    base = (("ハルは実装をやる。", do("ハル", "実装")), ("ソラがコードを確かめる。", rd("ja", cl("確かめる", {"agent": "ソラ", "patient": "コード"}))))
+    human, _ = explain_lines(*base, ("生成は人がやる。", do("人", "生成")))
+    assert out_of(human, role="generate", kind="bulk_generation")["undecided_reason"] == "HUMAN"
+    assert out_of(human)["agent"] == "ハル"                                  # a human-does-it statement is scoped
+    wait, _ = explain_lines(*base, ("生成を待つ。", rd("ja", cl("待つ", {"patient": "生成"}))))
+    assert out_of(wait, role="generate", kind="bulk_generation")["undecided_reason"] == "WAIT"
+    rest, _ = explain_lines(*base, ("それ以外の仕事を待つ。", rd("ja", cl("待つ", {"patient": "それ以外の仕事"}))))
+    assert out_of(rest, role="generate", kind="bulk_generation")["undecided_reason"] == "WAIT"   # where the router said NOT_COVERED
+    assert out_of(rest)["agent"] == "ハル"                                    # a residual scope never turns a route into a wait
+    assert out_of(rest, role="verify", kind="verification")["undecided_reason"] == "ALL_EXCLUDED"   # and not ALL_EXCLUDED either
+```
+
+##### `test_relation_human_and_wait_with_scope_and_residual` — after
+
+```python
+def test_relation_human_and_wait_with_scope_and_residual():
+    base = (("ハルは実装をやる。", do("ハル", "実装")), ("ソラがコードを確かめる。", rd("ja", cl("確かめる", {"agent": "ソラ", "patient": "コード"}))))
+    human, _ = explain_lines(*base, ("生成は人がやる。", do("人", "生成")), lookup=FakePlacement())
+    assert out_of(human, role="generate", kind="bulk_generation")["undecided_reason"] == "HUMAN"
+    assert out_of(human)["agent"] == "ハル"                                  # a human-does-it statement is scoped
+    wait, _ = explain_lines(*base, ("生成を待つ。", rd("ja", cl("待つ", {"patient": "生成"}))), lookup=FakePlacement())
+    assert out_of(wait, role="generate", kind="bulk_generation")["undecided_reason"] == "WAIT"
+    rest, _ = explain_lines(*base, ("それ以外の仕事を待つ。", rd("ja", cl("待つ", {"patient": "それ以外の仕事"}))), lookup=FakePlacement())
+    assert out_of(rest, role="generate", kind="bulk_generation")["undecided_reason"] == "WAIT"   # where the router said NOT_COVERED
+    assert out_of(rest)["agent"] == "ハル"                                    # a residual scope never turns a route into a wait
+    assert out_of(rest, role="verify", kind="verification")["undecided_reason"] == "ALL_EXCLUDED"   # and not ALL_EXCLUDED either
+```
+
+##### `one_unit_status` — before
+
+```python
+def one_unit_status(sentence, reading):
+    explained, _ = explain_lines((sentence, reading))
+    return explained.extraction.units[0].status, explained.extraction.units[0].reasons
+```
+
+##### `one_unit_status` — after
+
+```python
+def one_unit_status(sentence, reading, lookup=None):      # W5-d2: ``lookup`` (default None = as before) is the placement
+    explained, _ = explain_lines((sentence, reading), lookup=lookup)
+    return explained.extraction.units[0].status, explained.extraction.units[0].reasons
+```
+
+##### `test_stops_have_their_own_typed_status` — before
+
+```python
+@pytest.mark.parametrize("sentence,reading,status", [
+    ("ハルは速い。", rd("ja", cl("速い", {"entity": "ハル"})), "PREDICATE_CLASS_UNKNOWN"),
+    ("ハルは占いをやる。", do("ハル", "占い"), "WORK_TERM_UNKNOWN"),
+    ("前者は実装をやる。", do("前者", "実装"), "NAME_UNRESOLVED"),
+    ("重い方は実装をやる。", do("重い方", "実装"), "NAME_UNRESOLVED"),
+    ("ハルさんは実装をやる。", do("ハルさん", "実装"), "NAME_UNRESOLVED"),
+    ("The quiet one does the review.", rd("en", cl("do", {"agent": "the quiet one", "patient": "review"})), "NAME_UNRESOLVED"),
+    ("ハルは10ファイルを超える実装をやる。", do("ハル", "10ファイルを超える実装"), "WORK_TERM_UNKNOWN"),
+    ("ハルは実装をやる。", rd("ja", cl("やる", {"agent": "ハル", "patient": "実装", "time": "明日"})), "UNREPRESENTABLE"),
+    ("ハルは1日3回まで実装をやる。", rd("ja", cl("やる", {"agent": "ハル", "patient": "実装"}, quantifiers={"event": "at_most:3"})), "UNREPRESENTABLE"),
+    ("ハルは実装をやりたい。", rd("ja", cl("やる", {"agent": "ハル", "patient": "実装"}, mod="desire")), "UNREPRESENTABLE"),
+    ("ハルは実装をやる。", rd("ja", cl("やる", {"agent": "ハル", "patient": "実装"}, voice="passive")), "UNREPRESENTABLE"),
+    ("ハルは実装をやる。", rd("ja", cl("やる", {"agent": ["ハル", "モモ"], "patient": "実装"})), "AMBIGUOUS_RELATION"),
+    ("ハルは東社のモデルだ。", rd("ja", cl("だ", {"entity": "ハル", "value": "東社のモデル"})), "NAME_UNRESOLVED"),
+    ("ハルは実装だ。", rd("ja", cl("だ", {"entity": "ハル", "value": "実装"})), "MAPPED"),
+])
+def test_stops_have_their_own_typed_status(sentence, reading, status):
+    got, reasons = one_unit_status(sentence, reading)
+    assert got == status, reasons
+```
+
+##### `test_stops_have_their_own_typed_status` — after
+
+```python
+@pytest.mark.parametrize("sentence,reading,status", [
+    ("ハルは速い。", rd("ja", cl("速い", {"entity": "ハル"})), "PREDICATE_CLASS_UNKNOWN"),
+    ("ハルは占いをやる。", do("ハル", "占い"), "WORK_TERM_UNKNOWN"),
+    ("前者は実装をやる。", do("前者", "実装"), "NAME_UNRESOLVED"),
+    ("重い方は実装をやる。", do("重い方", "実装"), "NAME_UNRESOLVED"),
+    ("ハルさんは実装をやる。", do("ハルさん", "実装"), "NAME_UNRESOLVED"),
+    ("The quiet one does the review.", rd("en", cl("do", {"agent": "the quiet one", "patient": "review"})), "NAME_UNRESOLVED"),
+    ("ハルは10ファイルを超える実装をやる。", do("ハル", "10ファイルを超える実装"), "WORK_TERM_UNKNOWN"),
+    ("ハルは実装をやる。", rd("ja", cl("やる", {"agent": "ハル", "patient": "実装", "time": "明日"})), "UNREPRESENTABLE"),
+    ("ハルは1日3回まで実装をやる。", rd("ja", cl("やる", {"agent": "ハル", "patient": "実装"}, quantifiers={"event": "at_most:3"})), "UNREPRESENTABLE"),
+    ("ハルは実装をやりたい。", rd("ja", cl("やる", {"agent": "ハル", "patient": "実装"}, mod="desire")), "UNREPRESENTABLE"),
+    ("ハルは実装をやる。", rd("ja", cl("やる", {"agent": "ハル", "patient": "実装"}, voice="passive")), "UNREPRESENTABLE"),
+    ("ハルは実装をやる。", rd("ja", cl("やる", {"agent": ["ハル", "モモ"], "patient": "実装"})), "AMBIGUOUS_RELATION"),
+    ("ハルは東社のモデルだ。", rd("ja", cl("だ", {"entity": "ハル", "value": "東社のモデル"})), "NAME_UNRESOLVED"),
+    ("ハルは実装だ。", rd("ja", cl("だ", {"entity": "ハル", "value": "実装"})), "MAPPED"),
+])
+def test_stops_have_their_own_typed_status(sentence, reading, status):
+    got, reasons = one_unit_status(sentence, reading, lookup=FakePlacement())
+    assert got == status, reasons
+```
+
+##### `test_stop_contradiction_and_conflicting_values` — before
+
+```python
+def test_stop_contradiction_and_conflicting_values():
+    both, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")), ("ハルは実装をやらない。", do("ハル", "実装", "-")))
+    assert [u.status for u in both.extraction.units] == ["CONTRADICTION", "CONTRADICTION"]
+    quant, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")),
+                             ("ハルは二つまで動かす。", rd("ja", cl("動かす", {"agent": "ハル"}, quantifiers={"event": "at_most:2"}))),
+                             ("ハルは三つまで動かす。", rd("ja", cl("動かす", {"agent": "ハル"}, quantifiers={"event": "at_most:3"}))))
+    assert [u.status for u in quant.extraction.units][1:] == ["CONTRADICTION", "CONTRADICTION"]
+```
+
+##### `test_stop_contradiction_and_conflicting_values` — after
+
+```python
+def test_stop_contradiction_and_conflicting_values():
+    both, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")), ("ハルは実装をやらない。", do("ハル", "実装", "-")), lookup=FakePlacement())
+    assert [u.status for u in both.extraction.units] == ["CONTRADICTION", "CONTRADICTION"]
+    quant, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")),
+                             ("ハルは二つまで動かす。", rd("ja", cl("動かす", {"agent": "ハル"}, quantifiers={"event": "at_most:2"}))),
+                             ("ハルは三つまで動かす。", rd("ja", cl("動かす", {"agent": "ハル"}, quantifiers={"event": "at_most:3"}))), lookup=FakePlacement())
+    assert [u.status for u in quant.extraction.units][1:] == ["CONTRADICTION", "CONTRADICTION"]
+```
+
+##### `test_gate_one_unread_unit_stops_every_job_and_the_router_is_not_called` — before
+
+```python
+def test_gate_one_unread_unit_stops_every_job_and_the_router_is_not_called(monkeypatch):
+    calls = []
+    real = ar.route
+    monkeypatch.setattr(ar, "route", lambda *a, **k: calls.append(1) or real(*a, **k))
+    explained, _ = explain_lines(*STD, ("ただし大きい物は人がやる。", no("ja")))
+    for job in (task(), task(role="verify", kind="verification", already_used={"implement": ["ハル"]}), task(role="review", kind="review")):
+        got = rt.route_task(explained, job)
+        assert got["decision"] == "undecided" and got["undecided_reason"] == "ABSTAINED" and got["agent"] is None
+        assert got["abstention"]["type"] == "INCOMPLETE_READING" and got["router"] is None
+        assert got["decided_by"] == "gate:INCOMPLETE_READING" and got["basis_kind"] is None
+        assert got["abstention"]["by_status"]["UNREAD"] == 1 and got["abstention"]["by_status"]["MAPPED"] == 7
+        assert [u["status"] for u in got["abstention"]["units"]] == ["UNREAD"]
+    assert calls == []
+    # the records of the units that were read are still reported
+    assert got["records"]["agents"] and got["records"]["rules"]
+    clean, _ = explain_lines(*STD)
+    assert rt.route_task(clean, task())["decision"] == "route" and calls == [1]
+```
+
+##### `test_gate_one_unread_unit_stops_every_job_and_the_router_is_not_called` — after
+
+```python
+def test_gate_one_unread_unit_stops_every_job_and_the_router_is_not_called(monkeypatch):
+    calls = []
+    real = ar.route
+    monkeypatch.setattr(ar, "route", lambda *a, **k: calls.append(1) or real(*a, **k))
+    explained, _ = explain_lines(*STD, ("ただし大きい物は人がやる。", no("ja")), lookup=FakePlacement())
+    for job in (task(), task(role="verify", kind="verification", already_used={"implement": ["ハル"]}), task(role="review", kind="review")):
+        got = rt.route_task(explained, job)
+        assert got["decision"] == "undecided" and got["undecided_reason"] == "ABSTAINED" and got["agent"] is None
+        assert got["abstention"]["type"] == "INCOMPLETE_READING" and got["router"] is None
+        assert got["decided_by"] == "gate:INCOMPLETE_READING" and got["basis_kind"] is None
+        assert got["abstention"]["by_status"]["UNREAD"] == 1 and got["abstention"]["by_status"]["MAPPED"] == 7
+        assert [u["status"] for u in got["abstention"]["units"]] == ["UNREAD"]
+    assert calls == []
+    # the records of the units that were read are still reported
+    assert got["records"]["agents"] and got["records"]["rules"]
+    clean, _ = explain_lines(*STD, lookup=FakePlacement())
+    assert rt.route_task(clean, task())["decision"] == "route" and calls == [1]
+```
+
+##### `test_T3_records_are_declared_text_with_witnesses_that_are_substrings_and_say_only_what_was_said` — before
+
+```python
+def test_T3_records_are_declared_text_with_witnesses_that_are_substrings_and_say_only_what_was_said(std):
+    explained, text = explain_lines(*STD, source="/some/explanation.md")
+    r = explained.records
+    assert r.agents and r.rules
+    for item in (*r.agents, *r.rules, *r.precedence, *r.lineage_relations):
+        basis = item.basis
+        assert basis.kind == "declared_text" and basis.source == "/some/explanation.md" and len(basis.witnesses) >= 1
+        assert all(w in text and w.strip() for w in basis.witnesses)
+    for agent in r.agents:
+        assert agent.lineage is None and agent.adapter == "fake" and agent.model is None and agent.effort is None
+        assert agent.note is None and agent.roles is None and agent.kinds is None and agent.concurrency is None
+    for rule in r.rules:
+        assert rule.reason is None and all(c.field != "independent_of" for c in rule.conditions)
+    assert [c["agent"] for c in r.constructed] == [a.id for a in r.agents]
+    assert all(c == {"agent": c["agent"], "field": "adapter", "value": "fake", "reason": "ADAPTER_NOT_STATED_ROUTE_ONLY"}
+               for c in r.constructed)
+    ar.build_routing_table(r.agents, r.rules, r.precedence, r.lineage_relations)   # the same record layer as any producer
+```
+
+##### `test_T3_records_are_declared_text_with_witnesses_that_are_substrings_and_say_only_what_was_said` — after
+
+```python
+def test_T3_records_are_declared_text_with_witnesses_that_are_substrings_and_say_only_what_was_said(std_placed):
+    explained, text = explain_lines(*STD, source="/some/explanation.md", lookup=FakePlacement())
+    r = explained.records
+    assert r.agents and r.rules
+    for item in (*r.agents, *r.rules, *r.precedence, *r.lineage_relations):
+        basis = item.basis
+        assert basis.kind == "declared_text" and basis.source == "/some/explanation.md" and len(basis.witnesses) >= 1
+        assert all(w in text and w.strip() for w in basis.witnesses)
+    for agent in r.agents:
+        assert agent.lineage is None and agent.adapter == "fake" and agent.model is None and agent.effort is None
+        assert agent.note is None and agent.roles is None and agent.kinds is None and agent.concurrency is None
+    for rule in r.rules:
+        assert rule.reason is None and all(c.field != "independent_of" for c in rule.conditions)
+    assert [c["agent"] for c in r.constructed] == [a.id for a in r.agents]
+    assert all(c == {"agent": c["agent"], "field": "adapter", "value": "fake", "reason": "ADAPTER_NOT_STATED_ROUTE_ONLY"}
+               for c in r.constructed)
+    ar.build_routing_table(r.agents, r.rules, r.precedence, r.lineage_relations)   # the same record layer as any producer
+```
+
+##### `test_T3_an_unconditional_assignment_is_the_fallback_and_nothing_else_is_made_one` — before
+
+```python
+def test_T3_an_unconditional_assignment_is_the_fallback_and_nothing_else_is_made_one(std):
+    by_conditions = {tuple((c.field, c.value) for c in rule.conditions): rule for rule in std.records.rules}
+    assert by_conditions[(("role", "implement"),)].fallback and by_conditions[(("role", "verify"),)].fallback
+    assert by_conditions[(("role", "review"),)].fallback
+    assert not by_conditions[(("kind", "test_authoring"),)].fallback and not by_conditions[(("kind", "attack"),)].fallback
+    assert sorted(r.role for r in std.records.rules if r.fallback) == ["implement", "review", "verify"]
+```
+
+##### `test_T3_an_unconditional_assignment_is_the_fallback_and_nothing_else_is_made_one` — after
+
+```python
+def test_T3_an_unconditional_assignment_is_the_fallback_and_nothing_else_is_made_one(std_placed):
+    by_conditions = {tuple((c.field, c.value) for c in rule.conditions): rule for rule in std_placed.records.rules}
+    assert by_conditions[(("role", "implement"),)].fallback and by_conditions[(("role", "verify"),)].fallback
+    assert by_conditions[(("role", "review"),)].fallback
+    assert not by_conditions[(("kind", "test_authoring"),)].fallback and not by_conditions[(("kind", "attack"),)].fallback
+    assert sorted(r.role for r in std_placed.records.rules if r.fallback) == ["implement", "review", "verify"]
+```
+
+##### `test_T3_two_unconditional_assignments_of_one_role_are_refused_by_the_record_layer_and_not_made_one` — before
+
+```python
+def test_T3_two_unconditional_assignments_of_one_role_are_refused_by_the_record_layer_and_not_made_one():
+    explained, _ = explain_lines(("実装はハルに任せる。", rd("ja", cl("任せる", {"recipient": "ハル", "patient": "実装"}))),
+                                 ("実装はルナに任せる。", rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))))
+    got = out_of(explained)
+    assert explained.table is None and explained.table_error[0] == "DUPLICATE_FALLBACK"
+    assert got["abstention"]["type"] == "RECORD_REFUSED" and got["abstention"]["detail"] == "DUPLICATE_FALLBACK"
+    assert got["records"]["table"] == "REFUSED:DUPLICATE_FALLBACK" and got["router"] is None and got["undecided_reason"] == "ABSTAINED"
+```
+
+##### `test_T3_two_unconditional_assignments_of_one_role_are_refused_by_the_record_layer_and_not_made_one` — after
+
+```python
+def test_T3_two_unconditional_assignments_of_one_role_are_refused_by_the_record_layer_and_not_made_one():
+    explained, _ = explain_lines(("実装はハルに任せる。", rd("ja", cl("任せる", {"recipient": "ハル", "patient": "実装"}))),
+                                 ("実装はルナに任せる。", rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))), lookup=FakePlacement())
+    got = out_of(explained)
+    assert explained.table is None and explained.table_error[0] == "DUPLICATE_FALLBACK"
+    assert got["abstention"]["type"] == "RECORD_REFUSED" and got["abstention"]["detail"] == "DUPLICATE_FALLBACK"
+    assert got["records"]["table"] == "REFUSED:DUPLICATE_FALLBACK" and got["router"] is None and got["undecided_reason"] == "ABSTAINED"
+```
+
+##### `test_T3_a_role_less_conditional_rule_needs_no_fallback_and_a_size_word_before_an_unknown_head_stops` — before
+
+```python
+def test_T3_a_role_less_conditional_rule_needs_no_fallback_and_a_size_word_before_an_unknown_head_stops():
+    cond, _ = explain_lines(("大きなリファクタリングはハルに任せる。",
+                             rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きなリファクタリング"}))),
+                            ("ハルはレビューをやる。", do("ハル", "レビュー")))
+    assert cond.table is not None and cond.abstention is None
+    unknown, _ = explain_lines(("ハルは大きな占いをやる。", do("ハル", "大きな占い")))
+    assert unknown.extraction.units[0].status == "WORK_TERM_UNKNOWN"
+```
+
+##### `test_T3_a_role_less_conditional_rule_needs_no_fallback_and_a_size_word_before_an_unknown_head_stops` — after
+
+```python
+def test_T3_a_role_less_conditional_rule_needs_no_fallback_and_a_size_word_before_an_unknown_head_stops():
+    cond, _ = explain_lines(("大きなリファクタリングはハルに任せる。",
+                             rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きなリファクタリング"}))),
+                            ("ハルはレビューをやる。", do("ハル", "レビュー")), lookup=FakePlacement())
+    assert cond.table is not None and cond.abstention is None
+    unknown, _ = explain_lines(("ハルは大きな占いをやる。", do("ハル", "大きな占い")), lookup=FakePlacement())
+    assert unknown.extraction.units[0].status == "WORK_TERM_UNKNOWN"
+```
+
+##### `test_T3_a_conditional_role_rule_without_the_roles_fallback_is_refused` — before
+
+```python
+def test_T3_a_conditional_role_rule_without_the_roles_fallback_is_refused():
+    # "大きな" before the role word 実装 gives role=implement & size=large: a conditional rule of a role with no fallback
+    explained, _ = explain_lines(("大きな実装はハルに任せる。", rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きな実装"}))))
+    assert explained.extraction.units[0].status == "MAPPED"
+    assert explained.table_error[0] == "MISSING_ROLE_DEFAULT"
+    got = out_of(explained)
+    assert got["abstention"]["type"] == "RECORD_REFUSED" and got["abstention"]["detail"] == "MISSING_ROLE_DEFAULT"
+    assert explained.records.rules[0].fallback is False
+```
+
+##### `test_T3_a_conditional_role_rule_without_the_roles_fallback_is_refused` — after
+
+```python
+def test_T3_a_conditional_role_rule_without_the_roles_fallback_is_refused():
+    # "大きな" before the role word 実装 gives role=implement & size=large: a conditional rule of a role with no fallback
+    explained, _ = explain_lines(("大きな実装はハルに任せる。", rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きな実装"}))), lookup=FakePlacement())
+    assert explained.extraction.units[0].status == "MAPPED"
+    assert explained.table_error[0] == "MISSING_ROLE_DEFAULT"
+    got = out_of(explained)
+    assert got["abstention"]["type"] == "RECORD_REFUSED" and got["abstention"]["detail"] == "MISSING_ROLE_DEFAULT"
+    assert explained.records.rules[0].fallback is False
+```
+
+##### `test_T3_only_says_roles_or_kinds_and_otherwise_they_stay_unsaid` — before
+
+```python
+def test_T3_only_says_roles_or_kinds_and_otherwise_they_stay_unsaid():
+    explained, _ = explain_lines(("ウィックは検証だけをやる。", rd("ja", cl("やる", {"agent": "ウィック", "patient": "検証"}, quantifiers={"patient": "only"}))),
+                                 ("ハルはテストだけを書く。", rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"}, quantifiers={"patient": "only"}))),
+                                 ("クイルは実装をやる。", do("クイル", "実装")))
+    by_id = {a.id: a for a in explained.records.agents}
+    assert by_id["ウィック"].roles == frozenset({"verify"}) and by_id["ウィック"].kinds is None
+    assert by_id["ハル"].kinds == frozenset({"test_authoring"}) and by_id["ハル"].roles is None
+    assert by_id["クイル"].roles is None and by_id["クイル"].kinds is None
+```
+
+##### `test_T3_only_says_roles_or_kinds_and_otherwise_they_stay_unsaid` — after
+
+```python
+def test_T3_only_says_roles_or_kinds_and_otherwise_they_stay_unsaid():
+    explained, _ = explain_lines(("ウィックは検証だけをやる。", rd("ja", cl("やる", {"agent": "ウィック", "patient": "検証"}, quantifiers={"patient": "only"}))),
+                                 ("ハルはテストだけを書く。", rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"}, quantifiers={"patient": "only"}))),
+                                 ("クイルは実装をやる。", do("クイル", "実装")), lookup=FakePlacement())
+    by_id = {a.id: a for a in explained.records.agents}
+    assert by_id["ウィック"].roles == frozenset({"verify"}) and by_id["ウィック"].kinds is None
+    assert by_id["ハル"].kinds == frozenset({"test_authoring"}) and by_id["ハル"].roles is None
+    assert by_id["クイル"].roles is None and by_id["クイル"].kinds is None
+```
+
+##### `test_T3_the_same_content_as_a_hand_written_table_gives_the_same_decisions` — before
+
+```python
+def test_T3_the_same_content_as_a_hand_written_table_gives_the_same_decisions(std):
+    hand = ar.table_from_dicts(
+        agents=[{"id": "ハル", "adapter": "fake", "witness": "w"}, {"id": "モモ", "adapter": "fake", "witness": "w"},
+                {"id": "セキ", "adapter": "fake", "witness": "w"}],
+        rules=[{"id": "A", "when": {"role": "implement"}, "prefer": ["ハル"], "fallback": True, "witness": "w"},
+               {"id": "B", "when": {"kind": "test_authoring"}, "prefer": ["モモ"], "witness": "w"},
+               {"id": "C", "when": {"role": "verify"}, "prefer": ["セキ"], "fallback": True, "witness": "w"},
+               {"id": "D", "when": {"role": "review"}, "prefer": ["モモ"], "fallback": True, "witness": "w"},
+               {"id": "E", "when": {"kind": "attack"}, "prefer": ["ハル"], "witness": "w"}],
+        lineage_relations=[{"a": "ハル", "b": "セキ", "relation": "same", "witness": "w"}])
+    requests = [dict(role="implement", kind="feature", size="medium"), dict(role="implement", kind="test_authoring", size="small"),
+                dict(role="review", kind="review", size="medium"), dict(role="verify", kind="verification", size="medium"),
+                dict(role="verify", kind="verification", size="medium", used_agents={"implement": ("ハル",)}),
+                dict(role="verify", kind="verification", size="medium", used_agents={"implement": ("モモ",)}),
+                dict(role="read", kind="read_large_file", size="large"), dict(role="verify", kind="attack", size="small",
+                                                                             used_agents={"implement": ("モモ",)})]
+    assert len(requests) >= 6
+    for fields in requests:
+        request = ar.RoutingRequest(job_id="j", **fields)
+        assert ar.route(std.table, request).essence() == ar.route(hand, request).essence(), fields
+```
+
+##### `test_T3_the_same_content_as_a_hand_written_table_gives_the_same_decisions` — after
+
+```python
+def test_T3_the_same_content_as_a_hand_written_table_gives_the_same_decisions(std_placed):
+    hand = ar.table_from_dicts(
+        agents=[{"id": "ハル", "adapter": "fake", "witness": "w"}, {"id": "モモ", "adapter": "fake", "witness": "w"},
+                {"id": "セキ", "adapter": "fake", "witness": "w"}],
+        rules=[{"id": "A", "when": {"role": "implement"}, "prefer": ["ハル"], "fallback": True, "witness": "w"},
+               {"id": "B", "when": {"kind": "test_authoring"}, "prefer": ["モモ"], "witness": "w"},
+               {"id": "C", "when": {"role": "verify"}, "prefer": ["セキ"], "fallback": True, "witness": "w"},
+               {"id": "D", "when": {"role": "review"}, "prefer": ["モモ"], "fallback": True, "witness": "w"},
+               {"id": "E", "when": {"kind": "attack"}, "prefer": ["ハル"], "witness": "w"}],
+        lineage_relations=[{"a": "ハル", "b": "セキ", "relation": "same", "witness": "w"}])
+    requests = [dict(role="implement", kind="feature", size="medium"), dict(role="implement", kind="test_authoring", size="small"),
+                dict(role="review", kind="review", size="medium"), dict(role="verify", kind="verification", size="medium"),
+                dict(role="verify", kind="verification", size="medium", used_agents={"implement": ("ハル",)}),
+                dict(role="verify", kind="verification", size="medium", used_agents={"implement": ("モモ",)}),
+                dict(role="read", kind="read_large_file", size="large"), dict(role="verify", kind="attack", size="small",
+                                                                             used_agents={"implement": ("モモ",)})]
+    assert len(requests) >= 6
+    for fields in requests:
+        request = ar.RoutingRequest(job_id="j", **fields)
+        assert ar.route(std_placed.table, request).essence() == ar.route(hand, request).essence(), fields
+```
+
+##### `test_router_call_passes_used_agents_only_no_chooser_and_the_first_names` — before
+
+```python
+def test_router_call_passes_used_agents_only_no_chooser_and_the_first_names(monkeypatch, std):
+    seen = {}
+    real = ar.route
+
+    def spy(table, request, **kw):
+        seen["request"], seen["kw"] = request, kw
+        return real(table, request, **kw)
+
+    monkeypatch.setattr(ar, "route", spy)
+    got = rt.route_task(std, task(role="verify", kind="verification", already_used={"implement": "モモ"}, running={"ハル": 1}))
+    request = seen["request"]
+    assert request.used_agents == {"implement": ("モモ",)} and request.used_lineages == {} and request.in_use == {"ハル": 1}
+    assert seen["kw"] == {} and request.job_id == "route-from-text"
+    assert got["router"]["values"] == "declared"
+```
+
+##### `test_router_call_passes_used_agents_only_no_chooser_and_the_first_names` — after
+
+```python
+def test_router_call_passes_used_agents_only_no_chooser_and_the_first_names(monkeypatch, std_placed):
+    seen = {}
+    real = ar.route
+
+    def spy(table, request, **kw):
+        seen["request"], seen["kw"] = request, kw
+        return real(table, request, **kw)
+
+    monkeypatch.setattr(ar, "route", spy)
+    got = rt.route_task(std_placed, task(role="verify", kind="verification", already_used={"implement": "モモ"}, running={"ハル": 1}))
+    request = seen["request"]
+    assert request.used_agents == {"implement": ("モモ",)} and request.used_lineages == {} and request.in_use == {"ハル": 1}
+    assert seen["kw"] == {} and request.job_id == "route-from-text"
+    assert got["router"]["values"] == "declared"
+```
+
+##### `test_router_reasons_are_written_through_from_the_routers_types` — before
+
+```python
+def test_router_reasons_are_written_through_from_the_routers_types(std):
+    assert out_of(std, role="read", kind="read_large_file")["undecided_reason"] == "NOT_COVERED"
+    assert out_of(std, role="verify", kind="verification", already_used={"implement": ["モモ"]})["undecided_reason"] == "ALL_EXCLUDED"
+    tie, _ = explain_lines(("テストはハルがやる。", do("ハル", "テスト")), ("テストはルナがやる。", do("ルナ", "テスト")),
+                           ("実装はクイルに任せる。", rd("ja", cl("任せる", {"recipient": "クイル", "patient": "実装"}))))
+    got = out_of(tie, kind="test_authoring", size="small")
+    assert got["undecided_reason"] == "TIE" and got["decided_by"] == "router:TESTIMONY_UNAVAILABLE" and got["basis_kind"] == "precedence"
+    assert got["agent"] is None and got["abstention"] is None
+    assert out_of(std, kind="test_authoring", size="small")["decided_by"] == "rule:T001_1"
+```
+
+##### `test_router_reasons_are_written_through_from_the_routers_types` — after
+
+```python
+def test_router_reasons_are_written_through_from_the_routers_types(std_placed):
+    assert out_of(std_placed, role="read", kind="read_large_file")["undecided_reason"] == "NOT_COVERED"
+    assert out_of(std_placed, role="verify", kind="verification", already_used={"implement": ["モモ"]})["undecided_reason"] == "ALL_EXCLUDED"
+    tie, _ = explain_lines(("テストはハルがやる。", do("ハル", "テスト")), ("テストはルナがやる。", do("ルナ", "テスト")),
+                           ("実装はクイルに任せる。", rd("ja", cl("任せる", {"recipient": "クイル", "patient": "実装"}))), lookup=FakePlacement())
+    got = out_of(tie, kind="test_authoring", size="small")
+    assert got["undecided_reason"] == "TIE" and got["decided_by"] == "router:TESTIMONY_UNAVAILABLE" and got["basis_kind"] == "precedence"
+    assert got["agent"] is None and got["abstention"] is None
+    assert out_of(std_placed, kind="test_authoring", size="small")["decided_by"] == "rule:T001_1"
+```
+
+##### `test_router_unknown_task_names_abstain_with_their_own_type` — before
+
+```python
+def test_router_unknown_task_names_abstain_with_their_own_type(std):
+    for kw in ({"already_used": {"implement": ["ゲンバ"]}}, {"running": {"ゲンバ": 1}}):
+        got = out_of(std, **kw)
+        assert got["abstention"]["type"] == "TASK_NAME_UNKNOWN" and got["undecided_reason"] == "ABSTAINED" and got["agent"] is None
+    named_only_in_a_comparison_only_sentence = explain_lines(*STD)[0]
+    assert "ハル" in agent_ids(named_only_in_a_comparison_only_sentence)
+```
+
+##### `test_router_unknown_task_names_abstain_with_their_own_type` — after
+
+```python
+def test_router_unknown_task_names_abstain_with_their_own_type(std_placed):
+    for kw in ({"already_used": {"implement": ["ゲンバ"]}}, {"running": {"ゲンバ": 1}}):
+        got = out_of(std_placed, **kw)
+        assert got["abstention"]["type"] == "TASK_NAME_UNKNOWN" and got["undecided_reason"] == "ABSTAINED" and got["agent"] is None
+    named_only_in_a_comparison_only_sentence = explain_lines(*STD, lookup=FakePlacement())[0]
+    assert "ハル" in agent_ids(named_only_in_a_comparison_only_sentence)
+```
+
+##### `test_constraint_prohibition_veto_does_not_try_the_next_agent` — before
+
+```python
+def test_constraint_prohibition_veto_does_not_try_the_next_agent(std):
+    got = rt.route_task(with_constraints(std, [cons("prohibit", "ハル", role="implement")]), task())
+    assert got["abstention"]["type"] == "PROHIBITION_VETO" and got["agent"] is None and got["undecided_reason"] == "ABSTAINED"
+    assert got["router"]["agent_id"] == "ハル"        # what the router had decided is reported, and nobody else is chosen
+```
+
+##### `test_constraint_prohibition_veto_does_not_try_the_next_agent` — after
+
+```python
+def test_constraint_prohibition_veto_does_not_try_the_next_agent(std_placed):
+    got = rt.route_task(with_constraints(std_placed, [cons("prohibit", "ハル", role="implement")]), task())
+    assert got["abstention"]["type"] == "PROHIBITION_VETO" and got["agent"] is None and got["undecided_reason"] == "ABSTAINED"
+    assert got["router"]["agent_id"] == "ハル"        # what the router had decided is reported, and nobody else is chosen
+```
+
+##### `test_constraint_human_and_wait_scopes_and_residual_and_conflict` — before
+
+```python
+def test_constraint_human_and_wait_scopes_and_residual_and_conflict(std):
+    ok = rt.route_task(with_constraints(std, [cons("human", role="generate")]), task())
+    assert ok["decision"] == "route"
+    for kind, label in (("human", "HUMAN"), ("wait", "WAIT")):
+        got = rt.route_task(with_constraints(std, [cons(kind, role="implement")]), task())
+        assert got["undecided_reason"] == label and got["decided_by"] == f"constraint:{kind}" and got["agent"] is None
+    residual = cons("wait", residual=True)
+    assert rt.route_task(with_constraints(std, [residual]), task())["decision"] == "route"
+    assert rt.route_task(with_constraints(std, [residual]), task(role="read", kind="read_large_file"))["undecided_reason"] == "WAIT"
+    clash = rt.route_task(with_constraints(std, [cons("human", role="implement"), cons("wait", kind="feature")]), task())
+    assert clash["abstention"]["type"] == "CONSTRAINT_CONFLICT" and clash["undecided_reason"] == "ABSTAINED"
+```
+
+##### `test_constraint_human_and_wait_scopes_and_residual_and_conflict` — after
+
+```python
+def test_constraint_human_and_wait_scopes_and_residual_and_conflict(std_placed):
+    ok = rt.route_task(with_constraints(std_placed, [cons("human", role="generate")]), task())
+    assert ok["decision"] == "route"
+    for kind, label in (("human", "HUMAN"), ("wait", "WAIT")):
+        got = rt.route_task(with_constraints(std_placed, [cons(kind, role="implement")]), task())
+        assert got["undecided_reason"] == label and got["decided_by"] == f"constraint:{kind}" and got["agent"] is None
+    residual = cons("wait", residual=True)
+    assert rt.route_task(with_constraints(std_placed, [residual]), task())["decision"] == "route"
+    assert rt.route_task(with_constraints(std_placed, [residual]), task(role="read", kind="read_large_file"))["undecided_reason"] == "WAIT"
+    clash = rt.route_task(with_constraints(std_placed, [cons("human", role="implement"), cons("wait", kind="feature")]), task())
+    assert clash["abstention"]["type"] == "CONSTRAINT_CONFLICT" and clash["undecided_reason"] == "ABSTAINED"
+```
+
+##### `test_constraint_independence_veto_for_two_other_roles` — before
+
+```python
+def test_constraint_independence_veto_for_two_other_roles():
+    explained, _ = explain_lines(("ハルは検証をやる。", do("ハル", "検証")), ("モモはレビューをやる。", do("モモ", "レビュー")),
+                                 ("ルナは実装をやる。", do("ルナ", "実装")),
+                                 ("モモとルナは別の会社だ。", rd("ja", cl("だ", {"entity": "モモとルナ", "value": "同じ会社"}, "-"))))
+    independent = cons("independent", roles=["implement", "review"])
+    got = rt.route_task(with_constraints(explained, [independent]), task(role="review", kind="review", already_used={"implement": ["ハル"]}))
+    assert got["abstention"]["type"] == "INDEPENDENCE_VETO" and got["agent"] is None      # モモ vs ハル: no relation is said
+    got = rt.route_task(with_constraints(explained, [independent]), task(role="review", kind="review", already_used={"implement": ["ルナ"]}))
+    assert got["decision"] == "route" and got["agent"] == "モモ"                            # モモ vs ルナ: said to be distinct
+    got = rt.route_task(with_constraints(explained, [independent]), task(role="implement", kind="feature", already_used={"review": ["ハル"]}))
+    assert got["abstention"]["type"] == "INDEPENDENCE_VETO"                                # the pair is read in both directions
+    assert [(r.a, r.b, r.relation) for r in explained.records.lineage_relations] == [("モモ", "ルナ", "distinct")]
+```
+
+##### `test_constraint_independence_veto_for_two_other_roles` — after
+
+```python
+def test_constraint_independence_veto_for_two_other_roles():
+    explained, _ = explain_lines(("ハルは検証をやる。", do("ハル", "検証")), ("モモはレビューをやる。", do("モモ", "レビュー")),
+                                 ("ルナは実装をやる。", do("ルナ", "実装")),
+                                 ("モモとルナは別の会社だ。", rd("ja", cl("だ", {"entity": "モモとルナ", "value": "同じ会社"}, "-"))), lookup=FakePlacement())
+    independent = cons("independent", roles=["implement", "review"])
+    got = rt.route_task(with_constraints(explained, [independent]), task(role="review", kind="review", already_used={"implement": ["ハル"]}))
+    assert got["abstention"]["type"] == "INDEPENDENCE_VETO" and got["agent"] is None      # モモ vs ハル: no relation is said
+    got = rt.route_task(with_constraints(explained, [independent]), task(role="review", kind="review", already_used={"implement": ["ルナ"]}))
+    assert got["decision"] == "route" and got["agent"] == "モモ"                            # モモ vs ルナ: said to be distinct
+    got = rt.route_task(with_constraints(explained, [independent]), task(role="implement", kind="feature", already_used={"review": ["ハル"]}))
+    assert got["abstention"]["type"] == "INDEPENDENCE_VETO"                                # the pair is read in both directions
+    assert [(r.a, r.b, r.relation) for r in explained.records.lineage_relations] == [("モモ", "ルナ", "distinct")]
+```
+
+##### `test_handoff2_a_role_less_attack_rule_and_a_verify_job_do_not_make_an_independence_cycle` — before
+
+```python
+def test_handoff2_a_role_less_attack_rule_and_a_verify_job_do_not_make_an_independence_cycle(std):
+    assert std.table is not None
+    got = out_of(std, role="verify", kind="attack", already_used={"implement": ["モモ"]})
+    assert got["records"]["table"] == "BUILT"
+    assert all(c.field != "independent_of" for rule in std.records.rules for c in rule.conditions)
+```
+
+##### `test_handoff2_a_role_less_attack_rule_and_a_verify_job_do_not_make_an_independence_cycle` — after
+
+```python
+def test_handoff2_a_role_less_attack_rule_and_a_verify_job_do_not_make_an_independence_cycle(std_placed):
+    assert std_placed.table is not None
+    got = out_of(std_placed, role="verify", kind="attack", already_used={"implement": ["モモ"]})
+    assert got["records"]["table"] == "BUILT"
+    assert all(c.field != "independent_of" for rule in std_placed.records.rules for c in rule.conditions)
+```
+
+##### `test_handoff3_a_role_less_closed_choice_rule_is_chosen_for_an_answer_job` — before
+
+```python
+def test_handoff3_a_role_less_closed_choice_rule_is_chosen_for_an_answer_job():
+    explained, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")),
+                                 ("ハルはレビューをやる。", do("ハル", "レビュー")),
+                                 ("ルナは回答をやる。", do("ルナ", "回答")))
+    # a role-less rule is made from a kind word; the closed choice has no word in the table, so build the same record by hand
+    rule = ar.RoutingRule("T900_1", (ar.Condition("kind", "closed_choice"),), ("ルナ",), None, ar.Basis.text("x", "w"))
+    records = dataclasses.replace(explained.records, rules=tuple(explained.records.rules) + (rule,))
+    table = ar.build_routing_table(records.agents, records.rules, records.precedence, records.lineage_relations)
+    decision = ar.route(table, ar.RoutingRequest(job_id="j", role="answer", kind="closed_choice", size="small"))
+    assert decision.decided and decision.agent_id == "ルナ"
+```
+
+##### `test_handoff3_a_role_less_closed_choice_rule_is_chosen_for_an_answer_job` — after
+
+```python
+def test_handoff3_a_role_less_closed_choice_rule_is_chosen_for_an_answer_job():
+    explained, _ = explain_lines(("ハルは実装をやる。", do("ハル", "実装")),
+                                 ("ハルはレビューをやる。", do("ハル", "レビュー")),
+                                 ("ルナは回答をやる。", do("ルナ", "回答")), lookup=FakePlacement())
+    # a role-less rule is made from a kind word; the closed choice has no word in the table, so build the same record by hand
+    rule = ar.RoutingRule("T900_1", (ar.Condition("kind", "closed_choice"),), ("ルナ",), None, ar.Basis.text("x", "w"))
+    records = dataclasses.replace(explained.records, rules=tuple(explained.records.rules) + (rule,))
+    table = ar.build_routing_table(records.agents, records.rules, records.precedence, records.lineage_relations)
+    decision = ar.route(table, ar.RoutingRequest(job_id="j", role="answer", kind="closed_choice", size="small"))
+    assert decision.decided and decision.agent_id == "ルナ"
+```
+
+##### `test_output_keys_order_and_basis_kinds` — before
+
+```python
+def test_output_keys_order_and_basis_kinds(std):
+    got = out_of(std)
+    assert list(got) == ["schema", "decision", "agent", "undecided_reason", "abstention", "basis_kind", "evidence", "decided_by",
+                         "records", "relations", "reading", "router", "ignored_fields", "task"]
+    assert list(got["records"]) == ["agents", "rules", "precedence", "lineage_relations", "aliases", "constraints", "constructed", "table"]
+    assert got["schema"] == rt.SCHEMA and got["reading"]["lookup"] == "stub-no-placement/1"
+    assert got["basis_kind"] in rt.BASIS_KINDS_OUT and got["evidence"] == ["ハルは実装をやる。"]
+    assert out_of(std, kind="test_authoring", size="small")["basis_kind"] == "condition"
+    for undecided in (out_of(std, role="read", kind="read_large_file"), out_of(std, role="verify", kind="verification",
+                                                                                   already_used={"implement": ["ハル"]})):
+        assert undecided["undecided_reason"] in rt.UNDECIDED_OUT and undecided["basis_kind"] in rt.BASIS_KINDS_OUT + (None,)
+    assert out_of(std, role="read", kind="read_large_file")["basis_kind"] == "silence"
+    assert json.loads(rt.dumps(got)) == got
+```
+
+##### `test_output_keys_order_and_basis_kinds` — after
+
+```python
+def test_output_keys_order_and_basis_kinds(std_placed):
+    got = out_of(std_placed)
+    assert list(got) == ["schema", "decision", "agent", "undecided_reason", "abstention", "basis_kind", "evidence", "decided_by",
+                         "records", "relations", "reading", "router", "ignored_fields", "task"]
+    assert list(got["records"]) == ["agents", "rules", "precedence", "lineage_relations", "aliases", "constraints", "constructed", "table"]
+    assert got["schema"] == rt.SCHEMA and got["reading"]["lookup"] == "test-fake-placement/1"      # W5-d2 (K2): the explanation was read under the made-up placement; the id of "no placement" is held by test_w5d2_k2_the_standard_explanation_with_and_without_a_placement
+    assert got["basis_kind"] in rt.BASIS_KINDS_OUT and got["evidence"] == ["ハルは実装をやる。"]
+    assert out_of(std_placed, kind="test_authoring", size="small")["basis_kind"] == "condition"
+    for undecided in (out_of(std_placed, role="read", kind="read_large_file"), out_of(std_placed, role="verify", kind="verification",
+                                                                                   already_used={"implement": ["ハル"]})):
+        assert undecided["undecided_reason"] in rt.UNDECIDED_OUT and undecided["basis_kind"] in rt.BASIS_KINDS_OUT + (None,)
+    assert out_of(std_placed, role="read", kind="read_large_file")["basis_kind"] == "silence"
+    assert json.loads(rt.dumps(got)) == got
+```
+
+#### `tests/test_routing_from_text_entry.py` (before = git show c875ed3:tests/test_routing_from_text_entry.py)
+
+Added (helpers / tests, not amendments): none
+
+##### `entry` — before
+
+```python
+def entry(explanation, task, seed="0", module=("-m", "verantyx.cli", "route")):
+    env = dict(os.environ)
+    env.update({"PYTHONPATH": ROOT, "PYTHONDONTWRITEBYTECODE": "1", "PYTHONHASHSEED": seed})
+    argument = task if isinstance(task, str) else json.dumps(task, ensure_ascii=False)
+    return subprocess.run([sys.executable, *module, "--explanation", explanation, "--task", argument],
+                          capture_output=True, text=True, env=env, cwd=ROOT)
+```
+
+##### `entry` — after
+
+```python
+def entry(explanation, task, seed="0", module=("-m", "verantyx.cli", "route")):
+    env = dict(os.environ)
+    env.pop("VERA_PLACEMENT", None)      # W5-d2: the entry reads VERA_PLACEMENT, so a variable of the caller must not decide what these tests (written for "no placement") see
+    env.update({"PYTHONPATH": ROOT, "PYTHONDONTWRITEBYTECODE": "1", "PYTHONHASHSEED": seed})
+    argument = task if isinstance(task, str) else json.dumps(task, ensure_ascii=False)
+    return subprocess.run([sys.executable, *module, "--explanation", explanation, "--task", argument],
+                          capture_output=True, text=True, env=env, cwd=ROOT)
+```
+
+##### `test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader` — before
+
+```python
+def test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader():
+    # W5-a round 3 (auditor's decision B3 (β); docs/READING_SOUNDNESS.md K64): the entry no longer reads an を-phrase as the thing acted on when
+    # the subject has no person evidence and the predicate is in none of the reader's classes with an を-object (書く, 確かめる: the corpus
+    # table alone calls them transitive). Two sentences of r1.md are not read, so the gate abstains and nobody is routed. The name is kept;
+    # the old expectation is kept in K64 in full.
+    proc = entry(r1(), TASK)
+    assert proc.returncode == 0, proc.stderr
+    assert proc.stdout.count("\n") == 1                      # one line
+    out = json.loads(proc.stdout)
+    assert list(out) == KEYS
+    assert (out["decision"], out["agent"], out["undecided_reason"]) == ("undecided", None, "ABSTAINED")
+    assert out["decided_by"] == "gate:INCOMPLETE_READING" and out["router"] is None
+    assert out["abstention"]["type"] == "INCOMPLETE_READING"
+    assert out["abstention"]["detail"] == "2 of 8 units were not read and mapped; no job is routed"
+    assert out["abstention"]["units"] == [
+        {"index": 1, "status": "UNREAD", "text": "モモがテストを書く。", "reasons": ["AGENT_EVIDENCE_MISSING:モモ"]},
+        {"index": 2, "status": "UNREAD", "text": "セキがコードを確かめる。", "reasons": ["AGENT_EVIDENCE_MISSING:セキ"]}]
+    assert out["evidence"] == ["モモがテストを書く。", "セキがコードを確かめる。"]
+    assert out["reading"]["by_status"] == {"MAPPED": 5, "COMPARISON_ONLY": 1, "UNREAD": 2, "PREDICATE_CLASS_UNKNOWN": 0, "WORK_TERM_UNKNOWN": 0,
+                                           "AMBIGUOUS_RELATION": 0, "NAME_UNRESOLVED": 0, "CONTRADICTION": 0, "UNREPRESENTABLE": 0}
+    assert out["reading"]["lookup"] == "stub-no-placement/1"
+    assert all(a["basis"]["kind"] == "declared_text" and a["lineage"] is None for a in out["records"]["agents"])
+```
+
+##### `test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader` — after
+
+```python
+def test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader():
+    # W5-d2 (auditor's ruling B1, K2): the name is kept; the expectation is the contract of W5-d. This entry has no placement (the variable is taken off in entry()), and since
+    # W5-d (R-J1) a Japanese name that no naming sentence introduced is not verified without a placement: the units that were MAPPED are NAME_UNRESOLVED
+    # (NAME_UNVERIFIED:<name>:NO_PLACEMENT) and nobody is routed. The earlier text of this test (W5-a round 3: two sentences UNREAD, five MAPPED) is kept in the
+    # docs (w5d2-amended) and in K64 of docs/READING_SOUNDNESS.md.
+    proc = entry(r1(), TASK)
+    assert proc.returncode == 0, proc.stderr
+    assert proc.stdout.count("\n") == 1                      # one line
+    out = json.loads(proc.stdout)
+    assert list(out) == KEYS
+    assert (out["decision"], out["agent"], out["undecided_reason"]) == ("undecided", None, "ABSTAINED")
+    assert out["decided_by"] == "gate:INCOMPLETE_READING" and out["router"] is None
+    assert out["abstention"]["type"] == "INCOMPLETE_READING"
+    assert out["abstention"]["detail"] == "8 of 8 units were not read and mapped; no job is routed"
+    assert out["abstention"]["units"] == [
+        {"index": 0, "status": "NAME_UNRESOLVED", "text": "ハルは実装をやる。", "reasons": ["NAME_UNVERIFIED:ハル:NO_PLACEMENT"]},
+        {"index": 1, "status": "UNREAD", "text": "モモがテストを書く。", "reasons": ["AGENT_EVIDENCE_MISSING:モモ"]},
+        {"index": 2, "status": "UNREAD", "text": "セキがコードを確かめる。", "reasons": ["AGENT_EVIDENCE_MISSING:セキ"]},
+        {"index": 3, "status": "NAME_UNRESOLVED", "text": "モモは検証をやらない。", "reasons": ["NAME_UNVERIFIED:モモ:NO_PLACEMENT"]},
+        {"index": 4, "status": "NAME_UNRESOLVED", "text": "レビューはモモがやる。", "reasons": ["NAME_UNVERIFIED:モモ:NO_PLACEMENT"]},
+        {"index": 5, "status": "NAME_UNRESOLVED", "text": "ハルが攻撃をやる。", "reasons": ["NAME_UNVERIFIED:ハル:NO_PLACEMENT"]},
+        {"index": 6, "status": "NAME_UNRESOLVED", "text": "ハルとセキは同じ会社だ。", "reasons": ["NAME_UNVERIFIED:ハル:NO_PLACEMENT"]},
+        {"index": 7, "status": "NAME_UNRESOLVED", "text": "モモはハルより速い。", "reasons": ["NAME_UNVERIFIED:モモ:NO_PLACEMENT"]}]
+    assert out["evidence"] == ["ハルは実装をやる。", "モモがテストを書く。", "セキがコードを確かめる。", "モモは検証をやらない。", "レビューはモモがやる。",
+                               "ハルが攻撃をやる。", "ハルとセキは同じ会社だ。", "モモはハルより速い。"]
+    assert out["reading"]["by_status"] == {"MAPPED": 0, "COMPARISON_ONLY": 0, "UNREAD": 2, "PREDICATE_CLASS_UNKNOWN": 0, "WORK_TERM_UNKNOWN": 0,
+                                           "AMBIGUOUS_RELATION": 0, "NAME_UNRESOLVED": 6, "CONTRADICTION": 0, "UNREPRESENTABLE": 0}
+    assert out["reading"]["lookup"] == "stub-no-placement/1"
+    assert out["records"]["agents"] == []                      # nothing was mapped, so no agent record exists
+    assert all(a["basis"]["kind"] == "declared_text" and a["lineage"] is None for a in out["records"]["agents"])
+```
+
+#### `tests/test_routing_from_text_regress.py` (before = git show c875ed3:tests/test_routing_from_text_regress.py)
+
+Added (helpers / tests, not amendments): none
+
+##### `run` — before
+
+```python
+def run(text, job):
+    return rt.route_task(rt.explain(text, "probe.md"), dict(job))
+```
+
+##### `run` — after
+
+```python
+def run(text, job, lookup=None):      # W5-d2: ``lookup`` (default None = as before) is the placement
+    return rt.route_task(rt.explain(text, "probe.md", lookup=lookup), dict(job))
+```
+
+##### `statuses` — before
+
+```python
+def statuses(text):
+    return [(u.status, u.reasons) for u in rt.explain(text, "probe.md").extraction.units]
+```
+
+##### `statuses` — after
+
+```python
+def statuses(text, lookup=None):      # W5-d2: ``lookup`` (default None = as before) is the placement
+    return [(u.status, u.reasons) for u in rt.explain(text, "probe.md", lookup=lookup).extraction.units]
+```
+
+##### `test_M1_two_agents_that_are_each_east_co_are_not_merged_and_nobody_is_routed` — before
+
+```python
+def test_M1_two_agents_that_are_each_east_co_are_not_merged_and_nobody_is_routed():
+    assert [s for s, _ in statuses(M1_TEXT)] == ["MAPPED", "MAPPED", "AMBIGUOUS_RELATION", "AMBIGUOUS_RELATION"]
+    for job in (REVIEW, IMPLEMENT):
+        got = run(M1_TEXT, job)
+        assert got["decision"] == "undecided" and got["agent"] is None and got["undecided_reason"] == "ABSTAINED"
+        assert got["abstention"]["type"] == "INCOMPLETE_READING" and got["abstention"]["by_status"]["AMBIGUOUS_RELATION"] == 2
+        assert got["records"]["aliases"] == [] and [a["id"] for a in got["records"]["agents"]] == ["ハル", "セキ"]
+        assert sorted(item["data"]["reading"] for item in got["relations"] if item["held"]) == [
+            "COPULA_IS_ANOTHER_NAME", "COPULA_IS_ANOTHER_NAME",
+            "COPULA_IS_A_PREDICATE_OF_THE_FIRST", "COPULA_IS_A_PREDICATE_OF_THE_FIRST"]
+```
+
+##### `test_M1_two_agents_that_are_each_east_co_are_not_merged_and_nobody_is_routed` — after
+
+```python
+def test_M1_two_agents_that_are_each_east_co_are_not_merged_and_nobody_is_routed():
+    assert [s for s, _ in statuses(M1_TEXT, lookup=FakePlacement())] == ["MAPPED", "MAPPED", "AMBIGUOUS_RELATION", "AMBIGUOUS_RELATION"]
+    for job in (REVIEW, IMPLEMENT):
+        got = run(M1_TEXT, job, lookup=FakePlacement())
+        assert got["decision"] == "undecided" and got["agent"] is None and got["undecided_reason"] == "ABSTAINED"
+        assert got["abstention"]["type"] == "INCOMPLETE_READING" and got["abstention"]["by_status"]["AMBIGUOUS_RELATION"] == 2
+        assert got["records"]["aliases"] == [] and [a["id"] for a in got["records"]["agents"]] == ["ハル", "セキ"]
+        assert sorted(item["data"]["reading"] for item in got["relations"] if item["held"]) == [
+            "COPULA_IS_ANOTHER_NAME", "COPULA_IS_ANOTHER_NAME",
+            "COPULA_IS_A_PREDICATE_OF_THE_FIRST", "COPULA_IS_A_PREDICATE_OF_THE_FIRST"]
+```
+
+##### `test_M3_the_non_past_sentence_of_the_same_form_is_still_routed` — before
+
+```python
+def test_M3_the_non_past_sentence_of_the_same_form_is_still_routed():
+    got = run("ハルが実装をやる。\n", IMPLEMENT)
+    assert (got["decision"], got["agent"]) == ("route", "ハル")
+    got = run("Rook reviews the code.\n", REVIEW)
+    assert (got["decision"], got["agent"]) == ("route", "Rook")
+```
+
+##### `test_M3_the_non_past_sentence_of_the_same_form_is_still_routed` — after
+
+```python
+def test_M3_the_non_past_sentence_of_the_same_form_is_still_routed():
+    got = run("ハルが実装をやる。\n", IMPLEMENT, lookup=FakePlacement())
+    assert (got["decision"], got["agent"]) == ("route", "ハル")
+    got = run("Rook reviews the code.\n", REVIEW, lookup=FakePlacement())
+    assert (got["decision"], got["agent"]) == ("route", "Rook")
+```
+
+#### `tests/test_routing_from_text_w5b.py` (before = git show c875ed3:tests/test_routing_from_text_w5b.py)
+
+Added (helpers / tests, not amendments): none
+
+##### `test_the_determiner_test_is_for_english_only_and_not_for_a_naming_sentence` — before
+
+```python
+def test_the_determiner_test_is_for_english_only_and_not_for_a_naming_sentence():
+    explained = explain("ミラは実装をやる。\n", {"ミラは実装をやる。": ja_do("ミラ")})
+    assert [u.status for u in explained.extraction.units] == ["MAPPED"]
+    alias = rd("en", cl("call", {"patient": "Mira", "result": "Crew"}))
+    sent = "Call Mira the Crew."
+    ex = explain(f"Mira reviews code.\n{sent}\n", {"Mira reviews code.": en_review("Mira"), sent: alias})
+    assert [u.status for u in ex.extraction.units] == ["MAPPED", "MAPPED"]
+```
+
+##### `test_the_determiner_test_is_for_english_only_and_not_for_a_naming_sentence` — after
+
+```python
+def test_the_determiner_test_is_for_english_only_and_not_for_a_naming_sentence():
+    explained = explain("ミラは実装をやる。\n", {"ミラは実装をやる。": ja_do("ミラ")}, lookup=FakePlacement())
+    assert [u.status for u in explained.extraction.units] == ["MAPPED"]
+    alias = rd("en", cl("call", {"patient": "Mira", "result": "Crew"}))
+    sent = "Call Mira the Crew."
+    ex = explain(f"Mira reviews code.\n{sent}\n", {"Mira reviews code.": en_review("Mira"), sent: alias}, lookup=FakePlacement())
+    assert [u.status for u in ex.extraction.units] == ["MAPPED", "MAPPED"]
+```
+
+##### `test_without_a_placement_nothing_is_checked_and_that_is_counted_not_hidden` — before
+
+```python
+def test_without_a_placement_nothing_is_checked_and_that_is_counted_not_hidden():
+    explained = explain("ソラは実装をやる。\n", {"ソラは実装をやる。": ja_do("ソラ")})
+    assert [u.status for u in explained.extraction.units] == ["MAPPED"]
+    check = route(explained, role="implement", kind="feature")["reading"]["common_noun_check"]
+    assert check == {"lookup": "stub-no-placement/1", "checked": 0, "not_checked": 1, "flagged": 0, "introduced_by_naming": 0}
+```
+
+##### `test_without_a_placement_nothing_is_checked_and_that_is_counted_not_hidden` — after
+
+```python
+def test_without_a_placement_nothing_is_checked_and_that_is_counted_not_hidden(monkeypatch):
+    # W5-d2 (auditor's ruling B1, K2): the NAME IS FROM THE OLD CONTRACT (a Japanese name with no placement was routed and counted as "not checked"). The contract now
+    # (W5-d, R-J1): with no placement a Japanese name that no naming sentence introduced is not verified -> the unit is NAME_UNRESOLVED (NAME_UNVERIFIED:<name>:NO_PLACEMENT)
+    # and the text abstains; the check is still counted, not hidden.
+    monkeypatch.delenv("VERA_PLACEMENT", raising=False)
+    explained = explain("ソラは実装をやる。\n", {"ソラは実装をやる。": ja_do("ソラ")})
+    (unit,) = explained.extraction.units
+    assert unit.status == "NAME_UNRESOLVED" and unit.reasons == ["NAME_UNVERIFIED:ソラ:NO_PLACEMENT"]
+    got = route(explained, role="implement", kind="feature")
+    assert got["agent"] is None and got["abstention"]["type"] == "INCOMPLETE_READING"
+    check = got["reading"]["common_noun_check"]
+    assert check == {"lookup": "stub-no-placement/1", "checked": 0, "not_checked": 1, "flagged": 0, "introduced_by_naming": 0}
+```
+
+##### `test_a_japanese_addendum_without_a_marker_keeps_both_statements` — before
+
+```python
+@pytest.mark.parametrize("label", ["追記：", "追伸：", "追記（翌日）："])
+def test_a_japanese_addendum_without_a_marker_keeps_both_statements(label):
+    first, second = "実装はミラに任せる。", "実装はルナに任せる。"
+    explained = explain(f"{first}\n{label}{second}\n", {first: ja_assign("ミラ"), second: ja_assign("ルナ")})
+    assert explained.extraction.auto_resolved == 0 and [r.superseded_by for r in explained.extraction.relations] == [None, None]
+    assert route(explained, role="implement", kind="feature")["agent"] is None
+```
+
+##### `test_a_japanese_addendum_without_a_marker_keeps_both_statements` — after
+
+```python
+@pytest.mark.parametrize("label", ["追記：", "追伸：", "追記（翌日）："])
+def test_a_japanese_addendum_without_a_marker_keeps_both_statements(label):
+    first, second = "実装はミラに任せる。", "実装はルナに任せる。"
+    explained = explain(f"{first}\n{label}{second}\n", {first: ja_assign("ミラ"), second: ja_assign("ルナ")}, lookup=FakePlacement())
+    assert explained.extraction.auto_resolved == 0 and [r.superseded_by for r in explained.extraction.relations] == [None, None]
+    assert route(explained, role="implement", kind="feature")["agent"] is None
+```
+
+##### `test_a_japanese_addendum_with_a_replacement_word_replaces` — before
+
+```python
+@pytest.mark.parametrize("second,reading_name", [("やっぱり実装はルナに任せる。", "ルナ"), ("実装はミラではなくルナに任せる。", "ルナ")])
+def test_a_japanese_addendum_with_a_replacement_word_replaces(second, reading_name):
+    first = "実装はミラに任せる。"
+    explained = explain(f"{first}\n追記：{second}\n", {first: ja_assign("ミラ"), second: ja_assign(reading_name)})
+    assert explained.extraction.auto_resolved == 1
+    assert route(explained, role="implement", kind="feature")["agent"] == "ルナ"
+```
+
+##### `test_a_japanese_addendum_with_a_replacement_word_replaces` — after
+
+```python
+@pytest.mark.parametrize("second,reading_name", [("やっぱり実装はルナに任せる。", "ルナ"), ("実装はミラではなくルナに任せる。", "ルナ")])
+def test_a_japanese_addendum_with_a_replacement_word_replaces(second, reading_name):
+    first = "実装はミラに任せる。"
+    explained = explain(f"{first}\n追記：{second}\n", {first: ja_assign("ミラ"), second: ja_assign(reading_name)}, lookup=FakePlacement())
+    assert explained.extraction.auto_resolved == 1
+    assert route(explained, role="implement", kind="feature")["agent"] == "ルナ"
+```
+
+##### `test_the_other_labels_replace_as_before_without_any_marker` — before
+
+```python
+@pytest.mark.parametrize("label,sentence", [("訂正：", "実装はルナに任せる。"), ("更新：", "実装はルナに任せる。")])
+def test_the_other_labels_replace_as_before_without_any_marker(label, sentence):
+    first = "実装はミラに任せる。"
+    explained = explain(f"{first}\n{label}{sentence}\n", {first: ja_assign("ミラ"), sentence: ja_assign("ルナ")})
+    assert explained.extraction.auto_resolved == 1 and route(explained, role="implement", kind="feature")["agent"] == "ルナ"
+    assert explained.extraction.additions_kept == 0
+```
+
+##### `test_the_other_labels_replace_as_before_without_any_marker` — after
+
+```python
+@pytest.mark.parametrize("label,sentence", [("訂正：", "実装はルナに任せる。"), ("更新：", "実装はルナに任せる。")])
+def test_the_other_labels_replace_as_before_without_any_marker(label, sentence):
+    first = "実装はミラに任せる。"
+    explained = explain(f"{first}\n{label}{sentence}\n", {first: ja_assign("ミラ"), sentence: ja_assign("ルナ")}, lookup=FakePlacement())
+    assert explained.extraction.auto_resolved == 1 and route(explained, role="implement", kind="feature")["agent"] == "ルナ"
+    assert explained.extraction.additions_kept == 0
+```
+
+##### `test_C3_without_a_marker_relation_override_replaces_exactly_the_same_scope_and_counts_it_both_statements_stand` — before
+
+```python
+def test_C3_without_a_marker_relation_override_replaces_exactly_the_same_scope_and_counts_it_both_statements_stand():
+    table = {"実装はハルに任せる。": ja_assign("ハル"), "実装はルナに任せる。": ja_assign("ルナ")}
+    explained = explain("実装はハルに任せる。\n追記：実装はルナに任せる。\n", table)
+    assert _units(explained) == ["MAPPED", "MAPPED"]
+    assert explained.extraction.auto_resolved == 0
+    assert [r.superseded_by for r in explained.extraction.relations] == [None, None]
+    assert [r.preference for r in explained.records.rules] == [("ハル",), ("ルナ",)]
+    result = route(explained, role="implement", kind="feature")
+    assert result["agent"] is None
+    assert result["abstention"]["type"] == "RECORD_REFUSED" and result["abstention"]["detail"] == "DUPLICATE_FALLBACK"
+```
+
+##### `test_C3_without_a_marker_relation_override_replaces_exactly_the_same_scope_and_counts_it_both_statements_stand` — after
+
+```python
+def test_C3_without_a_marker_relation_override_replaces_exactly_the_same_scope_and_counts_it_both_statements_stand():
+    table = {"実装はハルに任せる。": ja_assign("ハル"), "実装はルナに任せる。": ja_assign("ルナ")}
+    explained = explain("実装はハルに任せる。\n追記：実装はルナに任せる。\n", table, lookup=FakePlacement())
+    assert _units(explained) == ["MAPPED", "MAPPED"]
+    assert explained.extraction.auto_resolved == 0
+    assert [r.superseded_by for r in explained.extraction.relations] == [None, None]
+    assert [r.preference for r in explained.records.rules] == [("ハル",), ("ルナ",)]
+    result = route(explained, role="implement", kind="feature")
+    assert result["agent"] is None
+    assert result["abstention"]["type"] == "RECORD_REFUSED" and result["abstention"]["detail"] == "DUPLICATE_FALLBACK"
+```
+
+##### `test_C3_without_a_marker_relation_override_that_overlaps_only_partly_is_held_as_ambiguous_both_declarations_stand` — before
+
+```python
+def test_C3_without_a_marker_relation_override_that_overlaps_only_partly_is_held_as_ambiguous_both_declarations_stand():
+    table = {"大きなリファクタリングはハルに任せる。": ja_assign("ハル", "大きなリファクタリング"),
+             "実装はルナに任せる。": ja_assign("ルナ")}
+    explained = explain("大きなリファクタリングはハルに任せる。\n追記：実装はルナに任せる。\n", table)
+    assert _units(explained) == ["MAPPED", "MAPPED"]
+    assert explained.extraction.auto_resolved == 0
+    assert route(explained, role="implement", kind="feature")["agent"] == "ルナ"        # the two declarations have different scopes: both stay
+```
+
+##### `test_C3_without_a_marker_relation_override_that_overlaps_only_partly_is_held_as_ambiguous_both_declarations_stand` — after
+
+```python
+def test_C3_without_a_marker_relation_override_that_overlaps_only_partly_is_held_as_ambiguous_both_declarations_stand():
+    table = {"大きなリファクタリングはハルに任せる。": ja_assign("ハル", "大きなリファクタリング"),
+             "実装はルナに任せる。": ja_assign("ルナ")}
+    explained = explain("大きなリファクタリングはハルに任せる。\n追記：実装はルナに任せる。\n", table, lookup=FakePlacement())
+    assert _units(explained) == ["MAPPED", "MAPPED"]
+    assert explained.extraction.auto_resolved == 0
+    assert route(explained, role="implement", kind="feature")["agent"] == "ルナ"        # the two declarations have different scopes: both stay
+```
+
+##### `test_C3_without_a_marker_an_override_of_another_kind_about_another_name_is_held_not_a_replacement_both_statements_stand` — before
+
+```python
+def test_C3_without_a_marker_an_override_of_another_kind_about_another_name_is_held_not_a_replacement_both_statements_stand():
+    table = {"ハルはテストを書く。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"})),
+             "モモはテストを書かない。": rd("ja", cl("書く", {"agent": "モモ", "patient": "テスト"}, "-")),
+             "ハルはテストを書かない。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"}, "-"))}
+    # another name, another kind: with no marker the addendum is added next to the earlier statement
+    explained = explain("ハルはテストを書く。\n追記：モモはテストを書かない。\n", table)
+    assert _units(explained) == ["MAPPED", "MAPPED"] and explained.extraction.auto_resolved == 0
+    assert route(explained, role="implement", kind="test_authoring")["agent"] == "ハル"
+    # the same name, the opposite polarity: a contradiction that stays a contradiction (nothing is replaced, nothing is chosen)
+    explained = explain("ハルはテストを書く。\n追記：ハルはテストを書かない。\n", table)
+    units = explained.extraction.units
+    assert [u.status for u in units] == ["CONTRADICTION", "CONTRADICTION"]
+    assert [u.reasons[0] for u in units] == ["CONTRADICTS:R002", "CONTRADICTS:R001"]
+    assert route(explained, role="implement", kind="test_authoring")["abstention"]["type"] == "INCOMPLETE_READING"
+```
+
+##### `test_C3_without_a_marker_an_override_of_another_kind_about_another_name_is_held_not_a_replacement_both_statements_stand` — after
+
+```python
+def test_C3_without_a_marker_an_override_of_another_kind_about_another_name_is_held_not_a_replacement_both_statements_stand():
+    table = {"ハルはテストを書く。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"})),
+             "モモはテストを書かない。": rd("ja", cl("書く", {"agent": "モモ", "patient": "テスト"}, "-")),
+             "ハルはテストを書かない。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"}, "-"))}
+    # another name, another kind: with no marker the addendum is added next to the earlier statement
+    explained = explain("ハルはテストを書く。\n追記：モモはテストを書かない。\n", table, lookup=FakePlacement())
+    assert _units(explained) == ["MAPPED", "MAPPED"] and explained.extraction.auto_resolved == 0
+    assert route(explained, role="implement", kind="test_authoring")["agent"] == "ハル"
+    # the same name, the opposite polarity: a contradiction that stays a contradiction (nothing is replaced, nothing is chosen)
+    explained = explain("ハルはテストを書く。\n追記：ハルはテストを書かない。\n", table, lookup=FakePlacement())
+    units = explained.extraction.units
+    assert [u.status for u in units] == ["CONTRADICTION", "CONTRADICTION"]
+    assert [u.reasons[0] for u in units] == ["CONTRADICTS:R002", "CONTRADICTS:R001"]
+    assert route(explained, role="implement", kind="test_authoring")["abstention"]["type"] == "INCOMPLETE_READING"
+```
+
+#### `tests/attack/test_attack_w5b_wave2.py` (before = the attack original attacks/W5-b/test_attack_w5b_wave2.py (first line dropped))
+
+Added (helpers / tests, not amendments): `_AllUnplaced`
+
+##### `test_yappari_sonomama_does_not_turn_an_addendum_into_replacement` — before
+
+```python
+def test_yappari_sonomama_does_not_turn_an_addendum_into_replacement():
+    first = "実装はハルに任せる。"
+    second = "やっぱりそのまま、実装はハルに任せる。"
+    explained = rt.explain(f"{first}\n追記：{second}\n", "attack.md", reader=_reading_for_assignment)
+    actual = {"statuses": [unit.status for unit in explained.extraction.units],
+              "auto_resolved": explained.extraction.auto_resolved,
+              "superseded_by": [relation.superseded_by for relation in explained.extraction.relations],
+              "additions_kept": explained.extraction.additions_kept}
+    print(f"OBS R2 {json.dumps(actual, ensure_ascii=False, sort_keys=True)}")
+    assert actual == {"statuses": ["MAPPED", "MAPPED"], "auto_resolved": 0,
+                      "superseded_by": [None, None], "additions_kept": 1}
+```
+
+##### `test_yappari_sonomama_does_not_turn_an_addendum_into_replacement` — after
+
+```python
+def test_yappari_sonomama_does_not_turn_an_addendum_into_replacement():
+    # W5-d2 (K2): the expectation is the result of W5-d's R-J2. The marker `やっぱり` is followed by a fragment of its own (`そのまま`); the fragment is read by the same
+    # reader, and this reader answers every sentence with the affirmative assignment, so the fragment is not a maintenance and the unit is AMBIGUOUS_RELATION:
+    # nothing is replaced (superseded_by stays None, auto_resolved 0) and nothing is added. The point of the attack (it must not be a replacement) is kept.
+    first = "実装はハルに任せる。"
+    second = "やっぱりそのまま、実装はハルに任せる。"
+    explained = rt.explain(f"{first}\n追記：{second}\n", "attack.md", reader=_reading_for_assignment, lookup=_AllUnplaced())
+    actual = {"statuses": [unit.status for unit in explained.extraction.units],
+              "auto_resolved": explained.extraction.auto_resolved,
+              "superseded_by": [relation.superseded_by for relation in explained.extraction.relations],
+              "additions_kept": explained.extraction.additions_kept}
+    print(f"OBS R2 {json.dumps(actual, ensure_ascii=False, sort_keys=True)}")
+    assert actual == {"statuses": ["MAPPED", "AMBIGUOUS_RELATION"], "auto_resolved": 0,
+                      "superseded_by": [None], "additions_kept": 0}
+```
+
+<!-- w5d2-amended:end -->
+
+## W5-d 第 2 ラウンド（W5-d2）の測定
+<!-- w5d2-measured:begin -->
+測定の時刻: 2026-10-04 01:22:30 +0900。出力はすべて `artifacts/w5-d/r2/`（ファイル名を添える）。中間職のレビュー r1（`review-impl/W5-d2/review.r1.md`）の M1〜M4（改訂したテストの前後の全文・測定の区間・失敗集合のファイル・報告）に応えてこの区間と `w5d2-amended` 区間を書いた。製品とテストのコードはレビューのあとに変えていない（`code_sha_r2b_start.txt` と `code_sha_r2b_end.txt` が同じ）。受入の測定はこのとき全部流し直した（`g1_rerun_r2b.txt`・`g2_rerun_r2b.txt`・`g3_rerun_r2b.txt`・`q1_observe_cmp_r2b.txt`・`g4_compare_r2b.txt`・`q5_r7_verify_r2b.txt`・`k5_check_r2b.txt`。出力は前の流しと byte 一致。違いが無かったことの確認なので前の流しのファイルも残す）。
+
+**受入基準**（第 2 ラウンド）
+- **G1**（`g1_rerun_r2b.txt`）: 攻撃の写し 36 本が `36 passed`、K の 72 関数（82 id）が全部通る（`102 passed`）、新しいテスト（第 1 ラウンドの 5 本＋第 2 ラウンドの追記）が `113 passed`。G1-b: 写しと原本の差は先頭行と改訂した関数・足したヘルパの中だけ（`g1b_hunks.txt`、`attack_copy_revisions.diff`。w5c の 2 本は原本と同一、`data/` も同一）。
+- **G2**（`g2_185_*.json(l)`・`g2_attack120_r7.json(l)`・`g2_rerun_r2b.txt`）: `VERA_PLACEMENT` なしの 185 問は第 1 ラウンドの出力と byte 一致（place: 正答/誤答/FALSE_NONE/棄権 = 38 / 0 / 4 / 143、noplace: 26 / 0 / 4 / 155）。`VERA_PLACEMENT=r7`: place 73 / 0 / 6 / 106、noplace 66 / 0 / 8 / 111。誤答 0、型未確認の FILLED/TIE 0（4 通りとも `unchecked_fillers_in_FILLED_TIE` は 0・0・0・0）。正答は減っていない（第 1 ラウンドと同じか、r7 で増える）。攻撃の 120 問（r7、116 問は正解なしで採点されない）: FILLED 29・TIE 5、型未確認の FILLED/TIE 0、`wrong` 0 件。A01（`EN08-01`）は `NO_TYPED_CANDIDATE`（`letter`・`note` は `TYPE_UNCHECKED`）で FILLED/TIE にならない（`g2_r7_notes.txt`）。中間職の凍結 64 問・56 問は実装役が開かない約束なので測っていない（中間職が測る）。
+- **G3**（`g3_rerun_r2b.txt`・`g3_*`）: 経路づけの凍結 4 本（配置なし）の misroutes は 0, 0, 0, 0、r7 の 2 本は 0, 0。合成 `g3_synth`（入力の sha256 は `g3_synth_inputs_check.txt` で第 1 ラウンドの凍結と一致）: 配置なし misroutes 0・普通名詞に振った数 0、r7 misroutes 1（第 1 ラウンドと同じ 1 件。`委員会` が推定の GROUP_ORG で通る既知の穴）、基点 1（`g3_synth_results/g3_synth_counts.json`）。D2-2 の影響: r7 の 2 本の 118 件を、D2-2 の呼び出しを外した写しと単位ごとに比べて変化した件数は 0（`g3_r7_diff.txt`）。
+- **G4**（`g4_result.json`・`g4_compare_r2b.txt`）: 入力の sha256 と `summary` が第 1 ラウンドと同じ（自己申告の文書 16 件で `ANSWER` 0、文面違いの確認記録 15 件で `ANSWER` 0・旧文が返った 0、対照は 4/4 と 2/2 で答える）。`verantyx/basis_policy.py` は第 2 ラウンドで変えていない（sha256 が `files_start.sha256` と同じ）。
+- **G5**（`q5_r7_verify_r2b.txt`・`k5_check_r2b.txt`）: r7 は作り直していない。`verify` が run1・run2 とも `OK`、`content_sha256` は第 1 ラウンドと同じ。`coarse_place.py`・`tools/build_coarse_placement.py` は第 2 ラウンドで変えていない。K5 の写しが通り、r6_audit_summary.json not_confirmed: 13 words; invariant_errors [] byte_differences []、第 1 ラウンドの 13 語と同じ集合（`命じる` を含む）。
+- **平叙文の観測**（`q1_observe_cmp_r2b.txt`）: `o1_bytes.py --child` の出力が、配置なしと `VERA_PLACEMENT=r7` の 2 通りとも基点と byte 一致（`same: base vs now` が 2 行。この流しは前の流しとも byte 一致）。
+- **G7**（`pytest_full.txt`・`after_failures.txt`・`new_failures.txt`・`fixed_failures.txt`・`new_failures_explained.txt`）: 全体テストの最終行 `117 failed, 11981 passed, 45 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 362.65s (0:06:02)`。失敗は一意に 117 件、基線に無い失敗は 2 件（`tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches`、`tests/test_gen_coarse_evidence.py::test_the_stop_signal_ends_the_run_with_an_interrupted_record`）、基線にあって今は通る失敗は 0 件。基線に無い失敗の理由は `new_failures_explained.txt`（環境由来だけ）。K の id は失敗集合に 0 件。
+
+**K2（自由文→記録 52 件）の改訂**（裁定 B1。前後の全文は上の `w5d2-amended` 区間。`changed_functions_k1k2.txt`）: 既存 51 件と攻撃の写し R2 の 1 件（K の id の内訳は `k_ids.txt`: `test_routing_from_text.py` 36・`_w5b` 12・`_regress` 2・`_entry` 1・攻撃の写し 1）。名前は変えていない。直し方: テストの中だけの `FakePlacement`（固定の名前は `UNPLACED`、列挙した普通名詞は direct の型。製品には入っていない: `git diff c875ed3 -- verantyx/` に `fake` の語は無い）を `tests/test_routing_from_text.py` に 1 つ足し、`explain_lines(..., lookup=None)` と、それを経由する補助関数（`two_rules_and_a_precedence`・`one_unit_status`・`run`・`statuses`）に既定 None の `lookup` 引数を足し、module スコープの fixture `std` は変えずに `std_placed`（同じ STD を `FakePlacement()` で）を足して、K2 の関数だけを切り替えた。
+
+**配置なしそのものが主題の改訂 3 件**（期待を新しい契約「配置なし → 棄権」に）: `test_routing_from_text_w5b.py::test_without_a_placement_nothing_is_checked_and_that_is_counted_not_hidden`（単位は `NAME_UNRESOLVED`・`NAME_UNVERIFIED:ソラ:NO_PLACEMENT`）、`test_routing_from_text_entry.py::test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader`（本物の読解器・配置なしの子プロセスの今の出力に合わせた。`entry()` は子プロセスの env を `dict(os.environ)` から作るので `VERA_PLACEMENT` を外す 1 行を足した。期待の弱体化ではなく、漏れを防ぐため）、`test_routing_from_text.py::test_output_keys_order_and_basis_kinds`（主題は鍵の並びなので `std_placed` に切り替え、`reading.lookup == "test-fake-placement/1"`）。配置なしの棄権を表すテスト（足した）: `tests/test_routing_from_text_w5d.py::test_w5d2_k2_the_standard_explanation_with_and_without_a_placement`（STD を偽の配置ありで流すと第 1 ラウンド前と同じ判断、配置なしは `INCOMPLETE_READING`・単位に `NAME_UNVERIFIED:…:NO_PLACEMENT`）と `test_w5d2_without_a_placement_a_part_of_a_parallel_name_is_unverified_as_before`。攻撃の写し R2（`test_yappari_sonomama_does_not_turn_an_addendum_into_replacement`）は `lookup=` に全語 UNPLACED の偽の配置（`_AllUnplaced`）を渡し、期待を R-J2 の結果 `{"statuses": ["MAPPED", "AMBIGUOUS_RELATION"], "auto_resolved": 0, "superseded_by": [None], "additions_kept": 0}` に改訂した（攻撃の偽 reader は断片「そのまま」も肯定の「任せる」に読むので未確定。主旨＝置き換えにならない、は保たれる）。
+
+**D2-2 並列の名前の部分（製品の変更。裁定の申し送り「並列の名前の過剰棄権は直さず既知の穴」からの逸脱）**: 理由と実測。(1) 裁定の K2 の形（偽の `PlacementLookup` の注入）・G7・「期待を弱めない」は、並列の部分に配置の答えが無いと同時には満たせない。偽の配置（全語 UNPLACED）を入れても、標準の説明文 STD の `ハルとセキは同じ会社だ。` で配置の答えが充填物 `ハルとセキ` 全体にしか付かず、部分 `ハル`・`セキ` に答えが無いので R-J1 が `NAME_UNVERIFIED:ハル:NO_PLACEMENT` で止め、関門が `INCOMPLETE_READING` で全部を棄権にする。中間職の試作の実測でこの 11 件が通らない（`test_relation_comparison_keeps_one_agent_only_and_comparison_only_does_not_stop`・`test_relation_independence_same_negated_distinct_and_a_different_phrase_is_held_as_ambiguous`・`test_relation_roles_independence_is_the_routers_default_r3_and_makes_no_record`・`test_gate_one_unread_unit_stops_every_job_and_the_router_is_not_called`・`test_T3_the_same_content_as_a_hand_written_table_gives_the_same_decisions`・`test_router_call_passes_used_agents_only_no_chooser_and_the_first_names`・`test_router_reasons_are_written_through_from_the_routers_types`・`test_router_unknown_task_names_abstain_with_their_own_type`・`test_constraint_prohibition_veto_does_not_try_the_next_agent`・`test_constraint_human_and_wait_scopes_and_residual_and_conflict`・`test_constraint_independence_veto_for_two_other_roles`。出典: `plan_evidence/proto_numbers.txt` §1）。実装役も同じ測定をした: D2-2 の呼び出し 1 行だけを外した写しで K2 のテスト一式を流すと 12 failed（上の 11 件と、`std_placed` に切り替えた `test_output_keys_order_and_basis_kinds`。`d22_without_the_call.txt`、`scripts/run_k2_without_d22.py`）、D2-2 を入れた木では 0 件。期待を書き換えれば「弱体化」、失敗のままなら G7 に反する。(2) 直し方は R-J1 の同じ規則を部分の名前それぞれの配置の答えに当てるだけ（新しい規則は足さない）: `read_units` で `lookup is None` なら最初に 1 回 `event_cross.default_lookup()` に解決し、`UnitReading.part_places`（既定値つきの新しい欄）に、日本語の `CROSSED` の単位の各充填物を `_split_parallel` で切った群を同じ lookup に問い、契約に合う答え（`invariant_problems()` が空）だけ `setdefault` で入れ、`_places_of` は充填物自身の答えを先にして `part_places` を後に足す。日本語だけ（英語の並列は問わない）。(3) 実測: 偽の配置なしで、routing の関係テスト一式＋攻撃の写し R2 の失敗集合は K2 の 52 id と完全に同じ（差 0。`k2_after_product_raw.txt`＝製品の変更だけを入れて、偽の配置を入れる前のテストを流した）＝この変更は新しい失敗を作らない。偽の配置ありで K2 の関数は全部通る（`g1_rerun_r2b.txt` の K の `102 passed`）。G3: 配置なし 4 本・r7 2 本とも misroutes 0、r7 の 2 本は D2-2 を外した写しと単位ごとに比べて 118 件中 0 件が変化（`g3_rerun_r2b.txt`・`g3_r7_diff.txt`）。足したテスト（`tests/test_routing_from_text_w5d.py`）: `test_w5d2_a_parallel_name_is_routed_when_the_placement_answers_for_each_part`（全語 UNPLACED で `ハルとセキは同じ会社だ。` が MAPPED・INDEPENDENCE(same)）、`test_w5d2_a_part_of_a_parallel_name_that_the_placement_types_as_a_common_noun_stops_the_unit`（部分の 1 つが direct の GROUP_ORG → `COMMON_NOUN_SUBJECT`）、`test_w5d2_without_a_placement_a_part_of_a_parallel_name_is_unverified_as_before`、`test_w5d2_an_english_parallel_name_is_not_asked_part_by_part`（spy の lookup で英語の部分が問われない）、`test_w5d2_the_parts_that_are_asked_are_exactly_the_groups_of_the_parallel_split`。
+
+**第 2 ラウンドで置き換わった第 1 ラウンドの記述**（第 1 ラウンドの `w5d-*` 区間の中は 1 文字も変えていない。元の行は残し、この一覧が上書きする）
+- 「既知の穴 1: 並列の名前は配置があっても止まる」→ 第 2 ラウンドで、配置があれば部分の名前も配置の答えで引く（上）。配置が部分を UNPLACED と答えれば名前として通る（単独の名前と同じ扱い。下の穴 3）。配置が無ければ今までどおり `NAME_UNVERIFIED`。
+- 「K2 は宣言した衝突」→ 裁定 B1 で改訂が許可され、上のとおり改訂した。
+
+**既知の穴**（直していない。次の攻撃と W3-b3 のあとで見る）:
+1. r7 でも、推定・UNPLACED の普通名詞の主語が名前として通る（第 1 ラウンドの探りで 60 文中 8 文。合成 `g3_synth` の r7 で `委員会` が 1 件。`g3_synth_results/g3_synth_counts.json`）。
+2. R2 の「維持」（`やっぱりそのまま`）は、本物の読解器ではほぼ到達しない（断片を節に読めず `AMBIGUOUS_RELATION` に倒れる。到達するのは断片を読む偽 reader のテストだけ。第 1 ラウンドのまま）。
+3. D2-2 は「部分の名前それぞれの配置の答え」を見るだけで、配置が部分を UNPLACED と答えれば名前として通る。
+4. 並列の部分を問う `lookup.lookup(名)` は `_read_one` の `try` の外にあり、部分を問われたときだけ例外を投げる lookup では `explain` 全体が例外で止まる（中間職のレビュー r1 の任意の改善 1。本番の `StubLookup`・`CoarseLookup` は例外を投げない作りなので実害は今のところ無い。レビューが製品・テストの変更を範囲外としたので直していない）。
+5. r7 の説明文で `ハル` は MULTIPLE（ANIMAL・GROUP_ORG・PERSON）の direct なので `COMMON_NOUN_SUBJECT` で止まる（中間職のレビュー r1 の申し送り 2）。D2-2 は偽の配置では効くが、本番の r7 で `ハル` を名前として通さない（実装役も `r7_lookups.txt` で確かめた: `ハル` は MULTIPLE・direct・ANIMAL/GROUP_ORG/PERSON、`セキ` は UNPLACED、`チーム` は DECIDED・direct・GROUP_ORG、`委員会` は DECIDED・estimated・GROUP_ORG）。安全側の過剰棄権で、G3 の r7 で「正しく振った 0」はこれと読解器による。
+**この文書の担当の測定は上のとおり。全体の受入と判断は `artifacts/w5-d/DECISIONS.md` の「第 2 ラウンド（W5-d2）」と `artifacts/w5-d/r2/`。**
+<!-- w5d2-measured:end -->

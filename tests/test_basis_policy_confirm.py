@@ -313,10 +313,11 @@ def test_two_confirmed_records_with_different_claims_abstain(tmp_path, monkeypat
 
 def test_two_confirmed_records_with_the_same_claim_are_not_a_split(tmp_path, monkeypatch, capsys):
     root, sid = _world(tmp_path, monkeypatch)
-    sov.append_basis_confirmation(root, sid, _payload(confirm_id="aaa", claim="主張A"))
-    sov.append_basis_confirmation(root, sid, _payload(confirm_id="bbb", claim="主張A"))
+    claim = _ask(tmp_path, capsys, "--human-present")[1]["confirm"]["claim"]    # W5-d (D1, amended): the sentence generated now
+    sov.append_basis_confirmation(root, sid, _payload(confirm_id="aaa", claim=claim))
+    sov.append_basis_confirmation(root, sid, _payload(confirm_id="bbb", claim=claim))
     rc, out = _ask(tmp_path, capsys)
-    assert rc == 0 and out["verdict"] == "ANSWER" and out["text"] == "主張A"
+    assert rc == 0 and out["verdict"] == "ANSWER" and out["text"] == claim
 
 
 def test_after_consent_is_withdrawn_the_records_are_not_used(tmp_path, monkeypatch, capsys):

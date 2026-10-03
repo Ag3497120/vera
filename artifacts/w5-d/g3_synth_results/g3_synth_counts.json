@@ -1,0 +1,23 @@
+{
+ "base": {
+  "items": 14,
+  "misroutes": 1,
+  "common_noun_routed": 1,
+  "routed_any_agent": 1,
+  "route_correct": 0
+ },
+ "noplace": {
+  "items": 14,
+  "misroutes": 0,
+  "common_noun_routed": 0,
+  "routed_any_agent": 0,
+  "route_correct": 0
+ },
+ "r7": {
+  "items": 14,
+  "misroutes": 1,
+  "common_noun_routed": 1,
+  "routed_any_agent": 1,
+  "route_correct": 0
+ }
+}
