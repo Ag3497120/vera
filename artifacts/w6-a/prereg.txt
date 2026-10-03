@@ -1,0 +1,2 @@
+prereg registered at: 2026-10-03 17:21:59 +0900
+prereg section (prereg:begin .. prereg:end inclusive, as in docs/BASIS_POLICY.md) sha256: 4fcdeb2bfb891dd12388fc3487bbd0d080fa4e2a182664471bed59c04f68aa68

@@ -1720,6 +1720,41 @@ def promote(root: str, store_id: str, *, min_count: Optional[int] = None,
             "thresholds": thresholds, "consent": consent}
 
 
+# ------------------------------------------------------- basis confirmation (W6-a)
+#: 利用者が「生成コーパスの文は正しい」と答えた記録 / 「正しくない」と答えた記録の status。
+BASIS_CONFIRMATION_STATUSES = ("HUMAN_CONFIRMED", "REJECTED_GENERATED")
+#: 昇格の候補の数え上げ・訂正が読む鍵。確認の記録には入れない（昇格や訂正の対象にしない）。
+_SOV_CONFIRMATION_FORBIDDEN_KEYS = ("phrase", "cell", "occupied", "corrects")
+
+
+@_sov_typed
+def append_basis_confirmation(root: str, store_id: str, payload: Any, *,
+                              now: Optional[Callable[[], datetime]] = None) -> Dict[str, Any]:
+    """利用者の確認（はい／いいえ）を `decision` の事件として 1 件追記する口。
+
+    同意（現在の consent.promote）が無ければ何も書かない（NO_CONSENT）。payload の形が違えば
+    BAD_PAYLOAD で何も書かない。既存の事件は変えない・消さない（いいえ も追記）。`decision` は
+    昇格の候補にならない（`promote` の数え上げでは not_a_candidate）。
+    """
+    root = _sov_root(root)
+    conn, _path = _sov_open_active(root, store_id, write=False)
+    try:
+        consent = _sov_consent(conn)
+    finally:
+        conn.close()
+    if not consent["promote"]:
+        return {"verdict": "NO_CONSENT", "store_id": store_id, "consent": consent, "wrote": 0}
+    if (not isinstance(payload, Mapping) or payload.get("record") != "basis_confirmation"
+            or payload.get("status") not in BASIS_CONFIRMATION_STATUSES
+            or any(k in payload for k in _SOV_CONFIRMATION_FORBIDDEN_KEYS)):
+        return {"verdict": "BAD_PAYLOAD", "store_id": store_id, "wrote": 0}
+    try:
+        eid = SovereignLedger(root, store_id, now).append({"kind": "decision", "payload": dict(payload)})
+    except LedgerRefusal as exc:
+        return {"verdict": exc.verdict, "detail": exc.detail, "store_id": store_id, "wrote": 0}
+    return {"verdict": "APPENDED", "event_id": eid, "store_id": store_id, "wrote": 1}
+
+
 # -------------------------------------------------------------- cli
 #: 操作ごとの「型つきの結果で終わった」verdict。同じ文字列（DETACHED など）が、ある操作では成功で
 #: 別の操作では「読めない」の理由になるので、操作と組にして判断する。

@@ -1,0 +1,36 @@
+## 根拠の方針
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "根拠の方針",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+## basis policy
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "basis policy",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+## 生成コーパスの参考
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "生成コーパスの参考",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+## 確認の問い返し
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "確認の問い返し",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,

@@ -1,0 +1,30 @@
+added lines: 75
+PROPER/NUMERIC (must be empty): []
+ENGLISH NAMES (must be empty): []
+common nouns found in added lines (list only): ['依頼', '利用', '確認', '答え']
+verb lemmas found in added lines (list only): ['する', '出す', '読む']
+english lowercase words found in added lines (list only; each with the added lines that hold it, so a reader can judge): ['answer', 'def', 'never', 'not', 'only', 'read', 'the', 'wrote']
+  [answer] 2 added line(s):
+      A generated sentence may lend only the *phrasing* of an answer whose content a human source
+      answer's basis into "generated" and is never cited in ``sources``.
+  [def] 2 added line(s):
+      def form_mark(witnesses: Iterable["Witness"]) -> dict:
+      def append_basis_confirmation(root: str, store_id: str, payload: Any, *,
+  [never] 2 added line(s):
+      ``form_witnesses``: a borrowed sentence is not a source of the content, so it never turns an
+      answer's basis into "generated" and is never cited in ``sources``.
+  [not] 5 added line(s):
+      carries (W6-a, docs/BASIS_POLICY.md). ``basis_origin(sources)`` does not read
+      ``form_witnesses``: a borrowed sentence is not a source of the content, so it never turns an
+      if not consent["promote"]:
+  [only] 1 added line(s):
+      A generated sentence may lend only the *phrasing* of an answer whose content a human source
+  [read] 1 added line(s):
+      carries (W6-a, docs/BASIS_POLICY.md). ``basis_origin(sources)`` does not read
+  [the] 2 added line(s):
+      A generated sentence may lend only the *phrasing* of an answer whose content a human source
+      ``form_witnesses``: a borrowed sentence is not a source of the content, so it never turns an
+  [wrote] 4 added line(s):
+      return {"verdict": "NO_CONSENT", "store_id": store_id, "consent": consent, "wrote": 0}
+      return {"verdict": "BAD_PAYLOAD", "store_id": store_id, "wrote": 0}
+      return {"verdict": exc.verdict, "detail": exc.detail, "store_id": store_id, "wrote": 0}

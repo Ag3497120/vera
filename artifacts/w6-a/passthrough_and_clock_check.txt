@@ -1,0 +1,7 @@
+# 1. two direct runs of the same round5 document question; differing paths:
+['/multigrain_navigation/trace/elapsed_ms', '/trace[2]/ingest_ms']
+# 2. legacy ask, fake index: raw Vera().ask versus `vera ask` minus basis_policy
+こんにちは | rc 0 | same as raw (minus basis_policy): True | raw kind/verdict: social None | applied: False | reason: NO_CITED_SOURCES | outcome: None
+ありがとう。 | rc 0 | same as raw (minus basis_policy): True | raw kind/verdict: social None | applied: False | reason: NO_CITED_SOURCES | outcome: None
+-5 と 3 の和は？ | rc 0 | same as raw (minus basis_policy): True | raw kind/verdict: unknown UNKNOWN_COMMONSENSE_NO_STRUCTURE | applied: True | reason: None | outcome: ABSTAIN
+りんごとは何ですか？ | rc 0 | same as raw (minus basis_policy): True | raw kind/verdict: None UNKNOWN_NOT_PRESENT | applied: True | reason: None | outcome: ABSTAIN

@@ -52,6 +52,18 @@ def basis_mark(sources: Iterable) -> dict:
     return {} if origin is None else {"basis_origin": origin}
 
 
+def form_mark(witnesses: Iterable["Witness"]) -> dict:
+    """``{"form_source": "generated", "form_witnesses": [...]}`` or ``{}``, to be spread into a reply.
+
+    A generated sentence may lend only the *phrasing* of an answer whose content a human source
+    carries (W6-a, docs/BASIS_POLICY.md). ``basis_origin(sources)`` does not read
+    ``form_witnesses``: a borrowed sentence is not a source of the content, so it never turns an
+    answer's basis into "generated" and is never cited in ``sources``.
+    """
+    cited = [w.cite() for w in witnesses]
+    return {"form_source": GENERATED, "form_witnesses": cited} if cited else {}
+
+
 def default_root() -> Path:
     """The index directory chosen now (not at import): VERA_P4_INDEX, else <tree>/build/p4."""
     env = os.environ.get("VERA_P4_INDEX")
