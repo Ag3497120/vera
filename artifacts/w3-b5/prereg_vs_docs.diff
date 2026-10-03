@@ -1,0 +1,22 @@
+--- PREREG.md
++++ docs 10F prereg block
+@@ -43 +42,0 @@
+-| `P_MOVE` | recipient | に | PERSON GROUP_ORG | 項 | frame_required |
+@@ -45 +43,0 @@
+-| `P_COMMUNICATE` | recipient | に | PERSON GROUP_ORG | 項 | frame_required |
+@@ -47,12 +44,0 @@
+-| `P_ACT` | place | で | PLACE | 付加 | frame_required |
+-| `P_ACT` | recipient | に | PERSON GROUP_ORG | 項 | frame_required |
+-| `P_ACT` | goal | に | PLACE | 項 | frame_required |
+-| `P_ACT` | time | に | TIME | 付加 | frame_required |
+-| `P_CREATE` | place | で | PLACE | 付加 | frame_required |
+-| `P_CREATE` | recipient | に | PERSON GROUP_ORG | 項 | frame_required |
+-| `P_CREATE` | goal | に | PLACE | 項 | frame_required |
+-| `P_CREATE` | time | に | TIME | 付加 | frame_required |
+-| `P_EMOTION` | place | で | PLACE | 付加 | frame_required |
+-| `P_EMOTION` | recipient | に | PERSON GROUP_ORG | 項 | frame_required |
+-| `P_EMOTION` | goal | に | PLACE | 項 | frame_required |
+-| `P_EMOTION` | time | に | TIME | 付加 | frame_required |
+@@ -59,0 +46,2 @@
++
++**（表の変更記録（W3-b5）の変更 1 の後。登録時の 16 行のうち 14 行を外した。今の `frame_required` の行は P_MOVE と P_COMMUNICATE の `goal/に/PLACE` の 2 行（表は 19 行）。登録したままの本文と表は `artifacts/w3-b5/PREREG.md`。外した理由と数は「表の変更記録（W3-b5）」と K207。）**

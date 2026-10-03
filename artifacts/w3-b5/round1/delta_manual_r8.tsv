@@ -1,0 +1,5 @@
+先生が北海道に旅行した。	CORRECT	旅行する（r8 の実物: direct・NOT_CONFIRMED・枠は に:PLACE）。主語=agent、北海道=goal（旅行の行き先）。読みは正しい
+店員が沖縄に旅行した。	CORRECT	同上。沖縄=goal
+係員が京都に旅行した。	CORRECT	同上。京都=goal
+社員が山に昇った。	CORRECT	昇る（r8 の実物: direct・NOT_CONFIRMED・枠は に:PLACE）。山=goal（昇った先）。読みは正しい
+学生が山頂に昇った。	CORRECT	同上。山頂=goal

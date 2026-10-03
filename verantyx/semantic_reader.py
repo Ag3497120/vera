@@ -2692,6 +2692,56 @@ TYPED_FRAMES_NOT_READ_W3B4 = {
     'P_CHANGE': 'HE_GOAL_OR_RESULT', 'P_CONSUME': 'NI_TIME_OR_PURPOSE',
 }
 
+# ===================================================================================================================================
+# W3-b5: the generated frame of a predicate as a REFERENCE for a row that is read only when the frame allows it (docs/READING_SOUNDNESS.md section 10F, K200-K206).
+# A row of the kind `frame_required` is a candidate only when the predicate's `frame_generated` holds the row's particle with a type the row expects, and then the row expects
+# (row types) intersect (frame types). The frame never decides a type and never breaks a tie; it only allows or does not allow a row. The rows are in their own dictionary:
+# `TYPED_FRAMES`, `TYPED_FRAMES_W3B4`, `typed_frames_v2()` and `TYPED_FRAMES_NOT_READ_W3B4` are not changed. No word, no surface rule.
+# ===================================================================================================================================
+# Narrowed on 2026-10-04 (docs 10F, table change records 1 and 2, K206): the sixteen registered rows went to two (record 1) and then to none (record 2). The frame says which types stand on a
+# particle, not which role it is, and a row that read a worst case as a misread was taken out (a type whose rows are all out keeps its key with an empty tuple: the order and the keys of the
+# registration stay; the mechanism below, `frame_generated` and the kind `frame_required`, stays and is tested with the registered rows put back).
+TYPED_FRAMES_FRAME_REQUIRED_W3B5 = {
+    'P_MOVE': (),
+    'P_COMMUNICATE': (),
+    'P_ACT': (),
+    'P_CREATE': (),
+    'P_EMOTION': (),
+}
+W3B5_LICENSES = ('table', 'frame_required')
+W3B5_REASON_NAMES = ('FRAME_GENERATED_DOES_NOT_LICENSE', 'PLACEMENT_FRAME_GENERATED_INVALID')
+
+
+def typed_frames_w3b5_rows():
+    """K201: every row of the table with its kind, composed when it is asked: the rows of `typed_frames_v2()` (kind `table`) and then the rows of
+    `TYPED_FRAMES_FRAME_REQUIRED_W3B5` (kind `frame_required`), as (type, role, particles, expected types, 'arg' | 'adjunct', kind)."""
+    out = [(t, role, parts, exp, kind, 'table') for t, rows in typed_frames_v2().items() for (role, parts, exp, kind) in rows]
+    out += [(t, role, parts, exp, kind, 'frame_required') for t, rows in TYPED_FRAMES_FRAME_REQUIRED_W3B5.items() for (role, parts, exp, kind) in rows]
+    return out
+
+
+def predicate_frame_generated(answer):
+    """K202, the only reader of `frame_generated` of the answer of a predicate (it reads that key and the two keys inside it, nothing else of the answer):
+    ('absent', None) when there is no key or its value is None; ('generated', {particle: frozenset(types)}) for a value that keeps the contract of
+    docs/COARSE_PLACEMENT.md (an empty frame is well formed: it allows nothing); else (None, 'PLACEMENT_FRAME_GENERATED_INVALID:<problem>')."""
+    value = answer.get('frame_generated') if isinstance(answer, dict) else None
+    if value is None: return 'absent', None
+
+    def bad(problem): return None, 'PLACEMENT_FRAME_GENERATED_INVALID:' + problem
+    if not isinstance(value, dict): return bad('NOT_A_MAPPING')
+    if not {'origin': 'generated'}.items() <= value.items(): return bad('ORIGIN_NOT_GENERATED')         # a field of the VALUE of frame_generated (not of the answer)
+    frame = value.get('frame')
+    if not isinstance(frame, dict): return bad('FRAME_NOT_A_MAPPING')
+    from .coarse_types import NOUN_TYPES
+    out = {}
+    for particle, types in frame.items():
+        if particle not in _CASE_PARTICLES_9: return bad('PARTICLE_NOT_CASE:%s' % (particle,))
+        if not (isinstance(types, list) and types and all(isinstance(t, str) and t for t in types)): return bad('TYPES_NOT_A_LIST:%s' % (particle,))
+        for t in types:
+            if t not in NOUN_TYPES: return bad('TYPE_NOT_NOUN:%s:%s' % (particle, t))
+        out[particle] = frozenset(types)
+    return 'generated', out
+
 
 def typed_plan_u_w3b4_ja(clause, toks, query, *, voice, written, strip, role_map):
     """K160, the plan of paths U and U3 with the second table (K62 v2): the plan of W3-b2 (`typed_plan_u_w3b2_v1_ja`), body unchanged, with two references to the table
@@ -2709,6 +2759,9 @@ def typed_plan_u_w3b4_ja(clause, toks, query, *, voice, written, strip, role_map
     if rows is None: return None, 'PLACEMENT_FRAME_NOT_READ:' + ptype
     fkind, finfo = predicate_frame(answer_p)
     if fkind is None: return None, finfo
+    required_all = TYPED_FRAMES_FRAME_REQUIRED_W3B5.get(ptype, ())        # W3-b5 K200: the rows read only when the generated frame allows them
+    gen = None                                                           # predicate_frame_generated(answer_p), asked once and only when a row of that kind is needed
+    licensed_roles = {}                                                  # role -> 'frame_generated' for what was read through a row of that kind
     chosen, basis = [], {}
     for role in clause.roles:
         particle = _particle_after(toks, role.span.end)
@@ -2717,6 +2770,17 @@ def typed_plan_u_w3b4_ja(clause, toks, query, *, voice, written, strip, role_map
         question = _w3b2_not_demonstrative(toks, role)
         if question: return None, question
         in_frame = [row for row in rows if particle in row[1]]
+        required = [row for row in required_all if particle in row[1]]
+        licensed = []
+        if required:
+            if gen is None: gen = predicate_frame_generated(answer_p)
+            gkind, ginfo = gen
+            if gkind is None: return None, ginfo                         # a broken frame is a reason of its own, only when a row of that kind is needed
+            if gkind == 'generated':
+                allowed = ginfo.get(particle, frozenset())
+                licensed = [(r[0], r[1], tuple(t for t in r[2] if t in allowed), r[3]) for r in required if set(r[2]) & allowed]      # row types intersect frame types
+                if not in_frame and not licensed: return None, 'FRAME_GENERATED_DOES_NOT_LICENSE:%s' % particle
+                in_frame = in_frame + licensed
         if not in_frame: return None, 'PLACEMENT_PARTICLE_NOT_IN_FRAME:%s:%s' % (ptype, particle)
         if fkind == 'confirmed' and particle not in finfo: return None, 'PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:%s:%s' % (ptype, particle)
         head, relational = no_phrase_head(toks, role.span.end - len(value), role.span.end)      # the value is the end of the role's text (a demonstrative at its start was taken off)
@@ -2729,10 +2793,13 @@ def typed_plan_u_w3b4_ja(clause, toks, query, *, voice, written, strip, role_map
             else: last = (kind, payload)
         if not fits:
             kind, payload = last
+            if kind == 'mismatch' and gen is not None and gen[0] == 'generated' and any(payload[0] in r[2] for r in required) and not any(payload[0] in r[2] for r in in_frame):
+                return None, 'FRAME_GENERATED_DOES_NOT_LICENSE:%s' % particle      # a row that expects the type exists, and the frame does not allow it
             if kind == 'mismatch': return None, 'PLACEMENT_TYPE_MISMATCH:%s:%s:%s' % (ptype, particle, payload[0])
             return None, '%s:%s:%s' % (payload, particle, value)
         if len(fits) > 1: return None, 'PLACEMENT_ROLE_TIE'
         row, kind, types = fits[0]
+        if any(row is r for r in licensed): licensed_roles[row[0]] = 'frame_generated'
         if fkind == 'confirmed' and not set(types) <= finfo[particle]:
             return None, 'PLACEMENT_FRAME_TYPE_NOT_CONFIRMED:%s:%s:%s' % (ptype, particle, '+'.join(types))
         if role.name not in ('recipient', 'ambiguous'):
@@ -2741,6 +2808,9 @@ def typed_plan_u_w3b4_ja(clause, toks, query, *, voice, written, strip, role_map
         if row[0] in basis: return None, 'PLACEMENT_DUPLICATE_ROLE:' + row[0]
         chosen.append((row[0], role))
         basis[row[0]] = 'placement_%s%s:%s' % (kind, '_head' if head else '', '+'.join(types))
+    if licensed_roles:         # the license is told to the caller only: `role_flags` is closed by event_cross (docs 10F H204), so nothing is added to the output
+        return {'mode': 'override', 'roles': chosen, 'predicate_basis': 'placement_direct:' + ptype, 'role_basis': basis, 'clause': replace(clause, unsupported=()),
+                'role_license': licensed_roles}, None
     return {'mode': 'override', 'roles': chosen, 'predicate_basis': 'placement_direct:' + ptype, 'role_basis': basis, 'clause': replace(clause, unsupported=())}, None
 
 

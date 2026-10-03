@@ -1,0 +1,605 @@
+text	n_clauses	rule	unsupported	trigger_w3b1	trigger_w3b2	predicate	ctype	tail_gate	derived_gate	base_entry	base_reason
+兄が校庭であそんだ。	1	frame	ambiguous case role: で	-	U3	あそぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が校庭でおどった。	1	frame	ambiguous case role: で	-	U3	おどる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が校庭で騒いだ。	1	frame	ambiguous case role: で	-	U3	騒ぐ	五段-ガ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が校庭で昼寝した。	1	frame	ambiguous case role: で	-	U3	昼寝する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が校庭で活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員がホテルで勤務した。	1	frame	ambiguous case role: で	-	U3	勤務する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員がホテルで仕事した。	1	frame	ambiguous case role: で	-	U3	仕事する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員がホテルで生活した。	1	frame	ambiguous case role: で	-	U3	生活する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生がホテルで休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員がホテルで過ごした。	1	frame	ambiguous case role: で	-	U3	過ごす	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手がホテルで待ち合わせした。	1	frame	ambiguous case role: で	-	U3	待ち合わせする	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+監督が神社で修行した。	1	frame	ambiguous case role: で	-	U3	修行する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が神社で踊った。	1	frame	ambiguous case role: で	-	U3	踊る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が神社で待ち合わせした。	1	frame	ambiguous case role: で	-	U3	待ち合わせする	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が神社で会合した。	1	frame	ambiguous case role: で	-	U3	会合する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が交差点で待ち合わせした。	1	frame	ambiguous case role: で	-	U3	待ち合わせする	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が交差点で騒いだ。	1	frame	ambiguous case role: で	-	U3	騒ぐ	五段-ガ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が国道でドライブした。	1	frame	ambiguous case role: で	-	U3	ドライブする	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が国道で営業した。	1	frame	ambiguous case role: で	-	U3	営業する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が歩道で寝転がった。	1	frame	ambiguous case role: で	-	U3	寝転がる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生が歩道で休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が山頂で乾杯した。	1	frame	ambiguous case role: で	-	U3	乾杯する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が山頂でキャンプした。	1	frame	ambiguous case role: で	-	U3	キャンプする	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+監督が山頂で昼寝した。	1	frame	ambiguous case role: で	-	U3	昼寝する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校舎で勤務した。	1	frame	ambiguous case role: で	-	U3	勤務する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が校舎で修行した。	1	frame	ambiguous case role: で	-	U3	修行する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が民宿で過ごした。	1	frame	ambiguous case role: で	-	U3	過ごす	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が民宿で仕事した。	1	frame	ambiguous case role: で	-	U3	仕事する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が教会で会合した。	1	frame	ambiguous case role: で	-	U3	会合する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が教会で乾杯した。	1	frame	ambiguous case role: で	-	U3	乾杯する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員がテニスコートで活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員がテニスコートで休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生が銭湯で休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が銭湯で勤務した。	1	frame	ambiguous case role: で	-	U3	勤務する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が銭湯で昼寝した。	1	frame	ambiguous case role: で	-	U3	昼寝する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+監督が老人ホームで勤務した。	1	frame	ambiguous case role: で	-	U3	勤務する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が老人ホームで生活した。	1	frame	ambiguous case role: で	-	U3	生活する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が農道でドライブした。	1	frame	ambiguous case role: で	-	U3	ドライブする	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が釣り堀で過ごした。	1	frame	ambiguous case role: で	-	U3	過ごす	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が教会で曲を演奏した。	1	frame	ambiguous case role: で	-	U3	演奏する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が老人ホームで楽器を演奏した。	1	frame	ambiguous case role: で	-	U3	演奏する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が神社で音楽を演奏した。	1	frame	ambiguous case role: で	-	U3	演奏する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が校庭でトラックを運転した。	1	frame	ambiguous case role: で	-	U3	運転する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が農道でトラックを運転した。	1	frame	ambiguous case role: で	-	U3	運転する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生が山頂で牛を放牧した。	1	frame	ambiguous case role: で	-	U3	放牧する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が校庭で羊を放牧した。	1	frame	ambiguous case role: で	-	U3	放牧する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が農道で馬を放牧した。	1	frame	ambiguous case role: で	-	U3	放牧する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+監督が校庭で映像を撮影した。	1	frame	ambiguous case role: で	-	U3	撮影する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が神社で写真を撮影した。	1	frame	ambiguous case role: で	-	U3	撮影する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が教会で動画を撮影した。	1	frame	ambiguous case role: で	-	U3	撮影する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が山頂で写真を撮影した。	1	frame	ambiguous case role: で	-	U3	撮影する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が銭湯で映像を撮影した。	1	frame	ambiguous case role: で	-	U3	撮影する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が民宿で野菜を栽培した。	1	frame	ambiguous case role: で	-	U3	栽培する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が校庭で花を栽培した。	1	frame	ambiguous case role: で	-	U3	栽培する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が農道で苗を栽培した。	1	frame	ambiguous case role: で	-	U3	栽培する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が老人ホームで野菜を栽培した。	1	frame	ambiguous case role: で	-	U3	栽培する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+教会で係員が楽団の曲を演奏した。	1	frame	ambiguous case role: で	-	U3	演奏する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+神社で店員が町の写真を撮影した。	1	frame	ambiguous case role: で	-	U3	撮影する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+ホテルで先生が旅券の写真を撮影した。	1	frame	ambiguous case role: で	-	U3	撮影する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+国道で係員が会社のトラックを運転した。	1	frame	ambiguous case role: で	-	U3	運転する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+校庭で職員が町の楽器を演奏した。	1	frame	ambiguous case role: で	-	U3	演奏する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+山頂で学生が町の動画を撮影した。	1	frame	ambiguous case role: で	-	U3	撮影する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+老人ホームで係員が学校の曲を演奏した。	1	frame	ambiguous case role: で	-	U3	演奏する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+民宿で社員が工場の野菜を栽培した。	1	frame	ambiguous case role: で	-	U3	栽培する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が校庭で打った。	1	frame	ambiguous case role: で	-	U3	打つ	五段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員がホテルで皿を洗った。	1	frame	ambiguous case role: で	-	U3	洗う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が神社で皿を拭いた。	1	frame	ambiguous case role: で	-	U3	拭く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生が交差点で押した。	1	frame	ambiguous case role: で	-	U3	押す	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が国道で引いた。	1	frame	ambiguous case role: で	-	U3	引く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が歩道で花を切った。	1	frame	ambiguous case role: で	-	U3	切る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校舎で遊んだ。	1	frame	ambiguous case role: で	-	U3	遊ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が民宿で働いた。	1	frame	ambiguous case role: で	-	U3	働く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が校庭で守った。	1	frame	ambiguous case role: で	-	U3	守る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生がホテルで魚を焼いた。	1	frame	ambiguous case role: で	-	U3	焼く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が交差点で皿を作った。	1	frame	ambiguous case role: で	-	U3	作る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が国道で絵を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生が歩道で記事を書いた。	1	frame	ambiguous case role: で	-	U3	書く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が山頂で服を縫った。	1	frame	ambiguous case role: で	-	U3	縫う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が校舎で帽子を編んだ。	1	frame	ambiguous case role: で	-	U3	編む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+監督が民宿で驚いた。	1	frame	ambiguous case role: で	-	U3	驚く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が教会で笑った。	1	frame	ambiguous case role: で	-	U3	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が校庭で泣いた。	1	frame	ambiguous case role: で	-	U3	泣く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉がホテルで怒った。	1	frame	ambiguous case role: で	-	U3	怒る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が神社で喜んだ。	1	frame	ambiguous case role: で	-	U3	喜ぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が歩道でかみついた。	1	frame	ambiguous case role: で	-	U3	かみつく	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が校舎でいどんだ。	1	frame	ambiguous case role: で	-	U3	いどむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が民宿でさわった。	1	frame	ambiguous case role: で	-	U3	さわる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生が教会ですがった。	1	frame	ambiguous case role: で	-	U3	すがる	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が校庭で書き込んだ。	1	frame	ambiguous case role: で	-	U3	書き込む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手がホテルで記載した。	1	frame	ambiguous case role: で	-	U3	記載する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が交差点で敷設した。	1	frame	ambiguous case role: で	-	U3	敷設する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が国道で併設した。	1	frame	ambiguous case role: で	-	U3	併設する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が民宿でなやんだ。	1	frame	ambiguous case role: で	-	U3	なやむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が教会で戸惑った。	1	frame	ambiguous case role: で	-	U3	戸惑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が校庭で感心した。	1	frame	ambiguous case role: で	-	U3	感心する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が神社で恐縮した。	1	frame	ambiguous case role: で	-	U3	恐縮する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が交差点で退屈した。	1	frame	ambiguous case role: で	-	U3	退屈する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+監督が国道でおどろいた。	1	frame	ambiguous case role: で	-	U3	おどろく	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が搭乗口であそんだ。	1	frame	ambiguous case role: で	-	U3	あそぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が宿で勤務した。	1	frame	ambiguous case role: で	-	U3	勤務する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が林で休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が森で過ごした。	1	frame	ambiguous case role: で	-	U3	過ごす	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が橋で仕事した。	1	frame	ambiguous case role: で	-	U3	仕事する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が池で生活した。	1	frame	ambiguous case role: で	-	U3	生活する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が畑で待ち合わせした。	1	frame	ambiguous case role: で	-	U3	待ち合わせする	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生が屋上で会合した。	1	frame	ambiguous case role: で	-	U3	会合する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が廊下で乾杯した。	1	frame	ambiguous case role: で	-	U3	乾杯する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が玄関で活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+監督が左であそんだ。	1	frame	ambiguous case role: で	-	U3	あそぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が本社で休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が石畳で過ごした。	1	frame	ambiguous case role: で	-	U3	過ごす	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が多数決で生活した。	1	frame	ambiguous case role: で	-	U3	生活する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が望遠レンズで待ち合わせした。	1	frame	ambiguous case role: で	-	U3	待ち合わせする	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が搬出口で会合した。	1	frame	ambiguous case role: で	-	U3	会合する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が電話口で乾杯した。	1	frame	ambiguous case role: で	-	U3	乾杯する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が校庭であそんだ。	1	frame	ambiguous case role: で	-	U3	あそぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が神社で休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が交差点で過ごした。	1	frame	ambiguous case role: で	-	U3	過ごす	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生が国道で仕事した。	1	frame	ambiguous case role: で	-	U3	仕事する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が歩道で生活した。	1	frame	ambiguous case role: で	-	U3	生活する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が山頂で騒いだ。	1	frame	ambiguous case role: で	-	U3	騒ぐ	五段-ガ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+監督が校舎で踊った。	1	frame	ambiguous case role: で	-	U3	踊る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が校庭であそんだ。	1	frame	ambiguous case role: で	-	U3	あそぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生がホテルで勤務した。	1	frame	ambiguous case role: で	-	U3	勤務する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が神社で休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が山頂で過ごした。	1	frame	ambiguous case role: で	-	U3	過ごす	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が校庭で活躍する。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員がホテルで活躍しなかった。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生が神社で活躍しない。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が山頂で休憩する。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が銭湯で休憩しなかった。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+監督が老人ホームで休憩しない。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校舎で勤務する。	1	frame	ambiguous case role: で	-	U3	勤務する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が民宿で勤務しなかった。	1	frame	ambiguous case role: で	-	U3	勤務する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が教会で生活しない。	1	frame	ambiguous case role: で	-	U3	生活する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が国道で踊らなかった。	1	frame	ambiguous case role: で	-	U3	踊る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生がテニスコートで騒がない。	1	frame	ambiguous case role: で	-	U3	騒ぐ	五段-ガ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が交差点で過ごさなかった。	1	frame	ambiguous case role: で	-	U3	過ごす	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が校庭でも活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉がホテルでも休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が神社でもあそんだ。	1	frame	ambiguous case role: で	-	U3	あそぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が校庭でさえ活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹がホテルでさえ休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が神社でさえあそんだ。	1	frame	ambiguous case role: で	-	U3	あそぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が校庭でばかり活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生がホテルでばかり休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が神社でばかりあそんだ。	1	frame	ambiguous case role: で	-	U3	あそぶ	五段-バ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が校庭で活躍している。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-一般:助詞	ok	abstain	NO_SUPPORTED_CLAUSE
+先生がホテルで活躍したい。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-一般:助動詞	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が神社で活躍します。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-一般:助動詞	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が山頂で休憩している。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-一般:助詞	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が校舎で勤務したい。	1	frame	ambiguous case role: で	-	U3	勤務する	サ行変格	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-一般:助動詞	ok	abstain	NO_SUPPORTED_CLAUSE
+学生が民宿で生活している。	1	frame	ambiguous case role: で	-	U3	生活する	サ行変格	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-一般:助詞	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が校庭でこけた。	1	frame	ambiguous case role: で	-	U3	こける	下一段-カ行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行	abstain	NO_SUPPORTED_CLAUSE
+選手がホテルでくらした。	1	frame	ambiguous case role: で	-	U3	くらす	五段-サ行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:五段-サ行	abstain	NO_SUPPORTED_CLAUSE
+監督が神社でふかした。	1	frame	ambiguous case role: で	-	U3	ふかす	五段-サ行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:五段-サ行	abstain	NO_SUPPORTED_CLAUSE
+兄が山頂で待ち合わせた。	1	frame	ambiguous case role: で	-	U3	待ち合わせる	下一段-サ行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-サ行	abstain	NO_SUPPORTED_CLAUSE
+弟が校舎で涼めた。	1	frame	ambiguous case role: で	-	U3	涼める	下一段-マ行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行	abstain	NO_SUPPORTED_CLAUSE
+姉が校庭で叱られた。	1	frame	ambiguous case role: で	-	U3	叱る	五段-ラ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:未然形-一般:助動詞	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が弟をホテルで騒がせた。	1	frame	ambiguous case role: で	-	U3	騒がせる	五段-ガ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:未然形-一般:助動詞	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が神社で騒がされた。	1	frame	ambiguous case role: で	-	U3	騒がす	五段-サ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:未然形-一般:助動詞	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:五段-サ行	abstain	NO_SUPPORTED_CLAUSE
+兄が右で打った。	1	frame	ambiguous case role: で	-	U3	打つ	五段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が右で皿を洗った。	1	frame	ambiguous case role: で	-	U3	洗う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が右で皿を拭いた。	1	frame	ambiguous case role: で	-	U3	拭く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が右で絵を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が右で記事を書いた。	1	frame	ambiguous case role: で	-	U3	書く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が段差で驚いた。	1	frame	ambiguous case role: で	-	U3	驚く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が口で戦った。	1	frame	ambiguous case role: で	-	U3	戦う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が口で絵を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が口で手紙を書いた。	1	frame	ambiguous case role: で	-	U3	書く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が口で笑った。	1	frame	ambiguous case role: で	-	U3	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が右で投球した。	1	frame	ambiguous case role: で	-	U3	投球する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が右で曲を演奏した。	1	frame	ambiguous case role: で	-	U3	演奏する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が右でトラックを運転した。	1	frame	ambiguous case role: で	-	U3	運転する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が右で写真を撮影した。	1	frame	ambiguous case role: で	-	U3	撮影する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が右で踊った。	1	frame	ambiguous case role: で	-	U3	踊る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が右で騒いだ。	1	frame	ambiguous case role: で	-	U3	騒ぐ	五段-ガ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が右で苗を栽培した。	1	frame	ambiguous case role: で	-	U3	栽培する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が右で牛を放牧した。	1	frame	ambiguous case role: で	-	U3	放牧する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生が右で過ごした。	1	frame	ambiguous case role: で	-	U3	過ごす	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が右で活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が口で投球した。	1	frame	ambiguous case role: で	-	U3	投球する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が口で曲を演奏した。	1	frame	ambiguous case role: で	-	U3	演奏する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が口でトラックを運転した。	1	frame	ambiguous case role: で	-	U3	運転する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が口で写真を撮影した。	1	frame	ambiguous case role: で	-	U3	撮影する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が口で踊った。	1	frame	ambiguous case role: で	-	U3	踊る	五段-ラ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が口で騒いだ。	1	frame	ambiguous case role: で	-	U3	騒ぐ	五段-ガ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が口で苗を栽培した。	1	frame	ambiguous case role: で	-	U3	栽培する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生が口で牛を放牧した。	1	frame	ambiguous case role: で	-	U3	放牧する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が口で過ごした。	1	frame	ambiguous case role: で	-	U3	過ごす	五段-サ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が口で活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が右で投球した。	1	frame	ambiguous case role: で	-	U3	投球する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が口で曲を演奏した。	1	frame	ambiguous case role: で	-	U3	演奏する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+監督が右でトラックを運転した。	1	frame	ambiguous case role: で	-	U3	運転する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が口で写真を撮影した。	1	frame	ambiguous case role: で	-	U3	撮影する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が段差でもたついた。	1	frame	ambiguous case role: で	-	U3	もたつく	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が段差でやすんだ。	1	frame	ambiguous case role: で	-	U3	やすむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が段差で休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が坂でもたついた。	1	frame	ambiguous case role: で	-	U3	もたつく	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が坂でやすんだ。	1	frame	ambiguous case role: で	-	U3	やすむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が坂で騒いだ。	1	frame	ambiguous case role: で	-	U3	騒ぐ	五段-ガ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が溝でもたついた。	1	frame	ambiguous case role: で	-	U3	もたつく	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が溝で休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生がぬかるみでもたついた。	1	frame	ambiguous case role: で	-	U3	もたつく	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員がぬかるみでやすんだ。	1	frame	ambiguous case role: で	-	U3	やすむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手がぬかるみで騒いだ。	1	frame	ambiguous case role: で	-	U3	騒ぐ	五段-ガ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+監督が崖でやすんだ。	1	frame	ambiguous case role: で	-	U3	やすむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が崖で騒いだ。	1	frame	ambiguous case role: で	-	U3	騒ぐ	五段-ガ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が暗闇でもたついた。	1	frame	ambiguous case role: で	-	U3	もたつく	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が暗闇で騒いだ。	1	frame	ambiguous case role: で	-	U3	騒ぐ	五段-ガ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が暗闇で休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が崖で休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が溝でやすんだ。	1	frame	ambiguous case role: で	-	U3	やすむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が雨でやすんだ。	1	frame	ambiguous case role: で	-	U3	やすむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が雪で休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が風でもたついた。	1	frame	ambiguous case role: で	-	U3	もたつく	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が台風でやすんだ。	1	frame	ambiguous case role: で	-	U3	やすむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が地震で騒いだ。	1	frame	ambiguous case role: で	-	U3	騒ぐ	五段-ガ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生が雷で休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+職員が雨でもたついた。	1	frame	ambiguous case role: で	-	U3	もたつく	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が風で騒いだ。	1	frame	ambiguous case role: で	-	U3	騒ぐ	五段-ガ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が段差でやすんだ。	1	frame	ambiguous case role: で	-	U3	やすむ	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が坂で休憩した。	1	frame	ambiguous case role: で	-	U3	休憩する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が溝でもたついた。	1	frame	ambiguous case role: で	-	U3	もたつく	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が右で打った。	1	frame	ambiguous case role: で	-	U3	打つ	五段-タ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が右で皿を洗った。	1	frame	ambiguous case role: で	-	U3	洗う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が右で皿を拭いた。	1	frame	ambiguous case role: で	-	U3	拭く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が右で絵を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が右で記事を書いた。	1	frame	ambiguous case role: で	-	U3	書く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が段差で驚いた。	1	frame	ambiguous case role: で	-	U3	驚く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が口で戦った。	1	frame	ambiguous case role: で	-	U3	戦う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が口で絵を描いた。	1	frame	ambiguous case role: で	-	U3	描く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が口で手紙を書いた。	1	frame	ambiguous case role: で	-	U3	書く	五段-カ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が口で笑った。	1	frame	ambiguous case role: で	-	U3	笑う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が校庭で活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が校庭で活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が校庭で活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が校庭で活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+姉が神社で活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+妹が神社で活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が神社で活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が神社で活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が神社で活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が神社で活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生が神社で活躍した。	1	frame	ambiguous case role: で	-	U3	活躍する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が部長に返事を催促した。	1	frame		U	-	催促する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:催促する
+弟が課長に申告した。	1	frame		U	-	申告する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:申告する
+姉が先輩に曲を披露した。	1	frame		U	-	披露する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:披露する
+妹が後輩に請求書を請求した。	1	frame		U	-	請求する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:請求する
+先生が上司に告白した。	1	frame		U	-	告白する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:告白する
+店員が同僚に告知した。	1	frame		U	-	告知する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:告知する
+係員が社長に助言した。	1	frame		U	-	助言する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:助言する
+社員が店長に謝罪した。	1	frame		U	-	謝罪する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:謝罪する
+学生が隣人に抗議した。	1	frame		U	-	抗議する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:抗議する
+職員が弁護士に懇願した。	1	frame		U	-	懇願する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:懇願する
+選手が管理人に要望した。	1	frame		U	-	要望する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:要望する
+監督が看護師に電話した。	1	frame		U	-	電話する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:電話する
+兄が母に返答した。	1	frame		U	-	返答する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:返答する
+弟が父に宣伝した。	1	frame		U	-	宣伝する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:宣伝する
+姉が祖母に伝授した。	1	frame		U	-	伝授する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:伝授する
+妹が先生に書類を書き送った。	1	frame		U	-	書き送る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:書き送る
+先生が部長に反論した。	1	frame		U	-	反論する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:反論する
+店員が課長に応答した。	1	frame		U	-	応答する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:応答する
+係員が先輩に怒鳴った。	1	frame		U	-	怒鳴る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:怒鳴る
+社員が後輩にあやまった。	1	frame		U	-	あやまる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:あやまる
+学生が上司にたのんだ。	1	frame		U	-	たのむ	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:たのむ
+職員が同僚にせがんだ。	1	frame		U	-	せがむ	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:せがむ
+選手が社長に部品を発注した。	1	frame		U	-	発注する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:発注する
+監督が店長に声かけした。	1	frame		U	-	声かけする	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:声かけする
+兄が隣人に書類をメールした。	1	frame		U	-	メールする	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:メールする
+弟が弁護士に書類を申し送った。	1	frame		U	-	申し送る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:申し送る
+姉が管理人に言い返した。	1	frame		U	-	言い返す	五段-サ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:言い返す
+妹が看護師に布教した。	1	frame		U	-	布教する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:布教する
+先生が母に確約した。	1	frame		U	-	確約する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:確約する
+店員が父に奏上した。	1	frame		U	-	奏上する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:奏上する
+係員が政府に抗議した。	1	frame		U	-	抗議する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:抗議する
+社員が会社に請求した。	1	frame		U	-	請求する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:請求する
+学生が議会に要望した。	1	frame		U	-	要望する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:要望する
+職員が組合に返答した。	1	frame		U	-	返答する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:返答する
+選手が協会に発注した。	1	frame		U	-	発注する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:発注する
+監督が財団に催促した。	1	frame		U	-	催促する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:催促する
+兄が裁判所に申告した。	1	frame		U	-	申告する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:申告する
+弟が検察に宣伝した。	1	frame		U	-	宣伝する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:宣伝する
+姉が大学に反論した。	1	frame		U	-	反論する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:反論する
+弟が駅にむかった。	1	frame		U	-	むかう	五段-ワア行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:むかう
+姉が空港にもどった。	1	frame		U	-	もどる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:もどる
+妹が駅にかけこんだ。	1	frame		U	-	かけこむ	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:かけこむ
+先生が海にとびこんだ。	1	frame		U	-	とびこむ	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:とびこむ
+店員が山頂にたどり着いた。	1	frame		U	-	たどり着く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:たどり着く
+係員が港にいたった。	1	frame		U	-	いたる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:いたる
+社員が病院に入院した。	1	frame		U	-	入院する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:入院する
+選手が倉庫に出向いた。	1	frame		U	-	出向く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出向く
+監督が山頂に到達した。	1	frame		U	-	到達する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:到達する
+兄が駅に停車した。	1	frame		U	-	停車する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:停車する
+弟が港に停泊した。	1	frame		U	-	停泊する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:停泊する
+姉が現場に出動した。	1	frame		U	-	出動する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出動する
+妹が倉庫に侵入した。	1	frame		U	-	侵入する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:侵入する
+先生が球場に入場した。	1	frame		U	-	入場する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:入場する
+店員が北海道に遠征した。	1	frame		U	-	遠征する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遠征する
+係員が沖縄に赴いた。	1	frame		U	-	赴く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:赴く
+社員が京都に赴任した。	1	frame		U	-	赴任する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:赴任する
+学生が町に転入した。	1	frame		U	-	転入する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:転入する
+職員が村に転校した。	1	frame		U	-	転校する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:転校する
+選手が公園に合流した。	1	frame		U	-	合流する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:合流する
+姉が港に乗り込んだ。	1	frame		U	-	乗り込む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:乗り込む
+妹が駅に先回りした。	1	frame		U	-	先回りする	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:先回りする
+先生が北海道に旅行した。	1	frame		U	-	旅行する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:旅行する
+店員が沖縄に旅行した。	1	frame		U	-	旅行する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:旅行する
+係員が京都に旅行した。	1	frame		U	-	旅行する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:旅行する
+社員が山に昇った。	1	frame		U	-	昇る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:昇る
+学生が山頂に昇った。	1	frame		U	-	昇る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:昇る
+選手が現場に入室した。	1	frame		U	-	入室する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:入室する
+監督が港に到達した。	1	frame		U	-	到達する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:到達する
+兄が町に入院した。	1	frame		U	-	入院する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:入院する
+弟が島に停泊した。	1	frame		U	-	停泊する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:停泊する
+妹が町にもどった。	1	frame		U	-	もどる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:もどる
+先生が川にとびこんだ。	1	frame		U	-	とびこむ	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:とびこむ
+先生が命日に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+店員が祭日に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+係員が朔日に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+社員が満月に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+学生が新月に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+職員が乾季に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+選手が昭和に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+監督が大正に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+兄が平成に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+弟が令和に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+姉が戦間期に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+妹が氷河期に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+先生が満月に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+店員が新月に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+係員が朔日に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+社員が命日に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+学生が祭日に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+職員が乾季に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+選手が氷河期に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+監督が戦間期に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+兄が明治時代に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+弟が奈良時代に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+兄が会社に入社した。	1	frame		U	-	入社する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:入社する
+弟が劇団に入団した。	1	frame		U	-	入団する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:入団する
+姉が協会に入会した。	1	frame		U	-	入会する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:入会する
+妹がチームに入部した。	1	frame		U	-	入部する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:入部する
+店員が軍に入隊した。	1	frame		U	-	入隊する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:入隊する
+係員が内閣に入閣した。	1	frame		U	-	入閣する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:入閣する
+社員が政府に入省した。	1	frame		U	-	入省する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:入省する
+学生が組合に加わった。	1	frame		U	-	加わる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:加わる
+職員がチームに合流した。	1	frame		U	-	合流する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:合流する
+選手が大学に編入した。	1	frame		U	-	編入する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:編入する
+監督が会社に出社した。	1	frame		U	-	出社する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出社する
+兄が会社に着任した。	1	frame		U	-	着任する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:着任する
+弟が会社に赴任した。	1	frame		U	-	赴任する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:赴任する
+姉が企業に就いた。	1	frame		U	-	就く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:就く
+妹が大学に入学した。	1	frame		U	-	入学する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:入学する
+先生が大学に進学した。	1	frame		U	-	進学する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:進学する
+妹が部長に面接した。	1	frame		U	-	面接する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:面接する
+先生が課長に交渉した。	1	frame		U	-	交渉する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:交渉する
+店員が先輩に合意した。	1	frame		U	-	合意する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:合意する
+社員が後輩に呼応した。	1	frame		U	-	呼応する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:呼応する
+学生が社長に取り次いだ。	1	frame		U	-	取り次ぐ	五段-ガ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:取り次ぐ
+職員が店長に応対した。	1	frame		U	-	応対する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:応対する
+選手が隣人に話し込んだ。	1	frame		U	-	話し込む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:話し込む
+監督が弁護士に面接した。	1	frame		U	-	面接する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:面接する
+兄が管理人に交渉した。	1	frame		U	-	交渉する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:交渉する
+弟が看護師に合意した。	1	frame		U	-	合意する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:合意する
+姉が上司に呼応した。	1	frame		U	-	呼応する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:呼応する
+兄が先生に旅行した。	1	frame		U	-	旅行する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:旅行する
+弟が会社に旅行した。	1	frame		U	-	旅行する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:旅行する
+姉が部長に昇った。	1	frame		U	-	昇る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:昇る
+妹が政府に昇った。	1	frame		U	-	昇る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:昇る
+先生が母に旅行した。	1	frame		U	-	旅行する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:旅行する
+店員が協会に昇った。	1	frame		U	-	昇る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:昇る
+係員が先輩に誘った。	1	frame		U	-	誘う	五段-ワア行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:誘う
+社員が課長に断った。	1	frame		U	-	断る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:断る
+学生が同僚に呼んだ。	1	frame		U	-	呼ぶ	五段-バ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:呼ぶ
+職員が先生に走った。	1	frame		U	-	走る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:走る
+選手が母に歩いた。	1	frame		U	-	歩く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:歩く
+兄が山田に催促した。	1	frame		U	-	催促する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:催促する
+弟が本社に抗議した。	1	frame		U	-	抗議する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:抗議する
+姉が本社に請求した。	1	frame		U	-	請求する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:請求する
+妹が山田に申告した。	1	frame		U	-	申告する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:申告する
+弟が部長に助言した。	1	frame		U	-	助言する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:助言する
+姉が課長に謝罪した。	1	frame		U	-	謝罪する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:謝罪する
+妹が先輩に懇願した。	1	frame		U	-	懇願する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:懇願する
+兄が部長に周知した。	1	frame		U	-	周知する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:周知する
+弟が後輩に指導した。	1	frame		U	-	指導する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:指導する
+姉が同僚に発信した。	1	frame		U	-	発信する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:発信する
+妹が学生に講義した。	1	frame		U	-	講義する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:講義する
+先生が課長に送信した。	1	frame		U	-	送信する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:送信する
+店員が先輩に配信した。	1	frame		U	-	配信する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:配信する
+係員が上司に詫びた。	1	frame		U	-	詫びる	上一段-バ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:詫びる
+社員が弟に説いた。	1	frame		U	-	説く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:説く
+先生が町に奉職した。	1	frame		U	-	奉職する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:奉職する
+店員が市に業務した。	1	frame		U	-	業務する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:業務する
+係員が島に涼んだ。	1	frame		U	-	涼む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:涼む
+社員が駅に雨宿りした。	1	frame		U	-	雨宿りする	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:雨宿りする
+学生が駅にぶつかった。	1	frame		U	-	ぶつかる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:ぶつかる
+職員が倉庫に激突した。	1	frame		U	-	激突する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:激突する
+選手が港に追突した。	1	frame		U	-	追突する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:追突する
+監督が島に命中した。	1	frame		U	-	命中する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:命中する
+兄が町に遭遇した。	1	frame		U	-	遭遇する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遭遇する
+弟が市に介入した。	1	frame		U	-	介入する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:介入する
+姉が工場に集中した。	1	frame		U	-	集中する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:集中する
+妹が町に入浴した。	1	frame		U	-	入浴する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:入浴する
+先生が町に出演した。	1	frame		U	-	出演する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出演する
+店員が町に出場した。	1	frame		U	-	出場する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出場する
+係員が村にいついた。	1	frame		U	-	いつく	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:いつく
+兄が町に併設した。	1	frame		U	-	併設する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:併設する
+弟が市に敷設した。	1	frame		U	-	敷設する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:敷設する
+妹が町に記載した。	1	frame		U	-	記載する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:記載する
+妹が東京に旅行した。	1	frame		U	-	旅行する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:旅行する
+先生が本社に旅行した。	1	frame		U	-	旅行する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:旅行する
+店員が左に昇った。	1	frame		U	-	昇る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:昇る
+係員が山田に旅行した。	1	frame		U	-	旅行する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:旅行する
+社員が稽古場に昇った。	1	frame		U	-	昇る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:昇る
+学生が多数決に旅行した。	1	frame		U	-	旅行する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:旅行する
+職員が望遠レンズに旅行した。	1	frame		U	-	旅行する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:旅行する
+選手が搬出口に昇った。	1	frame		U	-	昇る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:昇る
+監督が電話口に旅行した。	1	frame		U	-	旅行する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:旅行する
+兄が東京に遠征した。	1	frame		U	-	遠征する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遠征する
+弟が本社に赴いた。	1	frame		U	-	赴く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:赴く
+姉が稽古場に赴任した。	1	frame		U	-	赴任する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:赴任する
+弟が駅に走った。	1	frame		U	-	走る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:走る
+姉が空港に歩いた。	1	frame		U	-	歩く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:歩く
+監督が公園に飛んだ。	1	frame		U	-	飛ぶ	五段-バ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:飛ぶ
+兄が現場に降りた。	1	frame		U	-	降りる	上一段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:降りる
+兄が駅に催促した。	1	frame		U	-	催促する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:催促する
+弟が空港に申告した。	1	frame		U	-	申告する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:申告する
+姉が港に請求した。	1	frame		U	-	請求する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:請求する
+妹が町に披露した。	1	frame		U	-	披露する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:披露する
+先生が村に抗議した。	1	frame		U	-	抗議する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:抗議する
+店員が島に要望した。	1	frame		U	-	要望する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:要望する
+姉が病院に入院した。	1	frame		U	-	入院する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:入院する
+先生が山頂に到達した。	1	frame		U	-	到達する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:到達する
+弟が町に避難した。	1	frame		U	-	避難する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:避難する
+姉が町に日帰りした。	1	frame		U	-	日帰りする	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:日帰りする
+妹が町に移動した。	1	frame		U	-	移動する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:移動する
+先生が町に進出した。	1	frame		U	-	進出する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:進出する
+店員が海に潜った。	1	frame		U	-	潜る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:潜る
+学生が町に浸透した。	1	frame		U	-	浸透する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:浸透する
+兄が七夕に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+弟が節分に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+姉が日没に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+妹が室町時代に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+先生が幕末に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+店員が平安時代に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+係員が弥生時代に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+社員が鎌倉時代に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+姉が全盛期に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+妹が収穫期に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+先生が旧暦に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+店員が昭和初期に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+係員が立春に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+社員が繁忙期に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+学生が飛鳥時代に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+店員が命日に臨んだ。	1	frame		U	-	臨む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:臨む
+係員が祭日に臨んだ。	1	frame		U	-	臨む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:臨む
+社員が満月に臨んだ。	1	frame		U	-	臨む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:臨む
+学生が乾季に臨んだ。	1	frame		U	-	臨む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:臨む
+職員が昭和に臨んだ。	1	frame		U	-	臨む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:臨む
+選手が令和に臨んだ。	1	frame		U	-	臨む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:臨む
+監督が大正に臨んだ。	1	frame		U	-	臨む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:臨む
+兄が満月に退屈した。	1	frame		U	-	退屈する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:退屈する
+弟が新月に退屈した。	1	frame		U	-	退屈する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:退屈する
+姉が命日に退屈した。	1	frame		U	-	退屈する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:退屈する
+妹が祭日に退屈した。	1	frame		U	-	退屈する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:退屈する
+先生が乾季に退屈した。	1	frame		U	-	退屈する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:退屈する
+弟が満月に参拝した。	1	frame		U	-	参拝する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:参拝する
+姉が命日に会った。	1	frame		U	-	会う	五段-ワア行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:会う
+妹が祭日に勝った。	1	frame		U	-	勝つ	五段-タ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:勝つ
+先生が乾季に逆らった。	1	frame		U	-	逆らう	五段-ワア行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:逆らう
+店員が朔日に挑んだ。	1	frame		U	-	挑む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:挑む
+社員が大正に反抗した。	1	frame		U	-	反抗する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:反抗する
+学生が命日に感心した。	1	frame		U	-	感心する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:感心する
+職員が祭日に共感した。	1	frame		U	-	共感する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:共感する
+選手が満月に戸惑った。	1	frame		U	-	戸惑う	五段-ワア行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:戸惑う
+監督が朔日に書き込んだ。	1	frame		U	-	書き込む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:書き込む
+兄が命日に記載した。	1	frame		U	-	記載する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:記載する
+社員が満月に遊んだ。	1	frame		U	-	遊ぶ	五段-バ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遊ぶ
+学生が命日に働いた。	1	frame		U	-	働く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:働く
+職員が祭日に守った。	1	frame		U	-	守る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:守る
+選手が乾季に打った。	1	frame		U	-	打つ	五段-タ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:打つ
+監督が満月に驚いた。	1	frame		U	-	驚く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:驚く
+兄が命日に喜んだ。	1	frame		U	-	喜ぶ	五段-バ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:喜ぶ
+弟が祭日に怒った。	1	frame		U	-	怒る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:怒る
+姉が満月に作った。	1	frame		U	-	作る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:作る
+妹が命日に書いた。	1	frame		U	-	書く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:書く
+先生が祭日に描いた。	1	frame		U	-	描く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:描く
+兄が東京に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+弟が左に起きた。	1	frame		U	-	起きる	上一段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:起きる
+姉が石畳に遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+兄が取材に出向いた。	1	frame		U	-	出向く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出向く
+弟が取材に赴いた。	1	frame		U	-	赴く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:赴く
+姉が取材に遠征した。	1	frame		U	-	遠征する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遠征する
+妹が取材に出動した。	1	frame		U	-	出動する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出動する
+弟が見学に出向いた。	1	frame		U	-	出向く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出向く
+姉が見学に赴いた。	1	frame		U	-	赴く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:赴く
+妹が見学に遠征した。	1	frame		U	-	遠征する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遠征する
+先生が見学に出動した。	1	frame		U	-	出動する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出動する
+姉が買い物に出向いた。	1	frame		U	-	出向く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出向く
+妹が買い物に赴いた。	1	frame		U	-	赴く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:赴く
+先生が買い物に遠征した。	1	frame		U	-	遠征する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遠征する
+店員が買い物に出動した。	1	frame		U	-	出動する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出動する
+妹が散歩に出向いた。	1	frame		U	-	出向く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出向く
+先生が散歩に赴いた。	1	frame		U	-	赴く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:赴く
+店員が散歩に遠征した。	1	frame		U	-	遠征する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遠征する
+係員が散歩に出動した。	1	frame		U	-	出動する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出動する
+先生が見物に出向いた。	1	frame		U	-	出向く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出向く
+店員が見物に赴いた。	1	frame		U	-	赴く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:赴く
+係員が見物に遠征した。	1	frame		U	-	遠征する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遠征する
+社員が見物に出動した。	1	frame		U	-	出動する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出動する
+店員が面会に出向いた。	1	frame		U	-	出向く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出向く
+係員が面会に赴いた。	1	frame		U	-	赴く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:赴く
+社員が面会に遠征した。	1	frame		U	-	遠征する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遠征する
+学生が面会に出動した。	1	frame		U	-	出動する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出動する
+係員が勉強に出向いた。	1	frame		U	-	出向く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出向く
+社員が勉強に赴いた。	1	frame		U	-	赴く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:赴く
+学生が勉強に遠征した。	1	frame		U	-	遠征する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遠征する
+職員が勉強に出動した。	1	frame		U	-	出動する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出動する
+社員が運動に出向いた。	1	frame		U	-	出向く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出向く
+学生が運動に赴いた。	1	frame		U	-	赴く	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:赴く
+職員が運動に遠征した。	1	frame		U	-	遠征する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遠征する
+選手が運動に出動した。	1	frame		U	-	出動する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:出動する
+姉が休みに金を使った。	1	frame	ambiguous case role: に	U	-	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+先生が祭日に金を使った。	1	frame	ambiguous case role: に	U	-	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が朔日に金を使った。	1	frame	ambiguous case role: に	U	-	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+係員が命日に金を使った。	1	frame	ambiguous case role: に	U	-	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+社員が乾季に金を使った。	1	frame	ambiguous case role: に	U	-	使う	五段-ワア行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+弟が先生に共感した。	1	frame		U	-	共感する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:共感する
+姉が先輩に執着した。	1	frame		U	-	執着する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:執着する
+妹が上司に帰依した。	1	frame		U	-	帰依する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:帰依する
+先生が母に恋した。	1	frame		U	-	恋する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:恋する
+店員が部長に恐縮した。	1	frame		U	-	恐縮する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:恐縮する
+係員が父に感心した。	1	frame		U	-	感心する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:感心する
+社員が隣人に戸惑った。	1	frame		U	-	戸惑う	五段-ワア行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:戸惑う
+学生が後輩に満足した。	1	frame		U	-	満足する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:満足する
+職員が祖母に親しんだ。	1	frame		U	-	親しむ	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:親しむ
+選手が課長に配慮した。	1	frame		U	-	配慮する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:配慮する
+監督が同僚にいら立った。	1	frame		U	-	いら立つ	五段-タ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:いら立つ
+兄が店長におどろいた。	1	frame		U	-	おどろく	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:おどろく
+弟が弁護士になやんだ。	1	frame		U	-	なやむ	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:なやむ
+姉が管理人にびびった。	1	frame		U	-	びびる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:びびる
+妹が社長に恐れ入った。	1	frame		U	-	恐れ入る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:恐れ入る
+先生が看護師に共感した。	1	frame		U	-	共感する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:共感する
+妹が先生にかみついた。	1	frame		U	-	かみつく	五段-カ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:かみつく
+先生が先輩にさわった。	1	frame		U	-	さわる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:さわる
+店員が上司にすがった。	1	frame		U	-	すがる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:すがる
+係員が母につきまとった。	1	frame		U	-	つきまとう	五段-ワア行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:つきまとう
+社員が部長にぶつかった。	1	frame		U	-	ぶつかる	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:ぶつかる
+学生が父に反抗した。	1	frame		U	-	反抗する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:反抗する
+職員が隣人に反発した。	1	frame		U	-	反発する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:反発する
+選手が後輩に逆らった。	1	frame		U	-	逆らう	五段-ワア行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:逆らう
+監督が祖母に挑んだ。	1	frame		U	-	挑む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:挑む
+兄が課長に立ち向かった。	1	frame		U	-	立ち向かう	五段-ワア行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:立ち向かう
+弟が同僚に勝った。	1	frame		U	-	勝つ	五段-タ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:勝つ
+姉が店長に会った。	1	frame		U	-	会う	五段-ワア行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:会う
+妹が弁護士に再会した。	1	frame		U	-	再会する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:再会する
+先生が管理人に遭遇した。	1	frame		U	-	遭遇する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遭遇する
+店員が社長に激突した。	1	frame		U	-	激突する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:激突する
+係員が看護師に倣った。	1	frame		U	-	倣う	五段-ワア行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:倣う
+社員が先生に拝んだ。	1	frame		U	-	拝む	五段-マ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:拝む
+学生が先輩に屈した。	1	frame		U	-	屈する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:屈する
+係員が先生に打った。	1	frame		U	-	打つ	五段-タ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:打つ
+社員が母に守った。	1	frame		U	-	守る	五段-ラ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:守る
+学生が弟に遊んだ。	1	frame		U	-	遊ぶ	五段-バ行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遊ぶ
+職員が妹に洗った。	1	frame		U	-	洗う	五段-ワア行	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:洗う
+先生が警察に抗議した。	1	frame		U	-	抗議する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:抗議する
+店員が家族に告白した。	1	frame		U	-	告白する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:告白する
+係員が警察に要望した。	1	frame		U	-	要望する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:要望する
+社員が警察に申告した。	1	frame		U	-	申告する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:申告する
+学生が顧客に請求した。	1	frame		U	-	請求する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:請求する
+職員が顧客に宣伝した。	1	frame		U	-	宣伝する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:宣伝する
+選手が家族に伝授した。	1	frame		U	-	伝授する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:伝授する
+学生が友人に催促した。	1	frame		U	-	催促する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:催促する
+職員が隊員に請求した。	1	frame		U	-	請求する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:請求する
+選手が住民に抗議した。	1	frame		U	-	抗議する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:抗議する
+監督が相手に申告した。	1	frame		U	-	申告する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:申告する
+姉が神社に参拝した。	1	frame		U	-	参拝する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:参拝する
+先生が船を港に係留した。	1	frame	ambiguous case role: に	U	-	係留する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+店員が教会に参列した。	1	frame		U	-	参列する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:参列する
+係員が苗を畑に植え込んだ。	1	frame	ambiguous case role: に	U	-	植え込む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+学生が機械を倉庫に格納した。	1	frame	ambiguous case role: に	U	-	格納する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+選手が船を港に配備した。	1	frame	ambiguous case role: に	U	-	配備する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+監督が書類を倉庫に保存した。	1	frame	ambiguous case role: に	U	-	保存する	サ行変格	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が部品を港に積み込んだ。	1	frame	ambiguous case role: に	U	-	積み込む	五段-マ行	ok	ok	abstain	NO_SUPPORTED_CLAUSE
+兄が北海道にも旅行した。	1	frame		U	-	旅行する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:旅行する
+弟が沖縄にさえ旅行した。	1	frame		U	-	旅行する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:旅行する
+姉が部長にも催促した。	1	frame		U	-	催促する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:催促する
+妹が課長にばかり申告した。	1	frame		U	-	申告する	サ行変格	ok	ok	abstain	QUANTIFIER_NOT_MAPPED:ばかり
+先生が満月にも遅刻した。	1	frame		U	-	遅刻する	サ行変格	ok	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:遅刻する
+先生が課長に申告したい。	1	frame		U	-	申告する	サ行変格	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-一般:助動詞	ok	abstain	RECIPIENT_TYPE_UNDETERMINED:申告する
+店員が部長につたえた。	1	frame		U	-	つたえる	下一段-ア行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行	abstain	RECIPIENT_TYPE_UNDETERMINED:つたえる
+係員が先輩におしえた。	1	frame		U	-	おしえる	下一段-ア行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行	abstain	RECIPIENT_TYPE_UNDETERMINED:おしえる
+社員が課長にひろめた。	1	frame		U	-	ひろめる	下一段-マ行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行	abstain	RECIPIENT_TYPE_UNDETERMINED:ひろめる
+学生が後輩に例えた。	1	frame		U	-	例える	下一段-ア行	ok	PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行	abstain	RECIPIENT_TYPE_UNDETERMINED:例える
+兄が温室で活躍した。	1	frame		-	-	活躍する	サ行変格	ok	ok	read	
+弟が広場で休憩した。	1	frame		-	-	休憩する	サ行変格	ok	ok	read	
+姉が倉庫で勤務した。	1	frame		-	-	勤務する	サ行変格	ok	ok	read	
+妹が球場で活躍した。	1	frame		-	-	活躍する	サ行変格	ok	ok	read	
+先生が温室で昼寝した。	1	frame		-	-	昼寝する	サ行変格	ok	ok	read	
+店員が広場で乾杯した。	1	frame		-	-	乾杯する	サ行変格	ok	ok	read	
+妹が校庭で活躍して休んだ。	2	frame	multiple predicates need explicit clause scope;ambiguous case role: で	-	-	活躍する	サ行変格	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-一般:助詞	ok	abstain	NO_SUPPORTED_CLAUSE
+先生がホテルで休憩し、弟が休んだ。	2	frame	ambiguous case role: で	-	-	休憩する	サ行変格	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-一般:補助記号	ok	abstain	UNSUPPORTED_CLAUSE
+店員が神社で踊ったが、弟は帰った。	3	frame	multiple predicates need explicit clause scope;ambiguous case role: で;unrepresented source content	-	-	踊る	五段-ラ行	PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-促音便:助動詞	ok	abstain	UNSUPPORTED_CLAUSE

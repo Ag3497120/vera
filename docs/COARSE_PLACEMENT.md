@@ -1218,6 +1218,8 @@ template sha256 (the fixed part): `ded30f48c0a596575d061e75aa0768beb3008969a587a
 
 **W3-a3 の追記（述語の `frame`・`frame_status`・`generated_frame`）**: すべての答えの最後に `frame_status`（閉じた 7 値）と `frame`（助詞 → 名詞の型。確認できた述語だけ、ほかは null）が付く。直接の答えには `generated_frame`、確認済みの枠には `frame_unconfirmed` も付く。意味・不変条件・閉じた一覧・述語の型が `direct` になる条件は **§12（特に §12.10）を見よ**。既存のキーの値と順は変えていない。
 
+（W3-b5 追記 2026-10-04 06:10:50 +0900）**問い合わせの新しい鍵 `frame_generated`**（常に出す。`frame` とは独立）: 値は `null` か `{"origin": "generated", "constructed": true, "ptype": <生成の枠の表の ptype>, "frame": <生成の枠の表の frame をそのまま。{助詞: [型…]}>, "provenance": {"model", "effort", "batch_id", "attempt"}}`。引く語は答えの `spelling.normalized`（配置を引いた NFKC の形）。`null` になるのは、配置が開けない（`NO_PLACEMENT`）・配置に `generated_frames` 表が無い・表にその語の行が無いとき。置き場所は W3-a3 の末尾の鍵（`generated_frame`・`frame_status`・`frame`・`frame_unconfirmed`・`frame_disagreement` のうち答えにあるもの）の最初の鍵の直前（`spelling` の後ろ）。既存の鍵の値と順は変わらない（`frame_generated` を除いた答えは基点と byte 一致。r7・r8 の全語でテストする）。`frame`（CONFIRMED のときだけ）・`frame_status`・`frame_unconfirmed` の意味と値は変わらない。不変条件: `frame_generated` が null でないなら `origin == "generated"`・`constructed == true`・`frame` の鍵は格助詞 9 種・値は 17 型の文字列の並び。生成の枠は構成物であって証拠でない。読解器はこれを `frame_required` の行の許可（読んでよいか）にだけ使い、型の決定や同点の解消には使わない（docs/READING_SOUNDNESS.md §10F K200〜K203）。（W3-b5 追記 2026-10-04 07:39:33 +0900: 第 2 ラウンドの表の変更 2 の後、`frame_required` の行は 0 行で、読解器はこの鍵を使って読む文を 1 文も持たない。鍵は契約として残る。）
+
 ### 11.7 既知の穴
 
 - 生成した定義文の精度は、凍結した検査データでは「推定（生成）」の語の正答・誤決定の件数（第 11.5 節の表）でしか分からない。検査データに無い語の精度は測っていない。
@@ -1477,6 +1479,8 @@ def test_hiragana_katakana_variant_keeps_same_state():
 - `axes["role_distribution@…"]`・`axes["gen_frame"]` の `top` は `decide_word` の判定を出す（数の鍵が「助詞|型」なので最大の鍵は意味が無い）。ほかの腕の `top` の出し方は変えない。
 - 不変条件: `frame` が null でない ⇔ `frame_status == CONFIRMED` ⇒ `namespace == "P"`・`state == DECIDED`・`origin == direct`・`gen_frame ∈ decided_by`・鍵はすべて格助詞 9 種・値は空でない 17 型のソート済みの並び。
 - `why` の閉じた一覧（新規分）: `AGREEMENT_ONLY`・`FRAME_NOT_DECIDING`・`DISTRIBUTION_DISAGREES`・`FRAME_PARTICLES_NOT_COVERED`（既存の `GENERATED_NOT_DECIDING`・`GENERATED_SPLIT`・`SEEDED`・`OUTRANKED`・`ROLE_SINGLE_SOURCE`・`RECOVERED_NOT_DECIDING` はそのまま）。
+
+（W3-b5 追記 2026-10-04 06:10:50 +0900）**問い合わせの新しい鍵 `frame_generated`**（常に出す。`frame` とは独立）: 値は `null` か `{"origin": "generated", "constructed": true, "ptype": <生成の枠の表の ptype>, "frame": <生成の枠の表の frame をそのまま。{助詞: [型…]}>, "provenance": {"model", "effort", "batch_id", "attempt"}}`。引く語は答えの `spelling.normalized`（配置を引いた NFKC の形）。`null` になるのは、配置が開けない（`NO_PLACEMENT`）・配置に `generated_frames` 表が無い・表にその語の行が無いとき。置き場所は W3-a3 の末尾の鍵（`generated_frame`・`frame_status`・`frame`・`frame_unconfirmed`・`frame_disagreement` のうち答えにあるもの）の最初の鍵の直前（`spelling` の後ろ）。既存の鍵の値と順は変わらない（`frame_generated` を除いた答えは基点と byte 一致。r7・r8 の全語でテストする）。`frame`（CONFIRMED のときだけ）・`frame_status`・`frame_unconfirmed` の意味と値は変わらない。不変条件: `frame_generated` が null でないなら `origin == "generated"`・`constructed == true`・`frame` の鍵は格助詞 9 種・値は 17 型の文字列の並び。生成の枠は構成物であって証拠でない。読解器はこれを `frame_required` の行の許可（読んでよいか）にだけ使い、型の決定や同点の解消には使わない（docs/READING_SOUNDNESS.md §10F K200〜K203）。（W3-b5 追記 2026-10-04 07:39:33 +0900: 第 2 ラウンドの表の変更 2 の後、`frame_required` の行は 0 行で、読解器はこの鍵を使って読む文を 1 文も持たない。鍵は契約として残る。）
 
 ### 12.11 検査データ・採点
 - 抜き出しの枠: `artifacts/w3-a/pred_verb_freq.tsv`（材料の頻度の上位 3,000 の述語）の `class == V`、`seed == -`、`in_predicate_check == -` の行。**種と W3-a の述語の確認とは重ねない**。

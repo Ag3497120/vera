@@ -1,0 +1,4 @@
+frozen sha (604 rows): 7f9e4ef3c4eac5c61192baea4b5b8b9a79a50e72ecbec7fb7651eb60bf578632
+sha of the first 604 rows of the file now: 7f9e4ef3c4eac5c61192baea4b5b8b9a79a50e72ecbec7fb7651eb60bf578632
+sha of the whole file now (617 rows, after the append of 13 rows H206): 35292560ff792d3779e6f66d37f2caab360936fe1beddf25739559b795b6007d
+recorded after the append: 35292560ff792d3779e6f66d37f2caab360936fe1beddf25739559b795b6007d

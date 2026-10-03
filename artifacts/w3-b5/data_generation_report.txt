@@ -1,0 +1,64 @@
+rows=617 problems=63
+PROBLEM	監督が山頂で皿を並べた。	path none not in ('U', 'U3') tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行
+PROBLEM	姉が教会で本を集めた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行
+PROBLEM	店員が神社で機械を組み立てた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-タ行
+PROBLEM	先生が交差点で慌てた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-タ行
+PROBLEM	姉が交差点でごねた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行
+PROBLEM	妹が国道でNone。	None in text
+PROBLEM	店員が山頂でいじめた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行
+PROBLEM	監督が神社で縫いつけた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行
+PROBLEM	姉が歩道で収めた。	path none not in ('U', 'U3') tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行
+PROBLEM	妹が山頂であきれた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ラ行
+PROBLEM	先生が校舎でじれた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ラ行
+PROBLEM	学生がホテルで感謝した。	path none not in ('U', 'U3')
+PROBLEM	兄が歩道でおびえた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行
+PROBLEM	兄が東京で勤務した。	path none not in ('U', 'U3')
+PROBLEM	妹が稽古場で仕事した。	path none not in ('U', 'U3')
+PROBLEM	店員がホテルで勤務した。	duplicate
+PROBLEM	学生がぬかるみでもたついた。	duplicate
+PROBLEM	学生が店に入店した。	path none not in ('U', 'U3')
+PROBLEM	職員が港に入港した。	path none not in ('U', 'U3')
+PROBLEM	潜り込む	goal predicate not usable (no r8 row / not P_MOVE / no に:PLACE / CONFIRMED)
+PROBLEM	逃げ込む	goal predicate not usable (no r8 row / not P_MOVE / no に:PLACE / CONFIRMED)
+PROBLEM	飛び込む	goal predicate not usable (no r8 row / not P_MOVE / no に:PLACE / CONFIRMED)
+PROBLEM	職員が現場に出張した。	path none not in ('U', 'U3')
+PROBLEM	向かう	goal predicate not usable (no r8 row / not P_MOVE / no に:PLACE / CONFIRMED)
+PROBLEM	事務局	filler type
+PROBLEM	係員が同僚に通じた。	 predicate=通ずる
+PROBLEM	遠征する	frame に holds PERSON/GROUP_ORG or has no に
+PROBLEM	赴く	frame に holds PERSON/GROUP_ORG or has no に
+PROBLEM	店員が部長に頼んだ。	path none not in ('U', 'U3')
+PROBLEM	監督が父に進んだ。	path none not in ('U', 'U3')
+PROBLEM	兄が祖母に渡った。	path none not in ('U', 'U3')
+PROBLEM	弟が社長に通った。	path none not in ('U', 'U3')
+PROBLEM	姉が工場に勤めた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行
+PROBLEM	妹が病院につとめた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行
+PROBLEM	姉が村に分村した。	path none not in ('U', 'U3')
+PROBLEM	妹が港に進んだ。	path none not in ('U', 'U3')
+PROBLEM	先生が町に戻った。	path none not in ('U', 'U3')
+PROBLEM	店員が村に帰った。	path none not in ('U', 'U3')
+PROBLEM	係員が倉庫に入った。	path none not in ('U', 'U3')
+PROBLEM	社員が島に出た。	path none not in ('U', 'U3') tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ダ行
+PROBLEM	学生が山に渡った。	path none not in ('U', 'U3')
+PROBLEM	職員が海に通った。	path none not in ('U', 'U3')
+PROBLEM	選手が川に向かった。	path none not in ('U', 'U3')
+PROBLEM	妹が港に入港した。	path none not in ('U', 'U3')
+PROBLEM	兄が病院に通った。	path none not in ('U', 'U3')
+PROBLEM	係員が町に戻れた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ラ行
+PROBLEM	社員が港に行けた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行
+PROBLEM	係員が昭和に勤めた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行
+PROBLEM	妹が夏休みに金を使った。	path none not in ('U', 'U3')
+PROBLEM	妹が山に登山した。	path none not in ('U', 'U3')
+PROBLEM	社員が花を神社に供えた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行
+PROBLEM	職員が装置を駅に設置した。	path none not in ('U', 'U3')
+PROBLEM	弟が装置を現場に据えた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行
+PROBLEM	弟が駅に案内した。	path none not in ('U', 'U3')
+PROBLEM	姉が空港に案内した。	path none not in ('U', 'U3')
+PROBLEM	妹が港に案内した。	path none not in ('U', 'U3')
+PROBLEM	弟が町に通じた。	 predicate=通ずる
+PROBLEM	姉が村に通じた。	 predicate=通ずる
+PROBLEM	妹が島に通じた。	 predicate=通ずる
+PROBLEM	先生が山に通じた。	 predicate=通ずる
+PROBLEM	店員が町に送付した。	path none not in ('U', 'U3')
+PROBLEM	係員が村に送付した。	path none not in ('U', 'U3')
+PROBLEM	弟が崖でおびえた。	 tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行

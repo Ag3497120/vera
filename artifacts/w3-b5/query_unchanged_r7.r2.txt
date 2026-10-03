@@ -1,0 +1,6 @@
+placement /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1
+words=4995 (generated_frames 4788 + headwords and probes 207)
+answer without frame_generated differs from the base commit: 0
+key position wrong: 0
+value differs from the row of the table: 0
+with a value: 4788, null: 207

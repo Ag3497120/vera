@@ -1,0 +1,16 @@
+== two_goal_rows_put_back (the real r8; DIRECT NOT_CONFIRMED predicates only can be read through a frame)
+round2: read 0 of 32
+probe:purpose: read 5 of 5
+  probe:purpose	兄が遠足に旅行した。	{"agent": "兄", "goal": "遠足"}
+  probe:purpose	姉が展覧会に旅行した。	{"agent": "姉", "goal": "展覧会"}
+  probe:purpose	妹が花火大会に旅行した。	{"agent": "妹", "goal": "花火大会"}
+  probe:purpose	弟がお祭りに旅行した。	{"agent": "弟", "goal": "お祭り"}
+  probe:purpose	先生が神社参拝に旅行した。	{"agent": "先生", "goal": "神社参拝"}
+probe:control_goal: read 3 of 3
+  probe:control_goal	先生が北海道に旅行した。	{"agent": "先生", "goal": "北海道"}
+  probe:control_goal	店員が沖縄に旅行した。	{"agent": "店員", "goal": "沖縄"}
+  probe:control_goal	係員が京都に旅行した。	{"agent": "係員", "goal": "京都"}
+== table_as_it_is (the real r8; DIRECT NOT_CONFIRMED predicates only can be read through a frame)
+round2: read 0 of 32
+probe:purpose: read 0 of 5
+probe:control_goal: read 0 of 3

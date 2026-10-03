@@ -1,0 +1,44 @@
+id	pred_type	input	frozen_roles	decision	reason
+W3B5-NIGOAL-R-001	P_MOVE	弟が駅にむかった。	{"agent": "弟", "goal": "駅"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-002	P_MOVE	姉が空港にもどった。	{"agent": "姉", "goal": "空港"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-003	P_MOVE	妹が駅にかけこんだ。	{"agent": "妹", "goal": "駅"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-004	P_MOVE	先生が海にとびこんだ。	{"agent": "先生", "goal": "海"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-005	P_MOVE	店員が山頂にたどり着いた。	{"agent": "店員", "goal": "山頂"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-006	P_MOVE	係員が港にいたった。	{"agent": "係員", "goal": "港"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-007	P_MOVE	社員が病院に入院した。	{"agent": "社員", "goal": "病院"}	kept	kept: 入院する の に は入る先（病院）= goal
+W3B5-NIGOAL-R-008	P_MOVE	選手が倉庫に出向いた。	{"agent": "選手", "goal": "倉庫"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-009	P_MOVE	監督が山頂に到達した。	{"agent": "監督", "goal": "山頂"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-010	P_MOVE	兄が駅に停車した。	{"agent": "兄", "goal": "駅"}	DECLARED:goal_or_place_not_decided	停車する の に は止まる地点（到達点とも停車している場所とも決まらない）。同じ型（とまる・滞在）。正解は 1 つの読みに決まらない
+W3B5-NIGOAL-R-011	P_MOVE	弟が港に停泊した。	{"agent": "弟", "goal": "港"}	DECLARED:frozen_expectation_is_a_wrong_answer	停泊する の に は船がとまっている場所（存在の場所）。到達点を言う動詞でない。規約 §2: place
+W3B5-NIGOAL-R-012	P_MOVE	姉が現場に出動した。	{"agent": "姉", "goal": "現場"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-013	P_MOVE	妹が倉庫に侵入した。	{"agent": "妹", "goal": "倉庫"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-014	P_MOVE	先生が球場に入場した。	{"agent": "先生", "goal": "球場"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-015	P_MOVE	店員が北海道に遠征した。	{"agent": "店員", "goal": "北海道"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-016	P_MOVE	係員が沖縄に赴いた。	{"agent": "係員", "goal": "沖縄"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-017	P_MOVE	社員が京都に赴任した。	{"agent": "社員", "goal": "京都"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-018	P_MOVE	学生が町に転入した。	{"agent": "学生", "goal": "町"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-019	P_MOVE	職員が村に転校した。	{"agent": "職員", "goal": "村"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-020	P_MOVE	選手が公園に合流した。	{"agent": "選手", "goal": "公園"}	kept	kept: 合流する の に は集まる先 = goal
+W3B5-NIGOAL-R-021	P_MOVE	姉が港に乗り込んだ。	{"agent": "姉", "goal": "港"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-022	P_MOVE	妹が駅に先回りした。	{"agent": "妹", "goal": "駅"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-023	P_MOVE	先生が北海道に旅行した。	{"agent": "先生", "goal": "北海道"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-024	P_MOVE	店員が沖縄に旅行した。	{"agent": "店員", "goal": "沖縄"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-025	P_MOVE	係員が京都に旅行した。	{"agent": "係員", "goal": "京都"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-026	P_MOVE	社員が山に昇った。	{"agent": "社員", "goal": "山"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-027	P_MOVE	学生が山頂に昇った。	{"agent": "学生", "goal": "山頂"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-028	P_MOVE	選手が現場に入室した。	{"agent": "選手", "goal": "現場"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-029	P_MOVE	監督が港に到達した。	{"agent": "監督", "goal": "港"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-030	P_MOVE	兄が町に入院した。	{"agent": "兄", "goal": "町"}	kept	kept: goal（日本語として不自然な文。判定には影響しない。町に入院した）
+W3B5-NIGOAL-R-031	P_MOVE	弟が島に停泊した。	{"agent": "弟", "goal": "島"}	DECLARED:frozen_expectation_is_a_wrong_answer	停泊する の に は船がとまっている場所（存在の場所）。規約 §2: place
+W3B5-NIGOAL-R-032	P_MOVE	妹が町にもどった。	{"agent": "妹", "goal": "町"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-033	P_MOVE	先生が川にとびこんだ。	{"agent": "先生", "goal": "川"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-034	P_ACT	姉が神社に参拝した。	{"agent": "姉", "goal": "神社"}	kept	kept: 参拝する の に は行く先（神社）= goal
+W3B5-NIGOAL-R-035	P_ACT	先生が船を港に係留した。	{"agent": "先生", "goal": "港", "patient": "船"}	kept	kept: 係留する は物を港に置く（設置の到達点）= goal
+W3B5-NIGOAL-R-036	P_ACT	店員が教会に参列した。	{"agent": "店員", "goal": "教会"}	DECLARED:goal_or_place_not_decided	参列する に 場所 は 行き先（参列に行く）とも場所とも決まらない（行事には で を取る方が自然）。正解は 1 つの読みに決まらない
+W3B5-NIGOAL-R-037	P_ACT	係員が苗を畑に植え込んだ。	{"agent": "係員", "goal": "畑", "patient": "苗"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-038	P_ACT	学生が機械を倉庫に格納した。	{"agent": "学生", "goal": "倉庫", "patient": "機械"}	kept	kept: 格納する は物を倉庫に置く（設置の到達点）= goal
+W3B5-NIGOAL-R-039	P_ACT	選手が船を港に配備した。	{"agent": "選手", "goal": "港", "patient": "船"}	kept	kept: 配備する は物を港に置く（設置の到達点）= goal
+W3B5-NIGOAL-R-040	P_ACT	監督が書類を倉庫に保存した。	{"agent": "監督", "goal": "倉庫", "patient": "書類"}	kept	kept: 保存する は物を倉庫に置く（設置の到達点）= goal
+W3B5-NIGOAL-R-041	P_ACT	兄が部品を港に積み込んだ。	{"agent": "兄", "goal": "港", "patient": "部品"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-904	P_COMMUNICATE	先生が舞台に登壇した。	{"agent": "先生", "goal": "舞台"}	kept	kept: goal（移動・設置の到達点）
+W3B5-NIGOAL-R-905	P_COMMUNICATE	店員が校舎に掲示した。	{"agent": "店員", "goal": "校舎"}	kept	kept: goal（移動・設置の到達点）

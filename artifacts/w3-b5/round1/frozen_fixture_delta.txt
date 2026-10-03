@@ -1,0 +1,4 @@
+rows=2270 (file x row x fake)
+output differences: {}
+same output and same diagnosis: 2270
+same output, diagnosis differs only: 0

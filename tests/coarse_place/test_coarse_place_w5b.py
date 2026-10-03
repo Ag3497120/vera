@@ -136,7 +136,7 @@ def test_a_spelling_that_has_an_answer_of_its_own_keeps_it_exactly_as_the_answer
     the answer of ``_answer``."""
     for term in ("ヒナタ丸", "ひなた丸", "モモ丸", "ﾋﾅﾀ丸", "ハガネ丸"):
         r = q(term, placement)
-        without = {k: v for k, v in r.items() if k not in ("spelling", "term")}
+        without = {k: v for k, v in r.items() if k not in ("spelling", "term", "frame_generated")}      # W3-b5 (integration): `query` adds frame_generated; `_answer` does not
         again = cp._answer(cp._open(str(placement))[0], r["spelling"]["normalized"], None, None)
         again.pop("term")
         assert without == again, term
