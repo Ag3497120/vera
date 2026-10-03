@@ -1,0 +1,172 @@
+..............FFF                                                        [100%]
+=================================== FAILURES ===================================
+_ test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim[whitespace] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1377/test_attack_a_confirmed_senten0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1069f8550>
+confirmed_claim = '窓が光った。', current_claim = '窓が 光った。', variant = 'whitespace'
+
+    @pytest.mark.parametrize("confirmed_claim,current_claim,variant", CASES)
+    def test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim(
+        tmp_path, monkeypatch, confirmed_claim, current_claim, variant
+    ):
+        root = str(tmp_path / "sovereign")
+        assert sov.create(root, "store-a", "owner", consent_promote=True)["verdict"] == "CREATED"
+        monkeypatch.setenv("VERA_SOVEREIGN_ROOT", root)
+        monkeypatch.setenv("VERA_SOVEREIGN_STORE", "store-a")
+    
+        saved = sov.append_basis_confirmation(root, "store-a", {
+            "record": "basis_confirmation",
+            "status": "HUMAN_CONFIRMED",
+            "witness": "user_confirmation",
+            "confirm_id": f"prior-{variant}",
+            "query": QUERY,
+            "claim": confirmed_claim,
+            "generated_sources": [{"family": "local", "source_id": "local:old:1", "sha": "old"}],
+            "table_version": 1,
+            "origin": "human_confirmed",
+        })
+        assert saved["verdict"] == "APPENDED"
+    
+        generated = {
+            "family": "local", "source": "local:new:1", "source_file": "new.jsonl", "line": 1,
+            "sha": "new", "origin": "generated", "text": current_claim,
+        }
+        result, rc = bp.apply_to_ask(
+            {"kind": "answer", "verdict": "ANSWER", "text": current_claim,
+             "sources": [generated], "evidence": [current_claim], "door": "attack"},
+            bp.AskPolicy(), query=QUERY, mode="legacy", documents=[],
+        )
+    
+        assert rc == 0
+>       assert result["basis_policy"]["outcome"] == "ABSTAIN", {
+            "variant": variant,
+            "confirmed_claim": confirmed_claim,
+            "generated_claim": current_claim,
+            "actual_outcome": result["basis_policy"]["outcome"],
+            "actual_verdict": result["verdict"],
+            "actual_text": result["text"],
+            "record_use": result["basis_policy"]["sovereign"],
+        }
+E       AssertionError: {'variant': 'whitespace', 'confirmed_claim': '窓が光った。', 'generated_claim': '窓が 光った。', 'actual_outcome': 'ANSWER_HUMAN_BASIS', ...}
+E       assert 'ANSWER_HUMAN_BASIS' == 'ABSTAIN'
+E         
+E         - ABSTAIN
+E         + ANSWER_HUMAN_BASIS
+
+attacks/W5-c/test_attack_confirmation_text_binding.py:57: AssertionError
+_ test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim[punctuation] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1377/test_attack_a_confirmed_senten1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1067d56d0>
+confirmed_claim = '窓が光った。', current_claim = '窓が光った!', variant = 'punctuation'
+
+    @pytest.mark.parametrize("confirmed_claim,current_claim,variant", CASES)
+    def test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim(
+        tmp_path, monkeypatch, confirmed_claim, current_claim, variant
+    ):
+        root = str(tmp_path / "sovereign")
+        assert sov.create(root, "store-a", "owner", consent_promote=True)["verdict"] == "CREATED"
+        monkeypatch.setenv("VERA_SOVEREIGN_ROOT", root)
+        monkeypatch.setenv("VERA_SOVEREIGN_STORE", "store-a")
+    
+        saved = sov.append_basis_confirmation(root, "store-a", {
+            "record": "basis_confirmation",
+            "status": "HUMAN_CONFIRMED",
+            "witness": "user_confirmation",
+            "confirm_id": f"prior-{variant}",
+            "query": QUERY,
+            "claim": confirmed_claim,
+            "generated_sources": [{"family": "local", "source_id": "local:old:1", "sha": "old"}],
+            "table_version": 1,
+            "origin": "human_confirmed",
+        })
+        assert saved["verdict"] == "APPENDED"
+    
+        generated = {
+            "family": "local", "source": "local:new:1", "source_file": "new.jsonl", "line": 1,
+            "sha": "new", "origin": "generated", "text": current_claim,
+        }
+        result, rc = bp.apply_to_ask(
+            {"kind": "answer", "verdict": "ANSWER", "text": current_claim,
+             "sources": [generated], "evidence": [current_claim], "door": "attack"},
+            bp.AskPolicy(), query=QUERY, mode="legacy", documents=[],
+        )
+    
+        assert rc == 0
+>       assert result["basis_policy"]["outcome"] == "ABSTAIN", {
+            "variant": variant,
+            "confirmed_claim": confirmed_claim,
+            "generated_claim": current_claim,
+            "actual_outcome": result["basis_policy"]["outcome"],
+            "actual_verdict": result["verdict"],
+            "actual_text": result["text"],
+            "record_use": result["basis_policy"]["sovereign"],
+        }
+E       AssertionError: {'variant': 'punctuation', 'confirmed_claim': '窓が光った。', 'generated_claim': '窓が光った!', 'actual_outcome': 'ANSWER_HUMAN_BASIS', ...}
+E       assert 'ANSWER_HUMAN_BASIS' == 'ABSTAIN'
+E         
+E         - ABSTAIN
+E         + ANSWER_HUMAN_BASIS
+
+attacks/W5-c/test_attack_confirmation_text_binding.py:57: AssertionError
+_ test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim[nfkc] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1377/test_attack_a_confirmed_senten2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1067d5250>
+confirmed_claim = 'コードはＡＢＣです。', current_claim = 'コードはABCです。', variant = 'NFKC'
+
+    @pytest.mark.parametrize("confirmed_claim,current_claim,variant", CASES)
+    def test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim(
+        tmp_path, monkeypatch, confirmed_claim, current_claim, variant
+    ):
+        root = str(tmp_path / "sovereign")
+        assert sov.create(root, "store-a", "owner", consent_promote=True)["verdict"] == "CREATED"
+        monkeypatch.setenv("VERA_SOVEREIGN_ROOT", root)
+        monkeypatch.setenv("VERA_SOVEREIGN_STORE", "store-a")
+    
+        saved = sov.append_basis_confirmation(root, "store-a", {
+            "record": "basis_confirmation",
+            "status": "HUMAN_CONFIRMED",
+            "witness": "user_confirmation",
+            "confirm_id": f"prior-{variant}",
+            "query": QUERY,
+            "claim": confirmed_claim,
+            "generated_sources": [{"family": "local", "source_id": "local:old:1", "sha": "old"}],
+            "table_version": 1,
+            "origin": "human_confirmed",
+        })
+        assert saved["verdict"] == "APPENDED"
+    
+        generated = {
+            "family": "local", "source": "local:new:1", "source_file": "new.jsonl", "line": 1,
+            "sha": "new", "origin": "generated", "text": current_claim,
+        }
+        result, rc = bp.apply_to_ask(
+            {"kind": "answer", "verdict": "ANSWER", "text": current_claim,
+             "sources": [generated], "evidence": [current_claim], "door": "attack"},
+            bp.AskPolicy(), query=QUERY, mode="legacy", documents=[],
+        )
+    
+        assert rc == 0
+>       assert result["basis_policy"]["outcome"] == "ABSTAIN", {
+            "variant": variant,
+            "confirmed_claim": confirmed_claim,
+            "generated_claim": current_claim,
+            "actual_outcome": result["basis_policy"]["outcome"],
+            "actual_verdict": result["verdict"],
+            "actual_text": result["text"],
+            "record_use": result["basis_policy"]["sovereign"],
+        }
+E       AssertionError: {'variant': 'NFKC', 'confirmed_claim': 'コードはＡＢＣです。', 'generated_claim': 'コードはABCです。', 'actual_outcome': 'ANSWER_HUMAN_BASIS', ...}
+E       assert 'ANSWER_HUMAN_BASIS' == 'ABSTAIN'
+E         
+E         - ABSTAIN
+E         + ANSWER_HUMAN_BASIS
+
+attacks/W5-c/test_attack_confirmation_text_binding.py:57: AssertionError
+=========================== short test summary info ============================
+FAILED attacks/W5-c/test_attack_confirmation_text_binding.py::test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim[whitespace]
+FAILED attacks/W5-c/test_attack_confirmation_text_binding.py::test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim[punctuation]
+FAILED attacks/W5-c/test_attack_confirmation_text_binding.py::test_attack_a_confirmed_sentence_must_equal_the_current_generated_claim[nfkc]
+3 failed, 14 passed in 0.32s

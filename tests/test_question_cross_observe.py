@@ -33,6 +33,15 @@ def write_placement(tmp, lemmas, name='pl.json'):
     return str(path)
 
 
+def person_placement(lemmas):
+    """W5-d2 (auditor's ruling B1, K1): a made-up placement object that lives in the tests only. {word: type} are DECIDED / direct; a word it does not name is UNKNOWN.
+    Since W5-d a filler whose type was not checked is not a candidate, so a test that expects an answer must say what the filler is."""
+    return O.FilePlacement({'lemmas': {w: {'state': 'DECIDED', 'origin': 'direct', 'types': [t]} for w, t in lemmas.items()}, 'neighbors': {}}, 'test')
+
+
+PERSONS = {'船長': 'PERSON', '提督': 'PERSON'}
+
+
 def ask(tmp, text, sentences, *, placement=None, direction='', kind='question', cross=None, lang=None):
     doc = write_doc(tmp, sentences)
     res = O.run_entry(anchor_text=text, anchor_kind=kind, lang=lang, direction=direction, anchor_cross=cross, structure_path=doc, no_index=True,
@@ -47,7 +56,7 @@ def fills(out):
 
 # ---------------------------------------------------------------------------------------------------------------------------------
 def test_filled_has_the_filler_the_sentence_id_and_the_coordinate(tmp_path):
-    out, text = ask(tmp_path, Q_SHIP, [S1, '鳥が空を飛んだ。'])
+    out, text = ask(tmp_path, Q_SHIP, [S1, '鳥が空を飛んだ。'], placement=write_placement(tmp_path, PERSONS))    # W5-d2 (K1): the filler's type is given by a placement
     a = out['answer']
     assert list(a) == ['schema', 'status', 'question', 'question_cross', 'fillers', 'excluded', 'structure', 'reasons']
     assert a['schema'] == 'verantyx.question_answer/1' and a['status'] == 'FILLED'
@@ -63,7 +72,7 @@ def test_filled_has_the_filler_the_sentence_id_and_the_coordinate(tmp_path):
 
 
 def test_a_tie_is_returned_with_both_and_never_broken(tmp_path):
-    out, _ = ask(tmp_path, Q_SHIP, [S1, S2])
+    out, _ = ask(tmp_path, Q_SHIP, [S1, S2], placement=write_placement(tmp_path, PERSONS))    # W5-d2 (K1)
     assert out['answer']['status'] == 'TIE'
     assert [f['surface'] for f in out['answer']['fillers']] == sorted(['提督', '船長'])
     assert out['focus']['kind'] == 'TIE' and len(out['focus']['candidates']) == 2
@@ -72,9 +81,10 @@ def test_a_tie_is_returned_with_both_and_never_broken(tmp_path):
 
 
 def test_a_tie_does_not_depend_on_the_order_of_the_sentences(tmp_path):
+    pl = person_placement(PERSONS)    # W5-d2 (K1): the fillers are typed by a made-up placement
     def build(order):
         items = [{'id': 's%d' % i, 'text': t, 'reading': SR.read(t, 'ja', placement=None)} for i, t in order]
-        return O.Structure.from_injected(items)
+        return O.Structure.from_injected(items, lookup=pl, neighbors=pl)
     vp = O.build_viewpoint(anchor_text=Q_SHIP, anchor_kind='question')
     a = O.to_json(O.observe(vp, build([(1, S1), (2, S2)])))
     b = O.to_json(O.observe(vp, build([(2, S2), (1, S1)])))
@@ -84,7 +94,8 @@ def test_a_tie_does_not_depend_on_the_order_of_the_sentences(tmp_path):
 def test_an_arm_tie_gives_each_filler_as_a_candidate_of_its_own():
     reading = SR.read(S1, 'ja', placement=None)
     reading['clauses'][0]['roles']['agent'] = ['船長', '提督']
-    st = O.Structure.from_injected([{'id': 'x', 'text': 'hand written', 'reading': reading}])
+    pl = person_placement(PERSONS)    # W5-d2 (K1)
+    st = O.Structure.from_injected([{'id': 'x', 'text': 'hand written', 'reading': reading}], lookup=pl, neighbors=pl)
     out = json.loads(O.to_json(O.observe(O.build_viewpoint(anchor_text=Q_SHIP, anchor_kind='question'), st)))
     assert out['answer']['status'] == 'TIE'
     assert [f['surface'] for f in out['answer']['fillers']] == ['提督', '船長'] and all(f['from_arm_tie'] for f in out['answer']['fillers'])
@@ -110,10 +121,14 @@ def test_type_excluded_all_is_not_the_same_as_no_attested_cell(tmp_path):
     assert out['abstain']['reasons'] == {'FILL_HOLE:candidate:HOLE_TYPE_DISAGREE': 1}
 
 
-def test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun(tmp_path):
-    out, _ = ask(tmp_path, Q_SHIP, [S1])    # no placement: NOT_CHECKED(NO_PLACEMENT), shown but not excluded
-    assert out['answer']['status'] == 'FILLED'
-    assert out['answer']['fillers'][0]['hole_type_check'] == {'verdict': 'NOT_CHECKED', 'reason': 'NO_PLACEMENT', 'expected': ['GROUP_ORG', 'PERSON'], 'observed': None}
+def test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun(tmp_path, monkeypatch):
+    # W5-d2 (auditor's ruling B1, K1): the NAME IS FROM THE OLD CONTRACT (an unchecked type was shown but did not exclude). The contract now: with no placement the
+    # filler's type is not checked, so it is not a candidate (TYPE_UNCHECKED) and the answer is the abstention NO_TYPED_CANDIDATE.
+    monkeypatch.delenv('VERA_PLACEMENT', raising=False)
+    out, _ = ask(tmp_path, Q_SHIP, [S1])    # no placement: NOT_CHECKED(NO_PLACEMENT), excluded as TYPE_UNCHECKED
+    assert out['answer']['status'] == 'NO_TYPED_CANDIDATE' and out['answer']['fillers'] == []
+    assert [e['reason'] for e in out['answer']['excluded']] == ['TYPE_UNCHECKED']
+    assert out['answer']['excluded'][0]['hole_type_check'] == {'verdict': 'NOT_CHECKED', 'reason': 'NO_PLACEMENT', 'expected': ['GROUP_ORG', 'PERSON'], 'observed': None}
 
 
 def test_restrictor_whose_type_is_not_decided_says_so(tmp_path):
@@ -174,11 +189,12 @@ def test_a_question_the_reader_cannot_read_is_a_typed_no_anchor(tmp_path):
 
 
 def test_the_reading_of_the_anchor_is_not_evidence(tmp_path):
+    pl = person_placement(PERSONS)    # W5-d2 (K1): the filler of the second structure is typed by a made-up placement
     out, _ = ask(tmp_path, Q_SHIP, [])
     assert out['answer']['status'] == 'NO_ATTESTED_CELL' and out['answer']['structure']['sentences'] == 0
-    st = O.Structure.from_jsonl(write_doc(tmp_path, [S1]))
+    st = O.Structure.from_jsonl(write_doc(tmp_path, [S1]), pl, pl)
     vp = O.build_viewpoint(anchor_text='誰が商人に小包を渡した？', anchor_kind='question')
-    assert json.loads(O.to_json(O.observe(vp, O.Structure.empty())))['answer']['status'] == 'NO_ATTESTED_CELL'
+    assert json.loads(O.to_json(O.observe(vp, O.Structure.empty(pl, pl))))['answer']['status'] == 'NO_ATTESTED_CELL'
     assert json.loads(O.to_json(O.observe(vp, st)))['answer']['status'] == 'FILLED'
 
 
@@ -199,11 +215,12 @@ def test_the_index_does_not_change_the_evidence(tmp_path):
 
 
 def test_nfkc_of_the_filler_and_of_the_other_arms(tmp_path):
-    out, _ = ask(tmp_path, Q_SHIP, ['Ａ社が商人に小包を渡した。', 'A社が商人に小包を渡した。'])
+    pl = write_placement(tmp_path, {'Ａ社': 'GROUP_ORG', 'A社': 'GROUP_ORG', '小包': 'ARTIFACT'})    # W5-d2 (K1): the fillers are typed (the answer of the second question is 小包)
+    out, _ = ask(tmp_path, Q_SHIP, ['Ａ社が商人に小包を渡した。', 'A社が商人に小包を渡した。'], placement=pl)
     a = out['answer']
     assert a['status'] == 'FILLED' and sorted(f['surface'] for f in a['fillers']) == ['A社', 'Ａ社'] and {f['nfkc'] for f in a['fillers']} == {'A社'}
     assert out['focus']['kind'] == 'TIE' and len(out['focus']['candidates']) == 2    # two cells (the surface differs), one answer
-    out, _ = ask(tmp_path, 'Ａ社は商人に何を渡した？', ['Ａ社が商人に小包を渡した。', 'A社が商人に小包を渡した。'])
+    out, _ = ask(tmp_path, 'Ａ社は商人に何を渡した？', ['Ａ社が商人に小包を渡した。', 'A社が商人に小包を渡した。'], placement=pl)
     assert out['answer']['status'] == 'FILLED' and fills(out) == [('小包', [('s1', 0), ('s2', 0)])]
 
 
@@ -216,27 +233,29 @@ def test_a_cross_with_more_arms_is_not_a_match_and_is_listed(tmp_path):
 
 
 def test_an_extending_cross_that_names_another_filler_makes_the_answer_incomplete(tmp_path):
-    out, _ = ask(tmp_path, '誰が小包を渡さなかった？', ['提督は小包を渡さなかった。', '船長は港で小包を渡さなかった。'])
+    pl = write_placement(tmp_path, PERSONS)    # W5-d2 (K1): the fillers are typed by a placement
+    out, _ = ask(tmp_path, '誰が小包を渡さなかった？', ['提督は小包を渡さなかった。', '船長は港で小包を渡さなかった。'], placement=pl)
     # the admiral is a match; the captain is in a cross with one more arm: the set of fillers is not given as complete
     a = out['answer']
     assert a['status'] == 'INCOMPLETE_BY_EXTENSION' and [f['surface'] for f in a['fillers']] == ['提督'] and out['ranks'] == []
     assert out['abstain']['reasons'] == {'FILL_HOLE:INCOMPLETE_BY_EXTENSION': 1}
     # the same filler in the extending cross does not make it incomplete
-    out, _ = ask(tmp_path, '誰が小包を渡さなかった？', ['船長は小包を渡さなかった。', '船長は港で小包を渡さなかった。'])
+    out, _ = ask(tmp_path, '誰が小包を渡さなかった？', ['船長は小包を渡さなかった。', '船長は港で小包を渡さなかった。'], placement=pl)
     assert out['answer']['status'] == 'FILLED' and fills(out) == [('船長', [('s1', 0)])]
 
 
 def test_polarity_tense_and_voice_must_be_the_same(tmp_path):
+    pl = write_placement(tmp_path, {'船長': 'PERSON'})    # W5-d2 (K1): the filler 船長 is typed (提督 is not: it is TYPE_UNCHECKED and stays beside the answer)
     for sentence in ('船長は商人に小包を渡さなかった。', '船長は商人に小包を渡す。'):
-        out, _ = ask(tmp_path, Q_SHIP, [sentence])
+        out, _ = ask(tmp_path, Q_SHIP, [sentence], placement=pl)
         assert out['answer']['status'] == 'NO_ATTESTED_CELL', sentence
-    out, _ = ask(tmp_path, '誰が商人に小包を渡さなかった？', ['船長は商人に小包を渡さなかった。'])
+    out, _ = ask(tmp_path, '誰が商人に小包を渡さなかった？', ['船長は商人に小包を渡さなかった。'], placement=pl)
     assert out['answer']['status'] == 'FILLED'
-    out, _ = ask(tmp_path, '誰が商人に小包を渡す？', ['船長は商人に小包を渡す。', S2])
+    out, _ = ask(tmp_path, '誰が商人に小包を渡す？', ['船長は商人に小包を渡す。', S2], placement=pl)
     assert out['answer']['status'] == 'FILLED' and fills(out) == [('船長', [('s1', 0)])]
     passive = SR.read(S1, 'ja', placement=None)
     passive['clauses'][0]['voice'] = 'passive'
-    st = O.Structure.from_injected([{'id': 'p', 'text': 'hand written', 'reading': passive}])
+    st = O.Structure.from_injected([{'id': 'p', 'text': 'hand written', 'reading': passive}], lookup=person_placement(PERSONS), neighbors=person_placement(PERSONS))
     assert json.loads(O.to_json(O.observe(O.build_viewpoint(anchor_text=Q_SHIP, anchor_kind='question'), st)))['answer']['status'] == 'NO_ATTESTED_CELL'
 
 
@@ -246,7 +265,7 @@ def test_the_predicate_is_compared_as_it_is_without_a_paraphrase(tmp_path):
 
 
 def test_a_filler_that_is_the_mark_character_is_a_correct_answer(tmp_path):
-    out, _ = ask(tmp_path, Q_SHIP, ['Ｘが商人に小包を渡した。'])
+    out, _ = ask(tmp_path, Q_SHIP, ['Ｘが商人に小包を渡した。'], placement=write_placement(tmp_path, {'Ｘ': 'PERSON'}))    # W5-d2 (K1): the filler is typed
     assert out['answer']['status'] == 'FILLED' and fills(out) == [('Ｘ', [('s1', 0)])]
 
 
@@ -270,7 +289,8 @@ def test_no_output_has_the_capital_word_answer(tmp_path, case):
 
 
 def test_the_ledger_records_a_question_and_replays_to_the_same_output(tmp_path):
-    st = O.Structure.from_jsonl(write_doc(tmp_path, [S1, S2]))
+    pl = person_placement(PERSONS)    # W5-d2 (K1): the fillers are typed by a made-up placement
+    st = O.Structure.from_jsonl(write_doc(tmp_path, [S1, S2]), pl, pl)
     for text in (Q_SHIP, '誰が商人に小包を渡さなかった？'):
         ledger = SAL.MemoryLedger()
         vp = O.build_viewpoint(anchor_text=text, anchor_kind='question')
@@ -279,7 +299,7 @@ def test_the_ledger_records_a_question_and_replays_to_the_same_output(tmp_path):
         O.record_turn(ledger, vp, obs)
         event = [e for e in ledger.events() if e['kind'] == 'observation'][0]
         assert event['payload']['outcome'] == obs.outcome and O.replay(list(ledger.events()), event, st) is True
-    one = O.Structure.from_jsonl(write_doc(tmp_path, [S1], 'one.jsonl'))
+    one = O.Structure.from_jsonl(write_doc(tmp_path, [S1], 'one.jsonl'), pl, pl)
     ledger = SAL.MemoryLedger(); vp = O.build_viewpoint(anchor_text=Q_SHIP, anchor_kind='question')
     obs = O.observe(vp, one, ledger=ledger); O.record_turn(ledger, vp, obs)
     event = [e for e in ledger.events() if e['kind'] == 'observation'][0]
@@ -296,9 +316,10 @@ def test_a_seed_and_a_statement_with_kind_question_take_the_old_path(tmp_path):
 
 
 def test_the_cross_index_of_a_question_is_zero_or_nothing(tmp_path):
-    out, _ = ask(tmp_path, Q_SHIP, [S1], cross=0)
+    pl = write_placement(tmp_path, PERSONS)    # W5-d2 (K1)
+    out, _ = ask(tmp_path, Q_SHIP, [S1], cross=0, placement=pl)
     assert out['answer']['status'] == 'FILLED'
-    out, _ = ask(tmp_path, Q_SHIP, [S1], cross=1)
+    out, _ = ask(tmp_path, Q_SHIP, [S1], cross=1, placement=pl)
     assert out['answer']['status'] == 'ANCHOR_CROSS_INDEX_OUT_OF_RANGE' and out['focus'] == {'kind': 'NO_ANCHOR', 'reason': 'ANCHOR_CROSS_INDEX_OUT_OF_RANGE'}
 
 
@@ -309,7 +330,7 @@ def _entry(args, seed, tmp):
 
 def test_the_command_line_entry_gives_the_same_bytes_for_two_hash_seeds(tmp_path):
     doc = write_doc(tmp_path, [S1, S2, '鳥が空を飛んだ。'])
-    args = ['--anchor-text', Q_SHIP, '--anchor-kind', 'question', '--structure', doc, '--no-index']
+    args = ['--anchor-text', Q_SHIP, '--anchor-kind', 'question', '--structure', doc, '--no-index', '--placement', write_placement(tmp_path, PERSONS)]    # W5-d2 (K1)
     a, b = _entry(args, 0, tmp_path), _entry(args, 4242, tmp_path)
     assert a.returncode == b.returncode == 0, a.stderr + b.stderr
     assert a.stdout == b.stdout and json.loads(a.stdout)['answer']['status'] == 'TIE'

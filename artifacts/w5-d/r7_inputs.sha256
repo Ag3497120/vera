@@ -1,0 +1,12 @@
+f0d0932a61fa7ab32c5c940d79fff5d43853ada1b2fb6cf4f0b4f0e74b8017f9  /Users/motonisihikoudai/Projects/vera-impl/wt/W5-d-S/tests/coarse_place/data/unknown_words.jsonl
+3f3172d04fda65a1b82bbf9664979728bda29613ced0fa25c936caa26637c1c7  /Users/motonisihikoudai/Projects/vera-impl/wt/W5-d-S/tests/coarse_place/data/dev_unknown.jsonl
+bd2da38fc269cdc7a11efe18d1975be8a765ba03d3489989678301690783cdf4  /Users/motonisihikoudai/Projects/vera-impl/wt/W5-d-S/artifacts/w3-a3/exclude_coined.jsonl
+c9772c535ee284b2cf10adcea45be63704b7f8494fe00778655c4f4ff1c30323  /Users/motonisihikoudai/Projects/vera-impl/wt/W5-d-S/artifacts/w3-a/holdout_2000.jsonl
+bf33fe42792a129e5e7e62b8d0b06108f835b6d55851056514c5d05cea20f86f  /Users/motonisihikoudai/Projects/vera-impl/wt/W5-d-S/artifacts/w3-a/dev_l1_1000.jsonl
+e4cb227615d80382f2c60d7c1f145e8648f4babb4d1888f6120bd0e5efc77ac8  /Users/motonisihikoudai/Projects/vera-impl/wt/W5-d-S/artifacts/w3-a/FROZEN.json
+05abcc25e7a75a83dcc4f5c9645a67be81c81a90ea2a8c1d48568c7faca08331  /Users/motonisihikoudai/Projects/vera-impl/wt/W5-d-S/artifacts/w3-a3/config_w3a3.json
+248ca1a4b03f6ffd514458cba3975cbbc3392559aca3434be2fdd0e7ea0a8729  /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/generated/definitions.jsonl
+42de32b510ae3bf1a4fe09f0756aac70f126f1480c45413a2064bdc321ab7910  /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/generated/ledger.jsonl
+9a7e8decfc85d2dde8a0209cf983491cc6d4d0257697ab19ff18828b9ae89717  /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/gen_pred/frames.jsonl
+d21fe1e3064f6363440d75f3807c1ed3954fa5a03e70326a753586f46d13a0c4  /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/gen_pred/ledger.jsonl
+7585034b6149bf3b9f684cc0c354dbfb203ceed928e15955a399d1cbbdf045ae  /Users/motonisihikoudai/vera-wiring/data/jawiki_leads.full.jsonl

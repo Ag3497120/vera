@@ -1,0 +1,13 @@
+59a60,71
+> 
+> 
+> # ---- W5-d probe (scratchpad copy only), K3: a memo.txt that really holds the sentences the tests give as the document's text, in the cwd of each test
+> import pytest as _pytest_k3
+> 
+> 
+> @_pytest_k3.fixture(autouse=True)
+> def _w5d_probe_memo(tmp_path_factory, monkeypatch):
+>     import os
+>     d = tmp_path_factory.mktemp("memo_cwd")
+>     (d / "memo.txt").write_text("窓が光った。\n次郎が花子に本を渡した。\n花子は資料を渡した。\n花子は太郎に資料を渡した。\n", encoding="utf-8")
+>     monkeypatch.chdir(d)

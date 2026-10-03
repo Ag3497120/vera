@@ -1,0 +1,326 @@
+{
+ "alias_stats": {},
+ "args": {
+  "codex_dir": null,
+  "exclude_terms": [],
+  "families": null,
+  "frozen": null,
+  "generated": null,
+  "generated_frames": null,
+  "generated_frames_ledger": null,
+  "generated_ledger": null,
+  "holdout": [],
+  "jawiki": "/Users/motonisihikoudai/Projects/vera-impl/wt/atk-W5-b/attacks/W5-b/pytest-temp-confined/test_two_decided_kana_variants0/kana.jsonl",
+  "jobs": 2,
+  "sample_stride": 1,
+  "stage_cache": null
+ },
+ "argument_chains": {
+  "skipped_or_counted_by_reason": {
+   "jawiki": {}
+  },
+  "stage2": {
+   "filler_typed_words": 377,
+   "frame_decides": true,
+   "per_source": {
+    "jawiki": {
+     "global_place": 0,
+     "global_quantity": 0,
+     "global_time": 0,
+     "noun_uses": 7
+    }
+   },
+   "predicate_typed_words": 281,
+   "words_with_new_rows": 0
+  }
+ },
+ "build_finished_at_utc": "2026-10-03T13:26:51Z",
+ "build_started_at_utc": "2026-10-03T13:26:51Z",
+ "builder_sha256": "b6a18067f66105665552e0e76954fd7b30dce37e57ad2ed1ce759e86dc4d2a58",
+ "coarse_types_sha256": "4c0286c425babdd4ea2c352380305ac9d5af76cb2b2e428c2f71a77f115d76f0",
+ "config": {
+  "alias_min": 1,
+  "conflict_policy": "unknown",
+  "counter_latin_numerals_min": 6,
+  "counter_latin_share_pct": 10,
+  "counter_max_chars": 3,
+  "counter_max_chars_single": 6,
+  "counter_min": 1,
+  "counter_min_sources": 1,
+  "ctx_min_lift_pct": 150,
+  "ctx_min_share_pct": 60,
+  "ctx_min_total": 2,
+  "ctx_store_min": 2,
+  "def_min": 1,
+  "definition_outranks_role": true,
+  "donor_contra_min": 5,
+  "donor_stage_b": true,
+  "est_ctx_min_lift_pct": 150,
+  "est_ctx_min_share_pct": 60,
+  "est_ctx_min_sources": 2,
+  "est_ctx_min_total": 2,
+  "frame_decides": true,
+  "frame_min_total": 99999,
+  "gen_upgrade_on_agreement": true,
+  "head_min_chars": 2,
+  "hearst_min": 2,
+  "hearst_min_share_pct": 70,
+  "kin_left": false,
+  "kin_left_min_count": 10,
+  "kin_left_min_share_pct": 90,
+  "kin_min_count": 2,
+  "kin_min_share_pct": 70,
+  "kin_min_unit_chars": 2,
+  "kin_store_min": 2,
+  "left_attested": true,
+  "left_recursive": true,
+  "max_chain_depth": 4,
+  "max_word_chars": 12,
+  "min_seen": 1,
+  "min_suffix_chars": 2,
+  "paren_alias_min": 1,
+  "pos_min": 3,
+  "qual_min": 1,
+  "rd_min_sources": 2,
+  "rd_min_total": 100,
+  "rd_particle_min": 10,
+  "rd_particle_share_pct": 30,
+  "rd_store_min": 20,
+  "rd_type_share_pct": 70,
+  "recovered_decides": true,
+  "role_min": 1,
+  "role_min_share_pct": 60,
+  "role_min_sources": 2,
+  "sahen_min": 2,
+  "sahen_min_share_pct": 30,
+  "slot_lift_pct": 300,
+  "slot_min": 20,
+  "slot_share_pct": 30
+ },
+ "config_sha256": "177cd7c689bfae8645f722e4d250e51420edcc989871d7980eb9a3473ec60762",
+ "content_sha256": "b07804300245b9dcd0abe0ba7387976d3b0dcd0a7aead5870b24857da7a721b1",
+ "donor_stats": {
+  "donor_contra_min": 5,
+  "enabled": true,
+  "excluded": {
+   "contra_arm": 0,
+   "not_decided": 0
+  },
+  "stage_a": {
+   "donors": 377,
+   "non_seed_donors": 2
+  },
+  "stage_b": {
+   "donors": 377,
+   "non_seed_donors": 2
+  },
+  "top_donors": [
+   {
+    "dependents": 1,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "会社",
+    "type": "GROUP_ORG"
+   },
+   {
+    "dependents": 1,
+    "dependents_with_other_met_arm_elsewhere": 0,
+    "donor": "道具",
+    "type": "ARTIFACT"
+   }
+  ]
+ },
+ "donors": 377,
+ "duration_sec": 0.4,
+ "excluded_term_hits": {},
+ "excluded_terms_total": 0,
+ "frozen_sha256": null,
+ "generated": null,
+ "generated_frames": null,
+ "git_dirty": true,
+ "git_head": "c3dcc603bd72e1b26532d784e06ca5999a73dc18",
+ "holdout": null,
+ "hypernym_rounds": [
+  {
+   "decided_heads": 2,
+   "donors": 375,
+   "round": 0
+  },
+  {
+   "decided_heads": 2,
+   "donors": 377,
+   "round": 1
+  }
+ ],
+ "inputs": [
+  {
+   "bytes": 264,
+   "lines": 2,
+   "name": "jawiki_leads",
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/wt/atk-W5-b/attacks/W5-b/pytest-temp-confined/test_two_decided_kana_variants0/kana.jsonl",
+   "sha256": "512f68f6c341ab3782be976ba46f2be1f49c4a918ee3333df11a0d0f03f0c08a",
+   "stats": {
+    "chars": 28,
+    "redirect_rows": 0,
+    "rows_used": 2,
+    "text_rows": 2
+   }
+  }
+ ],
+ "materials": [
+  {
+   "name": "jawiki lead sentences",
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/wt/atk-W5-b/attacks/W5-b/pytest-temp-confined/test_two_decided_kana_variants0/kana.jsonl",
+   "role": "definition / alias / role / pos material"
+  },
+  {
+   "name": "hand-written seeds",
+   "path": "verantyx/coarse_types.py (SEEDS_NOUN, SEEDS_PRED)"
+  },
+  {
+   "name": "notation rules",
+   "path": "verantyx/coarse_types.py (notation_type)"
+  },
+  {
+   "name": "predicate frame rule table",
+   "path": "verantyx/coarse_types.py (PRED_FRAME_RULES)"
+  },
+  {
+   "name": "stop-word lists (they give no type)",
+   "path": "verantyx/coarse_types.py (GENERIC_HEADS, META_HEADS, RANK_WORDS)"
+  },
+  {
+   "name": "paren alias (the first bracket element after a title)",
+   "role": "derived from the jawiki leads above (an arm of its own)"
+  },
+  {
+   "name": "predicate argument chains (neighbouring noun runs + case particles + a verb)",
+   "role": "arms role_distribution (predicates) and slot (nouns): shown, never alone a decider; derived from the jawiki and codex material above"
+  },
+  {
+   "name": "K62 table (the predicate types and frames W3-b1 reads; a copy)",
+   "path": "verantyx/coarse_types.py (K62_FRAMES)",
+   "role": "reverse lookup of role_distribution"
+  },
+  {
+   "name": "unidic-lite via fugashi",
+   "use": "word segmentation, the coarse word class (pos1, pos2) and orthBase ONLY; no finer dictionary sense labels"
+  }
+ ],
+ "no_weights_no_models": true,
+ "outputs": {
+  "by_arm_placed": {
+   "definition": 2,
+   "seed": 656
+  },
+  "by_kind_placed": {
+   "seed": 656,
+   "title": 2
+  },
+  "by_ns_placed": {
+   "N": 377,
+   "P": 281
+  },
+  "by_state": {
+   "DECIDED": 658,
+   "UNPLACED": 3
+  },
+  "by_state_ns": {
+   "DECIDED/N": 377,
+   "DECIDED/P": 281,
+   "UNPLACED/N": 3
+  },
+  "by_top_placed": {
+   "ABSTRACT": 23,
+   "ANIMAL": 23,
+   "ARTIFACT": 23,
+   "BODY_PART": 23,
+   "EVENT_ACT": 23,
+   "GROUP_ORG": 24,
+   "IDENTIFIER": 10,
+   "INFO_LANGUAGE": 23,
+   "NATURAL_PHENOMENON": 23,
+   "PERSON": 23,
+   "PLACE": 22,
+   "PLANT": 23,
+   "P_ACT": 25,
+   "P_CHANGE": 23,
+   "P_COGNITION": 23,
+   "P_COMMUNICATE": 24,
+   "P_CONSUME": 14,
+   "P_CREATE": 24,
+   "P_EMOTION": 10,
+   "P_EXIST": 24,
+   "P_GIVE": 22,
+   "P_MOVE": 24,
+   "P_PERCEIVE": 23,
+   "P_POSSESS": 21,
+   "P_STATE": 24,
+   "QUANTITY": 23,
+   "STATE_PROPERTY": 23,
+   "SUBSTANCE_FOOD": 22,
+   "TIME": 23,
+   "WORK": 23
+  },
+  "evidence_by_arm": {
+   "definition": 2,
+   "seed": 656
+  },
+  "evidence_by_src": {
+   "hand": 656,
+   "jawiki": 2
+  },
+  "funnel": {
+   "alias_titles_with_typed_target": 0,
+   "distinct_words_in_material_any_count": 7,
+   "distinct_words_in_material_min_seen": 7,
+   "paren_alias_words_with_typed_target": 0,
+   "rows": 661,
+   "rows_placed_direct": 658,
+   "rows_with_any_evidence": 658,
+   "titles_with_definition_phrase": 2,
+   "titles_with_qualifier_phrase": 0,
+   "titles_with_recovered_phrase": 0,
+   "words_with_a_met_arm_before_decision": 0
+  },
+  "headwords": 661,
+  "placed_direct": 658,
+  "placed_estimated_generated": 0,
+  "tables": {
+   "atoms": 547,
+   "counters": 0,
+   "ctx": 0,
+   "evidence": 658,
+   "generated": 0,
+   "generated_frames": 0,
+   "headwords": 661,
+   "meta": 4,
+   "unit_kin": 89,
+   "unit_sample": 35
+  }
+ },
+ "placement_bytes": 118784,
+ "seed_counts": {
+  "noun": 375,
+  "pred": 281
+ },
+ "skipped_rows_by_reason": {
+  "jawiki": {}
+ },
+ "stage_seconds": {
+  "aliases_sec": 0.0,
+  "codex_sec": 0.0,
+  "ctx_sec": 0.0,
+  "decide_sec": 0.0,
+  "definitions_sec": 0.0,
+  "extraction_sec": 0.0,
+  "hearst_sec": 0.0,
+  "jawiki_sec": 0.0,
+  "resolve_sec": 0.0,
+  "stage_a_sec": 0.0,
+  "stage_b_sec": 0.0,
+  "units_sec": 0.0,
+  "votes_sec": 0.0,
+  "write_sec": 0.0
+ },
+ "types_version": "1"
+}

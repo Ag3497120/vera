@@ -1,0 +1,126 @@
+[
+  {
+    "term": "昨日",
+    "state": "DECIDED",
+    "origin": "estimated",
+    "estimate_basis": "generated",
+    "top": [
+      "TIME"
+    ],
+    "frame_status": "ESTIMATED",
+    "seen_in_material": true
+  },
+  {
+    "term": "来週",
+    "state": "DECIDED",
+    "origin": "estimated",
+    "estimate_basis": "generated",
+    "top": [
+      "TIME"
+    ],
+    "frame_status": "ESTIMATED",
+    "seen_in_material": true
+  },
+  {
+    "term": "毎朝",
+    "state": "UNPLACED",
+    "origin": null,
+    "estimate_basis": null,
+    "top": [],
+    "frame_status": "NO_ANSWER",
+    "seen_in_material": true
+  },
+  {
+    "term": "歌う",
+    "state": "DECIDED",
+    "origin": "direct",
+    "estimate_basis": null,
+    "top": [
+      "WORK"
+    ],
+    "frame_status": "NOT_PREDICATE",
+    "seen_in_material": true
+  },
+  {
+    "term": "歌った",
+    "state": "DECIDED",
+    "origin": "estimated",
+    "estimate_basis": "proximity",
+    "top": [
+      "WORK"
+    ],
+    "frame_status": "ESTIMATED",
+    "seen_in_material": false
+  },
+  {
+    "term": "歌わない",
+    "state": "UNKNOWN",
+    "origin": null,
+    "estimate_basis": null,
+    "top": [],
+    "frame_status": "NO_ANSWER",
+    "seen_in_material": false
+  },
+  {
+    "term": "歌い",
+    "state": "UNKNOWN",
+    "origin": null,
+    "estimate_basis": null,
+    "top": [],
+    "frame_status": "NO_ANSWER",
+    "seen_in_material": false
+  },
+  {
+    "term": "読み上げる",
+    "state": "DECIDED",
+    "origin": "direct",
+    "estimate_basis": null,
+    "top": [
+      "P_COMMUNICATE"
+    ],
+    "frame_status": "CONFIRMED",
+    "seen_in_material": true
+  },
+  {
+    "term": "読み上げた",
+    "state": "UNKNOWN",
+    "origin": null,
+    "estimate_basis": null,
+    "top": [],
+    "frame_status": "NO_ANSWER",
+    "seen_in_material": false
+  },
+  {
+    "term": "読み上げ",
+    "state": "DECIDED",
+    "origin": "estimated",
+    "estimate_basis": "generated",
+    "top": [
+      "EVENT_ACT"
+    ],
+    "frame_status": "ESTIMATED",
+    "seen_in_material": true
+  },
+  {
+    "term": "連絡",
+    "state": "MULTIPLE",
+    "origin": "direct",
+    "estimate_basis": null,
+    "top": [
+      "EVENT_ACT",
+      "NATURAL_PHENOMENON",
+      "TIME"
+    ],
+    "frame_status": "NO_ANSWER",
+    "seen_in_material": true
+  },
+  {
+    "term": "連絡する",
+    "state": "UNKNOWN",
+    "origin": null,
+    "estimate_basis": null,
+    "top": [],
+    "frame_status": "NO_ANSWER",
+    "seen_in_material": false
+  }
+]

@@ -1,0 +1,14 @@
+G5 comparison: r6/run1 (runs 001-004, measured before W5-d changed any code) vs r7/run1 (runs 005-008, after). Same script, same data.
+L1 (token cover)                     summary.json  001/summary.json vs 005/summary.json: equal after removing builder_sha256 / placement path / time_utc
+L1 (token cover)                     items.jsonl   001/items.jsonl vs 005/items.jsonl: byte-identical
+    r7 numbers: {'token_cover_rate': 0.8132}
+L2 (type of a word in a sentence)    summary.json  002/summary.json vs 006/summary.json: equal after removing builder_sha256 / placement path / time_utc
+L2 (type of a word in a sentence)    items.jsonl   002/items.jsonl vs 006/items.jsonl: byte-identical
+    r7 numbers: {'n': 1072, 'correct_rate': 0.5289, 'wrong_single_rate': 0.0438, 'trap_wrong_single_rate': 0.0455, 'correct_direct': 567, 'wrong_single_direct': 47}
+L3 (typed / unknown words)           summary.json  003/summary.json vs 007/summary.json: equal after removing builder_sha256 / placement path / time_utc
+L3 (typed / unknown words)           items.jsonl   003/items.jsonl vs 007/items.jsonl: byte-identical
+    r7 numbers: {'correct_rate': 0.4943, 'typed_n': 174, 'unknown_n': 60, 'wrong_rate': 0.0517, 'returned_type_rate': 0.15}
+verbs 300 (frozen)                   summary.json  004/summary.json vs 008/summary.json: equal after removing builder_sha256 / placement path / time_utc
+verbs 300 (frozen)                   items.jsonl   004/items.jsonl vs 008/items.jsonl: byte-identical
+    r7 numbers: {'n_typed': 258, 'n_unknown': 42, 'direct_answers': 5, 'correct_direct': 4, 'wrong_single_direct': 1, 'wrong_rate_among_direct': 0.2, 'wrong_rate_typed': 0.0039, 'returned_rate_unknown': 0.0238}
+ALL IDENTICAL: True

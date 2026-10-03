@@ -1,0 +1,7 @@
+K3/K4/D1 check: tests/test_basis_policy*.py failures now vs proto_new_failures.txt
+mine:       15 proto:       15
+only in mine:
+only in proto:
+attack copies (w5c, 3+1 tests) failing: 0
+test_cli_explicit_round5_document_entry_uses_same_python_route: 0 failures (0 = passes)
+K3 = form(3) + w5c_r3 documents(7) = 10; K4 = recorded_yes(4); D1-revision = confirm(1)

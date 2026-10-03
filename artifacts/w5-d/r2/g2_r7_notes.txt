@@ -1,0 +1,20 @@
+== 185 place: FALSE_NONE now but not without VERA_PLACEMENT
+  Q094 TYPE_EXCLUDED_ALL excluded= [{'surface': '会社', 'reason': 'HOLE_TYPE_DISAGREE'}] before: NO_TYPED_CANDIDATE ABSTAINED
+  Q136 TYPE_EXCLUDED_ALL excluded= [{'surface': 'X', 'reason': 'HOLE_TYPE_DISAGREE'}] before: NO_TYPED_CANDIDATE ABSTAINED
+== 185 place: FALSE_NONE in both
+  ['Q010', 'Q059', 'Q118', 'Q121']
+== 185 place: FILLED/TIE with a TYPE_UNCHECKED excluded filler beside
+  []
+== 185 noplace: FALSE_NONE now but not without VERA_PLACEMENT
+  Q094 TYPE_EXCLUDED_ALL excluded= [{'surface': '会社', 'reason': 'HOLE_TYPE_DISAGREE'}] before: NO_TYPED_CANDIDATE ABSTAINED
+  Q130 TYPE_EXCLUDED_ALL excluded= [{'surface': '医者', 'reason': 'HOLE_TYPE_NOT_CHECKED'}] before: HOLE_TYPE_UNDETERMINED ABSTAINED
+  Q131 TYPE_EXCLUDED_ALL excluded= [{'surface': '医者', 'reason': 'HOLE_TYPE_NOT_CHECKED'}] before: HOLE_TYPE_UNDETERMINED ABSTAINED
+  Q136 TYPE_EXCLUDED_ALL excluded= [{'surface': 'X', 'reason': 'HOLE_TYPE_DISAGREE'}] before: NO_TYPED_CANDIDATE ABSTAINED
+== 185 noplace: FALSE_NONE in both
+  ['Q010', 'Q059', 'Q118', 'Q121']
+== 185 noplace: FILLED/TIE with a TYPE_UNCHECKED excluded filler beside
+  []
+== attack 120 (r7)
+  EN08-01 {'id': 'EN08-01', 'status': 'NO_TYPED_CANDIDATE', 'class': 'ABSTAINED', 'fillers': [], 'excluded': [{'surface': 'letter', 'reason': 'TYPE_UNCHECKED'}, {'surface': 'note', 'reason': 'TYPE_UNCHECKED'}], 'reasons': ['NO_TYPED_CANDIDATE', 'UNREAD_SENTENCES:1'], 'unchecked_fillers': 0}
+  FILLED/TIE with a TYPE_UNCHECKED beside: [('JA02-01', 'FILLED', [{'surface': '本', 'verdict': 'AGREE'}], [{'surface': '新聞', 'reason': 'TYPE_UNCHECKED'}, {'surface': '毎日本', 'reason': 'TYPE_UNCHECKED'}])]
+  unchecked fillers in FILLED/TIE: 0

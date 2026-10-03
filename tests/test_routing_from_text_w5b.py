@@ -8,6 +8,7 @@ import pytest
 
 from verantyx import routing_from_text as rt
 from verantyx.event_cross import PlaceResult
+from test_routing_from_text import FakePlacement      # W5-d2 (K2): the made-up placement of the tests (UNPLACED for a fixed name); the product keeps its own default
 
 
 def cl(pred, roles, pol="+", tense="nonpast"):
@@ -88,11 +89,11 @@ def test_the_determiner_test_looks_at_the_name_the_relation_uses_not_at_every_wo
 
 
 def test_the_determiner_test_is_for_english_only_and_not_for_a_naming_sentence():
-    explained = explain("ミラは実装をやる。\n", {"ミラは実装をやる。": ja_do("ミラ")})
+    explained = explain("ミラは実装をやる。\n", {"ミラは実装をやる。": ja_do("ミラ")}, lookup=FakePlacement())
     assert [u.status for u in explained.extraction.units] == ["MAPPED"]
     alias = rd("en", cl("call", {"patient": "Mira", "result": "Crew"}))
     sent = "Call Mira the Crew."
-    ex = explain(f"Mira reviews code.\n{sent}\n", {"Mira reviews code.": en_review("Mira"), sent: alias})
+    ex = explain(f"Mira reviews code.\n{sent}\n", {"Mira reviews code.": en_review("Mira"), sent: alias}, lookup=FakePlacement())
     assert [u.status for u in ex.extraction.units] == ["MAPPED", "MAPPED"]
 
 
@@ -135,10 +136,17 @@ def test_an_estimated_unplaced_or_unknown_word_is_not_a_reason_to_stop(answer):
     assert route(explained, role="implement", kind="feature")["reading"]["common_noun_check"]["checked"] == 1
 
 
-def test_without_a_placement_nothing_is_checked_and_that_is_counted_not_hidden():
+def test_without_a_placement_nothing_is_checked_and_that_is_counted_not_hidden(monkeypatch):
+    # W5-d2 (auditor's ruling B1, K2): the NAME IS FROM THE OLD CONTRACT (a Japanese name with no placement was routed and counted as "not checked"). The contract now
+    # (W5-d, R-J1): with no placement a Japanese name that no naming sentence introduced is not verified -> the unit is NAME_UNRESOLVED (NAME_UNVERIFIED:<name>:NO_PLACEMENT)
+    # and the text abstains; the check is still counted, not hidden.
+    monkeypatch.delenv("VERA_PLACEMENT", raising=False)
     explained = explain("ソラは実装をやる。\n", {"ソラは実装をやる。": ja_do("ソラ")})
-    assert [u.status for u in explained.extraction.units] == ["MAPPED"]
-    check = route(explained, role="implement", kind="feature")["reading"]["common_noun_check"]
+    (unit,) = explained.extraction.units
+    assert unit.status == "NAME_UNRESOLVED" and unit.reasons == ["NAME_UNVERIFIED:ソラ:NO_PLACEMENT"]
+    got = route(explained, role="implement", kind="feature")
+    assert got["agent"] is None and got["abstention"]["type"] == "INCOMPLETE_READING"
+    check = got["reading"]["common_noun_check"]
     assert check == {"lookup": "stub-no-placement/1", "checked": 0, "not_checked": 1, "flagged": 0, "introduced_by_naming": 0}
 
 
@@ -168,7 +176,7 @@ def test_an_english_addendum_without_a_marker_keeps_both_statements_and_routes_n
 @pytest.mark.parametrize("label", ["追記：", "追伸：", "追記（翌日）："])
 def test_a_japanese_addendum_without_a_marker_keeps_both_statements(label):
     first, second = "実装はミラに任せる。", "実装はルナに任せる。"
-    explained = explain(f"{first}\n{label}{second}\n", {first: ja_assign("ミラ"), second: ja_assign("ルナ")})
+    explained = explain(f"{first}\n{label}{second}\n", {first: ja_assign("ミラ"), second: ja_assign("ルナ")}, lookup=FakePlacement())
     assert explained.extraction.auto_resolved == 0 and [r.superseded_by for r in explained.extraction.relations] == [None, None]
     assert route(explained, role="implement", kind="feature")["agent"] is None
 
@@ -185,7 +193,7 @@ def test_an_english_addendum_with_a_replacement_word_replaces(sentence):
 @pytest.mark.parametrize("second,reading_name", [("やっぱり実装はルナに任せる。", "ルナ"), ("実装はミラではなくルナに任せる。", "ルナ")])
 def test_a_japanese_addendum_with_a_replacement_word_replaces(second, reading_name):
     first = "実装はミラに任せる。"
-    explained = explain(f"{first}\n追記：{second}\n", {first: ja_assign("ミラ"), second: ja_assign(reading_name)})
+    explained = explain(f"{first}\n追記：{second}\n", {first: ja_assign("ミラ"), second: ja_assign(reading_name)}, lookup=FakePlacement())
     assert explained.extraction.auto_resolved == 1
     assert route(explained, role="implement", kind="feature")["agent"] == "ルナ"
 
@@ -193,7 +201,7 @@ def test_a_japanese_addendum_with_a_replacement_word_replaces(second, reading_na
 @pytest.mark.parametrize("label,sentence", [("訂正：", "実装はルナに任せる。"), ("更新：", "実装はルナに任せる。")])
 def test_the_other_labels_replace_as_before_without_any_marker(label, sentence):
     first = "実装はミラに任せる。"
-    explained = explain(f"{first}\n{label}{sentence}\n", {first: ja_assign("ミラ"), sentence: ja_assign("ルナ")})
+    explained = explain(f"{first}\n{label}{sentence}\n", {first: ja_assign("ミラ"), sentence: ja_assign("ルナ")}, lookup=FakePlacement())
     assert explained.extraction.auto_resolved == 1 and route(explained, role="implement", kind="feature")["agent"] == "ルナ"
     assert explained.extraction.additions_kept == 0
 
@@ -227,7 +235,7 @@ def _units(explained):
 
 def test_C3_without_a_marker_relation_override_replaces_exactly_the_same_scope_and_counts_it_both_statements_stand():
     table = {"実装はハルに任せる。": ja_assign("ハル"), "実装はルナに任せる。": ja_assign("ルナ")}
-    explained = explain("実装はハルに任せる。\n追記：実装はルナに任せる。\n", table)
+    explained = explain("実装はハルに任せる。\n追記：実装はルナに任せる。\n", table, lookup=FakePlacement())
     assert _units(explained) == ["MAPPED", "MAPPED"]
     assert explained.extraction.auto_resolved == 0
     assert [r.superseded_by for r in explained.extraction.relations] == [None, None]
@@ -240,7 +248,7 @@ def test_C3_without_a_marker_relation_override_replaces_exactly_the_same_scope_a
 def test_C3_without_a_marker_relation_override_that_overlaps_only_partly_is_held_as_ambiguous_both_declarations_stand():
     table = {"大きなリファクタリングはハルに任せる。": ja_assign("ハル", "大きなリファクタリング"),
              "実装はルナに任せる。": ja_assign("ルナ")}
-    explained = explain("大きなリファクタリングはハルに任せる。\n追記：実装はルナに任せる。\n", table)
+    explained = explain("大きなリファクタリングはハルに任せる。\n追記：実装はルナに任せる。\n", table, lookup=FakePlacement())
     assert _units(explained) == ["MAPPED", "MAPPED"]
     assert explained.extraction.auto_resolved == 0
     assert route(explained, role="implement", kind="feature")["agent"] == "ルナ"        # the two declarations have different scopes: both stay
@@ -251,11 +259,11 @@ def test_C3_without_a_marker_an_override_of_another_kind_about_another_name_is_h
              "モモはテストを書かない。": rd("ja", cl("書く", {"agent": "モモ", "patient": "テスト"}, "-")),
              "ハルはテストを書かない。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"}, "-"))}
     # another name, another kind: with no marker the addendum is added next to the earlier statement
-    explained = explain("ハルはテストを書く。\n追記：モモはテストを書かない。\n", table)
+    explained = explain("ハルはテストを書く。\n追記：モモはテストを書かない。\n", table, lookup=FakePlacement())
     assert _units(explained) == ["MAPPED", "MAPPED"] and explained.extraction.auto_resolved == 0
     assert route(explained, role="implement", kind="test_authoring")["agent"] == "ハル"
     # the same name, the opposite polarity: a contradiction that stays a contradiction (nothing is replaced, nothing is chosen)
-    explained = explain("ハルはテストを書く。\n追記：ハルはテストを書かない。\n", table)
+    explained = explain("ハルはテストを書く。\n追記：ハルはテストを書かない。\n", table, lookup=FakePlacement())
     units = explained.extraction.units
     assert [u.status for u in units] == ["CONTRADICTION", "CONTRADICTION"]
     assert [u.reasons[0] for u in units] == ["CONTRADICTS:R002", "CONTRADICTS:R001"]

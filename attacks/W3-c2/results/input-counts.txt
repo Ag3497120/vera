@@ -1,0 +1,12 @@
+     120 attacks/W3-c2/data/questions.jsonl
+       7 attacks/W3-c2/data/docs/EN08.jsonl
+       7 attacks/W3-c2/data/docs/EN09.jsonl
+       7 attacks/W3-c2/data/docs/EN10.jsonl
+       7 attacks/W3-c2/data/docs/JA01.jsonl
+       7 attacks/W3-c2/data/docs/JA02.jsonl
+       7 attacks/W3-c2/data/docs/JA03.jsonl
+       7 attacks/W3-c2/data/docs/JA04.jsonl
+       7 attacks/W3-c2/data/docs/JA05.jsonl
+       7 attacks/W3-c2/data/docs/JA06.jsonl
+       7 attacks/W3-c2/data/docs/JA07.jsonl
+     190 total

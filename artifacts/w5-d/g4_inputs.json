@@ -1,0 +1,55 @@
+{
+  "note": "W5-d G4 inputs, written and sha256-frozen (g4_inputs.sha256) BEFORE g4_probe.py was run. Bodies are of files created by the probe under its own temp dir.",
+  "bodies": {
+    "memo.txt": "第一条 窓は午後に閉める。\n第二条 会議は月曜に開く。\n",
+    "empty.txt": "",
+    "other.txt": "全く別の内容。担当者は火曜に来る。\n",
+    "case.txt": "The window closes at noon.\n"
+  },
+  "self_reported": [
+    {"id": "S01-missing-path", "documents": ["MISSING:nowhere.txt"], "source": {"family": "document", "source": "nowhere.txt", "text": "窓は午後に閉める。"}},
+    {"id": "S02-absent-sentence", "documents": ["memo.txt"], "source": {"family": "document", "source": "memo.txt", "text": "渡された文書に無い文。"}},
+    {"id": "S03-empty-file", "documents": ["empty.txt"], "source": {"family": "document", "source": "empty.txt", "text": "窓は午後に閉める。"}},
+    {"id": "S04-directory-without-it", "documents": ["DIR:other.txt"], "source": {"family": "document", "source": "other.txt", "text": "窓は午後に閉める。"}},
+    {"id": "S05-paraphrase", "documents": ["memo.txt"], "source": {"family": "document", "source": "memo.txt", "text": "午後に窓を閉める。"}},
+    {"id": "S06-superset", "documents": ["memo.txt"], "source": {"family": "document", "source": "memo.txt", "text": "第一条 窓は午後に閉める。 ただし雨の日は除く。"}},
+    {"id": "S07-sha-mismatch", "documents": ["memo.txt"], "source": {"family": "document", "source": "memo.txt", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"}},
+    {"id": "S08-blank-text", "documents": ["memo.txt"], "source": {"family": "document", "source": "memo.txt", "text": "   "}},
+    {"id": "S09-no-text-no-sha", "documents": ["memo.txt"], "source": {"family": "document", "source": "memo.txt"}},
+    {"id": "S10-right-name-wrong-text", "documents": ["memo.txt"], "source": {"family": "document", "source": "memo.txt", "text": "窓は午前に閉める。"}},
+    {"id": "S11-text-of-a-file-not-handed-over", "documents": ["memo.txt"], "source": {"family": "document", "source": "other.txt", "text": "全く別の内容。"}},
+    {"id": "S12-latin-case", "documents": ["case.txt"], "source": {"family": "document", "source": "case.txt", "text": "THE WINDOW CLOSES AT NOON."}},
+    {"id": "S13-sha-of-another-file", "documents": ["memo.txt"], "source": {"family": "document", "source": "memo.txt", "sha256_of_body": "other.txt"}},
+    {"id": "S14-text-is-a-number", "documents": ["memo.txt"], "source": {"family": "document", "source": "memo.txt", "text": 5}},
+    {"id": "S15-text-is-a-list", "documents": ["memo.txt"], "source": {"family": "document", "source": "memo.txt", "text": ["窓は午後に閉める。"]}},
+    {"id": "S16-not-round5-mode", "documents": ["memo.txt"], "mode": "legacy", "source": {"family": "document", "source": "memo.txt", "text": "窓は午後に閉める。"}}
+  ],
+  "self_reported_controls": [
+    {"id": "C01-exact-sentence", "documents": ["memo.txt"], "source": {"family": "document", "source": "memo.txt", "text": "窓は午後に閉める。"}},
+    {"id": "C02-nfkc-equal", "documents": ["case.txt"], "source": {"family": "document", "source": "case.txt", "text": "The window closes at noon."}},
+    {"id": "C03-in-a-directory", "documents": ["DIR:memo.txt"], "source": {"family": "document", "source": "memo.txt", "text": "会議は月曜に開く。"}},
+    {"id": "C04-sha-of-the-body", "documents": ["memo.txt"], "source": {"family": "document", "source": "memo.txt", "sha256_of_body": "memo.txt"}}
+  ],
+  "confirmed_claim": "窓が光った。",
+  "record_variants": [
+    {"id": "R01-half-space", "current": "窓が 光った。"},
+    {"id": "R02-ideographic-space", "current": "窓が　光った。"},
+    {"id": "R03-nbsp", "current": "窓が 光った。"},
+    {"id": "R04-trailing-space", "current": "窓が光った。 "},
+    {"id": "R05-trailing-newline", "current": "窓が光った。\n"},
+    {"id": "R06-tab", "current": "窓が\t光った。"},
+    {"id": "R07-punctuation", "current": "窓が光った!"},
+    {"id": "R08-no-stop", "current": "窓が光った"},
+    {"id": "R09-zero-width-space", "current": "窓が​光った。"},
+    {"id": "R10-bom-prefix", "current": "﻿窓が光った。"},
+    {"id": "R11-other-sentence", "current": "窓が割れた。"},
+    {"id": "R12-nfkc", "confirmed": "コードはABCです。", "current": "コードはＡＢＣです。"},
+    {"id": "R13-nfkc-reverse", "confirmed": "コードはＡＢＣです。", "current": "コードはABCです。"},
+    {"id": "R14-fullwidth-digit", "confirmed": "部屋は3階です。", "current": "部屋は３階です。"},
+    {"id": "R15-leading-space", "current": " 窓が光った。"}
+  ],
+  "record_controls": [
+    {"id": "RC1-exact", "current": "窓が光った。"},
+    {"id": "RC2-exact-two-records", "current": "窓が光った。", "records": 2}
+  ]
+}

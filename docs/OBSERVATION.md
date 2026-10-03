@@ -394,7 +394,7 @@ d に q に無い腕がある（例: 場所 `駅で` が多い）なら一致し
 <!-- w3c2-entry:begin -->
 ### 入口の実行出力（`recompute_q.py` が実際に走らせて貼った。手で書き換えない）
 
-`python -m verantyx.cli observe --anchor-text '母は台所で何を作った？' --anchor-kind question --structure tests/observe/question/docs/QD05.jsonl --no-index`（FILLED）
+`python -m verantyx.cli observe --anchor-text 'どの人が客に切符を渡した？' --anchor-kind question --structure tests/observe/question/docs/QD02.jsonl --no-index --placement tests/observe/question/placement_q.json`（FILLED）
 ```json
 {
  "exit_code": 0,
@@ -403,61 +403,47 @@ d に q に無い腕がある（例: 場所 `駅で` が多い）なら一致し
  },
  "answer.status": "FILLED",
  "answer.question": {
-  "hole_role": "patient",
-  "hole_type": [
-   "ABSTRACT",
-   "ANIMAL",
-   "ARTIFACT",
-   "BODY_PART",
-   "EVENT_ACT",
-   "IDENTIFIER",
-   "INFO_LANGUAGE",
-   "NATURAL_PHENOMENON",
-   "PLACE",
-   "PLANT",
-   "QUANTITY",
-   "STATE_PROPERTY",
-   "SUBSTANCE_FOOD",
-   "TIME",
-   "WORK"
-  ],
-  "wh": "何",
+  "hole_role": "agent",
+  "hole_type": null,
+  "wh": "どの",
   "kind": "WH_QUESTION",
-  "restrictor": null,
+  "restrictor": "人",
   "hole_mark": "Ｘ"
  },
  "answer.fillers": [
   {
-   "surface": "料理",
+   "surface": "駅員",
    "evidence": [
     {
-     "reading": "QD05-S06",
+     "reading": "QD02-S01",
      "cross_index": 0,
-     "text": "母は台所で料理を作った。"
+     "text": "駅員が客に切符を渡した。"
     }
    ],
-   "hole_type_check": "NOT_CHECKED:NO_PLACEMENT"
+   "hole_type_check": "AGREE"
   }
  ],
  "answer.structure": {
-  "sentences": 10,
-  "crossed": 9,
-  "unread": 1,
+  "sentences": 9,
+  "crossed": 6,
+  "unread": 3,
   "unread_ids": [
-   "QD05-S10"
+   "QD02-S07",
+   "QD02-S08",
+   "QD02-S09"
   ],
-  "crosses_compared": 9,
+  "crosses_compared": 6,
   "crosses_matched": 1,
   "extending": []
  },
  "answer.reasons": [
-  "UNREAD_SENTENCES:1"
+  "UNREAD_SENTENCES:3"
  ],
  "abstain": null
 }
 ```
 
-`python -m verantyx.cli observe --anchor-text '誰が生徒に地図を渡した？' --anchor-kind question --structure tests/observe/question/docs/QD01.jsonl --no-index`（TIE）
+`python -m verantyx.cli observe --anchor-text '誰が生徒に地図を渡した？' --anchor-kind question --structure tests/observe/question/docs/QD01.jsonl --no-index --placement tests/observe/question/placement_q.json`（TIE）
 ```json
 {
  "exit_code": 0,
@@ -487,7 +473,7 @@ d に q に無い腕がある（例: 場所 `駅で` が多い）なら一致し
      "text": "先生が生徒に地図を渡した。"
     }
    ],
-   "hole_type_check": "NOT_CHECKED:NO_PLACEMENT"
+   "hole_type_check": "AGREE"
   },
   {
    "surface": "校長",
@@ -498,7 +484,7 @@ d に q に無い腕がある（例: 場所 `駅で` が多い）なら一致し
      "text": "校長が生徒に地図を渡した。"
     }
    ],
-   "hole_type_check": "NOT_CHECKED:NO_PLACEMENT"
+   "hole_type_check": "AGREE"
   }
  ],
  "answer.structure": {
@@ -698,3 +684,642 @@ FALSE_NONE（正解があるのに「無い」と返したもの）の 1 件ず�
 
 **Q6**: `pytest_related.txt` の最終行: 2350 passed in 14.38s。全体テスト `pytest_full.txt` の最終行: 116 failed, 11182 passed, 45 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 316.63s (0:05:16)。基線にない失敗 `pytest_new_failures.txt`: 2 行。増えた成功 `pytest_fixed.txt`: 0 行。
 <!-- w3c2-measured:end -->
+
+## W5-d の事前登録: 質問の十字 — 型を確かめられない充填物を答えにしない
+<!-- w5d-prereg:begin -->
+事前登録の時刻: 2026-10-03 23:07:21 +0900（`date '+%F %T %z'` の出力。製品コードの変更より前）。ベースは `dev` = `c875ed3`。
+
+攻撃の第 4 波（W3-c2: A01 英語の `Who did the girl write?` が `letter`・`note` を TIE で返す／A02 時の副詞が patient の候補に混ざる）の根は同じ: 充填物の型を確かめられないまま候補にしている。次の規則で直す（中間職の指示書 Q-J1〜Q-J5）。
+
+- **Q-J1 候補の条件**: 穴の腕の充填物は、`_hole_type_check` の判定が `AGREE` のときだけ候補にする。除外の順は今のまま `SAME_AS_RESTRICTOR` → `HOLE_TYPE_DISAGREE` →（which+N のとき）`HOLE_TYPE_NOT_CHECKED` → 新しい `TYPE_UNCHECKED`（それ以外の `NOT_CHECKED` すべて: 配置なし・UNPLACED・UNKNOWN・推定・MULTIPLE で一部が穴の外・無効な答え）。`HOLE_EXCLUSION_REASONS` の末尾に `TYPE_UNCHECKED` を足す（並びは変えない）。
+- **Q-J2 全候補一致**: `place.state == 'MULTIPLE'` で `place.types` が空でなく、そのすべてが穴の型の集合に入るとき `AGREE`（理由 `MULTIPLE_ALL_IN_HOLE`）。一部でも外れれば今どおり `NOT_CHECKED`。`DECIDED` かつ `origin == 'direct'` の判定は変えない。推定は AGREE にしない。
+- **Q-J3 新しい状態 `NO_TYPED_CANDIDATE`**: 候補が 0 で、外したものに `TYPE_UNCHECKED` が 1 つでもある → `NO_TYPED_CANDIDATE`（棄権。`NoMoveLicensed({'FILL_HOLE:NO_TYPED_CANDIDATE': 1})`）。外したものが全部 `HOLE_TYPE_DISAGREE`・`SAME_AS_RESTRICTOR`・`HOLE_TYPE_NOT_CHECKED` なら今どおり `TYPE_EXCLUDED_ALL`（「型が合わないと分かった」と「確かめられなかった」を混ぜない）。
+- **Q-J4 言語・配置**: 言語で分けない。英語でも `--placement`（FilePlacement）で direct の型があれば AGREE になりうる。質問の観測は `VERA_PLACEMENT` を読まない。
+- **Q-J5 A02**: `毎日本` を 1 つの充填物にする誤りは読解器（`semantic_reader.py`、触らない）の問題。観測側では配置で型が確かめられない → `TYPE_UNCHECKED` で `excluded` に残る。
+- 平叙文の観測は 1 バイトも変えない（`_hole_type_check` を呼ぶのは質問の経路だけ。`o1_bytes` の `cmp` で確かめる）。
+- 閉じるもの: 本節の「既知の穴 6」（配置なし・型未確認の充填物が FILLED/TIE の候補になる）。代価は正答の減少（G2 で数える）。
+
+### 宣言する規則どうしの衝突（実装役は解かずに宣言する。判断は監査役）
+チケットの規則を字面どおりに入れると、旧い振る舞いをそのまま固定した既存テストが落ちる。実装役はチケットの規則どおりに作り、テストの期待は変えず（改訂が許された 1 関数を除く）、落ちた id を全部宣言する。
+
+| # | 衝突 | 落ちる見込みのもの |
+|---|---|---|
+| K1 | W3-c2「型を確かめられない充填物は候補から外す」 × 配置なしで FILLED/TIE を期待する既存テスト・攻撃の外れ | `tests/test_question_cross_observe.py` の一部、攻撃の写しの 2 件 |
+| K2 | R1「配置が無い日本語の名前は命名の文で導入されたものだけ」 × 配置なし（スタブ）の名前で振る既存テスト・R2 の攻撃テスト | `tests/test_routing_from_text*.py` の多数、攻撃の写しの R2 の 1 件 |
+| K3 | A1「出典の本文が渡した文書の中にある」 × 存在しない文書を渡して `family: document` を人とする既存テスト | `tests/test_basis_policy_form.py`・`tests/test_basis_policy_w5c_r3.py` の一部 |
+| K4 | D1「文面が同じときだけ格上げ」 × 別の文の記録で格上げすることを固定した既存テスト（改訂許可の 2 件の外） | `tests/test_basis_policy_w5c_r3.py::test_r3_a_recorded_yes_still_lifts_a_generated_answer` |
+| K5 | W3-a3 A1「枠の確認は助詞ごとの型の一致」 × 攻撃の写しの不変条件「gen_frame の格上げ語は全部 CONFIRMED」 | `tests/attack/w3a3/test_attack_w3a3_r6.py::test_all_r6_generated_frame_upgrades` |
+| D1-改訂 | 許可された 2 件のうち設計上落ちる 1 件 | `tests/test_basis_policy_confirm.py::test_two_confirmed_records_with_the_same_claim_are_not_a_split`（名前不変で改訂。前後の全文は BASIS_POLICY の測定の節） |
+
+### 受入基準の測り方（G1〜G7。測る前に固定）
+- G1: 攻撃の写し 5 本（`tests/attack/w3c2`・`test_attack_w5b_wave2.py`・`test_attack_w5c_*.py` 2 本・`tests/attack/w3a3/test_attack_w3a3_r6.py`）。落ちてよいのは宣言した K1(2)・K2(1)・K5(1) の 4 id だけ。A02・R2・W3-a3 A1 は新しいテストで確かめる。
+- G2: `artifacts/w5-d/scripts/run_questions_both.py`（実装役の 185 問、配置あり／なし）。誤答 0、型未確認の充填物を持つ FILLED/TIE 0。正答の減少は変更前（`artifacts/w5-d/before/q185_*.json`）との差を数で。
+- G3: 経路づけの凍結 4 本（`run_bank.py`、配置なし・r7）の misroutes と、自作の合成（`artifacts/w5-d/g3_synth/`、入力と期待を先に書き sha256 を凍結）。
+- G4: `artifacts/w5-d/scripts/g4_probe.py`（入力を先に凍結）。自己申告の文書・文面違いの確認記録から `ANSWER_*` が 0。対照（本当に渡した文書の文・完全一致の記録）では答えが出ること。
+- G5: r7 を cache なしで 2 回作り `verify` が両方 OK、`content_sha256` が run1 = run2 = r6（`5c969d45…`）。L1〜L3・動詞 300 語を `measure_w5d.py` で r6 と r7 で測り同じ。
+- G7: `pytest tests`（最後に 1 回）の失敗集合が基線 `dev_c875ed3_failures.txt` から増えない。増えた分は 1 件ずつ K1〜K5 または環境由来に当てる。当たらないものはコードを直す。
+- 基線（変更前）の測定は `artifacts/w5-d/before/` に保存済み（この事前登録より前）。製品コードの差分はこの時点で空。
+
+<!-- w5d-prereg:end -->
+
+## W5-d の測定: 質問の十字
+<!-- w5d-measured:begin -->
+
+測定の時刻: 2026-10-03 23:34:53 +0900。出典はすべて `artifacts/w5-d/` のファイル（下に名前を書く）。全体テスト: `pytest_full.txt` の最終行 `198 failed, 11889 passed, 45 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 341.39s (0:05:41)`。基線 `dev_c875ed3_failures.txt` に無い新しい失敗は 83 件（`new_failures.txt`）で、1 件ずつ `new_failures_explained.txt` に K1〜K5・改訂・環境由来のどれかを書いた。どれにも当たらないものは 0 件（`grep -v -E 'K[1-5]|D1-改訂|環境由来' new_failures_explained.txt` が空）。基線から直った失敗は 0 件（`fixed_failures.txt`）。
+
+### 質問の十字（G2。`g2_185_place.json`・`g2_185_noplace.json`、変更前は `before/q185_place.json`・`before/q185_noplace.json`。`scripts/run_questions_both.py`）
+実装役の凍結データ 185 問。
+
+| 条件 | 正答 | 誤答 | 偽の「無し」 | 棄権 | 型未確認の充填物を持つ FILLED/TIE の充填物 | NO_TYPED_CANDIDATE |
+|---|---|---|---|---|---|---|
+| 変更前・配置あり | 99 | 0 | 4 | 82 | 68 | 0 |
+| 変更後・配置あり | 38 | 0 | 4 | 143 | 0 | 63 |
+| 変更前・配置なし | 87 | 0 | 4 | 94 | 68 | 0 |
+| 変更後・配置なし | 26 | 0 | 4 | 155 | 0 | 63 |
+
+誤答は 0 のまま。型未確認の充填物を持つ FILLED/TIE は 68 → 0（配置なしでも）。**代価（正答の減少）**: 配置あり 99 → 38（61 問減）、配置なし 87 → 26（61 問減）。減った分は誤答ではなく棄権（`NO_TYPED_CANDIDATE`）になった。中間職の凍結データ（64 問・56 問）は実装役は開いていない（レビューで中間職が流す）。
+
+### 「既知の穴 6」の扱い
+本節の既存の「既知の穴 6」（配置なし・型未確認の充填物が FILLED/TIE の候補になる）は**閉じた**（型未確認は候補にしない）。代価: 正答の減少（上の表）。既存の行は消していない。
+
+### 平叙文の観測は変わらない（`q1_observe_cmp.txt`）
+`tests/observe/o1_bytes.py --child`（凍結ケース全部。`M15-question-J01` を含む）を基点と今の木で流し、出力は基点と 2 種のハッシュ種で byte 一致。
+
+### 宣言した衝突 K1（質問の十字）の実際の失敗 id（15 件）
+- `tests/attack/w3c2/test_attack_w3c2_question_cross.py::test_negative_question_does_not_match_affirmative_crosses`
+- `tests/attack/w3c2/test_attack_w3c2_question_cross.py::test_tied_agent_witnesses_remain_a_tie`
+- `tests/test_question_cross_observe.py::test_a_filler_that_is_the_mark_character_is_a_correct_answer`
+- `tests/test_question_cross_observe.py::test_a_tie_does_not_depend_on_the_order_of_the_sentences`
+- `tests/test_question_cross_observe.py::test_a_tie_is_returned_with_both_and_never_broken`
+- `tests/test_question_cross_observe.py::test_an_arm_tie_gives_each_filler_as_a_candidate_of_its_own`
+- `tests/test_question_cross_observe.py::test_an_extending_cross_that_names_another_filler_makes_the_answer_incomplete`
+- `tests/test_question_cross_observe.py::test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun`
+- `tests/test_question_cross_observe.py::test_filled_has_the_filler_the_sentence_id_and_the_coordinate`
+- `tests/test_question_cross_observe.py::test_nfkc_of_the_filler_and_of_the_other_arms`
+- `tests/test_question_cross_observe.py::test_polarity_tense_and_voice_must_be_the_same`
+- `tests/test_question_cross_observe.py::test_the_command_line_entry_gives_the_same_bytes_for_two_hash_seeds`
+- `tests/test_question_cross_observe.py::test_the_cross_index_of_a_question_is_zero_or_nothing`
+- `tests/test_question_cross_observe.py::test_the_ledger_records_a_question_and_replays_to_the_same_output`
+- `tests/test_question_cross_observe.py::test_the_reading_of_the_anchor_is_not_evidence`
+
+型・配置を与えれば K1 の既存テストの意図は新しい規則でも満たせることの証拠: `k1_probe.txt`（scratchpad の写しの `tests/conftest.py` に機械的な書き換えを当てた。テストファイルは変えていない）。
+```
+K1 probe (scratchpad copy of c875ed3 + the changed verantyx files; the test file is NOT changed; only tests/conftest.py of the copy gets the mechanical rewrite in k1_probe_rewrite.diff:
+the stub lookup answers DECIDED/direct for the fillers the tests use: 船長 提督 Ｘ 商人 人 = PERSON, Ａ社 A社 = GROUP_ORG, 小包 = ARTIFACT).
+
+K1 failing existing tests in the real tree:       13
+of those, still failing with the rewrite:        2  => pass with a typed placement: 11
+  still failing (in K1): tests/test_question_cross_observe.py::test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun
+  still failing (in K1): tests/test_question_cross_observe.py::test_the_command_line_entry_gives_the_same_bytes_for_two_hash_seeds
+tests that fail only because of the rewrite (they passed in the real tree):        1
+  probe artifact: tests/test_question_cross_observe.py::test_restrictor_whose_type_is_not_decided_says_so
+
+reasons: test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun asserts FILLED with NOT_CHECKED(NO_PLACEMENT): the opposite of Q-J1 by design;
+test_the_command_line_entry_gives_the_same_bytes_for_two_hash_seeds runs the CLI in a subprocess (the in-process rewrite does not reach it; the same intent is in tests/test_question_cross_w5d.py::test_k1_the_command_line_entry_gives_the_same_bytes_for_two_hash_seeds with --placement, which passes).
+test_restrictor_whose_type_is_not_decided_says_so: the rewrite types 人, so the restrictor is decided (an artifact of the probe).
+```
+
+### K1 の追加の帰結: `recompute_q.py --check`（`doc_checks.txt`）
+`tests/observe/question/recompute_q.py --check`（docs の `w3c2-entry` 区間を、入口を実際に走らせて作り直して照合する道具）は、配置を渡さない 3 つの例（`QD05` の FILLED・`QD01` の TIE・`NO_ATTESTED_CELL`）を走らせ、`FILLED` を期待する所で `AssertionError: ('FILLED', 'NO_TYPED_CANDIDATE')` になる（変更前の木では通る）。これは K1 と同じ原因（配置なしでは型未確認の充填物は候補にならない）。道具は許可パスの外（`tests/observe/question/`）、`w3c2-entry` 区間は既存の区間で 1 文字も変えられないので、**当てていない**。監査役の判断で、例に型を与える配置を足す（または FILLED/TIE の例を配置つきにする）改訂が要る。ほかの `recompute*.py --check` と `render_w3a3.py --check` は通る。
+
+<!-- w5d-measured:end -->
+
+## W5-d 第 2 ラウンド（W5-d2）の事前登録
+<!-- w5d2-prereg:begin -->
+事前登録の時刻: 2026-10-04 00:31:06 +0900（`date '+%F %T %z'` の出力。第 2 ラウンドの製品コード・テストの変更より前）。ベースは `dev` = `c875ed3`。第 1 ラウンドの `w5d-prereg`・`w5d-measured` 区間は 1 文字も変えない（第 1 ラウンドの記録）。この節が置き換えるものは、後ろの `w5d2-measured` 区間の「置き換わった記述」に列挙する。
+
+**監査役の裁定（2026-10-04 00:05）**: B1 規則の衝突で落ちる既存テスト 78 件＋攻撃の写し 4 件は改訂を許可（K1・K2 は偽の `PlacementLookup` の注入、K3・K4・K5 は期待の改訂。名前は変えず、前後の全文を docs に）。B2 D1 の比較は正規化しない完全一致を追認（チケットの文言「NFKC 正規化後」は撤回）。B3 `recompute_q.py --check` と `w3c2-entry` 区間の例は、配置を与えた例に取り直してよい（区間の規則の本文は変えない）。追加 9 質問の観測が `VERA_PLACEMENT` を読まないのは、この後では「本番では質問がほぼ全部棄権」を意味するので、`observe.py` の question の経路で、`--placement` が無く `VERA_PLACEMENT` があるときは `event_cross.default_lookup()` の lookup を使う（収まらなければ既知の穴として次のチケットへ）。
+
+**第 2 ラウンドの判断（中間職の指示書 D2-1〜D2-8）**
+- D2-1 K1（質問の十字 15 件）: 配置の JSON（穴の充填物だけに direct の型。穴の型と食い違う型は付けない）または `O.FilePlacement` を注入する。例外 1 件（`test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun`）は「配置なしで FILLED」が主題で新しい契約と正反対なので、期待を新しい契約（配置なし → `NO_TYPED_CANDIDATE`・`TYPE_UNCHECKED`・`hole_type_check` が `NOT_CHECKED/NO_PLACEMENT`）に改訂。配置あり／なしの対のテストを足す。
+- D2-2 K2（自由文→記録 52 件）: テストの中だけの `FakePlacement`（固定の名前は `UNPLACED`、列挙した普通名詞は direct の型）を注入。配置なしが主題の 3 件は期待を新しい契約（配置なし → 棄権）に改訂。**裁定の申し送り（並列の名前の過剰棄権は直さず既知の穴）からの逸脱**: 偽の配置（全語 UNPLACED）を注入しても 11 件は `ハルとセキは同じ会社だ。` の部分名 `ハル`・`セキ` に配置の答えが無く `NAME_UNVERIFIED` → `INCOMPLETE_READING` で通らない。期待を書き換えれば「弱体化」になるので、`routing_from_text.py` だけで、日本語の並列の充填物の部分名それぞれを同じ lookup に問う（R-J1 の同じ規則を部分名の配置の答えに当てるだけ。新しい規則は足さない。英語は変えない）。配置が無ければ今どおり `NAME_UNVERIFIED`。
+- D2-3 K3（10 件）: 期待の値は変えず、渡した文書を実在させる（`tmp_path` の `memo.txt` に出典の `text` を書く）。K4: `artifacts/w5-d/k4_proposal.diff` をそのまま当てる。K5: 48 語の導出・バイト一致・各条件は不変、`frame_status` は `CONFIRMED` か `NOT_CONFIRMED`（後者は `frame is None`・`frame_disagreement`・助詞ごとの型が交わらない）、数は assert せず出力に一覧。
+- D2-4 攻撃の写し 3 本の先頭行を `revised in W5-d2` に。G1-b は「先頭行と改訂した関数を除いて同一」。`data/` は同一。
+- D2-5 D1: コードは変えない（正規化しない完全一致）。BASIS_POLICY に追認の理由を書く。
+- D2-6 B3: `recompute_q.py` の `EXAMPLES` を 4 つ組（期待, 文書, 問い, 配置ファイル名）にし、`QD02`『どの人が客に切符を渡した？』（FILLED）と `QD01`『誰が生徒に地図を渡した？』（TIE）を `placement_q.json` つきに、`NO_ATTESTED_CELL` の例は今のまま。`--write` は 1 回だけ。凍結データは変えない。
+- D2-7 追加 9: 製品の変更は `observe.py` の `_observe_question` の中だけ。`--placement` が無い（`StubLookup`）ときだけ `EC.default_lookup()`。充填物の型の確かめは同じ lookup に `surface` を問い直した答え。出力の `structure.placement` は実際に使った lookup の id。新しい鍵は足さない。**門**（どれか 1 つでも破れたらこの変更だけを戻して既知の穴に書く）: (1) r7 で 185 問の誤答 0・型未確認の FILLED/TIE 0、攻撃 120 問でも型未確認 0 で A01 が FILLED/TIE にならない、(2) `VERA_PLACEMENT` なしの 185 問の出力が第 1 ラウンドと byte 一致、(3) 平叙文の観測（`o1_bytes.py --child`）が基点と byte 一致（配置なしと r7 の 2 通り）。FALSE_NONE の増分と TIE が FILLED に縮む件は数えて書くが門にしない。
+- D2-8 置き場所: 本区間（事前登録）、`w5d2-measured`（測定）、`w5d2-amended`（改訂したテストの前後の全文。`artifacts/w5-d/r2/scripts/amended_texts.py` で生成）。K1・B3・D2-7 → OBSERVATION、K2・D2-2 → ROUTING_FROM_TEXT、K3・K4・D1 → BASIS_POLICY、K5 → COARSE_PLACEMENT、EVENT_CROSS には穴の型の節への 1 段落。
+
+**測り方（測る前に固定。出力はすべて `artifacts/w5-d/r2/`）**
+- G1: 攻撃の写し 36 本が全部通る（`tests/attack/w3c2`・`test_attack_w5b_wave2.py`・`test_attack_w5c_*.py` 2 本・`tests/attack/w3a3/test_attack_w3a3_r6.py`）、K の 82 id が全部通る、G1-b は上のとおり。
+- G2: 実装役の 185 問を（配置なしの環境 × place/noplace）と（`VERA_PLACEMENT=r7` × place/noplace）、攻撃 120 問を r7 で。誤答 0、型未確認の充填物を持つ FILLED/TIE 0。
+- G3: 経路づけの凍結 4 本（配置なし）と 2 本（r7）の misroutes 0、合成 `g3_synth` を同じ入力で流し直して配置なしで誤って振った数 0。r7 は第 1 ラウンドの 1 から増えない。D2-2 の影響として r7 の 2 本の単位ごとの状態を第 1 ラウンドと比べる。
+- G4: `g4_probe` の写しを流し、入力の sha256 と `summary` が第 1 ラウンドと同じ（`basis_policy.py` は第 2 ラウンドで変えない）。
+- G5: r7 は作り直さない。`verify` が `OK`、`content_sha256` が第 1 ラウンドと同じ。
+- G7: `pytest tests`（最後に 1 回）の失敗集合が基線から増えない。基線に無い失敗は環境由来だけ。K の id が残れば改訂を見直す。
+
+**この文書の担当**: K1・B3・D2-7（質問の観測と `recompute_q.py`）。
+<!-- w5d2-prereg:end -->
+
+<!-- w5d2-amended:begin -->
+#### `tests/test_question_cross_observe.py` (before = git show c875ed3:tests/test_question_cross_observe.py)
+
+Added (helpers / tests, not amendments): `person_placement`, `=PERSONS`
+
+##### `test_filled_has_the_filler_the_sentence_id_and_the_coordinate` — before
+
+```python
+def test_filled_has_the_filler_the_sentence_id_and_the_coordinate(tmp_path):
+    out, text = ask(tmp_path, Q_SHIP, [S1, '鳥が空を飛んだ。'])
+    a = out['answer']
+    assert list(a) == ['schema', 'status', 'question', 'question_cross', 'fillers', 'excluded', 'structure', 'reasons']
+    assert a['schema'] == 'verantyx.question_answer/1' and a['status'] == 'FILLED'
+    assert fills(out) == [('船長', [('s1', 0)])]
+    assert out['focus']['kind'] == 'FOCUS' and out['anchor'] is None and out['abstain'] is None
+    el = out['ranks'][0]['elements'][0]
+    assert el['cell_key'] == out['focus']['cell_key'] and el['coords'] == [{'origin': {'kind': 'structure', 'id': 's1', 'cross_index': 0}, 'moves': []}]
+    assert el['occupied'] == 'ATTESTED' and el['realization']['status'] == 'REALIZED' and el['realization']['text'].startswith('船長') and 'Ｘ' not in el['realization']['text']
+    assert a['structure']['sentences'] == 2 and a['structure']['unread'] == 1 and a['structure']['unread_ids'] == ['s2']
+    assert a['structure']['crosses_compared'] == 1 and a['structure']['crosses_matched'] == 1
+    assert a['question']['hole_role'] == 'agent' and 'declarative' not in a['question']
+    assert out['counts']['question']['status'] == 'FILLED'
+```
+
+##### `test_filled_has_the_filler_the_sentence_id_and_the_coordinate` — after
+
+```python
+def test_filled_has_the_filler_the_sentence_id_and_the_coordinate(tmp_path):
+    out, text = ask(tmp_path, Q_SHIP, [S1, '鳥が空を飛んだ。'], placement=write_placement(tmp_path, PERSONS))    # W5-d2 (K1): the filler's type is given by a placement
+    a = out['answer']
+    assert list(a) == ['schema', 'status', 'question', 'question_cross', 'fillers', 'excluded', 'structure', 'reasons']
+    assert a['schema'] == 'verantyx.question_answer/1' and a['status'] == 'FILLED'
+    assert fills(out) == [('船長', [('s1', 0)])]
+    assert out['focus']['kind'] == 'FOCUS' and out['anchor'] is None and out['abstain'] is None
+    el = out['ranks'][0]['elements'][0]
+    assert el['cell_key'] == out['focus']['cell_key'] and el['coords'] == [{'origin': {'kind': 'structure', 'id': 's1', 'cross_index': 0}, 'moves': []}]
+    assert el['occupied'] == 'ATTESTED' and el['realization']['status'] == 'REALIZED' and el['realization']['text'].startswith('船長') and 'Ｘ' not in el['realization']['text']
+    assert a['structure']['sentences'] == 2 and a['structure']['unread'] == 1 and a['structure']['unread_ids'] == ['s2']
+    assert a['structure']['crosses_compared'] == 1 and a['structure']['crosses_matched'] == 1
+    assert a['question']['hole_role'] == 'agent' and 'declarative' not in a['question']
+    assert out['counts']['question']['status'] == 'FILLED'
+```
+
+##### `test_a_tie_is_returned_with_both_and_never_broken` — before
+
+```python
+def test_a_tie_is_returned_with_both_and_never_broken(tmp_path):
+    out, _ = ask(tmp_path, Q_SHIP, [S1, S2])
+    assert out['answer']['status'] == 'TIE'
+    assert [f['surface'] for f in out['answer']['fillers']] == sorted(['提督', '船長'])
+    assert out['focus']['kind'] == 'TIE' and len(out['focus']['candidates']) == 2
+    assert len(out['ranks']) == 1 and out['ranks'][0]['kind'] == 'TIE' and len(out['ranks'][0]['elements']) == 2
+    assert sorted(r['reading'] for f in out['answer']['fillers'] for r in f['evidence']) == ['s1', 's2']
+```
+
+##### `test_a_tie_is_returned_with_both_and_never_broken` — after
+
+```python
+def test_a_tie_is_returned_with_both_and_never_broken(tmp_path):
+    out, _ = ask(tmp_path, Q_SHIP, [S1, S2], placement=write_placement(tmp_path, PERSONS))    # W5-d2 (K1)
+    assert out['answer']['status'] == 'TIE'
+    assert [f['surface'] for f in out['answer']['fillers']] == sorted(['提督', '船長'])
+    assert out['focus']['kind'] == 'TIE' and len(out['focus']['candidates']) == 2
+    assert len(out['ranks']) == 1 and out['ranks'][0]['kind'] == 'TIE' and len(out['ranks'][0]['elements']) == 2
+    assert sorted(r['reading'] for f in out['answer']['fillers'] for r in f['evidence']) == ['s1', 's2']
+```
+
+##### `test_a_tie_does_not_depend_on_the_order_of_the_sentences` — before
+
+```python
+def test_a_tie_does_not_depend_on_the_order_of_the_sentences(tmp_path):
+    def build(order):
+        items = [{'id': 's%d' % i, 'text': t, 'reading': SR.read(t, 'ja', placement=None)} for i, t in order]
+        return O.Structure.from_injected(items)
+    vp = O.build_viewpoint(anchor_text=Q_SHIP, anchor_kind='question')
+    a = O.to_json(O.observe(vp, build([(1, S1), (2, S2)])))
+    b = O.to_json(O.observe(vp, build([(2, S2), (1, S1)])))
+    assert a == b and '"status":"TIE"' in a
+```
+
+##### `test_a_tie_does_not_depend_on_the_order_of_the_sentences` — after
+
+```python
+def test_a_tie_does_not_depend_on_the_order_of_the_sentences(tmp_path):
+    pl = person_placement(PERSONS)    # W5-d2 (K1): the fillers are typed by a made-up placement
+    def build(order):
+        items = [{'id': 's%d' % i, 'text': t, 'reading': SR.read(t, 'ja', placement=None)} for i, t in order]
+        return O.Structure.from_injected(items, lookup=pl, neighbors=pl)
+    vp = O.build_viewpoint(anchor_text=Q_SHIP, anchor_kind='question')
+    a = O.to_json(O.observe(vp, build([(1, S1), (2, S2)])))
+    b = O.to_json(O.observe(vp, build([(2, S2), (1, S1)])))
+    assert a == b and '"status":"TIE"' in a
+```
+
+##### `test_an_arm_tie_gives_each_filler_as_a_candidate_of_its_own` — before
+
+```python
+def test_an_arm_tie_gives_each_filler_as_a_candidate_of_its_own():
+    reading = SR.read(S1, 'ja', placement=None)
+    reading['clauses'][0]['roles']['agent'] = ['船長', '提督']
+    st = O.Structure.from_injected([{'id': 'x', 'text': 'hand written', 'reading': reading}])
+    out = json.loads(O.to_json(O.observe(O.build_viewpoint(anchor_text=Q_SHIP, anchor_kind='question'), st)))
+    assert out['answer']['status'] == 'TIE'
+    assert [f['surface'] for f in out['answer']['fillers']] == ['提督', '船長'] and all(f['from_arm_tie'] for f in out['answer']['fillers'])
+    assert out['focus']['kind'] == 'FOCUS'    # one cell: the tie is inside its arm, which the answer shows
+```
+
+##### `test_an_arm_tie_gives_each_filler_as_a_candidate_of_its_own` — after
+
+```python
+def test_an_arm_tie_gives_each_filler_as_a_candidate_of_its_own():
+    reading = SR.read(S1, 'ja', placement=None)
+    reading['clauses'][0]['roles']['agent'] = ['船長', '提督']
+    pl = person_placement(PERSONS)    # W5-d2 (K1)
+    st = O.Structure.from_injected([{'id': 'x', 'text': 'hand written', 'reading': reading}], lookup=pl, neighbors=pl)
+    out = json.loads(O.to_json(O.observe(O.build_viewpoint(anchor_text=Q_SHIP, anchor_kind='question'), st)))
+    assert out['answer']['status'] == 'TIE'
+    assert [f['surface'] for f in out['answer']['fillers']] == ['提督', '船長'] and all(f['from_arm_tie'] for f in out['answer']['fillers'])
+    assert out['focus']['kind'] == 'FOCUS'    # one cell: the tie is inside its arm, which the answer shows
+```
+
+##### `test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun` — before
+
+```python
+def test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun(tmp_path):
+    out, _ = ask(tmp_path, Q_SHIP, [S1])    # no placement: NOT_CHECKED(NO_PLACEMENT), shown but not excluded
+    assert out['answer']['status'] == 'FILLED'
+    assert out['answer']['fillers'][0]['hole_type_check'] == {'verdict': 'NOT_CHECKED', 'reason': 'NO_PLACEMENT', 'expected': ['GROUP_ORG', 'PERSON'], 'observed': None}
+```
+
+##### `test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun` — after
+
+```python
+def test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun(tmp_path, monkeypatch):
+    # W5-d2 (auditor's ruling B1, K1): the NAME IS FROM THE OLD CONTRACT (an unchecked type was shown but did not exclude). The contract now: with no placement the
+    # filler's type is not checked, so it is not a candidate (TYPE_UNCHECKED) and the answer is the abstention NO_TYPED_CANDIDATE.
+    monkeypatch.delenv('VERA_PLACEMENT', raising=False)
+    out, _ = ask(tmp_path, Q_SHIP, [S1])    # no placement: NOT_CHECKED(NO_PLACEMENT), excluded as TYPE_UNCHECKED
+    assert out['answer']['status'] == 'NO_TYPED_CANDIDATE' and out['answer']['fillers'] == []
+    assert [e['reason'] for e in out['answer']['excluded']] == ['TYPE_UNCHECKED']
+    assert out['answer']['excluded'][0]['hole_type_check'] == {'verdict': 'NOT_CHECKED', 'reason': 'NO_PLACEMENT', 'expected': ['GROUP_ORG', 'PERSON'], 'observed': None}
+```
+
+##### `test_the_reading_of_the_anchor_is_not_evidence` — before
+
+```python
+def test_the_reading_of_the_anchor_is_not_evidence(tmp_path):
+    out, _ = ask(tmp_path, Q_SHIP, [])
+    assert out['answer']['status'] == 'NO_ATTESTED_CELL' and out['answer']['structure']['sentences'] == 0
+    st = O.Structure.from_jsonl(write_doc(tmp_path, [S1]))
+    vp = O.build_viewpoint(anchor_text='誰が商人に小包を渡した？', anchor_kind='question')
+    assert json.loads(O.to_json(O.observe(vp, O.Structure.empty())))['answer']['status'] == 'NO_ATTESTED_CELL'
+    assert json.loads(O.to_json(O.observe(vp, st)))['answer']['status'] == 'FILLED'
+```
+
+##### `test_the_reading_of_the_anchor_is_not_evidence` — after
+
+```python
+def test_the_reading_of_the_anchor_is_not_evidence(tmp_path):
+    pl = person_placement(PERSONS)    # W5-d2 (K1): the filler of the second structure is typed by a made-up placement
+    out, _ = ask(tmp_path, Q_SHIP, [])
+    assert out['answer']['status'] == 'NO_ATTESTED_CELL' and out['answer']['structure']['sentences'] == 0
+    st = O.Structure.from_jsonl(write_doc(tmp_path, [S1]), pl, pl)
+    vp = O.build_viewpoint(anchor_text='誰が商人に小包を渡した？', anchor_kind='question')
+    assert json.loads(O.to_json(O.observe(vp, O.Structure.empty(pl, pl))))['answer']['status'] == 'NO_ATTESTED_CELL'
+    assert json.loads(O.to_json(O.observe(vp, st)))['answer']['status'] == 'FILLED'
+```
+
+##### `test_nfkc_of_the_filler_and_of_the_other_arms` — before
+
+```python
+def test_nfkc_of_the_filler_and_of_the_other_arms(tmp_path):
+    out, _ = ask(tmp_path, Q_SHIP, ['Ａ社が商人に小包を渡した。', 'A社が商人に小包を渡した。'])
+    a = out['answer']
+    assert a['status'] == 'FILLED' and sorted(f['surface'] for f in a['fillers']) == ['A社', 'Ａ社'] and {f['nfkc'] for f in a['fillers']} == {'A社'}
+    assert out['focus']['kind'] == 'TIE' and len(out['focus']['candidates']) == 2    # two cells (the surface differs), one answer
+    out, _ = ask(tmp_path, 'Ａ社は商人に何を渡した？', ['Ａ社が商人に小包を渡した。', 'A社が商人に小包を渡した。'])
+    assert out['answer']['status'] == 'FILLED' and fills(out) == [('小包', [('s1', 0), ('s2', 0)])]
+```
+
+##### `test_nfkc_of_the_filler_and_of_the_other_arms` — after
+
+```python
+def test_nfkc_of_the_filler_and_of_the_other_arms(tmp_path):
+    pl = write_placement(tmp_path, {'Ａ社': 'GROUP_ORG', 'A社': 'GROUP_ORG', '小包': 'ARTIFACT'})    # W5-d2 (K1): the fillers are typed (the answer of the second question is 小包)
+    out, _ = ask(tmp_path, Q_SHIP, ['Ａ社が商人に小包を渡した。', 'A社が商人に小包を渡した。'], placement=pl)
+    a = out['answer']
+    assert a['status'] == 'FILLED' and sorted(f['surface'] for f in a['fillers']) == ['A社', 'Ａ社'] and {f['nfkc'] for f in a['fillers']} == {'A社'}
+    assert out['focus']['kind'] == 'TIE' and len(out['focus']['candidates']) == 2    # two cells (the surface differs), one answer
+    out, _ = ask(tmp_path, 'Ａ社は商人に何を渡した？', ['Ａ社が商人に小包を渡した。', 'A社が商人に小包を渡した。'], placement=pl)
+    assert out['answer']['status'] == 'FILLED' and fills(out) == [('小包', [('s1', 0), ('s2', 0)])]
+```
+
+##### `test_an_extending_cross_that_names_another_filler_makes_the_answer_incomplete` — before
+
+```python
+def test_an_extending_cross_that_names_another_filler_makes_the_answer_incomplete(tmp_path):
+    out, _ = ask(tmp_path, '誰が小包を渡さなかった？', ['提督は小包を渡さなかった。', '船長は港で小包を渡さなかった。'])
+    # the admiral is a match; the captain is in a cross with one more arm: the set of fillers is not given as complete
+    a = out['answer']
+    assert a['status'] == 'INCOMPLETE_BY_EXTENSION' and [f['surface'] for f in a['fillers']] == ['提督'] and out['ranks'] == []
+    assert out['abstain']['reasons'] == {'FILL_HOLE:INCOMPLETE_BY_EXTENSION': 1}
+    # the same filler in the extending cross does not make it incomplete
+    out, _ = ask(tmp_path, '誰が小包を渡さなかった？', ['船長は小包を渡さなかった。', '船長は港で小包を渡さなかった。'])
+    assert out['answer']['status'] == 'FILLED' and fills(out) == [('船長', [('s1', 0)])]
+```
+
+##### `test_an_extending_cross_that_names_another_filler_makes_the_answer_incomplete` — after
+
+```python
+def test_an_extending_cross_that_names_another_filler_makes_the_answer_incomplete(tmp_path):
+    pl = write_placement(tmp_path, PERSONS)    # W5-d2 (K1): the fillers are typed by a placement
+    out, _ = ask(tmp_path, '誰が小包を渡さなかった？', ['提督は小包を渡さなかった。', '船長は港で小包を渡さなかった。'], placement=pl)
+    # the admiral is a match; the captain is in a cross with one more arm: the set of fillers is not given as complete
+    a = out['answer']
+    assert a['status'] == 'INCOMPLETE_BY_EXTENSION' and [f['surface'] for f in a['fillers']] == ['提督'] and out['ranks'] == []
+    assert out['abstain']['reasons'] == {'FILL_HOLE:INCOMPLETE_BY_EXTENSION': 1}
+    # the same filler in the extending cross does not make it incomplete
+    out, _ = ask(tmp_path, '誰が小包を渡さなかった？', ['船長は小包を渡さなかった。', '船長は港で小包を渡さなかった。'], placement=pl)
+    assert out['answer']['status'] == 'FILLED' and fills(out) == [('船長', [('s1', 0)])]
+```
+
+##### `test_polarity_tense_and_voice_must_be_the_same` — before
+
+```python
+def test_polarity_tense_and_voice_must_be_the_same(tmp_path):
+    for sentence in ('船長は商人に小包を渡さなかった。', '船長は商人に小包を渡す。'):
+        out, _ = ask(tmp_path, Q_SHIP, [sentence])
+        assert out['answer']['status'] == 'NO_ATTESTED_CELL', sentence
+    out, _ = ask(tmp_path, '誰が商人に小包を渡さなかった？', ['船長は商人に小包を渡さなかった。'])
+    assert out['answer']['status'] == 'FILLED'
+    out, _ = ask(tmp_path, '誰が商人に小包を渡す？', ['船長は商人に小包を渡す。', S2])
+    assert out['answer']['status'] == 'FILLED' and fills(out) == [('船長', [('s1', 0)])]
+    passive = SR.read(S1, 'ja', placement=None)
+    passive['clauses'][0]['voice'] = 'passive'
+    st = O.Structure.from_injected([{'id': 'p', 'text': 'hand written', 'reading': passive}])
+    assert json.loads(O.to_json(O.observe(O.build_viewpoint(anchor_text=Q_SHIP, anchor_kind='question'), st)))['answer']['status'] == 'NO_ATTESTED_CELL'
+```
+
+##### `test_polarity_tense_and_voice_must_be_the_same` — after
+
+```python
+def test_polarity_tense_and_voice_must_be_the_same(tmp_path):
+    pl = write_placement(tmp_path, {'船長': 'PERSON'})    # W5-d2 (K1): the filler 船長 is typed (提督 is not: it is TYPE_UNCHECKED and stays beside the answer)
+    for sentence in ('船長は商人に小包を渡さなかった。', '船長は商人に小包を渡す。'):
+        out, _ = ask(tmp_path, Q_SHIP, [sentence], placement=pl)
+        assert out['answer']['status'] == 'NO_ATTESTED_CELL', sentence
+    out, _ = ask(tmp_path, '誰が商人に小包を渡さなかった？', ['船長は商人に小包を渡さなかった。'], placement=pl)
+    assert out['answer']['status'] == 'FILLED'
+    out, _ = ask(tmp_path, '誰が商人に小包を渡す？', ['船長は商人に小包を渡す。', S2], placement=pl)
+    assert out['answer']['status'] == 'FILLED' and fills(out) == [('船長', [('s1', 0)])]
+    passive = SR.read(S1, 'ja', placement=None)
+    passive['clauses'][0]['voice'] = 'passive'
+    st = O.Structure.from_injected([{'id': 'p', 'text': 'hand written', 'reading': passive}], lookup=person_placement(PERSONS), neighbors=person_placement(PERSONS))
+    assert json.loads(O.to_json(O.observe(O.build_viewpoint(anchor_text=Q_SHIP, anchor_kind='question'), st)))['answer']['status'] == 'NO_ATTESTED_CELL'
+```
+
+##### `test_a_filler_that_is_the_mark_character_is_a_correct_answer` — before
+
+```python
+def test_a_filler_that_is_the_mark_character_is_a_correct_answer(tmp_path):
+    out, _ = ask(tmp_path, Q_SHIP, ['Ｘが商人に小包を渡した。'])
+    assert out['answer']['status'] == 'FILLED' and fills(out) == [('Ｘ', [('s1', 0)])]
+```
+
+##### `test_a_filler_that_is_the_mark_character_is_a_correct_answer` — after
+
+```python
+def test_a_filler_that_is_the_mark_character_is_a_correct_answer(tmp_path):
+    out, _ = ask(tmp_path, Q_SHIP, ['Ｘが商人に小包を渡した。'], placement=write_placement(tmp_path, {'Ｘ': 'PERSON'}))    # W5-d2 (K1): the filler is typed
+    assert out['answer']['status'] == 'FILLED' and fills(out) == [('Ｘ', [('s1', 0)])]
+```
+
+##### `test_the_ledger_records_a_question_and_replays_to_the_same_output` — before
+
+```python
+def test_the_ledger_records_a_question_and_replays_to_the_same_output(tmp_path):
+    st = O.Structure.from_jsonl(write_doc(tmp_path, [S1, S2]))
+    for text in (Q_SHIP, '誰が商人に小包を渡さなかった？'):
+        ledger = SAL.MemoryLedger()
+        vp = O.build_viewpoint(anchor_text=text, anchor_kind='question')
+        obs = O.observe(vp, st, ledger=ledger)
+        assert isinstance(obs, O.QuestionObservation) and obs.outcome in ('TIE', 'NO_MOVE_LICENSED')
+        O.record_turn(ledger, vp, obs)
+        event = [e for e in ledger.events() if e['kind'] == 'observation'][0]
+        assert event['payload']['outcome'] == obs.outcome and O.replay(list(ledger.events()), event, st) is True
+    one = O.Structure.from_jsonl(write_doc(tmp_path, [S1], 'one.jsonl'))
+    ledger = SAL.MemoryLedger(); vp = O.build_viewpoint(anchor_text=Q_SHIP, anchor_kind='question')
+    obs = O.observe(vp, one, ledger=ledger); O.record_turn(ledger, vp, obs)
+    event = [e for e in ledger.events() if e['kind'] == 'observation'][0]
+    assert event['payload']['observed_cell'] == obs.focus.cell_key and O.replay(list(ledger.events()), event, one) is True
+```
+
+##### `test_the_ledger_records_a_question_and_replays_to_the_same_output` — after
+
+```python
+def test_the_ledger_records_a_question_and_replays_to_the_same_output(tmp_path):
+    pl = person_placement(PERSONS)    # W5-d2 (K1): the fillers are typed by a made-up placement
+    st = O.Structure.from_jsonl(write_doc(tmp_path, [S1, S2]), pl, pl)
+    for text in (Q_SHIP, '誰が商人に小包を渡さなかった？'):
+        ledger = SAL.MemoryLedger()
+        vp = O.build_viewpoint(anchor_text=text, anchor_kind='question')
+        obs = O.observe(vp, st, ledger=ledger)
+        assert isinstance(obs, O.QuestionObservation) and obs.outcome in ('TIE', 'NO_MOVE_LICENSED')
+        O.record_turn(ledger, vp, obs)
+        event = [e for e in ledger.events() if e['kind'] == 'observation'][0]
+        assert event['payload']['outcome'] == obs.outcome and O.replay(list(ledger.events()), event, st) is True
+    one = O.Structure.from_jsonl(write_doc(tmp_path, [S1], 'one.jsonl'), pl, pl)
+    ledger = SAL.MemoryLedger(); vp = O.build_viewpoint(anchor_text=Q_SHIP, anchor_kind='question')
+    obs = O.observe(vp, one, ledger=ledger); O.record_turn(ledger, vp, obs)
+    event = [e for e in ledger.events() if e['kind'] == 'observation'][0]
+    assert event['payload']['observed_cell'] == obs.focus.cell_key and O.replay(list(ledger.events()), event, one) is True
+```
+
+##### `test_the_cross_index_of_a_question_is_zero_or_nothing` — before
+
+```python
+def test_the_cross_index_of_a_question_is_zero_or_nothing(tmp_path):
+    out, _ = ask(tmp_path, Q_SHIP, [S1], cross=0)
+    assert out['answer']['status'] == 'FILLED'
+    out, _ = ask(tmp_path, Q_SHIP, [S1], cross=1)
+    assert out['answer']['status'] == 'ANCHOR_CROSS_INDEX_OUT_OF_RANGE' and out['focus'] == {'kind': 'NO_ANCHOR', 'reason': 'ANCHOR_CROSS_INDEX_OUT_OF_RANGE'}
+```
+
+##### `test_the_cross_index_of_a_question_is_zero_or_nothing` — after
+
+```python
+def test_the_cross_index_of_a_question_is_zero_or_nothing(tmp_path):
+    pl = write_placement(tmp_path, PERSONS)    # W5-d2 (K1)
+    out, _ = ask(tmp_path, Q_SHIP, [S1], cross=0, placement=pl)
+    assert out['answer']['status'] == 'FILLED'
+    out, _ = ask(tmp_path, Q_SHIP, [S1], cross=1, placement=pl)
+    assert out['answer']['status'] == 'ANCHOR_CROSS_INDEX_OUT_OF_RANGE' and out['focus'] == {'kind': 'NO_ANCHOR', 'reason': 'ANCHOR_CROSS_INDEX_OUT_OF_RANGE'}
+```
+
+##### `test_the_command_line_entry_gives_the_same_bytes_for_two_hash_seeds` — before
+
+```python
+def test_the_command_line_entry_gives_the_same_bytes_for_two_hash_seeds(tmp_path):
+    doc = write_doc(tmp_path, [S1, S2, '鳥が空を飛んだ。'])
+    args = ['--anchor-text', Q_SHIP, '--anchor-kind', 'question', '--structure', doc, '--no-index']
+    a, b = _entry(args, 0, tmp_path), _entry(args, 4242, tmp_path)
+    assert a.returncode == b.returncode == 0, a.stderr + b.stderr
+    assert a.stdout == b.stdout and json.loads(a.stdout)['answer']['status'] == 'TIE'
+    assert 'ANSWER' not in a.stdout
+```
+
+##### `test_the_command_line_entry_gives_the_same_bytes_for_two_hash_seeds` — after
+
+```python
+def test_the_command_line_entry_gives_the_same_bytes_for_two_hash_seeds(tmp_path):
+    doc = write_doc(tmp_path, [S1, S2, '鳥が空を飛んだ。'])
+    args = ['--anchor-text', Q_SHIP, '--anchor-kind', 'question', '--structure', doc, '--no-index', '--placement', write_placement(tmp_path, PERSONS)]    # W5-d2 (K1)
+    a, b = _entry(args, 0, tmp_path), _entry(args, 4242, tmp_path)
+    assert a.returncode == b.returncode == 0, a.stderr + b.stderr
+    assert a.stdout == b.stdout and json.loads(a.stdout)['answer']['status'] == 'TIE'
+    assert 'ANSWER' not in a.stdout
+```
+
+#### `tests/observe/question/recompute_q.py` (before = git show c875ed3:tests/observe/question/recompute_q.py)
+
+Added (helpers / tests, not amendments): none
+
+##### `=EXAMPLES` — before
+
+```python
+EXAMPLES = (('FILLED', 'QD05', '母は台所で何を作った？'), ('TIE', 'QD01', '誰が生徒に地図を渡した？'), ('NO_ATTESTED_CELL', 'QD01', '誰が生徒に手紙を送った？'))
+```
+
+##### `=EXAMPLES` — after
+
+```python
+EXAMPLES = (('FILLED', 'QD02', 'どの人が客に切符を渡した？', 'placement_q.json'), ('TIE', 'QD01', '誰が生徒に地図を渡した？', 'placement_q.json'),
+            ('NO_ATTESTED_CELL', 'QD01', '誰が生徒に手紙を送った？', None))
+```
+
+##### `entry_block` — before
+
+```python
+def entry_block():
+    rel = lambda p: str(Path(p).relative_to(TREE))
+    out = ['### 入口の実行出力（`recompute_q.py` が実際に走らせて貼った。手で書き換えない）', '']
+    env = {'HOME': os.environ.get('HOME', ''), 'PATH': '/usr/bin:/bin', 'PYTHONDONTWRITEBYTECODE': '1', 'PYTHONPATH': str(TREE), 'PYTHONHASHSEED': '0'}
+    for want, doc, text in EXAMPLES:
+        args = ['--anchor-text', text, '--anchor-kind', 'question', '--structure', rel(Q / 'docs' / (doc + '.jsonl')), '--no-index']
+        done = subprocess.run([sys.executable, '-m', 'verantyx.cli', 'observe', *args], capture_output=True, text=True, env=env, cwd=str(TREE), timeout=180)
+        d = json.loads(done.stdout)
+        a = d['answer']
+        show = {'exit_code': done.returncode, 'focus': {k: (v if k != 'candidates' else '[%d cells]' % len(v)) for k, v in d['focus'].items() if k != 'cell_key'},
+                'answer.status': a['status'], 'answer.question': a['question'],
+                'answer.fillers': [{'surface': f['surface'], 'evidence': [{'reading': e['reading'], 'cross_index': e['cross_index'], 'text': e['text']} for e in f['evidence']],
+                                    'hole_type_check': f['hole_type_check']['verdict'] + (':' + f['hole_type_check']['reason'] if f['hole_type_check']['reason'] else '')}
+                                   for f in a['fillers']],
+                'answer.structure': a['structure'], 'answer.reasons': a['reasons'], 'abstain': d['abstain']}
+        assert a['status'] == want, (want, a['status'])
+        out += ['`%s`（%s）' % ('python -m verantyx.cli observe ' + ' '.join("'%s'" % x if (' ' in x or '？' in x) else x for x in args), want), '```json',
+                json.dumps(show, ensure_ascii=False, indent=1), '```', '']
+    return '\n'.join(out).rstrip('\n')
+```
+
+##### `entry_block` — after
+
+```python
+def entry_block():
+    rel = lambda p: str(Path(p).relative_to(TREE))
+    out = ['### 入口の実行出力（`recompute_q.py` が実際に走らせて貼った。手で書き換えない）', '']
+    env = {'HOME': os.environ.get('HOME', ''), 'PATH': '/usr/bin:/bin', 'PYTHONDONTWRITEBYTECODE': '1', 'PYTHONPATH': str(TREE), 'PYTHONHASHSEED': '0'}
+    for want, doc, text, placement in EXAMPLES:
+        args = ['--anchor-text', text, '--anchor-kind', 'question', '--structure', rel(Q / 'docs' / (doc + '.jsonl')), '--no-index'] + (['--placement', rel(Q / placement)] if placement else [])
+        done = subprocess.run([sys.executable, '-m', 'verantyx.cli', 'observe', *args], capture_output=True, text=True, env=env, cwd=str(TREE), timeout=180)
+        d = json.loads(done.stdout)
+        a = d['answer']
+        show = {'exit_code': done.returncode, 'focus': {k: (v if k != 'candidates' else '[%d cells]' % len(v)) for k, v in d['focus'].items() if k != 'cell_key'},
+                'answer.status': a['status'], 'answer.question': a['question'],
+                'answer.fillers': [{'surface': f['surface'], 'evidence': [{'reading': e['reading'], 'cross_index': e['cross_index'], 'text': e['text']} for e in f['evidence']],
+                                    'hole_type_check': f['hole_type_check']['verdict'] + (':' + f['hole_type_check']['reason'] if f['hole_type_check']['reason'] else '')}
+                                   for f in a['fillers']],
+                'answer.structure': a['structure'], 'answer.reasons': a['reasons'], 'abstain': d['abstain']}
+        assert a['status'] == want, (want, a['status'])
+        out += ['`%s`（%s）' % ('python -m verantyx.cli observe ' + ' '.join("'%s'" % x if (' ' in x or '？' in x) else x for x in args), want), '```json',
+                json.dumps(show, ensure_ascii=False, indent=1), '```', '']
+    return '\n'.join(out).rstrip('\n')
+```
+
+#### `tests/attack/w3c2/test_attack_w3c2_question_cross.py` (before = the attack original attacks/W3-c2/test_attack_question_cross.py (first line dropped))
+
+Added (helpers / tests, not amendments): `_persons`
+
+##### `test_tied_agent_witnesses_remain_a_tie` — before
+
+```python
+def test_tied_agent_witnesses_remain_a_tie():
+    answer = _run('JA01-01')['answer']
+    got = {f['surface'] for f in answer['fillers']}
+    assert answer['status'] == 'TIE' and got == {'校長', '先生'}, (
+        f"expected both matching witnesses, got status={answer['status']}, fillers={got!r}"
+    )
+```
+
+##### `test_tied_agent_witnesses_remain_a_tie` — after
+
+```python
+def test_tied_agent_witnesses_remain_a_tie(tmp_path):
+    answer = _run('JA01-01', _persons(tmp_path))['answer']
+    got = {f['surface'] for f in answer['fillers']}
+    assert answer['status'] == 'TIE' and got == {'校長', '先生'}, (
+        f"expected both matching witnesses, got status={answer['status']}, fillers={got!r}"
+    )
+```
+
+##### `test_negative_question_does_not_match_affirmative_crosses` — before
+
+```python
+def test_negative_question_does_not_match_affirmative_crosses():
+    answer = _run('JA01-05')['answer']
+    got = {f['surface'] for f in answer['fillers']}
+    assert answer['status'] == 'FILLED' and got == {'校長'}, (
+        f"expected the sole negative witness JA01-S04, got status={answer['status']}, fillers={got!r}"
+    )
+```
+
+##### `test_negative_question_does_not_match_affirmative_crosses` — after
+
+```python
+def test_negative_question_does_not_match_affirmative_crosses(tmp_path):
+    answer = _run('JA01-05', _persons(tmp_path))['answer']
+    got = {f['surface'] for f in answer['fillers']}
+    assert answer['status'] == 'FILLED' and got == {'校長'}, (
+        f"expected the sole negative witness JA01-S04, got status={answer['status']}, fillers={got!r}"
+    )
+```
+
+<!-- w5d2-amended:end -->
+
+## W5-d 第 2 ラウンド（W5-d2）の測定
+<!-- w5d2-measured:begin -->
+測定の時刻: 2026-10-04 01:22:30 +0900。出力はすべて `artifacts/w5-d/r2/`（ファイル名を添える）。中間職のレビュー r1（`review-impl/W5-d2/review.r1.md`）の M1〜M4（改訂したテストの前後の全文・測定の区間・失敗集合のファイル・報告）に応えてこの区間と `w5d2-amended` 区間を書いた。製品とテストのコードはレビューのあとに変えていない（`code_sha_r2b_start.txt` と `code_sha_r2b_end.txt` が同じ）。受入の測定はこのとき全部流し直した（`g1_rerun_r2b.txt`・`g2_rerun_r2b.txt`・`g3_rerun_r2b.txt`・`q1_observe_cmp_r2b.txt`・`g4_compare_r2b.txt`・`q5_r7_verify_r2b.txt`・`k5_check_r2b.txt`。出力は前の流しと byte 一致。違いが無かったことの確認なので前の流しのファイルも残す）。
+
+**受入基準**（第 2 ラウンド）
+- **G1**（`g1_rerun_r2b.txt`）: 攻撃の写し 36 本が `36 passed`、K の 72 関数（82 id）が全部通る（`102 passed`）、新しいテスト（第 1 ラウンドの 5 本＋第 2 ラウンドの追記）が `113 passed`。G1-b: 写しと原本の差は先頭行と改訂した関数・足したヘルパの中だけ（`g1b_hunks.txt`、`attack_copy_revisions.diff`。w5c の 2 本は原本と同一、`data/` も同一）。
+- **G2**（`g2_185_*.json(l)`・`g2_attack120_r7.json(l)`・`g2_rerun_r2b.txt`）: `VERA_PLACEMENT` なしの 185 問は第 1 ラウンドの出力と byte 一致（place: 正答/誤答/FALSE_NONE/棄権 = 38 / 0 / 4 / 143、noplace: 26 / 0 / 4 / 155）。`VERA_PLACEMENT=r7`: place 73 / 0 / 6 / 106、noplace 66 / 0 / 8 / 111。誤答 0、型未確認の FILLED/TIE 0（4 通りとも `unchecked_fillers_in_FILLED_TIE` は 0・0・0・0）。正答は減っていない（第 1 ラウンドと同じか、r7 で増える）。攻撃の 120 問（r7、116 問は正解なしで採点されない）: FILLED 29・TIE 5、型未確認の FILLED/TIE 0、`wrong` 0 件。A01（`EN08-01`）は `NO_TYPED_CANDIDATE`（`letter`・`note` は `TYPE_UNCHECKED`）で FILLED/TIE にならない（`g2_r7_notes.txt`）。中間職の凍結 64 問・56 問は実装役が開かない約束なので測っていない（中間職が測る）。
+- **G3**（`g3_rerun_r2b.txt`・`g3_*`）: 経路づけの凍結 4 本（配置なし）の misroutes は 0, 0, 0, 0、r7 の 2 本は 0, 0。合成 `g3_synth`（入力の sha256 は `g3_synth_inputs_check.txt` で第 1 ラウンドの凍結と一致）: 配置なし misroutes 0・普通名詞に振った数 0、r7 misroutes 1（第 1 ラウンドと同じ 1 件。`委員会` が推定の GROUP_ORG で通る既知の穴）、基点 1（`g3_synth_results/g3_synth_counts.json`）。D2-2 の影響: r7 の 2 本の 118 件を、D2-2 の呼び出しを外した写しと単位ごとに比べて変化した件数は 0（`g3_r7_diff.txt`）。
+- **G4**（`g4_result.json`・`g4_compare_r2b.txt`）: 入力の sha256 と `summary` が第 1 ラウンドと同じ（自己申告の文書 16 件で `ANSWER` 0、文面違いの確認記録 15 件で `ANSWER` 0・旧文が返った 0、対照は 4/4 と 2/2 で答える）。`verantyx/basis_policy.py` は第 2 ラウンドで変えていない（sha256 が `files_start.sha256` と同じ）。
+- **G5**（`q5_r7_verify_r2b.txt`・`k5_check_r2b.txt`）: r7 は作り直していない。`verify` が run1・run2 とも `OK`、`content_sha256` は第 1 ラウンドと同じ。`coarse_place.py`・`tools/build_coarse_placement.py` は第 2 ラウンドで変えていない。K5 の写しが通り、r6_audit_summary.json not_confirmed: 13 words; invariant_errors [] byte_differences []、第 1 ラウンドの 13 語と同じ集合（`命じる` を含む）。
+- **平叙文の観測**（`q1_observe_cmp_r2b.txt`）: `o1_bytes.py --child` の出力が、配置なしと `VERA_PLACEMENT=r7` の 2 通りとも基点と byte 一致（`same: base vs now` が 2 行。この流しは前の流しとも byte 一致）。
+- **G7**（`pytest_full.txt`・`after_failures.txt`・`new_failures.txt`・`fixed_failures.txt`・`new_failures_explained.txt`）: 全体テストの最終行 `117 failed, 11981 passed, 45 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 362.65s (0:06:02)`。失敗は一意に 117 件、基線に無い失敗は 2 件（`tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches`、`tests/test_gen_coarse_evidence.py::test_the_stop_signal_ends_the_run_with_an_interrupted_record`）、基線にあって今は通る失敗は 0 件。基線に無い失敗の理由は `new_failures_explained.txt`（環境由来だけ）。K の id は失敗集合に 0 件。
+
+**K1（質問の十字 15 件）の改訂**（裁定 B1。前後の全文は上の `w5d2-amended` 区間。`changed_functions_k1k2.txt`）: 既存 13 関数（`tests/test_question_cross_observe.py`）と攻撃の写し 2 関数（`tests/attack/w3c2/test_attack_w3c2_question_cross.py::test_tied_agent_witnesses_remain_a_tie`・`test_negative_question_does_not_match_affirmative_crosses`）。名前は変えていない。直し方は 3 種類: (1) 穴の充填物だけに direct の型を付けた配置の JSON（`write_placement`）、(2) `O.FilePlacement`（足したヘルパ `person_placement`・`PERSONS`）、(3) 子プロセスの CLI は `--placement` を引数に足した。穴の型と食い違う型は付けていない。攻撃の写しは `tmp_path` に `校長`・`先生` = PERSON の JSON を書いて渡した（`data/` は触っていない）。例外 1 件 `test_an_unchecked_type_is_not_a_reason_to_exclude_except_for_which_noun` は主題が「配置なしで FILLED」で新しい契約と正反対なので、期待を新しい契約（配置なし → `NO_TYPED_CANDIDATE`・`excluded` の理由 `TYPE_UNCHECKED`・`hole_type_check` が `NOT_CHECKED/NO_PLACEMENT`）に改訂した（assert は 2 → 3 に増えた。名前は旧い契約のものなので関数の先頭に注記）。**配置なしの棄権を表すテスト**: この関数と、足した `tests/test_question_cross_w5d.py::test_w5d2_k1_the_same_question_with_and_without_a_placement`（同じ問いで配置あり = `TIE`、なし = `NO_TYPED_CANDIDATE`）。
+
+**D2-7（`VERA_PLACEMENT` を質問の経路につなぐ）の門**（3 つとも通った。戻していない）:
+1. r7 で 185 問の `WRONG` 0・型未確認の FILLED/TIE 0、攻撃 120 問でも型未確認 0 で A01 が FILLED/TIE にならない（`g2_185_*_r7.json`・`g2_attack120_r7.json`）。
+2. `VERA_PLACEMENT` なしの 185 問の出力が第 1 ラウンドの `g2_185_{place,noplace}.jsonl` と byte 一致（`g2_rerun_r2b.txt`）。
+3. 平叙文の観測（`o1_bytes.py --child`）が基点と byte 一致（配置なし・r7。`q1_observe_cmp_r2b.txt`）。
+製品の変更は `observe.py` の `_observe_question` の中だけ（`git diff c875ed3 -- verantyx/observe.py`）。足したテスト（`tests/test_question_cross_w5d.py`、r7 が無ければ失敗する。skip にしない）: `test_w5d2_vera_placement_types_the_hole_filler_of_a_question`（`誰が生徒に地図を渡した？`: `先生` → FILLED・`先生`＋`校長` → TIE・`花子`〔MULTIPLE ANIMAL/PERSON〕→ `NO_TYPED_CANDIDATE`、`structure.placement` が `coarse-placement:` で始まる）・`test_w5d2_the_placement_file_wins_over_vera_placement`・`test_w5d2_an_empty_vera_placement_is_as_before_no_typed_candidate`・`test_w5d2_the_command_line_with_vera_placement_gives_the_same_bytes_for_two_hash_seeds`。
+
+**申し送りとして数えたもの**（門にしない。`g2_r7_notes.txt`）:
+- FALSE_NONE の増分（r7）: 185 問の noplace で 4 → 8（Q094・Q130・Q131・Q136）、place で 4 → 6（Q094・Q136）。Q094 は `会社` が r7 で GROUP_ORG の direct（`どこ` の穴は PLACE → `HOLE_TYPE_DISAGREE`）、Q130・Q131 は `医者` が MULTIPLE（PERSON/PLACE）で which+N の `HOLE_TYPE_NOT_CHECKED`（以前からの規則で `TYPE_EXCLUDED_ALL` に数えられる）、Q136 は `X` が r7 で INFO_LANGUAGE の direct。どれも誤答（WRONG）ではない。
+- TIE が FILLED に縮む形（既知の穴）: r7 で型未確認の充填物を横に持つ FILLED は攻撃 120 問では `JA02-01`（`花子は何を読んだ？` → FILLED [本]、`新聞`・`毎日本` は `TYPE_UNCHECKED`）の 1 件。185 問では 0。中間職のレビュー r1 の申し送り 1 は、第 1 ラウンドの凍結の反例を r7 で流すと同じ形（W01）と、読解器が文を読めないための欠け（W08・W18。`UNREAD_SENTENCES`）が出ると書いている（実装役は未測定）。
+
+**B3（`recompute_q.py` の例の取り直し）**: `EXAMPLES` を 4 つ組 `(期待, 文書, 問い, 配置ファイル名 or None)` にし、`entry_block()` は配置ファイル名があれば `--placement tests/observe/question/<名>` を引数に足す。採用した例: `FILLED`（`QD02`・`どの人が客に切符を渡した？`・`placement_q.json`。凍結の Q037）、`TIE`（`QD01`・`誰が生徒に地図を渡した？`・`placement_q.json`。`先生`・`校長` が PERSON の direct）、`NO_ATTESTED_CELL`（`QD01`・`誰が生徒に手紙を送った？`・配置なし。今のまま）。`QD05` の `母は台所で何を作った？` は `料理` が `placement_q.json` に無く `NO_TYPED_CANDIDATE` になるので使っていない。凍結データ（`placement_q.json`・`questions.jsonl`）は変えていない。`--write` は 1 回だけ（`recompute_write_time.txt`）、`--check` は exit 0（`doc_checks.txt`）。前後の全文（`EXAMPLES`・`entry_block`）は上の `w5d2-amended` 区間、`recompute_q.py` の前は `recompute_q_before.py`。
+
+**`w3c2-entry` 区間の変更記録**（区間の規則の本文・`w3c2-measured` 区間は変えていない）: 2026-10-04 00:43:03 +0900（`recompute_q.py --write` 実行時）。区間の sha256（内側のテキスト）: 前 `6d703c97f8fa97e5569f3d5fdbd95a70c021e14d557ae493cd8573f34145f075`、後 `9d0fb8824f346e65c755aaf962534ec656c7be8e1fd12ccf0124f7c8e2185eb3`。理由: 配置を渡さない旧い例（`QD05` の FILLED・`QD01` の TIE）は、W5-d の規則（型を確かめられない充填物は候補にしない）では `NO_TYPED_CANDIDATE` になり、`--check` が `AssertionError: ('FILLED', 'NO_TYPED_CANDIDATE')` で落ちた（第 1 ラウンドの `doc_checks.txt` の追加の帰結）。例は測定の出力なので、配置を与えた例に取り直した（裁定 B3）。`w3c2-measured` 区間の sha256 は前後で同じ（`docs_regions_end.txt`）。
+
+**第 2 ラウンドで置き換わった第 1 ラウンドの記述**（第 1 ラウンドの `w5d-*` 区間の中は 1 文字も変えていない。元の行は残し、この一覧が上書きする）
+- 「Q-J4 言語・配置: …質問の観測は `VERA_PLACEMENT` を読まない」→ 第 2 ラウンドで読む。`--placement` が無く `VERA_PLACEMENT` があるときは、読解器・事象の十字と同じ `event_cross.default_lookup()` の lookup を使う（`--placement` や呼び手が渡した lookup があればそれが勝つ。`VERA_PLACEMENT` が空・未設定なら今までどおり）。
+- 「K1 は宣言した衝突（15 件）」→ 裁定 B1 で改訂が許可され、上のとおり改訂した（`k_ids.txt` の 82 id は全部通る）。
+- 「K1 の追加の帰結: `recompute_q.py --check` が落ちる」→ 裁定 B3 で例を取り直し、`--check` は exit 0。
+- 第 1 ラウンドの測定の節にある、質問の観測の数（配置なし 185 問）は今も有効（byte 一致）。`VERA_PLACEMENT=r7` の数はこの区間が初出。
+
+**既知の穴**: (a) TIE が FILLED に縮む（上）。(b) r7 では FALSE_NONE が増える（上。r7 の型による `TYPE_EXCLUDED_ALL`）。(c) 攻撃 120 問の 116 問には正解が無いので、r7 の FILLED 29・TIE 5 は型こそ全部 AGREE だが正しさは採点されていない（監査役の G6 で見る）。
+**この文書の担当の測定は上のとおり。全体の受入と判断は `artifacts/w5-d/DECISIONS.md` の「第 2 ラウンド（W5-d2）」と `artifacts/w5-d/r2/`。**
+<!-- w5d2-measured:end -->

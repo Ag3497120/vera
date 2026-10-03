@@ -1,0 +1,64 @@
+OBS M1_REORDER {"answer": null, "decision": "escalate", "detail": "LEDGER_INTEGRITY", "ledger_replay": null, "mapping_outcome": "ESCALATED:MAPPING_UNSETTLED/LEDGER_INTEGRITY", "reason": "MAPPING_UNSETTLED"}
+.OBS M2_DUPLICATE {"answer": null, "decision": "escalate", "detail": "LEDGER_INTEGRITY", "ledger_replay": null, "mapping_outcome": "ESCALATED:MAPPING_UNSETTLED/LEDGER_INTEGRITY", "reason": "MAPPING_UNSETTLED"}
+.OBS M3_TRUNCATE {"answer": null, "decision": "escalate", "detail": "LEDGER_INTEGRITY", "ledger_replay": null, "mapping_outcome": "ESCALATED:MAPPING_UNSETTLED/LEDGER_INTEGRITY", "reason": "MAPPING_UNSETTLED"}
+.[jawiki 1/2] 0s
+[jawiki 2/2] 0s
+{"state": "BUILT", "out": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1384/test_two_decided_kana_variants0/placement", "content_sha256": "b07804300245b9dcd0abe0ba7387976d3b0dcd0a7aead5870b24857da7a721b1", "headwords": 661, "placed_direct": 658, "duration_sec": 0.4}
+OBS K1 {"hira": ["DECIDED", ["GROUP_ORG"], "direct", null, "KANA_VARIANT_DIFFERS"], "kata": ["DECIDED", ["ARTIFACT"], "direct", null, "KANA_VARIANT_DIFFERS"]}
+.OBS S1 {"active": 0, "promotions": 3, "run": 0, "status": "RELEASED", "unique_ids": 3, "verdicts": [["promote-a", "RELEASED"], ["promote-b", "NOTHING_TO_PROMOTE"], ["release", "RELEASED"]]}
+OBS S1 {"active": 0, "promotions": 3, "run": 1, "status": "RELEASED", "unique_ids": 3, "verdicts": [["promote-a", "RELEASED"], ["promote-b", "NOTHING_TO_PROMOTE"], ["release", "RELEASED"]]}
+OBS S1 {"active": 0, "promotions": 3, "run": 2, "status": "RELEASED", "unique_ids": 3, "verdicts": [["promote-a", "RELEASED"], ["promote-b", "RELEASED"], ["release", "RELEASED"]]}
+OBS S1 {"active": 0, "promotions": 3, "run": 3, "status": "RELEASED", "unique_ids": 3, "verdicts": [["promote-a", "NOTHING_TO_PROMOTE"], ["promote-b", "PROMOTED"], ["release", "RELEASED"]]}
+OBS S1 {"active": 0, "promotions": 3, "run": 4, "status": "RELEASED", "unique_ids": 3, "verdicts": [["promote-a", "PROMOTED"], ["promote-b", "NOTHING_TO_PROMOTE"], ["release", "RELEASED"]]}
+.OBS O1 {"reason": "COORDS_INCOMPLETE", "status": "MISMATCH"}
+.OBS R1 {"agent": "チーム", "agents": [{"adapter": "fake", "basis": {"kind": "declared_text", "line": null, "source": "attack.md", "witnesses": ["チームがテストを書く。"]}, "concurrency": null, "effort": null, "id": "チーム", "kinds": null, "lineage": null, "model": null, "note": null, "roles": null}], "common_noun_check": {"checked": 0, "flagged": 0, "introduced_by_naming": 0, "lookup": "stub-no-placement/1", "not_checked": 1}, "decision": "route", "reasons": [], "unit_status": "MAPPED"}
+FOBS R2 {"additions_kept": 0, "auto_resolved": 1, "statuses": ["MAPPED", "MAPPED"], "superseded_by": ["R002", null]}
+FOBS A {"answer": null, "mapping_exit": "FRAME_SILENT/TERM_IN_WIDER_PHRASE", "question": "What’s the language of the invoice archive?", "typed": ["escalate", "FRAME_SILENT", "TERM_IN_WIDER_PHRASE"], "wider_phrase": "ESCALATE:ATTRIBUTE_NOT_IN_RECORD:language"}
+.OBS A {"answer": null, "mapping_exit": "FRAME_SILENT/TERM_IN_WIDER_PHRASE", "question": "Which language for the invoice archive?", "typed": ["escalate", "FRAME_SILENT", "TERM_IN_WIDER_PHRASE"], "wider_phrase": "ESCALATE:ATTRIBUTE_NOT_IN_RECORD:language"}
+.OBS A {"answer": null, "mapping_exit": "FRAME_SILENT/TERM_IN_WIDER_PHRASE", "question": "Which billing-language should we use for the invoice archive?", "typed": ["escalate", "FRAME_SILENT", "TERM_IN_WIDER_PHRASE"], "wider_phrase": "ESCALATE:ATTRIBUTE_NOT_IN_RECORD:billing-language"}
+.OBS Q {"conditional": {"answer": null, "decision": "escalate", "detail": "BUILTIN_PROTECTED", "reason": "HUMAN_APPROVAL_REQUIRED"}, "negative": {"answer": null, "decision": "escalate", "detail": "NO_ROLE", "reason": "VOCAB_UNMAPPED"}}
+.
+=================================== FAILURES ===================================
+____ test_japanese_common_noun_without_placement_is_not_routed_as_an_agent _____
+
+    def test_japanese_common_noun_without_placement_is_not_routed_as_an_agent():
+        explained = rt.explain("チームがテストを書く。\n", "attack.md")
+        result = rt.route_task(explained, {"role": "implement", "kind": "test_authoring", "size": "medium"})
+        unit = explained.extraction.units[0]
+        actual = {"unit_status": unit.status, "reasons": unit.reasons,
+                  "agents": [dataclasses.asdict(agent) for agent in explained.records.agents],
+                  "decision": result["decision"], "agent": result["agent"],
+                  "common_noun_check": result["reading"].get("common_noun_check")}
+        print(f"OBS R1 {json.dumps(actual, ensure_ascii=False, sort_keys=True)}")
+>       assert unit.status != "MAPPED" and result["agent"] is None
+E       AssertionError: assert ('MAPPED' != 'MAPPED')
+E        +  where 'MAPPED' = UnitResult(index=0, status='MAPPED', reasons=[], text='チームがテストを書く。', witness='チームがテストを書く。', override=False).status
+
+attacks/W5-b/test_attack_w5b_wave2.py:182: AssertionError
+_______ test_yappari_sonomama_does_not_turn_an_addendum_into_replacement _______
+
+    def test_yappari_sonomama_does_not_turn_an_addendum_into_replacement():
+        first = "実装はハルに任せる。"
+        second = "やっぱりそのまま、実装はハルに任せる。"
+        explained = rt.explain(f"{first}\n追記：{second}\n", "attack.md", reader=_reading_for_assignment)
+        actual = {"statuses": [unit.status for unit in explained.extraction.units],
+                  "auto_resolved": explained.extraction.auto_resolved,
+                  "superseded_by": [relation.superseded_by for relation in explained.extraction.relations],
+                  "additions_kept": explained.extraction.additions_kept}
+        print(f"OBS R2 {json.dumps(actual, ensure_ascii=False, sort_keys=True)}")
+>       assert actual == {"statuses": ["MAPPED", "MAPPED"], "auto_resolved": 0,
+                          "superseded_by": [None, None], "additions_kept": 1}
+E       AssertionError: assert {'statuses': ...ions_kept': 0} == {'statuses': ...ions_kept': 1}
+E         
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'auto_resolved': 1} != {'auto_resolved': 0}
+E         {'superseded_by': ['R002', None]} != {'superseded_by': [None, None]}
+E         {'additions_kept': 0} != {'additions_kept': 1}
+E         Use -v to get more diff
+
+attacks/W5-b/test_attack_w5b_wave2.py:206: AssertionError
+=========================== short test summary info ============================
+FAILED attacks/W5-b/test_attack_w5b_wave2.py::test_japanese_common_noun_without_placement_is_not_routed_as_an_agent
+FAILED attacks/W5-b/test_attack_w5b_wave2.py::test_yappari_sonomama_does_not_turn_an_addendum_into_replacement
+2 failed, 10 passed in 1.23s

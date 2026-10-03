@@ -1,0 +1,18 @@
+229c229
+< def _sovereign_with_yes(tmp_path, monkeypatch, query=Q):
+---
+> def _sovereign_with_yes(tmp_path, monkeypatch, query=Q, claim=OTHER_CLAIM):
+234c234
+<               "confirm_id": "abc", "query": query, "claim": OTHER_CLAIM, "generated_sources": [],
+---
+>               "confirm_id": "abc", "query": query, "claim": claim, "generated_sources": [],
+277c277,279
+<     root = _sovereign_with_yes(tmp_path, monkeypatch)
+---
+>     # W5-d (D1) proposal: the human confirmed THE SENTENCE the result now carries (the claim of the result is its ``text``)
+>     claim = _synthetic("answer", "ANSWER", [])["text"]
+>     root = _sovereign_with_yes(tmp_path, monkeypatch, claim=claim)
+281c283
+<     assert out["text"] == OTHER_CLAIM and out["kind"] == "answer"
+---
+>     assert out["text"] == claim and out["kind"] == "answer"

@@ -1,0 +1,20 @@
+F...                                                                     [100%]
+=================================== FAILURES ===================================
+_____ test_person_question_does_not_fill_with_artifacts_without_placement ______
+
+    def test_person_question_does_not_fill_with_artifacts_without_placement():
+        out = _run('EN08-01')
+        answer = out['answer']
+        got = [(f['surface'], f['hole_type_check']) for f in answer['fillers']]
+>       assert answer['status'] not in ('FILLED', 'TIE') and not answer['fillers'], (
+            'the documents say only that the girl wrote artifacts, not which person she wrote to; '
+            f"expected abstention for frozen truth NONE, got status={answer['status']}, fillers={got!r}, "
+            f"question={answer['question']!r}, reasons={answer['reasons']!r}"
+        )
+E       AssertionError: the documents say only that the girl wrote artifacts, not which person she wrote to; expected abstention for frozen truth NONE, got status=TIE, fillers=[('letter', {'verdict': 'NOT_CHECKED', 'reason': 'NO_PLACEMENT', 'expected': ['GROUP_ORG', 'PERSON'], 'observed': None}), ('note', {'verdict': 'NOT_CHECKED', 'reason': 'NO_PLACEMENT', 'expected': ['GROUP_ORG', 'PERSON'], 'observed': None})], question={'hole_role': 'patient', 'hole_type': ['GROUP_ORG', 'PERSON'], 'wh': 'who', 'kind': 'WH_QUESTION', 'restrictor': None, 'hole_mark': 'X'}, reasons=['UNREAD_SENTENCES:1']
+E       assert ('TIE' not in ('FILLED', 'TIE'))
+
+attacks/W3-c2/test_attack_question_cross.py:29: AssertionError
+=========================== short test summary info ============================
+FAILED attacks/W3-c2/test_attack_question_cross.py::test_person_question_does_not_fill_with_artifacts_without_placement
+1 failed, 3 passed in 0.32s

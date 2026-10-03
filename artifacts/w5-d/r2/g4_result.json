@@ -1,0 +1,301 @@
+{
+ "inputs_sha256": "41436fe027df37ef8c421f8e73ae0c97dfaafd80f27793775da5b2c3e5c4c6f9",
+ "summary": {
+  "self_reported_cases": 16,
+  "self_reported_exceptions": 0,
+  "self_reported_ANSWER": 0,
+  "self_reported_controls": 4,
+  "self_reported_controls_answered": 4,
+  "record_variant_cases": 15,
+  "record_variant_ANSWER": 0,
+  "record_variant_old_sentence_returned": 0,
+  "record_controls": 2,
+  "record_controls_answered": 2
+ },
+ "results": {
+  "self_reported": [
+   {
+    "id": "S01-missing-path",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   },
+   {
+    "id": "S02-absent-sentence",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   },
+   {
+    "id": "S03-empty-file",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   },
+   {
+    "id": "S04-directory-without-it",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   },
+   {
+    "id": "S05-paraphrase",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   },
+   {
+    "id": "S06-superset",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   },
+   {
+    "id": "S07-sha-mismatch",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   },
+   {
+    "id": "S08-blank-text",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   },
+   {
+    "id": "S09-no-text-no-sha",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   },
+   {
+    "id": "S10-right-name-wrong-text",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   },
+   {
+    "id": "S11-text-of-a-file-not-handed-over",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   },
+   {
+    "id": "S12-latin-case",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   },
+   {
+    "id": "S13-sha-of-another-file",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   },
+   {
+    "id": "S14-text-is-a-number",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   },
+   {
+    "id": "S15-text-is-a-list",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   },
+   {
+    "id": "S16-not-round5-mode",
+    "outcome": "ABSTAIN",
+    "basis_original": "UNKNOWN_ORIGIN",
+    "verdict": "UNKNOWN_ORIGIN_SOURCE",
+    "answered": false
+   }
+  ],
+  "self_reported_controls": [
+   {
+    "id": "C01-exact-sentence",
+    "outcome": "ANSWER_HUMAN_BASIS",
+    "basis_original": "HUMAN",
+    "verdict": "ANSWER",
+    "answered": true
+   },
+   {
+    "id": "C02-nfkc-equal",
+    "outcome": "ANSWER_HUMAN_BASIS",
+    "basis_original": "HUMAN",
+    "verdict": "ANSWER",
+    "answered": true
+   },
+   {
+    "id": "C03-in-a-directory",
+    "outcome": "ANSWER_HUMAN_BASIS",
+    "basis_original": "HUMAN",
+    "verdict": "ANSWER",
+    "answered": true
+   },
+   {
+    "id": "C04-sha-of-the-body",
+    "outcome": "ANSWER_HUMAN_BASIS",
+    "basis_original": "HUMAN",
+    "verdict": "ANSWER",
+    "answered": true
+   }
+  ],
+  "record_variants": [
+   {
+    "id": "R01-half-space",
+    "outcome": "ABSTAIN",
+    "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+    "answered": false,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": 1
+   },
+   {
+    "id": "R02-ideographic-space",
+    "outcome": "ABSTAIN",
+    "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+    "answered": false,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": 1
+   },
+   {
+    "id": "R03-nbsp",
+    "outcome": "ABSTAIN",
+    "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+    "answered": false,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": 1
+   },
+   {
+    "id": "R04-trailing-space",
+    "outcome": "ABSTAIN",
+    "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+    "answered": false,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": 1
+   },
+   {
+    "id": "R05-trailing-newline",
+    "outcome": "ABSTAIN",
+    "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+    "answered": false,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": 1
+   },
+   {
+    "id": "R06-tab",
+    "outcome": "ABSTAIN",
+    "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+    "answered": false,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": 1
+   },
+   {
+    "id": "R07-punctuation",
+    "outcome": "ABSTAIN",
+    "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+    "answered": false,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": 1
+   },
+   {
+    "id": "R08-no-stop",
+    "outcome": "ABSTAIN",
+    "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+    "answered": false,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": 1
+   },
+   {
+    "id": "R09-zero-width-space",
+    "outcome": "ABSTAIN",
+    "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+    "answered": false,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": 1
+   },
+   {
+    "id": "R10-bom-prefix",
+    "outcome": "ABSTAIN",
+    "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+    "answered": false,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": 1
+   },
+   {
+    "id": "R11-other-sentence",
+    "outcome": "ABSTAIN",
+    "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+    "answered": false,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": 1
+   },
+   {
+    "id": "R12-nfkc",
+    "outcome": "ABSTAIN",
+    "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+    "answered": false,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": 1
+   },
+   {
+    "id": "R13-nfkc-reverse",
+    "outcome": "ABSTAIN",
+    "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+    "answered": false,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": 1
+   },
+   {
+    "id": "R14-fullwidth-digit",
+    "outcome": "ABSTAIN",
+    "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+    "answered": false,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": 1
+   },
+   {
+    "id": "R15-leading-space",
+    "outcome": "ABSTAIN",
+    "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+    "answered": false,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": 1
+   }
+  ],
+  "record_controls": [
+   {
+    "id": "RC1-exact",
+    "outcome": "ANSWER_HUMAN_BASIS",
+    "verdict": "ANSWER",
+    "answered": true,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": null
+   },
+   {
+    "id": "RC2-exact-two-records",
+    "outcome": "ANSWER_HUMAN_BASIS",
+    "verdict": "ANSWER",
+    "answered": true,
+    "text_is_the_confirmed_old_sentence": false,
+    "claim_differs": null
+   }
+  ]
+ }
+}

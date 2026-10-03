@@ -1,0 +1,22 @@
+{
+  "derived_words": 48,
+  "queried": 48,
+  "byte_differences": [],
+  "invariant_errors": [],
+  "disjoint_slot_conflicts": [],
+  "not_confirmed": [
+    "うたう",
+    "たたえる",
+    "みせる",
+    "交わす",
+    "命じる",
+    "問い合わせる",
+    "潜める",
+    "示せる",
+    "薦める",
+    "見せ合う",
+    "言い換える",
+    "訴える",
+    "謳う"
+  ]
+}

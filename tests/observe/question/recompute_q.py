@@ -19,15 +19,18 @@ A = TREE / 'artifacts' / 'w3-c2'
 DOC = TREE / 'docs' / 'OBSERVATION.md'
 Q = HERE
 MARKS = {'entry': ('<!-- w3c2-entry:begin -->', '<!-- w3c2-entry:end -->'), 'measured': ('<!-- w3c2-measured:begin -->', '<!-- w3c2-measured:end -->')}
-EXAMPLES = (('FILLED', 'QD05', '母は台所で何を作った？'), ('TIE', 'QD01', '誰が生徒に地図を渡した？'), ('NO_ATTESTED_CELL', 'QD01', '誰が生徒に手紙を送った？'))
+# W5-d2 (auditor's ruling B3): (expected status, document, question, placement file or None). Since W5-d a filler whose type was not checked is not an answer, so the two
+# examples that expect an answer give the frozen placement file of this directory (the same file the frozen question Q037 used); the third has no placement, as before.
+EXAMPLES = (('FILLED', 'QD02', 'どの人が客に切符を渡した？', 'placement_q.json'), ('TIE', 'QD01', '誰が生徒に地図を渡した？', 'placement_q.json'),
+            ('NO_ATTESTED_CELL', 'QD01', '誰が生徒に手紙を送った？', None))
 
 
 def entry_block():
     rel = lambda p: str(Path(p).relative_to(TREE))
     out = ['### 入口の実行出力（`recompute_q.py` が実際に走らせて貼った。手で書き換えない）', '']
     env = {'HOME': os.environ.get('HOME', ''), 'PATH': '/usr/bin:/bin', 'PYTHONDONTWRITEBYTECODE': '1', 'PYTHONPATH': str(TREE), 'PYTHONHASHSEED': '0'}
-    for want, doc, text in EXAMPLES:
-        args = ['--anchor-text', text, '--anchor-kind', 'question', '--structure', rel(Q / 'docs' / (doc + '.jsonl')), '--no-index']
+    for want, doc, text, placement in EXAMPLES:
+        args = ['--anchor-text', text, '--anchor-kind', 'question', '--structure', rel(Q / 'docs' / (doc + '.jsonl')), '--no-index'] + (['--placement', rel(Q / placement)] if placement else [])
         done = subprocess.run([sys.executable, '-m', 'verantyx.cli', 'observe', *args], capture_output=True, text=True, env=env, cwd=str(TREE), timeout=180)
         d = json.loads(done.stdout)
         a = d['answer']

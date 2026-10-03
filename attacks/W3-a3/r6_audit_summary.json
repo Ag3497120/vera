@@ -1,0 +1,270 @@
+{
+  "derived_words": 48,
+  "queried": 48,
+  "byte_differences": [],
+  "invariant_errors": [],
+  "disjoint_slot_conflicts": [
+    {
+      "word": "うたう",
+      "source": "role_distribution@codex:general_qa",
+      "particle": "を",
+      "distribution_types": [
+        "EVENT_ACT"
+      ],
+      "confirmed_frame_types": [
+        "INFO_LANGUAGE",
+        "WORK"
+      ]
+    },
+    {
+      "word": "うたう",
+      "source": "role_distribution@jawiki",
+      "particle": "を",
+      "distribution_types": [
+        "PERSON"
+      ],
+      "confirmed_frame_types": [
+        "INFO_LANGUAGE",
+        "WORK"
+      ]
+    },
+    {
+      "word": "たたえる",
+      "source": "role_distribution@codex:paraphrase_entail",
+      "particle": "を",
+      "distribution_types": [
+        "EVENT_ACT"
+      ],
+      "confirmed_frame_types": [
+        "ABSTRACT",
+        "GROUP_ORG",
+        "PERSON"
+      ]
+    },
+    {
+      "word": "みせる",
+      "source": "role_distribution@jawiki",
+      "particle": "を",
+      "distribution_types": [
+        "EVENT_ACT"
+      ],
+      "confirmed_frame_types": [
+        "ABSTRACT",
+        "ARTIFACT",
+        "PERSON",
+        "WORK"
+      ]
+    },
+    {
+      "word": "交わす",
+      "source": "role_distribution@codex:figurative_commonsense",
+      "particle": "を",
+      "distribution_types": [
+        "EVENT_ACT"
+      ],
+      "confirmed_frame_types": [
+        "ABSTRACT",
+        "ARTIFACT",
+        "INFO_LANGUAGE"
+      ]
+    },
+    {
+      "word": "交わす",
+      "source": "role_distribution@codex:narrative",
+      "particle": "を",
+      "distribution_types": [
+        "EVENT_ACT"
+      ],
+      "confirmed_frame_types": [
+        "ABSTRACT",
+        "ARTIFACT",
+        "INFO_LANGUAGE"
+      ]
+    },
+    {
+      "word": "交わす",
+      "source": "role_distribution@codex:paraphrase_entail",
+      "particle": "を",
+      "distribution_types": [
+        "EVENT_ACT"
+      ],
+      "confirmed_frame_types": [
+        "ABSTRACT",
+        "ARTIFACT",
+        "INFO_LANGUAGE"
+      ]
+    },
+    {
+      "word": "交わす",
+      "source": "role_distribution@jawiki",
+      "particle": "を",
+      "distribution_types": [
+        "EVENT_ACT"
+      ],
+      "confirmed_frame_types": [
+        "ABSTRACT",
+        "ARTIFACT",
+        "INFO_LANGUAGE"
+      ]
+    },
+    {
+      "word": "命じる",
+      "source": "role_distribution@jawiki",
+      "particle": "を",
+      "distribution_types": [
+        "EVENT_ACT"
+      ],
+      "confirmed_frame_types": [
+        "GROUP_ORG",
+        "PERSON"
+      ]
+    },
+    {
+      "word": "問い合わせる",
+      "source": "role_distribution@codex:code_qa",
+      "particle": "を",
+      "distribution_types": [
+        "WORK"
+      ],
+      "confirmed_frame_types": [
+        "ABSTRACT",
+        "INFO_LANGUAGE"
+      ]
+    },
+    {
+      "word": "潜める",
+      "source": "role_distribution@codex:narrative",
+      "particle": "を",
+      "distribution_types": [
+        "SUBSTANCE_FOOD"
+      ],
+      "confirmed_frame_types": [
+        "EVENT_ACT",
+        "INFO_LANGUAGE"
+      ]
+    },
+    {
+      "word": "潜める",
+      "source": "role_distribution@codex:pro",
+      "particle": "を",
+      "distribution_types": [
+        "SUBSTANCE_FOOD"
+      ],
+      "confirmed_frame_types": [
+        "EVENT_ACT",
+        "INFO_LANGUAGE"
+      ]
+    },
+    {
+      "word": "示せる",
+      "source": "role_distribution@codex:general_qa",
+      "particle": "を",
+      "distribution_types": [
+        "EVENT_ACT"
+      ],
+      "confirmed_frame_types": [
+        "ABSTRACT",
+        "INFO_LANGUAGE"
+      ]
+    },
+    {
+      "word": "薦める",
+      "source": "role_distribution@codex:paraphrase_entail",
+      "particle": "を",
+      "distribution_types": [
+        "WORK"
+      ],
+      "confirmed_frame_types": [
+        "ABSTRACT",
+        "EVENT_ACT",
+        "GROUP_ORG",
+        "PERSON"
+      ]
+    },
+    {
+      "word": "見せ合う",
+      "source": "role_distribution@codex:conversation",
+      "particle": "を",
+      "distribution_types": [
+        "INFO_LANGUAGE"
+      ],
+      "confirmed_frame_types": [
+        "GROUP_ORG",
+        "PERSON"
+      ]
+    },
+    {
+      "word": "言い換える",
+      "source": "role_distribution@codex:code",
+      "particle": "を",
+      "distribution_types": [
+        "IDENTIFIER"
+      ],
+      "confirmed_frame_types": [
+        "ABSTRACT",
+        "INFO_LANGUAGE"
+      ]
+    },
+    {
+      "word": "訴える",
+      "source": "role_distribution@codex:conversation",
+      "particle": "を",
+      "distribution_types": [
+        "STATE_PROPERTY"
+      ],
+      "confirmed_frame_types": [
+        "GROUP_ORG",
+        "PERSON"
+      ]
+    },
+    {
+      "word": "訴える",
+      "source": "role_distribution@codex:general_qa",
+      "particle": "を",
+      "distribution_types": [
+        "EVENT_ACT"
+      ],
+      "confirmed_frame_types": [
+        "GROUP_ORG",
+        "PERSON"
+      ]
+    },
+    {
+      "word": "訴える",
+      "source": "role_distribution@codex:paraphrase_entail",
+      "particle": "を",
+      "distribution_types": [
+        "STATE_PROPERTY"
+      ],
+      "confirmed_frame_types": [
+        "GROUP_ORG",
+        "PERSON"
+      ]
+    },
+    {
+      "word": "訴える",
+      "source": "role_distribution@jawiki",
+      "particle": "を",
+      "distribution_types": [
+        "EVENT_ACT"
+      ],
+      "confirmed_frame_types": [
+        "GROUP_ORG",
+        "PERSON"
+      ]
+    },
+    {
+      "word": "謳う",
+      "source": "role_distribution@jawiki",
+      "particle": "を",
+      "distribution_types": [
+        "EVENT_ACT"
+      ],
+      "confirmed_frame_types": [
+        "ABSTRACT",
+        "INFO_LANGUAGE",
+        "WORK"
+      ]
+    }
+  ]
+}

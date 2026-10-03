@@ -1,0 +1,25 @@
+# G1-a
+....................................                                     [100%]
+36 passed in 1.43s
+# G1-b (the copy has one added first line; so the original is compared whole with the copy minus its first line. The plan's 'tail -n +2' on BOTH sides would drop the original's docstring line)
+w3c2 diff exit 1
+w5b diff exit 1
+w3a3 diff exit 1
+same-w5c-1
+same-w5c-2
+data-same
+@@ -43,16 +43,24 @@
+@@ -194,17 +194,29 @@
+@@ -15,6 +15,10 @@
+@@ -23,7 +27,7 @@
+@@ -33,7 +37,7 @@
+@@ -58,6 +62,23 @@
+@@ -79,7 +100,7 @@
+# G1-c
+.........................................                                [100%]
+113 passed in 4.70s
+# G1-d
+72 functions
+........................................................................ [ 70%]
+..............................                                           [100%]
+102 passed in 2.65s

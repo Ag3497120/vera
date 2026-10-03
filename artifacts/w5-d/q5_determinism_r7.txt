@@ -1,0 +1,18 @@
+== verify r7/run1
+{"state": "OK", "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1", "content_sha256": "5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1", "counts": {"headwords": 1758845, "evidence": 1864292, "unit_kin": 618648, "unit_sample": 295849, "atoms": 7403, "ctx": 166701, "counters": 140, "meta": 4, "generated": 52270, "generated_frames": 4788}, "bad": []}
+exit 0
+== verify r7/run2
+{"state": "OK", "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run2", "content_sha256": "5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1", "counts": {"headwords": 1758845, "evidence": 1864292, "unit_kin": 618648, "unit_sample": 295849, "atoms": 7403, "ctx": 166701, "counters": 140, "meta": 4, "generated": 52270, "generated_frames": 4788}, "bad": []}
+exit 0
+content_sha256 run1 == run2 == r6/run1: True 5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1
+generated_frames.outcomes run1: {"DISTRIBUTION_DISAGREES": 743, "FRAME_PARTICLES_NOT_COVERED": 54, "decided_direct_upgrade": 48, "decided_direct_upgrade_all_sources_codex": 30, "decided_direct_upgrade_with_jawiki": 18, "decided_estimated_generated": 4740, "frame_confirmed": 35, "frame_types_disagree": 13}
+outcomes run1 == run2: True
+r6 outcomes (no new keys): {"DISTRIBUTION_DISAGREES": 743, "FRAME_PARTICLES_NOT_COVERED": 54, "decided_direct_upgrade": 48, "decided_direct_upgrade_all_sources_codex": 30, "decided_direct_upgrade_with_jawiki": 18, "decided_estimated_generated": 4740}
+excluded_terms_total run1/run2/r6: 359 359 359
+frame_types_disagree: 13 frame_confirmed: 35
+git_head run1: c875ed32444b1a2a12dccf38a7a7a79a03418eeb git_dirty: True builder_sha256 r6/r7: b6a18067f661 393561fcd9b2 coarse_types_sha256 equal: False
+duration_sec run1/run2: 519.8 513.3
+
+note: coarse_types_sha256 in the manifest differs from r6's (bcc078d6... vs 4c0286c4...). I did not touch verantyx/coarse_types.py: git diff c875ed3 -- verantyx/coarse_types.py is empty, and its sha256 now is 4c0286c425babdd4ea2c352380305ac9d5af76cb2b2e428c2f71a77f115d76f0.
+So the dev base's coarse_types.py already differed from the W3-a3 working tree that built r6 (merge W3-a3 + W5-b, git log: 3b31258, a427b5f); the tables built from it are the same (content_sha256 equal), which is what the builder hashes.
+git_dirty: true in the r7 manifest = the working tree has my uncommitted changes (expected).

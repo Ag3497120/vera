@@ -173,8 +173,17 @@ def _doc_result(kind="answer", verdict="ANSWER", extra=None):
     return _synthetic(kind, verdict, [copy.deepcopy(DOC)] + copy.deepcopy(extra or []), text=BODY)
 
 
+def _hand_over_memo(tmp_path, monkeypatch, *texts):
+    """W5-d2 (auditor's ruling B1, K3): the test hands over a document that EXISTS. Since W5-d a ``family: document`` source is a human source only when its text is
+    found (NFKC) in a document that was really handed over; ``documents=["memo.txt"]`` used to be enough, and a file that is not there is not a document. Writes
+    ``memo.txt`` (one line per text) under ``tmp_path`` and makes it the working directory for the test (the relative name now names a real file)."""
+    (tmp_path / "memo.txt").write_text("\n".join(texts) + "\n", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+
+
 @pytest.mark.parametrize("origin", ORIGINS_UNSET, ids=lambda o: f"origin-{o!r}")
-def test_r3_a_document_the_user_handed_over_is_answered_unchanged(origin):
+def test_r3_a_document_the_user_handed_over_is_answered_unchanged(origin, tmp_path, monkeypatch):
+    _hand_over_memo(tmp_path, monkeypatch, BODY)      # W5-d2 (K3): the document exists and holds the source's text
     src = _fsrc("document", origin, source="memo.txt")
     result = _synthetic("answer", "ANSWER", [src], text=BODY)
     before = copy.deepcopy(result)
@@ -186,7 +195,8 @@ def test_r3_a_document_the_user_handed_over_is_answered_unchanged(origin):
     assert out["kind"] == "answer" and out["verdict"] == "ANSWER"
 
 
-def test_r3_a_generated_sentence_next_to_the_users_document_is_mixed_not_unknown_origin():
+def test_r3_a_generated_sentence_next_to_the_users_document_is_mixed_not_unknown_origin(tmp_path, monkeypatch):
+    _hand_over_memo(tmp_path, monkeypatch, BODY)      # W5-d2 (K3)
     out, _rc = bp.apply_to_ask(_doc_result(extra=[GEN]), bp.AskPolicy(), query=Q, mode="round5", documents=MEMO_ARG)
     assert out["basis_policy"]["basis"] == "MIXED" and out["verdict"] == "UNKNOWN_BASIS_NOT_IN_TABLE"
     assert out["basis_policy"]["outcome"] == "ABSTAIN" and _state(out) == "abstain"
@@ -215,7 +225,9 @@ def test_r3_the_same_document_source_outside_round5_with_documents_is_an_unknown
     ("round5", [], [_fsrc("document", None), GEN]),
     ("engine", MEMO_ARG, [_fsrc("document", None), _fsrc("MISSING", None)]),
 ], ids=lambda v: None)
-def test_r3_the_withheld_count_is_the_classified_count(mode, documents, sources):
+def test_r3_the_withheld_count_is_the_classified_count(mode, documents, sources, tmp_path, monkeypatch):
+    if documents:      # W5-d2 (K3): the document that is handed over exists and holds the text of each document source (the comparison side below keeps the self-reporting call)
+        _hand_over_memo(tmp_path, monkeypatch, *[s["text"] for s in sources if s.get("family") == "document"])
     result = _synthetic("answer", "ANSWER", copy.deepcopy(sources))
     out, _rc = bp.apply_to_ask(result, bp.AskPolicy(), query=Q, mode=mode, documents=list(documents))
     user_documents = mode == "round5" and bool(documents)
@@ -226,12 +238,12 @@ def test_r3_the_withheld_count_is_the_classified_count(mode, documents, sources)
 
 
 # ============================================================ R-b: a recorded "yes" lifts only a generated basis
-def _sovereign_with_yes(tmp_path, monkeypatch, query=Q):
+def _sovereign_with_yes(tmp_path, monkeypatch, query=Q, claim=OTHER_CLAIM):
     root = tmp_path / "sov"
     assert sov.create(str(root), "s1", "o", consent_promote=True)["verdict"] == "CREATED"
     _use(monkeypatch, root, "s1")
     record = {"record": "basis_confirmation", "status": "HUMAN_CONFIRMED", "witness": "user_confirmation",
-              "confirm_id": "abc", "query": query, "claim": OTHER_CLAIM, "generated_sources": [],
+              "confirm_id": "abc", "query": query, "claim": claim, "generated_sources": [],
               "table_version": 1, "origin": "human_confirmed"}
     assert sov.append_basis_confirmation(str(root), "s1", record)["verdict"] == "APPENDED"
     return root
@@ -274,11 +286,13 @@ def test_r3_a_recorded_yes_does_not_lift_a_basis_with_an_unknown_origin(tmp_path
 @pytest.mark.parametrize("human", [False, True])
 @pytest.mark.parametrize("ref", [False, True])
 def test_r3_a_recorded_yes_still_lifts_a_generated_answer(tmp_path, monkeypatch, human, ref):
-    root = _sovereign_with_yes(tmp_path, monkeypatch)
+    # W5-d (D1) proposal: the human confirmed THE SENTENCE the result now carries (the claim of the result is its ``text``)
+    claim = _synthetic("answer", "ANSWER", [])["text"]
+    root = _sovereign_with_yes(tmp_path, monkeypatch, claim=claim)
     before = _snapshot(root)
     out, rc = _ask_with_record([GEN], "answer", "ANSWER", human=human, ref=ref)
     assert rc == 0 and out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"
-    assert out["text"] == OTHER_CLAIM and out["kind"] == "answer"
+    assert out["text"] == claim and out["kind"] == "answer"
     assert out["basis_policy"]["sovereign"]["confirmed_records_used"] == 1
     assert out["basis_policy"]["sovereign"]["confirmed_records_not_used"] == 0
     assert _snapshot(root) == before
@@ -315,6 +329,7 @@ def test_r3_a_result_that_cites_nothing_is_passed_through_and_the_record_is_not_
 
 def test_r3_the_users_own_document_answer_is_kept_and_the_record_is_not_used(tmp_path, monkeypatch):
     root = _sovereign_with_yes(tmp_path, monkeypatch)
+    _hand_over_memo(tmp_path, monkeypatch, BODY)      # W5-d2 (K3)
     before = _snapshot(root)
     out, rc = _ask_with_record([DOC], "answer", "ANSWER", human=False, ref=False, mode="round5", documents=MEMO_ARG)
     assert rc == 0 and out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"

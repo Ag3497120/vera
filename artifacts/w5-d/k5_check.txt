@@ -1,0 +1,10 @@
+K5 check: tests/attack/w3a3/test_attack_w3a3_r6.py::test_all_r6_generated_frame_upgrades (the attack copy; r6 route, current code)
+result: 1 failed (declared K5)
+failure shape: assert not invariant_errors -> 13 entries, all words with frame_status NOT_CONFIRMED (the 13 words that the new rule leaves unconfirmed):
+  うたう たたえる みせる 交わす 命じる 問い合わせる 潜める 示せる 薦める 見せ合う 言い換える 訴える 謳う
+byte_differences: [] (empty: the placement's answers are the same but for the frame confirmation)
+
+sha256 of the three files the attack copy writes next to itself (last run):
+213856af55c92f9d5b61fa3b0447e6a92fa64eb492a34ee575add9efa1bc2115  tests/attack/w3a3/r6_48_queries.jsonl
+c266aa732d4a5e78f8b40e11545607af7dcf17835c9d64134598e81e6164fe96  tests/attack/w3a3/r6_audit_summary.json
+c27484e44b6e54d7dba1e28d3dc7ff5809bb5a07ea2b23dae8c8488380185ee0  tests/attack/w3a3/state_probes.json

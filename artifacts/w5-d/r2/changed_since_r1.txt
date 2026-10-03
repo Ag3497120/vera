@@ -1,0 +1,23 @@
+# files (outside artifacts/w5-d/r2/) whose sha256 differs between files_start.sha256 (start of round 2) and files_end.sha256 (now)
+CHANGED artifacts/w5-d/DECISIONS.md
+CHANGED docs/BASIS_POLICY.md
+CHANGED docs/COARSE_PLACEMENT.md
+CHANGED docs/EVENT_CROSS.md
+CHANGED docs/OBSERVATION.md
+CHANGED docs/ROUTING_FROM_TEXT.md
+CHANGED tests/attack/test_attack_w5b_wave2.py
+CHANGED tests/attack/w3a3/r6_audit_summary.json
+CHANGED tests/attack/w3a3/test_attack_w3a3_r6.py
+CHANGED tests/attack/w3c2/test_attack_w3c2_question_cross.py
+NEW tests/observe/question/recompute_q.py
+NEW tests/test_basis_policy_form.py
+NEW tests/test_basis_policy_w5c_r3.py
+NEW tests/test_question_cross_observe.py
+CHANGED tests/test_question_cross_w5d.py
+NEW tests/test_routing_from_text.py
+NEW tests/test_routing_from_text_entry.py
+NEW tests/test_routing_from_text_regress.py
+NEW tests/test_routing_from_text_w5b.py
+CHANGED tests/test_routing_from_text_w5d.py
+CHANGED verantyx/observe.py
+CHANGED verantyx/routing_from_text.py

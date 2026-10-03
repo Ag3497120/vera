@@ -13,6 +13,7 @@ KEYS = ["schema", "decision", "agent", "undecided_reason", "abstention", "basis_
 
 def entry(explanation, task, seed="0", module=("-m", "verantyx.cli", "route")):
     env = dict(os.environ)
+    env.pop("VERA_PLACEMENT", None)      # W5-d2: the entry reads VERA_PLACEMENT, so a variable of the caller must not decide what these tests (written for "no placement") see
     env.update({"PYTHONPATH": ROOT, "PYTHONDONTWRITEBYTECODE": "1", "PYTHONHASHSEED": seed})
     argument = task if isinstance(task, str) else json.dumps(task, ensure_ascii=False)
     return subprocess.run([sys.executable, *module, "--explanation", explanation, "--task", argument],
@@ -24,10 +25,10 @@ def r1():
 
 
 def test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader():
-    # W5-a round 3 (auditor's decision B3 (β); docs/READING_SOUNDNESS.md K64): the entry no longer reads an を-phrase as the thing acted on when
-    # the subject has no person evidence and the predicate is in none of the reader's classes with an を-object (書く, 確かめる: the corpus
-    # table alone calls them transitive). Two sentences of r1.md are not read, so the gate abstains and nobody is routed. The name is kept;
-    # the old expectation is kept in K64 in full.
+    # W5-d2 (auditor's ruling B1, K2): the name is kept; the expectation is the contract of W5-d. This entry has no placement (the variable is taken off in entry()), and since
+    # W5-d (R-J1) a Japanese name that no naming sentence introduced is not verified without a placement: the units that were MAPPED are NAME_UNRESOLVED
+    # (NAME_UNVERIFIED:<name>:NO_PLACEMENT) and nobody is routed. The earlier text of this test (W5-a round 3: two sentences UNREAD, five MAPPED) is kept in the
+    # docs (w5d2-amended) and in K64 of docs/READING_SOUNDNESS.md.
     proc = entry(r1(), TASK)
     assert proc.returncode == 0, proc.stderr
     assert proc.stdout.count("\n") == 1                      # one line
@@ -36,14 +37,22 @@ def test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_r
     assert (out["decision"], out["agent"], out["undecided_reason"]) == ("undecided", None, "ABSTAINED")
     assert out["decided_by"] == "gate:INCOMPLETE_READING" and out["router"] is None
     assert out["abstention"]["type"] == "INCOMPLETE_READING"
-    assert out["abstention"]["detail"] == "2 of 8 units were not read and mapped; no job is routed"
+    assert out["abstention"]["detail"] == "8 of 8 units were not read and mapped; no job is routed"
     assert out["abstention"]["units"] == [
+        {"index": 0, "status": "NAME_UNRESOLVED", "text": "ハルは実装をやる。", "reasons": ["NAME_UNVERIFIED:ハル:NO_PLACEMENT"]},
         {"index": 1, "status": "UNREAD", "text": "モモがテストを書く。", "reasons": ["AGENT_EVIDENCE_MISSING:モモ"]},
-        {"index": 2, "status": "UNREAD", "text": "セキがコードを確かめる。", "reasons": ["AGENT_EVIDENCE_MISSING:セキ"]}]
-    assert out["evidence"] == ["モモがテストを書く。", "セキがコードを確かめる。"]
-    assert out["reading"]["by_status"] == {"MAPPED": 5, "COMPARISON_ONLY": 1, "UNREAD": 2, "PREDICATE_CLASS_UNKNOWN": 0, "WORK_TERM_UNKNOWN": 0,
-                                           "AMBIGUOUS_RELATION": 0, "NAME_UNRESOLVED": 0, "CONTRADICTION": 0, "UNREPRESENTABLE": 0}
+        {"index": 2, "status": "UNREAD", "text": "セキがコードを確かめる。", "reasons": ["AGENT_EVIDENCE_MISSING:セキ"]},
+        {"index": 3, "status": "NAME_UNRESOLVED", "text": "モモは検証をやらない。", "reasons": ["NAME_UNVERIFIED:モモ:NO_PLACEMENT"]},
+        {"index": 4, "status": "NAME_UNRESOLVED", "text": "レビューはモモがやる。", "reasons": ["NAME_UNVERIFIED:モモ:NO_PLACEMENT"]},
+        {"index": 5, "status": "NAME_UNRESOLVED", "text": "ハルが攻撃をやる。", "reasons": ["NAME_UNVERIFIED:ハル:NO_PLACEMENT"]},
+        {"index": 6, "status": "NAME_UNRESOLVED", "text": "ハルとセキは同じ会社だ。", "reasons": ["NAME_UNVERIFIED:ハル:NO_PLACEMENT"]},
+        {"index": 7, "status": "NAME_UNRESOLVED", "text": "モモはハルより速い。", "reasons": ["NAME_UNVERIFIED:モモ:NO_PLACEMENT"]}]
+    assert out["evidence"] == ["ハルは実装をやる。", "モモがテストを書く。", "セキがコードを確かめる。", "モモは検証をやらない。", "レビューはモモがやる。",
+                               "ハルが攻撃をやる。", "ハルとセキは同じ会社だ。", "モモはハルより速い。"]
+    assert out["reading"]["by_status"] == {"MAPPED": 0, "COMPARISON_ONLY": 0, "UNREAD": 2, "PREDICATE_CLASS_UNKNOWN": 0, "WORK_TERM_UNKNOWN": 0,
+                                           "AMBIGUOUS_RELATION": 0, "NAME_UNRESOLVED": 6, "CONTRADICTION": 0, "UNREPRESENTABLE": 0}
     assert out["reading"]["lookup"] == "stub-no-placement/1"
+    assert out["records"]["agents"] == []                      # nothing was mapped, so no agent record exists
     assert all(a["basis"]["kind"] == "declared_text" and a["lineage"] is None for a in out["records"]["agents"])
 
 

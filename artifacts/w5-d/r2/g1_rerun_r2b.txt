@@ -1,0 +1,22 @@
+# round-2b re-run (after review.r1): 2026-10-04 01:08:59 +0900
+# G1-a
+....................................                                     [100%]
+36 passed in 1.41s
+# G1-c
+.........................................                                [100%]
+113 passed in 4.86s
+# G1-d
+72 functions
+........................................................................ [ 70%]
+..............................                                           [100%]
+102 passed in 2.63s
+# G1-b: original (whole) vs copy minus its first line; w5c cmp; data
+same-w5c-1
+same-w5c-2
+data-same
+# G1-b recheck 2026-10-04 01:09:34 +0900 (script g1b_diff.py; the diff files attack_copy_*.diff were regenerated, same hunk bodies as before)
+w3c2: hunks=1 changed-in-defs=['_persons', 'test_negative_question_does_not_match_affirmative_crosses', 'test_tied_agent_witnesses_remain_a_tie'] changed-outside-defs=[]
+w5b: hunks=1 changed-in-defs=['_AllUnplaced', 'test_yappari_sonomama_does_not_turn_an_addendum_into_replacement'] changed-outside-defs=[]
+w3a3: hunks=5 changed-in-defs=['test_all_r6_generated_frame_upgrades'] changed-outside-defs=[]
+
+# (the three first G1-b lines of the first attempt failed because zsh does not split `set -- $p`; replaced by scripts/g1b_diff.py, results below)

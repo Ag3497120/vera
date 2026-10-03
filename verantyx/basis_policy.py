@@ -21,6 +21,8 @@ import copy
 import hashlib
 import json
 import os
+import unicodedata
+from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
@@ -152,14 +154,34 @@ def _is_index_family(src: Mapping[str, Any]) -> bool:
     return isinstance(family, str) and family in ability_corpus.FAMILIES
 
 
-def _class_of(src: Any, user_documents: bool = False) -> str:
+def _document_text_holds(src: Mapping[str, Any], document_texts: Sequence[str]) -> bool:
+    """W5-d (docs/BASIS_POLICY.md, W5-d): is this ``family == "document"`` source really in a document the caller handed over?
+    (a) its ``text`` is a non-blank string and, under NFKC, a substring of the NFKC text of one of the documents; or
+    (b) it has no ``text`` key and its ``sha256`` is that of the (utf-8) text of one of the documents (the form
+    ``request_goal_route`` gives a source). A claim of the source alone (a non-empty ``--document`` argument, a ``family`` string) is nothing."""
+    if "text" in src:
+        text = src["text"]
+        if not isinstance(text, str) or not text.strip():
+            return False
+        needle = unicodedata.normalize("NFKC", text)
+        return any(needle in unicodedata.normalize("NFKC", body) for body in document_texts)
+    digest = src.get("sha256")
+    return isinstance(digest, str) and any(hashlib.sha256(body.encode("utf-8")).hexdigest() == digest
+                                           for body in document_texts)
+
+
+def _class_of(src: Any, user_documents: bool = False, document_texts: Optional[Sequence[str]] = None) -> str:
     """The class of one source: the rules of docs/BASIS_POLICY.md section prereg-w5c-r3 (the earliest rule that applies wins).
 
     A human source is one whose origin is declared human (``human_confirmed``), the request text itself
     (``family == "user"``) and, only when ``user_documents`` is true (the caller handed these documents over in
-    this very call), a ``family == "document"`` source with no origin. Everything else with no origin is
-    ``unknown_origin``: it is not a human source and it is not known to be a generated one either (absent,
-    ``None``, ``""``, a different spelling of a declared value, any unknown value, a family outside the index)."""
+    this very call), a ``family == "document"`` source with no origin WHOSE TEXT IS IN THOSE DOCUMENTS (W5-d: with
+    ``document_texts``, the bodies of the documents handed over, it must be found in them -- ``_document_text_holds``;
+    a document source not found there is ``unknown_origin``). ``document_texts is None`` is the older contract: the
+    caller has checked it himself (the product never calls it so: ``apply_to_ask`` always passes the bodies).
+    Everything else with no origin is ``unknown_origin``: it is not a human source and it is not known to be a
+    generated one either (absent, ``None``, ``""``, a different spelling of a declared value, any unknown value,
+    a family outside the index)."""
     if not isinstance(src, dict):
         return "unreadable"
     origin = src.get("origin")
@@ -174,7 +196,9 @@ def _class_of(src: Any, user_documents: bool = False) -> str:
     if src.get("family") == "user":
         return "request_text"
     if user_documents and src.get("family") == "document":
-        return "human"
+        if document_texts is None or _document_text_holds(src, document_texts):
+            return "human"
+        return "unknown_origin"
     return "unknown_origin"
 
 
@@ -186,10 +210,11 @@ def _unknown_value(src: Any) -> bool:
     return origin is not None and not (isinstance(origin, str) and origin in DECLARED_ORIGINS)
 
 
-def _unknown_origin_sources(sources: Iterable[Any], user_documents: bool = False) -> List[Mapping[str, Any]]:
+def _unknown_origin_sources(sources: Iterable[Any], user_documents: bool = False,
+                            document_texts: Optional[Sequence[str]] = None) -> List[Mapping[str, Any]]:
     """The sources whose origin is unknown in either sense (class ``unknown_origin`` or an unknown value)."""
     return [s for s in sources if isinstance(s, dict)
-            and (_class_of(s, user_documents) == "unknown_origin" or _unknown_value(s))]
+            and (_class_of(s, user_documents, document_texts) == "unknown_origin" or _unknown_value(s))]
 
 
 @dataclass(frozen=True)
@@ -215,16 +240,18 @@ class SourceClass:
                 "unknown_origin_values": dict(self.unknown_origin_values)}
 
 
-def classify_sources(sources: Iterable[Any], *, user_documents: bool = False) -> SourceClass:
+def classify_sources(sources: Iterable[Any], *, user_documents: bool = False,
+                     document_texts: Optional[Sequence[str]] = None) -> SourceClass:
     """Closed rules, the earliest that applies wins; the declared ``origin`` is the only evidence (no guessing).
-    ``user_documents``: the caller handed documents over in this call (rule 7 of ``prereg-w5c-r3``)."""
+    ``user_documents``: the caller handed documents over in this call (rule 7 of ``prereg-w5c-r3``);
+    ``document_texts``: the bodies of those documents (W5-d: a document source counts as human only when its text is found in them)."""
     counts = {name: 0 for name in _CLASSES}
     by_origin: Dict[str, int] = {}
     unknown = 0
     unknown_by_family: Dict[str, int] = {}
     unknown_values: Dict[str, int] = {}
     for src in sources:
-        cls = _class_of(src, user_documents)
+        cls = _class_of(src, user_documents, document_texts)
         if cls == "unknown_origin":
             unknown += 1
             fam = _family_of(src)
@@ -660,6 +687,21 @@ def _reference(generated: Sequence[Mapping[str, Any]], rejected: bool) -> List[D
             for s in generated]
 
 
+def _document_texts(documents: Sequence[Any]) -> List[str]:
+    """The bodies of the documents the caller handed over, read the way ``one.Vera.load_documents`` reads them (``document_loaders``:
+    a directory by ``load_directory``, a file by ``load_paths``). A path that cannot be read gives no body (so nothing is found in it)."""
+    from .document_loaders import load_directory, load_paths
+    bodies: List[str] = []
+    for item in documents:
+        try:
+            path = Path(item)
+            result = load_directory(str(path)) if path.is_dir() else load_paths([str(path)])
+        except (OSError, ValueError, TypeError):
+            continue
+        bodies.extend(doc.text for doc in result["documents"] if isinstance(doc.text, str))
+    return bodies
+
+
 def apply_to_ask(result: Any, policy: AskPolicy, *, query: str, mode: str,
                  documents: Sequence[str]) -> Tuple[Any, int]:
     """Pass one ``vera ask`` result through the policy; returns (output, exit code).
@@ -673,7 +715,8 @@ def apply_to_ask(result: Any, policy: AskPolicy, *, query: str, mode: str,
     orig = copy.deepcopy(result)
     sources = _source_list(orig)
     user_documents = mode == "round5" and bool(documents)
-    sc = classify_sources(sources, user_documents=user_documents)
+    document_texts = _document_texts(documents) if user_documents else None      # W5-d: what was really handed over
+    sc = classify_sources(sources, user_documents=user_documents, document_texts=document_texts)
     n_unknown = _n_unknown(sc)
     refused = _is_refused(orig)
     kind = policy.request_kind
@@ -701,13 +744,16 @@ def apply_to_ask(result: Any, policy: AskPolicy, *, query: str, mode: str,
             notes["rejected_by_user"] = 1
         if b0 == "GENERATED" and mine and not has_unknown:
             claims = {e["payload"]["claim"] for e in mine}
-            if len(claims) == 1:
+            if len(claims) > 1:                      # contradicting confirmations are looked at BEFORE the comparison with the present claim
+                basis = "NONE"
+                notes["ambiguous"] = True
+            elif claims == {claim}:                  # W5-d (D1): the very sentence now generated -- string equality, nothing normalized
                 basis = "HUMAN"
                 record = max(mine, key=lambda e: e["seq"])
                 notes["confirmed_records_used"] = 1
-            else:
-                basis = "NONE"
-                notes["ambiguous"] = True
+            else:                                    # a yes for another sentence is not a yes for this one
+                notes["confirmed_records_not_used"] = len(mine)
+                notes["confirmed_records_claim_differs"] = len(mine)
         elif mine:
             notes["confirmed_records_not_used"] = len(mine)
     sovereign_note = {"state": view.state, "store_id": view.store_id, **notes}
@@ -783,7 +829,7 @@ def apply_to_ask(result: Any, policy: AskPolicy, *, query: str, mode: str,
             # carried are dropped, and so is its own text when that text quotes a generated sentence
             own = orig.get("text") if isinstance(orig.get("text"), str) else ""
             quoted = any(b and b in own for b in (_text_of(g) for g in list(generated)
-                                                  + _unknown_origin_sources(sources, user_documents)))
+                                                  + _unknown_origin_sources(sources, user_documents, document_texts)))
             out = _unknown_dict(orig, sources, sc.counts["generated"], orig.get("verdict"),
                                 _WITHDRAWN_TEXT[withdrawn_verdict] if quoted else own, outcome,
                                 kind=orig.get("kind"), fallback=withdrawn_verdict, n_unknown=n_unknown)

@@ -1,0 +1,2 @@
+inputs True summary True
+{"self_reported_cases": 16, "self_reported_exceptions": 0, "self_reported_ANSWER": 0, "self_reported_controls": 4, "self_reported_controls_answered": 4, "record_variant_cases": 15, "record_variant_ANSWER": 0, "record_variant_old_sentence_returned": 0, "record_controls": 2, "record_controls_answered": 2}

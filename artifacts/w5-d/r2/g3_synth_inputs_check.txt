@@ -1,0 +1,12 @@
+g3_synth/explanations/c1.md: OK
+g3_synth/explanations/c10.md: OK
+g3_synth/explanations/c2.md: OK
+g3_synth/explanations/c3.md: OK
+g3_synth/explanations/c4.md: OK
+g3_synth/explanations/c5.md: OK
+g3_synth/explanations/c6.md: OK
+g3_synth/explanations/c7.md: OK
+g3_synth/explanations/c8.md: OK
+g3_synth/explanations/c9.md: OK
+g3_synth/items.jsonl: OK
+shasum: WARNING: 1 line is improperly formatted

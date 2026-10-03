@@ -1,0 +1,6 @@
+New failures of the full test run (pytest_full.txt, 2026-10-04 01:12:01 - 01:18:05 +0900) that are not in the baseline dev_c875ed3_failures.txt (new_failures.txt, 2 ids). Both are environment-caused, none of the 82 K ids is in the failure set (grep -c -f k_ids = 0), fixed_failures.txt is empty.
+
+1. tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+   Fails when run alone too (1 failed in 3.17 s): `assert meta["child_env"]["HOME"] == "<WORK>/home" and meta["verantyx_untouched"] is True` - it checks that verantyx/ has no uncommitted change. The tree is uncommitted by design until the auditor commits, so it fails only while the work is uncommitted (the ticket says so).
+2. tests/test_gen_coarse_evidence.py::test_the_stop_signal_ends_the_run_with_an_interrupted_record
+   Load-caused flake: failed in this full run, passed 3 of 3 times when run alone (flaky_check.txt). It was not in the failure set of the first full run (00:47-00:53, 116 failed) nor of the reviewer's run.

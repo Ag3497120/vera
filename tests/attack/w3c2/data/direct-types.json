@@ -1,0 +1,33 @@
+{
+  "lemmas": {
+    "letter": {
+      "state": "DECIDED",
+      "origin": "direct",
+      "types": [
+        "ARTIFACT"
+      ]
+    },
+    "note": {
+      "state": "DECIDED",
+      "origin": "direct",
+      "types": [
+        "ARTIFACT"
+      ]
+    },
+    "girl": {
+      "state": "DECIDED",
+      "origin": "direct",
+      "types": [
+        "PERSON"
+      ]
+    },
+    "student": {
+      "state": "DECIDED",
+      "origin": "direct",
+      "types": [
+        "PERSON"
+      ]
+    }
+  },
+  "neighbors": {}
+}

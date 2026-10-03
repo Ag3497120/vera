@@ -402,6 +402,8 @@ class UnitReading:
     relations: List[dict] = field(default_factory=list)
     reasons: List[str] = field(default_factory=list)
     lookup_id: Optional[str] = None
+    part_places: Dict[str, Any] = field(default_factory=dict)   # W5-d2 (D2-2): compared name of each part of a parallel Japanese filler -> the placement answer for it
+    marker_head: Optional["UnitReading"] = None      # W5-d (R-J2): the fragment between a replacement marker and the next clause break, read by the same reader
 
 
 def read_units(units: Iterable[Unit], reader: Optional[Callable[[str], Mapping[str, Any]]] = None,
@@ -414,26 +416,61 @@ def read_units(units: Iterable[Unit], reader: Optional[Callable[[str], Mapping[s
         from . import semantic_read
         reader = semantic_read.read
     done: List[UnitReading] = []
+    if lookup is None:      # W5-d2: resolved once (what ``attach_events`` resolved for every unit): the reading of a unit and the questions about the parts of its names use the same lookup
+        lookup = event_cross.default_lookup()
     for unit in units:
-        try:
-            raw = reader(unit.text)
-            out = event_cross.attach_events(raw, lookup)
-        except Exception as exc:     # ReadError and anything else: typed, counted, never hidden
-            done.append(UnitReading(unit, "ERROR", None, [], [], ["READER_ERROR:" + str(getattr(exc, "type", type(exc).__name__))]))
-            continue
-        events = out.get("events") or {}
-        status = events.get("status")
-        lang = raw.get("lang") if isinstance(raw, Mapping) else None
-        lookup_id = (events.get("lookup") or {}).get("id")
-        if status == "CROSSED":
-            done.append(UnitReading(unit, "CROSSED", lang, list(events.get("crosses") or []),
-                                    list(events.get("relations") or []), [], lookup_id))
-        else:
-            abstain = events.get("abstain") or {}
-            reasons = [str(item) for item in (abstain.get("reasons") or [])] or [str(abstain.get("kind") or "NO_REASON")]
-            done.append(UnitReading(unit, status if status in ("ABSTAINED", "INPUT_REJECTED") else "ERROR", lang, [], [],
-                                    reasons, lookup_id))
+        reading = _read_one(unit, reader, lookup, event_cross)
+        if _replaces_by_marker(unit):
+            head = _marker_head(unit.text)
+            if head is not None:      # W5-d (R-J2): the marker is followed by a fragment of its own: read it as it stands (same reader, same lookup)
+                reading.marker_head = _read_one(Unit(unit.index, head, unit.witness, "", False, unit.line), reader, lookup, event_cross)
+        done.append(reading)
     return done
+
+
+def _read_one(unit: Unit, reader: Callable[[str], Mapping[str, Any]], lookup: Any, event_cross: Any) -> UnitReading:
+    """One unit through the reader and the event cross (the body of ``read_units``)."""
+    try:
+        raw = reader(unit.text)
+        out = event_cross.attach_events(raw, lookup)
+    except Exception as exc:     # ReadError and anything else: typed, counted, never hidden
+        return UnitReading(unit, "ERROR", None, [], [], ["READER_ERROR:" + str(getattr(exc, "type", type(exc).__name__))])
+    events = out.get("events") or {}
+    status = events.get("status")
+    lang = raw.get("lang") if isinstance(raw, Mapping) else None
+    lookup_id = (events.get("lookup") or {}).get("id")
+    if status == "CROSSED":
+        crosses = list(events.get("crosses") or [])
+        got = UnitReading(unit, "CROSSED", lang, crosses, list(events.get("relations") or []), [], lookup_id)
+        if lang == "ja":
+            _ask_the_parts_of_parallel_fillers(got, lookup, event_cross)
+        return got
+    abstain = events.get("abstain") or {}
+    reasons = [str(item) for item in (abstain.get("reasons") or [])] or [str(abstain.get("kind") or "NO_REASON")]
+    return UnitReading(unit, status if status in ("ABSTAINED", "INPUT_REJECTED") else "ERROR", lang, [], [], reasons, lookup_id)
+
+
+def _ask_the_parts_of_parallel_fillers(reading: UnitReading, lookup: Any, event_cross: Any) -> None:
+    """W5-d2 (D2-2), Japanese only.  The placement answer the event cross attaches is for the filler as a whole (``ハルとセキ``); R-J1 examines each name that
+    a relation uses, and a name that is one part of a parallel filler (``ハル``) had no answer, so it stopped as ``NAME_UNVERIFIED:ハル:NO_PLACEMENT`` even
+    under a placement that answers.  Each part (a group of ``_split_parallel``, two or more of them) is asked of the SAME lookup; an answer that keeps the
+    contract of the placement query is kept in ``part_places`` (the first answer for a name stays), anything else is not entered (= no answer, as before).
+    No new rule: R-J1 is applied to the answer of the part as it is applied to the answer of a single name."""
+    for cross in reading.crosses:
+        for arm in (cross.get("arms") or {}).values():
+            for filler in arm.get("fillers") or []:
+                if not isinstance(filler, Mapping):
+                    continue
+                groups = _split_parallel(str(filler.get("surface")), "ja")
+                if len(groups) < 2:
+                    continue
+                for group in groups:
+                    name = _join(group, "ja")
+                    if not name:
+                        continue
+                    answer = lookup.lookup(name)
+                    if isinstance(answer, event_cross.PlaceResult) and not answer.invariant_problems():
+                        reading.part_places.setdefault(_norm(name), answer.to_dict())
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------
@@ -875,6 +912,62 @@ def _replaces(unit: Unit) -> bool:
     return unit.label not in ADDITION_LABELS or _has_replacement_marker(unit.text)
 
 
+_CLAUSE_BREAKS = "、，,;；"            # the marks that end a clause inside a sentence (a form of the text, no word)
+
+
+def _replaces_by_marker(unit: Unit) -> bool:
+    """The unit is under an ADDITION_LABELS label and its own sentence carries a replacement marker (the only case in which a marker decides)."""
+    return unit.override and unit.label in ADDITION_LABELS and _has_replacement_marker(unit.text)
+
+
+def _marker_head(text: str) -> Optional[str]:
+    """W5-d (R-J2): the fragment that stands between the first replacement marker of the sentence and the next clause break, when there is one.
+
+    The marker's place is the first occurrence (NFKC text) of a ``REPLACEMENT_MARKERS["ja"]`` entry, or of an English entry as a whole word
+    (the earliest of them). What follows it (``rest``) says what the marker is attached to:
+      * ``rest`` begins with a clause break, or is nothing but end marks -> the marker is a lead-in word of the whole sentence: a replacement (None);
+      * ``rest`` holds no clause break before the sentence end -> the marker leads the clause directly: a replacement (None);
+      * otherwise the marker is followed by a fragment of its own, up to the first clause break (``head``): it is returned, to be read as it
+        stands. No word is looked at: only the marks and the order."""
+    nk = unicodedata.normalize("NFKC", text)
+    spots: List[Tuple[int, int]] = []
+    for marker in REPLACEMENT_MARKERS["ja"]:
+        at = nk.find(marker)
+        if at >= 0:
+            spots.append((at, at + len(marker)))
+    pos = 0
+    for word in nk.split():
+        start = nk.index(word, pos)
+        pos = start + len(word)
+        core = word.strip(_PUNCT)
+        if core.casefold() in REPLACEMENT_MARKERS["en"]:
+            begin = start + (len(word) - len(word.lstrip(_PUNCT)))
+            spots.append((begin, begin + len(core)))
+    if not spots:
+        return None
+    _, end = min(spots)
+    rest = nk[end:].strip()
+    if not rest or rest[0] in _CLAUSE_BREAKS:
+        return None
+    body = rest.rstrip("".join(SENTENCE_ENDS) + ". \t\n")
+    cuts = [body.index(mark) for mark in _CLAUSE_BREAKS if mark in body]
+    if not cuts:
+        return None
+    return body[:min(cuts)].strip() or None
+
+
+def _marker_head_verdict(head: str, reading: Optional[UnitReading]) -> Tuple[str, str]:
+    """W5-d (R-J2): ``("MAINTAIN", reason)`` when the fragment after a replacement marker reads as exactly one clause whose polarity is ``-``
+    (a change that is denied: nothing is replaced and nothing is added in its place), else ``("AMBIGUOUS", reason)`` (it could not be read,
+    is not one clause, or is affirmative: the marker's scope is not determined). The fragment's own predicate is not interpreted."""
+    undetermined = f"MARKER_SCOPE_UNDETERMINED:{head}"
+    if reading is None or reading.status != "CROSSED" or reading.relations or len(reading.crosses) != 1:
+        return "AMBIGUOUS", undetermined
+    if (reading.crosses[0].get("center") or {}).get("polarity") == "-":
+        return "MAINTAIN", "MAINTAINED_AFTER_MARKER"
+    return "AMBIGUOUS", undetermined
+
+
 def _determiner_before(text: str, name: str) -> Optional[str]:
     """The English determiner that stands right before ``name`` in the sentence as it was written, else None.  The reader drops the
     determiner of a filler ("The crew" -> crew), so the sentence itself is looked at; words are cut at blanks and their end marks."""
@@ -894,6 +987,8 @@ def _places_of(reading: UnitReading) -> Dict[str, Mapping[str, Any]]:
             for filler in arm.get("fillers") or []:
                 if isinstance(filler, Mapping) and isinstance(filler.get("place"), Mapping):
                     places.setdefault(_norm(str(filler.get("surface"))), filler["place"])
+    for key, place in reading.part_places.items():      # W5-d2: the answers for the parts of a parallel name; the answer for the filler itself comes first
+        places.setdefault(key, place)
     return places
 
 
@@ -905,7 +1000,10 @@ def _common_noun_stop(reading: UnitReading, rels: List[Relation], introduced: se
       (b) the placement says the word itself is typed (origin ``direct``, DECIDED or MULTIPLE).  An estimated, unplaced or unknown word
           says nothing (an estimate is a construction, not a testimony), and without a placement nothing is checked: the count of names
           that could not be checked is kept in ``check`` (and shown in the output's ``reading.common_noun_check``).
-    A name that a naming sentence introduced and the names of a naming sentence are not examined."""
+    A name that a naming sentence introduced and the names of a naming sentence are not examined.
+    W5-d (R-J1), Japanese only: (b) takes only a direct type that is one of the noun types (``event_cross.NOUN_TYPE_IDS``), and a name with no usable
+    placement answer (none, or ``NO_PLACEMENT``) that no naming sentence introduced is stopped as ``NAME_UNVERIFIED:<name>:NO_PLACEMENT`` (a name that
+    is placed but UNPLACED / UNKNOWN / estimated still passes, as before)."""
     names: List[str] = []
     for rel in rels:
         if rel.kind != "ALIAS":
@@ -928,11 +1026,19 @@ def _common_noun_stop(reading: UnitReading, rels: List[Relation], introduced: se
         place = places.get(key)
         usable = place is not None and place.get("state") not in (None, "NO_PLACEMENT") and place.get("source") != "NO_PLACEMENT"
         typed = usable and place.get("origin") == "direct" and place.get("state") in ("DECIDED", "MULTIPLE")
+        if typed and reading.lang == "ja":
+            # W5-d (R-J1): a Japanese name is stopped as a common noun when its direct type is one of the noun types (event_cross.NOUN_TYPE_IDS);
+            # a direct type of another kind (a predicate type, say) says nothing about the word being a common noun
+            from . import event_cross
+            typed = any(str(t) in event_cross.NOUN_TYPE_IDS for t in place.get("types") or [])
         if key not in seen:
             seen[key] = "flagged" if typed else ("checked" if usable else "not_checked")
             check[seen[key]] += 1
         if typed:
             return f"COMMON_NOUN_SUBJECT:{name}:PLACEMENT_DIRECT:{','.join(str(t) for t in place.get('types') or [])}"
+        if reading.lang == "ja" and not usable:
+            # W5-d (R-J1): with no placement answer a Japanese name that no naming sentence introduced cannot be told from a common noun
+            return f"NAME_UNVERIFIED:{name}:NO_PLACEMENT"
     return None
 
 
@@ -954,6 +1060,16 @@ def extract(readings: List[UnitReading]) -> Extraction:
             if stop is not None:
                 status, reasons, rels, kept = "NAME_UNRESOLVED", [stop], [], []
         replaces = _replaces(unit)
+        if replaces and status in PASSING_STATUSES and _replaces_by_marker(unit) and _marker_head(unit.text) is not None:
+            # W5-d (R-J2): the marker is followed by a fragment of its own; what it says decides whether this line replaces, maintains or is undetermined
+            head = _marker_head(unit.text)
+            verdict, why = _marker_head_verdict(head, reading.marker_head)
+            if verdict == "MAINTAIN":
+                replaces, reasons = False, list(reasons) + [why]          # not a replacement; kept as an addition below
+            else:
+                status, reasons, rels, kept, replaces = "AMBIGUOUS_RELATION", list(reasons) + [why], [], [], False
+                units.append(UnitResult(unit.index, status, reasons, unit.text, unit.witness, replaces))
+                continue
         if unit.override and not replaces:
             additions_kept += 1
         units.append(UnitResult(unit.index, status, reasons, unit.text, unit.witness, replaces))
