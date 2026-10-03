@@ -1,0 +1,15 @@
+## current tree
+semantic_read: /Users/motonisihikoudai/Projects/vera-impl/wt/W5-a-S/verantyx/semantic_read.py
+pro: 212 rows in 0.003s
+exit_code: 0
+summary: {"outcome": "NO_ANCHOR", "reason": "READER_ABSTAINED"}
+anchor: 会計係は領収書を発行しなかった。
+readable: False abstain: {"kind": "not_supported", "reasons": ["AGENT_EVIDENCE_MISSING:会計係"]}
+
+## round-2 snapshot
+semantic_read: /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5a3/r2snap/verantyx/semantic_read.py
+pro: 212 rows in 0.003s
+exit_code: 0
+summary: {"outcome": "FOCUS", "anchor": "発行する|-|past|agent=会計係;patient=領収書", "anchor_realization": "REALIZED:会計係は領収書を発行しなかった。", "anchor_occupied": "ATTESTED", "observed": [], "focus": "発行する|-|past|agent=会計係;patient=領収書", "tie": null, "occupied": {"発行する|-|past|agent=会計係;patient=領収書": "ATTESTED"}, "realization": {"発行する|-|past|agent=会計係;patient=領収書": "REALIZED:会計係は領収書を発行しなかった。"}, "claims": {"発行する|-|past|agent=会計係;patient=領収書": "OBSERVED_OCCUPIED"}, "distances": {}, "unoccupied_marked": [], "ranks": [["発行する|-|past|agent=会計係;patient=領収書"]], "basis_origin": {}, "decided_by": [], "ledger_seqs": {"発行する|-|past|agent=会計係;patient=領収書": {"distance": [], "utter_verbatim": [], "utter_neighbor": [], "recency": [], "decided": []}}, "face_swap_counts": {"licensed": 0, "candidates_tried": 0, "candidates_skipped_same_as_original": 0}}
+anchor: 会計係は領収書を発行しなかった。
+readable: True abstain: null

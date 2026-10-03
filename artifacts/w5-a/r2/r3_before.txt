@@ -1,0 +1,10 @@
+@pytest.mark.parametrize('text', ['先生が生徒に練習をさせた。', '母が子どもに勉強をさせた。', '兄が洗濯をした。'])
+def test_a_sahen_noun_apart_from_its_suru_is_not_read_as_suru_with_an_object(text):
+    ab = refusal(text)
+    assert any(r.startswith('PREDICATE_NOT_MAPPED') for r in ab['reasons']), ab
+
+
+@pytest.mark.parametrize('text,predicate', [('兄が窓を開けた。', '開ける'), ('弟が本を読んだ。', '読む'), ('母が弟に皿を洗わせた。', '洗う')])
+def test_an_ordinary_object_and_a_causative_of_an_ordinary_verb_are_still_read(text, predicate):
+    out = SR.read(text)
+    assert out['readable'] is True and out['clauses'][0]['predicate'] == predicate, out

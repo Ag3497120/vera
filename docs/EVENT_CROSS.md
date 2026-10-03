@@ -67,7 +67,7 @@
 | `EventCross` | `index`（節の番号）、`center`（述語の辞書形・極性・時制・モダリティ・態。あれば量化・スコープ・比較をそのまま）、`arms`（役割名 -> `Arm`。規約の順）、`provenance`（`source_schema`・`clause_index`・`rule`・`span`。読解器の `clause_meta` の写し） |
 | `Arm` | `kind`（`FILLER` か `ARM_TIE`）、`fillers`、`agreement`（`TypeAgreement`） |
 | `Filler` | `surface`（原文の表記）、`head`（主辞。読解器は主辞を出さないので `surface` と同じで `head_basis` は `surface`）、`place`（`PlaceResult`）、`flags`（読解器が出した量化があれば `{"quantifier": 値}`） |
-| `PlaceResult` | `state`・`origin`・`estimate_basis`・`types`（順位ではない集合。辞書順に並べる）・`provenance`。`source` は `direct`・`estimated_near`・`estimated_generated`・`UNPLACED`・`UNKNOWN`・`NO_PLACEMENT` のどれか |
+| `PlaceResult` | `state`・`origin`・`estimate_basis`・`types`（順位ではない集合。**構築時に辞書順に書き直す**。空でない文字列だけのタプルのときに限る。それ以外の形は直さず `invariant_problems` が拒否する。後から順序を崩された値は `TYPES_NOT_IN_ALPHABETICAL_ORDER`。W5-a A1）・`provenance`。`source` は `direct`・`estimated_near`・`estimated_generated`・`UNPLACED`・`UNKNOWN`・`NO_PLACEMENT` のどれか |
 | `TypeAgreement` | `verdict`（`AGREE`・`DISAGREE`・`NOT_CHECKED`）、`reason`（`NOT_CHECKED` のときの閉じた理由）、`expected`・`observed` |
 | `CrossReading` | `status`（`CROSSED`・`ABSTAINED`・`INPUT_REJECTED`）、`crosses`、`relations`（読解器の `relations` の写し）、`abstain`、`lookup_id`、`counts` |
 | `PlacementLookup` | `lookup(lemma) -> PlaceResult` の Protocol。引数は語だけ（役割も述語も渡さない） |
@@ -89,6 +89,12 @@
    - 充填物の `place` は `lookup.lookup(head)` の結果（役割も述語も渡さない）。`flags` は節の `quantifiers` にその役割名の鍵があるときだけ。
    - 十字の関係は読解器の `relations` をそのまま（件数も順も向きも同じ。足さない）。
 4. 入力の dict を変更しない（深い写し）。同じ入力・同じ lookup なら `to_dict()` の直列化は同じバイト列。
+   **W5-a（A1・A2。攻撃役の反例）**: `to_dict()` の JSON が、等しい入力に対して**鍵の挿入順によらず**同じバイト列になるよう、次を固定した。
+   - `place.types` は常に辞書順（型は集合で順位ではないので、構築時に辞書順で書くのは解決ではなく定義どおりの書き方）。lookup が `MULTIPLE` の型を逆順に返しても `PERSON, PLACE` の順で出る。
+   - `relations` の各要素は `type, from, to` の順で写し、ほかの鍵があれば（落とさず）その後ろに辞書順。
+   - 入力から写す入れ子の Mapping（`center` の `quantifiers`・`scope`・`comparison`、`flags` の量化、`abstain`、`provenance` の値）は鍵を辞書順にして写す（配列の順は変えない）。
+   - lookup が返す `place.provenance` は入力ではないので変えない。
+   - テスト: `tests/attack/test_w5a_cross_key_order.py`（入力の各 Mapping の鍵の**全順列**で直列化が同じバイト列。件数と秒数は `artifacts/w5-a/k3_permutations.txt`）。
 
 ## 型一致の決め方
 

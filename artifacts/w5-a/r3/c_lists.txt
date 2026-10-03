@@ -1,0 +1,5 @@
+# 99 module-level closed collections of verantyx.semantic_read / semantic_reader (script: scratchpad lists_dump.py): sha256 of the JSON, dev copy then tree
+a6b5d38e140fbd1a61a9452550e01e1a7e4158e7bf5bdaa5f8db15b6b21ce1be  -
+a6b5d38e140fbd1a61a9452550e01e1a7e4158e7bf5bdaa5f8db15b6b21ce1be  -
+# distinct (uniq | wc -l):
+       1

@@ -422,8 +422,16 @@ def test_the_index_is_opened_read_only_and_not_changed(tmp_path):
 
 # ------------------------------------------------------------------ realization and the claim (D11, D12)
 def test_realization_and_claim_travel_together():
+    # W5-a round 2 (auditor's decision B2; docs/READING_SOUNDNESS.md K63): the entry no longer sets aside an unsupported clause for
+    # 'unrepresented source content'. The element whose agent was swapped for the recipient's own name (花子は花子に本をあげた。) is not read back, so its
+    # realization is REFUSED (ROUNDTRIP_MISMATCH); the other elements are unchanged. The element is found by its agent's surface, not by position.
     obs = O.observe(vp(direction='FACE_SWAP:agent'), struct(fakes.people_placement()))
+    refused = [e for e in elements(obs) if surfaces_of(e, 'agent') == ['花子']]
+    assert len(refused) == 1
+    assert refused[0].realization == {'status': 'REFUSED', 'reason': 'ROUNDTRIP_MISMATCH', 'detail': 'generated text was not read (ABSTAINED)'}
+    assert refused[0].claim == 'UNKNOWN_OCCUPANCY'
     for e in elements(obs):
+        if e is refused[0]: continue
         r = e.realization
         assert r['status'] == 'REALIZED' and r['claim'] == 'UNKNOWN_OCCUPANCY' and r['provenance'].startswith('observed:occupancy_unknown')
         assert r['text'].endswith('に本をあげた。') and r['derivation'] == 'observed-cross'
@@ -434,7 +442,13 @@ def test_unoccupied_cells_have_a_constructed_provenance_and_never_an_answer(tmp_
     idx = make_index(tmp_path, ['ただの文字列。'])
     obs = O.observe(vp(direction='FACE_SWAP:agent'), struct(fakes.people_placement(), index=O.IndexSpec(idx, ('pro',))))
     es = elements(obs)
-    assert es and all(e.claim == 'CONSTRUCTED_UNOCCUPIED' and e.realization['provenance'] == 'constructed:observed_unoccupied' for e in es)
+    # W5-a round 2 (auditor's decision B2; docs/READING_SOUNDNESS.md K63): the element whose agent is the recipient's own name (花子) is not read back,
+    # so its realization is REFUSED and carries no provenance of its own (measured: status, reason, detail only); its claim is still constructed.
+    refused = [e for e in es if surfaces_of(e, 'agent') == ['花子']]
+    assert len(refused) == 1
+    assert refused[0].realization == {'status': 'REFUSED', 'reason': 'ROUNDTRIP_MISMATCH', 'detail': 'generated text was not read (ABSTAINED)'}
+    assert es and all(e.claim == 'CONSTRUCTED_UNOCCUPIED' for e in es)
+    assert all(e.realization['provenance'] == 'constructed:observed_unoccupied' for e in es if e is not refused[0])
     assert 'ANSWER' not in O.to_json(obs)
 
 
@@ -652,7 +666,9 @@ def test_counts_list_every_realization_refusal_reason_with_zeros_in_a_fixed_orde
     from verantyx import semantic_realize
     c = O.observe(vp(direction='FACE_SWAP:agent'), struct(fakes.people_placement())).to_dict()['counts']['realization']
     expect = sorted(semantic_realize.REFUSAL_REASONS - set(O.REFUSAL_NOT_ON_THIS_PATH))
-    assert list(c['refused']) == expect and all(v == 0 for v in c['refused'].values()) and c['realized'] == 4
+    # W5-a round 2 (auditor's decision B2; docs/READING_SOUNDNESS.md K63): one element (agent 花子, the recipient's own name) is refused, not realized.
+    assert list(c['refused']) == expect and c['realized'] == 3
+    assert c['refused']['ROUNDTRIP_MISMATCH'] == 1 and all(v == 0 for k, v in c['refused'].items() if k != 'ROUNDTRIP_MISMATCH')
     # the two reasons that are left out belong to the answer / source-view realizers; if the realizer's list grows, this fails and a person decides
     assert set(O.REFUSAL_NOT_ON_THIS_PATH) <= semantic_realize.REFUSAL_REASONS and len(expect) + len(O.REFUSAL_NOT_ON_THIS_PATH) == len(semantic_realize.REFUSAL_REASONS)
     assert 'ANSWER' not in json.dumps(c)

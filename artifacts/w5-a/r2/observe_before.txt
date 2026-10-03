@@ -1,0 +1,30 @@
+def test_realization_and_claim_travel_together():
+    obs = O.observe(vp(direction='FACE_SWAP:agent'), struct(fakes.people_placement()))
+    for e in elements(obs):
+        r = e.realization
+        assert r['status'] == 'REALIZED' and r['claim'] == 'UNKNOWN_OCCUPANCY' and r['provenance'].startswith('observed:occupancy_unknown')
+        assert r['text'].endswith('に本をあげた。') and r['derivation'] == 'observed-cross'
+    assert 'ANSWER' not in O.to_json(obs)
+
+
+def test_unoccupied_cells_have_a_constructed_provenance_and_never_an_answer(tmp_path):
+    idx = make_index(tmp_path, ['ただの文字列。'])
+    obs = O.observe(vp(direction='FACE_SWAP:agent'), struct(fakes.people_placement(), index=O.IndexSpec(idx, ('pro',))))
+    es = elements(obs)
+    assert es and all(e.claim == 'CONSTRUCTED_UNOCCUPIED' and e.realization['provenance'] == 'constructed:observed_unoccupied' for e in es)
+    assert 'ANSWER' not in O.to_json(obs)
+def test_counts_list_every_realization_refusal_reason_with_zeros_in_a_fixed_order():
+    from verantyx import semantic_realize
+    c = O.observe(vp(direction='FACE_SWAP:agent'), struct(fakes.people_placement())).to_dict()['counts']['realization']
+    expect = sorted(semantic_realize.REFUSAL_REASONS - set(O.REFUSAL_NOT_ON_THIS_PATH))
+    assert list(c['refused']) == expect and all(v == 0 for v in c['refused'].values()) and c['realized'] == 4
+    # the two reasons that are left out belong to the answer / source-view realizers; if the realizer's list grows, this fails and a person decides
+    assert set(O.REFUSAL_NOT_ON_THIS_PATH) <= semantic_realize.REFUSAL_REASONS and len(expect) + len(O.REFUSAL_NOT_ON_THIS_PATH) == len(semantic_realize.REFUSAL_REASONS)
+    assert 'ANSWER' not in json.dumps(c)
+    # an English cross cannot be said: that reason (and only that one) is counted
+    en = O.observe(vp('Taro gave Hanako a book.'), struct()).to_dict()['counts']['realization']
+    assert list(en['refused']) == expect
+    assert en['refused']['NOT_REALIZABLE'] == 1 and sum(en['refused'].values()) == 1 and en['realized'] == 0
+
+
+def test_a_cell_with_no_filler_is_not_searched_in_the_index_and_is_not_called_unoccupied(tmp_path):

@@ -29,6 +29,7 @@ output). The entry writes no file, uses no network, prints nothing but the JSON 
 from __future__ import annotations
 
 import argparse
+import functools
 import json
 import re
 import sys
@@ -57,7 +58,7 @@ NOT_PRODUCED = {
     'relation:cause': 'not mapped', 'relation:contrast': 'not mapped', 'relation:concession': 'not mapped', 'relation:condition': 'not mapped',
     'relation:purpose': 'not mapped', 'relation:sequence': 'not mapped', 'relation:simultaneous': 'not mapped', 'relation:manner': 'not mapped',
     'relation:quote': 'not mapped', 'relation:content': 'not mapped',
-    'voice:passive (indirect, honorific, potential, spontaneous)': 'れる/られる is passive only on positive evidence: による/によって; a に/から phrase of a verb of the closed class _NI_KARA_FREE_PREDICATES; or no agent phrase and a subject headed by a noun that is never a person (_not_person_evidence). Not evidence: a subject missing from the person table, a verb outside a class. られる (potential), a verb of thought/feeling (spontaneous) and any other case: UNDETERMINED_VOICE',
+    'voice:passive (indirect, honorific, potential, spontaneous)': 'れる/られる is passive only on positive evidence: による/によって; or a に/から phrase of a verb of the closed class _NI_KARA_FREE_PREDICATES. Not evidence: a subject missing from the person table, a subject that is not a person, a verb outside a class. No agent phrase: always UNDETERMINED_VOICE (passive and spontaneous are not told apart without the predicate\'s type; W5-a). られる (potential), a verb of thought/feeling (spontaneous) and any other case: UNDETERMINED_VOICE',
     'voice:causative_passive': 'only from the reader\'s causer/causee roles',
     'en:time and place phrases': 'the English frame has no time/place role; a sentence that has one is returned unread (UNREPRESENTED_CONTENT)',
     'en:possessive determiners': 'her/his/their ... are dropped by the frame; the value cannot be restored, so the sentence is returned unread',
@@ -66,7 +67,7 @@ NOT_PRODUCED = {
     'predicate:converse verbs': 'verbs of receiving / borrowing / learning / hearing: the reader names the converse verb and swaps the roles; the convention forbids a replaced word as the predicate, so only the restoration it states (4.6, もらう) is made and the others are not read (PREDICATE_NORMALIZED)',
     'role:goal for existence / residence verbs': 'the place of existence or residence is `place` (convention 2, 4.2); with no shown place the input is not read (PLACE_TYPE_UNDETERMINED)',
     'role:agent / recipient for a capitalised name (English)': 'a capital letter says "a name", not "a person" (a city is written like a person): an intransitive subject and the recipient after `to` need a pronoun or an animate noun (SUBJECT_TYPE_UNDETERMINED / RECIPIENT_TYPE_UNDETERMINED); only the first object of a double-object clause is a recipient by its construction',
-    'role:path (を of a verb of going through a space)': 'the convention has no role for the path a motion verb covers (走る・歩く・渡る の を-phrase); the reader calls it patient, which is wrong, so the input is not read (PATH_ROLE_NOT_MAPPED)',
+    'role:path (を of a verb of going through a space)': 'the convention has no role for the path a motion verb covers (走る・歩く・渡る の を-phrase); the reader calls it patient, which is wrong, so the input is not read (PATH_ROLE_NOT_MAPPED). Also a compound verb whose parts are of that class (the structure of the word, not a word added), and an active clause with an を-phrase whose subject is shown not to be a person, or whose subject has no person evidence and whose を-phrase has place evidence (SUBJECT_TYPE_UNDETERMINED:object or path; W5-a); and an active clause with an を-phrase whose subject has no person evidence and whose predicate is in none of the reader\'s closed classes with an を-object (the corpus transitivity table is not counted as evidence of an object): AGENT_EVIDENCE_MISSING (W5-a rounds 2-3, K64)',
     'predicate:する with a サ変 noun apart from its する (掃除をさせた)': 'convention 3 writes a サ変 verb as noun + する, the reader splits it into する and a patient; the input is not read (PREDICATE_NOT_MAPPED:light verb)',
     'en:two names in a row': 'a proper name before a common noun (a double object) may be one phrase or two roles; not read (NP_BOUNDARY_UNDETERMINED)',
     'en:be + a participle that is also a state adjective': 'closed / opened / finished ... without a by-phrase are a passive and a state alike; the voice is undecided (UNDETERMINED_VOICE)',
@@ -262,13 +263,21 @@ def _map_ja(text, toks, view, R):
     def overlaps(a, b):
         return a.predicate_span.start <= b.predicate_span.start and b.predicate_span.end <= a.predicate_span.end or (
             b.predicate_span.start <= a.predicate_span.start and a.predicate_span.end <= b.predicate_span.end)
+    def answered(u, sup):
+        """W5-a round 2 (auditor's decision B2): the one rejected alternative reading that READING_CONVENTIONS §9.2 (1) writes down -- a
+        copula / negative-copula reading left unsupported only because its value is a predicate phrase, and the comparison read from inside
+        it is supported. Any other reason, alone or beside that one, is not set aside: the input is not read (UNSUPPORTED_CLAUSE)."""
+        return (sup.rule == 'comparison' and u.rule in ('copula', 'negation') and bool(u.unsupported)
+                and all(reason == R._PREDICATE_VALUE_REASON for reason in u.unsupported))
+
     def inside(u, sup):
         """u is a rejected alternative reading of the predicate of the supported clause sup: its predicate range lies wholly in sup's, or --
         the one other shape -- u is a copula / negative-copula reading whose predicate range is the whole predicate phrase ('弟より強い') and
-        sup is the comparison read from inside it. Any other overlap is not an alternative reading of the same predicate."""
-        if sup.predicate_span.start <= u.predicate_span.start and u.predicate_span.end <= sup.predicate_span.end: return True
+        sup is the comparison read from inside it. Any other overlap is not an alternative reading of the same predicate. Either way every
+        reason u was unsupported for must be answered by sup (answered)."""
+        if sup.predicate_span.start <= u.predicate_span.start and u.predicate_span.end <= sup.predicate_span.end: return answered(u, sup)
         return (u.rule in ('copula', 'negation') and sup.rule == 'comparison'
-                and u.predicate_span.start <= sup.predicate_span.start and sup.predicate_span.end <= u.predicate_span.end)
+                and u.predicate_span.start <= sup.predicate_span.start and sup.predicate_span.end <= u.predicate_span.end) and answered(u, sup)
     stray = [c for c in unsupported if not any(inside(c, s) for s in supported)]
     if stray:
         _no('UNSUPPORTED_CLAUSE')
@@ -353,6 +362,48 @@ _PATH_VERBS = frozenset(('走る', '歩く', '渡る', '飛ぶ', '跳ぶ', '進�
                          '降りる', '出る', '離れる', '巡る', '辿る', '滑る', '散歩する', '通過する', '横断する', '移動する', '出発する', '旅する'))
 
 
+@functools.lru_cache(maxsize=None)
+def _single_verb(surface):
+    """The tagger's one word for `surface` when it is a single verb written as it is; else None."""
+    from .typed_edges import _tagger
+    ws = list(_tagger()(surface))
+    return ws[0] if len(ws) == 1 and ws[0].surface == surface and ws[0].feature.pos1 == '動詞' else None
+
+
+@functools.lru_cache(maxsize=None)
+def _stem_lemma(stem):
+    """The lemma of the verb whose continuative form (stem + ます) is `stem`, when the tagger reads stem + ます as a verb and ます; else None."""
+    from .typed_edges import _tagger, _base
+    ws = list(_tagger()(stem + 'ます'))
+    return _base(ws[0]) if len(ws) == 2 and ws[0].feature.pos1 == '動詞' and ws[1].surface == 'ます' else None
+
+
+@functools.lru_cache(maxsize=None)
+def _is_compound_path_verb(lemma):
+    """A compound verb made of the closed class _PATH_VERBS: split the lemma in two; the second half is one verb that is, or whose lemma is, a verb
+    of _PATH_VERBS (飛び越える: 越える), or the first half is the continuative form of such a verb (突っ走る: 走る). The class is extended by the
+    structure of the word, not by a word added to it. A lemma that is itself in the class is the existing test's, not this one's."""
+    from .typed_edges import _base
+    if lemma in _PATH_VERBS: return False
+    for i in range(1, len(lemma)):
+        first, second = lemma[:i], lemma[i:]
+        word = _single_verb(second)
+        if word is None: continue
+        if second in _PATH_VERBS or _base(word) in _PATH_VERBS: return True
+        if _stem_lemma(first) in _PATH_VERBS: return True
+    return False
+
+
+def _object_frame_known(predicate, R):
+    """W5-a round 3 (auditor's decision B3, (β) variant C): a predicate is known to take an を-object only when it is in one of the reader's
+    own closed classes whose frame writes the を-phrase as the thing acted on (X が Y に Z を渡す, X を Y に変える / 任命する / 置く,
+    X を囲む ...). The corpus table (frames.transitivity) is not a source: its 'trans' is the share of を among a verb's case edges, which
+    does not tell a path を from an object を (docs/READING_SOUNDNESS.md K64). A predicate in no class is not known to take an object."""
+    classes = (R._TRANSFER_PREDICATES, R._SHARING_PREDICATES, R._CHANGE_PREDICATES - R._INTRANSITIVE_CHANGE_PREDICATES, R._SELECTION_PREDICATES,
+               R._PROCESSING_PREDICATES, R._PRODUCT_PREDICATES, R._CONTAINMENT_PREDICATES, R._PLACEMENT_PREDICATES)
+    return any(predicate in cls for cls in classes)
+
+
 def _clause_ja(c, text, toks, R):
     from .frames import transitivity
     pred_i = next((i for i, (w, a, b) in enumerate(toks) if a == c.predicate_span.start), None)
@@ -389,7 +440,7 @@ def _clause_ja(c, text, toks, R):
     # A verb of going through a space takes the path with を (道を歩く): the convention has no role for it and the reader names it patient;
     # a サ変 noun apart from its する (掃除をさせた) is written by the convention as one predicate (掃除する), not as する with a patient. Neither is guessed.
     if voice == 'active' and any(r.name == 'patient' for r in raw_roles):
-        if c.predicate in _PATH_VERBS: _no('PATH_ROLE_NOT_MAPPED:' + c.predicate)
+        if c.predicate in _PATH_VERBS or _is_compound_path_verb(c.predicate): _no('PATH_ROLE_NOT_MAPPED:' + c.predicate)
         if c.predicate == 'する': _no('PREDICATE_NOT_MAPPED:light verb')
     if voice == 'causative' and c.predicate == 'する' and any(r.name == 'patient' for r in raw_roles): _no('PREDICATE_NOT_MAPPED:light verb')
     # ---- roles ----
@@ -401,7 +452,23 @@ def _clause_ja(c, text, toks, R):
         if not value: _no('EMPTY_ROLE_VALUE:' + name)
         if value not in text: _no('VALUE_NOT_IN_INPUT:' + name)
         if name == 'agent':
-            if voice == 'passive' or has_patient:
+            if voice != 'passive' and has_patient:
+                # W5-a: an active clause with an object names its subject agent only when nothing says the subject is not a person, and the を-phrase
+                # is not a place (a place with を is a path or a starting point of a movement: 庭を歩く). Otherwise the type is not decided.
+                objects = [x.span.text for x in raw_roles if x.name == 'patient']
+                if _not_person_evidence(r.span.text, R) or (not R._is_person_phrase(r.span.text) and any(
+                        R._is_place_phrase(o) or o.replace(' ', '').replace('\u3000', '').split('の')[-1] in R._SPOT_NOUNS for o in objects)):
+                    _no('SUBJECT_TYPE_UNDETERMINED:object or path:' + r.span.text)
+                # W5-a rounds 2-3 (auditor's decision B3, (β) variant C): an を-phrase is the thing acted on only in a frame the reader's own closed
+                # classes know. A subject with no person evidence (_is_person_phrase: persons, bodies of persons, animals; the tree has no class of
+                # vehicles, so none counts) and an を-phrase of a predicate in none of those classes may be a thing moving along a path: not an agent,
+                # the input is not read. The corpus transitivity table does not count as a known frame (K64).
+                if (not R._is_person_phrase(r.span.text)
+                        and any(x.name == 'patient' and R._particle_after(toks, x.span.end) == 'を' for x in raw_roles)
+                        and not _object_frame_known(c.predicate, R)):
+                    _no('AGENT_EVIDENCE_MISSING:' + r.span.text)
+                mapped = 'agent'
+            elif voice == 'passive' or has_patient:
                 mapped = 'agent'
             elif R._is_person_phrase(r.span.text):
                 mapped = 'agent'
@@ -550,8 +617,9 @@ def _voice_ja(c, toks, pred_i, transitivity):
         #   1a  a によって phrase                                                                      -> passive
         #   1b  a に/から phrase and a verb of _NI_KARA_FREE_PREDICATES (transitive, no に/から argument of its own) -> passive; any other verb -> abstain,
         #       whoever the subject is (the に/から phrase may be an argument of the active verb with an honorific, or the agent)
-        #   2   no agent phrase and a transitive verb: られる -> abstain (also the potential); a verb of _SPONTANEOUS_PREDICATES -> abstain; a subject
-        #       whose head is a noun that is never a person (_not_person_evidence) -> passive; otherwise abstain
+        #   2   no agent phrase and a transitive verb: always abstain (W5-a). れる/られる with no agent phrase is passive, spontaneous (a verb of
+        #       recollection, thought or feeling that no list can close) or honorific alike, and "the subject is not a person" tells the
+        #       passive from none of them; so no passive without 1a or 1b. (The earlier rule 2c, a passive on a non-person subject, is withdrawn.)
         if agent is not None:
             by = particle_after(agent)
             if subject_marked and by == 'によって': return 'passive'
@@ -562,7 +630,8 @@ def _voice_ja(c, toks, pred_i, transitivity):
         if subject_marked and transitivity(c.predicate) == 'trans':
             if 'られる' in passive: _no('UNDETERMINED_VOICE:passive or potential')
             if c.predicate in _SPONTANEOUS_PREDICATES: _no('UNDETERMINED_VOICE:passive or spontaneous')
-            if _not_person_evidence(patients[0].span.text): return 'passive'
+            # a subject that is not a person rules out the honorific, not the spontaneous (nothing tells the two apart without the verb's type)
+            if _not_person_evidence(patients[0].span.text): _no('UNDETERMINED_VOICE:passive or spontaneous')
             _no('UNDETERMINED_VOICE:passive or honorific')
     _no('UNDETERMINED_VOICE:れる/られる')
 
@@ -654,20 +723,41 @@ def _recipient_by_construction_en(text, recipient, patient):
     return not re.search(r'\b(?:to|for|at|from|in|on|into|toward|towards)\s+$', text[:r], re.I)
 
 
+def _en_inflections(verb, table):
+    """The written forms a known verb can take (closed rules: -s, -es, -ed, -d, a doubled final letter + -ed, consonant + y -> -ied / -ies, and the
+    irregular table's past and participle)."""
+    out = {verb, verb + 's', verb + 'es', verb + 'ed', verb + 'd', verb + verb[-1] + 'ed'}
+    if len(verb) > 1 and verb.endswith('y') and verb[-2] not in 'aeiou':
+        out.update((verb[:-1] + 'ied', verb[:-1] + 'ies'))
+    out.update(table.get(verb, ()))
+    return out
+
+
 def _clause_en(text, words, low, frame, known, aux, en):
     if frame.ambiguous or frame.inferred: _no('EN_AMBIGUOUS_OR_INFERRED')
-    head = frame.predicate.split()[0]
-    if head not in known and en.lemma(head) not in known and head.rstrip('e') not in {k.rstrip('e') for k in known}:
-        _no('UNKNOWN_PREDICATE:' + frame.predicate)
+    frame_head = frame.predicate.split()[0]
+    # locate the verb token as it is WRITTEN (the reader's head may be a lemma that en_frames guessed wrong, e.g. one with a letter too many)
+    k = next((i for i, w in enumerate(low) if i > 0 and (en.lemma(w) == frame_head or w == frame_head)), None)
+    table = _en_irregular_table()
+    if k is None:                       # no written verb token: the old gate; the refusal for the missing token comes where the verb group is read
+        head, predicate = frame_head, frame.predicate
+        if head not in known and en.lemma(head) not in known and head.rstrip('e') not in {x.rstrip('e') for x in known}:
+            _no('UNKNOWN_PREDICATE:' + frame.predicate)
+    else:
+        # the dictionary form is decided from the written form and the closed list alone: exactly one known verb that the written form is an
+        # inflection of; none -> UNKNOWN_PREDICATE, more than one -> a tie (abstain)
+        forms = sorted(v for v in known if low[k] in _en_inflections(v, table))
+        if not forms: _no('UNKNOWN_PREDICATE:' + frame.predicate)
+        if len(forms) > 1: _no('PREDICATE_FORM_UNDETERMINED:' + low[k] + ':' + ','.join(forms))
+        head = forms[0]
+        predicate = ' '.join([head] + frame.predicate.split()[1:])
     if any(w in _EN_QUANT for w in low): _no('QUANTIFIER_NOT_MAPPED')
     if any(w in _EN_POSSESSIVES for w in low): _no('UNREPRESENTED_CONTENT:possessive determiner')
     if re.search(r'[0-9]', text): _no('QUANTIFIER_NOT_MAPPED:numeral')
     if re.search(r'[?]|^(?:who|what|where|when|why|how|do|does|did|is|are|was|were)\b', text.strip(), re.I) and not text.strip().lower().startswith(('did not', 'does not')):
         _no('UNDETERMINED_MODALITY:question')
     # locate the verb group
-    k = next((i for i, w in enumerate(low) if i > 0 and (en.lemma(w) == head or w == head)), None)
     if k is None: _no('UNDETERMINED_TENSE:verb token')
-    table = _en_irregular_table()
     prev = low[k - 1]
     j = k - 1
     neg = False
@@ -737,11 +827,11 @@ def _clause_en(text, words, low, frame, known, aux, en):
     for value in (agent, patient, recipient):
         accounted.update(w.lower() for w in _en_words(value or ''))
     accounted.update(en.DET); accounted.update({'to', 'by'}); accounted.update(head.split()); accounted.update(low[i] for i in used)
-    accounted.update(w for w in frame.predicate.split())
+    accounted.update(w for w in predicate.split())
     accounted.update(low[i] for i in range(len(low)) if low[i] in aux or low[i] in en.NEG)
     leftover = [w for i, w in enumerate(low) if w not in accounted and i != k]
     if leftover: _no('UNREPRESENTED_CONTENT:' + leftover[0])
-    clause = {'predicate': frame.predicate, 'roles': ordered, 'polarity': '-' if frame.negated else '+', 'tense': tense, 'modality': None, 'voice': voice}
+    clause = {'predicate': predicate, 'roles': ordered, 'polarity': '-' if frame.negated else '+', 'tense': tense, 'modality': None, 'voice': voice}
     if bool(neg) != bool(frame.negated): _no('UNDETERMINED_POLARITY')
     return clause, {'rule': 'en_frames', 'span': [0, len(text)]}
 

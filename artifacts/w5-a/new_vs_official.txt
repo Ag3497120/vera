@@ -1,0 +1,7 @@
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+FAILED tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread
+FAILED tests/test_semantic_read_r4.py::test_t6_a_subject_headed_by_a_noun_that_is_never_a_person_keeps_the_passive[\u5009\u5eab\u304c\u89e3\u4f53\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t6_a_subject_headed_by_a_noun_that_is_never_a_person_keeps_the_passive[\u6559\u5ba4\u304c\u6539\u88c5\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t6_a_subject_headed_by_a_noun_that_is_never_a_person_keeps_the_passive[\u6d77\u5cb8\u304c\u9589\u9396\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t6_a_subject_headed_by_a_noun_that_is_never_a_person_keeps_the_passive[\u76ee\u6b21\u304c\u66f4\u65b0\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t6_a_subject_headed_by_a_noun_that_is_never_a_person_keeps_the_passive[\u8981\u7d04\u304c\u524a\u9664\u3055\u308c\u305f\u3002]

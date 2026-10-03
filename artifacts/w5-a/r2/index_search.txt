@@ -1,0 +1,28 @@
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "主語 人の証拠 を 経路 棄権",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "他動性 枠 transitivity",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

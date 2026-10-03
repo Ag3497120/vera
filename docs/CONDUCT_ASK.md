@@ -150,6 +150,10 @@ W2-g の detail: `MAPPING_UNSETTLED` = `STEP1_DISAGREE` `STEP1_INVALID_ANSWER` `
 - 棄権 → `VOCAB_UNMAPPED`（`LLM_ABSTAINED:DISAGREE|NONE_SELECTED|INVALID_ANSWER`）、失敗 → `VOCAB_UNMAPPED`（`LLM_FAILED:<種別>`）、オフ → `VOCAB_UNMAPPED`（`VOCAB_LLM_OFF`）。
 - 削除・公開・支出・認証情報に見える許可の質問は、最後まで対応づけられなければ `HUMAN_APPROVAL_REQUIRED`（`BUILTIN_PROTECTED`）で上げる（答えを出す方向には使わない）。
 
+**過去の決定の再利用の鍵（W5-a A-01）**: `llm_choice.LLMChooser` は、語・候補の語・**候補ごとに渡した文脈（`used_in`）の内容ハッシュ**が同じときだけ過去の決定を再利用する（`reuse_key`。台帳の決定行に `reuse_key` と構成 `reuse_key_parts` を残す）。
+文脈が変われば再照会する。`reuse_key` の無い古い台帳の決定は再利用しない（`summary()["decisions_without_reuse_key"]` に数える）。**質問文（`question`）は鍵に入れない**: 語彙の選択は、質問文が違っても同じ語・同じ候補・同じ文脈なら再利用する今の約束のまま。
+`conduct_map` の決定の再利用（W2-g2）は、文脈が同じなら鍵も同じなので変わらない。
+
 作り物のプロバイダ（`--vocab-llm fake --vocab-fake <台本.json>`）。台本は JSON の 1 個のオブジェクト:
 
 ```

@@ -87,6 +87,12 @@ class PlaceResult:
     types: Tuple[str, ...] = ()
     provenance: Mapping[str, Any] = field(default_factory=dict)
 
+    def __post_init__(self) -> None:
+        # `types` is a set, not a ranking: a well-formed tuple of non-empty strings is written in alphabetical order, whatever order the lookup
+        # returned it in. Any other shape (a list, an empty string, a non-string) is left as it is and refused by invariant_problems().
+        if isinstance(self.types, tuple) and self.types and all(isinstance(t, str) and t for t in self.types):
+            object.__setattr__(self, 'types', tuple(sorted(self.types)))
+
     @property
     def source(self) -> str:
         """direct | estimated_near | estimated_generated | UNPLACED | UNKNOWN | NO_PLACEMENT (| INVALID for a broken lookup answer)."""
@@ -107,6 +113,7 @@ class PlaceResult:
             bad.append('TYPES_NOT_A_TUPLE_OF_STRINGS'); return bad
         n = len(self.types)
         if len(set(self.types)) != n: bad.append('TYPES_DUPLICATED')
+        if list(self.types) != sorted(self.types): bad.append('TYPES_NOT_IN_ALPHABETICAL_ORDER')
         if (self.state == 'DECIDED') != (n == 1): bad.append('DECIDED_IFF_ONE_TYPE')
         if (self.state == 'MULTIPLE') != (n >= 2): bad.append('MULTIPLE_IFF_TWO_OR_MORE_TYPES')
         if self.origin not in (None,) + ORIGINS: bad.append('ORIGIN_UNKNOWN:%s' % (self.origin,))
@@ -179,7 +186,7 @@ class Filler:
 
     def to_dict(self) -> Dict[str, Any]:
         return {'surface': self.surface, 'head': self.head, 'head_basis': self.head_basis,
-                'place': self.place.to_dict(), 'flags': copy.deepcopy(dict(self.flags))}
+                'place': self.place.to_dict(), 'flags': _canon(dict(self.flags))}
 
 
 @dataclass(frozen=True)
@@ -200,9 +207,26 @@ class EventCross:
     provenance: Mapping[str, Any]
 
     def to_dict(self) -> Dict[str, Any]:
-        return {'index': self.index, 'center': copy.deepcopy(dict(self.center)),
+        return {'index': self.index, 'center': {k: _canon(v) for k, v in self.center.items()},
                 'arms': {role: arm.to_dict() for role, arm in self.arms.items()},
-                'provenance': copy.deepcopy(dict(self.provenance))}
+                'provenance': {k: _canon(v) for k, v in self.provenance.items()}}
+
+
+_RELATION_KEY_ORDER = ('type', 'from', 'to')
+
+
+def _canon(v: Any) -> Any:
+    """A value copied from the input, written with its mapping keys in alphabetical order (lists keep their order)."""
+    if isinstance(v, Mapping): return {k: _canon(v[k]) for k in sorted(v, key=str)}
+    if isinstance(v, (list, tuple)): return [_canon(x) for x in v]
+    return copy.deepcopy(v)
+
+
+def _relation_dict(r: Mapping[str, Any]) -> Dict[str, Any]:
+    """A relation in the fixed key order type, from, to; any other key after them, alphabetical (kept, not dropped)."""
+    out = {k: _canon(r[k]) for k in _RELATION_KEY_ORDER if k in r}
+    out.update({k: _canon(r[k]) for k in sorted((k for k in r if k not in _RELATION_KEY_ORDER), key=str)})
+    return out
 
 
 def _empty_counts() -> Dict[str, Any]:
@@ -234,8 +258,8 @@ class CrossReading:
     def to_dict(self) -> Dict[str, Any]:
         return {'schema': SCHEMA, 'status': self.status,
                 'crosses': [c.to_dict() for c in self.crosses],
-                'relations': copy.deepcopy([dict(r) for r in self.relations]),
-                'abstain': copy.deepcopy(dict(self.abstain)) if self.abstain is not None else None,
+                'relations': [_relation_dict(r) for r in self.relations],
+                'abstain': _canon(self.abstain) if self.abstain is not None else None,
                 'lookup': {'id': self.lookup_id},
                 'counts': self.counts}
 

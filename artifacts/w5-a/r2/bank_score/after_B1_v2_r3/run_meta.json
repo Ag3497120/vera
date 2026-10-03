@@ -1,0 +1,66 @@
+{
+ "args": {
+  "corpus_root": null,
+  "entry_option": "mod-semantic-read",
+  "frames": null,
+  "items": "tests/bank_score/fixtures/B1_v2_r3/items.jsonl",
+  "quarantine": null,
+  "timeout_s": 60.0
+ },
+ "bank": "B1",
+ "child_argv_template": [
+  "<python>",
+  "-c",
+  "<BOOTSTRAP: runpy.run_module('verantyx.semantic_read', run_name='__main__')>",
+  "run_module",
+  "verantyx.semantic_read",
+  "--text=<入力>"
+ ],
+ "child_env": {
+  "BANK_SCORE_PROVENANCE": "<WORK>/prov/N.json",
+  "HOME": "<WORK>/home",
+  "LANG": "C.UTF-8",
+  "PATH": "/usr/bin:/bin",
+  "PYTHONDONTWRITEBYTECODE": "1",
+  "PYTHONIOENCODING": "utf-8",
+  "PYTHONPATH": "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-a-S",
+  "VERA_CORPUS_ROOT": "<WORK>/empty_corpus"
+ },
+ "entry": "mod-semantic-read",
+ "entry_note": "B1 の読解の入口: python -m verantyx.semantic_read --text=<入力の文字列だけ>（言語・分類名・現象・誤読の型は渡さない。言語は入口が文字種で決める）",
+ "frames_sha256": null,
+ "fugashi": "1.5.2",
+ "items_sha256": "50469f9f26848f972db1864f818b3351d2d14d3d3c234acd06ce64451c9e56f5",
+ "precheck": {
+  "exit_code": 0,
+  "import_error": null,
+  "modules": 23,
+  "outside": [],
+  "status": "ok",
+  "stderr_tail": ""
+ },
+ "profile": "v2",
+ "provenance_total": {
+  "outside_count": 0,
+  "processes_checked": 18,
+  "processes_unverified": 0
+ },
+ "python": "/Users/motonisihikoudai/vera-wiring/env/bin/python",
+ "quarantine": {
+  "count": 0,
+  "ids": [],
+  "not_in_items": [],
+  "shape": null
+ },
+ "quarantine_sha256": null,
+ "raw_path_redactions": 0,
+ "timing": {
+  "precheck_ms": 107.2,
+  "vera_calls_ms_total": 3177.2
+ },
+ "tree_head": "0e409545f84ef428dd5e48f6e08031f9d05df93f",
+ "tree_realpath": "/Users/motonisihikoudai/Projects/vera-impl/wt/W5-a-S",
+ "unreachable_not_called": 0,
+ "vera_calls": 17,
+ "verantyx_untouched": false
+}

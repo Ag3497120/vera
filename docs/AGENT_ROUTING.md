@@ -177,6 +177,10 @@ R1 の 5 つの拒否（語彙外の種類・未知のアダプター・同じ I
    同じ候補を指したときだけ採用し（証言型。1 回目と 2 回目が食い違えば決定にならない）、`stage=llm_testimony`、
    `decided_by=llm_testimony:<llm_choice の decision_id>` と台帳（`<state>/routing_choice.jsonl`）の記録を残す。
    過去の決定の再利用は `testimony.cached` に出る。
+   **再利用の条件（W5-a A-01。攻撃役の反例）**: 再利用は、語・候補（ID）・**候補ごとに LLM へ渡した文脈（`used_in` = 規則の理由と、役割・種類・系統・model の要約）の内容ハッシュ**がすべて同じときだけ。
+   理由・役割・種類・系統・model のどれかが変われば鍵が変わり、再照会する（古い証言を `cached=True` で返さない）。台帳の決定行に `reuse_key` と、その構成 `reuse_key_parts`（候補ごとの `[語, 文脈の sha256]`）を残す。
+   `reuse_key` の無い古い決定行は再利用しない（再照会。件数は `ChoiceLedger.summary()["decisions_without_reuse_key"]`）。質問文は鍵に入れない（既存の約束）。
+   `agent_routing.py` は変えていない（候補の `used_in` にすでに理由と要約が入っている）。
 4. **型付きで止まる**: 決まらなければ `stage=NONE`、`undecided_reason`（`UNDECIDED_REASONS`）つきで返し、`conduct` は
    `FrameRefusal("ROUTING_UNDECIDED")` で起動前に止まる（完了にしない）。
 
@@ -288,6 +292,7 @@ R1 の 5 つの拒否（語彙外の種類・未知のアダプター・同じ I
 | J24 | エージェント ID・系統名の形、系統を人間が書かなかったエージェント | 記録層は ID と `lineage` を「空でない文字列・前後の空白と制御文字なし」だけ検査する（人間の呼び名をそのまま持てる）。ASCII のトークンの形は DSL の producer の検査（`MALFORMED_ROW`）。`lineage` は `None` で持て、独立の判定に関わる候補だけ `LINEAGE_UNDECLARED` で除外する。指揮者は検証役の要求に実装役の ID を `used_agents` で渡し、実装役との関係が分からなければ（`undeclared`）全候補が除外されて起動前に `ROUTING_UNDECIDED`（`NO_VIABLE_CANDIDATE`）。`independent_of=none` の規則は系統を見ない。`RUN_LIMITS.verification.same_lineage_as_implementer` は、関係が分からなければ `null`（真偽を作らない） |
 | J25 | 系統の関係の記録（F8） | 名札は producer が宣言した分割（同じ名札＝同系統、違う名札＝別系統）。呼び名を揃えられない producer は名札を付けず、`LineageRelation`（`same` / `distinct`、向きなし、出所つき）で言われた関係だけを渡す。同系統の閉包は名札と `same` の推移閉包で、順序に依らない。矛盾は `LINEAGE_CONFLICT`（黙って片方を勝たせない）、重複は `DUPLICATE_LINEAGE_RELATION`。経路づけ器の独立の判定は候補と「使われたエージェント」の関係（`used_agents`）。言われていない関係は作らず `LINEAGE_UNDECLARED`。根拠は `independence_basis` に残し、`independence` の既存の値は変えない。`used_lineages` の経路は文言まで変えず、同じ役割を両方で渡すと `ValueError`。DSL に関係の文法は足さない |
 | J26 | 役割を言わない割り当て（F9） | 規則の `role=` は 0 個か 1 個。無い規則は `kind` / `size` が合えばどの役割の要求にも一致し、受け皿の要求は生まない（`MISSING_ROLE_DEFAULT` の範囲は広げない）。受け皿の `role=` 欠けだけが `MISSING_ROLE_CONDITION`。`role=` の無い規則の `independent_of` は `BAD_CONDITION`（どの役割の要求にも効くので自己ループ。検証の独立は要求の役割で暗黙に効く）。`AgentRecord.roles` は未申告 `None` で持て（空は `BAD_VALUE`）、役割では除外せず `role_fit` に残す。`role=` の無い規則に頭が無くその役割の受け皿も無いときは `NO_VIABLE_CANDIDATE`（規則は当てはまったが誰も残らなかった。`ROLE_NOT_ROUTABLE` は「その役割の規則も、一致する役割なしの規則も無い」）。指揮者の「検証役を言ったか」は `routable` で決める |
+| J27 | 証言の再利用の鍵（W5-a） | 語・候補・候補ごとの文脈の内容ハッシュ。`llm_choice.choice_key`（語と候補だけ）は `verify_adoption` のために残し、再利用には使わない。文脈が同じなら鍵も同じなので、`conduct_map` の決定の再利用（W2-g2）は変わらない |
 
 ## 9. W2-h2 への約束
 
