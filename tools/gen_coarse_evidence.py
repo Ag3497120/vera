@@ -229,8 +229,107 @@ def select_needs_pred(placement: str, n: int, stage_cache: str):
     return out, boundary
 
 
+def _frames_words(path: str) -> set:
+    """Every ``word`` of a generated-frames file (abstentions included)."""
+    out = set()
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                out.add(json.loads(line)["word"])
+    return out
+
+
+def select_needs_sahen(placement: str, stage_cache: str, min_uses: int, exclude_frames: Sequence[str], n: int):
+    """W3-a4 (docs 12.17, D6): the common-noun + する predicates to write a frame for.  A word w is kept when
+    (1) its uses as such a predicate in ONE source (the maximum over the sources; sources are never
+    added) are at least ``min_uses``, (2) it is a headword of the placement, (3) its namespace holds P
+    (P or NP), (4) its state is UNPLACED or MULTIPLE and (5) no row of any ``exclude_frames`` file (an
+    abstention included) names it.  The first failing condition is counted (``reasons``).  Ordered by
+    ``n_seen`` descending (display order inside one frequency = string order); every word whose
+    ``n_seen`` equals that of the ``n``-th is included.  Returns ``(rows, boundary, reasons)``."""
+    import pickle
+    with open(stage_cache, "rb") as f:
+        ex = pickle.load(f)
+    if "sahen_verb" not in ex:
+        return None, None, None
+    by_src: Dict[str, Dict[str, int]] = collections.defaultdict(dict)
+    for src, c in ex["sahen_verb"].items():
+        for w, k in c.items():
+            by_src[w][src] = k
+    del ex
+    excluded = set()
+    for path in exclude_frames:
+        excluded |= _frames_words(path)
+    dbp = os.path.join(placement, "placement.sqlite")
+    con = sqlite3.connect("file:%s?mode=ro" % dbp, uri=True)
+    reasons = collections.Counter()
+    kept = []
+    try:
+        for w in sorted(by_src):
+            mx = max(by_src[w].values())
+            if mx < min_uses:
+                reasons["below_min_uses"] += 1
+                continue
+            hw = con.execute("SELECT word, ns, state, kind, n_seen FROM headwords WHERE word=?", (w,)).fetchone()
+            if hw is None:
+                reasons["not_headword"] += 1
+            elif hw[1] not in ("P", "NP"):
+                reasons["ns_not_predicate"] += 1
+            elif hw[2] not in ("UNPLACED", "MULTIPLE"):
+                reasons["already_decided"] += 1
+            elif w in excluded:
+                reasons["in_exclude_frames"] += 1
+            else:
+                kept.append((hw, mx, dict(sorted(by_src[w].items()))))
+        kept.sort(key=lambda t: (-t[0][4], t[0][0]))
+        if len(kept) > n:
+            boundary = kept[n - 1][0][4]
+            kept = [t for t in kept if t[0][4] >= boundary]
+        else:
+            boundary = kept[-1][0][4] if kept else None
+        out = []
+        for rank, (hw, mx, per_src) in enumerate(kept, 1):
+            word, ns, state, kind, freq = hw
+            if state == "MULTIPLE":
+                status = "SPLIT"
+            else:
+                has = con.execute(
+                    "SELECT 1 FROM evidence WHERE word=? AND arm!='ns_vote' LIMIT 1", (word,)).fetchone()
+                status = "BELOW_THRESHOLD" if has else "NO_EVIDENCE"
+            out.append({"rank": rank, "word": word, "freq": freq, "state": state, "ns": ns, "kind": kind,
+                        "evidence_status": status, "sahen_uses_max_src": mx, "sahen_uses_by_src": per_src})
+    finally:
+        con.close()
+    return out, boundary, dict(reasons)
+
+
+SAHEN_NEEDS_RULE = (
+    "common-noun + suru predicates: a word whose uses in ONE source (the maximum over the sources, never "
+    "a sum) are at least min_uses, which is a headword whose namespace is P or NP and whose state is "
+    "UNPLACED or MULTIPLE and which no row of the exclude-frames files (abstentions included) names; "
+    "ordered by n_seen descending; every word whose n_seen equals that of the n-th is included; display "
+    "order inside one frequency = string order; the first failing condition is counted per reason; "
+    "no test data is read")
+
+
 def cmd_needs(args) -> int:
-    if getattr(args, "kind", "noun") == "pred":
+    min_uses = getattr(args, "sahen_min_uses", None)
+    excl = list(getattr(args, "exclude_frames", None) or [])
+    reasons = None
+    if min_uses is None and excl:
+        print(json.dumps({"state": "UNKNOWN_EXCLUDE_FRAMES_WITHOUT_SAHEN_MIN_USES"}))
+        return 2
+    if min_uses is not None:
+        if getattr(args, "kind", "noun") != "pred" or not args.stage_cache:
+            print(json.dumps({"state": "UNKNOWN_SAHEN_NEEDS_ARGS", "needs": "--kind pred and --stage-cache"}))
+            return 2
+        rows, boundary, reasons = select_needs_sahen(args.placement, args.stage_cache, min_uses, excl, args.n)
+        if rows is None:
+            print(json.dumps({"state": "UNKNOWN_STAGE_CACHE_STALE", "stage_cache": args.stage_cache,
+                              "missing": ["sahen_verb"]}))
+            return 2
+    elif getattr(args, "kind", "noun") == "pred":
         if not args.stage_cache:
             print(json.dumps({"state": "UNKNOWN_STAGE_CACHE_UNSET"}))
             return 2
@@ -269,6 +368,12 @@ def cmd_needs(args) -> int:
         "out": os.path.abspath(args.out),
         "out_sha256": sha256_file(args.out),
     }
+    if min_uses is not None:
+        meta["rule"] = SAHEN_NEEDS_RULE
+        meta["min_uses"] = min_uses
+        meta["exclude_frames"] = [{"path": os.path.abspath(x), "sha256": sha256_file(x)} for x in excl]
+        meta["reasons"] = reasons
+        meta["stage_cache"] = os.path.abspath(args.stage_cache)
     with open(args.meta, "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=1, sort_keys=True)
         f.write("\n")
@@ -854,6 +959,10 @@ def main(argv=None) -> int:
     n.add_argument("--n", type=int, default=60000)
     n.add_argument("--out", required=True)
     n.add_argument("--meta", required=True)
+    n.add_argument("--sahen-min-uses", type=int, default=None,
+                   help="pred: list the common-noun + suru predicates with at least this many uses in one source")
+    n.add_argument("--exclude-frames", action="append", default=None,
+                   help="with --sahen-min-uses: a generated-frames file whose words are left out (repeatable)")
     r = sub.add_parser("run")
     r.add_argument("--kind", choices=kinds, default="noun")
     r.add_argument("--needs", required=True)

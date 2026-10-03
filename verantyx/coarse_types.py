@@ -344,6 +344,10 @@ DEFAULT_CONFIG: Dict[str, object] = {
     "rd_particle_share_pct": 30,  # ... and this share (%) of all the typed arguments
     "rd_type_share_pct": 70,      # a noun type is significant in a particle from this share (%)
     "rd_min_sources": 2,          # sources whose distribution must back a generated frame
+    # W3-a4: which particles of a distribution arm a generated frame must contain to be confirmed.
+    # "all9" (the default) is the rule r5 to r7 were built with: it keeps every answer stored before
+    # W3-a4 as it was; a build sets its own value in its config file (docs section 12.17).
+    "frame_cover_rule": "all9",
     "slot_min": 20,               # slot: uses in the construction
     "slot_share_pct": 30,         # ... and this share (%) of the word's noun uses
     "slot_lift_pct": 300,         # a construction must be this much (%) more typical than the source's base rate
@@ -357,6 +361,11 @@ GEN_FRAME_ARM = "gen_frame"
 GEN_ARMS = (GEN_ARM, GEN_FRAME_ARM)
 #: the nine case particles a predicate's frame and the argument chains are made of
 CASE_PARTICLES_9: Tuple[str, ...] = ("が", "を", "に", "で", "へ", "と", "から", "まで", "より")
+#: W3-a4: the values of ``frame_cover_rule`` (see ``_apply_gen_frame``), the particle a place
+#: argument may be waived for, and the frame row that waives it
+FRAME_COVER_RULES: Tuple[str, ...] = ("all9", "he_by_ni_place", "k62_he_by_ni_place")
+HE_PARTICLE = CASE_PARTICLES_9[4]
+NI_PLACE_SLOT = CASE_PARTICLES_9[2] + "|PLACE"
 
 # --- K62: the predicate types W3-b1 reads, and the frame of each (W3-a3 12.2) ----------------
 # A copy of the table `w3b1_frames` of docs/READING_SOUNDNESS.md section 10 (K62) of branch
@@ -652,12 +661,16 @@ def _apply_gen_definition(base_dec, gen_rows, cfg: dict) -> Dict[str, object]:
 
 
 def _apply_gen_frame(dec, gf_rows, slot_rows, cfg: dict) -> Dict[str, object]:
-    """W3-a3 12.6: the predicate type a model wrote (``gen_frame``) with its frame (``gen_frame_slot``
-    rows, ``<particle>|<noun type>``).  It places a word nothing else decided as an ESTIMATE
-    (generated).  It becomes DIRECT only when the ``role_distribution`` arms that reached their own
-    threshold (R) (1) are at least ``rd_min_sources``, (2) all vote for exactly the generated type and
-    (3) every significant particle of each of them is a particle of the generated frame.  A vote for
-    another type is ``DISTRIBUTION_DISAGREES`` and a frame that misses a particle is
+    """W3-a3 12.6 / W3-a4 12.17: the predicate type a model wrote (``gen_frame``) with its frame
+    (``gen_frame_slot`` rows, ``<particle>|<noun type>``).  It places a word nothing else decided as an
+    ESTIMATE (generated).  It becomes DIRECT only when the ``role_distribution`` arms that reached their
+    own threshold (R) (1) are at least ``rd_min_sources``, (2) all vote for exactly the generated type
+    and (3) every particle each of them needs is a particle of the generated frame.  What an arm needs
+    is set by ``frame_cover_rule``: ``"all9"`` (the default: the rule of r5 to r7) needs every
+    significant particle (the nine case particles); ``"he_by_ni_place"`` needs the same except that the
+    particle he is waived when the frame has no he but has a ni|PLACE row; ``"k62_he_by_ni_place"``
+    needs only the significant particles that appear in the K62 table, with the same waiver.  A vote
+    for another type is ``DISTRIBUTION_DISAGREES`` and a frame that misses a needed particle is
     ``FRAME_PARTICLES_NOT_COVERED``: both stay estimates (a split is not made: the distribution never
     decides on its own, so it is not offered as a candidate)."""
     arms_ = dec["arms"]
@@ -683,11 +696,32 @@ def _apply_gen_frame(dec, gf_rows, slot_rows, cfg: dict) -> Dict[str, object]:
     if any(arms_[k]["top"] != [t] for k in rd):
         garm["why"] = "DISTRIBUTION_DISAGREES"
         return est
-    if any(not set(arms_[k]["sig"]) <= gen_parts for k in rd):
+    rule = cfg.get("frame_cover_rule", "all9")
+    if rule not in FRAME_COVER_RULES:
+        raise ValueError("UNKNOWN_FRAME_COVER_RULE:%s" % rule)
+    waive_he = (rule != "all9" and HE_PARTICLE not in gen_parts
+                and any(r[2] == NI_PLACE_SLOT for r in slot_rows))
+    known = k62_particles() if rule == "k62_he_by_ni_place" else None
+    need: Dict[str, set] = {}
+    ignored: Dict[str, list] = {}
+    waived: List[str] = []
+    for k in rd:
+        sig = set(arms_[k]["sig"])
+        need_k = sig if known is None else {p for p in sig if p in known}
+        skipped = sorted(p for p in sig - need_k if p not in gen_parts)
+        if known is not None and skipped:
+            ignored[k] = skipped              # significant, outside K62 and missing from the frame
+        if waive_he and HE_PARTICLE in need_k:
+            need_k = need_k - {HE_PARTICLE}
+            waived.append(k)
+        need[k] = need_k
+    if any(not need[k] <= gen_parts for k in rd):
         garm["why"] = "FRAME_PARTICLES_NOT_COVERED"
         return est
     if not rd or len(rd) < cfg["rd_min_sources"]:
         return est
+    if rule != "all9":
+        garm["cover"] = {"he_by_ni_place": waived, "ignored": ignored}
     for k in rd:
         arms_[k]["met"] = True
         arms_[k]["why"] = None

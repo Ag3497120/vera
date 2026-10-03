@@ -1,0 +1,24 @@
+== l1 /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a4-S/artifacts/w3-a4/eval_runs/001
+{"sentences": 2000, "tokens": 21774, "token_cover_rate": 0.8132, "distinct": 8391, "distinct_cover_rate": 0.6758, "by_pos_rate": {"名詞": 0.7843, "動詞": 0.9936, "形状詞": 1.0, "形容詞": 1.0}, "placed_direct_headwords": 992686, "pass": {"token_cover>=0.90": false, "placed>=100000": true}}
+== l2 /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a4-S/artifacts/w3-a4/eval_runs/002
+{"n": 1072, "correct_rate": 0.5289, "wrong_single_rate": 0.0438, "trap_wrong_single_rate": 0.0455, "non_direct": {"None/other": 160, "estimated/correct": 145, "estimated/wrong_single": 28}, "pass": {"correct>=0.85": false, "wrong<=0.08": true, "trap_wrong<=0.05": true, "n>=800": true, "trap_n>=100": true}}
+== l3 /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a4-S/artifacts/w3-a4/eval_runs/003
+{"typed_n": 174, "unknown_n": 60, "correct_rate": 0.4943, "wrong_rate": 0.0517, "unknown_among_typed": 79, "returned_type_rate": 0.15, "leaks_direct_not_notation": [], "pass": {"correct>=0.65": false, "wrong<=0.15": true, "returned_type<=0.20": true, "no_leaks": true, "no_unmarked": true}}
+== verbs /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a4-S/artifacts/w3-a4/eval_runs/004
+{"n_typed": 258, "n_unknown": 42, "correct_direct": 4, "wrong_single_direct": 1, "wrong_rate_typed": 0.0039, "direct_answers": 5, "wrong_rate_among_direct": 0.2, "returned_type_among_unknown": 1, "returned_rate_unknown": 0.0238, "by_kind": {"typed": {"correct": 196, "wrong_single": 57, "other": 5}, "unknown_coined": {"abstained": 39, "returned": 1}, "unknown_fragment": {"abstained": 2}}, "by_decisive_arm": {"-": {"other(non-direct)": 5}, "est:morphology:kin": {"wrong_single(non-direct)": 1}, "gen_frame": {"correct(non-direct)": 192, "wrong_single(non-direct)": 55}, "gen_frame+role_distribution": {"correct": 4, "wrong_single": 1}}, "pass_Q3": {"wrong_direct<=5%": true, "returned_unknown<=20%": true}}
+== l1 /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/run1
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a4-S/artifacts/w3-a4/eval_runs/005
+{"sentences": 2000, "tokens": 21774, "token_cover_rate": 0.8132, "distinct": 8391, "distinct_cover_rate": 0.6758, "by_pos_rate": {"名詞": 0.7843, "動詞": 0.9936, "形状詞": 1.0, "形容詞": 1.0}, "placed_direct_headwords": 992779, "pass": {"token_cover>=0.90": false, "placed>=100000": true}}
+== l2 /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/run1
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a4-S/artifacts/w3-a4/eval_runs/006
+{"n": 1072, "correct_rate": 0.5289, "wrong_single_rate": 0.0438, "trap_wrong_single_rate": 0.0455, "non_direct": {"None/other": 160, "estimated/correct": 145, "estimated/wrong_single": 28}, "pass": {"correct>=0.85": false, "wrong<=0.08": true, "trap_wrong<=0.05": true, "n>=800": true, "trap_n>=100": true}}
+== l3 /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/run1
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a4-S/artifacts/w3-a4/eval_runs/007
+{"typed_n": 174, "unknown_n": 60, "correct_rate": 0.4943, "wrong_rate": 0.0517, "unknown_among_typed": 79, "returned_type_rate": 0.15, "leaks_direct_not_notation": [], "pass": {"correct>=0.65": false, "wrong<=0.15": true, "returned_type<=0.20": true, "no_leaks": true, "no_unmarked": true}}
+== verbs /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/run1
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a4-S/artifacts/w3-a4/eval_runs/008
+{"n_typed": 258, "n_unknown": 42, "correct_direct": 4, "wrong_single_direct": 1, "wrong_rate_typed": 0.0039, "direct_answers": 5, "wrong_rate_among_direct": 0.2, "returned_type_among_unknown": 1, "returned_rate_unknown": 0.0238, "by_kind": {"typed": {"correct": 196, "wrong_single": 57, "other": 5}, "unknown_coined": {"abstained": 39, "returned": 1}, "unknown_fragment": {"abstained": 2}}, "by_decisive_arm": {"-": {"other(non-direct)": 5}, "est:morphology:kin": {"wrong_single(non-direct)": 1}, "gen_frame": {"correct(non-direct)": 192, "wrong_single(non-direct)": 55}, "gen_frame+role_distribution": {"correct": 4, "wrong_single": 1}}, "pass_Q3": {"wrong_direct<=5%": true, "returned_unknown<=20%": true}}

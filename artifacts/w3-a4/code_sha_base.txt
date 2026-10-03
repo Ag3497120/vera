@@ -1,0 +1,2 @@
+21f94de6cb33a99d7a29a3848aaaa5cc74b0b0492425641ed7bd14550d50e7c3  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a4-S/tools/build_coarse_placement.py
+e20bbbc780af038a1916e255058ba6e3d66fb8c2ced642982e691f551fbfe5b7  /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a4-S/verantyx/coarse_types.py

@@ -1,0 +1,18 @@
+generated_frames の語 8030（CONFIRMED 99・NOT_CONFIRMED 31・ESTIMATED 7900・その他 0）
+不変条件の違反: 0
+へ を覆った語（cover.he_by_ni_place が空でない）: 15
+WAIVED	向かえる	frame_status=CONFIRMED	frame={}	frame_unconfirmed={"に": ["EVENT_ACT", "PERSON", "PLACE"]}	generated_particles=['に']	hat_arms=['role_distribution@codex:figurative_commonsense']
+WAIVED	嫁ぐ	frame_status=CONFIRMED	frame={}	frame_unconfirmed={"が": ["PERSON"], "に": ["PERSON", "PLACE"]}	generated_particles=['が', 'に']	hat_arms=['role_distribution@codex:narrative']
+WAIVED	日帰りする	frame_status=CONFIRMED	frame={}	frame_unconfirmed={"に": ["PLACE"]}	generated_particles=['に']	hat_arms=['role_distribution@codex:conversation']
+WAIVED	昇る	frame_status=NOT_CONFIRMED	frame=null	frame_unconfirmed=null	generated_particles=['から', 'に']	hat_arms=['role_distribution@codex:narrative']
+WAIVED	流れ込む	frame_status=CONFIRMED	frame={}	frame_unconfirmed={"に": ["ARTIFACT", "BODY_PART", "PLACE"]}	generated_particles=['に']	hat_arms=['role_distribution@codex:narrative']
+WAIVED	浸透する	frame_status=CONFIRMED	frame={}	frame_unconfirmed={"に": ["ABSTRACT", "ARTIFACT", "PLACE"]}	generated_particles=['に']	hat_arms=['role_distribution@codex:general_qa']
+WAIVED	潜る	frame_status=CONFIRMED	frame={}	frame_unconfirmed={"が": ["ANIMAL", "PERSON"], "に": ["PLACE"]}	generated_particles=['が', 'に']	hat_arms=['role_distribution@codex:narrative', 'role_distribution@codex:pro']
+WAIVED	異動する	frame_status=CONFIRMED	frame={}	frame_unconfirmed={"が": ["GROUP_ORG", "PERSON"], "に": ["GROUP_ORG", "PLACE"]}	generated_particles=['が', 'に']	hat_arms=['role_distribution@codex:paraphrase_entail']
+WAIVED	移す	frame_status=CONFIRMED	frame={"に": ["ARTIFACT", "PLACE"]}	frame_unconfirmed={"が": ["GROUP_ORG", "PERSON"], "を": ["ABSTRACT", "ARTIFACT", "SUBSTANCE_FOOD"], "から": ["ARTIFACT", "PLACE"]}	generated_particles=['から', 'が', 'に', 'を']	hat_arms=['role_distribution@codex:general_qa', 'role_distribution@codex:narrative', 'role_distribution@codex:pro']
+WAIVED	行ける	frame_status=CONFIRMED	frame={}	frame_unconfirmed={"に": ["EVENT_ACT", "PLACE"]}	generated_particles=['に']	hat_arms=['role_distribution@codex:figurative_commonsense', 'role_distribution@codex:narrative', 'role_distribution@codex:paraphrase_entail', 'role_distribution@codex:pro']
+WAIVED	送り返す	frame_status=CONFIRMED	frame={}	frame_unconfirmed={"を": ["ARTIFACT", "INFO_LANGUAGE", "SUBSTANCE_FOOD"], "に": ["GROUP_ORG", "PERSON", "PLACE"]}	generated_particles=['に', 'を']	hat_arms=['role_distribution@codex:narrative']
+WAIVED	逃げ込む	frame_status=CONFIRMED	frame={}	frame_unconfirmed={"に": ["PLACE"]}	generated_particles=['に']	hat_arms=['role_distribution@codex:narrative']
+WAIVED	通う	frame_status=CONFIRMED	frame={"に": ["PLACE"]}	frame_unconfirmed={"と": ["GROUP_ORG", "PERSON"]}	generated_particles=['と', 'に']	hat_arms=['role_distribution@codex:narrative']
+WAIVED	進出する	frame_status=CONFIRMED	frame={}	frame_unconfirmed={"が": ["GROUP_ORG", "PERSON"], "に": ["GROUP_ORG", "PLACE"]}	generated_particles=['が', 'に']	hat_arms=['role_distribution@codex:general_qa']
+WAIVED	飛び込む	frame_status=CONFIRMED	frame={}	frame_unconfirmed={"に": ["ARTIFACT", "EVENT_ACT", "PLACE"]}	generated_particles=['に']	hat_arms=['role_distribution@codex:narrative', 'role_distribution@codex:paraphrase_entail']

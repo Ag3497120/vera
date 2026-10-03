@@ -1,0 +1,6 @@
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1/placement.sqlite: OK
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run2/placement.sqlite: OK
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1/manifest.json: OK
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/gen_pred/frames.jsonl: OK
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/gen_pred/ledger.jsonl: OK
+/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/stage/extract.pkl: OK

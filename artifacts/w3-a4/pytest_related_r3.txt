@@ -1,0 +1,8 @@
+                    output=b''.join(stdout_seq) if stdout_seq else None,
+                    stderr=b''.join(stderr_seq) if stderr_seq else None)
+E           subprocess.TimeoutExpired: Command '['/Users/motonisihikoudai/vera-wiring/env/bin/python', '/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a4-S/tools/gen_coarse_evidence.py', 'run', '--needs', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W3-a4-impl/bt_r3/test_the_stop_signal_ends_the_0/needs.jsonl', '--out-dir', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W3-a4-impl/bt_r3/test_the_stop_signal_ends_the_0/G', '--codex-bin', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W3-a4-impl/bt_r3/test_the_stop_signal_ends_the_0/fakecodex', '--batch-size', '2', '--slots', '2']' timed out after 20 seconds
+
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:1253: TimeoutExpired
+=========================== short test summary info ============================
+FAILED tests/test_gen_coarse_evidence.py::test_the_stop_signal_ends_the_run_with_an_interrupted_record
+1 failed, 295 passed in 38.51s

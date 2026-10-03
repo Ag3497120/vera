@@ -1,0 +1,3 @@
+SEEDS_PRED 281 語。判定 (ns, state, origin, top, by) が違う語: 0
+n_seen だけが違う語（判定ではない）: 1
+NSEEN	対する	35929	35930	(+1)

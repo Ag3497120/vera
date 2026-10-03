@@ -1,0 +1,16 @@
+word	class	before(ns,state,origin,top,by)	after	arms_that_differ
+よぶ	i	('P', 'DECIDED', 'estimated', 'P_COMMUNICATE', 'gen_frame')	('P', 'DECIDED', 'direct', 'P_COMMUNICATE', 'gen_frame+role_distribution@jawiki')	[]
+向かえる	i	('P', 'DECIDED', 'estimated', 'P_MOVE', 'gen_frame')	('P', 'DECIDED', 'direct', 'P_MOVE', 'gen_frame+role_distribution@codex:figurative_commonsense')	[]
+嫁ぐ	i	('P', 'DECIDED', 'estimated', 'P_MOVE', 'gen_frame')	('P', 'DECIDED', 'direct', 'P_MOVE', 'gen_frame+role_distribution@codex:narrative')	[]
+昇る	i	('P', 'DECIDED', 'estimated', 'P_MOVE', 'gen_frame')	('P', 'DECIDED', 'direct', 'P_MOVE', 'gen_frame+role_distribution@codex:general_qa+role_distribution@codex:narrative')	[]
+流れ込む	i	('P', 'DECIDED', 'estimated', 'P_MOVE', 'gen_frame')	('P', 'DECIDED', 'direct', 'P_MOVE', 'gen_frame+role_distribution@codex:narrative')	[]
+潜る	i	('P', 'DECIDED', 'estimated', 'P_MOVE', 'gen_frame')	('P', 'DECIDED', 'direct', 'P_MOVE', 'gen_frame+role_distribution@codex:narrative+role_distribution@codex:pro')	[]
+移す	i	('P', 'DECIDED', 'estimated', 'P_MOVE', 'gen_frame')	('P', 'DECIDED', 'direct', 'P_MOVE', 'gen_frame+role_distribution@codex:general_qa+role_distribution@codex:narrative+role_distribution@codex:pro')	[]
+行ける	i	('P', 'DECIDED', 'estimated', 'P_MOVE', 'gen_frame')	('P', 'DECIDED', 'direct', 'P_MOVE', 'gen_frame+role_distribution@codex:figurative_commonsense+role_distribution@codex:narrative+role_distribution@codex:paraphrase_entail+role_distribution@codex:pro')	[]
+送り返す	i	('P', 'DECIDED', 'estimated', 'P_MOVE', 'gen_frame')	('P', 'DECIDED', 'direct', 'P_MOVE', 'gen_frame+role_distribution@codex:narrative')	[]
+逃げ込む	i	('P', 'DECIDED', 'estimated', 'P_MOVE', 'gen_frame')	('P', 'DECIDED', 'direct', 'P_MOVE', 'gen_frame+role_distribution@codex:narrative')	[]
+通う	i	('P', 'DECIDED', 'estimated', 'P_MOVE', 'gen_frame')	('P', 'DECIDED', 'direct', 'P_MOVE', 'gen_frame+role_distribution@codex:narrative')	[]
+飛び込む	i	('P', 'DECIDED', 'estimated', 'P_MOVE', 'gen_frame')	('P', 'DECIDED', 'direct', 'P_MOVE', 'gen_frame+role_distribution@codex:narrative+role_distribution@codex:paraphrase_entail')	[]
+# r7 の generated_frames の語 4788、判定が変わった語 12（i=12 ii=0 iii=0）
+# direct から外れた語: 0 []
+# cover リストにあるのに i に入らなかった語: 0 []
