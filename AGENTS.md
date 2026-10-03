@@ -45,3 +45,4 @@
 - Claude Opus 5.5（中間職: 指示書・レビュー）と Claude Sonnet 5.5（運転係・軽い作業）は **effort medium**。
 - **実装は codex（gpt-6-luna、effort max）** が行う。Sonnet は codex を起動して待つ運転係で、製品・テスト・docs を編集しない。
 - 攻撃役は codex（gpt-6-luna、effort max）。コーパス・枠の生成は codex **effort low**（変更なし）。
+- 2026-10-04 09:00 追記: Claude の週間上限の都合で、実装とレビューの往復は **codex（max）だけ** で回す（`codex_loop.sh`: 実装 codex → レビュー codex、承認まで最大 3 往復）。Claude は監査役（Fable）と、統合前の最終レビュー（Opus medium、1 回）だけに使う。
