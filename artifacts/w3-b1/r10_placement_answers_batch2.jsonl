@@ -1,0 +1,55 @@
+{"term": "出る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["seed"]}
+{"term": "訪れる", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_CREATE"], "decided_by": ["frame@codex:paraphrase_entail"]}
+{"term": "越える", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_CREATE"], "decided_by": ["frame@codex:conversation"]}
+{"term": "離れる", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["frame@codex:conversation", "frame@jawiki"]}
+{"term": "抜ける", "state": "UNPLACED", "origin": null, "estimate_basis": null, "top": [], "decided_by": null}
+{"term": "逃れる", "state": "UNPLACED", "origin": null, "estimate_basis": null, "top": [], "decided_by": null}
+{"term": "流れる", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["WORK"], "decided_by": ["definition"]}
+{"term": "着く", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["seed"]}
+{"term": "戻る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["seed"]}
+{"term": "帰る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["seed"]}
+{"term": "去る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_CHANGE"], "decided_by": ["frame@codex:paraphrase_entail", "frame@codex:pro"]}
+{"term": "入る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["seed"]}
+{"term": "通る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["seed"]}
+{"term": "渡る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["seed"]}
+{"term": "登る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["frame@codex:conversation", "frame@codex:general_qa", "frame@codex:paraphrase_entail", "frame@jawiki"]}
+{"term": "下りる", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_CREATE"], "decided_by": ["frame@codex:narrative"]}
+{"term": "来る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["seed"]}
+{"term": "向かう", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["seed"]}
+{"term": "進む", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["seed"]}
+{"term": "出かける", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["frame@codex:figurative_commonsense", "frame@codex:paraphrase_entail", "frame@codex:pro"]}
+{"term": "寄せる", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["frame@codex:conversation"]}
+{"term": "届ける", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_GIVE"], "decided_by": ["seed"]}
+{"term": "並べる", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_ACT"], "decided_by": ["seed"]}
+{"term": "揃える", "state": "UNPLACED", "origin": null, "estimate_basis": null, "top": [], "decided_by": null}
+{"term": "集める", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_ACT"], "decided_by": ["seed"]}
+{"term": "決める", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_COGNITION"], "decided_by": ["seed"]}
+{"term": "食べる", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_CONSUME"], "decided_by": ["seed"]}
+{"term": "見る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_PERCEIVE"], "decided_by": ["seed"]}
+{"term": "片付ける", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_CREATE"], "decided_by": ["frame@codex:figurative_commonsense", "frame@codex:narrative", "frame@codex:pro"]}
+{"term": "見せる", "state": "UNPLACED", "origin": null, "estimate_basis": null, "top": [], "decided_by": null}
+{"term": "教える", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_COMMUNICATE"], "decided_by": ["seed"]}
+{"term": "答える", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_COMMUNICATE"], "decided_by": ["seed"]}
+{"term": "伝える", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_COMMUNICATE"], "decided_by": ["seed"]}
+{"term": "訪ねる", "state": "UNPLACED", "origin": null, "estimate_basis": null, "top": [], "decided_by": null}
+{"term": "尋ねる", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_COMMUNICATE"], "decided_by": ["seed"]}
+{"term": "呼ぶ", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_COMMUNICATE"], "decided_by": ["seed"]}
+{"term": "話す", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_COMMUNICATE"], "decided_by": ["seed"]}
+{"term": "語る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_COMMUNICATE"], "decided_by": ["seed"]}
+{"term": "叫ぶ", "state": "UNPLACED", "origin": null, "estimate_basis": null, "top": [], "decided_by": null}
+{"term": "言う", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_COMMUNICATE"], "decided_by": ["seed"]}
+{"term": "移る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["seed"]}
+{"term": "通う", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_CHANGE"], "decided_by": ["frame@codex:pro"]}
+{"term": "逃げる", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_CHANGE"], "decided_by": ["frame@codex:code"]}
+{"term": "走る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["seed"]}
+{"term": "歩く", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["seed"]}
+{"term": "飛ぶ", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["seed"]}
+{"term": "泳ぐ", "state": "UNPLACED", "origin": null, "estimate_basis": null, "top": [], "decided_by": null}
+{"term": "登る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["frame@codex:conversation", "frame@codex:general_qa", "frame@codex:paraphrase_entail", "frame@jawiki"]}
+{"term": "向ける", "state": "UNPLACED", "origin": null, "estimate_basis": null, "top": [], "decided_by": null}
+{"term": "巡る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_CREATE"], "decided_by": ["frame@codex:conversation", "frame@codex:paraphrase_entail"]}
+{"term": "回る", "state": "DECIDED", "origin": "direct", "estimate_basis": null, "top": ["P_MOVE"], "decided_by": ["seed"]}
+{"term": "跳ぶ", "state": "UNPLACED", "origin": null, "estimate_basis": null, "top": [], "decided_by": null}
+{"term": "滑る", "state": "UNPLACED", "origin": null, "estimate_basis": null, "top": [], "decided_by": null}
+{"term": "辿り着く", "state": "UNPLACED", "origin": null, "estimate_basis": null, "top": [], "decided_by": null}
+{"term": "到着する", "state": "UNKNOWN", "origin": null, "estimate_basis": null, "top": [], "decided_by": null}

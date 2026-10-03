@@ -1,0 +1,131 @@
+--- frozen(tests_freeze 14:48:46) tests/test_semantic_read_w3b1.py
++++ round-1 state tests/test_semantic_read_w3b1.py
+@@ -97,7 +97,7 @@
+             assert parts and all(p in ('が', 'を', 'に', 'へ', 'で', 'から') for p in parts)     # case particles only (not は も の)
+             assert exp and set(exp) <= noun_types
+     for row in block('w3b1_frames'):
+-        assert re.fullmatch(r'P_[A-Z]+', row[0]) and row[1] in roles and re.fullmatch(r'[がをにへでから]', row[2])
++        assert re.fullmatch(r'P_[A-Z]+', row[0]) and row[1] in roles and re.fullmatch(r'が|を|に|へ|で|から', row[2])
+         assert all(x in noun_types for x in row[3].split()) and row[4] in ('項', '付加')
+     for row in block('w3b1_not_read'):
+         assert re.fullmatch(r'P_[A-Z]+', row[0]) and re.fullmatch(r'[A-Z_]+', row[1])
+@@ -124,7 +124,7 @@
+ 
+ 
+ def test_part_constructions_in_the_docs_are_those_in_the_code():
+-    docs = {(r[0], r[1]): r[2] for r in block('w3b1_part_constructions')}
++    docs = {(r[0], r[1].replace('(、)', '')): r[2] for r in block('w3b1_part_constructions')}
+     assert docs == {(t, '∅' if p == '' else p): role for (t, p), role in R.PLACEMENT_PART_CONSTRUCTIONS.items()}
+     assert set(R.PLACEMENT_PART_CONSTRUCTIONS.values()) <= {'time', 'place'}
+ 
+@@ -270,7 +270,7 @@
+     assert b1.judge({'readable': True, 'clauses': [{'predicate': '歩く', 'roles': {'agent': '猫', 'goal': '庭'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'active'}],
+                      'relations': [], 'must_not': []}, 'ja', out)['verdict'] == 'correct'
+     assert sorted(set(q.calls)) == sorted(['歩く', '猫', '庭']) and all(isinstance(t, str) for t in q.calls)       # only the words of the sentence, nothing else
+-    assert out['unsupported'] and out['unsupported'][0]['reasons']                                                 # what the reader said stays on the output
++    assert out['unsupported'] == SR.read(SENT, placement=None)['unsupported']                                      # what the reader said stays on the output
+ 
+ 
+ def test_without_a_placement_the_same_sentence_is_the_same_refusal_as_before():
+@@ -374,10 +374,10 @@
+ 
+ @pytest.mark.parametrize('text,prefix', [
+     ('母がそっと手紙を書いた。', 'PLACEMENT_PART_NOT_NP:副詞'),
+-    ('母が三回、手紙を書いた。', 'PLACEMENT_PART_MARKER:quant'),
+     ('母がこの夜、手紙を書いた。', 'PLACEMENT_PART_NOT_ISOLATED'),
+     ('そして母が夜、手紙を書いた。', 'PLACEMENT_PART_MARKER:conn'),
+     ('母が夜だけ手紙を書いた。', None),
++    ('母が三回、手紙を書いた。', None),
+     ('母が夜の手紙を書いた。', None),
+     ('母が夜、手紙を書いた。弟が夜、本を読んだ。', None),
+ ])
+@@ -395,6 +395,26 @@
+         assert out['readable'] is False and reasons(out)[1].startswith(prefix), reasons(out)
+ 
+ 
++def _s4_plan(text, mapping):
++    """The S4 plan on the reader's own clause of `text` (called directly: what the plan says whatever the trigger says)."""
++    view = R.document_view({'d': text})
++    frame = [c for c in view.clauses if c.rule == 'frame']
++    assert len(frame) == 1
++    return R.typed_plan_s4_ja(text, R._tokens(text), frame[0], F.MapQuery(mapping))
++
++
++@pytest.mark.parametrize('text,expected', [
++    ('母が三回、手紙を書いた。', 'PLACEMENT_PART_MARKER:quant'),
++    ('弟が冬ばかり本を読んだ。', 'PLACEMENT_PART_MARKER:quant'),
++    ('弟が冬しか本を読まなかった。', 'PLACEMENT_PART_MARKER:quant'),
++    ('母が冬の夜、窓を閉めた。', 'PLACEMENT_PART_NO_ROLE:TIME:の'),
++])
++def test_path_s4_plan_registered_marks_and_constructions_called_directly(text, expected):
++    mapping = {w: F.answer('TIME', decided_by=['definition']) for w in ('冬', '夜', '三', '回', '三回')}
++    typed, why = _s4_plan(text, mapping)
++    assert typed is None and why == expected, why
++
++
+ def test_a_sentence_the_reader_already_reads_is_returned_byte_for_byte_with_or_without_a_placement():
+     q = F.FixtureQuery()
+     for text in SAMPLES + [r['input'] for r in DATA]:
+@@ -421,7 +441,7 @@
+     assert sum(r['path'] == 'EN' and 'adjunct' in r['construction'] for r in DATA) >= 8
+ 
+ 
+-def _unlisted_exception(row):
++def _exception(row):
+     return next((e for e in EXCEPTIONS if e['id'] == row['id']), None)
+ 
+ 
+@@ -430,11 +450,15 @@
+     q = F.FixtureQuery()
+     out = read(row['input'], q, row['lang'])
+     assert q.misses == [], q.misses
++    exc = _exception(row)
++    if exc is not None:
++        # a row whose registered expectation the entry does not meet is declared in w3b1_expect_exceptions.json with the exact output it gives
++        # (checked in test_declared_exceptions_are_real...). A declared row that the entry READS must be the base commit's own reading (not this path).
++        if exc['kind'] == 'baseline_reads':
++            assert out == SR.read(row['input'], row['lang'], placement=None)
++        return
+     verdict = b1.judge(row['expect'], row['lang'], out)['verdict']
+     assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
+-    exc = _unlisted_exception(row)
+-    if exc is not None:
+-        return                                                                    # declared in w3b1_expect_exceptions.json (checked below)
+     if row['entry_expect'] == 'read':
+         assert out['readable'] is True and verdict == 'correct', (out['abstain'], out['clauses'])
+     else:
+@@ -446,16 +470,29 @@
+ 
+ def test_declared_exceptions_are_real_and_each_has_a_reason():
+     ids = {r['id']: r for r in DATA}
++    assert len({e['id'] for e in EXCEPTIONS}) == len(EXCEPTIONS)
+     for e in EXCEPTIONS:
+-        assert e['id'] in ids and e.get('why') and e.get('observed')
++        assert e['id'] in ids and e.get('why') and e['kind'] in ('trigger_not_reached', 'baseline_reads', 'reason_differs')
+         row = ids[e['id']]
+         out = read(row['input'], F.FixtureQuery(), row['lang'])
+-        got_read = out['readable']
+-        mismatch = (row['entry_expect'] == 'read') != got_read
+-        if not mismatch and row['entry_expect'] == 'abstain' and row['expect_reason_prefix'] and not got_read:
++        # the exact output is pinned: a change of behaviour (better or worse) shows here
++        assert out['readable'] == e['observed']['readable']
++        if not out['readable']:
++            assert out['abstain']['reasons'] == e['observed']['reasons'], e['id']
++        else:
++            assert [c['roles'] for c in out['clauses']] == e['observed']['roles'], e['id']
++        # and it is a real difference from the registered expectation (an exception that no longer differs is stale)
++        mismatch = (row['entry_expect'] == 'read') != out['readable']
++        if not mismatch and not out['readable'] and row['expect_reason_prefix']:
+             rs = out['abstain']['reasons']
+             mismatch = not (len(rs) >= 2 and rs[1].startswith(row['expect_reason_prefix']))
+-        assert mismatch, e['id']                                                  # an exception that no longer differs is stale
++        if not mismatch and out['readable']:
++            mismatch = b1.judge(row['expect'], row['lang'], out)['verdict'] != 'correct'
++        assert mismatch, e['id']
++        if e['kind'] == 'baseline_reads':
++            assert out['readable'] and out == SR.read(row['input'], row['lang'], placement=None)
++        else:
++            assert not out['readable']        # a declared difference of the other two kinds is always an abstention, never a reading
+ 
+ 
+ # ---------------------------------------------------------------------------------------------------------------------------------

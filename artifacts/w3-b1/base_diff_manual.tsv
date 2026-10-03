@@ -1,0 +1,1 @@
+# manual verdicts (text<TAB>label<TAB>reason). Empty on purpose: every false->readable input has an automatic judgement (b1.judge against the gold of the new data).

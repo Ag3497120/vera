@@ -23,6 +23,11 @@ What the convention has and this entry does not produce is the closed table NOT_
 With `--events` one more key, `events`, is appended LAST (the event cross of verantyx/event_cross.py, built from this output alone); without it
 the output is unchanged to the byte, and a refused input answers the same with or without it.
 
+With a coarse placement (`--placement <dir>` or the variable VERA_PLACEMENT; the argument wins) a refused input may be read once more with the DIRECT type of
+its words (docs/READING_SOUNDNESS.md section 10): only the two typed paths there, only when the reader itself refused for the one reason the path answers;
+the clause then carries `predicate_basis` / `role_basis` (where the role or predicate came from). Without a placement the output is unchanged to the byte
+and none of the placement code is loaded.
+
 Exit code: 0 for readable true and false alike; 2 for an input that is refused (a typed `{"error": {"type", "detail"}}` object on standard
 output). The entry writes no file, uses no network, prints nothing but the JSON object, and gives the same output to the same input.
 """
@@ -30,9 +35,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 import unicodedata
+from dataclasses import replace
+from types import SimpleNamespace
 
 SCHEMA = 'verantyx.semantic_read/1'
 # A design constant (not a measurement): the construction reader gives up above 256 tokens (semantic_reader._read_constructions) and the
@@ -216,7 +224,7 @@ def _potential_suspect(word):
     return False
 
 
-def _read_ja(text):
+def _read_ja(text, placement=None):
     from . import semantic_reader as R
     from .typed_edges import _tagger
     toks = R._tokens(text)
@@ -246,11 +254,55 @@ def _read_ja(text):
     try:
         clauses, relations, meta = _map_ja(text, toks, view, R)
     except _Abstain as stop:
+        if placement is not None:
+            return _typed_reread_ja(text, toks, view, R, placement, stop, unsupported_report)
         return _refusal('ja', stop.kind, [stop.reason], unsupported_report)
     return _answer('ja', clauses, relations, meta, unsupported_report)
 
 
-def _map_ja(text, toks, view, R):
+def _typed_reread_ja(text, toks, view, R, placement, stop, report):
+    """W3-b1: a refusal of the reader gets one more look with the DIRECT types of the words, only when it is one of the two cases of the typed paths
+    (R.typed_trigger_ja). The decisions (the table, the gate) are the reader's (R.typed_plan_*); what is done here is to run this entry's own rules over
+    the roles they decide (_map_ja with `typed`) and to write the reasons. A refusal keeps its own reason first; one PLACEMENT_* reason follows it."""
+    first = [stop.reason]
+
+    def refuse(why):
+        return _refusal('ja', stop.kind, first + [why], report)
+    kind = R.typed_trigger_ja(text, view)
+    if kind is None:
+        return _refusal('ja', stop.kind, first, report)
+    clause = view.clauses[0]
+    if kind == 'U':
+        from .frames import transitivity
+        pred_i = next((i for i, (w, a, b) in enumerate(toks) if a == clause.predicate_span.start), None)
+        try:
+            voice = _voice_ja(clause, toks, pred_i, transitivity)
+        except _Abstain:
+            voice = None
+        typed, why = R.typed_plan_u_ja(clause, toks, placement, voice=voice, written=_written_predicate(toks, pred_i),
+                                       strip=lambda role: _strip_demonstrative(role, toks), role_map=_ROLE_TABLE)
+    else:
+        typed, why = R.typed_plan_s4_ja(text, toks, clause, placement)
+    if typed is None:
+        return refuse(why)
+    try:
+        clauses, relations, meta = _map_ja(text, toks, SimpleNamespace(clauses=(typed['clause'],), unread=()), R, typed=typed)
+    except _Abstain as again:
+        return refuse('PLACEMENT_REREAD_ABSTAINS:' + again.reason)
+    # K63 (table change record 2): the ending of the predicate must be one of the four that the present rules turn into a polarity and a tense; checked
+    # after the reread, so the reasons of everything refused before are unchanged
+    ending = R.typed_tail_ja(toks, typed['clause'])
+    if ending:
+        return refuse(ending)
+    # K63 (table change record 3): the head may be a derived verb (a potential, a spontaneous or a short causative looks like a verb of its own); checked after the
+    # ending, so the reasons of everything refused before are unchanged
+    derived = R.typed_head_derived_ja(toks, typed['clause'])
+    if derived:
+        return refuse(derived)
+    return _answer('ja', clauses, relations, meta, report)
+
+
+def _map_ja(text, toks, view, R, typed=None):
     sentences = list(R._sentences(text))
     if view.unread:
         _no('UNREAD_SPAN:' + view.unread[0].reason)
@@ -323,7 +375,7 @@ def _map_ja(text, toks, view, R):
         relations = []
     out = []; meta = []
     for c in supported:
-        out.append(_clause_ja(c, text, toks, R)); meta.append({'rule': c.rule, 'span': [c.predicate_span.start, c.predicate_span.end]})
+        out.append(_clause_ja(c, text, toks, R, typed=typed)); meta.append({'rule': c.rule, 'span': [c.predicate_span.start, c.predicate_span.end]})
     return out, relations, meta
 
 
@@ -353,7 +405,7 @@ _PATH_VERBS = frozenset(('走る', '歩く', '渡る', '飛ぶ', '跳ぶ', '進�
                          '降りる', '出る', '離れる', '巡る', '辿る', '滑る', '散歩する', '通過する', '横断する', '移動する', '出発する', '旅する'))
 
 
-def _clause_ja(c, text, toks, R):
+def _clause_ja(c, text, toks, R, typed=None):
     from .frames import transitivity
     pred_i = next((i for i, (w, a, b) in enumerate(toks) if a == c.predicate_span.start), None)
     body = c.body_span or c.span
@@ -395,7 +447,8 @@ def _clause_ja(c, text, toks, R):
     # ---- roles ----
     roles = {}
     has_patient = 'patient' in names
-    for r in raw_roles:
+    override = typed is not None and typed.get('mode') == 'override'
+    for r in ([] if override else raw_roles):
         name = r.name
         value = _strip_demonstrative(r, toks)
         if not value: _no('EMPTY_ROLE_VALUE:' + name)
@@ -418,6 +471,14 @@ def _clause_ja(c, text, toks, R):
             _no('UNMAPPED_ROLE:' + name)
         if mapped in roles: _no('DUPLICATE_ROLE:' + mapped)
         roles[mapped] = value
+    if override:
+        # W3-b1 path U: the roles were decided by the type table (reader.typed_plan_u_ja); the checks of a value are the ones above
+        for mapped, r in typed['roles']:
+            value = _strip_demonstrative(r, toks)
+            if not value: _no('EMPTY_ROLE_VALUE:' + r.name)
+            if value not in text: _no('VALUE_NOT_IN_INPUT:' + r.name)
+            if mapped in roles: _no('DUPLICATE_ROLE:' + mapped)
+            roles[mapped] = value
     # ---- polarity, tense, modality ----
     polarity = c.polarity
     if polarity not in ('+', '-'): _no('UNDETERMINED_POLARITY')
@@ -439,6 +500,9 @@ def _clause_ja(c, text, toks, R):
     out = {'predicate': predicate, 'roles': roles, 'polarity': polarity, 'tense': tense, 'modality': modality, 'voice': voice}
     if c.rule == 'comparison':
         out['comparison'] = _comparison_kind(c, text)
+    if typed is not None:             # where the roles / the predicate came from (last keys; nothing before them changes)
+        if typed.get('predicate_basis'): out['predicate_basis'] = typed['predicate_basis']
+        if typed.get('role_basis'): out['role_basis'] = dict(typed['role_basis'])
     return out
 
 
@@ -611,7 +675,7 @@ def _en_irregular_table():
     return table
 
 
-def _read_en(text):
+def _read_en(text, placement=None):
     from . import en_frames as en
     words = _en_words(text)
     low = [w.lower() for w in words]
@@ -624,15 +688,27 @@ def _read_en(text):
         return _refusal('en', 'unreadable_input', ['INTERJECTION_OR_FORMULA'])
     if not any((en.lemma(w) in known or w in aux or w in en.IRREG) for w in low):
         # no word of the closed verb list: that says the list is short, not that the input cannot be read (round 5, M8)
-        return _refusal('en', 'not_supported', ['UNKNOWN_PREDICATE'])
+        return _refusal('en', 'not_supported', ['UNKNOWN_PREDICATE'] + (['PLACEMENT_PREDICATE_UNIDENTIFIED'] if placement is not None else []))
     frame, why = en.read_typed(text)
     if frame is None:
         return _refusal('en', 'not_supported', ['EN_UNREAD:' + r for r in why] or ['EN_UNREAD'])
     try:
         clause, meta = _clause_en(text, words, low, frame, known, aux, en)
     except _Abstain as stop:
-        return _refusal('en', stop.kind, [stop.reason])
+        reasons = [stop.reason]
+        if placement is not None and stop.reason.startswith('UNKNOWN_PREDICATE:'):
+            reasons.append(_placement_reason_en(stop.reason, placement, en))
+        return _refusal('en', stop.kind, reasons)
     return _answer('en', [clause], [], [meta], [])
+
+
+def _placement_reason_en(reason, placement, en):
+    """W3-b1: English is not read with a placement (the placement holds no English predicate and no everyday English noun has a direct type). The one
+    thing added to `UNKNOWN_PREDICATE:<verb>` is what the placement says of the verb: the reason of the gate, or FRAME_NOT_READ:en."""
+    from . import semantic_reader as R
+    lemma = en.lemma(reason.split(':', 1)[1].split()[0])
+    noun, why = R.placement_type(placement.query(lemma))
+    return '%s:predicate:%s' % (why, lemma) if why else 'PLACEMENT_FRAME_NOT_READ:en'
 
 
 def _person_en(value, text=None):
@@ -749,12 +825,33 @@ def _clause_en(text, words, low, frame, known, aux, en):
 # ---------------------------------------------------------------------------------------------------------------------------------
 # entry
 # ---------------------------------------------------------------------------------------------------------------------------------
-def read(text, lang=None):
-    """The reading of `text` as a JSON-ready dict. Raises ReadError for an input that is refused (see ERROR_TYPES)."""
+_UNSET = object()
+
+
+def _placement_query(placement):
+    """The placement to ask: a path (the variable VERA_PLACEMENT when none is given; empty = no placement; the placement module's own variable is NOT
+    read), an object with `query(term)` (a fake in a test), or None (no placement, whatever the variable says)."""
+    if placement is _UNSET:
+        placement = os.environ.get('VERA_PLACEMENT')
+    if placement is None:
+        return None
+    if isinstance(placement, str):
+        if not placement.strip(): return None
+        from . import semantic_reader as R
+        return R.CoarseQuery(placement)
+    if callable(getattr(placement, 'query', None)):
+        return placement
+    raise ReadError('BAD_ARGUMENTS', 'placement must be a path or an object with query(term)')
+
+
+def read(text, lang=None, *, placement=_UNSET):
+    """The reading of `text` as a plain dict (what main() prints). Raises ReadError for an input that is refused (see ERROR_TYPES). `placement`: see _placement_query;
+    without one the output is exactly what it was before the placement existed."""
     chosen = check_input(text, lang)
     if chosen is None:
         return _refusal(None, 'not_supported', ['NO_LANGUAGE'])
-    return _read_ja(text) if chosen == 'ja' else _read_en(text)
+    query = _placement_query(placement)
+    return _read_ja(text, query) if chosen == 'ja' else _read_en(text, query)
 
 
 class _Parser(argparse.ArgumentParser):
@@ -772,12 +869,28 @@ def main(argv=None):
     cut = argv.index('--') if '--' in argv else len(argv)
     events = '--events' in argv[:cut]
     argv = [a for i, a in enumerate(argv) if not (i < cut and a == '--events')]
+    # `--placement <dir>` / `--placement=<dir>` is taken out the same way (exact argument, before any `--`, not registered with the parser).
+    cut = argv.index('--') if '--' in argv else len(argv)
+    placement, kept, i = None, [], 0
     try:
+        while i < len(argv):
+            a = argv[i]
+            if i < cut and (a == '--placement' or a.startswith('--placement=')):
+                if placement is not None: raise ReadError('BAD_ARGUMENTS', '--placement given twice')
+                if a == '--placement':
+                    if i + 1 >= cut: raise ReadError('BAD_ARGUMENTS', '--placement needs a directory')
+                    placement = argv[i + 1]; i += 2
+                else:
+                    placement = a[len('--placement='):]; i += 1
+                if not placement.strip(): raise ReadError('BAD_ARGUMENTS', '--placement needs a directory')
+                continue
+            kept.append(a); i += 1
+        argv = kept
         args = parser.parse_args(argv)
-        out = read(args.text, args.lang)
+        out = read(args.text, args.lang, placement=_UNSET if placement is None else placement)
         if events:
             from . import event_cross    # only for --events: the default output does not load the module
-            out = event_cross.attach_events(out)
+            out = event_cross.attach_events(out) if placement is None else event_cross.attach_events(out, event_cross.default_lookup(placement))
         code = 0
     except ReadError as err:
         out = {'error': {'type': err.type, 'detail': err.detail}}; code = 2

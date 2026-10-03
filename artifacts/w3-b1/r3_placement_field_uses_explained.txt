@@ -1,0 +1,20 @@
+# 配置の答えの欄(state・origin・top・decided_by・estimate_basis)を読む場所の説明(A5)
+# 出典: placement_field_uses.txt(`git diff 0ff3f35 -- verantyx` の追加行のうち欄を読む 9 行)。関数名は verantyx/semantic_reader.py の現在の行番号。
+# 結論: 読むのは `_placement_answer_problems`(契約の検査)と `placement_type`(門)の 2 関数だけ。ほかの追加コードは門が返した (型, 理由) しか見ない。
+
+placement_field_uses.txt の行  関数                           何をしているか
+246  `for key in ('state', 'top', 'origin', 'estimate_basis', 'constructed')`   _placement_answer_problems  契約の鍵が揃っているかの検査(欠ければ PLACEMENT_INVALID)
+248  `state, top, origin, basis = answer[...]`                                _placement_answer_problems  契約の不変条件の検査(DECIDED ⇔ 型 1 つ など)
+259  `by = answer.get('decided_by')`                                           _placement_answer_problems  direct の答えに decided_by があるかの検査
+266  (docstring)                                                               placement_type              門の説明の文(コードではない)
+275  `state = answer['state']`                                                 placement_type              門 2: state ごとの理由
+281  `if answer['origin'] == 'estimated'`                                      placement_type              門 3: 推定は決定に使わない(proximity と generated を別の理由で返す)
+282  `... answer['estimate_basis'] == 'proximity' ...`                         placement_type              門 3 の理由の選択
+283  `arms = answer['decided_by']`                                             placement_type              門 4(gen_definition の格上げ)と門 5(役割の腕だけ)の判定
+286  `return answer['top'][0], None`                                           placement_type              門 6: DECIDED・direct の唯一の型を返す
+
+読まない場所(確かめた):
+- 経路 U(`typed_plan_u_ja`)・経路 S4(`typed_plan_s4_ja`)・英語の理由・`typed_trigger_ja`・`semantic_read.py` の配線は、`placement_type` が返した (型, 理由) だけを使う。`state`・`origin`・`top`・`decided_by`・`estimate_basis` を直接読まない(grep の結果にこれらのファイルの行が無い)。
+- `CoarseQuery`・`CoarseLookup` は答えの `placement.content_sha256` を id に使うだけで、型の決定に使わない。
+- `verantyx/event_cross.py` の欄の読み(`PlaceResult` の `origin`・`estimate_basis`・`state`)は W3-b が登録した既存の一致判定で、この変更の追加行ではない(追加は `default_lookup`・`CoarseLookup`・`ENTRY_BASIS_KEYS` の写しだけ)。十字は役割も値も型で変えない(AGREE / DISAGREE の申告だけ)。
+- 問い合わせは `coarse_place.query(term, placement=<実在のパス>)` だけ(`context_role`・`context_predicate`・`None` を渡す所なし。テスト `test_the_query_adapter_asks_for_the_word_only_with_a_real_path`)。

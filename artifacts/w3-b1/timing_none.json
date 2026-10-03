@@ -1,0 +1,10 @@
+{
+ "mode": "none",
+ "inputs": 2899,
+ "load_1min_before": 3.91,
+ "load_1min_after": 3.91,
+ "wall_seconds": 2.628,
+ "median_ms_per_input": 0.607,
+ "max_ms_per_input": 61.836,
+ "mean_ms_per_input": 0.906
+}

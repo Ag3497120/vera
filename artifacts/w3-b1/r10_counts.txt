@@ -1,0 +1,16 @@
+rows 78
+path S4 derived dekiru entry_expect abstain: 2
+path S4 derived godan_plain entry_expect read: 4
+path S4 derived ichidan_plain entry_expect abstain: 5
+path S4 derived ichidan_upper entry_expect read: 2
+path S4 derived potential entry_expect abstain: 14
+path S4 derived ranuki entry_expect abstain: 2
+path S4 derived sa_not_a entry_expect read: 3
+path S4 derived short_causative entry_expect abstain: 7
+path S4 derived spontaneous entry_expect abstain: 2
+path U derived godan_plain entry_expect read: 7
+path U derived ichidan_plain entry_expect abstain: 6
+path U derived potential entry_expect abstain: 17
+path U derived sa_not_a entry_expect read: 3
+path U derived short_causative entry_expect abstain: 4
+tails {"neg": 12, "negpast": 17, "nonpast": 14, "past": 35}

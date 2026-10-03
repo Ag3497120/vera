@@ -1,0 +1,5 @@
+files_compared=28 cross_files=4 excluded_sentences=25
+inputs_shared_with_existing=0
+cross_sentences_shared_with_this_data=0
+inputs_shared_with_excluded=0
+overlap=0

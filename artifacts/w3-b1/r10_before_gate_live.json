@@ -1,0 +1,1255 @@
+{
+ "summary": {
+  "mode": "live",
+  "rows": 78,
+  "verdicts": {
+   "abstain": 43,
+   "correct": 24,
+   "misread": 11
+  },
+  "verdicts_by_data": {
+   "ja_r10": {
+    "abstain": 43,
+    "correct": 24,
+    "misread": 11
+   }
+  },
+  "misread": 11,
+  "incomplete": 0,
+  "unjudged": 0,
+  "new_data_rows": 78,
+  "entry_expect_mismatch": {
+   "read_expected_but_abstained": 4,
+   "abstain_expected_but_read": 16
+  },
+  "reason_prefix_mismatch_among_abstained": 0,
+  "second_reason_prefixes": {
+   "PLACEMENT_DIRECT_VIA_GENERATED": 1,
+   "PLACEMENT_PART_NO_ROLE": 1,
+   "PLACEMENT_REREAD_ABSTAINS": 20,
+   "PLACEMENT_SLOT_EVIDENCE_ONLY": 20,
+   "PLACEMENT_UNPLACED": 1
+  },
+  "bad_verdicts": {
+   "bad_verdict_total": 11,
+   "bad_verdict_produced_by_the_placement": 11
+  }
+ },
+ "misses_in_fixture": [],
+ "read_expected_but_abstained": [
+  {
+   "id": "W3B1-R10-S4-027",
+   "input": "父が週末、靴を洗った。",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:週末"
+   ]
+  },
+  {
+   "id": "W3B1-R10-S4-029",
+   "input": "母が夏、絵を描く。",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:夏"
+   ]
+  },
+  {
+   "id": "W3B1-R10-S4-030",
+   "input": "弟が秋、本を読まなかった。",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:秋"
+   ]
+  },
+  {
+   "id": "W3B1-R10-S4-033",
+   "input": "兄が夕方、手紙を渡した。",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:夕方"
+   ]
+  }
+ ],
+ "abstain_expected_but_read": [
+  {
+   "id": "W3B1-R10-U-001",
+   "input": "弟が公園へ歩けた。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R10-U-003",
+   "input": "馬が村へ歩けない。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R10-U-004",
+   "input": "兄が寺へ歩けなかった。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R10-U-018",
+   "input": "先生が公園へ歩かした。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R10-U-019",
+   "input": "母が庭へ歩かす。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R10-U-020",
+   "input": "兄が橋へ歩かさなかった。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R10-U-021",
+   "input": "父が広場へ歩かさない。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R10-U-022",
+   "input": "猫が庭へ出た。",
+   "verdict": "correct",
+   "identical_to_no_placement": true
+  },
+  {
+   "id": "W3B1-R10-U-024",
+   "input": "弟が広場へ出なかった。",
+   "verdict": "correct",
+   "identical_to_no_placement": true
+  },
+  {
+   "id": "W3B1-R10-U-025",
+   "input": "兄が駅から離れた。",
+   "verdict": "correct",
+   "identical_to_no_placement": true
+  },
+  {
+   "id": "W3B1-R10-U-026",
+   "input": "母が病院へ出かけた。",
+   "verdict": "correct",
+   "identical_to_no_placement": true
+  },
+  {
+   "id": "W3B1-R10-U-027",
+   "input": "姉が港へ出かけなかった。",
+   "verdict": "correct",
+   "identical_to_no_placement": true
+  },
+  {
+   "id": "W3B1-R10-S4-015",
+   "input": "先生が放課後、生徒を走らした。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R10-S4-017",
+   "input": "母が休日、妹を走らさなかった。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R10-S4-019",
+   "input": "店員が夜、学生を走らした。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  },
+  {
+   "id": "W3B1-R10-S4-020",
+   "input": "姉が昼、手紙を書かした。",
+   "verdict": "misread",
+   "identical_to_no_placement": false
+  }
+ ],
+ "reason_prefix_mismatch": [],
+ "rows": [
+  {
+   "id": "W3B1-R10-U-001",
+   "data": "ja_r10",
+   "input": "弟が公園へ歩けた。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "弟",
+     "goal": "公園"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-002",
+   "data": "ja_r10",
+   "input": "猫が広場へ歩ける。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩ける",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:permission"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-U-003",
+   "data": "ja_r10",
+   "input": "馬が村へ歩けない。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "馬",
+     "goal": "村"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-004",
+   "data": "ja_r10",
+   "input": "兄が寺へ歩けなかった。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "goal": "寺"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-005",
+   "data": "ja_r10",
+   "input": "妹が病院へ行けた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNDETERMINED_MODALITY:possible potential form",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-U-006",
+   "data": "ja_r10",
+   "input": "父が市場へ行ける。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNDETERMINED_MODALITY:possible potential form",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-U-007",
+   "data": "ja_r10",
+   "input": "母が港へ行けない。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNDETERMINED_MODALITY:possible potential form",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-U-008",
+   "data": "ja_r10",
+   "input": "姉が空港へ行けなかった。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNDETERMINED_MODALITY:possible potential form",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-U-009",
+   "data": "ja_r10",
+   "input": "兄が部屋へ戻れた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNDETERMINED_MODALITY:possible potential form",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-U-010",
+   "data": "ja_r10",
+   "input": "妹が教室へ戻れる。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNDETERMINED_MODALITY:possible potential form",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-U-011",
+   "data": "ja_r10",
+   "input": "弟が台所へ戻れない。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNDETERMINED_MODALITY:possible potential form",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-U-012",
+   "data": "ja_r10",
+   "input": "父が工場へ戻れなかった。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNDETERMINED_MODALITY:possible potential form",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-U-013",
+   "data": "ja_r10",
+   "input": "姉が駅から空港へ向かえた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNDETERMINED_MODALITY:possible potential form",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-U-014",
+   "data": "ja_r10",
+   "input": "祖父が夜に病院へ向かえない。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNDETERMINED_MODALITY:possible potential form",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-U-015",
+   "data": "ja_r10",
+   "input": "弟が橋へ向かえなかった。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNDETERMINED_MODALITY:possible potential form",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-U-016",
+   "data": "ja_r10",
+   "input": "母が台所から部屋へ移れた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNDETERMINED_MODALITY:possible potential form",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-U-017",
+   "data": "ja_r10",
+   "input": "兄が町へ移れる。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNDETERMINED_MODALITY:possible potential form",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-U-018",
+   "data": "ja_r10",
+   "input": "先生が公園へ歩かした。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "先生",
+     "goal": "公園"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-019",
+   "data": "ja_r10",
+   "input": "母が庭へ歩かす。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "母",
+     "goal": "庭"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-020",
+   "data": "ja_r10",
+   "input": "兄が橋へ歩かさなかった。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "goal": "橋"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-021",
+   "data": "ja_r10",
+   "input": "父が広場へ歩かさない。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "父",
+     "goal": "広場"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-022",
+   "data": "ja_r10",
+   "input": "猫が庭へ出た。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "猫",
+     "goal": "庭"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-023",
+   "data": "ja_r10",
+   "input": "犬が森へ出る。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "GOAL_TYPE_UNDETERMINED:森"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-U-024",
+   "data": "ja_r10",
+   "input": "弟が広場へ出なかった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "弟",
+     "goal": "広場"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-025",
+   "data": "ja_r10",
+   "input": "兄が駅から離れた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "source": "駅"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-026",
+   "data": "ja_r10",
+   "input": "母が病院へ出かけた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "母",
+     "goal": "病院"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-027",
+   "data": "ja_r10",
+   "input": "姉が港へ出かけなかった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "姉",
+     "goal": "港"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-028",
+   "data": "ja_r10",
+   "input": "兄が山へ登った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "goal": "山"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-029",
+   "data": "ja_r10",
+   "input": "姉が島へ渡る。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "姉",
+     "goal": "島"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-030",
+   "data": "ja_r10",
+   "input": "犬が部屋へ戻った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "犬",
+     "goal": "部屋"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-031",
+   "data": "ja_r10",
+   "input": "弟が町へ進まなかった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "弟",
+     "goal": "町"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-032",
+   "data": "ja_r10",
+   "input": "妹が空港へ向かった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "妹",
+     "goal": "空港"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-033",
+   "data": "ja_r10",
+   "input": "祖父が港へ帰らない。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "祖父",
+     "goal": "港"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-034",
+   "data": "ja_r10",
+   "input": "父が店へ入った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "父",
+     "goal": "店"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-035",
+   "data": "ja_r10",
+   "input": "兄が病院へ引き返した。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "兄",
+     "goal": "病院"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-036",
+   "data": "ja_r10",
+   "input": "姉が寺へ引き返さない。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "姉",
+     "goal": "寺"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-U-037",
+   "data": "ja_r10",
+   "input": "母が駅へ引き返さなかった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "母",
+     "goal": "駅"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-S4-001",
+   "data": "ja_r10",
+   "input": "母が夕方、手紙を書けた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:夕方"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-002",
+   "data": "ja_r10",
+   "input": "父が週末、絵を描ける。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:週末"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-003",
+   "data": "ja_r10",
+   "input": "姉が休日、靴を磨けない。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-004",
+   "data": "ja_r10",
+   "input": "兄が春休み、食器を洗えなかった。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-005",
+   "data": "ja_r10",
+   "input": "弟が冬、本を読めた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-006",
+   "data": "ja_r10",
+   "input": "妹が夏、皿を洗える。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:夏"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-007",
+   "data": "ja_r10",
+   "input": "祖父が秋、絵を描けない。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:秋"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-008",
+   "data": "ja_r10",
+   "input": "先生が早朝、床を磨けなかった。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:早朝"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-009",
+   "data": "ja_r10",
+   "input": "生徒が連休、手紙を書ける。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-010",
+   "data": "ja_r10",
+   "input": "学生が夜中、本を読めない。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:夜中"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-011",
+   "data": "ja_r10",
+   "input": "店員が日曜、床を磨けた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:日曜"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-012",
+   "data": "ja_r10",
+   "input": "母が真夜中、絵を描けなかった。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_DIRECT_VIA_GENERATED:part:真夜中"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-013",
+   "data": "ja_r10",
+   "input": "父が大晦日、皿を洗えた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-014",
+   "data": "ja_r10",
+   "input": "姉が正午、靴を磨ける。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:正午"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-015",
+   "data": "ja_r10",
+   "input": "先生が放課後、生徒を走らした。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "先生",
+     "patient": "生徒",
+     "time": "放課後"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-S4-016",
+   "data": "ja_r10",
+   "input": "父が週末、弟を歩かす。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:週末"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-017",
+   "data": "ja_r10",
+   "input": "母が休日、妹を走らさなかった。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "母",
+     "patient": "妹",
+     "time": "休日"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-S4-018",
+   "data": "ja_r10",
+   "input": "兄が夏、弟を歩かさない。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:夏"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-019",
+   "data": "ja_r10",
+   "input": "店員が夜、学生を走らした。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "店員",
+     "patient": "学生",
+     "time": "夜"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-S4-020",
+   "data": "ja_r10",
+   "input": "姉が昼、手紙を書かした。",
+   "verdict": "misread",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "姉",
+     "patient": "手紙",
+     "time": "昼"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-S4-021",
+   "data": "ja_r10",
+   "input": "母が夕方、本を読ました。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:夕方"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-022",
+   "data": "ja_r10",
+   "input": "母が夕方、扉を閉めない。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:夕方"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-023",
+   "data": "ja_r10",
+   "input": "店員が早朝、窓を開けなかった。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:早朝"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-024",
+   "data": "ja_r10",
+   "input": "祖父が秋、窓を閉める。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:秋"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-025",
+   "data": "ja_r10",
+   "input": "弟が週末、果物を食べた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:週末"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-026",
+   "data": "ja_r10",
+   "input": "妹が夏、食器を並べた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:夏"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-027",
+   "data": "ja_r10",
+   "input": "父が週末、靴を洗った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:週末"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-028",
+   "data": "ja_r10",
+   "input": "先生が冬、手紙を書いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "先生",
+     "patient": "手紙",
+     "time": "冬"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-S4-029",
+   "data": "ja_r10",
+   "input": "母が夏、絵を描く。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:夏"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-030",
+   "data": "ja_r10",
+   "input": "弟が秋、本を読まなかった。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:秋"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-031",
+   "data": "ja_r10",
+   "input": "母が昼、写真を見た。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "母",
+     "patient": "写真",
+     "time": "昼"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-S4-032",
+   "data": "ja_r10",
+   "input": "弟が冬、服を着た。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "弟",
+     "patient": "服",
+     "time": "冬"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-S4-033",
+   "data": "ja_r10",
+   "input": "兄が夕方、手紙を渡した。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_SLOT_EVIDENCE_ONLY:part:夕方"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-034",
+   "data": "ja_r10",
+   "input": "母が昼、本を返した。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "母",
+     "patient": "本",
+     "time": "昼"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-S4-035",
+   "data": "ja_r10",
+   "input": "先生が冬、本を貸さなかった。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "roles": [
+    {
+     "agent": "先生",
+     "patient": "本",
+     "time": "冬"
+    }
+   ]
+  },
+  {
+   "id": "W3B1-R10-S4-036",
+   "data": "ja_r10",
+   "input": "兄が夜、映画を見れた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-037",
+   "data": "ja_r10",
+   "input": "弟が冬、果物を食べれた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-038",
+   "data": "ja_r10",
+   "input": "姉が冬、掃除ができた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NO_ROLE:EVENT_ACT:が"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-039",
+   "data": "ja_r10",
+   "input": "母が昼、洗濯ができなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_UNPLACED:part:洗濯"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-040",
+   "data": "ja_r10",
+   "input": "姉が夜、昔を思えた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  },
+  {
+   "id": "W3B1-R10-S4-041",
+   "data": "ja_r10",
+   "input": "兄が冬、故郷を思えた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+   ],
+   "roles": null
+  }
+ ]
+}

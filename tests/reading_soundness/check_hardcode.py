@@ -14,7 +14,7 @@ HERE = Path(__file__).resolve().parent
 
 def sentences():
     out = []
-    for f in ('table7.jsonl', 'ja.jsonl', 'ja_r2.jsonl', 'en.jsonl', 'en_r2.jsonl', 'a3.jsonl', 'a3_r2.jsonl', 'ja_r3.jsonl', 'a3_r3.jsonl', 'ja_r4.jsonl', 'a3_r4.jsonl', 'ja_r5.jsonl', 'a3_r5.jsonl', 'ja_r6.jsonl'):
+    for f in ('table7.jsonl', 'ja.jsonl', 'ja_r2.jsonl', 'en.jsonl', 'en_r2.jsonl', 'a3.jsonl', 'a3_r2.jsonl', 'ja_r3.jsonl', 'a3_r3.jsonl', 'ja_r4.jsonl', 'a3_r4.jsonl', 'ja_r5.jsonl', 'a3_r5.jsonl', 'ja_r6.jsonl', 'ja_r8.jsonl', 'en_r4.jsonl', 'ja_r9.jsonl', 'ja_r10.jsonl'):
         for line in (HERE / f).read_text(encoding='utf-8').splitlines():
             if line.strip():
                 r = json.loads(line); out.append(r['text'])

@@ -1,0 +1,143 @@
+added lines: 480
+PROPER/NUMERIC (must be empty): []
+ENGLISH NAMES (must be empty): []
+common nouns found in added lines (list only): []
+verb lemmas found in added lines (list only): ['いる', 'する']
+english lowercase words found in added lines (list only; each with the added lines that hold it, so a reader can judge): ['after', 'all', 'answer', 'asked', 'came', 'closed', 'contract', 'could', 'def', 'every', 'exactly', 'form', 'kept', 'left', 'let', 'made', 'more', 'never', 'none', 'not', 'nothing', 'only', 'opened', 'patient', 'read', 'report', 'returned', 'run', 'said', 'that', 'the', 'this', 'two', 'types', 'was', 'were', 'when', 'while', 'writes', 'written', 'wrote']
+  [after] 8 added line(s):
+      # after the reread, so the reasons of everything refused before are unchanged
+      # K63 (table change record 3): the head may be a derived verb (a potential, a spontaneous or a short causative looks like a verb of its own); checked after the
+      after = toks[last + 1][0]
+  [all] 5 added line(s):
+      if 'role_basis' in clause and not (isinstance(rbasis, Mapping) and rbasis and all(isinstance(k, str) and isinstance(v, str) and v.strip() for k, v in rbasis.ite
+      if not isinstance(top, list) or not all(isinstance(t, str) and t for t in top): return ['TOP_NOT_A_LIST_OF_STRINGS']
+      if not (isinstance(by, list) and by and all(isinstance(x, str) and x for x in by)): return ['DIRECT_WITHOUT_DECIDED_BY']
+  [answer] 38 added line(s):
+      """The default lookup when no placement is named: there is no placement, so every answer is NO_PLACEMENT (reason STUB).
+      placement cannot be opened). An answer that cannot be opened is NO_PLACEMENT with its own reason, never a negative answer."""
+      answer = coarse_place.query(lemma, placement=self.path)
+  [asked] 2 added line(s):
+      # of words: (conjugation type, end of the dictionary form), None = not asked.
+      The answer fields of the placement are not read here and the placement is not asked."""
+  [came] 2 added line(s):
+      the clause then carries `predicate_basis` / `role_basis` (where the role or predicate came from). Without a placement the output is unchanged to the byte
+      if typed is not None:             # where the roles / the predicate came from (last keys; nothing before them changes)
+  [closed] 2 added line(s):
+      The four shapes are closed structures of a verb form and an auxiliary (no list of words, no list of endings): the head in the final form with nothing after
+      # causative is the original verb with voice causative). The gate is a closed structure of the conjugation type and the end of the dictionary form, with no list
+  [contract] 2 added line(s):
+      """The contract of the placement query (docs/COARSE_PLACEMENT.md 11.6): the problems of an answer, empty when it is well formed."""
+      1 an answer that breaks the contract -> PLACEMENT_INVALID
+  [could] 1 added line(s):
+      `recipient`, or whose に phrase it left ambiguous), 'S4' (the only thing the reader could not represent is a left-over part), or None. One
+  [def] 28 added line(s):
+      def __init__(self, path: str) -> None:
+      def lookup(self, lemma: str) -> PlaceResult:
+      def id(self) -> str:
+  [every] 2 added line(s):
+      """The default lookup when no placement is named: there is no placement, so every answer is NO_PLACEMENT (reason STUB).
+      self.lookup('a')          # the content hash is in every answer, whatever the word
+  [exactly] 2 added line(s):
+      without one the output is exactly what it was before the placement existed."""
+      sentence, nothing unread, exactly one clause of the frame rule, no condition. A reason of the reader that is not the one of the path (it
+  [form] 15 added line(s):
+      # A part is not read when one of its tokens or its particle is one of these (matched on the surface and on the base form of a token).
+      """The kind of mark (K64) a token is, or None. Matched on the surface and on the base form; a numeral, a connective and a word of the entry's quantity
+      endings that the present rules turn into a polarity and a tense, else the reason (PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:<form of the head>:<part of speech
+  [kept] 4 added line(s):
+      placement, kept, i = None, [], 0
+      kept.append(a); i += 1
+      argv = kept
+  [left] 4 added line(s):
+      # K63: a left-over part of a clause (a noun phrase and a particle, or a comma) that is read as a role: (noun type, particle) -> role. '' is the comma.
+      `recipient`, or whose に phrase it left ambiguous), 'S4' (the only thing the reader could not represent is a left-over part), or None. One
+      # a role name the reader has decided must be the one the table gives (only `recipient` and `ambiguous` are left to the table)
+  [let] 2 added line(s):
+      # the tagger, independent verbs of their own (a shimo-ichidan or a godan verb), so the four endings of typed_tail_ja let them through, and the present rules the
+      (PLACEMENT_PREDICATE_POSSIBLY_DERIVED:<conjugation type of the head>). Applied only after typed_tail_ja has let the clause through (its reasons are unchanged).
+  [made] 1 added line(s):
+      context role, no context predicate, never a None path). `id` is made from the content hash of the first answer."""
+  [more] 2 added line(s):
+      With a coarse placement (`--placement <dir>` or the variable VERA_PLACEMENT; the argument wins) a refused input may be read once more with the DIRECT type of
+      """W3-b1: a refusal of the reader gets one more look with the DIRECT types of the words, only when it is one of the two cases of the typed paths
+  [never] 4 added line(s):
+      # provenance of the cross, never to its centre.
+      """The coarse placement (verantyx/coarse_place.py) as a PlacementLookup: the word only (no role, no predicate), the placement's own path (never a
+      placement cannot be opened). An answer that cannot be opened is NO_PLACEMENT with its own reason, never a negative answer."""
+  [none] 3 added line(s):
+      """The lookup used when none is given: the coarse placement named by the argument, else by the variable VERA_PLACEMENT (empty or unset = none), else the
+      and none of the placement code is loaded.
+      """The placement to ask: a path (the variable VERA_PLACEMENT when none is given; empty = no placement; the placement module's own variable is NOT
+  [not] 53 added line(s):
+      stub. (The placement module's own variable is not read here.)"""
+      if placement is None or not str(placement).strip(): return StubLookup()
+      if 'predicate_basis' in clause and not (isinstance(basis, str) and basis.strip()): bad.append('ENTRY_BASIS_NOT_WELL_FORMED:predicate_basis')
+  [nothing] 4 added line(s):
+      if typed is not None:             # where the roles / the predicate came from (last keys; nothing before them changes)
+      2 NO_PLACEMENT / UNKNOWN / UNPLACED / MULTIPLE are four different reasons (nothing here turns one into another)
+      sentence, nothing unread, exactly one clause of the frame rule, no condition. A reason of the reader that is not the one of the path (it
+  [only] 14 added line(s):
+      """The coarse placement (verantyx/coarse_place.py) as a PlacementLookup: the word only (no role, no predicate), the placement's own path (never a
+      from . import coarse_place    # inside the function: the module is loaded only when a placement is named
+      import os    # inside the function: the module level holds the standard library only (a test says so)
+  [opened] 1 added line(s):
+      placement cannot be opened). An answer that cannot be opened is NO_PLACEMENT with its own reason, never a negative answer."""
+  [patient] 1 added line(s):
+      ('patient', ('を',), ('PERSON', 'GROUP_ORG', 'ANIMAL', 'PLANT', 'ARTIFACT', 'SUBSTANCE_FOOD', 'EVENT_ACT', 'STATE_PROPERTY', 'ABSTRACT',
+  [read] 17 added line(s):
+      None path: the placement module would then read its own variable). `id` is `coarse-placement:<content_sha256>` (`...:unavailable:<reason>` when the
+      stub. (The placement module's own variable is not read here.)"""
+      With a coarse placement (`--placement <dir>` or the variable VERA_PLACEMENT; the argument wins) a refused input may be read once more with the DIRECT type of
+  [report] 4 added line(s):
+      def _typed_reread_ja(text, toks, view, R, placement, stop, report):
+      return _refusal('ja', stop.kind, first + [why], report)
+      return _refusal('ja', stop.kind, first, report)
+  [returned] 1 added line(s):
+      # (the row `recipient / に / PERSON GROUP_ORG` was registered here and returned to "not read" on 2026-10-03 15:28:43 +0900: docs K62 table change record 1)
+  [run] 12 added line(s):
+      (R.typed_trigger_ja). The decisions (the table, the gate) are the reader's (R.typed_plan_*); what is done here is to run this entry's own rules over
+      """Path S4: the left-over parts of the clause (a run of content tokens no role and no predicate covers) read as `time` / `place`, or (None, reason)."""
+      runs, run = [], []
+  [said] 1 added line(s):
+      said `ambiguous frame role`, the clause has a quantifier, ...) is the reader saying it cannot split: it is not overridden."""
+  [that] 15 added line(s):
+      # W3-b1: the source fields the reading entry writes on a clause that it decided by a type (`predicate_basis`: a string, `role_basis`: {role: string}).
+      placement cannot be opened). An answer that cannot be opened is NO_PLACEMENT with its own reason, never a negative answer."""
+      # K63 (table change record 2): the ending of the predicate must be one of the four that the present rules turn into a polarity and a tense; checked
+  [the] 78 added line(s):
+      # W3-b1: the source fields the reading entry writes on a clause that it decided by a type (`predicate_basis`: a string, `role_basis`: {role: string}).
+      # They are NOT keys of the convention (CLAUSE_KEYS stays the table of docs/READING_CONVENTIONS.md 1.1): the cross accepts them and copies them to the
+      # provenance of the cross, never to its centre.
+  [this] 2 added line(s):
+      (R.typed_trigger_ja). The decisions (the table, the gate) are the reader's (R.typed_plan_*); what is done here is to run this entry's own rules over
+      # Nothing above this line is changed. What is added: a table of types (no word in it), one gate that is the only reader of a placement answer
+  [two] 7 added line(s):
+      its words (docs/READING_SOUNDNESS.md section 10): only the two typed paths there, only when the reader itself refused for the one reason the path answers;
+      """W3-b1: a refusal of the reader gets one more look with the DIRECT types of the words, only when it is one of the two cases of the typed paths
+      # (`placement_type`), the two triggers and their plans. The plans return what to read; the entry (semantic_read.py) runs its own rules over it.
+  [types] 5 added line(s):
+      from types import SimpleNamespace
+      """W3-b1: a refusal of the reader gets one more look with the DIRECT types of the words, only when it is one of the two cases of the typed paths
+      # Nothing above this line is changed. What is added: a table of types (no word in it), one gate that is the only reader of a placement answer
+  [was] 3 added line(s):
+      for key in ENTRY_BASIS_KEYS:     # only when the entry wrote them: a cross of a clause without them is what it always was
+      without one the output is exactly what it was before the placement existed."""
+      # (the row `recipient / に / PERSON GROUP_ORG` was registered here and returned to "not read" on 2026-10-03 15:28:43 +0900: docs K62 table change record 1)
+  [were] 1 added line(s):
+      # W3-b1 path U: the roles were decided by the type table (reader.typed_plan_u_ja); the checks of a value are the ones above
+  [when] 11 added line(s):
+      """The default lookup when no placement is named: there is no placement, so every answer is NO_PLACEMENT (reason STUB).
+      None path: the placement module would then read its own variable). `id` is `coarse-placement:<content_sha256>` (`...:unavailable:<reason>` when the
+      from . import coarse_place    # inside the function: the module is loaded only when a placement is named
+  [while] 2 added line(s):
+      while i < len(argv):
+      while j >= 0 and toks[j][0].feature.pos1 == '助詞': j -= 1
+  [writes] 2 added line(s):
+      # W3-b1: the source fields the reading entry writes on a clause that it decided by a type (`predicate_basis`: a string, `role_basis`: {role: string}).
+      role as the entry writes it, `role_map` the entry's table of reader role names -> convention names."""
+  [written] 6 added line(s):
+      typed, why = R.typed_plan_u_ja(clause, toks, placement, voice=voice, written=_written_predicate(toks, pred_i),
+      def typed_plan_u_ja(clause, toks, query, *, voice, written, strip, role_map):
+      """Path U: (typed, None) or (None, reason). `voice` is the voice the entry decided, `written` the predicate as written, `strip(role)` the value of a
+  [wrote] 1 added line(s):
+      for key in ENTRY_BASIS_KEYS:     # only when the entry wrote them: a cross of a clause without them is what it always was

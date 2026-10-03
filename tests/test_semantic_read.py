@@ -7,6 +7,7 @@
 """
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -20,7 +21,7 @@ TREE = Path(__file__).resolve().parent.parent
 FIXTURE = TREE / 'tests' / 'bank_score' / 'fixtures' / 'B1_v2' / 'items.jsonl'
 ITEMS = [json.loads(l) for l in FIXTURE.read_text(encoding='utf-8').splitlines() if l.strip()]
 CLAUSE_KEYS = {'predicate', 'roles', 'polarity', 'tense', 'modality', 'voice'}
-OPTIONAL_KEYS = {'quantifiers', 'scope', 'comparison'}
+OPTIONAL_KEYS = {'quantifiers', 'scope', 'comparison', 'predicate_basis', 'role_basis'}
 ABSTAIN_KINDS = {'unreadable_input', 'not_supported'}
 
 
@@ -58,6 +59,12 @@ def validate(out):
         if c.get('voice') not in b1.VOICES: bad.append((i, 'voice'))
         if c.get('comparison') is not None and c['comparison'] not in b1.COMPARISONS: bad.append((i, 'comparison'))
         if 'quantifiers' in c and not (isinstance(c['quantifiers'], dict) and c['quantifiers']): bad.append((i, 'quantifiers'))
+        # W3-b1: the source fields of a clause decided by the coarse placement (docs/READING_SOUNDNESS.md section 10, K65)
+        if 'predicate_basis' in c and not (isinstance(c['predicate_basis'], str) and re.fullmatch(r'placement_direct:P_[A-Z]+', c['predicate_basis'])): bad.append((i, 'predicate_basis'))
+        if 'role_basis' in c:
+            rb = c['role_basis']
+            if not (isinstance(rb, dict) and rb and set(rb) <= set(roles or {}) and all(isinstance(v, str) and re.fullmatch(r'placement_direct:[A-Z_]+', v) for v in rb.values())):
+                bad.append((i, 'role_basis'))
     for r in relations:
         if set(r) != {'type', 'from', 'to'} or r['type'] not in b1.REL_TYPES or not all(isinstance(r[k], int) and 0 <= r[k] < len(clauses) for k in ('from', 'to')):
             bad.append(('relation', r))
