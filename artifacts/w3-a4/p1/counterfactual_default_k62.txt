@@ -1,0 +1,13 @@
+反実仮想（既定を k62_he_by_ni_place にした場合に r7 の答えが変わる語）: 12 語（比べた語 15102）
+よぶ	frame_status ESTIMATED -> CONFIRMED	origin(after)=direct	decided_by=['gen_frame']
+向かえる	frame_status ESTIMATED -> CONFIRMED	origin(after)=direct	decided_by=['gen_frame']
+嫁ぐ	frame_status ESTIMATED -> CONFIRMED	origin(after)=direct	decided_by=['gen_frame']
+昇る	frame_status ESTIMATED -> CONFIRMED	origin(after)=direct	decided_by=['gen_frame']
+流れ込む	frame_status ESTIMATED -> CONFIRMED	origin(after)=direct	decided_by=['gen_frame']
+潜る	frame_status ESTIMATED -> CONFIRMED	origin(after)=direct	decided_by=['gen_frame']
+移す	frame_status ESTIMATED -> CONFIRMED	origin(after)=direct	decided_by=['gen_frame']
+行ける	frame_status ESTIMATED -> CONFIRMED	origin(after)=direct	decided_by=['gen_frame']
+送り返す	frame_status ESTIMATED -> CONFIRMED	origin(after)=direct	decided_by=['gen_frame']
+逃げ込む	frame_status ESTIMATED -> CONFIRMED	origin(after)=direct	decided_by=['gen_frame']
+通う	frame_status ESTIMATED -> CONFIRMED	origin(after)=direct	decided_by=['gen_frame']
+飛び込む	frame_status ESTIMATED -> CONFIRMED	origin(after)=direct	decided_by=['gen_frame']

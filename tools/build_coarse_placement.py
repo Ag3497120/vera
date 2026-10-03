@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import itertools
 import json
 import os
 import random
@@ -33,6 +34,7 @@ from verantyx.coarse_types import arm_top, combine_arms  # noqa: E402,F401  (one
 
 HOLDOUT_SEED = 20261003
 EXIT_STAGE_CACHE_STALE = 4      # the extraction cache lacks the argument chains (W3-a3)
+EXIT_GEN_FRAMES_OVERLAP = 5     # the two generated-frames files name the same word (W3-a4)
 FAMILIES_DEFAULT = ["code", "code_qa", "conversation", "figurative_commonsense",
                     "general_qa", "narrative", "paraphrase_entail", "pro"]
 
@@ -259,6 +261,20 @@ def _is_noun(t) -> bool:
     return t[1] == "名詞" and t[2] in NOUN_POS2
 
 
+#: W3-a4: the second-level class of a noun that forms a predicate with する (the third-level
+#: class is never read: docs section 12.17, C1)
+SAHEN_NOUN_POS2 = "普通名詞"
+
+
+def _sahen_verb(noun, maxc: int) -> str:
+    """The headword of a common noun + する (the noun's base spelling + する), or "" when the token is
+    not a common noun or the headword is longer than ``maxc``."""
+    if not (_is_noun(noun) and noun[2] == SAHEN_NOUN_POS2):
+        return ""
+    pv = (noun[3] or noun[0]) + "する"
+    return pv if len(pv) <= maxc else ""
+
+
 def analyze(toks, acc: dict, maxc: int) -> None:
     """Count, for one tokenised text: noun-run words with their particle
     context and the first verb after, verbal-noun (+する) uses, the coarse
@@ -358,6 +374,10 @@ def analyze(toks, acc: dict, maxc: int) -> None:
             elif p1 == "動詞" and ob == "する" and prev is not None \
                     and prev[1] == "名詞":
                 skip = True
+                pv = _sahen_verb(prev, maxc)        # W3-a4: a common noun + する is one predicate
+                if pv:
+                    pos[(pv, "V")] += 1
+                    acc["sahen_verb"][pv] += 1
             if not skip:
                 w = ob or s
                 if len(w) <= maxc:
@@ -440,6 +460,7 @@ def _chain_count(toks, run, j: int, acc: dict, maxc: int) -> None:
         e = _run_end(toks, k)
         if e is not None and e < n and toks[e][1] == "動詞" and toks[e][3] == "する":
             skips["sahen"] += 1         # a verbal noun right before する: the verb is "noun + する", not する
+            _sahen_chain(toks, e, (fr, fh, m), acc, maxc)    # W3-a4: counted apart (chain_sahen)
             return
         if e is None or e >= n or toks[e][1] != "助詞" or toks[e][0] not in ct.CASE_PARTICLES_9:
             skips["chain_broken"] += 1
@@ -460,6 +481,34 @@ def _chain_count(toks, run, j: int, acc: dict, maxc: int) -> None:
         return
     acc["chain"][(fr, fh, m, v[3] or v[0], "た" in aux)] += 1
     skips["counted"] += 1
+
+
+def _sahen_chain(toks, e: int, head, acc: dict, maxc: int) -> None:
+    """W3-a4 12.17 (D2): the chain whose verb is a common noun + する (``toks[e]`` is the する, the noun
+    run ends at ``e``).  ``head`` is ``(filler run, filler head, m)``.  ``chain_skips["sahen"]`` has
+    already been counted by the caller; this splits that count by reason (``sahen_chain_skips``:
+    ``no_common_noun``, ``too_long``, ``voice``, ``counted``) and puts the counted chains in
+    ``chain_sahen`` (never in ``chain``)."""
+    sk = acc["sahen_chain_skips"]
+    last = toks[e - 1]
+    if not (_is_noun(last) and last[2] == SAHEN_NOUN_POS2):
+        sk["no_common_noun"] += 1
+        return
+    pv = _sahen_verb(last, maxc)
+    if not pv:
+        sk["too_long"] += 1
+        return
+    aux = []
+    q = e + 1
+    while q < len(toks) and toks[q][1] == "助動詞":
+        aux.append(toks[q][3] or toks[q][0])
+        q += 1
+    if any(a in VOICE_AUX for a in aux):
+        sk["voice"] += 1
+        return
+    fr, fh, m = head
+    acc["chain_sahen"][(fr, fh, m, pv, "た" in aux)] += 1
+    sk["counted"] += 1
 
 
 def _hearst_scan(toks, hearst: Counter, maxc: int) -> None:
@@ -494,7 +543,12 @@ def _hearst_scan(toks, hearst: Counter, maxc: int) -> None:
 def _empty_acc() -> dict:
     return {"occ": Counter(), "pos": Counter(), "sahen": Counter(),
             "counters": Counter(), "counters2": Counter(), "hearst": Counter(),
-            "counter_nums": {}, "chain": Counter(), "chain_skips": Counter()}
+            "counter_nums": {}, "chain": Counter(), "chain_skips": Counter(),
+            "chain_sahen": Counter(), "sahen_chain_skips": Counter(), "sahen_verb": Counter()}
+
+
+#: W3-a4: the extraction keys that a cache made before the verbal-noun predicates were counted lacks
+SAHEN_CACHE_KEYS = ("chain_sahen", "sahen_chain_skips", "sahen_verb")
 
 
 #: ``counter_nums`` keeps at most this many distinct numerals per Latin unit (only the
@@ -1174,6 +1228,12 @@ def _count_gen_frame(gfstat: Counter, dec: dict, garm: dict, ev=(), cfg: Optiona
     elif garm["met"]:
         gfstat["decided_direct_upgrade"] += 1
         srcs_ = [k.split("@", 1)[1] for k in dec["by"] if k.startswith("role_distribution@")]
+        cov_ = garm.get("cover")          # W3-a4: only a rule other than all9 writes it
+        if cov_ is not None:
+            if cov_["he_by_ni_place"]:
+                gfstat["cover_he_by_ni_place"] += 1
+            if cov_["ignored"]:
+                gfstat["cover_ignored_non_k62"] += 1
         if srcs_ and all(x.startswith("codex:") for x in srcs_):
             gfstat["decided_direct_upgrade_all_sources_codex"] += 1
         else:
@@ -1212,13 +1272,15 @@ def _stage2(ex: dict, cfg: dict, rec: Dict[str, list], srcs, pos_src, gfstat: Co
     rd_store = cfg["rd_store_min"]
     for src in srcs:
         chain = ex.get("chain", {}).get(src, {})
+        chain_s = ex.get("chain_sahen", {}).get(src, {})     # W3-a4: common noun + する chains, read in the same loop
         pos_n = {w: c.get("N", 0) for w, c in pos_src.get(src, {}).items() if c.get("N", 0)}
         noun_uses = sum(pos_n.values())
         st = Counter()
         rd: Dict[str, Counter] = defaultdict(Counter)
         slot_cnt: Counter = Counter()
         g_time = g_place = 0
-        for (fr, fh, m, verb, past), n in chain.items():
+        st["sahen_chains"] = sum(chain_s.values())
+        for (fr, fh, m, verb, past), n in itertools.chain(chain.items(), chain_s.items()):
             st["chains"] += n
             if m in case9:
                 vr = rec.get(verb)
@@ -1678,6 +1740,10 @@ def _resolve_stage(ex: dict, cfg: dict, allow=None, use_gen: bool = False,
     gstat["used"] = len(gen_used)
     return {"gen_frame_table": gf_table, "gen_frame_stats": dict(gfstat), "new_info": new_info,
             "chain_skips": {k_: dict(v_) for k_, v_ in sorted(ex.get("chain_skips", {}).items())},
+            "sahen_by_reason": {k_: dict(sorted(v_.items()))
+                                for k_, v_ in sorted(ex.get("sahen_chain_skips", {}).items())},
+            "sahen_verbs": {k_: {"distinct": len(v_), "uses": sum(v_.values())}
+                            for k_, v_ in sorted(ex.get("sahen_verb", {}).items())},
             "gen_table": gen_table, "gen_stats": dict(gstat), "funnel": dict(funnel), "ctx_global": ctx_global, "headwords": hw_rows, "evidence": ev_rows, "unit_kin": uk,
             "unit_sample": us, "atoms": atoms, "ctx": ctx_rows,
             "counters": ctr_rows, "stat": stat, "rounds": rounds,
@@ -1883,6 +1949,70 @@ def read_generated_frames(path: str, excl_terms: Sequence[str]):
     return rows, drops, n_lines
 
 
+def _frames_file_words(path: str) -> set:
+    """Every ``word`` of a generated-frames file, abstentions included."""
+    out = set()
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                out.add(json.loads(line)["word"])
+    return out
+
+
+def _gen_frames_part(path: str, ledger: Optional[str], excl_terms: Sequence[str]):
+    """Read one generated-frames file and its ledger.  Returns ``(rows, info)``; ``info`` is what the
+    manifest's ``generated_frames`` holds for one file (the same keys, in the same order, as before W3-a4)."""
+    tg = time.time()
+    rows, drops, lines = read_generated_frames(path, excl_terms)
+    info = {"path": os.path.abspath(path), "sha256": sha256_file(path),
+            "lines": lines, "rows_read": len(rows),
+            "dropped_by_reason": dict(drops),
+            "read_sec": round(time.time() - tg, 1)}
+    if ledger:
+        info["ledger_path"] = os.path.abspath(ledger)
+        info["ledger_sha256"] = sha256_file(ledger)
+        led = [json.loads(l) for l in open(ledger, encoding="utf-8") if l.strip()]
+        ok_b = {e["batch"] for e in led if e["ev"] == "end" and e.get("status") == "ok"}
+        all_b = {e["batch"] for e in led}
+        info["calls"] = sum(1 for e in led if e["ev"] == "start")
+        info["batches_ok"] = len(ok_b)
+        info["batches_failed"] = len(all_b - ok_b)
+    used_m = {(r["model"], r["effort"]) for r in rows.values()}
+    info["models"] = sorted("%s:%s" % m for m in used_m)
+    info["model"] = sorted({m for m, _e in used_m})[0] if used_m else None
+    info["effort"] = sorted({e for _m, e in used_m})[0] if used_m else None
+    return rows, info
+
+
+def _merge_gen_frames_infos(infos: Sequence[dict]) -> dict:
+    """W3-a4: the manifest's ``generated_frames`` for two files.  The keys keep their meaning for the
+    FIRST file (``path``, ``sha256``, ``ledger_*``); the counts and ``models`` are the totals of both;
+    ``parts`` holds each file's own."""
+    first = infos[0]
+    drops: Counter = Counter()
+    for i in infos:
+        drops.update(i["dropped_by_reason"])
+    out = {"path": first["path"], "sha256": first["sha256"],
+           "lines": sum(i["lines"] for i in infos), "rows_read": sum(i["rows_read"] for i in infos),
+           "dropped_by_reason": dict(drops),
+           "read_sec": round(sum(i["read_sec"] for i in infos), 1)}
+    if "ledger_path" in first:
+        out["ledger_path"] = first["ledger_path"]
+        out["ledger_sha256"] = first["ledger_sha256"]
+    for k in ("calls", "batches_ok", "batches_failed"):
+        if all(k in i for i in infos):
+            out[k] = sum(i[k] for i in infos)
+    models = sorted({m for i in infos for m in i["models"]})
+    out["models"] = models
+    out["model"] = sorted({m.split(":")[0] for m in models})[0] if models else None
+    out["effort"] = sorted({m.split(":")[1] for m in models})[0] if models else None
+    keep = ("path", "sha256", "lines", "rows_read", "dropped_by_reason", "ledger_path", "ledger_sha256",
+            "calls", "batches_ok", "batches_failed", "models", "effort")
+    out["parts"] = [{k: i[k] for k in keep if k in i} for i in infos]
+    return out
+
+
 # =====================================================================================
 # the build command
 # =====================================================================================
@@ -1956,6 +2086,17 @@ def cmd_build(args) -> int:
         frozen_sha = sha256_file(args.frozen)
     excl = _load_terms(args.exclude_terms)
     excl_terms = sorted({t for ts in excl.values() for t in ts})
+    if args.generated_frames_add or args.generated_frames_add_ledger:
+        if not (args.generated_frames and args.generated_frames_add):
+            print(json.dumps({"state": "UNKNOWN_GENERATED_FRAMES_ADD_ARGS",
+                              "needs": "--generated-frames and --generated-frames-add"}))
+            return 2
+        both_ = sorted(_frames_file_words(args.generated_frames) & _frames_file_words(args.generated_frames_add))
+        if both_:
+            # one word written twice is dropped by read_generated_frames (no tie is broken by order): stop
+            print(json.dumps({"state": "GENERATED_FRAMES_OVERLAP", "n": len(both_), "words": both_[:20]},
+                             ensure_ascii=False))
+            return EXIT_GEN_FRAMES_OVERLAP
     hold_lines, hold_codex, hold_shas = set(), set(), set()
     hold_info = None
     if args.holdout:
@@ -1991,6 +2132,12 @@ def cmd_build(args) -> int:
             print(json.dumps({"state": "STAGE_CACHE_STALE", "stage_cache": cache_path,
                               "missing": [k for k in ("chain", "chain_skips") if k not in ex]}))
             return EXIT_STAGE_CACHE_STALE
+        missing2 = [k for k in SAHEN_CACHE_KEYS if k not in ex]
+        if missing2:
+            # W3-a4: an extraction made before the verbal-noun predicates were counted (same reason)
+            print(json.dumps({"state": "STAGE_CACHE_STALE", "stage_cache": cache_path,
+                              "missing": missing2}))
+            return EXIT_STAGE_CACHE_STALE
         stage_t["extraction_sec"] = 0.0
         stage_t["extraction_from_cache"] = cache_path
         inputs = ex["inputs"]
@@ -2000,6 +2147,7 @@ def cmd_build(args) -> int:
         ctxm = mp.get_context("fork")
         ex = {"occ": {}, "pos": {}, "sahen": {}, "counters": {}, "counters2": {},
               "counter_nums": {}, "chain": {}, "chain_skips": {},
+              "chain_sahen": {}, "sahen_chain_skips": {}, "sahen_verb": {},
               "defs": [], "aliases": [], "paren_aliases": [], "hearst": {}}
         t1 = time.time()
         # ---- jawiki
@@ -2016,6 +2164,9 @@ def cmd_build(args) -> int:
         nums_j: dict = {}
         chain_j = Counter()
         chain_sk_j = Counter()
+        chain_sah_j = Counter()
+        sah_sk_j = Counter()
+        sah_verb_j = Counter()
         pos_j = Counter()
         npos_j = Counter()
         jw_stats = Counter()
@@ -2030,6 +2181,9 @@ def cmd_build(args) -> int:
                 _merge_nums(nums_j, a["counter_nums"])
                 chain_j.update(a["chain"])
                 chain_sk_j.update(a["chain_skips"])
+                chain_sah_j.update(a["chain_sahen"])
+                sah_sk_j.update(a["sahen_chain_skips"])
+                sah_verb_j.update(a["sahen_verb"])
                 pos_j.update(a["pos"])
                 ex["defs"].extend(r["defs"])
                 ex["aliases"].extend(r["aliases"])
@@ -2052,6 +2206,9 @@ def cmd_build(args) -> int:
         ex["counter_nums"]["jawiki"] = nums_j
         ex["chain"]["jawiki"] = chain_j
         ex["chain_skips"]["jawiki"] = chain_sk_j
+        ex["chain_sahen"]["jawiki"] = chain_sah_j
+        ex["sahen_chain_skips"]["jawiki"] = sah_sk_j
+        ex["sahen_verb"]["jawiki"] = sah_verb_j
         ex["pos"]["jawiki"] = pos_j
         stage_t["jawiki_sec"] = round(time.time() - t1, 1)
         # ---- codex
@@ -2092,6 +2249,9 @@ def cmd_build(args) -> int:
                     _merge_nums(acc["counter_nums"], a["counter_nums"])
                     acc["chain"].update(a["chain"])
                     acc["chain_skips"].update(a["chain_skips"])
+                    acc["chain_sahen"].update(a["chain_sahen"])
+                    acc["sahen_chain_skips"].update(a["sahen_chain_skips"])
+                    acc["sahen_verb"].update(a["sahen_verb"])
                     skips_total.setdefault(src, Counter()).update(r["skips"])
                     excl_counts.update({src + ":" + t: n for t, n in r["excl"].items()})
                     cstats[src]["rows"] += r["rows"]
@@ -2110,6 +2270,9 @@ def cmd_build(args) -> int:
                 ex["counter_nums"][src] = a["counter_nums"]
                 ex["chain"][src] = a["chain"]
                 ex["chain_skips"][src] = a["chain_skips"]
+                ex["chain_sahen"][src] = a["chain_sahen"]
+                ex["sahen_chain_skips"][src] = a["sahen_chain_skips"]
+                ex["sahen_verb"][src] = a["sahen_verb"]
                 ex["pos"][src] = a["pos"]
             for inp in inputs:
                 if inp["name"].startswith("codex:"):
@@ -2154,27 +2317,13 @@ def cmd_build(args) -> int:
     ex["gen_frames"] = {}
     gf_info = None
     if args.generated_frames:
-        tg = time.time()
-        gf_rows, gf_drops, gf_lines = read_generated_frames(args.generated_frames, excl_terms)
+        gf_rows, gf_info = _gen_frames_part(args.generated_frames, args.generated_frames_ledger, excl_terms)
+        if args.generated_frames_add:
+            add_rows, add_info = _gen_frames_part(args.generated_frames_add,
+                                                  args.generated_frames_add_ledger, excl_terms)
+            gf_rows = dict(gf_rows, **add_rows)           # the two files share no word (checked before the build)
+            gf_info = _merge_gen_frames_infos([gf_info, add_info])
         ex["gen_frames"] = gf_rows
-        gf_info = {"path": os.path.abspath(args.generated_frames),
-                   "sha256": sha256_file(args.generated_frames),
-                   "lines": gf_lines, "rows_read": len(gf_rows),
-                   "dropped_by_reason": dict(gf_drops),
-                   "read_sec": round(time.time() - tg, 1)}
-        if args.generated_frames_ledger:
-            gf_info["ledger_path"] = os.path.abspath(args.generated_frames_ledger)
-            gf_info["ledger_sha256"] = sha256_file(args.generated_frames_ledger)
-            led = [json.loads(l) for l in open(args.generated_frames_ledger, encoding="utf-8") if l.strip()]
-            ok_b = {e["batch"] for e in led if e["ev"] == "end" and e.get("status") == "ok"}
-            all_b = {e["batch"] for e in led}
-            gf_info["calls"] = sum(1 for e in led if e["ev"] == "start")
-            gf_info["batches_ok"] = len(ok_b)
-            gf_info["batches_failed"] = len(all_b - ok_b)
-        used_m = {(r["model"], r["effort"]) for r in gf_rows.values()}
-        gf_info["models"] = sorted("%s:%s" % m for m in used_m)
-        gf_info["model"] = sorted({m for m, _e in used_m})[0] if used_m else None
-        gf_info["effort"] = sorted({e for _m, e in used_m})[0] if used_m else None
     # ---- resolve
     t3 = time.time()
     res = resolve_all(ex, cfg)
@@ -2260,6 +2409,10 @@ def cmd_build(args) -> int:
          "model": (gf_info or {}).get("model"), "effort": (gf_info or {}).get("effort"),
          "role": "arm gen_frame: an estimate (generated) unless the distribution arms back the same "
                  "type and cover its particles; never a donor"} if args.generated_frames else None,
+        {"name": "generated predicate frames, second file (W3-a4: common noun + suru predicates)",
+         "path": args.generated_frames_add, "origin": "generated",
+         "model": (gf_info or {}).get("model"), "effort": (gf_info or {}).get("effort"),
+         "role": "arm gen_frame, as the first file"} if args.generated_frames_add else None,
         {"name": "unidic-lite via fugashi", "use": "word segmentation, the coarse word class (pos1, pos2) and orthBase ONLY; no finer dictionary sense labels"},
     ]
     materials = [m for m in materials if m]
@@ -2274,7 +2427,11 @@ def cmd_build(args) -> int:
                  "stage_cache": cache_path, "generated": args.generated,
                  "generated_ledger": args.generated_ledger,
                  "generated_frames": args.generated_frames,
-                 "generated_frames_ledger": args.generated_frames_ledger},
+                 "generated_frames_ledger": args.generated_frames_ledger,
+                 **({"generated_frames_add": args.generated_frames_add,
+                     "generated_frames_add_ledger": args.generated_frames_add_ledger}
+                    if args.generated_frames_add else {}),
+                 **({"compare_to": args.compare_to} if args.compare_to else {})},
         "frozen_sha256": frozen_sha,
         "coarse_types_sha256": sha256_file(os.path.join(os.path.dirname(HERE), "verantyx", "coarse_types.py")),
         "builder_sha256": sha256_file(os.path.abspath(__file__)),
@@ -2304,6 +2461,8 @@ def cmd_build(args) -> int:
                          if k not in ("used", "ns_not_predicate", "not_in_material")}})
                              if gf_info else None),
         "argument_chains": {"skipped_or_counted_by_reason": res["chain_skips"],
+                            "sahen_by_reason": res["sahen_by_reason"],
+                            "sahen_verbs": res["sahen_verbs"],
                             "stage2": res["new_info"]},
         "donors": res["donors"],
         "materials": materials,
@@ -2315,6 +2474,13 @@ def cmd_build(args) -> int:
         "types_version": ct.TYPES_VERSION,
         "no_weights_no_models": True,
     }
+    if args.compare_to:
+        tc = time.time()
+        sahen_words = {w for c_ in ex.get("sahen_verb", {}).values() for w in c_}
+        manifest["compare_to"] = _compare_to(args.compare_to, dbp, sahen_words, manifest.get("generated_frames"))
+        manifest["compare_to"]["compare_sec"] = round(time.time() - tc, 1)
+        manifest["duration_sec"] = round(time.time() - t_start, 1)
+        manifest["build_finished_at_utc"] = now_utc()
     with open(os.path.join(args.out, "manifest.json"), "w", encoding="utf-8") as f:
         json.dump(manifest, f, ensure_ascii=False, indent=1, sort_keys=True)
         f.write("\n")
@@ -2322,6 +2488,74 @@ def cmd_build(args) -> int:
                       "headwords": counts["headwords"], "placed_direct": len(placed),
                       "duration_sec": manifest["duration_sec"]}, ensure_ascii=False))
     return 0
+
+
+def _compare_to(old_dir: str, new_db: str, sahen_words: set, new_frames_info: Optional[dict]) -> dict:
+    """W3-a4 (D8): the differences between this build and the placement in ``old_dir`` (read only), for the
+    manifest: headwords (rows, added, removed, changed decisions by namespace), ctx rows, generated frame
+    rows and the ``generated_frames.outcomes`` of both.  A decision is ``(ns, state, origin, top, by)``;
+    ``decision_changed`` = ns, state, origin or top differs, ``by_only`` = only ``by`` differs."""
+    odb = os.path.join(old_dir, "placement.sqlite")
+    oc = sqlite3.connect("file:%s?mode=ro" % odb, uri=True)
+    nc = sqlite3.connect("file:%s?mode=ro" % new_db, uri=True)
+    try:
+        def hw(con):
+            return {r[0]: tuple(r[1:]) for r in con.execute(
+                "SELECT word, ns, state, origin, top, n_seen, by FROM headwords")}
+        old_h, new_h = hw(oc), hw(nc)
+        added = sorted(set(new_h) - set(old_h))
+        removed = sorted(set(old_h) - set(new_h))
+        changed: Dict[str, Counter] = defaultdict(Counter)
+        p_changes, n_changes, n_by_only = [], [], []
+        for w in sorted(set(new_h) & set(old_h)):
+            o, n_ = old_h[w], new_h[w]
+            if o[:4] + o[5:] == n_[:4] + n_[5:]:                  # n_seen is a count, not a decision
+                continue
+            kind = "decision_changed" if o[:4] != n_[:4] else "by_only"
+            changed[n_[0]]["total"] += 1
+            changed[n_[0]][kind] += 1
+            if "P" in n_[0]:
+                p_changes.append({"word": w, "ns": [o[0], n_[0]], "before": list(o), "after": list(n_), "kind": kind})
+            if "N" in n_[0] and kind == "decision_changed":
+                n_changes.append((n_[4], w, o, n_))
+            elif "N" in n_[0]:
+                n_by_only.append((n_[4], w, o, n_))
+        n_changes.sort(key=lambda t: (-t[0], t[1]))
+        n_by_only.sort(key=lambda t: (-t[0], t[1]))
+        add_sahen = [w for w in added if w in sahen_words]
+        headwords = {"rows": [len(old_h), len(new_h)], "added": len(added),
+                     "added_sahen_verb": len(add_sahen), "added_other": len(added) - len(add_sahen),
+                     "added_other_words": [w for w in added if w not in sahen_words][:50],
+                     "removed": len(removed), "removed_words": removed[:50],
+                     "changed_by_ns": {k: dict(v) for k, v in sorted(changed.items())},
+                     "changed_P_words": p_changes,
+                     "changed_N_decision_top20": [{"word": w, "n_seen": ns_, "before": list(o), "after": list(n_)}
+                                                  for ns_, w, o, n_ in n_changes[:20]],
+                     "changed_N_by_only_top20": [{"word": w, "n_seen": ns_, "before": list(o), "after": list(n_)}
+                                                 for ns_, w, o, n_ in n_by_only[:20]]}
+        def ctx(con):
+            return {r[:4]: r[4] for r in con.execute("SELECT src, particle, pred, type, n FROM ctx")}
+        old_c, new_c = ctx(oc), ctx(nc)
+        ctx_d = {"rows": [len(old_c), len(new_c)], "only_before": len(set(old_c) - set(new_c)),
+                 "only_after": len(set(new_c) - set(old_c)),
+                 "n_differs": sum(1 for k in set(old_c) & set(new_c) if old_c[k] != new_c[k])}
+        def gfw(con):
+            return {r[0] for r in con.execute("SELECT word FROM generated_frames")}
+        old_g, new_g = gfw(oc), gfw(nc)
+        gf_d = {"rows": [len(old_g), len(new_g)], "added": len(new_g - old_g), "removed": len(old_g - new_g)}
+        try:
+            old_m = json.load(open(os.path.join(old_dir, "manifest.json"), encoding="utf-8"))
+            old_out = ((old_m.get("generated_frames") or {}).get("outcomes")) or {}
+            old_csha = old_m.get("content_sha256")
+        except (OSError, ValueError):
+            old_out, old_csha = {}, None
+        new_out = ((new_frames_info or {}).get("outcomes")) or {}
+        outcomes = {k: [old_out.get(k), new_out.get(k)] for k in sorted(set(old_out) | set(new_out))}
+    finally:
+        oc.close()
+        nc.close()
+    return {"dir": os.path.abspath(old_dir), "content_sha256": old_csha, "headwords": headwords,
+            "ctx": ctx_d, "generated_frames": gf_d, "outcomes_before_after": outcomes}
 
 
 def cmd_verify(args) -> int:
@@ -2386,6 +2620,12 @@ def main(argv=None) -> int:
                    help="frames.jsonl made by tools/gen_coarse_evidence.py collect --kind pred")
     b.add_argument("--generated-frames-ledger", default=None,
                    help="the predicate generator's ledger.jsonl (its calls and batches go in the manifest)")
+    b.add_argument("--generated-frames-add", default=None,
+                   help="a second frames.jsonl (W3-a4); a word that is in both files stops the build")
+    b.add_argument("--generated-frames-add-ledger", default=None,
+                   help="the ledger.jsonl of the second frames file")
+    b.add_argument("--compare-to", default=None,
+                   help="a placement directory (read only): the manifest gets the differences to it")
     b.add_argument("--stage-cache", default=None,
                    help="pickle path: reuse (or write) the extraction stage")
     v = sub.add_parser("verify")

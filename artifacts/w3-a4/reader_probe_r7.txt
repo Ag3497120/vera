@@ -1,0 +1,17 @@
+### r7/run1
+TEXT: 係がデータを確認した rc 0 queried []
+  readable: False abstain: {'kind': 'not_supported', 'reasons': ['AGENT_EVIDENCE_MISSING:係']} predicates: []
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["AGENT_EVIDENCE_MISSING:係"]}, "unsupported": [], "clause_meta": []}
+
+TEXT: 係がデータを確認した。 rc 0 queried []
+  readable: False abstain: {'kind': 'not_supported', 'reasons': ['AGENT_EVIDENCE_MISSING:係']} predicates: []
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["AGENT_EVIDENCE_MISSING:係"]}, "unsupported": [], "clause_meta": []}
+
+TEXT: 担当者が部長に結果を報告した。 rc 0 queried []
+  readable: True abstain: None predicates: ['報告する']
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "報告する", "roles": {"agent": "担当者", "patient": "結果", "recipient": "部長"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [12, 13]}]}
+
+TEXT: 担当者がデータを確認した。 rc 0 queried []
+  readable: True abstain: None predicates: ['確認する']
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "確認する", "roles": {"agent": "担当者", "patient": "データ"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [10, 11]}]}
+

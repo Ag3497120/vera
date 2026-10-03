@@ -1,0 +1,40 @@
+{
+ "boundary_freq": 20,
+ "by_evidence_status": {
+  "BELOW_THRESHOLD": 1763,
+  "NO_EVIDENCE": 1722
+ },
+ "by_kind": {
+  "token": 3485
+ },
+ "by_ns": {
+  "P": 3485
+ },
+ "by_state": {
+  "UNPLACED": 3485
+ },
+ "content_sha256": "c1900987c33c6970550a143a69b91ea9d5220cbe1b055c3edac1fd5c0cf2c206",
+ "exclude_frames": [
+  {
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/gen_pred/frames.jsonl",
+   "sha256": "9a7e8decfc85d2dde8a0209cf983491cc6d4d0257697ab19ff18828b9ae89717"
+  }
+ ],
+ "kind": "pred",
+ "last_freq": 20,
+ "min_uses": 20,
+ "n_at_boundary": 33,
+ "n_requested": 1000000,
+ "out": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a4-S/artifacts/w3-a4/needs_sahen.jsonl",
+ "out_sha256": "cc3d991c1f5fb456eac8f828e736aa98e267b4bfc5fd90d6ddfd5373df6bdb51",
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/base",
+ "reasons": {
+  "already_decided": 8,
+  "below_min_uses": 10741,
+  "in_exclude_frames": 10,
+  "ns_not_predicate": 1
+ },
+ "rule": "common-noun + suru predicates: a word whose uses in ONE source (the maximum over the sources, never a sum) are at least min_uses, which is a headword whose namespace is P or NP and whose state is UNPLACED or MULTIPLE and which no row of the exclude-frames files (abstentions included) names; ordered by n_seen descending; every word whose n_seen equals that of the n-th is included; display order inside one frequency = string order; the first failing condition is counted per reason; no test data is read",
+ "stage_cache": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/stage/extract.pkl",
+ "total": 3485
+}

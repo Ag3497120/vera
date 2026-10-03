@@ -1,0 +1,15 @@
+生成の計画（実行の前に書いた。実測は下に追記する）
+一覧: needs_sahen.jsonl / needs_sahen.meta.json（r8/base と r8/stage/extract.pkl から。--sahen-min-uses 20、--exclude-frames は r6 の frames.jsonl）
+語数 N = 3485（meta.total）。落ちた語の理由別: below_min_uses 10741・not_headword 0・ns_not_predicate 1・already_decided 8・in_exclude_frames 10
+N は中間職の上限側の見込み（5,094）以下、止める基準（6,000）以下。
+束の数 ceil(N/40) = 88、--max-calls = min(1500, 3 × 88) = 264
+費用の見込み（実測ではない。呼び出しの数の見込みだけ）: 呼び出し 88 回（失敗の再試行があれば増え、上限 264 回）、モデル gpt-6-luna、effort low、並列 12。プロンプトと schema は W3-a3（r6）と同じ。
+P2 の 5 語（確認する・連絡する・報告する・提出する・参加する）は一覧にある（上のコマンドの出力が 1 1 1 1 1）。
+
+実測（gen_sahen_summary.json・gen_sahen_run.log。試しの 1 束を含む）
+呼び出し 88 回（試し 1 + 本番 87）、束 88、成功 88・失敗 0（ok_rate 1.0）、effort low、モデル gpt-6-luna、上限 264 回に対して使用 88
+wall_sec 288.0（台帳の最初から最後）、sum_call_sec 2699.6、本番 run の wall_sec 247.0（gen_sahen_run.log）
+回答のあった語 3485（うち棄権 243）、無効 0、欠け 0
+プロンプト sha256 1509fd30…68d2、schema sha256 68551a6a…d882（prompt_sha.txt と同じ）
+frames.jsonl sha256 ff9ddf02…fe50、ledger.jsonl sha256 0422c2f2…88d2（gen_sahen_sha256.txt）
+r6 の台帳・枠の sha256 は手順 0 と同じ（shasum -c で全部 OK）

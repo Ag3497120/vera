@@ -1,0 +1,3 @@
+duration_sec 635.9
+stage_seconds {'aliases_sec': 24.1, 'codex_sec': 231.2, 'ctx_sec': 26.9, 'decide_sec': 110.8, 'definitions_sec': 19.5, 'extraction_sec': 354.0, 'hearst_sec': 35.8, 'jawiki_sec': 122.8, 'resolve_sec': 236.0, 'stage_a_sec': 108.2, 'stage_b_sec': 126.7, 'units_sec': 124.0, 'votes_sec': 35.7, 'write_sec': 17.7}
+duration_sec run2 277.0 (extraction from cache; run1 272.5)

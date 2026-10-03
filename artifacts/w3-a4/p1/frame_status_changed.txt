@@ -1,0 +1,1 @@
+frame_status が変わった語: 0 語（r7_before.tsv と r7_after.tsv の第 3 列の比較）
