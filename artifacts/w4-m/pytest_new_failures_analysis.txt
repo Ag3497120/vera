@@ -1,0 +1,19 @@
+Full run (pytest_full.txt): 116 failed / 7653 passed. Set difference against the 115-line baseline (pytest_new_failures.txt): 2 new, 1 baseline failure absent.
+
+new 1: tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+  asserts meta["verantyx_untouched"] is True, computed by tools/bank_score/cli.py:278 as `git status --porcelain -- verantyx` == "".
+  The working tree is uncommitted (verantyx/sovereign.py, verantyx/cli.py are modified), so it is False by construction.
+  Reproduced in a scratch git repo made from `git archive 5cae978` (in the scratchpad, not in the work tree): passes when clean,
+  fails after appending one comment line to verantyx/sovereign.py. Expected to pass once the change is committed (not run on the committed tree).
+
+new 2: tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread
+  `out["kind"]` is 'unknown' instead of 'answer'. Fails alone, and ALSO fails alone on a pristine `git archive 5cae978` copy
+  (scratchpad base5cae978, PYTHONPATH there), so it is not caused by this change. It passed inside the baseline full run, i.e. it depends on
+  something other than the code of the commit (order or machine state); cause not investigated.
+
+baseline failure absent this run: tests/test_one_trace.py::test_every_default_integration_part_has_a_trace (passed this time; not investigated).
+
+Round 2 (after review r1): pytest_full.txt is 116 failed / 7659 passed (6 more passed than round 1: the 6 new tests). The set difference
+against the baseline is the same as in round 1: the same 2 new ids and the same 1 baseline id that passed (pytest_new_failures.txt).
+The causes were not re-investigated in round 2; review r1 independently reproduced both (bank_score: uncommitted tree makes
+verantyx_untouched False by construction; test_p4_abilities: also fails on a git archive of 5cae978).

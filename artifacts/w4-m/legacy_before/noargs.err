@@ -1,0 +1,4 @@
+usage: vera sovereign [-h] --domain NAME=PATH [--ask ASK]
+                      [--questions QUESTIONS] [--n-queries N_QUERIES]
+                      [--name NAME] [--out OUT]
+vera sovereign: error: the following arguments are required: --domain

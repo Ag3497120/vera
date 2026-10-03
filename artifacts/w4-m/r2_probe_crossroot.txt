@@ -1,0 +1,14 @@
+# probe_crossroot (review r1's script, run on the r2 code)
+promote A s0 2
+promote A s1 2
+export EXPORTED
+attach B ATTACHED
+promote B PROMOTED 2 0
+trace in B fe7043e70c88ee01fabeae42 structure seq [1] sovereign rows structure_seq [1]
+trace in B 777b32ac683447f6d2161eeb structure seq [2] sovereign rows structure_seq [2]
+trace in A fe7043e70c88ee01fabeae42 structure seq [3] sovereign side ANSWER
+trace in A 777b32ac683447f6d2161eeb structure seq [4] sovereign side ANSWER
+# probe_crossroot2
+PROMOTED
+s1 key k-s1 back-link structure_seq 1 -> B structure row ('s1', 'k-s1')
+s1 key shared back-link structure_seq 2 -> B structure row ('s1', 'shared')

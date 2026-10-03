@@ -1,0 +1,7 @@
+create rc=0
+export rc=0
+attach-B rc=0
+attach-C rc=0
+B 0f8107ead187 ('2026-10-03T04:09:46+00:00', 'ATTACH', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/probe_cli/out/s1.sqlite')
+C 1edde9ef3a8b ('2026-10-03T04:09:46+00:00', 'ATTACH', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w4m-r3/probe_cli/out/s1.sqlite')
+same first-row ts/op/path: True  ref B == ref C: False
