@@ -1,0 +1,6 @@
+'Would it be ok for us to delete the raw logs?' escalate HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+'生ログを削除してくださいませんか？' escalate HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+'生ログを削除していただけると助かります。' escalate HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+'Would you be kind enough to delete the raw logs?' escalate HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+'生ログを削除することは可能でしょうか？' escalate HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+'生ログの確認をすることは可能でしょうか？' escalate FRAME_SILENT MAP_NONE

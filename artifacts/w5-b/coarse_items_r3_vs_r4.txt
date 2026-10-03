@@ -1,0 +1,126 @@
+001 differ
+10d9
+< {"term": "もの", "pos": "名詞", "misses": 14}
+31d29
+< {"term": "ごう", "pos": "名詞", "misses": 8}
+79d76
+< {"term": "ザ", "pos": "名詞", "misses": 5}
+90d86
+< {"term": "みち", "pos": "名詞", "misses": 5}
+110d105
+< {"term": "アイ", "pos": "名詞", "misses": 4}
+127d121
+< {"term": "きく", "pos": "動詞", "misses": 4}
+149d142
+< {"term": "ワン", "pos": "名詞", "misses": 3}
+157d149
+< {"term": "ひこ", "pos": "名詞", "misses": 3}
+160d151
+< {"term": "きる", "pos": "動詞", "misses": 3}
+187d177
+< {"term": "デ", "pos": "名詞", "misses": 3}
+195d184
+< {"term": "まつ", "pos": "名詞", "misses": 3}
+216d204
+< {"term": "まつ", "pos": "動詞", "misses": 3}
+289d276
+< {"term": "スキマ", "pos": "名詞", "misses": 2}
+379d365
+< {"term": "ゆく", "pos": "動詞", "misses": 2}
+389d374
+< {"term": "とる", "pos": "動詞", "misses": 2}
+471d455
+< {"term": "マイ", "pos": "名詞", "misses": 2}
+535d518
+< {"term": "エデン", "pos": "名詞", "misses": 2}
+669d651
+< {"term": "ふるさと", "pos": "名詞", "misses": 1}
+688d669
+< {"term": "ヒジキ", "pos": "名詞", "misses": 1}
+736d716
+< {"term": "シンク", "pos": "名詞", "misses": 1}
+798d777
+< {"term": "せいれん", "pos": "名詞", "misses": 1}
+800d778
+< {"term": "シテ", "pos": "名詞", "misses": 1}
+829d806
+< {"term": "ふる", "pos": "動詞", "misses": 1}
+835d811
+< {"term": "ひゃく", "pos": "名詞", "misses": 1}
+843d818
+< {"term": "もず", "pos": "名詞", "misses": 1}
+925d899
+< {"term": "いとう", "pos": "名詞", "misses": 1}
+939d912
+< {"term": "ハイ", "pos": "名詞", "misses": 1}
+972d944
+< {"term": "はつ", "pos": "名詞", "misses": 1}
+978d949
+< {"term": "おわり", "pos": "名詞", "misses": 1}
+989d959
+< {"term": "にれ", "pos": "名詞", "misses": 1}
+995d964
+< {"term": "たば", "pos": "名詞", "misses": 1}
+1058d1026
+< {"term": "ちり", "pos": "名詞", "misses": 1}
+1067d1034
+< {"term": "レオン", "pos": "名詞", "misses": 1}
+1159d1125
+< {"term": "ネオ", "pos": "名詞", "misses": 1}
+1197d1162
+< {"term": "あいす", "pos": "動詞", "misses": 1}
+1307d1271
+< {"term": "ちがや", "pos": "名詞", "misses": 1}
+1437d1400
+< {"term": "まいる", "pos": "動詞", "misses": 1}
+1440d1402
+< {"term": "たく", "pos": "名詞", "misses": 1}
+1518d1479
+< {"term": "ちか", "pos": "名詞", "misses": 1}
+1621d1581
+< {"term": "まもる", "pos": "動詞", "misses": 1}
+1682d1641
+< {"term": "さまつ", "pos": "名詞", "misses": 1}
+1703d1661
+< {"term": "ナカ", "pos": "名詞", "misses": 1}
+1710d1667
+< {"term": "りじ", "pos": "名詞", "misses": 1}
+1809d1765
+< {"term": "ふじた", "pos": "名詞", "misses": 1}
+1843,1844d1798
+< {"term": "しげ", "pos": "名詞", "misses": 1}
+< {"term": "まさ", "pos": "名詞", "misses": 1}
+1966d1919
+< {"term": "なかにし", "pos": "名詞", "misses": 1}
+1983d1935
+< {"term": "ゾラ", "pos": "名詞", "misses": 1}
+2095d2046
+< {"term": "みす", "pos": "名詞", "misses": 1}
+2122d2072
+< {"term": "バイ", "pos": "名詞", "misses": 1}
+2355d2304
+< {"term": "さいとう", "pos": "名詞", "misses": 1}
+2421d2369
+< {"term": "さんせい", "pos": "名詞", "misses": 1}
+2478d2425
+< {"term": "アサイ", "pos": "名詞", "misses": 1}
+2564d2510
+< {"term": "くこ", "pos": "名詞", "misses": 1}
+2670d2615
+< {"term": "はず", "pos": "名詞", "misses": 1}
+2688d2632
+< {"term": "しずく", "pos": "名詞", "misses": 1}
+2751d2694
+< {"term": "ばれる", "pos": "動詞", "misses": 1}
+2918d2860
+< {"term": "リ", "pos": "名詞", "misses": 1}
+002 differ
+405c405
+< {"id": "V0405", "term": "ロケット", "gold": ["ARTIFACT"], "category": "technical", "trap": false, "trap_suggests": null, "state": "UNPLACED", "origin": null, "top": [], "estimate_basis": null, "decided_by": "-", "cls": "other", "neighbors": []}
+---
+> {"id": "V0405", "term": "ロケット", "gold": ["ARTIFACT"], "category": "technical", "trap": false, "trap_suggests": null, "state": "DECIDED", "origin": "estimated", "top": ["WORK"], "estimate_basis": "kana_variant", "decided_by": "est:kana_variant", "cls": "wrong_single", "neighbors": ["kana_variant:ろけっと"]}
+625c625
+< {"id": "V0627", "term": "モネ", "gold": ["PERSON"], "category": "proper", "trap": false, "trap_suggests": null, "state": "UNPLACED", "origin": null, "top": [], "estimate_basis": null, "decided_by": "-", "cls": "other", "neighbors": []}
+---
+> {"id": "V0627", "term": "モネ", "gold": ["PERSON"], "category": "proper", "trap": false, "trap_suggests": null, "state": "DECIDED", "origin": "estimated", "top": ["WORK"], "estimate_basis": "kana_variant", "decided_by": "est:kana_variant", "cls": "wrong_single", "neighbors": ["kana_variant:もね"]}
+003 same

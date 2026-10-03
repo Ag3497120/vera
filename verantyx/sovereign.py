@@ -692,6 +692,15 @@ def _sov_statements(which: str) -> List[str]:
             f"ts TEXT NOT NULL, promotion_id TEXT NOT NULL, store_id TEXT NOT NULL, "
             f"kind TEXT NOT NULL CHECK(kind IN ({pkinds})), basis TEXT NOT NULL, "
             "payload TEXT NOT NULL, thresholds TEXT NOT NULL")
+        # one row per (store_id, candidate): promotion_id is a function of (store_id, kind, key), so this
+        # is the uniqueness of a candidate. A trigger and not a UNIQUE index (an index lets INSERT OR
+        # REPLACE silently drop the old row; an ABORT leaves it). A retired row still counts: a candidate
+        # that was promoted once is never promoted again in the same structure ledger.
+        out.append(
+            "CREATE TRIGGER promotion_log_one_per_candidate BEFORE INSERT ON promotion_log "
+            "WHEN EXISTS (SELECT 1 FROM promotion_log "
+            "WHERE store_id = NEW.store_id AND promotion_id = NEW.promotion_id) "
+            "BEGIN SELECT RAISE(ABORT, 'DUPLICATE_PROMOTION'); END")
         out += _sov_table(
             "retire_log",
             "ts TEXT NOT NULL, promotion_seq INTEGER NOT NULL, promotion_id TEXT NOT NULL, "
@@ -923,15 +932,26 @@ def _sov_open_active(root: str, store_id: str, *, write: bool) -> Tuple[sqlite3.
 
 def _sov_registry_append(root: str, *, store_id: str, op: str, path: Optional[str],
                          file_sha256: Optional[str], content_sha256: Optional[str],
-                         detail: Mapping[str, Any], ts: str) -> int:
+                         detail: Mapping[str, Any], ts: str,
+                         in_txn: Optional[Callable[[sqlite3.Connection, int], Mapping[str, Any]]] = None) -> int:
+    """Append one registry row. `in_txn(conn, registry_seq)` (release only) runs inside the same
+    transaction, before the row is written, and returns extra `detail` keys: whatever it wrote and
+    the registry row are committed together or not at all."""
     conn = _sov_struct_open(root, write=True, create=(op in ("CREATE", "ATTACH")))
     if conn is None:
         raise UnknownStore(store_id)
     try:
-        return _sov_txn(conn, lambda: _sov_insert(conn, "registry_log", {
-            "ts": ts, "store_id": store_id, "op": op, "path": path,
-            "file_sha256": file_sha256, "content_sha256": content_sha256,
-            "detail": _sov_dump({**dict(detail), "root": os.path.abspath(os.fspath(root))})}))
+        def work() -> int:
+            extra: Mapping[str, Any] = {}
+            if in_txn is not None:
+                nxt = conn.execute("SELECT IFNULL(MAX(seq),0)+1 FROM registry_log").fetchone()[0]
+                extra = in_txn(conn, nxt)
+            return _sov_insert(conn, "registry_log", {
+                "ts": ts, "store_id": store_id, "op": op, "path": path,
+                "file_sha256": file_sha256, "content_sha256": content_sha256,
+                "detail": _sov_dump({**dict(detail), **dict(extra),
+                                     "root": os.path.abspath(os.fspath(root))})})
+        return _sov_txn(conn, work)
     finally:
         conn.close()
 
@@ -1321,6 +1341,18 @@ def _sov_load_promotions(conn: sqlite3.Connection,
     return out
 
 
+def _sov_retire_rows(conn: sqlite3.Connection, store_id: str, ts: str, reg: int) -> int:
+    """retire_log へ、そのソブリン由来の退役していない昇格を追記する（呼び手が書き込みトランザクションの中で呼ぶ）。"""
+    n = 0
+    for p in _sov_load_promotions(conn, store_id):
+        if p["retired"] is None:
+            _sov_insert(conn, "retire_log", {
+                "ts": ts, "promotion_seq": p["seq"], "promotion_id": p["promotion_id"],
+                "store_id": store_id, "reason": "RELEASED", "registry_seq": reg})
+            n += 1
+    return n
+
+
 def _sov_retire(root: str, store_id: str, ts: str,
                 registry_seq: Optional[int]) -> int:
     """そのソブリン由来の、退役していない昇格を retire_log へ追記する（削除しない）。"""
@@ -1332,14 +1364,7 @@ def _sov_retire(root: str, store_id: str, ts: str,
             reg = registry_seq
             if reg is None:
                 reg = conn.execute("SELECT IFNULL(MAX(seq),0)+1 FROM registry_log").fetchone()[0]
-            n = 0
-            for p in _sov_load_promotions(conn, store_id):
-                if p["retired"] is None:
-                    _sov_insert(conn, "retire_log", {
-                        "ts": ts, "promotion_seq": p["seq"], "promotion_id": p["promotion_id"],
-                        "store_id": store_id, "reason": "RELEASED", "registry_seq": reg})
-                    n += 1
-            return n
+            return _sov_retire_rows(conn, store_id, ts, reg)
         return _sov_txn(conn, work)
     finally:
         conn.close()
@@ -1372,14 +1397,22 @@ def release(root: str, store_id: str, confirm: str, *,
     for r in rows:
         if r["file_sha256"] is not None:
             last_known = r["file_sha256"]
-    retired_now = _sov_retire(root, store_id, ts, None)
-    detail: Dict[str, Any] = {"file_state": snap["file_state"], "retired_this_run": retired_now,
-                              "consent": snap["consent"]}
+    retired_first = _sov_retire(root, store_id, ts, None)
+    late: List[int] = []
+
+    def retire_late(conn: sqlite3.Connection, reg: int) -> Mapping[str, Any]:
+        # a promote that wrote between the retirement above and this row is retired in the SAME
+        # transaction as the RELEASE row, so no promotion is live once RELEASE exists
+        late.append(_sov_retire_rows(conn, store_id, ts, reg))
+        return {"retired_this_run": retired_first + late[0], "retired_with_release": late[0]}
+
+    detail: Dict[str, Any] = {"file_state": snap["file_state"], "consent": snap["consent"]}
     if snap["file_sha256"] is None:
         detail["last_known_file_sha256"] = last_known
     seq = _sov_registry_append(
         root, store_id=store_id, op="RELEASE", path=path, file_sha256=snap["file_sha256"],
-        content_sha256=snap["content_sha256"], ts=ts, detail=detail)
+        content_sha256=snap["content_sha256"], ts=ts, detail=detail, in_txn=retire_late)
+    retired_now = retired_first + (late[0] if late else 0)
     conn = _sov_struct_open(root)
     try:
         retired_total = len([p for p in _sov_load_promotions(conn, store_id)
@@ -1613,29 +1646,124 @@ def _sov_analyze(events: Sequence[Mapping[str, Any]], since_seq: int, n: int, d:
     return counts, to_promote
 
 
-def _sov_append_structure_promotion(root: str, rec: PromotionRecord, promotion_id: str,
-                                    thresholds: Mapping[str, Any], ts: str) -> int:
+def _sov_consent_key(consent: Mapping[str, Any]) -> Tuple[Any, Any, Any]:
+    return (consent.get("promote"), consent.get("since"), consent.get("since_seq"))
+
+
+def _sov_append_structure_promotion(root: str, store_id: str, todo: Sequence[Mapping[str, Any]],
+                                    thresholds: Mapping[str, Any], ts: str,
+                                    consent0: Mapping[str, Any]) -> Dict[str, Any]:
+    """The write stage of promote: ONE transaction pair, taken in the order structure -> sovereign.
+
+    Nothing is analysed here. Under BEGIN IMMEDIATE on the structure ledger (the lock that serializes
+    two promotes and a release) the state is read again: the registry must still be ACTIVE and no
+    retirement may have started; then the sovereign file is opened and locked the same way and the
+    consent is read again: it must still be on and equal to the consent the analysis read
+    (`consent0`). Only then are the candidates appended to the structure side (a candidate that is
+    already there is refused by the trigger and returned in `refused`, nothing is written for it).
+    The structure side is committed; the sovereign side only held its lock (ROLLBACK, nothing
+    written), so a consent that is withdrawn after this point cannot undo a row already committed
+    but cannot be raced past either: set_consent needs the lock this stage held while it checked.
+
+    Returns {"stopped": None | {verdict ...}, "written": [{promotion_id, structure_seq}],
+    "refused": [{promotion_id, reason}]}.
+    """
     conn = _sov_struct_open(root, write=True)
     if conn is None:
-        raise UnknownStore(rec.store_id)
+        raise UnknownStore(store_id)
+    sconn: Optional[sqlite3.Connection] = None
+    structure_open = False
+    sovereign_open = False
     try:
-        return _sov_txn(conn, lambda: _sov_insert(conn, "promotion_log", {
-            "ts": ts, "promotion_id": promotion_id, "store_id": rec.store_id,
-            "kind": rec.kind, "basis": rec.basis, "payload": _sov_dump(dict(rec.payload)),
-            "thresholds": _sov_dump(dict(thresholds))}))
+        conn.execute("BEGIN IMMEDIATE")
+        structure_open = True
+        rows = _sov_registry(conn, store_id)
+        st = _sov_fold(rows)
+        if st is None:
+            raise UnknownStore(store_id)
+        if st == "DETACHED":
+            return {"stopped": {"verdict": "DETACHED", "store_id": store_id, "wrote": 0},
+                    "written": [], "refused": []}
+        if st == "RELEASED":
+            return {"stopped": {"verdict": "RELEASED", "store_id": store_id, "wrote": 0},
+                    "written": [], "refused": []}
+        started = conn.execute("SELECT COUNT(*) FROM retire_log WHERE store_id = ?",
+                               (store_id,)).fetchone()[0]
+        if started:
+            return {"stopped": {"verdict": "RELEASE_IN_PROGRESS", "store_id": store_id, "wrote": 0,
+                                "retired_rows": started,
+                                "want": "run release again with --confirm to finish it"},
+                    "written": [], "refused": []}
+        path = _sov_path_of(rows)
+        if path is None or not os.path.exists(path):
+            raise FileMissing(store_id, path)
+        sconn = _sov_connect(path, True)
+        _sov_check_shape(sconn, "sovereign", store_id)
+        sconn.execute("BEGIN IMMEDIATE")
+        sovereign_open = True
+        consent = _sov_consent(sconn)
+        if not consent["promote"]:
+            return {"stopped": {"verdict": "NO_CONSENT", "store_id": store_id, "consent": consent,
+                                "wrote": 0},
+                    "written": [], "refused": []}
+        if _sov_consent_key(consent) != _sov_consent_key(consent0):
+            return {"stopped": {"verdict": "CONSENT_CHANGED", "store_id": store_id,
+                                "consent": consent, "consent_at_start": dict(consent0),
+                                "wrote": 0},
+                    "written": [], "refused": []}
+        written: List[Dict[str, Any]] = []
+        refused: List[Dict[str, Any]] = []
+        for g in todo:
+            payload = {"key": g["key"], "count": g["count"], "days": g["days"],
+                       "evidence": g["evidence"]}
+            rec = PromotionRecord(store_id=store_id, kind=g["kind"],
+                                  basis=f"conversation:{store_id}", payload=payload)
+            try:
+                seq = _sov_insert(conn, "promotion_log", {
+                    "ts": ts, "promotion_id": g["promotion_id"], "store_id": store_id,
+                    "kind": rec.kind, "basis": rec.basis, "payload": _sov_dump(dict(rec.payload)),
+                    "thresholds": _sov_dump(dict(thresholds))})
+            except sqlite3.IntegrityError as exc:
+                if "DUPLICATE_PROMOTION" not in str(exc):
+                    raise
+                refused.append({"promotion_id": g["promotion_id"], "reason": "DUPLICATE_PROMOTION"})
+                continue
+            written.append({"promotion_id": g["promotion_id"], "structure_seq": seq})
+        conn.execute("COMMIT")
+        structure_open = False
+        sconn.execute("ROLLBACK")      # the sovereign side was only locked and read
+        sovereign_open = False
+        return {"stopped": None, "written": written, "refused": refused}
     finally:
+        # on every path out the transactions are closed; a stop returns here with both still open
+        if sovereign_open and sconn is not None:
+            sconn.execute("ROLLBACK")
+        if structure_open:
+            conn.execute("ROLLBACK")
+        if sconn is not None:
+            sconn.close()
         conn.close()
 
 
 def _sov_append_backlink(root: str, store_id: str, promotion_id: str, kind: str, key: str,
                          structure_seq: int, evidence: Sequence[str], ts: str,
                          structure_ref: str) -> int:
+    """Append the sovereign side's back-link, once: an identical link already there is not added again
+    (the repair at the start of two promotes that run together must not double it)."""
     conn, _path = _sov_open_active(root, store_id, write=True)
     try:
-        return _sov_txn(conn, lambda: _sov_insert(conn, "promotion_log", {
-            "ts": ts, "promotion_id": promotion_id, "kind": kind, "cand_key": key,
-            "structure_seq": structure_seq, "evidence": _sov_dump(list(evidence)),
-            "structure_ref": structure_ref}))
+        def work() -> int:
+            same = conn.execute(
+                "SELECT seq FROM promotion_log WHERE promotion_id = ? AND structure_seq = ? "
+                "AND structure_ref = ? ORDER BY seq LIMIT 1",
+                (promotion_id, structure_seq, structure_ref)).fetchone()
+            if same is not None:
+                return same[0]
+            return _sov_insert(conn, "promotion_log", {
+                "ts": ts, "promotion_id": promotion_id, "kind": kind, "cand_key": key,
+                "structure_seq": structure_seq, "evidence": _sov_dump(list(evidence)),
+                "structure_ref": structure_ref})
+        return _sov_txn(conn, work)
     finally:
         conn.close()
 
@@ -1646,9 +1774,13 @@ def promote(root: str, store_id: str, *, min_count: Optional[int] = None,
             now: Optional[Callable[[], datetime]] = None) -> Dict[str, Any]:
     """同意のあるソブリンの、繰り返し観測された未占有の升・言い回しを構造の側へ昇格する。
 
-    同意が無ければ何も書かない（NO_CONSENT）。1 件ごとに、構造の側（出所
-    conversation:<store_id>）とソブリンの側（back-link）の両方へ追記する。返す
-    `promoted` の並びは evidence の最初の seq の順で、表示のため（勝者選びではない）。
+    同意が無ければ何も書かない（NO_CONSENT）。解析は読むだけ（ロックなし）で、書き込みは
+    `_sov_append_structure_promotion` の 1 つのトランザクション（構造 → ソブリンの順にロック）の中で、
+    登録の状態・退役の開始・同意をもう一度確かめてから行う（RELEASED / DETACHED / RELEASE_IN_PROGRESS /
+    NO_CONSENT / CONSENT_CHANGED は書かずに止まる）。同じ候補が既に構造の側にあれば、一意のトリガが
+    拒否し、`refused`（DUPLICATE_PROMOTION）に数えて追記しない。構造の側が確定した後に候補ごとに
+    ソブリンの側へ back-link を追記する（途中で止まっても次の実行が補修する）。返す `promoted` の並びは
+    evidence の最初の seq の順で、表示のため（勝者選びではない）。
     しきい値は事前登録（PREREG_MIN_COUNT / PREREG_MIN_DAYS）で、方針値であり実測にもとづく値ではない。
     """
     root = _sov_root(root)
@@ -1700,24 +1832,25 @@ def promote(root: str, store_id: str, *, min_count: Optional[int] = None,
             repaired += 1
     counts, todo = _sov_analyze(events, consent["since_seq"], n, d, store_id,
                                 {p["promotion_id"] for p in existing})
+    stage = _sov_append_structure_promotion(root, store_id, todo, thresholds, ts, consent)
+    if stage["stopped"] is not None:
+        return {**stage["stopped"], "thresholds": thresholds, "analysed_candidates": len(todo)}
+    by_id = {g["promotion_id"]: g for g in todo}
     done = []
-    for g in todo:
-        rec = PromotionRecord(
-            store_id=store_id, kind=g["kind"], basis=f"conversation:{store_id}",
-            payload={"key": g["key"], "count": g["count"], "days": g["days"],
-                     "evidence": g["evidence"]})
-        sseq = _sov_append_structure_promotion(root, rec, g["promotion_id"], thresholds, ts)
+    for w in stage["written"]:
+        g = by_id[w["promotion_id"]]
         bseq = _sov_append_backlink(root, store_id, g["promotion_id"], g["kind"], g["key"],
-                                    sseq, g["evidence"], ts, sref)
+                                    w["structure_seq"], g["evidence"], ts, sref)
         done.append({"promotion_id": g["promotion_id"], "kind": g["kind"], "key": g["key"],
-                     "count": g["count"], "days": g["days"], "structure_seq": sseq,
+                     "count": g["count"], "days": g["days"], "structure_seq": w["structure_seq"],
                      "sovereign_seq": bseq})
     counts["promoted"] = len(done)
+    counts["duplicate_promotion"] = len(stage["refused"])
     counts["repaired_backlink"] = repaired
     counts["events_total"] = len(events)
     return {"verdict": "PROMOTED" if done else "NOTHING_TO_PROMOTE", "store_id": store_id,
-            "basis": f"conversation:{store_id}", "promoted": done, "counts": counts,
-            "thresholds": thresholds, "consent": consent}
+            "basis": f"conversation:{store_id}", "promoted": done, "refused": stage["refused"],
+            "counts": counts, "thresholds": thresholds, "consent": consent}
 
 
 # ------------------------------------------------------- basis confirmation (W6-a)

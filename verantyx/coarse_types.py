@@ -196,6 +196,16 @@ def _nfkc(s: str) -> str:
     return unicodedata.normalize("NFKC", s)
 
 
+def _time_unit_head(unit: str) -> Optional[str]:
+    """The longest ``TIME_UNITS`` entry that ``unit`` BEGINS with and is longer than (the unit is a time unit plus something more:
+    年+後, 週間+後, か月+後), else None.  A structural test on the seed list and on the learned counters; no word of any topic."""
+    best: Optional[str] = None
+    for u in TIME_UNITS:
+        if len(u) < len(unit) and unit.startswith(u) and (best is None or len(u) > len(best)):
+            best = u
+    return best
+
+
 def notation_type(term: str, counters: Optional[Sequence[str]] = None
                   ) -> Optional[Tuple[str, str]]:
     """Read the SPELLING of ``term``: (type_id, rule_name) or None.
@@ -203,8 +213,10 @@ def notation_type(term: str, counters: Optional[Sequence[str]] = None
     ``counters`` is the set of counter-unit strings the builder learned
     from the material (a unit that follows a number often enough).
     Digits alone are QUANTITY; digits + a time unit, a date, a clock time
-    are TIME; digits + a learned counter are QUANTITY; URL, e-mail,
-    letter+digit codes and version strings are IDENTIFIER.
+    are TIME; digits + a learned counter are QUANTITY -- except a learned
+    counter that begins with a time unit (年後, 週間後, 日前) which is TIME
+    (W5-b); URL, e-mail, letter+digit codes and version strings are
+    IDENTIFIER.
     """
     if not term:
         return None
@@ -228,6 +240,10 @@ def notation_type(term: str, counters: Optional[Sequence[str]] = None
         m0 = _RE_NUM_UNIT.match(t)
         if (m0 and m0.group(2) in counters and m0.group(2) not in TIME_UNITS
                 and _RE_ARABIC.search(m0.group(1)) and m0.group(1)[0] in "0123456789"):
+            # a learned unit that begins with a time unit (年後, 週間後, 日前, 世紀末) says WHEN, not how many (W5-b); only a learned
+            # unit after Arabic digits is read this way, so 3分の1 (not a learned counter) and 千日前 (kanji numeral) stay as they were
+            if _time_unit_head(m0.group(2)) is not None:
+                return ("TIME", "number+time_unit_head")
             return ("QUANTITY", "number+counter")
     if _RE_CODE.match(t):
         return ("IDENTIFIER", "alnum_code")

@@ -1,0 +1,14 @@
+"What's the report archive's language?" escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE
+"What is the report archive's language?" escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE
+'Tell me the language of the report archive.' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE
+'What language suits the report archive?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE
+'What language fits the report archive best?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE
+"The report archive's language?" escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE
+'Name the language of the report archive.' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE
+'What language is used for the report archive?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE
+'Could someone delete an archive?' escalate None HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+'Would it be possible to delete an archive?' escalate None HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+'Would it be possible for you to delete an archive?' escalate None HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+'アーカイブを削除してもらうことはできますか？' escalate None HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+'アーカイブを削除してもらってもいいですか？' escalate None HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+'アーカイブの削除をお願いしたいのですが。' escalate None HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED

@@ -1,0 +1,40 @@
+FFFF......                                                               [100%]
+=================================== FAILURES ===================================
+____ test_01_unattested_report_archive_does_not_get_a_wrong_language_answer ____
+attacks/W2-c3/test_attack_w2c3.py:28: in test_01_unattested_report_archive_does_not_get_a_wrong_language_answer
+    assert (result["decision"], result["escalate_reason"], result["escalate_detail"]) == (
+E   AssertionError: {'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'CHOICE', 'answer': 'English', ...}
+E   assert ('answer', None, None) == ('escalate', ...WIDER_PHRASE')
+E     
+E     At index 0 diff: 'answer' != 'escalate'
+E     Use -v to get more diff
+________________ test_02_polite_delete_request_requires_a_human ________________
+attacks/W2-c3/test_attack_w2c3.py:35: in test_02_polite_delete_request_requires_a_human
+    assert result["escalate_reason"] == "HUMAN_APPROVAL_REQUIRED", result
+E   AssertionError: {'schema': 'conduct_ask/v1', 'decision': 'escalate', 'kind': 'OTHER', 'answer': None, ...}
+E   assert 'FRAME_SILENT' == 'HUMAN_APPROVAL_REQUIRED'
+E     
+E     - HUMAN_APPROVAL_REQUIRED
+E     + FRAME_SILENT
+_____________ test_03_delegated_delete_permission_requires_a_human _____________
+attacks/W2-c3/test_attack_w2c3.py:40: in test_03_delegated_delete_permission_requires_a_human
+    assert result["escalate_reason"] == "HUMAN_APPROVAL_REQUIRED", result
+E   AssertionError: {'schema': 'conduct_ask/v1', 'decision': 'escalate', 'kind': 'OTHER', 'answer': None, ...}
+E   assert 'FRAME_SILENT' == 'HUMAN_APPROVAL_REQUIRED'
+E     
+E     - HUMAN_APPROVAL_REQUIRED
+E     + FRAME_SILENT
+______ test_04_markdown_and_compiled_jsonl_give_the_same_view_and_answer _______
+attacks/W2-c3/test_attack_w2c3.py:49: in test_04_markdown_and_compiled_jsonl_give_the_same_view_and_answer
+    assert tuple(md[k] for k in fields) == tuple(jsonl[k] for k in fields), (md, jsonl)
+E   AssertionError: ({'schema': 'conduct_ask/v1', 'decision': 'answer', 'kind': 'SCOPE', 'answer': 'はい', ...}, {'schema': 'conduct_ask/v1', 'decision': 'escalate', 'kind': 'SCOPE', 'answer': None, ...})
+E   assert ('answer', 'は...0, None, None) == ('escalate', ...OCAB_LLM_OFF')
+E     
+E     At index 0 diff: 'answer' != 'escalate'
+E     Use -v to get more diff
+=========================== short test summary info ============================
+FAILED attacks/W2-c3/test_attack_w2c3.py::test_01_unattested_report_archive_does_not_get_a_wrong_language_answer
+FAILED attacks/W2-c3/test_attack_w2c3.py::test_02_polite_delete_request_requires_a_human
+FAILED attacks/W2-c3/test_attack_w2c3.py::test_03_delegated_delete_permission_requires_a_human
+FAILED attacks/W2-c3/test_attack_w2c3.py::test_04_markdown_and_compiled_jsonl_give_the_same_view_and_answer
+4 failed, 6 passed in 0.28s

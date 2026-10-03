@@ -23,6 +23,7 @@ python -m verantyx.conduct_ask --frame <枠.md|枠.jsonl> --question <文> [--op
 - 公開 API: `verantyx.conduct_ask.answer_question(frame_path, question, options=None, *, vocab_llm="off", vocab_fake=None, vocab_ledger=None, chooser=None, map_fake=None, map_second=None, map_max_asks=24, mapper=None, map_effort=None, map_timeout=None) -> dict`。
   `chooser` に `llm_choice.LLMChooser` を渡せば作り物のプロバイダで試せる。`mapper` に `conduct_map.RecordMapper` を渡せば、対応づけも作り物で試せる（§13）。例外は投げず、想定外の失敗は `INTERNAL_ERROR` の JSON を返す。
 - 副作用なし: 枠の隣にも作業ディレクトリにも何も書かない。`--vocab-ledger` を渡したときだけ、そのファイルに台帳を追記する（既定はメモリ上）。
+  （W5-b で追記: 枠の記録への対応づけ（§13）が台帳に行を足したときは、台帳の隣の `<台帳>.manifest.json` にも書く。§14.5。`--vocab-ledger` を渡さなければ manifest もメモリ上。）
 - 既定の `--vocab-llm off` では LLM の部品を作らない（`verantyx.conduct_map` も読み込まない）。`codex` / `claude` は、語彙外の経路か、枠の記録への対応づけ（§13）に入ったときに初めてプロバイダを作る。
   W2-c の試験はすべて作り物。W2-g は、手順を決めた実プロバイダの実行だけを §13.9 の出典に残した（試験は既定ですべて作り物で、実プロバイダを使う試験は `VERA_LLM_LIVE=1` のときだけ走る）。
 - 標準出力には JSON を 1 個だけ（末尾に改行）。トレースバックは出さない（型名だけを標準エラーへ）。
@@ -869,6 +870,13 @@ S-C パスは大文字・小文字まで許可リストと一致したときだ�
   - **E0 の `を除` は `〜を除外する場合は` の `を除外` にも当たる**（レビューの任意 O1。表は変えない約束なので直していない）。
   - **基点から既にある穴（今回の変更と無関係）**: 凍結データの `w2g2-x06-08` は期待が escalate なのに `off` が `Yes` と答える（基点のコードでも同じ。`artifacts/w2-c2/r3/c1/c1_summary.json` の `S1_after_answer_when_expected_escalate_total`）。
 
+- **W5-b（W2-c3 #1〜#4 の直し）で残る穴**（§16）: (1) 保護された操作の語は閉じた類のままで、`消す` `消して` はその類に無い（`代わりに消してください` は上がらない。`代わりに削除してください` は上がる）。`send`（`send externally` 以外）も類に無い（`Could you send the report to the client?` は上がらない）。`remove` は類にあるが、`Could we let the intern remove the old entries?` のように広い語句の経路が先に当たる文は許可の層まで届かず `FRAME_SILENT/TERM_IN_WIDER_PHRASE` になる（上がらないのではなく、答えにもならない）。(2) 広い語句の問いの属性の照合は、英語は語の完全一致（複数形・活用は見ない）で、合わなければ上げる側に倒れる。属性語は `what|which` ＋ 名詞句 ＋ 助動詞、`what is the <語> of`、`の<語>は何` の形からだけ取る（それ以外の聞き方では要求しない）。(3) md と jsonl の view は、方針の条件・決定の主語・完了条件の id を揃えたが、**不変条件の id**（md `I1`、jsonl 記録の id）と `skipped_records` は揃っていない（jsonl の記録に元の id を持つ欄が無く、`invariant I1` という主語の文字列から取り出すのは推測になるので、していない）。
+- （W5-b 第 2 ラウンドで追記。上の (2) の属性の取り方と、§16.2 の #2・#3 の形は広げた: §16.4。残る穴は 2 つ。(a) `Could we let the intern remove the old entries?` が許可の層に届かないのは、層の順序のため: 広い語句の経路（枠の語が長い名詞句の中にある文）は許可の層より前に手を上げる（`FRAME_SILENT/TERM_IN_WIDER_PHRASE`）。上がってはいる（答えにならない）が、型は `HUMAN_APPROVAL_REQUIRED` でない。順序を変えると許可の層の全体の挙動が変わるので、このチケットでは変えていない。(b) 依頼の枠の語の間の語は 2 語までで、冠詞・限定詞は含まない（`Could you summarize the release plan?` は依頼でない）。名詞の前に別の語が 3 つ以上入る依頼（`Could you, if it is not too much trouble, delete …`）は上がらない。逆に、動詞の位置の語が何であっても 2 語までを許すので、`Could you explain release notes?` のように保護された語が名詞として使われている文も `HUMAN_APPROVAL_REQUIRED` になる（上げる側の誤り。答えは出さない）。）
+- （W5-b 第 3 ラウンドで追記。上の (2) の「それ以外の聞き方では要求しない」は **撤回**: §16.5。残る穴: (a) 日本語は、トピックの名詞を読むのは `の<語>は|が`（読点で閉じない）・`の<語>を教え…`・`どの|どんな<語>` だけで、`…一覧の形式は、どちらにしますか` のように **読点でトピックを閉じた文** の属性は読まない（凍結の既存試験が `…の選択は、…どちらにしますか` を答えにすると固定しているため。同じ形で別の属性を問う文は答えになりうる）。(b) 日本語で枠の語が 1 つも言及されない文（広い語句の経路でない）は、対応づけが答えにしうる（この確認は広い語句の経路にしか当てていない）。(c) Yes / No の選択肢で `Is the <語> in English?` のように述語に別の属性が隠れる問いは、助動詞で始まる文として「語そのものへの問い」と読まれる（属性を示す形が文に無いため）。(d) 依頼で `I'd like you to delete …`（平叙の依頼）・`Is there any chance you could delete …`・`Would it be possible for you to have someone …` の使役を含む形は上がらない。(e) `Language of the …?`・`The language used by …`（冠詞なしの名詞句・過去分詞の修飾）は属性語が読めず、`ATTRIBUTE_UNREAD` で手を上げる（答えにならない側の誤り）。）
+- （W5-b 第 4 ラウンドで追記: §16.6）上の第 3 ラウンドの項の (a)「読点で閉じた日本語のトピックの属性は読まない」は **撤回**: 読点で閉じたトピックも `の<語>は|が` の属性の形として読む。ただし選択肢が はい／いいえ か、与えられた選択肢の文字列がすべてトピックの後ろにある文は、語そのものへの問い（属性なし）として読む。残る穴: (b) 別の属性を問いながら記録の値を選択肢として名指しする文（`…の文字コードは、PDFとCSVのどちらにしますか？` の形）は答えになりうる。Yes / No の選択肢で別の属性を問う日本語の文（`…の形式は、今回の範囲に入りますか？`）も答えになりうる（`tests/test_conduct_ask_w5b.py::test_1_documented_limit_a_comma_closed_topic_about_another_attribute_that_names_the_options_can_answer`）。
+- （W5-b 第 4 ラウンドで追記: §16.6）上の (d) の依頼の穴のうち、`be so kind as to` など繋辞＋不定詞の形、授受の動詞の条件形で終わる平叙の依頼（`…していただけると助かります`）、`くださる` の活用（`…してくださいませんか`）、可能の尾の `でしょうか`（`…することは可能でしょうか`）は **直した**。残る外側の形: `I'd like you to delete …`（平叙の依頼）・`Is there any chance you could …`・`消す` `消して`（保護された操作の語の閉じた類に無い）。
+- （W5-b 第 4 ラウンドで追記: §16.6、監査役の裁定 C4）md と jsonl の枠の読みの差（`欠測の扱い`／`欠測扱い`、完了条件の id）は W5-b の #4 で `build_view`（`_view_from_jsonl`）で **揃えた**。固定していた試験の期待は `{}` に改めた。
+
 ## 12. 既知の限界（規則だけで自然文の質問を読む方式）
 
 - この入口は、自然文の質問を規則（閉じた形の列挙）で読み、列挙に無い形は上げる設計である。ただし列挙した形の中での読み違い（記録の向き・条件・主体・時・大文字小文字など）は、罠を書かれるたびに見つかってきた。
@@ -1010,6 +1018,9 @@ S-C パスは大文字・小文字まで許可リストと一致したときだ�
 ```
 
 `vocab` は規則の経路のまま残る。`trace.resolver_outcomes["mapping"]` に結果が入る。
+
+（W5-b で追記）`mapping` に鍵 `ledger_replay` を足した（キーは常に全部出す）: 台帳から読み戻して照会しなかった手順が無ければ `null`、あれば `{"type": "LEDGER_REPLAY", "steps": <その手順の数>}`。`conduct_ask.apply_mapping` の `LEDGER_INTEGRITY`（台帳を開けない）の報告にも `ledger_replay: null` がある。
+台帳から再利用した手順（`cached: true`）の `step1` `decides` `step2[]` `order.*` には `"replay": {"type": "LEDGER_REPLAY", "manifest": "MATCHED"}` が付く（再利用の前に台帳の manifest が一致していたことを言う。§14.5）。
 
 ### 13.6 作り物の台本（`--map-fake`、試験の `ScriptedMapProvider`）
 
@@ -1168,6 +1179,16 @@ S-C パスは大文字・小文字まで許可リストと一致したときだ�
 - 出力の `mapping`: v1 の鍵（`provenance` `counts_as_evidence` `constructed` `route` `outcome` `rule` `candidates` `asks_used` `asks_cap` `step1` `step2` `order` `exit_check`）に、`protocol` `effort` `decides`（記録の経路の `decides` 段）`retries`（その問いで行った再照会の数）を足した。
   `step1` は `{"decision_id","status","reason","cached","retries","asks","records"}`（`decides` の鍵は無い。`decides` 段の値は `mapping.decides.decides`）。`step2` は組ごとの `{"decision_id","status","reason","cached","retries","asks","record","option_index","relation"}` の並び（記録の順 → 肢の順）。
   `order` は `decides`（`決まる` / `決まらない` / null）と `decides_step`（その段の decision）を持つ。detail: `DECIDES_<DISAGREE|INVALID_ANSWER|FAILED:種別>`（`decides` 段）、`STEP2_<…>`（最初に決まらなかった組）、`MAP_RECORD_DOES_NOT_DECIDE`、`ASK_BUDGET`。
+
+**W5-b で追記: 台帳の manifest と「台帳からの再生」の型（攻撃役の反例 W2-g2 A1: 決定の行を書き換えてハッシュを付け直すと、照会 0 回で答えが変わった）**
+
+- 鎖のハッシュは「この行までが途切れていない」ことしか言わない。**鎖は事故を見つけるが、書き換えを見つけない**（鍵が無いので、行を書き換えた人は鎖を作り直せる）。そこで、`RecordMapper` が書いた行（`map_*`）について、別のファイル `<台帳>.manifest.json`（`--vocab-ledger` なしの台帳ではその `ChoiceLedger` オブジェクトの属性）に、台帳の **1 行目（seq 0）のハッシュ** `root` と、各行の **内容ハッシュ** `rows["<seq>"]`（`hash` と `prev` を除いた行の正準 json の sha256。`seq` は含む）を残す。形: `{"schema": "conduct_map.manifest/1", "root": ..., "rows": {"<seq>": ...}}`。
+  manifest への追記は台帳への追記と同じロックの中で行う（`ChoiceLedger.append_manifested`。`ChoiceLedger.append` は manifest に触れないので、語の対応づけなど他の使い手の挙動と台帳のディレクトリは変わらない）。書き方は同じディレクトリの一時ファイル → `os.replace`。
+- 手順の最初（再利用も照会も、これより前に）に鎖の検査（今までどおり）に続けて manifest と突き合わせる。食い違えば照会も再生もせず、その手順は `REFUSED`・理由 `LEDGER_INTEGRITY`（理由の名前は変えない）・手順の `detail` に `LEDGER_MISMATCH:<種類>`、結果の `escalate_detail` は `LEDGER_INTEGRITY`。種類: `NO_MANIFEST`（`map_*` の行があるのに manifest が無い）、`MANIFEST_UNREADABLE`、`ROOT`（1 行目のハッシュが違う）、`ROW <seq>`（`map_*` の行が manifest に無い、または内容ハッシュが違う）、`MISSING_ROW <seq>`（manifest にある行が台帳に無い。**末尾を切り詰めても鎖は正しいままなので、これが要る**）。
+- 台帳から再利用した手順は型 `LEDGER_REPLAY`（出力の `replay` と `mapping.ledger_replay`。§13.5）を持つ。
+- **この方式が守れるのは「片方だけの書き換え」（台帳だけ・manifest だけ）と末尾の切り詰めで、改ざんを検出するとは言えない。** manifest も書き換えられるファイルなので、台帳と manifest を矛盾なく書き換えれば再生される（`tests/test_conduct_map_w5b.py::test_documented_limit_a_rewrite_of_the_ledger_and_the_manifest_together_is_replayed` がこの限界を固定している）。守り切るには、鍵か外の記録（台帳の外にある最後のハッシュ）が要るが、この版にはない。
+- **manifest の無い古い台帳**: `map_*` の行を持つのに manifest が無い台帳は再利用せず `LEDGER_MISMATCH:NO_MANIFEST` で止まる（最初の 1 回の照会の費用が増えるのではなく、手順が止まる）。新しい台帳（新しいパス、または `--vocab-ledger` なし）を使えば、最初の追記で manifest ができる。見えない補修はしない。
+- 追記の途中（台帳へ書いたあと manifest へ書く前）で止まると、その台帳は `ROW <seq>` で止まる（安全側。新しい台帳を使う）。
 
 ### 14.6 作り物の台本（`ScriptedMapProvider`。**LLM の測定ではなく、仮定**）
 
@@ -1480,3 +1501,82 @@ W2-c の罠の規則（§4 の 2・4、§6、§7）は、形が当たれば上�
 - **非対称**: 保護された操作は、境目の形では**証拠ありに倒す**（取りこぼすと、対応づけが問いの向きを取り違えて答える。対応づけに渡す `_builtin_protected` は広いまま）。広い語句は、迷ったら**証拠なしに倒す**が、証拠なしは「上げる」ではなく「対応づけに回す」で、対応づけが決めなければ基点の型に戻る。
 - 測定: 書き込みの許可の問い 51 文（`off`・空の対応づけ・素朴な台本）で答えが出たのは素朴な台本の 1 文（基点でも同じ。§11）。「許可リストの無い枠には書き込みを許す答えを作る経路が無い」とは言えない。
 - 既知の穴は §11 の W2-c2 の項。特に、D14 の危険の移動、戻した 3 つの罠のバンクでの誤発火、`w2c2-builtin-route-11` が戻した `NO_ALLOWLIST` で止まること、md と jsonl の残る差 (a)(b)。
+
+## 16. W5-b: 攻撃の第 2 波の命中のうち W2-g2 A1・W2-c3 #1〜#4 の直し
+
+攻撃役（codex gpt-6-luna）が実行して確かめた反例を、語の一覧を足さずに直した。再現テストは `tests/attack/test_attack_w2g2_mapping.py` と `tests/attack/w2c3/test_attack_w2c3_traps.py`（攻撃役の原本の写し。中身は 1 文字も変えていない）、新しい試験は `tests/test_conduct_map_w5b.py`（15 本）と `tests/test_conduct_ask_w5b.py`（36 本）。
+
+### 16.1 A1: 台帳の manifest と再生の型（§14.5 の追記が本体）
+
+台帳の 1 行目のハッシュと各行の内容ハッシュを別ファイルに残し、再生の前に突き合わせる。食い違えば `LEDGER_INTEGRITY`（`detail` は `LEDGER_MISMATCH:<種類>`）で止め、答えにしない。再利用した手順は型 `LEDGER_REPLAY` を持つ。**限界: 台帳と manifest の両方を矛盾なく書き換えれば再生される。改ざんを検出するとは言わない。**
+
+### 16.2 W2-c3 の 4 件
+
+- **#1 広い語句の問いの属性**: 規則の結果が `VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE`（広い語句の経路）で、対応づけが答えになったときだけ、質問の属性語（`what|which` ＋ 名詞句 ＋ 助動詞の名詞句の最後の語、`what is the <語> of|for`、日本語は `の<語>は何`）が、答えの根拠の **すべての記録の原文** に語として（英語は語の境界で完全一致、日本語は部分文字列）現れることを要求する。無ければ `FRAME_SILENT/TERM_IN_WIDER_PHRASE` で上げ、`mapping.exit_check` と `outcome` に記録し、`trace.resolver_outcomes["wider_phrase"]` に `ESCALATE:ATTRIBUTE_NOT_IN_RECORD:<属性語>` を残す。名詞句が質問の枠の語の言及と重なるとき（問われているのが語そのもの）・属性語が取れないときは要求しない。**この経路以外には当てない。**
+- **#2・#3 依頼・代行・丁寧形**: `_builtin_protected_asked` だけを広げた（`_PERM_CUE` と保護された操作の語 `_BI_JA_OP` `_BI_EN_OP` は変えていない）。英語: 丁寧の副詞（`could you please delete`）、依頼の枠（`would|will|can|could you`）、使役の枠（`could we have the team delete`、`can we get someone to`、`let`、`make`）。**`ask` は入れない**（`Can we ask someone to delete the old logs?` は上げない。既存の試験が固定している）。日本語: `…してもらえますか` `…していただけますか` `…してくれますか` `…してください` `代わりに…して`。関数の門は `_PERM_CUE` か、この関数だけが使う依頼の手がかり `_BI_REQUEST_CUE` のどちらか。
+- **#4 md と jsonl の view**: `_view_from_jsonl` で、方針の条件は `witness.condition` → `normalized.subject` → `slots.subject`、決定の主語は `normalized.subject` → `slots.subject`（コンパイラが書き換える前の、枠の作者の書いた形）、完了条件の id は `GOAL` の記録の `acceptance_record_id → completion_criterion_id`（`C1` など。引かれていない記録は記録の id）。`project_frame.py` は変えていない（直る場所は読む側の `conduct_ask._view_from_jsonl` で、チケットが `project_frame.py` の中にあると書いたのは実際はここ）。
+
+### 16.3 測定と試験（`artifacts/w5-b/` の出力）
+
+- 凍結データ（W2-c / W2-g / W2-c2。1,108 行。`off` と作り物の対応づけ）の前後: `C1_changed_rows 0`、`S_lines_hold true`（`artifacts/w5-b/w2c2_diff/c1_summary.json`、前 `w2c2_before/`、後 `w2c2_after/`）。日本語の依頼の形の追加でも答えが変わった行は 0。
+- 攻撃テスト（W2-c3 の 10 本、W2-g2 の 7 本）は全部通る（`artifacts/w5-b/L1_attack_after.txt` の W2-g2・W2-c3 の分）。
+- **既存の試験 1 本が落ちる（宣言。テストには触れていない）**: `tests/test_conduct_ask_w2c2_view.py::test_markdown_and_jsonl_views_have_the_same_decisions_and_the_same_terms` は、md と jsonl の差が `{"experiment_data_pipeline.md": {"欠測の扱い": ..., "欠測扱い": ...}}` の 1 件だけあることを固定している。#4 の直しでこの差が無くなり（`{}`）、固定の期待と食い違う。チケットの指示（差を揃える）と既存の期待のどちらを取るかは監査役の判断。期待を `{}` に改める（強める）改訂が自然。
+
+### 16.4 第 2 ラウンド（レビュー M1・M2）: 同じ型の破れを「型」で広げた
+
+中間職の凍結反例と追加の探りで、#1・#2・#3 と同じ型の破れが見つかった（`Could you kindly delete …`、`Would you mind deleting …`、`What's the language of …`、`Which language for …`、日本語の `…をお願いできますか` など）。語を 1 つずつ足さず、構文の位置と形を広げた。`_PERM_CUE`・保護された操作の語（`_BI_JA_OP`、`_BI_EN_OP` の動詞）は変えていない。
+
+- **#2・#3 英語**: (1) 依頼の枠（`can|could|… you`、`would|will you`）と使役の枠（`… we/I/you have|get|let|make <名詞句> (to)`）の主語と動詞の間に、**冠詞・限定詞を除く語を 0〜2 個**許す位置（`_BI_SLOT`）を置いた（副詞の一覧ではない。`kindly`・`also`・`possibly`・`just`・`mind` のどれも一覧に無い）。冠詞・限定詞を除くのは、その後ろの語が動詞でなく名詞句の頭になるため（`Could you summarize the release plan?` は依頼でない）。(2) `be able to` / `be willing to` を、`can` と同じ構文として依頼の枠に入れた。(3) 使役の動詞の -ing 形（`having someone delete`）と、保護された操作の動詞の -ing 形（`publishing`・`deploying` など。**同じ動詞の活用であって新しい操作の語ではない**。`would you mind publishing …`）。(4) `ask` は今までどおり入れない。(5) **否定**（`Could you not delete …`）: 位置は否定の語も許すが、その問いは前の段（`QUESTION_UNREADABLE/NEGATED_QUESTION`）が先に手を上げる。答えにはならない（`tests/test_conduct_ask_w5b.py::test_2_3_a_negated_request_is_never_answered`）。
+- **#2・#3 日本語**: 依頼の形を 5 つの構文に整理した: て形 ＋ `もらえ|いただけ|頂け|くれ`（`しておいて` も）、て形 ＋ `ください`、て形 ＋ `ほしい`（`…してほしいのですが、可能ですか`）、操作の名詞 ＋ 頼む動詞 `お願い|依頼|頼` ＋ 可能・疑問の形（`…をお願いできますか`、`…を頼めますか`、`…を依頼してもいいですか`、`…をお願いしたいのですが、よろしいですか`。かなの活用の尾だけを許し、`削除依頼は誰に出しますか` のような手順の質問は含まない）、て形だけ（今までどおり）。手がかりの `_BI_REQUEST_CUE` に `てほしい|お願い|依頼|頼め…` を足した。保護された操作の語（`削除` など）は足していない。
+- **#1 属性語**: 英語の形を 3 つにした: `what|which` ＋ `is|are|'s` ＋ `the <語> of|for`、`what|which <名詞句> <助動詞 または 前置詞>`（`Which language for …`、`What size on …`）、`how <形容詞> <助動詞>`（`How big should …`、`How long is …`）。日本語に `どの|どんな<語>を|で|に|が|は` を足した。名詞句が枠の語の言及と重なれば属性語なし、取れなければ要求しない、広い語句の経路だけ、は変えていない。前置詞の類は文法の閉じた類（`for of in on at to about with from by under over per`）で、属性の語の一覧ではない。
+- **測定**: 凍結データ（1,108 行）の前後は第 2 ラウンドでも `C1_changed_rows 0`・`S_lines_hold true`（`artifacts/w5-b/w2c2_diff/c1_summary.json`）。関係テストは `artifacts/w5-b/w2c_tests.txt`（落ちるのは C4 の 1 本だけ）。新しい試験は `tests/test_conduct_ask_w5b.py`（`test_1_the_shapes_without_a_plain_auxiliary_are_read_too` と、`test_2_3_…` の入力の追加）。
+
+### 16.5 第 3 ラウンド（レビュー M-A・M-B）: 既定を反転した（取れない形は答えにしない）
+
+中間職の第 2 ラウンドの探りで、#1 の属性語を読む形を許可の一覧のように増やしても、読めない形（所有格 `<名詞>'s <語>`、`Tell me the <語> of …`、`What <名詞> <一般の動詞> …`）が答えに流れた。**§16.2 の #1 の「属性語が取れなければ要求しない」と §16.4 の「取れなければ要求しない」は撤回する。** 広い語句の経路で対応づけが答えたとき、答えが立つのは次のどちらかだけ:
+
+- (i) 質問の属性語を、下の形から **読めて**、答えの根拠の **すべての記録の原文** に語として現れる（英語は語の境界で完全一致、日本語は部分文字列）。
+- (ii) 質問の形が、語そのものを問い属性を問わないと **構文で確かめられる**: Yes / No の選択肢で助動詞で始まる文（`Is the … in scope?`）、または `what|which|how` の直後が助動詞の文（`What should … be?`、`Which should we pick for …?`）で、属性を問う形が文に無い。
+
+それ以外は `FRAME_SILENT/TERM_IN_WIDER_PHRASE` で手を上げる。`trace.resolver_outcomes["wider_phrase"]` は **読めて無かった** `ESCALATE:ATTRIBUTE_NOT_IN_RECORD:<語>` と **読めなかった** `ESCALATE:ATTRIBUTE_UNREAD` を別の型にする。属性を問う形（語の一覧ではなく文法の形）: 所有格 `<名詞>'s <語>`（`what's` などの短縮は除く）、`the <1〜3 語> of|for`（最後の語）、`what|which|whose <名詞句>`（助動詞・前置詞・限定詞・接続詞の手前まで 3 語。名詞句が枠の語を含むなら語そのものなので属性なし）、`how <語>`、日本語 `の<語>は|が`（読点で閉じない）・`の<語>を教え…`・`どの|どんな<語>`。`where|when|who|why` と、形が読めず (ii) でもない文（動詞で始まる依頼・`Describe …`）は `ATTRIBUTE_UNREAD`。助動詞・前置詞・限定詞の類は文法の閉じた類。
+
+- **#2・#3 の追加の構文**: (1) 依頼の手がかりと枠の主語を同じ閉じた類にした（`i|we|you|they|someone|somebody|anyone|anybody|everyone|everybody`。`Could someone delete …`）。枠の法助動詞に `would|will` も。(2) 可能の問い `is|would it be possible (for <語>) to`（`ok|allowed` と同じ位置に `possible`）。(3) 日本語で授受の動詞が可能・許可の問いの中にある形: て形 ＋ `もらう|いただく|頂く` ＋ `こと|の` ＋ `は|が` ＋ `できますか|可能ですか`、て形 ＋ `もらって|いただいて|頂いて` ＋ `もいいですか` 系。(4) 頼む動詞の願望・平叙: `…の削除をお願いしたいのですが。`、`…をお願いします。`（かなの尾だけ）。(5) 依頼の位置 `_BI_SLOT` から、節を開く語（wh 語・`if|whether|before|after|because|while|until|unless`）を除いた（`Could you explain why deleting … is needed?` は依頼でない: 第 2 ラウンドで `HUMAN_APPROVAL_REQUIRED` に変わっていたのを dev と同じ `FRAME_SILENT/MAP_NONE` に戻した）。保護された操作の語・`_PERM_CUE` は変えていない。
+- **測定**（`artifacts/w5-b/`）: 凍結データ 1,108 行の前後は `C1_changed_rows 0`・`S_lines_hold true`（`w2c2_diff/c1_summary.json`）。ただしこのデータの対応づけは空の作り物なので、広い語句の経路で答えが立つ場面は含まない。答えが立つ場面は `scripts/wider_answer_effect.py` で、凍結データの値の記録に答える広い語句の問 5 件（前 `wider_answer_effect_before.txt`、後 `wider_answer_effect_after.txt`）がすべて前と同じ答えのままであることを見た。
+- **試験の数**: 第 3 ラウンドの後、`tests/test_conduct_ask_w5b.py` は 111 件（`artifacts/w5-b/w2c_tests.txt` の実行で全部通る。§16 冒頭の「36 本」は第 1 ラウンドの数）。
+
+### 16.6 第 4 ラウンド（レビュー M-D・M-E と監査役の裁定 C4）
+
+読点で閉じた日本語のトピック（M-D）と、依頼・丁寧形の 4 つの構文（M-E）を、語の一覧を足さずに直した。`_PERM_CUE`・`_PJA_CAN`・`_BI_JA_OP`・`_BI_EN_OP`・`_BI_JA_CRED`・`_BI_EN_CRED` は 1 バイトも変えていない（許可の層の全体に効くため。`_builtin_protected_asked` が使う `_BI_*` だけを広げた）。
+
+**M-D: 読点で閉じたトピック**（`_ATTR_JA_TOPIC`・`_attribute_forms`・`_names_the_term_itself`）。`の<語>は|が` の否定先読み `(?![、,])` を外し、読点で閉じたトピックも属性の形として読む。ただし一致の直後が読点（`、` `,`）のときに限り、次のどちらかなら **属性語の無い形**（語そのものを問う形。英語の (ii) に当たる）として扱い、答えとして残す: (a) 選択肢が はい／いいえ（`ctx.polarity_options()`）、(b) 選択肢があり、**与えられた選択肢の文字列がすべて、トピックの後ろ（一致の終わりから文末まで）に現れる**（`…の選択は、<A>と<B>のどちらにしますか`）。選択肢は入力で、字面の一覧ではない。どちらでもなければ今までの `の<語>は|が` と同じ（`[語]`。`own()` で枠の語と重なるなら属性なし）。読点で閉じないトピックの扱いは変えていない。
+- 試験（`tests/test_conduct_ask_w5b.py`）: 欠陥を固定していた `test_1_documented_limit_a_japanese_topic_closed_by_a_comma_is_not_read_as_an_attribute`（同じ文を `answer` と固定）は、同じ文が `("escalate", "FRAME_SILENT", "TERM_IN_WIDER_PHRASE")`・`ESCALATE:ATTRIBUTE_NOT_IN_RECORD:形式` になる `test_1_a_japanese_topic_closed_by_a_comma_is_read_as_an_attribute_form_and_handed_up` に書き換えた（このチケットで足した新しい試験）。(a)(b) が答えのまま残る試験、選択肢を名指さない文が手を上げる試験、残る穴を固定する `test_1_documented_limit_a_comma_closed_topic_about_another_attribute_that_names_the_options_can_answer` を足した。
+- 残る穴: (b) の判定は「選択肢が文の後ろにある」ことだけを見るので、別の属性を問いながら選択肢に記録の値を名指しする文（`…の文字コードは、PDFとCSVのどちらにしますか？`）は答えになりうる。Yes / No の選択肢で別の属性を問う日本語の文（`…の形式は、今回の範囲に入りますか？`）も答えになりうる（Yes / No の選択肢では属性が文のどこにも現れないため）。
+
+**M-E: 依頼の 4 つの構文**（`_BI_*`。形容詞・副詞・操作の語は足していない。構文の位置で広げた）:
+1. 門と枠の形容詞の類を 1 か所に: `_BI_OK_ADJ`（`ok|okay|fine|alright|allowed|permitted|acceptable|possible`。**値の集合は今の枠と同じ。足していない**）。枠 `(is|would) it (be) <形容詞> (for … to|to|if …)` と門 `_BI_REQUEST_CUE` の両方がこの定数を使う。
+2. 授受の動詞の尊敬形 `くださる` の活用: `…てくださ(い|る|います|いません)(か|でしょうか)?`（`…してくださいませんか`・`…してくださいますか`・`…してくださる？`）。門の `てください` も `てくださ` に。
+3. 依頼の構文（`…してもらう(こと|の)は…`）の中の可能の尾: `_BI_JA_CAN = (?:でき|可能)(?:ます|る|です)?(?:か|でしょうか)`。`_PJA_CAN` は変えていない。
+4. 授受・依頼の動詞の条件形で終わる平叙の依頼（条件形の後ろは文末まで何でもよい。前は今までどおり保護された操作の語の直後）: `<て形>(もらえ|いただけ|頂け|くれ)(れば|ると|たら)…`（`…していただけると助かります`）、`(を|の)?(お願い|依頼)(を)?(でき(れば|ると|たら)|すれば|すると|したら)…`（`…の削除をお願いできればと思います`）。
+5. 英語の繋辞＋不定詞の依頼: 枠の末尾 `(?:(?:be\s+)?(?:able|willing)\s+to\s+)?` を `(?:be\s+(?:[a-z][a-z\-']*\s+){1,3}to\s+)?` に置き換えた（`be so kind as to`・`be good enough to`・`be able to`・`be willing to` がどれも入る。`able|willing` の一覧はここで消えた）。op の語が `to` の直後（＋`_PEN_GAP`）にあるときだけ当たる: `Would you be able to explain how to delete …` は当たらない（試験に 1 本）。
+6. **任意の改善 1（採用）**: 素の許可の問い `…することは可能でしょうか`。`_BI_JA_ASKED_OP` の 2 つ目の尾を `_BI_JA_CAN` にし、門に `(?:でき|可能)(?:ます|です)?でしょうか` を足した（`_PERM_CUE`・`_PJA_CAN` は変えていない）。副作用: 凍結データ 1,108 行の `C1_changed_rows` は 0 のまま、W2-c 系 20 ファイルの結果は変わらない。
+- `Can we ask someone to delete …?` は今までどおり上げない（`ask` を使役に入れない）。上げすぎの対照（`probe2` の OVER 9 文・凍結 L2 の対照）は上がらないまま。
+- 残る外側の形: `I'd like you to delete …`（平叙の依頼）・`Is there any chance you could …`・`消す` `消して`（保護された操作の語の閉じた類に無い）。
+- 試験（`tests/test_conduct_ask_w5b.py` の `test_2_3_round4_…` の 3 本）: 各構文につき保護された操作の文 2 つ以上と、同じ構文で保護されていない操作の文（`review` `確認` など。上がらない）、定数の存在と `_PJA_CAN` の不変。
+
+**C4（監査役の裁定、2026-10-03。期待を強める向きの改訂）**: md と jsonl の view の差を揃えたので、差を固定していた `tests/test_conduct_ask_w2c2_view.py::test_markdown_and_jsonl_views_have_the_same_decisions_and_the_same_terms` の最後の 2 行（コメントと assert）を改めた。変更前の 2 行の全文:
+
+```python
+    # the one known difference: the compiler normalises the condition of a policy (witness.condition keeps the markdown's words)
+    assert known_differences == {"experiment_data_pipeline.md": {"欠測の扱い": (["policy"], None), "欠測扱い": (None, ["policy"])}}
+```
+
+変更後の 2 行の全文:
+
+```python
+    # W5-b (#4; auditor ruling C4, 2026-10-03): the markdown and jsonl views agree; no known difference remains
+    assert known_differences == {}
+```
+
+（`git diff a92a926 -- tests/test_conduct_ask_w2c2_view.py` の変わった行は 4 行。ほかの行は変えていない。）
+
+**測定**（`artifacts/w5-b/`）: W2-c 系 20 ファイル（`w2c_tests.txt`）は `1252 passed`。凍結データ 1,108 行の前後は `C1_changed_rows 0`・`S_lines_hold true`（`w2c2_diff/c1_summary.json`）。広い語句の経路で答えが立つ 5 件（`wider_answer_effect_after.txt`）は第 3 ラウンドと同じ出力（差 0 行）。`probe2`（`probe_r4_probe2_after.txt`）と攻撃の探り（`probe_r4_atk2_after.txt`）は第 3 ラウンドの出力と差 0 行。依頼の探り 6 文（`probe_r4_probe_ok.txt`）は、保護された操作の 5 文（4 構文と任意の改善 1）が `HUMAN_APPROVAL_REQUIRED`、保護されていない 1 文（`…の確認をすることは可能でしょうか`）は上がらない。凍結の中間職の反例の実行は `L2_frozen_on_impl_r4.txt`。`tests/test_conduct_ask_w5b.py` は 147 本。

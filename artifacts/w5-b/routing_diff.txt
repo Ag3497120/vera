@@ -1,0 +1,5 @@
+## items: questions 62; summary equal: True; misroutes before 0 after 0
+## items_mid: questions 56; summary equal: True; misroutes before 0 after 0
+## items_reader_shaped: questions 16; summary equal: True; misroutes before 0 after 0
+## items_mid_reader_shaped: questions 17; summary equal: True; misroutes before 0 after 0
+questions compared 151; changed (decision, agent, abstention type or relations): 0

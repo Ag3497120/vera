@@ -1,0 +1,17 @@
+placement: /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r5/run1
+explanations (distinct files): 8 questions: 151
+route -> undecided because of the check: 7 | undecided -> route: 0 | agent changed: 0
+misroutes (scored as run_bank scores them): stub 0 | with placement 0
+names stopped as COMMON_NOUN_SUBJECT (explanation: reasons):
+  e5.md ['COMMON_NOUN_SUBJECT:Pike:PLACEMENT_DIRECT:INFO_LANGUAGE']
+  r1.md ['COMMON_NOUN_SUBJECT:ハル:PLACEMENT_DIRECT:ANIMAL,GROUP_ORG,PERSON', 'COMMON_NOUN_SUBJECT:モモ:PLACEMENT_DIRECT:ANIMAL,PERSON']
+common_noun_check per explanation:
+  e1.md {"checked": 0, "not_checked": 0, "flagged": 0, "introduced_by_naming": 0}
+  e2.md {"checked": 0, "not_checked": 0, "flagged": 0, "introduced_by_naming": 0}
+  e3.md {"checked": 0, "not_checked": 0, "flagged": 0, "introduced_by_naming": 0}
+  e4.md {"checked": 0, "not_checked": 0, "flagged": 0, "introduced_by_naming": 0}
+  e5.md {"checked": 0, "not_checked": 0, "flagged": 1, "introduced_by_naming": 0}
+  e6.md {"checked": 0, "not_checked": 0, "flagged": 0, "introduced_by_naming": 0}
+  r1.md {"checked": 1, "not_checked": 0, "flagged": 2, "introduced_by_naming": 0}
+  r2.md {"checked": 3, "not_checked": 0, "flagged": 0, "introduced_by_naming": 0}
+common_noun_check total over the distinct explanations: {"checked": 4, "not_checked": 0, "flagged": 3, "introduced_by_naming": 0}

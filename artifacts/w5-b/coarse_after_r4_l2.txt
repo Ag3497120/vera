@@ -1,0 +1,2 @@
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-b-S/artifacts/w5-b/coarse_after_r4/eval_runs/002
+{"n": 1072, "correct_rate": 0.5289, "wrong_single_rate": 0.0438, "trap_wrong_single_rate": 0.0455, "non_direct": {"None/other": 160, "estimated/correct": 145, "estimated/wrong_single": 28}, "pass": {"correct>=0.85": false, "wrong<=0.08": true, "trap_wrong<=0.05": true, "n>=800": true, "trap_n>=100": true}}

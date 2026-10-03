@@ -1,0 +1,13 @@
+same tests/attack/test_attack_w2g2_mapping.py
+same tests/attack/test_attack_w3a2_contract.py
+same tests/attack/test_attack_w4m_sovereign.py
+same tests/attack/test_attack_w3c_observe.py
+same tests/attack/test_attack_w2h2_routing_from_text.py
+same tests/attack/w2c3/test_attack_w2c3_traps.py
+same attack_01_common_noun.md
+same attack_02_addendum.md
+same w2c3/frame_a.md
+same w2c3/frame_b.md
+same w2c3/frame_b.compiled.jsonl
+same w2c3/map_false_report.json
+same w2c3/map_empty.json

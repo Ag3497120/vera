@@ -1210,6 +1210,12 @@ template sha256 (the fixed part): `ded30f48c0a596575d061e75aa0768beb3008969a587a
 
 **読解器への提案**（読解器側は別チケット。ここでは線を提案するだけ）: 読解器は **`origin==direct` かつ `state==DECIDED` の型だけ** を役割の決定に使う。**推定（近さ）・推定（生成）は、同点の解消には使わない**（表示と候補の提示だけに使う）。`MULTIPLE`・`UNPLACED`・`UNKNOWN`・`NO_PLACEMENT` は、それぞれ別の型のまま棄権として扱い、「型が無い」を「型が合わない」と混ぜない。
 
+（W5-b で追記）**表記の契約**: 問い合わせは NFKC だけ正規化し（全角／半角・互換文字は同じ語）、表記の判定・見出し語・証拠・推定のすべての検索にその 1 つの形を使う（出力の `term` は呼び手の文字列を strip したもの）。**ひらがなとカタカナは別の語**（読みの正規化はしない）で、`state` `top` `candidates` は問い合わせた表記の証拠だけで決まる。答えに鍵 `spelling` を足した（既存の鍵は変えていない）:
+`{"query": <strip 後の入力>, "normalized": <NFKC 形>, "normalization": "NFKC", "kana": "DISTINCT", "kana_variant": null | {"term", "state", "top", "origin"}, "why": null | "KANA_VARIANT_DIFFERS"}`。
+`kana_variant` は、ひらがなとカタカナを入れ替えた表記（コードポイントの差 0x60）の **見出し語の行だけ**（推定はしない。行が無ければ null）。`why` は、その行が `DECIDED`／`MULTIPLE` で `(state, top)` が答えと違うときだけ `KANA_VARIANT_DIFFERS`。**`spelling` は `state` `top` `candidates` に一切影響しない**（`NO_PLACEMENT` の答えにも付く）。詳細と測定は §11.9。
+
+（W5-b 第 4 ラウンドで一部撤回: §11.9.3、監査役の裁定 C1。上の「`spelling` は `state` `top` `candidates` に一切影響しない」「推定はしない」「不変条件の `estimate_basis` は `proximity` か `generated`」は、**問うた表記が `UNPLACED`／`UNKNOWN` で、仮名が 1 つの文字体系だけで、もう一方の表記が `DECIDED` かつ `direct` のときに限り** 変わった。そのとき答えは `origin: estimated`・`estimate_basis: kana_variant`・`constructed: true` で、`spelling.why` は `ESTIMATED_FROM_KANA_VARIANT:<もう一方の表記>`。それ以外（自分の答えを持つ表記・`MULTIPLE` や `estimated` の変種・仮名が混ざった表記・`NO_PLACEMENT`）は上の記述のまま。）
+
 ### 11.7 既知の穴
 
 - 生成した定義文の精度は、凍結した検査データでは「推定（生成）」の語の正答・誤決定の件数（第 11.5 節の表）でしか分からない。検査データに無い語の精度は測っていない。
@@ -1219,6 +1225,7 @@ template sha256 (the fixed part): `ded30f48c0a596575d061e75aa0768beb3008969a587a
 - 標本の外の設定（`donor_contra_min` など）は dev の 1 つの配置で選んだ。
 - 欧文の単位の規則（第 11.8 節）は、dev ではなく抽出段の表の中身（私とレビューが挙げた実在の単位と非単位の小さい集合）で選んだ。`mm`（出所 `codex:code_qa` では日付の書式としても出る）と `em` は表に残らない。事前に書いた候補の格子に後から `K=6` を足した（DECISIONS §6-2）。
 - 時の単位を頭に持つ 2 形態素の単位（`年後`・`日前`・`世紀末` など）が表に入り、`3年後` が数量になる（W3-a から続く既存の問題で、今回は直していない）。
+  **（W5-b で直した: §11.9。`3年後` は `TIME`。この項目は直す前の記録として残す。）**
 - 「正解の型が証拠の表のどこかに現れる語の割合」は、`evidence` 表の `ns_vote` 以外の全行（閾値に届かない票・役割の腕を含む）を数えたもの。中間職の数え方（W3-a のレビューの集計）とは違い、同じ数字にはならない。
 
 ### 11.8 第 2 ラウンド（レビュー r1 の必須の修正 M1・M2）
@@ -1311,3 +1318,71 @@ template sha256 (the fixed part): `ded30f48c0a596575d061e75aa0768beb3008969a587a
 | A1-23 | DECIDED | IDENTIFIER | alnum_code | IDENTIFIER |
 | ABC-123 | DECIDED | IDENTIFIER | alnum_code | IDENTIFIER |
 <!-- END table:m2_queries -->
+
+### 11.9 W5-b: 攻撃の第 2 波（W3-a2 の A1・A2・B1）
+
+攻撃役の反例（`tests/attack/test_attack_w3a2_contract.py`。原本の写しで中身は変えていない）と、それへの直し。配置の実体は作り直していない（`tools/build_coarse_placement.py` は変えていない。配置は `/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r5/run1`）。
+
+#### 11.9.1 契約（§11.6 の追記と同じ。実装と一致させた）
+
+- **A1（全角／半角）**: 以前は生の表記を先に引き、無いときだけ NFKC 形を引いた。生の表記の見出し語が「未配置」で NFKC 形が「決定」のとき、前者が後者を遮った（`ＮＰＯ` は `UNPLACED`、`NPO` は `DECIDED`）。今は NFKC 形だけを引く。
+- **A2（かな）**: **ひらがなとカタカナは別の語**と決めた（監査役の推奨）。両表記を束ねる案は、凍結の L2 で誤った単一の型を増やすことを実測したので採らない: 非直接の 8 語のうち、別のかな表記の型を借りると `ロケット→WORK`・`モネ→WORK`（正解は `ARTIFACT`・`PERSON`）、`トキ`（今は正解の `ANIMAL`）は別表記 `とき` が 3 型（中間職の測定 `kana_variant_effect.txt`）。そこで `state` は問い合わせた表記の証拠だけで決め、もう一方の表記の見出し語の行を `spelling.kana_variant` で **見せるだけ**にした。
+  攻撃テスト `test_hiragana_katakana_variant_keeps_same_state`（`あざみ` と `アザミ` の `state` が等しいことを要求する）は、この契約のもとで **通らない**（`あざみ` は `UNPLACED`、`アザミ` は `DECIDED ['PLANT']` のまま）。**宣言（衝突 C1）**: チケットの「攻撃テストが通る」とチケットの推奨「かな違いは別語」は両立しない。テストには触れていない。契約を固定する試験は `tests/coarse_place/test_coarse_place_w5b.py` の `test_contract_kana_distinct_*`。
+  `あざみ` の `spelling.why` は `KANA_VARIANT_DIFFERS`（`アザミ` の行が `DECIDED ['PLANT']` で、答えの `UNPLACED` と違う）。
+- **B1（`3年後`）**: `coarse_types.notation_type` の、学習した助数詞の分岐（算用数字で始まる数＋`counters` にある単位）で、単位が `TIME_UNITS` のどれかで **始まり**、それより長いとき（最長一致）は `QUANTITY` でなく `("TIME", "number+time_unit_head")`。構造の規則で、語の一覧は足していない（`TIME_UNITS` と学習した `counters` だけ）。
+  **学習した助数詞でない単位には広げない**（`3分の1` は配置の直接の答え `QUANTITY` のまま）。**漢数字には広げない**（今の助数詞の分岐と同じ制限。`千日前`（地名）を `TIME` にしないため）。この規則に当たる単位は r5 の配置の `counters` 表（140 個）のうち 21 個（`artifacts/w5-b/time_head_counters.txt` が表から機械で数えた出力）。
+
+#### 11.9.2 測定（出典: `artifacts/w5-b/`）
+
+- 凍結の配置のデータ L1・L2・L3 の `items.jsonl` は、変更の前後で **バイト単位で同じ**（`coarse_items_cmp.txt`: 3 行とも `same`）。要約も同じ: L1 `token_cover_rate 0.7907`、L2 `correct_rate 0.5289 / wrong_single_rate 0.0438 / trap 0.0455`、L3 `correct_rate 0.4943 / wrong_rate 0.0517 / returned_type_rate 0.15`（`coarse_before_l*.txt` と `coarse_after_l*.txt`）。
+- 問い合わせの前後（`coarse_probe_before.txt` と `coarse_probe_after.txt`、道具 `scripts/coarse_probe_queries.py`）: `3年後` `5日前` `21世紀末` `３年後` `10分後` `2週間後` `3か月後` `10秒ごと` `7日目` `3日分` は `QUANTITY` → `TIME`（規則 `number+time_unit_head`）。`ＮＰＯ` は `UNPLACED` → `DECIDED ['GROUP_ORG']`（`NPO` と同じ）。`千日前` は `UNPLACED` のまま、`3分の1` `10メートル` `10ms` は `QUANTITY` のまま。
+- **残る穴**: `三年後`（漢数字）は今も推定（近さ）で `WORK` になる（`coarse_probe_after.txt`）。このチケットでは直していない（漢数字に広げると `千日前` のような地名を巻き込む）。`2年生` も、`年生` が学習した助数詞でないので推定（近さ）で `WORK`。
+- 試験: `tests/coarse_place/test_coarse_place_w5b.py`（28 本）。
+- （第 2 ラウンドで追記）**規則の当たる 21 単位（`time_head_counters.txt`）のうち、`日分`・`年ごと`・`時間制` は「時点」より「量・頻度・制度」に近い意味を持つ**。規則は構造（1 形態素目が時の単位で、学習した助数詞である）だけを見るので、これらも `TIME` を返す。型の規則として一貫しているが、意味の細かい区別（時点・期間・頻度）はこの層の型（`TIME`）では表さない。区別が要る使い手は、返った単位の語から自分で判断する（この層は区別を作らない）。
+
+#### 11.9.3 第 4 ラウンド（監査役の裁定 C1、2026-10-03）: かな違いは別語のまま、変種の型は **推定（`kana_variant`）** として返す
+
+**裁定の要約**: かな違いは別語のまま（§11.9.1 A2 の決定を維持）。ただし問い合わせた表記が `UNPLACED`／`UNKNOWN` で、ひらがな⇄カタカナの変種が `DECIDED` かつ `direct` なら、その型を直接ではなく **`origin: estimated`・`estimate_basis: kana_variant`** として返し、`why` に変種の表記を出す。攻撃テスト `test_hiragana_katakana_variant_keeps_same_state` は「同じ state」ではなく「変種の型が推定（kana_variant）として得られる」を assert する形に **改訂**する（攻撃役の期待は文書の読みの一つで、契約はこちら）。
+
+**規則**（`coarse_place.query` の最後、`_answer` の後、`spelling` を作る前。`_borrow_kana_variant`）:
+- 問うた表記の答えの `state` が `UNPLACED` か `UNKNOWN` のときだけ。`DECIDED`／`MULTIPLE`（直接・近さの推定・生成の推定のどれでも）は自分の答えを持つので借りない。`NO_PLACEMENT` も借りない。
+- 仮名が 1 つの文字体系だけ（ひらがなだけ、またはカタカナだけ。`ー`・漢字・数字・英字は問わない）の表記だけ。ひらがなとカタカナが混ざった表記を入れ替えても同じ語の別表記にならないので借りない（指示書 D-r4-2。裁定より狭い側）。
+- 変種の見出し語の行が `DECIDED` かつ `direct` のときだけ。`MULTIPLE` の変種・`estimated` の変種は借りない。
+- 借りた答え: `state DECIDED`、`origin estimated`、`estimate_basis kana_variant`、`constructed true`、`top` は変種の型、`namespace` は変種の行のもの、`candidates [{"type": t, "axes": {"kana_variant": 1}}]`、`axes` に `kana_variant: {term, state, top, origin}` を足す、`neighbors [{"word": 変種, "type": t, "via": "kana_variant:<変種>"}]`、`seen_in_material` は問うた表記のもの。`decided_by` は付けない（ほかの推定の答えと同じ）。`spelling.why` は `ESTIMATED_FROM_KANA_VARIANT:<変種>`（借りないときは今までどおり `KANA_VARIANT_DIFFERS` か null）。
+- 語の一覧は足していない（変種は問い合わせた表記から機械的に決まる）。配置の実体は作り直していない。
+
+**攻撃テストの改訂（変更前と変更後の関数の全文）**。変更前（攻撃役の原本 `attacks/W3-a2/test_attack_contract.py`）:
+
+```python
+def test_hiragana_katakana_variant_keeps_same_state():
+    hiragana = ask("あざみ")
+    katakana = ask("アザミ")
+    assert hiragana["state"] == katakana["state"], (
+        f"kana spelling variants changed state: あざみ={hiragana['state']} "
+        f"{hiragana['top']}, アザミ={katakana['state']} {katakana['top']}"
+    )
+```
+
+変更後（`tests/attack/test_attack_w3a2_contract.py`。先頭の出典コメントも 1 行書き換えた。ほかの 2 本は 1 バイトも変えていない）:
+
+```python
+def test_hiragana_katakana_variant_keeps_same_state():
+    hiragana = ask("あざみ")
+    katakana = ask("アザミ")
+    # W5-b round 4 (auditor ruling C1, 2026-10-03): the two kana spellings stay two words; an UNPLACED / UNKNOWN spelling whose other
+    # kana spelling is DECIDED and direct gets that type as an ESTIMATE (estimate_basis kana_variant), never as a direct answer.
+    assert (katakana["state"], katakana["origin"]) == ("DECIDED", "direct"), katakana
+    assert (hiragana["state"], hiragana["top"]) == (katakana["state"], katakana["top"]), (hiragana["state"], hiragana["top"])
+    assert (hiragana["origin"], hiragana["estimate_basis"], hiragana["constructed"]) == ("estimated", "kana_variant", True)
+    assert hiragana["spelling"]["why"] == "ESTIMATED_FROM_KANA_VARIANT:アザミ"
+```
+
+**測定の前後**（凍結データの L1・L2・L3。コマンド `scripts/measure_coarse_w5b.py <木> artifacts/w5-b/coarse_after_r4 l1|l2|l3 --placement <r5 run1>`。出力 `artifacts/w5-b/coarse_after_r4_l1.txt` `_l2.txt` `_l3.txt` と `coarse_after_r4/`、第 3 ラウンドとの行ごとの差 `coarse_items_r3_vs_r4.txt`）:
+- **L2（型つきの語彙 1,072 語）**: 事前登録の主指標は不変（`correct_rate 0.5289`・`wrong_single_rate 0.0438`・`trap_wrong_single_rate 0.0455`）。非直接の内訳は `estimated/wrong_single 26 → 28`・`None/other 162 → 160`・`estimated/correct 145 → 145`。変わった行はちょうど 2 つ: `ロケット`（V0405、正解 `ARTIFACT`、`UNPLACED` → `DECIDED`・`estimated`・`kana_variant`・`WORK`。`ろけっと` の型を借りた）と `モネ`（V0627、正解 `PERSON`、`UNPLACED` → `WORK`。`もね` の型を借りた）。どちらも印は付いている（`origin estimated`・`estimate_basis kana_variant`・`neighbors kana_variant:…`）が、型は **誤り**（推定の誤りに移った）。第 1 ラウンドの D1 で「束ねると誤る」と測った 2 語そのもの。裁定の帰結として受け入れた。
+- **L3（未知語 234）**: `items.jsonl` はバイト単位で第 3 ラウンドと同じ（変わった行 0。`correct_rate 0.4943`・`wrong_rate 0.0517`・`returned_type_rate 0.15`・`leaks_direct_not_notation []`）。
+- **L1（被覆）**: `token_cover_rate 0.7907 → 0.7957`、`distinct_cover_rate 0.6415 → 0.6483`、名詞 `0.7794 → 0.7842`、動詞 `0.8346 → 0.8422`。被覆できなかった語の一覧（`items.jsonl`）から 58 行（語と品詞の組）が消えた（被覆の側に移った。例: `ザ`・`デ` のような 1 文字のカタカナ、`もの`・`ごう`）。被覆は正誤を測らない指標なので、この 58 行の型が正しいかは測っていない。
+- 配置をつないだ経路づけ（`scripts/routing_with_placement.py <r5 run1>`、`routing_with_placement_r3_vs_r4.diff`）: 第 3 ラウンドの出力と **差 0 行**（`agent changed: 0`、`misroutes … with placement 0`）。
+
+**`event_cross` との接点（製品コードは変えていない。監査役への申し送り）**: `verantyx/event_cross.py` の `ESTIMATE_BASES = ('proximity', 'generated')` は `kana_variant` を知らない。`PlaceResult.from_coarse_query` で包んだ借りた答えは `invariant_problems()` に `ESTIMATE_BASIS_UNKNOWN:kana_variant` が出る（`artifacts/w5-b/kana_variant_event_cross.txt`: `DECIDED estimated kana_variant ['ESTIMATE_BASIS_UNKNOWN:kana_variant']`）。十字ではこれが `INVALID`（`LOOKUP_RESULT_INVALID`）として型つきで止まる（誤答にはならない）。`event_cross.py` は W3-b1 が変更中で触れない。`ESTIMATE_BASES` に足すかどうかは W3-b1 側の判断。同様に `tests/coarse_place/test_coarse_place_build.py` の `check_invariants`（W3-a のもの。このチケットでは変えない）も `estimate_basis` を `proximity`／`generated` に限っているので、借りた答えにそのヘルパーを当てると落ちる（新しい試験は当てていない）。
+
+**残る穴**: (1) 借りた型が誤ることがある（`ロケット`・`モネ` の 2 例。かな違いで別の語義になる語）。印（`estimated`／`kana_variant`）が付くので、同点の解消には使わないという §11.6 の提案（推定は決めに使わない）に従う側が止められる。(2) 変種を持たない表記は従来どおり `UNPLACED`／`UNKNOWN` のまま（借りない）。
