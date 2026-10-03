@@ -1,0 +1,14 @@
+{
+  "verdict": "ANSWER",
+  "query": "顕著さの場 台帳",
+  "searched": 654,
+  "hits": [
+    {
+      "kind": "module",
+      "name": "salience",
+      "about": "顕著さの場と会話の台帳 (docs/OBSERVATION.md): Salience field over a conversation ledger, a LIST OF STAGES, never a sum.",
+      "where": "verantyx/salience.py"
+    }
+  ],
+  "total_hits": 1
+}

@@ -1,0 +1,2 @@
+20:Nothing in this module is an ANSWER: an observed sentence is `OBSERVED_OCCUPIED`, `CONSTRUCTED_UNOCCUPIED` or `UNKNOWN_OCCUPANCY`, never an
+59:REFUSAL_NOT_ON_THIS_PATH: Tuple[str, ...] = ('NO_ANSWER_RESULT', 'NO_SOURCE_VIEW')

@@ -1,0 +1,35 @@
+{
+ "anchors": 25,
+ "claim": {
+  "CONSTRUCTED_UNOCCUPIED": 0,
+  "OBSERVED_OCCUPIED": 6,
+  "UNKNOWN_OCCUPANCY": 0
+ },
+ "clauses": 6,
+ "items": 24,
+ "no_anchor": {
+  "READER_ABSTAINED": 44
+ },
+ "occupied": {
+  "ATTESTED": 6,
+  "UNKNOWN_FAMILY_DB_MISSING": 0,
+  "UNKNOWN_INDEX_REBUILD_REQUIRED": 0,
+  "UNKNOWN_INDEX_UNREADABLE": 0,
+  "UNKNOWN_NO_INDEX": 0,
+  "UNKNOWN_QUERY_NOT_SEARCHED": 0,
+  "UNKNOWN_WINDOW_SATURATED": 0,
+  "UNOCCUPIED": 0
+ },
+ "outcome": {
+  "FOCUS": 3,
+  "NO_ANCHOR": 44,
+  "NO_MOVE_LICENSED": 3
+ },
+ "realized": 4,
+ "refused": {
+  "UNSUPPORTED_MODALITY": 2
+ },
+ "unreobservable_clauses": 0,
+ "unreobservable_examples": [],
+ "viewpoints": 50
+}

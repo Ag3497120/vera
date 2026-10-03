@@ -1,0 +1,39 @@
+{
+ "cases": 97,
+ "claims": {
+  "CONSTRUCTED_UNOCCUPIED": 5,
+  "OBSERVED_OCCUPIED": 97,
+  "UNKNOWN_OCCUPANCY": 62
+ },
+ "edge_cases": 1,
+ "edge_cases_with_a_move": 0,
+ "elements": 164,
+ "moved_elements": 97,
+ "no_anchor_reason": {
+  "READER_ABSTAINED": 29,
+  "RECORD_NOT_IN_STRUCTURE": 1
+ },
+ "occupied": {
+  "ATTESTED": 97,
+  "UNKNOWN_FAMILY_DB_MISSING": 3,
+  "UNKNOWN_NO_INDEX": 58,
+  "UNKNOWN_WINDOW_SATURATED": 1,
+  "UNOCCUPIED": 5
+ },
+ "outcome": {
+  "FOCUS": 41,
+  "NO_ANCHOR": 30,
+  "NO_MOVE_LICENSED": 6,
+  "TIE": 20
+ },
+ "outputs": 97,
+ "realized": 153,
+ "refused": {
+  "NOT_REALIZABLE": 9,
+  "ROUNDTRIP_MISMATCH": 2
+ },
+ "swap_cases_with_a_placement_file": 44,
+ "type_agreement_moved": {
+  "AGREE": 97
+ }
+}

@@ -1,0 +1,10 @@
+pro: 212 rows in 0.004s
+O4-a-L03   FOCUS->FOCUS alt(turn2 state)=2 alt(turn1 state)=2 same=False ok=True ok_other_reading=True
+O4-b-L04   FOCUS->FOCUS alt(turn2 state)=0 alt(turn1 state)=0 same=True ok=True ok_other_reading=True
+O4-c-L05   FOCUS->FOCUS alt(turn2 state)=0 alt(turn1 state)=0 same=True ok=True ok_other_reading=True
+O4-d-L01   TIE->TIE alt(turn2 state)=0 alt(turn1 state)=0 same=True ok=True ok_other_reading=True
+O4-e-L07   FOCUS->TIE alt(turn2 state)=2 alt(turn1 state)=2 same=False ok=True ok_other_reading=True
+O4-f-L08   TIE->TIE alt(turn2 state)=0 alt(turn1 state)=0 same=True ok=True ok_other_reading=True
+registered reading (alternative at the state of turn 2): rows ok 6 of 6, violations []
+other reading (alternative at the state of turn 1): rows ok 6 of 6, violations []
+L09 vs L10: differing ledger lines [2], outputs differ True, every stage difference made by that line True

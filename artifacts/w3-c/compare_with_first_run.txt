@@ -1,0 +1,4 @@
+pro: 212 rows in 0.003s
+cases in the first-run record: 94; summaries equal: 88; summaries differ: 6
+differ: ['O4-a-L03', 'O4-b-L04', 'O4-c-L05', 'O4-d-L01', 'O4-e-L07', 'O4-f-L08']
+cases only in the second round (not in the first-run record): ['LG11', 'LG12', 'LG13']
