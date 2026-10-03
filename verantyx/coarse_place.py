@@ -42,7 +42,27 @@ The answer
                                   (``axes["gen_definition"].provenance`` names the model,
                                   effort and batch).  It places only a word nothing else
                                   decided, never settles a tie, and is never passed on.
+                   ``kana_variant``  from the OTHER kana spelling of the word (W5-b round 4):
+                                  only when the asked spelling is ``UNPLACED`` / ``UNKNOWN``, its
+                                  kana is of one script only, and the other spelling is a
+                                  ``DECIDED`` and ``direct`` headword.  The type is the other
+                                  spelling's, marked as an estimate (``spelling.why`` names it).
                    For ``direct`` answers ``estimate_basis`` is None.
+
+``spelling`` (W5-b)
+    The question is NFKC-normalized (full-width / half-width and compatibility forms are the
+    same word) and every lookup uses that one spelling; ``term`` is the caller's string.
+    Hiragana and katakana are DIFFERENT words (no reading normalization): ``state`` / ``top`` /
+    ``candidates`` come from the evidence of the asked spelling alone.  ``spelling.kana_variant``
+    shows what the headword row of the other kana spelling says and ``spelling.why`` is
+    ``KANA_VARIANT_DIFFERS`` when that row is DECIDED / MULTIPLE and differs from the answer.
+    The one exception (auditor ruling C1, W5-b round 4): an asked spelling that is ``UNPLACED`` or
+    ``UNKNOWN`` and whose kana is of ONE script only (all hiragana or all katakana, other
+    characters aside) takes the type of the other spelling when that headword is ``DECIDED`` and
+    ``direct`` -- as an ESTIMATE (``origin`` ``estimated``, ``estimate_basis`` ``kana_variant``,
+    ``constructed`` True, ``spelling.why`` ``ESTIMATED_FROM_KANA_VARIANT:<the other spelling>``),
+    never as a direct answer.  A ``MULTIPLE`` or ``estimated`` variant is not borrowed, and an
+    asked spelling that has an answer of its own (any ``DECIDED`` / ``MULTIPLE``) keeps it.
 
 Evidence arms are never added to each other and sources (``jawiki`` and each
 codex family) never pool their counts; a conclusion is an overlay of the arms
@@ -481,10 +501,100 @@ def query(term: str, *, context_role: Optional[str] = None,
         raise ValueError("EMPTY_TERM")
     if context_role is not None and context_role not in ct.ROLE_PARTICLES:
         raise ValueError("UNKNOWN_CONTEXT_ROLE:%s" % context_role)
-    term = term.strip()
+    asked = term.strip()
+    q = unicodedata.normalize("NFKC", asked).strip()
+    if not q:
+        raise ValueError("EMPTY_TERM")
     pl, why = _open(placement)
     if pl is None:
-        return _no_placement(term, why[0], why[1], context_role, context_predicate)
+        out = _no_placement(q, why[0], why[1], context_role, context_predicate)
+        out["term"] = asked
+        out["spelling"] = _spelling(None, asked, q)
+        return out
+    out = _answer(pl, q, context_role, context_predicate)
+    borrowed = _borrow_kana_variant(pl, q, out)
+    if borrowed is not None:
+        out = borrowed
+    out["term"] = asked
+    out["spelling"] = _spelling(pl, asked, q, out, borrowed_from=_kana_swapped(q) if borrowed is not None else None)
+    return out
+
+
+def _single_script_kana(s: str) -> bool:
+    """True when the kana of ``s`` are of one script only: some hiragana and no katakana, or some katakana and no hiragana (other characters,
+    the long-vowel mark included, are not looked at)."""
+    hira = any(0x3041 <= ord(c) <= 0x3096 for c in s)
+    kata = any(0x30A1 <= ord(c) <= 0x30F6 for c in s)
+    return hira != kata
+
+
+def _borrow_kana_variant(pl: _Placement, q: str, answer: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """The answer for ``q`` rebuilt from the type of its other kana spelling, as an ESTIMATE, or None (auditor ruling C1, W5-b round 4).
+    Only when the answer of the asked spelling is UNPLACED / UNKNOWN, the kana of ``q`` are of one script only, and the headword row of the
+    other spelling is DECIDED and direct.  Nothing else is borrowed: a MULTIPLE or an estimated variant, a mixed-script spelling, an asked
+    spelling that has an answer of its own."""
+    if answer["state"] not in ("UNPLACED", "UNKNOWN") or not _single_script_kana(q):
+        return None
+    v = _kana_swapped(q)
+    if v == q:
+        return None
+    row = pl.head(v)
+    if row is None or row[1] != "DECIDED" or row[2] != "direct":
+        return None
+    tops = _order([t for t in row[3].split(",") if t])
+    if len(tops) != 1:
+        return None
+    t = tops[0]
+    axes = dict(answer["axes"])
+    axes["kana_variant"] = {"term": v, "state": "DECIDED", "top": tops, "origin": "direct"}
+    ctx = answer["context"]
+    return _result(q, row[0], "DECIDED", "estimated", True, tops, [{"type": t, "axes": {"kana_variant": 1}}], axes,
+                   [{"word": v, "type": t, "via": "kana_variant:" + v}], answer["seen_in_material"],
+                   ctx["role"], ctx["predicate"], answer["placement"], estimate_basis="kana_variant")
+
+
+def _kana_swapped(s: str) -> str:
+    """``s`` with every hiragana written as the katakana of the same sound and every katakana as the hiragana (a fixed offset of 0x60 in
+    the code table, ぁ-ゖ <-> ァ-ヶ).  Nothing else changes."""
+    out = []
+    for ch in s:
+        o = ord(ch)
+        if 0x3041 <= o <= 0x3096:
+            out.append(chr(o + 0x60))
+        elif 0x30A1 <= o <= 0x30F6:
+            out.append(chr(o - 0x60))
+        else:
+            out.append(ch)
+    return "".join(out)
+
+
+def _spelling(pl: Optional[_Placement], asked: str, q: str,
+              answer: Optional[Dict[str, Any]] = None, borrowed_from: Optional[str] = None) -> Dict[str, Any]:
+    """How the question was spelled and what the OTHER kana spelling of it says (W5-b).  Information only: it never
+    changes ``state`` / ``top`` / ``candidates`` of the answer (the answer is decided by the evidence of the asked
+    spelling alone; the one exception, an estimate borrowed from the other spelling, is made by ``_borrow_kana_variant`` and named here by
+    ``why``).  ``kana_variant`` reads the headword row of the other spelling and nothing else."""
+    out: Dict[str, Any] = {"query": asked, "normalized": q, "normalization": "NFKC", "kana": "DISTINCT",
+                           "kana_variant": None, "why": None}
+    v = _kana_swapped(q)
+    if pl is None or v == q:
+        return out
+    row = pl.head(v)
+    if row is None:
+        return out
+    tops = _order([t for t in row[3].split(",") if t])
+    out["kana_variant"] = {"term": v, "state": row[1], "top": tops, "origin": row[2]}
+    if borrowed_from is not None:
+        out["why"] = "ESTIMATED_FROM_KANA_VARIANT:" + borrowed_from
+    elif (answer is not None and row[1] in ("DECIDED", "MULTIPLE")
+            and (row[1], tops) != (answer["state"], answer["top"])):
+        out["why"] = "KANA_VARIANT_DIFFERS"
+    return out
+
+
+def _answer(pl: _Placement, term: str, context_role: Optional[str],
+            context_predicate: Optional[str]) -> Dict[str, Any]:
+    """The answer for ``term`` (already NFKC-normalized): every lookup below uses this one spelling."""
     # 1. spelling
     nt = ct.notation_type(term, pl.counters)
     if nt is not None:
@@ -497,10 +607,6 @@ def query(term: str, *, context_role: Optional[str] = None,
                        {"decided_by": ["notation"], "generated": False})
     # 2. the word itself
     row = pl.head(term)
-    if row is None:
-        norm = unicodedata.normalize("NFKC", term)
-        if norm != term:
-            row = pl.head(norm)
     if row is not None and row[1] in ("DECIDED", "MULTIPLE"):
         return _direct(pl, term, row, context_role, context_predicate)
     # 3. nearness (a construction)

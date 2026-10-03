@@ -1,0 +1,54 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+___________________ test_nfkc_width_variant_keeps_same_state ___________________
+
+    def test_nfkc_width_variant_keeps_same_state():
+        fullwidth = ask("ＮＰＯ")
+        ascii_form = ask("NPO")
+>       assert fullwidth["state"] == ascii_form["state"], (
+            f"NFKC-equivalent terms changed state: ＮＰＯ={fullwidth['state']} "
+            f"{fullwidth['top']}, NPO={ascii_form['state']} {ascii_form['top']}"
+        )
+E       AssertionError: NFKC-equivalent terms changed state: ＮＰＯ=UNPLACED [], NPO=DECIDED ['GROUP_ORG']
+E       assert 'UNPLACED' == 'DECIDED'
+E         
+E         - DECIDED
+E         + UNPLACED
+
+attacks/W3-a2/test_attack_contract.py:20: AssertionError
+_______________ test_hiragana_katakana_variant_keeps_same_state ________________
+
+    def test_hiragana_katakana_variant_keeps_same_state():
+        hiragana = ask("あざみ")
+        katakana = ask("アザミ")
+>       assert hiragana["state"] == katakana["state"], (
+            f"kana spelling variants changed state: あざみ={hiragana['state']} "
+            f"{hiragana['top']}, アザミ={katakana['state']} {katakana['top']}"
+        )
+E       AssertionError: kana spelling variants changed state: あざみ=UNPLACED [], アザミ=DECIDED ['PLANT']
+E       assert 'UNPLACED' == 'DECIDED'
+E         
+E         - DECIDED
+E         + UNPLACED
+
+attacks/W3-a2/test_attack_contract.py:29: AssertionError
+___________ test_number_plus_time_unit_is_not_downgraded_to_quantity ___________
+
+    def test_number_plus_time_unit_is_not_downgraded_to_quantity():
+        result = ask("3年後")
+>       assert result["top"] == ["TIME"], (
+            f"3年後 should be a time expression, got {result['top']} "
+            f"via {result['axes'].get('notation')}"
+        )
+E       AssertionError: 3年後 should be a time expression, got ['QUANTITY'] via {'counts': {'QUANTITY': 1}, 'top': ['QUANTITY'], 'rule': 'number+counter', 'met': True, 'generated': False}
+E       assert ['QUANTITY'] == ['TIME']
+E         
+E         At index 0 diff: 'QUANTITY' != 'TIME'
+E         Use -v to get more diff
+
+attacks/W3-a2/test_attack_contract.py:37: AssertionError
+=========================== short test summary info ============================
+FAILED attacks/W3-a2/test_attack_contract.py::test_nfkc_width_variant_keeps_same_state
+FAILED attacks/W3-a2/test_attack_contract.py::test_hiragana_katakana_variant_keeps_same_state
+FAILED attacks/W3-a2/test_attack_contract.py::test_number_plus_time_unit_is_not_downgraded_to_quantity
+3 failed in 0.15s

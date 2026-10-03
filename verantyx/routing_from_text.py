@@ -221,6 +221,18 @@ RESIDUAL_TERMS: Dict[str, frozenset] = {
 # A label that opens a line and says the line changes what was said before (matched as a whole word, never as a part of a word).
 OVERRIDE_MARKERS: frozenset = frozenset({"追記", "追伸", "訂正", "更新", "p.s.", "ps", "update", "edit", "correction", "addendum"})
 
+# Of the labels above, the ones that ADD to what was said before ("an addendum", "a postscript").  A line that opens with one of these replaces an
+# earlier statement only when its own sentence says so (REPLACEMENT_MARKERS below); the other labels (訂正 / 更新 / update / edit / correction)
+# replace as before.  Without a marker the two statements both stand and the router's own handling of two candidates decides (W5-b, A02).
+ADDITION_LABELS: frozenset = frozenset({"追記", "追伸", "p.s.", "ps", "addendum"})
+
+# A word that says the sentence takes the place of an earlier one.  Japanese entries are compared as a part of the NFKC text, English entries as
+# whole words after case folding.  A sentence with one of these, under an ADDITION_LABELS label, replaces; without one it adds.
+REPLACEMENT_MARKERS: Dict[str, frozenset] = {
+    "ja": frozenset({"やっぱり", "ではなく"}),
+    "en": frozenset({"instead", "replace"}),
+}
+
 # A word that points at something said before.  A filler that is one of these is not a name (the antecedent is not read).
 ANAPHORS: Dict[str, frozenset] = {
     "ja": frozenset({"前者", "後者", "それ", "これ", "あれ", "彼", "彼女", "同上", "上記", "そちら", "こちら"}),
@@ -249,7 +261,7 @@ MARKUP_CHARS: frozenset = frozenset({"-", "=", "_", "|", ":", "*", "#", "─", "
 
 # the constants that the freeze hash covers (artifacts/w2-h2/constants_frozen.txt), in this order
 CONSTANT_NAMES = ("PREDICATE_CLASSES", "VERB_WORK", "WORK_TERMS", "SIZE_TERMS", "IDENTITY_TERMS", "LINEAGE_HEADS", "ROLE_NOUNS",
-                  "HUMAN_TERMS", "RESIDUAL_TERMS", "OVERRIDE_MARKERS", "ANAPHORS", "GENERIC_OBJECTS", "HONORIFICS",
+                  "HUMAN_TERMS", "RESIDUAL_TERMS", "OVERRIDE_MARKERS", "ADDITION_LABELS", "REPLACEMENT_MARKERS", "ANAPHORS", "GENERIC_OBJECTS", "HONORIFICS",
                   "EN_DETERMINERS", "NON_NAME_POS", "SENTENCE_ENDS", "CLOSERS", "LIST_MARKERS", "MARKUP_CHARS")
 
 
@@ -282,6 +294,7 @@ class Unit:
     marker: str        # the list marker / heading / table bar that was taken off ("" when none)
     override: bool     # the line opened with an override label (OVERRIDE_MARKERS)
     line: int          # 1-based line number
+    label: str = ""    # that label, in the form it is compared in (_norm); "" when the line has none.  Every sentence of the line carries it
 
 
 def _is_markup(stripped: str) -> bool:
@@ -307,13 +320,14 @@ def _marker(line: str) -> Tuple[str, int]:
     return "", lead
 
 
-def _override_label(body: str) -> Optional[int]:
-    """The offset in ``body`` where the sentences begin, when the line opens with an override label ("追記（翌日）：", "P.S. ",
-    "Update:"); else None.  The head word is compared as a whole with OVERRIDE_MARKERS (never as a part of a word)."""
+def _override_label(body: str) -> Optional[Tuple[int, str]]:
+    """(the offset in ``body`` where the sentences begin, the label in its compared form), when the line opens with an override label
+    ("追記（翌日）：", "P.S. ", "Update:"); else None.  The head word is compared as a whole with OVERRIDE_MARKERS (never as a part of a word)."""
     n, i = len(body), 0
     while i < n and not body[i].isspace() and body[i] not in "（(：:":
         i += 1
-    if _norm(body[:i]) not in OVERRIDE_MARKERS:
+    label = _norm(body[:i])
+    if label not in OVERRIDE_MARKERS:
         return None
     j = i
     if j < n and body[j] in "（(":
@@ -322,9 +336,9 @@ def _override_label(body: str) -> Optional[int]:
             return None
         j = close + 1
     if j < n and body[j] in "：:":
-        return j + 1
+        return j + 1, label
     if j < n and body[j].isspace():
-        return j
+        return j, label
     return None
 
 
@@ -342,7 +356,8 @@ def segment_with_counts(text: str) -> Tuple[List[Unit], int]:
             units.append(Unit(len(units), stripped, stripped, "|", False, number))
             continue
         marker, offset = _marker(line)
-        label_end = _override_label(line[offset:])
+        found = _override_label(line[offset:])
+        label_end, label = (found if found is not None else (None, ""))
         start = offset + (label_end or 0)
         spans: List[Tuple[int, int]] = []
         i, first, n = start, start, len(line)
@@ -364,7 +379,7 @@ def segment_with_counts(text: str) -> Tuple[List[Unit], int]:
             if not sentence or all(ch in SENTENCE_ENDS or ch in CLOSERS or ch.isspace() for ch in sentence):
                 continue
             witness = line[:end].strip() if made == 0 else sentence     # the first sentence keeps the marker / label it came with
-            units.append(Unit(len(units), sentence, witness, marker, label_end is not None, number))
+            units.append(Unit(len(units), sentence, witness, marker, label_end is not None, number, label))
             made += 1
         if made == 0:
             skipped += 1
@@ -826,6 +841,8 @@ class Extraction:
     lineage: List[dict]
     constraints: List[dict]
     skipped_markup: int = 0
+    additions_kept: int = 0                    # units under an ADDITION_LABELS label that were NOT read as a replacement (no REPLACEMENT_MARKERS word)
+    common_noun_check: Dict[str, int] = field(default_factory=dict)    # names examined against the placement: checked / not_checked / flagged / introduced_by_naming
 
     def passing(self, unit: int) -> bool:
         return self.units[unit].status in PASSING_STATUSES
@@ -839,17 +856,111 @@ def _set_status(units: List[UnitResult], index: int, status: str, reason: str) -
     units[index].reasons = list(units[index].reasons) + [reason]
 
 
+_PUNCT = ".,;:!?()[]\"'“”‘’"
+
+
+def _has_replacement_marker(text: str) -> bool:
+    """The sentence says it takes the place of an earlier one: a Japanese marker as a part of the NFKC text, an English marker as a whole word."""
+    key = _norm(text)
+    if any(marker in key for marker in REPLACEMENT_MARKERS["ja"]):
+        return True
+    return bool({word.strip(_PUNCT) for word in key.split()} & REPLACEMENT_MARKERS["en"])
+
+
+def _replaces(unit: Unit) -> bool:
+    """Does this unit REPLACE an earlier statement?  A line under a label that only adds (ADDITION_LABELS) replaces when its own sentence
+    says so; under any other override label it replaces as before."""
+    if not unit.override:
+        return False
+    return unit.label not in ADDITION_LABELS or _has_replacement_marker(unit.text)
+
+
+def _determiner_before(text: str, name: str) -> Optional[str]:
+    """The English determiner that stands right before ``name`` in the sentence as it was written, else None.  The reader drops the
+    determiner of a filler ("The crew" -> crew), so the sentence itself is looked at; words are cut at blanks and their end marks."""
+    words = [word.strip(_PUNCT) for word in text.split()]
+    want = name.casefold()
+    for i in range(1, len(words)):
+        if words[i].casefold() == want and words[i - 1].casefold() in EN_DETERMINERS:
+            return words[i - 1]
+    return None
+
+
+def _places_of(reading: UnitReading) -> Dict[str, Mapping[str, Any]]:
+    """Filler surface (compared form) -> the placement answer the event cross attached to it."""
+    places: Dict[str, Mapping[str, Any]] = {}
+    for cross in reading.crosses:
+        for arm in (cross.get("arms") or {}).values():
+            for filler in arm.get("fillers") or []:
+                if isinstance(filler, Mapping) and isinstance(filler.get("place"), Mapping):
+                    places.setdefault(_norm(str(filler.get("surface"))), filler["place"])
+    return places
+
+
+def _common_noun_stop(reading: UnitReading, rels: List[Relation], introduced: set, check: Dict[str, int],
+                      seen: Dict[str, str]) -> Optional[str]:
+    """The reason (``COMMON_NOUN_SUBJECT:...``) why a name this unit declares is a common noun and not an agent's name, else None.
+    Two testimonies, each enough by itself, and neither is a list of nouns:
+      (a) an English determiner stands right before the name in the sentence as written ("The crew reviews code");
+      (b) the placement says the word itself is typed (origin ``direct``, DECIDED or MULTIPLE).  An estimated, unplaced or unknown word
+          says nothing (an estimate is a construction, not a testimony), and without a placement nothing is checked: the count of names
+          that could not be checked is kept in ``check`` (and shown in the output's ``reading.common_noun_check``).
+    A name that a naming sentence introduced and the names of a naming sentence are not examined."""
+    names: List[str] = []
+    for rel in rels:
+        if rel.kind != "ALIAS":
+            names.extend(n for n in rel.all_names() if n not in names)
+    if not names:
+        return None
+    if reading.lang == "en":
+        for name in names:
+            det = _determiner_before(reading.unit.text, name)
+            if det is not None:
+                return f"COMMON_NOUN_SUBJECT:{name}:DETERMINER:{det}"
+    places = _places_of(reading)
+    for name in names:
+        key = _norm(name)
+        if key in introduced:
+            if key not in seen:
+                seen[key] = "introduced_by_naming"
+                check["introduced_by_naming"] += 1
+            continue
+        place = places.get(key)
+        usable = place is not None and place.get("state") not in (None, "NO_PLACEMENT") and place.get("source") != "NO_PLACEMENT"
+        typed = usable and place.get("origin") == "direct" and place.get("state") in ("DECIDED", "MULTIPLE")
+        if key not in seen:
+            seen[key] = "flagged" if typed else ("checked" if usable else "not_checked")
+            check[seen[key]] += 1
+        if typed:
+            return f"COMMON_NOUN_SUBJECT:{name}:PLACEMENT_DIRECT:{','.join(str(t) for t in place.get('types') or [])}"
+    return None
+
+
 def extract(readings: List[UnitReading]) -> Extraction:
     units: List[UnitResult] = []
     relations: List[Relation] = []
     held: List[dict] = []
-    for reading in readings:
-        status, reasons, rels, kept = _interpret_unit(reading)
-        units.append(UnitResult(reading.unit.index, status, reasons, reading.unit.text, reading.unit.witness, reading.unit.override))
+    interpreted = [(reading, *_interpret_unit(reading)) for reading in readings]
+    # a name that a naming sentence introduced ("call the reviewer Mira") is a name by that sentence: neither test below applies to it
+    introduced = {_norm(rel.names[1]) for _, status, _, rels, _ in interpreted if status in PASSING_STATUSES
+                  for rel in rels if rel.kind == "ALIAS" and len(rel.names) == 2}
+    check = {"checked": 0, "not_checked": 0, "flagged": 0, "introduced_by_naming": 0}
+    seen_names: Dict[str, str] = {}
+    additions_kept = 0
+    for reading, status, reasons, rels, kept in interpreted:
+        unit = reading.unit
+        if status in PASSING_STATUSES:
+            stop = _common_noun_stop(reading, rels, introduced, check, seen_names)
+            if stop is not None:
+                status, reasons, rels, kept = "NAME_UNRESOLVED", [stop], [], []
+        replaces = _replaces(unit)
+        if unit.override and not replaces:
+            additions_kept += 1
+        units.append(UnitResult(unit.index, status, reasons, unit.text, unit.witness, replaces))
         for item in kept:
-            held.append({**item, "unit": reading.unit.index, "witness": reading.unit.witness})
+            held.append({**item, "unit": unit.index, "witness": unit.witness})
         for rel in rels:
-            rel.unit, rel.witness, rel.override = reading.unit.index, reading.unit.witness, reading.unit.override
+            rel.unit, rel.witness, rel.override = unit.index, unit.witness, replaces
             relations.append(rel)
     for number, rel in enumerate(relations, start=1):
         rel.id = f"R{number:03d}"
@@ -919,7 +1030,8 @@ def extract(readings: List[UnitReading]) -> Extraction:
                     old.superseded_by = rel.id
                     auto_resolved += 1
     _find_contradictions(units, relations)
-    ex = Extraction(units, relations, held, {k: v for k, v in canon.items()}, alias_groups, auto_resolved, [], [], [], [], [])
+    ex = Extraction(units, relations, held, {k: v for k, v in canon.items()}, alias_groups, auto_resolved, [], [], [], [], [],
+                    additions_kept=additions_kept, common_noun_check=dict(check))
     _build_specs(ex)
     return ex
 
@@ -1431,7 +1543,9 @@ def route_task(explained: Explained, task: Mapping[str, Any]) -> dict:
         "records": records_dict(explained.records, table_status),
         "relations": _relation_dicts(ex),
         "reading": {"units": explained.unit_count, "skipped_markup": explained.skipped_markup, "by_status": _by_status(ex.units),
-                    "auto_resolved": ex.auto_resolved, "lookup": explained.lookup_id or LOOKUP_ID_STUB},
+                    "auto_resolved": ex.auto_resolved, "lookup": explained.lookup_id or LOOKUP_ID_STUB,
+                    "addition_labels_kept_as_addition": ex.additions_kept,
+                    "common_noun_check": {"lookup": explained.lookup_id or LOOKUP_ID_STUB, **ex.common_noun_check}},
         "router": outcome["router"],
         "ignored_fields": norm["ignored"],
         "task": {"role": norm["role"], "kind": norm["kind"], "size": norm["size"],

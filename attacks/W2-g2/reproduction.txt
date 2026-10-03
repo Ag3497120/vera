@@ -1,0 +1,49 @@
+before: escalate / no answer / MAPPED_NO_OPTION_RELATED
+after one map_decision.result edit + hash recomputation: answer いいえ ANSWERED
+replay provider calls: [0, 0]
+Fplain edit: escalate MAPPING_UNSETTLED LEDGER_INTEGRITY ESCALATED:MAPPING_UNSETTLED/LEDGER_INTEGRITY
+.disagree: escalate MAPPING_UNSETTLED STEP1_DISAGREE asks_used= 2
+.reply: 'D3' => escalate MAPPING_UNSETTLED STEP1_INVALID_ANSWER
+.reply: '1 いいえ' => escalate MAPPING_UNSETTLED STEP1_INVALID_ANSWER
+.budget: 2 cap=2 retry_detail= RETRY_NO_BUDGET provider_calls= [1, 1]
+.decides injection: escalate MAPPING_UNSETTLED DECIDES_INVALID_ANSWER
+.
+=================================== FAILURES ===================================
+_ test_attack_resealed_tampered_mapping_decision_changes_answer_on_zero_ask_replay _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1356/test_attack_resealed_tampered_0')
+
+    def test_attack_resealed_tampered_mapping_decision_changes_answer_on_zero_ask_replay(tmp_path):
+        ledger_path = tmp_path / "ledger.jsonl"
+        first, _, first_pair = _run(UNRELATED, ledger_path)
+        assert first["decision"] == "escalate"
+        assert first["mapping"]["outcome"] == "ESCALATED:FRAME_SILENT/MAPPED_NO_OPTION_RELATED"
+        assert [provider.calls for provider in first_pair] == [4, 4]
+    
+        def target(row):
+            return (row.get("type") == "map_decision" and row.get("step") == "relation"
+                    and json.loads(row["key"]).get("option_index") == 1)
+    
+        _reseal_changed_last_entry(ledger_path, target,
+                                   lambda row: row["result"].update(relation="一致"))
+        assert ChoiceLedger(ledger_path).verify()["lines"] == 12
+    
+        replay, _, replay_pair = _run(UNRELATED, ledger_path)
+        print("before: escalate / no answer / MAPPED_NO_OPTION_RELATED")
+        print("after one map_decision.result edit + hash recomputation:", replay["decision"], replay["answer"],
+              replay["mapping"]["outcome"])
+        print("replay provider calls:", [provider.calls for provider in replay_pair])
+    
+        # The tampered relation decision is trusted by _cached despite disagreeing with both raw ask rows.
+        # The promised behavior under ledger modification is to refuse replay; current code answers option 2.
+>       assert (replay["decision"], replay["answer"], replay["mapping"]["outcome"]) == (
+            "escalate", None, "ESCALATED:MAPPING_UNSETTLED/LEDGER_INTEGRITY")
+E       AssertionError: assert ('answer', 'いいえ', 'ANSWERED') == ('escalate', ...ER_INTEGRITY')
+E         
+E         At index 0 diff: 'answer' != 'escalate'
+E         Use -v to get more diff
+
+attacks/W2-g2/test_attack_mapping.py:74: AssertionError
+=========================== short test summary info ============================
+FAILED attacks/W2-g2/test_attack_mapping.py::test_attack_resealed_tampered_mapping_decision_changes_answer_on_zero_ask_replay
+1 failed, 6 passed in 0.34s

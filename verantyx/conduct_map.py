@@ -47,6 +47,7 @@ DEFAULT_MAX_ASKS = 24           # configuration, not a measurement: the most pro
 DEFAULT_MAX_CANDIDATES = 24     # configuration, not a measurement
 DEFAULT_MAX_RECORDS = 3         # configuration, not a measurement
 DEFAULT_MAX_PARALLEL = 6        # configuration, not a measurement: the most asks in flight at once for one question
+REPLAY_TYPE = "LEDGER_REPLAY"               # the type of a step that was not asked but read back from the ledger (after the manifest matched)
 NOT_REUSED_DETAILS = ("RETRY_NO_BUDGET",)   # an abstention that only the lack of ask budget caused is not reused
 
 # ---------------------------------------------------------------------------------------------
@@ -517,6 +518,7 @@ class Session:
     question: str
     options: Optional[list[str]]          # marks stripped, in the order the caller gave them
     used: int = 0                          # asks sent to a provider in this question (reused decisions are not counted)
+    reused: int = 0                        # steps answered from the ledger (LEDGER_REPLAY) in this question
     retries: int = 0                       # how many of those asks were a second ask of an invalid reply
     steps: list[dict] = field(default_factory=list)
 
@@ -548,6 +550,9 @@ class StepResult:
                                "cached": self.cached, "retries": self.retries, "asks": self.asks}
         if self.detail:
             out["detail"] = self.detail
+        if self.cached:
+            # a step answered from the ledger is a replay, of a kind of its own: the manifest of the ledger matched when it was read
+            out["replay"] = {"type": REPLAY_TYPE, "manifest": "MATCHED"}
         if self.step == "records":
             out["records"] = list(self.records)
         elif self.step == "phases":
@@ -618,11 +623,23 @@ class RecordMapper:
         return Session(frame_sha256, question, [ca.strip_marks(o)[0] for o in options] if options else None)
 
     def _check_ledger(self) -> Optional[str]:
+        """None when the ledger can be used: its chain is intact and it agrees with its manifest (a ``LEDGER_MISMATCH:<kind>`` otherwise,
+        see ``ChoiceLedger.manifest_mismatch``).  Nothing is asked and nothing is replayed from a ledger that fails either check."""
         try:
-            self.ledger.verify()
+            bad = self.ledger.manifest_mismatch("map_")
         except LedgerIntegrityError as exc:
             return f"line {exc.line_no} {exc.kind}"
-        return None
+        return None if bad is None else f"LEDGER_MISMATCH:{bad}"
+
+    def _append(self, row: dict) -> dict:
+        """The one way this mapper writes to the ledger: the row and its entry in the manifest."""
+        return self.ledger.append_manifested(row)
+
+    @staticmethod
+    def _integrity(step: str, bad: str, record_id: Optional[str] = None, option_index: Optional[int] = None) -> "StepResult":
+        # the reason keeps its name (LEDGER_INTEGRITY); a manifest disagreement says which in `detail`
+        return StepResult(step, record_id, "", "REFUSED", "LEDGER_INTEGRITY", option_index=option_index,
+                          detail=bad if bad.startswith("LEDGER_MISMATCH:") else "")
 
     def provider_signature(self) -> list[list[str]]:
         """Who answers: name, model and effort of the two providers (part of every reuse key)."""
@@ -652,7 +669,7 @@ class RecordMapper:
     def _from_cache(self, hit: dict, step: str, record_id: Optional[str], option_index: Optional[int] = None) -> StepResult:
         by_id = {e["id"]: e for e in self.ledger.entries() if e.get("type") == "map_ask"}
         asks = [self._ask_summary(by_id[i]) for i in hit.get("ask_ids", []) if i in by_id]
-        reuse = self.ledger.append({"type": "map_reuse", "decision_id": self._new_id(), "reused_decision_id": hit["decision_id"],
+        reuse = self._append({"type": "map_reuse", "decision_id": self._new_id(), "reused_decision_id": hit["decision_id"],
                                     "key": hit["key"], "step": step, "record_id": record_id, "ts": self.ledger.now()})
         res = hit.get("result") or {}
         return StepResult(step, record_id, hit["decision_id"], hit["status"], hit.get("reason") or "",
@@ -662,7 +679,7 @@ class RecordMapper:
     def _refuse(self, step: str, sess: Session, key: str, items: Sequence[str], record_id: Optional[str], reason: str,
                 detail: str = "", option_index: Optional[int] = None) -> StepResult:
         did = self._new_id()
-        self.ledger.append({"type": "map_decision", "decision_id": did, "key": key, "step": step, "record_id": record_id,
+        self._append({"type": "map_decision", "decision_id": did, "key": key, "step": step, "record_id": record_id,
                             "status": "REFUSED", "reason": reason, "detail": detail, "result": None, "ask_ids": [],
                             "question": sess.question, "candidates": list(items),
                             "mapping_type": MAPPING_TYPE, "counts_as_evidence": False, "ts": self.ledger.now()})
@@ -743,7 +760,7 @@ class RecordMapper:
 
     def _decision(self, did: str, key: str, p: _Problem, status: str, reason: str, result: Any, rows: Sequence[dict],
                   sess: Session, detail: str = "") -> None:
-        self.ledger.append({"type": "map_decision", "decision_id": did, "key": key, "step": p.step, "record_id": p.record_id,
+        self._append({"type": "map_decision", "decision_id": did, "key": key, "step": p.step, "record_id": p.record_id,
                             "status": status, "reason": reason, "detail": detail, "result": result,
                             "ask_ids": [r["id"] for r in rows], "question": sess.question,
                             "candidates": [c["id"] for c in p.items], "mapping_type": MAPPING_TYPE, "counts_as_evidence": False,
@@ -773,7 +790,7 @@ class RecordMapper:
             row = self._answer_row(dids[pi], problems[pi], sess, k, 0, None, orders[pi][k], job["prompt"], reply, ms)
             last[pi][k] = row
             all_rows[pi].append(row)
-            self.ledger.append(row)
+            self._append(row)
         # the second ask of an invalid slot
         retry_jobs, retry_meta = [], []
         for pi, p in enumerate(problems):
@@ -799,7 +816,7 @@ class RecordMapper:
             row = self._answer_row(dids[pi], problems[pi], sess, k, 1, parent, new_order, job["prompt"], reply, ms)
             last[pi][k] = row
             all_rows[pi].append(row)
-            self.ledger.append(row)
+            self._append(row)
         out: list[_Decided] = []
         for pi, p in enumerate(problems):
             a, b = last[pi]
@@ -840,12 +857,13 @@ class RecordMapper:
         key = self._key(step, sess, items, None)
         bad = self._check_ledger()
         if bad is not None:
-            return StepResult(step, None, "", "REFUSED", "LEDGER_INTEGRITY")
+            return self._integrity(step, bad)
         ids = [c.id for c in cands]
         if len(cands) > self.max_candidates:
             return self._refuse(step, sess, key, ids, None, "TOO_MANY_CANDIDATES", f"{len(cands)} > {self.max_candidates}")
         hit = self._cached(key)
         if hit is not None:
+            sess.reused += 1
             return self._from_cache(hit, step, None)
         if sess.used + 2 > self.max_asks:
             return self._refuse(step, sess, key, ids, None, "ASK_BUDGET", f"{sess.used}+2 > {self.max_asks}")
@@ -872,10 +890,11 @@ class RecordMapper:
         key = self._key("decides", sess, [[x[0], x[2]] for x in items], None, {"about": about})
         bad = self._check_ledger()
         if bad is not None:
-            return StepResult("decides", None, "", "REFUSED", "LEDGER_INTEGRITY")
+            return self._integrity("decides", bad)
         ids = [x[0] for x in items]
         hit = self._cached(key)
         if hit is not None:
+            sess.reused += 1
             return self._from_cache(hit, "decides", None)
         if sess.used + 2 > self.max_asks:
             return self._refuse("decides", sess, key, ids, None, "ASK_BUDGET", f"{sess.used}+2 > {self.max_asks}")
@@ -894,11 +913,12 @@ class RecordMapper:
         todo: list[tuple[Candidate, int, str]] = []
         bad = self._check_ledger()
         if bad is not None:
-            return [StepResult("relation", c.id, "", "REFUSED", "LEDGER_INTEGRITY", option_index=i) for c, i in pairs]
+            return [self._integrity("relation", bad, c.id, i) for c, i in pairs]
         for c, i in pairs:
             key = self._key("relation", sess, [[c.id, c.text]], c.id, {"option_index": i, "option": sess.options[i]})
             hit = self._cached(key)
             if hit is not None:
+                sess.reused += 1
                 results[(c.id, i)] = self._from_cache(hit, "relation", c.id, i)
             else:
                 todo.append((c, i, key))
@@ -985,7 +1005,8 @@ def resolve(mapper: RecordMapper, view: "ca.FrameView", frame_sha256: str, quest
                               "route": None, "outcome": None, "rule": _rule_summary(rule), "candidates": [],
                               "asks_used": 0, "asks_cap": mapper.max_asks, "retries": 0,
                               "effort": ",".join(sorted({str(getattr(p, "effort", "")) for p in mapper.providers})),
-                              "step1": None, "decides": None, "step2": [], "order": None, "exit_check": None}
+                              "step1": None, "decides": None, "step2": [], "order": None, "exit_check": None,
+                              "ledger_replay": None}
     if rule.decision == "answer":
         route = "CORROBORATE"
     elif retry_allowed(rule.reason, rule.detail):
@@ -1021,6 +1042,7 @@ def resolve(mapper: RecordMapper, view: "ca.FrameView", frame_sha256: str, quest
     def done(out: "ca.Outcome", label: str) -> tuple["ca.Outcome", dict[str, Any]]:
         report["asks_used"] = sess.used
         report["retries"] = sess.retries
+        report["ledger_replay"] = {"type": REPLAY_TYPE, "steps": sess.reused} if sess.reused else None
         report["outcome"] = label
         return out, report
 

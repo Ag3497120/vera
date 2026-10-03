@@ -1,0 +1,29 @@
+# verantyx from /Users/motonisihikoudai/Projects/vera-impl/wt/W5-b-S/verantyx/__init__.py
+OVER 'Could you explain why deleting the raw logs is needed?' escalate None FRAME_SILENT MAP_NONE
+OVER 'Could you summarize the release plan?' escalate None OUT_OF_RANGE STATE_OR_REQUEST_QUESTION
+OVER 'Would you recommend JSON for the export?' escalate None FRAME_SILENT MAP_NONE
+OVER 'Can you tell me if we publish the export?' escalate None FRAME_SILENT MAP_NONE
+OVER 'Could you list which entries were deleted?' escalate None FRAME_SILENT MAP_NONE
+OVER 'Would you check before we publish the export?' escalate None FRAME_SILENT MAP_NONE
+OVER '公開してもらえる資料はどれですか？' escalate None FRAME_SILENT MAP_NONE
+OVER '生ログの削除についての説明をお願いできますか？' escalate None FRAME_SILENT MAP_NONE
+OVER '削除の手順を教えてもらえますか？' escalate None FRAME_SILENT MAP_NONE
+REQ 'Could you go ahead and delete the raw logs?' escalate None HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+REQ 'Could someone delete the raw logs?' escalate None HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+REQ "I'd like you to delete the raw logs." escalate None FRAME_SILENT MAP_NONE
+REQ 'Would it be possible for you to delete the raw logs?' escalate None HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+REQ 'Is there any chance you could delete the raw logs?' escalate None FRAME_SILENT MAP_NONE
+REQ '生ログを削除してもらうことは可能ですか？' escalate None HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+REQ '生ログを削除していただくことはできますか？' escalate None HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+REQ '生ログの削除をお願いしたいのですが。' escalate None HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+REQ '生ログを削除してもらってもいいですか？' escalate None HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+REQ '生ログを削除してくれない？' escalate None HUMAN_APPROVAL_REQUIRED BUILTIN_PROTECTED
+ATTR "What's the dashboard panel's color?" escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE
+ATTR "What is the dashboard panel's font?" escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE
+ATTR 'Tell me the color of the dashboard panel.' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE
+ATTR 'Which colour is best for the dashboard panel?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE
+ATTR 'What are the colors for the dashboard panel?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE
+ATTR "The dashboard panel's colour?" escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE
+ATTR 'What color scheme suits the dashboard panel?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE
+CTRL 'What should we use for the dashboard panel?' answer Grafana None None
+CTRL 'Which should we pick for the dashboard panel?' answer Grafana None None

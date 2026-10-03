@@ -1,0 +1,5 @@
+run1 (writes the ledger and the manifest) rc 0 decision answer Yes None None | asks_used 8 | ledger_replay None | step1.replay None | step1.detail None
+files: ['ledger.jsonl', 'ledger.jsonl.manifest.json']
+run2 (same ledger) rc 0 decision answer Yes None None | asks_used 0 | ledger_replay {'type': 'LEDGER_REPLAY', 'steps': 4} | step1.replay {'type': 'LEDGER_REPLAY', 'manifest': 'MATCHED'} | step1.detail None
+chain still verifies after the rewrite: 16 lines
+run3 (one relation row rewritten, chain re-sealed) rc 0 decision escalate None MAPPING_UNSETTLED LEDGER_INTEGRITY | asks_used 0 | ledger_replay None | step1.replay None | step1.detail LEDGER_MISMATCH:ROW 10

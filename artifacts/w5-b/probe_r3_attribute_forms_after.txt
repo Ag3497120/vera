@@ -1,0 +1,20 @@
+'Which language do we use for the report archive?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE ESCALATE:ATTRIBUTE_NOT_IN_RECORD:language
+'Which language is best for the report archive?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE ESCALATE:ATTRIBUTE_NOT_IN_RECORD:language
+'Please state the language of the report archive.' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE ESCALATE:ATTRIBUTE_NOT_IN_RECORD:language
+'Language of the report archive?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE ESCALATE:ATTRIBUTE_UNREAD
+'The language used by the report archive?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE ESCALATE:ATTRIBUTE_UNREAD
+'What language will the report archive be in?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE ESCALATE:ATTRIBUTE_NOT_IN_RECORD:language
+'Report archive language?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE ESCALATE:ATTRIBUTE_UNREAD
+"Give me the report archive's language." escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE ESCALATE:ATTRIBUTE_NOT_IN_RECORD:language
+'What would be the ideal language for the report archive?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE ESCALATE:ATTRIBUTE_NOT_IN_RECORD:language
+'In which language should the report archive be written?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE ESCALATE:ATTRIBUTE_NOT_IN_RECORD:language
+"What's the report archive written in?" escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE ESCALATE:ATTRIBUTE_UNREAD
+'Is the report archive in English?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE ESCALATE:ATTRIBUTE_UNREAD
+'What should we use for the report archive?' answer English None None ESCALATE:UNDECIDED:TO_MAPPING
+'The report archive: which language?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE ESCALATE:ATTRIBUTE_NOT_IN_RECORD:language
+'What does the report archive use for language?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE ESCALATE:ATTRIBUTE_NOT_IN_RECORD:use
+'Is English the language of the report archive?' escalate None FRAME_SILENT TERM_IN_WIDER_PHRASE ESCALATE:ATTRIBUTE_NOT_IN_RECORD:language
+'報告書アーカイブの言語は何ですか？' answer English None None None
+'報告書アーカイブの言語を教えてください。' answer English None None None
+'報告書アーカイブはどの言語ですか？' answer English None None None
+'報告書アーカイブの言語は英語ですか？' answer English None None None

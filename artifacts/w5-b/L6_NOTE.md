@@ -1,0 +1,1 @@
+# integration note (auditor): the implementer's round-4 full-suite run stopped at 58%; after_pytest.txt and after_failures.txt were replaced by the reviewer's complete run (review_r1_evidence/full.txt): 116 failed / 9213 passed, only test_s6 added vs the baseline.

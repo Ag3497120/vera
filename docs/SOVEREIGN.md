@@ -160,8 +160,25 @@ $ vera sovereign events --root R --store-id s1                     # rc=1
 - 読み取り専用で開く検査でも、ホットジャーナルが残っているファイルを開くと SQLite が巻き戻す・失敗することがある。`export` だけは開く前にサイドカーを確かめる。他の操作はそこまで確かめていない。
 - `structure_ref` は構造の側の台帳の最初の行（root の絶対パスを含む）から決まる。値が重なるのは次の 2 つ: (1) `structure.sqlite` のファイルそのものを別の root へ複製して使う（最初の行ごと複製される）、(2) root のディレクトリを別の場所へ移した後、元のパスに新しい root を作り、同じ秒に同じ最初の行を書いた（root の絶対パスも、ts・store_id・path・ハッシュも同じになる）。どちらの場合も back-link の区別はしない。root に symlink 経由の別名があるときは、最初の行を書いたときに渡された絶対パス（`os.path.abspath`、symlink は解決しない）が入る。ソブリンのファイルを動かすのは `export` / `attach --file` で、台帳の複製は想定していない。
 - 同時に複数の Vera が同じ root に書く場合の排他は、SQLite の `BEGIN IMMEDIATE` に任せている。複数ファイルにまたがる原子性は無い（構造の側→ソブリンの側の順で書き、落ちたら次回に修復する）。
+  （W5-b で追記: `promote` の書き込みの段は「構造 → ソブリン」の順にロックを取って、状態と同意を読み直してから書くようにした。複数ファイルにまたがる原子性が無いことは変わらず、構造の側のコミットと back-link の追記の間で落ちれば、back-link は次回の `promote` の最初の補修で足される。）
+- （W5-b）**ソブリンのファイルの payload の書き換えは今も検出しない**。攻撃役の外れの 1 本 `test_tampered_export_cannot_be_attached`（トリガを外して 1 行を書き換え、元の文でトリガを戻したファイルを `attach` する）は、取り込んだ写しのまま **通らない**（`ATTACHED` になり、書き換えた payload が読める）。この版は形の検査（表・トリガの名前と文）だけで、行の中身の検査をしないと上に書いた限界のとおり。攻撃役もこれを「外れ」に数えている。直していない（チケットは外れを変えないと言う）。
+- （W5-b）構造の側の `promotion_log` の一意性は、構造の台帳の持ち主がトリガを外せば破れる（上の「トリガはファイルの持ち主を止めない」と同じ限界）。検出は形の検査で、トリガの無い台帳は開けない。
+- （W5-b 第 4 ラウンド、監査役の裁定 C2、2026-10-03）上の `test_tampered_export_cannot_be_attached` は、攻撃役自身が「外れ」に数えた限界なので、`tests/attack/test_attack_w4m_sovereign.py` には **取り込んでいない**（skip・xfail にもしていない）。攻撃役の原本はクローンの `attacks/W4-m/test_attack_sovereign.py` にそのまま残してある（この関数も入っている）。
 - `create` はソブリンのファイルを作った後に registry へ書く。その間に落ちるとファイルだけ残り、再度の `create` は `REFUSED_FILE_EXISTS` になる（消さない。`attach --file` で登録できる）。
 - W3-c の入口での S5・S6 は未測定（`NOT_MEASURED_W3C_NOT_INTEGRATED`）。Protocol 越しには確かめた。
+
+## W5-b: 昇格の書き込みの段と排他（攻撃の第 2 波 H1〜H3）
+
+攻撃役の反例（`tests/attack/test_attack_w4m_sovereign.py`。原本の写しで中身は変えていない）: H1 同意を撤回した後も、進行中の `promote` が昇格を書き込む。H2 `release` と `promote` の競合で、`release` の後も昇格が active に残る。H3 2 プロセスの同時 `promote` が同じ候補を二重に登録する。原因は、同意と状態を最初に読んだきり、書き込みの時に確かめず、書き込みが 1 つのトランザクションでなかったこと。
+
+- **`promote` の流れ**: (1) 読むだけの段（ロックなし）: ソブリンの同意・事件、構造の側の昇格・退役の開始の有無を読み、`_sov_analyze` で候補を決める（解析は 1 回だけ。書き込みの前にやり直さない）。開始時に未補修の back-link があれば補修する。(2) **書き込みの段** `_sov_append_structure_promotion`（1 つのトランザクションの組）: 構造の側に `BEGIN IMMEDIATE` → registry を読み直して畳み、`ACTIVE` でなければ（`DETACHED`・`RELEASED`）書かずにその状態を返す → そのソブリンの `retire_log` の行があれば `RELEASE_IN_PROGRESS` → ソブリンのファイルを開き（形の検査つき）`BEGIN IMMEDIATE` → **同意をもう一度読み**、`promote` が偽なら `NO_CONSENT`、開始時に読んだ同意（`promote`・`since`・`since_seq`）と違えば新しい型 `CONSENT_CHANGED`（どちらも 0 行） → 候補ごとに構造の側へ追記 → **構造の側を COMMIT、ソブリンの側は ROLLBACK**（ソブリンの側は同意を確かめるためにロックを持っただけで、何も書いていない）。例外では両方 ROLLBACK。(3) 構造の側が確定した後、候補ごとにソブリンの側へ back-link を追記する（`_sov_append_backlink`。同じ `(promotion_id, structure_seq, structure_ref)` の back-link が既にあれば足さずにその seq を返す。途中で止まっても次の実行が補修する）。
+- **ロックの順は常に「構造 → ソブリン」**。`set_consent`・`append`・back-link はソブリンだけ、`release` は構造だけを取るので循環しない（追加するコードでこの順を破らない）。同意の撤回（`set_consent`）は、書き込みの段がソブリンのロックを持っている間は待つので、撤回と書き込みが交差すると、撤回が先ならば書き込みは `NO_CONSENT`、書き込みが先ならば昇格は撤回の前の同意に基づく有効な昇格として残る（撤回は将来の昇格を止め、すでに確定した昇格を取り消さない。取り消すのは `release`）。
+- **一意の制約（H3）**: 構造の側の `promotion_log` に **トリガ** `promotion_log_one_per_candidate`（同じ `(store_id, promotion_id)` の行が既にあれば `RAISE(ABORT, 'DUPLICATE_PROMOTION')`）を足した。`promotion_id` は `(store_id, kind, key)` から決まる値なので、これが `(store_id, 候補)` の一意性になる。**UNIQUE 索引は作らない**（索引は `INSERT OR REPLACE` が古い行を黙って消せる。トリガの ABORT は置換を起こさない）。退役した行も数える（一度昇格した候補は、同じ構造の台帳で二度と昇格しない）。拒否した候補は結果の `refused: [{"promotion_id", "reason": "DUPLICATE_PROMOTION"}]` と `counts.duplicate_promotion` に数え、追記しない。
+- **結果の型**: 書いた候補があれば `PROMOTED`、無ければ `NOTHING_TO_PROMOTE`（拒否だけでも `NOTHING_TO_PROMOTE`。`refused` と `counts` で分かる）。書き込みの段で止まったときはその型（`NO_CONSENT`・`CONSENT_CHANGED`・`RELEASED`・`DETACHED`・`RELEASE_IN_PROGRESS`）で `wrote: 0`。CLI の終了コード: `CONSENT_CHANGED` は型つきの停止で 1（`PROMOTED`・`NOTHING_TO_PROMOTE`・`NO_CONSENT` は今までどおり 0）。
+- **`release`（H2）**: 先の退役（今までどおり別のトランザクションでコミット）の後、`RELEASE` の行と **同じトランザクションの中で**、その時点で退役していない昇格（先の退役の後に `promote` が書いたもの）を退役させてから `RELEASE` の行を足す。件数は `RELEASE` の `detail.retired_with_release`、結果の `retired_this_run` は先の退役と合わせた数。これで「先の退役（0 行）→ promote が書く → RELEASE」の割り込みでも、`RELEASE` の時点で active が残らない。
+- **測定**（`artifacts/w5-b/l3_stress_before.txt` / `l3_stress_after.txt`、道具 `scripts/stress_w4m.py`。2 プロセスの競合を 30 回ずつ）: 変更前（dev の写し）は 2 プロセスの同時 `promote` が 30/30 回で二重登録（`pp_dup 30`）、`promote` と `release` の競合で release の後に active が残った回が 29/30（`pr_active_after_release_0` は 1 回だけ）。変更後は `pp_ok 30`・`pp_active_3 30`・`pr_active_after_release_0 30`。
+- **古い構造の台帳は `SchemaMismatch`**: トリガを持たない `structure.sqlite`（この変更の前に作ったもの）は、形の検査（`_sov_check_shape`）で `UNREADABLE_SCHEMA`（`missing: ["trigger:promotion_log_one_per_candidate"]`）になる。**自動では補わない**（見えない修理をしない）。新しい構造の台帳を作るか、持ち主がトリガを足す。この版が作る台帳には最初からある。
+- 試験: `tests/test_sovereign_w5b.py`（9 本。2 プロセスの同時 promote 20 回・promote と release 20 回・解析の後の撤回／撤回と再同意・生の SQL での二重・先の退役と RELEASE の間の promote・トリガの無い台帳）。
 
 ## 判断記録
 チケットの前提と実物の食い違いを実測した上で、中間職が決めたもの（`plan.md` §2）。

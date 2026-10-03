@@ -23,6 +23,7 @@ Nothing here is reached unless a caller passes a chooser explicitly.
 from __future__ import annotations
 
 import argparse
+import copy
 import fcntl
 import hashlib
 import json
@@ -421,16 +422,36 @@ def _verify_text(text: str) -> list[dict]:
     return entries
 
 
+MANIFEST_SCHEMA = "conduct_map.manifest/1"
+
+
+class ManifestUnreadable(ValueError):
+    """The manifest file exists but is not a manifest (not json, not an object, wrong schema or shape)."""
+
+
+def row_content_sha256(row: dict) -> str:
+    """The sha256 of what a ledger row SAYS: its canonical json without ``hash`` and ``prev`` (``seq`` stays).  The chain hash covers a
+    row and the rows before it; this covers the row alone, so a manifest can say what each row held without repeating it."""
+    return _sha256(_canonical({k: v for k, v in row.items() if k not in ("hash", "prev")}))
+
+
 class ChoiceLedger:
     """Append-only, hash-chained JSONL ledger.  ``path=None`` keeps the same chain in memory.
 
     There is no update or delete.  Opening verifies every line.
+
+    A ledger can carry a manifest (a separate file ``<ledger>.manifest.json``, or an attribute of the object when ``path`` is None) that
+    records the hash of the first row and the content hash of each row that was appended with ``append_manifested``.  ``append`` never
+    writes it (the other users of this ledger are unchanged).  The manifest turns "the chain is intact" into "the chain is the one that was
+    written": it catches a rewrite of one of the two files and a cut-off tail.  It does NOT catch a rewrite of both files that agree with
+    each other (docs/CONDUCT_ASK.md section 14.5).
     """
 
     def __init__(self, path: Optional[str | Path] = None, clock: Optional[Callable[[], str]] = None):
         self.path = Path(path) if path is not None else None
         self._clock = clock or (lambda: time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime()) + "Z")
         self._memory_text = ""
+        self._memory_manifest: Optional[dict] = None
         self.verify()
 
     def now(self) -> str:
@@ -452,19 +473,88 @@ class ChoiceLedger:
         return tuple(_verify_text(self._read_text()))
 
     def append(self, entry: dict) -> dict:
+        return self._append(entry, False)
+
+    def append_manifested(self, entry: dict) -> dict:
+        """``append``, and the row's content hash goes into the manifest under the same lock (the manifest is created with the first row
+        written this way).  An unreadable manifest refuses the append before anything is written."""
+        return self._append(entry, True)
+
+    def _append(self, entry: dict, manifested: bool) -> dict:
         if not isinstance(entry, dict) or not isinstance(entry.get("type"), str):
             raise ValueError("a ledger entry needs a string 'type'")
         if self.path is None:
-            return self._append_locked(entry, None)
+            return self._append_locked(entry, None, manifested)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.path, "a+b") as handle:
             fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
             try:
-                return self._append_locked(entry, handle)
+                return self._append_locked(entry, handle, manifested)
             finally:
                 fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
 
-    def _append_locked(self, entry: dict, handle: Any) -> dict:
+    # ---- the manifest
+    def manifest_path(self) -> Optional[Path]:
+        return Path(str(self.path) + ".manifest.json") if self.path is not None else None
+
+    def read_manifest(self) -> Optional[dict]:
+        """The manifest, or None when there is none (not the same as unreadable: that raises ManifestUnreadable)."""
+        if self.path is None:
+            return copy.deepcopy(self._memory_manifest)
+        mp = self.manifest_path()
+        if not mp.exists():
+            return None
+        try:
+            data = json.loads(_decode_ledger(mp.read_bytes()))
+        except (ValueError, LedgerIntegrityError, OSError):
+            raise ManifestUnreadable("not json") from None
+        rows = data.get("rows") if isinstance(data, dict) else None
+        if (not isinstance(data, dict) or data.get("schema") != MANIFEST_SCHEMA or not isinstance(data.get("root"), str)
+                or not isinstance(rows, dict) or not all(k.isdigit() and isinstance(v, str) for k, v in rows.items())):
+            raise ManifestUnreadable("not a manifest")
+        return data
+
+    def _write_manifest(self, manifest: dict) -> None:
+        if self.path is None:
+            self._memory_manifest = copy.deepcopy(manifest)
+            return
+        mp = self.manifest_path()
+        tmp = mp.with_name(mp.name + f".tmp{os.getpid()}")
+        with open(tmp, "w", encoding="utf-8") as handle:
+            handle.write(_canonical(manifest) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp, mp)
+
+    def manifest_mismatch(self, prefix: str = "map_") -> Optional[str]:
+        """None when the ledger and its manifest agree about the rows whose ``type`` begins with ``prefix``; else the first disagreement:
+        ``NO_MANIFEST`` (such rows exist and there is no manifest), ``MANIFEST_UNREADABLE``, ``ROOT`` (the first row is not the one the manifest
+        names), ``ROW <seq>`` (such a row is not in the manifest or holds other content, or a recorded row holds other content),
+        ``MISSING_ROW <seq>`` (the manifest records a row the ledger no longer has: a cut-off tail).  The chain itself is checked by ``verify``."""
+        entries = self.entries()
+        wanted = [e for e in entries if str(e.get("type", "")).startswith(prefix)]
+        try:
+            manifest = self.read_manifest()
+        except ManifestUnreadable:
+            return "MANIFEST_UNREADABLE"
+        if manifest is None:
+            return "NO_MANIFEST" if wanted else None
+        if entries and entries[0]["hash"] != manifest["root"]:
+            return "ROOT"
+        by_seq = {e["seq"]: e for e in entries}
+        recorded = manifest["rows"]
+        for e in wanted:
+            if recorded.get(str(e["seq"])) != row_content_sha256(e):
+                return f"ROW {e['seq']}"
+        for seq in sorted(int(k) for k in recorded):
+            row = by_seq.get(seq)
+            if row is None:
+                return f"MISSING_ROW {seq}"
+            if recorded[str(seq)] != row_content_sha256(row):
+                return f"ROW {seq}"
+        return None
+
+    def _append_locked(self, entry: dict, handle: Any, manifested: bool = False) -> dict:
         if handle is None:
             text = self._memory_text
         else:
@@ -477,6 +567,11 @@ class ChoiceLedger:
         body["prev"] = prev
         stored = dict(body, hash=_chain_hash(prev, body))
         line = _canonical(stored) + "\n"
+        manifest: Optional[dict] = None
+        if manifested:
+            manifest = self.read_manifest() or {"schema": MANIFEST_SCHEMA, "root": entries[0]["hash"] if entries else stored["hash"],
+                                                "rows": {}}
+            manifest["rows"][str(stored["seq"])] = row_content_sha256(stored)
         if handle is None:
             self._memory_text = text + line
         else:
@@ -484,6 +579,8 @@ class ChoiceLedger:
             handle.write(line.encode("utf-8"))
             handle.flush()
             os.fsync(handle.fileno())
+        if manifest is not None:
+            self._write_manifest(manifest)
         return stored
 
     def cache(self) -> dict[str, dict]:

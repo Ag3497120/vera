@@ -132,7 +132,10 @@ class StubNeighbors:
 class FilePlacement:
     """A placement read from ONE json file: {"lemmas": {word: PlaceResult fields}, "neighbors": {word: [word, ...]}}. It answers both the
     placement query (`lookup`) and the neighbour query (`neighbors`). A word the file does not mention is UNKNOWN (not UNPLACED, which says
-    the word is in the material and the evidence is short). The id is the sha256 of the file: the path never appears in an output."""
+    the word is in the material and the evidence is short). The id is the sha256 of the CONTENT the file gives (words in string order, each
+    answer as `PlaceResult` fields, each neighbour set in string order, written as canonical json), not of the bytes of the file: a file whose
+    neighbour lists are in another order, or whose keys or blanks differ, gives the same id and the same output; a different SET of neighbours
+    or a different answer gives another id. The path never appears in an output."""
 
     def __init__(self, data: Mapping[str, Any], sha256: str):
         if not isinstance(data, Mapping): raise _bad('PLACEMENT_FILE_INVALID:not an object')
@@ -153,7 +156,11 @@ class FilePlacement:
         for word, items in neighbors.items():
             if not isinstance(items, list) or not all(isinstance(w, str) for w in items): raise _bad('PLACEMENT_FILE_INVALID:neighbors of %s is not a list of strings' % word)
             self._neighbors[word] = tuple(sorted(set(items)))
-        self.id = 'file:' + sha256
+        self.file_sha256 = sha256    # the bytes of the file, kept for whoever reads the file; the id below does not use it (W5-b, A1)
+        content = {'lemmas': {w: {'state': r.state, 'origin': r.origin, 'estimate_basis': r.estimate_basis, 'types': list(r.types),
+                                  'provenance': dict(r.provenance)} for w, r in self._lemmas.items()},
+                   'neighbors': {w: list(items) for w, items in self._neighbors.items()}}
+        self.id = 'file:' + _sha(_cj(content))
 
     @classmethod
     def from_path(cls, path: Any) -> 'FilePlacement':
@@ -565,6 +572,11 @@ def _make_cell(cross: EC.EventCross, coord: Mapping[str, Any], cross_origin: str
     return Cell(cell_key_of(cross), cross, (coord,), cross_origin, lang)
 
 
+def _extended(cell: Cell, move: Mapping[str, Any]) -> Tuple[Mapping[str, Any], ...]:
+    """EVERY coordinate of `cell` followed by `move` (W5-b, A2): a cell that several paths reached passes all of them on, not only the first."""
+    return tuple({'origin': c['origin'], 'moves': list(c['moves']) + [move]} for c in cell.coords)
+
+
 @dataclass(frozen=True)
 class NoAnchor:
     reason: str
@@ -646,8 +658,7 @@ def _try_swap(cell: Cell, role: str, to: str, lookup: Any, neighbor_source_id: s
     if verdict.verdict == 'DISAGREE': return None, 'DISAGREE'
     if verdict.verdict == 'NOT_CHECKED': return None, 'NOT_CHECKED:%s' % verdict.reason
     move = {'move': FACE_SWAP, 'role': role, 'from': arm.fillers[0].surface, 'to': to, 'neighbor_source': neighbor_source_id}
-    coord = {'origin': cell.coord['origin'], 'moves': list(cell.coord['moves']) + [move]}
-    return _make_cell(new_cross, coord, 'constructed:face_swap', cell.lang), None
+    return Cell(cell_key_of(new_cross), new_cross, _extended(cell, move), 'constructed:face_swap', cell.lang), None
 
 
 def _swap_gate(cell: Cell, role: str, neighbors: Any) -> Tuple[Optional[NeighborResult], Optional[str]]:
@@ -677,8 +688,8 @@ def _edge_targets(cell: Cell, relation: str, structure: Structure, anchor_readin
             elif rel['to'] == i and rel['from'] != i: j, direction = rel['from'], 'backward'
             else: continue
             move = {'move': EDGE, 'relation': relation, 'reading': reading.id, 'from': i, 'to': j, 'dir': direction}
-            coord = {'origin': cell.coord['origin'], 'moves': list(cell.coord['moves']) + [move]}
-            found.append((_make_cell(reading.crosses[j], coord, 'read:' + reading.source, reading.lang), move))
+            target = reading.crosses[j]
+            found.append((Cell(cell_key_of(target), target, _extended(cell, move), 'read:' + reading.source, reading.lang), move))
     return found
 
 
@@ -839,6 +850,37 @@ def _changed_fillers(cell: Cell, anchor: Cell) -> Tuple[str, ...]:
     return tuple(sorted({s for s in _surfaces_of(cell.cross) if s not in base}))
 
 
+def _levels(viewpoint: Viewpoint, structure: Structure, lookup: Any, neighbors: Any, anchor: Cell, anchor_reading: Optional[Reading],
+            counts: Dict[str, Any]) -> List[Cell]:
+    """The observable cells: apply direction[k-1] to every cell of level k-1 (P3). Depends on (structure, viewpoint) only, never on the ledger:
+    `reobserve` runs it again to check that the coordinates of an element are all the paths there are."""
+    seen: Dict[str, int] = {anchor.key: 0}
+    level: List[Cell] = [anchor]
+    observable: List[Cell] = []
+    for k in range(1, viewpoint.effective_range + 1):
+        move = viewpoint.direction[k - 1]
+        raw: Dict[str, List[Cell]] = {}
+        for cell in sorted(level, key=lambda c: c.key):    # the order only fixes the order of work, never a winner
+            for new in _apply_move(move, cell, structure, lookup, neighbors, anchor_reading, counts):
+                if new.key in seen:
+                    counts['revisits_dropped'] += 1
+                    continue
+                raw.setdefault(new.key, []).append(new)
+        level = []
+        for key in sorted(raw):
+            # every path of every cell of the group, without repeats, in canonical-json string order (W5-b, A2). The cross shown is the one of
+            # the cell that owns the first coordinate (a way of showing, not a winner: the cells of a group have the same content).
+            by_text: Dict[str, Mapping[str, Any]] = {}
+            for c in raw[key]:
+                for co in c.coords: by_text.setdefault(_cj(co), co)
+            group = sorted(raw[key], key=lambda c: min(_cj(co) for co in c.coords))
+            merged = replace(group[0], coords=tuple(by_text[t] for t in sorted(by_text)))
+            seen[key] = k
+            level.append(merged)
+            observable.append(merged)
+    return observable
+
+
 def observe(viewpoint: Viewpoint, structure: Structure, lookup: Any = None, neighbors: Any = None, ledger: Any = None) -> Observation:
     """Observe `structure` from `viewpoint`. The state is `ledger` when given, else `viewpoint.state` (FLAT when there is none).
     Deterministic in (structure, viewpoint, state); the ledger is only read."""
@@ -854,27 +896,7 @@ def observe(viewpoint: Viewpoint, structure: Structure, lookup: Any = None, neig
         trace = SAL.rank([], state).trace
         return Observation(vp_json, info, None, (), resolved, counts, trace, state_info)
     anchor, anchor_reading = resolved
-    # --- levels: apply direction[k-1] to every cell of level k-1 (P3)
-    seen: Dict[str, int] = {anchor.key: 0}
-    level: List[Cell] = [anchor]
-    observable: List[Cell] = []
-    for k in range(1, viewpoint.effective_range + 1):
-        move = viewpoint.direction[k - 1]
-        raw: Dict[str, List[Cell]] = {}
-        for cell in sorted(level, key=lambda c: c.key):    # the order only fixes the order of work, never a winner
-            for new in _apply_move(move, cell, structure, lookup, neighbors, anchor_reading, counts):
-                if new.key in seen:
-                    counts['revisits_dropped'] += 1
-                    continue
-                raw.setdefault(new.key, []).append(new)
-        level = []
-        for key in sorted(raw):
-            group = sorted(raw[key], key=lambda c: _cj(c.coord))
-            coords = tuple(dict.fromkeys(_cj(c.coord) for c in group))
-            merged = replace(group[0], coords=tuple(json.loads(s) for s in coords))
-            seen[key] = k
-            level.append(merged)
-            observable.append(merged)
+    observable = _levels(viewpoint, structure, lookup, neighbors, anchor, anchor_reading, counts)
     counts['candidates'] = len(observable)
     # --- the elements: occupancy, claim, realization (every source separately)
     realized_cache: Dict[Tuple[str, Optional[str]], Dict[str, Any]] = {}
@@ -974,7 +996,9 @@ def reobserve(element: Any, viewpoint: Viewpoint, structure: Structure, lookup: 
     """Walk every coordinate of an observed element again from the structure. REOBSERVED when each coordinate reaches a cell with the
     element's cell key, the first coordinate reaches a cross whose canonical json is byte-identical to the element's, the other coordinates
     reach the same cross apart from its provenance (the clause index and span of the sentence it came through), and the sentence of the
-    realization (if any) is read again to the same cell. Otherwise MISMATCH with the first reason."""
+    realization (if any) is read again to the same cell, and the viewpoint and structure observed again hold exactly this set of coordinates for
+    the cell (COORDS_INCOMPLETE when one is missing, COORDS_EXTRA when one is not a path there, COORDS_DUPLICATED when one is carried twice, CELL_NOT_OBSERVED when the cell is not there).
+    Otherwise MISMATCH with the first reason."""
     d = element.to_dict() if isinstance(element, ObservedElement) else element
     lookup = lookup if lookup is not None else structure.lookup
     neighbors = neighbors if neighbors is not None else structure.neighbors
@@ -995,6 +1019,21 @@ def reobserve(element: Any, viewpoint: Viewpoint, structure: Structure, lookup: 
         crossed = EC.build_crosses(out, lookup)
         if crossed.status != 'CROSSED' or len(crossed.crosses) != 1 or cell_key_of(crossed.crosses[0]) != d['cell_key']:
             return {'status': 'MISMATCH', 'reason': 'REALIZATION_NOT_REREAD_TO_THE_CELL'}
+    # completeness (W5-b, A2): the coordinates the element carries are ALL the paths that reach its cell. Observe again from the same viewpoint
+    # and structure (no ledger: the cells and their coordinates do not depend on it) and compare the sets of coordinates. A missing path is
+    # not "fine because the rest replay": the promise is every path.
+    resolved = _resolve_anchor(viewpoint, structure, lookup)
+    if isinstance(resolved, NoAnchor): return {'status': 'MISMATCH', 'reason': 'CELL_NOT_OBSERVED'}
+    anchor, anchor_reading = resolved
+    cells: Dict[str, Cell] = {c.key: c for c in _levels(viewpoint, structure, lookup, neighbors, anchor, anchor_reading, _new_counts())}
+    cells[anchor.key] = anchor
+    again = cells.get(d['cell_key'])
+    if again is None: return {'status': 'MISMATCH', 'reason': 'CELL_NOT_OBSERVED'}
+    have, got = {_cj(c) for c in again.coords}, {_cj(c) for c in d['coords']}
+    if have - got: return {'status': 'MISMATCH', 'reason': 'COORDS_INCOMPLETE'}
+    if got - have: return {'status': 'MISMATCH', 'reason': 'COORDS_EXTRA'}
+    # the same set is not yet "exactly what observe gives": observe writes each path once, so a coordinate carried twice is not what it gave
+    if len(d['coords']) != len(got): return {'status': 'MISMATCH', 'reason': 'COORDS_DUPLICATED'}
     return {'status': 'REOBSERVED', 'reason': None}
 
 
@@ -1043,6 +1082,36 @@ class EntryResult:
     exit_code: int
     stdout: Optional[str]
     error: Optional[Dict[str, Any]]
+
+
+def _payload_problem(event: Mapping[str, Any]) -> Optional[str]:
+    """The first field of a ledger event that the observer or the field (salience) reads and that has the wrong type, as `<field>`; None when
+    the event is usable. Which fields are read is decided by P9 (what the observer writes) and by `salience.build_context` / the stages
+    (what they read: `text` of an utterance, `decided_cell` of any event used as a dict key, `observed_cell` by equality). W5-b, A3."""
+    kind, p = event['kind'], event['payload']
+    def is_str(v: Any) -> bool: return isinstance(v, str)
+    if 'decided_cell' in p and not is_str(p['decided_cell']): return 'decided_cell'
+    if kind == 'utterance':
+        if not is_str(p.get('text')): return 'text'
+        if 'anchor' in p and p['anchor'] not in ANCHOR_KINDS: return 'anchor'
+    elif kind == 'observation':
+        if not isinstance(p.get('viewpoint'), Mapping): return 'viewpoint'
+        if p.get('outcome') not in OUTCOMES: return 'outcome'
+        if not isinstance(p.get('state_seq'), int) or isinstance(p.get('state_seq'), bool): return 'state_seq'
+        if not is_str(p.get('output_sha256')): return 'output_sha256'
+        if 'observed_cell' in p and not is_str(p['observed_cell']): return 'observed_cell'
+        if 'tie_cells' in p and not (isinstance(p['tie_cells'], list) and all(is_str(c) for c in p['tie_cells'])): return 'tie_cells'
+    elif kind == 'decision':
+        if not is_str(p.get('decided_cell')): return 'decided_cell'
+    return None
+
+
+def validate_ledger_payloads(ledger: Any) -> None:
+    """Check EVERY event of a loaded ledger before anything is observed or appended. Raises ValueError('LEDGER_INVALID:PAYLOAD_INVALID:seq=<n>:<field>')
+    for the first event whose payload has a field of the wrong type (docs/OBSERVATION.md, E-W5b-4)."""
+    for ev in ledger.events():
+        field = _payload_problem(ev)
+        if field is not None: raise ValueError('%s:PAYLOAD_INVALID:seq=%s:%s' % (SAL.LEDGER_INVALID, ev['seq'], field))
 
 
 def build_structure(*, structure_path: Optional[str] = None, index_root: Optional[str] = None,
@@ -1097,6 +1166,7 @@ def run_entry(*, anchor_text: Optional[str] = None, anchor_record: Optional[str]
         if os.path.exists(ledger_path):
             try:
                 ledger = SAL.load_jsonl(ledger_path)
+                validate_ledger_payloads(ledger)
             except ValueError as exc:
                 text = str(exc)
                 if not text.startswith(SAL.LEDGER_INVALID + ':'): raise

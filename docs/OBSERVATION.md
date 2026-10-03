@@ -142,6 +142,7 @@
 2. `moves` を順に適用する。`FACE_SWAP` は、記録した `from` が今の腕の充填物と同じで、記録した `to` が今も近傍にあり、近傍の出所の id が同じで、合成した読みの型一致が `AGREE` であることを確かめる。`EDGE` は、記録した関係・読み・番号・向きが今も読みの中にあることを確かめる。
 3. 得た十字の升の鍵が要素の鍵と同じで、最初の座標では `cross.to_dict()` の正準 json が要素の `cross` と byte 一致であることを確かめる。2 本目以降の座標は、十字が（通ってきた文の節番号と範囲の `provenance` を除いて）同じであることを確かめる。
 4. 実現した文があれば、それを読解器に通して十字にし、要素の鍵と同じ升に戻ることを確かめる。
+5. （W5-b。E28）渡された座標が **全部の経路** であること: 同じ視点と構造で升と座標を求め直し、同じ升の座標の集合と等しいことを確かめる（`COORDS_INCOMPLETE` / `COORDS_EXTRA` / `COORDS_DUPLICATED` / `CELL_NOT_OBSERVED`）。
 一致しなければ `MISMATCH` と最初に外れた理由を返す。手で辿るなら、1 と 2 を上のとおりにし、`python -m verantyx.semantic_read --text=<文> --events` の十字の充填物の `surface` と、座標の `from` / `to` を見比べる。
 
 台帳からの再生は `observe.replay(events, observation_event, structure)`: 観測の事件の `state_seq` までの台帳（そのターンの前）で観測し直し、出力の sha256 が事件の `output_sha256` と同じかを見る。
@@ -239,6 +240,20 @@ python -m verantyx.cli observe --anchor-text <文> | --anchor-record <id>
 - E23（第 2 ラウンド、任意 2）: `--lang` に `ja`・`en` 以外を渡すと `BAD_ARGUMENTS`（終了 2）。以前は `NO_ANCHOR(READ_ERROR:...)`（終了 0）になりえた。
 - E24（第 2 ラウンド、任意 1）: `tests/observe/run_bank.py` は `observe.observe` を直接呼ばず、入口の関数 `observe.run_entry` を通す。自作の B3 の索引なしの行は変更前と byte 一致（`cmp`）、実索引は要約が同じ（行の `cmp` はしていない）。
 - E25（第 2 ラウンド、任意 5）: 同じ距離で同じ内容に複数の道で届いた升は 1 升にまとめ、代表の十字は座標の正準 json の文字列順で先頭の道のものにする（`replace(group[0], coords=...)`）。勝者選びではない（内容は同一で、道は `coords` に全部残る。2 本目以降の座標は十字の `provenance` を除いた一致で再観測する。E13）。
+
+- E26（W5-b、攻撃 A1。**出所 id は中身の id**）: `FilePlacement` の `id`（出力の `structure.placement` と `structure.neighbors`）は、ファイルのバイト列の sha256 ではなく、**実際に使う中身の正準形**（語の辞書順の `lemmas`・各 `PlaceResult` の欄・語の辞書順の `neighbors`・各近傍の集合は辞書順）を正準 json（鍵の順・空白は固定）にした文字列の sha256（`file:<sha256>`）。近傍の並び・鍵の順・空白・重複だけが違うファイルは同じ id になり、出力もバイト単位で同じ。近傍の **集合** や答えが違えば id が違う。バイト列の sha256 は `FilePlacement.file_sha256` に持つだけで、id にも出力にも使わない。攻撃役の反例: 近傍の並べ替えだけで JSON のバイト列が変わった（`tests/attack/test_attack_w3c_observe.py`）。
+- E27（W5-b、攻撃 A2。**合流した升は全経路の座標を持ち、次の段へ手渡す**）: 升の座標は「親の **すべての** 座標 × この 1 手」で作る（`_try_swap` と `_edge_targets` が `cell.coords` の各座標に手を足した座標の組を持つ 1 つの升を返す）。同じレベルの合流では、群のすべての升のすべての座標を集めて重複を除き、正準 json の文字列順に並べる。代表の十字は「最小の座標の文字列を持つ升」のもの（勝者選びではない。E25 と同じ考え。座標が同じなら同じ升なので、最小の座標を持つ升は 1 つに決まる）。`Cell.coord` は先頭の座標のまま。**升の数・`counts` の数え方は今までどおり升ごと**（座標ごとに数えない）。座標の数に上限は設けていない（全経路）。以前は 2 段目以降で先頭の座標だけが引き継がれ、4 本あるはずの経路が 1 本になっていた。
+- E28（W5-b、攻撃 A2 の続き。**`reobserve` は全経路を要求する**）: 今の検査（各座標をたどり直す。先頭はバイト一致、2 本目以降は provenance を除いた一致。実現した文の読み直し）の **後に**、同じ `viewpoint`・`structure`・`lookup`・`neighbors` で升とその座標を求め直し（`_levels`。台帳は渡さない。升と座標は台帳に依らない: 各レベルの展開は `structure` と `viewpoint` だけを読む）、同じ升の座標の集合が、渡された要素の座標の集合と等しいことを要求する。欠けていれば `MISMATCH`・`COORDS_INCOMPLETE`、余分なら `COORDS_EXTRA`、升が無ければ `CELL_NOT_OBSERVED`。既存の理由の順と名前は変えていない。 集合が等しくても、同じ座標が 2 回入っていれば（`observe` は各経路を 1 回ずつ出す）`COORDS_DUPLICATED`（第 2 ラウンドで追加。集合でだけ比べると、座標の数を数える使い手に重なった要素が通ってしまうため。理由の名前は新しく、既存の名前は変えていない）。
+- E29（W5-b、攻撃 A3。**台帳は全行を検証してから追記する**）: `run_entry` は `SAL.load_jsonl` の後、観測の前に、**全事件の payload を、観測器と顕著さの場が読む欄の型で検証する**（`observe.validate_ledger_payloads`）。不正なら終了コード 3・`LEDGER_INVALID`・`detail` に `PAYLOAD_INVALID:seq=<n>:<欄>`、**0 行追記**（台帳のバイト列は変わらない）。見る欄は P9（観測器が書く欄）と `salience.py` が読む欄から決めた:
+
+  | 事件の種類 | 検証する欄 | 理由（読む側） |
+  |---|---|---|
+  | すべて | `decided_cell` があれば文字列 | `build_context` が `'decided_cell' in payload` の値を辞書の鍵にする（文字列でなければ落ちる） |
+  | `utterance` | `text` は文字列（必須）、`anchor` があれば `ANCHOR_KINDS`（`seed`・`question`） | `utter_verbatim`・`utter_neighbor` の段が `text` を部分文字列として読む。`anchor` は P9 が書く欄 |
+  | `observation` | `viewpoint` は Mapping、`outcome` は `OUTCOMES` のどれか、`state_seq` は int（bool でない）、`output_sha256` は文字列、`observed_cell` があれば文字列、`tie_cells` があれば文字列の list | P9 が書く欄。`observed_cell` は `recency` の段が等値で読む。`replay` が `state_seq` と `viewpoint` を読む |
+  | `decision` | `decided_cell` は文字列（必須） | `decided` の段が `ledger.count('decided_cell', …)` で読む |
+
+  この表の外の欄（`phrase` など他の使い手の欄）は見ない。`tests/observe/data/ledgers/` の台帳と、観測器自身が書く台帳は全部通る。
 
 ## 既知の穴（隠さない）
 

@@ -382,6 +382,11 @@ def _view_from_jsonl(cf: ConductFrame) -> FrameView:
                       if r.get("kind") == "POLICY" and isinstance(r.get("witness"), dict)
                       and r["witness"].get("authority_record_id")
                       and r["witness"].get("question_kind") in ("CHOICE", "CONFIRM", "SCOPE")}
+    # the id a completion criterion has in the markdown ("C1"): the GOAL record that cites the ACCEPTANCE record says which criterion it is
+    # (W5-b, #4); a criterion no GOAL cites keeps the id of its record
+    criterion_id = {str(r["witness"]["acceptance_record_id"]): str(r["witness"]["completion_criterion_id"]) for r in recs
+                    if r.get("kind") == "GOAL" and isinstance(r.get("witness"), dict)
+                    and r["witness"].get("acceptance_record_id") and r["witness"].get("completion_criterion_id")}
     phase_by_ref: dict[str, str] = {}
     pending_tasks: list[tuple[str, str]] = []
     for idx, r in enumerate(recs, 1):
@@ -391,11 +396,15 @@ def _view_from_jsonl(cf: ConductFrame) -> FrameView:
             sec = w.get("section")
             text = str(w.get("entry") or w.get("sentence") or " / ".join(str(x) for x in s.values()))
             rf = Ref(r["id"], str(sec or kind.lower()), idx, text)
+            written = r.get("normalized") if isinstance(r.get("normalized"), dict) else {}
             if kind == "POLICY" and w.get("question_kind") in ("CHOICE", "CONFIRM", "SCOPE"):
-                v.policies.append(PolicyV(w["question_kind"], s["subject"], s["answer"], rf))
+                # the words as the frame author wrote them (the markdown view's `condition or subject`): `witness.condition`, else the form
+                # `normalized` keeps from before the compiler rewrote the subject, else the subject
+                v.policies.append(PolicyV(w["question_kind"], str(w.get("condition") or written.get("subject") or s["subject"]),
+                                          s["answer"], rf))
             elif kind == "DECISION" and sec == "decisions":
                 if not w.get("question_kind") and r["id"] not in pair_decisions:
-                    v.decisions.append(DecV(s["subject"], s["choice"], rf))
+                    v.decisions.append(DecV(str(written.get("subject") or s["subject"]), s["choice"], rf))
             elif kind == "DECISION" and sec == "phases":
                 pid = str(w.get("phase_id") or r["id"])
                 v.phases.append(PhaseV(pid, s["choice"], headwords(s["choice"]), rf))
@@ -420,7 +429,8 @@ def _view_from_jsonl(cf: ConductFrame) -> FrameView:
                     raw = wit.get("command")
                     cmd = raw if isinstance(raw, str) else " ".join(str(x) for x in raw or [])
                 hj = acc.get("human_judged")
-                v.criteria.append(TextV(r["id"], str(acc.get("item") or s["subject"]), rf, hj if isinstance(hj, bool) else None, cmd))
+                v.criteria.append(TextV(criterion_id.get(r["id"], r["id"]), str(acc.get("item") or s["subject"]), rf,
+                                        hj if isinstance(hj, bool) else None, cmd))
             elif kind == "DECISION" and sec == "conflict_precedence":
                 v.precedence.append(PrecV(str(w.get("precedence_id") or r["id"]), str(w["higher"]), str(w["lower"]), rf))
             elif kind == "DECISION" and sec == "write_allowlist":
@@ -2057,9 +2067,25 @@ def _masked_question(ctx: "Ctx", mentions: bool = True) -> str:
     return "".join(chars)
 
 
+# between the subject of a request and its verb stand up to two words of any kind except an article / determiner ("could you kindly delete",
+# "can you also publish", "would you mind deleting", "could you just go ahead and ..."): the slot is a position in the clause, not a list of
+# adverbs. A determiner opens a noun phrase, so the word after it is not the verb ("could you summarize the release plan" is not a request to
+# release). A negation stands in the slot too ("could you not delete ..."): a request about the protected operation goes to a person either way.
+_BI_SLOT = (r"(?:(?!(?:the|a|an|this|that|these|those|my|your|our|their|his|her|its|any|all|some|each|every|"
+            r"what|which|who|whom|whose|where|when|why|how|if|whether|before|after|because|while|until|unless)\b)[a-z][a-z\-']*\s+){0,2}")
+# the subjects a request may have, as one closed class of pronouns (a noun phrase after a determiner is the other kind of subject)
+_BI_SUBJ_ALT = r"i|we|you|they|someone|somebody|anyone|anybody|everyone|everybody"
+_BI_SUBJ = r"(?:" + _BI_SUBJ_ALT + r")"
+# the adjective class of "would it be <adjective> for us to ..." / "is it <adjective> to ...": one definition, used by the frame and by the gate
+_BI_OK_ADJ = r"(?:ok|okay|fine|alright|allowed|permitted|acceptable|possible)"
 _BI_MODAL_FRAMES = (
-    r"(?:{M})\s+(?:i|we|you|they|someone|anyone|everyone|(?:the|our|a|an|this|that|my|your)\s+[a-z][a-z\-']*(?:\s+[a-z][a-z\-']*)?)\s+",
-    r"(?:is|would)\s+it\s+(?:be\s+)?(?:ok|okay|fine|alright|allowed|permitted|acceptable)\s+"
+    r"(?:{M}|would|will)\s+(?:" + _BI_SUBJ_ALT + r"|(?:the|our|a|an|this|that|my|your)\s+[a-z][a-z\-']*(?:\s+[a-z][a-z\-']*)?)\s+(?:please\s+)?",
+    # a request ("could you please delete ...", "would you mind deleting ...", "would you be able to ..."): the modal may also be would / will
+    r"(?:{M}|would|will)\s+you\s+" + _BI_SLOT + r"(?:be\s+(?:[a-z][a-z\-']*\s+){1,3}to\s+)?",
+    # a request to have it done ("could we have somebody delete ...", "can we get someone to ..."): have / get / let / make + a 1-3 word phrase.
+    # NOT "ask": asking someone to do it is a question about asking (a pinned case: tests/test_conduct_ask_w2c2.py)
+    r"(?:{M}|would|will)\s+(?:i|we|you)\s+" + _BI_SLOT + r"(?:have|having|get|getting|let|letting|make|making)\s+[a-z][a-z\-']*(?:\s+[a-z][a-z\-']*){0,2}\s+(?:to\s+)?",
+    r"(?:is|would)\s+it\s+(?:be\s+)?" + _BI_OK_ADJ + r"\s+"
     r"(?:for\s+(?:us|me|them|[a-z]+)\s+to\s+|to\s+|if\s+(?:i|we|they|you|[a-z]+)\s+)",
     r"(?:am\s+i|are\s+we|is\s+[a-z]+|are\s+(?:you|they))\s+(?:allowed|permitted)\s+to\s+",
     r"(?:do\s+(?:i|we)\s+have\s+)?permission\s+to\s+",
@@ -2068,17 +2094,52 @@ _BI_ASKED_EN = re.compile(r"(?:" + "|".join(f.replace("{M}", _PEN_MODAL) for f i
 _BI_ASKED_EN_OBJ = re.compile(r"(?:" + "|".join(f.replace("{M}", _PEN_MODAL) for f in _BI_MODAL_FRAMES) + r")" + _PEN_GAP +
                               r"[a-z][a-z\-']*\s+(?:(?:the|our|a|an|this|that|these|those|my|your|any|all|their|its)\s+)?$")
 _BI_ASKED_GERUND = re.compile(r"(?:\bis|\bare|\bwould|\bwill|\bbe)\s+(?:it\s+)?$")
-_BI_EN_OP = re.compile(r"\b(?:delete|deleting|erase|remove|destroy|publish|deploy|release|upload|spend|purchase|buy|pay|charge)\b|"
+# (the -ing forms are the same verbs inflected: "would you mind publishing ...")
+_BI_EN_OP = re.compile(r"\b(?:delete|deleting|erase|erasing|remove|removing|destroy|destroying|publish|publishing|deploy|deploying|release|releasing|"
+                       r"upload|uploading|spend|spending|purchase|purchasing|buy|buying|pay|paying|charge|charging)\b|"
                        r"\b(?:send|share)\s+externally\b")
 _BI_EN_CRED = re.compile(r"\b(?:credentials?|passwords?|tokens?|api\s+keys?)\b")
 _BI_EN_CRED_NEXT = frozenset("in into to for on with from of at by and or so now today then too please here there when if as that which".split())
 _BI_JA_OP = re.compile(r"削除|消去|抹消|公開|公表|支出|支払|購入|課金|外部送信")
 _BI_JA_CRED = re.compile(r"パスワード|認証情報")
+# a request or an errand (W5-b, #2 / #3). Four shapes, each a construction and not a list of operations:
+#   - the verb in te-form + a giving/receiving verb: "…してもらえますか", "…していただけますか", "…しておいてくれますか"
+#   - the te-form + "ください": "代わりに…してください"
+#   - the te-form + a wish: "…してほしいのですが、可能ですか"
+#   - the operation as a noun + the verb of asking, in a can-I / may-I question: "…をお願いできますか", "…を頼めますか", "…を依頼してもいいですか"
+_BI_JA_TE = r"(?:し|行っ|実施し|実行し)?て(?:おい)?"
+# the can / possible tail used by the request constructions and the plain "is it possible to ..." question (a bare "可能でしょうか" included);
+# `_PJA_CAN` (the permission layer's tail) is not changed
+_BI_JA_CAN = r"(?:でき|可能)(?:ます|る|です)?(?:か|でしょうか)"
+_BI_JA_REQUEST = (
+    re.compile(r"[ぁ-ん]{0,2}(?:を|は)?" + _BI_JA_TE + r"て?(?:もらえ|いただけ|頂け|くれ)(?:ます|ません|る|ない)?(?:か|でしょうか)?"),
+    # the honorific giving verb "くださる" in its polite forms: …てください / …てくださいます(か) / …てくださいませんか / …てくださる(？)
+    re.compile(r"[ぁ-ん]{0,2}(?:を|は)?" + _BI_JA_TE + r"くださ(?:い|る|います|いません)(?:か|でしょうか)?"),
+    re.compile(r"[ぁ-ん]{0,2}(?:を|は)?" + _BI_JA_TE + r"(?:ほし|欲し)い(?:の|ん)?(?:です|だ)?(?:が|けど|けれど|けれども)?[、,]?.*"),
+    re.compile(r"[ぁ-ん]{0,2}(?:を|の)?(?:お願い|依頼|頼)(?:い)?(?:でき|し|め|ん)[ぁ-ん、,]{0,14}(?:か|でしょうか)"),
+    # the verb of asking in the wish form, the sentence ending on its connective tail ("…の削除をお願いしたいのですが。"): no question word is needed
+    re.compile(r"[ぁ-ん]{0,2}(?:を|の)?(?:お願い|依頼)(?:を)?(?:し|いたし)(?:ます|たい|たく)[ぁ-ん、,]{0,10}"),
+    # the receiving verb inside a can-I / may-I question ("…してもらうことはできますか", "…していただくことは可能ですか", "…してもらってもいいですか")
+    re.compile(r"[ぁ-ん]{0,2}(?:を|は)?" + _BI_JA_TE + r"(?:もらう|いただく|頂く)(?:こと|の)?(?:は|が)?" + _BI_JA_CAN),
+    re.compile(r"[ぁ-ん]{0,2}(?:を|は)?" + _BI_JA_TE + r"(?:もらっ|いただい|頂い)て" + _PJA_MAY),
+    # a declarative request that ends on the conditional of a giving / receiving verb ("…していただけると助かります", "…してもらえたら嬉しいです")
+    # or of the verb of asking ("…の削除をお願いできればと思います"): what follows the conditional is anything up to the end of the sentence
+    re.compile(r"[ぁ-ん]{0,2}(?:を|は)?" + _BI_JA_TE + r"て?(?:もらえ|いただけ|頂け|くれ)(?:れば|ると|たら).*"),
+    re.compile(r"[ぁ-ん]{0,2}(?:を|の)?(?:お願い|依頼)(?:を)?(?:でき(?:れば|ると|たら)|すれば|すると|したら).*"),
+    re.compile(r"[ぁ-ん]{0,2}(?:を|は)?" + _BI_JA_TE),
+)
+# what makes a sentence a request to somebody ("could you", "would you", "will you", "have somebody ...", "…てもらえ", "…てください", "…てほしい",
+# "…をお願い", "…を頼め", "代わりに", "could someone ...", "would it be possible ..."); only `_builtin_protected_asked` uses it, beside `_PERM_CUE` (which is unchanged: it serves the whole permission layer)
+_BI_REQUEST_CUE = re.compile(
+    r"\b(?:could|can|would|will)\s+" + _BI_SUBJ + r"\b|\b(?:" + _PEN_MODAL + r"|would|will)\s+(?:i|we|you)\s+(?:please\s+)?(?:have|get|let|make)\b|"
+    r"\b(?:is|would)\s+it\s+(?:be\s+)?" + _BI_OK_ADJ + r"\b|"
+    r"て(?:もらえ|もらう|もらって|いただけ|いただく|いただいて|頂け|頂く|頂いて|くれ)|てくださ|て(?:ほし|欲し)い|お願い|依頼|頼[めみん]|代わりに|"
+    r"(?:でき|可能)(?:ます|です)?でしょうか")
 _BI_JA_ASKED_OP = (
     re.compile(r"[ぁ-ん]{0,2}(?:を|は)?(?:し|行い|行っ|実施し|実行し)?(?:て|で)" + _PJA_MAY),
-    re.compile(r"[ぁ-ん]{0,2}(?:を|は)?(?:する|行う|実施する|実行する)?(?:こと)?(?:は|が)?" + _PJA_CAN),
+    re.compile(r"[ぁ-ん]{0,2}(?:を|は)?(?:する|行う|実施する|実行する)?(?:こと)?(?:は|が)?" + _BI_JA_CAN),
     re.compile(r"[ぁ-ん]{0,2}(?:は|が)?(?:許可|承認)され(?:てい)?(?:ます|る)(?:か|でしょうか)"),
-)
+) + _BI_JA_REQUEST
 _BI_JA_ASKED_CRED = re.compile(r"(?:を|は)[^、。,\s]{1,8}(?:て|で)" + _PJA_MAY)
 
 
@@ -2087,7 +2148,7 @@ def _builtin_protected_asked(ctx: Ctx) -> bool:
     text = _masked_question(ctx, mentions=False)
     for a, b in ctx.sentences:
         sent = text[a:b]
-        if not _PERM_CUE.search(sent):
+        if not (_PERM_CUE.search(sent) or _BI_REQUEST_CUE.search(sent)):
             continue
         if has_cjk(sent):
             for mm in _BI_JA_OP.finditer(sent):
@@ -2923,6 +2984,143 @@ def validate_input(question: Any, options: Any) -> Optional[tuple[str, str]]:
     return None
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# W5-b #1: the attribute a question asks about, for an answer the mapping gave to a wider phrase
+# ---------------------------------------------------------------------------------------------------------------------
+# An answer the mapping gives to a wider phrase may stand only when it is shown that the question does not ask about a different attribute of the
+# thing than the records speak of. The default is to hand up: the answer stands when (i) every word the question asks about (an attribute) was
+# read and appears in the original text of every record the answer rests on, or (ii) the question's form is positively one that asks about the
+# term itself and about no attribute: a yes / no question that opens with an auxiliary ("is the ... in scope?") or a question with a wh-word and an
+# auxiliary ("what should the ... be?", "which do we pick for ..."), with none of the attribute-asking forms in it. Every other shape (a request
+# that opens with a verb, a wh-word followed by something that is not an auxiliary and that no form reads, "where / when / who / why") is handed
+# up as ATTRIBUTE_UNREAD: a form that is not read never flows to an answer, and "read and absent" (ATTRIBUTE_NOT_IN_RECORD) is a different type.
+# The attribute-asking forms are grammatical shapes, not a list of attributes (English; every word of the shape that is not a frame term must be in the record):
+#   "<host>'s <word>"                            possessive           ("the panel's colour")
+#   "the <1-3 words> of / for"                   a noun and its complement ("the language of ...", "what is the colour for ...")
+#   "what / which / whose <words> <stop>"        a wh-word and a noun phrase (up to three words, up to an auxiliary, a preposition, a determiner or a
+#                                                conjunction): "what language is ...", "what colour scheme suits ..."; a noun phrase that holds a
+#                                                frame term is that term itself and names no attribute
+#   "how <word>"                                 "how big should ...", "how long is ..."
+# Japanese: "の<語>は|が" (with or without a comma after the topic), "の<語>を教え…", "どの<語>", "どんな<語>". A comma-closed topic ("…の<語>は、…") is
+# read as the attribute form too, except when the sentence is positively a question about the term itself: the options are Yes / No, or every given
+# option string stands after the topic (the sentence names the choice, "…は、<A>と<B>のどちら…"); then it is the attribute-free form (W5-b round 4, D-r4-1).
+# In the other forms a word that overlaps a matched frame term is that term itself and names no attribute.
+_ATTR_AUX = frozenset("should do does did is are was were will would can could shall must might may am has have had".split())
+_ATTR_PREP = frozenset("for of in on at to about with from by under over per into onto as".split())
+_ATTR_DET = frozenset("the a an this that these those my your our their his her its any all some each every".split())
+_ATTR_JOIN = frozenset("and or but if whether".split())
+_ATTR_CONTRACTION_HOSTS = frozenset("what who where how when why that there here it he she let which".split())
+_ATTR_WH = frozenset("what which whose who where when why how".split())
+_ATTR_EN_POSS = re.compile(r"\b([a-z][a-z\-]*)'s\s+([a-z][a-z\-']*)")
+_ATTR_EN_THE_OF = re.compile(r"\bthe\s+((?:[a-z][a-z\-']*\s+){0,2}[a-z][a-z\-']*)\s+(?:of|for)\b")
+_ATTR_EN_WH = re.compile(r"\b(what|which|whose|who|where|when|why|how)\b(?!')")
+_ATTR_EN_TOK = re.compile(r"[a-z][a-z\-']*")
+_ATTR_EN_LEAD = re.compile(r"^(?:(?:so|and|also|then|well|ok|okay|hmm)\b[ ,]*)*")
+_ATTR_JA_TOPIC = re.compile(r"の([^のはがをにでともやへ、。，．？?！!\s]{1,8})(?:は|が)")
+_ATTR_JA_TELL = re.compile(r"の([^のはがをにでともやへ、。，．？?！!\s]{1,8})を(?:教え|知らせ|示し|答え)")
+_ATTR_JA_WH = re.compile(r"(?:どの|どんな)([^のはがをにでともやへ、。，．？?！!\s]{1,8})(?:を|で|に|が|は)")
+
+
+def _names_the_term_itself(ctx: "Ctx", after_topic: str) -> bool:
+    """A comma-closed Japanese topic opens a question about the term itself (no attribute) when the options are Yes / No, or when every given
+    option string stands in the rest of the sentence after the topic (the sentence names the choice).  The options are input, not a word list."""
+    if ctx.polarity_options() is not None:
+        return True
+    return bool(ctx.options) and all(o.core and o.core in after_topic for o in ctx.options)
+
+
+def _attribute_forms(ctx: "Ctx", a: int, b: int) -> tuple[list[list[str]], bool]:
+    """The attribute-asking forms of one sentence ``ctx.q[a:b]``: a list of forms (each the words of the form that are not frame terms) and
+    whether the sentence has a shape that is neither read as a form nor positively an attribute-free question (``True`` = unread)."""
+    sent = ctx.q[a:b]
+    mention_spans = [(m.start, m.end) for m in ctx.mentions]
+
+    def own(start: int, end: int) -> bool:
+        return not any(ms < a + end and a + start < me for ms, me in mention_spans)
+
+    forms: list[list[str]] = []
+    if has_cjk(sent):
+        for pat in (_ATTR_JA_TOPIC, _ATTR_JA_TELL, _ATTR_JA_WH):
+            for m in pat.finditer(sent):
+                if pat is _ATTR_JA_TOPIC and sent[m.end():m.end() + 1] in ("、", ",") and _names_the_term_itself(ctx, sent[m.end():]):
+                    forms.append([])
+                    continue
+                forms.append([m.group(1)] if own(*m.span(1)) else [])
+        return forms, False
+    for m in _ATTR_EN_POSS.finditer(sent):
+        if m.group(1) not in _ATTR_CONTRACTION_HOSTS:
+            forms.append([m.group(2)] if own(*m.span(2)) else [])
+    for m in _ATTR_EN_THE_OF.finditer(sent):
+        words = list(_ATTR_EN_TOK.finditer(m.group(1)))
+        last = words[-1]
+        forms.append([last.group(0)] if own(m.start(1) + last.start(), m.start(1) + last.end()) else [])
+    unread = False
+    free_wh = False
+    for m in _ATTR_EN_WH.finditer(sent):
+        wh = m.group(1)
+        toks = list(_ATTR_EN_TOK.finditer(sent, m.end()))
+        first = toks[0].group(0) if toks else None
+        if wh in ("who", "where", "when", "why"):
+            unread = True
+        elif first is None:
+            unread = True
+        elif first in _ATTR_AUX:
+            free_wh = True
+        elif first in _ATTR_PREP or first in _ATTR_DET:
+            # "which of ...", "what the ...": no noun phrase of the shape is read
+            if first in _ATTR_PREP:
+                unread = True
+        elif wh == "how":
+            forms.append([first] if own(toks[0].start(), toks[0].end()) else [])
+        else:
+            words: list[str] = []
+            term_inside = False
+            for t in toks[:3]:
+                w = t.group(0)
+                if w in _ATTR_AUX or w in _ATTR_PREP or w in _ATTR_DET or w in _ATTR_JOIN:
+                    break
+                words.append(w)
+                term_inside = term_inside or not own(t.start(), t.end())
+            # a noun phrase that holds a matched frame term is that term itself ("which confirmation channel setup should we ..."): no attribute
+            forms.append([] if term_inside else words)
+    if forms:
+        return forms, unread
+    if unread:
+        return forms, True
+    lead = _ATTR_EN_LEAD.match(sent.strip(" "))
+    rest = sent.strip(" ")[lead.end():] if lead else sent.strip(" ")
+    first_word = _ATTR_EN_TOK.match(rest)
+    # a question that opens with an auxiliary is a yes / no question about the term only when the options say so (Yes / No): "is the ... in English?"
+    # with a choice of languages asks about an attribute that no form shows
+    opens_with_aux = bool(first_word) and first_word.group(0) in _ATTR_AUX and ctx.polarity_options() is not None
+    return forms, not (opens_with_aux or free_wh)
+
+
+def _attribute_verdict(ctx: "Ctx", basis: Sequence[Ref]) -> tuple[str, Optional[str]]:
+    """``("OK", None)`` when the answer may stand; ``("NOT_IN_RECORD", word)`` when a word the question asks about (read from a form) is not in
+    the original text of every record the answer rests on; ``("UNREAD", None)`` when a sentence of the question has neither a form that was
+    read nor the positive shape of a question about the term itself.  Only the asked sentences are looked at (those ending in a question mark or
+    ``か``; all sentences when none does)."""
+    asked = [(a, b) for a, b in ctx.sentences if ctx.q[a:b].rstrip(" \t。.!！").endswith(("?", "か")) or ctx.q[a:b].count("?")]
+    unread = False
+    for a, b in asked or ctx.sentences:
+        forms, sent_unread = _attribute_forms(ctx, a, b)
+        unread = unread or sent_unread
+        for words in forms:
+            for word in words:
+                if not basis:
+                    return "NOT_IN_RECORD", word
+                for ref in basis:
+                    text = nz(ref.text)
+                    if has_cjk(word):
+                        found = word in text
+                    else:
+                        found = bool(re.search(r"(?<![0-9a-z])" + re.escape(word) + r"(?![0-9a-z])", text))
+                    if not found:
+                        return "NOT_IN_RECORD", word
+    return ("UNREAD", None) if unread else ("OK", None)
+
+
 def answer_question(frame_path: str, question: str, options: Optional[Sequence[str]] = None, *,
                     vocab_llm: str = "off", vocab_fake: Optional[str] = None, vocab_ledger: Optional[str] = None,
                     chooser: Optional[LLMChooser] = None, map_fake: Optional[str] = None,
@@ -3074,9 +3272,19 @@ def _answer_question(frame_path: str, question: str, options: Optional[Sequence[
                 rep = {"provenance": conduct_map.MAPPING_TYPE, "protocol": conduct_map.PROTOCOL, "counts_as_evidence": False,
                        "constructed": True, "route": None, "outcome": "ESCALATED:MAPPING_UNSETTLED/LEDGER_INTEGRITY", "rule": None,
                        "candidates": [], "asks_used": 0, "asks_cap": map_max_asks, "retries": 0, "effort": None, "step1": None,
-                       "decides": None, "step2": [], "order": None, "exit_check": None}
+                       "decides": None, "step2": [], "order": None, "exit_check": None, "ledger_replay": None}
                 return _esc("MAPPING_UNSETTLED", "LEDGER_INTEGRITY", [], layer="mapping"), rep
         new, rep = conduct_map.resolve(mapper_box[0], view, cf.sha256, question, q, opts_list, rule, _builtin_protected(ctx))
+        if new.decision == "answer" and rule.reason == "VOCAB_UNMAPPED" and rule.detail == "TERM_IN_WIDER_PHRASE":
+            # an answer the mapping gave to a wider phrase (a frame term inside a longer noun phrase) must rest on records that speak of what the question asks
+            # about (W5-b #1): a record about one thing says nothing of the colour of another
+            verdict, missing = _attribute_verdict(ctx, new.basis)
+            if verdict != "OK":
+                ctx.trace_out["wider_phrase"] = (f"ESCALATE:ATTRIBUTE_NOT_IN_RECORD:{missing}" if verdict == "NOT_IN_RECORD"
+                                                 else "ESCALATE:ATTRIBUTE_UNREAD")
+                new = _esc("FRAME_SILENT", "TERM_IN_WIDER_PHRASE", new.basis, new.kind, "wider_phrase")
+                rep["exit_check"] = f"{new.reason}/{new.detail}"
+                rep["outcome"] = f"ESCALATED:{new.reason}/{new.detail}"
         if new.decision == "answer":
             # the same exit checks as every other answer (a corroborated rule answer has passed them already), then the
             # question-form gates that need no vocabulary: a paraphrased question reaches an answer without the rules' own

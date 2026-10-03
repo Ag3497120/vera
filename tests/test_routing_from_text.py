@@ -227,8 +227,8 @@ OV = (("実装はハルに任せる。", rd("ja", cl("任せる", {"recipient": 
 
 
 def test_relation_override_replaces_exactly_the_same_scope_and_counts_it():
-    text = "実装はハルに任せる。\n追記：実装はルナに任せる。\n"
-    table = {"実装はハルに任せる。": OV[0][1], "実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
+    text = "実装はハルに任せる。\n追記：やっぱり実装はルナに任せる。\n"
+    table = {"実装はハルに任せる。": OV[0][1], "やっぱり実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
     explained = rt.explain(text, "x.md", reader=lambda s: table[s])
     assert explained.extraction.auto_resolved == 1
     assert [r.superseded_by for r in explained.extraction.relations] == ["R002", None]
@@ -243,8 +243,8 @@ def test_relation_override_that_overlaps_only_partly_is_held_as_ambiguous():
              "実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
     # "大きな実装" is a size word before a head that is not a kind: the first sentence stops, so use a kind head instead
     table = {"大きなリファクタリングはハルに任せる。": rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きなリファクタリング"})),
-             "実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
-    text = "大きなリファクタリングはハルに任せる。\n追記：実装はルナに任せる。\n"
+             "やっぱり実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
+    text = "大きなリファクタリングはハルに任せる。\n追記：やっぱり実装はルナに任せる。\n"
     explained = rt.explain(text, "x.md", reader=lambda s: table[s])
     assert explained.extraction.units[1].status == "AMBIGUOUS_RELATION" and explained.extraction.auto_resolved == 0
     assert out_of(explained)["abstention"]["type"] == "INCOMPLETE_READING"
@@ -329,14 +329,14 @@ def test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replac
                              ("セキもテストを書く。", rd("ja", cl("書く", {"agent": "セキ", "patient": "テスト"}))))
     # the same kind (A does it -> B does it) replaces; a different kind and a different name (A does it -> B does not) is held
     table = {"ハルはテストを書く。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"})),
-             "モモはテストを書かない。": rd("ja", cl("書く", {"agent": "モモ", "patient": "テスト"}, "-"))}
-    explained = rt.explain("ハルはテストを書く。\n追記：モモはテストを書かない。\n", "x.md", reader=lambda sentence: table[sentence])
+             "やっぱりモモはテストを書かない。": rd("ja", cl("書く", {"agent": "モモ", "patient": "テスト"}, "-"))}
+    explained = rt.explain("ハルはテストを書く。\n追記：やっぱりモモはテストを書かない。\n", "x.md", reader=lambda sentence: table[sentence])
     unit = explained.extraction.units[1]
     assert unit.status == "AMBIGUOUS_RELATION" and unit.reasons[0].startswith("OVERRIDE_OTHER_KIND_AND_NAME:")
     assert explained.extraction.auto_resolved == 0 and out_of(explained, kind="test_authoring")["abstention"]["type"] == "INCOMPLETE_READING"
     same_name = {"ハルはテストを書く。": table["ハルはテストを書く。"],
-                 "ハルはテストを書かない。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"}, "-"))}
-    explained = rt.explain("ハルはテストを書く。\n追記：ハルはテストを書かない。\n", "x.md", reader=lambda sentence: same_name[sentence])
+                 "やっぱりハルはテストを書かない。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"}, "-"))}
+    explained = rt.explain("ハルはテストを書く。\n追記：やっぱりハルはテストを書かない。\n", "x.md", reader=lambda sentence: same_name[sentence])
     assert explained.extraction.units[1].status == "MAPPED" and explained.extraction.auto_resolved == 1
 
 

@@ -1,0 +1,2 @@
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-b-S/artifacts/w5-b/coarse_after_r4/eval_runs/003
+{"typed_n": 174, "unknown_n": 60, "correct_rate": 0.4943, "wrong_rate": 0.0517, "unknown_among_typed": 79, "returned_type_rate": 0.15, "leaks_direct_not_notation": [], "pass": {"correct>=0.65": false, "wrong<=0.15": true, "returned_type<=0.20": true, "no_leaks": true, "no_unmarked": true}}

@@ -1,0 +1,43 @@
+== tests/attack/test_attack_w2g2_mapping.py
+== tests/attack/test_attack_w3a2_contract.py
+29,32c29,34
+<     assert hiragana["state"] == katakana["state"], (
+<         f"kana spelling variants changed state: あざみ={hiragana['state']} "
+<         f"{hiragana['top']}, アザミ={katakana['state']} {katakana['top']}"
+<     )
+---
+>     # W5-b round 4 (auditor ruling C1, 2026-10-03): the two kana spellings stay two words; an UNPLACED / UNKNOWN spelling whose other
+>     # kana spelling is DECIDED and direct gets that type as an ESTIMATE (estimate_basis kana_variant), never as a direct answer.
+>     assert (katakana["state"], katakana["origin"]) == ("DECIDED", "direct"), katakana
+>     assert (hiragana["state"], hiragana["top"]) == (katakana["state"], katakana["top"]), (hiragana["state"], hiragana["top"])
+>     assert (hiragana["origin"], hiragana["estimate_basis"], hiragana["constructed"]) == ("estimated", "kana_variant", True)
+>     assert hiragana["spelling"]["why"] == "ESTIMATED_FROM_KANA_VARIANT:アザミ"
+== tests/attack/test_attack_w4m_sovereign.py
+27,50d26
+< def test_tampered_export_cannot_be_attached(tmp_path):
+<     """Drop a rewrite trigger, alter one row, restore its exact SQL, then attach the export."""
+<     origin, moved = tmp_path / "origin", tmp_path / "moved"
+<     sov.create(origin, "s1", "owner-a")
+<     sov.open_ledger(origin, "s1").append(
+<         {"kind": "utterance", "payload": {"phrase": "original"}})
+<     exported = tmp_path / "s1.sqlite"
+<     assert sov.export(origin, "s1", str(exported))["verdict"] == "EXPORTED"
+< 
+<     conn = sqlite3.connect(exported, isolation_level=None)
+<     conn.execute("DROP TRIGGER event_log_no_update")
+<     conn.execute("UPDATE event_log SET payload = ? WHERE seq = 1",
+<                  (json.dumps({"phrase": "forged"}, separators=(",", ":")),))
+<     conn.execute(
+<         "CREATE TRIGGER event_log_no_update BEFORE UPDATE ON event_log "
+<         "BEGIN SELECT RAISE(ABORT, 'event_log is append-only: no update'); END")
+<     conn.close()
+< 
+<     attached = sov.attach(moved, file=str(exported))
+<     observed = (attached["verdict"],
+<                 sov.open_ledger(moved, "s1").events()[0]["payload"]["phrase"])
+<     assert observed == ("UNREADABLE_SCHEMA", "original"), observed
+< 
+< 
+== tests/attack/test_attack_w3c_observe.py
+== tests/attack/test_attack_w2h2_routing_from_text.py
+== tests/attack/w2c3/test_attack_w2c3_traps.py

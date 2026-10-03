@@ -1,0 +1,165 @@
+## 台帳 再生 改ざん 検出
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "台帳 再生 改ざん 検出",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## 表記 正規化 NFKC かな
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "表記 正規化 NFKC かな",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## 昇格 同時実行 トランザクション
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "昇格 同時実行 トランザクション",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## 観測 座標 経路 合流
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "観測 座標 経路 合流",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## 追記 上書き 置き換え
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "追記 上書き 置き換え",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## 許可 依頼 保護された操作
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "許可 依頼 保護された操作",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## md jsonl 枠 view
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "md jsonl 枠 view",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## r4: 読点 トピック 属性 選択肢
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "読点 トピック 属性 選択肢",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## r4: 依頼 尊敬 くださる 条件形
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "依頼 尊敬 くださる 条件形",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## r4: かな 変種 推定
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "かな 変種 推定",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## r4: 置き換え 標識 追記
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "置き換え 標識 追記",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

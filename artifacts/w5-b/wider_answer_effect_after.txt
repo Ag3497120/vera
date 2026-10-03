@@ -1,0 +1,7 @@
+verantyx from /Users/motonisihikoudai/Projects/vera-impl/wt/W5-b-S/verantyx/__init__.py
+w2c2-wider-route-06 answer はい None None | 撮影場所の記録の取り込みは、今回の範囲に入りますか？
+w2c2-wider-route-07 answer 冊子 None None | アルバムの形式の選択は、冊子と画面のどちらにしますか？
+w2c2-wider-route-11 answer Yes None None | Is the sheet music downloads feature in scope?
+w2c2-wider-route-12 answer Yes None None | Is the moon phase icon design in scope?
+w2c2-wider-route-13 answer A web form None None | Which confirmation channel setup should we go with, a web form or phone calls?
+items 5

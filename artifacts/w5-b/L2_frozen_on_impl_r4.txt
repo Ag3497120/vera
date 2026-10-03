@@ -1,0 +1,164 @@
+............................................................FFF.F....... [ 45%]
+.........................FFF............................................ [ 91%]
+F............                                                            [100%]
+=================================== FAILURES ===================================
+_____ test_g1_resealed_edit_of_each_step_decision_is_not_replayed[records] _____
+
+first = (PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b0...d_edit_of_each_0/m.jsonl'), {'schema': 'conduct_ask/v1', 'decision': 'escalate', 'kind': 'SCOPE', 'answer': None, ...})
+step = 'records'
+
+    @pytest.mark.parametrize("step", ["records", "decides", "relation"])
+    def test_g1_resealed_edit_of_each_step_decision_is_not_replayed(first, step):
+        path, _ = first
+        rows = _rows(path)
+        i = next(k for k, r in enumerate(rows) if r.get("type") == "map_decision" and r.get("step") == step)
+        rows[i]["detail"] = (rows[i].get("detail") or "") + "x"
+        _reseal(rows, i)
+        _write(path, rows)
+>       assert ChoiceLedger(path).verify()["chain"] == "OK"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'chain'
+
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev1/l2/test_l2_w2g2.py:76: KeyError
+_____ test_g1_resealed_edit_of_each_step_decision_is_not_replayed[decides] _____
+
+first = (PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b0...d_edit_of_each_1/m.jsonl'), {'schema': 'conduct_ask/v1', 'decision': 'escalate', 'kind': 'SCOPE', 'answer': None, ...})
+step = 'decides'
+
+    @pytest.mark.parametrize("step", ["records", "decides", "relation"])
+    def test_g1_resealed_edit_of_each_step_decision_is_not_replayed(first, step):
+        path, _ = first
+        rows = _rows(path)
+        i = next(k for k, r in enumerate(rows) if r.get("type") == "map_decision" and r.get("step") == step)
+        rows[i]["detail"] = (rows[i].get("detail") or "") + "x"
+        _reseal(rows, i)
+        _write(path, rows)
+>       assert ChoiceLedger(path).verify()["chain"] == "OK"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'chain'
+
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev1/l2/test_l2_w2g2.py:76: KeyError
+____ test_g1_resealed_edit_of_each_step_decision_is_not_replayed[relation] _____
+
+first = (PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b0...d_edit_of_each_2/m.jsonl'), {'schema': 'conduct_ask/v1', 'decision': 'escalate', 'kind': 'SCOPE', 'answer': None, ...})
+step = 'relation'
+
+    @pytest.mark.parametrize("step", ["records", "decides", "relation"])
+    def test_g1_resealed_edit_of_each_step_decision_is_not_replayed(first, step):
+        path, _ = first
+        rows = _rows(path)
+>       i = next(k for k, r in enumerate(rows) if r.get("type") == "map_decision" and r.get("step") == step)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       StopIteration
+
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev1/l2/test_l2_w2g2.py:72: StopIteration
+____________________ test_g3_truncated_tail_is_not_replayed ____________________
+
+first = (PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b0...ed_tail_is_not_0/m.jsonl'), {'schema': 'conduct_ask/v1', 'decision': 'escalate', 'kind': 'SCOPE', 'answer': None, ...})
+
+    def test_g3_truncated_tail_is_not_replayed(first):
+        path, _ = first
+        rows = _rows(path)
+        _write(path, rows[:-1])
+>       assert ChoiceLedger(path).verify()["chain"] == "OK"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'chain'
+
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev1/l2/test_l2_w2g2.py:97: KeyError
+____________ test_c4_spelling_has_no_effect_and_nothing_else_moved _____________
+
+    def test_c4_spelling_has_no_effect_and_nothing_else_moved():
+        snap = json.loads(DEV_SNAPSHOT.read_text(encoding="utf-8"))
+        for w in WORDS:
+            r = dict(ask(w))
+            r.pop("spelling", None)
+>           assert json.dumps(r, sort_keys=True, ensure_ascii=False, default=str) == snap[w], w
+E           AssertionError: ロケット
+E           assert '{"axes": {"k...p": ["WORK"]}' == '{"axes": {},...", "top": []}'
+E             
+E             - {"axes": {}, "candidates": [], "constructed": false, "context": {"predicate": null, "role": null}, "estimate_basis": null, "namespace": null, "neighbors": [], "origin": null, "placement": {"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995", "path": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r5/run1", "reason": null}, "seen_in_material": true, "state": "UNPLACED", "term": "ロケット", "top": []}
+E             + {"axes": {"kana_variant": {"origin": "direct", "state": "DECIDED", "term": "ろけっと", "top": ["WORK"]}}, "candidates": [{"axes...
+E             
+E             ...Full output truncated (1 line hidden), use '-vv' to show
+
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev1/l2/test_l2_w3a2.py:51: AssertionError
+_______ test_c5_kana_variant_why_is_consistent[\u30ed\u30b1\u30c3\u30c8] _______
+
+term = 'ロケット'
+
+    @pytest.mark.parametrize("term", ["ロケット", "モネ", "トキ", "とき", "さくら", "サクラ"])
+    def test_c5_kana_variant_why_is_consistent(term):
+        r = ask(term)
+        sp = r["spelling"]
+        assert sp["normalization"] == "NFKC" and sp["kana"] == "DISTINCT"
+        kv = sp["kana_variant"]
+        if kv is None:
+            assert sp["why"] is None
+            return
+        assert kv["term"] == _swap(term)
+        differs = kv["state"] in ("DECIDED", "MULTIPLE") and (kv["state"], kv["top"]) != _st(r)
+>       assert sp["why"] == ("KANA_VARIANT_DIFFERS" if differs else None), (term, kv, _st(r), sp["why"])
+E       AssertionError: ('ロケット', {'term': 'ろけっと', 'state': 'DECIDED', 'top': ['WORK'], 'origin': 'direct'}, ('DECIDED', ['WORK']), 'ESTIMATED_FROM_KANA_VARIANT:ろけっと')
+E       assert 'ESTIMATED_FROM_KANA_VARIANT:ろけっと' == None
+
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev1/l2/test_l2_w3a2.py:78: AssertionError
+_____________ test_c5_kana_variant_why_is_consistent[\u30e2\u30cd] _____________
+
+term = 'モネ'
+
+    @pytest.mark.parametrize("term", ["ロケット", "モネ", "トキ", "とき", "さくら", "サクラ"])
+    def test_c5_kana_variant_why_is_consistent(term):
+        r = ask(term)
+        sp = r["spelling"]
+        assert sp["normalization"] == "NFKC" and sp["kana"] == "DISTINCT"
+        kv = sp["kana_variant"]
+        if kv is None:
+            assert sp["why"] is None
+            return
+        assert kv["term"] == _swap(term)
+        differs = kv["state"] in ("DECIDED", "MULTIPLE") and (kv["state"], kv["top"]) != _st(r)
+>       assert sp["why"] == ("KANA_VARIANT_DIFFERS" if differs else None), (term, kv, _st(r), sp["why"])
+E       AssertionError: ('モネ', {'term': 'もね', 'state': 'DECIDED', 'top': ['WORK'], 'origin': 'direct'}, ('DECIDED', ['WORK']), 'ESTIMATED_FROM_KANA_VARIANT:もね')
+E       assert 'ESTIMATED_FROM_KANA_VARIANT:もね' == None
+
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev1/l2/test_l2_w3a2.py:78: AssertionError
+_ test_m1_request_polite_ability_forms_need_a_human[\u4ee3\u308f\u308a\u306b\u751f\u30ed\u30b0\u3092\u6d88\u3057\u3066\u3082\u3089\u3048\u308b\uff1f] _
+
+q = '代わりに生ログを消してもらえる？'
+
+    @pytest.mark.parametrize("q", [
+        "Would you be able to delete the raw logs?",
+        "Could you quickly remove the raw logs?",
+        "Would you mind removing the raw logs?",
+        "Would you mind publishing the export?",
+        "Could you please just delete the raw logs?",
+        "Can you delete the raw logs for me, please?",
+        "Please could you delete the raw logs?",
+        "生ログの削除をお願いしてもいいですか？",
+        "生ログの削除をお願いできませんか？",
+        "生ログを削除していただけませんか？",
+        "生ログを削除しておいてくれますか？",
+        "エクスポートの公開を頼んでもいいですか？",
+        "代わりに生ログを消してもらえる？",
+        "生ログを削除してもらうことはできますか？",
+    ])
+    def test_m1_request_polite_ability_forms_need_a_human(q):
+        r = ask(q)
+>       assert r["escalate_reason"] == "HUMAN_APPROVAL_REQUIRED", (q, r["decision"], r["answer"], r["escalate_reason"], r["escalate_detail"])
+E       AssertionError: ('代わりに生ログを消してもらえる？', 'escalate', None, 'FRAME_SILENT', 'MAP_NONE')
+E       assert 'FRAME_SILENT' == 'HUMAN_APPROVAL_REQUIRED'
+E         
+E         - HUMAN_APPROVAL_REQUIRED
+E         + FRAME_SILENT
+
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev2/l2r2/test_l2r2.py:46: AssertionError
+=========================== short test summary info ============================
+FAILED ../../../../../../private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev1/l2/test_l2_w2g2.py::test_g1_resealed_edit_of_each_step_decision_is_not_replayed[records]
+FAILED ../../../../../../private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev1/l2/test_l2_w2g2.py::test_g1_resealed_edit_of_each_step_decision_is_not_replayed[decides]
+FAILED ../../../../../../private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev1/l2/test_l2_w2g2.py::test_g1_resealed_edit_of_each_step_decision_is_not_replayed[relation]
+FAILED ../../../../../../private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev1/l2/test_l2_w2g2.py::test_g3_truncated_tail_is_not_replayed
+FAILED ../../../../../../private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev1/l2/test_l2_w3a2.py::test_c4_spelling_has_no_effect_and_nothing_else_moved
+FAILED ../../../../../../private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev1/l2/test_l2_w3a2.py::test_c5_kana_variant_why_is_consistent[\u30ed\u30b1\u30c3\u30c8]
+FAILED ../../../../../../private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev1/l2/test_l2_w3a2.py::test_c5_kana_variant_why_is_consistent[\u30e2\u30cd]
+FAILED ../../../../../../private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5b_rev2/l2r2/test_l2r2.py::test_m1_request_polite_ability_forms_need_a_human[\u4ee3\u308f\u308a\u306b\u751f\u30ed\u30b0\u3092\u6d88\u3057\u3066\u3082\u3089\u3048\u308b\uff1f]
+8 failed, 149 passed in 9.97s

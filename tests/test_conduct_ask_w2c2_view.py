@@ -86,8 +86,8 @@ def test_markdown_and_jsonl_views_have_the_same_decisions_and_the_same_terms(com
         diff = {k: (tm.get(k), tj.get(k)) for k in set(tm) | set(tj) if tm.get(k) != tj.get(k)}
         if diff:
             known_differences[Path(md).name] = diff
-    # the one known difference: the compiler normalises the condition of a policy (witness.condition keeps the markdown's words)
-    assert known_differences == {"experiment_data_pipeline.md": {"欠測の扱い": (["policy"], None), "欠測扱い": (None, ["policy"])}}
+    # W5-b (#4; auditor ruling C4, 2026-10-03): the markdown and jsonl views agree; no known difference remains
+    assert known_differences == {}
 
 
 def test_the_decision_of_a_policy_pair_is_found_by_the_id_and_not_by_a_word(compiled, tmp_path):

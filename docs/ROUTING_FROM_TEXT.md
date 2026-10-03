@@ -62,6 +62,8 @@ producer（枠の DSL / 自由文の読解 = この文書 / 辞書）── 記�
   2 つ目以降は文だけ。
 - 追記の印（`OVERRIDE_MARKERS`）が行頭のラベル（`追記（翌日）：` `P.S. ` `Update:`）として現れたときに限り、ラベルを外した残りを読解器に渡し、その行の全部の文に `override: true` を付ける。
   印は NFKC・小文字化した **語全体** との一致で、語の一部とは照合しない（`追記は誰かが書く。` や `Updated:` は追記ではない）。
+- （W5-b で追記）印のうち「足す」を言うもの（`ADDITION_LABELS`: `追記` `追伸` `p.s.` `ps` `addendum`）の行は、**文ごとに**、その文に置き換えの標識（`REPLACEMENT_MARKERS`: `やっぱり` `ではなく` `instead` `replace`）があるときだけ上書き（`UnitResult.override` と関係の `override`）として扱う。
+  標識が無い文は上書きでない普通の単位（足す）になる。`Unit.override`（行が印で始まった）と `Unit.label`（その印の比較用の形）は文の切り方の結果として今までどおり付け、上書きかどうかの判定は `extract` が行う。足すのに使われた単位の数は出力の `reading.addition_labels_kept_as_addition`。
 
 ## 4. 関係の集合と写す先（`RELATION_KINDS`）
 
@@ -274,6 +276,8 @@ producer（枠の DSL / 自由文の読解 = この文書 / 辞書）── 記�
 | `HUMAN_TERMS` | ja: `人` `人間` `私` `自分` `人手`／en: `human` `a human` `i` `me` `a person` `people` | 文の主体が人間（エージェントではない）であることを言う語。仕事の割り当て先が人間なら `HUMAN` |
 | `RESIDUAL_TERMS` | ja: `それ以外` `それ以外の仕事` `それ以外のもの` `上記以外` `どれにも当てはまらない仕事`／en: `anything else` `everything else` `otherwise` `any other job` `any other work` `the rest` | 「残り全部」を範囲にする語。経路づけ器の `NOT_COVERED` だけを置き換える |
 | `OVERRIDE_MARKERS` | `追記` `追伸` `訂正` `更新` `p.s.` `ps` `update` `edit` `correction` `addendum` | 行頭のラベルとして「これは前に言ったことを変える」を言う語（語全体の一致だけ） |
+| `ADDITION_LABELS` | `追記` `追伸` `p.s.` `ps` `addendum`（`OVERRIDE_MARKERS` の部分集合。W5-b で足した） | 行頭のラベルのうち「前の言明に **足す**」を言う語。この印の行は、その文に `REPLACEMENT_MARKERS` の語があるときだけ前の関係を置き換える。印が無ければ両方を残し、同じ仕事に 2 人が候補になれば経路づけ器の同点の処理に任せる（A02）。`訂正` `更新` `update` `edit` `correction` は置き換えのまま |
+| `REPLACEMENT_MARKERS` | ja: `やっぱり` `ではなく`／en: `instead` `replace`（W5-b で足した） | 文が「前の言明の代わり」を言う語。日本語は NFKC の文の部分文字列、英語は小文字化した語全体との一致。`ADDITION_LABELS` の行でだけ使う |
 | `ANAPHORS` | ja: `前者` `後者` `それ` `これ` `あれ` `彼` `彼女` `同上` `上記` `そちら` `こちら`／en: `the former` `the latter` `it` `they` `them` `he` `she` `this` `that` `former` `latter` `the same one` | 先行詞を指す語。先行詞は読まないので呼び名として受けない（`NAME_UNRESOLVED`） |
 | `GENERIC_OBJECTS` | ja: `コード` `作業` `仕事` `もの` `ファイル` `変更`／en: `code` `work` `job` `task` `file` `files` `change` `changes` | 仕事を言う動詞（確かめる・review など）の目的語として何も足さない語 |
 | `HONORIFICS` | `さん` `氏` `君` `様` | 呼びかけの敬称。敬称つきの語は呼び名として受けない |
@@ -284,7 +288,7 @@ producer（枠の DSL / 自由文の読解 = この文書 / 辞書）── 記�
 | `LIST_MARKERS` | `-` `*` `・` `•` `●` `○` | 箇条書きの記号 |
 | `MARKUP_CHARS` | `-` `=` `_` `|` `:` `*` `#` `─` `—` `―` `~` `+` | これと空白だけの行は記号だけの行 |
 
-`CONSTANT_NAMES` の 19 個（上の表と集合）が凍結の対象。
+`CONSTANT_NAMES` の 19 個（上の表と集合）が凍結の対象。（W5-b: `ADDITION_LABELS` と `REPLACEMENT_MARKERS` を足して 21 個。7 章に全件と理由を書いた。）
 
 ## 7. 定数の変更記録
 
@@ -311,6 +315,8 @@ producer（枠の DSL / 自由文の読解 = この文書 / 辞書）── 記�
 - `HUMAN_TERMS`: `en:i`、`ja:人`、`ja:人間`
 - `RESIDUAL_TERMS`: `ja:どれにも当てはまらない仕事`
 - `OVERRIDE_MARKERS`: `en:p.s.`、`en:update`、`ja:追記`
+- `ADDITION_LABELS`: `en:p.s.`、`ja:追記`
+- `REPLACEMENT_MARKERS`: `en:instead`、`ja:ではなく`、`ja:やっぱり`
 - `ANAPHORS`: `en:it`、`en:that`
 - `GENERIC_OBJECTS`: `en:change`、`en:code`、`en:file`、`en:files`、`en:job`、`en:work`、`ja:もの`、`ja:コード`、`ja:ファイル`、`ja:仕事`、`ja:変更`
 - `EN_DETERMINERS`: `en:a`、`en:our`、`en:that`、`en:the`
@@ -319,6 +325,10 @@ producer（枠の DSL / 自由文の読解 = この文書 / 辞書）── 記�
 
 **第 2 ラウンド（レビュー第 1 ラウンドへの対応）で足した・変えた定数の項目: なし**（ハッシュは凍結と同じ `095335d5…870a`。`artifacts/w2-h2/constants_final.txt`）。
 第 2 ラウンドで足したのは定数でない処理だけである（コピュラの割れる読み・複数語の呼び名・時制・上書きの範囲。判断 D13〜D16）。
+
+**W5-b（2026-10-03）で凍結のあとに足した定数の項目（全件）**: `ADDITION_LABELS` = `追記` `追伸` `p.s.` `ps` `addendum`（`OVERRIDE_MARKERS` の部分集合なので、新しい語は 0）、`REPLACEMENT_MARKERS` = ja `やっぱり` `ではなく`、en `instead` `replace`。
+理由: 攻撃役の反例 `Addendum:`（追記は足すのが既定で、置き換えは明示の標識があるときだけのはず）を直すため。`CONSTANT_NAMES` は 19 個から 21 個になり、凍結のハッシュの対象も 21 個になった（19 個のハッシュ `095335d5…870a` は凍結の記録として残す）。
+e1〜e6 の語である項目は上の一覧に足した（`ADDITION_LABELS` `REPLACEMENT_MARKERS`）。**この 2 つの表の語は、チケットの文言（「やっぱり」「〜ではなく」「instead」「replace」の 4 語。チケットが挙げている）から決めた。** 実装役は説明文 e4 の本文を直接は読んでおらず、指示書に引かれた 1 文（`追記（翌日）：やっぱり…コマではなくホムラにする。`）だけを見た。e1〜e6 に出る語であることは、上の一覧のとおり `constants_in_data.py` の出力で後から確かめた。
 
 ## 8. 呼び名と別名
 
@@ -401,7 +411,7 @@ producer（枠の DSL / 自由文の読解 = この文書 / 辞書）── 記�
  "basis_kind": "explicit"|"comparison"|"negation"|"condition"|"independence"|"precedence"|"quantity"|"combination"|"silence"|null,
  "evidence": ["<原文の文>", ...], "decided_by": "rule:..."|"precedence"|"router:<UNDECIDED_REASON>"|"constraint:<種類>"|"gate:<ABSTENTION_TYPE>",
  "records": {"agents", "rules", "precedence", "lineage_relations", "aliases", "constraints", "constructed", "table": "BUILT"|"REFUSED:<code>"},
- "relations": [...], "reading": {"units", "skipped_markup", "by_status", "auto_resolved", "lookup"},
+ "relations": [...], "reading": {"units", "skipped_markup", "by_status", "auto_resolved", "lookup", "addition_labels_kept_as_addition", "common_noun_check": {"lookup", "checked", "not_checked", "flagged", "introduced_by_naming"}},
  "router": <RoutingDecision.ledger_fields()>|null, "ignored_fields": [...], "task": {...}}
 ```
 
@@ -642,6 +652,120 @@ cd <作業ツリー> && PYTHONPATH=<作業ツリー> PYTHONDONTWRITEBYTECODE=1 p
 | D15 | 時制（レビュー M3） | `center["tense"]` が `nonpast` 以外なら `UNREPRESENTABLE`（`TENSE:<値>`） | 中心の欄を黙って捨てない。過去形は「前回だれがやったか」の報告で、振り分けの宣言ではない。`null`（テ形など）も宣言と言えないので止める |
 | D16 | 英語の呼び名 | 1 語に限る。2 語以上で `and` で割れないものは `NAME_UNRESOLVED`（`MULTI_WORD_NAME`） | 読解器が副詞を充填物に混ぜる（`Rook usually`）と、存在しない呼び名に振る（レビュー第 1 ラウンドで実測）。品詞が分からないので語数で止める |
 
+### W5-b（攻撃の第 2 波 A01・A02）で決めたもの
+
+| # | 論点 | 決定 | 理由 |
+|---|---|---|---|
+| D17 | 普通名詞の主語（A01）の根拠 | 理由 `COMMON_NOUN_SUBJECT:<名前>:<根拠>`（単位の状態は既存の `NAME_UNRESOLVED`、単位は通らないので記録は作らず門が `INCOMPLETE_READING` で止める）。根拠は 2 つで、どちらか一方で足りる。(a) `DETERMINER:<限定詞>`: 英語の単位で、関係が使う呼び名が、単位の元の文（`Unit.text`）の中で `EN_DETERMINERS` の語の直後に出る（読解器は `The team` の `The` を落とすので元の文を見る。空白で切り前後の句読点を除き、限定詞は大小無視）。(b) `PLACEMENT_DIRECT:<型,…>`: 十字の `place`（`explain(..., lookup=…)` の配置）が `origin == direct` かつ `DECIDED` / `MULTIPLE` | 語の一覧ではなく、文の構造（限定詞）と配置の証言だけを使う。この木の既定の配置はスタブ（`NO_PLACEMENT`）なので (b) は配置がつながったときに効く（(a) がこの木の攻撃を止める）。正規表現は使わない（T4） |
+| D18 | (b) で根拠にしないもの | `estimated`（構成物で証言でない）・`UNPLACED`・`UNKNOWN`・`NO_PLACEMENT`。命名の文（`呼ぶ`・`call`）の **2 つ目の名前**と、命名の文の名前は調べない | 推定は証言でない。命名の文で導入された名前は、その文によって名前になっている（`チーム` を人が `呼ぶ` と書けば、配置が `GROUP_ORG` と言っても名前） |
+| D19 | 調べた数 | 出力の `reading.common_noun_check` = {`lookup`, `checked`（配置が答えた名前。重複は 1）, `not_checked`（配置が使えず調べられなかった名前）, `flagged`, `introduced_by_naming`} | 自動で棄却した件数も数える。配置が無いときに「調べて問題なかった」と見えないように、調べられなかった数を別に出す |
+| D20 | 追記は足す（A02） | `ADDITION_LABELS`（`追記` `追伸` `p.s.` `ps` `addendum`）の行は、文ごとに `REPLACEMENT_MARKERS` の語があるときだけ上書き。無ければ足す（両方の関係が残り、同じ仕事に 2 人が候補になれば経路づけ器の既存の処理（同点・矛盾）に任せる）。`訂正` `更新` `update` `edit` `correction` は今までどおり置き換える | 「追記」は足すのが既定のはずで、置き換えは明示の標識があるときだけ。見えない置き換えをしない |
+| D21 | 既存テスト 3 本 | `追記：` の行が標識なしで置き換わることを期待する 3 本（`test_relation_override_replaces_exactly_the_same_scope_and_counts_it` `test_relation_override_that_overlaps_only_partly_is_held_as_ambiguous` `test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replacement`）は **この変更と矛盾して落ちる**。テストには触れず、報告で宣言した（チケットの指示と既存の期待のどちらを取るかは監査役の判断） | テストの期待を弱めない |
+
+### W5-b 第 4 ラウンド（監査役の裁定 C3、2026-10-03）
+
+D20（追記は足す）の帰結として落ちていた既存の 3 本について、監査役は「3 本の **入力** に置き換えの標識（`やっぱり`）を足して『標識つきの置き換え』の試験として残し、同じ入力の標識なしの版を『足す（両方が記録に残る）』の新しい試験として追加する」と裁定した（名前と assert は変えない）。変えたのは入力の文字列と、読解器の表（文をそのまま鍵にした辞書）の鍵だけ。以下が **変更前と変更後の関数の全文**。
+
+**test_relation_override_replaces_exactly_the_same_scope_and_counts_it**（変更前）
+
+```python
+def test_relation_override_replaces_exactly_the_same_scope_and_counts_it():
+    text = "実装はハルに任せる。\n追記：実装はルナに任せる。\n"
+    table = {"実装はハルに任せる。": OV[0][1], "実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
+    explained = rt.explain(text, "x.md", reader=lambda s: table[s])
+    assert explained.extraction.auto_resolved == 1
+    assert [r.superseded_by for r in explained.extraction.relations] == ["R002", None]
+    assert [r.preference for r in explained.records.rules] == [("ルナ",)]
+    result = rt.route_task(explained, task())
+    assert result["agent"] == "ルナ" and result["reading"]["auto_resolved"] == 1
+    assert [r["superseded_by"] for r in result["relations"]] == ["R002", None]      # the replaced relation is kept and says by what
+```
+
+**test_relation_override_replaces_exactly_the_same_scope_and_counts_it**（変更後）
+
+```python
+def test_relation_override_replaces_exactly_the_same_scope_and_counts_it():
+    text = "実装はハルに任せる。\n追記：やっぱり実装はルナに任せる。\n"
+    table = {"実装はハルに任せる。": OV[0][1], "やっぱり実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
+    explained = rt.explain(text, "x.md", reader=lambda s: table[s])
+    assert explained.extraction.auto_resolved == 1
+    assert [r.superseded_by for r in explained.extraction.relations] == ["R002", None]
+    assert [r.preference for r in explained.records.rules] == [("ルナ",)]
+    result = rt.route_task(explained, task())
+    assert result["agent"] == "ルナ" and result["reading"]["auto_resolved"] == 1
+    assert [r["superseded_by"] for r in result["relations"]] == ["R002", None]      # the replaced relation is kept and says by what
+```
+
+**test_relation_override_that_overlaps_only_partly_is_held_as_ambiguous**（変更前）
+
+```python
+def test_relation_override_that_overlaps_only_partly_is_held_as_ambiguous():
+    table = {"大きな実装はハルに任せる。": rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きな実装"})),
+             "実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
+    # "大きな実装" is a size word before a head that is not a kind: the first sentence stops, so use a kind head instead
+    table = {"大きなリファクタリングはハルに任せる。": rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きなリファクタリング"})),
+             "実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
+    text = "大きなリファクタリングはハルに任せる。\n追記：実装はルナに任せる。\n"
+    explained = rt.explain(text, "x.md", reader=lambda s: table[s])
+    assert explained.extraction.units[1].status == "AMBIGUOUS_RELATION" and explained.extraction.auto_resolved == 0
+    assert out_of(explained)["abstention"]["type"] == "INCOMPLETE_READING"
+```
+
+**test_relation_override_that_overlaps_only_partly_is_held_as_ambiguous**（変更後）
+
+```python
+def test_relation_override_that_overlaps_only_partly_is_held_as_ambiguous():
+    table = {"大きな実装はハルに任せる。": rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きな実装"})),
+             "実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
+    # "大きな実装" is a size word before a head that is not a kind: the first sentence stops, so use a kind head instead
+    table = {"大きなリファクタリングはハルに任せる。": rd("ja", cl("任せる", {"recipient": "ハル", "patient": "大きなリファクタリング"})),
+             "やっぱり実装はルナに任せる。": rd("ja", cl("任せる", {"recipient": "ルナ", "patient": "実装"}))}
+    text = "大きなリファクタリングはハルに任せる。\n追記：やっぱり実装はルナに任せる。\n"
+    explained = rt.explain(text, "x.md", reader=lambda s: table[s])
+    assert explained.extraction.units[1].status == "AMBIGUOUS_RELATION" and explained.extraction.auto_resolved == 0
+    assert out_of(explained)["abstention"]["type"] == "INCOMPLETE_READING"
+```
+
+**test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replacement**（変更前）
+
+```python
+def test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replacement():
+    ov, text = explain_lines(("ハルはテストを書く。", rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"}))),
+                             ("セキもテストを書く。", rd("ja", cl("書く", {"agent": "セキ", "patient": "テスト"}))))
+    # the same kind (A does it -> B does it) replaces; a different kind and a different name (A does it -> B does not) is held
+    table = {"ハルはテストを書く。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"})),
+             "モモはテストを書かない。": rd("ja", cl("書く", {"agent": "モモ", "patient": "テスト"}, "-"))}
+    explained = rt.explain("ハルはテストを書く。\n追記：モモはテストを書かない。\n", "x.md", reader=lambda sentence: table[sentence])
+    unit = explained.extraction.units[1]
+    assert unit.status == "AMBIGUOUS_RELATION" and unit.reasons[0].startswith("OVERRIDE_OTHER_KIND_AND_NAME:")
+    assert explained.extraction.auto_resolved == 0 and out_of(explained, kind="test_authoring")["abstention"]["type"] == "INCOMPLETE_READING"
+    same_name = {"ハルはテストを書く。": table["ハルはテストを書く。"],
+                 "ハルはテストを書かない。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"}, "-"))}
+    explained = rt.explain("ハルはテストを書く。\n追記：ハルはテストを書かない。\n", "x.md", reader=lambda sentence: same_name[sentence])
+    assert explained.extraction.units[1].status == "MAPPED" and explained.extraction.auto_resolved == 1
+```
+
+**test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replacement**（変更後）
+
+```python
+def test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replacement():
+    ov, text = explain_lines(("ハルはテストを書く。", rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"}))),
+                             ("セキもテストを書く。", rd("ja", cl("書く", {"agent": "セキ", "patient": "テスト"}))))
+    # the same kind (A does it -> B does it) replaces; a different kind and a different name (A does it -> B does not) is held
+    table = {"ハルはテストを書く。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"})),
+             "やっぱりモモはテストを書かない。": rd("ja", cl("書く", {"agent": "モモ", "patient": "テスト"}, "-"))}
+    explained = rt.explain("ハルはテストを書く。\n追記：やっぱりモモはテストを書かない。\n", "x.md", reader=lambda sentence: table[sentence])
+    unit = explained.extraction.units[1]
+    assert unit.status == "AMBIGUOUS_RELATION" and unit.reasons[0].startswith("OVERRIDE_OTHER_KIND_AND_NAME:")
+    assert explained.extraction.auto_resolved == 0 and out_of(explained, kind="test_authoring")["abstention"]["type"] == "INCOMPLETE_READING"
+    same_name = {"ハルはテストを書く。": table["ハルはテストを書く。"],
+                 "やっぱりハルはテストを書かない。": rd("ja", cl("書く", {"agent": "ハル", "patient": "テスト"}, "-"))}
+    explained = rt.explain("ハルはテストを書く。\n追記：やっぱりハルはテストを書かない。\n", "x.md", reader=lambda sentence: same_name[sentence])
+    assert explained.extraction.units[1].status == "MAPPED" and explained.extraction.auto_resolved == 1
+```
+
+標識なしの版は `tests/test_routing_from_text_w5b.py` に新しい 3 本として足した（既存ファイルの差分を入力だけに保つため）: `test_C3_without_a_marker_relation_override_replaces_exactly_the_same_scope_and_counts_it_both_statements_stand`・`test_C3_without_a_marker_relation_override_that_overlaps_only_partly_is_held_as_ambiguous_both_declarations_stand`・`test_C3_without_a_marker_an_override_of_another_kind_about_another_name_is_held_not_a_replacement_both_statements_stand`。期待は今の木で測った挙動（出力は `artifacts/w5-b/w2h_tests.txt`）: 1 本目は単位が 2 つとも `MAPPED`・`auto_resolved == 0`・`superseded_by` が両方 `None`・規則の `preference` が `[('ハル',), ('ルナ',)]` で、`route_task` は同じ仕事に 2 体の候補なので既存の処理で `RECORD_REFUSED`／`DUPLICATE_FALLBACK` の棄権。2 本目は 2 つとも `MAPPED`（範囲の違う 2 つの宣言がどちらも残り、agent は `ルナ`）。3 本目の前半（別の名前・別の種類）は 2 つとも `MAPPED`、後半（同じ名前で否定）は 2 単位とも `CONTRADICTION`（`CONTRADICTS:R002`／`CONTRADICTS:R001`）で、置き換えではなく矛盾として残り `INCOMPLETE_READING` で棄権する。
+
 ## 19. 既知の制限
 
 - **読解器の被覆が狭い**（0 章）。普通に書かれた説明文は、棄権の理由（`NO_SUPPORTED_CLAUSE` `EN_UNREAD` `NO_PREDICATE_TOKEN` など）の件数どおり、ほぼ全部が棄権になる。単位の数と理由は「測定結果」の区間と `artifacts/w2-h2/reader_gaps.md`。
@@ -651,7 +775,9 @@ cd <作業ツリー> && PYTHONPATH=<作業ツリー> PYTHONDONTWRITEBYTECODE=1 p
 - **複数語の英語の呼び名**（`Big Rook` のような固有名）は棄権（D16）。別名の取り出し元は `呼ぶ`・`call` の文だけで、コピュラ（「L は Luna だ」）の別名は読まない（D14）。
 - **過去形の文**は棄権（D15）。「ハルが実装をやった」だけの説明文では、実装の仕事は決まらない（`UNREPRESENTABLE`）。未来（`Rook will review the code.`）は読解器が `nonpast` と返すので宣言として読む。
 - **追記の上書き**は、同じ範囲・同じ種類の言明なら呼び名が違っても置き換える（D13）。「追記」が足すだけの意味で書かれていれば、本来は同点（undecided）が正解になる。
+  （W5-b で直した: `追記` `追伸` `p.s.` `ps` `addendum` の行は、その文に `REPLACEMENT_MARKERS` の語が無ければ足す（D20）。残る穴: 標識の語は 4 つの閉じた表で、`replaced`・`rather than`・`今度は` のような言い方は標識として読まない（足す側に倒れ、2 人が候補なら同点で棄権する）。標識は文ごとに見るので、同じ行の別の文の標識は効かない。）
 - **普通名詞の主語**（「チームがレビューをやる」）は、配置がスタブで名前と区別できず、`HUMAN_TERMS` の小さい閉じた表にも無ければ呼び名になる（申し送り。読解器の被覆が狭く、他の全文が読める説明文の中でしか効かない）。
+  （W5-b で直した部分: 英語は単位の元の文で限定詞の直後にある名前を止める（`The team`、D17 (a)）。配置がつながれば `direct` の型を持つ語も止める（D17 (b)）。**残る穴**: 日本語には限定詞が無く、配置がスタブの間は `チーム` を止められない。配置がつながると、凍結の経路づけデータの呼び名のうち配置が `direct` と答える語（人名・地名と同じ形の呼び名）も止まりうる（`artifacts/w5-b/routing_with_placement.txt` に実測を出す。製品コードは変えずに測った）。限定詞が無い英語の普通名詞（`Reviewers review code.`）と、限定詞が名前から離れた文（`The big team ...` は複数語の名前として止まる）は D17 (a) の対象でない。）
 - **名前の敬称以外の人**（「あの人」）は `HUMAN_TERMS` に無ければ呼び名として検査され、通れば呼び名になる（敬称つき・照応・説明的な句だけを止める）。
 - **表と箇条書きのラベル**（`シロ：実装担当。`、表の行）は解釈しない。読解器が読めないので門が止める。
 - **見出し・題名の行**（`## エージェントの分担`、`メモ（チャットから転記）`）も単位として読解器に渡るため、述語が無ければ `UNREAD` で門が止める。
