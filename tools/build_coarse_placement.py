@@ -32,6 +32,7 @@ from verantyx import coarse_types as ct  # noqa: E402
 from verantyx.coarse_types import arm_top, combine_arms  # noqa: E402,F401  (one shared rule)
 
 HOLDOUT_SEED = 20261003
+EXIT_STAGE_CACHE_STALE = 4      # the extraction cache lacks the argument chains (W3-a3)
 FAMILIES_DEFAULT = ["code", "code_qa", "conversation", "figurative_commonsense",
                     "general_qa", "narrative", "paraphrase_entail", "pro"]
 
@@ -344,6 +345,7 @@ def analyze(toks, acc: dict, maxc: int) -> None:
                     occ[(w, role, pred)] += 1
                 if is_sahen:
                     sahen[w] += 1
+            _chain_count(toks, run, j, acc, maxc)
             i = j
             continue
         if p1 in ("動詞", "形容詞") or (p1 == "形状詞" and p2 == "一般"):
@@ -361,6 +363,103 @@ def analyze(toks, acc: dict, maxc: int) -> None:
                 if len(w) <= maxc:
                     pos[(w, {"動詞": "V", "形容詞": "A", "形状詞": "S"}[p1])] += 1
         i += 1
+
+
+#: auxiliaries (base forms) that change the voice: a predicate followed by one of them is not counted
+VOICE_AUX = ("れる", "られる", "せる", "させる")
+_CHAIN_ARGS_MAX = 3
+
+
+def _run_end(toks, i: int) -> Optional[int]:
+    """End (exclusive) of the noun run that starts at ``i`` (the same cut ``analyze`` makes), or None."""
+    n = len(toks)
+    if i >= n:
+        return None
+    t = toks[i]
+    if not (_is_noun(t) or (t[1] == "接頭辞" and i + 1 < n and _is_noun(toks[i + 1]))):
+        return None
+    j = i
+    while j < n:
+        u = toks[j]
+        if _is_noun(u):
+            j += 1
+        elif u[1] == "接尾辞" and u[2] == "名詞的" and j > i:
+            j += 1
+        elif u[1] == "接頭辞" and j == i:
+            j += 1
+        else:
+            break
+    return j
+
+
+def _chain_count(toks, run, j: int, acc: dict, maxc: int) -> None:
+    """W3-a3 12.3: the argument chain of one noun run (``toks[:j]`` ends with it).  When the run is
+    followed by one of the nine case particles or by a comma (the mark m), look to the right, neighbours
+    only: up to three more ``noun run + case particle`` pairs, then a verb.  Anything else breaks the
+    chain; the reason is counted (``chain_skips``).  A counted chain is ``(filler run, filler head, m,
+    verb, past)``.  A voice auxiliary after the verb (れる られる せる させる) is not counted, nor is a
+    verbal noun + する (``sahen``: the last noun run is followed straight by する)."""
+    n = len(toks)
+    nx = toks[j] if j < n else None
+    if nx is None:
+        return
+    if nx[1] == "助詞" and nx[0] in ct.CASE_PARTICLES_9:
+        m = nx[0]
+    elif nx[1] == "補助記号" and nx[0] in _COMMAS:
+        m = "∅"
+    else:
+        return
+    skips = acc["chain_skips"]
+    if run[0][2] == "数詞":
+        skips["numeral_start"] += 1
+        return
+    # the filler: the whole run (when it is a word of the same cut as ``occ``) and its last noun
+    if len(run) == 1:
+        fh = run[0][3] or run[0][0]
+        fr = fh
+    else:
+        rw = "".join(x[0] for x in run)
+        fr = rw if (len(rw) <= maxc and ct.notation_type(rw) is None) else ""
+        last = run[-1]
+        fh = (last[3] or last[0]) if (_is_noun(last) and last[2] != "数詞") else ""
+    if (not fr and not fh) or len(fr) > maxc or len(fh) > maxc:
+        skips["no_filler"] += 1
+        return
+    k = j + 1
+    pairs = 0
+    while True:
+        if k >= n:
+            skips["no_verb"] += 1
+            return
+        t = toks[k]
+        if t[1] == "動詞":
+            break
+        if t[1] == "補助記号" and t[2] == "句点":
+            skips["no_verb"] += 1
+            return
+        e = _run_end(toks, k)
+        if e is not None and e < n and toks[e][1] == "動詞" and toks[e][3] == "する":
+            skips["sahen"] += 1         # a verbal noun right before する: the verb is "noun + する", not する
+            return
+        if e is None or e >= n or toks[e][1] != "助詞" or toks[e][0] not in ct.CASE_PARTICLES_9:
+            skips["chain_broken"] += 1
+            return
+        pairs += 1
+        if pairs > _CHAIN_ARGS_MAX:
+            skips["too_many_args"] += 1
+            return
+        k = e + 1
+    v = toks[k]
+    aux = []
+    q = k + 1
+    while q < n and toks[q][1] == "助動詞":
+        aux.append(toks[q][3] or toks[q][0])
+        q += 1
+    if any(a in VOICE_AUX for a in aux):
+        skips["voice"] += 1
+        return
+    acc["chain"][(fr, fh, m, v[3] or v[0], "た" in aux)] += 1
+    skips["counted"] += 1
 
 
 def _hearst_scan(toks, hearst: Counter, maxc: int) -> None:
@@ -395,7 +494,7 @@ def _hearst_scan(toks, hearst: Counter, maxc: int) -> None:
 def _empty_acc() -> dict:
     return {"occ": Counter(), "pos": Counter(), "sahen": Counter(),
             "counters": Counter(), "counters2": Counter(), "hearst": Counter(),
-            "counter_nums": {}}
+            "counter_nums": {}, "chain": Counter(), "chain_skips": Counter()}
 
 
 #: ``counter_nums`` keeps at most this many distinct numerals per Latin unit (only the
@@ -952,17 +1051,20 @@ CREATE TABLE counters(unit TEXT PRIMARY KEY, n INTEGER) WITHOUT ROWID;
 CREATE TABLE meta(k TEXT PRIMARY KEY, v TEXT) WITHOUT ROWID;
 CREATE TABLE generated(word TEXT PRIMARY KEY, model TEXT, effort TEXT, batch_id TEXT,
   attempt INTEGER, definition TEXT, hypernym TEXT, phrases TEXT) WITHOUT ROWID;
+CREATE TABLE generated_frames(word TEXT PRIMARY KEY, model TEXT, effort TEXT, batch_id TEXT,
+  attempt INTEGER, ptype TEXT, frame TEXT) WITHOUT ROWID;
 """
 
 TABLE_ORDER = [("headwords", "word"), ("evidence", "word,arm,src,type"),
                ("unit_kin", "unit,pos,type"), ("unit_sample", "unit,pos"),
                ("atoms", "ch"), ("ctx", "src,particle,pred,type"),
-               ("counters", "unit"), ("meta", "k"), ("generated", "word")]
+               ("counters", "unit"), ("meta", "k"), ("generated", "word"),
+               ("generated_frames", "word")]
 
 
 def _tables_of(con: sqlite3.Connection):
     have = {r[0] for r in con.execute("SELECT name FROM sqlite_master WHERE type='table'")}
-    return [(t, o) for t, o in TABLE_ORDER if t in have]   # a placement made before `generated` existed
+    return [(t, o) for t, o in TABLE_ORDER if t in have]   # a placement made before `generated` / `generated_frames` existed
 
 
 def content_sha256(con: sqlite3.Connection) -> str:
@@ -1052,13 +1154,160 @@ def learn_counters(ex: dict, cfg: dict) -> List[Tuple[str, int]]:
                   if n >= cfg["counter_min_sources"] and unit_ok(u))
 
 
-def _resolve_stage(ex: dict, cfg: dict, allow=None, use_gen: bool = False) -> dict:
+#: slot constructions (W3-a3 12.5): the marks and the predicate types they are read with.  Predicate
+#: TYPES (ids settled by stage 1), never predicate words.
+SLOT_TIME_MARKS = ("∅", "に")
+SLOT_PLACE_MARKS = ("で", "に")
+SLOT_PLACE_PTYPES = ("P_MOVE", "P_EXIST")
+
+
+def _count_gen_frame(gfstat: Counter, dec: dict, garm: dict) -> None:
+    """Count what became of a word that has a generated predicate frame (by outcome and reason)."""
+    why = garm.get("why")
+    if dec.get("origin") == "estimated":
+        gfstat["decided_estimated_generated"] += 1
+        if why:
+            gfstat[why] += 1
+    elif garm["met"]:
+        gfstat["decided_direct_upgrade"] += 1
+        srcs_ = [k.split("@", 1)[1] for k in dec["by"] if k.startswith("role_distribution@")]
+        if srcs_ and all(x.startswith("codex:") for x in srcs_):
+            gfstat["decided_direct_upgrade_all_sources_codex"] += 1
+        else:
+            gfstat["decided_direct_upgrade_with_jawiki"] += 1
+    elif why == "GENERATED_NOT_DECIDING":
+        gfstat["base_decided_generated_ignored"] += 1
+    elif why == "GENERATED_SPLIT":
+        gfstat["tie"] += 1
+
+
+def _stage2(ex: dict, cfg: dict, rec: Dict[str, list], srcs, pos_src, gfstat: Counter,
+            n_new_rows: Dict[str, int]):
+    """Stage 2 of ``_resolve_stage`` (see there): add the ``role_distribution`` rows of the predicates,
+    the ``slot`` rows of the nouns and the ``gen_frame`` rows of the generated predicate frames, and
+    decide the words that got a row again.  Returns ``(info for the manifest, generated_frames rows)``."""
+    filler_type: Dict[str, str] = {}
+    pred_type1: Dict[str, str] = {}
+    for w, r in rec.items():
+        d = r[5]
+        if d["state"] == "DECIDED" and d.get("origin") == "direct" and not any(
+                g in d["by"] for g in ct.GEN_ARMS):
+            t = d["tops"][0]
+            if t.startswith("P_"):
+                pred_type1[w] = t
+            else:
+                filler_type[w] = t
+    extra: Dict[str, list] = defaultdict(list)
+    case9 = set(ct.CASE_PARTICLES_9)
+    per_src: Dict[str, dict] = {}
+    lift = cfg["slot_lift_pct"]
+    rd_store = cfg["rd_store_min"]
+    for src in srcs:
+        chain = ex.get("chain", {}).get(src, {})
+        pos_n = {w: c.get("N", 0) for w, c in pos_src.get(src, {}).items() if c.get("N", 0)}
+        noun_uses = sum(pos_n.values())
+        st = Counter()
+        rd: Dict[str, Counter] = defaultdict(Counter)
+        slot_cnt: Counter = Counter()
+        g_time = g_place = 0
+        for (fr, fh, m, verb, past), n in chain.items():
+            st["chains"] += n
+            if m in case9:
+                vr = rec.get(verb)
+                if vr is not None and "P" in vr[0]:
+                    ft = filler_type.get(fr) if fr else None
+                    if ft is None and fh:
+                        ft = filler_type.get(fh)
+                    if ft is None:
+                        st["untyped_arguments"] += n
+                    else:
+                        st["typed_arguments"] += n
+                        rd[verb][(m, ft)] += n
+            is_time = past and m in SLOT_TIME_MARKS
+            is_place = m in SLOT_PLACE_MARKS and pred_type1.get(verb) in SLOT_PLACE_PTYPES
+            if is_time or is_place:
+                ws = {x for x in (fr, fh) if x}
+                if is_time:
+                    g_time += n
+                    for x in ws:
+                        slot_cnt[(x, "TIME")] += n
+                if is_place:
+                    g_place += n
+                    for x in ws:
+                        slot_cnt[(x, "PLACE")] += n
+        for verb, c in rd.items():
+            base = sum(c.values())
+            if base >= rd_store:
+                st["rd_words"] += 1
+                for (part, typ), n in c.items():
+                    extra[verb].append((verb, "role_distribution", src, "%s|%s" % (part, typ), n, base))
+                    st["rd_rows"] += 1
+        glob = {"TIME": g_time, "PLACE": g_place}
+        for (w, typ), n in slot_cnt.items():
+            wr = rec.get(w)
+            if wr is None or "N" not in wr[0]:
+                continue
+            base = max(pos_n.get(w, 0), n)
+            if n * noun_uses * 100 >= lift * glob[typ] * base:
+                extra[w].append((w, "slot", src, typ, n, base))
+                st["slot_rows_" + typ] += 1
+        ctr = ex.get("counters", {}).get(src, {})
+        g_q = sum(ctr.values())
+        for w, n in ctr.items():
+            wr = rec.get(w)
+            if wr is None or "N" not in wr[0]:
+                continue
+            base = max(pos_n.get(w, 0), n)
+            if n * noun_uses * 100 >= lift * g_q * base:
+                extra[w].append((w, "slot", src, "QUANTITY", n, base))
+                st["slot_rows_QUANTITY"] += 1
+        st["noun_uses"] = noun_uses
+        st["global_time"], st["global_place"], st["global_quantity"] = g_time, g_place, g_q
+        per_src[src] = dict(st)
+    # generated predicate frames (a model wrote them; arm gen_frame, never a donor)
+    gfs = ex.get("gen_frames", {})
+    gf_table = []
+    order = {p: i for i, p in enumerate(ct.ROLE_PARTICLES)}
+    for w in sorted(gfs):
+        g = gfs[w]
+        r = rec.get(w)
+        if r is None:
+            gfstat["not_in_material"] += 1
+            continue
+        if "P" not in r[0]:
+            gfstat["ns_not_predicate"] += 1
+            continue
+        extra[w].append((w, ct.GEN_FRAME_ARM, g["src"], g["ptype"], 1, None))
+        for part in sorted(g["frame"], key=lambda x: order[x]):
+            for typ in sorted(g["frame"][part]):
+                extra[w].append((w, "gen_frame_slot", g["src"], "%s|%s" % (part, typ), 1, None))
+        gf_table.append((w, g["model"], g["effort"], g["batch_id"], g["attempt"], g["ptype"],
+                         stable_json(g["frame"])))
+        gfstat["used"] += 1
+    for w, rows in extra.items():
+        r = rec[w]
+        r[1] = r[1] + rows
+        n_new_rows[w] = len(rows)
+        r[5] = ct.decide_word([(a_, s_, t_, n_, b_) for (_w, a_, s_, t_, n_, b_) in r[1]], cfg)
+    info = {"filler_typed_words": len(filler_type), "predicate_typed_words": len(pred_type1),
+            "per_source": per_src, "words_with_new_rows": len(extra),
+            "frame_decides": bool(cfg.get("frame_decides", True))}
+    return info, gf_table
+
+
+def _resolve_stage(ex: dict, cfg: dict, allow=None, use_gen: bool = False,
+                   use_new: bool = False) -> dict:
     """Everything after extraction: definition chain, aliases, contexts,
     role/sahen/pos_class/frame arms, decisions, unit tables.  ``allow`` (None = every
     head) names the heads that may hand a type down a chain or to a context table.
     ``use_gen``: read the generated definitions (``ex["gen"]``) as an arm of their own
     (``gen_definition``); a word they alone place is an ESTIMATE (generated) and is never
-    a donor, a unit-family member or a context donor."""
+    a donor, a unit-family member or a context donor.
+    ``use_new`` (W3-a3): after the decisions above ("stage 1": no new arm), add the distribution of a
+    predicate's arguments (``role_distribution``), the time / place / quantity constructions of a noun
+    (``slot``) and the generated predicate frames (``ex["gen_frames"]``, arm ``gen_frame``) and decide
+    again only the words that got a new row ("stage 2").  The types that stage 2 reads (what a filler
+    is, what a predicate is) are stage 1's, so stage 2 never feeds itself."""
     t0 = time.time()
     timing = {}
     seeds_n = {w: t for t, ws in ct.SEEDS_NOUN.items() for w in ws}
@@ -1249,6 +1498,7 @@ def _resolve_stage(ex: dict, cfg: dict, allow=None, use_gen: bool = False) -> di
     for h in hubs:
         watch |= dep[h]
     other_met: Dict[str, list] = {}
+    rec: Dict[str, list] = {}       # stage 1: word -> [ns, evidence rows, n_votes, n_seen, kind, decision]
     for w in sorted(words):
         pc = pos_tot.get(w, Counter())
         n_seen = sum(pc.values())
@@ -1349,11 +1599,28 @@ def _resolve_stage(ex: dict, cfg: dict, allow=None, use_gen: bool = False) -> di
         if w in watch:
             other_met[w] = [(a_["arm"], tuple(a_["top"])) for a_ in dec["arms"].values()
                             if a_["met"] and a_["arm"] not in ("definition", "definition_recovered")]
+        if state == "UNPLACED" and not n_votes and n_seen < min_seen:
+            continue
+        rec[w] = [ns, ev, n_votes, n_seen, kind, dec]
+    # ---- stage 2 (W3-a3): the new arms, only for the words that got a new row
+    new_info: Dict[str, object] = {}
+    gf_table: list = []
+    gfstat: Counter = Counter()
+    n_new_rows: Dict[str, int] = {}
+    if use_new:
+        new_info, gf_table = _stage2(ex, cfg, rec, srcs, pos_src, gfstat, n_new_rows)
+    # ---- final rows
+    for w in sorted(rec):
+        ns, ev, n_votes, n_seen, kind, dec = rec[w]
+        state, tops, by = dec["state"], dec["tops"], dec["by"]
         if ns == "NP" and tops:
             kinds_ = {type_ns(t) for t in tops}
             ns = kinds_.pop() if len(kinds_) == 1 else "NP"
         origin = dec.get("origin")
-        if origin == "estimated":
+        garm_f = dec["arms"].get(ct.GEN_FRAME_ARM)
+        if garm_f is not None:
+            _count_gen_frame(gfstat, dec, garm_f)
+        elif origin == "estimated":
             gstat["decided_estimated_generated"] += 1
         elif ct.GEN_ARM in dec["arms"]:
             a_g = dec["arms"][ct.GEN_ARM]
@@ -1363,10 +1630,8 @@ def _resolve_stage(ex: dict, cfg: dict, allow=None, use_gen: bool = False) -> di
                 gstat["base_decided_generated_ignored"] += 1
             elif a_g["why"] == "GENERATED_SPLIT":
                 gstat["tie"] += 1
-        if state == "UNPLACED" and not n_votes and n_seen < min_seen:
-            continue
         funnel["rows"] += 1
-        if n_votes:
+        if n_votes or n_new_rows.get(w):
             funnel["rows_with_any_evidence"] += 1
         if origin == "direct":
             funnel["rows_placed_direct"] += 1
@@ -1376,9 +1641,9 @@ def _resolve_stage(ex: dict, cfg: dict, allow=None, use_gen: bool = False) -> di
                         "+".join(by)))
         ev_rows.extend(ev)
         stat[(state, ns)] += 1
-        # a word placed with a generated sentence in its decision (an upgrade to "direct"
-        # included) never feeds the unit families: a generated sentence is not passed on
-        if state == "DECIDED" and origin == "direct" and ct.GEN_ARM not in by:
+        # a word placed with a generated sentence or frame in its decision (an upgrade to "direct"
+        # included) never feeds the unit families: a generated claim is not passed on
+        if state == "DECIDED" and origin == "direct" and not any(g_ in by for g_ in ct.GEN_ARMS):
             placed_single[w] = tops[0]
     timing["decide_sec"] = round(time.time() - t0, 1)
     # ---- unit tables
@@ -1403,7 +1668,9 @@ def _resolve_stage(ex: dict, cfg: dict, allow=None, use_gen: bool = False) -> di
         gen_table.append((w_, g_["model"], g_["effort"], g_["batch_id"], g_["attempt"],
                           g_["definition"], g_["hypernym"], stable_json(gen_typed[w_])))
     gstat["used"] = len(gen_used)
-    return {"gen_table": gen_table, "gen_stats": dict(gstat), "funnel": dict(funnel), "ctx_global": ctx_global, "headwords": hw_rows, "evidence": ev_rows, "unit_kin": uk,
+    return {"gen_frame_table": gf_table, "gen_frame_stats": dict(gfstat), "new_info": new_info,
+            "chain_skips": {k_: dict(v_) for k_, v_ in sorted(ex.get("chain_skips", {}).items())},
+            "gen_table": gen_table, "gen_stats": dict(gstat), "funnel": dict(funnel), "ctx_global": ctx_global, "headwords": hw_rows, "evidence": ev_rows, "unit_kin": uk,
             "unit_sample": us, "atoms": atoms, "ctx": ctx_rows,
             "counters": ctr_rows, "stat": stat, "rounds": rounds,
             "alias_stats": alias_stats, "timing": timing,
@@ -1456,7 +1723,8 @@ def resolve_all(ex: dict, cfg: dict) -> dict:
     t0 = time.time()
     # stage A never reads the generated definitions: they hand nothing down, so the donor
     # set (and everything built on it) does not depend on them
-    a = _resolve_stage(ex, cfg, None, use_gen=not cfg.get("donor_stage_b", True))
+    a = _resolve_stage(ex, cfg, None, use_gen=not cfg.get("donor_stage_b", True),
+                       use_new=not cfg.get("donor_stage_b", True))
     ta = round(time.time() - t0, 1)
     seeds_n = a["_seeds"]
     st_a = {"donors": a["donors"], "non_seed_donors": len(a["_cand"])}
@@ -1469,7 +1737,7 @@ def resolve_all(ex: dict, cfg: dict) -> dict:
     else:
         allow, excl = _donor_allow(a, cfg)
         t1 = time.time()
-        res = _resolve_stage(ex, cfg, allow, use_gen=True)
+        res = _resolve_stage(ex, cfg, allow, use_gen=True, use_new=True)
         tb = round(time.time() - t1, 1)
         res["donor_stats"] = {
             "enabled": True, "donor_contra_min": cfg["donor_contra_min"],
@@ -1546,6 +1814,64 @@ def read_generated(path: str, excl_terms: Sequence[str], tagger):
                    "effort": effort, "batch_id": pv.get("batch_id"),
                    "attempt": pv.get("attempt"),
                    "src": "generated:%s:%s" % (model, effort)}
+    return rows, drops, n_lines
+
+
+def read_generated_frames(path: str, excl_terms: Sequence[str]):
+    """Read ``frames.jsonl`` (written by tools/gen_coarse_evidence.py collect --kind pred).
+
+    Returns ``(rows, drops, n_lines)``.  ``rows[word]`` = {ptype, frame ({particle: [noun types]}),
+    model, effort, batch_id, attempt, src}.  A generated frame is what a model wrote when asked, not a
+    testimony from the material: its source is always ``generated:<model>:<effort>``.  Dropped, with a
+    count by reason: ``abstained`` (the model answered null), ``invalid`` (a type or a particle outside
+    the closed inventory), ``excluded_term`` (the word holds a held-out test word) and ``dup_word`` (a
+    word that appears twice is not taken: no tie is broken by order)."""
+    rx = None
+    if excl_terms:
+        rx = re.compile("|".join(re.escape(t) for t in sorted(excl_terms, key=len, reverse=True)))
+    drops: Counter = Counter()
+    for k_ in ("abstained", "invalid", "excluded_term"):
+        drops[k_] += 0
+    raw: Dict[str, dict] = {}
+    dup = set()
+    n_lines = 0
+    for line in open(path, encoding="utf-8"):
+        line = line.strip()
+        if not line:
+            continue
+        n_lines += 1
+        r = json.loads(line)
+        w = r["word"]
+        if w in raw or w in dup:
+            dup.add(w)
+            raw.pop(w, None)
+            continue
+        raw[w] = r
+    drops["dup_word"] = len(dup)
+    rows: Dict[str, dict] = {}
+    for w in sorted(raw):
+        r = raw[w]
+        if r.get("abstained") or r.get("ptype") is None:
+            drops["abstained"] += 1
+            continue
+        fr = r.get("frame") or {}
+        ok = r["ptype"] in ct.PRED_TYPES and isinstance(fr, dict)
+        if ok:
+            for part, ts in fr.items():
+                if part not in ct.CASE_PARTICLES_9 or not ts or any(t not in ct.NOUN_TYPES for t in ts):
+                    ok = False
+                    break
+        if not ok:
+            drops["invalid"] += 1
+            continue
+        if rx is not None and rx.search(w):
+            drops["excluded_term"] += 1
+            continue
+        pv = r.get("provenance") or {}
+        model, effort = pv.get("model"), pv.get("effort")
+        rows[w] = {"ptype": r["ptype"], "frame": {p: sorted(set(ts)) for p, ts in fr.items()},
+                   "model": model, "effort": effort, "batch_id": pv.get("batch_id"),
+                   "attempt": pv.get("attempt"), "src": "generated:%s:%s" % (model, effort)}
     return rows, drops, n_lines
 
 
@@ -1651,6 +1977,12 @@ def cmd_build(args) -> int:
         import pickle
         with open(cache_path, "rb") as f:
             ex = pickle.load(f)
+        if "chain" not in ex or "chain_skips" not in ex:
+            # an old extraction knows nothing of the argument chains: reading it as "counted zero" would
+            # make every distribution arm silently empty (W3-a3 12.3)
+            print(json.dumps({"state": "STAGE_CACHE_STALE", "stage_cache": cache_path,
+                              "missing": [k for k in ("chain", "chain_skips") if k not in ex]}))
+            return EXIT_STAGE_CACHE_STALE
         stage_t["extraction_sec"] = 0.0
         stage_t["extraction_from_cache"] = cache_path
         inputs = ex["inputs"]
@@ -1659,7 +1991,7 @@ def cmd_build(args) -> int:
     else:
         ctxm = mp.get_context("fork")
         ex = {"occ": {}, "pos": {}, "sahen": {}, "counters": {}, "counters2": {},
-              "counter_nums": {},
+              "counter_nums": {}, "chain": {}, "chain_skips": {},
               "defs": [], "aliases": [], "paren_aliases": [], "hearst": {}}
         t1 = time.time()
         # ---- jawiki
@@ -1674,6 +2006,8 @@ def cmd_build(args) -> int:
         ctr_j = Counter()
         ctr2_j = Counter()
         nums_j: dict = {}
+        chain_j = Counter()
+        chain_sk_j = Counter()
         pos_j = Counter()
         npos_j = Counter()
         jw_stats = Counter()
@@ -1686,6 +2020,8 @@ def cmd_build(args) -> int:
                 ctr_j.update(a["counters"])
                 ctr2_j.update(a["counters2"])
                 _merge_nums(nums_j, a["counter_nums"])
+                chain_j.update(a["chain"])
+                chain_sk_j.update(a["chain_skips"])
                 pos_j.update(a["pos"])
                 ex["defs"].extend(r["defs"])
                 ex["aliases"].extend(r["aliases"])
@@ -1706,6 +2042,8 @@ def cmd_build(args) -> int:
         ex["counters"]["jawiki"] = ctr_j
         ex["counters2"]["jawiki"] = ctr2_j
         ex["counter_nums"]["jawiki"] = nums_j
+        ex["chain"]["jawiki"] = chain_j
+        ex["chain_skips"]["jawiki"] = chain_sk_j
         ex["pos"]["jawiki"] = pos_j
         stage_t["jawiki_sec"] = round(time.time() - t1, 1)
         # ---- codex
@@ -1744,6 +2082,8 @@ def cmd_build(args) -> int:
                     acc["counters"].update(a["counters"])
                     acc["counters2"].update(a["counters2"])
                     _merge_nums(acc["counter_nums"], a["counter_nums"])
+                    acc["chain"].update(a["chain"])
+                    acc["chain_skips"].update(a["chain_skips"])
                     skips_total.setdefault(src, Counter()).update(r["skips"])
                     excl_counts.update({src + ":" + t: n for t, n in r["excl"].items()})
                     cstats[src]["rows"] += r["rows"]
@@ -1760,6 +2100,8 @@ def cmd_build(args) -> int:
                 ex["counters"][src] = a["counters"]
                 ex["counters2"][src] = a["counters2"]
                 ex["counter_nums"][src] = a["counter_nums"]
+                ex["chain"][src] = a["chain"]
+                ex["chain_skips"][src] = a["chain_skips"]
                 ex["pos"][src] = a["pos"]
             for inp in inputs:
                 if inp["name"].startswith("codex:"):
@@ -1800,6 +2142,31 @@ def cmd_build(args) -> int:
         gen_info["models"] = sorted("%s:%s" % m for m in used_models)
         gen_info["model"] = sorted({m for m, _e in used_models})[0] if used_models else None
         gen_info["effort"] = sorted({e for _m, e in used_models})[0] if used_models else None
+    # ---- generated predicate frames (a different origin as well: never part of the cache)
+    ex["gen_frames"] = {}
+    gf_info = None
+    if args.generated_frames:
+        tg = time.time()
+        gf_rows, gf_drops, gf_lines = read_generated_frames(args.generated_frames, excl_terms)
+        ex["gen_frames"] = gf_rows
+        gf_info = {"path": os.path.abspath(args.generated_frames),
+                   "sha256": sha256_file(args.generated_frames),
+                   "lines": gf_lines, "rows_read": len(gf_rows),
+                   "dropped_by_reason": dict(gf_drops),
+                   "read_sec": round(time.time() - tg, 1)}
+        if args.generated_frames_ledger:
+            gf_info["ledger_path"] = os.path.abspath(args.generated_frames_ledger)
+            gf_info["ledger_sha256"] = sha256_file(args.generated_frames_ledger)
+            led = [json.loads(l) for l in open(args.generated_frames_ledger, encoding="utf-8") if l.strip()]
+            ok_b = {e["batch"] for e in led if e["ev"] == "end" and e.get("status") == "ok"}
+            all_b = {e["batch"] for e in led}
+            gf_info["calls"] = sum(1 for e in led if e["ev"] == "start")
+            gf_info["batches_ok"] = len(ok_b)
+            gf_info["batches_failed"] = len(all_b - ok_b)
+        used_m = {(r["model"], r["effort"]) for r in gf_rows.values()}
+        gf_info["models"] = sorted("%s:%s" % m for m in used_m)
+        gf_info["model"] = sorted({m for m, _e in used_m})[0] if used_m else None
+        gf_info["effort"] = sorted({e for _m, e in used_m})[0] if used_m else None
     # ---- resolve
     t3 = time.time()
     res = resolve_all(ex, cfg)
@@ -1822,6 +2189,7 @@ def cmd_build(args) -> int:
     con.executemany("INSERT INTO ctx VALUES (?,?,?,?,?)", res["ctx"])
     con.executemany("INSERT INTO counters VALUES (?,?)", res["counters"])
     con.executemany("INSERT INTO generated VALUES (?,?,?,?,?,?,?,?)", res["gen_table"])
+    con.executemany("INSERT INTO generated_frames VALUES (?,?,?,?,?,?,?)", res["gen_frame_table"])
     meta = {"config": cfg_text, "types_version": ct.TYPES_VERSION,
             "schema_version": "1", "ctx_global": stable_json(res["ctx_global"])}
     con.executemany("INSERT INTO meta VALUES (?,?)", sorted(meta.items()))
@@ -1874,6 +2242,16 @@ def cmd_build(args) -> int:
          "model": (gen_info or {}).get("model"), "effort": (gen_info or {}).get("effort"),
          "role": "arm gen_definition: places only a word nothing else decided, as an estimate "
                  "(generated); never settles a tie; never a donor"} if args.generated else None,
+        {"name": "predicate argument chains (neighbouring noun runs + case particles + a verb)",
+         "role": "arms role_distribution (predicates) and slot (nouns): shown, never alone a decider; "
+                 "derived from the jawiki and codex material above"},
+        {"name": "K62 table (the predicate types and frames W3-b1 reads; a copy)",
+         "path": "verantyx/coarse_types.py (K62_FRAMES)", "role": "reverse lookup of role_distribution"},
+        {"name": "generated predicate frames (a model wrote them; not a testimony)",
+         "path": args.generated_frames, "origin": "generated",
+         "model": (gf_info or {}).get("model"), "effort": (gf_info or {}).get("effort"),
+         "role": "arm gen_frame: an estimate (generated) unless the distribution arms back the same "
+                 "type and cover its particles; never a donor"} if args.generated_frames else None,
         {"name": "unidic-lite via fugashi", "use": "word segmentation, the coarse word class (pos1, pos2) and orthBase ONLY; no finer dictionary sense labels"},
     ]
     materials = [m for m in materials if m]
@@ -1886,7 +2264,9 @@ def cmd_build(args) -> int:
                  "frozen": args.frozen, "jawiki": args.jawiki,
                  "codex_dir": args.codex_dir, "families": args.families,
                  "stage_cache": cache_path, "generated": args.generated,
-                 "generated_ledger": args.generated_ledger},
+                 "generated_ledger": args.generated_ledger,
+                 "generated_frames": args.generated_frames,
+                 "generated_frames_ledger": args.generated_frames_ledger},
         "frozen_sha256": frozen_sha,
         "coarse_types_sha256": sha256_file(os.path.join(os.path.dirname(HERE), "verantyx", "coarse_types.py")),
         "builder_sha256": sha256_file(os.path.abspath(__file__)),
@@ -1907,6 +2287,16 @@ def cmd_build(args) -> int:
                                                               "decided_direct_upgrade",
                                                               "base_decided_generated_ignored")}})
                       if gen_info else None),
+        "generated_frames": (dict(gf_info, **{
+            "used": res["gen_frame_stats"].get("used", 0),
+            "dropped_by_reason": dict(gf_info["dropped_by_reason"], **{
+                k: res["gen_frame_stats"].get(k, 0)
+                for k in ("ns_not_predicate", "not_in_material")}),
+            "outcomes": {k: v for k, v in sorted(res["gen_frame_stats"].items())
+                         if k not in ("used", "ns_not_predicate", "not_in_material")}})
+                             if gf_info else None),
+        "argument_chains": {"skipped_or_counted_by_reason": res["chain_skips"],
+                            "stage2": res["new_info"]},
         "donors": res["donors"],
         "materials": materials,
         "seed_counts": {"noun": sum(len(v) for v in ct.SEEDS_NOUN.values()),
@@ -1984,6 +2374,10 @@ def main(argv=None) -> int:
                    help="definitions.jsonl made by tools/gen_coarse_evidence.py collect")
     b.add_argument("--generated-ledger", default=None,
                    help="the generator's ledger.jsonl (its calls and batches go in the manifest)")
+    b.add_argument("--generated-frames", default=None,
+                   help="frames.jsonl made by tools/gen_coarse_evidence.py collect --kind pred")
+    b.add_argument("--generated-frames-ledger", default=None,
+                   help="the predicate generator's ledger.jsonl (its calls and batches go in the manifest)")
     b.add_argument("--stage-cache", default=None,
                    help="pickle path: reuse (or write) the extraction stage")
     v = sub.add_parser("verify")

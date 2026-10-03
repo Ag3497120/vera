@@ -1,0 +1,28 @@
+{
+ "boundary_freq": 16,
+ "by_evidence_status": {
+  "BELOW_THRESHOLD": 2190,
+  "NO_EVIDENCE": 2832
+ },
+ "by_kind": {
+  "title": 12,
+  "token": 5010
+ },
+ "by_ns": {
+  "NP": 34,
+  "P": 4988
+ },
+ "by_state": {
+  "UNPLACED": 5022
+ },
+ "content_sha256": "15513261d9f7e8f7050b6563c8f8ad646c5e49c8faa9422effa55fb6e5f94fc6",
+ "kind": "pred",
+ "last_freq": 16,
+ "n_at_boundary": 92,
+ "n_requested": 5000,
+ "out": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a3-S/artifacts/w3-a3/needs_pred.jsonl",
+ "out_sha256": "ea352c7728d292c8104a9bc7d20b373e737776dcc4be4513607eecb6470103e9",
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/base",
+ "rule": "headwords whose namespace is P or NP and whose state is UNPLACED or MULTIPLE, kept when the extraction cache saw the word more often as a verb (V) than as an adjective or adjectival noun (A+S), the uses of all sources summed (a filter that makes the list, not a vote for a type); ordered by n_seen descending; every word whose n_seen equals that of the n-th is included; display order inside one frequency = string order; no test data is read",
+ "total": 5022
+}

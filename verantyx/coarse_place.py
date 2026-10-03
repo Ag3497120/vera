@@ -44,6 +44,13 @@ The answer
                                   decided, never settles a tie, and is never passed on.
                    For ``direct`` answers ``estimate_basis`` is None.
 
+W3-a3 adds three keys at the END of every answer (nothing above changes): ``frame_status`` (one of
+``CONFIRMED NOT_CONFIRMED ESTIMATED NOT_PREDICATE NO_ANSWER NO_PLACEMENT NO_FRAME_TABLE``) and ``frame``
+(``{particle: [noun types]}`` only for a predicate placed DIRECT by a generated frame that the distribution
+of its arguments backed -- the arm ``gen_frame`` in ``decided_by``, ``generated_frame`` true -- else null),
+and for a confirmed frame ``frame_unconfirmed`` (what the model wrote beyond it; display only).  See
+docs/COARSE_PLACEMENT.md section 12.
+
 Evidence arms are never added to each other and sources (``jawiki`` and each
 codex family) never pool their counts; a conclusion is an overlay of the arms
 that met their thresholds (agree -> DECIDED, split -> MULTIPLE).  Types listed
@@ -68,7 +75,7 @@ EXIT_OK, EXIT_NO_PLACEMENT, EXIT_BAD_ARGS = 0, 2, 64
 _CACHE: Dict[str, "_Placement"] = {}
 #: the tables of a placement (a manifest may name only these)
 _TABLES = frozenset(("headwords", "evidence", "unit_kin", "unit_sample", "atoms",
-                     "ctx", "counters", "meta", "generated"))
+                     "ctx", "counters", "meta", "generated", "generated_frames"))
 
 
 def cuts_for(n: int) -> Tuple[Tuple[int, int], ...]:
@@ -112,6 +119,9 @@ class _Placement:
         # likewise a placement made before the ``generated`` table existed (W3-a2)
         self.has_generated = con.execute(
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='generated'").fetchone() is not None
+        # ... and one made before the ``generated_frames`` table existed (W3-a3): it cannot confirm a frame
+        self.has_generated_frames = con.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='generated_frames'").fetchone() is not None
 
     # --- lookups ---------------------------------------------------------------
     def head(self, w: str):
@@ -144,6 +154,21 @@ class _Placement:
         except ValueError:
             ph = []
         return (r[0], r[1], r[2], r[3], r[4], r[5], ph)
+
+    def generated_frame(self, w: str):
+        """(model, effort, batch_id, attempt, ptype, {particle: [noun types]}) or None."""
+        if not self.has_generated_frames:
+            return None
+        r = self.con.execute(
+            "SELECT model, effort, batch_id, attempt, ptype, frame FROM generated_frames WHERE word=?",
+            (w,)).fetchone()
+        if r is None:
+            return None
+        try:
+            fr = json.loads(r[5])
+        except ValueError:
+            fr = {}
+        return (r[0], r[1], r[2], r[3], r[4], fr)
 
     def kin(self, unit: str, pos: str):
         return self.con.execute(
@@ -244,13 +269,29 @@ def _direct(pl: _Placement, term: str, row, role, pred) -> Dict[str, Any]:
     dec = ct.decide_word([(a, s, t, n, b) for (a, s, t, n, b) in ev], pl.cfg)
     axes: Dict[str, Any] = {}
     gen_row = pl.generated(term) if any(a == ct.GEN_ARM for (a, _s, _t, _n, _b) in ev) else None
+    gf_row = (pl.generated_frame(term)
+              if any(a == ct.GEN_FRAME_ARM for (a, _s, _t, _n, _b) in ev) else None)
     for k, a in dec["arms"].items():
         cnts = a["counts"]
         mx = max(cnts.values())
         axes[k] = {"counts": dict(sorted(cnts.items())),
-                   "top": sorted(t for t, c in cnts.items() if c == mx),
+                   # a distribution's keys are "<particle>|<type>" (the largest key means nothing) and a
+                   # generated frame's verdict is the decision's own: those two arms show decide_word's top
+                   "top": (list(a["top"]) if a["arm"] in ("role_distribution", ct.GEN_FRAME_ARM)
+                           else sorted(t for t, c in cnts.items() if c == mx)),
                    "met": a["met"], "threshold_met": a["threshold_met"],
                    "why": a["why"], "generated": a["src"].startswith("codex:")}
+        if a["arm"] == "role_distribution":
+            axes[k]["significant_particles"] = list(a["sig"])
+        if k == ct.GEN_FRAME_ARM:
+            if gf_row is not None:
+                axes[k]["provenance"] = {"model": gf_row[0], "effort": gf_row[1],
+                                         "batch_id": gf_row[2]}
+            else:
+                parts = a["src"].split(":")
+                axes[k]["provenance"] = {"model": parts[1] if len(parts) > 1 else None,
+                                         "effort": parts[2] if len(parts) > 2 else None,
+                                         "batch_id": None}
         if k == ct.GEN_ARM:
             # a sentence a model wrote: its origin stays on the answer
             if gen_row is not None:
@@ -271,20 +312,72 @@ def _direct(pl: _Placement, term: str, row, role, pred) -> Dict[str, Any]:
              "generated_definition": ct.GEN_ARM in decided_by}
     nsv: Dict[str, Dict[str, int]] = {}
     for (a, s, t, n, b) in ev:
-        if a in ct.NON_VOTE_ARMS:
+        if a == "ns_vote":
             nsv.setdefault(s, {})[t] = n
     if nsv:
         extra["namespace_votes"] = {s: dict(sorted(v.items())) for s, v in sorted(nsv.items())}
+    extra["generated_frame"] = ct.GEN_FRAME_ARM in decided_by
+    frame = unconfirmed = None
+    if (dec.get("origin") == "direct" and dec["state"] == "DECIDED" and ct.GEN_FRAME_ARM in decided_by):
+        # the frame the answer stands on: the particles the distribution arms that backed it found
+        # significant (a union of sets; no count is added), each with the types the model wrote
+        sig = set()
+        for k in decided_by:
+            if k in dec["arms"] and dec["arms"][k]["arm"] == "role_distribution":
+                sig |= set(dec["arms"][k]["sig"])
+        gen_map: Dict[str, List[str]] = {}
+        for (a, s, t, n, b) in ev:
+            if a == "gen_frame_slot":
+                part, _bar, typ = t.partition("|")
+                gen_map.setdefault(part, []).append(typ)
+        order = [p for p in ct.ROLE_PARTICLES if p in gen_map]
+        frame = {p: sorted(set(gen_map[p])) for p in order if p in sig}
+        unconfirmed = {p: sorted(set(gen_map[p])) for p in order if p not in sig}
     if dec.get("origin") == "estimated":
-        # placed by a generated definition ALONE: a construction, marked as such
-        ph = gen_row[6] if gen_row else []
-        word = next((p for p, t in ph if t == tops[0]), None) or term
-        batch = gen_row[2] if gen_row else None
+        # placed by a generated definition (or frame) ALONE: a construction, marked as such
+        if ct.GEN_FRAME_ARM in decided_by:
+            word = term
+            batch = gf_row[2] if gf_row else None
+        else:
+            ph = gen_row[6] if gen_row else []
+            word = next((p for p, t in ph if t == tops[0]), None) or term
+            batch = gen_row[2] if gen_row else None
         nbs = [{"word": word, "type": tops[0], "via": "generated:%s" % batch}]
-        return _result(term, ns, state, "estimated", True, _order(tops), cands, axes, nbs,
-                       True, role, pred, _pl_info(pl), extra, estimate_basis="generated")
-    return _result(term, ns, state, "direct", False, _order(tops), cands, axes, [],
-                   True, role, pred, _pl_info(pl), extra)
+        r = _result(term, ns, state, "estimated", True, _order(tops), cands, axes, nbs,
+                    True, role, pred, _pl_info(pl), extra, estimate_basis="generated")
+    else:
+        r = _result(term, ns, state, "direct", False, _order(tops), cands, axes, [],
+                    True, role, pred, _pl_info(pl), extra)
+    return _set_frame(pl, r, frame, unconfirmed)
+
+
+def _frame_status_of(pl: Optional[_Placement], r: Dict[str, Any]) -> str:
+    """The closed list of ``frame_status`` values (docs section 12.10)."""
+    st = r["state"]
+    if st == "NO_PLACEMENT":
+        return "NO_PLACEMENT"
+    if st in ("UNPLACED", "UNKNOWN", "MULTIPLE"):
+        return "NO_ANSWER"
+    if r["origin"] == "estimated":
+        return "ESTIMATED"
+    top = r["top"]
+    if r.get("namespace") != "P" or not top or not top[0].startswith("P_"):
+        return "NOT_PREDICATE"
+    if pl is None or not pl.has_generated_frames:
+        return "NO_FRAME_TABLE"
+    return "CONFIRMED" if ct.GEN_FRAME_ARM in (r.get("decided_by") or []) else "NOT_CONFIRMED"
+
+
+def _set_frame(pl: Optional[_Placement], r: Dict[str, Any], frame=None, unconfirmed=None) -> Dict[str, Any]:
+    """Append the W3-a3 keys (last, after every existing key): ``frame_status`` and ``frame`` (the
+    particle -> noun types of a CONFIRMED predicate, else null); ``frame_unconfirmed`` only with a
+    CONFIRMED frame (what the model wrote beyond it: shown, never read by a reader)."""
+    status = _frame_status_of(pl, r)
+    r["frame_status"] = status
+    r["frame"] = frame if status == "CONFIRMED" else None
+    if status == "CONFIRMED":
+        r["frame_unconfirmed"] = unconfirmed or {}
+    return r
 
 
 def _left_ok(pl: _Placement, left: str, memo, cfg) -> bool:
@@ -333,7 +426,7 @@ def _estimate(pl: _Placement, term: str, row, role, pred) -> Dict[str, Any]:
         # word upgraded to "direct" by agreement (its ``by`` names ``gen_definition``)
         if r is None or r[1] != "DECIDED" or r[2] != "direct":
             continue
-        if ct.GEN_ARM in (r[6] or "").split("+"):
+        if any(g in (r[6] or "").split("+") for g in ct.GEN_ARMS):
             continue
         if best is None or len(right) > len(best[0]):
             best = (right, r[3], left)
@@ -473,6 +566,20 @@ def _estimate(pl: _Placement, term: str, row, role, pred) -> Dict[str, Any]:
 def query(term: str, *, context_role: Optional[str] = None,
           context_predicate: Optional[str] = None,
           placement: Optional[str] = None) -> Dict[str, Any]:
+    """The coarse type(s) of ``term`` (``_query_inner`` below holds the steps and the full description) with
+    the W3-a3 keys appended LAST to every answer: ``frame_status`` and ``frame`` (see the module docstring
+    and docs section 12.10).  The steps themselves are not touched by W3-a3."""
+    r = _query_inner(term, context_role=context_role, context_predicate=context_predicate,
+                     placement=placement)
+    if "frame_status" not in r:
+        pl, _why = _open(placement)             # opened (and cached) by the call above
+        r = _set_frame(pl, r)
+    return r
+
+
+def _query_inner(term: str, *, context_role: Optional[str] = None,
+                 context_predicate: Optional[str] = None,
+                 placement: Optional[str] = None) -> Dict[str, Any]:
     """The coarse type(s) of ``term`` (see the module docstring).
 
     ``context_role`` must be one of ``ct.ROLE_PARTICLES`` (or None); anything

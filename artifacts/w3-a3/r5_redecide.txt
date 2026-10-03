@@ -1,0 +1,10 @@
+{
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r5/run1",
+ "headwords": 1758846,
+ "words_with_evidence_decided_again": 1223418,
+ "words_without_evidence": 535428,
+ "words_without_evidence_not_unplaced": 0,
+ "differences": 0,
+ "examples": [],
+ "seconds": 9.2
+}

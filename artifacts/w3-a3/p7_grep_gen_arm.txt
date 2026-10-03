@@ -1,0 +1,13 @@
+verantyx/coarse_types.py:337:GEN_ARM = "gen_definition"
+verantyx/coarse_types.py:597:    gen_rows = [r for r in ev if r[0] == GEN_ARM]
+verantyx/coarse_types.py:615:    garm = {"arm": GEN_ARM, "src": gen_rows[0][1], "counts": dict(sorted(counts.items())),
+verantyx/coarse_types.py:617:    arms_[GEN_ARM] = garm
+verantyx/coarse_types.py:627:                   if k != GEN_ARM and a["threshold_met"] and a["top"] == [t])
+verantyx/coarse_types.py:632:        return {"arms": arms_, "state": "DECIDED", "tops": [t], "by": sorted(agree + [GEN_ARM]),
+verantyx/coarse_types.py:634:    return {"arms": arms_, "state": "DECIDED", "tops": [t], "by": [GEN_ARM],
+verantyx/coarse_place.py:271:    gen_row = pl.generated(term) if any(a == ct.GEN_ARM for (a, _s, _t, _n, _b) in ev) else None
+verantyx/coarse_place.py:295:        if k == ct.GEN_ARM:
+verantyx/coarse_place.py:312:             "generated_definition": ct.GEN_ARM in decided_by}
+tools/build_coarse_placement.py:1583:                        ev.append((w, ct.GEN_ARM, g_["src"], t_, n_, None))
+tools/build_coarse_placement.py:1625:        elif ct.GEN_ARM in dec["arms"]:
+tools/build_coarse_placement.py:1626:            a_g = dec["arms"][ct.GEN_ARM]

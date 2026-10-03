@@ -1,0 +1,5 @@
+R5 headwords check: coined terms = 60 present in headwords = 0 []
+dev/check term overlap: []
+dev kinds {'typed': 127, 'unknown_fragment': 3, 'unknown_coined': 20} check kinds {'typed': 258, 'unknown_fragment': 2, 'unknown_coined': 40}
+typed with P_MOVE/P_COMMUNICATE (dev, check): 24 58
+seed overlap dev/check: []

@@ -1,0 +1,3 @@
+terms compared: 2530 | answers that differ in any OLD key's value: 0 [] | key order of the old keys changed: 0
+frame_status on R5 (an old placement, no generated_frames table): {'ESTIMATED': 471, 'NOT_PREDICATE': 938, 'NO_ANSWER': 1029, 'NO_FRAME_TABLE': 92}
+every answer's last keys: [('frame_status', 'frame')]

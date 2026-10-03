@@ -1,0 +1,56 @@
+{
+ "check_kinds": {
+  "typed": 258,
+  "unknown_coined": 40,
+  "unknown_fragment": 2
+ },
+ "dev_kinds": {
+  "typed": 127,
+  "unknown_coined": 20,
+  "unknown_fragment": 3
+ },
+ "files": {
+  "artifacts/w3-a3/PREREG.md": {
+   "bytes": 21884,
+   "lines": 108,
+   "sha256": "20543c2bc45dc85b6fb82b58734106952a6b4eb899667e0bd14f9345d35c8179"
+  },
+  "artifacts/w3-a3/coined_absent.txt": {
+   "bytes": 314,
+   "lines": 5,
+   "sha256": "39ae59f836b058ec3dc0b0fbcd5a38c9df90f7c3eb2122e3f1d9c52290847b39"
+  },
+  "artifacts/w3-a3/dev_verbs_spec.txt": {
+   "bytes": 8715,
+   "lines": 155,
+   "sha256": "b18962d5e696fd5ee8b5aab5cd443cb40c4e8244ad9b7fbcaacb1cbb3599dfa9"
+  },
+  "artifacts/w3-a3/exclude_coined.jsonl": {
+   "bytes": 1578,
+   "lines": 60,
+   "sha256": "bd2da38fc269cdc7a11efe18d1975be8a765ba03d3489989678301690783cdf4"
+  },
+  "artifacts/w3-a3/make_verb_data.py": {
+   "bytes": 5433,
+   "lines": 129,
+   "sha256": "e4e5e14ebd18d949c4ae42051dacd244973e0b53493fa2100c50caa36c5a16a1"
+  },
+  "artifacts/w3-a3/verb_check_spec.txt": {
+   "bytes": 16695,
+   "lines": 303,
+   "sha256": "033a1ab235c43fc766f9e809b84aff0404254c770007225d872350b2b93aac7a"
+  },
+  "tests/coarse_place/data/dev_verbs.jsonl": {
+   "bytes": 24079,
+   "lines": 150,
+   "sha256": "fe3d564fd120df6c801881e25318ad20adaf65cfa16b8bb99e2ed0298b2a8bdb"
+  },
+  "tests/coarse_place/data/verb_check_300.jsonl": {
+   "bytes": 47845,
+   "lines": 300,
+   "sha256": "5f542d75c5aaba1deb3e64f89bbfc1063b05319114be7c09291f278b85b2c80b"
+  }
+ },
+ "frozen_at": "2026-10-03 18:55:35 +0900",
+ "product_code_diff_stat_at_freeze": "(empty)"
+}
