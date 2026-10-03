@@ -16,6 +16,9 @@ from verantyx.event_cross import PlaceResult
 from test_routing_from_text_w5b import Placement, direct, en_review, explain, ja_do, rd, cl, route
 
 R7 = "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1"
+# Integration (auditor, 2026-10-04): the suite runs split across two machines and the registered build lives outside the tree, so a machine without
+# it SKIPS with a visible reason instead of failing (same treatment as the other r6/r7-pinned tests). Where the build exists nothing changes.
+_needs_build = pytest.mark.skipif(not __import__('os').path.isdir(R7), reason="ENV_MISSING[coarse placement r7/run1]")
 SENTENCE = "ソラは実装をやる。\n"
 CHECK_KEYS = {"lookup", "checked", "not_checked", "flagged", "introduced_by_naming"}
 
@@ -144,6 +147,7 @@ def test_a2_one_estimated_name_stops_the_whole_text_as_a_typed_common_noun_does(
     ("委員会がテストを書く。", "委員会", "GROUP_ORG"),
     ("開発者がテストを書く。", "開発者", "PERSON"),
 ])
+@_needs_build
 def test_a2_r7_an_estimated_common_noun_is_not_routed(monkeypatch, sentence, noun, types):
     monkeypatch.setenv("VERA_PLACEMENT", R7)
     explained = rt.explain(sentence + "\n", "x.md")
@@ -157,6 +161,7 @@ def test_a2_r7_an_estimated_common_noun_is_not_routed(monkeypatch, sentence, nou
     ("レビューは課がやる。", "課"),
     ("レビューは外注先がやる。", "外注先"),
 ])
+@_needs_build
 def test_a2_r7_an_unplaced_word_is_routed_as_in_w5d_by_the_corrected_rule(monkeypatch, sentence, noun):
     # W5-e2: r7 says UNPLACED for these words; the corrected rule (auditor, 2026-10-04 04:42:38) passes an UNPLACED word to the name check, exactly as W5-d did
     monkeypatch.setenv("VERA_PLACEMENT", R7)

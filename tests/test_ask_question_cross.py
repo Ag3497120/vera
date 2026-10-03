@@ -380,7 +380,7 @@ def test_an_exception_in_the_stage_is_an_error_state_and_the_original_stays(tmp_
 def test_the_states_and_reasons_are_the_closed_lists():
     src = Path(cli.__file__).read_text(encoding='utf-8')
     states = set(O.ANSWER_STATUSES) | {'NOT_A_QUESTION', 'DOCUMENTS_NOT_LOADED', 'STRUCTURE_INVALID', 'ERROR'}
-    assert len(O.ANSWER_STATUSES) == 11 and len(states) == 15
+    assert len(O.ANSWER_STATUSES) == 12 and len(states) == 16    # Integration (auditor, 2026-10-04): W5-e (A-1) added INCOMPLETE_TYPING to observe.ANSWER_STATUSES (was 11 / 15 at W3-c4)
     for word in ('SURFACE_NOT_IN_EVIDENCE', 'QUOTE_UNBALANCED_EVIDENCE', 'PERIOD_CUT_UNCERTAIN', 'PREDICATE_FORM_DIFFERS', 'PREDICATE_POSITION_UNKNOWN', 'SURFACES_DIFFER',
                  'DOCUMENTS_NOT_LOADED', 'STRUCTURE_INVALID', 'NOT_A_QUESTION'):
         assert word in src

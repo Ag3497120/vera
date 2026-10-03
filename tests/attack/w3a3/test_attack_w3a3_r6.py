@@ -8,6 +8,11 @@ from verantyx import coarse_types as ct
 
 
 PLACEMENT = "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/run1"
+# Integration (auditor, 2026-10-04): the suite runs split across two machines and the registered build lives outside the tree, so a machine without
+# it SKIPS with a visible reason instead of failing (same treatment as the other r6/r7-pinned tests). Where the build exists nothing changes.
+import os as _os
+import pytest as _pytest
+pytestmark = _pytest.mark.skipif(not _os.path.isdir(PLACEMENT), reason="ENV_MISSING[coarse placement r6/run1]")
 OUT = Path(__file__).parent
 
 

@@ -10,6 +10,9 @@ from verantyx import observe as ob, routing_from_text as rt, semantic_read as se
 from verantyx.semantic_ir import Clause, Role, Span, Variable
 
 R7 = "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1"
+# Integration (auditor, 2026-10-04): the suite runs split across two machines and the registered build lives outside the tree, so a machine without
+# it SKIPS with a visible reason instead of failing (same treatment as the other r6/r7-pinned tests). Where the build exists nothing changes.
+_needs_build = pytest.mark.skipif(not __import__('os').path.isdir(R7), reason="ENV_MISSING[coarse placement r7/run1]")
 Q = "誰が商人に小包を渡した？"
 S1 = "船長が商人に小包を渡した。"
 S2 = "提督が商人に小包を渡した。"
@@ -63,6 +66,7 @@ def test_obs_tie_with_two_direct_witnesses_is_order_independent(tmp_path):
     assert a["focus"] == b["focus"] and a["ranks"] == b["ranks"]
 
 
+@_needs_build
 def test_route_r7_estimated_common_noun_is_not_mapped_as_an_agent(monkeypatch):
     monkeypatch.setenv("VERA_PLACEMENT", R7)
     place = cp.query("委員会", placement=R7)
@@ -191,6 +195,7 @@ def test_d1_record_in_another_sovereign_root_does_not_lift(tmp_path, monkeypatch
     assert out["kind"] == "unknown" and out["basis_policy"]["sovereign"]["confirmed_records_used"] == 0
 
 
+@_needs_build
 def test_d1_nfkc_variant_does_not_lift_and_conflicting_variants_abstain(tmp_path, monkeypatch):
     root = tmp_path / "sov"; create_store(root, "s1")
     monkeypatch.setenv("VERA_SOVEREIGN_ROOT", str(root)); monkeypatch.setenv("VERA_SOVEREIGN_STORE", "s1")
@@ -227,6 +232,7 @@ def partial_frame_vector():
     return None
 
 
+@_needs_build
 def test_frame_confirmed_partial_intersection_does_not_authorize_unbacked_type():
     vector = partial_frame_vector()
     if vector is None:
