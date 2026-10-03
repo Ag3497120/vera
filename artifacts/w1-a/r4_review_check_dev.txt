@@ -1,0 +1,34 @@
+tree=/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W1-a2-impl3/dev191
+VIOLATION N1    土手に桜の木が植えられた。 [('植える', 'agent', '土手')]
+VIOLATION N1    芝生に水がまかれた。 [('まく', 'agent', '芝生')]
+VIOLATION N1    裏手に倉庫が建てられた。 [('建てる', 'agent', '裏手')]
+VIOLATION N1    分母に数字が書き込まれた。 [('書き込む', 'agent', '分母')]
+VIOLATION N1    体長に目盛りが記された。 [('記す', 'agent', '体長')]
+VIOLATION N1    器官に異常が見つけられた。 [('見つける', 'agent', '器官')]
+VIOLATION N1    酵母に糖が加えられた。 [('加える', 'agent', '酵母')]
+VIOLATION N1    空母に戦闘機が積まれた。 [('積む', 'agent', '空母')]
+VIOLATION N1    川の土手に看板が立てられた。 [('立てる', 'agent', '川の土手')]
+VIOLATION N1    民家に火が放たれた。 [('放つ', 'agent', '民家')]
+VIOLATION N1    空き家に看板が掛けられた。 [('掛ける', 'agent', '空き家')]
+VIOLATION N1    隠れ家に宝が隠された。 [('隠す', 'agent', '隠れ家')]
+VIOLATION N1    古い民家に新しい屋根が付けられた。 [('付ける', 'agent', '古い民家')]
+VIOLATION N1    全長に印が付けられた。 [('付ける', 'agent', '全長')]
+VIOLATION N1    身長に印が付けられた。 [('付ける', 'agent', '身長')]
+VIOLATION N1    個人に責任が負わされた。 [('負わす', 'agent', '個人')]
+ok        N2    母が着物を園児に仕立てた。 
+ok        N2    先生が作文を児童に直した。 
+ok        N2    母が浴衣を末っ子に仕立てた。 
+ok        N2    係長が資料を新入りに整理した。 
+ok        N2    美容師が髪を花嫁に染めた。 
+VIOLATION N3    町内会に新しい会長が選ばれた。 [('選ぶ', 'agent', '町内会')]
+VIOLATION N3    自治会に新しい役員が選ばれた。 [('選ぶ', 'agent', '自治会')]
+VIOLATION N4    この町は昔ほど賑やかではない。 [('copula', 'property')]
+VIOLATION N4    この村は都会ほど便利ではない。 [('copula', 'property')]
+VIOLATION QA    土手に桜の木が植えられた。 / 誰が桜の木を植えた？ -> ANSWER ['土手']
+VIOLATION QA    芝生に水がまかれた。 / 誰が水をまいた？ -> ANSWER ['芝生']
+VIOLATION QA    裏手に倉庫が建てられた。 / 誰が倉庫を建てた？ -> ANSWER ['裏手']
+VIOLATION QA    空母に戦闘機が積まれた。 / 誰が戦闘機を積んだ？ -> ANSWER ['空']
+VIOLATION QA    分母に数字が書き込まれた。 / 誰が数字を書き込んだ？ -> ANSWER ['分']
+VIOLATION QA    器官に異常が見つけられた。 / 誰が異常を見つけた？ -> ANSWER ['器官']
+checks=31 violations=26
+exit=1

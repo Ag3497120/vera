@@ -1,0 +1,10 @@
+seed 7: dev {'abstain': 2259, 'correct': 121, 'wrong': 20} / after {'abstain': 2275, 'correct': 105, 'wrong': 20} / correct->not-correct 20 (うち使役系 13) / not-correct->correct 4
+   new wrong-graded: 受け身 | 妻は夫に、和風ハンバーグへ大根おろしを添えられた。 | 誰が大根おろしを添えた？ | gold=妻 ans=['夫']
+   new wrong-graded: 数量 | 三人の選手が、試合後に真理監督へ感想を伝えた。 | 誰に感想を伝えた？ | gold=真理監督 ans=['真理']
+   new wrong-graded: 語順の入れ替え | 夜、虫の声をフクロウが聞いていた。 | 誰が虫の声を聞いていましたか。 | gold=フクロウ。 ans=['フクロウ']
+seed 101: dev {'abstain': 2288, 'correct': 90, 'wrong': 22} / after {'abstain': 2306, 'correct': 77, 'wrong': 17} / correct->not-correct 15 (うち使役系 7) / not-correct->correct 2
+   new wrong-graded: 受け身 | 祖父は孫に、わけぎを納豆へ混ぜられた。 | 誰がわけぎを混ぜた？ | gold=祖父 ans=['孫']
+   new wrong-graded: 否定 | バスケットボール部の監督は、試合中に奈津を交代させなかった。 | 誰が誰を交代させなかった？ | gold=監督が奈津を。 ans=['バスケットボール部の', '奈津']
+   new wrong-graded: 語順の入れ替え | ヤギを、山羊飼いが夕方に小屋へ戻した。 | 誰が小屋へ戻した？ | gold=山羊飼いが。 ans=['山羊飼い']
+   new wrong-graded: 語順の入れ替え | 旅行の荷物を、出発前に両親が車へ運んだ。 | 何を車へ運んだ？ | gold=旅行の荷物を。 ans=['旅行の荷物']
+   new wrong-graded: 語順の入れ替え | 札幌で、佐藤さんを鈴木さんが先に見つけた。 | 誰が誰を見つけた？ | gold=鈴木さんが佐藤さんを見つけた。 ans=['鈴木さん', '佐藤さん']

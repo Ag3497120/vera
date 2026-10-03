@@ -1,0 +1,24 @@
+tree=/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W1-a3-impl/r3end entry=yes
+VIOLATION entry     陛下が視察された。 [{'predicate': '視察する', 'roles': {'patient': '陛下'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'passive'}]
+VIOLATION entry     恩師が執筆された。 [{'predicate': '執筆する', 'roles': {'patient': '恩師'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'passive'}]
+VIOLATION entry     皇后が訪問された。 [{'predicate': '訪問する', 'roles': {'patient': '皇后'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'passive'}]
+VIOLATION entry     大臣が視察された。 [{'predicate': '視察する', 'roles': {'patient': '大臣'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'passive'}]
+VIOLATION entry     博士が研究された。 [{'predicate': '研究する', 'roles': {'patient': '博士'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'passive'}]
+VIOLATION entry     総理が謝罪された。 [{'predicate': '謝罪する', 'roles': {'patient': '総理'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'passive'}]
+VIOLATION entry     陛下が子供に話しかけられた。 [{'predicate': '話しかける', 'roles': {'agent': '子供', 'patient': '陛下'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'passive'}]
+VIOLATION entry     大臣が国民に謝罪された。 [{'predicate': '謝罪する', 'roles': {'agent': '国民', 'patient': '大臣'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'passive'}]
+VIOLATION entry     先生が生徒に謝罪された。 [{'predicate': '謝罪する', 'roles': {'agent': '生徒', 'patient': '先生'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'passive'}]
+VIOLATION entry     校長が生徒に注意された。 [{'predicate': '注意する', 'roles': {'agent': '生徒', 'patient': '校長'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'passive'}]
+VIOLATION entry     賞状が優勝者に手渡された。 [{'predicate': '手渡す', 'roles': {'agent': '優勝者', 'patient': '賞状'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'passive'}]
+VIOLATION entry     設計が建築家に任された。 [{'predicate': '任す', 'roles': {'agent': '建築家', 'patient': '設計'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'passive'}]
+ok        entry-ok  子どもが先生に叱られた。 
+ok        entry-ok  少年は犬に追いかけられた。 
+known     misread   子供たちが公園を回った。 [{'predicate': '回る', 'roles': {'agent': '子供たち', 'patient': '公園'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'active'}]
+known     misread   車がトンネルを抜けた。 [{'predicate': '抜ける', 'roles': {'agent': '車', 'patient': 'トンネル'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'active'}]
+known     misread   行列が大通りを練り歩いた。 [{'predicate': '練り歩く', 'roles': {'agent': '行列', 'patient': '大通り'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'active'}]
+known     misread   船が港を出航した。 [{'predicate': '出航する', 'roles': {'agent': '船', 'patient': '港'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'active'}]
+info      was-pass  窓が少年に割られた。 [{'predicate': '割る', 'roles': {'agent': '少年', 'patient': '窓'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'passive'}]
+info      was-pass  財布が泥棒に盗まれた。 [{'predicate': '盗む', 'roles': {'agent': '泥棒', 'patient': '財布'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'passive'}]
+info      was-pass  書類が提出された。 [{'predicate': '提出する', 'roles': {'patient': '書類'}, 'polarity': '+', 'tense': 'past', 'modality': None, 'voice': 'passive'}]
+checks=14 violations=12
+exit=1

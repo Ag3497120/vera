@@ -13,11 +13,26 @@ import tempfile
 import time
 from pathlib import Path
 
+# 子プロセスが走らせてよいモジュール（閉じた集合。ここに無い名前は走らせない）。
+ALLOWED_MODULES = ("verantyx.cli", "verantyx.semantic_read")
+
 _SCRIPT = r'''
 import importlib.util, json, os, runpy, sys, traceback
 TREE = @@TREE@@
+ALLOWED = @@ALLOWED@@
 MODE = sys.argv[1]
-ARGS = sys.argv[2:]
+if MODE == "run_module":                 # run_module <module> <args...> : verantyx.cli 以外の入口（--store は付けない）
+    MODULE = sys.argv[2]
+    ARGS = sys.argv[3:]
+elif MODE == "precheck":                 # precheck [<module>]
+    MODULE = sys.argv[2] if len(sys.argv) > 2 else "verantyx.cli"
+    ARGS = []
+else:
+    MODULE = "verantyx.cli"
+    ARGS = sys.argv[2:]
+if MODULE not in ALLOWED:
+    sys.stderr.write("module not allowed: %r\n" % (MODULE,))
+    sys.exit(97)
 
 def _locations(m):
     f = getattr(m, "__file__", None)
@@ -52,13 +67,14 @@ def provenance(extra):
         mods.append(name)
         if not locs or not all(_inside(p, tree) for p in locs):
             outside.append({"module": name, "locations": [os.path.realpath(p) for p in locs] or ["<unknown>"]})
-    try:
-        spec = importlib.util.find_spec("verantyx.cli")
-        origin = getattr(spec, "origin", None)
-        if origin is None or not _inside(origin, tree):
-            outside.append({"module": "verantyx.cli(find_spec)", "locations": [origin or "<unknown>"]})
-    except Exception as e:
-        outside.append({"module": "verantyx.cli(find_spec)", "locations": ["<error:%s>" % type(e).__name__]})
+    for target in sorted({"verantyx.cli", MODULE}):          # 選んだモジュールにも出自の検査を掛ける
+        try:
+            spec = importlib.util.find_spec(target)
+            origin = getattr(spec, "origin", None)
+            if origin is None or not _inside(origin, tree):
+                outside.append({"module": target + "(find_spec)", "locations": [origin or "<unknown>"]})
+        except Exception as e:
+            outside.append({"module": target + "(find_spec)", "locations": ["<error:%s>" % type(e).__name__]})
     d = {"modules": len(mods), "outside": outside}
     d.update(extra)
     return d
@@ -69,12 +85,14 @@ if MODE == "precheck":
     try:
         import verantyx
         import verantyx.cli
+        if MODULE != "verantyx.cli":
+            importlib.import_module(MODULE)
     except BaseException as e:
         extra["import_error"] = "%s: %s" % (type(e).__name__, e)
 else:
-    sys.argv = ["verantyx.cli", "--store", "store.json"] + ARGS
+    sys.argv = ["verantyx.cli", "--store", "store.json"] + ARGS if MODULE == "verantyx.cli" else [MODULE] + ARGS
     try:
-        runpy.run_module("verantyx.cli", run_name="__main__", alter_sys=True)
+        runpy.run_module(MODULE, run_name="__main__", alter_sys=True)
     except SystemExit as e:
         c = e.code
         code = 0 if c is None else (c if isinstance(c, int) else 1)
@@ -107,7 +125,7 @@ class Session:
         self.corpus_root = corpus_root or str(self.work / "empty_corpus")
         if corpus_root is None:
             (self.work / "empty_corpus").mkdir()
-        self.script = _SCRIPT.replace("@@TREE@@", repr(self.tree))
+        self.script = _SCRIPT.replace("@@TREE@@", repr(self.tree)).replace("@@ALLOWED@@", repr(ALLOWED_MODULES))
         self.processes_checked = 0
         self.processes_unverified = 0
         self.outside: list[dict] = []
@@ -171,10 +189,12 @@ class Session:
         return {"status": status, "exit_code": exit_code, "stdout": out, "stderr": err, "provenance": provenance,
                 "elapsed_ms": elapsed}
 
-    def precheck(self) -> dict:
+    def precheck(self, module: str = "verantyx.cli") -> dict:
+        if module not in ALLOWED_MODULES:
+            raise ValueError(f"許可していないモジュール: {module!r}（許可: {list(ALLOWED_MODULES)}）")
         cwd = self.work / "precheck"
         cwd.mkdir(exist_ok=True)
-        r = self._spawn("precheck", [], cwd)
+        r = self._spawn("precheck", [module] if module != "verantyx.cli" else [], cwd)
         prov = r["provenance"]
         return {"exit_code": r["exit_code"], "status": r["status"],
                 "modules": None if prov is None else prov.get("modules"),
@@ -182,13 +202,16 @@ class Session:
                 "import_error": None if prov is None else prov.get("import_error"),
                 "stderr_tail": self.redact(r["stderr"][-400:]), "elapsed_ms": r["elapsed_ms"]}
 
-    def run_ask(self, seq: int, argv: list[str], files: list[dict]) -> dict:
-        """ask を 1 回走らせる。cwd は問題ごとの一時ディレクトリ（文書ファイルを置く）。"""
+    def run_ask(self, seq: int, argv: list[str], files: list[dict], module: str = "verantyx.cli") -> dict:
+        """入口を 1 回走らせる（既定は verantyx.cli の ask）。cwd は問題ごとの一時ディレクトリ（文書ファイルを置く）。
+        module は閉じた許可集合（ALLOWED_MODULES）だけ。集合に無ければ例外（何も走らせない）。"""
+        if module not in ALLOWED_MODULES:
+            raise ValueError(f"許可していないモジュール: {module!r}（許可: {list(ALLOWED_MODULES)}）")
         qdir = self.work / f"q{seq:04d}"
         qdir.mkdir()
         for f in files:
             (qdir / f["filename"]).write_text(f["text"], encoding="utf-8")
-        r = self._spawn("run", argv, qdir)
+        r = self._spawn("run", argv, qdir) if module == "verantyx.cli" else self._spawn("run_module", [module, *argv], qdir)
         shutil.rmtree(qdir, ignore_errors=True)
         stdout_json = None
         reason = None

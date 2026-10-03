@@ -1,0 +1,39 @@
+# K39-K41 の例の実測。DEV = 基点 191db17 (読解器 document_view のみ。入口は無い)、W = この木 (読解器と入口)
+## DEV
+宿題が生徒に課された。
+  reader: [('課す', [('agent', '生徒'), ('patient', '宿題')])]
+作業が後輩に割り振られた。
+  reader: [('割り振る', [('agent', '後輩'), ('patient', '作業')])]
+犬が坂を駆け下りた。
+  reader: [('駆け下りる', [('agent', '犬'), ('patient', '坂')])]
+列車が鉄橋を通り抜けた。
+  reader: [('通り抜ける', [('agent', '列車'), ('patient', '鉄橋')])]
+少年が校門を飛び出した。
+  reader: [('飛び出す', [('agent', '少年'), ('patient', '校門')])]
+船団が岬を回った。
+  reader: [('回る', [('agent', '船団'), ('patient', '岬')])]
+海岸が懐かしまれた。
+  reader: [('懐かしむ', [('patient', '海岸')])]
+
+## W
+宿題が生徒に課された。
+  reader: [('課す', [('agent', '生徒'), ('patient', '宿題')])]
+  entry : readable=false UNDETERMINED_VOICE:passive or honorific
+作業が後輩に割り振られた。
+  reader: [('割り振る', [('agent', '後輩'), ('patient', '作業')])]
+  entry : readable=false UNDETERMINED_VOICE:passive or honorific
+犬が坂を駆け下りた。
+  reader: [('駆け下りる', [('agent', '犬'), ('patient', '坂')])]
+  entry : [{"predicate": "駆け下りる", "roles": {"agent": "犬", "patient": "坂"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]
+列車が鉄橋を通り抜けた。
+  reader: [('通り抜ける', [('agent', '列車'), ('patient', '鉄橋')])]
+  entry : [{"predicate": "通り抜ける", "roles": {"agent": "列車", "patient": "鉄橋"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]
+少年が校門を飛び出した。
+  reader: [('飛び出す', [('agent', '少年'), ('patient', '校門')])]
+  entry : [{"predicate": "飛び出す", "roles": {"agent": "少年", "patient": "校門"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]
+船団が岬を回った。
+  reader: [('回る', [('agent', '船団'), ('patient', '岬')])]
+  entry : [{"predicate": "回る", "roles": {"agent": "船団", "patient": "岬"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]
+海岸が懐かしまれた。
+  reader: [('懐かしむ', [('patient', '海岸')])]
+  entry : [{"predicate": "懐かしむ", "roles": {"patient": "海岸"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]

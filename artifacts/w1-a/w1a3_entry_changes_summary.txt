@@ -1,0 +1,4 @@
+inputs 2271 readable_before 274 readable_now 227
+{'readable→false': 47, 'reason_changed': 2}
+45 UNDETERMINED_VOICE:passive or honorific
+2 UNDETERMINED_VOICE:passive or potential

@@ -8,7 +8,8 @@ from __future__ import annotations
 # 入口の決め方: README が最初に案内する `vera` CLI のうち、そのバンクの入力（文書・依頼・会話）を
 # 受け取り、型つきの結果を返す最初のサブコマンド。
 ENTRIES = {
-    "B1": ("cli",),
+    # B1 の "mod-semantic-read" (W1-a2): 読解の入口 `python -m verantyx.semantic_read --text=<文>`（1 問ずつ別プロセス）。既定の入口は cli のまま。
+    "B1": ("cli", "mod-semantic-read"),
     "B2": ("cli-ask-round5", "cli-ask"),
     "B3": ("cli-ask-round5",),
     "B5": ("cli",),
@@ -31,6 +32,25 @@ CAPABILITY_REASONS = {
 }
 
 
+# 入口が走らせるモジュール（子プロセス）。閉じた集合。ここに無いモジュールは走らせない（runner.ALLOWED_MODULES と同じ）。
+ENTRY_MODULES = {"cli": "verantyx.cli", "cli-ask": "verantyx.cli", "cli-ask-round5": "verantyx.cli",
+                 "mod-semantic-read": "verantyx.semantic_read"}
+ENTRY_NOTES = {
+    "mod-semantic-read": "B1 の読解の入口: python -m verantyx.semantic_read --text=<入力の文字列だけ>（言語・分類名・現象・誤読の型は渡さない。言語は入口が文字種で決める）",
+}
+DEFAULT_ENTRY_NOTE = "既定: README が最初に案内する vera CLI のうち、そのバンクの入力を受け取り型つきの結果を返す最初のサブコマンド"
+CHILD_ARGV_TEMPLATES = {
+    "mod-semantic-read": ["<python>", "-c", "<BOOTSTRAP: runpy.run_module('verantyx.semantic_read', run_name='__main__')>",
+                          "run_module", "verantyx.semantic_read", "--text=<入力>"],
+}
+DEFAULT_CHILD_ARGV_TEMPLATE = ["<python>", "-c", "<BOOTSTRAP: runpy.run_module('verantyx.cli', run_name='__main__')>",
+                               "run", "ask", "[--mode round5] [--document <file>...] -- <query>"]
+
+
+def entry_module(entry: str) -> str:
+    return ENTRY_MODULES[entry]
+
+
 def check_entry(bank: str, entry: str | None) -> str:
     """表に無い入口は ValueError（近い入口に寄せない）。None なら既定。"""
     if entry is None:
@@ -44,7 +64,7 @@ def reachability(bank: str, entry: str, case: dict) -> dict:
     """到達表。missing が空なら reachable。"""
     missing: list[str] = []
     if bank == "B1":
-        missing = ["sentence_structure"]
+        missing = [] if entry == "mod-semantic-read" else ["sentence_structure"]
     elif bank == "B5":
         missing = ["frame_question_answer"]
     elif bank == "B2":
@@ -58,6 +78,9 @@ def reachability(bank: str, entry: str, case: dict) -> dict:
 
 def build_call(bank: str, entry: str, case: dict) -> dict:
     """到達できる問題の呼び出し: argv（ask 以降）とそれに必要な文書ファイル。"""
+    if bank == "B1" and entry == "mod-semantic-read":
+        # 入力の文字列だけを渡す（規約 §1）。--lang も、分類名・現象・誤読の型も渡さない。`--text=` の形なので - で始まる文も option と誤読されない
+        return {"module": "verantyx.semantic_read", "argv": ["--text=" + case["input"]], "files": []}
     if bank == "B2":
         query = case["last_user"]
     elif bank == "B3":
@@ -70,7 +93,7 @@ def build_call(bank: str, entry: str, case: dict) -> dict:
         for d in case["docs"]:
             argv += ["--document", d["filename"]]
     argv += ["--", query]  # query が - で始まっても option と誤読させない
-    return {"argv": argv, "files": [{"filename": d["filename"], "text": d["text"]} for d in case["docs"]]}
+    return {"module": "verantyx.cli", "argv": argv, "files": [{"filename": d["filename"], "text": d["text"]} for d in case["docs"]]}
 
 
 def _state(raw: dict, profile: str = "w1s", bank: str | None = None) -> str:
@@ -112,6 +135,8 @@ def evidence_texts(raw: dict) -> list[str]:
 def observe(bank: str, raw: dict, entry: str, argv: list[str], exit_code: int, raw_item: dict | None = None,
             profile: str = "w1s") -> dict:
     """Vera の型つき結果 → 観測。状態は型（kind / verdict / status）だけから決める。本文の文言は見ない。"""
+    if bank == "B1" and entry == "mod-semantic-read":
+        return _observe_semantic_read(raw, entry, argv, exit_code)
     state = _state(raw, profile, bank)
     verdict = raw.get("verdict") if isinstance(raw.get("verdict"), str) else None
     label_override = False
@@ -148,3 +173,16 @@ def observe(bank: str, raw: dict, entry: str, argv: list[str], exit_code: int, r
         obs["constructed"] = raw.get("constructed") is True
         obs["evidence_texts"] = evidence_texts(raw)
     return obs
+
+
+def _observe_semantic_read(raw: dict, entry: str, argv: list[str], exit_code: int) -> dict:
+    """読解の入口（B1）の出力 → 観測。`readable` は型付きの真偽: 真は answer、偽は abstain。真偽でなければ unmapped（実行時エラー
+    UNMAPPED_RESULT_TYPE）。readable・clauses・relations を v2/score.py:b1_output がそのまま読む。文言は見ない。"""
+    readable = raw.get("readable")
+    state = "answer" if readable is True else "abstain" if readable is False else "unmapped"
+    return {"state": state, "status": None, "verdict": None, "kind": None, "door": None, "text": "", "values": None,
+            "partial": False, "declared_constructed": False, "has_evidence": False, "label_override": False,
+            "exit_code": exit_code, "entry": entry, "argv": argv, "constructed": False, "evidence_texts": [],
+            "readable": readable if isinstance(readable, bool) else None,
+            "clauses": raw.get("clauses") if isinstance(raw.get("clauses"), list) else [],
+            "relations": raw.get("relations") if isinstance(raw.get("relations"), list) else []}

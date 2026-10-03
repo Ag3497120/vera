@@ -1,0 +1,275 @@
+# 必須 1 の確認: 他動詞の目的語が省略された文の に 句。dev(191db17)の読みと修正後の読み(出典: x3_dev.jsonl / x3_after.jsonl)
+# supported 節 = 規則/述語/役割; unsupported = 対応済みにしなかった節の数
+先生が素人に言い換えた。
+   dev: frame:言い換える:agent=先生,recipient=素人
+   after: (未対応)
+姉が甥に訳した。
+   dev: frame:訳す:agent=姉,recipient=甥
+   after: (未対応)
+社長が新顔に変えた。
+   dev: frame:変える:agent=社長,recipient=新顔
+   after: (未対応)
+係員が留学生に翻訳した。
+   dev: frame:翻訳する:agent=係員,recipient=留学生
+   after: (未対応)
+講師が受講者に言い換えた。
+   dev: frame:言い換える:agent=講師,recipient=受講者
+   after: (未対応)
+その説明は叔父が素人に言い換えた。
+   dev: (未対応)
+   after: (未対応)
+先生が説明された。
+   dev: frame:説明する:patient=先生
+   after: frame:説明する:patient=先生
+先生が話された。
+   dev: frame:話す:patient=先生
+   after: frame:話す:patient=先生
+先生が発表された。
+   dev: frame:発表する:patient=先生
+   after: frame:発表する:patient=先生
+先生が書かれた。
+   dev: frame:書く:patient=先生
+   after: frame:書く:patient=先生
+先生が教えられた。
+   dev: frame:教える:patient=先生
+   after: frame:教える:patient=先生
+先生が生徒に説明された。
+   dev: frame:説明する:agent=生徒,patient=先生
+   after: frame:説明する:agent=生徒,patient=先生
+社長が社員に話された。
+   dev: frame:話す:agent=社員,patient=社長
+   after: frame:話す:agent=社員,patient=社長
+部長が部下に伝えられた。
+   dev: frame:伝える:agent=部下,patient=部長
+   after: frame:伝える:agent=部下,patient=部長
+校長が保護者に挨拶された。
+   dev: frame:挨拶する:agent=保護者,patient=校長
+   after: frame:挨拶する:agent=保護者,patient=校長
+絵が田中家に飾られた。
+   dev: frame:飾る:agent=田中家,patient=絵
+   after: (未対応)
+看板が鈴木家に掲げられた。
+   dev: frame:掲げる:agent=鈴木家,patient=看板
+   after: (未対応)
+窓が割られた。
+   dev: frame:割る:patient=窓
+   after: frame:割る:patient=窓
+少年は犬に追いかけられた。
+   dev: frame:追いかける:agent=犬,patient=少年
+   after: frame:追いかける:agent=犬,patient=少年
+彼は医者になった。
+   dev: zero_subject:なる:agent=彼,recipient=医者
+   after: zero_subject:なる:agent=彼,result=医者
+信号が赤に変わった。
+   dev: frame:変わる:agent=信号,recipient=赤
+   after: frame:変わる:agent=信号,result=赤
+専門家に意見が求められた。
+   dev: frame:求める:agent=専門家,patient=意見
+   after: frame:求める:agent=専門家,patient=意見
+ミロのヴィーナスに傷が付けられた。
+   dev: frame:付ける:agent=ミロのヴィーナス,patient=傷
+   after: frame:付ける:agent=ミロのヴィーナス,patient=傷
+選手たちはグラウンドを走った。
+   dev: frame:走る:agent=選手たち,patient=グラウンド
+   after: frame:走る:agent=選手たち,patient=グラウンド
+店長が店員に掃除をさせた。
+   dev: frame:させる:agent=店長,patient=掃除,recipient=店員
+   after: diathesis:する:causer=店長,causee=店員,patient=掃除
+先生が生徒を二人に選んだ。
+   dev: (未対応)
+   after: frame:選ぶ:agent=先生,patient=生徒,result=二人
+切手に消印が押された。
+   dev: frame:押す:agent=切手,patient=消印
+   after: (未対応)
+先生が来られた。
+   dev: frame:来る:patient=先生
+   after: frame:来る:patient=先生
+子供が野菜を食べられた。
+   dev: frame:食べる:agent=子供,patient=野菜
+   after: frame:食べる:agent=子供,patient=野菜
+富士山に雪が積もった。
+   dev: frame:積もる:agent=雪,recipient=富士山
+   after: frame:積もる:agent=雪,recipient=富士山
+2004年10月6日にキングレコードから発売された。
+   dev: frame:発売する:agent=キングレコード,time=2004年10月6日
+   after: (未対応)
+通訳が賓客に言い換えた。
+   dev: frame:言い換える:agent=通訳,recipient=賓客
+   after: (未対応)
+ガイドが修学旅行生に訳した。
+   dev: frame:訳す:agent=ガイド,recipient=修学旅行生
+   after: (未対応)
+校長が保護者に書き換えた。
+   dev: frame:書き換える:agent=校長,recipient=保護者
+   after: (未対応)
+弁護士が証人に読み替えた。
+   dev: frame:読み替える:agent=弁護士,recipient=証人
+   after: (未対応)
+兄が姉に翻訳した。
+   dev: frame:翻訳する:agent=兄,recipient=姉
+   after: (未対応)
+店員が客に置き換えた。
+   dev: frame:置き換える:agent=店員,recipient=客
+   after: (未対応)
+係長が部下に変えた。
+   dev: frame:変える:agent=係長,recipient=部下
+   after: (未対応)
+司書が児童に言い換えた。
+   dev: frame:言い換える:agent=司書,recipient=児童
+   after: (未対応)
+弟は教師になった。
+   dev: frame:なる:agent=弟,recipient=教師
+   after: frame:なる:agent=弟,result=教師
+信号が青に変わった。
+   dev: frame:変わる:agent=信号,recipient=青
+   after: frame:変わる:agent=信号,result=青
+妹は看護師に成長した。
+   dev: frame:成長する:agent=妹,recipient=看護師
+   after: frame:成長する:agent=妹,result=看護師
+水が氷に変化した。
+   dev: frame:変化する:agent=水,recipient=氷
+   after: frame:変化する:agent=水,result=氷
+村が町に発展した。
+   dev: frame:発展する:agent=村,recipient=町
+   after: (未対応)
+蛹が蝶に変態した。
+   dev: frame:変態する:agent=蛹,recipient=蝶
+   after: frame:変態する:agent=蛹,recipient=蝶
+皿が藤田家に飾られた。
+   dev: frame:飾る:agent=藤田家,patient=皿
+   after: (未対応)
+看板が岡田家に掲げられた。
+   dev: frame:掲げる:agent=岡田家,patient=看板
+   after: (未対応)
+荷物が藤井家に預けられた。
+   dev: frame:預ける:agent=藤井家,patient=荷物
+   after: (未対応)
+絵が評論家に見せられた。
+   dev: frame:見せる:agent=評論家,patient=絵
+   after: (未対応)
+子どもが先生に叱られた。
+   dev: frame:叱る:agent=先生,patient=子ども
+   after: frame:叱る:agent=先生,patient=子ども
+犬が隣人に可愛がられた。
+   dev: copula:identity:entity=犬,value=隣人に可愛がられた
+   after: (未対応)
+母が娘に服を作り直した。
+   dev: frame:作り直す:agent=母,patient=服,recipient=娘
+   after: frame:作り直す:agent=母,patient=服,recipient=娘
+父が息子に部屋を整えた。
+   dev: frame:整える:agent=父,patient=部屋,recipient=息子
+   after: frame:整える:agent=父,patient=部屋,recipient=息子
+通訳が依頼人に訳した。
+   dev: frame:訳す:agent=通訳,recipient=依頼人
+   after: (未対応)
+講師が初心者に言い換えた。
+   dev: frame:言い換える:agent=講師,recipient=初心者
+   after: (未対応)
+記者が読者に書き換えた。
+   dev: frame:書き換える:agent=記者,recipient=読者
+   after: (未対応)
+弁護士が被告に翻訳した。
+   dev: frame:翻訳する:agent=弁護士,recipient=被告
+   after: (未対応)
+司会者が観客に言い換えた。
+   dev: frame:言い換える:agent=司会者,recipient=観客
+   after: (未対応)
+医師が患者に読み替えた。
+   dev: frame:読み替える:agent=医師,recipient=患者
+   after: (未対応)
+兄が妹に翻訳した。
+   dev: frame:翻訳する:agent=兄,recipient=妹
+   after: (未対応)
+案内人が旅行者に言い換えた。
+   dev: frame:言い換える:agent=案内人,recipient=旅行者
+   after: (未対応)
+秘書が上司に書き換えた。
+   dev: frame:書き換える:agent=秘書,recipient=上司
+   after: (未対応)
+翻訳者が子どもに訳した。
+   dev: frame:訳す:agent=翻訳者,recipient=子ども
+   after: (未対応)
+先輩が後輩に読み替えた。
+   dev: frame:読み替える:agent=先輩,recipient=後輩
+   after: (未対応)
+解説者が視聴者に言い換えた。
+   dev: frame:言い換える:agent=解説者,recipient=視聴者
+   after: (未対応)
+司書が利用者に翻訳した。
+   dev: frame:翻訳する:agent=司書,recipient=利用者
+   after: (未対応)
+祖母が曾孫に訳した。
+   dev: frame:訳す:agent=祖母,recipient=曾孫
+   after: (未対応)
+老人が居候に言い換えた。
+   dev: frame:言い換える:agent=老人,recipient=居候
+   after: (未対応)
+隠居が嫡男に書き換えた。
+   dev: frame:書き換える:agent=隠居,recipient=嫡男
+   after: (未対応)
+姉は弁護士になった。
+   dev: frame:なる:agent=姉,recipient=弁護士
+   after: frame:なる:agent=姉,result=弁護士
+兄は教員に変わった。
+   dev: frame:変わる:agent=兄,recipient=教員
+   after: frame:変わる:agent=兄,result=教員
+友人は医師になった。
+   dev: frame:なる:agent=友人,recipient=医師
+   after: frame:なる:agent=友人,result=医師
+彼は市長になった。
+   dev: zero_subject:なる:agent=彼,recipient=市長
+   after: zero_subject:なる:agent=彼,result=市長
+弟は技術者に成長した。
+   dev: frame:成長する:agent=弟,recipient=技術者
+   after: frame:成長する:agent=弟,result=技術者
+絵が伊藤家に飾られた。
+   dev: frame:飾る:agent=伊藤家,patient=絵
+   after: (未対応)
+提灯が小林家に吊るされた。
+   dev: frame:吊るす:agent=小林家,patient=提灯
+   after: (未対応)
+荷物が加藤家に置かれた。
+   dev: frame:置く:agent=加藤家,patient=荷物
+   after: (未対応)
+家宝が吉田家に保管された。
+   dev: frame:保管する:agent=吉田家,patient=家宝
+   after: (未対応)
+標識が山本家に立てられた。
+   dev: frame:立てる:agent=山本家,patient=標識
+   after: (未対応)
+皿が松本家に並べられた。
+   dev: frame:並べる:agent=松本家,patient=皿
+   after: (未対応)
+掛け軸が井上家に収められた。
+   dev: frame:収める:agent=井上家,patient=掛け軸
+   after: (未対応)
+若木が木村家に植えられた。
+   dev: frame:植える:agent=木村家,patient=若木
+   after: (未対応)
+旗が清水家に掲げられた。
+   dev: frame:掲げる:agent=清水家,patient=旗
+   after: (未対応)
+壺が斎藤家に据えられた。
+   dev: frame:据える:agent=斎藤家,patient=壺
+   after: (未対応)
+衝立が森家に置かれた。
+   dev: frame:置く:agent=森家,patient=衝立
+   after: (未対応)
+鉢植えが石川家に並べられた。
+   dev: frame:並べる:agent=石川家,patient=鉢植え
+   after: (未対応)
+表彰状が橋本家に飾られた。
+   dev: frame:飾る:agent=橋本家,patient=表彰状
+   after: (未対応)
+評論家に感想が求められた。
+   dev: frame:求める:agent=評論家,patient=感想
+   after: frame:求める:agent=評論家,patient=感想
+小説家に原稿が依頼された。
+   dev: frame:依頼する:agent=小説家,patient=原稿
+   after: (未対応)
+画家に作品が褒められた。
+   dev: frame:褒める:agent=画家,patient=作品
+   after: frame:褒める:agent=画家,patient=作品
+建築家に図面が見せられた。
+   dev: frame:見せる:agent=建築家,patient=図面
+   after: (未対応)

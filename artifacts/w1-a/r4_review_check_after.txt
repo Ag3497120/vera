@@ -1,0 +1,34 @@
+tree=/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a-S
+ok        N1    土手に桜の木が植えられた。 
+ok        N1    芝生に水がまかれた。 
+ok        N1    裏手に倉庫が建てられた。 
+ok        N1    分母に数字が書き込まれた。 
+ok        N1    体長に目盛りが記された。 
+ok        N1    器官に異常が見つけられた。 
+ok        N1    酵母に糖が加えられた。 
+ok        N1    空母に戦闘機が積まれた。 
+ok        N1    川の土手に看板が立てられた。 
+ok        N1    民家に火が放たれた。 
+ok        N1    空き家に看板が掛けられた。 
+ok        N1    隠れ家に宝が隠された。 
+ok        N1    古い民家に新しい屋根が付けられた。 
+ok        N1    全長に印が付けられた。 
+ok        N1    身長に印が付けられた。 
+ok        N1    個人に責任が負わされた。 
+ok        N2    母が着物を園児に仕立てた。 
+ok        N2    先生が作文を児童に直した。 
+ok        N2    母が浴衣を末っ子に仕立てた。 
+ok        N2    係長が資料を新入りに整理した。 
+ok        N2    美容師が髪を花嫁に染めた。 
+ok        N3    町内会に新しい会長が選ばれた。 
+ok        N3    自治会に新しい役員が選ばれた。 
+ok        N4    この町は昔ほど賑やかではない。 
+ok        N4    この村は都会ほど便利ではない。 
+ok        QA    土手に桜の木が植えられた。 / 誰が桜の木を植えた？ -> UNKNOWN_UNSUPPORTED_EVIDENCE []
+ok        QA    芝生に水がまかれた。 / 誰が水をまいた？ -> UNKNOWN_UNSUPPORTED_EVIDENCE []
+ok        QA    裏手に倉庫が建てられた。 / 誰が倉庫を建てた？ -> UNKNOWN_UNSUPPORTED_EVIDENCE []
+ok        QA    空母に戦闘機が積まれた。 / 誰が戦闘機を積んだ？ -> UNKNOWN_UNSUPPORTED_EVIDENCE []
+ok        QA    分母に数字が書き込まれた。 / 誰が数字を書き込んだ？ -> UNKNOWN_UNSUPPORTED_EVIDENCE []
+ok        QA    器官に異常が見つけられた。 / 誰が異常を見つけた？ -> UNKNOWN_UNSUPPORTED_EVIDENCE []
+checks=31 violations=0
+exit=0

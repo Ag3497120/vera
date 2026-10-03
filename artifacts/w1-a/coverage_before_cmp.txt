@@ -1,0 +1,2 @@
+cmp_json_exit=0
+cmp_sentences_exit=0

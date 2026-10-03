@@ -1,0 +1,16 @@
+tree=/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W1-a2-impl3/dev191 entry=no (reader part only)
+VIOLATION reader  ピアノに細かい傷が付けられた。 [('付ける', 'agent', 'ピアノ')]
+ok        reader  先生が説明を新米に言い換えた。 
+ok        reader  父が話を末っ子に言い換えた。 
+ok        reader  母が名前を園児に変えた。 
+ok        reader  結果が事務局から通知された。 
+ok        reader  2004年10月6日にキングレコードから発売された。 
+VIOLATION reader  姉は買い物に行った。 [('行く', 'recipient', '買い物')]
+VIOLATION reader  彼は買い物に行った。 [('行く', 'recipient', '買い物')]
+VIOLATION reader  支部に資料が送られた。 [('送る', 'agent', '支部')]
+VIOLATION reader  戦後は若者が都会へ移った。 [('移る', 'recipient', '都会')]
+ok        kept    マキは研究室へ行った。 
+ok        kept    妹が学校へ行った。 
+ok        kept    叔父が弟に時計をくれた。 
+checks=13 violations=5
+exit=1

@@ -1,0 +1,38 @@
+tree=/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a-S entry=yes
+ok        reader   先生が素人に言い換えた。 
+ok        reader   姉が甥に訳した。 
+ok        reader   社長が新顔に変えた。 
+ok        reader   係員が留学生に翻訳した。 
+ok        reader   講師が受講者に言い換えた。 
+ok        reader   絵が田中家に飾られた。 
+ok        reader   看板が鈴木家に掲げられた。 
+ok        kept     彼は医者になった。 
+ok        kept     信号が赤に変わった。 
+ok        kept     専門家に意見が求められた。 
+ok        entry    先生が説明された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry    先生が話された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry    先生が発表された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry    先生が書かれた。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry    先生が教えられた。 ['UNDETERMINED_VOICE:passive or potential']
+ok        entry    先生が生徒に説明された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry    社長が社員に話された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry    部長が部下に伝えられた。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry    校長が保護者に挨拶された。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry    先生が素人に言い換えた。 ['NO_SUPPORTED_CLAUSE']
+ok        entry    姉が甥に訳した。 ['NO_SUPPORTED_CLAUSE']
+ok        entry    社長が新顔に変えた。 ['NO_SUPPORTED_CLAUSE']
+ok        entry    係員が留学生に翻訳した。 ['NO_SUPPORTED_CLAUSE']
+ok        entry    講師が受講者に言い換えた。 ['NO_SUPPORTED_CLAUSE']
+ok        entry    絵が田中家に飾られた。 ['NO_SUPPORTED_CLAUSE']
+ok        entry    看板が鈴木家に掲げられた。 ['NO_SUPPORTED_CLAUSE']
+ok        entry    窓が割られた。 ['UNDETERMINED_VOICE:passive or honorific']
+ok        entry    Ann sent the package to London. ['RECIPIENT_TYPE_UNDETERMINED:London']
+ok        entry    Kate mailed the letter to Tokyo. ['RECIPIENT_TYPE_UNDETERMINED:Tokyo']
+ok        entry    The letter was sent to Paris. ['RECIPIENT_TYPE_UNDETERMINED:Paris']
+ok        entry    Ann showed the photo to Rome. ['RECIPIENT_TYPE_UNDETERMINED:Rome']
+ok        entry-ok 少年は犬に追いかけられた。 
+ok        entry-ok Lisa sent Paul a message. 
+ok        entry-ok Ann opened the door. 
+ok        entry-ok 彼は医者になった。 
+checks=35 violations=0
+exit=0

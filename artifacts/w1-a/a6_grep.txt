@@ -1,0 +1,4 @@
+$ git diff 075d486 -- verantyx/ | grep ^+ | grep -n -E 2025|東京|JSON|API|妹|今朝|先生|生徒|作文|報告書|モデル|会議|ありがとう
+(matches above; 0 lines expected)
+$ git diff 075d486 -- verantyx/ | grep ^+ | grep -n -w -E crowded|quickly|red
+(matches above; 0 lines expected)

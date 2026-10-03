@@ -1,0 +1,1101 @@
+.FFFFFFFFFFFFFFFFFFFF.....FFFF.....FFFFFFF.......FFFFFFFFFFFFFFFFFFFFFFF [ 96%]
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_ test_t1_a_subject_without_evidence_and_no_agent_abstains[\u7267\u5e2b\u304c\u52b1\u307e\u3055\u308c\u305f\u3002] _
+
+text = '牧師が励まされた。'
+
+    @pytest.mark.parametrize('text', T1)
+    def test_t1_a_subject_without_evidence_and_no_agent_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '牧師が励まされた。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '励ます', 'roles': {'patient': '牧師'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t1_a_subject_without_evidence_and_no_agent_abstains[\u795e\u7236\u304c\u6551\u52a9\u3055\u308c\u305f\u3002] _
+
+text = '神父が救助された。'
+
+    @pytest.mark.parametrize('text', T1)
+    def test_t1_a_subject_without_evidence_and_no_agent_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '神父が救助された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '救助する', 'roles': {'patient': '神父'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t1_a_subject_without_evidence_and_no_agent_abstains[\u5c06\u8ecd\u304c\u63a1\u7528\u3055\u308c\u305f\u3002] _
+
+text = '将軍が採用された。'
+
+    @pytest.mark.parametrize('text', T1)
+    def test_t1_a_subject_without_evidence_and_no_agent_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '将軍が採用された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '採用する', 'roles': {'patient': '将軍'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t1_a_subject_without_evidence_and_no_agent_abstains[\u9577\u8001\u304c\u547c\u3073\u6b62\u3081\u3089\u308c\u305f\u3002] _
+
+text = '長老が呼び止められた。'
+
+    @pytest.mark.parametrize('text', T1)
+    def test_t1_a_subject_without_evidence_and_no_agent_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '長老が呼び止められた。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '呼び止める', 'roles': {'patient': '長老'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t1_a_subject_without_evidence_and_no_agent_abstains[\u5e2b\u7bc4\u304c\u52e7\u8a98\u3055\u308c\u305f\u3002] _
+
+text = '師範が勧誘された。'
+
+    @pytest.mark.parametrize('text', T1)
+    def test_t1_a_subject_without_evidence_and_no_agent_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '師範が勧誘された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '勧誘する', 'roles': {'patient': '師範'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t2_a_subject_of_the_unknown_person_kind_with_a_ni_phrase_abstains[\u7267\u5e2b\u304c\u53cb\u4eba\u306b\u52b1\u307e\u3055\u308c\u305f\u3002] _
+
+text = '牧師が友人に励まされた。'
+
+    @pytest.mark.parametrize('text', T2)
+    def test_t2_a_subject_of_the_unknown_person_kind_with_a_ni_phrase_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '牧師が友人に励まされた。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '励ます', 'roles': {'agent': '友人', 'patient': '牧師'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t2_a_subject_of_the_unknown_person_kind_with_a_ni_phrase_abstains[\u795e\u7236\u304c\u8b66\u5bdf\u306b\u6551\u52a9\u3055\u308c\u305f\u3002] _
+
+text = '神父が警察に救助された。'
+
+    @pytest.mark.parametrize('text', T2)
+    def test_t2_a_subject_of_the_unknown_person_kind_with_a_ni_phrase_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '神父が警察に救助された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '救助する', 'roles': {'agent': '警察', 'patient': '神父'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t2_a_subject_of_the_unknown_person_kind_with_a_ni_phrase_abstains[\u5c06\u8ecd\u304c\u5144\u306b\u63a1\u7528\u3055\u308c\u305f\u3002] _
+
+text = '将軍が兄に採用された。'
+
+    @pytest.mark.parametrize('text', T2)
+    def test_t2_a_subject_of_the_unknown_person_kind_with_a_ni_phrase_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '将軍が兄に採用された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '採用する', 'roles': {'agent': '兄', 'patient': '将軍'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t2_a_subject_of_the_unknown_person_kind_with_a_ni_phrase_abstains[\u9577\u8001\u304c\u5f1f\u306b\u8ffd\u8de1\u3055\u308c\u305f\u3002] _
+
+text = '長老が弟に追跡された。'
+
+    @pytest.mark.parametrize('text', T2)
+    def test_t2_a_subject_of_the_unknown_person_kind_with_a_ni_phrase_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '長老が弟に追跡された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '追跡する', 'roles': {'agent': '弟', 'patient': '長老'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t2_a_subject_of_the_unknown_person_kind_with_a_ni_phrase_abstains[\u5e2b\u7bc4\u304c\u90e8\u4e0b\u304b\u3089\u52e7\u8a98\u3055\u308c\u305f\u3002] _
+
+text = '師範が部下から勧誘された。'
+
+    @pytest.mark.parametrize('text', T2)
+    def test_t2_a_subject_of_the_unknown_person_kind_with_a_ni_phrase_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '師範が部下から勧誘された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '勧誘する', 'roles': {'agent': '部下', 'patient': '師範'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t3_a_person_subject_with_a_ni_phrase_and_a_verb_outside_the_class_abstains[\u5f1f\u304c\u5144\u306b\u52a9\u3051\u3089\u308c\u305f\u3002] _
+
+text = '弟が兄に助けられた。'
+
+    @pytest.mark.parametrize('text', T3)
+    def test_t3_a_person_subject_with_a_ni_phrase_and_a_verb_outside_the_class_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '弟が兄に助けられた。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '助ける', 'roles': {'agent': '兄', 'patient': '弟'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t3_a_person_subject_with_a_ni_phrase_and_a_verb_outside_the_class_abstains[\u5ba2\u304c\u5e97\u54e1\u306b\u547c\u3073\u6b62\u3081\u3089\u308c\u305f\u3002] _
+
+text = '客が店員に呼び止められた。'
+
+    @pytest.mark.parametrize('text', T3)
+    def test_t3_a_person_subject_with_a_ni_phrase_and_a_verb_outside_the_class_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '客が店員に呼び止められた。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '呼び止める', 'roles': {'agent': '店員', 'patient': '客'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t3_a_person_subject_with_a_ni_phrase_and_a_verb_outside_the_class_abstains[\u53cb\u4eba\u304c\u8b66\u5bdf\u306b\u6551\u52a9\u3055\u308c\u305f\u3002] _
+
+text = '友人が警察に救助された。'
+
+    @pytest.mark.parametrize('text', T3)
+    def test_t3_a_person_subject_with_a_ni_phrase_and_a_verb_outside_the_class_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '友人が警察に救助された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '救助する', 'roles': {'agent': '警察', 'patient': '友人'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t3_a_person_subject_with_a_ni_phrase_and_a_verb_outside_the_class_abstains[\u90e8\u4e0b\u304c\u4e0a\u53f8\u306b\u52b1\u307e\u3055\u308c\u305f\u3002] _
+
+text = '部下が上司に励まされた。'
+
+    @pytest.mark.parametrize('text', T3)
+    def test_t3_a_person_subject_with_a_ni_phrase_and_a_verb_outside_the_class_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '部下が上司に励まされた。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '励ます', 'roles': {'agent': '上司', 'patient': '部下'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t3_a_person_subject_with_a_ni_phrase_and_a_verb_outside_the_class_abstains[\u5148\u8f29\u304c\u5f8c\u8f29\u304b\u3089\u78ba\u8a8d\u3055\u308c\u305f\u3002] _
+
+text = '先輩が後輩から確認された。'
+
+    @pytest.mark.parametrize('text', T3)
+    def test_t3_a_person_subject_with_a_ni_phrase_and_a_verb_outside_the_class_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '先輩が後輩から確認された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '確認する', 'roles': {'agent': '後輩', 'patient': '先輩'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t4_a_thing_with_a_ni_or_kara_phrase_and_a_verb_outside_the_class_abstains[\u5199\u771f\u304c\u59c9\u304b\u3089\u9001\u3089\u308c\u305f\u3002] _
+
+text = '写真が姉から送られた。'
+
+    @pytest.mark.parametrize('text', T4)
+    def test_t4_a_thing_with_a_ni_or_kara_phrase_and_a_verb_outside_the_class_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '写真が姉から送られた。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '送る', 'roles': {'agent': '姉', 'patient': '写真'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t4_a_thing_with_a_ni_or_kara_phrase_and_a_verb_outside_the_class_abstains[\u5831\u544a\u304c\u90e8\u4e0b\u304b\u3089\u63d0\u51fa\u3055\u308c\u305f\u3002] _
+
+text = '報告が部下から提出された。'
+
+    @pytest.mark.parametrize('text', T4)
+    def test_t4_a_thing_with_a_ni_or_kara_phrase_and_a_verb_outside_the_class_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '報告が部下から提出された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '提出する', 'roles': {'agent': '部下', 'patient': '報告'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t4_a_thing_with_a_ni_or_kara_phrase_and_a_verb_outside_the_class_abstains[\u82e6\u60c5\u304c\u5ba2\u304b\u3089\u5bc4\u305b\u3089\u308c\u305f\u3002] _
+
+text = '苦情が客から寄せられた。'
+
+    @pytest.mark.parametrize('text', T4)
+    def test_t4_a_thing_with_a_ni_or_kara_phrase_and_a_verb_outside_the_class_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '苦情が客から寄せられた。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '寄せる', 'roles': {'agent': '客', 'patient': '苦情'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t4_a_thing_with_a_ni_or_kara_phrase_and_a_verb_outside_the_class_abstains[\u7533\u8acb\u304c\u5144\u306b\u5374\u4e0b\u3055\u308c\u305f\u3002] _
+
+text = '申請が兄に却下された。'
+
+    @pytest.mark.parametrize('text', T4)
+    def test_t4_a_thing_with_a_ni_or_kara_phrase_and_a_verb_outside_the_class_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '申請が兄に却下された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '却下する', 'roles': {'agent': '兄', 'patient': '申請'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t4_a_thing_with_a_ni_or_kara_phrase_and_a_verb_outside_the_class_abstains[\u8cc7\u6599\u304c\u53cb\u4eba\u304b\u3089\u63d0\u4f9b\u3055\u308c\u305f\u3002] _
+
+text = '資料が友人から提供された。'
+
+    @pytest.mark.parametrize('text', T4)
+    def test_t4_a_thing_with_a_ni_or_kara_phrase_and_a_verb_outside_the_class_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '資料が友人から提供された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '提供する', 'roles': {'agent': '友人', 'patient': '資料'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t5_a_thing_without_evidence_of_a_thing_abstains[\u6a4b\u304c\u64a4\u53bb\u3055\u308c\u305f\u3002] _
+
+text = '橋が撤去された。'
+
+    @pytest.mark.parametrize('text', T5)
+    def test_t5_a_thing_without_evidence_of_a_thing_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '橋が撤去された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '撤去する', 'roles': {'patient': '橋'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t5_a_thing_without_evidence_of_a_thing_abstains[\u6761\u4f8b\u304c\u5ec3\u6b62\u3055\u308c\u305f\u3002] _
+
+text = '条例が廃止された。'
+
+    @pytest.mark.parametrize('text', T5)
+    def test_t5_a_thing_without_evidence_of_a_thing_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '条例が廃止された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '廃止する', 'roles': {'patient': '条例'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t5_a_thing_without_evidence_of_a_thing_abstains[\u5098\u304c\u56de\u53ce\u3055\u308c\u305f\u3002] _
+
+text = '傘が回収された。'
+
+    @pytest.mark.parametrize('text', T5)
+    def test_t5_a_thing_without_evidence_of_a_thing_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '傘が回収された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '回収する', 'roles': {'patient': '傘'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t5_a_thing_without_evidence_of_a_thing_abstains[\u8a08\u753b\u304c\u64a4\u56de\u3055\u308c\u305f\u3002] _
+
+text = '計画が撤回された。'
+
+    @pytest.mark.parametrize('text', T5)
+    def test_t5_a_thing_without_evidence_of_a_thing_abstains(text):
+>       abstains_on_voice(text)
+
+tests/test_semantic_read_r4.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '計画が撤回された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '撤回する', 'roles': {'patient': '計画'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t7_an_ichidan_verb_with_rareru_is_a_passive_or_a_potential_and_abstains[\u8868\u304c\u66f8\u304d\u63db\u3048\u3089\u308c\u305f\u3002] _
+
+text = '表が書き換えられた。'
+
+    @pytest.mark.parametrize('text', T7)
+    def test_t7_an_ichidan_verb_with_rareru_is_a_passive_or_a_potential_and_abstains(text):
+>       ab = abstains_on_voice(text)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_semantic_read_r4.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '表が書き換えられた。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '書き換える', 'roles': {'patient': '表'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t7_an_ichidan_verb_with_rareru_is_a_passive_or_a_potential_and_abstains[\u8981\u70b9\u304c\u898b\u3064\u3051\u3089\u308c\u305f\u3002] _
+
+text = '要点が見つけられた。'
+
+    @pytest.mark.parametrize('text', T7)
+    def test_t7_an_ichidan_verb_with_rareru_is_a_passive_or_a_potential_and_abstains(text):
+>       ab = abstains_on_voice(text)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_semantic_read_r4.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '要点が見つけられた。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '見つける', 'roles': {'patient': '要点'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t7_an_ichidan_verb_with_rareru_is_a_passive_or_a_potential_and_abstains[\u76ee\u6b21\u304c\u66f8\u304d\u63db\u3048\u3089\u308c\u305f\u3002] _
+
+text = '目次が書き換えられた。'
+
+    @pytest.mark.parametrize('text', T7)
+    def test_t7_an_ichidan_verb_with_rareru_is_a_passive_or_a_potential_and_abstains(text):
+>       ab = abstains_on_voice(text)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_semantic_read_r4.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '目次が書き換えられた。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '書き換える', 'roles': {'patient': '目次'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t8_a_verb_of_thought_or_feeling_is_a_passive_or_a_spontaneous_and_abstains[\u6d77\u5cb8\u304c\u5072\u3070\u308c\u305f\u3002] _
+
+text = '海岸が偲ばれた。'
+
+    @pytest.mark.parametrize('text', T8)
+    def test_t8_a_verb_of_thought_or_feeling_is_a_passive_or_a_spontaneous_and_abstains(text):
+>       ab = abstains_on_voice(text)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_semantic_read_r4.py:129: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '海岸が偲ばれた。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '偲ぶ', 'roles': {'patient': '海岸'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t8_a_verb_of_thought_or_feeling_is_a_passive_or_a_spontaneous_and_abstains[\u5009\u5eab\u304c\u601d\u3044\u51fa\u3055\u308c\u305f\u3002] _
+
+text = '倉庫が思い出された。'
+
+    @pytest.mark.parametrize('text', T8)
+    def test_t8_a_verb_of_thought_or_feeling_is_a_passive_or_a_spontaneous_and_abstains(text):
+>       ab = abstains_on_voice(text)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_semantic_read_r4.py:129: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '倉庫が思い出された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '思い出す', 'roles': {'patient': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t8_a_verb_of_thought_or_feeling_is_a_passive_or_a_spontaneous_and_abstains[\u8981\u70b9\u304c\u671f\u5f85\u3055\u308c\u305f\u3002] _
+
+text = '要点が期待された。'
+
+    @pytest.mark.parametrize('text', T8)
+    def test_t8_a_verb_of_thought_or_feeling_is_a_passive_or_a_spontaneous_and_abstains(text):
+>       ab = abstains_on_voice(text)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_semantic_read_r4.py:129: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '要点が期待された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '期待する', 'roles': {'patient': '要点'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t8_a_verb_of_thought_or_feeling_is_a_passive_or_a_spontaneous_and_abstains[\u6e56\u304c\u60f3\u50cf\u3055\u308c\u305f\u3002] _
+
+text = '湖が想像された。'
+
+    @pytest.mark.parametrize('text', T8)
+    def test_t8_a_verb_of_thought_or_feeling_is_a_passive_or_a_spontaneous_and_abstains(text):
+>       ab = abstains_on_voice(text)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_semantic_read_r4.py:129: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_semantic_read_r4.py:42: in abstains_on_voice
+    ab = refusal(text)
+         ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+text = '湖が想像された。'
+
+    def refusal(text):
+        out = SR.read(text)
+>       assert out['readable'] is False and out['clauses'] == [] and out['relations'] == [], out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '想像する', 'roles': {'patient': '湖'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert (True is False)
+
+tests/test_semantic_read_r4.py:37: AssertionError
+_ test_t11_the_ni_kara_class_is_the_five_verbs_and_meets_no_class_of_the_reader _
+
+    def test_t11_the_ni_kara_class_is_the_five_verbs_and_meets_no_class_of_the_reader():
+>       cls = SR._NI_KARA_FREE_PREDICATES
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_NI_KARA_FREE_PREDICATES'
+
+tests/test_semantic_read_r4.py:147: AttributeError
+_ test_t11_the_spontaneous_class_is_apart_from_the_ni_kara_class_and_every_verb_is_in_the_dictionary_form _
+
+    def test_t11_the_spontaneous_class_is_apart_from_the_ni_kara_class_and_every_verb_is_in_the_dictionary_form():
+>       assert not (SR._SPONTANEOUS_PREDICATES & SR._NI_KARA_FREE_PREDICATES)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_SPONTANEOUS_PREDICATES'
+
+tests/test_semantic_read_r4.py:155: AttributeError
+_ test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u5148\u751f] _
+
+phrase = '先生'
+
+    @pytest.mark.parametrize('phrase', ['先生', '社長', '弟', '友人', '部下', '警察', '山田さん', '店員'])
+    def test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing(phrase):
+        assert R._is_person_phrase(phrase) is True
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:162: AttributeError
+_ test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u793e\u9577] _
+
+phrase = '社長'
+
+    @pytest.mark.parametrize('phrase', ['先生', '社長', '弟', '友人', '部下', '警察', '山田さん', '店員'])
+    def test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing(phrase):
+        assert R._is_person_phrase(phrase) is True
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:162: AttributeError
+___ test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u5f1f] ____
+
+phrase = '弟'
+
+    @pytest.mark.parametrize('phrase', ['先生', '社長', '弟', '友人', '部下', '警察', '山田さん', '店員'])
+    def test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing(phrase):
+        assert R._is_person_phrase(phrase) is True
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:162: AttributeError
+_ test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u53cb\u4eba] _
+
+phrase = '友人'
+
+    @pytest.mark.parametrize('phrase', ['先生', '社長', '弟', '友人', '部下', '警察', '山田さん', '店員'])
+    def test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing(phrase):
+        assert R._is_person_phrase(phrase) is True
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:162: AttributeError
+_ test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u90e8\u4e0b] _
+
+phrase = '部下'
+
+    @pytest.mark.parametrize('phrase', ['先生', '社長', '弟', '友人', '部下', '警察', '山田さん', '店員'])
+    def test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing(phrase):
+        assert R._is_person_phrase(phrase) is True
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:162: AttributeError
+_ test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u8b66\u5bdf] _
+
+phrase = '警察'
+
+    @pytest.mark.parametrize('phrase', ['先生', '社長', '弟', '友人', '部下', '警察', '山田さん', '店員'])
+    def test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing(phrase):
+        assert R._is_person_phrase(phrase) is True
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:162: AttributeError
+_ test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u5c71\u7530\u3055\u3093] _
+
+phrase = '山田さん'
+
+    @pytest.mark.parametrize('phrase', ['先生', '社長', '弟', '友人', '部下', '警察', '山田さん', '店員'])
+    def test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing(phrase):
+        assert R._is_person_phrase(phrase) is True
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:162: AttributeError
+_ test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u5e97\u54e1] _
+
+phrase = '店員'
+
+    @pytest.mark.parametrize('phrase', ['先生', '社長', '弟', '友人', '部下', '警察', '山田さん', '店員'])
+    def test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing(phrase):
+        assert R._is_person_phrase(phrase) is True
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:162: AttributeError
+___ test_t11_a_noun_outside_the_closed_classes_is_no_evidence[\u7267\u5e2b] ____
+
+phrase = '牧師'
+
+    @pytest.mark.parametrize('phrase', ['牧師', '神父', '橋', '条例', '傘', '計画', '子猫', ''])
+    def test_t11_a_noun_outside_the_closed_classes_is_no_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:167: AttributeError
+___ test_t11_a_noun_outside_the_closed_classes_is_no_evidence[\u795e\u7236] ____
+
+phrase = '神父'
+
+    @pytest.mark.parametrize('phrase', ['牧師', '神父', '橋', '条例', '傘', '計画', '子猫', ''])
+    def test_t11_a_noun_outside_the_closed_classes_is_no_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:167: AttributeError
+______ test_t11_a_noun_outside_the_closed_classes_is_no_evidence[\u6a4b] _______
+
+phrase = '橋'
+
+    @pytest.mark.parametrize('phrase', ['牧師', '神父', '橋', '条例', '傘', '計画', '子猫', ''])
+    def test_t11_a_noun_outside_the_closed_classes_is_no_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:167: AttributeError
+___ test_t11_a_noun_outside_the_closed_classes_is_no_evidence[\u6761\u4f8b] ____
+
+phrase = '条例'
+
+    @pytest.mark.parametrize('phrase', ['牧師', '神父', '橋', '条例', '傘', '計画', '子猫', ''])
+    def test_t11_a_noun_outside_the_closed_classes_is_no_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:167: AttributeError
+______ test_t11_a_noun_outside_the_closed_classes_is_no_evidence[\u5098] _______
+
+phrase = '傘'
+
+    @pytest.mark.parametrize('phrase', ['牧師', '神父', '橋', '条例', '傘', '計画', '子猫', ''])
+    def test_t11_a_noun_outside_the_closed_classes_is_no_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:167: AttributeError
+___ test_t11_a_noun_outside_the_closed_classes_is_no_evidence[\u8a08\u753b] ____
+
+phrase = '計画'
+
+    @pytest.mark.parametrize('phrase', ['牧師', '神父', '橋', '条例', '傘', '計画', '子猫', ''])
+    def test_t11_a_noun_outside_the_closed_classes_is_no_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:167: AttributeError
+___ test_t11_a_noun_outside_the_closed_classes_is_no_evidence[\u5b50\u732b] ____
+
+phrase = '子猫'
+
+    @pytest.mark.parametrize('phrase', ['牧師', '神父', '橋', '条例', '傘', '計画', '子猫', ''])
+    def test_t11_a_noun_outside_the_closed_classes_is_no_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:167: AttributeError
+_________ test_t11_a_noun_outside_the_closed_classes_is_no_evidence[] __________
+
+phrase = ''
+
+    @pytest.mark.parametrize('phrase', ['牧師', '神父', '橋', '条例', '傘', '計画', '子猫', ''])
+    def test_t11_a_noun_outside_the_closed_classes_is_no_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is False
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:167: AttributeError
+_ test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u5009\u5eab] _
+
+phrase = '倉庫'
+
+    @pytest.mark.parametrize('phrase', ['倉庫', '要約', '目次', '海岸', '駅の倉庫', '英語', '赤色', '総会'])
+    def test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is True
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:172: AttributeError
+_ test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u8981\u7d04] _
+
+phrase = '要約'
+
+    @pytest.mark.parametrize('phrase', ['倉庫', '要約', '目次', '海岸', '駅の倉庫', '英語', '赤色', '総会'])
+    def test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is True
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:172: AttributeError
+_ test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u76ee\u6b21] _
+
+phrase = '目次'
+
+    @pytest.mark.parametrize('phrase', ['倉庫', '要約', '目次', '海岸', '駅の倉庫', '英語', '赤色', '総会'])
+    def test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is True
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:172: AttributeError
+_ test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u6d77\u5cb8] _
+
+phrase = '海岸'
+
+    @pytest.mark.parametrize('phrase', ['倉庫', '要約', '目次', '海岸', '駅の倉庫', '英語', '赤色', '総会'])
+    def test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is True
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:172: AttributeError
+_ test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u99c5\u306e\u5009\u5eab] _
+
+phrase = '駅の倉庫'
+
+    @pytest.mark.parametrize('phrase', ['倉庫', '要約', '目次', '海岸', '駅の倉庫', '英語', '赤色', '総会'])
+    def test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is True
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:172: AttributeError
+_ test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u82f1\u8a9e] _
+
+phrase = '英語'
+
+    @pytest.mark.parametrize('phrase', ['倉庫', '要約', '目次', '海岸', '駅の倉庫', '英語', '赤色', '総会'])
+    def test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is True
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:172: AttributeError
+_ test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u8d64\u8272] _
+
+phrase = '赤色'
+
+    @pytest.mark.parametrize('phrase', ['倉庫', '要約', '目次', '海岸', '駅の倉庫', '英語', '赤色', '総会'])
+    def test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is True
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:172: AttributeError
+_ test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u7dcf\u4f1a] _
+
+phrase = '総会'
+
+    @pytest.mark.parametrize('phrase', ['倉庫', '要約', '目次', '海岸', '駅の倉庫', '英語', '赤色', '総会'])
+    def test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence(phrase):
+>       assert SR._not_person_evidence(phrase) is True
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_read' has no attribute '_not_person_evidence'
+
+tests/test_semantic_read_r4.py:172: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_r4.py::test_t1_a_subject_without_evidence_and_no_agent_abstains[\u7267\u5e2b\u304c\u52b1\u307e\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t1_a_subject_without_evidence_and_no_agent_abstains[\u795e\u7236\u304c\u6551\u52a9\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t1_a_subject_without_evidence_and_no_agent_abstains[\u5c06\u8ecd\u304c\u63a1\u7528\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t1_a_subject_without_evidence_and_no_agent_abstains[\u9577\u8001\u304c\u547c\u3073\u6b62\u3081\u3089\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t1_a_subject_without_evidence_and_no_agent_abstains[\u5e2b\u7bc4\u304c\u52e7\u8a98\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t2_a_subject_of_the_unknown_person_kind_with_a_ni_phrase_abstains[\u7267\u5e2b\u304c\u53cb\u4eba\u306b\u52b1\u307e\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t2_a_subject_of_the_unknown_person_kind_with_a_ni_phrase_abstains[\u795e\u7236\u304c\u8b66\u5bdf\u306b\u6551\u52a9\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t2_a_subject_of_the_unknown_person_kind_with_a_ni_phrase_abstains[\u5c06\u8ecd\u304c\u5144\u306b\u63a1\u7528\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t2_a_subject_of_the_unknown_person_kind_with_a_ni_phrase_abstains[\u9577\u8001\u304c\u5f1f\u306b\u8ffd\u8de1\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t2_a_subject_of_the_unknown_person_kind_with_a_ni_phrase_abstains[\u5e2b\u7bc4\u304c\u90e8\u4e0b\u304b\u3089\u52e7\u8a98\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t3_a_person_subject_with_a_ni_phrase_and_a_verb_outside_the_class_abstains[\u5f1f\u304c\u5144\u306b\u52a9\u3051\u3089\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t3_a_person_subject_with_a_ni_phrase_and_a_verb_outside_the_class_abstains[\u5ba2\u304c\u5e97\u54e1\u306b\u547c\u3073\u6b62\u3081\u3089\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t3_a_person_subject_with_a_ni_phrase_and_a_verb_outside_the_class_abstains[\u53cb\u4eba\u304c\u8b66\u5bdf\u306b\u6551\u52a9\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t3_a_person_subject_with_a_ni_phrase_and_a_verb_outside_the_class_abstains[\u90e8\u4e0b\u304c\u4e0a\u53f8\u306b\u52b1\u307e\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t3_a_person_subject_with_a_ni_phrase_and_a_verb_outside_the_class_abstains[\u5148\u8f29\u304c\u5f8c\u8f29\u304b\u3089\u78ba\u8a8d\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t4_a_thing_with_a_ni_or_kara_phrase_and_a_verb_outside_the_class_abstains[\u5199\u771f\u304c\u59c9\u304b\u3089\u9001\u3089\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t4_a_thing_with_a_ni_or_kara_phrase_and_a_verb_outside_the_class_abstains[\u5831\u544a\u304c\u90e8\u4e0b\u304b\u3089\u63d0\u51fa\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t4_a_thing_with_a_ni_or_kara_phrase_and_a_verb_outside_the_class_abstains[\u82e6\u60c5\u304c\u5ba2\u304b\u3089\u5bc4\u305b\u3089\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t4_a_thing_with_a_ni_or_kara_phrase_and_a_verb_outside_the_class_abstains[\u7533\u8acb\u304c\u5144\u306b\u5374\u4e0b\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t4_a_thing_with_a_ni_or_kara_phrase_and_a_verb_outside_the_class_abstains[\u8cc7\u6599\u304c\u53cb\u4eba\u304b\u3089\u63d0\u4f9b\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t5_a_thing_without_evidence_of_a_thing_abstains[\u6a4b\u304c\u64a4\u53bb\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t5_a_thing_without_evidence_of_a_thing_abstains[\u6761\u4f8b\u304c\u5ec3\u6b62\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t5_a_thing_without_evidence_of_a_thing_abstains[\u5098\u304c\u56de\u53ce\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t5_a_thing_without_evidence_of_a_thing_abstains[\u8a08\u753b\u304c\u64a4\u56de\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t7_an_ichidan_verb_with_rareru_is_a_passive_or_a_potential_and_abstains[\u8868\u304c\u66f8\u304d\u63db\u3048\u3089\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t7_an_ichidan_verb_with_rareru_is_a_passive_or_a_potential_and_abstains[\u8981\u70b9\u304c\u898b\u3064\u3051\u3089\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t7_an_ichidan_verb_with_rareru_is_a_passive_or_a_potential_and_abstains[\u76ee\u6b21\u304c\u66f8\u304d\u63db\u3048\u3089\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t8_a_verb_of_thought_or_feeling_is_a_passive_or_a_spontaneous_and_abstains[\u6d77\u5cb8\u304c\u5072\u3070\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t8_a_verb_of_thought_or_feeling_is_a_passive_or_a_spontaneous_and_abstains[\u5009\u5eab\u304c\u601d\u3044\u51fa\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t8_a_verb_of_thought_or_feeling_is_a_passive_or_a_spontaneous_and_abstains[\u8981\u70b9\u304c\u671f\u5f85\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t8_a_verb_of_thought_or_feeling_is_a_passive_or_a_spontaneous_and_abstains[\u6e56\u304c\u60f3\u50cf\u3055\u308c\u305f\u3002]
+FAILED tests/test_semantic_read_r4.py::test_t11_the_ni_kara_class_is_the_five_verbs_and_meets_no_class_of_the_reader
+FAILED tests/test_semantic_read_r4.py::test_t11_the_spontaneous_class_is_apart_from_the_ni_kara_class_and_every_verb_is_in_the_dictionary_form
+FAILED tests/test_semantic_read_r4.py::test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u5148\u751f]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u793e\u9577]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u5f1f]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u53cb\u4eba]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u90e8\u4e0b]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u8b66\u5bdf]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u5c71\u7530\u3055\u3093]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_phrase_that_is_a_person_is_never_evidence_of_a_thing[\u5e97\u54e1]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_noun_outside_the_closed_classes_is_no_evidence[\u7267\u5e2b]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_noun_outside_the_closed_classes_is_no_evidence[\u795e\u7236]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_noun_outside_the_closed_classes_is_no_evidence[\u6a4b]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_noun_outside_the_closed_classes_is_no_evidence[\u6761\u4f8b]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_noun_outside_the_closed_classes_is_no_evidence[\u5098]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_noun_outside_the_closed_classes_is_no_evidence[\u8a08\u753b]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_noun_outside_the_closed_classes_is_no_evidence[\u5b50\u732b]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_noun_outside_the_closed_classes_is_no_evidence[]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u5009\u5eab]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u8981\u7d04]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u76ee\u6b21]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u6d77\u5cb8]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u99c5\u306e\u5009\u5eab]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u82f1\u8a9e]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u8d64\u8272]
+FAILED tests/test_semantic_read_r4.py::test_t11_a_head_in_a_closed_class_that_is_never_a_person_is_evidence[\u7dcf\u4f1a]
+57 failed, 18 passed in 0.45s

@@ -1,0 +1,136 @@
+## 体長から数値が割り出された。
+   SUP frame 割り出す + [('agent', '体長'), ('patient', '数値')] [] PASS
+## 空母から戦闘機が発進させられた。
+   SUP frame 発進させる + [('agent', '空母'), ('patient', '戦闘機')] [] PASS
+## 民家によって道が塞がれた。
+   SUP frame 塞ぐ + [('agent', '民家'), ('patient', '道')] [] PASS
+## 器官によって血液が運ばれた。
+   SUP frame 運ぶ + [('agent', '器官'), ('patient', '血液')] [] PASS
+## 土手が桜の木に囲まれた。
+   SUP frame 囲む + [('agent', '桜の木'), ('patient', '土手')] [] PASS
+## 母が名前を園児に変えた。
+   SUP frame 変える + [('agent', '母'), ('patient', '名前'), ('recipient', '園児')] [] PASS
+## 先生が資料を園児に整理した。
+   SUP frame 整理する + [('agent', '先生'), ('patient', '資料'), ('recipient', '園児')] [] PASS
+## 乳母が着物を若君に仕立てた。
+   SUP frame 仕立てる + [('agent', '乳母'), ('patient', '着物'), ('recipient', '若君')] [] PASS
+## 店主が写真を常連に選んだ。
+   SUP frame 選ぶ + [('agent', '店主'), ('patient', '写真'), ('recipient', '常連')] [] PASS
+## 彼女が委員に選ばれた。
+   uns frame 選ぶ + [('agent', '委員')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+## 田中さんが代表に選ばれた。
+   SUP frame 選ぶ + [('agent', '代表'), ('patient', '田中さん')] [] PASS
+## 山口さんが友人に選ばれた。
+   SUP frame 選ぶ + [('agent', '友人'), ('patient', '山口さん')] [] PASS
+## 有志に会長が推薦された。
+   SUP frame 推薦する + [('agent', '有志'), ('patient', '会長')] [] PASS
+## 学園祭に実行委員が選出された。
+   SUP frame 選出する + [('agent', '学園祭'), ('patient', '実行委員')] [] PASS
+## 彼は昨日ほど走らなかった。
+   uns frame 走る - [] ['unsupported source quantifier/exception/time', 'unrepresented source content'] REJ:unsupported/ill-typed source
+## この店は大手並みの品揃えだ。
+   SUP copula property + [('entity', 'こ'), ('attribute', '店'), ('value', '大手並みの品揃え')] [] PASS
+## この問題は去年ほどの難問ではない。
+   SUP copula property - [('entity', 'こ'), ('attribute', '問題'), ('value', '去年ほどの難問')] [] PASS
+## 兄は父くらいの背丈だ。
+   SUP copula identity + [('entity', '兄'), ('value', '父くらいの背丈')] [] PASS
+## 弟が公園へ走った。
+   SUP frame 走る + [('agent', '弟'), ('recipient', '公園')] [] PASS
+## 弟が先生へ手紙を送った。
+   SUP frame 送る + [('agent', '弟'), ('patient', '手紙'), ('recipient', '先生')] [] PASS
+## 弟が都会へ引っ越した。
+   SUP frame 引っ越す + [('agent', '弟'), ('recipient', '都会')] [] PASS
+## 母が荷物を棚に置いた。
+   SUP frame 置く + [('agent', '母'), ('patient', '荷物'), ('recipient', '棚')] [] PASS
+## 母が荷物を倉庫に置いた。
+   SUP frame 置く + [('agent', '母'), ('patient', '荷物'), ('recipient', '倉庫')] [] PASS
+## 鳥が空に舞った。
+   SUP frame 舞う + [('agent', '鳥'), ('recipient', '空')] [] PASS
+## 若者が都会に移った。
+   SUP frame 移る + [('agent', '若者'), ('recipient', '都会')] [] PASS
+## 友人が都会に住んでいる。
+   SUP frame 住む + [('agent', '友人'), ('recipient', '都会')] [] PASS
+## 祖母が絵を長女に描いた。
+   SUP frame 描く + [('agent', '祖母'), ('patient', '絵'), ('recipient', '長女')] [] PASS
+## 鉄橋に補強材が取り付けられた。
+   SUP frame 取り付ける + [('agent', '鉄橋'), ('patient', '補強材')] [] PASS
+## 桟橋に旗が立てられた。
+   SUP frame 立てる + [('agent', '桟橋'), ('patient', '旗')] [] PASS
+## 舞台袖に照明が据えられた。
+   SUP frame 据える + [('agent', '舞台袖'), ('patient', '照明')] [] PASS
+## 母屋に看板が掲げられた。
+   SUP frame 掲げる + [('agent', '母屋'), ('patient', '看板')] [] PASS
+## 大広間に絨毯が敷かれた。
+   SUP frame 敷く + [('agent', '大広間'), ('patient', '絨毯')] [] PASS
+## 国技館に横断幕が掲げられた。
+   SUP frame 掲げる + [('agent', '国技館'), ('patient', '横断幕')] [] PASS
+## 実家に荷物が運び込まれた。
+   SUP frame 運び込む + [('agent', '実家'), ('patient', '荷物')] [] PASS
+## 街道沿いに休憩所が設けられた。
+   SUP frame 設ける + [('agent', '街道沿い'), ('patient', '休憩所')] [] PASS
+## 母が編み物を孫に仕上げた。
+   SUP frame 仕上げる + [('agent', '母'), ('patient', '編み物'), ('recipient', '孫')] [] PASS
+## 叔父が古い机を甥に直した。
+   SUP frame 直す + [('agent', '叔父'), ('patient', '古い机'), ('recipient', '甥')] [] PASS
+## 先輩が名簿を後輩にまとめた。
+   SUP frame まとめる + [('agent', '先輩'), ('patient', '名簿'), ('recipient', '後輩')] [] PASS
+## 店主が写真を客に選んだ。
+   SUP frame 選ぶ + [('agent', '店主'), ('patient', '写真'), ('recipient', '客')] [] PASS
+## 染め師が布を弟子に染めた。
+   SUP frame 染める + [('agent', '染め師'), ('patient', '布'), ('recipient', '弟子')] [] PASS
+## 彼が部屋を妹に改装した。
+   uns frame 改装する + [('patient', '部屋'), ('recipient', '妹')] ['unrepresented source content'] REJ:unsupported/ill-typed source
+   SUP gold_scramble 改装する + [('unresolved_0', '彼'), ('patient', '部屋'), ('recipient', '妹')] [] PASS
+## 左官が壁を白に塗り替えた。
+   SUP frame 塗り替える + [('agent', '左官'), ('patient', '壁'), ('recipient', '白')] [] PASS
+## 職人が板を薄板に加工した。
+   uns frame 加工する + [('agent', '職人'), ('patient', '板'), ('recipient', '薄板')] ['unrepresented source content', 'unrepresented source content'] REJ:unsupported/ill-typed source
+## 先生が児童を委員に指名した。
+   SUP frame 指名する + [('agent', '先生'), ('patient', '児童'), ('recipient', '委員')] [] PASS
+## 役場に委員が指名された。
+   SUP frame 指名する + [('agent', '役場'), ('patient', '委員')] [] PASS
+## 青年会に会長が選出された。
+   SUP frame 選出する + [('agent', '青年会'), ('patient', '会長')] [] PASS
+## 町内会に会計が選ばれた。
+   SUP frame 選ぶ + [('agent', '町内会'), ('patient', '会計')] [] PASS
+## 田所さんが学級委員に選ばれた。
+   SUP frame 選ぶ + [('agent', '学級委員'), ('patient', '田所さん')] [] PASS
+## 市議会に議員が選ばれた。
+   SUP frame 選ぶ + [('agent', '市議会'), ('patient', '議員')] [] PASS
+## 県知事が副知事に選任された。
+   SUP frame 選任する + [('agent', '副知事'), ('patient', '県知事')] [] PASS
+## 兄は父ほど背が高くない。
+   SUP comparison 高い + [('entity', '兄'), ('standard', '父'), ('dimension', '<背>'), ('direction', '<less>')] [] REJ:role/value licensing
+## この犬は猫ほど大きくない。
+   SUP comparison 大きい + [('entity', 'この犬'), ('standard', '猫'), ('dimension', '<大きい>'), ('direction', '<less>')] [] REJ:role/value licensing
+## 彼女は母くらい料理が上手だ。
+   uns copula identity + [('entity', '彼女'), ('value', '母くらい料理が上手')] ['unresolved anaphora'] REJ:unsupported/ill-typed source
+## 弟は兄ぐらい物知りだ。
+   SUP copula identity + [('entity', '弟'), ('value', '兄ぐらい物知り')] [] PASS
+## 今日は昨日ほど暑くない。
+   (no clauses) ['unsupported negative adjective']
+## この川は去年ほど深くない。
+   (no clauses) ['unsupported negative adjective']
+## 先生は校長ほど厳しくない。
+   (no clauses) ['unsupported negative adjective']
+## 姉が駅へ走った。
+   SUP frame 走る + [('agent', '姉'), ('recipient', '駅')] [] PASS
+## 弟が友達へ手紙を送った。
+   SUP frame 送る + [('agent', '弟'), ('patient', '手紙'), ('recipient', '友達')] [] PASS
+## 祖父が山里へ帰った。
+   SUP frame 帰る + [('agent', '祖父'), ('recipient', '山里')] [] PASS
+## 鳥が空へ飛んだ。
+   SUP frame 飛ぶ + [('agent', '鳥'), ('recipient', '空')] [] PASS
+## 祖母が荷物を台所へ運んだ。
+   SUP frame 運ぶ + [('agent', '祖母'), ('patient', '荷物'), ('recipient', '台所')] [] PASS
+## 子供が川に落ちた。
+   SUP frame 落ちる + [('agent', '子供'), ('recipient', '川')] [] PASS
+## 猫が箱に入った。
+   SUP frame 入る + [('agent', '猫'), ('recipient', '箱')] [] PASS
+## 船が港に着いた。
+   SUP frame 着く + [('agent', '船'), ('recipient', '港')] [] PASS
+## 兵士が命令を受けた。
+   SUP frame 与える + [('patient', '命令'), ('recipient', '兵士')] [] PASS
+## 医者が患者に薬を渡した。
+   SUP frame 渡す + [('agent', '医者'), ('patient', '薬'), ('recipient', '患者')] [] PASS
+tree=/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W1-a2-impl/dev191 foreign_modules=[]

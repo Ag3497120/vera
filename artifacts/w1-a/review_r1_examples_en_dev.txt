@@ -1,0 +1,11 @@
+READ The book Ken wrote sold well. -> ('writ', 'book ken', 'sold well', '', False)
+READ Ken saw the man the police arrested. -> ('s', 'ken', 'man', '', False)
+READ Ken read the report written by the intern. -> ('read', 'ken', 'written', 'report', False)
+READ Ken left as Lisa arrived. -> ('leav', 'ken', 'arrived', 'as lisa', False)
+READ Ken thinks Lisa sent the report. -> ('think', 'ken', 'lisa', '', False)
+READ Not a single engineer fixed the bug. -> ('a', '', 'single engineer', '', True)
+READ Two engineers fixed the server. -> ('fix', 'two engineer', 'server', '', False)
+READ Only Ken signed the contract. -> ('sign', 'only ken', 'contract', '', False)
+READ The coach kept the players running. -> ('keep', 'coach', 'player running', '', False)
+READ Ken might sign the contract. -> ('th', 'ken might sign', 'contract', '', False)
+tree=/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/dev foreign_modules=[]

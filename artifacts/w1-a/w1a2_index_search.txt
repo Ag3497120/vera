@@ -1,0 +1,45 @@
+### index search: 意味読解の入口 JSON
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "意味読解の入口 JSON",
+  "searched": 647,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 279,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### index search: 採点器 入口 B1
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "採点器 入口 B1",
+  "searched": 647,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 279,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### index search: 人の判定 接尾辞
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "人の判定 接尾辞",
+  "searched": 647,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 279,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

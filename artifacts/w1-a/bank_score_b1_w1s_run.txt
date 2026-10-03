@@ -1,0 +1,4 @@
+w1s exit=0
+B1 entry=mod-semantic-read total=26 correct=3 wrong=3 misread=0 over_abstain=16 correct_abstain=4 false_compliance=0 unreachable=0 runtime_error=0 unscorable=0
+correct_rate=0.115385 wrong_rate=0.115385 false_compliance_rate=0.0
+{'correct': 3, 'correct_abstain': 4, 'false_compliance': 0, 'misread': 0, 'over_abstain': 16, 'runtime_error': 0, 'unreachable': 0, 'unscorable': 0, 'wrong': 3}
