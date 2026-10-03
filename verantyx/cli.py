@@ -528,6 +528,22 @@ def cmd_index(args) -> int:
     return 0
 
 
+def cmd_read_events(args) -> int:
+    """文を読み、事象の十字(述語が中心・役割が腕・語が充填物)を `events` 欄に足して 1 行で返す。
+
+    `python -m verantyx.semantic_read --text=... --events` と同じ関数を通すので出力は 1 バイトも違わない。
+    """
+    from . import semantic_read
+
+    argv = []
+    if args.text is not None:
+        argv.append("--text=" + args.text)
+    if args.lang is not None:
+        argv.append("--lang=" + args.lang)
+    argv.append("--events")
+    return semantic_read.main(argv)
+
+
 def cmd_doctor(args) -> int:
     """入れた直後に叩く自己検査 — 二つの顔を1回で確かめる。
 
@@ -1541,6 +1557,15 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--limit", type=int, default=12)
     p.add_argument("--out", default="")
     p.set_defaults(fn=cmd_index)
+
+    p = sub.add_parser(
+        "read-events",
+        help="read one sentence and return its event crosses (predicate = centre, "
+             "roles = arms, words = fillers) as one line; same output as "
+             "`python -m verantyx.semantic_read --text=... --events`")
+    p.add_argument("--text", default=None)
+    p.add_argument("--lang", default=None)
+    p.set_defaults(fn=cmd_read_events)
 
     p = sub.add_parser(
         "mcp-config",

@@ -1,0 +1,118 @@
+added lines: 422
+PROPER/NUMERIC (must be empty): []
+ENGLISH NAMES (must be empty): []
+common nouns found in added lines (list only): ['十字']
+verb lemmas found in added lines (list only): ['通す']
+english lowercase words found in added lines (list only; each with the added lines that hold it, so a reader can judge): ['all', 'answer', 'because', 'broken', 'built', 'contract', 'def', 'down', 'every', 'fixed', 'got', 'kept', 'leave', 'missing', 'more', 'never', 'new', 'none', 'not', 'nothing', 'only', 'passed', 'patient', 'read', 'rest', 'returned', 'than', 'that', 'the', 'this', 'two', 'types', 'was', 'when', 'which', 'written']
+  [all] 3 added line(s):
+      estimated kinds are all different typed reasons), and it holds no word list of any topic.
+      if not isinstance(self.types, tuple) or not all(isinstance(t, str) and t for t in self.types):
+      elif not all(isinstance(x, str) and x.strip() for x in value): bad.append('ROLE_VALUE_NOT_STRING:%s' % name)
+  [answer] 6 added line(s):
+      # the answer of argv that never contained `--events`. Only the exact argument, before any `--`, is taken out; the parser
+      types is MULTIPLE and is not checked), it never turns a missing placement into a negative answer (NO_PLACEMENT, UNKNOWN, UNPLACED and the
+      """direct | estimated_near | estimated_generated | UNPLACED | UNKNOWN | NO_PLACEMENT (| INVALID for a broken lookup answer)."""
+  [because] 3 added line(s):
+      What it does NOT do: it never changes a role, a value or an arm because of a type (a DISAGREE is a statement, not a repair), it never adds
+      # because this module does not import the placement code (it asks a PlacementLookup). Not used to reject a type id the lookup returns.
+      """Ask the coarse placement about ONE word. The only argument is the word: no role and no predicate is passed, because a placement that
+  [broken] 1 added line(s):
+      """direct | estimated_near | estimated_generated | UNPLACED | UNKNOWN | NO_PLACEMENT (| INVALID for a broken lookup answer)."""
+  [built] 2 added line(s):
+      With `--events` one more key, `events`, is appended LAST (the event cross of verantyx/event_cross.py, built from this output alone); without it
+      is a FILLER of an arm. The cross is built ONLY from the output of the reading entry (`verantyx.semantic_read`, schema
+  [contract] 3 added line(s):
+      INVALID_STATE = 'INVALID'    # the state written on a filler whose lookup returned something that breaks the contract (not a state of the placement)
+      """The contract of the placement query (docs of W3-a2): empty when the answer is well formed."""
+      """Ask the lookup about `head` (and nothing else). A lookup answer that breaks the contract is kept as an INVALID placement with the
+  [def] 24 added line(s):
+      def cmd_read_events(args) -> int:
+      def source(self) -> str:
+      def invariant_problems(self) -> List[str]:
+  [down] 1 added line(s):
+      """Write down the dict that the placement query returns (keys `state`, `origin`, `estimate_basis`, `top`, `namespace`, `term`,
+  [every] 4 added line(s):
+      * every role of the clause becomes an arm (in the fixed order ROLE_NAMES, so a cross serialises to the same bytes every time);
+      * every filler gets a coarse placement from a `PlacementLookup` (the type candidates and where they come from);
+      * every arm gets a TypeAgreement (AGREE / DISAGREE / NOT_CHECKED with a typed reason) comparing the placed type with the type the
+  [fixed] 1 added line(s):
+      * every role of the clause becomes an arm (in the fixed order ROLE_NAMES, so a cross serialises to the same bytes every time);
+  [got] 6 added line(s):
+      got = lookup.lookup(head)
+      if isinstance(got, PlaceResult):
+      problems = got.invariant_problems()
+  [kept] 1 added line(s):
+      """Ask the lookup about `head` (and nothing else). A lookup answer that breaks the contract is kept as an INVALID placement with the
+  [leave] 1 added line(s):
+      # state DECIDED and origin direct (the invariants above leave no other case)
+  [missing] 2 added line(s):
+      types is MULTIPLE and is not checked), it never turns a missing placement into a negative answer (NO_PLACEMENT, UNKNOWN, UNPLACED and the
+      if key not in d: raise ValueError('BAD_COARSE_QUERY_RESULT:missing %s' % key)
+  [more] 2 added line(s):
+      With `--events` one more key, `events`, is appended LAST (the event cross of verantyx/event_cross.py, built from this output alone); without it
+      kind: str                          # FILLER (one candidate) | ARM_TIE (two or more candidates, none chosen)
+  [never] 6 added line(s):
+      # the answer of argv that never contained `--events`. Only the exact argument, before any `--`, is taken out; the parser
+      `verantyx.semantic_read/1`): the input sentence is never parsed again here, the reader's rules are not changed, and nothing is guessed.
+      What it does NOT do: it never changes a role, a value or an arm because of a type (a DISAGREE is a statement, not a repair), it never adds
+  [new] 1 added line(s):
+      """A new dict: the reader output as it is, plus the key `events` last. The input is not changed."""
+  [none] 1 added line(s):
+      kind: str                          # FILLER (one candidate) | ARM_TIE (two or more candidates, none chosen)
+  [not] 53 added line(s):
+      if args.text is not None:
+      if args.lang is not None:
+      argv = [a for i, a in enumerate(argv) if not (i < cut and a == '--events')]
+  [nothing] 3 added line(s):
+      `verantyx.semantic_read/1`): the input sentence is never parsed again here, the reader's rules are not changed, and nothing is guessed.
+      """Ask the lookup about `head` (and nothing else). A lookup answer that breaks the contract is kept as an INVALID placement with the
+      src = copy.deepcopy(dict(read_output))    # nothing below touches the caller's object
+  [only] 4 added line(s):
+      from . import event_cross    # only for --events: the default output does not load the module
+      # The noun type ids of the coarse placement, as named in the W3-a2 working tree on 2026-10-03 (its list is append-only). Kept here as strings
+      """Ask the coarse placement about ONE word. The only argument is the word: no role and no predicate is passed, because a placement that
+  [passed] 1 added line(s):
+      """Ask the coarse placement about ONE word. The only argument is the word: no role and no predicate is passed, because a placement that
+  [patient] 1 added line(s):
+      'agent', 'patient', 'recipient', 'goal', 'result', 'source', 'place', 'time', 'instrument',
+  [read] 4 added line(s):
+      "read-events",
+      help="read one sentence and return its event crosses (predicate = centre, "
+      """`semantic_read.read(text, lang)` with the `events` key added. Raises the reader's ReadError for an input it refuses."""
+  [rest] 1 added line(s):
+      # that sees the rest is the one it always was.
+  [returned] 1 added line(s):
+      INVALID_STATE = 'INVALID'    # the state written on a filler whose lookup returned something that breaks the contract (not a state of the placement)
+  [than] 1 added line(s):
+      * one clause -> one cross (same order, same index); the clause keys other than `roles` become the centre as they are;
+  [that] 10 added line(s):
+      # the answer of argv that never contained `--events`. Only the exact argument, before any `--`, is taken out; the parser
+      # that sees the rest is the one it always was.
+      # The registered table (docs/EVENT_CROSS.md, section "事前登録"): the type the convention says a role holds. Roles that the convention does
+  [the] 45 added line(s):
+      With `--events` one more key, `events`, is appended LAST (the event cross of verantyx/event_cross.py, built from this output alone); without it
+      the output is unchanged to the byte, and a refused input answers the same with or without it.
+      # `--events` is NOT registered with the parser: argparse would then take its abbreviations (--e, --ev, ...) too and change
+  [this] 4 added line(s):
+      With `--events` one more key, `events`, is appended LAST (the event cross of verantyx/event_cross.py, built from this output alone); without it
+      What this layer does:
+      # because this module does not import the placement code (it asks a PlacementLookup). Not used to reject a type id the lookup returns.
+  [two] 1 added line(s):
+      kind: str                          # FILLER (one candidate) | ARM_TIE (two or more candidates, none chosen)
+  [types] 12 added line(s):
+      types is MULTIPLE and is not checked), it never turns a missing placement into a negative answer (NO_PLACEMENT, UNKNOWN, UNPLACED and the
+      # docs/READING_CONVENTIONS.md section 1.2: the closed list of relation types.
+      """What a placement says about one word. `types` is an UNORDERED set written in alphabetical order: it is not a ranking."""
+  [was] 2 added line(s):
+      # that sees the rest is the one it always was.
+      convention expects of the role (EXPECTED_TYPES, registered in docs/EVENT_CROSS.md before any test data was written).
+  [when] 3 added line(s):
+      """The contract of the placement query (docs of W3-a2): empty when the answer is well formed."""
+      reason: Optional[str] = None       # one of NOT_CHECKED_REASONS when NOT_CHECKED, else None
+      """The reasons for which the reader output is refused as an input (empty when it can be crossed or is a typed abstention)."""
+  [which] 1 added line(s):
+      """The reasons for which the reader output is refused as an input (empty when it can be crossed or is a typed abstention)."""
+  [written] 3 added line(s):
+      convention expects of the role (EXPECTED_TYPES, registered in docs/EVENT_CROSS.md before any test data was written).
+      INVALID_STATE = 'INVALID'    # the state written on a filler whose lookup returned something that breaks the contract (not a state of the placement)
+      """What a placement says about one word. `types` is an UNORDERED set written in alphabetical order: it is not a ranking."""

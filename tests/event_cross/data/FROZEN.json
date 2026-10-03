@@ -1,0 +1,22 @@
+{
+  "sentences": {
+    "sentences_ja.jsonl": "e4b633745ede2aa1803470e948bfbc9883a60b8c963374897fc4a117445c3951",
+    "sentences_en.jsonl": "2e4f0139c9aebf088d753a866c3b2278e82cf6850fa8e87193f21dc27a55420b",
+    "frozen_at": "2026-10-03 09:40:04 +0900"
+  },
+  "expected": {
+    "expected_ja.jsonl": "1f7c6e271ede6ebca2416c64560f73314d4134d2ff3832f131633c28e6ba15cc",
+    "expected_en.jsonl": "0c2f2a90aea13cd5f77b985e51fc34147d25ae9101b29f5467277aa3b3716ed8",
+    "frozen_at": "2026-10-03 09:43:28 +0900"
+  },
+  "sentences_add1": {
+    "sentences_ja_add1.jsonl": "a172c51b8c723cea91ec048d06bb68b2db77b69bd546b93290384a742856959c",
+    "sentences_en_add1.jsonl": "5ce3b188c271715e222ce7188b17116851b86731c4bde4e03382b654075e919b",
+    "frozen_at": "2026-10-03 09:45:13 +0900"
+  },
+  "expected_add1": {
+    "expected_ja_add1.jsonl": "24b00630227c2cc77c905f00ea39f894d27436b7a4259ef2dbe2923ab60cfe8d",
+    "expected_en_add1.jsonl": "9bbadab5203a4b388ef9a36710bdded64aef434127f4cd131c24f93140bf8953",
+    "frozen_at": "2026-10-03 09:45:13 +0900"
+  }
+}

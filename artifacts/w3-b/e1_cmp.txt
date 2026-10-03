@@ -1,0 +1,6 @@
+E1a_OK
+E1b_OK
+E1c_OK
+subprocess checked 35 inputs (every 30th plus the last edge inputs), mismatch 0
+inputs:      775
+3b7faaad4c76e166eba673374976f2e62cfda3f7bc8af7671aaad0b14f975797 verantyx/semantic_read.py@b471f5a (git show output, sha256)

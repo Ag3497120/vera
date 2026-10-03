@@ -1,0 +1,82 @@
+{"id": "ja-001", "text": "母が台所でスープを作った。", "tags": ["simple", "fronted_time_place"], "topic": "cooking"}
+{"id": "ja-002", "text": "農家が畑に種をまいた。", "tags": ["simple"], "topic": "farming"}
+{"id": "ja-003", "text": "医者が患者に薬を出した。", "tags": ["simple", "giving"], "topic": "medical"}
+{"id": "ja-004", "text": "運転手がバスを止めた。", "tags": ["simple"], "topic": "transport"}
+{"id": "ja-005", "text": "子どもが庭で犬と遊んだ。", "tags": ["simple"], "topic": "housework"}
+{"id": "ja-006", "text": "技術者が機械を修理した。", "tags": ["simple"], "topic": "factory"}
+{"id": "ja-007", "text": "先生が黒板に字を書いた。", "tags": ["simple"], "topic": "school"}
+{"id": "ja-008", "text": "店員が客にりんごを売った。", "tags": ["simple", "giving"], "topic": "shopping"}
+{"id": "ja-009", "text": "風が窓を揺らした。", "tags": ["simple"], "topic": "weather"}
+{"id": "ja-010", "text": "看護師が熱を測った。", "tags": ["simple"], "topic": "medical"}
+{"id": "ja-011", "text": "机の上に置いた本を妹が読んだ。", "tags": ["complex"], "topic": "school"}
+{"id": "ja-012", "text": "先生は明日試験があると言った。", "tags": ["complex"], "topic": "school"}
+{"id": "ja-013", "text": "工場が機械を止めたという知らせが届いた。", "tags": ["complex"], "topic": "factory"}
+{"id": "ja-014", "text": "母が作ったスープを子どもが飲んだ。", "tags": ["complex"], "topic": "cooking"}
+{"id": "ja-015", "text": "運転手は道が混んでいると話した。", "tags": ["complex"], "topic": "transport"}
+{"id": "ja-016", "text": "農家が育てた野菜を店員が並べた。", "tags": ["complex"], "topic": "farming"}
+{"id": "ja-017", "text": "雨が降ったので、試合が延期された。", "tags": ["connective", "passive"], "topic": "weather"}
+{"id": "ja-018", "text": "薬を飲んだが、熱は下がらなかった。", "tags": ["connective", "negation"], "topic": "medical"}
+{"id": "ja-019", "text": "先生が説明しても、生徒は分からなかった。", "tags": ["connective", "negation"], "topic": "school"}
+{"id": "ja-020", "text": "水を入れれば、機械が動く。", "tags": ["connective"], "topic": "factory"}
+{"id": "ja-021", "text": "母が料理をしながら、歌を歌った。", "tags": ["connective"], "topic": "cooking"}
+{"id": "ja-022", "text": "手を洗ってから、食事を始めた。", "tags": ["connective"], "topic": "housework"}
+{"id": "ja-023", "text": "部品を取り替えたので、機械が直った。", "tags": ["connective"], "topic": "factory"}
+{"id": "ja-024", "text": "早く着くために、運転手は近道を選んだ。", "tags": ["connective"], "topic": "transport"}
+{"id": "ja-025", "text": "書類を印刷して、課長に渡した。", "tags": ["connective", "giving"], "topic": "office"}
+{"id": "ja-026", "text": "弟は野菜を食べなかった。", "tags": ["negation", "simple"], "topic": "cooking"}
+{"id": "ja-027", "text": "農家は雨の日に畑へ行かない。", "tags": ["negation", "simple"], "topic": "farming"}
+{"id": "ja-028", "text": "店員は客に袋を渡さなかった。", "tags": ["negation", "giving"], "topic": "shopping"}
+{"id": "ja-029", "text": "電車は駅に止まらなかった。", "tags": ["negation", "simple"], "topic": "transport"}
+{"id": "ja-030", "text": "技術者はその機械を直さなかった。", "tags": ["negation", "simple"], "topic": "factory"}
+{"id": "ja-031", "text": "母は牛乳を買わなかった。", "tags": ["negation", "simple"], "topic": "shopping"}
+{"id": "ja-032", "text": "姉は妹より足が速い。", "tags": ["comparison"], "topic": "sports"}
+{"id": "ja-033", "text": "この道は川沿いの道より広い。", "tags": ["comparison"], "topic": "transport"}
+{"id": "ja-034", "text": "東の畑は西の畑より水が多い。", "tags": ["comparison"], "topic": "farming"}
+{"id": "ja-035", "text": "新しい機械は古い機械より静かだ。", "tags": ["comparison"], "topic": "factory"}
+{"id": "ja-036", "text": "電車はバスより速い。", "tags": ["comparison"], "topic": "transport"}
+{"id": "ja-037", "text": "夏は冬より日が長い。", "tags": ["comparison"], "topic": "weather"}
+{"id": "ja-038", "text": "犬は猫より大きい。", "tags": ["comparison"], "topic": "housework"}
+{"id": "ja-039", "text": "先生が生徒にノートをあげた。", "tags": ["giving"], "topic": "school"}
+{"id": "ja-040", "text": "隣の人が私に野菜をくれた。", "tags": ["giving"], "topic": "farming"}
+{"id": "ja-041", "text": "生徒は先生に花をもらった。", "tags": ["giving"], "topic": "school"}
+{"id": "ja-042", "text": "店員が客にお釣りを渡した。", "tags": ["giving"], "topic": "shopping"}
+{"id": "ja-043", "text": "課長が部下に書類を送った。", "tags": ["giving"], "topic": "office"}
+{"id": "ja-044", "text": "兄が妹に傘を貸した。", "tags": ["giving"], "topic": "housework"}
+{"id": "ja-045", "text": "医者が患者に説明書を渡した。", "tags": ["giving"], "topic": "medical"}
+{"id": "ja-046", "text": "窓が子どもに割られた。", "tags": ["passive"], "topic": "housework"}
+{"id": "ja-047", "text": "新しい橋が市によって建てられた。", "tags": ["passive"], "topic": "construction"}
+{"id": "ja-048", "text": "荷物が運転手によって運ばれた。", "tags": ["passive"], "topic": "transport"}
+{"id": "ja-049", "text": "試合は雨で延期された。", "tags": ["passive"], "topic": "weather"}
+{"id": "ja-050", "text": "部品が工場で作られた。", "tags": ["passive", "fronted_time_place"], "topic": "factory"}
+{"id": "ja-051", "text": "手紙が先生に読まれた。", "tags": ["passive"], "topic": "school"}
+{"id": "ja-052", "text": "犬が子どもに撫でられた。", "tags": ["passive"], "topic": "housework"}
+{"id": "ja-053", "text": "昨日、工場で機械が止まった。", "tags": ["fronted_time_place"], "topic": "factory"}
+{"id": "ja-054", "text": "朝に、母が台所で魚を焼いた。", "tags": ["fronted_time_place"], "topic": "cooking"}
+{"id": "ja-055", "text": "来週、農家が畑で麦を刈る。", "tags": ["fronted_time_place"], "topic": "farming"}
+{"id": "ja-056", "text": "駅で、先生が生徒に切符を渡した。", "tags": ["fronted_time_place", "giving"], "topic": "transport"}
+{"id": "ja-057", "text": "夜に、看護師が病室で患者の熱を測った。", "tags": ["fronted_time_place"], "topic": "medical"}
+{"id": "ja-058", "text": "去年、市が川に橋を架けた。", "tags": ["fronted_time_place"], "topic": "construction"}
+{"id": "ja-059", "text": "三月に、学校で卒業式があった。", "tags": ["fronted_time_place"], "topic": "school"}
+{"id": "ja-060", "text": "昨日、会社でシステムが止まった。", "tags": ["fronted_time_place"], "topic": "software"}
+{"id": "ja-061", "text": "担当者が金曜日までに報告書を課長に提出する。", "tags": ["explain", "giving"], "topic": "office"}
+{"id": "ja-062", "text": "私が明日までに資料を部長に送る。", "tags": ["explain", "giving"], "topic": "office"}
+{"id": "ja-063", "text": "開発者が来週までに修正版を利用者に配る。", "tags": ["explain", "giving"], "topic": "software"}
+{"id": "ja-064", "text": "事務員が今日中に請求書を取引先に送った。", "tags": ["explain", "giving"], "topic": "office"}
+{"id": "ja-065", "text": "工場長が月曜日に新しい部品を作業員に渡す。", "tags": ["explain", "giving"], "topic": "factory"}
+{"id": "ja-066", "text": "担当者は毎朝データを確認する。", "tags": ["explain"], "topic": "software"}
+{"id": "ja-067", "text": "看護師が午後に薬を患者に届ける。", "tags": ["explain", "giving"], "topic": "medical"}
+{"id": "ja-068", "text": "私が夕方までに記録を医者に見せる。", "tags": ["explain", "giving"], "topic": "medical"}
+{"id": "ja-069", "text": "運転手が毎日荷物を店に運ぶ。", "tags": ["explain"], "topic": "transport"}
+{"id": "ja-070", "text": "管理者が金曜日までにパスワードを部下に伝える。", "tags": ["explain", "giving"], "topic": "software"}
+{"id": "ja-071", "text": "営業が今週中に見積書を客に出す。", "tags": ["explain", "giving"], "topic": "shopping"}
+{"id": "ja-072", "text": "技術者が明日までにプログラムを直す。", "tags": ["explain"], "topic": "software"}
+{"id": "ja-073", "text": "担当者がサーバーを再起動した。", "tags": ["explain", "simple"], "topic": "software"}
+{"id": "ja-074", "text": "調理担当が昼までに野菜を切る。", "tags": ["explain"], "topic": "cooking"}
+{"id": "ja-075", "text": "おはようございます、皆さん。", "tags": ["unreadable"], "topic": "greeting"}
+{"id": "ja-076", "text": "どうもありがとう。", "tags": ["unreadable"], "topic": "greeting"}
+{"id": "ja-077", "text": "わあ。", "tags": ["unreadable"], "topic": "greeting"}
+{"id": "ja-078", "text": "大きな赤い車の。", "tags": ["unreadable"], "topic": "transport"}
+{"id": "ja-079", "text": "山 川 空 本 を の。", "tags": ["unreadable"], "topic": "school"}
+{"id": "ja-080", "text": "先生が地図をぬめった。", "tags": ["unreadable"], "topic": "school"}
+{"id": "ja-081", "text": "失礼しました。", "tags": ["unreadable"], "topic": "greeting"}
+{"id": "ja-082", "text": "おお、すごい。", "tags": ["unreadable"], "topic": "greeting"}

@@ -1,0 +1,6 @@
+registered_at: 2026-10-03 09:35:00 +0900 (docs/EVENT_CROSS.md 事前登録節。date 出力は本文に記載)
+cmd: awk '/<!-- prereg:begin -->/{f=1;next}/<!-- prereg:end -->/{f=0}f' docs/EVENT_CROSS.md | shasum -a 256
+332442d39ba1964d6861d911cdce31fd7569008b4b30d8052cc698188499468e  -
+recorded_at: 2026-10-03 09:35:11 +0900
+cmd: ls tests/event_cross/data 2>/dev/null  (空=まだデータが無い)
+ls output: []

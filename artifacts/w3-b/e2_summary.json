@@ -1,0 +1,196 @@
+{
+ "sentences": 204,
+ "by_lang": {
+  "en": 101,
+  "ja": 103
+ },
+ "status": {
+  "ABSTAINED": 134,
+  "CROSSED": 70
+ },
+ "status_by_lang": {
+  "en": {
+   "ABSTAINED": 70,
+   "CROSSED": 31
+  },
+  "ja": {
+   "ABSTAINED": 64,
+   "CROSSED": 39
+  }
+ },
+ "status_by_tag": {
+  "comparison": {
+   "ABSTAINED": 11,
+   "CROSSED": 9
+  },
+  "complex": {
+   "ABSTAINED": 12
+  },
+  "connective": {
+   "ABSTAINED": 18
+  },
+  "explain": {
+   "ABSTAINED": 27,
+   "CROSSED": 4
+  },
+  "fronted_time_place": {
+   "ABSTAINED": 17,
+   "CROSSED": 3
+  },
+  "giving": {
+   "ABSTAINED": 28,
+   "CROSSED": 30
+  },
+  "negation": {
+   "ABSTAINED": 10,
+   "CROSSED": 15
+  },
+  "passive": {
+   "ABSTAINED": 14,
+   "CROSSED": 2
+  },
+  "simple": {
+   "ABSTAINED": 23,
+   "CROSSED": 36
+  },
+  "unreadable": {
+   "ABSTAINED": 15,
+   "CROSSED": 1
+  }
+ },
+ "status_by_topic": {
+  "construction": {
+   "ABSTAINED": 3,
+   "CROSSED": 4
+  },
+  "cooking": {
+   "ABSTAINED": 10,
+   "CROSSED": 5
+  },
+  "factory": {
+   "ABSTAINED": 17,
+   "CROSSED": 6
+  },
+  "farming": {
+   "ABSTAINED": 10,
+   "CROSSED": 3
+  },
+  "greeting": {
+   "ABSTAINED": 10
+  },
+  "housework": {
+   "ABSTAINED": 10,
+   "CROSSED": 4
+  },
+  "medical": {
+   "ABSTAINED": 11,
+   "CROSSED": 9
+  },
+  "office": {
+   "ABSTAINED": 9,
+   "CROSSED": 5
+  },
+  "school": {
+   "ABSTAINED": 17,
+   "CROSSED": 9
+  },
+  "shopping": {
+   "ABSTAINED": 3,
+   "CROSSED": 8
+  },
+  "software": {
+   "ABSTAINED": 12,
+   "CROSSED": 3
+  },
+  "sports": {
+   "CROSSED": 1
+  },
+  "transport": {
+   "ABSTAINED": 15,
+   "CROSSED": 10
+  },
+  "weather": {
+   "ABSTAINED": 7,
+   "CROSSED": 3
+  }
+ },
+ "crosses": 70,
+ "arms": 174,
+ "arm_ties": 0,
+ "relations": 0,
+ "relation_types": {},
+ "agreement": {
+  "AGREE": 0,
+  "DISAGREE": 0,
+  "NOT_CHECKED": 174
+ },
+ "not_checked_by_reason": {
+  "ARM_TIE": 0,
+  "ESTIMATED_GENERATED": 0,
+  "ESTIMATED_NEAR": 0,
+  "LOOKUP_RESULT_INVALID": 0,
+  "MULTIPLE": 0,
+  "NO_PLACEMENT": 95,
+  "ROLE_NOT_IN_TABLE": 79,
+  "UNKNOWN": 0,
+  "UNPLACED": 0
+ },
+ "abstain_kind": {
+  "not_supported": 129,
+  "unreadable_input": 5
+ },
+ "abstain_first_reason": {
+  "EN_UNREAD": 39,
+  "GOAL_TYPE_UNDETERMINED": 1,
+  "INTERJECTION_OR_FORMULA": 3,
+  "NO_PREDICATE_TOKEN": 2,
+  "NO_SUPPORTED_CLAUSE": 31,
+  "PREDICATE_NORMALIZED": 1,
+  "QUANTIFIER_NOT_MAPPED": 1,
+  "RECIPIENT_TYPE_UNDETERMINED": 5,
+  "RELATION_NOT_MAPPED": 4,
+  "SUBJECT_TYPE_UNDETERMINED": 2,
+  "UNCOVERED_PREDICATE": 6,
+  "UNDETERMINED_TENSE": 1,
+  "UNDETERMINED_VOICE": 4,
+  "UNKNOWN_PREDICATE": 19,
+  "UNMAPPED_ROLE": 6,
+  "UNREAD_SPAN": 2,
+  "UNREPRESENTED_CONTENT": 5,
+  "UNSUPPORTED_CLAUSE": 2
+ },
+ "roles": {
+  "agent": 61,
+  "entity": 9,
+  "patient": 61,
+  "place": 3,
+  "recipient": 30,
+  "standard": 9,
+  "time": 1
+ },
+ "explain": {
+  "ja": {
+   "sentences": 16,
+   "crossed": 2,
+   "abstained": 14,
+   "crossed_ids": [
+    "ja-102",
+    "ja-103"
+   ]
+  },
+  "en": {
+   "sentences": 15,
+   "crossed": 2,
+   "abstained": 13,
+   "crossed_ids": [
+    "en-096",
+    "en-097"
+   ]
+  }
+ },
+ "clauses_per_sentence": {
+  "0": 134,
+  "1": 70
+ },
+ "error_outputs": 0
+}

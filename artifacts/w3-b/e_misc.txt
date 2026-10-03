@@ -1,0 +1,18 @@
+## 共通: 読み込まれた verantyx がすべて作業ツリー配下
+outside []
+## E3
+9 passed, 46 deselected in 0.11s
+relations equal on 204
+## E4
+18 passed, 37 deselected in 0.11s
+## 到達性
+2
+    {
+      "kind": "module",
+      "name": "event_cross",
+      "about": "Event cross (事象の十字): the middle layer between a word's coarse placement and the relations between events.",
+      "where": "verantyx/event_cross.py"
+    },
+    {
+      "kind": "command",
+outside [] 43
