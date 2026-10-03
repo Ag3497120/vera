@@ -1,0 +1,7 @@
+mask keys (values set to 0, keys kept): elapsed_ms, ingest_ms
+questions compared: 343 (base 343, base2 343, new 343)
+base1 vs base2: same 343, differ 0
+base vs new (outside the later stage): same 100, differ 0
+base vs new (ORIGINAL, question_cross removed): same 197, differ 0
+inside the closed set and mapped to ANSWER or TIE (changed by design, not compared): 46
+inside the closed set, unexplained: 0

@@ -1,0 +1,2 @@
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+FAILED tests/test_basis_policy_entry.py::test_a_document_that_does_not_answer_stays_an_abstention

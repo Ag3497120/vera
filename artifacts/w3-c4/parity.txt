@@ -1,0 +1,6 @@
+placement=none        variant=with_lang questions=185 identical=185
+placement=none        variant=no_lang   questions=185 identical=185
+placement=placement_q variant=with_lang questions=185 identical=185
+placement=placement_q variant=no_lang   questions=185 identical=185
+compared outputs: 740; mismatches: 0
+not compared: structure.file_sha256 (records hash vs file bytes hash)

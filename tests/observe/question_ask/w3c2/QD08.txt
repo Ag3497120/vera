@@ -1,0 +1,8 @@
+The farmer bought a horse.
+The clerk reads the newspaper.
+The sailor wrote a letter.
+The teacher gave the map to the student.
+The principal gave the map to the student.
+The doctor did not give the medicine to the patient.
+X sold the map to the chef.
+The miller sold the horse to the baker.

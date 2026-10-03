@@ -1270,3 +1270,41 @@ def test_r3_the_users_own_document_answer_is_kept_and_the_record_is_not_used(tmp
 **既知の穴**: 確認済みの文と現在の生成文が表記だけ違うとき（空白・句読点・NFKC の違い）は格上げされず、再確認を求める（安全側の過剰棄権）。
 **この文書の担当の測定は上のとおり。全体の受入と判断は `artifacts/w5-d/DECISIONS.md` の「第 2 ラウンド（W5-d2）」と `artifacts/w5-d/r2/`。**
 <!-- w5d2-measured:end -->
+
+## W3-c4: 文書 QA の後段との接続（注記）
+
+（箇条書きは事前登録の要点。下の `w3c4-measured` の区間は測定値で、`tests/observe/question_ask/make_summary.py --patch-docs` が `artifacts/w3-c4/` のファイルから機械で貼った。第 2 ラウンドで再測定した。）
+- 順は 既存の経路 → 質問の十字の後段（`vera ask --mode round5 --document` が `UNKNOWN_UNREAD`・`UNKNOWN_NO_EVIDENCE` を返したときだけ。`docs/OBSERVATION.md` の「文書 QA の後段（W3-c4）」） → `apply_to_ask`。`apply_to_ask` の引数と方針の表（A/C/E/D/B）・出力の形は変えていない（`basis_policy.py` は無変更）。
+- 後段の出典は `family:"document"`・`origin` なし → 方針の分類で `human`（出典の `text` は渡した文書の本文の行から切り出した文なので、W5-d の「文が渡した文書の本文にある」照合を必ず満たす）。
+- 方針が答えを取り下げる（`_unknown_dict`）と `question_cross` と `candidates` は運ばれず、後段が走ったことは trace の 1 段（`part:"question_cross"`）だけが残る。
+- `AMBIGUOUS_QUESTION_CROSS_TIE`（`kind:"unknown"`）は方針の `ABSTAIN` で元の dict がそのまま返る（`candidates` も残る）。
+
+<!-- w3c4-measured:begin -->
+（`tests/observe/question_ask/make_summary.py --patch-docs` が `artifacts/w3-c4/` のファイルから貼った区間。手で書き換えない。）
+
+A4 のテスト: `tests/test_ask_question_cross.py` の `test_policy_the_document_sentence_is_a_human_basis`・`test_policy_human_basis_without_human_present_too`・`test_policy_a_tie_is_an_abstention_and_keeps_the_candidates`。
+CLI での A4（`artifacts/w3-c4/a4_cli.txt`）:
+
+```
+$ VP=R7 py.sh -m verantyx.cli --store st.json ask --mode round5 --document probe/ja1.txt --request-kind factual --human-present -- 校長は何を読んだ？  | (door verdict outcome counts.human sentence_ids)
+question_cross ANSWER ANSWER_HUMAN_BASIS 1 ['ja1.txt#2:1']
+$ same without --request-kind/--human-present
+question_cross ANSWER ANSWER_HUMAN_BASIS 1 ['ja1.txt#2:1']
+$ no VERA_PLACEMENT: the original abstention plus question_cross
+UNKNOWN_UNREAD semantic_document NO_TYPED_CANDIDATE ORIGINAL
+$ the existing path answers: no question_cross
+ANSWER semantic_document False
+```
+
+後段が答えた（`door:"question_cross"`）問の `basis_policy.outcome` の分布（既定の方針。各 score の JSON の `policy_outcomes`。ANSWER の行は `ANSWER_HUMAN_BASIS`、TIE の行は `ABSTAIN`）:
+
+```
+a2_place: {"ABSTAIN": 5, "ANSWER_HUMAN_BASIS": 39}
+a2_r7: {"ABSTAIN": 1, "ANSWER_HUMAN_BASIS": 20}
+w3c2_place: {"ABSTAIN": 8, "ANSWER_HUMAN_BASIS": 21}
+w3c2_r7: {"ABSTAIN": 1, "ANSWER_HUMAN_BASIS": 20}
+b2like_place: {"ANSWER_HUMAN_BASIS": 13}
+b2like_r7: {"ANSWER_HUMAN_BASIS": 4}
+a1_new_r7: {"ABSTAIN": 2, "ANSWER_HUMAN_BASIS": 44}
+```
+<!-- w3c4-measured:end -->

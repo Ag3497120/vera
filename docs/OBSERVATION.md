@@ -602,7 +602,7 @@ d に q に無い腕がある（例: 場所 `駅で` が多い）なら一致し
 9. **PROPERTY（どんな＋N）・CAUSE・MANNER は読まない**。十字に腕が無い・読解器が関係を出さないため、全部が型付きの棄権。
 10. **表に無い疑問の語は検出しない**（`どれ`・`どなた`・`いかが` など）。はい／いいえ疑問として読まれうるが、はい／いいえ疑問は観測しない（`POLAR_QUESTION`）ので答えは作られない。数の問い（何人・いくつ・how many）は `WH_NOT_IN_TABLE`。
 11. はい／いいえ疑問は十字を作るだけで、観測しない（`POLAR_QUESTION`）。
-12. `vera ask --mode round5 --document` につながっていない（このチケットの範囲外）。
+12. `vera ask --mode round5 --document` につながっていない（このチケットの範囲外）。 → **W3-c4 で後段としてつないだ**（既存の経路が `UNKNOWN_UNREAD`・`UNKNOWN_NO_EVIDENCE` を返したときだけ。「文書 QA の後段（W3-c4）」の節。元の行は消さない）。
 13. **読解器は英文の末尾の取り残しの `to` を黙って捨てる**（基点でも `The girl wrote a letter to.` を `agent girl / patient letter` と読む）。W3-c2 の範囲外なので直していない（事実の記録）。そのため `read_question` は、平叙形に取り残しの `to` が印より後に残らない形だけを作る（残りが `to` 1 語なら印を `to` の後に置く。読解器は受け手の位置を型の証拠が無いので棄権する）。`Who did the girl write to?` は `QUESTION_NOT_READ` になる。読解器側の健全性の穴（別チケット候補）。
 
 ### Q5 の申し送り（監査役が隠しバンク B2 で測るとき）
@@ -1323,3 +1323,277 @@ def test_negative_question_does_not_match_affirmative_crosses(tmp_path):
 **既知の穴**: (a) TIE が FILLED に縮む（上）。(b) r7 では FALSE_NONE が増える（上。r7 の型による `TYPE_EXCLUDED_ALL`）。(c) 攻撃 120 問の 116 問には正解が無いので、r7 の FILLED 29・TIE 5 は型こそ全部 AGREE だが正しさは採点されていない（監査役の G6 で見る）。
 **この文書の担当の測定は上のとおり。全体の受入と判断は `artifacts/w5-d/DECISIONS.md` の「第 2 ラウンド（W5-d2）」と `artifacts/w5-d/r2/`。**
 <!-- w5d2-measured:end -->
+
+## 文書 QA の後段（W3-c4）
+
+（この節は段階的に書く。最初に書いたのは次の「事前登録」小節だけ。ほかの小節は検査データを作り、実装したあとに足す。）
+
+### 事前登録（W3-c4）
+
+<!-- w3c4-prereg:begin -->
+登録日時: 2026-10-04 02:05:35 +0900（`date '+%Y-%m-%d %H:%M:%S %z'` の出力。この節はこの出力の直後に書いた）
+この時点で `tests/observe/question_ask/` は存在しない（`ls` の出力を `artifacts/w3-c4/prereg.txt` に記録する）。出典は中間職の指示書 `.claude/vera-audit/review-impl/W3-c4/plan.md` の D3〜D7 と手順 1 の採点・A1 の比べ方。
+
+**後段の条件（D3。閉じた集合。これ以外は 1 バイトも変えない）**: `mode == "round5"` かつ `--document` が 1 つ以上 かつ 既存の経路の結果が dict で `verdict ∈ {"UNKNOWN_UNREAD", "UNKNOWN_NO_EVIDENCE"}`（ちょうどこの 2 値）。外れたら後段の関数は最初の行で同じオブジェクトをそのまま返す（複製もしない。条件の判定より前に import・文書の読み込み・時刻の取得をしない）。答え・他の棄権（`UNKNOWN_UNSUPPORTED_EVIDENCE`・`UNKNOWN_CONTENT_PERMISSION` など）・文書なし・`--mode` が round5 でないものは触らない。後段は `vera ask` だけにつなぐ（`vera chat` の round5 にはつながない）。
+
+**構造の作り方（D4）**:
+1. 文書は方針の `_document_texts` と同じ読み方: `--document` の各項目について、ディレクトリなら `load_directory`、それ以外は `load_paths([path])`（中で `document_loaders.load_path`）。読めた `Document(source, text)` を使い、読めなかったものは `skipped`。
+2. 行 = `doc.text.split("\n")` の 1 始まりの番号（`splitlines()` は使わない）。
+3. 区切り = 正規表現 `(?<=。)|(?<=\.)(?=\s)` で行を `split`（`。` の直後、`.` の直後で次の字が空白類のところ）。各片を `strip()`、空の片は捨てる。`！`・`？`・`!`・`?`・全角 `．` では切らない。語の一覧・略語の例外は足さない。「`.` は直後が空白のときだけ」は、チケットの「`.`」を「文の終わりの `.`」と読んだ解釈（`3.5` や `a.b` を割らないため）。
+4. 文 id = `<doc.source>#<行>:<その行の中の空でない片の番号>`。records = `{"id", "text"}` の列（`lang` は付けない）。
+5. 読めた文書が 0 本なら観測しない（状態 `DOCUMENTS_NOT_LOADED`）。id が重複したら（同じファイル名の文書が 2 本、同じ文書を 2 回）観測せず状態 `STRUCTURE_INVALID`。
+6. 一時ファイルを作らない。records を `observe.observe_question_records`（メモリ上で受ける入口。観測の規則は触らない。配置は `VERA_PLACEMENT` の `event_cross.default_lookup`）に渡す。質問は `--query` そのまま、`lang` は None。
+
+**結果の写し（D5）**: `question_cross.state` の閉じた一覧 = 観測器の `ANSWER_STATUSES` 11 個（`FILLED`・`TIE`・`NO_ATTESTED_CELL`・`TYPE_EXCLUDED_ALL`・`HOLE_TYPE_UNDETERMINED`・`POLAR_QUESTION`・`DIRECTION_NOT_APPLIED`・`QUESTION_NOT_READ`・`ANCHOR_CROSS_INDEX_OUT_OF_RANGE`・`INCOMPLETE_BY_EXTENSION`・`NO_TYPED_CANDIDATE`）＋ `NOT_A_QUESTION`・`DOCUMENTS_NOT_LOADED`・`STRUCTURE_INVALID`・`ERROR`。理由の閉じた一覧 = `SURFACES_DIFFER:<n>`・`SURFACE_NOT_IN_EVIDENCE`・`QUOTE_UNBALANCED_EVIDENCE`（ほかは観測器の `answer.reasons` の先頭）。
+
+| 状態 | `mapped_to` | 出力の形 |
+|---|---|---|
+| `FILLED` かつ `fillers` が 1 行・表記が証拠の文のどれかの部分文字列・証拠の文の鉤括弧（`「」『』“”`、`"` は偶数）が閉じている | `ANSWER` | `kind:"answer"`・`verdict:"ANSWER"`・`text` = 証拠の文の中の表記そのまま・`values`・`evidence`・`sources`（`family:"document"`・`source`・`line`・`text`・`sentence_id`。`origin` は付けない）・`door:"question_cross"`・`question_cross`・`trace` に 1 段 |
+| `FILLED` かつ `fillers` が 2 行以上（NFKC は同じで表記が違う） | `AMBIGUOUS_QUESTION_CROSS_TIE` | 理由 `SURFACES_DIFFER:<行数>`。どれも選ばない |
+| `FILLED` で表記が証拠に無い | `ORIGINAL` | 理由 `SURFACE_NOT_IN_EVIDENCE` |
+| `FILLED` で鉤括弧が閉じていない | `ORIGINAL` | 理由 `QUOTE_UNBALANCED_EVIDENCE`（「。」で割った片が引用の途中で切れ、伝聞が事実として読まれるのを答えにしない棄権への倒し。分割の規則は足していない） |
+| `TIE`（各候補にも同じ表記・鉤括弧の検査。外れたら `ORIGINAL`） | `AMBIGUOUS_QUESTION_CROSS_TIE` | `kind:"unknown"`・`verdict:"AMBIGUOUS_QUESTION_CROSS_TIE"`・`candidates:[{"text","sources"}…]`（観測器の順。選ばない・並べ替えない）・最上位の `sources` は空 |
+| `NOT_A_QUESTION`（疑問文と読まれず `answer` が無い）・`NO_ATTESTED_CELL`・`QUESTION_NOT_READ`・`NO_TYPED_CANDIDATE`・`TYPE_EXCLUDED_ALL`・`HOLE_TYPE_UNDETERMINED`・`POLAR_QUESTION`・`INCOMPLETE_BY_EXTENSION`・`ANCHOR_CROSS_INDEX_OUT_OF_RANGE`・`DIRECTION_NOT_APPLIED`・`DOCUMENTS_NOT_LOADED`・`STRUCTURE_INVALID`・`ERROR` | `ORIGINAL` | 元の dict（浅い複製）＋ `question_cross` ＋ trace の 1 段。他の鍵は 1 つも変えない |
+
+`question_cross` の鍵（全部の場合で同じ順）: `state`・`reason`・`mapped_to`・`hole_role`・`hole_type`・`coord`・`structure`・`documents`。trace の 1 段 = `{"part":"question_cross","status":"ran"|"abstained","state":…,"mapped_to":…}`（元の `trace` の複製の末尾に足す）。`except Exception` は後段の関数の外枠 1 か所だけ（状態 `ERROR`、`ORIGINAL`）。検査データの全部で `ERROR` は 0 件でなければならない。
+
+**方針との接続（D6）**: 順は 既存の経路 → 後段 → `basis_policy.apply_to_ask`（引数は変えない。`basis_policy.py` は触らない）。
+
+**今回やらないこと（D7）**: チケットの「やること 5」（文書で候補が 0 のとき `VERA_P4_INDEX` の生成の文を構造にする）はやらない。方針の `CONFIRM_REQUEST`・`REFERENCE_GENERATED` は後段からは到達しない（既知の穴に書く）。
+
+**採点（W3-c2 の D17 を ask の出力に写したもの。最終出力（方針の後）を読む）**:
+- `RAN` = trace に `part == "question_cross"` の段がある。`QC_ANSWER` = `door == "question_cross"` かつ `verdict == "ANSWER"`。`QC_TIE` = `verdict == "AMBIGUOUS_QUESTION_CROSS_TIE"`。`QC_NONE` = `question_cross.state ∈ {NO_ATTESTED_CELL, TYPE_EXCLUDED_ALL}`。
+- truth `ONE`: CORRECT ⇔ `QC_ANSWER` かつ NFKC(`text`) == NFKC(唯一の充填物) かつ `{s.sentence_id}` == `truth.evidence` の集合 かつ `sources[0].sentence_id == min(truth.evidence)`（文字列順）。`QC_ANSWER`/`QC_TIE` でそれ以外は WRONG。`QC_NONE` は FALSE_NONE。他は ABSTAINED。
+- `SPLIT`: CORRECT ⇔ `QC_TIE` かつ候補の NFKC 集合 == 充填物の集合 かつ全候補の文 id の集合 == `truth.evidence` の集合。`QC_ANSWER`・それ以外の `QC_TIE` は WRONG。`QC_NONE` は FALSE_NONE。他は ABSTAINED。
+- `NONE`: CORRECT ⇔ `question_cross.state == NO_ATTESTED_CELL`。`QC_ANSWER`/`QC_TIE` は WRONG。他は ABSTAINED。
+- `YESNO`・`ILLFORMED`: `QC_ANSWER`/`QC_TIE` なら WRONG、他は CORRECT。
+- `RAN` でない問（既存の経路が答えた・閉じた集合の外の棄権・文書なし）は後段の採点の外（`NOT_RUN`）。既存の経路の答えは別の欄 `base_answer` に truth と照らして `BASE_MATCH`/`BASE_MISMATCH` を書く（承認の条件には入れない。報告だけ）。
+- 承認の条件は WRONG == 0（配置 2 通り（差し替えの配置・`VERA_PLACEMENT=r7`）とも）。CORRECT・FALSE_NONE・ABSTAINED・NOT_RUN と `question_cross.state` の分布を報告する。
+
+**A1 の比べ方**: `vera ask` の出力は同じ入力でも毎回 byte が変わる（trace の時間の実測値）。基点どうしで 2 回流した差から、値が違う JSON の鍵を全部集めた（`artifacts/w3-c4/nondeterministic_keys.txt`）: `ingest_ms`・`elapsed_ms` の 2 つ。比べるときはこの 2 つの鍵の値だけを `0` に置き換え、鍵は消さない（伏せる範囲を広げて差を隠さない）。(i) 基点の verdict が条件の外、または文書なし、または round5 でない → 基点と新が（伏せた後で）byte 一致。(ii) 条件の中で写しが `ORIGINAL` → 新から `question_cross` と trace の最後の段を除くと、基点と byte 一致。(iii) 対照として基点どうし 2 回も同じ手順で一致すること。基点は `c334fe6`。
+
+**検査データの規模（手順 2）**: 文書 10 本（各 5〜10 文・単文中心、和文 6 本以上・英文 3 本以上）、質問 60 問以上（ONE 20・NONE 10・SPLIT 8・YESNO/ILLFORMED/読めない形 6・文書なし 4・既存の経路が答える形 6・平叙文 2・文書 2 本 4・配置に載せない名詞が答えの問 3）。W3-c2 の検査データ 185 問と、B2 の形の自作の文書 QA（文書 4 本・質問 24 問以上）も流す。期待は系に 1 度も通さずに人が書き、`tests/observe/question_ask/FROZEN.json` で sha256 を凍結する。凍結後は 1 バイトも変えない（誤りは `corrections.jsonl` に追記し、当てた結果と当てない結果の両方を出す）。
+<!-- w3c4-prereg:end -->
+
+### 事前登録の変更記録（W3-c4）
+
+- 2026-10-04 02:18:14 +0900（`date '+%Y-%m-%d %H:%M:%S %z'` の出力）: **理由の閉じた一覧に `PERIOD_CUT_UNCERTAIN` を足した**（実装役 J1。上の事前登録の「理由の閉じた一覧」は 3 つだった。測定と検査データの採点より前、検査データの凍結（`FROZEN.json`）より後）。きっかけ: 手元の試走で、`Mr. Smith gave the map to the student.` の行が `.` + 空白で「`Mr.`」と「`Smith gave the map to the student.`」に割れ、「Who gave the map to the student?」に答え `Smith`（文書の表記は `Mr. Smith`）を返した。分割の規則（上の正規表現）も、語の一覧も足さない。足したのは棄権への倒しだけ: 証拠の文が、(a) 直前の片が「1 語で `.` で終わる」（`Mr.`・`U.S.`・`e.g.`・`J.` など）か、(b) 自分が `.` で終わりその次の片が小文字で始まる、のどちらかの切れ目の隣にあるとき、その文は「文の途中かもしれない」ので答え・候補の証拠にしない（写し = `ORIGINAL`、理由 `PERIOD_CUT_UNCERTAIN`）。検査は `QUOTE_UNBALANCED_EVIDENCE` の後。過剰に棄権する側に倒れる（1 語だけの文の次の文も棄権する）。表の他の行は変えない。
+- 2026-10-04 02:24:37 +0900（`date` の出力）: 上の `PERIOD_CUT_UNCERTAIN` の条件に (c) を足した（実装役 J1 の続き。測定より前）: 直前の片が `.` で終わり、自分が小文字で始まる片も「文の途中かもしれない」。理由: 単体テストで `Smith Jr. sold the horse.` の後ろ半分（`sold the horse.`）が (a)(b) では印が付かないことに気づいた（前の片 `Smith Jr.` は 2 語）。これで切れ目の両側の片が印を受ける。条件は 3 つ: (a) 直前の片が 1 語で `.` で終わる、(b) 自分が `.` で終わり次の片が小文字で始まる、(c) 直前の片が `.` で終わり自分が小文字で始まる。
+- 2026-10-04 02:26:19 +0900（`date` の出力）: **採点の ONE の行を 1 つだけ緩めた**（実装役 J2。測定の前。理由: 事前登録の採点は「ONE の truth に `QC_TIE` が出たら WRONG」だが、W3-c2 の検査データを再利用した 2 問（Q046・Q050。文書 QD03 の `ＰＣ`／`PC` を 1 つの答え `PC` と人が数えた ONE）で、計画の写し D5（NFKC が同じで表記が違う充填物 → どれも選ばず `AMBIGUOUS_QUESTION_CROSS_TIE`、理由 `SURFACES_DIFFER:n`）と衝突した。TIE は型付きの棄権で、誤った答えではない）。新しい行: truth が ONE で、`QC_TIE` の理由が `SURFACES_DIFFER:*`、候補の NFKC の集合が truth の充填物 1 つと一致し、候補の文 id の和が truth の `evidence` と一致する → `ABSTAINED`（過剰な棄権。score の JSON の `notation_tie` に id を載せる）。それ以外の ONE への TIE は事前登録どおり WRONG。この緩めを使わずに数えた値は `wrong_details`・`notation_tie` から機械で出せる（緩めが無ければ WRONG はその id の数だけ増える）。
+
+- 2026-10-04 03:25:11 +0900（`date '+%Y-%m-%d %H:%M:%S %z'` の出力。この項を書いた直後に取った値。**第 2 ラウンド M1 の事前登録。規則の実装・第 2 ラウンドの測定・凍結より前**）: **理由の閉じた一覧に `PREDICATE_FORM_DIFFERS` と `PREDICATE_POSITION_UNKNOWN` を足す**（`PERIOD_CUT_UNCERTAIN` の後の検査。合わせて 6 つ: `SURFACES_DIFFER:<n>`・`SURFACE_NOT_IN_EVIDENCE`・`QUOTE_UNBALANCED_EVIDENCE`・`PERIOD_CUT_UNCERTAIN`・`PREDICATE_FORM_DIFFERS`・`PREDICATE_POSITION_UNKNOWN`）。それ以外はこの登録で変えない（後段の条件・構造の作り方・写しの形・採点はそのまま）。
+  - **後段の条件（再確認。閉じた集合）**: `verdict ∈ {"UNKNOWN_UNREAD", "UNKNOWN_NO_EVIDENCE"}` ちょうどこの 2 値、かつ `--document` が 1 つ以上、かつ round5。これ以外の出力は 1 バイトも変えない（A1 は第 2 ラウンドでも `cmp` で測り直す）。**充填物（`text`）は証拠の文に書かれた表記そのまま**（言い換え・正規化をしない。この登録の検査は答えを採るか棄権するかを決めるだけで、文字列を作らない）。**構造はメモリ上で `observe_question_records` に渡す**（一時ファイルを作らない。この登録の検査もファイルを作らない）。
+  - **きっかけ（第 1 ラウンドのレビュー M1。中間職の実測）**: 読解器 `semantic_read._MODAL_MARKS` が `たかった`・`たがった`・`たがっていた`・`たかったです`・`てみたかった`・`らしかった`・文末の `たら` を法の印として見ず、`先生は本を読みたかった。` を `読んだ。` と同じ節（読む／過去／法なし）として返す。そのため後段が「先生は何を読んだ？」に `本` と答えた（基点は答えなし）。読解器は触らない。後段の側で棄権に倒す。
+  - **規則（構造だけで決まる。語の一覧・活用の一覧を足さない）**: 答え・TIE の候補の証拠の各文について、(1) `semantic_read.read(文)`（観測器の `read_sentence` と同じ呼び方。読むだけ）の `lang` が `ja` のとき、`readable` が真・`clauses` と `clause_meta` がちょうど 1 つ・`clause_meta[0].span` が文の中の位置として取れる、のどれかが欠けたら棄権（理由 `PREDICATE_POSITION_UNKNOWN`）。(2) 取れたら、**書かれた述語** = 文の `span[0]` から文末まで（末尾の `。．.！!？?` と空白類を除く）。**質問の末尾** = `--query` の末尾の `？?` と空白類を除いたもの。書かれた述語が質問の末尾で終わっていなければ棄権（理由 `PREDICATE_FORM_DIFFERS`）。例: 文 `…読みたかった` の書かれた述語 `読みたかった` は、質問 `先生は何を読んだ` の末尾でない → 棄権。文 `…読んだ` は 質問 `先生は何を読んだ` の末尾 → 従来どおり。質問 `先生は何を読みたかった？` と文 `…読みたかった` は一致 → 答える。文字の比べ方は完全一致（NFKC などの正規化をしない。棄権に倒れる側）。(3) 棄権のときの写し = `ORIGINAL`（元の dict に `question_cross` と trace の 1 段を足すだけ。`question_cross.reason` が上の理由）。TIE の各候補にも同じ検査をする（1 つでも外れたら `ORIGINAL`）。(4) `lang` が `ja` でない文（英語）には適用しない。理由: 中間職の英語の反例 39 例（`probe`・`probe2` の E 系 20 例）で、読解器は法助動詞・不定詞・完了などを `NO_MATCHING_CROSS_IN_READ_SENTENCES`（後段の前の棄権）にし、後段が誤った答えを返した例は 0。英語には「活用語尾を法の印と見ない」穴の実例が無い。ただし証明ではない（既知の穴に書く）。(5) 丁寧形（`読みました`）の文が普通形の質問（`読んだ`）に答えなくなるのは過剰な棄権として許す（`読みました` を `読んだ` と同じとみなす活用の表を足さない）。
+  - **検査データ（第 2 ラウンドの追加。凍結）**: `tests/observe/question_ask/extra2/`（文書 4 本・質問 42 問。`build_extra2.py` が手書きの内容を書き出す。第 1 ラウンドの 7 つの言い方、プローブしていない 10 の言い方、述語の書き方が同じ対照、文が過去で問が願望の逆、丁寧形の過剰な棄権、英語の法の文）。期待は系に 1 度も通さずに書いた。`FROZEN_EXTRA2.json` に sha256 と日時を凍結する（既存の `FROZEN.json`・`FROZEN_EXTRA.json` は変えない）。採点は事前登録のとおり（NONE の問で後段が答え・TIE を返したら WRONG、ONE の問で答えが期待と違えば WRONG）。`expect_reason` は作者の予想で、合否の条件ではない（読解器が先に棄権しうる）。予想と実際の理由の分布を報告する。承認の条件は WRONG == 0・ERROR == 0。
+  - **測り直すもの**: A1（条件の外・ORIGINAL が基点と byte 一致。基点の出力は第 1 ラウンドのものを使う）、A2（差し替え配置・r7）、W3-c2 の 185 問、B2 の形、第 2 ラウンドの検査データ。第 1 ラウンドから CORRECT が減った問の id を score の差から機械で出して docs の測定の区間に貼る。
+
+### 何を作ったか（W3-c4）
+
+- `verantyx/cli.py`: `cmd_ask` の round5 の分岐で `v.ask(...)` と `apply_to_ask(...)` の間に `_round5_question_cross(res, documents, args.query)` の 1 行。関数は `cmd_ask` の直前（`_QC_TRIGGER`・`_QC_SPLIT`・`_qc_records`・`_qc_sources`・`_qc_run`・`_round5_question_cross` ほか）。round5 は `one.py` の `Vera` なので、チケットの `vera.py` ではなく `cli.py` に置いた（plan D1）。`cmd_chat`（REPL）にはつないでいない。
+- `verantyx/observe.py`（末尾への追加だけ）: `structure_from_records`・`observe_question_records`。構造をメモリ上で受ける入口で、`observe --anchor-kind question --structure <同じ records の jsonl> --no-index` と同じ `answer` を返す（`artifacts/w3-c4/parity.txt`）。観測の規則は触っていない。
+- 検査データ `tests/observe/question_ask/`（凍結: `FROZEN.json`・`FROZEN_EXTRA.json`）、runner `run_ask.py`、比較 `cmp_a1.py`・`cmp_det.py`、パリティ `parity.py`、データの行検査 `check_lines.py`、測定の要約 `make_summary.py`。テスト `tests/test_ask_question_cross.py`・`tests/test_ask_question_cross_data.py`。
+
+- **第 2 ラウンド（M1）**: `verantyx/cli.py` に `_qc_predicate_form`（読むだけ。`semantic_read.read` の `clause_meta[0].span` から、書かれた述語が質問の末尾で終わるかを見る）を足し、`_qc_run` の候補の検査の最後（`PERIOD_CUT_UNCERTAIN` の後）に呼ぶ。検査データ `tests/observe/question_ask/extra2/`（凍結: `FROZEN_EXTRA2.json`。誤りの訂正は `extra2/corrections.jsonl`）、要約 `summarize_extra2.py`、テスト（`tests/test_ask_question_cross.py` の 8b、`tests/test_ask_question_cross_data.py` の extra2）。`make_summary.py` が第 1 ラウンドの score（`artifacts/w3-c4/r1_scores/`）との差を機械で出す。
+
+### 入口（W3-c4）
+
+```
+VERA_PLACEMENT=<粗い配置のディレクトリ> python -m verantyx.cli ask --mode round5 --document <文書または文書のディレクトリ> [--document …] [--request-kind factual --human-present] -- <質問>
+```
+
+- 既存の経路が `UNKNOWN_UNREAD`・`UNKNOWN_NO_EVIDENCE` で止まったときだけ後段が走る。走ったかは出力の `trace` の `{"part":"question_cross", …}` と `question_cross` の鍵で分かる。
+- **配置（`VERA_PLACEMENT`）が無いと後段は何も答えない**（穴の型を確かめられない候補は `TYPE_UNCHECKED` → `NO_TYPED_CANDIDATE`。W5-d の規則。配置が無いのを実装の誤りと思って規則を緩めない）。配置があっても、英語の普通名詞（farmer・letter・teacher など）は粗い配置に型が無く、ほとんど答えない（測定結果の節）。
+- 答えは `door:"question_cross"`・`sources[*].family:"document"`（文書のファイル名・行・文の本文・文 id）。割れたら `AMBIGUOUS_QUESTION_CROSS_TIE`（候補を重ねて返す）。それ以外は元の棄権に `question_cross: {"state", "reason", …}` を足すだけ。
+
+### 判断記録（W3-c4）
+
+中間職の指示書（plan）の決定は D1〜D8。実装役の判断は J。
+
+- **plan D1**: 後段は `cli.py`（`vera.py` ではない）。**D2**: `observe.py` は末尾への追加のみ（`-` の行 0）。**D3**: 条件はちょうど `{UNKNOWN_UNREAD, UNKNOWN_NO_EVIDENCE}` かつ文書あり。外は同じオブジェクトを返す。**D4**: 構造は `load_directory`/`load_paths`、行は `split("\n")`、区切りは `(?<=。)|(?<=\.)(?=\s)`、id は `<ファイル名>#<行>:<番号>`。**D5**: 写しの表。**D6**: 順は 既存 → 後段 → 方針。**D7**: 生成コーパスの構造（やること 5）はやらない（`CONFIRM_REQUEST`・`REFERENCE_GENERATED` は後段から到達しない。既知の穴）。**D8**: A3 の未公開データは中間職が持つ。runner は `--questions`・`--docs-dir`・`--placement`・`--vp` で動く。
+- **J1**: 理由 `PERIOD_CUT_UNCERTAIN` を足した（上の「事前登録の変更記録」）。試走で `Mr. Smith gave the map to the student.` に `Smith` を返したため。分割規則・語の一覧は足さず、棄権への倒しだけ。
+- **J2**: 採点の ONE の行を 1 つ緩めた（同じく変更記録）。`ＰＣ`/`PC` の W3-c2 の 2 問（Q046・Q050）が、計画の写し（SURFACES_DIFFER → TIE）と衝突したため。緩めない場合の値は `notation_tie` から機械で出る。
+- **J3**: `cli.py` の先頭に `import re` を 1 行足した（区切りの正規表現のため。`-` の行は増えない）。
+- **J4**: 後段の関数は `mode` を引数に取らない。`mode == "round5"` は呼び出し位置（round5 の分岐の中だけ）で満たされる。`--mode legacy`・`--engine` の分岐は 1 バイトも触っていない（テスト `test_not_round5_…`）。
+- **J5**: 基点との比較（A1）の runner は、子プロセスの cwd をそのツリー自身にする。`python -m` は cwd を sys.path の先頭に置くので、cwd が新しいツリーのままだと基点の測定が新しい `verantyx` を読んでしまう（最初の試走で実際に起きて、基点の出力に `question_cross` が出たので気づいた。やり直して、各 score の JSON の `loaded_from` に読んだ `cli.py` の路を残す）。
+- **J6**: 凍結後に、文書なしの問が 2 問しか無い（登録は 4 問）のに気づき、3 問を `questions_nodoc.jsonl` として足して `FROZEN_EXTRA.json` で凍結した（流す前。後段に届かない形）。
+- **J7**: `question_cross.documents` は `ERROR` で読み込み前に落ちたとき `None`。`where`（文 id → 出典）の内部に `cut_uncertain` を持つが、出典の 5 鍵（`family source line text sentence_id`）には出さない。
+- **J8**: TIE（および表記違いの TIE）の各候補にも、表記・鉤括弧・`PERIOD_CUT_UNCERTAIN` の検査をする（外れたら `ORIGINAL`）。
+- **J9**: `QUOTE_UNBALANCED_EVIDENCE` は今の読解器では実際には到達しない（鉤括弧を含む文を読解器が読まないので、証拠にならない。`Reading` の status が `ABSTAINED`）。偽の観測を差し込んだ単体テストでだけ検査している。読解器が鉤括弧の文を読むようになったときの備え。
+
+- **J11（第 2 ラウンド M1）**: 規則は中間職の推奨のとおり（書かれた述語が質問の末尾で終わるか）。実装は `cli.py` の中だけ（`semantic_read.py`・`observe.py`・`basis_policy.py` は無変更）。理由は 2 つに分けた: 述語の位置が取れない・節が 1 つに決まらない（`PREDICATE_POSITION_UNKNOWN`）と、位置は取れたが書き方が違う（`PREDICATE_FORM_DIFFERS`）。「分からない」と「違う」を混ぜない。英語には適用しない（事前登録の変更記録に理由。反例が実測で 0 で、読解器が先に棄権している。証明ではない）。比べ方は完全一致（NFKC などで寄せない。棄権に倒れる側）。質問の末尾は `--query` から末尾の `？?` と空白類だけを除く（`か`・`の`・`です` は除かない。`先生は何を読んだのですか？` は棄権する）。
+- **J12**: 第 1 ラウンドで自分が足したテスト `test_a_quotation_that_closes_inside_the_sentence_is_not_a_reason_to_abstain`（偽の観測で鉤括弧の検査だけを見るもの）は、鉤括弧を含む文を読解器が読まないため、新しい検査が先に棄権してしまう。その検査だけを `monkeypatch` で外して、元の主張（閉じた鉤括弧は棄権の理由にならない）を保った。既存（基点）のテストは 1 つも変えていない。
+- **J13**: 凍結した extra2 の 2 問（X032・X037。文は丁寧形・問は普通形）の truth を、凍結のときは NONE（答えなくてよい）と書いたが、答え（`絵`・`歌`）は正しい（同じ事実）。作者の誤りとして `extra2/corrections.jsonl` に前後・理由・日時を追記し、訂正を当てない版と当てた版の両方を測った（`artifacts/w3-c4/r2_extra2_*_score.json` と `*_corr_score.json`）。凍結したファイルは 1 バイトも変えていない（`questions_corrected.jsonl` は別ファイル）。
+- **J14**: 第 1 ラウンドのレビューの任意の改善 1・3・4 を直した（`docs/BASIS_POLICY.md` の古い一文、`run_ask.py` の `--base-tree` を基点の測定で必須に、既知の穴 7 の例）。任意の改善 2（`artifacts/w3-c4/` が大きい）は、基点の 2 回目の出力が A1 の対照の入力で、消すと再現できなくなるので、そのまま残した（コミットの判断は監査役）。
+
+### 既知の穴（W3-c4。隠さない）
+
+1. **配置が無いと答えない（F3）**。`VERA_PLACEMENT` 未設定の既定の入口では、後段は走るが穴の型を確かめられないので `NO_TYPED_CANDIDATE` で元の棄権を返す。実際に答えが変わるのは粗い配置を渡したときだけ。
+2. **英語はほとんど答えない**（粗い配置 r7 に英語の普通名詞の型が無い）。数は測定結果の節。直していない。
+3. **D7 をやっていない**: 方針の `CONFIRM_REQUEST`・`REFERENCE_GENERATED`（生成コーパスの構造から来る `origin:"generated"` の出典）は後段からは到達しない。方針の 6 値のうち到達するのは `ANSWER_HUMAN_BASIS`・`ABSTAIN` など後段が作る形に限る。
+4. **`vera chat` の round5（REPL）につないでいない**（範囲外）。
+5. **読解器が読めない問・文は答えにならない**: 後段が走った問の相当数は `QUESTION_NOT_READ`（読解器の棄権。数は測定結果の節の `question_cross.state` の分布）。受取人・場所・時の穴、鉤括弧を含む文、従属節の文は読まれない。後段は読解器を足さない。
+6. **略語の保護は過剰に棄権する側**（J1）: `Mr.`・イニシャル・`U.S.` の隣の文は答えにならない。1 語だけの文の隣も棄権する。
+7. **充填物が語の一部のことがある**: 読解器が複合語を割ったとき（例 `森田課長` → `森田` と `課長`）、答えは文の部分文字列だが人が書いた名前の一部になりうる。後段はこれを検出しない（検査は「表記が証拠の文の中にある」まで）。 例: 文書「森田課長が資料を渡した。」に「誰が資料を渡した？」は、既存の経路が `agent: 森田` と答える（後段は走らない。基点から）。
+8. **既存の経路の答えは触らない**: 後段は棄権にだけ走る。既存の経路が間違って答えることは後段では直らない（`base_answer` で報告する）。
+9. **表記だけが違う正解は TIE（過剰な棄権）になる**（`ＰＣ`/`PC`）。
+10. **方針が答えを取り下げると `question_cross` は運ばれず、trace の 1 段だけが残る**（`basis_policy.py` は無変更）。
+11. 行番号は「`load_path` が読み込んだ本文の行」。Markdown 風の構文（フェンス・表・字下げ・URL）は読み込みで行が潰れうる。
+12. A3（中間職の未公開）・A5（隠しバンク B7・B2）は第 1 ラウンドでは実装役は流していない（第 2 ラウンドも同じ）。
+13. **読解器の `_MODAL_MARKS` が活用形（`たかった`・`たがった`・`らしかった`・文末 `たら`）を見ない（第 1 ラウンドのレビュー E2）**。後段は書かれた述語の一致で棄権に倒すだけで、根は直らない。既存の経路は同じ文に「誰が本を読んだ？」と問われると `agent: 先生` と答える（基点から。extra2 の X008〜X010 が `BASE_MISMATCH`）。読解器を変更中の並行チケットとの統合後に、後段の数も変わりうる。
+14. **述語の書き方が違うと、正しい答えでも棄権する（過剰な棄権）**: 丁寧形の文（`読みました`）に普通形の問（`読んだ`）、問が `…読んだのですか？` のように `か`・`の`・`です` で終わる、進行形の文に過去の問。どれも活用の表や語の一覧を足さずに棄権に倒した（J11）。どの問が答えなくなったかは測定結果の節（第 1 ラウンドとの差）に機械で貼ってある。
+15. **英語には述語の書き方の検査を掛けていない**。中間職の英語の反例では誤答 0 だが、英語の読解器が法を落とす文が無いことの証明ではない。
+16. 述語の位置は読解器の `clause_meta.span` に依存する。読解器の出力の形が変わって `span` が取れなくなると `PREDICATE_POSITION_UNKNOWN` で全部棄権する（安全側）。
+
+### 宣言する衝突（W3-c4。実装役は解かずに宣言する。判断は監査役）
+
+**K1: 既存テスト `tests/test_basis_policy_entry.py::test_a_document_that_does_not_answer_stays_an_abstention` が落ちる**（基線の失敗一覧に無い。全体テストの新しい失敗はこれと、環境由来の `test_s6_two_runs_agree_except_timing_and_recount_matches` の 2 件だけ。後者は基点の `git archive` の複製でも同じ理由（`verantyx_untouched` が False）で落ち、チケットが「未コミットの間だけ」と名指ししている）。
+
+- テストの主張: 文書「花子は太郎に資料を渡した。」に「誰が次郎に鍵を渡しましたか？」と問う `vera ask --mode round5 --document` の出力（`basis_policy` を除く）が、`Vera.ask` の戻り値と（時間の鍵を除いて）**完全に等しい**。
+- 衝突の理由: この問は既存の経路が `UNKNOWN_NO_EVIDENCE` で止まる（後段の条件の中）。チケットは「NO_ATTESTED_CELL／QUESTION_NOT_READ は元の棄権をそのまま返し、`question_cross: {…}` を **足す**」と定め、指示書は trace に 1 段を足すとしている。足した 2 つ（`question_cross` と trace の `part:"question_cross"` の段）のぶんだけ出力が等しくなくなるのは、チケットの設計から必然（実測: `question_cross.state == "NO_ATTESTED_CELL"`、`mapped_to == "ORIGINAL"`）。それ以外の鍵は 1 つも変わらない（A1 の比較 `artifacts/w3-c4/a1_cmp_noplace.txt`・`a1_cmp_r7.txt`: 元の棄権のまま返した問は全部、`question_cross` と trace の 1 段を除いて基点と byte 一致）。
+- 指示書の前提 F11 は「どれも出力全体の等号や trace の末尾を見ていない」としたが、このテストは出力全体の等号を見ている。
+- 実装役はこのテストを変えていない（許可パスの外。削除・skip・期待値の弱体化をしない）。製品の側を変えてテストに合わせることもしていない（チケットの仕様が反対を求めるため）。
+- 提案（監査役が許可するときの変更。適用していない）: `artifacts/w3-c4/proposed_test_change_basis_policy_entry.diff`。`assert _stable(_without(out, "basis_policy")) == _stable(raw)` の 1 行を、後段が足した 2 つ（`question_cross` と trace の `part:"question_cross"` の段が 1 つだけあること）を確かめて、それを取り除いたものが `raw` に等しい、という主張に置き換える（元の主張を弱めるのではなく、足されたものを名指しして残りの等号を保つ）。この変更を当てた複製のテストは通る（`pytest -k does_not_answer_stays`: 1 passed。複製はスクラッチで流した）。
+- 元の 1 行（前）: `assert _stable(_without(out, "basis_policy")) == _stable(raw)`。提案の後の全文は diff のとおり。
+
+### 測定結果（W3-c4）
+
+<!-- w3c4-measured:begin -->
+（`tests/observe/question_ask/make_summary.py --patch-docs` が `artifacts/w3-c4/` のファイルから貼った区間。手で書き換えない。）
+
+```
+[base verdicts of the 343 questions of A1 (a1_base1.jsonl, no placement; same in the r7 run is in a1_base_r7.jsonl)]
+    (outside) verdict AMBIGUOUS: 7
+    (outside) verdict ANSWER: 60
+    (outside) verdict CONFLICT: 5
+    (outside) verdict UNKNOWN_INVALID_PROOF: 1
+    (outside) verdict UNKNOWN_UNSUPPORTED_EVIDENCE: 25
+  inside the closed set: UNKNOWN_NO_EVIDENCE: 20
+  inside the closed set: UNKNOWN_UNREAD: 223
+  no document: 2
+  outside the closed set: 98
+[a1_new: all 343 questions, final output after the policy, cli, no placement]
+  counts {"CORRECT": 42, "WRONG": 0, "FALSE_NONE": 6, "ABSTAINED": 195, "NOT_RUN": 100}
+  question_cross.state of the questions the stage ran on: {"HOLE_TYPE_UNDETERMINED": 11, "NOT_A_QUESTION": 1, "NO_ATTESTED_CELL": 33, "NO_TYPED_CANDIDATE": 101, "POLAR_QUESTION": 7, "QUESTION_NOT_READ": 89, "STRUCTURE_INVALID": 1}
+  mapped_to: {"ORIGINAL": 243}; ERROR states: 0; WRONG ids: []
+[a1_new_r7: all 343 questions, final output after the policy, cli, VERA_PLACEMENT=r7]
+  counts {"CORRECT": 88, "WRONG": 0, "FALSE_NONE": 9, "ABSTAINED": 146, "NOT_RUN": 100}
+  question_cross.state of the questions the stage ran on: {"FILLED": 45, "HOLE_TYPE_UNDETERMINED": 6, "INCOMPLETE_BY_EXTENSION": 2, "NOT_A_QUESTION": 1, "NO_ATTESTED_CELL": 33, "NO_TYPED_CANDIDATE": 54, "POLAR_QUESTION": 7, "QUESTION_NOT_READ": 89, "STRUCTURE_INVALID": 1, "TIE": 2, "TYPE_EXCLUDED_ALL": 3}
+  mapped_to: {"AMBIGUOUS_QUESTION_CROSS_TIE": 2, "ANSWER": 44, "ORIGINAL": 197}; ERROR states: 0; WRONG ids: []
+[a2_place: new data (AQ), in process, placement_ask.json]
+  n=111 counts {"CORRECT": 68, "WRONG": 0, "FALSE_NONE": 1, "ABSTAINED": 16, "NOT_RUN": 26}
+  WRONG ids: []; FALSE_NONE ids: ['AQ083']; ERROR states: 0
+  question_cross.state: {"FILLED": 40, "INCOMPLETE_BY_EXTENSION": 1, "NOT_A_QUESTION": 1, "NO_ATTESTED_CELL": 18, "NO_TYPED_CANDIDATE": 1, "POLAR_QUESTION": 3, "QUESTION_NOT_READ": 16, "STRUCTURE_INVALID": 1, "TIE": 4}
+  mapped_to: {"AMBIGUOUS_QUESTION_CROSS_TIE": 5, "ANSWER": 39, "ORIGINAL": 41}; existing path on the NOT_RUN rows: {"BASE_MATCH": 12, "BASE_NOT_JUDGED": 3, "NO_ANSWER": 11}
+  basis_policy.outcome of the answers: {"ABSTAIN": 5, "ANSWER_HUMAN_BASIS": 39}
+[a2_r7: new data (AQ), cli, VERA_PLACEMENT=r7]
+  n=111 counts {"CORRECT": 45, "WRONG": 0, "FALSE_NONE": 1, "ABSTAINED": 39, "NOT_RUN": 26}
+  WRONG ids: []; FALSE_NONE ids: ['AQ083']; ERROR states: 0
+  question_cross.state: {"FILLED": 20, "INCOMPLETE_BY_EXTENSION": 1, "NOT_A_QUESTION": 1, "NO_ATTESTED_CELL": 18, "NO_TYPED_CANDIDATE": 24, "POLAR_QUESTION": 3, "QUESTION_NOT_READ": 16, "STRUCTURE_INVALID": 1, "TIE": 1}
+  mapped_to: {"AMBIGUOUS_QUESTION_CROSS_TIE": 1, "ANSWER": 20, "ORIGINAL": 64}; existing path on the NOT_RUN rows: {"BASE_MATCH": 12, "BASE_NOT_JUDGED": 3, "NO_ANSWER": 11}
+  basis_policy.outcome of the answers: {"ABSTAIN": 1, "ANSWER_HUMAN_BASIS": 20}
+[w3c2_place: W3-c2 185 questions, in process, placement_q.json]
+  n=185 counts {"CORRECT": 43, "WRONG": 0, "FALSE_NONE": 3, "ABSTAINED": 79, "NOT_RUN": 60}
+  WRONG ids: []; FALSE_NONE ids: ['Q010', 'Q059', 'Q121']; ERROR states: 0
+  question_cross.state: {"FILLED": 24, "NO_ATTESTED_CELL": 11, "NO_TYPED_CANDIDATE": 23, "POLAR_QUESTION": 4, "QUESTION_NOT_READ": 57, "TIE": 6}
+  mapped_to: {"AMBIGUOUS_QUESTION_CROSS_TIE": 8, "ANSWER": 21, "ORIGINAL": 96}; existing path on the NOT_RUN rows: {"BASE_MATCH": 23, "BASE_MISMATCH": 6, "BASE_NOT_JUDGED": 2, "NO_ANSWER": 29}
+  basis_policy.outcome of the answers: {"ABSTAIN": 8, "ANSWER_HUMAN_BASIS": 21}
+[w3c2_r7: W3-c2 185 questions, cli, VERA_PLACEMENT=r7]
+  n=185 counts {"CORRECT": 37, "WRONG": 0, "FALSE_NONE": 6, "ABSTAINED": 82, "NOT_RUN": 60}
+  WRONG ids: []; FALSE_NONE ids: ['Q010', 'Q059', 'Q121', 'Q130', 'Q131', 'Q136']; ERROR states: 0
+  question_cross.state: {"FILLED": 21, "HOLE_TYPE_UNDETERMINED": 6, "INCOMPLETE_BY_EXTENSION": 1, "NO_ATTESTED_CELL": 11, "NO_TYPED_CANDIDATE": 21, "POLAR_QUESTION": 4, "QUESTION_NOT_READ": 57, "TIE": 1, "TYPE_EXCLUDED_ALL": 3}
+  mapped_to: {"AMBIGUOUS_QUESTION_CROSS_TIE": 1, "ANSWER": 20, "ORIGINAL": 104}; existing path on the NOT_RUN rows: {"BASE_MATCH": 23, "BASE_MISMATCH": 6, "BASE_NOT_JUDGED": 2, "NO_ANSWER": 29}
+  basis_policy.outcome of the answers: {"ABSTAIN": 1, "ANSWER_HUMAN_BASIS": 20}
+[w3c2_place_corr: W3-c2 185 questions with the W3-c2 corrections applied, in process]
+  n=185 counts {"CORRECT": 43, "WRONG": 0, "FALSE_NONE": 3, "ABSTAINED": 79, "NOT_RUN": 60}
+  WRONG ids: []; FALSE_NONE ids: ['Q010', 'Q059', 'Q121']; ERROR states: 0
+  question_cross.state: {"FILLED": 24, "NO_ATTESTED_CELL": 11, "NO_TYPED_CANDIDATE": 23, "POLAR_QUESTION": 4, "QUESTION_NOT_READ": 57, "TIE": 6}
+  mapped_to: {"AMBIGUOUS_QUESTION_CROSS_TIE": 8, "ANSWER": 21, "ORIGINAL": 96}; existing path on the NOT_RUN rows: {"BASE_MATCH": 23, "BASE_MISMATCH": 6, "BASE_NOT_JUDGED": 2, "NO_ANSWER": 29}
+  basis_policy.outcome of the answers: {"ABSTAIN": 8, "ANSWER_HUMAN_BASIS": 21}
+[w3c2_r7_corr: W3-c2 185 questions with the W3-c2 corrections applied, cli, r7]
+  n=185 counts {"CORRECT": 37, "WRONG": 0, "FALSE_NONE": 6, "ABSTAINED": 82, "NOT_RUN": 60}
+  WRONG ids: []; FALSE_NONE ids: ['Q010', 'Q059', 'Q121', 'Q130', 'Q131', 'Q136']; ERROR states: 0
+  question_cross.state: {"FILLED": 21, "HOLE_TYPE_UNDETERMINED": 6, "INCOMPLETE_BY_EXTENSION": 1, "NO_ATTESTED_CELL": 11, "NO_TYPED_CANDIDATE": 21, "POLAR_QUESTION": 4, "QUESTION_NOT_READ": 57, "TIE": 1, "TYPE_EXCLUDED_ALL": 3}
+  mapped_to: {"AMBIGUOUS_QUESTION_CROSS_TIE": 1, "ANSWER": 20, "ORIGINAL": 104}; existing path on the NOT_RUN rows: {"BASE_MATCH": 23, "BASE_MISMATCH": 6, "BASE_NOT_JUDGED": 2, "NO_ANSWER": 29}
+  basis_policy.outcome of the answers: {"ABSTAIN": 1, "ANSWER_HUMAN_BASIS": 20}
+[b2like_place: B2-like (47 questions), in process, placement_ask.json]
+  n=47 counts {"CORRECT": 15, "WRONG": 0, "FALSE_NONE": 2, "ABSTAINED": 16, "NOT_RUN": 14}
+  WRONG ids: []; FALSE_NONE ids: ['BQ040', 'BQ046']; ERROR states: 0
+  question_cross.state: {"FILLED": 13, "NO_ATTESTED_CELL": 4, "QUESTION_NOT_READ": 16}
+  mapped_to: {"ANSWER": 13, "ORIGINAL": 20}; existing path on the NOT_RUN rows: {"BASE_MATCH": 12, "BASE_MISMATCH": 1, "BASE_NOT_JUDGED": 1}
+  basis_policy.outcome of the answers: {"ANSWER_HUMAN_BASIS": 13}
+[b2like_r7: B2-like (47 questions), cli, r7]
+  n=47 counts {"CORRECT": 6, "WRONG": 0, "FALSE_NONE": 2, "ABSTAINED": 25, "NOT_RUN": 14}
+  WRONG ids: []; FALSE_NONE ids: ['BQ040', 'BQ046']; ERROR states: 0
+  question_cross.state: {"FILLED": 4, "NO_ATTESTED_CELL": 4, "NO_TYPED_CANDIDATE": 9, "QUESTION_NOT_READ": 16}
+  mapped_to: {"ANSWER": 4, "ORIGINAL": 29}; existing path on the NOT_RUN rows: {"BASE_MATCH": 12, "BASE_MISMATCH": 1, "BASE_NOT_JUDGED": 1}
+  basis_policy.outcome of the answers: {"ANSWER_HUMAN_BASIS": 4}
+[later stage ran / mapped to ANSWER or TIE, by the language of the first document (AD08-10, QD08-10, BA04 are English)]
+  a2_place: {"en answered_or_tie": 18, "en ran": 33, "ja answered_or_tie": 26, "ja ran": 52}
+  a2_r7: {"en ran": 33, "ja answered_or_tie": 21, "ja ran": 52}
+  w3c2_place: {"en answered_or_tie": 10, "en ran": 47, "ja answered_or_tie": 19, "ja ran": 78}
+  w3c2_r7: {"en ran": 47, "ja answered_or_tie": 21, "ja ran": 78}
+  b2like_place: {"en answered_or_tie": 5, "en ran": 10, "ja answered_or_tie": 8, "ja ran": 23}
+  b2like_r7: {"en ran": 10, "ja answered_or_tie": 4, "ja ran": 23}
+[a1_cmp_noplace.txt]
+  questions compared: 343 (base 343, base2 343, new 343)
+  base1 vs base2: same 343, differ 0
+  base vs new (outside the later stage): same 100, differ 0
+  base vs new (ORIGINAL, question_cross removed): same 243, differ 0
+  inside the closed set and mapped to ANSWER or TIE (changed by design, not compared): 0
+  inside the closed set, unexplained: 0
+[a1_cmp_r7.txt]
+  questions compared: 343 (base 343, base2 343, new 343)
+  base1 vs base2: same 343, differ 0
+  base vs new (outside the later stage): same 100, differ 0
+  base vs new (ORIGINAL, question_cross removed): same 197, differ 0
+  inside the closed set and mapped to ANSWER or TIE (changed by design, not compared): 46
+  inside the closed set, unexplained: 0
+[a1_cmp_other_modes.txt]
+  base1 vs base2: same 10, differ 0
+  base vs new (outside the later stage): same 10, differ 0
+  base vs new (ORIGINAL, question_cross removed): same 0, differ 0
+  inside the closed set and mapped to ANSWER or TIE (changed by design, not compared): 0
+  inside the closed set, unexplained: 0
+  rc=0
+[pytest_related_before.txt: related tests before] 1624 passed in 29.50s
+[pytest_related_after.txt: related tests after] 1 failed, 1623 passed in 28.82s
+[pytest_new_tests.txt: the new tests] 72 passed in 9.22s
+[pytest_full.txt: full run] 117 failed, 12186 passed, 37 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 376.79s (0:06:16)
+[determinism.txt]
+  PYTHONHASHSEED=0 vs PYTHONHASHSEED=1: questions 20, same 20, differ 0
+  mask keys (values set to 0, keys kept): elapsed_ms, ingest_ms
+[parity.txt]
+  placement=placement_q variant=no_lang   questions=185 identical=185
+  compared outputs: 740; mismatches: 0
+  not compared: structure.file_sha256 (records hash vs file bytes hash)
+[round 2 (M1, PREDICATE_FORM_DIFFERS / PREDICATE_POSITION_UNKNOWN): round-1 score -> round-2 score, per run; the ids that were CORRECT in round 1 and are not now]
+  a2_place: CORRECT 68 -> 68, WRONG 0 -> 0, ERROR 0 -> 0, WRONG ids now []
+      stage abstained by the new check: {}; CORRECT -> not CORRECT: none
+  a2_r7: CORRECT 45 -> 45, WRONG 0 -> 0, ERROR 0 -> 0, WRONG ids now []
+      stage abstained by the new check: {}; CORRECT -> not CORRECT: none
+  w3c2_place: CORRECT 44 -> 43, WRONG 0 -> 0, ERROR 0 -> 0, WRONG ids now []
+      stage abstained by the new check: {"PREDICATE_FORM_DIFFERS": 1}; CORRECT -> not CORRECT: Q120(ABSTAINED:PREDICATE_FORM_DIFFERS)
+  w3c2_place_corr: CORRECT 44 -> 43, WRONG 0 -> 0, ERROR 0 -> 0, WRONG ids now []
+      stage abstained by the new check: {"PREDICATE_FORM_DIFFERS": 1}; CORRECT -> not CORRECT: Q120(ABSTAINED:PREDICATE_FORM_DIFFERS)
+  w3c2_r7: CORRECT 38 -> 37, WRONG 0 -> 0, ERROR 0 -> 0, WRONG ids now []
+      stage abstained by the new check: {"PREDICATE_FORM_DIFFERS": 1}; CORRECT -> not CORRECT: Q120(ABSTAINED:PREDICATE_FORM_DIFFERS)
+  w3c2_r7_corr: CORRECT 38 -> 37, WRONG 0 -> 0, ERROR 0 -> 0, WRONG ids now []
+      stage abstained by the new check: {"PREDICATE_FORM_DIFFERS": 1}; CORRECT -> not CORRECT: Q120(ABSTAINED:PREDICATE_FORM_DIFFERS)
+  b2like_place: CORRECT 15 -> 15, WRONG 0 -> 0, ERROR 0 -> 0, WRONG ids now []
+      stage abstained by the new check: {}; CORRECT -> not CORRECT: none
+  b2like_r7: CORRECT 6 -> 6, WRONG 0 -> 0, ERROR 0 -> 0, WRONG ids now []
+      stage abstained by the new check: {}; CORRECT -> not CORRECT: none
+  a1_new: CORRECT 42 -> 42, WRONG 0 -> 0, ERROR 0 -> 0, WRONG ids now []
+      stage abstained by the new check: {}; CORRECT -> not CORRECT: none
+  a1_new_r7: CORRECT 89 -> 88, WRONG 0 -> 0, ERROR 0 -> 0, WRONG ids now []
+      stage abstained by the new check: {"PREDICATE_FORM_DIFFERS": 1}; CORRECT -> not CORRECT: Q120(ABSTAINED:PREDICATE_FORM_DIFFERS)
+[extra2 (round 2 data, 42 questions, frozen in FROZEN_EXTRA2.json): round-1 code vs round-2 code, uncorrected and corrected truth (corrections.jsonl: X032, X037)]
+  in process, placement_extra2.json, truth as frozen: counts {"CORRECT": 19, "WRONG": 0, "FALSE_NONE": 0, "ABSTAINED": 16, "NOT_RUN": 7}, WRONG [], ERROR 0
+  in process, placement_extra2.json, truth with corrections.jsonl: counts {"CORRECT": 19, "WRONG": 0, "FALSE_NONE": 0, "ABSTAINED": 16, "NOT_RUN": 7}, WRONG [], ERROR 0
+  cli, VERA_PLACEMENT=r7, truth as frozen: counts {"CORRECT": 18, "WRONG": 0, "FALSE_NONE": 0, "ABSTAINED": 17, "NOT_RUN": 7}, WRONG [], ERROR 0
+  cli, VERA_PLACEMENT=r7, truth with corrections.jsonl: counts {"CORRECT": 18, "WRONG": 0, "FALSE_NONE": 0, "ABSTAINED": 17, "NOT_RUN": 7}, WRONG [], ERROR 0
+  round-1 code (the same questions, in process): truth as frozen: counts {"CORRECT": 19, "WRONG": 13, "FALSE_NONE": 0, "ABSTAINED": 3, "NOT_RUN": 7}, WRONG ['X001', 'X002', 'X003', 'X004', 'X005', 'X006', 'X007', 'X032', 'X033', 'X034', 'X035', 'X036', 'X037']
+  round-1 code (the same questions, in process): truth with corrections.jsonl: counts {"CORRECT": 21, "WRONG": 11, "FALSE_NONE": 0, "ABSTAINED": 3, "NOT_RUN": 7}, WRONG ['X001', 'X002', 'X003', 'X004', 'X005', 'X006', 'X007', 'X033', 'X034', 'X035', 'X036']
+```
+<!-- w3c4-measured:end -->

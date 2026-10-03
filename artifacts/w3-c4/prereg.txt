@@ -1,0 +1,7 @@
+2026-10-04 02:06:12 +0900
+$ ls tests/observe/question_ask
+ls: tests/observe/question_ask: No such file or directory
+$ git diff --stat
+ docs/BASIS_POLICY.md |  8 ++++++++
+ docs/OBSERVATION.md  | 51 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 59 insertions(+)

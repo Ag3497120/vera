@@ -1,0 +1,39 @@
+m01 | modality: maybe | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m02 | unknown whether | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m03 | hearsay rashii | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m04 | conditional | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m05 | desire | UNKNOWN_UNREAD | semantic_document | FILLED | PREDICATE_FORM_DIFFERS | None | [] | 
+m06 | intention | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m07 | reported speech without quotes | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m08 | quoted hearsay | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m09 | question in doc | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m10 | negation | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m11 | negation progressive | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m12 | denied claim | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m13 | passive: answer 先生 is fine, 本 is wrong | ANSWER | semantic_document | None | None | agent: 先生 | [] | 
+m14 | causative: the reader is the student | UNKNOWN_NO_EVIDENCE | semantic_document | QUESTION_NOT_READ | READER_ABSTAINED | None | [] | 
+m15 | without reading | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m16 | compound name (partial ok?) | ANSWER | semantic_document | None | None | agent: 森田 | [] | 
+m17 | time arm | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m18 | coordination | UNKNOWN_NO_EVIDENCE | semantic_document | QUESTION_NOT_READ | READER_ABSTAINED | None | [] | 
+m19 | contrastive negation | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m20 | two clauses one sentence | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m21 | two clauses one sentence (2) | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m22 | relative / subordinate | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m23 | relative clause | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+m24 | ellipsis negation | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+e01 | en modal | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+e02 | en negation | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+e03 | en conditional | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+e04 | en reported | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+e05 | en never | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+e06 | en question in doc | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+e07 | en passive | UNKNOWN_UNREAD | semantic_document | QUESTION_NOT_READ | READER_ABSTAINED | None | [] | 
+e08 | en want | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+e09 | en abbreviation | UNKNOWN_UNREAD | semantic_document | FILLED | PERIOD_CUT_UNCERTAIN | None | [] | 
+e10 | en refuse | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+e11 | en quantifier negation | UNKNOWN_UNREAD | semantic_document | QUESTION_NOT_READ | READER_ABSTAINED | None | [] | 
+e12 | en object negation | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+e13 | en fail | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 
+e14 | en contrast | UNKNOWN_UNREAD | semantic_document | QUESTION_NOT_READ | READER_ABSTAINED | None | [] | 
+e15 | en contraction | UNKNOWN_UNREAD | semantic_document | NO_ATTESTED_CELL | NO_MATCHING_CROSS_IN_READ_SENTENCES | None | [] | 

@@ -1461,3 +1461,27 @@ def _observe_question(viewpoint: Viewpoint, structure: Structure, lookup: Any, n
     status = 'FILLED' if len(kinds) == 1 else 'TIE'
     focus: Any = Focus(elements[0].cell.key) if len(elements) == 1 else Tie(tuple(e.cell.key for e in elements))    # a Tie is never broken
     return finish(status, focus, qcross, fillers, excluded, reasons=extending_reasons + unread_reasons, ranks=(tuple(elements),))
+
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# in-memory entry for a question over sentences held in memory (W3-c4; docs/OBSERVATION.md, 文書 QA の後段). Additions only: no rule of the observation is touched.
+# ---------------------------------------------------------------------------------------------------------------------------------
+def structure_from_records(items: Iterable[Mapping[str, Any]], lookup: Any = None, neighbors: Any = None, index: Optional[IndexSpec] = None) -> Structure:
+    """Like `Structure.from_jsonl`, from records held in memory: {"id", "text"[, "lang"]}. The same checks and the same reader; no file is made."""
+    lookup = lookup if lookup is not None else EC.StubLookup()
+    records = list(items)
+    readings: List[Reading] = []
+    for n, obj in enumerate(records, 1):
+        if not isinstance(obj, Mapping) or not isinstance(obj.get('id'), str) or not obj['id'] or not isinstance(obj.get('text'), str):
+            raise _bad('STRUCTURE_INVALID:item %d needs a string id and a string text' % n)
+        lang = obj.get('lang')
+        if lang is not None and lang not in ('ja', 'en'): raise _bad('STRUCTURE_INVALID:item %d has a bad lang' % n)
+        readings.append(read_sentence(obj['id'], obj['text'], lang, lookup))
+    return Structure(readings, lookup, neighbors, index, _sha(_cj(records)), 0)
+
+
+def observe_question_records(question: str, records: Iterable[Mapping[str, Any]], *, lang: Optional[str] = None) -> Dict[str, Any]:
+    """The `observe --anchor-kind question --structure <records as jsonl> --no-index` output (same dict), with the records in memory (stub reading placement,
+    no index, no ledger; the type of a filler is asked of `EC.default_lookup()`, i.e. VERA_PLACEMENT, as on the command line without --placement)."""
+    vp = build_viewpoint(anchor_text=question, anchor_kind='question', lang=lang)
+    return json.loads(to_json(observe(vp, structure_from_records(records))))

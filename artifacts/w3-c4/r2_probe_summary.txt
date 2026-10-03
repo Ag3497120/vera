@@ -1,0 +1,4 @@
+probe scripts: W3-c4-rev/probe.py, probe2.py, probe3.py (reviewer's, read only; output dir = own scratch; placement of probe.py = its own pl.json, of probe2/3 = W3-c4-rev/probe/pl.json)
+before the rule (round-1 code):  probe2 'ANSWER question_cross': 5  probe3: 4  probe BAD: 1
+after the rule (round-2 code):   probe2 'ANSWER question_cross': 1  probe3: 0  probe BAD: 0
+the one remaining ANSWER of probe2 after the rule: The teacher did read the book. | ANSWER question_cross FILLED None book   (English 'did read': the rule is not applied to English; the reviewer's note allows it)
