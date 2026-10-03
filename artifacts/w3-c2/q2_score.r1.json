@@ -1,0 +1,338 @@
+{
+ "totals": {
+  "CORRECT": 100,
+  "WRONG": 1,
+  "FALSE_NONE": 4,
+  "ABSTAINED": 80,
+  "UNSCORED": 0,
+  "n": 185
+ },
+ "totals_with_corrections": {
+  "CORRECT": 100,
+  "WRONG": 1,
+  "FALSE_NONE": 4,
+  "ABSTAINED": 80,
+  "UNSCORED": 0,
+  "n": 185,
+  "corrections_applied": []
+ },
+ "by_hole": {
+  "CAUSE": {
+   "CORRECT": 0,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 11,
+   "UNSCORED": 0
+  },
+  "ILLFORMED": {
+   "CORRECT": 7,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 0,
+   "UNSCORED": 0
+  },
+  "MANNER": {
+   "CORRECT": 0,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 9,
+   "UNSCORED": 0
+  },
+  "PERSON": {
+   "CORRECT": 28,
+   "WRONG": 1,
+   "FALSE_NONE": 1,
+   "ABSTAINED": 15,
+   "UNSCORED": 0
+  },
+  "PLACE": {
+   "CORRECT": 7,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 12,
+   "UNSCORED": 0
+  },
+  "POLAR": {
+   "CORRECT": 8,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 0,
+   "UNSCORED": 0
+  },
+  "PROPERTY": {
+   "CORRECT": 0,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 8,
+   "UNSCORED": 0
+  },
+  "RESTRICTOR": {
+   "CORRECT": 12,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 5,
+   "UNSCORED": 0
+  },
+  "THING": {
+   "CORRECT": 38,
+   "WRONG": 0,
+   "FALSE_NONE": 3,
+   "ABSTAINED": 3,
+   "UNSCORED": 0
+  },
+  "TIME": {
+   "CORRECT": 0,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 17,
+   "UNSCORED": 0
+  }
+ },
+ "by_lang": {
+  "en": {
+   "CORRECT": 29,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 18,
+   "UNSCORED": 0
+  },
+  "ja": {
+   "CORRECT": 71,
+   "WRONG": 1,
+   "FALSE_NONE": 4,
+   "ABSTAINED": 62,
+   "UNSCORED": 0
+  }
+ },
+ "by_truth_kind": {
+  "ILLFORMED": {
+   "CORRECT": 7,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 0,
+   "UNSCORED": 0
+  },
+  "NONE": {
+   "CORRECT": 11,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 41,
+   "UNSCORED": 0
+  },
+  "ONE": {
+   "CORRECT": 65,
+   "WRONG": 0,
+   "FALSE_NONE": 4,
+   "ABSTAINED": 35,
+   "UNSCORED": 0
+  },
+  "SPLIT": {
+   "CORRECT": 9,
+   "WRONG": 1,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 4,
+   "UNSCORED": 0
+  },
+  "YESNO": {
+   "CORRECT": 8,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 0,
+   "UNSCORED": 0
+  }
+ },
+ "status_counts": {
+  "DIRECTION_NOT_APPLIED": 1,
+  "FILLED": 66,
+  "HOLE_TYPE_UNDETERMINED": 1,
+  "NO_ATTESTED_CELL": 15,
+  "POLAR_QUESTION": 7,
+  "QUESTION_NOT_READ": 86,
+  "TIE": 9
+ },
+ "abstained_reasons_by_hole": {
+  "CAUSE": {
+   "READ:HOLE_RELATION_NOT_PRODUCED:cause": 11
+  },
+  "MANNER": {
+   "READ:HOLE_RELATION_NOT_PRODUCED:manner": 9
+  },
+  "PERSON": {
+   "DIRECTION_NOT_APPLIED": 1,
+   "READ:AGENT_EVIDENCE_MISSING:Ｘ": 7,
+   "READ:EN_FORM_NOT_REWRITTEN": 1,
+   "READ:RECIPIENT_TYPE_UNDETERMINED:X": 1,
+   "READ:RECIPIENT_TYPE_UNDETERMINED:Ｘ": 2,
+   "READ:SUBJECT_TYPE_UNDETERMINED:object or path:Ｘ": 1,
+   "READ:SUBJECT_TYPE_UNDETERMINED:Ｘ": 1,
+   "READ:UNKNOWN_PREDICATE": 1
+  },
+  "PLACE": {
+   "READ:HOLE_ROLE_NOT_PRODUCED:en:place": 3,
+   "READ:NO_SUPPORTED_CLAUSE": 9
+  },
+  "PROPERTY": {
+   "READ:HOLE_NOT_AN_ARM:property": 8
+  },
+  "RESTRICTOR": {
+   "HOLE_TYPE_UNDETERMINED": 1,
+   "READ:AGENT_EVIDENCE_MISSING:Ｘ": 2,
+   "READ:NO_SUPPORTED_CLAUSE": 1,
+   "READ:SUBJECT_TYPE_UNDETERMINED:Ｘ": 1
+  },
+  "THING": {
+   "READ:EN_FORM_NOT_REWRITTEN": 1,
+   "READ:HOLE_MARK_IN_INPUT": 1,
+   "READ:HOLE_POSITION_UNDETERMINED": 1
+  },
+  "TIME": {
+   "READ:HOLE_NOT_ISOLATED": 10,
+   "READ:HOLE_ROLE_NOT_PRODUCED:en:time": 3,
+   "READ:NO_SUPPORTED_CLAUSE": 2,
+   "READ:RECIPIENT_TYPE_UNDETERMINED:Ｘ兄": 1,
+   "READ:RECIPIENT_TYPE_UNDETERMINED:Ｘ姉": 1
+  }
+ },
+ "wrong": [
+  {
+   "id": "Q185",
+   "hole": "PERSON",
+   "truth_kind": "SPLIT",
+   "text": "誰が地図を渡さなかった？",
+   "status": "FILLED",
+   "detail": {
+    "got_status": "FILLED",
+    "got_fillers": [
+     "校長"
+    ],
+    "got_evidence": [
+     "QD01-S09"
+    ],
+    "want_fillers": [
+     "先生",
+     "校長"
+    ],
+    "want_evidence": [
+     "QD01-S09"
+    ]
+   },
+   "reasons": [
+    "FILLED"
+   ],
+   "fillers": [
+    {
+     "surface": "校長",
+     "evidence": [
+      "QD01-S09"
+     ]
+    }
+   ],
+   "structure": {
+    "unread": 2,
+    "crosses_compared": 7,
+    "crosses_matched": 1
+   },
+   "extending": 1,
+   "answer_reasons": [
+    "EXTENDING_CROSSES_NOT_MATCHED:1",
+    "UNREAD_SENTENCES:2"
+   ]
+  }
+ ],
+ "false_none": [
+  {
+   "id": "Q010",
+   "hole": "THING",
+   "truth_kind": "ONE",
+   "text": "先生は何を渡さなかった？",
+   "status": "NO_ATTESTED_CELL",
+   "detail": null,
+   "reasons": [
+    "NO_ATTESTED_CELL"
+   ],
+   "fillers": [],
+   "structure": {
+    "unread": 2,
+    "crosses_compared": 7,
+    "crosses_matched": 0
+   },
+   "extending": 1,
+   "answer_reasons": [
+    "NO_MATCHING_CROSS_IN_READ_SENTENCES",
+    "EXTENDING_CROSSES_NOT_MATCHED:1",
+    "UNREAD_SENTENCES:2"
+   ]
+  },
+  {
+   "id": "Q059",
+   "hole": "THING",
+   "truth_kind": "ONE",
+   "text": "漁師は何を送った？",
+   "status": "NO_ATTESTED_CELL",
+   "detail": null,
+   "reasons": [
+    "NO_ATTESTED_CELL"
+   ],
+   "fillers": [],
+   "structure": {
+    "unread": 3,
+    "crosses_compared": 6,
+    "crosses_matched": 0
+   },
+   "extending": 1,
+   "answer_reasons": [
+    "NO_MATCHING_CROSS_IN_READ_SENTENCES",
+    "EXTENDING_CROSSES_NOT_MATCHED:1",
+    "UNREAD_SENTENCES:3"
+   ]
+  },
+  {
+   "id": "Q118",
+   "hole": "PERSON",
+   "truth_kind": "ONE",
+   "text": "誰が薬を渡した？",
+   "status": "NO_ATTESTED_CELL",
+   "detail": null,
+   "reasons": [
+    "NO_ATTESTED_CELL"
+   ],
+   "fillers": [],
+   "structure": {
+    "unread": 2,
+    "crosses_compared": 7,
+    "crosses_matched": 0
+   },
+   "extending": 2,
+   "answer_reasons": [
+    "NO_MATCHING_CROSS_IN_READ_SENTENCES",
+    "EXTENDING_CROSSES_NOT_MATCHED:2",
+    "UNREAD_SENTENCES:2"
+   ]
+  },
+  {
+   "id": "Q121",
+   "hole": "THING",
+   "truth_kind": "ONE",
+   "text": "弟は何を読んだ？",
+   "status": "NO_ATTESTED_CELL",
+   "detail": null,
+   "reasons": [
+    "NO_ATTESTED_CELL"
+   ],
+   "fillers": [],
+   "structure": {
+    "unread": 2,
+    "crosses_compared": 7,
+    "crosses_matched": 0
+   },
+   "extending": 2,
+   "answer_reasons": [
+    "NO_MATCHING_CROSS_IN_READ_SENTENCES",
+    "EXTENDING_CROSSES_NOT_MATCHED:2",
+    "UNREAD_SENTENCES:2"
+   ]
+  }
+ ],
+ "unscored": [],
+ "nonzero_exit": []
+}

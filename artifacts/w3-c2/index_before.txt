@@ -1,0 +1,95 @@
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "疑問文 穴 質問の十字",
+  "searched": 674,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 66,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+{
+  "verdict": "ANSWER",
+  "query": "質問に文書の証拠で答える",
+  "searched": 674,
+  "hits": [
+    {
+      "kind": "door",
+      "name": "compile_documents",
+      "about": "Read the user's documents (.txt/.md files or folders, comma",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "ingest_documents",
+      "about": "Ingest several source documents about one event and PRESERVE their",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "load_documents",
+      "about": "Read files (or a folder) into the store — PDF, Word, HTML, CSV,",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "vera_ask_documents",
+      "about": "Answer from the loaded documents only — quote, or say nothing.",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "vera_documents",
+      "about": "What documents this terminal has loaded, and a way to drop one.",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "verify_against_documents",
+      "about": "Check what an AI wrote against the user's compiled documents, claim",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "command",
+      "name": "documents",
+      "about": "load documents into the store from the CLI — PDF, Word, HTML, CSV, JSON, text; a directory is walked",
+      "where": "verantyx/cli.py"
+    },
+    {
+      "kind": "module",
+      "name": "document_ingest",
+      "about": "Documents in, disagreement out — multi-source ingestion for deep search.",
+      "where": "verantyx/document_ingest.py"
+    },
+    {
+      "kind": "module",
+      "name": "document_loaders",
+      "about": "Files in, `Document`s out — with a typed refusal when a format is beyond us.",
+      "where": "verantyx/document_loaders.py"
+    },
+    {
+      "kind": "module",
+      "name": "document_structure",
+      "about": "A document has sections and labels. The answer usually lives in one.",
+      "where": "verantyx/document_structure.py"
+    },
+    {
+      "kind": "fork",
+      "name": "document_draft_is_licensed_fork",
+      "about": "文書の下書きは引用行の言葉しか使えない — 使えなければ黙る。",
+      "where": "verantyx/cross_geometry_forks.py",
+      "registered": "yes"
+    },
+    {
+      "kind": "door",
+      "name": "how_to_resolve",
+      "about": "What an expert should register so a refusal becomes an answer.",
+      "where": "verantyx/mcp_server.py"
+    }
+  ],
+  "total_hits": 103
+}

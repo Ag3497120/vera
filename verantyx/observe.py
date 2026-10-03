@@ -19,6 +19,8 @@ inputs). Nothing here makes either work by loosening a rule.
 
 Nothing in this module is an ANSWER: an observed sentence is `OBSERVED_OCCUPIED`, `CONSTRUCTED_UNOCCUPIED` or `UNKNOWN_OCCUPANCY`, never an
 answer to a question (an answer needs a record as evidence, which is outside this ticket).
+Only the path of an anchor of kind `question` returns an `answer` (W3-c2): the fillers of the hole of a question, each with the ids of the structure's
+own sentences that attest it. The anchor's reading and the index are never evidence (docs/OBSERVATION.md, 質問の観測).
 """
 from __future__ import annotations
 
@@ -884,6 +886,8 @@ def _levels(viewpoint: Viewpoint, structure: Structure, lookup: Any, neighbors: 
 def observe(viewpoint: Viewpoint, structure: Structure, lookup: Any = None, neighbors: Any = None, ledger: Any = None) -> Observation:
     """Observe `structure` from `viewpoint`. The state is `ledger` when given, else `viewpoint.state` (FLAT when there is none).
     Deterministic in (structure, viewpoint, state); the ledger is only read."""
+    q = _observe_question(viewpoint, structure, lookup, neighbors, ledger)    # W3-c2: an anchor that is a question has a path of its own
+    if q is not None: return q
     lookup = lookup if lookup is not None else structure.lookup
     neighbors = neighbors if neighbors is not None else structure.neighbors
     state = ledger if ledger is not None else viewpoint.state
@@ -1180,3 +1184,258 @@ def run_entry(*, anchor_text: Optional[str] = None, anchor_record: Optional[str]
         record_turn(ledger, vp, obs)
         SAL.append_jsonl(ledger_path, list(ledger.events(since='ev:%d' % before)) if before else list(ledger.events()))
     return EntryResult(0, out, None)
+
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# questions (W3-c2): a question is a cross with one typed HOLE; the cells of the structure that agree with it everywhere but the hole fill it
+# (docs/OBSERVATION.md, 質問の観測). Evidence = the crosses of the structure's own sentences only: not the anchor's reading, not the index.
+# ---------------------------------------------------------------------------------------------------------------------------------
+ANSWER_SCHEMA = 'verantyx.question_answer/1'
+ANSWER_STATUSES: Tuple[str, ...] = ('FILLED', 'TIE', 'NO_ATTESTED_CELL', 'TYPE_EXCLUDED_ALL', 'HOLE_TYPE_UNDETERMINED', 'POLAR_QUESTION',
+                                    'DIRECTION_NOT_APPLIED', 'QUESTION_NOT_READ', 'ANCHOR_CROSS_INDEX_OUT_OF_RANGE', 'INCOMPLETE_BY_EXTENSION')
+HOLE_EXCLUSION_REASONS: Tuple[str, ...] = ('HOLE_TYPE_DISAGREE', 'HOLE_TYPE_NOT_CHECKED', 'SAME_AS_RESTRICTOR')
+
+
+def _nfkc(surface: str) -> str:
+    import unicodedata    # the only normalisation the match uses: on the SURFACE of a filler. A predicate, a polarity, a tense, a voice are compared as they are
+    return unicodedata.normalize('NFKC', surface)
+
+
+@dataclass(frozen=True)
+class QuestionObservation(Observation):
+    """An observation whose anchor is a question: the `Observation` shape (so the ledger, the replay and the entry work as they do) plus `answer`."""
+    answer: Mapping[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> Dict[str, Any]:
+        out = super().to_dict()
+        out['answer'] = copy.deepcopy(dict(self.answer))
+        return out
+
+
+def _cross_matches_question(q: EC.EventCross, hole: str, d: EC.EventCross) -> bool:
+    """docs/OBSERVATION.md, 一致の定義 (D9): the centre as it is (every key), the same arms but the hole's, each with the same kind and the surfaces
+    equal elementwise under NFKC, and d has the hole's arm. Nothing else: no neighbour, no paraphrase, no swap of a face."""
+    if dict(q.center) != dict(d.center): return False
+    if hole not in d.arms: return False
+    if set(q.arms) - {hole} != set(d.arms) - {hole}: return False
+    for role, arm in q.arms.items():
+        if role == hole: continue
+        other = d.arms[role]
+        if arm.kind != other.kind or len(arm.fillers) != len(other.fillers): return False
+        if any(_nfkc(a.surface) != _nfkc(b.surface) for a, b in zip(arm.fillers, other.fillers)): return False
+    return True
+
+
+def _cross_extends_question(q: EC.EventCross, hole: str, d: EC.EventCross) -> List[str]:
+    """The roles d has beyond the question, when d is the question's cross plus MORE arms (the same centre, every other arm of the question the same,
+    the hole's arm present); else []. Such a cross is NOT a match (a negated question must not be answered by a sentence that is negated in one place only);
+    it is listed so that an absence is not read as "the document says nothing"."""
+    if dict(q.center) != dict(d.center) or hole not in d.arms: return []
+    mine = set(q.arms) - {hole}
+    extra = sorted(set(d.arms) - {hole} - mine)
+    if not extra or not mine <= set(d.arms): return []
+    for role in mine:
+        a, b = q.arms[role], d.arms[role]
+        if a.kind != b.kind or len(a.fillers) != len(b.fillers) or any(_nfkc(x.surface) != _nfkc(y.surface) for x, y in zip(a.fillers, b.fillers)): return []
+    return extra
+
+
+def _valid_place(lookup: Any, word: str) -> Optional[EC.PlaceResult]:
+    got = lookup.lookup(word)
+    return got if isinstance(got, EC.PlaceResult) and not got.invariant_problems() else None
+
+
+def _hole_type_check(place: Any, expected: Sequence[str]) -> Dict[str, Any]:
+    """The rules 3-7 of docs/EVENT_CROSS.md (型一致の決め方), in that order, against the types the HOLE expects (rules 1 and 2 do not apply: a filler of an
+    ARM_TIE arm is a candidate of its own, and the hole's expected types are not the role table's)."""
+    want = tuple(sorted(expected))
+    if not isinstance(place, EC.PlaceResult) or place.invariant_problems():
+        return {'verdict': 'NOT_CHECKED', 'reason': 'LOOKUP_RESULT_INVALID', 'expected': list(want), 'observed': None}
+    if place.state in ('NO_PLACEMENT', 'UNKNOWN', 'UNPLACED'):
+        return {'verdict': 'NOT_CHECKED', 'reason': place.state, 'expected': list(want), 'observed': None}
+    if place.origin == 'estimated':
+        return {'verdict': 'NOT_CHECKED', 'reason': 'ESTIMATED_NEAR' if place.estimate_basis == 'proximity' else 'ESTIMATED_GENERATED',
+                'expected': list(want), 'observed': list(place.types)}
+    if place.state == 'MULTIPLE':
+        return {'verdict': 'NOT_CHECKED', 'reason': 'MULTIPLE', 'expected': list(want), 'observed': list(place.types)}
+    return {'verdict': 'AGREE' if place.types[0] in want else 'DISAGREE', 'reason': None, 'expected': list(want), 'observed': list(place.types)}
+
+
+def _public_question(question: Mapping[str, Any]) -> Dict[str, Any]:
+    """The reader's `question` field without `declarative`: the declarative form holds the mark in a sentence, and no sentence with the mark is put in an output."""
+    return {k: v for k, v in question.items() if k != 'declarative'}
+
+
+def _question_answer(status: str, question: Mapping[str, Any], cross: Optional[EC.EventCross], fillers: List[Dict[str, Any]], excluded: List[Dict[str, Any]],
+                     structure_info: Mapping[str, Any], reasons: List[str]) -> Dict[str, Any]:
+    return {'schema': ANSWER_SCHEMA, 'status': status, 'question': _public_question(question),
+            'question_cross': cross.to_dict() if cross is not None else None, 'fillers': fillers, 'excluded': excluded,
+            'structure': dict(structure_info), 'reasons': reasons}
+
+
+def _observe_question(viewpoint: Viewpoint, structure: Structure, lookup: Any, neighbors: Any, ledger: Any) -> Optional[QuestionObservation]:
+    """The observation of an anchor that is a QUESTION (kind `question`, read by `semantic_read.read_question` to a cross with a hole). None when the anchor
+    is not one: a seed, a record, or a text that is not a question (the reader says so by returning no `question` key) go the way they always went."""
+    a = viewpoint.anchor
+    if not (isinstance(a, AnchorText) and a.kind == 'question'): return None
+    if a.reading is not None:
+        read_out: Any = a.reading
+        if not isinstance(read_out, Mapping) or 'question' not in read_out: return None
+    else:
+        from . import semantic_read
+        try:
+            read_out = semantic_read.read_question(a.text, a.lang)
+        except semantic_read.ReadError:
+            return None
+        if 'question' not in read_out: return None
+    lookup = lookup if lookup is not None else structure.lookup
+    state = ledger if ledger is not None else viewpoint.state
+    state_info = _state_info(state)
+    vp_json = viewpoint_to_dict(viewpoint, state_info)
+    counts = _new_counts()
+    info = structure.info()
+    trace = SAL.rank([], state).trace
+    question = read_out['question']
+    crossed_read = [r for r in structure.readings if r.status == 'CROSSED']
+    unread = sorted(r.id for r in structure.readings if r.status != 'CROSSED')
+    sinfo: Dict[str, Any] = {'sentences': len(structure.readings), 'crossed': len(crossed_read), 'unread': len(unread), 'unread_ids': unread,
+                             'crosses_compared': 0, 'crosses_matched': 0, 'extending': []}
+    counts['question'] = {'status': None, 'candidates': 0, 'excluded': 0}
+
+    def finish(status: str, focus: Any, cross: Optional[EC.EventCross] = None, fillers: Optional[List[Dict[str, Any]]] = None,
+               excluded: Optional[List[Dict[str, Any]]] = None, reasons: Optional[List[str]] = None,
+               ranks: Tuple[Tuple[ObservedElement, ...], ...] = ()) -> QuestionObservation:
+        counts['question']['status'] = status
+        counts['question']['candidates'] = len(fillers or ())
+        counts['question']['excluded'] = len(excluded or ())
+        answer = _question_answer(status, question, cross, fillers or [], excluded or [], sinfo, reasons or [])
+        return QuestionObservation(vp_json, info, None, ranks, focus, counts, trace, state_info, answer)
+
+    def not_read(reason: str, detail: Mapping[str, Any]) -> QuestionObservation:
+        return finish('QUESTION_NOT_READ', NoAnchor(reason, dict(detail, question=_public_question(question))), reasons=[reason])
+
+    if not read_out.get('readable'):
+        return not_read('READER_ABSTAINED', copy.deepcopy(dict(read_out.get('abstain') or {})))
+    crossed = EC.build_crosses(read_out, lookup)
+    if crossed.status != 'CROSSED' or len(crossed.crosses) != 1:
+        return not_read('READER_INPUT_REJECTED', copy.deepcopy(dict(crossed.abstain or {})))
+    if a.cross_index is not None and a.cross_index != 0:
+        return finish('ANCHOR_CROSS_INDEX_OUT_OF_RANGE', NoAnchor('ANCHOR_CROSS_INDEX_OUT_OF_RANGE', {'cross_index': a.cross_index, 'crosses': 1}),
+                      reasons=['ANCHOR_CROSS_INDEX_OUT_OF_RANGE'])
+    qcross = crossed.crosses[0]
+    if viewpoint.direction:
+        return finish('DIRECTION_NOT_APPLIED', NoMoveLicensed({'FILL_HOLE:DIRECTION_NOT_APPLIED': 1}), qcross, reasons=['DIRECTION_NOT_APPLIED'])
+    hole = question.get('hole_role')
+    if hole == 'polarity':
+        return finish('POLAR_QUESTION', NoMoveLicensed({'FILL_HOLE:POLAR_QUESTION': 1}), qcross, reasons=['POLAR_QUESTION_NOT_OBSERVED'])
+    mark = question.get('hole_mark')
+    harm = qcross.arms.get(hole) if isinstance(hole, str) else None
+    if harm is None or harm.kind != 'FILLER' or harm.fillers[0].surface != mark:
+        return not_read('QUESTION_HOLE_NOT_IN_CROSS', {'hole_role': hole})
+    # --- the type the hole expects
+    expected: Optional[Tuple[str, ...]] = tuple(question['hole_type']) if question.get('hole_type') else None
+    restrictor = question.get('restrictor')
+    if expected is None:
+        got = _valid_place(lookup, restrictor) if isinstance(restrictor, str) and restrictor else None
+        if got is None or got.state != 'DECIDED' or got.origin != 'direct':
+            return finish('HOLE_TYPE_UNDETERMINED', NoMoveLicensed({'FILL_HOLE:HOLE_TYPE_UNDETERMINED': 1}), qcross, reasons=['RESTRICTOR_TYPE_NOT_DECIDED'])
+        expected = tuple(got.types)
+    strict = bool(restrictor)    # which+N presupposes "one of the N": only a candidate whose type is checked and agrees may answer
+    # --- compare the question's cross with EVERY cross of EVERY read sentence of the structure (no sampling, no index, no anchor)
+    matched: List[Tuple[Reading, int, EC.EventCross]] = []
+    extending_fillers: List[EC.Filler] = []
+    for r in crossed_read:
+        for i, d in enumerate(r.crosses):
+            sinfo['crosses_compared'] += 1
+            if _cross_matches_question(qcross, hole, d):
+                matched.append((r, i, d))
+            else:
+                extra = _cross_extends_question(qcross, hole, d)
+                if extra:
+                    sinfo['extending'].append({'reading': r.id, 'cross_index': i, 'extra_roles': extra,
+                                               'fillers': [f.surface for f in d.arms[hole].fillers]})
+                    extending_fillers.extend(d.arms[hole].fillers)
+    sinfo['crosses_matched'] = len(matched)
+    sinfo['extending'].sort(key=_cj)
+    extending_reasons = ['EXTENDING_CROSSES_NOT_MATCHED:%d' % len(sinfo['extending'])] if sinfo['extending'] else []
+    unread_reasons = ['UNREAD_SENTENCES:%d' % len(unread)] if unread else []
+    if not matched:
+        return finish('NO_ATTESTED_CELL', NoMoveLicensed({'FILL_HOLE:NO_ATTESTED_CELL': 1}), qcross,
+                      reasons=['NO_MATCHING_CROSS_IN_READ_SENTENCES'] + extending_reasons + unread_reasons)
+    # --- candidates: the fillers of the hole's arm of the matched crosses, judged against the hole's type
+    kept: List[Dict[str, Any]] = []
+    dropped: List[Dict[str, Any]] = []
+    def judge(f: EC.Filler) -> Tuple[Dict[str, Any], Optional[str]]:
+        check = _hole_type_check(f.place, expected)
+        reason: Optional[str] = None
+        if restrictor and _nfkc(f.surface) == _nfkc(restrictor): reason = 'SAME_AS_RESTRICTOR'
+        elif check['verdict'] == 'DISAGREE': reason = 'HOLE_TYPE_DISAGREE'
+        elif strict and check['verdict'] != 'AGREE': reason = 'HOLE_TYPE_NOT_CHECKED'
+        return check, reason
+
+    for r, i, d in sorted(matched, key=lambda t: (t[0].id, t[1])):
+        cell_key = cell_key_of(d)
+        arm = d.arms[hole]
+        for f in arm.fillers:
+            check, reason = judge(f)
+            item = {'surface': f.surface, 'nfkc': _nfkc(f.surface), 'reading': r.id, 'cross_index': i, 'cell_key': cell_key, 'text': r.text,
+                    'reading_source': r.source, 'check': check, 'agreement': arm.agreement.to_dict(), 'from_arm_tie': arm.kind == 'ARM_TIE',
+                    'cross': d, 'lang': r.lang}
+            (dropped if reason else kept).append(dict(item, reason=reason))
+
+    def evidence_of(item: Mapping[str, Any]) -> Dict[str, Any]:
+        return {'reading': item['reading'], 'cross_index': item['cross_index'], 'cell_key': item['cell_key'], 'text': item['text'],
+                'reading_source': item['reading_source'], 'role_agreement': item['agreement']}
+
+    def group(items: List[Dict[str, Any]], with_reason: bool) -> List[Dict[str, Any]]:
+        by_surface: Dict[Tuple[str, str, Optional[str]], List[Dict[str, Any]]] = {}
+        for it in items: by_surface.setdefault((it['nfkc'], it['surface'], it['reason']), []).append(it)
+        out: List[Dict[str, Any]] = []
+        for key in sorted(by_surface):    # a display order (the key is text), never a choice
+            its = sorted(by_surface[key], key=lambda x: (x['reading'], x['cross_index']))
+            row: Dict[str, Any] = {'surface': key[1], 'nfkc': key[0], 'evidence': [evidence_of(x) for x in its], 'hole_type_check': its[0]['check']}
+            if with_reason: row['reason'] = key[2]
+            else: row['role_agreement'] = its[0]['agreement']; row['from_arm_tie'] = any(x['from_arm_tie'] for x in its)
+            out.append(row)
+        return out
+
+    fillers, excluded = group(kept, False), group(dropped, True)
+    if not kept:
+        reasons_count: Dict[str, int] = {}
+        for it in dropped: reasons_count['FILL_HOLE:candidate:%s' % it['reason']] = reasons_count.get('FILL_HOLE:candidate:%s' % it['reason'], 0) + 1
+        return finish('TYPE_EXCLUDED_ALL', NoMoveLicensed(dict(sorted(reasons_count.items()))), qcross, fillers, excluded,
+                      reasons=['EVERY_CANDIDATE_EXCLUDED_BY_THE_TYPE_OF_THE_HOLE'] + extending_reasons + unread_reasons)
+    # --- the cells that carry the kept candidates, as elements (the realizer says each one's sentence from the STRUCTURE's cross, never from the question's)
+    cells: Dict[str, Cell] = {}
+    for it in sorted(kept, key=lambda x: (x['cell_key'], x['reading'], x['cross_index'])):
+        coord = {'origin': {'kind': 'structure', 'id': it['reading'], 'cross_index': it['cross_index']}, 'moves': []}
+        if it['cell_key'] in cells:
+            old = cells[it['cell_key']]
+            if _cj(coord) not in {_cj(c) for c in old.coords}:
+                cells[it['cell_key']] = replace(old, coords=tuple(sorted(old.coords + (coord,), key=_cj)))
+        else:
+            cells[it['cell_key']] = Cell(it['cell_key'], it['cross'], (coord,), 'read:' + it['reading_source'], it['lang'])
+    realized: Dict[Tuple[str, Optional[str]], Dict[str, Any]] = {}
+    elements: List[ObservedElement] = []
+    for key in sorted(cells):
+        cell = cells[key]
+        occupancy = _occupancy(cell, structure, None)    # the structure's own sentences only: no anchor reading
+        claim, provenance = _claim_of(occupancy)
+        if (cell.key, cell.lang) not in realized: realized[(cell.key, cell.lang)] = _realization(cell, claim, provenance)
+        realization = realized[(cell.key, cell.lang)]
+        counts['occupancy'][occupancy.occupied] += 1
+        counts['claims'][claim] += 1
+        if realization['status'] == 'REALIZED': counts['realization']['realized'] += 1
+        else: counts['realization']['refused'][realization['reason']] = counts['realization']['refused'].get(realization['reason'], 0) + 1
+        elements.append(ObservedElement(cell, occupancy, claim, provenance, realization))
+    counts['candidates'] = len(elements)
+    kinds = {row['nfkc'] for row in fillers}
+    # A cross that is the question's cross plus MORE arms is not a match, but if it names a candidate (one the hole's type does not exclude) that the matches do
+    # not, the set of fillers above may be short of it: the answer is then not given as complete (the other fillers are in structure.extending).
+    unseen = sorted({_nfkc(f.surface) for f in extending_fillers if judge(f)[1] is None} - kinds)
+    if unseen:
+        return finish('INCOMPLETE_BY_EXTENSION', NoMoveLicensed({'FILL_HOLE:INCOMPLETE_BY_EXTENSION': len(unseen)}), qcross, fillers, excluded,
+                      reasons=['EXTENDING_CROSS_NAMES_ANOTHER_FILLER:%d' % len(unseen)] + extending_reasons + unread_reasons)
+    status = 'FILLED' if len(kinds) == 1 else 'TIE'
+    focus: Any = Focus(elements[0].cell.key) if len(elements) == 1 else Tie(tuple(e.cell.key for e in elements))    # a Tie is never broken
+    return finish(status, focus, qcross, fillers, excluded, reasons=extending_reasons + unread_reasons, ranks=(tuple(elements),))

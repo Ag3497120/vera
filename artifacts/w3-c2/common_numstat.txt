@@ -1,0 +1,4 @@
+51	0	docs/EVENT_CROSS.md
+377	0	docs/OBSERVATION.md
+259	0	verantyx/observe.py
+245	0	verantyx/semantic_read.py

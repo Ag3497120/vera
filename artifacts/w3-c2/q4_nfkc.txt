@@ -1,0 +1,3 @@
+19:+    import unicodedata    # the only normalisation the match uses: on the SURFACE of a filler. A predicate, a polarity, a tense, a voice are compared as they are
+20:+    return unicodedata.normalize('NFKC', surface)
+36:+    equal elementwise under NFKC, and d has the hole's arm. Nothing else: no neighbour, no paraphrase, no swap of a face."""

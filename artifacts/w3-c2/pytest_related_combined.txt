@@ -1,0 +1,3 @@
+FAILED tests/test_observe_data.py::test_o4_alternative_rule_and_the_pair_l09_l10
+FAILED tests/test_observe_data.py::test_o4_the_strict_judge_flags_the_old_rule_it_replaced
+2 failed, 2188 passed in 40.52s

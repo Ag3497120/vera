@@ -30,6 +30,12 @@ and none of the placement code is loaded.
 
 Exit code: 0 for readable true and false alike; 2 for an input that is refused (a typed `{"error": {"type", "detail"}}` object on standard
 output). The entry writes no file, uses no network, prints nothing but the JSON object, and gives the same output to the same input.
+
+質問の十字 (W3-c2): `read_question(text, lang)` takes a QUESTION (an interrogative sentence) as a cross with one typed hole (疑問文を「穴の空いた十字」に写す): the wh word is replaced by
+a mark (`Ｘ` / `X`, a symbol and never a word), the declarative form is read by the same reader, and the answer is the shape of `read()` plus the last key `question`
+({hole_role, hole_type, wh, kind, restrictor, hole_mark, declarative}). `read()` itself still refuses a question. The registered table of wh words is `WH_TABLE`
+(docs/EVENT_CROSS.md, 穴の型); the observation that fills the hole from the sentences of a structure is `verantyx.observe` (docs/OBSERVATION.md, 質問の観測).
+Keywords: 疑問文 穴 質問の十字 read_question question hole wh.
 """
 from __future__ import annotations
 
@@ -942,6 +948,245 @@ def read(text, lang=None, *, placement=_UNSET):
         return _refusal(None, 'not_supported', ['NO_LANGUAGE'])
     query = _placement_query(placement)
     return _read_ja(text, query) if chosen == 'ja' else _read_en(text, query)
+
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# questions (W3-c2): a question is read as a cross whose ONE arm is a typed hole (docs/EVENT_CROSS.md, "穴の型"; docs/OBSERVATION.md, "質問の観測")
+# ---------------------------------------------------------------------------------------------------------------------------------
+# `read()` is NOT changed: it still refuses a question (UNREAD_SPAN: interrogative ...). `read_question()` is the new, separate entry. The hole is a
+# MARK (one symbol put where the wh word was), never a word: no word is guessed for the hole, no particle is added to make a position readable, and
+# a position that needs evidence of the type of the word (to whom, where at, to where, when) is therefore refused with the reader's own reason.
+HOLE_MARK_JA = 'Ｘ'        # U+FF38: a common noun for the tagger; the one symbol that replaces a wh word of a Japanese question
+HOLE_MARK_EN = 'X'
+HOLE_TYPES_VERSION = 1
+# The registered table (docs/EVENT_CROSS.md, 穴の型, between BEGIN table:w3c2_holes and END table:w3c2_holes; a test compares the two).
+# `arms`: the roles the hole may take (the reader decides the role; a role outside this tuple is refused, never corrected). `types`: the types a filler
+# of the hole is expected to have (`types_except`: every type of event_cross.NOUN_TYPE_IDS except these). `unread`: why this hole is not read at all.
+WH_TABLE = (
+    {'hole': 'PERSON', 'ja': ('誰', 'だれ'), 'en': ('who',), 'noun': False, 'arms': ('agent', 'recipient', 'patient'),
+     'types': ('GROUP_ORG', 'PERSON'), 'types_except': None, 'unread': None, 'unread_en': None},
+    {'hole': 'THING', 'ja': ('何', 'なに', 'なん'), 'en': ('what',), 'noun': False, 'arms': ('patient',),
+     'types': None, 'types_except': ('GROUP_ORG', 'PERSON'), 'unread': None, 'unread_en': None},
+    {'hole': 'PLACE', 'ja': ('どこ',), 'en': ('where',), 'noun': False, 'arms': ('place', 'goal', 'source'),
+     'types': ('PLACE',), 'types_except': None, 'unread': None, 'unread_en': 'HOLE_ROLE_NOT_PRODUCED:en:place'},
+    {'hole': 'TIME', 'ja': ('いつ',), 'en': ('when',), 'noun': False, 'arms': ('time',),
+     'types': ('TIME',), 'types_except': None, 'unread': None, 'unread_en': 'HOLE_ROLE_NOT_PRODUCED:en:time'},
+    {'hole': 'RESTRICTOR', 'ja': ('どの',), 'en': ('which',), 'noun': True, 'arms': None,
+     'types': None, 'types_except': None, 'unread': None, 'unread_en': None},
+    {'hole': 'PROPERTY', 'ja': ('どんな',), 'en': (), 'noun': True, 'arms': (),
+     'types': None, 'types_except': None, 'unread': 'HOLE_NOT_AN_ARM:property', 'unread_en': 'HOLE_NOT_AN_ARM:property'},
+    {'hole': 'CAUSE', 'ja': ('なぜ', 'どうして'), 'en': ('why',), 'noun': False, 'arms': (),
+     'types': None, 'types_except': None, 'unread': 'HOLE_RELATION_NOT_PRODUCED:cause', 'unread_en': 'HOLE_RELATION_NOT_PRODUCED:cause'},
+    {'hole': 'MANNER', 'ja': ('どうやって', 'どう'), 'en': ('how',), 'noun': False, 'arms': (),
+     'types': None, 'types_except': None, 'unread': 'HOLE_RELATION_NOT_PRODUCED:manner', 'unread_en': 'HOLE_RELATION_NOT_PRODUCED:manner'},
+)
+QUESTION_KINDS = ('WH_QUESTION', 'POLAR_QUESTION')
+# The closed list of the reasons that read_question itself gives (a reason of the reader is passed on as the reader wrote it).
+QUESTION_REASONS = (
+    'NOT_A_QUESTION', 'HOLE_MARK_IN_INPUT', 'QUESTION_MULTI_SENTENCE', 'QUESTION_MULTI_CLAUSE', 'INTERROGATIVE_NOT_FINAL', 'MULTIPLE_HOLES',
+    'WH_INDEFINITE', 'WH_NOT_IN_TABLE', 'HOLE_DROPPED', 'HOLE_NOT_ISOLATED', 'HOLE_POSITION_UNDETERMINED', 'EN_FORM_NOT_REWRITTEN',
+    'HOLE_NOT_AN_ARM:property', 'HOLE_RELATION_NOT_PRODUCED:cause', 'HOLE_RELATION_NOT_PRODUCED:manner',
+    'HOLE_ROLE_NOT_PRODUCED:en:place', 'HOLE_ROLE_NOT_PRODUCED:en:time', 'HOLE_ROLE_NOT_ALLOWED:<wh>:<role>')
+_EN_WH_WORDS = frozenset(w for row in WH_TABLE for w in row['en'])
+
+
+def _hole_row(hole):
+    return next(r for r in WH_TABLE if r['hole'] == hole)
+
+
+def _question_dict(hole_role, hole_type, wh, kind, restrictor, mark, declarative):
+    return {'hole_role': hole_role, 'hole_type': hole_type, 'wh': wh, 'kind': kind, 'restrictor': restrictor, 'hole_mark': mark,
+            'declarative': declarative}
+
+
+def _hole_types(row):
+    """The sorted type ids a filler of this hole is expected to have (None: decided at observation time, for which+N)."""
+    if row['types'] is not None: return sorted(row['types'])
+    if row['types_except'] is not None:
+        from .event_cross import NOUN_TYPE_IDS    # inside the function: importing the reading entry must not load the cross module
+        return sorted(t for t in NOUN_TYPE_IDS if t not in row['types_except'])
+    return None
+
+
+def _with_question(out, question):
+    out = dict(out); out['question'] = question
+    return out
+
+
+def _question_refusal(lang, kind, reasons, question, unsupported=()):
+    return _with_question(_refusal(lang, kind, reasons, unsupported), question)
+
+
+def _strings_of(obj):
+    if isinstance(obj, str): yield obj
+    elif isinstance(obj, dict):
+        for k, v in obj.items():
+            yield from _strings_of(k); yield from _strings_of(v)
+    elif isinstance(obj, (list, tuple)):
+        for v in obj: yield from _strings_of(v)
+
+
+def _isolate_hole(clause, mark):
+    """The role whose value is exactly the mark, when the mark stands in exactly one value of the clause and nowhere else; else the reason."""
+    total = sum(s.count(mark) for s in _strings_of(clause))
+    if total == 0: return None, 'HOLE_DROPPED'
+    exact = [role for role, v in clause['roles'].items() if v == mark]
+    if total == 1 and len(exact) == 1: return exact[0], None
+    return None, 'HOLE_NOT_ISOLATED'
+
+
+def _finish_question(lang, out, row, wh, restrictor, mark, declarative):
+    """From the reading of the declarative form to the answer of read_question (D7, D2, D4, D8)."""
+    kind = 'POLAR_QUESTION' if row is None else 'WH_QUESTION'
+    if not out['readable']:
+        q = _question_dict(None, None, wh, kind, restrictor, mark, declarative)
+        return _question_refusal(lang, out['abstain']['kind'], out['abstain']['reasons'], q, out['unsupported'])
+    q = _question_dict(None, None, wh, kind, restrictor, mark, declarative)
+    if len(out['clauses']) != 1: return _question_refusal(lang, 'not_supported', ['QUESTION_MULTI_CLAUSE'], q, out['unsupported'])
+    if row is None:
+        q['hole_role'] = 'polarity'
+        return _with_question(out, q)
+    role, why = _isolate_hole(out['clauses'][0], mark)
+    if why is not None: return _question_refusal(lang, 'not_supported', [why], q, out['unsupported'])
+    if row['arms'] is not None and role not in row['arms']:
+        return _question_refusal(lang, 'not_supported', ['HOLE_ROLE_NOT_ALLOWED:%s:%s' % (wh, role)], q, out['unsupported'])
+    q['hole_role'] = role; q['hole_type'] = _hole_types(row)
+    return _with_question(out, q)
+
+
+def _wh_tokens_ja(text, toks):
+    """The wh words of a Japanese question, found by the TOKEN: the surface of a token (or of the tokens in a row, for どうやって) that is a wh word of
+    WH_TABLE and a pronoun / adnominal / adverb. Returns [(row, wh, start, end, restrictor, indefinite)]; start..end is what the mark replaces."""
+    found = []
+    wh_forms = sorted(((w, row) for row in WH_TABLE for w in row['ja']), key=lambda p: -len(p[0]))
+    i = 0
+    while i < len(toks):
+        word, a, b = toks[i]
+        if word.feature.pos1 not in ('代名詞', '連体詞', '副詞'): i += 1; continue
+        hit = None
+        for w, row in wh_forms:
+            if text.startswith(w, a):
+                j = i
+                while j < len(toks) and toks[j][2] < a + len(w): j += 1
+                if j < len(toks) and toks[j][2] == a + len(w): hit = (w, row, j)    # the wh word ends on a token boundary
+                break
+        if hit is None: i += 1; continue
+        w, row, j = hit
+        end, restrictor, k = a + len(w), None, j + 1
+        if row['noun']:
+            n0 = k
+            while k < len(toks) and toks[k][0].feature.pos1 in ('名詞', '接尾辞'): k += 1
+            if k > n0: restrictor = text[toks[n0][1]:toks[k - 1][2]]; end = toks[k - 1][2]
+        nxt = toks[k] if k < len(toks) else None
+        indefinite = bool(nxt is not None and nxt[0].feature.pos2 in ('副助詞', '係助詞') and nxt[0].surface in ('か', 'も', 'でも'))
+        found.append((row, w, a, end, restrictor, indefinite))
+        i = k
+    return found
+
+
+def _question_ja(text, query):
+    from . import semantic_reader as R
+    view = R.document_view({'d': text})
+    # the reader's own detection of an interrogative (a final か, a ？, ...) or a final question mark that the construction reader read past
+    if not (any(u.reason == 'interrogative source does not assert a fact' for u in view.unread) or text.rstrip().endswith(('?', '？'))):
+        return _refusal('ja', 'not_supported', ['NOT_A_QUESTION'])
+    mark = HOLE_MARK_JA
+    plain = _question_dict(None, None, None, None, None, mark, None)    # the kind is told once the wh words are counted
+    if len(list(R._sentences(text))) != 1: return _question_refusal('ja', 'not_supported', ['QUESTION_MULTI_SENTENCE'], plain)
+    if mark in text: return _question_refusal('ja', 'not_supported', ['HOLE_MARK_IN_INPUT'], plain)
+    toks = R._tokens(text)
+    # the declarative form: the sentence-final marks and final particles (by part of speech, not by word) are taken off and a full stop is put
+    cut = len(toks)
+    while cut > 0 and (toks[cut - 1][0].feature.pos1 == '補助記号' or (toks[cut - 1][0].feature.pos1 == '助詞' and toks[cut - 1][0].feature.pos2 == '終助詞')): cut -= 1
+    stop = toks[cut][1] if cut < len(toks) else len(text)
+    found = _wh_tokens_ja(text, toks)
+    if found: plain = _question_dict(None, None, None, 'WH_QUESTION', None, mark, None)
+    if any(f[5] for f in found): return _question_refusal('ja', 'not_supported', ['WH_INDEFINITE'], plain)
+    if len(found) >= 2: return _question_refusal('ja', 'not_supported', ['MULTIPLE_HOLES'], plain)
+    row = wh = restrictor = None
+    declarative = text[:stop].rstrip() + '。'
+    if found:
+        row, wh, a, end, restrictor, _ = found[0]
+        if row['hole'] == 'RESTRICTOR' and restrictor is None: return _question_refusal('ja', 'not_supported', ['WH_NOT_IN_TABLE'], _question_dict(None, None, wh, 'WH_QUESTION', None, mark, None))
+        if end > stop: return _question_refusal('ja', 'not_supported', ['WH_NOT_IN_TABLE'], plain)
+        declarative = text[:a] + mark + text[end:stop].rstrip() + '。'
+        plain = _question_dict(None, None, wh, 'WH_QUESTION', restrictor, mark, declarative)
+        if row['unread'] is not None: return _question_refusal('ja', 'not_supported', [row['unread']], plain)
+    else:
+        plain = _question_dict(None, None, None, 'POLAR_QUESTION', None, mark, declarative)
+    again = R.document_view({'d': declarative})
+    if any(u.reason == 'interrogative source does not assert a fact' for u in again.unread):
+        return _question_refusal('ja', 'not_supported', ['INTERROGATIVE_NOT_FINAL'], plain)
+    if R._WH.search(declarative): return _question_refusal('ja', 'not_supported', ['WH_NOT_IN_TABLE'], dict(plain, kind='WH_QUESTION'))
+    return _finish_question('ja', _read_ja(declarative, query), row, wh, restrictor, mark, declarative)
+
+
+def _question_en(text, query):
+    from . import en_frames as en
+    stripped = text.strip()
+    if not stripped.endswith('?'): return _refusal('en', 'not_supported', ['NOT_A_QUESTION'])
+    mark = HOLE_MARK_EN
+    plain = _question_dict(None, None, None, None, None, mark, None)
+    if re.search(r'(?<![A-Za-z0-9\'\-])X(?![A-Za-z0-9\'\-])', text): return _question_refusal('en', 'not_supported', ['HOLE_MARK_IN_INPUT'], plain)
+    body = stripped[:-1]
+    if re.search(r'[.!?;:]', body): return _question_refusal('en', 'not_supported', ['QUESTION_MULTI_SENTENCE'], plain)
+    words = _en_words(body)
+    if re.sub(r"[A-Za-z][A-Za-z'\-]*|[0-9]+|\s+", '', body): return _question_refusal('en', 'not_supported', ['EN_FORM_NOT_REWRITTEN'], plain)
+    low = [w.lower() for w in words]
+    if not words: return _refusal('en', 'unreadable_input', ['NO_LANGUAGE'])
+    aux = set(en.AUX); neg = set(en.NEG)
+    holes = [i for i, w in enumerate(low) if w in _EN_WH_WORDS]
+    if len(holes) >= 2: return _question_refusal('en', 'not_supported', ['MULTIPLE_HOLES'], _question_dict(None, None, None, 'WH_QUESTION', None, mark, None))
+    row = wh = restrictor = None
+    if holes:
+        if holes[0] != 0: return _question_refusal('en', 'not_supported', ['EN_FORM_NOT_REWRITTEN'], plain)
+        wh = low[0]
+        row = next(r for r in WH_TABLE if wh in r['en'])
+        k = 1
+        if row['noun']:
+            if len(words) < 3: return _question_refusal('en', 'not_supported', ['WH_NOT_IN_TABLE'], _question_dict(None, None, wh, 'WH_QUESTION', None, mark, None))
+            restrictor = words[1]; k = 2
+        plain = _question_dict(None, None, wh, 'WH_QUESTION', restrictor, mark, None)
+        if row['hole'] == 'MANNER' and not (len(low) > 1 and low[1] in aux): return _question_refusal('en', 'not_supported', ['WH_NOT_IN_TABLE'], plain)
+        if row['unread_en'] is not None: return _question_refusal('en', 'not_supported', [row['unread_en']], plain)
+        if k >= len(words): return _question_refusal('en', 'not_supported', ['EN_FORM_NOT_REWRITTEN'], plain)
+        if low[k] not in aux:    # E1: the wh word (and its noun) is the subject
+            declarative = ' '.join([mark] + words[k:]) + '.'
+            return _finish_question('en', _read_en(declarative, query), row, wh, restrictor, mark, declarative)
+        start, hole_at = k, True
+    else:
+        if low[0] not in ('did', 'does', 'do'): return _question_refusal('en', 'not_supported', ['EN_FORM_NOT_REWRITTEN'], plain)
+        start, hole_at = 0, False
+        plain = _question_dict(None, None, None, 'POLAR_QUESTION', None, mark, None)
+    # E2 (wh) and E3 (polar): <aux> <subject ...> <verb> <rest>  ->  <subject ...> <aux> <verb> <rest>  (the do of emphasis)
+    if low[start] not in ('did', 'does', 'do'): return _question_refusal('en', 'not_supported', ['EN_FORM_NOT_REWRITTEN'], plain)
+    known = _en_known_verbs()
+    j = next((i for i in range(start + 1, len(words)) if en.lemma(low[i]) in known), None)
+    if j is None or j == start + 1 or any(w in neg or w in aux for w in low[start + 1:j]):
+        return _question_refusal('en', 'not_supported', ['EN_FORM_NOT_REWRITTEN'], plain)
+    subject, verb, rest = words[start + 1:j], words[j], words[j + 1:]
+    if hole_at:
+        # a stranded final `to` (the preposition left behind by the wh word) is checked FIRST: the mark goes after it, so that the declarative form
+        # never keeps a stranded `to` after the mark (the reader drops a final `to` silently and would read the mark as the object)
+        if not rest: rest = [mark]
+        elif low[-1] == 'to': rest = rest + [mark]
+        elif low[j + 1] == 'to': rest = [mark] + rest
+        else: return _question_refusal('en', 'not_supported', ['HOLE_POSITION_UNDETERMINED'], plain)
+    sentence = ' '.join(subject + [low[start], verb] + rest)    # the auxiliary as it is in a sentence (not capitalised)
+    declarative = sentence[:1].upper() + sentence[1:] + '.'
+    plain = dict(plain, declarative=declarative)
+    return _finish_question('en', _read_en(declarative, query), row, wh, restrictor, mark, declarative)
+
+
+def read_question(text, lang=None, *, placement=_UNSET):
+    """The reading of a QUESTION as a plain dict: the shape of `read()` plus the LAST key `question` ({hole_role, hole_type, wh, kind, restrictor,
+    hole_mark, declarative}). The wh word is replaced by the hole mark (a symbol, never a word) and the declarative form is read by the same reader as
+    any sentence; the hole is the one role whose value is the mark. A text that is not a question returns the refusal `NOT_A_QUESTION` WITHOUT the key
+    `question`. Raises ReadError for an input that is refused (as `read()` does). Only the question path is here: `read()` is unchanged."""
+    chosen = check_input(text, lang)
+    if chosen is None: return _refusal(None, 'not_supported', ['NO_LANGUAGE'])
+    query = _placement_query(placement)
+    return _question_ja(text, query) if chosen == 'ja' else _question_en(text, query)
 
 
 class _Parser(argparse.ArgumentParser):

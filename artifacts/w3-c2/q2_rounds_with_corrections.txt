@@ -1,0 +1,2 @@
+r1 {"as_frozen": {"CORRECT": 100, "ABSTAINED": 80, "FALSE_NONE": 4, "WRONG": 1}, "corrected": {"CORRECT": 99, "ABSTAINED": 80, "FALSE_NONE": 4, "WRONG": 2}} corrected WRONG ids ['Q080', 'Q185']
+r2 {"as_frozen": {"CORRECT": 99, "ABSTAINED": 82, "FALSE_NONE": 4}, "corrected": {"CORRECT": 99, "ABSTAINED": 82, "FALSE_NONE": 4}} corrected WRONG ids []

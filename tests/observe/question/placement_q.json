@@ -1,0 +1,285 @@
+{
+ "lemmas": {
+  "PC": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "animal": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "ANIMAL"
+   ]
+  },
+  "farmer": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "horse": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "ANIMAL"
+   ]
+  },
+  "mayor": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "person": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "principal": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "student": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "teacher": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "カメラ": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "人": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "兄": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "先生": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "公園": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PLACE"
+   ]
+  },
+  "切符": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "医者": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "地図": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "場所": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PLACE"
+   ]
+  },
+  "客": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "店員": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "弟": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "患者": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "本": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "校長": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "森": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PLACE"
+   ]
+  },
+  "歌手": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "港": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PLACE"
+   ]
+  },
+  "漁師": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "物": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "犬": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "ANIMAL"
+   ]
+  },
+  "生徒": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "看護師": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "社長": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "車": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "運転手": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "鉛筆": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "馬": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "ANIMAL"
+   ]
+  },
+  "駅": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PLACE"
+   ]
+  },
+  "駅員": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "ＰＣ": {
+   "origin": "direct",
+   "state": "DECIDED",
+   "types": [
+    "ARTIFACT"
+   ]
+  }
+ },
+ "neighbors": {}
+}
