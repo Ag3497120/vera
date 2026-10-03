@@ -43,6 +43,10 @@ CLAUSE_REQUIRED_KEYS: Tuple[str, ...] = ('predicate', 'roles', 'polarity', 'tens
 CLAUSE_OPTIONAL_KEYS: Tuple[str, ...] = ('quantifiers', 'scope', 'comparison')
 CLAUSE_KEYS: Tuple[str, ...] = CLAUSE_REQUIRED_KEYS + CLAUSE_OPTIONAL_KEYS
 CENTER_KEYS: Tuple[str, ...] = tuple(k for k in CLAUSE_KEYS if k != 'roles')    # the order of the centre in a serialised cross
+# W3-b1: the source fields the reading entry writes on a clause that it decided by a type (`predicate_basis`: a string, `role_basis`: {role: string}).
+# They are NOT keys of the convention (CLAUSE_KEYS stays the table of docs/READING_CONVENTIONS.md 1.1): the cross accepts them and copies them to the
+# provenance of the cross, never to its centre.
+ENTRY_BASIS_KEYS: Tuple[str, ...] = ('predicate_basis', 'role_basis')
 
 # The noun type ids of the coarse placement, as named in the W3-a2 working tree on 2026-10-03 (its list is append-only). Kept here as strings
 # because this module does not import the placement code (it asks a PlacementLookup). Not used to reject a type id the lookup returns.
@@ -152,12 +156,46 @@ class PlacementLookup(Protocol):
 
 
 class StubLookup:
-    """The default lookup until the coarse placement is wired in: there is no placement, so every answer is NO_PLACEMENT (reason STUB).
+    """The default lookup when no placement is named: there is no placement, so every answer is NO_PLACEMENT (reason STUB).
     (UNPLACED would say that the word is in the material and the evidence is short; that is a different statement.)"""
     id = 'stub-no-placement/1'
 
     def lookup(self, lemma: str) -> PlaceResult:
         return PlaceResult(state='NO_PLACEMENT', origin=None, estimate_basis=None, types=(), provenance={'reason': 'STUB'})
+
+
+class CoarseLookup:
+    """The coarse placement (verantyx/coarse_place.py) as a PlacementLookup: the word only (no role, no predicate), the placement's own path (never a
+    None path: the placement module would then read its own variable). `id` is `coarse-placement:<content_sha256>` (`...:unavailable:<reason>` when the
+    placement cannot be opened). An answer that cannot be opened is NO_PLACEMENT with its own reason, never a negative answer."""
+    def __init__(self, path: str) -> None:
+        self.path = path
+        self._id: Optional[str] = None
+
+    def lookup(self, lemma: str) -> PlaceResult:
+        from . import coarse_place    # inside the function: the module is loaded only when a placement is named
+        answer = coarse_place.query(lemma, placement=self.path)
+        if self._id is None:
+            info = (answer.get('placement') if isinstance(answer, Mapping) else None) or {}
+            sha = info.get('content_sha256') if isinstance(info, Mapping) else None
+            self._id = 'coarse-placement:%s' % sha if sha else 'coarse-placement:unavailable:%s' % (info.get('reason') if isinstance(info, Mapping) else None,)
+        return PlaceResult.from_coarse_query(answer)
+
+    @property
+    def id(self) -> str:
+        if self._id is None:
+            self.lookup('a')          # the content hash is in every answer, whatever the word
+        return self._id  # type: ignore[return-value]
+
+
+def default_lookup(placement: Optional[str] = None) -> Any:
+    """The lookup used when none is given: the coarse placement named by the argument, else by the variable VERA_PLACEMENT (empty or unset = none), else the
+    stub. (The placement module's own variable is not read here.)"""
+    if placement is None:
+        import os    # inside the function: the module level holds the standard library only (a test says so)
+        placement = os.environ.get('VERA_PLACEMENT')
+    if placement is None or not str(placement).strip(): return StubLookup()
+    return CoarseLookup(str(placement))
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------
@@ -322,7 +360,13 @@ def _check(read_output: Any) -> List[str]:
         for key in CLAUSE_REQUIRED_KEYS:
             if key not in clause: bad.append('MISSING_FIELD:%s' % key)
         for key in clause:
+            if key in ENTRY_BASIS_KEYS: continue
             if key not in CLAUSE_KEYS: bad.append('UNKNOWN_CLAUSE_KEY:%s' % (key,))
+        basis = clause.get('predicate_basis')
+        if 'predicate_basis' in clause and not (isinstance(basis, str) and basis.strip()): bad.append('ENTRY_BASIS_NOT_WELL_FORMED:predicate_basis')
+        rbasis = clause.get('role_basis')
+        if 'role_basis' in clause and not (isinstance(rbasis, Mapping) and rbasis and all(isinstance(k, str) and isinstance(v, str) and v.strip() for k, v in rbasis.items())):
+            bad.append('ENTRY_BASIS_NOT_WELL_FORMED:role_basis')
         roles = clause.get('roles')
         if 'roles' in clause and not isinstance(roles, Mapping): bad.append('ROLES_NOT_A_MAPPING'); continue
         for name, value in (roles or {}).items():
@@ -376,12 +420,15 @@ def _cross(i: int, clause: Mapping[str, Any], meta: Mapping[str, Any], lookup: A
     provenance = {'source_schema': SOURCE_SCHEMA, 'clause_index': i,
                   'rule': copy.deepcopy(meta.get('rule')) if isinstance(meta, Mapping) else None,
                   'span': copy.deepcopy(meta.get('span')) if isinstance(meta, Mapping) else None}
+    for key in ENTRY_BASIS_KEYS:     # only when the entry wrote them: a cross of a clause without them is what it always was
+        if key in clause: provenance[key] = copy.deepcopy(clause[key])
     return EventCross(index=i, center=center, arms=arms, provenance=provenance)
 
 
 def build_crosses(read_output: Mapping[str, Any], lookup: Optional[PlacementLookup] = None) -> CrossReading:
-    """Turn the output of the reading entry into crosses. Never changes `read_output`. A lookup of None is the stub (no placement)."""
-    lookup = StubLookup() if lookup is None else lookup
+    """Turn the output of the reading entry into crosses. Never changes `read_output`. A lookup of None is `default_lookup()` (the placement named by
+    VERA_PLACEMENT, else the stub: no placement)."""
+    lookup = default_lookup() if lookup is None else lookup
     lid = _lookup_id(lookup)
     problems = _check(read_output)
     if problems:

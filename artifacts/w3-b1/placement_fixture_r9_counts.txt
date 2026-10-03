@@ -1,0 +1,1 @@
+{'content_sha256': 'ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995', 'inputs': 60, 'note': 'coarse_place.query(term, placement=<run1>) の答えの抜粋。配置のパスは書かない。テストの偽物 FixtureQuery が使う', 'terms': 123}

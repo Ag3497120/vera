@@ -1,0 +1,2425 @@
+{
+"_meta": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"inputs": 60,
+"note": "coarse_place.query(term, placement=<run1>) の答えの抜粋。配置のパスは書かない。テストの偽物 FixtureQuery が使う",
+"terms": 123
+},
+"answers": {
+"、": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "、",
+"top": []
+},
+"。": {
+"constructed": false,
+"decided_by": [
+"alias"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "。",
+"top": [
+"INFO_LANGUAGE"
+]
+},
+"い": {
+"constructed": false,
+"decided_by": [
+"paren_alias"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "MULTIPLE",
+"term": "い",
+"top": [
+"BODY_PART",
+"INFO_LANGUAGE"
+]
+},
+"いる": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "P",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "いる",
+"top": [
+"P_EXIST"
+]
+},
+"おく": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "P",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "おく",
+"top": [
+"P_ACT"
+]
+},
+"か": {
+"constructed": false,
+"decided_by": [
+"paren_alias"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "か",
+"top": [
+"ARTIFACT"
+]
+},
+"から": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "から",
+"top": []
+},
+"が": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "が",
+"top": []
+},
+"ください": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "ください",
+"top": []
+},
+"くださる": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "P",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "くださる",
+"top": [
+"P_GIVE"
+]
+},
+"しまう": {
+"constructed": false,
+"decided_by": [
+"frame@codex:paraphrase_entail",
+"frame@codex:pro"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "P",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "しまう",
+"top": [
+"P_CREATE"
+]
+},
+"しまっ": {
+"constructed": true,
+"decided_by": null,
+"estimate_basis": "proximity",
+"generated": null,
+"generated_definition": null,
+"namespace": "N",
+"origin": "estimated",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "しまっ",
+"top": [
+"WORK"
+]
+},
+"しれ": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "しれ",
+"top": []
+},
+"しれる": {
+"constructed": false,
+"decided_by": [
+"frame@codex:code"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "P",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "しれる",
+"top": [
+"P_CHANGE"
+]
+},
+"そう": {
+"constructed": false,
+"decided_by": [
+"paren_alias"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "MULTIPLE",
+"term": "そう",
+"top": [
+"INFO_LANGUAGE",
+"PERSON"
+]
+},
+"た": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "た",
+"top": []
+},
+"たい": {
+"constructed": false,
+"decided_by": [
+"paren_alias"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "たい",
+"top": [
+"QUANTITY"
+]
+},
+"たかっ": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "たかっ",
+"top": []
+},
+"だ": {
+"constructed": false,
+"decided_by": [
+"paren_alias"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "だ",
+"top": [
+"ABSTRACT"
+]
+},
+"て": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "て",
+"top": []
+},
+"で": {
+"constructed": false,
+"decided_by": [
+"paren_alias"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "で",
+"top": [
+"GROUP_ORG"
+]
+},
+"な": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "な",
+"top": []
+},
+"ない": {
+"constructed": false,
+"decided_by": [
+"pos_class@codex:code",
+"pos_class@codex:code_qa",
+"pos_class@codex:conversation",
+"pos_class@codex:figurative_commonsense",
+"pos_class@codex:general_qa",
+"pos_class@codex:narrative",
+"pos_class@codex:paraphrase_entail",
+"pos_class@codex:pro",
+"pos_class@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "P",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "ない",
+"top": [
+"P_STATE"
+]
+},
+"なかっ": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "なかっ",
+"top": []
+},
+"に": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "に",
+"top": []
+},
+"ぬ": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "ぬ",
+"top": []
+},
+"へ": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "へ",
+"top": []
+},
+"べき": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "べき",
+"top": []
+},
+"べし": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "べし",
+"top": []
+},
+"まい": {
+"constructed": false,
+"decided_by": [
+"paren_alias",
+"role@codex:narrative",
+"role@codex:paraphrase_entail"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "まい",
+"top": [
+"PERSON"
+]
+},
+"ます": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "ます",
+"top": []
+},
+"ませ": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "ませ",
+"top": []
+},
+"も": {
+"constructed": false,
+"decided_by": [
+"paren_alias"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "も",
+"top": [
+"NATURAL_PHENOMENON"
+]
+},
+"よう": {
+"constructed": false,
+"decided_by": [
+"paren_alias"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "よう",
+"top": [
+"STATE_PROPERTY"
+]
+},
+"らしい": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "らしい",
+"top": []
+},
+"を": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "を",
+"top": []
+},
+"ん": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "ん",
+"top": []
+},
+"休日": {
+"constructed": false,
+"decided_by": [
+"definition",
+"role@codex:conversation",
+"role@codex:figurative_commonsense",
+"role@codex:narrative",
+"role@codex:pro"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "休日",
+"top": [
+"TIME"
+]
+},
+"兄": {
+"constructed": false,
+"decided_by": [
+"definition_recovered",
+"role@codex:narrative",
+"role@codex:paraphrase_entail",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "兄",
+"top": [
+"PERSON"
+]
+},
+"先生": {
+"constructed": false,
+"decided_by": [
+"role@codex:figurative_commonsense",
+"role@codex:general_qa",
+"role@codex:narrative",
+"role@codex:paraphrase_entail"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "先生",
+"top": [
+"PERSON"
+]
+},
+"冬": {
+"constructed": false,
+"decided_by": [
+"definition",
+"hearst@codex:general_qa",
+"role@codex:conversation",
+"role@codex:general_qa",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "冬",
+"top": [
+"TIME"
+]
+},
+"夜": {
+"constructed": false,
+"decided_by": [
+"definition",
+"role@codex:code_qa",
+"role@codex:conversation",
+"role@codex:general_qa",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "夜",
+"top": [
+"TIME"
+]
+},
+"妹": {
+"constructed": false,
+"decided_by": [
+"definition_recovered",
+"role@codex:narrative",
+"role@codex:paraphrase_entail",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "妹",
+"top": [
+"PERSON"
+]
+},
+"姉": {
+"constructed": false,
+"decided_by": [
+"definition_recovered",
+"role@codex:narrative",
+"role@codex:paraphrase_entail",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "姉",
+"top": [
+"PERSON"
+]
+},
+"学生": {
+"constructed": false,
+"decided_by": [
+"role@codex:code",
+"role@codex:narrative",
+"role@codex:paraphrase_entail"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "学生",
+"top": [
+"PERSON"
+]
+},
+"寺": {
+"constructed": false,
+"decided_by": [
+"alias",
+"role@codex:conversation",
+"role@codex:figurative_commonsense",
+"role@codex:general_qa",
+"role@codex:narrative",
+"role@codex:paraphrase_entail",
+"role@codex:pro",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "寺",
+"top": [
+"PLACE"
+]
+},
+"島": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "島",
+"top": [
+"PLACE"
+]
+},
+"平日": {
+"constructed": false,
+"decided_by": [
+"definition",
+"role@codex:code_qa",
+"role@codex:conversation"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "平日",
+"top": [
+"TIME"
+]
+},
+"年末": {
+"constructed": false,
+"decided_by": [
+"alias",
+"role@codex:code",
+"role@codex:code_qa",
+"role@codex:conversation",
+"role@codex:figurative_commonsense",
+"role@codex:general_qa",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "年末",
+"top": [
+"TIME"
+]
+},
+"広場": {
+"constructed": false,
+"decided_by": [
+"definition",
+"hearst@jawiki",
+"role@codex:conversation",
+"role@codex:figurative_commonsense",
+"role@codex:general_qa",
+"role@codex:narrative",
+"role@codex:paraphrase_entail",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "広場",
+"top": [
+"PLACE"
+]
+},
+"床": {
+"constructed": false,
+"decided_by": [
+"role@codex:general_qa",
+"role@codex:paraphrase_entail",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "床",
+"top": [
+"PLACE"
+]
+},
+"店員": {
+"constructed": false,
+"decided_by": [
+"hearst@codex:general_qa",
+"role@codex:figurative_commonsense",
+"role@codex:narrative",
+"role@codex:paraphrase_entail",
+"role@codex:pro"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "店員",
+"top": [
+"PERSON"
+]
+},
+"庭": {
+"constructed": false,
+"decided_by": [
+"definition",
+"role@codex:conversation",
+"role@codex:figurative_commonsense",
+"role@codex:general_qa",
+"role@codex:narrative",
+"role@codex:paraphrase_entail",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "庭",
+"top": [
+"PLACE"
+]
+},
+"弟": {
+"constructed": false,
+"decided_by": [
+"definition_recovered",
+"role@codex:narrative",
+"role@codex:paraphrase_entail",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "弟",
+"top": [
+"PERSON"
+]
+},
+"後": {
+"constructed": false,
+"decided_by": [
+"role@codex:code",
+"role@codex:code_qa",
+"role@codex:narrative"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "MULTIPLE",
+"term": "後",
+"top": [
+"PLACE",
+"TIME"
+]
+},
+"扉": {
+"constructed": false,
+"decided_by": [
+"paren_alias",
+"role@codex:conversation",
+"role@codex:figurative_commonsense",
+"role@codex:general_qa",
+"role@codex:narrative",
+"role@codex:paraphrase_entail",
+"role@codex:pro"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "MULTIPLE",
+"term": "扉",
+"top": [
+"ARTIFACT",
+"PLANT"
+]
+},
+"手紙": {
+"constructed": false,
+"decided_by": [
+"definition",
+"hearst@codex:general_qa",
+"role@codex:code_qa",
+"role@codex:general_qa",
+"role@codex:paraphrase_entail",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "MULTIPLE",
+"term": "手紙",
+"top": [
+"ABSTRACT",
+"IDENTIFIER",
+"INFO_LANGUAGE",
+"WORK"
+]
+},
+"描い": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "描い",
+"top": []
+},
+"描き": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "描き",
+"top": []
+},
+"描く": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "P",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "描く",
+"top": [
+"P_CREATE"
+]
+},
+"放課": {
+"constructed": true,
+"decided_by": [
+"gen_definition"
+],
+"estimate_basis": "generated",
+"generated": false,
+"generated_definition": true,
+"namespace": "N",
+"origin": "estimated",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "放課",
+"top": [
+"TIME"
+]
+},
+"放課後": {
+"constructed": false,
+"decided_by": [
+"definition",
+"role@codex:conversation",
+"role@codex:figurative_commonsense"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "放課後",
+"top": [
+"TIME"
+]
+},
+"日": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "日",
+"top": [
+"TIME"
+]
+},
+"昼": {
+"constructed": false,
+"decided_by": [
+"definition_recovered"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "昼",
+"top": [
+"TIME"
+]
+},
+"書い": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "書い",
+"top": []
+},
+"書き": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "書き",
+"top": []
+},
+"書く": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "P",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "書く",
+"top": [
+"P_CREATE"
+]
+},
+"書け": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "書け",
+"top": []
+},
+"月末": {
+"constructed": false,
+"decided_by": [
+"definition",
+"hearst@codex:code_qa"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "月末",
+"top": [
+"TIME"
+]
+},
+"本": {
+"constructed": false,
+"decided_by": [
+"hearst@codex:general_qa"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "本",
+"top": [
+"INFO_LANGUAGE"
+]
+},
+"村": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "村",
+"top": [
+"PLACE"
+]
+},
+"森": {
+"constructed": false,
+"decided_by": [
+"role@codex:conversation",
+"role@codex:figurative_commonsense",
+"role@codex:general_qa",
+"role@codex:narrative",
+"role@codex:pro",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "森",
+"top": [
+"PLACE"
+]
+},
+"橋": {
+"constructed": false,
+"decided_by": [
+"role@codex:conversation",
+"role@codex:figurative_commonsense",
+"role@codex:general_qa",
+"role@codex:narrative",
+"role@codex:paraphrase_entail",
+"role@codex:pro",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "橋",
+"top": [
+"PLACE"
+]
+},
+"歩い": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "歩い",
+"top": []
+},
+"歩き": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "歩き",
+"top": []
+},
+"歩く": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "P",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "歩く",
+"top": [
+"P_MOVE"
+]
+},
+"歩け": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "歩け",
+"top": []
+},
+"母": {
+"constructed": false,
+"decided_by": [
+"role@codex:narrative",
+"role@codex:paraphrase_entail"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "母",
+"top": [
+"PERSON"
+]
+},
+"洗う": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "P",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "洗う",
+"top": [
+"P_ACT"
+]
+},
+"洗っ": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "洗っ",
+"top": []
+},
+"洗わ": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "洗わ",
+"top": []
+},
+"港": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "港",
+"top": [
+"PLACE"
+]
+},
+"湖": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "湖",
+"top": [
+"PLACE"
+]
+},
+"父": {
+"constructed": false,
+"decided_by": [
+"paren_alias",
+"role@codex:narrative",
+"role@codex:paraphrase_entail",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "父",
+"top": [
+"PERSON"
+]
+},
+"犬": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "犬",
+"top": [
+"ANIMAL"
+]
+},
+"猫": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "猫",
+"top": [
+"ANIMAL"
+]
+},
+"生徒": {
+"constructed": false,
+"decided_by": [
+"role@codex:code",
+"role@codex:figurative_commonsense",
+"role@codex:narrative",
+"role@codex:paraphrase_entail"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "生徒",
+"top": [
+"PERSON"
+]
+},
+"町": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "町",
+"top": [
+"PLACE"
+]
+},
+"畑": {
+"constructed": false,
+"decided_by": [
+"role@codex:figurative_commonsense",
+"role@codex:general_qa",
+"role@codex:narrative",
+"role@codex:pro",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "畑",
+"top": [
+"PLACE"
+]
+},
+"病院": {
+"constructed": false,
+"decided_by": [
+"definition",
+"hearst@jawiki",
+"role@codex:conversation",
+"role@codex:figurative_commonsense",
+"role@codex:general_qa",
+"role@codex:narrative",
+"role@codex:paraphrase_entail",
+"role@codex:pro"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "病院",
+"top": [
+"PLACE"
+]
+},
+"皿": {
+"constructed": false,
+"decided_by": [
+"hearst@codex:general_qa"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "皿",
+"top": [
+"ARTIFACT"
+]
+},
+"磨い": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "磨い",
+"top": []
+},
+"磨か": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "磨か",
+"top": []
+},
+"磨き": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "磨き",
+"top": []
+},
+"磨く": {
+"constructed": false,
+"decided_by": [
+"frame@codex:conversation",
+"frame@codex:pro"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "P",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "磨く",
+"top": [
+"P_ACT"
+]
+},
+"磨け": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "磨け",
+"top": []
+},
+"磨ける": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "磨ける",
+"top": []
+},
+"祖父": {
+"constructed": false,
+"decided_by": [
+"role@codex:narrative",
+"role@codex:paraphrase_entail"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "祖父",
+"top": [
+"PERSON"
+]
+},
+"窓": {
+"constructed": false,
+"decided_by": [
+"role@codex:code_qa",
+"role@codex:figurative_commonsense",
+"role@codex:general_qa",
+"role@codex:narrative",
+"role@codex:paraphrase_entail",
+"role@codex:pro"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "MULTIPLE",
+"term": "窓",
+"top": [
+"ARTIFACT",
+"TIME"
+]
+},
+"絵": {
+"constructed": false,
+"decided_by": [
+"alias",
+"hearst@codex:general_qa",
+"role@codex:general_qa",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "絵",
+"top": [
+"WORK"
+]
+},
+"誕生": {
+"constructed": false,
+"decided_by": [
+"role@codex:general_qa",
+"role@codex:paraphrase_entail",
+"role@jawiki",
+"sahen@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "MULTIPLE",
+"term": "誕生",
+"top": [
+"EVENT_ACT",
+"TIME"
+]
+},
+"誕生日": {
+"constructed": false,
+"decided_by": [
+"definition",
+"hearst@codex:code",
+"role@codex:code_qa",
+"role@codex:conversation",
+"role@codex:figurative_commonsense",
+"role@codex:general_qa",
+"role@codex:narrative",
+"role@codex:paraphrase_entail",
+"role@jawiki"
+],
+"estimate_basis": null,
+"generated": true,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "誕生日",
+"top": [
+"TIME"
+]
+},
+"読む": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "読む",
+"top": []
+},
+"読ん": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "読ん",
+"top": []
+},
+"走っ": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "走っ",
+"top": []
+},
+"走ら": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "走ら",
+"top": []
+},
+"走り": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "走り",
+"top": []
+},
+"走る": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "P",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "走る",
+"top": [
+"P_MOVE"
+]
+},
+"走れ": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "走れ",
+"top": []
+},
+"閉め": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "閉め",
+"top": []
+},
+"閉める": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "P",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "閉める",
+"top": [
+"P_ACT"
+]
+},
+"閉めろ": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "閉めろ",
+"top": []
+},
+"開け": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "開け",
+"top": []
+},
+"開ける": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "P",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "開ける",
+"top": [
+"P_ACT"
+]
+},
+"靴": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "靴",
+"top": []
+},
+"飛ば": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "飛ば",
+"top": []
+},
+"飛び": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNPLACED",
+"term": "飛び",
+"top": []
+},
+"飛ぶ": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "P",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "飛ぶ",
+"top": [
+"P_MOVE"
+]
+},
+"飛ん": {
+"constructed": false,
+"decided_by": null,
+"estimate_basis": null,
+"generated": null,
+"generated_definition": null,
+"namespace": null,
+"origin": null,
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "UNKNOWN",
+"term": "飛ん",
+"top": []
+},
+"食器": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "食器",
+"top": [
+"ARTIFACT"
+]
+},
+"馬": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "馬",
+"top": [
+"ANIMAL"
+]
+},
+"駅": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "駅",
+"top": [
+"PLACE"
+]
+},
+"鳥": {
+"constructed": false,
+"decided_by": [
+"seed"
+],
+"estimate_basis": null,
+"generated": false,
+"generated_definition": false,
+"namespace": "N",
+"origin": "direct",
+"placement": {
+"content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+"reason": null
+},
+"state": "DECIDED",
+"term": "鳥",
+"top": [
+"ANIMAL"
+]
+}
+}
+}

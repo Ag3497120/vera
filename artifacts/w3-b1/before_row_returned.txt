@@ -1,0 +1,3 @@
+inputs=2761 new_data_rows=213
+registered_table {"false->readable": 72, "new_data_rows_read_correct": 72, "new_data_verdicts": {"abstain": 93, "correct": 117, "incomplete": 3}, "new_data_wrong_or_misread": 0}
+current_table {"false->readable": 51, "new_data_rows_read_correct": 51, "new_data_verdicts": {"abstain": 114, "correct": 96, "incomplete": 3}, "new_data_wrong_or_misread": 0}

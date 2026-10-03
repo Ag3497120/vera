@@ -1,0 +1,6 @@
+rows 213 ja 197 en 16
+by path x entry_expect [(('EN', 'abstain'), 16), (('S4', 'abstain'), 51), (('S4', 'read'), 36), (('U', 'abstain'), 65), (('U', 'read'), 45)]
+path U by pred_type x entry_expect [(('P_ACT', 'abstain'), 4), (('P_CHANGE', 'abstain'), 4), (('P_COGNITION', 'abstain'), 4), (('P_COMMUNICATE', 'abstain'), 12), (('P_COMMUNICATE', 'read'), 21), (('P_CONSUME', 'abstain'), 4), (('P_CREATE', 'abstain'), 4), (('P_EMOTION', 'abstain'), 4), (('P_EXIST', 'abstain'), 4), (('P_GIVE', 'abstain'), 4), (('P_MOVE', 'abstain'), 8), (('P_MOVE', 'read'), 24), (('P_PERCEIVE', 'abstain'), 4), (('P_POSSESS', 'abstain'), 4), (('P_STATE', 'abstain'), 5)]
+U read/total 45/110 S4 read/total 36/87
+expect.readable true/false Counter({True: 168, False: 45})
+expect_reason_prefix [('None', 97), ('PLACEMENT_', 8), ('PLACEMENT_DIRECT_VIA_GENERATED', 5), ('PLACEMENT_ESTIMATED_GENERATED', 5), ('PLACEMENT_FRAME_NOT_READ', 45), ('PLACEMENT_MULTIPLE', 8), ('PLACEMENT_PART_MARKER:conn', 3), ('PLACEMENT_PART_MARKER:quant', 6), ('PLACEMENT_PART_NOT_ISOLATED', 3), ('PLACEMENT_PART_NOT_NP', 6), ('PLACEMENT_PART_NO_ROLE', 3), ('PLACEMENT_REREAD_ABSTAINS', 3), ('PLACEMENT_SLOT_EVIDENCE_ONLY', 12), ('PLACEMENT_TYPE_MISMATCH', 4), ('PLACEMENT_UNPLACED', 5)]

@@ -1,0 +1,52 @@
+=== 述語の型から役割を決める
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "述語の型から役割を決める",
+  "searched": 670,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 53,
+    "module": 287,
+    "prereg": 65,
+    "results": 44
+  },
+=== 格フレームの型の表
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "格フレームの型の表",
+  "searched": 670,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 53,
+    "module": 287,
+    "prereg": 65,
+    "results": 44
+  },
+=== 粗い配置を読解に使う
+{
+  "verdict": "ANSWER",
+  "query": "粗い配置を読解に使う",
+  "searched": 670,
+  "hits": [
+    {
+      "kind": "door",
+      "name": "explain_placement",
+      "about": "Where would this sentence land, and why — core, facets, poles,",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+=== 読解器 配置 direct 型
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "読解器 配置 direct 型",
+  "searched": 670,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 53,
+    "module": 287,
+    "prereg": 65,
+    "results": 44
+  },

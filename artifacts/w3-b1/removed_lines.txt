@@ -1,0 +1,2 @@
+-    for f in ('table7.jsonl', 'ja.jsonl', 'ja_r2.jsonl', 'en.jsonl', 'en_r2.jsonl', 'a3.jsonl', 'a3_r2.jsonl', 'ja_r3.jsonl', 'a3_r3.jsonl', 'ja_r4.jsonl', 'a3_r4.jsonl', 'ja_r5.jsonl', 'a3_r5.jsonl', 'ja_r6.jsonl'):
+-OPTIONAL_KEYS = {'quantifiers', 'scope', 'comparison'}

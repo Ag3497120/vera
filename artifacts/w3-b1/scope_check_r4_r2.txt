@@ -1,0 +1,3 @@
+_voice_ja unchanged_since_base True
+_potential_suspect unchanged_since_base True
+typed_tail_ja unchanged_since_r3 True

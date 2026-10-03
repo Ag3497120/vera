@@ -1,0 +1,130 @@
+{
+ "placement_sha_in_lookup_id_example": "coarse-placement:ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+ "groups": {
+  "rest": {
+   "sentences_read": 198,
+   "with_a_cross_of_a_typed_clause": 0,
+   "arms": 479,
+   "AGREE": 155,
+   "DISAGREE": 4,
+   "NOT_CHECKED": 320,
+   "not_checked_by_reason": {
+    "ESTIMATED_GENERATED": 15,
+    "ESTIMATED_NEAR": 7,
+    "MULTIPLE": 12,
+    "ROLE_NOT_IN_TABLE": 256,
+    "UNKNOWN": 4,
+    "UNPLACED": 26
+   },
+   "lookup_ids": {
+    "coarse-placement:ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995": 198
+   }
+  },
+  "event_cross_sentences": {
+   "sentences_read": 69,
+   "with_a_cross_of_a_typed_clause": 0,
+   "arms": 171,
+   "AGREE": 35,
+   "DISAGREE": 0,
+   "NOT_CHECKED": 136,
+   "not_checked_by_reason": {
+    "ESTIMATED_GENERATED": 4,
+    "ESTIMATED_NEAR": 7,
+    "MULTIPLE": 9,
+    "ROLE_NOT_IN_TABLE": 78,
+    "UNKNOWN": 3,
+    "UNPLACED": 35
+   },
+   "lookup_ids": {
+    "coarse-placement:ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995": 69
+   }
+  },
+  "new_data": {
+   "sentences_read": 78,
+   "with_a_cross_of_a_typed_clause": 66,
+   "arms": 198,
+   "AGREE": 113,
+   "DISAGREE": 0,
+   "NOT_CHECKED": 85,
+   "not_checked_by_reason": {
+    "ESTIMATED_NEAR": 1,
+    "ROLE_NOT_IN_TABLE": 84
+   },
+   "lookup_ids": {
+    "coarse-placement:ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995": 78
+   }
+  }
+ },
+ "disagree": [
+  {
+   "group": "rest",
+   "source": "ja.jsonl",
+   "sentence": "先月、兄が会社で書類を作った。",
+   "role": "place",
+   "value": [
+    "会社"
+   ],
+   "expected": [
+    "PLACE"
+   ],
+   "observed": [
+    "GROUP_ORG"
+   ],
+   "typed_by_the_entry": false
+  },
+  {
+   "group": "rest",
+   "source": "r3_probe_ja.txt",
+   "sentence": "国が研究者を委員に任命した。",
+   "role": "agent",
+   "value": [
+    "国"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "PLACE"
+   ],
+   "typed_by_the_entry": false
+  },
+  {
+   "group": "rest",
+   "source": "r3_probe_ja.txt",
+   "sentence": "翻訳者が原稿を英語に訳した。",
+   "role": "agent",
+   "value": [
+    "翻訳者"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "EVENT_ACT"
+   ],
+   "typed_by_the_entry": false
+  },
+  {
+   "group": "rest",
+   "source": "w1a2r2_probe_ja.txt",
+   "sentence": "店が看板を赤に塗り替えた。",
+   "role": "agent",
+   "value": [
+    "店"
+   ],
+   "expected": [
+    "ANIMAL",
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "observed": [
+    "PLACE"
+   ],
+   "typed_by_the_entry": false
+  }
+ ]
+}

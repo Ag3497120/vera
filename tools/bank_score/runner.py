@@ -133,7 +133,7 @@ class Session:
         self.n = 0
 
     def env(self, prov: Path) -> dict[str, str]:
-        return {
+        e = {
             "PATH": os.environ.get("PATH", ""),
             "PYTHONPATH": self.tree,
             "PYTHONDONTWRITEBYTECODE": "1",
@@ -143,6 +143,9 @@ class Session:
             "LANG": "C.UTF-8",
             "PYTHONIOENCODING": "utf-8",
         }
+        if os.environ.get("VERA_PLACEMENT"):      # W3-b1 (auditor): a placement is passed only when the parent names one; recorded in run_meta
+            e["VERA_PLACEMENT"] = os.environ["VERA_PLACEMENT"]
+        return e
 
     def redact(self, s: str, count: bool = True) -> str:
         """一時パスを <WORK> に置き換える。count=True のときだけ置換件数（生出力・標準エラー用）に数える。"""

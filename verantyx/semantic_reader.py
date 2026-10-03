@@ -1682,3 +1682,307 @@ def read_request(text,budget=Budget()):
         return Request(raw,(),(),(),(Unread(full,str(exc)),),stages,('typed unread',))
     except Limit as exc:     # a path/plan deeper than the budget is a typed unread request, never an exception out of ask
         return Request(raw,(),(),(),(Unread(full,'request plan exceeds budget: '+str(exc)),),stages,('typed unread',))
+
+
+# ===================================================================================================================================
+# W3-b1: reading with the DIRECT type of a word (the coarse placement). docs/READING_SOUNDNESS.md section 10 (K62-K65).
+# Nothing above this line is changed. What is added: a table of types (no word in it), one gate that is the only reader of a placement answer
+# (`placement_type`), the two triggers and their plans. The plans return what to read; the entry (semantic_read.py) runs its own rules over it.
+# ===================================================================================================================================
+# K62. predicate type -> (role, case particles, expected noun types, 'arg' | 'adjunct'). Only these two of the 13 predicate types are read.
+TYPED_FRAMES = {
+    'P_MOVE': (
+        ('agent', ('が',), ('PERSON', 'GROUP_ORG', 'ANIMAL'), 'arg'),
+        ('goal', ('へ',), ('PLACE',), 'arg'),
+        ('source', ('から',), ('PLACE',), 'arg'),
+        ('place', ('で',), ('PLACE',), 'adjunct'),
+        ('time', ('に',), ('TIME',), 'adjunct')),
+    'P_COMMUNICATE': (
+        ('agent', ('が',), ('PERSON', 'GROUP_ORG', 'ANIMAL'), 'arg'),
+        # (the row `recipient / に / PERSON GROUP_ORG` was registered here and returned to "not read" on 2026-10-03 15:28:43 +0900: docs K62 table change record 1)
+        ('patient', ('を',), ('PERSON', 'GROUP_ORG', 'ANIMAL', 'PLANT', 'ARTIFACT', 'SUBSTANCE_FOOD', 'EVENT_ACT', 'STATE_PROPERTY', 'ABSTRACT',
+                              'INFO_LANGUAGE', 'BODY_PART', 'NATURAL_PHENOMENON', 'WORK', 'IDENTIFIER'), 'arg'),
+        ('place', ('で',), ('PLACE',), 'adjunct'),
+        ('time', ('に',), ('TIME',), 'adjunct')),
+}
+# the other predicate types: not read (name = a short reason; the sentences are in docs K62)
+TYPED_FRAMES_NOT_READ = {
+    'P_GIVE': 'NI_ROLE_SPLIT', 'P_CHANGE': 'NI_RESULT_OR_TIME', 'P_CREATE': 'NI_RECIPIENT_OR_BENEFICIARY', 'P_PERCEIVE': 'NI_SOURCE_OR_RECIPIENT',
+    'P_EXIST': 'GA_ENTITY_OR_AGENT', 'P_POSSESS': 'PARTICLE_ROLE_UNDECIDED', 'P_ACT': 'PARTICLE_ROLE_UNDECIDED', 'P_STATE': 'ADJECTIVAL_PREDICATE',
+    'P_COGNITION': 'TO_QUOTATION_NI_UNDECIDED', 'P_EMOTION': 'NI_DE_CAUSE_OR_PLACE', 'P_CONSUME': 'NI_ROLE_UNDECIDED',
+}
+# K63: a left-over part of a clause (a noun phrase and a particle, or a comma) that is read as a role: (noun type, particle) -> role. '' is the comma.
+PLACEMENT_PART_CONSTRUCTIONS = {('TIME', ''): 'time', ('TIME', 'に'): 'time', ('PLACE', 'で'): 'place'}
+# K64: marks of negation, condition, quantification, connection, quotation, modality and aspect (the list of W1-a4, copied; no rule is copied).
+# A part is not read when one of its tokens or its particle is one of these (matched on the surface and on the base form of a token).
+W3B1_MARKERS_JA = {
+    'neg': ('ない', 'ず', 'ぬ', 'ません', 'なかっ', '全然', '決して', 'あまり', '少しも', 'ろくに', 'めったに', '必ずしも', '全く'),
+    'cond': ('もし', 'もしも', '万一', '仮に', 'たとえ', 'ば', 'たら', 'なら', '場合'),
+    'quant': ('よく', 'いつも', '時々', 'たまに', '少し', 'たくさん', 'ほとんど', 'だけ', 'しか', 'ばかり', 'のみ', 'さえ'),
+    'conn': ('また', 'さらに', 'そして', 'しかし', 'だから', 'でも'),
+    'quote': ('「', '」', '『', '』', 'という', 'そうだ', 'らしい'),
+    'modal': ('たぶん', 'きっと', 'おそらく', 'ぜひ', 'どうか', 'どうやら', 'もしかすると', 'まるで'),
+    'time_aspect': ('もう', 'まだ', 'すでに', 'ずっと', '急に', '突然', 'やっと', 'ついに', '再び'),
+}
+_PLACEMENT_STATES = ('DECIDED', 'MULTIPLE', 'UNPLACED', 'UNKNOWN', 'NO_PLACEMENT')
+
+
+class CoarseQuery:
+    """The placement as the reader asks it: `query(term)` returns the answer of `coarse_place.query(term, placement=<path>)` as it is (the word only: no
+    context role, no context predicate, never a None path). `id` is made from the content hash of the first answer."""
+    def __init__(self, path):
+        self.path = path
+        self._id = None
+
+    def query(self, term):
+        from . import coarse_place
+        answer = coarse_place.query(term, placement=self.path)
+        if self._id is None:
+            info = (answer.get('placement') if isinstance(answer, dict) else None) or {}
+            sha = info.get('content_sha256')
+            self._id = 'coarse-placement:' + sha if sha else 'coarse-placement:unavailable:%s' % (info.get('reason'),)
+        return answer
+
+    @property
+    def id(self):
+        if self._id is None:
+            self.query('a')
+        return self._id
+
+
+def _placement_answer_problems(answer):
+    """The contract of the placement query (docs/COARSE_PLACEMENT.md 11.6): the problems of an answer, empty when it is well formed."""
+    if not isinstance(answer, dict): return ['NOT_A_MAPPING']
+    for key in ('state', 'top', 'origin', 'estimate_basis', 'constructed'):
+        if key not in answer: return ['MISSING_' + key.upper()]
+    state, top, origin, basis = answer['state'], answer['top'], answer['origin'], answer['estimate_basis']
+    if state not in _PLACEMENT_STATES: return ['STATE_UNKNOWN']
+    if not isinstance(top, list) or not all(isinstance(t, str) and t for t in top): return ['TOP_NOT_A_LIST_OF_STRINGS']
+    if len(set(top)) != len(top): return ['TOP_DUPLICATED']
+    if (state == 'DECIDED') != (len(top) == 1): return ['DECIDED_IFF_ONE_TYPE']
+    if (state == 'MULTIPLE') != (len(top) >= 2): return ['MULTIPLE_IFF_TWO_OR_MORE_TYPES']
+    if origin not in (None, 'direct', 'estimated'): return ['ORIGIN_UNKNOWN']
+    if basis not in (None, 'proximity', 'generated'): return ['ESTIMATE_BASIS_UNKNOWN']
+    if (origin == 'estimated') != (basis is not None) or (origin == 'estimated') != bool(answer['constructed']): return ['ESTIMATED_IFF_CONSTRUCTED_IFF_BASIS']
+    if top and origin is None: return ['TYPES_WITHOUT_ORIGIN']
+    if origin == 'direct':
+        by = answer.get('decided_by')
+        if not (isinstance(by, list) and by and all(isinstance(x, str) and x for x in by)): return ['DIRECT_WITHOUT_DECIDED_BY']
+    return []
+
+
+def placement_type(answer, *, adjunct=False):
+    """THE GATE (K62): the type a placement answer lets the reader use, as (type, None), or (None, reason). The only reader of the fields of an answer
+    (state, origin, top, decided_by, estimate_basis). The first rule that applies:
+      1 an answer that breaks the contract -> PLACEMENT_INVALID
+      2 NO_PLACEMENT / UNKNOWN / UNPLACED / MULTIPLE are four different reasons (nothing here turns one into another)
+      3 an estimated answer (near or generated) is a construction, not a testimony: not used
+      4 a direct answer that a generated definition decided (`gen_definition` among the arms) is not used
+      5 an adjunct (a time or a place) whose arms are ALL role distributions (`role@...`) is not used: they count only that a word stood in that slot
+      6 otherwise the one type of a DECIDED direct answer."""
+    problems = _placement_answer_problems(answer)
+    if problems: return None, 'PLACEMENT_INVALID:' + problems[0]
+    state = answer['state']
+    if state == 'NO_PLACEMENT':
+        return None, 'PLACEMENT_NO_PLACEMENT:%s' % (((answer.get('placement') or {}).get('reason')) or 'UNSPECIFIED')
+    if state == 'UNKNOWN': return None, 'PLACEMENT_UNKNOWN'
+    if state == 'UNPLACED': return None, 'PLACEMENT_UNPLACED'
+    if state == 'MULTIPLE': return None, 'PLACEMENT_MULTIPLE'
+    if answer['origin'] == 'estimated':
+        return None, 'PLACEMENT_ESTIMATED_NEAR' if answer['estimate_basis'] == 'proximity' else 'PLACEMENT_ESTIMATED_GENERATED'
+    arms = answer['decided_by']
+    if 'gen_definition' in arms: return None, 'PLACEMENT_DIRECT_VIA_GENERATED'
+    if adjunct and all(a.startswith('role@') for a in arms): return None, 'PLACEMENT_SLOT_EVIDENCE_ONLY'
+    return answer['top'][0], None
+
+
+def typed_trigger_ja(text, view):
+    """Which of the two typed paths (if any) may look at a refused Japanese input: 'U' (an unlisted predicate whose に / へ phrase the reader named
+    `recipient`, or whose に phrase it left ambiguous), 'S4' (the only thing the reader could not represent is a left-over part), or None. One
+    sentence, nothing unread, exactly one clause of the frame rule, no condition. A reason of the reader that is not the one of the path (it
+    said `ambiguous frame role`, the clause has a quantifier, ...) is the reader saying it cannot split: it is not overridden."""
+    if len(list(_sentences(text))) != 1 or view.unread or len(view.clauses) != 1: return None
+    clause = view.clauses[0]
+    if clause.rule != 'frame' or clause.conditions: return None
+    unsupported = set(clause.unsupported)
+    if unsupported == {'unrepresented source content'}: return 'S4'
+    if any(clause.predicate in four for four in (_TRANSFER_PREDICATES, _GOAL_PREDICATES, _PLACEMENT_PREDICATES, _LOCATION_PREDICATES)): return None
+    if not clause.unsupported and any(r.name == 'recipient' for r in clause.roles): return 'U'
+    if unsupported == {'ambiguous case role: に'}:
+        ambiguous = [r for r in clause.roles if r.name == 'ambiguous']
+        if ambiguous and all(r.rule == 'case:に:location|goal|time' for r in ambiguous): return 'U'
+    return None
+
+
+class _Asker:
+    """One placement question per word per sentence (the answers are kept for the sentence)."""
+    def __init__(self, query):
+        self.query, self.answers = query, {}
+
+    def __call__(self, term):
+        if term not in self.answers: self.answers[term] = self.query.query(term)
+        return self.answers[term]
+
+
+def typed_plan_u_ja(clause, toks, query, *, voice, written, strip, role_map):
+    """Path U: (typed, None) or (None, reason). `voice` is the voice the entry decided, `written` the predicate as written, `strip(role)` the value of a
+    role as the entry writes it, `role_map` the entry's table of reader role names -> convention names."""
+    if voice != 'active': return None, 'PLACEMENT_VOICE_NOT_ACTIVE'
+    if written is None or written != clause.predicate: return None, 'PLACEMENT_PREDICATE_NORMALIZED'
+    ask = _Asker(query)
+    ptype, why = placement_type(ask(written))
+    if why: return None, '%s:predicate:%s' % (why, written)
+    if not ptype.startswith('P_'): return None, 'PLACEMENT_NOT_PREDICATE_TYPE'
+    if ptype in TYPED_FRAMES_NOT_READ: return None, 'PLACEMENT_FRAME_NOT_READ:' + ptype
+    rows = TYPED_FRAMES.get(ptype)
+    if rows is None: return None, 'PLACEMENT_FRAME_NOT_READ:' + ptype
+    chosen, basis = [], {}
+    for role in clause.roles:
+        particle = _particle_after(toks, role.span.end)
+        value = strip(role)
+        if not value: return None, 'PLACEMENT_INVALID:EMPTY_TERM:%s' % (particle,)
+        in_frame = [row for row in rows if particle in row[1]]
+        if not in_frame: return None, 'PLACEMENT_PARTICLE_NOT_IN_FRAME:%s:%s' % (ptype, particle)
+        answer = ask(value)
+        noun, why = placement_type(answer)
+        if why: return None, '%s:%s:%s' % (why, particle, value)
+        candidates = [row for row in in_frame if noun in row[2]]
+        if not candidates: return None, 'PLACEMENT_TYPE_MISMATCH:%s:%s:%s' % (ptype, particle, noun)
+        if len(candidates) > 1: return None, 'PLACEMENT_ROLE_TIE'
+        row = candidates[0]
+        if row[3] == 'adjunct':
+            noun2, why2 = placement_type(answer, adjunct=True)
+            if why2: return None, '%s:%s:%s' % (why2, particle, value)
+        # a role name the reader has decided must be the one the table gives (only `recipient` and `ambiguous` are left to the table)
+        if role.name not in ('recipient', 'ambiguous'):
+            decided = 'agent' if role.name == 'agent' else role_map.get(role.name)
+            if decided != row[0]: return None, 'PLACEMENT_READER_DISAGREES:%s:%s' % (decided or role.name, row[0])
+        if row[0] in basis: return None, 'PLACEMENT_DUPLICATE_ROLE:' + row[0]
+        chosen.append((row[0], role)); basis[row[0]] = 'placement_direct:' + noun
+    return {'mode': 'override', 'roles': chosen, 'predicate_basis': 'placement_direct:' + ptype, 'role_basis': basis, 'clause': replace(clause, unsupported=())}, None
+
+
+def _w3b1_marker(token):
+    """The kind of mark (K64) a token is, or None. Matched on the surface and on the base form; a numeral, a connective and a word of the entry's quantity
+    list are marks by their own kind."""
+    word = token[0]; feature = word.feature
+    surface, base = word.surface, _base(word)
+    if feature.pos2 == '数詞': return 'quant'
+    for kind, words in W3B1_MARKERS_JA.items():
+        if surface in words or base in words: return kind
+    if feature.pos1 == '接続詞' or feature.pos2 == '接続助詞': return 'conn'
+    from .semantic_read import _QUANT_SURFACES
+    if surface in _QUANT_SURFACES or base in _QUANT_SURFACES: return 'quant'
+    return None
+
+
+def typed_plan_s4_ja(text, toks, clause, query):
+    """Path S4: the left-over parts of the clause (a run of content tokens no role and no predicate covers) read as `time` / `place`, or (None, reason)."""
+    pred_i = next((i for i, (w, a, b) in enumerate(toks) if a == clause.predicate_span.start), None)
+    if pred_i is None: return None, 'PLACEMENT_PART_NONE'
+    covered = [(r.span.start, r.span.end) for r in clause.roles] + list(_predicate_coverage(toks, pred_i, clause.predicate))
+    def is_covered(i): return any(l <= toks[i][1] and toks[i][2] <= r for l, r in covered)
+    runs, run = [], []
+    for i, (w, a, b) in enumerate(toks):
+        if w.feature.pos1 in _CONTENT_WORDS and not is_covered(i): run.append(i)
+        else:
+            if run: runs.append(run)
+            run = []
+    if run: runs.append(run)
+    if not runs: return None, 'PLACEMENT_PART_NONE'
+    ask = _Asker(query)
+    connective = any(t[0].feature.pos1 == '接続詞' for t in toks)
+    new_roles, basis = [], {}
+    for run in runs:
+        first, last = run[0], run[-1]
+        surface = ''.join(toks[i][0].surface for i in run)
+        for i in run:
+            pos1 = toks[i][0].feature.pos1
+            if pos1 not in ('名詞', '接頭辞', '接尾辞'): return None, 'PLACEMENT_PART_NOT_NP:' + pos1
+            if toks[i][0].feature.pos2 == '数詞': return None, 'PLACEMENT_PART_MARKER:quant'
+        # what stands before the part must be the sentence start, a mark of punctuation, a covered token, or the particle of a covered phrase
+        j = first - 1
+        isolated = j < 0 or toks[j][0].feature.pos1 == '補助記号' or is_covered(j)
+        if not isolated:
+            while j >= 0 and toks[j][0].feature.pos1 == '助詞': j -= 1
+            isolated = 0 <= j < first - 1 and is_covered(j)
+        if not isolated: return None, 'PLACEMENT_PART_NOT_ISOLATED'
+        if last + 1 >= len(toks): return None, 'PLACEMENT_PART_NOT_FOLLOWED'
+        after = toks[last + 1][0]
+        if after.surface == '、' and after.feature.pos1 == '補助記号': particle, particle_token = '', None
+        elif after.feature.pos1 == '助詞': particle, particle_token = after.surface, toks[last + 1]
+        else: return None, 'PLACEMENT_PART_NOT_FOLLOWED'
+        if particle_token is not None and last + 2 < len(toks) and toks[last + 2][0].feature.pos1 == '助詞':
+            return None, 'PLACEMENT_PART_PARTICLE:' + particle + toks[last + 2][0].surface
+        checked = [toks[i] for i in run] + ([particle_token] if particle_token is not None else [])
+        for token in checked:
+            kind = _w3b1_marker(token)
+            if kind: return None, 'PLACEMENT_PART_MARKER:' + kind
+        if connective: return None, 'PLACEMENT_PART_MARKER:conn'
+        answer = ask(surface)
+        noun, why = placement_type(answer, adjunct=True)
+        if why: return None, '%s:part:%s' % (why, surface)
+        role_name = PLACEMENT_PART_CONSTRUCTIONS.get((noun, particle))
+        if role_name is None: return None, 'PLACEMENT_PART_NO_ROLE:%s:%s' % (noun, particle or '∅')
+        if role_name in basis: return None, 'PLACEMENT_DUPLICATE_ROLE:' + role_name
+        start, end = toks[first][1], toks[last][2]
+        new_roles.append(Role(role_name, surface, Span(clause.predicate_span.source, start, end, text[start:end]), 'placement_direct:' + noun))
+        basis[role_name] = 'placement_direct:' + noun
+    return {'mode': 'extra', 'roles': new_roles, 'predicate_basis': None, 'role_basis': basis,
+            'clause': replace(clause, roles=clause.roles + tuple(new_roles), unsupported=())}, None
+
+
+def typed_tail_ja(toks, clause):
+    """K63, the gate on the ending of the predicate (table change record 2, review round 2 M7): None when the clause that a typed path read has one of the four
+    endings that the present rules turn into a polarity and a tense, else the reason (PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:<form of the head>:<part of speech
+    of the first token after the head, or なし>). The head is the token the predicate span ends with, the tail the tokens after it (one closing full stop 。 . ． apart;
+    ！ and ？ stay in the tail).
+    The four shapes are closed structures of a verb form and an auxiliary (no list of words, no list of endings): the head in the final form with nothing after
+    it; in the continuative form with the auxiliary た; in the irrealis form with ない in the final form; in the irrealis form with ない in the continuative form
+    and た. Everything else is not read, without asking whether the present rules would have used the word (a wide abstention): an ending the rules do not
+    interpret (ている + ない, ません, a prohibition, まい, たい, an imperative, てください, ...) is not told apart from one they do."""
+    reason = 'PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:%s:%s'
+    head_i = next((i for i, (w, a, b) in enumerate(toks) if b == clause.predicate_span.end), None)
+    if head_i is None: return reason % ('head', 'なし')
+    tail = list(toks[head_i + 1:])
+    if tail and tail[-1][0].surface in ('。', '.', '．') and tail[-1][0].feature.pos1 == '補助記号': tail.pop()      # a closing full stop only: ！ and ？ stay in the tail
+    first = tail[0][0].feature.pos1 if tail else 'なし'
+    head = toks[head_i][0].feature
+    if head.pos1 != '動詞': return reason % ('head', first)
+    form = head.cForm or ''
+
+    def aux(token, lemma, tail_form):
+        f = token[0].feature
+        return f.pos1 == '助動詞' and f.lemma == lemma and (f.cForm or '').startswith(tail_form)
+    if not tail and form.startswith('終止形'): return None
+    if len(tail) == 1 and form.startswith('連用形') and aux(tail[0], 'た', '終止形'): return None
+    if len(tail) == 1 and form.startswith('未然形') and aux(tail[0], 'ない', '終止形'): return None
+    if len(tail) == 2 and form.startswith('未然形') and aux(tail[0], 'ない', '連用形') and aux(tail[1], 'た', '終止形'): return None
+    return reason % (form or 'なし', first)
+
+
+# K63 (table change record 3, review round 3 M8): the gate on a head that may be a derived verb. The table is docs/READING_SOUNDNESS.md `table:w3b1_derived_gate`
+# (a test compares the two). A potential verb (a godan potential, a ra-dropped potential), a spontaneous one and a short causative (〜す) are, in the output of
+# the tagger, independent verbs of their own (a shimo-ichidan or a godan verb), so the four endings of typed_tail_ja let them through, and the present rules then
+# return the predicate in the derived form with no modality / voice (conventions section 3: a potential is the original verb with modality ability; section 4: a
+# causative is the original verb with voice causative). The gate is a closed structure of the conjugation type and the end of the dictionary form, with no list
+# of words: (conjugation type, end of the dictionary form), None = not asked.
+DERIVED_GATE = (('下一段', None), ('五段-サ行', 'ア段+す'))
+_A_ROW_KANA = frozenset('あかさたなはまやらわがざだばぱ')    # the a-column of the gojuon (clear, voiced and semi-voiced); the kana of a conjugation, not words
+
+
+def typed_head_derived_ja(toks, clause):
+    """K63, the gate on a head that may be a derived verb (table change record 3, review round 3 M8): None, or the reason
+    (PLACEMENT_PREDICATE_POSSIBLY_DERIVED:<conjugation type of the head>). Applied only after typed_tail_ja has let the clause through (its reasons are unchanged).
+    The head is the token the predicate span ends with (as in typed_tail_ja). One of the rows of DERIVED_GATE: the conjugation type (feature.cType) begins with
+    下一段, or it is 五段-サ行 and the last two characters of the dictionary form (orthBase, as typed_edges._base) are a kana of the a-column and す.
+    The answer fields of the placement are not read here and the placement is not asked."""
+    reason = 'PLACEMENT_PREDICATE_POSSIBLY_DERIVED:%s'
+    head_i = next((i for i, (w, a, b) in enumerate(toks) if b == clause.predicate_span.end), None)
+    if head_i is None: return reason % 'head'
+    word = toks[head_i][0]
+    ctype = word.feature.cType or ''
+    base = _base(word)
+    if ctype.startswith(DERIVED_GATE[0][0]): return reason % ctype
+    if ctype == DERIVED_GATE[1][0] and len(base) >= 2 and base[-1] == 'す' and base[-2] in _A_ROW_KANA: return reason % ctype
+    return None

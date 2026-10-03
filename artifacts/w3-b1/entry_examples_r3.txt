@@ -1,0 +1,15 @@
+## 猫が庭へ走るな。 (--placement)
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["RECIPIENT_TYPE_UNDETERMINED:走る", "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:終止形-一般:助詞"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## 猫が庭へ走らなかった。 (--placement)
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "走る", "roles": {"agent": "猫", "goal": "庭"}, "polarity": "-", "tense": "past", "modality": null, "voice": "active", "predicate_basis": "placement_direct:P_MOVE", "role_basis": {"agent": "placement_direct:ANIMAL", "goal": "placement_direct:PLACE"}}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [4, 6]}]}
+exit=0
+## 兄が夜、窓を開けた。 (--placement)
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "開ける", "roles": {"agent": "兄", "patient": "窓", "time": "夜"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active", "role_basis": {"time": "placement_direct:TIME"}}], "relations": [], "abstain": null, "unsupported": [{"predicate": "開ける", "span": [6, 8], "reasons": ["unrepresented source content"]}], "clause_meta": [{"rule": "frame", "span": [6, 8]}]}
+exit=0
+## 兄が夜、窓を開けていない。 (--placement)
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE", "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-一般:助詞"]}, "unsupported": [{"predicate": "開ける", "span": [6, 8], "reasons": ["unrepresented source content"]}], "clause_meta": []}
+exit=0
+## 猫が庭へ走るな。 (no placement)
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["RECIPIENT_TYPE_UNDETERMINED:走る"]}, "unsupported": [], "clause_meta": []}
+exit=0

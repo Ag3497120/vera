@@ -1,0 +1,5 @@
+姉が皿を洗えた。 READ [{"predicate": "洗える", "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]
+姉が冬に皿を洗えた。 READ [{"predicate": "洗える", "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]
+姉が絵を描けた。 READ [{"predicate": "描ける", "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]
+姉が手紙を書けた。 READ [{"predicate": "書ける", "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]
+兄が字を書けない。 READ [{"predicate": "書ける", "polarity": "-", "tense": "nonpast", "modality": null, "voice": "active"}]

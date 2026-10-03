@@ -1,0 +1,12 @@
+event_cross_sentences: sentences_read=70 typed=0 arms=174 AGREE=36 DISAGREE=1 NOT_CHECKED=137 {"ESTIMATED_GENERATED": 4, "ESTIMATED_NEAR": 7, "MULTIPLE": 9, "ROLE_NOT_IN_TABLE": 79, "UNKNOWN": 3, "UNPLACED": 35}
+new_data: sentences_read=67 typed=63 arms=176 AGREE=102 DISAGREE=0 NOT_CHECKED=74 {"ESTIMATED_NEAR": 1, "ROLE_NOT_IN_TABLE": 73}
+rest: sentences_read=241 typed=0 arms=578 AGREE=181 DISAGREE=7 NOT_CHECKED=390 {"ESTIMATED_GENERATED": 15, "ESTIMATED_NEAR": 7, "MULTIPLE": 13, "ROLE_NOT_IN_TABLE": 314, "UNKNOWN": 14, "UNPLACED": 27}
+DISAGREE total=8
+DISAGREE	rest	先月、兄が会社で書類を作った。	place	['会社']	expected=['PLACE']	observed=['GROUP_ORG']	typed_by_the_entry=False
+DISAGREE	rest	この先生は学校で数学を教えた。	place	['学校']	expected=['PLACE']	observed=['GROUP_ORG']	typed_by_the_entry=False
+DISAGREE	rest	国が研究者を委員に任命した。	agent	['国']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['PLACE']	typed_by_the_entry=False
+DISAGREE	rest	翻訳者が原稿を英語に訳した。	agent	['翻訳者']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['EVENT_ACT']	typed_by_the_entry=False
+DISAGREE	rest	店が看板を赤に塗り替えた。	agent	['店']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['PLACE']	typed_by_the_entry=False
+DISAGREE	rest	車がトンネルを抜けた。	agent	['車']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['ARTIFACT']	typed_by_the_entry=False
+DISAGREE	rest	船が港を出航した。	agent	['船']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['ARTIFACT']	typed_by_the_entry=False
+DISAGREE	event_cross_sentences	風が窓を揺らした。	agent	['風']	expected=['ANIMAL', 'GROUP_ORG', 'PERSON']	observed=['NATURAL_PHENOMENON']	typed_by_the_entry=False

@@ -1,0 +1,4 @@
+w3b1_integ_combination.py exit=0 (ex.sh, 2 runs byte-identical)
+w3b1_base_diff.py exit=0 (ex.sh, 2 runs byte-identical)
+check_hardcode.py --base 2732274 exit=0 (i2d.sh)
+w3b1_mk_exceptions.py 2 runs byte-identical (DETERMINISTIC)

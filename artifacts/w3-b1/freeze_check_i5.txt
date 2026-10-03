@@ -1,0 +1,7 @@
+bank_freeze_r8 OK
+bank_freeze_r9 OK
+bank_freeze_r10 OK
+placement_fixture OK
+placement_fixture_r9 OK
+placement_fixture_r10 OK
+w3b1_tests_freeze_i5 OK

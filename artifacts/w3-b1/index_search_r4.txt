@@ -1,0 +1,14 @@
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "可能形 派生した動詞 使役の短縮形 棄権",
+  "searched": 671,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 53,
+    "module": 287,
+    "prereg": 66,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

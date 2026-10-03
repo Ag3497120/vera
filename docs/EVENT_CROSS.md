@@ -103,23 +103,31 @@ lookup が不変条件を破る値を返したときは、その充填物の `pl
 
 ## スタブと粗い配置の差し替え手順
 
-既定の lookup は `StubLookup`（`id` は `stub-no-placement/1`）で、全部 `state: NO_PLACEMENT`（`provenance.reason` は `STUB`）を返す。粗い配置（W3-a2、このチケットの時点で未統合）が入ったら次のアダプタに差し替える。`verantyx/coarse_*` はこのチケットでは import しない（W3-a2 が変更中）。
+**差し替えは済んだ**(W3-b1。docs/READING_SOUNDNESS.md §10)。既定の lookup は `verantyx.event_cross.default_lookup(placement=None)`: 引数 `placement`(配置のディレクトリ)があればそれ、無ければ環境変数 `VERA_PLACEMENT`、どちらも無い・空なら今までの `StubLookup`(`id` は `stub-no-placement/1`。全部 `state: NO_PLACEMENT`、`provenance.reason` は `STUB`)。配置があれば `CoarseLookup`。`build_crosses`・`attach_events` の `lookup=None` は `default_lookup()`。粗い配置自身の環境変数 `VERA_COARSE_PLACEMENT` は **読まない**(`coarse_place.query` に `None` のパスを渡すと配置の側が自分の変数を読むので、必ず実在のパスつきで呼ぶ)。
 
 ```python
-from verantyx import coarse_place
-from verantyx.event_cross import PlaceResult, read_events
+from verantyx.event_cross import CoarseLookup, default_lookup, read_events
 
-class CoarseLookup:
-    def __init__(self, placement=None, ident="coarse-placement"):
-        self.placement, self.id = placement, ident    # ident に配置の内容のハッシュを入れる（coarse_place.py の問い合わせ結果の欄）
-    def lookup(self, lemma):
-        # 役割も述語も渡さない（役割で推定した型で役割を照合する循環を避ける）
-        return PlaceResult.from_coarse_query(coarse_place.query(lemma, placement=self.placement))
-
-out = read_events("...", lookup=CoarseLookup())
+lookup = default_lookup('/path/to/placement')     # = CoarseLookup('/path/to/placement')。引数なし・VERA_PLACEMENT なしなら StubLookup
+out = read_events("...", lookup=lookup)           # 読解も同じ配置で読ませるなら VERA_PLACEMENT か semantic_read.read(..., placement=...)
 ```
 
-統合のときにやること: (1) `lookup.id` に配置の内容のハッシュ（coarse_place.py の問い合わせ結果の欄）を入れ、`events.lookup.id` に出す。(2) `NOUN_TYPE_IDS` が coarse_types.py の名詞の型の一覧に含まれることを確かめるテストを足す。(3) 入口（`--events`）が配置を使うかどうか（環境変数 `VERA_COARSE_PLACEMENT` の扱い）は次のチケットで決める。このチケットの入口は常にスタブ。(4) `PlaceResult.from_coarse_query` は契約の形の dict を写す純関数で、W3-a2 側のキーが変わったらここだけ直す。
+- `CoarseLookup.lookup(lemma)` は関数の中で `coarse_place` を import し、`PlaceResult.from_coarse_query(coarse_place.query(lemma, placement=self.path))` を返す(語だけ。役割も述語も渡さない)。モジュール直下の import は標準ライブラリだけのまま(テストがある)。
+- `CoarseLookup.id` は `coarse-placement:<content_sha256>`(開けないときは `coarse-placement:unavailable:<reason>`。`events.lookup.id` に出る)。開けない配置は `NO_PLACEMENT`(理由は `provenance.placement.reason`)で、「型が合わない」とは混ぜない。
+- 入口は `--placement <dir>`(`--` より前の完全一致の引数だけ。略記は今までどおり `BAD_ARGUMENTS`)か `VERA_PLACEMENT`。`--events` のときは同じ配置が十字の lookup にもなる(`python -m verantyx.semantic_read --text=... --events --placement=<dir>`)。
+- 十字は、入口が型で決めた節の出所の欄 `ENTRY_BASIS_KEYS = ('predicate_basis', 'role_basis')` を受け入れ(`CLAUSE_KEYS` は変えない。規約 §1.1 の表と一致するテストがある)、その節の十字の `provenance` に同じ名前・同じ値で写す(`center` には入れない)。欄が壊れていれば `ENTRY_BASIS_NOT_WELL_FORMED:<鍵>` で入力を拒否する。
+- 実データでの `AGREE` / `DISAGREE`(型一致は「事前登録」の表のまま。直さず申告だけ。出典: `artifacts/w3-b1/events_live.json`、`tests/reading_soundness/w3b1_events_measure.py`。コマンド: `cd <木> && VERA_PLACEMENT=<配置> python tests/reading_soundness/w3b1_events_measure.py --inputs artifacts/w3-b1/entry_inputs.txt --out artifacts/w3-b1/events_live.json`、`--inputs` は必須):
+
+| item | value | source (artifacts/w3-b1/) |
+|---|---|---|
+| event cross with the placement, event_cross_sentences: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED | 70 / 174 / 36 / 1 / 137 | events_live.json |
+| event cross with the placement, new_data: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED | 81 / 203 / 115 / 0 / 88 | events_live.json |
+| event cross with the placement, rest: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED | 241 / 578 / 181 / 7 / 390 | events_live.json |
+| event cross DISAGREE arms in all (and how many of them were typed by the entry) | 8 (0) | events_live.json |
+
+  `DISAGREE` の全件は `artifacts/w3-b1/events_live_summary.txt`。どれも基点の読解器が非人の主語を `agent` と読んだ文(車が・船が・国が・風が など)と、会社・学校を `place` と読んだ文で、十字が不一致と申告している(読みは変えない)。
+
+統合のときにやること(W3-b の時点の 4 項目の結果): (1) `lookup.id` に配置の内容のハッシュ — 済(`coarse-placement:<content_sha256>`)。(2) `NOUN_TYPE_IDS` が coarse_types.py の名詞の型の一覧と一致するテスト — 済(`tests/test_semantic_read_w3b1.py::test_the_expected_types_of_a_role_are_those_of_the_event_cross_table`)。(3) 入口が配置を使うかどうか — 済(`--placement` / `VERA_PLACEMENT`。指定が無ければ今までどおりスタブで、出力は基点とバイト一致)。(4) `PlaceResult.from_coarse_query` は契約の形の dict を写す純関数で、W3-a2 側のキーが変わったらここだけ直す — 変えていない。
 
 ## `--events` の出力例（実行出力の貼り付け）
 
