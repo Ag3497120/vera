@@ -1,0 +1,376 @@
+# X4: python -m verantyx.semantic_read (cwd=$WD, 木=$W)
+$ python -m verantyx.semantic_read --text=先生が生徒に地図を渡した。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "渡す", "roles": {"agent": "先生", "patient": "地図", "recipient": "生徒"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [9, 11]}]}
+exit=0
+$ python -m verantyx.semantic_read --text=ありがとう。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "unreadable_input", "reasons": ["INTERJECTION_OR_FORMULA"]}, "unsupported": [], "clause_meta": []}
+exit=0
+$ python -m verantyx.semantic_read --text=Ann sent the report to Ben.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["RECIPIENT_TYPE_UNDETERMINED:Ben"]}, "unsupported": [], "clause_meta": []}
+exit=0
+$ python -m verantyx.semantic_read --text=
+{"error": {"type": "EMPTY_TEXT", "detail": "the text is empty or only blanks"}}
+exit=2
+$ python -m verantyx.semantic_read --text=犬が走った。 --lang en
+{"error": {"type": "LANG_MISMATCH", "detail": "--lang en but the script of the text is ja"}}
+exit=2
+
+# the self-made B1 v2 sample, one process per input (tests/bank_score/fixtures/B1_v2/items.jsonl)
+## FX-J01 先生が生徒に地図を渡した。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "渡す", "roles": {"agent": "先生", "patient": "地図", "recipient": "生徒"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [9, 11]}]}
+exit=0
+## FX-J02 兄が本を読んだ。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [4, 6]}]}
+exit=0
+## FX-J03 母が手紙を書いた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "書く", "roles": {"agent": "母", "patient": "手紙"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [5, 7]}]}
+exit=0
+## FX-J04 弟は宿題を終えなかった。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "終える", "roles": {"agent": "弟", "patient": "宿題"}, "polarity": "-", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [5, 7]}]}
+exit=0
+## FX-J05 祖父が庭で花を育てている。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "育てる", "roles": {"agent": "祖父", "patient": "花", "place": "庭"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [7, 9]}]}
+exit=0
+## FX-J06 店員が客に商品を見せた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "見せる", "roles": {"agent": "店員", "patient": "商品", "recipient": "客"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [8, 10]}]}
+exit=0
+## FX-J07 私は昨日、図書館で本を借りた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "貸す", "span": [11, 13], "reasons": ["unsupported source quantifier/exception/time", "unrepresented source content"]}], "clause_meta": []}
+exit=0
+## FX-J08 窓が風で開いた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "開く", "span": [4, 6], "reasons": ["ambiguous case role: で"]}], "clause_meta": []}
+exit=0
+## FX-J09 桜が咲いた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["SUBJECT_TYPE_UNDETERMINED:桜"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX-J10 手紙が兄に読まれた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNDETERMINED_VOICE:passive or honorific"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX-J11 窓ガラスが子供に割られた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNDETERMINED_VOICE:passive or honorific"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX-J12 姉は朝食を食べなかった。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "食べる", "roles": {"agent": "姉", "patient": "朝食"}, "polarity": "-", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [5, 7]}]}
+exit=0
+## FX-J13 先生は生徒に宿題を出さなかった。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["RECIPIENT_TYPE_UNDETERMINED:出す"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX-J14 太郎は花子に花束を贈った。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "贈る", "roles": {"agent": "太郎", "patient": "花束", "recipient": "花子"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [9, 11]}]}
+exit=0
+## FX-J15 父がこの本を読んだ。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "読む", "roles": {"agent": "父", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [{"predicate": "読む", "span": [6, 8], "reasons": ["unrepresented source content"]}], "clause_meta": [{"rule": "np_internal", "span": [6, 8]}]}
+exit=0
+## FX-J16 妹が学校へ行った。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "行く", "roles": {"agent": "妹", "goal": "学校"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [5, 7]}]}
+exit=0
+## FX-J17 弟が部屋に入った。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "入る", "roles": {"agent": "弟", "goal": "部屋"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [5, 7]}]}
+exit=0
+## FX-J18 母が部屋に花瓶を置いた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "置く", "roles": {"agent": "母", "patient": "花瓶", "goal": "部屋"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [8, 10]}]}
+exit=0
+## FX-J19 祖母が病院で働いている。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "働く", "roles": {"agent": "祖母", "place": "病院"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [6, 8]}]}
+exit=0
+## FX-J20 兄が会社から帰った。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "帰る", "roles": {"agent": "兄", "source": "会社"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [6, 8]}]}
+exit=0
+## FX-J21 子供が公園で遊んだ。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "遊ぶ", "roles": {"agent": "子供", "place": "公園"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [6, 8]}]}
+exit=0
+## FX-J22 弟は犬に噛まれた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "噛む", "roles": {"agent": "犬", "patient": "弟"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [4, 6]}]}
+exit=0
+## FX-J23 先生が生徒に本を読ませた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "読む", "roles": {"causer": "先生", "causee": "生徒", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "causative"}], "relations": [], "abstain": null, "unsupported": [{"predicate": "読ませる", "span": [8, 10], "reasons": ["causative frame: causer/causee unresolved"]}], "clause_meta": [{"rule": "diathesis", "span": [8, 12]}]}
+exit=0
+## FX-J24 この問題は難しくない。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNREAD_SPAN:unsupported negative adjective"]}, "unsupported": [{"predicate": null, "span": [0, 11], "reasons": ["unsupported negative adjective"]}], "clause_meta": []}
+exit=0
+## FX-J25 姉は先月、京都を訪れた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNMAPPED_ROLE:topic"]}, "unsupported": [{"predicate": "訪れる", "span": [8, 10], "reasons": ["unrepresented source content"]}], "clause_meta": []}
+exit=0
+## FX-J26 田中さんは医者だ。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "だ", "roles": {"entity": "田中さん", "value": "医者"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "copula", "span": [5, 7]}]}
+exit=0
+## FX-J27 東京は日本の首都だ。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "だ", "roles": {"entity": "東京", "value": "日本の首都"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "copula", "span": [3, 8]}]}
+exit=0
+## FX-J28 山田さんは学生ではない。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "だ", "roles": {"entity": "山田さん", "value": "学生"}, "polarity": "-", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "copula", "span": [5, 7]}]}
+exit=0
+## FX-J29 犬が猫を追いかけた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "追いかける", "roles": {"agent": "犬", "patient": "猫"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [4, 8]}]}
+exit=0
+## FX-J30 会社が新製品を発表した。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "発表する", "roles": {"agent": "会社", "patient": "新製品"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [9, 10]}]}
+exit=0
+## FX-J31 兄は弟より強い。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "強い", "roles": {"entity": "兄", "standard": "弟"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active", "comparison": "comparative"}], "relations": [], "abstain": null, "unsupported": [{"predicate": "identity", "span": [2, 7], "reasons": ["copula value is a predicate phrase"]}], "clause_meta": [{"rule": "comparison", "span": [5, 7]}]}
+exit=0
+## FX-J32 田中さんは毎朝走る。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "走る", "span": [7, 9], "reasons": ["unrepresented source content", "ambiguous frame role"]}], "clause_meta": []}
+exit=0
+## FX-J33 父は車で会社へ行った。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "行く", "roles": {"agent": "父", "goal": "会社", "instrument": "車"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [7, 9]}]}
+exit=0
+## FX-J34 母が娘に着物を仕立ててやった。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["BENEFACTIVE_NOT_PRODUCED"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX-J35 兄は宿題を終えなければならない。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "終える", "span": [5, 7], "reasons": ["multiple predicates need explicit clause scope"]}, {"predicate": "なる", "span": [11, 13], "reasons": ["multiple predicates need explicit clause scope", "unlicensed role borrowing", "unrepresented source content", "event without participant or content word"]}], "clause_meta": []}
+exit=0
+## FX-J36 弟はピアノを弾くことができる。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "弾く", "span": [6, 8], "reasons": ["multiple predicates need explicit clause scope", "unrepresented source content", "ambiguous frame role"]}, {"predicate": "できる", "span": [11, 14], "reasons": ["multiple predicates need explicit clause scope", "unlicensed role borrowing", "unrepresented source content", "event without participant or content word"]}], "clause_meta": []}
+exit=0
+## FX-J37 兄が買った本は面白い。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "買う", "span": [2, 4], "reasons": ["unrepresented source content", "ambiguous frame role"]}], "clause_meta": []}
+exit=0
+## FX-J38 雨が降ったので、試合は中止になった。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNSUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "降る", "span": [2, 4], "reasons": ["multiple predicates need explicit clause scope", "unrepresented source content"]}, {"predicate": "なる", "span": [14, 16], "reasons": ["multiple predicates need explicit clause scope", "unrepresented source content"]}], "clause_meta": []}
+exit=0
+## FX-J39 兄は本を読みながら音楽を聞いた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "読む", "span": [4, 6], "reasons": ["multiple predicates need explicit clause scope", "unrepresented source content"]}, {"predicate": "伝える", "span": [12, 14], "reasons": ["multiple predicates need explicit clause scope", "unlicensed role borrowing", "unrepresented source content"]}], "clause_meta": []}
+exit=0
+## FX-J40 すべての生徒が宿題を終えた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["QUANTIFIER_NOT_MAPPED:すべて"]}, "unsupported": [{"predicate": "終える", "span": [10, 12], "reasons": ["unsupported source quantifier/exception/time"]}], "clause_meta": []}
+exit=0
+## FX-E01 Ann sent the report to Ben.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["RECIPIENT_TYPE_UNDETERMINED:Ben"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX-E02 The teacher gave the students a test.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": true, "clauses": [{"predicate": "give", "roles": {"agent": "teacher", "patient": "test", "recipient": "students"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "en_frames", "span": [0, 37]}]}
+exit=0
+## FX-E03 Tom did not finish the homework.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": true, "clauses": [{"predicate": "finish", "roles": {"agent": "Tom", "patient": "homework"}, "polarity": "-", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "en_frames", "span": [0, 32]}]}
+exit=0
+## FX-E04 She opened the window.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": true, "clauses": [{"predicate": "open", "roles": {"agent": "She", "patient": "window"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "en_frames", "span": [0, 22]}]}
+exit=0
+## FX-E05 The dog chased the cat.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": true, "clauses": [{"predicate": "chase", "roles": {"agent": "dog", "patient": "cat"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "en_frames", "span": [0, 23]}]}
+exit=0
+## FX-E06 Mary reads a book.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": true, "clauses": [{"predicate": "read", "roles": {"agent": "Mary", "patient": "book"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "en_frames", "span": [0, 18]}]}
+exit=0
+## FX-E07 The manager approved the budget.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": true, "clauses": [{"predicate": "approve", "roles": {"agent": "manager", "patient": "budget"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "en_frames", "span": [0, 32]}]}
+exit=0
+## FX-E08 The report was written by Ann.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": true, "clauses": [{"predicate": "write", "roles": {"agent": "Ann", "patient": "report"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "en_frames", "span": [0, 30]}]}
+exit=0
+## FX-E09 They did not call the doctor.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": true, "clauses": [{"predicate": "call", "roles": {"agent": "They", "patient": "doctor"}, "polarity": "-", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "en_frames", "span": [0, 29]}]}
+exit=0
+## FX-E10 Ben handed Ann the keys.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": true, "clauses": [{"predicate": "hand", "roles": {"agent": "Ben", "patient": "keys", "recipient": "Ann"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "en_frames", "span": [0, 24]}]}
+exit=0
+## FX-E11 The company hired a new engineer.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": true, "clauses": [{"predicate": "hire", "roles": {"agent": "company", "patient": "new engineer"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "en_frames", "span": [0, 33]}]}
+exit=0
+## FX-E12 Sara wrote the letter.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": true, "clauses": [{"predicate": "write", "roles": {"agent": "Sara", "patient": "letter"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "en_frames", "span": [0, 22]}]}
+exit=0
+## FX-U01 ありがとうございました。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "unreadable_input", "reasons": ["INTERJECTION_OR_FORMULA"]}, "unsupported": [{"predicate": null, "span": [0, 12], "reasons": ["interjection is not a proposition"]}], "clause_meta": []}
+exit=0
+## FX-U02 ええと、うーん。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "unreadable_input", "reasons": ["INTERJECTION_OR_FORMULA"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX-U03 昨日の会議の資料。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "unreadable_input", "reasons": ["NO_PREDICATE_TOKEN"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX-U04 青い机窓を走るそして食べるが。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "走る", "span": [5, 7], "reasons": ["multiple predicates need explicit clause scope"]}, {"predicate": "食べる", "span": [10, 13], "reasons": ["multiple predicates need explicit clause scope", "unrepresented source content", "event without participant or content word"]}], "clause_meta": []}
+exit=0
+## FX-U05 先生が生徒に地図をフォルノした。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "unreadable_input", "reasons": ["UNKNOWN_PREDICATE_WORD:フォルノ"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX-U06 先生が生徒が地図を渡した。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "渡す", "span": [9, 11], "reasons": ["unrepresented source content"]}], "clause_meta": []}
+exit=0
+## FX-U07 雨が降ったので、試合をゴルマンした。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "unreadable_input", "reasons": ["UNKNOWN_PREDICATE_WORD:ゴルマン"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX-U08 Thank you very much.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "unreadable_input", "reasons": ["INTERJECTION_OR_FORMULA"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX-U09 Oh!
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "unreadable_input", "reasons": ["INTERJECTION_OR_FORMULA"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX-U10 in the red box
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNKNOWN_PREDICATE"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX-U11 Table quickly purple because run.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["EN_UNREAD:subordinate clause: not representable"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX-U12 Ann blorped the report to Ben.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNKNOWN_PREDICATE"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX-U13 The teacher the student gave map a.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["EN_UNREAD:relative clause (reduced): not representable"]}, "unsupported": [], "clause_meta": []}
+exit=0
+
+# the self-made B1 v2 sample, one process per input (tests/bank_score/fixtures/B1_v2_r2/items.jsonl)
+## FX2-J01 兄は弟から本を借りた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["PREDICATE_NORMALIZED:貸す<-借りる"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX2-J02 兄は姉から手紙を受け取った。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["PREDICATE_NORMALIZED:渡す<-受け取る"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX2-J03 弟は先生に英語を教わった。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["PREDICATE_NORMALIZED:教える<-教わる"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX2-J04 兄は弟に本をもらった。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "もらう", "roles": {"agent": "弟", "patient": "本", "recipient": "兄"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [6, 9]}]}
+exit=0
+## FX2-J05 叔父が弟に時計をくれた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "くれる", "roles": {"agent": "叔父", "patient": "時計", "recipient": "弟"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [8, 10]}]}
+exit=0
+## FX2-J06 兄は東京に住んでいる。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "住む", "roles": {"agent": "兄", "place": "東京"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [5, 7]}]}
+exit=0
+## FX2-J07 姉は大阪に滞在した。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "滞在する", "roles": {"agent": "姉", "place": "大阪"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [7, 8]}]}
+exit=0
+## FX2-J08 結果が事務局から通知された。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "通知する", "span": [10, 11], "reasons": ["ambiguous case role: から"]}], "clause_meta": []}
+exit=0
+## FX2-J09 依頼書が本部から配られた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "配る", "span": [8, 10], "reasons": ["ambiguous case role: から"]}], "clause_meta": []}
+exit=0
+## FX2-J10 荷物が広島から送られた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNDETERMINED_VOICE:passive or honorific"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX2-J11 ドラムに皮が張られた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "張る", "span": [6, 8], "reasons": ["ambiguous case role: に"]}, {"predicate": "張る", "span": [6, 10], "reasons": ["ill-typed role: a phrase that cannot act (not a person/organisation) as agent"]}], "clause_meta": []}
+exit=0
+## FX2-J12 ソファに布が掛けられた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "掛ける", "span": [6, 8], "reasons": ["ambiguous case role: に"]}, {"predicate": "掛ける", "span": [6, 11], "reasons": ["ill-typed role: a phrase that cannot act (not a person/organisation) as agent"]}], "clause_meta": []}
+exit=0
+## FX2-J13 祖母が昔話を孫娘に言い換えた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "言い換える", "span": [9, 13], "reasons": ["ambiguous case role: に"]}], "clause_meta": []}
+exit=0
+## FX2-J14 兄が文章を英語に訳した。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "訳す", "roles": {"agent": "兄", "patient": "文章", "result": "英語"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [8, 10]}]}
+exit=0
+## FX2-J15 母は釣りに行った。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "行く", "span": [5, 7], "reasons": ["ambiguous case role: に"]}], "clause_meta": []}
+exit=0
+## FX2-J16 妹が図書館へ行った。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "行く", "roles": {"agent": "妹", "goal": "図書館"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [6, 8]}]}
+exit=0
+## FX2-J17 兄が友人に手紙を渡した。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "渡す", "roles": {"agent": "兄", "patient": "手紙", "recipient": "友人"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [8, 10]}]}
+exit=0
+## FX2-J18 雨が降った。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["SUBJECT_TYPE_UNDETERMINED:雨"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX2-J19 犬が走った。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "走る", "roles": {"agent": "犬"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [2, 4]}]}
+exit=0
+## FX2-J20 母が窓を開けなかった。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "開ける", "roles": {"agent": "母", "patient": "窓"}, "polarity": "-", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [4, 6]}]}
+exit=0
+## FX2-E01 Rain stopped.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["SUBJECT_TYPE_UNDETERMINED:Rain"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX2-E02 Snow fell.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["SUBJECT_TYPE_UNDETERMINED:Snow"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX2-E03 Prices dropped.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["SUBJECT_TYPE_UNDETERMINED:Prices"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX2-E04 Ann taught Ben French.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NP_BOUNDARY_UNDETERMINED:Ben French"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX2-E05 Ben sent the report to Ann.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["RECIPIENT_TYPE_UNDETERMINED:Ann"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX2-E06 The manager hired a clerk.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": true, "clauses": [{"predicate": "hire", "roles": {"agent": "manager", "patient": "clerk"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "en_frames", "span": [0, 26]}]}
+exit=0
+## FX2-E07 Ann received a letter from Ben.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNKNOWN_PREDICATE"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX2-E08 The dog chased the cat.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": true, "clauses": [{"predicate": "chase", "roles": {"agent": "dog", "patient": "cat"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "en_frames", "span": [0, 23]}]}
+exit=0
+## FX2-U01 Thank you very much.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "unreadable_input", "reasons": ["INTERJECTION_OR_FORMULA"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX2-U02 Oh!
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "unreadable_input", "reasons": ["INTERJECTION_OR_FORMULA"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX2-U03 お疲れさまでした。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNREAD_SPAN:unsupported clause grammar"]}, "unsupported": [{"predicate": null, "span": [0, 9], "reasons": ["unsupported clause grammar"]}], "clause_meta": []}
+exit=0
+## FX2-U04 あれ、まあ。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "unreadable_input", "reasons": ["NO_PREDICATE_TOKEN"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX2-U05 駅の近くの古い店。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNREAD_SPAN:unsupported clause grammar"]}, "unsupported": [{"predicate": null, "span": [0, 9], "reasons": ["unsupported clause grammar"]}], "clause_meta": []}
+exit=0
+## FX2-U06 机が静かに走って緑の。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "走る", "span": [5, 7], "reasons": ["unrepresented source content"]}], "clause_meta": []}
+exit=0
+## FX2-U07 兄が窓をうぬぼった。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "unreadable_input", "reasons": ["NO_PREDICATE_TOKEN"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX2-U08 Ann gorped the door.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNKNOWN_PREDICATE"]}, "unsupported": [], "clause_meta": []}
+exit=0
+
+# the self-made B1 v2 sample, one process per input (tests/bank_score/fixtures/B1_v2_r3/items.jsonl)
+## FX3-J01 社長が社員に叱られた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "叱る", "roles": {"agent": "社員", "patient": "社長"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [6, 8]}]}
+exit=0
+## FX3-J02 少年が教師に褒められた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "褒める", "roles": {"agent": "教師", "patient": "少年"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [6, 8]}]}
+exit=0
+## FX3-J03 皿が割られた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNDETERMINED_VOICE:passive or honorific"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX3-J04 通訳が依頼人に訳した。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "訳す", "span": [7, 9], "reasons": ["ambiguous case role: に"]}], "clause_meta": []}
+exit=0
+## FX3-J05 講師が初心者に言い換えた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "言い換える", "span": [7, 11], "reasons": ["ambiguous case role: に"]}], "clause_meta": []}
+exit=0
+## FX3-J06 兄が妹に翻訳した。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "翻訳する", "span": [6, 7], "reasons": ["ambiguous case role: に"]}], "clause_meta": []}
+exit=0
+## FX3-J07 姉は弁護士になった。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "なる", "roles": {"agent": "姉", "result": "弁護士"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [6, 8]}]}
+exit=0
+## FX3-J08 絵が伊藤家に飾られた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "飾る", "span": [6, 8], "reasons": ["ambiguous case role: に"]}, {"predicate": "飾る", "span": [6, 10], "reasons": ["ill-typed role: a phrase that cannot act (not a person/organisation) as agent"]}], "clause_meta": []}
+exit=0
+## FX3-J09 旗が清水家に掲げられた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "掲げる", "span": [6, 8], "reasons": ["ambiguous case role: に"]}, {"predicate": "掲げる", "span": [6, 11], "reasons": ["ill-typed role: a phrase that cannot act (not a person/organisation) as agent"]}], "clause_meta": []}
+exit=0
+## FX3-J10 評論家に感想が求められた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNDETERMINED_VOICE:passive or honorific"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX3-J11 店主が客に怒られた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNDETERMINED_VOICE:passive or honorific"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX3-E01 Ann sent the package to London.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["RECIPIENT_TYPE_UNDETERMINED:London"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX3-E02 The letter was sent to Paris.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["RECIPIENT_TYPE_UNDETERMINED:Paris"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX3-E03 Lisa sent Paul a message.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": true, "clauses": [{"predicate": "send", "roles": {"agent": "Lisa", "patient": "message", "recipient": "Paul"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "en_frames", "span": [0, 25]}]}
+exit=0
+## FX3-E04 Tom shipped the crate to Berlin.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["UNKNOWN_PREDICATE"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX3-E05 Ben handed the keys to Dana.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["RECIPIENT_TYPE_UNDETERMINED:Dana"]}, "unsupported": [], "clause_meta": []}
+exit=0
+## FX3-E06 Kate showed the photo to them.
+{"schema": "verantyx.semantic_read/1", "lang": "en", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["EN_UNREAD:infinitive complement: not representable"]}, "unsupported": [], "clause_meta": []}
+exit=0

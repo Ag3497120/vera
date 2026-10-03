@@ -43,7 +43,8 @@ def _parser() -> argparse.ArgumentParser:
     ap.add_argument("--frames", help="B5 の枠ファイルのディレクトリ（B5 では必須、他では不可）")
     ap.add_argument("--tree", required=True, help="測る Vera のツリー（PYTHONPATH になる）")
     ap.add_argument("--out", required=True)
-    ap.add_argument("--entry", help="入口（B1/B5: cli、B2: cli-ask-round5|cli-ask、B3: cli-ask-round5）")
+    ap.add_argument("--entry", help="入口（B1: cli|mod-semantic-read、B5: cli、B2: cli-ask-round5|cli-ask、B3: cli-ask-round5。"
+                                    "mod-semantic-read は B1 の読解の入口 `python -m verantyx.semantic_read`）")
     ap.add_argument("--timeout", type=float, default=60.0, help="1 問あたりの秒数（既定 60）")
     ap.add_argument("--python", default=sys.executable)
     ap.add_argument("--corpus-root", help="VERA_CORPUS_ROOT（既定は空の一時ディレクトリ）")
@@ -185,7 +186,7 @@ def run(args: argparse.Namespace) -> int:
     timing = {"vera_calls_ms_total": 0.0}
     vera_calls = unreachable_n = 0
     try:
-        pre = sess.precheck()
+        pre = sess.precheck(adapters.entry_module(entry))
         timing["precheck_ms"] = pre.pop("elapsed_ms")
         if pre["outside"] is None or pre["import_error"] or pre["outside"]:
             raise InvalidRun("precheck", {"outside": pre["outside"] or [], "precheck": pre})
@@ -201,7 +202,7 @@ def run(args: argparse.Namespace) -> int:
                                                       "reason_detail": reach["reasons"]}))
                 continue
             call = adapters.build_call(bank, entry, rec["case"])
-            r = sess.run_ask(seq, call["argv"], call["files"])
+            r = sess.run_ask(seq, call["argv"], call["files"], call.get("module", "verantyx.cli"))
             vera_calls += 1
             timing["vera_calls_ms_total"] = round(timing["vera_calls_ms_total"] + r["elapsed_ms"], 1)
             _check_provenance(sess, f"item:{rec['id']}")
@@ -268,7 +269,7 @@ def run(args: argparse.Namespace) -> int:
         "bank": bank,
         "profile": profile,
         "entry": entry,
-        "entry_note": "既定: README が最初に案内する vera CLI のうち、そのバンクの入力を受け取り型つきの結果を返す最初のサブコマンド",
+        "entry_note": adapters.ENTRY_NOTES.get(entry, adapters.DEFAULT_ENTRY_NOTE),
         "python": args.python,
         "args": {"items": args.items, "quarantine": args.quarantine, "frames": args.frames,
                  "corpus_root": args.corpus_root, "timeout_s": args.timeout, "entry_option": args.entry},
@@ -276,8 +277,7 @@ def run(args: argparse.Namespace) -> int:
         "tree_head": _git(args.tree, "rev-parse", "HEAD"),
         "verantyx_untouched": (_git(args.tree, "status", "--porcelain", "--", "verantyx") == ""),
         "child_env": sess.env_for_meta(),
-        "child_argv_template": ["<python>", "-c", "<BOOTSTRAP: runpy.run_module('verantyx.cli', run_name='__main__')>",
-                                "run", "ask", "[--mode round5] [--document <file>...] -- <query>"],
+        "child_argv_template": adapters.CHILD_ARGV_TEMPLATES.get(entry, adapters.DEFAULT_CHILD_ARGV_TEMPLATE),
         "precheck": pre,
         "provenance_total": {"processes_checked": sess.processes_checked,
                              "processes_unverified": sess.processes_unverified,

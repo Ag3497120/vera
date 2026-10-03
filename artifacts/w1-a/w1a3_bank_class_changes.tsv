@@ -1,0 +1,7 @@
+sample	id	input	before(round-3 end)	now
+B1_v2	FX-J10	手紙が兄に読まれた。	correct	over_abstain
+B1_v2	FX-J11	窓ガラスが子供に割られた。	correct	over_abstain
+B1_v2_r2	FX2-J10	荷物が広島から送られた。	correct	over_abstain
+B1_v2_r3	FX3-J03	皿が割られた。	correct	over_abstain
+B1_v2_r3	FX3-J10	評論家に感想が求められた。	correct	over_abstain
+B1_v2_r3	FX3-J11	店主が客に怒られた。	correct	over_abstain

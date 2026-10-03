@@ -66,10 +66,18 @@ _VT_RESULT_VERBS = frozenset((
     '登用する', '任命する', '任用する', '起用する', '抜擢する', '選任する', '選出する', '認定する', '選ぶ', '指名する'))
 _VT_APPOINTMENT_VERBS = frozenset(('登用する', '任命する', '任用する', '起用する', '抜擢する', '選任する', '選出する', '指名する', '認定する',
                                    '昇進する', '昇格する', '降格する'))      # confer a post/status on a person: the に-phrase is that status
+_VT_PRODUCT_VERBS = frozenset(('加工する',))      # making a material into a product: the に-phrase is the product, never a person it is done for
+_VT_INTRANSITIVE_CHANGE_VERBS = frozenset(('なる', '成る', '変わる', '化す', '変化する', '変質する', '成長する', '発展する', '進化する', '変貌する',
+                                           '転じる', '転ずる', '移行する'))      # the subject itself changes; no transitive use (a verb with an object left out is not one of these)
 _VT_SHARING_VERBS = frozenset(('分ける', '分割する', '分配する', '配分する'))
 _VT_COUNTED_HEAD = re.compile(r'[0-9０-９〇一二三四五六七八九十百千万数]+[つ個組班人名種類グ]?の')
 _VT_LOCATIVE_VERBS = frozenset(('住む', '滞在する', '位置する', '存在する'))
-_VT_MOTION_VERBS = frozenset(('行く', '来る', '帰る', '戻る', '向かう', '着く', '入る', '出る', '進む', '移る', '渡る')) | _VT_LOCATIVE_VERBS
+_VT_MOTION_VERBS = frozenset(('行く', '来る', '帰る', '戻る', '向かう', '着く', '入る', '出る', '進む', '移る', '渡る',
+                              '出かける', '通う', '引っ越す', '到着する', '帰宅する', '出勤する', '出張する', '出発する', '旅立つ', '上陸する')) | _VT_LOCATIVE_VERBS
+_VT_GOAL_VERBS = (_VT_MOTION_VERBS - _VT_LOCATIVE_VERBS) | frozenset(('送る', '届ける'))      # verbs of motion / sending whose に・へ-phrase is an end point
+# nouns that name a spot or geographic feature and can never act: a から-phrase of a passive naming one is an origin, not a giver
+_VT_SPOTS = frozenset(('駅', '公園', '部屋', '庭', '海', '山', '川', '湖', '島', '畑', '森', '谷', '海岸', '教室', '倉庫', '台所', '玄関', '屋上'))
+_VT_GATHERINGS = frozenset(('会議', '会合', '集会', '総会', '授業', '講義', '試合', '式典', '面接', '宴会', '結婚式', '葬儀'))      # scheduled gatherings one goes to: an end point of going
 _VT_ENCLOSING_VERBS = frozenset(('囲む', '含む', '覆う', '包む', '挟む', '抱く', '満たす', '占める', '隔てる', '区切る', '限る', '閉ざす', '取り巻く', '取り囲む'))
 _VT_PLACEMENT_VERBS = frozenset((
     '置く', '入れる', '載せる', '乗せる', '積む', '掛ける', '吊るす', '貼る', '付ける', '立てる', '並べる', '差す', '挿す', '刺す', '埋める', '植える',
@@ -88,6 +96,39 @@ _VT_PERSON_WORDS = frozenset(('甥', '姪', 'いとこ', '親', '子', '孫', '�
                               '犬', '猫', '鳥', '猿', '熊', '鹿', '猪', '馬', '牛', '豚', '羊', '山羊', '兎', '鼠', '狐', '狸', '狼', '虎', '獅子', '象', '蛇', '蛙', '魚',
                               '虫', '蜂', '蚊', '蟻', '烏', '鷲', '鷹', '雀', '鶏', '鳩', '燕', 'イヌ', 'ネコ', 'サル', 'クマ', 'シカ', 'ウマ', 'ウシ', 'ブタ'))
 _VT_BENEFACTIVE = frozenset(('あげる', 'やる', 'くれる', '差し上げる', 'もらう', '貰う', 'いただく', '頂く', 'くださる'))
+# Round 4 (written separately from the reader's classes; test_gates_round4 checks that the two lists agree). A closed class takes a word
+# only when every sense of the word names a person; the ending characters of a word are not evidence.
+_VT_PERSON_WORDS = _VT_PERSON_WORDS | frozenset((
+    '兵士', '兵隊', '軍人', '役人', '商人', '住人', '町人', '旅人', '恋人', '夫人', '婦人', '青年', '少年', '少女', '武士', '騎士',
+    '隊員', '団員', '部員', '局員', '署員', '係員', '駅員', '船員', '乗員', '要員', '党員', '教員',
+    '歌手', '作家', '画家', '村長', '町長', '市長', '区長', '知事', '委員', '役員', '議員', '議長', '会長', '幹事', '理事', '取締役', '評議員', '会員',
+    '主人', '店主', '社員', '職人', '医者', '学者', '飼い主', '持ち主', '地主', '家主', '船長', '機長', '艦長', '隊長', '団長', '局長', '署長',
+    '所長', '館長', '園長', '院長', '組長', '学長'))
+# the person-role words of frames.ROLES that name a person in every sense, copied so that the class is closed in this module (written separately from
+# the reader's list; test_gates_round5 compares the two); the one frames.ROLES word that also names a building is left out
+_VT_ROLE_NOUNS = frozenset(('シェフ','上司','伯母','伯父','住民','作業員','係長','兄','先生','先輩','助手','医師','友人','叔母','叔父','司書','同僚','夫','妹','妻','姉','娘','学生','孫','工員','店員','店長','弟','後輩','息子','患者','技師','担任','指揮者','教師','教授','料理人','校長','検査員','母','消防士','漁師','父','班長','理学療法士','生徒','監督','看護師','社長','祖母','祖父','職員','船長','薬剤師','記者','課長','警察官','運転手','選手','部下','部長'))
+_VT_PERSON_WORDS = _VT_PERSON_WORDS | _VT_ROLE_NOUNS
+_VT_ROLE_SUFFIXES = frozenset(('士', '生', '主', '医', '者', '人', '手', '員', '民', '師', '長', '係', '官', '家', '将', '婦', '夫'))   # tagged 接尾辞 only inside a compound
+_VT_GROUP_SUFFIXES = frozenset(('団', '隊'))
+_VT_GROUP_NOUNS = frozenset(('軍', 'チーム', '客'))
+_VT_MEMBER_NOUNS = frozenset(('委員', '理事', '役員', '取締役', '評議員', '議員', '幹事', '監事', '会員'))
+_VT_POSTS = frozenset(('社長', '部長', '課長', '係長', '班長', '店長', '校長', '議長', '会長', '委員長', '委員', '理事', '幹事', '代表', '主任', '監督',
+                       '館長', '院長', '所長', '局長', '署長', '組長', '村長', '町長', '市長', '区長', '知事', '学長', '園長', '艦長', '隊長', '団長',
+                       '船長', '機長', '首相', '大統領', '総理', '総裁', 'キャプテン', 'リーダー', '主将', '教授', '役員', '議員', '取締役', '支店長',
+                       '工場長'))
+_VT_POST_SUFFIXES = frozenset(('長', '係'))
+# verbs of making / mending / finishing / editing / dyeing / selecting: their に-phrase is a result only with evidence of a result type
+_VT_PROCESSING_VERBS = frozenset(('直す', '仕立てる', '仕上げる', '整理する', 'まとめる', '編集する', '改訂する', '染める', '塗り替える', '塗りかえる',
+                                  '塗り直す', '改装する', '模様替えする', '描き直す', '選ぶ', '作り変える', '改造する'))
+_VT_SELECTION_VERBS = (_VT_APPOINTMENT_VERBS - frozenset(('昇進する', '昇格する', '降格する'))) | frozenset(('選ぶ',))
+_VT_COLOURS = frozenset([c for c in ('赤', '青', '黄', '緑', '白', '黒', '紫', '茶', '灰', '橙', '紺', '藍', '朱', '紅', '桃', '黄緑', '薄緑', '群青')]
+                        + [c + '色' for c in ('赤', '青', '黄', '緑', '白', '黒', '紫', '茶', '灰', '橙', '紺', '藍', '朱', '紅', '桃', '金', '銀', '水',
+                                              '空', '肌', '黄緑', '薄緑', '群青')]
+                        + ['ピンク', 'オレンジ', 'グレー', 'ブラウン', 'ブルー', 'グリーン', 'レッド', 'ホワイト', 'ブラック', 'イエロー', 'パープル', 'ベージュ'])
+_VT_FORMATS = frozenset(('図', '表', '図表', '一覧', '要点', '概要', '要約', '目次', 'リスト', '箇条書き', 'グラフ', '年表'))      # nouns naming only a format / digest of content
+_VT_FORM_NOUNS = frozenset(('語', '形', '版', '式', '型', '風', '色'))
+_VT_LANGUAGES = frozenset(('英語', '仏語', '独語', '露語', '言語', '方言', '敬語', '平仮名', 'ひらがな', 'カタカナ', '漢字'))      # name only a language / variety / script (one token each)
+_VT_DEGREE_MARKS = ('ほど', 'くらい', 'ぐらい', '並み')
 # A person/organisation is accepted on positive evidence only (see _vt_is_addressee); the ending characters of a word (社 会 部 校 …)
 # are shared by organisations, events, places and body/regional parts and decide nothing.
 _VT_HONORIFIC_TOKENS = ('さん', '氏', '君', '様', '殿', '達', 'たち', 'ども', 'ちゃん')
@@ -240,7 +281,7 @@ def _vt_is_place(phrase):
     compact = phrase.replace(' ', '').replace('　', '')
     segments = compact.split('の'); head = segments[-1]
     options = [head]
-    for tail in ('前', '内', '上', '中', '周辺', '近く', '付近', '隅', '奥', '脇', '横', '隣', '角', '裏', '先'):
+    for tail in ('前', '内', '上', '中', '周辺', '近く', '付近', '隅', '奥', '脇', '横', '隣', '角', '裏', '先', '方面'):
         if head.endswith(tail) and len(head) > len(tail): options.append(head[:-len(tail)])
         if head == tail and len(segments) > 1: options.append(segments[-2])
     if any(o.endswith(_VT_PLACE_ENDINGS) for o in options): return True
@@ -248,23 +289,88 @@ def _vt_is_place(phrase):
     return bool(toks) and toks[-1][1] == '名詞' and toks[-1][2] == '固有名詞' and toks[-1][3] == '地名'
 
 
+def _vt_is_origin_spot(phrase):
+    """Evidence that a から-phrase of a passive names where something comes from: a closed spot noun that cannot act, or a named place."""
+    compact = phrase.replace(' ', '').replace('　', '')
+    head = compact.split('の')[-1]
+    if head in _VT_SPOTS: return True
+    toks = _vt_tokens(head)
+    return bool(toks) and toks[-1][1] == '名詞' and toks[-1][2] == '固有名詞' and toks[-1][3] == '地名'
+
+
 def _vt_is_addressee(phrase):
-    """Can the phrase be an addressee / an actor? Judged from the tagger and closed lexicons on the HEAD (after the last の) only."""
-    from .frames import is_role, ROLES, _LEARNED, _PERSON_SUFFIX
+    """Can the phrase be an addressee / an actor? Positive evidence only, judged from the tagger and closed classes on the HEAD (after
+    the last の): a closed person word, a pronoun, a proper person/organisation name, a noun + person-role/honorific/group suffix token,
+    a noun + 軍/チーム/客, or <X>会 whose X is a person or ends in a member noun. The ending characters of a word decide nothing, and the
+    katakana words of frames._LEARNED (a corpus count of words written before a name: instruments, appliances, cities ...) are not a class of persons."""
     compact = phrase.replace(' ', '').replace('　', '')
     head = compact.split('の')[-1]
     if not head: return False
-    if head in _VT_PERSON_WORDS or head in ROLES or head in _LEARNED or head.endswith('客'): return True
+    if head in _VT_PERSON_WORDS: return True
     toks = _vt_tokens(head)
     if not toks: return False
     final = toks[-1]
     if final[1] == '代名詞': return True
     if final[2] == '固有名詞' and final[3] in ('人名', '組織名', '一般'): return True
-    if len(toks) > 1 and toks[-2][1] in ('名詞', '代名詞'):
-        if final[1] == '接尾辞' and final[0] in _VT_HONORIFIC_TOKENS + ('団', '隊'): return True
-        if final[1] == '名詞' and final[0] in ('軍', 'チーム'): return True
-    if len(toks) > 1 and final[0] == '会' and final[1] == '名詞' and is_role(toks[-2][0]): return True
-    return head.endswith(_PERSON_SUFFIX) and final[3] != 'サ変可能'
+    if len(toks) > 1:
+        prev = toks[-2]
+        chained = prev[1] in ('名詞', '代名詞') or (prev[1] == '接尾辞' and prev[0] in _VT_HONORIFIC_TOKENS + tuple(_VT_ROLE_SUFFIXES))
+        if chained:
+            # Round 6: a family name + 家 names the people AND the house; that is no evidence of a person (a common noun + 家 is one)
+            if (final[1] == '接尾辞' and (final[0] in _VT_HONORIFIC_TOKENS or final[0] in _VT_GROUP_SUFFIXES or final[0] in _VT_ROLE_SUFFIXES)
+                    and not (final[0] == '家' and prev[1] == '名詞' and prev[2] == '固有名詞')): return True
+            if final[1] == '名詞' and final[0] in _VT_GROUP_NOUNS: return True
+        if final[0] == '会' and final[1] == '名詞' and prev[1] in ('名詞', '接尾辞'):
+            if prev[0] in _VT_MEMBER_NOUNS or _vt_is_addressee(head[:final[4]]): return True
+    return False
+
+
+def _vt_is_post(phrase):
+    """A post / office (what a person is chosen AS): a closed post noun, or <noun> + 長/係 as two tokens."""
+    compact = phrase.replace(' ', '').replace('　', '')
+    head = compact.split('の')[-1]
+    if not head: return False
+    if head in _VT_POSTS: return True
+    toks = _vt_tokens(head)
+    return len(toks) >= 2 and toks[-1][1] == '接尾辞' and toks[-1][0] in _VT_POST_SUFFIXES and toks[-2][1] == '名詞'
+
+
+def _vt_result_evidence(phrase):
+    """Positive evidence that a に-phrase names a result type: a number + counter, an adjectival noun head, a noun + 語/形/版/式/型/風/色, a
+    colour name, or a time phrase. A person lexicon is not consulted."""
+    compact = phrase.replace(' ', '').replace('　', '')
+    if not compact: return False
+    if _VT_COUNTED_HEAD.match(compact) or _vt_is_time(compact): return True
+    head = compact.split('の')[-1]
+    if head in _VT_COLOURS or head in _VT_FORMATS or head in _VT_LANGUAGES: return True
+    toks = _vt_tokens(head)
+    if not toks: return False
+    if toks[-1][1] == '形状詞': return True
+    if toks[-1][1] == '名詞' and toks[-1][3] == '助数詞可能': return True                # a noun usable as a counter: a unit things are divided into
+    if toks[-1][1] == '名詞' and toks[-1][0] in _VT_FORMATS: return True                 # a compound headed by a format noun
+    if len(toks) == 2 and toks[0][2] == '数詞' and toks[1][1] in ('接尾辞', '名詞'): return True      # a numeral + one counter / measure word
+    return len(toks) >= 2 and toks[-1][1] == '名詞' and toks[-1][0] in _VT_FORM_NOUNS and toks[-2][1] == '名詞'
+
+
+def _vt_result_excluded(predicate, phrase, object_person, passive):
+    """Why a に-phrase cannot be the result of this verb of change, or None. A person lexicon is not consulted: with a thing acted on, the
+    に-phrase is a result only on evidence of a result type (a status-conferring verb, and a clause with no thing acted on whose verb has no
+    transitive use, need none; a transitive verb with its object left out is undecided)."""
+    compact = phrase.replace(' ', '').replace('　', '')
+    if passive and predicate in _VT_SELECTION_VERBS:
+        return None if (_vt_is_post(compact) and object_person is not False) else 'the に-phrase of a passive selection is a result only when it names a post'
+    if predicate in _VT_APPOINTMENT_VERBS or predicate in _VT_PRODUCT_VERBS: return None
+    if _vt_result_evidence(compact): return None
+    if object_person is True: return None              # work applied TO a person: the に-phrase is the status the person is brought to
+    if predicate in _VT_PROCESSING_VERBS: return 'a result of a verb of making needs evidence of a result type'
+    if object_person is None and predicate in _VT_INTRANSITIVE_CHANGE_VERBS: return None   # nothing acted on and the verb takes none (なる, 変わる): the に-phrase is what the subject becomes
+    return 'a result of a verb of conversion on a thing needs evidence of a result type'
+
+
+def _vt_passive_follows(toks, index):
+    """toks[index] (tuples with the lemma last) is the predicate token; a サ変 predicate is the noun and the する verb."""
+    if index < len(toks) and toks[index][1] == '名詞' and index + 1 < len(toks) and toks[index + 1][6] == 'する': index += 1
+    return index + 1 < len(toks) and toks[index + 1][6] in ('れる', 'られる')
 
 
 def _vt_following(tagged, end):
@@ -281,16 +387,21 @@ def _vt_following(tagged, end):
     return ''
 
 
-def _vt_recipient_excluded(predicate, value, has_object, benefactive):
+def _vt_recipient_excluded(predicate, value, has_object, benefactive, mark='に'):
     """Why a に-marked phrase cannot be this predicate's recipient, or None. Verbs of transfer/telling and a benefactive address
     the phrase; a person is an addressee; the end point of a motion/placement/location verb is read as recipient (project
     convention); otherwise, with an を-object, the に-phrase is a result/place/state."""
     if predicate in _VT_ADDRESSEE_VERBS or benefactive: return None
+    # Round 4: the end point of a MOTION verb is a recipient only when the phrase shows it is a place or an addressee; placement and
+    # location verbs keep the project convention (existing tests fix it).
+    if predicate in _VT_MOTION_VERBS and predicate not in _VT_LOCATIVE_VERBS:
+        return None if (_vt_is_place(value) or _vt_is_addressee(value)) else 'end point without place or person evidence'
+    if predicate in _VT_MOTION_VERBS or predicate in _VT_PLACEMENT_VERBS: return None
+    if mark != 'に': return None
     person = _vt_is_addressee(value) and not _vt_is_place(value)
     if predicate in _VT_RESULT_VERBS:
         shares = predicate in _VT_SHARING_VERBS and person and not _VT_COUNTED_HEAD.match(value.replace(' ', '').replace('　', ''))
         return None if shares else 'not an addressee'
-    if predicate in _VT_MOTION_VERBS or predicate in _VT_PLACEMENT_VERBS: return None
     if person: return None
     return 'not an addressee' if has_object else None
 
@@ -309,7 +420,8 @@ def _vt_intransitive(predicate):
 
 
 def _vt_origin_not_agent(value):
-    return _vt_is_time(value) or (_vt_is_place(value) and not _vt_is_addressee(value))
+    # a から-phrase is an agent only with positive evidence of a person; a spot noun never is one (a surname-like 森 is tagged a person name)
+    return _vt_is_time(value) or value.replace(' ', '').replace('　', '').split('の')[-1] in _VT_SPOTS or not _vt_is_addressee(value)
 
 
 def _vt_participant_excluded(name, value, tagged, end, predicate, passive, has_patient=True, benefactive=False, subject=None):
@@ -318,8 +430,9 @@ def _vt_participant_excluded(name, value, tagged, end, predicate, passive, has_p
     follow = _vt_following(tagged, end)
     if follow in ('に', 'は') and _vt_is_time(value): return 'time phrase'
     if name == 'agent' and passive and follow == 'に' and _vt_agent_excluded(value, predicate, subject, has_patient): return 'not a person'
+    if name == 'agent' and passive and follow == 'に' and predicate in _VT_SELECTION_VERBS: return 'by/as undecided (a passive verb of selection)'
     if name == 'agent' and passive and follow == 'から' and _vt_origin_not_agent(value): return 'an origin, not an agent'
-    if name == 'recipient' and follow == 'に': return _vt_recipient_excluded(predicate, value, has_patient, benefactive)
+    if name == 'recipient' and follow in ('に', 'へ'): return _vt_recipient_excluded(predicate, value, has_patient, benefactive, follow)
     if name == 'patient' and follow == 'は' and not passive and _vt_intransitive(predicate): return 'topic of an intransitive verb'
     return None
 
@@ -327,7 +440,7 @@ def _vt_participant_excluded(name, value, tagged, end, predicate, passive, has_p
 def _vt_check_roles(clause):
     """Type checks every clause must pass, whatever rule produced it."""
     body = clause.body_span or clause.span
-    roles = [r for r in clause.roles if r.name in _VT_NOMINAL_ROLES or r.name in _VT_TIME_ADJUNCT_ROLES or r.name == 'time']
+    roles = [r for r in clause.roles if r.name in _VT_NOMINAL_ROLES or r.name in _VT_TIME_ADJUNCT_ROLES or r.name in ('time', 'source')]
     if not roles: return
     toks = _vt_tokens(body.text); rdepth = _vt_depths(body.text)
     starts = {t[4] for t in toks}; ends = {t[5] for t in toks}
@@ -344,7 +457,7 @@ def _vt_check_roles(clause):
     after = [t for t in toks if t[4] >= p0]
     benefactive = any(after[k][0] in ('て', 'で') and k + 1 < len(after) and after[k + 1][6] in _VT_BENEFACTIVE
                       for k in range(len(after) - 1))
-    clause_passive = len(after) > 1 and after[1][6] in ('れる', 'られる')
+    clause_passive = _vt_passive_follows(after, 0)
     for role in roles:
         a, b = spans[id(role)]; mark = follow[id(role)]; text = role.span.text
         if role.name in _VT_NOMINAL_ROLES:
@@ -365,7 +478,9 @@ def _vt_check_roles(clause):
                 raise Rejected('ill-typed role: a phrase that cannot act as agent')
             if role.name == 'agent' and mark == 'から' and _vt_origin_not_agent(text):
                 raise Rejected('ill-typed role: an origin (place/time) as agent')
-            if role.name == 'recipient' and mark == 'に' and _vt_recipient_excluded(clause.predicate, text, has_object, benefactive):
+            if role.name == 'agent' and mark == 'に' and clause_passive and clause.predicate in _VT_SELECTION_VERBS:
+                raise Rejected('ill-typed role: the に-phrase of a passive verb of selection is by/as undecided, not an agent')
+            if role.name == 'recipient' and mark in ('に', 'へ') and _vt_recipient_excluded(clause.predicate, text, has_object, benefactive, mark):
                 raise Rejected('ill-typed role: recipient is not an addressee')
             if role.name == 'patient' and mark == 'は' and not clause_passive and _vt_intransitive(clause.predicate):
                 raise Rejected('ill-typed role: a topic as the patient of an intransitive verb')
@@ -374,6 +489,12 @@ def _vt_check_roles(clause):
                 if len(stem) >= 2 and clause.predicate.startswith(stem): raise Rejected('ill-typed role: participant repeats the predicate')
         elif role.name in _VT_TIME_ADJUNCT_ROLES and _vt_is_time(text):
             raise Rejected('ill-typed role: time phrase as place/goal/direction/result')
+        elif role.name == 'source' and mark == 'から' and clause_passive and not _vt_is_origin_spot(text):
+            raise Rejected('ill-typed role: the から-phrase of a passive is the agent or the origin, and nothing shows it is a spot')
+        elif (role.name in ('goal', 'direction') and mark in ('に', 'へ') and clause.predicate in _VT_GOAL_VERBS
+              and not _vt_is_place(text) and text.replace(' ', '').replace('　', '').split('の')[-1] not in _VT_GATHERINGS
+              and not _vt_is_addressee(text)):
+            raise Rejected('ill-typed role: end point of motion without place evidence')
         elif role.name == 'time' and mark == 'に' and has_object and clause.predicate in _VT_RESULT_VERBS:
             raise Rejected('ill-typed role: time phrase of a verb of change is its new value, not when it happened')
         elif role.name == 'result' and _vt_is_time(text) and clause.predicate not in _VT_RESULT_VERBS:
@@ -381,11 +502,11 @@ def _vt_check_roles(clause):
         elif (role.name == 'result' and mark == 'に' and clause.predicate in _VT_RESULT_VERBS and not clause_passive
               and any(r.name == 'patient' and follow[id(r)] == 'を' and spans[id(r)][0] >= b for r in roles)):
             raise Rejected('ill-typed role: a に-phrase before the object of a verb of change is not its result')
-        elif (role.name == 'result' and mark == 'に' and clause.predicate in _VT_RESULT_VERBS and _vt_is_addressee(text)
-              and clause.predicate not in _VT_APPOINTMENT_VERBS and not _vt_is_place(text)
-              and not any(r.name == 'patient' and follow[id(r)] in (('が', 'は') if clause_passive else ('を',)) and _vt_is_addressee(r.span.text)
-                          for r in roles)):
-            raise Rejected('ill-typed role: a person as the result of a verb of change on a thing')
+        elif role.name == 'result' and mark == 'に' and clause.predicate in _VT_RESULT_VERBS and not _vt_is_time(text):
+            owners = [r for r in roles if r.name == 'patient' and follow[id(r)] in (('が', 'は') if clause_passive else ('を',))]
+            object_person = any(_vt_is_addressee(r.span.text) for r in owners) if owners else None
+            why = _vt_result_excluded(clause.predicate, text, object_person, clause_passive)
+            if why: raise Rejected('ill-typed role: ' + why)
 
 
 _COMPOUND_SURFACES = tuple(sorted({surface for choices in _CONSTRUCTION_PARTICLES.values()
@@ -842,6 +963,17 @@ def license_clause(clause, view, ranges=None):
             if not ok: raise Rejected('copula attribute split is not at a particle token')
         vend = value.span.end - body.start
         vtoks = [t for t in ctoks if t[4] >= cut[5] and t[4] < vend and cdepth[t[4]] == 0]      # not inside a parenthetical gloss
+        # a value written with no copula that ENDS in a chain of verbal auxiliaries after a verb / an adjective / a verbalising suffix is a verb the tagger
+        # split, not a noun (an auxiliary inside a noun phrase, or the copula であった at the end, is not this)
+        if not re.search(r'(?:です|である|だ|ではない|でない|じゃない|でした|だった|ではなかった|でなかった|じゃなかった)[。！？?]*\s*$', raw):
+            vbody = [t for t in vtoks if t[1] not in ('補助記号', '記号')]
+            n = len(vbody)
+            while n and vbody[n - 1][1] == '助動詞': n -= 1
+            if 0 < n < len(vbody):
+                head = vbody[n - 1]
+                copular_ari = head[1] == '動詞' and head[6] == 'ある' and n >= 2 and vbody[n - 2][0] == 'で'
+                if not copular_ari and (head[1] in ('動詞', '形容詞') or (head[1] == '接尾辞' and head[2] == '動詞的')):
+                    raise Rejected('copula value is a predicate phrase')
         while vtoks and (vtoks[-1][1] in ('助動詞', '補助記号', '記号')
                          or (vtoks[-1][1] == '動詞' and vtoks[-1][6] == 'ある' and len(vtoks) > 1 and vtoks[-2][0] == 'で')
                          or (vtoks[-1][1] == '助詞' and vtoks[-1][0] == 'で')):
@@ -850,6 +982,11 @@ def license_clause(clause, view, ranges=None):
         # a comparison standard: より after a noun/pronoun/の is one whatever tag it gets (前のより軽い: the tagger says 副詞)
         if any(t[0] == 'より' and (t[1] == '助詞' or (k > 0 and (vtoks[k - 1][1] in ('名詞', '代名詞', '数', '接尾辞')
                                                               or (vtoks[k - 1][1] == '助詞' and vtoks[k - 1][0] == 'の'))))
+               for k, t in enumerate(vtoks)):
+            raise Rejected('copula value is a predicate phrase')
+        # a degree comparison: ほど / くらい / ぐらい / 並み after a noun, pronoun, number or の (先月ほど静か, 海くらい穏やか, 君のほど重い)
+        if any(t[0] in _VT_DEGREE_MARKS and k > 0 and (vtoks[k - 1][1] in ('名詞', '代名詞', '数', '接尾辞')
+                                                      or (vtoks[k - 1][1] == '助詞' and vtoks[k - 1][0] == 'の'))
                for k, t in enumerate(vtoks)):
             raise Rejected('copula value is a predicate phrase')
         if (vcontent and vcontent[-1][1] in ('形容詞', '形状詞', '動詞')

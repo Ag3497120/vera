@@ -31,12 +31,11 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 TREE = os.environ.get('PYTHONPATH', '').split(os.pathsep)[0]
 
-JA_BANKS = ('table7.jsonl', 'ja.jsonl', 'ja_r2.jsonl', 'ja_r3.jsonl')
+JA_BANKS = ('table7.jsonl', 'ja.jsonl', 'ja_r2.jsonl', 'ja_r3.jsonl', 'ja_r4.jsonl', 'ja_r5.jsonl', 'ja_r6.jsonl')
 EN_BANKS = ('en.jsonl', 'en_r2.jsonl')
-# 上申済みの既知の例外(id で列挙する。ほかの誤読は 0 を要求する)。J1-17: 「へ」の終点を recipient と呼ぶ規約を既存テスト
-# tests/test_semantic_realize.py::test_reader_case_roles_are_preserved (マキは研究室へ行った。→ recipient) が固定している。
-# チケットが誤読とする「着点を受け手にする」と衝突し、既存テストは変えられない(許可パスの規則)ので、凍結した正解のまま誤読 1 と数え、上申する。
-ESCALATED = {'J1-17': 'end point of へ is read as recipient by a convention fixed in an existing test; escalated (docs/READING_SOUNDNESS.md)'}
+# 上申済みの既知の例外(id で列挙する)。W1-a2 で空にした: 以前の J1-17(「へ」の終点を recipient と呼ぶ規約)は、場所・人の正の証拠が無い終点を
+# recipient と読まず、第 2 ラウンドからは未対応にして解消した(docs/READING_SOUNDNESS.md §4.4 M5)。ほかの誤読も 0 を要求する。
+ESCALATED = {}
 
 
 def isolation_check():

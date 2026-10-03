@@ -1,0 +1,50 @@
+text	kind	round-3-end reading (clauses)	now: abstain reason
+3時に会議室で書類が配られた。	readable→false	[{"predicate": "配る", "roles": {"patient": "書類", "time": "3時", "place": "会議室"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+昭和30年に市役所が建設された。	readable→false	[{"predicate": "建設する", "roles": {"patient": "市役所", "time": "昭和30年"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+2019年10月に制度が改正された。	readable→false	[{"predicate": "改正する", "roles": {"patient": "制度", "time": "2019年10月"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+8時に工場で試験が行われた。	readable→false	[{"predicate": "行う", "roles": {"patient": "試験", "time": "8時", "place": "工場"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+犯人が警察に逮捕された。	readable→false	[{"predicate": "逮捕する", "roles": {"agent": "警察", "patient": "犯人"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+生徒が先生から注意された。	readable→false	[{"predicate": "注意する", "roles": {"agent": "先生", "patient": "生徒"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+荷物が届けられた。	readable→false	[{"predicate": "届ける", "roles": {"patient": "荷物"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or potential
+窓が割られた。	readable→false	[{"predicate": "割る", "roles": {"patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+契約が結ばれた。	readable→false	[{"predicate": "結ぶ", "roles": {"patient": "契約"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+試験が中止された。	readable→false	[{"predicate": "中止する", "roles": {"patient": "試験"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+駅の看板が撤去された。	readable→false	[{"predicate": "撤去する", "roles": {"patient": "駅の看板"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+3時間後に新製品が発表された。	readable→false	[{"predicate": "発表する", "roles": {"patient": "新製品", "time": "3時間後"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+15日後に請求書が発送された。	readable→false	[{"predicate": "発送する", "roles": {"patient": "請求書", "time": "15日後"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+数日後に結果が公表された。	readable→false	[{"predicate": "公表する", "roles": {"patient": "結果", "time": "数日後"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+容疑者が警察に追跡された。	readable→false	[{"predicate": "追跡する", "roles": {"agent": "警察", "patient": "容疑者"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+規則が委員会に承認された。	readable→false	[{"predicate": "承認する", "roles": {"agent": "委員会", "patient": "規則"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+少年が探検隊に救助された。	readable→false	[{"predicate": "救助する", "roles": {"agent": "探検隊", "patient": "少年"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+要望書が政府に却下された。	readable→false	[{"predicate": "却下する", "roles": {"agent": "政府", "patient": "要望書"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+俳優が劇団に採用された。	readable→false	[{"predicate": "採用する", "roles": {"agent": "劇団", "patient": "俳優"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+消防士に子猫が助けられた。	readable→false	[{"predicate": "助ける", "roles": {"agent": "消防士", "patient": "子猫"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+弁護士に契約書が確認された。	readable→false	[{"predicate": "確認する", "roles": {"agent": "弁護士", "patient": "契約書"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+編集長に原稿が却下された。	readable→false	[{"predicate": "却下する", "roles": {"agent": "編集長", "patient": "原稿"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+公務員に書類が調べられた。	readable→false	[{"predicate": "調べる", "roles": {"agent": "公務員", "patient": "書類"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+運転手に荷物が降ろされた。	readable→false	[{"predicate": "降ろす", "roles": {"agent": "運転手", "patient": "荷物"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+看護師に患者が励まされた。	readable→false	[{"predicate": "励ます", "roles": {"agent": "看護師", "patient": "患者"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+警備員に男が呼び止められた。	readable→false	[{"predicate": "呼び止める", "roles": {"agent": "警備員", "patient": "男"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+事業団から資金が提供された。	readable→false	[{"predicate": "提供する", "roles": {"agent": "事業団", "patient": "資金"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+畑から芋が掘り出された。	readable→false	[{"predicate": "掘り出す", "roles": {"patient": "芋", "source": "畑"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+川から砂が運ばれた。	readable→false	[{"predicate": "運ぶ", "roles": {"patient": "砂", "source": "川"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+広島から荷物が送られた。	readable→false	[{"predicate": "送る", "roles": {"patient": "荷物", "source": "広島"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+評論家に感想が求められた。	readable→false	[{"predicate": "求める", "roles": {"agent": "評論家", "patient": "感想"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+新人が消防団に勧誘された。	readable→false	[{"predicate": "勧誘する", "roles": {"agent": "消防団", "patient": "新人"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+前半に大量の得点が奪われた。	readable→false	[{"predicate": "奪う", "roles": {"patient": "大量の得点", "time": "前半"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+書類が部下に整理された。	readable→false	[{"predicate": "整理する", "roles": {"agent": "部下", "patient": "書類"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+軍団に命令が下された。	readable→false	[{"predicate": "下す", "roles": {"agent": "軍団", "patient": "命令"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+手紙が兄に読まれた。	readable→false	[{"predicate": "読む", "roles": {"agent": "兄", "patient": "手紙"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+窓ガラスが子供に割られた。	readable→false	[{"predicate": "割る", "roles": {"agent": "子供", "patient": "窓ガラス"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+荷物が広島から送られた。	readable→false	[{"predicate": "送る", "roles": {"patient": "荷物", "source": "広島"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+倉庫から荷物が運び出された。	readable→false	[{"predicate": "運び出す", "roles": {"patient": "荷物", "source": "倉庫"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+荷物が駅から届けられた。	readable→false	[{"predicate": "届ける", "roles": {"patient": "荷物", "source": "駅"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or potential
+先生に宿題が出された。	readable→false	[{"predicate": "出す", "roles": {"agent": "先生", "patient": "宿題"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+手紙が友人から送られた。	readable→false	[{"predicate": "送る", "roles": {"agent": "友人", "patient": "手紙"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+協会から表彰状が授与された。	readable→false	[{"predicate": "授与する", "roles": {"agent": "協会", "patient": "表彰状"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+同事業は同日付でフォーサイドメディアへ譲渡された。	reason_changed	RECIPIENT_TYPE_UNDETERMINED:フォーサイドメディア	UNDETERMINED_VOICE:passive or honorific
+先生が教えられた。	reason_changed	UNDETERMINED_VOICE:passive or honorific	UNDETERMINED_VOICE:passive or potential
+専門家に意見が求められた。	readable→false	[{"predicate": "求める", "roles": {"agent": "専門家", "patient": "意見"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+ミロのヴィーナスに傷が付けられた。	readable→false	[{"predicate": "付ける", "roles": {"agent": "ミロのヴィーナス", "patient": "傷"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+皿が割られた。	readable→false	[{"predicate": "割る", "roles": {"patient": "皿"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific
+店主が客に怒られた。	readable→false	[{"predicate": "怒る", "roles": {"agent": "客", "patient": "店主"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]	UNDETERMINED_VOICE:passive or honorific

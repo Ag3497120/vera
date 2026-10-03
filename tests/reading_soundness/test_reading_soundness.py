@@ -47,7 +47,13 @@ def test_bank_is_large_enough():
             # round 2 (ja_r2 / en_r2): sub-forms the first bank did not measure
             'K1': 6, 'K2': 5, 'K3': 6, 'K4': 5, 'K5': 3, 'K6': 4, 'F1': 4, 'F2': 4, 'F3': 4, 'F4': 4, 'F5': 4, 'F6': 4,
             # round 3 (ja_r3): the type of a に-phrase decides whether it can be an agent / a result
-            'L1': 12, 'L2': 10, 'L3': 5}
+            'L1': 12, 'L2': 10, 'L3': 5,
+            # round 4 (ja_r4): N1-N4 sub-forms (types that need a positive type evidence)
+            'N1': 12, 'N1c': 4, 'N2': 12, 'N2c': 4, 'N3': 12, 'N3c': 3, 'N4': 12,
+            # round 5 (ja_r5): the review's misreading types (M1 a katakana thing as agent, M2 a conversion verb, M3 から of a passive, M5 end point of motion)
+            'R1': 12, 'R1c': 4, 'R2': 12, 'R2c': 4, 'R3': 12, 'R3c': 3, 'R4': 12, 'R4c': 4,
+            # round 6 (ja_r6): S1 a transitive verb with its object left out (the に-phrase is not a result), S4 a family name + 家
+            'S1': 12, 'S1c': 4, 'S4': 12, 'S4c': 3}
     for t, n in need.items():
         assert SUMMARY[t]['n'] >= n, (t, SUMMARY[t])
 
@@ -58,7 +64,7 @@ def test_frozen_banks_are_unchanged():
     import hashlib
     art = HERE.parent.parent / 'artifacts' / 'w1-a'
     expected = {}
-    for name in ('bank_freeze.sha256', 'bank_freeze_r2.sha256', 'bank_freeze_r3.sha256'):
+    for name in ('bank_freeze.sha256', 'bank_freeze_r2.sha256', 'bank_freeze_r3.sha256', 'bank_freeze_r4.sha256', 'bank_freeze_r5.sha256', 'bank_freeze_r6.sha256'):
         f = art / name
         if not f.exists():
             pytest.skip('artifacts/w1-a not present')
@@ -79,9 +85,10 @@ def test_no_misread_is_returned_as_supported(row):
 
 
 def test_the_only_misread_is_the_escalated_exception():
+    """W1-a2: strengthened. There is no escalated exception any more (J1-17 is read as a direction) and no sentence of any bank is misread."""
     misread = {r['id'] for r in ROWS if r['result'] == 'misread'}
-    assert misread <= set(harness.ESCALATED), misread - set(harness.ESCALATED)
-    assert set(harness.ESCALATED) == {'J1-17'}
+    assert misread == set(), misread
+    assert set(harness.ESCALATED) == set()
 
 
 def test_no_clause_outside_the_gold_passes_the_checker():
@@ -111,10 +118,13 @@ def test_english_simple_negation_and_active_sentences_are_still_read():
 
 def test_a3_questions_do_not_answer_with_time_or_place():
     from verantyx.one import Vera
-    for r in _items('a3.jsonl') + _items('a3_r2.jsonl') + _items('a3_r3.jsonl'):
+    for r in _items('a3.jsonl') + _items('a3_r2.jsonl') + _items('a3_r3.jsonl') + _items('a3_r4.jsonl') + _items('a3_r5.jsonl'):
         ans = Vera.from_texts({'d': r['text']}, mode='semantic').ask(r['question'])
         values = [str(v) for v in (ans.get('values') or [])]
         assert not any(f in v for f in r['forbidden'] for v in values), (r, ans.get('verdict'), values)
+        # W1-a2 (strengthened): a passive sentence without a stated agent has no answer to "who did it?", and a CUT answer (空母 -> 空)
+        # escapes the forbidden-word test, so any answer-shaped reply fails.
+        assert not str(ans.get('verdict')).startswith('ANSWER') and not values, (r, ans.get('verdict'), values)
 
 
 # ---------------------------------------------------------------------------------------------------------------------

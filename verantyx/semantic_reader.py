@@ -101,6 +101,31 @@ _PERSON_NOUNS = frozenset(('甥','姪','いとこ','親','子','孫','祖先','�
                            '犬','猫','鳥','猿','熊','鹿','猪','馬','牛','豚','羊','山羊','兎','鼠','狐','狸','狼','虎','獅子','象','蛇','蛙','魚',
                            '虫','蜂','蚊','蟻','烏','鷲','鷹','雀','鶏','鳩','燕','イヌ','ネコ','サル','クマ','シカ','ウマ','ウシ','ブタ'))
 
+# W1-a round 4 (N1): the ending characters of a word decide nothing about whether it is a person. What counts is listed here or
+# in _is_person_phrase and is POSITIVE evidence only. The closed classes below take a word ONLY when every sense of the word names a
+# person (or a body of persons): 歌手 is always a singer; 雨戸 is never a person, and a word that has a person sense and a non-person
+# sense (本家, 旧家, 先方の家) is not listed. A word that is not listed is "not shown to be a person", never "shown not to be one".
+_PERSON_OCCUPATION_WORDS = frozenset(('兵士','兵隊','軍人','役人','商人','住人','町人','旅人','恋人','夫人','婦人','青年','少年','少女','武士','騎士','隊員','団員','部員','局員','署員','係員','駅員','船員','乗員','要員','党員','教員','歌手','作家','画家','村長','町長','市長','区長','知事','委員','役員','議員','議長','会長','幹事','理事',
+                                      '取締役','評議員','会員','主人','店主','社員','職人','医者','学者','飼い主','持ち主','地主','家主',
+                                      '船長','機長','艦長','隊長','団長','局長','署長','所長','館長','園長','院長','組長','学長'))
+_PERSON_NOUNS = _PERSON_NOUNS | _PERSON_OCCUPATION_WORDS
+# The person-role words of frames.ROLES that name a person in EVERY sense, copied here so that the class is closed in this module (frames.ROLES also
+# lists a word that names a building as well as a farmer; that one is left out, and frames._LEARNED is not used at all: round 5, M1).
+_ROLE_NOUNS = frozenset(('シェフ','上司','伯母','伯父','住民','作業員','係長','兄','先生','先輩','助手','医師','友人','叔母','叔父','司書','同僚','夫','妹','妻','姉','娘','学生','孫','工員','店員','店長','弟','後輩','息子','患者','技師','担任','指揮者','教師','教授','料理人','校長','検査員','母','消防士','漁師','父','班長','理学療法士','生徒','監督','看護師','社長','祖母','祖父','職員','船長','薬剤師','記者','課長','警察官','運転手','選手','部下','部長'))
+_PERSON_NOUNS = _PERSON_NOUNS | _ROLE_NOUNS
+# person-role suffix TOKENS: the tagger marks these 接尾辞 only when they close a person-role compound (整備士, 研修生, 警察官, 薬剤師, 事務員,
+# 保護者). A word the tagger keeps as ONE token (隣家, 欠員, 最長) has no suffix token and is not matched by them.
+_HOUSE_SUFFIX_TOKENS = frozenset(('家',))        # a suffix that is a person after a common noun (a trade) but a person AND a building after a family name
+_PERSON_ROLE_SUFFIX_TOKENS = frozenset(('士','生','主','医','者','人','手','員','民','師','長','係','官','家','将','婦','夫'))
+# a body of persons named after its members: 委員会, 審査委員会, 役員会 (the member noun is a person in every sense)
+_MEMBER_NOUNS = frozenset(('委員','理事','役員','取締役','評議員','議員','幹事','監事','会員'))
+# A post / office conferred by selection or appointment (the に-phrase of 選ばれた / 任命された is that post, as in "was chosen as ...").
+# Closed class: a noun that names an office, never a kinship term or a plain occupation (友人, 先生, 患者, 母 are not posts).
+_POST_NOUNS = frozenset(('社長','部長','課長','係長','班長','店長','校長','議長','会長','委員長','委員','理事','幹事','代表','主任','監督','館長',
+                         '院長','所長','局長','署長','組長','村長','町長','市長','区長','知事','学長','園長','艦長','隊長','団長','船長',
+                         '機長','首相','大統領','総理','総裁','キャプテン','リーダー','主将','教授','役員','議員','取締役','支店長','工場長'))
+_POST_SUFFIX_TOKENS = frozenset(('長','係'))           # <noun>+長 / <noun>+係 as two tokens: 学部長, 連絡係
+
 
 def _word_features(text):
     return [(w.surface, w.feature.pos1, w.feature.pos2, w.feature.pos3) for w in _tagger()(text)]
@@ -197,7 +222,7 @@ def _is_place_phrase(phrase):
     segments = compact.split('の'); head = segments[-1]
     # <place>前 / <place>内 / <place>の隅: a spatial tail on a place is still that place
     options = [head]
-    for tail in ('前', '内', '上', '中', '周辺', '近く', '付近', '隅', '奥', '脇', '横', '隣', '角', '裏', '先'):
+    for tail in ('前', '内', '上', '中', '周辺', '近く', '付近', '隅', '奥', '脇', '横', '隣', '角', '裏', '先', '方面'):
         if head.endswith(tail) and len(head) > len(tail): options.append(head[:-len(tail)])
         if head == tail and len(segments) > 1: options.append(segments[-2])
     if any(o in _PLACE_NOMINALS or any(o.endswith(x) for x in _PLACE_SUFFIXES) for o in options): return True
@@ -205,25 +230,61 @@ def _is_place_phrase(phrase):
     return bool(feats) and feats[-1][1] == '名詞' and feats[-1][2] == '固有名詞' and feats[-1][3] == '地名'
 
 
+# Nouns that name a scheduled GATHERING one goes to or takes part in (会議に出る, 試合に行く): every sense is an event held somewhere at a time, so the
+# に-phrase of a verb of going / leaving is where one goes (the event), not a purpose. NOT an activity (散歩, 勉強, 旅行, 釣り: one goes IN ORDER
+# to do it; that is a purpose, which the convention has no role for).
+_GATHERING_NOUNS = frozenset(('会議','会合','集会','総会','授業','講義','試合','式典','面接','宴会','結婚式','葬儀'))
+
+
+def _is_end_point(phrase):
+    """Evidence that the に/へ-phrase of a verb of motion is where one goes: a place (_is_place_phrase), a gathering (_GATHERING_NOUNS) or a person
+    (_is_person_phrase: one goes TO somebody; _recipient_claim keeps such a phrase as the recipient, and this keeps the same phrase when the
+    shared frame reader split it into a descriptor and a name: 店長 + サキ)."""
+    compact = phrase.replace(' ', '').replace('　', '')
+    return _is_place_phrase(compact) or compact.split('の')[-1] in _GATHERING_NOUNS or _is_person_phrase(compact)
+
+
 def _is_person_phrase(phrase):
     """A participant that can receive/address/act: a person name, pronoun, role noun, or an organisation noun. Positive evidence on
-    the HEAD of the phrase (the part after the last の) only; the ending characters of a word decide nothing (see _PERSON_NOUNS)."""
-    from .frames import is_role, ROLES, _LEARNED, _PERSON_SUFFIX
+    the HEAD of the phrase (the part after the last の) only; the ending characters of a word decide nothing. Evidence:
+      (a) the head is a word of a closed class that names persons in every sense (_PERSON_NOUNS, which holds _ROLE_NOUNS). frames._LEARNED (a
+          corpus count of katakana words written before a name: it holds names of instruments, appliances, cities ...) is NOT such a class and is not consulted;
+      (b) the last token is a pronoun;
+      (c) the last token is a proper noun of a person / organisation / unspecified kind;
+      (d) two or more tokens whose last token is a person-role / honorific / group SUFFIX token after a noun (整備士, <名前>さん, 子供達);
+      (e) two or more tokens whose last token is the noun 軍 / チーム / 客 after a noun (連合軍, 開発チーム, 観光客);
+      (f) <X>会 where X is a person or ends in a member noun (委員会, 審査委員会): a body of persons."""
     compact = phrase.replace(' ', '').replace('　', '')
     head = compact.split('の')[-1]
     if not head: return False
-    if head in _PERSON_NOUNS or head in ROLES or head in _LEARNED or head.endswith('客'): return True
+    if head in _PERSON_NOUNS: return True
     feats = _word_features(head)
     if not feats: return False
     last = feats[-1]
     if last[1] == '代名詞': return True
     if last[1] == '名詞' and last[2] == '固有名詞' and last[3] in ('人名', '組織名', '一般'): return True    # a bare person / company name
-    if len(feats) >= 2 and feats[-2][1] in ('名詞', '代名詞'):
-        if last[1] == '接尾辞' and last[0] in _PERSON_SUFFIX_TOKENS | _GROUP_SUFFIX_TOKENS: return True
-        if last[1] == '名詞' and last[0] in ('軍', 'チーム'): return True
-    if len(feats) >= 2 and last[0] == '会' and last[1] == '名詞' and is_role(feats[-2][0]): return True              # 委員会, 理事会: a body of persons
-    # a person-role noun by its last character (整備士, 研修生, 牧場主): an event noun is not one (成長, 関係, 配達 end in 長/係/達 but are 動作 nouns)
-    return head.endswith(_PERSON_SUFFIX) and last[3] != 'サ変可能'
+    if len(feats) >= 2:
+        before = feats[-2]
+        if before[1] in ('名詞', '代名詞') or (before[1] == '接尾辞' and before[0] in _PERSON_ROLE_SUFFIX_TOKENS | _PERSON_SUFFIX_TOKENS):
+            if last[1] == '接尾辞' and last[0] in _PERSON_SUFFIX_TOKENS | _GROUP_SUFFIX_TOKENS | _PERSON_ROLE_SUFFIX_TOKENS:
+                # Round 6: <family name>+家 is both "the people of that family" and "that family's house": not every sense names persons,
+                # so it is no evidence (a common noun + 家, the name of a trade, is a person in every sense and stays).
+                if not (last[0] in _HOUSE_SUFFIX_TOKENS and before[1] == '名詞' and before[2] == '固有名詞'): return True
+            if last[1] == '名詞' and last[0] in ('軍', 'チーム', '客'): return True
+        if last[0] == '会' and last[1] == '名詞' and before[1] in ('名詞', '接尾辞'):
+            body = ''.join(f[0] for f in feats[:-1])
+            if before[0] in _MEMBER_NOUNS or _is_person_phrase(body): return True
+    return False
+
+
+def _is_post_phrase(phrase):
+    """A post / office (the thing a person is chosen AS): the head is a closed-class post noun, or <noun> + 長/係 as two tokens."""
+    compact = phrase.replace(' ', '').replace('　', '')
+    head = compact.split('の')[-1]
+    if not head: return False
+    if head in _POST_NOUNS: return True
+    feats = _word_features(head)
+    return len(feats) >= 2 and feats[-1][1] == '接尾辞' and feats[-1][0] in _POST_SUFFIX_TOKENS and feats[-2][1] == '名詞'
 
 
 # Verbs whose に/へ argument is an addressee: the thing is handed over, told, asked, shown, reported to someone.
@@ -247,6 +308,46 @@ def _counted_phrase(value):
     return bool(_COUNTED.match(value.replace(' ', '').replace('　', '')))
 
 
+def _result_type_evidence(phrase):
+    """Positive evidence that a に-phrase names a RESULT TYPE (a form, a state, a category, a language, a colour, a time), judged from tokens
+    and closed classes: a number + counter (四つの山, 三段落, 一冊), a head that is an adjectival noun, a noun + 語/形/版/式/型/風/色
+    (英語版, 改訂版), a name that names only a colour, or a time phrase. A person word, a lexicon of persons or the ending characters of a
+    word are not consulted: no evidence is "undecided", not "not a result"."""
+    compact = phrase.replace(' ', '').replace('　', '')
+    if not compact: return False
+    if _counted_phrase(compact) or _is_time_phrase(compact): return True
+    head = compact.split('の')[-1]
+    if head in _COLOR_NAMES or head in _FORMAT_NOUNS or head in _LANGUAGE_NAMES: return True
+    feats = _word_features(head)
+    if not feats: return False
+    if feats[-1][1] == '形状詞': return True
+    if feats[-1][1] == '名詞' and feats[-1][3] == '助数詞可能': return True            # a noun usable as a counter (袋, 束, 組, 班): a unit things are divided into
+    if feats[-1][1] == '名詞' and feats[-1][0] in _FORMAT_NOUNS: return True            # a compound headed by a format noun: 短い要約
+    if len(feats) == 2 and feats[0][2] == '数詞' and feats[1][1] in ('接尾辞', '名詞'): return True      # a numeral + one counter / measure word: 一冊, 二つ, 三段落
+    return len(feats) >= 2 and feats[-1][1] == '名詞' and feats[-1][0] in _RESULT_FORM_NOUNS and feats[-2][1] == '名詞'
+
+
+def _result_ill_typed(predicate, phrase, object_person, passive):
+    """None when a に-phrase may be the `result` of this verb of change; otherwise the typed reason it may not. One rule for the reader and
+    the type gate. object_person: whether the thing the verb acts on (the を-object, or the subject of a passive) is a person; None when
+    there is no such thing in the clause.
+    Round 5 (M2): a person lexicon is never the ground for `result`. With a thing acted on (X を Y に V) the に-phrase is a result only on
+    positive evidence of a result type (_result_type_evidence); with none it is undecided (result|beneficiary), whoever it names. Two cases
+    need no evidence: the verb confers a status (an appointment; the object is a person by the verb's own selection) and a clause with NO
+    thing acted on AND a verb that has no transitive use (X は Y になる: nothing is done for anybody, so Y can only be what X becomes).
+    Round 6: a transitive verb whose object is merely left out (<person>が〜に言い換えた) is NOT such a clause: the に-phrase may be whoever
+    the work is done for, so it is a result only on evidence of a result type (the object's absence is not evidence of intransitivity)."""
+    compact = phrase.replace(' ', '').replace('　', '')
+    if passive and predicate in _SELECTION_PREDICATES:
+        return None if (_is_post_phrase(compact) and object_person is not False) else _SELECTION_RESULT_REASON
+    if predicate in _APPOINTMENT_PREDICATES or predicate in _PRODUCT_PREDICATES: return None
+    if _result_type_evidence(compact): return None
+    if object_person is True: return None              # a verb of change applied TO a person (娘を〜に仕立てた): the に-phrase is the status the person is brought to
+    if predicate in _PROCESSING_PREDICATES: return _RESULT_EVIDENCE_REASON
+    if object_person is None and predicate in _INTRANSITIVE_CHANGE_PREDICATES: return None   # no thing acted on and the verb takes none (なる, 変わる): the に-phrase is what the subject becomes
+    return _CHANGE_EVIDENCE_REASON
+
+
 # Verbs whose に argument names the form/state/category the object ends up in (X を Y に変える). The に phrase is a
 # result, not an addressee. Class: change of form, conversion between formats/languages, partition/collection,
 # processing into a product, renaming/reclassifying.
@@ -268,6 +369,55 @@ _CHANGE_PREDICATES = frozenset((
 # 候補を議長に選出した). Their に-phrase is the status it is given, even when the object is a person the tagger cannot recognise (候補).
 _APPOINTMENT_PREDICATES = frozenset(('登用する','任命する','任用する','起用する','抜擢する','選任する','選出する','指名する','認定する',
                                      '昇進する','昇格する','降格する'))
+# W1-a round 4 (N2): the verbs of _CHANGE_PREDICATES fall in three groups for a に-phrase after the object (X を Y に V):
+#   (a) conversion verbs (変える, 翻訳する, 分類する, なる, 加工する, ...): the verb itself selects the result; a beneficiary に is rare. Their
+#       に-phrase is the `result` unless it is a person and the object is a thing (then it could be whoever the work is done for).
+#   (b) _PROCESSING_PREDICATES: verbs of making / mending / finishing / editing / dyeing / selecting. Their に-phrase is as often the person
+#       the work is done FOR (妹にセーターを仕上げた) as the form it ends in. It is a `result` ONLY with positive evidence of a result type
+#       (_result_type_evidence); with none it stays ambiguous (result|beneficiary), whoever or whatever it names, and a person lexicon is
+#       not consulted. Words on the boundary are placed in (b), the safe side (they only lose readings, never gain a wrong one).
+#   (c) _APPOINTMENT_PREDICATES keep their treatment: the に-phrase is the status given to the (person) object.
+_PROCESSING_PREDICATES = frozenset(('直す','仕立てる','仕上げる','整理する','まとめる','編集する','改訂する','染める','塗り替える','塗りかえる',
+                                    '塗り直す','改装する','模様替えする','描き直す','選ぶ','作り変える','改造する'))
+# Verbs of change that have NO transitive use (the subject itself changes: 彼は医者になった, 信号が赤に変わった, 水が氷に変化した). Only these
+# may take a に-phrase as the result with no evidence of a result type when the clause has no object. The class is closed and decided by the
+# verbs' own grammar, not by frames.transitivity (which marks 化す and 発展する transitive): a verb that is transitive or either way (言い換える,
+# 訳す, 変える, 縮小する) with its object left out is undecided like any other.
+_INTRANSITIVE_CHANGE_PREDICATES = frozenset(('なる','成る','変わる','化す','変化する','変質する','成長する','発展する','進化する','変貌する','転じる','転ずる','移行する'))
+# Verbs that name making a MATERIAL into a PRODUCT (加工する): what it is made into is the に-phrase; the verb takes no person it is done for, so it
+# needs no evidence of a result type. (A shared test fixes 丸太を角材に加工した -> result; 角材 is a single token with no evidence of its own.)
+_PRODUCT_PREDICATES = frozenset(('加工する',))
+# Verbs of selection / appointment. In the passive (X が Y に選ばれた) the に-phrase is "by Y" or "as Y": both readings exist, so it is the
+# result only when Y is a post (the thing one is chosen as) and is never taken as the agent; otherwise it is undecided.
+_SELECTION_PREDICATES = (_APPOINTMENT_PREDICATES - frozenset(('昇進する','昇格する','降格する'))) | frozenset(('選ぶ',))
+_SELECTION_AGENT_REASON = 'ill-typed role: the に-phrase of a passive verb of selection is by/as undecided, not an agent'
+_SELECTION_RESULT_REASON = 'ill-typed role: the に-phrase of a passive verb of selection is a result only when it names a post'
+_RESULT_EVIDENCE_REASON = 'ill-typed role: result of a verb of making without evidence of a result type'
+_CHANGE_EVIDENCE_REASON = 'ill-typed role: result of a verb of conversion on a thing without evidence of a result type'
+# Names that name only a colour (the position of a result of dyeing / painting). 色 itself ends 茶色, 金色 (one token), so the class is a list.
+_COLOR_BASES = ('赤','青','黄','緑','白','黒','紫','茶','灰','橙','紺','藍','朱','紅','桃','金','銀','水','空','肌','黄緑','薄緑','群青')
+_COLOR_NAMES = frozenset([c for c in _COLOR_BASES if c not in ('水','空','肌','金','銀')] + [c + '色' for c in _COLOR_BASES]
+                         + ['ピンク','オレンジ','グレー','ブラウン','ブルー','グリーン','レッド','ホワイト','ブラック','イエロー','パープル','ベージュ'])
+# Nouns that name only a FORMAT or DIGEST of content (what a document is arranged into): 図表, 要点, 一覧. Inanimate in every sense, so
+# they can never be the person a piece of work is done for; naming the form the object ends up in, they are evidence of a result type.
+_FORMAT_NOUNS = frozenset(('図','表','図表','一覧','要点','概要','要約','目次','リスト','箇条書き','グラフ','年表'))
+# Names that name only a language, a language variety or a script (every sense): a form a text is put into (英語に訳す). 英語 is ONE token, so the
+# <noun>+語 rule below does not see it; a language name of a country + 語 (two tokens) is seen by that rule.
+_LANGUAGE_NAMES = frozenset(('英語','仏語','独語','露語','言語','方言','敬語','平仮名','ひらがな','カタカナ','漢字'))
+# Nouns that name a spot or a geographic feature and can never act (so a から-phrase of a passive naming one is an origin, not a giver). A
+# closed class of nouns every sense of which is a place that is not a body of people: NOT 学校/会社/局 or a country, which also name bodies that act.
+_SPOT_NOUNS = frozenset(('駅','公園','部屋','庭','海','山','川','湖','島','畑','森','谷','海岸','教室','倉庫','台所','玄関','屋上'))
+def _is_origin_spot(phrase):
+    """Evidence that a から-phrase of a passive names where something comes from rather than who gave it: its head is one of _SPOT_NOUNS or a
+    named place (the tagger's 固有名詞/地名; the shared tests fix 九州から運ばれた, 北海道から送られた as source)."""
+    compact = phrase.replace(' ', '').replace('　', '')
+    head = compact.split('の')[-1]
+    if head in _SPOT_NOUNS: return True
+    feats = _word_features(head)
+    return bool(feats) and feats[-1][1] == '名詞' and feats[-1][2] == '固有名詞' and feats[-1][3] == '地名'
+
+
+_RESULT_FORM_NOUNS = frozenset(('語','形','版','式','型','風','色'))      # <noun>+語/形/版/式/型/風: 英語版, 改訂版, 浴衣風
 # Verbs whose passive agent is the thing that holds/encloses the subject (surrounded by mountains, included in a park): a place-typed
 # agent of these is a real (inanimate) agent. For every other verb a place-typed passive に-phrase says where it happened
 # (a shop was placed in front of a station) and is not an agent.
@@ -285,6 +435,9 @@ _PLACEMENT_PREDICATES = frozenset((
     '植える','仕舞う','収める','収納する','配置する','設置する','保管する','運ぶ','移す','持つ','持っていく','持ってくる','しまう',
     '詰める','注ぐ','漬ける','浸す','飾る','敷く','留める','結ぶ','繋ぐ','つなぐ','接続する','投げる','落とす',
     '置いてくる','置いていく','入れてくる','入れていく'))
+# round 5: more verbs of going, so the end-point rule (a place is shown, or the phrase is not an end point) covers them as well
+_GOAL_PREDICATES = _GOAL_PREDICATES | frozenset(('出かける','通う','引っ越す','到着する','帰宅する','出勤する','出張する','出発する','旅立つ','上陸する'))
+_MOTION_CLASS = _GOAL_PREDICATES | _LOCATION_PREDICATES | _PLACEMENT_PREDICATES
 _CAUSATIVE_REASON = 'causative frame: causer/causee unresolved'
 _TIME_ROLE_REASON = 'ill-typed role: time phrase as event participant'
 _TIME_FUSED_REASON = 'ill-typed role: time phrase fused with participant'
@@ -296,7 +449,8 @@ _REPEATS_PREDICATE_REASON = 'ill-typed role: participant repeats the predicate i
 _TIME_ADJUNCT_REASON = 'ill-typed role: time phrase as place/goal/direction/result'
 _TIME_ADJUNCT_ROLES = frozenset(('goal', 'location', 'direction', 'place'))
 _RESULT_ORDER_REASON = 'ill-typed role: a に-phrase before the object of a verb of change is not its result'
-_PERSON_RESULT_REASON = 'ill-typed role: a person as the result of a verb of change on a thing'
+_SOURCE_AGENT_REASON = 'ill-typed role: the から-phrase of a passive is the agent or the origin, and nothing shows it is a spot'
+_ENDPOINT_REASON = 'ill-typed role: end point of motion without place evidence'
 _TIME_OF_CHANGE_REASON = 'ill-typed role: time phrase of a verb of change is its new value, not when it happened'
 _TOPIC_PATIENT_REASON = 'ill-typed role: a は-topic as the patient of an intransitive verb'
 _EVENT_PARTICIPANTS = frozenset(('agent', 'patient', 'recipient', 'causer', 'causee'))
@@ -345,6 +499,7 @@ def _event_time(words, predicate_index):
 
 
 _PREDICATE_VALUE_REASON = 'copula value is a predicate phrase'
+_DEGREE_MARKS = frozenset(('ほど', 'くらい', 'ぐらい', '並み'))
 _VALUE_CASE_PARTICLES = frozenset(('より', 'が', 'を', 'に', 'で', 'へ', 'から', 'まで', 'と'))
 
 
@@ -396,13 +551,24 @@ def _copula_split(text, tokens):
     return None
 
 
-def _predicate_phrase_value(tokens, first_value_token, value_end, depths=None):
+def _predicate_phrase_value(tokens, first_value_token, value_end, depths=None, has_copula=True):
     """The right-hand side of は/が is a predicate phrase, not a noun: its last content word is an adjective/adjectival
     noun/verb and it contains a case particle (古い橋より長い, 猫が好き). Reading that as `A is B` mislabels a comparison or
     a double-subject predicate as an identity; it is returned unsupported (the comparison rule can then read it).
     A parenthetical reading/gloss (depth > 0) is not part of the value's own grammar, and a trailing copula (…であった, …で
     あり) is not its predicate: neither decides."""
     value = [t for t in tokens[first_value_token:] if t[1] < value_end and (depths is None or depths[t[1]] == 0)]
+    # Round 5 (M9): a value written with NO copula that ENDS in a chain of verbal auxiliaries (れ / られ / せ / た / ない ...) after a verb, an adjective or a
+    # verbalising suffix (…がら + れ + た) is a verb the tagger split into pieces, not a noun: 'A が B られた' is no identity of A and B. A value that
+    # holds an auxiliary INSIDE a noun phrase (…である魔法使いの名称: a relative clause) or ends in the copula であった is not touched.
+    if not has_copula:
+        body = [w for w, _, _ in value if w.feature.pos1 not in ('補助記号', '記号')]
+        n = len(body)
+        while n and body[n - 1].feature.pos1 == '助動詞': n -= 1
+        if 0 < n < len(body):
+            head = body[n - 1]
+            copular_ari = head.feature.pos1 == '動詞' and _base(head) == 'ある' and n >= 2 and body[n - 2].surface == 'で'
+            if not copular_ari and (head.feature.pos1 in ('動詞', '形容詞') or (head.feature.pos1 == '接尾辞' and head.feature.pos2 == '動詞的')): return True
     # a comparison inside the value. より is a particle after a noun (駅より) but the tagger calls it an adverb after の (前のより軽い,
     # 君のより重い: 'than the previous one'); an adverb より that opens the value (より安全だ: 'more') is not a comparison standard.
     for k, (w, _, _) in enumerate(value):
@@ -410,6 +576,12 @@ def _predicate_phrase_value(tokens, first_value_token, value_end, depths=None):
         if w.feature.pos1 == '助詞': return True
         if k > 0 and (value[k - 1][0].feature.pos1 in ('名詞', '代名詞', '数', '接尾辞')
                       or (value[k - 1][0].feature.pos1 == '助詞' and value[k - 1][0].surface == 'の')): return True
+    # Round 4 (N4): ほど / くらい / ぐらい / 並み after a noun, pronoun, number or a nominalising の is a degree comparison (昔ほど…, 君のほど…,
+    # 海くらい…): the value is a predicate phrase whatever tag the word gets, exactly as より is.
+    for k, (w, _, _) in enumerate(value):
+        if w.surface in _DEGREE_MARKS and k > 0 and (value[k - 1][0].feature.pos1 in ('名詞', '代名詞', '数', '接尾辞')
+                                                     or (value[k - 1][0].feature.pos1 == '助詞' and value[k - 1][0].surface == 'の')):
+            return True
     while value and (value[-1][0].feature.pos1 in ('助動詞', '補助記号', '記号')
                      or (value[-1][0].feature.pos1 == '動詞' and _base(value[-1][0]) == 'ある' and len(value) > 1
                          and value[-2][0].surface == 'で')
@@ -451,29 +623,32 @@ def _case_phrase(text, tokens, particle_index, lower=0):
     return start, end, phrase
 
 
-def _case_role(particle, phrase, predicate, *, quoted=False, person=False, after_object=None, object_person=None):
+def _case_role(particle, phrase, predicate, *, quoted=False, person=False, after_object=None, object_person=None, passive=False):
     """Map only morphologically or syntactically resolved cases; label the rest.
 
     after_object: for a document clause, whether this phrase stands after the clause's を-object (None: not a clause read, as
     in a question). With a verb of change or rescheduling the time に-phrase after the object is the new value (予定を月曜日に
-    変えた: result); before the object it could as well be when it happened -> ambiguous (unsupported), never `time`."""
+    変えた: result); before the object it could as well be when it happened -> ambiguous (unsupported), never `time`.
+    passive: the verb is followed by れる/られる. The に-phrase of a passive verb of selection is by/as undecided (see _result_ill_typed)."""
     compact = phrase.replace(' ', '').replace('　', '')
     if particle == 'に':
         if (_TIME_NOMINAL.fullmatch(compact) or _is_time_phrase(compact)):
             if after_object is not None and predicate in _CHANGE_PREDICATES:
                 return ('result', 'case') if after_object else ('ambiguous', 'case:に:time|result')
             return 'time', 'case'
+        if passive and predicate in _SELECTION_PREDICATES and not _is_place_phrase(compact):
+            return ('result', 'case') if _result_ill_typed(predicate, compact, object_person, True) is None else ('ambiguous', 'case:に:agent|result')
         if predicate in _CHANGE_PREDICATES and not _is_place_phrase(compact) and not compact.endswith(_RELATIONAL_TAILS):
             # Word order is evidence that needs no lexicon: a result follows its object (AをBに変える); a に-phrase that comes BEFORE the
             # object (BにAを直す) is whoever the work is done for, or the place/target: not decided here (ambiguous -> unsupported).
             if after_object is False: return 'ambiguous', 'case:に:result|beneficiary'
-            # A PERSON after the object of a verb of change is the status the object is given only when the object is itself a person
-            # (彼を部長に任命した: a person becomes a manager). With a thing as the object it is whoever the work is done for (娘に着物を
-            # 仕立てた): a beneficiary, which is not a `result` and is not decided here (ambiguous -> unsupported, never a guess).
-            if object_person is False and predicate not in _APPOINTMENT_PREDICATES and _is_person_phrase(compact):
-                return 'ambiguous', 'case:に:result|beneficiary'
+            # Round 4: whether the phrase is a result is decided by _result_ill_typed: a verb of making needs positive evidence of a result
+            # type; a conversion verb takes it unless it is a person and the object is a thing; an appointment keeps its status reading.
+            if _result_ill_typed(predicate, compact, object_person, False) is not None: return 'ambiguous', 'case:に:result|beneficiary'
             return 'result', 'case'
-        if predicate in _GOAL_PREDICATES: return 'goal', 'case'
+        # Round 5 (M5): the end point of a verb of motion is a `goal` only when the phrase shows it is a place; a phrase with no such evidence
+        # (…しに行く: a purpose of going) is undecided, not a goal.
+        if predicate in _GOAL_PREDICATES: return ('goal', 'case') if _is_end_point(compact) else ('ambiguous', 'case:に:goal|purpose|addressee')
         if predicate in _LOCATION_PREDICATES: return 'location', 'case'
         return 'ambiguous', 'case:に:location|goal|time'
     if particle == 'で':
@@ -490,9 +665,14 @@ def _case_role(particle, phrase, predicate, *, quoted=False, person=False, after
         return 'ambiguous', 'case:と:companion|quotation'
     if particle == 'から':
         if _TIME_NOMINAL.fullmatch(compact) or _is_time_phrase(compact): return 'ambiguous', 'case:から:source|time-range'
+        # Round 5 (M3): the から-phrase of a PASSIVE is the agent (the giver) or the origin. Convention 4.6 makes it the agent; it is the
+        # origin only when the phrase names a spot that cannot act (_SPOT_NOUNS). Anything else is undecided, never `source`.
+        if passive and not _is_origin_spot(compact): return 'ambiguous', 'case:から:agent|source'
         return 'source', 'case'
     if particle == 'まで': return 'limit', 'case'
-    if particle == 'へ': return 'direction', 'case'
+    if particle == 'へ':
+        if predicate in _GOAL_PREDICATES and not _is_end_point(compact): return 'ambiguous', 'case:へ:direction|purpose|addressee'
+        return 'direction', 'case'
     return None, 'case'
 
 
@@ -555,19 +735,19 @@ def _case_roles(text, tokens, predicate_index, lower=0, existing=(), offset=0, p
             prior = tokens[ti - 1][0] if ti else None
             person = bool(prior and (prior.feature.pos3 == '人名' or phrase.endswith('さん') or phrase.endswith('氏')))
         after_object = None; object_person = None
+        passive_clause = predicate_index + 1 < len(tokens) and _base(tokens[predicate_index + 1][0]) in ('れる', 'られる')
         if document:
             # only a clause with an を-marked object has the 'AをBに' pattern; position relative to it decides result/ambiguous
             ends = [item.span.end - offset for item in existing if getattr(item, 'name', None) == 'patient'
                     and _particle_after(tokens, item.span.end - offset) == 'を']
             if ends: after_object = any(e <= pstart for e in ends)
             # the thing the verb acts on: the を-object, or for a passive its subject (彼が部長に選ばれた: he is given the status)
-            passive_clause = predicate_index + 1 < len(tokens) and _base(tokens[predicate_index + 1][0]) in ('れる', 'られる')
             marks = ('を',) if not passive_clause else ('が', 'は')
             objects = [item.span.text for item in existing if getattr(item, 'name', None) == 'patient'
                        and _particle_after(tokens, item.span.end - offset) in marks]
             if objects: object_person = any(_is_person_phrase(t) for t in objects)
         role, kind = _case_role(word.surface, phrase, predicate, quoted=quoted, person=person, after_object=after_object,
-                                object_person=object_person)
+                                object_person=object_person, passive=passive_clause)
         if role is None: continue
         span = (pstart, pend)
         if span in existing_spans: continue
@@ -655,20 +835,27 @@ def _object_marked(frame, text, tokens, chunk_start, predicate_start):
     return at >= 0 and _particle_after(tokens, at + len(frame.patient)) in ('を', 'が')
 
 
-def _recipient_claim(predicate, value, has_object, benefactive):
+def _recipient_claim(predicate, value, has_object, benefactive, particle='に'):
     """May a に-marked phrase be the recipient of this predicate? 'keep' or 'drop'. One rule for every rule's clauses
     (the frame branch and the type gate share it): a verb of transfer/telling or a benefactive is addressed to the phrase; a
     person is an addressee; a motion/placement/location verb's end point is read as `recipient` (project convention:
     終点 -> recipient, fixed by test_reader_case_roles_are_preserved) and is kept; for any other verb with an を-object
     the に-phrase is a result/place/state, not an addressee, and is not claimed."""
     if predicate in _TRANSFER_PREDICATES or benefactive: return 'keep'
+    # Round 4 (J1-17): the end point of a MOTION verb (行く, 移る, 向かう ...) is read as `recipient` (the project convention) ONLY when the
+    # phrase shows it is a place (_is_place_phrase) or an addressee (_is_person_phrase). A phrase with neither is not claimed here: it is
+    # re-read as the `direction` (へ) / `goal` (に) it is, instead of being typed as somebody who receives. Placement and location verbs
+    # (置く, 住む ...) keep their reading: existing tests fix 封筒を青棚に置く -> recipient (see docs H33).
+    if predicate in _GOAL_PREDICATES:
+        return 'keep' if (_is_place_phrase(value) or _is_person_phrase(value)) else 'drop'
+    if predicate in _LOCATION_PREDICATES or predicate in _PLACEMENT_PREDICATES: return 'keep'
+    if particle != 'に': return 'keep'                    # へ with any other verb: only the motion rule above applies (nothing else was ever checked for へ)
     person = _is_person_phrase(value) and not _is_place_phrase(value)
     if predicate in _CHANGE_PREDICATES:
         # …を弟に分ける shares with a person; …を二つに分ける makes two (and …を課長に昇進させる / …を二つのグループに分ける name the
         # new status / the categories). Only a verb of sharing out has an addressee, and then only a person who is not a counted
         # group; for every other verb of change the に-phrase is the result.
         return 'keep' if (predicate in _SHARING_PREDICATES and person and not _counted_phrase(value)) else 'drop'
-    if predicate in _GOAL_PREDICATES or predicate in _LOCATION_PREDICATES or predicate in _PLACEMENT_PREDICATES: return 'keep'
     if person: return 'keep'
     # AをBにV with a non-person B and a verb outside every class above: B may be a result, a place or a person's name
     # nobody tagged. Not claimed as the recipient. A に-complement of a verb with no を-object (九州に集中する) keeps its
@@ -689,9 +876,10 @@ def _can_be_passive_agent(value, predicate, subject, has_object=False):
 
 
 def _is_origin_not_agent(value):
-    """A passive's から-phrase is the giver/sender when it can act (友人から届けられた, 役所から通知された); a place that cannot act (産地から
-    伝えられた, 工場から出荷された) or a time (来月から導入された) is the origin/start, never the agent."""
-    return _is_time_phrase(value) or (_is_place_phrase(value) and not _is_person_phrase(value))
+    """A passive's から-phrase is the giver/sender only when it is shown to be a person or organisation that can act (友人から届けられた,
+    役所から通知された, by _is_person_phrase). Anything else (産地から伝えられた, 尺度から割り出された) or a time (来月から導入された) is the
+    origin/start: the phrase is not claimed as the agent (round 4: no positive evidence of a person, no agent)."""
+    return _is_time_phrase(value) or value.replace(' ', '').replace('　', '').split('の')[-1] in _SPOT_NOUNS or not _is_person_phrase(value)
 
 
 def _role_claim(role, value, tokens, at, predicate_index, predicate, has_patient=True, subject=None):
@@ -711,12 +899,13 @@ def _role_claim(role, value, tokens, at, predicate_index, predicate, has_patient
     # A passive's に-phrase is an agent only when it can act: a person, a role/organisation noun, or the thing that
     # encloses (囲まれる). Anything else (a flower bed, a roof, a shelf) is where it happened, or unknown: never an agent.
     if role == 'agent' and passive and follow == 'に' and not _can_be_passive_agent(value, predicate, subject, has_patient): return 'drop'
+    if role == 'agent' and passive and follow == 'に' and predicate in _SELECTION_PREDICATES: return 'drop'      # by/as undecided (N3)
     if role == 'agent' and passive and follow == 'から' and _is_origin_not_agent(value): return 'drop'
     # The frame reader parks a は-topic in a free `patient` slot (実は、弟が駅で友人に会った → patient=実). An object slot belongs to a
     # transitive verb: the topic of an intransitive one (会う, 着く, 住む) is not its patient (a passive subject is: 雨に降られた).
     if role == 'patient' and follow == 'は' and not passive and _transitivity(predicate) == 'intrans': return 'drop'
-    if role == 'recipient' and follow == 'に':
-        return _recipient_claim(predicate, value, has_patient, _benefactive_after(tokens, predicate_index))
+    if role == 'recipient' and follow in ('に', 'へ'):
+        return _recipient_claim(predicate, value, has_patient, _benefactive_after(tokens, predicate_index), follow)
     return 'keep'
 
 
@@ -862,7 +1051,7 @@ def _piece(source, raw, start, end, sovereign, family):
         copula = suffix[1] if suffix else ''
         value = raw_value[:suffix.start()] if suffix else raw_value
         value = value.rstrip()
-        if _predicate_phrase_value(tokens, m.value_token, m.start(2) + len(value), _bracket_depths(text)): unknown.append(_PREDICATE_VALUE_REASON)
+        if _predicate_phrase_value(tokens, m.value_token, m.start(2) + len(value), _bracket_depths(text), has_copula=bool(suffix)): unknown.append(_PREDICATE_VALUE_REASON)
         if not value:
             return [], [Unread(full, 'unsupported empty copula value')]
         entity, attr = _split_attribute(text, tokens, len(lhs))
@@ -895,7 +1084,7 @@ def _piece(source, raw, start, end, sovereign, family):
         for index, frame in enumerate(frames):
             if index >= len(predicates): break
             ev, surface_pred = predicates[index]; word, pstart, pend = tokens[ev]
-            roles = []; descriptors = []; issues = list(unknown)
+            roles = []; descriptors = []; issues = list(unknown); dropped_recipient = False
             causal = ev + 1 < len(tokens) and _base(tokens[ev + 1][0]) in ('せる', 'させる')
             previous = predicates[index-1][0] if index else -1
             chunk_start = tokens[previous][2] if previous >= 0 else 0
@@ -917,7 +1106,11 @@ def _piece(source, raw, start, end, sovereign, family):
                 claim = _role_claim(role, value, tokens, at, ev, surface_pred if causal else frame.predicate,
                                     _object_marked(frame, text, tokens, chunk_start, pstart), frame.patient or None)
                 if claim == 'fused': issues.append(_TIME_FUSED_REASON)
-                elif claim in ('time', 'drop'): continue      # re-read below as the adjunct it is (time/result/goal/place)
+                elif claim in ('time', 'drop'):
+                    # a causee typed `recipient` by the shared frame reader (it is what the causative reason below is about) is dropped by the
+                    # end-point rule when it shows neither place nor person: the causative frame is still unresolved
+                    if role == 'recipient' and claim == 'drop' and (surface_pred if causal else frame.predicate) in _GOAL_PREDICATES: dropped_recipient = True
+                    continue      # re-read below as the adjunct it is (time/result/goal/place)
                 if value in ('彼','彼女','それ','これ','あれ') or '彼の' in value:
                     issues.append('unresolved anaphora')
                 split = name_split_in(tokens_covering([(w.surface, w.feature.pos1, w.feature.pos2, a0, a1) for w, a0, a1 in tokens], at, at+len(value)), value)
@@ -941,7 +1134,7 @@ def _piece(source, raw, start, end, sovereign, family):
             # what makes the clause unsupported (diathesis re-reads it as causer/causee/patient). A causative with no
             # recipient (X が Y を V-させる: agent = causer, patient = causee) and a lexicalised -せる verb of transfer
             # (知らせる) carry no mislabelled role and are left as they were.
-            if causal and any(r.name == 'recipient' for r in roles) and frame.predicate not in _TRANSFER_PREDICATES:
+            if causal and (dropped_recipient or any(r.name == 'recipient' for r in roles)) and frame.predicate not in _TRANSFER_PREDICATES:
                 issues.append(_CAUSATIVE_REASON)
             issues.extend(case_issues)
             for role, term, (at, end_at), kind in case_roles:
@@ -1147,6 +1340,13 @@ def _repeats_predicate(text, predicate):
     return len(stem) >= 2 and predicate.startswith(stem)
 
 
+def _passive_follows(toks, index):
+    """The predicate token at `index` is followed by れる/られる. A サ変 predicate (a noun + する, 指名された) is the noun and the する verb: the
+    passive auxiliary follows the verb, whichever of the two the clause's predicate span starts at."""
+    if index < len(toks) and toks[index][0].feature.pos1 == '名詞' and index + 1 < len(toks) and _base(toks[index + 1][0]) == 'する': index += 1
+    return index + 1 < len(toks) and _base(toks[index + 1][0]) in ('れる', 'られる')
+
+
 def _type_gate(clause):
     """Typed gate over every clause, whichever rule produced it (native frame/copula or a construction).
 
@@ -1155,7 +1355,7 @@ def _type_gate(clause):
     a non-addressee as a recipient, a time phrase as a place/goal). Absent/ill-typed is not the same as false, so the
     sentence stays visible as unsupported rather than disappearing."""
     body = clause.body_span or clause.span
-    roles = [r for r in clause.roles if r.name in _NOMINAL_ROLES or r.name in _TIME_ADJUNCT_ROLES or r.name in ('result', 'time')]
+    roles = [r for r in clause.roles if r.name in _NOMINAL_ROLES or r.name in _TIME_ADJUNCT_ROLES or r.name in ('result', 'time', 'source')]
     if not clause.roles:
         # An event with no participant at all asserts nothing about anyone: either the sentence has no content word beyond the
         # predicate (すみません → 済む() 否定: nothing is said) or the participants were dropped silently (a clause read as する() out
@@ -1175,7 +1375,7 @@ def _type_gate(clause):
         followers[id(role)] = _particle_after(toks, b)
     has_object = any(r.name == 'patient' and followers[id(r)] == 'を' for r in roles)
     subject = next((r.span.text for r in roles if r.name == 'patient' and followers[id(r)] in ('が', 'は')), None)
-    clause_passive = pred_index + 1 < len(toks) and _base(toks[pred_index + 1][0]) in ('れる', 'られる')
+    clause_passive = _passive_follows(toks, pred_index)
     objects = [r.span.text for r in roles if r.name == 'patient' and followers[id(r)] in (('が', 'は') if clause_passive else ('を',))]
     object_person = any(_is_person_phrase(t) for t in objects) if objects else None
     benefactive = _benefactive_after(toks, pred_index) if pred_index < len(toks) else False
@@ -1197,10 +1397,12 @@ def _type_gate(clause):
             elif (role.name == 'agent' and follow in ('に', 'へ')
                   and not _can_be_passive_agent(text, clause.predicate, subject, has_object)):
                 found.append(_NONAGENT_REASON)
+            elif role.name == 'agent' and follow == 'に' and clause_passive and clause.predicate in _SELECTION_PREDICATES:
+                found.append(_SELECTION_AGENT_REASON)
             elif role.name == 'agent' and follow == 'から' and _is_origin_not_agent(text):
                 found.append(_NONAGENT_REASON)
-            elif (role.name == 'recipient' and follow == 'に'
-                  and _recipient_claim(clause.predicate, text, has_object, benefactive) == 'drop'):
+            elif (role.name == 'recipient' and follow in ('に', 'へ')
+                  and _recipient_claim(clause.predicate, text, has_object, benefactive, follow) == 'drop'):
                 found.append(_NOT_ADDRESSEE_REASON)
             if role.name in ('agent', 'patient', 'recipient') and _repeats_predicate(text, clause.predicate):
                 found.append(_REPEATS_PREDICATE_REASON)
@@ -1208,12 +1410,17 @@ def _type_gate(clause):
                 found.append(_TOPIC_PATIENT_REASON)
         elif role.name in _TIME_ADJUNCT_ROLES and _is_time_phrase(text):
             found.append(_TIME_ADJUNCT_REASON)
+        elif role.name == 'source' and follow == 'から' and clause_passive and not _is_origin_spot(text):
+            found.append(_SOURCE_AGENT_REASON)
+        elif (role.name in ('goal', 'direction') and follow in ('に', 'へ') and clause.predicate in _GOAL_PREDICATES
+              and not _is_end_point(text)):
+            found.append(_ENDPOINT_REASON)
         elif (role.name == 'result' and follow == 'に' and clause.predicate in _CHANGE_PREDICATES and not clause_passive
               and any(r.name == 'patient' and followers[id(r)] == 'を' and r.span.start >= role.span.end for r in roles)):
             found.append(_RESULT_ORDER_REASON)
-        elif (role.name == 'result' and follow == 'に' and clause.predicate in _CHANGE_PREDICATES and object_person is False
-              and clause.predicate not in _APPOINTMENT_PREDICATES and _is_person_phrase(text)):
-            found.append(_PERSON_RESULT_REASON)
+        elif role.name == 'result' and follow == 'に' and clause.predicate in _CHANGE_PREDICATES and not _is_time_phrase(text):
+            reason = _result_ill_typed(clause.predicate, text, object_person, clause_passive)
+            if reason: found.append(reason)
         elif role.name == 'time' and follow == 'に' and has_object and clause.predicate in _CHANGE_PREDICATES:
             found.append(_TIME_OF_CHANGE_REASON)        # 予定を月曜日に変えた: the に-time is the new value, not when it happened
         elif role.name == 'result' and _is_time_phrase(text) and clause.predicate not in _CHANGE_PREDICATES:

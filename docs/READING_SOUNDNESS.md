@@ -1,8 +1,10 @@
 # 意味読解の健全性(W1-a): 誤読を「対応済み」として返さない
 
-作業ツリー: `/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a-S`(基点 `dev` = `075d486`、未コミット)。第 3 ラウンド(中間職のレビュー `review.r2.md` の M1〜M4 への対応)を反映した版。
+作業ツリー: `/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a-S`(ブランチ `ticket/W1-a`、HEAD `8d69747` = 第 3 ラウンドの実装 `0f5d05e` に `dev`(`191db17`)を取り込んだもの。**W1-a2(第 4 ラウンド)の変更は未コミット**)。基点 `dev` は `191db17`。
+この版は W1-a2(チケット `W1-a2_reading_soundness`、中間職のレビュー `review.r3.md` の N1〜N4 への対応と、読解の入口・採点器の入口の新設)の**第 3 ラウンド**(中間職のレビュー `review.r2.md` の必須の修正 1〜5 への対応。§4.5、H53〜H60、K33〜K39。第 2 ラウンドは中間職のレビュー `review.r1.md` の M1〜M8 への対応。§4.4、H44〜H52、K26〜K32)を反映する。第 3 ラウンドまでの記録(§4.1 の M1〜M3、§7 の H1〜H31、§8 の K1〜K12)は、W1-a2 で置き換えた箇所に印を付けて残した。
 数値はすべて `artifacts/w1-a/` の出力から出る。§6 の表は `tests/reading_soundness/recompute.py` の出力(`artifacts/w1-a/recompute.md`)をそのまま貼ってある。
 各コマンドと出力ファイルの対応は `artifacts/w1-a/COMMANDS.md`。
+**W1-a3(チケット W1-a2 の最終の継続。中間職のレビュー `review.r3.md` の必須 1・2 への対応。2026-10-03)**: 入口 `verantyx/semantic_read.py` の `_voice_ja`(れる/られる)を、「閉じた類に入っていない」ことではなく**正の証拠**があるときだけ passive にする向きに直した(§4.6、H61〜H65、K39〜K41)。読解器(`semantic_reader.py`)・検査・採点器・見本・凍結データは変えていない。過去の記録(H56・§4.5 の必須 2・§9.2 の 6)は消さず、撤回の印を付けた。
 
 ## 1. 目的
 
@@ -36,6 +38,13 @@
 | **L1** | 受身＋に＋(場所・部位・催し・組織にも見える語: 境内・礼拝堂・下部・展示会場・内部・町内会館・校舎裏)7、本当に組織が動作主(警察・委員会・探検隊・政府・劇団)5、部・課(野球部・経理課)2。正解は 非動作主は patient＋place|location、組織は agent＋patient | 14 | ja_r3.jsonl |
 | **L2** | 変化の動詞＋人の に 句: 受益者・分配先(人)8(恩恵の補助動詞あり 4、なし 2、分ける 2)、目的語が人で に が地位(任命・選出・抜擢・登用)4 | 12 | ja_r3.jsonl |
 | **L3** | `Nのより Adj`(より がタガーで副詞になる比較。standard は準体の の を含む句) | 6 | ja_r3.jsonl |
+| **N1** | 受身＋に＋(1 トークンの普通名詞で、人の接尾辞と同じ文字で終わる非人: 山手・切手・借家・生家・町家・波長・感官・定員・衛生)。正解は patient＋place|location(|goal) | 14 | ja_r4.jsonl |
+| **N1c** | 対照: 名詞＋人の接尾辞のトークン(消防士・弁護士・編集長・公務員・運転手・看護師)が受身の動作主 | 6 | ja_r4.jsonl |
+| **N2** | 目的語の後ろの に 句が、結果の型の証拠の無い語彙に無い人(長男・次男・新郎・花婿・双子・居候 …)。動詞は加工・作成類。正解は agent＋patient＋recipient|beneficiary | 12 | ja_r4.jsonl |
+| **N2c** | 対照: 結果の型の証拠がある(色名・数＋助数詞・名詞＋版)。正解は result | 6 | ja_r4.jsonl |
+| **N3** | 受身の選出・任命で、に 句が組織・集団・催し・場所(地位でも明らかな人でもない)。**正解は未対応**(同点は棄権。H35) | 12 | ja_r4.jsonl |
+| **N3c** | 対照: に 句が地位の名詞(店長・監督・課長・校長)。正解は patient＋result | 4 | ja_r4.jsonl |
+| **N4** | `Nほど`・`Nのほど`・`Nくらい`・`Nぐらい`＋形容詞・形状詞の比較(否定・肯定)。**正解は未対応**(H35) | 14 | ja_r4.jsonl |
 | E0 | 英語の統制(読めて正しい単純文) | 8 | en.jsonl |
 | E1〜E6 | 否定／量化／関係節／使役／比較／従属節 | 8, 9, 8, 8, 8, 8 | en.jsonl |
 | **F0** | 英語の統制(読めて正しい文) | 6 | en_r2.jsonl |
@@ -43,6 +52,7 @@
 | A3 | 受身で動作主なしの「誰が」質問(時間 4・場所 4) | 8 | a3.jsonl |
 | **A3R2** | 同(受身＋に の場所 4・時刻の変種 3) | 7 | a3_r2.jsonl |
 | **A3R3** | 同(受身＋に＋場所・催し・部位・組織にも見える語 6) | 6 | a3_r3.jsonl |
+| **A3R4** | 同(受身＋に＋人の接尾辞と同じ文字で終わる 1 トークンの非人 7) | 7 | a3_r4.jsonl |
 
 正解の書き方と照合規則は `tests/reading_soundness/harness.py` の docstring が正本。要点: `kind=clauses`(alternatives のどれかと対象節が全部一致)、`none`(構造化しない)、`unsupported`(Frame・読解器が表せない。棄権が正)、`frame`(英語)。節の一致は述語・極性・役割の過不足なしの完全一致。英語は時間の副詞を Frame が持たないので、落としても誤読としない。
 第 2 ラウンドの日本語バンク(K1〜K6)の正解は「unsupported」ではなく**正しい構造**で書いた(読めずに未対応になるのは構わないが、それは未対応であって正読ではない)。
@@ -88,10 +98,68 @@ O1(レビューの任意改善)を実装: 対象節の一部だけが別々の a
 - **述語そのものを参与者にしない**(`_repeats_predicate`): 参与者の語幹(お・ご を除く、2 文字以上)が述語の語頭と一致するとき(`世話る` と `お世話`)。1 文字の同族目的語(歌を歌う)は止めない。
 - **役割 0 の節**: 参与者が全く無い節は、文に内容語が残っているか否かによらず supported にしない(`event without participant or content word`)。modality などの構文が、参与者を黙って落とした空の節を supported にするのを止める。
 - **構文**: `np_internal` は、時間・関係の語(副詞可能・形状詞可能・連体詞＋副詞可能)＋読点を並列にしない。読点だけの 2 項の対で、片方が人でもう片方が人でないもの(普通、母)も並列にしない(実在の並列の `本科5学科、専攻科2専攻` や 人と人の対は残す)。`time_expr` は が/は をまたぐ役割句を作らない。`diathesis` は使役の被使役者を native frame が recipient とした句に限り、自動詞の使役(を＋に)は `frames.transitivity` が他動詞でなければ棄権、基底の動詞を語幹で一意化する。`negation` は 名詞述語 が節のとき名詞文にしない。`comparison` は dimension が名詞でなければ(程度副詞・副詞形)形容詞自身を dimension にする。`adnominal` は location 役割を setting の元として受ける。`gold_caus_pass` と `diathesis` の安全理由に使役の理由を名指しで足した。
-- **人・組織の判定を正の証拠にする(第 3 ラウンド M1)**(`semantic_reader.py:_is_person_phrase`、検査側 `semantic_verify.py:_vt_is_addressee` は別実装): 語の末尾の文字(社・会・部・校・所 …)では判定しない。人・組織とするのは、句の主辞(最後の の より後ろ)が次のどれかのときだけ。(a) 閉じた人・集合行為者の名詞(`_PERSON_NOUNS`: 警察・企業・政府・協会・機関・組合・劇団・財団・役所・国会・政党・部隊・陸軍・刑事・山賊・取締役会 …、親族・役職を含む。語義が組織に偏る語だけ。学会・大会のような催しとも読める語、会社・大学のような場所でもある語は入れない)または `frames.ROLES`・学習済み役職、(b) 代名詞、(c) 主辞が人名・組織名・一般の固有名詞(名前そのもの。**固有名詞が主辞の前にあるだけの句は人としない**: 太郎の鞄、山田橋、伏見稲荷神社)、(d) 名詞の後ろにタガーが 接尾辞 とした さん・氏・君・様・殿・達・たち・ども・ちゃん・団・隊(消防団・探検隊・子供達)、名詞の後ろの 軍・チーム(連合軍・開発チーム)、(e) 人の役職名詞＋会(委員会)、(f) `frames.is_role` の末尾の人接尾(整備士・研修生・部長)で、サ変可能(動作名詞: 成長・関係・配達)でないもの。いずれにも当たらない受身の に 句は agent にせず、既存の `_NONAGENT_REASON` で unsupported にする。部・課・会・社 で終わる語は、名前(固有名詞が主辞)か役職名詞＋会でなければ組織とみなさない(野球部・経理課・出力部・山間部 は区別できないので未対応)。
-- **変化の動詞の に 句(第 3 ラウンド M2)**(`_case_role`): (1) に 句が目的語**より前**(BにAを直す)なら `result` にしない(`ambiguous`)。語順は語彙を要さない根拠。(2) 人の に 句は、目的語(受身なら主語)も人のとき(`彼を部長に任命`)に限り `result`(状態・地位)。目的語が物のとき(`娘に着物を仕立てた`)は受益者で、`result` ではなく `ambiguous`(恩恵の補助動詞があれば recipient)。(3) 地位を授ける動詞(`_APPOINTMENT_PREDICATES`: 任命・登用・起用・抜擢・選任・選出・指名・認定・昇進・昇格・降格)は、目的語が人であることを動詞自身が選択するので、目的語の判定を問わず に 句を `result`。検査側は自前の `_VT_APPOINTMENT_VERBS` と語順・人の判定で、同じ型の `result` を拒否する。
-- **比較の より(第 3 ラウンド M3)**: `より` が名詞・代名詞・数・`の` の直後にあれば、品詞タグ(助詞/副詞)によらず比較の印とみなし、copula の値を述語句(unsupported)にする(`前のより軽い`)。値の先頭の副詞 より(`より良い社会`)は比較の印としない。比較構文が読めれば読み(standard は準体の の を含む句 `前の`)、読めなければ未対応。`ほど` の比較は、`ほど…ない` を比較構文が既存のまま読む(copula の値には入らないので変更していない)。
+- **【W1-a2 で (f) と `frames.is_role` の呼び出しを廃止し、§4.3 N1 に置き換えた】人・組織の判定を正の証拠にする(第 3 ラウンド M1)**(`semantic_reader.py:_is_person_phrase`、検査側 `semantic_verify.py:_vt_is_addressee` は別実装): 語の末尾の文字(社・会・部・校・所 …)では判定しない。人・組織とするのは、句の主辞(最後の の より後ろ)が次のどれかのときだけ。(a) 閉じた人・集合行為者の名詞(`_PERSON_NOUNS`: 警察・企業・政府・協会・機関・組合・劇団・財団・役所・国会・政党・部隊・陸軍・刑事・山賊・取締役会 …、親族・役職を含む。語義が組織に偏る語だけ。学会・大会のような催しとも読める語、会社・大学のような場所でもある語は入れない)または `frames.ROLES`・学習済み役職、(b) 代名詞、(c) 主辞が人名・組織名・一般の固有名詞(名前そのもの。**固有名詞が主辞の前にあるだけの句は人としない**: 太郎の鞄、山田橋、伏見稲荷神社)、(d) 名詞の後ろにタガーが 接尾辞 とした さん・氏・君・様・殿・達・たち・ども・ちゃん・団・隊(消防団・探検隊・子供達)、名詞の後ろの 軍・チーム(連合軍・開発チーム)、(e) 人の役職名詞＋会(委員会)、(f) `frames.is_role` の末尾の人接尾(整備士・研修生・部長)で、サ変可能(動作名詞: 成長・関係・配達)でないもの。いずれにも当たらない受身の に 句は agent にせず、既存の `_NONAGENT_REASON` で unsupported にする。部・課・会・社 で終わる語は、名前(固有名詞が主辞)か役職名詞＋会でなければ組織とみなさない(野球部・経理課・出力部・山間部 は区別できないので未対応)。
+- **【W1-a2 で §4.3 N2・N3 に置き換えた】変化の動詞の に 句(第 3 ラウンド M2)**(`_case_role`): (1) に 句が目的語**より前**(BにAを直す)なら `result` にしない(`ambiguous`)。語順は語彙を要さない根拠。(2) 人の に 句は、目的語(受身なら主語)も人のとき(`彼を部長に任命`)に限り `result`(状態・地位)。目的語が物のとき(`娘に着物を仕立てた`)は受益者で、`result` ではなく `ambiguous`(恩恵の補助動詞があれば recipient)。(3) 地位を授ける動詞(`_APPOINTMENT_PREDICATES`: 任命・登用・起用・抜擢・選任・選出・指名・認定・昇進・昇格・降格)は、目的語が人であることを動詞自身が選択するので、目的語の判定を問わず に 句を `result`。検査側は自前の `_VT_APPOINTMENT_VERBS` と語順・人の判定で、同じ型の `result` を拒否する。
+- **比較の より(第 3 ラウンド M3)**: `より` が名詞・代名詞・数・`の` の直後にあれば、品詞タグ(助詞/副詞)によらず比較の印とみなし、copula の値を述語句(unsupported)にする(`前のより軽い`)。値の先頭の副詞 より(`より良い社会`)は比較の印としない。比較構文が読めれば読み(standard は準体の の を含む句 `前の`)、読めなければ未対応。`ほど` の比較について、第 3 ラウンドの本文は「copula の値には入らないので変更していない」と書いたが**事実と違った**: `この町は昔ほど賑やかではない。` は copula identity として supported になっていた(開始時点の N4 は 14 文中 11 文が誤読。`soundness_start.txt`)。W1-a2 で §4.3 N4 のとおり直した。
 - **英語**(`en_frames.py:read_typed`): 否定側の印(否定の決定詞・量化・関係節・使役・不定詞補文・比較・従属節・等位・助動詞・焦点語・文頭の否定・as)に加えて、**読めた Frame の肯定側の検め**を足した。(a) 主動詞のトークンが動詞か(`_verb_token_problem`: be の後は分詞だけ。限定詞・前置詞・形容詞を動詞にしない)。(b) 各役割が名詞句か(`_np_problem`: 数詞・焦点語・接続詞・助動詞を含まない。小文字名詞の後の代名詞・固有名詞〈縮約関係節〉、末尾の分詞、知覚・保持動詞の後の -ing を含まない)。(c) 文の内容語がすべて述語か役割に覆われているか(`_frame_problems`: 黙って落とした語があれば `(None, 理由)`)。(d) 小節(painted the room blue)、変化の動詞の to/into(convert X to Y: 結果であって受け手でない)、動詞の後の節(thinks the report is late)。`read` は `read_typed` の Frame を返す。比較の形容詞の語幹一覧は、評価文でなく一般の語彙(1〜2 音節の変化する形容詞)から作り直し、条件の 2 語組と評価文由来の語(crowded, red)を削除した(R8)。`regression()['all_pass']` は True。
+
+### 4.3 W1-a2(第 4 ラウンド)の規則: 正の証拠が無ければ役割を決めない
+
+方針(チケット): 語彙や語末の文字で型を当てる方向をやめる。正の証拠が無いときは、その役割を決めずに未対応(`ambiguous`)として返す。正読が減ってもよい。曖昧な文は片方に倒さない。基点より悪くしない。
+読解(`semantic_reader.py`)と検査(`semantic_verify.py`)は、今回も**別の実装**(検査は読解を import せず、自前のトークン化・自前の定数・自前の関数)。一覧の一致は `tests/reading_soundness/test_gates_round4.py::test_round4_class_lists_agree` が確かめる(一覧は別々に持つので、同じ内容を二重に書いている点は第 3 ラウンドの H28 と同じ)。
+
+**N1 人の判定から語末の文字を外す**(`_is_person_phrase`、検査側 `_vt_is_addressee`)。`frames.is_role`・`frames._PERSON_SUFFIX`・`endswith` を、読解と検査の人の判定から**呼ばない**(`frames.py` は変えない。`np_internal._is_person_item` は呼び続けている: K22)。人・組織とするのは、句の主辞(最後の の より後ろ)が次のときだけ。
+  (a) 閉じた類に完全一致: `_PERSON_NOUNS`(語義がすべて人・人の集団を指す語だけ)・`frames.ROLES`(農家を除く: 人と家屋の両義)。**`frames._LEARNED` は使わない**(第 2 ラウンド M1: コーパスで名前の前に出たカタカナ語の一覧で、ピアノ・カメラ・ロンドンなど人でない語を含み、人の類ではない。詳細は §4.4)、(b) 代名詞、(c) 最後のトークンが人名・組織名・一般の固有名詞、(d) 2 トークン以上で、最後のトークンが 接尾辞 で、表層が人の役割の接尾(士 生 主 医 者 人 手 員 民 師 長 係 官 家 将 婦 夫)・敬称(さん 氏 君 様 殿 達 たち ども ちゃん)・集団(団 隊)で、直前が名詞・代名詞(または人の接尾辞)、(e) 2 トークン以上で最後が名詞の 軍・チーム・客 で直前が名詞、(f) `<X>会` で、X が人であるか、X の最後のトークンが成員の名詞(委員 理事 役員 取締役 評議員 議員 幹事 監事 会員)であるもの(委員会・審査委員会)。
+  1 トークンの普通名詞(切手・定員・隣家 …)は、末尾の文字が人の接尾辞と同じでも、(d) に当たらない(接尾辞のトークンが無い)ので人ではない。
+  **足した語(`_PERSON_OCCUPATION_WORDS`、判断記録 H32)**: 語義がすべて人を指すものだけ。評価バンク・レビュー・自作バンクの文にだけ出る語は足していない(`a6_review_words.txt` は 0 行)。
+
+**N2 変化の動詞の に 句は、構文の証拠があるときだけ `result`**(`_result_ill_typed`、`_result_type_evidence`、`_PROCESSING_PREDICATES`。検査側 `_vt_result_excluded`、`_VT_PROCESSING_VERBS`)。`_CHANGE_PREDICATES` を 3 つの類に分ける。(a) 変換類(変える・翻訳する・分ける・分類する・なる … と、日程変更の延期する類): 【第 2 ラウンドで変更: §4.4 M2】目的語(受身なら主語)があるときは (b) と同じく結果の型の証拠があるときだけ `result`(人の語彙は根拠にしない)。目的語が無く、動詞に他動詞の用法が無い節(`X は Y になる`・変わる・成長する など。`_INTRANSITIVE_CHANGE_PREDICATES`)だけ証拠なしで `result`。【第 3 ラウンドで狭めた: §4.5 R1】他動詞(言い換える・訳す・変える …)の目的語が省略された節は、に 句が誰かのための相手かもしれないので、他の節と同じく結果の型の証拠が要る。(b) 加工・作成類(直す・仕立てる・仕上げる・整理する・まとめる・編集する・改訂する・染める・塗り替える・塗り直す・改装する・模様替えする・描き直す・選ぶ・作り変える・改造する): 受益者の に も取る。**結果の型の証拠があるときだけ** `result`。証拠が無ければ `ambiguous`(`case:に:result|beneficiary`)で、人の語彙は根拠にしない。ただし目的語が人のとき(`娘を〜に仕立てた`)は、に 句は人が就く状態なので `result`。(c) 任命類(`_APPOINTMENT_PREDICATES`): 従来どおり。
+  結果の型の証拠(トークンと閉じた類で判定): 数詞＋助数詞・単位語 1 語(一冊・二つ・三段落)または `_counted_phrase`(四つの〜)、主辞が形状詞、主辞が名詞で 語・形・版・式・型・風・色 の直前が名詞(英語版・改訂版)、色の名だけを指す語(`_COLOR_NAMES`。茶色・金色は 1 トークンなので語末の 色 では判定しない)、書式・要約だけを指す名詞(`_FORMAT_NOUNS`。基準と、足した理由は H34)、時の句。
+
+**N3 受身の選出・任命の に 句**(`_SELECTION_PREDICATES` = 任命類から昇進・昇格・降格を除いたもの＋選ぶ、`_is_post_phrase`、`_POST_NOUNS`)。「…によって選ばれた」と「…として選ばれた」に割れるので、受身のとき、に 句は**動作主にしない**(`_role_claim` と型の門と検査が拒否)。`result` にするのは、主辞が地位・役職の名詞(閉じた類 `_POST_NOUNS` か、名詞＋長/係)で、主語が人のときだけ。それ以外は `ambiguous`(`case:に:agent|result`)で未対応。型の門の受身の検出は、サ変の述語(`指名された`)で述語の範囲が名詞から始まる構文の節を見逃していたので、`_passive_follows` に直した(これが無いと構文(diathesis)の `agent` が通っていた)。
+
+**N4 `ほど`・`くらい`・`ぐらい`・`並み` は比較の印**(`_predicate_phrase_value`、`constructions/negation.py:_nominal_value` と `_licenses_copula`、検査側 copula 分岐): 名詞・代名詞・数・接尾辞・準体の の の直後にあれば、品詞タグによらず値を述語句(unsupported)にする(`より` と同じ扱い)。比較構文(`constructions/comparison.py`)がその文を読めるなら読み(`この鞄は君のほど重くない。` は comparison のまま)、読めなければ未対応。
+
+**J1-17 移動の動詞の終点**(`_recipient_claim`、`_role_claim`、検査側 `_vt_recipient_excluded`): 移動の動詞(`_GOAL_PREDICATES`: 行く・来る・帰る・戻る・向かう・着く・入る・出る・進む・移る・渡る)の に/へ 句は、**場所の証拠**(`_is_place_phrase`)か**人の証拠**があるときだけ、規約の名前 `recipient` のまま supported。どちらも無ければ `recipient` にしない。【第 2 ラウンドで変更: §4.4 M5】第 1 ラウンドは `へ` を `direction`、`に` を `goal` と読み直していたが、証拠の無い句を型付きの役割にするのは誤読(買い物に行った → goal=買い物)なので、**未対応(`ambiguous`)にする**(J1-17 `戦後は若者が都会へ移った。` は未対応になる。チケットの X1 が認めている)。置く類(`_PLACEMENT_PREDICATES`)と住む類(`_LOCATION_PREDICATES`)は変えない(H33)。`_is_place_phrase` が語末の `endswith`(`_PLACE_SUFFIXES`)を含むことは変えていない。ここでは `recipient` を残す根拠にだけ使い、動作主の判定には使わない。
+
+**受身の から 句**(`_is_origin_not_agent`、検査側 `_vt_origin_not_agent`): 動作主にするのは、人の証拠(N1 の (a)〜(f))があるときだけ。【第 2 ラウンドで変更: §4.4 M3】それ以外を `source` に読み直すのをやめ、`source` にするのは出どころの証拠(行為できない場所の名詞の閉じた類 `_SPOT_NOUNS`、または固有名詞の地名)があるときだけにした。証拠が無ければ `ambiguous`(`case:から:agent|source`)で未対応。
+
+### 4.4 W1-a2 第 2 ラウンド(中間職のレビュー `review.r1.md` の必須の修正 M1〜M8)
+
+レビューの例の語は規則・語の類に書かない(`a6_review_words.txt` 0 行)。例は型の説明で、直したのは型。読解と検査は別の実装のまま(検査は読解を import しない)。一覧の一致は `test_gates_round5.py::test_round5_class_lists_agree` が確かめる。
+
+- **M1 `frames._LEARNED` を人の証拠にしない**(`_is_person_phrase`、`_vt_is_addressee`)。`_LEARNED` はコーパスで名前の前に書かれていたカタカナ語を集めた表で、人でない語を多く含む。読解と検査の両方から外した(`frames.py` は変えない)。`frames.ROLES` の農家(人と家屋の両義)も外した。残る `frames.ROLES` の語に一部の動作名詞と兼ねる語(監督・教授・担任)があるのは既知の灰色(K26)。
+- **M2 変換の動詞の に 句も、結果の型の証拠があるときだけ `result`**(`_result_ill_typed`、検査側 `_vt_result_excluded`)。第 1 ラウンドの (a) 類は「人の証拠があれば `ambiguous`、無ければ `result`」で、人の語彙に無い人が `result` になり基点(`recipient`)より悪くなっていた。いまは (a)(b) 類とも「目的語(受身なら主語)があり、結果の型の証拠が無く、目的語が人でもなければ `ambiguous`」(人の語彙は使わない)。証拠なしで `result` にするのは、任命類(目的語は動詞の選択で人)、目的語が人の節(`娘を医者に仕立てた`)、目的語の無い節(`彼は医者になった`: 誰かのためにするものが無いので、に 句は主語がなるものにしかならない。**【第 3 ラウンドで取り消し・狭めた: §4.5 R1】これは「目的語が書かれていない」ことと「動詞が自動詞である」ことを混ぜていた。他動詞の目的語が省略された文(`<人>が<人>に言い換えた`)でも、に 句が人のとき result になり、基点(recipient)より悪くなっていた。いまは動詞に他動詞の用法が無い閉じた類だけ**)、`加工する`(材料を製品にする動詞。`_PRODUCT_PREDICATES`。既存テスト `丸太を角材に加工した → result` を守るために (a) から分けた。H45)。証拠に足したもの: 言語名・文字種の名だけを指す語(`_LANGUAGE_NAMES`。英語は 1 トークンなので 名詞＋語 の規則で拾えない。基準: すべての語義が言語・言語の変種・文字種)、助数詞になれる名詞(タガーの 助数詞可能。袋・束・組・班。人を数える語でも、「〜に分ける」では分け先の単位)。
+- **M3 受身の から 句を、証拠なしで `source` に読み直さない**(`_case_role`、型の門、検査)。`結果が事務局から通知された。`(基点 agent、第 1 ラウンド source)は未対応。`source` にするのは、`_SPOT_NOUNS`(駅 公園 部屋 庭 海 山 川 湖 島 畑 森 谷 海岸 教室 倉庫 台所 玄関 屋上: 行為できない場所だけを指す語)か地名の固有名詞のとき。`_is_origin_not_agent` は `_SPOT_NOUNS` の語を、タガーが人名(姓)と読んでも人にしない(森 は姓でもある)。X3 の手分類 76 行から `支部 goal IMPROVED` の行を除いた(H33 の取り消し)。
+- **M5 終点の証拠が無い移動の動詞の に/へ 句を `goal`/`direction` と読み直さない**(`_case_role`、型の門、検査)。`goal`/`direction` にするのは `_is_end_point`(場所 `_is_place_phrase`、集まりを指す名詞 `_GATHERING_NOUNS`: 会議 会合 集会 総会 授業 講義 試合 式典 面接 宴会 結婚式 葬儀、または人 `_is_person_phrase`: 共有の frame 読解器が `店長サキ` を 店長＋サキ に割って recipient=サキ とし、同じ句を へ の句としても読むため。人の句は `_recipient_claim` が recipient として残す句と同じ)のときだけ。それ以外(買い物・釣り・荷造り)は `ambiguous`。集まりを足した理由は H46(既存テスト `会議に出た` を守る)。移動の動詞に 出かける・通う・引っ越す・到着する・帰宅する・出勤する・出張する・出発する・旅立つ・上陸する を足した(同じ規則が掛かるように)。
+- **M6〜M8(入口)**: §9.2。M6 存在・居住の場所は `place`(`goal` は移動・設置の終点だけ)、M7 述語は書かれた動詞の辞書形(逆の動詞に替えない)、M4 文頭の大文字は固有名の証拠にしない、M8 辞書に無い動詞は `unreadable_input` ではなく `not_supported`。
+- **M9(レビューに無い。自作の下位形で見つけた)**: 動詞をタガーが「形容詞の語幹＋接尾辞＋助動詞」に割る(…がられた)と、copula なしの名詞文(`A が B られた` = A と B の同一)として対応済みになっていた(基点にもあった誤読)。copula が無く、値が助動詞の連なりで終わり、その直前が動詞・形容詞・動詞的の接尾辞なら述語句(unsupported)にした(読解 `_predicate_phrase_value` と検査の copula 分岐。H50)。
+
+### 4.5 W1-a2 第 3 ラウンド(中間職のレビュー `review.r2.md` の必須の修正 1〜5)
+
+レビューの例の語は規則・語の類に書かない(`a6_review_words.txt` 0 行。レビューの第 3 ラウンドの例の語を grep に足した)。読解と検査は別の実装のまま(検査は読解を import しない)。一覧の一致は `test_gates_round6.py::test_round6_class_lists_agree` が確かめる。新しい凍結データ: `ja_r6.jsonl`(38 文: S1 16・S1c 5・S4 13・S4c 4。`bank_freeze_r6.sha256`)と入口の第 3 の見本 `B1_v2_r3`(17 問。`b1v2_r3_fixture_freeze.sha256`)。
+
+- **必須 1 他動詞の目的語が省略された文の に 句は、証拠なしに `result` にしない**(`_result_ill_typed` の `if object_person is None: return None`、検査側 `_vt_result_excluded`)。第 2 ラウンドの免除「目的語が無い節は証拠なしで result」は、`X は Y になる`(自動詞)のためのものだったが、他動詞の目的語が省略された文(`<人>が<人>に言い換えた`)にも掛かり、に 句が人でも result になって、基点(recipient)より悪かった。いまは、**動詞に他動詞の用法が無い閉じた類**(`_INTRANSITIVE_CHANGE_PREDICATES`: なる 成る 変わる 化す 変化する 変質する 成長する 発展する 進化する 変貌する 転じる 転ずる 移行する。基準: 主語自身が変わる。他動詞または両用の動詞は入れない)だけが目的語なしで証拠なしの result を許す。`frames.transitivity` は 化す・発展する を trans と言うので使わず、動詞の閉じた類にした。検査側は `_VT_INTRANSITIVE_CHANGE_VERBS`(別の定数)。他動詞・自他が分からない動詞で目的語が無く、結果の型の証拠も無ければ `ambiguous`(未対応)で、基点の recipient には戻さない(チケットはどちらも認める。同点は棄権)。受身で節の中に主語が無い文(`…に分類される`)も、目的語の有無が決まらないので同じ扱いになる(K33)。
+- **【一部撤回: W1-a3 の §4.6・H61 が、下の「主語が人でなければ今までどおり passive」と「に 句を能動で取る類に入っていない他動詞は passive」を撤回した】必須 2(入口) 人が主語の れる/られる は、受身と尊敬の同点なので棄権する**(`_voice_ja`)。`<人>が説明された` は「<人>が説明した」(尊敬)とも読める。表層は選ばないので、片方(passive)を返すのは同点の勝者づくりだった。いまは、主語(が/は の patient)に人の証拠(`_is_person_phrase`)があるとき: 動作主の句が無ければ `UNDETERMINED_VOICE`、に/から の句があり、動詞が に 句を能動で取る類(授受・伝達 `_TRANSFER_PREDICATES`、移動・設置・存在 `_GOAL_/_PLACEMENT_/_LOCATION_PREDICATES`、変化 `_CHANGE_PREDICATES`)か他動詞でないなら `UNDETERMINED_VOICE`、によって は passive。**主語が人でなければ(`<物>が割られた`)今までどおり passive**。レビューの指定にある「他動詞であること」は、能動で に を取らない他動詞(叱る・褒める・追いかける)だけを passive にするためにレビューの文面より保守的に付けた(`frames.transitivity` が unknown の動詞(逮捕する)・intrans と言う動詞(笑う)の受身が棄権になる: K34)。読解器側の patient=<人>(基点からの読み、K32)は直していない(入口が止める)。
+- **必須 3(入口) 英語は、大文字を人の証拠にしない**(`_person_en`、`_recipient_by_construction_en`)。大文字は「固有名である」ことの証拠で「人である」ことの証拠ではない(都市の名も同じ書き方)。`to` の後ろの受け手と、自動詞の主語は、代名詞か `en_frames.ANIMATE` の主辞があるときだけ。二重目的語(`V NP NP`)の最初の目的語は、構文が受け手を決めるので証拠なしで recipient(`Lisa sent Paul a message.`。直前に前置詞が無く、patient より前にあることを確かめる)。**`Ann sent the report to Ben.` のように人名を `to` で受ける文は、読めなくなった(`RECIPIENT_TYPE_UNDETERMINED`)。チケット・指示書の X4 のコマンド例にあった文だが、人名と地名を区別する正の証拠が無い**。
+- **必須 4 姓＋家 を人の証拠にしない**(`_is_person_phrase` の (d)、検査側 `_vt_is_addressee`)。接尾辞 家 は、普通名詞の後ろでは人(評論家・実業家)だが、姓(固有名詞・人名)の後ろでは「その家の人々」と「その家(建物)」に割れる。最後のトークンが 接尾辞 家 で、直前が固有名詞のときは人の証拠にしない(`_HOUSE_SUFFIX_TOKENS`)。普通名詞＋家 は今までどおり。受身の に 句は未確定(未対応)で、動作主にしない。
+- **必須 5 X3 の手分類 1 件の訂正と、X3 に流す文の追加**: `ながらく副業作家であったため作品数は少ない。` の 2 行(entity・value)を IMPROVED から STILL_WRONG に直した(原因の節が主語に入り、形容詞を名詞文の値にしているので誤り。基点も誤りで、新しい誤読ではない)。必須 1〜4 の型の文を、自分で選んだ別の語で `review_r3_examples_ja.txt`(レビューの例)・`w1a2r3_probe_ja.txt`(自作の別の語 22 文)・`b1v2_r3_inputs_ja.txt` として X3 の `--extra` に足した(`scripts_r3/run_x3.sh`)。
+- **レビューの任意の改善 2・3(入口。直した)**: を の句が経路を表す移動の動詞(走る 歩く 渡る 飛ぶ …。`_PATH_VERBS`: 規約に経路の役割が無く、読解器は patient と呼ぶ)は `PATH_ROLE_NOT_MAPPED` で棄権。サ変名詞が を で切れた `掃除をさせた`・`宿題をした` は読解器が predicate=する・patient=掃除 と読み、規約 3 の「名詞＋する」に合わないので `PREDICATE_NOT_MAPPED:light verb` で棄権。任意 1(作品名・神名の固有名詞の主辞が動作主になる)と 4(`生徒を二人に選んだ`)は直していない(K35)。
+- **結果の型の証拠に足した語**: `言語`(`_LANGUAGE_NAMES`・`_VT_LANGUAGES`。基準「言語・方言・文字種だけを指す語」に合う。必須 1 の変更で `40以上の言語に翻訳されている。`(第 2 ラウンドでは result と正しく読めていた)が未対応になったので、基準に合う語として戻した。H55)。人の語彙には何も足していない。
+
+### 4.6 W1-a3(中間職のレビュー `review.r3.md` の必須 1・2)
+
+直したのは入口 `verantyx/semantic_read.py` の `_voice_ja`(れる/られる だけの節)だけ。読解器・検査・採点器は変えていない(`diff -rq` で `verantyx/` は `semantic_read.py` の 1 ファイル、`tools/` は 0)。新しいテストは `tests/test_semantic_read_r4.py`(入口に通す前に凍結。`w1a3_tests_freeze.sha256`。H65)。
+
+- **原則**: 「主語が人の語彙に入っていない」ことも「動詞が能動で に を取る類に入っていない」ことも、何の証拠でもない(人の語彙に無い人がいる。第 3 ラウンドの規則は、この「入っていない」ことを passive の根拠にしていて、尊敬を受ける人の文に passive・patient=主語 を返した。基点の読解器は `voice` を持たないので、基点に無い新しい誤読)。**正の証拠があるときだけ passive** にする。主語の型の判定に `_is_person_phrase` の否定を使わない。
+- **規則**(この順。patient がちょうど 1 つ、`causative` が無いとき。それ以外は今までどおり `UNDETERMINED_VOICE:れる/られる`。主語は patient の直後の助詞が が/は):
+  1. 動作主の句がある: (1a) によって で主語が が/は → passive。(1b) に/から で、述語が閉じた類 `_NI_KARA_FREE_PREDICATES` に入り `frames.transitivity` が trans → passive。それ以外は、**主語の型によらず** `UNDETERMINED_VOICE:passive or honorific`。(1c) それ以外 → `UNDETERMINED_VOICE:れる/られる with an object`(今までどおり)。
+  2. 動作主の句が無く、主語が が/は で述語が trans: (2a) 助動詞の連なりに `られる`(一段・カ変の動詞。可能と同形。規約では可能は `voice: active`・modality `ability`)→ `UNDETERMINED_VOICE:passive or potential`。(2b) 述語が閉じた類 `_SPONTANEOUS_PREDICATES` → `UNDETERMINED_VOICE:passive or spontaneous`。(2c) 主語に**人でないことの正の証拠**(`_not_person_evidence`)→ passive。(2d) それ以外 → `UNDETERMINED_VOICE:passive or honorific`。
+- **`_NI_KARA_FREE_PREDICATES`(5 語: 叱る・褒める・追いかける・殴る・噛む)**: 基準は「対象に直接働きかける他動詞で、能動では が・を 以外の項を**どの語義でも**取らない(に/へ の受け手・行き先・結果も、から の起点も立たない)」。受身の に/から の句は能動の項になれないので動作主の句であり、尊敬の読み(能動の項としての に/から)が成り立たない。読解器の 5 つの類(`_TRANSFER_/_GOAL_/_PLACEMENT_/_LOCATION_/_CHANGE_PREDICATES`)と交わらず、全語が `frames.transitivity` で trans(`test_semantic_read_r4.py` の T11)。**今回は足していない**(足すと passive が増える。H62)。
+- **`_not_person_evidence(phrase)`**: 句の主辞(最後の の の後ろ)が、読解器にすでにある閉じた類 `_SPOT_NOUNS`・`_FORMAT_NOUNS`・`_LANGUAGE_NAMES`・`_COLOR_NAMES`・`_GATHERING_NOUNS`(どれも「すべての語義が人でない」基準が書いてある)のどれかに入るときだけ真。`_is_person_phrase` が真なら偽(人の証拠と物の証拠が両方あれば同点=証拠にしない)。**名詞は足していない**。使わない証拠は H62。
+- **`_SPONTANEOUS_PREDICATES`(20 語)**: 思考・感情・想起・予期・知覚の動詞で、れる/られる が自発(「自然にそう思われる」)にもなるもの。棄権を増やす側の類で、「入っていれば棄権」にだけ使う。**入っていないことを passive の根拠にはしない**(2c の正の証拠が別に要る。漏れる余地は K41)。
+- **書き換えたテスト 2 件**(H63): `test_semantic_read_r3.py::test_a_subject_that_is_not_a_person_keeps_the_passive` → `test_a_subject_without_evidence_of_a_thing_abstains`(同じ 4 文で、`readable: false` かつ理由が `UNDETERMINED_VOICE` で始まることを確かめる)。`w1a2_review_r2_check.py` の `ENTRY_KEPT` の 1 件(物の主語・動作主の句なし)を `ENTRY_UNREADABLE` へ移した。
+- **結果**: 入口の出力の比較(第 3 ラウンドの終わりの木との比較)は §6 の W1-a3 の節。`false→readable`・`changed` は 0 件(新しい passive は第 3 ラウンドでも passive だった文に限られる)。正読が減った(§8 K41 の (3))。
 
 ### 4.2 門(読めないと言う)と検査
 
@@ -133,9 +201,15 @@ O1(レビューの任意改善)を実装: 対象節の一部だけが別々の a
 - 第 3 ラウンドのバンク(`ja_r3.jsonl` 32 文・`a3_r3.jsonl` 6 文)は、読解器(harness)に通す前に `bank_freeze_r3.sha256` で凍結した。**凍結前に、似た形の文を手元の probe(`show_clauses.py`)に通している**(レビュー指摘の文と、野球部・消防団・委員会・運動会・山間部・出力部 など M1〜M3 の下位形を探すための文。バンクの文そのものは凍結前に一度も通していないが、同じ語彙の文を見て規則を作ったので、バンクは未知入力ではなく「同じ型の確認」である)。凍結後の最初の harness 実行で `ja_r3` は誤読 0・検査誤通過 0(正読 L1 5/14、L2 10/12、L3 6/6)。正解は直していない。
 - 第 3 ラウンドの規則修正は、レビューの文と手元の追加 probe(重複を除いた 141 文: 場所・催し・部位・組織の語の受身、変化の動詞＋人、Nのより Adj。入力 `r3_probe_ja.txt`、dev での読み `r3_probe_ja_dev.txt`、修正後 `r3_probe_ja_after.txt`)に対して行った。probe で見つけた同型の穴(`太郎の鞄に`・`伏見稲荷神社に`・`運動会に`・`山間部に`・`出力部に`・`配達に`、`先生が児童に絵本を編集した`)は、型の条件(正の証拠・語順)で直した。残った穴は §8 K13〜。
 
+- **W1-a2 の測定条件**: 修正前は `dev`(`191db17`)の `git archive` を作業用ディレクトリ(W の外)に展開して使った(`rm -rf` は使わず、消さずに残した)。開始時点(HEAD `8d69747`、製品コードの変更前)も `git archive HEAD` を W の外に展開して比べた(`soundness_start_pre_r4.*` は r4 バンクを足す前の開始時点の harness で `TOTAL misread=1`、`soundness_start.*` は r4 バンクを足した開始時点の W)。すべて `env -i … PYTHONPATH=<木>`、`VERA_CONSTRUCTIONS_OFF` なし。読み込まれた `verantyx*` がすべて木の配下であることは、harness・a3_check・dump_reads・r3_review_check・test_semantic_read が自分で検査し、採点器は出自の検査(`outside_count`)で見た。
+- **W1-a2 第 1 ラウンドの凍結と、凍結前に何をしたか**(第 2 ラウンドは H51): 新しい評価バンク(`ja_r4.jsonl` 68 文・`a3_r4.jsonl` 7 行)と B1 v2 の自作の見本(`tests/bank_score/fixtures/B1_v2/items.jsonl` 65 問)は、読解器・入口・QA に通す前に凍結した(`bank_freeze_r4.sha256`: 2026-10-03 04:57 JST、`b1v2_fixture_freeze.sha256`: 04:59 JST)。**凍結前にやったこと**: タガーだけに候補の語を通して分かち書き(1 トークンか、名詞＋接尾辞か)を確かめた(読解器・入口は通していない)。凍結前に新しい文を読解器・入口・QA に通していない。凍結後は、読解器の出力を見て規則を直し、さらに手元の probe(`w1a2_probe_ja.txt` 67 文。dev / 修正後の出力は `w1a2_probe_ja_{dev,after}.txt`)で同型の穴を探した(から の受身の動作主、移動の動詞の終点、委員 を地位とするかなど)。この probe は評価バンクに入れていない。
+
+- **W1-a2 第 3 ラウンドの測定条件と凍結**: 作業場所は `W1-a2-impl3`(scratchpad、消さずに残した)。dev(`191db17`)を `git archive` で展開し直した。**凍結: `ja_r6.jsonl` と `B1_v2_r3/items.jsonl` は 2026-10-03 07:24:43 JST に `bank_freeze_r6.sha256`・`b1v2_r3_fixture_freeze.sha256` で凍結した**(`shasum -a 256` をその時刻に実行)。凍結の前に読解器・入口へ通したのは、レビュー(review.r2.md)が挙げた文(先生が素人に言い換えた、先生が説明された、`Ann sent the package to London.`、絵が田中家に飾られた、など)と、規則を直したあとの動作確認の数文(`Lisa sent Paul a message.`、`彼は医者になった。`、`窓が割られた。`)だけで、バンクの文は凍結前に一度も通していない(`ja_r6.jsonl` の文と B1_v2_r3 の入力がバンク・docs・既存テストの文と重複しないことは、凍結の直前にファイルを grep して確かめた: 0 件)。必須 1〜4 の修正は凍結の前に書いたが(コード)、バンクの正解は規約(READING_CONVENTIONS.md)から書き、読解器の出力には合わせていない。
+- **第 2 ラウンドとの比較の測り方**: `scripts_r3/make_round2_copy.py` は、W のコピー(`verantyx/`・`tools/`・`tests/`・`docs/`)に対して第 3 ラウンドの変更だけをテキスト置換で戻し、第 2 ラウンドの終わりと同じ挙動の複製を作る(その複製で `test_semantic_read.py`・`test_semantic_read_r2.py` が `189 passed`、第 2 ラウンドの報告の数と一致)。`scripts_r3/compare_with_round2.py` が読解(x3 の 2144 文)と入口(2271 文)の違いを `r3_lost_vs_round2.tsv`・`r3_entry_changes_vs_round2.tsv` に出す。
+
 ## 6. 結果
 
-(`recompute.py` の出力。出典 `soundness_dev.json`, `soundness_after.json`, `coverage_*.json`, `dropped.tsv`, `gained.tsv`, `changed.tsv`, `*_classified.tsv`, `before/after_pytest.txt`, `bank_freeze*.sha256`)
+(`recompute.py` の出力。出典 `soundness_{dev,start,after}.json`, `coverage_*.json`, `dropped.tsv`, `gained.tsv`, `changed.tsv`, `*_classified.tsv`, `before/after_pytest.txt`, `w1a2_{start,after}_pytest.txt`, `x3_table.tsv`, `bank_score_b1_selfmade/summary.json`, `bank_freeze*.sha256`, `b1v2_fixture_freeze.sha256`)
 
 #### 型ごとの結果(出典: soundness_dev.json / soundness_after.json)
 
@@ -155,10 +229,10 @@ O1(レビューの任意改善)を実装: 対象節の一部だけが別々の a
 | F4 | 5 | 0 | 5 | 0 | 0 | 0 | 0 | 0 | 5 | 5 | 0 | 0 | False |
 | F5 | 6 | 0 | 6 | 0 | 0 | 0 | 0 | 0 | 6 | 6 | 0 | 0 | False |
 | F6 | 6 | 0 | 6 | 0 | 0 | 0 | 0 | 0 | 6 | 6 | 0 | 0 | False |
-| J1 | 17 | 0 | 16 | 1 | 15 | 13 | 1 | 1 | 3 | 0 | 13 | 1 | True |
+| J1 | 17 | 0 | 16 | 1 | 15 | 13 | 0 | 0 | 4 | 0 | 13 | 0 | True |
 | J2 | 18 | 17 | 1 | 0 | 1 | 17 | 0 | 0 | 1 | 0 | 17 | 0 | True |
 | J3 | 15 | 1 | 8 | 6 | 9 | 9 | 0 | 0 | 6 | 6 | 9 | 0 | True |
-| J4 | 15 | 4 | 11 | 0 | 11 | 13 | 0 | 0 | 2 | 0 | 13 | 0 | True |
+| J4 | 15 | 4 | 11 | 0 | 11 | 10 | 0 | 0 | 5 | 0 | 10 | 0 | True |
 | J5 | 17 | 1 | 14 | 2 | 14 | 11 | 0 | 0 | 6 | 0 | 11 | 0 | True |
 | J6 | 16 | 10 | 5 | 1 | 5 | 15 | 0 | 0 | 1 | 0 | 15 | 0 | True |
 | J7 | 16 | 0 | 16 | 0 | 16 | 9 | 0 | 0 | 7 | 0 | 9 | 0 | True |
@@ -173,11 +247,30 @@ O1(レビューの任意改善)を実装: 対象節の一部だけが別々の a
 | L1 | 14 | 7 | 7 | 0 | 7 | 5 | 0 | 0 | 9 | 0 | 5 | 0 | False |
 | L2 | 12 | 8 | 4 | 0 | 4 | 10 | 0 | 0 | 2 | 0 | 10 | 0 | True |
 | L3 | 6 | 1 | 5 | 0 | 5 | 6 | 0 | 0 | 0 | 0 | 6 | 0 | True |
-| T7 | 7 | 0 | 7 | 0 | 6 | 6 | 0 | 0 | 1 | 0 | 5 | 0 | True |
-| 合計 | 326 | 102 | 197 | 27 | 113 | 184 | 1 | 1 | 141 | 84 | 141 | 1 | - |
+| N1 | 14 | 0 | 14 | 0 | 14 | 0 | 0 | 0 | 14 | 0 | 0 | 0 | False |
+| N1c | 6 | 6 | 0 | 0 | 0 | 6 | 0 | 0 | 0 | 0 | 6 | 0 | True |
+| N2 | 12 | 12 | 0 | 0 | 0 | 0 | 0 | 0 | 12 | 0 | 0 | 0 | False |
+| N2c | 6 | 0 | 6 | 0 | 6 | 5 | 0 | 0 | 1 | 0 | 5 | 0 | True |
+| N3 | 12 | 0 | 11 | 1 | 11 | 0 | 0 | 0 | 12 | 12 | 0 | 0 | False |
+| N3c | 4 | 0 | 4 | 0 | 4 | 4 | 0 | 0 | 0 | 0 | 4 | 0 | True |
+| N4 | 14 | 0 | 11 | 3 | 10 | 0 | 0 | 0 | 14 | 14 | 0 | 0 | False |
+| R1 | 14 | 0 | 14 | 0 | 14 | 0 | 0 | 0 | 14 | 0 | 0 | 0 | False |
+| R1c | 4 | 3 | 1 | 0 | 1 | 3 | 0 | 0 | 1 | 0 | 3 | 0 | True |
+| R2 | 12 | 11 | 1 | 0 | 0 | 0 | 0 | 0 | 12 | 0 | 0 | 0 | False |
+| R2c | 5 | 0 | 5 | 0 | 5 | 4 | 0 | 0 | 1 | 0 | 4 | 0 | True |
+| R3 | 12 | 12 | 0 | 0 | 0 | 1 | 0 | 0 | 11 | 0 | 1 | 0 | False |
+| R3c | 4 | 0 | 4 | 0 | 4 | 4 | 0 | 0 | 0 | 0 | 4 | 0 | True |
+| R4 | 12 | 0 | 11 | 1 | 10 | 0 | 0 | 0 | 12 | 12 | 0 | 0 | False |
+| R4c | 5 | 5 | 0 | 0 | 0 | 5 | 0 | 0 | 0 | 0 | 5 | 0 | True |
+| S1 | 16 | 16 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 0 | 0 | 0 | False |
+| S1c | 5 | 0 | 5 | 0 | 4 | 5 | 0 | 0 | 0 | 0 | 4 | 0 | True |
+| S4 | 13 | 0 | 13 | 0 | 13 | 0 | 0 | 0 | 13 | 0 | 0 | 0 | False |
+| S4c | 4 | 4 | 0 | 0 | 0 | 2 | 0 | 0 | 2 | 0 | 0 | 0 | True |
+| T7 | 7 | 0 | 7 | 0 | 6 | 5 | 0 | 0 | 2 | 0 | 4 | 0 | True |
+| 合計 | 500 | 171 | 297 | 32 | 209 | 219 | 0 | 0 | 281 | 122 | 173 | 0 | - |
 
-harness 実行の木: dev = `/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r3/dev` (not a git tree (archive of 075d486 expected for DEVTREE)), 修正後 = `/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a-S` (075d486105caa1c490e5a2a4f61b256921b111d3)
-評価文の件数(ファイル別): {'table7.jsonl': 7, 'ja.jsonl': 149, 'ja_r2.jsonl': 43, 'ja_r3.jsonl': 32, 'en.jsonl': 57, 'en_r2.jsonl': 38}
+harness 実行の木: dev = `/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W1-a2-impl3/dev191` (not a git tree (archive of 075d486 expected for DEVTREE)), 修正後 = `/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a-S` (8d69747432f92f8d62a73b09b19790ffc60db8b2)
+評価文の件数(ファイル別): {'table7.jsonl': 7, 'ja.jsonl': 149, 'ja_r2.jsonl': 43, 'ja_r3.jsonl': 32, 'ja_r4.jsonl': 68, 'ja_r5.jsonl': 68, 'ja_r6.jsonl': 38, 'en.jsonl': 57, 'en_r2.jsonl': 38}
 
 #### カバレッジ(出典: coverage_before.json / coverage_after.json / dropped.tsv / gained.tsv / changed.tsv)
 
@@ -185,76 +278,253 @@ harness 実行の木: dev = `/private/tmp/claude-501/-Users-motonisihikoudai-Pro
 |---|---|---|
 | documents | 1500 | 1500 |
 | sentences_approx | 3575 | 3575 |
-| supported_sentences | 1365 | 1355 |
-| supported_pct | 38.2 | 37.9 |
-| only_unsupported_sentences | 1439 | 1431 |
+| supported_sentences | 1365 | 1351 |
+| supported_pct | 38.2 | 37.8 |
+| only_unsupported_sentences | 1439 | 1435 |
 | unread_spans | 772 | 790 |
 
-- supported から外れた文(dropped.tsv): 49 件。分類(coverage_dropped_classified.tsv): {'WAS_WRONG': 49}
-- dropped の分類理由欄の語から機械的に分けた内訳(recompute.py の `_kind`。目安であり、分類の正本は各行の理由): {'時間・場所・方角・結果・対象を参与者にした': 8, '先行する語を黙って落とした': 2, '語の途中・括弧・助詞をまたぐ役割句': 19, '役割 0 の空の節': 19, 'そのほか': 1}
+- supported から外れた文(dropped.tsv): 53 件。分類(coverage_dropped_classified.tsv): {'WAS_WRONG': 52, 'DROPPED_CORRECT': 1}
+- dropped の分類理由欄の語から機械的に分けた内訳(recompute.py の `_kind`。目安であり、分類の正本は各行の理由): {'時間・場所・方角・結果・対象を参与者にした': 8, '先行する語を黙って落とした': 2, '語の途中・括弧・助詞をまたぐ役割句': 23, '役割 0 の空の節': 19, 'そのほか': 1}
 - 新たに supported になった文(gained.tsv): 39 件。分類(coverage_gained_classified.tsv): {'CORRECT': 39}
-- どちらも supported だが supported 節の構造が変わった文(changed.tsv): 78 件
-- 検算: 修正前 1365 - 49 + 39 = 1355 (修正後 1355)
+- どちらも supported だが supported 節の構造が変わった文(changed.tsv): 79 件
+- 検算: 修正前 1365 - 53 + 39 = 1351 (修正後 1351)
 
 #### 全テスト(出典: before_pytest.txt / after_pytest.txt)
 
 - 作業前: `124 failed, 3684 passed, 28 skipped, 82 xfailed, 68 xpassed, 37 subtests passed in 28.70s`
 - 作業後: `123 failed, 4598 passed, 28 skipped, 78 xfailed, 72 xpassed, 37 subtests passed in 25.35s`
 
-#### 凍結ハッシュ(出典: bank_freeze.sha256 = 第 1 ラウンドの 4 ファイル、bank_freeze_r2.sha256 = 第 2 ラウンドの 3 ファイル、bank_freeze_r3.sha256 = 第 3 ラウンドの 2 ファイル)と、いまの評価ファイルの sha256
+#### 凍結ハッシュ(出典: bank_freeze.sha256 = 第 1 ラウンドの 4 ファイル、bank_freeze_r2.sha256 = 第 2 ラウンドの 3 ファイル、bank_freeze_r3.sha256 = 第 3 ラウンドの 2 ファイル、bank_freeze_r4.sha256 = W1-a2 第 1 ラウンドの 2 ファイル、bank_freeze_r5.sha256 = W1-a2 第 2 ラウンドの 2 ファイル、bank_freeze_r6.sha256 = W1-a2 第 3 ラウンドの 1 ファイル ja_r6.jsonl)と、いまの評価ファイルの sha256
 
 | ファイル | 凍結時の sha256 | いまの sha256 | 一致 |
 |---|---|---|---|
 | a3.jsonl | `4e2d728ac017813d8f6f4ef26505d8394e7a7d8f0ad131487e02a3e67c559e58` | `4e2d728ac017813d8f6f4ef26505d8394e7a7d8f0ad131487e02a3e67c559e58` | 一致 |
 | a3_r2.jsonl | `2672d566bd650b181617e89b77ce10ce44d3226169ec58589b10f8bb9d070394` | `2672d566bd650b181617e89b77ce10ce44d3226169ec58589b10f8bb9d070394` | 一致 |
 | a3_r3.jsonl | `48e86f0a3d9a3b9c8597dd266a992999bc5580cf8cb625e7dad31d44beb29305` | `48e86f0a3d9a3b9c8597dd266a992999bc5580cf8cb625e7dad31d44beb29305` | 一致 |
+| a3_r4.jsonl | `dd1d5ab64184ce898c6f6a1d575f00c450b41685bb0dfa6d5589347bf35e7a00` | `dd1d5ab64184ce898c6f6a1d575f00c450b41685bb0dfa6d5589347bf35e7a00` | 一致 |
+| a3_r5.jsonl | `a714b0e49fd6406ae134a9fbf5030ca4e15dcee1a35cebd9f8b7e09ab369014a` | `a714b0e49fd6406ae134a9fbf5030ca4e15dcee1a35cebd9f8b7e09ab369014a` | 一致 |
 | en.jsonl | `88fb349633b7d659db156afbf60ca48d4478692b0ad9c5f63f0506bb5bb76049` | `88fb349633b7d659db156afbf60ca48d4478692b0ad9c5f63f0506bb5bb76049` | 一致 |
 | en_r2.jsonl | `a3f77278f73f2cc3d8502876baa5392d6e6febdace5ecfcd26c4bc1ae22cd8c8` | `a3f77278f73f2cc3d8502876baa5392d6e6febdace5ecfcd26c4bc1ae22cd8c8` | 一致 |
 | ja.jsonl | `d4bff65f30857cee01ffa30a4c402fbcd87725085a213075b2178a51a3065c0e` | `d4bff65f30857cee01ffa30a4c402fbcd87725085a213075b2178a51a3065c0e` | 一致 |
 | ja_r2.jsonl | `9df414efd8aa16a94af03cbe15e7e28037771543c4aed2969af7027bf105fea4` | `9df414efd8aa16a94af03cbe15e7e28037771543c4aed2969af7027bf105fea4` | 一致 |
 | ja_r3.jsonl | `af6bb55eecf295a921d6e02b54e17e24f91a85eb8f1b60624f9a14cfa2b23f88` | `af6bb55eecf295a921d6e02b54e17e24f91a85eb8f1b60624f9a14cfa2b23f88` | 一致 |
+| ja_r4.jsonl | `a2b9c7abf672b7e38d3793bd621edd38daec37d48374297ff05bbb2a2f32736d` | `a2b9c7abf672b7e38d3793bd621edd38daec37d48374297ff05bbb2a2f32736d` | 一致 |
+| ja_r5.jsonl | `9266fc1309b0e58012e154437233280dd5e1c345b4732609df5e2baecde61ca3` | `9266fc1309b0e58012e154437233280dd5e1c345b4732609df5e2baecde61ca3` | 一致 |
+| ja_r6.jsonl | `830b8ce1ba1bf6699352b8ddb6b56ea2ff3ef9434816af9e6aad20666ca41ed9` | `830b8ce1ba1bf6699352b8ddb6b56ea2ff3ef9434816af9e6aad20666ca41ed9` | 一致 |
 | table7.jsonl | `4f8daab2c15ef1491610ae09326ece5d48d9e7dc18a5be89a39dfe3dbab1fa7f` | `4f8daab2c15ef1491610ae09326ece5d48d9e7dc18a5be89a39dfe3dbab1fa7f` | 一致 |
 
-上申済みの既知の例外(harness.py の ESCALATED、id で列挙): J1-17 (end point of へ is read as recipient by a convention fixed in an existing test; escalated (docs/READING_SOUNDNESS.md))
+上申済みの既知の例外(harness.py の ESCALATED、id で列挙): なし(W1-a2 で空にした)
 
-### A1 誤読 0
-修正後は表 7 文・J1〜J9・K1〜K6・L1〜L3・E0〜E6・F0〜F6 の全 326 文で、**上申済みの 1 件(J1-17)を除く誤読が 0、検査誤通過が 0**(`soundness_after.txt`: `TOTAL misread=1 false_pass=1`、`ESCALATED … misread=1 false_pass=1`、`UNESCALATED misread=0 false_pass=0`)。dev は誤読 197(うち上申済みの 1 を除くと 196)・検査誤通過 113(`soundness_dev.txt`: `TOTAL misread=197 false_pass=113`)。第 3 ラウンドの L1〜L3 だけでは、dev の誤読は L1 7/14、L2 4/12、L3 5/6、修正後は 0(第 2 ラウンドの木では、レビューの未公開文で 10 件の誤読が出ていた: `review.r2.md`)。
-J1-17(`戦後は若者が都会へ移った。`)は、凍結した正解では誤読になる(正解 `direction=都会`、読解器は `recipient=都会`)。原因は「へ の終点を recipient と呼ぶ」規約を既存テスト `tests/test_semantic_realize.py::test_reader_case_roles_are_preserved`(`マキは研究室へ行った。`→ recipient)が固定していること。チケットが誤読とする「着点を受け手にする」と衝突し、既存テストは変えられない(許可パスの規則)ので、**上申として扱う**: `harness.py` の `ESCALATED` と pytest(`test_the_only_misread_is_the_escalated_exception`)は、この 1 件を id で列挙して例外とし、ほかの誤読は 0 を要求する。判断記録 H1・既知の穴 K1。
-レビューの再現文(日本語 20・英語 10。`review_r1_examples_{ja,en}.txt`)を dev と修正後で流した結果: 日本語は supported の節が dev で 17 件、修正後で 8 件(`review_r1_examples_ja_dev.txt` / `_after.txt`)。残り 8 は時刻が `time` になった 4 文、日程変更の結果が `result` になった 3 文、`一部、…` が既存の量化構文(`quantifier`: 一部 を事象の部分量化として読む設計、述語名 `…__quant_partial`)で読まれた 1 文で、どれも誤読ではない(後者は H18)。英語は dev で 10 文すべてが Frame を返し、修正後は 0(`review_r1_examples_en_*.txt`)。
+B1 v2 の自作の見本(`tests/bank_score/fixtures/B1_v2/items.jsonl`、`b1v2_fixture_freeze.sha256`): 凍結 `655acecda51d2243e5aa84b2adfc29c68a17f17705780bacca81025cbfe62a69` / いま `655acecda51d2243e5aa84b2adfc29c68a17f17705780bacca81025cbfe62a69` / 一致
 
-`pytest tests/reading_soundness`(`pytest_reading_soundness.txt`): `913 passed`(評価 326 文×型、門の単体 正例・負例、第 3 ラウンドの `test_gates_round3.py`、検査の変異、凍結ハッシュ、読解器と検査の類一覧の一致)。
+B1 v2 の第 2 ラウンドの自作の見本(`tests/bank_score/fixtures/B1_v2_r2/items.jsonl`、`b1v2_r2_fixture_freeze.sha256`): 凍結 `77f97a0074571c8d5d7b6f8ff7471f96e09382e7be72c299f14d5b5faa35406a` / いま `77f97a0074571c8d5d7b6f8ff7471f96e09382e7be72c299f14d5b5faa35406a` / 一致
 
-### A2 半数以上を正読
-J1〜J9 のすべてで 2×正読 ≥ 文数(表の最右列)。第 2 ラウンドの下位形: K1 8/10、K4 5/6、K6 7/7 は半数以上。第 3 ラウンドの下位形: L2 10/12、L3 6/6 は半数以上。**半数に届かない下位形と理由**:
-- L1 5/14(受身＋に＋場所・部位・催し・組織にも見える語): 正読は本当に組織が動作主の 5 文(警察・委員会・探検隊・政府・劇団)。非動作主の 7 文(境内・礼拝堂・下部・展示会場・内部・町内会館・校舎裏)は、正解は patient＋place|location だが、場所として読む規則が無いので未対応(K3 と同じ理由、H4)で、誤読ではない(agent の supported 節は 0)。部・課 の 2 文(野球部・経理課)は、組織の証拠が無い(出力部・山間部 と区別できない)ので未対応(H25)。
-- K2 0/7(時間でない 副詞可能 の語＋読点): 文頭の談話副詞(結局・実際・以上・普通・基本的に・全部・通常)は役割を持たず、原文の内容語が役割に載らない節になる。副詞を捨てた主節だけを supported にするのは「読み飛ばしを数える」原則に反するので、型付きの `unrepresented source content` で棄権する(誤読ではなく未対応)。
-- K3 0/8(受身＋に＋未知の場所名詞): agent にしないことは実装したが、`花壇` のような場所語を `place`/`location` として読む規則は実装していない(場所の判定は閉じた接尾辞・語彙で、未知の場所名は棄権)。検査側の `location` の許可条件(住む・位置する 等)を広げると、quantifier・te_chain・adnominal が recipient/location に依存している既存の読みが動くので、このチケットでは広げなかった(H4)。
-- K5 1/5(色・状態の に、動詞が類の外): 塗る・張り替える・塗り直す が「面に塗る」(場所)か「色に塗る」(結果)かは に の語の型で決まり、色語の辞書を持たないので棄権。
-英語は A2 を課さない(統制 E0 8/8、F0 6/6 は読む)。
+B1 v2 の第 3 ラウンドの自作の見本(`tests/bank_score/fixtures/B1_v2_r3/items.jsonl`、`b1v2_r3_fixture_freeze.sha256`): 凍結 `50469f9f26848f972db1864f818b3351d2d14d3d3c234acd06ce64451c9e56f5` / いま `50469f9f26848f972db1864f818b3351d2d14d3d3c234acd06ce64451c9e56f5` / 一致
 
-### A3 受身で動作主なしの「誰が」に時間・場所を返さない
-`a3_check.py`(`mode="semantic"`): 修正後は 21 文(`a3.jsonl` 8 ＋ `a3_r2.jsonl` 7 ＋ `a3_r3.jsonl` 6。時間 7・場所・催し・部位 14)すべてで `ANSWER` を返さず(`UNKNOWN_NO_EVIDENCE` 12、`UNKNOWN_UNSUPPORTED_EVIDENCE` 9)、禁止語を返したものは 0(`a3_after.txt`, `rows=21 failed=0`, `exit=0`)。dev は 21 文中 13 文(A3-02, A3-03, A3-08, A3R2-01, 02, 03, 05, A3R3-01〜06)で時間語・場所語を `ANSWER`(`a3_dev.txt`, `rows=21 failed=13`, `exit=1`)。第 3 ラウンドの 6 文(`a3_r3.jsonl`)は、末尾が 社・会・部・所 の語(総会・展覧会・製作所・内部)や場所(境内・礼拝堂)が受身の に 句にあるもので、第 2 ラウンドの木で A3 型の誤答(`神社`・`教会`・`外部` を `ANSWER`)が出たのに対応する。第 1 ラウンドの場所の文 4 つは「で」の場所で dev でも失敗しておらず、受身の に の場所を測っていなかった。第 2 ラウンドで受身＋に の場所 4 文を足した(A3R2-01〜04)。
+#### W1-a2: 開始時点(HEAD 8d69747、製品コードの変更前)から修正後への変化(出典: soundness_start.json / soundness_after.json)
 
-### A4 既存テストの新しい失敗 0
-基線(作業前の W): `124 failed, 3684 passed, …`(`before_pytest.txt`)。失敗一覧は `/Users/motonisihikoudai/Projects/vera-impl/baselines/dev_075d486_failures.txt` と一致(`before_vs_w0-1.txt`)。修正後: `123 failed, 4598 passed, 28 skipped, 78 xfailed, 72 xpassed`(`after_pytest.txt`。passed の増分は `tests/reading_soundness` の新規テスト)。失敗 123 件は全部基線の失敗一覧に含まれる(`comm -23` の出力は空)。`tools/w0_1_compare_runs.py`: `G3 NEW_FAIL=0`、FIXED 1(`test_semantic_measure::test_role_only_questions_generalize[…駅B…]`)、`exit=0`(`compare.txt`)。xfail の印は外していない(作業前 82 xfailed / 68 xpassed、修正後 78 / 72)。既存テストの差分は 0(`A0_final.txt`)。
+| 型 | 文数 | 開始 正読 | 開始 誤読 | 開始 未対応 | 修正後 正読 | 修正後 誤読 | 修正後 未対応 |
+|---|---|---|---|---|---|---|---|
+| J1 | 17 | 13 | 1 | 3 | 13 | 0 | 4 |
+| J4 | 15 | 13 | 0 | 2 | 10 | 0 | 5 |
+| N1 | 14 | 0 | 14 | 0 | 0 | 0 | 14 |
+| N2 | 12 | 0 | 12 | 0 | 0 | 0 | 12 |
+| N3 | 12 | 0 | 9 | 3 | 0 | 0 | 12 |
+| N3c | 4 | 0 | 4 | 0 | 4 | 0 | 0 |
+| N4 | 14 | 0 | 11 | 3 | 0 | 0 | 14 |
+| T7 | 7 | 6 | 0 | 1 | 5 | 0 | 2 |
 
-### A5 カバレッジ
-supported 文 1365 → 1355(表。`coverage_diff_output.txt`)。supported から外れた 49 文は全件を `coverage_dropped_classified.tsv` に分類した: **`WAS_WRONG` 49、`DROPPED_CORRECT` 0**(`exit=0`)。内訳(理由欄の語から機械的に分けた目安、§6 の表): 役割 0 の空の節 19(うち modality 10)、語の途中・括弧・助詞をまたぐ役割句 19、時間・場所・方角・結果・対象を参与者にした 8、先行する語を黙って落とした 2、ほか 1。新たに supported になった 39 文は `coverage_gained_classified.tsv` で `CORRECT` 39、`MISREAD` 0(`名前（読み、生没年）は、〜` の定義文 37、位置する 1、quote 1)。同じ supported のまま構造が変わった 78 文は `changed.tsv`(未分類。目視した範囲は、括弧内の切断が名前全体になった copula、時間表現が agent/recipient から time になったものが多い)。
-第 1 ラウンドから変わった dropped: 新たに落ちた 16 文の内訳は、modality の空の節 10、時間・場所・対象を動作主・受け手にしていた 6(`w1089:108`, `w11:0`, `w209:0`, `w234:76`, `w665:53`, `w709:86`)。第 1 ラウンドで落ちていた `w425:14`(`結成当初は…ユニットであった`)と `w859:0`(`X(…)は、…であった`)は、値の判定が括弧と末尾の「である/であった」を数えなくなったので落ちなくなった(正しく読めていたものを落としていた誤検出を、この修正で解消した)。
-分類は自分で原文と前後の節を読んで付けた。判断が割れうるのは、以前の節が文の一部だけを正しく読み、残りを黙って落としていたもの(`w1163:48`, `w855:185`, `w868:69`, `w988:68`, `w623:10`, `w40:0`)と、役割 0 の modality 節 10 文(情報の乏しい断言だったが「正しい構造」ではない、と判断した)。落とした内容が原文にあったので `WAS_WRONG` とした(原則「自動で読み飛ばしたものも数える」)。
-第 1 ラウンドの `np_internal` の「読点だけの 2 項は全部棄権」案は、`本科5学科、専攻科2専攻を擁する`(w157)と `…嶋中行雄、エコノミストの嶋中雄二がいる`(w846)を落とした(`DROPPED_CORRECT` になる)ので採らず、人と非人の組み(異種)のときだけ並列にしない規則にした(H21)。
+開始時点から修正後で結果が変わった文(出典: 同上): correct→unsupported 4, misread→correct 4, misread→unsupported 47
+- 開始時点で正読だったが修正後は正読でなくなった文: 4 件(id: J4-05, J4-07, J4-11, T7-03)
+- 修正後の誤読: 0 件、新しい自作文 N1〜N4 系(N1・N1c・N2・N2c・N3・N3c・N4)の文数: 68
 
-第 3 ラウンドの変更後も、supported 文の集合は 1365 → 1355、dropped 49・gained 39 のまま(第 2 ラウンドの分類ファイルが全件に当たり、`missing=0`、`WAS_WRONG` 49・`DROPPED_CORRECT` 0・gained `CORRECT` 39)。supported 文の集合の差(dropped・gained)は第 2 ラウンドの 49・39 と件数が同じで、分類ファイルは全件に当たった(上の `missing=0`)。supported でない節の理由・役割名が変わった文があるかは数えていない。
+#### W1-a2 X3: 基点 dev との比較(出典: x3_table.tsv。x3_dev.jsonl と x3_after.jsonl から x3_compare.py が作る)
 
-### A6 決め打ちでない
-`check_hardcode.py`(`a6_hardcode.txt`, `exit=0`): 全評価文(table7・ja・ja_r2・ja_r3・en・en_r2・a3・a3_r2・a3_r3)の固有名詞・数字・英字を含む語、英語の文頭以外の大文字語が追加行に現れない(0 件)。**英語は全内容語(3 文字以上の小文字語)を照合して一覧に出す**ようにした(R8。一覧は同ファイル。各語がどの追加行に出たかを併記)。出た語の説明: 助動詞・量化詞・焦点語・接続詞・数詞・時間語など**閉じた機能語類の定義**(`_MODALS`, `_QUANT`, `_FOCUS`, `_SUBORD`, `_NUMBER_WORDS`, `_TIME`)に含まれるもの、比較の形容詞語幹の一般語彙(`_ADJ_STEMS`。fast/long/new/old/early/late など。基準は直前のコメント: 1〜2 音節で比較変化する一般の形容詞)、補文・小節・変化の動詞の類(`_COMPLEMENT_MATRIX`, `_SMALL_CLAUSE_MATRIX`, `_RESULT_CHANGE_VERBS`)、そのほかはコメントと docstring の説明語(book, report, engineer, arrived …。説明用の語で、条件には使っていない)。評価文の固有の語(人名・日付・製品名)は条件に現れない。`git diff 075d486 -- verantyx/ | grep '^+' | grep -n -w -E 'crowded|quickly|red'` は 0 行、表 7 文の語の grep も 0 行(`a6_grep.txt`)。日本語の普通名詞・動詞の一致一覧も同ファイル: 述語・名詞の「類」を基準で定義した一覧(受け手の動詞、結果を取る変化・日程変更の動詞、移動・設置の動詞、包含の動詞、人・動物を表す名詞、場所の接尾辞、時間の形態素・直示語・暦の語、助数詞)で、評価文から作っていない。バンクの J4 には類の外の動詞(起こす・編み上げる・仕上げる)を 3 つ入れており、K5 は類の外の動詞(塗る・張り替える)を使う。
+- 修正後に新しく対応済みになった (役割, 値): 476 行(種類 {'ROLE_CHANGED': 134, 'NEWLY_SUPPORTED': 342}、判定の付け方 {'harness': 192, 'manual': 284})
+- 判定の内訳: {'CORRECT': 297, 'IMPROVED': 171, 'STILL_WRONG': 8}。未分類 0、REGRESSED 0、WRONG 0、MISREAD 0
+- 対象の文: 評価バンク(table7・ja・ja_r2・ja_r3・ja_r4・ja_r5・ja_r6)・review_r3_examples_ja.txt・b1v2_r3_inputs_ja.txt・w1a2r3_probe_ja.txt・r3_probe_ja.txt・review_r1_examples_ja.txt・r4_review_examples_ja.txt・b1v2_inputs_ja.txt・review_r2_examples_ja.txt・b1v2_r2_inputs_ja.txt・w1a2r2_probe_ja.txt・w1a2r3_probe_ja.txt・w1a3_review_r3_examples_ja.txt・w1a3_r4_inputs_ja.txt・coverage_texts_ja.txt(カバレッジの標本の文)の重複を除いた 2217 文(x3_after.jsonl)、うち表に出た文 271
 
-### A7 文書の数値の再計算
-`recompute.py` が `artifacts/w1-a/` から §6 の表を出す(`recompute.md`)。文書のその他の数値はファイル名つきで出典を示した。
+#### W1-a2 X5: 採点器 `--entry mod-semantic-read` で B1_v2 を流した結果(出典: bank_score_b1_selfmade/summary.json, run_meta.json)
+
+- 問題数 65、入口の呼び出し 65、出自の外 0、出自を確かめられなかった子プロセス 0、未到達 0、実行時エラー 0、採点不能 0
+- 9 分類: correct 35, correct_abstain 13, false_compliance 0, misread 0, over_abstain 17, runtime_error 0, unreachable 0, unscorable 0, wrong 0
+- correct_rate 0.538462、wrong_rate 0.0、false_compliance_rate 0.0(誤読 0 件)
+
+#### W1-a2 X5(第 2 ラウンドの見本): 採点器 `--entry mod-semantic-read` で B1_v2_r2 を流した結果(出典: bank_score_b1_selfmade_r2/summary.json, run_meta.json)
+
+- 問題数 36、入口の呼び出し 36、出自の外 0、出自を確かめられなかった子プロセス 0、未到達 0、実行時エラー 0、採点不能 0
+- 9 分類: correct 11, correct_abstain 8, false_compliance 0, misread 0, over_abstain 17, runtime_error 0, unreachable 0, unscorable 0, wrong 0
+- correct_rate 0.305556、wrong_rate 0.0、false_compliance_rate 0.0(誤読 0 件)
+
+#### W1-a2 X5(第 3 ラウンドの見本): 採点器 `--entry mod-semantic-read` で B1_v2_r3 を流した結果(出典: bank_score_b1_selfmade_r3/summary.json, run_meta.json)
+
+- 問題数 17、入口の呼び出し 17、出自の外 0、出自を確かめられなかった子プロセス 0、未到達 0、実行時エラー 0、採点不能 0
+- 9 分類: correct 4, correct_abstain 0, false_compliance 0, misread 0, over_abstain 13, runtime_error 0, unreachable 0, unscorable 0, wrong 0
+- correct_rate 0.235294、wrong_rate 0.0、false_compliance_rate 0.0(誤読 0 件)
+
+#### W1-a2 X4: 読解の入口の見本(自作 B1_v2 の 65 問を `semantic_read.read` に通した結果。出典: tests/bank_score/fixtures/B1_v2/items.jsonl、artifacts/w1-a/semantic_read_examples.txt)
+
+| 入力の種類 | 問題数 | 入口が readable=true | 入口が readable=false | 正答 | 棄権(正解は読める) | 不完全 | 誤読 |
+|---|---|---|---|---|---|---|---|
+| 日本語・読める | 40 | 24 | 16 | 24 | 16 | 0 | 0 |
+| 英語・読める | 12 | 11 | 1 | 11 | 1 | 0 | 0 |
+| 読めない入力(日英) | 13 | 0 | 13 | 13 | 0 | 0 | 0 |
+
+#### W1-a2 X4: 読解の入口の見本(自作 B1_v2_r2 の 36 問を `semantic_read.read` に通した結果。出典: tests/bank_score/fixtures/B1_v2_r2/items.jsonl、artifacts/w1-a/semantic_read_examples.txt)
+
+| 入力の種類 | 問題数 | 入口が readable=true | 入口が readable=false | 正答 | 棄権(正解は読める) | 不完全 | 誤読 |
+|---|---|---|---|---|---|---|---|
+| 日本語・読める | 20 | 9 | 11 | 9 | 11 | 0 | 0 |
+| 英語・読める | 8 | 2 | 6 | 2 | 6 | 0 | 0 |
+| 読めない入力(日英) | 8 | 0 | 8 | 8 | 0 | 0 | 0 |
+
+#### W1-a2 X4: 読解の入口の見本(自作 B1_v2_r3 の 17 問を `semantic_read.read` に通した結果。出典: tests/bank_score/fixtures/B1_v2_r3/items.jsonl、artifacts/w1-a/semantic_read_examples.txt)
+
+| 入力の種類 | 問題数 | 入口が readable=true | 入口が readable=false | 正答 | 棄権(正解は読める) | 不完全 | 誤読 |
+|---|---|---|---|---|---|---|---|
+| 日本語・読める | 11 | 3 | 8 | 3 | 8 | 0 | 0 |
+| 英語・読める | 6 | 1 | 5 | 1 | 5 | 0 | 0 |
+| 読めない入力(日英) | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+- 入口が `readable: false` にした 68 問の kind: {'not_supported': 57, 'unreadable_input': 11}。理由の型の内訳: {'BENEFACTIVE_NOT_PRODUCED': 1, 'EN_UNREAD': 3, 'INTERJECTION_OR_FORMULA': 6, 'NO_PREDICATE_TOKEN': 3, 'NO_SUPPORTED_CLAUSE': 21, 'NP_BOUNDARY_UNDETERMINED': 1, 'PREDICATE_NORMALIZED': 3, 'QUANTIFIER_NOT_MAPPED': 1, 'RECIPIENT_TYPE_UNDETERMINED': 6, 'SUBJECT_TYPE_UNDETERMINED': 5, 'UNDETERMINED_VOICE': 6, 'UNKNOWN_PREDICATE': 5, 'UNKNOWN_PREDICATE_WORD': 2, 'UNMAPPED_ROLE': 1, 'UNREAD_SPAN': 3, 'UNSUPPORTED_CLAUSE': 1}
+
+### 入口が出さない型(`verantyx/semantic_read.py` の `NOT_PRODUCED`。出さないものは棄権し、近い型に押し込まない)
+
+- `role:beneficiary`: V-てあげる/くれる/もらう: the reader names the phrase recipient; naming it beneficiary needs the verb to be read as a benefit, so the clause is not read
+- `role:experiencer`: the reader has no indirect (adversative) passive reading
+- `role:cause`: a noun-phrase cause (で): the reader leaves the で-phrase place|means ambiguous
+- `role:instrument`: only when the reader decides means; an ambiguous で-phrase is not decided
+- `role:entity(non-person subject of an intransitive verb)`: the reader names every subject agent; a non-person is not shown, so the subject type is undecided (SUBJECT_TYPE_UNDETERMINED)
+- `comparison:equative`: ほど / くらい / as ... as: not mapped
+- `comparison:superlative`: not mapped
+- `comparison:verb`: a comparison whose predicate is a verb: not mapped
+- `quantifiers`: every quantity word or numeral outside a time phrase is returned unread (QUANTIFIER_NOT_MAPPED)
+- `scope`: no quantifier is produced, so no scope is
+- `modality:ability/permission/volition/desire/request/possibility/conjecture/hearsay/question`: any surface mark of these makes the input unread (UNDETERMINED_MODALITY)
+- `tense:null (subordinate clauses)`: a sentence of more than one clause is returned unread unless the relation is mapped
+- `relation:cause`: not mapped
+- `relation:contrast`: not mapped
+- `relation:concession`: not mapped
+- `relation:condition`: not mapped
+- `relation:purpose`: not mapped
+- `relation:sequence`: not mapped
+- `relation:simultaneous`: not mapped
+- `relation:manner`: not mapped
+- `relation:quote`: not mapped
+- `relation:content`: not mapped
+- `voice:passive (indirect, honorific, potential, spontaneous)`: れる/られる is passive only on positive evidence: による/によって; a に/から phrase of a verb of the closed class _NI_KARA_FREE_PREDICATES; or no agent phrase and a subject headed by a noun that is never a person (_not_person_evidence). Not evidence: a subject missing from the person table, a verb outside a class. られる (potential), a verb of thought/feeling (spontaneous) and any other case: UNDETERMINED_VOICE
+- `voice:causative_passive`: only from the reader's causer/causee roles
+- `en:time and place phrases`: the English frame has no time/place role; a sentence that has one is returned unread (UNREPRESENTED_CONTENT)
+- `en:possessive determiners`: her/his/their ... are dropped by the frame; the value cannot be restored, so the sentence is returned unread
+- `en:perfect, progressive, modal verbs`: tense / modality cannot be decided from the frame
+- `en:verbs outside the known list`: a verb is accepted only when it is in the closed list of known verbs (UNKNOWN_PREDICATE): a coined verb must not be read; the refusal is `not_supported`, never `unreadable_input` (round 5)
+- `predicate:converse verbs`: verbs of receiving / borrowing / learning / hearing: the reader names the converse verb and swaps the roles; the convention forbids a replaced word as the predicate, so only the restoration it states (4.6, もらう) is made and the others are not read (PREDICATE_NORMALIZED)
+- `role:goal for existence / residence verbs`: the place of existence or residence is `place` (convention 2, 4.2); with no shown place the input is not read (PLACE_TYPE_UNDETERMINED)
+- `role:agent / recipient for a capitalised name (English)`: a capital letter says "a name", not "a person" (a city is written like a person): an intransitive subject and the recipient after `to` need a pronoun or an animate noun (SUBJECT_TYPE_UNDETERMINED / RECIPIENT_TYPE_UNDETERMINED); only the first object of a double-object clause is a recipient by its construction
+- `role:path (を of a verb of going through a space)`: the convention has no role for the path a motion verb covers (走る・歩く・渡る の を-phrase); the reader calls it patient, which is wrong, so the input is not read (PATH_ROLE_NOT_MAPPED)
+- `predicate:する with a サ変 noun apart from its する (掃除をさせた)`: convention 3 writes a サ変 verb as noun + する, the reader splits it into する and a patient; the input is not read (PREDICATE_NOT_MAPPED:light verb)
+- `en:two names in a row`: a proper name before a common noun (a double object) may be one phrase or two roles; not read (NP_BOUNDARY_UNDETERMINED)
+- `en:be + a participle that is also a state adjective`: closed / opened / finished ... without a by-phrase are a passive and a state alike; the voice is undecided (UNDETERMINED_VOICE)
+
+入口が棄権の理由として返す型(`semantic_read.py` が使う閉じた一覧): 見本での理由の型 ['BENEFACTIVE_NOT_PRODUCED', 'EN_UNREAD', 'INTERJECTION_OR_FORMULA', 'NO_PREDICATE_TOKEN', 'NO_SUPPORTED_CLAUSE', 'NP_BOUNDARY_UNDETERMINED', 'PREDICATE_NORMALIZED', 'QUANTIFIER_NOT_MAPPED', 'RECIPIENT_TYPE_UNDETERMINED', 'SUBJECT_TYPE_UNDETERMINED', 'UNDETERMINED_VOICE', 'UNKNOWN_PREDICATE', 'UNKNOWN_PREDICATE_WORD', 'UNMAPPED_ROLE', 'UNREAD_SPAN', 'UNSUPPORTED_CLAUSE']
+
+#### W1-a2 X6: 全テスト(出典: w1a2_start_pytest.txt / w1a2r3_after_pytest.txt / w1a2r3_new_failures.txt)
+
+- 開始時点(第 1 ラウンドの前): `123 failed, 5262 passed, 44 skipped, 78 xfailed, 72 xpassed, 37 subtests passed in 136.14s (0:02:16)`
+- 修正後(第 3 ラウンド): `124 failed, 5932 passed, 44 skipped, 78 xfailed, 72 xpassed, 37 subtests passed in 169.63s (0:02:49)`
+- 基線(dev_191db17_failures.txt)に無い失敗: 1 件 (FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches)
+
+#### W1-a2 第 2 ラウンド: レビューの型 R1〜R4c の自作文(ja_r5.jsonl、凍結 bank_freeze_r5.sha256。出典: soundness_dev.json / soundness_after.json)
+
+| 型 | 文数 | dev 正読 | dev 誤読 | dev 未対応 | 修正後 正読 | 修正後 誤読 | 修正後 未対応 |
+|---|---|---|---|---|---|---|---|
+| R1 | 14 | 0 | 14 | 0 | 0 | 0 | 14 |
+| R1c | 4 | 3 | 1 | 0 | 3 | 0 | 1 |
+| R2 | 12 | 11 | 1 | 0 | 0 | 0 | 12 |
+| R2c | 5 | 0 | 5 | 0 | 4 | 0 | 1 |
+| R3 | 12 | 12 | 0 | 0 | 1 | 0 | 11 |
+| R3c | 4 | 0 | 4 | 0 | 4 | 0 | 0 |
+| R4 | 12 | 0 | 11 | 1 | 0 | 0 | 12 |
+| R4c | 5 | 5 | 0 | 0 | 5 | 0 | 0 |
+| 合計 | 68 | 31 | 36 | 1 | 17 | 0 | 51 |
+- review.r1.md の反例の回帰確認(w1a2_review_r1_check.py、修正後、出典: r2_review_check_after.txt): checks=29 violations=0
+- review.r1.md の反例の回帰確認(w1a2_review_r1_check.py、dev、出典: r2_review_check_dev.txt): checks=13 violations=5
+
+#### W1-a2 第 3 ラウンド: レビュー(review.r2.md)の型 S1〜S4c の自作文(ja_r6.jsonl、凍結 bank_freeze_r6.sha256。出典: soundness_dev.json / soundness_after.json)
+
+| 型 | 文数 | dev 正読 | dev 誤読 | dev 未対応 | 修正後 正読 | 修正後 誤読 | 修正後 未対応 |
+|---|---|---|---|---|---|---|---|
+| S1 | 16 | 16 | 0 | 0 | 0 | 0 | 16 |
+| S1c | 5 | 0 | 5 | 0 | 5 | 0 | 0 |
+| S4 | 13 | 0 | 13 | 0 | 0 | 0 | 13 |
+| S4c | 4 | 4 | 0 | 0 | 2 | 0 | 2 |
+| 合計 | 38 | 20 | 18 | 0 | 7 | 0 | 31 |
+- review.r2.md の反例の回帰確認(w1a2_review_r2_check.py、修正後、出典: r3_review_check_after.txt): checks=35 violations=0
+- review.r2.md の反例の回帰確認(w1a2_review_r2_check.py、dev、出典: r3_review_check_dev.txt): checks=10 violations=4
+- 第 2 ラウンドの終わりと同じ挙動の複製(`make_round2_copy.py`。出典: soundness_round2code.json)で同じ評価バンク(500 文)を流した結果: 正読 219、誤読 29、未対応 252。第 3 ラウンドの規則で結果が変わった文: 29 文(misread→unsupported 29)。変わった文はすべて ja_r6 の S1・S4 の文(`S1-01, S1-02, S1-03 …`)。ja_r6 以外の評価バンクの文の結果は 1 文も変わっていない: 0 文
+- 第 3 ラウンドの規則で、第 2 ラウンドの規則では supported だった (役割, 値) が supported でなくなったもの(出典: r3_lost_vs_round2.tsv。第 2 ラウンドの規則は、第 3 ラウンドの変更だけを戻した複製で測った。対象は x3 と同じ 2144 文): 93 組、47 文。役割別: {'agent': 46, 'result': 30, 'patient': 17}
+- 入口が第 2 ラウンドでは `readable: true` で、第 3 ラウンドでは `readable: false` になった入力(出典: r3_entry_changes_vs_round2.tsv。対象は x3 の 2144 文と 3 つの B1 v2 の見本・英語の自作バンクの 2271 文): 66 件。棄権の理由の型: {'UNDETERMINED_VOICE': 14, 'NO_SUPPORTED_CLAUSE': 39, 'PATH_ROLE_NOT_MAPPED': 3, 'PREDICATE_NOT_MAPPED': 1, 'RECIPIENT_TYPE_UNDETERMINED': 9}。第 2 ラウンドで `false` で第 3 ラウンドで `true` になった入力: 0 件
+- 基線に無い失敗の s6(`test_s6_…`)を、W をコミットした複製(scratchpad)で `tests/bank_score`・`tests/test_semantic_read*.py` を流した結果(出典: w1a2r3_s6_in_committed_copy.txt): `515 passed in 74.88s (0:01:14)`
+
+#### W1-a3: 入口の態(`_voice_ja`)を正の証拠の向きにした変更の測定(出典: w1a3_*.txt / w1a3_*.tsv)
+
+- 入口の出力の比較(第 3 ラウンドの終わりの木と今の木。出典: w1a3_entry_changes_vs_r3end.tsv、inputs 2271 readable_before 274 readable_now 227): 種類 {'readable→false': 47, 'reason_changed': 2}。`readable→false` の理由の内訳: {'UNDETERMINED_VOICE:passive or honorific': 45, 'UNDETERMINED_VOICE:passive or potential': 2}。`false→readable`・`changed`: 0 件・0 件
+- 自作の 3 つの見本で分類が変わった問題(出典: w1a3_bank_class_changes.tsv。第 3 ラウンドの終わりの結果との比較): 6 問、{('correct', 'over_abstain'): 6}。id: FX-J10, FX-J11, FX2-J10, FX3-J03, FX3-J10, FX3-J11
+- review.r3.md の入口の反例の回帰確認(w1a3_review_r3_check.py、今の木、出典: w1a3_review_r3_check_after.txt): checks=14 violations=0 exit=0
+- review.r3.md の入口の反例の回帰確認(w1a3_review_r3_check.py、第 3 ラウンドの終わりの木、出典: w1a3_review_r3_check_r3end.txt): checks=14 violations=12 exit=1
+- `tests/test_semantic_read_r4.py` の凍結(出典: w1a3_tests_freeze.sha256、w1a3_tests_freeze_time.txt): 凍結が 2 回(2 回目は T4 の差し替え。H65)。最後の凍結 `8eed13423de957cbba20792e2fee003beaf22d77fba0054b1ced7a5d86ec0d65` / いま `8eed13423de957cbba20792e2fee003beaf22d77fba0054b1ced7a5d86ec0d65` / 一致
+- テストの結果(第 3 ラウンドの終わりの写しで流した結果(`r3end`。落ちるべきものが落ちる確認)。出典: w1a3_r4_on_r3end.txt): `57 failed, 18 passed in 0.45s`
+- テストの結果(今の木。出典: w1a3_pytest_semantic_read.txt): `339 passed in 39.28s`
+- 全テスト(出典: w1a3_after_pytest.txt / w1a3_new_failures.txt): `124 failed, 6007 passed, 44 skipped, 78 xfailed, 72 xpassed, 37 subtests passed in 143.32s (0:02:23)`。基線に無い失敗: 1 件 (FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches)
+- 基線に無い失敗の s6 を、W をコミットした複製(scratchpad)で `tests/bank_score`・`tests/test_semantic_read*.py` を流した結果(出典: w1a3_s6_in_committed_copy.txt): `590 passed in 49.75s`
+- カバレッジの再測定(出典: w1a3_coverage_cmp.txt): coverage_after.json の再測定(W、tools/read_coverage.py --n 1500 --stride 200)は coverage_after.json と cmp で一致(SAME_COVERAGE。読解器は変えていないので変更前と同じ)。DROPPED_CORRECT 1 件(w1356)は監査役が許容(2026-10-03)。
+
+### X1 W1-a の受入基準 A1〜A7 が引き続き成り立つ(第 3 ラウンドの再測定)
+- **A1 誤読 0**: `soundness_after.txt` は `TOTAL misread=0 false_pass=0`(500 文。ja_r6 の 38 文を含む)、`ESCALATED(… []) misread=0`。dev は `TOTAL misread=297 false_pass=209`(`soundness_dev.txt`。第 3 ラウンドの ja_r6 の 38 文のうち 18 文を含む)。第 2 ラウンドの終わりと同じ挙動の複製で同じ 500 文を流すと `TOTAL misread=29`(ja_r6 の S1 16・S4 13。`soundness_round2code.txt`)で、第 3 ラウンドの規則はこの 29 文を未対応にし、ja_r6 以外の文の結果は 1 文も変えていない(§6 の表)。J1-17 は第 2 ラウンドで未対応に倒した(§4.4 M5)。`test_the_only_misread_is_the_escalated_exception` は「誤読の集合が空」と「`ESCALATED` が空」を要求する。
+- **A2 型ごとに半数以上を正読**: J1〜J9・K1・K4・K6・L2・L3 のすべてで表の「正読が半数以上」が True(J1 は 17 文中 13、J4 は 15 文中 10)。第 2 ラウンドから変わっていない(§6 の表)。開始時点(HEAD `8d69747`)で正読だったが修正後は正読でなくなった評価バンクの文は 4 文(T7-03・J4-05・J4-07・J4-11。`soundness_start.json`・`soundness_after.json`)。dev(`191db17`)で正読だったが修正後は正読でない文は 56 文(S1 16・N2 12・R2 11・R3 11・L1 2・L2 2・S4c 2。H53)。半数未満の型(K2・K3・K5・L1、N1・N2・N3・N4、R1・R2・R3・R4、S1・S4)は方針 1 により不問で、件数と理由を §8 に書いた(S1 は 16 文すべて未対応、S4 は 13 文すべて未対応。対照の S1c 5/5・S4c 2/4(残りは未対応)は正読)。
+- **A3**: `a3_check.py` は修正後 `rows=33 failed=0`、exit=0(`a3_after.txt`)。dev は `rows=33 failed=24`、exit=1(`a3_dev.txt`)。判定は第 1 ラウンドで強めた(`ANSWER` で始まる、または `values` が空でなければそれだけで失敗)。
+- **A4**: X6 を見る。**A5**: X6 のカバレッジ。**A6**: `check_hardcode.py --base 191db17`(`a6_hardcode.txt`、exit=0): 固有名詞・数字・英字を含む語、英語の文頭以外の大文字語が追加行に現れない(0 件)。レビュー(`review.r3.md`・`review.r1.md`・`review.r2.md`)の例の語(土手 芝生 … 素人 新顔 留学生 受講者 田中家 鈴木家 London Paris Tokyo Rome ミロ グラウンド 甥 を足した)を製品コード(`git diff HEAD -U0 -- verantyx/ tools/` の追加行と `semantic_read.py`)に grep して 0 行(`a6_review_words.txt`)。**A7**: X7。
+- **A0 変更範囲**(`A0_w1a2.txt`): 許可パスの外の変更 0、`verantyx/cli.py` など触らないファイルの差分 0、既存のテスト・見本の差分 0(新しいファイルだけ)、採点規則(`score.py`・`v2/*`・`classify.py`・`checks.py`)の差分 0。
+- **凍結**(`freeze_check.txt`): `bank_freeze{,_r2,_r3,_r4,_r5,_r6}.sha256`・`b1v2_fixture_freeze.sha256`・`b1v2_r2_fixture_freeze.sha256`・`b1v2_r3_fixture_freeze.sha256` の全ファイルが OK。`pytest tests/reading_soundness` は第 3 ラウンドの最終のコードで全件通る(`pytest_reading_soundness.txt`)。
+
+### X2 レビューの反例と、新しい自作文
+- W1-a の第 3 ラウンドのレビュー(`review.r3.md`): `r3_review_check.py`(`r4_review_check_after.txt`): `checks=31 violations=0`、exit=0。dev は `violations=26`、exit=1(`r4_review_check_dev.txt`)。
+- W1-a2 第 3 ラウンドのレビュー(`review.r2.md` の必須 1〜4): `w1a2_review_r2_check.py`(`r3_review_check_after.txt`): `checks=35 violations=0`、exit=0(読解 7・読めたまま 3・入口 20 の棄権・入口 5 の読めたまま)。dev(入口が無いので読解だけ)は `checks=10 violations=4`、exit=1(`r3_review_check_dev.txt`。違反は 姓＋家 が動作主の 2 文と、`result` が出ない 2 文。**dev は必須 1 の文を recipient と読み、違反に数えない**。dev・修正後の読みは `r3_required1_dump.txt`)。
+- 第 2 ラウンドのレビュー(`review.r1.md` の M1〜M8): `w1a2_review_r1_check.py`(`r2_review_check_after.txt`): `checks=29 violations=0`、exit=0(読解 10・読めたまま 3・入口 16)。dev(入口が無いので読解だけ)は `checks=13 violations=5`、exit=1(`r2_review_check_dev.txt`)。回帰確認で、評価バンクではない。
+- 新しい自作文: 第 1 ラウンドの `ja_r4.jsonl`(68 文)、第 2 ラウンドの `ja_r5.jsonl`(68 文)、第 3 ラウンドの `ja_r6.jsonl`(38 文: S1 16・S1c 5・S4 13・S4c 4)。`soundness_after.txt` で全型の誤読 0、検査誤通過 0。**dev では ja_r6 の 38 文のうち 18 文が誤読**(S1c 5・S4 13)。基点で正しかった S1 の 16 文(dev は recipient)は、いま未対応になった(他動詞の目的語が省略された文は、に 句の人が受け手か結果か決まらないので型を決めない。チケットはどちらも認める。H54)。
+
+### X3 新しい誤読を作らない
+`x3_compare.py`(`x3_summary.txt`、exit=0): 基点 dev と比べて、修正後に新しく supported になった (役割, 値) 476 行を 1 件ずつ判定し、**未分類 0・REGRESSED 0・WRONG 0・MISREAD 0**、STILL_WRONG 8(基点でも同じ誤りで、新しい誤読ではない行。K27。第 2 ラウンドの手分類で IMPROVED とした `ながらく副業作家であったため作品数は少ない。` の 2 行を STILL_WRONG に直した: レビュー必須 5)。判定の付け方: 評価バンクの文は harness の結果、それ以外(probe・レビューの例・B1 v2 の日本語の入力・カバレッジの標本の文 1346 文・第 3 ラウンドの `review_r3_examples_ja.txt`・`w1a2r3_probe_ja.txt`・`b1v2_r3_inputs_ja.txt`)は手分類(`x3_classified.tsv`。各行に理由の欄)。第 3 ラウンドで手分類に足した 12 行は、変化の動詞(なる・変わる・成長する・変化する)の result が dev の recipient から直ったもの(IMPROVED)、使役(掃除をさせた)の causer/causee(IMPROVED)、`先生が生徒を二人に選んだ。`(CORRECT。疑わしい読みとして K35)、`…に分類される` の adjunct_1(IMPROVED。dev は agent)。
+
+### X4 読解の入口
+`python -m verantyx.semantic_read --text <文> [--lang ja|en]`(`verantyx/semantic_read.py`、§9)。`tests/test_semantic_read.py`・`test_semantic_read_r2.py`・`test_semantic_read_r3.py` は全件通る(`pytest_semantic_read.txt`): 3 つの見本(65 問・36 問・17 問)のそれぞれで規約どおりの JSON(自前の検証関数)、読めない問題はすべて `readable: false`、`b1.judge` が誤読と判定する問題 0、壊れた入力 7 型の型付き拒否(exit 2)、空の cwd の子プロセスで読み込まれた `verantyx*` がすべて木配下、同じ入力で同じ出力。5 本のコマンドと 3 つの見本の全入力の出力は `semantic_read_examples.txt`(`scripts_r3/gen_examples.py`)。件数: 日本語の読める入力 40+20+11、英語 12+8+6、読めない入力 13+8(規約 §7 の 1〜6 を各 1 問以上含む)。**X4 のコマンド例 `Ann sent the report to Ben.` は、第 3 ラウンドから `readable: false`(`RECIPIENT_TYPE_UNDETERMINED`)になった**(H57)。レビュー M4・M6・M7・M8・必須 2・3 の型は `test_semantic_read_r2.py`・`test_semantic_read_r3.py` が自分で選んだ別の語で止める。
+
+### X5 採点器の入口
+`python -m tools.bank_score --profile v2 --bank B1 --items tests/bank_score/fixtures/B1_v2/items.jsonl --entry mod-semantic-read --tree <W> …`(`bank_score_b1_selfmade/`): exit=0、65 問、入口の呼び出し 65(`vera_calls` = 問題数。**既存の B1 見本(w1s 形式)は `--profile v2` では 26 問すべて `unscorable`(`ITEM_INVALID`)になり、何も呼ばずに「未到達 0」が成り立つ(`bank_score_b1_w1s_sample_under_v2.txt`: `unscorable=26`)ので、v2 形式の自作の見本を作った**)、`unreachable=0`、`runtime_error=0`、`unscorable=0`、出自の外 0、誤読 0(§6 の表)。第 2 の見本(`B1_v2_r2`、36 問、`bank_score_b1_selfmade_r2/`)・第 3 の見本(`B1_v2_r3`、17 問、`bank_score_b1_selfmade_r3/`)も exit=0、呼び出しが問題数と一致、誤読 0。w1s の見本(`fixtures/B1/items.jsonl`)を `--profile w1s --entry mod-semantic-read` で流すと exit=0、`runtime_error` 0、誤読 0(`bank_score_b1_w1s_run.txt`。採点の良し悪しは問わない)。既存の `tests/bank_score` は全件通る(コミットした複製で。`pytest_bank_score.txt`、X6 の説明)。採点規則(`score.py`・`v2/*.py`・`classify.py`・`checks.py`)は変えていない。第 2 ラウンドから正答が 1 問ずつ減った(B1_v2 38→37、B1_v2_r2 13→12)のは、`to` の後ろの人名を受け手にしなくなった英語の 2 問が棄権になったため(H57)。
+
+### X6 既存テストに新しい失敗が無い
+基線は `dev_191db17_failures.txt`(124 件)。修正後は `124 failed, 5932 passed`(§6 の表。`w1a2r3_after_pytest.txt`)。基線に無い失敗が 1 件: `tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches`。**環境による失敗**: このテストは `run_meta.json` の `verantyx_untouched`(`git status --porcelain -- verantyx` が空か)が True であることを要求し、この作業ツリーは `verantyx/` に未コミットの変更を持つので False になる。W の内容を別の git リポジトリにコミットした複製(scratchpad。`.git`・`artifacts`・`corpora` を除いて写した)で `tests/bank_score`・`tests/test_semantic_read*.py` を流すと `515 passed`、失敗 0(`w1a2r3_s6_in_committed_copy.txt`)。監査役がコミットすれば通るはずだが、**コミット後の確認は私にはできない**。基線の失敗が 1 件直った(`comm -13`: `test_semantic_measure.py::test_role_only_questions_generalize[…駅B…]`。第 2 ラウンドから)。`tools/w0_1_compare_runs.py`(`w1a2r3_compare.txt`): `NEW_FAIL=1`(上の 1 件)、`MISSING_IN_AFTER=0`、`PASS_TO_XFAIL=0`。xfail の印は変えていない。
+カバレッジ(`tools/read_coverage.py` は無改変。before は dev を測り直して `cmp` で既存の `coverage_before.json`・`coverage_sentences_before.jsonl` と一致: `coverage_before_cmp.txt`): supported 文 1365 → 1351、dropped 53・gained 39(第 2 ラウンドと同じ件数)。dropped の全件を `coverage_dropped_classified.tsv` に分類済み(`WAS_WRONG` 52、**`DROPPED_CORRECT` 1**、`missing=0`)、gained 39 は `CORRECT`(`coverage_diff_output.txt`、exit=0)。**`DROPPED_CORRECT` の 1 件(`w1356`: `2004年10月6日にキングレコードから発売された。`)は基点では agent=キングレコード(規約 4.6 のとおり正しい)で、レビュー(第 2 ラウンド M3)がこの文の未対応を要求している。第 2 ラウンドから変わらない衝突として、監査役の判断を仰ぐ(H44)**。第 3 ラウンドの変更の途中で dropped が一度 54 になり(`40以上の言語に翻訳されている。`: 他動詞の目的語が省略された節の規則(必須 1)で未対応になった)、`言語` を結果の型の証拠(言語名の類)に足して戻した(H55)。もう 1 文 `ナキハクチョウ(…)は、…属に分類される鳥類。` は supported のまま、`分類される` の に 句が result から adjunct_1 に変わった(第 2 ラウンドでは result。dev は agent で誤り。K33)。
+
+### X7 文書の数値の再計算
+`recompute.py > recompute.md`。空行以外の全行が本文書に含まれることを `grep -F` で確かめた(出力 0 行、`recompute_in_docs_check.txt`)。残った誤読の型・不足している型・正読と未対応の内訳は §8・§9。
+
+### 補助測定(受入基準ではない): 質問応答への影響
+`qa_probe.py`(seed 7・101、各 150 問×現象、`qa_probe_summary.txt`): seed 7 は正答 dev 121 → 修正後 105、seed 101 は dev 90 → 修正後 77(どちらも第 2 ラウンドの終わりと同じ数。第 1 ラウンドの終わりは 106 と 78)。誤答は seed 7 で 20 → 20、seed 101 で 22 → 17。正答が減った主因は使役系(K2。seed 7 で 13 問、seed 101 で 7 問)で、第 3 ラウンドの変更による正答数の変化は 0(第 2 ラウンドの終わりと同じ数)。
+
+### W1-a3 の受入基準 X1〜X7 の再測定(2026-10-03。コマンドと出力は `artifacts/w1-a/COMMANDS.md` の「W1-a3 の記録」)
+読解器・検査・採点器は変えていないので、読解器の出力が第 3 ラウンドの終わりと同じであることを確かめ(H64)、入口・採点器・テストの出力を作り直した。表の数値は §6 の W1-a3 の節(`recompute.md`)。
+- **X1**: `soundness_after.json` は第 3 ラウンドの終わりと `cmp` で同一、`soundness_after.txt`・`a3_after.txt` も同一、凍結ハッシュ 17 行すべて OK(`freeze_check.txt`)、`check_hardcode.py` の出力も同一(`a6_hardcode.txt`、exit=0)、`pytest tests/reading_soundness` は `1320 passed`(`pytest_reading_soundness.txt`)。
+- **X2**: 読解器の反例(`r3_review_check.py`・`w1a2_review_r1_check.py`・`w1a2_review_r2_check.py`)の出力は第 3 ラウンドと同一で違反 0(`r4_review_check_after.txt`・`r2_review_check_after.txt`・`r3_review_check_after.txt`)。review.r3.md が挙げた入口の反例(尊敬の 10 文の型・授受と委任の受身 2 文)は `w1a3_review_r3_check.py` で、今の木は違反 0、第 3 ラウンドの終わりの写しは違反 12(§6)。経路・起点の を の 4 文は、入口がまだ誤って読む(K40。表示だけで違反に数えない)。新しい自作文は `tests/test_semantic_read_r4.py`(T1〜T11)で、`w1a3_tests_freeze.sha256` のとおり入口に通す前に凍結した(H65 の 1 回の差し替えを除く)。
+- **X3**: `x3_summary.txt`(exit=0)は `unclassified=0 regressed=0 wrong=0 misread=0`。X3 の入力に `w1a3_review_r3_examples_ja.txt`(review.r3.md の日本語の例 30 文)と `w1a3_r4_inputs_ja.txt`(`test_semantic_read_r4.py` の日本語 48 文)を足した(重複を除いて 73 文増)。既存の 2144 文の `x3_after.jsonl`・`x3_dev.jsonl` の行は変更前と 1 行ずつ同一。
+- **X4**: `python -m verantyx.semantic_read` の 3 つの見本の全入力 118 件(`semantic_read_examples.txt`): 日本語で `readable: true` 36・`false` 47、英語で `true` 14・`false` 21、すべて exit=0 で規約どおりの JSON(`test_semantic_read*.py` の検証関数が全件通る)。壊れた入力 7 型は exit=2 の型付きの拒否(`w1a3_broken_inputs.txt`)。
+- **X5**: B1_v2・B1_v2_r2・B1_v2_r3・w1s の見本が `--entry mod-semantic-read` で最後まで動き、`misread=0`・`unreachable=0`・`runtime_error=0`(§6 の X5 の表、`bank_score_b1_w1s_run.txt`)。第 3 ラウンドの終わりから分類が変わったのは 6 問で、すべて `correct→over_abstain`(`w1a3_bank_class_changes.tsv`。入口が棄権する側にしか動かない)。`pytest tests/bank_score` は s6 の 1 件だけが失敗(未コミットの変更があるため。H64 の複製では通る)。
+- **X6**: 全テスト(§6)。基線に無い失敗は s6 の 1 件だけ(環境による失敗。コミットした複製では `tests/bank_score`・`tests/test_semantic_read*.py` が全件通る)。基線の失敗が 1 件通るようになっている(`tests/test_semantic_measure.py::test_role_only_questions_generalize[…]` 1 件。`w1a3_after_pytest.txt` の失敗は 124 件、基線は 124 件、基線に無い 1 件と基線にあって通る 1 件)。カバレッジは再測定が変更前と `cmp` で一致(`w1a3_coverage_cmp.txt`)。dropped の分類・DROPPED_CORRECT 1 件(w1356、監査役が許容)は変わらない。
+- **X7**: `recompute.py > recompute.md`。空行以外の全行が本文書に含まれる(`recompute_in_docs_check.txt` が 0 行)。残った誤読の型は §8 の K39〜K41、不足している型は §9.3、正読と未対応の内訳は §6。
 
 ## 7. 判断記録
 
-- **H1 J1-17 の正解を凍結時に戻し、上申とした(第 2 ラウンド、R9)**: 第 1 ラウンドは、凍結後に `戦後は若者が都会へ移った。` の正解へ alternative(`recipient=都会`)を足し、誤読 0 にしていた。これは「判定を甘くする alternatives を後から足さない」に反するので取り消し、凍結時のハッシュに戻した。既存テストの規約と衝突する 1 件は、ハーネスと pytest で id 指定の既知の例外にし、ほかは誤読 0 を要求する。**監督に上申**: 「へ・に の終点を recipient と呼ぶ」規約(K1)を、このチケットの誤読基準とどう折り合わせるか。
+- **H1 J1-17 の正解を凍結時に戻し、上申とした(第 2 ラウンド、R9)**: 第 1 ラウンドは、凍結後に `戦後は若者が都会へ移った。` の正解へ alternative(`recipient=都会`)を足し、誤読 0 にしていた。これは「判定を甘くする alternatives を後から足さない」に反するので取り消し、凍結時のハッシュに戻した。既存テストの規約と衝突する 1 件は、ハーネスと pytest で id 指定の既知の例外にし、ほかは誤読 0 を要求する。**監督に上申**: 「へ・に の終点を recipient と呼ぶ」規約(K1)を、このチケットの誤読基準とどう折り合わせるか。 **【W1-a2 で解消: H33。上申のままにせず、`direction` と読んで正読にした】**
 - **H2 frames.py を触らない(D1)**: 時間句・受け手・動作主の型は読解側で検め、検査側は自前で検める。
 - **H3 recipient は「どれでも落とす」ではなく類で決める**: 受け手の動詞・人名以外の に 句をすべて曖昧にすると、実在の文(置く・分ける・恩恵の あげる・人を表す語)で正しい答えが落ちた。そこで類を足し、を の目的語があるものに限って落とすようにした。第 2 ラウンドで、この条件を frame 分岐から **すべての規則の節に掛かる門と検査の汎用部**へ移した(R5)。移したところ `塗る` が `_PLACEMENT_PREDICATES`(置く類の終点は recipient のまま残す規約)に入っていて `彼が部屋を青に塗った。` の `recipient=青` を通したので、`塗る` を置く類から外した。
 - **H4 locative に(住む・位置する・ある・属する)と placement の終点は recipient のまま**: 試作で location に直したところ、quantifier・te_chain・adnominal が recipient を前提にしていて、「…にある」型の文が大量に落ちた。直さず、既存の読みを保った(K1)。受身＋に の場所を location として読む規則も、同じ理由で入れていない(K3)。
@@ -278,15 +548,50 @@ supported 文 1365 → 1355(表。`coverage_diff_output.txt`)。supported から
 
 - **H25 人・組織の判定を末尾の文字から正の証拠へ(第 3 ラウンド M1)**: `_PERSON_SUFFIXES`(社・会・部・校・院・館・園・所・局・署・省・庁・団・隊 …)の `endswith` をやめ、§4.1 の (a)〜(f) の正の証拠だけを人・組織とした。理由: 末尾が同じ語が組織・催し・場所・部位・領域・機械の部分を区別なく含み(神社・教会・茶会・大会・外部・胸部・一部・高校・山間部・出力部)、同じ一覧を読解と検査が写していたので両方を同時にすり抜けた。**代償**: 野球部・営業部・経理課 のような実在の組織も、固有名詞が主辞でなければ組織とみなさず未対応になる(`新入生が野球部に勧誘された。` は dev では正読、いまは未対応)。出力部(機械の部分)・山間部(領域)と区別する根拠がタガーに無い。A5 では、この代償で落ちたコーパスの文は 0(`coverage_dropped_classified.tsv` は変わらず 49 件が `WAS_WRONG`、`DROPPED_CORRECT` 0)。一方、評価の外の実在の文では落ちうる(K13)。集合行為者の語(政府・軍・協会・機関・組合・劇団・財団・役所・役場)は閉じた語彙として `_PERSON_NOUNS` に足した(`役所` は第 2 ラウンドのテスト `test_gate_person_or_organisation_with_kara_keeps_the_agent_of_a_passive` が agent を要求していた。テストは変えていない)。主辞の前にある固有名詞では人としない(`太郎の鞄`・`伏見稲荷神社`・`山田橋`)ことも、同じ変更で入れた(以前は句全体から固有名詞を探していた)。サ変可能(動作名詞)の末尾の長・係・達・手 は人としない(成長・関係・配達)。
 - **H26 変化の動詞の人の に 句(第 3 ラウンド M2)**: レビューの合格条件(人は result にしない。受け手の根拠が無ければ unsupported)に従い、受益者を `recipient` と読む案は、恩恵の補助動詞がある場合(あげる・やる)だけにした。plain の `母が息子に作文を直した。` は dev では `recipient=息子`(正解と一致)で正読だったが、いまは未対応(L2-05・L2-06)。語順(に 句が目的語より前)を語彙に頼らない根拠として足したので、`先生が児童に絵本を編集した。`(児童 は人の語彙に無い)も `result` にならない。目的語が人(彼を部長に)のとき、および地位を授ける動詞(`_APPOINTMENT_PREDICATES`。目的語が人であることを動詞が選択するので、`候補を議長に選出` のように目的語の語が人の語彙に無くても通る)では `result`。受身(`彼が部長に選ばれた`)は主語を目的語の代わりに使う。検査側は自前の `_VT_APPOINTMENT_VERBS` と語順・人の判定で同じ型を拒否する(`test_m2_class_lists_agree` が一覧の一致を検める)。
-- **H27 比較の より(第 3 ラウンド M3)**: 『前のより軽い』のように standard が準体の の で終わる句(`前の`)になる。これは比較構文の既存の読みで、評価バンクの正解(L3)も `standard=前の` と書いた(の を含む句が省略された名詞句の全体だと判断。判断が割れうる)。`ほど` の比較は、copula の値に入る形(`昨日のほど辛くない`)でも、比較構文の既存の読み(`ほど…ない`)に任せ、変更していない。
+- **H27 比較の より(第 3 ラウンド M3)**: 『前のより軽い』のように standard が準体の の で終わる句(`前の`)になる。これは比較構文の既存の読みで、評価バンクの正解(L3)も `standard=前の` と書いた(の を含む句が省略された名詞句の全体だと判断。判断が割れうる)。`ほど` の比較は(第 3 ラウンドの時点では誤って)、copula の値に入る形(`昨日のほど辛くない`)でも、比較構文の既存の読み(`ほど…ない`)に任せ、変更していない。
 - **H28 検査の独立性(レビューの申し送り 1)**: 検査(`_vt_is_addressee`・`_VT_APPOINTMENT_VERBS`・`_vt_check_roles` の result 分岐)は読解を import せず、自前のトークン化と自前の関数で書いたが、**判定の基準(正の証拠の一覧、サ変可能の除外)は同じ内容を二重に書いている**。「別の関数」であって「別の根拠」ではない。違いは、検査が読解の出力(`unsupported` の印)を信用せず、役割の語の型を原文から再判定する点と、語順(`result` が目的語より前)のように、人の語彙に頼らない根拠を検査側にも置いた点。`test_m1_checker_refuses_the_same_clause_with_the_unsupported_mark_removed` などの変異テストは、読解が止めた節の印を外しても検査が拒否することを示す。人の語彙そのものが欠ける(児童・園児・見習い など)穴は、読解も検査も同じように通す(K13)。
 - **H29 凍結バンクの新規 3 型(M4)**: `ja_r3.jsonl`(L1 14・L2 12・L3 6)・`a3_r3.jsonl`(6)。レビューの要求(場所・催し・部位・組織にも見える語の受身 8 以上のうち 3 以上は本当に組織が動作主、変化の動詞＋人 6 以上と役職の対照 3 以上、Nのより Adj 5 以上、A3 4 以上)を満たす件数(`test_bank_is_large_enough`)。正解は正しい構造で書き、unsupported を正解にしていない。正読が半数に届かない下位形(L1)の理由は §6 A2。
 - **H30 検査の変異テスト(レビューの確認点 6)**: 第 3 ラウンドの追加分は `test_gates_round3.py`: (1) 読解が止めた節の unsupported を外した節を検査が拒否する(M1: 古寺・西部・音楽会、M3: 兄のより・隣町のより・君のより)、(2) 受益者・人の に 句を `result` に改名した節を検査が拒否する(M2)、(3) 目的語より前の に 句を `result` に改名した節を検査が拒否する(M2 の語順)。
 - **H31 補助測定を再実行していない**: 単位受入デモ(`unit_demos.txt`)と質問応答への影響(`qa_probe_*`)は第 2 ラウンドの測定のまま。第 3 ラウンドの変更後は測り直していない(受入基準ではない)。H15・H16 の数値は第 2 ラウンドの木のもの。
 
+- **H32 N1: 人の判定に足した閉じた語(W1-a2)**: 基準は「その語のすべての語義が人(または人の集団)を指す」。足した語(`_PERSON_OCCUPATION_WORDS`、検査側 `_VT_PERSON_WORDS`): 兵士 兵隊 軍人 役人 商人 住人 町人 旅人 恋人 夫人 婦人 青年 少年 少女 武士 騎士 隊員 団員 部員 局員 署員 係員 駅員 船員 乗員 要員 党員 教員 歌手 作家 画家 村長 町長 市長 区長 知事 委員 役員 議員 議長 会長 幹事 理事 取締役 評議員 会員 主人 店主 社員 職人 医者 学者 飼い主 持ち主 地主 家主 船長 機長 艦長 隊長 団長 局長 署長 所長 館長 園長 院長 組長 学長。語義が人と物に割れる語(本家・旧家・農家・家主以外の〜家)は入れていない。足した理由: 語末の文字をやめたので、1 トークンの人の語(歌手・隊員・兵士)が人でなくなり、既存テストの正読(`班長が隊員に壁を磨かせた。` の使役、`隊長が兵士に水を汲ませた。`(J7-06))が落ちたため、同じ類の語を基準でそろえた(評価バンクやレビューの文にだけ出る語は足していない)。`客` は名詞の 客 が名詞の後ろにあるとき(観光客)だけ人とした(`head.endswith('客')` はやめた)。`技官`・`助教` のような 1 トークンの語は載せていないので人と判定されず、未対応になる(K19)。
+- **H33 J1-17: 規則・範囲・上申の解消(W1-a2)**: 規則は §4.3。実測で次を決めた。(1) 適用は移動の動詞(`_GOAL_PREDICATES`)だけ。計画は置く類・住む類にも掛けるとしたが、`tests/test_semantic_measure.py::test_coordinated_predicates_are_read_per_clause`(`リサは封筒を青棚に置いて、合鍵をオウに預けた。`)が `封筒を青棚に置く` の終点を recipient と固定していて、置く類にも掛けると失敗した(最初の実装で 1 件の新しい失敗が出て気づいた)。既存テストは変えられないので置く類・住む類は変えない。(2) さらに、証拠を要求する範囲を「を の目的語の無い他のすべての動詞の に 補語」にまで広げる試みは、`所属する`・`属する`・`ある` などの文が 34 文落ちる(dropped 53 → 87)ので戻した。(3) 【第 2 ラウンドで取り消し(H47)】場所の証拠が無い終点は `ambiguous` でなく `direction`(へ)/`goal`(に)に読み直す、としていた。中間職のレビュー(M5)が、証拠の無い句を型付きの役割にするのは誤読(買い物に行った → goal=買い物)であり、指示書とチケットは未対応に倒す指示だったと指摘した。いまは未対応(`ambiguous`)にする。J1-17 は未対応になる(正読でも誤読でもない)。(4) `_is_place_phrase` の語末の `endswith`(`_PLACE_SUFFIXES`)は、`recipient` を残す根拠にだけ使う。(5) `harness.py` の `ESCALATED` を空にし、テストを強めた(誤読の集合が空、`ESCALATED` が空)。
+- **H34 N2: 類の境界・衝突・足した類(W1-a2)**: (a)/(b) の境界。**(a) に入れた語(計画は (b) としていたもの)**【第 2 ラウンドで (a) 類の規則を変更(H45)。`加工する` は `_PRODUCT_PREDICATES` に分けた】: `加工する`(`職人が丸太を角材に加工した。` を既存テストが result と固定)、`整理する`・`まとめる` は計画どおり (b)。(b) に入れた境界の語: 改訂する・編集する・改造する・作り変える(迷う語は (b) の安全な側)。**衝突(§5 の 14)**: 既存テスト `test_gate_conversion_target_is_a_result_not_a_recipient`(`課長が資料を図表に整理した。`・`職員が表を要点にまとめた。`)と `test_checker_rejects_result_renamed_to_recipient` は、(b) の動詞で に 句が `図表`・`要点` のとき result を要求する。計画の証拠(数詞・形状詞・語/形/版…・色・時)では 図表・要点 は証拠が無く、テストが落ちた。語彙で数を戻さず、正の証拠の規則の中で戻せるものとして、**書式・要約だけを指す名詞の閉じた類**(`_FORMAT_NOUNS`: 図 表 図表 一覧 要点 概要 要約 目次 リスト 箇条書き グラフ 年表。すべて物の書式で、人にはなれない)を結果の型の証拠に加えた。また最後のトークンがこの類の複合語(`短い要約`)も証拠とした(開始時点で正読だった J4-06 を保つため)。この類の語を評価の文から選んだのではないこと: 上の語のうち、既存テストと J4-06 に出る 図表・要点・要約 以外は、同じ基準(書式・要約)で私が足した。**失った正読**: J4-11 `工場が鉄を部品に仕上げた。`(`部品` に証拠が無い。物の名だが、人の語彙を持たないので「人でない」とは言えない)。計画の予告どおり(方針 1)。(b) で目的語が人のときは `result`(`母が娘を医者に仕立てた。` を保つため。開始時点の probe にあった正読): 目的語が人なら、に 句は受益者でなくその人が就く状態になる。
+- **H35 N3: 曖昧文の扱いと、バンクの正解の書き方(W1-a2)**: 選出・任命の受身の に 句は「…によって」と「…として」に割れるので、地位の名詞のとき以外は `ambiguous`(未対応)にした。**バンクの正解**: N3(12 文)と N4(14 文)は `gold.kind = "unsupported"`(未対応が正解)で書いた。計画は「unsupported を正解にしない」としたが、(N3)同点は棄権の原則そのものが検査の対象で、どちらかの読みを正解に書くと片方に倒した読みが正答になる、(N4)比較構文に読める形容詞が閉じた語彙で、語彙の外の形容詞の比較は正しい構造を読解器の形式で書けない、ため。誤読は「supported の節が 1 つでもあれば」と数えるので、対応済みで返すと必ず誤読になる。`委員`(`彼女が委員に選ばれた。`)は `_POST_NOUNS` に入れたので、述語・主語が読めれば result になる(未解決の指示語で `彼女` は unsupported のまま)。
+- **H36 N4(W1-a2)**: `ほど`・`くらい`・`ぐらい`・`並み` を比較の印とした。`位` は足さなかった(順位などと衝突する)。構文 `negation` の copula が同じ文を supported にしていた(`彼女は姉ほど社交的ではない。` の `negation`)ので、`constructions/negation.py` の値の判定と licensor に同じ条件を別々に入れた。比較構文は変えていない。
+- **H37 受身の から 句(W1-a2)**: 動作主は人の証拠があるときだけ。計画に無かった追加で、probe(`体長から数値が割り出された。`→ agent=体長)で見つけた同型の穴。時の から 句は従来どおり起点。
+- **H38 型の門の受身の検出(W1-a2)**: `clause_passive` は述語トークンの直後が れる/られる かを見ていたが、構文(diathesis)の節はサ変の述語の範囲が名詞から始まるので、`指名された` で受身と判定できず、`agent` が通っていた。`_passive_follows` でサ変を 1 つ進めて見る。検査側は `_vt_passive_follows`。この変更で、受身の `topic`・`result` の判定も構文の節に効くようになった(`test_reading_soundness.py` の既存のテストは全部通る)。
+- **H39 `a3_check.py` とテストを強めた点(W1-a2)**: (1) `a3_check.py` は禁止語の部分文字列だけでなく、`verdict` が `ANSWER` で始まる、または `values` が空でなければ失敗とする(切れた答えを見逃さない)。(2) `test_a3_questions_do_not_answer_with_time_or_place` に同じ条件を足した。(3) `test_the_only_misread_is_the_escalated_exception` を、誤読の集合が空・`ESCALATED` が空を要求する形に強めた。どのテストも削除・skip・期待値の弱体化はしていない。
+- **H40 入口の棄権の規則と写す表(W1-a2)**: §9。要点: 入力の文字列だけから、日本語は `document_view`、英語は `en_frames.read_typed` を通し、(1) 読解器の unread・unsupported(同じ述語の退けられた別の読みを除く)があれば棄権、(2) 文末の述語が supported の節に入っていなければ棄権(主節の述語が造語なら全体を読めないとする規約 §7 の 5)、(3) タガーの辞書に無い述語語(`is_unk`)は `unreadable_input`、(4) 量化語・数詞・モダリティの印・可能形の疑い・恩恵の補助動詞・複数節は棄権、(5) 役割名は閉じた表で写し、表に無い名前・人でない主語・場所の証拠の無い終点は棄権、(6) 時制・態は表層と役割から決め、決まらなければ棄権。決められないときに推測で欄を埋めない(`tense`・`modality`・`voice` を根拠無しに埋めると、それ自体が誤読になりうる)。
+- **H41 採点器の入口(W1-a2)**: `ENTRIES["B1"] = ("cli", "mod-semantic-read")`、`DEFAULT_ENTRY["B1"]` は `cli` のまま。入口は入力の文字列だけを `--text=<文>` で渡し(言語・分類名・現象・誤読の型は渡さない)、`runner.ALLOWED_MODULES`(`verantyx.cli`・`verantyx.semantic_read`)の外のモジュールは例外で拒否する(子プロセスの台本も 97 で終了)。`verantyx.cli` のときだけ `--store store.json` を付ける。出自の検査は選んだモジュールにも `find_spec` で掛ける。`run_meta.json` の `child_argv_template`・`entry_note` を入口ごとの値にした。採点規則は変えていない。
+- **H42 `np_internal` は変えなかった(W1-a2)**: `np_internal._is_person_item`(列挙か副詞＋主語かを決める)は `is_role(head) or head.endswith(_PERSON_SUFFIX)` のまま。計画は必須でないとした。読解と検査の人の判定(上の N1)からは外れていて、`np_internal` の判定は役割を決めず、並列にするかを決めるだけ(K22)。
+- **H43 補助測定を再実行した(H31 の訂正)**: `qa_probe.py` を seed 7・101 で再実行し(`qa_probe_summary.txt`)、§6 の補助測定に数を書いた。
+- **H44 第 2 ラウンドの前提と範囲(W1-a2)**: 中間職のレビュー `review.r1.md` の必須の修正 M1〜M8 に対応した。M1・M2・M7 は中間職の指示書の誤り(`frames._LEARNED` を人の類として使ってよい / (a) 類は人の語彙で ambiguous にする / `clause.predicate` をそのまま使う)が原因で、チケットの方針(語彙で型を当てない・基点より悪くしない・言い換えた述語を出さない)が指示書より優先するので、指示書でなくチケットに従った。修正の範囲は、これらに関わる規則とテスト、および同型の穴(M9)に限った。ほかの規則(K17 の recipient の名付けなど)は作り直していない。 **追記(2026-10-03、監査役の判断。W1-a3 の指示書による)**: `w1356`(`2004年10月6日にキングレコードから発売された。`)の DROPPED_CORRECT 1 件は「許容(組織の換称。人の証拠が無いので未対応に倒してよい)」。語彙を足して戻していない。
+- **H45 M2: 結果の型の証拠に足したもの、加工する の扱い(第 2 ラウンド)**: (1) 言語名・文字種の名だけを指す語の閉じた類 `_LANGUAGE_NAMES`(英語 仏語 独語 露語 方言 敬語 平仮名 ひらがな カタカナ 漢字。基準: すべての語義が言語・言語の変種・文字種。人名・地名と兼ねない)。`英語` は 1 トークンなので 名詞＋語 の規則で拾えず、これを足さないと `原稿を英語に訳した` 型の正読が消える(レビューが勧めた)。(2) 助数詞になれる名詞(タガーの 助数詞可能。袋・束・組・班 …)。**衝突(§5 の 14)**: 既存テスト `test_gate_conversion_target_is_a_result_not_a_recipient`(`店員が箱を袋に分けた。`)が (a) 類で袋を result と固定しているのに、(a) 類を証拠必須にすると証拠が無く落ちた。語彙を足して戻すのでなく、トークンの形(助数詞可能)を正の証拠にした: 分け先の単位(袋・束・班)は人を数える語でも「〜に分ける」では結果。(3) `加工する` は `_PRODUCT_PREDICATES`(材料を製品にする動詞。受益者の に を取らないので証拠なしで result)。既存テスト `丸太を角材に加工した → result` を守るため。角材 は 1 トークンで証拠を持たない。これは動詞の類による判定で、に 句の語の型を語彙で決めるものではない。**失った正読**(証拠が無い): `工場が鉄を部品に仕上げた` 型(第 1 ラウンドから)と、(a) 類の動詞で に 句が証拠を持たない物(`写真を白黒に変えた`・`書類をデータに変換した`)。方針 1 により許される。
+- **H46 M5: 集まりの名詞と移動の動詞の追加(第 2 ラウンド)**: 終点の証拠は場所(`_is_place_phrase`)に、**集まりを指す名詞の閉じた類 `_GATHERING_NOUNS`**(会議 会合 集会 総会 授業 講義 試合 式典 面接 宴会 結婚式 葬儀。基準: すべての語義が、時と場所を持つ催し。活動(買い物・散歩・勉強・旅行)は目的であって含めない)を足した。**衝突(§5 の 14)**: 既存テスト `test_gates_round2.py::test_gate_time_adverbial_before_a_comma_is_kept_as_time` の `先週、叔父が会社で会議に出た。` が、会議 を goal として読んだ節の supported を要求する(時と agent を確かめるテスト)。終点の証拠を場所だけにするとこの文が未対応になりテストが落ちたので、テストの文は変えず、集まりの名詞を正の証拠の類として足した。移動の動詞に 出かける・通う・引っ越す・到着する・帰宅する・出勤する・出張する・出発する・旅立つ・上陸する を足した(`旅行に出かけた` 型が、基点どおり recipient=旅行 のまま残るのを防ぐため。同じ規則が掛かる)。構文 `constructions/negation.py` が持つ自前の `_GOAL_PREDICATES` は変えていない。
+- **H47 テストの書き換えと取り消し(第 2 ラウンド)**: (1) `test_gates_round4.py::test_j117_the_checker_refuses_a_recipient_end_point_without_evidence` は、第 1 ラウンドの H33(証拠の無い終点を `direction` と読み直す)を前提にしていた(`direction` の役割を `recipient` に改名して検査が拒否するかを見る)。M5 で読解が `direction` を出さなくなり、前提が消えたので、同じ変異(終点の役割を `recipient` に改名・読解の mark を消す・検査が拒否しなければならない)を、いま読解が出す `ambiguous` に対して行う形にした。強さは同じ(`Rejected` を要求)。期待値を弱めていない。(2) X3 の手分類 76 行のうち `支部に資料が送られた。 goal 支部 IMPROVED` の 1 行は、M5 により読みが無くなったので除いた(`x3_classified.tsv` の旧版は第 1 ラウンドの記録)。
+- **H48 M3: 受身の から 句の出どころの証拠(第 2 ラウンド)**: `source` にするのは、行為できない場所だけを指す語の閉じた類 `_SPOT_NOUNS`(駅 公園 部屋 庭 海 山 川 湖 島 畑 森 谷 海岸 教室 倉庫 台所 玄関 屋上)か、タガーの 固有名詞/地名。地名を足したのは、既存テスト(`test_gate_place_with_kara_is_the_source_not_the_agent_of_a_passive`: 九州・北海道・大阪)が source を要求するため。地名は組織の換称にもなる(K28)。`森` のように、行為できない場所の語でも姓としてタガーが人名と読む語があり、`_is_origin_not_agent` は `_SPOT_NOUNS` の語を人としない(自作の下位形で `薪が森から運ばれた` が agent=森 になったのを見つけて直した)。
+- **H49 入口の変更(第 2 ラウンド M4・M6・M7・M8)**: (M7)述語は、述語の範囲の先頭のトークンの原形(サ変は 名詞＋する)と `clause.predicate` が一致するときだけ返す。一致しなければ `PREDICATE_NORMALIZED:<読解器の述語><-<書かれた述語>` で棄権する。役割は戻さない(規約に 借りる などの規則が無い)。**規約 4.6 が明記する もらう だけ**は述語の名前を戻す(読解器の役割はすでに「与え手 = agent・主語 = recipient」で規約と一致)。(M6)`recipient` の写し方: 授受・伝達の動詞＋人 → `recipient`、移動・設置の動詞＋場所 → `goal`、存在・居住の動詞＋場所 → `place`、それ以外は棄権。(M4)英語の人の証拠から「文頭の語の大文字」を外した。人名とみなすのは、入力の 2 語目以降に同じ語が大文字で現れるとき。(M8)`unreadable_input` は、定型・感動詞の語だけの入力、述語になれるトークンが無い日本語の断片、辞書に無い述語語(`is_unk`)に限る。英語の閉じた動詞の一覧に動詞が無い入力は `not_supported`(`UNKNOWN_PREDICATE`)。(任意の改善)be ＋ 過去分詞で by 句が無く、分詞が状態の形容詞でもある語(closed・opened・finished …の閉じた類 `_EN_STATE_PARTICIPLES`)は、受身と状態に割れるので `UNDETERMINED_VOICE` で棄権する。英語で固有名が 2 語続く句(`Ann taught Ben French` の patient=`Ben French`)は 1 つの名詞句か 2 つの役割か決まらないので `NP_BOUNDARY_UNDETERMINED` で棄権する(en_frames の既知の分け方の穴。自作の見本で見つけた)。`_map_ja` の退けられた別の読みの扱いは、指示書は「unsupported の述語の範囲が supported の範囲に含まれる」の一方向としていたが、比較の文では copula の節(`弟より強い` 全体)が comparison の節(`強い`)を含むので、含まれる向きに加えて「copula / 否定の copula の節が comparison の節を含む」ただ 1 つの形だけを足した(`test_a_comparative_is_read_with_its_standard_and_kind` が要求)。それ以外の重なりは別の読みとみなさない。
+- **H50 M9(第 2 ラウンド。レビューに無い誤読の型)**: 自作の下位形を凍結後に読解器に通したとき、`隣人に犬が可愛がられた。`(動詞をタガーが 可愛(形容詞)＋がら(接尾辞 動詞的)＋れ＋た に割る)が、copula の無い名詞文(entity=`隣人に犬`、value=`可愛がられた`)として supported になり、検査も通した(基点にもあった誤読)ことが分かった。値が copula なしで、**助動詞の連なりで終わり、その直前が動詞・形容詞・動詞的の接尾辞**であれば、値は述語句(unsupported)にした(読解 `_predicate_phrase_value` と検査の copula 分岐。copula の `であった` と、名詞句の中の助動詞(`…である魔法使いの名称`)は対象外)。**最初の版は広すぎた**: 値のどこかに助動詞があれば述語句にしたので、カバレッジの dropped が 49 から 74 件に増え、新しく落ちた 25 件のうち 20 件ほどは正しい定義文(`『…』は、…である魔法使いの名称。` など)だった(X6 の「正しいのに落とした」)。カバレッジの `dropped.tsv` で気づき、末尾の連なりだけに狭めて、増えた分を元に戻した(出力: `coverage_diff_output.txt` は狭めた後の測定)。
+- **H51 第 2 ラウンドの凍結と、凍結前に読解器に通したもの**: `ja_r5.jsonl`(68 文)・`a3_r5.jsonl`(5 行)の凍結は 2026-10-03 06:11:06 JST(`bank_freeze_r5.sha256`)、B1 v2 の第 2 の自作の見本 `B1_v2_r2/items.jsonl`(36 問)は 06:11:48 JST(`b1v2_r2_fixture_freeze.sha256`)。**凍結前に読解器・入口に通した文**(バンクの文ではない。ただしレビューの例は B1_v2_r2 に回帰の項目として入っている): レビューの例(`review_r2_examples_ja.txt` の 20 文と、英語の Rain stopped. など)、第 1 ラウンドで落ちた既存テストの文(`先週、叔父が会社で会議に出た。`・`職人が丸太を角材に加工した。`・`店員が箱を袋に分けた。`・九州・北海道・大阪の から の文・`戦後は若者が新天地へ移った。` 型)、規則を試した文(`原稿を英語に訳した。`・`画家が壁を青に塗り替えた。`・`友人から手紙が届けられた。`・`港から貨物が運び出された。`・`山から石が運び出された。`・`彼は医者になった。`・`弟は貰った。` ほか約 15 文)。凍結後に流したもの: ja_r5 全文(M9 の `隣人に犬が可愛がられた。`=R1c-04 が誤読で見つかった。バンクの文は変えていない)、`w1a2r2_probe_ja.txt`(自作の 88 文。コーパスの文を含まない)、`r2_review_check`。
+- **H52 X3 の対象の拡張(第 2 ラウンド)**: レビュー M3 の指示により、X3 の対象の文にカバレッジの標本の文(`coverage_texts_ja.txt`: `coverage_sentences_after.jsonl` の文)を足した。基点との比較の表(`x3_table.tsv`)は 446 行(第 1 ラウンドは 259 行)になり、手分類は `x3_classified.tsv`(各行に分類の理由の欄)に追記した(コーパスの標本の行は、基点が語の途中で切った copula を修正後は括弧付きの名前全体で読んでいる IMPROVED/CORRECT、時の句が agent / recipient から time になった IMPROVED が大半)。REGRESSED・WRONG・MISREAD は 0。
+- **H53 評価バンクで失った正読(第 2・第 3 ラウンド。第 2 ラウンドの報告が参照していた記述の本体)**: 基点 dev(`191db17`)で正読だった評価バンクの文のうち、修正後に正読でなくなったのは 56 文(S1 16・N2 12・R2 11・R3 11・L1 2・L2 2・S4c 2。`soundness_dev.json`・`soundness_after.json` から数えた)。このうち第 3 ラウンドの ja_r6(S1・S4c)の 18 文を除く 38 文(N2・R2・R3・L1・L2)が、第 2 ラウンドの終わりの報告の「38 文」と一致する。開始時点(HEAD `8d69747`)で正読だったが修正後は正読でない文は 4 文(T7-03 `APIサーバーがリクエストをJSONに変換した。`・J4-05 `母が野菜をスープに変えた。`・J4-07 `担当者が書類を電子データに変換した。`・J4-11 `工場が鉄を部品に仕上げた。`)。失った理由の型は、結果の型の証拠が無い に 句(JSON・スープ・電子データ・部品。タガーも閉じた類も結果の型と言えない)を result にしなくなったこと(第 2 ラウンド M2)。語彙を足して戻していない(§5 の 14: 衝突時は語彙で数を戻さない)。**第 3 ラウンドの規則で評価バンクの結果が変わったのは ja_r6 の 29 文(誤読 → 未対応)だけ**(`soundness_round2code.txt`、§6)。
+- **H54 必須 1: 規則の選び方(第 3 ラウンド)**: 目的語が無いときに証拠なしで result にしてよい動詞を、`frames.transitivity` が intrans と言う動詞ではなく、閉じた類(`_INTRANSITIVE_CHANGE_PREDICATES` 13 語。基準: 主語自身が変わり、他動詞の用法が無い)にした。`frames.transitivity` は 化す・発展する を trans、分類する・変化する・成長する・進化する などを unknown と言い(コーパスの を の数による判定)、intrans と言うのは なる・成る・変わる・移行する と昇進・昇格・降格する(任命類)だけなので、これを根拠にすると `会社が大企業に成長した。` が未対応になる。他動詞・両用の動詞(縮小する・拡大する・転換する・分類する・区分する …)で目的語が無いときは証拠が要る(言い換える・訳す と同じ)。証拠が無いときは `ambiguous`(未対応)にし、基点の `recipient` には戻さない(基点の recipient は、受益の補助動詞が無ければ根拠が無い。チケットは未対応か recipient のどちらも認める)。その結果、基点(recipient)で正しかった ja_r6 の S1 16 文は未対応になった。検査側は `_VT_INTRANSITIVE_CHANGE_VERBS`(別の定数)で、`test_round6_class_lists_agree` が一致を確かめる。
+- **H55 `言語` を言語名の類に足した(第 3 ラウンド)**: 必須 1 の変更で、カバレッジの標本の `40以上の言語に翻訳されている。`(第 2 ラウンドでは `result=40以上の言語` と正しく読めていた。dev は agent で誤り)が dropped に入った。`_LANGUAGE_NAMES`(基準: 言語・言語の変種・文字種だけを指し、すべての語義がそうである語)に `言語` を足した(`言語` は言語を指す語で、人でも場所でもない)。読解の `_LANGUAGE_NAMES` と検査の `_VT_LANGUAGES` の両方。足したのはこの 1 語だけ(`test_m2_the_language_names_have_a_criterion` が、人・場所の語でないことを確かめる)。
+- **H56 必須 2: 態の規則を、レビューの文面より保守的にした(第 3 ラウンド)(W1-a3 で撤回: H61。本文は残す)**: レビューは「に 句が能動の項にならない動詞は passive のまま」と書いたが、能動で に を取る動詞の閉じた一覧を作る方向は語彙に頼る(会う・勝つ・従う … の自動詞が漏れる)ので、passive にするのを「他動詞(`frames.transitivity` が trans)で、に 句を能動で取る類(授受・伝達・移動・設置・存在・変化)でないもの」だけにした。結果として、`frames.transitivity` が unknown/intrans の動詞(逮捕する・笑う)の受身も、主語が人のときは棄権になる(K34。第 2 ラウンドでは passive を返していた)。**主語に人の証拠がある**ことの判定は `_is_person_phrase` で、動物の語(閉じた類 `_PERSON_NOUNS` に含まれる)も人と同じ扱い(尊敬は動物に使わないが、判定の語彙を増やさないため)。
+- **H57 必須 3: 英語の `to` の後ろの人名は受け手にしない(第 3 ラウンド)**: 計画・第 1 ラウンドは、2 語目以降の大文字の語を人の証拠にした(文頭の大文字は第 2 ラウンドで外した)。大文字は「固有名」の証拠で「人」の証拠ではない(地名・組織名も大文字)ので、位置によらず証拠にしない。人名を `to` で受ける文(`Ann sent the report to Ben.`)も、`en_frames` に人名の表が無いので読めなくなった(`RECIPIENT_TYPE_UNDETERMINED`)。人名の表を作れば戻るが、語彙で型を当てる方向に反するので作らない。**既存のテストの書き換え(弱めていない)**: `tests/test_semantic_read.py` の子プロセスのテストの文を `Ann sent the report to Ben.`(第 1 ラウンドで私が作ったテスト)から `Ann sent Ben the report.`(二重目的語。構文が受け手を決める)に、`tests/test_semantic_read_r2.py::test_m4_a_name_that_is_not_the_first_word_is_a_recipient` を二重目的語のテストに置き換えた。どちらも第 1・第 2 ラウンドで私が作った新規のファイルで、基線にあるテストではない。置き換えた理由は、この規則がレビュー必須 3 で逆になったから。逆の規則を止めるテスト(`test_semantic_read_r3.py`: 地名が受け手にならない・棄権する・二重目的語は受け手)を足した。
+- **H58 X3 の手分類 2 行の訂正と、第 2 ラウンドの比較の測り方(第 3 ラウンド)**: 必須 5 の指摘のとおり、`ながらく副業作家であったため作品数は少ない。` の entity・value を IMPROVED から STILL_WRONG に直した(第 2 ラウンドの私の手分類の誤り)。第 3 ラウンドの変更が何を落としたかは、変更だけを戻した複製(`scripts_r3/make_round2_copy.py`)との比較で測った(§5・§6): 読解は 93 組(47 文)、入口は 66 件。読解の 93 組のうち 92 組は、誤読を含む節(result=人、agent=姓＋家)と同じ節の他の役割で、正読が落ちたものは `ナキハクチョウ…に分類される` の result 1 組(K33)。
+- **H59 入口の追加の棄権(第 3 ラウンド。レビューの任意の改善 2・3)**: を が経路を表す移動の動詞(`_PATH_VERBS`、閉じた類 27 語。基準: 空間を通る移動を指す動詞)と、`する`＋を の目的語(サ変名詞が を で切れた形)は棄権。`NOT_PRODUCED` に 2 行足した。基点の読み(patient=経路、predicate=する)は誤りか規約外なので、誤読を避ける方を採った。**棄権が増えた**: `6時半に姉が家を出た。`(出る)・`母が料理をした。` など(K36)。
+- **H60 レビューの任意の改善 1・4 は直していない(第 3 ラウンド)**: 1 `ミロのヴィーナスに傷が付けられた。`(タガーが固有名詞・人名と付ける作品名・神名が受身の動作主になる。チケットが固有名詞の主辞を人の証拠と認めているので変えない)、4 `先生が生徒を二人に選んだ。`(二人は数詞＋助数詞で結果の型の証拠。受益とも読めるという指摘に同意するが、証拠の規則の範囲で result と読める文として X3 では CORRECT とした)。どちらも K35 に書いた。
+- **H61 必須 1: 入口の態を「正の証拠」の向きに反転した(W1-a3)**: review.r3 の必須 1 のとおり、第 3 ラウンドの規則は「主語が `_is_person_phrase` に入っていない」ことと「動詞が `_TRANSFER_/_GOAL_/_PLACEMENT_/_LOCATION_/_CHANGE_PREDICATES` に入っていない」ことを passive の根拠にしていた(H56 は「保守的にした」と書いたが、`frames.transitivity` が trans の動詞では passive に倒れていた)。人の語彙に無い人(尊敬を受ける人)の文に passive・patient=主語・agent=聞き手 を返す、基点に無い新しい誤読だった。review.r2 の必須 2 にあった「主語が人でなければ passive のまま」は review.r3 が撤回した(その型の文が棄権になるのは、チケットの方針 1 が許す)。規則は §4.6。**正読は減った**(§6 の W1-a3 の節。減った分はすべて「第 3 ラウンドで passive を返していた文が棄権になった」もので、棄権が増える側にしか動かさない)。
+- **H62 閉じた類の選び方と、使わなかった証拠(W1-a3)**: (1) `_NI_KARA_FREE_PREDICATES` は 5 語(叱る・褒める・追いかける・殴る・噛む)に固定した。review.r3 は基準の例に 盗む・割る も挙げたが、基準に合わないので入れていない: 割る は に の結果をとる(`<物>を<数>つに割る`)、盗む は から の起点をとる(`<場所>から<物>を盗む`)。同様に 蹴る(に の行き先)・叩く(語義が広い)・怒る(に の相手)も入れない(足すと passive が増える=規則を広げる向きで、監査役の指示に反する)。見本の問題(評価バンクの受身の問題と型が同じもの)を correct に戻すために語を足していない。(2) `_not_person_evidence` が使う類は、すでにあり基準が書いてある 5 つ(`_SPOT_NOUNS`・`_FORMAT_NOUNS`・`_LANGUAGE_NAMES`・`_COLOR_NAMES`・`_GATHERING_NOUNS`)だけ。使わない: `_is_place_phrase`(語末の文字 `_PLACE_SUFFIXES` の一致を含み、人の集まりとして尊敬・行為の主体になる語を拾う)、固有名詞の地名(国・都市は行為者になる。`_SPOT_NOUNS` の docstring と同じ理由)、`_is_time_phrase`(時の語が主語の れる/られる は自発が典型で、受身の証拠として弱い)、`_result_type_evidence`(数詞＋助数詞が人を物と言う)。(3) 可能と自発の棄権を足した理由: 規約では可能は `voice: active`・modality `ability` なので、一段・カ変の られる に passive を返すと可能との同点の勝者づくりになる。思考・感情の動詞の れる/られる は自発にもなる。この 2 つは棄権を増やす側(正読を増やさない)。
+- **H63 実装役が自分で作ったテスト 2 件の書き換え(W1-a3。H57 と同じ形)**: review.r3 必須 1 の 4・5 が、review.r2 の「主語が人でなければ passive のまま」を撤回したため、その期待を持つ 2 件だけを書き換えた(基線のテストは触っていない)。期待を弱めたのではなく、逆の規則を止めるテストに置き換えた: (1) `test_semantic_read_r3.py::test_a_subject_that_is_not_a_person_keeps_the_passive`(4 文 → passive)を `test_a_subject_without_evidence_of_a_thing_abstains`(同じ 4 文 → `readable: false` かつ理由が `UNDETERMINED_VOICE` で始まる)に。passive が残る型は `test_semantic_read_r4.py` の T6(正の証拠がある主語)で確かめる。(2) `w1a2_review_r2_check.py` の `ENTRY_KEPT` の 1 件(物の主語・動作主の句なし)を `ENTRY_UNREADABLE` へ。
+- **H64 測定の作り直し方(W1-a3)**: 読解器は変えていないので、読解器の出力が第 3 ラウンドの終わりとバイト単位で同じことを確かめた範囲: `soundness_after.json`(`cmp`)・`soundness_after.txt`(1 行目の木のパスを除いて `diff`)・`a3_after.txt`(`cmp`)・`x3_after.jsonl`/`x3_dev.jsonl` の既存の 2144 文の行(1 行ずつ比較)・`r4_review_check`/`r2_review_check` の出力(`cmp`)・凍結ハッシュ(`freeze_check.txt`)・`check_hardcode.py` の出力(`diff`)。作り直した範囲: 入口の出力の比較・採点器(3 つの見本と w1s)・入口の見本(`semantic_read_examples.txt`)・テストの出力・X3(新しい 2 つの `--extra` で 73 文を足した。既存行は同一)。カバレッジの再測定は §6 の W1-a3 の節。
+- **H65 凍結後の `test_semantic_read_r4.py` の差し替え 1 回(W1-a3。指示書の決まりの外なので隠さない)**: 最初の凍結(`w1a3_tests_freeze.sha256` の 1 行目)のあと、**入口の `_voice_ja` に触る前に**、第 3 ラウンドの終わりの写し(`r3end`)でテストを流した。T4(物の主語＋に/から の人の句＋類に無い動詞、授受・委任・依頼の型を含める)の 5 文(`<物>が<人>に 送られた` の型など。受け手に に を取る授受の動詞)は 5 文とも**読解器が `NO_SUPPORTED_CLAUSE` を返し、態の規則に届かなかった**(読解器は変えていないので、どんな実装でも `UNDETERMINED_VOICE` にならない。凍結の書き方の誤り)。指示書が差し替えを許すのは T6・T9・T10 だけだが、T4 の 5 文を、態の規則に届く別の 5 文(`から`・`に` の人の句、授受・提出・却下・提供の動詞。第 3 ラウンドの終わりの写しで passive になることを確かめた文)に差し替え、元の 5 文は `T4X`(読めない、または passive でない、を確かめるテスト)に残した。2 回目の凍結を 2 行目に追記した。**期待を弱めた差し替えではない**(T1〜T5・T7・T8 の期待は変えていない)が、指示書の決まりの範囲外なので中間職の判断を仰ぐ。T10(`によって`)は読解器が 2 文とも読まない(`UNCOVERED_PREDICATE`)ので、このテストは「読めない」で通る(`によって` の分岐は入口の出力に届かない: 判断記録にだけ残す)。
+
 ## 8. 既知の穴(隠さない)
 
-- **K1 項目の呼び名(上申)**: 「移動・設置・場所の動詞の終点」(へ・に)を recipient と呼ぶ規約。住む・位置する・ある・属する・出場する(を の目的語の無い動詞の に 補語)や、へ の終点、置く類の終点も recipient のまま。J1-17 が凍結した正解で誤読になる(§6 A1)。既存テスト(`test_reader_case_roles_are_preserved`)と構文(quantifier・adnominal・te_chain)がその呼び名に依存しており、このチケットでは変えていない。
+- **K1 項目の呼び名(上申。W1-a2 で範囲を狭めた)**: 「移動・設置・場所の動詞の終点」(へ・に)を recipient と呼ぶ規約。W1-a2 で、**移動の動詞(行く・来る・帰る … 移る・渡る)の終点は、場所または人の証拠があるときだけ** recipient のままにし、証拠が無ければ direction/goal と読み直した(H33。J1-17 は正読)。置く類・住む類・その他の自動詞の に 補語の終点は recipient のまま(既存テストと構文が前提にしている)。実測の残り: `子供が川に落ちた。`→ recipient=川、`鳥が空へ飛んだ。`→ recipient=空、`母が荷物を棚に置いた。`→ recipient=棚、`友人が都会に住んでいる。`→ recipient=都会、`弟が都会へ引っ越した。`(引っ越す は移動の動詞の類に無い)→ direction(`w1a2_probe_ja_after.txt`)。規約の役割名は place・goal なので、これらは役割名の不正確な読み(K17)。
 - **K2 使役を問う質問が答えなくなった**: 文書側が diathesis の `causer/causee/patient` になり、質問側(`semantic_wh.py` など許可パス外)が使役を知らず棄権する(`qa_probe_summary.txt`: 使役系 13 問・7 問)。直すには質問側が causer/causee を読む必要がある(別チケット)。
 - **K3 「人」「動作主」の判定は閉じた類**: 人・組織・動物は語彙・接尾辞・親族語で判定する。未登録の語(例: タガーが固有名詞・普通名詞と付けた新しい役職名)や、場所でもある語(学校・会社)は受身の agent にならず、棄権になる(誤読ではなく未対応)。タガーの誤タグ(壇上 を人名)は拾えない。
 - **K4 受身＋に の場所**: agent にはしないが、場所として読む規則が無いので未対応になる(K3 バンク 0/8)。
@@ -297,7 +602,57 @@ supported 文 1365 → 1355(表。`coverage_diff_output.txt`)。supported から
 - **K9 値の先頭の読点**: `X（読み）は、Y` の定義文は value が `、Y` で始まる(既存の表現)。
 - **K10 一部(H18)**: `一部、…` を量化構文が supported にする。
 - **K11 コミット・統合**: 差分は未コミット。`np_internal.py`・`time_expr.py`・`diathesis.py`・`comparison.py` は他チケットが触る可能性がある(統合時に確認)。
-- **K12 changed.tsv の 78 件は未分類**(O4)。目視した範囲では、修正後も誤った節が残る例(`四六のガマ（しろくのガマ）とは…` の property の entity/attribute の分け方、`日本の農道一覧（…）は…` の entity=日本)がある。
-- **K13 人の語彙の穴(第 3 ラウンド)**: 人・組織の判定は正の証拠の一覧(閉じた語彙・親族語・役職・人名・接尾辞)。一覧に無い人を表す語(児童・園児・見習い・新入り・末っ子)は人と判定されない。受身の に 句では agent にならず(未対応で安全)、変化の動詞の に 句では語順(目的語より後)と人の語彙のどちらかの証拠が要るので、`先生が絵本を児童に編集した。`(目的語の後ろ)のように語彙に無い人が目的語の後ろにあるときは `result` になりうる。逆に、実在の組織で固有名詞が主辞でないもの(野球部・営業部・経理課・自治会・商社)は agent にならず未対応(§H25)。
-- **K14 末尾の文字が人の接尾辞と同じ語(第 3 ラウンド)**: `frames.is_role`(許可パス外)の末尾の人接尾(長・手・人・生 …)に当たる語は、サ変可能でなければ人とみなす。`身長`・`全長`(長)、`個人`(人)が agent として残る(`全長に印が付けられた。`→ agent=全長、`個人に責任が負わされた。`→ agent=個人。後者は 負わす の類=課す・負わす が伝達・授受の動詞に入っていないことも原因)。`r3_probe_ja_after.txt` に 3 件が残っている(誤読で、未修正)。
-- **K15 受身の に が組織の 選ぶ(第 3 ラウンド)**: `自治会に新しい役員が選ばれた。` は `result=自治会`(supported)。「…として選ばれた」か「…に選ばれた(動作主)」か原文で決まらない曖昧な文で、地位を表す に が `result` になる読みを許した。未修正。
+- **K12 changed.tsv の分類(O4)【第 2 ラウンドで X3 に統合】**: 第 1 ラウンドは未分類だった(レビュー M3 の指摘)。第 2 ラウンドは、基点と比べて (役割, 値) が新しい行を、カバレッジの標本の文を含めて全件分類した(`x3_table.tsv`、H52)。**残る誤り**: `四六のガマ（しろくのガマ）とは…`・`日本の農道一覧（…）は…` のように、名前の中の の で entity と attribute に割る property の読みは、基点にもあり(基点は括弧の中で切っていた)、修正後は語境界で切れるが、名前を割る点は直っていない(K27)。
+- **K13 【W1-a2 で直した】人の語彙の穴**: 語彙に無い人(児童・園児・見習い・新入り・末っ子・花嫁)が目的語の後ろにあるとき `result` になる穴は、(b) 類の動詞では結果の型の証拠(§4.3 N2)が無いと `result` にしないことで塞いだ(`ja_r4` N2 12 文と `r3_review_check.py` の N2 5 文で `result` 0)。受身の に 句は、人の証拠が無ければ動作主にしない(従来どおり)。【第 2 ラウンドで直した(§4.4 M2)】(a) 類の動詞(変える・書き換える・分ける …)も、目的語があるときは結果の型の証拠が無ければ result にしない(基点は recipient)。レビューの 3 文型(`…を〜に言い換えた`・`…を〜に変えた`)は未対応(`w1a2_review_r1_check.py`)。実在の組織で固有名詞が主辞でないもの(野球部・営業部・経理課・自治会・商社)は、受身の agent にならず未対応(§H25)。
+- **K14 【W1-a2 で直した】末尾の文字が人の接尾辞と同じ語**: 受身の に 句で `身長`・`全長`・`個人`・土手・芝生 … が agent になる穴は、`frames.is_role` の `endswith` を読解と検査の人の判定から外して塞いだ(§4.3 N1。`ja_r4` N1 14 文と `r3_review_check.py` の 16 文で agent 0、QA の 6 文で `ANSWER` 0)。`個人`(人)は閉じた類に入れていない(語義が人でない場合もある)ので人と判定されない。
+- **K15 【W1-a2 で直した】受身の に が組織の 選ぶ**: `自治会に新しい役員が選ばれた。` は未対応になった(§4.3 N3。agent にも result にもしない)。地位の名詞のときだけ result(`鈴木さんが店長に選ばれた。`)。
+
+- **K16 N1〜N4 の正読は 0**: N1(14)・N2(12)・N3(12)・N4(14)は全文が未対応(誤読 0)。人でない語・語彙に無い人・組織を受身の に 句に置いた文を「場所」などと正しく読む規則は無い(`山手に公園が造られた。` を patient=公園・place=山手と読む規則が無い。K3・K4 と同じ)。方針 1 により不問。 第 2 ラウンドの R1(14)・R2(12)・R4(12)も正読は 0(R3 は 12 文中 1。R1c 4 文中 3、R2c 5 文中 4、R3c 4 文中 4、R4c 5 文中 5 は正読。誤読は全型で 0。基点で正しかった文が未対応になった件数は H53)。
+- **K17 recipient という役割名の不正確さ**: K1 の残りの形。規約の役割名は place・goal・direction。移動の動詞以外の終点は、場所の証拠が無くても recipient と読むことがある(`子供が川に落ちた。`→ recipient=川)。移動の動詞以外にまで証拠を要求する試みは、`所属する`・`属する`・`ある` の文を落とす(dropped 53 → 87)ので採らなかった(H33)。入口(`semantic_read`)は recipient を、授受・伝達の動詞で人の証拠があるとき、または移動・設置の動詞で場所の証拠があるとき(goal)にしか写さず、それ以外は棄権する。 第 2 ラウンドに測った例(基点も同じ読み。`w1a2r2_probe_ja.txt` と `x3_dev.jsonl`): `彼は試合に勝った。`・`兄は計画に賛成した。`・`妹は新しい生活に慣れた。`・`姉は講習会に参加した。`・`雪が屋根に積もった。` はいずれも に 句が recipient で supported(動詞が移動・授受・置く類のどれでもないため。入口は棄権する)。移動の動詞(行く・来る・向かう … と第 2 ラウンドで足した 出かける・通う など)だけは、場所・集まり・人の証拠が無ければ未対応(H46)。
+- **K18 地位の名詞は閉じた類**: `学級委員`(委員 は地位だが、名詞＋委員 の形)・`副知事` などは `_POST_NOUNS` や 名詞＋長/係 に当たらないので、`田所さんが学級委員に選ばれた。` は未対応(誤読ではなく、失った正読)。`〜長`・`〜係` は 1 トークンの語(`船長` など)では閉じた類の完全一致で判定し、語末の文字では判定しない。
+- **K19 人の語の 1 トークン語の欠け**: 語末の文字をやめたので、閉じた類に無い 1 トークンの人の語(技官・助教など)は、受身の動作主・受け手になれず未対応(正読を失う。H32)。
+- **K20 英語の入口は閉じた動詞の一覧**: `semantic_read` は、`en_frames` の不規則動詞・授受動詞と、自分で書いた規則動詞の一覧(`_EN_REGULAR_VERBS` 108 語。不規則変化・授受動詞と合わせた既知の動詞は 186 語)にある動詞だけを読む(造語を読まないため)。一覧に無い実在の動詞は棄権する(誤読ではないが、over_abstain)。時・場所の前置詞句・所有の限定詞・量化詞・完了・進行・助動詞は棄権する。
+- **K21 可能形の疑い**: 入口は、動詞の語彙素の e 段の語尾を u 段に替えた語がタガーの辞書にあり、かつ `frames.transitivity` が「を」の動詞と言っていない語を、可能形かもしれないとして棄権する(`ピアノが弾ける` など)。逆に「を」の動詞と言う語(`食べる`・`育てる`)は可能形の疑いから外すので、`transitivity.json` に無い他動詞は棄権側に倒れる。
+- **K22 `np_internal` の語末の判定**: `constructions/np_internal.py:_is_person_item` が `frames.is_role`・`frames._PERSON_SUFFIX` を呼び続けている(列挙か副詞＋主語かの判定だけで、役割は決めない)。`frames.py` は変えない(`verdict.py`・`frame_evidence.py` も使う)ので、この判定の語末の文字は残っている。
+- **K23 `test_s6_two_runs_agree_except_timing_and_recount_matches` は未コミットの間だけ失敗**(X6)。
+- **K24 `一部、…` の構文(K10)**: `一部、兄が駅で傘を買った。` は、量化の構文が `quantifier_partial__event` を持つ supported の節を返す(開始時点から。X3 では CORRECT と手分類)。入口は量化の語の入力を棄権する。
+- **K25 入口が読む範囲は狭い**: 第 1 の見本(自作 65 問)で、日本語の読める入力 40 問のうち 26 問を読み(正答 26、棄権 14)、英語 12 問のうち 11 問を読み(正答 11、棄権 1。第 2 ラウンドは 12 問すべて正答だったが、`to` の後ろの人名を受け手にしなくなった 1 問が棄権になった)、読めない 13 問はすべて `readable: false`。第 2 の見本(自作 36 問。入口の誤読の型を狙った問題で、読めない入力と棄権が多い)は、日本語 20 問のうち 10 問を読み(正答 10、棄権 10)、英語 8 問のうち 3 問を読み(正答 3、棄権 5。文頭の大文字・状態の分詞・2 語の名前・一覧に無い動詞)、読めない 8 問はすべて `readable: false`(§6 の X4 の表)。日本語で棄権する理由は §6(`NO_SUPPORTED_CLAUSE`・`PREDICATE_NORMALIZED` など)。複数節の文(関係節・因果・順序・譲歩・条件)・量化・モダリティ・使役の多くは棄権する。実バンクでの正答率は測っていない(見ない)。
+- **K26 `frames.ROLES` の灰色の語**: 閉じた人の類 `_ROLE_NOUNS` は `frames.ROLES` から人と建物の両義の語を 1 語除いて写したもの。残る語のうち 監督・教授・担任 は役職・人の語だが、動作を表す名詞の語義もある(監督する・教授する・担任する)。「すべての語義が人」の基準には厳密には合わない灰色(人以外の語義が に 句に来る文は多くないので残した)。
+- **K27 名前の中の の で entity / attribute に割る property の読み**: `四六のガマ（しろくのガマ）とは…`・`日本の農道一覧（…）は…`(基点にもある)。名前(題名・固有の語)の中の の を「A の B は C」の所有・属性として割るので、entity=四六・attribute=ガマ のようになる。語境界では切れるが、割ること自体が誤り。X3 では基点が括弧の中で切っていたので IMPROVED としたが、絶対的には誤読(これらの文は x3_classified.tsv の `copula property` の行)。
+- **K28 地名の から は source**: 受身の から 句が地名(固有名詞/地名)のとき source にする(既存テストの要求。H48)。地名が組織の換称(`…から発表された`)のときは誤りになりうる(未測定。X3・自作の文には無い)。`森`・`川上` のように姓でもある普通名詞は、タガーが人名と読むので、人の証拠(c)を満たす(`_SPOT_NOUNS` の語だけ例外)。
+- **K29 `先生に宿題が出された。` の agent**: `出す` は授受の動詞の一覧に無く、に 句が人なので agent と読む。提出の意味(受け手)にも読める曖昧な文を片方に倒している(基点も同じ。入口も agent を返す)。授受・提出の動詞の整理は今回の範囲外。
+- **K30 カバレッジと X3 の手分類は私の読み**: dropped の分類(`coverage_dropped_classified.tsv` の理由欄)と X3 の 460 行の手分類(`x3_classified.tsv` の理由欄)は、中間職が全件読んで異論があれば差し戻す。`w1356`(`2004年10月6日にキングレコードから発売された。`)は基点で正しく(agent)、レビュー M3 の要求で未対応になった: DROPPED_CORRECT 1 件(衝突として上申)。 **追記(2026-10-03、監査役の判断)**: `w1356` の DROPPED_CORRECT 1 件は許容(組織の換称。人の証拠が無いので未対応に倒してよい)。語彙を足して戻さない(H44)。
+- **K31 入口の英語は閉じた動詞の一覧と、人の証拠(代名詞・動物の語)だけ**: 人名の自動詞(`Ann slept.`)は、位置によらず読まない(`SUBJECT_TYPE_UNDETERMINED`。第 3 ラウンドで、文頭以外の大文字も証拠にしなくなった)。人名を `to` で受ける文(`Ann sent the report to Ben.`)も読まない(`RECIPIENT_TYPE_UNDETERMINED`。H57)。二重目的語の最初の目的語は構文が受け手を決める(`Ann sent Ben the report.`)が、その名が地名でも受け手と呼ぶ(`Ann sent London a gift.` の型。構文が決めると見なした)。`en_frames` の分け方の穴(二つの名前が続く句)は入口が `NP_BOUNDARY_UNDETERMINED` で棄権するだけで、`en_frames.py` は変えていない。
+- **K32 読解器の側に残る、基点からの誤読(入口は棄権する。レビュー r1 の任意の改善 4)**: `先生が来られた。`(尊敬の れる を受身と読み patient=先生)、`庭に猫がいる。`(存在の場所を recipient=庭)、`子供が野菜を食べられた。`(受身・可能・尊敬に割れる文を一方の読みで対応済み)。基点と同じ読みで、第 2 ラウンドでは直していない(`w1a2r2_review_checks.txt`)。入口はそれぞれ `UNDETERMINED_VOICE`・`RECIPIENT_TYPE_UNDETERMINED`・`UNDETERMINED_VOICE` で棄権する(`semantic_read.read`)。第 3 ラウンドで、人が主語の れる/られる(`先生が説明された。`・`先生が生徒に説明された。`)は受身と尊敬の同点として棄権するようにした(H56。読解器の側の patient=<人> は基点からの読みのまま。`r3_required1_dump.txt` の後半)。
+- **K33 受身で節の中に主語が無い `…に分類される` の result を失った(第 3 ラウンド)**: 他動詞の目的語が省略された節と、受身で主語(動作を受ける物)が節の外にある節(関係節の中の `…に分類される` など)は、目的語の有無が見分けられず、どちらも結果の型の証拠が無ければ未対応になる。カバレッジの標本で `ナキハクチョウ（…）は、カモ目カモ科ハクチョウ属に分類される鳥類。` の に 句が result(第 2 ラウンド)から adjunct_1(型を決めない付加語。dev は agent で誤り)に変わった。`40以上の言語に翻訳されている。` は `言語` を言語名の類に足して戻した(H55)。分類名(目・科・属)の類を作る方向は、語彙で型を当てることになるので採らない。
+- **K34 入口の態で棄権が増えた(第 3 ラウンド)**: 人が主語の れる/られる は棄権する。自然な受身の文も落ちる: 第 2 ラウンドでは読んだ `客が店員に案内された。`(案内する は伝達の類)・`鈴木さんが店長に選ばれた。`・`警察に容疑者が逮捕された。`(逮捕する の `frames.transitivity` が unknown)・`先生が生徒に笑われた。`(笑う が unknown)・`議長に新人が選ばれた。` など(`r3_entry_changes_vs_round2.tsv`。入口の 66 件の違いのうち `UNDETERMINED_VOICE` が 14 件)。動物・組織の主語(尊敬の対象でない)も人と同じ扱いで棄権する。評価バンクの受身の問題で、これらの型は棄権(over_abstain)になる。誤読にはならない。 **追記(W1-a3)**: 主語が物の受身も、人でないことの正の証拠(§4.6 の `_not_person_evidence`)が無ければ棄権するようになった(§4.6、K41 の (3)。件数は §6 の W1-a3 の節の `readable→false`)。第 3 ラウンドでは passive を返していた `<物>が<他動詞>された` の多くが `UNDETERMINED_VOICE` になる。
+- **K35 レビューの任意の改善 1・4 は残る(第 3 ラウンド。H60)**: (1) 固有名詞(人名)と付けられた作品名・神名が受身の に 句で動作主になる(`ミロのヴィーナスに傷が付けられた。`)。(4) `先生が生徒を二人に選んだ。` → result=二人(目的語が人の 選ぶ＋数詞＋人。受益とも読める。dev は未対応)。X3 では CORRECT としたが疑わしい読み。
+- **K36 入口の棄権: 経路の を と サ変の分離(第 3 ラウンド)**: `家を出た`・`道を歩いた`・`料理をした`・`宿題をした` は、読解器の読み(patient=家、predicate=する)が規約と合わないので棄権する(H59)。`_PATH_VERBS` は閉じた類で、載っていない移動の動詞(例えば 這う・駆け抜ける)の を は patient のまま返る(動詞の自他は `frames.transitivity` で決められないため)。
+- **K37 `_INTRANSITIVE_CHANGE_PREDICATES` は 13 語の閉じた類(第 3 ラウンド)**: 載っていない自動詞の変化の動詞(化ける・成り代わる・…に至る など)の に 句は、結果の型の証拠が無ければ未対応になる(安全な側の損失)。載せる基準: 主語自身が変わる、他動詞の用法が無い(H54)。
+- **K38 日本語の人名＋家 以外の固有名詞＋接尾辞(第 3 ラウンド)**: 固有名詞の後ろの 接尾辞 家 だけを外した。姓＋氏・さん・君・様 などは人の証拠のまま(敬称なので人)、姓＋団・隊・軍・チーム・会 は組織(人の集合)として人の証拠のまま。地名＋家 は固有名詞(地名)の直後なので外れるが、これは意図(地名＋家 は人の集まりではない)。
+- **K39 授受・委任・依頼の受身で、に＋人 を動作主にする(読解器。基点と同じ読み。W1-a3)**: `<物>が<人>に<授受・委任・依頼の動詞>された` の型で、読解器は に 句を `agent` とする(自然な読みは受け手、または依頼の相手で、agent とも読める同点)。`_TRANSFER_PREDICATES` などの閉じた類の外の動詞で起きる。実測(`w1a3_k_examples.txt`。基点 DEV と W の読解器の読みは同じ): `宿題が生徒に課された。` → agent=生徒、`作業が後輩に割り振られた。` → agent=後輩。**入口は W1-a3 の規則で `UNDETERMINED_VOICE:passive or honorific` として棄権する**(どちらの文も `readable: false`)。読解器を直していないので、入口の規則を緩めると表に出る。`w1a2_review_r2_check.py` の `READER_KEPT` にある `専門家に意見が求められた。`(agent=専門家)は、この同点を片方に倒した読みを「保つべき読み」として持っている(今回は変えていない。監査役への申し送り)。
+- **K40 経路・起点の を の主語(入口。基点と同じ読み。入口に残る誤読。W1-a3)**: K36 の `_PATH_VERBS` に無い移動の動詞では、(1) を 句が経路でも起点でも patient になり(`<物>が<場所>を<移動の動詞>た` の型。起点の を も同じ)、(2) 物が主語のとき入口は主語を `agent` で返す(規約 2 では、物が主語の自動詞の主語は entity)。**入口は棄権せず `readable: true` で返す**。実測(`w1a3_k_examples.txt`): `犬が坂を駆け下りた。`・`列車が鉄橋を通り抜けた。`・`少年が校門を飛び出した。`・`船団が岬を回った。` はすべて `readable: true`・`voice: active`・roles が agent と patient(坂・鉄橋・校門・岬 が patient)。読解器の読みは基点と同じ。**今回は直さない**(監査役の範囲指定。態の規則とは別の穴)。review.r3 の任意の改善 1(場所の正の証拠で止める)は別のチケットで検討する。
+- **K41 W1-a3 の態の規則に残るリスク**: (1) `_SPONTANEOUS_PREDICATES` は 20 語の閉じた類で、載っていない自発の動詞は、主語に §4.6 の証拠(閉じた類の主辞)があると passive になりうる。実測: `海岸が懐かしまれた。` → `voice: passive`・patient=海岸(`w1a3_k_examples.txt`。自発とも読める)。(2) `_NI_KARA_FREE_PREDICATES` の動詞の られる で、に 句が可能の主体になる読み(`<人>に<物>が<動詞>られる`)は区別しない(まれな型として受け入れた)。(3) 主語が物の受身の多くが棄権になる(§6 の W1-a3 の節の `readable→false` の件数。第 3 ラウンドでは passive を返していた文)。尊敬の型で残るもの: 動作主の句が無く、主語が §4.6 の閉じた類の主辞で、自発の類に無い動詞、の組み合わせだけ(上の (1))。
+
+## 9. 読解の入口と採点器の入口(W1-a2)
+
+### 9.1 入口
+`python -m verantyx.semantic_read --text <文> [--lang ja|en]`(`verantyx/semantic_read.py`。`verantyx/cli.py` には触れない)。標準出力に JSON を 1 個だけ書く(`ensure_ascii=False`)。ファイルを書かず、ネットワークを使わず、同じ入力に同じ出力を返す。**読めた(`readable: true`)も読めない(`false`)も終了コード 0、壊れた入力の型付きの拒否は 2**(`{"error": {"type", "detail"}}`。型は `MISSING_TEXT`・`EMPTY_TEXT`・`TEXT_TOO_LONG`(上限は設計の定数 1000 字。読解の構文が 256 トークンを超える文を読まないことと、規約の入力が 1〜2 文であることから決めた値で、測定値ではない)・`BAD_LANG`・`LANG_MISMATCH`・`CONTROL_CHARACTERS`(改行・タブ・復帰以外の制御文字とサロゲート)・`BAD_ARGUMENTS`)。値が `-` で始まる文は `--text=<文>` で渡す。言語は `--lang` が無ければ文字種(ひらがな・カタカナ・漢字が 1 字でもあれば ja、なければ ASCII の英字があれば en、どちらも無ければ `readable: false`・`NO_LANGUAGE`)。
+
+出力は `docs/READING_CONVENTIONS.md` §1 の形に、`schema`・`lang`・`abstain`・`unsupported`・`clause_meta`(節と同じ並びの規則名・述語の範囲)を足したもの。`readable: false` のときは `clauses: []`・`relations: []` で、`abstain` が `{"kind", "reasons"}`: `unreadable_input` は読めない入力であることに**正の証拠**があるときだけ(読解器が名付けた挨拶・感動詞、述語になれるトークンが無い日本語の断片、辞書に無い述語語、定型・感動詞の語だけの英語)、それ以外はすべて `not_supported`(読めないとは言っていない)。**第 2 ラウンドの M8**: 英語の閉じた動詞の一覧に動詞が無い入力は `not_supported`(`UNKNOWN_PREDICATE`)で、`unreadable_input` ではない(一覧が短いだけで、入力が読めない証拠ではないので)。`unsupported` は読解器が見つけて対応済みにできなかった節を型付きの理由と並べる。
+
+### 9.2 `readable: true` にしてよい条件と、写す表
+読解器(日本語は `document_view`、英語は `en_frames.read_typed`)が supported の節を返し、さらに次をすべて満たすときだけ。1 つでも欠ければ `readable: false`・`not_supported` と型付きの理由(括弧内)。
+1. unread・unsupported の節が無い(`UNREAD_SPAN`・`UNSUPPORTED_CLAUSE`。同じ述語の範囲の退けられた別の読み(比較が読めて copula が unsupported)は一覧にだけ出す)。同じ述語に supported の節が 2 つ以上あって内容が違えば `COMPETING_READINGS`。
+2. 文末の述語、およびすべての独立の動詞・形容詞・形状詞・copula が、どれかの supported の節の述語の範囲に入っている(`MAIN_PREDICATE_NOT_READ`・`UNCOVERED_PREDICATE`)。主節の述語が造語なら、従属節が読めても全体を読めないとする規約 §7 の 5 のため。
+3. 述語語がタガーの辞書に無ければ `unreadable_input`(`UNKNOWN_PREDICATE_WORD`)。
+4. 量化語・数詞(時の句の中を除く)・モダリティの印・可能形の疑い・恩恵の補助動詞・複数節(関係節以外)が無い(`QUANTIFIER_NOT_MAPPED`・`UNDETERMINED_MODALITY`・`BENEFACTIVE_NOT_PRODUCED`・`RELATION_NOT_MAPPED`)。
+5. 役割名が閉じた表に載る(`UNMAPPED_ROLE`)。表: patient・causer・causee・time・quotation・standard・attribute・value・entity・result・companion は同名、origin は source、location は place、means は instrument、direction・limit は goal。`agent` は他動詞(patient がある)か受身なら agent(を の経路の動詞 `_PATH_VERBS` と サ変の分離 `する` は棄権: H59)、自動詞の主語は人の証拠があるときだけ agent(無ければ `SUBJECT_TYPE_UNDETERMINED`。規約は人でない主語を entity とするが、人でないことの証拠が無いので推測で写さない)。`recipient` は授受・伝達の動詞＋人の証拠なら recipient、移動・設置の動詞＋場所の証拠なら goal、**存在・居住の動詞(住む・滞在する・位置する・存在する)＋場所の証拠なら place**(第 2 ラウンド M6。`goal` は移動・設置の終点だけ)、それ以外は棄権(`RECIPIENT_TYPE_UNDETERMINED`・`GOAL_TYPE_UNDETERMINED`・`PLACE_TYPE_UNDETERMINED`)。
+6. 極性は読解器の値。時制は読解器の past/nonpast、空なら末尾の表層(`だった`・`でした` → past、`だ`・`です`・形容詞の終止 → nonpast)で決まらなければ `UNDETERMINED_TENSE`。モダリティは `assert` → null、`obligation`・`prohibition` は表層の印と一致するときだけ、それ以外は棄権。態は述語の後ろの助動詞と役割から決め、`れる/られる` は、**正の証拠があるときだけ passive**(W1-a3。§4.6、H61。第 3 ラウンドの「主語が人でなければ passive」「類に入っていない他動詞は passive」は撤回): (1) によって の動作主、(2) に/から の動作主で、述語が閉じた類 `_NI_KARA_FREE_PREDICATES`(叱る・褒める・追いかける・殴る・噛む)、(3) 動作主の句が無く、主語の主辞が人でないことの閉じた類(`_not_person_evidence`)で、られる(可能と同形)でも思考・感情の動詞(自発。`_SPONTANEOUS_PREDICATES`)でもない他動詞。使役は causer/causee があるときだけ。それ以外は `UNDETERMINED_VOICE`(理由は `passive or honorific`・`passive or potential`・`passive or spontaneous`・`れる/られる with an object`・`れる/られる`)。比較は `より` の comparative だけ(`COMPARISON_NOT_PRODUCED`)。節間関係は関係節(`adnominal`)だけを relative として出す。
+7. 値は役割の範囲の文字列(先頭の指示の連体詞 この・その・あの・どの を外す)で、入力の部分文字列。
+8. **述語は書かれた動詞の辞書形**(第 2 ラウンド M7): 述語の範囲の先頭のトークンの原形(サ変は 名詞＋する)が `clause.predicate` と一致するときだけ返す。読解器は 借りる・受け取る・教わる・預かる・聞く などを逆の動詞に替えて役割を入れ替える(`frames.CONVERSE`)ので、一致しなければ `PREDICATE_NORMALIZED:<読解器の述語><-<書かれた述語>` で棄権する(規約 3: 言い換えた語を述語にしない)。規約 4.6 が明記する もらう だけは、役割がすでに規約どおり(与え手 = agent、主語 = recipient)なので、述語の名前を もらう に戻して返す。
+
+英語: Frame が None なら `readable: false`(`EN_UNREAD`、述語になれる語が無ければ `unreadable_input`)。`ambiguous`・`inferred`・一覧に無い動詞・量化詞・所有の限定詞・時の句・完了・進行・助動詞は棄権。時制は表層(不規則変化表・-ed・do/does/did/will/be)から決める(`Frame.past` は使わない)。主語は人の証拠(代名詞・`ANIMATE`。**大文字の語は位置によらず証拠にしない**: Rain・Snow(第 2 ラウンド M4)、London・Paris(第 3 ラウンド必須 3。大文字は固有名の証拠で、人の証拠ではない))があるときだけ agent(他動詞は agent)、recipient は人の証拠があるときだけ。ただし二重目的語(`V NP NP`)の最初の目的語は、直前に前置詞が無く patient より前にあれば、構文が受け手を決めるので証拠なしで recipient。be＋過去分詞は passive(by 句が無く、分詞が状態の形容詞でもある語は `UNDETERMINED_VOICE`)。固有名が 2 語続く句(`Ann taught Ben French` の patient)は `NP_BOUNDARY_UNDETERMINED` で棄権する。
+
+### 9.3 入口が出さない型(`NOT_PRODUCED`)と、見本での内訳
+入口が出さない型の一覧(正本は `semantic_read.NOT_PRODUCED`。出さないものは棄権し、近い型に押し込まない)と、自作の 3 つの B1 v2 の見本の結果(B1_v2: 正読 35・正しい棄権 13・棄権 17・誤読 0、B1_v2_r2: 正読 11・正しい棄権 8・棄権 17・誤読 0、B1_v2_r3: 正読 4・正しい棄権 0・棄権 13・誤読 0。9 分類。W1-a3 の測定)は、§6 の X4・X5 の表(`recompute.md`)にある。

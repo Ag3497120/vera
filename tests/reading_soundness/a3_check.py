@@ -3,7 +3,7 @@
 
 既定の入口ではなく読解 API(mode="semantic")で確かめる。a3.jsonl・a3_r2.jsonl・a3_r3.jsonl の各行 {text, question, forbidden} を
 Vera.from_texts({'d': text}, mode='semantic').ask(question) に通し、verdict と values を出力する。
-values のどれかが forbidden のいずれかを含んだら失敗(終了コード 1)。隔離検査: 読み込んだ verantyx* が PYTHONPATH の木の配下か。
+values のどれかが forbidden のいずれかを含んだら失敗(終了コード 1)。W1-a2 で強めた: verdict が ANSWER で始まる、または values が空でなければ、それだけで失敗(切れた答え 空母→空 を見逃さない)。隔離検査: 読み込んだ verantyx* が PYTHONPATH の木の配下か。
 """
 import json, os, sys
 from pathlib import Path
@@ -20,7 +20,7 @@ def main():
     if foreign:
         print('ISOLATION FAILED', foreign); sys.exit(2)
     rows = []
-    for name in ('a3.jsonl', 'a3_r2.jsonl', 'a3_r3.jsonl'):
+    for name in ('a3.jsonl', 'a3_r2.jsonl', 'a3_r3.jsonl', 'a3_r4.jsonl', 'a3_r5.jsonl'):
         rows += [json.loads(x) for x in (HERE / name).read_text(encoding='utf-8').splitlines() if x.strip()]
     failed = 0
     for r in rows:
@@ -29,8 +29,11 @@ def main():
         values = [str(v) for v in (answer.get('values') or [])]
         text = answer.get('text', '')
         bad = [f for f in r['forbidden'] if any(f in v for v in values) or f in str(text)]
-        failed += bool(bad)
-        print(f"{r['id']} verdict={verdict} values={values} text={text!r} forbidden_hit={bad} :: {r['text']} / {r['question']}")
+        # W1-a2 (strengthened): every row is a passive sentence WITHOUT a stated agent, so no answer to "who did it?" exists in the text.
+        # A cut answer (空母 -> 空) escapes the forbidden-word test (the substring 空母 is not in 空), so ANY answer-shaped reply fails.
+        answered = str(verdict).startswith('ANSWER') or bool(values)
+        failed += bool(bad) or answered
+        print(f"{r['id']} verdict={verdict} values={values} text={text!r} forbidden_hit={bad} answered={answered} :: {r['text']} / {r['question']}")
     print(f'rows={len(rows)} failed={failed}')
     sys.exit(1 if failed else 0)
 

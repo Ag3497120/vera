@@ -1,6 +1,6 @@
 {
  "header": {
-  "tree": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/r3/dev",
+  "tree": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W1-a2-impl3/dev191",
   "revision": "not a git tree (archive of 075d486 expected for DEVTREE)",
   "foreign_modules": [],
   "bank_files": {
@@ -8,12 +8,13 @@
    "ja.jsonl": 149,
    "ja_r2.jsonl": 43,
    "ja_r3.jsonl": 32,
+   "ja_r4.jsonl": 68,
+   "ja_r5.jsonl": 68,
+   "ja_r6.jsonl": 38,
    "en.jsonl": 57,
    "en_r2.jsonl": 38
   },
-  "escalated": {
-   "J1-17": "end point of へ is read as recipient by a convention fixed in an existing test; escalated (docs/READING_SOUNDNESS.md)"
-  }
+  "escalated": {}
  },
  "summary": {
   "E0": {
@@ -192,8 +193,8 @@
    "abstain_is_correct": 0,
    "correct_and_all_pass": 0,
    "false_pass": 15,
-   "misread_escalated": 1,
-   "false_pass_escalated": 1,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
    "half_or_more_correct": false
   },
   "J2": {
@@ -399,6 +400,234 @@
    "misread_escalated": 0,
    "false_pass_escalated": 0,
    "half_or_more_correct": false
+  },
+  "N1": {
+   "n": 14,
+   "correct": 0,
+   "misread": 14,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 0,
+   "false_pass": 14,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": false
+  },
+  "N1c": {
+   "n": 6,
+   "correct": 6,
+   "misread": 0,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 6,
+   "false_pass": 0,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": true
+  },
+  "N2": {
+   "n": 12,
+   "correct": 12,
+   "misread": 0,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 12,
+   "false_pass": 0,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": true
+  },
+  "N2c": {
+   "n": 6,
+   "correct": 0,
+   "misread": 6,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 0,
+   "false_pass": 6,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": false
+  },
+  "N3": {
+   "n": 12,
+   "correct": 0,
+   "misread": 11,
+   "unsupported": 1,
+   "abstain_is_correct": 1,
+   "correct_and_all_pass": 0,
+   "false_pass": 11,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": false
+  },
+  "N3c": {
+   "n": 4,
+   "correct": 0,
+   "misread": 4,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 0,
+   "false_pass": 4,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": false
+  },
+  "N4": {
+   "n": 14,
+   "correct": 0,
+   "misread": 11,
+   "unsupported": 3,
+   "abstain_is_correct": 3,
+   "correct_and_all_pass": 0,
+   "false_pass": 10,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": false
+  },
+  "R1": {
+   "n": 14,
+   "correct": 0,
+   "misread": 14,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 0,
+   "false_pass": 14,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": false
+  },
+  "R1c": {
+   "n": 4,
+   "correct": 3,
+   "misread": 1,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 3,
+   "false_pass": 1,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": true
+  },
+  "R2": {
+   "n": 12,
+   "correct": 11,
+   "misread": 1,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 11,
+   "false_pass": 0,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": true
+  },
+  "R2c": {
+   "n": 5,
+   "correct": 0,
+   "misread": 5,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 0,
+   "false_pass": 5,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": false
+  },
+  "R3": {
+   "n": 12,
+   "correct": 12,
+   "misread": 0,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 12,
+   "false_pass": 0,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": true
+  },
+  "R3c": {
+   "n": 4,
+   "correct": 0,
+   "misread": 4,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 0,
+   "false_pass": 4,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": false
+  },
+  "R4": {
+   "n": 12,
+   "correct": 0,
+   "misread": 11,
+   "unsupported": 1,
+   "abstain_is_correct": 1,
+   "correct_and_all_pass": 0,
+   "false_pass": 10,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": false
+  },
+  "R4c": {
+   "n": 5,
+   "correct": 5,
+   "misread": 0,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 5,
+   "false_pass": 0,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": true
+  },
+  "S1": {
+   "n": 16,
+   "correct": 16,
+   "misread": 0,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 16,
+   "false_pass": 0,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": true
+  },
+  "S1c": {
+   "n": 5,
+   "correct": 0,
+   "misread": 5,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 0,
+   "false_pass": 4,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": false
+  },
+  "S4": {
+   "n": 13,
+   "correct": 0,
+   "misread": 13,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 0,
+   "false_pass": 13,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": false
+  },
+  "S4c": {
+   "n": 4,
+   "correct": 4,
+   "misread": 0,
+   "unsupported": 0,
+   "abstain_is_correct": 0,
+   "correct_and_all_pass": 4,
+   "false_pass": 0,
+   "misread_escalated": 0,
+   "false_pass_escalated": 0,
+   "half_or_more_correct": true
   },
   "T7": {
    "n": 7,
@@ -1259,7 +1488,7 @@
    "type": "J1",
    "text": "戦後は若者が都会へ移った。",
    "gold_kind": "clauses",
-   "escalated": true,
+   "escalated": false,
    "result": "misread",
    "abstain_ok": false,
    "targets_all_pass": true,
@@ -8379,6 +8608,5662 @@
       [
        "value",
        "猫のより長い"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1-01",
+   "type": "N1",
+   "text": "山手に公園が造られた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "造る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "山手"
+      ],
+      [
+       "patient",
+       "公園"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1-02",
+   "type": "N1",
+   "text": "切手に消印が押された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "押す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "切手"
+      ],
+      [
+       "patient",
+       "消印"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1-03",
+   "type": "N1",
+   "text": "借家に表札が掛けられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "掛ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "借家"
+      ],
+      [
+       "patient",
+       "表札"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1-04",
+   "type": "N1",
+   "text": "生家に記念碑が建てられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "建てる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "生家"
+      ],
+      [
+       "patient",
+       "記念碑"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1-05",
+   "type": "N1",
+   "text": "町家に格子が取り付けられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "取り付ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "町家"
+      ],
+      [
+       "patient",
+       "格子"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1-06",
+   "type": "N1",
+   "text": "波長に補正が加えられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "加える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "波長"
+      ],
+      [
+       "patient",
+       "補正"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1-07",
+   "type": "N1",
+   "text": "感官に刺激が加えられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "加える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "感官"
+      ],
+      [
+       "patient",
+       "刺激"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1-08",
+   "type": "N1",
+   "text": "定員に上限が設けられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "設ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "定員"
+      ],
+      [
+       "patient",
+       "上限"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1-09",
+   "type": "N1",
+   "text": "衛生に注意が向けられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "向ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "衛生"
+      ],
+      [
+       "patient",
+       "注意"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1-10",
+   "type": "N1",
+   "text": "港の山手に灯台が建てられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "建てる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "港の山手"
+      ],
+      [
+       "patient",
+       "灯台"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1-11",
+   "type": "N1",
+   "text": "古い借家に新しい門が取り付けられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "取り付ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "古い借家"
+      ],
+      [
+       "patient",
+       "新しい門"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1-12",
+   "type": "N1",
+   "text": "生家に石畳が敷かれた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "敷く",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "生家"
+      ],
+      [
+       "patient",
+       "石畳"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1-13",
+   "type": "N1",
+   "text": "町家に看板が掲げられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "掲げる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "町家"
+      ],
+      [
+       "patient",
+       "看板"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1-14",
+   "type": "N1",
+   "text": "山手に石畳が敷かれた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "敷く",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "山手"
+      ],
+      [
+       "patient",
+       "石畳"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1c-01",
+   "type": "N1c",
+   "text": "消防士に子猫が助けられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "助ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "消防士"
+      ],
+      [
+       "patient",
+       "子猫"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1c-02",
+   "type": "N1c",
+   "text": "弁護士に契約書が確認された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "確認する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "弁護士"
+      ],
+      [
+       "patient",
+       "契約書"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1c-03",
+   "type": "N1c",
+   "text": "編集長に原稿が却下された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "却下する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "編集長"
+      ],
+      [
+       "patient",
+       "原稿"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1c-04",
+   "type": "N1c",
+   "text": "公務員に書類が調べられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "調べる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "公務員"
+      ],
+      [
+       "patient",
+       "書類"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1c-05",
+   "type": "N1c",
+   "text": "運転手に荷物が降ろされた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "降ろす",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "運転手"
+      ],
+      [
+       "patient",
+       "荷物"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N1c-06",
+   "type": "N1c",
+   "text": "看護師に患者が励まされた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "励ます",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "看護師"
+      ],
+      [
+       "patient",
+       "患者"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2-01",
+   "type": "N2",
+   "text": "祖母が羽織を長男に仕立てた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "仕立てる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "祖母"
+      ],
+      [
+       "patient",
+       "羽織"
+      ],
+      [
+       "recipient",
+       "長男"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2-02",
+   "type": "N2",
+   "text": "父が靴を次男に直した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "直す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "父"
+      ],
+      [
+       "patient",
+       "靴"
+      ],
+      [
+       "recipient",
+       "次男"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2-03",
+   "type": "N2",
+   "text": "職人が着物を新郎に仕立てた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "仕立てる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "職人"
+      ],
+      [
+       "patient",
+       "着物"
+      ],
+      [
+       "recipient",
+       "新郎"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2-04",
+   "type": "N2",
+   "text": "母が帯を長女に仕上げた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "仕上げる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "母"
+      ],
+      [
+       "patient",
+       "帯"
+      ],
+      [
+       "recipient",
+       "長女"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2-05",
+   "type": "N2",
+   "text": "兄が自転車を弟分に塗り直した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "塗り直す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "兄"
+      ],
+      [
+       "patient",
+       "自転車"
+      ],
+      [
+       "recipient",
+       "弟分"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2-06",
+   "type": "N2",
+   "text": "叔父が納戸を居候に改装した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "改装する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "叔父"
+      ],
+      [
+       "patient",
+       "納戸"
+      ],
+      [
+       "recipient",
+       "居候"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2-07",
+   "type": "N2",
+   "text": "店員が花束を花婿に仕上げた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "仕上げる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "店員"
+      ],
+      [
+       "patient",
+       "花束"
+      ],
+      [
+       "recipient",
+       "花婿"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2-08",
+   "type": "N2",
+   "text": "先輩が資料を跡取りにまとめた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "まとめる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "先輩"
+      ],
+      [
+       "patient",
+       "資料"
+      ],
+      [
+       "recipient",
+       "跡取り"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2-09",
+   "type": "N2",
+   "text": "姉が洋服を双子に直した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "直す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "姉"
+      ],
+      [
+       "patient",
+       "洋服"
+      ],
+      [
+       "recipient",
+       "双子"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2-10",
+   "type": "N2",
+   "text": "母が制服を一人っ子に仕立てた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "仕立てる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "母"
+      ],
+      [
+       "patient",
+       "制服"
+      ],
+      [
+       "recipient",
+       "一人っ子"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2-11",
+   "type": "N2",
+   "text": "大工が机を幼なじみに仕上げた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "仕上げる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "大工"
+      ],
+      [
+       "patient",
+       "机"
+      ],
+      [
+       "recipient",
+       "幼なじみ"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2-12",
+   "type": "N2",
+   "text": "祖父が絵を長女に描き直した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "描き直す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "祖父"
+      ],
+      [
+       "patient",
+       "絵"
+      ],
+      [
+       "recipient",
+       "長女"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2c-01",
+   "type": "N2c",
+   "text": "係が写真を四つの山にまとめた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "まとめる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "係"
+      ],
+      [
+       "patient",
+       "写真"
+      ],
+      [
+       "recipient",
+       "四つの山"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2c-02",
+   "type": "N2c",
+   "text": "職人が糸を藍色に染めた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "染める",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "職人"
+      ],
+      [
+       "patient",
+       "糸"
+      ],
+      [
+       "recipient",
+       "藍色"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2c-03",
+   "type": "N2c",
+   "text": "理容師が髪を銀色に染めた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "染める",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "理容師"
+      ],
+      [
+       "patient",
+       "髪"
+      ],
+      [
+       "recipient",
+       "銀色"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2c-04",
+   "type": "N2c",
+   "text": "校正者が原稿を三段落にまとめた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "まとめる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "校正者"
+      ],
+      [
+       "patient",
+       "原稿"
+      ],
+      [
+       "recipient",
+       "三段落"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2c-05",
+   "type": "N2c",
+   "text": "編集部が論文を改訂版にまとめた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "まとめる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "編集部"
+      ],
+      [
+       "patient",
+       "論文"
+      ],
+      [
+       "recipient",
+       "改訂版"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N2c-06",
+   "type": "N2c",
+   "text": "筆者が草稿を英語版に直した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "直す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "筆者"
+      ],
+      [
+       "patient",
+       "草稿"
+      ],
+      [
+       "recipient",
+       "英語版"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3-01",
+   "type": "N3",
+   "text": "同窓会に幹事が選ばれた。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "選ぶ",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "同窓会"
+      ],
+      [
+       "patient",
+       "幹事"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3-02",
+   "type": "N3",
+   "text": "自治体に担当者が指名された。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "指名する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "自治体"
+      ],
+      [
+       "patient",
+       "担当者"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3-03",
+   "type": "N3",
+   "text": "商店街に新しい代表が選出された。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "選出する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "商店街"
+      ],
+      [
+       "patient",
+       "新しい代表"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3-04",
+   "type": "N3",
+   "text": "実行委員会に議長が指名された。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "指名する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "実行委員会"
+      ],
+      [
+       "patient",
+       "議長"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3-05",
+   "type": "N3",
+   "text": "保護者会に書記が選ばれた。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "選ぶ",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "保護者会"
+      ],
+      [
+       "patient",
+       "書記"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3-06",
+   "type": "N3",
+   "text": "研究室に連絡係が指名された。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "指名する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "研究室"
+      ],
+      [
+       "patient",
+       "連絡係"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3-07",
+   "type": "N3",
+   "text": "港町に新しい市長が選ばれた。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "選ぶ",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "港町"
+      ],
+      [
+       "patient",
+       "新しい市長"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3-08",
+   "type": "N3",
+   "text": "音楽祭に審査員が選出された。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "選出する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "音楽祭"
+      ],
+      [
+       "patient",
+       "審査員"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3-09",
+   "type": "N3",
+   "text": "管弦楽団に指揮者が任命された。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "任命する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "管弦楽団"
+      ],
+      [
+       "patient",
+       "指揮者"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3-10",
+   "type": "N3",
+   "text": "農協に理事が選任された。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "選任する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "農協"
+      ],
+      [
+       "patient",
+       "理事"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3-11",
+   "type": "N3",
+   "text": "学会に座長が指名された。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "指名する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "学会"
+      ],
+      [
+       "patient",
+       "座長"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3-12",
+   "type": "N3",
+   "text": "寮に寮長が選ばれた。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "unsupported",
+   "abstain_ok": true,
+   "targets_all_pass": false,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "選ぶ",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "寮"
+      ],
+      [
+       "patient",
+       "寮長"
+      ]
+     ],
+     "unsupported": [
+      "unrepresented source content",
+      "unrepresented source content"
+     ],
+     "license": "REJECT: unsupported/ill-typed source"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3c-01",
+   "type": "N3c",
+   "text": "鈴木さんが店長に選ばれた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "選ぶ",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "店長"
+      ],
+      [
+       "patient",
+       "鈴木さん"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3c-02",
+   "type": "N3c",
+   "text": "野村さんが監督に任命された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "任命する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "監督"
+      ],
+      [
+       "patient",
+       "野村さん"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3c-03",
+   "type": "N3c",
+   "text": "青木さんが課長に指名された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "指名する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "課長"
+      ],
+      [
+       "patient",
+       "青木さん"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N3c-04",
+   "type": "N3c",
+   "text": "吉田さんが校長に選出された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "選出する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "校長"
+      ],
+      [
+       "patient",
+       "吉田さん"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N4-01",
+   "type": "N4",
+   "text": "この商店街は去年ほど静かではない。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "copula",
+     "predicate": "property",
+     "polarity": "-",
+     "roles": [
+      [
+       "entity",
+       "こ"
+      ],
+      [
+       "attribute",
+       "商店街"
+      ],
+      [
+       "value",
+       "去年ほど静か"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N4-02",
+   "type": "N4",
+   "text": "この道は旧道ほど安全ではない。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "copula",
+     "predicate": "property",
+     "polarity": "-",
+     "roles": [
+      [
+       "entity",
+       "こ"
+      ],
+      [
+       "attribute",
+       "道"
+      ],
+      [
+       "value",
+       "旧道ほど安全"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N4-03",
+   "type": "N4",
+   "text": "弟は兄ほど几帳面ではない。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "copula",
+     "predicate": "identity",
+     "polarity": "-",
+     "roles": [
+      [
+       "entity",
+       "弟"
+      ],
+      [
+       "value",
+       "兄ほど几帳面"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N4-04",
+   "type": "N4",
+   "text": "この部屋は隣の部屋ほど快適ではない。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "copula",
+     "predicate": "property",
+     "polarity": "-",
+     "roles": [
+      [
+       "entity",
+       "こ"
+      ],
+      [
+       "attribute",
+       "部屋"
+      ],
+      [
+       "value",
+       "隣の部屋ほど快適"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N4-05",
+   "type": "N4",
+   "text": "この店は本店ほど有名ではない。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "copula",
+     "predicate": "property",
+     "polarity": "-",
+     "roles": [
+      [
+       "entity",
+       "こ"
+      ],
+      [
+       "attribute",
+       "店"
+      ],
+      [
+       "value",
+       "本店ほど有名"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N4-06",
+   "type": "N4",
+   "text": "今年の梅雨は例年ほど蒸し暑くない。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "unsupported",
+   "abstain_ok": true,
+   "targets_all_pass": false,
+   "false_pass": 0,
+   "clauses": [],
+   "unread": [
+    "unsupported negative adjective"
+   ]
+  },
+  {
+   "id": "N4-07",
+   "type": "N4",
+   "text": "彼女は姉ほど社交的ではない。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": false,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "copula",
+     "predicate": "identity",
+     "polarity": "-",
+     "roles": [
+      [
+       "entity",
+       "彼女"
+      ],
+      [
+       "value",
+       "姉ほど社交的"
+      ]
+     ],
+     "unsupported": [
+      "unresolved anaphora"
+     ],
+     "license": "REJECT: unsupported/ill-typed source"
+    },
+    {
+     "rule": "negation",
+     "predicate": "identity",
+     "polarity": "-",
+     "roles": [
+      [
+       "entity",
+       "彼女"
+      ],
+      [
+       "value",
+       "姉ほど社交的"
+      ]
+     ],
+     "unsupported": [],
+     "license": "REJECT: construction source licensing"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N4-08",
+   "type": "N4",
+   "text": "この橋は隣町のほど丈夫ではない。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "copula",
+     "predicate": "property",
+     "polarity": "-",
+     "roles": [
+      [
+       "entity",
+       "こ"
+      ],
+      [
+       "attribute",
+       "橋"
+      ],
+      [
+       "value",
+       "隣町のほど丈夫"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N4-09",
+   "type": "N4",
+   "text": "この料理は母のほど上品ではない。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "copula",
+     "predicate": "property",
+     "polarity": "-",
+     "roles": [
+      [
+       "entity",
+       "こ"
+      ],
+      [
+       "attribute",
+       "料理"
+      ],
+      [
+       "value",
+       "母のほど上品"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N4-10",
+   "type": "N4",
+   "text": "この湖は海くらい穏やかだ。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "copula",
+     "predicate": "property",
+     "polarity": "+",
+     "roles": [
+      [
+       "entity",
+       "こ"
+      ],
+      [
+       "attribute",
+       "湖"
+      ],
+      [
+       "value",
+       "海くらい穏やか"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N4-11",
+   "type": "N4",
+   "text": "彼は父親ぐらい器用だ。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "unsupported",
+   "abstain_ok": true,
+   "targets_all_pass": false,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "copula",
+     "predicate": "identity",
+     "polarity": "+",
+     "roles": [
+      [
+       "entity",
+       "彼"
+      ],
+      [
+       "value",
+       "父親ぐらい器用"
+      ]
+     ],
+     "unsupported": [
+      "unresolved anaphora"
+     ],
+     "license": "REJECT: unsupported/ill-typed source"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N4-12",
+   "type": "N4",
+   "text": "この街は都心くらい華やかだ。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "copula",
+     "predicate": "property",
+     "polarity": "+",
+     "roles": [
+      [
+       "entity",
+       "こ"
+      ],
+      [
+       "attribute",
+       "街"
+      ],
+      [
+       "value",
+       "都心くらい華やか"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N4-13",
+   "type": "N4",
+   "text": "この店は隣の店ぐらい親切ではない。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "copula",
+     "predicate": "property",
+     "polarity": "-",
+     "roles": [
+      [
+       "entity",
+       "こ"
+      ],
+      [
+       "attribute",
+       "店"
+      ],
+      [
+       "value",
+       "隣の店ぐらい親切"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "N4-14",
+   "type": "N4",
+   "text": "今日の風は昨日ほど穏やかではなかった。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "unsupported",
+   "abstain_ok": true,
+   "targets_all_pass": false,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "copula",
+     "predicate": "property",
+     "polarity": "-",
+     "roles": [
+      [
+       "entity",
+       "今日"
+      ],
+      [
+       "attribute",
+       "風"
+      ],
+      [
+       "value",
+       "昨日ほど穏やか"
+      ]
+     ],
+     "unsupported": [
+      "unsupported source quantifier/exception/time"
+     ],
+     "license": "REJECT: unsupported/ill-typed source"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1-01",
+   "type": "R1",
+   "text": "ドラムに皮が張られた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "張る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "ドラム"
+      ],
+      [
+       "patient",
+       "皮"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1-02",
+   "type": "R1",
+   "text": "バイオリンに弦が付けられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "付ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "バイオリン"
+      ],
+      [
+       "patient",
+       "弦"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1-03",
+   "type": "R1",
+   "text": "テレビに保護シートが貼られた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "貼る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "テレビ"
+      ],
+      [
+       "patient",
+       "保護シート"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1-04",
+   "type": "R1",
+   "text": "ラジオに印が付けられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "付ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "ラジオ"
+      ],
+      [
+       "patient",
+       "印"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1-05",
+   "type": "R1",
+   "text": "コンピュータに装置が取り付けられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "取り付ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "コンピュータ"
+      ],
+      [
+       "patient",
+       "装置"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1-06",
+   "type": "R1",
+   "text": "ソファに布が掛けられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "掛ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "ソファ"
+      ],
+      [
+       "patient",
+       "布"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1-07",
+   "type": "R1",
+   "text": "ベッドにシーツが敷かれた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "敷く",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "ベッド"
+      ],
+      [
+       "patient",
+       "シーツ"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1-08",
+   "type": "R1",
+   "text": "ストーブに薪が入れられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "入れる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "ストーブ"
+      ],
+      [
+       "patient",
+       "薪"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1-09",
+   "type": "R1",
+   "text": "プリンタに用紙が差し込まれた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "差し込む",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "プリンタ"
+      ],
+      [
+       "patient",
+       "用紙"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1-10",
+   "type": "R1",
+   "text": "マイクに布が巻かれた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "巻く",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "マイク"
+      ],
+      [
+       "patient",
+       "布"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1-11",
+   "type": "R1",
+   "text": "フルートに飾りが付けられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "付ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "フルート"
+      ],
+      [
+       "patient",
+       "飾り"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1-12",
+   "type": "R1",
+   "text": "エアコンにフィルターが取り付けられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "取り付ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "エアコン"
+      ],
+      [
+       "patient",
+       "フィルター"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1-13",
+   "type": "R1",
+   "text": "トランペットに黒い布が掛けられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "掛ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "トランペット"
+      ],
+      [
+       "patient",
+       "黒い布"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1-14",
+   "type": "R1",
+   "text": "クラリネットに印が刻まれた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "刻む",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "クラリネット"
+      ],
+      [
+       "patient",
+       "印"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1c-01",
+   "type": "R1c",
+   "text": "兄に弟が叱られた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "叱る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "兄"
+      ],
+      [
+       "patient",
+       "弟"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1c-02",
+   "type": "R1c",
+   "text": "教師に生徒が褒められた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "褒める",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "教師"
+      ],
+      [
+       "patient",
+       "生徒"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1c-03",
+   "type": "R1c",
+   "text": "警備員に男が呼び止められた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "呼び止める",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "警備員"
+      ],
+      [
+       "patient",
+       "男"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R1c-04",
+   "type": "R1c",
+   "text": "隣人に犬が可愛がられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "copula",
+     "predicate": "identity",
+     "polarity": "+",
+     "roles": [
+      [
+       "entity",
+       "隣人に犬"
+      ],
+      [
+       "value",
+       "可愛がられた"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2-01",
+   "type": "R2",
+   "text": "祖母が昔話を孫娘に言い換えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "言い換える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "祖母"
+      ],
+      [
+       "patient",
+       "昔話"
+      ],
+      [
+       "recipient",
+       "孫娘"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2-02",
+   "type": "R2",
+   "text": "母が手紙を嫁に書き換えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "書き換える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "母"
+      ],
+      [
+       "patient",
+       "手紙"
+      ],
+      [
+       "recipient",
+       "嫁"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2-03",
+   "type": "R2",
+   "text": "店主が説明書を女将に書き換えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "書き換える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "店主"
+      ],
+      [
+       "patient",
+       "説明書"
+      ],
+      [
+       "recipient",
+       "女将"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2-04",
+   "type": "R2",
+   "text": "叔父が報告を居候に翻訳した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "翻訳する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "叔父"
+      ],
+      [
+       "patient",
+       "報告"
+      ],
+      [
+       "recipient",
+       "居候"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2-05",
+   "type": "R2",
+   "text": "兄が文章を若旦那に訳した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": false,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "訳す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "兄"
+      ],
+      [
+       "patient",
+       "文章"
+      ],
+      [
+       "recipient",
+       "旦那"
+      ],
+      [
+       "ambiguous",
+       "若旦那"
+      ]
+     ],
+     "unsupported": [
+      "ambiguous case role: に",
+      "unrepresented source content"
+     ],
+     "license": "REJECT: unsupported/ill-typed source"
+    },
+    {
+     "rule": "gold_scramble",
+     "predicate": "訳す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "兄"
+      ],
+      [
+       "patient",
+       "文章"
+      ],
+      [
+       "unresolved_0",
+       "若旦那"
+      ],
+      [
+       "recipient",
+       "旦那"
+      ]
+     ],
+     "unsupported": [],
+     "license": "REJECT: construction source licensing"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2-06",
+   "type": "R2",
+   "text": "父が計画を跡取りに読み替えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "読み替える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "父"
+      ],
+      [
+       "patient",
+       "計画"
+      ],
+      [
+       "recipient",
+       "跡取り"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2-07",
+   "type": "R2",
+   "text": "師匠が楽譜を新弟子に書き換えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "書き換える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "師匠"
+      ],
+      [
+       "patient",
+       "楽譜"
+      ],
+      [
+       "recipient",
+       "新弟子"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2-08",
+   "type": "R2",
+   "text": "祖父が手順を家来に言い換えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "言い換える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "祖父"
+      ],
+      [
+       "patient",
+       "手順"
+      ],
+      [
+       "recipient",
+       "家来"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2-09",
+   "type": "R2",
+   "text": "伯母が献立を新妻に変えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "変える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "伯母"
+      ],
+      [
+       "patient",
+       "献立"
+      ],
+      [
+       "recipient",
+       "新妻"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2-10",
+   "type": "R2",
+   "text": "先輩が規則を舅に置き換えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "置き換える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "先輩"
+      ],
+      [
+       "patient",
+       "規則"
+      ],
+      [
+       "recipient",
+       "舅"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2-11",
+   "type": "R2",
+   "text": "姉が案内を姑に訳した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "訳す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "姉"
+      ],
+      [
+       "patient",
+       "案内"
+      ],
+      [
+       "recipient",
+       "姑"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2-12",
+   "type": "R2",
+   "text": "職員が通知を孫に切り替えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "切り替える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "職員"
+      ],
+      [
+       "patient",
+       "通知"
+      ],
+      [
+       "recipient",
+       "孫"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2c-01",
+   "type": "R2c",
+   "text": "兄が文章を英語に訳した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "訳す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "兄"
+      ],
+      [
+       "patient",
+       "文章"
+      ],
+      [
+       "recipient",
+       "英語"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2c-02",
+   "type": "R2c",
+   "text": "班長が名簿を三つの班に分類した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "分類する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "班長"
+      ],
+      [
+       "patient",
+       "名簿"
+      ],
+      [
+       "recipient",
+       "三つの班"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2c-03",
+   "type": "R2c",
+   "text": "教師が本文を方言に書き換えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "書き換える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "教師"
+      ],
+      [
+       "patient",
+       "本文"
+      ],
+      [
+       "recipient",
+       "方言"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2c-04",
+   "type": "R2c",
+   "text": "係員が荷物を箱に分けた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "分ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "係員"
+      ],
+      [
+       "patient",
+       "荷物"
+      ],
+      [
+       "recipient",
+       "箱"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R2c-05",
+   "type": "R2c",
+   "text": "職員が資料を一覧に整理した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "整理する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "職員"
+      ],
+      [
+       "patient",
+       "資料"
+      ],
+      [
+       "recipient",
+       "一覧"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3-01",
+   "type": "R3",
+   "text": "本社から指示が出された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "出す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "本社"
+      ],
+      [
+       "patient",
+       "指示"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3-02",
+   "type": "R3",
+   "text": "支店から通達が送られた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "送る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "支店"
+      ],
+      [
+       "patient",
+       "通達"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3-03",
+   "type": "R3",
+   "text": "研究所から報告書が公表された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "公表する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "研究所"
+      ],
+      [
+       "patient",
+       "報告書"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3-04",
+   "type": "R3",
+   "text": "協議会から声明が発表された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "発表する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "協議会"
+      ],
+      [
+       "patient",
+       "声明"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3-05",
+   "type": "R3",
+   "text": "出版社から新刊が発売された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "発売する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "出版社"
+      ],
+      [
+       "patient",
+       "新刊"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3-06",
+   "type": "R3",
+   "text": "本部から命令が伝えられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "伝える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "本部"
+      ],
+      [
+       "patient",
+       "命令"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3-07",
+   "type": "R3",
+   "text": "管理組合から案内が配られた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "配る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "管理組合"
+      ],
+      [
+       "patient",
+       "案内"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3-08",
+   "type": "R3",
+   "text": "工房から作品が納められた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "納める",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "工房"
+      ],
+      [
+       "patient",
+       "作品"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3-09",
+   "type": "R3",
+   "text": "市役所から通知が届けられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "届ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "市役所"
+      ],
+      [
+       "patient",
+       "通知"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3-10",
+   "type": "R3",
+   "text": "事業団から資金が提供された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "提供する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "事業団"
+      ],
+      [
+       "patient",
+       "資金"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3-11",
+   "type": "R3",
+   "text": "製作所から部品が届けられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "届ける",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "製作所"
+      ],
+      [
+       "patient",
+       "部品"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3-12",
+   "type": "R3",
+   "text": "運営会社から案内が出された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "出す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "運営会社"
+      ],
+      [
+       "patient",
+       "案内"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3c-01",
+   "type": "R3c",
+   "text": "畑から芋が掘り出された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "掘り出す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "畑"
+      ],
+      [
+       "patient",
+       "芋"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3c-02",
+   "type": "R3c",
+   "text": "川から砂が運ばれた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "運ぶ",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "川"
+      ],
+      [
+       "patient",
+       "砂"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3c-03",
+   "type": "R3c",
+   "text": "庭から古い壺が掘り出された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "掘り出す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "庭"
+      ],
+      [
+       "patient",
+       "古い壺"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R3c-04",
+   "type": "R3c",
+   "text": "広島から荷物が送られた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "送る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "広島"
+      ],
+      [
+       "patient",
+       "荷物"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4-01",
+   "type": "R4",
+   "text": "母は釣りに行った。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "行く",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "母"
+      ],
+      [
+       "recipient",
+       "釣り"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4-02",
+   "type": "R4",
+   "text": "弟は見学に来た。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "来る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "弟"
+      ],
+      [
+       "recipient",
+       "見学"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4-03",
+   "type": "R4",
+   "text": "叔父は荷造りに戻った。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "戻る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "叔父"
+      ],
+      [
+       "recipient",
+       "荷造り"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4-04",
+   "type": "R4",
+   "text": "姉は練習に向かった。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "向かう",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "姉"
+      ],
+      [
+       "recipient",
+       "練習"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4-05",
+   "type": "R4",
+   "text": "兄は食事に出た。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "出る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "兄"
+      ],
+      [
+       "recipient",
+       "食事"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4-06",
+   "type": "R4",
+   "text": "妹は勉強に行った。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "行く",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "妹"
+      ],
+      [
+       "recipient",
+       "勉強"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4-07",
+   "type": "R4",
+   "text": "父は見回りに出た。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "出る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "父"
+      ],
+      [
+       "recipient",
+       "見回り"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4-08",
+   "type": "R4",
+   "text": "先生は準備に戻った。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "戻る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "先生"
+      ],
+      [
+       "recipient",
+       "準備"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4-09",
+   "type": "R4",
+   "text": "彼は観光に来た。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": false,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "来る",
+     "polarity": "+",
+     "roles": [
+      [
+       "recipient",
+       "観光"
+      ]
+     ],
+     "unsupported": [
+      "unrepresented source content"
+     ],
+     "license": "REJECT: unsupported/ill-typed source"
+    },
+    {
+     "rule": "zero_subject",
+     "predicate": "来る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "彼"
+      ],
+      [
+       "recipient",
+       "観光"
+      ]
+     ],
+     "unsupported": [],
+     "license": "REJECT: construction source licensing"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4-10",
+   "type": "R4",
+   "text": "娘は遊びに行った。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "unsupported",
+   "abstain_ok": true,
+   "targets_all_pass": false,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "遊ぶ",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "娘"
+      ]
+     ],
+     "unsupported": [
+      "multiple predicates need explicit clause scope"
+     ],
+     "license": "REJECT: unsupported/ill-typed source"
+    },
+    {
+     "rule": "frame",
+     "predicate": "行く",
+     "polarity": "+",
+     "roles": [],
+     "unsupported": [
+      "multiple predicates need explicit clause scope",
+      "unlicensed role borrowing",
+      "unrepresented source content"
+     ],
+     "license": "REJECT: unsupported/ill-typed source"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4-11",
+   "type": "R4",
+   "text": "後輩は取材に向かった。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "向かう",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "後輩"
+      ],
+      [
+       "recipient",
+       "取材"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4-12",
+   "type": "R4",
+   "text": "祖母は昼寝に入った。",
+   "gold_kind": "unsupported",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "入る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "祖母"
+      ],
+      [
+       "recipient",
+       "昼寝"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4c-01",
+   "type": "R4c",
+   "text": "妹が図書館へ行った。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "行く",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "妹"
+      ],
+      [
+       "recipient",
+       "図書館"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4c-02",
+   "type": "R4c",
+   "text": "兄が病院に着いた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "着く",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "兄"
+      ],
+      [
+       "recipient",
+       "病院"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4c-03",
+   "type": "R4c",
+   "text": "母が公園に向かった。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "向かう",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "母"
+      ],
+      [
+       "recipient",
+       "公園"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4c-04",
+   "type": "R4c",
+   "text": "弟が教室へ戻った。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "戻る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "弟"
+      ],
+      [
+       "recipient",
+       "教室"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "R4c-05",
+   "type": "R4c",
+   "text": "叔母が会議に出た。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "出る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "叔母"
+      ],
+      [
+       "recipient",
+       "会議"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-01",
+   "type": "S1",
+   "text": "通訳が依頼人に訳した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "訳す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "通訳"
+      ],
+      [
+       "recipient",
+       "依頼人"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-02",
+   "type": "S1",
+   "text": "講師が初心者に言い換えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "言い換える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "講師"
+      ],
+      [
+       "recipient",
+       "初心者"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-03",
+   "type": "S1",
+   "text": "記者が読者に書き換えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "書き換える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "記者"
+      ],
+      [
+       "recipient",
+       "読者"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-04",
+   "type": "S1",
+   "text": "弁護士が被告に翻訳した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "翻訳する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "弁護士"
+      ],
+      [
+       "recipient",
+       "被告"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-05",
+   "type": "S1",
+   "text": "司会者が観客に言い換えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "言い換える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "司会者"
+      ],
+      [
+       "recipient",
+       "観客"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-06",
+   "type": "S1",
+   "text": "医師が患者に読み替えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "読み替える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "医師"
+      ],
+      [
+       "recipient",
+       "患者"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-07",
+   "type": "S1",
+   "text": "兄が妹に翻訳した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "翻訳する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "兄"
+      ],
+      [
+       "recipient",
+       "妹"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-08",
+   "type": "S1",
+   "text": "案内人が旅行者に言い換えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "言い換える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "案内人"
+      ],
+      [
+       "recipient",
+       "旅行者"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-09",
+   "type": "S1",
+   "text": "秘書が上司に書き換えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "書き換える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "秘書"
+      ],
+      [
+       "recipient",
+       "上司"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-10",
+   "type": "S1",
+   "text": "翻訳者が子どもに訳した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "訳す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "翻訳者"
+      ],
+      [
+       "recipient",
+       "子ども"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-11",
+   "type": "S1",
+   "text": "先輩が後輩に読み替えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "読み替える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "先輩"
+      ],
+      [
+       "recipient",
+       "後輩"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-12",
+   "type": "S1",
+   "text": "解説者が視聴者に言い換えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "言い換える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "解説者"
+      ],
+      [
+       "recipient",
+       "視聴者"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-13",
+   "type": "S1",
+   "text": "司書が利用者に翻訳した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "翻訳する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "司書"
+      ],
+      [
+       "recipient",
+       "利用者"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-14",
+   "type": "S1",
+   "text": "祖母が曾孫に訳した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "訳す",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "祖母"
+      ],
+      [
+       "recipient",
+       "曾孫"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-15",
+   "type": "S1",
+   "text": "老人が居候に言い換えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "言い換える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "老人"
+      ],
+      [
+       "recipient",
+       "居候"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1-16",
+   "type": "S1",
+   "text": "隠居が嫡男に書き換えた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "書き換える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "隠居"
+      ],
+      [
+       "recipient",
+       "嫡男"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1c-01",
+   "type": "S1c",
+   "text": "姉は弁護士になった。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "なる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "姉"
+      ],
+      [
+       "recipient",
+       "弁護士"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1c-02",
+   "type": "S1c",
+   "text": "兄は教員に変わった。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "変わる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "兄"
+      ],
+      [
+       "recipient",
+       "教員"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1c-03",
+   "type": "S1c",
+   "text": "友人は医師になった。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "なる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "友人"
+      ],
+      [
+       "recipient",
+       "医師"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1c-04",
+   "type": "S1c",
+   "text": "彼は市長になった。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": false,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "なる",
+     "polarity": "+",
+     "roles": [
+      [
+       "recipient",
+       "市長"
+      ]
+     ],
+     "unsupported": [
+      "unrepresented source content"
+     ],
+     "license": "REJECT: unsupported/ill-typed source"
+    },
+    {
+     "rule": "zero_subject",
+     "predicate": "なる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "彼"
+      ],
+      [
+       "recipient",
+       "市長"
+      ]
+     ],
+     "unsupported": [],
+     "license": "REJECT: construction source licensing"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S1c-05",
+   "type": "S1c",
+   "text": "弟は技術者に成長した。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "成長する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "弟"
+      ],
+      [
+       "recipient",
+       "技術者"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4-01",
+   "type": "S4",
+   "text": "絵が伊藤家に飾られた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "飾る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "伊藤家"
+      ],
+      [
+       "patient",
+       "絵"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4-02",
+   "type": "S4",
+   "text": "提灯が小林家に吊るされた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "吊るす",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "小林家"
+      ],
+      [
+       "patient",
+       "提灯"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4-03",
+   "type": "S4",
+   "text": "荷物が加藤家に置かれた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "置く",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "加藤家"
+      ],
+      [
+       "patient",
+       "荷物"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4-04",
+   "type": "S4",
+   "text": "家宝が吉田家に保管された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "保管する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "吉田家"
+      ],
+      [
+       "patient",
+       "家宝"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4-05",
+   "type": "S4",
+   "text": "標識が山本家に立てられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "立てる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "山本家"
+      ],
+      [
+       "patient",
+       "標識"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4-06",
+   "type": "S4",
+   "text": "皿が松本家に並べられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "並べる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "松本家"
+      ],
+      [
+       "patient",
+       "皿"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4-07",
+   "type": "S4",
+   "text": "掛け軸が井上家に収められた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "収める",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "井上家"
+      ],
+      [
+       "patient",
+       "掛け軸"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4-08",
+   "type": "S4",
+   "text": "若木が木村家に植えられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "植える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "木村家"
+      ],
+      [
+       "patient",
+       "若木"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4-09",
+   "type": "S4",
+   "text": "旗が清水家に掲げられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "掲げる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "清水家"
+      ],
+      [
+       "patient",
+       "旗"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4-10",
+   "type": "S4",
+   "text": "壺が斎藤家に据えられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "据える",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "斎藤家"
+      ],
+      [
+       "patient",
+       "壺"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4-11",
+   "type": "S4",
+   "text": "衝立が森家に置かれた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "置く",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "森家"
+      ],
+      [
+       "patient",
+       "衝立"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4-12",
+   "type": "S4",
+   "text": "鉢植えが石川家に並べられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "並べる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "石川家"
+      ],
+      [
+       "patient",
+       "鉢植え"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4-13",
+   "type": "S4",
+   "text": "表彰状が橋本家に飾られた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "misread",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 1,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "飾る",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "橋本家"
+      ],
+      [
+       "patient",
+       "表彰状"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4c-01",
+   "type": "S4c",
+   "text": "評論家に感想が求められた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "求める",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "評論家"
+      ],
+      [
+       "patient",
+       "感想"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4c-02",
+   "type": "S4c",
+   "text": "小説家に原稿が依頼された。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "依頼する",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "小説家"
+      ],
+      [
+       "patient",
+       "原稿"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4c-03",
+   "type": "S4c",
+   "text": "画家に作品が褒められた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "褒める",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "画家"
+      ],
+      [
+       "patient",
+       "作品"
+      ]
+     ],
+     "unsupported": [],
+     "license": "PASS"
+    }
+   ],
+   "unread": []
+  },
+  {
+   "id": "S4c-04",
+   "type": "S4c",
+   "text": "建築家に図面が見せられた。",
+   "gold_kind": "clauses",
+   "escalated": false,
+   "result": "correct",
+   "abstain_ok": false,
+   "targets_all_pass": true,
+   "false_pass": 0,
+   "clauses": [
+    {
+     "rule": "frame",
+     "predicate": "見せる",
+     "polarity": "+",
+     "roles": [
+      [
+       "agent",
+       "建築家"
+      ],
+      [
+       "patient",
+       "図面"
       ]
      ],
      "unsupported": [],

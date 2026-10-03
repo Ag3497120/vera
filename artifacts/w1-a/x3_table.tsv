@@ -1,0 +1,477 @@
+sentence	role	value	kind	dev_role	label	how	source
+2025年3月5日に東京で会議が開かれた。	time	2025年3月5日	ROLE_CHANGED	agent	CORRECT	harness	table7.jsonl
+今朝、妹が駅で傘を買った。	agent	妹	NEWLY_SUPPORTED	-	CORRECT	harness	table7.jsonl
+今朝、妹が駅で傘を買った。	time	今朝	NEWLY_SUPPORTED	-	CORRECT	harness	table7.jsonl
+このモデルは前のモデルより速い。	dimension	速い	NEWLY_SUPPORTED	-	CORRECT	harness	table7.jsonl
+このモデルは前のモデルより速い。	direction	速い	NEWLY_SUPPORTED	-	CORRECT	harness	table7.jsonl
+このモデルは前のモデルより速い。	entity	このモデル	NEWLY_SUPPORTED	-	CORRECT	harness	table7.jsonl
+このモデルは前のモデルより速い。	standard	前のモデル	NEWLY_SUPPORTED	-	CORRECT	harness	table7.jsonl
+先生が生徒に作文を書かせた。	causee	生徒	ROLE_CHANGED	recipient	CORRECT	harness	table7.jsonl
+先生が生徒に作文を書かせた。	causer	先生	ROLE_CHANGED	agent	CORRECT	harness	table7.jsonl
+1998年4月に新しい図書館が建てられた。	time	1998年4月	ROLE_CHANGED	agent	CORRECT	harness	ja.jsonl
+3時に会議室で書類が配られた。	time	3時	ROLE_CHANGED	agent	CORRECT	harness	ja.jsonl
+昭和30年に市役所が建設された。	time	昭和30年	ROLE_CHANGED	agent	CORRECT	harness	ja.jsonl
+2019年10月に制度が改正された。	time	2019年10月	ROLE_CHANGED	agent	CORRECT	harness	ja.jsonl
+8時に工場で試験が行われた。	time	8時	ROLE_CHANGED	agent	CORRECT	harness	ja.jsonl
+9時に授業が始まった。	time	9時	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+7時に姉が駅で友人を迎えた。	time	7時	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+10時に店長が店で看板を外した。	time	10時	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+2020年3月に兄が大学を卒業した。	time	2020年3月	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+1990年に祖父が会社を設立した。	time	1990年	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+8時に先輩が教室で資料を配った。	time	8時	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+戦後は人口が増えた。	time	戦後	ROLE_CHANGED	patient	CORRECT	harness	ja.jsonl
+晩年は祖父が庭で野菜を育てた。	agent	祖父	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+晩年は祖父が庭で野菜を育てた。	patient	野菜	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+晩年は祖父が庭で野菜を育てた。	place	庭	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+晩年は祖父が庭で野菜を育てた。	time	晩年	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+先月、兄が会社で書類を作った。	agent	兄	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+先月、兄が会社で書類を作った。	time	先月	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+翌日、母が市場で野菜を買った。	agent	母	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+翌日、母が市場で野菜を買った。	patient	野菜	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+翌日、母が市場で野菜を買った。	place	市場	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+翌日、母が市場で野菜を買った。	time	翌日	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+夕方、弟が公園で犬を見た。	agent	弟	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+夕方、弟が公園で犬を見た。	time	夕方	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+毎朝、父が庭で花を育てている。	agent	父	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+毎朝、父が庭で花を育てている。	time	毎朝	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+昨夜、妹が台所で皿を洗った。	agent	妹	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+昨夜、妹が台所で皿を洗った。	patient	皿	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+昨夜、妹が台所で皿を洗った。	place	台所	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+昨夜、妹が台所で皿を洗った。	time	昨夜	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+来週、先生が教室で試験を行う。	agent	先生	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+来週、先生が教室で試験を行う。	time	来週	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+先週、祖母が薬局で薬を買った。	agent	祖母	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+先週、祖母が薬局で薬を買った。	patient	薬	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+先週、祖母が薬局で薬を買った。	place	薬局	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+先週、祖母が薬局で薬を買った。	time	先週	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+10月5日、市長が広場で式典を開いた。	agent	市長	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+10月5日、市長が広場で式典を開いた。	patient	式典	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+10月5日、市長が広場で式典を開いた。	place	広場	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+10月5日、市長が広場で式典を開いた。	time	10月5日	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+技術者がデータを表に整理した。	result	表	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+学生が英文を日本語に訳した。	result	日本語	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+職人が木を板に加工した。	result	板	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+係員が列を二つに分けた。	result	二つ	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+先生が文章を短い要約にまとめた。	result	短い要約	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+通訳が発言を英語に翻訳した。	result	英語	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+新しい橋は古い橋より長い。	dimension	長い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+新しい橋は古い橋より長い。	direction	長い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+新しい橋は古い橋より長い。	standard	古い橋	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+北の部屋は南の部屋より広い。	dimension	広い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+北の部屋は南の部屋より広い。	direction	広い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+北の部屋は南の部屋より広い。	entity	北の部屋	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+北の部屋は南の部屋より広い。	standard	南の部屋	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+この荷物はあの荷物より重い。	dimension	重い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+この荷物はあの荷物より重い。	direction	重い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+この荷物はあの荷物より重い。	entity	この荷物	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+この荷物はあの荷物より重い。	standard	あの荷物	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+兄の車は弟の車より速い。	dimension	速い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+兄の車は弟の車より速い。	direction	速い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+兄の車は弟の車より速い。	entity	兄の車	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+兄の車は弟の車より速い。	standard	弟の車	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+新型機は旧型機より軽い。	dimension	軽い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+新型機は旧型機より軽い。	direction	軽い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+新型機は旧型機より軽い。	standard	旧型機	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+この道はあの道より狭い。	dimension	狭い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+この道はあの道より狭い。	direction	狭い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+この道はあの道より狭い。	entity	この道	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+この道はあの道より狭い。	standard	あの道	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+夏の気温は冬の気温より高い。	dimension	高い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+夏の気温は冬の気温より高い。	direction	高い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+夏の気温は冬の気温より高い。	entity	夏の気温	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+夏の気温は冬の気温より高い。	standard	冬の気温	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+姉は妹より背が高い。	dimension	背	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+姉は妹より背が高い。	direction	高い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+姉は妹より背が高い。	standard	妹	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+この町はあの町より人口が多い。	dimension	人口	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+この町はあの町より人口が多い。	direction	多い	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+この町はあの町より人口が多い。	entity	この町	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+この町はあの町より人口が多い。	standard	あの町	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+東の池は西の池より水が少ない。	dimension	水	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+東の池は西の池より水が少ない。	direction	少ない	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+東の池は西の池より水が少ない。	entity	東の池	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+東の池は西の池より水が少ない。	standard	西の池	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+この建物は市の図書館だ。	entity	この建物	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+その人は有名な医者です。	entity	その人	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+あの山は富士山である。	entity	あの山	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+その箱は重い。	entity	その箱	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+あの部屋は広い。	entity	あの部屋	NEWLY_SUPPORTED	-	CORRECT	harness	ja.jsonl
+店長が店員に商品を並べさせた。	causee	店員	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+店長が店員に商品を並べさせた。	causer	店長	ROLE_CHANGED	agent	CORRECT	harness	ja.jsonl
+先生が学生に論文を読ませた。	causee	学生	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+先生が学生に論文を読ませた。	causer	先生	ROLE_CHANGED	agent	CORRECT	harness	ja.jsonl
+社長が部下に資料を作らせた。	causee	部下	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+社長が部下に資料を作らせた。	causer	社長	ROLE_CHANGED	agent	CORRECT	harness	ja.jsonl
+兄が弟に荷物を運ばせた。	causee	弟	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+兄が弟に荷物を運ばせた。	causer	兄	ROLE_CHANGED	agent	CORRECT	harness	ja.jsonl
+母が娘に皿を洗わせた。	causee	娘	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+母が娘に皿を洗わせた。	causer	母	ROLE_CHANGED	agent	CORRECT	harness	ja.jsonl
+隊長が兵士に水を汲ませた。	causee	兵士	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+隊長が兵士に水を汲ませた。	causer	隊長	ROLE_CHANGED	agent	CORRECT	harness	ja.jsonl
+親が子供に手紙を書かせた。	causee	子供	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+親が子供に手紙を書かせた。	causer	親	ROLE_CHANGED	agent	CORRECT	harness	ja.jsonl
+母が子供に野菜を食べさせた。	causee	子供	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+母が子供に野菜を食べさせた。	causer	母	ROLE_CHANGED	agent	CORRECT	harness	ja.jsonl
+親が子供に薬を飲ませた。	causee	子供	ROLE_CHANGED	recipient	CORRECT	harness	ja.jsonl
+親が子供に薬を飲ませた。	causer	親	ROLE_CHANGED	agent	CORRECT	harness	ja.jsonl
+5時過ぎに店長が店を閉めた。	agent	店長	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+5時過ぎに店長が店を閉めた。	patient	店	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+5時過ぎに店長が店を閉めた。	time	5時過ぎ	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+3時間後に新製品が発表された。	patient	新製品	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+3時間後に新製品が発表された。	time	3時間後	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+2020年代に技術者が新工法を確立した。	time	2020年代	ROLE_CHANGED	recipient	CORRECT	harness	ja_r2.jsonl
+15日後に請求書が発送された。	patient	請求書	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+15日後に請求書が発送された。	time	15日後	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+夜9時に消防隊が現場で消火作業を終えた。	agent	消防隊	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+夜9時に消防隊が現場で消火作業を終えた。	patient	消火作業	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+夜9時に消防隊が現場で消火作業を終えた。	place	現場	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+夜9時に消防隊が現場で消火作業を終えた。	time	夜9時	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+10月上旬に新校舎が完成した。	agent	新校舎	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+10月上旬に新校舎が完成した。	time	10月上旬	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+昼過ぎに配達員が荷物を届けた。	time	昼過ぎ	ROLE_CHANGED	goal	CORRECT	harness	ja_r2.jsonl
+数日後に結果が公表された。	time	数日後	ROLE_CHANGED	agent	CORRECT	harness	ja_r2.jsonl
+主催者が大会を日曜日に延期した。	agent	主催者	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+主催者が大会を日曜日に延期した。	patient	大会	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+主催者が大会を日曜日に延期した。	result	日曜日	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+店主が定休日を木曜日に変えた。	agent	店主	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+店主が定休日を木曜日に変えた。	patient	定休日	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+店主が定休日を木曜日に変えた。	result	木曜日	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+教授が締め切りを来月末に延長した。	agent	教授	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+教授が締め切りを来月末に延長した。	patient	締め切り	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+教授が締め切りを来月末に延長した。	result	来月末	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+先生が試験を翌週に繰り下げた。	agent	先生	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+先生が試験を翌週に繰り下げた。	patient	試験	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+先生が試験を翌週に繰り下げた。	result	翌週	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r2.jsonl
+委員会が開票を3日に前倒しした。	result	3日	ROLE_CHANGED	recipient	CORRECT	harness	ja_r2.jsonl
+姉が爪を桃色に塗り直した。	result	桃色	ROLE_CHANGED	recipient	CORRECT	harness	ja_r2.jsonl
+市長が弁護士を顧問に任命した。	result	顧問	ROLE_CHANGED	recipient	CORRECT	harness	ja_r3.jsonl
+委員会が会員を代表に選出した。	result	代表	ROLE_CHANGED	recipient	CORRECT	harness	ja_r3.jsonl
+王が騎士を隊長に抜擢した。	result	隊長	ROLE_CHANGED	recipient	CORRECT	harness	ja_r3.jsonl
+工場長が職人を班長に登用した。	result	班長	ROLE_CHANGED	recipient	CORRECT	harness	ja_r3.jsonl
+このノートは姉のより重い。	dimension	重い	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+このノートは姉のより重い。	direction	重い	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+このノートは姉のより重い。	entity	このノート	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+このノートは姉のより重い。	standard	姉の	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+弟の自転車は私のより速い。	dimension	速い	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+弟の自転車は私のより速い。	direction	速い	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+弟の自転車は私のより速い。	entity	弟の自転車	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+弟の自転車は私のより速い。	standard	私の	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+北側の部屋は南側のより狭い。	dimension	狭い	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+北側の部屋は南側のより狭い。	direction	狭い	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+北側の部屋は南側のより狭い。	entity	北側の部屋	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+北側の部屋は南側のより狭い。	standard	南側の	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+この川は隣町のより長い。	dimension	長い	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+この川は隣町のより長い。	direction	長い	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+この川は隣町のより長い。	entity	この川	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+この川は隣町のより長い。	standard	隣町の	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+犬の耳は猫のより長い。	dimension	長い	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+犬の耳は猫のより長い。	direction	長い	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+犬の耳は猫のより長い。	entity	犬の耳	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+犬の耳は猫のより長い。	standard	猫の	NEWLY_SUPPORTED	-	CORRECT	harness	ja_r3.jsonl
+職人が糸を藍色に染めた。	result	藍色	ROLE_CHANGED	recipient	CORRECT	harness	ja_r4.jsonl
+理容師が髪を銀色に染めた。	result	銀色	ROLE_CHANGED	recipient	CORRECT	harness	ja_r4.jsonl
+校正者が原稿を三段落にまとめた。	result	三段落	ROLE_CHANGED	recipient	CORRECT	harness	ja_r4.jsonl
+編集部が論文を改訂版にまとめた。	result	改訂版	ROLE_CHANGED	recipient	CORRECT	harness	ja_r4.jsonl
+筆者が草稿を英語版に直した。	result	英語版	ROLE_CHANGED	recipient	CORRECT	harness	ja_r4.jsonl
+鈴木さんが店長に選ばれた。	result	店長	ROLE_CHANGED	agent	CORRECT	harness	ja_r4.jsonl
+野村さんが監督に任命された。	result	監督	ROLE_CHANGED	agent	CORRECT	harness	ja_r4.jsonl
+青木さんが課長に指名された。	result	課長	ROLE_CHANGED	agent	CORRECT	harness	ja_r4.jsonl
+吉田さんが校長に選出された。	result	校長	ROLE_CHANGED	agent	CORRECT	harness	ja_r4.jsonl
+兄が文章を英語に訳した。	result	英語	ROLE_CHANGED	recipient	CORRECT	harness	ja_r5.jsonl
+班長が名簿を三つの班に分類した。	result	三つの班	ROLE_CHANGED	recipient	CORRECT	harness	ja_r5.jsonl
+教師が本文を方言に書き換えた。	result	方言	ROLE_CHANGED	recipient	CORRECT	harness	ja_r5.jsonl
+職員が資料を一覧に整理した。	result	一覧	ROLE_CHANGED	recipient	CORRECT	harness	ja_r5.jsonl
+畑から芋が掘り出された。	source	畑	ROLE_CHANGED	agent	CORRECT	harness	ja_r5.jsonl
+川から砂が運ばれた。	source	川	ROLE_CHANGED	agent	CORRECT	harness	ja_r5.jsonl
+庭から古い壺が掘り出された。	source	庭	ROLE_CHANGED	agent	CORRECT	harness	ja_r5.jsonl
+広島から荷物が送られた。	source	広島	ROLE_CHANGED	agent	CORRECT	harness	ja_r5.jsonl
+叔母が会議に出た。	goal	会議	ROLE_CHANGED	recipient	CORRECT	harness	ja_r5.jsonl
+姉は弁護士になった。	result	弁護士	ROLE_CHANGED	recipient	CORRECT	harness	ja_r6.jsonl
+兄は教員に変わった。	result	教員	ROLE_CHANGED	recipient	CORRECT	harness	ja_r6.jsonl
+友人は医師になった。	result	医師	ROLE_CHANGED	recipient	CORRECT	harness	ja_r6.jsonl
+彼は市長になった。	result	市長	ROLE_CHANGED	recipient	CORRECT	harness	ja_r6.jsonl
+弟は技術者に成長した。	result	技術者	ROLE_CHANGED	recipient	CORRECT	harness	ja_r6.jsonl
+このパソコンは前のより軽い。	dimension	軽い	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+このパソコンは前のより軽い。	direction	軽い	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+このパソコンは前のより軽い。	entity	このパソコン	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+このパソコンは前のより軽い。	standard	前の	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+この鞄は君のより重い。	dimension	重い	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+この鞄は君のより重い。	direction	重い	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+この鞄は君のより重い。	entity	この鞄	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+この鞄は君のより重い。	standard	君の	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+私の家は彼のより狭い。	dimension	狭い	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+私の家は彼のより狭い。	direction	狭い	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+私の家は彼のより狭い。	entity	私の家	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+私の家は彼のより狭い。	standard	彼の	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+係員が乗客を三つのグループに分けた。	result	三つのグループ	ROLE_CHANGED	recipient	IMPROVED	manual	r3_probe_ja.txt
+母が娘を医者に仕立てた。	result	医者	ROLE_CHANGED	recipient	IMPROVED	manual	r3_probe_ja.txt
+この部屋は暗い。	entity	この部屋	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+この車は去年のよりずっと高い。	dimension	高い	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+この車は去年のよりずっと高い。	direction	高い	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+この車は去年のよりずっと高い。	entity	この車	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+この車は去年のよりずっと高い。	standard	去年の	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+この靴は姉のより小さい。	dimension	小さい	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+この靴は姉のより小さい。	direction	小さい	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+この靴は姉のより小さい。	entity	この靴	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+この靴は姉のより小さい。	standard	姉の	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+前半に大量の得点が奪われた。	time	前半	ROLE_CHANGED	agent	IMPROVED	manual	r3_probe_ja.txt
+弟のスマホは兄のより新しい。	dimension	新しい	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+弟のスマホは兄のより新しい。	direction	新しい	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+弟のスマホは兄のより新しい。	entity	弟のスマホ	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+弟のスマホは兄のより新しい。	standard	兄の	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+私の部屋は妹のより広い。	dimension	広い	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+私の部屋は妹のより広い。	direction	広い	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+私の部屋は妹のより広い。	entity	私の部屋	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+私の部屋は妹のより広い。	standard	妹の	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+このカメラは前のよりずっと軽い。	dimension	軽い	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+このカメラは前のよりずっと軽い。	direction	軽い	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+このカメラは前のよりずっと軽い。	entity	このカメラ	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+このカメラは前のよりずっと軽い。	standard	前の	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+隣の庭は我が家のより狭い。	dimension	狭い	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+隣の庭は我が家のより狭い。	direction	狭い	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+隣の庭は我が家のより狭い。	entity	隣の庭	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+隣の庭は我が家のより狭い。	standard	我が家の	NEWLY_SUPPORTED	-	IMPROVED	manual	r3_probe_ja.txt
+委員会が候補を議長に選出した。	result	議長	ROLE_CHANGED	recipient	IMPROVED	manual	r3_probe_ja.txt
+組合が候補を議長に選出した。	result	議長	ROLE_CHANGED	recipient	IMPROVED	manual	r3_probe_ja.txt
+彼女は髪を茶色に染めた。	agent	彼女	NEWLY_SUPPORTED	-	CORRECT	manual	r3_probe_ja.txt
+彼女は髪を茶色に染めた。	patient	髪	NEWLY_SUPPORTED	-	CORRECT	manual	r3_probe_ja.txt
+彼女は髪を茶色に染めた。	result	茶色	NEWLY_SUPPORTED	-	CORRECT	manual	r3_probe_ja.txt
+町内会が男性を会長に選出した。	result	会長	ROLE_CHANGED	recipient	IMPROVED	manual	r3_probe_ja.txt
+会社が営業部長を取締役に抜擢した。	result	取締役	ROLE_CHANGED	recipient	IMPROVED	manual	r3_probe_ja.txt
+父が弟を後継者に指名した。	result	後継者	ROLE_CHANGED	recipient	IMPROVED	manual	r3_probe_ja.txt
+国が研究者を委員に任命した。	result	委員	ROLE_CHANGED	recipient	IMPROVED	manual	r3_probe_ja.txt
+翻訳者が原稿を英語に訳した。	result	英語	ROLE_CHANGED	recipient	IMPROVED	manual	r3_probe_ja.txt
+店が商品を三つの箱に分けた。	result	三つの箱	ROLE_CHANGED	recipient	IMPROVED	manual	r3_probe_ja.txt
+6時半に姉が家を出た。	time	6時半	ROLE_CHANGED	recipient	IMPROVED	manual	review_r1_examples_ja.txt
+3時過ぎに兄が店を出た。	time	3時過ぎ	ROLE_CHANGED	goal	IMPROVED	manual	review_r1_examples_ja.txt
+2時間後に救急車が病院に着いた。	time	2時間後	ROLE_CHANGED	goal	IMPROVED	manual	review_r1_examples_ja.txt
+6時半に会議が開かれた。	time	6時半	ROLE_CHANGED	agent	IMPROVED	manual	review_r1_examples_ja.txt
+一部、兄が駅で傘を買った。	agent	兄	NEWLY_SUPPORTED	-	CORRECT	manual	review_r1_examples_ja.txt
+一部、兄が駅で傘を買った。	patient	傘	NEWLY_SUPPORTED	-	CORRECT	manual	review_r1_examples_ja.txt
+一部、兄が駅で傘を買った。	place	駅	NEWLY_SUPPORTED	-	CORRECT	manual	review_r1_examples_ja.txt
+一部、兄が駅で傘を買った。	quantifier_partial__event	一部	NEWLY_SUPPORTED	-	CORRECT	manual	review_r1_examples_ja.txt
+部長が会議を3時に変更した。	result	3時	ROLE_CHANGED	recipient	IMPROVED	manual	review_r1_examples_ja.txt
+母が予定を月曜日に変えた。	agent	母	NEWLY_SUPPORTED	-	CORRECT	manual	review_r1_examples_ja.txt
+母が予定を月曜日に変えた。	patient	予定	NEWLY_SUPPORTED	-	CORRECT	manual	review_r1_examples_ja.txt
+母が予定を月曜日に変えた。	result	月曜日	NEWLY_SUPPORTED	-	CORRECT	manual	review_r1_examples_ja.txt
+課長が会議を来週に延期した。	agent	課長	NEWLY_SUPPORTED	-	CORRECT	manual	review_r1_examples_ja.txt
+課長が会議を来週に延期した。	patient	会議	NEWLY_SUPPORTED	-	CORRECT	manual	review_r1_examples_ja.txt
+課長が会議を来週に延期した。	result	来週	NEWLY_SUPPORTED	-	CORRECT	manual	review_r1_examples_ja.txt
+先生が生徒に本を読ませた。	causee	生徒	ROLE_CHANGED	recipient	IMPROVED	manual	b1v2_inputs_ja.txt
+先生が生徒に本を読ませた。	causer	先生	ROLE_CHANGED	agent	IMPROVED	manual	b1v2_inputs_ja.txt
+姉は先月、京都を訪れた。	patient	京都	NEWLY_SUPPORTED	-	CORRECT	manual	b1v2_inputs_ja.txt
+姉は先月、京都を訪れた。	time	先月	NEWLY_SUPPORTED	-	CORRECT	manual	b1v2_inputs_ja.txt
+姉は先月、京都を訪れた。	topic	姉	NEWLY_SUPPORTED	-	CORRECT	manual	b1v2_inputs_ja.txt
+兄は弟より強い。	dimension	強い	NEWLY_SUPPORTED	-	IMPROVED	manual	b1v2_inputs_ja.txt
+兄は弟より強い。	direction	強い	NEWLY_SUPPORTED	-	IMPROVED	manual	b1v2_inputs_ja.txt
+兄は弟より強い。	standard	弟	NEWLY_SUPPORTED	-	IMPROVED	manual	b1v2_inputs_ja.txt
+雨が降ったので、試合は中止になった。	result	中止	ROLE_CHANGED	recipient	IMPROVED	manual	b1v2_inputs_ja.txt
+荷物が広島から送られた。	source	広島	ROLE_CHANGED	agent	IMPROVED	manual	b1v2_r2_inputs_ja.txt
+倉庫から荷物が運び出された。	source	倉庫	ROLE_CHANGED	agent	IMPROVED	manual	w1a2r2_probe_ja.txt
+彼女は看板を黒に塗り替えた。	agent	彼女	NEWLY_SUPPORTED	-	CORRECT	manual	w1a2r2_probe_ja.txt
+彼女は看板を黒に塗り替えた。	patient	看板	NEWLY_SUPPORTED	-	CORRECT	manual	w1a2r2_probe_ja.txt
+彼女は看板を黒に塗り替えた。	result	黒	NEWLY_SUPPORTED	-	IMPROVED	manual	w1a2r2_probe_ja.txt
+彼女は医者になった。	result	医者	ROLE_CHANGED	recipient	IMPROVED	manual	w1a2r2_probe_ja.txt
+荷物が駅から届けられた。	source	駅	ROLE_CHANGED	agent	IMPROVED	manual	w1a2r2_probe_ja.txt
+議長に新人が選ばれた。	result	議長	ROLE_CHANGED	agent	IMPROVED	manual	w1a2r2_probe_ja.txt
+資料を英語に直した。	result	英語	ROLE_CHANGED	recipient	IMPROVED	manual	w1a2r2_probe_ja.txt
+祖父が箱を二つに分けた。	result	二つ	ROLE_CHANGED	recipient	IMPROVED	manual	w1a2r2_probe_ja.txt
+彼はエンジニアになった。	result	エンジニア	ROLE_CHANGED	recipient	IMPROVED	manual	w1a2r2_probe_ja.txt
+先生が生徒をリーダーに指名した。	result	リーダー	ROLE_CHANGED	recipient	IMPROVED	manual	w1a2r2_probe_ja.txt
+店が看板を赤に塗り替えた。	result	赤	ROLE_CHANGED	recipient	IMPROVED	manual	w1a2r2_probe_ja.txt
+弟が漫画を英語に訳した。	result	英語	ROLE_CHANGED	recipient	IMPROVED	manual	w1a2r2_probe_ja.txt
+姉が絵を三枚に分けた。	result	三枚	ROLE_CHANGED	recipient	IMPROVED	manual	w1a2r2_probe_ja.txt
+金月 龍之介（きんげつ りゅうのすけ、1970年9月29日 - ）は、日本の脚本家、小説家、フリーライター。	entity	金月 龍之介（きんげつ りゅうのすけ、1970年9月29日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+金月 龍之介（きんげつ りゅうのすけ、1970年9月29日 - ）は、日本の脚本家、小説家、フリーライター。	value	、日本の脚本家、小説家、フリーライター	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+中野 サユリ（なかの さゆり、1985年9月20日 - ）は、大阪府出身の女性シンガーソングライター。	entity	中野 サユリ（なかの さゆり、1985年9月20日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+中野 サユリ（なかの さゆり、1985年9月20日 - ）は、大阪府出身の女性シンガーソングライター。	value	、大阪府出身の女性シンガーソングライター	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+四六のガマ（しろくのガマ）とは、前足が4本指、後足が6本指のニホンヒキガエル（ガマ）のことである。	attribute	ガマ（しろくのガマ）	NEWLY_SUPPORTED	-	STILL_WRONG	manual	coverage_texts_ja.txt
+四六のガマ（しろくのガマ）とは、前足が4本指、後足が6本指のニホンヒキガエル（ガマ）のことである。	entity	四六	NEWLY_SUPPORTED	-	STILL_WRONG	manual	coverage_texts_ja.txt
+デジタル放送の一覧（デジタルほうそうのいちらん）とはデジタル方式の放送の一覧である。	attribute	一覧（デジタルほうそうのいちらん）	NEWLY_SUPPORTED	-	STILL_WRONG	manual	coverage_texts_ja.txt
+デジタル放送の一覧（デジタルほうそうのいちらん）とはデジタル方式の放送の一覧である。	entity	デジタル放送	NEWLY_SUPPORTED	-	STILL_WRONG	manual	coverage_texts_ja.txt
+「フンコロガシは、忙しい。」（フンコロガシは、いそがしい。	quotation	フンコロガシは、忙しい。	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+「チグエソ 地球の空の下で」（チグエソ ちきゅうのそらのしたで）は、日本の歌。	entity	「チグエソ 地球の空の下で」（チグエソ ちきゅうのそらのしたで）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+野村 愛正（のむら あいせい、1891年8月21日 - 1974年7月6日）は、日本の小説家・脚本家・連句人。	entity	野村 愛正（のむら あいせい、1891年8月21日 - 1974年7月6日）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+野村 愛正（のむら あいせい、1891年8月21日 - 1974年7月6日）は、日本の小説家・脚本家・連句人。	value	、日本の小説家・脚本家・連句人	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+芦田 実（あしだ みのる）は、日本の化学研究者である。	entity	芦田 実（あしだ みのる）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+毎年4月28日には薬師如来の祭礼として念仏踊りが催されている。	capacity	薬師如来の祭礼	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+毎年4月28日には薬師如来の祭礼として念仏踊りが催されている。	time	毎年4月28日	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+284（二百八十四、にひゃくはちじゅうよん）は自然数、また整数において、283の次で285の前の数である。	entity	284（二百八十四、にひゃくはちじゅうよん）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+284（二百八十四、にひゃくはちじゅうよん）は自然数、また整数において、283の次で285の前の数である。	value	自然数、また整数において、283の次で285の前の数	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+東流（ひがしながれ）は、博多祇園山笠や博多松囃子（博多どんたく）の運営における構成単位である流の一つである。	entity	東流（ひがしながれ）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+東流（ひがしながれ）は、博多祇園山笠や博多松囃子（博多どんたく）の運営における構成単位である流の一つである。	value	、博多祇園山笠や博多松囃子（博多どんたく）の運営における構成単位である流の一つ	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+受賞作は『小説宝石』に掲載され、受賞者には賞金50万円が授与される。	quotation	小説宝石	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+アントワーヌ・カンタン・フーキエ＝タンヴィル（Antoine Quentin Fouquier de Tinville または Fouquier-Tinville, 1746年6月12日 - 1795年5月7日）は、フランス革命期の革命裁判所の検事。	entity	アントワーヌ・カンタン・フーキエ＝タンヴィル（Antoine Quentin Fouquier de Tinville または Fouquier-Tinville, 1746年6月12日 - 1795年5月7日）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+アントワーヌ・カンタン・フーキエ＝タンヴィル（Antoine Quentin Fouquier de Tinville または Fouquier-Tinville, 1746年6月12日 - 1795年5月7日）は、フランス革命期の革命裁判所の検事。	value	、フランス革命期の革命裁判所の検事	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+菅原 高視（すがわら の たかみ）は、平安時代前期の貴族。	entity	菅原 高視（すがわら の たかみ）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+菅原 高視（すがわら の たかみ）は、平安時代前期の貴族。	value	、平安時代前期の貴族	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+小野 昭（おの あきら、1946年 - ）は、日本の考古学者。	entity	小野 昭（おの あきら、1946年 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+小野 昭（おの あきら、1946年 - ）は、日本の考古学者。	value	、日本の考古学者	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+原 マスミ（はら マスミ、男性、1955年2月27日 - ）は、日本のシンガーソングライター、イラストレーター、画家。	entity	原 マスミ（はら マスミ、男性、1955年2月27日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+原 マスミ（はら マスミ、男性、1955年2月27日 - ）は、日本のシンガーソングライター、イラストレーター、画家。	value	、日本のシンガーソングライター、イラストレーター、画家	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+小野 健斗（おの けんと、1989年8月9日 - ）は、日本の俳優、モデル。	entity	小野 健斗（おの けんと、1989年8月9日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+小野 健斗（おの けんと、1989年8月9日 - ）は、日本の俳優、モデル。	value	、日本の俳優、モデル	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+渡辺 祐子（わたなべ ゆうこ、のちにゆう子に改名、1966年2月26日 - ）は、京都府長岡京市生まれの元女優。	entity	渡辺 祐子（わたなべ ゆうこ、のちにゆう子に改名、1966年2月26日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+渡辺 祐子（わたなべ ゆうこ、のちにゆう子に改名、1966年2月26日 - ）は、京都府長岡京市生まれの元女優。	value	、京都府長岡京市生まれの元女優	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+長沢 彰彦（ながさわ あきひこ、1946年12月13日 - ）は、元朝日放送（ABC）アナウンサー・大阪国際大学教授。	entity	長沢 彰彦（ながさわ あきひこ、1946年12月13日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+長沢 彰彦（ながさわ あきひこ、1946年12月13日 - ）は、元朝日放送（ABC）アナウンサー・大阪国際大学教授。	value	、元朝日放送（ABC）アナウンサー・大阪国際大学教授	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+木浦 正幸（このうら まさゆき、1952年（昭和27年）11月25日 - ）は、日本の政治家。	entity	木浦 正幸（このうら まさゆき、1952年（昭和27年）11月25日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+木浦 正幸（このうら まさゆき、1952年（昭和27年）11月25日 - ）は、日本の政治家。	value	、日本の政治家	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+松平 頼升（まつだいら よりのり）は、江戸時代後期の大名、明治時代前期の華族。	entity	松平 頼升（まつだいら よりのり）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+ながらく副業作家であったため作品数は少ない。	entity	ながらく副業作家であったため作品数	NEWLY_SUPPORTED	-	STILL_WRONG	manual	coverage_texts_ja.txt
+ながらく副業作家であったため作品数は少ない。	value	少ない	NEWLY_SUPPORTED	-	STILL_WRONG	manual	coverage_texts_ja.txt
+英文学の教師（オハイオ大学などに勤務）を本業とし、晩年は作家業に専念した。	time	晩年	ROLE_CHANGED	agent	IMPROVED	manual	coverage_texts_ja.txt
+学校法人薫英学園（がっこうほうじんくんえいがくえん）とは、日本の学校法人の一つ。	entity	学校法人薫英学園（がっこうほうじんくんえいがくえん）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+学校法人薫英学園（がっこうほうじんくんえいがくえん）とは、日本の学校法人の一つ。	value	、日本の学校法人の一つ	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+通称「八中(はっちゅう)」。	quotation	八中(はっちゅう)	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+内藤 信義（ないとう のぶよし）は、村上藩内藤家の分家当主。	entity	内藤 信義（ないとう のぶよし）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+徳川 宜子（とくがわ ことこ、1956年（昭和31年）11月5日 - ）は、日本の建築家。	entity	徳川 宜子（とくがわ ことこ、1956年（昭和31年）11月5日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+徳川 宜子（とくがわ ことこ、1956年（昭和31年）11月5日 - ）は、日本の建築家。	value	、日本の建築家	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+()]] リトマス（利篤謨斯、）は、リトマスゴケ（ 属）などある種の地衣類から得られる紫色の染料。	adjunct_1	種の地衣類	ROLE_CHANGED	agent	IMPROVED	manual	coverage_texts_ja.txt
+滝川 悠（たきがわ ゆう、女性、1月15日 - ）は、日本のイラストレーター。	entity	滝川 悠（たきがわ ゆう、女性、1月15日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+滝川 悠（たきがわ ゆう、女性、1月15日 - ）は、日本のイラストレーター。	value	、日本のイラストレーター	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+2001年10月17日に発売された。	time	2001年10月17日	ROLE_CHANGED	agent	IMPROVED	manual	coverage_texts_ja.txt
+ヨゼフ・シュミット （、ポーランド語の読みはユゼフ・シュミット、1935年3月28日 - 2024年7月28日または7月29日）は、ポーランドの陸上競技選手。	entity	ヨゼフ・シュミット （、ポーランド語の読みはユゼフ・シュミット、1935年3月28日 - 2024年7月28日または7月29日）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+ヨゼフ・シュミット （、ポーランド語の読みはユゼフ・シュミット、1935年3月28日 - 2024年7月28日または7月29日）は、ポーランドの陸上競技選手。	value	、ポーランドの陸上競技選手	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+ラテン語では「cithara」と綴られ、キタラまたは中世以降はチタラと発音される。	quotation	cithara	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+日本では同年にカプコンから発売された。	agent	カプコン	ROLE_CHANGED	source	IMPROVED	manual	coverage_texts_ja.txt
+日本では同年にカプコンから発売された。	topic	日本	ROLE_CHANGED	context	IMPROVED	manual	coverage_texts_ja.txt
+平野 啓一郎（ひらの けいいちろう、1975年〈昭和50年〉6月22日 - ）は、日本の小説家。	entity	平野 啓一郎（ひらの けいいちろう、1975年〈昭和50年〉6月22日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+平野 啓一郎（ひらの けいいちろう、1975年〈昭和50年〉6月22日 - ）は、日本の小説家。	value	、日本の小説家	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+2018年4月にはweb版、『FINEBOYS Online』をスタート。	quotation	FINEBOYS Online	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+波多野 和俊（はたの かずとし、1979年4月2日 - ）は、日本の男性声優、舞台俳優。	entity	波多野 和俊（はたの かずとし、1979年4月2日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+波多野 和俊（はたの かずとし、1979年4月2日 - ）は、日本の男性声優、舞台俳優。	value	、日本の男性声優、舞台俳優	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+吉田川（よしだがわ）は、木曽川水系の一級河川。	entity	吉田川（よしだがわ）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+吉田川（よしだがわ）は、木曽川水系の一級河川。	value	、木曽川水系の一級河川	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+源 為義（みなもと の ためよし）は、平安時代末期の武将。	entity	源 為義（みなもと の ためよし）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+ホームがカーブの途中に位置しているため、停車時には列車が大きく傾く。	agent	ホーム	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+ホームがカーブの途中に位置しているため、停車時には列車が大きく傾く。	location	カーブの途中	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+羽田 実加（はだ みか、1978年9月22日 - ）は、日本の元タレント、元女優。	entity	羽田 実加（はだ みか、1978年9月22日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+羽田 実加（はだ みか、1978年9月22日 - ）は、日本の元タレント、元女優。	value	、日本の元タレント、元女優	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+大谷 實（おおや みのる、1934年10月25日 - 2026年1月6日）は、日本の法学者。	entity	大谷 實（おおや みのる、1934年10月25日 - 2026年1月6日）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+大谷 實（おおや みのる、1934年10月25日 - 2026年1月6日）は、日本の法学者。	value	、日本の法学者	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+早崎 治（はやさき おさむ、1933年5月7日 - 1993年11月11日）は、日本の写真家。	entity	早崎 治（はやさき おさむ、1933年5月7日 - 1993年11月11日）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+早崎 治（はやさき おさむ、1933年5月7日 - 1993年11月11日）は、日本の写真家。	value	、日本の写真家	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+1967年10月に廃止された。	time	1967年10月	ROLE_CHANGED	agent	IMPROVED	manual	coverage_texts_ja.txt
+『栄花物語』（えいがものがたり）は平安時代の歴史物語。	entity	『栄花物語』（えいがものがたり）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+『栄花物語』（えいがものがたり）は平安時代の歴史物語。	value	平安時代の歴史物語	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+モリヤツガシラ属（もりやつがしらぞく、学名 ）は、サイチョウ目モリヤツガシラ科の1属である。	entity	モリヤツガシラ属（もりやつがしらぞく、学名 ）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+モリヤツガシラ属（もりやつがしらぞく、学名 ）は、サイチョウ目モリヤツガシラ科の1属である。	value	、サイチョウ目モリヤツガシラ科の1属	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+文部科学大臣（もんぶかがくだいじん、）は、日本の文部科学省の長および主任の大臣たる国務大臣。	entity	文部科学大臣（もんぶかがくだいじん、）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+文部科学大臣（もんぶかがくだいじん、）は、日本の文部科学省の長および主任の大臣たる国務大臣。	value	、日本の文部科学省の長および主任の大臣たる国務大臣	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+情報倫理（じょうほうりんり、）とは、人間が情報もしくは情報技術をもちいた社会形成に必要とされる行動の規範である。	adjunct_1	社会形成	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+情報倫理（じょうほうりんり、）とは、人間が情報もしくは情報技術をもちいた社会形成に必要とされる行動の規範である。	adjunct_2	必要	ROLE_CHANGED	adjunct_1	IMPROVED	manual	coverage_texts_ja.txt
+ウィンブルドン選手権（ウィンブルドンせんしゅけん、）は、イギリス・ロンドンのウィンブルドンで開催されるテニスの4大国際大会の一つである。	place	ロンドンのウィンブルドン	ROLE_CHANGED	adjunct_1	IMPROVED	manual	coverage_texts_ja.txt
+日本では一時期「能力別学習」の名前で教育が行われていた。	quotation	能力別学習	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+おサイフケータイは、携帯電話に埋め込まれたFeliCaチップ（ICチップ）を用いた、非接触型の少額決済サービス、およびこのサービスに対応したモバイルFeliCa ICチップ等を内蔵した携帯電話等の総称。	adjunct_1	携帯電話	ROLE_CHANGED	agent	IMPROVED	manual	coverage_texts_ja.txt
+河野 通宣（かわの みちのぶ）は、河野氏の人物。	entity	河野 通宣（かわの みちのぶ）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+行政代執行（ぎょうせいだいしっこう）とは、行政上の強制執行の一種。	entity	行政代執行（ぎょうせいだいしっこう）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+日本の農道一覧（にほんののうどういちらん）は、日本の農道の一覧である。	attribute	農道一覧（にほんののうどういちらん）	NEWLY_SUPPORTED	-	STILL_WRONG	manual	coverage_texts_ja.txt
+日本の農道一覧（にほんののうどういちらん）は、日本の農道の一覧である。	entity	日本	NEWLY_SUPPORTED	-	STILL_WRONG	manual	coverage_texts_ja.txt
+生野 慈朗（しょうの じろう、1950年（昭和25年）2月25日 - 2023年（令和5年）4月6日）は、日本のテレビディレクター。	entity	生野 慈朗（しょうの じろう、1950年（昭和25年）2月25日 - 2023年（令和5年）4月6日）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+生野 慈朗（しょうの じろう、1950年（昭和25年）2月25日 - 2023年（令和5年）4月6日）は、日本のテレビディレクター。	value	、日本のテレビディレクター	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+中屋旅館（なかやりょかん）とは、旅館の名称である。	entity	中屋旅館（なかやりょかん）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+ナキハクチョウ（鳴白鳥、Cygnus buccinator）は、カモ目カモ科ハクチョウ属に分類される鳥類。	adjunct_1	カモ目カモ科ハクチョウ属	ROLE_CHANGED	agent	IMPROVED	manual	coverage_texts_ja.txt
+八宝菜（はっぽうさい、、、 パーパオツァイ）とは中華料理のひとつである。	entity	八宝菜（はっぽうさい、、、 パーパオツァイ）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+八宝菜（はっぽうさい、、、 パーパオツァイ）とは中華料理のひとつである。	value	中華料理のひとつ	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+品川宿（しながわしゅく、しながわじゅく）は、東海道五十三次の宿場の一つ。	entity	品川宿（しながわしゅく、しながわじゅく）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+品川宿（しながわしゅく、しながわじゅく）は、東海道五十三次の宿場の一つ。	value	、東海道五十三次の宿場の一つ	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+人情噺（にんじょうばなし）とは、落語の演目の中のひとつのカテゴリである。	entity	人情噺（にんじょうばなし）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+1991年11月に北海道の箭内政之と渡辺和郎によって発見された。	time	1991年11月	ROLE_CHANGED	recipient	IMPROVED	manual	coverage_texts_ja.txt
+友永 朱音（ともなが あかね、1975年12月2日 - ）は、日本の女性声優。	entity	友永 朱音（ともなが あかね、1975年12月2日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+友永 朱音（ともなが あかね、1975年12月2日 - ）は、日本の女性声優。	value	、日本の女性声優	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+大阪経済法科大学出版部（おおさかけいざいほうかだいがくしゅっぱんぶ 1987年9月 - ）は、大阪経済法科大学の出版部である。	entity	大阪経済法科大学出版部（おおさかけいざいほうかだいがくしゅっぱんぶ 1987年9月 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+大阪経済法科大学出版部（おおさかけいざいほうかだいがくしゅっぱんぶ 1987年9月 - ）は、大阪経済法科大学の出版部である。	value	、大阪経済法科大学の出版部	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+『1973年のピンボール』 （せんきゅうひゃくななじゅうさんねんのピンボール） は、村上春樹の2作目の長編小説。	entity	『1973年のピンボール』 （せんきゅうひゃくななじゅうさんねんのピンボール） 	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+藤原 仲麻呂（ふじわらの なかまろ、慶雲3年〈706年〉- 天平宝字8年旧9月18日〈764年10月17日〉）は、奈良時代の公卿。	entity	藤原 仲麻呂（ふじわらの なかまろ、慶雲3年〈706年〉- 天平宝字8年旧9月18日〈764年10月17日〉）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+ヨウ素を1811年に発見した。	time	1811年	ROLE_CHANGED	recipient	IMPROVED	manual	coverage_texts_ja.txt
+エルティシ川（エルティシがわ、, , , , , 、日本語でイルティシュ川、イルティッシュ川、イルティシ川、イルチシ川、イルトィシュ川、イルトィシ川とも表記）は、アジアの川で、オビ川の主要な支流のひとつ。	entity	エルティシ川（エルティシがわ、, , , , , 、日本語でイルティシュ川、イルティッシュ川、イルティシ川、イルチシ川、イルトィシュ川、イルトィシ川とも表記）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+エルティシ川（エルティシがわ、, , , , , 、日本語でイルティシュ川、イルティッシュ川、イルティシ川、イルチシ川、イルトィシュ川、イルトィシ川とも表記）は、アジアの川で、オビ川の主要な支流のひとつ。	value	、アジアの川で、オビ川の主要な支流のひとつ	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+奥州で産出される金を京で商う事を生業としたとされ、源義経が奥州藤原氏を頼って奥州平泉に下るのを手助けしたとされる。	place	奥州	ROLE_CHANGED	adjunct_1	IMPROVED	manual	coverage_texts_ja.txt
+大隅国（おおすみのくに、）は、かつて日本の地方行政区分だった令制国の一つ。	entity	大隅国（おおすみのくに、）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+前田 斉広（まえだ なりなが）は、加賀藩の第11代藩主。	entity	前田 斉広（まえだ なりなが）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+前田 斉広（まえだ なりなが）は、加賀藩の第11代藩主。	value	、加賀藩の第11代藩主	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+『幕張サボテンキャンパス』（まくはりサボテンキャンパス）は、みずしな孝之による日本の4コマ漫画。	entity	『幕張サボテンキャンパス』（まくはりサボテンキャンパス）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+『幕張サボテンキャンパス』（まくはりサボテンキャンパス）は、みずしな孝之による日本の4コマ漫画。	value	、みずしな孝之による日本の4コマ漫画	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+菅田 俊（すがた しゅん、1955年〈昭和30年〉2月17日 - ）は、日本の俳優。	entity	菅田 俊（すがた しゅん、1955年〈昭和30年〉2月17日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+菅田 俊（すがた しゅん、1955年〈昭和30年〉2月17日 - ）は、日本の俳優。	value	、日本の俳優	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+1996年3月に開所した。	time	1996年3月	ROLE_CHANGED	recipient	IMPROVED	manual	coverage_texts_ja.txt
+農中信託銀行株式会社（のうちゅうしんたくぎんこう、）は、農林中央金庫グループの信託銀行。	entity	農中信託銀行株式会社（のうちゅうしんたくぎんこう、）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+また、本社機能の移転日時を同月11日に修正した。	time	同月11日	ROLE_CHANGED	recipient	IMPROVED	manual	coverage_texts_ja.txt
+原田 宗資（はらだ むねすけ）は、安土桃山時代から江戸時代初期の武将、仙台藩伊達家重臣。	entity	原田 宗資（はらだ むねすけ）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+原田 宗資（はらだ むねすけ）は、安土桃山時代から江戸時代初期の武将、仙台藩伊達家重臣。	value	、安土桃山時代から江戸時代初期の武将、仙台藩伊達家重臣	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+の墓]] 酒井 忠隆（さかい ただたか）は、若狭小浜藩の第3代藩主。	entity	の墓]] 酒井 忠隆（さかい ただたか）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+萩原 えみこ（はぎわら えみこ、1971年9月19日 - ）は、日本の女性声優、ナレーター。	entity	萩原 えみこ（はぎわら えみこ、1971年9月19日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+萩原 えみこ（はぎわら えみこ、1971年9月19日 - ）は、日本の女性声優、ナレーター。	value	、日本の女性声優、ナレーター	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+コントラファゴットは、木管楽器の一つで、ファゴット同様、上下に組み合わされた2枚のリードによって音を出すダブルリード（複簧）式の管楽器である。	adjunct_1	上下	ROLE_CHANGED	agent	IMPROVED	manual	coverage_texts_ja.txt
+永野 茂門（ながの しげと、1922年〈大正11年〉6月28日 - 2010年〈平成22年〉1月4日）は、日本の陸軍軍人、陸上自衛官、政治家。	entity	永野 茂門（ながの しげと、1922年〈大正11年〉6月28日 - 2010年〈平成22年〉1月4日）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+永野 茂門（ながの しげと、1922年〈大正11年〉6月28日 - 2010年〈平成22年〉1月4日）は、日本の陸軍軍人、陸上自衛官、政治家。	value	、日本の陸軍軍人、陸上自衛官、政治家	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+兵衛府（ひょうえふ）とは、律令制における官司。	entity	兵衛府（ひょうえふ）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+冨樫 真（とがし まこと、1973年6月5日 - ）は、日本の女優。	entity	冨樫 真（とがし まこと、1973年6月5日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+冨樫 真（とがし まこと、1973年6月5日 - ）は、日本の女優。	value	、日本の女優	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+三重野 康（みえの やすし、1924年（大正13年）3月17日 - 2012年（平成24年）4月15日）は、日本の銀行家。	entity	三重野 康（みえの やすし、1924年（大正13年）3月17日 - 2012年（平成24年）4月15日）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+三重野 康（みえの やすし、1924年（大正13年）3月17日 - 2012年（平成24年）4月15日）は、日本の銀行家。	value	、日本の銀行家	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+非円唇後舌半狭母音（ひえんしん あとじた はんせまぼいん）は母音の種類の一つで、基本母音の第15番。	entity	非円唇後舌半狭母音（ひえんしん あとじた はんせまぼいん）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+非円唇後舌半狭母音（ひえんしん あとじた はんせまぼいん）は母音の種類の一つで、基本母音の第15番。	value	母音の種類の一つで、基本母音の第15番	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+]] V型2気筒（ブイがたにきとう）とは、レシプロエンジンなどのシリンダー配列形式のひとつ。	entity	]] V型2気筒（ブイがたにきとう）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+]] V型2気筒（ブイがたにきとう）とは、レシプロエンジンなどのシリンダー配列形式のひとつ。	value	、レシプロエンジンなどのシリンダー配列形式のひとつ	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+寺園 敦史（てらぞの あつし、1961年 - ）は、日本のジャーナリスト。	entity	寺園 敦史（てらぞの あつし、1961年 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+寺園 敦史（てらぞの あつし、1961年 - ）は、日本のジャーナリスト。	value	、日本のジャーナリスト	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+1956年にノーム・チョムスキーが発表した。	time	1956年	ROLE_CHANGED	recipient	IMPROVED	manual	coverage_texts_ja.txt
+プリンスローズあるいはプランスロゼ（Prince Rose、1928-1944年）はベルギーの競走馬。	entity	プリンスローズあるいはプランスロゼ（Prince Rose、1928-1944年）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+プリンスローズあるいはプランスロゼ（Prince Rose、1928-1944年）はベルギーの競走馬。	value	ベルギーの競走馬	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+稲川 東一郎（いながわ とういちろう、1905年〈明治38年〉10月25日 - 1967年〈昭和42年〉4月18日）は、福島県生まれの高校野球指導者。	entity	稲川 東一郎（いながわ とういちろう、1905年〈明治38年〉10月25日 - 1967年〈昭和42年〉4月18日）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+稲川 東一郎（いながわ とういちろう、1905年〈明治38年〉10月25日 - 1967年〈昭和42年〉4月18日）は、福島県生まれの高校野球指導者。	value	、福島県生まれの高校野球指導者	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+により、1846年に創業された。	time	1846年	ROLE_CHANGED	agent	IMPROVED	manual	coverage_texts_ja.txt
+1963年にビートルズによってカバーされた。	time	1963年	ROLE_CHANGED	recipient	IMPROVED	manual	coverage_texts_ja.txt
+舟橋 明恵（ふなはし あきえ、1977年5月16日 - ）は、元フリーアナウンサー。	entity	舟橋 明恵（ふなはし あきえ、1977年5月16日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+舟橋 明恵（ふなはし あきえ、1977年5月16日 - ）は、元フリーアナウンサー。	value	、元フリーアナウンサー	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+1974年にデビューした。	time	1974年	ROLE_CHANGED	recipient	IMPROVED	manual	coverage_texts_ja.txt
+細貝 萌（ほそがい はじめ、1986年6月10日 - ）は、群馬県前橋市出身の元プロサッカー選手。	entity	細貝 萌（ほそがい はじめ、1986年6月10日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+細貝 萌（ほそがい はじめ、1986年6月10日 - ）は、群馬県前橋市出身の元プロサッカー選手。	value	、群馬県前橋市出身の元プロサッカー選手	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+寺園 喜基（てらぞの よしき、1939年12月1日 - ）は、日本の神学者、九州大学名誉教授、日本バプテスト福岡城西キリスト教会協力牧師。	entity	寺園 喜基（てらぞの よしき、1939年12月1日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+寺園 喜基（てらぞの よしき、1939年12月1日 - ）は、日本の神学者、九州大学名誉教授、日本バプテスト福岡城西キリスト教会協力牧師。	value	、日本の神学者、九州大学名誉教授、日本バプテスト福岡城西キリスト教会協力牧師	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+東野 佑美（ひがしの ゆみ、1980年6月1日 - ）は、日本の女優、歌手。	entity	東野 佑美（ひがしの ゆみ、1980年6月1日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+東野 佑美（ひがしの ゆみ、1980年6月1日 - ）は、日本の女優、歌手。	value	、日本の女優、歌手	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+池上 彰（いけがみ あきら、1950年〈昭和25年〉8月9日 - ）は、日本の大学教授、ジャーナリスト、ニュース解説者。	entity	池上 彰（いけがみ あきら、1950年〈昭和25年〉8月9日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+池上 彰（いけがみ あきら、1950年〈昭和25年〉8月9日 - ）は、日本の大学教授、ジャーナリスト、ニュース解説者。	value	、日本の大学教授、ジャーナリスト、ニュース解説者	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+廬井 鯨（いおい の くじら）は、飛鳥時代の人物。	entity	廬井 鯨（いおい の くじら）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+久努 麻呂（くぬ の まろ）は、飛鳥時代の人物。	entity	久努 麻呂（くぬ の まろ）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+日本獣医生命科学大学（にほんじゅういせいめいかがくだいがく、）は、日本の私立大学。	entity	日本獣医生命科学大学（にほんじゅういせいめいかがくだいがく、）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+日本獣医生命科学大学（にほんじゅういせいめいかがくだいがく、）は、日本の私立大学。	value	、日本の私立大学	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+顔面骨折（がんめんこっせつ、）とは、顔面における骨折である。	entity	顔面骨折（がんめんこっせつ、）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+顔面骨折（がんめんこっせつ、）とは、顔面における骨折である。	value	、顔面における骨折	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+『神の左手悪魔の右手』（かみのひだりてあくまのみぎて）は、楳図かずおのホラー漫画。	entity	『神の左手悪魔の右手』（かみのひだりてあくまのみぎて）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+『神の左手悪魔の右手』（かみのひだりてあくまのみぎて）は、楳図かずおのホラー漫画。	value	、楳図かずおのホラー漫画	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+「赤とんぼの唄」（あかとんぼのうた）とは、あのねのねの楽曲で1枚目のシングルである（メジャーデビュー作）。	entity	「赤とんぼの唄」（あかとんぼのうた）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+水野 勝貞（みずの かつさだ）は、備後国福山藩の第3代藩主。	entity	水野 勝貞（みずの かつさだ）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+萩 わら子（はぎ わらこ、1982年6月9日 - ）は、日本の漫画家。	entity	萩 わら子（はぎ わらこ、1982年6月9日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+萩 わら子（はぎ わらこ、1982年6月9日 - ）は、日本の漫画家。	value	、日本の漫画家	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+水野 忠恒（みずの ただつね）は、江戸時代の大名。	entity	水野 忠恒（みずの ただつね）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+橋本 真由美（はしもと まゆみ、旧姓・清水、1949年3月21日 - ）は、日本の実業家で、ブックオフコーポレーション元社長（第2代）である。	entity	橋本 真由美（はしもと まゆみ、旧姓・清水、1949年3月21日 - ）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+橋本 真由美（はしもと まゆみ、旧姓・清水、1949年3月21日 - ）は、日本の実業家で、ブックオフコーポレーション元社長（第2代）である。	value	、日本の実業家で、ブックオフコーポレーション元社長（第2代）	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+40以上の言語に翻訳されている。	result	40以上の言語	ROLE_CHANGED	agent	IMPROVED	manual	coverage_texts_ja.txt
+『銀の勇者』（ぎんのゆうしゃ）は、渡辺祥智によるファンタジー漫画。	entity	『銀の勇者』（ぎんのゆうしゃ）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+戦後はソ連空軍の指揮官として朝鮮戦争に参戦した。	time	戦後	ROLE_CHANGED	agent	IMPROVED	manual	coverage_texts_ja.txt
+その後、空軍の将官として勤務を続け、晩年はソ連人民代議員を勤めた。	capacity	空軍の将官	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+その後、空軍の将官として勤務を続け、晩年はソ連人民代議員を勤めた。	patient	勤務	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+その後、空軍の将官として勤務を続け、晩年はソ連人民代議員を勤めた。	time	その後	NEWLY_SUPPORTED	-	CORRECT	manual	coverage_texts_ja.txt
+その後、空軍の将官として勤務を続け、晩年はソ連人民代議員を勤めた。	time	晩年	ROLE_CHANGED	agent	IMPROVED	manual	coverage_texts_ja.txt
+MDGRAPE-3とは、理研の分子動力学シミュレーション専用の超高速計算機（スーパーコンピュータ）である。	entity	MDGRAPE-3	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+「どまんじゅう」とは土饅頭、即ち墓の墳丘のことである。	entity	「どまんじゅう」	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+退局後はタレントとしても活動した。	time	退局後	ROLE_CHANGED	agent	IMPROVED	manual	coverage_texts_ja.txt
+画）]] 間 光延（はざま みつのぶ、寛永12年（1635年）-元禄16年2月4日（1703年3月20日））は、江戸時代前期の武士。	entity	画）]] 間 光延（はざま みつのぶ、寛永12年（1635年）-元禄16年2月4日（1703年3月20日））	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+画）]] 間 光延（はざま みつのぶ、寛永12年（1635年）-元禄16年2月4日（1703年3月20日））は、江戸時代前期の武士。	value	、江戸時代前期の武士	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+アメリカ野球愛好会（あめりかやきゅうあいこうかい　英語表記はAssociation of American Baseball Research）は、アメリカ野球の研究団体。	entity	アメリカ野球愛好会（あめりかやきゅうあいこうかい　英語表記はAssociation of American Baseball Research）	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+アメリカ野球愛好会（あめりかやきゅうあいこうかい　英語表記はAssociation of American Baseball Research）は、アメリカ野球の研究団体。	value	、アメリカ野球の研究団体	NEWLY_SUPPORTED	-	IMPROVED	manual	coverage_texts_ja.txt
+彼は医者になった。	result	医者	ROLE_CHANGED	recipient	IMPROVED	manual	review_r3_examples_ja.txt
+信号が赤に変わった。	result	赤	ROLE_CHANGED	recipient	IMPROVED	manual	review_r3_examples_ja.txt
+店長が店員に掃除をさせた。	causee	店員	ROLE_CHANGED	recipient	IMPROVED	manual	review_r3_examples_ja.txt
+店長が店員に掃除をさせた。	causer	店長	ROLE_CHANGED	agent	IMPROVED	manual	review_r3_examples_ja.txt
+先生が生徒を二人に選んだ。	agent	先生	NEWLY_SUPPORTED	-	CORRECT	manual	review_r3_examples_ja.txt
+先生が生徒を二人に選んだ。	patient	生徒	NEWLY_SUPPORTED	-	CORRECT	manual	review_r3_examples_ja.txt
+先生が生徒を二人に選んだ。	result	二人	NEWLY_SUPPORTED	-	CORRECT	manual	review_r3_examples_ja.txt
+弟は教師になった。	result	教師	ROLE_CHANGED	recipient	IMPROVED	manual	w1a2r3_probe_ja.txt
+信号が青に変わった。	result	青	ROLE_CHANGED	recipient	IMPROVED	manual	w1a2r3_probe_ja.txt
+妹は看護師に成長した。	result	看護師	ROLE_CHANGED	recipient	IMPROVED	manual	w1a2r3_probe_ja.txt
+水が氷に変化した。	result	氷	ROLE_CHANGED	recipient	IMPROVED	manual	w1a2r3_probe_ja.txt

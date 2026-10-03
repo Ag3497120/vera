@@ -1,0 +1,32 @@
+tree=/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a-S entry=yes
+ok        reader  ピアノに細かい傷が付けられた。 
+ok        reader  先生が説明を新米に言い換えた。 
+ok        reader  父が話を末っ子に言い換えた。 
+ok        reader  母が名前を園児に変えた。 
+ok        reader  結果が事務局から通知された。 
+ok        reader  2004年10月6日にキングレコードから発売された。 
+ok        reader  姉は買い物に行った。 
+ok        reader  彼は買い物に行った。 
+ok        reader  支部に資料が送られた。 
+ok        reader  戦後は若者が都会へ移った。 
+ok        kept    マキは研究室へ行った。 
+ok        kept    妹が学校へ行った。 
+ok        kept    叔父が弟に時計をくれた。 
+ok        entry   兄は弟から本を借りた。 unread: ['PREDICATE_NORMALIZED:貸す<-借りる']
+ok        entry   兄は弟に本をもらった。 read
+ok        entry   兄は姉から手紙を受け取った。 unread: ['PREDICATE_NORMALIZED:渡す<-受け取る']
+ok        entry   弟は先生に英語を教わった。 unread: ['PREDICATE_NORMALIZED:教える<-教わる']
+ok        entry   兄は東京に住んでいる。 read
+ok        entry   結果が事務局から通知された。 unread: ['NO_SUPPORTED_CLAUSE']
+ok        entry   先生が説明を新米に言い換えた。 unread: ['NO_SUPPORTED_CLAUSE']
+ok        entry   ピアノに細かい傷が付けられた。 unread: ['NO_SUPPORTED_CLAUSE']
+ok        entry   姉は買い物に行った。 unread: ['NO_SUPPORTED_CLAUSE']
+ok        entry   Rain stopped. 
+ok        entry   Snow fell. 
+ok        entry   Prices dropped. 
+ok        entry-ok Ann opened the door. 
+ok        entry-ok 叔父が弟に時計をくれた。 
+ok        entry-ok 妹が学校へ行った。 
+ok        entry   Ann received a letter from Ben. not_supported
+checks=29 violations=0
+exit=0

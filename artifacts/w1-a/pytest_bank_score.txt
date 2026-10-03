@@ -1,0 +1,36 @@
+..................................................F..................... [ 27%]
+........................................................................ [ 54%]
+........................................................................ [ 81%]
+..................................................                       [100%]
+=================================== FAILURES ===================================
+___________ test_s6_two_runs_agree_except_timing_and_recount_matches ___________
+
+tmp_path = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-690/test_s6_two_runs_agree_except_0')
+
+    def test_s6_two_runs_agree_except_timing_and_recount_matches(tmp_path):
+        items = subset(tmp_path, {"b2s-001", "b2s-003", "b2s-008", "b2s-020"})
+        a, b = tmp_path / "a", tmp_path / "b"
+        assert run("B2", items, a) == 0 and run("B2", items, b) == 0
+        assert compare.main([str(a), str(b)]) == 0
+        assert recount.main([str(a)]) == 0
+        rows = rows_of(a)
+        assert [r["class"] for r in rows if r["id"] == "b2s-020"] == ["unreachable"]
+        assert sum(1 for r in rows if r["entry"] == "cli-ask-round5") == 4
+        meta = json.loads((a / "run_meta.json").read_text(encoding="utf-8"))
+        assert meta["provenance_total"]["outside_count"] == 0 and meta["vera_calls"] == 3
+>       assert meta["child_env"]["HOME"] == "<WORK>/home" and meta["verantyx_untouched"] is True
+E       AssertionError: assert ('<WORK>/home' == '<WORK>/home'
+E         
+E           <WORK>/home and False is True)
+
+tests/bank_score/test_bs_end_to_end.py:99: AssertionError
+----------------------------- Captured stdout call -----------------------------
+B2 entry=cli-ask-round5 total=4 correct=0 wrong=0 misread=0 over_abstain=2 correct_abstain=1 false_compliance=0 unreachable=1 runtime_error=0 unscorable=0
+correct_rate=0.0 wrong_rate=0.0 false_compliance_rate=0.0
+B2 entry=cli-ask-round5 total=4 correct=0 wrong=0 misread=0 over_abstain=2 correct_abstain=1 false_compliance=0 unreachable=1 runtime_error=0 unscorable=0
+correct_rate=0.0 wrong_rate=0.0 false_compliance_rate=0.0
+一致: 12 ファイル（除いた欄: results ['elapsed_ms'], raw ['elapsed_ms', 'ingest_ms', 'ms'], run_meta ['timing']）
+recount /private/tmp/pytest-of-motonisihikoudai/pytest-690/test_s6_two_runs_agree_except_0/a: summary.json 一致 / summary.md 一致
+=========================== short test summary info ============================
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+1 failed, 265 passed in 48.76s

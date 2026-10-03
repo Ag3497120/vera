@@ -1,0 +1,17 @@
+tests/reading_soundness/a3.jsonl: OK
+tests/reading_soundness/en.jsonl: OK
+tests/reading_soundness/ja.jsonl: OK
+tests/reading_soundness/table7.jsonl: OK
+tests/reading_soundness/ja_r2.jsonl: OK
+tests/reading_soundness/en_r2.jsonl: OK
+tests/reading_soundness/a3_r2.jsonl: OK
+tests/reading_soundness/ja_r3.jsonl: OK
+tests/reading_soundness/a3_r3.jsonl: OK
+tests/reading_soundness/ja_r4.jsonl: OK
+tests/reading_soundness/a3_r4.jsonl: OK
+tests/reading_soundness/ja_r5.jsonl: OK
+tests/reading_soundness/a3_r5.jsonl: OK
+tests/reading_soundness/ja_r6.jsonl: OK
+tests/bank_score/fixtures/B1_v2/items.jsonl: OK
+tests/bank_score/fixtures/B1_v2_r2/items.jsonl: OK
+tests/bank_score/fixtures/B1_v2_r3/items.jsonl: OK

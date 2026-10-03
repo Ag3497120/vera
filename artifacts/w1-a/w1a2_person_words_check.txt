@@ -1,0 +1,15 @@
+土手 False False
+芝生 False False
+分母 False False
+体長 False False
+全長 False False
+身長 False False
+器官 False False
+民家 False False
+個人 False False
+整備士 True True
+研修生 True True
+運転手 True True
+警察官 True True
+委員会 True True
+編集長 True True

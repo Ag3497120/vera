@@ -1,0 +1,13 @@
+tree=/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W1-a3-impl/dev191 entry=no (reader part only)
+ok        reader   先生が素人に言い換えた。 
+ok        reader   姉が甥に訳した。 
+ok        reader   社長が新顔に変えた。 
+ok        reader   係員が留学生に翻訳した。 
+ok        reader   講師が受講者に言い換えた。 
+VIOLATION reader   絵が田中家に飾られた。 [('飾る', 'agent', '田中家')]
+VIOLATION reader   看板が鈴木家に掲げられた。 [('掲げる', 'agent', '鈴木家')]
+VIOLATION kept     彼は医者になった。 ('result', '医者') is gone
+VIOLATION kept     信号が赤に変わった。 ('result', '赤') is gone
+ok        kept     専門家に意見が求められた。 
+checks=10 violations=4
+exit=1

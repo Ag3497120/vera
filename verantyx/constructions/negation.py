@@ -133,6 +133,7 @@ def _copula_scope(text: str):
 
 
 _CASE_PARTICLES = frozenset(("が", "を", "に", "で", "へ", "から", "より", "まで"))
+_DEGREE_SURFACES = ("ほど", "くらい", "ぐらい", "並み")
 _FORMAL_NOUNS = frozenset(("わけ", "こと", "もの", "はず", "ところ", "ため", "つもり"))
 
 
@@ -144,6 +145,13 @@ def _nominal_value(value: str) -> bool:
         return False
     if any(word.feature.pos1 == "助詞" and word.surface in _CASE_PARTICLES for word, _, _ in tagged):
         return False
+    # W1-a round 4: ほど / くらい / ぐらい / 並み after a noun, pronoun, number or a nominalising の is a degree comparison (先月ほど静か),
+    # whatever tag it gets: the value is a predicate phrase, not an identity.
+    for k, (word, _, _) in enumerate(tagged):
+        if word.surface in _DEGREE_SURFACES and k > 0 and (
+                tagged[k - 1][0].feature.pos1 in ("名詞", "代名詞", "数", "接尾辞")
+                or (tagged[k - 1][0].feature.pos1 == "助詞" and tagged[k - 1][0].surface == "の")):
+            return False
     content = [word for word, _, _ in tagged if word.feature.pos1 not in ("助詞", "助動詞", "補助記号", "記号")]
     if not content or content[-1].feature.pos1 in ("動詞", "形容詞"):
         return False
@@ -625,6 +633,12 @@ def _licenses_copula(clause, source):
     if (len(value_tokens) > 1 and value_tokens[-1][0].surface in ("わけ", "こと", "もの", "はず", "ところ", "ため", "つもり")
             and value_tokens[-2][0].feature.pos1 in ("動詞", "助動詞", "形容詞")):
         return False
+    for k in range(1, len(value_tokens)):                 # a degree comparison (Nほど / Nくらい / Nぐらい / N並み) is not an identity value
+        before = value_tokens[k - 1][0]
+        if (value_tokens[k][0].surface in ("ほど", "くらい", "ぐらい", "並み")
+                and (before.feature.pos1 in ("名詞", "代名詞", "数", "接尾辞")
+                     or (before.feature.pos1 == "助詞" and before.surface == "の"))):
+            return False
     parsed = (entity, value, negative,
               (entity_left, entity_right), (value_left, value_right),
               (len(prefix), len(prefix) + len(negative)))
