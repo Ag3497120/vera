@@ -1,0 +1,185 @@
+{
+ "e1-e6": {
+  "PREDICATE_CLASSES": [
+   "en:answer",
+   "en:be",
+   "en:call",
+   "en:check",
+   "en:do",
+   "en:hold",
+   "en:implement",
+   "en:read",
+   "en:review",
+   "en:run",
+   "en:verify",
+   "en:write",
+   "ja:だ",
+   "ja:やる",
+   "ja:任せる",
+   "ja:作る",
+   "ja:優先する",
+   "ja:動かす",
+   "ja:呼ぶ",
+   "ja:回す",
+   "ja:待つ",
+   "ja:書く",
+   "ja:確かめる",
+   "ja:答える",
+   "ja:読む",
+   "ja:頼む"
+  ],
+  "VERB_WORK": [
+   "en:answer",
+   "en:check",
+   "en:implement",
+   "en:read",
+   "en:review",
+   "en:verify",
+   "en:write",
+   "ja:作る",
+   "ja:書く",
+   "ja:確かめる",
+   "ja:答える",
+   "ja:読む"
+  ],
+  "WORK_TERMS": [
+   "en:bulk generation",
+   "en:feature",
+   "en:features",
+   "en:fix",
+   "en:fixes",
+   "en:generation",
+   "en:implementation",
+   "en:reading",
+   "en:refactor",
+   "en:refactors",
+   "en:review",
+   "en:reviews",
+   "en:test",
+   "en:tests",
+   "en:verification",
+   "ja:テスト",
+   "ja:リファクタ",
+   "ja:リファクタリング",
+   "ja:レビュー",
+   "ja:修正",
+   "ja:実装",
+   "ja:攻撃",
+   "ja:新機能",
+   "ja:検証",
+   "ja:生成",
+   "ja:読み込み"
+  ],
+  "SIZE_TERMS": [
+   "en:big",
+   "en:large",
+   "en:small",
+   "ja:大きな",
+   "ja:小さい",
+   "ja:小さな"
+  ],
+  "IDENTITY_TERMS": [
+   "en:different",
+   "en:same",
+   "ja:別",
+   "ja:同じ"
+  ],
+  "LINEAGE_HEADS": [
+   "en:family",
+   "en:lab",
+   "ja:会社",
+   "ja:系列"
+  ],
+  "ROLE_NOUNS": [
+   "ja:作った者",
+   "ja:確かめる者"
+  ],
+  "HUMAN_TERMS": [
+   "en:i",
+   "ja:人",
+   "ja:人間"
+  ],
+  "RESIDUAL_TERMS": [
+   "ja:どれにも当てはまらない仕事"
+  ],
+  "OVERRIDE_MARKERS": [
+   "en:p.s.",
+   "en:update",
+   "ja:追記"
+  ],
+  "ANAPHORS": [
+   "en:it",
+   "en:that"
+  ],
+  "GENERIC_OBJECTS": [
+   "en:change",
+   "en:code",
+   "en:file",
+   "en:files",
+   "en:job",
+   "en:work",
+   "ja:もの",
+   "ja:コード",
+   "ja:ファイル",
+   "ja:仕事",
+   "ja:変更"
+  ],
+  "EN_DETERMINERS": [
+   "en:a",
+   "en:our",
+   "en:that",
+   "en:the"
+  ]
+ },
+ "r1-r2": {
+  "PREDICATE_CLASSES": [
+   "en:attack",
+   "en:check",
+   "en:do",
+   "en:read",
+   "en:review",
+   "en:write",
+   "ja:だ",
+   "ja:やる",
+   "ja:書く",
+   "ja:確かめる"
+  ],
+  "VERB_WORK": [
+   "en:attack",
+   "en:check",
+   "en:read",
+   "en:review",
+   "en:write",
+   "ja:書く",
+   "ja:確かめる"
+  ],
+  "WORK_TERMS": [
+   "en:attack",
+   "en:attacks",
+   "en:review",
+   "en:reviews",
+   "en:test",
+   "en:tests",
+   "ja:テスト",
+   "ja:レビュー",
+   "ja:実装",
+   "ja:攻撃",
+   "ja:検証"
+  ],
+  "IDENTITY_TERMS": [
+   "ja:同じ"
+  ],
+  "LINEAGE_HEADS": [
+   "ja:会社"
+  ],
+  "GENERIC_OBJECTS": [
+   "en:code",
+   "en:file",
+   "en:files",
+   "ja:コード"
+  ],
+  "EN_DETERMINERS": [
+   "en:the"
+  ]
+ }
+}

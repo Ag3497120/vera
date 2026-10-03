@@ -1,0 +1,60 @@
+{
+ "items": 16,
+ "errors": 0,
+ "route_expected": 11,
+ "route_correct": 6,
+ "route_abstained": 5,
+ "route_wrong_agent": 0,
+ "undecided_expected": 5,
+ "undecided_correct": 5,
+ "undecided_got_agent": 0,
+ "misroutes": 0,
+ "always_abstain_correct": 5,
+ "correct_total": 11,
+ "undecided_reason": {
+  "ALL_EXCLUDED": 5,
+  "NOT_COVERED": 5,
+  "None": 6
+ },
+ "abstention_type": {
+  "None": 16
+ },
+ "basis_kind": {
+  "condition": 2,
+  "explicit": 4,
+  "independence": 5,
+  "silence": 5
+ },
+ "per_explanation": {
+  "r1": {
+   "questions": 8,
+   "units": 8,
+   "by_status": {
+    "MAPPED": 7,
+    "COMPARISON_ONLY": 1,
+    "UNREAD": 0,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  },
+  "r2": {
+   "questions": 8,
+   "units": 6,
+   "by_status": {
+    "MAPPED": 6,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 0,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   }
+  }
+ }
+}

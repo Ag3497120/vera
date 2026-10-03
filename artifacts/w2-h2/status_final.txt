@@ -1,0 +1,9 @@
+ M verantyx/cli.py
+?? artifacts/w2-h2/
+?? docs/ROUTING_FROM_TEXT.md
+?? tests/routing_from_text/
+?? tests/test_routing_from_text.py
+?? tests/test_routing_from_text_data.py
+?? tests/test_routing_from_text_entry.py
+?? tests/test_routing_from_text_regress.py
+?? verantyx/routing_from_text.py

@@ -1,0 +1,180 @@
+{
+ "explanations": {
+  "e1": {
+   "units": 9,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 9,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   },
+   "unread_reasons": {
+    "UNREAD/NO_SUPPORTED_CLAUSE": 7,
+    "UNREAD/QUANTIFIER_NOT_MAPPED": 1,
+    "UNREAD/UNREAD_SPAN": 1
+   }
+  },
+  "e2": {
+   "units": 13,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 13,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   },
+   "unread_reasons": {
+    "UNREAD/NO_PREDICATE_TOKEN": 5,
+    "UNREAD/NO_SUPPORTED_CLAUSE": 6,
+    "UNREAD/UNREAD_SPAN": 2
+   }
+  },
+  "e3": {
+   "units": 10,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 10,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   },
+   "unread_reasons": {
+    "UNREAD/NO_PREDICATE_TOKEN": 3,
+    "UNREAD/NO_SUPPORTED_CLAUSE": 7
+   }
+  },
+  "e4": {
+   "units": 13,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 13,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   },
+   "unread_reasons": {
+    "UNREAD/NO_PREDICATE_TOKEN": 4,
+    "UNREAD/NO_SUPPORTED_CLAUSE": 5,
+    "UNREAD/PREDICATE_VALUE_NOT_MAPPED": 1,
+    "UNREAD/UNREAD_SPAN": 2,
+    "UNREAD/UNSUPPORTED_CLAUSE": 1
+   }
+  },
+  "e5": {
+   "units": 10,
+   "by_status": {
+    "MAPPED": 1,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 9,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   },
+   "unread_reasons": {
+    "UNREAD/EN_UNREAD": 9
+   }
+  },
+  "e6": {
+   "units": 10,
+   "by_status": {
+    "MAPPED": 0,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 10,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   },
+   "unread_reasons": {
+    "UNREAD/EN_UNREAD": 8,
+    "UNREAD/UNKNOWN_PREDICATE": 2
+   }
+  },
+  "r1": {
+   "units": 8,
+   "by_status": {
+    "MAPPED": 7,
+    "COMPARISON_ONLY": 1,
+    "UNREAD": 0,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   },
+   "unread_reasons": {}
+  },
+  "r2": {
+   "units": 6,
+   "by_status": {
+    "MAPPED": 6,
+    "COMPARISON_ONLY": 0,
+    "UNREAD": 0,
+    "PREDICATE_CLASS_UNKNOWN": 0,
+    "WORK_TERM_UNKNOWN": 0,
+    "NAME_UNRESOLVED": 0,
+    "AMBIGUOUS_RELATION": 0,
+    "CONTRADICTION": 0,
+    "UNREPRESENTABLE": 0
+   },
+   "unread_reasons": {}
+  }
+ },
+ "unread_reasons_all": {
+  "UNREAD/NO_SUPPORTED_CLAUSE": 25,
+  "UNREAD/EN_UNREAD": 17,
+  "UNREAD/NO_PREDICATE_TOKEN": 12,
+  "UNREAD/UNREAD_SPAN": 5,
+  "UNREAD/UNKNOWN_PREDICATE": 2,
+  "UNREAD/PREDICATE_VALUE_NOT_MAPPED": 1,
+  "UNREAD/QUANTIFIER_NOT_MAPPED": 1,
+  "UNREAD/UNSUPPORTED_CLAUSE": 1
+ },
+ "units_all": {
+  "units": 79,
+  "by_status": {
+   "MAPPED": 14,
+   "COMPARISON_ONLY": 1,
+   "UNREAD": 64,
+   "PREDICATE_CLASS_UNKNOWN": 0,
+   "WORK_TERM_UNKNOWN": 0,
+   "NAME_UNRESOLVED": 0,
+   "AMBIGUOUS_RELATION": 0,
+   "CONTRADICTION": 0,
+   "UNREPRESENTABLE": 0
+  }
+ },
+ "examples": {
+  "UNREAD/EN_UNREAD": "We run four agents.",
+  "UNREAD/NO_PREDICATE_TOKEN": "## エージェントの分担",
+  "UNREAD/NO_SUPPORTED_CLAUSE": "ミズチは手が速く、普段の実装はミズチに任せる。",
+  "UNREAD/PREDICATE_VALUE_NOT_MAPPED": "コマとユキは別の会社なので、独立性は問題ない。",
+  "UNREAD/QUANTIFIER_NOT_MAPPED": "うちのチームでは三つのエージェントを使い分けている。",
+  "UNREAD/UNKNOWN_PREDICATE": "Routing notes",
+  "UNREAD/UNREAD_SPAN": "テストを書く仕事はミズチでもカガリでもよく、どちらを優先するかは決めていない。",
+  "UNREAD/UNSUPPORTED_CLAUSE": "・「小さい子」と書いたらコマのこと。"
+ }
+}

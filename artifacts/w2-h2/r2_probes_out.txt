@@ -1,0 +1,12 @@
+## m1_b9 / review
+undecided None ABSTAINED INCOMPLETE_READING {'MAPPED': 2, 'AMBIGUOUS_RELATION': 2} aliases [] agents ['ハル', 'セキ']
+## m1_one_line / implement
+undecided None ABSTAINED INCOMPLETE_READING {'AMBIGUOUS_RELATION': 1} aliases [] agents []
+## m2_usually / review
+undecided None ABSTAINED INCOMPLETE_READING {'MAPPED': 1, 'NAME_UNRESOLVED': 1} aliases [] agents ['Rook']
+## m2_sometimes / review
+undecided None ABSTAINED INCOMPLETE_READING {'MAPPED': 1, 'NAME_UNRESOLVED': 1} aliases [] agents ['Rook']
+## m3_ja_past / implement
+undecided None ABSTAINED INCOMPLETE_READING {'UNREPRESENTABLE': 1} aliases [] agents []
+## m3_en_past / review
+undecided None ABSTAINED INCOMPLETE_READING {'UNREPRESENTABLE': 1} aliases [] agents []

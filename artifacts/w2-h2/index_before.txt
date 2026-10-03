@@ -1,0 +1,141 @@
+## 自由文から経路づけ
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "自由文から経路づけ",
+  "searched": 652,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 41,
+    "module": 283,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## 説明文から分業の記録
+{
+  "verdict": "ANSWER",
+  "query": "説明文から分業の記録",
+  "searched": 652,
+  "hits": [
+    {
+      "kind": "door",
+      "name": "explain_placement",
+      "about": "Where would this sentence land, and why — core, facets, poles,",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "vera_explain",
+      "about": "Meaning descent: the term's units grounded in definition",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "module",
+      "name": "explain",
+      "about": "A constructed explanation for a term the store never held.",
+      "where": "verantyx/explain.py"
+    },
+    {
+      "kind": "module",
+      "name": "placement_explain",
+      "about": "Where would this sentence land, and why — the placement inspector.",
+      "where": "verantyx/placement_explain.py"
+    },
+    {
+      "kind": "door",
+      "name": "own_ai_guide",
+      "about": "The build-your-own-AI guide: how placement works (core / facet /",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "record_typed_failure",
+      "about": "Classify failure evidence through the named domain pack (see",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "module",
+      "name": "assembled",
+      "about": "Every organ on one road, so what this engine actually is can be seen.",
+      "where": "verantyx/assembled.py"
+    },
+    {
+      "kind": "module",
+      "name": "contract_reader",
+      "about": "Conservative raw reader; whole-clause accounting blocks silent requirement loss.",
+      "where": "verantyx/contract_reader.py"
+    },
+    {
+      "kind": "module",
+      "name": "meaning_descent",
+      "about": "Meaning descent — lattice units wired to shelf definition sentences.",
+      "where": "verantyx/meaning_descent.py"
+    },
+    {
+      "kind": "module",
+      "name": "semantic_outside",
+      "about": "Typed, non-answer explanations for terms outside a semantic View.",
+      "where": "verantyx/semantic_outside.py"
+    },
+    {
+      "kind": "module",
+      "name": "semantic_unknown",
+      "about": "View-local, constructed routes for terms no semantic clause holds.",
+      "where": "verantyx/semantic_unknown.py"
+    },
+    {
+      "kind": "module",
+      "name": "settings_registry",
+      "about": "One place that knows what every setting and mode is — and can prove it.",
+      "where": "verantyx/settings_registry.py"
+    }
+  ],
+  "total_hits": 15
+}
+## 述語の類
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "述語の類",
+  "searched": 652,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 41,
+    "module": 283,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## 別名 呼び名
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "別名 呼び名",
+  "searched": 652,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 41,
+    "module": 283,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## 文の分割
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "文の分割",
+  "searched": 652,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 41,
+    "module": 283,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
