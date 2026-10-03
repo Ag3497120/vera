@@ -1,0 +1,10 @@
+placement: /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/dev/d2
+config: slot_min=20 slot_share_pct=30 slot_lift_pct=300
+slot -> direct: ビット gold=QUANTITY top=QUANTITY correct by=gen_definition+slot@codex:code+slot@codex:code_qa+slot@codex:general_qa+slot@jawiki
+{"words": 167, "direct_before": 86, "direct_after": 87, "became_direct_by_slot": 1, "became_correct": 1, "became_wrong": 0}
+query 昨日: {"state": "DECIDED", "origin": "estimated", "estimate_basis": "generated", "top": ["TIME"], "decided_by": ["gen_definition"], "frame_status": "ESTIMATED"}
+diagnostic: 昨日 slot rows: [('codex:general_qa', 2, 157, '1.3%'), ('codex:paraphrase_entail', 364, 4110, '8.9%'), ('jawiki', 1, 52, '1.9%')]
+diagnostic: slot_share_pct=30 -> DECIDED estimated TIME by=gen_definition
+diagnostic: slot_share_pct=10 -> DECIDED estimated TIME by=gen_definition
+diagnostic: slot_share_pct=8 -> DECIDED direct TIME by=gen_definition+slot@codex:paraphrase_entail
+diagnostic: slot_share_pct=5 -> DECIDED direct TIME by=gen_definition+slot@codex:paraphrase_entail

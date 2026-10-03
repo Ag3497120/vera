@@ -34,6 +34,11 @@ import threading
 import time
 from typing import Dict, List, Optional, Sequence, Tuple
 
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.dirname(HERE))
+
+from verantyx import coarse_types as ct  # noqa: E402  (the closed inventories the predicate prompt lists)
+
 MODEL, EFFORT, TIER = "gpt-6-luna", "low", "priority"
 ALLOWED_ITEMS = {"agent_message", "reasoning"}
 BENIGN_ERRORS = ("Falling back from WebSockets to HTTPS transport",)
@@ -60,6 +65,45 @@ PROMPT_HEAD = """あなたは日本語の辞書の編集者です。下の WORDS
 """
 WORDS_PREFIX = "WORDS_JSON: "
 
+# --- the predicate form (W3-a3, ``--kind pred``).  A separate prompt and schema: the noun ones above
+# are not touched.  The inventories are listed FROM coarse_types, never copied by hand.
+PRED_PARTICLES = ct.CASE_PARTICLES_9
+
+
+def _pred_prompt_head() -> str:
+    ptypes = "\n".join("- %s: %s" % (k, v) for k, v in ct.PRED_TYPES.items())
+    ntypes = "\n".join("- %s: %s" % (k, v) for k, v in ct.NOUN_TYPES.items())
+    return (
+        "あなたは日本語の文法辞書の編集者です。下の WORDS_JSON の各語（動詞）について、"
+        "(1) 述語の型を下の述語の型の一覧から 1 つ、(2) その語が普通に取る格の枠（助詞ごとに、その助詞で取る名詞の型）を答えてください。\n"
+        "\n述語の型（id: 名称）:\n" + ptypes + "\n"
+        "\n名詞の型（id: 名称）:\n" + ntypes + "\n"
+        "\n助詞は次の 9 種だけ: " + " ".join(PRED_PARTICLES) + "\n"
+        "\n規則:\n"
+        "- ptype は述語の型の id から 1 つ。当てはまる型が選べない、断片で語にならない、綴りから何も判断できない語は、ptype を null、frame を空の配列にする。無理に作らない。\n"
+        "- frame は [{\"particle\": 助詞, \"types\": [名詞の型の id, ...]}, ...] の配列。この語が普通に取る格だけを書く。同じ助詞は 1 回だけ書き、その助詞で取る名詞の型は types にまとめる。\n"
+        "- 語に複数の意味があるときは、いちばん一般的な意味を 1 つだけ選ぶ。\n"
+        "- ファイルを読まない。コマンドを実行しない。ネットワークを使わない。道具を使わず、あなたの知識だけで答える。\n"
+        "- items は入力の語と同じ順で、語ごとに 1 件ずつ。word には入力の語をそのまま入れる。\n"
+        "\n")
+
+
+PRED_PROMPT_HEAD = _pred_prompt_head()
+PRED_SCHEMA = {"type": "object", "additionalProperties": False, "required": ["items"],
+               "properties": {"items": {"type": "array", "items": {
+                   "type": "object", "additionalProperties": False,
+                   "required": ["word", "ptype", "frame"],
+                   "properties": {
+                       "word": {"type": "string"},
+                       "ptype": {"type": ["string", "null"], "enum": list(ct.PRED_TYPES) + [None]},
+                       "frame": {"type": "array", "items": {
+                           "type": "object", "additionalProperties": False,
+                           "required": ["particle", "types"],
+                           "properties": {
+                               "particle": {"type": "string", "enum": list(PRED_PARTICLES)},
+                               "types": {"type": "array", "items": {
+                                   "type": "string", "enum": list(ct.NOUN_TYPES)}}}}}}}}}}
+
 
 def now_utc() -> str:
     return datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="milliseconds")
@@ -84,6 +128,18 @@ def build_prompt(words: Sequence[str]) -> str:
 def prompt_template_sha256() -> str:
     """sha256 of the fixed part of the prompt (the word line aside)."""
     return sha256_text(PROMPT_HEAD + WORDS_PREFIX)
+
+
+def build_prompt_pred(words: Sequence[str]) -> str:
+    return PRED_PROMPT_HEAD + WORDS_PREFIX + json.dumps(list(words), ensure_ascii=False) + "\n"
+
+
+def prompt_template_sha256_pred() -> str:
+    return sha256_text(PRED_PROMPT_HEAD + WORDS_PREFIX)
+
+
+def schema_sha256(schema: dict) -> str:
+    return sha256_text(json.dumps(schema, ensure_ascii=False, sort_keys=True))
 
 
 # =====================================================================================
@@ -126,8 +182,61 @@ def select_needs(placement: str, n: int):
     return out, boundary
 
 
+def select_needs_pred(placement: str, n: int, stage_cache: str):
+    """The verbs the placement has no direct type for (W3-a3).  A headword whose namespace holds P (P or
+    NP), whose state is UNPLACED or MULTIPLE, and which the extraction cache saw MORE often as a verb
+    (V) than as an adjective or an adjectival noun (A + S) -- a filter that makes the LIST (it is not a
+    vote for a type; the uses of all sources are summed for it).  Most frequent first by ``n_seen``;
+    every word with the same frequency as the ``n``-th is included.  The test data are not read."""
+    import pickle
+    with open(stage_cache, "rb") as f:
+        ex = pickle.load(f)
+    v_uses: Dict[str, int] = collections.Counter()
+    as_uses: Dict[str, int] = collections.Counter()
+    for _src, pc in ex["pos"].items():
+        for (w, cl), k in pc.items():
+            if cl == "V":
+                v_uses[w] += k
+            elif cl in ("A", "S"):
+                as_uses[w] += k
+    del ex
+    dbp = os.path.join(placement, "placement.sqlite")
+    con = sqlite3.connect("file:%s?mode=ro" % dbp, uri=True)
+    try:
+        rows = [r for r in con.execute(
+            "SELECT word, ns, state, kind, n_seen FROM headwords "
+            "WHERE state IN ('UNPLACED','MULTIPLE') AND ns IN ('P','NP')").fetchall()
+            if v_uses.get(r[0], 0) > as_uses.get(r[0], 0)]
+        rows.sort(key=lambda r: (-r[4], r[0]))
+        if len(rows) > n:
+            boundary = rows[n - 1][4]
+            rows = [r for r in rows if r[4] >= boundary]
+        else:
+            boundary = rows[-1][4] if rows else None
+        out = []
+        for rank, (word, ns, state, kind, freq) in enumerate(rows, 1):
+            if state == "MULTIPLE":
+                status = "SPLIT"
+            else:
+                has = con.execute(
+                    "SELECT 1 FROM evidence WHERE word=? AND arm!='ns_vote' LIMIT 1", (word,)).fetchone()
+                status = "BELOW_THRESHOLD" if has else "NO_EVIDENCE"
+            out.append({"rank": rank, "word": word, "freq": freq, "state": state, "ns": ns,
+                        "kind": kind, "evidence_status": status,
+                        "verb_uses": v_uses.get(word, 0), "adjective_uses": as_uses.get(word, 0)})
+    finally:
+        con.close()
+    return out, boundary
+
+
 def cmd_needs(args) -> int:
-    rows, boundary = select_needs(args.placement, args.n)
+    if getattr(args, "kind", "noun") == "pred":
+        if not args.stage_cache:
+            print(json.dumps({"state": "UNKNOWN_STAGE_CACHE_UNSET"}))
+            return 2
+        rows, boundary = select_needs_pred(args.placement, args.n, args.stage_cache)
+    else:
+        rows, boundary = select_needs(args.placement, args.n)
     mpath = os.path.join(args.placement, "manifest.json")
     manifest = json.load(open(mpath, encoding="utf-8"))
     with open(args.out, "w", encoding="utf-8") as f:
@@ -136,11 +245,18 @@ def cmd_needs(args) -> int:
     meta = {
         "placement": os.path.abspath(args.placement),
         "content_sha256": manifest.get("content_sha256"),
-        "rule": ("headwords with state UNPLACED or MULTIPLE (nouns, predicates and NP alike), "
-                 "ordered by n_seen descending; every word whose n_seen equals that of the "
-                 "n-th is included; display order inside one frequency = string order; "
-                 "n_seen is a sum used only to rank, never a vote for a type; "
-                 "no test data is read"),
+        "rule": (("headwords with state UNPLACED or MULTIPLE (nouns, predicates and NP alike), "
+                  "ordered by n_seen descending; every word whose n_seen equals that of the "
+                  "n-th is included; display order inside one frequency = string order; "
+                  "n_seen is a sum used only to rank, never a vote for a type; "
+                  "no test data is read") if getattr(args, "kind", "noun") != "pred" else
+                 ("headwords whose namespace is P or NP and whose state is UNPLACED or MULTIPLE, kept "
+                  "when the extraction cache saw the word more often as a verb (V) than as an adjective "
+                  "or adjectival noun (A+S), the uses of all sources summed (a filter that makes the "
+                  "list, not a vote for a type); ordered by n_seen descending; every word whose n_seen "
+                  "equals that of the n-th is included; display order inside one frequency = string "
+                  "order; no test data is read")),
+        "kind": getattr(args, "kind", "noun"),
         "n_requested": args.n,
         "total": len(rows),
         "boundary_freq": boundary,
@@ -280,6 +396,81 @@ def parse_output(batch_words: Sequence[str], data) -> Tuple[Dict[str, Tuple[Opti
                      "abstained": abstained, "answered": len(answers)}
 
 
+def parse_output_pred(batch_words: Sequence[str], data):
+    """The answers of one predicate batch (W3-a3).  Like ``parse_output`` (a foreign word is dropped and
+    counted ``foreign``, a word that comes back more than once is NOT taken: ``dup_dropped``, a batch word
+    that does not come back is ``missing``), and: ``ptype`` null = an abstention (its frame is ignored);
+    a ptype or a particle or a noun type outside the closed inventories drops the word (``invalid``);
+    a frame that names one particle twice is not taken (``frame_dup_particle``: the word keeps its ptype,
+    its frame is empty -- no entry is chosen by order).  ``answers[w] = (ptype or None, {particle: [types]})``."""
+    items = data.get("items") if isinstance(data, dict) else None
+    if not isinstance(items, list):
+        raise ValueError("NO_ITEMS")
+    inb = set(batch_words)
+    seen: Dict[str, list] = collections.defaultdict(list)
+    foreign = 0
+    for it in items:
+        if not isinstance(it, dict) or not isinstance(it.get("word"), str):
+            foreign += 1
+            continue
+        w = it["word"]
+        if w not in inb:
+            foreign += 1
+            continue
+        seen[w].append((it.get("ptype"), it.get("frame")))
+    answers: Dict[str, Tuple[Optional[str], Dict[str, List[str]]]] = {}
+    dup = invalid = frame_dup = abst = 0
+    for w in batch_words:
+        got = seen.get(w)
+        if not got:
+            continue
+        if len(got) > 1:
+            dup += 1
+            continue
+        pt, fr = got[0]
+        if pt is None:
+            answers[w] = (None, {})
+            abst += 1
+            continue
+        if not isinstance(pt, str) or pt not in ct.PRED_TYPES or not isinstance(fr, list):
+            invalid += 1
+            continue
+        frame: Dict[str, set] = {}
+        ok, dupflag = True, False
+        for e in fr:
+            if not isinstance(e, dict):
+                ok = False
+                break
+            part, ts = e.get("particle"), e.get("types")
+            if (not isinstance(part, str) or part not in PRED_PARTICLES or not isinstance(ts, list)
+                    or any((not isinstance(t, str)) or t not in ct.NOUN_TYPES for t in ts)):
+                ok = False
+                break
+            if part in frame:
+                dupflag = True
+            frame.setdefault(part, set()).update(ts)
+        if not ok:
+            invalid += 1
+            continue
+        if dupflag:
+            frame_dup += 1
+            frame = {}
+        answers[w] = (pt, {p: sorted(ts) for p, ts in frame.items() if ts})
+    missing = sum(1 for w in batch_words if w not in seen)
+    return answers, {"foreign": foreign, "dup_dropped": dup, "missing": missing,
+                     "abstained": abst, "answered": len(answers), "invalid": invalid,
+                     "frame_dup_particle": frame_dup}
+
+
+#: what differs between the noun form and the predicate form of a run (the rest is shared)
+KINDS = {
+    "noun": {"schema": SCHEMA, "prompt": build_prompt, "parse": parse_output,
+             "template_sha": prompt_template_sha256},
+    "pred": {"schema": PRED_SCHEMA, "prompt": build_prompt_pred, "parse": parse_output_pred,
+             "template_sha": prompt_template_sha256_pred},
+}
+
+
 def run_one(cmd: List[str], cwd: str, timeout: float, procs: set, plock: threading.Lock,
             stop: threading.Event):
     """Run one codex call.  Returns (exit, sec, stdout, stderr, timed_out)."""
@@ -305,7 +496,8 @@ def run_one(cmd: List[str], cwd: str, timeout: float, procs: set, plock: threadi
     return p.returncode, round(time.time() - t0, 3), out or "", err or "", timed_out
 
 
-def judge(exit_code, stdout: str, stderr: str, out_path: str, batch_words, timed_out, interrupted):
+def judge(exit_code, stdout: str, stderr: str, out_path: str, batch_words, timed_out, interrupted,
+          parse=None):
     """(status, reason, n_items, n_missing, extra) for one finished call."""
     if interrupted:
         return "interrupted", "STOPPED", None, None, {}
@@ -332,7 +524,7 @@ def judge(exit_code, stdout: str, stderr: str, out_path: str, batch_words, timed
     except (OSError, ValueError):
         return "bad_output", "NO_OR_BAD_JSON", None, None, {}
     try:
-        _ans, st = parse_output(batch_words, data)
+        _ans, st = (parse or parse_output)(batch_words, data)
     except ValueError as e:
         return "bad_output", str(e), None, None, {}
     return "ok", None, len(data["items"]), st["missing"], st
@@ -342,6 +534,8 @@ def judge(exit_code, stdout: str, stderr: str, out_path: str, batch_words, timed
 # run
 # =====================================================================================
 def cmd_run(args) -> int:
+    kind = getattr(args, "kind", "noun")
+    spec = KINDS[kind]
     words = read_needs_words(args.needs)
     batches = make_batches(words, args.batch_size)
     out_dir = os.path.abspath(args.out_dir)
@@ -368,7 +562,10 @@ def cmd_run(args) -> int:
     meta = {"batch_size": args.batch_size, "max_retries": args.max_retries,
             "max_calls": args.max_calls, "slots": args.slots, "model": MODEL, "effort": EFFORT,
             "needs": os.path.abspath(args.needs), "needs_sha256": sha256_file(args.needs),
-            "prompt_template_sha256": prompt_template_sha256()}
+            "prompt_template_sha256": spec["template_sha"]()}
+    if kind != "noun":
+        meta["kind"] = kind
+        meta["schema_sha256"] = schema_sha256(spec["schema"])
     with open(bpath, "w", encoding="utf-8") as f:
         json.dump({"meta": meta, "batches": [
             {"index": b["index"], "id": b["id"], "words_sha": b["words_sha"], "n": len(b["words"])}
@@ -376,7 +573,7 @@ def cmd_run(args) -> int:
         f.write("\n")
     schema_path = os.path.join(out_dir, "schema.json")
     with open(schema_path, "w", encoding="utf-8") as f:
-        json.dump(SCHEMA, f, ensure_ascii=False, sort_keys=True)
+        json.dump(spec["schema"], f, ensure_ascii=False, sort_keys=True)
     empty = os.path.join(out_dir, "work", "empty")
 
     starts, ok, total_calls = ledger_state(events)
@@ -440,7 +637,7 @@ def cmd_run(args) -> int:
                 return
             b, attempt = got
             out_path = os.path.join(out_dir, "raw", "%s.a%d.last.json" % (b["id"], attempt))
-            prompt = build_prompt(b["words"])
+            prompt = spec["prompt"](b["words"])
             argv = [args.codex_bin, "exec", "-m", MODEL,
                     "-c", "model_reasoning_effort=" + json.dumps(EFFORT),
                     "-c", "service_tier=" + json.dumps(TIER),
@@ -458,7 +655,7 @@ def cmd_run(args) -> int:
                                                          procs, plock, stop)
                 status, reason, n_items, n_missing, st = judge(
                     code, out, err, out_path, b["words"], timed_out,
-                    stop.is_set() and code not in (0,))
+                    stop.is_set() and code not in (0,), spec["parse"])
             except OSError as e:               # the executable could not be started
                 code, sec, err = None, 0.0, str(e)
                 status, reason, n_items, n_missing, st = "failed", "OSERROR", None, None, {}
@@ -520,12 +717,25 @@ def cmd_collect(args) -> int:
     words_of = _batch_words(events)
     lines = []
     bad = []
+    pred = getattr(args, "kind", "noun") == "pred"
     for bid in sorted(firsts):
         e = firsts[bid]
         words = words_of[(bid, e["attempt"])]
         path = e["out_path"]
         if not path or not os.path.exists(path) or sha256_file(path) != e["out_sha256"]:
             bad.append({"batch": bid, "reason": "OUTPUT_FILE_CHANGED_OR_MISSING"})
+            continue
+        if pred:
+            answers, _st = parse_output_pred(words, json.load(open(path, encoding="utf-8")))
+            for w in words:
+                if w not in answers:
+                    continue        # missing, duplicated or invalid: no row (not an abstention)
+                pt, fr = answers[w]
+                lines.append(json.dumps({
+                    "word": w, "ptype": pt, "frame": fr, "abstained": pt is None,
+                    "provenance": {"origin": "generated", "model": MODEL, "effort": EFFORT,
+                                   "batch_id": bid, "attempt": e["attempt"],
+                                   "out_sha256": e["out_sha256"]}}, ensure_ascii=False) + "\n")
             continue
         answers, _st = parse_output(words, json.load(open(path, encoding="utf-8")))
         for w in words:
@@ -548,11 +758,14 @@ def _ts(s: str) -> float:
     return datetime.datetime.fromisoformat(s).timestamp()
 
 
-def summarize(out_dir: str) -> dict:
+def summarize(out_dir: str, kind: Optional[str] = None) -> dict:
     events = read_ledger(os.path.join(out_dir, "ledger.jsonl"))
     bf = os.path.join(out_dir, "batches.json")
     bmeta = json.load(open(bf, encoding="utf-8")) if os.path.exists(bf) else {"meta": {}, "batches": []}
     meta = bmeta["meta"]
+    kind = kind or meta.get("kind", "noun")
+    parse = KINDS[kind]["parse"]
+    invalid = frame_dup = 0
     limit = 1 + int(meta.get("max_retries", 2))
     starts, ok, calls = ledger_state(events)
     firsts = _first_ok(events)
@@ -569,7 +782,9 @@ def summarize(out_dir: str) -> dict:
     for bid, e in firsts.items():
         path = e["out_path"]
         words = words_of[(bid, e["attempt"])]
-        _a, st = parse_output(words, json.load(open(path, encoding="utf-8")))
+        _a, st = parse(words, json.load(open(path, encoding="utf-8")))
+        invalid += st.get("invalid", 0)
+        frame_dup += st.get("frame_dup_particle", 0)
         ans += st["answered"]
         abst += st["abstained"]
         miss += st["missing"]
@@ -580,7 +795,9 @@ def summarize(out_dir: str) -> dict:
     sum_call = round(sum(e.get("sec") or 0 for e in events if e["ev"] == "end"), 1)
     wall = round(max(t_ends) - min(t_starts), 1) if t_starts and t_ends else None
     capped = calls >= int(meta.get("max_calls", 10 ** 9))
-    return {
+    extra = ({"kind": "pred", "words_invalid": invalid, "words_frame_dup_particle": frame_dup,
+              "schema_sha256": meta.get("schema_sha256")} if kind == "pred" else {})
+    return dict(extra, **{
         "model": MODEL, "effort": EFFORT, "slots": meta.get("slots"),
         "batch_size": meta.get("batch_size"), "max_calls": meta.get("max_calls"),
         "max_retries": meta.get("max_retries"),
@@ -600,11 +817,11 @@ def summarize(out_dir: str) -> dict:
         "ledger_sha256": sha256_file(os.path.join(out_dir, "ledger.jsonl"))
         if os.path.exists(os.path.join(out_dir, "ledger.jsonl")) else None,
         "prompt_template_sha256": meta.get("prompt_template_sha256"),
-    }
+    })
 
 
 def cmd_summarize(args) -> int:
-    s = summarize(args.out_dir)
+    s = summarize(args.out_dir, getattr(args, "kind", None))
     text = json.dumps(s, ensure_ascii=False, indent=1, sort_keys=True) + "\n"
     if args.out == "/dev/stdout":
         sys.stdout.write(text)
@@ -616,6 +833,11 @@ def cmd_summarize(args) -> int:
 
 
 def cmd_prompt(args) -> int:
+    if getattr(args, "kind", "noun") == "pred":
+        print(PRED_PROMPT_HEAD + WORDS_PREFIX + '["<語>", ...]')
+        print("template_sha256 " + prompt_template_sha256_pred())
+        print("schema_sha256 " + schema_sha256(PRED_SCHEMA))
+        return 0
     print(PROMPT_HEAD + WORDS_PREFIX + '["<語>", ...]')
     print("template_sha256 " + prompt_template_sha256())
     return 0
@@ -624,12 +846,16 @@ def cmd_prompt(args) -> int:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     sub = ap.add_subparsers(dest="cmd", required=True)
+    kinds = ("noun", "pred")
     n = sub.add_parser("needs")
+    n.add_argument("--kind", choices=kinds, default="noun")
+    n.add_argument("--stage-cache", default=None, help="pred: the extraction cache (verbs are told by it)")
     n.add_argument("--placement", required=True)
     n.add_argument("--n", type=int, default=60000)
     n.add_argument("--out", required=True)
     n.add_argument("--meta", required=True)
     r = sub.add_parser("run")
+    r.add_argument("--kind", choices=kinds, default="noun")
     r.add_argument("--needs", required=True)
     r.add_argument("--out-dir", required=True)
     r.add_argument("--codex-bin", required=True, help="path of the codex executable (no default)")
@@ -642,12 +868,15 @@ def main(argv=None) -> int:
     r.add_argument("--limit-batches", type=int, default=None)
     r.add_argument("--extra-config", action="append", default=[])
     c = sub.add_parser("collect")
+    c.add_argument("--kind", choices=kinds, default="noun")
     c.add_argument("--out-dir", required=True)
     c.add_argument("--out", required=True)
     s = sub.add_parser("summarize")
+    s.add_argument("--kind", choices=kinds, default=None)
     s.add_argument("--out-dir", required=True)
     s.add_argument("--out", required=True)
-    sub.add_parser("prompt")
+    pp = sub.add_parser("prompt")
+    pp.add_argument("--kind", choices=kinds, default="noun")
     args = ap.parse_args(argv)
     if args.cmd == "run" and (args.slots < 1 or args.slots > 12):
         ap.error("--slots must be 1..12")

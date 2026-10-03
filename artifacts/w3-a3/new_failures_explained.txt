@@ -1,0 +1,13 @@
+W3-a3 Q7: failures of the full test run that are not in the baseline list (dev_9af2ed5_failures.txt, 114 lines)
+after_failures.txt has 116 lines; new_failures.txt (comm -13) has exactly these 2; no baseline failure disappeared.
+
+1. tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+   fails at `meta["verantyx_untouched"] is True` (got False): the run's own record says the verantyx tree is not the
+   committed one.  The ticket's note names it as environment-derived while the tree is uncommitted ("未コミットの間だけ").
+2. tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread
+   fails at `out["kind"] == "answer"` (got "unknown") in the chat's generation path; named in the ticket's note as
+   environment-derived.
+
+Evidence that neither depends on this change: both tests were run again on an UNTOUCHED export of the base commit
+(`git archive HEAD` extracted into the scratch directory, PYTHONPATH pointing at it, no change of ours in it):
+  "2 failed in 3.34s" (the same two tests).  Neither test reads coarse_place, coarse_types or the builder.

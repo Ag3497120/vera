@@ -1216,6 +1216,8 @@ template sha256 (the fixed part): `ded30f48c0a596575d061e75aa0768beb3008969a587a
 
 （W5-b 第 4 ラウンドで一部撤回: §11.9.3、監査役の裁定 C1。上の「`spelling` は `state` `top` `candidates` に一切影響しない」「推定はしない」「不変条件の `estimate_basis` は `proximity` か `generated`」は、**問うた表記が `UNPLACED`／`UNKNOWN` で、仮名が 1 つの文字体系だけで、もう一方の表記が `DECIDED` かつ `direct` のときに限り** 変わった。そのとき答えは `origin: estimated`・`estimate_basis: kana_variant`・`constructed: true` で、`spelling.why` は `ESTIMATED_FROM_KANA_VARIANT:<もう一方の表記>`。それ以外（自分の答えを持つ表記・`MULTIPLE` や `estimated` の変種・仮名が混ざった表記・`NO_PLACEMENT`）は上の記述のまま。）
 
+**W3-a3 の追記（述語の `frame`・`frame_status`・`generated_frame`）**: すべての答えの最後に `frame_status`（閉じた 7 値）と `frame`（助詞 → 名詞の型。確認できた述語だけ、ほかは null）が付く。直接の答えには `generated_frame`、確認済みの枠には `frame_unconfirmed` も付く。意味・不変条件・閉じた一覧・述語の型が `direct` になる条件は **§12（特に §12.10）を見よ**。既存のキーの値と順は変えていない。
+
 ### 11.7 既知の穴
 
 - 生成した定義文の精度は、凍結した検査データでは「推定（生成）」の語の正答・誤決定の件数（第 11.5 節の表）でしか分からない。検査データに無い語の精度は測っていない。
@@ -1386,3 +1388,431 @@ def test_hiragana_katakana_variant_keeps_same_state():
 **`event_cross` との接点（製品コードは変えていない。監査役への申し送り）**: `verantyx/event_cross.py` の `ESTIMATE_BASES = ('proximity', 'generated')` は `kana_variant` を知らない。`PlaceResult.from_coarse_query` で包んだ借りた答えは `invariant_problems()` に `ESTIMATE_BASIS_UNKNOWN:kana_variant` が出る（`artifacts/w5-b/kana_variant_event_cross.txt`: `DECIDED estimated kana_variant ['ESTIMATE_BASIS_UNKNOWN:kana_variant']`）。十字ではこれが `INVALID`（`LOOKUP_RESULT_INVALID`）として型つきで止まる（誤答にはならない）。`event_cross.py` は W3-b1 が変更中で触れない。`ESTIMATE_BASES` に足すかどうかは W3-b1 側の判断。同様に `tests/coarse_place/test_coarse_place_build.py` の `check_invariants`（W3-a のもの。このチケットでは変えない）も `estimate_basis` を `proximity`／`generated` に限っているので、借りた答えにそのヘルパーを当てると落ちる（新しい試験は当てていない）。
 
 **残る穴**: (1) 借りた型が誤ることがある（`ロケット`・`モネ` の 2 例。かな違いで別の語義になる語）。印（`estimated`／`kana_variant`）が付くので、同点の解消には使わないという §11.6 の提案（推定は決めに使わない）に従う側が止められる。(2) 変種を持たない表記は従来どおり `UNPLACED`／`UNKNOWN` のまま（借りない）。
+
+## 12. W3-a3: 述語の枠と高頻度語の「直接」の型 — 生成と分布の一致で埋める（日本語）
+
+<!-- w3a3-prereg:begin -->
+登録日時: 2026-10-03 18:49:53 +0900 から 2026-10-03 18:51:03 +0900 の間（`date '+%F %T %z'` の出力。`artifacts/w3-a3/prereg_time.txt` の `before` と `after`。この節はその間に書いた）
+この時点で `tests/coarse_place/data/dev_verbs.jsonl`・`verb_check_300.jsonl`・`artifacts/w3-a3/FROZEN.json`・`tests/coarse_place/test_coarse_place_w3a3_*.py`・`tests/test_gen_coarse_evidence_pred.py` は存在しない。製品コード（`verantyx/coarse_*.py`・`tools/*.py`）の差分は 0。
+出典: 中間職の指示書 `.claude/vera-audit/review-impl/W3-a3/plan.md`（チケット W3-a3）。この節に **語の一覧は無い**（型の id・助詞・設定の名前と格子だけ）。
+
+### 12.1 目的と、規則の形（変えるなら下の「変更記録」に日時つきで書く）
+述語（動詞）の「型 ＋ 格の枠（助詞 → 期待する充填物の型）」と、時・場所・数量の語の直接の型を、**生成（モデルが書いたもの）と分布（材料の数え）の一致** で `direct` にする。生成だけで決まったものは `estimated(generated)` に留める。配置は情報を増やさない: 分布の腕と `slot` の腕は **単独では決めない**（`AGREEMENT_ONLY`）。読解器には触れない（契約と欄だけ。読解器は W3-b2）。
+
+### 12.2 K62 の写し（`coarse_types.K62_FRAMES`）
+出典は W3-b1 の `docs/READING_SOUNDNESS.md` §10 の K62 の表（`origin/integ-w3b1`、コミット `5d863dd`、blob `0d6233b20c6a1cd717f9a16bb6d96476422864ab`。§10A の K62 ではない）。表は 2 型 9 行。写しは型 id・助詞・名詞の型 id だけで、`artifacts/w3-a3/k62_source.md` に表をそのまま貼って機械で照合する。**表を広げない**。残り 11 型は枠が無い（「読まない型」）。
+**区別の行**: 型 T の行の (助詞, 名詞の型) の組のうち、もう一方の型のどの行にも無い組。表から機械的に導く関数で求め、手で選ばない。
+
+### 12.3 抽出段の新しい数え（`analyze`。読解器は使わない）
+「項の連なり」の規則（隣接だけ。長距離は数えない）:
+- 印 m は、名詞の連続（今の `analyze` の run と同じ切り方）の直後の格助詞 9 種（が を に で へ と から まで より）か、読点「、」（∅）。は・も・の は印にしない。
+- 印の直後から右へ、次のどれかが来るまで見る。(1) 名詞の連続＋格助詞 9 種の組（ほかの項）。最大 3 組。4 組目が来たら数えない（`too_many_args`）。(2) 動詞（`pos1 == 動詞`）が来たらそれがこの項の述語。(3) 文末・句点に至っても動詞が無い（`no_verb`）、それ以外（読点・副詞・形容詞・連体詞・接続助詞・係助詞・の・名詞の連続のあとに助詞が無い・代名詞 等）が来たら数えない（`chain_broken`）。
+- 述語は `orthBase`（無ければ表層）。直前が名詞の「する」は数えない（`sahen`）。動詞の直後に連続する助動詞の原形に れる・られる・せる・させる があれば数えない（`voice`。態を変えると助詞と役割の対応が変わるため。閉じた文法の類で、語の一覧ではない）。連続する助動詞の原形に た があれば「過去」の印を付ける。
+- 充填物は `(連続全体の語, 最後の名詞の原形)`。数詞で始まる連続は数えない（`numeral_start`。数量は表記の規則と既存の counters で扱う）。
+- 出所ごとに `acc["chain"]: Counter[(filler_run, filler_head, m, verb, past)]` に数える。出所をまたいで足さない。抽出段の cache に新しいキー `chain` が無いときは、型つきで止まる（`STAGE_CACHE_STALE`、終了コード 4）。理由別の数（`chain_broken`・`too_many_args`・`no_verb`・`sahen`・`voice`・`numeral_start`・数えた数）は manifest に出す。
+
+### 12.4 述語の分布の腕 `role_distribution`（出所ごと。`ARMS_BY_SOURCE`）
+決定は 2 段（循環を避ける）。**段 1** = 今の判定（新しい腕なし）を全語に行う。段 1 で `DECIDED`・`origin=direct`・名詞の型 1 つ・`decided_by` に生成の腕（`gen_definition`・`gen_frame`）を含まない語だけを「型の分かった充填物」とする。**段 2** で、新しい腕の行を足して、新しい行を持つ語だけを決め直す。新しい腕は単独では決めないので、段 2 で段 1 の型の源は変わらない。
+- 充填物の型: 連続全体の語が段 1 で型を持てばそれ、無ければ最後の名詞の型、どちらも無ければ型なし（数えるが票にしない。`untyped` として manifest に）。この順は固定の規則（同点の解消ではない）。
+- evidence の行: `(述語, "role_distribution", 出所, "<助詞>|<名詞の型>", n, base=その述語のその出所での型つきの項の総数)`。述語ごと出所ごとに `rd_store_min` 以上の型つきの項があるときだけ保存。∅（読点）は述語の腕に入れない（格助詞 9 種だけ）。
+- `arm_verdict("role_distribution")`（判定は `coarse_types` の 1 か所。builder と問い合わせが同じ関数を使う）。K62 の逆引き:
+  1. `base < rd_min_total` → 票なし。
+  2. 有意な助詞 Sig: 助詞 p の型つきの数 n_p が `rd_particle_min` 以上、かつ n_p ≥ `rd_particle_share_pct`% × base。
+  3. 各 p ∈ Sig の有意な型 Types(p): n_{p,t} ≥ `rd_type_share_pct`% × n_p。
+  4. K62 の型 T が候補になるのは、(a) Sig のうち K62 の 6 助詞（が を に で へ から）に入るものが、すべて T の行の助詞に含まれ、(b) その各 p で Types(p) ⊆ T の行の型、(c) T の区別の行の少なくとも 1 つが有意（p ∈ Sig かつ t ∈ Types(p)）。と・まで・より は表に無い助詞なので候補の判定には使わない（数は見せる）。
+  5. 候補がちょうど 1 つ → その型。0 または 2 → 票なし（割れは票にしない。同点は棄権）。
+- この腕は単独では決めない（`threshold_met=True` でも `met=False`、`why="AGREEMENT_ONLY"`）。生成の型との一致だけに使う。
+- 帰結: K62 の `P_MOVE` に に+PLACE の行は無いので、に+PLACE が有意な移動の動詞は (a)(b) で候補にならない。再現率は低く、精度を優先する設計である。
+
+### 12.5 名詞の「時・場所・数量」の腕 `slot`（出所ごと。`ARMS_BY_SOURCE`）
+- 12.3 の数えから、名詞の語ごとに出所ごとに、型ごとに別の数を数える（型をまたいで足さない）。`TIME`: 印が ∅ か に で、述語が「過去」の印つき。`PLACE`: 印が で か に で、述語の段 1 の型（`DECIDED`・direct・生成の腕なし）が `P_MOVE` か `P_EXIST`（**動詞の一覧を書かない。配置の型で決める**）。`QUANTITY`: 既存の `counters`（算用数字の直後の 1 形態素）のその語の数をそのまま使う（新しく数えない）。
+- 行 `(語, "slot", 出所, 型, n, base=その出所での名詞の使用数)`。builder は出所ごとの基準率（その出所の全名詞の使用のうちその構文に出た割合）に対する持ち上げが `slot_lift_pct`%（= `ctx_min_lift_pct` と同じ 300）以上の型だけを行にする。
+- `arm_verdict("slot")`: 最上位の型の数 ≥ `slot_min` かつ ≥ `slot_share_pct`% × base。同点は全部並べる。
+- この腕も単独では決めない（`AGREEMENT_ONLY`）。W3-a2 の `gen_definition` の格上げ（生成でない腕で、自分の閾値を満たし、最上位がちょうど [T]）の相手にだけなる。したがって `slot` で direct になった語の `decided_by` には必ず `gen_definition` が入る（W3-b1 の門 4 に当たる。仕様どおり）。名詞の生成は W3-a2 の物をそのまま使う（作り直さない）。
+
+### 12.6 生成の腕 `gen_frame` と格上げの規則（`coarse_types.decide_word` の 1 か所）
+- 票の行 `(語, "gen_frame", "generated:<model>:<effort>", 述語の型, 1, None)`。枠の行（票でない。`NON_VOTE_ARMS`）`(語, "gen_frame_slot", 同じ出所, "<助詞>|<名詞の型>", 1, None)`。名前空間に P を含む語だけ（名詞には付けない）。
+- `GEN_ARMS = (gen_definition, gen_frame)`。生成が決め手に入った語は、直接でも推定の材料（head の段・donor・単位の族）にしない。
+- 判定（`gen_frame` の行がある語）: (1) 生成の腕と `role_distribution`・`slot` を除いて判定（`_decide_base`）。`DECIDED`／`MULTIPLE` ならそれが最終（`why="GENERATED_NOT_DECIDING"`）。(2) `UNPLACED` で `gen_frame` の型が 1 つ T のとき、`role_distribution` の腕のうち自分の閾値を満たした（票のある）ものを R とする。**格上げ（direct）**: |R| ≥ `rd_min_sources`、R のすべての腕の票が [T]、かつ R の各腕について「生成の枠の助詞の集合 ⊇ その腕の有意な助詞の集合（9 種全部。と・まで・より を含む）」→ `DECIDED`・`origin=direct`・`decided_by = sorted(R の腕 + ["gen_frame"])`。R の腕に T と違う型の票がある → `estimated(generated)`・`why="DISTRIBUTION_DISAGREES"`（MULTIPLE にはしない: 分布の腕は単独で決めない腕で、直接の候補として並べない）。型は一致するが助詞の包含が成り立たない → `estimated(generated)`・`why="FRAME_PARTICLES_NOT_COVERED"`。R が空、または |R| < `rd_min_sources` → `estimated(generated)`（`why` なし）。(3) 生成が棄権（null）・枠が採れない → 何もしない。
+- 推定（生成）の答えの形は W3-a2 と同じ（`estimate_basis="generated"`）。`estimate_basis` に新しい値を作らない。
+- 帰結: K62 は 2 型だけなので、生成と分布の一致で `direct` になる述語の型は `P_MOVE` と `P_COMMUNICATE` だけ。ほかの 11 型は `estimated(generated)` に留まる。
+- 格上げのうち、票を出した分布の腕がすべて codex コーパスの出所（jawiki 無し）だった語の数を別に出す（codex が書いた枠と codex が書いたコーパスの一致であることを隠さない）。
+- `gen_frame` で格上げした述語は、W3-b1 の門 4（`'gen_definition' in decided_by` の文字列だけを見る）を通る。読解器が使うかは W3-b2 で決める。答えに `generated_frame: true` を付けて機械的に区別できるようにする。
+
+### 12.7 既存の `frame` 腕（`PRED_FRAME_RULES`）の扱い
+削除しない。設定 `frame_decides`（`DEFAULT_CONFIG` の既定は True。古い配置で保存された判定を再現するため）で決め手に入れるかを切り替える。False のとき `frame@src` は `threshold_met` のまま `met=False`、`why="FRAME_NOT_DECIDING"`。
+**決め方（dev の動詞を測る前に書く）**: dev の動詞（12.11）について、R5 で `decided_by` に `frame@` を含む語の正答・誤決定を数え、**正答が誤決定の 3 倍以上なら True、そうでなければ False**。どちらも 0 のときは False（決め手の無いものを決め手に入れない）。数は `dev_frame_legacy.txt` に。W3-a の凍結データの数字（決め手の 18 語のうち正答 2・誤決定 11）は根拠にしない。
+
+### 12.8 設定・dev の格子・選び方
+新しい設定（`DEFAULT_CONFIG` に追記。既存の設定の値は変えない。既定値は古い配置で今の判定を再現する値）と、dev で試す格子（厳しい側から並べる。この並びが最後の同数の解消の順）:
+
+| 設定 | 意味 | 格子 |
+|---|---|---|
+| `frame_decides` | 既存の `frame` 腕を決め手にするか | 12.7 の規則で 1 つに決まる |
+| `rd_store_min` | 分布の行を保存する床 | 固定 20（格子の `rd_min_total` の最小値以下） |
+| `rd_min_total` | 分布の腕の型つきの項の最小 | 100 / 50 / 20 |
+| `rd_particle_min` | 有意な助詞の最小数 | 10 / 5 |
+| `rd_particle_share_pct` | 有意な助詞の割合 | 30 / 20 / 10 |
+| `rd_type_share_pct` | 助詞の中で有意な型の割合 | 70 / 50 |
+| `rd_min_sources` | 格上げに要る分布の腕の数 | 2 / 1 |
+| `slot_min` | slot の最小数 | 20 / 10 / 5 |
+| `slot_share_pct` | slot の割合 | 30 / 20 / 10 |
+| `slot_lift_pct` | 基準率に対する持ち上げ | 固定 300（= `ctx_min_lift_pct`） |
+
+**選び方**: 述語は dev の動詞で、`origin=direct` の誤決定が 0 の設定のうち、`origin=direct` の正答が最多のもの。誤決定が 0 の設定が無ければ、誤決定が最少の設定のうち同じ規則。同数なら direct の答えが少ない（より厳しい）もの、なお同数なら格子の並びで先のもの。名詞（slot）は dev の語彙（L2）で、`direct` の誤決定が slot なし（段 1 と同じ判定）より増えない設定のうち、direct の正答が最多のもの。同数の扱いは述語と同じ。格子の評価は **1 つの dev 配置の保存された evidence から `ct.decide_word` を設定を変えて呼び直す**（判定は evidence と設定だけの関数。保存の床と持ち上げは固定なので結果に効かない）。選んだ値で dev 配置を 1 回作り直し、問い合わせの入口で同じ数になることを確かめる。**凍結データを見て設定・規則を変えない**。
+
+### 12.9 述語の枠の生成（`tools/gen_coarse_evidence.py --kind pred`）
+- 名詞の形（プロンプト・schema・argv・sha256 `ded30f48c0a596575d061e75aa0768beb3008969a587a01d2ec39807af031f65`）は 1 バイトも変えない。述語は `--kind pred`（既定 `noun`）。台帳・再開・再試行・上限・並列・stdin を閉じる・`--codex-bin` 必須・道具の使用の棄却は既存の仕組みをそのまま使う。
+- `needs --kind pred`: 見出し語のうち ns が P か NP、state が UNPLACED か MULTIPLE、かつ抽出段の cache の品詞の数で動詞（V）の使用が形容詞・形状詞（A+S）の使用より多い語（一覧を作るための絞りで、型の票ではない。全出所の和を使う）。`n_seen` の降順、境界の同点は全部入れる。検査データを読まない。上位 5,000 語。
+- 呼び出し: `gpt-6-luna`・effort `low`・`--slots 12`・`--max-calls 1500`・`-s read-only`・stdin を閉じる・束 40 語。
+- プロンプトは 13 の述語型 id と名詞 17 型の id を `coarse_types.PRED_TYPES`・`NOUN_TYPES` の説明つきで機械的に並べる（手で写さない）。助詞は 9 種。語ごとに `ptype`（13 の id か null）と `frame`（`[{"particle": 9 種, "types": [17 型 id…]}]`）。例に検査データの語を使わない。
+- 出力の検査: 束に無い語は捨てて数える（`foreign`）、同じ語が 2 回返ったら採らない（`dup_dropped`）、同じ助詞が 1 語の frame に 2 回あればその語の frame を採らない（`frame_dup_particle`）、ptype が null なら棄権、enum の外は採らない（`invalid`）。
+
+### 12.10 問い合わせの新しい欄（§11.6 の契約への追記）
+すべての答えに、既存のキーの値と順を変えずに、最後に次のキーを足す。
+- `frame_status`（**閉じた一覧**）: `CONFIRMED`（下の `frame` がある）・`NOT_CONFIRMED`（P の direct だが `gen_frame` の格上げで決まっていない）・`ESTIMATED`（推定）・`NOT_PREDICATE`（名前空間が P でない、または型が P_ でない）・`NO_ANSWER`（UNPLACED・UNKNOWN・MULTIPLE）・`NO_PLACEMENT`・`NO_FRAME_TABLE`（`generated_frames` 表の無い古い配置で、P の direct の答え）。
+- `frame`: `CONFIRMED` のときだけ `{助詞: [名詞の型, …]}`、ほかは null。中身 = 格上げに加わった分布の腕の有意な助詞の和集合 S（集合の和で、数は足さない）の各 p について、生成の枠の p の型（ソート）。S に無い生成の助詞は `frame` に入れず `frame_unconfirmed`（表示用。`CONFIRMED` のときだけ付く。読解器は使わない）に出す。助詞の並びは `ROLE_PARTICLES` の順。
+- `generated_frame`（直接の答えだけ）: `decided_by` に `gen_frame` があれば true。`gen_frame` の腕の `axes` に `provenance`（model・effort・batch_id）。
+- `axes["role_distribution@…"]`・`axes["gen_frame"]` の `top` は `decide_word` の判定を出す（数の鍵が「助詞|型」なので最大の鍵は意味が無い）。ほかの腕の `top` の出し方は変えない。
+- 不変条件: `frame` が null でない ⇔ `frame_status == CONFIRMED` ⇒ `namespace == "P"`・`state == DECIDED`・`origin == direct`・`gen_frame ∈ decided_by`・鍵はすべて格助詞 9 種・値は空でない 17 型のソート済みの並び。
+- `why` の閉じた一覧（新規分）: `AGREEMENT_ONLY`・`FRAME_NOT_DECIDING`・`DISTRIBUTION_DISAGREES`・`FRAME_PARTICLES_NOT_COVERED`（既存の `GENERATED_NOT_DECIDING`・`GENERATED_SPLIT`・`SEEDED`・`OUTRANKED`・`ROLE_SINGLE_SOURCE`・`RECOVERED_NOT_DECIDING` はそのまま）。
+
+### 12.11 検査データ・採点
+- 抜き出しの枠: `artifacts/w3-a/pred_verb_freq.tsv`（材料の頻度の上位 3,000 の述語）の `class == V`、`seed == -`、`in_predicate_check == -` の行。**種と W3-a の述語の確認とは重ねない**。
+- `tests/coarse_place/data/dev_verbs.jsonl`（dev、閾値を決める用）: 枠から `random.Random(20261004).sample` で 130 語に手で型を付ける。断片（語にならないもの）は `kind="unknown_fragment"`・`gold=[]`・`gold_unknown=true`。それに、材料に無い造語の動詞 20 語（`kind="unknown_coined"`）。
+- `tests/coarse_place/data/verb_check_300.jsonl`（凍結の検査）: dev の 130 語を除いた残りから `random.Random(20261005).sample` で 260 語に型を付け、断片は unknown にし、造語の動詞を足して計 300 行（造語 40 語）。
+- 行の形: `{"id","term","kind":"typed"|"unknown_fragment"|"unknown_coined","gold":[P_ 型,…],"gold_unknown":bool,"frame":{助詞:[名詞の型,…]}|null,"why":短い理由}`。`gold` は多義なら 2〜3 型まで。`frame` は `P_MOVE`・`P_COMMUNICATE` を gold に持つ語には必ず書く。frame の照合は報告だけ。
+- 造語は配置 R5 の `headwords` に無いことを確かめて記録する（`coined_absent.txt`）。造語だけを `exclude_coined.jsonl` に書き、r6 の作成で `--exclude-terms` に渡す。**検査データのファイルそのものは `--exclude-terms` に渡さない**。
+- 採点（W3-a の `PREREG.md` と同じ定義）: 正答 = `top` が空でなく gold と交わり `len(top) ≤ max(1, len(gold))`。誤決定 = `len(top)==1` かつ gold の外。**Q3 の分母**: 誤決定率 = `origin=="direct"` かつ誤決定 / typed の件数。分からない語で型を返す率 = `top != []`（直接・推定を問わない）/ unknown の件数。参考に direct の答えの中での誤決定の割合も出す。断片の語は材料にあるので生成の一覧に入りうる。モデルが型を返せば `estimated(generated)` になり「型を返す」に数える（一覧から手で除かない）。
+- 凍結: `artifacts/w3-a3/FROZEN.json`（各ファイルの sha256・行数・凍結時刻 `frozen_at`、`PREREG.md` の sha256）。**凍結時刻 > この節の登録時刻**、かつ **凍結時刻 < 製品コードの最初の変更**。
+
+### 12.12 受入基準（事前登録）
+- **Q1** 分布の腕と格上げの規則が、検査データを書く前に docs に日時つきで登録されている。語の一覧が無い。
+- **Q2** 生成は上限 1,500 回以内。成功した束の割合・所要時間・1 語あたりの呼び出し数を報告。
+- **Q3** 動詞 300 語の凍結データで、`direct` の述語の型の **誤決定 ≤ 5%**、分からない語で型を返す ≤ 20%（目標の正答率は書かない。数だけ）。中間職の 100 語でも同じ条件。
+- **Q4** W3-a の凍結データ L1〜L3 が悪化しない（W3-a2 の承認条件と同じ）。
+- **Q5** 配置の作成が決定的（cache なしの 2 回の `content_sha256` が一致）。
+- **Q6**（監査役が測る）隠しバンク B1 を `VERA_PLACEMENT` つきで流し、誤読 0・誤答 0 のまま `PLACEMENT_PREDICATE_UNIDENTIFIED` の件数が減る。**この基準は配置の側の変更では動かない見込みで、満たせないものとして報告する**: その理由を出すのは `origin/integ-w3b1:verantyx/semantic_read.py` の 760 行目だけで、英語の入力で、どの語も既知の動詞の閉じた一覧に無いときに、配置を一度も問い合わせずに足される（`_read_en`、758〜760 行）。日本語の経路にこの理由は無い。
+- **Q7** 既存テストの失敗集合が基線（114 件）から増えない。
+
+### 12.13 決めた順
+登録（この節）→ 検査データの作成と凍結 → 既存 `frame` 腕の dev での判定（R5）→ 製品コード → 合成のテスト → 抽出の cache と述語の生成なしの配置（r6/base）→ 述語の一覧と生成 → dev の格子と設定の凍結 → 全量 r6（cache なし 2 回）→ 凍結データの測定 → 全体テストと文書。凍結データの測定のあとに規則・設定を変えない。
+
+### 12.14 変更記録（登録のあとの変更はすべてここに日時・前後・理由を書く）
+（登録時点では無し）
+<!-- w3a3-prereg:end -->
+
+<!-- w3a3-measure:begin -->
+### 12.15 測定（登録の外。この節の数値は `artifacts/w3-a3/render_w3a3.py` が `artifacts/w3-a3/` の測定ファイルから描く。`render_w3a3.py --check` で一致を確かめる）
+
+### 12.15.1 実行の順と時刻
+
+登録 → 凍結 → 実装 → dev → 設定の凍結 → 全量 → 凍結データの測定、の順に、次の時刻で行った（出典: `prereg_time.txt`・`FROZEN.json`・`*.started`）。製品コードの最初の変更は凍結の後（`DECISIONS.md` D1）。
+
+<!-- BEGIN table:w3a3_order -->
+| 段 | 時刻（`date '+%F %T %z'`） |
+|---|---|
+| 事前登録（docs §12.1〜12.14） | 2026-10-03 18:49:53 +0900 〜 2026-10-03 18:51:03 +0900 |
+| 検査データの凍結（`FROZEN.json` の `frozen_at`） | 2026-10-03 18:55:35 +0900 |
+| r6/base の作成を始めた | 2026-10-03 19:04:20 +0900 |
+| 述語の枠の生成（本番）を始めた | 2026-10-03 19:16:00 +0900 |
+| dev の配置 d1 の作成を始めた | 2026-10-03 19:22:37 +0900 |
+| 設定を凍結した（`config_w3a3.json`） | 2026-10-03 19:27:52 +0900 |
+| 全量 r6/run1 の作成を始めた | 2026-10-03 19:33:17 +0900 |
+<!-- END table:w3a3_order -->
+
+### 12.15.2 述語の一覧と生成（Q2）
+
+呼び出しは試し 1 回を含み、上限 1,500 の内。出典: `gen_pred_summary.json`・`needs_pred.meta.json`。名詞のプロンプトの sha256 は `ded30f48…` のまま変えていない（`test_the_noun_prompt_and_its_hash_did_not_change`）。
+
+<!-- BEGIN table:w3a3_generation -->
+| 項目 | 値 |
+|---|---|
+| 一覧の語数（境界の同点を全部入れた。頼んだ数 5000） | 5022 |
+| 一覧の境界の頻度（`n_seen`）と、その頻度の語数 | 16 / 92 |
+| 一覧の内訳（名前空間） | NP 34, P 4988 |
+| 一覧の内訳（証拠の状態） | BELOW_THRESHOLD 2190, NO_EVIDENCE 2832 |
+| モデル・effort・並列・束の大きさ | gpt-6-luna・low・12・40 |
+| 呼び出し数（上限 1500） | 126 |
+| 束の数・成功した束・成功の割合 | 126・126・1.0000 |
+| 失敗した束・上限で走らなかった束 | 0・0 |
+| 所要時間（台帳の最初の start から最後の end まで。試し呼び出しとの空きを含む） | 431.7 秒 |
+| 呼び出しの時間の合計（並列の分を足したもの） | 4197.0 秒 |
+| 1 語あたりの呼び出し数（呼び出し数 / 頼んだ語数） | 0.02509 |
+| 答えが返った語・棄権（`ptype` null）・同じ助詞が 2 回の frame | 5022・234・5 |
+| 束に無い語・重複・範囲外・戻らなかった語 | 0・0・0・0 |
+| 述語のプロンプトの sha256（固定部） | 1509fd3014397232d48dfd00b0ae9d8df078b5f2fb3d54e9f53c2b17a76d68e2 |
+| schema の sha256 | 68551a6ab548b7d5920d5c22cb0ca7eb114f47589ffd50a0b5ad6a488a84d882 |
+| 台帳の sha256 | d21fe1e3064f6363440d75f3807c1ed3954fa5a03e70326a753586f46d13a0c4 |
+| `frames.jsonl` の sha256 | 9a7e8decfc85d2dde8a0209cf983491cc6d4d0257697ab19ff18828b9ae89717 |
+<!-- END table:w3a3_generation -->
+
+一覧に載った検査データの動詞（数えただけ。一覧は検査データで変えていない）: dev の動詞 150 行のうち 126 行（typed 124・断片 2・造語 0）、凍結の 300 行のうち 260 行（typed 258・断片 2・造語 0）。造語は材料から除いたので一覧に載らない。
+
+### 12.15.3 設定（dev で決めた値。ここから先は変えない）
+
+`frame_decides` は §12.7 の規則どおり、R5 を dev の動詞で測った結果（`dev_frame_legacy.txt`）で決めた: `frame@` が決め手の語の正答 10・誤決定 11・その他 2 → 正答が誤決定の 3 倍に届かない → False。ほかの値は dev の格子（`dev_grid.py`、全行は `dev_grid.txt`）から §12.8 の選び方で選んだ。設定ファイルの sha256 は `config_w3a3.sha256`。
+
+<!-- BEGIN table:w3a3_config -->
+| 設定 | 意味 | 格子 | 値 |
+|---|---|---|---|
+| frame_decides | 既存の `frame` 腕を決め手にするか（§12.7 の規則で決まる） | 規則で 1 つ | False |
+| rd_store_min | 分布の行を保存する床（固定） | 固定 20 | 20 |
+| rd_min_total | 分布の腕の型つきの項の最小 | 100 / 50 / 20 | 20 |
+| rd_particle_min | 有意な助詞の最小数 | 10 / 5 | 10 |
+| rd_particle_share_pct | 有意な助詞の割合（%） | 30 / 20 / 10 | 30 |
+| rd_type_share_pct | 助詞の中で有意な型の割合（%） | 70 / 50 | 50 |
+| rd_min_sources | 格上げに要る分布の腕の数 | 2 / 1 | 1 |
+| slot_min | slot の最小数 | 20 / 10 / 5 | 20 |
+| slot_share_pct | slot の割合（%） | 30 / 20 / 10 | 30 |
+| slot_lift_pct | 基準率に対する持ち上げ（%。固定） | 固定 300 | 300 |
+<!-- END table:w3a3_config -->
+
+述語の格子 72 行の選択: 格子の 51 行目（0 始まり）。dev の動詞での direct の数 = {"direct_correct": 3, "direct_wrong": 3, "direct_answers": 6, "unknown_direct": 1, "gen_frame_direct": 3}。新しい腕を全部外したときの数（参考）= {"direct_correct": 0, "direct_wrong": 3, "direct_answers": 3, "unknown_direct": 1, "gen_frame_direct": 0}。
+
+slot の格子 9 行の選択: 格子の 0 行目。dev の語彙（L2、種を除く）での direct の数 = {"direct_correct": 299, "direct_wrong": 24, "direct_answers": 353, "unknown_direct": 0, "gen_frame_direct": 0}。slot の行を外したときの数 = {"direct_correct": 298, "direct_wrong": 24, "direct_answers": 352, "unknown_direct": 0, "gen_frame_direct": 0}。
+
+### 12.15.4 配置 r6 の中身（`manifest_r6_run1.json`）
+
+<!-- BEGIN table:w3a3_placement -->
+| 項目 | 値 |
+|---|---|
+| 見出し語の数 | 1758845 |
+| direct で置いた語（`placed_direct`） | 992686 |
+| `estimated(generated)` の語（名詞の定義 + 述語の枠） | 20403 |
+| `generated_frames` 表の行数 | 4788 |
+| `evidence` 表の行数 | 1864292 |
+| 作成の所要時間（秒。cache なし） | 516.7 |
+<!-- END table:w3a3_placement -->
+
+述語の枠の生成を配置に入れた結果（`generated_frames` の節。語数）:
+
+<!-- BEGIN table:w3a3_gen_frames -->
+| 項目 | 語数 |
+|---|---|
+| 読んだ行（`frames.jsonl`） | 4788 |
+| 使った語（述語の見出し語） | 4788 |
+| 棄権（`ptype` null） | 234 |
+| 名前空間に P を含まない語（`ns_not_predicate`） | 0 |
+| 材料に無い語 | 0 |
+| 格上げ（direct。`decided_by` に `gen_frame`） | 48 |
+| 　うち、票を出した分布の腕がすべて codex コーパスの出所（jawiki 無し） | 30 |
+| 　うち、jawiki の腕が加わった | 18 |
+| `estimated(generated)`（生成だけ・または一致せず） | 4740 |
+| 　うち `DISTRIBUTION_DISAGREES` | 743 |
+| 　うち `FRAME_PARTICLES_NOT_COVERED` | 54 |
+| 生成が決めない（別の腕がすでに決めていた） | 0 |
+<!-- END table:w3a3_gen_frames -->
+
+項の連なりの数え（抽出段。出所ごと。理由別。数えなかった理由も数える）:
+
+<!-- BEGIN table:w3a3_chains -->
+| 出所 | counted | chain_broken | too_many_args | no_verb | sahen | voice | numeral_start | no_filler |
+|---|---|---|---|---|---|---|---|---|
+| codex:code | 2891396 | 2014128 | 28 | 43 | 1728884 | 136199 | 91896 | 4086 |
+| codex:code_qa | 1211430 | 787989 | 30 | 431 | 569555 | 30191 | 130901 | 2869 |
+| codex:conversation | 1733959 | 1160218 | 16 | 27694 | 189776 | 48783 | 63008 | 349 |
+| codex:figurative_commonsense | 911544 | 302433 | 25 | 3961 | 63124 | 31433 | 4670 | 0 |
+| codex:general_qa | 1831432 | 1152371 | 33 | 935 | 357100 | 89119 | 39022 | 542 |
+| codex:narrative | 918086 | 379456 | 11 | 8745 | 28844 | 31313 | 13592 | 0 |
+| codex:paraphrase_entail | 1219793 | 640157 | 96 | 2680 | 208553 | 161657 | 27017 | 6280 |
+| codex:pro | 2632600 | 1152465 | 17 | 3 | 35579 | 76739 | 17769 | 0 |
+| jawiki | 1676156 | 2006347 | 406 | 3921 | 844152 | 156307 | 619778 | 34941 |
+<!-- END table:w3a3_chains -->
+
+段 2 の内訳（出所ごと。型の分かった項・型なしの項・分布の行を持つ述語・slot の行）:
+
+<!-- BEGIN table:w3a3_stage2 -->
+| 出所 | 型つきの項 | 型なしの項 | 分布の行を持つ述語 | 分布の行 | slot TIME | slot PLACE | slot QUANTITY |
+|---|---|---|---|---|---|---|---|
+| codex:code | 1063319 | 1772839 | 596 | 17791 | 3674 | 4725 | 636 |
+| codex:code_qa | 533437 | 653870 | 385 | 9674 | 1360 | 1793 | 829 |
+| codex:conversation | 726295 | 890751 | 980 | 21628 | 3178 | 4257 | 159 |
+| codex:figurative_commonsense | 382665 | 500592 | 1185 | 23937 | 2378 | 2002 | 6 |
+| codex:general_qa | 789570 | 987995 | 1321 | 28888 | 3958 | 5328 | 323 |
+| codex:narrative | 432973 | 462122 | 1045 | 21706 | 2151 | 1516 | 2 |
+| codex:paraphrase_entail | 613863 | 584056 | 951 | 17418 | 3762 | 2206 | 169 |
+| codex:pro | 1070636 | 1494573 | 1407 | 28942 | 2502 | 1486 | 1 |
+| jawiki | 754709 | 833607 | 1013 | 23480 | 20641 | 57797 | 1406 |
+<!-- END table:w3a3_stage2 -->
+
+段 1 で型の分かった充填物の語 981743・述語の語 2583、新しい行を持つ語 104890。`evidence` の腕ごとの行数（新しい腕）: `role_distribution` 193464・`slot` 128245・`gen_frame` 4788・`gen_frame_slot` 15395。
+
+### 12.15.5 述語の型（Q3。凍結データの動詞 300 語・配置 r6/run1）
+
+出典: `eval_runs/001/summary.json`（`measure_w3a3.py verbs --data tests/coarse_place/data/verb_check_300.jsonl`）。数だけを書く（目標の正答率は書かない）。正答・誤決定の定義は §12.11。
+
+<!-- BEGIN table:w3a3_q3 -->
+| 項目 | 値 |
+|---|---|
+| typed の語・分からない語（断片・造語） | 258・42 |
+| direct の答え（typed の中） | 5 |
+| 　うち正答・誤決定 | 4・1 |
+| **direct の誤決定 / typed**（Q3: ≤ 5%） | 1 / 258 = 0.4% → 満たす |
+| direct の答えの中での誤決定の割合（参考） | 20.0% |
+| **分からない語で型を返す / 分からない語**（Q3: ≤ 20%。direct・推定を問わない） | 1 / 42 = 2.4% → 満たす |
+| typed のうち direct でない答え | None/other 5, estimated/correct 192, estimated/wrong_single 56 |
+| typed 全体の正答・誤決定（direct か推定かを問わない。参考） | 196・57 |
+| `frame_status` の分布 | CONFIRMED 5, ESTIMATED 249, NO_ANSWER 46 |
+<!-- END table:w3a3_q3 -->
+
+種類（`kind`）ごと:
+
+<!-- BEGIN table:w3a3_q3_kind -->
+| 種類 | 結果 |
+|---|---|
+| typed | correct 196, other 5, wrong_single 57 |
+| unknown_coined | abstained 39, returned 1 |
+| unknown_fragment | abstained 2 |
+<!-- END table:w3a3_q3_kind -->
+
+決め手の腕ごと（typed。腕名は出所を省いた）:
+
+<!-- BEGIN table:w3a3_q3_arm -->
+| 決め手 | 結果 |
+|---|---|
+| - | other(non-direct) 5 |
+| est:morphology:kin | wrong_single(non-direct) 1 |
+| gen_frame | correct(non-direct) 192, wrong_single(non-direct) 55 |
+| gen_frame+role_distribution | correct 4, wrong_single 1 |
+<!-- END table:w3a3_q3_arm -->
+
+参考（dev の動詞 150 語・配置 d2。設定を決めた dev の数。`dev_runs/002`）: typed 127・分からない 23、direct の答え 6（正答 3・誤決定 3）、分からない語で型を返す 2 / 23。
+
+### 12.15.6 W3-a の凍結データ L1〜L3（Q4。R5 との比較）
+
+出典: `q4_compare.txt`（R5 の `artifacts/w3-a/eval_runs/041〜045` と、R6 の `eval_runs/` の最後の測定を読む。手で写していない）。W3-a2 の承認条件と同じ 4 項目（誤決定・罠・L3 の誤り・分からない語で型を返す が R5 以下）を満たすか: **満たす**。
+
+<!-- BEGIN table:w3a3_q4 -->
+| 項目 | R5 | r6/run1 | 差 |
+|---|---|---|---|
+| L2 direct の正答（分母 1072） | 567 | 567 | +0 |
+| L2 direct の誤決定 | 47 | 47 | +0 |
+| L2 語末の罠の誤決定 | 7 | 7 | +0 |
+| L3 型が決まるべき語の正答（174 語） | 86 | 86 | +0 |
+| L3 誤り | 9 | 9 | +0 |
+| L3 分からない語で型を返す（60 語） | 9 | 9 | +0 |
+| L1 トークンの被覆（21774 トークン） | 17217 | 17618 | +401 |
+| L1 異なり語の被覆 | 5383 | 5625 | +242 |
+| L1 配置された見出し語（direct） | 993027 | 992686 | -341 |
+<!-- END table:w3a3_q4 -->
+
+4 項目の判定: `L2 wrong<=47` = True, `trap<=7` = True, `L3 wrong<=9` = True, `unk_returned<=9` = True
+
+併せて見た項目（R5 より下がっていないか）: L2 correct not lower = True, L1 token cover not lower = True, L3 correct not lower = True, L3 leaks (direct, not notation) none = True
+
+R5 から上がった数 20 件・下がった数 11 件・変わらない数 38 件（全部の一覧は `q4_compare.txt`）。
+
+下がった数（全部）:
+
+- l1.placed_direct_headwords: R5 993027 -> new 992686 (-341)
+- l1.tokens_by_basis.direct: R5 14832 -> new 14684 (-148)
+- l1.tokens_by_basis.none: R5 4557 -> new 4156 (-401)
+- l1.tokens_by_basis.proximity: R5 741 -> new 646 (-95)
+- l1.tokens_by_origin.direct: R5 14832 -> new 14684 (-148)
+- l1.tokens_by_origin.none: R5 4557 -> new 4156 (-401)
+- l1.tokens_typed_by_basis.direct: R5 14832 -> new 14684 (-148)
+- l1.tokens_typed_by_basis.proximity: R5 741 -> new 646 (-95)
+- pred.all.wrong_single: R5 25 -> new 21 (-4)
+- pred.non_seed.wrong_single: R5 22 -> new 20 (-2)
+- pred.non_seed_now.wrong_single: R5 25 -> new 21 (-4)
+
+### 12.15.7 決定性・判定の監査・全体テスト（Q5・Q7）
+
+**Q5**（cache なし、同じ引数で 2 回作った `content_sha256`）:
+
+```
+verify run1: state OK content_sha256 5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1 bad []
+verify run1 exit=0
+verify run2: state OK content_sha256 5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1 bad []
+verify run2 exit=0
+['5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1', '5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1'] True
+stage_cache arg (must be null for both): [None, None]
+build durations (sec): [516.7, 526.4]
+extraction_from_cache present: [False, False]
+```
+
+**判定の監査**（`audit_w3a3.py`、`audit_w3a3.txt`。全見出し語）:
+
+<!-- BEGIN table:w3a3_audit -->
+| 項目 | 値 |
+|---|---|
+| A 保存した判定と `decide_word` の再計算の差 | 0 |
+| B `role_distribution`／`slot` だけで決まった語 | 0 |
+| C `gen_frame` の格上げ（語数） | 48 |
+| C 　うち登録した条件を破る語 | 0 |
+| C 　うち票を出した分布の腕がすべて codex の出所の語 | 30 |
+| D `gen_frame` で `estimated` の語（語数） | 4740 |
+| D 　うち規則では格上げされるはずだった語 | 0 |
+| E 述語の見出し語をすべて問い合わせた数 | 11141 |
+| E 　不変条件を破る答え | 0 |
+| E 　`frame_status` の分布 | CONFIRMED 48, ESTIMATED 5618, NOT_CONFIRMED 2581, NOT_PREDICATE 11, NO_ANSWER 2883 |
+<!-- END table:w3a3_audit -->
+
+**Q7**（全体テスト。`pytest_full.txt` の最後の行: `116 failed, 10276 passed, 45 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 295.86s (0:04:55)`）: 基線の失敗 114 件、今回の失敗 116 件、基線に無い失敗 2 件（`new_failures.txt`）。
+
+### 12.15.9 slot（時・場所・数量）の確かめと、確認済みの答えの例
+
+出典: `dev_time_place.txt`（`dev_time_place.py`、配置 d2、dev の語彙だけ）。**登録した設定では、dev の時の語で slot により direct になった語は無かった**。チケットの「`昨日` のような語が direct になる」は、登録した設定では満たせなかった（理由は `DECISIONS.md` D4-2: dev の時の語は過去の述語と使われる数が閾値に届かない）。
+
+<!-- BEGIN table:w3a3_slot -->
+| 項目 | 値 |
+|---|---|
+| dev の語彙のうち時・場所・数量の型を正解に持つ語（種を除く） | 167 |
+| slot の行を外した判定で direct の語 | 86 |
+| 登録した設定で direct の語 | 87 |
+| slot の行で direct になった語 | 1 |
+| 　うち正答・誤決定 | 1・0 |
+<!-- END table:w3a3_slot -->
+
+高頻度の過去の時の語 `昨日`（dev の語彙には無い。入口に直接問い合わせた）: `{"state": "DECIDED", "origin": "estimated", "estimate_basis": "generated", "top": ["TIME"], "decided_by": ["gen_definition"], "frame_status": "ESTIMATED"}`。保存された evidence の slot の行（出所・数・名詞の使用数・割合）: [('codex:general_qa', 2, 157, '1.3%'), ('codex:paraphrase_entail', 364, 4110, '8.9%'), ('jawiki', 1, 52, '1.9%')]。
+設定を変えたのではなく、保存された evidence を別の `slot_share_pct` で決め直しただけの診断（登録の格子は 30 / 20 / 10）: 30 → DECIDED estimated TIME、10 → DECIDED estimated TIME、8 → DECIDED direct TIME、5 → DECIDED direct TIME。dev の語彙にはこの種の語が無く、dev の数で格子の下側を選ぶことはできない。dev の標本を足して設定を選び直すことはしなかった。
+
+確認済みの述語の答えの例（r6/run1。`p7_lend_check_r6.txt`。契約の形の確認用で、語の一覧ではない）:
+
+```
+{
+ "term": "うたう",
+ "state": "DECIDED",
+ "origin": "direct",
+ "top": [
+  "P_COMMUNICATE"
+ ],
+ "decided_by": [
+  "gen_frame",
+  "role_distribution@codex:general_qa",
+  "role_distribution@codex:narrative",
+  "role_distribution@jawiki"
+ ],
+ "generated_frame": true,
+ "frame_status": "CONFIRMED",
+ "frame": {
+  "を": [
+   "INFO_LANGUAGE",
+   "WORK"
+  ]
+ },
+ "frame_unconfirmed": {
+  "で": [
+   "PLACE"
+  ]
+ }
+}
+```
+
+### 12.15.10 既知の穴・満たせないもの・読解器への申し送り（隠さない）
+
+- **Q6 は配置の側では動かない**。`PLACEMENT_PREDICATE_UNIDENTIFIED` を出すのは `origin/integ-w3b1:verantyx/semantic_read.py` の 760 行目だけで、**英語の入力**で、どの語も既知の動詞の閉じた一覧に無いときに、配置を一度も問い合わせずに足される理由である（`_read_en`、758〜760 行）。日本語の経路にこの理由は無い。この ticket の許可パス（配置の側）の変更では、その件数は原理的に変わらない。英語の述語は置いていない・読解器には触れていない。Q6 は満たせないものとして監査役に返す。
+- **直接になる述語の型は 2 型だけ**。K62 の表は `P_MOVE` と `P_COMMUNICATE` の 2 型・9 行だけで、逆引きの分布の腕はこの 2 型しか票にできない。ほかの 11 型の述語は、生成だけ → `estimated(generated)` に留まる（規則どおり。表は広げていない。広げる提案は、表の行を増やす変更が読解器の誤読を増やさないことを W3-b1 の側で測ってからにすること）。
+- **再現率は低い**: K62 の `P_MOVE` に に+PLACE の行は無いので、に+PLACE が有意な移動の動詞は (a)(b) で候補にならない。と・まで・より は表に無いので候補に効かない。分布の腕は隣接する項だけを数え（長距離は数えない）、型の分かった充填物は段 1 で direct に置いた語に限るので、項の約半分は型なし（§12.15.4）。
+- **W3-b1 の門 4 を `gen_frame` は通る**: 門 4 は `'gen_definition' in decided_by` の文字列だけを見る。述語の生成の腕を別の名前（`gen_frame`）にしたので、格上げした述語は門 4 を通る（読解器が direct として使いうる）。これは読解器の方針の変更に当たるので、答えに `generated_frame: true` を付けて機械的に区別できるようにした。読解器が使うかは W3-b2 で決める。`slot` で direct になった名詞は `decided_by` に必ず `gen_definition` が入り、門 4 に当たる（仕様どおり）。
+- **codex が書いた枠と codex が書いたコーパスの一致**: 格上げ 48 語のうち 30 語は、票を出した分布の腕がすべて codex コーパスの出所（jawiki 無し）。生成した枠と生成したコーパスの一致であり、人が書いた出所の証拠ではない（`origin=direct` の意味は W3-a2 から変わらない: 生成でない腕が自分の閾値で合意した）。
+- **`frame` は報告用**: 読解器の変更は W3-b2。K62 の表は固定のまま、配置の `frame` と一致する範囲でだけ使う（表に無い助詞は読まない）。この ticket では契約と欄だけ。
+- **封筒のような名詞**: 名詞の生成は W3-a2 の物をそのまま使った（作り直していない）。上位語が型に通らず `no_type` になった名詞は残る。
+- **断片の動詞**（語にならないもの）は材料にあるので生成の一覧に入りうる。モデルが型を返せば `estimated(generated)` になり、「分からない語で型を返す」に数える（一覧から手で除いていない）。
+- **`昨日` のような過去の時の語は、登録した設定では direct にならなかった**（§12.15.9。`slot_share_pct` が 8 以下なら direct になるが、dev の語彙にはこの種の語が無く、dev の数では下側を選べなかった）。チケットの「やること 4」の小項目は満たせていない。
+- `frame_decides=False` の判断は dev の小さい標本（決め手が `frame` の語 23 語）に基づく。W3-a の凍結データの数字（決め手の 18 語のうち正答 2・誤決定 11）は根拠にしていない。
+- 検査データ（動詞 300 語・dev 150 語）は自作で、型は手で付けた。自作のデータで通ることは証拠にならない（隠しバンクと中間職の 100 語で測る）。
+<!-- w3a3-measure:end -->
+
+> **統合の注記（監査役、2026-10-03）**: W5-b の `spelling` と W3-a3 の `frame_status`/`frame` はどちらも「答えの最後」に足されたので、統合後の順は 既存の鍵 → `generated_frame` の前に `spelling` → `frame_status` → `frame`（→ `frame_unconfirmed`）とする。値は変えていない。

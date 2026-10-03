@@ -1,0 +1,53 @@
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "述語の型 格の枠 生成",
+  "searched": 673,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+----
+{
+  "verdict": "ANSWER",
+  "query": "predicate frame",
+  "searched": 673,
+  "hits": [
+    {
+      "kind": "module",
+      "name": "en_frames",
+      "about": "English into the same event frame as Japanese — and back.",
+      "where": "verantyx/en_frames.py"
+    },
+    {
+      "kind": "module",
+      "name": "predicate_profile",
+      "about": "Predicate profiles — which predicates co-occur with each subject.",
+      "where": "verantyx/predicate_profile.py"
+    },
+    {
+      "kind": "module",
+      "name": "base",
+      "about": "Vera base: records in predicate-argument structure, reached through the stereo cross with a capped fallback.",
+      "where": "verantyx/base.py"
+    },
+    {
+      "kind": "module",
+      "name": "semantic_retrieve",
+      "about": "Read-only adapter to existing conductive and predicate/term postings.",
+      "where": "verantyx/semantic_retrieve.py"
+    },
+    {
+      "kind": "results",
+      "name": "RESULTS_2026-09-30_round5a",
+      "about": "Round5-A 公開意味経路の実装・開発測定",
+      "where": "docs/RESULTS_2026-09-30_round5a.md"
+    }
+  ],
+  "total_hits": 5
+}

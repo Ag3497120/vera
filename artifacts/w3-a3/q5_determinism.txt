@@ -1,0 +1,8 @@
+verify run1: state OK content_sha256 5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1 bad []
+verify run1 exit=0
+verify run2: state OK content_sha256 5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1 bad []
+verify run2 exit=0
+['5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1', '5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1'] True
+stage_cache arg (must be null for both): [None, None]
+build durations (sec): [516.7, 526.4]
+extraction_from_cache present: [False, False]

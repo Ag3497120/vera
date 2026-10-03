@@ -1,0 +1,50 @@
+{
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/run1",
+ "content_sha256": "5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1",
+ "headwords": 1758845,
+ "config": {
+  "frame_decides": false,
+  "rd_min_total": 20,
+  "rd_particle_min": 10,
+  "rd_particle_share_pct": 30,
+  "rd_type_share_pct": 50,
+  "rd_min_sources": 1,
+  "slot_min": 20,
+  "slot_share_pct": 30,
+  "slot_lift_pct": 300,
+  "rd_store_min": 20
+ },
+ "A_decision_recomputed": {
+  "differences": 0,
+  "examples": []
+ },
+ "B_decided_by_new_agreement_only_arms_alone": {
+  "words": 0,
+  "examples": []
+ },
+ "C_gen_frame_direct_upgrades": {
+  "words": 48,
+  "violating_the_rule": 0,
+  "examples": [],
+  "all_distribution_sources_are_codex": 30
+ },
+ "D_gen_frame_estimates": {
+  "words": 4740,
+  "that_the_rule_would_have_upgraded": 0,
+  "examples": []
+ },
+ "E_frame_invariants_all_predicate_headwords": {
+  "queried": 11141,
+  "by_frame_status": {
+   "NOT_PREDICATE": 11,
+   "NO_ANSWER": 2883,
+   "ESTIMATED": 5618,
+   "NOT_CONFIRMED": 2581,
+   "CONFIRMED": 48
+  },
+  "violations": 0,
+  "examples": []
+ },
+ "seconds": 11.9,
+ "all_clear": true
+}

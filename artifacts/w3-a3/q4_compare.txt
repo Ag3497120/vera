@@ -1,0 +1,43 @@
+R5 placement content_sha256: ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995
+new placement: /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/run1 content_sha256: 5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1
+runs used: {"l2": "002", "l3": "003", "l1": "004", "pred": "005", "l5": "006"}
+
+== went UP (20) ==
+l1.by_pos_rate.動詞: R5 0.8346 -> new 0.992 (+0.1574)
+l1.by_pos_rate.名詞: R5 0.7794 -> new 0.7797 (+0.0003)
+l1.distinct_cover: R5 5383 -> new 5625 (+242)
+l1.distinct_cover_rate: R5 0.6415 -> new 0.6704 (+0.0289)
+l1.token_cover: R5 17217 -> new 17618 (+401)
+l1.token_cover_rate: R5 0.7907 -> new 0.8091 (+0.0184)
+l1.tokens_by_basis.generated: R5 1644 -> new 2288 (+644)
+l1.tokens_by_origin.estimated: R5 2385 -> new 2934 (+549)
+l1.tokens_typed_by_basis.generated: R5 1644 -> new 2288 (+644)
+pred.all.correct: R5 15 -> new 87 (+72)
+pred.all.returned_any: R5 45 -> new 108 (+63)
+pred.non_seed.correct: R5 15 -> new 79 (+64)
+pred.non_seed.returned_any: R5 41 -> new 99 (+58)
+pred.non_seed_now.correct: R5 15 -> new 87 (+72)
+pred.non_seed_now.returned_any: R5 45 -> new 108 (+63)
+l5.max_ms: R5 2.903 -> new 5.162 (+2.259)
+l5.mean_ms: R5 0.093 -> new 0.213 (+0.12)
+l5.median_ms: R5 0.078 -> new 0.098 (+0.02)
+l5.p95_ms: R5 0.202 -> new 1.176 (+0.974)
+l5.placement_bytes: R5 273076224 -> new 296656896 (+2.35807e+07)
+
+== went DOWN (11) ==
+l1.placed_direct_headwords: R5 993027 -> new 992686 (-341)
+l1.tokens_by_basis.direct: R5 14832 -> new 14684 (-148)
+l1.tokens_by_basis.none: R5 4557 -> new 4156 (-401)
+l1.tokens_by_basis.proximity: R5 741 -> new 646 (-95)
+l1.tokens_by_origin.direct: R5 14832 -> new 14684 (-148)
+l1.tokens_by_origin.none: R5 4557 -> new 4156 (-401)
+l1.tokens_typed_by_basis.direct: R5 14832 -> new 14684 (-148)
+l1.tokens_typed_by_basis.proximity: R5 741 -> new 646 (-95)
+pred.all.wrong_single: R5 25 -> new 21 (-4)
+pred.non_seed.wrong_single: R5 22 -> new 20 (-2)
+pred.non_seed_now.wrong_single: R5 25 -> new 21 (-4)
+
+(unchanged numbers: 38)
+
+reported alongside: {"L2 correct not lower": true, "L1 token cover not lower": true, "L3 correct not lower": true, "L3 leaks (direct, not notation) none": true}
+{"L2 wrong<=47": true, "trap<=7": true, "L3 wrong<=9": true, "unk_returned<=9": true}

@@ -1,0 +1,376 @@
+{
+ "builder_sha256": "b6a18067f66105665552e0e76954fd7b30dce37e57ad2ed1ce759e86dc4d2a58",
+ "by_decisive_arm": {
+  "-": {
+   "other(non-direct)": 1
+  },
+  "alias": {
+   "wrong_single": 1
+  },
+  "definition": {
+   "wrong_single": 1
+  },
+  "est:morphology:kin": {
+   "wrong_single(non-direct)": 1
+  },
+  "gen_frame": {
+   "correct(non-direct)": 94,
+   "wrong_single(non-direct)": 25
+  },
+  "gen_frame+role_distribution": {
+   "correct": 3
+  },
+  "paren_alias": {
+   "wrong_single": 1
+  }
+ },
+ "by_decisive_arm_unknown": {
+  "est:morphology:head": 1,
+  "paren_alias": 1
+ },
+ "by_frame_status": {
+  "CONFIRMED": 3,
+  "ESTIMATED": 121,
+  "NOT_PREDICATE": 4,
+  "NO_ANSWER": 22
+ },
+ "by_gold_type": {
+  "P_ACT": {
+   "correct(non-direct)": 16,
+   "wrong_single(non-direct)": 9
+  },
+  "P_ACT,P_CHANGE": {
+   "correct(non-direct)": 4,
+   "wrong_single(non-direct)": 1
+  },
+  "P_ACT,P_COMMUNICATE": {
+   "correct(non-direct)": 2
+  },
+  "P_ACT,P_CONSUME": {
+   "correct(non-direct)": 1,
+   "wrong_single(non-direct)": 1
+  },
+  "P_ACT,P_GIVE": {
+   "correct(non-direct)": 2
+  },
+  "P_ACT,P_MOVE": {
+   "correct(non-direct)": 1
+  },
+  "P_ACT,P_POSSESS": {
+   "correct(non-direct)": 1
+  },
+  "P_ACT,P_STATE": {
+   "correct(non-direct)": 3,
+   "wrong_single(non-direct)": 1
+  },
+  "P_CHANGE": {
+   "correct(non-direct)": 12,
+   "wrong_single": 1,
+   "wrong_single(non-direct)": 2
+  },
+  "P_CHANGE,P_ACT": {
+   "correct(non-direct)": 1
+  },
+  "P_CHANGE,P_POSSESS": {
+   "correct(non-direct)": 1
+  },
+  "P_CHANGE,P_STATE": {
+   "correct(non-direct)": 2
+  },
+  "P_COGNITION": {
+   "correct(non-direct)": 3
+  },
+  "P_COGNITION,P_ACT": {
+   "correct(non-direct)": 1
+  },
+  "P_COGNITION,P_STATE": {
+   "wrong_single(non-direct)": 1
+  },
+  "P_COMMUNICATE": {
+   "correct": 2,
+   "correct(non-direct)": 2
+  },
+  "P_COMMUNICATE,P_ACT": {
+   "correct(non-direct)": 1
+  },
+  "P_COMMUNICATE,P_CREATE": {
+   "correct(non-direct)": 1
+  },
+  "P_COMMUNICATE,P_PERCEIVE": {
+   "correct(non-direct)": 1
+  },
+  "P_CONSUME": {
+   "correct(non-direct)": 1
+  },
+  "P_CREATE": {
+   "correct(non-direct)": 1,
+   "wrong_single(non-direct)": 1
+  },
+  "P_CREATE,P_ACT": {
+   "correct(non-direct)": 1,
+   "wrong_single(non-direct)": 1
+  },
+  "P_CREATE,P_CHANGE": {
+   "correct(non-direct)": 1
+  },
+  "P_EMOTION": {
+   "correct(non-direct)": 1
+  },
+  "P_EXIST": {
+   "wrong_single": 1
+  },
+  "P_EXIST,P_ACT": {
+   "wrong_single(non-direct)": 1
+  },
+  "P_EXIST,P_STATE": {
+   "correct(non-direct)": 3
+  },
+  "P_GIVE": {
+   "correct(non-direct)": 4,
+   "wrong_single(non-direct)": 2
+  },
+  "P_GIVE,P_ACT": {
+   "correct(non-direct)": 2
+  },
+  "P_GIVE,P_POSSESS": {
+   "correct(non-direct)": 1
+  },
+  "P_MOVE": {
+   "correct": 1,
+   "correct(non-direct)": 5,
+   "wrong_single(non-direct)": 1
+  },
+  "P_MOVE,P_ACT": {
+   "correct(non-direct)": 1
+  },
+  "P_MOVE,P_CHANGE": {
+   "correct(non-direct)": 2
+  },
+  "P_MOVE,P_STATE": {
+   "correct(non-direct)": 1,
+   "wrong_single(non-direct)": 2
+  },
+  "P_PERCEIVE": {
+   "correct(non-direct)": 4,
+   "wrong_single(non-direct)": 1
+  },
+  "P_PERCEIVE,P_ACT": {
+   "correct(non-direct)": 1
+  },
+  "P_PERCEIVE,P_COMMUNICATE": {
+   "correct(non-direct)": 1
+  },
+  "P_POSSESS": {
+   "other(non-direct)": 1,
+   "wrong_single(non-direct)": 2
+  },
+  "P_STATE": {
+   "correct(non-direct)": 5,
+   "wrong_single": 1
+  },
+  "P_STATE,P_ACT": {
+   "correct(non-direct)": 1
+  },
+  "P_STATE,P_CHANGE": {
+   "correct(non-direct)": 1
+  },
+  "P_STATE,P_EXIST": {
+   "correct(non-direct)": 1
+  },
+  "P_STATE,P_PERCEIVE": {
+   "correct(non-direct)": 1
+  }
+ },
+ "by_kind": {
+  "typed": {
+   "correct": 97,
+   "other": 1,
+   "wrong_single": 29
+  },
+  "unknown_coined": {
+   "abstained": 19,
+   "returned": 1
+  },
+  "unknown_fragment": {
+   "abstained": 2,
+   "returned": 1
+  }
+ },
+ "by_state": {
+  "DECIDED": 128,
+  "UNKNOWN": 19,
+  "UNPLACED": 3
+ },
+ "coarse_types_sha256": "bcc078d69f963c5fbec646d2cdbef88fdeea76c5f8bc4cfb2aa896bb09d6b999",
+ "command": [
+  "verbs",
+  "--placement",
+  "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/dev/d2",
+  "--data",
+  "tests/coarse_place/data/dev_verbs.jsonl",
+  "--runs",
+  "dev"
+ ],
+ "config_sha256": "cf6af0f82b7f034ccfc3d8bdd691c28a7df71652f3ccb8e873e418f610a4ef53",
+ "content_sha256": "5c969d454b39d39ac0e394191b5e985b4e0a10099591bb7b12fcc559e7d77ff1",
+ "correct_all": 97,
+ "correct_direct": 3,
+ "data": "tests/coarse_place/data/dev_verbs.jsonl",
+ "data_path": "tests/coarse_place/data/dev_verbs.jsonl",
+ "data_sha256": "fe3d564fd120df6c801881e25318ad20adaf65cfa16b8bb99e2ed0298b2a8bdb",
+ "direct_answers": 6,
+ "direct_wrong_words": [
+  {
+   "decided_by": "alias",
+   "gold": [
+    "P_EXIST"
+   ],
+   "term": "いきる",
+   "top": [
+    "GROUP_ORG"
+   ]
+  },
+  {
+   "decided_by": "definition",
+   "gold": [
+    "P_CHANGE"
+   ],
+   "term": "乱れる",
+   "top": [
+    "WORK"
+   ]
+  },
+  {
+   "decided_by": "paren_alias",
+   "gold": [
+    "P_STATE"
+   ],
+   "term": "たける",
+   "top": [
+    "PERSON"
+   ]
+  }
+ ],
+ "frame_report_only": [
+  {
+   "expected_frame": {
+    "が": [
+     "ANIMAL",
+     "PERSON"
+    ],
+    "と": [
+     "INFO_LANGUAGE"
+    ],
+    "を": [
+     "INFO_LANGUAGE"
+    ]
+   },
+   "frame": {
+    "が": [
+     "ANIMAL",
+     "PERSON"
+    ],
+    "を": [
+     "INFO_LANGUAGE"
+    ]
+   },
+   "inside": true,
+   "term": "叫ぶ"
+  },
+  {
+   "expected_frame": {
+    "が": [
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "と": [
+     "PERSON"
+    ],
+    "に": [
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "を": [
+     "ABSTRACT",
+     "INFO_LANGUAGE"
+    ]
+   },
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "GROUP_ORG",
+     "PERSON"
+    ]
+   },
+   "inside": false,
+   "term": "たたえる"
+  },
+  {
+   "expected_frame": {
+    "から": [
+     "PLACE"
+    ],
+    "が": [
+     "ANIMAL",
+     "ARTIFACT",
+     "PERSON"
+    ],
+    "へ": [
+     "PLACE"
+    ]
+   },
+   "frame": {
+    "から": [
+     "PLACE"
+    ],
+    "へ": [
+     "PLACE"
+    ]
+   },
+   "inside": true,
+   "term": "遠ざかる"
+  }
+ ],
+ "n_typed": 127,
+ "n_unknown": 23,
+ "non_direct_typed": {
+  "None/other": 1,
+  "estimated/correct": 94,
+  "estimated/wrong_single": 26
+ },
+ "pass_Q3": {
+  "returned_unknown<=20%": true,
+  "wrong_direct<=5%": true
+ },
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/dev/d2",
+ "returned_rate_unknown": 0.087,
+ "returned_type_among_unknown": 2,
+ "runs": "dev",
+ "time_utc": "2026-10-03T10:32:33Z",
+ "unknown_returned_words": [
+  {
+   "decided_by": "paren_alias",
+   "estimate_basis": null,
+   "kind": "unknown_fragment",
+   "origin": "direct",
+   "term": "あり",
+   "top": [
+    "PERSON"
+   ]
+  },
+  {
+   "decided_by": "est:morphology:head",
+   "estimate_basis": "proximity",
+   "kind": "unknown_coined",
+   "origin": "estimated",
+   "term": "しゃぽむ",
+   "top": [
+    "PERSON"
+   ]
+  }
+ ],
+ "wrong_rate_among_direct": 0.5,
+ "wrong_rate_typed": 0.0236,
+ "wrong_single_all": 29,
+ "wrong_single_direct": 3
+}

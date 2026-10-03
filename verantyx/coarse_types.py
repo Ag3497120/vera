@@ -85,7 +85,11 @@ ARMS: Tuple[str, ...] = (
     "role", "hearst", "sahen", "pos_class", "frame", "morphology",
     # W3-a2 (appended): the definition read by the fallback ("X wa, Y de ari, ...")
     # and the definition sentence a model generated (a different origin: see decide_word)
-    "definition_recovered", "gen_definition")
+    "definition_recovered", "gen_definition",
+    # W3-a3 (appended): how a predicate's arguments are distributed over particles and noun types
+    # (read back through the K62 table), the frame a model wrote for a predicate, and the
+    # time / place / quantity constructions a noun stands in
+    "role_distribution", "gen_frame", "slot")
 
 
 def type_ids(namespace: Optional[str] = None) -> List[str]:
@@ -329,10 +333,74 @@ DEFAULT_CONFIG: Dict[str, object] = {
     # estimate (generated).  True: when an arm of another kind that reached its own threshold
     # points at the very same single type, the word is placed DIRECT (an agreement).
     "gen_upgrade_on_agreement": True,
+    # W3-a3.  frame_decides: the hand-written frame arm (PRED_FRAME_RULES) takes part in a decision.
+    # True keeps every placement made before W3-a3 answering as it was stored; the W3-a3 build sets
+    # its own value in its config file.  The rd_* / slot_* defaults are the STRICTEST values of the
+    # registered grid (docs section 12.8); a build sets its own in its config file.
+    "frame_decides": True,
+    "rd_store_min": 20,           # a predicate's distribution rows are stored from this many typed arguments
+    "rd_min_total": 100,          # role_distribution: typed arguments needed in one source
+    "rd_particle_min": 10,        # a particle is significant from this many typed arguments ...
+    "rd_particle_share_pct": 30,  # ... and this share (%) of all the typed arguments
+    "rd_type_share_pct": 70,      # a noun type is significant in a particle from this share (%)
+    "rd_min_sources": 2,          # sources whose distribution must back a generated frame
+    "slot_min": 20,               # slot: uses in the construction
+    "slot_share_pct": 30,         # ... and this share (%) of the word's noun uses
+    "slot_lift_pct": 300,         # a construction must be this much (%) more typical than the source's base rate
 }
 
 #: the arm of generated definitions and the origin its source carries
 GEN_ARM = "gen_definition"
+#: W3-a3: the arm of a generated predicate type (its frame rides on ``gen_frame_slot`` rows) ...
+GEN_FRAME_ARM = "gen_frame"
+#: ... and every arm a model wrote.  A word one of these decided is never lent to another word.
+GEN_ARMS = (GEN_ARM, GEN_FRAME_ARM)
+#: the nine case particles a predicate's frame and the argument chains are made of
+CASE_PARTICLES_9: Tuple[str, ...] = ("が", "を", "に", "で", "へ", "と", "から", "まで", "より")
+
+# --- K62: the predicate types W3-b1 reads, and the frame of each (W3-a3 12.2) ----------------
+# A copy of the table `w3b1_frames` of docs/READING_SOUNDNESS.md section 10 (K62) of branch
+# origin/integ-w3b1 (commit 5d863dd, blob 0d6233b2...): predicate type, role, particle, expected
+# noun types, kind ("arg" = 項, "adjunct" = 付加).  Type ids and particles only.  Widening it is
+# not allowed here: the table is the reader's, and the reverse lookup below is made from it.
+_NP = ("PERSON", "GROUP_ORG", "ANIMAL")
+_PATIENT = ("PERSON", "GROUP_ORG", "ANIMAL", "PLANT", "ARTIFACT", "SUBSTANCE_FOOD", "EVENT_ACT",
+            "STATE_PROPERTY", "ABSTRACT", "INFO_LANGUAGE", "BODY_PART", "NATURAL_PHENOMENON",
+            "WORK", "IDENTIFIER")
+K62_FRAMES: Tuple[Tuple[str, str, str, Tuple[str, ...], str], ...] = (
+    ("P_MOVE", "agent", "が", _NP, "arg"),
+    ("P_MOVE", "goal", "へ", ("PLACE",), "arg"),
+    ("P_MOVE", "source", "から", ("PLACE",), "arg"),
+    ("P_MOVE", "place", "で", ("PLACE",), "adjunct"),
+    ("P_MOVE", "time", "に", ("TIME",), "adjunct"),
+    ("P_COMMUNICATE", "agent", "が", _NP, "arg"),
+    ("P_COMMUNICATE", "patient", "を", _PATIENT, "arg"),
+    ("P_COMMUNICATE", "place", "で", ("PLACE",), "adjunct"),
+    ("P_COMMUNICATE", "time", "に", ("TIME",), "adjunct"),
+)
+
+
+def k62_by_type() -> Dict[str, Dict[str, frozenset]]:
+    """{predicate type: {particle: set of expected noun types}} from ``K62_FRAMES``."""
+    out: Dict[str, Dict[str, frozenset]] = {}
+    for ptype, _role, part, types, _kind in K62_FRAMES:
+        d = out.setdefault(ptype, {})
+        d[part] = frozenset(d.get(part, frozenset()) | set(types))
+    return out
+
+
+def k62_particles() -> frozenset:
+    """The particles that appear anywhere in the K62 table."""
+    return frozenset(p for _t, _r, p, _ts, _k in K62_FRAMES)
+
+
+def k62_distinguishing(ptype: str) -> frozenset:
+    """The (particle, noun type) pairs of ``ptype``'s rows that no OTHER type's row holds: derived
+    from the table, never chosen by hand (W3-a3 12.2)."""
+    rows = k62_by_type()
+    mine = {(p, t) for p, ts in rows.get(ptype, {}).items() for t in ts}
+    others = {(p, t) for pt, d in rows.items() if pt != ptype for p, ts in d.items() for t in ts}
+    return frozenset(mine - others)
 
 #: Taxonomic rank words (longest first).  "…イヌ科イヌ亜科の一部" says X belongs to a
 #: taxon: the type of the taxon in front of the last rank word is the phrase's.
@@ -386,7 +454,8 @@ META_HEADS: Tuple[str, ...] = (
 # --- the decision rules (ONE place: the builder and the query use the same) --
 #: Arms whose evidence is kept per source (a count of one source is never added
 #: to another source's).
-ARMS_BY_SOURCE: Tuple[str, ...] = ("role", "hearst", "sahen", "pos_class", "frame")
+ARMS_BY_SOURCE: Tuple[str, ...] = ("role", "hearst", "sahen", "pos_class", "frame",
+                                   "role_distribution", "slot")
 #: The definition-like arms (what ``definition_outranks_role`` puts first).
 TIER2_ARMS: Tuple[str, ...] = (
     "definition", "definition_recovered", "title_qualifier", "alias", "paren_alias", "hearst")
@@ -394,7 +463,10 @@ TIER2_ARMS: Tuple[str, ...] = (
 #: (``donor_contra_min``): each is looked at on its own, never summed.
 DONOR_CONTRA_ARMS: Tuple[str, ...] = ("role", "hearst", "alias", "paren_alias", "title_qualifier")
 #: Evidence rows that are not a vote for a type (they explain a decision).
-NON_VOTE_ARMS: Tuple[str, ...] = ("ns_vote",)
+NON_VOTE_ARMS: Tuple[str, ...] = ("ns_vote", "gen_frame_slot")
+#: W3-a3: arms that never decide a word on their own.  They only back another arm's claim
+#: (a generated frame, a generated definition): the evidence is shown, ``met`` stays False.
+AGREEMENT_ONLY_ARMS: Tuple[str, ...] = ("role_distribution", "slot")
 
 
 def arm_key(arm: str, src: str) -> str:
@@ -465,36 +537,92 @@ def arm_verdict(arm: str, counts: Dict[str, int], cfg: dict,
     if arm == "frame":
         mx = max(counts.values())
         return sorted(t for t, c in counts.items() if c == mx)
+    if arm == "role_distribution":
+        cands = rd_analyze(counts, cfg, base)["candidates"]
+        return list(cands) if len(cands) == 1 else []     # a split is no vote (a tie abstains)
+    if arm == "slot":
+        mx = max(counts.values())
+        if mx >= cfg["slot_min"] and mx * 100 >= cfg["slot_share_pct"] * max(base or 0, mx):
+            return sorted(t for t, c in counts.items() if c == mx)     # a tie stays whole
+        return []
     if arm in ("seed", "notation"):
         return sorted(counts)
     return []
 
 
+def rd_analyze(counts: Dict[str, int], cfg: dict, base: Optional[int]) -> Dict[str, object]:
+    """Read one source's distribution of a predicate's arguments (keys ``<particle>|<noun type>``)
+    back through the K62 table (W3-a3 12.4).  ``base`` = the typed arguments of the predicate in that
+    source.  Returns ``{"sig": significant particles (ROLE_PARTICLES order), "types": {particle:
+    significant noun types}, "candidates": [K62 predicate types that fit]}``.
+
+    A K62 type T is a candidate when (a) every significant particle that the K62 table knows
+    (を が に で へ から) is a particle of T's rows, (b) for each of them the significant types lie inside
+    T's types for it, (c) at least one of T's distinguishing pairs is significant.  と まで より are
+    not in the table: they never make or break a candidate (they stay in ``sig``)."""
+    empty = {"sig": [], "types": {}, "candidates": []}
+    if not counts or base is None or base < cfg["rd_min_total"]:
+        return empty
+    n_p: Dict[str, int] = {}
+    n_pt: Dict[Tuple[str, str], int] = {}
+    for key, n in counts.items():
+        p, _bar, t = key.partition("|")
+        n_p[p] = n_p.get(p, 0) + n
+        n_pt[(p, t)] = n_pt.get((p, t), 0) + n
+    sig = [p for p in ROLE_PARTICLES if p in n_p
+           and n_p[p] >= cfg["rd_particle_min"]
+           and n_p[p] * 100 >= cfg["rd_particle_share_pct"] * base]
+    types = {p: sorted(t for (pp, t), n in n_pt.items()
+                       if pp == p and n * 100 >= cfg["rd_type_share_pct"] * n_p[p]) for p in sig}
+    known = k62_particles()
+    cands = []
+    for ptype, rows in k62_by_type().items():
+        read = [p for p in sig if p in known]
+        if not all(p in rows for p in read):
+            continue
+        if not all(set(types[p]) <= rows[p] for p in read):
+            continue
+        dist = k62_distinguishing(ptype)
+        if any((p, t) in dist for p in sig for t in types[p]):
+            cands.append(ptype)
+    return {"sig": sig, "types": types, "candidates": sorted(cands)}
+
+
 def decide_word(ev, cfg: dict) -> Dict[str, object]:
     """Decide one word from its evidence rows ``(arm, src, type, n, base)``.
 
-    The rows of the generated arm (``gen_definition``) are set apart: the word is first
-    decided WITHOUT them (``_decide_base``); a generated arm then (1) never changes a
+    The rows of the generated arms (``gen_definition``, ``gen_frame``) are set apart: the word is
+    first decided WITHOUT them (``_decide_base``); a generated arm then (1) never changes a
     DECIDED or MULTIPLE decision (``GENERATED_NOT_DECIDING``), (2) places a word nothing
     else decided only when it names ONE type (a split places nothing:
     ``GENERATED_SPLIT``), as an ESTIMATE (generated) -- or DIRECT when an arm of
     another kind that reached its own threshold names exactly that type (and
-    ``gen_upgrade_on_agreement``).  The result carries ``origin`` ("direct", "estimated"
-    or None) and ``estimate_basis`` (None or "generated").
+    ``gen_upgrade_on_agreement``).  The generated predicate frame (``gen_frame``, W3-a3) is
+    upgraded to DIRECT by the ``role_distribution`` arms under its own rule (``_apply_gen_frame``).
+    The result carries ``origin`` ("direct", "estimated" or None) and ``estimate_basis``
+    (None or "generated").
 
-    Returns ``{"arms": {key: {counts, top, threshold_met, met, why}}, "state",
-    "tops", "by"}``.  ``threshold_met`` is the arm's own threshold; ``met`` is
-    True only when the arm also TOOK PART in the decision.  ``why`` names the
-    reason an arm that reached its threshold was set aside:
-    ``ROLE_SINGLE_SOURCE`` (the weakest arm never decides alone: fewer than
-    ``role_min_sources`` role sources reached their thresholds), ``SEEDED`` (a
-    hand-written anchor settles the word) or ``OUTRANKED``
-    (``definition_outranks_role``).  Counts of different arms and
-    different sources are never added."""
+    Returns ``{"arms": {key: {counts, top, threshold_met, met, why}}, "state", "tops", "by"}``.
+    ``threshold_met`` is the arm's own threshold; ``met`` is True only when the arm also TOOK PART
+    in the decision.  ``why`` names the reason an arm that reached its threshold was set aside:
+    ``ROLE_SINGLE_SOURCE`` (the weakest arm never decides alone: fewer than ``role_min_sources``
+    role sources reached their thresholds), ``SEEDED`` (a hand-written anchor settles the word),
+    ``OUTRANKED`` (``definition_outranks_role``), ``AGREEMENT_ONLY`` (``role_distribution`` and
+    ``slot`` never decide alone) or ``FRAME_NOT_DECIDING`` (``frame_decides`` is off).  Counts of
+    different arms and different sources are never added."""
     gen_rows = [r for r in ev if r[0] == GEN_ARM]
-    base_dec = _decide_base([r for r in ev if r[0] != GEN_ARM], cfg)
-    if not gen_rows:
-        return base_dec
+    gf_rows = [r for r in ev if r[0] == GEN_FRAME_ARM]
+    base_dec = _decide_base([r for r in ev if r[0] not in GEN_ARMS], cfg)
+    dec = base_dec
+    if gen_rows:
+        dec = _apply_gen_definition(base_dec, gen_rows, cfg)
+    if gf_rows:
+        dec = _apply_gen_frame(dec, gf_rows, [r for r in ev if r[0] == "gen_frame_slot"], cfg)
+    return dec
+
+
+def _apply_gen_definition(base_dec, gen_rows, cfg: dict) -> Dict[str, object]:
+    """The W3-a2 rule of the generated definition (see ``decide_word``)."""
     arms_ = base_dec["arms"]
     counts: Dict[str, int] = {}
     for _a, _s, typ, n, _b in gen_rows:
@@ -523,8 +651,52 @@ def decide_word(ev, cfg: dict) -> Dict[str, object]:
             "origin": "estimated", "estimate_basis": "generated"}
 
 
+def _apply_gen_frame(dec, gf_rows, slot_rows, cfg: dict) -> Dict[str, object]:
+    """W3-a3 12.6: the predicate type a model wrote (``gen_frame``) with its frame (``gen_frame_slot``
+    rows, ``<particle>|<noun type>``).  It places a word nothing else decided as an ESTIMATE
+    (generated).  It becomes DIRECT only when the ``role_distribution`` arms that reached their own
+    threshold (R) (1) are at least ``rd_min_sources``, (2) all vote for exactly the generated type and
+    (3) every significant particle of each of them is a particle of the generated frame.  A vote for
+    another type is ``DISTRIBUTION_DISAGREES`` and a frame that misses a particle is
+    ``FRAME_PARTICLES_NOT_COVERED``: both stay estimates (a split is not made: the distribution never
+    decides on its own, so it is not offered as a candidate)."""
+    arms_ = dec["arms"]
+    counts: Dict[str, int] = {}
+    for _a, _s, typ, n, _b in gf_rows:
+        counts[typ] = n
+    top = arm_top(counts, 1)
+    garm = {"arm": GEN_FRAME_ARM, "src": gf_rows[0][1], "counts": dict(sorted(counts.items())),
+            "top": top, "threshold_met": bool(top), "met": False, "why": None}
+    arms_[GEN_FRAME_ARM] = garm
+    if dec["state"] in ("DECIDED", "MULTIPLE"):
+        garm["why"] = "GENERATED_NOT_DECIDING"
+        return dec
+    if len(top) != 1:
+        garm["why"] = "GENERATED_SPLIT"
+        return dec
+    t = top[0]
+    garm["met"] = True
+    gen_parts = {r[2].partition("|")[0] for r in slot_rows}
+    rd = sorted(k for k, a in arms_.items() if a["arm"] == "role_distribution" and a["threshold_met"])
+    est = {"arms": arms_, "state": "DECIDED", "tops": [t], "by": [GEN_FRAME_ARM],
+           "origin": "estimated", "estimate_basis": "generated"}
+    if any(arms_[k]["top"] != [t] for k in rd):
+        garm["why"] = "DISTRIBUTION_DISAGREES"
+        return est
+    if any(not set(arms_[k]["sig"]) <= gen_parts for k in rd):
+        garm["why"] = "FRAME_PARTICLES_NOT_COVERED"
+        return est
+    if not rd or len(rd) < cfg["rd_min_sources"]:
+        return est
+    for k in rd:
+        arms_[k]["met"] = True
+        arms_[k]["why"] = None
+    return {"arms": arms_, "state": "DECIDED", "tops": [t], "by": sorted(rd + [GEN_FRAME_ARM]),
+            "origin": "direct", "estimate_basis": None}
+
+
 def _decide_base(ev, cfg: dict) -> Dict[str, object]:
-    """``decide_word`` without the generated arm (see there)."""
+    """``decide_word`` without the generated arms (see there)."""
     arms: Dict[str, dict] = {}
     for arm, src, typ, n, base in ev:
         if arm in NON_VOTE_ARMS:
@@ -541,6 +713,14 @@ def _decide_base(ev, cfg: dict) -> Dict[str, object]:
                        "counts": dict(sorted(a["counts"].items())),
                        "top": top, "threshold_met": bool(top), "met": bool(top),
                        "why": None}
+        if a["arm"] == "role_distribution":
+            out_arms[k]["sig"] = list(rd_analyze(a["counts"], cfg, a["base"])["sig"])
+        if top and a["arm"] in AGREEMENT_ONLY_ARMS:
+            out_arms[k]["met"] = False           # shown, never a decider: it only backs a generated claim
+            out_arms[k]["why"] = "AGREEMENT_ONLY"
+        elif top and a["arm"] == "frame" and not cfg.get("frame_decides", True):
+            out_arms[k]["met"] = False
+            out_arms[k]["why"] = "FRAME_NOT_DECIDING"
     if not cfg.get("recovered_decides", True):
         for a in out_arms.values():          # the fallback definition is shown, not used
             if a["arm"] == "definition_recovered" and a["threshold_met"]:

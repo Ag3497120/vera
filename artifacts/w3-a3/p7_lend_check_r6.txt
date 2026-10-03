@@ -1,0 +1,9 @@
+upgraded predicates (first 6): ['うたう', 'たたえる', 'みせる', '交わす', '冠する', '切り出す']
+ニセうたう -> DECIDED estimated ['WORK'] ['kin:うたう@R', 'kin:うたう@R']
+超うたう -> DECIDED estimated ['WORK'] ['kin:うたう@R', 'kin:うたう@R']
+ニセたたえる -> UNKNOWN None [] []
+超たたえる -> UNKNOWN None [] []
+ニセみせる -> UNKNOWN None [] []
+超みせる -> UNKNOWN None [] []
+{"term": "うたう", "state": "DECIDED", "origin": "direct", "top": ["P_COMMUNICATE"], "decided_by": ["gen_frame", "role_distribution@codex:general_qa", "role_distribution@codex:narrative", "role_distribution@jawiki"], "generated_frame": true, "frame_status": "CONFIRMED", "frame": {"を": ["INFO_LANGUAGE", "WORK"]}, "frame_unconfirmed": {"で": ["PLACE"]}}
+axes: ['role_distribution@codex:general_qa', 'role_distribution@codex:narrative', 'role_distribution@jawiki', 'gen_frame']
