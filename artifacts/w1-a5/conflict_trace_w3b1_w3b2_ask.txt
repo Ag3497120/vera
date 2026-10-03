@@ -1,0 +1,107 @@
+F.......FFFFFFFFF...F...                                                 [100%]
+=================================== FAILURES ===================================
+_ test_path_s4_registered_unread_constructions[\u6bcd\u304c\u305d\u3063\u3068\u624b\u7d19\u3092\u66f8\u3044\u305f\u3002-PLACEMENT_PART_NOT_NP:\u526f\u8a5e] _
+tests/test_semantic_read_w3b1.py:413: in test_path_s4_registered_unread_constructions
+    assert out['readable'] is False and reasons(out)[1].startswith(prefix), reasons(out)
+                                                                            ^^^^^^^^^^^^
+tests/test_semantic_read_w3b1.py:80: in reasons
+    assert out['readable'] is False, out
+E   AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '書く', 'roles': {'agent': '母', 'patient': '手紙'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E   assert True is False
+_________ test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-061] _________
+tests/test_semantic_read_w3b1.py:482: in test_every_row_of_the_new_data_with_the_fixture
+    assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: ('misread', [{'predicate': '開ける', 'roles': {'agent': '兄', 'patient': '窓'}, 'polarity': '+', 'tense': 'past', ...}])
+E   assert 'misread' in ('correct', 'abstain')
+_________ test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-062] _________
+tests/test_semantic_read_w3b1.py:482: in test_every_row_of_the_new_data_with_the_fixture
+    assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: ('misread', [{'predicate': '書く', 'roles': {'agent': '母', 'patient': '手紙'}, 'polarity': '+', 'tense': 'past', ...}])
+E   assert 'misread' in ('correct', 'abstain')
+_________ test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-063] _________
+tests/test_semantic_read_w3b1.py:482: in test_every_row_of_the_new_data_with_the_fixture
+    assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: ('misread', [{'predicate': '磨く', 'roles': {'agent': '弟', 'patient': '靴'}, 'polarity': '+', 'tense': 'past', ...}])
+E   assert 'misread' in ('correct', 'abstain')
+_________ test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-064] _________
+tests/test_semantic_read_w3b1.py:482: in test_every_row_of_the_new_data_with_the_fixture
+    assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: ('misread', [{'predicate': '書く', 'roles': {'agent': '姉', 'patient': '名前'}, 'polarity': '+', 'tense': 'past', ...}])
+E   assert 'misread' in ('correct', 'abstain')
+_ test_without_a_placement_every_output_is_the_base_commits_output_byte_for_byte _
+tests/test_semantic_read_w3b1.py:580: in test_without_a_placement_every_output_is_the_base_commits_output_byte_for_byte
+    assert json.dumps(SR.read(text), ensure_ascii=False) == expect, text
+E   AssertionError: 兄がそっと窓を開けた。
+E   assert '{"schema": "...n": [7, 9]}]}' == '{"schema": "...se_meta": []}'
+E     
+E     Skipping 55 identical leading characters in diff, use -v to show
+E     - eadable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "開ける", "span": [7, 9], "reasons": ["unrepresented source content", "unrepresented source content"]}], "clause_meta": []}
+E     + eadable": true, "clauses": [{"predicate": "開ける", "roles": {"agent": "兄", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active", "flags": {"adverbs": ["そっと"]}}], "relations": [], "abstain": null, "unsupp...
+E     
+E     ...Full output truncated (1 line hidden), use '-vv' to show
+____________ test_a_quantity_adverb_is_not_read_the_output_is_w3b1s ____________
+tests/test_semantic_read_w3b2.py:670: in test_a_quantity_adverb_is_not_read_the_output_is_w3b1s
+    assert new == base and not new['readable'], text
+E   AssertionError: 兄が窓を3回拭いた。
+E   assert ({'schema': 'v...', ...}], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 4 identical items, use -vv to show
+E     Differing items:
+E     {'clause_meta': [{'rule': 'frame', 'span': [6, 8]}]} != {'clause_meta': []}
+E     {'readable': True} != {'readable': False}
+E     {'abstain': None} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_MARKER:quant']}}
+E     {'clauses': [{'predicate': '拭く', 'roles': {'agent': '兄', 'patient': '窓'}, 'polarity': '+', 'tense': 'past', ...}]} != {'clauses': []}
+E     Use -v to get more diff)
+_ test_without_a_placement_the_output_is_the_base_commits_byte_for_byte_and_has_no_new_key _
+tests/test_semantic_read_w3b2.py:709: in test_without_a_placement_the_output_is_the_base_commits_byte_for_byte_and_has_no_new_key
+    assert json.dumps(new, ensure_ascii=False) == json.dumps(base, ensure_ascii=False), text
+E   AssertionError: 兄がそっと窓を開けた。
+E   assert '{"schema": "...n": [7, 9]}]}' == '{"schema": "...se_meta": []}'
+E     
+E     Skipping 55 identical leading characters in diff, use -v to show
+E     - eadable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "開ける", "span": [7, 9], "reasons": ["unrepresented source content", "unrepresented source content"]}], "clause_meta": []}
+E     + eadable": true, "clauses": [{"predicate": "開ける", "roles": {"agent": "兄", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active", "flags": {"adverbs": ["そっと"]}}], "relations": [], "abstain": null, "unsupp...
+E     
+E     ...Full output truncated (1 line hidden), use '-vv' to show
+_ test_every_difference_from_w3b1_is_a_sentence_read_now_or_a_sentence_stopped_by_a_frame_on_all_the_data _
+tests/test_semantic_read_w3b2.py:741: in test_every_difference_from_w3b1_is_a_sentence_read_now_or_a_sentence_stopped_by_a_frame_on_all_the_data
+    assert SR.typed_explain_ja(text, F.FixtureQuery())['w3b2'] == 'READ', text
+E   AssertionError: 兄がそっと窓を開けた。
+E   assert 'PLACEMENT_PART_NOT_NP:副詞' == 'READ'
+E     
+E     - READ
+E     + PLACEMENT_PART_NOT_NP:副詞
+_ test_the_diagnosis_says_read_exactly_when_the_entry_reads_with_the_new_path_on_all_the_data _
+tests/test_semantic_read_w3b2.py:750: in test_the_diagnosis_says_read_exactly_when_the_entry_reads_with_the_new_path_on_all_the_data
+    assert (ex['w3b2'] == 'READ') == new_path_read, (text, ex)
+E   AssertionError: ('兄がそっと窓を開けた。', {'w3b1_trigger': 'S4', 'w3b1': 'PLACEMENT_PART_NOT_NP:副詞', 'w3b2_trigger': 'S4', 'w3b2': 'PLACEMENT_PART_NOT_NP:副詞', ...})
+E   assert ('PLACEMENT_PART_NOT_NP:副詞' == 'READ'
+E     
+E     - READ
+E     + PLACEMENT_PART_NOT_NP:副詞) == True
+_ test_a_desire_or_hearsay_sentence_is_not_the_answer_of_a_plain_past_question[\u6821\u9577\u306f\u65b0\u805e\u3092\u8aad\u3093\u3067\u307f\u305f\u304b\u3063\u305f\u3002-\u6821\u9577\u306f\u4f55\u3092\u8aad\u3093\u3060\uff1f] _
+tests/test_ask_question_cross.py:428: in test_a_desire_or_hearsay_sentence_is_not_the_answer_of_a_plain_past_question
+    assert out['question_cross']['mapped_to'] == 'ORIGINAL' and out['question_cross']['reason'] == 'PREDICATE_FORM_DIFFERS' and out['question_cross']['state'] == 'FILLED'
+E   AssertionError: assert ('ORIGINAL' == 'ORIGINAL'
+E     
+E       ORIGINAL and 'NO_MATCHING_...EAD_SENTENCES' == 'PREDICATE_FORM_DIFFERS'
+E     
+E     - PREDICATE_FORM_DIFFERS
+E     + NO_MATCHING_CROSS_IN_READ_SENTENCES)
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w3b1.py::test_path_s4_registered_unread_constructions[\u6bcd\u304c\u305d\u3063\u3068\u624b\u7d19\u3092\u66f8\u3044\u305f\u3002-PLACEMENT_PART_NOT_NP:\u526f\u8a5e]
+FAILED tests/test_semantic_read_w3b1.py::test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-061]
+FAILED tests/test_semantic_read_w3b1.py::test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-062]
+FAILED tests/test_semantic_read_w3b1.py::test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-063]
+FAILED tests/test_semantic_read_w3b1.py::test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-064]
+FAILED tests/test_semantic_read_w3b1.py::test_without_a_placement_every_output_is_the_base_commits_output_byte_for_byte
+FAILED tests/test_semantic_read_w3b2.py::test_a_quantity_adverb_is_not_read_the_output_is_w3b1s
+FAILED tests/test_semantic_read_w3b2.py::test_without_a_placement_the_output_is_the_base_commits_byte_for_byte_and_has_no_new_key
+FAILED tests/test_semantic_read_w3b2.py::test_every_difference_from_w3b1_is_a_sentence_read_now_or_a_sentence_stopped_by_a_frame_on_all_the_data
+FAILED tests/test_semantic_read_w3b2.py::test_the_diagnosis_says_read_exactly_when_the_entry_reads_with_the_new_path_on_all_the_data
+FAILED tests/test_ask_question_cross.py::test_a_desire_or_hearsay_sentence_is_not_the_answer_of_a_plain_past_question[\u6821\u9577\u306f\u65b0\u805e\u3092\u8aad\u3093\u3067\u307f\u305f\u304b\u3063\u305f\u3002-\u6821\u9577\u306f\u4f55\u3092\u8aad\u3093\u3060\uff1f]
+11 failed, 13 passed, 446 deselected in 5.13s

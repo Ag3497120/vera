@@ -1,0 +1,207 @@
+--- a/tests/test_semantic_read_w3b1.py
++++ b/tests/test_semantic_read_w3b1.py
+@@ -39,6 +39,7 @@
+ from verantyx import coarse_types as CT    # noqa: E402
+ from verantyx import semantic_read as SR    # noqa: E402
+ from verantyx import semantic_reader as R    # noqa: E402
++W1A5 = _load_by_path('w1a5_common_in_w3b1', RS / 'w1a5_common.py')    # W1-a5 (docs/READING_SOUNDNESS.md 10G)
+ 
+ DOCS = (TREE / 'docs' / 'READING_SOUNDNESS.md').read_text(encoding='utf-8')
+ BASE_COMMIT = '2732274'  # integration: dev before the W3-b1 merge (W5-a changed the base reading)
+@@ -409,6 +410,8 @@
+         if not plain['readable']:
+             assert out['abstain']['reasons'][0] == plain['abstain']['reasons'][0]
+             assert all(r.startswith('PLACEMENT_PART_MARKER') for r in out['abstain']['reasons'][1:])
++    elif prefix == 'PLACEMENT_PART_NOT_NP:副詞' and out['readable'] and W1A5.touched(text):
++        assert out['clauses'][0]['flags']['adverbs'] and 'そっと' not in out['clauses'][0]['roles'].values()     # W1-a5 (10G K213): the adverb is a mark, not a part
+     else:
+         assert out['readable'] is False and reasons(out)[1].startswith(prefix), reasons(out)
+ 
+@@ -478,6 +481,11 @@
+         if exc['kind'] == 'baseline_reads':
+             assert out == SR.read(row['input'], row['lang'], placement=None)
+         return
++    if out['readable'] and row['entry_expect'] == 'abstain' and W1A5.touched(row['input']):
++        # W1-a5 (10G K210/K213): an adverb sentence is read now, the adverb as a mark (`flags.adverbs`). What the S4 row forbids still holds: the adverb is no role of the clause (`must_not`).
++        c = out['clauses'][row['expect']['must_not'][0]['clause']]
++        assert all(c['roles'].get(m['role']) != m['value'] for m in row['expect']['must_not']) and c['flags']['adverbs'], c
++        return
+     verdict = b1.judge(row['expect'], row['lang'], out)['verdict']
+     assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
+     if row['id'] in W3B4_NOW_READ:
+@@ -576,6 +584,9 @@
+     base = _base_module()
+     texts = list(dict.fromkeys(SAMPLES + [r['input'] for r in DATA] + ['犬が猫を追いかけた。', 'おはようございます。', '弟は兄より背が高い。', 'The dog chased the cat.']))
+     for text in texts:
++        if W1A5.touched(text):      # W1-a5 (10G K210): a sentence W1-a5 changed is one of the four registered kinds; every other sentence is compared byte for byte as before
++            assert W1A5.documented(base.read(text), SR.read(text, placement=None)), text
++            continue
+         expect = json.dumps(base.read(text), ensure_ascii=False)
+         assert json.dumps(SR.read(text), ensure_ascii=False) == expect, text
+         assert json.dumps(SR.read(text, placement=None), ensure_ascii=False) == expect, text
+--- a/tests/test_semantic_read_w3b2.py
++++ b/tests/test_semantic_read_w3b2.py
+@@ -36,6 +36,7 @@
+ from tools.bank_score.v2 import b1    # noqa: E402
+ from verantyx import semantic_read as SR    # noqa: E402
+ from verantyx import semantic_reader as R    # noqa: E402
++W1A5 = _load_by_path('w1a5_common_in_w3b2', RS / 'w1a5_common.py')    # W1-a5 (docs/READING_SOUNDNESS.md 10G)
+ 
+ DOCS = (TREE / 'docs' / 'READING_SOUNDNESS.md').read_text(encoding='utf-8')
+ 
+@@ -667,6 +668,9 @@
+     for text in ('兄が三回、窓を拭いた。', '兄が三度、窓を拭いた。', '兄が3回、窓を拭いた。', '兄が窓を3回拭いた。'):
+         m = {'三回': P('QUANTITY'), '3回': P('QUANTITY', by=('notation',)), '3': P('QUANTITY', by=('notation',))}
+         new, base = pair(text, m)
++        if W1A5.touched(text, Q(m)):      # W1-a5 (10G K212): a quantity that follows the rules is read (`quantifiers`); the other sentences stay as the base commit's
++            assert W1A5.documented(base, new), text
++            continue
+         assert new == base and not new['readable'], text
+ 
+ 
+@@ -706,6 +710,9 @@
+ def test_without_a_placement_the_output_is_the_base_commits_byte_for_byte_and_has_no_new_key():
+     for text in ALL_JA:
+         new, base = SR.read(text, placement=None), BASE.read(text, placement=None)
++        if W1A5.touched(text):      # W1-a5 (10G K210)
++            assert W1A5.documented(base, new), text
++            continue
+         assert json.dumps(new, ensure_ascii=False) == json.dumps(base, ensure_ascii=False), text
+         for c in new['clauses']:
+             assert not ({'role_flags', 'predicate_basis', 'role_basis'} & set(c)), text
+@@ -720,6 +727,9 @@
+ 
+ def classify(text):
+     new, base = fx_pair(text)
++    if W1A5.touched(text, F.FixtureQuery()):      # W1-a5 (10G K210): its own kind; it is documented, never a changed reading of the older paths
++        assert W1A5.documented(base, new), text
++        return 'w1a5'
+     if base['readable']:
+         if new == base: return 'same_read'
+         if (not new['readable']) and len(reasons(new)) == 2 and reasons(new)[1].startswith('PLACEMENT_FRAME_'): return 'frame_stopped'
+@@ -744,6 +754,7 @@
+ def test_the_diagnosis_says_read_exactly_when_the_entry_reads_with_the_new_path_on_all_the_data():
+     for text in ALL_JA:
+         ex = SR.typed_explain_ja(text, F.FixtureQuery())
++        if W1A5.touched(text, F.FixtureQuery()): continue      # W1-a5 (10G K210): the diagnosis of the typed paths says nothing about a reading of W1-a5
+         new, base = fx_pair(text)
+         assert set(ex) == {'w3b1_trigger', 'w3b1', 'w3b2_trigger', 'w3b2', 'frame'}
+         new_path_read = bool(new['readable']) and not base['readable']
+--- a/tests/test_semantic_read_w3b3.py
++++ b/tests/test_semantic_read_w3b3.py
+@@ -36,6 +36,7 @@
+ from tools.bank_score.v2 import b1    # noqa: E402
+ from verantyx import semantic_read as SR    # noqa: E402
+ from verantyx import semantic_reader as R    # noqa: E402
++W1A5 = _load_by_path('w1a5_common_in_w3b3', RS / 'w1a5_common.py')    # W1-a5 (docs/READING_SOUNDNESS.md 10G)
+ 
+ DOCS = (TREE / 'docs' / 'READING_SOUNDNESS.md').read_text(encoding='utf-8')
+ ROWS = {name: COMMON.load_data(name) for name in COMMON.DATA_ALL}
+@@ -578,6 +579,9 @@
+     q = F.FixtureQuery(); bq = F.FixtureQuery()
+     out = SR.read(row['input'], placement=q)
+     bout = BASE.read(row['input'], placement=bq)
++    if W1A5.touched(row['input']):      # W1-a5 (10G K210): the W3-b3 path does not read the sentence (checked below); W1-a5 either adds its reason to the base's, or reads the clause with a mark of the adverb
++        assert explain(row['input'])['read'] is False and W1A5.documented(bout, out), (row['input'], out)
++        return
+     assert out['readable'] is False and out == bout, (row['input'], out)
+     assert verdict(row, out) == 'correct'
+     assert explain(row['input'])['read'] is False
+@@ -599,6 +603,10 @@
+ @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+ def test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis(text):
+     out = SR.read(text, placement=None)
++    if W1A5.touched(text):      # W1-a5 (10G K210)
++        assert W1A5.documented(BASE.read(text, placement=None), out), text
++        assert 'head' not in json.dumps(out) and 'basis' not in json.dumps(out)
++        return
+     assert out == BASE.read(text, placement=None)
+     assert json.dumps(out, ensure_ascii=False) == json.dumps(BASE.read(text, placement=None), ensure_ascii=False)
+     assert 'head' not in json.dumps(out) and 'basis' not in json.dumps(out)
+@@ -620,7 +628,7 @@
+     if ex['read']:
+         assert out['readable'] is True and bout['readable'] is False, text
+     else:
+-        assert out == bout, (text, ex['reason'])
++        assert out == bout or (W1A5.touched(text, F.FixtureQuery()) and W1A5.documented(bout, out)), (text, ex['reason'])      # W1-a5 (10G K210): its reason stands behind the base's
+         if ex['reason'].startswith(BEFORE_ANY_QUESTION): assert q.calls == bq.calls, (text, ex['reason'])
+ 
+ 
+@@ -651,6 +659,10 @@
+ def test_no_row_of_the_data_is_misread_or_incomplete_and_the_fixture_holds_every_word(row):
+     q = F.FixtureQuery()
+     out = SR.read(row['input'], placement=q)
++    if W1A5.touched(row['input'], F.FixtureQuery()) and out['readable']:
++        # W1-a5 (10G K213): a sentence of a W1-a4 misread type that W1-a5 reads with the mark of an adverb; the frozen expectation (abstain) is superseded by the auditor at integration (frozen_conflicts.md)
++        assert out['clauses'][0]['flags']['adverbs'] and W1A5.documented(BASE.read(row['input'], placement=F.FixtureQuery()), out)
++        return
+     assert verdict(row, out) in ('correct', 'abstain'), (row['input'], verdict(row, out), out)
+     bq = F.FixtureQuery(); BASE.read(row['input'], placement=bq)
+     assert q.misses == [] and bq.misses == [], (q.misses, bq.misses)
+--- a/tests/test_semantic_read_w3b4.py
++++ b/tests/test_semantic_read_w3b4.py
+@@ -202,7 +202,10 @@
+ def test_the_reader_file_only_gains_lines_and_the_other_files_of_the_ticket_are_not_touched():
+     diff = git('diff', BASE_COMMIT, '--', 'verantyx/semantic_reader.py').splitlines()
+     assert [l for l in diff if l.startswith('-') and not l.startswith('---')] == []
+-    for path in ('verantyx/semantic_read.py', 'verantyx/coarse_types.py', 'verantyx/coarse_place.py', 'verantyx/event_cross.py', 'verantyx/observe.py'):
++    # W1-a5 (docs 10G K210): semantic_read.py gains exactly the two lines that wrap the entry (before `if __name__`), nothing is removed
++    entry = [l for l in git('diff', '-U0', BASE_COMMIT, '--', 'verantyx/semantic_read.py').splitlines() if l[:1] in '+-' and l[:3] not in ('+++', '---')]
++    assert len(entry) == 2 and entry[0].startswith('+from .semantic_reader import w1a5_wrap as _w1a5_wrap') and entry[1] == '+_read_ja = _w1a5_wrap(_read_ja)'
++    for path in ('verantyx/coarse_types.py', 'verantyx/coarse_place.py', 'verantyx/event_cross.py', 'verantyx/observe.py'):
+         assert git('diff', BASE_COMMIT, '--', path) == '', path
+ 
+ 
+@@ -233,9 +236,12 @@
+     body = ast.parse((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')).body
+     def assign(n):
+         return (n.targets[0].id, ast.unparse(n.value)) if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name) else None
+-    assert [assign(n) for n in body[-3:]] == [('typed_plan_u_w3b1_ungated_ja', 'typed_plan_u_ja'), ('typed_plan_u_ja', '_typed_plan_focus_gated(typed_plan_u_w3b1_ungated_ja)'),
+-                                              ('typed_plan_u_w3b2_ja', '_typed_plan_focus_gated(typed_plan_u_w3b4_ja)')]
+-    assert ('typed_plan_u_w3b2_ja', 'typed_plan_u_w3b4_ja') in [assign(n) for n in body[:-3]]
++    # W1-a5 (docs 10G K210, H222): the section of W1-a5 is appended after these three statements; it does not assign these names again. The three statements are the last ones before it.
++    start = next(i for i, n in enumerate(body) if isinstance(n, ast.Import) and ast.unparse(n) == 'import functools as _w1a5_functools')
++    assert [assign(n) for n in body[start - 3:start]] == [('typed_plan_u_w3b1_ungated_ja', 'typed_plan_u_ja'), ('typed_plan_u_ja', '_typed_plan_focus_gated(typed_plan_u_w3b1_ungated_ja)'),
++                                                         ('typed_plan_u_w3b2_ja', '_typed_plan_focus_gated(typed_plan_u_w3b4_ja)')]
++    assert ('typed_plan_u_w3b2_ja', 'typed_plan_u_w3b4_ja') in [assign(n) for n in body[:start - 3]]
++    assert not [n for n in body[start:] if (assign(n) or ('',))[0] in ('typed_plan_u_ja', 'typed_plan_u_w3b2_ja', 'typed_plan_u_w3b1_ungated_ja')]
+ 
+ 
+ def test_the_only_readers_of_a_placement_answer_are_still_the_gate_and_the_adapter():
+--- a/tests/test_ask_question_cross.py
++++ b/tests/test_ask_question_cross.py
+@@ -425,7 +425,9 @@
+     path = doc_file(tmp_path, 'f.txt', sentence + '\n')
+     rc, out = ask(tmp_path, capsys, [path], question)
+     assert out['verdict'] == 'UNKNOWN_UNREAD' and out.get('door') != 'question_cross'
+-    assert out['question_cross']['mapped_to'] == 'ORIGINAL' and out['question_cross']['reason'] == 'PREDICATE_FORM_DIFFERS' and out['question_cross']['state'] == 'FILLED'
++    # W1-a5 (10G K211): a te-miru form is not read (the auxiliary is not in convention 3), so for that sentence the cross finds no read sentence instead of a different form; the verdict is the same
++    want = ('PREDICATE_FORM_DIFFERS', 'NO_MATCHING_CROSS_IN_READ_SENTENCES') if 'てみ' in sentence else ('PREDICATE_FORM_DIFFERS',)
++    assert out['question_cross']['mapped_to'] == 'ORIGINAL' and out['question_cross']['reason'] in want and out['question_cross']['state'] == 'FILLED'
+     assert qc_steps(out)[0]['mapped_to'] == 'ORIGINAL'
+ 
+ 
+--- /dev/null
++++ b/tests/reading_soundness/w1a5_common.py
+@@ -0,0 +1,21 @@
++"""W1-a5 (docs/READING_SOUNDNESS.md section 10G): what a test that compares the entry with the base commit byte for byte may still say about a sentence W1-a5 changed.
++`touched(text)`: the decision of W1-a5 for the sentence is not `not_triggered`. `documented(base_out, out)`: `out` differs from `base_out` in one of the registered ways only (K210):
++the aspect rule corrected the polarity and the tense of a read output; an aspect gate refused a read output (one reason, ASPECT_*); one reason of W1-a5 stands behind the reasons of the
++base (the kind is the base's); or the base abstained and the output is one clause that carries `quantifiers` or `flags`. Nothing is weakened: a sentence W1-a5 does not touch is compared
++byte for byte as before; a touched sentence must be one of the four kinds."""
++from verantyx import semantic_reader as R
++
++
++def touched(text, placement=None):
++    return R.w1a5_explain_ja(text, placement)['path'] != 'not_triggered'
++
++
++def documented(base_out, out):
++    if base_out['readable'] and out['readable']:
++        a, b = base_out['clauses'], out['clauses']
++        return len(a) == len(b) == 1 and {k: v for k, v in a[0].items() if k not in ('polarity', 'tense')} == {k: v for k, v in b[0].items() if k not in ('polarity', 'tense')}
++    if base_out['readable']:
++        return len(out['abstain']['reasons']) == 1 and out['abstain']['reasons'][0].startswith('ASPECT_')
++    if not out['readable']:
++        return out['abstain']['kind'] == base_out['abstain']['kind'] and out['abstain']['reasons'][:-1] == base_out['abstain']['reasons']
++    return len(out['clauses']) == 1 and ('quantifiers' in out['clauses'][0] or 'flags' in out['clauses'][0])

@@ -1,0 +1,32 @@
+2026-10-04 07:18:08 +0900
+== git diff df4f001 -- verantyx/semantic_reader.py | grep -c '^-[^-]'
+0
+== git diff -U0 df4f001 -- verantyx/semantic_reader.py | grep -c '^@@'
+1
+== git diff --stat df4f001 -- verantyx
+ verantyx/semantic_read.py   |   2 +
+ verantyx/semantic_reader.py | 382 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 384 insertions(+)
+== five gate functions (def lines)
+5
+== calls of the five functions (line: text)
+2799:def _w1a5_hira(reading):
+2952:def _w1a5_adverb_class(t):
+2953:    names = {t.surface, t.base, t.lemma, _w1a5_hira(t.lform)} - {''}
+2964:def _w1a5_after_adverb(toks, j):
+2971:def _w1a5_np_boundary(toks, role):
+2980:def _w1a5_adverb_gate(toks, j, frame, forms):
+2983:    kind = _w1a5_adverb_class(t)
+2990:    k = _w1a5_after_adverb(toks, j)
+2992:    if role is not None and not _w1a5_np_boundary(toks, role): return 'ADVERB_MAY_MODIFY_NP:' + t.surface
+== line of _w1a5_reread def and of w1a5_wrap def
+2998:def _w1a5_reread(E, text, base_out, record):
+3089:def w1a5_wrap(base):
+== 'flags' made in the W1-a5 section (lines after the section start)
+== git diff df4f001 -- docs | grep -c '^-[^-]'
+0
+== PREREG diff
+PREREG_SAME
+== __pycache__ and .pytest_cache in the tree
+       0
+       0

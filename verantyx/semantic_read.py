@@ -1551,5 +1551,7 @@ def main(argv=None):
     return code
 
 
+from .semantic_reader import w1a5_wrap as _w1a5_wrap      # W1-a5 (docs/READING_SOUNDNESS.md section 10G, K210): the reading entry, then aspect / floating quantity / adverb mark
+_read_ja = _w1a5_wrap(_read_ja)
 if __name__ == '__main__':
     sys.exit(main())

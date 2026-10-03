@@ -1,0 +1,3965 @@
+[
+ {
+  "id": "W1A5-ASP-R-001",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄が本を読んでいる。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_kept",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "+",
+   "tense": "nonpast"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "nonpast",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-002",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄が本を読んでいた。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_kept",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "+",
+   "tense": "past"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-003",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄が本を読んでいます。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_kept",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "+",
+   "tense": "nonpast"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "nonpast",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-004",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄が本を読んでいました。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_kept",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "+",
+   "tense": "past"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-005",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄が本を読んでしまった。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_kept",
+  "reason": null,
+  "aspect": {
+   "aux": "仕舞う",
+   "polarity": "+",
+   "tense": "past"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-006",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄が本を読んでおいた。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_kept",
+  "reason": null,
+  "aspect": {
+   "aux": "置く",
+   "polarity": "+",
+   "tense": "past"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-007",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄が本を読んでおきました。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_kept",
+  "reason": null,
+  "aspect": {
+   "aux": "置く",
+   "polarity": "+",
+   "tense": "past"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-008",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "母が部屋を掃除している。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_kept",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "+",
+   "tense": "nonpast"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "掃除する",
+   "roles": {
+    "agent": "母",
+    "patient": "部屋"
+   },
+   "polarity": "+",
+   "tense": "nonpast",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-009",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "父が会社へ行っていない。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_kept",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "-",
+   "tense": "nonpast"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "行く",
+   "roles": {
+    "agent": "父",
+    "goal": "会社"
+   },
+   "polarity": "-",
+   "tense": "nonpast",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-010",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄が本を読んでいない。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_corrected",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "-",
+   "tense": "nonpast"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "-",
+   "tense": "nonpast",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-011",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄が本を読んでいなかった。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_corrected",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "-",
+   "tense": "past"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "-",
+   "tense": "past",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-012",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄が本を読んでいません。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_corrected",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "-",
+   "tense": "nonpast"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "-",
+   "tense": "nonpast",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-013",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄が本を読んでいませんでした。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_corrected",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "-",
+   "tense": "past"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "-",
+   "tense": "past",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-014",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄が本を読んでしまわなかった。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_corrected",
+  "reason": null,
+  "aspect": {
+   "aux": "仕舞う",
+   "polarity": "-",
+   "tense": "past"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "-",
+   "tense": "past",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-015",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄が本を読んでおかなかった。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_corrected",
+  "reason": null,
+  "aspect": {
+   "aux": "置く",
+   "polarity": "-",
+   "tense": "past"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "-",
+   "tense": "past",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-016",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "弟が庭で遊んでいなかった。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_corrected",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "-",
+   "tense": "past"
+  },
+  "adverbs": [],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "遊ぶ",
+   "roles": {
+    "agent": "弟",
+    "place": "庭"
+   },
+   "polarity": "-",
+   "tense": "past",
+   "modality": null,
+   "voice": "active"
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-017",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄がゆっくり本を読んでいる。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "+",
+   "tense": "nonpast"
+  },
+  "adverbs": [
+   "ゆっくり"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "nonpast",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "ゆっくり"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-018",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄がそっと窓を開けていた。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "+",
+   "tense": "past"
+  },
+  "adverbs": [
+   "そっと"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "開ける",
+   "roles": {
+    "agent": "兄",
+    "patient": "窓"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "そっと"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-019",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "兄が本をゆっくり読んでいる。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "+",
+   "tense": "nonpast"
+  },
+  "adverbs": [
+   "ゆっくり"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "nonpast",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "ゆっくり"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ASP-R-020",
+  "category": "aspect",
+  "behavior": "read",
+  "input": "母がゆっくり部屋を掃除している。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "+",
+   "tense": "nonpast"
+  },
+  "adverbs": [
+   "ゆっくり"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "掃除する",
+   "roles": {
+    "agent": "母",
+    "patient": "部屋"
+   },
+   "polarity": "+",
+   "tense": "nonpast",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "ゆっくり"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ASP-A-001",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が本を読んでみた。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_refused",
+  "reason": "ASPECT_NOT_IN_CONVENTION:みる",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "ASPECT_NOT_IN_CONVENTION:みる"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-002",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が本を読んでみる。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_refused",
+  "reason": "ASPECT_NOT_IN_CONVENTION:みる",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "ASPECT_NOT_IN_CONVENTION:みる"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-003",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "母が窓を開けてある。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_refused",
+  "reason": "ASPECT_NOT_IN_CONVENTION:ある",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "ASPECT_NOT_IN_CONVENTION:ある"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-004",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が本を読んでおいてある。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_refused",
+  "reason": "ASPECT_CHAIN_NOT_READ",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "ASPECT_CHAIN_NOT_READ"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-005",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が本を読んでしまっている。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_refused",
+  "reason": "ASPECT_CHAIN_NOT_READ",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "ASPECT_CHAIN_NOT_READ"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-006",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が本を読んでいたら、母が笑った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "RELATION_NOT_MAPPED:frame"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-007",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が走っていった。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "PREDICATE_NORMALIZED:走っていく<-走る"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-008",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が帰ってきた。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "PREDICATE_NORMALIZED:帰ってくる<-帰る"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-009",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が本を読んでない。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-010",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が本を読んでいく。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "PREDICATE_NORMALIZED:読んでいく<-読む"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-011",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が本を読んでいなくはない。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "UNREAD_SPAN:unsupported double negation"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-012",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が本を読んでいないわけではない。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "UNREAD_SPAN:unsupported double negation"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-013",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が本を読んでいたい。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "UNDETERMINED_MODALITY:たい"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-014",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が本を読んでいるだろう。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "UNREAD_SPAN:volitional source does not assert a fact"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-015",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が本を読んでいろ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_refused",
+  "reason": "ASPECT_ENDING_NOT_READ",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "ASPECT_ENDING_NOT_READ"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-016",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が本を読んでいなければならない。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-017",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が本を読んでいないので、母が怒った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "UNCOVERED_PREDICATE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-018",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄がまだ本を読んでいない。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:time_aspect:まだ",
+  "aspect": null,
+  "adverbs": [
+   "まだ"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:time_aspect:まだ"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-019",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄はもう本を読んでいない。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:time_aspect:もう",
+  "aspect": null,
+  "adverbs": [
+   "もう"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:time_aspect:もう"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ASP-A-020",
+  "category": "aspect",
+  "behavior": "abstain",
+  "input": "兄が本を読んじゃわなかった。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "aspect_refused",
+  "reason": "ASPECT_CONTRACTED_NEGATION",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "ASPECT_CONTRACTED_NEGATION"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-R-001",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "兄が本を三冊読んだ。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三冊",
+   "value": "exactly:3",
+   "counter": "冊",
+   "key": "patient"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "patient": "exactly:3"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-002",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "母がりんごを五個買った。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "五個",
+   "value": "exactly:5",
+   "counter": "個",
+   "key": "patient"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "買う",
+   "roles": {
+    "agent": "母",
+    "patient": "りんご"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "patient": "exactly:5"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-003",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "姉が切手を二枚買った。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "二枚",
+   "value": "exactly:2",
+   "counter": "枚",
+   "key": "patient"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "買う",
+   "roles": {
+    "agent": "姉",
+    "patient": "切手"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "patient": "exactly:2"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-004",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "弟が犬を二匹飼った。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "二匹",
+   "value": "exactly:2",
+   "counter": "匹",
+   "key": "patient"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "飼う",
+   "roles": {
+    "agent": "弟",
+    "patient": "犬"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "patient": "exactly:2"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-005",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "兄が手紙を三通書いた。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三通",
+   "value": "exactly:3",
+   "counter": "通",
+   "key": "patient"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "書く",
+   "roles": {
+    "agent": "兄",
+    "patient": "手紙"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "patient": "exactly:3"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-006",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "兄が牛を十頭育てた。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "十頭",
+   "value": "exactly:10",
+   "counter": "頭",
+   "key": "patient"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "育てる",
+   "roles": {
+    "agent": "兄",
+    "patient": "牛"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "patient": "exactly:10"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-007",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "兄が本を三十五冊読んだ。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三十五冊",
+   "value": "exactly:35",
+   "counter": "冊",
+   "key": "patient"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "patient": "exactly:35"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-008",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "兄が本を百二十冊集めた。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "百二十冊",
+   "value": "exactly:120",
+   "counter": "冊",
+   "key": "patient"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "集める",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "patient": "exactly:120"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-009",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "母が卵を２個割った。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "２個",
+   "value": "exactly:2",
+   "counter": "個",
+   "key": "patient"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "割る",
+   "roles": {
+    "agent": "母",
+    "patient": "卵"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "patient": "exactly:2"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-010",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "兄が本を3冊読んだ。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "3冊",
+   "value": "exactly:3",
+   "counter": "冊",
+   "key": "patient"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "patient": "exactly:3"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-011",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "兄が本を二万冊集めた。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "二万冊",
+   "value": "exactly:20000",
+   "counter": "冊",
+   "key": "patient"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "集める",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "patient": "exactly:20000"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-012",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "兄が本を千冊集めた。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "千冊",
+   "value": "exactly:1000",
+   "counter": "冊",
+   "key": "patient"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "集める",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "patient": "exactly:1000"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-013",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "学生が三人来た。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三人",
+   "value": "exactly:3",
+   "counter": "人",
+   "key": "agent"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "来る",
+   "roles": {
+    "agent": "学生"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "agent": "exactly:3"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-014",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "子どもが五人遊んだ。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "五人",
+   "value": "exactly:5",
+   "counter": "人",
+   "key": "agent"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "遊ぶ",
+   "roles": {
+    "agent": "子ども"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "agent": "exactly:5"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-015",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "学生が十人帰った。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "十人",
+   "value": "exactly:10",
+   "counter": "人",
+   "key": "agent"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "帰る",
+   "roles": {
+    "agent": "学生"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "agent": "exactly:10"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-016",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "兄が本を三回読んだ。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三回",
+   "value": "exactly:3",
+   "counter": "回",
+   "key": "event"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "event": "exactly:3"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-017",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "兄は駅に三回行った。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三回",
+   "value": "exactly:3",
+   "counter": "回",
+   "key": "event"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "行く",
+   "roles": {
+    "agent": "兄",
+    "goal": "駅"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "event": "exactly:3"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-018",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "兄は京都に三度来た。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三度",
+   "value": "exactly:3",
+   "counter": "度",
+   "key": "event"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "来る",
+   "roles": {
+    "agent": "兄",
+    "goal": "京都"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "event": "exactly:3"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-019",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "兄は駅に二度行った。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "二度",
+   "value": "exactly:2",
+   "counter": "度",
+   "key": "event"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "行く",
+   "roles": {
+    "agent": "兄",
+    "goal": "駅"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "event": "exactly:2"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-020",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "兄が三回走った。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三回",
+   "value": "exactly:3",
+   "counter": "回",
+   "key": "event"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "走る",
+   "roles": {
+    "agent": "兄"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "event": "exactly:3"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-021",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "兄が手紙を五回書いた。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "五回",
+   "value": "exactly:5",
+   "counter": "回",
+   "key": "event"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "書く",
+   "roles": {
+    "agent": "兄",
+    "patient": "手紙"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "event": "exactly:5"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-R-022",
+  "category": "quantity",
+  "behavior": "read",
+  "input": "兄が本を三冊読んでいる。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": {
+   "aux": "居る",
+   "polarity": "+",
+   "tense": "nonpast"
+  },
+  "adverbs": [],
+  "quantity": {
+   "surface": "三冊",
+   "value": "exactly:3",
+   "counter": "冊",
+   "key": "patient"
+  },
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "nonpast",
+   "modality": null,
+   "voice": "active",
+   "quantifiers": {
+    "patient": "exactly:3"
+   }
+  }
+ },
+ {
+  "id": "W1A5-QTY-A-001",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が本を三日読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_TARGET_UNDETERMINED:time",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_TARGET_UNDETERMINED:time"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-002",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が三時間走った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_TARGET_UNDETERMINED:time",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_TARGET_UNDETERMINED:time"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-003",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が牛乳を二リットル飲んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_TARGET_UNDETERMINED:unit",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "二リットル",
+   "value": "exactly:2",
+   "counter": "リットル",
+   "key": null
+  },
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_TARGET_UNDETERMINED:unit"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-004",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が五キロ走った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_TARGET_UNDETERMINED:unit",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "五キロ",
+   "value": "exactly:5",
+   "counter": "キロ",
+   "key": null
+  },
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_TARGET_UNDETERMINED:unit"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-005",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が車を三台買った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_TARGET_UNDETERMINED:unit",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三台",
+   "value": "exactly:3",
+   "counter": "台",
+   "key": null
+  },
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_TARGET_UNDETERMINED:unit"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-006",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が水を三杯飲んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_TARGET_UNDETERMINED:unit",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三杯",
+   "value": "exactly:3",
+   "counter": "杯",
+   "key": null
+  },
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_TARGET_UNDETERMINED:unit"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-007",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄がりんごを弟に三個あげた。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_TARGET_UNDETERMINED:particle",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三個",
+   "value": "exactly:3",
+   "counter": "個",
+   "key": null
+  },
+  "reasons": [
+   "UNSUPPORTED_CLAUSE",
+   "QUANTIFIER_TARGET_UNDETERMINED:particle"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-008",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "りんごを兄が三個食べた。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_TARGET_UNDETERMINED:scrambled",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三個",
+   "value": "exactly:3",
+   "counter": "個",
+   "key": null
+  },
+  "reasons": [
+   "UNSUPPORTED_CLAUSE",
+   "QUANTIFIER_TARGET_UNDETERMINED:scrambled"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-009",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄は三冊読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-010",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が本を三冊も読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_TARGET_UNDETERMINED:position",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_TARGET_UNDETERMINED:position"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-011",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄がりんごを三個ずつ食べた。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_TARGET_UNDETERMINED:position",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_TARGET_UNDETERMINED:position"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-012",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が本を三冊しか読まなかった。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_TARGET_UNDETERMINED:position",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_TARGET_UNDETERMINED:position"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-013",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が本を三冊だけ読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-014",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が三人の学生に会った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "QUANTIFIER_NOT_MAPPED:numeral"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-015",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が三度本を読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "QUANTIFIER_NOT_MAPPED:numeral"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-016",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が温度を三度上げた。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_TARGET_UNDETERMINED:unit",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三度",
+   "value": "exactly:3",
+   "counter": "度",
+   "key": null
+  },
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_TARGET_UNDETERMINED:unit"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-017",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "気温が三度下がった。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_TARGET_UNDETERMINED:unit",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三度",
+   "value": "exactly:3",
+   "counter": "度",
+   "key": null
+  },
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_TARGET_UNDETERMINED:unit"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-018",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が本を三回目に読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-019",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が本を二、三冊読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_VALUE_UNDETERMINED:二、三",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_VALUE_UNDETERMINED:二、三"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-020",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄がりんごを数個食べた。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_VALUE_UNDETERMINED:数",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_VALUE_UNDETERMINED:数"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-021",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄は本を一度も読まなかった。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_TARGET_UNDETERMINED:position",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_TARGET_UNDETERMINED:position"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-022",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が本を三冊読まなかった。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_SCOPE_UNDETERMINED:neg",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三冊",
+   "value": "exactly:3",
+   "counter": "冊",
+   "key": null
+  },
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_SCOPE_UNDETERMINED:neg"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-023",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄がゆっくり本を三冊読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_WITH_QUANTITY",
+  "aspect": null,
+  "adverbs": [
+   "ゆっくり"
+  ],
+  "quantity": {
+   "surface": "三冊",
+   "value": "exactly:3",
+   "counter": "冊",
+   "key": null
+  },
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_WITH_QUANTITY"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-024",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が三日月を見た。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-025",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が一緒に走った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "RECIPIENT_TYPE_UNDETERMINED:走る"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-026",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が本を三冊読みたい。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "REREAD_ABSTAINS:UNDETERMINED_MODALITY:みたい",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三冊",
+   "value": "exactly:3",
+   "counter": "冊",
+   "key": null
+  },
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "REREAD_ABSTAINS:UNDETERMINED_MODALITY:みたい"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-027",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "弟が本を三冊読まれた。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "REREAD_ABSTAINS:UNDETERMINED_VOICE:れる/られる with an object",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三冊",
+   "value": "exactly:3",
+   "counter": "冊",
+   "key": null
+  },
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "REREAD_ABSTAINS:UNDETERMINED_VOICE:れる/られる with an object"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-028",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が弟に本を三冊読ませた。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-029",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が三人と走った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-030",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が三人で走った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-031",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が本を三冊読めた。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form",
+  "aspect": null,
+  "adverbs": [],
+  "quantity": {
+   "surface": "三冊",
+   "value": "exactly:3",
+   "counter": "冊",
+   "key": null
+  },
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-032",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が本を三十冊と五冊読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-033",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が三位に入った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-QTY-A-034",
+  "category": "quantity",
+  "behavior": "abstain",
+  "input": "兄が本を三冊読んでいない。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "QUANTIFIER_SCOPE_UNDETERMINED:neg",
+  "aspect": {
+   "aux": "居る",
+   "polarity": "-",
+   "tense": "nonpast"
+  },
+  "adverbs": [],
+  "quantity": {
+   "surface": "三冊",
+   "value": "exactly:3",
+   "counter": "冊",
+   "key": null
+  },
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "QUANTIFIER_SCOPE_UNDETERMINED:neg"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-R-001",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "兄がゆっくり本を読んだ。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "ゆっくり"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "ゆっくり"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-002",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "兄がそっと窓を開けた。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "そっと"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "開ける",
+   "roles": {
+    "agent": "兄",
+    "patient": "窓"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "そっと"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-003",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "兄がこっそり部屋に入った。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "こっそり"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "入る",
+   "roles": {
+    "agent": "兄",
+    "goal": "部屋"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "こっそり"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-004",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "兄がわざと窓を割った。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "わざと"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "割る",
+   "roles": {
+    "agent": "兄",
+    "patient": "窓"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "わざと"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-005",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "兄がすぐに帰った。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "すぐ"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "帰る",
+   "roles": {
+    "agent": "兄"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "すぐ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-006",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "兄がすぐ走った。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "すぐ"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "走る",
+   "roles": {
+    "agent": "兄"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "すぐ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-007",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "兄がじっと空を見た。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "じっと"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "見る",
+   "roles": {
+    "agent": "兄",
+    "patient": "空"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "じっと"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-008",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "兄が本をゆっくり読んだ。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "ゆっくり"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "兄",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "ゆっくり"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-009",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "兄が窓をそっと開けた。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "そっと"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "開ける",
+   "roles": {
+    "agent": "兄",
+    "patient": "窓"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "そっと"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-010",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "兄がゆっくり走った。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "ゆっくり"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "走る",
+   "roles": {
+    "agent": "兄"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "ゆっくり"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-011",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "兄がゆっくり歩いた。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "ゆっくり"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "歩く",
+   "roles": {
+    "agent": "兄"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "ゆっくり"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-012",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "母がゆっくり掃除した。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "ゆっくり"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "掃除する",
+   "roles": {
+    "agent": "母"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "ゆっくり"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-013",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "母が部屋をゆっくり掃除した。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "ゆっくり"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "掃除する",
+   "roles": {
+    "agent": "母",
+    "patient": "部屋"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "ゆっくり"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-014",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "母がすぐに部屋を掃除した。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "すぐ"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "掃除する",
+   "roles": {
+    "agent": "母",
+    "patient": "部屋"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "すぐ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-015",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "弟がさっそく手紙を書いた。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "さっそく"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "書く",
+   "roles": {
+    "agent": "弟",
+    "patient": "手紙"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "さっそく"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-016",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "姉がちゃんと本を読んだ。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "ちゃんと"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "読む",
+   "roles": {
+    "agent": "姉",
+    "patient": "本"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "ちゃんと"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-017",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "姉がしっかり手紙を書いた。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "しっかり"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "書く",
+   "roles": {
+    "agent": "姉",
+    "patient": "手紙"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "しっかり"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-018",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "姉がきちんと窓を閉めた。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "きちんと"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "閉める",
+   "roles": {
+    "agent": "姉",
+    "patient": "窓"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "きちんと"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-019",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "兄がすぐに会社へ行った。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "すぐ"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "行く",
+   "roles": {
+    "agent": "兄",
+    "goal": "会社"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "すぐ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-R-020",
+  "category": "adverb",
+  "behavior": "read",
+  "input": "兄がそっと部屋に入った。",
+  "entry": "read",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [
+   "そっと"
+  ],
+  "quantity": null,
+  "reasons": null,
+  "clause": {
+   "predicate": "入る",
+   "roles": {
+    "agent": "兄",
+    "goal": "部屋"
+   },
+   "polarity": "+",
+   "tense": "past",
+   "modality": null,
+   "voice": "active",
+   "flags": {
+    "adverbs": [
+     "そっと"
+    ]
+   }
+  }
+ },
+ {
+  "id": "W1A5-ADV-A-001",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄が急に走った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-002",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄が静かに走った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-003",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がすでに本を読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:time_aspect:すでに",
+  "aspect": null,
+  "adverbs": [
+   "すでに"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:time_aspect:すでに"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-004",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄が全然本を読まなかった。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:neg:全然",
+  "aspect": null,
+  "adverbs": [
+   "全然"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:neg:全然"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-005",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がきっと本を読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:modal:きっと",
+  "aspect": null,
+  "adverbs": [
+   "きっと"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:modal:きっと"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-006",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がたぶん本を読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:modal:たぶん",
+  "aspect": null,
+  "adverbs": [
+   "たぶん"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:modal:たぶん"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-007",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄が多分本を読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:modal:多分",
+  "aspect": null,
+  "adverbs": [
+   "多分"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:modal:多分"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-008",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄が恐らく本を読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:modal:恐らく",
+  "aspect": null,
+  "adverbs": [
+   "恐らく"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:modal:恐らく"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-009",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がよく本を読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:quant:よく",
+  "aspect": null,
+  "adverbs": [
+   "よく"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:quant:よく"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-010",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がまた本を読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:conn:また",
+  "aspect": null,
+  "adverbs": [
+   "また"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:conn:また"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-011",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がゆっくり本を読まなかった。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_SCOPE_UNDETERMINED:neg",
+  "aspect": null,
+  "adverbs": [
+   "ゆっくり"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_SCOPE_UNDETERMINED:neg"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-012",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がゆっくり本を読みたい。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "REREAD_ABSTAINS:UNDETERMINED_MODALITY:みたい",
+  "aspect": null,
+  "adverbs": [
+   "ゆっくり"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "REREAD_ABSTAINS:UNDETERMINED_MODALITY:みたい"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-013",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がゆっくり本を読むだろう。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "UNREAD_SPAN:volitional source does not assert a fact"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-014",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がすぐ近くの店に行った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MAY_MODIFY_NP:すぐ",
+  "aspect": null,
+  "adverbs": [
+   "すぐ"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MAY_MODIFY_NP:すぐ"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-015",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がすぐ隣の部屋に入った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MAY_MODIFY_NP:すぐ",
+  "aspect": null,
+  "adverbs": [
+   "すぐ"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MAY_MODIFY_NP:すぐ"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-016",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がとても古い本を読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MAY_MODIFY_NP:とても",
+  "aspect": null,
+  "adverbs": [
+   "とても"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MAY_MODIFY_NP:とても"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-017",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がゆっくり古い本を読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MAY_MODIFY_NP:ゆっくり",
+  "aspect": null,
+  "adverbs": [
+   "ゆっくり"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MAY_MODIFY_NP:ゆっくり"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-018",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄が弟よりゆっくり走った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-019",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がゆっくりそっと窓を開けた。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_STACKED",
+  "aspect": null,
+  "adverbs": [
+   "ゆっくり",
+   "そっと"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_STACKED"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-020",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がゆっくり、そして静かに窓を開けた。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-021",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄が一番走った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:convention:一番",
+  "aspect": null,
+  "adverbs": [
+   "一番"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:convention:一番"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-022",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がちょうど本を読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:convention:ちょうど",
+  "aspect": null,
+  "adverbs": [
+   "ちょうど"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:convention:ちょうど"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-023",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がほぼ本を読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:approx:ほぼ",
+  "aspect": null,
+  "adverbs": [
+   "ほぼ"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:approx:ほぼ"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-024",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄があやうく本を落とした。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "UNSUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-025",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "どうぞ本を読んでください。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ASPECT_NOT_IN_CONVENTION:くださる",
+  "aspect": null,
+  "adverbs": [
+   "どうぞ"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ASPECT_NOT_IN_CONVENTION:くださる"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-026",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がひょっとしたら本を読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-027",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がゆっくり三回読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_WITH_QUANTITY",
+  "aspect": null,
+  "adverbs": [
+   "ゆっくり"
+  ],
+  "quantity": {
+   "surface": "三回",
+   "value": "exactly:3",
+   "counter": "回",
+   "key": null
+  },
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_WITH_QUANTITY"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-028",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がそっとドアを開けて入った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-029",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がもう走った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:time_aspect:もう",
+  "aspect": null,
+  "adverbs": [
+   "もう"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:time_aspect:もう"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-030",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がずっと走った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:time_aspect:ずっと",
+  "aspect": null,
+  "adverbs": [
+   "ずっと"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:time_aspect:ずっと"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-031",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄が少し走った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "reread_refused",
+  "reason": "ADVERB_MARK_NOT_READ:quant:少し",
+  "aspect": null,
+  "adverbs": [
+   "少し"
+  ],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "ADVERB_MARK_NOT_READ:quant:少し"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-032",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄が弟よりすぐ帰った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-033",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がゆっくり本を読んで、母が笑った。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "UNSUPPORTED_CLAUSE"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-034",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がもしかしたら本を読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "UNREAD_SPAN:interrogative source does not assert a fact"
+  ],
+  "clause": null
+ },
+ {
+  "id": "W1A5-ADV-A-035",
+  "category": "adverb",
+  "behavior": "abstain",
+  "input": "兄がだいたい本を読んだ。",
+  "entry": "abstain",
+  "entry_ok": true,
+  "verdict": "correct",
+  "w1a5_ok": true,
+  "path": "not_triggered",
+  "reason": null,
+  "aspect": null,
+  "adverbs": [],
+  "quantity": null,
+  "reasons": [
+   "UNDETERMINED_MODALITY:たい"
+  ],
+  "clause": null
+ }
+]

@@ -1,0 +1,13 @@
+rows 151 (base entry = the tree of df4f001, nothing of W1-a5)
+adverb    abstain  base=ABSTAIN  35
+adverb    read     base=ABSTAIN  20
+aspect    abstain  base=ABSTAIN  13
+aspect    abstain  base=READ     7
+aspect    read     base=ABSTAIN  4
+aspect    read     base=READ     16
+quantity  abstain  base=ABSTAIN  34
+quantity  read     base=ABSTAIN  22
+aspect read 20 abstain 20
+quantity read 22 abstain 34
+adverb read 20 abstain 35
+w1a5_expect paths of read rows: {('aspect', 'aspect_kept'): 9, ('aspect', 'aspect_corrected'): 7, ('aspect', 'reread'): 4, ('quantity', 'reread'): 22, ('adverb', 'reread'): 20}

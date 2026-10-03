@@ -2889,3 +2889,875 @@ def test_frozen_read_and_abstain_expectations(rows):
     assert not bad, "frozen outcome/role/polarity expectations failed: " + repr(bad)
 ```
 <!-- w5e2-kw3b3:end -->
+
+## 10G. W1-a5: 規約に欄がある「表せない部分」を型で写す — 相の補助動詞・遊離した数量・副詞の印（事前登録 K210〜）
+
+<!-- w1a5-prereg:begin -->
+登録日時: 2026-10-04 05:15:13 +0900（`date '+%F %T %z'` の出力）。直前のコミット: `df4f001e1f3027192b0006e8c9a54b4a164088c3`（作業木 `ticket/W1-a5`、未コミットの変更なし）。
+この時点で **無い** ファイル: `tests/reading_soundness/ja_r12.jsonl`、`tests/test_semantic_read_w1a5.py`、`artifacts/w1-a5/` の測定物（`prereg_time.txt`・`isolation_check.txt`・`index_search.txt` を除く）、`semantic_reader.py` の W1-a5 の区画。
+出典: チケット `W1-a5_convention_slots.prompt.md` と中間職の指示書 `W1-a5/plan.md`（Claude Opus 5.5）。規約 `docs/READING_CONVENTIONS.md` §3（述語）・§4.3・§5（極性・時制）・§6（量化）・§9.1（未決）。
+
+### 位置づけ
+
+B1（r8）の日本語の棄権のうち「表せない部分（unrepresented source content）」が理由の文の中身は (a) 相の助動詞 (b) 数量の副詞（遊離した数量）(c) 副詞 (d) 「X の Y」の修飾の重なり、だった。W1-a4 の教訓（表層の規則で読む範囲を広げると未公開の文で誤読が出る）に従い、ここでは **規約が名指しする閉じた文法の類** だけを規約の欄に写す。相の助動詞の一覧は読解器の語の一覧ではなく **規約 §3 の列挙の写し**。副詞は意味を決めず **印** として残す（黙って落とさない）。(d) は W3-b2 に欄があり、このチケットでは扱わない。英語は触らない。
+
+### K210 制御の流れ（登録）
+
+1. 入口 `semantic_read._read_ja` を、モジュールの末尾で `w1a5_wrap` が包む（`semantic_read.py` に 2 行。`_read_ja` の本文は 1 字も変えない）。包みは `(text, placement=None)` を受け、`W1A5_DEPTH[0] > 0`（基点の `_read_ja` を呼んでいる間と、W3-b3 の節ごとの読みの間）なら基点をそのまま呼ぶ。深さ 0 のとき、深さを 1 にして基点の出力 `out` を得て（`try/finally` で戻す）、次の 3 つのどれかだけを行う。それ以外は `out` と **同じオブジェクト** を返す。
+   - (a) `out['readable']` が真 → K211 の相の規則だけを掛ける。基点と同じ極性・時制なら何もしない。違えば節の `polarity`・`tense` だけを替えた写しを返す（`aspect_corrected`）。門に当たれば棄権（`aspect_refused`）。
+   - (b) 偽で、再読の引き金（下）に当たる → K211〜K213 の門を順に掛け、読めれば K214 の読み（`reread`）、門に当たれば基点の棄権の理由の **後ろに** W1-a5 の理由を 1 つ足して棄権（`reread_refused`）。
+   - (c) それ以外は何もしない（`not_triggered`）。
+2. 配置の有無で W1-a5 の判断は変わらない（配置に問い合わせない）。
+3. 最後の判断を診断用に `W1A5_LAST` に記録し、`w1a5_explain_ja(text, placement=None)` は `semantic_read.read(text, 'ja', placement=placement)` を自分で走らせてその記録の写しを返す（第二の判断を書かない）。形: `{'path': 'not_triggered'|'aspect_kept'|'aspect_corrected'|'aspect_refused'|'reread'|'reread_refused', 'reason': None|str, 'aspect': None|{'aux','polarity','tense'}, 'adverbs': [表層…], 'quantity': None|{'surface','value','counter','key'}}`。
+4. 最初にトークンの値の写し（表層・pos1〜4・cForm・原形・lemma・lForm・文字位置）を取り、以後はその写しだけで判断する（タガーのノードは次の解析で壊れうる）。`_map_ja` に渡すトークン列は呼ぶ直前に取り直す。
+
+**再読の引き金**（すべて満たすとき。満たさなければ何もしない）:
+- T1 文が 1 つ（`R._sentences(text)` が 1 区間）で `view.unread` が空（`view = R.document_view({'d': text})`）。
+- T2 `view.clauses` のうち rule が `frame` の節がちょうど 1 つ。ほかの節は、構文の節 `gold_quantity` で、その述語の区間が frame の節と同じ・`quantity` 以外の役割が frame の節と同じ・`quantity` の区間が W1-a5 の見つけた数量と同じものだけ（違えば `COMPETING_READINGS:gold_quantity`）。
+- T3 その frame の節の `unsupported` が `{'unrepresented source content'}` だけ。
+- T4 覆われない内容語が 1 つ以上あり、そのすべてが「品詞 副詞 のトークン」か「1 つの数量（K212 Q1 の形）のトークン」。覆い = 節の役割の区間 ∪ `R._predicate_coverage`。内容語 = `R._uncovered_nominals` と同じ品詞（名詞・代名詞・形容詞・形状詞・副詞・接頭辞・接尾辞）。ほかに覆われない内容語があれば当たらない。
+
+**振る舞いの約束**（テストで確かめる）: (1) W1-a5 が何もしない入力の出力は基点の出力と同じオブジェクト。(2) 配置の有無で判断が変わらない。(3) W1-a5 が読んだ節には必ず `quantifiers` か `flags` か相の連鎖がある。(4) 読めた出力に W1-a5 が掛けて変えるのは `polarity`・`tense` だけ、または棄権。
+
+### K211 相の補助動詞（規約 §3 の写し）
+
+- **一覧**（規約 §3 の「〜ている／〜てしまう／〜ておく」の写し。テストが規約の文から機械で取り出して一致を確かめる）。語を足して直さない。
+
+<!-- BEGIN table:w1a5_aspect_aux -->
+| lemma | 表記 | 規約の出典 |
+|---|---|---|
+| 居る | いる | §3 述語「〜ている」 |
+| 仕舞う | しまう | §3 述語「〜てしまう」 |
+| 置く | おく | §3 述語「〜ておく」 |
+<!-- END table:w1a5_aspect_aux -->
+
+- **連鎖の形**: 節の述語の頭の動詞（サ変は する のトークン）か、その直後の態の助動詞（れる・られる・せる・させる）の直後に て／で（助詞-接続助詞）、その直後に 動詞-非自立可能 のトークン（補助動詞）。`ないで`・`ずに` の後の いる は連鎖に数えない（基点のまま）。
+- **語尾の表**（補助動詞の活用形 cForm の頭と、その後ろ文末までの助動詞の原形の並び → 極性・時制。極性は §5 で決める。基点の節の極性は信じない）:
+
+<!-- BEGIN table:w1a5_aspect_endings -->
+| 補助動詞の cForm | 後ろの助動詞の原形 | polarity | tense |
+|---|---|---|---|
+| 終止形 | (なし) | + | nonpast |
+| 連用形 | た | + | past |
+| 連用形 | ます | + | nonpast |
+| 連用形 | ます た | + | past |
+| 未然形 | ない | - | nonpast |
+| 未然形 | ない た | - | past |
+| 連用形 | ます ぬ | - | nonpast |
+| 連用形 | ます ぬ です た | - | past |
+<!-- END table:w1a5_aspect_endings -->
+
+- **門**（この順。最初に当たった理由を返す）:
+  1. 補助動詞の lemma が一覧に無い（見る・有る・行く・来る・上げる・呉れる・貰う …）→ `ASPECT_NOT_IN_CONVENTION:<原形>`。てある はここ（H211）。授受は基点がすでに `BENEFACTIVE_NOT_PRODUCED` で棄権しているので、基点の出力が読めていなければ何もしない。
+  2. 補助動詞の後ろにまた連鎖（てしまっている・ておいてある）→ `ASPECT_CHAIN_NOT_READ`。
+  3. 語尾が表に無い（ば・たら・ても・ように・だろう・たい・なくはない・ないわけではない・命令形・意志形 …）→ `ASPECT_ENDING_NOT_READ`。
+  4. 縮約形（てる・でる・ちゃう・じゃう。H212）: 読めた出力で、縮約の助動詞の後ろに ない・ぬ・ず・ます（未然形）がある → `ASPECT_CONTRACTED_NEGATION`。再読の中の縮約形 → `ASPECT_CONTRACTED`。それ以外の縮約形は何もしない。
+  5. 出力の節が 2 つ以上: 連鎖のどれかが門 1〜3 に当たるか、補助動詞の直後が否定（ない・ぬ）なら `ASPECT_MULTI_CLAUSE`。当たらなければ何もしない。
+  6. 出力の節が 1 つで連鎖の頭が節の述語でない → `ASPECT_NOT_ON_PREDICATE`。
+- モダリティ・態は基点の判断のまま（`_MODAL_MARKS` などは入口が見ている）。
+
+### K212 遊離した数量（規約 §6・§4.3 の写し）
+
+- **Q1 形**: 連続する `名詞-数詞` のトークン（1 つ以上）＋その直後の助数詞のトークン 1 つ。助数詞のトークン = pos1 `接尾辞`・pos2 `名詞的` のもの、または pos1 `名詞`・pos3 `助数詞可能` のもの。種類: (i) 表層が 回・度 → event、(ii) 接尾辞（名詞的）→ 名詞句にかかる数、(iii) それ以外の 助数詞可能 の名詞（時間・円・キロ・リットル・台・杯 …）→ 単位（Q7 で棄権）。数詞の直後が助数詞のトークンでない形は数量ではない（引き金 T4 に当たらない）。1 文に 2 つ以上 → `QUANTIFIER_TARGET_UNDETERMINED:two`。
+- **Q2 値**（数詞の品詞と字種で決める）: 数詞のトークンの表層を連結し NFKC。すべて ASCII の数字 → 整数。すべて下の表の漢数字 → 位取りの漢数字として変換（十・百・千 は前に数字が無ければ 1、万 は大きい位）。それ以外（`〇`・`数`・`何`・`幾`・`、`・小数点・数字と漢字の混在）・変換の失敗・値 0 → `QUANTIFIER_VALUE_UNDETERMINED:<表層>`。値は `exactly:N`（N は算用数字の文字列）。
+
+<!-- BEGIN table:w1a5_numerals -->
+| 種類 | 字 |
+|---|---|
+| digits | 一 二 三 四 五 六 七 八 九 |
+| units | 十 百 千 万 |
+<!-- END table:w1a5_numerals -->
+
+- **Q3 位置**: 数量のトークンがどの役割の区間の中にも無い（中にあれば引き金に当たらない。H215）。助数詞の **直後のトークンが節の述語の区間の頭**（サ変は名詞のトークン）であること。違えば（三冊も・三冊ずつ・三人で・三人の・三回目・三冊ゆっくり …）→ `QUANTIFIER_TARGET_UNDETERMINED:position`。
+- **Q4 時**: 数量の表層が `semantic_reader._TIME_NUMERIC_HEAD` に全体一致 → `QUANTIFIER_TARGET_UNDETERMINED:time`。
+- **Q5 event**: 助数詞が下の 2 語 → キー `"event"`。ただし 度 で、数詞の直前のトークンが格助詞 が・を → `QUANTIFIER_TARGET_UNDETERMINED:unit`（H216）。
+
+<!-- BEGIN table:w1a5_event_counters -->
+| 助数詞 | キー | 規約の出典 |
+|---|---|---|
+| 回 | event | §6 回数（N 回押した の型） |
+| 度 | event | §6 回数 |
+<!-- END table:w1a5_event_counters -->
+
+- **Q6 名詞句**（(ii) の助数詞）: **直前の名詞句 = 同じ節の中で数量の直前にある、格助詞つきの名詞句**。数詞の直前のトークンが格助詞 が か を（pos2 `格助詞`）で、その直前で終わる区間を持つ役割が節にあること。無ければ（文頭・は・も・に・で …）→ `QUANTIFIER_TARGET_UNDETERMINED:no_phrase` または `:particle`。が の場合に、節の を の句がその が の句より前にある → `…:scrambled`（H214）。**割れたら棄権**。
+- **Q7 単位**: Q1 の (iii) → `QUANTIFIER_TARGET_UNDETERMINED:unit`（引き金には当てて理由を残す。三時間 は Q4 が先に `time` で止める）。
+- **Q8 範囲**（再読の後、出力の節で）: 節の極性が −、モダリティが null 以外、態が active 以外 → `QUANTIFIER_SCOPE_UNDETERMINED:<neg|modality|voice>`。
+- **Q9 役割**: キーにする役割は、が → `agent` か `entity`、を → `patient`（出力の節の `roles` で値が一致する役割名）。それ以外・見つからない → `QUANTIFIER_TARGET_UNDETERMINED:role`。
+- 量化の語を含む複合語（一人・二人・一緒・一番・三日月 …）はタガーが数詞にしないので数量にならない（覆われない名詞・副詞として残り、引き金と副詞の門で決まる）。
+
+### K213 副詞の印（規約 §2「副詞は役割にしない」の欄の追加）
+
+品詞 副詞 のトークンだけを対象にする（急に・静かに・簡単に は形状詞＋に で対象外。H217）。各副詞トークンに順に:
+
+- **A1 標識**: K64（`W3B1_MARKERS_JA` の 7 類。参照し、写さない。表層・原形・lemma・lForm を平仮名にした読み のどれかが一致。多分・恐らく の漢字表記を捕まえるため。H218）→ `ADVERB_MARK_NOT_READ:<類>:<表層>`。入口の `_QUANT_SURFACES` → `…:quant:<表層>`。規約が別の欄の印として名指しする語 → `…:convention:<表層>`。登録した類 → `…:modal:<表層>` / `…:approx:<表層>`。
+- **A2 比較**: 文に助詞 より・ほど・くらい・ぐらい（または表層 より の副詞）がある → `COMPARISON_NOT_READ`。
+- **A3 連続・接続**: 副詞の直後が副詞・接続詞・読点＋接続詞 → `ADVERB_STACKED`。
+- **A4 名詞句の修飾**: 副詞（とその直後の と／に の助詞）の直後から役割の区間が始まるとき、その区間の最初のトークンが 名詞-普通名詞（pos3 が 副詞可能・助数詞可能 でない）・名詞-固有名詞・代名詞 のどれかで、区間の中に の・連体詞・形容詞・形状詞・動詞・数詞・接頭辞 が無いときだけ境界として認める。それ以外 → `ADVERB_MAY_MODIFY_NP:<表層>`。
+- **A5 数量と同居**: 同じ文に K212 の数量がある → `ADVERB_WITH_QUANTITY`。
+- **A6 範囲**（再読の後）: 節の極性が −、モダリティが null 以外 → `ADVERB_SCOPE_UNDETERMINED:<neg|modality>`。
+- 役割の区間の端: 読解器が `phrase_bounded` で落とした役割（副詞の直後で始まる句）は A4 を通れば境界として認め、それ以外の役割はすべて `R.phrase_bounded(R.tag(text), 始, 終)` が真であること（偽 → 引き金に当たらないのと同じ扱いで何もしない）。
+
+登録する副詞の類（**棄権を増やす向きだけ**。規準を文で書き、語はこの表の語だけ。登録後に語を足して誤読を直さない。K218）:
+- `convention`: 規約が別の欄の印として名指しする語。規約 §4.4 の最上級（一番・最も）と §6 の `ちょうど`（exactly）。
+- `modal`: 規約 §5 のモダリティの印で K64 に無いもの。
+- `approx`: 副詞を外すと出来事の成立が含意されない近似・未遂の副詞。
+
+<!-- BEGIN table:w1a5_adverb_classes -->
+| 類 | 語 | 規準 |
+|---|---|---|
+| convention | 一番 最も ちょうど | 規約 §4.4 の最上級・§6 の exactly を名指しする語 |
+| modal | どうぞ ひょっとすると ひょっとしたら もしかしたら | 規約 §5 のモダリティの印（request・possibility）で K64 に無い語 |
+| approx | ほぼ だいたい 大体 あやうく 危うく | 副詞を外すと出来事の成立が含意されない近似・未遂 |
+<!-- END table:w1a5_adverb_classes -->
+
+比較の助詞（A2）: `W1A5_COMPARISON_PARTICLES` = より・ほど・くらい・ぐらい。
+
+### K214 再読と出力
+
+- `E = semantic_read`。`toks2 = R._tokens(text)` を取り直し、数量のトークン（数詞と助数詞）**だけ** を除いた列 `masked` を作る（副詞は除かない）。`E._map_ja(text, masked, SimpleNamespace(clauses=(replace(frame, unsupported=()),), unread=()), R)` を呼ぶ。`_Abstain` → `REREAD_ABSTAINS:<その理由>`（入口の門 `_QUANT_SURFACES`・命令形・可能形の疑い・受身の門などはすべて今のまま働く。迂回しない）。
+- 再読の節に K211 の相の規則を掛け（棄権なら理由）、Q8・Q9・A6 を掛ける。
+- 出力の節の鍵の順: `predicate, roles, polarity, tense, modality, voice`（`_clause_ja` の出力そのまま）の後ろに、数量があれば `quantifiers`、副詞があれば最後に `flags`（`{"adverbs": [表層, …]}`。文中の出現順。副詞のトークンの表層だけ）。
+- 出力全体は `E._answer('ja', [節], [], meta, out['unsupported'])`（`unsupported` は基点の棄権の出力が持っていたもの。W3-b1 の S4 と同じ扱い）。
+- `flags` は規約 §1.1 の鍵ではなく、照合（§8）に使わない（W3-b2 の `role_flags.determiner` と同じ形で `docs/READING_CONVENTIONS.md` §3 に追記する）。採点アダプタは読まない欄。
+
+### K215 理由の型（閉じた一覧）
+
+出力に出る W1-a5 の理由は、基点の棄権の理由の **後ろ** に 1 つ足す（基点の理由の並びは今のまま。`kind` は基点のまま。読めた出力に相の門が当たったときは `kind: not_supported`、理由は 1 つ）。
+
+<!-- BEGIN table:w1a5_reasons -->
+| 理由 | 意味 |
+|---|---|
+| ASPECT_NOT_IN_CONVENTION:<原形> | 補助動詞が規約 §3 の列挙に無い（てみる・てある・ていく・てくる …） |
+| ASPECT_CHAIN_NOT_READ | 補助動詞の後ろにまた連鎖がある |
+| ASPECT_ENDING_NOT_READ | 補助動詞の語尾が表に無い |
+| ASPECT_CONTRACTED_NEGATION | 縮約形の後ろに否定がある（読めた出力の極性が決まらない） |
+| ASPECT_CONTRACTED | 再読の中の縮約形 |
+| ASPECT_MULTI_CLAUSE | 2 節以上の出力で、補助動詞の連鎖が決まらない |
+| ASPECT_NOT_ON_PREDICATE | 連鎖の頭が節の述語でない |
+| QUANTIFIER_TARGET_UNDETERMINED:<two\|unit\|time\|position\|particle\|no_phrase\|scrambled\|role> | 数量のかかり先・種類が決まらない |
+| QUANTIFIER_VALUE_UNDETERMINED:<表層> | 数詞の値が決まらない |
+| QUANTIFIER_SCOPE_UNDETERMINED:<neg\|modality\|voice> | 否定・モダリティ・態の中の数量 |
+| COMPETING_READINGS:gold_quantity | 構文の節 `gold_quantity` が W1-a5 の読みと整合しない |
+| ADVERB_MARK_NOT_READ:<類>:<表層> | K64・入口の量化の語・規約の名指し・登録した類の副詞 |
+| COMPARISON_NOT_READ | 比較の助詞のある文 |
+| ADVERB_STACKED | 副詞が連続する・接続詞を挟む |
+| ADVERB_MAY_MODIFY_NP:<表層> | 副詞の直後の句が名詞句の内側を修飾しうる形 |
+| ADVERB_WITH_QUANTITY | 数量と副詞の同居 |
+| ADVERB_SCOPE_UNDETERMINED:<neg\|modality> | 否定・モダリティの中の副詞 |
+| REREAD_ABSTAINS:<理由> | 入口の既存の門が再読を棄権した |
+<!-- END table:w1a5_reasons -->
+
+### K216 出力の欄
+
+- `quantifiers`: 規約 §6 の形。回数 `{"event": "exactly:N"}`、名詞句 `{"patient": "exactly:N"}`（キーは役割名）。節の鍵の順では `voice` の後ろ。
+- `flags`: `{"adverbs": [表層, …]}`。節の鍵の順では最後。`role_flags`・`predicate_basis`・`role_basis` は W1-a5 の読みには付かない。
+- 十字（`event_cross.validate`）は節の鍵 `flags` を `UNKNOWN_CLAUSE_KEY:flags` で拒む（H220）。`quantifiers` は受け取る。
+
+### K217 検査データの設計と受入基準（チケットの写し）
+
+- `tests/reading_soundness/ja_r12.jsonl`（新規。期待を先に書いて凍結。実装に通さない）: **相 40**（読む 20・棄権 20）、**数量 40**（読む 20・棄権 20）、**副詞 40**（読む 20・棄権 20）。行の形は W3-b4 の `ja_r10_w3b4.jsonl` と同じ（`id`・`lang`・`category`・`behavior`・`input`・`text`・`expect`・`entry_expect`・`w1a5_expect`・`construction`・`note`）。読む行には必ず `must_not` を 1 つ以上。棄権が正解の群: 相（てみる・てある・ていく・てくる・てしまっている・ていなくはない・ていないわけではない・ていたら・ているだろう・ていたい・縮約形の否定・2 節の文の ていない・まだ／もう＋ていない）、数量（期間・名詞の助数詞・に の後・かき混ぜ・は／も の後・三冊も／ずつ／しか／だけ・三人の＋名詞・数詞が値に溶ける・が／を の後の 度・三回目・第三・二、三個・数個・何個・否定の数量・副詞と同居・量化の語を含む複合語）、副詞（K64 の各類・否定の焦点・モダリティ・名詞句の修飾・比較・副詞の連続・一番／ちょうど／ほぼ・数量と同居・接続詞を挟む）。
+- **C1**: 既存の凍結データ（今ある ja・ja_r2〜r6・ja_r8〜r10・ja_r10_w3b4・table7・en・en_r2・en_r4・a3*・w3b2_*・w3b3_*）と x3 で `misread=0`。配置なしの出力が変わる文は **全件列挙** し「新しく読めた（正読）／棄権のまま理由が変わった／読みが変わった（読めた→別の読み）／読めた→棄権（相の門）」に分け、読みが変わった文は 0（H210 の基点の誤読の訂正は別欄に数え、凍結データでは 0 を示す）。
+- **C2**: 検査データで誤読 0、相・数量・副詞の各 20 文が読める。
+- **C3**: 中間職の未公開の文（各 30 文以上、期待を先に凍結）で誤読 0。誤読が出た構成は棄権に戻す。
+- **C4**（監査役が測る）: B1（r8）で誤読 0・誤答 0 のまま、正読が 11 を上回る。実装役は測らず、見込みも書かない。
+- **C5**: 既存テストの失敗集合が基線 `dev_df4f001_failures.txt` から増えない（byte 一致・ハッシュ固定の衝突は申告）。`check_hardcode` の失敗欄が空。
+
+### K218 変更の約束
+
+登録の後の変更は **狭める方向だけ**（門を足す・類を棄権に戻す）。変更は「変更記録」に日時（`date '+%F %T %z'`）・前後・理由・出典を書く。**語を足して誤読を直さない**: 誤読が出たら、その構成（相の 1 形・数量の 1 規則・副詞の印全体 のどれか）を棄権に戻す。副詞の印で誤読が出て構造の門（否定・位置・隣接）で説明できないときは、K213 を丸ごと棄権に戻す（引き金 T4 から副詞を外す）。
+
+### 判断記録（登録の一部。H210〜H225。データより前に書く）
+
+- **H210 相は棄権した文だけの話ではない**: 基点は ている／ていない をすでに読んでいて、ていない・ていなかった・ています・ていません を `+` と誤読する（実測は指示書の証拠）。表せない部分の理由になっているのは相でなく、同じ文の副詞。だから相の規則は (a) 読めた出力の後処理（極性・時制の決め直し、規約に無い補助動詞の棄権）と (b) 再読の中、の両方に掛ける。基点の誤読の訂正は `readable→readable` の差として全件列挙し、1 件ずつ規約 §5 で正しいことを示す。凍結データでの件数は **実測で確かめて** 報告する（C1 は 0 件を求める）。
+- **H211 てある は棄権**: チケットの目的 (1) は てある を含むが、規約 §3 の列挙に てある は無く、§9.1 は 〜てみる・〜てある・〜ていく・〜てくる の書き方を未決としている。てある は格の写し方も変える（窓が開けてある の 窓 は patient）。チケットの「やること 3」も「規約に無い形は棄権」と書く。規約 §3 の写しに忠実に棄権（チケットの文言との差）。
+- **H212 縮約形は新しくは読まない**: てる・でる・ちゃう・じゃう は規約 §3 の字面に無い。基点が読めた出力は変えない。縮約形の直後に否定があれば棄権。再読の中の縮約形は棄権。
+- **H213 助数詞は品詞で絞り、時間・単位は棄権**: チケットの「回・度 → event、それ以外 → 直前の名詞句の役割」だけでは、期間・単位を数として読む誤読が出る。助数詞のトークンの品詞が 接尾辞（名詞的）のものだけを数にし、名詞の助数詞（時間・円・キロ・台・杯 …）と `_TIME_NUMERIC_HEAD` に当たるものは棄権。
+- **H214 直前の名詞句が割れる文は棄権**: 数詞の直前が格助詞 が か を のときだけ決める。が の場合、を の句が先にあれば棄権（かき混ぜ）。に・で・から・へ・と・まで・より・は・も の直後、直前に句が無い数量は棄権。チケットの「割れたら棄権」を狭める側に具体化した。
+- **H215 数詞が役割の値に溶けている文は読まない**: 値から数量を剥がすのは表層の切り直しになる。
+- **H216 度 は単位（温度・角度）と割れる**: 数詞の直前が が・を のときは棄権。回 にはこの門を掛けない。
+- **H217 副詞の印は品詞 副詞 のトークンだけ**（チケットどおり）。形状詞＋に は対象外。
+- **H218 K64 の照合は lemma と読みでも**: 多分・恐らく は表層・原形が K64 の たぶん・おそらく と一致しない。読みでの照合は棄権を増やす向きだけ。
+- **H219 W1-a4 の誤読の型の門を使う**: 否定・モダリティのある節では副詞を印にしない、副詞の直後が名詞句の内側を修飾しうる形なら棄権、接続詞を挟む・副詞が連続するなら棄権、比較の文では読まない、数量と副詞の同居も読まない。W1-a4 のコードは持ち込まない。
+- **H220 `flags` は十字が拒む（申告）**: 鍵の名前はチケットどおり `flags`。`event_cross.py` は触れないので、副詞の印つきの読みは十字で `INPUT_REJECTED:UNKNOWN_CLAUSE_KEY:flags`（基点ではその文は棄権 → ABSTAINED だった）。統合時に `event_cross.ENTRY_FLAG_KEYS` へ `flags` を足す 1 行が要る。
+- **H221 差し込みは `_read_ja` の外（モジュールの末尾の包み）**: `test_question_cross` が `_read_ja` などの本文の sha256 を固定しているので、`_read_ja` の中に足さない。`semantic_read.py` の `if __name__ == '__main__':` の直前に 2 行。`tests/test_semantic_read_w3b4.py` の「`semantic_read.py` の差分が 0」の 1 件はチケットの許可（差し込み 2 行）と衝突する（申告）。
+- **H222 `semantic_reader.py` の末尾に足す**: W3-b4 の構造テストの 1 件（ファイルの最後の 3 文が W3-b4 の名前の差し替えであること）が落ちる（申告）。チケットは「末尾に新しい区画」を指示している。W1-a5 の区画は `typed_plan_u_ja`・`typed_plan_u_w3b2_ja` を再代入しない。
+- **H223 凍結データの名前**: チケットの「ja_r1〜r11」のうち、この木に `ja_r7.jsonl`・`ja_r11.jsonl` は無い。対象は今ある一覧（K217）。新しいデータは `ja_r12.jsonl`。
+- **H224 番号**: §10G、K210〜、判断記録 H210〜、既知の穴 K230〜、測定結果 K225。
+- **H225 `NOT_PRODUCED['quantifiers']` の文言は直せない（既知の穴）**: 「数量は全部読まない」と書いたまま。定数は `test_question_cross` がハッシュで固定し、`semantic_read.py` には 2 行しか足せない。統合時に監査役が文言を直す候補として申告する。
+<!-- w1a5-prereg:end -->
+
+### K225 測定結果（数値は `artifacts/w1-a5/` のファイルのとおり。予想は書かない）
+
+（第 1 ラウンドの測定。第 2 ラウンドの撤回の後の測定は K226）
+
+記録: 2026-10-04 05:53:58 +0900（`date '+%F %T %z'`）。登録（K210〜K218）は変えていない（下の「変更記録」は検査の側の訂正だけ）。
+
+**C2 検査データ**（`tests/reading_soundness/ja_r12.jsonl`。凍結 `artifacts/w1-a5/bank_freeze.sha256`、データ作成の時刻 < テスト < 実装の順は `prereg_time.txt`・`bank_freeze_time.txt`・`tests_freeze_time.txt`・`impl_start_time.txt`）:
+- 件数（`data_counts.txt`）: 151 行 = 相 40（読む 20・棄権 20）・数量 56（読む 22・棄権 34）・副詞 55（読む 20・棄権 35）。基点の入口が読む行（`reader_facts_prefreeze.tsv`）: 相の読む 16・棄権 7、ほかはすべて棄権。
+- `data_check_none.txt`・`data_check_r8.txt`（配置 r8）・`data_check_fixture.txt`（偽の配置）: いずれも `rows=151 misread=0 incomplete=0 unjudged=0 entry_expect_mismatch=0 w1a5_expect_mismatch=0`。読めて正読の行: 相 20・数量 22・副詞 20。path の内訳: aspect_kept 9・aspect_corrected 7・aspect_refused 7・reread 46・reread_refused 47・not_triggered 35。
+- `pytest_w1a5.txt`: `tests/test_semantic_read_w1a5.py` 424 件がすべて通る。
+
+**C1 既存の凍結データ・x3**（`delta_summary.txt`・`delta_none_summary.txt`・`delta_r8_summary.txt`・`frozen_fixture_delta.txt`・`x3_summary.txt`・`soundness_compare.txt`）:
+- x3（`dump_reads.py --banks --extra ja_r12 の文`）: 基点と修正後が `cmp` でバイト一致（読解器の層は変えていない）。`harness.py`: `sentences 500 changed 0 misread 0`。
+- 入口の差（入力 3,851 文 = `entry_inputs.txt`。配置なしと r8 で同じ件数）: same 3,733、newly_read 50、refusal_reason_changed 54、read_to_refused 7、reading_changed 7、error_changed 0。
+  - reading_changed 7・read_to_refused 7 はすべて `ja_r12.jsonl` の行。**既存の入力では 0**（凍結データで読みが変わった文は 0）。reading_changed の 7 件はすべて基点の誤読の訂正（基点は polarity `+`、規約 5 で `-`）。read_to_refused の 7 件は相の門（`delta_manual.tsv` に 1 件ずつ理由）。
+  - newly_read 50 のうち `ja_r12.jsonl` 45・既存の凍結データ 5（下の「満たせなかったこと」）。C4 のために数えた r8 での newly_read は 50（`delta_r8_summary.txt`）。
+  - refusal_reason_changed 54: 理由が 1 つ増える（`ja_r12` 45・`ja.jsonl` 1・`w3b3_w1a4.jsonl` 8）。
+- 偽の配置（w3b1・w3b2・w3b3 の `FixtureQuery`、凍結データ 5,031 行×偽）: newly_read 15（5 文×3）、refusal_reason_changed 27（9 文×3）、同じ 4,989（`frozen_fixture_delta.txt`）。reading_changed・read_to_refused は 0。
+- **満たせなかったこと**: 既存の凍結データの 5 文が「新しく読めて、凍結した期待と合わない」（C1 の「newly_read の WRONG 0」に 4 件、UNSURE 1 件）。`ja_r8.jsonl` の W3B1-S4-061〜064（兄がそっと窓を開けた。母がゆっくり手紙を書いた。弟がきちんと靴を磨いた。姉がはっきり名前を書いた。期待は棄権、`b1.judge` は `misread`）と、`w3b3_w1a4.jsonl` の W3B3-W1A4-021（兄がとても喜んだ。期待は棄権）。この 5 文は、チケットの目的 (3) が読むことを求める構成（様態・程度の副詞）そのもので、`ja_r12.jsonl` の副詞の行と区別する規則が無い（`ja_r12.jsonl` の ADV-R-002 は W3B1-S4-061 と同じ文）。実装では解けず、期待の差し替えか副詞の印の撤回かを監査役が決める（`frozen_conflicts.md`）。読んだ結果は `ja_r8` の `must_not`（副詞を place・time の役割にしない）を守る。
+
+**C5**（`pytest_full.txt`・`pytest_new_failures.txt`・`frozen_conflicts.md`・`check_hardcode.txt`）:
+- `pytest_full.txt`: `157 failed, 14191 passed, 37 skipped, 75 xfailed, 75 xpassed`（7 分 4 秒）。基線 115 件に対して、新しい失敗 42 件（`pytest_new_failures.txt`）、基線から消えた失敗 0 件（`pytest_fixed_vs_baseline.txt`）。新しい失敗の内訳: `test_semantic_read_w3b3` 28・`test_semantic_read_w3b1` 6・`test_semantic_read_w3b2` 4・`test_semantic_read_w3b4` 2・`test_ask_question_cross` 1・環境由来 1（`tests/bank_score/test_bs_end_to_end.py::test_s6_…`。`verantyx/` が未コミットの間だけ落ちる）。1 件ずつの説明は `frozen_conflicts.md`（5 行の凍結データの衝突を含む）。
+- `check_hardcode_w1a5.py --base df4f001`（`check_hardcode.txt`）: `PROPER/NUMERIC (must be empty): []`、`ENGLISH NAMES (must be empty): []`。
+- `git diff df4f001 -- verantyx/semantic_reader.py` の `-` 行は 0、追加は末尾の 1 区画だけ。`semantic_read.py` は 2 行（`if __name__` の前）。
+
+**十字**（`cross_on_new_reads.txt`）: 新しく読めた 50 文（配置なし）を `build_crosses` に渡すと、`quantifiers` だけの 22 文は `CROSSED`、`flags` を持つ 28 文は `INPUT_REJECTED`（理由はすべて `UNKNOWN_CLAUSE_KEY:flags`）。統合時に `event_cross.ENTRY_FLAG_KEYS` へ `flags` を足す 1 行が要る（H220）。
+
+### 実装の判断記録（H226〜。登録の後。登録の規則は変えていない）
+
+- **H226 読みの順序の細部**: 引き金（T1〜T4）の後、(1) `gold_quantity` の整合 (2) 相の門 1〜4（再読の中の縮約形は `ASPECT_CONTRACTED`）(3) 数量の門（two・値・位置・時・event／unit／名詞句）(4) 副詞の門（各副詞に A1〜A5）(5) `_map_ja` の再読 (6) 相の門 6 と極性・時制の決め直し (7) Q8・Q9・A6、の順。再読で数量のトークンだけを抜き、副詞は抜かない。
+- **H227 語尾は文末まで**: 語尾の表は「補助動詞の後ろ、文末までの助動詞の並び」の写しなので、単文の出力では補助動詞＋助動詞の後ろが句点か文末でなければ表に無い（`ASPECT_ENDING_NOT_READ`）。終助詞（よ・ね）や連体形（ている兄）が続く文は、基点が正しく読んでいても棄権になる（既知の穴 K239）。2 節以上の出力では文末の制約を掛けない。最後の助動詞は終止形であること（ていたら・ていれば・ているだろう を表の外に置くため）。
+- **H228 接続詞の直後の句**: 副詞の直後が（読点＋）接続詞のとき、その後ろで始まる役割は `phrase_bounded` を通らないが、その文は A3 で必ず棄権するので引き金の例外に数えた（棄権を増やす向きだけ。登録の A3 の理由 `ADVERB_STACKED` に届かせるため）。
+- **H229 助動詞の原形の鍵**: 「ん」の原形は `ぬ`、撥音便の後ろの過去の「だ」は原形が `だ` で lemma が `た`。表の語（登録の定数）に当たる原形はそれを使い、当たらなければ lemma を使う（語を足していない）。
+- **H230 偽の基点で門 5・6 を検査**: 基点の入口は 2 節の文の補助動詞の連鎖を読まないので、門 5・6 は `w1a5_wrap` に基点の代わりの関数（読んだ出力を返す）を渡して検査した（`tests/test_semantic_read_w1a5.py`）。
+- **H231 `ja_r12.jsonl` と既存データの重複**: データを凍結する前に既存の凍結データとの文の重なりを調べなかった（十字のデータとだけ調べた）。凍結の後で `ja_r8.jsonl` の W3B1-S4-061 と同じ文（兄がそっと窓を開けた。）が `ja_r12.jsonl` の ADV-R-002 にあると分かった（期待は逆）。`w3b3_w1a4.jsonl` の W3B3-W1A4-010・011 と同じ文は ADV-A-014・015（期待は同じ棄権）。凍結後なので書き換えず、申告する。
+- **H232 凍結したテストの訂正（テストの変更記録 1〜4）**: 実装に通す前に凍結した `tests/test_semantic_read_w1a5.py` に、期待の側の誤りが 8 件あった。弱めたものは無い（下の記録）。（訂正 第 2 ラウンド 2026-10-04 07:18:15 +0900: テストの変更記録 2 は期待の理由を `None` に緩めていて、弱めていた。第 2 ラウンドで観測に固定し直した＝テストの変更記録 第 2 ラウンド）
+
+### テストの変更記録（W1-a5）
+
+記録: 2026-10-04 05:38:19 +0900（`artifacts/w1-a5/tests_edited_time.txt`）。変更前（凍結）の全文は `artifacts/w1-a5/tests_frozen_copy/test_semantic_read_w1a5.py.frozen`（sha256 `5d08288d…374991f`、`tests_freeze.sha256`）。変更後の sha256 は `tests_freeze_after.sha256`。
+
+1. データの行 2 件（W1A5-QTY-A-013 三冊だけ・W1A5-QTY-A-018 三回目に）: 凍結した `w1a5_expect` は `reread_refused`（理由 `QUANTIFIER_TARGET_UNDETERMINED:position`）だったが、実測は `not_triggered`。理由: 前者は読解器の節が「unrepresented source content」のほかに「unsupported source quantifier/exception/time」を持ち（引き金 T3 が当たらない）、後者は数詞が読解器の役割（ambiguous case role: に）の中にある（H215）。どちらも入口は棄権のまま（`entry_expect`・`expect` は満たす）。行は凍結のまま、`artifacts/w1-a5/expect_exceptions.json` に実測を固定し、テストは「この観測で、出力は基点と同じ」を確かめる（弱めたのは経路の予想だけ。棄権の期待は変えていない）。
+2. `QTY_REFUSED` の 2 文（三冊で・三回目に）: 期待の理由を `QUANTIFIER_TARGET_UNDETERMINED:position` から `None`（棄権であることと、経路が `reread_refused` か `not_triggered` であること）に直した。理由は 1 と同じ（数詞が役割の中にある）。
+3. 十字のテスト 2 件: `build_crosses` の第 2 引数は配置の問い合わせ（`MapQuery`）ではなく十字の `lookup` なので、引数を外した（既定の `lookup` = 配置なし）。検査の中身（`flags` は `UNKNOWN_CLAUSE_KEY:flags` で拒まれ、`quantifiers` は `CROSSED`、`flags` を鍵に足せば `CROSSED`）は同じ。
+4. 門 5・6 のテスト 2 件: 門 5 の対照の文を、第 1 節の補助動詞が連体形に切られる文（ているので）から、文末が終止形の 2 文（兄が本を読んでいる。母が手紙を書いた。）に替えた（連体形は表に無く、門 3 に当たって `ASPECT_MULTI_CLAUSE` になるのが登録の規則どおり）。門 6 の文を、補助動詞の語尾が文末に届く文（兄が来て本を読んでいる。）に替えた（元の文は語尾が文末に届かず、門 3 が先に当たる）。検査の中身（門 5・6 の理由）は同じ。
+
+### 既知の穴（K230〜）
+
+- **K230 歳・位・目**: `三歳に`・`三位に`・`三回目` は位置の規則（数量の直後が述語の頭）か、数詞が役割の中にあることで落ちる。`兄が三位入賞した。` の型は実測していない。
+- **K231 十字**: `flags` を持つ読みは十字で `INPUT_REJECTED:UNKNOWN_CLAUSE_KEY:flags`（新しく読めた 50 文のうち 28。`cross_on_new_reads.txt`）。（第 2 ラウンドの副詞の印の撤回で該当しない）
+- **K232 `NOT_PRODUCED['quantifiers']`**: 文言は「数量は全部読まない」のまま（`test_question_cross` がハッシュで固定。H225）。
+- **K233 形状詞＋に の様態**: 急に（名詞＋だ の連用形）・静かに・簡単に は品詞が副詞でなく、読まない（棄権のまま）。
+- **K234 数量が述語の直前に無い文**: 三冊も・三個ずつ・三冊しか・三冊だけ・三回目に は読まない（位置の門）。
+- **K235 W3-b3 の節の中**: 節ごとの読みの間は `W1A5_DEPTH` が 1 で、W1-a5 は働かない。
+- **K236 登録の類の外の副詞**: 登録した 9 語と K64 の外の、評価・程度・近似・驚きの副詞は印として読んでしまう。実測（探りの文。`artifacts/w1-a5/probe_unseen.txt`）: 兄がまさか走った。兄がまさに走った。兄がもっと走った。兄がつい本を読んだ。兄がちょっと走った。兄がだんだん走った。兄がしばしば本を読んだ。兄がたまたま本を読んだ。兄がわざわざ本を読んだ。兄がとても喜んだ。（最後は凍結データ `w3b3_w1a4.jsonl` が棄権を期待）。語を足して直さない（K218）。直すなら K213 の副詞の印を丸ごと棄権に戻す。（第 2 ラウンドの副詞の印の撤回で該当しない）
+- **K237 `read_question`**: 質問の読みも `_read_ja` の包みを通る。実測: 兄が何を三冊読んだ？ が読める（hole は patient、数量は patient）、誰が…の質問は主語の根拠の門（`AGENT_EVIDENCE_MISSING`）で今までどおり棄権。
+- **K238 可能形**: 基点が可能形を見落とす文（走れた・歌えた。基点でも `走れる`・`歌える` と読む）は、副詞の再読も同じ誤りを引き継ぐ（兄がゆっくり歌えた。が `歌える` + flags）。入口の門のまま。（第 2 ラウンドの副詞の印の撤回で該当しない）
+- **K239 終助詞・連体形**: ている＋よ・ね（兄が本を読んでいるよ。）と、連体形の ている は語尾が文末に届かず `ASPECT_ENDING_NOT_READ` になる。基点が正しく読んでいた文を失う（H227。登録の損）。
+- **K240 `unsupported`**: 再読の出力（読めた出力）の `unsupported` は基点の棄権の報告をそのまま持つ（W3-b1 の S4 と同じ。空でない）。
+- **K241 縮約形**: 読んでる・読んじゃった は基点のまま（読めた出力は変えない）。縮約形の直後の否定は棄権（`ASPECT_CONTRACTED_NEGATION`）。縮約形を含む再読は棄権（`ASPECT_CONTRACTED`）。読んどいた はタガーが誤って切り、基点が棄権する。
+- **K242 門 5・6 は基点が読まない**: 2 節の文の補助動詞の連鎖を基点は読まないので、門 5・6 は偽の基点でしか検査していない（H230）。
+
+### 衝突の申告（`artifacts/w1-a5/frozen_conflicts.md` に 1 件ずつ。チケットの許可パスの外の既存テストは変えていない）
+
+- `tests/test_semantic_read_w3b4.py` の 2 件（H221・H222）、W1-a5 が読む／理由を足す行の byte 一致のテスト（`test_semantic_read_w3b1/w3b2/w3b3`）、凍結データの 5 文を期待どおりに保つテスト、`tests/test_ask_question_cross.py` の 1 件。提案する改訂は `artifacts/w1-a5/proposed_test_changes.diff`（木には当てていない。検査を外さず、W1-a5 が変えた文を 4 つの登録した種類に限る形）。
+
+### 変更記録（K218。第 2 ラウンド W1-a5-2）
+
+記録日時: 2026-10-04 06:30:39 +0900（`artifacts/w1-a5/r2/change_time.txt`。`date '+%F %T %z'` の出力）。この時点で、第 2 ラウンドのデータの追記・テストの変更・コードの変更はまだ無い（順序: この記録 → データの追記と凍結 → 戻す行の一覧の凍結 → テストの変更と凍結 → 実装）。
+出典: 中間職のレビュー `.claude/vera-audit/review-impl/W1-a5/review.r1.md`（必須の修正 1〜5。C3 の誤読 8 文）、チケット末尾の監査役の判断（2026-10-04 06:14:34 +0900）、中間職の指示書 `.claude/vera-audit/review-impl/W1-a5-2/plan.md` と証拠 `plan_evidence/`（`tree_facts2.txt`〜`tree_facts5.txt` = 第 1 ラウンドの木の出力）。登録（K210〜K217・H210〜H225）の本文は変えない。この変更は K218（変更の約束）が定める「構成を棄権に戻す」向き（狭める向き）だけである。
+
+#### 変更 1: 副詞の印の撤回（K213 を無効にする）
+
+- **前**（K213・K210 の T4）: 覆われない内容語が 1 つ以上あり、そのすべてが 1 つの数量のトークンか品詞 `副詞` のトークンであるとき再読に入り、副詞を節の `flags.adverbs` に印として残して「読めた」とした。
+- **後**: 引き金 T4 は「覆われない内容語が 1 つ以上あり、**そのすべてが 1 つの数量（Q1 の形）のトークン**であること」。品詞 `副詞` のトークンが覆われずに残る文は T4 に当たらず、W1-a5 は何もしない（基点の出力と同じオブジェクトを返す。`path = 'not_triggered'`）。出力に `flags` を書かない。`w1a5_explain_ja` の `adverbs` は常に `[]`（K216 の形は変えない）。
+- **理由**: C3（中間職の未公開の文 139 文）で誤読 5 文。どれも語の意味による誤読で、K213 の構造の門（否定・位置・隣接・比較）では説明できない。K218 の「副詞の印で誤読が出て構造の門で説明できないときは K213 を丸ごと棄権に戻す」に当たる。副詞は開いた類で、推量・証拠・不信の副詞は命題の断定を変える。印として残しても「読めた」と主張すること自体が誤読になる（W1-a4 の教訓の再確認）。副詞の印を撤回すると、第 1 ラウンドの C1 の凍結データ 5 文の衝突（`ja_r8` W3B1-S4-061〜064、`w3b3_w1a4` W3B3-W1A4-021）も解ける。
+
+  | 文（review.r1 の表） | 第 1 ラウンドの出力 | 何が誤りか |
+  |---|---|---|
+  | 兄がおおかた家に帰った。 | 帰る past、`flags [おおかた]` | 推量の副詞。帰ったことは主張されていない |
+  | 兄がどうやら家に帰った。 | 帰る past、`flags [どう]` | 証拠の副詞（印の表層が切れている） |
+  | 兄がたしか本を読んだ。 | 読む past、`flags [たしか]` | 記憶の確かさの留保 |
+  | 兄がまさか本を読んだ。 | 読む past、`flags [まさか]` | 不信・驚きの副詞 |
+  | 兄がさぞ喜んだ。 | 喜ぶ past、`flags [さぞ]` | 推量の副詞 |
+
+- **消すもの**: 関数 `_w1a5_hira`・`_w1a5_adverb_class`・`_w1a5_after_adverb`・`_w1a5_np_boundary`・`_w1a5_adverb_gate`、`_w1a5_reread` の中の副詞の組み立て・門の繰り返し・A6・`flags` の組み立て（ただし基点の行は 1 字も変えない: 変更は W1-a5 の区画の中だけで、区画より前と基点の関数の行の削除は 0 のまま）。
+- **残すもの**: 登録の定数 `W1A5_CONVENTION_ADVERBS`・`W1A5_ADVERB_CLASSES`・`W1A5_COMPARISON_PARTICLES`、K213 の表 `w1a5_adverb_classes`、K215 の表 `w1a5_reasons` の `ADVERB_*`・`COMPARISON_NOT_READ` の行（登録の記録。どこからも参照されず、出力に現れない。表と定数の一致を検査するテストが登録の表と比べるため）。
+
+#### 変更 2: 名詞句にかかる遊離数量の撤回（K212 の Q6 の 接尾辞 の枝 ＋ Q9 を無効にする）
+
+- **前**（K212）: 助数詞が 回・度 以外の接尾辞（名詞的）の数量は、数詞の直前の格助詞（が・を）で「直前の名詞句」を決め、再読の出力の役割の値との照合（Q9）で 1 つに決まれば、その役割に `exactly:N` を書いた。
+- **後**: 助数詞が接尾辞（名詞的）の数量は、Q2〜Q6（値・位置・時・助詞・直前の句・かき混ぜ）と再読・Q8（範囲）を今のまま通し、それらに当たらなかったときに `QUANTIFIER_TARGET_UNDETERMINED:noun_phrase` で棄権する（Q9 の位置）。第 1 ラウンドで別の理由で棄権していた文は理由が変わらず、読めていた文だけが新しい理由で棄権になる。回・度（event）は今のまま（`"event": "exactly:N"`）。度 の単位の門（H216）も今のまま。`w1a5_explain_ja` の `quantity` は今のとおり値を記録する（`key` は `None` のまま）。
+- **理由**: C3 の誤読 3 文（review.r1。主語の数を patient に付けた）に加え、中間職が今の木で確かめた同じ規則の誤読 6 文（`plan_evidence/tree_facts2.txt`〜`tree_facts3.txt`）。「直前の名詞句」の規則は、省略された項・主題の項を数量の係り先の候補から外してしまう。読解器にも入口にも項の省略を知る手段が無く、助数詞（人・冊）で分けるのは語の一覧になる。
+
+  | 文 | 第 1 ラウンドの `quantifiers` | 何が誤りか |
+  |---|---|---|
+  | 学生が論文を三人書いた。 | `{patient: exactly:3}` | 三人は学生の数（review.r1 の C3） |
+  | 客がケーキを五人食べた。 | `{patient: exactly:5}` | 同上（review.r1 の C3） |
+  | 子供たちが絵を三人描いた。 | `{patient: exactly:3}` | 同上（review.r1 の C3） |
+  | 学生は論文を三人書いた。 | `{patient: exactly:3}` | 主語が は でも同じ型 |
+  | 論文を三人書いた。 | `{patient: exactly:3}` | 主語の省略。三人は書いた人の数 |
+  | 兄が三冊読んだ。 | `{agent: exactly:3}` | 目的語の省略。三冊は本の数で、兄は 3 人ではない |
+  | 母が五個買った。 | `{agent: exactly:5}` | 同上 |
+  | 本は兄が三冊読んだ。 | `{agent: exactly:3}` | 目的語が主題（は）。三冊は本の数 |
+  | 手紙は姉が二通書いた。 | `{agent: exactly:2}` | 同上 |
+
+- **監査役の判断 (2) の文言より広い理由**: 判断 (2) の文言は「が の句と を の句が両方ある節で、を の直後の遊離数量を棄権」。この文言では上の 6 文のうち 5 文が残る（`学生は論文を三人書いた。` は が が無く、`兄が三冊読んだ。` 等は を が無い）。語を足さずに分ける方法が無いので、規則（Q6 の 接尾辞 の枝と Q9）そのものを棄権に戻した。K218 が名指しする「数量の 1 規則」の撤回で、判断 (2) を含み、それより狭める側である（H233）。回・度 は節の出来事の回数で、項の省略の影響を受けない（`plan_evidence/tree_facts4.txt`・`tree_facts5.txt` で誤読なし）ので、読み続ける。
+
+新しい理由は登録の表 `w1a5_reasons`（K215）に足さず、次の表と定数 `W1A5_REASONS_K218` に置く。
+
+<!-- BEGIN table:w1a5_reasons_k218 -->
+| 理由 | 意味 |
+|---|---|
+| QUANTIFIER_TARGET_UNDETERMINED:noun_phrase | 名詞句にかかる遊離数量（回・度 以外の接尾辞の助数詞）は読まない（K218 第 2 ラウンドの撤回） |
+<!-- END table:w1a5_reasons_k218 -->
+
+#### 追記（2026-10-04 07:02:58 +0900。W1-a5-2 の続き。監査役の実行上の注意により、副詞の門の 5 関数は消さず、呼ばない形で残す）
+
+記録日時は `artifacts/w1-a5/r2/change_time_addendum.txt`。この追記の時点で、5 関数はまだ戻していない（順序: この追記 → データ・テストの凍結の確認 → 直す前の記録 → 5 関数を戻す → C1・C2・C5・決め打ちの流し直し）。上の 06:30:39 の記録の本文は書き換えない。
+
+- **前**（06:30:39 の変更 1「消すもの」と H235）: 副詞の門の関数 `_w1a5_hira`・`_w1a5_adverb_class`・`_w1a5_after_adverb`・`_w1a5_np_boundary`・`_w1a5_adverb_gate` を消す。この追記の時点の木は、そのとおり 5 関数を消している（`artifacts/w1-a5/r2/pre_restore/semantic_reader.before_restore.py.txt`）。
+- **後**: 5 関数を第 1 ラウンドの本文のまま（1 字も変えずに。`artifacts/w1-a5/r2/semantic_reader.r1.py.txt` の本文）区画に戻す。どこからも呼ばない（`_w1a5_reread`・`w1a5_wrap` から呼ばれない）。見出しのコメントは「K213 withdrawn (K218, round 2): the mark of an adverb is not made; the functions of its gates stay and are not called」の型（英語。例文・日本語の語を書かない）。呼び出し側（引き金 T4 の副詞・`exempt`・副詞の門の繰り返し・A6・`flags`）は変更 1 のとおり外したまま。登録の定数・表は残す（変更なし）。変更 1 の「消すもの」のうち「関数 … を消し」は「呼ばない形で残す」に読み替える。
+- **理由**: 監査役の実行上の注意（「副詞の区画は呼び出しを外す。削除行 0 の制約は守る: 呼ばない形にして関数は残し、docs に撤回を書く」）。関数を消す形は中間職の指示書 `plan.md` §2.3 の 3 に従ったもので、監査役の注意が指示書より優先する（`review.r1.md` 必須 4）。基点 `df4f001` に対する `-` 行は、どちらの形でも 0。
+- **出典**: 監査役の実行上の注意（W1-a5-2 第 2 ラウンドの起動時）、`.claude/vera-audit/review-impl/W1-a5-2/review.r1.md` 必須の修正 4、同 1〜3。
+- **振る舞いの同値**: 5 関数は呼ばれないので、出力は変わらない。戻した後に、最小の変更の写し（`plan_evidence/sim_change.diff`）との出力のバイト比較と、戻す前の出力との比較（全入力）を `artifacts/w1-a5/r2/` に記録する（結果は K226 の「第 2 ラウンドの続き」）。
+- 同じ追記を `artifacts/w1-a5/r2/CHANGE_K218_addendum.md` に写した（`CHANGE_K218.md` は書き換えない）。
+
+### 判断記録 第 2 ラウンド（H233〜）
+
+- **H233 変更 2 を監査役の文言より広くした**: 監査役の判断 (2) の文言（が と を が両方ある節の を の直後）では、主語が は の文・主語の省略・目的語の省略・目的語が主題の文（上の表の 6 文）が誤読のまま残る。語を足さずに分ける手段が無い（助数詞で分けるのは語の一覧、省略は入口にも読解器にも見えない）ので、K218 の「数量の 1 規則の撤回」として名詞句の数量を丸ごと棄権に戻した。証拠のファイル: `plan_evidence/tree_facts2.txt`〜`tree_facts5.txt`（第 1 ラウンドの木の出力）。広さを戻すなら、これらの文が誤読に戻る（監査役へ申し送り）。
+- **H234 戻した行は書き換えず、一覧を規則から機械で作って実装の前に凍結する**: 変更 1・2 で期待と合わなくなる `ja_r12.jsonl` の行は書き換えない。第 1 ラウンドの出力 `artifacts/w1-a5/data_check_none.json` から、規則（副詞の印が付いていた行 → `adverb_mark`、助数詞が 回・度 でない再読の行 → `noun_phrase_quantity`）だけで `artifacts/w1-a5/r2/k218_withdrawn_rows.json` を作り（`artifacts/w1-a5/tools/mk_withdrawn_k218.py`）、実装の前に sha256 を残す。テストはその行を「棄権で、予測した経路・理由で、副詞なら出力が基点の出力と `==`、数量なら基点の理由の後ろに `:noun_phrase` が 1 つ」で確かめる。誤読 0 の検査は全行に掛けたまま。実装の結果を見て行を選ばない。
+- **H235 副詞の関数は消し、登録の定数と表は残す**: 副詞の門の関数は呼ばれないので消す（基点の行の削除は 0 のまま。W1-a5 の区画の中の関数の削除であり、基点の関数・区画より前の行には触れない）。登録の定数・表は、登録の記録であり表と定数の一致の検査の対象なので残す。（追記 2026-10-04 07:02:58 +0900: 監査役の実行上の注意により、5 関数は消さず呼ばない形で残した。振る舞いは同じ＝同値の確かめ。変更記録の追記を参照）
+- **H236 C2 の「各 20」は監査役の判断で免除**: 相の助動詞（誤読 0）が本体。読める文の数と原因（相・数量・副詞）は K226 に実測で書く。検査データの件数の固定値は実測の値で書く。
+- **H237 データの追記 14 行**: C3 の誤読 8 文（review.r1。数量 3・副詞 5）と中間職の探りの誤読 6 文（数量。`plan.md` §1.3）を、棄権の行として `ja_r12.jsonl` の末尾に追記する（`W1A5-QTY-A-901〜909`・`W1A5-ADV-A-901〜905`）。既存の 151 行は 1 字も変えない。追記の前に先頭 151 行の sha256 が第 1 ラウンドの凍結（`d6050258…`）と一致することを記録し、追記の後の全体の sha256 を凍結する。
+
+### K226 測定結果（第 2 ラウンド。出力は `artifacts/w1-a5/r2/`。数値はそのファイルから。予想は書かない）
+
+記録: 2026-10-04 07:19:36 +0900（`date '+%F %T %z'`）。登録（K210〜K217）と、変更記録（K218 第 2 ラウンド。06:30:39 の本文と 07:02:58 の追記）は変えていない。第 2 ラウンドの作業は 2 回に分かれる。1 回目（06:30〜06:46）: 変更記録・データの追記・戻した行の一覧の凍結・テストの変更と凍結・実装（副詞の印と名詞句の数量の撤回）。2 回目（07:02〜）: 監査役の実行上の注意により、副詞の門の 5 関数を **消さず呼ばない形で戻し**、その後に C1・C2・C5・決め打ちを流し直した。下の数値は 2 回目の測り直し（`artifacts/w1-a5/r2/` の今のファイル）。戻す前の出力と状態は `artifacts/w1-a5/r2/pre_restore/` に残してある。
+
+**範囲・順序**（`scope_check.txt`・`freeze_check_r2b.txt`・`CHANGE_K218_addendum.md`）:
+- `git diff df4f001 -- verantyx/semantic_reader.py` の `-` 行 0、hunk 1、追加 382 行。`git diff --stat df4f001 -- verantyx`: 2 ファイル、`semantic_read.py` は `2 +`。5 関数の `def` 行は 5。5 関数の呼び出しは、`def` 行と 5 関数どうしの中だけで、`_w1a5_reread`・`w1a5_wrap` から呼ばれない。区画の中に `flags` を作る行は 0。
+- `git diff df4f001 -- docs | grep -c '^-[^-]'` は 0。事前登録の区画（K210〜K217 の登録の印の間）は `artifacts/w1-a5/PREREG.md` と差なし。
+- 時刻の順（`change_time.txt` 06:30:39 → `bank_append_time.txt` 06:31:44 → `withdrawn_freeze_time.txt` 06:32:10 → `tests_freeze_r2_time.txt` 06:34:17 → `impl_start_time.txt` 06:34:29 → `change_time_addendum.txt` 07:02:58 → `freeze_check_time_r2b.txt` 07:03:22 → `pre_restore/record_time.txt` 07:03:30 → `restore_done_time.txt`）。データ（先頭 151 行の sha256 `d6050258…`、全体 165 行）・一覧（`k218_withdrawn_rows.json`）・テスト（`4d1b8f2a…`）の凍結は、2 回目でも `shasum -c` が OK（変えていない）。
+
+**同値**（`equivalence_min.txt`）: 配置なしの入口の出力（`entry_inputs.txt` 3,865 文）が、中間職の最小の変更（`plan_evidence/sim_change.diff` を第 1 ラウンドの木の写しに当てたもの）の出力と **バイトで一致**（`MIN_SAME`）、5 関数を戻す前の出力とも一致（`BEFORE_RESTORE_SAME`。sha256 `e55ec4c9…`）。配置 r8 の出力（`entry_r8_after.jsonl`、sha256 `856dec54…`）も戻す前と同じ（`pre_restore/entry_shas.txt`）。
+
+**C2 検査データ**（`data_check_none.txt`・`data_check_r8.txt`・`data_check_fixture.txt`。3 本とも終了コード 0。`placement=` の欄以外は同じ）:
+- `rows=165 misread=0 incomplete=0 unjudged=0 entry_expect_mismatch=0 w1a5_expect_mismatch=0`、`withdrawn=66 withdrawn_mismatch=0`。
+- 読めて正読の行（`read_and_judged_correct`）: **相 16・数量 6・副詞 0**（行数: 相 40・数量 65・副詞 60）。path の内訳: aspect_kept 9・aspect_corrected 7・aspect_refused 7・reread 6・reread_refused 46・not_triggered 90。
+- `pytest_w1a5.txt`: `tests/test_semantic_read_w1a5.py` 457 件がすべて通る。
+
+**C1 既存の凍結データ・x3**（`delta_none_summary.txt`・`delta_r8_summary.txt`・`frozen_fixture_delta.txt`・`x3_summary.txt`・`soundness_compare.txt`）:
+- 入口の差（入力 3,865 文。配置なしと r8 で同じ）: same 3,799、newly_read 6、refusal_reason_changed 46、read_to_refused 7、reading_changed 7、error_changed 0。**変わった 66 文はすべて `ja_r12.jsonl` の文。既存の凍結データの文で変わったものは 0**（`rows that come from the frozen data files: {}`）。第 1 ラウンドの K225 の「既存の凍結データ 5 文の衝突」は消えた。
+- 全件の列挙: `delta_none.jsonl`（前後の出力つき）・`delta_none_labels.tsv`（newly_read・reading_changed・read_to_refused の全 20 件に判定と理由。`delta_manual.tsv`）。
+  - newly_read 6（すべて CORRECT。event の数量のみ）: 兄が本を三回読んだ。／兄は駅に三回行った。／兄は京都に三度来た。／兄は駅に二度行った。／兄が三回走った。／兄が手紙を五回書いた。
+  - reading_changed 7（すべて CORRECTION。基点が極性 `+` と誤読していたのを規約 5 で `-` に直したもの）: ていない・ていなかった・ていません・ていませんでした・てしまわなかった・ておかなかった・遊んでいなかった。
+  - read_to_refused 7（すべて REGISTERED_REFUSAL）: てみた・てみる・てある・ておいてある・てしまっている・ていろ・じゃわなかった。基点が正しく読んでいた じゃわなかった（極性 `-`）の読みを失う（H212 で登録した損）。ていろ は基点が命令形を平叙文と誤読していた文で、棄権が正しい。
+  - refusal_reason_changed 46: 理由が 1 つ増えるだけ（種類は基点のまま）。
+- 偽の配置（5,031 行×偽）: output differences `{}`（`frozen_fixture_delta.txt`）。
+- x3（`dump_reads.py --banks --extra ja_r12 の 165 文`、570 文）: 基点と修正後が `cmp` でバイト一致。`harness.py`: `sentences 500 changed 0 misread 0`（`soundness_compare.txt`）。
+
+**十字**（`cross_on_new_reads.txt`）: 新しく読めた 6 文（配置なし）はすべて `CROSSED`（`quantifiers` のみ）。`INPUT_REJECTED` 0・`flags` を持つ節 0。統合時の `event_cross.ENTRY_FLAG_KEYS` の 1 行は不要。
+
+**決め打ちの検査**（`check_hardcode.txt`）: `PROPER/NUMERIC (must be empty): []`、`ENGLISH NAMES (must be empty): []`、終了コード 0。
+
+**C5**（`pytest_full.txt`・`pytest_failures.txt`・`pytest_new_failures.txt`・`frozen_conflicts.md`）:
+- 全体テスト: `120 failed, 14261 passed, 37 skipped, 75 xfailed, 75 xpassed`（7 分 1 秒。`pytest_full_start_time.txt` 07:09:02〜`pytest_full_end_time.txt` 07:16:05）。基線 115 件に対して、**新しい失敗 5 件**（`pytest_new_failures.txt`）、基線から消えた失敗 0 件（`pytest_fixed_vs_baseline.txt` は空）。第 1 ラウンドに無かった失敗 0 件（`pytest_new_vs_r1.txt` は空。第 1 ラウンドの 42 件は 37 件が消えて 5 件が残った）。
+- 新しい失敗 5 件の内訳: w3b2 1・w3b4 2・ask 1（W1-a5 の意図した帰結。byte 一致・ハッシュ固定の衝突）、環境由来 1（`test_s6_…`。`verantyx/` が未コミットの間だけ落ちる）。1 件ずつの説明と提案する改訂は `frozen_conflicts.md`・`proposed_test_changes.diff`（**当てていない**。更新だけ。`git apply --check` の乾式の結果は `proposed_apply_check.txt`）。
+- 前の実行で負荷のため落ちた `test_gen_coarse_evidence::test_the_stop_signal…`（20 秒のタイムアウト）は、この全体テストでは通り、単独でも通った（`rerun_gen_coarse.txt`: `1 passed`）。`tools/gen_coarse_evidence.py` は基点から変わっていない。
+- 関係するテスト（`pytest_related_after.txt`）: `4 failed, 5149 passed`。失敗 4 件（`pytest_related_failures_after.txt`）は新しい失敗 5 件のうちの 4 件（s6 を除く）で、第 1 ラウンドの 41 件から増えたものは 0（減ったもの 37 は上の「消えた 37 件」）。
+
+**満たせなかったこと（C2 の「各 20」。監査役の判断で免除済み）**: 読めて正読の行は 相 16・数量 6・副詞 0（チケットの「各 20」に対して）。原因は、第 1 ラウンドの 相 20・数量 22・副詞 20 から次の 2 つの撤回で減ったこと（戻した行 66 = `k218_withdrawn_rows.json`）。(1) 副詞の印の撤回（K213）: 副詞 20 行（ADV-R）と、副詞つきの相 4 行（ASP-R-017〜020）が読めなくなった（副詞を含む行で戻したのは 50 行 = ADV-R 20・ADV-A 23・ASP-R 4・ASP-A 2・QTY-A 1）。(2) 名詞句にかかる数量の撤回（K212 の Q6・Q9）: 数量 16 行（QTY-R）。相の助動詞の本体（誤読 0）は変わらない。
+
+**C3 は中間職が測る**（実装役は中間職の未公開の文を持たない）。実装役の側の探りは証拠にしない。
+
+
+### テストの変更記録 第 2 ラウンド（W1-a5）
+
+記録日時: 2026-10-04 07:19:36 +0900（`date '+%F %T %z'`）。変更前（第 1 ラウンドの末）の全文は `artifacts/w1-a5/r2/test_semantic_read_w1a5.r1.py.txt`（sha256 `f5e8d655…`、`artifacts/w1-a5/r2/tests_before_r2.sha256`）。変更後（実装の前に凍結）の sha256 は `4d1b8f2a…`（`artifacts/w1-a5/r2/tests_freeze_r2.sha256`、凍結の時刻 2026-10-04 06:34:17 +0900 = `tests_freeze_r2_time.txt`。実装の開始 06:34:29 より前）。第 2 ラウンドの続き（5 関数を呼ばない形で戻した作業。07:02〜）ではテストを変えていない（`shasum -c tests_freeze_r2.sha256` は OK）。名前の変更・削除・skip・xfail は無い。
+
+**弱める側の変更（隠さず）**: 変更 1（一覧の行で、入口の期待「読む」と判定 `correct` を求めない）・変更 2（正読の下限「各 20」を実測の 16・6・0 に）・変更 4（`flags` の十字の検査が `== 0` に）・変更 5（副詞つきの縮約形の棄権の確かめが「何もしない」に）は、検査の中身を弱める側に動いた。どれも副詞の印と名詞句の数量の撤回（K218。監査役の判断）の帰結で、誤読 0 の検査は全行に掛けたまま残している。強める側: 変更 3（`n == 22`）・変更 7a/7b（`None` を観測に固定、経路を `reread_refused` に絞った）・変更 8・9（出力が基点と `==` を確かめる）。
+
+#### 変更の対象: `test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct`
+
+変更 1: 一覧 `k218_withdrawn_rows.json` の行（66 行。第 1 ラウンドの出力から規則で作り、実装の前に凍結）に枝を足した。その行は「棄権で、経路・理由が一覧の予測どおり、副詞なら出力が基点と `==`、数量なら基点の理由の後ろに `:noun_phrase` が 1 つで、値の変換が第 1 ラウンドと同じ」を確かめる。一覧に無い行は今のまま（入口の期待と判定 `correct`）。一覧の行は、第 1 ラウンドの `entry_expect`（読む）と `correct` の判定を求めない。これは検査の緩和であり、撤回（K218）の帰結としてだけ許される。誤読 0 の検査は全行に掛けたまま（次のテスト）。
+
+変更前（全文）:
+
+```python
+@pytest.mark.parametrize('row', DATA, ids=[r['id'] for r in DATA])
+def test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct(row):
+    out = SR.read(row['input'], 'ja', placement=None)
+    assert ('read' if out['readable'] else 'abstain') == row['entry_expect'], out
+    verdict = b1.judge(row['expect'], 'ja', out)
+    assert verdict['verdict'] == 'correct', verdict
+    ex = R.w1a5_explain_ja(row['input'])
+    want = row['w1a5_expect']
+    assert ex['path'] in PATHS
+    if row['id'] in EXCEPTIONS:
+        # the frozen prediction of the path was another one (artifacts/w1-a5/expect_exceptions.json, docs 10G test change record 1): the entry abstains as registered, nothing is done
+        pinned = EXCEPTIONS[row['id']]
+        assert (ex['path'], ex['reason']) == (pinned['observed_path'], pinned['observed_reason']) and not out['readable']
+        assert out == BASE.read(row['input'], 'ja', placement=None)
+        return
+    if want['path'] is not None: assert ex['path'] == want['path'], (ex, want)
+    if want['reason_prefix'] is not None:
+        assert ex['reason'] is not None and ex['reason'].startswith(want['reason_prefix']), (ex, want)
+        assert out['abstain']['reasons'][-1] == ex['reason']
+    if out['readable']:
+        c = out['clauses'][0]
+        assert set(c) <= set(ALLOWED_CLAUSE_KEYS), c
+        if want['quantifiers'] is not None: assert c.get('quantifiers', {}) == want['quantifiers']
+        if want['flags'] is not None: assert c.get('flags', {}) == want['flags']
+        if 'quantifiers' in c or 'flags' in c: assert ex['path'] == 'reread'
+        if 'flags' in c: assert list(c)[-1] == 'flags'
+        if 'quantifiers' in c: assert list(c).index('quantifiers') == list(c).index('voice') + 1
+    else:
+        assert out['clauses'] == [] and out['relations'] == []
+```
+
+変更後（全文）:
+
+```python
+@pytest.mark.parametrize('row', DATA, ids=[r['id'] for r in DATA])
+def test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct(row):
+    out = SR.read(row['input'], 'ja', placement=None)
+    verdict = b1.judge(row['expect'], 'ja', out)
+    ex = R.w1a5_explain_ja(row['input'])
+    want = row['w1a5_expect']
+    assert ex['path'] in PATHS
+    if row['id'] in WITHDRAWN:
+        # a row that K218 (round 2) turned back to an abstention (artifacts/w1-a5/r2/k218_withdrawn_rows.json, made by rule before the implementation): it abstains, as the list pins
+        wd = WITHDRAWN[row['id']]
+        assert not out['readable'] and verdict['verdict'] in ('correct', 'abstain'), (out, verdict)
+        assert (ex['path'], ex['reason']) == (wd['pinned_path'], wd['pinned_reason']), (ex, wd)
+        base = BASE.read(row['input'], 'ja', placement=None)
+        if wd['kind'] == 'adverb_mark':
+            assert wd['pinned_path'] == 'not_triggered' and out == base
+        else:
+            assert wd['kind'] == 'noun_phrase_quantity' and wd['pinned_path'] == 'reread_refused'
+            assert not base['readable'] and out['abstain']['kind'] == base['abstain']['kind']
+            assert out['abstain']['reasons'][:-1] == base['abstain']['reasons'] and out['abstain']['reasons'][-1] == wd['pinned_reason']
+            assert ex['quantity']['value'] == wd['round1_value']          # the value of the numerals is still converted (and checked) on the way to the refusal
+        return
+    assert ('read' if out['readable'] else 'abstain') == row['entry_expect'], out
+    assert verdict['verdict'] == 'correct', verdict
+    if row['id'] in EXCEPTIONS:
+        # the frozen prediction of the path was another one (artifacts/w1-a5/expect_exceptions.json, docs 10G test change record 1): the entry abstains as registered, nothing is done
+        pinned = EXCEPTIONS[row['id']]
+        assert (ex['path'], ex['reason']) == (pinned['observed_path'], pinned['observed_reason']) and not out['readable']
+        assert out == BASE.read(row['input'], 'ja', placement=None)
+        return
+    if want['path'] is not None: assert ex['path'] == want['path'], (ex, want)
+    if want['reason_prefix'] is not None:
+        assert ex['reason'] is not None and ex['reason'].startswith(want['reason_prefix']), (ex, want)
+        assert out['abstain']['reasons'][-1] == ex['reason']
+    if out['readable']:
+        c = out['clauses'][0]
+        assert set(c) <= set(ALLOWED_CLAUSE_KEYS), c
+        if want['quantifiers'] is not None: assert c.get('quantifiers', {}) == want['quantifiers']
+        if want['flags'] is not None: assert c.get('flags', {}) == want['flags']
+        if 'quantifiers' in c or 'flags' in c: assert ex['path'] == 'reread'
+        if 'flags' in c: assert list(c)[-1] == 'flags'
+        if 'quantifiers' in c: assert list(c).index('quantifiers') == list(c).index('voice') + 1
+    else:
+        assert out['clauses'] == [] and out['relations'] == []
+```
+
+#### 変更の対象: `test_no_row_of_the_data_is_misread_or_incomplete_and_the_three_kinds_are_read_in_at_least_twenty_rows_each`
+
+変更 2: `misread`・`incomplete`・`UNJUDGED` が 0（今のまま）。`abstain` の判定は `WITHDRAWN` の行にだけ許す。カテゴリごとの正読の数の下限 `>= 20` を、実測の固定値 `{aspect 16, quantity 6, adverb 0}` の `==` に替えた。**これは第 1 ラウンドの登録（「各 20」）の下限を下げる変更である**。監査役の判断（2026-10-04 06:14:34。C2 の「各 20」は満たせなくてよい）による免除で、件数は `artifacts/w1-a5/r2/data_check_none.txt` の実測。
+
+変更前（全文）:
+
+```python
+def test_no_row_of_the_data_is_misread_or_incomplete_and_the_three_kinds_are_read_in_at_least_twenty_rows_each():
+    verdicts = {}
+    for r in DATA:
+        verdicts[r['id']] = b1.judge(r['expect'], 'ja', SR.read(r['input'], 'ja', placement=None))['verdict']
+    assert not [i for i, v in verdicts.items() if v in ('misread', 'incomplete', 'UNJUDGED', 'abstain')]
+    for cat in ('aspect', 'quantity', 'adverb'):
+        n = sum(1 for r in DATA if r['category'] == cat and r['behavior'] == 'read' and verdicts[r['id']] == 'correct')
+        assert n >= 20, (cat, n)
+```
+
+変更後（全文）:
+
+```python
+def test_no_row_of_the_data_is_misread_or_incomplete_and_the_three_kinds_are_read_in_at_least_twenty_rows_each():
+    # round 2: the "at least twenty each" of round 1 is released by the auditor's decision (docs 10G H236); the number of rows read and judged correct is pinned to the measured value
+    verdicts = {}
+    for r in DATA:
+        verdicts[r['id']] = b1.judge(r['expect'], 'ja', SR.read(r['input'], 'ja', placement=None))['verdict']
+    assert not [i for i, v in verdicts.items() if v in ('misread', 'incomplete', 'UNJUDGED')]
+    reads = {r['id'] for r in DATA if r['behavior'] == 'read'}
+    correct = {i for i in reads if verdicts[i] == 'correct'}
+    # a row that is expected to be read and is abstained from (verdict abstain) is allowed only on a withdrawn row; the other rows that are expected to be read are read and correct
+    assert {i for i, v in verdicts.items() if v == 'abstain'} == reads & set(WITHDRAWN) == reads - correct and not (correct & set(WITHDRAWN))
+    counts = {cat: sum(1 for r in DATA if r['category'] == cat and r['id'] in correct) for cat in ('aspect', 'quantity', 'adverb')}
+    assert counts == {'aspect': 16, 'quantity': 6, 'adverb': 0}, counts
+```
+
+#### 変更の対象: `test_a_read_output_of_w1a5_fits_the_check_of_the_cross_once_flags_is_a_key_of_the_entry`
+
+変更 3: 十字の検査を通す読めた行の数の下限 `n >= 60` を、実測の `n == 22` に替えた（読めた行 = 相 16 + 数量 6）。全行で `flags` が節に無いことの検査を足した。
+
+変更前（全文）:
+
+```python
+def test_a_read_output_of_w1a5_fits_the_check_of_the_cross_once_flags_is_a_key_of_the_entry(monkeypatch):
+    monkeypatch.setattr(EC, 'ENTRY_FLAG_KEYS', EC.ENTRY_FLAG_KEYS + ('flags',))
+    n = 0
+    for r in DATA:
+        out = SR.read(r['input'], 'ja', placement=None)
+        if out['readable']:
+            assert EC.build_crosses(out).status == 'CROSSED', r['id']; n += 1
+    assert n >= 60
+```
+
+変更後（全文）:
+
+```python
+def test_a_read_output_of_w1a5_fits_the_check_of_the_cross_once_flags_is_a_key_of_the_entry(monkeypatch):
+    monkeypatch.setattr(EC, 'ENTRY_FLAG_KEYS', EC.ENTRY_FLAG_KEYS + ('flags',))
+    n = 0
+    for r in DATA:
+        out = SR.read(r['input'], 'ja', placement=None)
+        if out['readable']:
+            assert EC.build_crosses(out).status == 'CROSSED', r['id']
+            assert 'flags' not in out['clauses'][0], r['id']; n += 1
+    assert n == 22
+```
+
+#### 変更の対象: `test_the_cross_refuses_the_key_flags_today_and_takes_the_key_quantifiers`
+
+変更 4: `seen['flags'] >= 20` を `== 0` に、`seen['quantifiers'] >= 20` を `== 6`（実測）に替えた。`flags` を持つ読みが無くなったので、十字が `flags` を拒むことは、副詞の印の撤回の後は検査の対象が無い（`seen['flags'] == 0` で、`flags` が出ないことを固定する）。
+
+変更前（全文）:
+
+```python
+def test_the_cross_refuses_the_key_flags_today_and_takes_the_key_quantifiers():
+    seen = {'flags': 0, 'quantifiers': 0}
+    for r in DATA:
+        out = SR.read(r['input'], 'ja', placement=None)
+        if not out['readable']: continue
+        c = out['clauses'][0]
+        cr = EC.build_crosses(out)
+        if 'flags' in c:
+            assert cr.status == 'INPUT_REJECTED' and cr.abstain['reasons'] == ['UNKNOWN_CLAUSE_KEY:flags'], r['id']; seen['flags'] += 1
+        elif 'quantifiers' in c:
+            assert cr.status == 'CROSSED', r['id']; seen['quantifiers'] += 1
+    assert seen['flags'] >= 20 and seen['quantifiers'] >= 20
+```
+
+変更後（全文）:
+
+```python
+def test_the_cross_refuses_the_key_flags_today_and_takes_the_key_quantifiers():
+    seen = {'flags': 0, 'quantifiers': 0}
+    for r in DATA:
+        out = SR.read(r['input'], 'ja', placement=None)
+        if not out['readable']: continue
+        c = out['clauses'][0]
+        cr = EC.build_crosses(out)
+        if 'flags' in c:
+            assert cr.status == 'INPUT_REJECTED' and cr.abstain['reasons'] == ['UNKNOWN_CLAUSE_KEY:flags'], r['id']; seen['flags'] += 1
+        elif 'quantifiers' in c:
+            assert cr.status == 'CROSSED', r['id']; seen['quantifiers'] += 1
+    assert seen['flags'] == 0 and seen['quantifiers'] == 6
+```
+
+#### 変更の対象: `test_the_gate_4_a_contracted_form_followed_by_a_negation_is_refused_and_the_other_contracted_forms_are_left_as_the_base_has_them`
+
+変更 5: 副詞の引き金が無くなったので、縮約形の再読の棄権 `ASPECT_CONTRACTED` を、回数の数量の文（`兄が本を三回読んでる。` 型）で確かめる文に替え、副詞つきの元の文は「W1-a5 は何もせず基点の出力と `==`、経路 `not_triggered`」を確かめる行として残した。
+
+変更前（全文）:
+
+```python
+def test_the_gate_4_a_contracted_form_followed_by_a_negation_is_refused_and_the_other_contracted_forms_are_left_as_the_base_has_them():
+    assert last_reason('兄が本を読んじゃわなかった。') == 'ASPECT_CONTRACTED_NEGATION'
+    for text in ('兄が本を読んでる。', '兄が本を読んじゃった。'):
+        assert SR.read(text, 'ja', placement=None) == BASE.read(text, 'ja', placement=None)
+        assert R.w1a5_explain_ja(text)['path'] == 'not_triggered'
+    assert last_reason('兄がゆっくり本を読んでる。') == 'ASPECT_CONTRACTED'
+```
+
+変更後（全文）:
+
+```python
+def test_the_gate_4_a_contracted_form_followed_by_a_negation_is_refused_and_the_other_contracted_forms_are_left_as_the_base_has_them():
+    assert last_reason('兄が本を読んじゃわなかった。') == 'ASPECT_CONTRACTED_NEGATION'
+    for text in ('兄が本を読んでる。', '兄が本を読んじゃった。'):
+        assert SR.read(text, 'ja', placement=None) == BASE.read(text, 'ja', placement=None)
+        assert R.w1a5_explain_ja(text)['path'] == 'not_triggered'
+    assert last_reason('兄が本を三回読んでる。') == 'ASPECT_CONTRACTED'
+    text = '兄がゆっくり本を読んでる。'                      # round 2: an adverb is not a trigger any more, so a contracted form behind it is the base's
+    assert SR.read(text, 'ja', placement=None) == BASE.read(text, 'ja', placement=None) and R.w1a5_explain_ja(text)['path'] == 'not_triggered'
+```
+
+#### 変更の対象: `test_a_floating_quantity_is_written_with_the_key_the_convention_gives_and_the_counter_is_not_in_the_value`
+
+変更 6: 助数詞が `W1A5_EVENT_COUNTERS`（回・度）の行は今のまま。それ以外（名詞句にかかる数量）は、棄権・最後の理由 `QUANTIFIER_TARGET_UNDETERMINED:noun_phrase`・経路 `reread_refused`・理由の前の並びが基点と同じ・`w1a5_explain_ja` の `quantity.value` が数詞の変換値（変換の検査を残す）を確かめる。`QTY_READ` の表は変えていない。
+
+変更前（全文）:
+
+```python
+@pytest.mark.parametrize('text,quant', QTY_READ, ids=[t for t, _ in QTY_READ])
+def test_a_floating_quantity_is_written_with_the_key_the_convention_gives_and_the_counter_is_not_in_the_value(text, quant):
+    out = SR.read(text, 'ja', placement=None)
+    c = clause_of(out)
+    assert c['quantifiers'] == quant and 'flags' not in c
+    assert all(not any(ch in v for ch in '冊個人回度') for v in c['roles'].values()), c['roles']
+    assert R.w1a5_explain_ja(text)['quantity']['value'] == list(quant.values())[0]
+    key = list(quant)[0]
+    assert key == 'event' or key in c['roles']
+```
+
+変更後（全文）:
+
+```python
+@pytest.mark.parametrize('text,quant', QTY_READ, ids=[t for t, _ in QTY_READ])
+def test_a_floating_quantity_is_written_with_the_key_the_convention_gives_and_the_counter_is_not_in_the_value(text, quant):
+    out = SR.read(text, 'ja', placement=None)
+    ex = R.w1a5_explain_ja(text)
+    assert (ex['quantity']['counter'] in R.W1A5_EVENT_COUNTERS) == (list(quant)[0] == 'event')
+    if list(quant)[0] != 'event':
+        # round 2 (K218): the quantity of a noun phrase is not written; the entry abstains, the reason of the base entry is kept and the reason of K218 is added behind it
+        base = BASE.read(text, 'ja', placement=None)
+        assert not out['readable'] and not base['readable']
+        assert out['abstain']['reasons'][-1] == 'QUANTIFIER_TARGET_UNDETERMINED:noun_phrase' and out['abstain']['reasons'][:-1] == base['abstain']['reasons']
+        assert out['abstain']['kind'] == base['abstain']['kind'] and ex['path'] == 'reread_refused'
+        assert ex['quantity']['value'] == list(quant.values())[0] and ex['quantity']['key'] is None      # the value of the numerals is still converted and checked
+        return
+    c = clause_of(out)
+    assert c['quantifiers'] == quant and 'flags' not in c
+    assert all(not any(ch in v for ch in '冊個人回度') for v in c['roles'].values()), c['roles']
+    assert R.w1a5_explain_ja(text)['quantity']['value'] == list(quant.values())[0]
+    key = list(quant)[0]
+    assert key == 'event' or key in c['roles']
+```
+
+#### 変更の対象: `QTY_REFUSED`
+
+変更 7a（必須 4）: `None`（棄権であることと経路が `reread_refused` か `not_triggered` であることしか求めない緩い期待）だった 3 文（`三冊で`・`三回目に`・`三十冊と五冊`）を、観測 `NOT_TRIGGERED`（W1-a5 は何もしない）に固定し直した。第 1 ラウンドの変更 2 は期待を `None` に緩めていて、弱めていた（H232 の「弱めたものは無い」は誤り。H232 に訂正を追記）。
+
+変更前（全文）:
+
+```python
+QTY_REFUSED = [
+    ('兄が本を〇冊読んだ。', 'QUANTIFIER_VALUE_UNDETERMINED'), ('兄が本を数冊読んだ。', 'QUANTIFIER_VALUE_UNDETERMINED'), ('兄が本を二、三冊読んだ。', 'QUANTIFIER_VALUE_UNDETERMINED'),
+    ('兄が本を三日読んだ。', 'QUANTIFIER_TARGET_UNDETERMINED:time'), ('兄が本を三年読んだ。', 'QUANTIFIER_TARGET_UNDETERMINED:time'), ('兄が本を三週間読んだ。', 'QUANTIFIER_TARGET_UNDETERMINED:time'),
+    ('兄が三時間走った。', 'QUANTIFIER_TARGET_UNDETERMINED:time'), ('兄が牛乳を二リットル飲んだ。', 'QUANTIFIER_TARGET_UNDETERMINED:unit'), ('兄が車を三台買った。', 'QUANTIFIER_TARGET_UNDETERMINED:unit'),
+    ('兄が温度を三度上げた。', 'QUANTIFIER_TARGET_UNDETERMINED:unit'), ('気温が三度下がった。', 'QUANTIFIER_TARGET_UNDETERMINED:unit'),
+    ('兄が本を三冊も読んだ。', 'QUANTIFIER_TARGET_UNDETERMINED:position'), ('兄が本を三冊で読んだ。', None), ('兄が本を三回目に読んだ。', None),
+    ('兄がりんごを弟に三個あげた。', 'QUANTIFIER_TARGET_UNDETERMINED:particle'), ('りんごを兄が三個食べた。', 'QUANTIFIER_TARGET_UNDETERMINED:scrambled'),
+    ('兄が本を三冊読まなかった。', 'QUANTIFIER_SCOPE_UNDETERMINED:neg'), ('兄が本を三冊読んでいない。', 'QUANTIFIER_SCOPE_UNDETERMINED:neg'), ('兄が本を三回読んでいない。', 'QUANTIFIER_SCOPE_UNDETERMINED:neg'),
+    ('兄が本を三冊読みたい。', 'REREAD_ABSTAINS'), ('兄が本を三冊読めた。', 'REREAD_ABSTAINS'), ('兄が本を三十冊と五冊読んだ。', None),
+]
+```
+
+変更後（全文）:
+
+```python
+QTY_REFUSED = [
+    ('兄が本を〇冊読んだ。', 'QUANTIFIER_VALUE_UNDETERMINED'), ('兄が本を数冊読んだ。', 'QUANTIFIER_VALUE_UNDETERMINED'), ('兄が本を二、三冊読んだ。', 'QUANTIFIER_VALUE_UNDETERMINED'),
+    ('兄が本を三日読んだ。', 'QUANTIFIER_TARGET_UNDETERMINED:time'), ('兄が本を三年読んだ。', 'QUANTIFIER_TARGET_UNDETERMINED:time'), ('兄が本を三週間読んだ。', 'QUANTIFIER_TARGET_UNDETERMINED:time'),
+    ('兄が三時間走った。', 'QUANTIFIER_TARGET_UNDETERMINED:time'), ('兄が牛乳を二リットル飲んだ。', 'QUANTIFIER_TARGET_UNDETERMINED:unit'), ('兄が車を三台買った。', 'QUANTIFIER_TARGET_UNDETERMINED:unit'),
+    ('兄が温度を三度上げた。', 'QUANTIFIER_TARGET_UNDETERMINED:unit'), ('気温が三度下がった。', 'QUANTIFIER_TARGET_UNDETERMINED:unit'),
+    ('兄が本を三冊も読んだ。', 'QUANTIFIER_TARGET_UNDETERMINED:position'), ('兄が本を三冊で読んだ。', NOT_TRIGGERED), ('兄が本を三回目に読んだ。', NOT_TRIGGERED),
+    ('兄がりんごを弟に三個あげた。', 'QUANTIFIER_TARGET_UNDETERMINED:particle'), ('りんごを兄が三個食べた。', 'QUANTIFIER_TARGET_UNDETERMINED:scrambled'),
+    ('兄が本を三冊読まなかった。', 'QUANTIFIER_SCOPE_UNDETERMINED:neg'), ('兄が本を三冊読んでいない。', 'QUANTIFIER_SCOPE_UNDETERMINED:neg'), ('兄が本を三回読んでいない。', 'QUANTIFIER_SCOPE_UNDETERMINED:neg'),
+    ('兄が本を三冊読みたい。', 'REREAD_ABSTAINS'), ('兄が本を三冊読めた。', 'REREAD_ABSTAINS'), ('兄が本を三十冊と五冊読んだ。', NOT_TRIGGERED),
+]
+```
+
+#### 変更の対象: `test_a_quantity_the_rules_cannot_place_is_refused_with_the_reason_of_the_gate`
+
+変更 7b: `NOT_TRIGGERED` の行は `path == 'not_triggered'` かつ出力が基点と `==`。理由のある行は `path == 'reread_refused'` と最後の理由の接頭辞（「どちらか」から強めた）。
+
+変更前（全文）:
+
+```python
+@pytest.mark.parametrize('text,reason', QTY_REFUSED, ids=[t for t, _ in QTY_REFUSED])
+def test_a_quantity_the_rules_cannot_place_is_refused_with_the_reason_of_the_gate(text, reason):
+    out = SR.read(text, 'ja', placement=None)
+    rs = reasons(out)
+    if reason is not None: assert rs[-1].startswith(reason), rs
+    assert len(rs) >= 1 and R.w1a5_explain_ja(text)['path'] in ('reread_refused', 'not_triggered')
+```
+
+変更後（全文）:
+
+```python
+@pytest.mark.parametrize('text,reason', QTY_REFUSED, ids=[t for t, _ in QTY_REFUSED])
+def test_a_quantity_the_rules_cannot_place_is_refused_with_the_reason_of_the_gate(text, reason):
+    out = SR.read(text, 'ja', placement=None)
+    rs = reasons(out)
+    path = R.w1a5_explain_ja(text)['path']
+    if reason == NOT_TRIGGERED:
+        assert path == 'not_triggered' and out == BASE.read(text, 'ja', placement=None)
+    else:
+        assert rs[-1].startswith(reason), rs
+        assert path == 'reread_refused'
+    assert len(rs) >= 1
+```
+
+#### 変更の対象: `test_an_adverb_the_rules_do_not_mark_is_refused_with_the_reason_of_the_gate`
+
+変更 8: 副詞の門の理由（`ADVERB_*`・`COMPARISON_NOT_READ`）は出なくなったので、各文が「棄権、`path == 'not_triggered'`、出力が基点と `==`、表の理由が出力の理由に無い」ことを確かめる。`ADV_MARKS` の表は変えていない。
+
+変更前（全文）:
+
+```python
+@pytest.mark.parametrize('text,reason', ADV_MARKS, ids=[t for t, _ in ADV_MARKS])
+def test_an_adverb_the_rules_do_not_mark_is_refused_with_the_reason_of_the_gate(text, reason):
+    assert last_reason(text) == reason
+    assert R.w1a5_explain_ja(text)['path'] == 'reread_refused'
+```
+
+変更後（全文）:
+
+```python
+@pytest.mark.parametrize('text,reason', ADV_MARKS, ids=[t for t, _ in ADV_MARKS])
+def test_an_adverb_the_rules_do_not_mark_is_refused_with_the_reason_of_the_gate(text, reason):
+    # round 2 (K218): the mark of an adverb is withdrawn; an adverb that stays uncovered is no trigger, so the entry is the base entry and the reason of the gate is not added
+    out = SR.read(text, 'ja', placement=None)
+    assert not out['readable'] and R.w1a5_explain_ja(text)['path'] == 'not_triggered'
+    assert out == BASE.read(text, 'ja', placement=None)
+    assert reason not in out['abstain']['reasons']
+```
+
+#### 変更の対象: `test_an_adverb_that_passes_every_gate_is_marked_in_the_last_key_and_is_not_in_a_role`
+
+変更 9: 副詞の印が付いて読める、の検査を、「棄権、基点の出力と `==`、`path == 'not_triggered'`、`w1a5_explain_ja` の `adverbs == []`」に替えた。`ADV_READ` の表は変えていない。
+
+変更前（全文）:
+
+```python
+@pytest.mark.parametrize('text,flags', ADV_READ, ids=[t for t, _ in ADV_READ])
+def test_an_adverb_that_passes_every_gate_is_marked_in_the_last_key_and_is_not_in_a_role(text, flags):
+    c = clause_of(SR.read(text, 'ja', placement=None))
+    assert c['flags'] == {'adverbs': flags} and list(c)[-1] == 'flags'
+    assert not any(f in v for f in flags for v in c['roles'].values())
+    assert 'quantifiers' not in c
+    assert R.w1a5_explain_ja(text)['adverbs'] == flags
+```
+
+変更後（全文）:
+
+```python
+@pytest.mark.parametrize('text,flags', ADV_READ, ids=[t for t, _ in ADV_READ])
+def test_an_adverb_that_passes_every_gate_is_marked_in_the_last_key_and_is_not_in_a_role(text, flags):
+    # round 2 (K218): the mark is withdrawn; the sentence is the base entry's (an abstention) and the diagnosis has no adverb
+    out = SR.read(text, 'ja', placement=None)
+    assert not out['readable'] and out == BASE.read(text, 'ja', placement=None)
+    ex = R.w1a5_explain_ja(text)
+    assert ex['path'] == 'not_triggered' and ex['adverbs'] == []
+```
+
+#### 足したもの（今のテストは消していない）
+
+- `WD_FILE`: 一覧のファイルの場所
+
+```python
+WD_FILE = TREE / 'artifacts' / 'w1-a5' / 'r2' / 'k218_withdrawn_rows.json'
+```
+
+- `WITHDRAWN`: 一覧の行（id 別）
+
+```python
+WITHDRAWN = {r['id']: r for r in json.loads(WD_FILE.read_text(encoding='utf-8'))['rows']}
+```
+
+- `NOT_TRIGGERED`: 観測の印（`QTY_REFUSED` の 3 文）
+
+```python
+NOT_TRIGGERED = 'NOT_TRIGGERED'      # round 2: the observation is pinned (the numeral is inside a role of the base reading, or the clause is not the one of the trigger): W1-a5 does nothing
+```
+
+- `MISREAD_BEFORE`: 誤読だった 14 文（C3 の 8 文 + 中間職の探りの 6 文）
+
+```python
+MISREAD_BEFORE = [
+    '学生が論文を三人書いた。', '客がケーキを五人食べた。', '子供たちが絵を三人描いた。', '学生は論文を三人書いた。', '論文を三人書いた。', '兄が三冊読んだ。', '母が五個買った。', '本は兄が三冊読んだ。',
+    '手紙は姉が二通書いた。', '兄がおおかた家に帰った。', '兄がどうやら家に帰った。', '兄がたしか本を読んだ。', '兄がまさか本を読んだ。', '兄がさぞ喜んだ。',
+]
+```
+
+- `test_the_k218_reasons_table_is_the_constant`: 新しい理由の表 `w1a5_reasons_k218` が定数 `W1A5_REASONS_K218` と一致
+
+```python
+def test_the_k218_reasons_table_is_the_constant():
+    assert [cells(l)[0] for l in block('w1a5_reasons_k218')] == list(R.W1A5_REASONS_K218) == ['QUANTIFIER_TARGET_UNDETERMINED:noun_phrase']
+```
+
+- `test_the_withdrawn_list_is_the_rule_applied_to_the_round_1_output`: 一覧が、第 1 ラウンドの出力 `artifacts/w1-a5/data_check_none.json` に規則を当てた結果（66 行、`adverb_mark` 50・`noun_phrase_quantity` 16）と一致すること。手で選んだ行が無い検査
+
+```python
+def test_the_withdrawn_list_is_the_rule_applied_to_the_round_1_output():
+    round1 = json.loads((TREE / 'artifacts' / 'w1-a5' / 'data_check_none.json').read_text(encoding='utf-8'))
+    construction = {r['id']: r['construction'] for r in DATA}
+    made = {}
+    for x in round1:
+        if x['adverbs']:
+            made[x['id']] = ('adverb_mark', 'not_triggered', None, None)
+        elif x['path'] == 'reread' and x['quantity'] and x['quantity']['counter'] not in ('回', '度'):
+            made[x['id']] = ('noun_phrase_quantity', 'reread_refused', 'QUANTIFIER_TARGET_UNDETERMINED:noun_phrase', x['quantity']['value'])
+    assert len(made) == len(WITHDRAWN) == 66 and list(made) == list(WITHDRAWN)
+    for i, w in WITHDRAWN.items():
+        assert (w['kind'], w['pinned_path'], w['pinned_reason'], w['round1_value']) == made[i], i
+        assert w['construction'] == construction[i] and w['input'] == next(r['input'] for r in DATA if r['id'] == i)
+    kinds = [w['kind'] for w in WITHDRAWN.values()]
+    assert kinds.count('adverb_mark') == 50 and kinds.count('noun_phrase_quantity') == 16
+    assert not any(w['input'] in MISREAD_BEFORE for w in WITHDRAWN.values())      # the 14 appended rows are not in the list: round 1 did not output them
+```
+
+- `_outputs_of_the_data_and_of_the_entry_inputs`: （補助）データの全行と入口の入力の全文の出力
+
+```python
+def _outputs_of_the_data_and_of_the_entry_inputs():
+    texts = [r['input'] for r in DATA] + _entry_inputs()
+    for text in texts:
+        yield text, SR.read(text, 'ja', placement=None)
+```
+
+- `test_no_output_carries_flags_after_the_withdrawal`: 読めた出力の節に `flags` が無い。`adverbs` が常に空
+
+```python
+def test_no_output_carries_flags_after_the_withdrawal():
+    n = 0
+    for text, out in _outputs_of_the_data_and_of_the_entry_inputs():
+        if out['readable']:
+            assert all('flags' not in c for c in out['clauses']), text; n += 1
+        assert R.w1a5_explain_ja(text)['adverbs'] == [], text
+    assert n > 0
+```
+
+- `test_no_quantity_of_a_noun_phrase_is_read`: 読めた節の `quantifiers` の鍵が `event` だけ
+
+```python
+def test_no_quantity_of_a_noun_phrase_is_read():
+    n = 0
+    for text, out in _outputs_of_the_data_and_of_the_entry_inputs():
+        if out['readable']:
+            for c in out['clauses']:
+                if 'quantifiers' in c:
+                    assert list(c['quantifiers']) == ['event'], text; n += 1
+    assert n >= 6
+```
+
+- `test_the_misread_sentences_of_round_1_and_of_the_plan_are_refused`: 誤読だった 14 文が棄権
+
+```python
+def test_the_misread_sentences_of_round_1_and_of_the_plan_are_refused():
+    assert len(MISREAD_BEFORE) == len(set(MISREAD_BEFORE)) == 14
+    rows = {r['input']: r for r in DATA}
+    for text in MISREAD_BEFORE:
+        out = SR.read(text, 'ja', placement=None)
+        assert not out['readable'], text
+        assert rows[text]['behavior'] == 'abstain' and rows[text]['id'].startswith(('W1A5-QTY-A-9', 'W1A5-ADV-A-9')), text
+        assert R.w1a5_explain_ja(text)['path'] in ('reread_refused', 'not_triggered')
+```
+
+
+### 既知の穴 第 2 ラウンド（K243〜。隠さない）
+
+- **K243 数量は回数（回・度）だけを読む**: 名詞句にかかる遊離数量（冊・個・人・通 …）は書かない（`QUANTIFIER_TARGET_UNDETERMINED:noun_phrase`）。省略された項・主題の項を、読解器にも入口にも見分ける手段が無い（変更記録 変更 2）。実測: 第 1 ラウンドで読めていた数量の 16 行（QTY-R-001〜015・022）が棄権になった（`k218_withdrawn_rows.json`）。読める数量の文は 回・度 の 6 文だけ（`data_check_none.txt`）。
+- **K244 副詞を含む文は、相の訂正が要る文でも W1-a5 は何もしない**（基点の棄権のまま）。副詞の欄は規約に無い（チケットの背景どおり）。実測: 副詞つきの相 4 行（ASP-R-017〜020）は、第 1 ラウンドで読めたが、今は基点の棄権（`k218_withdrawn_rows.json`）。副詞を含む行で戻した 50 行の内訳は K226。
+- **K245 度 の単位の門（H216）は直前が が・を のときだけ**: は・に の後の 度（`兄は三度転んだ。` は回数として `event: exactly:3` と読む）は門に当たらない。中間職の探り（`plan_evidence/tree_facts5.txt`）では誤読は出ていない。中間職のレビュー（`review.r1.md`）では、は＋度 が単位になる文（`海水温は三度下がった。` など）は W1-a5 の門ではなく基点の型の門（`SUBJECT_TYPE_UNDETERMINED`）で棄権していた。W1-a5 の門が守ったのではない。主語の型が決まる語（人・動物）で は＋数＋度 が単位になる文が来れば、誤読になりうる。
+- **K246 `semantic_read.py` の差し込みの行のコメントに「adverb mark」が残る**: 副詞の印の撤回で古くなった。差し込みの 2 行（許可パスの条件）を変えないため直していない。
+- **K247 終助詞の後ろの相は読まない（K239 の実測）**: ている＋よ・ね・ぞ は `ASPECT_ENDING_NOT_READ` で棄権する。中間職の未公開の文 108 文のうち 8 文（`review.r1.md`）。安全側。基点が正しく読んでいた文を失う（H227。登録の損）。
+- **K248 副詞の門の 5 関数と登録の定数は区画に残るが呼ばれない**: `_w1a5_hira`・`_w1a5_adverb_class`・`_w1a5_after_adverb`・`_w1a5_np_boundary`・`_w1a5_adverb_gate`（監査役の実行上の注意: 削除行 0 の制約を守り、呼ばない形にして関数は残し、docs に撤回を書く）。検査（`check_hardcode.txt`）は、これらの関数の行を追加行として数える。副詞の印を戻す場合は、新しい登録と測定が要る（K218 の判断は撤回）。
+- **K249 基点の既存の誤り（W1-a5 は触らない）**: `兄がうっかり鍵を忘れた。` → patient `うっかり鍵`（基点 `df4f001` の出力とこの木の出力が同じ。W1-a5 の経路は `not_triggered`。`base_known_error.txt`）。中間職の C3 で `incomplete` になった 1 文。
+- **K250 `test_no_quantity_of_a_noun_phrase_is_read` の弱点**: 読めた節の量化の鍵が `event` だけであることを、基点が付ける量化も含めて求める。基点が量化を書く文（「すべての〜」型）が将来の入力に入ると、W1-a5 と無関係に落ちる。今は通っている（`pytest_w1a5.txt`）。名前どおりの検査にするなら `path == 'reread'` の節に限る（期待を弱めない範囲で）。凍結後なので、第 2 ラウンドでは変えていない。
+- **K251 C2 の「各 20」を満たしていない**（監査役の判断で免除。H236）: 相 16・数量 6・副詞 0（K226）。

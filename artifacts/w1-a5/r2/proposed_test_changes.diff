@@ -1,0 +1,87 @@
+--- a/tests/test_semantic_read_w3b2.py
++++ b/tests/test_semantic_read_w3b2.py
+@@ -36,6 +36,7 @@
+ from tools.bank_score.v2 import b1    # noqa: E402
+ from verantyx import semantic_read as SR    # noqa: E402
+ from verantyx import semantic_reader as R    # noqa: E402
++W1A5 = _load_by_path('w1a5_common_in_w3b2', RS / 'w1a5_common.py')    # W1-a5 (docs/READING_SOUNDNESS.md 10G)
+ 
+ DOCS = (TREE / 'docs' / 'READING_SOUNDNESS.md').read_text(encoding='utf-8')
+ 
+@@ -667,6 +668,9 @@
+     for text in ('兄が三回、窓を拭いた。', '兄が三度、窓を拭いた。', '兄が3回、窓を拭いた。', '兄が窓を3回拭いた。'):
+         m = {'三回': P('QUANTITY'), '3回': P('QUANTITY', by=('notation',)), '3': P('QUANTITY', by=('notation',))}
+         new, base = pair(text, m)
++        if W1A5.touched(text, Q(m)):      # W1-a5 (10G K212): a quantity that follows the rules is read (`quantifiers`); the other sentences stay as the base commit's
++            assert W1A5.documented(base, new), text
++            continue
+         assert new == base and not new['readable'], text
+ 
+ 
+--- a/tests/test_semantic_read_w3b4.py
++++ b/tests/test_semantic_read_w3b4.py
+@@ -202,7 +202,10 @@
+ def test_the_reader_file_only_gains_lines_and_the_other_files_of_the_ticket_are_not_touched():
+     diff = git('diff', BASE_COMMIT, '--', 'verantyx/semantic_reader.py').splitlines()
+     assert [l for l in diff if l.startswith('-') and not l.startswith('---')] == []
+-    for path in ('verantyx/semantic_read.py', 'verantyx/coarse_types.py', 'verantyx/coarse_place.py', 'verantyx/event_cross.py', 'verantyx/observe.py'):
++    # W1-a5 (docs 10G K210): semantic_read.py gains exactly the two lines that wrap the entry (before `if __name__`), nothing is removed
++    entry = [l for l in git('diff', '-U0', BASE_COMMIT, '--', 'verantyx/semantic_read.py').splitlines() if l[:1] in '+-' and l[:3] not in ('+++', '---')]
++    assert len(entry) == 2 and entry[0].startswith('+from .semantic_reader import w1a5_wrap as _w1a5_wrap') and entry[1] == '+_read_ja = _w1a5_wrap(_read_ja)'
++    for path in ('verantyx/coarse_types.py', 'verantyx/coarse_place.py', 'verantyx/event_cross.py', 'verantyx/observe.py'):
+         assert git('diff', BASE_COMMIT, '--', path) == '', path
+ 
+ 
+@@ -233,9 +236,12 @@
+     body = ast.parse((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')).body
+     def assign(n):
+         return (n.targets[0].id, ast.unparse(n.value)) if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name) else None
+-    assert [assign(n) for n in body[-3:]] == [('typed_plan_u_w3b1_ungated_ja', 'typed_plan_u_ja'), ('typed_plan_u_ja', '_typed_plan_focus_gated(typed_plan_u_w3b1_ungated_ja)'),
+-                                              ('typed_plan_u_w3b2_ja', '_typed_plan_focus_gated(typed_plan_u_w3b4_ja)')]
+-    assert ('typed_plan_u_w3b2_ja', 'typed_plan_u_w3b4_ja') in [assign(n) for n in body[:-3]]
++    # W1-a5 (docs 10G K210, H222): the section of W1-a5 is appended after these three statements; it does not assign these names again. The three statements are the last ones before it.
++    start = next(i for i, n in enumerate(body) if isinstance(n, ast.Import) and ast.unparse(n) == 'import functools as _w1a5_functools')
++    assert [assign(n) for n in body[start - 3:start]] == [('typed_plan_u_w3b1_ungated_ja', 'typed_plan_u_ja'), ('typed_plan_u_ja', '_typed_plan_focus_gated(typed_plan_u_w3b1_ungated_ja)'),
++                                                         ('typed_plan_u_w3b2_ja', '_typed_plan_focus_gated(typed_plan_u_w3b4_ja)')]
++    assert ('typed_plan_u_w3b2_ja', 'typed_plan_u_w3b4_ja') in [assign(n) for n in body[:start - 3]]
++    assert not [n for n in body[start:] if (assign(n) or ('',))[0] in ('typed_plan_u_ja', 'typed_plan_u_w3b2_ja', 'typed_plan_u_w3b1_ungated_ja')]
+ 
+ 
+ def test_the_only_readers_of_a_placement_answer_are_still_the_gate_and_the_adapter():
+--- a/tests/test_ask_question_cross.py
++++ b/tests/test_ask_question_cross.py
+@@ -425,7 +425,9 @@
+     path = doc_file(tmp_path, 'f.txt', sentence + '\n')
+     rc, out = ask(tmp_path, capsys, [path], question)
+     assert out['verdict'] == 'UNKNOWN_UNREAD' and out.get('door') != 'question_cross'
+-    assert out['question_cross']['mapped_to'] == 'ORIGINAL' and out['question_cross']['reason'] == 'PREDICATE_FORM_DIFFERS' and out['question_cross']['state'] == 'FILLED'
++    # W1-a5 (10G K211): a te-miru form is not read (the auxiliary is not in convention 3), so for that sentence the cross finds no read sentence instead of a different form; the verdict is the same
++    want = ('PREDICATE_FORM_DIFFERS', 'NO_MATCHING_CROSS_IN_READ_SENTENCES') if 'てみ' in sentence else ('PREDICATE_FORM_DIFFERS',)
++    assert out['question_cross']['mapped_to'] == 'ORIGINAL' and out['question_cross']['reason'] in want and out['question_cross']['state'] == 'FILLED'
+     assert qc_steps(out)[0]['mapped_to'] == 'ORIGINAL'
+ 
+ 
+--- /dev/null
++++ b/tests/reading_soundness/w1a5_common.py
+@@ -0,0 +1,21 @@
++"""W1-a5 (docs/READING_SOUNDNESS.md section 10G): what a test that compares the entry with the base commit byte for byte may still say about a sentence W1-a5 changed.
++`touched(text)`: the decision of W1-a5 for the sentence is not `not_triggered`. `documented(base_out, out)`: `out` differs from `base_out` in one of the registered ways only (K210, round 2):
++the aspect rule corrected the polarity and the tense of a read output; an aspect gate refused a read output (one reason, ASPECT_*); one reason of W1-a5 stands behind the reasons of the
++base (the kind is the base's); or the base abstained and the output is one clause whose `quantifiers` is the key `event` only (K218: no `flags`, no quantity of a noun phrase). Nothing is
++weakened: a sentence W1-a5 does not touch is compared byte for byte as before; a touched sentence must be one of the four kinds."""
++from verantyx import semantic_reader as R
++
++
++def touched(text, placement=None):
++    return R.w1a5_explain_ja(text, placement)['path'] != 'not_triggered'
++
++
++def documented(base_out, out):
++    if base_out['readable'] and out['readable']:
++        a, b = base_out['clauses'], out['clauses']
++        return len(a) == len(b) == 1 and {k: v for k, v in a[0].items() if k not in ('polarity', 'tense')} == {k: v for k, v in b[0].items() if k not in ('polarity', 'tense')}
++    if base_out['readable']:
++        return len(out['abstain']['reasons']) == 1 and out['abstain']['reasons'][0].startswith('ASPECT_')
++    if not out['readable']:
++        return out['abstain']['kind'] == base_out['abstain']['kind'] and out['abstain']['reasons'][:-1] == base_out['abstain']['reasons']
++    return len(out['clauses']) == 1 and list(out['clauses'][0].get('quantifiers', {})) == ['event']

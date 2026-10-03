@@ -1,0 +1,11 @@
+newly_read sentences (no placement): 6
+build_crosses status: {'CROSSED': 6}
+INPUT_REJECTED reasons: {} (UNKNOWN_CLAUSE_KEY:flags absent: True)
+status by the key the clause carries: {'CROSSED/quantifiers': 6}
+clauses that carry flags: 0
+CROSSED	兄が本を三回読んだ。	{"quantifiers": {"event": "exactly:3"}}
+CROSSED	兄は駅に三回行った。	{"quantifiers": {"event": "exactly:3"}}
+CROSSED	兄は京都に三度来た。	{"quantifiers": {"event": "exactly:3"}}
+CROSSED	兄は駅に二度行った。	{"quantifiers": {"event": "exactly:2"}}
+CROSSED	兄が三回走った。	{"quantifiers": {"event": "exactly:3"}}
+CROSSED	兄が手紙を五回書いた。	{"quantifiers": {"event": "exactly:5"}}

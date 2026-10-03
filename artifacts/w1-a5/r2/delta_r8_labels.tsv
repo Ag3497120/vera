@@ -1,0 +1,20 @@
+reading_changed	兄が本を読んでいない。	ja_r12.jsonl	CORRECTION	基点は polarity + (誤読)。規約 5: 単純否定(ない)は "-"。新しい読み: - nonpast
+reading_changed	兄が本を読んでいなかった。	ja_r12.jsonl	CORRECTION	基点は polarity + (誤読)。規約 5: ない+た は "-" past。新しい読み: - past
+reading_changed	兄が本を読んでいません。	ja_r12.jsonl	CORRECTION	基点は polarity + (誤読)。規約 5: ません は "-"。新しい読み: - nonpast
+reading_changed	兄が本を読んでいませんでした。	ja_r12.jsonl	CORRECTION	基点は polarity + (誤読)。規約 5: ませんでした は "-" past。新しい読み: - past
+reading_changed	兄が本を読んでしまわなかった。	ja_r12.jsonl	CORRECTION	基点は polarity + (誤読)。規約 3 は てしまう を外した形、5 は否定を "-"。新しい読み: - past
+reading_changed	兄が本を読んでおかなかった。	ja_r12.jsonl	CORRECTION	基点は polarity + (誤読)。規約 3 は ておく を外した形、5 は否定を "-"。新しい読み: - past
+reading_changed	弟が庭で遊んでいなかった。	ja_r12.jsonl	CORRECTION	基点は polarity + (誤読)。規約 5: ない+た は "-" past。place 庭 はそのまま。新しい読み: - past
+read_to_refused	兄が本を読んでみた。	ja_r12.jsonl	REGISTERED_REFUSAL	基点は 読む past (てみる を外した)。規約 9.1 が てみる の書き方を未決としている形(バンク側が隔離)。棄権が規約どおりの扱い(H211)
+read_to_refused	兄が本を読んでみる。	ja_r12.jsonl	REGISTERED_REFUSAL	同上(てみる。規約 9.1 未決)
+read_to_refused	母が窓を開けてある。	ja_r12.jsonl	REGISTERED_REFUSAL	基点は 開ける nonpast。規約 3 の列挙に てある は無く、9.1 が未決。格の写し方も変わる(窓が開けてある の 窓 は patient)ので棄権(H211)
+read_to_refused	兄が本を読んでおいてある。	ja_r12.jsonl	REGISTERED_REFUSAL	基点は 読む nonpast。補助動詞の連鎖(ておいてある)。規約 3 は 1 つの補助動詞だけを外す。連鎖は読まない(K211 門 1/2)
+read_to_refused	兄が本を読んでしまっている。	ja_r12.jsonl	REGISTERED_REFUSAL	基点は 読む nonpast。補助動詞の連鎖(てしまっている)。連鎖は読まない(K211 門 2)。基点の読みは規約 3 の字面に反しないが、連鎖の語尾の表が規約に無い
+read_to_refused	兄が本を読んでいろ。	ja_r12.jsonl	REGISTERED_REFUSAL	基点は 読む + nonpast の平叙文として読む(誤読: ていろ は命令形で modality request。規約 5)。語尾が表に無い(門 3)ので棄権
+read_to_refused	兄が本を読んじゃわなかった。	ja_r12.jsonl	REGISTERED_REFUSAL	基点は 読む - past(規約 5 で正しい読み)。縮約形(じゃう)は規約 3 の字面に無い形で、後ろに否定がある(門 4, H212)ので棄権。正しい読みを失う(登録した損)
+newly_read	兄が本を三回読んだ。	ja_r12.jsonl	CORRECT	b1.judge on new_data: correct
+newly_read	兄は駅に三回行った。	ja_r12.jsonl	CORRECT	b1.judge on new_data: correct
+newly_read	兄は京都に三度来た。	ja_r12.jsonl	CORRECT	b1.judge on new_data: correct
+newly_read	兄は駅に二度行った。	ja_r12.jsonl	CORRECT	b1.judge on new_data: correct
+newly_read	兄が三回走った。	ja_r12.jsonl	CORRECT	b1.judge on new_data: correct
+newly_read	兄が手紙を五回書いた。	ja_r12.jsonl	CORRECT	b1.judge on new_data: correct

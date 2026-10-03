@@ -1,0 +1,4 @@
+FAILED tests/test_ask_question_cross.py::test_a_desire_or_hearsay_sentence_is_not_the_answer_of_a_plain_past_question[\u6821\u9577\u306f\u65b0\u805e\u3092\u8aad\u3093\u3067\u307f\u305f\u304b\u3063\u305f\u3002-\u6821\u9577\u306f\u4f55\u3092\u8aad\u3093\u3060\uff1f]
+FAILED tests/test_semantic_read_w3b2.py::test_a_quantity_adverb_is_not_read_the_output_is_w3b1s
+FAILED tests/test_semantic_read_w3b4.py::test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays_under_a_name_of_its_own
+FAILED tests/test_semantic_read_w3b4.py::test_the_reader_file_only_gains_lines_and_the_other_files_of_the_ticket_are_not_touched

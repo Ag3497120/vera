@@ -1,0 +1,33 @@
+{
+ "note": "rows of tests/reading_soundness/ja_r12.jsonl (frozen, not edited) whose diagnostic `w1a5_expect` the frozen test could not meet: the entry abstains as registered (`entry_expect`, `expect`), only the path that the author predicted was another one. The test compares them with the pinned observation.",
+ "exceptions": [
+  {
+   "id": "W1A5-QTY-A-013",
+   "input": "兄が本を三冊だけ読んだ。",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "QUANTIFIER_TARGET_UNDETERMINED:position",
+    "quantifiers": null,
+    "flags": null
+   },
+   "observed_path": "not_triggered",
+   "observed_reason": null,
+   "entry_refused": true,
+   "why": "the frame clause of the reader carries a second reason beside \"unrepresented source content\" (unsupported source quantifier/exception/time, for the focus particle that follows the quantity), so the trigger T3 does not hold: the base entry abstains and W1-a5 does nothing"
+  },
+  {
+   "id": "W1A5-QTY-A-018",
+   "input": "兄が本を三回目に読んだ。",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "QUANTIFIER_TARGET_UNDETERMINED:position",
+    "quantifiers": null,
+    "flags": null
+   },
+   "observed_path": "not_triggered",
+   "observed_reason": null,
+   "entry_refused": true,
+   "why": "the numeral lies inside a role of the reader (ambiguous case role: ni, the phrase is 3-kai-me), so the trigger does not hold (H215): the base entry abstains and W1-a5 does nothing"
+  }
+ ]
+}

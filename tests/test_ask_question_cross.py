@@ -425,7 +425,11 @@ def test_a_desire_or_hearsay_sentence_is_not_the_answer_of_a_plain_past_question
     path = doc_file(tmp_path, 'f.txt', sentence + '\n')
     rc, out = ask(tmp_path, capsys, [path], question)
     assert out['verdict'] == 'UNKNOWN_UNREAD' and out.get('door') != 'question_cross'
-    assert out['question_cross']['mapped_to'] == 'ORIGINAL' and out['question_cross']['reason'] == 'PREDICATE_FORM_DIFFERS' and out['question_cross']['state'] == 'FILLED'
+    # W1-a5 (10G K211): a te-miru form is not read (the auxiliary is not in convention 3), so for that sentence the cross finds no read sentence instead of a different form; the verdict is the same
+    # Integration (auditor, 2026-10-04): for the te-miru sentence the document sentence itself is no longer read, so the cross reports
+    # NO_ATTESTED_CELL / NO_MATCHING_CROSS_IN_READ_SENTENCES instead of a FILLED cell rejected by the form check; the verdict is the same abstention.
+    want = (('NO_ATTESTED_CELL', 'NO_MATCHING_CROSS_IN_READ_SENTENCES'),) if ('てみ' in sentence or 'でみ' in sentence) else (('FILLED', 'PREDICATE_FORM_DIFFERS'),)   # 読んでみた: the voiced te-form
+    assert out['question_cross']['mapped_to'] == 'ORIGINAL' and (out['question_cross']['state'], out['question_cross']['reason']) in want
     assert qc_steps(out)[0]['mapped_to'] == 'ORIGINAL'
 
 

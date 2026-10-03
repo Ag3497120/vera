@@ -239,9 +239,12 @@ def test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays
     body = ast.parse((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')).body
     def assign(n):
         return (n.targets[0].id, ast.unparse(n.value)) if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name) else None
-    assert [assign(n) for n in body[-3:]] == [('typed_plan_u_w3b1_ungated_ja', 'typed_plan_u_ja'), ('typed_plan_u_ja', '_typed_plan_focus_gated(typed_plan_u_w3b1_ungated_ja)'),
-                                              ('typed_plan_u_w3b2_ja', '_typed_plan_focus_gated(typed_plan_u_w3b4_ja)')]
-    assert ('typed_plan_u_w3b2_ja', 'typed_plan_u_w3b4_ja') in [assign(n) for n in body[:-3]]
+    # W1-a5 (docs 10G K210, H222): the section of W1-a5 is appended after these three statements; it does not assign these names again. The three statements are the last ones before it.
+    start = next(i for i, n in enumerate(body) if isinstance(n, ast.Import) and ast.unparse(n) == 'import functools as _w1a5_functools')
+    assert [assign(n) for n in body[start - 3:start]] == [('typed_plan_u_w3b1_ungated_ja', 'typed_plan_u_ja'), ('typed_plan_u_ja', '_typed_plan_focus_gated(typed_plan_u_w3b1_ungated_ja)'),
+                                                         ('typed_plan_u_w3b2_ja', '_typed_plan_focus_gated(typed_plan_u_w3b4_ja)')]
+    assert ('typed_plan_u_w3b2_ja', 'typed_plan_u_w3b4_ja') in [assign(n) for n in body[:start - 3]]
+    assert not [n for n in body[start:] if (assign(n) or ('',))[0] in ('typed_plan_u_ja', 'typed_plan_u_w3b2_ja', 'typed_plan_u_w3b1_ungated_ja')]
 
 
 def test_the_only_readers_of_a_placement_answer_are_still_the_gate_and_the_adapter():

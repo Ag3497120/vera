@@ -1,0 +1,151 @@
+兄が本を読んでいる。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", []]]	unread=0
+兄が本を読んでいた。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", []]]	unread=0
+兄が本を読んでいます。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", []]]	unread=0
+兄が本を読んでいました。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", []]]	unread=0
+兄が本を読んでしまった。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", []]]	unread=0
+兄が本を読んでおいた。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", []]]	unread=0
+兄が本を読んでおきました。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", []]]	unread=0
+母が部屋を掃除している。	READ [{"predicate": "掃除する", "roles": {"agent": "母", "patient": "部屋"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}]	view=[["frame", "掃除する", [["agent", "母"], ["patient", "部屋"]], "+", "nonpast", []]]	unread=0
+父が会社へ行っていない。	READ [{"predicate": "行く", "roles": {"agent": "父", "goal": "会社"}, "polarity": "-", "tense": "nonpast", "modality": null, "voice": "active"}]	view=[["frame", "行く", [["agent", "父"], ["recipient", "会社"]], "-", "nonpast", []]]	unread=0
+兄が本を読んでいない。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", []]]	unread=0
+兄が本を読んでいなかった。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", []]]	unread=0
+兄が本を読んでいません。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", []]]	unread=0
+兄が本を読んでいませんでした。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", []]]	unread=0
+兄が本を読んでしまわなかった。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", []]]	unread=0
+兄が本を読んでおかなかった。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", []]]	unread=0
+弟が庭で遊んでいなかった。	READ [{"predicate": "遊ぶ", "roles": {"agent": "弟", "place": "庭"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	view=[["frame", "遊ぶ", [["agent", "弟"], ["place", "庭"]], "+", "past", []]]	unread=0
+兄がゆっくり本を読んでいる。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がそっと窓を開けていた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "開ける", [["agent", "兄"], ["patient", "窓"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄が本をゆっくり読んでいる。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", ["unrepresented source content"]]]	unread=0
+母がゆっくり部屋を掃除している。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "掃除する", [["agent", "母"], ["patient", "部屋"]], "+", "nonpast", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄が本を読んでみた。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", []]]	unread=0
+兄が本を読んでみる。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", []]]	unread=0
+母が窓を開けてある。	READ [{"predicate": "開ける", "roles": {"agent": "母", "patient": "窓"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}]	view=[["frame", "開ける", [["agent", "母"], ["patient", "窓"]], "+", "nonpast", []]]	unread=0
+兄が本を読んでおいてある。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", []]]	unread=0
+兄が本を読んでしまっている。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", []]]	unread=0
+兄が本を読んでいたら、母が笑った。	ABSTAIN ["RELATION_NOT_MAPPED:frame"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", []], ["frame", "笑う", [["agent", "母"]], "+", "past", []]]	unread=0
+兄が走っていった。	ABSTAIN ["PREDICATE_NORMALIZED:走っていく<-走る"]	view=[["frame", "走っていく", [["agent", "兄"]], "+", "past", []]]	unread=0
+兄が帰ってきた。	ABSTAIN ["PREDICATE_NORMALIZED:帰ってくる<-帰る"]	view=[["frame", "帰ってくる", [["agent", "兄"]], "+", "past", []]]	unread=0
+兄が本を読んでない。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", ["unrepresented source content"]]]	unread=0
+兄が本を読んでいく。	ABSTAIN ["PREDICATE_NORMALIZED:読んでいく<-読む"]	view=[["frame", "読んでいく", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", []]]	unread=0
+兄が本を読んでいなくはない。	ABSTAIN ["UNREAD_SPAN:unsupported double negation"]	view=[]	unread=1
+兄が本を読んでいないわけではない。	ABSTAIN ["UNREAD_SPAN:unsupported double negation"]	view=[]	unread=1
+兄が本を読んでいたい。	ABSTAIN ["UNDETERMINED_MODALITY:たい"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", []]]	unread=0
+兄が本を読んでいるだろう。	ABSTAIN ["UNREAD_SPAN:volitional source does not assert a fact"]	view=[]	unread=1
+兄が本を読んでいろ。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", []]]	unread=0
+兄が本を読んでいなければならない。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", ["multiple predicates need explicit clause scope"]], ["frame", "なる", [], "+", "nonpast", ["multiple predicates need explicit clause scope", "unrepresented source content", "event without participant or content word"]]]	unread=0
+兄が本を読んでいないので、母が怒った。	ABSTAIN ["UNCOVERED_PREDICATE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", []], ["frame", "怒る", [["agent", "母"]], "+", "past", []]]	unread=0
+兄がまだ本を読んでいない。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄はもう本を読んでいない。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄が本を読んじゃわなかった。	READ [{"predicate": "読む", "roles": {"agent": "兄", "patient": "本"}, "polarity": "-", "tense": "past", "modality": null, "voice": "active"}]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "-", "past", []]]	unread=0
+兄が本を三冊読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content"]]]	unread=0
+母がりんごを五個買った。	ABSTAIN ["UNSUPPORTED_CLAUSE"]	view=[["frame", "買う", [["agent", "母"], ["patient", "りんご"]], "+", "past", ["unrepresented source content"]], ["gold_quantity", "買う", [["agent", "母"], ["patient", "りんご"], ["quantity", "五個"]], "+", "past", []]]	unread=0
+姉が切手を二枚買った。	ABSTAIN ["UNSUPPORTED_CLAUSE"]	view=[["frame", "買う", [["agent", "姉"], ["patient", "切手"]], "+", "past", ["unrepresented source content"]], ["gold_quantity", "買う", [["agent", "姉"], ["patient", "切手"], ["quantity", "二枚"]], "+", "past", []]]	unread=0
+弟が犬を二匹飼った。	ABSTAIN ["UNSUPPORTED_CLAUSE"]	view=[["frame", "飼う", [["agent", "弟"], ["patient", "犬"]], "+", "past", ["unrepresented source content"]], ["gold_quantity", "飼う", [["agent", "弟"], ["patient", "犬"], ["quantity", "二匹"]], "+", "past", []]]	unread=0
+兄が手紙を三通書いた。	ABSTAIN ["UNSUPPORTED_CLAUSE"]	view=[["frame", "書く", [["agent", "兄"], ["patient", "手紙"]], "+", "past", ["unrepresented source content"]], ["gold_quantity", "書く", [["agent", "兄"], ["patient", "手紙"], ["quantity", "三通"]], "+", "past", []]]	unread=0
+兄が牛を十頭育てた。	ABSTAIN ["UNSUPPORTED_CLAUSE"]	view=[["frame", "育てる", [["agent", "兄"], ["patient", "牛"]], "+", "past", ["unrepresented source content"]], ["gold_quantity", "育てる", [["agent", "兄"], ["patient", "牛"], ["quantity", "十頭"]], "+", "past", []]]	unread=0
+兄が本を三十五冊読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が本を百二十冊集めた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "集める", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content"]]]	unread=0
+母が卵を２個割った。	ABSTAIN ["UNSUPPORTED_CLAUSE"]	view=[["frame", "割る", [["agent", "母"], ["patient", "卵"]], "+", "past", ["unrepresented source content"]], ["gold_quantity", "割る", [["agent", "母"], ["patient", "卵"], ["quantity", "２個"]], "+", "past", []]]	unread=0
+兄が本を3冊読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が本を二万冊集めた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "集める", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が本を千冊集めた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "集める", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content"]]]	unread=0
+学生が三人来た。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "来る", [["agent", "学生"]], "+", "past", ["unrepresented source content"]]]	unread=0
+子どもが五人遊んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "遊ぶ", [["agent", "子ども"]], "+", "past", ["unrepresented source content"]]]	unread=0
+学生が十人帰った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "帰る", [["agent", "学生"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が本を三回読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄は駅に三回行った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "行く", [["agent", "兄"], ["recipient", "駅"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄は京都に三度来た。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "来る", [["agent", "兄"], ["recipient", "京都"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄は駅に二度行った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "行く", [["agent", "兄"], ["recipient", "駅"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が三回走った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "走る", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が手紙を五回書いた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "書く", [["agent", "兄"], ["patient", "手紙"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が本を三冊読んでいる。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", ["unrepresented source content"]]]	unread=0
+兄が本を三日読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が三時間走った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "走る", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が牛乳を二リットル飲んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "飲む", [["agent", "兄"], ["patient", "牛乳"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が五キロ走った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "走る", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が車を三台買った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "買う", [["agent", "兄"], ["patient", "車"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が水を三杯飲んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "飲む", [["agent", "兄"], ["patient", "水"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄がりんごを弟に三個あげた。	ABSTAIN ["UNSUPPORTED_CLAUSE"]	view=[["frame", "あげる", [["agent", "兄"], ["patient", "りんご"], ["recipient", "弟"]], "+", "past", ["unrepresented source content"]], ["gold_quantity", "あげる", [["agent", "兄"], ["patient", "りんご"], ["recipient", "弟"], ["quantity", "三個"]], "+", "past", []]]	unread=0
+りんごを兄が三個食べた。	ABSTAIN ["UNSUPPORTED_CLAUSE"]	view=[["frame", "食べる", [["agent", "兄"], ["patient", "りんご"]], "+", "past", ["unrepresented source content"]], ["gold_quantity", "食べる", [["agent", "兄"], ["patient", "りんご"], ["quantity", "三個"]], "+", "past", []]]	unread=0
+兄は三冊読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"]], "+", "past", ["unrepresented source content", "ambiguous frame role"]]]	unread=0
+兄が本を三冊も読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄がりんごを三個ずつ食べた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "食べる", [["agent", "兄"], ["patient", "りんご"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が本を三冊しか読まなかった。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "-", "past", ["unrepresented source content"]]]	unread=0
+兄が本を三冊だけ読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unsupported source quantifier/exception/time", "unrepresented source content"]]]	unread=0
+兄が三人の学生に会った。	ABSTAIN ["QUANTIFIER_NOT_MAPPED:numeral"]	view=[["frame", "会う", [["agent", "兄"], ["recipient", "三人の学生"]], "+", "past", []]]	unread=0
+兄が三度本を読んだ。	ABSTAIN ["QUANTIFIER_NOT_MAPPED:numeral"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "三度本"]], "+", "past", []]]	unread=0
+兄が温度を三度上げた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "上げる", [["agent", "兄"], ["patient", "温度"]], "+", "past", ["unrepresented source content"]]]	unread=0
+気温が三度下がった。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "下がる", [["agent", "気温"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が本を三回目に読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"], ["ambiguous", "三回目"]], "+", "past", ["ambiguous case role: に"]]]	unread=0
+兄が本を二、三冊読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄がりんごを数個食べた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "食べる", [["agent", "兄"], ["patient", "りんご"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄は本を一度も読まなかった。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "-", "past", ["unrepresented source content"]]]	unread=0
+兄が本を三冊読まなかった。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "-", "past", ["unrepresented source content"]]]	unread=0
+兄がゆっくり本を三冊読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄が三日月を見た。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "見る", [["agent", "兄"], ["patient", "三日月"]], "+", "past", ["ill-typed role: time phrase fused with participant"]]]	unread=0
+兄が一緒に走った。	ABSTAIN ["RECIPIENT_TYPE_UNDETERMINED:走る"]	view=[["frame", "走る", [["agent", "兄"], ["recipient", "一緒"]], "+", "past", []]]	unread=0
+兄が本を三冊読みたい。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", ["unrepresented source content"]]]	unread=0
+弟が本を三冊読まれた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "弟"], ["patient", "本"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が弟に本を三冊読ませた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読ませる", [["agent", "兄"], ["patient", "本"], ["recipient", "弟"]], "+", "past", ["causative frame: causer/causee unresolved", "unrepresented source content"]]]	unread=0
+兄が三人と走った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "走る", [["agent", "兄"], ["ambiguous", "三人"]], "+", "past", ["ambiguous case role: と"]]]	unread=0
+兄が三人で走った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "走る", [["agent", "兄"], ["ambiguous", "三人"]], "+", "past", ["ambiguous case role: で"]]]	unread=0
+兄が本を三冊読めた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読める", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が本を三十冊と五冊読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"], ["ambiguous", "三十冊"]], "+", "past", ["ambiguous case role: と", "unrepresented source content"]]]	unread=0
+兄が三位に入った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "入る", [["agent", "兄"], ["ambiguous", "三位"]], "+", "past", ["ambiguous case role: に"]]]	unread=0
+兄が本を三冊読んでいない。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", ["unrepresented source content"]]]	unread=0
+兄がゆっくり本を読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がそっと窓を開けた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "開ける", [["agent", "兄"], ["patient", "窓"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がこっそり部屋に入った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "入る", [["agent", "兄"], ["recipient", "部屋"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がわざと窓を割った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "割る", [["agent", "兄"], ["patient", "窓"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がすぐに帰った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "帰る", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄がすぐ走った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "走る", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄がじっと空を見た。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "見る", [["agent", "兄"], ["patient", "空"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄が本をゆっくり読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が窓をそっと開けた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "開ける", [["agent", "兄"], ["patient", "窓"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄がゆっくり走った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "走る", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄がゆっくり歩いた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "歩く", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+母がゆっくり掃除した。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "掃除する", [["agent", "母"]], "+", "past", ["unrepresented source content"]]]	unread=0
+母が部屋をゆっくり掃除した。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "掃除する", [["agent", "母"], ["patient", "部屋"]], "+", "past", ["unrepresented source content"]]]	unread=0
+母がすぐに部屋を掃除した。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "掃除する", [["agent", "母"], ["patient", "部屋"]], "+", "past", ["unrepresented source content"]]]	unread=0
+弟がさっそく手紙を書いた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "書く", [["agent", "弟"], ["patient", "手紙"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+姉がちゃんと本を読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "姉"], ["patient", "本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+姉がしっかり手紙を書いた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "書く", [["agent", "姉"], ["patient", "手紙"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+姉がきちんと窓を閉めた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "閉める", [["agent", "姉"], ["patient", "窓"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がすぐに会社へ行った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "行く", [["agent", "兄"], ["recipient", "会社"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄がそっと部屋に入った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "入る", [["agent", "兄"], ["recipient", "部屋"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄が急に走った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "走る", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が静かに走った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "走る", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄がすでに本を読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄が全然本を読まなかった。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "-", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がきっと本を読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がたぶん本を読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄が多分本を読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄が恐らく本を読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がよく本を読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がまた本を読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がゆっくり本を読まなかった。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "-", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がゆっくり本を読みたい。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "nonpast", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がゆっくり本を読むだろう。	ABSTAIN ["UNREAD_SPAN:volitional source does not assert a fact"]	view=[]	unread=1
+兄がすぐ近くの店に行った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "行く", [["agent", "兄"], ["recipient", "近くの店"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がすぐ隣の部屋に入った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "入る", [["agent", "兄"], ["recipient", "隣の部屋"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がとても古い本を読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "古い本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がゆっくり古い本を読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "古い本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄が弟よりゆっくり走った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "走る", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄がゆっくりそっと窓を開けた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "開ける", [["agent", "兄"], ["patient", "窓"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がゆっくり、そして静かに窓を開けた。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "開ける", [["agent", "兄"], ["patient", "窓"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄が一番走った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "走る", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄がちょうど本を読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がほぼ本を読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄があやうく本を落とした。	ABSTAIN ["UNSUPPORTED_CLAUSE"]	view=[["frame", "落とす", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]], ["np_internal", "落とす", [["agent", "兄"], ["patient", "あやうく本"]], "+", "past", []]]	unread=0
+どうぞ本を読んでください。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["patient", "本"]], "+", "nonpast", ["unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がひょっとしたら本を読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "する", [["agent", "兄"]], "+", "past", ["multiple predicates need explicit clause scope", "unrepresented source content"]], ["frame", "読む", [["patient", "本"]], "+", "past", ["multiple predicates need explicit clause scope", "unrepresented source content", "unrepresented source content"]]]	unread=0
+兄がゆっくり三回読んだ。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄がそっとドアを開けて入った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "開ける", [["agent", "兄"], ["patient", "ドア"]], "+", "past", ["multiple predicates need explicit clause scope", "unrepresented source content", "unrepresented source content"]], ["frame", "入る", [], "+", "past", ["multiple predicates need explicit clause scope", "unrepresented source content", "event without participant or content word"]]]	unread=0
+兄がもう走った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "走る", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄がずっと走った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "走る", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が少し走った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "走る", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄が弟よりすぐ帰った。	ABSTAIN ["NO_SUPPORTED_CLAUSE"]	view=[["frame", "帰る", [["agent", "兄"]], "+", "past", ["unrepresented source content"]]]	unread=0
+兄がゆっくり本を読んで、母が笑った。	ABSTAIN ["UNSUPPORTED_CLAUSE"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "本"]], "+", "past", ["unrepresented source content", "unrepresented source content"]], ["frame", "笑う", [["agent", "母"]], "+", "past", []]]	unread=0
+兄がもしかしたら本を読んだ。	ABSTAIN ["UNREAD_SPAN:interrogative source does not assert a fact"]	view=[]	unread=1
+兄がだいたい本を読んだ。	ABSTAIN ["UNDETERMINED_MODALITY:たい"]	view=[["frame", "読む", [["agent", "兄"], ["patient", "だいたい本"]], "+", "past", []]]	unread=0

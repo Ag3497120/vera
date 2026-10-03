@@ -1,0 +1,3 @@
+before: 2026-10-04 05:13:46 +0900
+head: df4f001e1f3027192b0006e8c9a54b4a164088c3 Merge W3-b4 (K62 v2, focus-particle gate)
+after: 2026-10-04 05:15:19 +0900
