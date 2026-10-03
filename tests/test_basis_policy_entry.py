@@ -174,7 +174,8 @@ def test_p2_synthetic_results_with_generated_sources_never_come_out_as_an_answer
 @pytest.mark.parametrize("human", [False, True])
 @pytest.mark.parametrize("ref", [False, True])
 def test_a_mix_of_human_and_generated_sources_abstains(human, ref):
-    result = _synthetic("answer", "ANSWER", [HUMAN, GEN])
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    result = _synthetic("answer", "ANSWER", [{**HUMAN, "origin": "human_confirmed"}, GEN])
     out, rc = bp.apply_to_ask(result, bp.AskPolicy(human_present=human, show_reference=ref),
                               query="q", mode="legacy", documents=[])
     assert rc == 0 and out["kind"] == "unknown" and out["verdict"] == "UNKNOWN_BASIS_NOT_IN_TABLE"
@@ -199,7 +200,8 @@ def test_a_refusal_that_carries_generated_sources_stays_a_refusal_and_loses_the_
 
 
 def test_a_human_answer_is_passed_through_unchanged_apart_from_the_policy_note():
-    result = _synthetic("answer", "ANSWER", [USER, HUMAN])
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    result = _synthetic("answer", "ANSWER", [USER, {**HUMAN, "origin": "human_confirmed"}])
     out, rc = bp.apply_to_ask(result, bp.AskPolicy(), query="q", mode="legacy", documents=[])
     assert rc == 0 and _without(out, "basis_policy") == result
     assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS" and out["basis_policy"]["applied"] is True

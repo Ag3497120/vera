@@ -1860,6 +1860,37 @@ BASIS_CONFIRMATION_STATUSES = ("HUMAN_CONFIRMED", "REJECTED_GENERATED")
 _SOV_CONFIRMATION_FORBIDDEN_KEYS = ("phrase", "cell", "occupied", "corrects")
 
 
+def basis_confirmation_destination(root: str, store_id: str) -> Dict[str, Any]:
+    """確認 id を束縛する宛先: `{"store_id", "structure_ref"}`（W5-c）。
+
+    構造の側の台帳を **読み取り専用**（`write`・`create` を付けない）で開く。台帳が無い root、または
+    その root が登録していない `store_id` は、何も作らず `UnknownStore`（型つきの「読めない」）。同じ root の 2 つのストアは同じ `structure_ref` を持ち `store_id`
+    で分かれる。別の root は `structure_ref` で分かれる。
+    """
+    conn = _sov_struct_open(_sov_root(root))
+    if conn is None:
+        raise UnknownStore(store_id)
+    try:
+        known = bool(_sov_registry(conn, store_id))
+        ref = _sov_struct_ref(conn)
+    finally:
+        conn.close()
+    if not known:                       # a store this root never registered has no destination
+        raise UnknownStore(store_id)
+    return {"store_id": store_id, "structure_ref": ref}
+
+
+def basis_confirmation_store_ids(root: str) -> List[str]:
+    """root の registry に載っている `store_id` の、重複なしの昇順（読み取り専用。台帳が無ければ `[]`）。"""
+    conn = _sov_struct_open(_sov_root(root))
+    if conn is None:
+        return []
+    try:
+        return sorted({r["store_id"] for r in _sov_registry(conn)})
+    finally:
+        conn.close()
+
+
 @_sov_typed
 def append_basis_confirmation(root: str, store_id: str, payload: Any, *,
                               now: Optional[Callable[[], datetime]] = None) -> Dict[str, Any]:
@@ -1868,6 +1899,11 @@ def append_basis_confirmation(root: str, store_id: str, payload: Any, *,
     同意（現在の consent.promote）が無ければ何も書かない（NO_CONSENT）。payload の形が違えば
     BAD_PAYLOAD で何も書かない。既存の事件は変えない・消さない（いいえ も追記）。`decision` は
     昇格の候補にならない（`promote` の数え上げでは not_a_candidate）。
+
+    W5-c: payload に `destination`（`{"store_id", "structure_ref"}`）があれば、それが自分
+    （`basis_confirmation_destination`）と等しいときだけ書く。鍵がちょうど 2 つの Mapping でなければ
+    BAD_PAYLOAD、違えば CONFIRM_TARGET_MISMATCH（どちらも何も書かない）。`destination` の無い payload は
+    従来どおり受ける（直接の呼び手は束縛されない）。
     """
     root = _sov_root(root)
     conn, _path = _sov_open_active(root, store_id, write=False)
@@ -1881,6 +1917,14 @@ def append_basis_confirmation(root: str, store_id: str, payload: Any, *,
             or payload.get("status") not in BASIS_CONFIRMATION_STATUSES
             or any(k in payload for k in _SOV_CONFIRMATION_FORBIDDEN_KEYS)):
         return {"verdict": "BAD_PAYLOAD", "store_id": store_id, "wrote": 0}
+    if "destination" in payload:
+        given = payload["destination"]
+        if not isinstance(given, Mapping) or set(given) != {"store_id", "structure_ref"}:
+            return {"verdict": "BAD_PAYLOAD", "store_id": store_id, "wrote": 0}
+        expected = basis_confirmation_destination(root, store_id)
+        if dict(given) != expected:
+            return {"verdict": "CONFIRM_TARGET_MISMATCH", "store_id": store_id, "wrote": 0,
+                    "expected": expected, "given": dict(given)}
     try:
         eid = SovereignLedger(root, store_id, now).append({"kind": "decision", "payload": dict(payload)})
     except LedgerRefusal as exc:

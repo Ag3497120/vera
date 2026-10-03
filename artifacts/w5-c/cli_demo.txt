@@ -1,0 +1,27 @@
+tree: /Users/motonisihikoudai/Projects/vera-impl/wt/W5-c-S
+## A1: index whose rows have NULL origin, plain
+   argv: ask <Q>    index=idx_null store=store-a
+   rc=0 kind=unknown verdict=UNKNOWN_ORIGIN_SOURCE outcome=ABSTAIN wrote=None files_changed_under_root=[]
+## A1: same, human present
+   argv: ask <Q> --human-present   index=idx_null store=store-a
+   rc=0 kind=unknown verdict=UNKNOWN_ORIGIN_SOURCE outcome=ABSTAIN wrote=None files_changed_under_root=[]
+## A1: same, human present + reference column
+   argv: ask <Q> --human-present --show-generated-reference   index=idx_null store=store-a
+   rc=0 kind=unknown verdict=UNKNOWN_ORIGIN_SOURCE outcome=ABSTAIN wrote=None files_changed_under_root=[]
+## A1: same, request that claims no fact
+   argv: ask <Q> --request-kind creative   index=idx_null store=store-a
+   rc=0 kind=answer verdict=ANSWER outcome=CONSTRUCTED wrote=None files_changed_under_root=[]
+## A2: question put for store-a (index with origin generated)
+   argv: ask <Q> --human-present   index=idx_ok store=store-a
+   rc=0 kind=unknown verdict=CONFIRM_REQUEST outcome=CONFIRM_REQUEST wrote=None files_changed_under_root=[]
+   issued id fc5eaad74ec7f15990570e5f  destination={'state': 'ACTIVE_CONSENTED', 'store_id': 'store-a', 'structure_ref': 'e1392ced77c3af31683d56a9b63b45a2fd602ba0e4ea361193c476cea5560979'}
+## A2: that id given to store-b
+   argv: ask <Q> --confirm fc5eaad74ec7f15990570e5f yes   index=idx_ok store=store-b
+   rc=1 kind=unknown verdict=CONFIRM_TARGET_MISMATCH outcome=CONFIRM_REQUEST wrote=0 files_changed_under_root=[]
+## A2: that id given to store-a (the right destination)
+   argv: ask <Q> --confirm fc5eaad74ec7f15990570e5f yes   index=idx_ok store=store-a
+   rc=0 kind=confirmation verdict=CONFIRMED_HUMAN_RECORD outcome=CONFIRM_REQUEST wrote=1 files_changed_under_root=['stores/store-a.sqlite']
+## A2: the same question afterwards, store-a
+   argv: ask <Q>    index=idx_ok store=store-a
+   rc=0 kind=answer verdict=ANSWER outcome=ANSWER_HUMAN_BASIS wrote=None files_changed_under_root=[]
+events in store-a: 1  events in store-b: 0

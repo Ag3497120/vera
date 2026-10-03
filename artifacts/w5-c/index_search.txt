@@ -1,0 +1,59 @@
+### 確認 id 宛先
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "確認 id 宛先",
+  "searched": 673,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 出典 origin 不明
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "出典 origin 不明",
+  "searched": 673,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### ソブリン 台帳 確認
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "ソブリン 台帳 確認",
+  "searched": 673,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "出典 origin 利用者の文書",
+  "searched": 673,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

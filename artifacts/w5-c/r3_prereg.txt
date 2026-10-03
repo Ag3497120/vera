@@ -1,0 +1,34 @@
+<!-- prereg-w5c-r3:begin -->
+# 根拠の方針 — 事前登録の追記（W5-c 第 3 ラウンド、監査役の判断の反映）
+
+登録日時: 2026-10-03 21:07:31 +0900
+監査役の判断の日時: 2026-10-03 20:40（チケットの末尾の節「監査役の判断」。第 2 ラウンドの申し送りへの回答）。
+この節は `tests/test_basis_policy_w5c_r3.py` を書く前、既存テストを改訂する前、製品コードを直す前に確定した。上の 2 つの節（`prereg:begin`〜`prereg:end` と `prereg-w5c:begin`〜`prereg-w5c:end`）は 1 文字も変えない。**W5-c-1 の規則 7 と W5-c-3 の 3 つ目の項目（記録による格上げ）は、この節で置き換える。** 置き換えない部分（規則 1〜6、W5-c-2 の `UNKNOWN_ORIGIN` の列、W5-c-4 の確認 id v2、W5-c-5）は今も有効。
+
+## W5-c-r3-1. 分類の規則 v3 `classify_sources`（上から順に最初に当たったもの）
+
+入力に 1 つ増える: `user_documents`（真偽）。`apply_to_ask` は `mode == "round5"` かつ `documents` が空でないときだけ真にする（ファイル名の照合はしない。`classify_sources` 単独の呼び出しの既定は偽）。
+
+1. dict でない → `unreadable`
+2. `origin == "generated"` → `generated`
+3. `origin == "human_confirmed"` → `human`
+4. `family` が `ability_corpus.FAMILIES` のどれかと文字列として完全一致し、`origin` が `constructed`・`testimony` でない → `unknown_origin`（W5-c-1 の規則 4 のまま）
+5. `origin` の鍵があり値が `None` 以外 → `non_evidence`（W5-c-1 の規則 5 のまま）
+6. `family == "user"` → `request_text`（W5-c-1 の規則 6 のまま。依頼文は `cited` に入れない）
+7. （新）`user_documents` が真で `family == "document"`（完全一致）→ `human`。ここに来るのは `origin` が鍵なしか `None` のものだけ（`origin` に値があれば規則 5 まで）
+8. （変更。W5-c-1 の規則 7 の「それ以外 → `human`」を置き換える）それ以外 → `unknown_origin`（欠落・`None` の `origin` で、規則 4 の系列でも `family: "user"` でも、利用者がこの呼び出しで渡した文書でもないもの。系列の鍵が無い・文字列でない出典も含む）
+
+理由: 原則「分からないことと偽であることを混ぜない。出所の分からない出典は人が書いたものではない」を、索引の系列でない出典にも当てる。人の出典は、`origin` が明示的に人の値（今は `human_confirmed` だけ）のときか、`family == "user"` と、利用者がこの呼び出しで渡した文書だけ。監査役の判断は「`family == "user"`（利用者が渡した文書・会話）」と利用者が渡した文書を人と明記している。製品は利用者の文書の出典を `family: "document"` で出す（`family: "user"` は依頼文の断片）。CLI で `--document` を受けるのは `--mode round5` だけで、その mode の文書は `load_documents(documents)` で渡したものだけなので、「round5 で documents を渡した呼び出しの `family: "document"`」は来歴が分かっている。規則 7 の例外を消すだけで字面どおりに戻る。
+
+数え方（W5-c-1 と同じ。規則 8 は規則 4 と同じ列に数える）: `unknown_origin`（数）と `unknown_origin_by_family`（系列ごと。系列が文字列でなければ `"(none)"`）に数え、`counts` の 5 鍵には入れず、`cited` には足す。`policy_basis` は `unknown_origin` か `unknown_origin_values` が 1 つでもあれば `UNKNOWN_ORIGIN`。
+
+## W5-c-r3-2. 記録による格上げ（W5-c-3 の 3 つ目の項目を置き換える）
+
+ソブリンの はい の記録（`human_confirmed`）で `ANSWER_HUMAN_BASIS` に格上げするのは、**元の結果の根拠が `GENERATED`**（元の結果が棄権でなく、根拠が生成の出典だけ）で、同意ありのソブリンに同じ問いの はい の記録があり、出所不明の出典が混じらない（`UNKNOWN_ORIGIN` でない）ときだけ。元の結果が棄権の場合・出典が無い場合（`NONE`）・`UNKNOWN_ORIGIN` が混じる場合・`MIXED` は格上げしない（元の棄権・素通しのまま。記録は `confirmed_records_not_used` に数える）。判断の「その生成文と確認済みの文が一致するとき」は今回は入れない（記録の claim と今の claim の照合は、既存の `tests/test_basis_policy_confirm.py` の 2 件の期待と衝突するため。判断記録 R3-J5）。
+
+## W5-c-r3-3. 版
+
+`CLASSIFY_VERSION = 3`。`TABLE_VERSION = 1`・`SCHEMA`・`CONFIRM_ID_VERSION = 2` は変えない（表と id の式は変わらない）。格上げの条件の変更に新しい定数は作らない。`basis_policy` の注記の `classify_version` は 3。
+<!-- prereg-w5c-r3:end -->
+Sat Oct  3 21:07:58 JST 2026
+2026-10-03 21:07:58 +0900

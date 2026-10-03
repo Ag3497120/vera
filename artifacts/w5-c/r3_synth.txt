@@ -1,0 +1,6 @@
+combinations: 218880  with an unknown origin (independent definition): 214400
+unknown-origin combinations by outcome: {'ABSTAIN': 214400}
+BAD (unknown origin and an answer / pass-through / confirm / reference / kept source / leaked record / sovereign changed): {}
+other combinations (no unknown origin) by outcome: {'ABSTAIN': 1996, 'ANSWER_HUMAN_BASIS': 1008, 'CONFIRM_REQUEST': 216, 'PASSTHROUGH': 1152, 'REFERENCE_GENERATED': 108}
+ANSWER_HUMAN_BASIS among them that no declared reason explains: 0 {}
+sovereign files hashed at start and end: {'consent': 2, 'consent+yes': 2, 'no_consent': 2} unchanged: True

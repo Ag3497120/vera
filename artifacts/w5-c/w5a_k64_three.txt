@@ -1,0 +1,11 @@
+### pre-W5-a tree (git archive 2732274^)
+semantic_read loaded from: /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5c-impl/pre_w5a/verantyx/semantic_read.py
+{"text": "尼僧が月報を発行した。", "readable": true, "abstain": null, "predicate": "発行する", "roles": {"agent": "尼僧", "patient": "月報"}}
+{"text": "複数の人物が会報を発行した。", "readable": true, "abstain": null, "predicate": "発行する", "roles": {"agent": "複数の人物", "patient": "会報"}}
+{"text": "会社が試験機を公開した。", "readable": true, "abstain": null, "predicate": "公開する", "roles": {"agent": "会社", "patient": "試験機"}}
+
+### this worktree (dev 6d20016 + W5-c; semantic_read.py unchanged)
+semantic_read loaded from: /Users/motonisihikoudai/Projects/vera-impl/wt/W5-c-S/verantyx/semantic_read.py
+{"text": "尼僧が月報を発行した。", "readable": false, "abstain": {"kind": "not_supported", "reasons": ["AGENT_EVIDENCE_MISSING:尼僧"]}, "predicate": null, "roles": null}
+{"text": "複数の人物が会報を発行した。", "readable": false, "abstain": {"kind": "not_supported", "reasons": ["AGENT_EVIDENCE_MISSING:複数の人物"]}, "predicate": null, "roles": null}
+{"text": "会社が試験機を公開した。", "readable": false, "abstain": {"kind": "not_supported", "reasons": ["AGENT_EVIDENCE_MISSING:会社"]}, "predicate": null, "roles": null}

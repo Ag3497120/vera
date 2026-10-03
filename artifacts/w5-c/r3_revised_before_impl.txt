@@ -1,0 +1,103 @@
+.........................F.F............................................ [  4%]
+........................................................................ [  9%]
+........................................................................ [ 14%]
+........................................................................ [ 19%]
+........................................................................ [ 24%]
+........................................................................ [ 29%]
+........................................................................ [ 34%]
+........................................................................ [ 39%]
+........................................................................ [ 44%]
+........................................................................ [ 49%]
+........................................................................ [ 54%]
+........................................................................ [ 59%]
+........................................................................ [ 64%]
+........................................................................ [ 69%]
+........................................................................ [ 74%]
+........................................................................ [ 79%]
+........................................................................ [ 84%]
+........................................................................ [ 89%]
+...................................................F.................... [ 94%]
+...................................F.............FF..................... [ 99%]
+.....                                                                    [100%]
+=================================== FAILURES ===================================
+___________ test_rule4_origin_none_falls_through_to_the_later_rules ____________
+
+    def test_rule4_origin_none_falls_through_to_the_later_rules():
+        sc = bp.classify_sources([{"origin": None, "family": "user"}, {"origin": None, "family": "doc"}])
+        # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力は同じ。later rule の「それ以外」は人でなく出所不明（規則 8）
+>       assert sc.counts["request_text"] == 1 and sc.counts["human"] == 0 and sc.unknown_origin == 1
+E       assert (1 == 1 and 1 == 0)
+
+tests/test_basis_policy_table.py:157: AssertionError
+______________________ test_rule6_anything_else_is_human _______________________
+
+    def test_rule6_anything_else_is_human():
+        sc = bp.classify_sources([{"family": "document", "source": "memo.txt", "text": "花子は来た。"}])
+        # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力は同じ。origin の無い出典は、利用者が渡した文書と分かっていなければ出所不明
+>       assert sc.counts["human"] == 0 and sc.unknown_origin == 1 and sc.basis == "UNKNOWN_ORIGIN" and sc.cited == 1
+E       assert (1 == 0)
+
+tests/test_basis_policy_table.py:168: AssertionError
+____________ test_w5c_the_versions_and_the_table_are_as_registered _____________
+
+    def test_w5c_the_versions_and_the_table_are_as_registered():
+        assert bp.TABLE_VERSION == 1 and bp.SCHEMA == "verantyx.basis_policy/1"
+        # W5-c r3（監査役の判断 2026-10-03 20:40）: 規則 7・8 が変わったので CLASSIFY_VERSION は 3（prereg-w5c-r3 節）
+>       assert bp.CLASSIFY_VERSION == 3 and bp.CONFIRM_ID_VERSION == 2
+E       assert (2 == 3)
+E        +  where 2 = bp.CLASSIFY_VERSION
+
+tests/test_basis_policy_w5c.py:281: AssertionError
+_ test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis _
+
+    def test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis():
+        sc = bp.classify_sources([_src("x", "zzz")])
+        assert sc.basis == "NONE" and sc.policy_basis == "UNKNOWN_ORIGIN"
+        assert sc.counts["non_evidence"] == 1 and sc.non_evidence_by_origin == {"zzz": 1}
+        assert bp.classify_sources([_src("x", "constructed")]).policy_basis == "NONE"
+        assert bp.classify_sources([_src("x", "testimony")]).policy_basis == "NONE"
+        assert bp.classify_sources([GEN]).policy_basis == "GENERATED"
+        # W5-c r3（監査役の判断 2026-10-03 20:40）: 最後の行の入力を明示の人にした（期待は同じ）。強める側の assert を 1 行足した
+        assert bp.classify_sources([{**HUMAN, "origin": "human_confirmed"}]).policy_basis == "HUMAN"
+>       assert bp.classify_sources([HUMAN]).policy_basis == "UNKNOWN_ORIGIN"
+E       AssertionError: assert 'HUMAN' == 'UNKNOWN_ORIGIN'
+E         
+E         - UNKNOWN_ORIGIN
+E         + HUMAN
+
+tests/test_basis_policy_w5c.py:319: AssertionError
+________ test_w5c_the_policy_note_carries_the_new_versions_and_numbers _________
+
+    def test_w5c_the_policy_note_carries_the_new_versions_and_numbers():
+        out, _rc = bp.apply_to_ask(_synthetic("answer", "ANSWER", [_src("pro", "")]), bp.AskPolicy(), query="窓は？",
+                                   mode="legacy", documents=[])
+        note = out["basis_policy"]
+        assert note["schema"] == "verantyx.basis_policy/1" and note["table_version"] == 1
+        # W5-c r3（監査役の判断 2026-10-03 20:40）: 注記の classify_version は 3
+>       assert note["classify_version"] == 3 and note["confirm_id_version"] == 2
+E       assert (2 == 3)
+
+tests/test_basis_policy_w5c.py:352: AssertionError
+_ test_w5c_known_hole_a_source_outside_the_index_families_without_origin_is_still_human _
+
+    def test_w5c_known_hole_a_source_outside_the_index_families_without_origin_is_still_human():
+        """Closed in round 3 (docs/BASIS_POLICY.md section 11, hole 1; the auditor's decision of 2026-10-03 20:40):
+        a source outside the index families with no origin is an unknown origin, not a human one. The name is kept
+        on purpose (the auditor's rule: an existing test's name is never changed; the before/after text is in the docs)."""
+        out, _rc = bp.apply_to_ask(_synthetic("answer", "ANSWER", [HUMAN]), bp.AskPolicy(), query="窓は？",
+                                   mode="legacy", documents=[])
+>       assert out["basis_policy"]["outcome"] == "ABSTAIN" and out["basis_policy"]["basis"] == "UNKNOWN_ORIGIN"
+E       AssertionError: assert ('ANSWER_HUMAN_BASIS' == 'ABSTAIN'
+E         
+E         - ABSTAIN
+E         + ANSWER_HUMAN_BASIS)
+
+tests/test_basis_policy_w5c.py:363: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_basis_policy_table.py::test_rule4_origin_none_falls_through_to_the_later_rules
+FAILED tests/test_basis_policy_table.py::test_rule6_anything_else_is_human - ...
+FAILED tests/test_basis_policy_w5c.py::test_w5c_the_versions_and_the_table_are_as_registered
+FAILED tests/test_basis_policy_w5c.py::test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis
+FAILED tests/test_basis_policy_w5c.py::test_w5c_the_policy_note_carries_the_new_versions_and_numbers
+FAILED tests/test_basis_policy_w5c.py::test_w5c_known_hole_a_source_outside_the_index_families_without_origin_is_still_human
+6 failed, 1439 passed in 6.85s

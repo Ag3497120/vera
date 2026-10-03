@@ -1,0 +1,73 @@
+<!-- prereg-w5c:begin -->
+# 根拠の方針 — 事前登録の追記（W5-c、攻撃第 3 波の A1・A2）
+
+登録日時: 2026-10-03 19:27:14 +0900
+上の節（`prereg:begin` から `prereg:end` まで）は 1 文字も変えない。この節はその **追記** で、`tests/test_basis_policy_w5c.py` を書く前に確定した。24 行の表（節 2）は変えないので `TABLE_VERSION = 1`・`SCHEMA = "verantyx.basis_policy/1"` のまま。変わるのは「根拠の分類の規則」と「確認 id の式」で、これらには表とは別の版を付ける: `CLASSIFY_VERSION = 2`、`CONFIRM_ID_VERSION = 2`。旧版（節 3・節 5）は上に残してある（削除しない）。上の節の「この節を変えるときは `TABLE_VERSION` を上げる」は、表・式・規則を **書き換える** ときの約束。ここでは書き換えず、版の別の定数を付けて追記した。
+
+## W5-c-1. 分類の規則 v2 `classify_sources`（上から順に最初に当たったもの）
+
+閉じた語彙 `DECLARED_ORIGINS = ("generated", "human_confirmed", "constructed", "testimony")`（`origin` に製品が書く値の型の申告。語の一覧ではない）。
+
+1. dict でない → `unreadable`
+2. `origin == "generated"` → `generated`
+3. `origin == "human_confirmed"` → `human`
+4. （新）`family` が `ability_corpus.FAMILIES` のどれかと **文字列として完全一致** し、`origin` が `constructed`・`testimony` でない（鍵なし・`None`・`""`・`"GENERATED"`・未知の値・文字列でない値すべて）→ `unknown_origin`（出所不明。生成とも人とも言わない）
+5. `origin` の鍵があり値が `None` 以外 → `non_evidence`（値ごとに数える）
+6. `family == "user"` → `request_text`
+7. それ以外 → `human`
+
+`FAMILIES` は import して参照する（写さない。系列名の大文字・空白の揺れを直す処理は足さない）。
+
+別の述語 `_unknown_value(src)`: dict で、`origin` が `None` 以外かつ `DECLARED_ORIGINS` の外（文字列でない値も外）。規則 5 で `non_evidence` に数えた出典のうち、値が閉じた語彙の外のものを数える。
+
+数え方:
+- 規則 4 は `SourceClass.unknown_origin`（数）と `unknown_origin_by_family`（系列ごと）に数える。`counts`（5 鍵: `human / generated / non_evidence / request_text / unreadable`）には **入れない**（鍵の集合は変えない）。`cited` には足す（足さないと出典なしとして素通しになる）。
+- `_unknown_value` が真の出典は、従来どおり `counts["non_evidence"]`・`non_evidence_by_origin` に数え、加えて `unknown_origin_values`（値ごと）に写す。
+- `SourceClass.basis`: 規則 4 が 1 つ以上なら `"UNKNOWN_ORIGIN"`。それ以外は従来（`HUMAN / GENERATED / MIXED / NONE`。`_unknown_value` だけでは `basis` を変えない）。
+- 方針が使う根拠 `policy_basis`: 規則 4 が 1 つ以上、または `_unknown_value` が真の出典が 1 つ以上なら `"UNKNOWN_ORIGIN"`、それ以外は `basis`。
+
+## W5-c-2. `UNKNOWN_ORIGIN` の列（表の外の扱い。24 行の表には足さない）
+
+`decide` は根拠 `"UNKNOWN_ORIGIN"` を受ける。表を引かず、次のとおり決める（`MIXED` と同じ「表に無い根拠」の扱い）。`"UNKNOWN"` など他の不正な根拠は従来どおり `NOT_IN_TABLE:basis`。
+
+| 依頼の類 | 根拠 | 人が居る | 参考 ON | 結果 | `in_table` | 理由 |
+|---|---|---|---|---|---|---|
+| 事実の問い（FACTUAL） | UNKNOWN_ORIGIN | 偽・真のどちらでも | 偽・真のどちらでも | ABSTAIN | 偽 | `NOT_IN_TABLE:UNKNOWN_ORIGIN_SOURCE` |
+| 事実を主張しない依頼（NON_FACTUAL） | UNKNOWN_ORIGIN | 偽・真のどちらでも | 偽・真のどちらでも | 表の `GENERATED` の行の結果（`CONSTRUCTED`） | 偽 | `UNKNOWN_ORIGIN_READ_AS_GENERATED` |
+
+- 事実の問いでは、人が居ても `CONFIRM_REQUEST` を出さず、参考 ON でも `REFERENCE_GENERATED` にしない。出所の分からない文を「生成コーパスにはこうある」と言えないため（中身が生成とも限らない）。
+- 事実を主張しない依頼では、チケットの「生成と同じ側」に従う（材料としてのみ。型は `constructed`）。
+- 参考欄・`confirm` の生成文・`_generated_sources` は `origin == "generated"` だけ（出所不明の文は出さない）。
+
+## W5-c-3. 出力
+
+- 事実の問いで出所不明の答えを引っ込めた結果: `kind: "unknown"`、`verdict: "UNKNOWN_ORIGIN_SOURCE"`、`text`: 定型文（`出所の分からない出典があるため、答えません。`）、`sources: []`、`evidence: []`、`withheld`、`door`、`trace`。
+- 棄権の結果が出所不明の出典を持つとき: 生成の出典を持つときと同じく本文を落として組み直す。元の `text` が出所不明の出典の本文を引用していれば、定型文に置き換える。
+- 根拠が出所不明のとき、ソブリンの はい の記録で `HUMAN` に格上げしない（格上げは従来どおり `GENERATED`・`NONE` のときだけ）。
+- 出所不明の結果に `--confirm` を付けると、確認 id が存在しないので `UNKNOWN_CONFIRM_ID`（何も書かない、終了コード 1）。
+
+## W5-c-4. 確認 id v2 と宛先の束縛
+
+- `confirm_id = sha256(json.dumps({"query", "claim", "generated", "destination"}, sort_keys=True, ensure_ascii=False, separators=(",", ":")))` の先頭 24 桁。`destination = {"store_id", "structure_ref"}`（`structure_ref` は宛先のソブリンがある root の構造の台帳の最初の行から決まる、決定的で動かない識別子）。宛先が無いときは鍵 `destination` を **入れない**（W6-a の式と同じ値になる）。桁数は 24 のまま。
+- 宛先を持つのは、確認の時点でソブリンが `ACTIVE_CONSENTED` か `ACTIVE_NO_CONSENT` のときだけ。それ以外（ソブリン無し・設定が半端・DETACHED・読めない）は宛先なし。
+- 問い返しは何も書かない（台帳を作らない）。確認要求の「どこに出したか」は、(1) id の入力、(2) 保存するときの記録の payload の `destination`（追記専用の `event_log` に残る）、(3) ソブリンの口が自分以外の `destination` を拒むこと、で持つ。
+- `--confirm ID yes|no` の判定の順（最初に当たったもので終わる。どれも書かない点は同じ。書くのは最後だけ）:
+  1. いまの問いに確認 id が無い（根拠が `GENERATED` でない、または本文が無い）→ `UNKNOWN_CONFIRM_ID`、rc 1
+  2. 渡された id が、いまの問いで作りうる id（宛先の候補: いまの宛先・宛先なし・いまの root に登録された全ストア × その root の `structure_ref`）のどれとも一致しない → `UNKNOWN_CONFIRM_ID`、rc 1（別の root の id は宛先を特定できないのでここに入る。分からないことを「別の宛先」と言わない）。2 つ以上の別の宛先に一致したら `UNKNOWN_CONFIRM_ID`（同点は棄権）
+  3. いまのソブリンが `ACTIVE_*` でない → 従来の `CONFIRM_REQUEST`、rc 1
+  4. いまのソブリンが `ACTIVE_NO_CONSENT` → `NO_CONSENT`、rc 1（口は呼ばない）
+  5. 一致した宛先がいまの宛先でない → `CONFIRM_TARGET_MISMATCH`、rc 1
+  6. 書く（`CONFIRMED_HUMAN_RECORD` か `REJECTED_GENERATED_RECORDED`、rc 0）。記録の payload に `destination` を入れる
+- 3・4 を 5 より先にするのは、既存の期待（`tests/test_basis_policy_entry.py`・`tests/test_basis_policy_confirm.py`）が固定しているため。
+
+## W5-c-5. ソブリンの口の検査
+
+`append_basis_confirmation` は、同意の検査と形の検査の後、書く前に、payload に鍵 `destination` があれば: `Mapping` で鍵がちょうど `{"store_id", "structure_ref"}` でなければ `BAD_PAYLOAD`、自分（`store_id` と、その root の `structure_ref`）と等しくなければ `CONFIRM_TARGET_MISMATCH`（何も書かない）。`destination` の無い payload は従来どおり受ける。宛先を読む 2 つの口は構造の台帳を **読み取り専用** で開き、台帳が無い root に何も作らない。
+
+## W5-c-6. 版
+
+`TABLE_VERSION = 1`（変えない）、`SCHEMA`（変えない）、`CLASSIFY_VERSION = 2`、`CONFIRM_ID_VERSION = 2`。`basis_policy` の注記に `classify_version`・`confirm_id_version` を足す。
+<!-- prereg-w5c:end -->
+---
+date at insertion: 2026-10-03 19:27:14 +0900
+Sat Oct  3 19:27:14 JST 2026
