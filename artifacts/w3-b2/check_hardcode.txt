@@ -1,0 +1,147 @@
+added lines: 435
+PROPER/NUMERIC (must be empty): []
+ENGLISH NAMES (must be empty): []
+common nouns found in added lines (list only): []
+verb lemmas found in added lines (list only): []
+english lowercase words found in added lines (list only; each with the added lines that hold it, so a reader can judge): ['after', 'all', 'answer', 'asked', 'contract', 'def', 'each', 'every', 'exactly', 'form', 'had', 'joined', 'just', 'least', 'left', 'made', 'more', 'new', 'none', 'not', 'nothing', 'only', 'outside', 'passed', 'plan', 'read', 'report', 'returned', 'run', 'that', 'the', 'this', 'three', 'two', 'types', 'update', 'was', 'when', 'which', 'while', 'writes', 'written']
+  [after] 8 added line(s):
+      # after the reread, so the reasons of everything refused before are unchanged
+      # K63 (table change record 3): the head may be a derived verb (a potential, a spontaneous or a short causative looks like a verb of its own); checked after the
+      for c in clauses:               # K97: the demonstrative the part stood after, as the last key of the clause (nothing before it changes)
+  [all] 7 added line(s):
+      if all(t in EXPECTED_TYPES[role] for t in place.types):
+      if not (isinstance(flags, Mapping) and flags and isinstance(roles, Mapping) and all(
+      if adjunct and all(a.startswith('role@') for a in arms): return None, 'PLACEMENT_SLOT_EVIDENCE_ONLY'
+  [answer] 22 added line(s):
+      # Nothing above this line is changed. What is added: a gate for a SET of allowed types (`placement_fit`: a split answer whose every candidate is allowed is read
+      def placement_fit(answer, allowed, *, adjunct=False):
+      for being split: every candidate of a direct split answer is in `allowed` (then whichever candidate it is, the reading is the same).
+  [asked] 5 added line(s):
+      """W3-b2: the placement as the plans ask it, for ONE sentence: a word is asked once, whichever plan asks it first (the plans of W3-b1 and of W3-b2 share the ans
+      if kind == 'U':             # K95: the frame of a CONFIRMED predicate narrows what W3-b1 read (no new question: the predicate was asked)
+      W3-b1 read (new questions are not asked) and, inside the plan, to what W3-b2 reads."""
+  [contract] 1 added line(s):
+      # placement_type has checked the contract: the state is MULTIPLE, the origin is direct or estimated
+  [def] 24 added line(s):
+      def __init__(self, inner):
+      def query(self, term):
+      def id(self):
+  [each] 2 added line(s):
+      """W3-b2: wraps a placement for `typed_explain_ja`: the same questions go through, and `w3b2_trace` is where `_typed_reread_ja` writes what each step decided.""
+      phrase is not asked); the frame of the predicate (K95) narrows each role (the particle must be in it, every type of the role must be in its list)."""
+  [every] 9 added line(s):
+      verdict: str                       # AGREE | DISAGREE | NOT_CHECKED | AGREE_ALL_CANDIDATES (a split placement of which every type the role expects)
+      # W3-b2: a split placement is not a tie to break: when every candidate is a type the role expects, whichever it is the arm agrees. One candidate outside: not ch
+      # Nothing above this line is changed. What is added: a gate for a SET of allowed types (`placement_fit`: a split answer whose every candidate is allowed is read
+  [exactly] 2 added line(s):
+      """K94: 'U3' (a clause whose で phrase the reader left ambiguous) or None. Decided before any question to the placement. One sentence, nothing unread, exactly on
+      for r in runs:                   # K96: two runs joined by exactly one の are one part
+  [form] 1 added line(s):
+      # W3-b2: a verdict that exists beside the three, counted under its own key only when it occurs (a count without it has the form it always had).
+  [had] 1 added line(s):
+      # W3-b2: a verdict that exists beside the three, counted under its own key only when it occurs (a count without it has the form it always had).
+  [joined] 2 added line(s):
+      (K96) two runs joined by one の made one part whose head is the later run, and (K97) a demonstrative before the part (D1) or before a role the reader typed, when
+      for r in runs:                   # K96: two runs joined by exactly one の are one part
+  [just] 1 added line(s):
+      determiner, lead = None, first                  # K97 D1: a demonstrative just before the part is not part of it; what stands before it decides the isolation
+  [least] 1 added line(s):
+      particle の; there is at least one の, none first, none last, none next to another. The head is what stands after the last の."""
+  [left] 3 added line(s):
+      """K94: 'U3' (a clause whose で phrase the reader left ambiguous) or None. Decided before any question to the placement. One sentence, nothing unread, exactly on
+      part is left (D2). (typed, None) or (None, reason)."""
+      """K97 D2: no content run is left, and the reader's `unrepresented source content` is only that a demonstrative stands before a role it typed (the span of the r
+  [made] 1 added line(s):
+      (K96) two runs joined by one の made one part whose head is the later run, and (K97) a demonstrative before the part (D1) or before a role the reader typed, when
+  [more] 2 added line(s):
+      """W3-b1 / W3-b2: a refusal of the reader gets one more look with the DIRECT types of the words (docs/READING_SOUNDNESS.md K62-K65, K94-K99). The decisions (the
+      # the reader of the frame of a predicate (`predicate_frame`, used only to narrow), the head of `X no Y` (`no_phrase_head`), one more trigger (U3) and the two pl
+  [new] 3 added line(s):
+      if kind == 'U':             # K95: the frame of a CONFIRMED predicate narrows what W3-b1 read (no new question: the predicate was asked)
+      W3B2_ROLE_BASIS_RE = r'placement_(direct|all_candidates)(_head)?:[A-Z_]+(\+[A-Z_]+)*'    # K99: the values of `role_basis` the new paths write (and W3-b1's)
+      W3-b1 read (new questions are not asked) and, inside the plan, to what W3-b2 reads."""
+  [none] 2 added line(s):
+      particle の; there is at least one の, none first, none last, none next to another. The head is what stands after the last の."""
+      clause of the frame rule, no condition, a predicate in none of the reader's four lists, the unsupported reasons only the ambiguity of で (and, beside it, of に), 
+  [not] 58 added line(s):
+      # convention either: the cross accepts it, checks its shape, and writes `flags['determiner']` of the filler of that role (it is not copied to the centre or to t
+      # W3-b2: a split placement is not a tie to break: when every candidate is a type the role expects, whichever it is the arm agrees. One candidate outside: not ch
+      if not (isinstance(flags, Mapping) and flags and isinstance(roles, Mapping) and all(
+  [nothing] 3 added line(s):
+      for c in clauses:               # K97: the demonstrative the part stood after, as the last key of the clause (nothing before it changes)
+      """K94: 'U3' (a clause whose で phrase the reader left ambiguous) or None. Decided before any question to the placement. One sentence, nothing unread, exactly on
+      their value (the head of `X no Y`) fits it by `placement_fit`; nothing else is added. (typed, None) or (None, reason)."""
+  [only] 7 added line(s):
+      # W3-b2: a verdict that exists beside the three, counted under its own key only when it occurs (a count without it has the form it always had).
+      # the reader of the frame of a predicate (`predicate_frame`, used only to narrow), the head of `X no Y` (`no_phrase_head`), one more trigger (U3) and the two pl
+      # No table of K62 / K63 / K64 is widened: the only constants are the two rule names of U3, the three demonstratives of the ticket and the two part-of-speech cla
+  [outside] 2 added line(s):
+      # W3-b2: a split placement is not a tie to break: when every candidate is a type the role expects, whichever it is the arm agrees. One candidate outside: not ch
+      (None, reason)                  every other case; for a split answer a candidate of which is outside, the reason is PLACEMENT_MULTIPLE, as in W3-b1; an estimate
+  [passed] 1 added line(s):
+      invariants of 12.10, else (None, 'PLACEMENT_FRAME_INVALID:<problem>'). The caller has already passed the answer through `placement_type`."""
+  [plan] 8 added line(s):
+      """W3-b2: the placement as the plans ask it, for ONE sentence: a word is asked once, whichever plan asks it first (the plans of W3-b1 and of W3-b2 share the ans
+      The order (K94): W3-b1's trigger and plan first. A sentence W3-b1 reads is returned as W3-b1 reads it (W3-b2 does not run), except that the frame of a CONFIRMED
+      (K95) may stop a path U reading. A sentence W3-b1's plan refuses gets W3-b2's plan of the same path; when that is refused too, the output is W3-b1's refusal. A
+  [read] 11 added line(s):
+      if kind == 'U':             # K95: the frame of a CONFIRMED predicate narrows what W3-b1 read (no new question: the predicate was asked)
+      """W3-b2, for tests and measurements: what the typed steps decided for a Japanese input, the output of `read` unchanged. {'w3b1_trigger': 'U' | 'S4' | None,
+      reason the frame of the predicate stopped a reading of W3-b1}. All None when no typed step ran (no placement, English, the reader read it alone). It runs `read`
+  [report] 4 added line(s):
+      return _refusal('ja', stop.kind, first, report)
+      return _answer('ja', done[0], done[1], done[2], report)
+      return _answer('ja', done[0], done[1], done[2], report)
+  [returned] 1 added line(s):
+      The order (K94): W3-b1's trigger and plan first. A sentence W3-b1 reads is returned as W3-b1 reads it (W3-b2 does not run), except that the frame of a CONFIRMED
+  [run] 11 added line(s):
+      tables, the gates) are the reader's (R.typed_plan_*, R.typed_trigger_*); what is done here is to run this entry's own rules over the roles they decide (_map_ja 
+      The order (K94): W3-b1's trigger and plan first. A sentence W3-b1 reads is returned as W3-b1 reads it (W3-b2 does not run), except that the frame of a CONFIRMED
+      # this step. The plans return what to read; the entry (semantic_read.py) runs its own rules over it and decides in which order the plans of W3-b1 and of W3-b2 r
+  [that] 11 added line(s):
+      # W3-b2: the other source field the entry writes on a clause of a type path: `role_flags` = {role: {"determiner": the demonstrative that stood before the filler
+      # convention either: the cross accepts it, checks its shape, and writes `flags['determiner']` of the filler of that role (it is not copied to the centre or to t
+      # W3-b2: a verdict that exists beside the three, counted under its own key only when it occurs (a count without it has the form it always had).
+  [the] 66 added line(s):
+      # W3-b2: the other source field the entry writes on a clause of a type path: `role_flags` = {role: {"determiner": the demonstrative that stood before the filler
+      # convention either: the cross accepts it, checks its shape, and writes `flags['determiner']` of the filler of that role (it is not copied to the centre or to t
+      # W3-b2: a verdict that exists beside the three, counted under its own key only when it occurs (a count without it has the form it always had).
+  [this] 4 added line(s):
+      tables, the gates) are the reader's (R.typed_plan_*, R.typed_trigger_*); what is done here is to run this entry's own rules over the roles they decide (_map_ja 
+      # Nothing above this line is changed. What is added: a gate for a SET of allowed types (`placement_fit`: a split answer whose every candidate is allowed is read
+      # this step. The plans return what to read; the entry (semantic_read.py) runs its own rules over it and decides in which order the plans of W3-b1 and of W3-b2 r
+  [three] 6 added line(s):
+      # W3-b2: a verdict that exists beside the three, counted under its own key only when it occurs (a count without it has the form it always had).
+      # No table of K62 / K63 / K64 is widened: the only constants are the two rule names of U3, the three demonstratives of the ticket and the two part-of-speech cla
+      W3B2_DEMONSTRATIVES = ('この', 'その', 'あの')                                       # K97: the ticket's three (the question word of the entry's list is not one)
+  [two] 6 added line(s):
+      # the reader of the frame of a predicate (`predicate_frame`, used only to narrow), the head of `X no Y` (`no_phrase_head`), one more trigger (U3) and the two pl
+      # No table of K62 / K63 / K64 is widened: the only constants are the two rule names of U3, the three demonstratives of the ticket and the two part-of-speech cla
+      W3B2_AMBIGUOUS_RULES = ('case:で:place|means', 'case:に:location|goal|time')        # K94: the two splits of the reader that U3 looks at
+  [types] 19 added line(s):
+      if all(t in EXPECTED_TYPES[role] for t in place.types):
+      return TypeAgreement('AGREE_ALL_CANDIDATES', None, tuple(sorted(EXPECTED_TYPES[role])), tuple(place.types))
+      """W3-b1 / W3-b2: a refusal of the reader gets one more look with the DIRECT types of the words (docs/READING_SOUNDNESS.md K62-K65, K94-K99). The decisions (the
+  [update] 1 added line(s):
+      note.update({'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': None, 'frame': None})
+  [was] 2 added line(s):
+      if kind == 'U':             # K95: the frame of a CONFIRMED predicate narrows what W3-b1 read (no new question: the predicate was asked)
+      head, relational = no_phrase_head(toks, role.span.end - len(value), role.span.end)      # the value is the end of the role's text (a demonstrative at its start 
+  [when] 11 added line(s):
+      # W3-b2: a verdict that exists beside the three, counted under its own key only when it occurs (a count without it has the form it always had).
+      c['agreement'][arm.agreement.verdict] = c['agreement'].get(arm.agreement.verdict, 0) + 1     # an extra verdict gets its key at the end, when it first occurs
+      # W3-b2: a split placement is not a tie to break: when every candidate is a type the role expects, whichever it is the arm agrees. One candidate outside: not ch
+  [which] 3 added line(s):
+      verdict: str                       # AGREE | DISAGREE | NOT_CHECKED | AGREE_ALL_CANDIDATES (a split placement of which every type the role expects)
+      # this step. The plans return what to read; the entry (semantic_read.py) runs its own rules over it and decides in which order the plans of W3-b1 and of W3-b2 r
+      (None, reason)                  every other case; for a split answer a candidate of which is outside, the reason is PLACEMENT_MULTIPLE, as in W3-b1; an estimate
+  [while] 1 added line(s):
+      while j >= 0 and toks[j][0].feature.pos1 == '助詞': j -= 1
+  [writes] 4 added line(s):
+      # W3-b2: the other source field the entry writes on a clause of a type path: `role_flags` = {role: {"determiner": the demonstrative that stood before the filler
+      # convention either: the cross accepts it, checks its shape, and writes `flags['determiner']` of the filler of that role (it is not copied to the centre or to t
+      """W3-b2: wraps a placement for `typed_explain_ja`: the same questions go through, and `w3b2_trace` is where `_typed_reread_ja` writes what each step decided.""
+  [written] 9 added line(s):
+      written = _written_predicate(toks, pred_i) if kind != 'S4' else None
+      typed, why = R.typed_plan_u_ja(clause, toks, query, voice=voice, written=written, strip=strip, role_map=_ROLE_TABLE)
+      why_frame = R.typed_frame_check_ja(toks, typed, query.query(written))

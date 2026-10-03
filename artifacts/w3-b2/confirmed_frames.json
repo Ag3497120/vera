@@ -1,0 +1,776 @@
+{
+ "words": 48,
+ "frame_status": {
+  "CONFIRMED": 48
+ },
+ "by_predicate_type": {
+  "P_COMMUNICATE": 38,
+  "P_MOVE": 10
+ },
+ "particles_in_frames": {
+  "から": 5,
+  "が": 4,
+  "に": 1,
+  "へ": 6,
+  "を": 38
+ },
+ "rows": [
+  {
+   "word": "うたう",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "INFO_LANGUAGE",
+     "WORK"
+    ]
+   }
+  },
+  {
+   "word": "たたえる",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "GROUP_ORG",
+     "PERSON"
+    ]
+   }
+  },
+  {
+   "word": "みせる",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "ARTIFACT",
+     "PERSON",
+     "WORK"
+    ]
+   }
+  },
+  {
+   "word": "交わす",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "ARTIFACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "冠する",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "切り出す",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "EVENT_ACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "受け付ける",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "EVENT_ACT",
+     "GROUP_ORG",
+     "INFO_LANGUAGE",
+     "PERSON"
+    ]
+   }
+  },
+  {
+   "word": "口ずさむ",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "INFO_LANGUAGE",
+     "WORK"
+    ]
+   }
+  },
+  {
+   "word": "叫ぶ",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "が": [
+     "ANIMAL",
+     "PERSON"
+    ],
+    "を": [
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "呼び掛ける",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "EVENT_ACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "呼べる",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ]
+   }
+  },
+  {
+   "word": "命じる",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "GROUP_ORG",
+     "PERSON"
+    ]
+   }
+  },
+  {
+   "word": "命ずる",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "EVENT_ACT"
+    ]
+   }
+  },
+  {
+   "word": "唱える",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "EVENT_ACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "問い合わせる",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "問う",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "INFO_LANGUAGE",
+     "PERSON"
+    ]
+   }
+  },
+  {
+   "word": "広める",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "引っ越す",
+   "state": "DECIDED",
+   "top": [
+    "P_MOVE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "へ": [
+     "PLACE"
+    ]
+   }
+  },
+  {
+   "word": "戻れる",
+   "state": "DECIDED",
+   "top": [
+    "P_MOVE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "に": [
+     "PLACE"
+    ],
+    "へ": [
+     "PLACE"
+    ]
+   }
+  },
+  {
+   "word": "教え合う",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "旅立つ",
+   "state": "DECIDED",
+   "top": [
+    "P_MOVE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "が": [
+     "ANIMAL",
+     "PERSON"
+    ],
+    "へ": [
+     "PLACE"
+    ]
+   }
+  },
+  {
+   "word": "明かす",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "書き表す",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "歌える",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "INFO_LANGUAGE",
+     "WORK"
+    ]
+   }
+  },
+  {
+   "word": "流れ出る",
+   "state": "DECIDED",
+   "top": [
+    "P_MOVE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "から": [
+     "ARTIFACT",
+     "PLACE"
+    ]
+   }
+  },
+  {
+   "word": "漏らす",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "INFO_LANGUAGE",
+     "SUBSTANCE_FOOD"
+    ]
+   }
+  },
+  {
+   "word": "潜める",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "EVENT_ACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "潜り込む",
+   "state": "DECIDED",
+   "top": [
+    "P_MOVE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "へ": [
+     "PLACE"
+    ]
+   }
+  },
+  {
+   "word": "申し入れる",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "EVENT_ACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "申し込める",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "ARTIFACT",
+     "EVENT_ACT"
+    ]
+   }
+  },
+  {
+   "word": "示せる",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "舞い上がる",
+   "state": "DECIDED",
+   "top": [
+    "P_MOVE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "へ": [
+     "PLACE"
+    ]
+   }
+  },
+  {
+   "word": "薦める",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "EVENT_ACT",
+     "GROUP_ORG",
+     "PERSON"
+    ]
+   }
+  },
+  {
+   "word": "見せ合う",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "GROUP_ORG",
+     "PERSON"
+    ]
+   }
+  },
+  {
+   "word": "言い換える",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "訴える",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "GROUP_ORG",
+     "PERSON"
+    ]
+   }
+  },
+  {
+   "word": "詫びる",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "EVENT_ACT"
+    ]
+   }
+  },
+  {
+   "word": "話し合う",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "EVENT_ACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "話せる",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "説く",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "EVENT_ACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "読み上げる",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "INFO_LANGUAGE",
+     "WORK"
+    ]
+   }
+  },
+  {
+   "word": "論ずる",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "EVENT_ACT",
+     "INFO_LANGUAGE"
+    ]
+   }
+  },
+  {
+   "word": "謳う",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "INFO_LANGUAGE",
+     "WORK"
+    ]
+   }
+  },
+  {
+   "word": "起き上がる",
+   "state": "DECIDED",
+   "top": [
+    "P_MOVE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "が": [
+     "ANIMAL",
+     "PERSON"
+    ],
+    "から": [
+     "PLACE"
+    ]
+   }
+  },
+  {
+   "word": "遠ざかる",
+   "state": "DECIDED",
+   "top": [
+    "P_MOVE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "へ": [
+     "PLACE"
+    ],
+    "から": [
+     "PLACE"
+    ]
+   }
+  },
+  {
+   "word": "離れる",
+   "state": "DECIDED",
+   "top": [
+    "P_MOVE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "から": [
+     "ARTIFACT",
+     "PERSON",
+     "PLACE"
+    ]
+   }
+  },
+  {
+   "word": "頼める",
+   "state": "DECIDED",
+   "top": [
+    "P_COMMUNICATE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "を": [
+     "ABSTRACT",
+     "EVENT_ACT",
+     "INFO_LANGUAGE",
+     "PERSON"
+    ]
+   }
+  },
+  {
+   "word": "飛び出す",
+   "state": "DECIDED",
+   "top": [
+    "P_MOVE"
+   ],
+   "origin": "direct",
+   "frame_status": "CONFIRMED",
+   "frame": {
+    "が": [
+     "ANIMAL",
+     "ARTIFACT",
+     "NATURAL_PHENOMENON",
+     "PERSON"
+    ],
+    "から": [
+     "PLACE"
+    ]
+   }
+  }
+ ]
+}

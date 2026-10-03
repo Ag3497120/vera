@@ -239,7 +239,8 @@ def test_only_the_gate_and_the_query_adapter_read_the_fields_of_an_answer():
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and pat.search(ast.get_source_segment(src, node) or ''):
                 offenders.add(node.name)
         # nested functions are inside their parents' segments, so only top-level and method names matter here
-        allowed = {'placement_type'}
+        # W3-b2 (proposal): the gate for a SET of allowed types and the reader of the frame are two more readers of the fields of an answer (docs 10B K95)
+        allowed = {'placement_type', 'placement_fit', 'predicate_frame'}
         assert offenders <= allowed | {'_placement_answer_problems'}, (module.__name__, sorted(offenders))
     assert 'placement_type' in {n.name for n in ast.walk(ast.parse(Path(R.__file__).read_text(encoding='utf-8'))) if isinstance(n, ast.FunctionDef)}
 
@@ -307,7 +308,8 @@ def test_without_a_placement_the_same_sentence_is_the_same_refusal_as_before():
     ({'庭': F.bare('UNPLACED')}, 'PLACEMENT_UNPLACED:へ:庭'),
     ({'庭': F.bare('NO_PLACEMENT', 'MISSING')}, 'PLACEMENT_NO_PLACEMENT:MISSING:へ:庭'),
     ({'猫': F.answer('PLACE')}, 'PLACEMENT_TYPE_MISMATCH:P_MOVE:が:PLACE'),
-    ({'猫': F.answer(['ANIMAL', 'PERSON'])}, 'PLACEMENT_MULTIPLE:が:猫'),
+    # W3-b2 (proposal): [ANIMAL, PERSON] is now READ (every candidate is in the agent's set: K95); a split with a candidate outside stays refused
+    ({'猫': F.answer(['ANIMAL', 'ABSTRACT'])}, 'PLACEMENT_MULTIPLE:が:猫'),
     ({'猫': F.bare('UNKNOWN')}, 'PLACEMENT_UNKNOWN:が:猫'),
 ])
 def test_path_u_abstains_with_the_typed_reason_of_the_first_decision_that_fails(over, prefix):
@@ -389,7 +391,8 @@ def test_path_s4_abstains_unless_the_part_is_a_direct_time(answer_, prefix):
 
 @pytest.mark.parametrize('text,prefix', [
     ('母がそっと手紙を書いた。', 'PLACEMENT_PART_NOT_NP:副詞'),
-    ('母がこの夜、手紙を書いた。', 'PLACEMENT_PART_NOT_ISOLATED'),
+    # W3-b2 (proposal): この is now an expressed mark (K97 D1): the unread one of the question word is どの
+    ('母がどの夜、手紙を書いた。', 'PLACEMENT_PART_NOT_ISOLATED'),
     ('そして母が夜、手紙を書いた。', 'PLACEMENT_PART_MARKER:conn'),
     ('母が夜だけ手紙を書いた。', None),
     ('母が三回、手紙を書いた。', None),

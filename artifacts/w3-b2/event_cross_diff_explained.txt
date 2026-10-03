@@ -1,0 +1,6 @@
+# deleted lines of `git diff 3b31258 -- verantyx/event_cross.py` (artifacts/w3-b2/event_cross.diff), one by one
+1. `-    verdict: str                       # AGREE | DISAGREE | NOT_CHECKED`                   the comment of TypeAgreement.verdict: the fourth value is named in it (no code change).
+2. `-                c['agreement'][arm.agreement.verdict] += 1`                                counts: a verdict that is not in VERDICTS (EXTRA_VERDICTS) gets its key at the end when it first occurs (3.6, point 2).
+3. `-    if place.state == 'MULTIPLE': return TypeAgreement('NOT_CHECKED', 'MULTIPLE')`        rule 6 of the agreement is split in two: every type expected -> AGREE_ALL_CANDIDATES, otherwise the same NOT_CHECKED (point 1).
+4. `-            if key in ENTRY_BASIS_KEYS: continue`                                         _check accepts the keys of ENTRY_FLAG_KEYS beside the keys of ENTRY_BASIS_KEYS (point 3).
+Added without deleting: the constants EXTRA_VERDICTS and ENTRY_FLAG_KEYS, the check of the shape of `role_flags` (ENTRY_FLAGS_NOT_WELL_FORMED) and the line of _filler that writes `flags['determiner']`.

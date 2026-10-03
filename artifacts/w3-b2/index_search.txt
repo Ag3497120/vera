@@ -1,0 +1,45 @@
+### 述語の枠で格を決める
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "述語の枠で格を決める",
+  "searched": 675,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 67,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 指示詞を充填物の印にする
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "指示詞を充填物の印にする",
+  "searched": 675,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 67,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 全候補一致 MULTIPLE 型による読解
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "全候補一致 MULTIPLE 型による読解",
+  "searched": 675,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 67,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

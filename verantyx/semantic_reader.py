@@ -1986,3 +1986,302 @@ def typed_head_derived_ja(toks, clause):
     if ctype.startswith(DERIVED_GATE[0][0]): return reason % ctype
     if ctype == DERIVED_GATE[1][0] and len(base) >= 2 and base[-1] == 'す' and base[-2] in _A_ROW_KANA: return reason % ctype
     return None
+
+
+# ===================================================================================================================================
+# W3-b2: the second step of reading by the type of a word. docs/READING_SOUNDNESS.md section 10B (K94-K99).
+# Nothing above this line is changed. What is added: a gate for a SET of allowed types (`placement_fit`: a split answer whose every candidate is allowed is read),
+# the reader of the frame of a predicate (`predicate_frame`, used only to narrow), the head of `X no Y` (`no_phrase_head`), one more trigger (U3) and the two plans of
+# this step. The plans return what to read; the entry (semantic_read.py) runs its own rules over it and decides in which order the plans of W3-b1 and of W3-b2 run.
+# No table of K62 / K63 / K64 is widened: the only constants are the two rule names of U3, the three demonstratives of the ticket and the two part-of-speech classes below.
+# ===================================================================================================================================
+W3B2_AMBIGUOUS_RULES = ('case:で:place|means', 'case:に:location|goal|time')        # K94: the two splits of the reader that U3 looks at
+W3B2_DEMONSTRATIVES = ('この', 'その', 'あの')                                       # K97: the ticket's three (the question word of the entry's list is not one)
+W3B2_HEAD_RELATIONAL_POS3 = ('副詞可能', '助数詞可能')                                # K96: a head of these classes does not decide the type of its phrase
+W3B2_REASON_NAMES = ('PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED', 'PLACEMENT_FRAME_TYPE_NOT_CONFIRMED', 'PLACEMENT_FRAME_INVALID', 'PLACEMENT_HEAD_RELATIONAL',
+                     'PLACEMENT_DETERMINER_ROLE_UNTYPED', 'PLACEMENT_DETERMINER_NOT_BOUNDED', 'PLACEMENT_DETERMINER_NOT_READ', 'PLACEMENT_W3B2_NOT_TRIGGERED')
+W3B2_ROLE_BASIS_RE = r'placement_(direct|all_candidates)(_head)?:[A-Z_]+(\+[A-Z_]+)*'    # K99: the values of `role_basis` the new paths write (and W3-b1's)
+_CASE_PARTICLES_9 = ('が', 'を', 'に', 'で', 'へ', 'と', 'から', 'まで', 'より')     # the keys a CONFIRMED frame may hold (docs/COARSE_PLACEMENT.md 12.10)
+
+
+def placement_fit(answer, allowed, *, adjunct=False):
+    """K95, the gate for a SET of allowed types: (kind, types) or (None, reason). `placement_type` is the gate of one type; this one adds the one case it refuses
+    for being split: every candidate of a direct split answer is in `allowed` (then whichever candidate it is, the reading is the same).
+      ('direct', (T,))                T is the one type of a DECIDED direct answer and is in `allowed`
+      ('mismatch', (T,))              the same, T is not in `allowed` (the caller names it in its own reason)
+      ('all_candidates', (T1, T2..))  a MULTIPLE direct answer, no generated definition, not (an adjunct decided only by role distributions), every type in `allowed`
+      (None, reason)                  every other case; for a split answer a candidate of which is outside, the reason is PLACEMENT_MULTIPLE, as in W3-b1; an estimated
+                                      split gives the reason of the estimate (it is a construction, whatever its candidates)."""
+    allowed = frozenset(allowed)
+    noun, why = placement_type(answer, adjunct=adjunct)
+    if why is None:
+        return ('direct', (noun,)) if noun in allowed else ('mismatch', (noun,))
+    if why != 'PLACEMENT_MULTIPLE': return None, why
+    # placement_type has checked the contract: the state is MULTIPLE, the origin is direct or estimated
+    if answer['origin'] == 'estimated':
+        return None, 'PLACEMENT_ESTIMATED_NEAR' if answer['estimate_basis'] == 'proximity' else 'PLACEMENT_ESTIMATED_GENERATED'
+    arms = answer['decided_by']
+    if 'gen_definition' in arms: return None, 'PLACEMENT_DIRECT_VIA_GENERATED'
+    if adjunct and all(a.startswith('role@') for a in arms): return None, 'PLACEMENT_SLOT_EVIDENCE_ONLY'
+    types = tuple(sorted(answer['top']))
+    if set(types) <= allowed: return 'all_candidates', types
+    return None, 'PLACEMENT_MULTIPLE'
+
+
+def predicate_frame(answer):
+    """K95, the frame of a predicate (W3-a3, docs/COARSE_PLACEMENT.md 12.10), read only to NARROW what the table reads: ('table', None) when the answer has no frame
+    (no `frame_status`, NOT_CONFIRMED, NO_FRAME_TABLE: the table alone decides, as before), ('confirmed', {particle: frozenset(types)}) for a CONFIRMED frame that keeps the
+    invariants of 12.10, else (None, 'PLACEMENT_FRAME_INVALID:<problem>'). The caller has already passed the answer through `placement_type`."""
+    if 'frame_status' not in answer: return 'table', None
+    status = answer['frame_status']
+    if status in ('NOT_CONFIRMED', 'NO_FRAME_TABLE'): return 'table', None
+    if status != 'CONFIRMED': return None, 'PLACEMENT_FRAME_INVALID:FRAME_STATUS_UNEXPECTED'
+
+    def bad(problem): return None, 'PLACEMENT_FRAME_INVALID:' + problem
+    if answer.get('namespace') != 'P': return bad('NAMESPACE_NOT_P')
+    if answer.get('state') != 'DECIDED' or answer.get('origin') != 'direct': return bad('NOT_DECIDED_DIRECT')
+    if 'gen_frame' not in (answer.get('decided_by') or []): return bad('GEN_FRAME_NOT_IN_DECIDED_BY')
+    frame = answer.get('frame')
+    if not isinstance(frame, dict): return bad('FRAME_NOT_A_MAPPING')
+    out = {}
+    for particle, types in frame.items():
+        if particle not in _CASE_PARTICLES_9: return bad('PARTICLE_NOT_CASE:%s' % (particle,))
+        if not (isinstance(types, list) and types and all(isinstance(t, str) and t for t in types) and types == sorted(set(types))):
+            return bad('TYPES_NOT_A_SORTED_LIST:%s' % (particle,))
+        out[particle] = frozenset(types)
+    return 'confirmed', out
+
+
+def _basis_types(basis):
+    """The types of a `role_basis` value: `placement_direct_head:PLACE` -> ('PLACE',), `placement_all_candidates:A+B` -> ('A', 'B')."""
+    return tuple(basis.split(':', 1)[1].split('+'))
+
+
+def typed_frame_check_ja(toks, typed, predicate_answer):
+    """K95: the frame of the predicate (when CONFIRMED) must hold the particle and every type of every role a path U read; None, or the reason. Applied to what
+    W3-b1 read (new questions are not asked) and, inside the plan, to what W3-b2 reads."""
+    kind, info = predicate_frame(predicate_answer)
+    if kind is None: return info
+    if kind == 'table': return None
+    ptype = typed['predicate_basis'].split(':', 1)[1]
+    for name, role in typed['roles']:
+        particle = _particle_after(toks, role.span.end)
+        if particle not in info: return 'PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:%s:%s' % (ptype, particle)
+        types = _basis_types(typed['role_basis'][name])
+        if not set(types) <= info[particle]: return 'PLACEMENT_FRAME_TYPE_NOT_CONFIRMED:%s:%s:%s' % (ptype, particle, '+'.join(types))
+    return None
+
+
+def _is_no_token(token):
+    f = token[0].feature
+    return token[0].surface == 'の' and f.pos1 == '助詞' and f.pos2 == '格助詞'
+
+
+def no_phrase_head(toks, start, end):
+    """K96: the head of `X no Y`, (head, None); (None, None) when the span has not the structure; (None, 'PLACEMENT_HEAD_RELATIONAL:<pos3>') when the head is of a class
+    that does not decide the type of the phrase. The structure (no list of words): the tokens of the span are all nouns (not numerals), prefixes, suffixes or the case
+    particle の; there is at least one の, none first, none last, none next to another. The head is what stands after the last の."""
+    inside = [t for t in toks if t[1] >= start and t[2] <= end]
+    if not inside or inside[0][1] != start or inside[-1][2] != end: return None, None
+
+    def nominal(t):
+        f = t[0].feature
+        return (f.pos1 == '名詞' and f.pos2 != '数詞') or f.pos1 in ('接頭辞', '接尾辞')
+    if not all(_is_no_token(t) or nominal(t) for t in inside): return None, None
+    at = [i for i, t in enumerate(inside) if _is_no_token(t)]
+    if not at or at[0] == 0 or at[-1] == len(inside) - 1 or any(b - a == 1 for a, b in zip(at, at[1:])): return None, None
+    head = inside[at[-1] + 1:]
+    pos3 = head[-1][0].feature.pos3
+    if pos3 in W3B2_HEAD_RELATIONAL_POS3: return None, 'PLACEMENT_HEAD_RELATIONAL:%s' % pos3
+    return ''.join(t[0].surface for t in head), None
+
+
+def _is_demonstrative_token(token):
+    """K97: a demonstrative of the ticket's three, by the part of speech (a 連体詞) and the surface. An interjection the tagger cuts is not one."""
+    return token[0].feature.pos1 == '連体詞' and token[0].surface in W3B2_DEMONSTRATIVES
+
+
+def _w3b2_not_demonstrative(toks, role):
+    """K97: a role span that begins with a 連体詞 that the entry strips as a demonstrative (its list holds the question word) but that is not one of the three:
+    the reason, else None. The question is not read."""
+    from .semantic_read import _DEMONSTRATIVES
+    inside = [t for t in toks if t[1] >= role.span.start and t[2] <= role.span.end]
+    if inside and inside[0][0].feature.pos1 == '連体詞' and inside[0][0].surface in _DEMONSTRATIVES and inside[0][0].surface not in W3B2_DEMONSTRATIVES:
+        return 'PLACEMENT_DETERMINER_NOT_READ:%s' % inside[0][0].surface
+    return None
+
+
+def typed_trigger_w3b2_ja(text, view):
+    """K94: 'U3' (a clause whose で phrase the reader left ambiguous) or None. Decided before any question to the placement. One sentence, nothing unread, exactly one
+    clause of the frame rule, no condition, a predicate in none of the reader's four lists, the unsupported reasons only the ambiguity of で (and, beside it, of に), and
+    every `ambiguous` role of one of the two rules of W3B2_AMBIGUOUS_RULES. A split the reader names otherwise (result|beneficiary, goal|purpose|addressee ...) is not
+    looked at."""
+    if len(list(_sentences(text))) != 1 or view.unread or len(view.clauses) != 1: return None
+    clause = view.clauses[0]
+    if clause.rule != 'frame' or clause.conditions: return None
+    if any(clause.predicate in four for four in (_TRANSFER_PREDICATES, _GOAL_PREDICATES, _PLACEMENT_PREDICATES, _LOCATION_PREDICATES)): return None
+    unsupported = set(clause.unsupported)
+    if unsupported not in ({'ambiguous case role: で'}, {'ambiguous case role: で', 'ambiguous case role: に'}): return None
+    ambiguous = [r for r in clause.roles if r.name == 'ambiguous']
+    if not ambiguous or not all(r.rule in W3B2_AMBIGUOUS_RULES for r in ambiguous): return None
+    if not any(r.rule == W3B2_AMBIGUOUS_RULES[0] for r in ambiguous): return None
+    return 'U3'
+
+
+def typed_plan_u_w3b2_ja(clause, toks, query, *, voice, written, strip, role_map):
+    """K94-K96, the plan of paths U and U3 of W3-b2: (typed, None) or (None, reason). The same table (K62) and the same steps as `typed_plan_u_ja`, with three
+    differences: a role is read when `placement_fit` gives `direct` or `all_candidates` for the row of its particle; the type of `X no Y` is asked of its head (the whole
+    phrase is not asked); the frame of the predicate (K95) narrows each role (the particle must be in it, every type of the role must be in its list)."""
+    if voice != 'active': return None, 'PLACEMENT_VOICE_NOT_ACTIVE'
+    if written is None or written != clause.predicate: return None, 'PLACEMENT_PREDICATE_NORMALIZED'
+    ask = _Asker(query)
+    answer_p = ask(written)
+    ptype, why = placement_type(answer_p)
+    if why: return None, '%s:predicate:%s' % (why, written)
+    if not ptype.startswith('P_'): return None, 'PLACEMENT_NOT_PREDICATE_TYPE'
+    if ptype in TYPED_FRAMES_NOT_READ: return None, 'PLACEMENT_FRAME_NOT_READ:' + ptype
+    rows = TYPED_FRAMES.get(ptype)
+    if rows is None: return None, 'PLACEMENT_FRAME_NOT_READ:' + ptype
+    fkind, finfo = predicate_frame(answer_p)
+    if fkind is None: return None, finfo
+    chosen, basis = [], {}
+    for role in clause.roles:
+        particle = _particle_after(toks, role.span.end)
+        value = strip(role)
+        if not value: return None, 'PLACEMENT_INVALID:EMPTY_TERM:%s' % (particle,)
+        question = _w3b2_not_demonstrative(toks, role)
+        if question: return None, question
+        in_frame = [row for row in rows if particle in row[1]]
+        if not in_frame: return None, 'PLACEMENT_PARTICLE_NOT_IN_FRAME:%s:%s' % (ptype, particle)
+        if fkind == 'confirmed' and particle not in finfo: return None, 'PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:%s:%s' % (ptype, particle)
+        head, relational = no_phrase_head(toks, role.span.end - len(value), role.span.end)      # the value is the end of the role's text (a demonstrative at its start was taken off)
+        if relational: return None, relational
+        answer = ask(head or value)
+        fits, last = [], None
+        for row in in_frame:
+            kind, payload = placement_fit(answer, row[2], adjunct=row[3] == 'adjunct')
+            if kind in ('direct', 'all_candidates'): fits.append((row, kind, payload))
+            else: last = (kind, payload)
+        if not fits:
+            kind, payload = last
+            if kind == 'mismatch': return None, 'PLACEMENT_TYPE_MISMATCH:%s:%s:%s' % (ptype, particle, payload[0])
+            return None, '%s:%s:%s' % (payload, particle, value)
+        if len(fits) > 1: return None, 'PLACEMENT_ROLE_TIE'
+        row, kind, types = fits[0]
+        if fkind == 'confirmed' and not set(types) <= finfo[particle]:
+            return None, 'PLACEMENT_FRAME_TYPE_NOT_CONFIRMED:%s:%s:%s' % (ptype, particle, '+'.join(types))
+        if role.name not in ('recipient', 'ambiguous'):
+            decided = 'agent' if role.name == 'agent' else role_map.get(role.name)
+            if decided != row[0]: return None, 'PLACEMENT_READER_DISAGREES:%s:%s' % (decided or role.name, row[0])
+        if row[0] in basis: return None, 'PLACEMENT_DUPLICATE_ROLE:' + row[0]
+        chosen.append((row[0], role))
+        basis[row[0]] = 'placement_%s%s:%s' % (kind, '_head' if head else '', '+'.join(types))
+    return {'mode': 'override', 'roles': chosen, 'predicate_basis': 'placement_direct:' + ptype, 'role_basis': basis, 'clause': replace(clause, unsupported=())}, None
+
+
+def typed_plan_s4_w3b2_ja(text, toks, clause, query, *, role_map):
+    """K96-K97, the plan of path S4 of W3-b2: the parts of W3-b1's plan (a run of content tokens no role and no predicate covers, read as `time` / `place` by K63), with
+    (K96) two runs joined by one の made one part whose head is the later run, and (K97) a demonstrative before the part (D1) or before a role the reader typed, when no
+    part is left (D2). (typed, None) or (None, reason)."""
+    pred_i = next((i for i, (w, a, b) in enumerate(toks) if a == clause.predicate_span.start), None)
+    if pred_i is None: return None, 'PLACEMENT_PART_NONE'
+    covered = [(r.span.start, r.span.end) for r in clause.roles] + list(_predicate_coverage(toks, pred_i, clause.predicate))
+
+    def is_covered(i): return any(l <= toks[i][1] and toks[i][2] <= r for l, r in covered)
+    runs, run = [], []
+    for i, (w, a, b) in enumerate(toks):
+        if w.feature.pos1 in _CONTENT_WORDS and not is_covered(i): run.append(i)
+        else:
+            if run: runs.append(run)
+            run = []
+    if run: runs.append(run)
+    if not runs: return _s4_demonstrative_roles(text, toks, clause, query, role_map, covered)
+    parts = []
+    for r in runs:                   # K96: two runs joined by exactly one の are one part
+        if parts and r[0] - parts[-1][-1] == 2 and _is_no_token(toks[parts[-1][-1] + 1]): parts[-1] = parts[-1] + [parts[-1][-1] + 1] + r
+        else: parts.append(r)
+    ask = _Asker(query)
+    connective = any(t[0].feature.pos1 == '接続詞' for t in toks)
+    new_roles, basis, flags = [], {}, {}
+    for part in parts:
+        first, last = part[0], part[-1]
+        surface = ''.join(toks[i][0].surface for i in part)
+        for i in part:
+            if _is_no_token(toks[i]): continue
+            pos1 = toks[i][0].feature.pos1
+            if pos1 not in ('名詞', '接頭辞', '接尾辞'): return None, 'PLACEMENT_PART_NOT_NP:' + pos1
+            if toks[i][0].feature.pos2 == '数詞': return None, 'PLACEMENT_PART_MARKER:quant'
+        determiner, lead = None, first                  # K97 D1: a demonstrative just before the part is not part of it; what stands before it decides the isolation
+        if first > 0 and _is_demonstrative_token(toks[first - 1]) and toks[first - 1][2] == toks[first][1]:
+            determiner, lead = toks[first - 1][0].surface, first - 1
+        j = lead - 1
+        isolated = j < 0 or toks[j][0].feature.pos1 == '補助記号' or is_covered(j)
+        if not isolated:
+            while j >= 0 and toks[j][0].feature.pos1 == '助詞': j -= 1
+            isolated = 0 <= j < lead - 1 and is_covered(j)
+        if not isolated: return None, 'PLACEMENT_PART_NOT_ISOLATED'
+        if last + 1 >= len(toks): return None, 'PLACEMENT_PART_NOT_FOLLOWED'
+        after = toks[last + 1][0]
+        if after.surface == '、' and after.feature.pos1 == '補助記号': particle, particle_token = '', None
+        elif after.feature.pos1 == '助詞': particle, particle_token = after.surface, toks[last + 1]
+        else: return None, 'PLACEMENT_PART_NOT_FOLLOWED'
+        if particle_token is not None and last + 2 < len(toks) and toks[last + 2][0].feature.pos1 == '助詞':
+            return None, 'PLACEMENT_PART_PARTICLE:' + particle + toks[last + 2][0].surface
+        for token in [toks[i] for i in part] + ([particle_token] if particle_token is not None else []):
+            kind = _w3b1_marker(token)
+            if kind: return None, 'PLACEMENT_PART_MARKER:' + kind
+        if connective: return None, 'PLACEMENT_PART_MARKER:conn'
+        start, end = toks[first][1], toks[last][2]
+        head, relational = no_phrase_head(toks, start, end)
+        if relational: return None, relational
+        noun, why = placement_type(ask(head or surface), adjunct=True)
+        if why: return None, '%s:part:%s' % (why, surface)
+        role_name = PLACEMENT_PART_CONSTRUCTIONS.get((noun, particle))
+        if role_name is None: return None, 'PLACEMENT_PART_NO_ROLE:%s:%s' % (noun, particle or '∅')
+        if role_name in basis: return None, 'PLACEMENT_DUPLICATE_ROLE:' + role_name
+        label = 'placement_direct%s:%s' % ('_head' if head else '', noun)
+        new_roles.append(Role(role_name, surface, Span(clause.predicate_span.source, start, end, text[start:end]), label))
+        basis[role_name] = label
+        if determiner: flags[role_name] = {'determiner': determiner}
+    typed = {'mode': 'extra', 'roles': new_roles, 'predicate_basis': None, 'role_basis': basis,
+             'clause': replace(clause, roles=clause.roles + tuple(new_roles), unsupported=())}
+    if flags: typed['role_flags'] = flags
+    return typed, None
+
+
+def _s4_demonstrative_roles(text, toks, clause, query, role_map, covered):
+    """K97 D2: no content run is left, and the reader's `unrepresented source content` is only that a demonstrative stands before a role it typed (the span of the role
+    does not hold it). The roles after a demonstrative are marked, when the name the entry writes for them is in the table of types of the event cross and the type of
+    their value (the head of `X no Y`) fits it by `placement_fit`; nothing else is added. (typed, None) or (None, reason)."""
+    from .event_cross import EXPECTED_TYPES
+
+    def before(role):
+        i = next((i for i, t in enumerate(toks) if t[1] == role.span.start), None)
+        return i - 1 if i is not None and i > 0 and _is_demonstrative_token(toks[i - 1]) and toks[i - 1][2] == role.span.start else None
+    marked = [(role, before(role)) for role in clause.roles if before(role) is not None]
+    if not marked: return None, 'PLACEMENT_PART_NONE'
+    named = []
+    for role, k in marked:
+        name = 'agent' if role.name == 'agent' else role_map.get(role.name)
+        if name is None: return None, 'PLACEMENT_DETERMINER_ROLE_UNTYPED:%s' % role.name
+        if name not in EXPECTED_TYPES: return None, 'PLACEMENT_DETERMINER_ROLE_UNTYPED:%s' % name
+        named.append((role, k, name))
+    tagged = tag([w for w, _, _ in toks], [a for _, a, _ in toks])
+    demonstratives = [(toks[k][1], toks[k][2]) for _, k, _ in named]
+    if _uncovered_nominals(toks, covered + demonstratives): return None, 'PLACEMENT_DETERMINER_NOT_BOUNDED'
+    for role in clause.roles:
+        ds = next((toks[k][1] for r, k, _ in named if r is role), role.span.start)
+        if not phrase_bounded(tagged, ds, role.span.end): return None, 'PLACEMENT_DETERMINER_NOT_BOUNDED'
+    ask = _Asker(query)
+    basis, flags = {}, {}
+    for role, k, name in named:
+        value = role.span.text
+        head, relational = no_phrase_head(toks, role.span.start, role.span.end)
+        if relational: return None, relational
+        kind, payload = placement_fit(ask(head or value), EXPECTED_TYPES[name], adjunct=name in ('time', 'place'))
+        if kind == 'mismatch': return None, 'PLACEMENT_TYPE_MISMATCH:determiner:%s:%s' % (name, payload[0])
+        if kind is None: return None, '%s:%s:%s' % (payload, name, value)
+        if name in basis: return None, 'PLACEMENT_DUPLICATE_ROLE:' + name
+        basis[name] = 'placement_%s%s:%s' % (kind, '_head' if head else '', '+'.join(payload))
+        flags[name] = {'determiner': toks[k][0].surface}
+    return {'mode': 'extra', 'roles': [], 'predicate_basis': None, 'role_basis': basis, 'role_flags': flags, 'clause': replace(clause, unsupported=())}, None

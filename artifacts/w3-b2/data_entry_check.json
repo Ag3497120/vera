@@ -1,0 +1,5893 @@
+{
+ "summary": {
+  "mode": "live",
+  "rows": 284,
+  "verdicts": {
+   "abstain": 171,
+   "correct": 113
+  },
+  "verdicts_by_data": {
+   "frame": {
+    "abstain": 54,
+    "correct": 32
+   },
+   "multiple": {
+    "abstain": 32,
+    "correct": 30
+   },
+   "determiner": {
+    "abstain": 40,
+    "correct": 34
+   },
+   "no": {
+    "abstain": 45,
+    "correct": 17
+   }
+  },
+  "misread": 0,
+  "incomplete": 0,
+  "unjudged": 0,
+  "entry_expect_mismatch": 25,
+  "w3b2_expect_mismatch": 37,
+  "entry_expect_mismatch_declared": 25,
+  "entry_expect_mismatch_undeclared": 0,
+  "w3b2_expect_mismatch_declared": 37,
+  "w3b2_expect_mismatch_undeclared": 0,
+  "bad_verdicts": {},
+  "words_missing_from_the_fixture": []
+ },
+ "entry_expect_mismatch": [
+  {
+   "id": "W3B2-FRAME-015",
+   "input": "生徒が校庭で回った。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "NO_PREDICATE_TOKEN"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-018",
+   "input": "姉が神社で願った。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "NO_PREDICATE_TOKEN"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-022",
+   "input": "祖母が隠れ家で願った。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "NO_PREDICATE_TOKEN"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-036",
+   "input": "先生が夜にホテルで願った。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "NO_PREDICATE_TOKEN"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-007",
+   "input": "祖母がこの春休み、絵を描いた。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-008",
+   "input": "店員がその年明け、靴を磨いた。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-011",
+   "input": "弟がこの大晦日、靴を磨いた。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-001",
+   "input": "兄が祖父の畑へ走った。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_UNKNOWN:へ:祖父の畑"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:祖父の畑",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-002",
+   "input": "母が先生の庭へ歩いた。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_UNKNOWN:へ:先生の庭"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:先生の庭",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-003",
+   "input": "姉が叔父の村へ歩いた。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_UNKNOWN:へ:叔父の村"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:叔父の村",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-004",
+   "input": "弟が隣人の港へ走った。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_ESTIMATED_NEAR:へ:隣人の港"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:隣人の港",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-005",
+   "input": "妹が友人の橋へ歩いた。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_ESTIMATED_NEAR:へ:友人の橋"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:友人の橋",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-006",
+   "input": "父が祖母の寺へ歩いた。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_ESTIMATED_NEAR:へ:祖母の寺"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:祖母の寺",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-007",
+   "input": "祖父が母の台所へ歩いた。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_ESTIMATED_NEAR:へ:母の台所"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:母の台所",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-008",
+   "input": "先生が生徒の玄関へ走った。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_UNKNOWN:へ:生徒の玄関"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:生徒の玄関",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-009",
+   "input": "店員が店長の倉庫へ走った。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_UNKNOWN:へ:店長の倉庫"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:店長の倉庫",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-013",
+   "input": "兄が友人の隣へ走った。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_UNKNOWN:へ:友人の隣"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:友人の隣",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-014",
+   "input": "姉が祖父の横へ歩いた。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_UNKNOWN:へ:祖父の横"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:祖父の横",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-027",
+   "input": "先生が島のホテルで願った。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "NO_PREDICATE_TOKEN"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-028",
+   "input": "兄が校庭で弟の犬を呼んだ。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-031",
+   "input": "先生が国道で祖母の猫を呼んだ。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-032",
+   "input": "兄が去年の大晦日、窓を拭いた。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-033",
+   "input": "姉が学校の春休み、本を読んだ。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-034",
+   "input": "母が町の祝日、皿を洗った。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-035",
+   "input": "弟が去年の年明け、手紙を書いた。",
+   "entry_expect": "read",
+   "readable": false,
+   "verdict": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  }
+ ],
+ "w3b2_expect_mismatch": [
+  {
+   "id": "W3B2-FRAME-015",
+   "input": "生徒が校庭で回った。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-018",
+   "input": "姉が神社で願った。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-022",
+   "input": "祖母が隠れ家で願った。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-036",
+   "input": "先生が夜にホテルで願った。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-043",
+   "input": "姉がゲートで願った。",
+   "w3b2_expect": "PLACEMENT_MULTIPLE",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-032",
+   "input": "住民が神社で願った。",
+   "w3b2_expect": "PLACEMENT_MULTIPLE",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-007",
+   "input": "祖母がこの春休み、絵を描いた。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-008",
+   "input": "店員がその年明け、靴を磨いた。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-011",
+   "input": "弟がこの大晦日、靴を磨いた。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-001",
+   "input": "兄が祖父の畑へ走った。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:祖父の畑",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-002",
+   "input": "母が先生の庭へ歩いた。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:先生の庭",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-003",
+   "input": "姉が叔父の村へ歩いた。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:叔父の村",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-004",
+   "input": "弟が隣人の港へ走った。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:隣人の港",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-005",
+   "input": "妹が友人の橋へ歩いた。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:友人の橋",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-006",
+   "input": "父が祖母の寺へ歩いた。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:祖母の寺",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-007",
+   "input": "祖父が母の台所へ歩いた。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:母の台所",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-008",
+   "input": "先生が生徒の玄関へ走った。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:生徒の玄関",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-009",
+   "input": "店員が店長の倉庫へ走った。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:店長の倉庫",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-013",
+   "input": "兄が友人の隣へ走った。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:友人の隣",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-014",
+   "input": "姉が祖父の横へ歩いた。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:祖父の横",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-015",
+   "input": "母が先生の方へ歩いた。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-027",
+   "input": "先生が島のホテルで願った。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-028",
+   "input": "兄が校庭で弟の犬を呼んだ。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-031",
+   "input": "先生が国道で祖母の猫を呼んだ。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-032",
+   "input": "兄が去年の大晦日、窓を拭いた。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-033",
+   "input": "姉が学校の春休み、本を読んだ。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-034",
+   "input": "母が町の祝日、皿を洗った。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-035",
+   "input": "弟が去年の年明け、手紙を書いた。",
+   "w3b2_expect": "READ",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-036",
+   "input": "兄が友人の前へ走った。",
+   "w3b2_expect": "PLACEMENT_HEAD_RELATIONAL",
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:前",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:前",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-037",
+   "input": "姉が祖父の後へ歩いた。",
+   "w3b2_expect": "PLACEMENT_HEAD_RELATIONAL",
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:後",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:後",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-044",
+   "input": "兄が夏の夕方、窓を拭いた。",
+   "w3b2_expect": "PLACEMENT_HEAD_RELATIONAL",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-045",
+   "input": "姉が春の夜、手紙を書いた。",
+   "w3b2_expect": "PLACEMENT_HEAD_RELATIONAL",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-046",
+   "input": "母が冬の休日、靴を磨いた。",
+   "w3b2_expect": "PLACEMENT_HEAD_RELATIONAL",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-047",
+   "input": "弟が秋の平日、本を読んだ。",
+   "w3b2_expect": "PLACEMENT_HEAD_RELATIONAL",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-059",
+   "input": "兄が校庭で友人の挨拶を断った。",
+   "w3b2_expect": "PLACEMENT_MULTIPLE",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-060",
+   "input": "姉が神社で先生の日程を断った。",
+   "w3b2_expect": "PLACEMENT_MULTIPLE",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-061",
+   "input": "友人の客が庭へ走った。",
+   "w3b2_expect": "PLACEMENT_MULTIPLE",
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  }
+ ],
+ "rows": [
+  {
+   "id": "W3B2-FRAME-001",
+   "data": "frame",
+   "input": "兄が校庭で走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-002",
+   "data": "frame",
+   "input": "弟が歩道で走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-003",
+   "data": "frame",
+   "input": "姉が森林で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-004",
+   "data": "frame",
+   "input": "妹が山頂で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-005",
+   "data": "frame",
+   "input": "母が神社で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-006",
+   "data": "frame",
+   "input": "父が国道で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-007",
+   "data": "frame",
+   "input": "犬が校庭で走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-008",
+   "data": "frame",
+   "input": "猫が廃墟で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-009",
+   "data": "frame",
+   "input": "馬が森林で走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-010",
+   "data": "frame",
+   "input": "鳥が山頂で飛んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-011",
+   "data": "frame",
+   "input": "鳥が森林で飛んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-012",
+   "data": "frame",
+   "input": "祖父が校舎で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-013",
+   "data": "frame",
+   "input": "祖母が神社で動いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-014",
+   "data": "frame",
+   "input": "店員が歩道で走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-015",
+   "data": "frame",
+   "input": "生徒が校庭で回った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_PREDICATE_TOKEN"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-016",
+   "data": "frame",
+   "input": "学生が校舎で走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-017",
+   "data": "frame",
+   "input": "兄が校舎で名乗った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-018",
+   "data": "frame",
+   "input": "姉が神社で願った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_PREDICATE_TOKEN"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-019",
+   "data": "frame",
+   "input": "弟がホテルで断った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-020",
+   "data": "frame",
+   "input": "母がアパートで断った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-021",
+   "data": "frame",
+   "input": "先生が宿舎で名乗った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-022",
+   "data": "frame",
+   "input": "祖母が隠れ家で願った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_PREDICATE_TOKEN"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-023",
+   "data": "frame",
+   "input": "兄が校庭で弟を呼んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-024",
+   "data": "frame",
+   "input": "姉が神社で妹を誘った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-025",
+   "data": "frame",
+   "input": "母が校舎で兄を呼んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-026",
+   "data": "frame",
+   "input": "先生が国道で生徒を呼んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-027",
+   "data": "frame",
+   "input": "店員がホテルで犬を誘った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-028",
+   "data": "frame",
+   "input": "母がアパートで依頼を断った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-029",
+   "data": "frame",
+   "input": "父が神社で合格を願った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-030",
+   "data": "frame",
+   "input": "兄が民宿で名前を名乗った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-031",
+   "data": "frame",
+   "input": "兄が夜に校庭で走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-032",
+   "data": "frame",
+   "input": "姉が昼に神社で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-033",
+   "data": "frame",
+   "input": "母が冬に宿舎で断った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-034",
+   "data": "frame",
+   "input": "父が休日に川で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-035",
+   "data": "frame",
+   "input": "弟が平日に歩道で走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-036",
+   "data": "frame",
+   "input": "先生が夜にホテルで願った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_PREDICATE_TOKEN"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-037",
+   "data": "frame",
+   "input": "兄が杖で歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:で:ARTIFACT",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-038",
+   "data": "frame",
+   "input": "祖父が杖で歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:で:ARTIFACT",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-039",
+   "data": "frame",
+   "input": "母が杖で動いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:で:ARTIFACT",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-040",
+   "data": "frame",
+   "input": "弟が棒で走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:で:ARTIFACT",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-041",
+   "data": "frame",
+   "input": "兄が窓口で名乗った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_MULTIPLE:で:窓口",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-042",
+   "data": "frame",
+   "input": "母がホールで断った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_MULTIPLE:で:ホール",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-043",
+   "data": "frame",
+   "input": "姉がゲートで願った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_PREDICATE_TOKEN"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-044",
+   "data": "frame",
+   "input": "弟が交番で走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_MULTIPLE:で:交番",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-045",
+   "data": "frame",
+   "input": "兄が廊下で走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:廊下",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-046",
+   "data": "frame",
+   "input": "弟が路地で走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:路地",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-047",
+   "data": "frame",
+   "input": "祖母が縁側で歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:縁側",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-048",
+   "data": "frame",
+   "input": "猫が屋根で歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:屋根",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-049",
+   "data": "frame",
+   "input": "犬が洞窟で走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:洞窟",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-050",
+   "data": "frame",
+   "input": "姉が浜辺で歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:浜辺",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-051",
+   "data": "frame",
+   "input": "姉が階段で走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:階段",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-052",
+   "data": "frame",
+   "input": "母が受付で名乗った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:受付",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-053",
+   "data": "frame",
+   "input": "兄がテラスで歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_DIRECT_VIA_GENERATED:で:テラス",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-054",
+   "data": "frame",
+   "input": "弟が渓流で走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_DIRECT_VIA_GENERATED:で:渓流",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-055",
+   "data": "frame",
+   "input": "母が長屋で名乗った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_DIRECT_VIA_GENERATED:で:長屋",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-056",
+   "data": "frame",
+   "input": "兄が蔵で名乗った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_ESTIMATED_GENERATED:で:蔵",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-057",
+   "data": "frame",
+   "input": "姉が塹壕で走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_ESTIMATED_GENERATED:で:塹壕",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-058",
+   "data": "frame",
+   "input": "兄が土間で歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_UNPLACED:で:土間",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-059",
+   "data": "frame",
+   "input": "母が広間で名乗った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_UNPLACED:で:広間",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-060",
+   "data": "frame",
+   "input": "祖父が座敷で断った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_UNPLACED:で:座敷",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-061",
+   "data": "frame",
+   "input": "妹が屋根裏で歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_UNPLACED:で:屋根裏",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-062",
+   "data": "frame",
+   "input": "兄が里で歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:で:QUANTITY",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-063",
+   "data": "frame",
+   "input": "兄が校庭で遊んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_ACT",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-064",
+   "data": "frame",
+   "input": "弟が神社で遊んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_ACT",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-065",
+   "data": "frame",
+   "input": "母がホテルで働いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_ACT",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-066",
+   "data": "frame",
+   "input": "父がアパートで働いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_ACT",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-067",
+   "data": "frame",
+   "input": "猫が校舎で眠った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_EXIST",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-068",
+   "data": "frame",
+   "input": "犬が基地で眠った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_EXIST",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-069",
+   "data": "frame",
+   "input": "母が隠れ家で休んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_EXIST",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-070",
+   "data": "frame",
+   "input": "妹が校庭で泣いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_EMOTION",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-071",
+   "data": "frame",
+   "input": "弟が神社で笑った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_EMOTION",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-072",
+   "data": "frame",
+   "input": "祖父が国道で座った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_EXIST",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-073",
+   "data": "frame",
+   "input": "姉が校舎で窓を拭いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_ACT",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-074",
+   "data": "frame",
+   "input": "兄が校庭で絵を描いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_CREATE",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-075",
+   "data": "frame",
+   "input": "姉が神社で手紙を書いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_CREATE",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-076",
+   "data": "frame",
+   "input": "兄が基地で絵を見た。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_PERCEIVE",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-077",
+   "data": "frame",
+   "input": "兄が校庭で叫んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:で",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-078",
+   "data": "frame",
+   "input": "姉が神社で叫んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:で",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-079",
+   "data": "frame",
+   "input": "母が校舎で叫んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:で",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-080",
+   "data": "frame",
+   "input": "弟が路上で叫んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:で",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-081",
+   "data": "frame",
+   "input": "会社が校庭で叫んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_TYPE_NOT_CONFIRMED:P_COMMUNICATE:が:GROUP_ORG",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-082",
+   "data": "frame",
+   "input": "チームが国道で叫んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_TYPE_NOT_CONFIRMED:P_COMMUNICATE:が:GROUP_ORG",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-083",
+   "data": "frame",
+   "input": "兄が弟に作文を直した。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-084",
+   "data": "frame",
+   "input": "姉が妹に宿題を直した。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-085",
+   "data": "frame",
+   "input": "母が父に手紙を直した。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-086",
+   "data": "frame",
+   "input": "先生が生徒に答案を直した。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-001",
+   "data": "multiple",
+   "input": "家族が庭へ走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:家族",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-002",
+   "data": "multiple",
+   "input": "家族が森へ歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:家族",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-003",
+   "data": "multiple",
+   "input": "家族が島へ飛んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:家族",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-004",
+   "data": "multiple",
+   "input": "家族が村へ歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:家族",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-005",
+   "data": "multiple",
+   "input": "家族が港へ走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:家族",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-006",
+   "data": "multiple",
+   "input": "家族が橋へ歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:家族",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-007",
+   "data": "multiple",
+   "input": "家族が寺へ歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:家族",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-008",
+   "data": "multiple",
+   "input": "家族が玄関へ走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:家族",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-009",
+   "data": "multiple",
+   "input": "家族が山へ歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:家族",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-010",
+   "data": "multiple",
+   "input": "家族が湖へ歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:家族",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-011",
+   "data": "multiple",
+   "input": "警察が屋上へ走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:警察",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-012",
+   "data": "multiple",
+   "input": "警察が倉庫へ走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:警察",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-013",
+   "data": "multiple",
+   "input": "警察が港へ歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:警察",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-014",
+   "data": "multiple",
+   "input": "警察が畑へ走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:警察",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-015",
+   "data": "multiple",
+   "input": "警察が森へ歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:警察",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-016",
+   "data": "multiple",
+   "input": "警察が湖へ歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:警察",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-017",
+   "data": "multiple",
+   "input": "警察が山へ歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:警察",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-018",
+   "data": "multiple",
+   "input": "警察が病院へ走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:警察",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-019",
+   "data": "multiple",
+   "input": "家族が校庭で走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-020",
+   "data": "multiple",
+   "input": "家族が神社で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-021",
+   "data": "multiple",
+   "input": "警察が国道で走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-022",
+   "data": "multiple",
+   "input": "警察が歩道で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-023",
+   "data": "multiple",
+   "input": "家族がホテルで名乗った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-024",
+   "data": "multiple",
+   "input": "警察がアパートで断った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-025",
+   "data": "multiple",
+   "input": "兄がホテルで注文を断った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-026",
+   "data": "multiple",
+   "input": "母が民宿で注文を断った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-027",
+   "data": "multiple",
+   "input": "先生が宿舎で注文を断った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-028",
+   "data": "multiple",
+   "input": "姉がアパートで注文を断った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-029",
+   "data": "multiple",
+   "input": "家族が川で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-030",
+   "data": "multiple",
+   "input": "警察が湖で走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-031",
+   "data": "multiple",
+   "input": "夫婦がホテルで名乗った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_MULTIPLE:が:夫婦",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-032",
+   "data": "multiple",
+   "input": "住民が神社で願った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_PREDICATE_TOKEN"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-033",
+   "data": "multiple",
+   "input": "友人が庭へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_MULTIPLE:が:友人"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:友人",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:が:友人",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-034",
+   "data": "multiple",
+   "input": "夫婦が森へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_MULTIPLE:が:夫婦"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:夫婦",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:が:夫婦",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-035",
+   "data": "multiple",
+   "input": "住民が村へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_MULTIPLE:が:住民"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:住民",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:が:住民",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-036",
+   "data": "multiple",
+   "input": "隊員が港へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_MULTIPLE:が:隊員"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:隊員",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:が:隊員",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-037",
+   "data": "multiple",
+   "input": "親子が橋へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_MULTIPLE:が:親子"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:親子",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:が:親子",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-038",
+   "data": "multiple",
+   "input": "一行が寺へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "SUBJECT_TYPE_UNDETERMINED:一行",
+    "PLACEMENT_MULTIPLE:が:一行"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:一行",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:が:一行",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-039",
+   "data": "multiple",
+   "input": "艦隊が湖へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "SUBJECT_TYPE_UNDETERMINED:艦隊",
+    "PLACEMENT_MULTIPLE:が:艦隊"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:艦隊",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:が:艦隊",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-040",
+   "data": "multiple",
+   "input": "客が庭へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_MULTIPLE:が:客"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:客",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:が:客",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-041",
+   "data": "multiple",
+   "input": "鹿が山へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_MULTIPLE:が:鹿"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:鹿",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:が:鹿",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-042",
+   "data": "multiple",
+   "input": "兄が図書館へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_MULTIPLE:へ:図書館"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:図書館",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:図書館",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-043",
+   "data": "multiple",
+   "input": "姉が家へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_MULTIPLE:へ:家"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:家",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:家",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-044",
+   "data": "multiple",
+   "input": "母が谷へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_MULTIPLE:へ:谷"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:谷",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:谷",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-045",
+   "data": "multiple",
+   "input": "弟が役所へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_MULTIPLE:へ:役所"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:役所",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:役所",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-046",
+   "data": "multiple",
+   "input": "妹が本部へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_MULTIPLE:へ:本部"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:本部",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:本部",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-047",
+   "data": "multiple",
+   "input": "父が銀行へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_MULTIPLE:へ:銀行"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:銀行",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:銀行",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-048",
+   "data": "multiple",
+   "input": "祖父が研究所へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_MULTIPLE:へ:研究所"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:研究所",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:研究所",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-049",
+   "data": "multiple",
+   "input": "先生が職場へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_MULTIPLE:へ:職場"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:職場",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:職場",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-050",
+   "data": "multiple",
+   "input": "家族が図書館へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_MULTIPLE:が:家族"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:家族",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:図書館",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-051",
+   "data": "multiple",
+   "input": "警察が家へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_MULTIPLE:が:警察"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:警察",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:家",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-052",
+   "data": "multiple",
+   "input": "家族が銀行へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_MULTIPLE:が:家族"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:が:家族",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:銀行",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-053",
+   "data": "multiple",
+   "input": "先生が校舎で挨拶を断った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_MULTIPLE:を:挨拶",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-054",
+   "data": "multiple",
+   "input": "母がホテルで勝利を願った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_MULTIPLE:を:勝利",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-055",
+   "data": "multiple",
+   "input": "姉が神社で日程を断った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_MULTIPLE:を:日程",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-056",
+   "data": "multiple",
+   "input": "兄がアパートで地図を断った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_MULTIPLE:を:地図",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-057",
+   "data": "multiple",
+   "input": "兄が窓口で歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_MULTIPLE:で:窓口",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-058",
+   "data": "multiple",
+   "input": "母がホールで走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_MULTIPLE:で:ホール",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-059",
+   "data": "multiple",
+   "input": "姉が交番で歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_MULTIPLE:で:交番",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-060",
+   "data": "multiple",
+   "input": "家族が校庭で遊んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_ACT",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-061",
+   "data": "multiple",
+   "input": "警察が神社で働いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_ACT",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-062",
+   "data": "multiple",
+   "input": "家族がホテルで眠った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_NOT_READ:P_EXIST",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-001",
+   "data": "determiner",
+   "input": "母がこの休日、本を読んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-002",
+   "data": "determiner",
+   "input": "兄がその昼、手紙を書いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-003",
+   "data": "determiner",
+   "input": "先生がこの平日、皿を洗った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-004",
+   "data": "determiner",
+   "input": "弟がその年末、靴を磨いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-005",
+   "data": "determiner",
+   "input": "父がこの月末、手紙を書いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-006",
+   "data": "determiner",
+   "input": "生徒がその誕生日、本を読んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-007",
+   "data": "determiner",
+   "input": "祖母がこの春休み、絵を描いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-008",
+   "data": "determiner",
+   "input": "店員がその年明け、靴を磨いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-009",
+   "data": "determiner",
+   "input": "兄がこの昼、皿を洗った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-010",
+   "data": "determiner",
+   "input": "姉がその冬、本を読んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-011",
+   "data": "determiner",
+   "input": "弟がこの大晦日、靴を磨いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-012",
+   "data": "determiner",
+   "input": "妹がその放課後、窓を拭いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-013",
+   "data": "determiner",
+   "input": "学生がこの休日、窓を拭いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-014",
+   "data": "determiner",
+   "input": "祖父がその夜、皿を洗った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-015",
+   "data": "determiner",
+   "input": "姉がこの冬、絵を描いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-016",
+   "data": "determiner",
+   "input": "母がその平日、本を読んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-017",
+   "data": "determiner",
+   "input": "姉があの冬、絵を描いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_ISOLATED"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NOT_ISOLATED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-018",
+   "data": "determiner",
+   "input": "妹があの放課後、窓を拭いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_ISOLATED"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NOT_ISOLATED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-019",
+   "data": "determiner",
+   "input": "祖父があの大晦日、皿を洗った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_ISOLATED"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NOT_ISOLATED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-020",
+   "data": "determiner",
+   "input": "学生があの休日、窓を拭いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_ISOLATED"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NOT_ISOLATED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-021",
+   "data": "determiner",
+   "input": "母があの平日、手紙を書いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_ISOLATED"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NOT_ISOLATED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-022",
+   "data": "determiner",
+   "input": "母がこの部屋で休んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-023",
+   "data": "determiner",
+   "input": "兄がその公園で遊んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-024",
+   "data": "determiner",
+   "input": "弟がこの工場で働いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-025",
+   "data": "determiner",
+   "input": "妹がその庭で遊んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-026",
+   "data": "determiner",
+   "input": "祖父がこの山で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-027",
+   "data": "determiner",
+   "input": "祖母がその島で休んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-028",
+   "data": "determiner",
+   "input": "生徒がこの広場で遊んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-029",
+   "data": "determiner",
+   "input": "学生がその体育館で走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-030",
+   "data": "determiner",
+   "input": "父がその台所で働いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-031",
+   "data": "determiner",
+   "input": "先生がこの港で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-032",
+   "data": "determiner",
+   "input": "姉がその病院で働いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-033",
+   "data": "determiner",
+   "input": "店員がこの美術館で働いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-034",
+   "data": "determiner",
+   "input": "兄がこの博物館で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-035",
+   "data": "determiner",
+   "input": "母がその動物園で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-036",
+   "data": "determiner",
+   "input": "弟がこの劇場で働いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-037",
+   "data": "determiner",
+   "input": "姉があの病院で働いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NONE",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-038",
+   "data": "determiner",
+   "input": "父があの台所で働いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NONE",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-039",
+   "data": "determiner",
+   "input": "先生があの港で歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NONE",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-040",
+   "data": "determiner",
+   "input": "店員があの美術館で働いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NONE",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-041",
+   "data": "determiner",
+   "input": "兄がその夜に手紙を書いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-042",
+   "data": "determiner",
+   "input": "姉がこの昼に皿を洗った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-043",
+   "data": "determiner",
+   "input": "弟がその夜に靴を磨いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-044",
+   "data": "determiner",
+   "input": "先生がこの昼に絵を描いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-045",
+   "data": "determiner",
+   "input": "父がその夜に窓を拭いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-046",
+   "data": "determiner",
+   "input": "母がこの夜に本を読んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-047",
+   "data": "determiner",
+   "input": "姉があの昼に皿を洗った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NONE",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-048",
+   "data": "determiner",
+   "input": "兄がどの夜、手紙を書いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_ISOLATED"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NOT_ISOLATED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-049",
+   "data": "determiner",
+   "input": "母がどの冬、本を読んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_ISOLATED"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NOT_ISOLATED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-050",
+   "data": "determiner",
+   "input": "姉がどの昼、皿を洗った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_ISOLATED"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NOT_ISOLATED",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NOT_ISOLATED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-051",
+   "data": "determiner",
+   "input": "母がどの部屋で歌った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NONE",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-052",
+   "data": "determiner",
+   "input": "兄がどの公園で遊んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NONE",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-053",
+   "data": "determiner",
+   "input": "姉がどの庭で遊んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NONE",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-054",
+   "data": "determiner",
+   "input": "あの兄が窓を拭いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NONE",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-055",
+   "data": "determiner",
+   "input": "あの母が本を読んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_PART_NONE",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-056",
+   "data": "determiner",
+   "input": "兄がその車で走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_DETERMINER_ROLE_UNTYPED:instrument",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-057",
+   "data": "determiner",
+   "input": "母がこの電車で歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_DETERMINER_ROLE_UNTYPED:instrument",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-058",
+   "data": "determiner",
+   "input": "姉がその自転車で走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_DETERMINER_ROLE_UNTYPED:instrument",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-059",
+   "data": "determiner",
+   "input": "弟がその船で動いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_DETERMINER_ROLE_UNTYPED:instrument",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-060",
+   "data": "determiner",
+   "input": "兄がその駅から走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_DETERMINER_ROLE_UNTYPED:source",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-061",
+   "data": "determiner",
+   "input": "母がこの町から歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_DETERMINER_ROLE_UNTYPED:source",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-062",
+   "data": "determiner",
+   "input": "姉がこの山から走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_DETERMINER_ROLE_UNTYPED:source",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-063",
+   "data": "determiner",
+   "input": "弟がその工場から歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_DETERMINER_ROLE_UNTYPED:source",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-064",
+   "data": "determiner",
+   "input": "母がその学校で歌った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_TYPE_MISMATCH:determiner:place:GROUP_ORG",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-065",
+   "data": "determiner",
+   "input": "兄がこの会社で働いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_TYPE_MISMATCH:determiner:place:GROUP_ORG",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-066",
+   "data": "determiner",
+   "input": "姉がその図書館で歌った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_MULTIPLE:place:図書館",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-067",
+   "data": "determiner",
+   "input": "弟がこの研究所で働いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_MULTIPLE:place:研究所",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-068",
+   "data": "determiner",
+   "input": "父がその家で休んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_MULTIPLE:place:家",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-069",
+   "data": "determiner",
+   "input": "母がその教室で歌った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:place:教室",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-070",
+   "data": "determiner",
+   "input": "兄がこの店で働いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:place:店",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-071",
+   "data": "determiner",
+   "input": "姉がこの海で泳いだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:place:海",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-072",
+   "data": "determiner",
+   "input": "弟がその倉庫で働いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:place:倉庫",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-073",
+   "data": "determiner",
+   "input": "弟がその朝に靴を磨いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_UNPLACED:time:朝",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-074",
+   "data": "determiner",
+   "input": "母がこの朝に本を読んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NONE"
+   ],
+   "explain": {
+    "w3b1_trigger": "S4",
+    "w3b1": "PLACEMENT_PART_NONE",
+    "w3b2_trigger": "S4",
+    "w3b2": "PLACEMENT_UNPLACED:time:朝",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-001",
+   "data": "no",
+   "input": "兄が祖父の畑へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_UNKNOWN:へ:祖父の畑"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:祖父の畑",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-002",
+   "data": "no",
+   "input": "母が先生の庭へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_UNKNOWN:へ:先生の庭"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:先生の庭",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-003",
+   "data": "no",
+   "input": "姉が叔父の村へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_UNKNOWN:へ:叔父の村"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:叔父の村",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-004",
+   "data": "no",
+   "input": "弟が隣人の港へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_ESTIMATED_NEAR:へ:隣人の港"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:隣人の港",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-005",
+   "data": "no",
+   "input": "妹が友人の橋へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_ESTIMATED_NEAR:へ:友人の橋"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:友人の橋",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-006",
+   "data": "no",
+   "input": "父が祖母の寺へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_ESTIMATED_NEAR:へ:祖母の寺"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:祖母の寺",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-007",
+   "data": "no",
+   "input": "祖父が母の台所へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_ESTIMATED_NEAR:へ:母の台所"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:母の台所",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-008",
+   "data": "no",
+   "input": "先生が生徒の玄関へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_UNKNOWN:へ:生徒の玄関"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:生徒の玄関",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-009",
+   "data": "no",
+   "input": "店員が店長の倉庫へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_UNKNOWN:へ:店長の倉庫"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:店長の倉庫",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-010",
+   "data": "no",
+   "input": "兄が町の広場へ走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:町の広場",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-011",
+   "data": "no",
+   "input": "姉が学校の工場へ歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:学校の工場",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-012",
+   "data": "no",
+   "input": "弟が会社の屋上へ走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:会社の屋上",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-013",
+   "data": "no",
+   "input": "兄が友人の隣へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_UNKNOWN:へ:友人の隣"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:友人の隣",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-014",
+   "data": "no",
+   "input": "姉が祖父の横へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_UNKNOWN:へ:祖父の横"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:祖父の横",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-015",
+   "data": "no",
+   "input": "母が先生の方へ歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-016",
+   "data": "no",
+   "input": "友人の弟が庭へ走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:が:友人の弟",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-017",
+   "data": "no",
+   "input": "先生の妹が森へ歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:が:先生の妹",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-018",
+   "data": "no",
+   "input": "隣人の息子が港へ走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:が:隣人の息子",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-019",
+   "data": "no",
+   "input": "祖父の兄が島へ歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:が:祖父の兄",
+    "w3b2_trigger": "U",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-020",
+   "data": "no",
+   "input": "兄が学校の校庭で走った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-021",
+   "data": "no",
+   "input": "弟が町の神社で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-022",
+   "data": "no",
+   "input": "姉が村の川で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-023",
+   "data": "no",
+   "input": "母が山の森林で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-024",
+   "data": "no",
+   "input": "祖父が駅の歩道で歩いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-025",
+   "data": "no",
+   "input": "祖母が会社のマンションで名乗った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-026",
+   "data": "no",
+   "input": "父が市のアパートで断った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-027",
+   "data": "no",
+   "input": "先生が島のホテルで願った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_PREDICATE_TOKEN"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-028",
+   "data": "no",
+   "input": "兄が校庭で弟の犬を呼んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-029",
+   "data": "no",
+   "input": "姉が神社で友人の弟を誘った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-030",
+   "data": "no",
+   "input": "母が校舎で兄の友人を呼んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "READ",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-031",
+   "data": "no",
+   "input": "先生が国道で祖母の猫を呼んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-032",
+   "data": "no",
+   "input": "兄が去年の大晦日、窓を拭いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-033",
+   "data": "no",
+   "input": "姉が学校の春休み、本を読んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-034",
+   "data": "no",
+   "input": "母が町の祝日、皿を洗った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-035",
+   "data": "no",
+   "input": "弟が去年の年明け、手紙を書いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "read",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-036",
+   "data": "no",
+   "input": "兄が友人の前へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_MULTIPLE:へ:前"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:前",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:前",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-037",
+   "data": "no",
+   "input": "姉が祖父の後へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_MULTIPLE:へ:後"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:後",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:後",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-038",
+   "data": "no",
+   "input": "猫が庭の中へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_ESTIMATED_NEAR:へ:庭の中"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:庭の中",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_HEAD_RELATIONAL:副詞可能",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-039",
+   "data": "no",
+   "input": "犬が森の中へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_ESTIMATED_NEAR:へ:森の中"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:森の中",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_HEAD_RELATIONAL:副詞可能",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-040",
+   "data": "no",
+   "input": "鳥が山の上へ飛んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:飛ぶ",
+    "PLACEMENT_UNKNOWN:へ:山の上"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:山の上",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_HEAD_RELATIONAL:副詞可能",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-041",
+   "data": "no",
+   "input": "馬が橋の上へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_UNKNOWN:へ:橋の上"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:橋の上",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_HEAD_RELATIONAL:副詞可能",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-042",
+   "data": "no",
+   "input": "兄が校庭の前で走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_HEAD_RELATIONAL:副詞可能",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-043",
+   "data": "no",
+   "input": "母が神社の前で歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_HEAD_RELATIONAL:副詞可能",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-044",
+   "data": "no",
+   "input": "兄が夏の夕方、窓を拭いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-045",
+   "data": "no",
+   "input": "姉が春の夜、手紙を書いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-046",
+   "data": "no",
+   "input": "母が冬の休日、靴を磨いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-047",
+   "data": "no",
+   "input": "弟が秋の平日、本を読んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-048",
+   "data": "no",
+   "input": "兄が友人の窪地へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_UNPLACED:へ:窪地"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNPLACED:へ:窪地",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_UNPLACED:へ:窪地",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-049",
+   "data": "no",
+   "input": "姉が祖父の洲へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_UNPLACED:へ:洲"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNPLACED:へ:洲",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_UNPLACED:へ:洲",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-050",
+   "data": "no",
+   "input": "兄が祖父の家へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_UNKNOWN:へ:祖父の家"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:祖父の家",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:祖父の家",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-051",
+   "data": "no",
+   "input": "母が先生の図書館へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_MULTIPLE:へ:図書館"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:図書館",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:図書館",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-052",
+   "data": "no",
+   "input": "弟が友人の谷へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_MULTIPLE:へ:谷"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:谷",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:谷",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-053",
+   "data": "no",
+   "input": "兄が祖父の学校へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:走る",
+    "PLACEMENT_TYPE_MISMATCH:P_MOVE:へ:GROUP_ORG"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_MOVE:へ:GROUP_ORG",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:へ:GROUP_ORG",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-054",
+   "data": "no",
+   "input": "姉が友人の会社へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_TYPE_MISMATCH:P_MOVE:へ:GROUP_ORG"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_MOVE:へ:GROUP_ORG",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:へ:GROUP_ORG",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-055",
+   "data": "no",
+   "input": "兄が学校の廊下で走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:学校の廊下",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-056",
+   "data": "no",
+   "input": "弟が町の路地で走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:町の路地",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-057",
+   "data": "no",
+   "input": "姉が神社の縁側で歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:神社の縁側",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-058",
+   "data": "no",
+   "input": "母が町の長屋で名乗った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_DIRECT_VIA_GENERATED:で:町の長屋",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-059",
+   "data": "no",
+   "input": "兄が校庭で友人の挨拶を断った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-060",
+   "data": "no",
+   "input": "姉が神社で先生の日程を断った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-061",
+   "data": "no",
+   "input": "友人の客が庭へ走った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-062",
+   "data": "no",
+   "input": "先生の夫婦が森へ歩いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:歩く",
+    "PLACEMENT_UNKNOWN:が:先生の夫婦"
+   ],
+   "explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:が:先生の夫婦",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:が:先生の夫婦",
+    "frame": null
+   }
+  }
+ ]
+}

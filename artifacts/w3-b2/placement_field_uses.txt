@@ -1,0 +1,10 @@
+92:+                    note['frame'] = why_frame
+172:+    if answer['origin'] == 'estimated':
+173:+        return None, 'PLACEMENT_ESTIMATED_NEAR' if answer['estimate_basis'] == 'proximity' else 'PLACEMENT_ESTIMATED_GENERATED'
+174:+    arms = answer['decided_by']
+177:+    types = tuple(sorted(answer['top']))
+184:+    (no `frame_status`, NOT_CONFIRMED, NO_FRAME_TABLE: the table alone decides, as before), ('confirmed', {particle: frozenset(types)}) for a CONFIRMED frame that keeps the
+186:+    if 'frame_status' not in answer: return 'table', None
+187:+    status = answer['frame_status']
+193:+    if answer.get('state') != 'DECIDED' or answer.get('origin') != 'direct': return bad('NOT_DECIDED_DIRECT')
+194:+    if 'gen_frame' not in (answer.get('decided_by') or []): return bad('GEN_FRAME_NOT_IN_DECIDED_BY')

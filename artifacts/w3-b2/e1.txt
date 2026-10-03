@@ -1,0 +1,5 @@
+E1_SAME
+E1_EQUALS_BASE_COMMIT_RUN
+base commit run also differs from artifacts/w3-b/e1_current.out (a recorded output of an older tree)
+E1_SAME_WITH_PLACEMENT
+with placement: cmp_vs_base_commit_exit=0

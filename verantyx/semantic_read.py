@@ -261,46 +261,135 @@ def _read_ja(text, placement=None):
     return _answer('ja', clauses, relations, meta, unsupported_report)
 
 
+class _CachedQuery:
+    """W3-b2: the placement as the plans ask it, for ONE sentence: a word is asked once, whichever plan asks it first (the plans of W3-b1 and of W3-b2 share the answers).
+    `id` is the id of the placement it wraps."""
+    def __init__(self, inner):
+        self.inner, self.answers = inner, {}
+
+    def query(self, term):
+        if term not in self.answers: self.answers[term] = self.inner.query(term)
+        return self.answers[term]
+
+    @property
+    def id(self):
+        return getattr(self.inner, 'id', None)
+
+
 def _typed_reread_ja(text, toks, view, R, placement, stop, report):
-    """W3-b1: a refusal of the reader gets one more look with the DIRECT types of the words, only when it is one of the two cases of the typed paths
-    (R.typed_trigger_ja). The decisions (the table, the gate) are the reader's (R.typed_plan_*); what is done here is to run this entry's own rules over
-    the roles they decide (_map_ja with `typed`) and to write the reasons. A refusal keeps its own reason first; one PLACEMENT_* reason follows it."""
+    """W3-b1 / W3-b2: a refusal of the reader gets one more look with the DIRECT types of the words (docs/READING_SOUNDNESS.md K62-K65, K94-K99). The decisions (the
+    tables, the gates) are the reader's (R.typed_plan_*, R.typed_trigger_*); what is done here is to run this entry's own rules over the roles they decide (_map_ja with
+    `typed`) and to write the reasons. A refusal keeps its own reason first; one PLACEMENT_* reason follows it.
+    The order (K94): W3-b1's trigger and plan first. A sentence W3-b1 reads is returned as W3-b1 reads it (W3-b2 does not run), except that the frame of a CONFIRMED predicate
+    (K95) may stop a path U reading. A sentence W3-b1's plan refuses gets W3-b2's plan of the same path; when that is refused too, the output is W3-b1's refusal. A
+    sentence W3-b1 has no trigger for gets the trigger of W3-b2 (U3). What W3-b2's plan refused is in the diagnosis (typed_explain_ja), not in the output."""
+    trace = getattr(placement, 'w3b2_trace', None)
+    note = trace if trace is not None else {}
+    note.update({'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': None, 'frame': None})
+    query = _CachedQuery(placement)
     first = [stop.reason]
 
     def refuse(why):
         return _refusal('ja', stop.kind, first + [why], report)
     kind = R.typed_trigger_ja(text, view)
+    second = None
     if kind is None:
-        return _refusal('ja', stop.kind, first, report)
+        second = R.typed_trigger_w3b2_ja(text, view)
+        if second is None:
+            note['w3b2'] = 'PLACEMENT_W3B2_NOT_TRIGGERED'
+            return _refusal('ja', stop.kind, first, report)
     clause = view.clauses[0]
-    if kind == 'U':
+    pred_i = next((i for i, (w, a, b) in enumerate(toks) if a == clause.predicate_span.start), None)
+    written = _written_predicate(toks, pred_i) if kind != 'S4' else None
+    voice = None
+    if kind != 'S4':
         from .frames import transitivity
-        pred_i = next((i for i, (w, a, b) in enumerate(toks) if a == clause.predicate_span.start), None)
         try:
             voice = _voice_ja(clause, toks, pred_i, transitivity)
         except _Abstain:
             voice = None
-        typed, why = R.typed_plan_u_ja(clause, toks, placement, voice=voice, written=_written_predicate(toks, pred_i),
-                                       strip=lambda role: _strip_demonstrative(role, toks), role_map=_ROLE_TABLE)
+    strip = lambda role: _strip_demonstrative(role, toks)
+
+    def reread(typed):
+        """Our own rules over what a plan decided: (clauses, relations, meta) or (None, the reason of the refusal). The order of the gates is W3-b1's (K63)."""
+        try:
+            clauses, relations, meta = _map_ja(text, toks, SimpleNamespace(clauses=(typed['clause'],), unread=()), R, typed=typed)
+        except _Abstain as again:
+            return None, 'PLACEMENT_REREAD_ABSTAINS:' + again.reason
+        # K63 (table change record 2): the ending of the predicate must be one of the four that the present rules turn into a polarity and a tense; checked
+        # after the reread, so the reasons of everything refused before are unchanged
+        ending = R.typed_tail_ja(toks, typed['clause'])
+        if ending: return None, ending
+        # K63 (table change record 3): the head may be a derived verb (a potential, a spontaneous or a short causative looks like a verb of its own); checked after the
+        # ending, so the reasons of everything refused before are unchanged
+        derived = R.typed_head_derived_ja(toks, typed['clause'])
+        if derived: return None, derived
+        for c in clauses:               # K97: the demonstrative the part stood after, as the last key of the clause (nothing before it changes)
+            if typed.get('role_flags'): c['role_flags'] = {role: dict(flags) for role, flags in typed['role_flags'].items()}
+        return (clauses, relations, meta), None
+    if second is None:
+        note['w3b1_trigger'] = kind
+        if kind == 'U':
+            typed, why = R.typed_plan_u_ja(clause, toks, query, voice=voice, written=written, strip=strip, role_map=_ROLE_TABLE)
+        else:
+            typed, why = R.typed_plan_s4_ja(text, toks, clause, query)
+        if typed is not None:
+            done, why_read = reread(typed)
+            if done is None:
+                note['w3b1'] = why_read
+                return refuse(why_read)
+            note['w3b1'] = 'READ'
+            if kind == 'U':             # K95: the frame of a CONFIRMED predicate narrows what W3-b1 read (no new question: the predicate was asked)
+                why_frame = R.typed_frame_check_ja(toks, typed, query.query(written))
+                if why_frame:
+                    note['frame'] = why_frame
+                    return refuse(why_frame)
+            return _answer('ja', done[0], done[1], done[2], report)
+        note['w3b1'] = why
+        note['w3b2_trigger'] = kind
+        refused = why
     else:
-        typed, why = R.typed_plan_s4_ja(text, toks, clause, placement)
-    if typed is None:
-        return refuse(why)
-    try:
-        clauses, relations, meta = _map_ja(text, toks, SimpleNamespace(clauses=(typed['clause'],), unread=()), R, typed=typed)
-    except _Abstain as again:
-        return refuse('PLACEMENT_REREAD_ABSTAINS:' + again.reason)
-    # K63 (table change record 2): the ending of the predicate must be one of the four that the present rules turn into a polarity and a tense; checked
-    # after the reread, so the reasons of everything refused before are unchanged
-    ending = R.typed_tail_ja(toks, typed['clause'])
-    if ending:
-        return refuse(ending)
-    # K63 (table change record 3): the head may be a derived verb (a potential, a spontaneous or a short causative looks like a verb of its own); checked after the
-    # ending, so the reasons of everything refused before are unchanged
-    derived = R.typed_head_derived_ja(toks, typed['clause'])
-    if derived:
-        return refuse(derived)
-    return _answer('ja', clauses, relations, meta, report)
+        note['w3b2_trigger'] = second
+        refused = None
+    if kind == 'S4':
+        typed2, why2 = R.typed_plan_s4_w3b2_ja(text, toks, clause, query, role_map=_ROLE_TABLE)
+    else:
+        typed2, why2 = R.typed_plan_u_w3b2_ja(clause, toks, query, voice=voice, written=written, strip=strip, role_map=_ROLE_TABLE)
+    if typed2 is not None:
+        done, why_read = reread(typed2)
+        if done is not None:
+            note['w3b2'] = 'READ'
+            return _answer('ja', done[0], done[1], done[2], report)
+        why2 = why_read
+    note['w3b2'] = why2
+    return refuse(refused) if refused is not None else _refusal('ja', stop.kind, first, report)
+
+
+class _ExplainQuery:
+    """W3-b2: wraps a placement for `typed_explain_ja`: the same questions go through, and `w3b2_trace` is where `_typed_reread_ja` writes what each step decided."""
+    def __init__(self, inner):
+        self.inner, self.w3b2_trace = inner, {}
+
+    def query(self, term):
+        return self.inner.query(term)
+
+    @property
+    def id(self):
+        return getattr(self.inner, 'id', None)
+
+
+def typed_explain_ja(text, placement):
+    """W3-b2, for tests and measurements: what the typed steps decided for a Japanese input, the output of `read` unchanged. {'w3b1_trigger': 'U' | 'S4' | None,
+    'w3b1': 'READ' | the reason W3-b1 stopped | None, 'w3b2_trigger': 'U' | 'S4' | 'U3' | None, 'w3b2': 'READ' | the reason W3-b2 stopped | None, 'frame': None | the
+    reason the frame of the predicate stopped a reading of W3-b1}. All None when no typed step ran (no placement, English, the reader read it alone). It runs `read` itself
+    (the same functions in the same order): no second decision is written here."""
+    blank = {'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': None, 'frame': None}
+    chosen = check_input(text, None)
+    query = _placement_query(placement)
+    if chosen != 'ja' or query is None: return blank
+    probe = _ExplainQuery(query)
+    _read_ja(text, probe)
+    return dict(blank, **probe.w3b2_trace) if probe.w3b2_trace else blank
 
 
 def _map_ja(text, toks, view, R, typed=None):
