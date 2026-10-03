@@ -1,0 +1,7 @@
+# T6: the head of the subject is a noun of a closed class that is never a person; no agent phrase; a godan / suru verb outside the spontaneous class
+T6 = ['倉庫が解体された。', '教室が改装された。', '要約が削除された。', '目次が更新された。', '海岸が閉鎖された。']
+@pytest.mark.parametrize('text', T6)
+def test_t6_a_subject_headed_by_a_noun_that_is_never_a_person_keeps_the_passive(text):
+    subject = text.split('が')[0]
+    c = only_clause(text)
+    assert c['voice'] == 'passive' and c['roles'] == {'patient': subject}, c

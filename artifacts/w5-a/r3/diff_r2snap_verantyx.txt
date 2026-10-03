@@ -1,0 +1,48 @@
+diff -ru /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5a3/r2snap/verantyx/semantic_read.py verantyx/semantic_read.py
+--- /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5a3/r2snap/verantyx/semantic_read.py	2026-10-03 15:39:31
++++ verantyx/semantic_read.py	2026-10-03 16:22:38
+@@ -67,7 +67,7 @@
+     'predicate:converse verbs': 'verbs of receiving / borrowing / learning / hearing: the reader names the converse verb and swaps the roles; the convention forbids a replaced word as the predicate, so only the restoration it states (4.6, もらう) is made and the others are not read (PREDICATE_NORMALIZED)',
+     'role:goal for existence / residence verbs': 'the place of existence or residence is `place` (convention 2, 4.2); with no shown place the input is not read (PLACE_TYPE_UNDETERMINED)',
+     'role:agent / recipient for a capitalised name (English)': 'a capital letter says "a name", not "a person" (a city is written like a person): an intransitive subject and the recipient after `to` need a pronoun or an animate noun (SUBJECT_TYPE_UNDETERMINED / RECIPIENT_TYPE_UNDETERMINED); only the first object of a double-object clause is a recipient by its construction',
+-    'role:path (を of a verb of going through a space)': 'the convention has no role for the path a motion verb covers (走る・歩く・渡る の を-phrase); the reader calls it patient, which is wrong, so the input is not read (PATH_ROLE_NOT_MAPPED). Also a compound verb whose parts are of that class (the structure of the word, not a word added), and an active clause with an を-phrase whose subject is shown not to be a person, or whose subject has no person evidence and whose を-phrase has place evidence (SUBJECT_TYPE_UNDETERMINED:object or path; W5-a); and an active clause with an を-phrase whose subject has no person evidence and whose predicate has no known object frame (frames.transitivity is not \'trans\' and the predicate is in none of the reader\'s classes with an を-object): AGENT_EVIDENCE_MISSING (W5-a round 2). A path verb the corpus table marks transitive is not caught (K64)',
++    'role:path (を of a verb of going through a space)': 'the convention has no role for the path a motion verb covers (走る・歩く・渡る の を-phrase); the reader calls it patient, which is wrong, so the input is not read (PATH_ROLE_NOT_MAPPED). Also a compound verb whose parts are of that class (the structure of the word, not a word added), and an active clause with an を-phrase whose subject is shown not to be a person, or whose subject has no person evidence and whose を-phrase has place evidence (SUBJECT_TYPE_UNDETERMINED:object or path; W5-a); and an active clause with an を-phrase whose subject has no person evidence and whose predicate is in none of the reader\'s closed classes with an を-object (the corpus transitivity table is not counted as evidence of an object): AGENT_EVIDENCE_MISSING (W5-a rounds 2-3, K64)',
+     'predicate:する with a サ変 noun apart from its する (掃除をさせた)': 'convention 3 writes a サ変 verb as noun + する, the reader splits it into する and a patient; the input is not read (PREDICATE_NOT_MAPPED:light verb)',
+     'en:two names in a row': 'a proper name before a common noun (a double object) may be one phrase or two roles; not read (NP_BOUNDARY_UNDETERMINED)',
+     'en:be + a participle that is also a state adjective': 'closed / opened / finished ... without a by-phrase are a passive and a state alike; the voice is undecided (UNDETERMINED_VOICE)',
+@@ -394,12 +394,11 @@
+     return False
+ 
+ 
+-def _object_frame_known(predicate, R, transitivity):
+-    """W5-a round 2 (B3): the predicate has a known frame that takes an を-object. Two sources, neither a list added here: the corpus table
+-    (frames.transitivity == 'trans': the verb's case edges are often を), and the reader's own closed classes whose frame writes the を-phrase as
+-    the thing acted on (X が Y に Z を渡す, X を Y に変える / 任命する / 置く, X を囲む ...). A predicate in neither -- one the table marks
+-    'intrans' or 'unknown', or does not hold at all -- is not known to take an object."""
+-    if transitivity(predicate) == 'trans': return True
++def _object_frame_known(predicate, R):
++    """W5-a round 3 (auditor's decision B3, (β) variant C): a predicate is known to take an を-object only when it is in one of the reader's
++    own closed classes whose frame writes the を-phrase as the thing acted on (X が Y に Z を渡す, X を Y に変える / 任命する / 置く,
++    X を囲む ...). The corpus table (frames.transitivity) is not a source: its 'trans' is the share of を among a verb's case edges, which
++    does not tell a path を from an object を (docs/READING_SOUNDNESS.md K64). A predicate in no class is not known to take an object."""
+     classes = (R._TRANSFER_PREDICATES, R._SHARING_PREDICATES, R._CHANGE_PREDICATES - R._INTRANSITIVE_CHANGE_PREDICATES, R._SELECTION_PREDICATES,
+                R._PROCESSING_PREDICATES, R._PRODUCT_PREDICATES, R._CONTAINMENT_PREDICATES, R._PLACEMENT_PREDICATES)
+     return any(predicate in cls for cls in classes)
+@@ -460,12 +459,13 @@
+                 if _not_person_evidence(r.span.text, R) or (not R._is_person_phrase(r.span.text) and any(
+                         R._is_place_phrase(o) or o.replace(' ', '').replace('\u3000', '').split('の')[-1] in R._SPOT_NOUNS for o in objects)):
+                     _no('SUBJECT_TYPE_UNDETERMINED:object or path:' + r.span.text)
+-                # W5-a round 2 (auditor's decision B3): an を-phrase is the thing acted on only in a known frame that takes one. A subject with no
+-                # person evidence (_is_person_phrase: persons, bodies of persons, animals; the tree has no class of vehicles, so none counts) and
+-                # an を-phrase of a predicate with no known object frame may be a thing moving along a path: not an agent, the input is not read.
++                # W5-a rounds 2-3 (auditor's decision B3, (β) variant C): an を-phrase is the thing acted on only in a frame the reader's own closed
++                # classes know. A subject with no person evidence (_is_person_phrase: persons, bodies of persons, animals; the tree has no class of
++                # vehicles, so none counts) and an を-phrase of a predicate in none of those classes may be a thing moving along a path: not an agent,
++                # the input is not read. The corpus transitivity table does not count as a known frame (K64).
+                 if (not R._is_person_phrase(r.span.text)
+                         and any(x.name == 'patient' and R._particle_after(toks, x.span.end) == 'を' for x in raw_roles)
+-                        and not _object_frame_known(c.predicate, R, transitivity)):
++                        and not _object_frame_known(c.predicate, R)):
+                     _no('AGENT_EVIDENCE_MISSING:' + r.span.text)
+                 mapped = 'agent'
+             elif voice == 'passive' or has_patient:

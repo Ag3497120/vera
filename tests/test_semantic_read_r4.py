@@ -12,6 +12,7 @@ tagger-side table does not know as a person (a person who is owed respect) is th
 
 Every sentence below is written (from this rule, with words the author chose) BEFORE the entry was run on it; the file is frozen by
 artifacts/w1-a/w1a3_tests_freeze.sha256. T1-T5, T7, T8 ask for an abstention; T6, T9, T10 ask for a passive.
+W5-a round 2 (K62): T6 now asks for an abstention (UNDETERMINED_VOICE:passive or spontaneous); rule 2c above is withdrawn.
 """
 import sys
 from pathlib import Path
@@ -113,9 +114,10 @@ def test_t5_a_thing_without_evidence_of_a_thing_abstains(text):
 
 @pytest.mark.parametrize('text', T6)
 def test_t6_a_subject_headed_by_a_noun_that_is_never_a_person_keeps_the_passive(text):
-    subject = text.split('が')[0]
-    c = only_clause(text)
-    assert c['voice'] == 'passive' and c['roles'] == {'patient': subject}, c
+    # W5-a round 2 (auditor's decision B1; docs/READING_SOUNDNESS.md K62): rule 2c (a passive on a non-person subject alone) is withdrawn.
+    # A non-person subject rules out the honorific, not the spontaneous: the entry abstains. The old expectation is kept in K62 in full.
+    ab = abstains_on_voice(text)
+    assert ab['reasons'] == ['UNDETERMINED_VOICE:passive or spontaneous'], ab
 
 
 @pytest.mark.parametrize('text', T7)

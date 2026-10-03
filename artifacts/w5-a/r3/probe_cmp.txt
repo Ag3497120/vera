@@ -1,0 +1,13 @@
+readable→false JA017 鳥が枝を飛び越えた。 ['PATH_ROLE_NOT_MAPPED:飛び越える'] []
+readable→false JA020 子犬が骨をかじった。 ['AGENT_EVIDENCE_MISSING:子犬'] []
+readable→false JA052 会議が中止された。 ['UNDETERMINED_VOICE:passive or spontaneous'] []
+readable→false JA053 図表が修正された。 ['UNDETERMINED_VOICE:passive or spontaneous'] []
+readable→false JA054 庭が荒らされた。 ['UNDETERMINED_VOICE:passive or spontaneous'] []
+reason_changed JA063 母は私に部屋を片づけてくれた。 ['UNSUPPORTED_CLAUSE'] []
+readable→false JA073 要約が読まれた。 ['UNDETERMINED_VOICE:passive or spontaneous'] []
+readable→false JA076 昔の海岸が思い返された。 ['UNDETERMINED_VOICE:passive or spontaneous'] []
+readable→false JA077 昔の庭が思い起こされた。 ['UNDETERMINED_VOICE:passive or spontaneous'] []
+readable→false JA079 ふと昔の海岸が思い返された。 ['UNSUPPORTED_CLAUSE'] []
+readable→false JA080 自転車が細道を駆け抜けた。 ['PATH_ROLE_NOT_MAPPED:駆け抜ける'] []
+changed EN036 The chair was repaired by them. None [{"predicate": "repair", "roles": {"agent": "them", "patient": "chair"}, "polarity": "+", "tense": "past", "modality": null, "voice": "passive"}]
+{'same': 128, 'readable→false': 10, 'reason_changed': 1, 'changed': 1}

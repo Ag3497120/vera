@@ -1,0 +1,1 @@
+{'犬': True, '子犬': False, '会社': False, '車': False, '尼僧': False, '複数の人物': False}

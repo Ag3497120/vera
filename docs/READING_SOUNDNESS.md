@@ -656,3 +656,379 @@ B1 v2 の第 3 ラウンドの自作の見本(`tests/bank_score/fixtures/B1_v2_r
 
 ### 9.3 入口が出さない型(`NOT_PRODUCED`)と、見本での内訳
 入口が出さない型の一覧(正本は `semantic_read.NOT_PRODUCED`。出さないものは棄権し、近い型に押し込まない)と、自作の 3 つの B1 v2 の見本の結果(B1_v2: 正読 35・正しい棄権 13・棄権 17・誤読 0、B1_v2_r2: 正読 11・正しい棄権 8・棄権 17・誤読 0、B1_v2_r3: 正読 4・正しい棄権 0・棄権 13・誤読 0。9 分類。W1-a3 の測定)は、§6 の X4・X5 の表(`recompute.md`)にある。
+
+## 10. W5-a（攻撃役の命中への対応。K62〜）
+
+攻撃役（codex gpt-6-luna xhigh）が出した、実行して失敗を確認した反例のうち、読解の入口に関する 5 件（W1-a3 の H1〜H4。H2 の「unsupported があるのに readable」は別の件として数える）を直した。
+この節は**追記だけ**で、既存の節は書き換えない。撤回は次の 2 つ: **§4.6 の規則 2c（動作主の句が無く、主語が人でないことの正の証拠だけで passive）と §9.2 の 6 の (3) は K62 で撤回**。
+攻撃テスト 3 本は `tests/attack/test_attack_w1a3_reading_entry.py`・`test_attack_w3b_placement_type_order.py`・`test_attack_w2h_routing_testimony_context_cache.py` に中身を変えずに取り込んだ（直す前は 8 件失敗: `artifacts/w5-a/attack_before.txt`、直した後は 8 件通る: `artifacts/w5-a/attack_after.txt`）。
+入口の変化の測定（x3 の入力 ＋ 自作の見本 B1_v2・_r2・_r3 ＋ 英語の評価文を重複なく 2,344 入力。変更前は dev の写し）: 出典 `artifacts/w5-a/entry_changes.txt`。読めた入力は 241 から 226 になった。**中身が変わった文（`changed`）は 0、棄権から読めるに変わった文（`false→readable`）は 0**、`readable→false` は 15 文、棄権の理由だけが変わった文は 82。
+
+### K62（H1: 自発）
+**採った道は (a)**: 規則 2c（`_voice_ja` の「動作主の句が無く、主語の主辞が人でないことの閉じた類にあれば passive」）を廃止した。passive を返すのは 1a（によって）と 1b（`_NI_KARA_FREE_PREDICATES` の動詞 ＋ に／から）だけ。`_SPONTANEOUS_PREDICATES` には語を足していない（一覧に無い語で同じ穴が開くため）。
+理由の型: 主語に人でない正の証拠があるとき `UNDETERMINED_VOICE:passive or spontaneous`（尊敬は証拠で除けるが、自発を除く証拠が無い）、無ければ従来の `UNDETERMINED_VOICE:passive or honorific`。`_not_person_evidence` 関数は残した（理由の分岐と既存テストが使う）。
+(b)（述語の配置の型が自発・心理の類でない `direct` のときだけ passive を許す）は、W3-b1 が配置をつなぐ前なので採っていない。つないだ後の別チケットでやる。
+**正読の損失（全件）**: x3 ほかの入力で passive から棄権になった文は次の 8 文（`artifacts/w5-a/entry_changes.txt` の `R→F` のうち `UNDETERMINED_VOICE`）: 「2025年3月5日に東京で会議が開かれた。」「会議が延期された。」「6時半に会議が開かれた。」「倉庫が解体された。」「教室が改装された。」「要約が削除された。」「目次が更新された。」「海岸が閉鎖された。」。攻撃役の 140 文では、命中 2 文（思い返された・思い起こされた）が直り、外れのうち 4 文（「会議が中止された。」「図表が修正された。」「庭が荒らされた。」「要約が読まれた。」）の正読が失われた（`artifacts/w5-a/probe_cmp.txt`）。自作の見本 3 本の 118 問は分類が 1 つも変わらない（`artifacts/w5-a/bank_class_changes.tsv`）。
+**既存テストとの衝突（宣言）**: `tests/test_semantic_read_r4.py` の T6（`倉庫が解体された。` 型の 5 文を passive と期待する W1-a3 のテスト）の 5 件が失敗する。2c の廃止の直接の帰結で、このテストは許可パス外、期待を棄権に書き換えるのは期待値の弱体化の禁止にかかるので触れていない。T6 の改訂を別に許すか、2c を残して (b) まで待つかは監査役の判断（`artifacts/w5-a/new_failures.txt`）。
+
+#### 第 2 ラウンドの追記（監査役の判断 B1）
+**撤回**: 上の「既存テストとの衝突（宣言）」の「T6 は許可パス外で…触れていない…判断は監査役に委ねる」は、第 2 ラウンドで監査役の判断 B1（2026-10-03）により T6 の期待を改訂したので、「触れていない」は撤回する。
+**T6 の改訂（前後を全文）**。T6 は、今回不健全と実証された規則 2c（主語が人でない証拠だけで passive）を期待として固定していた。攻撃役の H1: 一覧に無い自発の述語で passive を断定する。T6 の 5 文（`倉庫が解体された。` `教室が改装された。` `要約が削除された。` `目次が更新された。` `海岸が閉鎖された。`）は、人でない主語は尊敬を除くが自発を除かない（K62 の本文）ので、期待を「`UNDETERMINED_VOICE` で棄権」に変えた。テストの名前と、パラメータ `T6` の 5 文は変えていない。期待は理由の完全一致（`['UNDETERMINED_VOICE:passive or spontaneous']`。「passive でない」だけの弱い形にしていない）。
+旧い期待（`tests/test_semantic_read_r4.py` の T6 の定義と関数。dev と同一。出典 `artifacts/w5-a/r2/t6_before.txt`）:
+```python
+# T6: the head of the subject is a noun of a closed class that is never a person; no agent phrase; a godan / suru verb outside the spontaneous class
+T6 = ['倉庫が解体された。', '教室が改装された。', '要約が削除された。', '目次が更新された。', '海岸が閉鎖された。']
+@pytest.mark.parametrize('text', T6)
+def test_t6_a_subject_headed_by_a_noun_that_is_never_a_person_keeps_the_passive(text):
+    subject = text.split('が')[0]
+    c = only_clause(text)
+    assert c['voice'] == 'passive' and c['roles'] == {'patient': subject}, c
+```
+新しい期待（出典 `artifacts/w5-a/r2/t6_after.txt`）:
+```python
+# T6: the head of the subject is a noun of a closed class that is never a person; no agent phrase; a godan / suru verb outside the spontaneous class
+T6 = ['倉庫が解体された。', '教室が改装された。', '要約が削除された。', '目次が更新された。', '海岸が閉鎖された。']
+@pytest.mark.parametrize('text', T6)
+def test_t6_a_subject_headed_by_a_noun_that_is_never_a_person_keeps_the_passive(text):
+    # W5-a round 2 (auditor's decision B1; docs/READING_SOUNDNESS.md K62): rule 2c (a passive on a non-person subject alone) is withdrawn.
+    # A non-person subject rules out the honorific, not the spontaneous: the entry abstains. The old expectation is kept in K62 in full.
+    ab = abstains_on_voice(text)
+    assert ab['reasons'] == ['UNDETERMINED_VOICE:passive or spontaneous'], ab
+```
+docstring の末尾にも 1 行足した: `W5-a round 2 (K62): T6 now asks for an abstention (UNDETERMINED_VOICE:passive or spontaneous); rule 2c above is withdrawn.`（docstring のほかの行は変えていない）。
+ファイル全体の sha256: 前 `8eed13423de957cbba20792e2fee003beaf22d77fba0054b1ced7a5d86ec0d65`（`artifacts/w5-a/r2/t6_before.sha256`）、後 `721a9c036aa4128f49d6474964329185b37e84deacf9ae4c2e32438f0a173863`（`artifacts/w5-a/r2/t6_after.sha256`）。`artifacts/w1-a/w1a3_tests_freeze.sha256` は許可パス外なので書き換えていない。そこに記録された `tests/test_semantic_read_r4.py` の sha256（`8eed…`）と今のファイルの値は一致しなくなったので、凍結の再計算は「不一致」と出る。これは T6 の改訂の直接の帰結で、ここに宣言する。
+`tests/test_semantic_read_r4.py` は 75 件通る（単独で流した値）。T6 の 5 文の理由は 5 文ともちょうど `['UNDETERMINED_VOICE:passive or spontaneous']`。
+第 2 ラウンドの値（B2・B3 を含む入口の変化。出典 `artifacts/w5-a/r2/entry_changes_vs_dev.txt`）: dev に対して `readable→false` は 38 文、棄権の理由だけが変わった文は 103。**`changed` と `false→readable` は 0**。上の第 1 ラウンドの「15 文」「82」は第 1 ラウンドの値として残す。そのうち `UNDETERMINED_VOICE:passive or spontaneous` による `readable→false` は 8 文で、第 1 ラウンドの 8 文と同じ。
+
+### K63（H2: unsupported と readable の矛盾）
+§9.2 の条件 1 のとおり、unsupported の節が残るなら `readable: false`。ただし、同じ述語の「退けられた別の読み」を一覧にだけ出す扱い（§9.2 の 1）は、**その節が unsupported になった理由のすべてが、supported の節の側の証拠で答えられているとき**だけに絞った。免除する理由は 3 つで、他の理由は免除しない（`UNSUPPORTED_CLAUSE` で棄権）:
+1. `copula value is a predicate phrase`: supported の節が比較（`comparison`）で、退けられた節が copula／否定の copula。
+2. `causative frame: causer/causee unresolved`: supported の節の役割に causer と causee の両方がある。
+3. `unrepresented source content`: 退けられた節の範囲の内容語（読解器自身の `_uncovered_nominals` が数える品詞）が、supported の節の役割と述語の範囲ですべて覆われている。
+x3 ほかで棄権になったのは 5 文（「妹は漫画を読まなくもない。」「店長は看板を外さなくもない。」「彼女の鞄は私のより大きい。」「今年の売上は去年のより多い。」「1918年から1930年まで…を務めた。」）。出典 `artifacts/w5-a/entry_changes.txt`。チケットの「例外を作らない」は、新しい例外を作らない意味に読み、既存の別の読みの扱い（既存テスト 4 件と §9.2 自身が書く比較の例外）を、証拠のある場合に狭めた。
+
+#### 第 2 ラウンドの追記（監査役の判断 B2）
+**撤回**: 上の「免除する理由は 3 つ」（`causative frame: causer/causee unresolved` と `unrepresented source content` の免除を含む）と、「新しい例外を作らない意味に読み」は**撤回する**（中間職の指示書 D2 の誤り）。`docs/READING_CONVENTIONS.md` §9.2 に既に書かれている免除は、比較の例外だけだった。使役の免除と `unrepresented source content` の免除は書かれていない免除なので外した。
+**新しい規則**（`semantic_read._map_ja` の `answered`）: 退けられた節 u を一覧にだけ出して読むのは、(1) supported の節が比較（`comparison`）で、(2) u が copula／否定の copula で、(3) u の unsupported の理由が 1 つ以上あり、そのすべてが `copula value is a predicate phrase` のとき**だけ**。ほかの理由は、単独でも、この理由と並んでいても免除しない（`UNSUPPORTED_CLAUSE` で棄権）。理由の無い unsupported の節も免除しない。`R._uncovered_nominals` は呼ばなくなった。`unsupported` が空でない `readable: true` の出力は、理由が `copula value is a predicate phrase` だけで、`clauses` に比較の節がある（不変条件。`artifacts/w5-a/r2/h2_invariant.txt`: 25 行、理由の組はすべて `('copula value is a predicate phrase',)`。コマンドは `h2_invariant.py`）。
+**正読の損失**: 第 1 ラウンドの木に対して `readable→false` が 23 文増えた（`artifacts/w5-a/r2/entry_changes_vs_r1.txt`。理由はすべて `UNSUPPORTED_CLAUSE`。`AGENT_EVIDENCE_MISSING` は 0 件）。全文:
+- 「先生が生徒に作文を書かせた。」
+- 「この犬が庭で穴を掘った。」
+- 「その子供が公園で石を拾った。」
+- 「この先生は学校で数学を教えた。」
+- 「店長が店員に商品を並べさせた。」
+- 「先生が学生に論文を読ませた。」
+- 「社長が部下に資料を作らせた。」
+- 「兄が弟に荷物を運ばせた。」
+- 「母が娘に皿を洗わせた。」
+- 「隊長が兵士に水を汲ませた。」
+- 「親が子供に手紙を書かせた。」
+- 「母が子供に野菜を食べさせた。」
+- 「親が子供に薬を飲ませた。」
+- 「彼は市長になった。」
+- 「彼女は髪を茶色に染めた。」
+- 「父がこの本を読んだ。」
+- 「先生が生徒に本を読ませた。」
+- 「彼女は看板を黒に塗り替えた。」
+- 「彼女は医者になった。」
+- 「彼はエンジニアになった。」
+- 「彼は学校に通った。」
+- 「僕は工事現場に向かった。」
+- 「彼は医者になった。」
+dev に対しては `readable→false` 38・理由だけの変化 103（`entry_changes_vs_dev.txt`）。変わった中身（`changed`）は 0、`false→readable` は 0。
+**既存テストの期待の改訂（B2 の許可。免除に依存した期待）**:
+(1) `tests/test_semantic_read_r3.py`（2 関数。ノード ID は保つ。パラメータの並び・関数名は変えず、直前に改訂の表 `W5A_R2_REVISED` を足して 3 文だけを分けた）。旧い期待（dev と同一。出典 `artifacts/w5-a/r2/r3_before.txt`、ファイル全体の sha256 `b54651bb2d612f73401fdc93acecf995f98bde8974b603b58a0ca0abe59b7f01`）:
+```python
+@pytest.mark.parametrize('text', ['先生が生徒に練習をさせた。', '母が子どもに勉強をさせた。', '兄が洗濯をした。'])
+def test_a_sahen_noun_apart_from_its_suru_is_not_read_as_suru_with_an_object(text):
+    ab = refusal(text)
+    assert any(r.startswith('PREDICATE_NOT_MAPPED') for r in ab['reasons']), ab
+
+
+@pytest.mark.parametrize('text,predicate', [('兄が窓を開けた。', '開ける'), ('弟が本を読んだ。', '読む'), ('母が弟に皿を洗わせた。', '洗う')])
+def test_an_ordinary_object_and_a_causative_of_an_ordinary_verb_are_still_read(text, predicate):
+    out = SR.read(text)
+    assert out['readable'] is True and out['clauses'][0]['predicate'] == predicate, out
+```
+新しい期待（出典 `artifacts/w5-a/r2/r3_after.txt`、sha256 `3ece5094b5a59cb4c0ab5a65f8151e759d6b641a481fa7ded9b6fa4f57b24d10`）。3 文とも理由は `['UNSUPPORTED_CLAUSE']` ちょうど（使役は `causative frame: causer/causee unresolved` の unsupported の節が残るため。`兄が洗濯をした。` は今までどおり `PREDICATE_NOT_MAPPED`）:
+```python
+# W5-a round 2 (auditor's decision B2; docs/READING_SOUNDNESS.md K63): READING_CONVENTIONS §9.2 (1) sets aside one rejected alternative
+# reading only (a comparison read, the copula unsupported). The reader leaves these inputs with an unsupported clause for another reason
+# (causative frame: causer/causee unresolved), so the entry does not read them and abstains with UNSUPPORTED_CLAUSE. The old expectations
+# are kept in K63 in full.
+W5A_R2_REVISED = {'先生が生徒に練習をさせた。': ['UNSUPPORTED_CLAUSE'], '母が子どもに勉強をさせた。': ['UNSUPPORTED_CLAUSE'],
+                  '母が弟に皿を洗わせた。': ['UNSUPPORTED_CLAUSE']}
+
+
+@pytest.mark.parametrize('text', ['先生が生徒に練習をさせた。', '母が子どもに勉強をさせた。', '兄が洗濯をした。'])
+def test_a_sahen_noun_apart_from_its_suru_is_not_read_as_suru_with_an_object(text):
+    ab = refusal(text)
+    if text in W5A_R2_REVISED:
+        assert ab['reasons'] == W5A_R2_REVISED[text], ab
+        return
+    assert any(r.startswith('PREDICATE_NOT_MAPPED') for r in ab['reasons']), ab
+
+
+@pytest.mark.parametrize('text,predicate', [('兄が窓を開けた。', '開ける'), ('弟が本を読んだ。', '読む'), ('母が弟に皿を洗わせた。', '洗う')])
+def test_an_ordinary_object_and_a_causative_of_an_ordinary_verb_are_still_read(text, predicate):
+    if text in W5A_R2_REVISED:
+        assert refusal(text)['reasons'] == W5A_R2_REVISED[text]
+        return
+    out = SR.read(text)
+    assert out['readable'] is True and out['clauses'][0]['predicate'] == predicate, out
+```
+(2) **監査役の見積もり（「落ちる既存の 3〜4 件」）の外の 3 件: `tests/test_observe.py`（W3-c のテスト）の 3 関数**。読解のテストだけを数えた見積もりの外で、全体テストで初めて分かった。原因の記録は `artifacts/w5-a/r2/observe_cause.txt`: 観測の `FACE_SWAP:agent` が作る `花子は花子に本をあげた。`（agent を受け手と同じ名に替えた文）を読み直すと、読解器が `unrepresented source content` の unsupported の節を残す。第 1 ラウンドの木はこれを免除して読めた（`REALIZED`、4 件実現）が、B2 では読めず、その要素の実現が `REFUSED`（`ROUNDTRIP_MISMATCH`）になる（3 件実現・拒否 1）。原因は免除の除去だけ。`tests/test_observe_data.py`（凍結データ）は変えておらず、通る。
+改訂は、対象の要素を**agent の表層（`surfaces_of(e, 'agent') == ['花子']`）で特定**し、その要素の `realization` を測った値に完全一致（`{'status': 'REFUSED', 'reason': 'ROUNDTRIP_MISMATCH', 'detail': 'generated text was not read (ABSTAINED)'}`）させ、ほかの要素の assert は元のまま。`test_unoccupied_...` は、拒否された要素の `realization` に `provenance` が無い（測った値）ので、その要素だけ上の完全一致にし、`claim == 'CONSTRUCTED_UNOCCUPIED'` は全要素に課したまま、`provenance` の assert はほかの要素に課す。`test_counts_...` は `realized == 3` と `ROUNDTRIP_MISMATCH` が 1・ほかの拒否理由は 0。旧い期待（dev と同一。出典 `artifacts/w5-a/r2/observe_before.txt`、ファイル全体の sha256 `8f689a2bfc52c7ac69e42fda333d552444d218dcbc9bde8cc16a819c33854d26`）:
+```python
+def test_realization_and_claim_travel_together():
+    obs = O.observe(vp(direction='FACE_SWAP:agent'), struct(fakes.people_placement()))
+    for e in elements(obs):
+        r = e.realization
+        assert r['status'] == 'REALIZED' and r['claim'] == 'UNKNOWN_OCCUPANCY' and r['provenance'].startswith('observed:occupancy_unknown')
+        assert r['text'].endswith('に本をあげた。') and r['derivation'] == 'observed-cross'
+    assert 'ANSWER' not in O.to_json(obs)
+
+
+def test_unoccupied_cells_have_a_constructed_provenance_and_never_an_answer(tmp_path):
+    idx = make_index(tmp_path, ['ただの文字列。'])
+    obs = O.observe(vp(direction='FACE_SWAP:agent'), struct(fakes.people_placement(), index=O.IndexSpec(idx, ('pro',))))
+    es = elements(obs)
+    assert es and all(e.claim == 'CONSTRUCTED_UNOCCUPIED' and e.realization['provenance'] == 'constructed:observed_unoccupied' for e in es)
+    assert 'ANSWER' not in O.to_json(obs)
+def test_counts_list_every_realization_refusal_reason_with_zeros_in_a_fixed_order():
+    from verantyx import semantic_realize
+    c = O.observe(vp(direction='FACE_SWAP:agent'), struct(fakes.people_placement())).to_dict()['counts']['realization']
+    expect = sorted(semantic_realize.REFUSAL_REASONS - set(O.REFUSAL_NOT_ON_THIS_PATH))
+    assert list(c['refused']) == expect and all(v == 0 for v in c['refused'].values()) and c['realized'] == 4
+    # the two reasons that are left out belong to the answer / source-view realizers; if the realizer's list grows, this fails and a person decides
+    assert set(O.REFUSAL_NOT_ON_THIS_PATH) <= semantic_realize.REFUSAL_REASONS and len(expect) + len(O.REFUSAL_NOT_ON_THIS_PATH) == len(semantic_realize.REFUSAL_REASONS)
+    assert 'ANSWER' not in json.dumps(c)
+    # an English cross cannot be said: that reason (and only that one) is counted
+    en = O.observe(vp('Taro gave Hanako a book.'), struct()).to_dict()['counts']['realization']
+    assert list(en['refused']) == expect
+    assert en['refused']['NOT_REALIZABLE'] == 1 and sum(en['refused'].values()) == 1 and en['realized'] == 0
+
+
+def test_a_cell_with_no_filler_is_not_searched_in_the_index_and_is_not_called_unoccupied(tmp_path):
+```
+新しい期待（出典 `artifacts/w5-a/r2/observe_after.txt`、sha256 `0990dc72d8c59fd7c3601b150997e3e726042a0728c081c68ff5d21af9fb655d`）:
+```python
+def test_realization_and_claim_travel_together():
+    # W5-a round 2 (auditor's decision B2; docs/READING_SOUNDNESS.md K63): the entry no longer sets aside an unsupported clause for
+    # 'unrepresented source content'. The element whose agent was swapped for the recipient's own name (花子は花子に本をあげた。) is not read back, so its
+    # realization is REFUSED (ROUNDTRIP_MISMATCH); the other elements are unchanged. The element is found by its agent's surface, not by position.
+    obs = O.observe(vp(direction='FACE_SWAP:agent'), struct(fakes.people_placement()))
+    refused = [e for e in elements(obs) if surfaces_of(e, 'agent') == ['花子']]
+    assert len(refused) == 1
+    assert refused[0].realization == {'status': 'REFUSED', 'reason': 'ROUNDTRIP_MISMATCH', 'detail': 'generated text was not read (ABSTAINED)'}
+    assert refused[0].claim == 'UNKNOWN_OCCUPANCY'
+    for e in elements(obs):
+        if e is refused[0]: continue
+        r = e.realization
+        assert r['status'] == 'REALIZED' and r['claim'] == 'UNKNOWN_OCCUPANCY' and r['provenance'].startswith('observed:occupancy_unknown')
+        assert r['text'].endswith('に本をあげた。') and r['derivation'] == 'observed-cross'
+    assert 'ANSWER' not in O.to_json(obs)
+
+
+def test_unoccupied_cells_have_a_constructed_provenance_and_never_an_answer(tmp_path):
+    idx = make_index(tmp_path, ['ただの文字列。'])
+    obs = O.observe(vp(direction='FACE_SWAP:agent'), struct(fakes.people_placement(), index=O.IndexSpec(idx, ('pro',))))
+    es = elements(obs)
+    # W5-a round 2 (auditor's decision B2; docs/READING_SOUNDNESS.md K63): the element whose agent is the recipient's own name (花子) is not read back,
+    # so its realization is REFUSED and carries no provenance of its own (measured: status, reason, detail only); its claim is still constructed.
+    refused = [e for e in es if surfaces_of(e, 'agent') == ['花子']]
+    assert len(refused) == 1
+    assert refused[0].realization == {'status': 'REFUSED', 'reason': 'ROUNDTRIP_MISMATCH', 'detail': 'generated text was not read (ABSTAINED)'}
+    assert es and all(e.claim == 'CONSTRUCTED_UNOCCUPIED' for e in es)
+    assert all(e.realization['provenance'] == 'constructed:observed_unoccupied' for e in es if e is not refused[0])
+    assert 'ANSWER' not in O.to_json(obs)
+
+
+def test_counts_list_every_realization_refusal_reason_with_zeros_in_a_fixed_order():
+    from verantyx import semantic_realize
+    c = O.observe(vp(direction='FACE_SWAP:agent'), struct(fakes.people_placement())).to_dict()['counts']['realization']
+    expect = sorted(semantic_realize.REFUSAL_REASONS - set(O.REFUSAL_NOT_ON_THIS_PATH))
+    # W5-a round 2 (auditor's decision B2; docs/READING_SOUNDNESS.md K63): one element (agent 花子, the recipient's own name) is refused, not realized.
+    assert list(c['refused']) == expect and c['realized'] == 3
+    assert c['refused']['ROUNDTRIP_MISMATCH'] == 1 and all(v == 0 for k, v in c['refused'].items() if k != 'ROUNDTRIP_MISMATCH')
+    # the two reasons that are left out belong to the answer / source-view realizers; if the realizer's list grows, this fails and a person decides
+    assert set(O.REFUSAL_NOT_ON_THIS_PATH) <= semantic_realize.REFUSAL_REASONS and len(expect) + len(O.REFUSAL_NOT_ON_THIS_PATH) == len(semantic_realize.REFUSAL_REASONS)
+    assert 'ANSWER' not in json.dumps(c)
+    # an English cross cannot be said: that reason (and only that one) is counted
+    en = O.observe(vp('Taro gave Hanako a book.'), struct()).to_dict()['counts']['realization']
+    assert list(en['refused']) == expect
+    assert en['refused']['NOT_REALIZABLE'] == 1 and sum(en['refused'].values()) == 1 and en['realized'] == 0
+```
+(3) 第 1 ラウンドの新規ファイル `tests/attack/test_w5a_reading_entry_rules.py` の H2 の 3 テスト（3 種の免除を前提にしていた）を B2 の規則で書き直した: 使役は `UNSUPPORTED_CLAUSE` で棄権し `unsupported` に使役の理由が出る、`unrepresented source content` も棄権、名前の古くなった 1 つは `test_h2_a_reason_beside_the_predicate_phrase_reason_is_never_set_aside` に改名、不変条件のテストは 26 文について「`readable: true` なら `unsupported` の理由が `['copula value is a predicate phrase']` ちょうどで、`clauses` に比較の節がある」を課す。
+**採点器の分類の変化**（自作の見本 3 本・118 問。出典 `artifacts/w5-a/r2/bank_class_changes.tsv`、`artifacts/w5-a/r2/bank_score/`）: 変わったのは 2 問だけで、どちらも `correct → over_abstain`（`FX-J15`「父がこの本を読んだ。」・`FX-J23`「先生が生徒に本を読ませた。」）。B1_v2 は正答 35→33・過剰棄権 17→19、B1_v2_r2・B1_v2_r3 は変化なし。誤読・誤答・誤った応諾は 3 本とも 0 のまま。
+
+第 3 ラウンド（監査役の判断 M1）: 上の新しい期待の全文は、第 2 ラウンドでは `test_unoccupied_...` の最終行 `assert 'ANSWER' not in O.to_json(obs)` と関数間の空行が抜けていた（行番号で切り出したため）。関数の境界で取り直した。抜けのあった版は `artifacts/w5-a/r3/observe_after_r2_truncated.txt`。テストのファイルは変えていない（sha256 `0990dc72…` は同じ）。
+
+### K64（H3: 経路の を）
+3 つで棄権に倒した（`semantic_read.py` の入口側だけ。`semantic_reader.py` は変えていない）:
+1. **複合動詞の構造**: 述語の語彙素を前後に切り、後ろ半分が 1 語の動詞で `_PATH_VERBS` にある（またはその語彙素が入る）、または前半が `_PATH_VERBS` の動詞の連用形（連用形 ＋ ます がタガーで動詞 ＋ ます）のとき、`PATH_ROLE_NOT_MAPPED`。語は 1 つも足していない（閉じた類を語の構造で延ばす）。
+2. **主語に人でない正の証拠**（`_not_person_evidence`）がある能動の節で、を の句がある → `SUBJECT_TYPE_UNDETERMINED:object or path:<主語>`。
+3. **主語に人の証拠が無く、を の句に場所の証拠**（`_is_place_phrase` または主辞が `_SPOT_NOUNS`）がある → 同じ理由。場所の を は経路・起点でありうる。
+x3 ほかの入力で棄権になったのは 2 文（「行列が大通りを練り歩いた。」「船が港を出航した。」。どちらも K40 型の誤読だった）。
+**「人の証拠が無ければ棄権」には広げなかった**: 中間職の試作で、W2-h2 の自由文からの経路づけ 2 件と W3-c の凍結データ 5 件（主語 `ハル`・`車掌`・`会計係` など）が落ちた（指示書 §0 の記録）。
+**残る穴（隠さない）**: (1) 一覧に無い単純動詞の経路（例の型: `<物>が<場所の証拠の無い名詞>を<くぐる・転がる・吹き抜ける 等>`）は今も agent・patient で返る（実測: 「少年が校門をくぐった。」「風が谷間を吹き抜けた。」「玉が床を転がった。」は agent と patient で読める）。複合動詞でも、構成要素が `_PATH_VERBS` の動詞でない語（吹き抜ける: 吹く・抜ける）は拾えない。(2) 主語に人の証拠がある経路の を（`少年が校門を…` 型のうち複合でないもの）は patient の名が誤り（K40 の (1) の残り）。(3) 人でない主語が能動で他動詞を取る一般の文（煙突が空を汚した。の型で、主語に閉じた類の証拠も、を の句に場所の証拠も無いもの）は agent のまま。直すには述語・名詞の配置の型が要る（W3-b1）。
+
+#### 第 2 ラウンドの追記（監査役の判断 B3）
+**撤回**: 上の「**「人の証拠が無ければ棄権」には広げなかった**」と「残る穴（隠さない）」の (3)（主語に閉じた類の証拠も場所の証拠も無い人でない主語の能動の文は agent のまま）は、次の規則で一部を閉じたので、その範囲で撤回する。
+**規則**（`semantic_read._clause_ja` の agent の写しに 1 か所と、補助関数 `_object_frame_known`。`semantic_reader.py` は変えていない）: 能動の節で、主語に人の正の証拠が無く（`_is_person_phrase` が偽: 人・人の集まり・動物。木に乗り物の類は無いので、乗り物の証拠は無い扱い）、`を` で示された patient があり、述語に**既知の枠（を を取る）が無い**とき、`AGENT_EVIDENCE_MISSING:<主語>` で棄権する。「既知の枠」は木にある 2 つの源だけ: コーパスの他動性の表（`frames.transitivity(述語) == 'trans'`）、または読解器の閉じた類のうち を の項を動作の対象として書く枠の類（`_TRANSFER_PREDICATES`・`_SHARING_PREDICATES`・`_CHANGE_PREDICATES` から `_INTRANSITIVE_CHANGE_PREDICATES` を除いたもの・`_SELECTION_PREDICATES`・`_PROCESSING_PREDICATES`・`_PRODUCT_PREDICATES`・`_CONTAINMENT_PREDICATES`・`_PLACEMENT_PREDICATES`）。表で `intrans`・`unknown` の述語、表に無い述語は既知の枠が無い。**語の一覧は 1 つも足していない**（`artifacts/w5-a/r2/c_lists.txt`）。は で示された目的語は を ではないので発火しない。`SUBJECT_TYPE_UNDETERMINED:object or path` の理由の型は変えず、その後ろに置いた。
+**入口の 2,344 入力で B3 による変化は 0**（`artifacts/w5-a/r2/entry_changes_vs_r1.txt` に `AGENT_EVIDENCE_MISSING` が 0 件）。
+**監査役の B3 が言う「落ちる既存の 7 件」の分類**（`artifacts/w5-a/r2/classify7.py` の出力 `classify7.txt`。「`transitivity`」は `frames.transitivity`。いずれも主語は `_is_person_phrase` が偽なので、「人の証拠が無ければ棄権」だけの規則（枠の条件なし）なら棄権になる文）:
+
+| テスト（ノード ID） | 文 | 述語 | `transitivity` | 読解器の類 | 分類 | 第 2 ラウンドの結果 |
+|---|---|---|---|---|---|---|
+| `test_routing_from_text_entry.py::test_T1_...` | `モモがテストを書く。` | 書く | trans | なし | (ii) | 読める（agent・patient）。発火しない |
+| 同上 | `セキがコードを確かめる。` | 確かめる | trans | なし | (ii) | 読める。発火しない |
+| 同上 | `モモは検証をやらない。` | やる | trans | `_TRANSFER_PREDICATES` | (ii) | 読める。発火しない |
+| `test_routing_from_text_regress.py::test_M1_...` | `セキがレビューをやる。` | やる | trans | `_TRANSFER_PREDICATES` | (ii) | 読める。発火しない |
+| `test_observe_data.py::...[S-J06]` | `車掌は乗客に切符を渡した。` | 渡す | trans | `_TRANSFER_PREDICATES` | (ii) | 読める。発火しない |
+| `...[S-J07]` | `受付は客に鍵を渡した。` | 渡す | trans | `_TRANSFER_PREDICATES` | (ii) | 読める。発火しない |
+| `...[S-J13]` | `農家は市場で果物を売った。` | 売る | trans | `_TRANSFER_PREDICATES` | (ii) | 読める。発火しない |
+| `...[S-J21]` | `会計係は領収書を発行しなかった。` | 発行する | trans | なし | (ii) | 読める。発火しない |
+| `...[M12-single-J05]`（観測で主語を `車掌` に替える） | `駅員は乗客に切符を渡した。`・`車掌は乗客に切符を渡した。` | 渡す | trans | `_TRANSFER_PREDICATES` | (ii) | 読める。発火しない |
+
+7 件はすべて (ii)（規約どおりの正しい読み）で、(i)（経路の を を patient にする K40 型の読みを期待にしているもの）は 0 件。したがって B3 のために改訂した既存テストは 0 件。7 件は全部通る（`artifacts/w5-a/r2/b3_seven.txt`）。
+**残る型（宣言。隠さない）**: コーパスの他動性の表が `trans` とする経路の動詞（`<物>が<場所>を<そういう動詞>` の型）は、表が経路の を と patient の を を区別しないので、今も agent・patient で返る。実測の例: 「霧が湖面を這った。」は agent `霧`・patient `湖面` で読める（`frames.transitivity('這う')` は `trans`）。これを閉じる手段は、(a) 枠の条件を外す（変種 A: 「人の証拠が無ければ棄権」。上の 7 件の正しい読み（(ii)）を壊す。監査役の (ii) に反する）、(b) 経路の動詞の一覧を足す（禁止）、(c) W3-b1 の述語の配置の型から経路を読む、の 3 つ。**(ii) を優先して (c) を待つ**。監査役の B3 の主文（「述語の既知の枠が を を patient として取らない、または述語が一覧に無い」ときに棄権する）と (ii) は、表が `trans` とする経路の動詞で衝突する。この衝突の判断は監査役に返す。もう 1 つの残り: は で示された patient（「空は雲がたなびいた。」は agent `雲`・patient `空` で読める）は、この規則の対象外。
+
+#### 第 3 ラウンドの追記（監査役の判断 B3 (β)、2026-10-03 15:35）
+**撤回（上の第 2 ラウンドの追記のうち、間違いになった文）**: (1) 「既知の枠は木にある 2 つの源だけ: コーパスの他動性の表（`frames.transitivity(述語) == 'trans'`）、または読解器の閉じた類…」の**前半（表を源とすること）**。(2) 「**(ii) を優先して (c) を待つ**」。(3) 「**残る型（宣言。隠さない）**: コーパスの他動性の表が `trans` とする経路の動詞は… 今も agent・patient で返る」。(4) 7 件の表の「第 2 ラウンドの結果」の列のうち、`書く`・`確かめる`・`発行する` の 3 文の「読める。発火しない」。(5) 「入口の 2,344 入力で B3 による変化は 0」は第 2 ラウンドの木についての記録で、今の木では下の 5 件。第 2 ラウンドの文は消していない。新しい結果は下に書く。
+第 2 ラウンドの追記が「今も agent・patient で返る」と書いた `霧が湖面を這った。` を今の木で流した結果（`artifacts/w5-a/r3/` の `classify7.py` と同じ呼び出し。`semantic_read.read`）: `readable: False`、`abstain: {'kind': 'not_supported', 'reasons': ['AGENT_EVIDENCE_MISSING:霧']}`。
+
+**規則（第 3 ラウンド）**: 既知の枠は**読解器の閉じた類 8 つだけ**（`_TRANSFER_PREDICATES`・`_SHARING_PREDICATES`・`_CHANGE_PREDICATES` から `_INTRANSITIVE_CHANGE_PREDICATES` を除いたもの・`_SELECTION_PREDICATES`・`_PROCESSING_PREDICATES`・`_PRODUCT_PREDICATES`・`_CONTAINMENT_PREDICATES`・`_PLACEMENT_PREDICATES`。第 2 ラウンドと同じ 8 つ）。`semantic_read._object_frame_known(predicate, R)` は表（`frames.transitivity`）を引数にも本体にも持たない。能動の節で、主語に人の正の証拠が無く（`_is_person_phrase` が偽）、`を` で示された patient があり、述語が 8 つの類のどれにも無いとき、`AGENT_EVIDENCE_MISSING:<主語>` で棄権する。条件の残りと理由の型、`SUBJECT_TYPE_UNDETERMINED:object or path` の後ろという置き場所は第 2 ラウンドのまま。`semantic_reader.py` は変えていない。語の一覧は 1 つも足していない・削っていない（閉じた類の JSON は dev の写しと同一: `artifacts/w5-a/r3/c_lists.txt`）。乗り物の類・動物の類は作っていない。木に乗り物の類は無いので、乗り物の証拠は無い扱い。`frames.is_role` など新しい人の証拠の源は足していない。
+**表を源にしない理由**: 表の `trans` は「動詞の格の辺のうち を の割合が 0.2 以上」（`frames.transitivity` の docstring）で、経路の を と対象の を を区別しない。今の木で測った値（`artifacts/w5-a/r3/transitivity_values.txt`）: `書く` 0.467・`確かめる` 0.7・`発行する` 0.225・`這う` 0.531（`削る` 0.646・`壊す` 0.607）。経路の動詞と普通の他動詞の値が重なり、値では分けられない。第 2 ラウンドの中間職の実測は `.claude/vera-audit/review-impl/W5-a2/review.r1.md`（経路の動詞 8 語が 0.211〜0.805 で、いずれも `trans`）。
+**入口の 2,344 入力**: 第 2 ラウンドの木に対して変わったのは `readable→false` の 5 件だけで、理由はすべて `AGENT_EVIDENCE_MISSING`（`changed`・`F→R` は 0。`artifacts/w5-a/r3/entry_changes_vs_r2.txt`、全文）:
+```
+R→F 2023年、会社が工場で新製品を作った。 AGENT_EVIDENCE_MISSING:会社
+R→F 会社が新製品を発表した。 AGENT_EVIDENCE_MISSING:会社
+R→F 尼僧が住職を務める。 AGENT_EVIDENCE_MISSING:尼僧
+R→F 複数の人物が同名を名乗っている。 AGENT_EVIDENCE_MISSING:複数の人物
+R→F 車がトンネルを抜けた。 AGENT_EVIDENCE_MISSING:車
+{'readable→false': 5}
+{'AGENT_EVIDENCE_MISSING:会社': 2, 'AGENT_EVIDENCE_MISSING:尼僧': 1, 'AGENT_EVIDENCE_MISSING:複数の人物': 1, 'AGENT_EVIDENCE_MISSING:車': 1}
+```
+このうち正しい読みの損失は 4 文（`2023年、会社が工場で新製品を作った。`・`会社が新製品を発表した。`・`尼僧が住職を務める。`・`複数の人物が同名を名乗っている。`。主語は `_is_person_phrase` が偽（`artifacts/w5-a/r3/person_phrase_probe.txt`）で、述語 作る・発表する・務める・名乗る は 8 つの類に無い）、既知の誤読の解消が 1 文（`車がトンネルを抜けた。` は第 2 ラウンドの木では agent と patient で読んでいた K40 型の誤読で、今は棄権）。dev に対しては（`artifacts/w5-a/r3/entry_changes_vs_dev.txt`の最終 2 行）`{'readable→false': 43, 'reason_changed': 103}`、`CHG`・`F→R` は 0 行。
+**攻撃役の 140 文**（`artifacts/w5-a/r3/probe_cmp_vs_r2.txt`）: 第 2 ラウンドとの差は 1 文で、`JA020 子犬が骨をかじった。` が `AGENT_EVIDENCE_MISSING:子犬` で棄権になった（正しい読みの損失。`_is_person_phrase('犬')` は真だが `'子犬'` は偽。語を足して戻していない）。合計は `{'same': 128, 'readable→false': 10, 'reason_changed': 1, 'changed': 1}`（`changed` の 1 文は第 1 ラウンドから変わらない英語の 1 文）。
+**採点器の見本**（自作 3 本・118 問。`artifacts/w5-a/r3/bank_class_changes_vs_r2.tsv`、`artifacts/w5-a/r3/bank_score/`）: 第 2 ラウンドに対して変わったのは 1 問だけで、`FX-J30`「会社が新製品を発表した。」が `correct → over_abstain`（B1_v2 の正答 33→32・過剰棄権 19→20。数は `artifacts/w5-a/r3/bank_score/after_B1_v2/summary.json`）。誤読・誤答・誤った応諾は 3 本とも 0 のまま。dev に対しては 3 問（`FX-J15`・`FX-J23`・`FX-J30`、`bank_class_changes_vs_dev.tsv`）。
+**7 件の分類（第 3 ラウンド。`artifacts/w5-a/r3/classify7.py` の出力 `classify7.txt`。述語と主語は各行に書いた）**:
+
+| テスト（ノード ID） | 文 | 述語 | `transitivity` | 読解器の類 | 主語は人の証拠 | `object_frame_known` | 第 3 ラウンドの結果 | 分類 |
+|---|---|---|---|---|---|---|---|---|
+| `test_routing_from_text_entry.py::test_T1_...` | `モモがテストを書く。` | 書く | trans | なし | False | False | 棄権 `AGENT_EVIDENCE_MISSING:モモ` | (ii) 改訂 |
+| `test_routing_from_text_entry.py::test_T1_...` | `セキがコードを確かめる。` | 確かめる | trans | なし | False | False | 棄権 `AGENT_EVIDENCE_MISSING:セキ` | (ii) 改訂 |
+| `test_routing_from_text_entry.py::test_T1_...` | `モモは検証をやらない。` | やる | trans | _TRANSFER_PREDICATES | False | True | 読める | (ii) 変わらず通る |
+| `test_routing_from_text_regress.py::test_M1_...` | `セキがレビューをやる。` | やる | trans | _TRANSFER_PREDICATES | False | True | 読める | (ii) 変わらず通る |
+| `test_observe_data.py::...[S-J06]` | `車掌は乗客に切符を渡した。` | 渡す | trans | _TRANSFER_PREDICATES | False | True | 読める | (ii) 変わらず通る |
+| `test_observe_data.py::...[S-J07]` | `受付は客に鍵を渡した。` | 渡す | trans | _TRANSFER_PREDICATES | False | True | 読める | (ii) 変わらず通る |
+| `test_observe_data.py::...[S-J13]` | `農家は市場で果物を売った。` | 売る | trans | _TRANSFER_PREDICATES | False | True | 読める | (ii) 変わらず通る |
+| `test_observe_data.py::...[S-J21]` | `会計係は領収書を発行しなかった。` | 発行する | trans | なし | False | False | 棄権 `AGENT_EVIDENCE_MISSING:会計係` | (ii) 改訂 |
+| `test_observe_data.py::...[M12-single-J05]` | `駅員は乗客に切符を渡した。` | 渡す | trans | _TRANSFER_PREDICATES | True | True | 読める | (ii) 変わらず通る |
+| `test_observe_data.py::...[M12-single-J05]` | `車掌は乗客に切符を渡した。` | 渡す | trans | _TRANSFER_PREDICATES | False | True | 読める | (ii) 変わらず通る |
+
+7 件のうち、棄権になったのは `書く`・`確かめる`・`発行する` の 3 文。それを期待にしていた 2 件の試験（test_T1 と S-J21）を、監査役の許可（(ii) の 2 件）に従って改訂した。残る文（`やる`・`渡す`・`売る`）は読解器の類にあるので読め、試験は変えていない（`artifacts/w5-a/r3/b3_seven.txt`）。
+
+**改訂した既存の試験 2 件**（監査役が許可。**名前もパラメータも変えていない**）。原因はどちらも B3 だけであることを、第 2 ラウンドの状態の写し（コミット済み。木の外）と今の木で同じ呼び出しを流して確かめた（`artifacts/w5-a/r3/t1_output.json` と `t1_output_r2snap.json`、`sj21_cause.txt`）。
+(1) `tests/test_routing_from_text_entry.py::test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader`。ファイル全体の sha256: 前 `d92de3d9656ddf1a0828cb4ca6c4251411f8bfd24e881e9198e2ec5bc7254f71`・後 `5307c2670d337c5d7689a97fa2111a091ccd1a892f8770f89978c65f085b5b52`。読めなくなった 2 文は `モモがテストを書く。`（`AGENT_EVIDENCE_MISSING:モモ`）と `セキがコードを確かめる。`（`AGENT_EVIDENCE_MISSING:セキ`）。第 2 ラウンドの写しでは `decision: route`・`agent: ハル`・`MAPPED` 7、今の木では `decision: undecided`・`ABSTAINED`・`gate:INCOMPLETE_READING`・`router: null`・`MAPPED` 5・`COMPARISON_ONLY` 1・`UNREAD` 2。関数名は `routes_through_the_real_reader` を含むが、改訂後は**誰にも経路づけしない**（名前を変えない指示に従った）。期待は測った値への完全一致（「経路づけしない」だけの弱い形にしていない）。
+旧い全文（`artifacts/w5-a/r3/t1_before.txt`。dev と同一で、`git show 0e40954` と `cmp` で確かめた）:
+```python
+def test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader():
+    proc = entry(r1(), TASK)
+    assert proc.returncode == 0, proc.stderr
+    assert proc.stdout.count("\n") == 1                      # one line
+    out = json.loads(proc.stdout)
+    assert list(out) == KEYS
+    assert (out["decision"], out["agent"], out["undecided_reason"]) == ("route", "ハル", None)
+    assert out["abstention"] is None and out["decided_by"].startswith("rule:") and out["evidence"] == ["ハルは実装をやる。"]
+    assert out["reading"]["by_status"]["MAPPED"] == 7 and out["reading"]["lookup"] == "stub-no-placement/1"
+    assert all(a["basis"]["kind"] == "declared_text" and a["lineage"] is None for a in out["records"]["agents"])
+```
+新しい全文（`artifacts/w5-a/r3/t1_after.txt`）:
+```python
+def test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader():
+    # W5-a round 3 (auditor's decision B3 (β); docs/READING_SOUNDNESS.md K64): the entry no longer reads an を-phrase as the thing acted on when
+    # the subject has no person evidence and the predicate is in none of the reader's classes with an を-object (書く, 確かめる: the corpus
+    # table alone calls them transitive). Two sentences of r1.md are not read, so the gate abstains and nobody is routed. The name is kept;
+    # the old expectation is kept in K64 in full.
+    proc = entry(r1(), TASK)
+    assert proc.returncode == 0, proc.stderr
+    assert proc.stdout.count("\n") == 1                      # one line
+    out = json.loads(proc.stdout)
+    assert list(out) == KEYS
+    assert (out["decision"], out["agent"], out["undecided_reason"]) == ("undecided", None, "ABSTAINED")
+    assert out["decided_by"] == "gate:INCOMPLETE_READING" and out["router"] is None
+    assert out["abstention"]["type"] == "INCOMPLETE_READING"
+    assert out["abstention"]["detail"] == "2 of 8 units were not read and mapped; no job is routed"
+    assert out["abstention"]["units"] == [
+        {"index": 1, "status": "UNREAD", "text": "モモがテストを書く。", "reasons": ["AGENT_EVIDENCE_MISSING:モモ"]},
+        {"index": 2, "status": "UNREAD", "text": "セキがコードを確かめる。", "reasons": ["AGENT_EVIDENCE_MISSING:セキ"]}]
+    assert out["evidence"] == ["モモがテストを書く。", "セキがコードを確かめる。"]
+    assert out["reading"]["by_status"] == {"MAPPED": 5, "COMPARISON_ONLY": 1, "UNREAD": 2, "PREDICATE_CLASS_UNKNOWN": 0, "WORK_TERM_UNKNOWN": 0,
+                                           "AMBIGUOUS_RELATION": 0, "NAME_UNRESOLVED": 0, "CONTRADICTION": 0, "UNREPRESENTABLE": 0}
+    assert out["reading"]["lookup"] == "stub-no-placement/1"
+    assert all(a["basis"]["kind"] == "declared_text" and a["lineage"] is None for a in out["records"]["agents"])
+```
+(2) `tests/test_observe_data.py::test_output_matches_the_frozen_expectation[S-J21]`。ファイル全体の sha256: 前 `57355834dfca10c64f087db25377b74d369bf2313a46bfc3b74bd61727bdf446`・後 `b054ec5bb2a82599a4ad0dd274dbd5bd558d88207d92fa0b1fee9ad18f067733`。凍結データ（`tests/observe/data/`）は変えていない（`git diff --stat -- tests/observe/` が空、`test_frozen_files_are_unchanged` が通る）。凍結の期待の行（`artifacts/w5-a/r3/sj21_frozen_expectation.txt`。変えていない）:
+```
+{"case": "S-J21", "outcome": "FOCUS", "anchor": "発行する|-|past|agent=会計係;patient=領収書", "anchor_realization": "REALIZED:会計係は領収書を発行しなかった。", "anchor_occupied": "ATTESTED", "observed": [], "focus": "発行する|-|past|agent=会計係;patient=領収書", "tie": null, "occupied": {"発行する|-|past|agent=会計係;patient=領収書": "ATTESTED"}, "realization": {"発行する|-|past|agent=会計係;patient=領収書": "REALIZED:会計係は領収書を発行しなかった。"}, "claims": {"発行する|-|past|agent=会計係;patient=領収書": "OBSERVED_OCCUPIED"}}
+```
+旧い全文（`artifacts/w5-a/r3/sj21_before.txt`。dev と同一）:
+```python
+@pytest.mark.parametrize('case', [c['case'] for c in CASES if EXPECTED[c['case']]['outcome'] != 'TURNS'])
+def test_output_matches_the_frozen_expectation(world, case):
+    exp = _apply_disagreements(case, EXPECTED[case])
+    got = view.summarize(parsed(world, case)[0])
+    assert view.compare(exp, got) == []
+```
+新しい全文（`artifacts/w5-a/r3/sj21_after.txt`。表 `W5A_R3_REVISED` と本体）:
+```python
+# W5-a round 3 (auditor's decision B3 (β); docs/READING_SOUNDNESS.md K64): the anchor sentence of S-J21 has a subject with no person evidence and
+# an を-phrase of a predicate in none of the reader's classes with an を-object (発行する: the corpus table alone calls it transitive), so the
+# reader entry abstains and the observer has no anchor. The frozen expectation (expected.jsonl) is kept unchanged and no longer holds; the
+# revised expectation is the measured summary. The old test body is kept in K64 in full.
+W5A_R3_REVISED = {'S-J21': ({'outcome': 'NO_ANCHOR', 'reason': 'READER_ABSTAINED'}, ['AGENT_EVIDENCE_MISSING:会計係'])}
+
+
+@pytest.mark.parametrize('case', [c['case'] for c in CASES if EXPECTED[c['case']]['outcome'] != 'TURNS'])
+def test_output_matches_the_frozen_expectation(world, case):
+    exp = _apply_disagreements(case, EXPECTED[case])
+    got = view.summarize(parsed(world, case)[0])
+    if case in W5A_R3_REVISED:
+        summary, reasons = W5A_R3_REVISED[case]
+        assert got == summary, got
+        anchor = next(c for c in CASES if c['case'] == case)['anchor']['text']
+        assert semantic_read.read(anchor)['abstain']['reasons'] == reasons
+        assert view.compare(exp, got) != []      # the frozen expectation is not rewritten: it is kept and no longer holds
+        return
+    assert view.compare(exp, got) == []
+```
+原因の記録（`artifacts/w5-a/r3/sj21_cause.txt`）:
+```
+## current tree
+semantic_read: /Users/motonisihikoudai/Projects/vera-impl/wt/W5-a-S/verantyx/semantic_read.py
+pro: 212 rows in 0.003s
+exit_code: 0
+summary: {"outcome": "NO_ANCHOR", "reason": "READER_ABSTAINED"}
+anchor: 会計係は領収書を発行しなかった。
+readable: False abstain: {"kind": "not_supported", "reasons": ["AGENT_EVIDENCE_MISSING:会計係"]}
+
+## round-2 snapshot
+semantic_read: /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5a3/r2snap/verantyx/semantic_read.py
+pro: 212 rows in 0.003s
+exit_code: 0
+summary: {"outcome": "FOCUS", "anchor": "発行する|-|past|agent=会計係;patient=領収書", "anchor_realization": "REALIZED:会計係は領収書を発行しなかった。", "anchor_occupied": "ATTESTED", "observed": [], "focus": "発行する|-|past|agent=会計係;patient=領収書", "tie": null, "occupied": {"発行する|-|past|agent=会計係;patient=領収書": "ATTESTED"}, "realization": {"発行する|-|past|agent=会計係;patient=領収書": "REALIZED:会計係は領収書を発行しなかった。"}, "claims": {"発行する|-|past|agent=会計係;patient=領収書": "OBSERVED_OCCUPIED"}, "distances": {}, "unoccupied_marked": [], "ranks": [["発行する|-|past|agent=会計係;patient=領収書"]], "basis_origin": {}, "decided_by": [], "ledger_seqs": {"発行する|-|past|agent=会計係;patient=領収書": {"distance": [], "utter_verbatim": [], "utter_neighbor": [], "recency": [], "decided": []}}, "face_swap_counts": {"licensed": 0, "candidates_tried": 0, "candidates_skipped_same_as_original": 0}}
+anchor: 会計係は領収書を発行しなかった。
+readable: True abstain: null
+```
+**正しい読みの損失（文ごと・全件）**: 入口の 2,344 入力で 4 文（上）、攻撃役の 140 文で 1 文（`JA020 子犬が骨をかじった。`）、改訂した試験で 3 文（`モモがテストを書く。`・`セキがコードを確かめる。`・`会計係は領収書を発行しなかった。`）、採点器の見本で 1 問（`FX-J30` 会社が新製品を発表した。）。いずれも主語に人の正の証拠が無く、述語が 8 つの類に無い。
+**申し送り（W3-b1）**: これらの損失は、述語の配置の `direct` の型で主語が人・動物・乗り物と分かれば取り戻せる対象で、ここでは語を足して戻していない。原則: 誤読 0 は正読より優先（W1-a 以来の方針）。
+**既存の試験の期待を変えた件数**: 第 3 ラウンドで 2 件（test_T1 の 1・S-J21 の 1）。全ラウンドの合計は 13 件（T6 の 5・test_semantic_read_r3 の 3・test_observe の 3・test_T1 の 1・S-J21 の 1。5 ファイル 8 関数。K62・K63・K64 に前後の全文）。
+
+### K65（H4: 英語の述語の辞書形）
+読解器の述語は、書かれた動詞の形から閉じた一覧（既知の動詞）で決める。書かれた形 `low[k]` を屈折形（-s・-es・-ed・-d・語末の重ね＋ed・子音＋y の -ied/-ies・不規則表の過去形と過去分詞）に持つ既知の動詞がちょうど 1 つならその辞書形、0 なら `UNKNOWN_PREDICATE`、2 つ以上なら `PREDICATE_FORM_UNDETERMINED:<書かれた形>:<候補>`（同点は棄権）。`en_frames.lemma` は許可パス外なので直していない。
+入口の門（`en.lemma(w) in known`）は変えていない。能動の -ed で `en_frames.lemma` が誤る語は門で `UNKNOWN_PREDICATE`（棄権。誤読ではない）のまま残る。
+x3 の入力で英語の出力が変わったのは攻撃役の 1 文（`EN036`）だけで、`predicate` が `repair` になった（`artifacts/w5-a/probe_cmp.txt`）。合成の既知の動詞 `{hire, hir}` に対する `hired` が同点で棄権することは `tests/attack/test_w5a_reading_entry_rules.py` で確かめた。
+
+### 十字（A1・A2）と証言の再利用（A-01）
+`docs/EVENT_CROSS.md`（変換の規則 4）、`docs/AGENT_ROUTING.md`（§4 の 3 と J27）、`docs/CONDUCT_ASK.md`（§6）に書いた。測定は `artifacts/w5-a/k3_permutations.txt`（鍵順の全順列）と `artifacts/w5-a/k4_reask_counts.txt`（照会の回数）。

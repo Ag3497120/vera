@@ -98,10 +98,24 @@ def _apply_disagreements(case, expected):
     return expected
 
 
+# W5-a round 3 (auditor's decision B3 (β); docs/READING_SOUNDNESS.md K64): the anchor sentence of S-J21 has a subject with no person evidence and
+# an を-phrase of a predicate in none of the reader's classes with an を-object (発行する: the corpus table alone calls it transitive), so the
+# reader entry abstains and the observer has no anchor. The frozen expectation (expected.jsonl) is kept unchanged and no longer holds; the
+# revised expectation is the measured summary. The old test body is kept in K64 in full.
+W5A_R3_REVISED = {'S-J21': ({'outcome': 'NO_ANCHOR', 'reason': 'READER_ABSTAINED'}, ['AGENT_EVIDENCE_MISSING:会計係'])}
+
+
 @pytest.mark.parametrize('case', [c['case'] for c in CASES if EXPECTED[c['case']]['outcome'] != 'TURNS'])
 def test_output_matches_the_frozen_expectation(world, case):
     exp = _apply_disagreements(case, EXPECTED[case])
     got = view.summarize(parsed(world, case)[0])
+    if case in W5A_R3_REVISED:
+        summary, reasons = W5A_R3_REVISED[case]
+        assert got == summary, got
+        anchor = next(c for c in CASES if c['case'] == case)['anchor']['text']
+        assert semantic_read.read(anchor)['abstain']['reasons'] == reasons
+        assert view.compare(exp, got) != []      # the frozen expectation is not rewritten: it is kept and no longer holds
+        return
     assert view.compare(exp, got) == []
 
 

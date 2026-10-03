@@ -1,0 +1,12 @@
+def test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader():
+    proc = entry(r1(), TASK)
+    assert proc.returncode == 0, proc.stderr
+    assert proc.stdout.count("\n") == 1                      # one line
+    out = json.loads(proc.stdout)
+    assert list(out) == KEYS
+    assert (out["decision"], out["agent"], out["undecided_reason"]) == ("route", "ハル", None)
+    assert out["abstention"] is None and out["decided_by"].startswith("rule:") and out["evidence"] == ["ハルは実装をやる。"]
+    assert out["reading"]["by_status"]["MAPPED"] == 7 and out["reading"]["lookup"] == "stub-no-placement/1"
+    assert all(a["basis"]["kind"] == "declared_text" and a["lineage"] is None for a in out["records"]["agents"])
+
+

@@ -1,0 +1,9 @@
+# T6: the head of the subject is a noun of a closed class that is never a person; no agent phrase; a godan / suru verb outside the spontaneous class
+T6 = ['倉庫が解体された。', '教室が改装された。', '要約が削除された。', '目次が更新された。', '海岸が閉鎖された。']
+@pytest.mark.parametrize('text', T6)
+def test_t6_a_subject_headed_by_a_noun_that_is_never_a_person_keeps_the_passive(text):
+    # W5-a round 2 (auditor's decision B1; docs/READING_SOUNDNESS.md K62): rule 2c (a passive on a non-person subject alone) is withdrawn.
+    # A non-person subject rules out the honorific, not the spontaneous: the entry abstains. The old expectation is kept in K62 in full.
+    ab = abstains_on_voice(text)
+    assert ab['reasons'] == ['UNDETERMINED_VOICE:passive or spontaneous'], ab
+

@@ -1,0 +1,59 @@
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "受身 自発 棄権",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+=== 十字 直列化 鍵の順
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "十字 直列化 鍵の順",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+=== 証言 再利用 鍵 文脈
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "証言 再利用 鍵 文脈",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+=== 複合動詞 経路
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "複合動詞 経路",
+  "searched": 672,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 288,
+    "prereg": 65,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

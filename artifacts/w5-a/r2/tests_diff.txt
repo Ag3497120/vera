@@ -1,0 +1,105 @@
+diff --git a/tests/test_observe.py b/tests/test_observe.py
+index 58b4455..39283c7 100644
+--- a/tests/test_observe.py
++++ b/tests/test_observe.py
+@@ -422,8 +422,16 @@ def test_the_index_is_opened_read_only_and_not_changed(tmp_path):
+ 
+ # ------------------------------------------------------------------ realization and the claim (D11, D12)
+ def test_realization_and_claim_travel_together():
++    # W5-a round 2 (auditor's decision B2; docs/READING_SOUNDNESS.md K63): the entry no longer sets aside an unsupported clause for
++    # 'unrepresented source content'. The element whose agent was swapped for the recipient's own name (花子は花子に本をあげた。) is not read back, so its
++    # realization is REFUSED (ROUNDTRIP_MISMATCH); the other elements are unchanged. The element is found by its agent's surface, not by position.
+     obs = O.observe(vp(direction='FACE_SWAP:agent'), struct(fakes.people_placement()))
++    refused = [e for e in elements(obs) if surfaces_of(e, 'agent') == ['花子']]
++    assert len(refused) == 1
++    assert refused[0].realization == {'status': 'REFUSED', 'reason': 'ROUNDTRIP_MISMATCH', 'detail': 'generated text was not read (ABSTAINED)'}
++    assert refused[0].claim == 'UNKNOWN_OCCUPANCY'
+     for e in elements(obs):
++        if e is refused[0]: continue
+         r = e.realization
+         assert r['status'] == 'REALIZED' and r['claim'] == 'UNKNOWN_OCCUPANCY' and r['provenance'].startswith('observed:occupancy_unknown')
+         assert r['text'].endswith('に本をあげた。') and r['derivation'] == 'observed-cross'
+@@ -434,7 +442,13 @@ def test_unoccupied_cells_have_a_constructed_provenance_and_never_an_answer(tmp_
+     idx = make_index(tmp_path, ['ただの文字列。'])
+     obs = O.observe(vp(direction='FACE_SWAP:agent'), struct(fakes.people_placement(), index=O.IndexSpec(idx, ('pro',))))
+     es = elements(obs)
+-    assert es and all(e.claim == 'CONSTRUCTED_UNOCCUPIED' and e.realization['provenance'] == 'constructed:observed_unoccupied' for e in es)
++    # W5-a round 2 (auditor's decision B2; docs/READING_SOUNDNESS.md K63): the element whose agent is the recipient's own name (花子) is not read back,
++    # so its realization is REFUSED and carries no provenance of its own (measured: status, reason, detail only); its claim is still constructed.
++    refused = [e for e in es if surfaces_of(e, 'agent') == ['花子']]
++    assert len(refused) == 1
++    assert refused[0].realization == {'status': 'REFUSED', 'reason': 'ROUNDTRIP_MISMATCH', 'detail': 'generated text was not read (ABSTAINED)'}
++    assert es and all(e.claim == 'CONSTRUCTED_UNOCCUPIED' for e in es)
++    assert all(e.realization['provenance'] == 'constructed:observed_unoccupied' for e in es if e is not refused[0])
+     assert 'ANSWER' not in O.to_json(obs)
+ 
+ 
+@@ -652,7 +666,9 @@ def test_counts_list_every_realization_refusal_reason_with_zeros_in_a_fixed_orde
+     from verantyx import semantic_realize
+     c = O.observe(vp(direction='FACE_SWAP:agent'), struct(fakes.people_placement())).to_dict()['counts']['realization']
+     expect = sorted(semantic_realize.REFUSAL_REASONS - set(O.REFUSAL_NOT_ON_THIS_PATH))
+-    assert list(c['refused']) == expect and all(v == 0 for v in c['refused'].values()) and c['realized'] == 4
++    # W5-a round 2 (auditor's decision B2; docs/READING_SOUNDNESS.md K63): one element (agent 花子, the recipient's own name) is refused, not realized.
++    assert list(c['refused']) == expect and c['realized'] == 3
++    assert c['refused']['ROUNDTRIP_MISMATCH'] == 1 and all(v == 0 for k, v in c['refused'].items() if k != 'ROUNDTRIP_MISMATCH')
+     # the two reasons that are left out belong to the answer / source-view realizers; if the realizer's list grows, this fails and a person decides
+     assert set(O.REFUSAL_NOT_ON_THIS_PATH) <= semantic_realize.REFUSAL_REASONS and len(expect) + len(O.REFUSAL_NOT_ON_THIS_PATH) == len(semantic_realize.REFUSAL_REASONS)
+     assert 'ANSWER' not in json.dumps(c)
+diff --git a/tests/test_semantic_read_r3.py b/tests/test_semantic_read_r3.py
+index 539e959..db6fb56 100644
+--- a/tests/test_semantic_read_r3.py
++++ b/tests/test_semantic_read_r3.py
+@@ -128,13 +128,27 @@ def test_the_path_of_a_motion_verb_is_never_called_the_thing_acted_on(text):
+     assert any(r.startswith('PATH_ROLE_NOT_MAPPED') for r in ab['reasons']), ab
+ 
+ 
++# W5-a round 2 (auditor's decision B2; docs/READING_SOUNDNESS.md K63): READING_CONVENTIONS §9.2 (1) sets aside one rejected alternative
++# reading only (a comparison read, the copula unsupported). The reader leaves these inputs with an unsupported clause for another reason
++# (causative frame: causer/causee unresolved), so the entry does not read them and abstains with UNSUPPORTED_CLAUSE. The old expectations
++# are kept in K63 in full.
++W5A_R2_REVISED = {'先生が生徒に練習をさせた。': ['UNSUPPORTED_CLAUSE'], '母が子どもに勉強をさせた。': ['UNSUPPORTED_CLAUSE'],
++                  '母が弟に皿を洗わせた。': ['UNSUPPORTED_CLAUSE']}
++
++
+ @pytest.mark.parametrize('text', ['先生が生徒に練習をさせた。', '母が子どもに勉強をさせた。', '兄が洗濯をした。'])
+ def test_a_sahen_noun_apart_from_its_suru_is_not_read_as_suru_with_an_object(text):
+     ab = refusal(text)
++    if text in W5A_R2_REVISED:
++        assert ab['reasons'] == W5A_R2_REVISED[text], ab
++        return
+     assert any(r.startswith('PREDICATE_NOT_MAPPED') for r in ab['reasons']), ab
+ 
+ 
+ @pytest.mark.parametrize('text,predicate', [('兄が窓を開けた。', '開ける'), ('弟が本を読んだ。', '読む'), ('母が弟に皿を洗わせた。', '洗う')])
+ def test_an_ordinary_object_and_a_causative_of_an_ordinary_verb_are_still_read(text, predicate):
++    if text in W5A_R2_REVISED:
++        assert refusal(text)['reasons'] == W5A_R2_REVISED[text]
++        return
+     out = SR.read(text)
+     assert out['readable'] is True and out['clauses'][0]['predicate'] == predicate, out
+diff --git a/tests/test_semantic_read_r4.py b/tests/test_semantic_read_r4.py
+index 98e116c..4ba1ce9 100644
+--- a/tests/test_semantic_read_r4.py
++++ b/tests/test_semantic_read_r4.py
+@@ -12,6 +12,7 @@ tagger-side table does not know as a person (a person who is owed respect) is th
+ 
+ Every sentence below is written (from this rule, with words the author chose) BEFORE the entry was run on it; the file is frozen by
+ artifacts/w1-a/w1a3_tests_freeze.sha256. T1-T5, T7, T8 ask for an abstention; T6, T9, T10 ask for a passive.
++W5-a round 2 (K62): T6 now asks for an abstention (UNDETERMINED_VOICE:passive or spontaneous); rule 2c above is withdrawn.
+ """
+ import sys
+ from pathlib import Path
+@@ -113,9 +114,10 @@ def test_t5_a_thing_without_evidence_of_a_thing_abstains(text):
+ 
+ @pytest.mark.parametrize('text', T6)
+ def test_t6_a_subject_headed_by_a_noun_that_is_never_a_person_keeps_the_passive(text):
+-    subject = text.split('が')[0]
+-    c = only_clause(text)
+-    assert c['voice'] == 'passive' and c['roles'] == {'patient': subject}, c
++    # W5-a round 2 (auditor's decision B1; docs/READING_SOUNDNESS.md K62): rule 2c (a passive on a non-person subject alone) is withdrawn.
++    # A non-person subject rules out the honorific, not the spontaneous: the entry abstains. The old expectation is kept in K62 in full.
++    ab = abstains_on_voice(text)
++    assert ab['reasons'] == ['UNDETERMINED_VOICE:passive or spontaneous'], ab
+ 
+ 
+ @pytest.mark.parametrize('text', T7)

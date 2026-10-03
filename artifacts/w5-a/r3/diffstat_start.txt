@@ -1,0 +1,11 @@
+ docs/AGENT_ROUTING.md          |   5 +
+ docs/CONDUCT_ASK.md            |   4 +
+ docs/EVENT_CROSS.md            |   8 +-
+ docs/READING_SOUNDNESS.md      | 239 +++++++++++++++++++++++++++++++++++++++++
+ tests/test_observe.py          |  20 +++-
+ tests/test_semantic_read_r3.py |  14 +++
+ tests/test_semantic_read_r4.py |   8 +-
+ verantyx/event_cross.py        |  34 +++++-
+ verantyx/llm_choice.py         |  31 +++++-
+ verantyx/semantic_read.py      | 124 ++++++++++++++++++---
+ 10 files changed, 454 insertions(+), 33 deletions(-)

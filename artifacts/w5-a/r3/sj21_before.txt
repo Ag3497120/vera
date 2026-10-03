@@ -1,0 +1,7 @@
+@pytest.mark.parametrize('case', [c['case'] for c in CASES if EXPECTED[c['case']]['outcome'] != 'TURNS'])
+def test_output_matches_the_frozen_expectation(world, case):
+    exp = _apply_disagreements(case, EXPECTED[case])
+    got = view.summarize(parsed(world, case)[0])
+    assert view.compare(exp, got) == []
+
+

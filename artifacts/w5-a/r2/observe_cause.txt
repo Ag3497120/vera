@@ -1,0 +1,18 @@
+== 第 1 ラウンドの写し (/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5a2/r1snap)
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5a2/r1snap/verantyx/semantic_read.py
+REALIZED None 次郎は花子に本をあげた。 UNKNOWN_OCCUPANCY UNKNOWN_OCCUPANCY
+REALIZED None 犬は花子に本をあげた。 UNKNOWN_OCCUPANCY UNKNOWN_OCCUPANCY
+REALIZED None 花子は花子に本をあげた。 UNKNOWN_OCCUPANCY UNKNOWN_OCCUPANCY
+realized 4 refused_nonzero {}
+太郎は花子に本をあげた。 True None []
+花子は花子に本をあげた。 True None [{'predicate': 'あげる', 'span': [8, 10], 'reasons': ['unrepresented source content']}]
+次郎は花子に本をあげた。 True None []
+== 今の木 (/Users/motonisihikoudai/Projects/vera-impl/wt/W5-a-S、B2 の後)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-a-S/verantyx/semantic_read.py
+REALIZED None 次郎は花子に本をあげた。 UNKNOWN_OCCUPANCY UNKNOWN_OCCUPANCY
+REALIZED None 犬は花子に本をあげた。 UNKNOWN_OCCUPANCY UNKNOWN_OCCUPANCY
+REFUSED ROUNDTRIP_MISMATCH None None UNKNOWN_OCCUPANCY
+realized 3 refused_nonzero {'ROUNDTRIP_MISMATCH': 1}
+太郎は花子に本をあげた。 True None []
+花子は花子に本をあげた。 False {'kind': 'not_supported', 'reasons': ['UNSUPPORTED_CLAUSE']} [{'predicate': 'あげる', 'span': [8, 10], 'reasons': ['unrepresented source content']}]
+次郎は花子に本をあげた。 True None []

@@ -1,0 +1,5 @@
+K3 _readable: 81398 orders, 14.34 s
+.K3 _readable_with_comparison: 40320 orders, 6.70 s
+.K3 _unreadable: 40328 orders, 1.08 s
+.....
+7 passed in 22.19s

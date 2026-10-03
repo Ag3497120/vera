@@ -1,0 +1,24 @@
+def test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader():
+    # W5-a round 3 (auditor's decision B3 (β); docs/READING_SOUNDNESS.md K64): the entry no longer reads an を-phrase as the thing acted on when
+    # the subject has no person evidence and the predicate is in none of the reader's classes with an を-object (書く, 確かめる: the corpus
+    # table alone calls them transitive). Two sentences of r1.md are not read, so the gate abstains and nobody is routed. The name is kept;
+    # the old expectation is kept in K64 in full.
+    proc = entry(r1(), TASK)
+    assert proc.returncode == 0, proc.stderr
+    assert proc.stdout.count("\n") == 1                      # one line
+    out = json.loads(proc.stdout)
+    assert list(out) == KEYS
+    assert (out["decision"], out["agent"], out["undecided_reason"]) == ("undecided", None, "ABSTAINED")
+    assert out["decided_by"] == "gate:INCOMPLETE_READING" and out["router"] is None
+    assert out["abstention"]["type"] == "INCOMPLETE_READING"
+    assert out["abstention"]["detail"] == "2 of 8 units were not read and mapped; no job is routed"
+    assert out["abstention"]["units"] == [
+        {"index": 1, "status": "UNREAD", "text": "モモがテストを書く。", "reasons": ["AGENT_EVIDENCE_MISSING:モモ"]},
+        {"index": 2, "status": "UNREAD", "text": "セキがコードを確かめる。", "reasons": ["AGENT_EVIDENCE_MISSING:セキ"]}]
+    assert out["evidence"] == ["モモがテストを書く。", "セキがコードを確かめる。"]
+    assert out["reading"]["by_status"] == {"MAPPED": 5, "COMPARISON_ONLY": 1, "UNREAD": 2, "PREDICATE_CLASS_UNKNOWN": 0, "WORK_TERM_UNKNOWN": 0,
+                                           "AMBIGUOUS_RELATION": 0, "NAME_UNRESOLVED": 0, "CONTRADICTION": 0, "UNREPRESENTABLE": 0}
+    assert out["reading"]["lookup"] == "stub-no-placement/1"
+    assert all(a["basis"]["kind"] == "declared_text" and a["lineage"] is None for a in out["records"]["agents"])
+
+

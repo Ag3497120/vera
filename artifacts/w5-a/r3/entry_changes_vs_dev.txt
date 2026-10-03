@@ -1,0 +1,45 @@
+R→F 2025年3月5日に東京で会議が開かれた。 UNDETERMINED_VOICE:passive or spontaneous
+R→F 先生が生徒に作文を書かせた。 UNSUPPORTED_CLAUSE
+R→F 会議が延期された。 UNDETERMINED_VOICE:passive or spontaneous
+R→F 2023年、会社が工場で新製品を作った。 AGENT_EVIDENCE_MISSING:会社
+R→F この犬が庭で穴を掘った。 UNSUPPORTED_CLAUSE
+R→F その子供が公園で石を拾った。 UNSUPPORTED_CLAUSE
+R→F この先生は学校で数学を教えた。 UNSUPPORTED_CLAUSE
+R→F 店長が店員に商品を並べさせた。 UNSUPPORTED_CLAUSE
+R→F 先生が学生に論文を読ませた。 UNSUPPORTED_CLAUSE
+R→F 社長が部下に資料を作らせた。 UNSUPPORTED_CLAUSE
+R→F 兄が弟に荷物を運ばせた。 UNSUPPORTED_CLAUSE
+R→F 母が娘に皿を洗わせた。 UNSUPPORTED_CLAUSE
+R→F 隊長が兵士に水を汲ませた。 UNSUPPORTED_CLAUSE
+R→F 親が子供に手紙を書かせた。 UNSUPPORTED_CLAUSE
+R→F 母が子供に野菜を食べさせた。 UNSUPPORTED_CLAUSE
+R→F 親が子供に薬を飲ませた。 UNSUPPORTED_CLAUSE
+R→F 妹は漫画を読まなくもない。 UNSUPPORTED_CLAUSE
+R→F 店長は看板を外さなくもない。 UNSUPPORTED_CLAUSE
+R→F 彼女の鞄は私のより大きい。 UNSUPPORTED_CLAUSE
+R→F 彼は市長になった。 UNSUPPORTED_CLAUSE
+R→F 今年の売上は去年のより多い。 UNSUPPORTED_CLAUSE
+R→F 彼女は髪を茶色に染めた。 UNSUPPORTED_CLAUSE
+R→F 6時半に会議が開かれた。 UNDETERMINED_VOICE:passive or spontaneous
+R→F 父がこの本を読んだ。 UNSUPPORTED_CLAUSE
+R→F 先生が生徒に本を読ませた。 UNSUPPORTED_CLAUSE
+R→F 会社が新製品を発表した。 AGENT_EVIDENCE_MISSING:会社
+R→F 彼女は看板を黒に塗り替えた。 UNSUPPORTED_CLAUSE
+R→F 彼女は医者になった。 UNSUPPORTED_CLAUSE
+R→F 彼はエンジニアになった。 UNSUPPORTED_CLAUSE
+R→F 彼は学校に通った。 UNSUPPORTED_CLAUSE
+R→F 僕は工事現場に向かった。 UNSUPPORTED_CLAUSE
+R→F 尼僧が住職を務める。 AGENT_EVIDENCE_MISSING:尼僧
+R→F 複数の人物が同名を名乗っている。 AGENT_EVIDENCE_MISSING:複数の人物
+R→F 1918年から1930年まで外務人民委員（外務大臣）を務めた。 UNSUPPORTED_CLAUSE
+R→F 彼は医者になった。 UNSUPPORTED_CLAUSE
+R→F 車がトンネルを抜けた。 AGENT_EVIDENCE_MISSING:車
+R→F 行列が大通りを練り歩いた。 PATH_ROLE_NOT_MAPPED:練り歩く
+R→F 船が港を出航した。 SUBJECT_TYPE_UNDETERMINED:object or path:船
+R→F 倉庫が解体された。 UNDETERMINED_VOICE:passive or spontaneous
+R→F 教室が改装された。 UNDETERMINED_VOICE:passive or spontaneous
+R→F 要約が削除された。 UNDETERMINED_VOICE:passive or spontaneous
+R→F 目次が更新された。 UNDETERMINED_VOICE:passive or spontaneous
+R→F 海岸が閉鎖された。 UNDETERMINED_VOICE:passive or spontaneous
+{'readable→false': 43, 'reason_changed': 103}
+{'UNDETERMINED_VOICE:passive or spontaneous': 8, 'UNSUPPORTED_CLAUSE': 28, 'AGENT_EVIDENCE_MISSING:会社': 2, 'AGENT_EVIDENCE_MISSING:尼僧': 1, 'AGENT_EVIDENCE_MISSING:複数の人物': 1, 'AGENT_EVIDENCE_MISSING:車': 1, 'PATH_ROLE_NOT_MAPPED:練り歩く': 1, 'SUBJECT_TYPE_UNDETERMINED:object or path:船': 1}

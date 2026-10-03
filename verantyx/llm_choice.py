@@ -375,6 +375,22 @@ def choice_key(word: str, candidate_terms: Sequence[str]) -> str:
     return _canonical({"word": _norm(word), "candidates": sorted({_norm(t) for t in candidate_terms})})
 
 
+REUSE_KEY_PROTOCOL = "llm_choice/reuse-key/2"
+
+
+def reuse_key_parts(word: str, candidates: Sequence["ChoiceCandidate"]) -> dict:
+    """What a reused decision must share with the current ask: the word and, for every candidate shown, its term AND the sha256 of the
+    context lines (used_in) that were put in the prompt. The set of candidates is order-free; the lines of one candidate keep their order."""
+    return {"protocol": REUSE_KEY_PROTOCOL, "word": _norm(word),
+            "candidates": sorted([_norm(c.term), _sha256(_canonical(list(c.used_in)))] for c in candidates)}
+
+
+def reuse_key(word: str, candidates: Sequence["ChoiceCandidate"]) -> str:
+    """The key a recorded decision is reused under. `choice_key` (word + terms only) is kept for what it checks (verify_adoption); a decision
+    is NOT reused on it, because the same terms with a different context is a different question. The question text is not part of it."""
+    return _canonical(reuse_key_parts(word, candidates))
+
+
 # ------------------------------------------------------------------ ledger
 def _chain_hash(prev: str, body: dict) -> str:
     """The only place a ledger hash is computed (append and verify both call it)."""
@@ -487,11 +503,13 @@ class ChoiceLedger:
         return stored
 
     def cache(self) -> dict[str, dict]:
-        """Rebuilt from decision lines.  ADOPTED and ABSTAINED only; first decision per key wins."""
+        """Rebuilt from decision lines.  ADOPTED and ABSTAINED only; first decision per reuse key wins.  A decision line without a
+        ``reuse_key`` (written before the context was part of the key) is not here: it is never reused (see summary())."""
         out: dict[str, dict] = {}
         for entry in self.entries():
-            if entry.get("type") == "decision" and entry.get("status") in ("ADOPTED", "ABSTAINED"):
-                out.setdefault(entry["key"], entry)
+            if (entry.get("type") == "decision" and entry.get("status") in ("ADOPTED", "ABSTAINED")
+                    and isinstance(entry.get("reuse_key"), str)):
+                out.setdefault(entry["reuse_key"], entry)
         return out
 
     def verify_adoption(self, decision_id: str, word: str, choice: str, candidate_terms: Sequence[str]) -> bool:
@@ -547,6 +565,7 @@ class ChoiceLedger:
             "decision_status": count(decisions, "status"),
             "decision_reasons": dict(sorted(reasons.items())),
             "reuse_rows": sum(1 for e in entries if e.get("type") == "reuse"),
+            "decisions_without_reuse_key": sum(1 for d in decisions if not isinstance(d.get("reuse_key"), str)),
             "last_hash": entries[-1]["hash"] if entries else GENESIS,
         }
 
@@ -756,6 +775,7 @@ class LLMChooser:
                        failure: Optional[str] = None, detail: str = "") -> dict:
         return self.ledger.append({
             "type": "decision", "decision_id": decision_id, "key": key, "word": word,
+            "reuse_key": reuse_key(word, cands), "reuse_key_parts": reuse_key_parts(word, cands),
             "candidates": [c.term for c in cands], "merged_duplicates": merged, "status": status,
             "reason": reason, "choice": choice, "ask_ids": list(ask_ids), "failure": failure,
             "detail": detail, "mapping_type": MAPPING_TYPE if status == "ADOPTED" else None,
@@ -787,10 +807,11 @@ class LLMChooser:
             return ChoiceDecision("REFUSED", "TOO_MANY_CANDIDATES", decision_id=decision_id,
                                   detail=f"{len(cands)} > max_candidates={self.max_candidates}")
 
-        hit = self.ledger.cache().get(key)
+        shown_key = reuse_key(shown_word, cands)       # the word, the terms and the context shown for each: what the asker was given
+        hit = self.ledger.cache().get(shown_key)
         if hit is not None:
             reuse = self.ledger.append({"type": "reuse", "decision_id": decision_id,
-                                        "reused_decision_id": hit["decision_id"], "key": key,
+                                        "reused_decision_id": hit["decision_id"], "key": key, "reuse_key": shown_key,
                                         "word": shown_word, "ts": self.ledger.now()})
             return self._from_cached(hit, reuse["decision_id"])
 

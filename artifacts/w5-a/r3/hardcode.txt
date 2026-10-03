@@ -1,0 +1,131 @@
+added lines: 162
+PROPER/NUMERIC (must be empty): []
+ENGLISH NAMES (must be empty): []
+common nouns found in added lines (list only): ['任命']
+verb lemmas found in added lines (list only): ['する', 'よる', '変える', '渡す', '置く', '走る']
+english lowercase words found in added lines (list only; each with the added lines that hold it, so a reader can judge): ['after', 'all', 'answered', 'auditor', 'because', 'def', 'down', 'each', 'every', 'exactly', 'fixed', 'form', 'kept', 'left', 'letter', 'made', 'missing', 'more', 'never', 'none', 'not', 'nothing', 'old', 'only', 'outside', 'patient', 'read', 'returned', 'than', 'that', 'the', 'this', 'two', 'types', 'update', 'was', 'were', 'when', 'which', 'writes', 'written']
+  [after] 1 added line(s):
+      """A relation in the fixed key order type, from, to; any other key after them, alphabetical (kept, not dropped)."""
+  [all] 2 added line(s):
+      if isinstance(self.types, tuple) and self.types and all(isinstance(t, str) and t for t in self.types):
+      and all(reason == R._PREDICATE_VALUE_REASON for reason in u.unsupported))
+  [answered] 4 added line(s):
+      def answered(u, sup):
+      reason u was unsupported for must be answered by sup (answered)."""
+      if sup.predicate_span.start <= u.predicate_span.start and u.predicate_span.end <= sup.predicate_span.end: return answered(u, sup)
+  [auditor] 3 added line(s):
+      """W5-a round 2 (auditor's decision B2): the one rejected alternative reading that READING_CONVENTIONS §9.2 (1) writes down -- a
+      """W5-a round 3 (auditor's decision B3, (β) variant C): a predicate is known to take an を-object only when it is in one of the reader's
+      # W5-a rounds 2-3 (auditor's decision B3, (β) variant C): an を-phrase is the thing acted on only in a frame the reader's own closed
+  [because] 2 added line(s):
+      is NOT reused on it, because the same terms with a different context is a different question. The question text is not part of it."""
+      copula / negative-copula reading left unsupported only because its value is a predicate phrase, and the comparison read from inside
+  [def] 11 added line(s):
+      def __post_init__(self) -> None:
+      def _canon(v: Any) -> Any:
+      def _relation_dict(r: Mapping[str, Any]) -> Dict[str, Any]:
+  [down] 1 added line(s):
+      """W5-a round 2 (auditor's decision B2): the one rejected alternative reading that READING_CONVENTIONS §9.2 (1) writes down -- a
+  [each] 1 added line(s):
+      shown_key = reuse_key(shown_word, cands)       # the word, the terms and the context shown for each: what the asker was given
+  [every] 2 added line(s):
+      """What a reused decision must share with the current ask: the word and, for every candidate shown, its term AND the sha256 of the
+      sup is the comparison read from inside it. Any other overlap is not an alternative reading of the same predicate. Either way every
+  [exactly] 1 added line(s):
+      # the dictionary form is decided from the written form and the closed list alone: exactly one known verb that the written form is an
+  [fixed] 1 added line(s):
+      """A relation in the fixed key order type, from, to; any other key after them, alphabetical (kept, not dropped)."""
+  [form] 3 added line(s):
+      """The lemma of the verb whose continuative form (stem + ます) is `stem`, when the tagger reads stem + ます as a verb and ます; else None."""
+      of _PATH_VERBS (飛び越える: 越える), or the first half is the continuative form of such a verb (突っ走る: 走る). The class is extended by the
+      # the dictionary form is decided from the written form and the closed list alone: exactly one known verb that the written form is an
+  [kept] 2 added line(s):
+      """A relation in the fixed key order type, from, to; any other key after them, alphabetical (kept, not dropped)."""
+      """The key a recorded decision is reused under. `choice_key` (word + terms only) is kept for what it checks (verify_adoption); a decision
+  [left] 2 added line(s):
+      # returned it in. Any other shape (a list, an empty string, a non-string) is left as it is and refused by invariant_problems().
+      copula / negative-copula reading left unsupported only because its value is a predicate phrase, and the comparison read from inside
+  [letter] 2 added line(s):
+      """The written forms a known verb can take (closed rules: -s, -es, -ed, -d, a doubled final letter + -ed, consonant + y -> -ied / -ies, and the
+      # locate the verb token as it is WRITTEN (the reader's head may be a lemma that en_frames guessed wrong, e.g. one with a letter too many)
+  [made] 1 added line(s):
+      """A compound verb made of the closed class _PATH_VERBS: split the lemma in two; the second half is one verb that is, or whose lemma is, a verb
+  [missing] 2 added line(s):
+      'voice:passive (indirect, honorific, potential, spontaneous)': 'れる/られる is passive only on positive evidence: による/によって; or a に/から phrase of a verb of the closed 
+      if k is None:                       # no written verb token: the old gate; the refusal for the missing token comes where the verb group is read
+  [more] 1 added line(s):
+      # inflection of; none -> UNKNOWN_PREDICATE, more than one -> a tie (abstain)
+  [never] 1 added line(s):
+      ``reuse_key`` (written before the context was part of the key) is not here: it is never reused (see summary())."""
+  [none] 4 added line(s):
+      'role:path (を of a verb of going through a space)': 'the convention has no role for the path a motion verb covers (走る・歩く・渡る の を-phrase); the reader calls it pat
+      # vehicles, so none counts) and an を-phrase of a predicate in none of those classes may be a thing moving along a path: not an agent,
+      #       passive from none of them; so no passive without 1a or 1b. (The earlier rule 2c, a passive on a non-person subject, is withdrawn.)
+  [not] 26 added line(s):
+      # `types` is a set, not a ranking: a well-formed tuple of non-empty strings is written in alphabetical order, whatever order the lookup
+      """A relation in the fixed key order type, from, to; any other key after them, alphabetical (kept, not dropped)."""
+      out.update({k: _canon(r[k]) for k in sorted((k for k in r if k not in _RELATION_KEY_ORDER), key=str)})
+  [nothing] 2 added line(s):
+      # W5-a: an active clause with an object names its subject agent only when nothing says the subject is not a person, and the を-phrase
+      # a subject that is not a person rules out the honorific, not the spontaneous (nothing tells the two apart without the verb's type)
+  [old] 1 added line(s):
+      if k is None:                       # no written verb token: the old gate; the refusal for the missing token comes where the verb group is read
+  [only] 7 added line(s):
+      """The key a recorded decision is reused under. `choice_key` (word + terms only) is kept for what it checks (verify_adoption); a decision
+      """Rebuilt from decision lines.  ADOPTED and ABSTAINED only; first decision per reuse key wins.  A decision line without a
+      'voice:passive (indirect, honorific, potential, spontaneous)': 'れる/られる is passive only on positive evidence: による/によって; or a に/から phrase of a verb of the closed 
+  [outside] 1 added line(s):
+      'voice:passive (indirect, honorific, potential, spontaneous)': 'れる/られる is passive only on positive evidence: による/によって; or a に/から phrase of a verb of the closed 
+  [patient] 3 added line(s):
+      'role:path (を of a verb of going through a space)': 'the convention has no role for the path a motion verb covers (走る・歩く・渡る の を-phrase); the reader calls it pat
+      objects = [x.span.text for x in raw_roles if x.name == 'patient']
+      and any(x.name == 'patient' and R._particle_after(toks, x.span.end) == 'を' for x in raw_roles)
+  [read] 6 added line(s):
+      'role:path (を of a verb of going through a space)': 'the convention has no role for the path a motion verb covers (走る・歩く・渡る の を-phrase); the reader calls it pat
+      copula / negative-copula reading left unsupported only because its value is a predicate phrase, and the comparison read from inside
+      it is supported. Any other reason, alone or beside that one, is not set aside: the input is not read (UNSUPPORTED_CLAUSE)."""
+  [returned] 1 added line(s):
+      # returned it in. Any other shape (a list, an empty string, a non-string) is left as it is and refused by invariant_problems().
+  [than] 1 added line(s):
+      # inflection of; none -> UNKNOWN_PREDICATE, more than one -> a tie (abstain)
+  [that] 11 added line(s):
+      context lines (used_in) that were put in the prompt. The set of candidates is order-free; the lines of one candidate keep their order."""
+      'voice:passive (indirect, honorific, potential, spontaneous)': 'れる/られる is passive only on positive evidence: による/によって; or a に/から phrase of a verb of the closed 
+      'role:path (を of a verb of going through a space)': 'the convention has no role for the path a motion verb covers (走る・歩く・渡る の を-phrase); the reader calls it pat
+  [the] 32 added line(s):
+      # `types` is a set, not a ranking: a well-formed tuple of non-empty strings is written in alphabetical order, whatever order the lookup
+      """A value copied from the input, written with its mapping keys in alphabetical order (lists keep their order)."""
+      """A relation in the fixed key order type, from, to; any other key after them, alphabetical (kept, not dropped)."""
+  [this] 1 added line(s):
+      structure of the word, not by a word added to it. A lemma that is itself in the class is the existing test's, not this one's."""
+  [two] 2 added line(s):
+      """A compound verb made of the closed class _PATH_VERBS: split the lemma in two; the second half is one verb that is, or whose lemma is, a verb
+      # a subject that is not a person rules out the honorific, not the spontaneous (nothing tells the two apart without the verb's type)
+  [types] 4 added line(s):
+      # `types` is a set, not a ranking: a well-formed tuple of non-empty strings is written in alphabetical order, whatever order the lookup
+      if isinstance(self.types, tuple) and self.types and all(isinstance(t, str) and t for t in self.types):
+      object.__setattr__(self, 'types', tuple(sorted(self.types)))
+  [update] 4 added line(s):
+      out.update({k: _canon(r[k]) for k in sorted((k for k in r if k not in _RELATION_KEY_ORDER), key=str)})
+      out.update((verb[:-1] + 'ied', verb[:-1] + 'ies'))
+      out.update(table.get(verb, ()))
+  [was] 3 added line(s):
+      ``reuse_key`` (written before the context was part of the key) is not here: it is never reused (see summary())."""
+      shown_key = reuse_key(shown_word, cands)       # the word, the terms and the context shown for each: what the asker was given
+      reason u was unsupported for must be answered by sup (answered)."""
+  [were] 1 added line(s):
+      context lines (used_in) that were put in the prompt. The set of candidates is order-free; the lines of one candidate keep their order."""
+  [when] 4 added line(s):
+      """The tagger's one word for `surface` when it is a single verb written as it is; else None."""
+      """The lemma of the verb whose continuative form (stem + ます) is `stem`, when the tagger reads stem + ます as a verb and ます; else None."""
+      """W5-a round 3 (auditor's decision B3, (β) variant C): a predicate is known to take an を-object only when it is in one of the reader's
+  [which] 2 added line(s):
+      'role:path (を of a verb of going through a space)': 'the convention has no role for the path a motion verb covers (走る・歩く・渡る の を-phrase); the reader calls it pat
+      X を囲む ...). The corpus table (frames.transitivity) is not a source: its 'trans' is the share of を among a verb's case edges, which
+  [writes] 2 added line(s):
+      """W5-a round 2 (auditor's decision B2): the one rejected alternative reading that READING_CONVENTIONS §9.2 (1) writes down -- a
+      own closed classes whose frame writes the を-phrase as the thing acted on (X が Y に Z を渡す, X を Y に変える / 任命する / 置く,
+  [written] 7 added line(s):
+      # `types` is a set, not a ranking: a well-formed tuple of non-empty strings is written in alphabetical order, whatever order the lookup
+      """A value copied from the input, written with its mapping keys in alphabetical order (lists keep their order)."""
+      ``reuse_key`` (written before the context was part of the key) is not here: it is never reused (see summary())."""
