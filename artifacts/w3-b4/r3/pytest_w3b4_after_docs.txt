@@ -1,0 +1,146 @@
+........................................................................ [  9%]
+........................................................................ [ 18%]
+........................................................................ [ 27%]
+........................................................................ [ 37%]
+........................................................................ [ 46%]
+........................................................................ [ 55%]
+........................................................................ [ 65%]
+.......................FFF.............................................. [ 74%]
+........................................................................ [ 83%]
+......................................................................F. [ 92%]
+.............................................F.........                  [100%]
+=================================== FAILURES ===================================
+_________ test_every_row_of_the_new_data_with_the_fixture[W3B1-U-090] __________
+
+row = {'id': 'W3B1-U-090', 'lang': 'ja', 'behavior': 'read', 'input': '兄が駅へ送り出した。', ...}
+
+    @pytest.mark.parametrize('row', DATA, ids=[r['id'] for r in DATA])
+    def test_every_row_of_the_new_data_with_the_fixture(row):
+        q = F.FixtureQuery()
+        out = read(row['input'], q, row['lang'])
+        assert q.misses == [], q.misses
+        exc = _exception(row)
+        if exc is not None:
+            # a row whose registered expectation the entry does not meet is declared in w3b1_expect_exceptions.json with the exact output it gives
+            # (checked in test_declared_exceptions_are_real...). A declared row that the entry READS must be the base commit's own reading (not this path).
+            if exc['kind'] == 'baseline_reads':
+                assert out == SR.read(row['input'], row['lang'], placement=None)
+            return
+        verdict = b1.judge(row['expect'], row['lang'], out)['verdict']
+        assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
+        if row['entry_expect'] == 'read':
+            assert out['readable'] is True and verdict == 'correct', (out['abstain'], out['clauses'])
+        else:
+>           assert out['readable'] is False, out['clauses']
+E           AssertionError: [{'predicate': '送り出す', 'roles': {'agent': '兄', 'goal': '駅'}, 'polarity': '+', 'tense': 'past', ...}]
+E           assert True is False
+
+tests/test_semantic_read_w3b1.py:483: AssertionError
+_________ test_every_row_of_the_new_data_with_the_fixture[W3B1-U-091] __________
+
+row = {'id': 'W3B1-U-091', 'lang': 'ja', 'behavior': 'read', 'input': '弟が港へ踏み出した。', ...}
+
+    @pytest.mark.parametrize('row', DATA, ids=[r['id'] for r in DATA])
+    def test_every_row_of_the_new_data_with_the_fixture(row):
+        q = F.FixtureQuery()
+        out = read(row['input'], q, row['lang'])
+        assert q.misses == [], q.misses
+        exc = _exception(row)
+        if exc is not None:
+            # a row whose registered expectation the entry does not meet is declared in w3b1_expect_exceptions.json with the exact output it gives
+            # (checked in test_declared_exceptions_are_real...). A declared row that the entry READS must be the base commit's own reading (not this path).
+            if exc['kind'] == 'baseline_reads':
+                assert out == SR.read(row['input'], row['lang'], placement=None)
+            return
+        verdict = b1.judge(row['expect'], row['lang'], out)['verdict']
+        assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
+        if row['entry_expect'] == 'read':
+            assert out['readable'] is True and verdict == 'correct', (out['abstain'], out['clauses'])
+        else:
+>           assert out['readable'] is False, out['clauses']
+E           AssertionError: [{'predicate': '踏み出す', 'roles': {'agent': '弟', 'goal': '港'}, 'polarity': '+', 'tense': 'past', ...}]
+E           assert True is False
+
+tests/test_semantic_read_w3b1.py:483: AssertionError
+_________ test_every_row_of_the_new_data_with_the_fixture[W3B1-U-092] __________
+
+row = {'id': 'W3B1-U-092', 'lang': 'ja', 'behavior': 'read', 'input': '母が庭へ踏み込んだ。', ...}
+
+    @pytest.mark.parametrize('row', DATA, ids=[r['id'] for r in DATA])
+    def test_every_row_of_the_new_data_with_the_fixture(row):
+        q = F.FixtureQuery()
+        out = read(row['input'], q, row['lang'])
+        assert q.misses == [], q.misses
+        exc = _exception(row)
+        if exc is not None:
+            # a row whose registered expectation the entry does not meet is declared in w3b1_expect_exceptions.json with the exact output it gives
+            # (checked in test_declared_exceptions_are_real...). A declared row that the entry READS must be the base commit's own reading (not this path).
+            if exc['kind'] == 'baseline_reads':
+                assert out == SR.read(row['input'], row['lang'], placement=None)
+            return
+        verdict = b1.judge(row['expect'], row['lang'], out)['verdict']
+        assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
+        if row['entry_expect'] == 'read':
+            assert out['readable'] is True and verdict == 'correct', (out['abstain'], out['clauses'])
+        else:
+>           assert out['readable'] is False, out['clauses']
+E           AssertionError: [{'predicate': '踏み込む', 'roles': {'agent': '母', 'goal': '庭'}, 'polarity': '+', 'tense': 'past', ...}]
+E           assert True is False
+
+tests/test_semantic_read_w3b1.py:483: AssertionError
+_ test_u3_does_not_read_when_the_predicate_is_not_of_a_type_the_table_reads_or_is_split _
+
+    def test_u3_does_not_read_when_the_predicate_is_not_of_a_type_the_table_reads_or_is_split():
+        for pred, top, why in (('遊ぶ', 'P_ACT', 'PLACEMENT_FRAME_NOT_READ:P_ACT'), ('眠る', 'P_EXIST', 'PLACEMENT_FRAME_NOT_READ:P_EXIST')):
+            m = u3_map(**{pred: P(top)})
+            text = '兄が校庭で%s。' % {'遊ぶ': '遊んだ', '眠る': '眠った'}[pred]
+            new, base = pair(text, m)
+            assert new == base and not new['readable']
+>           assert SR.typed_explain_ja(text, Q(m))['w3b2'] == why
+E           AssertionError: assert 'PLACEMENT_PA...FRAME:P_ACT:で' == 'PLACEMENT_FR...OT_READ:P_ACT'
+E             
+E             - PLACEMENT_FRAME_NOT_READ:P_ACT
+E             + PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で
+
+tests/test_semantic_read_w3b2.py:320: AssertionError
+_ test_the_new_data_rows_are_read_and_refused_as_registered_and_judged_correct_when_read _
+
+    def test_the_new_data_rows_are_read_and_refused_as_registered_and_judged_correct_when_read():
+        """Every row meets `entry_expect` and `w3b2_expect`, except the rows declared in w3b2_expect_exceptions.json (see the next tests): for those the observed result is pinned."""
+        problems, misses = [], []
+        for r in NEW_DATA:
+            q = F.FixtureQuery()
+            out = SR.read(r['input'], placement=q)
+            misses += q.misses
+            verdict = b1.judge(r['expect'], 'ja', out)['verdict']
+            if verdict in ('misread', 'incomplete', 'UNJUDGED'): problems.append((r['id'], 'verdict', verdict))
+            ex = SR.typed_explain_ja(r['input'], F.FixtureQuery())
+            if r['id'] in EXCEPTIONS:
+                x = EXCEPTIONS[r['id']]
+                if ('read' if out['readable'] else 'abstain') != x['observed_entry'] or ex != x['observed_explain'] or verdict != x['observed_verdict']:
+                    problems.append((r['id'], 'declared exception no longer what was observed', x['observed_entry'], x['observed_explain']))
+                continue
+            if (r['entry_expect'] == 'read') != bool(out['readable']): problems.append((r['id'], 'entry_expect', r['entry_expect'], out['readable']))
+            if r['entry_expect'] == 'read' and verdict != 'correct': problems.append((r['id'], 'read but not correct', verdict))
+            if not out['readable']:
+                base = SR.read(r['input'], placement=None)
+                if not out['abstain']['reasons'][0] == base['abstain']['reasons'][0]: problems.append((r['id'], 'first reason differs from the one without a placement'))
+            e = r['w3b2_expect']
+            if e == 'READ': ok = ex['w3b2'] == 'READ'
+            elif e.startswith('FRAME:'): ok = (ex['frame'] or '').startswith(e[6:])
+            else: ok = (ex['w3b2'] or '').startswith(e)
+            if not ok: problems.append((r['id'], 'w3b2_expect', e, ex))
+>       assert problems == []
+E       AssertionError: assert [('W3B2-FRAME...', ...}), ...] == []
+E         
+E         Left contains 11 more items, first extra item: ('W3B2-FRAME-063', 'w3b2_expect', 'PLACEMENT_FRAME_NOT_READ:P_ACT', {'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': 'U3', 'w3b2': 'PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で', ...})
+E         Use -v to get more diff
+
+tests/test_semantic_read_w3b2.py:786: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w3b1.py::test_every_row_of_the_new_data_with_the_fixture[W3B1-U-090]
+FAILED tests/test_semantic_read_w3b1.py::test_every_row_of_the_new_data_with_the_fixture[W3B1-U-091]
+FAILED tests/test_semantic_read_w3b1.py::test_every_row_of_the_new_data_with_the_fixture[W3B1-U-092]
+FAILED tests/test_semantic_read_w3b2.py::test_u3_does_not_read_when_the_predicate_is_not_of_a_type_the_table_reads_or_is_split
+FAILED tests/test_semantic_read_w3b2.py::test_the_new_data_rows_are_read_and_refused_as_registered_and_judged_correct_when_read
+5 failed, 770 passed in 21.94s

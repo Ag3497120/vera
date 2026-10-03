@@ -1,0 +1,45 @@
+1953c1953
+< 先頭の 9 行は `w3b1_frames`（K62）の行と 1 字も違わない。助詞は が を に へ から で の 6 つだけ（と・まで・より は書かない）。役割は `docs/READING_CONVENTIONS.md` §2 の閉じた一覧から。期待する型は `coarse_types.NOUN_TYPES` の 17 型の部分集合。**同じ型の中で同じ助詞を持つ 2 行の期待する型は互いに素**（テストで機械的に確かめる。現在の表は同じ型・同じ助詞の行が 1 つずつ）。新しい 20 行（**登録時。表の変更記録 1・2 で P_CHANGE の 4 行・P_CONSUME の 5 行を消したので、今は 11 行**）の（役割・助詞・型）は **v1 の 9 行にすでにある組だけ**（agent/が、patient/を、goal/へ、source/から、place/で、time/に）。recipient・instrument・result・goal(に)・cause の行は 1 行も足さない。
+---
+> 先頭の 9 行は `w3b1_frames`（K62）の行と 1 字も違わない。助詞は が を に へ から で の 6 つだけ（と・まで・より は書かない）。役割は `docs/READING_CONVENTIONS.md` §2 の閉じた一覧から。期待する型は `coarse_types.NOUN_TYPES` の 17 型の部分集合。**同じ型の中で同じ助詞を持つ 2 行の期待する型は互いに素**（テストで機械的に確かめる。現在の表は同じ型・同じ助詞の行が 1 つずつ）。新しい 20 行（**登録時。表の変更記録 1・2 で P_CHANGE の 4 行・P_CONSUME の 5 行を消したので 11 行。さらに第 3 ラウンドの表の変更記録 3 で P_ACT・P_CREATE・P_EMOTION の `place/で/PLACE` の 3 行を消したので、今は 8 行（表は 17 行）**）の（役割・助詞・型）は **v1 の 9 行にすでにある組だけ**（agent/が、patient/を、goal/へ、source/から、place/で、time/に）。recipient・instrument・result・goal(に)・cause の行は 1 行も足さない。
+1971d1970
+< | `P_ACT` | place | で | PLACE | 付加 |
+1974d1972
+< | `P_CREATE` | place | で | PLACE | 付加 |
+1977d1974
+< | `P_EMOTION` | place | で | PLACE | 付加 |
+1980c1977
+< 読む型に残る「読まない助詞」（表の外の助詞・型は今までどおり `PLACEMENT_PARTICLE_NOT_IN_FRAME`・`PLACEMENT_TYPE_MISMATCH` で棄権する）: `P_ACT` の に（する の result）、`P_CHANGE` の に（result）・を（経路）（**P_CHANGE は表の変更記録 1 で型ごと読まない型に戻した**）、`P_CREATE` の に（recipient/beneficiary・goal/place・result）・へ・から（用例が乏しい）、`P_CONSUME` の に+TIME 以外・へ（**P_CONSUME は表の変更記録 2 で型ごと読まない型に戻した**）、`P_EMOTION` の に（cause）・へ・から。すべての型で で の instrument（規約が型を決めない）、を+PLACE/TIME/QUANTITY（経路・幅・量）、と・まで・より（6 つの助詞の外）。
+---
+> 読む型に残る「読まない助詞」（表の外の助詞・型は今までどおり `PLACEMENT_PARTICLE_NOT_IN_FRAME`・`PLACEMENT_TYPE_MISMATCH` で棄権する）: `P_ACT` の に（する の result）、`P_CHANGE` の に（result）・を（経路）（**P_CHANGE は表の変更記録 1 で型ごと読まない型に戻した**）、`P_CREATE` の に（recipient/beneficiary・goal/place・result）・へ・から（用例が乏しい）、`P_CONSUME` の に+TIME 以外・へ（**P_CONSUME は表の変更記録 2 で型ごと読まない型に戻した**）、`P_EMOTION` の に（cause）・へ・から。すべての型で で の instrument（規約が型を決めない）（**表の変更記録 3 で、新しく読む 3 型（P_ACT・P_CREATE・P_EMOTION）は で の place も読まない**。v1 の P_MOVE・P_COMMUNICATE の で の place の行は表に残る）、を+PLACE/TIME/QUANTITY（経路・幅・量）、と・まで・より（6 つの助詞の外）。
+2005c2002
+< | `P_ACT`（25） | PARTICLE_ROLE_UNDECIDED | が: agent だけ。を: patient（経路の を を取る移動の動詞は成員に無い。PLACE は v1 と同じく除く）。へ+PLACE: goal。から+PLACE: source。で+PLACE: place。**に は解けない**: する が「〜を〜にする」で result を取り、型は PLACE・TIME・人に及ぶ。goal（置く・つける・入れる）・time と型が重なる | 読む: が・を・へ・から・で。に は読まない |
+---
+> | `P_ACT`（25） | PARTICLE_ROLE_UNDECIDED | が: agent だけ。を: patient（経路の を を取る移動の動詞は成員に無い。PLACE は v1 と同じく除く）。へ+PLACE: goal。から+PLACE: source。で+PLACE: place。**に は解けない**: する が「〜を〜にする」で result を取り、型は PLACE・TIME・人に及ぶ。goal（置く・つける・入れる）・time と型が重なる | 読む: が・を・へ・から・で。に は読まない（**第 3 ラウンドの表の変更記録 3 で で を外した**: 今は が・を・へ・から。で は instrument・cause と型が重なる。反例: 兄が右で打った＝右手（instrument）を place 右と読んだ）|
+2007c2004
+< | `P_CREATE`（24） | NI_RECIPIENT_OR_BENEFICIARY | が: agent。を: patient。で+PLACE: place。**に は解けない**（に+人 が recipient か beneficiary か、に+PLACE が goal か place か、に+TIME が result と重なる）。へ・から は成員の用例が乏しいので行を置かない | 読む: が・を・で |
+---
+> | `P_CREATE`（24） | NI_RECIPIENT_OR_BENEFICIARY | が: agent。を: patient。で+PLACE: place。**に は解けない**（に+人 が recipient か beneficiary か、に+PLACE が goal か place か、に+TIME が result と重なる）。へ・から は成員の用例が乏しいので行を置かない | 読む: が・を・で（**第 3 ラウンドの表の変更記録 3 で で を外した**: 今は が・を。反例: 兄が右で絵を描いた＝右手を place 右と読んだ。兄が口で絵を描いた＝r7 の 口=PLACE は文の語義 くち でない（K173））|
+2009c2006
+< | `P_EMOTION`（10） | NI_DE_CAUSE_OR_PLACE | が: agent。を: patient。で+PLACE: place（原因の で の充填物は PLACE でない）。**に は解けない**（に が原因・相手で、cause は型を決めない。TIME の語でも原因と時が割れる） | 読む: が・を・で |
+---
+> | `P_EMOTION`（10） | NI_DE_CAUSE_OR_PLACE | が: agent。を: patient。で+PLACE: place（原因の で の充填物は PLACE でない）。**に は解けない**（に が原因・相手で、cause は型を決めない。TIME の語でも原因と時が割れる） | 読む: が・を・で（**第 3 ラウンドの表の変更記録 3 で で を外した**: 今は が・を。反例: 兄が段差で驚いた＝段差は原因（cause）で、place 段差と読んだ）|
+2038c2035
+< **登録部分（`w3b4-prereg` の中）との関係**: `w3b4_frames`・`w3b4_not_read` は登録部分の中にあり、W3-b1 の作法（表の変更記録 1。登録時の行を表の中で戻し、本文に注記を付ける）に従って **表の本体を狭める方向に書き換えた**。登録したときの本文は `artifacts/w3-b4/PREREG.md`（変えていない）に残り、この 2 つの表の差は、下の 1・2 が述べる行（P_CHANGE の 4 行・P_CONSUME の 5 行を消し、`w3b4_not_read` に 2 行を足した）だけ。
+---
+> **登録部分（`w3b4-prereg` の中）との関係**: `w3b4_frames`・`w3b4_not_read` は登録部分の中にあり、W3-b1 の作法（表の変更記録 1。登録時の行を表の中で戻し、本文に注記を付ける）に従って **表の本体を狭める方向に書き換えた**。登録したときの本文は `artifacts/w3-b4/PREREG.md`（変えていない）に残り、登録時の本文との差は、次の 3 種類だけ（機械で比べた結果は K182 に書く）: (1) 2 つの表の行（`w3b4_frames` から P_CHANGE の 4 行・P_CONSUME の 5 行・第 3 ラウンドで P_ACT・P_CREATE・P_EMOTION の `place/で/PLACE` の 3 行を消し、`w3b4_not_read` に 2 行を足した）、(2) 本文に付けた太字の注記（K161 の行数、K161 の「読まない助詞」の段落、K162 の末尾の段落、K163 の P_ACT・P_CHANGE・P_CREATE・P_CONSUME・P_EMOTION の行）、(3) 登録時の字句は消していない（注記は足しただけ）。
+2055a2053,2066
+> **変更 3（第 3 ラウンド。2026-10-04 02:58:07 +0900。`date '+%F %T %z'` の出力。記録 `artifacts/w3-b4/r3/narrow_prereg_time.txt`。直前のコミット `c875ed32444b1a2a12dccf38a7a7a79a03418eeb`。この時点でコード（`semantic_reader.py`）・検査データ（`ja_r10_w3b4.jsonl`）・テストはまだ変えていない。docs の表と本文だけを先に変えた）: P_ACT・P_CREATE・P_EMOTION の `place/で/PLACE`（付加）の行だけを外す。型は外さない。**
+> - 前: `w3b4_frames` の P_ACT・P_CREATE・P_EMOTION の各 1 行 `place | で | PLACE | 付加`（計 3 行。表は 20 行）。後: その 3 行を消す（表は 17 行）。が（agent）・を（patient）・P_ACT の へ（goal）・から（source）の行は残す。`w3b4_not_read` は変えない（型は表に残る）。v1 の P_MOVE・P_COMMUNICATE の `place/で/PLACE` の行は表に残す（登録時の先頭 9 行は 1 字も変えない）。
+> - 理由: 規約 `docs/READING_CONVENTIONS.md` §2 の instrument（「道具・手段・言語・材料」）と cause（「名詞句で表された原因」）は期待する型を決めておらず、型が PLACE の語も取る。同じ助詞 で の 2 つの役割（place と instrument／cause）の期待する型が互いに素でない（K161 の前提が成り立たない）。右＝右手（instrument。右 は語のふつうの型が PLACE）、段差＝つまずく・驚く原因（cause。段差 は PLACE）。
+> - 出典: 中間職のレビュー第 2 ラウンド `review.r2.md` の F4（束 d の 6 文: 兄が右で打った。・兄が右で皿を洗った。・兄が右で皿を拭いた。（P_ACT）、兄が右で絵を描いた。・弟が右で記事を書いた。（P_CREATE）、兄が段差で驚いた。（P_EMOTION）。束 c の 口 の 4 文: 兄が口で戦った。（P_ACT）、兄が口で絵を描いた。・兄が口で手紙を書いた。（P_CREATE）、兄が口で笑った。（P_EMOTION）。optimistic（偽の配置で充填物を direct の PLACE にしたとき）の誤読は、束 d で 6 文すべてが `place 右`・`place 段差`、束 c で 口 の 4 文が `place 口`。基点では束 d の 6 文とも `PLACEMENT_FRAME_NOT_READ:<型>` で棄権するので、この誤読は W3-b4 が持ち込んだもの）と、§3 B1 の (b)。
+> - **K165 の例外を使った**（行だけを外して型を残してよいのは、その行だけが原因と示せるときに限る）: `review.r2.md` F4 の最後の行「束 c・d を通じて、誤読の役割はすべて `place`（`place/で` の行）。が・を・へ・から の行から来た誤読は 264 文（a・b・c・d）で 0」。**監査役の判断（チケット末尾、2026-10-04 04:20。道 (b)）**: 型ごと外す (a) は で を含まない単純な SOV 文まで読めなくし、原因でない行を捨てることになる。(c)（live の付加の門 5 に頼って 3 型を残す）は、r8 以降で 右・段差・口 に seed・definition の証拠が付けば live でも誤読になるので採らない。
+> - 狭めた行の扱い: 凍結した検査データの行（`entry_expect`・`w3b4_expect`）は書き換えない。第 2 ラウンドの `narrowed_types.json` の方式で、`artifacts/w3-b4/narrowed_rows.json`（ツールの出力）に「3 行を外したことで診断が変わる行」を記録し、テストと `run_rows.py` は「その行は入口が棄権し、診断が記録どおり」を確かめる。誤読した 10 文は `ja_r10_w3b4.jsonl` の末尾に棄権で足す（既存の行は変えない）。
+> 
+> **変更 3 の後の表**: `w3b4_frames` 17 行（既存 9 行 + P_ACT 4・P_CREATE 2・P_EMOTION 2）、`w3b4_not_read` 8 型（変わらない）。読む型は 13 のうち 5 のまま（P_MOVE・P_COMMUNICATE・P_ACT・P_CREATE・P_EMOTION）。広げる変更は 0。
+> 
+> ### K183 付加の で は第 2 表では読まない（第 3 ラウンドの原則）
+> 
+> 付加の で は、表の外の役割（instrument・cause）と型が重なる（規約 §2 が型を決めず、PLACE の語も取る）ので、**第 2 表の新しい型には足さない**。P_EMOTION の で は、場所より原因（段差で驚く・物音で泣く）が普通である。v1 の P_MOVE・P_COMMUNICATE の で の place の行は表の行として残るが、**それを守っているものが何かは K184 に実測で書く**（チケット末尾の判断の文言「述語の生成の枠が で:PLACE を確認した語に限って守られている」は、r7 の実測と合わない。K184 と H174）。
+> 
+> 

@@ -1,0 +1,99 @@
+rows=318
+
+# pred_type x entry_expect x path (rows)
+P_ACT	abstain	U	4
+P_ACT	abstain	U3	20
+P_ACT	abstain	none	4
+P_ACT	read	U	4
+P_ACT	read	U3	22
+P_CHANGE	abstain	U	8
+P_CHANGE	abstain	U3	18
+P_CHANGE	abstain	none	4
+P_CHANGE	read	U	8
+P_CHANGE	read	U3	19
+P_COGNITION	abstain	U3	4
+P_CONSUME	abstain	U	4
+P_CONSUME	abstain	U3	24
+P_CONSUME	abstain	none	4
+P_CONSUME	read	U3	29
+P_CREATE	abstain	U	6
+P_CREATE	abstain	U3	22
+P_CREATE	abstain	none	4
+P_CREATE	read	U3	28
+P_EMOTION	abstain	U	6
+P_EMOTION	abstain	U3	27
+P_EMOTION	abstain	none	4
+P_EMOTION	read	U3	26
+P_EXIST	abstain	U3	4
+P_GIVE	abstain	U3	4
+P_PERCEIVE	abstain	U3	4
+P_POSSESS	abstain	U3	4
+P_STATE	abstain	none	3
+
+# pred_type x entry_expect (rows)
+P_ACT	abstain	28
+P_ACT	read	26
+P_CHANGE	abstain	30
+P_CHANGE	read	27
+P_COGNITION	abstain	4
+P_CONSUME	abstain	32
+P_CONSUME	read	29
+P_CREATE	abstain	32
+P_CREATE	read	28
+P_EMOTION	abstain	37
+P_EMOTION	read	26
+P_EXIST	abstain	4
+P_GIVE	abstain	4
+P_PERCEIVE	abstain	4
+P_POSSESS	abstain	4
+P_STATE	abstain	3
+
+# pred_type x behavior (the reading the conventions give: read = a determined reading exists)
+P_ACT	abstain	17
+P_ACT	read	37
+P_CHANGE	abstain	22
+P_CHANGE	read	35
+P_COGNITION	abstain	4
+P_CONSUME	abstain	16
+P_CONSUME	read	45
+P_CREATE	abstain	17
+P_CREATE	read	43
+P_EMOTION	abstain	23
+P_EMOTION	read	40
+P_EXIST	abstain	4
+P_GIVE	abstain	4
+P_PERCEIVE	abstain	4
+P_POSSESS	abstain	4
+P_STATE	abstain	3
+
+# groups of the refused rows (by the marker at the start of `construction`)
+P_ACT	(a)	3
+P_ACT	(b)	5
+P_ACT	(c)	4
+P_ACT	(d)	4
+P_ACT	(e)	8
+P_ACT	-	4
+P_CHANGE	(a)	1
+P_CHANGE	(b)	4
+P_CHANGE	(c)	7
+P_CHANGE	(d)	4
+P_CHANGE	(e)	8
+P_CHANGE	-	6
+P_CONSUME	(a)	5
+P_CONSUME	(b)	5
+P_CONSUME	(c)	4
+P_CONSUME	(d)	4
+P_CONSUME	(e)	10
+P_CONSUME	-	4
+P_CREATE	(a)	3
+P_CREATE	(b)	3
+P_CREATE	(c)	7
+P_CREATE	(d)	4
+P_CREATE	(e)	9
+P_CREATE	-	6
+P_EMOTION	(a)	5
+P_EMOTION	(b)	4
+P_EMOTION	(c)	10
+P_EMOTION	(d)	4
+P_EMOTION	(e)	9
+P_EMOTION	-	5

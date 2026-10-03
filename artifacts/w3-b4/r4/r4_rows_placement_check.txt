@@ -1,0 +1,25 @@
+W3B4-ACT-A-911 兄 same {'top': ['PERSON'], 'decided_by': ['definition_recovered', 'role@codex:narrative', 'role@codex:paraphrase_entail', 'role@jawiki']}
+W3B4-ACT-A-911 台車 same {'top': ['ARTIFACT'], 'decided_by': ['role@codex:conversation', 'role@codex:paraphrase_entail']}
+W3B4-ACT-A-911 倉庫 same {'top': ['PLACE'], 'decided_by': ['role@codex:conversation', 'role@codex:narrative', 'role@codex:paraphrase_entail']}
+W3B4-ACT-A-911 押す same {'top': ['P_ACT'], 'decided_by': ['seed']}
+W3B4-ACT-A-912 兄 same {'top': ['PERSON'], 'decided_by': ['definition_recovered', 'role@codex:narrative', 'role@codex:paraphrase_entail', 'role@jawiki']}
+W3B4-ACT-A-912 台車 same {'top': ['ARTIFACT'], 'decided_by': ['role@codex:conversation', 'role@codex:paraphrase_entail']}
+W3B4-ACT-A-912 倉庫 same {'top': ['PLACE'], 'decided_by': ['role@codex:conversation', 'role@codex:narrative', 'role@codex:paraphrase_entail']}
+W3B4-ACT-A-912 押す same {'top': ['P_ACT'], 'decided_by': ['seed']}
+W3B4-ACT-A-913 兄 same {'top': ['PERSON'], 'decided_by': ['definition_recovered', 'role@codex:narrative', 'role@codex:paraphrase_entail', 'role@jawiki']}
+W3B4-ACT-A-913 台車 same {'top': ['ARTIFACT'], 'decided_by': ['role@codex:conversation', 'role@codex:paraphrase_entail']}
+W3B4-ACT-A-913 倉庫 same {'top': ['PLACE'], 'decided_by': ['role@codex:conversation', 'role@codex:narrative', 'role@codex:paraphrase_entail']}
+W3B4-ACT-A-913 押す same {'top': ['P_ACT'], 'decided_by': ['seed']}
+W3B4-ACT-A-914 兄 same {'top': ['PERSON'], 'decided_by': ['definition_recovered', 'role@codex:narrative', 'role@codex:paraphrase_entail', 'role@jawiki']}
+W3B4-ACT-A-914 台車 same {'top': ['ARTIFACT'], 'decided_by': ['role@codex:conversation', 'role@codex:paraphrase_entail']}
+W3B4-ACT-A-914 倉庫 same {'top': ['PLACE'], 'decided_by': ['role@codex:conversation', 'role@codex:narrative', 'role@codex:paraphrase_entail']}
+W3B4-ACT-A-914 押す same {'top': ['P_ACT'], 'decided_by': ['seed']}
+W3B4-ACT-A-915 兄 same {'top': ['PERSON'], 'decided_by': ['definition_recovered', 'role@codex:narrative', 'role@codex:paraphrase_entail', 'role@jawiki']}
+W3B4-ACT-A-915 台車 same {'top': ['ARTIFACT'], 'decided_by': ['role@codex:conversation', 'role@codex:paraphrase_entail']}
+W3B4-ACT-A-915 倉庫 same {'top': ['PLACE'], 'decided_by': ['role@codex:conversation', 'role@codex:narrative', 'role@codex:paraphrase_entail']}
+W3B4-ACT-A-915 押す same {'top': ['P_ACT'], 'decided_by': ['seed']}
+W3B4-ACT-A-916 兄 same {'top': ['PERSON'], 'decided_by': ['definition_recovered', 'role@codex:narrative', 'role@codex:paraphrase_entail', 'role@jawiki']}
+W3B4-ACT-A-916 台車 same {'top': ['ARTIFACT'], 'decided_by': ['role@codex:conversation', 'role@codex:paraphrase_entail']}
+W3B4-ACT-A-916 倉庫 same {'top': ['PLACE'], 'decided_by': ['role@codex:conversation', 'role@codex:narrative', 'role@codex:paraphrase_entail']}
+W3B4-ACT-A-916 押す same {'top': ['P_ACT'], 'decided_by': ['seed']}
+all same

@@ -1,0 +1,5 @@
+word	state	origin	top	decided_by	frame_status
+網	DECIDED	direct	SUBSTANCE_FOOD	role@codex:conversation+role@codex:general_qa	NOT_PREDICATE
+靴下	DECIDED	direct	GROUP_ORG	hearst@codex:general_qa	NOT_PREDICATE
+はしご	DECIDED	direct	EVENT_ACT	sahen@codex:conversation	NOT_PREDICATE
+昔	DECIDED	direct	PLACE	role@codex:general_qa+role@codex:paraphrase_entail	NOT_PREDICATE

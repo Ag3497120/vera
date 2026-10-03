@@ -1,0 +1,14 @@
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "第 2 表 で の行 付加 instrument cause",
+  "searched": 677,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 69,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

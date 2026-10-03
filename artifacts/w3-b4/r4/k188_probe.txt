@@ -1,0 +1,4 @@
+# columns 1-3 (sentence, readable, roles) of the base commit tree and of this tree, compared
+identical (19 sentences)
+readable=True: 18 of       19
+typed diagnosis all None: 18

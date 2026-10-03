@@ -1,0 +1,123 @@
+52,53c52,59
+< READ_TYPES = ('P_ACT', 'P_CHANGE', 'P_CREATE', 'P_CONSUME', 'P_EMOTION')
+< UNREAD_TYPES = ('P_GIVE', 'P_PERCEIVE', 'P_EXIST', 'P_POSSESS', 'P_STATE', 'P_COGNITION')
+---
+> NARROWED_FILE = TREE / 'artifacts' / 'w3-b4' / 'narrowed_types.json'
+> NARROWED = json.loads(NARROWED_FILE.read_text(encoding='utf-8'))['types']
+> # round 2 (docs K165, table change records 1 and 2): a misread was found for P_CHANGE and P_CONSUME, so they went back to the unread types. The frozen rows of these two types keep their
+> # frozen expectations (`entry_expect: read` for 27 and 29 rows): the tests below read a row of a narrowed type as "the entry refuses it" (see `narrowed_types.json`).
+> READ_TYPES = ('P_ACT', 'P_CREATE', 'P_EMOTION')
+> UNREAD_TYPES = ('P_GIVE', 'P_PERCEIVE', 'P_EXIST', 'P_POSSESS', 'P_STATE', 'P_COGNITION', 'P_CHANGE', 'P_CONSUME')
+> # the refusals that happen BEFORE the type of the predicate is asked (the registered reasons of the rows of a narrowed type that stay as they were registered)
+> BEFORE_THE_TYPE = ('PLACEMENT_W3B2_NOT_TRIGGERED', 'PLACEMENT_VOICE_NOT_ACTIVE')
+148,149c154,156
+<     assert not any(r[2] == 'に' and r[1] != 'time' for r in rows)            # no に row but time/に (P_MOVE, P_COMMUNICATE, P_CONSUME)
+<     assert {t for t, role, p in rows if (role, p) == ('time', 'に')} == {'P_MOVE', 'P_COMMUNICATE', 'P_CONSUME'}
+---
+>     assert not any(r[2] == 'に' and r[1] != 'time' for r in rows)            # no に row but time/に (P_MOVE, P_COMMUNICATE; P_CONSUME's was taken out in round 2)
+>     assert {t for t, role, p in rows if (role, p) == ('time', 'に')} == {'P_MOVE', 'P_COMMUNICATE'}
+>     assert not any(t in ('P_CHANGE', 'P_CONSUME') for t, role, p in rows)      # round 2: the two narrowed types have no row at all
+277d283
+<     assert ('read' if out['readable'] else 'abstain') == row['entry_expect'], out
+280c286,295
+<     if row['id'] in EXCEPTIONS:
+---
+>     if row['pred_type'] in NARROWED:
+>         # round 2: a narrowed type is not read. The entry refuses every row of it (whatever the frozen `entry_expect` said), and the diagnosis says why: the type of the predicate is not read,
+>         # unless the row is refused before the type is asked (a registered reason that stays: the trigger does not fire / the voice) -- then the registered reason is what is observed
+>         assert out['readable'] is False, out
+>         if ex['w3b2'] != 'PLACEMENT_FRAME_NOT_READ:' + row['pred_type']:
+>             assert row['entry_expect'] == 'abstain' and e in BEFORE_THE_TYPE, (row['id'], ex)
+>             if row['id'] in EXCEPTIONS: assert ex == EXCEPTIONS[row['id']]['observed_explain'], ex
+>             else: assert (ex['w3b2'] or '').startswith(e), (e, ex)
+>     elif row['id'] in EXCEPTIONS:
+>         assert ('read' if out['readable'] else 'abstain') == row['entry_expect'], out
+283,284c298,301
+<     elif e == 'READ': assert ex['w3b2'] == 'READ', ex
+<     else: assert (ex['w3b2'] or '').startswith(e), (e, ex)
+---
+>     else:
+>         assert ('read' if out['readable'] else 'abstain') == row['entry_expect'], out
+>         if e == 'READ': assert ex['w3b2'] == 'READ', ex
+>         else: assert (ex['w3b2'] or '').startswith(e), (e, ex)
+294a312,314
+>     # a row the trigger fires for asks the placement (a row it does not fire for is refused by the reader alone). The only rows that fire the trigger and ask nothing are the rows refused
+>     # for the voice (a passive / causative is refused before the first question): round 1 had dropped this check altogether, round 2 restores it with that one exception
+>     if row['path'] != 'none' and ex['w3b2'] != 'PLACEMENT_VOICE_NOT_ACTIVE': assert q.calls
+381a402,477
+> 
+> 
+> # ===================================================================================================================================
+> # round 2 (docs K165, table change records 1 and 2): the types that were taken out again after the review of round 1
+> # ===================================================================================================================================
+> def _registered_rows(type_id):
+>     """The rows the table REGISTERED for a type (artifacts/w3-b4/PREREG.md is the text of the registration and is not changed), in the form of the table of the code."""
+>     text = (TREE / 'artifacts' / 'w3-b4' / 'PREREG.md').read_text(encoding='utf-8')
+>     m = re.search(r'<!-- BEGIN table:w3b4_frames -->\n(.*?)<!-- END table:w3b4_frames -->', text, re.S)
+>     rows = []
+>     for line in m.group(1).splitlines():
+>         if not line.startswith('|') or set(line) <= set('|- '): continue
+>         c = [x.strip().strip('`') for x in line.strip().strip('|').split('|')]
+>         if c[0] == type_id: rows.append((c[1], (c[2],), tuple(c[3].split()), 'arg' if c[4] == '項' else 'adjunct'))
+>     return tuple(rows)
+> 
+> 
+> def test_the_narrowed_types_are_recorded_have_no_row_and_are_in_the_table_of_the_unread_types_with_their_reason():
+>     assert tuple(NARROWED) == ('P_CHANGE', 'P_CONSUME')
+>     assert tuple(R.TYPED_FRAMES_NOT_READ_W3B4)[-2:] == tuple(NARROWED)          # at the end, in the order of the docs
+>     for t, rec in NARROWED.items():
+>         assert R.TYPED_FRAMES_NOT_READ_W3B4[t] == rec['name'] and t not in R.typed_frames_v2() and t not in R.TYPED_FRAMES_W3B4
+>         assert [r for r in block('w3b4_not_read') if r[0] == t] == [[t, rec['name'], next(x[2] for x in block('w3b4_not_read') if x[0] == t)]]
+>         assert rec['narrowed_at'] and rec['reason'] and rec['source'] and rec['recorded_in']
+>         assert len(_registered_rows(t)) >= 4                                   # the registration did have rows for the type (PREREG.md is not changed)
+>     # only narrowing: the rows of the table are a subset of the registered ones
+>     registered = {(t, row) for t in ('P_ACT', 'P_CHANGE', 'P_CREATE', 'P_CONSUME', 'P_EMOTION') for row in _registered_rows(t)}
+>     for t, rows in R.TYPED_FRAMES_W3B4.items():
+>         for row in rows: assert (t, row) in registered, (t, row)
+>     assert len(code_rows(R.typed_frames_v2())) == 20 and len(block('w3b4_frames')) == 20
+> 
+> 
+> def test_the_five_sentences_of_the_review_are_in_the_data_as_refused_rows_at_its_end_and_the_frozen_rows_stay():
+>     ids = [i for rec in NARROWED.values() for i in rec['rows_appended_to_the_data']]
+>     assert ids == ['W3B4-CHANGE-A-901', 'W3B4-CHANGE-A-902', 'W3B4-CHANGE-A-903', 'W3B4-CHANGE-A-904', 'W3B4-CONSUME-A-901']
+>     assert [r['id'] for r in DATA[-5:]] == ids and len(DATA) == 323
+>     for r in DATA[-5:]:
+>         assert r['entry_expect'] == 'abstain' and r['expect']['readable'] is False and r['behavior'] == 'abstain'
+>         assert r['w3b4_expect'] == 'PLACEMENT_FRAME_NOT_READ:' + r['pred_type'] and r['pred_type'] in NARROWED
+>     assert [r['input'] for r in DATA[-5:]] == ['会社が工場から店へ変わった。', 'チームが広場から体育館へ変わった。', '兄が田舎から都会へ変わった。', '学校が校舎から仮校舎へ変わった。', '兄が休みに金を使った。']
+>     # the first 318 rows are the frozen file (artifacts/w3-b4/bank_freeze.sha256): the file was only appended to
+>     import hashlib
+>     head = ''.join(l + '\n' for l in DATA_FILE.read_text(encoding='utf-8').splitlines()[:318]).encode('utf-8')
+>     frozen = (TREE / 'artifacts' / 'w3-b4' / 'bank_freeze.sha256').read_text(encoding='utf-8').split()[0]
+>     assert hashlib.sha256(head).hexdigest() == frozen
+> 
+> 
+> def test_the_five_sentences_were_misread_by_the_registered_rows_and_the_narrowed_table_refuses_them(monkeypatch):
+>     """The evidence for the narrowing, kept as a test: with the registered rows of the two types put back in memory (and the two types taken off the unread ones) the five sentences are READ and
+>     judged a misread; with the table as it is they are refused with the reason of the type. Nothing in the tree is changed by this test."""
+>     rows = DATA[-5:]
+>     for row in rows:
+>         out = SR.read(row['input'], placement=query_of(row))
+>         assert out['readable'] is False, row['input']
+>         assert SR.typed_explain_ja(row['input'], query_of(row))['w3b2'] == 'PLACEMENT_FRAME_NOT_READ:' + row['pred_type']
+>     for t in NARROWED:
+>         monkeypatch.setitem(R.TYPED_FRAMES_W3B4, t, _registered_rows(t))
+>         monkeypatch.delitem(R.TYPED_FRAMES_NOT_READ_W3B4, t)
+>     for row in rows:
+>         out = SR.read(row['input'], placement=query_of(row))
+>         assert out['readable'] is True, row['input']
+>         assert b1.judge(row['expect'], 'ja', out)['verdict'] == 'misread', (row['input'], out)
+>         assert SR.typed_explain_ja(row['input'], query_of(row))['w3b2'] == 'READ'
+> 
+> 
+> def test_every_row_of_a_narrowed_type_is_refused_by_the_entry_with_the_diagnosis_of_the_type_or_a_registered_reason_before_the_type():
+>     seen = {'type': 0, 'before_the_type': 0}
+>     for row in DATA:
+>         if row['pred_type'] not in NARROWED: continue
+>         assert SR.read(row['input'], placement=query_of(row))['readable'] is False, row['id']
+>         w3b2 = SR.typed_explain_ja(row['input'], query_of(row))['w3b2']
+>         seen['type' if w3b2 == 'PLACEMENT_FRAME_NOT_READ:' + row['pred_type'] else 'before_the_type'] += 1
+>     assert seen['type'] > 100 and 0 < seen['before_the_type'] <= 12, seen
+>     # the frozen read rows of the two types (27 and 29 rows) are the ones that the narrowing turned into refusals
+>     for t, n in (('P_CHANGE', 27), ('P_CONSUME', 29)):
+>         assert len([r for r in DATA if r['pred_type'] == t and r['entry_expect'] == 'read']) == n
