@@ -1,0 +1,28 @@
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "markdown と jsonl の枠の読みの食い違い",
+  "searched": 651,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 41,
+    "module": 282,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "対応づけが決まらないときの型",
+  "searched": 651,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 41,
+    "module": 282,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

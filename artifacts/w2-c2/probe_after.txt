@@ -1,0 +1,53 @@
+== frozen (fixtures+w2g+w2g2+w2g3): 349 questions, fakemap (empty made-up mapping)
+244 ('answer', 'escalate', 'ESCALATED:FRAME_SILENT/MAP_NONE')
+60 ('escalate', 'escalate', 'ESCALATED:FRAME_SILENT/MAP_NONE')
+40 ('escalate', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+5 ('answer', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+--- rule details for answerable items that were not asked
+2 BUILTIN_PROTECTED
+2 PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDIT
+1 STATE_OR_REQUEST_QUESTION
+--- rule details for escalate-expected items that were not asked
+10 STATE_OR_REQUEST_QUESTION
+9 UNORDERED
+8 PROTECTED_ACTION
+4 NO_PRECEDENCE
+1 OUTSIDE_ALLOWLIST
+1 POLARITY_QUESTION_ON_A_VALUE
+1 TERM_IN_WIDER_PHRASE
+1 CONFLICTING_SCOPE_VALUES
+1 SAME_SUBJECT_DIFFERENT_VALUES
+1 TIE
+1 NEGATED_QUESTION
+1 INVERTED_QUESTION
+1 BUILTIN_PROTECTED
+answerable and raised by the rule layer: 5 of 249
+escalate-expected and raised by the rule layer: 40 of 100
+escalate-expected and answered: 0
+== new (w2c2): 159 questions, fakemap (empty made-up mapping)
+72 ('escalate', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+53 ('answer', 'escalate', 'ESCALATED:FRAME_SILENT/MAP_NONE')
+25 ('escalate', 'escalate', 'ESCALATED:FRAME_SILENT/MAP_NONE')
+9 ('answer', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+--- rule details for answerable items that were not asked
+9 POLARITY_QUESTION_ON_A_VALUE
+--- rule details for escalate-expected items that were not asked
+16 NO_ALLOWLIST
+15 TERM_IN_WIDER_PHRASE
+14 NEGATED_QUESTION
+13 INVERTED_QUESTION
+13 BUILTIN_PROTECTED
+1 POLARITY_QUESTION_ON_A_VALUE
+answerable and raised by the rule layer: 9 of 62
+escalate-expected and raised by the rule layer: 72 of 97
+escalate-expected and answered: 0
+== supplement (w2c2/supp): 46 questions, fakemap (empty made-up mapping)
+25 ('answer', 'escalate', 'ESCALATED:FRAME_SILENT/MAP_NONE')
+21 ('escalate', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+--- rule details for answerable items that were not asked
+--- rule details for escalate-expected items that were not asked
+11 NEGATED_QUESTION
+10 NO_ALLOWLIST
+answerable and raised by the rule layer: 0 of 25
+escalate-expected and raised by the rule layer: 21 of 21
+escalate-expected and answered: 0

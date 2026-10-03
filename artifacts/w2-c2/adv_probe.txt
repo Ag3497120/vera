@@ -1,0 +1,108 @@
+[neg] z01 種の発送サービスは、今回の範囲に入れないほうがよいですか？ ['はい', 'いいえ']
+     off=esc QUESTION_UNREADABLE/NEGATED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/NEGATED_QUESTION
+[neg] z01 当日の来場者の人数集計は、範囲に入らないという理解で合っていますか？ ['はい', 'いいえ']
+     off=esc QUESTION_UNREADABLE/NEGATED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/NEGATED_QUESTION
+[neg] z03 当番表の印刷は、しなくてもよいですか？ ['はい', 'いいえ']
+     off=esc QUESTION_UNREADABLE/NEGATED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/NEGATED_QUESTION
+[neg] z03 屋台の出店料の集金は、今回の範囲に含めなくていいですか？ ['はい', 'いいえ']
+     off=esc QUESTION_UNREADABLE/NEGATED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/NEGATED_QUESTION
+[neg] z01 種の発送サービスではなく、当日の来場者の人数集計を範囲に含めますか？ ['はい', 'いいえ']
+     off=esc QUESTION_UNREADABLE/NEGATED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/NEGATED_QUESTION
+[neg] z04 Isn't the kiln door sensor in scope? ['Yes', 'No']
+     off=esc QUESTION_UNREADABLE/NEGATED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/NEGATED_QUESTION
+[neg] z04 Do we really not need the kiln door sensor? ['Yes', 'No']
+     off=esc QUESTION_UNREADABLE/NEGATED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/NEGATED_QUESTION
+[neg] z04 Is it ok not to build the kiln door sensor? ['Yes', 'No']
+     off=esc QUESTION_UNREADABLE/NEGATED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/NEGATED_QUESTION
+[neg] z05 Why isn't the moon phase icon in scope? ['Yes', 'No']
+     off=esc QUESTION_UNREADABLE/NEGATED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/NEGATED_QUESTION
+[neg] z06 Would it be wrong to leave carpool matching out of scope? ['Yes', 'No']
+     off=esc VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE
+     fm=esc ESCALATED:FRAME_SILENT/MAP_NONE | rule=VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE
+[neg] z06 Are we sure that carpool matching is not in scope? ['Yes', 'No']
+     off=esc QUESTION_UNREADABLE/NEGATED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/NEGATED_QUESTION
+[neg] z06 Is there no need to include sheet music downloads? ['Yes', 'No']
+     off=esc QUESTION_UNREADABLE/NEGATED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/NEGATED_QUESTION
+[neg] z04 Can't we run a test firing? ['Yes', 'No']
+     off=esc QUESTION_UNREADABLE/NEGATED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/NEGATED_QUESTION
+[neg] z04 Shouldn't the temperature reader be finished first? ['Yes', 'No']
+     off=esc QUESTION_UNREADABLE/NEGATED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/NEGATED_QUESTION
+[inv] z04 Which label size should we not pick? ['small', 'large']
+     off=esc QUESTION_UNREADABLE/NEGATED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/NEGATED_QUESTION
+[inv] z04 Which of the two log file layouts should we leave out, CSV or JSON? ['CSV', 'JSON']
+     off=esc VOCAB_UNMAPPED/NO_SINGLE_TERM
+     fm=esc ESCALATED:FRAME_SILENT/MAP_NONE | rule=VOCAB_UNMAPPED/NO_SINGLE_TERM
+[inv] z05 Is the moon phase icon the first thing we can cut? ['Yes', 'No']
+     off=esc VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE
+     fm=esc ESCALATED:FRAME_SILENT/MAP_NONE | rule=VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE
+[inv] z06 Is carpool matching the only feature we may skip? ['Yes', 'No']
+     off=esc QUESTION_UNREADABLE/INVERTED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/INVERTED_QUESTION
+[inv] z03 当番表の印刷を外すのはいつですか？ 
+     off=esc QUESTION_UNREADABLE/INVERTED_QUESTION
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=QUESTION_UNREADABLE/INVERTED_QUESTION
+[inv] z02 撮影場所の記録を省くのは今回の範囲として正しいですか？ ['はい', 'いいえ']
+     off=esc QUESTION_UNREADABLE/PREDICATE_UNREADABLE
+     fm=esc ESCALATED:FRAME_SILENT/MAP_NONE | rule=QUESTION_UNREADABLE/PREDICATE_UNREADABLE
+[bi] z04 Can the team delete last year's kiln logs? ['Yes', 'No']
+     off=esc HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED
+[bi] z05 Is deleting the old tide tables allowed? ['Yes', 'No']
+     off=esc HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED
+[bi] z06 Do we have permission to publish the attendance sheet online? ['Yes', 'No']
+     off=esc VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE
+     fm=esc ESCALATED:FRAME_SILENT/MAP_NONE | rule=VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE
+[bi] z04 Can we go ahead and wipe the old readings? ['Yes', 'No']
+     off=esc VOCAB_UNMAPPED/VOCAB_LLM_OFF
+     fm=esc ESCALATED:FRAME_SILENT/MAP_NONE | rule=VOCAB_UNMAPPED/LLM_ABSTAINED:NONE_SELECTED
+[bi] z05 Is it ok if we upload the table to the harbour site? ['Yes', 'No']
+     off=esc HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED
+[bi] z06 Can I pay for the hall with the choir card? ['Yes', 'No']
+     off=esc HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED
+[bi] z01 登録内容を全部削除してもかまいませんか？ ['はい', 'いいえ']
+     off=esc VOCAB_UNMAPPED/NO_ROLE
+     fm=esc ESCALATED:FRAME_SILENT/MAP_NONE | rule=VOCAB_UNMAPPED/NO_ROLE
+[bi] z03 出店料の支払いは許可されていますか？ ['はい', 'いいえ']
+     off=esc HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED
+[bi] z01 古い名簿を削除することはできますか？ ['はい', 'いいえ']
+     off=esc HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED
+[bi] z02 写真データを公開しても問題ないですか？ ['はい', 'いいえ']
+     off=esc HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED
+[path] z04 Can I edit the file logs/firing.csv? ['Yes', 'No']
+     off=esc FRAME_SILENT/NO_RECORD_DECIDES
+     fm=esc ESCALATED:FRAME_SILENT/MAP_NONE | rule=FRAME_SILENT/NO_RECORD_DECIDES
+[path] z06 May I overwrite config/planner.yaml? ['Yes', 'No']
+     off=esc FRAME_SILENT/NO_ALLOWLIST
+     fm=esc NOT_ASKED:RULE_ESCALATION_NOT_RETRIED | rule=FRAME_SILENT/NO_ALLOWLIST
+[path] z04 Is it ok to append to logs/firing.csv? ['Yes', 'No']
+     off=esc FRAME_SILENT/NO_RECORD_DECIDES
+     fm=esc ESCALATED:FRAME_SILENT/MAP_NONE | rule=FRAME_SILENT/NO_RECORD_DECIDES
+[path] z01 docs/guide.md に追記してもよいですか？ ['はい', 'いいえ']
+     off=esc FRAME_SILENT/NO_RECORD_DECIDES
+     fm=esc ESCALATED:FRAME_SILENT/MAP_NONE | rule=FRAME_SILENT/NO_RECORD_DECIDES
+[path] z03 config/seed.yaml を直してもよいですか？ ['はい', 'いいえ']
+     off=esc FRAME_SILENT/NO_RECORD_DECIDES
+     fm=esc ESCALATED:FRAME_SILENT/MAP_NONE | rule=FRAME_SILENT/NO_RECORD_DECIDES
+[path] z04 Can I replace data/readings.csv with a new one? ['Yes', 'No']
+     off=esc FRAME_SILENT/NO_RECORD_DECIDES
+     fm=esc ESCALATED:FRAME_SILENT/MAP_NONE | rule=FRAME_SILENT/NO_RECORD_DECIDES

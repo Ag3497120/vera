@@ -1,0 +1,5 @@
+fc8fef8f7dd28268cfb84bb3a2fa39cdab12ce8e0aa7637454067e961a55eaf4  tests/conduct_ask/w2c2/supp/items.jsonl
+d7604c5849dc100228b0dd0fa612f79447f3f8778a1598de14739428454907e5  tests/conduct_ask/w2c2/supp/frames/s01_toylibrary.md
+f3646a18df93bf56c8ddc7ac4b825839f2a3178ae078d4ebf339c6d71edb2793  tests/conduct_ask/w2c2/supp/frames/s02_bosai.md
+98903a8e82097d1bf7c5de30bbd28d02b07d69697f9c57901f5186872831df6e  verantyx/conduct_ask.py
+2026-10-03T12:41:00+0900

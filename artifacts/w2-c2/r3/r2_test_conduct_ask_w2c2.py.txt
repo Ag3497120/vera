@@ -1,0 +1,608 @@
+"""W2-c2: the trap rules of conduct_ask hand a question up only on POSITIVE evidence.
+
+The data is tests/conduct_ask/w2c2/ (frozen before the rules were changed: artifacts/w2-c2/freeze.txt).  Every trap
+(WIDER = TERM_IN_WIDER_PHRASE, NEGATED = NEGATED_QUESTION, INVERTED = INVERTED_QUESTION, BUILTIN = BUILTIN_PROTECTED,
+NO_ALLOWLIST) has three groups of sentences:
+  raise     there is positive evidence: handed up, and (with the made-up record mapping) not even asked about
+  route     the base code handed it up by form only: it must now reach the record mapping, and the rules must not answer it wrongly
+  transfer  right to hand up but no positive evidence: it must not be answered by the rules (the danger moves to the mapping)
+No real provider is ever started (the mapping is made up: an empty script that never answers, or a scripted one).
+
+Round 2 added a supplement, tests/conduct_ask/w2c2/supp/ (frozen before the round-2 rule changes: artifacts/w2-c2/freeze_supp.txt).
+The C2 definition as pre-registered is judged by ``tests/conduct_ask/w2c2/run_w2c2.py c2 <dir>`` (its exit code is the verdict); on
+the ORIGINAL data it exits 1 because of the sentences recorded in RECORDED_C2_FAILURES below (value-polarity questions that a later
+rule of W2-c hands up), and this file records them as they are instead of letting the tests pass over them.  On the supplement it
+exits 0, and test_supp_c2_* judges that definition here, from the answers."""
+from __future__ import annotations
+
+import hashlib
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tests" / "conduct_ask"))
+import map_helpers as M  # noqa: E402
+from verantyx import conduct_ask as ca  # noqa: E402
+from verantyx.project_frame import load_conduct_frame  # noqa: E402
+
+DATA = ROOT / "tests" / "conduct_ask" / "w2c2"
+FRAMES = DATA / "frames"
+MAP_EMPTY = str(DATA / "map_fake_empty.json")
+TRAPS = ("WIDER", "NEGATED", "INVERTED", "BUILTIN", "NO_ALLOWLIST")
+RULE = {"WIDER": ("FRAME_SILENT", "TERM_IN_WIDER_PHRASE"), "NEGATED": ("QUESTION_UNREADABLE", "NEGATED_QUESTION"),
+        "INVERTED": ("QUESTION_UNREADABLE", "INVERTED_QUESTION"), "BUILTIN": ("HUMAN_APPROVAL_REQUIRED", "BUILTIN_PROTECTED"),
+        "NO_ALLOWLIST": ("FRAME_SILENT", "NO_ALLOWLIST")}
+TRAP_DETAILS = {d for _, d in RULE.values()}
+ITEMS = [json.loads(ln) for ln in (DATA / "items.jsonl").read_text(encoding="utf-8").splitlines() if ln.strip()]
+
+
+@pytest.fixture(autouse=True)
+def no_process(monkeypatch):
+    def forbidden(*a, **k):
+        raise AssertionError("a real provider process must never be started")
+    monkeypatch.setattr(subprocess, "run", forbidden)
+    monkeypatch.setattr(subprocess, "Popen", forbidden)
+
+
+def frame_path(frame_id: str) -> str:
+    return str(FRAMES / f"{frame_id}.md")
+
+
+def run(item: dict, mode: str) -> dict:
+    kw = {"vocab_llm": "fake", "map_fake": MAP_EMPTY} if mode == "fakemap" else {}
+    return ca.answer_question(frame_path(item["frame_id"]), item["question"], item["options"], **kw)
+
+
+@pytest.fixture(scope="module")
+def results() -> dict:
+    return {it["id"]: {"off": run(it, "off"), "fakemap": run(it, "fakemap")} for it in ITEMS}
+
+
+def truth_matches(res: dict, item: dict) -> bool:
+    t = item["truth"]
+    if res["decision"] != "answer" or t["decision"] != "answer":
+        return False
+    if t["answer_option_index"] is not None:
+        return res["answer_option_index"] == t["answer_option_index"]
+    return str(res["answer"]).strip() == str(t["answer"]).strip()
+
+
+def not_asked(res: dict) -> bool:
+    return str((res.get("mapping") or {}).get("outcome") or "").startswith("NOT_ASKED")
+
+
+def by(trap: str, group: str) -> list[dict]:
+    return [i for i in ITEMS if i["trap"] == trap and i["group"] == group]
+
+
+# ---------------------------------------------------------------------------------------------
+# the shape of the data
+# ---------------------------------------------------------------------------------------------
+
+@pytest.mark.parametrize("trap", TRAPS)
+def test_each_trap_has_the_three_groups_in_both_languages(trap):
+    need = {"raise": 10, "route": 10, "transfer": 3}
+    for group, n in need.items():
+        items = by(trap, group)
+        assert len(items) >= n, (trap, group, len(items))
+        for lang in ("ja", "en"):
+            assert sum(1 for i in items if i["lang"] == lang) >= 3, (trap, group, lang)
+
+
+def test_ids_are_unique_and_follow_the_pattern():
+    ids = [i["id"] for i in ITEMS]
+    assert len(ids) == len(set(ids))
+    for i in ITEMS:
+        assert i["id"].startswith(f"w2c2-{i['trap'].lower()}-{i['group']}-"), i["id"]
+        assert i["id"].rsplit("-", 1)[1].isdigit()
+        assert (FRAMES / f"{i['frame_id']}.md").exists()
+
+
+def test_every_item_has_the_common_fields_and_a_well_formed_truth():
+    for i in ITEMS:
+        assert i["trap"] in TRAPS and i["group"] in ("raise", "route", "transfer") and i["lang"] in ("ja", "en")
+        assert isinstance(i["question"], str) and i["question"].strip()
+        assert i["options"] is None or (isinstance(i["options"], list) and len(i["options"]) >= 2)
+        t = i["truth"]
+        assert t["decision"] in ("answer", "escalate") and isinstance(t["records"], list)
+        if t["decision"] == "answer":
+            if i["options"] is not None:
+                assert 0 <= t["answer_option_index"] < len(i["options"]) and t["answer"] == i["options"][t["answer_option_index"]]
+            else:
+                assert t["answer_option_index"] is None and isinstance(t["answer"], str) and t["answer"]
+        else:
+            assert t["answer"] is None and t["answer_option_index"] is None
+        if i["group"] == "raise":
+            assert (i["expect_rule"]["reason"], i["expect_rule"]["detail"]) == RULE[i["trap"]] and i["evidence"]
+            assert t["decision"] == "escalate"
+        elif i["group"] == "route":
+            assert i["misfire"]
+        else:
+            assert i["danger"] and t["decision"] == "escalate"
+
+
+@pytest.mark.parametrize("trap", TRAPS)
+def test_at_least_eight_in_ten_route_sentences_have_an_answer_in_the_frame(trap):
+    items = by(trap, "route")
+    assert 10 * sum(1 for i in items if i["truth"]["decision"] == "answer") >= 8 * len(items)
+
+
+def test_the_data_is_the_frozen_data():
+    """artifacts/w2-c2/freeze.txt holds the hashes taken before any rule was changed (the data is not tuned afterwards)."""
+    frozen = {}
+    for ln in (ROOT / "artifacts" / "w2-c2" / "freeze.txt").read_text(encoding="utf-8").splitlines():
+        parts = ln.split()
+        if len(parts) == 2 and len(parts[0]) == 64:
+            frozen[parts[1]] = parts[0]
+    for rel in ["tests/conduct_ask/w2c2/items.jsonl"] + sorted(f"tests/conduct_ask/w2c2/frames/{p.name}" for p in FRAMES.glob("*.md")):
+        assert frozen.get(rel) == hashlib.sha256((ROOT / rel).read_bytes()).hexdigest(), rel
+
+
+# ---------------------------------------------------------------------------------------------
+# C2: judged here from the answers themselves (not read from the report of the measuring tool)
+# ---------------------------------------------------------------------------------------------
+
+@pytest.mark.parametrize("item", [i for i in ITEMS if i["group"] == "raise"], ids=lambda i: i["id"])
+def test_c2_raise_is_handed_up_in_the_type_and_the_mapping_is_not_asked(item, results):
+    want = (item["expect_rule"]["reason"], item["expect_rule"]["detail"])
+    for mode in ("off", "fakemap"):
+        res = results[item["id"]][mode]
+        assert res["decision"] == "escalate" and (res["escalate_reason"], res["escalate_detail"]) == want, (mode, res["escalate_reason"], res["escalate_detail"])
+    assert not_asked(results[item["id"]]["fakemap"])
+
+
+# RECORDED C2 FAILURES.  The pre-registered C2 says every ``route`` sentence reaches the record mapping with the made-up
+# mapping (``mapping.outcome`` does not start with NOT_ASKED).  These ``route`` sentences do not: after the five traps stopped
+# handing them up, a LATER rule of W2-c (not loosened here) hands them up as POLARITY_QUESTION_ON_A_VALUE (a yes / no question on a
+# value the frame decides: test_polarity_question_on_a_decided_value_is_silent_not_yes).  That is a mistake of the DATA (a truth
+# of "answer" was given to a sentence that W2-c's design hands up), not something the tests may pass over: the data is frozen, so
+# the failures are recorded here, ``run_w2c2.py c2`` still exits 1 on it, and the supplement (supp/) judges the trap rules again.
+RECORDED_C2_FAILURES = {
+    "w2c2-negated-route-06", "w2c2-no_allowlist-route-01", "w2c2-no_allowlist-route-02", "w2c2-no_allowlist-route-03",
+    "w2c2-no_allowlist-route-04", "w2c2-no_allowlist-route-05", "w2c2-no_allowlist-route-06", "w2c2-no_allowlist-route-07",
+    "w2c2-no_allowlist-route-10"}
+
+
+def test_recorded_c2_failures_are_exactly_the_route_sentences_that_the_definition_rejects(results):
+    """Not a verdict of C2.  The recorded set must be neither stale nor hiding a new failure: it is the live set of ``route``
+    sentences whose made-up-mapping run is NOT_ASKED, and every one of them is handed up by POLARITY_QUESTION_ON_A_VALUE."""
+    live = {i["id"] for i in ITEMS if i["group"] == "route" and not_asked(results[i["id"]]["fakemap"])}
+    assert live == RECORDED_C2_FAILURES, sorted(live ^ RECORDED_C2_FAILURES)
+    for iid in RECORDED_C2_FAILURES:
+        rule = results[iid]["fakemap"]["mapping"]["rule"]
+        assert rule["detail"] == "POLARITY_QUESTION_ON_A_VALUE", (iid, rule["reason"], rule["detail"])
+
+
+@pytest.mark.parametrize("item", [i for i in ITEMS if i["group"] == "route" and i["id"] not in RECORDED_C2_FAILURES], ids=lambda i: i["id"])
+def test_route_reaches_the_mapping_and_the_rules_never_answer_wrongly_except_the_recorded_failures(item, results):
+    for mode in ("off", "fakemap"):
+        res = results[item["id"]][mode]
+        assert not (res["decision"] == "answer" and not truth_matches(res, item)), (mode, res["answer"])
+    fm = results[item["id"]]["fakemap"]
+    assert not not_asked(fm), (fm["escalate_reason"], fm["escalate_detail"])
+    assert (fm["mapping"]["rule"] or {}).get("detail") not in TRAP_DETAILS or fm["mapping"]["rule"]["reason"] in ("VOCAB_UNMAPPED", "FRAME_SILENT")
+
+
+@pytest.mark.parametrize("item", [i for i in ITEMS if i["group"] == "route" and i["id"] in RECORDED_C2_FAILURES], ids=lambda i: i["id"])
+def test_a_recorded_c2_failure_is_never_answered_wrongly_either(item, results):
+    for mode in ("off", "fakemap"):
+        res = results[item["id"]][mode]
+        assert not (res["decision"] == "answer" and not truth_matches(res, item)), (mode, res["answer"])
+
+
+@pytest.mark.parametrize("item", [i for i in ITEMS if i["group"] == "transfer"], ids=lambda i: i["id"])
+def test_c2_transfer_is_never_answered_by_the_rules(item, results):
+    for mode in ("off", "fakemap"):
+        assert results[item["id"]][mode]["decision"] == "escalate"
+
+
+def test_c2_transfer_routing_count_is_the_measured_one(results):
+    """The count that is reported next to (not inside) the pass/fail of C2: the transfer sentences that now reach the mapping."""
+    routed = {i["id"] for i in ITEMS if i["group"] == "transfer" and not not_asked(results[i["id"]]["fakemap"])}
+    not_routed = {i["id"] for i in ITEMS if i["group"] == "transfer"} - routed
+    # inverted-transfer-03: stopped by POLARITY_QUESTION_ON_A_VALUE, a later rule.  no_allowlist-transfer-02/03/04/06: sentences that
+    # ask for a write, which the round-2 write-target forms (a noun phrase between the verb and the path, 保存 / 追記 / 上書き …)
+    # now recognise: they are handed up as NO_ALLOWLIST again instead of reaching the mapping (the danger no longer moves)
+    assert not_routed == {"w2c2-inverted-transfer-03", "w2c2-no_allowlist-transfer-02", "w2c2-no_allowlist-transfer-03",
+                          "w2c2-no_allowlist-transfer-04", "w2c2-no_allowlist-transfer-06"}
+    for iid in ("w2c2-no_allowlist-transfer-02", "w2c2-no_allowlist-transfer-03", "w2c2-no_allowlist-transfer-04", "w2c2-no_allowlist-transfer-06"):
+        assert (results[iid]["off"]["escalate_reason"], results[iid]["off"]["escalate_detail"]) == ("FRAME_SILENT", "NO_ALLOWLIST")
+
+
+def test_the_five_traps_still_hand_up_every_raise_sentence_and_no_route_sentence_in_the_rule_layer(results):
+    for i in ITEMS:
+        fm = results[i["id"]]["fakemap"]
+        det = (fm["mapping"]["rule"] or {}).get("detail")
+        fired = not_asked(fm) and det in TRAP_DETAILS
+        if i["group"] == "raise":
+            assert fired, i["id"]
+        elif i["group"] == "route":
+            assert not fired, i["id"]
+
+
+# ---------------------------------------------------------------------------------------------
+# the frozen W2-c / W2-g data: the safety lines S1-S3 (against the answers of the base code, artifacts/w2-c2/base)
+# ---------------------------------------------------------------------------------------------
+
+FROZEN_SETS = ("fixtures", "w2g", "w2g2", "w2g3")
+
+
+def frozen_items():
+    for s in FROZEN_SETS:
+        d = ROOT / "tests" / "conduct_ask" / s
+        for ln in (d / "items.jsonl").read_text(encoding="utf-8").splitlines():
+            if ln.strip():
+                r = json.loads(ln)
+                yield s, r, str(d / "frames" / (r["frame_id"] + ".md"))
+
+
+@pytest.fixture(scope="module")
+def frozen_now() -> dict:
+    out = {}
+    for s, r, fp in frozen_items():
+        out[(s, r["id"])] = ca.answer_question(fp, r["question"], r.get("options"))
+    return out
+
+
+@pytest.fixture(scope="module")
+def frozen_base() -> dict:
+    out = {}
+    for ln in (ROOT / "artifacts" / "w2-c2" / "base" / "results.jsonl").read_text(encoding="utf-8").splitlines():
+        r = json.loads(ln)
+        if r["mode"] == "off" and r["set"] in FROZEN_SETS:
+            out[(r["set"], r["id"])] = r
+    return out
+
+
+def test_s1_s2_s3_no_new_answer_for_an_expected_escalation_and_no_wrong_answer_for_an_expected_answer(frozen_now, frozen_base):
+    checked = 0
+    for s, r, _ in frozen_items():
+        now, base, exp = frozen_now[(s, r["id"])], frozen_base[(s, r["id"])], r["expect"]
+        checked += 1
+        if exp["decision"] == "escalate":
+            assert not (now["decision"] == "answer" and base["decision"] != "answer"), r["id"]      # S1 (and S3 for off)
+        elif now["decision"] == "answer":
+            if exp.get("answer_option_index") is not None:
+                assert now["answer_option_index"] == exp["answer_option_index"], r["id"]            # S2
+            else:
+                assert now["answer"] == exp.get("answer"), r["id"]
+    assert checked == 349
+
+
+# ---------------------------------------------------------------------------------------------
+# the evidence functions, one by one
+# ---------------------------------------------------------------------------------------------
+
+def mentions_of(frame_id: str, question: str):
+    view = ca.build_view(load_conduct_frame(frame_path(frame_id)))
+    index = ca.TermIndex(view)
+    ms, _ = ca.find_mentions(ca.nz(question), index)
+    return ms
+
+
+@pytest.mark.parametrize("frame_id,question,evidence", [
+    ("z01_seedswap", "登録フォームのコピーは、今回の範囲に入りますか？", "E0:のコピー"),
+    ("z02_photos", "撮影日の一覧の写しを、家族に渡す前に確かめる必要がありますか？", "E0:の写し"),
+    ("z03_festival", "売り上げの記録欄の派生版は、今回の範囲に含めますか？", "E0:の派生"),
+    ("z01_seedswap", "登録フォームの入力例は、今回の範囲に入りますか？", "OTHER_RECORD:C3"),
+    ("z04_kiln", "Is the firing report archive in scope?", "OTHER_RECORD:C2"),
+    ("z04_kiln", "Is the temperature reader log in scope?", "OTHER_RECORD:I2"),
+    ("z04_kiln", "Must the reading format version be settled before the batch label printer is written?", "OTHER_RECORD:phase_order:P1->P3"),
+])
+def test_wider_phrase_with_evidence(frame_id, question, evidence):
+    wide = [m for m in mentions_of(frame_id, question) if m.wider]
+    assert wide and any(m.wider_evidence == evidence or (m.wider_evidence or "").startswith(evidence) for m in wide), [m.wider_evidence for m in wide]
+
+
+@pytest.mark.parametrize("frame_id,question", [
+    ("z01_seedswap", "登録フォームづくりに入るのは、品目の登録項目が決まったあとですか？"),
+    ("z01_seedswap", "いまの登録フォームは、品目の登録項目が決まってから作りますか？"),
+    ("z02_photos", "アルバムの形式の選択は、冊子と画面のどちらにしますか？"),
+    ("z04_kiln", "Must the reading format be defined before the temperature reader work starts?"),
+    ("z04_kiln", "Does the current temperature reader have to wait for the reading format?"),
+    ("z05_tideclock", "Is the moon phase icon design in scope?"),
+    ("z04_kiln", "Which backup label size should we use?"),
+])
+def test_wider_phrase_without_evidence_is_marked_wider_but_has_no_evidence(frame_id, question):
+    wide = [m for m in mentions_of(frame_id, question) if m.wider]
+    assert wide and all(m.wider_evidence is None for m in wide)
+
+
+def test_wider_phrase_without_evidence_is_vocab_unmapped_with_the_same_detail_and_says_what_was_not_checked():
+    res = ca.answer_question(frame_path("z04_kiln"), "Is the kiln door sensor module in scope?", ["Yes", "No"])
+    assert (res["decision"], res["escalate_reason"], res["escalate_detail"]) == ("escalate", "VOCAB_UNMAPPED", "TERM_IN_WIDER_PHRASE")
+    assert res["trace"]["resolver_outcomes"]["wider_phrase"] == "ESCALATE:UNDECIDED"
+    assert res["trace"]["resolver_outcomes"]["wider_phrase_head_type"] == "NOT_CHECKED:NO_PLACEMENT"
+    res = ca.answer_question(frame_path("z01_seedswap"), "登録フォームのコピーは、今回の範囲に入りますか？", ["はい", "いいえ"])
+    assert (res["escalate_reason"], res["escalate_detail"]) == ("FRAME_SILENT", "TERM_IN_WIDER_PHRASE")
+    assert res["trace"]["resolver_outcomes"]["wider_phrase"] == "ESCALATE:EVIDENCE:E0:のコピー"
+
+
+def ctx_of(frame_id: str, question: str, options=None) -> "ca.Ctx":
+    view = ca.build_view(load_conduct_frame(frame_path(frame_id)))
+    index = ca.TermIndex(view)
+    q = ca.nz(question)
+    ms, dropped = ca.find_mentions(q, index)
+    opts = ca.read_options(list(options) if options is not None else None, view, index)
+    return ca.Ctx(view, index, ca.Graph(view), question, q, opts, options is not None, ms, dropped, ca._sentences(q),
+                  "ja" if ca.has_cjk(q) else "en", q_case=ca.nz(question, fold=False))
+
+
+def trap_of(frame_id: str, question: str, options=None):
+    ctx = ctx_of(frame_id, question, options)
+    return ca._question_form_trap(ctx, ctx.sentences)
+
+
+@pytest.mark.parametrize("frame_id,question,options,expected", [
+    ("z01_seedswap", "種の発送サービスは、今回の範囲に入らないのですか？", None, "NEGATED_QUESTION"),
+    ("z03_festival", "当番表の印刷は、しなくてもよいですか？", None, "NEGATED_QUESTION"),
+    ("z02_photos", "原本の貸し出しは、認めないという理解で合っていますか？", None, "NEGATED_QUESTION"),
+    ("z01_seedswap", "種の発送サービスは、今回の範囲に入れないほうがよいですか？", None, "NEGATED_QUESTION"),
+    ("z04_kiln", "Is the glaze recipe library not in scope?", None, "NEGATED_QUESTION"),
+    ("z06_choir", "Isn't carpool matching out of scope?", None, "NEGATED_QUESTION"),
+    ("z05_tideclock", "Is it true that the moon phase icon is not in scope?", None, "NEGATED_QUESTION"),
+    ("z06_choir", "Are we sure that carpool matching is not in scope?", None, "NEGATED_QUESTION"),
+    ("z04_kiln", "Which log file layout should we avoid, CSV or JSON?", ["CSV", "JSON"], "INVERTED_QUESTION"),
+    ("z06_choir", "Should we write the reminder sender rather than the attendance sheet first?", None, "INVERTED_QUESTION"),
+    ("z03_festival", "今回の範囲から除外するのは、屋台の出店料の集金ですか？", None, "INVERTED_QUESTION"),
+    ("z01_seedswap", "当日の来場者の人数集計以外はすべて範囲外ですか？", None, "INVERTED_QUESTION"),
+    # round 2 (review 1, M1): a negated action whose permission is asked, an if-clause of an evaluation frame, a tag question
+    ("z01_seedswap", "種の発送サービスは、今回の範囲に含めなくても大丈夫ですか？", None, "NEGATED_QUESTION"),
+    ("z01_seedswap", "種の発送サービスは、今回の範囲に含めずに進めてよいですか？", None, "NEGATED_QUESTION"),
+    ("z01_seedswap", "種の発送サービスを入れないで進めても差し支えないですか？", None, "NEGATED_QUESTION"),
+    ("z01_seedswap", "種の発送サービスを入れないで進めても OK ですか？", None, "NEGATED_QUESTION"),
+    ("z01_seedswap", "種の発送サービスは、なくても問題ないですか？", None, "NEGATED_QUESTION"),
+    ("z01_seedswap", "種の発送サービスは範囲に含めない、で合っていますか？", None, "NEGATED_QUESTION"),
+    ("z04_kiln", "Is it OK if we don't include the glaze recipe library?", None, "NEGATED_QUESTION"),
+    ("z04_kiln", "Is it alright if we do not build the kiln door sensor?", None, "NEGATED_QUESTION"),
+    ("z04_kiln", "Would it be a problem if we didn't build the kiln door sensor?", None, "NEGATED_QUESTION"),
+    ("z04_kiln", "Would it hurt if we never build the kiln door sensor?", None, "NEGATED_QUESTION"),
+    ("z04_kiln", "Is it fine if the glaze recipe library isn't part of the first version?", None, "NEGATED_QUESTION"),
+    ("z04_kiln", "We don't need the glaze recipe library, right?", None, "NEGATED_QUESTION"),
+    ("z04_kiln", "The glaze recipe library isn't in scope, is it?", None, "NEGATED_QUESTION"),
+    ("z04_kiln", "The glaze recipe library is not in scope, correct?", None, "NEGATED_QUESTION"),
+    ("z04_kiln", "We should avoid the glaze recipe library, right?", None, "INVERTED_QUESTION"),
+])
+def test_form_trap_with_positive_evidence(frame_id, question, options, expected):
+    assert trap_of(frame_id, question, options) == expected
+
+
+@pytest.mark.parametrize("frame_id,question,options", [
+    ("z01_seedswap", "当日の順番表を作る前に、登録フォームができていなければなりませんか？", None),
+    ("z02_photos", "閲覧用のアルバムを組む前に、撮影日の一覧を作っておかなくてはいけませんか？", None),
+    ("z02_photos", "取り込みの解像度は六百dpiのはずですが、合っていますか？", None),
+    ("z01_seedswap", "当日の来場者の人数集計は、思いのほか手間はかかりませんが、今回の範囲に入りますか？", None),
+    ("z04_kiln", "Is the kiln door sensor in scope, yes or no?", None),
+    ("z05_tideclock", "Is the moon phase icon in scope, whether or not the budget grows?", None),
+    ("z04_kiln", "Is the batch label printer, which is not built yet, supposed to be finished before the firing report?", None),
+    ("z06_choir", "Which should we use for confirmation: a web form, or a channel that does not need a login?",
+     ["a web form", "a channel that does not need a login"]),
+    ("z02_photos", "傷や汚れを取り除く前に、取り込みの手順は決まっている必要がありますか？", None),
+    ("z02_photos", "撮影日の一覧を作る前に、傷や汚れを取り除く必要がありますか？", None),
+    ("z03_festival", "最悪の場合でも、当番の登録画面は当番の時間の区切りが決まってから作りますか？", None),
+    ("z04_kiln", "Is the kiln door sensor in scope, at least for the first release?", None),
+    ("z05_tideclock", "Is the moon phase icon in scope even for the worst-case harbour display?", None),
+    # round 2: the new forms do not widen to a negation that is not the asked predicate
+    ("z01_seedswap", "種の発送サービスは、今回の範囲に含めずに、後で決めます。範囲に入りますか？", None),
+    ("z01_seedswap", "種の発送サービスは、手間をかけずに作れますか？", None),
+    ("z04_kiln", "Is the kiln door sensor in scope, even though nobody has set it up yet?", None),
+    ("z04_kiln", "Since we won't open before spring, is the glaze recipe library in scope?", None),
+    ("z04_kiln", "Is it ok to include the glaze recipe library if we have the time?", None),
+    ("z04_kiln", "Can we ship the report, if the readings are right?", None),
+    ("z01_seedswap", "最悪の場合は、登録フォームのデザインを変えてもよいですか？", None),
+    ("z04_kiln", "If we skip the pilot, should the temperature reader keep a spare log?", None),
+])
+def test_form_trap_without_positive_evidence_is_none(frame_id, question, options):
+    assert trap_of(frame_id, question, options) is None
+
+
+def test_the_old_detectors_are_unchanged_because_the_stance_reader_uses_them():
+    assert ca._negated("なければなりませんか") and ca._negated("yes or no") and ca._INVERT_CUE.search("at least")
+    assert not ca._negated("問題ないですか") and ca._INVERT_CUE.search("drop-off")      # the old wide behaviour, kept on purpose
+
+
+@pytest.mark.parametrize("frame_id,question,expected", [
+    ("z04_kiln", "Can we delete last year's kiln logs?", True),
+    ("z05_tideclock", "May I upload the tide table to the harbour website?", True),
+    ("z06_choir", "Can we store the passwords in the sheet?", True),
+    ("z04_kiln", "Are we allowed to erase the readings of the kiln door sensor?", True),
+    ("z01_seedswap", "古い名簿を削除してもよいですか？", True),
+    ("z03_festival", "出店料を支払ってもよいですか？", True),
+    ("z01_seedswap", "参加者のパスワードを保存してもよいですか？", True),
+    ("z01_seedswap", "古い名簿を削除することはできますか？", True),
+    ("z05_tideclock", "Could a page with notes about the new release be added in this iteration?", False),
+    ("z06_choir", "Could the page for resetting a forgotten password be part of this build?", False),
+    ("z04_kiln", "May we use the small size for the stickers we pay for each month?", False),
+    ("z01_seedswap", "公開される日をお知らせ画面に出すのは、今回の範囲に入れてよいですか？", False),
+    ("z03_festival", "参加者へのお知らせは、公開の掲示板を使ってよいですか？", False),
+    ("z04_kiln", "Can we ask someone to delete the old logs?", False),
+])
+def test_builtin_protected_is_asked_only_where_the_operation_is_asked(frame_id, question, expected):
+    ctx = ctx_of(frame_id, question)
+    assert ca._builtin_protected_asked(ctx) is expected
+    if expected:
+        assert ca._builtin_protected(ctx)          # the wide test (what the mapping gets) holds wherever the narrow one does
+
+
+@pytest.mark.parametrize("frame_id,question,expected", [
+    ("z04_kiln", "Can I edit logs/firing.csv?", True),
+    ("z06_choir", "Am I allowed to change settings.json?", True),
+    ("z04_kiln", "Is it ok to write to data/readings.csv?", True),
+    ("z01_seedswap", "docs/guide.md を編集してもよいですか？", True),
+    ("z03_festival", "src/main.py を更新してもよいですか？", True),
+    ("z06_choir", "May the sheet layout be by voice part, e.g. sopranos first?", False),
+    ("z04_kiln", "Can the log file layout be CSV, as in export.csv?", False),
+    ("z01_seedswap", "当日の連絡手段は、掲示板（例：board.html）でよいですか？", False),
+    ("z04_kiln", "Is it ok to update the file logs/firing.csv?", True),
+    ("z04_kiln", "May we modify the file logs/firing.csv?", True),
+    ("z04_kiln", "Can we save the firing report to out/report.txt?", True),
+    ("z04_kiln", "Is it ok to append the new readings to data/readings.csv?", True),
+    ("z04_kiln", "May we overwrite config/reader.yaml?", True),
+    ("z04_kiln", "Can we export the batch labels into exports/labels.csv?", True),
+    ("z01_seedswap", "notes/list.txt に追記してもよいですか？", True),
+    ("z01_seedswap", "out/order.txt に保存してもよいですか？", True),
+    ("z01_seedswap", "config/seed.yaml を上書きしてもよいですか？", True),
+    ("z01_seedswap", "順番表を cards/order.pdf に出力してもよいですか？", True),
+    ("z01_seedswap", "notes/list.txt へ書き出してもよいですか？", True),
+    ("z01_seedswap", "保存先は out/logs にしてもよいですか？", True),
+    ("z04_kiln", "May we include the label printer, e.g. printer.py, in this build?", False),
+    ("z04_kiln", "Can we ask the studio about plan.md?", False),
+    ("z01_seedswap", "当日の連絡手段は、掲示板（board.html）でよいですか？", False),
+])
+def test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb(frame_id, question, expected):
+    assert ca._path_is_write_target(ctx_of(frame_id, question)) is expected
+
+
+def test_the_allowlist_checks_are_not_loosened():
+    # a frame WITH an allowlist keeps handing up a path outside it (OUTSIDE_ALLOWLIST is not one of the five traps)
+    res = ca.answer_question(frame_path("z05_tideclock"), "Can I edit tools/check.sh?", ["Yes", "No"])
+    assert (res["escalate_reason"], res["escalate_detail"]) == ("FRAME_SILENT", "OUTSIDE_ALLOWLIST")
+    res = ca.answer_question(frame_path("z05_tideclock"), "Can I edit src/main.py?", ["Yes", "No"])
+    assert res["decision"] == "answer" and res["answer"] == "Yes"
+    # and a write to a path of a frame without an allowlist is still NO_ALLOWLIST
+    res = ca.answer_question(frame_path("z04_kiln"), "Can I edit logs/firing.csv?", ["Yes", "No"])
+    assert (res["escalate_reason"], res["escalate_detail"]) == ("FRAME_SILENT", "NO_ALLOWLIST")
+
+
+# ---------------------------------------------------------------------------------------------
+# mapping_gate: the same detectors, applied to an answer that comes out of the record mapping
+# ---------------------------------------------------------------------------------------------
+
+F1 = frame_path("z01_seedswap")
+F4 = frame_path("z04_kiln")
+YN_JA = ["はい", "いいえ"]
+YN_EN = ["Yes", "No"]
+GOOD_D3 = {"records": ["D3"], "decides": "決まる", "relations": {"D3": ["一致", "矛盾"]}}    # z01 D3: 当日の来場者の人数集計 in scope; z04 D3: kiln door sensor in scope
+# paraphrases of D3 that have no frame term and none of the cue words of a vocabulary role: off hands them up as VOCAB_UNMAPPED
+# (NO_ROLE) and only the record mapping can decide them; the gate looks at the form of the question afterwards
+
+
+@pytest.mark.parametrize("frame,question,options,detail", [
+    (F1, "会場に来た人の数を数えるのは、今回やらないのですか？", YN_JA, "NEGATED_QUESTION"),
+    (F1, "会場に来た人の数を数えるのをやめるのは、今回の方針として正しいですか？", YN_JA, "INVERTED_QUESTION"),
+    (F4, "Isn't the sensor on the oven door among the things we build?", YN_EN, "NEGATED_QUESTION"),
+    (F4, "Do we skip the sensor on the oven door?", YN_EN, "INVERTED_QUESTION"),
+])
+def test_the_gate_hands_up_a_mapped_answer_to_a_question_with_positive_evidence(frame, question, options, detail):
+    off = ca.answer_question(frame, question, options)
+    assert (off["escalate_reason"], off["escalate_detail"]) == ("VOCAB_UNMAPPED", "NO_ROLE")
+    res, _ = M.ask_map(frame, question, options, GOOD_D3)
+    assert (res["decision"], res["escalate_reason"], res["escalate_detail"]) == ("escalate", "QUESTION_UNREADABLE", detail)
+    assert res["mapping"]["exit_check"] == f"QUESTION_UNREADABLE/{detail}"
+    assert res["trace"]["resolver_outcomes"]["mapping_gate"] == detail
+
+
+@pytest.mark.parametrize("frame,question,options", [
+    (F1, "会場に来た人の数を数えることは、今回やっておかなければなりませんか？", YN_JA),
+    (F4, "Is the sensor on the oven door among the things we build, yes or no?", YN_EN),
+    (F4, "Is the sensor on the oven door among the things we build, whether or not it is cheap?", YN_EN),
+])
+def test_the_gate_lets_a_mapped_answer_through_when_there_is_no_positive_evidence(frame, question, options):
+    off = ca.answer_question(frame, question, options)
+    assert (off["escalate_reason"], off["escalate_detail"]) == ("VOCAB_UNMAPPED", "NO_ROLE")
+    res, _ = M.ask_map(frame, question, options, GOOD_D3)
+    assert res["decision"] == "answer" and res["answer"] == options[0] and res["mapping"]["exit_check"] is None
+    assert "mapping_gate" not in res["trace"]["resolver_outcomes"]
+
+
+# ---------------------------------------------------------------------------------------------
+# round 2, M2: a longer phrase without evidence whose narrow reading is also silent
+# ---------------------------------------------------------------------------------------------
+
+def test_a_wider_phrase_without_evidence_whose_narrow_reading_is_also_silent_stays_frame_silent():
+    """Review 1, M2: read narrowly (the longer phrase is the same thing) the frame is silent as well, so both readings agree and
+    the result is the silence that the record mapping may retry (NO_RECORD_DECIDES), not a vocabulary question."""
+    res = ca.answer_question(frame_path("z04_kiln"), "Should the temperature reader work be finished by Friday?", ["Yes", "No"])
+    assert (res["decision"], res["escalate_reason"], res["escalate_detail"]) == ("escalate", "FRAME_SILENT", "NO_RECORD_DECIDES")
+    assert res["trace"]["resolver_outcomes"]["wider_phrase"] == "ESCALATE:UNDECIDED:NARROW_READING_ALSO_SILENT"
+    from verantyx import conduct_map
+    assert conduct_map.retry_allowed(res["escalate_reason"], res["escalate_detail"])
+
+
+def test_a_wider_phrase_without_evidence_is_not_answered_from_the_narrow_reading():
+    """The narrow reading's ANSWER (or any other hand-up) is never taken: the phrase stays a vocabulary question."""
+    for q in ("Is the kiln door sensor module in scope?", "Should the kiln door sensor module use the 10 minutes report interval?"):
+        res = ca.answer_question(frame_path("z04_kiln"), q, ["Yes", "No"])
+        assert res["decision"] == "escalate" and (res["escalate_reason"], res["escalate_detail"]) == ("VOCAB_UNMAPPED", "TERM_IN_WIDER_PHRASE"), q
+
+
+def test_the_narrow_reading_leaves_the_context_as_it_was():
+    ctx = ctx_of("z04_kiln", "Should the temperature reader work be finished by Friday?", ["Yes", "No"])
+    wide = [m for m in ctx.mentions if m.wider]
+    assert wide
+    before = (list(ctx.trace_tried), dict(ctx.trace_out), list(ctx.premise_sents))
+    ca._narrow_reading(ctx, wide)
+    assert (ctx.trace_tried, ctx.trace_out, ctx.premise_sents) == before and all(m.wider for m in wide)
+
+
+# ---------------------------------------------------------------------------------------------
+# round 2, M3: the supplement (tests/conduct_ask/w2c2/supp/), frozen BEFORE the round-2 rule changes
+# ---------------------------------------------------------------------------------------------
+
+SUPP = DATA / "supp"
+SUPP_FRAMES = SUPP / "frames"
+SUPP_ITEMS = [json.loads(ln) for ln in (SUPP / "items.jsonl").read_text(encoding="utf-8").splitlines() if ln.strip()]
+
+
+def supp_run(item: dict, mode: str) -> dict:
+    kw = {"vocab_llm": "fake", "map_fake": MAP_EMPTY} if mode == "fakemap" else {}
+    return ca.answer_question(str(SUPP_FRAMES / f"{item['frame_id']}.md"), item["question"], item["options"], **kw)
+
+
+@pytest.fixture(scope="module")
+def supp_results() -> dict:
+    return {it["id"]: {"off": supp_run(it, "off"), "fakemap": supp_run(it, "fakemap")} for it in SUPP_ITEMS}
+
+
+def supp_by(trap: str, group: str) -> list[dict]:
+    return [i for i in SUPP_ITEMS if i["trap"] == trap and i["group"] == group]
+
+
+def test_the_supplement_is_the_frozen_supplement():
+    """artifacts/w2-c2/freeze_supp.txt holds the hashes taken before the round-2 rule changes (nothing is tuned afterwards)."""
+    frozen = {}
+    for ln in (ROOT / "artifacts" / "w2-c2" / "freeze_supp.txt").read_text(encoding="utf-8").splitlines():
+        parts = ln.split()
+        if len(parts) == 2 and len(parts[0]) == 64:
+            frozen[parts[1]] = parts[0]
+    for rel in ["tests/conduct_ask/w2c2/supp/items.jsonl"] + sorted(f"tests/conduct_ask/w2c2/supp/frames/{p.name}" for p in SUPP_FRAMES.glob("*.md")):
+        assert frozen.get(rel) == hashlib.sha256((ROOT / rel).read_bytes()).hexdigest(), rel
+
+
+def test_the_supplement_has_what_review_1_asked_for():
+    assert len(supp_by("NO_ALLOWLIST", "route")) >= 10 and len(supp_by("NEGATED", "route")) >= 1
+    ids = [i["id"] for i in SUPP_ITEMS]
+    assert len(ids) == len(set(ids)) and all(i.startswith("supp-") for i in ids)
+    for i in SUPP_ITEMS:
+        assert (SUPP_FRAMES / f"{i['frame_id']}.md").exists() and i["trap"] in ("NEGATED", "NO_ALLOWLIST") and i["group"] in ("raise", "route")
+        t = i["truth"]
+        if i["group"] == "route":
+            assert t["decision"] == "answer" and t["answer"] in ("Yes", "No", "はい", "いいえ") and t["records"]    # the frame has the answer
+        else:
+            assert t["decision"] == "escalate" and i["evidence"] and i["expect_rule"]
+    for trap in ("NO_ALLOWLIST", "NEGATED"):
+        for group in ("raise", "route"):
+            for lang in ("ja", "en"):
+                assert any(i["lang"] == lang for i in supp_by(trap, group)), (trap, group, lang)
+
+
+@pytest.mark.parametrize("item", [i for i in SUPP_ITEMS if i["group"] == "raise"], ids=lambda i: i["id"])
+def test_supp_c2_raise_is_handed_up_in_the_type_and_the_mapping_is_not_asked(item, supp_results):
+    want = (item["expect_rule"]["reason"], item["expect_rule"]["detail"])
+    for mode in ("off", "fakemap"):
+        res = supp_results[item["id"]][mode]
+        assert res["decision"] == "escalate" and (res["escalate_reason"], res["escalate_detail"]) == want, (mode, res["escalate_reason"], res["escalate_detail"])
+    assert not_asked(supp_results[item["id"]]["fakemap"])
+
+
+@pytest.mark.parametrize("item", [i for i in SUPP_ITEMS if i["group"] == "route"], ids=lambda i: i["id"])
+def test_supp_c2_route_reaches_the_mapping_and_the_rules_never_answer_wrongly(item, supp_results):
+    for mode in ("off", "fakemap"):
+        res = supp_results[item["id"]][mode]
+        assert not (res["decision"] == "answer" and not truth_matches(res, item)), (mode, res["answer"])
+    fm = supp_results[item["id"]]["fakemap"]
+    assert not not_asked(fm), (fm["escalate_reason"], fm["escalate_detail"])

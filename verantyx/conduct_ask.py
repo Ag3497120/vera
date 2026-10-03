@@ -375,6 +375,13 @@ def _view_from_jsonl(cf: ConductFrame) -> FrameView:
     v = FrameView()
     superseded = {e["id"] for e in cf.events if e.get("op") == "supersede"}
     recs = [e["record"] for e in cf.events if e.get("op") == "write" and e["record"]["id"] not in superseded]
+    # W2-c2 round 3 (auditor's ruling B1): compile_frame writes a CHOICE / CONFIRM / SCOPE line of [decisions] as a DECISION
+    # record and a POLICY record that names it (witness.authority_record_id).  The markdown view reads that line as a
+    # policy only; the DECISION of the pair is not a decision of its own (it gave every policy term a "subject" entry).
+    pair_decisions = {str(r["witness"]["authority_record_id"]) for r in recs
+                      if r.get("kind") == "POLICY" and isinstance(r.get("witness"), dict)
+                      and r["witness"].get("authority_record_id")
+                      and r["witness"].get("question_kind") in ("CHOICE", "CONFIRM", "SCOPE")}
     phase_by_ref: dict[str, str] = {}
     pending_tasks: list[tuple[str, str]] = []
     for idx, r in enumerate(recs, 1):
@@ -387,7 +394,7 @@ def _view_from_jsonl(cf: ConductFrame) -> FrameView:
             if kind == "POLICY" and w.get("question_kind") in ("CHOICE", "CONFIRM", "SCOPE"):
                 v.policies.append(PolicyV(w["question_kind"], s["subject"], s["answer"], rf))
             elif kind == "DECISION" and sec == "decisions":
-                if not w.get("question_kind"):
+                if not w.get("question_kind") and r["id"] not in pair_decisions:
                     v.decisions.append(DecV(s["subject"], s["choice"], rf))
             elif kind == "DECISION" and sec == "phases":
                 pid = str(w.get("phase_id") or r["id"])
@@ -499,7 +506,8 @@ class Mention:
     via: str = "direct"         # direct / alias / llm
     alias: Optional[str] = None
     ambiguous: bool = False
-    wider: bool = False          # the term sits inside a longer noun phrase of the question (a different thing)
+    wider: bool = False          # the term sits inside a longer noun phrase of the question (in form only: see _is_wider)
+    wider_evidence: Optional[str] = None   # positive evidence that the longer phrase is ANOTHER thing (W2-c2: _wider_evidence)
 
     def groups(self) -> set[str]:
         return {e.group for e in self.entries}
@@ -705,6 +713,112 @@ def _is_wider(q: str, m: "Mention", others: Sequence["Mention"] = ()) -> bool:
     return first.group(0) not in _EN_RIGHT_STOP
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# W2-c2: positive evidence that a longer noun phrase is ANOTHER thing than the frame term inside it.
+#
+# ``_is_wider`` only sees a form (something attached to the term).  "<term>づくり", "<term> work", "the current <term>" are
+# usually the same thing under another name, so the form alone does not say that the longer phrase is a different thing:
+# that is a vocabulary question (VOCAB_UNMAPPED, handed to the record mapping), not a fact about the frame.  The phrase is
+# handed up as "the frame is silent" (FRAME_SILENT) only on one of two closed pieces of evidence:
+#   E0            (Japanese) the word right after the term names another object or range by its meaning
+#                 (_JA_RIGHT_DENY: のコピー, の一部, の写し, …);
+#   OTHER_RECORD  the longer phrase itself occurs in the text of another record of the frame (that record deals with the
+#                 longer phrase, so it is not the record of the term).
+# A third piece (the head noun of the longer phrase has another TYPE than the term) needs a placement lookup that this
+# entry does not have: it is not checked (trace: wider_phrase_head_type = NOT_CHECKED:NO_PLACEMENT).
+# ---------------------------------------------------------------------------------------------------------------------
+
+_JA_CHUNK_DELIM_NO_NO = "".join(c for c in _JA_CHUNK_DELIM if c != "の")
+
+
+def _wider_sides(q: str, m: "Mention", others: Sequence["Mention"]) -> tuple[Optional[int], Optional[int]]:
+    """Where the longer noun phrase around ``m`` starts and ends in ``q``: (start, end), ``None`` on a side where nothing
+    is attached.  The same conditions as ``_is_wider`` (which is left as it is), kept apart to give the extent."""
+    left: Optional[int] = None
+    right: Optional[int] = None
+    if has_cjk(m.term):
+        nxt = q[m.end:]
+        if nxt and (_JA_RIGHT_DENY.match(nxt) or (nxt[0] == "の" and not _JA_RIGHT_NO.match(nxt))
+                    or (nxt[0] not in "はがをにでとももやへの、。，,.?!！？ \t" and not re.match(
+                        r"^(?:前に|先に|後に|より|から|まで|について|に関|でき|ます|です|だ|か|って|なら|という|ごと|別)", nxt))):
+            j = m.end
+            while j < len(q) and q[j] not in _JA_CHUNK_DELIM_NO_NO:
+                j += 1
+            right = j
+        if m.start > 0 and q[m.start - 1] not in _JA_LEFT_OK:
+            cs = m.start
+            while cs > 0 and q[cs - 1] not in _JA_CHUNK_DELIM:
+                cs -= 1
+            left = cs
+        elif m.start > 0 and q[m.start - 1] == "の":
+            pre = q[:m.start]
+            general = any(pre.endswith(g) and (len(pre) == len(g) or pre[-len(g) - 1] in _JA_CHUNK_DELIM)
+                          for g in _JA_LEFT_GENERAL)
+            if not general:
+                for n in _JA_LEFT_NOUNS:
+                    if pre.endswith(n + "の"):
+                        before = pre[:-len(n) - 1]
+                        if any(before.endswith(d) and (len(before) == len(d) or before[-len(d) - 1] in _JA_CHUNK_DELIM)
+                               for d in _JA_LEFT_DEMONSTRATIVE):
+                            general = True
+            if not general and not any(o is not m and o.end == m.start - 1 for o in others):
+                cs = m.start - 1
+                while cs > 0 and q[cs - 1] not in _JA_CHUNK_DELIM:
+                    cs -= 1
+                if cs < m.start - 1:
+                    left = cs
+        return left, right
+    lm = re.search(r"([0-9a-z]+(?:['\-][0-9a-z]+)*)[ ]*$", q[:m.start])
+    if lm is not None:
+        w = lm.group(1)
+        if w in _EN_LEFT_VERBISH:
+            if not _en_verb_position(q, lm.start(1), w):
+                left = lm.start(1)
+        elif w not in _EN_LEFT_FUNC:
+            left = lm.start(1)
+    rest = q[m.end:].lstrip(" ")
+    if rest:
+        first = _TOKEN.match(rest)
+        if first is not None and first.group(0) not in _EN_RIGHT_STOP:
+            right = len(q) - len(rest) + first.end()
+    return left, right
+
+
+def _frame_records(view: "FrameView") -> list[Ref]:
+    """The text of every record a question may be about (not the vocabulary aliases and not the write allowlist)."""
+    refs: list[Ref] = []
+    groups: list[Sequence[Any]] = [view.phases, view.edges, view.policies, view.decisions, view.forbidden, view.protected,
+                                   view.invariants, view.criteria, view.escalations, view.precedence]
+    seen: set[tuple[str, int]] = set()
+    for g in groups:
+        for o in g:
+            r = getattr(o, "ref", None)
+            if isinstance(r, Ref) and (r.id, r.line) not in seen:
+                seen.add((r.id, r.line))
+                refs.append(r)
+    return refs
+
+
+def _wider_evidence(q: str, m: "Mention", others: Sequence["Mention"], view: "FrameView") -> Optional[str]:
+    """``"E0:<word>"`` / ``"OTHER_RECORD:<record id>"`` when the longer phrase around ``m`` is positively another thing,
+    else ``None`` (it may be the same thing under another name).  Only called for a mention that ``_is_wider`` marked."""
+    left, right = _wider_sides(q, m, others)
+    if left is None and right is None:
+        return None
+    if right is not None and has_cjk(m.term):
+        d = _JA_RIGHT_DENY.match(q[m.end:])
+        if d:
+            return "E0:" + d.group(0)
+    phrase = nz(q[left if left is not None else m.start: right if right is not None else m.end])
+    if len(phrase) <= len(nz(m.term)):
+        return None
+    own = {(r.id, r.line) for r in _mention_refs(m)}
+    for r in _frame_records(view):
+        if (r.id, r.line) not in own and phrase in nz(r.text):
+            return "OTHER_RECORD:" + r.id
+    return None
+
+
 def find_mentions(q: str, index: TermIndex) -> tuple[list[Mention], int]:
     """All mentions of frame terms in ``q`` (normalised), with the ones inside a longer mention removed."""
     qtoks = [t for t in latin_tokens(q) if t[0] not in _ARTICLES]
@@ -761,6 +875,7 @@ def find_mentions(q: str, index: TermIndex) -> tuple[list[Mention], int]:
     for m in merged:
         if m.groups() & {"policy", "subject", "phase"} and _is_wider(q, m, merged):
             m.wider = True
+            m.wider_evidence = _wider_evidence(q, m, merged, index.view)
     merged.sort(key=lambda m: (m.start, m.end))
     return merged, dropped
 
@@ -1896,6 +2011,104 @@ def _perm_form_ok(ctx: "Ctx", out: "Outcome") -> Optional[str]:
     return _PERM_OP if all(d == _PERM_OP for d in details) else _PERM_SUBJ
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# W2-c2: the hand-up that needs a positive reading of what is being ASKED.
+#
+# BUILTIN_PROTECTED: a permission question about an operation that looks like deleting, publishing, spending or a credential
+# is a question for a human.  The word alone is not that question: "the release notes page", "a password reset screen",
+# "the stickers we pay for" are only words in a description or a background.  ``_builtin_protected_asked`` is true only
+# when a protected word stands in the position of the operation that the permission question asks about (right after the
+# permission frame "can we / may I / is it ok to / are we allowed to ...", or right before the permission tail
+# "〜してもよいですか / 〜できますか").  ``_builtin_protected`` (the wide test) is still what the record mapping is given as
+# its safety net (conduct_map.resolve), unchanged.
+#
+# ---------------------------------------------------------------------------------------------------------------------
+
+# where the text of an offered option stands (used by _builtin_protected_asked)
+def _option_spans(ctx: "Ctx") -> list[tuple[int, int]]:
+    """Where the text of an offered option stands inside the question: (start, length).  A yes / no option is the answer
+    word, not a description of an alternative, and a Latin option is found only as a whole word ("no" is not in "not")."""
+    q = ctx.q
+    spans: list[tuple[int, int]] = []
+    for o in ctx.options:
+        if o.reading in ("YES", "NO") or len(o.core) < 2:
+            continue
+        if has_cjk(o.core):
+            at = q.find(o.core)
+        else:
+            mm = re.search(r"(?<![0-9a-z])" + re.escape(o.core) + r"(?![0-9a-z])", q)
+            at = mm.start() if mm else -1
+        if at >= 0:
+            spans.append((at, len(o.core)))
+    return spans
+
+
+def _masked_question(ctx: "Ctx", mentions: bool = True) -> str:
+    """The question with the text of every offered option (and, with ``mentions``, of every matched frame term) blanked
+    out (same length)."""
+    q = ctx.q
+    spans = _option_spans(ctx)
+    if mentions:
+        spans += [(m.start, m.end - m.start) for m in ctx.mentions if m.end > m.start]
+    chars = list(q)
+    for at, n in spans:
+        for i in range(at, min(at + n, len(chars))):
+            chars[i] = " "
+    return "".join(chars)
+
+
+_BI_MODAL_FRAMES = (
+    r"(?:{M})\s+(?:i|we|you|they|someone|anyone|everyone|(?:the|our|a|an|this|that|my|your)\s+[a-z][a-z\-']*(?:\s+[a-z][a-z\-']*)?)\s+",
+    r"(?:is|would)\s+it\s+(?:be\s+)?(?:ok|okay|fine|alright|allowed|permitted|acceptable)\s+"
+    r"(?:for\s+(?:us|me|them|[a-z]+)\s+to\s+|to\s+|if\s+(?:i|we|they|you|[a-z]+)\s+)",
+    r"(?:am\s+i|are\s+we|is\s+[a-z]+|are\s+(?:you|they))\s+(?:allowed|permitted)\s+to\s+",
+    r"(?:do\s+(?:i|we)\s+have\s+)?permission\s+to\s+",
+)
+_BI_ASKED_EN = re.compile(r"(?:" + "|".join(f.replace("{M}", _PEN_MODAL) for f in _BI_MODAL_FRAMES) + r")" + _PEN_GAP + r"$")
+_BI_ASKED_EN_OBJ = re.compile(r"(?:" + "|".join(f.replace("{M}", _PEN_MODAL) for f in _BI_MODAL_FRAMES) + r")" + _PEN_GAP +
+                              r"[a-z][a-z\-']*\s+(?:(?:the|our|a|an|this|that|these|those|my|your|any|all|their|its)\s+)?$")
+_BI_ASKED_GERUND = re.compile(r"(?:\bis|\bare|\bwould|\bwill|\bbe)\s+(?:it\s+)?$")
+_BI_EN_OP = re.compile(r"\b(?:delete|deleting|erase|remove|destroy|publish|deploy|release|upload|spend|purchase|buy|pay|charge)\b|"
+                       r"\b(?:send|share)\s+externally\b")
+_BI_EN_CRED = re.compile(r"\b(?:credentials?|passwords?|tokens?|api\s+keys?)\b")
+_BI_EN_CRED_NEXT = frozenset("in into to for on with from of at by and or so now today then too please here there when if as that which".split())
+_BI_JA_OP = re.compile(r"削除|消去|抹消|公開|公表|支出|支払|購入|課金|外部送信")
+_BI_JA_CRED = re.compile(r"パスワード|認証情報")
+_BI_JA_ASKED_OP = (
+    re.compile(r"[ぁ-ん]{0,2}(?:を|は)?(?:し|行い|行っ|実施し|実行し)?(?:て|で)" + _PJA_MAY),
+    re.compile(r"[ぁ-ん]{0,2}(?:を|は)?(?:する|行う|実施する|実行する)?(?:こと)?(?:は|が)?" + _PJA_CAN),
+    re.compile(r"[ぁ-ん]{0,2}(?:は|が)?(?:許可|承認)され(?:てい)?(?:ます|る)(?:か|でしょうか)"),
+)
+_BI_JA_ASKED_CRED = re.compile(r"(?:を|は)[^、。,\s]{1,8}(?:て|で)" + _PJA_MAY)
+
+
+def _builtin_protected_asked(ctx: Ctx) -> bool:
+    """A protected word stands where the permission question's operation stands (see the block comment above)."""
+    text = _masked_question(ctx, mentions=False)
+    for a, b in ctx.sentences:
+        sent = text[a:b]
+        if not _PERM_CUE.search(sent):
+            continue
+        if has_cjk(sent):
+            for mm in _BI_JA_OP.finditer(sent):
+                rest = sent[mm.end():].strip(" \t?？。!！")
+                if any(rx.fullmatch(rest) for rx in _BI_JA_ASKED_OP):
+                    return True
+            for mm in _BI_JA_CRED.finditer(sent):
+                if _BI_JA_ASKED_CRED.fullmatch(sent[mm.end():].strip(" \t?？。!！")):
+                    return True
+            continue
+        for mm in _BI_EN_OP.finditer(sent):
+            pre = sent[:mm.start()]
+            if _BI_ASKED_EN.search(pre) or (mm.group(0).endswith("ing") and _BI_ASKED_GERUND.search(pre)):
+                return True
+        for mm in _BI_EN_CRED.finditer(sent):
+            nxt = _TOKEN.match(sent[mm.end():].lstrip(" "))
+            if (nxt is None or nxt.group(0) in _BI_EN_CRED_NEXT) and _BI_ASKED_EN_OBJ.search(sent[:mm.start()]):
+                return True
+    return False
+
+
 def _layer_permission(ctx: Ctx) -> Optional[Outcome]:
     cue = bool(_PERM_CUE.search(ctx.q))
     statuses: list[tuple[str, list[Ref], Any]] = []
@@ -1913,7 +2126,7 @@ def _layer_permission(ctx: Ctx) -> Optional[Outcome]:
     path = _path_status(ctx) if cue else None
     if not statuses and path is None:
         return None
-    if not statuses and path is not None and _builtin_protected(ctx):
+    if not statuses and path is not None and _builtin_protected_asked(ctx):
         return _esc("HUMAN_APPROVAL_REQUIRED", "BUILTIN_PROTECTED", [], "PERMISSION", "permission")
     kinds = {s[0] for s in statuses}
     if "FORBIDDEN" in kinds and not cue:
@@ -2590,6 +2803,24 @@ def _classifier_kind(raw_q: str, options: Optional[list[str]]) -> str:
         return "OTHER"
 
 
+def _narrow_reading(ctx: Ctx, wide: Sequence[Mention]) -> Optional[Outcome]:
+    """What the permission layer and the resolvers say when the terms in ``wide`` are read as the frame terms themselves (the
+    longer phrase is taken to be the same thing).  The context is left as it was (traces, premise sentences, ``wider``)."""
+    tried, out_trace, premise = list(ctx.trace_tried), dict(ctx.trace_out), list(ctx.premise_sents)
+    for m in wide:
+        m.wider = False
+    try:
+        out = layer_permission(ctx)
+        return out if out is not None else combine_resolvers(ctx)
+    finally:
+        for m in wide:
+            m.wider = True
+        ctx.trace_tried[:] = tried
+        ctx.trace_out.clear()
+        ctx.trace_out.update(out_trace)
+        ctx.premise_sents[:] = premise
+
+
 def _decide(ctx: Ctx, only_role: Optional[str], kind_hint: str) -> tuple[Optional[Outcome], bool]:
     """Layers 3-6.  Returns (outcome, hit_status_or_request)."""
     if only_role is None:
@@ -2600,11 +2831,31 @@ def _decide(ctx: Ctx, only_role: Optional[str], kind_hint: str) -> tuple[Optiona
             return out, False
     wide = [m for m in ctx.mentions if m.wider]
     if wide and not any(g in m.groups() for m in ctx.mentions for g in ("forbidden", "protected")):
+        # W2-c2: the longer phrase is handed up as "the frame is silent" only on positive evidence that it is another
+        # thing; otherwise it may be the same thing under another name (a vocabulary question: VOCAB_UNMAPPED)
         ctx.trace_tried.append("wider_phrase")
-        ctx.trace_out["wider_phrase"] = "ESCALATE"
+        evidence = [m.wider_evidence for m in wide if m.wider_evidence]
+        ctx.trace_out["wider_phrase"] = f"ESCALATE:EVIDENCE:{evidence[0]}" if evidence else "ESCALATE:UNDECIDED"
+        ctx.trace_out["wider_phrase_head_type"] = "NOT_CHECKED:NO_PLACEMENT"
         if _REQUEST_CUE.search(ctx.q) or _STATUS_CUE.search(ctx.q):
             return _esc("OUT_OF_RANGE", "STATE_OR_REQUEST_QUESTION", [], "STATUS" if _STATUS_CUE.search(ctx.q) else "OTHER"), False
-        return _esc("FRAME_SILENT", "TERM_IN_WIDER_PHRASE", [r for m in wide for r in _mention_refs(m)], layer="wider_phrase"), False
+        wide_refs = [r for m in wide for r in _mention_refs(m)]
+        if not evidence:
+            # W2-c2 round 3 (auditor's ruling B1): without evidence the longer phrase may be the same thing as the term.
+            # It is handed to the record mapping only when reading the term narrowly hands up nothing that the mapping
+            # may not retry (an answer, or a silence the mapping may retry); the type VOCAB_UNMAPPED is what the
+            # mapping retries.  With the mapping off, or when the mapping does not decide, ``finish`` turns it back into
+            # the base hand-up FRAME_SILENT/TERM_IN_WIDER_PHRASE.  Anything else is the base hand-up right away: the
+            # permission layer (paths, protected operations) stands after this block and must not be skipped.
+            narrow = _narrow_reading(ctx, wide)
+            if narrow is None and not _builtin_protected_asked(ctx):
+                narrow = _esc("FRAME_SILENT", "NO_RECORD_DECIDES", [r for m in ctx.mentions for r in _mention_refs(m)])
+            from . import conduct_map
+            if narrow is not None and (narrow.decision == "answer" or conduct_map.retry_allowed(narrow.reason, narrow.detail)):
+                ctx.trace_out["wider_phrase"] = "ESCALATE:UNDECIDED:TO_MAPPING"
+                return _esc("VOCAB_UNMAPPED", "TERM_IN_WIDER_PHRASE", wide_refs, layer="wider_phrase"), False
+            ctx.trace_out["wider_phrase"] = "ESCALATE:UNDECIDED:NARROW_READING_HANDS_UP"
+        return _esc("FRAME_SILENT", "TERM_IN_WIDER_PHRASE", wide_refs, layer="wider_phrase"), False
     ctx.trace_tried.append("permission")
     out = layer_permission(ctx)
     ctx.trace_out["permission"] = "NOT_APPLICABLE" if out is None else ("ANSWER" if out.decision == "answer" else f"ESCALATE:{out.reason}:{out.detail}")
@@ -2840,11 +3091,23 @@ def _answer_question(frame_path: str, question: str, options: Optional[Sequence[
         return new, rep
 
     def finish(out: Outcome, voc: Optional[dict] = None) -> dict[str, Any]:
+        # W2-c2 round 3 (auditor's ruling B1): a wider phrase without evidence was handed to the mapping as
+        # VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE (see _decide).  With the mapping off, or when the mapping does not decide,
+        # the outcome is the base hand-up; what the mapping said stays in the mapping report as it is.
+        wider_base = (_esc("FRAME_SILENT", "TERM_IN_WIDER_PHRASE", out.basis, out.kind, out.layer)
+                      if out.reason == "VOCAB_UNMAPPED" and out.detail == "TERM_IN_WIDER_PHRASE" else None)
+        if wider_base is not None and not map_on:
+            ctx.trace_out["wider_phrase"] = "ESCALATE:UNDECIDED:MAPPING_OFF"
+            out = wider_base
         out = exit_checks(out)
         map_report: Optional[dict[str, Any]] = None
         if map_on:
             out, map_report = apply_mapping(out)
             ctx.trace_out["mapping"] = str(map_report["outcome"])
+            if (wider_base is not None and out.decision == "escalate" and map_report.get("exit_check") is None
+                    and out.reason in ("FRAME_SILENT", "MAPPING_UNSETTLED") and out.detail != "LEDGER_INTEGRITY"):
+                ctx.trace_out["wider_phrase"] = f"ESCALATE:UNDECIDED:MAPPING_DID_NOT_DECIDE:{out.reason}/{out.detail}"
+                out = wider_base
         r = _finish(res, out, ctx, voc if voc is not None else vocab, classifier_kind, opt_info)
         r["trace"] = {"mentions_found": len(ctx.mentions), "mentions_dropped_as_contained": dropped,
                       "resolvers_tried": list(ctx.trace_tried), "resolver_outcomes": dict(ctx.trace_out)}
@@ -2878,12 +3141,12 @@ def _answer_question(frame_path: str, question: str, options: Optional[Sequence[
         ctx.trace_out["range"] = "OUT_OF_RANGE"
         return finish(_esc("OUT_OF_RANGE", "STATE_OR_REQUEST_QUESTION", [], "STATUS" if _STATUS_CUE.search(q) else "OTHER"))
     if ctx.mentions:
-        if _builtin_protected(ctx):
+        if _builtin_protected_asked(ctx):
             return finish(_esc("HUMAN_APPROVAL_REQUIRED", "BUILTIN_PROTECTED", [], "PERMISSION"))
         return finish(_esc("FRAME_SILENT", "NO_RECORD_DECIDES", [m_ref for m in ctx.mentions for m_ref in _mention_refs(m)]))
     # no frame term at all ------------------------------------------------------------------
     def unmapped(detail: str, voc: Optional[dict] = None) -> dict[str, Any]:
-        if _builtin_protected(ctx):   # a delete / publish / spend looking permission question: a human, not "unmapped"
+        if _builtin_protected_asked(ctx):   # a delete / publish / spend looking permission question: a human, not "unmapped"
             return finish(_esc("HUMAN_APPROVAL_REQUIRED", "BUILTIN_PROTECTED", [], "PERMISSION"), voc)
         return finish(_esc("VOCAB_UNMAPPED", detail), voc)
 

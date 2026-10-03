@@ -4,7 +4,8 @@
 人間が最初に枠（`docs/frames/vera_project_frame.md` の書式）に書いた内容から答える。**枠から決まらないことは推測せず、
 理由の型を付けて人間に上げる。** 第一の目標は「誤って答えない」こと、そのうえで答えられる範囲を広げること。
 
-この文書の数値は、§1〜§12 は `artifacts/w2-c/`、§13（W2-g。LLM による枠の記録への対応づけ）は `artifacts/w2-g/`、§14（W2-g2。照会の分割と再照会）は `artifacts/w2-g/live_g2/` と `artifacts/w2-g/g2/` の出力から再計算できる（各節に出典と再計算コマンドを置く）。
+この文書の数値は、§1〜§12 は `artifacts/w2-c/`、§13（W2-g。LLM による枠の記録への対応づけ）は `artifacts/w2-g/`、§14（W2-g2。照会の分割と再照会）は `artifacts/w2-g/live_g2/` と `artifacts/w2-g/g2/` の出力から再計算できる（各節に出典と再計算コマンドを置く）。§15（W2-c2。罠の規則のうち広い語句と `BUILTIN_PROTECTED` を「正の証拠があるときだけ上げる」形に反転。否定・反転・`NO_ALLOWLIST` は基点に戻した）は `artifacts/w2-c2/` の出力から再計算できる。
+**§9 の数値は W2-c のコードの値**で、W2-c2 での差分は §15 の表（§9 は書き換えていない）。
 予想や未測定の値は書かない。
 
 ## 1. 使い方
@@ -69,7 +70,7 @@ python -m verantyx.conduct_ask --frame <枠.md|枠.jsonl> --question <文> [--op
 | `FRAME_CONFLICT` | 枠の中で矛盾（同じ条件に違う値、優先順位が無い族どうしの衝突） | 枠内で矛盾 |
 | `HUMAN_APPROVAL_REQUIRED` | `[protected_actions]`、`[escalation_conditions]`、枠が名指さない削除・公開・支出・認証情報に見える操作 | 人間の承認が必要 |
 | `OUT_OF_RANGE` | 枠の決定を聞く質問ではない（進捗・状態、成果物の作成依頼） | 範囲外 |
-| `VOCAB_UNMAPPED` | 質問の語が枠にも別名表にも無く、対応づけられない | 語彙が対応づけられない |
+| `VOCAB_UNMAPPED` | 質問の語が枠にも別名表にも無く、対応づけられない。`VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE`（W2-c2 第 3 ラウンド）は、証拠の無い広い語句を対応づけに回すための**規則の内部の型で、`mapping.rule` にだけ現れる**。最終の出力は `FRAME_SILENT/TERM_IN_WIDER_PHRASE`、対応づけの答え、または対応づけの具体的な型 | 語彙が対応づけられない |
 | `QUESTION_UNREADABLE` | 質問が空・肢の誤り、否定形・反転した質問、工程の節が読めない、「許可が必要か」と聞く質問、述語が読めない質問、1 つの質問に複数の問い | 質問が読めない |
 | `NO_OPTION_ALLOWED` | どの肢も枠に反する（無理に肢を選ばない） | （足した型） |
 | `ANSWER_FORM_UNSUPPORTED` | 答えは決まるが、肢が無く 1 語句で表せない | （足した型） |
@@ -83,6 +84,8 @@ python -m verantyx.conduct_ask --frame <枠.md|枠.jsonl> --question <文> [--op
 `PATH_CASE_DIFFERS` = 質問のパスが許可リストと大文字・小文字を畳んだときだけ一致する（§7）。いずれも型付きで上げる。`escalate_detail` は下位の理由（例 `TIE`、`UNORDERED`、`NO_STATE`、`NEGATED_QUESTION`、`INVERTED_QUESTION`、
 `TERM_IN_WIDER_PHRASE`、`AMBIGUOUS_TERM`、`REQUIREMENT_OF_PERMISSION`、`PREDICATE_UNREADABLE`、`MULTIPLE_QUESTIONS`、`HUMAN_JUDGED_NOT_STATED`、`OUTSIDE_ALLOWLIST`、`PATH_NOT_PLAIN`（第 5 ラウンド）、`CONTEXT_SENTENCE_UNREAD`（第 5 ラウンド）、`RECORD_STANCE_UNREADABLE` `PATH_CASE_DIFFERS`（`FRAME_SILENT`）と `INVARIANT_IS_CONDITIONAL`（`HUMAN_APPROVAL_REQUIRED`）（第 7 ラウンド）、`NO_PRECEDENCE`、`BUILTIN_PROTECTED`、`VOCAB_LLM_OFF`、`LLM_ABSTAINED:DISAGREE`、`LLM_FAILED:TIMEOUT`）。
 
+W2-c2 の detail（第 3 ラウンドの最終）: `TERM_IN_WIDER_PHRASE` の最終の出力は `FRAME_SILENT`（対応づけが答えたとき、対応づけまたは出口の検査がより具体的な型で上げたときを除く）。**別のものだという正の証拠があるとき**（§5）は、規則層でそのまま `FRAME_SILENT/TERM_IN_WIDER_PHRASE`（対応づけは試さない）。**証拠が無いとき**は、語を狭く読んだ結果（§5）を見て、それが答え、または対応づけが再試行してよい型なら、規則の出力を `VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE` にして対応づけに回す（`conduct_map.RETRY_ALLOWED` の `VOCAB_UNMAPPED` は detail を問わず試す）。対応づけが無効のとき（`--vocab-llm off`、台本の無い `fake`）、または対応づけが決めなかったとき（`FRAME_SILENT` か `MAPPING_UNSETTLED`。台帳の不整合 `LEDGER_INTEGRITY` と、門・出口の検査で上がったものを除く）は、最終の出力を基点と同じ `FRAME_SILENT/TERM_IN_WIDER_PHRASE` にする（対応づけが実際に言ったことは `mapping` に残す。置き換えの記録は `trace.resolver_outcomes.wider_phrase`。§15 表 15-4）。狭い読みが試してはいけない型（`NO_ALLOWLIST` `BUILTIN_PROTECTED` `POLARITY_QUESTION_ON_A_VALUE` など）で上げるときは回さず、基点と同じ `FRAME_SILENT/TERM_IN_WIDER_PHRASE`。`BUILTIN_PROTECTED` は W2-c2 から、保護された語が問われている操作の位置にあるときだけ出る（§6、§15）。`NEGATED_QUESTION` `INVERTED_QUESTION` `NO_ALLOWLIST` は基点の規則に戻した（第 3 ラウンド。§10 119、§15）。
+
 W2-g の detail: `MAPPING_UNSETTLED` = `STEP1_DISAGREE` `STEP1_INVALID_ANSWER` `STEP1_FAILED:<種別>`（手順 1）、`STEP2_DISAGREE` `STEP2_INVALID_ANSWER` `STEP2_FAILED:<種別>`（手順 2。種別は `TIMEOUT` `LIMIT_REACHED` `PROVIDER_EXCEPTION` など）、
 `PHASES_DISAGREE` `PHASES_INVALID_ANSWER` `PHASES_FAILED:<種別>`（順序の経路の工程の選択。第 2 ラウンド。第 3 ラウンドから、2 回の（工程の組, `decides`）の食い違いも `PHASES_DISAGREE`）、`ORDER_NOT_RESOLVED` `ORDER_MIXED_WITH_OTHER_RECORDS`（順序の記録のまとめを選んだのに工程の組が決まらない・ほかの記録と一緒に選んだ）、
 `RULE_BASIS_EMPTY` `RULE_BASIS_NOT_CANDIDATE` `RULE_BASIS_NOT_MAPPED` `RULE_ANSWER_NOT_MAPPED[:<理由>/<detail>]`（規則の答えを裏づけない）、`TOO_MANY_CANDIDATES` `TOO_MANY_RECORDS` `ASK_BUDGET` `LEDGER_INTEGRITY`（照会しない）。W2-g2（protocol v2。§14）では、`decides` 段の `DECIDES_DISAGREE` `DECIDES_INVALID_ANSWER` `DECIDES_FAILED:<種別>`を足し、`STEP2_*` は最初に決まらなかった（記録, 肢）の組、`INVALID_ANSWER` は再照会しても無効だった意味になった。
@@ -95,7 +98,7 @@ W2-g の detail: `MAPPING_UNSETTLED` = `STEP1_DISAGREE` `STEP1_INVALID_ANSWER` `
 1. 入力の検査（空の質問・4000 文字超・肢が 1 個・空の肢・印を除いて同じになる肢）→ 型付き拒否、終了コード 2。
 2. 否定形・反転した質問（否定語と同じ文に枠の語がある、または `avoid` / `以外` / `instead of` などがある）→ `QUESTION_UNREADABLE`。
 3. `[escalation_conditions]` の条件語句（活用を許す）が質問に現れ、scope が ANY か質問の種別と同じ → `HUMAN_APPROVAL_REQUIRED`。
-4. 語が長い語句の一部でないか（§5 の「より広い語句」。右側の付属語と、第 2 ラウンドで足した左側の修飾語）。
+4. 語が長い語句の一部でないか（§5 の「より広い語句」。右側の付属語と、第 2 ラウンドで足した左側の修飾語は、**形だけで `wider` を立てる**）。**別のものだという正の証拠があるときだけ** `FRAME_SILENT/TERM_IN_WIDER_PHRASE`（対応づけは試さない）。証拠が無ければ、語を狭く読んだ結果が答えまたは再試行してよい型のときに限り対応づけに回し、対応づけが無効か決まらなければ基点と同じ `FRAME_SILENT/TERM_IN_WIDER_PHRASE`（W2-c2 第 3 ラウンド。§5、§10 120）。
 5. 許可の 3 段（§7）。
 6. 解決器（順序・範囲・選択・受入条件）。複数が答えたら、全部同じ答えのときだけ答える（COMBINED）。違えば `FRAME_CONFLICT`。
    **答えを出す解決器はすべて**、述語が閉じた許可リストに当たるときだけ答える（§8。第 3 ラウンドで、順序の「X の前に Y を始めてよいか」と範囲の極性だけでなく、
@@ -123,7 +126,8 @@ W2-g の detail: `MAPPING_UNSETTLED` = `STEP1_DISAGREE` `STEP1_INVALID_ANSWER` `
 - 操作名（禁止・保護・上げる条件）は活用を許す: `…する` は語幹で、それ以外のう段で終わる語は末尾 1 文字を落とした形で照合する。
 - 工程の見出し語（日本語は最後の `を` より前、英語は先頭の動詞と冠詞を落とした残り）でも照合する。同じ見出し語が 2 つの工程にあれば使わない。
 - 最長一致: 別の言及に厳密に含まれる言及は捨てて数える（`trace.mentions_dropped_as_contained`）。同じ位置に別々の役割の語が当たったら `AMBIGUOUS_TERM`。
-- **より広い語句**: 当たった語が、質問の中でより長い名詞句の一部なら、別のものとして扱い `FRAME_SILENT`（`TERM_IN_WIDER_PHRASE`）。
+- **より広い語句**: 当たった語が、質問の中でより長い名詞句の一部に**見える**とき（形だけ。下の右側・左側の条件）、`Mention.wider` を立てる（W2-c から変わらない）。
+  **W2-c2 から、別のものとして `FRAME_SILENT`（`TERM_IN_WIDER_PHRASE`）で上げるのは、次のどちらかの正の証拠があるときだけ**: (E0) 日本語で、語の直後が `_JA_RIGHT_DENY` の語（`以外` `を除` `のみ` `だけ` `など` `等` `以降` `以前` `のコピー` `の一部` `の写し` `の複製` `の派生` `の中身` `のバックアップ`。別の対象・別の範囲を意味で名指す閉じた表）、(OTHER_RECORD) 長い語句そのものが、その言及の記録以外の枠の記録（工程・辺・方針・決定・操作・不変条件・受入条件・上げる条件・優先順位）の本文にそのまま現れる。どちらも無ければ「同じかもしれない」として、語を狭く（長い語句を同じものとして）読んだ結果を見る（`_narrow_reading`: `wider` を一時的に偽にして許可の層と解決器を流し、文脈を元に戻す。どの層も決めず `BUILTIN_PROTECTED` も問われていないときは `FRAME_SILENT/NO_RECORD_DECIDES` と同じ扱い）。それが**答え**、または対応づけが再試行してよい型（`conduct_map.retry_allowed`）なら、規則の出力を `VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE`（内部の型。`mapping.rule` にだけ現れる）にして対応づけに回す。そうでなければ（`NO_ALLOWLIST` `BUILTIN_PROTECTED` `POLARITY_QUESTION_ON_A_VALUE` など、試してはいけない型。広い語句の段は許可の層より前にあるので、回すと許可の層の安全の判定を飛ばして対応づけが答えうる）基点と同じ `FRAME_SILENT/TERM_IN_WIDER_PHRASE`。対応づけが無効・決めなかったときの最終の出力は §3（第 3 ラウンド。§10 120）。第 3 の証拠（長い語句の主辞が枠の語と違う型であること。配置の型が直接に分かるときだけ）は、この入口に配置の照会が無いので確かめていない（`trace.resolver_outcomes.wider_phrase_head_type = NOT_CHECKED:NO_PLACEMENT`）。`wider` が立つ形の条件（W2-c から変更なし）:
   右側: 日本語では語の直後が `の…`、`以外`、`のコピー` など、または直前が助詞・句読点でない文字。英語では語の直後に機能語・問いの動詞（`start` `begin` など）以外の語が続く。
   **左側（第 2 ラウンド、第 3 ラウンドで改めた）**: 英語では語の直前の語が、閉じた機能語の表（冠詞・指示詞・助動詞・前置詞・接続詞・代名詞・wh 語）に無ければ修飾語とみなす（`secondary` `backup` `per-host` など）。
   `use` `include` `start` `pick` のように名詞・形容詞にもなる動詞・動名詞（`test` `build` `record` `support` `target` `document` `ship` `run` `plan` `count` `keep` など）は、
@@ -148,7 +152,7 @@ W2-g の detail: `MAPPING_UNSETTLED` = `STEP1_DISAGREE` `STEP1_INVALID_ANSWER` `
 - 採用されたら、その語を質問の語の代わりにして、その役割の規則だけで 1 回やり直す。決まらなければ、やり直しの結果の型で上げる。
   根拠（`basis`）は枠の行だけ。`vocab`: `{"question_term","candidates","frame_term","provenance":"LLM_TESTIMONY_MAPPING","counts_as_evidence":false,"outcome":"ADOPTED|ABSTAINED:<理由>|FAILED:<種別>|REFUSED:<理由>|OFF|…","ledger_decision_id","asks":[…]}`。
 - 棄権 → `VOCAB_UNMAPPED`（`LLM_ABSTAINED:DISAGREE|NONE_SELECTED|INVALID_ANSWER`）、失敗 → `VOCAB_UNMAPPED`（`LLM_FAILED:<種別>`）、オフ → `VOCAB_UNMAPPED`（`VOCAB_LLM_OFF`）。
-- 削除・公開・支出・認証情報に見える許可の質問は、最後まで対応づけられなければ `HUMAN_APPROVAL_REQUIRED`（`BUILTIN_PROTECTED`）で上げる（答えを出す方向には使わない）。
+- 削除・公開・支出・認証情報に見える許可の質問は、最後まで対応づけられなければ `HUMAN_APPROVAL_REQUIRED`（`BUILTIN_PROTECTED`）で上げる（答えを出す方向には使わない）。**W2-c2 から、保護された語が問われている操作の位置にあるときだけ**（許可の枠 `can we` `may I` `is it ok to` `are we allowed to` … の直後、または `〜してもよいですか` `〜できますか` `〜は許可されていますか` の直前）。選択肢の説明・背景・名詞として出るだけ（`release notes` `password reset screen` `公開の掲示板` `削除ボタン`）では上げない（§15）。
 
 作り物のプロバイダ（`--vocab-llm fake --vocab-fake <台本.json>`）。台本は JSON の 1 個のオブジェクト:
 
@@ -709,6 +713,61 @@ S-C パスは大文字・小文字まで許可リストと一致したときだ�
 103. **W2-g2: 保存物を書き換えない。** `final_run.sh` `full_pytest.sh` `dump_calls.sh` `guard_run.sh` は流さず、出力先を `artifacts/w2-g/g2/` にした写し（`*_g2.sh`）で同じ検査を行った。実プロバイダの台帳は `artifacts/w2-g/live_g2/`（第 1〜3 ラウンドの台帳の `budget.py` と `docs_check.py` の合計 1,094 回を変えないため）。
     数値の再計算は `artifacts/w2-g/g2/docs_check_g2.py`（§14.7 の表は `make_docs_tables.py` の出力そのもの。手で写していない）。
 
+104. **W2-c2 D1: チケットの `decide()` は `conduct_map.decide()`（対応づけの決定の規則）と読む。** `conduct_ask.py` には `decide()` が無く、`_decide()` は層 3〜6 の入口で、広い語句の罠そのものを含む。`_decide()` の中で変えたのは広い語句のブロックだけ（層の順序・`layer_escalation_conditions`・`layer_permission`・`combine_resolvers` の呼び出しは変えていない）。`conduct_map.py` と `llm_choice.py` は変えていない。
+    **第 3 ラウンドでも有効**（`conduct_map.py` `llm_choice.py` は変えていない）。
+105. **W2-c2 D2: 広い語句で証拠が無いときは `VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE`。** 「より長い語句が枠の語と同じものか分からない」は、枠が黙っているのではなく語の対応づけの不明。`VOCAB_UNMAPPED` は detail を問わず対応づけが試す型なので、`conduct_map` を変えずに対応づけへ回る。detail は観察した現象のまま、reason が認識の状態（証拠あり = `FRAME_SILENT`、不明 = `VOCAB_UNMAPPED`）を運ぶ。
+    **この選択は、reason を固定している既存試験 1 本とぶつかった**: `tests/test_conduct_ask_policy.py::test_a_value_that_matches_but_whose_subject_is_not_asked_is_not_an_answer` は `Should the pump driver use the 30 seconds interval?`（f02）に `escalate_reason == "FRAME_SILENT"` を求める。この問いの『pump driver use』は動詞が右に続くだけの形（`wider` は立つが証拠は無い）で、新しい型は `VOCAB_UNMAPPED`。試験は変えていない（§11）。**第 2 ラウンドで、この問いは `FRAME_SILENT/NO_RECORD_DECIDES` に直った（§10 115）。**
+    **第 3 ラウンドで置き換え（§10 120）**: 内部の型としての `VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE` は残るが、最終の出力には出ない（`mapping.rule` にだけ出る）。`off` と、対応づけが決めないときは基点と同じ `FRAME_SILENT/TERM_IN_WIDER_PHRASE`。
+106. **W2-c2 D3: 証拠 (a)「主辞の型が違う」は確かめていない。** 基点には `coarse_*` が無く、`event_cross` の既定の照会は `StubLookup`（常に `NO_PLACEMENT`）。照会の部品は作らず、`trace.resolver_outcomes.wider_phrase_head_type = NOT_CHECKED:NO_PLACEMENT` と型で残した。
+    **第 3 ラウンドでも有効。**
+107. **W2-c2 D4: 広い語句の証拠は E0 と OTHER_RECORD だけ。** 「別の」「次回の」「another」「legacy」などの語の表は足していない（自作文に合わせる W2-c の失敗の形になるため）。英語の E0 に当たる物も足していない（英語は OTHER_RECORD だけ）。`Mention.wider` の意味（形だけ）は変えず、証拠は別の欄 `wider_evidence` に置いた。`_is_wider` は変えず、長い語句の範囲を出すために同じ条件を `_wider_sides` に写した。
+    **第 3 ラウンドでも有効**（E0 と OTHER_RECORD の表は 1 字も変えていない）。
+108. **W2-c2 D5（第 3 ラウンドで退役）: 否定・反転は 1 つの新しい検出器 `_question_form_trap` を 3 か所で共有する**（`layer_negation`、語彙外の経路、`mapping_gate`）。`_negated` `_NEG_JA` `_NEG_EN` `_INVERT_CUE` `_NEG_JA_SAFE` は変えていない（`_record_stance` が枠の記録の向きの読み取りに使う）。
+    計画書から足した点（どれも「境目は証拠ありに倒す」「閉じた形」の範囲。(1)(2) は設計で決めた。(3)(4) は凍結後に自分で書いた攻撃の文 `artifacts/w2-c2/adv_probe.py` の結果から足した。(5) は凍結後の測定で新データの raise 5 問が上がらなかったので直した）:
+    (1) 検出の前に、**肢の文字列**と**当たった枠の語**の範囲を空白にする（枠の語の中の `除く`、肢の説明の中の `does not` は質問者の語ではない）。肢は、`はい` `Yes` のような答えの語（`reading` が `YES` `NO`）を除き、ラテン文字の肢は単語として見つかったときだけ（`no` が `not` の中に当たらない）。
+    (2) 英語の主節は、読点・セミコロン・コロンで区切った節のうち、問いの形で始まる最後のもの。`which` `what` などの疑問詞は**文の最初の節の頭にあるときだけ**主節の頭と数える（挿入の関係節『, which is not built yet,』を主節にしない）。`isn't` など `n't` で終わる語は助動詞として数える。主節の候補が無ければ最後の節。主節は最初の従属の語（2 語目以降）の前で切る。
+    (3) 英語で、命題を問う形の後ろの否定も証拠にした: 『is it true that』『are we sure that』『do we agree that』など（`sure certain true correct right clear confirmed agree know confirm mean say think believe assume understand the case` ＋ `that`）。
+    (4) 日本語の否定の証拠に `ない` ＋ `ほうが`、`ないべき`、`ではなく`（`でなくても` は除く）を足した（『しないほうがよいですか』が取りこぼされないように）。義務の形は否定とみなさない。
+    (5) 日本語の反転は、`以外` は文のどこにあっても証拠にした（名詞句にかかるので、問われている述語にかかるかが分からないため）。ほかの語は最後の節か、**条件・理由・逆接で終わらない節**にあるときだけ（『最悪の場合は、〜』は数えず、『避けるべきなのは、〜』は数える）。凍結データの raise の日本語の反転 5 問が、計画書どおりの『最後の読点より後ろ』では上がらなかったので直した（データではなく検出器を直した）。
+    **第 3 ラウンドで退役（監査役の判断 2026-10-03 14:05 により基点に戻した）**: `_question_form_trap` とその部品（`_negation_evidence` `_inversion_evidence` `_en_main_parts` など）は消し、`layer_negation`・`mapping_gate`・語彙外の経路は基点の字句に戻した。`_option_spans` と `_masked_question` だけは BUILTIN が使うので残した。戻した理由: 中間職の罠で、本物の否定の問い・書き込み先の取りこぼし（基点では上がっていたもの）が出たため（§10 119）。
+109. **W2-c2 D6: BUILTIN は規則層の 3 か所だけ狭める。** `_builtin_protected_asked` を `_layer_permission`（枠の語が無くパスがあるとき）・枠の語が当たったがどの層も決めなかったとき・枠の語が 1 つも無いときの 3 か所で使う。`conduct_map.resolve` に渡す `_builtin_protected(ctx)` は広いまま（対応づけの呼び出しに触れない）。
+    結果として、規則層で上がらなくなった問が対応づけで答えになりかけても、禁止の記録だけで答えた場合を除き、対応づけの出口で同じ `HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED` で上がる。計画書から足した点: 許可の枠に `can the team …`（主語が 1〜3 語）、`is it ok if we …`、`permission to …`、`is deleting … allowed`（動名詞が主語）、認証情報の名詞は次の語が機能語のとき（`token bucket` `password reset screen` は名詞の一部なので数えない）、日本語の `〜は許可されていますか`。
+    **第 3 ラウンドでも有効**（`_option_spans` `_masked_question` は BUILTIN の節に移した）。
+110. **W2-c2 D7（第 3 ラウンドで退役）: NO_ALLOWLIST はパスが書き込み先として問われているときだけ。** `_path_status` は変えず、`_layer_permission` の中で、許可リストが無く（`NO_ALLOWLIST`）パスの字句が書き込みの形の隣に無いときは、パスを許可の対象と見ない。`OUTSIDE_ALLOWLIST` `PATH_NOT_PLAIN` `PATH_CASE_DIFFERS` は変えていない。
+    計画書から変えた順序: 計画書は「`path = None` にした後で BUILTIN を判定する」と読めるが、そうすると『`Can I delete logs/a.txt?`（許可リスト無し）』の削除の許可が BUILTIN で上がらなくなるので、**BUILTIN の判定はパスを見た時点の `path`（変える前）で行い**、その後で `NO_ALLOWLIST` のパスを外した。
+    **第 3 ラウンドで退役（監査役の判断 2026-10-03 14:05 により基点に戻した）**: `_path_is_write_target` と書き込み先の表は消し、`_layer_permission` の並びは基点の順（`path is None` なら返す → BUILTIN）に戻した（差は `_builtin_protected` → `_builtin_protected_asked` の 1 語だけ）。
+111. **W2-c2 D8: C1（凍結データで 1 問も変わらない）は字義では守れない。** 罠が正しく直れば、凍結データの罠で誤って上がっていた問は変わる。安全の線 S1〜S3（期待 escalate が新しく answer にならない、期待 answer が別の答えにならない、`off` で escalate → answer に変わったものは全件期待と一致）は必達とし、字義の C1（どれかの欄が変わった問の数）は全件を `artifacts/w2-c2/c1/c1_diff.tsv` に出した。0 にするために規則を個別の文へ合わせ込まず、凍結データの期待も変えていない。
+    **第 3 ラウンドでも有効**: 字義の C1 の最終の値は §15 の表 15-2。
+112. **W2-c2: 新データの route 9 問は、五つの罠の外の規則に止められた。** 凍結後の測定で、`route` のうち 9 問（`w2c2-negated-route-06`、`w2c2-no_allowlist-route-01〜07, 10`）が、罠ではなく W2-c の `POLARITY_QUESTION_ON_A_VALUE`（枠が決めた値への「はい／いいえ」の問いは答えず上げる）で上がった。基点では罠が先に上げていたので見えなかった。
+    これは私が書いたデータの設計の誤りで（値の極性の問いを route に使った）、凍結の約束どおり**差し替えていない**。計画書 §7.8 に従い、その規則を緩めて通してもいない。C2 の `route` は不合格として報告する（出力 `artifacts/w2-c2/c2_report.txt`）。`transfer` の 1 問（`w2c2-inverted-transfer-03`）も同じ規則で上がった。
+    **第 3 ラウンドの監査役の判断 B2**: これは元の新データの設計の誤りとして記録し、差し替えない。C2 の判定には補いのデータ（凍結の順序を中間職が確認済み）を使い、元の 9 問は route として**判定に入れない**（基点との一致だけ見る。§10 122）。
+113. **W2-c2: 新しい `trace` のキー。** `wider_phrase_head_type`（広い語句の入口で、確かめていないことの宣言）を足した。`wider_phrase` の値は `ESCALATE:EVIDENCE:<証拠>` / `ESCALATE:UNDECIDED` に変えた（`ESCALATE` を固定している試験は無い）。
+    **第 3 ラウンドで変更**: `wider_phrase` の値は `ESCALATE:EVIDENCE:<証拠>` / `ESCALATE:UNDECIDED:TO_MAPPING` / `ESCALATE:UNDECIDED:NARROW_READING_HANDS_UP` / `ESCALATE:UNDECIDED:MAPPING_OFF` / `ESCALATE:UNDECIDED:MAPPING_DID_NOT_DECIDE:<reason>/<detail>`（と、状態・依頼の問いの前の `ESCALATE:UNDECIDED`）。件数は表 15-4。
+
+114. **W2-c2 第 2 ラウンド M1（第 3 ラウンドで退役）: 否定の検出器の取りこぼしを直した**（第 1 ラウンドのレビュー。中間職が書いた攻撃の文で、本物の否定の問いが規則層でも門でも上がらず、素朴な対応づけの台本で答えが出た）。直した形はどれも閉じた形で、文ごとの語は足していない。
+    (a) 日本語: `〜なくて(も)` `〜ないで` `〜ずに` の後、同じ節の中（読点まで・16 字まで）に、許可・可否の結び（`_PJA_MAY` `_PJA_CAN`、`大丈夫` `差し支えない` `問題ない` `ok` `オーケー` `平気` `よろしい` ＋ `です(か)`）が文末にあれば証拠。`_NEG_JA_SAFE` が `問題ない` `構わない` `差し支えない` を消す**前**の文（空白を除いたもの）で見る。`〜ずに〜します` のような可否でない文は今までどおり当たらない（計画書 §3.2 の「`〜ずに` は当たらない」を、可否を問う文末に続くときに限って取り消した）。`ない、で合っていますか` も命題の否定に足した。
+    (b) 英語: 主節が評価・許可の枠（`is/would/will/could/may it be ok/okay/fine/alright/acceptable/allowed/permitted/a problem/an issue …`、`do/would you mind`、`would/does it hurt/matter/bother`）で、切った従属の語が `if` / `when` / `whenever` のときは、その節の中の否定も証拠にする。
+    (c) 英語: 最後の節が付加疑問（`right` `correct` `yes` `ok` `okay`、または助動詞（＋`n't` か `not`）＋代名詞だけの 1〜3 語）なら、その節を主節の候補から外す。反転の判定にも同じ主節を使う（`We should avoid X, right?` が反転で上がる）。
+    取りこぼしとして残る（基点でも上がっていなかった）: `を省いても大丈夫ですか` `leave out` `is out of scope, isn't it?` `Is X unnecessary?`（否定の語も反転の語の表の語も無い。表は計画書 D4・D5 のとおり足していない）。
+    **第 3 ラウンドで退役（監査役の判断 2026-10-03 14:05 により基点に戻した）**: `_NEG_JA_ASKED_OK` `_JA_OK_TAIL` ほか第 2 ラウンドで足した形は、検出器ごと消した。
+115. **W2-c2 第 2 ラウンド M2: 証拠の無い広い語句は、狭い読みも黙っているなら `FRAME_SILENT`（D2 を広げる、中間職の許可）。** 計画書 D2 の「証拠が無ければ `VOCAB_UNMAPPED`」は、reason を固定した既存試験 `test_a_value_that_matches_but_whose_subject_is_not_asked_is_not_an_answer`（`Should the pump driver use the 30 seconds interval?`）とぶつかった。`_decide` の広い語句のブロックの中で、証拠が無いとき語を狭く読んだ結果（`_narrow_reading`: `wider` を一時的に偽にして許可の層と解決器を流し、文脈を元に戻す。どの層も決めなかった場合は、パイプラインが枠の語のある問いに返す `FRAME_SILENT/NO_RECORD_DECIDES` と同じものとして扱う）を見て、`FRAME_SILENT` で detail が `conduct_map.retry_allowed` を満たすならその結果を返し、そうでなければ今までどおり `VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE`（`trace.resolver_outcomes.wider_phrase` は `ESCALATE:UNDECIDED:NARROW_READING_ALSO_SILENT` / `ESCALATE:UNDECIDED`）。狭い読みの答えは採らない。層の順序・`layer_permission`・`combine_resolvers` の呼び出しは変えていない。
+    **ぶつかった別の既存試験（未解決。試験は変えていない）**: `tests/test_conduct_ask_cli.py::test_markdown_and_jsonl_frames_give_the_same_decisions` が `w2c-f05-13`（`Does the usage documentation have to cover the circuit breaker?`）で落ちる。基点では markdown と jsonl のどちらも `FRAME_SILENT/TERM_IN_WIDER_PHRASE` だったが、狭い読みの結果が 2 つの形式で違う: markdown は決める層が無く（`NO_RECORD_DECIDES`）、jsonl は枠の語 `circuit breaker` に `subject` の記録も付いていて `POLARITY_QUESTION_ON_A_VALUE`（再試行を許さない型）なので `VOCAB_UNMAPPED`。つまり markdown と jsonl で枠の読み（`build_view`）が違うという W2-c からの食い違いが、広い語句の入口が狭い読みを見るようになったことで表に出た。`build_view` と枠の読みは許可パスの外なので触っていない。両方とも対応づけには回る（再試行を許す型）。この試験と上の既存試験の両方を満たす規則は、狭い読みの detail を無視しない限り作れなかった。
+    **第 3 ラウンドで置き換え（§10 120）**: 「狭い読みの結果をそのまま返す」は採らない（markdown と jsonl で型が割れる元だった）。狭い読みは、対応づけに回すか回さないかの判定にだけ使う。
+116. **W2-c2 第 2 ラウンド M3: C2 の試験の扱いと補いのデータ。** 第 1 ラウンドは、C2 で不合格になった 9 問（`w2c2-negated-route-06`、`w2c2-no_allowlist-route-01〜07, 10`）を試験の中で例外として固定していて、C2 が落ちていても試験は通った。試験の名前と説明を「C2 の判定」から「C2 で不合格になった問の記録」に変え（`RECORDED_C2_FAILURES`。生きている集合と完全に一致することも試験する）、C2 の合否は `run_w2c2.py c2` の終了コード（元のデータでは 1）をそのまま報告する。凍結データ（`tests/conduct_ask/w2c2/items.jsonl`・`frames/`）は変えていない。
+    補いのデータ `tests/conduct_ask/w2c2/supp/`（`items.jsonl` と `frames/`。`NO_ALLOWLIST` の `route` と `NEGATED` の `route`、および第 1 ラウンドで取りこぼされた形の `raise`）を足した。条件は「枠に答えがある」「値の極性の問いではない」「基点で罠が発火する」。**M1・M2・M4 のコードを書く前に凍結した**（`artifacts/w2-c2/freeze_supp.txt`。その時点の `conduct_ask.py` のハッシュは第 1 ラウンドの版）。凍結の前に基点のコードで発火を確かめ（`artifacts/w2-c2/supp_base/`）、凍結後は差し替えていない。補いのデータの C2 は別の行で報告する（表 15-6・15-7、`c2_report_supp.txt`）。C2 の最終的な読み（元の 9 問をデータの誤りとして除くか）は監査役が決める。
+    **第 3 ラウンドの扱い**: 補いのデータの凍結はそのまま有効。C2 の読みは §10 122（D12）に置き換わり、補いのデータは戻した罠だけでできているので、基点との一致（C2-R）で見る。試験の置き換えは §10 123。
+117. **W2-c2 第 2 ラウンド M4（第 3 ラウンドで退役）: 書き込み先の形を足した（D7 を広げる、中間職の許可）。** 書き込みの動詞の表と動詞‐パスの間の形を足した（§7 の 4 に一覧）。動詞の表を足すのは書き込みの動詞の取りこぼしを直すためで、個別の文に合わせたものではない。自分で書いた攻撃の文 `artifacts/w2-c2/adv_path.py` で、素朴な対応づけの台本でも答えが出ないことを確かめた。残った取りこぼし（基点でも上がっていなかった）: 許可の手がかり（`_PERM_CUE`）に無い問い（`〜しても大丈夫ですか`）はパスの判定まで行かない。許可の手がかりのある文で、動詞とパスの間に前置詞が入る形（`make changes to <パス>`）や `に手を入れて` は証拠にならない（新データの `transfer` に残る）。`of` を許したので、`the export of export.csv` のような名詞の `export` も証拠になる（上げる側に倒れる）。
+    **第 3 ラウンドで退役（監査役の判断 2026-10-03 14:05 により基点に戻した）**: 書き込み先の形の追加（動詞の表・名詞句・日本語の `保存` など）は、`_path_is_write_target` ごと消えた。
+118. **W2-c2 第 2 ラウンド: 足さなかったもの。** 反転の語の表（`_INVERT_CUE` と同じ集合）に `leave out` `省く` を足さなかった（計画書 D5。基点でも上がっていない）。`_JA_RIGHT_DENY` の `を除` が `〜を除外する場合は` の `を除外` にも当たる（レビューの任意 O1）のは、表を変えない約束（D4）なので直さず §11 に書いた。`wider` の形の判定（`_is_wider`）は変えていない。
+    **第 3 ラウンドでも有効**（足さなかったものは、足さないまま）。
+119. **W2-c2 第 3 ラウンド D9: 戻すの意味。** `NEGATED_QUESTION` `INVERTED_QUESTION` `NO_ALLOWLIST` の 3 つは、関わるコードを基点 `5cae978` と**字句まで同じ**にした（監査役の判断 2026-10-03 14:05。バンクでの誤発火より、本物の否定の問い・書き込み先の取りこぼしの危険の方が大きいと判断された）。`layer_negation` の本体、`mapping_gate` の最初の 2 つの `if`、語彙外の経路の `if _negated(q) or _INVERT_CUE.search(q):` の 2 行、`_layer_permission` の `path` の扱い（`_builtin_protected` → `_builtin_protected_asked` の 1 語だけは BUILTIN の反転なので残す）を基点の字句に戻した。新しい関数・定数（`_question_form_trap` `_negation_evidence` `_path_is_write_target` ほか）は消した。確かめ方は `git diff 5cae978 -- verantyx/conduct_ask.py` と、基点のコードの出力の記録との完全一致（`artifacts/w2-c2/r3/sentences_base.jsonl`、試験 `tests/test_conduct_ask_w2c2.py`）。第 1・2 ラウンドの判断記録（104〜118）は消さず、上のとおり退役を追記した。
+120. **W2-c2 第 3 ラウンド D10: 証拠の無い広い語句（監査役の判断 B1）。** (1) 証拠（E0 / OTHER_RECORD）がある → 規則層でそのまま `FRAME_SILENT/TERM_IN_WIDER_PHRASE`（対応づけは試さない）。(2) 証拠が無い → 狭い読み（`_narrow_reading`）を見る。答え、または `conduct_map.retry_allowed` の型なら、規則の出力は `VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE`（対応づけに回すための内部の型）。それ以外（狭い読みが `NO_ALLOWLIST` `BUILTIN_PROTECTED` `POLARITY_QUESTION_ON_A_VALUE` など、試してはいけない型で上げる）は回さず基点と同じ `FRAME_SILENT/TERM_IN_WIDER_PHRASE`。理由: 広い語句のブロックは許可の層より前にあるので、狭い読みが上げる問いを回すと、その安全の判定を飛ばして対応づけが答えうる。(3) `finish` で、規則の出力が `VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE` のとき: 対応づけが無効（`map_on` が偽）なら `exit_checks` の前に基点と同じ `FRAME_SILENT/TERM_IN_WIDER_PHRASE` に置き換える。有効なら `apply_mapping` に渡し、返ってきたものが「対応づけが決めなかった」（`decision == "escalate"`、`mapping.exit_check` が無い、reason が `FRAME_SILENT` か `MAPPING_UNSETTLED`、detail が `LEDGER_INTEGRITY` でない）ときだけ置き換える。答え、門・出口の検査で上がったもの、`HUMAN_APPROVAL_REQUIRED` `FRAME_CONFLICT` `NO_OPTION_ALLOWED` `ANSWER_FORM_UNSUPPORTED`、台帳の不整合は置き換えない（より具体的な型、または基盤の失敗を隠さない）。`mapping`（出力の対応づけの記録）は書き換えない。結果として `VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE` は最終の出力に出ない（試験で固定。表 15-5）。
+121. **W2-c2 第 3 ラウンド D11: jsonl の枠の読みの直し（監査役の判断 B1。許可パスに `_view_from_jsonl` の該当部分を足した）。** `project_frame.compile_frame` は `[decisions]` の CHOICE / CONFIRM / SCOPE の 1 行を、DECISION の記録（`witness.question_kind` 無し）と、それを名指す POLICY の記録（`witness.authority_record_id`）の 2 つに書く。markdown の読みは方針だけを作るが、jsonl の読みは対になる DECISION も `decisions` に入れていたので、枠の語に `subject` の記録が付き、markdown と jsonl で同じ枠が違う view・違う答えになった（基点からの不具合）。`_view_from_jsonl` で、`question_kind` が CHOICE / CONFIRM / SCOPE の POLICY の `authority_record_id` を集め、その id の DECISION は `decisions` に入れず、`skipped_records` にも数えない。**語や値の一致では対を探さない**（`authority_record_id` を消した写しで DECISION が戻ることを試験で固定: `tests/test_conduct_ask_w2c2_view.py`）。
+    直しても残る md と jsonl の差（このチケットでは直さない。許可は `subject` の記録の有無だけ。§11）: (a) 完了条件の id が語になる（markdown は `c1` `c2`、jsonl は記録の hash id）、(b) `docs/frames/examples/experiment_data_pipeline.md` の方針の条件が、markdown は `欠測の扱い`、jsonl は正規化された `欠測扱い`（`witness.condition` には `欠測の扱い` がある）。どちらも試験が差そのものを固定している。
+122. **W2-c2 第 3 ラウンド D12: C2 の読み（事前登録。監査役の判断の字義と食い違うので、監査役に申し送る）。** 監査役の受入「補いのデータで raise 全問・route 全問」は、補いのデータが戻す 2 つの罠（`NEGATED` と `NO_ALLOWLIST`）だけでできているので、戻した後は字義どおりには満たせない（戻せば route は基点どおり全部上がる）。そこで C2 を次のように読んだ（`run_w2c2.py c2r3` と `tests/test_conduct_ask_w2c2.py` が、それぞれ別に判定する）。**C2-K（残す罠 `WIDER` `BUILTIN`、新データ）**: raise は第 1 ラウンドの定義のまま全問合格。route は「作り物の対応づけで `mapping.outcome` が `NOT_ASKED` で始まらない」か「`NOT_ASKED` で `mapping.rule.detail` が戻した 3 つの罠のどれか（`ROUTE_STOPPED_BY_REVERTED_TRAP`）」のどちらかで、かつ `off`・作り物の対応づけで誤答・別の答えが 0。それ以外の規則で止まったら不合格。**C2-R（戻した罠、新データと補いのデータ）**: raise・route・transfer の全行・両モードで、6 欄（decision, answer, answer_option_index, escalate_reason, escalate_detail, mapping_outcome）が基点と一致。transfer は件数だけ出す。**B2**: 元の新データの route 9 問（`w2c2-negated-route-06`、`w2c2-no_allowlist-route-01〜07, 10`）は全部 C2-R の側にあるので、route としては判定に入れず基点との一致だけを見る。
+123. **W2-c2 第 3 ラウンド D13: 試験の扱い。** `tests/test_conduct_ask_w2c2.py` は未コミットの試験なので、無くなる関数・振る舞いを固定していた試験は、同じ文を使って新しい約束を固定する試験に 1 対 1 で置き換えた（黙って消していない。対応表は `artifacts/w2-c2/r3/report.md`）。期待は弱めていない（戻した罠は「上がっても回ってもよい」ではなく、基点の出力の記録との完全一致）。コミット済みの試験と凍結データは変えていない（`git diff 5cae978 --stat -- tests` が空）。置き換えた文は `tests/conduct_ask/w2c2/r3_sentences.jsonl`（旧試験の表から機械的に移した 78 文。`artifacts/w2-c2/r3/build_r3_sentences.py`）、基点の出力の記録は `artifacts/w2-c2/r3/sentences_base.jsonl`（ハッシュは `freeze_r3.txt`）。
+124. **W2-c2 第 3 ラウンド D14: 危険の移動（隠さず書く）。** 証拠の無い広い語句を対応づけに回すと、基点では広い語句で**偶然**上がっていた問いが、対応づけで答えになりうる。第 2 ラウンドのレビューの形（`excluded` のような活用形、`〜なしで`、`push … live`）は、戻した検出器（基点）でも門でも拾えない。語の表を足すのは監査役の判断（戻す）と D5 に反するので足していない。新データの transfer（判定に入れない）の実測は表 15-3。§11 に「残る危険の移動」として書いた。
+
 ## 11. 既知の穴
 
 - 自作データは実装役が書いたため、評価バンクより易しい可能性がある。Q1 の 0 は、この検査データでの値であり、評価バンクでの値ではない。
@@ -793,6 +852,18 @@ S-C パスは大文字・小文字まで許可リストと一致したときだ�
   - **自作データの言い換えは実装役が書いた。** 評価バンクより易しいか、難しいかは分からない。本番の 1 回目のあとに言い回しを改訂したので（§10 70）、自作データでの改善幅は未知の質問での値ではない。
   - **対応づけの照会は、規則が答えた問いにも走る（裏づけ）ので、1 問あたりの照会が増える**（本番の 1 問の中央値は、第 1 のデータの第 1 ラウンドの実行 `live/codex_codex_r2` で 8.96 秒、第 2 のデータの codex 同士 `live/w2g2/codex_codex` で 10.44 秒）。実プロバイダの利用上限や時間切れは型付きで上げる（`STEP1_FAILED:<種別>`）。
   - off のときは従来どおり規則だけで、§12 の残りのリスク（まだ誰も書いていない言い回しで誤答しうる）はそのまま残る。
+
+- **W2-c2 の既知の穴**（第 3 ラウンドの最終。どれも `artifacts/w2-c2/` の出力で確かめた。予想は書いていない）:
+  - **残る危険の移動（D14。§10 124）。** 証拠の無い広い語句は、基点では `FRAME_SILENT/TERM_IN_WIDER_PHRASE` で上がっていたが、第 3 ラウンドでは狭い読みが答えまたは再試行してよい型のとき対応づけに回り、対応づけが答えれば答えになりうる（`off` と、対応づけが決めないときは基点と同じ型）。第 2 ラウンドのレビュー §3 (c) の形（`excluded` のような活用形、`〜なしで`、`push … live`）は、戻した検出器でも門でも拾えない。語の表は足していない。新データの transfer の実測（表 15-3）: `WIDER` は 6 問中 3 問が対応づけに回る（残る 3 問は狭い読みが上げる型なので回さない）。`BUILTIN` は 6 問すべてが対応づけに回る（規則層の判定を狭めた帰結。作り物の空の台本では `MAP_NONE` で上がる。答える台本での挙動は測っていない）。戻した 3 つの罠は 0 問（基点と同じ）。
+  - **戻した 3 つの罠（`NEGATED_QUESTION` `INVERTED_QUESTION` `NO_ALLOWLIST`）は基点のまま**: 監査役のバンクでの誤発火（答えるのが正解の問が上がる）は残る。監査役の判断は、取りこぼしの危険（本物の否定の問い・書き込み先が上がらなくなる）の方が大きいというもの。基点の広い判定の穴（`drop-off` の `drop`、`出せない` の `ない`、`e.g.` をパスと読む）も基点のまま残る。
+  - **広い語句の入口の誤発火が、BUILTIN の route を 1 問止める**: `w2c2-builtin-route-11`（例の `e.g.` を含む許可の質問）は、戻した `NO_ALLOWLIST`（基点の広いパス判定）で上がる（`ROUTE_STOPPED_BY_REVERTED_TRAP`。表 15-3）。
+  - **md と jsonl の枠の読みの残る差（D11 の後）**: (a) 完了条件の id が語になる（markdown は `c1` `c2`、jsonl は記録の hash id）、(b) `docs/frames/examples/experiment_data_pipeline.md` の方針の条件が markdown は `欠測の扱い`、jsonl は正規化された `欠測扱い`。どちらも `project_frame` の側の話で、このチケットでは直していない（`tests/test_conduct_ask_w2c2_view.py` が差を固定）。コンパイルできない枠（41 枠中 29 枠。`FrameCompileError`）は md と jsonl の比較の対象外。
+  - **証拠 (a)（主辞の型）は未確認。** 英語の証拠は OTHER_RECORD だけで、日本語のように語の意味で別の対象を名指す閉じた表（E0）を持たない。
+  - **BUILTIN は、問われている操作の位置の表（許可の枠の直後など）に当たらない依頼・代行の形を取りこぼす。** 規則層では上がらず、対応づけに回る。対応づけに渡す広い判定 `_builtin_protected(ctx)` は変えていないので、対応づけが答えになりかけたら出口で上がる（禁止の記録だけで答えた場合を除く）。
+  - **`OUTSIDE_ALLOWLIST` の誤発火は未対応。** 許可リストのある枠で、例として挙げたファイル名（`e.g.`）を含む許可の質問は `OUTSIDE_ALLOWLIST` で上がる（基点のまま）。
+  - **許可の手がかり（`_PERM_CUE`）に無い書き込みの問い（`〜しても大丈夫ですか`）は、パスの判定まで行かない（基点から）。** 第 3 ラウンドのコードで測った: 自分で書いた書き込みの許可の問い 51 文（英 28・日 23。広い語句を含むもの 12 文）を、`off`・作り物の空の対応づけ・素朴な台本（記録 D1 D3 D4 D5 のそれぞれを選び肢 0 に「一致」）で流して、答えが出たのは `off` 0・空 0・素朴な台本 1 文（`docs/guide.md を修正しても大丈夫ですか？`。4 つの記録のどれでも）。基点のコードの同じ実行も同じ 1 文（出典 `artifacts/w2-c2/r3/r3_adv_path_e2e.txt` と `r3_adv_path_e2e_on_base.txt`）。したがって「許可リストの無い枠には書き込みを許す答えを作る経路が無い」とは言えない。
+  - **E0 の `を除` は `〜を除外する場合は` の `を除外` にも当たる**（レビューの任意 O1。表は変えない約束なので直していない）。
+  - **基点から既にある穴（今回の変更と無関係）**: 凍結データの `w2g2-x06-08` は期待が escalate なのに `off` が `Yes` と答える（基点のコードでも同じ。`artifacts/w2-c2/r3/c1/c1_summary.json` の `S1_after_answer_when_expected_escalate_total`）。
 
 ## 12. 既知の限界（規則だけで自然文の質問を読む方式）
 
@@ -903,7 +974,7 @@ S-C パスは大文字・小文字まで許可リストと一致したときだ�
   | `FRAME_SILENT` | `NO_RECORD_DECIDES` `NO_RECORD_DECIDES_AFTER_MAPPING` だけ |
   | `QUESTION_UNREADABLE` | `PREDICATE_UNREADABLE` `ORDER_PHASES_UNCLEAR` `ORDER_CLAUSE_UNCLEAR` `TARGET_PHASE_UNCLEAR` だけ |
 
-  対応づけだけの経路で、削除・公開・支出・認証情報に見える問い（W2-c の `_builtin_protected`）に答えになりかけたら、M が禁止の記録だけでできていない限り `HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED` で上げる。
+  対応づけだけの経路で、削除・公開・支出・認証情報に見える問い（W2-c の `_builtin_protected`。**W2-c2 でも、対応づけに渡す判定は広いまま**。規則層の判定だけを `_builtin_protected_asked` に狭めた。§15）に答えになりかけたら、M が禁止の記録だけでできていない限り `HUMAN_APPROVAL_REQUIRED/BUILTIN_PROTECTED` で上げる。
 - 対応づけの答えも、W2-c の出口の検査（`REQUIREMENT_OF_PERMISSION` `MULTIPLE_QUESTIONS` `CONTEXT_SENTENCE_UNREAD`）を**同じ関数**で通る。
 - **質問の形の門**（第 2 ラウンド。`conduct_ask.mapping_gate`、§10 78）: 対応づけが有効なとき、**答えになったもの**（対応づけだけの答えと、裏づけられた規則の答えの両方）に、W2-c の規則の検出器をそのまま当てる。
   否定（`_negated`）→ `QUESTION_UNREADABLE/NEGATED_QUESTION`、反転の語（`_INVERT_CUE`）→ `INVERTED_QUESTION`、各文の過去形の許可（`_PERM_PAST_EN` `_PERM_PAST_JA`）→ `PAST_TENSE_PERMISSION`、
@@ -1268,3 +1339,140 @@ v1 の鍵（`records` `decides` `relations` `records2` `decides2` `relations2` `
   台帳の鎖: `artifacts/w2-g/py.sh -m verantyx.llm_choice verify <ledger.jsonl>`。返答の数え直し: `artifacts/w2-g/py.sh artifacts/w2-g/g2/ledger_recheck_g2.py <ledger.jsonl>...`（`raw_reply` を最小形の読み手で読み直して、decision の status・結果・再照会の構造まで台帳と照合する）。
 - 一連の検査（G1〜G9・凍結・予算）は `artifacts/w2-g/g2/final_run_g2.sh`（出力 `artifacts/w2-g/g2/final_run_g2.log`。第 1〜3 ラウンドの保存物は書き換えない）。
 - 監査役の評価バンクの値はこの文書に書いていない。
+
+## 15. W2-c2: 罠の規則の反転（第 3 ラウンドの最終: 広い語句と BUILTIN だけ「上げるべき正の証拠があるときだけ上げる」）
+
+W2-c の罠の規則（§4 の 2・4、§6、§7）は、形が当たれば上げていた。実際の聞き返しには、枠に答えがあるのに「枠は黙っている」「質問が読めない」と上がるものがある。
+「分からないこと」と「偽であること」を混ぜないために、罠を「正の証拠があるときだけ上げる」に直した。第 1・2 ラウンドは 5 つの罠すべてを直したが、**第 3 ラウンドで、監査役の判断（2026-10-03 14:05）により、反転を `TERM_IN_WIDER_PHRASE`（広い語句）と `BUILTIN_PROTECTED` の 2 つに絞り、`NEGATED_QUESTION` `INVERTED_QUESTION` `NO_ALLOWLIST` は基点に戻した**（§10 119）。**対応づけ（`conduct_map`）と対応づけの決定の規則（`conduct_map.decide`）は変えていない**（§10 104）。
+§9 は W2-c のコードの値で、書き換えていない。W2-c2 での差分は、この節の表。
+
+### 15.1 罠ごとの発火条件（前 = 基点 `5cae978`、後 = 第 3 ラウンドの最終）
+
+| 罠（detail） | 変更前（基点。形だけ） | 変更後（最終） |
+|---|---|---|
+| `TERM_IN_WIDER_PHRASE` | `_is_wider` が当たれば `FRAME_SILENT` で上げる（語の右に付属語以外、左に機能語以外の修飾） | `wider` は同じ形で立つ。**E0**（日本語。語の直後が `_JA_RIGHT_DENY` の語）または **OTHER_RECORD**（長い語句が、その言及の記録以外の枠の記録の本文にそのまま現れる）があれば規則層で `FRAME_SILENT`（対応づけは試さない）。無ければ狭い読みを見て、答え・再試行してよい型なら対応づけに回し（規則の内部の型 `VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE`）、対応づけが無効・決めないときは基点と同じ `FRAME_SILENT/TERM_IN_WIDER_PHRASE`。狭い読みが試してはいけない型で上げるときは回さない（D10。§10 120） |
+| `NEGATED_QUESTION` | `_negated` が、枠の語を含む文（語彙外の経路と門は質問全体）のどこかに当たれば上げる | **戻した（基点と同じ）。** 第 1・2 ラウンドで、閉じた形の検出器 `_question_form_trap`（主述語にかかる否定だけ）を作り、第 2 ラウンドで取りこぼした形を足した。戻した理由: 中間職の罠で、本物の否定の問い（基点では上がっていたもの）の取りこぼしが出たため（監査役の判断） |
+| `INVERTED_QUESTION` | `_INVERT_CUE` が同じ範囲のどこかに当たれば上げる | **戻した（基点と同じ）。** 上と同じ検出器の反転の側を作り、同じ理由で戻した |
+| `BUILTIN_PROTECTED` | `_builtin_protected` = 許可の手がかりと保護された語が質問全体のどこかにあれば上げる | `_builtin_protected_asked`: 許可の手がかりのある文の中で、保護された語が**問われている操作の位置**（許可の枠の直後、または `〜してもよいですか` などの直前）にあるときだけ（規則層の 3 か所）。対応づけに渡す `_builtin_protected(ctx)` は広いまま（D6。§10 109） |
+| `NO_ALLOWLIST` | 許可の手がかりがあり、`_PATH_RX` に当たる字句があり、許可リストが無ければ上げる | **戻した（基点と同じ）。** 第 1・2 ラウンドで、パスが書き込みの動詞の隣にあるときだけ上げる検出器 `_path_is_write_target` を作った。戻した理由: 書き込み先の取りこぼし（基点では上がっていたもの）が出たため（監査役の判断） |
+
+### 15.2 測定の表（`artifacts/w2-c2/r3/` の出力そのもの）
+
+次の表は `artifacts/w2-c2/py.sh tests/conduct_ask/w2c2/run_w2c2.py table3 artifacts/w2-c2/base artifacts/w2-c2/r3/after` の標準出力をそのまま貼ったもの（`artifacts/w2-c2/r3/table_15.md`）。
+凍結データ = `tests/conduct_ask/{fixtures,w2g,w2g2,w2g3}`（349 問）、新データ = `tests/conduct_ask/w2c2/`（159 問、凍結は `artifacts/w2-c2/freeze.txt`）、補いのデータ = `tests/conduct_ask/w2c2/supp/`（46 問、凍結は `artifacts/w2-c2/freeze_supp.txt`）。
+
+**表 15-1 規則層で上がる問の数**（`--vocab-llm fake` ＋ 空の対応づけの台本 = 作り物の対応づけ。`mapping.outcome` が `NOT_ASKED` で始まる問を、`mapping.rule.detail` 別に数えた。前 = 基点 `5cae978` のコード、後 = 第 3 ラウンドのコード）
+
+凍結データ（349 問）
+
+| detail | 期待 answer 前 | 後 | 期待 escalate 前 | 後 |
+|---|---|---|---|---|
+| `TERM_IN_WIDER_PHRASE` | 8 | 0 | 4 | 1 |
+| `NEGATED_QUESTION` | 5 | 5 | 2 | 2 |
+| `INVERTED_QUESTION` | 0 | 0 | 1 | 1 |
+| `BUILTIN_PROTECTED` | 2 | 2 | 1 | 1 |
+| `NO_ALLOWLIST` | 0 | 0 | 0 | 0 |
+| 5 つの罠の計 | 15 | 7 | 8 | 5 |
+| 罠以外の規則の計 | 3 | 3 | 36 | 36 |
+| 問の総数 | 249 | 249 | 100 | 100 |
+
+新データ（`w2c2`、159 問）
+
+| detail | 期待 answer 前 | 後 | 期待 escalate 前 | 後 |
+|---|---|---|---|---|
+| `TERM_IN_WIDER_PHRASE` | 15 | 0 | 21 | 18 |
+| `NEGATED_QUESTION` | 16 | 16 | 20 | 20 |
+| `INVERTED_QUESTION` | 10 | 10 | 19 | 19 |
+| `BUILTIN_PROTECTED` | 11 | 0 | 19 | 13 |
+| `NO_ALLOWLIST` | 10 | 11 | 18 | 18 |
+| 5 つの罠の計 | 62 | 37 | 97 | 88 |
+| 罠以外の規則の計 | 0 | 0 | 0 | 0 |
+| 問の総数 | 62 | 62 | 97 | 97 |
+
+補いのデータ（`w2c2/supp`、46 問）
+
+| detail | 期待 answer 前 | 後 | 期待 escalate 前 | 後 |
+|---|---|---|---|---|
+| `TERM_IN_WIDER_PHRASE` | 0 | 0 | 0 | 0 |
+| `NEGATED_QUESTION` | 10 | 10 | 11 | 11 |
+| `INVERTED_QUESTION` | 0 | 0 | 0 | 0 |
+| `BUILTIN_PROTECTED` | 0 | 0 | 0 | 0 |
+| `NO_ALLOWLIST` | 15 | 15 | 10 | 10 |
+| 5 つの罠の計 | 25 | 25 | 21 | 21 |
+| 罠以外の規則の計 | 0 | 0 | 0 | 0 |
+| 問の総数 | 25 | 25 | 21 | 21 |
+
+**表 15-2 凍結データ（349 問 × 2 モード）で前後に変わった行（C1）と安全の線**
+
+| 項目 | 値 |
+|---|---|
+| 比べた凍結データの問 | 349 |
+| どれかの欄が変わった行（問 × モード） | 11 |
+| どれかの欄が変わった問 | 11 |
+| 　うち `off` で変わった問 | 0 |
+| 　うち `fakemap` で変わった問 | 11 |
+| 　変化の種類 `fakemap/NOT_ASKED->mapping` | 11 |
+| S1: 期待 escalate で、前は答えず後は答えた問 | 0 |
+| S2: 期待 answer で、前は答え合っていた（または答えなかった）のに後に別の答えになった行 | 0 |
+| S3: `off` で escalate から answer に変わった行 | 0（全部が期待と一致: True） |
+
+**表 15-3 C2 の第 3 ラウンドの読み（D12）の判定**（`c2r3`。後 = 第 3 ラウンドのコードの結果、基点 = 基点の結果自身を入れたもの）
+
+| 項目 | 後 | 基点 |
+|---|---|---|
+| C2-K raise（残した罠 `WIDER`・`BUILTIN`、新データ）合格/件数 | 28/28 | 28/28 |
+| C2-K route（同上）合格/件数 | 26/26 | 0/26 |
+| 　うち `ROUTE_STOPPED_BY_REVERTED_TRAP` | `w2c2-builtin-route-11` | なし |
+| C2-R（戻した罠 3 つ、新データと補い、両モード）基点と 6 欄が一致した行/行数 | 278/278 | 278/278 |
+| transfer（新データ、判定に入れない）対応づけに回った問/件数 | 9/30 | 0/30 |
+| 　`WIDER` の transfer | 3/6 | 0/6 |
+| 　`NEGATED` の transfer | 0/6 | 0/6 |
+| 　`INVERTED` の transfer | 0/6 | 0/6 |
+| 　`BUILTIN` の transfer | 6/6 | 0/6 |
+| 　`NO_ALLOWLIST` の transfer | 0/6 | 0/6 |
+| 判定に入れない元の新データの route 9 問（B2） | 9 問、全部が戻した罠の側: True | |
+| C2R3 | PASS | FAIL |
+
+**表 15-4 D10: 広い語句の段（`trace.resolver_outcomes.wider_phrase`）の値別の件数**（凍結 349 ＋ 新 159 ＋ 補い 46 = 554 問。`off` は規則だけ、`fakemap` は作り物の対応づけ）
+
+| 値 | `off` | `fakemap` |
+|---|---|---|
+| `(no wider-phrase step)` | 499 | 499 |
+| `ESCALATE:EVIDENCE:E0` | 6 | 6 |
+| `ESCALATE:EVIDENCE:OTHER_RECORD` | 11 | 11 |
+| `ESCALATE:UNDECIDED` | 6 | 6 |
+| `ESCALATE:UNDECIDED:MAPPING_DID_NOT_DECIDE:FRAME_SILENT/MAP_NONE` | 0 | 29 |
+| `ESCALATE:UNDECIDED:MAPPING_OFF` | 29 | 0 |
+| `ESCALATE:UNDECIDED:NARROW_READING_HANDS_UP` | 3 | 3 |
+
+**表 15-5 最終の出力の `FRAME_SILENT/TERM_IN_WIDER_PHRASE` と `VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE` の件数**
+
+| 最終の (reason, detail) | `off` 前 | 後 | `fakemap` 前 | 後 |
+|---|---|---|---|---|
+| `FRAME_SILENT/TERM_IN_WIDER_PHRASE` | 48 | 48 | 48 | 48 |
+| `VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE` | 0 | 0 | 0 | 0 |
+
+読み方（数値は上の表から。変更前 = 基点、後 = 第 3 ラウンド）:
+- 答えるのが正解で規則層に上がる問は、凍結データで 18 → 10、新データで 62 → 37、補いのデータで 25 → 25（表 15-1 の「5 つの罠の計」と「罠以外の規則の計」の和。`probe_base.txt` `probe_after.txt` の `answerable and raised by the rule layer` と一致）。`TERM_IN_WIDER_PHRASE` は凍結データ 8 → 0、新データ 15 → 0。`BUILTIN_PROTECTED` は新データ 11 → 0。戻した 3 つの罠の数は基点と同じ（補いのデータが 25 → 25 のままなのは、補いのデータが戻した罠だけでできているため）。新データの `NO_ALLOWLIST` の 10 → 11 は、`BUILTIN` の route 1 問（`w2c2-builtin-route-11`）が基点の広いパス判定で上がるため。
+- C1（表 15-2）: `off` で変わった問は 0。`fakemap` で変わった 11 問は、すべて `mapping_outcome` が `NOT_ASKED:RULE_ESCALATION_NOT_RETRIED` → `ESCALATED:FRAME_SILENT/MAP_NONE` に変わっただけ（決定・reason・detail は同じ。すべて広い語句で、対応づけに回るようになった）。S1〜S3 は 0。変わった行の全件は `artifacts/w2-c2/r3/c1/c1_diff.tsv`。
+- C2（表 15-3。D12 の読み）: C2-K の raise は 28/28、route は 26/26（うち 1 問 `w2c2-builtin-route-11` は戻した `NO_ALLOWLIST` に止められた）、C2-R は 278/278 行が基点と一致。元の新データの route 9 問は判定に入れない（B2。§10 122）。基点の結果自身を入れると C2-K の route は 0/26 で不合格になる（道具が判定していることの確認。`c2r3_on_base.txt`）。字義の C2（`c2`。旧定義）は終了コード 1（`c2_report_r3_olddef.txt`。戻した罠の route が基点どおり上がるため。合否には使わない）。
+- D10（表 15-4・15-5）: `off` は、広い語句で証拠が無く対応づけに回す条件を満たした 29 問がすべて `MAPPING_OFF`（基点と同じ `FRAME_SILENT/TERM_IN_WIDER_PHRASE`）、`fakemap`（空の台本）は同じ 29 問が `MAPPING_DID_NOT_DECIDE:FRAME_SILENT/MAP_NONE` で基点の型に戻る。`VOCAB_UNMAPPED/TERM_IN_WIDER_PHRASE` が最終の出力に出る行は 0。`ESCALATE:UNDECIDED`（値に続きが無いもの）は、広い語句の段が状態・依頼の問い（`OUT_OF_RANGE`）を返した行。
+
+### 15.3 出典と再計算
+
+- 基点のコードの書き出し: `git -C <ツリー> archive 5cae978 verantyx | tar -x -C <書き出し先>`。基点の結果の取り直しは第 1・2 ラウンドの `artifacts/w2-c2/base/results.jsonl` と `cmp` で一致した（`BASE_RESULTS_SAME`）。
+- 測定: `artifacts/w2-c2/py.sh tests/conduct_ask/w2c2/run_w2c2.py run --code-tree <ツリー> --label r3 --out artifacts/w2-c2/r3/after`。`recount <出力>`（`MATCH`）、`diff artifacts/w2-c2/base artifacts/w2-c2/r3/after --out artifacts/w2-c2/r3/c1`（C1 と S1〜S3）、`c2r3 artifacts/w2-c2/r3/after --base artifacts/w2-c2/base`（C2。出力 `c2r3_report.txt`、基点を入れた確認 `c2r3_on_base.txt`）、`c2 artifacts/w2-c2/r3/after`（旧定義。参考）、`probe`（出力 `probe_base.txt` `probe_after.txt`）、`sentences --code-tree <ツリー> --out <出力>`（`r3_sentences.jsonl` を流す。基点の記録 `sentences_base.jsonl`）、`bank`（新データを `b5_rule_probe.py` が読める形に。予行 `b5_probe_on_w2c2_after.txt`）。
+  子プロセスは `env -i` と `PYTHONPATH=<--code-tree>` で起こし、読み込まれた `verantyx*` が全部 `--code-tree` の下にあることを子の中で確かめる。
+- この節の表の再計算の確認: `artifacts/w2-c2/py.sh tests/conduct_ask/w2c2/run_w2c2.py table3 artifacts/w2-c2/base artifacts/w2-c2/r3/after` の出力が、この文書にそのまま入っていること（`artifacts/w2-c2/r3/c5_check.txt`）。
+- 全体試験の失敗集合: 変更後で 1 回（`artifacts/w2-c2/r3/c4_after.txt`）。基点の失敗一覧（`/Users/motonisihikoudai/Projects/vera-impl/baselines/dev_5cae978_failures.txt`）との差は `c4_new_failures.txt`。
+- 書き込みの許可の問い 51 文の測定（§11）: `artifacts/w2-c2/r3/r3_adv_path_e2e.py`（出力 `r3_adv_path_e2e.txt`、基点のコードでの同じ実行 `r3_adv_path_e2e_on_base.txt`）。
+- 試験: `tests/test_conduct_ask_w2c2.py`（データの形、凍結データのハッシュ、C2-K と C2-R を自分で判定、戻した罠の基点の出力との一致、証拠の関数の単体、D10、`mapping_gate`、凍結データの S1〜S3）、`tests/test_conduct_ask_w2c2_view.py`（markdown と jsonl の view・答えの一致、D11 の対）。
+
+### 15.4 判断の要約（詳細は §10 104〜124）
+
+- 第 1 ラウンド（§10 104〜113）: D1 `decide()` は `conduct_map.decide()` と読む（触っていない）。D2 証拠の無い広い語句の扱い（第 3 ラウンドで D10 に置き換え）。D3 証拠 (a) は確かめていない（型で宣言）。D4 証拠は E0 と OTHER_RECORD だけで、語の表を足していない。D5 否定・反転の検出器（第 3 ラウンドで退役）。D6 BUILTIN は規則層の 3 か所だけ狭める。D7 NO_ALLOWLIST（第 3 ラウンドで退役）。D8 C1 の字義は守れず、全件を報告した。
+- 第 2 ラウンド（§10 114〜118）: M1 否定の取りこぼしを直した（退役）。M2 狭い読み（D10 に置き換え）。M3 C2 の試験の扱いと補いのデータ。M4 書き込み先の形（退役）。旧版の §15.4 は、この 4 つを D9〜D12 と呼んでいた。**第 3 ラウンドの D9〜D14 は §10 119〜124** で、旧版の D9〜D12 とは別物。
+- 第 3 ラウンド（§10 119〜124）: D9 戻すの意味（否定・反転・`NO_ALLOWLIST` は基点と字句まで同じ）。D10 証拠の無い広い語句は対応づけに回し、対応づけが無効・決めないときは基点の型。D11 jsonl の枠の読みを直し、markdown と同じ view にした。D12 C2 の読み（字義と食い違うので監査役に申し送る）。D13 試験を 1 対 1 で置き換えた。D14 危険の移動（隠さず書いた）。
+- **非対称**: 保護された操作は、境目の形では**証拠ありに倒す**（取りこぼすと、対応づけが問いの向きを取り違えて答える。対応づけに渡す `_builtin_protected` は広いまま）。広い語句は、迷ったら**証拠なしに倒す**が、証拠なしは「上げる」ではなく「対応づけに回す」で、対応づけが決めなければ基点の型に戻る。
+- 測定: 書き込みの許可の問い 51 文（`off`・空の対応づけ・素朴な台本）で答えが出たのは素朴な台本の 1 文（基点でも同じ。§11）。「許可リストの無い枠には書き込みを許す答えを作る経路が無い」とは言えない。
+- 既知の穴は §11 の W2-c2 の項。特に、D14 の危険の移動、戻した 3 つの罠のバンクでの誤発火、`w2c2-builtin-route-11` が戻した `NO_ALLOWLIST` で止まること、md と jsonl の残る差 (a)(b)。

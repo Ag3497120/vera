@@ -1,0 +1,21 @@
+16 ('NEGATED/route', 'answer', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+15 ('WIDER/raise', 'escalate', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+15 ('WIDER/route', 'answer', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+14 ('NEGATED/raise', 'escalate', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+13 ('INVERTED/raise', 'escalate', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+13 ('BUILTIN/raise', 'escalate', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+12 ('NO_ALLOWLIST/raise', 'escalate', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+11 ('BUILTIN/route', 'answer', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+10 ('INVERTED/route', 'answer', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+10 ('NO_ALLOWLIST/route', 'answer', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+6 ('WIDER/transfer', 'escalate', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+6 ('NEGATED/transfer', 'escalate', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+6 ('INVERTED/transfer', 'escalate', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+6 ('BUILTIN/transfer', 'escalate', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+6 ('NO_ALLOWLIST/transfer', 'escalate', 'escalate', 'NOT_ASKED:RULE_ESCALATION_NOT_RETRIED')
+--- rule details for answerable items that were not asked
+16 NEGATED_QUESTION
+15 TERM_IN_WIDER_PHRASE
+11 BUILTIN_PROTECTED
+10 INVERTED_QUESTION
+10 NO_ALLOWLIST
