@@ -1,0 +1,229 @@
+{
+ "n": 12,
+ "tree": "new",
+ "loaded_from": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-c4-S/verantyx/cli.py",
+ "mode": "cli",
+ "placement": null,
+ "vp": true,
+ "counts": {
+  "CORRECT": 2,
+  "WRONG": 0,
+  "FALSE_NONE": 1,
+  "ABSTAINED": 6,
+  "NOT_RUN": 3
+ },
+ "wrong": [],
+ "wrong_details": {},
+ "notation_tie": [],
+ "false_none": [
+  "H03"
+ ],
+ "error_ids": [],
+ "error_count": 0,
+ "question_cross_states": {
+  "NO_ATTESTED_CELL": 3,
+  "NO_TYPED_CANDIDATE": 1,
+  "QUESTION_NOT_READ": 4,
+  "STRUCTURE_INVALID": 1
+ },
+ "mapped_to": {
+  "ORIGINAL": 9
+ },
+ "base_answer": {
+  "BASE_MATCH": 2,
+  "NO_ANSWER": 1
+ },
+ "by_category": {
+  "adhoc": {
+   "CORRECT": 2,
+   "WRONG": 0,
+   "FALSE_NONE": 1,
+   "ABSTAINED": 6,
+   "NOT_RUN": 3
+  }
+ },
+ "by_truth_kind": {
+  "NONE": {
+   "CORRECT": 2,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 1,
+   "NOT_RUN": 0
+  },
+  "ONE": {
+   "CORRECT": 0,
+   "WRONG": 0,
+   "FALSE_NONE": 1,
+   "ABSTAINED": 4,
+   "NOT_RUN": 3
+  },
+  "SPLIT": {
+   "CORRECT": 0,
+   "WRONG": 0,
+   "FALSE_NONE": 0,
+   "ABSTAINED": 1,
+   "NOT_RUN": 0
+  }
+ },
+ "unparsable": [],
+ "nonzero_exit": [],
+ "policy_outcomes": {},
+ "rows": [
+  {
+   "id": "H01",
+   "class": "ABSTAINED",
+   "base_answer": null,
+   "verdict": "UNKNOWN_NO_EVIDENCE",
+   "door": "semantic_document",
+   "state": "QUESTION_NOT_READ",
+   "mapped_to": "ORIGINAL",
+   "category": "adhoc",
+   "kind": "NONE",
+   "ran": true,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "H02",
+   "class": "NOT_RUN",
+   "base_answer": "BASE_MATCH",
+   "verdict": "ANSWER",
+   "door": "semantic_document",
+   "state": null,
+   "mapped_to": null,
+   "category": "adhoc",
+   "kind": "ONE",
+   "ran": false,
+   "outcome": "ANSWER_HUMAN_BASIS"
+  },
+  {
+   "id": "H03",
+   "class": "FALSE_NONE",
+   "base_answer": null,
+   "verdict": "UNKNOWN_UNREAD",
+   "door": "semantic_document",
+   "state": "NO_ATTESTED_CELL",
+   "mapped_to": "ORIGINAL",
+   "category": "adhoc",
+   "kind": "ONE",
+   "ran": true,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "H04",
+   "class": "CORRECT",
+   "base_answer": null,
+   "verdict": "UNKNOWN_UNREAD",
+   "door": "semantic_document",
+   "state": "NO_ATTESTED_CELL",
+   "mapped_to": "ORIGINAL",
+   "category": "adhoc",
+   "kind": "NONE",
+   "ran": true,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "H05",
+   "class": "NOT_RUN",
+   "base_answer": "BASE_MATCH",
+   "verdict": "ANSWER",
+   "door": "semantic_document",
+   "state": null,
+   "mapped_to": null,
+   "category": "adhoc",
+   "kind": "ONE",
+   "ran": false,
+   "outcome": "ANSWER_HUMAN_BASIS"
+  },
+  {
+   "id": "H06",
+   "class": "ABSTAINED",
+   "base_answer": null,
+   "verdict": "UNKNOWN_UNREAD",
+   "door": "semantic_document",
+   "state": "QUESTION_NOT_READ",
+   "mapped_to": "ORIGINAL",
+   "category": "adhoc",
+   "kind": "ONE",
+   "ran": true,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "H07",
+   "class": "ABSTAINED",
+   "base_answer": null,
+   "verdict": "UNKNOWN_UNREAD",
+   "door": "semantic_document",
+   "state": "QUESTION_NOT_READ",
+   "mapped_to": "ORIGINAL",
+   "category": "adhoc",
+   "kind": "ONE",
+   "ran": true,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "H08",
+   "class": "ABSTAINED",
+   "base_answer": null,
+   "verdict": "UNKNOWN_UNREAD",
+   "door": "semantic_document",
+   "state": "QUESTION_NOT_READ",
+   "mapped_to": "ORIGINAL",
+   "category": "adhoc",
+   "kind": "ONE",
+   "ran": true,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "H09",
+   "class": "CORRECT",
+   "base_answer": null,
+   "verdict": "UNKNOWN_UNREAD",
+   "door": "semantic_document",
+   "state": "NO_ATTESTED_CELL",
+   "mapped_to": "ORIGINAL",
+   "category": "adhoc",
+   "kind": "NONE",
+   "ran": true,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "H10",
+   "class": "NOT_RUN",
+   "base_answer": "NO_ANSWER",
+   "verdict": "UNKNOWN_UNSUPPORTED_EVIDENCE",
+   "door": "semantic_document",
+   "state": null,
+   "mapped_to": null,
+   "category": "adhoc",
+   "kind": "ONE",
+   "ran": false,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "H11",
+   "class": "ABSTAINED",
+   "base_answer": null,
+   "verdict": "UNKNOWN_UNREAD",
+   "door": "semantic_document",
+   "state": "NO_TYPED_CANDIDATE",
+   "mapped_to": "ORIGINAL",
+   "category": "adhoc",
+   "kind": "ONE",
+   "ran": true,
+   "outcome": "ABSTAIN"
+  },
+  {
+   "id": "H12",
+   "class": "ABSTAINED",
+   "base_answer": null,
+   "verdict": "UNKNOWN_UNREAD",
+   "door": "semantic_document",
+   "state": "STRUCTURE_INVALID",
+   "mapped_to": "ORIGINAL",
+   "category": "adhoc",
+   "kind": "SPLIT",
+   "ran": true,
+   "outcome": "ABSTAIN"
+  }
+ ]
+}

@@ -1,0 +1,8 @@
+$ VP=R7 py.sh -m verantyx.cli --store st.json ask --mode round5 --document probe/ja1.txt --request-kind factual --human-present -- 校長は何を読んだ？  | (door verdict outcome counts.human sentence_ids)
+question_cross ANSWER ANSWER_HUMAN_BASIS 1 ['ja1.txt#2:1']
+$ same without --request-kind/--human-present
+question_cross ANSWER ANSWER_HUMAN_BASIS 1 ['ja1.txt#2:1']
+$ no VERA_PLACEMENT: the original abstention plus question_cross
+UNKNOWN_UNREAD semantic_document NO_TYPED_CANDIDATE ORIGINAL
+$ the existing path answers: no question_cross
+ANSWER semantic_document False

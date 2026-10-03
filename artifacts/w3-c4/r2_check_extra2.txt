@@ -1,0 +1,5 @@
+X01.txt lines 7 loaded-same one-sentence-per-line
+X02.txt lines 10 loaded-same one-sentence-per-line
+X03.txt lines 7 loaded-same one-sentence-per-line
+X04.txt lines 5 loaded-same one-sentence-per-line
+evidence ids checked 9 bad 0

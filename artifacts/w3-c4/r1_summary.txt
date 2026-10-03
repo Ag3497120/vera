@@ -1,0 +1,104 @@
+[base verdicts of the 343 questions of A1 (a1_base1.jsonl, no placement; same in the r7 run is in a1_base_r7.jsonl)]
+    (outside) verdict AMBIGUOUS: 7
+    (outside) verdict ANSWER: 60
+    (outside) verdict CONFLICT: 5
+    (outside) verdict UNKNOWN_INVALID_PROOF: 1
+    (outside) verdict UNKNOWN_UNSUPPORTED_EVIDENCE: 25
+  inside the closed set: UNKNOWN_NO_EVIDENCE: 20
+  inside the closed set: UNKNOWN_UNREAD: 223
+  no document: 2
+  outside the closed set: 98
+[a1_new: all 343 questions, final output after the policy, cli, no placement]
+  counts {"CORRECT": 42, "WRONG": 0, "FALSE_NONE": 6, "ABSTAINED": 195, "NOT_RUN": 100}
+  question_cross.state of the questions the stage ran on: {"HOLE_TYPE_UNDETERMINED": 11, "NOT_A_QUESTION": 1, "NO_ATTESTED_CELL": 33, "NO_TYPED_CANDIDATE": 101, "POLAR_QUESTION": 7, "QUESTION_NOT_READ": 89, "STRUCTURE_INVALID": 1}
+  mapped_to: {"ORIGINAL": 243}; ERROR states: 0; WRONG ids: []
+[a1_new_r7: all 343 questions, final output after the policy, cli, VERA_PLACEMENT=r7]
+  counts {"CORRECT": 89, "WRONG": 0, "FALSE_NONE": 9, "ABSTAINED": 145, "NOT_RUN": 100}
+  question_cross.state of the questions the stage ran on: {"FILLED": 45, "HOLE_TYPE_UNDETERMINED": 6, "INCOMPLETE_BY_EXTENSION": 2, "NOT_A_QUESTION": 1, "NO_ATTESTED_CELL": 33, "NO_TYPED_CANDIDATE": 54, "POLAR_QUESTION": 7, "QUESTION_NOT_READ": 89, "STRUCTURE_INVALID": 1, "TIE": 2, "TYPE_EXCLUDED_ALL": 3}
+  mapped_to: {"AMBIGUOUS_QUESTION_CROSS_TIE": 2, "ANSWER": 45, "ORIGINAL": 196}; ERROR states: 0; WRONG ids: []
+[a2_place: new data (AQ), in process, placement_ask.json]
+  n=111 counts {"CORRECT": 68, "WRONG": 0, "FALSE_NONE": 1, "ABSTAINED": 16, "NOT_RUN": 26}
+  WRONG ids: []; FALSE_NONE ids: ['AQ083']; ERROR states: 0
+  question_cross.state: {"FILLED": 40, "INCOMPLETE_BY_EXTENSION": 1, "NOT_A_QUESTION": 1, "NO_ATTESTED_CELL": 18, "NO_TYPED_CANDIDATE": 1, "POLAR_QUESTION": 3, "QUESTION_NOT_READ": 16, "STRUCTURE_INVALID": 1, "TIE": 4}
+  mapped_to: {"AMBIGUOUS_QUESTION_CROSS_TIE": 5, "ANSWER": 39, "ORIGINAL": 41}; existing path on the NOT_RUN rows: {"BASE_MATCH": 12, "BASE_NOT_JUDGED": 3, "NO_ANSWER": 11}
+  basis_policy.outcome of the answers: {"ABSTAIN": 5, "ANSWER_HUMAN_BASIS": 39}
+[a2_r7: new data (AQ), cli, VERA_PLACEMENT=r7]
+  n=111 counts {"CORRECT": 45, "WRONG": 0, "FALSE_NONE": 1, "ABSTAINED": 39, "NOT_RUN": 26}
+  WRONG ids: []; FALSE_NONE ids: ['AQ083']; ERROR states: 0
+  question_cross.state: {"FILLED": 20, "INCOMPLETE_BY_EXTENSION": 1, "NOT_A_QUESTION": 1, "NO_ATTESTED_CELL": 18, "NO_TYPED_CANDIDATE": 24, "POLAR_QUESTION": 3, "QUESTION_NOT_READ": 16, "STRUCTURE_INVALID": 1, "TIE": 1}
+  mapped_to: {"AMBIGUOUS_QUESTION_CROSS_TIE": 1, "ANSWER": 20, "ORIGINAL": 64}; existing path on the NOT_RUN rows: {"BASE_MATCH": 12, "BASE_NOT_JUDGED": 3, "NO_ANSWER": 11}
+  basis_policy.outcome of the answers: {"ABSTAIN": 1, "ANSWER_HUMAN_BASIS": 20}
+[w3c2_place: W3-c2 185 questions, in process, placement_q.json]
+  n=185 counts {"CORRECT": 44, "WRONG": 0, "FALSE_NONE": 3, "ABSTAINED": 78, "NOT_RUN": 60}
+  WRONG ids: []; FALSE_NONE ids: ['Q010', 'Q059', 'Q121']; ERROR states: 0
+  question_cross.state: {"FILLED": 24, "NO_ATTESTED_CELL": 11, "NO_TYPED_CANDIDATE": 23, "POLAR_QUESTION": 4, "QUESTION_NOT_READ": 57, "TIE": 6}
+  mapped_to: {"AMBIGUOUS_QUESTION_CROSS_TIE": 8, "ANSWER": 22, "ORIGINAL": 95}; existing path on the NOT_RUN rows: {"BASE_MATCH": 23, "BASE_MISMATCH": 6, "BASE_NOT_JUDGED": 2, "NO_ANSWER": 29}
+  basis_policy.outcome of the answers: {"ABSTAIN": 8, "ANSWER_HUMAN_BASIS": 22}
+[w3c2_r7: W3-c2 185 questions, cli, VERA_PLACEMENT=r7]
+  n=185 counts {"CORRECT": 38, "WRONG": 0, "FALSE_NONE": 6, "ABSTAINED": 81, "NOT_RUN": 60}
+  WRONG ids: []; FALSE_NONE ids: ['Q010', 'Q059', 'Q121', 'Q130', 'Q131', 'Q136']; ERROR states: 0
+  question_cross.state: {"FILLED": 21, "HOLE_TYPE_UNDETERMINED": 6, "INCOMPLETE_BY_EXTENSION": 1, "NO_ATTESTED_CELL": 11, "NO_TYPED_CANDIDATE": 21, "POLAR_QUESTION": 4, "QUESTION_NOT_READ": 57, "TIE": 1, "TYPE_EXCLUDED_ALL": 3}
+  mapped_to: {"AMBIGUOUS_QUESTION_CROSS_TIE": 1, "ANSWER": 21, "ORIGINAL": 103}; existing path on the NOT_RUN rows: {"BASE_MATCH": 23, "BASE_MISMATCH": 6, "BASE_NOT_JUDGED": 2, "NO_ANSWER": 29}
+  basis_policy.outcome of the answers: {"ABSTAIN": 1, "ANSWER_HUMAN_BASIS": 21}
+[w3c2_place_corr: W3-c2 185 questions with the W3-c2 corrections applied, in process]
+  n=185 counts {"CORRECT": 44, "WRONG": 0, "FALSE_NONE": 3, "ABSTAINED": 78, "NOT_RUN": 60}
+  WRONG ids: []; FALSE_NONE ids: ['Q010', 'Q059', 'Q121']; ERROR states: 0
+  question_cross.state: {"FILLED": 24, "NO_ATTESTED_CELL": 11, "NO_TYPED_CANDIDATE": 23, "POLAR_QUESTION": 4, "QUESTION_NOT_READ": 57, "TIE": 6}
+  mapped_to: {"AMBIGUOUS_QUESTION_CROSS_TIE": 8, "ANSWER": 22, "ORIGINAL": 95}; existing path on the NOT_RUN rows: {"BASE_MATCH": 23, "BASE_MISMATCH": 6, "BASE_NOT_JUDGED": 2, "NO_ANSWER": 29}
+  basis_policy.outcome of the answers: {"ABSTAIN": 8, "ANSWER_HUMAN_BASIS": 22}
+[w3c2_r7_corr: W3-c2 185 questions with the W3-c2 corrections applied, cli, r7]
+  n=185 counts {"CORRECT": 38, "WRONG": 0, "FALSE_NONE": 6, "ABSTAINED": 81, "NOT_RUN": 60}
+  WRONG ids: []; FALSE_NONE ids: ['Q010', 'Q059', 'Q121', 'Q130', 'Q131', 'Q136']; ERROR states: 0
+  question_cross.state: {"FILLED": 21, "HOLE_TYPE_UNDETERMINED": 6, "INCOMPLETE_BY_EXTENSION": 1, "NO_ATTESTED_CELL": 11, "NO_TYPED_CANDIDATE": 21, "POLAR_QUESTION": 4, "QUESTION_NOT_READ": 57, "TIE": 1, "TYPE_EXCLUDED_ALL": 3}
+  mapped_to: {"AMBIGUOUS_QUESTION_CROSS_TIE": 1, "ANSWER": 21, "ORIGINAL": 103}; existing path on the NOT_RUN rows: {"BASE_MATCH": 23, "BASE_MISMATCH": 6, "BASE_NOT_JUDGED": 2, "NO_ANSWER": 29}
+  basis_policy.outcome of the answers: {"ABSTAIN": 1, "ANSWER_HUMAN_BASIS": 21}
+[b2like_place: B2-like (47 questions), in process, placement_ask.json]
+  n=47 counts {"CORRECT": 15, "WRONG": 0, "FALSE_NONE": 2, "ABSTAINED": 16, "NOT_RUN": 14}
+  WRONG ids: []; FALSE_NONE ids: ['BQ040', 'BQ046']; ERROR states: 0
+  question_cross.state: {"FILLED": 13, "NO_ATTESTED_CELL": 4, "QUESTION_NOT_READ": 16}
+  mapped_to: {"ANSWER": 13, "ORIGINAL": 20}; existing path on the NOT_RUN rows: {"BASE_MATCH": 12, "BASE_MISMATCH": 1, "BASE_NOT_JUDGED": 1}
+  basis_policy.outcome of the answers: {"ANSWER_HUMAN_BASIS": 13}
+[b2like_r7: B2-like (47 questions), cli, r7]
+  n=47 counts {"CORRECT": 6, "WRONG": 0, "FALSE_NONE": 2, "ABSTAINED": 25, "NOT_RUN": 14}
+  WRONG ids: []; FALSE_NONE ids: ['BQ040', 'BQ046']; ERROR states: 0
+  question_cross.state: {"FILLED": 4, "NO_ATTESTED_CELL": 4, "NO_TYPED_CANDIDATE": 9, "QUESTION_NOT_READ": 16}
+  mapped_to: {"ANSWER": 4, "ORIGINAL": 29}; existing path on the NOT_RUN rows: {"BASE_MATCH": 12, "BASE_MISMATCH": 1, "BASE_NOT_JUDGED": 1}
+  basis_policy.outcome of the answers: {"ANSWER_HUMAN_BASIS": 4}
+[later stage ran / mapped to ANSWER or TIE, by the language of the first document (AD08-10, QD08-10, BA04 are English)]
+  a2_place: {"en answered_or_tie": 18, "en ran": 33, "ja answered_or_tie": 26, "ja ran": 52}
+  a2_r7: {"en ran": 33, "ja answered_or_tie": 21, "ja ran": 52}
+  w3c2_place: {"en answered_or_tie": 10, "en ran": 47, "ja answered_or_tie": 20, "ja ran": 78}
+  w3c2_r7: {"en ran": 47, "ja answered_or_tie": 22, "ja ran": 78}
+  b2like_place: {"en answered_or_tie": 5, "en ran": 10, "ja answered_or_tie": 8, "ja ran": 23}
+  b2like_r7: {"en ran": 10, "ja answered_or_tie": 4, "ja ran": 23}
+[a1_cmp_noplace.txt]
+  questions compared: 343 (base 343, base2 343, new 343)
+  base1 vs base2: same 343, differ 0
+  base vs new (outside the later stage): same 100, differ 0
+  base vs new (ORIGINAL, question_cross removed): same 243, differ 0
+  inside the closed set and mapped to ANSWER or TIE (changed by design, not compared): 0
+  inside the closed set, unexplained: 0
+[a1_cmp_r7.txt]
+  questions compared: 343 (base 343, base2 343, new 343)
+  base1 vs base2: same 343, differ 0
+  base vs new (outside the later stage): same 100, differ 0
+  base vs new (ORIGINAL, question_cross removed): same 196, differ 0
+  inside the closed set and mapped to ANSWER or TIE (changed by design, not compared): 47
+  inside the closed set, unexplained: 0
+[a1_cmp_other_modes.txt]
+  base1 vs base2: same 10, differ 0
+  base vs new (outside the later stage): same 10, differ 0
+  base vs new (ORIGINAL, question_cross removed): same 0, differ 0
+  inside the closed set and mapped to ANSWER or TIE (changed by design, not compared): 0
+  inside the closed set, unexplained: 0
+  rc=0
+[pytest_related_before.txt: related tests before] 1624 passed in 29.50s
+[pytest_related_after.txt: related tests after] 1 failed, 1623 passed in 27.98s
+[pytest_new_tests.txt: the new tests] 50 passed in 7.31s
+[pytest_full.txt: full run] 117 failed, 12164 passed, 37 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 378.79s (0:06:18)
+[determinism.txt]
+  PYTHONHASHSEED=0 vs PYTHONHASHSEED=1: questions 20, same 20, differ 0
+[parity.txt]
+  placement=placement_q variant=no_lang   questions=185 identical=185
+  compared outputs: 740; mismatches: 0
+  not compared: structure.file_sha256 (records hash vs file bytes hash)

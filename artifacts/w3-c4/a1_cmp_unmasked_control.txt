@@ -1,0 +1,8 @@
+# control: the same comparison with an EMPTY mask (nothing hidden): the base against itself must differ, which is why the two time keys are masked
+mask keys (values set to 0, keys kept): 
+questions compared: 343 (base 343, base2 343, new 343)
+base1 vs base2: same 2, differ 341
+base vs new (outside the later stage): same 2, differ 98
+base vs new (ORIGINAL, question_cross removed): same 0, differ 243
+inside the closed set and mapped to ANSWER or TIE (changed by design, not compared): 0
+inside the closed set, unexplained: 0

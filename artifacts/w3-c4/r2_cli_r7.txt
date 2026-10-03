@@ -1,0 +1,10 @@
+doc: 先生は本を読みたかった。 / q: 先生は何を読んだ？
+UNKNOWN_UNREAD semantic_document - ABSTAIN FILLED PREDICATE_FORM_DIFFERS
+doc: 漁師は魚を運びたがった。 / q: 漁師は何を運んだ？
+UNKNOWN_UNREAD semantic_document - ABSTAIN FILLED PREDICATE_FORM_DIFFERS
+doc: 母は手紙を書きたかったです。 / q: 母は何を書いた？
+UNKNOWN_UNREAD semantic_document - ABSTAIN FILLED PREDICATE_FORM_DIFFERS
+doc: 先生は本を読んだ。 / q: 先生は何を読んだ？
+ANSWER question_cross 本 ANSWER_HUMAN_BASIS FILLED None
+doc: 先生は本を読みたかった。 / q: 先生は何を読みたかった？
+ANSWER question_cross 本 ANSWER_HUMAN_BASIS FILLED None

@@ -33,6 +33,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -255,6 +256,161 @@ def cmd_forget(args) -> int:
     return 0 if removed else 1
 
 
+# --- W3-c4: the question cross as a LATER STAGE of `vera ask --mode round5 --document` (docs/OBSERVATION.md, 文書 QA の後段（W3-c4）) ---------------------------
+# Only when the round5 reading stopped with one of these two abstentions (closed set, registered before the build) and a document was handed over: the sentences of the
+# documents are observed from the cross of the question (observe.observe_question_records, in memory, no file). Anything else is returned as the same object.
+_QC_TRIGGER = ("UNKNOWN_UNREAD", "UNKNOWN_NO_EVIDENCE")
+_QC_SPLIT = r"(?<=。)|(?<=\.)(?=\s)"
+_QC_PAIRS = (("「", "」"), ("『", "』"), ("“", "”"))
+
+
+def _qc_records(documents):
+    """Documents read as `one.Vera.load_documents` reads them -> ([{"id","text"}], {id: {"source","line","text"}}, loaded, skipped)."""
+    from .document_loaders import load_directory, load_paths
+    loaded, skipped = [], []
+    for item in documents:
+        path = Path(item)
+        res = load_directory(str(path)) if path.is_dir() else load_paths([str(path)])
+        loaded.extend(res["documents"])
+        skipped.extend(res["skipped"])
+    cut = re.compile(_QC_SPLIT)
+    records, where = [], {}
+    for doc in loaded:
+        for line_no, line in enumerate(doc.text.split("\n"), 1):
+            pieces = [x.strip() for x in cut.split(line) if x.strip()]
+            for k, piece in enumerate(pieces, 1):
+                sid = "%s#%d:%d" % (doc.source, line_no, k)
+                records.append({"id": sid, "text": piece})
+                # a '.' cut that may not be the end of a sentence (an abbreviation, an initial): the piece before it is one token ending in '.', or the
+                # piece after it starts with a lower-case letter. Both pieces next to such a cut are possibly the middle of a sentence: never the evidence of an answer.
+                after = k < len(pieces) and piece.endswith(".") and pieces[k][:1].islower()
+                before = k > 1 and pieces[k - 2].endswith(".") and (len(pieces[k - 2].split()) == 1 or piece[:1].islower())
+                where.setdefault(sid, {"source": doc.source, "line": line_no, "text": piece, "cut_uncertain": bool(after or before)})
+    return records, where, len(loaded), [{"verdict": x.get("verdict"), "path": x.get("path")} for x in skipped]
+
+
+def _qc_sources(evidence, where):
+    """The sentences that attest a filler, in the observer's order, each sentence once."""
+    out, seen = [], set()
+    for ev in evidence:
+        sid = ev["reading"]
+        if sid in seen:
+            continue
+        seen.add(sid)
+        w = where[sid]
+        out.append({"family": "document", "source": w["source"], "line": w["line"], "text": w["text"], "sentence_id": sid})
+    return out
+
+
+def _qc_quotes_open(text):
+    return any(text.count(a) != text.count(b) for a, b in _QC_PAIRS) or text.count('"') % 2 == 1
+
+
+_QC_END = "。．.！!？? \t\r\n　"
+
+
+def _qc_predicate_form(text, tail):
+    """Round 2 (M1). The reader gives `読みたかった` / `読みたがった` / `読んだらしかった` / a final `読んだら` the same clause as the plain past `読んだ` (it does not see the
+    conjugated mark). So an evidence sentence of Japanese is an answer only when its WRITTEN predicate (from the reader's span of the predicate to the end of the sentence) is the end
+    of the question as it was written. None: it is. Otherwise the reason: PREDICATE_POSITION_UNKNOWN (no single clause / no span) or PREDICATE_FORM_DIFFERS. Reads only; no word list."""
+    from . import semantic_read
+    try:
+        out = semantic_read.read(text)
+    except Exception:
+        return "PREDICATE_POSITION_UNKNOWN"
+    if not isinstance(out, dict) or out.get("lang") != "ja":
+        return None                                 # not applied to other languages (docs/OBSERVATION.md, 事前登録の変更記録 第 2 ラウンド)
+    meta, clauses = out.get("clause_meta") or [], out.get("clauses") or []
+    if not out.get("readable") or len(meta) != 1 or len(clauses) != 1 or not isinstance(meta[0], dict):
+        return "PREDICATE_POSITION_UNKNOWN"
+    span = meta[0].get("span")
+    if not (isinstance(span, (list, tuple)) and len(span) == 2 and all(type(i) is int for i in span) and 0 <= span[0] <= span[1] <= len(text)):
+        return "PREDICATE_POSITION_UNKNOWN"
+    written = text[span[0]:].rstrip(_QC_END)
+    return None if written and tail.endswith(written) else "PREDICATE_FORM_DIFFERS"
+
+
+def _qc_wrap(result, qc, step_state, observed, mapped):
+    """The ORIGINAL form: a shallow copy of the result plus `question_cross` and one step of the trace (the original is not modified)."""
+    out = dict(result)
+    out["question_cross"] = qc
+    out["trace"] = list(result.get("trace") or []) + [{"part": "question_cross", "status": "ran" if observed else "abstained",
+                                                        "state": step_state, "mapped_to": mapped}]
+    return out
+
+
+def _qc_info(state, reason, mapped, answer, coord, structure, documents):
+    q = (answer or {}).get("question") or {}
+    return {"state": state, "reason": reason, "mapped_to": mapped, "hole_role": q.get("hole_role"), "hole_type": q.get("hole_type"),
+            "coord": coord, "structure": structure, "documents": documents}
+
+
+def _qc_run(result, documents, query):
+    from .observe import observe_question_records
+    records, where, n_loaded, skipped = _qc_records(documents)
+    docs_info = {"loaded": n_loaded, "skipped": skipped}
+    if n_loaded == 0:
+        return _qc_wrap(result, _qc_info("DOCUMENTS_NOT_LOADED", None, "ORIGINAL", None, None, None, docs_info), "DOCUMENTS_NOT_LOADED", False, "ORIGINAL")
+    try:
+        obs = observe_question_records(query, records)
+    except ValueError as exc:
+        marker = "BAD_ARGUMENTS:STRUCTURE_INVALID:"
+        if not str(exc).startswith(marker):
+            raise
+        return _qc_wrap(result, _qc_info("STRUCTURE_INVALID", str(exc)[len(marker):], "ORIGINAL", None, None, None, docs_info), "STRUCTURE_INVALID", False, "ORIGINAL")
+    answer = obs.get("answer")
+    if not answer:
+        return _qc_wrap(result, _qc_info("NOT_A_QUESTION", None, "ORIGINAL", None, None, None, docs_info), "NOT_A_QUESTION", False, "ORIGINAL")
+    state = answer["status"]
+    reasons = answer.get("reasons") or []
+    structure = {"sentences": answer["structure"]["sentences"], "crossed": answer["structure"]["crossed"],
+                 "unread": answer["structure"]["unread"], "reasons": reasons}
+    coord = [c for rank in (obs.get("ranks") or [])[:1] for el in rank["elements"] for c in el["coords"]]
+    reason = reasons[0] if reasons else None
+
+    def original(why=None):
+        return _qc_wrap(result, _qc_info(state, why or reason, "ORIGINAL", answer, None, structure, docs_info), state, True, "ORIGINAL")
+
+    if state not in ("FILLED", "TIE"):
+        return original()
+    rows = answer["fillers"]
+    cands = [(row["surface"], _qc_sources(row["evidence"], where)) for row in rows]
+    tail = query.strip().rstrip("？?").rstrip()     # the question as written, without its final question mark
+    for surface, srcs in cands:                     # a surface that is not in its own evidence, or evidence cut in the middle of a quotation, is not an answer
+        if not any(surface in s["text"] for s in srcs):
+            return original("SURFACE_NOT_IN_EVIDENCE")
+        if any(_qc_quotes_open(s["text"]) for s in srcs):
+            return original("QUOTE_UNBALANCED_EVIDENCE")
+        if any(where[s["sentence_id"]]["cut_uncertain"] for s in srcs):
+            return original("PERIOD_CUT_UNCERTAIN")
+        for s in srcs:                              # the written predicate of the evidence is the end of the question (round 2, M1)
+            why = _qc_predicate_form(s["text"], tail)
+            if why:
+                return original(why)
+    if state == "FILLED" and len(rows) == 1:
+        surface, srcs = cands[0]
+        qc = _qc_info("FILLED", reason, "ANSWER", answer, coord, structure, docs_info)
+        return {"kind": "answer", "verdict": "ANSWER", "text": surface, "values": [surface], "evidence": [s["text"] for s in srcs], "sources": srcs,
+                "door": "question_cross", "question_cross": qc,
+                "trace": list(result.get("trace") or []) + [{"part": "question_cross", "status": "ran", "state": "FILLED", "mapped_to": "ANSWER"}]}
+    why = "SURFACES_DIFFER:%d" % len(rows) if state == "FILLED" else reason
+    qc = _qc_info(state, why, "AMBIGUOUS_QUESTION_CROSS_TIE", answer, coord, structure, docs_info)
+    return {"kind": "unknown", "verdict": "AMBIGUOUS_QUESTION_CROSS_TIE", "text": "",
+            "candidates": [{"text": surface, "sources": srcs} for surface, srcs in cands], "sources": [], "evidence": [],
+            "door": "question_cross", "question_cross": qc,
+            "trace": list(result.get("trace") or []) + [{"part": "question_cross", "status": "ran", "state": state, "mapped_to": "AMBIGUOUS_QUESTION_CROSS_TIE"}]}
+
+
+def _round5_question_cross(result, documents, query):
+    if not (documents and isinstance(result, dict) and result.get("verdict") in _QC_TRIGGER):
+        return result
+    try:
+        return _qc_run(result, documents, query)
+    except Exception as exc:    # the one outer frame of the later stage: it must never break the abstention that was already there
+        info = _qc_info("ERROR", "%s: %s" % (type(exc).__name__, exc), "ORIGINAL", None, None, None, None)
+        return _qc_wrap(result, info, "ERROR", False, "ORIGINAL")
+
+
 def cmd_ask(args) -> int:
     """一問一答。既定は手元の店、`--engine` で本線(engine.ask)を通す。
 
@@ -284,7 +440,8 @@ def cmd_ask(args) -> int:
         v = Vera(mode="round5")
         if documents:
             v.load_documents(documents)
-        out, rc = apply_to_ask(v.ask(args.query), policy, query=args.query, mode="round5",
+        res = _round5_question_cross(v.ask(args.query), documents, args.query)
+        out, rc = apply_to_ask(res, policy, query=args.query, mode="round5",
                                documents=documents)
         _print(out)
         return rc

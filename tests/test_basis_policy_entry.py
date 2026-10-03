@@ -290,7 +290,11 @@ def test_a_document_that_does_not_answer_stays_an_abstention(tmp_path, monkeypat
     raw = _roundtrip(v.ask(q))
     rc, out = _ask(tmp_path, capsys, q, "--mode", "round5", "--document", str(memo))
     assert rc == 0 and out["verdict"] != "ANSWER" and out["kind"] != "answer"
-    assert _stable(_without(out, "basis_policy")) == _stable(raw)
+    # W3-c4: the later stage adds `question_cross` and one step of the trace to an abstention of this kind; nothing else of the abstention changes
+    assert [t["state"] for t in out["trace"] if t.get("part") == "question_cross"] == ["NO_ATTESTED_CELL"] and out["question_cross"]["mapped_to"] == "ORIGINAL"
+    shown = _without(out, "basis_policy", "question_cross")
+    shown["trace"] = [t for t in out["trace"] if t.get("part") != "question_cross"]
+    assert _stable(shown) == _stable(raw)
     assert out["basis_policy"]["outcome"] == "ABSTAIN"
 
 

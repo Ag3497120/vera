@@ -1,0 +1,10 @@
+{"id": "AQ001", "exit_code": 2, "stdout": "{\n  \"kind\": \"unknown\",\n  \"verdict\": \"UNKNOWN_ROUTE_CONFIGURATION\",\n  \"reason\": \"--document requires --mode round5\"\n}\n", "stderr_tail": ""}
+{"id": "AQ002", "exit_code": 2, "stdout": "{\n  \"kind\": \"unknown\",\n  \"verdict\": \"UNKNOWN_ROUTE_CONFIGURATION\",\n  \"reason\": \"--document requires --mode round5\"\n}\n", "stderr_tail": ""}
+{"id": "AQ003", "exit_code": 2, "stdout": "{\n  \"kind\": \"unknown\",\n  \"verdict\": \"UNKNOWN_ROUTE_CONFIGURATION\",\n  \"reason\": \"--document requires --mode round5\"\n}\n", "stderr_tail": ""}
+{"id": "AQ004", "exit_code": 2, "stdout": "{\n  \"kind\": \"unknown\",\n  \"verdict\": \"UNKNOWN_ROUTE_CONFIGURATION\",\n  \"reason\": \"--document requires --mode round5\"\n}\n", "stderr_tail": ""}
+{"id": "AQ005", "exit_code": 2, "stdout": "{\n  \"kind\": \"unknown\",\n  \"verdict\": \"UNKNOWN_ROUTE_CONFIGURATION\",\n  \"reason\": \"--document requires --mode round5\"\n}\n", "stderr_tail": ""}
+{"id": "AQ006", "exit_code": 2, "stdout": "{\n  \"kind\": \"unknown\",\n  \"verdict\": \"UNKNOWN_ROUTE_CONFIGURATION\",\n  \"reason\": \"--document requires --mode round5\"\n}\n", "stderr_tail": ""}
+{"id": "AQ007", "exit_code": 2, "stdout": "{\n  \"kind\": \"unknown\",\n  \"verdict\": \"UNKNOWN_ROUTE_CONFIGURATION\",\n  \"reason\": \"--document requires --mode round5\"\n}\n", "stderr_tail": ""}
+{"id": "AQ008", "exit_code": 2, "stdout": "{\n  \"kind\": \"unknown\",\n  \"verdict\": \"UNKNOWN_ROUTE_CONFIGURATION\",\n  \"reason\": \"--document requires --mode round5\"\n}\n", "stderr_tail": ""}
+{"id": "AQ009", "exit_code": 2, "stdout": "{\n  \"kind\": \"unknown\",\n  \"verdict\": \"UNKNOWN_ROUTE_CONFIGURATION\",\n  \"reason\": \"--document requires --mode round5\"\n}\n", "stderr_tail": ""}
+{"id": "AQ010", "exit_code": 2, "stdout": "{\n  \"kind\": \"unknown\",\n  \"verdict\": \"UNKNOWN_ROUTE_CONFIGURATION\",\n  \"reason\": \"--document requires --mode round5\"\n}\n", "stderr_tail": ""}
