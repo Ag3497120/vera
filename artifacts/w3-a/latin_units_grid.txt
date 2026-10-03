@@ -1,0 +1,50 @@
+stage /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/stage_full8.pkl
+Q (real units) ['km', 'kg', 'GHz', 'ms', 'MiB', 'mm'] | N (non-units) ['AND', 'URL', 'and', 'app', 'for', 'has', 'in', 'is', 'mas', 'mis', 'of', 'sum', 'xx'] | undecided ['em']
+no rule (share 0, numerals 0): 18 Latin units: ['AND', 'GHz', 'MiB', 'URL', 'and', 'app', 'em', 'for', 'has', 'in', 'is', 'kg', 'km', 'mm', 'ms', 'of', 'sum', 'xx']
+   Q kept ['km', 'kg', 'GHz', 'ms', 'MiB', 'mm'] | N kept ['AND', 'URL', 'and', 'app', 'for', 'has', 'in', 'is', 'of', 'sum', 'xx']
+theta=10 K=5: 6 Latin units ['GHz', 'MiB', 'kg', 'km', 'ms', 'xx']
+   Q kept ['km', 'kg', 'GHz', 'ms', 'MiB'] | Q lost ['mm'] | N kept ['xx'] | em False | score 4
+theta=10 K=6: 5 Latin units ['GHz', 'MiB', 'kg', 'km', 'ms']
+   Q kept ['km', 'kg', 'GHz', 'ms', 'MiB'] | Q lost ['mm'] | N kept [] | em False | score 5
+theta=10 K=8: 4 Latin units ['MiB', 'kg', 'km', 'ms']
+   Q kept ['km', 'kg', 'ms', 'MiB'] | Q lost ['GHz', 'mm'] | N kept [] | em False | score 4
+theta=10 K=12: 4 Latin units ['MiB', 'kg', 'km', 'ms']
+   Q kept ['km', 'kg', 'ms', 'MiB'] | Q lost ['GHz', 'mm'] | N kept [] | em False | score 4
+theta=20 K=5: 5 Latin units ['GHz', 'MiB', 'kg', 'km', 'xx']
+   Q kept ['km', 'kg', 'GHz', 'MiB'] | Q lost ['ms', 'mm'] | N kept ['xx'] | em False | score 3
+theta=20 K=6: 4 Latin units ['GHz', 'MiB', 'kg', 'km']
+   Q kept ['km', 'kg', 'GHz', 'MiB'] | Q lost ['ms', 'mm'] | N kept [] | em False | score 4
+theta=20 K=8: 3 Latin units ['MiB', 'kg', 'km']
+   Q kept ['km', 'kg', 'MiB'] | Q lost ['GHz', 'ms', 'mm'] | N kept [] | em False | score 3
+theta=20 K=12: 3 Latin units ['MiB', 'kg', 'km']
+   Q kept ['km', 'kg', 'MiB'] | Q lost ['GHz', 'ms', 'mm'] | N kept [] | em False | score 3
+theta=33 K=5: 5 Latin units ['GHz', 'MiB', 'kg', 'km', 'xx']
+   Q kept ['km', 'kg', 'GHz', 'MiB'] | Q lost ['ms', 'mm'] | N kept ['xx'] | em False | score 3
+theta=33 K=6: 4 Latin units ['GHz', 'MiB', 'kg', 'km']
+   Q kept ['km', 'kg', 'GHz', 'MiB'] | Q lost ['ms', 'mm'] | N kept [] | em False | score 4
+theta=33 K=8: 3 Latin units ['MiB', 'kg', 'km']
+   Q kept ['km', 'kg', 'MiB'] | Q lost ['GHz', 'ms', 'mm'] | N kept [] | em False | score 3
+theta=33 K=12: 3 Latin units ['MiB', 'kg', 'km']
+   Q kept ['km', 'kg', 'MiB'] | Q lost ['GHz', 'ms', 'mm'] | N kept [] | em False | score 3
+SELECTED (max score, then larger theta, then larger K): theta=10 K=6 score=5
+--- per-source (after-numeral count, noun occurrences case-insensitive, distinct numerals) ---
+km {"codex:code_qa": [211, 289, 32], "jawiki": [12742, 5649, 32]}
+kg {"codex:code_qa": [105, 100, 30], "jawiki": [8238, 4579, 32]}
+GHz {"codex:general_qa": [270, 5, 6], "jawiki": [80, 14, 24]}
+ms {"codex:code": [111, 1075, 22], "codex:code_qa": [295, 740, 32]}
+MiB {"codex:code": [170, 104, 21], "codex:code_qa": [424, 156, 12]}
+mm {"codex:code_qa": [81, 7037, 32], "jawiki": [2402, 725, 32]}
+AND {"codex:code": [132, 4720, 28], "codex:code_qa": [130, 2260, 23]}
+URL {"codex:code": [83, 17660, 13], "codex:code_qa": [131, 34018, 7]}
+and {"codex:code": [181, 4720, 15], "codex:code_qa": [112, 2260, 19]}
+app {"codex:code": [1633, 12760, 32], "codex:code_qa": [458, 9639, 13]}
+for {"codex:code": [132, 20199, 16], "codex:code_qa": [120, 12075, 14]}
+has {"codex:code": [350, 6058, 10], "codex:code_qa": [150, 3315, 6]}
+in {"codex:code": [100, 20366, 32], "jawiki": [162, 5084, 32]}
+is {"codex:code": [407, 29694, 32], "codex:code_qa": [88, 15923, 11]}
+mas {}
+mis {}
+of {"codex:code": [607, 32306, 14], "codex:code_qa": [118, 11328, 8]}
+sum {"codex:code": [168, 2891, 1], "codex:code_qa": [106, 11834, 5]}
+xx {"codex:code": [840, 78, 5], "codex:code_qa": [966, 100, 9]}
+em {"codex:code": [638, 641, 1], "jawiki": [531, 101, 10]}

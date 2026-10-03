@@ -1,0 +1,7 @@
+# 注意: 修正前の dev/r4a の配置に、修正後の m1_m2_check.py と修正後の問い合わせ（head の段が gen_definition の語を飛ばす）を当てた出力。
+# M1a（unit_sample。構築側）は配置に焼き込まれているので修正前の誤りが見える。M1b（head の段）は問い合わせ側の修正が効くので 0 になる（修正前の問い合わせの漏れは test_coarse_place_generated.py の対照テストと m1_test_without_fix.txt で示した）。
+M1a unit_sample rows 296258; rows listing a word decided with gen_definition: 1434 (words decided with gen_definition: 18254, of which upgraded to direct: 2557)
+M1b head-stage leaks through a generated word: 0 []
+M1b control: of 3000 plain direct words, the compound used the head stage on 2906
+M2 Latin units in counters table (20): ['AND', 'GHz', 'MiB', 'URL', 'and', 'app', 'em', 'for', 'has', 'in', 'is', 'kg', 'km', 'mas', 'mis', 'mm', 'ms', 'of', 'sum', 'xx']; all units: 155
+BAD ['unit_sample lists a generated word', 'M2 4xx', 'M2 5xx', 'M2 1of', 'M2 3AND']

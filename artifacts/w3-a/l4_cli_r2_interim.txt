@@ -1,0 +1,24 @@
+$ /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/py.sh -m verantyx.coarse_place --term 土手
+{"term": "土手", "state": "NO_PLACEMENT", "origin": null, "constructed": false, "top": [], "seen_in_material": null, "context": {"role": null, "predicate": null}, "placement": {"path": null, "content_sha256": null, "reason": "UNSET"}}
+neighbors: [] axes: []
+exit=2
+$ /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/py.sh -m verantyx.coarse_place --term 土手 --placement /nonexistent
+{"term": "土手", "state": "NO_PLACEMENT", "origin": null, "constructed": false, "top": [], "seen_in_material": null, "context": {"role": null, "predicate": null}, "placement": {"path": "/nonexistent", "content_sha256": null, "reason": "MISSING"}}
+neighbors: [] axes: []
+exit=2
+$ /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/py.sh -m verantyx.coarse_place --term 土手 --placement /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r2/run1
+{"term": "土手", "state": "UNPLACED", "origin": null, "constructed": false, "top": [], "seen_in_material": true, "context": {"role": null, "predicate": null}, "placement": {"path": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r2/run1", "content_sha256": "ad38794767191b6120ee3a0b87e88faf006fcc1e3f9d85ddacfde77ec264b2b9", "reason": null}}
+neighbors: [] axes: []
+exit=0
+$ /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/py.sh -m verantyx.coarse_place --term ポルメリス --context-role が --context-predicate ある --placement /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r2/run1
+{"term": "ポルメリス", "state": "UNKNOWN", "origin": null, "constructed": false, "top": [], "seen_in_material": false, "context": {"role": "が", "predicate": "ある"}, "placement": {"path": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r2/run1", "content_sha256": "ad38794767191b6120ee3a0b87e88faf006fcc1e3f9d85ddacfde77ec264b2b9", "reason": null}}
+neighbors: [] axes: []
+exit=0
+$ /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/py.sh -m verantyx.coarse_place --term 土手 --context-role ほげ --placement /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r2/run1
+{"state": "BAD_ARGUMENT"}
+neighbors: [] axes: []
+exit=64
+$ /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/py.sh -m verantyx.coarse_place --term ミドリヒメトカゲ --context-role が --context-predicate 走る --placement /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r2/run1
+{"term": "ミドリヒメトカゲ", "state": "DECIDED", "origin": "estimated", "constructed": true, "top": ["ANIMAL"], "seen_in_material": false, "context": {"role": "が", "predicate": "走る"}, "placement": {"path": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r2/run1", "content_sha256": "ad38794767191b6120ee3a0b87e88faf006fcc1e3f9d85ddacfde77ec264b2b9", "reason": null}}
+neighbors: [('トカゲ', 'head:トカゲ@R'), ('やいトカゲ', 'kin:トカゲ@R'), ('アオスジトカゲ', 'kin:トカゲ@R'), ('アカメカブトトカゲ', 'kin:トカゲ@R')] axes: ['morphology:head', 'morphology:kin']
+exit=0

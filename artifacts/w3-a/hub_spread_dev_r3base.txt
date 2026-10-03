@@ -1,0 +1,7 @@
+placement: /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/r3base
+小説家 2212 [(('NONE', ''), 1838), (('UNPLACED', ''), 372), (('DECIDED', 'PLANT'), 1), (('DECIDED', 'PERSON'), 1)]
+僧 826 [(('DECIDED', 'GROUP_ORG'), 768), (('NONE', ''), 57), (('MULTIPLE', 'GROUP_ORG,INFO_LANGUAGE,PERSON,QUANTITY'), 1)]
+大名 1566 [(('NONE', ''), 1398), (('UNPLACED', ''), 168)]
+武将 6917 [(('NONE', ''), 5918), (('UNPLACED', ''), 998), (('DECIDED', 'P_STATE'), 1)]
+僧侶 439 [(('NONE', ''), 380), (('UNPLACED', ''), 58), (('DECIDED', 'P_STATE'), 1)]
+網膜 0 []

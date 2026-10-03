@@ -1,0 +1,9 @@
+# dev what-if on dev/r2b: the recursive left side (query-time key left_recursive). NOT official runs; dev data only.
+== left_recursive=true (the default)
+L2 n 580 correct 0.4707 wrong 0.0603 trapwrong 0.1351 {(None, 'other'): 177, ('estimated', 'correct'): 45, ('estimated', 'wrong_single'): 16}
+L3 typed 50 correct 0.560 wrong 0.040 | unk 15 returned 0.200
+L1 tokens 11108 cover 0.7196
+== left_recursive=false
+L2 n 580 correct 0.4707 wrong 0.0603 trapwrong 0.1351 {(None, 'other'): 176, ('estimated', 'correct'): 46, ('estimated', 'wrong_single'): 16}
+L3 typed 50 correct 0.520 wrong 0.100 | unk 15 returned 0.200
+L1 tokens 11108 cover 0.7170

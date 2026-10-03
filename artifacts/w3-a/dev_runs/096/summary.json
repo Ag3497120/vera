@@ -1,0 +1,483 @@
+{
+ "builder_sha256": "f724f253c1e4e2b7aad0d09e7b6af038d9b9e15d72a8071d8a5b1228fb590cf0",
+ "by_pos": {
+  "動詞": {
+   "hit": 1053,
+   "tokens": 1253
+  },
+  "名詞": {
+   "hit": 7492,
+   "tokens": 9629
+  },
+  "形容詞": {
+   "hit": 143,
+   "tokens": 143
+  },
+  "形状詞": {
+   "hit": 83,
+   "tokens": 83
+  }
+ },
+ "by_pos_rate": {
+  "動詞": 0.8404,
+  "名詞": 0.7781,
+  "形容詞": 1.0,
+  "形状詞": 1.0
+ },
+ "by_source": {
+  "codex:code": {
+   "hit": 749,
+   "tokens": 1004
+  },
+  "codex:code_qa": {
+   "hit": 187,
+   "tokens": 260
+  },
+  "codex:conversation": {
+   "hit": 516,
+   "tokens": 580
+  },
+  "codex:figurative_commonsense": {
+   "hit": 69,
+   "tokens": 82
+  },
+  "codex:general_qa": {
+   "hit": 93,
+   "tokens": 103
+  },
+  "codex:narrative": {
+   "hit": 12,
+   "tokens": 13
+  },
+  "codex:paraphrase_entail": {
+   "hit": 194,
+   "tokens": 225
+  },
+  "codex:pro": {
+   "hit": 693,
+   "tokens": 829
+  },
+  "jawiki": {
+   "hit": 6258,
+   "tokens": 8012
+  }
+ },
+ "coarse_types_sha256": "a715129f8a96f47afd39f5007316ce3266ac008e5386e6dcfbc56582ae0f79d4",
+ "command": [
+  "l1",
+  "--placement",
+  "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/r5a",
+  "--data",
+  "dev"
+ ],
+ "config_sha256": "a1c0c2047533dddb20deaae1f8df799e98a80a38a0cfe98df8fa51216bbc761c",
+ "content_sha256": "ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
+ "data": "dev",
+ "distinct": 5126,
+ "distinct_cover": 3481,
+ "distinct_cover_rate": 0.6791,
+ "headwords_all_rows": 1758846,
+ "holdout_sha256": "bf33fe42792a129e5e7e62b8d0b06108f835b6d55851056514c5d05cea20f86f",
+ "pass": {
+  "placed>=100000": true,
+  "token_cover>=0.90": false
+ },
+ "placed_by_arm": {
+  "alias": 303576,
+  "definition": 565083,
+  "definition_recovered": 8222,
+  "frame@codex:code": 33,
+  "frame@codex:code_qa": 17,
+  "frame@codex:conversation": 72,
+  "frame@codex:figurative_commonsense": 101,
+  "frame@codex:general_qa": 113,
+  "frame@codex:narrative": 76,
+  "frame@codex:paraphrase_entail": 121,
+  "frame@codex:pro": 152,
+  "frame@jawiki": 46,
+  "gen_definition": 2557,
+  "hearst@codex:code": 343,
+  "hearst@codex:code_qa": 63,
+  "hearst@codex:conversation": 13,
+  "hearst@codex:figurative_commonsense": 14,
+  "hearst@codex:general_qa": 624,
+  "hearst@codex:paraphrase_entail": 1,
+  "hearst@jawiki": 849,
+  "paren_alias": 97609,
+  "pos_class@codex:code": 257,
+  "pos_class@codex:code_qa": 232,
+  "pos_class@codex:conversation": 720,
+  "pos_class@codex:figurative_commonsense": 919,
+  "pos_class@codex:general_qa": 915,
+  "pos_class@codex:narrative": 491,
+  "pos_class@codex:paraphrase_entail": 345,
+  "pos_class@codex:pro": 598,
+  "pos_class@jawiki": 1986,
+  "role@codex:code": 945,
+  "role@codex:code_qa": 712,
+  "role@codex:conversation": 1730,
+  "role@codex:figurative_commonsense": 1702,
+  "role@codex:general_qa": 2540,
+  "role@codex:narrative": 1931,
+  "role@codex:paraphrase_entail": 2911,
+  "role@codex:pro": 1659,
+  "role@jawiki": 2741,
+  "sahen@codex:code": 2649,
+  "sahen@codex:code_qa": 1191,
+  "sahen@codex:conversation": 1753,
+  "sahen@codex:figurative_commonsense": 1077,
+  "sahen@codex:general_qa": 2027,
+  "sahen@codex:narrative": 590,
+  "sahen@codex:paraphrase_entail": 1600,
+  "sahen@codex:pro": 709,
+  "sahen@jawiki": 4978,
+  "seed": 656
+ },
+ "placed_by_kind": {
+  "paren_alias": 94682,
+  "seed": 656,
+  "title": 878689,
+  "token": 19000
+ },
+ "placed_by_ns": {
+  "N": 990014,
+  "NP": 8,
+  "P": 3005
+ },
+ "placed_by_state": {
+  "DECIDED": 1002932,
+  "MULTIPLE": 5792,
+  "UNPLACED": 750122
+ },
+ "placed_direct_headwords": 993027,
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/r5a",
+ "sentences": 1000,
+ "time_utc": "2026-10-03T03:34:34Z",
+ "token_cover": 8771,
+ "token_cover_rate": 0.7896,
+ "tokens": 11108,
+ "tokens_by_basis": {
+  "direct": 7602,
+  "generated": 789,
+  "none": 2337,
+  "proximity": 380
+ },
+ "tokens_by_origin": {
+  "direct": 7602,
+  "estimated": 1169,
+  "none": 2337
+ },
+ "tokens_by_state": {
+  "DECIDED": 7456,
+  "MULTIPLE": 1315,
+  "UNKNOWN": 150,
+  "UNPLACED": 2187
+ },
+ "tokens_typed_by_basis": {
+  "direct": 7602,
+  "generated": 789,
+  "proximity": 380
+ },
+ "top_misses": [
+  {
+   "n": 31,
+   "pos": "名詞",
+   "term": "出身"
+  },
+  {
+   "n": 25,
+   "pos": "名詞",
+   "term": "合衆"
+  },
+  {
+   "n": 16,
+   "pos": "名詞",
+   "term": "共和"
+  },
+  {
+   "n": 12,
+   "pos": "名詞",
+   "term": "人民"
+  },
+  {
+   "n": 10,
+   "pos": "名詞",
+   "term": "会"
+  },
+  {
+   "n": 10,
+   "pos": "名詞",
+   "term": "レビュー"
+  },
+  {
+   "n": 9,
+   "pos": "名詞",
+   "term": "愛知"
+  },
+  {
+   "n": 8,
+   "pos": "名詞",
+   "term": "連邦"
+  },
+  {
+   "n": 8,
+   "pos": "名詞",
+   "term": "例"
+  },
+  {
+   "n": 8,
+   "pos": "名詞",
+   "term": "朝鮮"
+  },
+  {
+   "n": 7,
+   "pos": "名詞",
+   "term": "名"
+  },
+  {
+   "n": 7,
+   "pos": "名詞",
+   "term": "系列"
+  },
+  {
+   "n": 6,
+   "pos": "名詞",
+   "term": "シングル"
+  },
+  {
+   "n": 6,
+   "pos": "名詞",
+   "term": "朝"
+  },
+  {
+   "n": 6,
+   "pos": "動詞",
+   "term": "読む"
+  },
+  {
+   "n": 6,
+   "pos": "名詞",
+   "term": "ログ"
+  },
+  {
+   "n": 6,
+   "pos": "動詞",
+   "term": "揺れる"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "and"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "a"
+  },
+  {
+   "n": 5,
+   "pos": "動詞",
+   "term": "指す"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "丁目"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "りつ"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "s"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "ザ"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "兵庫"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "マルタ"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "of"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "プロジェクト"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "紙"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "国家"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "らん"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "対"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "航空"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "もり"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "目的"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "もの"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "マン"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "りゅう"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "キャッシュ"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "架空"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "午後"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "愛媛"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "マカオ"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "豊田"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "朝倉"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "しま"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "on"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "じゅう"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "cargo"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "声"
+  },
+  {
+   "n": 4,
+   "pos": "動詞",
+   "term": "間に合う"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "コマンド"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "配列"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "git"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "test"
+  },
+  {
+   "n": 4,
+   "pos": "動詞",
+   "term": "立てる"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "is"
+  },
+  {
+   "n": 3,
+   "pos": "名詞",
+   "term": "マンハッタン"
+  },
+  {
+   "n": 3,
+   "pos": "名詞",
+   "term": "風景"
+  },
+  {
+   "n": 3,
+   "pos": "名詞",
+   "term": "物"
+  }
+ ]
+}

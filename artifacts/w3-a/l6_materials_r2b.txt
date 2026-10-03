@@ -1,0 +1,36 @@
+[
+ {
+  "name": "jawiki lead sentences",
+  "path": "/Users/motonisihikoudai/vera-wiring/data/jawiki_leads.full.jsonl",
+  "role": "definition / alias / role / pos material"
+ },
+ {
+  "name": "codex generated corpus index (train)",
+  "path": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c",
+  "role": "role / pos material per family (origin: generated)"
+ },
+ {
+  "name": "hand-written seeds",
+  "path": "verantyx/coarse_types.py (SEEDS_NOUN, SEEDS_PRED)"
+ },
+ {
+  "name": "notation rules",
+  "path": "verantyx/coarse_types.py (notation_type)"
+ },
+ {
+  "name": "predicate frame rule table",
+  "path": "verantyx/coarse_types.py (PRED_FRAME_RULES)"
+ },
+ {
+  "name": "stop-word lists (they give no type)",
+  "path": "verantyx/coarse_types.py (GENERIC_HEADS, META_HEADS, RANK_WORDS)"
+ },
+ {
+  "name": "paren alias (the first bracket element after a title)",
+  "role": "derived from the jawiki leads above (an arm of its own)"
+ },
+ {
+  "name": "unidic-lite via fugashi",
+  "use": "word segmentation, the coarse word class (pos1, pos2) and orthBase ONLY; no finer dictionary sense labels"
+ }
+]

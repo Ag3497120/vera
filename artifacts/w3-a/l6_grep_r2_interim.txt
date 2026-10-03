@@ -1,0 +1,2 @@
+grep exit=1 (1 expected)
+grep exit=1 (1 expected)

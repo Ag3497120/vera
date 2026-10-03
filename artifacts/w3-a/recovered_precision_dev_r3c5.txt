@@ -1,0 +1,11 @@
+placement: /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/r3c5
+only-definition_recovered words in dev_vocab: 8  correct 6  wrong_single 2  other 0
+rule: wrong > correct/3 -> do not let it decide:  wrong*3 > correct = False
+  ('理事会', ['GROUP_ORG'], ['GROUP_ORG'], 'correct')
+  ('鷲', ['ANIMAL'], ['ANIMAL'], 'correct')
+  ('人権', ['PERSON'], ['ABSTRACT'], 'wrong_single')
+  ('肋骨', ['BODY_PART'], ['BODY_PART'], 'correct')
+  ('社団法人', ['GROUP_ORG'], ['GROUP_ORG'], 'correct')
+  ('スズメバチ', ['ANIMAL'], ['ANIMAL'], 'correct')
+  ('ペルシア語', ['PLACE'], ['INFO_LANGUAGE'], 'wrong_single')
+  ('視神経', ['BODY_PART'], ['BODY_PART'], 'correct')

@@ -1,0 +1,467 @@
+{
+ "builder_sha256": "1da569be9858dfa43906017a8a6fe3c00a72ebd09c4ac20a98f5948aed7c8d6c",
+ "by_pos": {
+  "動詞": {
+   "hit": 815,
+   "tokens": 1253
+  },
+  "名詞": {
+   "hit": 7131,
+   "tokens": 9629
+  },
+  "形容詞": {
+   "hit": 143,
+   "tokens": 143
+  },
+  "形状詞": {
+   "hit": 82,
+   "tokens": 83
+  }
+ },
+ "by_pos_rate": {
+  "動詞": 0.6504,
+  "名詞": 0.7406,
+  "形容詞": 1.0,
+  "形状詞": 0.988
+ },
+ "by_source": {
+  "codex:code": {
+   "hit": 714,
+   "tokens": 1004
+  },
+  "codex:code_qa": {
+   "hit": 184,
+   "tokens": 260
+  },
+  "codex:conversation": {
+   "hit": 476,
+   "tokens": 580
+  },
+  "codex:figurative_commonsense": {
+   "hit": 63,
+   "tokens": 82
+  },
+  "codex:general_qa": {
+   "hit": 95,
+   "tokens": 103
+  },
+  "codex:narrative": {
+   "hit": 10,
+   "tokens": 13
+  },
+  "codex:paraphrase_entail": {
+   "hit": 192,
+   "tokens": 225
+  },
+  "codex:pro": {
+   "hit": 683,
+   "tokens": 829
+  },
+  "jawiki": {
+   "hit": 5754,
+   "tokens": 8012
+  }
+ },
+ "coarse_types_sha256": "2860a02568d9914a387bac44e751216d57fd81adf5815e5dfe73484fa2b19707",
+ "command": [
+  "l1",
+  "--placement",
+  "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/h1",
+  "--data",
+  "dev"
+ ],
+ "config_sha256": "bdc2c456a04d62bbb96ff47ee7dba36a1ae6e4a9e55b20b53b59762405b994f1",
+ "content_sha256": "b39d5defcb4d2c084e4385ffc01b2c91a2c60ad54fda448b23a1c0d6b039c747",
+ "data": "dev",
+ "distinct": 5126,
+ "distinct_cover": 3157,
+ "distinct_cover_rate": 0.6159,
+ "headwords_all_rows": 1696696,
+ "holdout_sha256": "bf33fe42792a129e5e7e62b8d0b06108f835b6d55851056514c5d05cea20f86f",
+ "pass": {
+  "placed>=100000": true,
+  "token_cover>=0.90": false
+ },
+ "placed_by_arm": {
+  "alias": 327937,
+  "definition": 603249,
+  "frame@codex:code": 35,
+  "frame@codex:code_qa": 17,
+  "frame@codex:conversation": 69,
+  "frame@codex:figurative_commonsense": 116,
+  "frame@codex:general_qa": 105,
+  "frame@codex:narrative": 90,
+  "frame@codex:paraphrase_entail": 147,
+  "frame@codex:pro": 178,
+  "frame@jawiki": 46,
+  "hearst@codex:code": 363,
+  "hearst@codex:code_qa": 67,
+  "hearst@codex:conversation": 15,
+  "hearst@codex:figurative_commonsense": 17,
+  "hearst@codex:general_qa": 676,
+  "hearst@codex:paraphrase_entail": 2,
+  "hearst@jawiki": 845,
+  "pos_class@codex:code": 248,
+  "pos_class@codex:code_qa": 220,
+  "pos_class@codex:conversation": 703,
+  "pos_class@codex:figurative_commonsense": 911,
+  "pos_class@codex:general_qa": 890,
+  "pos_class@codex:narrative": 484,
+  "pos_class@codex:paraphrase_entail": 331,
+  "pos_class@codex:pro": 588,
+  "pos_class@jawiki": 1969,
+  "role@codex:code": 1903,
+  "role@codex:code_qa": 992,
+  "role@codex:conversation": 2204,
+  "role@codex:figurative_commonsense": 1806,
+  "role@codex:general_qa": 3040,
+  "role@codex:narrative": 1387,
+  "role@codex:paraphrase_entail": 4106,
+  "role@codex:pro": 2389,
+  "role@jawiki": 9852,
+  "sahen@codex:code": 2648,
+  "sahen@codex:code_qa": 1190,
+  "sahen@codex:conversation": 1753,
+  "sahen@codex:figurative_commonsense": 1077,
+  "sahen@codex:general_qa": 2027,
+  "sahen@codex:narrative": 590,
+  "sahen@codex:paraphrase_entail": 1600,
+  "sahen@codex:pro": 709,
+  "sahen@jawiki": 4977,
+  "seed": 698
+ },
+ "placed_by_kind": {
+  "seed": 698,
+  "title": 933664,
+  "token": 28343
+ },
+ "placed_by_ns": {
+  "N": 959638,
+  "P": 3067
+ },
+ "placed_by_state": {
+  "DECIDED": 954244,
+  "MULTIPLE": 8461,
+  "UNPLACED": 733991
+ },
+ "placed_direct_headwords": 962705,
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/h1",
+ "sentences": 1000,
+ "time_utc": "2026-10-02T21:18:00Z",
+ "token_cover": 8171,
+ "token_cover_rate": 0.7356,
+ "tokens": 11108,
+ "tokens_by_origin": {
+  "direct": 7689,
+  "estimated": 482,
+  "none": 2937
+ },
+ "tokens_by_state": {
+  "DECIDED": 6803,
+  "MULTIPLE": 1368,
+  "UNKNOWN": 157,
+  "UNPLACED": 2780
+ },
+ "top_misses": [
+  {
+   "n": 97,
+   "pos": "動詞",
+   "term": "する"
+  },
+  {
+   "n": 31,
+   "pos": "名詞",
+   "term": "出身"
+  },
+  {
+   "n": 25,
+   "pos": "名詞",
+   "term": "合衆"
+  },
+  {
+   "n": 19,
+   "pos": "動詞",
+   "term": "おく"
+  },
+  {
+   "n": 17,
+   "pos": "動詞",
+   "term": "ござる"
+  },
+  {
+   "n": 16,
+   "pos": "名詞",
+   "term": "共和"
+  },
+  {
+   "n": 15,
+   "pos": "名詞",
+   "term": "がっこう"
+  },
+  {
+   "n": 12,
+   "pos": "名詞",
+   "term": "人民"
+  },
+  {
+   "n": 12,
+   "pos": "名詞",
+   "term": "プロ"
+  },
+  {
+   "n": 11,
+   "pos": "名詞",
+   "term": "一覧"
+  },
+  {
+   "n": 11,
+   "pos": "名詞",
+   "term": "音"
+  },
+  {
+   "n": 9,
+   "pos": "名詞",
+   "term": "シーズン"
+  },
+  {
+   "n": 9,
+   "pos": "名詞",
+   "term": "愛知"
+  },
+  {
+   "n": 8,
+   "pos": "名詞",
+   "term": "みや"
+  },
+  {
+   "n": 7,
+   "pos": "名詞",
+   "term": "ひと"
+  },
+  {
+   "n": 7,
+   "pos": "名詞",
+   "term": "総合"
+  },
+  {
+   "n": 7,
+   "pos": "名詞",
+   "term": "民主"
+  },
+  {
+   "n": 7,
+   "pos": "名詞",
+   "term": "系列"
+  },
+  {
+   "n": 6,
+   "pos": "名詞",
+   "term": "サービス"
+  },
+  {
+   "n": 6,
+   "pos": "名詞",
+   "term": "英"
+  },
+  {
+   "n": 6,
+   "pos": "名詞",
+   "term": "シングル"
+  },
+  {
+   "n": 6,
+   "pos": "名詞",
+   "term": "けい"
+  },
+  {
+   "n": 6,
+   "pos": "名詞",
+   "term": "公立"
+  },
+  {
+   "n": 6,
+   "pos": "名詞",
+   "term": "熊本"
+  },
+  {
+   "n": 6,
+   "pos": "名詞",
+   "term": "きょく"
+  },
+  {
+   "n": 6,
+   "pos": "動詞",
+   "term": "つく"
+  },
+  {
+   "n": 6,
+   "pos": "動詞",
+   "term": "つける"
+  },
+  {
+   "n": 6,
+   "pos": "動詞",
+   "term": "読む"
+  },
+  {
+   "n": 6,
+   "pos": "動詞",
+   "term": "揺れる"
+  },
+  {
+   "n": 6,
+   "pos": "動詞",
+   "term": "入れる"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "りょう"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "and"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "a"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "専用"
+  },
+  {
+   "n": 5,
+   "pos": "動詞",
+   "term": "指す"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "りつ"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "s"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "ライン"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "専門"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "電子"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "教育"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "システム"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "兵庫"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "フジ"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "of"
+  },
+  {
+   "n": 5,
+   "pos": "動詞",
+   "term": "出す"
+  },
+  {
+   "n": 5,
+   "pos": "名詞",
+   "term": "紙"
+  },
+  {
+   "n": 5,
+   "pos": "動詞",
+   "term": "冷える"
+  },
+  {
+   "n": 5,
+   "pos": "動詞",
+   "term": "乾く"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "陸軍"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "タレント"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "文化"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "らん"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "航空"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "もり"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "原題"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "同年"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "マン"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "りゅう"
+  },
+  {
+   "n": 4,
+   "pos": "名詞",
+   "term": "しん"
+  }
+ ]
+}

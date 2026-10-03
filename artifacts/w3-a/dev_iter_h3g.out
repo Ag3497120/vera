@@ -1,0 +1,18 @@
+{"state": "BUILT", "out": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/h3g", "content_sha256": "317b1949dac365e26c741d504ac02c32fb88d0e8073d0d6463d972fd898c38ba", "headwords": 1745511, "placed_direct": 1018478, "duration_sec": 105.0}
+{"n": 580, "correct_rate": 0.519, "wrong_single_rate": 0.0759, "trap_wrong_single_rate": 0.1351, "non_direct": {"None/other": 145, "estimated/correct": 34, "estimated/wrong_single": 12}, "pass": {"correct>=0.85": false, "wrong<=0.08": true, "trap_wrong<=0.05": false, "n>=800": true, "trap_n>=100": true}}
+Traceback (most recent call last):
+  File "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/measure_w3a.py", line 388, in <module>
+    main()
+  File "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/measure_w3a.py", line 384, in main
+    {"l1": cmd_l1, "l2": cmd_l2, "l3": cmd_l3, "l5": cmd_l5, "pred": cmd_pred}[args.cmd](args)
+  File "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/measure_w3a.py", line 214, in cmd_l3
+    outd = outdir(args)
+           ^^^^^^^^^^^^
+  File "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/measure_w3a.py", line 90, in outdir
+    return next_dir(os.path.join(A, "eval_runs" if args.data == "frozen" else "dev_runs"))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/measure_w3a.py", line 57, in next_dir
+    os.makedirs(p)
+  File "<frozen os>", line 225, in makedirs
+FileExistsError: [Errno 17] File exists: '/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/dev_runs/039'
+{"sentences": 1000, "tokens": 11108, "token_cover_rate": 0.7695, "distinct": 5126, "distinct_cover_rate": 0.6352, "by_pos_rate": {"名詞": 0.757, "動詞": 0.8252, "形容詞": 1.0, "形状詞": 0.988}, "placed_direct_headwords": 1018478, "pass": {"token_cover>=0.90": false, "placed>=100000": true}}

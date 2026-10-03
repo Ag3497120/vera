@@ -1,0 +1,13 @@
+{"id": "V1075", "term": "ストレス", "original_gold": ["ABSTRACT", "STATE_PROPERTY"], "proposed_gold": null, "reason": "drop: the author marked this word as uncertain when writing the spec but the mark was lost (it is arguable between concept, state and event), so it should not be in the key", "adopted": false, "reviewer_decision": "round 1 review: not adopted (the author-side mark cannot be verified); kept in the key"}
+{"id": "V0478", "term": "ボルト", "original_gold": ["QUANTITY"], "proposed_gold": ["QUANTITY", "ARTIFACT"], "reason": "polysemy missing: volt (unit) and bolt (fastener)", "adopted": true}
+{"id": "V0724", "term": "はやぶさ", "original_gold": ["ARTIFACT"], "proposed_gold": ["ARTIFACT", "ANIMAL"], "reason": "polysemy missing: the space probe and the falcon", "adopted": true}
+{"id": "V0948", "term": "上手", "original_gold": ["STATE_PROPERTY"], "proposed_gold": ["P_STATE"], "reason": "an adjectival noun (word class), and the boundary rules give adjectival nouns the predicate type P_STATE", "adopted": true}
+{"id": "V0949", "term": "下手", "original_gold": ["STATE_PROPERTY"], "proposed_gold": ["P_STATE"], "reason": "same as V0948", "adopted": true}
+{"id": "V0950", "term": "苦手", "original_gold": ["STATE_PROPERTY"], "proposed_gold": ["P_STATE"], "reason": "same as V0948", "adopted": true}
+{"id": "V1073", "term": "憲法", "original_gold": ["INFO_LANGUAGE", "WORK"], "proposed_gold": ["INFO_LANGUAGE", "WORK", "ABSTRACT"], "reason": "review r1: a constitution is also a law/institution; the boundary rule gives law -> ABSTRACT", "adopted": true}
+{"id": "V1069", "term": "日記帳", "original_gold": ["INFO_LANGUAGE", "WORK"], "proposed_gold": ["INFO_LANGUAGE", "WORK", "ARTIFACT"], "reason": "review r1: a diary book is also a physical notebook", "adopted": true}
+{"id": "V0729", "term": "練馬大根", "original_gold": ["SUBSTANCE_FOOD"], "proposed_gold": ["SUBSTANCE_FOOD", "PLANT"], "reason": "review r1: like 大根 (the plant and the vegetable)", "adopted": true}
+{"id": "V0732", "term": "コシヒカリ", "original_gold": ["SUBSTANCE_FOOD"], "proposed_gold": ["SUBSTANCE_FOOD", "PLANT"], "reason": "review r1: a rice cultivar is a plant and a food", "adopted": true}
+{"id": "V0685", "term": "こころ", "original_gold": ["WORK"], "proposed_gold": ["WORK", "ABSTRACT"], "reason": "review r1: also the ordinary noun (mind, heart)", "adopted": true}
+{"id": "V0684", "term": "雪国", "original_gold": ["WORK"], "proposed_gold": ["WORK", "PLACE"], "reason": "review r1: also the ordinary noun (a snowy region)", "adopted": true}
+{"id": "V0683", "term": "羅生門", "original_gold": ["WORK"], "proposed_gold": ["WORK", "PLACE"], "reason": "review r1: also the gate (a structure)", "adopted": true}

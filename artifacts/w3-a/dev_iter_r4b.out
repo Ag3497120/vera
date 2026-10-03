@@ -1,0 +1,17 @@
+{"state": "BUILT", "out": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/r4b", "content_sha256": "09f597669145c58882481b711adcb3ff1c75df996d25d4f50dd012ccd370c993", "headwords": 1758846, "placed_direct": 990470, "duration_sec": 221.8}
+{"n": 580, "correct_rate": 0.469, "wrong_single_rate": 0.0414, "trap_wrong_single_rate": 0.1081, "non_direct": {"estimated/correct": 113, "None/other": 122, "estimated/wrong_single": 19}, "pass": {"correct>=0.85": false, "wrong<=0.08": true, "trap_wrong<=0.05": false, "n>=800": true, "trap_n>=100": true}}
+{"typed_n": 50, "unknown_n": 15, "correct_rate": 0.52, "wrong_rate": 0.0, "unknown_among_typed": 24, "returned_type_rate": 0.0667, "leaks_direct_not_notation": [], "pass": {"correct>=0.65": false, "wrong<=0.15": true, "returned_type<=0.20": true, "no_leaks": true, "no_unmarked": true}}
+{"sentences": 1000, "tokens": 11108, "token_cover_rate": 0.7896, "distinct": 5126, "distinct_cover_rate": 0.6791, "by_pos_rate": {"名詞": 0.7781, "動詞": 0.8404, "形容詞": 1.0, "形状詞": 1.0}, "placed_direct_headwords": 990470, "pass": {"token_cover>=0.90": false, "placed>=100000": true}}
+placement: /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/r4b
+小説家 2212 [(('NONE', ''), 1838), (('UNPLACED', ''), 369), (('DECIDED', 'PERSON'), 4), (('DECIDED', 'PLANT'), 1)]
+僧 826 [(('NONE', ''), 640), (('UNPLACED', ''), 184), (('MULTIPLE', 'IDENTIFIER,PERSON'), 1), (('DECIDED', 'INFO_LANGUAGE'), 1)]
+大名 1566 [(('NONE', ''), 1398), (('UNPLACED', ''), 168)]
+placement: /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/r4b
+only-definition_recovered words in dev_vocab: 8  correct 6  wrong_single 2  other 0
+rule: wrong > correct/3 -> do not let it decide:  wrong*3 > correct = False
+placement: /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/dev/r4b
+upgraded: correct 0  wrong_single 0  other 0
+est_generated: correct 85  wrong_single 7  other 0
+gen_ignored: correct 4  wrong_single 0  other 24
+rule 5-7: upgrade stays ON when correct >= 3 * wrong among the upgraded: False  (correct 0, wrong 0)
+  ('est_generated', '恋人', ['PERSON'], ['PERSON'], 'correct')

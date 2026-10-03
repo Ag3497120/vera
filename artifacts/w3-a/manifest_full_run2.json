@@ -1,0 +1,646 @@
+{
+ "alias_stats": {
+  "resolved": 352991,
+  "unresolved_target": 597560
+ },
+ "args": {
+  "codex_dir": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c",
+  "exclude_terms": [
+   "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/tests/coarse_place/data/unknown_words.jsonl",
+   "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/tests/coarse_place/data/dev_unknown.jsonl"
+  ],
+  "families": null,
+  "frozen": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/FROZEN.json",
+  "holdout": [
+   "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/holdout_2000.jsonl",
+   "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/dev_l1_1000.jsonl"
+  ],
+  "jawiki": "/Users/motonisihikoudai/vera-wiring/data/jawiki_leads.full.jsonl",
+  "jobs": 8,
+  "sample_stride": 1,
+  "stage_cache": null
+ },
+ "build_finished_at_utc": "2026-10-02T22:00:46Z",
+ "build_started_at_utc": "2026-10-02T21:55:40Z",
+ "builder_sha256": "423a3fd7ae1ee534b699d6668a1a0c22b976fbb37250e8481fb61abd2d04b559",
+ "coarse_types_sha256": "5a07478613086a33a563d61016cdf6a8ee17bb4f3b171c17be919061668d94c7",
+ "config": {
+  "alias_min": 1,
+  "conflict_policy": "unknown",
+  "counter_max_chars": 3,
+  "counter_min": 200,
+  "ctx_min_lift_pct": 300,
+  "ctx_min_share_pct": 70,
+  "ctx_min_total": 20,
+  "ctx_store_min": 20,
+  "def_min": 1,
+  "definition_outranks_role": false,
+  "est_ctx_min_lift_pct": 300,
+  "est_ctx_min_share_pct": 70,
+  "est_ctx_min_sources": 2,
+  "est_ctx_min_total": 20,
+  "frame_min_total": 30,
+  "head_min_chars": 2,
+  "hearst_min": 2,
+  "hearst_min_share_pct": 70,
+  "kin_min_count": 3,
+  "kin_min_share_pct": 70,
+  "kin_min_unit_chars": 2,
+  "kin_store_min": 3,
+  "left_attested": true,
+  "max_chain_depth": 4,
+  "max_word_chars": 12,
+  "min_seen": 3,
+  "min_suffix_chars": 2,
+  "pos_min": 3,
+  "qual_min": 999,
+  "role_min": 5,
+  "role_min_share_pct": 70,
+  "role_min_sources": 2,
+  "sahen_min": 3,
+  "sahen_min_share_pct": 30
+ },
+ "config_sha256": "e48fcb83e2305378fbe65bab4afa924cc6d43ec723069e4e57229567feed2a45",
+ "content_sha256": "e07d46485ef297f8da634c42c391261420e4e51b0833588efa6bb38bfd6c82a6",
+ "donors": 625314,
+ "duration_sec": 306.2,
+ "excluded_term_hits": {
+  "codex:code:ヌルポ": 223,
+  "codex:code:前年同月比": 1,
+  "codex:code_qa:ヌルポ": 45,
+  "codex:code_qa:前年同月比": 7,
+  "codex:code_qa:合計走行距離": 1,
+  "codex:code_qa:夜行バス": 2,
+  "codex:code_qa:平均滞在日数": 1,
+  "codex:code_qa:年間降水量": 1,
+  "codex:code_qa:月間平均気温": 1,
+  "codex:conversation:冷凍餃子": 76,
+  "codex:conversation:前年同月比": 3,
+  "codex:conversation:夜行バス": 157,
+  "codex:conversation:市民合唱団": 9,
+  "codex:conversation:年末の大掃除": 26,
+  "codex:conversation:折りたたみ自転車": 16,
+  "codex:conversation:新入生歓迎会": 16,
+  "codex:conversation:来月上旬": 6,
+  "codex:conversation:梅雨明け直後": 1,
+  "codex:conversation:線状降水帯": 8,
+  "codex:conversation:英語論文の要約": 1,
+  "codex:conversation:食欲不振": 2,
+  "codex:conversation:高圧洗浄機": 17,
+  "codex:figurative_commonsense:冷凍餃子": 1,
+  "codex:figurative_commonsense:古民家カフェ": 1,
+  "codex:figurative_commonsense:夜行バス": 87,
+  "codex:figurative_commonsense:尺骨": 1,
+  "codex:figurative_commonsense:年末の大掃除": 11,
+  "codex:figurative_commonsense:折りたたみ自転車": 1,
+  "codex:figurative_commonsense:最大積載量": 1,
+  "codex:figurative_commonsense:海霧": 27,
+  "codex:figurative_commonsense:線状降水帯": 1,
+  "codex:figurative_commonsense:路上ライブ": 1,
+  "codex:figurative_commonsense:連休明けの朝": 1,
+  "codex:figurative_commonsense:高台の展望台": 1,
+  "codex:general_qa:倦怠感": 13,
+  "codex:general_qa:冬型の気圧配置": 3,
+  "codex:general_qa:冷凍餃子": 3,
+  "codex:general_qa:前年同月比": 9,
+  "codex:general_qa:夜行バス": 124,
+  "codex:general_qa:太陽フレア": 72,
+  "codex:general_qa:尺骨": 1,
+  "codex:general_qa:年末の大掃除": 20,
+  "codex:general_qa:年間降水量": 9,
+  "codex:general_qa:慢性的な腰痛": 1,
+  "codex:general_qa:慢性胃炎": 3,
+  "codex:general_qa:折りたたみ自転車": 2,
+  "codex:general_qa:方言辞典": 2,
+  "codex:general_qa:最大積載量": 6,
+  "codex:general_qa:海霧": 12,
+  "codex:general_qa:発酵バター": 4,
+  "codex:general_qa:眼窩": 1,
+  "codex:general_qa:磁気嵐": 42,
+  "codex:general_qa:線状降水帯": 30,
+  "codex:general_qa:腓骨": 1,
+  "codex:general_qa:舌下腺": 7,
+  "codex:general_qa:食欲不振": 36,
+  "codex:general_qa:高圧洗浄機": 1,
+  "codex:general_qa:黄砂の飛来": 21,
+  "codex:narrative:夜行バス": 33,
+  "codex:narrative:海霧": 9,
+  "codex:narrative:満月の翌朝": 2,
+  "codex:paraphrase_entail:冬型の気圧配置": 1,
+  "codex:paraphrase_entail:冷凍餃子": 4,
+  "codex:paraphrase_entail:夜行バス": 163,
+  "codex:paraphrase_entail:年間降水量": 2,
+  "codex:paraphrase_entail:折りたたみ自転車": 4,
+  "codex:paraphrase_entail:新入生歓迎会": 2,
+  "codex:paraphrase_entail:校内マラソン大会": 1,
+  "codex:paraphrase_entail:海霧": 24,
+  "codex:paraphrase_entail:線状降水帯": 1,
+  "codex:paraphrase_entail:路上ライブ": 10,
+  "codex:pro:冷凍餃子": 27,
+  "codex:pro:夜行バス": 2,
+  "codex:pro:年末の大掃除": 7,
+  "codex:pro:折りたたみ自転車": 1,
+  "codex:pro:海霧": 1,
+  "codex:pro:高圧洗浄機": 11,
+  "jawiki:グルルン": 2,
+  "jawiki:ゴロニャン": 3,
+  "jawiki:ソペリ": 1,
+  "jawiki:テュペロ": 4,
+  "jawiki:ヌルポ": 11,
+  "jawiki:ポゾラ": 3,
+  "jawiki:ムルヴァ": 2,
+  "jawiki:ロヴィナ": 7,
+  "jawiki:ヴェゼル": 6,
+  "jawiki:倦怠感": 23,
+  "jawiki:元プロ野球選手": 8730,
+  "jawiki:公共選択論": 16,
+  "jawiki:内側広筋": 1,
+  "jawiki:冬型の気圧配置": 3,
+  "jawiki:冷凍餃子": 3,
+  "jawiki:古民家カフェ": 1,
+  "jawiki:咽頭扁桃": 1,
+  "jawiki:地下駐輪場": 1,
+  "jawiki:夏至前後": 1,
+  "jawiki:夜行バス": 15,
+  "jawiki:太陽フレア": 17,
+  "jawiki:季節性うつ": 1,
+  "jawiki:尺骨": 24,
+  "jawiki:年間降水量": 18,
+  "jawiki:循環型経済": 1,
+  "jawiki:情報倫理学": 4,
+  "jawiki:慢性的な腰痛": 2,
+  "jawiki:慢性胃炎": 7,
+  "jawiki:折りたたみ自転車": 1,
+  "jawiki:放射冷却現象": 1,
+  "jawiki:新入生歓迎会": 1,
+  "jawiki:方言辞典": 7,
+  "jawiki:最大積載量": 11,
+  "jawiki:梅雨明け直後": 1,
+  "jawiki:極度の緊張": 2,
+  "jawiki:横隔神経": 1,
+  "jawiki:比較文化論": 26,
+  "jawiki:河川敷公園": 2,
+  "jawiki:海霧": 4,
+  "jawiki:発酵バター": 4,
+  "jawiki:相互扶助の精神": 6,
+  "jawiki:眼窩": 88,
+  "jawiki:磁気嵐": 9,
+  "jawiki:累計販売台数": 3,
+  "jawiki:線状降水帯": 8,
+  "jawiki:肩甲下筋": 2,
+  "jawiki:脱成長主義": 1,
+  "jawiki:腓骨": 23,
+  "jawiki:臨時株主総会": 8,
+  "jawiki:臨海工業団地": 5,
+  "jawiki:自己責任論": 2,
+  "jawiki:舌下腺": 6,
+  "jawiki:蝸牛管": 4,
+  "jawiki:認知言語学": 30,
+  "jawiki:路上ライブ": 30,
+  "jawiki:郊外型ショッピングモール": 1,
+  "jawiki:霧降高原": 7,
+  "jawiki:食欲不振": 41,
+  "jawiki:高圧洗浄機": 2,
+  "jawiki:鷹ノ巣山": 7,
+  "jawiki:鼻腔粘膜": 2
+ },
+ "excluded_terms_total": 299,
+ "frozen_sha256": "e4cb227615d80382f2c60d7c1f145e8648f4babb4d1888f6120bd0e5efc77ac8",
+ "git_dirty": true,
+ "git_head": "3d8bae948742d8d2a50aa785c62219b1d73b6e3e",
+ "holdout": [
+  {
+   "codex_rows": 1000,
+   "jawiki_lines": 1000,
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/holdout_2000.jsonl",
+   "sha256": "c9772c535ee284b2cf10adcea45be63704b7f8494fe00778655c4f4ff1c30323"
+  },
+  {
+   "codex_rows": 500,
+   "jawiki_lines": 500,
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a-S/artifacts/w3-a/dev_l1_1000.jsonl",
+   "sha256": "bf33fe42792a129e5e7e62b8d0b06108f835b6d55851056514c5d05cea20f86f"
+  }
+ ],
+ "hypernym_rounds": [
+  {
+   "decided_heads": 428499,
+   "donors": 375,
+   "round": 0
+  },
+  {
+   "decided_heads": 597194,
+   "donors": 428874,
+   "round": 1
+  },
+  {
+   "decided_heads": 616381,
+   "donors": 597569,
+   "round": 2
+  },
+  {
+   "decided_heads": 623763,
+   "donors": 616756,
+   "round": 3
+  },
+  {
+   "decided_heads": 624939,
+   "donors": 624138,
+   "round": 4
+  }
+ ],
+ "inputs": [
+  {
+   "bytes": 720529154,
+   "lines": 2455473,
+   "name": "jawiki_leads",
+   "path": "/Users/motonisihikoudai/vera-wiring/data/jawiki_leads.full.jsonl",
+   "sha256": "7585034b6149bf3b9f684cc0c354dbfb203ceed928e15955a399d1cbbdf045ae",
+   "stats": {
+    "chars": 138761580,
+    "redirect_rows": 953955,
+    "rows_used": 2441399,
+    "text_rows": 1500018
+   }
+  },
+  {
+   "bytes": 1443852288,
+   "name": "codex:code",
+   "origin": "generated",
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/code.db",
+   "rows": 1405189,
+   "sha256": "60d896ef7e63a6345b89e5566185a718cba995c46b519f34cff80ae071261789",
+   "stats": {
+    "chars": 118706658,
+    "rows": 1405189,
+    "rows_used": 1404691
+   }
+  },
+  {
+   "bytes": 861270016,
+   "name": "codex:code_qa",
+   "origin": "generated",
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/code_qa.db",
+   "rows": 324639,
+   "sha256": "4cf816fd16c8be2c499ed9c01dfc22efa744c750e28ca8bb75821c2347799aff",
+   "stats": {
+    "chars": 63080244,
+    "rows": 324639,
+    "rows_used": 324500
+   }
+  },
+  {
+   "bytes": 1606750208,
+   "name": "codex:conversation",
+   "origin": "generated",
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/conversation.db",
+   "rows": 2242864,
+   "sha256": "ab3736b20f1011bb70dae4ac6fd34cdd0c2609efaf02be2ed561bd6b72d7ddd9",
+   "stats": {
+    "chars": 63800770,
+    "rows": 2242864,
+    "rows_used": 2241886
+   }
+  },
+  {
+   "bytes": 231194624,
+   "name": "codex:figurative_commonsense",
+   "origin": "generated",
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/figurative_commonsense.db",
+   "rows": 238905,
+   "sha256": "ac36ce8e8a8d087eb1c163a205ae8dcae6e2c7ddffad312e15cb2364ea40c8f3",
+   "stats": {
+    "chars": 14034609,
+    "rows": 238905,
+    "rows_used": 238712
+   }
+  },
+  {
+   "bytes": 507125760,
+   "name": "codex:general_qa",
+   "origin": "generated",
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/general_qa.db",
+   "rows": 317423,
+   "sha256": "80234f7534a5744c68a29dc9d2dd4d5835f01c6878baf286b79525abf74dfc3a",
+   "stats": {
+    "chars": 47592098,
+    "rows": 317423,
+    "rows_used": 316924
+   }
+  },
+  {
+   "bytes": 181018624,
+   "name": "codex:narrative",
+   "origin": "generated",
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/narrative.db",
+   "rows": 146598,
+   "sha256": "81d29e62ed3c30de88bf292afbacd42423ae686c32f1871004e1a67e1d5865dd",
+   "stats": {
+    "chars": 14466732,
+    "rows": 146598,
+    "rows_used": 146526
+   }
+  },
+  {
+   "bytes": 340123648,
+   "name": "codex:paraphrase_entail",
+   "origin": "generated",
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/paraphrase_entail.db",
+   "rows": 379574,
+   "sha256": "60c942cd7c37a096f90d1a30f3daaae6c73563d71de0443a2116b3e6693a54b6",
+   "stats": {
+    "chars": 23121585,
+    "rows": 379574,
+    "rows_used": 379258
+   }
+  },
+  {
+   "bytes": 812023808,
+   "name": "codex:pro",
+   "origin": "generated",
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/pro.db",
+   "rows": 1366290,
+   "sha256": "910f1e77afb847b8b6b8b0f2764edd52f6b7c7a49e92189fd57a373a3c906000",
+   "stats": {
+    "chars": 39363117,
+    "rows": 1366290,
+    "rows_used": 1365911
+   }
+  }
+ ],
+ "materials": [
+  {
+   "name": "jawiki lead sentences",
+   "path": "/Users/motonisihikoudai/vera-wiring/data/jawiki_leads.full.jsonl",
+   "role": "definition / alias / role / pos material"
+  },
+  {
+   "name": "codex generated corpus index (train)",
+   "path": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c",
+   "role": "role / pos material per family (origin: generated)"
+  },
+  {
+   "name": "hand-written seeds",
+   "path": "verantyx/coarse_types.py (SEEDS_NOUN, SEEDS_PRED)"
+  },
+  {
+   "name": "notation rules",
+   "path": "verantyx/coarse_types.py (notation_type)"
+  },
+  {
+   "name": "predicate frame rule table",
+   "path": "verantyx/coarse_types.py (PRED_FRAME_RULES)"
+  },
+  {
+   "name": "unidic-lite via fugashi",
+   "use": "word segmentation, the coarse word class (pos1, pos2) and orthBase ONLY; no finer dictionary sense labels"
+  }
+ ],
+ "no_weights_no_models": true,
+ "outputs": {
+  "by_arm_placed": {
+   "alias": 352950,
+   "definition": 633945,
+   "frame@codex:code": 35,
+   "frame@codex:code_qa": 20,
+   "frame@codex:conversation": 86,
+   "frame@codex:figurative_commonsense": 123,
+   "frame@codex:general_qa": 116,
+   "frame@codex:narrative": 107,
+   "frame@codex:paraphrase_entail": 135,
+   "frame@codex:pro": 185,
+   "frame@jawiki": 42,
+   "hearst@codex:code": 366,
+   "hearst@codex:code_qa": 68,
+   "hearst@codex:conversation": 17,
+   "hearst@codex:figurative_commonsense": 20,
+   "hearst@codex:general_qa": 702,
+   "hearst@codex:paraphrase_entail": 2,
+   "hearst@jawiki": 927,
+   "pos_class@codex:code": 246,
+   "pos_class@codex:code_qa": 220,
+   "pos_class@codex:conversation": 700,
+   "pos_class@codex:figurative_commonsense": 906,
+   "pos_class@codex:general_qa": 881,
+   "pos_class@codex:narrative": 481,
+   "pos_class@codex:paraphrase_entail": 328,
+   "pos_class@codex:pro": 585,
+   "pos_class@jawiki": 1957,
+   "role@codex:code": 846,
+   "role@codex:code_qa": 650,
+   "role@codex:conversation": 1845,
+   "role@codex:figurative_commonsense": 1710,
+   "role@codex:general_qa": 2591,
+   "role@codex:narrative": 1460,
+   "role@codex:paraphrase_entail": 3306,
+   "role@codex:pro": 2390,
+   "role@jawiki": 2592,
+   "sahen@codex:code": 2649,
+   "sahen@codex:code_qa": 1191,
+   "sahen@codex:conversation": 1753,
+   "sahen@codex:figurative_commonsense": 1077,
+   "sahen@codex:general_qa": 2027,
+   "sahen@codex:narrative": 590,
+   "sahen@codex:paraphrase_entail": 1600,
+   "sahen@codex:pro": 709,
+   "sahen@jawiki": 4977,
+   "seed": 700
+  },
+  "by_kind_placed": {
+   "seed": 700,
+   "title": 988699,
+   "token": 19628
+  },
+  "by_ns_placed": {
+   "N": 1005946,
+   "P": 3081
+  },
+  "by_state": {
+   "DECIDED": 997082,
+   "MULTIPLE": 11945,
+   "UNPLACED": 736484
+  },
+  "by_state_ns": {
+   "DECIDED/N": 994098,
+   "DECIDED/P": 2984,
+   "MULTIPLE/N": 11848,
+   "MULTIPLE/P": 97,
+   "UNPLACED/N": 728586,
+   "UNPLACED/P": 7898
+  },
+  "by_top_placed": {
+   "ABSTRACT": 28578,
+   "ANIMAL": 11037,
+   "ARTIFACT": 31118,
+   "BODY_PART": 1381,
+   "EVENT_ACT": 41924,
+   "GROUP_ORG": 162204,
+   "IDENTIFIER": 1098,
+   "INFO_LANGUAGE": 32073,
+   "NATURAL_PHENOMENON": 10010,
+   "PERSON": 342674,
+   "PLACE": 138248,
+   "PLANT": 7931,
+   "P_ACT": 80,
+   "P_CHANGE": 84,
+   "P_COGNITION": 87,
+   "P_COMMUNICATE": 27,
+   "P_CONSUME": 66,
+   "P_CREATE": 117,
+   "P_EMOTION": 25,
+   "P_EXIST": 25,
+   "P_GIVE": 25,
+   "P_MOVE": 92,
+   "P_PERCEIVE": 25,
+   "P_POSSESS": 25,
+   "P_STATE": 2306,
+   "QUANTITY": 18299,
+   "STATE_PROPERTY": 9608,
+   "SUBSTANCE_FOOD": 23094,
+   "TIME": 7752,
+   "WORK": 127069
+  },
+  "evidence_by_arm": {
+   "alias": 352985,
+   "definition": 646420,
+   "frame": 1266,
+   "hearst": 21389,
+   "pos_class": 7943,
+   "role": 305076,
+   "sahen": 56827,
+   "seed": 700,
+   "title_qualifier": 44424
+  },
+  "evidence_by_src": {
+   "codex:code": 28754,
+   "codex:code_qa": 16317,
+   "codex:conversation": 30949,
+   "codex:figurative_commonsense": 21952,
+   "codex:general_qa": 40816,
+   "codex:narrative": 19770,
+   "codex:paraphrase_entail": 35576,
+   "codex:pro": 32337,
+   "hand": 700,
+   "jawiki": 1209859
+  },
+  "funnel": {
+   "alias_titles_with_typed_target": 352991,
+   "distinct_words_in_material_any_count": 3853102,
+   "distinct_words_in_material_min_seen": 795818,
+   "rows": 1745511,
+   "rows_placed_direct": 1009027,
+   "rows_with_any_evidence": 1191789,
+   "titles_with_definition_phrase": 634064,
+   "titles_with_qualifier_phrase": 56982,
+   "words_with_a_met_arm_before_decision": 0
+  },
+  "headwords": 1745511,
+  "placed_direct": 1009027,
+  "tables": {
+   "atoms": 7484,
+   "counters": 460,
+   "ctx": 258776,
+   "evidence": 1437030,
+   "headwords": 1745511,
+   "meta": 4,
+   "unit_kin": 664525,
+   "unit_sample": 293534
+  }
+ },
+ "placement_bytes": 260935680,
+ "seed_counts": {
+  "noun": 375,
+  "pred": 325
+ },
+ "skipped_rows_by_reason": {
+  "codex:code": {
+   "excluded_term": 224,
+   "holdout": 274
+  },
+  "codex:code_qa": {
+   "excluded_term": 58,
+   "holdout": 81
+  },
+  "codex:conversation": {
+   "excluded_term": 338,
+   "holdout": 613,
+   "no_japanese": 27
+  },
+  "codex:figurative_commonsense": {
+   "excluded_term": 134,
+   "holdout": 59
+  },
+  "codex:general_qa": {
+   "excluded_term": 422,
+   "holdout": 77
+  },
+  "codex:narrative": {
+   "excluded_term": 44,
+   "holdout": 28
+  },
+  "codex:paraphrase_entail": {
+   "excluded_term": 212,
+   "holdout": 104
+  },
+  "codex:pro": {
+   "excluded_term": 49,
+   "holdout": 330
+  },
+  "jawiki": {
+   "caption_only": 12372,
+   "def_empty": 3319,
+   "def_ends_代名詞": 77,
+   "def_ends_代名詞_recovered": 2,
+   "def_ends_副詞": 229,
+   "def_ends_副詞_recovered": 10,
+   "def_ends_助動詞": 8330,
+   "def_ends_助動詞_recovered": 4837,
+   "def_ends_助詞": 3515,
+   "def_ends_助詞_recovered": 248,
+   "def_ends_動詞": 39573,
+   "def_ends_動詞_recovered": 21099,
+   "def_ends_形容詞": 580,
+   "def_ends_形容詞_recovered": 341,
+   "def_ends_形状詞": 456,
+   "def_ends_形状詞_recovered": 149,
+   "def_ends_感動詞": 92,
+   "def_ends_感動詞_recovered": 5,
+   "def_ends_接尾辞": 70,
+   "def_ends_接尾辞_recovered": 28,
+   "def_ends_接続詞": 18,
+   "def_ends_接続詞_recovered": 3,
+   "def_ends_接頭辞": 26,
+   "def_ends_接頭辞_recovered": 1,
+   "def_ends_空白": 4,
+   "def_ends_空白_recovered": 1,
+   "def_ends_記号": 1570,
+   "def_ends_記号_recovered": 107,
+   "def_ends_連体詞": 22,
+   "def_ends_連体詞_recovered": 1,
+   "def_no_noun_phrase": 9487,
+   "def_no_noun_phrase_recovered": 3411,
+   "disambiguation": 11851,
+   "excluded_term": 9248,
+   "holdout": 1500,
+   "list_article": 10589,
+   "meta_title": 3327,
+   "notation_title": 13674,
+   "title_too_long": 199463
+  }
+ },
+ "stage_seconds": {
+  "aliases_sec": 16.6,
+  "codex_sec": 139.3,
+  "ctx_sec": 20.2,
+  "decide_sec": 60.5,
+  "definitions_sec": 13.3,
+  "extraction_sec": 215.1,
+  "hearst_sec": 28.4,
+  "jawiki_sec": 75.8,
+  "resolve_sec": 76.2,
+  "units_sec": 75.2,
+  "votes_sec": 28.4,
+  "write_sec": 14.2
+ },
+ "types_version": "1"
+}

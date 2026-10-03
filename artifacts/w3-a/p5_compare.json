@@ -1,0 +1,288 @@
+{
+ "placements": {
+  "W3-a (r2b)": "full/r2b/run1",
+  "W3-a2 F1-F6 only (r3c)": "full/r3c/run1",
+  "W3-a2 final (r5)": "full/r5/run1",
+  "W3-a2 round 1 (r4, before the review)": "full/r4/run1"
+ },
+ "rows": [
+  {
+   "approval_guard": false,
+   "by_placement": {
+    "W3-a (r2b)": {
+     "count": 15498,
+     "of": 21774,
+     "rate": 0.7118,
+     "run": "018"
+    },
+    "W3-a2 F1-F6 only (r3c)": {
+     "count": 15445,
+     "delta_count_vs_w3a": -53,
+     "direction": "worse",
+     "of": 21774,
+     "rate": 0.7093,
+     "run": "033"
+    },
+    "W3-a2 final (r5)": {
+     "count": 17217,
+     "delta_count_vs_w3a": 1719,
+     "direction": "better",
+     "of": 21774,
+     "rate": 0.7907,
+     "run": "043"
+    },
+    "W3-a2 round 1 (r4, before the review)": {
+     "count": 17223,
+     "delta_count_vs_w3a": 1725,
+     "direction": "better",
+     "of": 21774,
+     "rate": 0.791,
+     "run": "038"
+    }
+   },
+   "item": "L1 coverage (tokens)",
+   "target": 0.9,
+   "target_kind": "at least"
+  },
+  {
+   "approval_guard": false,
+   "by_placement": {
+    "W3-a (r2b)": {
+     "count": 537,
+     "of": 1072,
+     "rate": 0.5009,
+     "run": "016"
+    },
+    "W3-a2 F1-F6 only (r3c)": {
+     "count": 540,
+     "delta_count_vs_w3a": 3,
+     "direction": "better",
+     "of": 1072,
+     "rate": 0.5037,
+     "run": "031"
+    },
+    "W3-a2 final (r5)": {
+     "count": 567,
+     "delta_count_vs_w3a": 30,
+     "direction": "better",
+     "of": 1072,
+     "rate": 0.5289,
+     "run": "041"
+    },
+    "W3-a2 round 1 (r4, before the review)": {
+     "count": 567,
+     "delta_count_vs_w3a": 30,
+     "direction": "better",
+     "of": 1072,
+     "rate": 0.5289,
+     "run": "036"
+    }
+   },
+   "item": "L2 correct (direct)",
+   "target": 0.85,
+   "target_kind": "at least"
+  },
+  {
+   "approval_guard": true,
+   "by_placement": {
+    "W3-a (r2b)": {
+     "count": 59,
+     "of": 1072,
+     "rate": 0.055,
+     "run": "016"
+    },
+    "W3-a2 F1-F6 only (r3c)": {
+     "count": 47,
+     "delta_count_vs_w3a": -12,
+     "direction": "better",
+     "not_worse": true,
+     "of": 1072,
+     "rate": 0.0438,
+     "run": "031"
+    },
+    "W3-a2 final (r5)": {
+     "count": 47,
+     "delta_count_vs_w3a": -12,
+     "direction": "better",
+     "not_worse": true,
+     "of": 1072,
+     "rate": 0.0438,
+     "run": "041"
+    },
+    "W3-a2 round 1 (r4, before the review)": {
+     "count": 47,
+     "delta_count_vs_w3a": -12,
+     "direction": "better",
+     "not_worse": true,
+     "of": 1072,
+     "rate": 0.0438,
+     "run": "036"
+    }
+   },
+   "item": "L2 wrong (direct)",
+   "target": 0.08,
+   "target_kind": "at most"
+  },
+  {
+   "approval_guard": true,
+   "by_placement": {
+    "W3-a (r2b)": {
+     "count": 9,
+     "of": 154,
+     "rate": 0.0584,
+     "run": "016"
+    },
+    "W3-a2 F1-F6 only (r3c)": {
+     "count": 7,
+     "delta_count_vs_w3a": -2,
+     "direction": "better",
+     "not_worse": true,
+     "of": 154,
+     "rate": 0.0455,
+     "run": "031"
+    },
+    "W3-a2 final (r5)": {
+     "count": 7,
+     "delta_count_vs_w3a": -2,
+     "direction": "better",
+     "not_worse": true,
+     "of": 154,
+     "rate": 0.0455,
+     "run": "041"
+    },
+    "W3-a2 round 1 (r4, before the review)": {
+     "count": 7,
+     "delta_count_vs_w3a": -2,
+     "direction": "better",
+     "not_worse": true,
+     "of": 154,
+     "rate": 0.0455,
+     "run": "036"
+    }
+   },
+   "item": "L2 trap wrong (direct)",
+   "target": 0.05,
+   "target_kind": "at most"
+  },
+  {
+   "approval_guard": false,
+   "by_placement": {
+    "W3-a (r2b)": {
+     "count": 89,
+     "of": 174,
+     "rate": 0.5115,
+     "run": "017"
+    },
+    "W3-a2 F1-F6 only (r3c)": {
+     "count": 86,
+     "delta_count_vs_w3a": -3,
+     "direction": "worse",
+     "of": 174,
+     "rate": 0.4943,
+     "run": "032"
+    },
+    "W3-a2 final (r5)": {
+     "count": 86,
+     "delta_count_vs_w3a": -3,
+     "direction": "worse",
+     "of": 174,
+     "rate": 0.4943,
+     "run": "042"
+    },
+    "W3-a2 round 1 (r4, before the review)": {
+     "count": 88,
+     "delta_count_vs_w3a": -1,
+     "direction": "worse",
+     "of": 174,
+     "rate": 0.5057,
+     "run": "037"
+    }
+   },
+   "item": "L3 correct",
+   "target": 0.65,
+   "target_kind": "at least"
+  },
+  {
+   "approval_guard": true,
+   "by_placement": {
+    "W3-a (r2b)": {
+     "count": 9,
+     "of": 174,
+     "rate": 0.0517,
+     "run": "017"
+    },
+    "W3-a2 F1-F6 only (r3c)": {
+     "count": 9,
+     "delta_count_vs_w3a": 0,
+     "direction": "same",
+     "not_worse": true,
+     "of": 174,
+     "rate": 0.0517,
+     "run": "032"
+    },
+    "W3-a2 final (r5)": {
+     "count": 9,
+     "delta_count_vs_w3a": 0,
+     "direction": "same",
+     "not_worse": true,
+     "of": 174,
+     "rate": 0.0517,
+     "run": "042"
+    },
+    "W3-a2 round 1 (r4, before the review)": {
+     "count": 8,
+     "delta_count_vs_w3a": -1,
+     "direction": "better",
+     "not_worse": true,
+     "of": 174,
+     "rate": 0.046,
+     "run": "037"
+    }
+   },
+   "item": "L3 wrong",
+   "target": 0.15,
+   "target_kind": "at most"
+  },
+  {
+   "approval_guard": true,
+   "by_placement": {
+    "W3-a (r2b)": {
+     "count": 11,
+     "of": 60,
+     "rate": 0.1833,
+     "run": "017"
+    },
+    "W3-a2 F1-F6 only (r3c)": {
+     "count": 9,
+     "delta_count_vs_w3a": -2,
+     "direction": "better",
+     "not_worse": true,
+     "of": 60,
+     "rate": 0.15,
+     "run": "032"
+    },
+    "W3-a2 final (r5)": {
+     "count": 9,
+     "delta_count_vs_w3a": -2,
+     "direction": "better",
+     "not_worse": true,
+     "of": 60,
+     "rate": 0.15,
+     "run": "042"
+    },
+    "W3-a2 round 1 (r4, before the review)": {
+     "count": 9,
+     "delta_count_vs_w3a": -2,
+     "direction": "better",
+     "not_worse": true,
+     "of": 60,
+     "rate": 0.15,
+     "run": "037"
+    }
+   },
+   "item": "L3 returns a type for an unknown word",
+   "target": 0.2,
+   "target_kind": "at most"
+  }
+ ]
+}

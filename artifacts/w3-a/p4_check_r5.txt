@@ -1,0 +1,4 @@
+[('direct', 'DECIDED', 2557), ('estimated', 'DECIDED', 15697)]
+(52270, 1510)
+checked 300 bad []
+decided without the generated arm (checked, GENERATED_NOT_DECIDING): 1123

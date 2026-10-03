@@ -1,0 +1,29 @@
+# dev what-if on dev/r2a (query-time keys only; NOT official runs; dev data only: dev_vocab, dev_unknown, dev_l1_1000). script: dev_whatif.py
+== kin_left=false
+L2 n 580 correct 0.4690 wrong 0.0672 trapwrong 0.1351 {(None, 'other'): 178, ('estimated', 'correct'): 43, ('estimated', 'wrong_single'): 14}
+L3 typed 50 correct 0.560 wrong 0.040 | unk 15 returned 0.200
+L1 tokens 11108 cover 0.7144
+== kin_left=true
+L2 n 580 correct 0.4690 wrong 0.0672 trapwrong 0.1351 {(None, 'other'): 175, ('estimated', 'correct'): 45, ('estimated', 'wrong_single'): 15}
+L3 typed 50 correct 0.560 wrong 0.040 | unk 15 returned 0.200
+L1 tokens 11108 cover 0.7188
+== kin_left_min_count=10 kin_left_min_share_pct=90
+L2 n 580 correct 0.4690 wrong 0.0672 trapwrong 0.1351 {(None, 'other'): 175, ('estimated', 'correct'): 45, ('estimated', 'wrong_single'): 15}
+L3 typed 50 correct 0.560 wrong 0.040 | unk 15 returned 0.200
+L1 tokens 11108 cover 0.7188
+== kin_left_min_count=30 kin_left_min_share_pct=90
+L2 n 580 correct 0.4690 wrong 0.0672 trapwrong 0.1351 {(None, 'other'): 177, ('estimated', 'correct'): 44, ('estimated', 'wrong_single'): 14}
+L3 typed 50 correct 0.560 wrong 0.040 | unk 15 returned 0.200
+L1 tokens 11108 cover 0.7170
+== kin_left_min_count=30 kin_left_min_share_pct=95
+L2 n 580 correct 0.4690 wrong 0.0672 trapwrong 0.1351 {(None, 'other'): 178, ('estimated', 'correct'): 43, ('estimated', 'wrong_single'): 14}
+L3 typed 50 correct 0.560 wrong 0.040 | unk 15 returned 0.200
+L1 tokens 11108 cover 0.7151
+== kin_left_min_count=100 kin_left_min_share_pct=95
+L2 n 580 correct 0.4690 wrong 0.0672 trapwrong 0.1351 {(None, 'other'): 178, ('estimated', 'correct'): 43, ('estimated', 'wrong_single'): 14}
+L3 typed 50 correct 0.560 wrong 0.040 | unk 15 returned 0.200
+L1 tokens 11108 cover 0.7145
+== kin_left_min_count=3 kin_left_min_share_pct=70   (the lax setting: the general kin thresholds)
+L2 n 580 correct 0.4690 wrong 0.0672 trapwrong 0.1351 {(None, 'other'): 163, ('estimated', 'correct'): 45, ('estimated', 'wrong_single'): 27}
+L3 typed 50 correct 0.560 wrong 0.040 | unk 15 returned 0.200
+L1 tokens 11108 cover 0.7442

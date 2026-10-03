@@ -1,0 +1,2 @@
+tokens 21774 rate 0.7404 | distinct 8391 rate 0.5532
+meets 0.90: False

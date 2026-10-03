@@ -1,0 +1,8 @@
+L2 n 1072 correct 0.5289 wrong_single 0.0438 | trap n 154 wrong_single 0.0455 | non-direct {(None, 'other'): 162, ('estimated', 'correct'): 145, ('estimated', 'wrong_single'): 26}
+L3 typed 174 correct 0.5057 wrong 0.046 | unk 60 returned 0.15
+direct (not notation) unknown words []
+unmarked estimates []
+COUNTS L2 wrong_direct 47 trap_wrong_direct 7 L3 wrong 8 L3 unknown_returned 9
+P5 not-worse: {'L2 wrong<=59': True, 'trap<=9': True, 'L3 wrong<=9': True, 'unk_returned<=11': True}
+tokens 21774 rate 0.791 | distinct 8391 rate 0.6421
+meets 0.90: False

@@ -1,0 +1,13 @@
+# REPORT ONLY (frozen test data, full/r2/run1): what the query-time tiers contribute. The configuration was chosen on dev and is NOT changed because of these numbers. script: dev_whatif.py --frozen
+== kin_left=true
+L2 n 1072 correct 0.5009 wrong 0.0550 trapwrong 0.0584 {(None, 'other'): 273, ('estimated', 'wrong_single'): 20, ('estimated', 'correct'): 56}
+L3 typed 174 correct 0.511 wrong 0.052 | unk 60 returned 0.183
+L1 tokens 21774 cover 0.7160
+== kin_left=false
+L2 n 1072 correct 0.5009 wrong 0.0550 trapwrong 0.0584 {(None, 'other'): 277, ('estimated', 'correct'): 56, ('estimated', 'wrong_single'): 16}
+L3 typed 174 correct 0.511 wrong 0.052 | unk 60 returned 0.183
+L1 tokens 21774 cover 0.7118
+== left_recursive=false
+L2 n 1072 correct 0.5009 wrong 0.0550 trapwrong 0.0584 {(None, 'other'): 274, ('estimated', 'wrong_single'): 18, ('estimated', 'correct'): 57}
+L3 typed 174 correct 0.454 wrong 0.046 | unk 60 returned 0.183
+L1 tokens 21774 cover 0.7141

@@ -1,0 +1,8 @@
+W3-a2 (round 2, full test run: pytest_full_w3a2.txt, last line: 125 failed, 5059 passed ...): the one failure that is not
+in the baseline (dev_3d8bae9_failures.txt, 124 entries) is, as in W3-a rounds 1 and 2,
+tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+(new_failures_w3a2.txt).  It fails alone too (checked in this run: the assertion
+`meta["verantyx_untouched"] is True` is the one that fails): the bank-score tool requires
+`git status --porcelain -- verantyx` to be empty, and the two UNTRACKED files verantyx/coarse_place.py and
+verantyx/coarse_types.py make it non-empty.  No product behaviour changed; once the files are committed the check has
+nothing to report.  Baseline failures that no longer fail: 0.

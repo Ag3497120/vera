@@ -1,0 +1,9 @@
+# M1 の修正を一時的に外して test_coarse_place_generated.py の upgrade 系を走らせた出力（失敗することの確認）
+>       assert not [x for x in samples if "ポロロ" in x[2]]
+E       AssertionError: assert not [('ポロ', 'L', ['ポロロ']), ('ロロ', 'R', ['ポロロ'])]
+
+tests/coarse_place/test_coarse_place_generated.py:430: AssertionError
+=========================== short test summary info ============================
+FAILED tests/coarse_place/test_coarse_place_generated.py::test_an_upgraded_word_does_not_lend_its_type_as_the_head_of_an_unknown_compound
+FAILED tests/coarse_place/test_coarse_place_generated.py::test_an_upgraded_word_is_not_a_member_of_a_unit_family
+2 failed, 1 passed, 14 deselected in 0.38s

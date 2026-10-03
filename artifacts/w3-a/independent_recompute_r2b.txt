@@ -1,0 +1,4 @@
+L2 n 1072 correct 0.5009 wrong_single 0.055 | trap n 154 wrong_single 0.0584 | non-direct {(None, 'other'): 277, ('estimated', 'correct'): 56, ('estimated', 'wrong_single'): 16}
+L3 typed 174 correct 0.5115 wrong 0.0517 | unk 60 returned 0.1833
+direct (not notation) unknown words []
+unmarked estimates []

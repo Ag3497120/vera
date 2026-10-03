@@ -1,0 +1,19 @@
+{
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r2b/run1",
+ "role_min_sources": 2,
+ "direct_headwords": 1108448,
+ "words_with_evidence_checked": 1108448,
+ "counts": {
+  "by:alias": 350532,
+  "by:definition": 630859,
+  "by:frame": 870,
+  "by:hearst": 2100,
+  "by:paren_alias": 112988,
+  "by:pos_class": 6296,
+  "by:role": 10930,
+  "by:sahen": 16574,
+  "by:seed": 656,
+  "words": 1108448
+ },
+ "examples": {}
+}
