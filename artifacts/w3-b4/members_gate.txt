@@ -1,0 +1,16 @@
+P_ACT members=25 refused_by_the_derived_gate=8 free=17
+  gated: つける 並べる 付ける 入れる 続ける 閉める 開ける 集める
+  free:  おく する つく 働く 切る 取り除く 守る 引く 戦う 打つ 押す 拭く 洗う 置く 行う 試す 遊ぶ
+P_CHANGE members=23 refused_by_the_derived_gate=11 free=12
+  gated: 冷える 増える 増やす 変える 始める 崩れる 晴れる 消える 減らす 溶ける 濡れる
+  free:  なる 乾く 凍る 変わる 始まる 広がる 決まる 減る 湿る 直す 終わる 落ちる
+P_CREATE members=24 refused_by_the_derived_gate=11 free=13
+  gated: まとめる 定める 建てる 揚げる 整える 植える 沸かす 炒める 組み立てる 育てる 設ける
+  free:  作る 掘る 描く 書く 炊く 焼く 煮る 生む 築く 編む 縫う 蒸す 起こす
+P_CONSUME members=14 refused_by_the_derived_gate=3 free=11
+  gated: 使い分ける 使える 食べる
+  free:  使う 吸い込む 吸う 味わう 噛む 履く 用いる 着る 脱ぐ 飲み込む 飲む
+P_EMOTION members=10 refused_by_the_derived_gate=3 free=7
+  gated: 慌てる 楽しめる 疲れる
+  free:  喜ぶ 好む 怒る 楽しむ 泣く 笑う 驚く
+total members=96 refused_by_the_derived_gate=36

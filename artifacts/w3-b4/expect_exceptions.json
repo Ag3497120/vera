@@ -1,0 +1,153 @@
+{
+ "kinds": {
+  "adjunct_arms_are_role_distributions_only": "the filler stands in an adjunct (a place with で, a time with に) and every arm of its answer is a role distribution (role@...): the evidence gate 5 (K62) stops it first, whatever its types are (SLOT_EVIDENCE_ONLY); the registered reason named the later test of the types",
+  "entry_refuses_before_the_typed_step": "the entry itself refuses the input before any typed step runs (the reader finds no predicate token), so `typed_explain_ja` has nothing to say (all None)",
+  "reread_refuses_before_the_derived_gate": "the entry's own rules refuse the re-read first (the head 疲れた looks like a potential: UNDETERMINED_MODALITY), before the derived-head gate that was registered"
+ },
+ "exceptions": [
+  {
+   "id": "W3B4-ACT-A-008",
+   "input": "母が階段で皿を洗った。",
+   "kind": "adjunct_arms_are_role_distributions_only",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_MULTIPLE:で:階段",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:階段",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B4-CHANGE-A-013",
+   "input": "猫が階段で落ちた。",
+   "kind": "adjunct_arms_are_role_distributions_only",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_MULTIPLE:で:階段",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:階段",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B4-CREATE-A-023",
+   "input": "母が階段で絵を描いた。",
+   "kind": "adjunct_arms_are_role_distributions_only",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_MULTIPLE:で:階段",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:階段",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B4-CONSUME-A-006",
+   "input": "母が階段で服を着た。",
+   "kind": "adjunct_arms_are_role_distributions_only",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_MULTIPLE:で:階段",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:で:階段",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B4-CONSUME-A-001",
+   "input": "兄が夕食に薬を飲んだ。",
+   "kind": "adjunct_arms_are_role_distributions_only",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_TYPE_MISMATCH:P_CONSUME:に:SUBSTANCE_FOOD",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_FRAME_NOT_READ:P_CONSUME",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:夕食",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B4-CONSUME-A-002",
+   "input": "弟が夕食に道具を使った。",
+   "kind": "adjunct_arms_are_role_distributions_only",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_TYPE_MISMATCH:P_CONSUME:に:SUBSTANCE_FOOD",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_FRAME_NOT_READ:P_CONSUME",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:夕食",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B4-CONSUME-A-003",
+   "input": "母が弁当に服を着た。",
+   "kind": "adjunct_arms_are_role_distributions_only",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_TYPE_MISMATCH:P_CONSUME:に:SUBSTANCE_FOOD",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_FRAME_NOT_READ:P_CONSUME",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:弁当",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B4-CHANGE-A-025",
+   "input": "兄が全然国道で終わらなかった。",
+   "kind": "entry_refuses_before_the_typed_step",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_W3B2_NOT_TRIGGERED",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B4-EMOTION-A-035",
+   "input": "兄が国道で疲れた。",
+   "kind": "reread_refuses_before_the_derived_gate",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b4_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_REREAD_ABSTAINS:UNDETERMINED_MODALITY:possible potential form",
+    "frame": null
+   },
+   "observed_verdict": "abstain"
+  }
+ ]
+}

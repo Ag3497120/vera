@@ -671,7 +671,9 @@ def test_semantic_read_changes_only_read_ja_and_semantic_reader_only_adds():
     b = _functions(git('show', '%s:verantyx/semantic_read.py' % BASE_COMMIT)); n = _functions((TREE / 'verantyx' / 'semantic_read.py').read_text(encoding='utf-8'))
     assert [k for k in b if k in n and b[k] != n[k]] == ['_read_ja'] and not [k for k in b if k not in n]
     br = _functions(git('show', '%s:verantyx/semantic_reader.py' % BASE_COMMIT)); nr = _functions((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8'))
-    assert [k for k in br if k in nr and br[k] != nr[k]] == [] and not [k for k in br if k not in nr]
+    # Integration (auditor, 2026-10-04): W3-b4 (merged after W3-b3) wraps the two typed-reading plans with its focus-particle gate, so these two
+    # names of the base now point at the gated plans (docs/READING_SOUNDNESS.md 10D K186). Nothing else of the base changes.
+    assert [k for k in br if k in nr and br[k] != nr[k]] in ([], ['typed_plan_u_ja', 'typed_plan_u_w3b2_ja']) and not [k for k in br if k not in nr]
     diff = git('diff', BASE_COMMIT, '--', 'verantyx/semantic_reader.py').splitlines()
     assert not [l for l in diff if l.startswith('-') and not l.startswith('---')]
     rd = git('diff', BASE_COMMIT, '--', 'verantyx/semantic_read.py').splitlines()
@@ -686,7 +688,8 @@ def test_the_w3b3_section_of_the_reader_holds_no_word_of_a_sentence():
     cut table, or one of the 11 words of the registered lists (the permission words and the quotation verbs)."""
     src = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
     start = src.index('# W3-b3:')
-    tree = ast.parse(src[start:])
+    end = src.find('\n# W3-b4:', start)          # Integration (auditor, 2026-10-04): the W3-b4 section follows; this test is about the W3-b3 section only
+    tree = ast.parse(src[start:end if end != -1 else len(src)])
     literals = {n.value for n in ast.walk(tree) if isinstance(n, ast.Constant) and isinstance(n.value, str) and re.search('[^\x00-\x7f]', n.value)}
     tagger = {'動詞', '名詞', '助詞', '助動詞', '接頭辞', '接尾辞', '接続助詞', '格助詞', '係助詞', '準体助詞', '連体詞', '副詞', '代名詞', '形容詞', '形状詞', '補助記号', '読点', '句点', '数詞',
               '終助詞', '副助詞', '副詞可能', '助数詞可能', '非自立可能', '連体形', '終止形', '連用形', '仮定形', '未然形', '命令形', '連用形-一般', '接続詞', '助動詞語幹'}

@@ -459,6 +459,9 @@ def test_the_data_has_the_registered_shape():
     assert sum(r['path'] == 'EN' and 'adjunct' in r['construction'] for r in DATA) >= 8
 
 
+W3B4_NOW_READ = {'W3B1-U-090', 'W3B1-U-091', 'W3B1-U-092'}     # P_ACT rows (へ + PLACE) of ja_r8, registered as refused before the second table existed
+
+
 def _exception(row):
     return next((e for e in EXCEPTIONS if e['id'] == row['id']), None)
 
@@ -477,6 +480,10 @@ def test_every_row_of_the_new_data_with_the_fixture(row):
         return
     verdict = b1.judge(row['expect'], row['lang'], out)['verdict']
     assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
+    if row['id'] in W3B4_NOW_READ:
+        # W3-b4: P_ACT is a type the second table reads (goal/へ/PLACE): the row that W3-b1 registered as refused (FRAME_NOT_READ) is read, and read correctly
+        assert out['readable'] is True and verdict == 'correct', (out['abstain'], out['clauses'])
+        return
     if row['entry_expect'] == 'read':
         assert out['readable'] is True and verdict == 'correct', (out['abstain'], out['clauses'])
     else:

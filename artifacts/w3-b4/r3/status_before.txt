@@ -1,0 +1,6 @@
+ M docs/COARSE_PLACEMENT.md
+ M docs/READING_SOUNDNESS.md
+ M verantyx/semantic_reader.py
+?? tests/coarse_place/test_k62_v1_subset_v2.py
+?? tests/reading_soundness/ja_r10_w3b4.jsonl
+?? tests/test_semantic_read_w3b4.py

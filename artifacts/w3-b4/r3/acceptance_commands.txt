@@ -1,0 +1,19 @@
+$ ten_sentences or narrowed_rows or diagnosis_the_narrowing
+....                                                                     [100%]
+4 passed, 360 deselected in 1.44s
+$ F1: no_placement or base
+..                                                                       [100%]
+2 passed, 362 deselected in 1.98s
+$ F2: table or frames or disjoint or not_read or gaps or same_body + k62 subset
+.................                                                        [100%]
+17 passed, 352 deselected in 0.84s
+$ git diff c875ed3 -- verantyx/semantic_reader.py | grep -c ^-[^-]
+0
+$ frozen tests of W3-b1/W3-b2 and the K62 copy of W3-a3
+.............                                                            [100%]
+13 passed in 1.67s
+$ F3: shas
+59d67eeae2f058b368cb519fc8d8fc7a8c695f78abb6f416e41519115a4cdfa0  -
+8968c1a8fa416edf98575af85e6050f67a3e4af518cb68229b648c7e80502d9a  -
+tests/reading_soundness/ja_r10_w3b4.jsonl: OK
+$ entry smoke (r7)

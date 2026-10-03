@@ -1,0 +1,9 @@
+$ narrowed lists
+['P_ACT', 'P_CREATE', 'P_EMOTION'] ['P_GIVE', 'P_PERCEIVE', 'P_EXIST', 'P_POSSESS', 'P_STATE', 'P_COGNITION', 'P_CHANGE', 'P_CONSUME']
+$ VERA_PLACEMENT=R7 semantic_read --text 会社が工場から店へ変わった。
+False ['SUBJECT_TYPE_UNDETERMINED:会社', 'PLACEMENT_FRAME_NOT_READ:P_CHANGE']
+$ VERA_PLACEMENT=R7 semantic_read --text 兄が休みに金を使った。
+False ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_FRAME_NOT_READ:P_CONSUME']
+$ VERA_PLACEMENT=R7 semantic_read --text 兄が田舎から都会へ変わった。
+False ['RECIPIENT_TYPE_UNDETERMINED:変わる', 'PLACEMENT_FRAME_NOT_READ:P_CHANGE']
+modules outside tree: [] n= 42

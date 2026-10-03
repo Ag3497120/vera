@@ -1,0 +1,53 @@
+rows=2270 (file x row x fake)
+output differences: {"newly_read": 13}
+same output and same diagnosis: 2221
+same output, diagnosis differs only: 36
+diagnosis_only	w3b2	ja_r3.jsonl	兄が弟に自転車を直してあげた。	PLACEMENT_FRAME_NOT_READ:P_CHANGE -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CHANGE:を
+diagnosis_only	w3b1	ja_r8.jsonl	兄が弟に近づいた。	PLACEMENT_FRAME_NOT_READ:P_CHANGE -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CHANGE:に
+diagnosis_only	w3b1	ja_r8.jsonl	犬が兄に迫った。	PLACEMENT_FRAME_NOT_READ:P_CHANGE -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CHANGE:に
+diagnosis_only	w3b1	ja_r8.jsonl	猫が弟に近づいた。	PLACEMENT_FRAME_NOT_READ:P_CHANGE -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CHANGE:に
+diagnosis_only	w3b1	ja_r8.jsonl	母が先生に迫った。	PLACEMENT_FRAME_NOT_READ:P_CHANGE -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CHANGE:に
+diagnosis_only	w3b1	ja_r8.jsonl	兄が弟に手渡した。	PLACEMENT_FRAME_NOT_READ:P_CREATE -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:に
+diagnosis_only	w3b1	ja_r8.jsonl	母が先生に差し出した。	PLACEMENT_FRAME_NOT_READ:P_CREATE -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:に
+diagnosis_only	w3b1	ja_r8.jsonl	姉が妹に差し出した。	PLACEMENT_FRAME_NOT_READ:P_CREATE -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:に
+diagnosis_only	w3b1	ja_r8.jsonl	父が生徒に手渡した。	PLACEMENT_FRAME_NOT_READ:P_CREATE -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_CREATE:に
+newly_read	w3b1	ja_r8.jsonl	兄が駅へ送り出した。	{"agent": "兄", "goal": "駅"}
+newly_read	w3b1	ja_r8.jsonl	弟が港へ踏み出した。	{"agent": "弟", "goal": "港"}
+newly_read	w3b1	ja_r8.jsonl	母が庭へ踏み込んだ。	{"agent": "母", "goal": "庭"}
+diagnosis_only	w3b1	ja_r8.jsonl	姉が部屋へ踏み入れた。	PLACEMENT_FRAME_NOT_READ:P_ACT -> PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ラ行
+diagnosis_only	w3b1	ja_r8.jsonl	母が弟に怒った。	PLACEMENT_FRAME_NOT_READ:P_EMOTION -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:に
+diagnosis_only	w3b2	ja_r8.jsonl	母が弟に怒った。	PLACEMENT_FRAME_NOT_READ:P_EMOTION -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:に
+diagnosis_only	w3b1	ja_r8.jsonl	兄が先生に驚いた。	PLACEMENT_FRAME_NOT_READ:P_EMOTION -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:に
+diagnosis_only	w3b2	ja_r8.jsonl	兄が先生に驚いた。	PLACEMENT_FRAME_NOT_READ:P_EMOTION -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:に
+diagnosis_only	w3b1	ja_r8.jsonl	姉が妹に怒った。	PLACEMENT_FRAME_NOT_READ:P_EMOTION -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:に
+diagnosis_only	w3b2	ja_r8.jsonl	姉が妹に怒った。	PLACEMENT_FRAME_NOT_READ:P_EMOTION -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:に
+diagnosis_only	w3b1	ja_r8.jsonl	弟が兄に笑った。	PLACEMENT_FRAME_NOT_READ:P_EMOTION -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:に
+diagnosis_only	w3b2	ja_r8.jsonl	弟が兄に笑った。	PLACEMENT_FRAME_NOT_READ:P_EMOTION -> PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:に
+diagnosis_only	w3b1	ja_r8.jsonl	兄が弟に残した。	PLACEMENT_FRAME_NOT_READ:P_CONSUME -> PLACEMENT_TYPE_MISMATCH:P_CONSUME:に:PERSON
+diagnosis_only	w3b1	ja_r8.jsonl	母が先生に残した。	PLACEMENT_FRAME_NOT_READ:P_CONSUME -> PLACEMENT_SLOT_EVIDENCE_ONLY:に:先生
+diagnosis_only	w3b1	ja_r8.jsonl	姉が妹に残した。	PLACEMENT_FRAME_NOT_READ:P_CONSUME -> PLACEMENT_TYPE_MISMATCH:P_CONSUME:に:PERSON
+diagnosis_only	w3b1	ja_r8.jsonl	父が生徒に残した。	PLACEMENT_FRAME_NOT_READ:P_CONSUME -> PLACEMENT_SLOT_EVIDENCE_ONLY:に:生徒
+diagnosis_only	w3b1	ja_r8.jsonl	兄が川で窓を洗った。	PLACEMENT_FRAME_NOT_READ:P_ACT -> PLACEMENT_MULTIPLE:を:窓
+diagnosis_only	w3b2	ja_r8.jsonl	兄が川で窓を洗った。	PLACEMENT_FRAME_NOT_READ:P_ACT -> PLACEMENT_MULTIPLE:を:窓
+diagnosis_only	w3b1	ja_r8.jsonl	母が森で靴を洗った。	PLACEMENT_FRAME_NOT_READ:P_ACT -> PLACEMENT_UNPLACED:を:靴
+diagnosis_only	w3b2	ja_r8.jsonl	母が森で靴を洗った。	PLACEMENT_FRAME_NOT_READ:P_ACT -> PLACEMENT_UNPLACED:を:靴
+diagnosis_only	w3b1	w3b2_frame.jsonl	兄が校庭で遊んだ。	PLACEMENT_FRAME_NOT_READ:P_ACT -> PLACEMENT_UNKNOWN:で:校庭
+newly_read	w3b2	w3b2_frame.jsonl	兄が校庭で遊んだ。	{"agent": "兄", "place": "校庭"}
+diagnosis_only	w3b1	w3b2_frame.jsonl	弟が神社で遊んだ。	PLACEMENT_FRAME_NOT_READ:P_ACT -> PLACEMENT_UNKNOWN:で:神社
+newly_read	w3b2	w3b2_frame.jsonl	弟が神社で遊んだ。	{"agent": "弟", "place": "神社"}
+diagnosis_only	w3b1	w3b2_frame.jsonl	母がホテルで働いた。	PLACEMENT_FRAME_NOT_READ:P_ACT -> PLACEMENT_UNKNOWN:で:ホテル
+newly_read	w3b2	w3b2_frame.jsonl	母がホテルで働いた。	{"agent": "母", "place": "ホテル"}
+diagnosis_only	w3b1	w3b2_frame.jsonl	父がアパートで働いた。	PLACEMENT_FRAME_NOT_READ:P_ACT -> PLACEMENT_UNKNOWN:で:アパート
+newly_read	w3b2	w3b2_frame.jsonl	父がアパートで働いた。	{"agent": "父", "place": "アパート"}
+newly_read	w3b2	w3b2_frame.jsonl	妹が校庭で泣いた。	{"agent": "妹", "place": "校庭"}
+diagnosis_only	w3b1	w3b2_frame.jsonl	弟が神社で笑った。	PLACEMENT_FRAME_NOT_READ:P_EMOTION -> PLACEMENT_UNKNOWN:で:神社
+newly_read	w3b2	w3b2_frame.jsonl	弟が神社で笑った。	{"agent": "弟", "place": "神社"}
+diagnosis_only	w3b2	w3b2_frame.jsonl	姉が校舎で窓を拭いた。	PLACEMENT_FRAME_NOT_READ:P_ACT -> PLACEMENT_MULTIPLE:を:窓
+diagnosis_only	w3b1	w3b2_frame.jsonl	兄が校庭で絵を描いた。	PLACEMENT_FRAME_NOT_READ:P_CREATE -> PLACEMENT_UNKNOWN:で:校庭
+newly_read	w3b2	w3b2_frame.jsonl	兄が校庭で絵を描いた。	{"agent": "兄", "patient": "絵", "place": "校庭"}
+diagnosis_only	w3b1	w3b2_frame.jsonl	姉が神社で手紙を書いた。	PLACEMENT_FRAME_NOT_READ:P_CREATE -> PLACEMENT_UNKNOWN:で:神社
+newly_read	w3b2	w3b2_frame.jsonl	姉が神社で手紙を書いた。	{"agent": "姉", "patient": "手紙", "place": "神社"}
+diagnosis_only	w3b1	w3b2_multiple.jsonl	家族が校庭で遊んだ。	PLACEMENT_FRAME_NOT_READ:P_ACT -> PLACEMENT_UNKNOWN:が:家族
+newly_read	w3b2	w3b2_multiple.jsonl	家族が校庭で遊んだ。	{"agent": "家族", "place": "校庭"}
+diagnosis_only	w3b1	w3b2_multiple.jsonl	警察が神社で働いた。	PLACEMENT_FRAME_NOT_READ:P_ACT -> PLACEMENT_UNKNOWN:が:警察
+newly_read	w3b2	w3b2_multiple.jsonl	警察が神社で働いた。	{"agent": "警察", "place": "神社"}

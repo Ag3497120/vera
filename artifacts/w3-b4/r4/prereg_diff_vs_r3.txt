@@ -1,0 +1,5 @@
+0a1,4
+> 12c12
+> < - W3-b2 の計画 `typed_plan_u_w3b2_ja` の本文を **1 字ずつ写した** `typed_plan_u_w3b4_ja` を足す。違うのは表の参照の 2 行だけ（`TYPED_FRAMES_NOT_READ` → `TYPED_FRAMES_NOT_READ_W3B4`、`TYPED_FRAMES.get(ptype)` → `typed_frames_v2().get(ptype)`）。旧は `typed_plan_u_w3b2_v1_ja` の名で残し、`typed_plan_u_w3b2_ja` の名を新しい関数に差し替える（入口は呼ぶたびに `R.typed_plan_u_w3b2_ja` を引くので、経路 U・U3 が v2 で読む）。W3-b1 の計画 `typed_plan_u_ja` は v1 のまま。
+> ---
+> > - W3-b2 の計画 `typed_plan_u_w3b2_ja` の本文を **1 字ずつ写した** `typed_plan_u_w3b4_ja` を足す。違うのは表の参照の 2 行だけ（`TYPED_FRAMES_NOT_READ` → `TYPED_FRAMES_NOT_READ_W3B4`、`TYPED_FRAMES.get(ptype)` → `typed_frames_v2().get(ptype)`）。旧は `typed_plan_u_w3b2_v1_ja` の名で残し、`typed_plan_u_w3b2_ja` の名を新しい関数に差し替える（入口は呼ぶたびに `R.typed_plan_u_w3b2_ja` を引くので、経路 U・U3 が v2 で読む）。W3-b1 の計画 `typed_plan_u_ja` は v1 のまま。**（第 4 ラウンドの注記: 表は v1 のまま。ただし名前 typed_plan_u_ja は K186 の門で包んだ関数に差し替えた。本体の関数定義は基点のまま）**

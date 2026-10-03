@@ -1,0 +1,21 @@
+{
+ "about": "Types that the registered table of W3-b4 (docs/READING_SOUNDNESS.md 10D, K161) read and that were taken out again (K165, 'table change records' 1 and 2). The frozen rows of these types in tests/reading_soundness/ja_r10_w3b4.jsonl (entry_expect: read for 27 rows of P_CHANGE and 29 rows of P_CONSUME) are NOT rewritten: the tests and tools/run_rows.py read a row of a narrowed type as 'the entry refuses it, and the diagnosis says PLACEMENT_FRAME_NOT_READ:<type>' (a row that is refused before the type of the predicate is asked keeps its registered reason). Only narrowing is recorded here; nothing is widened.",
+ "types": {
+  "P_CHANGE": {
+   "narrowed_at": "2026-10-04 02:08:29 +0900",
+   "recorded_in": "docs/READING_SOUNDNESS.md 10D, table change record 1; artifacts/w3-b4/r2/narrow_prereg_time.txt",
+   "name": "HE_GOAL_OR_RESULT",
+   "reason": "へ is goal (落ちる・広がる) or result (変わる: 工場から店へ変わった). The type of a result is not decided by the conventions (section 2) and a result takes PLACE too (店・都会・体育館), so goal/へ/PLACE is not disjoint from result: the table read a result as a goal.",
+   "source": "review of round 1 (review.r1.md), F4, M1: 会社が工場から店へ変わった。 チームが広場から体育館へ変わった。 兄が田舎から都会へ変わった。 (live r7 and optimistic fake), 学校が校舎から仮校舎へ変わった。 (optimistic fake)",
+   "rows_appended_to_the_data": ["W3B4-CHANGE-A-901", "W3B4-CHANGE-A-902", "W3B4-CHANGE-A-903", "W3B4-CHANGE-A-904"]
+  },
+  "P_CONSUME": {
+   "narrowed_at": "2026-10-04 02:08:29 +0900",
+   "recorded_in": "docs/READING_SOUNDNESS.md 10D, table change record 2; artifacts/w3-b4/r2/narrow_prereg_time.txt",
+   "name": "NI_TIME_OR_PURPOSE",
+   "reason": "に+TIME is time or the purpose of using (金を休みに使う). A purpose has no role in the conventions and takes words of events and periods (休み・老後・正月), which are TIME too, so time/に/TIME is not disjoint from it.",
+   "source": "review of round 1 (review.r1.md), F4, M2: 兄が休みに金を使った。 (optimistic fake: 休み direct TIME)",
+   "rows_appended_to_the_data": ["W3B4-CONSUME-A-901"]
+  }
+ }
+}

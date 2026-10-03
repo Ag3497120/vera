@@ -312,7 +312,8 @@ def test_u3_does_not_read_a_place_that_is_not_a_place_in_the_registered_sense(no
 
 
 def test_u3_does_not_read_when_the_predicate_is_not_of_a_type_the_table_reads_or_is_split():
-    for pred, top, why in (('遊ぶ', 'P_ACT', 'PLACEMENT_FRAME_NOT_READ:P_ACT'), ('眠る', 'P_EXIST', 'PLACEMENT_FRAME_NOT_READ:P_EXIST')):
+    # W3-b4: P_ACT is a type of the second table but has no place/で row (instrument and cause take PLACE words too), so 兄が校庭で遊んだ。 is still refused, for the particle now
+    for pred, top, why in (('遊ぶ', 'P_ACT', 'PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で'), ('眠る', 'P_EXIST', 'PLACEMENT_FRAME_NOT_READ:P_EXIST')):
         m = u3_map(**{pred: P(top)})
         text = '兄が校庭で%s。' % {'遊ぶ': '遊んだ', '眠る': '眠った'}[pred]
         new, base = pair(text, m)
@@ -756,6 +757,12 @@ def test_the_fixture_has_every_word_the_data_asks():
 
 
 EXCEPTIONS = {x['id']: x for x in json.loads((RS / 'w3b2_expect_exceptions.json').read_text(encoding='utf-8'))['exceptions']}
+# W3-b4 (table change record 3): rows registered as refused with the reason of the first table (FRAME_NOT_READ) of a type that the second table reads (P_ACT, P_CREATE, P_EMOTION) but without a
+# place/で row. The entry still refuses every one of them (as registered); only the reason changed. The observation of each row is pinned (not "read if it can be read")
+W3B4_REASON = {**{i: 'PLACEMENT_PARTICLE_NOT_IN_FRAME:%s:で' % t for i, t in (
+    ('W3B2-FRAME-063', 'P_ACT'), ('W3B2-FRAME-064', 'P_ACT'), ('W3B2-FRAME-065', 'P_ACT'), ('W3B2-FRAME-066', 'P_ACT'), ('W3B2-FRAME-070', 'P_EMOTION'), ('W3B2-FRAME-071', 'P_EMOTION'),
+    ('W3B2-FRAME-074', 'P_CREATE'), ('W3B2-FRAME-075', 'P_CREATE'), ('W3B2-MULTIPLE-060', 'P_ACT'), ('W3B2-MULTIPLE-061', 'P_ACT'))},
+    'W3B2-FRAME-073': 'PLACEMENT_MULTIPLE:を:窓'}
 
 
 def test_the_new_data_rows_are_read_and_refused_as_registered_and_judged_correct_when_read():
@@ -772,6 +779,9 @@ def test_the_new_data_rows_are_read_and_refused_as_registered_and_judged_correct
             x = EXCEPTIONS[r['id']]
             if ('read' if out['readable'] else 'abstain') != x['observed_entry'] or ex != x['observed_explain'] or verdict != x['observed_verdict']:
                 problems.append((r['id'], 'declared exception no longer what was observed', x['observed_entry'], x['observed_explain']))
+            continue
+        if r['id'] in W3B4_REASON:
+            if out['readable'] or ex['w3b2'] != W3B4_REASON[r['id']] or verdict != 'abstain': problems.append((r['id'], 'W3-b4: refused with the pinned reason', out['readable'], ex['w3b2'], verdict))
             continue
         if (r['entry_expect'] == 'read') != bool(out['readable']): problems.append((r['id'], 'entry_expect', r['entry_expect'], out['readable']))
         if r['entry_expect'] == 'read' and verdict != 'correct': problems.append((r['id'], 'read but not correct', verdict))

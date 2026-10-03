@@ -2604,3 +2604,135 @@ def w3b3_head(snap, cut):
     if any(t.pos1 not in ('名詞', '接頭辞', '接尾辞') or t.pos2 == '数詞' for t in head): return None, 'HEAD_ROLE_UNDETERMINED:head_not_simple'
     if head[-1].pos3 in W3B2_HEAD_RELATIONAL_POS3: return None, 'HEAD_ROLE_UNDETERMINED:head_relational'
     return {'start': head[0].start, 'end': head[-1].end, 'surface': ''.join(t.surface for t in head), 'particle_index': k}, None
+
+# W3-b4: K62 v2, the second table (docs/READING_SOUNDNESS.md section 10D, K160-K165). Nothing above this line is changed: only lines are added.
+# The table of W3-b1 (`TYPED_FRAMES`, `TYPED_FRAMES_NOT_READ`) keeps its value; v2 is kept under new names. The rows are (role, particle, expected types) triples that v1 already
+# has; of those the new types use agent/が, patient/を, goal/へ and source/から only. No row is added for a role whose type the conventions do not decide (recipient, instrument,
+# result, cause), and no row for the adjunct place/で: instrument and cause take words that are PLACE too (examples are in the docs), so the new types are not read through で
+# (docs K183, table change record 3). The place/で rows of v1 (P_MOVE, P_COMMUNICATE) are v1's and stay in `TYPED_FRAMES`.
+# For a particle that two roles of one predicate type could take, a row is written only when the expected types of the two are disjoint (a test checks it); the rest is not read.
+# Two types registered with rows (P_CHANGE, P_CONSUME) were taken out again after the review of round 1 (docs K165, table change records 1 and 2): they are in TYPED_FRAMES_NOT_READ_W3B4.
+# After the review of round 2 the place/で row of P_ACT, P_CREATE and P_EMOTION was taken out (table change record 3); the types stay, with their other rows.
+# ===================================================================================================================================
+TYPED_FRAMES_W3B4 = {
+    'P_ACT': (
+        ('agent', ('が',), ('PERSON', 'GROUP_ORG', 'ANIMAL'), 'arg'),
+        ('patient', ('を',), ('PERSON', 'GROUP_ORG', 'ANIMAL', 'PLANT', 'ARTIFACT', 'SUBSTANCE_FOOD', 'EVENT_ACT', 'STATE_PROPERTY', 'ABSTRACT',
+                              'INFO_LANGUAGE', 'BODY_PART', 'NATURAL_PHENOMENON', 'WORK', 'IDENTIFIER'), 'arg'),
+        ('goal', ('へ',), ('PLACE',), 'arg'),
+        ('source', ('から',), ('PLACE',), 'arg')),
+    'P_CREATE': (
+        ('agent', ('が',), ('PERSON', 'GROUP_ORG', 'ANIMAL'), 'arg'),
+        ('patient', ('を',), ('PERSON', 'GROUP_ORG', 'ANIMAL', 'PLANT', 'ARTIFACT', 'SUBSTANCE_FOOD', 'EVENT_ACT', 'STATE_PROPERTY', 'ABSTRACT',
+                              'INFO_LANGUAGE', 'BODY_PART', 'NATURAL_PHENOMENON', 'WORK', 'IDENTIFIER'), 'arg')),
+    'P_EMOTION': (
+        ('agent', ('が',), ('PERSON', 'GROUP_ORG', 'ANIMAL'), 'arg'),
+        ('patient', ('を',), ('PERSON', 'GROUP_ORG', 'ANIMAL', 'PLANT', 'ARTIFACT', 'SUBSTANCE_FOOD', 'EVENT_ACT', 'STATE_PROPERTY', 'ABSTRACT',
+                              'INFO_LANGUAGE', 'BODY_PART', 'NATURAL_PHENOMENON', 'WORK', 'IDENTIFIER'), 'arg')),
+}
+
+
+def typed_frames_v2():
+    """K161: the table the plans of W3-b4 read with, composed WHEN IT IS ASKED (not copied when the module is loaded): the two types of K62 (v1, in the order of the first
+    table), then the types of W3-b4 (three after the narrowing of round 2, and without place/で after the narrowing of round 3). A change of `TYPED_FRAMES` is seen at once (a test of W3-b1 sets an item of it in place)."""
+    return {**TYPED_FRAMES, **TYPED_FRAMES_W3B4}
+
+
+# the types that stay unread (name = a short reason; the sentences are in docs K162, `table:w3b4_not_read`)
+TYPED_FRAMES_NOT_READ_W3B4 = {
+    'P_GIVE': 'GA_NI_GIVER_OR_RECEIVER', 'P_PERCEIVE': 'GA_PERCEIVER_OR_PERCEIVED', 'P_EXIST': 'GA_ENTITY_OR_AGENT', 'P_POSSESS': 'GA_AGENT_OR_RECIPIENT',
+    'P_STATE': 'ADJECTIVAL_PREDICATE', 'P_COGNITION': 'GA_OBJECT_OR_AGENT',
+    # narrowed after the review of round 1 (docs K165, table change records 1 and 2): a misread was found for each, so the type goes back to the unread ones (no word, no rule is added)
+    'P_CHANGE': 'HE_GOAL_OR_RESULT', 'P_CONSUME': 'NI_TIME_OR_PURPOSE',
+}
+
+
+def typed_plan_u_w3b4_ja(clause, toks, query, *, voice, written, strip, role_map):
+    """K160, the plan of paths U and U3 with the second table (K62 v2): the plan of W3-b2 (`typed_plan_u_w3b2_v1_ja`), body unchanged, with two references to the table
+    replaced: the types that are not read are `TYPED_FRAMES_NOT_READ_W3B4`, and the rows come from `typed_frames_v2()`. The reasons, their order and the form of `role_basis`
+    are those of W3-b2 (K99)."""
+    if voice != 'active': return None, 'PLACEMENT_VOICE_NOT_ACTIVE'
+    if written is None or written != clause.predicate: return None, 'PLACEMENT_PREDICATE_NORMALIZED'
+    ask = _Asker(query)
+    answer_p = ask(written)
+    ptype, why = placement_type(answer_p)
+    if why: return None, '%s:predicate:%s' % (why, written)
+    if not ptype.startswith('P_'): return None, 'PLACEMENT_NOT_PREDICATE_TYPE'
+    if ptype in TYPED_FRAMES_NOT_READ_W3B4: return None, 'PLACEMENT_FRAME_NOT_READ:' + ptype
+    rows = typed_frames_v2().get(ptype)
+    if rows is None: return None, 'PLACEMENT_FRAME_NOT_READ:' + ptype
+    fkind, finfo = predicate_frame(answer_p)
+    if fkind is None: return None, finfo
+    chosen, basis = [], {}
+    for role in clause.roles:
+        particle = _particle_after(toks, role.span.end)
+        value = strip(role)
+        if not value: return None, 'PLACEMENT_INVALID:EMPTY_TERM:%s' % (particle,)
+        question = _w3b2_not_demonstrative(toks, role)
+        if question: return None, question
+        in_frame = [row for row in rows if particle in row[1]]
+        if not in_frame: return None, 'PLACEMENT_PARTICLE_NOT_IN_FRAME:%s:%s' % (ptype, particle)
+        if fkind == 'confirmed' and particle not in finfo: return None, 'PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:%s:%s' % (ptype, particle)
+        head, relational = no_phrase_head(toks, role.span.end - len(value), role.span.end)      # the value is the end of the role's text (a demonstrative at its start was taken off)
+        if relational: return None, relational
+        answer = ask(head or value)
+        fits, last = [], None
+        for row in in_frame:
+            kind, payload = placement_fit(answer, row[2], adjunct=row[3] == 'adjunct')
+            if kind in ('direct', 'all_candidates'): fits.append((row, kind, payload))
+            else: last = (kind, payload)
+        if not fits:
+            kind, payload = last
+            if kind == 'mismatch': return None, 'PLACEMENT_TYPE_MISMATCH:%s:%s:%s' % (ptype, particle, payload[0])
+            return None, '%s:%s:%s' % (payload, particle, value)
+        if len(fits) > 1: return None, 'PLACEMENT_ROLE_TIE'
+        row, kind, types = fits[0]
+        if fkind == 'confirmed' and not set(types) <= finfo[particle]:
+            return None, 'PLACEMENT_FRAME_TYPE_NOT_CONFIRMED:%s:%s:%s' % (ptype, particle, '+'.join(types))
+        if role.name not in ('recipient', 'ambiguous'):
+            decided = 'agent' if role.name == 'agent' else role_map.get(role.name)
+            if decided != row[0]: return None, 'PLACEMENT_READER_DISAGREES:%s:%s' % (decided or role.name, row[0])
+        if row[0] in basis: return None, 'PLACEMENT_DUPLICATE_ROLE:' + row[0]
+        chosen.append((row[0], role))
+        basis[row[0]] = 'placement_%s%s:%s' % (kind, '_head' if head else '', '+'.join(types))
+    return {'mode': 'override', 'roles': chosen, 'predicate_basis': 'placement_direct:' + ptype, 'role_basis': basis, 'clause': replace(clause, unsupported=())}, None
+
+
+typed_plan_u_w3b2_v1_ja = typed_plan_u_w3b2_ja          # the plan of W3-b2 (rows of v1 only) stays under a name of its own: for the tests and the measurements that compare the two
+# semantic_read.py is not changed: the entry looks up `R.typed_plan_u_w3b2_ja` each time it runs, so paths U and U3 read with v2 once the name is this plan
+typed_plan_u_w3b2_ja = typed_plan_u_w3b4_ja
+
+
+# ===================================================================================================================================
+# W3-b4 round 4 (docs 10D K186, the auditor's decision 2): the gate of a focus particle right after a case particle, on the plans of paths U and U3 (the plan of
+# W3-b1 and the plan of W3-b2/W3-b4). A clause whose tokens (marks of punctuation and blanks skipped) have a case particle followed by a binding or adverbial particle
+# is refused: the reading would drop that particle (K180). Parts of speech and adjacency only, no list of words. Checked after the plan decided a reading, so every
+# reason of a refusal before is unchanged; it can only turn a reading into a refusal. Path S4 is not gated. Nothing above this block is changed.
+# ===================================================================================================================================
+def typed_focus_after_case_ja(toks, clause):
+    """K186: 'PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:<case particle>:<particle>' for the first token of 助詞/係助詞 or 助詞/副助詞 that follows a token of 助詞/格助詞
+    inside the clause (tokens of 補助記号 and 空白 between them are skipped), else None."""
+    lo, hi = clause.span.start, clause.span.end
+    inside = [t for t in toks if t[1] >= lo and t[2] <= hi and t[0].feature.pos1 not in ('補助記号', '空白')]
+    for (w, a, b), (w2, a2, b2) in zip(inside, inside[1:]):
+        if w.feature.pos1 == '助詞' and w.feature.pos2 == '格助詞' and w2.feature.pos1 == '助詞' and w2.feature.pos2 in ('係助詞', '副助詞'):
+            return 'PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:%s:%s' % (w.surface, w2.surface)
+    return None
+
+
+def _typed_plan_focus_gated(plan):
+    """K186: the plan `plan` (same arguments), then the gate on what it decided to read. The plan itself is kept as the attribute `ungated`."""
+    def gated(clause, toks, query, *, voice, written, strip, role_map):
+        typed, why = plan(clause, toks, query, voice=voice, written=written, strip=strip, role_map=role_map)
+        if typed is None: return typed, why
+        focus = typed_focus_after_case_ja(toks, clause)
+        if focus: return None, focus
+        return typed, why
+    gated.__name__ = plan.__name__ + '_focus_gated'
+    gated.ungated = plan
+    return gated
+
+
+typed_plan_u_w3b1_ungated_ja = typed_plan_u_ja           # the plan of W3-b1 (the function of the base commit, unchanged) under a name of its own
+typed_plan_u_ja = _typed_plan_focus_gated(typed_plan_u_w3b1_ungated_ja)
+typed_plan_u_w3b2_ja = _typed_plan_focus_gated(typed_plan_u_w3b4_ja)

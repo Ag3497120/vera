@@ -1,0 +1,124 @@
+{
+ "P_ACT": {
+  "abstain": 28,
+  "read": 26,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_DIRECT_VIA_GENERATED": 1,
+   "PLACEMENT_ESTIMATED_GENERATED": 1,
+   "PLACEMENT_MULTIPLE": 7,
+   "PLACEMENT_PARTICLE_NOT_IN_FRAME": 2,
+   "PLACEMENT_PREDICATE_POSSIBLY_DERIVED": 1,
+   "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED": 1,
+   "PLACEMENT_SLOT_EVIDENCE_ONLY": 4,
+   "PLACEMENT_TYPE_MISMATCH": 5,
+   "PLACEMENT_UNPLACED": 1,
+   "PLACEMENT_VOICE_NOT_ACTIVE": 1,
+   "PLACEMENT_W3B2_NOT_TRIGGERED": 4
+  },
+  "rows": 54
+ },
+ "P_CHANGE": {
+  "abstain": 61,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "NO_TYPED_STEP_RAN": 1,
+   "PLACEMENT_FRAME_NOT_READ": 57,
+   "PLACEMENT_W3B2_NOT_TRIGGERED": 3
+  },
+  "rows": 61
+ },
+ "P_COGNITION": {
+  "abstain": 4,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_FRAME_NOT_READ": 4
+  },
+  "rows": 4
+ },
+ "P_CONSUME": {
+  "abstain": 62,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_FRAME_NOT_READ": 57,
+   "PLACEMENT_VOICE_NOT_ACTIVE": 1,
+   "PLACEMENT_W3B2_NOT_TRIGGERED": 4
+  },
+  "rows": 62
+ },
+ "P_CREATE": {
+  "abstain": 32,
+  "read": 28,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_ESTIMATED_GENERATED": 2,
+   "PLACEMENT_MULTIPLE": 4,
+   "PLACEMENT_PARTICLE_NOT_IN_FRAME": 7,
+   "PLACEMENT_PREDICATE_POSSIBLY_DERIVED": 2,
+   "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED": 1,
+   "PLACEMENT_SLOT_EVIDENCE_ONLY": 4,
+   "PLACEMENT_TYPE_MISMATCH": 5,
+   "PLACEMENT_UNPLACED": 2,
+   "PLACEMENT_VOICE_NOT_ACTIVE": 1,
+   "PLACEMENT_W3B2_NOT_TRIGGERED": 4
+  },
+  "rows": 60
+ },
+ "P_EMOTION": {
+  "abstain": 37,
+  "read": 26,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_DIRECT_VIA_GENERATED": 1,
+   "PLACEMENT_ESTIMATED_GENERATED": 1,
+   "PLACEMENT_MULTIPLE": 6,
+   "PLACEMENT_PARTICLE_NOT_IN_FRAME": 8,
+   "PLACEMENT_PREDICATE_POSSIBLY_DERIVED": 1,
+   "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED": 1,
+   "PLACEMENT_REREAD_ABSTAINS": 1,
+   "PLACEMENT_SLOT_EVIDENCE_ONLY": 3,
+   "PLACEMENT_TYPE_MISMATCH": 7,
+   "PLACEMENT_UNPLACED": 3,
+   "PLACEMENT_VOICE_NOT_ACTIVE": 1,
+   "PLACEMENT_W3B2_NOT_TRIGGERED": 4
+  },
+  "rows": 63
+ },
+ "P_EXIST": {
+  "abstain": 4,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_FRAME_NOT_READ": 4
+  },
+  "rows": 4
+ },
+ "P_GIVE": {
+  "abstain": 4,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_FRAME_NOT_READ": 4
+  },
+  "rows": 4
+ },
+ "P_PERCEIVE": {
+  "abstain": 4,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_FRAME_NOT_READ": 4
+  },
+  "rows": 4
+ },
+ "P_POSSESS": {
+  "abstain": 4,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_FRAME_NOT_READ": 4
+  },
+  "rows": 4
+ },
+ "P_STATE": {
+  "abstain": 3,
+  "read": 0,
+  "reasons_of_the_refused_rows": {
+   "PLACEMENT_W3B2_NOT_TRIGGERED": 3
+  },
+  "rows": 3
+ }
+}

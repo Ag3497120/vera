@@ -1,0 +1,4 @@
+inputs=3505 same=3416 newly_read=89 frame_stopped=0 read_to_abstain_other=0 changed=0 refusal_changed=0 error_changed=0
+verdicts: {"CORRECT": 89}
+frame_stopped by reason: {}
+by source and kind: {"ja_r10_w3b4.jsonl|newly_read": 79, "w3b2_frame.jsonl|newly_read": 8, "w3b2_multiple.jsonl|newly_read": 2}

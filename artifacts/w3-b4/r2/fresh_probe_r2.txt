@@ -1,0 +1,21 @@
+# 20 fresh sentences through the entry with the placement r7 (live), after the narrowing. Judged by eye; not frozen, not an acceptance measurement.
+兄が公園から駅へ歩いた。 READ {"agent": "兄", "goal": "駅", "source": "公園"}
+兄が部屋から庭へ送り出した。 ABSTAIN ['RECIPIENT_TYPE_UNDETERMINED:送り出す', 'PLACEMENT_ESTIMATED_GENERATED:predicate:送り出す']
+姉が教室から校庭へ連れ出した。 ABSTAIN ['RECIPIENT_TYPE_UNDETERMINED:連れ出す', 'PLACEMENT_ESTIMATED_GENERATED:predicate:連れ出す']
+父が工場から店へ運んだ。 READ {"agent": "父", "goal": "店", "source": "工場"}
+兄が学校へ働いた。 ABSTAIN ['RECIPIENT_TYPE_UNDETERMINED:働く', 'PLACEMENT_FRAME_NOT_READ:P_ACT']
+兄が公園で働いた。 READ {"agent": "兄", "place": "公園"}
+母が台所で絵を描いた。 READ {"agent": "母", "patient": "絵", "place": "台所"}
+弟が海岸で石を拾った。 ABSTAIN ['NO_SUPPORTED_CLAUSE']
+兄が休みに絵を描いた。 ABSTAIN ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_FRAME_NOT_READ:P_CREATE']
+弟が夏に歌を作った。 READ {"agent": "弟", "patient": "歌", "time": "夏"}
+母が駅から荷物を送った。 READ {"agent": "母", "patient": "荷物", "source": "駅"}
+兄が会社から店へ移った。 READ {"agent": "兄", "goal": "店", "source": "会社"}
+妹が体育館で試験を恐れた。 READ {"agent": "妹", "patient": "試験", "place": "体育館"}
+兄が教室で先生を恐れた。 READ {"agent": "兄", "patient": "先生", "place": "教室"}
+姉が病院で手術を怖がった。 ABSTAIN ['NO_SUPPORTED_CLAUSE']
+父が川で魚を釣った。 ABSTAIN ['NO_SUPPORTED_CLAUSE']
+兄が正月に餅を作った。 READ {"agent": "兄", "patient": "餅", "time": "正月"}
+兄が老後に金を貯めた。 ABSTAIN ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_ESTIMATED_GENERATED:predicate:貯める']
+兄が公園で兄を愛した。 ABSTAIN ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NO_ROLE:PERSON:が']
+先生が大学から研究室へ戻した。 ABSTAIN ['RECIPIENT_TYPE_UNDETERMINED:戻す', 'PLACEMENT_ESTIMATED_GENERATED:predicate:戻す']

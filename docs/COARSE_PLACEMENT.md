@@ -1402,6 +1402,7 @@ def test_hiragana_katakana_variant_keeps_same_state():
 ### 12.2 K62 の写し（`coarse_types.K62_FRAMES`）
 出典は W3-b1 の `docs/READING_SOUNDNESS.md` §10 の K62 の表（`origin/integ-w3b1`、コミット `5d863dd`、blob `0d6233b20c6a1cd717f9a16bb6d96476422864ab`。§10A の K62 ではない）。表は 2 型 9 行。写しは型 id・助詞・名詞の型 id だけで、`artifacts/w3-a3/k62_source.md` に表をそのまま貼って機械で照合する。**表を広げない**。残り 11 型は枠が無い（「読まない型」）。
 **区別の行**: 型 T の行の (助詞, 名詞の型) の組のうち、もう一方の型のどの行にも無い組。表から機械的に導く関数で求め、手で選ばない。
+（W3-b4 追記 2026-10-04 01:10 +0900）読解器は v2（`docs/READING_SOUNDNESS.md` §10D の `w3b4_frames`、`semantic_reader.typed_frames_v2()`）で読む。配置の逆引き・格上げは v1（この節の `K62_FRAMES`）のまま。v1 ⊂ v2（行単位）は `tests/coarse_place/test_k62_v1_subset_v2.py` が確かめる。逆引きを v2 に移すかは W3-a4（r7 の 48 語がどう動くかを測ってから）。
 
 ### 12.3 抽出段の新しい数え（`analyze`。読解器は使わない）
 「項の連なり」の規則（隣接だけ。長距離は数えない）:

@@ -1,0 +1,49 @@
+--- a/tests/test_semantic_read_w3b1.py
++++ b/tests/test_semantic_read_w3b1.py
+@@ -459,6 +459,9 @@
+     assert sum(r['path'] == 'EN' and 'adjunct' in r['construction'] for r in DATA) >= 8
+ 
+ 
++W3B4_NOW_READ = {'W3B1-U-090', 'W3B1-U-091', 'W3B1-U-092'}     # P_ACT rows (へ + PLACE) of ja_r8, registered as refused before the second table existed
++
++
+ def _exception(row):
+     return next((e for e in EXCEPTIONS if e['id'] == row['id']), None)
+ 
+@@ -477,6 +480,10 @@
+         return
+     verdict = b1.judge(row['expect'], row['lang'], out)['verdict']
+     assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
++    if row['id'] in W3B4_NOW_READ:
++        # W3-b4: P_ACT is a type the second table reads (goal/へ/PLACE): the row that W3-b1 registered as refused (FRAME_NOT_READ) is read, and read correctly
++        assert out['readable'] is True and verdict == 'correct', (out['abstain'], out['clauses'])
++        return
+     if row['entry_expect'] == 'read':
+         assert out['readable'] is True and verdict == 'correct', (out['abstain'], out['clauses'])
+     else:
+--- a/tests/test_semantic_read_w3b2.py
++++ b/tests/test_semantic_read_w3b2.py
+@@ -312,7 +312,10 @@
+ 
+ 
+ def test_u3_does_not_read_when_the_predicate_is_not_of_a_type_the_table_reads_or_is_split():
+-    for pred, top, why in (('遊ぶ', 'P_ACT', 'PLACEMENT_FRAME_NOT_READ:P_ACT'), ('眠る', 'P_EXIST', 'PLACEMENT_FRAME_NOT_READ:P_EXIST')):
++    # W3-b4: P_ACT is a type of the second table, so 遊ぶ is read as P_ACT (checked below); P_PERCEIVE and P_EXIST are types that stay unread
++    new_act, base_act = pair('兄が校庭で遊んだ。', u3_map(**{'遊ぶ': P('P_ACT')}))
++    assert new_act['readable'] and not base_act['readable'] and new_act['clauses'][0]['roles'] == {'agent': '兄', 'place': '校庭'}
++    for pred, top, why in (('遊ぶ', 'P_PERCEIVE', 'PLACEMENT_FRAME_NOT_READ:P_PERCEIVE'), ('眠る', 'P_EXIST', 'PLACEMENT_FRAME_NOT_READ:P_EXIST')):
+         m = u3_map(**{pred: P(top)})
+         text = '兄が校庭で%s。' % {'遊ぶ': '遊んだ', '眠る': '眠った'}[pred]
+         new, base = pair(text, m)
+@@ -773,6 +776,11 @@
+             if ('read' if out['readable'] else 'abstain') != x['observed_entry'] or ex != x['observed_explain'] or verdict != x['observed_verdict']:
+                 problems.append((r['id'], 'declared exception no longer what was observed', x['observed_entry'], x['observed_explain']))
+             continue
++        if r['pred_type'] in R.TYPED_FRAMES_W3B4 and r['w3b2_expect'].startswith('PLACEMENT_FRAME_NOT_READ'):
++            # W3-b4: the type of the predicate is one the second table reads: the row registered as refused (FRAME_NOT_READ) is read correctly, or refused for a reason of the second table; never wrong
++            if verdict not in ('correct', 'abstain') or (out['readable'] and ex['w3b2'] != 'READ') or (not out['readable'] and ex['w3b2'] in (None, 'READ')):
++                problems.append((r['id'], 'W3-b4: a type of the second table', verdict, ex['w3b2']))
++            continue
+         if (r['entry_expect'] == 'read') != bool(out['readable']): problems.append((r['id'], 'entry_expect', r['entry_expect'], out['readable']))
+         if r['entry_expect'] == 'read' and verdict != 'correct': problems.append((r['id'], 'read but not correct', verdict))
+         if not out['readable']:

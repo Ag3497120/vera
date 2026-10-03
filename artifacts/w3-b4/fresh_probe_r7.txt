@@ -1,0 +1,39 @@
+# informal probe (not an acceptance test): sentences written after the implementation, read with the real placement r7 through the entry; the reading is judged by eye
+READ	母が湖で釣りを楽しんだ。	楽しむ	{"agent": "母", "patient": "釣り", "place": "湖"}	+/past/None
+READ	弟が国道で荷車を押した。	押す	{"agent": "弟", "patient": "荷車", "place": "国道"}	+/past/None
+abstain	祖母が校舎で窓を洗った。	['NO_SUPPORTED_CLAUSE']
+READ	父が川で魚を焼いた。	焼く	{"agent": "父", "patient": "魚", "place": "川"}	+/past/None
+abstain	姉が校庭で鳥を見た。	['NO_SUPPORTED_CLAUSE']
+READ	先生が森林で生徒を守った。	守る	{"agent": "先生", "patient": "生徒", "place": "森林"}	+/past/None
+READ	兄が湖で薬を飲んだ。	飲む	{"agent": "兄", "patient": "薬", "place": "湖"}	+/past/None
+READ	母が遊歩道で服を着た。	着る	{"agent": "母", "patient": "服", "place": "遊歩道"}	+/past/None
+READ	警官が国道で犬を引いた。	引く	{"agent": "警官", "patient": "犬", "place": "国道"}	+/past/None
+READ	弟が校庭で試合を楽しんだ。	楽しむ	{"agent": "弟", "patient": "試合", "place": "校庭"}	+/past/None
+abstain	兄が川で雨に驚いた。	['NO_SUPPORTED_CLAUSE']
+abstain	姉が国道で事故に驚いた。	['NO_SUPPORTED_CLAUSE']
+READ	弟が交差点で猫を笑った。	笑う	{"agent": "弟", "patient": "猫", "place": "交差点"}	+/past/None
+READ	母が校庭で手紙を作った。	作る	{"agent": "母", "patient": "手紙", "place": "校庭"}	+/past/None
+READ	兄が山頂で雪を楽しんだ。	楽しむ	{"agent": "兄", "patient": "雪", "place": "山頂"}	+/past/None
+abstain	弟が国道で川を守った。	['NO_SUPPORTED_CLAUSE']
+READ	犬が校庭で鳥を引いた。	引く	{"agent": "犬", "patient": "鳥", "place": "校庭"}	+/past/None
+READ	チームが国道で試合を楽しんだ。	楽しむ	{"agent": "チーム", "patient": "試合", "place": "国道"}	+/past/None
+abstain	校庭で兄を弟が押した。	['UNSUPPORTED_CLAUSE']
+abstain	荷車を兄が国道で押した。	['UNSUPPORTED_CLAUSE']
+abstain	兄が弟と国道で遊んだ。	['NO_SUPPORTED_CLAUSE']
+abstain	兄は国道で遊んだ。	['NO_SUPPORTED_CLAUSE']
+READ	兄が国道でも遊んだ。	遊ぶ	{"agent": "兄", "place": "国道"}	+/past/None
+READ	兄が国道でさえ遊んだ。	遊ぶ	{"agent": "兄", "place": "国道"}	+/past/None
+abstain	兄が国道で遊んだと言った。	['NO_SUPPORTED_CLAUSE']
+abstain	兄が国道で遊び、弟が校庭で泣いた。	['NO_SUPPORTED_CLAUSE']
+abstain	兄が国道で遊んだ、しかし弟は泣いた。	['UNSUPPORTED_CLAUSE']
+READ	兄が国道で遊ばない。	遊ぶ	{"agent": "兄", "place": "国道"}	-/nonpast/None
+abstain	兄が国道で遊ぶな。	['NO_SUPPORTED_CLAUSE']
+abstain	兄が国道で遊びたい。	['NO_SUPPORTED_CLAUSE']
+abstain	兄が国道で遊べる。	['NO_SUPPORTED_CLAUSE']
+abstain	兄が国道で遊ぼう。	['UNREAD_SPAN:volitional source does not assert a fact']
+abstain	兄が国道で遊んでください。	['NO_SUPPORTED_CLAUSE']
+abstain	兄が国道で遊んだかもしれない。	['UNREAD_SPAN:interrogative source does not assert a fact']
+abstain	兄が国道で遊んだらしい。	['NO_SUPPORTED_CLAUSE']
+abstain	兄が国道で遊んだ人。	['NO_SUPPORTED_CLAUSE']
+abstain	国道で遊んだ兄が泣いた。	['NO_SUPPORTED_CLAUSE']
+abstain	兄が国道で遊んだのは校庭だ。	['NO_SUPPORTED_CLAUSE']

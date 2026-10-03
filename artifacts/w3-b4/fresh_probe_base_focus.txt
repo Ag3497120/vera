@@ -1,0 +1,7 @@
+# the BASE commit c875ed3 (tree /private/tmp/.../w3b4/base_git) with the real placement r7: sentences with a focus particle after the case particle (P_MOVE is a type of v1)
+兄が国道でも走った。	READ	{"agent": "兄", "place": "国道"}
+兄が国道でさえ走った。	READ	{"agent": "兄", "place": "国道"}
+兄が国道でも歩いた。	READ	{"agent": "兄", "place": "国道"}
+兄が校庭へも走った。	READ	{"agent": "兄", "goal": "校庭"}
+兄が国道でだけ走った。	abstain	['NO_SUPPORTED_CLAUSE']
+兄が国道でのみ走った。	abstain	['NO_SUPPORTED_CLAUSE']

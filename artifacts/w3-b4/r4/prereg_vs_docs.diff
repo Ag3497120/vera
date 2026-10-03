@@ -1,0 +1,46 @@
+12c12
+< - W3-b2 の計画 `typed_plan_u_w3b2_ja` の本文を **1 字ずつ写した** `typed_plan_u_w3b4_ja` を足す。違うのは表の参照の 2 行だけ（`TYPED_FRAMES_NOT_READ` → `TYPED_FRAMES_NOT_READ_W3B4`、`TYPED_FRAMES.get(ptype)` → `typed_frames_v2().get(ptype)`）。旧は `typed_plan_u_w3b2_v1_ja` の名で残し、`typed_plan_u_w3b2_ja` の名を新しい関数に差し替える（入口は呼ぶたびに `R.typed_plan_u_w3b2_ja` を引くので、経路 U・U3 が v2 で読む）。W3-b1 の計画 `typed_plan_u_ja` は v1 のまま。
+---
+> - W3-b2 の計画 `typed_plan_u_w3b2_ja` の本文を **1 字ずつ写した** `typed_plan_u_w3b4_ja` を足す。違うのは表の参照の 2 行だけ（`TYPED_FRAMES_NOT_READ` → `TYPED_FRAMES_NOT_READ_W3B4`、`TYPED_FRAMES.get(ptype)` → `typed_frames_v2().get(ptype)`）。旧は `typed_plan_u_w3b2_v1_ja` の名で残し、`typed_plan_u_w3b2_ja` の名を新しい関数に差し替える（入口は呼ぶたびに `R.typed_plan_u_w3b2_ja` を引くので、経路 U・U3 が v2 で読む）。W3-b1 の計画 `typed_plan_u_ja` は v1 のまま。**（第 4 ラウンドの注記: 表は v1 のまま。ただし名前 typed_plan_u_ja は K186 の門で包んだ関数に差し替えた。本体の関数定義は基点のまま）**
+19c19
+< 先頭の 9 行は `w3b1_frames`（K62）の行と 1 字も違わない。助詞は が を に へ から で の 6 つだけ（と・まで・より は書かない）。役割は `docs/READING_CONVENTIONS.md` §2 の閉じた一覧から。期待する型は `coarse_types.NOUN_TYPES` の 17 型の部分集合。**同じ型の中で同じ助詞を持つ 2 行の期待する型は互いに素**（テストで機械的に確かめる。現在の表は同じ型・同じ助詞の行が 1 つずつ）。新しい 20 行の（役割・助詞・型）は **v1 の 9 行にすでにある組だけ**（agent/が、patient/を、goal/へ、source/から、place/で、time/に）。recipient・instrument・result・goal(に)・cause の行は 1 行も足さない。
+---
+> 先頭の 9 行は `w3b1_frames`（K62）の行と 1 字も違わない。助詞は が を に へ から で の 6 つだけ（と・まで・より は書かない）。役割は `docs/READING_CONVENTIONS.md` §2 の閉じた一覧から。期待する型は `coarse_types.NOUN_TYPES` の 17 型の部分集合。**同じ型の中で同じ助詞を持つ 2 行の期待する型は互いに素**（テストで機械的に確かめる。現在の表は同じ型・同じ助詞の行が 1 つずつ）。新しい 20 行（**登録時。表の変更記録 1・2 で P_CHANGE の 4 行・P_CONSUME の 5 行を消したので 11 行。さらに第 3 ラウンドの表の変更記録 3 で P_ACT・P_CREATE・P_EMOTION の `place/で/PLACE` の 3 行を消したので、今は 8 行（表は 17 行）**）の（役割・助詞・型）は **v1 の 9 行にすでにある組だけ**（agent/が、patient/を、goal/へ、source/から、place/で、time/に）。recipient・instrument・result・goal(に)・cause の行は 1 行も足さない。
+37,41d36
+< | `P_ACT` | place | で | PLACE | 付加 |
+< | `P_CHANGE` | agent | が | PERSON GROUP_ORG ANIMAL | 項 |
+< | `P_CHANGE` | goal | へ | PLACE | 項 |
+< | `P_CHANGE` | source | から | PLACE | 項 |
+< | `P_CHANGE` | place | で | PLACE | 付加 |
+44,49d38
+< | `P_CREATE` | place | で | PLACE | 付加 |
+< | `P_CONSUME` | agent | が | PERSON GROUP_ORG ANIMAL | 項 |
+< | `P_CONSUME` | patient | を | PERSON GROUP_ORG ANIMAL PLANT ARTIFACT SUBSTANCE_FOOD EVENT_ACT STATE_PROPERTY ABSTRACT INFO_LANGUAGE BODY_PART NATURAL_PHENOMENON WORK IDENTIFIER | 項 |
+< | `P_CONSUME` | source | から | PLACE | 項 |
+< | `P_CONSUME` | place | で | PLACE | 付加 |
+< | `P_CONSUME` | time | に | TIME | 付加 |
+52d40
+< | `P_EMOTION` | place | で | PLACE | 付加 |
+55c43
+< 読む型に残る「読まない助詞」（表の外の助詞・型は今までどおり `PLACEMENT_PARTICLE_NOT_IN_FRAME`・`PLACEMENT_TYPE_MISMATCH` で棄権する）: `P_ACT` の に（する の result）、`P_CHANGE` の に（result）・を（経路）、`P_CREATE` の に（recipient/beneficiary・goal/place・result）・へ・から（用例が乏しい）、`P_CONSUME` の に+TIME 以外・へ、`P_EMOTION` の に（cause）・へ・から。すべての型で で の instrument（規約が型を決めない）、を+PLACE/TIME/QUANTITY（経路・幅・量）、と・まで・より（6 つの助詞の外）。
+---
+> 読む型に残る「読まない助詞」（表の外の助詞・型は今までどおり `PLACEMENT_PARTICLE_NOT_IN_FRAME`・`PLACEMENT_TYPE_MISMATCH` で棄権する）: `P_ACT` の に（する の result）、`P_CHANGE` の に（result）・を（経路）（**P_CHANGE は表の変更記録 1 で型ごと読まない型に戻した**）、`P_CREATE` の に（recipient/beneficiary・goal/place・result）・へ・から（用例が乏しい）、`P_CONSUME` の に+TIME 以外・へ（**P_CONSUME は表の変更記録 2 で型ごと読まない型に戻した**）、`P_EMOTION` の に（cause）・へ・から。すべての型で で の instrument（規約が型を決めない）（**表の変更記録 3 で、新しく読む 3 型（P_ACT・P_CREATE・P_EMOTION）は で の place も読まない**。v1 の P_MOVE・P_COMMUNICATE の で の place の行は表に残る）、を+PLACE/TIME/QUANTITY（経路・幅・量）、と・まで・より（6 つの助詞の外）。
+67a56,57
+> | `P_CHANGE` | HE_GOAL_OR_RESULT | へ が goal(落ちる・広がる)か result(変わる: 工場から店へ変わった)か。result の型は規約が決めず PLACE も取る(店・都会・体育館)。に も result と time が重なる。表の変更記録 1(レビュー第 1 ラウンド F4・M1)で読まない型に戻した |
+> | `P_CONSUME` | NI_TIME_OR_PURPOSE | に+TIME が time か使い道(金を休みに使う)か。使い道は規約に役割が無く、休み・老後・正月のような行事・期間の語は TIME も取る。表の変更記録 2(レビュー第 1 ラウンド F4・M2)で読まない型に戻した |
+70c60
+< 読む型は 13 のうち 7（P_MOVE・P_COMMUNICATE・P_ACT・P_CHANGE・P_CREATE・P_CONSUME・P_EMOTION）、読まない型は 6。が の行が書けない型は型ごと読まない（ほぼすべての文に が があり、が を外した型は読む文が無いので、理由の文字列だけが変わって紛らわしい）。
+---
+> 読む型は 13 のうち 7（P_MOVE・P_COMMUNICATE・P_ACT・P_CHANGE・P_CREATE・P_CONSUME・P_EMOTION）、読まない型は 6（**登録時。表の変更記録 1・2 で P_CHANGE・P_CONSUME を読まない型に戻したので、今は読む型 5（P_MOVE・P_COMMUNICATE・P_ACT・P_CREATE・P_EMOTION）・読まない型 8**）。が の行が書けない型は型ごと読まない（ほぼすべての文に が があり、が を外した型は読む文が無いので、理由の文字列だけが変わって紛らわしい）。
+78,82c68,72
+< | `P_ACT`（25） | PARTICLE_ROLE_UNDECIDED | が: agent だけ。を: patient（経路の を を取る移動の動詞は成員に無い。PLACE は v1 と同じく除く）。へ+PLACE: goal。から+PLACE: source。で+PLACE: place。**に は解けない**: する が「〜を〜にする」で result を取り、型は PLACE・TIME・人に及ぶ。goal（置く・つける・入れる）・time と型が重なる | 読む: が・を・へ・から・で。に は読まない |
+< | `P_CHANGE`（23） | NI_RESULT_OR_TIME | が: agent。へ+PLACE: goal。から+PLACE: source。で+PLACE: place。**に は解けない**（result が TIME を取る: 冬になる。time と重なる。result は PLACE も取る）。**を も解けない**（自動詞 落ちる の経路の を の充填物は ARTIFACT も取り、patient の 14 型と重なる） | 読む: が・へ・から・で。に・を は読まない |
+< | `P_CREATE`（24） | NI_RECIPIENT_OR_BENEFICIARY | が: agent。を: patient。で+PLACE: place。**に は解けない**（に+人 が recipient か beneficiary か、に+PLACE が goal か place か、に+TIME が result と重なる）。へ・から は成員の用例が乏しいので行を置かない | 読む: が・を・で |
+< | `P_CONSUME`（14） | NI_ROLE_UNDECIDED | r7 の成員に授受・手助けの動詞は無い。が: agent。を: patient。から+PLACE: source。で+PLACE: place。に+TIME: time（「〜に使う」の目的の充填物は TIME でない）。に+人・に+PLACE の行は置かない | 読む: が・を・から・で・に(TIME) |
+< | `P_EMOTION`（10） | NI_DE_CAUSE_OR_PLACE | が: agent。を: patient。で+PLACE: place（原因の で の充填物は PLACE でない）。**に は解けない**（に が原因・相手で、cause は型を決めない。TIME の語でも原因と時が割れる） | 読む: が・を・で |
+---
+> | `P_ACT`（25） | PARTICLE_ROLE_UNDECIDED | が: agent だけ。を: patient（経路の を を取る移動の動詞は成員に無い。PLACE は v1 と同じく除く）。へ+PLACE: goal。から+PLACE: source。で+PLACE: place。**に は解けない**: する が「〜を〜にする」で result を取り、型は PLACE・TIME・人に及ぶ。goal（置く・つける・入れる）・time と型が重なる | 読む: が・を・へ・から・で。に は読まない（**第 3 ラウンドの表の変更記録 3 で で を外した**: 今は が・を・へ・から。で は instrument・cause と型が重なる。反例: 兄が右で打った＝右手（instrument）を place 右と読んだ）|
+> | `P_CHANGE`（23） | NI_RESULT_OR_TIME | が: agent。へ+PLACE: goal。から+PLACE: source。で+PLACE: place。**に は解けない**（result が TIME を取る: 冬になる。time と重なる。result は PLACE も取る）。**を も解けない**（自動詞 落ちる の経路の を の充填物は ARTIFACT も取り、patient の 14 型と重なる） | 読む: が・へ・から・で。に・を は読まない（**登録時の結論。表の変更記録 1 で、へ も解けないと分かり型ごと読まない型に戻した**） |
+> | `P_CREATE`（24） | NI_RECIPIENT_OR_BENEFICIARY | が: agent。を: patient。で+PLACE: place。**に は解けない**（に+人 が recipient か beneficiary か、に+PLACE が goal か place か、に+TIME が result と重なる）。へ・から は成員の用例が乏しいので行を置かない | 読む: が・を・で（**第 3 ラウンドの表の変更記録 3 で で を外した**: 今は が・を。反例: 兄が右で絵を描いた＝右手を place 右と読んだ。兄が口で絵を描いた＝r7 の 口=PLACE は文の語義 くち でない（K173））|
+> | `P_CONSUME`（14） | NI_ROLE_UNDECIDED | r7 の成員に授受・手助けの動詞は無い。が: agent。を: patient。から+PLACE: source。で+PLACE: place。に+TIME: time（「〜に使う」の目的の充填物は TIME でない）。に+人・に+PLACE の行は置かない | 読む: が・を・から・で・に(TIME)（**登録時の結論。表の変更記録 2 で、に+TIME も使い道と重なると分かり型ごと読まない型に戻した**） |
+> | `P_EMOTION`（10） | NI_DE_CAUSE_OR_PLACE | が: agent。を: patient。で+PLACE: place（原因の で の充填物は PLACE でない）。**に は解けない**（に が原因・相手で、cause は型を決めない。TIME の語でも原因と時が割れる） | 読む: が・を・で（**第 3 ラウンドの表の変更記録 3 で で を外した**: 今は が・を。反例: 兄が段差で驚いた＝段差は原因（cause）で、place 段差と読んだ）|

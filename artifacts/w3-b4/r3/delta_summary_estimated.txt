@@ -1,0 +1,5 @@
+inputs=3515 same=3515 newly_read=0 frame_stopped=0 read_to_abstain_other=0 changed=0 refusal_changed=0 error_changed=0
+verdicts: {}
+frame_stopped by reason: {}
+by source and kind: {}
+exit=0

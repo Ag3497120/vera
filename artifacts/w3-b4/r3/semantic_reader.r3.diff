@@ -1,0 +1,29 @@
+2292,2293c2292,2295
+< # The table of W3-b1 (`TYPED_FRAMES`, `TYPED_FRAMES_NOT_READ`) keeps its value; v2 is kept under new names. The rows are the (role, particle, expected types) triples that v1 already
+< # has (agent/が, patient/を, goal/へ, source/から, place/で, time/に): no row is added for a role whose type the conventions do not decide (recipient, instrument, result, cause).
+---
+> # The table of W3-b1 (`TYPED_FRAMES`, `TYPED_FRAMES_NOT_READ`) keeps its value; v2 is kept under new names. The rows are (role, particle, expected types) triples that v1 already
+> # has; of those the new types use agent/が, patient/を, goal/へ and source/から only. No row is added for a role whose type the conventions do not decide (recipient, instrument,
+> # result, cause), and no row for the adjunct place/で: instrument and cause take words that are PLACE too (examples are in the docs), so the new types are not read through で
+> # (docs K183, table change record 3). The place/で rows of v1 (P_MOVE, P_COMMUNICATE) are v1's and stay in `TYPED_FRAMES`.
+2295a2298
+> # After the review of round 2 the place/で row of P_ACT, P_CREATE and P_EMOTION was taken out (table change record 3); the types stay, with their other rows.
+2303,2304c2306
+<         ('source', ('から',), ('PLACE',), 'arg'),
+<         ('place', ('で',), ('PLACE',), 'adjunct')),
+---
+>         ('source', ('から',), ('PLACE',), 'arg')),
+2308,2309c2310
+<                               'INFO_LANGUAGE', 'BODY_PART', 'NATURAL_PHENOMENON', 'WORK', 'IDENTIFIER'), 'arg'),
+<         ('place', ('で',), ('PLACE',), 'adjunct')),
+---
+>                               'INFO_LANGUAGE', 'BODY_PART', 'NATURAL_PHENOMENON', 'WORK', 'IDENTIFIER'), 'arg')),
+2313,2314c2314
+<                               'INFO_LANGUAGE', 'BODY_PART', 'NATURAL_PHENOMENON', 'WORK', 'IDENTIFIER'), 'arg'),
+<         ('place', ('で',), ('PLACE',), 'adjunct')),
+---
+>                               'INFO_LANGUAGE', 'BODY_PART', 'NATURAL_PHENOMENON', 'WORK', 'IDENTIFIER'), 'arg')),
+2320c2320
+<     table), then the types of W3-b4 (three after the narrowing of round 2). A change of `TYPED_FRAMES` is seen at once (a test of W3-b1 sets an item of it in place)."""
+---
+>     table), then the types of W3-b4 (three after the narrowing of round 2, and without place/で after the narrowing of round 3). A change of `TYPED_FRAMES` is seen at once (a test of W3-b1 sets an item of it in place)."""

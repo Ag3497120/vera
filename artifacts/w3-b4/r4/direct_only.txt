@@ -1,0 +1,4 @@
+estimated cmp=0
+inputs=3521 same=3521 newly_read=0 frame_stopped=0 read_to_abstain_other=0 changed=0 refusal_changed=0 error_changed=0
+multiple cmp=0
+inputs=3521 same=3521 newly_read=0 frame_stopped=0 read_to_abstain_other=0 changed=0 refusal_changed=0 error_changed=0

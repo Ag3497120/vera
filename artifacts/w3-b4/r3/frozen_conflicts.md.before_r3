@@ -1,0 +1,26 @@
+# W3-b4: 凍結した既存テストが、このチケットの目的そのものと衝突する 5 件（既存テストは変えていない）
+
+基線（`dev_c875ed3_failures.txt`）に無い新しい失敗は、関係するテスト 3,557 件（この木。成功 3,550・失敗 7。基点の同じ選び方は 3,211 件・失敗 2）（`artifacts/w3-b4/pytest_related_after.txt`。基点の同じ選び方は `pytest_related_base.txt`）で
+**この 5 件だけ**（`pytest_related_new.txt`）。5 件とも「型による読解は P_ACT・P_CREATE・P_EMOTION を読まない」を **期待として凍結した行・テスト** で、
+このチケットは P_ACT・P_CHANGE・P_CREATE・P_CONSUME・P_EMOTION を読むようにするのが目的なので、避けられない衝突。出力は **すべて正しい読み**（誤読ではない）。
+全体テストでの確認は `pytest_new_failures.txt`（手順 12）。
+
+| # | テスト | 凍結した期待 | 今の出力 | 行の `expect` との判定 | 理由 |
+|---|---|---|---|---|---|
+| 1 | `tests/test_semantic_read_w3b1.py::test_every_row_of_the_new_data_with_the_fixture[W3B1-U-090]` | `entry_expect: abstain`（W3-b1 の理由 FRAME_NOT_READ。述語 送り出す=P_ACT） | 読む: `agent 兄 / goal 駅`（goal/へ/PLACE、P_ACT の行） | `correct`（行の `expect` は goal） | P_ACT が v2 の読む型になった |
+| 2 | 同 `[W3B1-U-091]` | 同上（踏み出す=P_ACT） | 読む: `agent 弟 / goal 港` | `correct` | 同上 |
+| 3 | 同 `[W3B1-U-092]` | 同上（踏み込む=P_ACT） | 読む: `agent 母 / goal 庭` | `correct` | 同上 |
+| 4 | `tests/test_semantic_read_w3b2.py::test_u3_does_not_read_when_the_predicate_is_not_of_a_type_the_table_reads_or_is_split` | 「兄が校庭で遊んだ。」（遊ぶ=P_ACT）が `PLACEMENT_FRAME_NOT_READ:P_ACT` で、出力が基点と同じ | 読む: `agent 兄 / place 校庭`（place/で/PLACE、P_ACT の行）。同じテストの P_EXIST（眠る）の部分は v2 でも成り立つ | `correct`（読みは規約どおり） | P_ACT が v2 の読む型になった |
+| 5 | `tests/test_semantic_read_w3b2.py::test_the_new_data_rows_are_read_and_refused_as_registered_and_judged_correct_when_read` | `w3b2_frame`・`w3b2_multiple` の 11 行が `entry_expect: abstain`・`w3b2_expect: PLACEMENT_FRAME_NOT_READ:*`（FRAME-063・064・065・066・070・071・073・074・075、MULTIPLE-060・061） | 10 行が正しく読める（063・064・065・066・070・071・074・075・MULTIPLE-060・061。すべて `correct`）。1 行（073「姉が校舎で窓を拭いた。」）は棄権のまま、理由が `PLACEMENT_MULTIPLE:を:窓` に変わる（`窓` は ARTIFACT+TIME の MULTIPLE。patient の 14 型の外の候補が 1 つ） | 読めた 10 行は `correct`、073 は `abstain` | 型が P_ACT・P_EMOTION・P_CREATE。いずれも v2 の読む型 |
+
+W3-b2 の `w3b2_*.jsonl` の 10 行は、配置 r6 の実物の答え（`w3b2_placement_fixture.json`）で読めている。偽物ではなく実物の答えで、読みが規約どおりであることは、この 5 件の独立した確認になる。
+
+## 監査役が採るなら当てる差分 `proposed_test_changes.diff`
+
+名前は変えず、期待を弱めない案（「読む型」が変わった行だけ読む側の期待に直し、誤読でないことの検査は残す。`test_the_...` の検査は「誤読・不完全 0」を維持）:
+
+1. `test_semantic_read_w3b1.py`: 3 行（U-090〜092）は「読む・`correct`」を要求する（`W3B4_NOW_READ`）。ほかの行は元のまま。
+2. `test_semantic_read_w3b2.py::test_u3_does_not_read_when_…`: 読まない型の例を P_ACT から P_PERCEIVE（v2 でも読まない）に替え、同じ文を P_ACT として読む（基点は読まない）ことを別の検査で確かめる。P_EXIST・MULTIPLE の部分は元のまま。
+3. `test_semantic_read_w3b2.py::test_the_new_data_rows_…`: 型が v2 の読む 5 型の `FRAME_NOT_READ` の行は、「読めるなら `correct` で診断が READ、読めないなら診断が v2 の理由（None・READ でない）で `abstain`・誤読でない」を要求する。ほかの行は元のまま。
+
+差分は `git apply` ではなく `patch -p1` で当たる（`/private/tmp/…/scratchpad/w3b4/prop_git` に基点＋この木の変更を重ね、差分を当てて `tests/test_semantic_read_w3b1.py tests/test_semantic_read_w3b2.py tests/test_semantic_read_w3b4.py` を流した: 747 件すべて成功）。
