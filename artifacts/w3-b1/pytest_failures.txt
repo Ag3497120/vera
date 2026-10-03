@@ -98,7 +98,6 @@ FAILED tests/attack/test_verifier_agents_differential.py::test_brief_matches_ind
 FAILED tests/attack/test_verifier_agents_fabrication.py::test_run_verifiers_records_references_with_their_verifier_identities
 FAILED tests/attack/test_verifier_agents_injection.py::test_brief_keeps_nested_quotes_and_unicode_inside_the_json_data
 FAILED tests/attack/test_verifier_agents_limits.py::test_unanimous_verification_evidence_is_order_independent
-FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
 FAILED tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread
 FAILED tests/test_request_goal_route.py::test_unsupported_or_unverified_request_or_source_is_held[\u8cc7\u6599\u306e\u51fa\u6765\u4e8b\u3092\u96f6\u6587\u4ee5\u5185\u3067\u8a00\u3044\u63db\u3048\u3066\u304f\u3060\u3055\u3044\u3002-\u82b1\u5b50\u304c\u592a\u90ce\u306b\u8cc7\u6599\u3092\u6e21\u3057\u305f\u3002-licensed one-event surface does not satisfy the requested sentence count]
 FAILED tests/test_semantic_coordination_codex.py::test_concessive_main_clause_keeps_the_topic_subject

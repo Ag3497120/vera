@@ -68,20 +68,20 @@ for rr in a10c['rows']:
     byk[(by_id[rr['id']]['path'], by_id[rr['id']]['derived'])]['read' if rr['readable'] else (rs[1].split(':')[0] if len(rs) > 1 else 'one reason only')] += 1
 for k in sorted(byk):
     row('ja_r10 with the gate, %s %s: read / second reasons by prefix' % k, ', '.join('%s %d' % kv for kv in sorted(byk[k].items())), 'r10_entry_check.json, ja_r10.jsonl')
-r3live = {r['text']: r for r in jl(A / 'r3_entry_live.jsonl')}; r4live = {r['text']: r for r in jl(A / 'entry_live.jsonl')}
+r3live = {r['text']: r for r in jl(A / 'r3_entry_live.jsonl')}; r4live = {r['text']: r for r in jl(A / 'r4_entry_live.jsonl')}
 ret = sorted((r4live[t]['source'], t) for t in r3live if t in r4live and r3live[t]['out'].get('readable') and not r4live[t]['out'].get('readable'))
-row('round 3 -> round 4 (same inputs): read with the placement in round 3 and abstained in round 4, by the file the input comes from', ', '.join('%s %d' % kv for kv in sorted(collections.Counter(s for s, _ in ret).items())) or 'none', 'r3_entry_live.jsonl, entry_live.jsonl')
+row('round 3 -> round 4 (same inputs): read with the placement in round 3 and abstained in round 4, by the file the input comes from', ', '.join('%s %d' % kv for kv in sorted(collections.Counter(s for s, _ in ret).items())) or 'none', 'r3_entry_live.jsonl, r4_entry_live.jsonl')
 row('round 3 -> round 4 (same inputs): read in both with a different output / abstained in round 3 and read in round 4 / abstained in both with a different output', '%d / %d / %d' % (
     sum(1 for t in r3live if t in r4live and r3live[t]['out'].get('readable') and r4live[t]['out'].get('readable') and r3live[t]['out'] != r4live[t]['out']),
     sum(1 for t in r3live if t in r4live and not r3live[t]['out'].get('readable') and r4live[t]['out'].get('readable')),
-    sum(1 for t in r3live if t in r4live and not r3live[t]['out'].get('readable') and not r4live[t]['out'].get('readable') and r3live[t]['out'] != r4live[t]['out'])), 'r3_entry_live.jsonl, entry_live.jsonl')
-live2, live3 = jl(A / 'r2_entry_live.jsonl'), jl(A / 'entry_live.jsonl')
+    sum(1 for t in r3live if t in r4live and not r3live[t]['out'].get('readable') and not r4live[t]['out'].get('readable') and r3live[t]['out'] != r4live[t]['out'])), 'r3_entry_live.jsonl, r4_entry_live.jsonl')
+live2, live3 = jl(A / 'r2_entry_live.jsonl'), jl(A / 'r4_entry_live.jsonl')   # history rows are fixed to the round-4 output (W3-b1-5: the W5-a abstentions are not counted as the gate's)
 
 t2 = {r['text']: r['out'] for r in live2}
 back = sorted(r['text'] for r in live3 if r['source'] == 'ja_r8.jsonl' and t2.get(r['text'], {}).get('readable') and not r['out'].get('readable'))
-row('ja_r8 rows read with the placement before the gate that the gate returned to abstention', '%d of %d' % (len(back), sum(1 for r in live3 if r['source'] == 'ja_r8.jsonl' and t2.get(r['text'], {}).get('readable'))), 'r2_entry_live.jsonl, entry_live.jsonl')
+row('ja_r8 rows read with the placement before the gate that the gate returned to abstention', '%d of %d' % (len(back), sum(1 for r in live3 if r['source'] == 'ja_r8.jsonl' and t2.get(r['text'], {}).get('readable'))), 'r2_entry_live.jsonl, r4_entry_live.jsonl')
 changed_r2 = sum(1 for r in live3 if r['text'] in t2 and t2[r['text']].get('readable') and r['out'].get('readable') and t2[r['text']] != r['out'])
-row('inputs read with the placement before the gate and after it with a different output', '%d' % changed_r2, 'r2_entry_live.jsonl, entry_live.jsonl')
+row('inputs read with the placement before the gate and after it with a different output', '%d' % changed_r2, 'r2_entry_live.jsonl, r4_entry_live.jsonl')
 # --- the entry on the new data with the real placement
 chk = js(A / 'r8_entry_check.json')['summary']
 row('entry with the placement on the new data: verdicts', ', '.join('%s %d' % kv for kv in sorted(chk['verdicts'].items())), 'r8_entry_check.json')
@@ -160,6 +160,50 @@ for g in sorted(ev['groups']):
     v = ev['groups'][g]
     row('event cross with the placement, %s: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED' % g, '%d / %d / %d / %d / %d' % (v['sentences_read'], v['arms'], v['AGREE'], v['DISAGREE'], v['NOT_CHECKED']), 'events_live.json')
 row('event cross DISAGREE arms in all (and how many of them were typed by the entry)', '%d (%d)' % (len(ev['disagree']), sum(1 for d in ev['disagree'] if d['typed_by_the_entry'])), 'events_live.json')
+# --- W3-b1-5: the merged tree (W3-b1 + W5-a, base commit 2732274). Every number is read from a file; nothing is typed in.
+IG = 'integration (W3-b1 + W5-a, base 2732274): '
+ic = {}
+for l in txt(A / 'integ_combination.txt').splitlines():
+    if '=' in l and not l.startswith('only_w3b1_input='):
+        kk, vv = l.split('=', 1); ic[kk] = vv
+only_w3b1_inputs = [l.split('=', 1)[1] for l in txt(A / 'integ_combination.txt').splitlines() if l.startswith('only_w3b1_input=')]
+row(IG + 'inputs / the merged entry with no placement equals the base commit byte for byte (rows)', '%s / %s' % (ic['inputs'], ic['now_none_equals_base']), 'integ_combination.txt')
+row(IG + 'inputs the commit before W5-a read and the base commit abstains on (W5-a): all / read by the merged entry with the placement / with a second reason (the typed path ran)', '%s / %s / %s' % (ic['w5a_new_abstain'], ic['now_readable'], ic['now_second_reason']), 'integ_combination.txt')
+row(IG + 'those inputs by the type of the first reason', ic['w5a_new_abstain_first_reason_types'], 'integ_combination.txt')
+row(IG + 'inputs abstained on both before and after W5-a with a different output (reason changed by W5-a)', ic['w5a_reason_changed'], 'integ_combination.txt')
+row(IG + 'read by the typed path (read with the placement, abstained with none): merged entry / W3-b1 tree alone', '%s / %s' % (ic['typed_read_now'], ic['typed_read_w3b1']), 'integ_combination.txt')
+row(IG + 'of those: identical output in both / different output / only the merged entry / only the W3-b1 tree alone (W5-a stopped it)', '%s / %s / %s / %s' % (ic['both_identical'], ic['both_different'], ic['only_now'], ic['only_w3b1']), 'integ_combination.txt')
+row(IG + 'inputs read by the W3-b1 tree alone and stopped by W5-a (listed in full)', '; '.join(only_w3b1_inputs) or 'none', 'integ_combination.txt')
+ex_now = js(HERE / 'w3b1_expect_exceptions.json')['exceptions']; ex_r4 = js(A / 'r4_w3b1_expect_exceptions.json')['exceptions']
+ks = collections.Counter()
+for e in ex_now:
+    for kk in sorted(set(re.findall(r'section 10A (K\d+)', e['why']))): ks[kk] += 1
+row(IG + 'declared exceptions whose why names section 10A, by K (all declared)', ', '.join('section 10A %s %d' % kv for kv in sorted(ks.items())) + ' (of %d)' % len(ex_now), 'tests/reading_soundness/w3b1_expect_exceptions.json')
+assert [e['id'] for e in ex_now] == [e['id'] for e in ex_r4]
+nchg = sum(1 for x, y in zip(ex_r4, ex_now) if x != y)
+row(IG + 'declared exceptions: unchanged / rewritten compared with round 4', '%d / %d' % (len(ex_now) - nchg, nchg), 'w3b1_expect_exceptions.json, r4_w3b1_expect_exceptions.json')
+d4, d5 = jl(A / 'r4_entry_dev.jsonl'), jl(A / 'entry_dev.jsonl')
+r9_w5a = sum(1 for x, y in zip(d4, d5) if x['source'] == 'ja_r9.jsonl' and x['out'].get('readable') and not y['out'].get('readable'))
+row(IG + 'ja_r9 rows the commit before W5-a reads and the base commit abstains on', '%d' % r9_w5a, 'r4_entry_dev.jsonl, entry_dev.jsonl')
+W5 = HERE.parent.parent / 'artifacts' / 'w5-a'
+def jt(p): return {r['text']: r for r in jl(p)}
+w5b, w5r3, w5n, w5l = jt(W5 / 'entry_before.jsonl'), jt(W5 / 'r3' / 'entry_after.jsonl'), jt(A / 'w5a_entry_none.jsonl'), jt(A / 'w5a_entry_live.jsonl')
+assert list(w5b) == list(w5n) == list(w5l) == list(w5r3)
+def cmp5(x, y):
+    cn = collections.Counter(); rf = {}
+    for t in x:
+        a_, b_ = x[t], y[t]
+        if a_['readable'] and not b_['readable']: cn['readable->false'] += 1; rf[t] = b_['abstain']['reasons'][0]
+        elif a_['readable'] and b_['readable'] and a_['clauses'] != b_['clauses']: cn['changed'] += 1
+        elif not a_['readable'] and b_['readable']: cn['false->readable'] += 1
+        elif not a_['readable'] and not b_['readable'] and a_['abstain'] != b_['abstain']: cn['reason_changed'] += 1
+    return cn, rf
+cn_n, rf_n = cmp5(w5b, w5n); cn_l, rf_l = cmp5(w5b, w5l); cn_3, rf_3 = cmp5(w5b, w5r3)
+row(IG + 'W5-a measurement inputs (%d): merged entry with no placement equals W5-a round 3 byte for byte' % len(w5b), 'yes' if (A / 'w5a_entry_none.jsonl').read_bytes() == (W5 / 'r3' / 'entry_after.jsonl').read_bytes() else 'NO', 'w5a_entry_none.jsonl, artifacts/w5-a/r3/entry_after.jsonl')
+row(IG + 'W5-a measurement inputs, merged entry with the placement against W5-a entry_before: readable->false / false->readable / changed / reason_changed', '%d / %d / %d / %d' % tuple(cn_l[x] for x in ('readable->false', 'false->readable', 'changed', 'reason_changed')), 'w5a_entry_live.jsonl, artifacts/w5-a/entry_before.jsonl')
+row(IG + 'W5-a measurement inputs, with no placement (same comparison): readable->false / false->readable / changed / reason_changed', '%d / %d / %d / %d' % tuple(cn_n[x] for x in ('readable->false', 'false->readable', 'changed', 'reason_changed')), 'w5a_entry_none.jsonl, artifacts/w5-a/entry_before.jsonl')
+row(IG + 'W5-a measurement inputs: the readable->false set and its first reasons with the placement are the same as W5-a round 3', 'yes (%d inputs)' % len(rf_l) if rf_l == rf_3 and rf_n == rf_3 else 'NO', 'w5a_entry_live.jsonl, w5a_entry_none.jsonl, artifacts/w5-a/r3/entry_after.jsonl')
+row(IG + 'E1 (events parity) lines', ', '.join(l.strip() for l in txt(A / 'e1.txt').splitlines() if l.strip()), 'e1.txt')
 print('| item | value | source (artifacts/w3-b1/) |')
 print('|---|---|---|')
 print('\n'.join(rows))

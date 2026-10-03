@@ -42,7 +42,7 @@ from verantyx import semantic_read as SR    # noqa: E402
 from verantyx import semantic_reader as R    # noqa: E402
 
 DOCS = (TREE / 'docs' / 'READING_SOUNDNESS.md').read_text(encoding='utf-8')
-BASE_COMMIT = '0ff3f35'
+BASE_COMMIT = '2732274'  # integration: dev before the W3-b1 merge (W5-a changed the base reading)
 TAIL = 'PLACEMENT_PREDICATE_TAIL_UNINTERPRETED'
 DERIVED = 'PLACEMENT_PREDICATE_POSSIBLY_DERIVED'
 

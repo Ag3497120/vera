@@ -23,7 +23,7 @@
   "PATH": "/usr/bin:/bin",
   "PYTHONDONTWRITEBYTECODE": "1",
   "PYTHONIOENCODING": "utf-8",
-  "PYTHONPATH": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b1-S",
+  "PYTHONPATH": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b1-5-S",
   "VERA_CORPUS_ROOT": "<WORK>/empty_corpus"
  },
  "entry": "mod-semantic-read",
@@ -55,12 +55,12 @@
  "quarantine_sha256": null,
  "raw_path_redactions": 0,
  "timing": {
-  "precheck_ms": 107.2,
-  "vera_calls_ms_total": 3228.0
+  "precheck_ms": 106.0,
+  "vera_calls_ms_total": 3212.5
  },
- "tree_head": "0ff3f35975063e193cc3601c4b5b507cb5aec8ff",
- "tree_realpath": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b1-S",
+ "tree_head": "5d863ddb04a52549dfdcb3172e76ace412d825ad",
+ "tree_realpath": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b1-5-S",
  "unreachable_not_called": 0,
  "vera_calls": 17,
- "verantyx_untouched": false
+ "verantyx_untouched": true
 }

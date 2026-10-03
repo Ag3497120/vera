@@ -1,0 +1,4 @@
+FAILED tests/test_semantic_read_w3b1.py::test_declared_exceptions_are_real_and_each_has_a_reason
+FAILED tests/test_semantic_read_w3b1_r3.py::test_every_row_of_ja_r9_with_the_fixture[W3B1-R9-S4-030]
+FAILED tests/test_semantic_read_w3b1_r3.py::test_without_a_placement_every_ja_r9_output_is_the_base_commits_output_byte_for_byte
+3 failed, 1947 passed in 8.69s

@@ -3,24 +3,22 @@
   "mode": "live",
   "rows": 60,
   "verdicts": {
-   "abstain": 49,
-   "correct": 10,
-   "incomplete": 1
+   "abstain": 50,
+   "correct": 10
   },
   "verdicts_by_data": {
    "ja_r9": {
-    "abstain": 49,
-    "correct": 10,
-    "incomplete": 1
+    "abstain": 50,
+    "correct": 10
    }
   },
   "misread": 0,
-  "incomplete": 1,
+  "incomplete": 0,
   "unjudged": 0,
   "new_data_rows": 60,
   "entry_expect_mismatch": {
    "read_expected_but_abstained": 2,
-   "abstain_expected_but_read": 1
+   "abstain_expected_but_read": 0
   },
   "reason_prefix_mismatch_among_abstained": 0,
   "second_reason_prefixes": {
@@ -29,10 +27,7 @@
    "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED": 32,
    "PLACEMENT_REREAD_ABSTAINS": 8
   },
-  "bad_verdicts": {
-   "bad_verdict_total": 1,
-   "bad_verdict_identical_to_no_placement": 1
-  }
+  "bad_verdicts": {}
  },
  "misses_in_fixture": [],
  "read_expected_but_abstained": [
@@ -53,14 +48,7 @@
    ]
   }
  ],
- "abstain_expected_but_read": [
-  {
-   "id": "W3B1-R9-S4-030",
-   "input": "姉が放課後、本を読むべきだ。",
-   "verdict": "incomplete",
-   "identical_to_no_placement": true
-  }
- ],
+ "abstain_expected_but_read": [],
  "reason_prefix_mismatch": [],
  "rows": [
   {
@@ -397,7 +385,7 @@
    "readable": false,
    "entry_expect": "abstain",
    "reasons": [
-    "MAIN_PREDICATE_NOT_READ"
+    "UNSUPPORTED_CLAUSE"
    ],
    "roles": null
   },
@@ -809,7 +797,7 @@
    "readable": false,
    "entry_expect": "abstain",
    "reasons": [
-    "MAIN_PREDICATE_NOT_READ"
+    "UNSUPPORTED_CLAUSE"
    ],
    "roles": null
   },
@@ -821,7 +809,7 @@
    "readable": false,
    "entry_expect": "abstain",
    "reasons": [
-    "UNDETERMINED_MODALITY:hearsay"
+    "UNSUPPORTED_CLAUSE"
    ],
    "roles": null
   },
@@ -854,15 +842,13 @@
    "id": "W3B1-R9-S4-030",
    "data": "ja_r9",
    "input": "姉が放課後、本を読むべきだ。",
-   "verdict": "incomplete",
-   "readable": true,
+   "verdict": "abstain",
+   "readable": false,
    "entry_expect": "abstain",
-   "reasons": null,
-   "roles": [
-    {
-     "patient": "本"
-    }
-   ]
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "roles": null
   }
  ]
 }

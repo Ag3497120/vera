@@ -2,56 +2,56 @@
  "placement_sha_in_lookup_id_example": "coarse-placement:ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995",
  "groups": {
   "rest": {
-   "sentences_read": 241,
+   "sentences_read": 198,
    "with_a_cross_of_a_typed_clause": 0,
-   "arms": 578,
-   "AGREE": 181,
-   "DISAGREE": 7,
-   "NOT_CHECKED": 390,
+   "arms": 479,
+   "AGREE": 155,
+   "DISAGREE": 4,
+   "NOT_CHECKED": 320,
    "not_checked_by_reason": {
     "ESTIMATED_GENERATED": 15,
     "ESTIMATED_NEAR": 7,
-    "MULTIPLE": 13,
-    "ROLE_NOT_IN_TABLE": 314,
-    "UNKNOWN": 14,
-    "UNPLACED": 27
+    "MULTIPLE": 12,
+    "ROLE_NOT_IN_TABLE": 256,
+    "UNKNOWN": 4,
+    "UNPLACED": 26
    },
    "lookup_ids": {
-    "coarse-placement:ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995": 241
+    "coarse-placement:ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995": 198
    }
   },
   "event_cross_sentences": {
-   "sentences_read": 70,
+   "sentences_read": 69,
    "with_a_cross_of_a_typed_clause": 0,
-   "arms": 174,
-   "AGREE": 36,
-   "DISAGREE": 1,
-   "NOT_CHECKED": 137,
+   "arms": 171,
+   "AGREE": 35,
+   "DISAGREE": 0,
+   "NOT_CHECKED": 136,
    "not_checked_by_reason": {
     "ESTIMATED_GENERATED": 4,
     "ESTIMATED_NEAR": 7,
     "MULTIPLE": 9,
-    "ROLE_NOT_IN_TABLE": 79,
+    "ROLE_NOT_IN_TABLE": 78,
     "UNKNOWN": 3,
     "UNPLACED": 35
    },
    "lookup_ids": {
-    "coarse-placement:ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995": 70
+    "coarse-placement:ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995": 69
    }
   },
   "new_data": {
-   "sentences_read": 81,
+   "sentences_read": 78,
    "with_a_cross_of_a_typed_clause": 66,
-   "arms": 203,
-   "AGREE": 115,
+   "arms": 198,
+   "AGREE": 113,
    "DISAGREE": 0,
-   "NOT_CHECKED": 88,
+   "NOT_CHECKED": 85,
    "not_checked_by_reason": {
     "ESTIMATED_NEAR": 1,
-    "ROLE_NOT_IN_TABLE": 87
+    "ROLE_NOT_IN_TABLE": 84
    },
    "lookup_ids": {
-    "coarse-placement:ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995": 81
+    "coarse-placement:ecd3f8e38e186a902398ee41b3cc8d06c9faaedd6bd2d3f4b86fb80166e8e995": 78
    }
   }
  },
@@ -63,22 +63,6 @@
    "role": "place",
    "value": [
     "会社"
-   ],
-   "expected": [
-    "PLACE"
-   ],
-   "observed": [
-    "GROUP_ORG"
-   ],
-   "typed_by_the_entry": false
-  },
-  {
-   "group": "rest",
-   "source": "ja.jsonl",
-   "sentence": "この先生は学校で数学を教えた。",
-   "role": "place",
-   "value": [
-    "学校"
    ],
    "expected": [
     "PLACE"
@@ -139,60 +123,6 @@
    ],
    "observed": [
     "PLACE"
-   ],
-   "typed_by_the_entry": false
-  },
-  {
-   "group": "rest",
-   "source": "w1a3_review_r3_examples_ja.txt",
-   "sentence": "車がトンネルを抜けた。",
-   "role": "agent",
-   "value": [
-    "車"
-   ],
-   "expected": [
-    "ANIMAL",
-    "GROUP_ORG",
-    "PERSON"
-   ],
-   "observed": [
-    "ARTIFACT"
-   ],
-   "typed_by_the_entry": false
-  },
-  {
-   "group": "rest",
-   "source": "w1a3_review_r3_examples_ja.txt",
-   "sentence": "船が港を出航した。",
-   "role": "agent",
-   "value": [
-    "船"
-   ],
-   "expected": [
-    "ANIMAL",
-    "GROUP_ORG",
-    "PERSON"
-   ],
-   "observed": [
-    "ARTIFACT"
-   ],
-   "typed_by_the_entry": false
-  },
-  {
-   "group": "event_cross_sentences",
-   "source": "sentences_ja.jsonl",
-   "sentence": "風が窓を揺らした。",
-   "role": "agent",
-   "value": [
-    "風"
-   ],
-   "expected": [
-    "ANIMAL",
-    "GROUP_ORG",
-    "PERSON"
-   ],
-   "observed": [
-    "NATURAL_PHENOMENON"
    ],
    "typed_by_the_entry": false
   }

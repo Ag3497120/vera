@@ -1,15 +1,14 @@
 mode=live
 rows=60
-verdicts={"abstain": 49, "correct": 10, "incomplete": 1}
-verdicts_by_data={"ja_r9": {"abstain": 49, "correct": 10, "incomplete": 1}}
+verdicts={"abstain": 50, "correct": 10}
+verdicts_by_data={"ja_r9": {"abstain": 50, "correct": 10}}
 misread=0
-incomplete=1
+incomplete=0
 unjudged=0
 new_data_rows=60
-entry_expect_mismatch={"abstain_expected_but_read": 1, "read_expected_but_abstained": 2}
+entry_expect_mismatch={"abstain_expected_but_read": 0, "read_expected_but_abstained": 2}
 reason_prefix_mismatch_among_abstained=0
 second_reason_prefixes={"PLACEMENT_PART_NOT_NP": 1, "PLACEMENT_PREDICATE_POSSIBLY_DERIVED": 2, "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED": 32, "PLACEMENT_REREAD_ABSTAINS": 8}
-bad_verdicts={"bad_verdict_identical_to_no_placement": 1, "bad_verdict_total": 1}
+bad_verdicts={}
 READ_EXPECTED_BUT_ABSTAINED W3B1-R9-S4-001 兄が夜、窓を開けた。 ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行']
 READ_EXPECTED_BUT_ABSTAINED W3B1-R9-S4-006 父が年末、扉を閉めなかった。 ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行']
-ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-030 姉が放課後、本を読むべきだ。 verdict=incomplete identical_to_no_placement=True

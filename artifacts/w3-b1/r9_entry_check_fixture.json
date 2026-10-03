@@ -3,46 +3,52 @@
   "mode": "fixture",
   "rows": 60,
   "verdicts": {
-   "abstain": 47,
-   "correct": 12,
-   "incomplete": 1
+   "abstain": 50,
+   "correct": 10
   },
   "verdicts_by_data": {
    "ja_r9": {
-    "abstain": 47,
-    "correct": 12,
-    "incomplete": 1
+    "abstain": 50,
+    "correct": 10
    }
   },
   "misread": 0,
-  "incomplete": 1,
+  "incomplete": 0,
   "unjudged": 0,
   "new_data_rows": 60,
   "entry_expect_mismatch": {
-   "read_expected_but_abstained": 0,
-   "abstain_expected_but_read": 1
+   "read_expected_but_abstained": 2,
+   "abstain_expected_but_read": 0
   },
   "reason_prefix_mismatch_among_abstained": 0,
   "second_reason_prefixes": {
    "PLACEMENT_PART_NOT_NP": 1,
+   "PLACEMENT_PREDICATE_POSSIBLY_DERIVED": 2,
    "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED": 32,
    "PLACEMENT_REREAD_ABSTAINS": 8
   },
-  "bad_verdicts": {
-   "bad_verdict_total": 1,
-   "bad_verdict_identical_to_no_placement": 1
-  }
+  "bad_verdicts": {}
  },
  "misses_in_fixture": [],
- "read_expected_but_abstained": [],
- "abstain_expected_but_read": [
+ "read_expected_but_abstained": [
   {
-   "id": "W3B1-R9-S4-030",
-   "input": "姉が放課後、本を読むべきだ。",
-   "verdict": "incomplete",
-   "identical_to_no_placement": true
+   "id": "W3B1-R9-S4-001",
+   "input": "兄が夜、窓を開けた。",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行"
+   ]
+  },
+  {
+   "id": "W3B1-R9-S4-006",
+   "input": "父が年末、扉を閉めなかった。",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行"
+   ]
   }
  ],
+ "abstain_expected_but_read": [],
  "reason_prefix_mismatch": [],
  "rows": [
   {
@@ -379,7 +385,7 @@
    "readable": false,
    "entry_expect": "abstain",
    "reasons": [
-    "MAIN_PREDICATE_NOT_READ"
+    "UNSUPPORTED_CLAUSE"
    ],
    "roles": null
   },
@@ -450,17 +456,14 @@
    "id": "W3B1-R9-S4-001",
    "data": "ja_r9",
    "input": "兄が夜、窓を開けた。",
-   "verdict": "correct",
-   "readable": true,
+   "verdict": "abstain",
+   "readable": false,
    "entry_expect": "read",
-   "reasons": null,
-   "roles": [
-    {
-     "agent": "兄",
-     "patient": "窓",
-     "time": "夜"
-    }
-   ]
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行"
+   ],
+   "roles": null
   },
   {
    "id": "W3B1-R9-S4-002",
@@ -530,17 +533,14 @@
    "id": "W3B1-R9-S4-006",
    "data": "ja_r9",
    "input": "父が年末、扉を閉めなかった。",
-   "verdict": "correct",
-   "readable": true,
+   "verdict": "abstain",
+   "readable": false,
    "entry_expect": "read",
-   "reasons": null,
-   "roles": [
-    {
-     "agent": "父",
-     "patient": "扉",
-     "time": "年末"
-    }
-   ]
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行"
+   ],
+   "roles": null
   },
   {
    "id": "W3B1-R9-S4-007",
@@ -797,7 +797,7 @@
    "readable": false,
    "entry_expect": "abstain",
    "reasons": [
-    "MAIN_PREDICATE_NOT_READ"
+    "UNSUPPORTED_CLAUSE"
    ],
    "roles": null
   },
@@ -809,7 +809,7 @@
    "readable": false,
    "entry_expect": "abstain",
    "reasons": [
-    "UNDETERMINED_MODALITY:hearsay"
+    "UNSUPPORTED_CLAUSE"
    ],
    "roles": null
   },
@@ -842,15 +842,13 @@
    "id": "W3B1-R9-S4-030",
    "data": "ja_r9",
    "input": "姉が放課後、本を読むべきだ。",
-   "verdict": "incomplete",
-   "readable": true,
+   "verdict": "abstain",
+   "readable": false,
    "entry_expect": "abstain",
-   "reasons": null,
-   "roles": [
-    {
-     "patient": "本"
-    }
-   ]
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "roles": null
   }
  ]
 }

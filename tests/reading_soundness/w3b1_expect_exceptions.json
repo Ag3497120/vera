@@ -704,42 +704,34 @@
   {
    "id": "W3B1-S4-054",
    "input": "母が梅雨、靴を磨いた。",
-   "kind": "baseline_reads",
+   "kind": "reason_differs",
    "registered": {
     "entry_expect": "abstain",
     "expect_reason_prefix": "PLACEMENT_MULTIPLE"
    },
    "observed": {
-    "readable": true,
-    "roles": [
-     {
-      "agent": "母",
-      "patient": "梅雨、靴"
-     }
-    ],
-    "verdict": "incomplete"
+    "readable": false,
+    "reasons": [
+     "UNSUPPORTED_CLAUSE"
+    ]
    },
-   "why": "the base commit already reads this sentence the same way (the output with no placement is identical), so no typed path was reached; the reading is wrong (judge: incomplete), which is an existing hole of the reader / the English frame, not of this change. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
+   "why": "caused by W5-a (merged into the base commit 2732274), not by the W3-b1 change: with the merge the entry gives the base commit's own output, the same as with no placement (reasons ['UNSUPPORTED_CLAUSE']; the typed path is not reached), while the W3-b1 tree before the merge (f410469) gave read: [{\"agent\": \"母\", \"patient\": \"梅雨、靴\"}], the same as the commit before W5-a (0ff3f35) gave with no placement. The cause is docs/READING_SOUNDNESS.md section 10A K63 (W5-a H2: an unsupported clause makes readable false; round 2, auditor decision B2: only the comparison/copula alternative is set aside). Registered: abstain with the second reason PLACEMENT_MULTIPLE. The entry abstains (the safe direction); the data is not changed."
   },
   {
    "id": "W3B1-S4-059",
    "input": "弟が夕べ、本を読んだ。",
-   "kind": "baseline_reads",
+   "kind": "reason_differs",
    "registered": {
     "entry_expect": "abstain",
     "expect_reason_prefix": "PLACEMENT_UNPLACED"
    },
    "observed": {
-    "readable": true,
-    "roles": [
-     {
-      "agent": "弟",
-      "patient": "夕べ、本"
-     }
-    ],
-    "verdict": "incomplete"
+    "readable": false,
+    "reasons": [
+     "UNSUPPORTED_CLAUSE"
+    ]
    },
-   "why": "the base commit already reads this sentence the same way (the output with no placement is identical), so no typed path was reached; the reading is wrong (judge: incomplete), which is an existing hole of the reader / the English frame, not of this change. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
+   "why": "caused by W5-a (merged into the base commit 2732274), not by the W3-b1 change: with the merge the entry gives the base commit's own output, the same as with no placement (reasons ['UNSUPPORTED_CLAUSE']; the typed path is not reached), while the W3-b1 tree before the merge (f410469) gave read: [{\"agent\": \"弟\", \"patient\": \"夕べ、本\"}], the same as the commit before W5-a (0ff3f35) gave with no placement. The cause is docs/READING_SOUNDNESS.md section 10A K63 (W5-a H2: an unsupported clause makes readable false; round 2, auditor decision B2: only the comparison/copula alternative is set aside). Registered: abstain with the second reason PLACEMENT_UNPLACED. The entry abstains (the safe direction); the data is not changed."
   },
   {
    "id": "W3B1-S4-060",
@@ -768,10 +760,10 @@
    "observed": {
     "readable": false,
     "reasons": [
-     "QUANTIFIER_NOT_MAPPED:numeral"
+     "UNSUPPORTED_CLAUSE"
     ]
    },
-   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_PART_MARKER:quant: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
+   "why": "caused by W5-a (merged into the base commit 2732274), not by the W3-b1 change: with the merge the entry gives the base commit's own output, the same as with no placement (reasons ['UNSUPPORTED_CLAUSE']; the typed path is not reached), while the W3-b1 tree before the merge (f410469) gave reasons ['QUANTIFIER_NOT_MAPPED:numeral'], the same as the commit before W5-a (0ff3f35) gave with no placement. The cause is docs/READING_SOUNDNESS.md section 10A K63 (W5-a H2: an unsupported clause makes readable false; round 2, auditor decision B2: only the comparison/copula alternative is set aside). Registered: abstain with the second reason PLACEMENT_PART_MARKER:quant. The entry abstains (the safe direction); the data is not changed."
   },
   {
    "id": "W3B1-S4-068",
@@ -784,10 +776,10 @@
    "observed": {
     "readable": false,
     "reasons": [
-     "QUANTIFIER_NOT_MAPPED:numeral"
+     "UNSUPPORTED_CLAUSE"
     ]
    },
-   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_PART_MARKER:quant: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
+   "why": "caused by W5-a (merged into the base commit 2732274), not by the W3-b1 change: with the merge the entry gives the base commit's own output, the same as with no placement (reasons ['UNSUPPORTED_CLAUSE']; the typed path is not reached), while the W3-b1 tree before the merge (f410469) gave reasons ['QUANTIFIER_NOT_MAPPED:numeral'], the same as the commit before W5-a (0ff3f35) gave with no placement. The cause is docs/READING_SOUNDNESS.md section 10A K63 (W5-a H2: an unsupported clause makes readable false; round 2, auditor decision B2: only the comparison/copula alternative is set aside). Registered: abstain with the second reason PLACEMENT_PART_MARKER:quant. The entry abstains (the safe direction); the data is not changed."
   },
   {
    "id": "W3B1-S4-069",
@@ -800,10 +792,10 @@
    "observed": {
     "readable": false,
     "reasons": [
-     "QUANTIFIER_NOT_MAPPED:numeral"
+     "UNSUPPORTED_CLAUSE"
     ]
    },
-   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_PART_MARKER:quant: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
+   "why": "caused by W5-a (merged into the base commit 2732274), not by the W3-b1 change: with the merge the entry gives the base commit's own output, the same as with no placement (reasons ['UNSUPPORTED_CLAUSE']; the typed path is not reached), while the W3-b1 tree before the merge (f410469) gave reasons ['QUANTIFIER_NOT_MAPPED:numeral'], the same as the commit before W5-a (0ff3f35) gave with no placement. The cause is docs/READING_SOUNDNESS.md section 10A K63 (W5-a H2: an unsupported clause makes readable false; round 2, auditor decision B2: only the comparison/copula alternative is set aside). Registered: abstain with the second reason PLACEMENT_PART_MARKER:quant. The entry abstains (the safe direction); the data is not changed."
   },
   {
    "id": "W3B1-S4-070",
@@ -816,10 +808,10 @@
    "observed": {
     "readable": false,
     "reasons": [
-     "QUANTIFIER_NOT_MAPPED:numeral"
+     "UNSUPPORTED_CLAUSE"
     ]
    },
-   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_PART_MARKER:quant: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
+   "why": "caused by W5-a (merged into the base commit 2732274), not by the W3-b1 change: with the merge the entry gives the base commit's own output, the same as with no placement (reasons ['UNSUPPORTED_CLAUSE']; the typed path is not reached), while the W3-b1 tree before the merge (f410469) gave reasons ['QUANTIFIER_NOT_MAPPED:numeral'], the same as the commit before W5-a (0ff3f35) gave with no placement. The cause is docs/READING_SOUNDNESS.md section 10A K63 (W5-a H2: an unsupported clause makes readable false; round 2, auditor decision B2: only the comparison/copula alternative is set aside). Registered: abstain with the second reason PLACEMENT_PART_MARKER:quant. The entry abstains (the safe direction); the data is not changed."
   },
   {
    "id": "W3B1-S4-071",

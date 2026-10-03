@@ -1,7 +1,7 @@
 mode=live
 rows=118
-verdicts={"abstain": 47, "correct": 71}
-verdicts_by_data={"B1_v2": {"abstain": 17, "correct": 48}, "B1_v2_r2": {"abstain": 17, "correct": 19}, "B1_v2_r3": {"abstain": 13, "correct": 4}}
+verdicts={"abstain": 50, "correct": 68}
+verdicts_by_data={"B1_v2": {"abstain": 20, "correct": 45}, "B1_v2_r2": {"abstain": 17, "correct": 19}, "B1_v2_r3": {"abstain": 13, "correct": 4}}
 misread=0
 incomplete=0
 unjudged=0

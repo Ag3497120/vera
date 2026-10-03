@@ -37,7 +37,7 @@ from verantyx import semantic_read as SR    # noqa: E402
 from verantyx import semantic_reader as R    # noqa: E402
 
 DOCS = (TREE / 'docs' / 'READING_SOUNDNESS.md').read_text(encoding='utf-8')
-BASE_COMMIT = '0ff3f35'
+BASE_COMMIT = '2732274'  # integration: dev before the W3-b1 merge (W5-a changed the base reading)
 TAIL = 'PLACEMENT_PREDICATE_TAIL_UNINTERPRETED'
 
 
@@ -202,6 +202,22 @@ RETURNED_BY_DERIVED_GATE = {
 }
 
 
+# W3-b1-5 (integration with W5-a): the row that BASELINE_READS says the base commit reads wrongly was read by the base commit 0ff3f35; after W5-a (docs section 10A K63) the base
+# commit abstains on it (UNSUPPORTED_CLAUSE). BASELINE_READS is kept as it was (not deleted); this is asked before it. The W3-b1 tree before the merge (f410469) still reads it.
+READ_BY_THE_BASE_ONLY_BEFORE_W5A = {'W3B1-R9-S4-030': ['UNSUPPORTED_CLAUSE']}
+W3B1_COMMIT = 'f410469'
+
+
+def _module_at(commit):
+    src = subprocess.run(['git', '-C', str(TREE), 'show', '%s:verantyx/semantic_read.py' % commit], capture_output=True, check=True).stdout
+    spec = importlib.util.spec_from_loader('verantyx._semantic_read_at_%s_w3b1_i5' % commit, loader=None)
+    mod = importlib.util.module_from_spec(spec)
+    mod.__package__ = 'verantyx'
+    sys.modules[spec.name] = mod
+    exec(compile(src.decode('utf-8'), 'verantyx/semantic_read.py@%s' % commit, 'exec'), mod.__dict__)
+    return mod
+
+
 @pytest.mark.parametrize('row', R9, ids=[r['id'] for r in R9])
 def test_every_row_of_ja_r9_with_the_fixture(row):
     q = F.FixtureQuery()
@@ -209,6 +225,12 @@ def test_every_row_of_ja_r9_with_the_fixture(row):
     assert q.misses == [], q.misses
     plain = SR.read(row['input'], 'ja', placement=None)
     verdict = b1.judge(row['expect'], 'ja', out)['verdict']
+    if row['id'] in READ_BY_THE_BASE_ONLY_BEFORE_W5A:
+        assert row['entry_expect'] == 'abstain' and out == plain and out['readable'] is False
+        assert out['abstain']['reasons'] == READ_BY_THE_BASE_ONLY_BEFORE_W5A[row['id']] and verdict == 'abstain'
+        before = _module_at(W3B1_COMMIT).read(row['input'], 'ja', placement=F.FixtureQuery())
+        assert before['readable'] is True and b1.judge(row['expect'], 'ja', before)['verdict'] == 'incomplete'
+        return
     if row['id'] in BASELINE_READS:
         assert out == plain and out['readable'] is True and verdict == 'incomplete'
         return

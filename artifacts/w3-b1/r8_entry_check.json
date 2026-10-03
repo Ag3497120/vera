@@ -3,15 +3,14 @@
   "mode": "live",
   "rows": 213,
   "verdicts": {
-   "abstain": 118,
+   "abstain": 120,
    "correct": 92,
-   "incomplete": 3
+   "incomplete": 1
   },
   "verdicts_by_data": {
    "ja_r8": {
-    "abstain": 103,
-    "correct": 92,
-    "incomplete": 2
+    "abstain": 105,
+    "correct": 92
    },
    "en_r4": {
     "abstain": 15,
@@ -19,14 +18,14 @@
    }
   },
   "misread": 0,
-  "incomplete": 3,
+  "incomplete": 1,
   "unjudged": 0,
   "new_data_rows": 213,
   "entry_expect_mismatch": {
    "read_expected_but_abstained": 34,
-   "abstain_expected_but_read": 3
+   "abstain_expected_but_read": 1
   },
-  "reason_prefix_mismatch_among_abstained": 16,
+  "reason_prefix_mismatch_among_abstained": 18,
   "second_reason_prefixes": {
    "PLACEMENT_DIRECT_VIA_GENERATED": 2,
    "PLACEMENT_ESTIMATED_GENERATED": 5,
@@ -43,8 +42,8 @@
    "PLACEMENT_UNPLACED": 3
   },
   "bad_verdicts": {
-   "bad_verdict_total": 3,
-   "bad_verdict_identical_to_no_placement": 3
+   "bad_verdict_total": 1,
+   "bad_verdict_identical_to_no_placement": 1
   }
  },
  "misses_in_fixture": [],
@@ -315,18 +314,6 @@
  ],
  "abstain_expected_but_read": [
   {
-   "id": "W3B1-S4-054",
-   "input": "母が梅雨、靴を磨いた。",
-   "verdict": "incomplete",
-   "identical_to_no_placement": true
-  },
-  {
-   "id": "W3B1-S4-059",
-   "input": "弟が夕べ、本を読んだ。",
-   "verdict": "incomplete",
-   "identical_to_no_placement": true
-  },
-  {
    "id": "W3B1-EN-015",
    "input": "The girl cleaned the room quietly.",
    "verdict": "incomplete",
@@ -395,6 +382,20 @@
    ]
   },
   {
+   "id": "W3B1-S4-054",
+   "want": "PLACEMENT_MULTIPLE",
+   "got": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3B1-S4-059",
+   "want": "PLACEMENT_UNPLACED",
+   "got": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
    "id": "W3B1-S4-060",
    "want": "PLACEMENT_UNPLACED",
    "got": [
@@ -405,28 +406,28 @@
    "id": "W3B1-S4-067",
    "want": "PLACEMENT_PART_MARKER:quant",
    "got": [
-    "QUANTIFIER_NOT_MAPPED:numeral"
+    "UNSUPPORTED_CLAUSE"
    ]
   },
   {
    "id": "W3B1-S4-068",
    "want": "PLACEMENT_PART_MARKER:quant",
    "got": [
-    "QUANTIFIER_NOT_MAPPED:numeral"
+    "UNSUPPORTED_CLAUSE"
    ]
   },
   {
    "id": "W3B1-S4-069",
    "want": "PLACEMENT_PART_MARKER:quant",
    "got": [
-    "QUANTIFIER_NOT_MAPPED:numeral"
+    "UNSUPPORTED_CLAUSE"
    ]
   },
   {
    "id": "W3B1-S4-070",
    "want": "PLACEMENT_PART_MARKER:quant",
    "got": [
-    "QUANTIFIER_NOT_MAPPED:numeral"
+    "UNSUPPORTED_CLAUSE"
    ]
   },
   {
@@ -2685,16 +2686,13 @@
    "id": "W3B1-S4-054",
    "data": "ja_r8",
    "input": "母が梅雨、靴を磨いた。",
-   "verdict": "incomplete",
-   "readable": true,
+   "verdict": "abstain",
+   "readable": false,
    "entry_expect": "abstain",
-   "reasons": null,
-   "roles": [
-    {
-     "agent": "母",
-     "patient": "梅雨、靴"
-    }
-   ]
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "roles": null
   },
   {
    "id": "W3B1-S4-055",
@@ -2752,16 +2750,13 @@
    "id": "W3B1-S4-059",
    "data": "ja_r8",
    "input": "弟が夕べ、本を読んだ。",
-   "verdict": "incomplete",
-   "readable": true,
+   "verdict": "abstain",
+   "readable": false,
    "entry_expect": "abstain",
-   "reasons": null,
-   "roles": [
-    {
-     "agent": "弟",
-     "patient": "夕べ、本"
-    }
-   ]
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "roles": null
   },
   {
    "id": "W3B1-S4-060",
@@ -2861,7 +2856,7 @@
    "readable": false,
    "entry_expect": "abstain",
    "reasons": [
-    "QUANTIFIER_NOT_MAPPED:numeral"
+    "UNSUPPORTED_CLAUSE"
    ],
    "roles": null
   },
@@ -2873,7 +2868,7 @@
    "readable": false,
    "entry_expect": "abstain",
    "reasons": [
-    "QUANTIFIER_NOT_MAPPED:numeral"
+    "UNSUPPORTED_CLAUSE"
    ],
    "roles": null
   },
@@ -2885,7 +2880,7 @@
    "readable": false,
    "entry_expect": "abstain",
    "reasons": [
-    "QUANTIFIER_NOT_MAPPED:numeral"
+    "UNSUPPORTED_CLAUSE"
    ],
    "roles": null
   },
@@ -2897,7 +2892,7 @@
    "readable": false,
    "entry_expect": "abstain",
    "reasons": [
-    "QUANTIFIER_NOT_MAPPED:numeral"
+    "UNSUPPORTED_CLAUSE"
    ],
    "roles": null
   },

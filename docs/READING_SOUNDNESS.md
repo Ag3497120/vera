@@ -858,6 +858,8 @@ B1 v2 の第 3 ラウンドの自作の見本(`tests/bank_score/fixtures/B1_v2_r
 
 第 4 ラウンド(レビュー M8。可能動詞・短い使役)の日時の順(出典: `r10_placement_answers_time.txt`・`r10_placement_answers_batch2_time.txt` < `r4_gate_prereg_time.txt` < `bank_freeze_r10_time.txt` < `r10_before_gate_time.txt` < `r4_impl_time.txt` < `w3b1_tests_freeze_r4_time.txt`): 経路 U の動詞の配置の問い合わせ(2026-10-03 17:06:38 と 17:08:05 +0900。データを書く前。読解器・入口には通していない)→ 派生の疑いの門の登録(表の変更記録 3。17:09:34。直前・直後も同じ秒)→ 検査データ `ja_r10.jsonl` の凍結(17:11:28)→ 門を入れる前の入口での測定(`r10_before_gate_live.txt`。17:12:38)→ 門の実装(`r4_impl_time.txt`。17:13:36)→ 申告の更新 → 新しいテスト `tests/test_semantic_read_w3b1_r4.py`(門の実装のあとに書いた。テスト凍結 17:17:10。凍結したテスト 2 本は変えていない)→ 測定の取り直し。第 3 ラウンドの測定物は `r3_` の名前で残した。
 
+(W3-b1-5: この表は、W3-b1 と W5-a を統合した木(基点 2732274)で `w3b1_recompute.py` を流し直して貼り直した。直前までの表(W3-b1 だけの第 4 ラウンドの木)の全行は `artifacts/w3-b1/r4_recompute.md` に残してある。履歴の行(第 3 → 第 4 ラウンド・門が戻した行)は `r4_entry_live.jsonl` に固定して値を変えず、末尾の「integration」の行が統合の測定。)
+
 | item | value | source (artifacts/w3-b1/) |
 |---|---|---|
 | new data: rows (ja_r8 / en_r4) | 213 (197 / 16) | tests/reading_soundness/ja_r8.jsonl, en_r4.jsonl |
@@ -869,10 +871,10 @@ B1 v2 の第 3 ラウンドの自作の見本(`tests/bank_score/fixtures/B1_v2_r
 | round 3 data ja_r9: read-expected / abstain-expected, path U and path S4 | 6 / 24, 6 / 24 | ja_r9.jsonl, r9_counts.txt |
 | ja_r9 through the entry with the placement, without the gate on the ending (written before the gate): verdicts | abstain 15, correct 28, incomplete 1, misread 16 | r9_before_gate_live.json |
 | ja_r9 without the gate: abstain-expected rows the entry reads | 33 | r9_before_gate_live.json |
-| ja_r9 through the entry with the placement, with the gate on the ending: verdicts | abstain 49, correct 10, incomplete 1 | r9_entry_check.json |
-| ja_r9 with the gate: misread / incomplete / UNJUDGED | 0 / 1 / 0 | r9_entry_check.json |
-| ja_r9 with the gate: bad verdicts identical to the output with no placement | 1 of 1 | r9_entry_check.json |
-| ja_r9 with the gate: read-expected rows the entry abstains on / abstain-expected rows the entry reads | 2 / 1 | r9_entry_check.json |
+| ja_r9 through the entry with the placement, with the gate on the ending: verdicts | abstain 50, correct 10 | r9_entry_check.json |
+| ja_r9 with the gate: misread / incomplete / UNJUDGED | 0 / 0 / 0 | r9_entry_check.json |
+| ja_r9 with the gate: bad verdicts identical to the output with no placement | 0 of 0 | r9_entry_check.json |
+| ja_r9 with the gate: read-expected rows the entry abstains on / abstain-expected rows the entry reads | 2 / 0 | r9_entry_check.json |
 | ja_r9 with the gate: second reasons by prefix | PLACEMENT_PART_NOT_NP 1, PLACEMENT_PREDICATE_POSSIBLY_DERIVED 2, PLACEMENT_PREDICATE_TAIL_UNINTERPRETED 32, PLACEMENT_REREAD_ABSTAINS 8 | r9_entry_check.json |
 | round 4 data ja_r10: rows (path U / path S4) | 78 (37 / 41) | tests/reading_soundness/ja_r10.jsonl, r10_counts.txt |
 | round 4 data ja_r10: read-expected / abstain-expected, path U and path S4 | 10 / 27, 9 / 32 | ja_r10.jsonl, r10_counts.txt |
@@ -899,23 +901,23 @@ B1 v2 の第 3 ラウンドの自作の見本(`tests/bank_score/fixtures/B1_v2_r
 | ja_r10 with the gate, U potential: read / second reasons by prefix | PLACEMENT_PREDICATE_POSSIBLY_DERIVED 3, PLACEMENT_REREAD_ABSTAINS 14 | r10_entry_check.json, ja_r10.jsonl |
 | ja_r10 with the gate, U sa_not_a: read / second reasons by prefix | read 3 | r10_entry_check.json, ja_r10.jsonl |
 | ja_r10 with the gate, U short_causative: read / second reasons by prefix | PLACEMENT_PREDICATE_POSSIBLY_DERIVED 4 | r10_entry_check.json, ja_r10.jsonl |
-| round 3 -> round 4 (same inputs): read with the placement in round 3 and abstained in round 4, by the file the input comes from | ja_r8.jsonl 4, ja_r9.jsonl 2 | r3_entry_live.jsonl, entry_live.jsonl |
-| round 3 -> round 4 (same inputs): read in both with a different output / abstained in round 3 and read in round 4 / abstained in both with a different output | 0 / 0 / 0 | r3_entry_live.jsonl, entry_live.jsonl |
-| ja_r8 rows read with the placement before the gate that the gate returned to abstention | 4 of 53 | r2_entry_live.jsonl, entry_live.jsonl |
-| inputs read with the placement before the gate and after it with a different output | 0 | r2_entry_live.jsonl, entry_live.jsonl |
-| entry with the placement on the new data: verdicts | abstain 118, correct 92, incomplete 3 | r8_entry_check.json |
-| entry with the placement on the new data: misread / incomplete / UNJUDGED | 0 / 3 / 0 | r8_entry_check.json |
-| entry with the placement on the new data: bad verdicts identical to the output with no placement | 3 of 3 | r8_entry_check.json |
-| new data: read-expected rows the entry abstains on / abstain-expected rows the entry reads | 34 / 3 | r8_entry_check.json |
-| new data: abstained rows whose second reason is not the registered prefix | 16 | r8_entry_check.json |
-| declared exceptions (w3b1_expect_exceptions.json) by kind | baseline_reads 3, reason_differs 16, row_returned_to_abstain 25, trigger_not_reached 9 | tests/reading_soundness/w3b1_expect_exceptions.json |
+| round 3 -> round 4 (same inputs): read with the placement in round 3 and abstained in round 4, by the file the input comes from | ja_r8.jsonl 4, ja_r9.jsonl 2 | r3_entry_live.jsonl, r4_entry_live.jsonl |
+| round 3 -> round 4 (same inputs): read in both with a different output / abstained in round 3 and read in round 4 / abstained in both with a different output | 0 / 0 / 0 | r3_entry_live.jsonl, r4_entry_live.jsonl |
+| ja_r8 rows read with the placement before the gate that the gate returned to abstention | 4 of 53 | r2_entry_live.jsonl, r4_entry_live.jsonl |
+| inputs read with the placement before the gate and after it with a different output | 0 | r2_entry_live.jsonl, r4_entry_live.jsonl |
+| entry with the placement on the new data: verdicts | abstain 120, correct 92, incomplete 1 | r8_entry_check.json |
+| entry with the placement on the new data: misread / incomplete / UNJUDGED | 0 / 1 / 0 | r8_entry_check.json |
+| entry with the placement on the new data: bad verdicts identical to the output with no placement | 1 of 1 | r8_entry_check.json |
+| new data: read-expected rows the entry abstains on / abstain-expected rows the entry reads | 34 / 1 | r8_entry_check.json |
+| new data: abstained rows whose second reason is not the registered prefix | 18 | r8_entry_check.json |
+| declared exceptions (w3b1_expect_exceptions.json) by kind | baseline_reads 1, reason_differs 18, row_returned_to_abstain 25, trigger_not_reached 9 | tests/reading_soundness/w3b1_expect_exceptions.json |
 | base-commit comparison: inputs (x3 + English + B1 samples + event cross sentences + new data) | 2899 | entry_dev.jsonl, entry_live.jsonl |
-| base-commit comparison: same / reason_changed | 2468 / 365 | entry_dev.jsonl, entry_live.jsonl, base_diff_summary.txt |
+| base-commit comparison: same / reason_changed | 2469 / 364 | entry_dev.jsonl, entry_live.jsonl, base_diff_summary.txt |
 | base-commit comparison: false->readable / readable->false | 66 / 0 | entry_dev.jsonl, entry_live.jsonl, base_diff_summary.txt |
 | base-commit comparison: changed (source fields taken out) / changed (as they are) / error_changed | 0 / 0 / 0 | entry_dev.jsonl, entry_live.jsonl |
 | false->readable by the file the input comes from | ja_r10.jsonl 9, ja_r8.jsonl 47, ja_r9.jsonl 10 | base_diff.jsonl |
 | false->readable verdicts | CORRECT 66 | base_diff.jsonl |
-| reason_changed: reasons added, by prefix | PLACEMENT_DIRECT_VIA_GENERATED 3, PLACEMENT_ESTIMATED_GENERATED 5, PLACEMENT_ESTIMATED_NEAR 2, PLACEMENT_FRAME_NOT_READ 79, PLACEMENT_MULTIPLE 11, PLACEMENT_NOT_PREDICATE_TYPE 1, PLACEMENT_PART_MARKER 7, PLACEMENT_PART_NONE 2, PLACEMENT_PART_NOT_FOLLOWED 3, PLACEMENT_PART_NOT_ISOLATED 3, PLACEMENT_PART_NOT_NP 17, PLACEMENT_PART_NO_ROLE 3, PLACEMENT_PART_PARTICLE 2, PLACEMENT_PREDICATE_POSSIBLY_DERIVED 17, PLACEMENT_PREDICATE_TAIL_UNINTERPRETED 32, PLACEMENT_PREDICATE_UNIDENTIFIED 32, PLACEMENT_REREAD_ABSTAINS 28, PLACEMENT_SLOT_EVIDENCE_ONLY 34, PLACEMENT_TYPE_MISMATCH 30, PLACEMENT_UNKNOWN 26, PLACEMENT_UNPLACED 24, PLACEMENT_VOICE_NOT_ACTIVE 4 | entry_dev.jsonl, entry_live.jsonl |
+| reason_changed: reasons added, by prefix | PLACEMENT_DIRECT_VIA_GENERATED 3, PLACEMENT_ESTIMATED_GENERATED 5, PLACEMENT_ESTIMATED_NEAR 2, PLACEMENT_FRAME_NOT_READ 79, PLACEMENT_MULTIPLE 11, PLACEMENT_NOT_PREDICATE_TYPE 1, PLACEMENT_PART_MARKER 7, PLACEMENT_PART_NONE 2, PLACEMENT_PART_NOT_FOLLOWED 3, PLACEMENT_PART_NOT_ISOLATED 3, PLACEMENT_PART_NOT_NP 17, PLACEMENT_PART_NO_ROLE 3, PLACEMENT_PART_PARTICLE 2, PLACEMENT_PREDICATE_POSSIBLY_DERIVED 17, PLACEMENT_PREDICATE_TAIL_UNINTERPRETED 32, PLACEMENT_PREDICATE_UNIDENTIFIED 32, PLACEMENT_REREAD_ABSTAINS 28, PLACEMENT_SLOT_EVIDENCE_ONLY 34, PLACEMENT_TYPE_MISMATCH 30, PLACEMENT_UNKNOWN 25, PLACEMENT_UNPLACED 24, PLACEMENT_VOICE_NOT_ACTIVE 4 | entry_dev.jsonl, entry_live.jsonl |
 | x3 sentences in the comparison: count / newly readable with the placement | 2217 / 0 | entry_dev.jsonl, entry_live.jsonl |
 | reader (document_view) on the x3 sentences: byte-for-byte as the base commit | yes (2217 lines) | x3_after.jsonl, x3_dev.jsonl |
 | frozen banks (harness): sentences / changed / misread | 500 / 0 / 0 | soundness_compare.txt |
@@ -923,20 +925,35 @@ B1 v2 の第 3 ラウンドの自作の見本(`tests/bank_score/fixtures/B1_v2_r
 | entry with no placement: output equal to the base commit on all inputs | yes | entry_none.jsonl, entry_dev.jsonl |
 | answers rewritten to estimated only: newly readable / readable and changed | 0 / 0 | a3_direct_only.txt |
 | answers rewritten to multiple only: newly readable / readable and changed | 0 / 0 | a3_direct_only.txt |
-| B1 sample B1_v2 through the scorer (no placement reaches the child process): correct / correct_abstain / over_abstain / misread / wrong | 35 / 13 / 17 / 0 / 0 | bs_B1_v2/summary.json |
+| B1 sample B1_v2 through the scorer (no placement reaches the child process): correct / correct_abstain / over_abstain / misread / wrong | 32 / 13 / 20 / 0 / 0 | bs_B1_v2/summary.json |
 | B1 sample B1_v2_r2 through the scorer (no placement reaches the child process): correct / correct_abstain / over_abstain / misread / wrong | 11 / 8 / 17 / 0 / 0 | bs_B1_v2_r2/summary.json |
 | B1 sample B1_v2_r3 through the scorer (no placement reaches the child process): correct / correct_abstain / over_abstain / misread / wrong | 4 / 0 / 13 / 0 / 0 | bs_B1_v2_r3/summary.json |
-| B1 samples in-process with the placement: verdicts | abstain 47, correct 71; misread 0, incomplete 0 | b1_fixtures_live.json |
-| placement questions over all inputs: total / most for one input / inputs with a question | 611 / 4 / 362 | queries_live.json |
-| placement answers by state/origin/basis | DECIDED/direct/None 543, DECIDED/estimated/generated 5, DECIDED/estimated/proximity 2, MULTIPLE/direct/None 11, UNKNOWN/None/None 26, UNPLACED/None/None 24 | queries_live.json |
-| time per input with the placement (median / mean / max, ms) at 1-min load 2.55 | 0.696 / 0.934 / 82.065 | timing_live.json |
-| time per input with no placement (median / mean / max, ms) at 1-min load 3.91 | 0.607 / 0.906 / 61.836 | timing_none.json |
+| B1 samples in-process with the placement: verdicts | abstain 50, correct 68; misread 0, incomplete 0 | b1_fixtures_live.json |
+| placement questions over all inputs: total / most for one input / inputs with a question | 610 / 4 / 361 | queries_live.json |
+| placement answers by state/origin/basis | DECIDED/direct/None 543, DECIDED/estimated/generated 5, DECIDED/estimated/proximity 2, MULTIPLE/direct/None 11, UNKNOWN/None/None 25, UNPLACED/None/None 24 | queries_live.json |
+| time per input with the placement (median / mean / max, ms) at 1-min load 1.96 | 0.687 / 0.924 / 84.389 | timing_live.json |
+| time per input with no placement (median / mean / max, ms) at 1-min load 1.96 | 0.596 / 0.871 / 59.609 | timing_none.json |
 | members of the two read types: members / frames tried / newly readable | 111 / 222 / 102 | probe_members.txt |
 | placement predicates (ns=P headwords): all / written with ASCII only | 10971 / 0 | probe_members.txt |
-| event cross with the placement, event_cross_sentences: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED | 70 / 174 / 36 / 1 / 137 | events_live.json |
-| event cross with the placement, new_data: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED | 81 / 203 / 115 / 0 / 88 | events_live.json |
-| event cross with the placement, rest: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED | 241 / 578 / 181 / 7 / 390 | events_live.json |
-| event cross DISAGREE arms in all (and how many of them were typed by the entry) | 8 (0) | events_live.json |
+| event cross with the placement, event_cross_sentences: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED | 69 / 171 / 35 / 0 / 136 | events_live.json |
+| event cross with the placement, new_data: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED | 78 / 198 / 113 / 0 / 85 | events_live.json |
+| event cross with the placement, rest: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED | 198 / 479 / 155 / 4 / 320 | events_live.json |
+| event cross DISAGREE arms in all (and how many of them were typed by the entry) | 4 (0) | events_live.json |
+| integration (W3-b1 + W5-a, base 2732274): inputs / the merged entry with no placement equals the base commit byte for byte (rows) | 2899 / 2899 | integ_combination.txt |
+| integration (W3-b1 + W5-a, base 2732274): inputs the commit before W5-a read and the base commit abstains on (W5-a): all / read by the merged entry with the placement / with a second reason (the typed path ran) | 48 / 0 / 0 | integ_combination.txt |
+| integration (W3-b1 + W5-a, base 2732274): those inputs by the type of the first reason | {"AGENT_EVIDENCE_MISSING": 6, "PATH_ROLE_NOT_MAPPED": 1, "SUBJECT_TYPE_UNDETERMINED": 1, "UNDETERMINED_VOICE": 8, "UNSUPPORTED_CLAUSE": 32} | integ_combination.txt |
+| integration (W3-b1 + W5-a, base 2732274): inputs abstained on both before and after W5-a with a different output (reason changed by W5-a) | 118 | integ_combination.txt |
+| integration (W3-b1 + W5-a, base 2732274): read by the typed path (read with the placement, abstained with none): merged entry / W3-b1 tree alone | 66 / 66 | integ_combination.txt |
+| integration (W3-b1 + W5-a, base 2732274): of those: identical output in both / different output / only the merged entry / only the W3-b1 tree alone (W5-a stopped it) | 66 / 0 / 0 / 0 | integ_combination.txt |
+| integration (W3-b1 + W5-a, base 2732274): inputs read by the W3-b1 tree alone and stopped by W5-a (listed in full) | none | integ_combination.txt |
+| integration (W3-b1 + W5-a, base 2732274): declared exceptions whose why names section 10A, by K (all declared) | section 10A K63 6 (of 53) | tests/reading_soundness/w3b1_expect_exceptions.json |
+| integration (W3-b1 + W5-a, base 2732274): declared exceptions: unchanged / rewritten compared with round 4 | 47 / 6 | w3b1_expect_exceptions.json, r4_w3b1_expect_exceptions.json |
+| integration (W3-b1 + W5-a, base 2732274): ja_r9 rows the commit before W5-a reads and the base commit abstains on | 1 | r4_entry_dev.jsonl, entry_dev.jsonl |
+| integration (W3-b1 + W5-a, base 2732274): W5-a measurement inputs (2344): merged entry with no placement equals W5-a round 3 byte for byte | yes | w5a_entry_none.jsonl, artifacts/w5-a/r3/entry_after.jsonl |
+| integration (W3-b1 + W5-a, base 2732274): W5-a measurement inputs, merged entry with the placement against W5-a entry_before: readable->false / false->readable / changed / reason_changed | 43 / 0 / 0 / 215 | w5a_entry_live.jsonl, artifacts/w5-a/entry_before.jsonl |
+| integration (W3-b1 + W5-a, base 2732274): W5-a measurement inputs, with no placement (same comparison): readable->false / false->readable / changed / reason_changed | 43 / 0 / 0 / 103 | w5a_entry_none.jsonl, artifacts/w5-a/entry_before.jsonl |
+| integration (W3-b1 + W5-a, base 2732274): W5-a measurement inputs: the readable->false set and its first reasons with the placement are the same as W5-a round 3 | yes (43 inputs) | w5a_entry_live.jsonl, w5a_entry_none.jsonl, artifacts/w5-a/r3/entry_after.jsonl |
+| integration (W3-b1 + W5-a, base 2732274): E1 (events parity) lines | E1_SAME, E1_EQUALS_BASE_2732274, E1_SAME_WITH_PLACEMENT | e1.txt |
 
 読み方(数字の外の説明。数は上の表にある):
 - **x3 の和文と B1 見本では、新しく読めた文は 0、読めていた文の変化も 0**。新しく読めたのは、この企てで作った検査データ(ja_r8)の文だけ。配置を使う入口が基点より多く読めるかどうかは、このチケットの測定では x3・B1 見本で示せていない(隠しバンクは監査役が測る。採点器の子プロセスに配置が届かない点は K72)。
@@ -961,6 +978,7 @@ B1 v2 の第 3 ラウンドの自作の見本(`tests/bank_score/fixtures/B1_v2_r
 
 - **K67 英語は読まない**(H104)。配置の述語(ns=P)の見出し語は 10971 のうち ASCII だけで書かれたものが 0(`probe_members.txt`)。日常語の名詞も direct の型が当てにならないので、英語の表は作らず、`UNKNOWN_PREDICATE` に配置の答えの理由を 1 つ足すだけ。
 - **K68 基点がすでに誤って読む文が検査データに 3 行ある**(`W3B1-S4-054` 梅雨・`W3B1-S4-059` 夕べ・`W3B1-EN-015` quietly)。和文は、読解器が時の語＋「、」＋名詞を 1 つの patient(`梅雨、靴`)とする 2 つ目の節(`np_internal`)を支持された節として返す。英語は `quietly` が patient に入る(`room quietly`)。どちらも基点の出力と同一で、配置の経路は通らない(読解器・英語の枠は許可パスの外。直さない)。この 3 行は凍結のまま、`b1.judge` は `incomplete`。基点の誤り(穴)として申告する。
+  (W3-b1-5 の追記)統合後(基点 2732274)は、W5-a の section 10A K63 で基点が `W3B1-S4-054`・`W3B1-S4-059` を `UNSUPPORTED_CLAUSE` で棄権するので、この 2 行はもう基点の誤読ではなく、申告は `baseline_reads` から `reason_differs` に変わった(基点が誤って読む行は `W3B1-EN-015` の 1 行だけ。§10 の統合の再検証)。
 - **K69 読む期待で棄権した 9 行**(大晦日・春休み・年明け の ∅+時)。読解器が `frame` の節のほかに `np_internal` の節(`大晦日、床` を 1 つの patient とする。支持されない節)も返すので、引き金の「節がちょうど 1 つ」に当たらない。安全な側の損失で、直さない(引き金を広げる変更は表を広げるのと同じ扱いで、このチケットでは禁止)。
 - **K70 理由の食い違い 13 行(表の変更記録 1 のあとは 16 行。増えた 3 行は、`に+人` が型の不一致で先に落ちるようになったもの。申告は `reason_differs`)**: 引き金に当たらず(読解器の節が 2 つ・数詞を読解器が先に `QUANTIFIER_NOT_MAPPED:numeral` にする・未読の区間・ほか)、登録した 2 番目の理由が付かない。すべて棄権している。
 - **K71 配置の述語の型の誤りは防げない**。`probe_members.txt`: 読む 2 型の成員 111 語を 4 つの枠に入れて 222 文、うち 102 文が新しく読める(`recipient に` の行を戻す前は 148 文、第 3 ラウンドの末は 124 文。第 4 ラウンドの派生の疑いの門で 22 文が棄権に戻った)(`在る`・`すむ`・`なくなる`・`戻す` など、へ＋場所の枠が不自然な語が通る。不自然な文の読みは何も言わないが、型が誤って P_MOVE・P_COMMUNICATE に入った語が自然な文で誤読を作る可能性は、検査データと x3 では 0 件、監査役の隠しバンクでだけ測れる)。名詞の型の誤り(例: 人名が TIME・PLACE)も同じ(`probe_members.txt` の標本)。誤りが見つかったら、その行を「読まない」に戻す(語を足して直さない)。
@@ -972,6 +990,7 @@ B1 v2 の第 3 ラウンドの自作の見本(`tests/bank_score/fixtures/B1_v2_r
 - **K77 型で読み直した節は、極性・時制・モダリティを今の写しの規則に任せるので、基点の規則の欠けは誤答だけでなく誤読(極性・モダリティ)になる。この変更(表の変更記録 2)で、解釈されない語尾を持つ節は新しい経路では読まない**(レビュー第 1 ラウンド M5 の申告が、第 2 ラウンド M7 で誤読と分かった)。基点の入口は、述語の後ろの「ている+ない」「ません(ている の後)」「禁止の な」「まい」「たい」「命令形」を解釈せず、`姉が本を読んでいない。`・`姉が本を読むな。` を `polarity: "+"`・`modality: null` で読む(基点の既存の誤読。この企ての許可パスの外で、別のチケットが要る)。型で読み直す経路は、基点がそれらの文を別の理由で棄権していたのを外すので、同じ欠けが新しく読めた文の誤読として出た(レビュー第 2 ラウンド: 未公開の 122 文で 14 件)。語尾の門(K63)は、型の決定と今の写しの再実行が通った後に、述語の語尾が 4 つの形(終止形・連用形+た・未然形+ない・未然形+なかっ+た)のどれかでなければ `PLACEMENT_PREDICATE_TAIL_UNINTERPRETED` で棄権する。それ以外の語尾は、今の規則が解釈するかどうかを調べずに一括して棄権する(H117)。測定: 検査データ `ja_r9` は 上の表。可能動詞・短い使役も同じ型(M8): タガーの出力では元の動詞とは別の独立した下一段・五段の動詞として現れるので、4 つの形を通り、述語が派生形のまま `modality`・`voice` なしで返った(第 4 ラウンドの門と K82〜K86)。
 - **K78 `PLACEMENT_REREAD_ABSTAINS` と S4 の読み直しは、基点が棄権した文を読み直す**。基点が読めた文は 1 バイトも変えない(`readable->false 0`・`changed 0`)が、基点が棄権した文を新しく読む。基点が棄権した理由(`unsupported`)の一部は、読解器が「ここは割れる」と言ったものを型で上書きしたもの(U2 の `ambiguous case role: に`。K76 のとおり記録として残す)。
 - **K79 基点がすでに読んでしまう語尾の文がある**(`ja_r9` の `W3B1-R9-S4-030` 姉が放課後、本を読むべきだ。)。基点の入口が `modality: null` で読む(べき を解釈しない)ので、配置なしの出力と同一で `incomplete`(新しい経路の誤読ではない。この変更は基点の出力を 1 バイトも変えない)。K77 のとおり基点の規則の欠けで、別のチケットが要る。検査データの `ja_r9` の `incomplete` 1 件はこれで、テストはこの 1 行を `BASELINE_READS` に固定している(出力が基点と同一であることを確かめる)。
+  (W3-b1-5 の追記)統合後(基点 2732274)は、W5-a の section 10A K63 で基点がこの文を `UNSUPPORTED_CLAUSE` で棄権するので、`ja_r9` の `incomplete` は 0 件になった。テストの `BASELINE_READS` は消さず、前に分岐 `READ_BY_THE_BASE_ONLY_BEFORE_W5A` を足してこの行を固定した(§10 の統合の再検証、テストの変更記録 19)。
 - **K80 語尾の門は述語の後ろだけを見る**。述語の前の語(役割の間の副詞・標識)が極性・モダリティを動かす場合は、引き金(U は `unsupported == ()`、S4 は部分の標識 K64)に任せていて、`ja_r9` は述語の前に語尾の型の語を置いていない。門を通る 4 つの形(とくに単純否定 2 形)が今の規則で正しく読まれることは、検査データ(ja_r8・ja_r9 の読む期待の行と、凍結したテストの単純否定の文)と未公開の文での測定だけが根拠で、証明ではない。門は広く棄権に倒すので、読めない文(受身・使役・丁寧の ます・ている・命令 など。棄権の型が `PLACEMENT_PREDICATE_TAIL_UNINTERPRETED`)が増える(`ja_r9` の棄権の期待 48 行のうち、門で棄権したのは上の表の件数)。受身・丁寧・ている などを読み直す変更は、表を広げるのと同じ扱いで、このチケットでは禁止。
 - **K81 `ja_r9` の検査文は、型の門を通る語だけで作った(語尾の門だけを測る)**。型の門の誤り(direct の型の誤配置)と語尾の誤りが重なる文は、`ja_r9` では測れていない(型の門は `ja_r8`・凍結テストが測る)。
 
@@ -980,6 +999,14 @@ B1 v2 の第 3 ラウンドの自作の見本(`tests/bank_score/fixtures/B1_v2_r
 - **K84 門はタガーの切り方に頼る**: 門は主辞のトークンの活用型と原形だけを見る。タガーが派生形を「元の動詞の別の活用形 + 助動詞」に切る場合(例 `死ねた` を `死ぬ/五段/仮定形 + た` と切ることがある)は、語尾の門(4 つの形)が受け持つ(仮定形 + た は 4 つの形に入らず棄権)。4 つの形のうちに派生形が入る別の切り方(下一段でも五段-サ行でもない活用型の独立した動詞として出る派生形)があれば、この門も語尾の門も防がない。ら抜きの可能形(見れた・食べれた)は、`ja_r10` の 2 文で下一段として出て、今の規則(`possible potential form`)が棄権した。サ変の可能の できる(上一段)は門の対象にせず、入口の既存の標識で棄権する(`ja_r10` の 2 文とテスト)。受身・尊敬と同形の下一段・自発(思える)は下一段の門の対象。 ただし この「入口の既存の標識で棄権する」は **かなの できる だけ** の話である(`_MODAL_MARKS` は `ことができ|できる|できた|できな` を含み、漢字の `出来た`・`事が出来た` には当たらない)。漢字の場合は標識ではなく別の理由で棄権する: 私の 4 文(`r4r2_kanji_dekiru_probe.txt`。配置あり・live)では、`妹が夜、勉強出来た。`・`弟が冬、勉強出来なかった。` が `NO_SUPPORTED_CLAUSE` + `PLACEMENT_PART_NOT_FOLLOWED`、`妹が夜、手紙を書く事が出来た。` が `NO_SUPPORTED_CLAUSE` だけ(配置なしと同一)で、どれも読まなかった。規則は変えていない(レビュー第 4 ラウンド r1 の任意の改善 2)。
 - **K85 `ja_r10` の経路 S4 の行は、時の語の選び方のために、門に届かないものが多い**: 時の語を配置の答え(`r8_placement_answers.jsonl`)から選んだが、証拠の門 5 を通る語かどうかを確かめなかった。S4 の可能動詞 14 文のうち門に届いたのは 0 文(上の表の「S4 potential」の行)で、S4 の可能動詞の穴(`洗えた`・`描けた`・`書けた` を読んでいた誤読)は `ja_r10` では測れていない。読む期待の行のうち 4 行(`W3B1-R10-S4-027`・`029`・`030`・`033`)は、時の語が門 5 で落ちて棄権する(データの選び方の誤りで、門の誤りではない)。データは直さず、テストの `READ_EXPECTED_BUT_ABSTAINED` に出力そのままで申告した。可能動詞の S4 は、レビューの 6 文と `書けた`・`書けない` を新しいテスト(時の語を型で与える `MapQuery`)で確かめた(門の前は読んで誤読、門のあとは棄権。`r4_probe_before_gate.txt`)。
 - **K86 経路 U の可能動詞の多くは、門の前から今の規則が棄権する**: `ja_r10` の U の可能動詞 17 文のうち 14 文は `UNDETERMINED_MODALITY:possible potential form`(基点の `_potential_suspect`)で棄権し、門が止めたのは `歩ける` の 3 文(歩く は を を取る動詞)。配置が `DECIDED direct P_MOVE` と答える可能動詞は `歩ける`・`行ける`・`戻れる`・`向かえる`・`移れる` の 5 語(`走れる`・`飛べる`・`帰れる` などは `UNPLACED`。`r10_placement_answers.jsonl`)で、語の選び方による測定の限界がある。
+
+- **K87 `docs/EVENT_CROSS.md` の十字の表の 4 行は W3-b1 だけの木の値のまま**(許可パスの外。直さず、監査役への申し送り。チケットとレビューの指示書は 3 行と書いたが、実際は `docs/EVENT_CROSS.md` の「event cross with the placement」の表の 4 行: `event_cross_sentences`・`new_data`・`rest` の 3 行と `DISAGREE arms in all` の 1 行)。今の木の値(`events_live.json`。上の K66 の表の同じ行)は `event_cross_sentences` 69 / 171 / 35 / 0 / 136、`new_data` 78 / 198 / 113 / 0 / 85、`rest` 198 / 479 / 155 / 4 / 320、`DISAGREE` の全体 4 (0)。`EVENT_CROSS.md` の値は 70 / 174 / 36 / 1 / 137、81 / 203 / 115 / 0 / 88、241 / 578 / 181 / 7 / 390、8 (0)。W5-a が読まなくなった文が十字から抜けた分の差(原因は section 10A K63 ほか)。`DISAGREE` の全件は `events_live_summary.txt`。
+- **K88 W5-a が W3-b1 の読みを止めた入力は、入口の 2,899 入力では 0 件**(`integ_combination.txt` の `only_w3b1=0`、`only_now=0`)。これはこの 2,899 入力についてだけの値で、ほかの文について「止めない」とは言っていない(中間職の未公開の群はレビューで流される)。
+- **K89 生成器の W5-a の理由の表は 3 行だけ**(`UNDETERMINED_VOICE:passive or spontaneous`=section 10A K62、`UNSUPPORTED_CLAUSE`=section 10A K63、`AGENT_EVIDENCE_MISSING:`=section 10A K64)。入口の 2,899 入力のうち、W5-a の前は読み、後は棄権する 48 入力の 1 番目の理由は `UNSUPPORTED_CLAUSE` 32・`UNDETERMINED_VOICE` 8・`AGENT_EVIDENCE_MISSING` 6・`PATH_ROLE_NOT_MAPPED` 1(行列が大通りを練り歩いた。)・`SUBJECT_TYPE_UNDETERMINED` 1(船が港を出航した。)(`integ_combination.txt`)。最後の 2 つは表に無い(W5-a の複合動詞・人の証拠の規則に由来するとみられるが、この表には入れていない。2 つとも `w1a3_review_r3_examples_ja.txt` の文で、`ja_r8`・`en_r4` の申告の行ではない)。申告の行に表に無い理由が現れれば、生成器は `assert` で止まる(黙って分類しない)。
+- **K90 §9.3 など、K66 の表の外の本文にある数は第 4 ラウンドまでの値のまま**(「既存の文の書き換え・削除は K66 の表の行だけ」を守った)。例: §9.3 の B1_v2 の自作見本 35 / 13 / 17 は W5-a の前の値で、基点 2732274 の同じ測定(`bs_summary_dev.txt`)も今の木(`bs_summary.txt`)も 32 / 13 / 20(`BS_SAME_AS_DEV`)。K66 の表の下の「読み方」の箇条書き(新データの `incomplete` 3 件・食い違い 53 行の内訳の 3 と 16 など)は第 4 ラウンドの値で、今の値は表の行と、§10 の統合の再検証にある(`incomplete` 1、種類別の申告の件数は `baseline_reads` 1・`reason_differs` 18)。
+- **K91 「既存の申告の行はバイト一致で残す」は 6 行について守れなかった**。53 行のうち 47 行は `r4_w3b1_expect_exceptions.json` とバイト一致、6 行(`W3B1-S4-054`・`059`・`067`〜`070`)は出力が W5-a の section 10A K63 で変わったので書き直した(凍結のテストが `observed` を出力そのままで固定し、同じ id の行を 2 つ置くことを禁じているため。H126)。前後の全文は §10 の統合の再検証に残した。
+- **K92 中間職の未公開の群での「新しい誤読 0」は、実装役は確かめていない**(指示書が開くことを禁じている)。実装役が確かめたのは、公開されている入力(入口の 2,899 入力・x3 の 2,217 文・W5-a の測定の 2,344 入力・凍結データ・B1 見本)だけ。自作のデータで通ることは隠しの評価の証拠にならない。
+- **K93 `tests/reading_soundness/recompute.py`(W1-a の表)の出力は、W1-a の `artifacts/w1-a/recompute.md` と 24 行の差がある**(`w1a_recompute_diff_i5.txt`)。基点 2732274 の木で流した出力と今の木の出力はバイト一致(`w1a_recompute_vs_dev_i5.txt`)で、差の原因は W5-a が基点の読みを変えたこと(例: 日本語・読める 24 → 21 など(W1-a の記録 → 今)、`diff` の全文)。W1-a の文書・測定物は許可パスの外なので直していない(指示書: 出なければ差を報告し、直さない)。
 
 ### 判断記録(H100〜。W1-a4 が H66〜H97 を使ったので衝突を避けた)
 
@@ -1012,6 +1039,14 @@ B1 v2 の第 3 ラウンドの自作の見本(`tests/bank_score/fixtures/B1_v2_r
 | H123 | `ja_r10` の経路 S4 の時の語が門 5 で落ちたこと(K85)と、基点がすでに読む U の行 5 件は、データを直さず、新しいテストで出力そのままを申告した | 凍結したデータの期待を後から直さない(指示書)。データの選び方の誤りは K85 に書き、可能動詞の S4 はレビューの文で別に確かめた |
 | H124 | `できる` は門の対象にしない | 上一段で、語の一覧になる。入口の既存の標識(`_MODAL_MARKS`)が棄権させる(`ja_r10` の 2 文とテストで確かめた。理由は `PLACEMENT_PART_NO_ROLE`・`PLACEMENT_UNPLACED` で、派生の門ではない) |
 | H125 | 申告の生成器は「派生の疑いの門だけを外せば期待を満たすか」(変更記録 3 の質問)を先に問い、満たすならその行の原因は変更記録 3 とする。登録したままの表を戻す質問(変更記録 1)は、変更記録 3 の質問が否のときだけ原因にする。両方で満たす行の `why` に両方を併記することはしなかった | レビュー第 4 ラウンド r1 の M1: `S4-003`・`004`・`013`・`021` は門を外すだけで期待を満たす(K62 の行を戻すことと無関係)のに、変更記録 1 の質問が先に当たって `why` が変更記録 1 を名指ししていた。出力・種類・既存 49 件は変わらず、4 件の `why` だけが変わった。併記(任意の改善 1)は、`why` に変更記録 1 の名が入り、原因の取り違えと見分けがつかなくなるので採らなかった(両方で満たす行は今のデータでは上の 4 行で、どれも変更記録 3 が原因) |
+| H126 | 申告の 6 行(`W3B1-S4-054`・`059`・`067`〜`070`)を書き直した。47 行は `r4_w3b1_expect_exceptions.json` とバイト一致 | 統合した木で、固定の配置での出力が W3-b1 だけの木(`f410469`)と違うのはこの 6 行だけで、どの行も出力が基点 2732274 の配置なしの出力(理由 1 つ。型の経路に届かない)になった。凍結のテストは `observed` を出力そのままで固定し、同じ id の行を 2 つ置けないので、書き直すしかない。書き直す前の 6 行の全文は `artifacts/w3-b1/r4_w3b1_expect_exceptions.json` と §10 の統合の再検証に残した |
+| H127 | 生成器は W5-a の質問(統合の出力が W3-b1 だけの木の出力と違うか)を、既存のどの質問よりも先に問う | 前回の取り違え(第 4 ラウンドのレビュー M1)の二の舞を避けるため、原因を出力から読む。違う行は `out == 配置なしの出力 == 2732274 の出力`、W3-b1 だけの木の出力 ＝ `0ff3f35` の配置なしの出力、1 番目の理由が W5-a の表のちょうど 1 行に当たる、を `assert` する(外れたら止まる)。既存の分岐(変更記録 3 → 変更記録 1 → baseline_reads → trigger_not_reached → reason_differs)と `meets` は 1 文字も変えていない。W5-a の質問が偽の行は今までどおりそこを通り、47 行はバイト一致 |
+| H128 | `ja_r9` の `W3B1-R9-S4-030` は `BASELINE_READS` から消さず、前に分岐 `READ_BY_THE_BASE_ONLY_BEFORE_W5A` を足した | 削除しない原則。分岐は「今は基点が `UNSUPPORTED_CLAUSE` で棄権し(出力 ＝ 配置なし、判定 `abstain`)、W3-b1 だけの木(`f410469`)では読んで `incomplete`」を固定する。第 3 ラウンドの `BASELINE_READS` の主張がその時点では正しかったことと、原因が W5-a の section 10A K63 であることを残す |
+| H129 | `tests/test_semantic_read_w3b1_r4.py` の `BASE_COMMIT` を `0ff3f35` から `2732274` に変えた | 配置なしの出力を基点と比べるテストなので、基点は今の dev でなければならない。変える前の `0ff3f35` でも、`ja_r10` の配置なしの出力が `0ff3f35` と `2732274` で同じなので通る(`r4_test_before_i5.txt`: 145 passed。申告を直した後に流した)。変えた後も通る。監査役が凍結テストに書いたのと同じ注記を付けた |
+| H130 | `w3b1_recompute.py` の履歴の行(第 3 → 第 4 ラウンドの 2 行と、門が戻した行・門の前後で出力が違う行の 2 行)の入力を `r4_entry_live.jsonl` に固定した | `entry_live.jsonl` のまま上書きすると、W5-a が棄権させた 054・059 が「門が戻した」に数えられ、4 → 6 になる。値は第 4 ラウンドと同じ(`recompute_r4_vs_i5.diff` で出所の欄だけが変わる) |
+| H131 | チケットは申告の失敗を 1 件と書いたが、統合直後の I1 の失敗は 3 件だった(`i1_start_i5.txt`) | 申告の `test_declared_exceptions_are_real_and_each_has_a_reason` に加えて、`test_semantic_read_w3b1_r3.py` の `W3B1-R9-S4-030`(`BASELINE_READS` の主張を、基点が W5-a の後は読まない)と、r3 の `BASE_COMMIT` が `0ff3f35` のままだった配置なしのバイト一致。どれも原因は W5-a が基点の読みを変えたこと |
+| H132 | 生成器で `0ff3f35`・`2732274` のモジュールを呼ぶとき、行の言語を渡す(`.read(text, lang)`)。指示書は `.read(text)` | 英語の行でも同じ言語で比べるため。今の 6 行(和文)の出力は言語を渡さない形と同じ(生成器の出力のバイト一致を確かめた) |
+| H133 | 新しい 6 行の `why` には W5-a の規則の表の行の文(`section 10A K63 …`)と、W3-b1 だけの木・`0ff3f35` の出力、型の経路に届かないことを入れ、W3-b1 の表の変更記録の語は入れない(否定でも) | 第 4 ラウンドのテスト(`test_the_declared_rows_stopped_by_the_derived_gate_…`)と新テストが語句で原因を見分けるので、否定で名指すと取り違えと区別がつかない |
 
 ### テストの変更記録(凍結したテストの変更。凍結: `w3b1_tests_freeze_time.txt`(2026-10-03 14:48:46 +0900)と、その sha256 `w3b1_tests_freeze.sha256`)
 
@@ -1045,6 +1080,276 @@ B1 v2 の第 3 ラウンドの自作の見本(`tests/bank_score/fixtures/B1_v2_r
 
 第 4 ラウンドのレビュー r1(必須の修正 M1: 申告の理由の取り違え)による(凍結したテスト 2 本は変えていない。凍結の記録 `w3b1_tests_freeze_r4.sha256` は取り直した。日時は `w3b1_tests_freeze_r4_time.txt`。取り直す前の写しは scratchpad に残してある):
 17. `tests/reading_soundness/w3b1_mk_exceptions.py`(生成器)と `w3b1_expect_exceptions.json`(申告)と `tests/test_semantic_read_w3b1_r4.py`(新テストに 1 件): 生成器が変更記録 3 の質問(今の表のまま門だけを外せば期待を満たすか)を先に問い、変更記録 1 の質問は、それが否のときだけ原因にする(H125)。`W3B1-S4-003`・`004`・`013`・`021` の `why` が変更記録 1 から変更記録 3 に変わった(`kind`・`observed`・件数 53・既存の 49 件はバイト単位で同じ。`w3b1_expect_exceptions_changes_r4.diff` は取り直し、`^<` の行 0)。新テスト `test_the_declared_rows_stopped_by_the_derived_gate_name_table_change_record_3_as_the_cause_and_not_record_1` は、申告の中の「出力の 2 番目の理由が派生の門」の行の `why` が変更記録 3 を名指しし変更記録 1 を名指ししないことを確かめる(取り違えていた直前の申告ファイルでは 4 行とも落ちる)。期待・出力の固定は変えていない。
+
+統合の再検証(W3-b1-5。基点 2732274。凍結したテスト `test_semantic_read_w3b1.py`・`test_semantic_read_w3b1_events.py` は **このチケットでは変えていない**。凍結の記録 `w3b1_tests_freeze_i5.sha256`(日時は `w3b1_tests_freeze_i5_time.txt`)。差分の全文は `w3b1_tests_changes_i5_r3.diff`・`w3b1_tests_changes_i5_r4.diff`・`w3b1_expect_exceptions_changes_i5.diff`):
+18. `tests/test_semantic_read_w3b1.py`: 監査役が統合のコミット(5d863dd)で `BASE_COMMIT` を `2732274` に変えた 1 行。このチケットでは触っていない(`git diff HEAD` が 0 行)。
+19. `tests/test_semantic_read_w3b1_r3.py`: `BASE_COMMIT` を `0ff3f35` から `2732274` に変え(差の `<` の行はこの 1 行だけ)、`READ_BY_THE_BASE_ONLY_BEFORE_W5A` の分岐を `BASELINE_READS` の分岐の前に足した(H128)。ほかの assert は 1 文字も変えていない。
+20. `tests/test_semantic_read_w3b1_r4.py`: `BASE_COMMIT` の 1 行だけ(H129)。
+21. `tests/reading_soundness/w3b1_mk_exceptions.py`(生成器)と `w3b1_expect_exceptions.json`(申告): 生成器に W5-a の質問と閉じた理由の表 `W5A_RULES` を足した(既存の分岐の差の `<` は 0 行)。申告は 53 行のうち 47 行がバイト一致、6 行が書き直し(H126。`w3b1_expect_exceptions_changes_i5.txt`)。
+22. 新しいテスト `tests/test_semantic_read_w3b1_i5.py`(5 件): 申告の `why` の原因の帰属(統合の出力が W3-b1 だけの木と違う行は `W5-a` と、1 番目の理由から引いた `section 10A K6x` を名指しし、W3-b1 の表の変更記録の語を含まない。違わない行は W5-a を名指さない)、違う行の出力の等式、第 4 ラウンドまでの `why` を当てると落ちること、`W5A_RULES` と §10A の見出しの一致。
+23. (テスト以外。参考)測定の補助: 新しい `tests/reading_soundness/w3b1_integ_combination.py`(組合せの検証)と、`w3b1_recompute.py`(履歴の行を `r4_` に固定、統合の行を足した)。
+
+### 統合の再検証(W3-b1-5。基点 2732274)
+
+W3-b1(基点 `0ff3f35`)と W5-a(基点 `0e40954`。dev `2732274` に統合済み)はどちらも `verantyx/semantic_read.py` を変えた。監査役が統合し(`5d863dd`)、このチケットは統合した木で W3-b1 の測定と申告を取り直した。**製品コードの差は 0**(`verantyx/` に差分なし。`scope_verantyx_i5.txt`)。
+
+**日時の順**(出典: `artifacts/w3-b1/` のファイルの更新時刻。2026-10-03): 統合した木での最初の I1(失敗 3 件。`i1_start_i5.txt`)→ 第 4 ラウンドの測定物の写し(`r4_` の名前。`cp -p` なので更新時刻は元のまま)→ 生成器と申告(`mk_exceptions_i5.txt` 18:42:43)→ r3・r4 のテスト(18:43:04)→ 新テスト(18:43:52)→ テストの凍結(`w3b1_tests_freeze_i5_time.txt` 18:44:01 +0900)→ 測定(18:44〜18:47。組合せのスクリプト `w3b1_integ_combination.py` は入口の測定の最中の 18:44:35 に書き、同じ分の 18:44:41 に初めて流した)→ recompute(18:47:11)→ docs → 全体テスト(`pytest_full_start_time.txt`)。
+
+**変えたテスト 3 本**: 凍結テスト `test_semantic_read_w3b1.py` の `BASE_COMMIT` は監査役が 5d863dd で `2732274` に変えた(変更記録 18)。`test_semantic_read_w3b1_r3.py`(変更記録 19)・`test_semantic_read_w3b1_r4.py`(変更記録 20)はこのチケット。生成器と申告は変更記録 21、新テストは 22。チケットは申告の失敗を 1 件と書いたが、最初の I1 の失敗は 3 件(H131)。
+
+**申告の 6 行(前後の全文)**。47 行は `r4_w3b1_expect_exceptions.json` とバイト一致(`w3b1_expect_exceptions_changes_i5.txt`: `same_ids_same_order True unchanged 47 changed 6`)。変わった 6 行は `W3B1-S4-054`・`059`(`baseline_reads` → `reason_differs`)と `067`〜`070`(`reason_differs` の理由が `QUANTIFIER_NOT_MAPPED:numeral` → `UNSUPPORTED_CLAUSE`)。**原因はすべて W5-a の section 10A K63**(`UNSUPPORTED_CLAUSE`: unsupported の節が残るなら `readable: false`)で、W3-b1 の変更ではない。根拠は 6 行すべてで: 統合の出力 ＝ 基点 `2732274` の配置なしの出力(理由 1 つ。型の経路に届いていない)、W3-b1 だけの木(`f410469`)の出力 ＝ `0ff3f35`(W5-a の前)の配置なしの出力(生成器が `assert` する。新テストも毎回確かめる)。
+
+`W3B1-S4-054` 前(第 4 ラウンド):
+```json
+{
+ "id": "W3B1-S4-054",
+ "input": "母が梅雨、靴を磨いた。",
+ "kind": "baseline_reads",
+ "registered": {
+  "entry_expect": "abstain",
+  "expect_reason_prefix": "PLACEMENT_MULTIPLE"
+ },
+ "observed": {
+  "readable": true,
+  "roles": [
+   {
+    "agent": "母",
+    "patient": "梅雨、靴"
+   }
+  ],
+  "verdict": "incomplete"
+ },
+ "why": "the base commit already reads this sentence the same way (the output with no placement is identical), so no typed path was reached; the reading is wrong (judge: incomplete), which is an existing hole of the reader / the English frame, not of this change. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
+}
+```
+`W3B1-S4-054` 後(今):
+```json
+{
+ "id": "W3B1-S4-054",
+ "input": "母が梅雨、靴を磨いた。",
+ "kind": "reason_differs",
+ "registered": {
+  "entry_expect": "abstain",
+  "expect_reason_prefix": "PLACEMENT_MULTIPLE"
+ },
+ "observed": {
+  "readable": false,
+  "reasons": [
+   "UNSUPPORTED_CLAUSE"
+  ]
+ },
+ "why": "caused by W5-a (merged into the base commit 2732274), not by the W3-b1 change: with the merge the entry gives the base commit's own output, the same as with no placement (reasons ['UNSUPPORTED_CLAUSE']; the typed path is not reached), while the W3-b1 tree before the merge (f410469) gave read: [{\"agent\": \"母\", \"patient\": \"梅雨、靴\"}], the same as the commit before W5-a (0ff3f35) gave with no placement. The cause is docs/READING_SOUNDNESS.md section 10A K63 (W5-a H2: an unsupported clause makes readable false; round 2, auditor decision B2: only the comparison/copula alternative is set aside). Registered: abstain with the second reason PLACEMENT_MULTIPLE. The entry abstains (the safe direction); the data is not changed."
+}
+```
+
+`W3B1-S4-059` 前(第 4 ラウンド):
+```json
+{
+ "id": "W3B1-S4-059",
+ "input": "弟が夕べ、本を読んだ。",
+ "kind": "baseline_reads",
+ "registered": {
+  "entry_expect": "abstain",
+  "expect_reason_prefix": "PLACEMENT_UNPLACED"
+ },
+ "observed": {
+  "readable": true,
+  "roles": [
+   {
+    "agent": "弟",
+    "patient": "夕べ、本"
+   }
+  ],
+  "verdict": "incomplete"
+ },
+ "why": "the base commit already reads this sentence the same way (the output with no placement is identical), so no typed path was reached; the reading is wrong (judge: incomplete), which is an existing hole of the reader / the English frame, not of this change. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
+}
+```
+`W3B1-S4-059` 後(今):
+```json
+{
+ "id": "W3B1-S4-059",
+ "input": "弟が夕べ、本を読んだ。",
+ "kind": "reason_differs",
+ "registered": {
+  "entry_expect": "abstain",
+  "expect_reason_prefix": "PLACEMENT_UNPLACED"
+ },
+ "observed": {
+  "readable": false,
+  "reasons": [
+   "UNSUPPORTED_CLAUSE"
+  ]
+ },
+ "why": "caused by W5-a (merged into the base commit 2732274), not by the W3-b1 change: with the merge the entry gives the base commit's own output, the same as with no placement (reasons ['UNSUPPORTED_CLAUSE']; the typed path is not reached), while the W3-b1 tree before the merge (f410469) gave read: [{\"agent\": \"弟\", \"patient\": \"夕べ、本\"}], the same as the commit before W5-a (0ff3f35) gave with no placement. The cause is docs/READING_SOUNDNESS.md section 10A K63 (W5-a H2: an unsupported clause makes readable false; round 2, auditor decision B2: only the comparison/copula alternative is set aside). Registered: abstain with the second reason PLACEMENT_UNPLACED. The entry abstains (the safe direction); the data is not changed."
+}
+```
+
+`W3B1-S4-067` 前(第 4 ラウンド):
+```json
+{
+ "id": "W3B1-S4-067",
+ "input": "兄が三回、窓を開けた。",
+ "kind": "reason_differs",
+ "registered": {
+  "entry_expect": "abstain",
+  "expect_reason_prefix": "PLACEMENT_PART_MARKER:quant"
+ },
+ "observed": {
+  "readable": false,
+  "reasons": [
+   "QUANTIFIER_NOT_MAPPED:numeral"
+  ]
+ },
+ "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_PART_MARKER:quant: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
+}
+```
+`W3B1-S4-067` 後(今):
+```json
+{
+ "id": "W3B1-S4-067",
+ "input": "兄が三回、窓を開けた。",
+ "kind": "reason_differs",
+ "registered": {
+  "entry_expect": "abstain",
+  "expect_reason_prefix": "PLACEMENT_PART_MARKER:quant"
+ },
+ "observed": {
+  "readable": false,
+  "reasons": [
+   "UNSUPPORTED_CLAUSE"
+  ]
+ },
+ "why": "caused by W5-a (merged into the base commit 2732274), not by the W3-b1 change: with the merge the entry gives the base commit's own output, the same as with no placement (reasons ['UNSUPPORTED_CLAUSE']; the typed path is not reached), while the W3-b1 tree before the merge (f410469) gave reasons ['QUANTIFIER_NOT_MAPPED:numeral'], the same as the commit before W5-a (0ff3f35) gave with no placement. The cause is docs/READING_SOUNDNESS.md section 10A K63 (W5-a H2: an unsupported clause makes readable false; round 2, auditor decision B2: only the comparison/copula alternative is set aside). Registered: abstain with the second reason PLACEMENT_PART_MARKER:quant. The entry abstains (the safe direction); the data is not changed."
+}
+```
+
+`W3B1-S4-068` 前(第 4 ラウンド):
+```json
+{
+ "id": "W3B1-S4-068",
+ "input": "母が二回、手紙を書いた。",
+ "kind": "reason_differs",
+ "registered": {
+  "entry_expect": "abstain",
+  "expect_reason_prefix": "PLACEMENT_PART_MARKER:quant"
+ },
+ "observed": {
+  "readable": false,
+  "reasons": [
+   "QUANTIFIER_NOT_MAPPED:numeral"
+  ]
+ },
+ "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_PART_MARKER:quant: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
+}
+```
+`W3B1-S4-068` 後(今):
+```json
+{
+ "id": "W3B1-S4-068",
+ "input": "母が二回、手紙を書いた。",
+ "kind": "reason_differs",
+ "registered": {
+  "entry_expect": "abstain",
+  "expect_reason_prefix": "PLACEMENT_PART_MARKER:quant"
+ },
+ "observed": {
+  "readable": false,
+  "reasons": [
+   "UNSUPPORTED_CLAUSE"
+  ]
+ },
+ "why": "caused by W5-a (merged into the base commit 2732274), not by the W3-b1 change: with the merge the entry gives the base commit's own output, the same as with no placement (reasons ['UNSUPPORTED_CLAUSE']; the typed path is not reached), while the W3-b1 tree before the merge (f410469) gave reasons ['QUANTIFIER_NOT_MAPPED:numeral'], the same as the commit before W5-a (0ff3f35) gave with no placement. The cause is docs/READING_SOUNDNESS.md section 10A K63 (W5-a H2: an unsupported clause makes readable false; round 2, auditor decision B2: only the comparison/copula alternative is set aside). Registered: abstain with the second reason PLACEMENT_PART_MARKER:quant. The entry abstains (the safe direction); the data is not changed."
+}
+```
+
+`W3B1-S4-069` 前(第 4 ラウンド):
+```json
+{
+ "id": "W3B1-S4-069",
+ "input": "弟が五回、皿を洗った。",
+ "kind": "reason_differs",
+ "registered": {
+  "entry_expect": "abstain",
+  "expect_reason_prefix": "PLACEMENT_PART_MARKER:quant"
+ },
+ "observed": {
+  "readable": false,
+  "reasons": [
+   "QUANTIFIER_NOT_MAPPED:numeral"
+  ]
+ },
+ "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_PART_MARKER:quant: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
+}
+```
+`W3B1-S4-069` 後(今):
+```json
+{
+ "id": "W3B1-S4-069",
+ "input": "弟が五回、皿を洗った。",
+ "kind": "reason_differs",
+ "registered": {
+  "entry_expect": "abstain",
+  "expect_reason_prefix": "PLACEMENT_PART_MARKER:quant"
+ },
+ "observed": {
+  "readable": false,
+  "reasons": [
+   "UNSUPPORTED_CLAUSE"
+  ]
+ },
+ "why": "caused by W5-a (merged into the base commit 2732274), not by the W3-b1 change: with the merge the entry gives the base commit's own output, the same as with no placement (reasons ['UNSUPPORTED_CLAUSE']; the typed path is not reached), while the W3-b1 tree before the merge (f410469) gave reasons ['QUANTIFIER_NOT_MAPPED:numeral'], the same as the commit before W5-a (0ff3f35) gave with no placement. The cause is docs/READING_SOUNDNESS.md section 10A K63 (W5-a H2: an unsupported clause makes readable false; round 2, auditor decision B2: only the comparison/copula alternative is set aside). Registered: abstain with the second reason PLACEMENT_PART_MARKER:quant. The entry abstains (the safe direction); the data is not changed."
+}
+```
+
+`W3B1-S4-070` 前(第 4 ラウンド):
+```json
+{
+ "id": "W3B1-S4-070",
+ "input": "姉が十回、靴を磨いた。",
+ "kind": "reason_differs",
+ "registered": {
+  "entry_expect": "abstain",
+  "expect_reason_prefix": "PLACEMENT_PART_MARKER:quant"
+ },
+ "observed": {
+  "readable": false,
+  "reasons": [
+   "QUANTIFIER_NOT_MAPPED:numeral"
+  ]
+ },
+ "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_PART_MARKER:quant: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
+}
+```
+`W3B1-S4-070` 後(今):
+```json
+{
+ "id": "W3B1-S4-070",
+ "input": "姉が十回、靴を磨いた。",
+ "kind": "reason_differs",
+ "registered": {
+  "entry_expect": "abstain",
+  "expect_reason_prefix": "PLACEMENT_PART_MARKER:quant"
+ },
+ "observed": {
+  "readable": false,
+  "reasons": [
+   "UNSUPPORTED_CLAUSE"
+  ]
+ },
+ "why": "caused by W5-a (merged into the base commit 2732274), not by the W3-b1 change: with the merge the entry gives the base commit's own output, the same as with no placement (reasons ['UNSUPPORTED_CLAUSE']; the typed path is not reached), while the W3-b1 tree before the merge (f410469) gave reasons ['QUANTIFIER_NOT_MAPPED:numeral'], the same as the commit before W5-a (0ff3f35) gave with no placement. The cause is docs/READING_SOUNDNESS.md section 10A K63 (W5-a H2: an unsupported clause makes readable false; round 2, auditor decision B2: only the comparison/copula alternative is set aside). Registered: abstain with the second reason PLACEMENT_PART_MARKER:quant. The entry abstains (the safe direction); the data is not changed."
+}
+```
+
+`ja_r9` の `W3B1-R9-S4-030`(姉が放課後、本を読むべきだ。)も同じ原因: W5-a の前は基点が読み(`incomplete`。K79)、後は `UNSUPPORTED_CLAUSE` で棄権する。`BASELINE_READS` は消さず、r3 のテストに新しい分岐を足して固定した(H128)。`ja_r9` の `entry_check` は `incomplete` 1 → 0。
+
+申告の種類別の件数(`recompute.md` の行): 第 4 ラウンド `baseline_reads` 3・`reason_differs` 16・`row_returned_to_abstain` 25・`trigger_not_reached` 9 → 今 `baseline_reads` 1・`reason_differs` 18・`row_returned_to_abstain` 25・`trigger_not_reached` 9(53 行は同じ)。新データの `incomplete` は 3 → 1(残る 1 は `W3B1-EN-015`、K68。配置なしの出力と同一)。
+
+**組合せの検証**(`integ_combination.txt`。W5-a が新たに棄権させた入力に W3-b1 の型の再読が走って新しい読みを作っていないか。入口の 2899 入力。表の行と同じ値): 配置なしの統合の出力が基点と同一の行 2899。W5-a の前は読み、後は棄権する入力 48 件のうち、配置ありで読んだもの 0、型の経路が走った(2 番目の理由が付いた)もの 0。1 番目の理由の型は {"AGENT_EVIDENCE_MISSING": 6, "PATH_ROLE_NOT_MAPPED": 1, "SUBJECT_TYPE_UNDETERMINED": 1, "UNDETERMINED_VOICE": 8, "UNSUPPORTED_CLAUSE": 32}。型の経路が読んだ入力は統合の木 66・W3-b1 だけの木 66 で、出力が同一 66・異なる 0・統合の木だけ 0・W3-b1 だけの木だけ 0(W5-a が W3-b1 の読みを止めた入力は **0 件**で、全件の一覧は空)。終了コード 0。新しく読めた 66 入力は `base_diff_summary.txt` で全件 `CORRECT`、`changed=0`、`readable->false=0`、`error_changed=0`。
+
+**全体テスト**(`pytest_full.txt`。開始 `pytest_full_start_time.txt`、直前の負荷 `pytest_full_load_before.txt`): 失敗 115・成功 9,573(基線の失敗一覧は 114 件)。基線にない失敗は `tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread` の 1 件だけで、チケットが環境由来と認めるもの(基点 `2732274` の木でも同じ assert で落ちる)。基線にあって通ったものは 0(`pytest_new_failures.txt`・`pytest_fixed_vs_baseline.txt`)。
+
+**`docs/EVENT_CROSS.md` の十字の 4 行は W3-b1 だけの値のまま**(許可パスの外。K87。値の前後は K87 に書いた)。
 
 ## 10A. W5-a（攻撃役の命中への対応。K62〜。§10 の W3-b1 の K62〜 とは別の系列）
 
@@ -1421,3 +1726,7 @@ x3 の入力で英語の出力が変わったのは攻撃役の 1 文（`EN036`�
 
 ### 十字（A1・A2）と証言の再利用（A-01）
 `docs/EVENT_CROSS.md`（変換の規則 4）、`docs/AGENT_ROUTING.md`（§4 の 3 と J27）、`docs/CONDUCT_ASK.md`（§6）に書いた。測定は `artifacts/w5-a/k3_permutations.txt`（鍵順の全順列）と `artifacts/w5-a/k4_reask_counts.txt`（照会の回数）。
+
+#### 統合の追記(W3-b1-5。W3-b1 の入った統合の木での取り直し。上の §10A の既存の文は変えない)
+
+W5-a の測定の入力 2,344(`artifacts/w5-a/scripts/entry_dump.py`)を、W3-b1 と統合した木で流し直した(出典 `artifacts/w3-b1/w5a_entry_none.jsonl`・`w5a_entry_live.jsonl`・`w5a_vs_before_none.txt`・`w5a_vs_before_live.txt`・`w5a_none_same.txt`。W5-a の `cmp.py` を実行しただけで、`artifacts/w5-a/` には書いていない)。配置なしの出力が W5-a 第 3 ラウンドの `entry_after.jsonl` とバイト一致か: **yes**。W5-a の `entry_before.jsonl` に対する `readable→false` / `false→readable` / `changed` / `reason_changed` は、配置あり **43 / 0 / 0 / 215**、配置なし **43 / 0 / 0 / 103**(配置ありの `reason_changed` が増えるのは配置の理由が足されるため。`readable→false` は同じ入力)。`readable→false` の集合と 1 番目の理由が W5-a 第 3 ラウンドと同じか: **yes (43 inputs)**。W5-a の `readable→false` を配置ありの入口が読み戻した入力は 0(`false→readable` と `changed` の行 `grep -c` は 0)。

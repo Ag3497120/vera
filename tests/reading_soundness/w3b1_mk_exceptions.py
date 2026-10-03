@@ -16,6 +16,25 @@ RETURNED_ROW = ('recipient', ('に',), ('PERSON', 'GROUP_ORG'), 'arg')
 CHANGE3_TIME = '2026-10-03 17:09:34 +0900'
 
 
+# W3-b1-5 (integration of W3-b1 with W5-a): the commits, and the closed table of the reasons W5-a registered in docs/READING_SOUNDNESS.md section 10A
+# (NOT the K62-K66 of section 10, which are W3-b1's). Reason type names only, no words. A reason that is not in this table makes the question below stop with an assert.
+W3B1_COMMIT, PRE_W5A_COMMIT, BASE_COMMIT = 'f410469', '0ff3f35', '2732274'
+W5A_RULES = (('UNDETERMINED_VOICE:passive or spontaneous', 'docs/READING_SOUNDNESS.md section 10A K62 (W5-a H1: rule 2c withdrawn; a passive is not decided on a non-person subject alone)'),
+             ('UNSUPPORTED_CLAUSE', 'docs/READING_SOUNDNESS.md section 10A K63 (W5-a H2: an unsupported clause makes readable false; round 2, auditor decision B2: only the comparison/copula alternative is set aside)'),
+             ('AGENT_EVIDENCE_MISSING:', 'docs/READING_SOUNDNESS.md section 10A K64 (W5-a H3: an active clause with an o-phrase and no person evidence for the subject abstains)'))
+
+
+def module_at(commit):
+    """verantyx/semantic_read.py as it is at `commit` (git show of the tree under PYTHONPATH), run as a module of its own."""
+    import importlib.util, subprocess
+    tree = os.path.realpath(os.environ.get('PYTHONPATH', '.').split(os.pathsep)[0])
+    src = subprocess.run(['git', '-C', tree, 'show', '%s:verantyx/semantic_read.py' % commit], capture_output=True, check=True).stdout
+    spec = importlib.util.spec_from_loader('verantyx._semantic_read_at_%s_mkx' % commit, loader=None)
+    mod = importlib.util.module_from_spec(spec); mod.__package__ = 'verantyx'; sys.modules[spec.name] = mod
+    exec(compile(src.decode('utf-8'), 'verantyx/semantic_read.py@%s' % commit, 'exec'), mod.__dict__)
+    return mod
+
+
 def meets(row, out, b1):
     """Whether `out` meets the registered expectation of the row (entry_expect, expect_reason_prefix, never a wrong or half reading)."""
     verdict = b1.judge(row['expect'], row['lang'], out)['verdict']
@@ -37,6 +56,7 @@ def main():
                and getattr(m, '__file__', None) and not os.path.realpath(m.__file__).startswith(root + os.sep)]
     if foreign: print('ISOLATION FAILED', foreign); sys.exit(2)
     exceptions = []
+    W3B1, PRE, B27 = module_at(W3B1_COMMIT), module_at(PRE_W5A_COMMIT), module_at(BASE_COMMIT)
     for name in ('ja_r8.jsonl', 'en_r4.jsonl'):
         for line in (HERE / name).read_text(encoding='utf-8').splitlines():
             row = json.loads(line)
@@ -45,6 +65,26 @@ def main():
             verdict = b1.judge(row['expect'], row['lang'], out)['verdict']
             reasons = out['abstain']['reasons'] if not out['readable'] else None
             if meets(row, out, b1): continue
+            # W3-b1-5: asked before every question below. Does the merged entry differ from the W3-b1 tree alone (f410469, the same fixed placement)? then W5-a is the cause:
+            # the merged entry gives the base commit's own output (the typed path is not reached) and the W3-b1 tree alone gave the output of the commit before W5-a.
+            w3b1_alone = W3B1.read(row['input'], row['lang'], placement=F.FixtureQuery())
+            if out != w3b1_alone:
+                pre, b27 = PRE.read(row['input'], row['lang']), B27.read(row['input'], row['lang'])
+                assert out == base == b27 and not out['readable'] and len(out['abstain']['reasons']) == 1, row['id']
+                assert w3b1_alone == pre, row['id']
+                first = out['abstain']['reasons'][0]
+                rule = [t for k, t in W5A_RULES if first == k or (k.endswith(':') and first.startswith(k))]
+                assert len(rule) == 1, (row['id'], out['abstain']['reasons'])
+                kind = 'row_returned_to_abstain' if row['entry_expect'] == 'read' else 'reason_differs'
+                was = ('read: %s' % json.dumps([c['roles'] for c in w3b1_alone['clauses']], ensure_ascii=False)) if w3b1_alone['readable'] else ('reasons %s' % w3b1_alone['abstain']['reasons'])
+                why = ('caused by W5-a (merged into the base commit %s), not by the W3-b1 change: with the merge the entry gives the base commit\'s own output, the same as with no placement '
+                       '(reasons %s; the typed path is not reached), while the W3-b1 tree before the merge (%s) gave %s, the same as the commit before W5-a (%s) gave with no placement. '
+                       'The cause is %s. Registered: %s%s. The entry abstains (the safe direction); the data is not changed.'
+                       % (BASE_COMMIT, out['abstain']['reasons'], W3B1_COMMIT, was, PRE_W5A_COMMIT, rule[0], row['entry_expect'],
+                          (' with the second reason %s' % row['expect_reason_prefix']) if row['expect_reason_prefix'] else ''))
+                exceptions.append({'id': row['id'], 'input': row['input'], 'kind': kind, 'registered': {'entry_expect': row['entry_expect'], 'expect_reason_prefix': row['expect_reason_prefix']},
+                                   'observed': {'readable': False, 'reasons': out['abstain']['reasons']}, 'why': why})
+                continue
             # table change record 3 (2026-10-03, review.r3.md M8) is asked FIRST (review.r1 of round 4, M1): would the row have met its expectation with the table as it is now
             # and only the gate on a head that may be a derived verb taken off? then the gate is the cause, whatever record 1 says (a row can meet it both ways)
             by_derived = False
