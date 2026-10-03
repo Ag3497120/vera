@@ -1,0 +1,449 @@
+{
+ "At what hour does the town library open its doors?": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ANSWER_HUMAN_BASIS"
+  },
+  "kind": "answer",
+  "sources": [
+   {
+    "family": "document",
+    "origin": null
+   }
+  ],
+  "text": "The library opens at nine in the morning.",
+  "verdict": "ANSWER"
+ },
+ "Give me an example sentence about a rainy afternoon.": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "CONSTRUCTED"
+  },
+  "constructed": true,
+  "kind": "answer",
+  "sources": [
+   {
+    "family": "document",
+    "origin": null
+   }
+  ],
+  "text": "Rain taps the window all afternoon.",
+  "verdict": "ANSWER"
+ },
+ "How many bikes fit in the rack?": {
+  "basis_policy": {
+   "applied": false,
+   "outcome": null,
+   "reason": "NO_CITED_SOURCES"
+  },
+  "kind": "answer",
+  "text": "The rack holds twenty bikes.",
+  "verdict": "ANSWER"
+ },
+ "Is the pool open on weekdays?": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ANSWER_HUMAN_BASIS"
+  },
+  "kind": "answer",
+  "sources": [
+   {
+    "family": "document",
+    "origin": null
+   }
+  ],
+  "text": "The pool is open on weekdays.",
+  "verdict": "ANSWER"
+ },
+ "Was the roof repaired last spring?": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ANSWER_HUMAN_BASIS"
+  },
+  "kind": "answer",
+  "sources": [
+   {
+    "family": "document",
+    "origin": null
+   }
+  ],
+  "text": "Yes, it is so.",
+  "verdict": "ANSWER"
+ },
+ "What temperature is the warehouse kept at?": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "REFERENCE_GENERATED"
+  },
+  "kind": "unknown",
+  "reference_generated": [
+   {
+    "text": "The warehouse is kept at ten degrees all year."
+   }
+  ],
+  "sources": [],
+  "text": "",
+  "verdict": "UNKNOWN_GENERATED_BASIS_ONLY"
+ },
+ "What time does the vault open?": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ANSWER_HUMAN_BASIS"
+  },
+  "kind": "answer",
+  "sources": [
+   {
+    "family": "document",
+    "origin": null
+   }
+  ],
+  "text": "The vault opens at six.",
+  "verdict": "ANSWER"
+ },
+ "When can patients visit the clinic without an appointment?": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ANSWER_HUMAN_BASIS"
+  },
+  "kind": "answer",
+  "sources": [
+   {
+    "family": "document",
+    "origin": null
+   }
+  ],
+  "text": "The clinic accepts walk-in visits after 4 pm on Friday.",
+  "verdict": "ANSWER"
+ },
+ "When did the depot last change its opening hours?": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ABSTAIN"
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "",
+  "verdict": "UNKNOWN_GENERATED_BASIS_ONLY"
+ },
+ "Where is the archive key kept?": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "CONFIRM_REQUEST"
+  },
+  "confirm": {
+   "text": "The generated corpus says the archive key is kept in the second floor office. Is this correct?"
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "確認",
+  "verdict": "CONFIRM_REQUEST"
+ },
+ "Where is the front desk located?": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ANSWER_FORM_FROM_GENERATED"
+  },
+  "form_source": "generated",
+  "form_text": "The desk can be found on the third floor.",
+  "kind": "answer",
+  "sources": [
+   {
+    "family": "document",
+    "origin": null
+   }
+  ],
+  "text": "The desk is on the third floor.",
+  "verdict": "ANSWER"
+ },
+ "Where is the staff entrance?": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ABSTAIN"
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "",
+  "verdict": "UNKNOWN_NO_HUMAN_BASIS"
+ },
+ "Which door is the emergency exit?": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "CONFIRM_REQUEST"
+  },
+  "confirm": {
+   "text": "It is the east door."
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "確認",
+  "verdict": "CONFIRM_REQUEST"
+ },
+ "Which shelf holds the spare keys?": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "CONFIRM_REQUEST"
+  },
+  "confirm": {
+   "text": "The generated corpus says the spare keys are on the top shelf. Is this correct?"
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "確認",
+  "verdict": "CONFIRM_REQUEST"
+ },
+ "Who keeps the visitor log?": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ABSTAIN"
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "",
+  "verdict": "UNKNOWN_NO_HUMAN_BASIS"
+ },
+ "Write an example about a place nobody described.": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ABSTAIN"
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "",
+  "verdict": "UNKNOWN_NO_HUMAN_BASIS"
+ },
+ "この文を言い換えてください。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ABSTAIN"
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "",
+  "verdict": "UNKNOWN_NO_HUMAN_BASIS"
+ },
+ "ロビーの売店はいつ開きますか。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ANSWER_HUMAN_BASIS"
+  },
+  "kind": "answer",
+  "sources": [
+   {
+    "family": "document",
+    "origin": null
+   }
+  ],
+  "text": "ロビーの売店は午前七時三十分から開いている。",
+  "verdict": "ANSWER"
+ },
+ "不正な依頼の種類の試験です。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ABSTAIN"
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "",
+  "verdict": "UNKNOWN_NO_HUMAN_BASIS"
+ },
+ "休憩室の自動販売機はいつ入れ替えましたか。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ABSTAIN"
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "",
+  "verdict": "UNKNOWN_NO_HUMAN_BASIS"
+ },
+ "会議室の予約は何時から受け付けていますか。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ANSWER_HUMAN_BASIS"
+  },
+  "kind": "answer",
+  "sources": [
+   {
+    "family": "document",
+    "origin": null
+   }
+  ],
+  "text": "会議室の予約は午前九時から受け付ける。",
+  "verdict": "ANSWER"
+ },
+ "体育館はどこにありますか。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ANSWER_FORM_FROM_GENERATED"
+  },
+  "form_source": "generated",
+  "form_text": "体育館は西門のそばにあります。",
+  "kind": "answer",
+  "sources": [
+   {
+    "family": "document",
+    "origin": null
+   }
+  ],
+  "text": "体育館は西門のそばにある。",
+  "verdict": "ANSWER"
+ },
+ "倉庫の温度は何度に保たれていますか。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "REFERENCE_GENERATED"
+  },
+  "kind": "unknown",
+  "reference_generated": [
+   {
+    "text": "倉庫の温度は常に十度に保たれる。"
+   }
+  ],
+  "sources": [],
+  "text": "",
+  "verdict": "UNKNOWN_GENERATED_BASIS_ONLY"
+ },
+ "受付はどこで行いますか。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ANSWER_FORM_FROM_GENERATED"
+  },
+  "form_source": "generated",
+  "form_text": "受付は三階の窓口で行います。",
+  "kind": "answer",
+  "sources": [
+   {
+    "family": "document",
+    "origin": null
+   }
+  ],
+  "text": "受付は三階の窓口で行う。",
+  "verdict": "ANSWER"
+ },
+ "屋上は開放されていますか。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "CONFIRM_REQUEST"
+  },
+  "confirm": {
+   "text": "屋上は開放されていますか？"
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "確認",
+  "verdict": "CONFIRM_REQUEST"
+ },
+ "次の文を言い換えてください。会議は延期された。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "CONSTRUCTED"
+  },
+  "kind": "answer",
+  "sources": [
+   {
+    "family": "document",
+    "origin": null
+   }
+  ],
+  "text": "会議は先送りになった。",
+  "verdict": "ANSWER"
+ },
+ "海の朝を文体を変えて書いてください。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "REFERENCE_GENERATED"
+  },
+  "kind": "unknown",
+  "reference_generated": [
+   {
+    "text": "朝の海は薄い銀色に光る。"
+   }
+  ],
+  "sources": [],
+  "text": "",
+  "verdict": "UNKNOWN_GENERATED_BASIS_ONLY"
+ },
+ "灯台はどの岬にありますか。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "CONFIRM_REQUEST"
+  },
+  "confirm": {
+   "question": "生成コーパスには「港の灯台は北の岬にある。」とあります。この内容は正しいですか？ はい／いいえ"
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "確認",
+  "verdict": "CONFIRM_REQUEST"
+ },
+ "給湯室の場所はどこですか。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "CONFIRM_REQUEST"
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "確認",
+  "verdict": "CONFIRM_REQUEST"
+ },
+ "誰も知らない街の名前を詩にしてください。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "ABSTAIN"
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "",
+  "verdict": "UNKNOWN_NO_HUMAN_BASIS"
+ },
+ "資料室の鍵はどこにありますか。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "CONFIRM_REQUEST"
+  },
+  "confirm": {
+   "text": "生成コーパスには「資料室の鍵は二階の事務室にある。」とあります。この内容は正しいですか？"
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "確認",
+  "verdict": "CONFIRM_REQUEST"
+ },
+ "障害を起こす依頼です。": {
+  "_exit": 2
+ },
+ "雨の日の様子を短い詩にしてください。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "CONSTRUCTED"
+  },
+  "constructed": true,
+  "kind": "answer",
+  "sources": [
+   {
+    "family": "document",
+    "origin": null
+   }
+  ],
+  "text": "傘をさして雨の道を歩く、静かな午後。",
+  "verdict": "ANSWER"
+ },
+ "非常口はどこですか。": {
+  "basis_policy": {
+   "applied": true,
+   "outcome": "CONFIRM_REQUEST"
+  },
+  "confirm": {
+   "text": "非常口は東階段の脇です。"
+  },
+  "kind": "unknown",
+  "sources": [],
+  "text": "確認",
+  "verdict": "CONFIRM_REQUEST"
+ },
+ "駐輪場は何台まで停められますか。": {
+  "kind": "answer",
+  "text": "駐輪場には二十台まで停められる。",
+  "verdict": "ANSWER"
+ }
+}

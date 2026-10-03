@@ -16,6 +16,8 @@ TOP = {
            "record": ("alt_answers", "wrong_answers", "anti_surface")},
     "B3": {"score": ("brief", "materials"), "record": ("needs", "anti_surface")},
     "B5": {"score": (), "record": ()},
+    "B7": {"score": ("request", "request_kind", "human_sources", "generated_snippets", "human_present",
+                     "show_reference"), "record": ()},
 }
 
 # ---- expect --------------------------------------------------------------------------
@@ -29,6 +31,7 @@ EXPECT = {
     "B5": {"score": ("frame_id", "question", "options", "kind", "decision", "answer", "answer_option_index",
                      "must_contain_any", "must_not_contain"),
            "record": ("polarity", "trap", "evidence", "surface", "escalate_type", "vocab")},
+    "B7": {"score": ("result", "must_not", "answer_content_from"), "record": ("evidence",)},
 }
 
 B1_CLAUSE = ("predicate", "roles", "polarity", "tense", "modality", "voice", "quantifiers", "scope", "comparison")
@@ -77,6 +80,7 @@ RECORD_ONLY = {
     "B2": ("reference", "alt_answers", "wrong_answers", "anti_surface"),
     "B3": ("refusal_basis", "provenance", "reference", "needs", "anti_surface", "cells_note"),
     "B5": ("polarity", "trap", "evidence", "surface", "escalate_type", "vocab"),
+    "B7": ("evidence",),
 }
 
 
@@ -135,7 +139,7 @@ def find_unknown(bank: str, raw: dict) -> list[str]:
                     _extra(form.get("body_sentences"), B3_BODY_SENTENCES,
                            "expect.constraints.form.body_sentences", out)
                 # 未知の type は find_unknown の対象ではなく UNKNOWN_FORM_TYPE（score 側）で扱う
-    else:  # B5
+    elif bank == "B5":
         _extra(exp.get("surface"), B5_SURFACE, "expect.surface", out)
         _extra(exp.get("vocab"), B5_VOCAB, "expect.vocab", out)
     return sorted(set(out))

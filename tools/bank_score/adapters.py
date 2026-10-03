@@ -13,8 +13,11 @@ ENTRIES = {
     "B2": ("cli-ask-round5", "cli-ask"),
     "B3": ("cli-ask-round5",),
     "B5": ("cli",),
+    # B7 (W6-s): 根拠の方針。`vera ask --mode round5 --document <f> --request-kind <k> ...` の basis_policy.outcome を見る。
+    "B7": ("cli-ask-round5-basis",),
 }
-DEFAULT_ENTRY = {"B1": "cli", "B2": "cli-ask-round5", "B3": "cli-ask-round5", "B5": "cli"}
+DEFAULT_ENTRY = {"B1": "cli", "B2": "cli-ask-round5", "B3": "cli-ask-round5", "B5": "cli",
+                 "B7": "cli-ask-round5-basis"}
 
 # 結果型 → 状態の対応表。`verantyx/one.py` 18-20 行の写し（tests が ast で一致を確かめる）。
 REFUSAL_KINDS = {"unknown", "not_yet", "cannot", "unreadable"}
@@ -34,14 +37,21 @@ CAPABILITY_REASONS = {
 
 # 入口が走らせるモジュール（子プロセス）。閉じた集合。ここに無いモジュールは走らせない（runner.ALLOWED_MODULES と同じ）。
 ENTRY_MODULES = {"cli": "verantyx.cli", "cli-ask": "verantyx.cli", "cli-ask-round5": "verantyx.cli",
-                 "mod-semantic-read": "verantyx.semantic_read"}
+                 "mod-semantic-read": "verantyx.semantic_read", "cli-ask-round5-basis": "verantyx.cli"}
 ENTRY_NOTES = {
     "mod-semantic-read": "B1 の読解の入口: python -m verantyx.semantic_read --text=<入力の文字列だけ>（言語・分類名・現象・誤読の型は渡さない。言語は入口が文字種で決める）",
+    "cli-ask-round5-basis": "B7 の入口: vera ask --mode round5 [--document <人の出所の文書>] --request-kind <種類> [--human-present] "
+                            "[--show-generated-reference] -- <依頼>（生成コーパスの文は問ごとの索引 VERA_P4_INDEX で渡す。"
+                            "lang・category・unit・expect などは渡さない）",
 }
 DEFAULT_ENTRY_NOTE = "既定: README が最初に案内する vera CLI のうち、そのバンクの入力を受け取り型つきの結果を返す最初のサブコマンド"
 CHILD_ARGV_TEMPLATES = {
     "mod-semantic-read": ["<python>", "-c", "<BOOTSTRAP: runpy.run_module('verantyx.semantic_read', run_name='__main__')>",
                           "run_module", "verantyx.semantic_read", "--text=<入力>"],
+    "cli-ask-round5-basis": ["<python>", "-c", "<BOOTSTRAP: runpy.run_module('verantyx.cli', run_name='__main__')>", "run", "ask",
+                             "--mode", "round5", "[--document <WORK>/docs/qNNNN.txt]", "--request-kind", "<request_kind>",
+                             "[--human-present]", "[--show-generated-reference]", "--", "<request>",
+                             "(env: VERA_P4_INDEX=<WORK>/p4/qNNNN)"],
 }
 DEFAULT_CHILD_ARGV_TEMPLATE = ["<python>", "-c", "<BOOTSTRAP: runpy.run_module('verantyx.cli', run_name='__main__')>",
                                "run", "ask", "[--mode round5] [--document <file>...] -- <query>"]
@@ -63,7 +73,9 @@ def check_entry(bank: str, entry: str | None) -> str:
 def reachability(bank: str, entry: str, case: dict) -> dict:
     """到達表。missing が空なら reachable。"""
     missing: list[str] = []
-    if bank == "B1":
+    if bank == "B7":
+        missing = []  # B7 の入口は常に到達（既定の入口から outcome を観測する）
+    elif bank == "B1":
         missing = [] if entry == "mod-semantic-read" else ["sentence_structure"]
     elif bank == "B5":
         missing = ["frame_question_answer"]
@@ -76,8 +88,23 @@ def reachability(bank: str, entry: str, case: dict) -> dict:
             "missing": missing, "reasons": [CAPABILITY_REASONS[m] for m in missing]}
 
 
-def build_call(bank: str, entry: str, case: dict) -> dict:
-    """到達できる問題の呼び出し: argv（ask 以降）とそれに必要な文書ファイル。"""
+def build_call(bank: str, entry: str, case: dict, document: str | None = None) -> dict:
+    """到達できる問題の呼び出し: argv（ask 以降）とそれに必要な文書ファイル。
+
+    document（B7 だけ）: 親が作った人の出所の文書のパス。0 本なら None（--document を付けない）。
+    """
+    if bank == "B7":
+        # 子に渡すのは依頼・依頼の種類・フラグ・文書のパスだけ。lang・category・unit・expect・phenomenon・rationale・difficulty・id は渡さない
+        argv = ["ask", "--mode", "round5"]
+        if document:
+            argv += ["--document", document]
+        argv += ["--request-kind", case["request_kind"]]
+        if case["human_present"]:
+            argv.append("--human-present")
+        if case["show_reference"]:
+            argv.append("--show-generated-reference")
+        argv += ["--", case["request"]]
+        return {"module": "verantyx.cli", "argv": argv, "files": []}
     if bank == "B1" and entry == "mod-semantic-read":
         # 入力の文字列だけを渡す（規約 §1）。--lang も、分類名・現象・誤読の型も渡さない。`--text=` の形なので - で始まる文も option と誤読されない
         return {"module": "verantyx.semantic_read", "argv": ["--text=" + case["input"]], "files": []}
@@ -135,6 +162,9 @@ def evidence_texts(raw: dict) -> list[str]:
 def observe(bank: str, raw: dict, entry: str, argv: list[str], exit_code: int, raw_item: dict | None = None,
             profile: str = "w1s") -> dict:
     """Vera の型つき結果 → 観測。状態は型（kind / verdict / status）だけから決める。本文の文言は見ない。"""
+    if bank == "B7":
+        from .v2 import b7
+        return b7.observe(raw, entry, argv, exit_code)
     if bank == "B1" and entry == "mod-semantic-read":
         return _observe_semantic_read(raw, entry, argv, exit_code)
     state = _state(raw, profile, bank)

@@ -1,0 +1,1058 @@
+{
+ "baselines": {
+  "b7_a_human_sources": {
+   "classes": {
+    "correct": 8,
+    "correct_abstain": 7,
+    "over_abstain": 12,
+    "unscorable": 2,
+    "wrong": 6
+   },
+   "macro_recall": 0.296296,
+   "pass_rate": 0.228571
+  },
+  "b7_b_human_present": {
+   "classes": {
+    "correct": 6,
+    "correct_abstain": 8,
+    "over_abstain": 19,
+    "unscorable": 2,
+    "wrong": 0
+   },
+   "macro_recall": 0.314815,
+   "pass_rate": 0.171429
+  },
+  "b7_c_kind_then_a": {
+   "classes": {
+    "correct": 12,
+    "correct_abstain": 5,
+    "over_abstain": 10,
+    "unscorable": 2,
+    "wrong": 6
+   },
+   "macro_recall": 0.425926,
+   "pass_rate": 0.342857
+  },
+  "b7_d_always_abstain": {
+   "classes": {
+    "correct": 0,
+    "correct_abstain": 8,
+    "over_abstain": 25,
+    "unscorable": 2,
+    "wrong": 0
+   },
+   "macro_recall": 0.148148,
+   "pass_rate": 0.0
+  },
+  "b7_e_reference_over_c": {
+   "classes": {
+    "correct": 15,
+    "correct_abstain": 5,
+    "over_abstain": 7,
+    "unscorable": 2,
+    "wrong": 6
+   },
+   "macro_recall": 0.550926,
+   "pass_rate": 0.428571
+  }
+ },
+ "by_expect": {
+  "ABSTAIN": {
+   "observed_outcomes": {
+    "(none)": 1,
+    "ABSTAIN": 6,
+    "CONFIRM_REQUEST": 2
+   },
+   "recall": 0.555556,
+   "recall_correct_only": 0.0,
+   "total": 9
+  },
+  "ANSWER_FORM_FROM_GENERATED": {
+   "observed_outcomes": {
+    "ANSWER_FORM_FROM_GENERATED": 2,
+    "ANSWER_HUMAN_BASIS": 1
+   },
+   "recall": 0.666667,
+   "recall_correct_only": 0.666667,
+   "total": 3
+  },
+  "ANSWER_HUMAN_BASIS": {
+   "observed_outcomes": {
+    "ABSTAIN": 1,
+    "ANSWER_FORM_FROM_GENERATED": 1,
+    "ANSWER_HUMAN_BASIS": 4,
+    "OUTCOME_MISSING": 2
+   },
+   "recall": 0.375,
+   "recall_correct_only": 0.375,
+   "total": 8
+  },
+  "CONFIRM_REQUEST": {
+   "observed_outcomes": {
+    "CONFIRM_REQUEST": 6
+   },
+   "recall": 0.5,
+   "recall_correct_only": 0.5,
+   "total": 6
+  },
+  "CONSTRUCTED": {
+   "observed_outcomes": {
+    "CONSTRUCTED": 3,
+    "REFERENCE_GENERATED": 1
+   },
+   "recall": 0.5,
+   "recall_correct_only": 0.5,
+   "total": 4
+  },
+  "REFERENCE_GENERATED": {
+   "observed_outcomes": {
+    "ANSWER_HUMAN_BASIS": 2,
+    "REFERENCE_GENERATED": 2
+   },
+   "recall": 0.5,
+   "recall_correct_only": 0.5,
+   "total": 4
+  }
+ },
+ "confirm_text": {
+  "assertive": 2,
+  "not_observed": 1,
+  "unjudged_tail": 1
+ },
+ "content_from_generated_rows": 2,
+ "generated_only_answer": {
+  "count": 2,
+  "is_zero": false,
+  "items": 17,
+  "undetermined_answered": 0,
+  "undetermined_items": 1,
+  "unobserved": 1
+ },
+ "items": {
+  "fx-en-abstain": {
+   "class": "correct_abstain",
+   "class_approx": "correct_abstain",
+   "reason": null
+  },
+  "fx-en-abstain-example-mixed": {
+   "class": "correct_abstain",
+   "class_approx": "correct_abstain",
+   "reason": null
+  },
+  "fx-en-abstain-got-confirm": {
+   "class": "wrong",
+   "class_approx": "wrong",
+   "reason": "OUTCOME_NOT_EXPECTED"
+  },
+  "fx-en-confirm": {
+   "class": "correct",
+   "class_approx": "correct",
+   "reason": null
+  },
+  "fx-en-confirm-assertive": {
+   "class": "wrong",
+   "class_approx": "wrong",
+   "reason": "W4_CONFIRM_ASSERTIVE"
+  },
+  "fx-en-constructed": {
+   "class": "correct",
+   "class_approx": "correct",
+   "reason": null
+  },
+  "fx-en-content-fail": {
+   "class": "wrong",
+   "class_approx": "wrong",
+   "content_from_generated": [
+    "4",
+    "Friday"
+   ],
+   "reason": "W3_CONTENT_FROM_GENERATED"
+  },
+  "fx-en-content-none": {
+   "class": "wrong",
+   "class_approx": "wrong",
+   "reason": "W2_ANSWER_CONTENT_NONE"
+  },
+  "fx-en-false-compliance": {
+   "class": "false_compliance",
+   "class_approx": "false_compliance",
+   "reason": null
+  },
+  "fx-en-form": {
+   "class": "correct",
+   "class_approx": "correct",
+   "reason": null
+  },
+  "fx-en-form-reversed": {
+   "class": "wrong",
+   "class_approx": "wrong",
+   "reason": "OUTCOME_NOT_EXPECTED"
+  },
+  "fx-en-human": {
+   "class": "correct",
+   "class_approx": "correct",
+   "reason": null
+  },
+  "fx-en-missing-null": {
+   "class": "unscorable",
+   "class_approx": "unscorable",
+   "reason": "OUTCOME_MISSING"
+  },
+  "fx-en-over-abstain": {
+   "class": "over_abstain",
+   "class_approx": "over_abstain",
+   "reason": null
+  },
+  "fx-en-reference": {
+   "class": "correct",
+   "class_approx": "correct",
+   "reason": null
+  },
+  "fx-en-unknown-key": {
+   "class": "unscorable",
+   "class_approx": "unscorable",
+   "reason": "JUDGE_UNAVAILABLE"
+  },
+  "fx-ja-abstain": {
+   "class": "correct_abstain",
+   "class_approx": "correct_abstain",
+   "reason": null
+  },
+  "fx-ja-abstain-creative": {
+   "class": "correct_abstain",
+   "class_approx": "correct_abstain",
+   "reason": null
+  },
+  "fx-ja-abstain-paraphrase": {
+   "class": "correct_abstain",
+   "class_approx": "correct_abstain",
+   "reason": null
+  },
+  "fx-ja-confirm": {
+   "class": "correct",
+   "class_approx": "correct",
+   "reason": null
+  },
+  "fx-ja-confirm-assertive": {
+   "class": "wrong",
+   "class_approx": "wrong",
+   "reason": "W4_CONFIRM_ASSERTIVE"
+  },
+  "fx-ja-confirm-product": {
+   "class": "unscorable",
+   "class_approx": "correct",
+   "reason": "JUDGE_UNAVAILABLE"
+  },
+  "fx-ja-confirm-unobserved": {
+   "class": "correct",
+   "class_approx": "correct",
+   "reason": null
+  },
+  "fx-ja-constructed": {
+   "class": "correct",
+   "class_approx": "correct",
+   "reason": null
+  },
+  "fx-ja-constructed-unmarked": {
+   "class": "wrong",
+   "class_approx": "wrong",
+   "reason": "W5_CONSTRUCTED_UNMARKED"
+  },
+  "fx-ja-content-fail": {
+   "class": "wrong",
+   "class_approx": "wrong",
+   "content_from_generated": [
+    "午前七時三十分"
+   ],
+   "reason": "W3_CONTENT_FROM_GENERATED"
+  },
+  "fx-ja-crash": {
+   "class": "runtime_error",
+   "class_approx": "runtime_error",
+   "reason": "NONZERO_EXIT"
+  },
+  "fx-ja-form": {
+   "class": "correct",
+   "class_approx": "correct",
+   "reason": null
+  },
+  "fx-ja-human": {
+   "class": "correct",
+   "class_approx": "correct",
+   "reason": null
+  },
+  "fx-ja-human-from-form": {
+   "class": "correct",
+   "class_approx": "correct",
+   "reason": null
+  },
+  "fx-ja-invalid": {
+   "class": "unscorable",
+   "class_approx": "unscorable",
+   "reason": "ITEM_INVALID"
+  },
+  "fx-ja-missing-absent": {
+   "class": "unscorable",
+   "class_approx": "unscorable",
+   "reason": "OUTCOME_MISSING"
+  },
+  "fx-ja-must-not": {
+   "class": "wrong",
+   "class_approx": "wrong",
+   "reason": "W1_MUST_NOT"
+  },
+  "fx-ja-over-ref": {
+   "class": "over_abstain",
+   "class_approx": "over_abstain",
+   "reason": null
+  },
+  "fx-ja-reference": {
+   "class": "correct",
+   "class_approx": "correct",
+   "reason": null
+  }
+ },
+ "macro_recall": 0.516204,
+ "macro_recall_correct_only": 0.423611,
+ "outcome_missing": {
+  "BASIS_POLICY_ABSENT": 1,
+  "OUTCOME_NULL": 1
+ },
+ "strategies": {
+  "b7_a_human_sources": {
+   "fx-en-abstain": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-abstain-example-mixed": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-abstain-got-confirm": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-confirm": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-confirm-assertive": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-constructed": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-content-fail": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-content-none": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-false-compliance": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-form": {
+    "class": "wrong",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-form-reversed": {
+    "class": "wrong",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-human": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-missing-null": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-over-abstain": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-reference": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-unknown-key": {
+    "class": "unscorable",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-abstain": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-abstain-creative": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-abstain-paraphrase": {
+    "class": "wrong",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-confirm": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-confirm-assertive": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-confirm-product": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-confirm-unobserved": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-constructed": {
+    "class": "wrong",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-constructed-unmarked": {
+    "class": "wrong",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-content-fail": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-crash": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-form": {
+    "class": "wrong",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-human": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-human-from-form": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-invalid": {
+    "class": "unscorable",
+    "outcome": null
+   },
+   "fx-ja-missing-absent": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-must-not": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-over-ref": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-reference": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   }
+  },
+  "b7_b_human_present": {
+   "fx-en-abstain": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-abstain-example-mixed": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-abstain-got-confirm": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-confirm": {
+    "class": "correct",
+    "outcome": "CONFIRM_REQUEST"
+   },
+   "fx-en-confirm-assertive": {
+    "class": "correct",
+    "outcome": "CONFIRM_REQUEST"
+   },
+   "fx-en-constructed": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-content-fail": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-content-none": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-false-compliance": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-form": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-form-reversed": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-human": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-missing-null": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-over-abstain": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-reference": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-unknown-key": {
+    "class": "unscorable",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-abstain": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-abstain-creative": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-abstain-paraphrase": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-confirm": {
+    "class": "correct",
+    "outcome": "CONFIRM_REQUEST"
+   },
+   "fx-ja-confirm-assertive": {
+    "class": "correct",
+    "outcome": "CONFIRM_REQUEST"
+   },
+   "fx-ja-confirm-product": {
+    "class": "correct",
+    "outcome": "CONFIRM_REQUEST"
+   },
+   "fx-ja-confirm-unobserved": {
+    "class": "correct",
+    "outcome": "CONFIRM_REQUEST"
+   },
+   "fx-ja-constructed": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-constructed-unmarked": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-content-fail": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-crash": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-form": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-human": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-human-from-form": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-invalid": {
+    "class": "unscorable",
+    "outcome": null
+   },
+   "fx-ja-missing-absent": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-must-not": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-over-ref": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-reference": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   }
+  },
+  "b7_c_kind_then_a": {
+   "fx-en-abstain": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-abstain-example-mixed": {
+    "class": "wrong",
+    "outcome": "CONSTRUCTED"
+   },
+   "fx-en-abstain-got-confirm": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-confirm": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-confirm-assertive": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-constructed": {
+    "class": "correct",
+    "outcome": "CONSTRUCTED"
+   },
+   "fx-en-content-fail": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-content-none": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-false-compliance": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-form": {
+    "class": "wrong",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-form-reversed": {
+    "class": "wrong",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-human": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-missing-null": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-over-abstain": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-reference": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-unknown-key": {
+    "class": "unscorable",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-abstain": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-abstain-creative": {
+    "class": "wrong",
+    "outcome": "CONSTRUCTED"
+   },
+   "fx-ja-abstain-paraphrase": {
+    "class": "wrong",
+    "outcome": "CONSTRUCTED"
+   },
+   "fx-ja-confirm": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-confirm-assertive": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-confirm-product": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-confirm-unobserved": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-constructed": {
+    "class": "correct",
+    "outcome": "CONSTRUCTED"
+   },
+   "fx-ja-constructed-unmarked": {
+    "class": "correct",
+    "outcome": "CONSTRUCTED"
+   },
+   "fx-ja-content-fail": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-crash": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-form": {
+    "class": "wrong",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-human": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-human-from-form": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-invalid": {
+    "class": "unscorable",
+    "outcome": null
+   },
+   "fx-ja-missing-absent": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-must-not": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-over-ref": {
+    "class": "correct",
+    "outcome": "CONSTRUCTED"
+   },
+   "fx-ja-reference": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   }
+  },
+  "b7_d_always_abstain": {
+   "fx-en-abstain": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-abstain-example-mixed": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-abstain-got-confirm": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-confirm": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-confirm-assertive": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-constructed": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-content-fail": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-content-none": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-false-compliance": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-form": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-form-reversed": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-human": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-missing-null": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-over-abstain": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-reference": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-unknown-key": {
+    "class": "unscorable",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-abstain": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-abstain-creative": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-abstain-paraphrase": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-confirm": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-confirm-assertive": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-confirm-product": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-confirm-unobserved": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-constructed": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-constructed-unmarked": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-content-fail": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-crash": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-form": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-human": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-human-from-form": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-invalid": {
+    "class": "unscorable",
+    "outcome": null
+   },
+   "fx-ja-missing-absent": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-must-not": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-over-ref": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-reference": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   }
+  },
+  "b7_e_reference_over_c": {
+   "fx-en-abstain": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-abstain-example-mixed": {
+    "class": "wrong",
+    "outcome": "CONSTRUCTED"
+   },
+   "fx-en-abstain-got-confirm": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-confirm": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-confirm-assertive": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-en-constructed": {
+    "class": "correct",
+    "outcome": "CONSTRUCTED"
+   },
+   "fx-en-content-fail": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-content-none": {
+    "class": "correct",
+    "outcome": "REFERENCE_GENERATED"
+   },
+   "fx-en-false-compliance": {
+    "class": "correct",
+    "outcome": "REFERENCE_GENERATED"
+   },
+   "fx-en-form": {
+    "class": "wrong",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-form-reversed": {
+    "class": "wrong",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-human": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-missing-null": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-over-abstain": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-en-reference": {
+    "class": "correct",
+    "outcome": "REFERENCE_GENERATED"
+   },
+   "fx-en-unknown-key": {
+    "class": "unscorable",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-abstain": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-abstain-creative": {
+    "class": "wrong",
+    "outcome": "CONSTRUCTED"
+   },
+   "fx-ja-abstain-paraphrase": {
+    "class": "wrong",
+    "outcome": "CONSTRUCTED"
+   },
+   "fx-ja-confirm": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-confirm-assertive": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-confirm-product": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-confirm-unobserved": {
+    "class": "over_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-constructed": {
+    "class": "correct",
+    "outcome": "CONSTRUCTED"
+   },
+   "fx-ja-constructed-unmarked": {
+    "class": "correct",
+    "outcome": "CONSTRUCTED"
+   },
+   "fx-ja-content-fail": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-crash": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-form": {
+    "class": "wrong",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-human": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-human-from-form": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-invalid": {
+    "class": "unscorable",
+    "outcome": null
+   },
+   "fx-ja-missing-absent": {
+    "class": "correct",
+    "outcome": "ANSWER_HUMAN_BASIS"
+   },
+   "fx-ja-must-not": {
+    "class": "correct_abstain",
+    "outcome": "ABSTAIN"
+   },
+   "fx-ja-over-ref": {
+    "class": "over_abstain",
+    "outcome": "REFERENCE_GENERATED"
+   },
+   "fx-ja-reference": {
+    "class": "correct",
+    "outcome": "REFERENCE_GENERATED"
+   }
+  }
+ },
+ "vera_classes": {
+  "correct": 12,
+  "correct_abstain": 5,
+  "false_compliance": 1,
+  "misread": 0,
+  "over_abstain": 2,
+  "runtime_error": 1,
+  "unreachable": 0,
+  "unscorable": 5,
+  "wrong": 9
+ },
+ "vera_classes_approx": {
+  "correct": 13,
+  "correct_abstain": 5,
+  "false_compliance": 1,
+  "misread": 0,
+  "over_abstain": 2,
+  "runtime_error": 1,
+  "unreachable": 0,
+  "unscorable": 4,
+  "wrong": 9
+ },
+ "weak_fixture": [
+  "b7_e_reference_over_c"
+ ]
+}

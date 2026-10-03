@@ -9,7 +9,7 @@ from __future__ import annotations
 from ..checks import FAIL, PASS, UNJUDGED, overall
 from ..classify import CLASS_JA, classify
 from ..schema import expected_side
-from . import b1, b2, b3, b5, keys
+from . import b1, b2, b3, b5, b7, keys
 
 
 def res(result: str, **detail: object) -> dict:
@@ -39,6 +39,8 @@ def b1_output(obs: dict) -> dict:
 
 
 def score_observation(bank: str, raw: dict, case: dict, obs: dict) -> dict:
+    if bank == "B7":
+        return b7.score(raw, case, obs)  # W6-s: B7（根拠の方針）は v2/b7.py（B1〜B5 の経路は変えない）
     expect = raw["expect"]
     side = expected_side(bank, expect)
     unk = keys.find_unknown(bank, raw)
