@@ -40,6 +40,7 @@ def test_the_answers_of_r7_are_byte_identical_to_the_frozen_hashes():
     bad = []
     for kind, w, sha, fs in rs:
         ans = cp.query(w, placement=R7)
+        ans = {k: v for k, v in ans.items() if k != "frame_generated"}       # W3-b5 (integration): one key more (docs/COARSE_PLACEMENT.md 11.6); the rest is what it was
         h = hashlib.sha256(json.dumps(ans, ensure_ascii=False).encode("utf-8")).hexdigest()
         if h != sha or ans.get("frame_status") != fs:
             bad.append((kind, w))

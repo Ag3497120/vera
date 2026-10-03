@@ -1,0 +1,95 @@
+# round 2 acceptance commands (py = env -u VERA_PLACEMENT -u VERA_COARSE_PLACEMENT PYTHONPATH=<tree> PYTHONDONTWRITEBYTECODE=1 /Users/motonisihikoudai/vera-wiring/env/bin/python). The long outputs are in the files named in docs 10F K208.
+
+$ git diff 7494ba2 --stat -- verantyx
+ verantyx/coarse_place.py    | 19 ++++++++++++
+ verantyx/semantic_reader.py | 70 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 89 insertions(+)
+[exit=0]
+
+$ git diff 7494ba2 -- verantyx | grep -c "^-[^-]"
+0
+
+$ grep -n "TYPED_FRAMES_FRAME_REQUIRED_W3B5 = " -A8 verantyx/semantic_reader.py
+2704:TYPED_FRAMES_FRAME_REQUIRED_W3B5 = {
+2705-    'P_MOVE': (),
+2706-    'P_COMMUNICATE': (),
+2707-    'P_ACT': (),
+2708-    'P_CREATE': (),
+2709-    'P_EMOTION': (),
+2710-}
+2711-W3B5_LICENSES = ('table', 'frame_required')
+2712-W3B5_REASON_NAMES = ('FRAME_GENERATED_DOES_NOT_LICENSE', 'PLACEMENT_FRAME_GENERATED_INVALID')
+
+$ /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w3b5r2/py -m pytest -q -p no:cacheprovider tests/test_semantic_read_w3b5.py tests/coarse_place/test_coarse_place_w3b5_frame_generated.py
+........................................................................ [ 10%]
+........................................................................ [ 20%]
+........................................................................ [ 30%]
+........................................................................ [ 41%]
+........................................................................ [ 51%]
+........................................................................ [ 61%]
+........................................................................ [ 71%]
+........................................................................ [ 82%]
+........................................................................ [ 92%]
+.....................................................                    [100%]
+701 passed in 9.87s
+[exit=0]
+
+$ /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w3b5r2/py -m pytest -q -p no:cacheprovider tests/test_semantic_read_w3b2.py::test_the_tables_of_w3b1_are_not_widened tests/test_semantic_read_w3b2.py::test_the_reader_file_only_gains_lines tests/test_semantic_read_w3b4.py::test_the_tables_of_the_base_commit_are_not_changed tests/test_semantic_read_w3b4.py::test_no_row_of_the_registered_gaps_is_in_the_table tests/test_semantic_read_w3b4.py::test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays_under_a_name_of_its_own
+.....                                                                    [100%]
+5 passed in 0.71s
+[exit=0]
+
+$ /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w3b5r2/py -m pytest -q -p no:cacheprovider tests/coarse_place/test_k62_v1_subset_v2.py tests/coarse_place/test_coarse_place_w3a3_k62.py
+...............                                                          [100%]
+15 passed in 0.21s
+[exit=0]
+
+$ py artifacts/w3-b5/tools/run_rows.py --data tests/reading_soundness/ja_r11.jsonl --out artifacts/w3-b5/data_check.json --exceptions artifacts/w3-b5/expect_exceptions.json --narrowed artifacts/w3-b5/narrowed_rows.json   (output: data_check.txt)
+rows=649 misread=0 incomplete=0 unjudged=0 entry_expect_mismatch=0 w3b5_expect_mismatch=0 declared_exceptions=23 narrowed_rows=333
+read rows judged correct: 6 of 6 read
+de_cause rows=30 read=0 abstain=30 reasons={"PLACEMENT_PARTICLE_NOT_IN_FRAME": 30}
+de_instrument rows=33 read=0 abstain=33 reasons={"PLACEMENT_PARTICLE_NOT_IN_FRAME": 33}
+de_place rows=170 read=6 abstain=164 reasons={"PLACEMENT_PARTICLE_NOT_IN_FRAME": 147, "PLACEMENT_ESTIMATED_GENERATED": 7, "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED": 4, "PLACEMENT_VOICE_NOT_ACTIVE": 3, "PLACEMENT_W3B2_NOT_TRIGGERED": 3}
+mechanism rows=32 read=0 abstain=32 reasons={"PLACEMENT_PARTICLE_NOT_IN_FRAME": 32}
+ni_goal rows=109 read=0 abstain=109 reasons={"PLACEMENT_TYPE_MISMATCH": 52, "PLACEMENT_SLOT_EVIDENCE_ONLY": 18, "PLACEMENT_PARTICLE_NOT_IN_FRAME": 26, "PLACEMENT_MULTIPLE": 2, "PLACEMENT_UNPLACED": 1, "PLACEMENT_UNKNOWN": 1, "PLACEMENT_ESTIMATED_GENERATED": 3, "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED": 6}
+ni_other rows=38 read=0 abstain=38 reasons={"PLACEMENT_PARTICLE_NOT_IN_FRAME": 38}
+ni_purpose rows=45 read=0 abstain=45 reasons={"PLACEMENT_TYPE_MISMATCH": 33, "PLACEMENT_FRAME_NOT_READ": 5, "PLACEMENT_SLOT_EVIDENCE_ONLY": 7}
+ni_recipient rows=118 read=0 abstain=118 reasons={"PLACEMENT_SLOT_EVIDENCE_ONLY": 56, "PLACEMENT_TYPE_MISMATCH": 40, "PLACEMENT_ESTIMATED_GENERATED": 3, "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED": 8, "PLACEMENT_MULTIPLE": 10, "PLACEMENT_UNPLACED": 1}
+ni_time rows=74 read=0 abstain=74 reasons={"PLACEMENT_PARTICLE_NOT_IN_FRAME": 74}
+exit=0
+
+$ (before the fix, 07:26:37) py artifacts/w3-b5/tools/run_rows.py --data tests/reading_soundness/ja_r11.jsonl --out artifacts/w3-b5/round2/before_round2_all.json --exceptions ... --narrowed ...   (output: data_check_before_round2.txt)
+rows=649 misread=31 incomplete=0 unjudged=0 entry_expect_mismatch=31 w3b5_expect_mismatch=31 declared_exceptions=19 narrowed_rows=286
+read rows judged correct: 41 of 72 read
+
+# L1 / L5 measurements of round 2 (outputs): none_cmp.r2.txt, x3_summary.r2.txt, soundness_compare.r2.txt, frozen_fixture_delta.r2.txt, query_unchanged_r8.r2.txt, query_unchanged_r7.r2.txt, delta_summary.r2.txt, r2_dump_sha256.txt, pytest_related_after.r2.txt, pytest_related_new.r2.txt, pytest_full.r2.txt, pytest_new_failures.r2.txt
+--- none_cmp.r2.txt
+cmp_exit=0
+84b2c118d271153e92eb5c189b16867bc5da01992d2745673a9b3866e16e99c7  /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w3b5r2/du
+84b2c118d271153e92eb5c189b16867bc5da01992d2745673a9b3866e16e99c7  /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w3b5r2/du
+--- x3_summary.r2.txt
+rows=0 kinds={} labels={}
+unclassified=0 regressed=0 wrong=0 misread=0 still_wrong(not new)=0
+exit=0
+--- soundness_compare.r2.txt
+sentences 500 changed 0 misread 0
+whole file equal apart from header (tree path): True
+results of the sentences (after): {'correct': 219, 'unsupported': 281} summary equal: True
+--- frozen_fixture_delta.r2.txt
+rows=2270 (file x row x fake)
+output differences: {}
+same output and same diagnosis: 2270
+same output, diagnosis differs only: 0
+--- pytest_related_after.r2.txt (tail)
+FAILED tests/test_semantic_read_w3b4.py::test_the_plan_of_w3b4_is_the_plan_of_w3b2_with_the_two_references_to_the_table_replaced
+FAILED tests/coarse_place/test_coarse_place_w3a4_r7_unchanged.py::test_the_answers_of_r7_are_byte_identical_to_the_frozen_hashes
+FAILED tests/coarse_place/test_coarse_place_w5b.py::test_a_spelling_that_has_an_answer_of_its_own_keeps_it_exactly_as_the_answer_function_gives_it
+3 failed, 5700 passed in 99.12s (0:01:39)
+exit=1
+--- pytest_full.r2.txt (summary)
+119 failed, 14698 passed, 38 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 418.26s (0:06:58)
+--- pytest_new_failures.r2.txt (new vs baseline)
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+FAILED tests/coarse_place/test_coarse_place_w3a4_r7_unchanged.py::test_the_answers_of_r7_are_byte_identical_to_the_frozen_hashes
+FAILED tests/coarse_place/test_coarse_place_w5b.py::test_a_spelling_that_has_an_answer_of_its_own_keeps_it_exactly_as_the_answer_function_gives_it
+FAILED tests/test_semantic_read_w3b4.py::test_the_plan_of_w3b4_is_the_plan_of_w3b2_with_the_two_references_to_the_table_replaced

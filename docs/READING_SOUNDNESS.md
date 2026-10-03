@@ -2889,3 +2889,461 @@ def test_frozen_read_and_abstain_expectations(rows):
     assert not bad, "frozen outcome/role/polarity expectations failed: " + repr(bad)
 ```
 <!-- w5e2-kw3b3:end -->
+
+## 10F. W3-b5: 生成の枠を参照系として使う付加の読み（frame_required の行。事前登録 K200〜）
+
+<!-- w3b5-prereg:begin -->
+登録日時: 2026-10-04 06:09:23 +0900（`date '+%F %T %z'` の出力。記録は `artifacts/w3-b5/prereg_time.txt`。直前のコミットは `7494ba21763a938f4f2c4a810f7d1f530d15b974`（dev。W3-b4・W5-e 統合済み））
+この時点で `tests/reading_soundness/ja_r11.jsonl`・`tests/test_semantic_read_w3b5.py` は存在しない。この登録より前に作ったのは、r8・r7 の生成の枠の数え上げ（`artifacts/w3-b5/r8_frame_census.txt`・`r7_frame_census.txt`・`r8_frames_by_type.json`。表に依らない事実であって、検査データではない）と道具（`artifacts/w3-b5/tools/`）だけ。
+出典: 中間職の指示書 `.claude/vera-audit/review-impl/W3-b5/plan.md` §2〜§3 と、チケット `W3-b5_frame_licensed_adjuncts.prompt.md`、監査役の実行上の注意（`frame_generated` は問い合わせに鍵を足すだけ。既存の鍵の値は r7・r8 で 1 語も変えない。`frame_required` の行は、述語の `frame_generated[助詞]` が行の期待する型を含み、かつ充填物が direct（または全候補一致）でその型のときだけ読む。`frame_generated` の無い述語は読まない。W3-b4 の係助詞の門はそのまま。順序: 登録 → データ凍結 → 直す前の記録 → 実装）。
+目的: 述語ごとの生成の枠（「この述語のこの助詞にはこの型が来る」）を、型による読解の **付加を許すかどうかの参照系** として使う。W3-b4 が外した 3 型の `place/で/PLACE` と、W3-b1 が読まなかった に の行を、枠が許すときだけ読む行（`frame_required`）として登録する。生成の枠は構成物（証拠でない）なので、型の決定にも同点の解消にも使わず、**読む行を許すか許さないかの門** にだけ使う。誤読 0 が正読より先。誤読が出た行は外す。語・表層の規則・述語ごとの例外は足さない。
+番号について: `READING_SOUNDNESS.md` に K19x・K20x・H19x・H20x は使われていないので、**この節は K200〜（事前登録・測定・既知の穴）、判断記録は H200〜** を使う。検査データの名前はチケットの `tests/reading_soundness/ja_r11.jsonl`。
+
+### K200 制御の流れ
+
+- 配置を指定したときだけ動く。配置なしの出力は基点（7494ba2）と 1 バイトも変わらない。
+- **問い合わせ（`coarse_place.query`）**: 答えに鍵 `frame_generated` を **足すだけ**（契約は `docs/COARSE_PLACEMENT.md` §11.6・§12.10 に追記する）。既存の鍵の値と順は変えない。W3-a3 の末尾の鍵（`generated_frame`・`frame_status`・`frame`・`frame_unconfirmed`・`frame_disagreement` のうち答えにあるもの）の **最初の鍵の直前** に挿入する（凍結テスト 5 本が答えの末尾の並びを固定している）。
+- **読解器（`semantic_reader.py`）は挿入だけで変える**（既存の行は 1 行も消さない・変えない。凍結テスト `test_the_reader_file_only_gains_lines` が `-` 行 0 を求める）。ファイルの末尾（並行の W1-a5 が足す場所と、W3-b4 第 4 ラウンドの名前の差し替えの 3 行）には何も足さない。名前を差し替えない: 入口が呼ぶ `typed_plan_u_w3b2_ja` は第 4 ラウンドの包み（K186 の係助詞の門）で `typed_plan_u_w3b4_ja` を呼ぶので、`typed_plan_u_w3b4_ja` を **その場で** 直せば、包んだ名前はそのまま新しい本体を呼び、K186 の門はそのまま掛かる。
+- 新しい表 `TYPED_FRAMES_FRAME_REQUIRED_W3B5` は **別の辞書** に置き、`TYPED_FRAMES`・`TYPED_FRAMES_W3B4`・`typed_frames_v2()`・`TYPED_FRAMES_NOT_READ_W3B4` は変えない（W3-b4 の凍結テストが値を固定している。`typed_frames_v2()` に `frame_required` の行を入れると 3 本が落ちる）。
+- **遅延の検査**: `frame_required` の行が無い（型, 助詞）の役割では、枠の答え（`frame_generated`）を見ない。したがって `frame_required` の行と無関係な文では、枠の答えが壊れていても、計画の戻り値は基点と 1 字も同じ。
+- **枠が無い述語**（`frame_generated` の鍵が無い／null。seed の語・表の無い配置・偽の配置）では `frame_required` の行は無いものとして扱い、棄権の理由は基点のまま（`PLACEMENT_PARTICLE_NOT_IN_FRAME`・`PLACEMENT_TYPE_MISMATCH`）。**不在と否定は別の理由**: 枠があって許さないときだけ `FRAME_GENERATED_DOES_NOT_LICENSE:<助詞>`、枠の形が壊れていて見る必要があるときだけ `PLACEMENT_FRAME_GENERATED_INVALID:<問題>`。
+- 許された行の期待する型は **行の型 ∩ 枠の型**。充填物の配置が `DECIDED direct`（または全候補が積に入る `MULTIPLE direct`）でその積に入るときだけ候補。2 行以上に合えば `PLACEMENT_ROLE_TIE`（棄権）。
+- W3-b1・W3-b2 の規則と門は変えない: 述語の推定（門 3）・`gen_definition`（門 4）・付加の `role@` だけ（門 5）・CONFIRMED の `frame` による狭め・K186 の係助詞の門・読解器が名前を決めた役割と行の役割が違えば `PLACEMENT_READER_DISAGREES`。推定の述語は述語の段で従来どおり棄権する。**門を緩めて数を出さない**。
+
+### K201 第 2 表に license の列（表 `table:w3b5_frames`）
+
+§10D の `w3b4_frames`（5 列）は W3-b4 のテストが 5 列で読むので書き換えない。ここに 6 列の新しい表を置く。先頭の 17 行は `w3b4_frames` の 17 行（1〜5 列）を 1 字も変えずに写し、6 列目を `table` にした。その後ろが `frame_required` の 16 行（型の順は `typed_frames_v2()` と同じ、型の中は place/で・recipient/に・goal/に・time/に の順）。`frame_required` の行の（型, 助詞）の組で、同じ型・同じ助詞の行（両 license を合わせて）の期待する型は互いに素（P_MOVE・P_COMMUNICATE の に: TIME｜PLACE｜PERSON GROUP_ORG。3 型の に: PERSON GROUP_ORG｜PLACE｜TIME）。助詞は が を に へ から で の 6 つ。期待する型は 17 型の部分集合。recipient の型の並びは `event_cross.EXPECTED_TYPES['recipient']` と集合が同じ。
+
+<!-- BEGIN table:w3b5_frames -->
+| 述語の型 | 役割 | 助詞 | 期待する型 | 種類 | license |
+|---|---|---|---|---|---|
+| `P_MOVE` | agent | が | PERSON GROUP_ORG ANIMAL | 項 | table |
+| `P_MOVE` | goal | へ | PLACE | 項 | table |
+| `P_MOVE` | source | から | PLACE | 項 | table |
+| `P_MOVE` | place | で | PLACE | 付加 | table |
+| `P_MOVE` | time | に | TIME | 付加 | table |
+| `P_COMMUNICATE` | agent | が | PERSON GROUP_ORG ANIMAL | 項 | table |
+| `P_COMMUNICATE` | patient | を | PERSON GROUP_ORG ANIMAL PLANT ARTIFACT SUBSTANCE_FOOD EVENT_ACT STATE_PROPERTY ABSTRACT INFO_LANGUAGE BODY_PART NATURAL_PHENOMENON WORK IDENTIFIER | 項 | table |
+| `P_COMMUNICATE` | place | で | PLACE | 付加 | table |
+| `P_COMMUNICATE` | time | に | TIME | 付加 | table |
+| `P_ACT` | agent | が | PERSON GROUP_ORG ANIMAL | 項 | table |
+| `P_ACT` | patient | を | PERSON GROUP_ORG ANIMAL PLANT ARTIFACT SUBSTANCE_FOOD EVENT_ACT STATE_PROPERTY ABSTRACT INFO_LANGUAGE BODY_PART NATURAL_PHENOMENON WORK IDENTIFIER | 項 | table |
+| `P_ACT` | goal | へ | PLACE | 項 | table |
+| `P_ACT` | source | から | PLACE | 項 | table |
+| `P_CREATE` | agent | が | PERSON GROUP_ORG ANIMAL | 項 | table |
+| `P_CREATE` | patient | を | PERSON GROUP_ORG ANIMAL PLANT ARTIFACT SUBSTANCE_FOOD EVENT_ACT STATE_PROPERTY ABSTRACT INFO_LANGUAGE BODY_PART NATURAL_PHENOMENON WORK IDENTIFIER | 項 | table |
+| `P_EMOTION` | agent | が | PERSON GROUP_ORG ANIMAL | 項 | table |
+| `P_EMOTION` | patient | を | PERSON GROUP_ORG ANIMAL PLANT ARTIFACT SUBSTANCE_FOOD EVENT_ACT STATE_PROPERTY ABSTRACT INFO_LANGUAGE BODY_PART NATURAL_PHENOMENON WORK IDENTIFIER | 項 | table |
+<!-- END table:w3b5_frames -->
+
+**（表の変更記録（W3-b5）の変更 1 と変更 2 の後。登録時の 16 行のうち 14 行を変更 1 で、残りの P_MOVE と P_COMMUNICATE の `goal/に/PLACE` の 2 行を変更 2 で外した。今の `frame_required` の行は 0 行（表は 17 行。すべて `table`）。登録したままの本文と表は `artifacts/w3-b5/PREREG.md`。外した理由と数は「表の変更記録（W3-b5）」と K207。）**
+
+**チケットの「11 型の に の 3 役割」から 5 型への逸脱（H200）**: 計画 `typed_plan_u_w3b4_ja` は、述語の型が `TYPED_FRAMES_NOT_READ_W3B4`（8 型）にあれば行を見る前に `PLACEMENT_FRAME_NOT_READ` で返す。また **節のすべての役割** に表の行を求める（が の役割も `in_frame` が空なら `PARTICLE_NOT_IN_FRAME`）。読まない 8 型には が の行が無いので、に の行だけを足しても 1 文も読めない。読まない型を読む型に変えるのは、K162（が の行が書けない型は型ごと読まない）に反し、チケットの範囲外。したがって `frame_required` の行は **読む 5 型（P_MOVE・P_COMMUNICATE・P_ACT・P_CREATE・P_EMOTION）にだけ** 16 行置く。P_MOVE・P_COMMUNICATE には `time/に/TIME`（`table`）が既にあるので、同じ行は `frame_required` で重ねない。登録したこの 16 行が **上限**（K206）。
+
+### K202 `frame_generated` の契約（読解器の側）
+
+問い合わせ `coarse_place.query` の答えの鍵 `frame_generated`（常に出す）は `null` か次の形:
+`{"origin": "generated", "constructed": true, "ptype": <生成の枠の表の ptype>, "frame": <生成の枠の表の frame をそのまま。{助詞: [型…]}>, "provenance": {"model", "effort", "batch_id", "attempt"}}`。`null` になるのは、配置が開けない（`NO_PLACEMENT`）・配置に `generated_frames` 表が無い・表にその語の行が無いとき。引く語は答えの `spelling.normalized`（配置を引いた NFKC の形）。`frame`（CONFIRMED のときだけ）・`frame_status`・`frame_unconfirmed` の意味と値は変えない。`frame_generated` は `frame_status` と独立。
+
+読解器は `predicate_frame_generated(answer)`（唯一の読み手。答えの `state`・`origin`・`top`・`decided_by`・`estimate_basis` を添字で読まない）で読む。戻り値は 3 種: `('absent', None)`（鍵が無い、または値が None）、`('generated', {助詞: frozenset(型)})`（形が正しい。空の `frame` `{}` は正しく、何も許さない）、`(None, 'PLACEMENT_FRAME_GENERATED_INVALID:<問題>')`。問題の閉じた一覧: `NOT_A_MAPPING`・`ORIGIN_NOT_GENERATED`・`FRAME_NOT_A_MAPPING`・`PARTICLE_NOT_CASE:<助詞>`（格助詞 9 種の外）・`TYPES_NOT_A_LIST:<助詞>`（空でない文字列の並びでない）・`TYPE_NOT_NOUN:<助詞>:<型>`（`coarse_types.NOUN_TYPES` の外）。
+
+### K203 理由の型と、許可の申告
+
+<!-- BEGIN table:w3b5_reasons -->
+| 理由 | 意味 |
+|---|---|
+| `FRAME_GENERATED_DOES_NOT_LICENSE:<助詞>` | その助詞に読める行が `frame_required` の行だけで、述語の生成の枠がその助詞を持たないか、行の型・充填物の型を許さない |
+| `PLACEMENT_FRAME_GENERATED_INVALID:<問題>` | `frame_required` の行を見る必要があり、`frame_generated` が K202 の形を破る |
+<!-- END table:w3b5_reasons -->
+
+1 列目の `:` の前の並びは `W3B5_REASON_NAMES` と同じ。出力には出ない（`semantic_read.py` を変えない）。診断 `typed_explain_ja(...)['w3b2']` に出る。
+
+**許可の申告（H204。チケット・指示書からの逸脱を登録時に書く）**: 指示書は、生成の枠で許された役割を節の `role_flags` に `{"license": "frame_generated"}` として出力に申告するとした。しかし `event_cross._flag_well_formed` は `role_flags` の 1 役割の鍵を `determiner`・`coordination` の部分集合に **閉じており**、`license` の鍵があると `ENTRY_FLAGS_NOT_WELL_FORMED` で出力ごと拒否される（`event_cross.py` は許可パスの外で、触らない）。出力の形を壊して数を出さない。したがって許可の申告は **計画の戻り値の鍵 `role_license`**（`{役割名: 'frame_generated'}`）にだけ置き、出力（`role_flags`）には出さない（`semantic_read.reread` は `typed['role_flags']` しか写さないので、`role_license` は出力に現れない）。`role_basis` の形（K99 の正規表現）は変えない。出力に出す形は、`event_cross` の閉じた一覧を広げる別チケットが決める（申し送り）。
+
+### K204 r8 の事実（登録時に測ったもの。出典 `artifacts/w3-b5/r8_frame_census.txt`・`r7_frame_census.txt`）
+
+配置 r8/run2 の `generated_frames` は 8,030 語。各語を `coarse_place.query(w, placement=r8)` に通した数（`r8_frame_census.txt`）:
+- DECIDED・estimated・述語の型が推定（frame_status ESTIMATED）: 7,900 語（P_ACT 2,368・P_CHANGE 1,251・P_MOVE 1,080・P_STATE 758・P_CREATE 450・P_COMMUNICATE 409・P_COGNITION 407・P_GIVE 320・P_EXIST 256・P_PERCEIVE 208・P_EMOTION 161・P_CONSUME 130・P_POSSESS 102）。
+- DECIDED・direct: 130 語。P_COMMUNICATE 96（CONFIRMED 67・NOT_CONFIRMED 29）、P_MOVE 34（CONFIRMED 32・NOT_CONFIRMED 2）。**P_ACT・P_CREATE・P_EMOTION で生成の枠を持つ direct の語は 0**。表の型と答えの型は全語で同じ。
+- r7（4,788 語）: DECIDED・direct 48 語（P_COMMUNICATE 38・P_MOVE 10）、残りは推定（`r7_frame_census.txt`）。
+
+読解器の門 3（述語の推定は使わない）は述語の段で止まるので、推定の 7,900 語の枠は `frame_required` の行を働かせない。direct の 130 語のうち CONFIRMED の語は、W3-b2 の規則（`frame` に助詞が無ければ棄権）が先に止める。**r8 の入口で `frame_required` の行が働きうるのは、NOT_CONFIRMED の direct の語だけ**（census の末尾の一覧）。
+
+ここから言えること: 3 型の `place/で`（P_ACT・P_CREATE・P_EMOTION）は、r8 の入口では 1 文も読まない（r8 に direct で枠を持つその 3 型の語が無い）。偽の配置のデータでだけ働く。L5 の見込みの数は書かない（監査役が測る）。
+
+### K205 検査データの設計と受入基準
+
+検査データ `tests/reading_soundness/ja_r11.jsonl`（1 行 1 文）。鍵と並び: `id`・`lang`・`input`・`text`・`behavior`・`expect`・`pred_type`・`path`・`particle`・`role_group`・`construction`・`placement`・`frame_source`・`entry_expect`・`w3b5_expect`・`note`。`id` は `W3B5-<GROUP>-<R|A>-NNN`（GROUP: `DEPLACE`・`DEINSTR`・`DECAUSE`・`NIRECIP`・`NIGOAL`・`NITIME`・`NIPURP`・`NIOTHER`・`MECH`）。`role_group`: `de_place`・`de_instrument`・`de_cause`・`ni_recipient`・`ni_goal`・`ni_time`・`ni_purpose`・`ni_other`・`mechanism`。
+
+- 件数の下限: 読む行は `de_place`・`ni_recipient`・`ni_goal`・`ni_time` の各 20 以上（H203: 引き金に届く読む行が足りない群は、足りないまま件数と理由を `data_counts.txt` と判断記録に書く。届かない文で水増ししない）。棄権の行は `de_place`・`de_instrument`・`de_cause`・`ni_recipient`・`ni_goal`・`ni_time`・`ni_purpose`・`ni_other` の各 20 以上。`mechanism` は 15 以上。
+- **枠の出所の規則**: 述語の `frame_generated.frame` は `frame_source` が `r8` のとき、r8 の `generated_frames` のその語の行を **1 字も変えずに写したもの**（述語の型も r8 のその行の ptype。データでは direct の NOT_CONFIRMED として扱い、`note` に「r8 では estimated」と書く）。`absent` は枠が無い（r8 に行の無い語・seed の日常動詞）。`synthetic`（作った枠）は `mechanism` の群にだけ許す。**読む行は `frame_source: r8` だけ**（偽の枠で読ませない）。照合は `frame_source_check.txt`。
+- 棄権の群に必ず入れる: (a) W3-b4 の束 d・c の 10 文（右・段差・口。枠が無い版と、で を持たない作った枠の版）、(b) 枠が許す最悪の場合（r8 の実物の枠が その助詞・その型を持つのに、充填物の役割が行と違う文。で: 手段・原因。に: 刺激・相手・受益者・与え手・結果・接触面・行き先の組織・目的の時）、(c) 枠が助詞・型を持たない（`DOES_NOT_LICENSE`）、(d) 充填物の配置（`role@` だけの付加・MULTIPLE で候補の 1 つが積の外・推定・UNPLACED）、(e) 述語の配置（推定・CONFIRMED で `frame` に助詞が無い・`frame_generated` が壊れている）、(f) 既存の門（格助詞の直後の係助詞・副助詞、受身・使役、語尾、派生）。
+- 偽の配置の方針: 固有名は `UNPLACED`、普通名詞は r8 と矛盾しない direct の型。r8 で MULTIPLE・推定・UNPLACED の語を DECIDED にしない。r8 で型が誤っている語（口=PLACE など）は「配置の型の誤り」の群にだけ使う。
+- 期待を先に凍結する（`bank_freeze.sha256`・`bank_freeze_time.txt`）。配置を通した入口・計画には凍結まで通さない。
+
+受入基準（チケットの写し。L5 は監査役が測る）:
+- **L1**: 配置なしの出力は基点と byte 一致。既存の凍結データ x3 で `changed=0`・`misread=0`。`query` の既存の鍵は r7・r8 で 1 語も変わらない。
+- **L2**: 表の検査（互いに素・役割・型・助詞・v1 ⊂ v2・`license` の値）がテストで通る。
+- **L3**: 検査データで誤読 0。右で打った・段差で驚いた・口の文が棄権、搭乗口で係員が旅券の写しを確認した の型の文が読める（述語と充填物は自作の別の語で）。
+- **L4**: 中間職の未公開の文（で・に 各 30 文以上、期待を先に凍結）で誤読 0。誤読が出た行は `frame_required` でも外す。
+- **L5**: B1（r8）で誤読 0・誤答 0 のまま、「ambiguous case role」が唯一の理由の 20 文のうち読める文が増える（数を報告）。
+- **L6**: 既存テストの失敗集合が基線 `dev_7494ba2_failures.txt` から増えない（ハッシュ固定の衝突は申告）。
+
+### K206 表の変更の約束
+
+登録後の変更は **狭める方向だけ**（`frame_required` の行を消す・期待する型を減らす）。誤読が 1 件でも出た行は外す（その行だけが原因と示せないときは、その型の `frame_required` の行をすべて外す）。語・表層の規則・述語ごとの例外は足さない。変更は「表の変更記録（W3-b5）」に日時・前後・理由・出典を書く。登録した 16 行の集合を広げない。
+<!-- w3b5-prereg:end -->
+
+### 表の変更記録（W3-b5）
+
+登録後の変更はすべてここに、日時・前後の差・理由・出典を書く（狭める変更だけ）。登録したときの本文と表は `artifacts/w3-b5/PREREG.md`（変えない）。
+
+**登録部分（`w3b5-prereg` の中）との関係**: `w3b5_frames` は登録部分の中にあり、W3-b4 の作法（表の変更記録。登録時の行を表の中で外し、本文に注記を付ける）に従って **表の本体を狭める方向に書き換えた**（外した行は 変更 1 で 14 行、変更 2 で 2 行の計 16 行。ほかは変えていない。K201 の表の直後に太字の注記を 1 つ足した）。登録時の表は 33 行（`table` 17 + `frame_required` 16）、今は 17 行（`table` 17 + `frame_required` 0）。登録時の本文と今の登録部分の差は `artifacts/w3-b5/prereg_vs_docs.r2.diff`（削除はマーカーの行と外した表の 16 行、追加は注記 1 つ。`PREREG.md` は変えていない: sha256 97b4c07e…）。
+
+**変更 1（2026-10-04 06:41:54 +0900。`date` の出力。記録 `artifacts/w3-b5/narrow_prereg_time.txt`。直前のコミット `7494ba21763a938f4f2c4a810f7d1f530d15b974`。この時点でコード（`semantic_reader.py` の表）はまだ登録のまま。docs の表と本文だけを先に変えた）: `frame_required` の 14 行を外す。**
+- 前: 16 行（P_MOVE 2・P_COMMUNICATE 2・P_ACT 4・P_CREATE 4・P_EMOTION 4）。後: `P_MOVE` の `goal/に/PLACE` と `P_COMMUNICATE` の `goal/に/PLACE` の 2 行だけ。外した 14 行: P_MOVE の `recipient/に`、P_COMMUNICATE の `recipient/に`、P_ACT の 4 行（`place/で`・`recipient/に`・`goal/に`・`time/に`）、P_CREATE の 4 行、P_EMOTION の 4 行。コードの辞書 `TYPED_FRAMES_FRAME_REQUIRED_W3B5` は型の鍵（5 つ）を残し、行をすべて外した型の値は空の並び `()` にする（型の順と鍵を固定するテストと、登録した 16 行との照合のため）。
+- 理由: 述語の生成の枠は「この述語のこの助詞にこの型が来る」とだけ言い、**役割を言わない**。同じ型・同じ助詞で別の役割になる充填物（手段・原因・刺激・相手・受益者・行き先の組織・勤務先・接触面・対象）を、枠は分けられない。登録した最悪の場合の行（K205 (b)）を入口に通したところ、下の組の行が読んだ（凍結した期待は `readable: false`。判定は `misread`）。**誤読が 1 件でも出た行は外す**（K206）。
+
+| 述語の型 | 行（役割） | 結果（同じ行を通った文の中で） |
+|---|---|---|
+| `P_ACT` | goal | 誤読 15 ・ 正読 8 ・ 先生が町に奉職した。 / 店員が市に業務した。 |
+| `P_ACT` | place | 誤読 34 ・ 正読 63 ・ 兄が右で投球した。 / 弟が右で曲を演奏した。 |
+| `P_ACT` | recipient | 誤読 18 ・ 正読 0 ・ 妹が先生にかみついた。 / 先生が先輩にさわった。 |
+| `P_ACT` | time | 誤読 7 ・ 正読 22 ・ 店員が命日に臨んだ。 / 係員が祭日に臨んだ。 |
+| `P_COMMUNICATE` | goal | 誤読 0 ・ 正読 2 ・ （誤読なし） |
+| `P_COMMUNICATE` | recipient | 誤読 11 ・ 正読 45 ・ 妹が部長に面接した。 / 先生が課長に交渉した。 |
+| `P_CREATE` | goal | 誤読 3 ・ 正読 0 ・ 兄が町に併設した。 / 弟が市に敷設した。 |
+| `P_CREATE` | place | 誤読 4 ・ 正読 13 ・ 妹が右で写真を撮影した。 / 係員が右で苗を栽培した。 |
+| `P_CREATE` | recipient | 誤読 5 ・ 正読 0 ・ 兄が先生に作った。 / 弟が先輩に縫った。 |
+| `P_EMOTION` | goal | 誤読 3 ・ 正読 0 ・ 姉が現場におどろいた。 / 妹が駅に戸惑った。 |
+| `P_EMOTION` | place | 誤読 3 ・ 正読 0 ・ 弟が段差で驚いた。 / 姉が坂でおどろいた。 |
+| `P_EMOTION` | recipient | 誤読 16 ・ 正読 0 ・ 弟が先生に共感した。 / 姉が先輩に執着した。 |
+| `P_EMOTION` | time | 誤読 5 ・ 正読 0 ・ 兄が満月に退屈した。 / 弟が新月に退屈した。 |
+| `P_MOVE` | goal | 誤読 0 ・ 正読 33 ・ （誤読なし） |
+| `P_MOVE` | recipient | 誤読 16 ・ 正読 0 ・ 兄が会社に入社した。 / 弟が劇団に入団した。 |
+
+- P_CREATE の `time/に`: 誤読は出ていないが、同じ型の `place/で`・`recipient/に`・`goal/に` の 3 行で誤読が出て、枠が役割を言わないことが型として示せた（K206 の「行だけで足りないと示せたら型の `frame_required` の行をすべて外す」）。r8 に `に:TIME` を持つ P_CREATE の語は 0 で、この行は r8 では何も許さず（データでは働かせられない）、枠が役割を言わない点は他の 3 行と同じなので外した。
+- P_EMOTION の `place/で`・`goal/に`: r8 に で:PLACE・に:PLACE を持つ P_EMOTION の語は 0 なので、実物の枠では働かない。作った枠（`mechanism` の群。作った枠は読ませる行に使わず、棄権の確認だけに使う）で入口に通したところ、2 行とも読んだ（原因を場所と読む誤読）ので外した。P_CREATE の `recipient/に` も同様（作った枠。受益者・宛先を recipient と読む）。
+- **残した 2 行**: P_MOVE の `goal/に/PLACE`（誤読 0・正読 33）と P_COMMUNICATE の `goal/に/PLACE`（誤読 0・正読 2）。P_COMMUNICATE の方は、r8 で に:PLACE を持ち読解器の引き金に届く語が 掲示する・登壇する の 2 語だけで（案内する・送付する は読解器が自分で読む）、証拠は薄い（既知の穴）。
+- 出典: `artifacts/w3-b5/data_check_before_narrowing.json`（617 行を入口に通した全件の出力。`role_license` は計画が申告した許可）・`data_check_before_narrowing.txt`・`narrow_summary.txt`。誤読の 140 文は、凍結した検査データの棄権の行と第 2 の束（判断記録 H206。凍結後に足した 13 行）にある（足し直さない。既存の棄権の行が、狭めたあとで棄権のまま通ることをテストが確かめる）。
+- 凍結した読む行のうち、外した行を使っていたものと、棄権の行のうち診断の理由が変わったもの（行が無くなったので `FRAME_GENERATED_DOES_NOT_LICENSE` が `PLACEMENT_PARTICLE_NOT_IN_FRAME` に戻るなど）は書き換えない。`artifacts/w3-b5/narrowed_rows.json`（`tools/mk_narrowed_rows.py` の出力）に「この狭めで入口の結果か診断が変わる行」を行ごとに記録し、テストと `run_rows.py` は「その行は入口が棄権し、診断が記録どおり」を確かめる（W3-b4 の第 3 ラウンドと同じ方式）。
+
+**変更 2 の事前登録（第 2 ラウンド。2026-10-04 07:22:12 +0900。`date` の出力。記録 `artifacts/w3-b5/r2_prereg_time.txt`。直前のコミット `7494ba21763a938f4f2c4a810f7d1f530d15b974`。この時点でコード・テスト・データは第 1 ラウンドのまま。ここに書くのは「やること」だけで、数値は実測のあとに「変更 2」の記録へ書く）**
+- 出典: 中間職のレビュー第 1 ラウンド（`.claude/vera-audit/review-impl/W3-b5/review.r1.md`）の L4 と必須 1〜3。中間職の未公開の文は開かない（文は書かれていない。型だけが渡された）。
+- 必須 1（K206）: 残した 2 行（`P_MOVE` の `goal/に/PLACE`・`P_COMMUNICATE` の `goal/に/PLACE`）を **両方** 外す。レビューの測定で、どちらの行も、述語の枠が に:PLACE を許すのに に が行き先でない文を goal と読んだ（`P_MOVE` は実物の r8 の入口でも 1 件）。どちらの行も期待する型は PLACE だけで、型を狭めて残す道は無い。外したあと `frame_required` の行は 0 行になる（辞書は型の鍵 5 つを空の並び `()` で残す。H208 と同じ）。`frame_required` の仕組み（`predicate_frame_generated`・遅延の検査・理由・`role_license`）と、登録した表を戻して流す仕組みのテスト（`registered` の固定具）は残す。語・表層の規則・述語ごとの例外は足さない。
+- 必須 2（検査データ）: レビューが型だけを渡した誤読の 4 つの型を、**自作の別の述語・別の充填物** で、実物の r8 の枠（`frame_source: r8`）で各 5 文以上、検査データの **末尾に追記** する（既存の 617 行は 1 バイトも変えない）。4 つの型: (1) 枠に に:PLACE を持つ **滞在・残留の動詞** で、に が存在の場所（規約 §2 では place）、(2) **目的の名詞が r8 で PLACE** の に（goal でない）、(3) に が **情報を受け取る組織** で、その組織の型が r8 で PLACE（規約 §4.1 では recipient 側）、(4) **行き先か場所か決まらない** に（正解は `readable: false`）。期待（`expect`・`entry_expect`・`w3b5_expect`）は文の設計から先に書き、実行の前に sha256 と時刻を残して凍結する（`bank_freeze_r2.sha256`・`bank_freeze_r2_time.txt`）。ID は `…-A-95N`（凍結後に足した 13 行は 9NN の 901〜913。それとは別の番号）。
+- 必須 2（「直す前の記録」）: 凍結のあと、**コードを直す前** に、残した 2 行の表（現在のコード）で追記の行を流し、誤読の件数と型を `artifacts/w3-b5/data_check_before_round2.json`・`.txt` に残す。そのあと表を 0 行にして同じ行を流し直し、棄権を確かめる。テストは「2 行の表を戻して流すと追記の行が誤読として読まれる（外す理由）」「外した表では棄権」を固定する。
+- 必須 3: 凍結した検査データの正解の誤り（`停泊する` の に を goal と書いた 2 行）は **期待を書き換えず**、`expect_exceptions.json` に新しい種類（`frozen_expectation_is_a_wrong_answer`）として申告する。ほかの読む行（`ni_goal` の `behavior: read`）に同じ型（滞在・存在の場所）が無いか全件を見直し、あれば同じく申告する。表を 0 行にしたあとは、これらの行は棄権になるので、読みの数には影響しない（測った値を書く）。
+- 順序: この事前登録 → 追記の行を書いて凍結 → 直す前の記録 → コードと表を 0 行にする → テスト・測定を取り直す。
+
+**変更 2（2026-10-04 07:27:03 +0900。コードの表を 0 行にした時刻。`date` の出力。記録 `artifacts/w3-b5/narrow2_code_time.txt`。事前登録は上の 07:22:12、追記の行の凍結は 07:26:28（`bank_freeze_r2_time.txt`）、直す前の記録は 07:26:37（`before_round2_time.txt`）。docs の表の本体を 0 行にしたのはコードのあと。直前のコミット `7494ba21763a938f4f2c4a810f7d1f530d15b974`）: 残した 2 行（`P_MOVE` の `goal/に/PLACE`・`P_COMMUNICATE` の `goal/に/PLACE`）を外す。`frame_required` の行は 0 行になる。**
+- 前: 2 行（変更 1 の後。表は 19 行）。後: 0 行（表は 17 行。すべて `table`）。コードの辞書 `TYPED_FRAMES_FRAME_REQUIRED_W3B5` は型の鍵 5 つをすべて空の並び `()` で残す。仕組み（`predicate_frame_generated`・遅延の検査・理由 2 つ・`role_license`）は残し、計画の中の挿入は 1 行も変えていない。
+- 理由（`review.r1.md` の L4。文は書かれていない。型だけ）: 残した 2 行の **両方** が、述語の枠が に:PLACE を許すのに に が行き先でない文を goal と読んだ（`P_MOVE` は実物の r8 の入口でも 1 件）。どちらの行も期待する型は PLACE だけなので、型を狭めて残す道は無い。枠は役割を言わない（K220）。
+- **私の測定（自作の別の語。`frame_source: r8` の実物の枠。レビューの文は開いていない）**: 凍結のあとに足した 32 行（検査データ 618〜649 行。4 つの型を各 8 行。`bank_freeze_r2.sha256`・`bank_freeze_r2_time.txt`。道具 `tools/mk_round2_rows.py`）を、コードを直す前に（残した 2 行の表で）流した結果が下（`data_check_before_round2.txt`・`data_check_before_round2.json`・`round2/before_round2_summary.txt`）。凍結した期待はどの行も `readable: false`（棄権が正しい）。
+
+| 型（レビューの 4 つ） | 述語（r8 の枠が に:PLACE を持つ） | 行 | 入口が読んだ | 誤読 | 許可（`role_license`） |
+|---|---|---|---|---|---|
+| (1) 滞在・残留の動詞で に が存在の場所 | 居残る・宿泊する（`P_MOVE`） | 8 | 8 | 8 | goal 8 |
+| (2) 目的・行事の名詞が r8 で PLACE（遠足・展覧会・花火大会・お祭り・神社参拝） | 集まる・殺到する・来場する・立ち寄る（`P_MOVE`） | 8 | 8 | 8 | goal 8 |
+| (3) に が情報を受け取る組織で r8 では PLACE（警察署・区役所・営業所・支社） | アップロードする（`P_COMMUNICATE`） | 8 | 7 | 7 | goal 7 |
+| (4) に が行き先とも場所とも決まらない | 座り込む・しゃがみこむ・倒れ込む（`P_MOVE`） | 8 | 8 | 8 | goal 8 |
+
+  - 32 行のうち 31 行が誤読（すべて `goal/に/PLACE` の許可）。読まなかった 1 行は `社員が資料を支社にアップロードした。`（`を` の充填物 `資料` が r8 で UNPLACED で `PLACEMENT_UNPLACED:を:資料` で止まる。誤読ではない）。凍結した 617 行は変更 1 の後と同じ（誤読 0）で、この 32 行だけが誤読を出した（全体: 649 行で誤読 31・不完全 0・UNJUDGED 0）。
+  - 述語の選び方（H213）: (3) の述語は アップロードする だけ。r8 で P_COMMUNICATE が に:PLACE を持つ 12 語のうち、型の段に届き（`path` が U）、述語が CONFIRMED でなく、派生の門にも当たらず、読解器が述語の形を変えない語は アップロードする・掲示する・登壇する だけで、掲示する・登壇する の に は組織でない。送付する・案内する・届け出る は型の段の引き金に当たらない（`path: none`。届け出る は派生の門にも当たる）、投稿する・配信する・申し込める は r8 で CONFIRMED（`frame` に に が無く、実物の入口は W3-b2 の規則で止める）、呼び出せる・申し込める は下一段で派生の門が止める、通じる は読解器が述語を 通ずる に直すので行の述語と合わない。（`tools/probe_comm_verbs.py` の出力 `round2/comm_verbs_probe.txt` から。）
+  - **実物の r8 の入口**（偽の配置でない。`round2/live_r8_goal_rows_probe.txt`、道具 `tools/live_with_goal_rows.py`）: 残した 2 行を戻すと、実物の r8 で 述語 旅行する（direct・NOT_CONFIRMED・枠が に:PLACE）＋目的・行事の名詞（r8 で PLACE。私が書いた 5 文。凍結データに入れていない探り）が 5 文とも読まれ `goal` になった（誤読。設計では に は目的）。統制の 旅行する＋地名 3 文も 同じ行を通って goal と読まれた（正しい）。32 行は述語が r8 で推定なので、実物では 0 文が読まれた。外した今の表では 探り 5 文も 統制 3 文も 0 文が読まれる。レビューが見つけた「実物の r8 の入口で起きた誤読」と同じ型が、私の語でも実物の入口で起きたことの確認。
+- 外したあと（`data_check.txt`）: 649 行で 誤読 0・不完全 0・UNJUDGED 0、入口が読んだのは 6 行（de_place の読解器だけで読める行。型の段を通らない `path: none`）で 6 行とも正読。`role_license` のある読みは 0。追記の 32 行はすべて棄権（診断の理由は基点の門のもの。`FRAME_GENERATED_DOES_NOT_LICENSE` ではない: 行が 1 つも無いので枠は見られない）。
+- `narrowed_rows.json`（K206 の記録）は 286 行から 333 行になった。増えた 47 行はすべて ni_goal の凍結した行: 読む期待が棄権になった 35 行（P_MOVE の goal 33 + P_COMMUNICATE の goal 2）と、棄権の期待のまま診断の理由が変わった 12 行。変更 1 の記録にあった 3 行（`W3B5-NIRECIP-A-028`・`-030`・`-032`）も診断の理由がもう一度変わった（`PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PERSON` → `PLACEMENT_SLOT_EVIDENCE_ONLY:に:<人>`。付加の `time/に` の門が先に働く。どれも棄権のまま）。`expect_exceptions.json` の 19 行（変更 1 のとき）は同じ。凍結した期待は 1 行も書き換えていない。
+- 変更 2 で外した行の出典: `artifacts/w3-b5/data_check_before_round2.json`（649 行の全件の出力）・`round2/before_round2_summary.txt`・`round2/live_r8_goal_rows_probe.txt`、レビュー `review.r1.md`。
+
+**変更 2 に伴う、凍結した正解の誤りの申告（必須 3。`artifacts/w3-b5/expect_exceptions.json` の新しい 2 つの種類。道具 `tools/mk_round2_declarations.py`）**: 凍結した検査データの `ni_goal` の読む行 43 行の全件を、規約 §2 に照らして見直した（`round2/ni_goal_read_rows_review.tsv`。行ごとの判断つき）。
+- `frozen_expectation_is_a_wrong_answer`（正解が place なのに goal と書いた）: `W3B5-NIGOAL-R-011`（弟が港に停泊した。）・`W3B5-NIGOAL-R-031`（弟が島に停泊した。）。停泊する の に は船がとまっている場所（存在の場所）で、到達点を言う動詞ではない（規約 §2: place）。レビューの指摘どおり。
+- `goal_or_place_not_decided`（正解は 1 つの読みに決まらない。`readable: false` が正しい）: `W3B5-NIGOAL-R-010`（兄が駅に停車した。停車する の に は止まる地点で、停泊する と同じ型）・`W3B5-NIGOAL-R-036`（店員が教会に参列した。参列する の に 場所 は行き先とも場所とも決まらない）。レビューは 停泊 の 2 行だけを挙げたが、同じ型（滞在・存在の場所、行き先か場所か決まらない）の行を見直して追加した（見直しの結果、ほかの 39 行は 到達点・設置の到達点・入る先として goal のままとした。`入院する`・`合流する`・`参拝する`・`係留する`・`配備する`・`保存する`・`格納する` の判断の理由は tsv にある）。
+- この 4 行は、登録した表（16 行）でも 変更 1 の後の表（2 行）でも 読まれて `correct` と数えられていた（`expect_exceptions.json` の `observed_with_the_table_as_registered`: P_MOVE の 3 行は 変更 1 の後も読まれていた。`R-036` は P_ACT の行で変更 1 のとき既に棄権になっていた）。**K207 の変更 1 の後の正読 41 行（P_MOVE 33・P_COMMUNICATE 2・読解器だけ 6）のうち、P_MOVE の 3 行は誤読として数えるべきだった（正解の側の誤り）**。L3 の「誤読 0」はこの 3 行を見逃していた。変更 2 の後はこの 4 行とも棄権で、読みの数には影響しない（入口が読むのは 6 行だけ）。
+- 凍結した期待は書き換えない。4 行は `narrowed_rows.json`（今は棄権）にも入っていて、テスト `test_the_frozen_rows_whose_answer_was_written_wrongly_are_declared_…` がこの申告と見直しの全件（43 行）を固定する。
+
+### K207 測定結果（登録のあと。数値は `artifacts/w3-b5/` のファイルから。予想は書かない）
+
+**（K207 は第 1 ラウンドの測定。表が 2 行の間の値で、変更 2 の後の値ではない。今の値は下の K208。K207 の「正読 41 行」の 3 行は 誤読として数えるべきだった: 変更 2 の「凍結した正解の誤りの申告」。K207 と K221・K229・K230 が名前で挙げる第 1 ラウンドの測定出力（`entry_*.jsonl`・`delta_*`・`direct_only.txt`・`none_cmp.txt`・`x3_*`・`soundness_*`・`frozen_fixture_*`・`query_unchanged_*.txt`・`pytest_full.txt` ほか・`status_after.txt`・`acceptance_commands.txt`）は `artifacts/w3-b5/round1/` に移した（消していない）。第 2 ラウンドの出力は拡張子の前に `.r2` を付けて `artifacts/w3-b5/` の直下にある。）**
+
+**検査データ**（`tests/reading_soundness/ja_r11.jsonl`。出力は `data_counts.txt`・`data_generation_report.txt`・`frame_source_check.txt`・`filler_types_r8.tsv`）:
+- 617 行。凍結した 604 行（`bank_freeze.sha256`、`bank_freeze_time.txt` 2026-10-04 06:32:47 +0900）と、凍結のあとに足した 13 行（判断記録 H206。`bank_freeze_after.sha256`、`bank_append1_time.txt` 2026-10-04 06:41:10 +0900。先頭の 604 行はバイトまで同じ）。
+- 役割の群 × 期待: de_place 読む 82（引き金に届く 76 + 読解器だけで読める 6）・棄権 88、de_instrument 棄権 33、de_cause 棄権 30、ni_recipient 読む 46・棄権 64、ni_goal 読む 43・棄権 50、ni_time 読む 22・棄権 52、ni_purpose 棄権 37、ni_other 棄権 38、mechanism 棄権 32。登録した件数の下限（K205）はすべて満たした（足りない群は無い）。
+- 枠の出所: `frame_source` r8 525 行・absent 60 行・synthetic 32 行。r8 の行の枠が r8 の sqlite の行と一致しない行は 0（`frame_source_check.txt`）。synthetic は `mechanism` の群だけ。充填物 184 語のうち偽の配置が r8 の実物と違うのは 8 語（右・口・段差・坂・溝・ぬかるみ・崖・暗闇。r8 が PLACE と答えた型のまま、腕を `seed` の direct にした最悪の場合の行）。r8 の答えと矛盾する型にした語は 0（`filler_types_r8.tsv`）。
+
+**登録した表（16 行）を入口に通したとき**（`data_check_first_604.txt`・`data_check_before_narrowing.txt`・`narrow_summary.txt`）: 604 行で誤読 129、617 行で誤読 140（不完全 0）。読んだ 332 行のうち 192 行が正読。誤読の組と件数は「表の変更記録（W3-b5）」の表のとおり。この結果で `frame_required` の 14 行を外した（変更 1）。
+
+**狭めたあと**（`data_check.txt`。`run_rows.py --exceptions expect_exceptions.json --narrowed narrowed_rows.json`）: 617 行で 誤読 0・不完全 0・UNJUDGED 0。入口が読んだのは 41 行で、41 行すべて正読（ni_goal 35 = P_MOVE の `goal/に` 33 + P_COMMUNICATE の `goal/に` 2、de_place 6 = 読解器だけで読める行）。狭めたことで結果か診断が変わった凍結の行は 286 行（読む期待が棄権になった 151 行と、棄権の期待のまま診断の理由が変わった 135 行。`narrowed_rows.json`）。狭める前から凍結の期待が観測と違った行は 19 行（`expect_exceptions.json`。18 行は CONFIRMED の述語で、確認済みの frame が先頭の役割 が を先に調べて `PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:<型>:が` で止まる行、1 行は 告白する の枠の に が PERSON だけなので、全候補が GROUP_ORG・PERSON の充填物 家族 が 行 ∩ 枠 = {PERSON} の外に出て `PLACEMENT_MULTIPLE` になる行。どれも棄権で、誤読ではない）。
+
+**配置なし・既存の凍結データ（L1）**:
+- 配置なしの入口 4,104 入力（`entry_inputs.txt` = W3-b4 の 3,500 + 検査データ 604 の文）: 基点と byte 一致（`none_cmp.txt` exit=0）。
+- x3（凍結した日本語のバンクと検査データの文 1,009 文）: `changed=0`・`misread=0`（`x3_summary.txt`）。照合ハーネス 500 文: 変わった文 0・誤読 0（`soundness_compare.txt`）。
+- 既存の凍結データを偽物（`w3b1_fakes`・`w3b2_fakes`・W3-b4 の行ごとの偽物）で基点と今で流した 2,270 件: 出力も診断も差 0（`frozen_fixture_delta.txt`）。
+- 問い合わせ: r8 の `generated_frames` 8,030 語 + 207 語、r7 の 4,788 語 + 207 語の全部で、`frame_generated` を除いた答えが基点と byte 一致（不一致 0）、鍵の位置の誤り 0、値が sqlite の行と違う 0（`query_unchanged_r8.txt`・`query_unchanged_r7.txt`）。
+
+**配置 r8・r7 の実物の入口（L5 の材料。受入ではない）**（`entry_r8_*`・`entry_r7_*`・`delta_summary.txt`・`delta_manual_r8.tsv`・`delta_summary_r7.txt`）: 4,104 入力で、r8 は基点 458 文が読め、今は 463 文（新しく読めた 5 文。ほかの入力の出力は 1 件も変わらない: `same=4099`・`frame_stopped=0`・`changed=0`）。新しく読めた 5 文は 検査データの 先生が北海道に旅行した。・店員が沖縄に旅行した。・係員が京都に旅行した。（旅行する）、社員が山に昇った。・学生が山頂に昇った。（昇る）で、述語は r8 の実物で direct・NOT_CONFIRMED・枠が に:PLACE を持つ語。5 文とも `goal` と読み、人が読んで正しい（`delta_manual_r8.tsv`）。r7 は新しく読めた文 0（`same=4104`）。推定の偽物・割れの偽物（`--mode estimated`・`--mode multiple`）は基点と byte 一致（`direct_only.txt`）。
+
+### K208 測定結果（第 2 ラウンド。変更 2 の後。数値は `artifacts/w3-b5/` のファイルから。予想は書かない）
+
+**検査データ（649 行）**（`data_counts.txt`・`frame_source_check.txt`・`filler_types_r8.tsv`）: 凍結した 604 行 + 第 1 ラウンドで足した 13 行（`bank_freeze_after.sha256`）+ 第 2 ラウンドで足した 32 行（`bank_freeze_r2.sha256` 1949592b…1316、`bank_freeze_r2_time.txt` 2026-10-04 07:26:28 +0900。先頭の 617 行はバイトまで同じ: テストが 3 つの凍結の sha が今のファイルの先頭と一致することを確かめる）。役割の群 × 期待（凍結した期待の件数）: de_place 読む 82・棄権 88、de_instrument 棄権 33、de_cause 棄権 30、ni_recipient 読む 46・棄権 72、ni_goal 読む 43・棄権 66、ni_time 読む 22・棄権 52、ni_purpose 棄権 45、ni_other 棄権 38、mechanism 棄権 32。登録した件数の下限（K205）はすべて満たしている（`data_counts.txt` の `all floors met: True`）。枠の出所: `frame_source` r8 557 行・absent 60 行・synthetic 32 行、r8 の sqlite の行と一致しない行は 0。充填物 203 語のうち偽の配置が r8 の実物と違うのは 8 語（第 1 ラウンドと同じ。追記の 32 行の語はすべて r8 の実物）。
+
+**直す前の記録（07:26:37）**: 残した 2 行の表で 649 行を流した: 誤読 31（追記の行だけ。型ごと 8・8・7・8）・不完全 0・UNJUDGED 0（`data_check_before_round2.txt`・`data_check_before_round2.json`）。内訳は「表の変更記録（W3-b5）」の変更 2 の表。
+
+**外したあと**（`data_check.txt`。`run_rows.py --exceptions expect_exceptions.json --narrowed narrowed_rows.json`）: 649 行で 誤読 0・不完全 0・UNJUDGED 0・凍結した期待と観測の不一致 0（申告 23 行・狭めた行 333 行を除く）。入口が読んだのは 6 行（de_place の読解器だけで読める行。`path: none`）で、6 行とも正読。`role_license` のある読みは 0。型の段を通って読まれた文は 1 文も無い。
+
+**配置なし・既存の凍結データ（L1。第 2 ラウンドで取り直した。大きな出力は scratchpad に置き、sha256 を `r2_dump_sha256.txt` に残した）**:
+- 配置なしの入口 4,149 入力（`entry_inputs_r2.txt` = 第 1 ラウンドの 4,104 + 検査データの追記の 45 文）: 基点と byte 一致（`none_cmp.r2.txt` cmp_exit=0）。
+- x3（1,054 文）: `changed=0`・`misread=0`（`x3_summary.r2.txt`）。照合ハーネス 500 文: 変わった文 0・誤読 0（`soundness_compare.r2.txt`）。
+- 既存の凍結データを偽物で流した 2,270 件: 出力も診断も差 0（`frozen_fixture_delta.r2.txt`）。
+- 問い合わせ: r8 の 8,030 語 + 207 語、r7 の 4,788 語 + 207 語で、`frame_generated` を除いた答えが基点と byte 一致（不一致 0）・鍵の位置の誤り 0・値が sqlite の行と違う 0（`query_unchanged_r8.r2.txt`・`query_unchanged_r7.r2.txt`）。
+
+**配置 r8・r7 の実物の入口（L5 の材料。受入ではない）**（`delta_summary.r2.txt`）: 4,149 入力で、r8 live・r7 live・推定の偽物・割れの偽物の 4 つの方式すべてで、基点と **byte 一致**（`same=4149`・`newly_read=0`・`frame_stopped=0`・`changed=0`）。r8 live は基点も今も 458 文が読める。第 1 ラウンドで新しく読めた 5 文（旅行する・昇る）は、2 行を外したので読まれなくなった。このチケットで B1 の「ambiguous case role」の文が読めるようになる数は 0（監査役の測定の前の、入口の差としての 0。B1 そのものは測っていない）。
+
+**関係するテスト（L6）**（`pytest_related_after.r2.txt`・`pytest_related_base.r2.txt`・`pytest_related_new.r2.txt`）: 基点の木（`git clone --shared` して `7494ba2` にした木）で 5,002 passed・失敗 0。今 5,700 passed・3 failed。新しく落ちたのは 基線 `dev_7494ba2_failures.txt` に無い 3 件だけで、第 1 ラウンドと同じ凍結テストとの衝突 3 件（K229。`frozen_conflicts.md`）。全体テストの結果は `pytest_full.r2.txt` と報告に書く。
+
+### 既知の穴（K220〜。隠さない）
+
+- **K220 生成の枠は役割を言わない（構造上の穴。表の 14 行が外れた理由）**: 「この述語のこの助詞にこの型が来る」という座標から、その句が place か instrument か cause か、recipient か刺激か相手か受益者か、goal か勤務先か接触面かは決まらない。同じ型の別の役割の充填物を枠では分けられない。誤読は 7 つの組で出た（K207）。語・述語ごとの例外・表層の規則は足さない約束なので、行を外した。
+- **K221 L5 への含意（変更 2 の後は 新しく読める文が 0）**: r8 の入口で `frame_required` の行が働きうるのは、述語が direct で NOT_CONFIRMED の語だけ（K204）。変更 1 の後に残した 2 行で、実物の r8 の入口で新しく読めたのは P_MOVE の `goal/に` の 旅行する・昇る の 5 文だけ（K207）。変更 2 でその 2 行を外したので、4,149 入力の実物の r8・r7 の出力は基点と byte 一致（新しく読める文 0。K208）。B1 の「で／に の格の曖昧」で唯一の理由の文の述語（確認する・集める・待つ・選ぶ・分ける…）は、r8 で estimated か、seed で枠が無い語なので、このチケットでは動かない（門 3 を緩めない）。動かすには、日常の seed 動詞に生成の枠を付ける別チケットと、述語の型が生成の枠だけで決まった語（r8 で 7,900 語）を型の段でどう扱うかの判断が要る。数の見込みは書かない（監査役が測る）。
+- **K222 配置の型の誤り**: r8 の 口=PLACE は文の語義（くち）でない（K173）。右・段差・坂 などは r8 では PLACE だが腕が `role@` だけで、付加の門 5 が今は止める。この門に頼る道は、r8 より後の配置で これらの語に seed・定義の証拠が付けば開く（W3-b4 の第 3 ラウンドと同じ判断）ので、最悪の場合の行は偽の配置（`seed` の腕で direct の PLACE）で作った。
+- **K223 seed の日常動詞に枠が無い**: 打つ・驚く・書く・描く・洗う などは r8 の `generated_frames` に行が無く、`frame_generated` は null。型の段はこれらの `frame_required` の行を読まない（基点の理由のまま）。
+- **K224 出力の 2 番目の理由は W3-b1 の理由のまま**: `semantic_read.py` を変えないので、新しい理由（`FRAME_GENERATED_DOES_NOT_LICENSE`・`PLACEMENT_FRAME_GENERATED_INVALID`）は診断 `typed_explain_ja(...)['w3b2']` にだけ出る（K170 と同じ）。
+- **K225 許可を出力に出せない（H204）**: 指示書の `role_flags.<役割>.license` は、`event_cross._flag_well_formed` が鍵を `determiner`・`coordination` に閉じているため、出力を `ENTRY_FLAGS_NOT_WELL_FORMED` で拒否させる。`event_cross.py` は許可パスの外で、広げない。計画の戻り値の `role_license` にだけ置いた。出力に出す形は別チケット。
+- **K226 P_COMMUNICATE の `goal/に` の証拠が薄い**: r8 で に:PLACE を持ち引き金に届く P_COMMUNICATE の語は 掲示する・登壇する の 2 語だけ（案内する・送付する・通じる は読解器が自分で読むか、読解器が述語の形を変える）。この行の最悪の場合を試せる語が無く、誤読 0 は 2 語の正読だけに基づく。広い配置（r9 以降）で語が増えたとき、誤読が出たら外す（K206）。**（変更 2: この行は外した。最悪の場合は 第 2 ラウンドで アップロードする（に:PLACE を持ち、型の段に届き、CONFIRMED でない語）で試せて、7 文が誤読になった。）**
+- **K227 検査データの限界**: 述語の枠は r8 の実物だが、述語の状態は 読む行でも棄権の行でも direct の NOT_CONFIRMED に直した偽の配置である（r8 では 7,900 語が estimated）。自作のデータで 誤読 0 になったことは証拠にならない。L4（中間職の未公開の文）で決まる。凍結後に足した 13 行（H206）は、最初の測定の結果を見た後で、表の行を試す語を選んだ（期待は設計から書き、実行前に書いた）。
+- **K228 CONFIRMED の行の設計の見落とし（申告）**: 確認済みの frame が先頭の役割（agent の が）から調べるので、frame に が が無い CONFIRMED の行は 常に `…:が` で止まる。で・に の確認を試す意図の 18 行がこの理由になった（`expect_exceptions.json`）。で・に を調べる行は、frame に が を持つ作った配置で試す必要がある（今は `frame_required` の で・に の行が残っていないので、試す対象が無い）。
+- **K229 凍結したテストとの避けられない衝突 3 件（申告。既存のテストは変えていない。提案する差し替えの全文は `artifacts/w3-b5/frozen_conflicts.md`）**: (1) `tests/test_semantic_read_w3b4.py::test_the_plan_of_w3b4_is_the_plan_of_w3b2_with_the_two_references_to_the_table_replaced` は `typed_plan_u_w3b4_ja` の本文を固定している（チケットが役割決定の関数の中の変更を指定したので避けられない）。(2) `tests/coarse_place/test_coarse_place_w3a4_r7_unchanged.py::test_the_answers_of_r7_are_byte_identical_to_the_frozen_hashes` は r7 の答えの `json.dumps` の sha256 を固定している（答えに鍵 `frame_generated` が増えるので、定義上すべて変わる。`frame_generated` を除いた答えは基点と byte 一致で、`query_unchanged_r7.txt` が 4,995 語で確かめた）。(3) `tests/coarse_place/test_coarse_place_w5b.py::test_a_spelling_that_has_an_answer_of_its_own_keeps_it_exactly_as_the_answer_function_gives_it` は `query` の答え（`spelling`・`term` を除く）が `_answer` の答えと等しいことを求めるが、`frame_generated` は `query` が足す（チケットが `query` の変更だけを許す）ので、`_answer` の答えに無い。
+- **K230 テストが追跡下のファイルを書き換える**（指示書 §2.5）: `tests/attack/w3a3/test_attack_w3a3_r6.py` の実行が `tests/attack/w3a3/r6_48_queries.jsonl`・`r6_audit_summary.json` を書き直す。全体テストのあとに戻して報告した（`status_after.txt`）。
+- **K231 W1-a5 との統合**: `semantic_reader.py` の末尾と、W3-b4 第 4 ラウンドの名前の差し替えの 3 文には何も足していない。docs は末尾に §10F を足したので、並行のチケットが末尾に足す節と統合のとき重なりうる。
+
+- **K232 L3 の後半（搭乗口で係員が旅券の写しを確認した の型が読める）は満たせない（変更 2 の後は 確定）**: `frame_required` の行が 0 行になったので、生成の枠を使って付加（place/で）や に の項を読む文は無い。参照系としての生成の枠は、「この助詞にこの型が来る」までしか言わず、同じ型の別の役割（場所と手段・原因、行き先と存在の場所・目的・情報の受け手）を分けられない。第 1 ラウンド（14 行）と第 2 ラウンド（残りの 2 行）の 2 回、別の述語・別の充填物で同じ穴が出た（K220）。仕組み（問い合わせの `frame_generated`・行の種類 `license`・`predicate_frame_generated`・遅延の検査・理由 2 つ・`role_license`）は残り、空の表で動く。判断が要る（監査役）: 役割まで言う参照（役割つきの生成の枠など）を別チケットで作るか、この仕組みを空のまま統合するか。
+- **K233 第 2 ラウンドの追記の行の限界**: (3) の述語が アップロードする だけ（H213）。(2) の充填物は r8 で PLACE と答えられた行事の名詞（遠足・展覧会・花火大会・お祭り・神社参拝）で、r8 では `role@` の証拠だけの語が多い（項では門 5 を通る）。私が書いた文の語はレビューの未公開の文と同じ型だが、同じ文ではない。レビューの文での再測定（中間職）が権威。
+- **K234 レビュー申し送りの 2（v1 の `P_MOVE`/`P_COMMUNICATE` の `place/で/PLACE`（W3-b1 から）の潜在の穴）**: 私は再現していない（このチケットの範囲外）。レビューの測定では、右・口・段差 が `role@` だけでない direct の PLACE になる配置（r9 以降）で、基点も同じ誤読をする。`role@` だけの今の r8 では門 5 が止める。
+- **K235 診断の理由が変わった行**: 変更 2 で、棄権のまま診断（`typed_explain_ja(...)['w3b2']`）の理由が変わった凍結の行が 12 行 + 変更 1 の記録の 3 行ある（`narrowed_rows.json`）。出力は棄権のまま（出力の 2 番目の理由は W3-b1 の理由のまま: K224）。
+- **K236 第 2 ラウンドの大きな測定出力は scratchpad に置いた**: 入口の全出力（各 1.8MB 前後の jsonl が 14 本）は `artifacts/w3-b5/` に置かず、sha256 を `r2_dump_sha256.txt` に残した（統合の負担を減らす。第 1 ラウンドの出力はそのまま残してある）。再現のコマンドは `acceptance_commands_r2.txt`。
+
+### 判断記録（H200〜）
+
+- **H200 「11 型の に の 3 役割」は成り立たない → 読む 5 型に 16 行**: 計画 `typed_plan_u_w3b4_ja` は、読まない型を行を見る前に返し、節のすべての役割に表の行を求める。読まない 8 型には が の行が無く、に の行だけでは 1 文も読めない。読まない型を読む型にするのはチケットの範囲外（K162）。（登録時。K201）
+- **H201 `frame_generated` の形と置き場所**: 値は生成の枠の表の行をそのまま（`origin: generated`・`constructed: true`・`ptype`・`frame`・`provenance`）。引く語は `spelling.normalized`。null は 配置が開けない・表が無い・行が無い。置き場所は W3-a3 の末尾の鍵の最初の直前（`spelling` の後ろ）: 凍結テスト 5 本が答えの末尾の並びを固定している。`frame` の意味は変えない。`coarse_place.py` は私的な関数 `_insert_frame_generated` を足し、`query` に 1 行（`return r` の前）を足しただけ。
+- **H202 枠が無い述語では基点の理由のまま**: 不在（`frame_generated` が null か鍵が無い）と否定（`FRAME_GENERATED_DOES_NOT_LICENSE`）は別の理由。W3-b4 のデータの診断の理由は 1 字も変わらない。
+- **H203 件数の下限の読み方**: 下限は 凍結した期待の件数（`behavior`）で数える。引き金に届かない文で水増しはしない（de_place の読む 82 行のうち 6 行は読解器だけで読める行で、型の段に届かない。引き金に届く行だけでも 76 で下限 20 を超える）。時の語の多くを読解器が自分で time と読むので、ni_time の読む行は 読解器が recipient と呼ぶ時の語（令和・満月・命日 など。r8 の direct の TIME で role@ だけでない証拠を持つ語）と P_ACT の 起きる・遅刻する だけで作り、22 行になった。
+- **H204 許可の申告は計画の戻り値の `role_license` だけ**: K225。指示書からの逸脱（登録時に書いた）。
+- **H205 `w3b5_expect` に `REFUSED`**: 登録した最悪の場合の行（枠が許し、充填物が PLACE で、役割だけが違う文）は、設計の中に棄権する理由が無い（それが穴）。理由の前方一致を書けないので、「`READ` でなければよい」を `REFUSED` で表す（K205 の「`READ`、または前方一致の文字列」への小さな追加。データの凍結の前に決めた）。
+- **H206 凍結の後に 13 行を足した**: 凍結した 604 行は、実物の r8 の枠では試せない行（P_COMMUNICATE の `goal/に`・P_EMOTION の `place/で`・`goal/に`・P_CREATE の `recipient/に`）を持たなかった。K206 に従い「誤読が出たら外す」ために、これらの最悪の場合の行を足した（期待は設計から書き、実行の前に書いた。ただし最初の測定の結果を見たあとで、どの行を試すか選んだ。K227）。ID は 9NN。
+- **H207 K206 の適用**: 誤読が 1 件でも出た行は外した。P_CREATE の `time/に` は 誤読が無いが、同じ型の 3 行で誤読が出たので型ごと外した（K206 の「型の行をすべて外す」）。残した 2 行は誤読 0。型の鍵は辞書に残し、行の無い型は空の並び（H208）。
+- **H208 辞書の鍵を残す**: 型の順と鍵を固定するテストと、登録した 16 行との照合のため。
+- **H209 仕組みのテストは登録した 16 行を戻して流す**: 計画の単体テスト（許す・助詞が無い・型が無い・枠が無い・壊れた枠・CONFIRMED・推定・割れ・K186 の門）は、表を狭めても仕組みが働くことを確かめる必要があるので、`registered` の固定具が登録した 16 行を `TYPED_FRAMES_FRAME_REQUIRED_W3B5` に戻して流す。狭めたあとの表そのものは別のテストが確かめる。
+- **H210 期待と観測の違い（誤読でない）の扱い**: K207 の 19 行は `expect_exceptions.json` に観測を固定して申告した（テストが観測を固定する）。
+- **H211 付加の行が表にあるときの理由の順（凍結前に決めた期待の訂正）**: 表の `time/に`（付加）が `in_frame` にあるので、枠の無い述語の に の文は、充填物の腕が `role@` だけなら門 5 が先に `PLACEMENT_SLOT_EVIDENCE_ONLY` で止める（`PLACEMENT_TYPE_MISMATCH` でなく）。割れた充填物が付加の行を持つ述語で `role@` だけなら同じ。凍結の前にコードを読んで期待をそう書いた（`mk_groups_w3b5.py` の `role_only`）。
+- **H212 第 2 ラウンドの必須 1: 残した 2 行を外す（K206。語・表層の規則は足さない）**: レビューの L4 の誤読の型（滞在・残留の動詞で に が存在の場所、目的の名詞が PLACE、情報を受け取る組織が PLACE、行き先か場所か決まらない）を、私の別の語で 32 行（4 型 × 8）書いたところ、残した 2 行の表で 31 行が読まれて誤読になった（変更 2）。型を狭める道が無いので（期待する型は PLACE だけ）行ごと外し、辞書の鍵は残す（H208）。
+- **H213 追記の 32 行の作り方**: 述語は r8 の実物の枠（`frame_source: r8`）で、充填物は r8 の実物の答え（`DECIDED direct`・期待する型）。(1) 居残る・宿泊する（P_MOVE。r8 の枠が に:PLACE）、(2) 集まる・殺到する・来場する・立ち寄る、(3) アップロードする（P_COMMUNICATE。ほかの語が使えない理由は変更 2 の記録）、(4) 座り込む・しゃがみこむ・倒れ込む。(2) の 出張する ＋ 展覧会 は型の段の引き金に当たらない（`path: none`。`mk_round2_rows.py` が報告して書かなかった）ので入れなかった。期待は設計から先に書き、sha256 と時刻を残して凍結した（07:26:28）。全行 `readable: false`・`entry_expect: abstain`・`w3b5_expect: REFUSED`（H205 と同じ理由: 設計の中に棄権の理由が無い）。ID は NIGOAL-A-951〜958（滞在）・961〜968（決まらない）、NIPURP-A-951〜956・958・959、NIRECIP-A-951〜958。第 1 ラウンドの 901〜913 とは別の番号。
+- **H214 凍結した正解の誤りの申告（必須 3）**: 期待は書き換えず、`expect_exceptions.json` に 2 つの新しい種類で申告した。レビューが挙げた 停泊 の 2 行に加え、`ni_goal` の読む行 43 行の全件を見直して（`round2/ni_goal_read_rows_review.tsv`）、停車（`R-010`）・参列（`R-036`）を「決まらない」として追加した（誤読として数えるべき方向の申告。ほかの 39 行は goal のまま）。この判断は私の読みで、中間職が別の判断をするなら申告の行を足す・外すだけで済む（テストは tsv と申告の一致を固定する）。
+- **H215 変更 2 のテストの作り**: 仕組みのテストは `registered`（16 行）か `goal_rows`（変更 1 の後の 2 行）の固定具で行を戻して流す。外した表そのものは別のテスト（表の検査・「0 行」・追記の 32 行が棄権・全行が誤読 0）が確かめる。
+- **H216 順序（登録 → データ凍結 → 直す前の記録 → 実装）の記録**: 事前登録 07:22:12（`r2_prereg_time.txt`）→ 追記の行の凍結 07:26:28（`bank_freeze_r2_time.txt`）→ 直す前の記録 07:26:37（`before_round2_time.txt`）→ コード 07:27:03（`narrow2_code_time.txt`）→ docs の表の本体・期待の申告・テスト・測定の取り直し。docs の表をコードより後に狭めた点は、変更 1（docs が先）と順が逆。事前登録の本文には 表を 0 行にすると書いてあり、本文の変更は無い。
+
+### テストの変更記録（W3-b5）
+
+- 凍結: `tests/test_semantic_read_w3b5.py`・`tests/coarse_place/test_coarse_place_w3b5_frame_generated.py`（`tests_freeze.sha256`・`tests_freeze_time.txt` 2026-10-04 06:36:45 +0900。凍結したままの写しは `artifacts/w3-b5/tests_frozen_copy/`）。実装の開始は 06:38:31（`impl_start_time.txt`）。
+- 変更（狭めたあと。変更の後の sha は `tests_freeze_after.sha256`、前後の差は `tests_change.diff`）: すべて `tests/test_semantic_read_w3b5.py`。`tests/coarse_place/test_coarse_place_w3b5_frame_generated.py` は変えていない。
+  1. `test_the_table_of_the_docs_…`・`test_the_first_seventeen_rows_…`: `frame_required` の行数 16 → 2（表は 33 → 19 行）。`test_v1_is_inside_…`: 行の鍵が に と で → で の行が無いので「の部分集合」。
+  2. `test_no_row_of_the_data_is_misread_…`: 読む群の確認 `ni_recipient > 0 and ni_goal > 0` → `ni_goal > 0`（recipient の行を外した）。
+  3. 「ticket の文」のテスト: 搭乗口の型の文が読める → 行が表にある間だけ読める（今は棄権し、`narrowed_rows.json` の診断のとおり）。名前に `_only_while_its_row_is_in_the_table` を足した。
+  4. 仕組みのテスト（H209）に固定具 `registered` を足した（9 本）。CONFIRMED のテストの frame に が を足し、先頭の役割が先に止まることの 1 行を足した（K228）。
+  5. 新しく足したテスト: 外した 14 行の照合、登録した表を戻すと最悪の場合が読まれる（誤読 100 件以上）、残した `goal/に` の行の単体。
+  - 凍結したデータの行の期待は 1 行も書き換えていない（`narrowed_rows.json` と `expect_exceptions.json` が記録を持つ）。
+
+**第 2 ラウンドの変更（変更 2。2026-10-04 07:36:32 +0900 に確定。変更の後の sha は `tests_freeze_r2.sha256`、前の写しは `artifacts/w3-b5/tests_r1_copy/`、前後の差は `tests_change_r2.diff`）**: すべて `tests/test_semantic_read_w3b5.py`。`tests/coarse_place/test_coarse_place_w3b5_frame_generated.py` は変えていない（sha256 b0282312…、第 1 ラウンドから同じ）。弱める変更ではない（表を狭めた結果に合わせた断定の変更と、新しいテストの追加）:
+1. `test_the_table_of_the_docs_…`・`test_the_first_seventeen_rows_…`: `frame_required` の行数 2 → 0（表は 19 → 17 行）。
+2. `test_the_data_is_the_frozen_file_…`: 3 つの凍結（604・617・649 行）の sha が今のファイルの先頭と一致することを確かめる（前は 604 行の 1 つだけ）。
+3. `test_no_row_of_the_data_is_misread_or_incomplete_and_the_groups_that_the_table_reads_are_read` → `…_and_after_the_last_narrowing_the_entry_reads_only_what_the_reader_alone_reads`（名前を変えた: 「表が読む群が読まれる」はもう成り立たない）。断定 `read['ni_goal'] > 0` → 「読まれた行はすべて `path: none` で、群は de_place だけ」。
+4. `test_the_rows_taken_out_by_the_table_change_record_are_the_fourteen_…_two_goal_rows`（名前を変えた）: 残る行は 2 → 0、外した行は 14 → 16（変更 1 が 14、変更 2 が 2）。
+5. `test_with_the_table_as_registered_…_fourteen_rows_were_taken_out`（名前の `fourteen` → `the_sixteen`。断定は同じ: 誤読 100 件以上）。
+6. `test_with_the_goal_row_of_the_remaining_frame_a_place_that_the_frame_lets_is_read_and_everything_else_is_a_reason`（残した行を使う）→ 固定具 `goal_rows`（変更 1 の後の 2 行）で行を戻して同じ断定を流す `test_with_the_two_goal_rows_put_back_the_mechanism_reads_…`（名前を変えた。中身は同じ）。表そのもの（行が無い）では同じ文が基点の理由 `PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE` で棄権し、枠が何を言っても・壊れていても同じであることを確かめる新しいテストを足した。
+7. 新しく足したテスト（4 本）: 追記の 32 行が 4 つの型を各 8 行・全行 abstain・r8 の実物の枠、2 行を戻すと 4 型とも 5 行以上が読まれて 31 行すべてが誤読、外した表ではその 32 行がすべて棄権で誤読 0、凍結した正解の誤りの申告と `ni_goal` の読む行 43 行の見直しの全件の固定。
+
+前後の差の全文（`tests_change_r2.diff` と同じ）:
+
+```diff
+--- artifacts/w3-b5/tests_r1_copy/test_semantic_read_w3b5.py (第 1 ラウンドの終わり。sha256 6dda19c6…)
++++ tests/test_semantic_read_w3b5.py (第 2 ラウンドの終わり。sha256 23b8fb8e…)
+@@ -1,6 +1,6 @@
+ """W3-b5: the generated frame of a predicate as a REFERENCE for what an adjunct (or a に phrase) may be read as. The query gains the key `frame_generated`; the second table (K62 v2)
+ gains a kind of row, `frame_required`: a row that the plan reads only when the generated frame of the predicate holds the particle with a type that the row expects and the
+-filler (a DECIDED direct answer, or every candidate of a split one) is of that type. The table of kinds (`license`), the 16 rows, the control flow, the contract of `frame_generated`,
++filler (a DECIDED direct answer, or every candidate of a split one) is of that type. The table of kinds (`license`), the 16 rows (none is left after table change record 2), the control flow, the contract of `frame_generated`,
+ the reasons, the data (tests/reading_soundness/ja_r11.jsonl) and these tests were registered in docs/READING_SOUNDNESS.md section 10F (K200-K206) in this order: registration,
+ data (frozen), tests (frozen), code. The placements the tests open are fakes made from the `placement` of each row of the data (a contract-conforming answer; `answer_of`); the only real
+ placements are r7 and r8, read only, for the tests of the query (skipped with ENV_MISSING when they are not there).
+@@ -90,7 +90,7 @@
+ def test_the_table_of_the_docs_is_the_rows_of_the_code_with_their_kind_in_the_same_order():
+     got = [tuple(r) for r in block('w3b5_frames')]
+     want = [(t, role, '/'.join(parts), ' '.join(exp), KIND[kind], lic) for (t, role, parts, exp, kind, lic) in R.typed_frames_w3b5_rows()]
+-    assert got == want and len(got) == 17 + 2          # 17 rows of the kind table and, after table change record 1 (K206), 2 of the 16 registered rows of the kind frame_required
++    assert got == want and len(got) == 17 + 0          # 17 rows of the kind table and, after table change records 1 and 2 (K206), none of the 16 registered rows of the kind frame_required
+ 
+ 
+ def test_the_first_seventeen_rows_are_the_rows_of_the_second_table_character_for_character_and_have_the_kind_table():
+@@ -99,7 +99,7 @@
+     assert len(old) == 17
+     for o, n in zip(old, new[:17]):
+         assert n.rstrip().endswith(' | table |') and n.rstrip()[:-len(' table |')].rstrip() == o.rstrip()
+-    assert [r[5] for r in block('w3b5_frames')] == ['table'] * 17 + ['frame_required'] * 2
++    assert [r[5] for r in block('w3b5_frames')] == ['table'] * 17 + ['frame_required'] * 0
+     v2 = R.typed_frames_v2()
+     code = [(t, role, parts, exp, kind) for t, rows in v2.items() for (role, parts, exp, kind) in rows]
+     rows = [(t, role, parts, exp, kind) for (t, role, parts, exp, kind, lic) in R.typed_frames_w3b5_rows() if lic == 'table']
+@@ -342,6 +342,16 @@
+ @pytest.fixture
+ def registered(monkeypatch):
+     monkeypatch.setattr(R, 'TYPED_FRAMES_FRAME_REQUIRED_W3B5', registered_rows())
++
++
++GOAL_ROWS = {'P_MOVE': (('goal', ('に',), ('PLACE',), 'arg'),), 'P_COMMUNICATE': (('goal', ('に',), ('PLACE',), 'arg'),), 'P_ACT': (), 'P_CREATE': (), 'P_EMOTION': ()}
++
++
++@pytest.fixture
++def goal_rows(monkeypatch):
++    """The table as it was after table change record 1 (round 1): the two rows P_MOVE and P_COMMUNICATE `goal/に/PLACE` that record 2 (round 2, review.r1.md) took out. The tests that put it back show WHY
++    they went (the rows that the review named are read with it) and that the mechanism still works with one row."""
++    monkeypatch.setattr(R, 'TYPED_FRAMES_FRAME_REQUIRED_W3B5', dict(GOAL_ROWS))
+ 
+ 
+ # ===================================================================================================================================
+@@ -570,11 +580,30 @@
+ 
+ def test_the_data_is_the_frozen_file_or_the_frozen_file_with_rows_appended_at_the_end():
+     import hashlib
+-    frozen = (A / 'bank_freeze.sha256').read_text(encoding='utf-8').split()[0]
+     lines = DATA_FILE.read_text(encoding='utf-8').splitlines(keepends=True)
+-    assert frozen in {hashlib.sha256(''.join(lines[:k]).encode('utf-8')).hexdigest() for k in range(len(lines), 0, -1)}
++    prefixes = {hashlib.sha256(''.join(lines[:k]).encode('utf-8')).hexdigest(): k for k in range(len(lines), 0, -1)}
++    # the three freezes, in order: 604 rows (first freeze), 617 (13 rows appended in round 1, H206), 649 (32 rows appended in round 2, K206 change 2): each one is the start of the file as it is now
++    sizes = [prefixes[(A / name).read_text(encoding='utf-8').split()[0]] for name in ('bank_freeze.sha256', 'bank_freeze_after.sha256', 'bank_freeze_r2.sha256')]
++    assert sizes == [604, 617, 649]
+ 
+ 
++def test_the_rows_appended_in_round_2_are_the_four_types_of_the_review_with_five_or_more_each_abstain_rows_with_the_real_frame_of_r8():
++    appended = DATA[617:]
++    assert len(appended) == 32 and all(r['id'].split('-')[2] == 'A' and r['behavior'] == 'abstain' and r['entry_expect'] == 'abstain' and r['w3b5_expect'] == 'REFUSED' for r in appended)
++    assert all(r['frame_source'] == 'r8' and r['pred_type'] in ('P_MOVE', 'P_COMMUNICATE') and r['particle'] == 'に' for r in appended)
++    assert all(r['expect'] == {'readable': False, 'clauses': [], 'relations': [], 'must_not': []} for r in appended)
++    assert collections.Counter(TYPE_OF(r) for r in appended) == {'stay': 8, 'purpose': 8, 'org_receives': 8, 'undecided': 8}
++    # the words are not the words of the older rows: the sentences and the (predicate, filler) pairs are new
++    old_inputs = {r['input'] for r in DATA[:617]}
++    assert not {r['input'] for r in appended} & old_inputs
++
++
++def TYPE_OF(row):
++    """The type of a round 2 row (review.r1.md required fix 2): by the id the generator gave (mk_round2_rows.py)."""
++    g, n = row['id'].split('-')[1], int(row['id'].split('-')[3])
++    return {'NIPURP': 'purpose', 'NIRECIP': 'org_receives'}.get(g) or ('stay' if n < 960 else 'undecided')
++
++
+ def _expected_reason_ok(row, got):
+     e = row['w3b5_expect']
+     if e == 'READ': return got == 'READ'
+@@ -608,15 +637,17 @@
+     assert _expected_reason_ok(row, ex['w3b2'] if ex['w3b2'] is not None else 'PLACEMENT_W3B2_NOT_TRIGGERED'), (row['w3b5_expect'], ex)
+ 
+ 
+-def test_no_row_of_the_data_is_misread_or_incomplete_and_the_groups_that_the_table_reads_are_read():
+-    bad = collections.Counter(); read = collections.Counter()
++def test_no_row_of_the_data_is_misread_or_incomplete_and_after_the_last_narrowing_the_entry_reads_only_what_the_reader_alone_reads():
++    bad = collections.Counter(); read = []
+     for row in DATA:
+         out = SR.read(row['input'], placement=query_of(row))
+         v = b1.judge(row['expect'], 'ja', out)['verdict']
+         bad[v] += 1
+-        if out['readable']: read[row['role_group']] += 1
++        if out['readable']: read.append(row)
+     assert bad['misread'] == 0 and bad['incomplete'] == 0 and bad['UNJUDGED'] == 0, bad
+-    assert read['ni_goal'] > 0          # after K206 the goal/に rows of P_MOVE and P_COMMUNICATE are what is read through a frame; the recipient/に and the で rows were taken out
++    # after table change record 2 (K206) there is no row of the kind frame_required: no sentence is read through a generated frame, so what is read is what the reader alone reads
++    # (the rows of the path `none`: the typed step is not asked) and the key frame_generated licenses nothing
++    assert read and all(r['path'] == 'none' for r in read) and {r['role_group'] for r in read} == {'de_place'}, collections.Counter(r['role_group'] for r in read)
+ 
+ 
+ def test_the_sentences_of_the_ticket_a_right_handed_hit_a_surprise_at_a_step_and_a_mouth_are_refused_and_the_boarding_gate_type_is_read_only_while_its_row_is_in_the_table():
+@@ -636,15 +667,16 @@
+             assert r['id'] in NARROWED_ROWS and SR.typed_explain_ja(r['input'], query_of(r))['w3b2'] == NARROWED_ROWS[r['id']]['observed_w3b2']
+ 
+ 
+-def test_the_rows_taken_out_by_the_table_change_record_are_the_fourteen_of_the_registration_and_the_rows_that_are_left_are_the_two_goal_rows():
++def test_the_rows_taken_out_by_the_table_change_records_are_the_sixteen_of_the_registration_fourteen_by_record_1_and_the_two_goal_rows_by_record_2_and_none_is_left():
+     reg = {(t, role, parts[0]) for t, rows in registered_rows().items() for (role, parts, exp, kind) in rows}
+     now = {(t, role, parts[0]) for (t, role, parts, exp, kind, lic) in R.typed_frames_w3b5_rows() if lic == 'frame_required'}
+-    assert len(reg) == 16 and now <= reg and len(reg - now) == 14
+-    assert now == {('P_MOVE', 'goal', 'に'), ('P_COMMUNICATE', 'goal', 'に')}
+-    assert set(R.TYPED_FRAMES_FRAME_REQUIRED_W3B5) == set(registered_rows()) | {'P_ACT', 'P_CREATE', 'P_EMOTION'}
++    assert len(reg) == 16 and now <= reg and len(reg - now) == 16 and now == set()
++    two = {(t, role, parts[0]) for t, rows in GOAL_ROWS.items() for (role, parts, exp, kind) in rows}
++    assert two == {('P_MOVE', 'goal', 'に'), ('P_COMMUNICATE', 'goal', 'に')} and two <= reg and len(reg - two) == 14        # record 1 left these two, record 2 took them out
++    assert set(R.TYPED_FRAMES_FRAME_REQUIRED_W3B5) == set(registered_rows()) | {'P_ACT', 'P_CREATE', 'P_EMOTION'} and all(v == () for v in R.TYPED_FRAMES_FRAME_REQUIRED_W3B5.values())
+ 
+ 
+-def test_with_the_table_as_registered_the_worst_cases_of_the_data_are_read_which_is_why_fourteen_rows_were_taken_out(registered):
++def test_with_the_table_as_registered_the_worst_cases_of_the_data_are_read_which_is_why_the_sixteen_rows_were_taken_out(registered):
+     """K206: the same data with the 16 registered rows put back. The rows that the change record names are the ones that misread (the count is the one in the record); with the table as it is
+     now (no `registered` fixture) there is none (test_no_row_of_the_data_is_misread_or_incomplete)."""
+     n = 0
+@@ -654,9 +686,58 @@
+     assert n >= 100
+ 
+ 
+-def test_with_the_goal_row_of_the_remaining_frame_a_place_that_the_frame_lets_is_read_and_everything_else_is_a_reason():
++def test_with_the_two_goal_rows_put_back_the_rows_appended_in_round_2_are_read_and_misread_which_is_why_the_two_rows_were_taken_out_too(goal_rows):
++    """K206, table change record 2 (review.r1.md): the table of record 1 (the two `goal/に/PLACE` rows). Each of the four types of the review has five or more rows that the entry reads, and each of them
++    is a misread (the frozen expectation is `readable: false`; the license told by the plan is the goal row). The count is the measurement of `data_check_before_round2.txt`: 31 of the 32 rows (the 32nd stops
++    at `PLACEMENT_UNPLACED:を:資料`)."""
++    per, wrong = collections.Counter(), 0
++    for r in DATA[617:]:
++        out = SR.read(r['input'], placement=query_of(r))
++        if not out['readable']: continue
++        per[TYPE_OF(r)] += 1
++        wrong += b1.judge(r['expect'], 'ja', out)['verdict'] == 'misread'
++    assert all(per[t] >= 5 for t in ('stay', 'purpose', 'org_receives', 'undecided')) and sum(per.values()) == wrong == 31, (per, wrong)
++
++
++def test_with_the_table_as_it_is_every_row_appended_in_round_2_is_refused_and_the_misreads_of_the_review_are_gone():
++    for r in DATA[617:]:
++        out = SR.read(r['input'], placement=query_of(r))
++        assert not out['readable'] and b1.judge(r['expect'], 'ja', out)['verdict'] != 'misread', r['input']
++        ex = SR.typed_explain_ja(r['input'], query_of(r))['w3b2']
++        assert ex != 'READ' and not ex.startswith('FRAME_GENERATED_DOES_NOT_LICENSE'), (r['input'], ex)          # no row asks for the frame: the reason is one of the base commit's gates
++
++
++def test_the_frozen_rows_whose_answer_was_written_wrongly_are_declared_with_the_observations_and_every_read_row_of_ni_goal_was_reviewed():
++    wrong = {i: e for i, e in EXCEPTIONS.items() if e['kind'] in ('frozen_expectation_is_a_wrong_answer', 'goal_or_place_not_decided')}
++    by = {r['id']: r for r in DATA}
++    assert {i for i, e in wrong.items() if e['kind'] == 'frozen_expectation_is_a_wrong_answer'} == {'W3B5-NIGOAL-R-011', 'W3B5-NIGOAL-R-031'}       # 停泊: review.r1.md required fix 3
++    assert set(wrong) == {'W3B5-NIGOAL-R-010', 'W3B5-NIGOAL-R-011', 'W3B5-NIGOAL-R-031', 'W3B5-NIGOAL-R-036'}
++    for i, e in wrong.items():
++        r = by[i]
++        assert r['behavior'] == 'read' and r['entry_expect'] == 'read' and 'goal' in r['expect']['clauses'][0]['roles'] and i in NARROWED_ROWS     # the frozen expectation is not rewritten
++        assert e['frozen_entry_expect'] == 'read' and e['frozen_w3b5_expect'] == r['w3b5_expect'] and e['observed_entry'] == 'abstain' and e['correct_by_convention'] and e['reason']
++        assert e['observed_with_the_table_as_registered']['entry'] == 'read' and e['observed_with_the_table_as_registered']['verdict'] == 'correct'      # it was counted correct: that was the error
++        assert not SR.read(r['input'], placement=query_of(r))['readable']
++    review = [l.split('\t') for l in (A / 'round2' / 'ni_goal_read_rows_review.tsv').read_text(encoding='utf-8').splitlines()[1:]]
++    assert [x[0] for x in review] == [r['id'] for r in DATA if r['role_group'] == 'ni_goal' and r['behavior'] == 'read'] and len(review) == 43
++    assert {x[0] for x in review if x[4].startswith('DECLARED:')} == set(wrong)
++
++
++def test_with_the_table_as_it_is_no_goal_row_reads_a_place_through_the_frame_and_the_reason_is_the_one_of_the_base_commit():
+     text = '兄が駅に旅行した。'
+     ok = {'兄': noun('PERSON'), '駅': noun('PLACE', ('definition',)), '旅行する': pred_answer('P_MOVE', gf('P_MOVE', {'に': ['PLACE']}))}
++    assert explain_of(text, ok)['w3b2'] == 'PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE'          # the same sentence, the same frame: no row, no license, the reason of the base commit
++    assert SR.read(text, placement=F.MapQuery(ok))['readable'] is False
++    for frame in ({}, {'に': ['PLACE']}, {'で': ['PLACE']}):
++        a = {**ok, '旅行する': pred_answer('P_MOVE', gf('P_MOVE', frame))}
++        assert explain_of(text, a)['w3b2'] == 'PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE'      # whatever the frame says: it licenses nothing now
++    a = {**ok, '旅行する': pred_answer('P_MOVE', gf('P_MOVE', {'に': 'PLACE'}))}               # and a broken frame is not even looked at (nothing needs it)
++    assert explain_of(text, a)['w3b2'] == 'PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE'
++
++
++def test_with_the_two_goal_rows_put_back_the_mechanism_reads_a_place_that_the_frame_lets_and_everything_else_is_a_reason(goal_rows):
++    text = '兄が駅に旅行した。'
++    ok = {'兄': noun('PERSON'), '駅': noun('PLACE', ('definition',)), '旅行する': pred_answer('P_MOVE', gf('P_MOVE', {'に': ['PLACE']}))}
+     assert explain_of(text, ok)['w3b2'] == 'READ'
+     assert explain_of(text, {**ok, '駅': noun('PLACE', ('role@jawiki',))})['w3b2'] == 'READ'            # an argument (goal) is not asked for evidence beyond role@: the gate is for adjuncts
+     out = SR.read(text, placement=F.MapQuery(ok))
+```

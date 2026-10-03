@@ -1,0 +1,53 @@
+$ /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w3b5/py -m pytest -q -p no:cacheprovider tests/test_semantic_read_w3b5.py tests/coarse_place/test_coarse_place_w3b5_frame_generated.py -k no_placement or query or unchanged or base or key
+.............                                                            [100%]
+13 passed, 651 deselected in 5.93s
+[exit=0]
+
+$ /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w3b5/py -m pytest -q -p no:cacheprovider tests/test_semantic_read_w3b5.py -k table or disjoint or license or subset or registered tests/coarse_place/test_k62_v1_subset_v2.py tests/coarse_place/test_coarse_place_w3a3_k62.py
+........................................................................ [ 11%]
+........................................................................ [ 22%]
+........................................................................ [ 33%]
+........................................................................ [ 44%]
+........................................................................ [ 55%]
+........................................................................ [ 66%]
+........................................................................ [ 78%]
+........................................................................ [ 89%]
+......................................................................   [100%]
+646 passed, 29 deselected in 3.64s
+[exit=0]
+
+$ /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w3b5/py -m pytest -q -p no:cacheprovider tests/test_semantic_read_w3b2.py::test_the_tables_of_w3b1_are_not_widened tests/test_semantic_read_w3b2.py::test_the_reader_file_only_gains_lines tests/test_semantic_read_w3b4.py::test_the_tables_of_the_base_commit_are_not_changed tests/test_semantic_read_w3b4.py::test_no_row_of_the_registered_gaps_is_in_the_table tests/test_semantic_read_w3b4.py::test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays_under_a_name_of_its_own
+.....                                                                    [100%]
+5 passed in 0.72s
+[exit=0]
+
+$ git diff 7494ba2 -- verantyx | grep -c '^-[^-]'
+0
+
+$ /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w3b5/py -m pytest -q -p no:cacheprovider tests/test_semantic_read_w3b5.py -k data or row
+........................................................................ [ 11%]
+........................................................................ [ 22%]
+........................................................................ [ 33%]
+........................................................................ [ 44%]
+........................................................................ [ 55%]
+........................................................................ [ 66%]
+........................................................................ [ 78%]
+........................................................................ [ 89%]
+.....................................................................    [100%]
+645 passed, 15 deselected in 7.79s
+[exit=0]
+
+$ /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w3b5/py artifacts/w3-b5/tools/run_rows.py --data tests/reading_soundness/ja_r11.jsonl --out /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w3b5/data_check_recheck.json --exceptions artifacts/w3-b5/expect_exceptions.json --narrowed artifacts/w3-b5/narrowed_rows.json
+rows=617 misread=0 incomplete=0 unjudged=0 entry_expect_mismatch=0 w3b5_expect_mismatch=0 declared_exceptions=19 narrowed_rows=286
+read rows judged correct: 41 of 41 read
+de_cause rows=30 read=0 abstain=30 reasons={"PLACEMENT_PARTICLE_NOT_IN_FRAME": 30}
+de_instrument rows=33 read=0 abstain=33 reasons={"PLACEMENT_PARTICLE_NOT_IN_FRAME": 33}
+de_place rows=170 read=6 abstain=164 reasons={"PLACEMENT_PARTICLE_NOT_IN_FRAME": 147, "PLACEMENT_ESTIMATED_GENERATED": 7, "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED": 4, "PLACEMENT_VOICE_NOT_ACTIVE": 3, "PLACEMENT_W3B2_NOT_TRIGGERED": 3}
+mechanism rows=32 read=0 abstain=32 reasons={"PLACEMENT_PARTICLE_NOT_IN_FRAME": 32}
+ni_goal rows=93 read=35 abstain=58 reasons={"PLACEMENT_PARTICLE_NOT_IN_FRAME": 26, "PLACEMENT_MULTIPLE": 6, "PLACEMENT_TYPE_MISMATCH": 6, "PLACEMENT_UNPLACED": 1, "PLACEMENT_UNKNOWN": 1, "PLACEMENT_ESTIMATED_GENERATED": 3, "PLACEMENT_SLOT_EVIDENCE_ONLY": 1, "FRAME_GENERATED_DOES_NOT_LICENSE": 6, "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED": 6, "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE": 2}
+ni_other rows=38 read=0 abstain=38 reasons={"PLACEMENT_PARTICLE_NOT_IN_FRAME": 38}
+ni_purpose rows=37 read=0 abstain=37 reasons={"PLACEMENT_TYPE_MISMATCH": 32, "PLACEMENT_FRAME_NOT_READ": 5}
+ni_recipient rows=110 read=0 abstain=110 reasons={"PLACEMENT_SLOT_EVIDENCE_ONLY": 48, "PLACEMENT_TYPE_MISMATCH": 41, "PLACEMENT_ESTIMATED_GENERATED": 3, "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED": 8, "PLACEMENT_MULTIPLE": 10}
+ni_time rows=74 read=0 abstain=74 reasons={"PLACEMENT_PARTICLE_NOT_IN_FRAME": 74}
+[exit=0]
+

@@ -1,0 +1,83 @@
+rows=649
+
+# role_group x behavior (rows)
+de_cause	abstain	30
+de_instrument	abstain	33
+de_place	abstain	88
+de_place	read	82
+mechanism	abstain	32
+ni_goal	abstain	66
+ni_goal	read	43
+ni_other	abstain	38
+ni_purpose	abstain	45
+ni_recipient	abstain	72
+ni_recipient	read	46
+ni_time	abstain	52
+ni_time	read	22
+
+# role_group x behavior x path x frame_source x pred_type
+de_cause	abstain	U3	absent	P_EMOTION	1
+de_cause	abstain	U3	r8	P_ACT	29
+de_instrument	abstain	U3	absent	P_ACT	4
+de_instrument	abstain	U3	absent	P_CREATE	4
+de_instrument	abstain	U3	absent	P_EMOTION	1
+de_instrument	abstain	U3	r8	P_ACT	19
+de_instrument	abstain	U3	r8	P_CREATE	5
+de_place	abstain	U3	absent	P_ACT	11
+de_place	abstain	U3	absent	P_CREATE	6
+de_place	abstain	U3	absent	P_EMOTION	5
+de_place	abstain	U3	r8	P_ACT	53
+de_place	abstain	U3	r8	P_CREATE	4
+de_place	abstain	U3	r8	P_EMOTION	6
+de_place	abstain	none	r8	P_ACT	3
+de_place	read	U3	r8	P_ACT	63
+de_place	read	U3	r8	P_CREATE	13
+de_place	read	none	r8	P_ACT	6
+mechanism	abstain	U	synthetic	P_CREATE	5
+mechanism	abstain	U	synthetic	P_EMOTION	3
+mechanism	abstain	U3	synthetic	P_ACT	15
+mechanism	abstain	U3	synthetic	P_CREATE	4
+mechanism	abstain	U3	synthetic	P_EMOTION	5
+ni_goal	abstain	U	absent	P_MOVE	4
+ni_goal	abstain	U	r8	P_ACT	15
+ni_goal	abstain	U	r8	P_COMMUNICATE	6
+ni_goal	abstain	U	r8	P_CREATE	3
+ni_goal	abstain	U	r8	P_MOVE	38
+ni_goal	read	U	r8	P_ACT	8
+ni_goal	read	U	r8	P_COMMUNICATE	2
+ni_goal	read	U	r8	P_MOVE	33
+ni_other	abstain	U	absent	P_ACT	4
+ni_other	abstain	U	r8	P_ACT	18
+ni_other	abstain	U	r8	P_EMOTION	16
+ni_purpose	abstain	U	absent	P_CONSUME	5
+ni_purpose	abstain	U	r8	P_MOVE	40
+ni_recipient	abstain	U	absent	P_COMMUNICATE	3
+ni_recipient	abstain	U	absent	P_MOVE	2
+ni_recipient	abstain	U	r8	P_COMMUNICATE	45
+ni_recipient	abstain	U	r8	P_MOVE	22
+ni_recipient	read	U	r8	P_COMMUNICATE	46
+ni_time	abstain	U	absent	P_ACT	4
+ni_time	abstain	U	absent	P_CREATE	3
+ni_time	abstain	U	absent	P_EMOTION	3
+ni_time	abstain	U	r8	P_ACT	32
+ni_time	abstain	U	r8	P_CREATE	2
+ni_time	abstain	U	r8	P_EMOTION	8
+ni_time	read	U	r8	P_ACT	22
+
+# registered floors: read >= 20 for de_place ni_recipient ni_goal ni_time; abstain >= 20 for de_place de_instrument de_cause ni_recipient ni_goal ni_time ni_purpose ni_other; mechanism >= 15
+floor read de_place 82 OK
+floor read ni_recipient 46 OK
+floor read ni_goal 43 OK
+floor read ni_time 22 OK
+floor abstain de_place 88 OK
+floor abstain de_instrument 33 OK
+floor abstain de_cause 30 OK
+floor abstain ni_recipient 72 OK
+floor abstain ni_goal 66 OK
+floor abstain ni_time 52 OK
+floor abstain ni_purpose 45 OK
+floor abstain ni_other 38 OK
+floor mechanism 32 OK
+read rows that reach a typed trigger (U/U3) by group (frozen expectation): {"de_place": 76, "ni_recipient": 46, "ni_goal": 43, "ni_time": 22}
+read rows the reader alone reads (path none): 6
+all floors met: True

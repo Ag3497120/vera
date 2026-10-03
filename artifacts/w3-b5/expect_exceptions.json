@@ -1,0 +1,465 @@
+{
+ "note": "frozen expectations that do not match what the entry does for a reason that is not a misread: a fact of the reader that the design had not seen, observation pinned; and (round 2, review.r1.md required fix 3) frozen answers written wrongly (kind frozen_expectation_is_a_wrong_answer / goal_or_place_not_decided: the expectation is not rewritten)",
+ "kinds": [
+  "confirmed_frame_checks_the_first_role",
+  "frame_row_does_not_cover_every_candidate",
+  "frozen_expectation_is_a_wrong_answer",
+  "goal_or_place_not_decided"
+ ],
+ "exceptions": [
+  {
+   "id": "W3B5-DEPLACE-A-059",
+   "input": "社員が校庭であそんだ。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_ACT:で",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_ACT:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-DEPLACE-A-060",
+   "input": "学生がホテルで勤務した。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_ACT:で",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_ACT:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-DEPLACE-A-061",
+   "input": "職員が神社で休憩した。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_ACT:で",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_ACT:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-DEPLACE-A-062",
+   "input": "選手が山頂で過ごした。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_ACT:で",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": "U3",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_ACT:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-NIRECIP-A-046",
+   "input": "兄が部長に周知した。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:に",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-NIRECIP-A-047",
+   "input": "弟が後輩に指導した。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:に",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-NIRECIP-A-048",
+   "input": "姉が同僚に発信した。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:に",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-NIRECIP-A-049",
+   "input": "妹が学生に講義した。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:に",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-NIRECIP-A-050",
+   "input": "先生が課長に送信した。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:に",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-NIRECIP-A-051",
+   "input": "店員が先輩に配信した。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:に",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-NIRECIP-A-052",
+   "input": "係員が上司に詫びた。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:に",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-NIRECIP-A-053",
+   "input": "社員が弟に説いた。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:に",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_COMMUNICATE:に:PERSON",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_COMMUNICATE:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-NIGOAL-A-043",
+   "input": "弟が町に避難した。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:に",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-NIGOAL-A-044",
+   "input": "姉が町に日帰りした。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:に",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-NIGOAL-A-045",
+   "input": "妹が町に移動した。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:に",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-NIGOAL-A-046",
+   "input": "先生が町に進出した。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:に",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-NIGOAL-A-047",
+   "input": "店員が海に潜った。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:に",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-NIGOAL-A-048",
+   "input": "学生が町に浸透した。",
+   "kind": "confirmed_frame_checks_the_first_role",
+   "frozen_entry_expect": "abstain",
+   "frozen_w3b5_expect": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:に",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が",
+    "frame": null
+   },
+   "observed_verdict": "correct"
+  },
+  {
+   "id": "W3B5-NIRECIP-R-041",
+   "input": "店員が家族に告白した。",
+   "kind": "frame_row_does_not_cover_every_candidate",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:に:家族",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:に:家族",
+    "frame": null
+   },
+   "observed_verdict": "abstain"
+  },
+  {
+   "id": "W3B5-NIGOAL-R-010",
+   "input": "兄が駅に停車した。",
+   "kind": "goal_or_place_not_decided",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "frozen_roles": {
+    "agent": "兄",
+    "goal": "駅"
+   },
+   "correct_by_convention": "not one reading (readable false)",
+   "reason": "停車する の に は止まる地点（到達点とも停車している場所とも決まらない）。同じ型（とまる・滞在）。正解は 1 つの読みに決まらない",
+   "observed_with_the_table_as_registered": {
+    "entry": "read",
+    "verdict": "correct",
+    "w3b2": "READ",
+    "role_license": {
+     "goal": "frame_generated"
+    }
+   },
+   "observed_before_round2": {
+    "entry": "read",
+    "verdict": "correct",
+    "w3b2": "READ",
+    "role_license": {
+     "goal": "frame_generated"
+    }
+   },
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE",
+    "frame": null
+   },
+   "observed_verdict": "abstain"
+  },
+  {
+   "id": "W3B5-NIGOAL-R-011",
+   "input": "弟が港に停泊した。",
+   "kind": "frozen_expectation_is_a_wrong_answer",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "frozen_roles": {
+    "agent": "弟",
+    "goal": "港"
+   },
+   "correct_by_convention": "place",
+   "reason": "停泊する の に は船がとまっている場所（存在の場所）。到達点を言う動詞でない。規約 §2: place",
+   "observed_with_the_table_as_registered": {
+    "entry": "read",
+    "verdict": "correct",
+    "w3b2": "READ",
+    "role_license": {
+     "goal": "frame_generated"
+    }
+   },
+   "observed_before_round2": {
+    "entry": "read",
+    "verdict": "correct",
+    "w3b2": "READ",
+    "role_license": {
+     "goal": "frame_generated"
+    }
+   },
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE",
+    "frame": null
+   },
+   "observed_verdict": "abstain"
+  },
+  {
+   "id": "W3B5-NIGOAL-R-031",
+   "input": "弟が島に停泊した。",
+   "kind": "frozen_expectation_is_a_wrong_answer",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "frozen_roles": {
+    "agent": "弟",
+    "goal": "島"
+   },
+   "correct_by_convention": "place",
+   "reason": "停泊する の に は船がとまっている場所（存在の場所）。規約 §2: place",
+   "observed_with_the_table_as_registered": {
+    "entry": "read",
+    "verdict": "correct",
+    "w3b2": "READ",
+    "role_license": {
+     "goal": "frame_generated"
+    }
+   },
+   "observed_before_round2": {
+    "entry": "read",
+    "verdict": "correct",
+    "w3b2": "READ",
+    "role_license": {
+     "goal": "frame_generated"
+    }
+   },
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE",
+    "frame": null
+   },
+   "observed_verdict": "abstain"
+  },
+  {
+   "id": "W3B5-NIGOAL-R-036",
+   "input": "店員が教会に参列した。",
+   "kind": "goal_or_place_not_decided",
+   "frozen_entry_expect": "read",
+   "frozen_w3b5_expect": "READ",
+   "frozen_roles": {
+    "agent": "店員",
+    "goal": "教会"
+   },
+   "correct_by_convention": "not one reading (readable false)",
+   "reason": "参列する に 場所 は 行き先（参列に行く）とも場所とも決まらない（行事には で を取る方が自然）。正解は 1 つの読みに決まらない",
+   "observed_with_the_table_as_registered": {
+    "entry": "read",
+    "verdict": "correct",
+    "w3b2": "READ",
+    "role_license": {
+     "goal": "frame_generated"
+    }
+   },
+   "observed_before_round2": {
+    "entry": "abstain",
+    "verdict": "abstain",
+    "w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に",
+    "role_license": null
+   },
+   "observed_entry": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_FRAME_NOT_READ:P_ACT",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に",
+    "frame": null
+   },
+   "observed_verdict": "abstain"
+  }
+ ]
+}

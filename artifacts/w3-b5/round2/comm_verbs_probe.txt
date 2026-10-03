@@ -1,0 +1,56 @@
+アップロードする	P_COMMUNICATE	に=['GROUP_ORG', 'PLACE']	DECIDED estimated ESTIMATED	past=アップロードした
+	兄が警察署にアップロードした。	path=U tail=ok derived=ok predicate=アップロードする
+	兄が区役所にアップロードした。	path=U tail=ok derived=ok predicate=アップロードする
+	兄が営業所にアップロードした。	path=U tail=ok derived=ok predicate=アップロードする
+	兄が公民館にアップロードした。	path=U tail=ok derived=ok predicate=アップロードする
+呼び出せる	P_COMMUNICATE	に=['PERSON', 'PLACE']	DECIDED estimated ESTIMATED	past=呼び出せた
+	兄が警察署に呼び出せた。	path=U tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-サ行 predicate=呼び出せる
+	兄が区役所に呼び出せた。	path=U tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-サ行 predicate=呼び出せる
+	兄が営業所に呼び出せた。	path=U tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-サ行 predicate=呼び出せる
+	兄が公民館に呼び出せた。	path=U tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-サ行 predicate=呼び出せる
+届け出る	P_COMMUNICATE	に=['GROUP_ORG', 'PLACE']	DECIDED estimated ESTIMATED	past=届け出た
+	兄が警察署に届け出た。	path=none tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ダ行 predicate=届け出る
+	兄が区役所に届け出た。	path=none tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ダ行 predicate=届け出る
+	兄が営業所に届け出た。	path=none tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ダ行 predicate=届け出る
+	兄が公民館に届け出た。	path=none tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ダ行 predicate=届け出る
+投稿する	P_COMMUNICATE	に=['GROUP_ORG', 'INFO_LANGUAGE', 'PLACE']	DECIDED direct CONFIRMED	past=投稿した
+	兄が警察署に投稿した。	path=U tail=ok derived=ok predicate=投稿する
+	兄が区役所に投稿した。	path=U tail=ok derived=ok predicate=投稿する
+	兄が営業所に投稿した。	path=U tail=ok derived=ok predicate=投稿する
+	兄が公民館に投稿した。	path=U tail=ok derived=ok predicate=投稿する
+掲示する	P_COMMUNICATE	に=['ARTIFACT', 'INFO_LANGUAGE', 'PLACE']	DECIDED estimated ESTIMATED	past=掲示した
+	兄が警察署に掲示した。	path=U tail=ok derived=ok predicate=掲示する
+	兄が区役所に掲示した。	path=U tail=ok derived=ok predicate=掲示する
+	兄が営業所に掲示した。	path=U tail=ok derived=ok predicate=掲示する
+	兄が公民館に掲示した。	path=U tail=ok derived=ok predicate=掲示する
+案内する	P_COMMUNICATE	に=['ABSTRACT', 'EVENT_ACT', 'PLACE']	DECIDED estimated ESTIMATED	past=案内した
+	兄が警察署に案内した。	path=none tail=ok derived=ok predicate=案内する
+	兄が区役所に案内した。	path=none tail=ok derived=ok predicate=案内する
+	兄が営業所に案内した。	path=none tail=ok derived=ok predicate=案内する
+	兄が公民館に案内した。	path=none tail=ok derived=ok predicate=案内する
+申し込める	P_COMMUNICATE	に=['GROUP_ORG', 'PERSON', 'PLACE']	DECIDED direct CONFIRMED	past=申し込めた
+	兄が警察署に申し込めた。	path=U tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行 predicate=申し込める
+	兄が区役所に申し込めた。	path=U tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行 predicate=申し込める
+	兄が営業所に申し込めた。	path=U tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行 predicate=申し込める
+	兄が公民館に申し込めた。	path=U tail=ok derived=PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行 predicate=申し込める
+登壇する	P_COMMUNICATE	に=['EVENT_ACT', 'PLACE']	DECIDED estimated ESTIMATED	past=登壇した
+	兄が警察署に登壇した。	path=U tail=ok derived=ok predicate=登壇する
+	兄が区役所に登壇した。	path=U tail=ok derived=ok predicate=登壇する
+	兄が営業所に登壇した。	path=U tail=ok derived=ok predicate=登壇する
+	兄が公民館に登壇した。	path=U tail=ok derived=ok predicate=登壇する
+送付する	P_COMMUNICATE	に=['GROUP_ORG', 'PERSON', 'PLACE']	DECIDED estimated ESTIMATED	past=送付した
+	兄が警察署に送付した。	path=none tail=ok derived=ok predicate=送付する
+	兄が区役所に送付した。	path=none tail=ok derived=ok predicate=送付する
+	兄が営業所に送付した。	path=none tail=ok derived=ok predicate=送付する
+	兄が公民館に送付した。	path=none tail=ok derived=ok predicate=送付する
+通じる	P_COMMUNICATE	に=['GROUP_ORG', 'PERSON', 'PLACE']	DECIDED estimated ESTIMATED	past=通じた
+	兄が警察署に通じた。	path=U tail=ok derived=ok predicate=通ずる
+	兄が区役所に通じた。	path=U tail=ok derived=ok predicate=通ずる
+	兄が営業所に通じた。	path=U tail=ok derived=ok predicate=通ずる
+	兄が公民館に通じた。	path=U tail=ok derived=ok predicate=通ずる
+通ずる	P_COMMUNICATE	に=['ABSTRACT', 'GROUP_ORG', 'PERSON', 'PLACE']	DECIDED estimated ESTIMATED	past=None
+配信する	P_COMMUNICATE	に=['GROUP_ORG', 'INFO_LANGUAGE', 'PERSON', 'PLACE']	DECIDED direct CONFIRMED	past=配信した
+	兄が警察署に配信した。	path=U tail=ok derived=ok predicate=配信する
+	兄が区役所に配信した。	path=U tail=ok derived=ok predicate=配信する
+	兄が営業所に配信した。	path=U tail=ok derived=ok predicate=配信する
+	兄が公民館に配信した。	path=U tail=ok derived=ok predicate=配信する

@@ -1,0 +1,14 @@
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "生成の枠 述語の枠 frame 付加 で に 型による読解",
+  "searched": 684,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 76,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

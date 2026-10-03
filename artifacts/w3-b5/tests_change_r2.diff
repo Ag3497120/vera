@@ -1,0 +1,182 @@
+--- artifacts/w3-b5/tests_r1_copy/test_semantic_read_w3b5.py	2026-10-04 07:28:49
++++ tests/test_semantic_read_w3b5.py	2026-10-04 07:29:43
+@@ -1,6 +1,6 @@
+ """W3-b5: the generated frame of a predicate as a REFERENCE for what an adjunct (or a に phrase) may be read as. The query gains the key `frame_generated`; the second table (K62 v2)
+ gains a kind of row, `frame_required`: a row that the plan reads only when the generated frame of the predicate holds the particle with a type that the row expects and the
+-filler (a DECIDED direct answer, or every candidate of a split one) is of that type. The table of kinds (`license`), the 16 rows, the control flow, the contract of `frame_generated`,
++filler (a DECIDED direct answer, or every candidate of a split one) is of that type. The table of kinds (`license`), the 16 rows (none is left after table change record 2), the control flow, the contract of `frame_generated`,
+ the reasons, the data (tests/reading_soundness/ja_r11.jsonl) and these tests were registered in docs/READING_SOUNDNESS.md section 10F (K200-K206) in this order: registration,
+ data (frozen), tests (frozen), code. The placements the tests open are fakes made from the `placement` of each row of the data (a contract-conforming answer; `answer_of`); the only real
+ placements are r7 and r8, read only, for the tests of the query (skipped with ENV_MISSING when they are not there).
+@@ -90,7 +90,7 @@
+ def test_the_table_of_the_docs_is_the_rows_of_the_code_with_their_kind_in_the_same_order():
+     got = [tuple(r) for r in block('w3b5_frames')]
+     want = [(t, role, '/'.join(parts), ' '.join(exp), KIND[kind], lic) for (t, role, parts, exp, kind, lic) in R.typed_frames_w3b5_rows()]
+-    assert got == want and len(got) == 17 + 2          # 17 rows of the kind table and, after table change record 1 (K206), 2 of the 16 registered rows of the kind frame_required
++    assert got == want and len(got) == 17 + 0          # 17 rows of the kind table and, after table change records 1 and 2 (K206), none of the 16 registered rows of the kind frame_required
+ 
+ 
+ def test_the_first_seventeen_rows_are_the_rows_of_the_second_table_character_for_character_and_have_the_kind_table():
+@@ -99,7 +99,7 @@
+     assert len(old) == 17
+     for o, n in zip(old, new[:17]):
+         assert n.rstrip().endswith(' | table |') and n.rstrip()[:-len(' table |')].rstrip() == o.rstrip()
+-    assert [r[5] for r in block('w3b5_frames')] == ['table'] * 17 + ['frame_required'] * 2
++    assert [r[5] for r in block('w3b5_frames')] == ['table'] * 17 + ['frame_required'] * 0
+     v2 = R.typed_frames_v2()
+     code = [(t, role, parts, exp, kind) for t, rows in v2.items() for (role, parts, exp, kind) in rows]
+     rows = [(t, role, parts, exp, kind) for (t, role, parts, exp, kind, lic) in R.typed_frames_w3b5_rows() if lic == 'table']
+@@ -342,6 +342,16 @@
+ @pytest.fixture
+ def registered(monkeypatch):
+     monkeypatch.setattr(R, 'TYPED_FRAMES_FRAME_REQUIRED_W3B5', registered_rows())
++
++
++GOAL_ROWS = {'P_MOVE': (('goal', ('に',), ('PLACE',), 'arg'),), 'P_COMMUNICATE': (('goal', ('に',), ('PLACE',), 'arg'),), 'P_ACT': (), 'P_CREATE': (), 'P_EMOTION': ()}
++
++
++@pytest.fixture
++def goal_rows(monkeypatch):
++    """The table as it was after table change record 1 (round 1): the two rows P_MOVE and P_COMMUNICATE `goal/に/PLACE` that record 2 (round 2, review.r1.md) took out. The tests that put it back show WHY
++    they went (the rows that the review named are read with it) and that the mechanism still works with one row."""
++    monkeypatch.setattr(R, 'TYPED_FRAMES_FRAME_REQUIRED_W3B5', dict(GOAL_ROWS))
+ 
+ 
+ # ===================================================================================================================================
+@@ -570,11 +580,30 @@
+ 
+ def test_the_data_is_the_frozen_file_or_the_frozen_file_with_rows_appended_at_the_end():
+     import hashlib
+-    frozen = (A / 'bank_freeze.sha256').read_text(encoding='utf-8').split()[0]
+     lines = DATA_FILE.read_text(encoding='utf-8').splitlines(keepends=True)
+-    assert frozen in {hashlib.sha256(''.join(lines[:k]).encode('utf-8')).hexdigest() for k in range(len(lines), 0, -1)}
++    prefixes = {hashlib.sha256(''.join(lines[:k]).encode('utf-8')).hexdigest(): k for k in range(len(lines), 0, -1)}
++    # the three freezes, in order: 604 rows (first freeze), 617 (13 rows appended in round 1, H206), 649 (32 rows appended in round 2, K206 change 2): each one is the start of the file as it is now
++    sizes = [prefixes[(A / name).read_text(encoding='utf-8').split()[0]] for name in ('bank_freeze.sha256', 'bank_freeze_after.sha256', 'bank_freeze_r2.sha256')]
++    assert sizes == [604, 617, 649]
+ 
+ 
++def test_the_rows_appended_in_round_2_are_the_four_types_of_the_review_with_five_or_more_each_abstain_rows_with_the_real_frame_of_r8():
++    appended = DATA[617:]
++    assert len(appended) == 32 and all(r['id'].split('-')[2] == 'A' and r['behavior'] == 'abstain' and r['entry_expect'] == 'abstain' and r['w3b5_expect'] == 'REFUSED' for r in appended)
++    assert all(r['frame_source'] == 'r8' and r['pred_type'] in ('P_MOVE', 'P_COMMUNICATE') and r['particle'] == 'に' for r in appended)
++    assert all(r['expect'] == {'readable': False, 'clauses': [], 'relations': [], 'must_not': []} for r in appended)
++    assert collections.Counter(TYPE_OF(r) for r in appended) == {'stay': 8, 'purpose': 8, 'org_receives': 8, 'undecided': 8}
++    # the words are not the words of the older rows: the sentences and the (predicate, filler) pairs are new
++    old_inputs = {r['input'] for r in DATA[:617]}
++    assert not {r['input'] for r in appended} & old_inputs
++
++
++def TYPE_OF(row):
++    """The type of a round 2 row (review.r1.md required fix 2): by the id the generator gave (mk_round2_rows.py)."""
++    g, n = row['id'].split('-')[1], int(row['id'].split('-')[3])
++    return {'NIPURP': 'purpose', 'NIRECIP': 'org_receives'}.get(g) or ('stay' if n < 960 else 'undecided')
++
++
+ def _expected_reason_ok(row, got):
+     e = row['w3b5_expect']
+     if e == 'READ': return got == 'READ'
+@@ -608,15 +637,17 @@
+     assert _expected_reason_ok(row, ex['w3b2'] if ex['w3b2'] is not None else 'PLACEMENT_W3B2_NOT_TRIGGERED'), (row['w3b5_expect'], ex)
+ 
+ 
+-def test_no_row_of_the_data_is_misread_or_incomplete_and_the_groups_that_the_table_reads_are_read():
+-    bad = collections.Counter(); read = collections.Counter()
++def test_no_row_of_the_data_is_misread_or_incomplete_and_after_the_last_narrowing_the_entry_reads_only_what_the_reader_alone_reads():
++    bad = collections.Counter(); read = []
+     for row in DATA:
+         out = SR.read(row['input'], placement=query_of(row))
+         v = b1.judge(row['expect'], 'ja', out)['verdict']
+         bad[v] += 1
+-        if out['readable']: read[row['role_group']] += 1
++        if out['readable']: read.append(row)
+     assert bad['misread'] == 0 and bad['incomplete'] == 0 and bad['UNJUDGED'] == 0, bad
+-    assert read['ni_goal'] > 0          # after K206 the goal/に rows of P_MOVE and P_COMMUNICATE are what is read through a frame; the recipient/に and the で rows were taken out
++    # after table change record 2 (K206) there is no row of the kind frame_required: no sentence is read through a generated frame, so what is read is what the reader alone reads
++    # (the rows of the path `none`: the typed step is not asked) and the key frame_generated licenses nothing
++    assert read and all(r['path'] == 'none' for r in read) and {r['role_group'] for r in read} == {'de_place'}, collections.Counter(r['role_group'] for r in read)
+ 
+ 
+ def test_the_sentences_of_the_ticket_a_right_handed_hit_a_surprise_at_a_step_and_a_mouth_are_refused_and_the_boarding_gate_type_is_read_only_while_its_row_is_in_the_table():
+@@ -636,15 +667,16 @@
+             assert r['id'] in NARROWED_ROWS and SR.typed_explain_ja(r['input'], query_of(r))['w3b2'] == NARROWED_ROWS[r['id']]['observed_w3b2']
+ 
+ 
+-def test_the_rows_taken_out_by_the_table_change_record_are_the_fourteen_of_the_registration_and_the_rows_that_are_left_are_the_two_goal_rows():
++def test_the_rows_taken_out_by_the_table_change_records_are_the_sixteen_of_the_registration_fourteen_by_record_1_and_the_two_goal_rows_by_record_2_and_none_is_left():
+     reg = {(t, role, parts[0]) for t, rows in registered_rows().items() for (role, parts, exp, kind) in rows}
+     now = {(t, role, parts[0]) for (t, role, parts, exp, kind, lic) in R.typed_frames_w3b5_rows() if lic == 'frame_required'}
+-    assert len(reg) == 16 and now <= reg and len(reg - now) == 14
+-    assert now == {('P_MOVE', 'goal', 'に'), ('P_COMMUNICATE', 'goal', 'に')}
+-    assert set(R.TYPED_FRAMES_FRAME_REQUIRED_W3B5) == set(registered_rows()) | {'P_ACT', 'P_CREATE', 'P_EMOTION'}
++    assert len(reg) == 16 and now <= reg and len(reg - now) == 16 and now == set()
++    two = {(t, role, parts[0]) for t, rows in GOAL_ROWS.items() for (role, parts, exp, kind) in rows}
++    assert two == {('P_MOVE', 'goal', 'に'), ('P_COMMUNICATE', 'goal', 'に')} and two <= reg and len(reg - two) == 14        # record 1 left these two, record 2 took them out
++    assert set(R.TYPED_FRAMES_FRAME_REQUIRED_W3B5) == set(registered_rows()) | {'P_ACT', 'P_CREATE', 'P_EMOTION'} and all(v == () for v in R.TYPED_FRAMES_FRAME_REQUIRED_W3B5.values())
+ 
+ 
+-def test_with_the_table_as_registered_the_worst_cases_of_the_data_are_read_which_is_why_fourteen_rows_were_taken_out(registered):
++def test_with_the_table_as_registered_the_worst_cases_of_the_data_are_read_which_is_why_the_sixteen_rows_were_taken_out(registered):
+     """K206: the same data with the 16 registered rows put back. The rows that the change record names are the ones that misread (the count is the one in the record); with the table as it is
+     now (no `registered` fixture) there is none (test_no_row_of_the_data_is_misread_or_incomplete)."""
+     n = 0
+@@ -654,9 +686,58 @@
+     assert n >= 100
+ 
+ 
+-def test_with_the_goal_row_of_the_remaining_frame_a_place_that_the_frame_lets_is_read_and_everything_else_is_a_reason():
++def test_with_the_two_goal_rows_put_back_the_rows_appended_in_round_2_are_read_and_misread_which_is_why_the_two_rows_were_taken_out_too(goal_rows):
++    """K206, table change record 2 (review.r1.md): the table of record 1 (the two `goal/に/PLACE` rows). Each of the four types of the review has five or more rows that the entry reads, and each of them
++    is a misread (the frozen expectation is `readable: false`; the license told by the plan is the goal row). The count is the measurement of `data_check_before_round2.txt`: 31 of the 32 rows (the 32nd stops
++    at `PLACEMENT_UNPLACED:を:資料`)."""
++    per, wrong = collections.Counter(), 0
++    for r in DATA[617:]:
++        out = SR.read(r['input'], placement=query_of(r))
++        if not out['readable']: continue
++        per[TYPE_OF(r)] += 1
++        wrong += b1.judge(r['expect'], 'ja', out)['verdict'] == 'misread'
++    assert all(per[t] >= 5 for t in ('stay', 'purpose', 'org_receives', 'undecided')) and sum(per.values()) == wrong == 31, (per, wrong)
++
++
++def test_with_the_table_as_it_is_every_row_appended_in_round_2_is_refused_and_the_misreads_of_the_review_are_gone():
++    for r in DATA[617:]:
++        out = SR.read(r['input'], placement=query_of(r))
++        assert not out['readable'] and b1.judge(r['expect'], 'ja', out)['verdict'] != 'misread', r['input']
++        ex = SR.typed_explain_ja(r['input'], query_of(r))['w3b2']
++        assert ex != 'READ' and not ex.startswith('FRAME_GENERATED_DOES_NOT_LICENSE'), (r['input'], ex)          # no row asks for the frame: the reason is one of the base commit's gates
++
++
++def test_the_frozen_rows_whose_answer_was_written_wrongly_are_declared_with_the_observations_and_every_read_row_of_ni_goal_was_reviewed():
++    wrong = {i: e for i, e in EXCEPTIONS.items() if e['kind'] in ('frozen_expectation_is_a_wrong_answer', 'goal_or_place_not_decided')}
++    by = {r['id']: r for r in DATA}
++    assert {i for i, e in wrong.items() if e['kind'] == 'frozen_expectation_is_a_wrong_answer'} == {'W3B5-NIGOAL-R-011', 'W3B5-NIGOAL-R-031'}       # 停泊: review.r1.md required fix 3
++    assert set(wrong) == {'W3B5-NIGOAL-R-010', 'W3B5-NIGOAL-R-011', 'W3B5-NIGOAL-R-031', 'W3B5-NIGOAL-R-036'}
++    for i, e in wrong.items():
++        r = by[i]
++        assert r['behavior'] == 'read' and r['entry_expect'] == 'read' and 'goal' in r['expect']['clauses'][0]['roles'] and i in NARROWED_ROWS     # the frozen expectation is not rewritten
++        assert e['frozen_entry_expect'] == 'read' and e['frozen_w3b5_expect'] == r['w3b5_expect'] and e['observed_entry'] == 'abstain' and e['correct_by_convention'] and e['reason']
++        assert e['observed_with_the_table_as_registered']['entry'] == 'read' and e['observed_with_the_table_as_registered']['verdict'] == 'correct'      # it was counted correct: that was the error
++        assert not SR.read(r['input'], placement=query_of(r))['readable']
++    review = [l.split('\t') for l in (A / 'round2' / 'ni_goal_read_rows_review.tsv').read_text(encoding='utf-8').splitlines()[1:]]
++    assert [x[0] for x in review] == [r['id'] for r in DATA if r['role_group'] == 'ni_goal' and r['behavior'] == 'read'] and len(review) == 43
++    assert {x[0] for x in review if x[4].startswith('DECLARED:')} == set(wrong)
++
++
++def test_with_the_table_as_it_is_no_goal_row_reads_a_place_through_the_frame_and_the_reason_is_the_one_of_the_base_commit():
+     text = '兄が駅に旅行した。'
+     ok = {'兄': noun('PERSON'), '駅': noun('PLACE', ('definition',)), '旅行する': pred_answer('P_MOVE', gf('P_MOVE', {'に': ['PLACE']}))}
++    assert explain_of(text, ok)['w3b2'] == 'PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE'          # the same sentence, the same frame: no row, no license, the reason of the base commit
++    assert SR.read(text, placement=F.MapQuery(ok))['readable'] is False
++    for frame in ({}, {'に': ['PLACE']}, {'で': ['PLACE']}):
++        a = {**ok, '旅行する': pred_answer('P_MOVE', gf('P_MOVE', frame))}
++        assert explain_of(text, a)['w3b2'] == 'PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE'      # whatever the frame says: it licenses nothing now
++    a = {**ok, '旅行する': pred_answer('P_MOVE', gf('P_MOVE', {'に': 'PLACE'}))}               # and a broken frame is not even looked at (nothing needs it)
++    assert explain_of(text, a)['w3b2'] == 'PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE'
++
++
++def test_with_the_two_goal_rows_put_back_the_mechanism_reads_a_place_that_the_frame_lets_and_everything_else_is_a_reason(goal_rows):
++    text = '兄が駅に旅行した。'
++    ok = {'兄': noun('PERSON'), '駅': noun('PLACE', ('definition',)), '旅行する': pred_answer('P_MOVE', gf('P_MOVE', {'に': ['PLACE']}))}
+     assert explain_of(text, ok)['w3b2'] == 'READ'
+     assert explain_of(text, {**ok, '駅': noun('PLACE', ('role@jawiki',))})['w3b2'] == 'READ'            # an argument (goal) is not asked for evidence beyond role@: the gate is for adjuncts
+     out = SR.read(text, placement=F.MapQuery(ok))

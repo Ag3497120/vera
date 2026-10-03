@@ -224,9 +224,12 @@ def test_the_plan_of_w3b4_is_the_plan_of_w3b2_with_the_two_references_to_the_tab
     src = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
     old, old_args = _plan_text(src, 'typed_plan_u_w3b2_ja', (('TYPED_FRAMES_NOT_READ', 'TYPED_FRAMES_NOT_READ_W3B4'), ('TYPED_FRAMES.get(ptype)', 'typed_frames_v2().get(ptype)')))
     new, new_args = _plan_text(src, 'typed_plan_u_w3b4_ja')
-    assert old == new and old_args == new_args
+    assert old_args == new_args
+    # Integration (auditor, 2026-10-04) per W3-b5 (docs 10F K200): the plan only GAINS lines (the frame_required kind of row); every statement of
+    # the plan of W3-b2 is still there, in the same order
+    import difflib
+    assert [l for l in difflib.ndiff(old.splitlines(), new.splitlines()) if l.startswith('- ')] == []
     assert 'TYPED_FRAMES_NOT_READ_W3B4' in new and 'typed_frames_v2()' in new
-
 
 def test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays_under_a_name_of_its_own():
     # round 4 (K186): the two names the entry calls are the plans wrapped by the focus gate; the plan under the gate is the plan of rounds 1-3 (`ungated`)

@@ -1,0 +1,155 @@
+placement: /Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/run2
+generated_frames words: 8030
+
+# (state, origin, answer predicate type, frame_status, gen_definition) -> number of words
+DECIDED | direct | P_COMMUNICATE | CONFIRMED | no_gen_def	67
+DECIDED | direct | P_COMMUNICATE | NOT_CONFIRMED | no_gen_def	29
+DECIDED | direct | P_MOVE | CONFIRMED | no_gen_def	32
+DECIDED | direct | P_MOVE | NOT_CONFIRMED | no_gen_def	2
+DECIDED | estimated | P_ACT | ESTIMATED | no_gen_def	2368
+DECIDED | estimated | P_CHANGE | ESTIMATED | no_gen_def	1251
+DECIDED | estimated | P_COGNITION | ESTIMATED | no_gen_def	407
+DECIDED | estimated | P_COMMUNICATE | ESTIMATED | no_gen_def	409
+DECIDED | estimated | P_CONSUME | ESTIMATED | no_gen_def	130
+DECIDED | estimated | P_CREATE | ESTIMATED | no_gen_def	450
+DECIDED | estimated | P_EMOTION | ESTIMATED | no_gen_def	161
+DECIDED | estimated | P_EXIST | ESTIMATED | no_gen_def	256
+DECIDED | estimated | P_GIVE | ESTIMATED | no_gen_def	320
+DECIDED | estimated | P_MOVE | ESTIMATED | no_gen_def	1080
+DECIDED | estimated | P_PERCEIVE | ESTIMATED | no_gen_def	208
+DECIDED | estimated | P_POSSESS | ESTIMATED | no_gen_def	102
+DECIDED | estimated | P_STATE | ESTIMATED | no_gen_def	758
+
+# (state, origin) -> by(table ptype == answer type)
+DECIDED | direct | same	130
+DECIDED | estimated | same	7900
+
+# (state, origin) -> words
+DECIDED | direct	130
+DECIDED | estimated	7900
+
+# words that hold a particle:type of the licensed rows, by (origin, answer type): count
+direct | P_COMMUNICATE	で:PLACE	2
+direct | P_COMMUNICATE	に:GROUP_ORG	26
+direct | P_COMMUNICATE	に:PERSON	26
+direct | P_COMMUNICATE	に:PLACE	3
+direct | P_MOVE	に:GROUP_ORG	4
+direct | P_MOVE	に:PERSON	3
+direct | P_MOVE	に:PLACE	21
+estimated | P_ACT	で:PLACE	42
+estimated | P_ACT	に:GROUP_ORG	130
+estimated | P_ACT	に:PERSON	169
+estimated | P_ACT	に:PLACE	166
+estimated | P_ACT	に:TIME	9
+estimated | P_CHANGE	で:PLACE	8
+estimated | P_CHANGE	に:GROUP_ORG	26
+estimated | P_CHANGE	に:PERSON	27
+estimated | P_CHANGE	に:PLACE	34
+estimated | P_CHANGE	に:TIME	5
+estimated | P_COGNITION	で:PLACE	1
+estimated | P_COGNITION	に:GROUP_ORG	5
+estimated | P_COGNITION	に:PERSON	10
+estimated | P_COGNITION	に:PLACE	1
+estimated | P_COMMUNICATE	で:PLACE	3
+estimated | P_COMMUNICATE	に:GROUP_ORG	98
+estimated | P_COMMUNICATE	に:PERSON	113
+estimated | P_COMMUNICATE	に:PLACE	9
+estimated | P_CONSUME	で:PLACE	3
+estimated | P_CONSUME	に:GROUP_ORG	1
+estimated | P_CONSUME	に:PERSON	3
+estimated | P_CREATE	で:PLACE	2
+estimated | P_CREATE	に:GROUP_ORG	1
+estimated | P_CREATE	に:PERSON	2
+estimated | P_CREATE	に:PLACE	11
+estimated | P_EMOTION	に:GROUP_ORG	14
+estimated | P_EMOTION	に:PERSON	28
+estimated | P_EMOTION	に:TIME	1
+estimated | P_EXIST	で:PLACE	6
+estimated | P_EXIST	に:GROUP_ORG	6
+estimated | P_EXIST	に:PERSON	11
+estimated | P_EXIST	に:PLACE	67
+estimated | P_EXIST	に:TIME	6
+estimated | P_GIVE	に:GROUP_ORG	115
+estimated | P_GIVE	に:PERSON	143
+estimated | P_GIVE	に:PLACE	24
+estimated | P_MOVE	で:PLACE	19
+estimated | P_MOVE	に:GROUP_ORG	85
+estimated | P_MOVE	に:PERSON	81
+estimated | P_MOVE	に:PLACE	367
+estimated | P_MOVE	に:TIME	18
+estimated | P_PERCEIVE	で:PLACE	1
+estimated | P_PERCEIVE	に:GROUP_ORG	5
+estimated | P_PERCEIVE	に:PERSON	14
+estimated | P_PERCEIVE	に:PLACE	7
+estimated | P_POSSESS	に:GROUP_ORG	3
+estimated | P_POSSESS	に:PERSON	5
+estimated | P_POSSESS	に:PLACE	3
+estimated | P_STATE	で:PLACE	15
+estimated | P_STATE	に:GROUP_ORG	71
+estimated | P_STATE	に:PERSON	94
+estimated | P_STATE	に:PLACE	89
+estimated | P_STATE	に:TIME	10
+
+# DECIDED direct words that hold a particle:type of the rows: word (frame_status)
+P_COMMUNICATE	で:PLACE	うたう(NOT_CONFIRMED) 上映する(CONFIRMED)
+P_COMMUNICATE	に:GROUP_ORG	伝達する(CONFIRMED) 依頼する(CONFIRMED) 催促する(NOT_CONFIRMED) 周知する(CONFIRMED) 呼び掛ける(CONFIRMED) 命じる(NOT_CONFIRMED) 命ずる(CONFIRMED) 問い合わせる(NOT_CONFIRMED) 報告する(NOT_CONFIRMED) 投稿する(CONFIRMED) 披露する(NOT_CONFIRMED) 指導する(CONFIRMED) 指示する(CONFIRMED) 提案する(CONFIRMED) 申し入れる(CONFIRMED) 申し込める(CONFIRMED) 申告する(NOT_CONFIRMED) 発信する(CONFIRMED) 要請する(CONFIRMED) 詫びる(CONFIRMED) 説明する(NOT_CONFIRMED) 請求する(NOT_CONFIRMED) 講義する(CONFIRMED) 送信する(CONFIRMED) 通知する(NOT_CONFIRMED) 配信する(CONFIRMED)
+P_COMMUNICATE	に:PERSON	伝達する(CONFIRMED) 依頼する(CONFIRMED) 催促する(NOT_CONFIRMED) 周知する(CONFIRMED) 呼び掛ける(CONFIRMED) 命じる(NOT_CONFIRMED) 命ずる(CONFIRMED) 問い合わせる(NOT_CONFIRMED) 報告する(NOT_CONFIRMED) 披露する(NOT_CONFIRMED) 指導する(CONFIRMED) 指示する(CONFIRMED) 提案する(CONFIRMED) 申し入れる(CONFIRMED) 申し込める(CONFIRMED) 申告する(NOT_CONFIRMED) 発信する(CONFIRMED) 要請する(CONFIRMED) 詫びる(CONFIRMED) 説く(CONFIRMED) 説明する(NOT_CONFIRMED) 請求する(NOT_CONFIRMED) 講義する(CONFIRMED) 送信する(CONFIRMED) 通知する(NOT_CONFIRMED) 配信する(CONFIRMED)
+P_COMMUNICATE	に:PLACE	投稿する(CONFIRMED) 申し込める(CONFIRMED) 配信する(CONFIRMED)
+P_MOVE	に:GROUP_ORG	侵攻する(CONFIRMED) 異動する(CONFIRMED) 送り返す(CONFIRMED) 進出する(CONFIRMED)
+P_MOVE	に:PERSON	向かえる(CONFIRMED) 嫁ぐ(CONFIRMED) 送り返す(CONFIRMED)
+P_MOVE	に:PLACE	侵攻する(CONFIRMED) 向かえる(CONFIRMED) 嫁ぐ(CONFIRMED) 戻れる(CONFIRMED) 旅行する(NOT_CONFIRMED) 日帰りする(CONFIRMED) 昇る(NOT_CONFIRMED) 流れ込む(CONFIRMED) 浸透する(CONFIRMED) 潜り込む(CONFIRMED) 潜る(CONFIRMED) 異動する(CONFIRMED) 移す(CONFIRMED) 移動する(CONFIRMED) 行ける(CONFIRMED) 送り返す(CONFIRMED) 逃げ込む(CONFIRMED) 通う(CONFIRMED) 進出する(CONFIRMED) 避難する(CONFIRMED) 飛び込む(CONFIRMED)
+
+# DECIDED estimated words that hold them: the first 12 by (answer type, particle:type)
+P_ACT	で:PLACE	42	あそぶ おどる くらす こける はさむ はたらく ふかす もたつく やすむ キャンプする ステージする ドライブする
+P_ACT	に:GROUP_ORG	130	いじめる いつく いどむ およぼす ごねる すがる せっする せつく たずさわる つき合う つとめる なりすます
+P_ACT	に:PERSON	169	あう あてる いじめる いどむ およぼす かまう かみつく こびる ごねる さわる じゃれる すがる
+P_ACT	に:PLACE	166	あてる いつく くくりつける くっつける こすりつける こめる しまいこむ しまい込む しゃがみ込む すすめる たいする つとめる
+P_ACT	に:TIME	9	そびれる 乗ずる 振替る 於く 毎晩する 臨む 起きる 連ねる 遅刻する
+P_CHANGE	で:PLACE	8	そだつ スリップする 出世する 刑死する 増水する 温まれる 育つ 自沈する
+P_CHANGE	に:GROUP_ORG	26	てんせいする 上場する 代る 任ずる 任官する 入信する 再任する 分ける 及ぼす 収束する 定着する 就ける
+P_CHANGE	に:PERSON	27	うつす てんせいする やけどする 付く 代える 代る 任ずる 再任する 分かれる 化ける 及ぼす 合せる
+P_CHANGE	に:PLACE	34	うつす かわる しみる つかる めばえる アテる 上げる 上場する 任官する 分かれる 分岐する 収束する
+P_CHANGE	に:TIME	5	上げる 振り向ける 目覚める 繰り越す 返り咲く
+P_COGNITION	で:PLACE	1	まよう
+P_COGNITION	に:GROUP_ORG	5	こだわる レビューする 傾倒する 反対する 同意する
+P_COGNITION	に:PERSON	10	こだわる たとえる レビューする 傾倒する 反対する 同意する 師事する 慣れ親しむ 気付く 注意する
+P_COGNITION	に:PLACE	1	まよう
+P_COMMUNICATE	で:PLACE	3	さえずる 代表する 演説する
+P_COMMUNICATE	に:GROUP_ORG	98	あいさつする いのる うなづく つげる つたえる ひろめる ぼやく やじる れんらくする わびる アサートする アップロードする
+P_COMMUNICATE	に:PERSON	113	あいさつする あやまる いのる うなづく おしえる せがむ たのむ つげる つたえる ひろめる ぼやく やじる
+P_COMMUNICATE	に:PLACE	9	アップロードする 呼び出せる 届け出る 掲示する 案内する 登壇する 送付する 通じる 通ずる
+P_CONSUME	で:PLACE	3	外食する 買い物する 食べ歩く
+P_CONSUME	に:GROUP_ORG	1	課金する
+P_CONSUME	に:PERSON	3	みあきる 奢る 課金する
+P_CREATE	で:PLACE	2	撮影する 栽培する
+P_CREATE	に:GROUP_ORG	1	かなえる
+P_CREATE	に:PERSON	2	かなえる 分泌する
+P_CREATE	に:PLACE	11	作り分ける 併設する 分村する 収める 埋め込める 敷設する 書き込む 架ける 縫いつける 蒔き付ける 記載する
+P_EMOTION	に:GROUP_ORG	14	あきれる じれる どうじる なやむ ビビる 共感する 恐れ入る 恐縮する 感心する 感謝する 戸惑う 甘える
+P_EMOTION	に:PERSON	28	あきれる あこがれる いら立つ おどろく おびえる じれる どうじる なやむ びびる ビビる 共感する 執着する
+P_EMOTION	に:TIME	1	退屈する
+P_EXIST	で:PLACE	6	吹雪く 滞在する 生存する 留まる 病死する 開幕する
+P_EXIST	に:GROUP_ORG	6	おはす 分布する 残留する 由来する 留まる 駐在する
+P_EXIST	に:PERSON	11	おはす のこる 出来る 出没する 埋まる 宿る 寄生する 憑依する 由来する 発現する 群がる
+P_EXIST	に:PLACE	67	うかぶ おける おさまる おはす こもる すまう とどまれる のこる はえる ひそむ やどる ゐる
+P_EXIST	に:TIME	6	おける とどまれる まにあう 出来る 梅雨入りする 生れる
+P_GIVE	に:GROUP_ORG	115	あたえる うけつぐ おごる くばる くれる ささげる つぐ ねだる みつぐ めぐむ もたらす もらえる
+P_GIVE	に:PERSON	143	あたえる あてがう うけつぐ おごる かえす かりる くばる くれる ささげる すそ分けする そえる つぐ
+P_GIVE	に:PLACE	24	かえす そえる とどける まねく よこす わり当てる 出せる 分配する 売り込む 奉納する 寄進する 差し入れる
+P_MOVE	で:PLACE	19	けん引する こむ ころぶ のる はばたく 乗車する 寝転ぶ 徐行する 旅する 早歩きする 横歩きする 滑れる
+P_MOVE	に:GROUP_ORG	85	いらっしゃる むかう よせる わかれる 付き従う 伝播する 伝来する 先んずる 先回りする 入会する 入党する 入団する
+P_MOVE	に:PERSON	81	いらっしゃる からみつく せまる たぐり寄せる とどく はこぶ ほうる まいる まわす むかう よせる 乗り移る
+P_MOVE	に:PLACE	367	あがる いきつく いたる いらっしゃる おくれる おちる おぼれる おりたつ かけこむ くりこむ こぎつける こむ
+P_MOVE	に:TIME	18	あがる いたる おくれる およぶ さかのぼる しずめる すすむ ずれ込む せまる むかえる 下げる 先駆ける
+P_PERCEIVE	で:PLACE	1	観光する
+P_PERCEIVE	に:GROUP_ORG	5	反響する 注目する 窺える 見せる 面会する
+P_PERCEIVE	に:PERSON	14	きこえる であう 出くわす 出会う 出会える 反響する 感じ取れる 注目する 窺える 見せる 見とれる 見向く
+P_PERCEIVE	に:PLACE	7	であう 出くわす 出会う 反響する 臨める 診せる 面会する
+P_POSSESS	に:GROUP_ORG	3	借る 賃貸する 頼る
+P_POSSESS	に:PERSON	5	せおう 借る 取り置く 賃貸する 頼る
+P_POSSESS	に:PLACE	3	内蔵する 取り置く 積載する
+P_STATE	で:PLACE	15	うずくまる くつろぐ くつろげる ねこむ ねころぶ 一人暮らしする 在宅する 待機する 戦死する 暮らせる 横たわる 歴任する
+P_STATE	に:GROUP_ORG	71	あやかる うかる かかわる きまる したがう すぎる そむ ちなむ なじむ なじめる まぎれる まける
+P_STATE	に:PERSON	94	あたる あやかる うんずる おうじる かかる かかわる からまる きまる したがう すぎる そむ ちなむ
+P_STATE	に:PLACE	89	あたる うかる かかる かくれる くっつく ごろつく すわる たたずむ つながる てきす とどまる なじむ
+P_STATE	に:TIME	10	とどまる ねいる 亘る 亙る 先行する 掛る 旅慣れる 明け暮れる 重なる 間に合う

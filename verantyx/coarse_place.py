@@ -696,6 +696,24 @@ def _estimate(pl: _Placement, term: str, row, role, pred) -> Dict[str, Any]:
                    neighbors, seen, role, pred, _pl_info(pl), estimate_basis="proximity")
 
 
+def _insert_frame_generated(term: str, r: Dict[str, Any], placement: Optional[str]) -> Dict[str, Any]:
+    """W3-b5 (docs section 11.6 / 12.10, W3-b5 addition): add the key ``frame_generated`` -- the row of ``generated_frames`` of the word, whatever ``frame_status`` is
+    (``{"origin": "generated", "constructed": true, "ptype", "frame", "provenance"}``), or null (no placement, a placement with no such table, a word with no row) --
+    just before the first key of W3-a3's tail.  The word is the one the placement was asked about (``spelling.normalized``).  Nothing else of the answer changes."""
+    pl, _why = _open(placement)
+    fg = None
+    if pl is not None:
+        word = (r.get("spelling") or {}).get("normalized") or unicodedata.normalize("NFKC", term.strip()).strip()
+        row = pl.generated_frame(word)
+        if row is not None:
+            fg = {"origin": "generated", "constructed": True, "ptype": row[4], "frame": row[5],
+                  "provenance": {"model": row[0], "effort": row[1], "batch_id": row[2], "attempt": row[3]}}
+    items = list(r.items())
+    tail = ("generated_frame", "frame_status", "frame", "frame_unconfirmed", "frame_disagreement")
+    cut = next((i for i, (k, _v) in enumerate(items) if k in tail), len(items))
+    return dict(items[:cut] + [("frame_generated", fg)] + items[cut:])
+
+
 def query(term: str, *, context_role: Optional[str] = None,
           context_predicate: Optional[str] = None,
           placement: Optional[str] = None) -> Dict[str, Any]:
@@ -715,6 +733,7 @@ def query(term: str, *, context_role: Optional[str] = None,
             sp = r.pop("spelling")
             items = list(r.items()); cut = next(i for i, (k, _) in enumerate(items) if k == tail[0])
             r = dict(items[:cut] + [("spelling", sp)] + items[cut:])
+    r = _insert_frame_generated(term, r, placement)       # W3-b5: one key more, before W3-a3's tail
     return r
 
 
