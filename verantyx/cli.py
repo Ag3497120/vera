@@ -544,6 +544,26 @@ def cmd_read_events(args) -> int:
     return semantic_read.main(argv)
 
 
+def cmd_observe(args) -> int:
+    """視点(錨・向き・範囲・状態)から構造を観測し、見えた十字を実現器で文にして json で 1 行返す(docs/OBSERVATION.md)。
+
+    処理はすべて `verantyx.observe.run_entry`。ここは引数を渡して結果を出すだけ。
+    終了コード: 0 = 型付きの結果(棄権・TIE を含む)、2 = 引数の誤り、3 = 台帳ファイルが壊れている(何も追記しない)。
+    """
+    from . import observe
+
+    result = observe.run_entry(
+        anchor_text=args.anchor_text, anchor_record=args.anchor_record, anchor_kind=args.anchor_kind,
+        anchor_cross=args.anchor_cross, lang=args.lang, direction=args.direction, range_=args.range,
+        structure_path=args.structure, index_root=args.index, index_families=tuple(args.index_family or ("pro",)),
+        no_index=args.no_index, placement_path=args.placement, ledger_path=args.ledger)
+    if result.error is not None:
+        print(json.dumps(result.error, ensure_ascii=False), file=sys.stderr)
+    else:
+        print(result.stdout)
+    return result.exit_code
+
+
 def cmd_doctor(args) -> int:
     """入れた直後に叩く自己検査 — 二つの顔を1回で確かめる。
 
@@ -1566,6 +1586,25 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--text", default=None)
     p.add_argument("--lang", default=None)
     p.set_defaults(fn=cmd_read_events)
+
+    p = sub.add_parser(
+        "observe",
+        help="observe a structure from a viewpoint (anchor, direction, range, ledger state) and realize "
+             "what is seen as one json line; every clause carries its coordinate (docs/OBSERVATION.md)")
+    p.add_argument("--anchor-text", default=None, help="the anchor sentence (a seed, or a question with --anchor-kind question)")
+    p.add_argument("--anchor-record", default=None, help="the id of a sentence of --structure as the anchor")
+    p.add_argument("--anchor-kind", default="seed", choices=["seed", "question"])
+    p.add_argument("--anchor-cross", type=int, default=None, help="which cross of the anchor sentence (needed when it has several)")
+    p.add_argument("--lang", default=None)
+    p.add_argument("--direction", default="", help="moves in order, e.g. FACE_SWAP:agent,EDGE:cause")
+    p.add_argument("--range", type=int, default=None, help="how many leading moves may be applied (default: all)")
+    p.add_argument("--structure", default=None, help="jsonl of {id, text} sentences")
+    p.add_argument("--index", default=None, help="corpus index directory (default: the default index root)")
+    p.add_argument("--index-family", action="append", default=None, help="index family (repeatable; default: pro)")
+    p.add_argument("--no-index", action="store_true", help="do not ask the corpus index (occupancy of unattested cells is UNKNOWN_NO_INDEX)")
+    p.add_argument("--placement", default=None, help="one json file of placements and neighbours")
+    p.add_argument("--ledger", default=None, help="ledger file (jsonl): observe in its state, then append the turn")
+    p.set_defaults(fn=cmd_observe)
 
     p = sub.add_parser(
         "mcp-config",

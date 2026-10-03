@@ -1,0 +1,66 @@
+{
+ "note": "期待は直さず、食い違いをここに凍結する。観測器の誤りと判断した件は 0、期待の書き誤りと判断した件は 3 ケース（LG05 の 2 つの欄、M04b、M04c）。",
+ "rows": [
+  {
+   "case": "LG05",
+   "key": "ranks",
+   "expected": [
+    [
+     "貸す|+|past|agent=教授;patient=辞書;recipient=学生"
+    ],
+    [
+     "貸す|+|past|agent=事務員;patient=辞書;recipient=学生",
+     "貸す|+|past|agent=犬;patient=辞書;recipient=学生"
+    ]
+   ],
+   "observed": [
+    [
+     "貸す|+|past|agent=教授;patient=辞書;recipient=学生"
+    ],
+    [
+     "貸す|+|past|agent=事務員;patient=辞書;recipient=学生"
+    ],
+    [
+     "貸す|+|past|agent=犬;patient=辞書;recipient=学生"
+    ]
+   ],
+   "judgment": "期待の書き誤り（観測器は事前登録の式どおり）",
+   "reason": "L05 の発話「教授にも聞いてみて」は 教授 を逐語で含むので 段 (ii-a) で A が先頭になる。期待はここまでは当たっている（焦点 A も一致）。外れたのは B と C の関係で、期待は B と C を同値と書いたが、B（事務員）の近傍に 教授 があり（placement.json の neighbors[事務員] = [司書, 教授]）その 教授 が同じ発話に現れるので 段 (ii-b) で B は 1、C は 0。よって B が C より上で順位は [A] [B] [C] になる。期待を書くとき 事務員 の近傍を見落とした。",
+   "observer_follows": "docs/OBSERVATION.md P8 (ii-b)"
+  },
+  {
+   "case": "LG05",
+   "key": "decided_by",
+   "expected": [
+    "utter_verbatim"
+   ],
+   "observed": [
+    "utter_verbatim",
+    "utter_neighbor"
+   ],
+   "judgment": "期待の書き誤り（上と同じ原因）",
+   "reason": "順位が 3 つに分かれたので境目が 2 つ（A|B は ii-a、B|C は ii-b）。",
+   "observer_follows": "docs/OBSERVATION.md P8"
+  },
+  {
+   "case": "M04b-swap-place-J09",
+   "key": "realization",
+   "cell": "作る|+|past|agent=祖母;patient=団子;place=縁側",
+   "expected": "REALIZED:祖母は団子を縁側で作った。",
+   "observed": "REFUSED:ROUNDTRIP_MISMATCH",
+   "judgment": "期待の書き誤り（実現器の読み直しの検査が働いた）",
+   "reason": "読解器は「縁側で」を「ambiguous case role: で」で読まない（artifacts/w3-c/reader_seed_obs.jsonl の J08・J10・J11・J12・J25 と同じ理由）。実現した文を読み直すと読めないので 実現器は ROUNDTRIP_MISMATCH で拒否した。同じ理由で J08 などが読めないことを期待を書く前に知っていたのに、縁側を入れた文が実現できると書いてしまった。拒否は規則どおり。",
+   "observer_follows": "docs/OBSERVATION.md P11 (読み直しの検査)"
+  },
+  {
+   "case": "M04c-swap-place-J09-index",
+   "key": "realization",
+   "cell": "作る|+|past|agent=祖母;patient=団子;place=縁側",
+   "expected": "REALIZED:祖母は団子を縁側で作った。",
+   "observed": "REFUSED:ROUNDTRIP_MISMATCH",
+   "judgment": "期待の書き誤り（M04b と同じ）",
+   "reason": "同上。",
+   "observer_follows": "docs/OBSERVATION.md P11"
+  }
+ ]
+}

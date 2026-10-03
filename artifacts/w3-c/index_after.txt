@@ -1,0 +1,14 @@
+{
+  "verdict": "ANSWER",
+  "query": "視点から構造を観測して生成",
+  "searched": 654,
+  "hits": [
+    {
+      "kind": "module",
+      "name": "observe",
+      "about": "観測としての生成 (docs/OBSERVATION.md): 視点から構造を観測して生成する。Generation as OBSERVATION: look at a structure from a viewpoint and let the realizer say what is seen.",
+      "where": "verantyx/observe.py"
+    }
+  ],
+  "total_hits": 1
+}

@@ -1,0 +1,14 @@
+{
+  "verdict": "ANSWER",
+  "query": "observe viewpoint salience ledger",
+  "searched": 654,
+  "hits": [
+    {
+      "kind": "module",
+      "name": "observe",
+      "about": "Generation as OBSERVATION (docs/OBSERVATION.md): look at a structure from a viewpoint and let the realizer say what is seen.",
+      "where": "verantyx/observe.py"
+    }
+  ],
+  "total_hits": 1
+}

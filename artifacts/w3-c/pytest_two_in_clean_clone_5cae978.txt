@@ -1,0 +1,40 @@
+F.                                                                       [100%]
+=================================== FAILURES ===================================
+_______________ test_speech_act_drafts_fill_new_roles_and_reread _______________
+
+tmp_path = PosixPath('/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w3c/pytest-of-motonisihikoudai/pytest-3/test_speech_act_drafts_fill_ne0')
+
+    def test_speech_act_drafts_fill_new_roles_and_reread(tmp_path: Path):
+        chat = _chat(tmp_path)
+        cases = [
+            ("同僚に資料を確認してもらう依頼文を書いてください。",
+             "request", ("資料", "いただけますか")),
+            ("私が資料をなくしたことを謝る文を書いてください。",
+             "apology", ("資料", "申し訳ありません")),
+            ("同僚に、来週の研修の集合時刻が変わったことを知らせるメッセージを書いてください。"
+             "新しい集合時刻は午前9時です。", "report-change", ("研修", "午前9時")),
+            ("友人から借りた傘を返すときのお礼のメッセージを書いてください。",
+             "thanks", ("傘", "ありがとうございます")),
+            ("公園で花を見つけたときの感想を一文で書いてください。",
+             "impression", ("公園", "花")),
+            ("街角に新しい図書館ができたと聞いたときの期待を一文で書いてください。",
+             "impression", ("図書館", "楽しみ")),
+            ("職場で資料の確認に間に合わない可能性に気づいたとき、先輩に状況を相談する"
+             "メッセージを書いてください。記録と、必要なら確認の調整を相談したいことを含めてください。",
+             "consult", ("資料の確認", "記録")),
+        ]
+        for prompt, act, content in cases:
+            assert read_question(prompt).requested_speech_act.value == act
+            out = chat.reply(prompt)
+>           assert out["ability"] == "generation" and out["kind"] == "answer"
+E           AssertionError: assert ('generation' == 'generation'
+E             
+E               generation and 'unknown' == 'answer'
+E             
+E             - answer
+E             + unknown)
+
+tests/test_p4_abilities.py:290: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread
+1 failed, 1 passed in 3.40s

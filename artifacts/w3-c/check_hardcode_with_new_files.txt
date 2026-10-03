@@ -1,0 +1,200 @@
+added lines: 1648
+PROPER/NUMERIC (must be empty): []
+ENGLISH NAMES (must be empty): []
+common nouns found in added lines (list only): ['十字', '結果']
+verb lemmas found in added lines (list only): ['いる', 'する', '出す']
+english lowercase words found in added lines (list only; each with the added lines that hold it, so a reader can judge): ['all', 'answer', 'asked', 'broken', 'budget', 'built', 'came', 'contract', 'could', 'def', 'did', 'each', 'every', 'exactly', 'file', 'fixed', 'form', 'found', 'gave', 'got', 'kept', 'larger', 'left', 'less', 'let', 'made', 'more', 'never', 'new', 'none', 'not', 'nothing', 'only', 'outside', 'passed', 'patient', 'read', 'results', 'returned', 'said', 'since', 'some', 'stored', 'than', 'that', 'the', 'this', 'two', 'types', 'was', 'were', 'when', 'which', 'window', 'writes', 'written']
+  [all] 6 added line(s):
+      p.add_argument("--range", type=int, default=None, help="how many leading moves may be applied (default: all)")
+      and all(ch in _PUNCT or unicodedata.category(ch).startswith("P") for ch in token.surface)):
+      "detail": "all content lemmas belong to the predicate or a filler" if passed else "content or function token is unlicensed",
+  [answer] 3 added line(s):
+      answer to a question (an answer needs a record as evidence, which is outside this ticket).
+      # Refusal reasons of `semantic_realize` that only the answer realizer and the source-view realizer raise (semantic_realize.py, the `_fail` calls of those two fu
+      """Ask the source about ONE word. An answer that breaks the contract is kept as an INVALID result with the problems named."""
+  [asked] 3 added line(s):
+      # no surface to look up (a cell with no filler): the index was never asked, which is not the same as "nothing there" (decision E21)
+      source: str                                   # structure | index:<family> | index (no index asked)
+      sources were asked (structure first, then the families as given). Sources are never added up."""
+  [broken] 3 added line(s):
+      a set decides anything; a tie is never broken (it is returned as TIE with its candidates). Every clause of the output carries its
+      a TIE is a result); 2: the arguments are wrong (`BAD_ARGUMENTS`); 3: the ledger file is broken (`LEDGER_INVALID`, nothing is appended)."""
+      """Read a ledger file (one json event per line, seq from 1 without gaps). A broken file raises ValueError('LEDGER_INVALID:<reason>')."""
+  [budget] 1 added line(s):
+      return Refused("BUDGET", "output character budget exceeded", ids, checks=checks)
+  [built] 1 added line(s):
+      optionally, a corpus index that tells whether a cell is occupied by a sentence there. The structure is built once and not changed."""
+  [came] 3 added line(s):
+      """One sentence for an observed cross, or a typed refusal. `rule` is the reader rule of the clause the cross came from."""
+      """One sentence read: the crosses and the relations the reader gave. `source` says where the reading came from: `semantic_read` (the entry)
+      reach the same cross apart from its provenance (the clause index and span of the sentence it came through), and the sentence of the
+  [contract] 1 added line(s):
+      """Ask the source about ONE word. An answer that breaks the contract is kept as an INVALID result with the problems named."""
+  [could] 1 added line(s):
+      # never returns them, so listing them with a 0 would say a thing this path could do. Dropped on purpose and named here (decision E22): the closed list of the ze
+  [def] 111 added line(s):
+      def cmd_observe(args) -> int:
+      def _observed_content(center: Any, arms: Any) -> tuple[Any, ...]:
+      def _observed_arm_surfaces(arms: Any) -> list[str]:
+  [did] 1 added line(s):
+      return {"passed": False, "detail": "generated text did not read as exactly one cross", "crosses": len(got.crosses)}
+  [each] 6 added line(s):
+      # predicate or to ONE filler (each tagged on its own, not concatenated), and every function word is in the closed sets above.
+      """Every content lemma of `sentence` is a lemma of the predicate or of one filler surface (each tagged ALONE); every function word is in
+      observe(viewpoint, structure) -> Observation      a list of event crosses, each with a coordinate (which cross, which moves)
+  [every] 10 added line(s):
+      "what is seen as one json line; every clause carries its coordinate (docs/OBSERVATION.md)")
+      # per arm, role / kind / surfaces; the placement is not part of the content); (2) every content lemma of the sentence belongs to the
+      # predicate or to ONE filler (each tagged on its own, not concatenated), and every function word is in the closed sets above.
+  [exactly] 3 added line(s):
+      # returned: (1) the sentence is read again by the reading entry and must give exactly one cross with the same content (centre keys and,
+      """Read `sentence` again with the reading entry: exactly one cross, with the same content as the observed one."""
+      return {"passed": False, "detail": "generated text did not read as exactly one cross", "crosses": len(got.crosses)}
+  [file] 19 added line(s):
+      print(json.dumps(result.error, ensure_ascii=False), file=sys.stderr)
+      p.add_argument("--placement", default=None, help="one json file of placements and neighbours")
+      p.add_argument("--ledger", default=None, help="ledger file (jsonl): observe in its state, then append the turn")
+  [fixed] 4 added line(s):
+      """One line of json. The key order is fixed by construction; nothing in it depends on time or on the environment."""
+      'realization': {'realized': 0, 'refused': {r: 0 for r in sorted(SR.REFUSAL_REASONS - set(REFUSAL_NOT_ON_THIS_PATH))}},    # a frozenset: sorted before use, so z
+      append-only ledger of events; its stages are fixed functions of numbers read from that ledger (formulas registered in docs/OBSERVATION.md
+  [form] 3 added line(s):
+      # The input is the dict form of a cross (the centre and the arms of `verantyx.event_cross.EventCross.to_dict()`), not a reader IR clause.
+      The stages are compared in this order as a tuple (lexicographic); cells with the same tuple in EVERY stage form one rank. A first rank with
+      for the jsonl file form. No deletion, no detaching and no persistence policy lives here.
+  [found] 9 added line(s):
+      found: List[Tuple[Cell, Dict[str, Any]]] = []
+      found.append((_make_cell(reading.crosses[j], coord, 'read:' + reading.source, reading.lang), move))
+      return found
+  [gave] 1 added line(s):
+      """One sentence read: the crosses and the relations the reader gave. `source` says where the reading came from: `semantic_read` (the entry)
+  [got] 32 added line(s):
+      got = event_cross.build_crosses(out)
+      if got.status != "CROSSED":
+      return {"passed": False, "detail": "generated text was not read (" + got.status + ")", "crosses": 0}
+  [kept] 2 added line(s):
+      """Ask the source about ONE word. An answer that breaks the contract is kept as an INVALID result with the problems named."""
+      `clock` gives the time stamp of a new event (default: UTC ISO string; the stamp is kept and never used by a stage)."""
+  [larger] 6 added line(s):
+      (ii-a) utter_verbatim  s2 = changed fillers that occur verbatim in the latest utterance   larger is higher
+      (ii-b) utter_neighbor  s3 = changed fillers one of whose neighbours occurs verbatim there larger is higher
+      (iv)   decided         s5 = ledger.count("decided_cell", key)                    larger is higher
+  [left] 2 added line(s):
+      # `__all__` above is left as it was; the W3-c names are added to it here.
+      """The viewpoint of a recorded observation (state left FLAT: replay supplies the ledger). An injected anchor needs its reading again."""
+  [less] 1 added line(s):
+      """A source-less IR clause that only carries the pieces `_surface_text` reads (no lineage claim is made on it)."""
+  [let] 1 added line(s):
+      """観測としての生成 (docs/OBSERVATION.md): 視点から構造を観測して生成する。Generation as OBSERVATION: look at a structure from a viewpoint and let the realizer say what is seen.
+  [made] 2 added line(s):
+      """A source-less IR clause that only carries the pieces `_surface_text` reads (no lineage claim is made on it)."""
+      realize (inside observe)      -> a sentence       made by `semantic_realize.realize_observed` from the observed cross only
+  [more] 1 added line(s):
+      more than one cell is a TIE and nothing is chosen from it. There is no random number, no hash, no iteration order of a set and no clock in
+  [never] 21 added line(s):
+      # The sentence never contains a word that is not in the observation. Other ways of saying the same thing are returned by
+      # `observed_variants` and are never chosen here.
+      """The other verified ways of saying the same cross (polite style, が as the agent particle, reversed role order). Listed, never chosen.
+  [new] 14 added line(s):
+      # REFUSAL_REASONS minus these two, and a test fails if the realizer's list grows, so a new reason is never dropped silently.
+      new, why = _try_swap(cell, move.role, word, lookup, _source_id(neighbors))
+      if new is None: c['candidates_unlicensed'][why] += 1; continue
+  [none] 4 added line(s):
+      cross is seen; a FACE_SWAP needs a placement file, an EDGE needs a reading with `relations` (the reader produced none in the measured
+      """The sentence the anchor stands for: the text of an `AnchorText`, the text of the structure's sentence for an `AnchorRecord` (None when it has none).
+      """Observe `structure` from `viewpoint`. The state is `ledger` when given, else `viewpoint.state` (FLAT when there is none).
+  [not] 137 added line(s):
+      if result.error is not None:
+      p.add_argument("--no-index", action="store_true", help="do not ask the corpus index (occupancy of unattested cells is UNKNOWN_NO_INDEX)")
+      # The input is the dict form of a cross (the centre and the arms of `verantyx.event_cross.EventCross.to_dict()`), not a reader IR clause.
+  [nothing] 5 added line(s):
+      # W3-c: realize an OBSERVED event cross (verantyx/observe.py). Added at the end of the module; nothing above is changed.
+      # no surface to look up (a cell with no filler): the index was never asked, which is not the same as "nothing there" (decision E21)
+      """One line of json. The key order is fixed by construction; nothing in it depends on time or on the environment."""
+  [only] 26 added line(s):
+      # The role names of the convention are written with the names the IR clause uses (place -> location, source -> origin) only to build ONE
+      """A source-less IR clause that only carries the pieces `_surface_text` reads (no lineage claim is made on it)."""
+      return no("NOT_REALIZABLE", "only Japanese crosses are realized")
+  [outside] 4 added line(s):
+      return no("ROLE_NOT_REALIZABLE", "tense is outside the closed set")
+      return no("ROLE_NOT_REALIZABLE", "polarity is outside the closed set")
+      return no("ROLE_NOT_REALIZABLE", "role " + str(role) + " is outside the realizable set")
+  [passed] 12 added line(s):
+      passed = not extra and not unexpected
+      "passed": passed,
+      "detail": "all content lemmas belong to the predicate or a filler" if passed else "content or function token is unlicensed",
+  [patient] 1 added line(s):
+      _OBSERVED_ROLE_TO_IR = {"agent": "agent", "patient": "patient", "recipient": "recipient", "goal": "goal",
+  [read] 25 added line(s):
+      # returned: (1) the sentence is read again by the reading entry and must give exactly one cross with the same content (centre keys and,
+      out = semantic_read.read(sentence, "ja")
+      return {"passed": False, "detail": "generated text was not read (" + got.status + ")", "crosses": 0}
+  [results] 6 added line(s):
+      results: list[Realized | Refused] = []
+      results.append(Refused("ROLE_NOT_REALIZABLE", detail, ids))
+      results.append(Refused("ROUNDTRIP_MISMATCH", checks["roundtrip"]["detail"], ids, text=sentence, checks=checks))
+  [returned] 3 added line(s):
+      # returned: (1) the sentence is read again by the reading entry and must give exactly one cross with the same content (centre keys and,
+      # The sentence never contains a word that is not in the observation. Other ways of saying the same thing are returned by
+      a set decides anything; a tie is never broken (it is returned as TIE with its candidates). Every clause of the output carries its
+  [said] 2 added line(s):
+      """Append the turn to the ledger: the utterance (when a person said something), then the observation. A TIE writes NO `observed_cell`
+      P8 as changed in change record 3): the anchor already acts through stage i, so the same sentence is not counted again as "what the person said last"."""
+  [since] 5 added line(s):
+      SAL.append_jsonl(ledger_path, list(ledger.events(since='ev:%d' % before)) if before else list(ledger.events()))
+      def events(self, since: Optional[str] = None) -> Iterable[Mapping[str, Any]]: ...   # seq の昇順
+      def events(self, since: Optional[str] = None) -> Iterable[Mapping[str, Any]]:
+  [some] 1 added line(s):
+      ('utter_neighbor', stage_utter_neighbor, 's3 = |{h in changed fillers : some neighbour of h is a substring of U}|, U = the latest utterance that is not the anch
+  [stored] 5 added line(s):
+      any rank or output (the only clock is the default time stamp of `MemoryLedger`, stored and never read by a stage).
+      # The only clock in this module. The value is stored with the event and is never read by a stage or written to an output.
+      """An in-memory, append-only ledger. `events` (already stored events with seq and ts, as `load_jsonl` reads them) are validated;
+  [than] 1 added line(s):
+      more than one cell is a TIE and nothing is chosen from it. There is no random number, no hash, no iteration order of a set and no clock in
+  [that] 23 added line(s):
+      # The sentence never contains a word that is not in the observation. Other ways of saying the same thing are returned by
+      """A source-less IR clause that only carries the pieces `_surface_text` reads (no lineage claim is made on it)."""
+      accepts; `EDGE(relation)`: go to the cross that the reader linked to this one by that relation), the range is how many of the leading
+  [the] 121 added line(s):
+      p.add_argument("--anchor-text", default=None, help="the anchor sentence (a seed, or a question with --anchor-kind question)")
+      p.add_argument("--anchor-record", default=None, help="the id of a sentence of --structure as the anchor")
+      p.add_argument("--anchor-cross", type=int, default=None, help="which cross of the anchor sentence (needed when it has several)")
+  [this] 14 added line(s):
+      the closed sets of this module. The same loop as `check_term_lineage`, with the licensed lemmas taken from the pieces."""
+      return no("ROLE_NOT_REALIZABLE", "quantifiers, scope and comparison are not expressed by this realizer")
+      accepts; `EDGE(relation)`: go to the cross that the reader linked to this one by that relation), the range is how many of the leading
+  [two] 4 added line(s):
+      # Refusal reasons of `semantic_realize` that only the answer realizer and the source-view realizer raise (semantic_realize.py, the `_fail` calls of those two fu
+      # REFUSAL_REASONS minus these two, and a test fails if the realizer's list grows, so a new reason is never dropped silently.
+      The `Ledger` protocol is shared with W4-m (the persistent ledger); this module has only the in-memory implementation and two thin helpers
+  [types] 5 added line(s):
+      bad_keys = [k for k in fields if k not in ('state', 'origin', 'estimate_basis', 'types', 'provenance')]
+      types = fields.get('types', [])
+      if not isinstance(types, list): raise _bad('PLACEMENT_FILE_INVALID:types of %s is not a list' % word)
+  [was] 6 added line(s):
+      return {"passed": False, "detail": "generated text was not read (" + got.status + ")", "crosses": 0}
+      # `__all__` above is left as it was; the W3-c names are added to it here.
+      # no surface to look up (a cell with no filler): the index was never asked, which is not the same as "nothing there" (decision E21)
+  [were] 3 added line(s):
+      sources were asked (structure first, then the families as given). Sources are never added up."""
+      skipped_as_anchor: Tuple[int, ...] = ()    # seqs of utterances equal to the anchor sentence that were skipped (counted, never dropped silently)
+      and no `sorted(...)[0]` picks a winner: a rank with two cells is a TIE, whatever order the cells were passed in."""
+  [when] 13 added line(s):
+      p.add_argument("--anchor-cross", type=int, default=None, help="which cross of the anchor sentence (needed when it has several)")
+      root: Optional[Path]              # None: the default root of the corpus index, resolved when first used
+      """Sentences from a jsonl file: one object per line, {"id", "text"} (other keys are ignored; "lang" is used when present)."""
+  [which] 8 added line(s):
+      p.add_argument("--anchor-cross", type=int, default=None, help="which cross of the anchor sentence (needed when it has several)")
+      observe(viewpoint, structure) -> Observation      a list of event crosses, each with a coordinate (which cross, which moves)
+      a conversation is the ledger, and the output says which ledger line moved which observation (`salience_trace`).
+  [window] 5 added line(s):
+      window: int = WINDOW
+      'window': self.index.window}
+      hits = self._corpus_obj().search(surface, family, limit=self._structure.index.window)
+  [writes] 1 added line(s):
+      """Append the turn to the ledger: the utterance (when a person said something), then the observation. A TIE writes NO `observed_cell`
+  [written] 8 added line(s):
+      # The role names of the convention are written with the names the IR clause uses (place -> location, source -> origin) only to build ONE
+      """The neighbours of one word in the placement. `items` is a SET written in string order: it is not a ranking."""
+      return NeighborResult(got.state, tuple(sorted(set(got.items))), got.provenance)    # a set written in string order, not a ranking

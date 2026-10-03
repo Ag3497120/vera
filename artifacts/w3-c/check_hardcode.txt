@@ -1,0 +1,101 @@
+added lines: 225
+PROPER/NUMERIC (must be empty): []
+ENGLISH NAMES (must be empty): []
+common nouns found in added lines (list only): ['十字', '結果']
+verb lemmas found in added lines (list only): ['いる', '出す']
+english lowercase words found in added lines (list only; each with the added lines that hold it, so a reader can judge): ['all', 'budget', 'came', 'def', 'did', 'each', 'every', 'exactly', 'file', 'form', 'got', 'left', 'less', 'made', 'never', 'not', 'nothing', 'only', 'outside', 'passed', 'patient', 'read', 'results', 'returned', 'that', 'the', 'this', 'was', 'when', 'which', 'written']
+  [all] 3 added line(s):
+      p.add_argument("--range", type=int, default=None, help="how many leading moves may be applied (default: all)")
+      and all(ch in _PUNCT or unicodedata.category(ch).startswith("P") for ch in token.surface)):
+      "detail": "all content lemmas belong to the predicate or a filler" if passed else "content or function token is unlicensed",
+  [budget] 1 added line(s):
+      return Refused("BUDGET", "output character budget exceeded", ids, checks=checks)
+  [came] 1 added line(s):
+      """One sentence for an observed cross, or a typed refusal. `rule` is the reader rule of the clause the cross came from."""
+  [def] 9 added line(s):
+      def cmd_observe(args) -> int:
+      def _observed_content(center: Any, arms: Any) -> tuple[Any, ...]:
+      def _observed_arm_surfaces(arms: Any) -> list[str]:
+  [did] 1 added line(s):
+      return {"passed": False, "detail": "generated text did not read as exactly one cross", "crosses": len(got.crosses)}
+  [each] 2 added line(s):
+      # predicate or to ONE filler (each tagged on its own, not concatenated), and every function word is in the closed sets above.
+      """Every content lemma of `sentence` is a lemma of the predicate or of one filler surface (each tagged ALONE); every function word is in
+  [every] 4 added line(s):
+      "what is seen as one json line; every clause carries its coordinate (docs/OBSERVATION.md)")
+      # per arm, role / kind / surfaces; the placement is not part of the content); (2) every content lemma of the sentence belongs to the
+      # predicate or to ONE filler (each tagged on its own, not concatenated), and every function word is in the closed sets above.
+  [exactly] 3 added line(s):
+      # returned: (1) the sentence is read again by the reading entry and must give exactly one cross with the same content (centre keys and,
+      """Read `sentence` again with the reading entry: exactly one cross, with the same content as the observed one."""
+      return {"passed": False, "detail": "generated text did not read as exactly one cross", "crosses": len(got.crosses)}
+  [file] 3 added line(s):
+      print(json.dumps(result.error, ensure_ascii=False), file=sys.stderr)
+      p.add_argument("--placement", default=None, help="one json file of placements and neighbours")
+      p.add_argument("--ledger", default=None, help="ledger file (jsonl): observe in its state, then append the turn")
+  [form] 1 added line(s):
+      # The input is the dict form of a cross (the centre and the arms of `verantyx.event_cross.EventCross.to_dict()`), not a reader IR clause.
+  [got] 6 added line(s):
+      got = event_cross.build_crosses(out)
+      if got.status != "CROSSED":
+      return {"passed": False, "detail": "generated text was not read (" + got.status + ")", "crosses": 0}
+  [left] 1 added line(s):
+      # `__all__` above is left as it was; the W3-c names are added to it here.
+  [less] 1 added line(s):
+      """A source-less IR clause that only carries the pieces `_surface_text` reads (no lineage claim is made on it)."""
+  [made] 1 added line(s):
+      """A source-less IR clause that only carries the pieces `_surface_text` reads (no lineage claim is made on it)."""
+  [never] 3 added line(s):
+      # The sentence never contains a word that is not in the observation. Other ways of saying the same thing are returned by
+      # `observed_variants` and are never chosen here.
+      """The other verified ways of saying the same cross (polite style, が as the agent particle, reversed role order). Listed, never chosen.
+  [not] 26 added line(s):
+      if result.error is not None:
+      p.add_argument("--no-index", action="store_true", help="do not ask the corpus index (occupancy of unattested cells is UNKNOWN_NO_INDEX)")
+      # The input is the dict form of a cross (the centre and the arms of `verantyx.event_cross.EventCross.to_dict()`), not a reader IR clause.
+  [nothing] 1 added line(s):
+      # W3-c: realize an OBSERVED event cross (verantyx/observe.py). Added at the end of the module; nothing above is changed.
+  [only] 6 added line(s):
+      # The role names of the convention are written with the names the IR clause uses (place -> location, source -> origin) only to build ONE
+      """A source-less IR clause that only carries the pieces `_surface_text` reads (no lineage claim is made on it)."""
+      return no("NOT_REALIZABLE", "only Japanese crosses are realized")
+  [outside] 3 added line(s):
+      return no("ROLE_NOT_REALIZABLE", "tense is outside the closed set")
+      return no("ROLE_NOT_REALIZABLE", "polarity is outside the closed set")
+      return no("ROLE_NOT_REALIZABLE", "role " + str(role) + " is outside the realizable set")
+  [passed] 11 added line(s):
+      passed = not extra and not unexpected
+      "passed": passed,
+      "detail": "all content lemmas belong to the predicate or a filler" if passed else "content or function token is unlicensed",
+  [patient] 1 added line(s):
+      _OBSERVED_ROLE_TO_IR = {"agent": "agent", "patient": "patient", "recipient": "recipient", "goal": "goal",
+  [read] 4 added line(s):
+      # returned: (1) the sentence is read again by the reading entry and must give exactly one cross with the same content (centre keys and,
+      out = semantic_read.read(sentence, "ja")
+      return {"passed": False, "detail": "generated text was not read (" + got.status + ")", "crosses": 0}
+  [results] 6 added line(s):
+      results: list[Realized | Refused] = []
+      results.append(Refused("ROLE_NOT_REALIZABLE", detail, ids))
+      results.append(Refused("ROUNDTRIP_MISMATCH", checks["roundtrip"]["detail"], ids, text=sentence, checks=checks))
+  [returned] 2 added line(s):
+      # returned: (1) the sentence is read again by the reading entry and must give exactly one cross with the same content (centre keys and,
+      # The sentence never contains a word that is not in the observation. Other ways of saying the same thing are returned by
+  [that] 2 added line(s):
+      # The sentence never contains a word that is not in the observation. Other ways of saying the same thing are returned by
+      """A source-less IR clause that only carries the pieces `_surface_text` reads (no lineage claim is made on it)."""
+  [the] 30 added line(s):
+      p.add_argument("--anchor-text", default=None, help="the anchor sentence (a seed, or a question with --anchor-kind question)")
+      p.add_argument("--anchor-record", default=None, help="the id of a sentence of --structure as the anchor")
+      p.add_argument("--anchor-cross", type=int, default=None, help="which cross of the anchor sentence (needed when it has several)")
+  [this] 2 added line(s):
+      the closed sets of this module. The same loop as `check_term_lineage`, with the licensed lemmas taken from the pieces."""
+      return no("ROLE_NOT_REALIZABLE", "quantifiers, scope and comparison are not expressed by this realizer")
+  [was] 2 added line(s):
+      return {"passed": False, "detail": "generated text was not read (" + got.status + ")", "crosses": 0}
+      # `__all__` above is left as it was; the W3-c names are added to it here.
+  [when] 1 added line(s):
+      p.add_argument("--anchor-cross", type=int, default=None, help="which cross of the anchor sentence (needed when it has several)")
+  [which] 1 added line(s):
+      p.add_argument("--anchor-cross", type=int, default=None, help="which cross of the anchor sentence (needed when it has several)")
+  [written] 1 added line(s):
+      # The role names of the convention are written with the names the IR clause uses (place -> location, source -> origin) only to build ONE
