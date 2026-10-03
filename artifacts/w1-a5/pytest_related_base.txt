@@ -1,0 +1,86 @@
+
+==================================== ERRORS ====================================
+_____________ ERROR collecting tests/test_semantic_read_w3b1_i5.py _____________
+tests/test_semantic_read_w3b1_i5.py:57: in <module>
+    W3B1 = _module_at(W3B1_COMMIT)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_semantic_read_w3b1_i5.py:48: in _module_at
+    src = subprocess.run(['git', '-C', str(TREE), 'show', '%s:verantyx/semantic_read.py' % commit], capture_output=True, check=True).stdout
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['git', '-C', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w1a5-impl/base_df4f001', 'show', 'f410469:verantyx/semantic_read.py']' returned non-zero exit status 128.
+______________ ERROR collecting tests/test_semantic_read_w3b2.py _______________
+tests/test_semantic_read_w3b2.py:64: in <module>
+    BASE = _base_module()
+           ^^^^^^^^^^^^^^
+tests/test_semantic_read_w3b2.py:55: in _base_module
+    src = git('show', '%s:verantyx/semantic_read.py' % BASE_COMMIT)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_semantic_read_w3b2.py:50: in git
+    return subprocess.run(['git', '-C', str(TREE)] + list(args), capture_output=True, check=True).stdout.decode('utf-8')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['git', '-C', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w1a5-impl/base_df4f001', 'show', '3b31258:verantyx/semantic_read.py']' returned non-zero exit status 128.
+______________ ERROR collecting tests/test_semantic_read_w3b3.py _______________
+tests/test_semantic_read_w3b3.py:72: in <module>
+    BASE = _base_module()
+           ^^^^^^^^^^^^^^
+tests/test_semantic_read_w3b3.py:63: in _base_module
+    src = git('show', '%s:verantyx/semantic_read.py' % BASE_COMMIT)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_semantic_read_w3b3.py:58: in git
+    return subprocess.run(['git', '-C', str(TREE)] + list(args), capture_output=True, check=True).stdout.decode('utf-8')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['git', '-C', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w1a5-impl/base_df4f001', 'show', 'c875ed3:verantyx/semantic_read.py']' returned non-zero exit status 128.
+___________ ERROR collecting tests/test_semantic_read_w3b3_events.py ___________
+tests/test_semantic_read_w3b3_events.py:61: in <module>
+    BEC = _base_ec()
+          ^^^^^^^^^^
+tests/test_semantic_read_w3b3_events.py:52: in _base_ec
+    src = git('show', '%s:verantyx/event_cross.py' % BASE_COMMIT)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_semantic_read_w3b3_events.py:48: in git
+    return subprocess.run(['git', '-C', str(TREE)] + list(args), capture_output=True, check=True).stdout.decode('utf-8')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['git', '-C', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w1a5-impl/base_df4f001', 'show', 'c875ed3:verantyx/event_cross.py']' returned non-zero exit status 128.
+____________ ERROR collecting tests/test_semantic_read_w3b3_m1r3.py ____________
+tests/test_semantic_read_w3b3_m1r3.py:104: in <module>
+    BASE = _base_module()
+           ^^^^^^^^^^^^^^
+tests/test_semantic_read_w3b3_m1r3.py:95: in _base_module
+    src = subprocess.run(['git', '-C', str(TREE), 'show', '%s:verantyx/semantic_read.py' % BASE_COMMIT], capture_output=True, check=True).stdout.decode('utf-8')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['git', '-C', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w1a5-impl/base_df4f001', 'show', 'c875ed3:verantyx/semantic_read.py']' returned non-zero exit status 128.
+_____________ ERROR collecting tests/test_semantic_read_w3b3_r2.py _____________
+tests/test_semantic_read_w3b3_r2.py:84: in <module>
+    BASE = _base_module()
+           ^^^^^^^^^^^^^^
+tests/test_semantic_read_w3b3_r2.py:75: in _base_module
+    src = subprocess.run(['git', '-C', str(TREE), 'show', '%s:verantyx/semantic_read.py' % BASE_COMMIT], capture_output=True, check=True).stdout.decode('utf-8')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['git', '-C', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w1a5-impl/base_df4f001', 'show', 'c875ed3:verantyx/semantic_read.py']' returned non-zero exit status 128.
+______________ ERROR collecting tests/test_semantic_read_w3b4.py _______________
+tests/test_semantic_read_w3b4.py:91: in <module>
+    BASE = _base_module()
+           ^^^^^^^^^^^^^^
+tests/test_semantic_read_w3b4.py:82: in _base_module
+    src = git('show', '%s:verantyx/semantic_read.py' % BASE_COMMIT)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_semantic_read_w3b4.py:77: in git
+    return subprocess.run(['git', '-C', str(TREE)] + list(args), capture_output=True, check=True).stdout.decode('utf-8')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['git', '-C', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w1a5-impl/base_df4f001', 'show', 'bed39eb:verantyx/semantic_read.py']' returned non-zero exit status 128.
+!!!!!!!!!!!!!!!!!!! Interrupted: 7 errors during collection !!!!!!!!!!!!!!!!!!!!
+7 errors in 2.67s

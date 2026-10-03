@@ -39,6 +39,7 @@ from tools.bank_score.v2 import b1    # noqa: E402
 from verantyx import coarse_types as CT    # noqa: E402
 from verantyx import semantic_read as SR    # noqa: E402
 from verantyx import semantic_reader as R    # noqa: E402
+W1A5 = _load_by_path('w1a5_common_in_w3b1', RS / 'w1a5_common.py')    # W1-a5 (docs/READING_SOUNDNESS.md 10G)
 
 DOCS = (TREE / 'docs' / 'READING_SOUNDNESS.md').read_text(encoding='utf-8')
 BASE_COMMIT = '2732274'  # integration: dev before the W3-b1 merge (W5-a changed the base reading)
@@ -409,6 +410,8 @@ def test_path_s4_registered_unread_constructions(text, prefix):
         if not plain['readable']:
             assert out['abstain']['reasons'][0] == plain['abstain']['reasons'][0]
             assert all(r.startswith('PLACEMENT_PART_MARKER') for r in out['abstain']['reasons'][1:])
+    elif prefix == 'PLACEMENT_PART_NOT_NP:副詞' and out['readable'] and W1A5.touched(text):
+        assert out['clauses'][0]['flags']['adverbs'] and 'そっと' not in out['clauses'][0]['roles'].values()     # W1-a5 (10G K213): the adverb is a mark, not a part
     else:
         assert out['readable'] is False and reasons(out)[1].startswith(prefix), reasons(out)
 
@@ -477,6 +480,11 @@ def test_every_row_of_the_new_data_with_the_fixture(row):
         # (checked in test_declared_exceptions_are_real...). A declared row that the entry READS must be the base commit's own reading (not this path).
         if exc['kind'] == 'baseline_reads':
             assert out == SR.read(row['input'], row['lang'], placement=None)
+        return
+    if out['readable'] and row['entry_expect'] == 'abstain' and W1A5.touched(row['input']):
+        # W1-a5 (10G K210/K213): an adverb sentence is read now, the adverb as a mark (`flags.adverbs`). What the S4 row forbids still holds: the adverb is no role of the clause (`must_not`).
+        c = out['clauses'][row['expect']['must_not'][0]['clause']]
+        assert all(c['roles'].get(m['role']) != m['value'] for m in row['expect']['must_not']) and c['flags']['adverbs'], c
         return
     verdict = b1.judge(row['expect'], row['lang'], out)['verdict']
     assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
@@ -576,6 +584,9 @@ def test_without_a_placement_every_output_is_the_base_commits_output_byte_for_by
     base = _base_module()
     texts = list(dict.fromkeys(SAMPLES + [r['input'] for r in DATA] + ['犬が猫を追いかけた。', 'おはようございます。', '弟は兄より背が高い。', 'The dog chased the cat.']))
     for text in texts:
+        if W1A5.touched(text):      # W1-a5 (10G K210): a sentence W1-a5 changed is one of the four registered kinds; every other sentence is compared byte for byte as before
+            assert W1A5.documented(base.read(text), SR.read(text, placement=None)), text
+            continue
         expect = json.dumps(base.read(text), ensure_ascii=False)
         assert json.dumps(SR.read(text), ensure_ascii=False) == expect, text
         assert json.dumps(SR.read(text, placement=None), ensure_ascii=False) == expect, text

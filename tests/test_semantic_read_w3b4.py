@@ -202,7 +202,10 @@ def test_the_second_table_is_composed_when_it_is_asked_not_copied_when_the_modul
 def test_the_reader_file_only_gains_lines_and_the_other_files_of_the_ticket_are_not_touched():
     diff = git('diff', BASE_COMMIT, '--', 'verantyx/semantic_reader.py').splitlines()
     assert [l for l in diff if l.startswith('-') and not l.startswith('---')] == []
-    for path in ('verantyx/semantic_read.py', 'verantyx/coarse_types.py', 'verantyx/coarse_place.py', 'verantyx/event_cross.py', 'verantyx/observe.py'):
+    # W1-a5 (docs 10G K210): semantic_read.py gains exactly the two lines that wrap the entry (before `if __name__`), nothing is removed
+    entry = [l for l in git('diff', '-U0', BASE_COMMIT, '--', 'verantyx/semantic_read.py').splitlines() if l[:1] in '+-' and l[:3] not in ('+++', '---')]
+    assert len(entry) == 2 and entry[0].startswith('+from .semantic_reader import w1a5_wrap as _w1a5_wrap') and entry[1] == '+_read_ja = _w1a5_wrap(_read_ja)'
+    for path in ('verantyx/coarse_types.py', 'verantyx/coarse_place.py', 'verantyx/event_cross.py', 'verantyx/observe.py'):
         assert git('diff', BASE_COMMIT, '--', path) == '', path
 
 
@@ -233,9 +236,12 @@ def test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays
     body = ast.parse((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')).body
     def assign(n):
         return (n.targets[0].id, ast.unparse(n.value)) if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name) else None
-    assert [assign(n) for n in body[-3:]] == [('typed_plan_u_w3b1_ungated_ja', 'typed_plan_u_ja'), ('typed_plan_u_ja', '_typed_plan_focus_gated(typed_plan_u_w3b1_ungated_ja)'),
-                                              ('typed_plan_u_w3b2_ja', '_typed_plan_focus_gated(typed_plan_u_w3b4_ja)')]
-    assert ('typed_plan_u_w3b2_ja', 'typed_plan_u_w3b4_ja') in [assign(n) for n in body[:-3]]
+    # W1-a5 (docs 10G K210, H222): the section of W1-a5 is appended after these three statements; it does not assign these names again. The three statements are the last ones before it.
+    start = next(i for i, n in enumerate(body) if isinstance(n, ast.Import) and ast.unparse(n) == 'import functools as _w1a5_functools')
+    assert [assign(n) for n in body[start - 3:start]] == [('typed_plan_u_w3b1_ungated_ja', 'typed_plan_u_ja'), ('typed_plan_u_ja', '_typed_plan_focus_gated(typed_plan_u_w3b1_ungated_ja)'),
+                                                         ('typed_plan_u_w3b2_ja', '_typed_plan_focus_gated(typed_plan_u_w3b4_ja)')]
+    assert ('typed_plan_u_w3b2_ja', 'typed_plan_u_w3b4_ja') in [assign(n) for n in body[:start - 3]]
+    assert not [n for n in body[start:] if (assign(n) or ('',))[0] in ('typed_plan_u_ja', 'typed_plan_u_w3b2_ja', 'typed_plan_u_w3b1_ungated_ja')]
 
 
 def test_the_only_readers_of_a_placement_answer_are_still_the_gate_and_the_adapter():

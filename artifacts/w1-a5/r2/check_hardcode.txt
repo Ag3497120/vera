@@ -1,0 +1,94 @@
+added lines: 384
+PROPER/NUMERIC (must be empty): []
+ENGLISH NAMES (must be empty): []
+common nouns found in added lines (list only): ['だいたい', 'ほど', '普通']
+verb lemmas found in added lines (list only): ['する', '仕舞う', '置く']
+english lowercase words found in added lines (list only; each with the added lines that hold it, so a reader can judge): ['after', 'all', 'called', 'closed', 'def', 'early', 'every', 'exactly', 'file', 'fixed', 'form', 'found', 'larger', 'made', 'not', 'nothing', 'only', 'read', 'run', 'that', 'the', 'this', 'two', 'types', 'update', 'were', 'while', 'writes']
+  [after] 4 added line(s):
+      # K215: the closed list of the reasons this section adds (after the reasons of the base entry)
+      """The base form of an auxiliary as the table of endings writes it (the past after a nasal has the base form of another word: its lemma is the one)."""
+      """The index where the phrase after the adverb (and the particle that belongs to it) starts."""
+  [all] 1 added line(s):
+      if not all(ch in digits or ch in units for ch in s): return None
+  [called] 3 added line(s):
+      # Round 2 (K218, the change record of the docs section 10G): the mark of an adverb and the quantity of a noun phrase were withdrawn; the registered constants st
+      # K213 (withdrawn in round 2, K218: the constants stay as the registered tables, only the gate functions that are not called refer to them): the words that anot
+      # ---- K213 withdrawn (K218, round 2): the mark of an adverb is not made; the functions of its gates stay and are not called ------------------------------
+  [closed] 1 added line(s):
+      # K215: the closed list of the reasons this section adds (after the reasons of the base entry)
+  [def] 21 added line(s):
+      def _w1a5_snapshot(tokens):
+      def _w1a5_hira(reading):
+      def _w1a5_aux_key(tok):
+  [early] 2 added line(s):
+      early = _w1a5_aspect(toks, [None], True, head_gate=False)
+      if early is not None and early[0] == 'refuse': return refuse(early[1])
+  [every] 1 added line(s):
+      # ---- the reread: the entry's own rules over the clause, without the tokens of the quantity (every gate of the entry is the entry's) ----
+  [exactly] 1 added line(s):
+      record.update(quantity={'surface': ''.join(t.surface for t in toks[i:j + 1]), 'value': 'exactly:%d' % value, 'counter': counter.surface, 'key': None})
+  [file] 1 added line(s):
+      # file); the function it wraps is not changed. Everything is decided on a copy of the values of the tokens (the nodes of the tagger are valid until the next par
+  [fixed] 2 added line(s):
+      fixed = dict(clause); fixed['polarity'] = info['polarity']; fixed['tense'] = info['tense']
+      changed = dict(out); changed['clauses'] = [fixed]
+  [form] 6 added line(s):
+      """The base form of an auxiliary as the table of endings writes it (the past after a nasal has the base form of another word: its lemma is the one)."""
+      """(the form of the auxiliary verb at k, the base forms of the auxiliaries behind it, whether the last of them is a final form, the index that follows them)."""
+      def _w1a5_row(form, keys, final):
+  [found] 8 added line(s):
+      reason = found = None
+      found = _w1a5_row(form, keys, final)
+      if found is None or not (at_end or many): reason = 'ASPECT_ENDING_NOT_READ'
+  [larger] 1 added line(s):
+      last = None                              # the last unit of the section (a section runs from a larger unit to a smaller one)
+  [made] 1 added line(s):
+      # ---- K213 withdrawn (K218, round 2): the mark of an adverb is not made; the functions of its gates stay and are not called ------------------------------
+  [not] 40 added line(s):
+      # file); the function it wraps is not changed. Everything is decided on a copy of the values of the tokens (the nodes of the tagger are valid until the next par
+      # Round 2 (K218, the change record of the docs section 10G): the mark of an adverb and the quantity of a noun phrase were withdrawn; the registered constants st
+      # K213 (withdrawn in round 2, K218: the constants stay as the registered tables, only the gate functions that are not called refer to them): the words that anot
+  [nothing] 3 added line(s):
+      W1A5_DEPTH = [0]       # > 0 while the base entry runs (also inside a clause of W3-b3): the wrapper does nothing then
+      """K211. None (nothing to do) | ('refuse', reason) | ('ok', {'aux', 'polarity', 'tense'}). `clauses`: the clauses of the output (a reread has one)."""
+      W1A5_DEPTH[0] = 1                     # the reading below is not a reading of an entry: nothing of this section starts again inside it
+  [only] 3 added line(s):
+      # K213 (withdrawn in round 2, K218: the constants stay as the registered tables, only the gate functions that are not called refer to them): the words that anot
+      """A readable output: only the aspect rule. Nothing to do -> the same object."""
+      """The value of the numerals (by the kind of character), or None. Digits of a place-value reading only; a value of 0 is not a quantity."""
+  [read] 4 added line(s):
+      """The values of the tokens (read at once: a node of the tagger is valid until the next parse)."""
+      raw = _tokens(text)                                       # a fresh parse after the view: the nodes are read at once
+      if key is None: return refuse('QUANTIFIER_TARGET_UNDETERMINED:noun_phrase')       # K218 round 2: a quantity of a noun phrase is not read
+  [run] 1 added line(s):
+      """The quantities: (first numeral index, counter index), a run of numerals and the counter that follows it."""
+  [that] 7 added line(s):
+      # W1-a5: the slots of the convention that have a field (docs/READING_SOUNDNESS.md section 10G, K210-K218): the auxiliary verbs of aspect (convention 3), the flo
+      # quantity (convention 6) and the mark of an adverb (`flags.adverbs`). The reading entry `_read_ja` of semantic_read.py is wrapped by `w1a5_wrap` (two lines at 
+      # K213 (withdrawn in round 2, K218: the constants stay as the registered tables, only the gate functions that are not called refer to them): the words that anot
+  [the] 33 added line(s):
+      from .semantic_reader import w1a5_wrap as _w1a5_wrap      # W1-a5 (docs/READING_SOUNDNESS.md section 10G, K210): the reading entry, then aspect / floating quant
+      # W1-a5: the slots of the convention that have a field (docs/READING_SOUNDNESS.md section 10G, K210-K218): the auxiliary verbs of aspect (convention 3), the flo
+      # quantity (convention 6) and the mark of an adverb (`flags.adverbs`). The reading entry `_read_ja` of semantic_read.py is wrapped by `w1a5_wrap` (two lines at 
+  [this] 4 added line(s):
+      # K215: the closed list of the reasons this section adds (after the reasons of the base entry)
+      """The reading entry of Japanese with W1-a5 behind it (K210): the base entry runs as it is, then the rules of this section are applied to its output."""
+      W1A5_DEPTH[0] = 1                     # the reading below is not a reading of an entry: nothing of this section starts again inside it
+  [two] 4 added line(s):
+      # quantity (convention 6) and the mark of an adverb (`flags.adverbs`). The reading entry `_read_ja` of semantic_read.py is wrapped by `w1a5_wrap` (two lines at 
+      # K213 (withdrawn in round 2, K218: the constants stay as the registered tables, only the gate functions that are not called refer to them): the words that anot
+      'ASPECT_NOT_ON_PREDICATE', 'QUANTIFIER_TARGET_UNDETERMINED:<two|unit|time|position|particle|no_phrase|scrambled|role>', 'QUANTIFIER_VALUE_UNDETERMINED:<表層>',
+  [types] 1 added line(s):
+      from types import SimpleNamespace as _w1a5_namespace
+  [update] 9 added line(s):
+      record.update(path='aspect_refused', reason=verdict[1])
+      record.update(aspect=dict(info))
+      record.update(path='aspect_kept')
+  [were] 1 added line(s):
+      # Round 2 (K218, the change record of the docs section 10G): the mark of an adverb and the quantity of a noun phrase were withdrawn; the registered constants st
+  [while] 6 added line(s):
+      W1A5_DEPTH = [0]       # > 0 while the base entry runs (also inside a clause of W3-b3): the wrapper does nothing then
+      while h >= 0 and toks[h].pos1 == '助動詞' and toks[h].base in _W1A5_VOICE: h -= 1
+      while True:
+  [writes] 1 added line(s):
+      """The base form of an auxiliary as the table of endings writes it (the past after a nasal has the base form of another word: its lemma is the one)."""

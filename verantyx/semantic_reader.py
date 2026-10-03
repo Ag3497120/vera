@@ -2736,3 +2736,385 @@ def _typed_plan_focus_gated(plan):
 typed_plan_u_w3b1_ungated_ja = typed_plan_u_ja           # the plan of W3-b1 (the function of the base commit, unchanged) under a name of its own
 typed_plan_u_ja = _typed_plan_focus_gated(typed_plan_u_w3b1_ungated_ja)
 typed_plan_u_w3b2_ja = _typed_plan_focus_gated(typed_plan_u_w3b4_ja)
+
+
+# W1-a5: the slots of the convention that have a field (docs/READING_SOUNDNESS.md section 10G, K210-K218): the auxiliary verbs of aspect (convention 3), the floating
+# quantity (convention 6) and the mark of an adverb (`flags.adverbs`). The reading entry `_read_ja` of semantic_read.py is wrapped by `w1a5_wrap` (two lines at the end of that
+# file); the function it wraps is not changed. Everything is decided on a copy of the values of the tokens (the nodes of the tagger are valid until the next parse).
+# Round 2 (K218, the change record of the docs section 10G): the mark of an adverb and the quantity of a noun phrase were withdrawn; the registered constants stay for the tables and the functions of the adverb gates stay and are not called.
+import functools as _w1a5_functools
+import sys as _w1a5_sys
+import unicodedata as _w1a5_unicodedata
+from collections import namedtuple as _w1a5_namedtuple
+from types import SimpleNamespace as _w1a5_namespace
+
+# K211: the auxiliary verbs of aspect are a copy of convention 3 (te-iru, te-shimau, te-oku); the table of endings is convention 5 (polarity and tense)
+W1A5_ASPECT_AUX = ('居る', '仕舞う', '置く')
+W1A5_ASPECT_ENDINGS = (
+    ('終止形', (), '+', 'nonpast'),
+    ('連用形', ('た',), '+', 'past'),
+    ('連用形', ('ます',), '+', 'nonpast'),
+    ('連用形', ('ます', 'た'), '+', 'past'),
+    ('未然形', ('ない',), '-', 'nonpast'),
+    ('未然形', ('ない', 'た'), '-', 'past'),
+    ('連用形', ('ます', 'ぬ'), '-', 'nonpast'),
+    ('連用形', ('ます', 'ぬ', 'です', 'た'), '-', 'past'),
+)
+# K212: the counters of a number of times (convention 6); the numerals of a place-value reading
+W1A5_EVENT_COUNTERS = ('回', '度')
+W1A5_KANJI_DIGITS = ('一', '二', '三', '四', '五', '六', '七', '八', '九')
+W1A5_KANJI_UNITS = ('十', '百', '千', '万')
+# K213 (withdrawn in round 2, K218: the constants stay as the registered tables, only the gate functions that are not called refer to them): the words that another field of the convention names, and the two small registered classes
+W1A5_CONVENTION_ADVERBS = ('一番', '最も', 'ちょうど')
+W1A5_ADVERB_CLASSES = {'modal': ('どうぞ', 'ひょっとすると', 'ひょっとしたら', 'もしかしたら'),
+                       'approx': ('ほぼ', 'だいたい', '大体', 'あやうく', '危うく')}
+W1A5_COMPARISON_PARTICLES = ('より', 'ほど', 'くらい', 'ぐらい')
+# K215: the closed list of the reasons this section adds (after the reasons of the base entry)
+W1A5_REASONS = (
+    'ASPECT_NOT_IN_CONVENTION:<原形>', 'ASPECT_CHAIN_NOT_READ', 'ASPECT_ENDING_NOT_READ', 'ASPECT_CONTRACTED_NEGATION', 'ASPECT_CONTRACTED', 'ASPECT_MULTI_CLAUSE',
+    'ASPECT_NOT_ON_PREDICATE', 'QUANTIFIER_TARGET_UNDETERMINED:<two|unit|time|position|particle|no_phrase|scrambled|role>', 'QUANTIFIER_VALUE_UNDETERMINED:<表層>',
+    'QUANTIFIER_SCOPE_UNDETERMINED:<neg|modality|voice>', 'COMPETING_READINGS:gold_quantity', 'ADVERB_MARK_NOT_READ:<類>:<表層>', 'COMPARISON_NOT_READ', 'ADVERB_STACKED',
+    'ADVERB_MAY_MODIFY_NP:<表層>', 'ADVERB_WITH_QUANTITY', 'ADVERB_SCOPE_UNDETERMINED:<neg|modality>', 'REREAD_ABSTAINS:<理由>')
+W1A5_REASONS_K218 = ('QUANTIFIER_TARGET_UNDETERMINED:noun_phrase',)       # round 2: the reason added by the change record (not part of the registered table above)
+W1A5_DEPTH = [0]       # > 0 while the base entry runs (also inside a clause of W3-b3): the wrapper does nothing then
+W1A5_LAST = {}         # the last decision of the wrapper, for w1a5_explain_ja
+
+_W1A5_TOKEN = _w1a5_namedtuple('_W1A5_TOKEN', 'surface pos1 pos2 pos3 cform base lemma lform start end')
+_W1A5_VOICE = ('れる', 'られる', 'せる', 'させる')
+_W1A5_CONTRACTED = ('てる', 'ちゃう')
+_W1A5_CONTENT = ('名詞', '代名詞', '形容詞', '形状詞', '副詞', '接頭辞', '接尾辞')
+_W1A5_UNREPRESENTED = 'unrepresented source content'
+
+
+def _w1a5_snapshot(tokens):
+    """The values of the tokens (read at once: a node of the tagger is valid until the next parse)."""
+    out = []
+    for word, start, end in tokens:
+        f = word.feature
+        out.append(_W1A5_TOKEN(word.surface, f.pos1, f.pos2, f.pos3, str(f.cForm), _base(word), getattr(f, 'lemma', None) or word.surface,
+                               getattr(f, 'lForm', None) or '', start, end))
+    return out
+
+
+def _w1a5_hira(reading):
+    return ''.join(chr(ord(ch) - 0x60) if 0x30A1 <= ord(ch) <= 0x30F6 else ch for ch in reading)
+
+
+def _w1a5_aux_key(tok):
+    """The base form of an auxiliary as the table of endings writes it (the past after a nasal has the base form of another word: its lemma is the one)."""
+    words = {w for row in W1A5_ASPECT_ENDINGS for w in row[1]}
+    return tok.base if tok.base in words else tok.lemma
+
+
+# ---- K211: aspect --------------------------------------------------------------------------------------------------------------
+def _w1a5_chains(toks):
+    """The chains of an auxiliary verb: a verb (or a verb and an auxiliary of voice), a te / de, a verb that is not independent. {'head': index, 'aux': [indices]}."""
+    aux = {}
+    for i in range(2, len(toks)):
+        t, c = toks[i], toks[i - 1]
+        if not (t.pos1 == '動詞' and t.pos2 == '非自立可能' and c.pos1 == '助詞' and c.pos2 == '接続助詞' and c.surface in ('て', 'で')): continue
+        h = i - 2
+        while h >= 0 and toks[h].pos1 == '助動詞' and toks[h].base in _W1A5_VOICE: h -= 1
+        if h >= 0 and toks[h].pos1 == '動詞': aux[i] = h
+    chains = []
+    for i in sorted(aux):
+        if aux[i] in aux: continue                       # the second auxiliary of a chain
+        seq = [i]
+        while True:
+            nxt = next((j for j in sorted(aux) if aux[j] == seq[-1]), None)
+            if nxt is None: break
+            seq.append(nxt)
+        chains.append({'head': aux[i], 'aux': seq})
+    return chains
+
+
+def _w1a5_ending(toks, k):
+    """(the form of the auxiliary verb at k, the base forms of the auxiliaries behind it, whether the last of them is a final form, the index that follows them)."""
+    j, keys, last = k + 1, [], toks[k]
+    while j < len(toks) and toks[j].pos1 == '助動詞':
+        keys.append(_w1a5_aux_key(toks[j])); last = toks[j]; j += 1
+    return toks[k].cform.split('-')[0], tuple(keys), last.cform.startswith('終止形'), j
+
+
+def _w1a5_row(form, keys, final):
+    if not final: return None
+    for f, aux, polarity, tense in W1A5_ASPECT_ENDINGS:
+        if f == form and aux == keys: return polarity, tense
+    return None
+
+
+def _w1a5_head_is_predicate(toks, h, predicate):
+    t = toks[h]
+    if (t.base == 'する' or t.lemma == '為る') and h > 0 and toks[h - 1].pos1 == '名詞' and toks[h - 1].surface + 'する' == predicate: return True
+    return predicate in (t.base, t.lemma)
+
+
+def _w1a5_aspect(toks, clauses, reread, head_gate=True):
+    """K211. None (nothing to do) | ('refuse', reason) | ('ok', {'aux', 'polarity', 'tense'}). `clauses`: the clauses of the output (a reread has one)."""
+    chains = _w1a5_chains(toks)
+    many = len(clauses) > 1
+    info = []
+    for ch in chains:
+        k = ch['aux'][0]
+        form, keys, final, stop = _w1a5_ending(toks, k)
+        reason = found = None
+        if toks[k].lemma not in W1A5_ASPECT_AUX: reason = 'ASPECT_NOT_IN_CONVENTION:' + toks[k].base
+        elif len(ch['aux']) > 1: reason = 'ASPECT_CHAIN_NOT_READ'
+        else:
+            found = _w1a5_row(form, keys, final)
+            at_end = stop >= len(toks) or toks[stop].pos2 == '句点'
+            if found is None or not (at_end or many): reason = 'ASPECT_ENDING_NOT_READ'
+        info.append((ch, reason, found, bool(keys) and keys[0] in ('ない', 'ぬ')))
+    if not many:
+        for ch, reason, found, negated in info:
+            if reason: return 'refuse', reason
+    for i, t in enumerate(toks):
+        if t.pos1 == '助動詞' and t.lemma in _W1A5_CONTRACTED:
+            if reread: return 'refuse', 'ASPECT_CONTRACTED'
+            nxt = toks[i + 1] if i + 1 < len(toks) else None
+            if nxt is not None and nxt.pos1 == '助動詞' and (nxt.base in ('ない', 'ぬ') or nxt.lemma == 'ず' or (nxt.base == 'ます' and nxt.cform.startswith('未然形'))):
+                return 'refuse', 'ASPECT_CONTRACTED_NEGATION'
+    if many:
+        for ch, reason, found, negated in info:
+            if reason or negated: return 'refuse', 'ASPECT_MULTI_CLAUSE'
+        return None
+    if not info: return None
+    if head_gate and (len(info) > 1 or not _w1a5_head_is_predicate(toks, info[0][0]['head'], clauses[0]['predicate'])): return 'refuse', 'ASPECT_NOT_ON_PREDICATE'
+    ch, reason, found, negated = info[0]
+    return 'ok', {'aux': toks[ch['aux'][0]].lemma, 'polarity': found[0], 'tense': found[1]}
+
+
+def _w1a5_on_output(E, text, toks, out, record):
+    """A readable output: only the aspect rule. Nothing to do -> the same object."""
+    verdict = _w1a5_aspect(toks, out['clauses'], False)
+    if verdict is None: return out
+    if verdict[0] == 'refuse':
+        record.update(path='aspect_refused', reason=verdict[1])
+        return E._refusal('ja', 'not_supported', [verdict[1]], out['unsupported'])
+    info = verdict[1]
+    record.update(aspect=dict(info))
+    clause = out['clauses'][0]
+    if (clause['polarity'], clause['tense']) == (info['polarity'], info['tense']):
+        record.update(path='aspect_kept')
+        return out
+    fixed = dict(clause); fixed['polarity'] = info['polarity']; fixed['tense'] = info['tense']
+    changed = dict(out); changed['clauses'] = [fixed]
+    record.update(path='aspect_corrected')
+    return changed
+
+
+# ---- K212: the floating quantity -----------------------------------------------------------------------------------------------
+def _w1a5_is_counter(t):
+    return (t.pos1 == '接尾辞' and t.pos2 == '名詞的') or (t.pos1 == '名詞' and t.pos3 == '助数詞可能')
+
+
+def _w1a5_forms(toks):
+    """The quantities: (first numeral index, counter index), a run of numerals and the counter that follows it."""
+    forms, i, n = [], 0, len(toks)
+    while i < n:
+        if toks[i].pos1 == '名詞' and toks[i].pos2 == '数詞':
+            j = i
+            while j < n and toks[j].pos1 == '名詞' and toks[j].pos2 == '数詞': j += 1
+            if j < n and _w1a5_is_counter(toks[j]):
+                forms.append((i, j)); i = j + 1
+            else:
+                i = j
+            continue
+        i += 1
+    return forms
+
+
+def _w1a5_number(surfaces):
+    """The value of the numerals (by the kind of character), or None. Digits of a place-value reading only; a value of 0 is not a quantity."""
+    s = _w1a5_unicodedata.normalize('NFKC', ''.join(surfaces))
+    if not s: return None
+    if s.isascii() and s.isdigit(): return int(s) or None
+    digits = {ch: n for n, ch in enumerate(W1A5_KANJI_DIGITS, 1)}
+    units = dict(zip(W1A5_KANJI_UNITS, (10, 100, 1000, 10000)))
+    if not all(ch in digits or ch in units for ch in s): return None
+    total = section = pending = 0
+    last = None                              # the last unit of the section (a section runs from a larger unit to a smaller one)
+    for ch in s:
+        if ch in digits:
+            if pending: return None
+            pending = digits[ch]
+        elif units[ch] == 10000:
+            section += pending; pending = 0
+            total += (section or 1) * 10000; section = 0; last = None
+        else:
+            if last is not None and units[ch] >= last: return None
+            section += (pending or 1) * units[ch]; pending = 0; last = units[ch]
+    value = total + section + pending
+    return value or None
+
+
+# ---- K213 withdrawn (K218, round 2): the mark of an adverb is not made; the functions of its gates stay and are not called ------------------------------
+def _w1a5_adverb_class(t):
+    names = {t.surface, t.base, t.lemma, _w1a5_hira(t.lform)} - {''}
+    for kind, words in W3B1_MARKERS_JA.items():             # K64: referred to, not copied
+        if names & set(words): return kind
+    from .semantic_read import _QUANT_SURFACES
+    if names & set(_QUANT_SURFACES): return 'quant'
+    if names & set(W1A5_CONVENTION_ADVERBS): return 'convention'
+    for kind, words in W1A5_ADVERB_CLASSES.items():
+        if names & set(words): return kind
+    return None
+
+
+def _w1a5_after_adverb(toks, j):
+    """The index where the phrase after the adverb (and the particle that belongs to it) starts."""
+    k = j + 1
+    if k < len(toks) and toks[k].pos1 == '助詞' and toks[k].surface in ('と', 'に'): k += 1
+    return k
+
+
+def _w1a5_np_boundary(toks, role):
+    inside = [t for t in toks if t.start >= role.span.start and t.end <= role.span.end]
+    if not inside: return False
+    first = inside[0]
+    head_ok = ((first.pos1 == '名詞' and first.pos2 == '普通名詞' and first.pos3 not in ('副詞可能', '助数詞可能'))
+               or (first.pos1 == '名詞' and first.pos2 == '固有名詞') or first.pos1 == '代名詞')
+    return head_ok and not any(t.surface == 'の' or t.pos1 in ('連体詞', '形容詞', '形状詞', '動詞', '接頭辞') or t.pos2 == '数詞' for t in inside)
+
+
+def _w1a5_adverb_gate(toks, j, frame, forms):
+    """A1..A5 for the adverb at j: None or the reason."""
+    t = toks[j]
+    kind = _w1a5_adverb_class(t)
+    if kind is not None: return 'ADVERB_MARK_NOT_READ:%s:%s' % (kind, t.surface)
+    if any((x.pos1 == '助詞' and x.surface in W1A5_COMPARISON_PARTICLES) or (x.pos1 == '副詞' and x.surface == W1A5_COMPARISON_PARTICLES[0]) for x in toks):
+        return 'COMPARISON_NOT_READ'
+    nxt = toks[j + 1] if j + 1 < len(toks) else None
+    if nxt is not None and (nxt.pos1 in ('副詞', '接続詞') or (nxt.pos2 == '読点' and j + 2 < len(toks) and toks[j + 2].pos1 == '接続詞')):
+        return 'ADVERB_STACKED'
+    k = _w1a5_after_adverb(toks, j)
+    role = next((r for r in frame.roles if k < len(toks) and r.span.start == toks[k].start), None)
+    if role is not None and not _w1a5_np_boundary(toks, role): return 'ADVERB_MAY_MODIFY_NP:' + t.surface
+    if forms: return 'ADVERB_WITH_QUANTITY'
+    return None
+
+
+# ---- K210, K214: the trigger, the reread and the output --------------------------------------------------------------------------
+def _w1a5_reread(E, text, base_out, record):
+    def refuse(reason, path='reread_refused'):
+        record.update(path=path, reason=reason)
+        return E._refusal('ja', base_out['abstain']['kind'], list(base_out['abstain']['reasons']) + [reason], base_out['unsupported'])
+    first = _w1a5_snapshot(_tokens(text))
+    if not any(t.pos2 == '数詞' for t in first): return base_out
+    if len(list(_sentences(text))) != 1 or text[:1].isspace(): return base_out
+    view = document_view({'d': text})
+    if view.unread: return base_out
+    frames = [c for c in view.clauses if c.rule == 'frame']
+    others = [c for c in view.clauses if c.rule != 'frame']
+    if len(frames) != 1 or any(c.rule != 'gold_quantity' for c in others): return base_out
+    frame = frames[0]
+    if set(frame.unsupported) != {_W1A5_UNREPRESENTED}: return base_out
+    raw = _tokens(text)                                       # a fresh parse after the view: the nodes are read at once
+    toks = _w1a5_snapshot(raw)
+    tagged = tag([w for w, a, b in raw], [a for w, a, b in raw])
+    ev = next((i for i, t in enumerate(toks) if t.start == frame.predicate_span.start), None)
+    if ev is None: return base_out
+    roles = [(r.span.start, r.span.end) for r in frame.roles]
+    if any(t.pos2 == '数詞' and any(x <= t.start and t.end <= y for x, y in roles) for t in toks): return base_out      # a numeral inside a role is the base entry's
+    covered = roles + list(_predicate_coverage(raw, ev, frame.predicate))
+    forms = _w1a5_forms(toks)
+    form_tokens = {i for a, b in forms for i in range(a, b + 1)}
+    uncovered = [i for i, t in enumerate(toks) if t.pos1 in _W1A5_CONTENT and not any(x <= t.start and t.end <= y for x, y in covered)]
+    if not uncovered or any(i not in form_tokens for i in uncovered): return base_out
+    for r in frame.roles:
+        if not phrase_bounded(tagged, r.span.start, r.span.end): return base_out
+    # ---- the trigger holds: the gates, in the order of K210 ----
+    gold = [c for c in others if c.rule == 'gold_quantity']
+    mine = sorted((r.name, r.span.start, r.span.end) for r in frame.roles)
+    for c in gold:
+        quantities = [r for r in c.roles if r.name == 'quantity']
+        same = (len(forms) == 1 and len(quantities) == 1 and (c.predicate_span.start, c.predicate_span.end) == (frame.predicate_span.start, frame.predicate_span.end)
+                and sorted((r.name, r.span.start, r.span.end) for r in c.roles if r.name != 'quantity') == mine
+                and (quantities[0].span.start, quantities[0].span.end) == (toks[forms[0][0]].start, toks[forms[0][1]].end))
+        if not same: return refuse('COMPETING_READINGS:gold_quantity')
+    early = _w1a5_aspect(toks, [None], True, head_gate=False)
+    if early is not None and early[0] == 'refuse': return refuse(early[1])
+    key = None
+    if forms:
+        if len(forms) > 1: return refuse('QUANTIFIER_TARGET_UNDETERMINED:two')
+        i, j = forms[0]
+        value = _w1a5_number([t.surface for t in toks[i:j]])
+        if value is None: return refuse('QUANTIFIER_VALUE_UNDETERMINED:' + ''.join(t.surface for t in toks[i:j]))
+        pred_heads = {ev}
+        if (toks[ev].base == 'する') and ev > 0 and toks[ev - 1].pos1 == '名詞' and toks[ev - 1].surface + 'する' == frame.predicate: pred_heads.add(ev - 1)
+        if j + 1 not in pred_heads: return refuse('QUANTIFIER_TARGET_UNDETERMINED:position')
+        if _TIME_NUMERIC_HEAD.fullmatch(''.join(t.surface for t in toks[i:j + 1])): return refuse('QUANTIFIER_TARGET_UNDETERMINED:time')
+        counter = toks[j]
+        before = toks[i - 1] if i else None
+        record.update(quantity={'surface': ''.join(t.surface for t in toks[i:j + 1]), 'value': 'exactly:%d' % value, 'counter': counter.surface, 'key': None})
+        if counter.surface in W1A5_EVENT_COUNTERS:
+            if counter.surface == W1A5_EVENT_COUNTERS[1] and before is not None and before.pos2 == '格助詞' and before.surface in ('が', 'を'):
+                return refuse('QUANTIFIER_TARGET_UNDETERMINED:unit')
+            key = 'event'
+        elif counter.pos1 == '接尾辞':
+            if before is None or before.pos1 != '助詞': return refuse('QUANTIFIER_TARGET_UNDETERMINED:no_phrase')
+            if not (before.pos2 == '格助詞' and before.surface in ('が', 'か', 'を')): return refuse('QUANTIFIER_TARGET_UNDETERMINED:particle')
+            role = next((r for r in frame.roles if r.span.end == before.start), None)
+            if role is None: return refuse('QUANTIFIER_TARGET_UNDETERMINED:no_phrase')
+            if before.surface == 'が' and any(r.span.start < role.span.start and any(t.start == r.span.end and t.surface == 'を' and t.pos2 == '格助詞' for t in toks)
+                                              for r in frame.roles if r is not role):
+                return refuse('QUANTIFIER_TARGET_UNDETERMINED:scrambled')
+        else:
+            return refuse('QUANTIFIER_TARGET_UNDETERMINED:unit')
+    # ---- the reread: the entry's own rules over the clause, without the tokens of the quantity (every gate of the entry is the entry's) ----
+    reread_raw = _tokens(text)
+    _w1a5_snapshot(reread_raw)
+    masked = [t for i, t in enumerate(reread_raw) if i not in form_tokens]
+    try:
+        clauses, relations, meta = E._map_ja(text, masked, _w1a5_namespace(clauses=(replace(frame, unsupported=()),), unread=()), _w1a5_sys.modules[__name__])
+    except E._Abstain as stop:
+        return refuse('REREAD_ABSTAINS:' + stop.reason)
+    if len(clauses) != 1: return refuse('REREAD_ABSTAINS:CLAUSE_COUNT')
+    clause = dict(clauses[0])
+    verdict = _w1a5_aspect(toks, [clause], True)
+    if verdict is not None:
+        if verdict[0] == 'refuse': return refuse(verdict[1])
+        record.update(aspect=dict(verdict[1])); clause['polarity'] = verdict[1]['polarity']; clause['tense'] = verdict[1]['tense']
+    if forms:
+        if clause['polarity'] == '-': return refuse('QUANTIFIER_SCOPE_UNDETERMINED:neg')
+        if clause['modality'] is not None: return refuse('QUANTIFIER_SCOPE_UNDETERMINED:modality')
+        if clause['voice'] != 'active': return refuse('QUANTIFIER_SCOPE_UNDETERMINED:voice')
+        if key is None: return refuse('QUANTIFIER_TARGET_UNDETERMINED:noun_phrase')       # K218 round 2: a quantity of a noun phrase is not read
+        record['quantity']['key'] = key
+        clause['quantifiers'] = {key: record['quantity']['value']}
+    record.update(path='reread')
+    return E._answer('ja', [clause], [], meta, base_out['unsupported'])
+
+
+def w1a5_wrap(base):
+    """The reading entry of Japanese with W1-a5 behind it (K210): the base entry runs as it is, then the rules of this section are applied to its output."""
+    @_w1a5_functools.wraps(base)
+    def wrapped(text, placement=None):
+        if W1A5_DEPTH[0] > 0:
+            return base(text, placement)
+        W1A5_DEPTH[0] = 1
+        try:
+            out = base(text, placement)
+        finally:
+            W1A5_DEPTH[0] = 0
+        from . import semantic_read as E
+        record = {'path': 'not_triggered', 'reason': None, 'aspect': None, 'adverbs': [], 'quantity': None}
+        W1A5_DEPTH[0] = 1                     # the reading below is not a reading of an entry: nothing of this section starts again inside it
+        try:
+            if out['readable']:
+                toks = _w1a5_snapshot(_tokens(text))
+                result = _w1a5_on_output(E, text, toks, out, record)
+            else:
+                result = _w1a5_reread(E, text, out, record)
+        finally:
+            W1A5_DEPTH[0] = 0
+        W1A5_LAST.clear(); W1A5_LAST.update(record)
+        return result
+    return wrapped
+
+
+def w1a5_explain_ja(text, placement=None):
+    """The decision of this section for `text` as the entry reads it: {'path', 'reason', 'aspect', 'adverbs', 'quantity'} (a copy)."""
+    from . import semantic_read as E
+    E.read(text, 'ja', placement=placement)
+    return {k: (dict(v) if isinstance(v, dict) else list(v) if isinstance(v, list) else v) for k, v in W1A5_LAST.items()}

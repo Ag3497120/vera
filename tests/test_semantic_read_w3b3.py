@@ -36,6 +36,7 @@ COMMON = _load_by_path('w3b3_common_in_test', RS / 'w3b3_common.py')
 from tools.bank_score.v2 import b1    # noqa: E402
 from verantyx import semantic_read as SR    # noqa: E402
 from verantyx import semantic_reader as R    # noqa: E402
+W1A5 = _load_by_path('w1a5_common_in_w3b3', RS / 'w1a5_common.py')    # W1-a5 (docs/READING_SOUNDNESS.md 10G)
 
 DOCS = (TREE / 'docs' / 'READING_SOUNDNESS.md').read_text(encoding='utf-8')
 ROWS = {name: COMMON.load_data(name) for name in COMMON.DATA_ALL}
@@ -578,6 +579,9 @@ def test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases(row):
     q = F.FixtureQuery(); bq = F.FixtureQuery()
     out = SR.read(row['input'], placement=q)
     bout = BASE.read(row['input'], placement=bq)
+    if W1A5.touched(row['input']):      # W1-a5 (10G K210): the W3-b3 path does not read the sentence (checked below); W1-a5 either adds its reason to the base's, or reads the clause with a mark of the adverb
+        assert explain(row['input'])['read'] is False and W1A5.documented(bout, out), (row['input'], out)
+        return
     assert out['readable'] is False and out == bout, (row['input'], out)
     assert verdict(row, out) == 'correct'
     assert explain(row['input'])['read'] is False
@@ -599,6 +603,10 @@ def test_the_english_output_is_not_changed(text):
 @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
 def test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis(text):
     out = SR.read(text, placement=None)
+    if W1A5.touched(text):      # W1-a5 (10G K210)
+        assert W1A5.documented(BASE.read(text, placement=None), out), text
+        assert 'head' not in json.dumps(out) and 'basis' not in json.dumps(out)
+        return
     assert out == BASE.read(text, placement=None)
     assert json.dumps(out, ensure_ascii=False) == json.dumps(BASE.read(text, placement=None), ensure_ascii=False)
     assert 'head' not in json.dumps(out) and 'basis' not in json.dumps(out)
@@ -620,7 +628,7 @@ def test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_a
     if ex['read']:
         assert out['readable'] is True and bout['readable'] is False, text
     else:
-        assert out == bout, (text, ex['reason'])
+        assert out == bout or (W1A5.touched(text, F.FixtureQuery()) and W1A5.documented(bout, out)), (text, ex['reason'])      # W1-a5 (10G K210): its reason stands behind the base's
         if ex['reason'].startswith(BEFORE_ANY_QUESTION): assert q.calls == bq.calls, (text, ex['reason'])
 
 
@@ -651,6 +659,10 @@ def test_a_refusal_the_path_gives_back_is_the_same_object(monkeypatch):
 def test_no_row_of_the_data_is_misread_or_incomplete_and_the_fixture_holds_every_word(row):
     q = F.FixtureQuery()
     out = SR.read(row['input'], placement=q)
+    if W1A5.touched(row['input'], F.FixtureQuery()) and out['readable']:
+        # W1-a5 (10G K213): a sentence of a W1-a4 misread type that W1-a5 reads with the mark of an adverb; the frozen expectation (abstain) is superseded by the auditor at integration (frozen_conflicts.md)
+        assert out['clauses'][0]['flags']['adverbs'] and W1A5.documented(BASE.read(row['input'], placement=F.FixtureQuery()), out)
+        return
     assert verdict(row, out) in ('correct', 'abstain'), (row['input'], verdict(row, out), out)
     bq = F.FixtureQuery(); BASE.read(row['input'], placement=bq)
     assert q.misses == [] and bq.misses == [], (q.misses, bq.misses)

@@ -1,0 +1,5 @@
+rows=151 misread=0 incomplete=0 unjudged=0 entry_expect_mismatch=0 w1a5_expect_mismatch=0 placement=none
+adverb    rows=55 read=20 read_and_judged_correct=20
+aspect    rows=40 read=20 read_and_judged_correct=20
+quantity  rows=56 read=22 read_and_judged_correct=22
+paths: {"aspect_corrected": 7, "aspect_kept": 9, "aspect_refused": 7, "not_triggered": 35, "reread": 46, "reread_refused": 47}

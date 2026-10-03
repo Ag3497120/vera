@@ -1,0 +1,6 @@
+rows=165 misread=0 incomplete=0 unjudged=0 entry_expect_mismatch=0 w1a5_expect_mismatch=0 placement=none
+withdrawn=66 withdrawn_mismatch=0
+adverb    rows=60 read=0 read_and_judged_correct=0
+aspect    rows=40 read=16 read_and_judged_correct=16
+quantity  rows=65 read=6 read_and_judged_correct=6
+paths: {"aspect_corrected": 7, "aspect_kept": 9, "aspect_refused": 7, "not_triggered": 90, "reread": 6, "reread_refused": 46}

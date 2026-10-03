@@ -1,0 +1,6 @@
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w1a5-impl/base_df4f001/verantyx/semantic_read.py
+[{"predicate": "忘れる", "roles": {"agent": "兄", "patient": "うっかり鍵"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]
+w1a5 path: base: no w1a5
+/Users/motonisihikoudai/Projects/vera-impl/wt/W1-a5-S/verantyx/semantic_read.py
+[{"predicate": "忘れる", "roles": {"agent": "兄", "patient": "うっかり鍵"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}]
+w1a5 path: not_triggered

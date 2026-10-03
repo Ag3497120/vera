@@ -1,0 +1,1191 @@
+{
+ "note": "The rows of ja_r12.jsonl (the 151 rows of round 1) that K218 round 2 turns back to an abstention. Made from artifacts/w1-a5/data_check_none.json (round 1) by the rule below, before the implementation.",
+ "change_record": "2026-10-04 06:30:39 +0900",
+ "rule": "adverb_mark: the round-1 row has a non-empty `adverbs` -> (not_triggered, None). noun_phrase_quantity: the round-1 path is reread and the counter of the quantity is not 回・度 -> (reread_refused, QUANTIFIER_TARGET_UNDETERMINED:noun_phrase).",
+ "rows": [
+  {
+   "id": "W1A5-ASP-R-017",
+   "kind": "adverb_mark",
+   "input": "兄がゆっくり本を読んでいる。",
+   "construction": "副詞＋ている（基点は棄権: 副詞が覆われない）",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "ゆっくり"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ASP-R-018",
+   "kind": "adverb_mark",
+   "input": "兄がそっと窓を開けていた。",
+   "construction": "副詞＋ていた",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "そっと"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ASP-R-019",
+   "kind": "adverb_mark",
+   "input": "兄が本をゆっくり読んでいる。",
+   "construction": "目的語の後の副詞＋ている",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "ゆっくり"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ASP-R-020",
+   "kind": "adverb_mark",
+   "input": "母がゆっくり部屋を掃除している。",
+   "construction": "サ変＋副詞＋ている",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "ゆっくり"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ASP-A-018",
+   "kind": "adverb_mark",
+   "input": "兄がまだ本を読んでいない。",
+   "construction": "まだ＋ていない（K64 time_aspect）",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:time_aspect:まだ",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ASP-A-019",
+   "kind": "adverb_mark",
+   "input": "兄はもう本を読んでいない。",
+   "construction": "もう＋ていない（K64 time_aspect）",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:time_aspect:もう",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-QTY-R-001",
+   "kind": "noun_phrase_quantity",
+   "input": "兄が本を三冊読んだ。",
+   "construction": "を＋冊（接尾辞）",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "patient": "exactly:3"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:3"
+  },
+  {
+   "id": "W1A5-QTY-R-002",
+   "kind": "noun_phrase_quantity",
+   "input": "母がりんごを五個買った。",
+   "construction": "を＋個",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "patient": "exactly:5"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:5"
+  },
+  {
+   "id": "W1A5-QTY-R-003",
+   "kind": "noun_phrase_quantity",
+   "input": "姉が切手を二枚買った。",
+   "construction": "を＋枚",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "patient": "exactly:2"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:2"
+  },
+  {
+   "id": "W1A5-QTY-R-004",
+   "kind": "noun_phrase_quantity",
+   "input": "弟が犬を二匹飼った。",
+   "construction": "を＋匹",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "patient": "exactly:2"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:2"
+  },
+  {
+   "id": "W1A5-QTY-R-005",
+   "kind": "noun_phrase_quantity",
+   "input": "兄が手紙を三通書いた。",
+   "construction": "を＋通",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "patient": "exactly:3"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:3"
+  },
+  {
+   "id": "W1A5-QTY-R-006",
+   "kind": "noun_phrase_quantity",
+   "input": "兄が牛を十頭育てた。",
+   "construction": "を＋頭・漢数字の 十",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "patient": "exactly:10"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:10"
+  },
+  {
+   "id": "W1A5-QTY-R-007",
+   "kind": "noun_phrase_quantity",
+   "input": "兄が本を三十五冊読んだ。",
+   "construction": "漢数字の位取り（三十五）",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "patient": "exactly:35"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:35"
+  },
+  {
+   "id": "W1A5-QTY-R-008",
+   "kind": "noun_phrase_quantity",
+   "input": "兄が本を百二十冊集めた。",
+   "construction": "漢数字の位取り（百二十）",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "patient": "exactly:120"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:120"
+  },
+  {
+   "id": "W1A5-QTY-R-009",
+   "kind": "noun_phrase_quantity",
+   "input": "母が卵を２個割った。",
+   "construction": "全角の数字",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "patient": "exactly:2"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:2"
+  },
+  {
+   "id": "W1A5-QTY-R-010",
+   "kind": "noun_phrase_quantity",
+   "input": "兄が本を3冊読んだ。",
+   "construction": "半角の数字",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "patient": "exactly:3"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:3"
+  },
+  {
+   "id": "W1A5-QTY-R-011",
+   "kind": "noun_phrase_quantity",
+   "input": "兄が本を二万冊集めた。",
+   "construction": "漢数字の位取り（二万）",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "patient": "exactly:20000"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:20000"
+  },
+  {
+   "id": "W1A5-QTY-R-012",
+   "kind": "noun_phrase_quantity",
+   "input": "兄が本を千冊集めた。",
+   "construction": "漢数字の 千（前に数字が無い）",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "patient": "exactly:1000"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:1000"
+  },
+  {
+   "id": "W1A5-QTY-R-013",
+   "kind": "noun_phrase_quantity",
+   "input": "学生が三人来た。",
+   "construction": "が＋人（主語の数量）",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "agent": "exactly:3"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:3"
+  },
+  {
+   "id": "W1A5-QTY-R-014",
+   "kind": "noun_phrase_quantity",
+   "input": "子どもが五人遊んだ。",
+   "construction": "が＋人（自動詞）",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "agent": "exactly:5"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:5"
+  },
+  {
+   "id": "W1A5-QTY-R-015",
+   "kind": "noun_phrase_quantity",
+   "input": "学生が十人帰った。",
+   "construction": "が＋人・漢数字の 十",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "agent": "exactly:10"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:10"
+  },
+  {
+   "id": "W1A5-QTY-R-022",
+   "kind": "noun_phrase_quantity",
+   "input": "兄が本を三冊読んでいる。",
+   "construction": "数量＋ている",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {
+     "patient": "exactly:3"
+    },
+    "flags": {}
+   },
+   "pinned_path": "reread_refused",
+   "pinned_reason": "QUANTIFIER_TARGET_UNDETERMINED:noun_phrase",
+   "round1_value": "exactly:3"
+  },
+  {
+   "id": "W1A5-QTY-A-023",
+   "kind": "adverb_mark",
+   "input": "兄がゆっくり本を三冊読んだ。",
+   "construction": "副詞と数量の同居",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_WITH_QUANTITY",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-001",
+   "kind": "adverb_mark",
+   "input": "兄がゆっくり本を読んだ。",
+   "construction": "様態の副詞（主語の後）",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "ゆっくり"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-002",
+   "kind": "adverb_mark",
+   "input": "兄がそっと窓を開けた。",
+   "construction": "様態の副詞（主語の後）",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "そっと"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-003",
+   "kind": "adverb_mark",
+   "input": "兄がこっそり部屋に入った。",
+   "construction": "様態の副詞＋に の句",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "こっそり"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-004",
+   "kind": "adverb_mark",
+   "input": "兄がわざと窓を割った。",
+   "construction": "様態の副詞",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "わざと"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-005",
+   "kind": "adverb_mark",
+   "input": "兄がすぐに帰った。",
+   "construction": "すぐに（すぐ＋に の格助詞。印は副詞のトークンだけ）",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "すぐ"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-006",
+   "kind": "adverb_mark",
+   "input": "兄がすぐ走った。",
+   "construction": "時の副詞（述語の直前）",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "すぐ"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-007",
+   "kind": "adverb_mark",
+   "input": "兄がじっと空を見た。",
+   "construction": "様態の副詞",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "じっと"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-008",
+   "kind": "adverb_mark",
+   "input": "兄が本をゆっくり読んだ。",
+   "construction": "目的語の後の副詞",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "ゆっくり"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-009",
+   "kind": "adverb_mark",
+   "input": "兄が窓をそっと開けた。",
+   "construction": "目的語の後の副詞",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "そっと"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-010",
+   "kind": "adverb_mark",
+   "input": "兄がゆっくり走った。",
+   "construction": "自動詞",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "ゆっくり"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-011",
+   "kind": "adverb_mark",
+   "input": "兄がゆっくり歩いた。",
+   "construction": "移動の動詞",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "ゆっくり"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-012",
+   "kind": "adverb_mark",
+   "input": "母がゆっくり掃除した。",
+   "construction": "サ変",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "ゆっくり"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-013",
+   "kind": "adverb_mark",
+   "input": "母が部屋をゆっくり掃除した。",
+   "construction": "サ変＋目的語の後の副詞",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "ゆっくり"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-014",
+   "kind": "adverb_mark",
+   "input": "母がすぐに部屋を掃除した。",
+   "construction": "サ変＋すぐに",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "すぐ"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-015",
+   "kind": "adverb_mark",
+   "input": "弟がさっそく手紙を書いた。",
+   "construction": "時の副詞",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "さっそく"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-016",
+   "kind": "adverb_mark",
+   "input": "姉がちゃんと本を読んだ。",
+   "construction": "様態の副詞",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "ちゃんと"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-017",
+   "kind": "adverb_mark",
+   "input": "姉がしっかり手紙を書いた。",
+   "construction": "様態の副詞",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "しっかり"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-018",
+   "kind": "adverb_mark",
+   "input": "姉がきちんと窓を閉めた。",
+   "construction": "様態の副詞",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "きちんと"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-019",
+   "kind": "adverb_mark",
+   "input": "兄がすぐに会社へ行った。",
+   "construction": "すぐに＋へ の句",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "すぐ"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-R-020",
+   "kind": "adverb_mark",
+   "input": "兄がそっと部屋に入った。",
+   "construction": "様態の副詞＋に の句",
+   "frozen_entry_expect": "read",
+   "frozen_w1a5_expect": {
+    "path": "reread",
+    "reason_prefix": null,
+    "quantifiers": {},
+    "flags": {
+     "adverbs": [
+      "そっと"
+     ]
+    }
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-003",
+   "kind": "adverb_mark",
+   "input": "兄がすでに本を読んだ。",
+   "construction": "K64 time_aspect",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:time_aspect:すでに",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-004",
+   "kind": "adverb_mark",
+   "input": "兄が全然本を読まなかった。",
+   "construction": "K64 neg",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:neg:全然",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-005",
+   "kind": "adverb_mark",
+   "input": "兄がきっと本を読んだ。",
+   "construction": "K64 modal",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:modal:きっと",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-006",
+   "kind": "adverb_mark",
+   "input": "兄がたぶん本を読んだ。",
+   "construction": "K64 modal",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:modal:たぶん",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-007",
+   "kind": "adverb_mark",
+   "input": "兄が多分本を読んだ。",
+   "construction": "K64 modal の漢字表記（読みで照合）",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:modal:多分",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-008",
+   "kind": "adverb_mark",
+   "input": "兄が恐らく本を読んだ。",
+   "construction": "K64 modal の漢字表記（読みで照合）",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:modal:恐らく",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-009",
+   "kind": "adverb_mark",
+   "input": "兄がよく本を読んだ。",
+   "construction": "K64 quant",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:quant:よく",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-010",
+   "kind": "adverb_mark",
+   "input": "兄がまた本を読んだ。",
+   "construction": "K64 conn",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:conn:また",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-011",
+   "kind": "adverb_mark",
+   "input": "兄がゆっくり本を読まなかった。",
+   "construction": "否定の焦点（副詞の範囲が決まらない）",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_SCOPE_UNDETERMINED:neg",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-012",
+   "kind": "adverb_mark",
+   "input": "兄がゆっくり本を読みたい。",
+   "construction": "モダリティ（願望）の中の副詞",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "REREAD_ABSTAINS",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-014",
+   "kind": "adverb_mark",
+   "input": "兄がすぐ近くの店に行った。",
+   "construction": "名詞句の修飾（すぐ近くの店）",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MAY_MODIFY_NP:すぐ",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-015",
+   "kind": "adverb_mark",
+   "input": "兄がすぐ隣の部屋に入った。",
+   "construction": "名詞句の修飾（すぐ隣の部屋）",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MAY_MODIFY_NP:すぐ",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-016",
+   "kind": "adverb_mark",
+   "input": "兄がとても古い本を読んだ。",
+   "construction": "名詞句の修飾（とても古い本）",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MAY_MODIFY_NP:とても",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-017",
+   "kind": "adverb_mark",
+   "input": "兄がゆっくり古い本を読んだ。",
+   "construction": "名詞句の修飾になりうる形（形容詞が続く）",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MAY_MODIFY_NP:ゆっくり",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-019",
+   "kind": "adverb_mark",
+   "input": "兄がゆっくりそっと窓を開けた。",
+   "construction": "副詞の連続",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_STACKED",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-021",
+   "kind": "adverb_mark",
+   "input": "兄が一番走った。",
+   "construction": "規約 4.4 の最上級（一番）",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:convention:一番",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-022",
+   "kind": "adverb_mark",
+   "input": "兄がちょうど本を読んだ。",
+   "construction": "規約 6 の exactly（ちょうど）",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:convention:ちょうど",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-023",
+   "kind": "adverb_mark",
+   "input": "兄がほぼ本を読んだ。",
+   "construction": "近似の副詞（ほぼ）",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:approx:ほぼ",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-025",
+   "kind": "adverb_mark",
+   "input": "どうぞ本を読んでください。",
+   "construction": "依頼の副詞（どうぞ）",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": null,
+    "reason_prefix": null,
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-027",
+   "kind": "adverb_mark",
+   "input": "兄がゆっくり三回読んだ。",
+   "construction": "副詞と数量の同居",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_WITH_QUANTITY",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-029",
+   "kind": "adverb_mark",
+   "input": "兄がもう走った。",
+   "construction": "K64 time_aspect",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:time_aspect:もう",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-030",
+   "kind": "adverb_mark",
+   "input": "兄がずっと走った。",
+   "construction": "K64 time_aspect",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:time_aspect:ずっと",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  },
+  {
+   "id": "W1A5-ADV-A-031",
+   "kind": "adverb_mark",
+   "input": "兄が少し走った。",
+   "construction": "K64 quant",
+   "frozen_entry_expect": "abstain",
+   "frozen_w1a5_expect": {
+    "path": "reread_refused",
+    "reason_prefix": "ADVERB_MARK_NOT_READ:quant:少し",
+    "quantifiers": null,
+    "flags": null
+   },
+   "pinned_path": "not_triggered",
+   "pinned_reason": null,
+   "round1_value": null
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+F
+=================================== FAILURES ===================================
+__________ test_the_registered_tables_are_the_constants_of_the_reader __________
+
+    def test_the_registered_tables_are_the_constants_of_the_reader():
+>       assert [cells(l)[0] for l in block('w1a5_aspect_aux')] == list(R.W1A5_ASPECT_AUX)
+                                                                       ^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'W1A5_ASPECT_AUX'
+
+tests/test_semantic_read_w1a5.py:98: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w1a5.py::test_the_registered_tables_are_the_constants_of_the_reader
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+FAILED tests/test_semantic_read_w1a5.py::test_the_registered_words_of_the_small_classes_are_never_marked
+FAILED tests/test_semantic_read_w1a5.py::test_an_adverb_the_tagger_does_not_call_an_adverb_is_not_marked
+FAILED tests/test_semantic_read_w1a5.py::test_the_cross_refuses_the_key_flags_today_and_takes_the_key_quantifiers

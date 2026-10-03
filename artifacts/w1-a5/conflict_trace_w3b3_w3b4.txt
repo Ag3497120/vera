@@ -1,0 +1,342 @@
+........................................................................ [  5%]
+........................................................................ [ 10%]
+........................................................................ [ 15%]
+........................................................................ [ 20%]
+.........................F.FF.F..FFFF.......F........................... [ 25%]
+........................................................................ [ 30%]
+........................................................................ [ 35%]
+........................F.FF.F..FFFF.......F............................ [ 40%]
+........................................................................ [ 45%]
+........................................................................ [ 50%]
+..........................................F.FF.F..FFFF.......F.......... [ 55%]
+........................................................................ [ 60%]
+........................................................................ [ 65%]
+........................................................................ [ 70%]
+.........F...........................................F.F................ [ 75%]
+........................................................................ [ 80%]
+........................................................................ [ 85%]
+........................................................................ [ 90%]
+........................................................................ [ 95%]
+.............................................................            [100%]
+=================================== FAILURES ===================================
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-002] _
+tests/test_semantic_read_w3b3.py:581: in test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases
+    assert out['readable'] is False and out == bout, (row['input'], out)
+E   AssertionError: ('兄がゆっくり歩かなかった。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E   assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff)
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-004] _
+tests/test_semantic_read_w3b3.py:581: in test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases
+    assert out['readable'] is False and out == bout, (row['input'], out)
+E   AssertionError: ('母はそっと窓を閉めなかった。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E   assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff)
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-005] _
+tests/test_semantic_read_w3b3.py:581: in test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases
+    assert out['readable'] is False and out == bout, (row['input'], out)
+E   AssertionError: ('兄がすぐ帰らなかった。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E   assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff)
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-007] _
+tests/test_semantic_read_w3b3.py:581: in test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases
+    assert out['readable'] is False and out == bout, (row['input'], out)
+E   AssertionError: ('兄がとても喜ばなかった。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E   assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff)
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-010] _
+tests/test_semantic_read_w3b3.py:581: in test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases
+    assert out['readable'] is False and out == bout, (row['input'], out)
+E   AssertionError: ('兄がすぐ近くの店に行った。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E   assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff)
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-011] _
+tests/test_semantic_read_w3b3.py:581: in test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases
+    assert out['readable'] is False and out == bout, (row['input'], out)
+E   AssertionError: ('兄がすぐ隣の部屋に入った。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E   assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff)
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-012] _
+tests/test_semantic_read_w3b3.py:581: in test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases
+    assert out['readable'] is False and out == bout, (row['input'], out)
+E   AssertionError: ('母がすぐ前の店で本を買った。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E   assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff)
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-013] _
+tests/test_semantic_read_w3b3.py:581: in test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases
+    assert out['readable'] is False and out == bout, (row['input'], out)
+E   AssertionError: ('兄がとても近くの店に行った。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E   assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:とても']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff)
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-021] _
+tests/test_semantic_read_w3b3.py:581: in test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases
+    assert out['readable'] is False and out == bout, (row['input'], out)
+E   AssertionError: ('兄がとても喜んだ。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '喜ぶ', 'roles': {'agent': '兄'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+E   assert (True is False)
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3086\u3063\u304f\u308a\u6b69\u304b\u306a\u304b\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:602: in test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis
+    assert out == BASE.read(text, placement=None)
+E   AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E     Use -v to get more diff
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u6bcd\u306f\u305d\u3063\u3068\u7a93\u3092\u9589\u3081\u306a\u304b\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:602: in test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis
+    assert out == BASE.read(text, placement=None)
+E   AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E     Use -v to get more diff
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3059\u3050\u5e30\u3089\u306a\u304b\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:602: in test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis
+    assert out == BASE.read(text, placement=None)
+E   AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E     Use -v to get more diff
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3068\u3066\u3082\u559c\u3070\u306a\u304b\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:602: in test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis
+    assert out == BASE.read(text, placement=None)
+E   AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E     Use -v to get more diff
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3059\u3050\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:602: in test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis
+    assert out == BASE.read(text, placement=None)
+E   AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E     Use -v to get more diff
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3059\u3050\u96a3\u306e\u90e8\u5c4b\u306b\u5165\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:602: in test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis
+    assert out == BASE.read(text, placement=None)
+E   AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E     Use -v to get more diff
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u6bcd\u304c\u3059\u3050\u524d\u306e\u5e97\u3067\u672c\u3092\u8cb7\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:602: in test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis
+    assert out == BASE.read(text, placement=None)
+E   AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E     Use -v to get more diff
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3068\u3066\u3082\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:602: in test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis
+    assert out == BASE.read(text, placement=None)
+E   AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_MAY_MODIFY_NP:とても']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E     Use -v to get more diff
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3068\u3066\u3082\u559c\u3093\u3060\u3002] _
+tests/test_semantic_read_w3b3.py:602: in test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis
+    assert out == BASE.read(text, placement=None)
+E   AssertionError: assert {'schema': 'v...', ...}], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 4 identical items, use -vv to show
+E     Differing items:
+E     {'readable': True} != {'readable': False}
+E     {'abstain': None} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E     {'clause_meta': [{'rule': 'frame', 'span': [5, 7]}]} != {'clause_meta': []}
+E     {'clauses': [{'predicate': '喜ぶ', 'roles': {'agent': '兄'}, 'polarity': '+', 'tense': 'past', ...}]} != {'clauses': []}
+E     Use -v to get more diff
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3086\u3063\u304f\u308a\u6b69\u304b\u306a\u304b\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:623: in test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none
+    assert out == bout, (text, ex['reason'])
+E   AssertionError: ('兄がゆっくり歩かなかった。', 'W3B3_NOT_TRIGGERED:groups=1')
+E   assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u6bcd\u306f\u305d\u3063\u3068\u7a93\u3092\u9589\u3081\u306a\u304b\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:623: in test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none
+    assert out == bout, (text, ex['reason'])
+E   AssertionError: ('母はそっと窓を閉めなかった。', 'W3B3_NOT_TRIGGERED:groups=1')
+E   assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3059\u3050\u5e30\u3089\u306a\u304b\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:623: in test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none
+    assert out == bout, (text, ex['reason'])
+E   AssertionError: ('兄がすぐ帰らなかった。', 'W3B3_NOT_TRIGGERED:groups=1')
+E   assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3068\u3066\u3082\u559c\u3070\u306a\u304b\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:623: in test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none
+    assert out == bout, (text, ex['reason'])
+E   AssertionError: ('兄がとても喜ばなかった。', 'W3B3_NOT_TRIGGERED:groups=1')
+E   assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3059\u3050\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:623: in test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none
+    assert out == bout, (text, ex['reason'])
+E   AssertionError: ('兄がすぐ近くの店に行った。', 'W3B3_NOT_TRIGGERED:groups=1')
+E   assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3059\u3050\u96a3\u306e\u90e8\u5c4b\u306b\u5165\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:623: in test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none
+    assert out == bout, (text, ex['reason'])
+E   AssertionError: ('兄がすぐ隣の部屋に入った。', 'W3B3_NOT_TRIGGERED:groups=1')
+E   assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u6bcd\u304c\u3059\u3050\u524d\u306e\u5e97\u3067\u672c\u3092\u8cb7\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:623: in test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none
+    assert out == bout, (text, ex['reason'])
+E   AssertionError: ('母がすぐ前の店で本を買った。', 'W3B3_NOT_TRIGGERED:groups=1')
+E   assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3068\u3066\u3082\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002] _
+tests/test_semantic_read_w3b3.py:623: in test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none
+    assert out == bout, (text, ex['reason'])
+E   AssertionError: ('兄がとても近くの店に行った。', 'W3B3_NOT_TRIGGERED:groups=1')
+E   assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 7 identical items, use -vv to show
+E     Differing items:
+E     {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:とても']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     Use -v to get more diff
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3068\u3066\u3082\u559c\u3093\u3060\u3002] _
+tests/test_semantic_read_w3b3.py:623: in test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none
+    assert out == bout, (text, ex['reason'])
+E   AssertionError: ('兄がとても喜んだ。', 'W3B3_NOT_TRIGGERED:groups=1')
+E   assert {'schema': 'v...', ...}], ...} == {'schema': 'v...ses': [], ...}
+E     
+E     Omitting 4 identical items, use -vv to show
+E     Differing items:
+E     {'readable': True} != {'readable': False}
+E     {'abstain': None} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E     {'clause_meta': [{'rule': 'frame', 'span': [5, 7]}]} != {'clause_meta': []}
+E     {'clauses': [{'predicate': '喜ぶ', 'roles': {'agent': '兄'}, 'polarity': '+', 'tense': 'past', ...}]} != {'clauses': []}
+E     Use -v to get more diff
+_ test_no_row_of_the_data_is_misread_or_incomplete_and_the_fixture_holds_every_word[W3B3-W1A4-021] _
+tests/test_semantic_read_w3b3.py:654: in test_no_row_of_the_data_is_misread_or_incomplete_and_the_fixture_holds_every_word
+    assert verdict(row, out) in ('correct', 'abstain'), (row['input'], verdict(row, out), out)
+E   AssertionError: ('兄がとても喜んだ。', 'misread', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '喜ぶ', 'roles': {'agent': '兄'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+E   assert 'misread' in ('correct', 'abstain')
+E    +  where 'misread' = verdict({'id': 'W3B3-W1A4-021', 'lang': 'ja', 'behavior': 'abstain', 'input': '兄がとても喜んだ。', ...}, {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '喜ぶ', 'roles': {'agent': '兄'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+_ test_the_reader_file_only_gains_lines_and_the_other_files_of_the_ticket_are_not_touched _
+tests/test_semantic_read_w3b4.py:206: in test_the_reader_file_only_gains_lines_and_the_other_files_of_the_ticket_are_not_touched
+    assert git('diff', BASE_COMMIT, '--', path) == '', path
+E   AssertionError: verantyx/semantic_read.py
+E   assert 'diff --git a...xit(main())\n' == ''
+E     
+E     + diff --git a/verantyx/semantic_read.py b/verantyx/semantic_read.py
+E     + index 97ea712..e5d630f 100644
+E     + --- a/verantyx/semantic_read.py
+E     + +++ b/verantyx/semantic_read.py
+E     + @@ -1551,5 +1551,7 @@ def main(argv=None):
+E     +      return code...
+E     
+E     ...Full output truncated (6 lines hidden), use '-vv' to show
+_ test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays_under_a_name_of_its_own _
+tests/test_semantic_read_w3b4.py:236: in test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays_under_a_name_of_its_own
+    assert [assign(n) for n in body[-3:]] == [('typed_plan_u_w3b1_ungated_ja', 'typed_plan_u_ja'), ('typed_plan_u_ja', '_typed_plan_focus_gated(typed_plan_u_w3b1_ungated_ja)'),
+E   AssertionError: assert [None, None, None] == [('typed_plan..._u_w3b4_ja)')]
+E     
+E     At index 0 diff: None != ('typed_plan_u_w3b1_ungated_ja', 'typed_plan_u_ja')
+E     Use -v to get more diff
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-002]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-004]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-005]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-007]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-010]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-011]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-012]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-013]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-021]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3086\u3063\u304f\u308a\u6b69\u304b\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u6bcd\u306f\u305d\u3063\u3068\u7a93\u3092\u9589\u3081\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3059\u3050\u5e30\u3089\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3068\u3066\u3082\u559c\u3070\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3059\u3050\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3059\u3050\u96a3\u306e\u90e8\u5c4b\u306b\u5165\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u6bcd\u304c\u3059\u3050\u524d\u306e\u5e97\u3067\u672c\u3092\u8cb7\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3068\u3066\u3082\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3068\u3066\u3082\u559c\u3093\u3060\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3086\u3063\u304f\u308a\u6b69\u304b\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u6bcd\u306f\u305d\u3063\u3068\u7a93\u3092\u9589\u3081\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3059\u3050\u5e30\u3089\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3068\u3066\u3082\u559c\u3070\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3059\u3050\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3059\u3050\u96a3\u306e\u90e8\u5c4b\u306b\u5165\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u6bcd\u304c\u3059\u3050\u524d\u306e\u5e97\u3067\u672c\u3092\u8cb7\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3068\u3066\u3082\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3068\u3066\u3082\u559c\u3093\u3060\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_no_row_of_the_data_is_misread_or_incomplete_and_the_fixture_holds_every_word[W3B3-W1A4-021]
+FAILED tests/test_semantic_read_w3b4.py::test_the_reader_file_only_gains_lines_and_the_other_files_of_the_ticket_are_not_touched
+FAILED tests/test_semantic_read_w3b4.py::test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays_under_a_name_of_its_own
+30 failed, 1399 passed in 24.71s

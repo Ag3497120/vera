@@ -1,0 +1,954 @@
+........................................................................ [  1%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+....................F................................................... [  9%]
+........................................................................ [ 10%]
+...........................................................FFFF......... [ 12%]
+...................................F.................................... [ 13%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+................................................F..FFF.................. [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 24%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+...........................................F.FF.F..FFFF.......F......... [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 32%]
+..........................................F.FF.F..FFFF.......F.......... [ 33%]
+........................................................................ [ 35%]
+........................................................................ [ 36%]
+............................................................F.FF.F..FFFF [ 38%]
+.......F................................................................ [ 39%]
+........................................................................ [ 41%]
+........................................................................ [ 42%]
+...........................F............................................ [ 44%]
+........................................................................ [ 45%]
+......................................................................F. [ 47%]
+F....................................................................... [ 49%]
+........................................................................ [ 50%]
+........................................................................ [ 52%]
+........................................................................ [ 53%]
+........................................................................ [ 55%]
+........................................................................ [ 56%]
+........................................................................ [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 70%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 75%]
+........................................................................ [ 76%]
+........................................................................ [ 78%]
+........................................................................ [ 79%]
+........................................................................ [ 81%]
+........................................................................ [ 82%]
+........................................................................ [ 84%]
+........................................................................ [ 85%]
+........................................................................ [ 87%]
+.....F.................................................................. [ 88%]
+........................................................................ [ 90%]
+........................................................................ [ 91%]
+........................................................................ [ 93%]
+........................................................................ [ 95%]
+........................................................................ [ 96%]
+........................................................................ [ 98%]
+........................................................................ [ 99%]
+................                                                         [100%]
+=================================== FAILURES ===================================
+_ test_path_s4_registered_unread_constructions[\u6bcd\u304c\u305d\u3063\u3068\u624b\u7d19\u3092\u66f8\u3044\u305f\u3002-PLACEMENT_PART_NOT_NP:\u526f\u8a5e] _
+
+text = '母がそっと手紙を書いた。', prefix = 'PLACEMENT_PART_NOT_NP:副詞'
+
+    @pytest.mark.parametrize('text,prefix', [
+        ('母がそっと手紙を書いた。', 'PLACEMENT_PART_NOT_NP:副詞'),
+        # W3-b2 (proposal): この is now an expressed mark (K97 D1): the unread one of the question word is どの
+        ('母がどの夜、手紙を書いた。', 'PLACEMENT_PART_NOT_ISOLATED'),
+        ('そして母が夜、手紙を書いた。', 'PLACEMENT_PART_MARKER:conn'),
+        ('母が夜だけ手紙を書いた。', None),
+        ('母が三回、手紙を書いた。', None),
+        ('母が夜の手紙を書いた。', None),
+        ('母が夜、手紙を書いた。弟が夜、本を読んだ。', None),
+    ])
+    def test_path_s4_registered_unread_constructions(text, prefix):
+        q = F.MapQuery({w: F.answer('TIME', decided_by=['definition']) for w in ('夜', '三', '回', '三回', 'そっと', 'この夜')})
+        out = read(text, q)
+        plain = SR.read(text, placement=None)
+        if prefix is None:
+            # not a part this path reads: nothing is added (or only a marker says why)
+            assert out['readable'] == plain['readable']
+            if not plain['readable']:
+                assert out['abstain']['reasons'][0] == plain['abstain']['reasons'][0]
+                assert all(r.startswith('PLACEMENT_PART_MARKER') for r in out['abstain']['reasons'][1:])
+        else:
+>           assert out['readable'] is False and reasons(out)[1].startswith(prefix), reasons(out)
+                                                                                    ^^^^^^^^^^^^
+
+tests/test_semantic_read_w3b1.py:413: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+out = {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '書く', 'roles': {'agent': '母', 'patient': '手紙'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+
+    def reasons(out):
+>       assert out['readable'] is False, out
+E       AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '書く', 'roles': {'agent': '母', 'patient': '手紙'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E       assert True is False
+
+tests/test_semantic_read_w3b1.py:80: AssertionError
+_________ test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-061] _________
+
+row = {'id': 'W3B1-S4-061', 'lang': 'ja', 'behavior': 'abstain', 'input': '兄がそっと窓を開けた。', ...}
+
+    @pytest.mark.parametrize('row', DATA, ids=[r['id'] for r in DATA])
+    def test_every_row_of_the_new_data_with_the_fixture(row):
+        q = F.FixtureQuery()
+        out = read(row['input'], q, row['lang'])
+        assert q.misses == [], q.misses
+        exc = _exception(row)
+        if exc is not None:
+            # a row whose registered expectation the entry does not meet is declared in w3b1_expect_exceptions.json with the exact output it gives
+            # (checked in test_declared_exceptions_are_real...). A declared row that the entry READS must be the base commit's own reading (not this path).
+            if exc['kind'] == 'baseline_reads':
+                assert out == SR.read(row['input'], row['lang'], placement=None)
+            return
+        verdict = b1.judge(row['expect'], row['lang'], out)['verdict']
+>       assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: ('misread', [{'predicate': '開ける', 'roles': {'agent': '兄', 'patient': '窓'}, 'polarity': '+', 'tense': 'past', ...}])
+E       assert 'misread' in ('correct', 'abstain')
+
+tests/test_semantic_read_w3b1.py:482: AssertionError
+_________ test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-062] _________
+
+row = {'id': 'W3B1-S4-062', 'lang': 'ja', 'behavior': 'abstain', 'input': '母がゆっくり手紙を書いた。', ...}
+
+    @pytest.mark.parametrize('row', DATA, ids=[r['id'] for r in DATA])
+    def test_every_row_of_the_new_data_with_the_fixture(row):
+        q = F.FixtureQuery()
+        out = read(row['input'], q, row['lang'])
+        assert q.misses == [], q.misses
+        exc = _exception(row)
+        if exc is not None:
+            # a row whose registered expectation the entry does not meet is declared in w3b1_expect_exceptions.json with the exact output it gives
+            # (checked in test_declared_exceptions_are_real...). A declared row that the entry READS must be the base commit's own reading (not this path).
+            if exc['kind'] == 'baseline_reads':
+                assert out == SR.read(row['input'], row['lang'], placement=None)
+            return
+        verdict = b1.judge(row['expect'], row['lang'], out)['verdict']
+>       assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: ('misread', [{'predicate': '書く', 'roles': {'agent': '母', 'patient': '手紙'}, 'polarity': '+', 'tense': 'past', ...}])
+E       assert 'misread' in ('correct', 'abstain')
+
+tests/test_semantic_read_w3b1.py:482: AssertionError
+_________ test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-063] _________
+
+row = {'id': 'W3B1-S4-063', 'lang': 'ja', 'behavior': 'abstain', 'input': '弟がきちんと靴を磨いた。', ...}
+
+    @pytest.mark.parametrize('row', DATA, ids=[r['id'] for r in DATA])
+    def test_every_row_of_the_new_data_with_the_fixture(row):
+        q = F.FixtureQuery()
+        out = read(row['input'], q, row['lang'])
+        assert q.misses == [], q.misses
+        exc = _exception(row)
+        if exc is not None:
+            # a row whose registered expectation the entry does not meet is declared in w3b1_expect_exceptions.json with the exact output it gives
+            # (checked in test_declared_exceptions_are_real...). A declared row that the entry READS must be the base commit's own reading (not this path).
+            if exc['kind'] == 'baseline_reads':
+                assert out == SR.read(row['input'], row['lang'], placement=None)
+            return
+        verdict = b1.judge(row['expect'], row['lang'], out)['verdict']
+>       assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: ('misread', [{'predicate': '磨く', 'roles': {'agent': '弟', 'patient': '靴'}, 'polarity': '+', 'tense': 'past', ...}])
+E       assert 'misread' in ('correct', 'abstain')
+
+tests/test_semantic_read_w3b1.py:482: AssertionError
+_________ test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-064] _________
+
+row = {'id': 'W3B1-S4-064', 'lang': 'ja', 'behavior': 'abstain', 'input': '姉がはっきり名前を書いた。', ...}
+
+    @pytest.mark.parametrize('row', DATA, ids=[r['id'] for r in DATA])
+    def test_every_row_of_the_new_data_with_the_fixture(row):
+        q = F.FixtureQuery()
+        out = read(row['input'], q, row['lang'])
+        assert q.misses == [], q.misses
+        exc = _exception(row)
+        if exc is not None:
+            # a row whose registered expectation the entry does not meet is declared in w3b1_expect_exceptions.json with the exact output it gives
+            # (checked in test_declared_exceptions_are_real...). A declared row that the entry READS must be the base commit's own reading (not this path).
+            if exc['kind'] == 'baseline_reads':
+                assert out == SR.read(row['input'], row['lang'], placement=None)
+            return
+        verdict = b1.judge(row['expect'], row['lang'], out)['verdict']
+>       assert verdict in ('correct', 'abstain'), (verdict, out['clauses'])           # never a wrong or half reading, whatever the row says
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: ('misread', [{'predicate': '書く', 'roles': {'agent': '姉', 'patient': '名前'}, 'polarity': '+', 'tense': 'past', ...}])
+E       assert 'misread' in ('correct', 'abstain')
+
+tests/test_semantic_read_w3b1.py:482: AssertionError
+_ test_without_a_placement_every_output_is_the_base_commits_output_byte_for_byte _
+
+    def test_without_a_placement_every_output_is_the_base_commits_output_byte_for_byte():
+        base = _base_module()
+        texts = list(dict.fromkeys(SAMPLES + [r['input'] for r in DATA] + ['犬が猫を追いかけた。', 'おはようございます。', '弟は兄より背が高い。', 'The dog chased the cat.']))
+        for text in texts:
+            expect = json.dumps(base.read(text), ensure_ascii=False)
+>           assert json.dumps(SR.read(text), ensure_ascii=False) == expect, text
+E           AssertionError: 兄がそっと窓を開けた。
+E           assert '{"schema": "...n": [7, 9]}]}' == '{"schema": "...se_meta": []}'
+E             
+E             Skipping 55 identical leading characters in diff, use -v to show
+E             - eadable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "開ける", "span": [7, 9], "reasons": ["unrepresented source content", "unrepresented source content"]}], "clause_meta": []}
+E             + eadable": true, "clauses": [{"predicate": "開ける", "roles": {"agent": "兄", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active", "flags": {"adverbs": ["そっと"]}}], "relations": [], "abstain": null, "unsupp...
+E             
+E             ...Full output truncated (1 line hidden), use '-vv' to show
+
+tests/test_semantic_read_w3b1.py:580: AssertionError
+____________ test_a_quantity_adverb_is_not_read_the_output_is_w3b1s ____________
+
+    def test_a_quantity_adverb_is_not_read_the_output_is_w3b1s():
+        for text in ('兄が三回、窓を拭いた。', '兄が三度、窓を拭いた。', '兄が3回、窓を拭いた。', '兄が窓を3回拭いた。'):
+            m = {'三回': P('QUANTITY'), '3回': P('QUANTITY', by=('notation',)), '3': P('QUANTITY', by=('notation',))}
+            new, base = pair(text, m)
+>           assert new == base and not new['readable'], text
+E           AssertionError: 兄が窓を3回拭いた。
+E           assert ({'schema': 'v...', ...}], ...} == {'schema': 'v...ses': [], ...}
+E             
+E             Omitting 4 identical items, use -vv to show
+E             Differing items:
+E             {'readable': True} != {'readable': False}
+E             {'clauses': [{'predicate': '拭く', 'roles': {'agent': '兄', 'patient': '窓'}, 'polarity': '+', 'tense': 'past', ...}]} != {'clauses': []}
+E             {'clause_meta': [{'rule': 'frame', 'span': [6, 8]}]} != {'clause_meta': []}
+E             {'abstain': None} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_MARKER:quant']}}
+E             Use -v to get more diff)
+
+tests/test_semantic_read_w3b2.py:670: AssertionError
+_ test_without_a_placement_the_output_is_the_base_commits_byte_for_byte_and_has_no_new_key _
+
+    def test_without_a_placement_the_output_is_the_base_commits_byte_for_byte_and_has_no_new_key():
+        for text in ALL_JA:
+            new, base = SR.read(text, placement=None), BASE.read(text, placement=None)
+>           assert json.dumps(new, ensure_ascii=False) == json.dumps(base, ensure_ascii=False), text
+E           AssertionError: 兄がそっと窓を開けた。
+E           assert '{"schema": "...n": [7, 9]}]}' == '{"schema": "...se_meta": []}'
+E             
+E             Skipping 55 identical leading characters in diff, use -v to show
+E             - eadable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "開ける", "span": [7, 9], "reasons": ["unrepresented source content", "unrepresented source content"]}], "clause_meta": []}
+E             + eadable": true, "clauses": [{"predicate": "開ける", "roles": {"agent": "兄", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active", "flags": {"adverbs": ["そっと"]}}], "relations": [], "abstain": null, "unsupp...
+E             
+E             ...Full output truncated (1 line hidden), use '-vv' to show
+
+tests/test_semantic_read_w3b2.py:709: AssertionError
+_ test_every_difference_from_w3b1_is_a_sentence_read_now_or_a_sentence_stopped_by_a_frame_on_all_the_data _
+
+    def test_every_difference_from_w3b1_is_a_sentence_read_now_or_a_sentence_stopped_by_a_frame_on_all_the_data():
+        kinds = {}
+        for text in ALL_JA:
+            k = classify(text)
+            kinds.setdefault(k, []).append(text)
+        bad = {k: v[:5] for k, v in kinds.items() if k in ('READ_CHANGED', 'REFUSAL_CHANGED')}
+        assert bad == {}, bad
+        assert kinds.get('newly_read'), kinds.keys()
+        for text in kinds['newly_read']:
+>           assert SR.typed_explain_ja(text, F.FixtureQuery())['w3b2'] == 'READ', text
+E           AssertionError: 兄がそっと窓を開けた。
+E           assert 'PLACEMENT_PART_NOT_NP:副詞' == 'READ'
+E             
+E             - READ
+E             + PLACEMENT_PART_NOT_NP:副詞
+
+tests/test_semantic_read_w3b2.py:741: AssertionError
+_ test_the_diagnosis_says_read_exactly_when_the_entry_reads_with_the_new_path_on_all_the_data _
+
+    def test_the_diagnosis_says_read_exactly_when_the_entry_reads_with_the_new_path_on_all_the_data():
+        for text in ALL_JA:
+            ex = SR.typed_explain_ja(text, F.FixtureQuery())
+            new, base = fx_pair(text)
+            assert set(ex) == {'w3b1_trigger', 'w3b1', 'w3b2_trigger', 'w3b2', 'frame'}
+            new_path_read = bool(new['readable']) and not base['readable']
+>           assert (ex['w3b2'] == 'READ') == new_path_read, (text, ex)
+E           AssertionError: ('兄がそっと窓を開けた。', {'w3b1_trigger': 'S4', 'w3b1': 'PLACEMENT_PART_NOT_NP:副詞', 'w3b2_trigger': 'S4', 'w3b2': 'PLACEMENT_PART_NOT_NP:副詞', ...})
+E           assert ('PLACEMENT_PART_NOT_NP:副詞' == 'READ'
+E             
+E             - READ
+E             + PLACEMENT_PART_NOT_NP:副詞) == True
+
+tests/test_semantic_read_w3b2.py:750: AssertionError
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-002] _
+
+row = {'id': 'W3B3-W1A4-002', 'lang': 'ja', 'behavior': 'abstain', 'input': '兄がゆっくり歩かなかった。', ...}
+
+    @pytest.mark.parametrize('row', ROWS['w1a4'], ids=lambda r: r['id'])
+    def test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases(row):
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(row['input'], placement=q)
+        bout = BASE.read(row['input'], placement=bq)
+>       assert out['readable'] is False and out == bout, (row['input'], out)
+E       AssertionError: ('兄がゆっくり歩かなかった。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E       assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E         Use -v to get more diff)
+
+tests/test_semantic_read_w3b3.py:581: AssertionError
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-004] _
+
+row = {'id': 'W3B3-W1A4-004', 'lang': 'ja', 'behavior': 'abstain', 'input': '母はそっと窓を閉めなかった。', ...}
+
+    @pytest.mark.parametrize('row', ROWS['w1a4'], ids=lambda r: r['id'])
+    def test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases(row):
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(row['input'], placement=q)
+        bout = BASE.read(row['input'], placement=bq)
+>       assert out['readable'] is False and out == bout, (row['input'], out)
+E       AssertionError: ('母はそっと窓を閉めなかった。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E       assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E         Use -v to get more diff)
+
+tests/test_semantic_read_w3b3.py:581: AssertionError
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-005] _
+
+row = {'id': 'W3B3-W1A4-005', 'lang': 'ja', 'behavior': 'abstain', 'input': '兄がすぐ帰らなかった。', ...}
+
+    @pytest.mark.parametrize('row', ROWS['w1a4'], ids=lambda r: r['id'])
+    def test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases(row):
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(row['input'], placement=q)
+        bout = BASE.read(row['input'], placement=bq)
+>       assert out['readable'] is False and out == bout, (row['input'], out)
+E       AssertionError: ('兄がすぐ帰らなかった。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E       assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E         Use -v to get more diff)
+
+tests/test_semantic_read_w3b3.py:581: AssertionError
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-007] _
+
+row = {'id': 'W3B3-W1A4-007', 'lang': 'ja', 'behavior': 'abstain', 'input': '兄がとても喜ばなかった。', ...}
+
+    @pytest.mark.parametrize('row', ROWS['w1a4'], ids=lambda r: r['id'])
+    def test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases(row):
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(row['input'], placement=q)
+        bout = BASE.read(row['input'], placement=bq)
+>       assert out['readable'] is False and out == bout, (row['input'], out)
+E       AssertionError: ('兄がとても喜ばなかった。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E       assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E         Use -v to get more diff)
+
+tests/test_semantic_read_w3b3.py:581: AssertionError
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-010] _
+
+row = {'id': 'W3B3-W1A4-010', 'lang': 'ja', 'behavior': 'abstain', 'input': '兄がすぐ近くの店に行った。', ...}
+
+    @pytest.mark.parametrize('row', ROWS['w1a4'], ids=lambda r: r['id'])
+    def test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases(row):
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(row['input'], placement=q)
+        bout = BASE.read(row['input'], placement=bq)
+>       assert out['readable'] is False and out == bout, (row['input'], out)
+E       AssertionError: ('兄がすぐ近くの店に行った。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E       assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E         Use -v to get more diff)
+
+tests/test_semantic_read_w3b3.py:581: AssertionError
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-011] _
+
+row = {'id': 'W3B3-W1A4-011', 'lang': 'ja', 'behavior': 'abstain', 'input': '兄がすぐ隣の部屋に入った。', ...}
+
+    @pytest.mark.parametrize('row', ROWS['w1a4'], ids=lambda r: r['id'])
+    def test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases(row):
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(row['input'], placement=q)
+        bout = BASE.read(row['input'], placement=bq)
+>       assert out['readable'] is False and out == bout, (row['input'], out)
+E       AssertionError: ('兄がすぐ隣の部屋に入った。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E       assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E         Use -v to get more diff)
+
+tests/test_semantic_read_w3b3.py:581: AssertionError
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-012] _
+
+row = {'id': 'W3B3-W1A4-012', 'lang': 'ja', 'behavior': 'abstain', 'input': '母がすぐ前の店で本を買った。', ...}
+
+    @pytest.mark.parametrize('row', ROWS['w1a4'], ids=lambda r: r['id'])
+    def test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases(row):
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(row['input'], placement=q)
+        bout = BASE.read(row['input'], placement=bq)
+>       assert out['readable'] is False and out == bout, (row['input'], out)
+E       AssertionError: ('母がすぐ前の店で本を買った。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E       assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E         Use -v to get more diff)
+
+tests/test_semantic_read_w3b3.py:581: AssertionError
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-013] _
+
+row = {'id': 'W3B3-W1A4-013', 'lang': 'ja', 'behavior': 'abstain', 'input': '兄がとても近くの店に行った。', ...}
+
+    @pytest.mark.parametrize('row', ROWS['w1a4'], ids=lambda r: r['id'])
+    def test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases(row):
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(row['input'], placement=q)
+        bout = BASE.read(row['input'], placement=bq)
+>       assert out['readable'] is False and out == bout, (row['input'], out)
+E       AssertionError: ('兄がとても近くの店に行った。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': False, 'clauses': [], ...})
+E       assert (False is False and {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:とても']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E         Use -v to get more diff)
+
+tests/test_semantic_read_w3b3.py:581: AssertionError
+_ test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-021] _
+
+row = {'id': 'W3B3-W1A4-021', 'lang': 'ja', 'behavior': 'abstain', 'input': '兄がとても喜んだ。', ...}
+
+    @pytest.mark.parametrize('row', ROWS['w1a4'], ids=lambda r: r['id'])
+    def test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases(row):
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(row['input'], placement=q)
+        bout = BASE.read(row['input'], placement=bq)
+>       assert out['readable'] is False and out == bout, (row['input'], out)
+E       AssertionError: ('兄がとても喜んだ。', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '喜ぶ', 'roles': {'agent': '兄'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+E       assert (True is False)
+
+tests/test_semantic_read_w3b3.py:581: AssertionError
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3086\u3063\u304f\u308a\u6b69\u304b\u306a\u304b\u3063\u305f\u3002] _
+
+text = '兄がゆっくり歩かなかった。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis(text):
+        out = SR.read(text, placement=None)
+>       assert out == BASE.read(text, placement=None)
+E       AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E         Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:602: AssertionError
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u6bcd\u306f\u305d\u3063\u3068\u7a93\u3092\u9589\u3081\u306a\u304b\u3063\u305f\u3002] _
+
+text = '母はそっと窓を閉めなかった。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis(text):
+        out = SR.read(text, placement=None)
+>       assert out == BASE.read(text, placement=None)
+E       AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E         Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:602: AssertionError
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3059\u3050\u5e30\u3089\u306a\u304b\u3063\u305f\u3002] _
+
+text = '兄がすぐ帰らなかった。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis(text):
+        out = SR.read(text, placement=None)
+>       assert out == BASE.read(text, placement=None)
+E       AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E         Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:602: AssertionError
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3068\u3066\u3082\u559c\u3070\u306a\u304b\u3063\u305f\u3002] _
+
+text = '兄がとても喜ばなかった。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis(text):
+        out = SR.read(text, placement=None)
+>       assert out == BASE.read(text, placement=None)
+E       AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E         Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:602: AssertionError
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3059\u3050\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002] _
+
+text = '兄がすぐ近くの店に行った。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis(text):
+        out = SR.read(text, placement=None)
+>       assert out == BASE.read(text, placement=None)
+E       AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E         Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:602: AssertionError
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3059\u3050\u96a3\u306e\u90e8\u5c4b\u306b\u5165\u3063\u305f\u3002] _
+
+text = '兄がすぐ隣の部屋に入った。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis(text):
+        out = SR.read(text, placement=None)
+>       assert out == BASE.read(text, placement=None)
+E       AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E         Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:602: AssertionError
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u6bcd\u304c\u3059\u3050\u524d\u306e\u5e97\u3067\u672c\u3092\u8cb7\u3063\u305f\u3002] _
+
+text = '母がすぐ前の店で本を買った。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis(text):
+        out = SR.read(text, placement=None)
+>       assert out == BASE.read(text, placement=None)
+E       AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E         Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:602: AssertionError
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3068\u3066\u3082\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002] _
+
+text = '兄がとても近くの店に行った。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis(text):
+        out = SR.read(text, placement=None)
+>       assert out == BASE.read(text, placement=None)
+E       AssertionError: assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'ADVERB_MAY_MODIFY_NP:とても']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E         Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:602: AssertionError
+_ test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3068\u3066\u3082\u559c\u3093\u3060\u3002] _
+
+text = '兄がとても喜んだ。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis(text):
+        out = SR.read(text, placement=None)
+>       assert out == BASE.read(text, placement=None)
+E       AssertionError: assert {'schema': 'v...', ...}], ...} == {'schema': 'v...ses': [], ...}
+E         
+E         Omitting 4 identical items, use -vv to show
+E         Differing items:
+E         {'readable': True} != {'readable': False}
+E         {'clauses': [{'predicate': '喜ぶ', 'roles': {'agent': '兄'}, 'polarity': '+', 'tense': 'past', ...}]} != {'clauses': []}
+E         {'clause_meta': [{'rule': 'frame', 'span': [5, 7]}]} != {'clause_meta': []}
+E         {'abstain': None} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE']}}
+E         Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:602: AssertionError
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3086\u3063\u304f\u308a\u6b69\u304b\u306a\u304b\u3063\u305f\u3002] _
+
+text = '兄がゆっくり歩かなかった。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none(text):
+        """K114 3: a sentence the path does not read gets the base's output byte for byte; it asks the placement nothing the base did not ask unless it passed every gate that needs no question
+        (the base's questions always come first: the typed readings of W3-b1 / W3-b2 run before the path); a sentence the path reads is one the base did not read."""
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(text, placement=q)
+        bout = BASE.read(text, placement=bq)
+        ex = explain(text)
+        assert q.calls[:len(bq.calls)] == bq.calls, text
+        if ex['read']:
+            assert out['readable'] is True and bout['readable'] is False, text
+        else:
+>           assert out == bout, (text, ex['reason'])
+E           AssertionError: ('兄がゆっくり歩かなかった。', 'W3B3_NOT_TRIGGERED:groups=1')
+E           assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E             
+E             Omitting 7 identical items, use -vv to show
+E             Differing items:
+E             {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E             Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:623: AssertionError
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u6bcd\u306f\u305d\u3063\u3068\u7a93\u3092\u9589\u3081\u306a\u304b\u3063\u305f\u3002] _
+
+text = '母はそっと窓を閉めなかった。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none(text):
+        """K114 3: a sentence the path does not read gets the base's output byte for byte; it asks the placement nothing the base did not ask unless it passed every gate that needs no question
+        (the base's questions always come first: the typed readings of W3-b1 / W3-b2 run before the path); a sentence the path reads is one the base did not read."""
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(text, placement=q)
+        bout = BASE.read(text, placement=bq)
+        ex = explain(text)
+        assert q.calls[:len(bq.calls)] == bq.calls, text
+        if ex['read']:
+            assert out['readable'] is True and bout['readable'] is False, text
+        else:
+>           assert out == bout, (text, ex['reason'])
+E           AssertionError: ('母はそっと窓を閉めなかった。', 'W3B3_NOT_TRIGGERED:groups=1')
+E           assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E             
+E             Omitting 7 identical items, use -vv to show
+E             Differing items:
+E             {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E             Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:623: AssertionError
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3059\u3050\u5e30\u3089\u306a\u304b\u3063\u305f\u3002] _
+
+text = '兄がすぐ帰らなかった。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none(text):
+        """K114 3: a sentence the path does not read gets the base's output byte for byte; it asks the placement nothing the base did not ask unless it passed every gate that needs no question
+        (the base's questions always come first: the typed readings of W3-b1 / W3-b2 run before the path); a sentence the path reads is one the base did not read."""
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(text, placement=q)
+        bout = BASE.read(text, placement=bq)
+        ex = explain(text)
+        assert q.calls[:len(bq.calls)] == bq.calls, text
+        if ex['read']:
+            assert out['readable'] is True and bout['readable'] is False, text
+        else:
+>           assert out == bout, (text, ex['reason'])
+E           AssertionError: ('兄がすぐ帰らなかった。', 'W3B3_NOT_TRIGGERED:groups=1')
+E           assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E             
+E             Omitting 7 identical items, use -vv to show
+E             Differing items:
+E             {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E             Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:623: AssertionError
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3068\u3066\u3082\u559c\u3070\u306a\u304b\u3063\u305f\u3002] _
+
+text = '兄がとても喜ばなかった。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none(text):
+        """K114 3: a sentence the path does not read gets the base's output byte for byte; it asks the placement nothing the base did not ask unless it passed every gate that needs no question
+        (the base's questions always come first: the typed readings of W3-b1 / W3-b2 run before the path); a sentence the path reads is one the base did not read."""
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(text, placement=q)
+        bout = BASE.read(text, placement=bq)
+        ex = explain(text)
+        assert q.calls[:len(bq.calls)] == bq.calls, text
+        if ex['read']:
+            assert out['readable'] is True and bout['readable'] is False, text
+        else:
+>           assert out == bout, (text, ex['reason'])
+E           AssertionError: ('兄がとても喜ばなかった。', 'W3B3_NOT_TRIGGERED:groups=1')
+E           assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E             
+E             Omitting 7 identical items, use -vv to show
+E             Differing items:
+E             {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_SCOPE_UNDETERMINED:neg']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E             Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:623: AssertionError
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3059\u3050\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002] _
+
+text = '兄がすぐ近くの店に行った。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none(text):
+        """K114 3: a sentence the path does not read gets the base's output byte for byte; it asks the placement nothing the base did not ask unless it passed every gate that needs no question
+        (the base's questions always come first: the typed readings of W3-b1 / W3-b2 run before the path); a sentence the path reads is one the base did not read."""
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(text, placement=q)
+        bout = BASE.read(text, placement=bq)
+        ex = explain(text)
+        assert q.calls[:len(bq.calls)] == bq.calls, text
+        if ex['read']:
+            assert out['readable'] is True and bout['readable'] is False, text
+        else:
+>           assert out == bout, (text, ex['reason'])
+E           AssertionError: ('兄がすぐ近くの店に行った。', 'W3B3_NOT_TRIGGERED:groups=1')
+E           assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E             
+E             Omitting 7 identical items, use -vv to show
+E             Differing items:
+E             {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E             Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:623: AssertionError
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3059\u3050\u96a3\u306e\u90e8\u5c4b\u306b\u5165\u3063\u305f\u3002] _
+
+text = '兄がすぐ隣の部屋に入った。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none(text):
+        """K114 3: a sentence the path does not read gets the base's output byte for byte; it asks the placement nothing the base did not ask unless it passed every gate that needs no question
+        (the base's questions always come first: the typed readings of W3-b1 / W3-b2 run before the path); a sentence the path reads is one the base did not read."""
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(text, placement=q)
+        bout = BASE.read(text, placement=bq)
+        ex = explain(text)
+        assert q.calls[:len(bq.calls)] == bq.calls, text
+        if ex['read']:
+            assert out['readable'] is True and bout['readable'] is False, text
+        else:
+>           assert out == bout, (text, ex['reason'])
+E           AssertionError: ('兄がすぐ隣の部屋に入った。', 'W3B3_NOT_TRIGGERED:groups=1')
+E           assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E             
+E             Omitting 7 identical items, use -vv to show
+E             Differing items:
+E             {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E             Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:623: AssertionError
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u6bcd\u304c\u3059\u3050\u524d\u306e\u5e97\u3067\u672c\u3092\u8cb7\u3063\u305f\u3002] _
+
+text = '母がすぐ前の店で本を買った。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none(text):
+        """K114 3: a sentence the path does not read gets the base's output byte for byte; it asks the placement nothing the base did not ask unless it passed every gate that needs no question
+        (the base's questions always come first: the typed readings of W3-b1 / W3-b2 run before the path); a sentence the path reads is one the base did not read."""
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(text, placement=q)
+        bout = BASE.read(text, placement=bq)
+        ex = explain(text)
+        assert q.calls[:len(bq.calls)] == bq.calls, text
+        if ex['read']:
+            assert out['readable'] is True and bout['readable'] is False, text
+        else:
+>           assert out == bout, (text, ex['reason'])
+E           AssertionError: ('母がすぐ前の店で本を買った。', 'W3B3_NOT_TRIGGERED:groups=1')
+E           assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E             
+E             Omitting 7 identical items, use -vv to show
+E             Differing items:
+E             {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:すぐ']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E             Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:623: AssertionError
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3068\u3066\u3082\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002] _
+
+text = '兄がとても近くの店に行った。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none(text):
+        """K114 3: a sentence the path does not read gets the base's output byte for byte; it asks the placement nothing the base did not ask unless it passed every gate that needs no question
+        (the base's questions always come first: the typed readings of W3-b1 / W3-b2 run before the path); a sentence the path reads is one the base did not read."""
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(text, placement=q)
+        bout = BASE.read(text, placement=bq)
+        ex = explain(text)
+        assert q.calls[:len(bq.calls)] == bq.calls, text
+        if ex['read']:
+            assert out['readable'] is True and bout['readable'] is False, text
+        else:
+>           assert out == bout, (text, ex['reason'])
+E           AssertionError: ('兄がとても近くの店に行った。', 'W3B3_NOT_TRIGGERED:groups=1')
+E           assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+E             
+E             Omitting 7 identical items, use -vv to show
+E             Differing items:
+E             {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞', 'ADVERB_MAY_MODIFY_NP:とても']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E             Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:623: AssertionError
+_ test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3068\u3066\u3082\u559c\u3093\u3060\u3002] _
+
+text = '兄がとても喜んだ。'
+
+    @pytest.mark.parametrize('text', [r['input'] for r in ALL] + JA_TEST_INPUTS)
+    def test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none(text):
+        """K114 3: a sentence the path does not read gets the base's output byte for byte; it asks the placement nothing the base did not ask unless it passed every gate that needs no question
+        (the base's questions always come first: the typed readings of W3-b1 / W3-b2 run before the path); a sentence the path reads is one the base did not read."""
+        q = F.FixtureQuery(); bq = F.FixtureQuery()
+        out = SR.read(text, placement=q)
+        bout = BASE.read(text, placement=bq)
+        ex = explain(text)
+        assert q.calls[:len(bq.calls)] == bq.calls, text
+        if ex['read']:
+            assert out['readable'] is True and bout['readable'] is False, text
+        else:
+>           assert out == bout, (text, ex['reason'])
+E           AssertionError: ('兄がとても喜んだ。', 'W3B3_NOT_TRIGGERED:groups=1')
+E           assert {'schema': 'v...', ...}], ...} == {'schema': 'v...ses': [], ...}
+E             
+E             Omitting 4 identical items, use -vv to show
+E             Differing items:
+E             {'readable': True} != {'readable': False}
+E             {'clauses': [{'predicate': '喜ぶ', 'roles': {'agent': '兄'}, 'polarity': '+', 'tense': 'past', ...}]} != {'clauses': []}
+E             {'clause_meta': [{'rule': 'frame', 'span': [5, 7]}]} != {'clause_meta': []}
+E             {'abstain': None} != {'abstain': {'kind': 'not_supported', 'reasons': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PART_NOT_NP:副詞']}}
+E             Use -v to get more diff
+
+tests/test_semantic_read_w3b3.py:623: AssertionError
+_ test_no_row_of_the_data_is_misread_or_incomplete_and_the_fixture_holds_every_word[W3B3-W1A4-021] _
+
+row = {'id': 'W3B3-W1A4-021', 'lang': 'ja', 'behavior': 'abstain', 'input': '兄がとても喜んだ。', ...}
+
+    @pytest.mark.parametrize('row', ALL, ids=[r['id'] for r in ALL])
+    def test_no_row_of_the_data_is_misread_or_incomplete_and_the_fixture_holds_every_word(row):
+        q = F.FixtureQuery()
+        out = SR.read(row['input'], placement=q)
+>       assert verdict(row, out) in ('correct', 'abstain'), (row['input'], verdict(row, out), out)
+E       AssertionError: ('兄がとても喜んだ。', 'misread', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '喜ぶ', 'roles': {'agent': '兄'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+E       assert 'misread' in ('correct', 'abstain')
+E        +  where 'misread' = verdict({'id': 'W3B3-W1A4-021', 'lang': 'ja', 'behavior': 'abstain', 'input': '兄がとても喜んだ。', ...}, {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '喜ぶ', 'roles': {'agent': '兄'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+
+tests/test_semantic_read_w3b3.py:654: AssertionError
+_ test_the_reader_file_only_gains_lines_and_the_other_files_of_the_ticket_are_not_touched _
+
+    def test_the_reader_file_only_gains_lines_and_the_other_files_of_the_ticket_are_not_touched():
+        diff = git('diff', BASE_COMMIT, '--', 'verantyx/semantic_reader.py').splitlines()
+        assert [l for l in diff if l.startswith('-') and not l.startswith('---')] == []
+        for path in ('verantyx/semantic_read.py', 'verantyx/coarse_types.py', 'verantyx/coarse_place.py', 'verantyx/event_cross.py', 'verantyx/observe.py'):
+>           assert git('diff', BASE_COMMIT, '--', path) == '', path
+E           AssertionError: verantyx/semantic_read.py
+E           assert 'diff --git a...xit(main())\n' == ''
+E             
+E             + diff --git a/verantyx/semantic_read.py b/verantyx/semantic_read.py
+E             + index 97ea712..e5d630f 100644
+E             + --- a/verantyx/semantic_read.py
+E             + +++ b/verantyx/semantic_read.py
+E             + @@ -1551,5 +1551,7 @@ def main(argv=None):
+E             +      return code...
+E             
+E             ...Full output truncated (6 lines hidden), use '-vv' to show
+
+tests/test_semantic_read_w3b4.py:206: AssertionError
+_ test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays_under_a_name_of_its_own _
+
+    def test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays_under_a_name_of_its_own():
+        # round 4 (K186): the two names the entry calls are the plans wrapped by the focus gate; the plan under the gate is the plan of rounds 1-3 (`ungated`)
+        assert R.typed_plan_u_w3b2_ja.ungated is R.typed_plan_u_w3b4_ja
+        assert R.typed_plan_u_ja.ungated is R.typed_plan_u_w3b1_ungated_ja
+        assert R.typed_plan_u_w3b1_ungated_ja.__name__ == 'typed_plan_u_ja'                  # the function of the base commit, unchanged
+        assert R.typed_plan_u_w3b2_v1_ja is not R.typed_plan_u_w3b4_ja and R.typed_plan_u_w3b2_v1_ja.__name__ == 'typed_plan_u_w3b2_ja'
+        assert (R.typed_plan_u_w3b4_ja.__code__.co_names != R.typed_plan_u_w3b2_v1_ja.__code__.co_names)
+        # the tail of the file (by ast, not by text): the last three statements are the round-4 replacement of the two names, and the one-line replacement of round 3 is still above them
+        body = ast.parse((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')).body
+        def assign(n):
+            return (n.targets[0].id, ast.unparse(n.value)) if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name) else None
+>       assert [assign(n) for n in body[-3:]] == [('typed_plan_u_w3b1_ungated_ja', 'typed_plan_u_ja'), ('typed_plan_u_ja', '_typed_plan_focus_gated(typed_plan_u_w3b1_ungated_ja)'),
+                                                  ('typed_plan_u_w3b2_ja', '_typed_plan_focus_gated(typed_plan_u_w3b4_ja)')]
+E       AssertionError: assert [None, None, None] == [('typed_plan..._u_w3b4_ja)')]
+E         
+E         At index 0 diff: None != ('typed_plan_u_w3b1_ungated_ja', 'typed_plan_u_ja')
+E         Use -v to get more diff
+
+tests/test_semantic_read_w3b4.py:236: AssertionError
+_ test_a_desire_or_hearsay_sentence_is_not_the_answer_of_a_plain_past_question[\u6821\u9577\u306f\u65b0\u805e\u3092\u8aad\u3093\u3067\u307f\u305f\u304b\u3063\u305f\u3002-\u6821\u9577\u306f\u4f55\u3092\u8aad\u3093\u3060\uff1f] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1450/test_a_desire_or_hearsay_sente3')
+capsys = <_pytest.capture.CaptureFixture object at 0x14fe20d10>
+place_forms = None, sentence = '校長は新聞を読んでみたかった。', question = '校長は何を読んだ？'
+
+    @pytest.mark.parametrize('sentence,question', FORMS)
+    def test_a_desire_or_hearsay_sentence_is_not_the_answer_of_a_plain_past_question(tmp_path, capsys, place_forms, sentence, question):
+        path = doc_file(tmp_path, 'f.txt', sentence + '\n')
+        rc, out = ask(tmp_path, capsys, [path], question)
+        assert out['verdict'] == 'UNKNOWN_UNREAD' and out.get('door') != 'question_cross'
+>       assert out['question_cross']['mapped_to'] == 'ORIGINAL' and out['question_cross']['reason'] == 'PREDICATE_FORM_DIFFERS' and out['question_cross']['state'] == 'FILLED'
+E       AssertionError: assert ('ORIGINAL' == 'ORIGINAL'
+E         
+E           ORIGINAL and 'NO_MATCHING_...EAD_SENTENCES' == 'PREDICATE_FORM_DIFFERS'
+E         
+E         - PREDICATE_FORM_DIFFERS
+E         + NO_MATCHING_CROSS_IN_READ_SENTENCES)
+
+tests/test_ask_question_cross.py:428: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w3b1.py::test_path_s4_registered_unread_constructions[\u6bcd\u304c\u305d\u3063\u3068\u624b\u7d19\u3092\u66f8\u3044\u305f\u3002-PLACEMENT_PART_NOT_NP:\u526f\u8a5e]
+FAILED tests/test_semantic_read_w3b1.py::test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-061]
+FAILED tests/test_semantic_read_w3b1.py::test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-062]
+FAILED tests/test_semantic_read_w3b1.py::test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-063]
+FAILED tests/test_semantic_read_w3b1.py::test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-064]
+FAILED tests/test_semantic_read_w3b1.py::test_without_a_placement_every_output_is_the_base_commits_output_byte_for_byte
+FAILED tests/test_semantic_read_w3b2.py::test_a_quantity_adverb_is_not_read_the_output_is_w3b1s
+FAILED tests/test_semantic_read_w3b2.py::test_without_a_placement_the_output_is_the_base_commits_byte_for_byte_and_has_no_new_key
+FAILED tests/test_semantic_read_w3b2.py::test_every_difference_from_w3b1_is_a_sentence_read_now_or_a_sentence_stopped_by_a_frame_on_all_the_data
+FAILED tests/test_semantic_read_w3b2.py::test_the_diagnosis_says_read_exactly_when_the_entry_reads_with_the_new_path_on_all_the_data
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-002]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-004]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-005]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-007]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-010]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-011]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-012]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-013]
+FAILED tests/test_semantic_read_w3b3.py::test_w1a4_every_misread_is_an_abstention_and_the_output_is_the_bases[W3B3-W1A4-021]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3086\u3063\u304f\u308a\u6b69\u304b\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u6bcd\u306f\u305d\u3063\u3068\u7a93\u3092\u9589\u3081\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3059\u3050\u5e30\u3089\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3068\u3066\u3082\u559c\u3070\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3059\u3050\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3059\u3050\u96a3\u306e\u90e8\u5c4b\u306b\u5165\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u6bcd\u304c\u3059\u3050\u524d\u306e\u5e97\u3067\u672c\u3092\u8cb7\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3068\u3066\u3082\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_without_a_placement_every_output_is_the_bases_and_has_no_head_and_no_basis[\u5144\u304c\u3068\u3066\u3082\u559c\u3093\u3060\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3086\u3063\u304f\u308a\u6b69\u304b\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u6bcd\u306f\u305d\u3063\u3068\u7a93\u3092\u9589\u3081\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3059\u3050\u5e30\u3089\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3068\u3066\u3082\u559c\u3070\u306a\u304b\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3059\u3050\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3059\u3050\u96a3\u306e\u90e8\u5c4b\u306b\u5165\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u6bcd\u304c\u3059\u3050\u524d\u306e\u5e97\u3067\u672c\u3092\u8cb7\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3068\u3066\u3082\u8fd1\u304f\u306e\u5e97\u306b\u884c\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none[\u5144\u304c\u3068\u3066\u3082\u559c\u3093\u3060\u3002]
+FAILED tests/test_semantic_read_w3b3.py::test_no_row_of_the_data_is_misread_or_incomplete_and_the_fixture_holds_every_word[W3B3-W1A4-021]
+FAILED tests/test_semantic_read_w3b4.py::test_the_reader_file_only_gains_lines_and_the_other_files_of_the_ticket_are_not_touched
+FAILED tests/test_semantic_read_w3b4.py::test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays_under_a_name_of_its_own
+FAILED tests/test_ask_question_cross.py::test_a_desire_or_hearsay_sentence_is_not_the_answer_of_a_plain_past_question[\u6821\u9577\u306f\u65b0\u805e\u3092\u8aad\u3093\u3067\u307f\u305f\u304b\u3063\u305f\u3002-\u6821\u9577\u306f\u4f55\u3092\u8aad\u3093\u3060\uff1f]
+41 failed, 4655 passed, 424 deselected in 127.41s (0:02:07)

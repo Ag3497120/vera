@@ -1,0 +1,8 @@
+_w1a5_hira IDENTICAL 121
+_w1a5_adverb_class IDENTICAL 504
+_w1a5_after_adverb IDENTICAL 247
+_w1a5_np_boundary IDENTICAL 496
+_w1a5_adverb_gate IDENTICAL 939
+functions of the round-1 section missing now: []
+functions only in the tree: []
+functions of the round-1 section whose text differs now: ['_w1a5_reread']

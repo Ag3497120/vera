@@ -36,6 +36,7 @@ COMMON = _load_by_path('w3b2_common_in_test', RS / 'w3b2_common.py')
 from tools.bank_score.v2 import b1    # noqa: E402
 from verantyx import semantic_read as SR    # noqa: E402
 from verantyx import semantic_reader as R    # noqa: E402
+W1A5 = _load_by_path('w1a5_common_in_w3b2', RS / 'w1a5_common.py')    # W1-a5 (docs/READING_SOUNDNESS.md 10G)
 
 DOCS = (TREE / 'docs' / 'READING_SOUNDNESS.md').read_text(encoding='utf-8')
 
@@ -667,6 +668,9 @@ def test_a_quantity_adverb_is_not_read_the_output_is_w3b1s():
     for text in ('兄が三回、窓を拭いた。', '兄が三度、窓を拭いた。', '兄が3回、窓を拭いた。', '兄が窓を3回拭いた。'):
         m = {'三回': P('QUANTITY'), '3回': P('QUANTITY', by=('notation',)), '3': P('QUANTITY', by=('notation',))}
         new, base = pair(text, m)
+        if W1A5.touched(text, Q(m)):      # W1-a5 (10G K212): a quantity that follows the rules is read (`quantifiers`); the other sentences stay as the base commit's
+            assert W1A5.documented(base, new), text
+            continue
         assert new == base and not new['readable'], text
 
 
@@ -706,6 +710,9 @@ ALL_JA = list(dict.fromkeys(t for t in [r['input'] for r in NEW_DATA + OLD_DATA 
 def test_without_a_placement_the_output_is_the_base_commits_byte_for_byte_and_has_no_new_key():
     for text in ALL_JA:
         new, base = SR.read(text, placement=None), BASE.read(text, placement=None)
+        if W1A5.touched(text):      # W1-a5 (10G K210)
+            assert W1A5.documented(base, new), text
+            continue
         assert json.dumps(new, ensure_ascii=False) == json.dumps(base, ensure_ascii=False), text
         for c in new['clauses']:
             assert not ({'role_flags', 'predicate_basis', 'role_basis'} & set(c)), text
@@ -720,6 +727,9 @@ def fx_pair(text, mapper=None):
 
 def classify(text):
     new, base = fx_pair(text)
+    if W1A5.touched(text, F.FixtureQuery()):      # W1-a5 (10G K210): its own kind; it is documented, never a changed reading of the older paths
+        assert W1A5.documented(base, new), text
+        return 'w1a5'
     if base['readable']:
         if new == base: return 'same_read'
         if (not new['readable']) and len(reasons(new)) == 2 and reasons(new)[1].startswith('PLACEMENT_FRAME_'): return 'frame_stopped'
@@ -744,6 +754,7 @@ def test_every_difference_from_w3b1_is_a_sentence_read_now_or_a_sentence_stopped
 def test_the_diagnosis_says_read_exactly_when_the_entry_reads_with_the_new_path_on_all_the_data():
     for text in ALL_JA:
         ex = SR.typed_explain_ja(text, F.FixtureQuery())
+        if W1A5.touched(text, F.FixtureQuery()): continue      # W1-a5 (10G K210): the diagnosis of the typed paths says nothing about a reading of W1-a5
         new, base = fx_pair(text)
         assert set(ex) == {'w3b1_trigger', 'w3b1', 'w3b2_trigger', 'w3b2', 'frame'}
         new_path_read = bool(new['readable']) and not base['readable']

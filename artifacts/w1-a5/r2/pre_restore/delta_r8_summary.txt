@@ -1,0 +1,6 @@
+inputs=3865 same=3799 newly_read=6 refusal_reason_changed=46 read_to_refused=7 reading_changed=7 error_changed=0
+newly_read labels: {"CORRECT": 6}
+read_to_refused labels: {"REGISTERED_REFUSAL": 7}
+reading_changed labels: {"CORRECTION": 7}
+rows that come from the frozen data files: {}
+by source and kind: {"ja_r12.jsonl|newly_read": 6, "ja_r12.jsonl|read_to_refused": 7, "ja_r12.jsonl|reading_changed": 7, "ja_r12.jsonl|refusal_reason_changed": 46}
