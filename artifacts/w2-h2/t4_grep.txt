@@ -1,0 +1,33 @@
+## re の使用（空であること）
+## 文字列の探索・前方一致（全部が構造の定数か読解器の出力に対するものであること。1 行ずつ docs に説明）
+295:    if body.startswith("#"):
+320:        close = body.find("）" if body[j] == "（" else ")", j)     # the matching bracket of the label
+335:    for number, raw in enumerate(text.split("\n"), start=1):
+341:        if stripped.startswith("|"):          # a table row is one unit (the table is not interpreted in this version)
+364:            if not sentence or all(ch in SENTENCE_ENDS or ch in CLOSERS or ch.isspace() for ch in sentence):
+481:    for word in surface.split():
+550:        words = key.split()
+567:        words = surface.split()
+1288:        ids_decided = head[len("rule:"):].split(",") if head.startswith("rule:") else []
+## RoutingTable の直接生成（空）
+## used_lineages（空）
+## 定数の表の行数
+PREDICATE_CLASSES 40
+VERB_WORK 14
+WORK_TERMS 33
+SIZE_TERMS 13
+IDENTITY_TERMS 7
+LINEAGE_HEADS 11
+ROLE_NOUNS 7
+HUMAN_TERMS 2
+RESIDUAL_TERMS 2
+OVERRIDE_MARKERS 10
+ANAPHORS 2
+GENERIC_OBJECTS 2
+HONORIFICS 4
+EN_DETERMINERS 9
+NON_NAME_POS 9
+SENTENCE_ENDS 6
+CLOSERS 6
+LIST_MARKERS 6
+MARKUP_CHARS 12

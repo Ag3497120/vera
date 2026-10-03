@@ -1,0 +1,215 @@
+added lines: 1509
+PROPER/NUMERIC (must be empty): []
+ENGLISH NAMES (must be empty): []
+common nouns found in added lines (list only): ['会社', '作業', '変更', '答え', '翌日', '説明']
+verb lemmas found in added lines (list only): ['する', 'なる', 'やる', '作る', '待つ', '書く', '行う', '読む']
+english lowercase words found in added lines (list only; each with the added lines that hold it, so a reader can judge): ['after', 'all', 'answer', 'asked', 'call', 'called', 'came', 'could', 'def', 'did', 'each', 'every', 'exactly', 'file', 'files', 'fix', 'fixed', 'form', 'found', 'got', 'kept', 'least', 'leaving', 'left', 'made', 'model', 'more', 'never', 'new', 'none', 'not', 'nothing', 'old', 'only', 'opened', 'patient', 'plan', 'read', 'rest', 'returned', 'route', 'run', 'running', 'said', 'she', 'team', 'than', 'that', 'the', 'this', 'two', 'types', 'update', 'was', 'were', 'when', 'which', 'while', 'who', 'writes', 'written']
+  [after] 1 added line(s):
+      Matching is by exact equality with what the reader returned (the predicate's dictionary form, a filler's string) after NFKC and
+  [all] 7 added line(s):
+      return all(ch in MARKUP_CHARS or ch.isspace() for ch in stripped)
+      if not sentence or all(ch in SENTENCE_ENDS or ch in CLOSERS or ch.isspace() for ch in sentence):
+      if all(roles):
+  [answer] 5 added line(s):
+      ("ja", "答える"): "ROLE_VERB",    # answer -> answer
+      ("en", "answer"): "ROLE_VERB",    # answer -> answer
+      ("ja", "答える"): ("role", "answer"),         # to answer is the role answer
+  [asked] 2 added line(s):
+      # The coarse placement (W3-a2) is not integrated, so a predicate's class and a filler's type cannot be asked of it: these hand tables
+      it is asked first); 2 or more sentences: combination; an exclusion by
+  [call] 3 added line(s):
+      ("ja", "呼ぶ"): "CALL",           # call
+      ("en", "call"): "CALL",           # call
+      members.sort(key=lambda k: first_call[k][0])        # the earliest call is the name that is returned
+  [called] 3 added line(s):
+      -> (7) route        agent_routing.route(table, request), called as it is (no chooser: no run-time LLM)
+      canon: Dict[str, str]                      # name key -> the name as first called
+      # names: the first way each name was called, in the order of the explanation (unit, then the order inside the sentence)
+  [came] 1 added line(s):
+      witness = line[:end].strip() if made == 0 else sentence     # the first sentence keeps the marker / label it came with
+  [could] 2 added line(s):
+      "'undecided' (typed) whenever any sentence could not be read")
+      -> (5) gate         ONE unit that could not be read and mapped (UNIT_STATUSES) -> no job is routed (typed abstention)
+  [def] 60 added line(s):
+      def cmd_route(args) -> int:
+      def _norm(text: str) -> str:
+      def _ja_tokens(text: str) -> List[Tuple[str, str]]:
+  [did] 2 added line(s):
+      ``independent_of`` condition, it makes no fallback rule the human did not state, and it breaks no tie by position.
+      """Specs -> the record types of agent_routing.  Nothing the human did not say is added, except ``adapter="fake"`` which the
+  [each] 3 added line(s):
+      -> (2) read         each unit through the reading entry (semantic_read) and the event cross (event_cross)
+      """Read each unit.  ``reader`` maps one sentence to a reading-entry output (the schema of docs/READING_CONVENTIONS.md);
+      # names: the first way each name was called, in the order of the explanation (unit, then the order inside the sentence)
+  [every] 4 added line(s):
+      are the closed constants below, every entry of which is listed with its reason in docs/ROUTING_FROM_TEXT.md), it builds a
+      # closed lists (docs/ROUTING_FROM_TEXT.md lists every one of them)
+      relations: List[Relation]                  # every relation, including held / superseded ones (see their fields)
+  [exactly] 4 added line(s):
+      # a relation (role / kind / size), and an override is a flag of the unit that replaces a relation of exactly the same scope.
+      """'same' / 'different' when the phrase is exactly (identity word, lineage head), e.g. 同じ会社 / different lab; else None."""
+      if isinstance(value, str) and value.partition(":")[0] in ("at_most", "exactly") and value.partition(":")[2].isdigit():
+  [file] 7 added line(s):
+      help='json text {"role","kind","size"[,"touches","already_used","running",...]} or the path of a file holding it')
+      "en": frozenset({"code", "work", "job", "task", "file", "files", "change", "changes"}),
+      """The explanation cannot be read as a UTF-8 file (the entry exits with 2 and ``{"error": "BAD_EXPLANATION"}``)."""
+  [files] 2 added line(s):
+      IGNORED_FIELDS = ("touches", "used_today", "files", "date")     # known fields the router has no place for (NOT_USED_BY_ROUTER)
+      "en": frozenset({"code", "work", "job", "task", "file", "files", "change", "changes"}),
+  [fix] 2 added line(s):
+      ("ja", "修正"): ("kind", "small_fix"),                # a fix
+      ("en", "fix"): ("kind", "small_fix"),                 # a fix
+  [fixed] 1 added line(s):
+      return json.dumps(result, ensure_ascii=False)       # the key order is the construction order, fixed above
+  [form] 6 added line(s):
+      -> (1) segment      lines and sentence ends -> units (the form of the text only; no topic word is looked at)
+      Matching is by exact equality with what the reader returned (the predicate's dictionary form, a filler's string) after NFKC and
+      # (language, dictionary form of the reader's predicate) -> class.  The reader decides the dictionary form; the table only classes it.
+  [found] 9 added line(s):
+      found = None
+      found = int(value.partition(":")[2])
+      if found is None or found < 1:
+  [got] 1 added line(s):
+      raise TaskError(f"{name} must be one of {', '.join(vocabulary)} (got {task.get(name)!r})")
+  [kept] 6 added line(s):
+      the default is ``semantic_read.read``.  A refusal or an exception of the reader is kept as ``ERROR`` with its type (never
+      """A unit that cannot be mapped: the status (UNIT_STATUSES), a typed reason, and the readings kept when it is split."""
+      # the two cannot be told apart, so both readings are kept and no record is made.  Another name is taken from a CALL sentence only.
+  [least] 1 added line(s):
+      raise TaskError(f"running[{item}] is a whole number of at least 0")
+  [leaving] 1 added line(s):
+      # out on purpose (leaving it out makes the unit abstain, never a wrong route).
+  [left] 4 added line(s):
+      # or a construction word (a copula, an anaphor, an honorific); a word whose meaning is not one-to-one with that vocabulary is left
+      left = sorted(set(quantifiers) - used_quant)
+      if left:
+  [made] 8 added line(s):
+      # A noun that names a ROLE of an agent ("the one who made it", "the verifier"), for the independence of two roles.
+      made = 0
+      witness = line[:end].strip() if made == 0 else sentence     # the first sentence keeps the marker / label it came with
+  [model] 2 added line(s):
+      agents = tuple(ar.AgentRecord(id=s["id"], adapter="fake", roles=s["roles"], kinds=s["kinds"], lineage=None, model=None,
+      "kinds": sorted(a.kinds) if a.kinds is not None else None, "lineage": a.lineage, "model": a.model,
+  [more] 4 added line(s):
+      ("ja", "書く"): ("role", "implement"),        # to write (with no object that says more) is to implement
+      def _witnesses_of(first: List[str], more: Iterable[str]) -> List[str]:
+      for item in more:
+  [never] 11 added line(s):
+      -> (6) table        build_routing_table (the record layer's own checks; a refusal is an abstention, never repaired)
+      roles other than implement/verify) may only turn a decision into "not routed"; they never pick a
+      different agent and never turn "not routed" into a route.
+  [new] 3 added line(s):
+      ("ja", "新機能"): ("kind", "feature"),                # a new feature
+      ("en", "new feature"): ("kind", "feature"),           # a new feature
+      ("en", "new features"): ("kind", "feature"),          # new features
+  [none] 1 added line(s):
+      marker: str        # the list marker / heading / table bar that was taken off ("" when none)
+  [not] 92 added line(s):
+      "'undecided' (typed) whenever any sentence could not be read")
+      -> (5) gate         ONE unit that could not be read and mapped (UNIT_STATUSES) -> no job is routed (typed abstention)
+      roles other than implement/verify) may only turn a decision into "not routed"; they never pick a
+  [nothing] 4 added line(s):
+      # ROLE_VERB: the verb itself names the work (VERB_WORK); its object adds nothing (GENERIC_OBJECTS)
+      # A word that adds nothing as the object of a verb that already names its work ("check the code", "review the work").
+      nothing).  An unknown head is ``WORK_TERM_UNKNOWN``; the phrase is never cut by a pattern."""
+  [old] 5 added line(s):
+      for old in equal:
+      old.superseded_by = rel.id
+      for old in earlier:
+  [only] 24 added line(s):
+      -> (1) segment      lines and sentence ends -> units (the form of the text only; no topic word is looked at)
+      roles other than implement/verify) may only turn a decision into "not routed"; they never pick a
+      What this module never does: it holds no topic regular expression and no match of the explanation's own words (the only tables
+  [opened] 2 added line(s):
+      # constant tables.  Written BEFORE the test data was opened (artifacts/w2-h2/constants_frozen.txt holds their hash and time).
+      override: bool     # the line opened with an override label (OVERRIDE_MARKERS)
+  [patient] 16 added line(s):
+      recipient, patient = take("recipient"), take("patient")
+      if recipient is None or patient is None:
+      work, generic = _parse_work(_surface(arms, patient), lang, allow_residual=True)
+  [plan] 1 added line(s):
+      """The output of the entry for one task (section 2.9 of the plan; docs/ROUTING_FROM_TEXT.md)."""
+  [read] 24 added line(s):
+      help="read a human's free-text explanation of the agents and route one job "
+      "'undecided' (typed) whenever any sentence could not be read")
+      -> (2) read         each unit through the reading entry (semantic_read) and the event cross (event_cross)
+  [rest] 8 added line(s):
+      # A scope that means "the rest": only the router's NOT_COVERED may be replaced by it.
+      "en": frozenset({"anything else", "everything else", "otherwise", "any other job", "any other work", "the rest"}),
+      """The morphemes of a Japanese string as (surface, pos1).  The tagger is the one the rest of Vera uses."""
+  [returned] 2 added line(s):
+      Matching is by exact equality with what the reader returned (the predicate's dictionary form, a filler's string) after NFKC and
+      members.sort(key=lambda k: first_call[k][0])        # the earliest call is the name that is returned
+  [route] 15 added line(s):
+      "route",
+      help="read a human's free-text explanation of the agents and route one job "
+      -> (7) route        agent_routing.route(table, request), called as it is (no chooser: no run-time LLM)
+  [run] 7 added line(s):
+      -> (7) route        agent_routing.route(table, request), called as it is (no chooser: no run-time LLM)
+      # RUN: how many of the agent run at once
+      ("ja", "動かす"): "RUN",          # run (transitive)
+  [running] 13 added line(s):
+      help='json text {"role","kind","size"[,"touches","already_used","running",...]} or the path of a file holding it')
+      USED_TASK_FIELDS = ("role", "kind", "size", "already_used", "running")
+      running_in = task.get("running")
+  [said] 4 added line(s):
+      # A label that opens a line and says the line changes what was said before (matched as a whole word, never as a part of a word).
+      # A word that points at something said before.  A filler that is one of these is not a name (the antecedent is not read).
+      take("agent")        # the human who assigns: said, and not an arm that changes the relation
+  [she] 1 added line(s):
+      "en": frozenset({"the former", "the latter", "it", "they", "them", "he", "she", "this", "that", "former", "latter",
+  [team] 1 added line(s):
+      # "X is Y" with two names: Y can be another name of X or what X belongs to / is (a company, a team); with no placement
+  [than] 10 added line(s):
+      roles other than implement/verify) may only turn a decision into "not routed"; they never pick a
+      extra = (self.data["than"],) if "than" in self.data else ()
+      return Relation("COMPARISON", (name,), dict(work), {"than": comparison_than})
+  [that] 29 added line(s):
+      -> (5) gate         ONE unit that could not be read and mapped (UNIT_STATUSES) -> no job is routed (typed abstention)
+      # a relation (role / kind / size), and an override is a flag of the unit that replaces a relation of exactly the same scope.
+      PASSING_STATUSES = ("MAPPED", "COMPARISON_ONLY")     # the only states that do not stop the gate
+  [the] 121 added line(s):
+      help="read a human's free-text explanation of the agents and route one job "
+      p.add_argument("--explanation", required=True, help="path of the explanation (UTF-8 text)")
+      help='json text {"role","kind","size"[,"touches","already_used","running",...]} or the path of a file holding it')
+  [this] 8 added line(s):
+      What this module never does: it holds no topic regular expression and no match of the explanation's own words (the only tables
+      # EXCEPTION, CONDITION and OVERRIDE of the ticket are not kinds of their own in this version: an exception is a narrower
+      "en": frozenset({"the former", "the latter", "it", "they", "them", "he", "she", "this", "that", "former", "latter",
+  [two] 7 added line(s):
+      -> (8) constraints  what the records cannot hold (a prohibition, "a human does it", "wait", the independence of two
+      ("ja", "リファクタリング"): ("kind", "large_refactor"),   # refactoring (concatenated: fugashi cuts it in two)
+      # The head noun of a lineage phrase: what two agents can be "the same" or "different" in.
+  [types] 1 added line(s):
+      """Specs -> the record types of agent_routing.  Nothing the human did not say is added, except ``adapter="fake"`` which the
+  [update] 2 added line(s):
+      OVERRIDE_MARKERS: frozenset = frozenset({"追記", "追伸", "訂正", "更新", "p.s.", "ps", "update", "edit", "correction", "addendum"})
+      work.update(parsed)                  # only a size can come with a generic object
+  [was] 7 added line(s):
+      (basis = Basis.text(source, [the sentences it was read from]))
+      # constant tables.  Written BEFORE the test data was opened (artifacts/w2-h2/constants_frozen.txt holds their hash and time).
+      # A label that opens a line and says the line changes what was said before (matched as a whole word, never as a part of a word).
+  [were] 2 added line(s):
+      """Units and the number of lines that were only markup (a blank line, ``---``, a table's separator row)."""
+      "detail": f"{len(stopped)} of {len(units)} units were not read and mapped; no job is routed",
+  [when] 8 added line(s):
+      SENTENCE_ENDS: frozenset = frozenset({"。", "．", "！", "？", "!", "?"})    # '.' counts only when blank or the end follows it
+      from .typed_edges import _tagger     # inside the function: fugashi is loaded only when a Japanese filler is looked at
+      marker: str        # the list marker / heading / table bar that was taken off ("" when none)
+  [which] 4 added line(s):
+      are the closed constants below, every entry of which is listed with its reason in docs/ROUTING_FROM_TEXT.md), it builds a
+      """The key by which two strings are the same: NFKC, case folded, no surrounding blanks."""
+      """Specs -> the record types of agent_routing.  Nothing the human did not say is added, except ``adapter="fake"`` which the
+  [while] 6 added line(s):
+      while k < len(body) and body[k] == "#":
+      while k < len(body) and body[k].isdigit():
+      while i < n and not body[i].isspace() and body[i] not in "（(：:":
+  [who] 6 added line(s):
+      # A noun that names a ROLE of an agent ("the one who made it", "the verifier"), for the independence of two roles.
+      take("agent")        # the human who assigns: said, and not an arm that changes the relation
+      who = take("agent", "patient", "entity")
+  [writes] 1 added line(s):
+      (``AgentRecord.lineage`` is always None: a label is a split the producer declares and a free text cannot), it writes no
+  [written] 2 added line(s):
+      witness: str       # a substring of the explanation (the line as written, only blanks taken off at both ends)
+      if ent_is_work != val_is_work:               # "work is the agent's": an assignment written with a copula

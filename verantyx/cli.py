@@ -564,6 +564,15 @@ def cmd_observe(args) -> int:
         print(result.stdout)
     return result.exit_code
 
+def cmd_route(args) -> int:
+    """人間の自由文の説明と仕事 1 件を受け取り、説明を読んで分業の記録を作り、経路づけて 1 行で返す(W2-h2)。
+
+    読めなかった文が 1 つでもあれば振らない(型付きの棄権)。決定でも棄権でも終了コード 0、入力の誤りは 2。
+    """
+    from . import routing_from_text
+
+    return routing_from_text.emit(args.explanation, args.task)
+
 
 def cmd_doctor(args) -> int:
     """入れた直後に叩く自己検査 — 二つの顔を1回で確かめる。
@@ -1620,6 +1629,16 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--placement", default=None, help="one json file of placements and neighbours")
     p.add_argument("--ledger", default=None, help="ledger file (jsonl): observe in its state, then append the turn")
     p.set_defaults(fn=cmd_observe)
+
+    p = sub.add_parser(
+        "route",
+        help="read a human's free-text explanation of the agents and route one job "
+             "(reading -> event cross -> relations -> records -> router); one line out, "
+             "'undecided' (typed) whenever any sentence could not be read")
+    p.add_argument("--explanation", required=True, help="path of the explanation (UTF-8 text)")
+    p.add_argument("--task", required=True,
+                   help='json text {"role","kind","size"[,"touches","already_used","running",...]} or the path of a file holding it')
+    p.set_defaults(fn=cmd_route)
 
     p = sub.add_parser(
         "mcp-config",

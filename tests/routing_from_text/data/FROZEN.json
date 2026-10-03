@@ -1,0 +1,67 @@
+{
+ "frozen_at": "2026-10-03 12:52:45 +0900",
+ "writers": {
+  "explanations (e1-e6) and explanations_reader_shaped (r1, r2)": "中間職 (Opus 5.5)。指示書の作成時に B6 の仕様だけを見て書き、2026-10-03 12:29:01 / 12:30:01 に凍結済み(1 バイトも変えずに写した。ハッシュは中間職の FROZEN.json と一致)",
+  "items.jsonl and items_reader_shaped.jsonl (task と期待)": "実装役 (Sonnet 5.5)。説明文は中間職が書いたので、書き手は分かれている。期待は人間の説明文が言っていること(意味)で書き、routing_from_text.py の出力を見て書いていない(例外の申告は impl.r1.md)"
+ },
+ "order": "constants_frozen.txt (12:46:15) -> explanations copied -> items written -> this file -> first run of the bank (artifacts/w2-h2/first_run_at.txt)",
+ "files": {
+  "explanations/e1.md": {
+   "sha256": "5b6ffa7a3f43c0d54b267c3bab4624e68ef352775ffe1d7b8107934041b84690",
+   "bytes": 744
+  },
+  "explanations/e2.md": {
+   "sha256": "b2781483a336f6fe1cc4286f94caaa531cd2c7af2dc10cbe91ed39b6c30e885c",
+   "bytes": 643
+  },
+  "explanations/e3.md": {
+   "sha256": "246b0e63724bb6cb9cf3e0ec7e7f6c72fb43e5d7eb67129f0d7fd7ff3dfb237e",
+   "bytes": 693
+  },
+  "explanations/e4.md": {
+   "sha256": "38627b60b37274f3b16bca5fe0a839bca0b02f929d475be22935694e9313aa3c",
+   "bytes": 651
+  },
+  "explanations/e5.md": {
+   "sha256": "7748bf0fc018a91a386c6503f0f16d973863d2ff42c568f5ecde5d2ac2b5a724",
+   "bytes": 609
+  },
+  "explanations/e6.md": {
+   "sha256": "f94108017350e568980f81b3d5426a5c6d074de64c5271d1a5845d162ee3bf14",
+   "bytes": 457
+  },
+  "explanations_reader_shaped/r1.md": {
+   "sha256": "873571dbd84b5e36878af921e3847cb6cdb6396cd1af8837f6ae5d24714cfc2b",
+   "bytes": 260
+  },
+  "explanations_reader_shaped/r2.md": {
+   "sha256": "1d5b3a6b5ce6f057a82350927167a97c6c5e0fe897308c903b59e44398201df4",
+   "bytes": 131
+  },
+  "items.jsonl": {
+   "sha256": "d488822c56525eacd5dfb9e8a2061cc1a749451c6af6567a30ed327e7b11e874",
+   "bytes": 32910
+  },
+  "items_reader_shaped.jsonl": {
+   "sha256": "1223acbc3fe955083f77fb6406416da28b786fad23cbccff3eb0a87c7e669287",
+   "bytes": 6487
+  },
+  "items_mid.jsonl": {
+   "sha256": "9de1bce4e2c42594d1e0a47bf58ac143678500594db56634c0b0917ee7a2a4ca",
+   "bytes": 18365
+  },
+  "items_mid_reader_shaped.jsonl": {
+   "sha256": "8939fa20108e9d840261ccac1ed814449e76fe3ecff900348a879c5e50c89180",
+   "bytes": 5175
+  }
+ },
+ "added_in_round_2": {
+  "files": [
+   "items_mid.jsonl",
+   "items_mid_reader_shaped.jsonl"
+  ],
+  "writer": "中間職 (Opus 5.5)。レビュー第 1 ラウンドで、実装役の items を開く前に書いて 2026-10-03 13:12:58 に凍結 (review-impl/W2-h2/mid_tasks_r1/FROZEN_mid_tasks.txt)。1 バイトも変えずに写した(sha256 は中間職の記録と一致)",
+  "copied_at": "2026-10-03 13:31:27 +0900",
+  "note": "第 1 ラウンドのレビューの任意の改善 2。凍結データの誤って振った数 0 の検査に含める。上の frozen_at と order は第 1 ラウンドの items.jsonl などについてのもので、これらの 2 ファイルには当てはまらない"
+ }
+}

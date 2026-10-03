@@ -1,0 +1,23 @@
+# 第 2 ラウンドの試験が、M1〜M3 の修正を戻したコードで落ちること（e96a0cb の書き出し + 現在の試験・cli、routing_from_text.py だけ M1〜M3 を戻した。D13 は戻していない）
+FFFFFFF.FF.FFFFF.                                                        [100%]
+=========================== short test summary info ============================
+FAILED tests/test_routing_from_text_regress.py::test_M1_two_agents_that_are_each_east_co_are_not_merged_and_nobody_is_routed
+FAILED tests/test_routing_from_text_regress.py::test_M1_a_single_copula_line_leaves_the_alias_table_empty
+FAILED tests/test_routing_from_text_regress.py::test_M1_the_entry_says_the_same
+FAILED tests/test_routing_from_text_regress.py::test_M2_an_adverb_in_the_agent_filler_is_not_a_second_agent[usually-NAME_UNRESOLVED]
+FAILED tests/test_routing_from_text_regress.py::test_M2_an_adverb_in_the_agent_filler_is_not_a_second_agent[always-NAME_UNRESOLVED]
+FAILED tests/test_routing_from_text_regress.py::test_M2_an_adverb_in_the_agent_filler_is_not_a_second_agent[sometimes-NAME_UNRESOLVED]
+FAILED tests/test_routing_from_text_regress.py::test_M2_an_adverb_in_the_agent_filler_is_not_a_second_agent[often-NAME_UNRESOLVED]
+FAILED tests/test_routing_from_text_regress.py::test_M3_a_past_sentence_is_not_an_assignment[\u30cf\u30eb\u304c\u5b9f\u88c5\u3092\u3084\u3063\u305f\u3002\n-job0]
+FAILED tests/test_routing_from_text_regress.py::test_M3_a_past_sentence_is_not_an_assignment[Rook reviewed the code.\n-job1]
+FAILED tests/test_routing_from_text.py::test_M1_a_copula_between_two_names_is_ambiguous_and_makes_no_alias_and_no_merge
+FAILED tests/test_routing_from_text.py::test_M2_an_english_name_of_more_than_one_word_is_not_a_name
+FAILED tests/test_routing_from_text.py::test_M3_a_centre_that_is_not_non_past_is_not_an_assignment[past]
+FAILED tests/test_routing_from_text.py::test_M3_a_centre_that_is_not_non_past_is_not_an_assignment[None]
+FAILED tests/test_routing_from_text.py::test_M3_a_centre_that_is_not_non_past_is_not_an_assignment[future]
+14 failed, 3 passed, 71 deselected in 0.59s
+# D13 を戻したコードで test_D13 が落ちること
+F                                                                        [100%]
+=========================== short test summary info ============================
+FAILED tests/test_routing_from_text.py::test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replacement
+1 failed, 76 deselected in 0.27s
