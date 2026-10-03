@@ -1,0 +1,391 @@
+{
+  "total": 64,
+  "q1_wrong_count": 0,
+  "q1_rate": 0.0,
+  "correct": 27,
+  "over_escalate": 21,
+  "correct_escalate": 16,
+  "answer_expected": 48,
+  "q2_answer_rate": 0.5625,
+  "escalate_expected": 16,
+  "escalate_correct": 16,
+  "escalate_correct_rate": 1.0,
+  "q2_by_category": {
+    "direct": {
+      "n": 16,
+      "correct": 11,
+      "rate": 0.6875
+    },
+    "combined": {
+      "n": 16,
+      "correct": 8,
+      "rate": 0.5
+    },
+    "oov": {
+      "n": 16,
+      "correct": 8,
+      "rate": 0.5
+    }
+  },
+  "by_lang": {
+    "ja": {
+      "total": 32,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 15,
+      "over_escalate": 9,
+      "correct_escalate": 8,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 24,
+      "q2_answer_rate": 0.625,
+      "q2_by_category": {
+        "direct": {
+          "n": 8,
+          "correct": 6,
+          "rate": 0.75
+        },
+        "combined": {
+          "n": 8,
+          "correct": 5,
+          "rate": 0.625
+        },
+        "oov": {
+          "n": 8,
+          "correct": 4,
+          "rate": 0.5
+        }
+      },
+      "escalate_expected": 8,
+      "escalate_correct": 8,
+      "escalate_correct_rate": 1.0,
+      "reason_type_match": 1,
+      "reason_type_match_rate": 0.125
+    },
+    "en": {
+      "total": 32,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 12,
+      "over_escalate": 12,
+      "correct_escalate": 8,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 24,
+      "q2_answer_rate": 0.5,
+      "q2_by_category": {
+        "direct": {
+          "n": 8,
+          "correct": 5,
+          "rate": 0.625
+        },
+        "combined": {
+          "n": 8,
+          "correct": 3,
+          "rate": 0.375
+        },
+        "oov": {
+          "n": 8,
+          "correct": 4,
+          "rate": 0.5
+        }
+      },
+      "escalate_expected": 8,
+      "escalate_correct": 8,
+      "escalate_correct_rate": 1.0,
+      "reason_type_match": 4,
+      "reason_type_match_rate": 0.5
+    }
+  },
+  "by_split": {
+    "dev": {
+      "total": 44,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 19,
+      "over_escalate": 17,
+      "correct_escalate": 8,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 36,
+      "q2_answer_rate": 0.5278,
+      "q2_by_category": {
+        "direct": {
+          "n": 12,
+          "correct": 8,
+          "rate": 0.6667
+        },
+        "combined": {
+          "n": 12,
+          "correct": 6,
+          "rate": 0.5
+        },
+        "oov": {
+          "n": 12,
+          "correct": 5,
+          "rate": 0.4167
+        }
+      },
+      "escalate_expected": 8,
+      "escalate_correct": 8,
+      "escalate_correct_rate": 1.0,
+      "reason_type_match": 2,
+      "reason_type_match_rate": 0.25
+    },
+    "holdout": {
+      "total": 20,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 8,
+      "over_escalate": 4,
+      "correct_escalate": 8,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 12,
+      "q2_answer_rate": 0.6667,
+      "q2_by_category": {
+        "direct": {
+          "n": 4,
+          "correct": 3,
+          "rate": 0.75
+        },
+        "combined": {
+          "n": 4,
+          "correct": 2,
+          "rate": 0.5
+        },
+        "oov": {
+          "n": 4,
+          "correct": 3,
+          "rate": 0.75
+        }
+      },
+      "escalate_expected": 8,
+      "escalate_correct": 8,
+      "escalate_correct_rate": 1.0,
+      "reason_type_match": 3,
+      "reason_type_match_rate": 0.375
+    }
+  },
+  "false_or_wrong_ids": [],
+  "inputs": {
+    "base": "artifacts/w2-g/live/w2g2/codex_codex",
+    "replace": "artifacts/w2-g/live/w2g2/codex_codex_r3b_order",
+    "subset": "artifacts/w2-g/live/w2g2_r3_subset.txt",
+    "items": "/Users/motonisihikoudai/Projects/vera-impl/wt/W2-g-S/tests/conduct_ask/w2g2/items.jsonl"
+  },
+  "replaced_ids": [
+    "w2g2-x01-03",
+    "w2g2-x01-04",
+    "w2g2-x01-05",
+    "w2g2-x02-04",
+    "w2g2-x02-05",
+    "w2g2-x03-03",
+    "w2g2-x03-04",
+    "w2g2-x04-04",
+    "w2g2-x04-05",
+    "w2g2-x05-05",
+    "w2g2-x05-10",
+    "w2g2-x06-03",
+    "w2g2-x06-04"
+  ],
+  "declared_but_not_run": [],
+  "changes": [
+    {
+      "id": "w2g2-x01-03",
+      "old": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP2_DISAGREE"
+      ],
+      "new": [
+        "over_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "MAP_RECORD_DOES_NOT_DECIDE"
+      ]
+    },
+    {
+      "id": "w2g2-x01-04",
+      "old": [
+        "correct",
+        "answer",
+        null,
+        null
+      ],
+      "new": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x01-05",
+      "old": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP2_DISAGREE"
+      ],
+      "new": [
+        "over_escalate",
+        "escalate",
+        "MAPPING_UNSETTLED",
+        "STEP2_DISAGREE"
+      ]
+    },
+    {
+      "id": "w2g2-x02-04",
+      "old": [
+        "over_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "TERM_IN_WIDER_PHRASE"
+      ],
+      "new": [
+        "over_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "TERM_IN_WIDER_PHRASE"
+      ]
+    },
+    {
+      "id": "w2g2-x02-05",
+      "old": [
+        "correct",
+        "answer",
+        null,
+        null
+      ],
+      "new": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x03-03",
+      "old": [
+        "correct",
+        "answer",
+        null,
+        null
+      ],
+      "new": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x03-04",
+      "old": [
+        "over_escalate",
+        "escalate",
+        "QUESTION_UNREADABLE",
+        "NEGATED_QUESTION"
+      ],
+      "new": [
+        "over_escalate",
+        "escalate",
+        "QUESTION_UNREADABLE",
+        "NEGATED_QUESTION"
+      ]
+    },
+    {
+      "id": "w2g2-x04-04",
+      "old": [
+        "correct",
+        "answer",
+        null,
+        null
+      ],
+      "new": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x04-05",
+      "old": [
+        "correct",
+        "answer",
+        null,
+        null
+      ],
+      "new": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x05-05",
+      "old": [
+        "over_escalate",
+        "escalate",
+        "OUT_OF_RANGE",
+        "STATE_OR_REQUEST_QUESTION"
+      ],
+      "new": [
+        "over_escalate",
+        "escalate",
+        "OUT_OF_RANGE",
+        "STATE_OR_REQUEST_QUESTION"
+      ]
+    },
+    {
+      "id": "w2g2-x05-10",
+      "old": [
+        "correct_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "UNORDERED"
+      ],
+      "new": [
+        "correct_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "UNORDERED"
+      ]
+    },
+    {
+      "id": "w2g2-x06-03",
+      "old": [
+        "correct",
+        "answer",
+        null,
+        null
+      ],
+      "new": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x06-04",
+      "old": [
+        "correct",
+        "answer",
+        null,
+        null
+      ],
+      "new": [
+        "over_escalate",
+        "escalate",
+        "FRAME_SILENT",
+        "PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION"
+      ]
+    }
+  ],
+  "note": "rows of `replace` stand in for the rows of `base` with the same id; all other rows are `base` unchanged"
+}

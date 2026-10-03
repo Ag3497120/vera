@@ -1,0 +1,213 @@
+{
+  "total": 20,
+  "q1_wrong_count": 0,
+  "q1_rate": 0.0,
+  "correct": 9,
+  "over_escalate": 3,
+  "correct_escalate": 8,
+  "answer_expected": 12,
+  "q2_answer_rate": 0.75,
+  "escalate_expected": 8,
+  "escalate_correct": 8,
+  "escalate_correct_rate": 1.0,
+  "q2_by_category": {
+    "direct": {
+      "n": 4,
+      "correct": 3,
+      "rate": 0.75
+    },
+    "combined": {
+      "n": 4,
+      "correct": 3,
+      "rate": 0.75
+    },
+    "oov": {
+      "n": 4,
+      "correct": 3,
+      "rate": 0.75
+    }
+  },
+  "by_lang": {
+    "ja": {
+      "total": 10,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 5,
+      "over_escalate": 1,
+      "correct_escalate": 4,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 6,
+      "q2_answer_rate": 0.8333,
+      "q2_by_category": {
+        "direct": {
+          "n": 2,
+          "correct": 2,
+          "rate": 1.0
+        },
+        "combined": {
+          "n": 2,
+          "correct": 1,
+          "rate": 0.5
+        },
+        "oov": {
+          "n": 2,
+          "correct": 2,
+          "rate": 1.0
+        }
+      },
+      "escalate_expected": 4,
+      "escalate_correct": 4,
+      "escalate_correct_rate": 1.0,
+      "reason_type_match": 1,
+      "reason_type_match_rate": 0.25
+    },
+    "en": {
+      "total": 10,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 4,
+      "over_escalate": 2,
+      "correct_escalate": 4,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 6,
+      "q2_answer_rate": 0.6667,
+      "q2_by_category": {
+        "direct": {
+          "n": 2,
+          "correct": 1,
+          "rate": 0.5
+        },
+        "combined": {
+          "n": 2,
+          "correct": 2,
+          "rate": 1.0
+        },
+        "oov": {
+          "n": 2,
+          "correct": 1,
+          "rate": 0.5
+        }
+      },
+      "escalate_expected": 4,
+      "escalate_correct": 4,
+      "escalate_correct_rate": 1.0,
+      "reason_type_match": 2,
+      "reason_type_match_rate": 0.5
+    }
+  },
+  "by_split": {
+    "holdout": {
+      "total": 20,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 9,
+      "over_escalate": 3,
+      "correct_escalate": 8,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 12,
+      "q2_answer_rate": 0.75,
+      "q2_by_category": {
+        "direct": {
+          "n": 4,
+          "correct": 3,
+          "rate": 0.75
+        },
+        "combined": {
+          "n": 4,
+          "correct": 3,
+          "rate": 0.75
+        },
+        "oov": {
+          "n": 4,
+          "correct": 3,
+          "rate": 0.75
+        }
+      },
+      "escalate_expected": 8,
+      "escalate_correct": 8,
+      "escalate_correct_rate": 1.0,
+      "reason_type_match": 3,
+      "reason_type_match_rate": 0.375
+    }
+  },
+  "false_or_wrong_ids": [],
+  "inputs": {
+    "base": "artifacts/w2-g/live/w2g2/codex_claude",
+    "replace": "artifacts/w2-g/live/w2g2/codex_claude_r3b_order",
+    "subset": "artifacts/w2-g/live/w2g2_r3_claude_subset.txt",
+    "items": "/Users/motonisihikoudai/Projects/vera-impl/wt/W2-g-S/tests/conduct_ask/w2g2/items.jsonl"
+  },
+  "replaced_ids": [
+    "w2g2-x03-03",
+    "w2g2-x03-04",
+    "w2g2-x06-03",
+    "w2g2-x06-04"
+  ],
+  "declared_but_not_run": [],
+  "changes": [
+    {
+      "id": "w2g2-x03-03",
+      "old": [
+        "correct",
+        "answer",
+        null,
+        null
+      ],
+      "new": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x03-04",
+      "old": [
+        "over_escalate",
+        "escalate",
+        "QUESTION_UNREADABLE",
+        "NEGATED_QUESTION"
+      ],
+      "new": [
+        "over_escalate",
+        "escalate",
+        "QUESTION_UNREADABLE",
+        "NEGATED_QUESTION"
+      ]
+    },
+    {
+      "id": "w2g2-x06-03",
+      "old": [
+        "correct",
+        "answer",
+        null,
+        null
+      ],
+      "new": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    },
+    {
+      "id": "w2g2-x06-04",
+      "old": [
+        "correct",
+        "answer",
+        null,
+        null
+      ],
+      "new": [
+        "correct",
+        "answer",
+        null,
+        null
+      ]
+    }
+  ],
+  "note": "rows of `replace` stand in for the rows of `base` with the same id; all other rows are `base` unchanged"
+}

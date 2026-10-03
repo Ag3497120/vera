@@ -1,0 +1,24 @@
+OK      tables block equals make_docs_tables.py output
+OK      code freeze time in the text
+OK      data freeze time in the text
+OK      code freeze time < data freeze time < first w2g3 ledger ts
+OK      w2g3 ledgers start after the data freeze (UTC, JST - 9h)
+OK      shape file has: order 14 (2/9/3)
+OK      shape file has: order-shaped 5, preference 2
+OK      shape file has: 3+ options 12
+OK      shape file has: no options 8 (6 values)
+OK      shape file has: option counts
+OK      shape file has: escalate kinds
+OK      text: order 14
+OK      text: order-shaped 5
+OK      text: preference 2
+OK      text: 3+ options 12
+OK      text: value 6
+OK      text: kinds
+OK      text: frames and questions
+OK      reply2 count 61 in the text
+OK      g9 counts (functions 34, collected 60) in the text
+OK      worst case 26
+OK      default cap 24
+OK      max_parallel 6
+MISSING lines: 0

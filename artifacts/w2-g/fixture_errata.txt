@@ -1,0 +1,12 @@
+Errata of the frozen self-made data (nothing was changed after the freezes; the tallies of every run use the frozen text).
+
+First data set (tests/conduct_ask/w2g/, frozen 2026-10-03 05:41:49 JST, now a reference value only):
+  w2g-w01-11  "図書館の所蔵品ぜんぶを、今回の点検の対象にしますか？"  frozen answer: escalate.
+              Debatable (round-1 review, optional 1): D2 (SCOPE magazines out of scope) lets "いいえ" be derived.  Kept as frozen; the run escalated it,
+              so the tally does not change either way.
+
+Second data set (tests/conduct_ask/w2g2/, frozen 2026-10-03 06:40:08 JST): no error found while writing.  Two things that were noticed
+after the freeze and are NOT corrections of the data (they are limits of the rules that the questions meet):
+  w2g2-x04-09 "How will volunteers record a drop-off?" expects an answer.  The rules' own reversal word list contains "drop", so the question-form gate
+              of the mapping (W2-c's _INVERT_CUE, applied as is) hands it up as INVERTED_QUESTION even when the mapping is right.
+  w2g2-x02-07 expects an answer; "普段のごみ収集では出せない品" contains "ない", so W2-c's _negated hands it up as NEGATED_QUESTION.

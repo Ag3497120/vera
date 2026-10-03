@@ -1,0 +1,1 @@
+{"records": ["order:ALL"], "decides": "決まる", "decides_phases": "決まる", "phases": ["P1", "P4"], "relations": {"order:P1<P4": ["一致", "矛盾"]}}

@@ -1,0 +1,181 @@
+== freeze: sha256 of the frozen fixtures (not OK lines)
+0
+== freeze: verantyx lines in status_at_freeze
+0
+== freeze time vs conduct_map.py creation time
+birth Oct  3 05:41:49 2026 | mtime Oct  3 05:41:49 2026 | artifacts/w2-g/fixtures_freeze.txt
+birth Oct  3 05:46:17 2026 | mtime Oct  3 07:27:28 2026 | verantyx/conduct_map.py
+birth Oct  3 05:41:30 2026 | mtime Oct  3 05:41:30 2026 | tests/conduct_ask/w2g/items.jsonl
+Fri Oct  2 20:41:49 UTC 2026
+== freeze 2 (the second data set, w2g2): sha256 not OK lines
+0
+== freeze 2: time of the freeze vs the first change of conduct_map.py after it (see r2 notes: conduct_map.py changed after the freeze)
+birth Oct  3 06:40:08 2026 | mtime Oct  3 06:40:08 2026 | artifacts/w2-g/fixtures_freeze2.txt
+birth Oct  3 06:39:17 2026 | mtime Oct  3 06:39:17 2026 | tests/conduct_ask/w2g2/items.jsonl
+Fri Oct  2 21:40:08 UTC 2026
+Sat Oct  3 06:40:08 JST 2026
+== freeze 2: the code at the freeze is the round-1 code (sha256 of the saved copies vs status_at_freeze2)
+9ff0ea90c20ee8feece76a677a293d08143a5a60300f2f6ec05bb4f3b4e3e0c8  artifacts/w2-g/conduct_map.r2_start.py.txt
+7716e25ae1b57595a175875f32901bfcad445c513f3311b35b8e694b3f645c56  artifacts/w2-g/conduct_ask.r2_start.py.txt
+65f30462e3aae29c83764b78182c4367523929229c00092402f3095cd7a2cef9  artifacts/w2-g/llm_choice.r2_start.py.txt
+9ff0ea90c20ee8feece76a677a293d08143a5a60300f2f6ec05bb4f3b4e3e0c8  verantyx/conduct_map.py
+7716e25ae1b57595a175875f32901bfcad445c513f3311b35b8e694b3f645c56  verantyx/conduct_ask.py
+65f30462e3aae29c83764b78182c4367523929229c00092402f3095cd7a2cef9  verantyx/llm_choice.py
+== new tests (G1 G2 G5 unit cli reply bank llm_choice)
+.................                                                        [100%]
+377 passed in 5.32s
+============================= 140 passed in 0.96s ==============================
+== meaningless asserts in the new tests (none)
+       0
+== skip/xfail marks in the new tests (only the live one)
+tests/test_conduct_map_live.py:26:        pytest.skip("ENV_MISSING[llm_live]: VERA_LLM_LIVE!=1 (live provider not requested)")
+== removed lines of llm_choice.py vs dev (none)
+0
+== G4 bank off / fake
+off vs W2-c saved (before): rows=161/161 differing ids=0 []
+off vs W2-c saved (after): rows=161/161 differing ids=0 []
+fake vs W2-c saved (before): rows=161/161 differing ids=0 []
+fake vs W2-c saved (after): rows=161/161 differing ids=0 []
+== G4 calls
+575 passed in 2.08s
+# calls_before.jsonl lines: 1527 distinct keys: 1086
+# calls_after.jsonl  lines: 1527 distinct keys: 1086
+# keys only in before: 0 / only in after: 0 (only-after = calls of the new test files; not counted as changes)
+# keys with more than one distinct result inside one run: 1
+# counts [off_or_scripted_only]: {'answer->escalate': 0, 'escalate->answer': 0, 'answer value/index changed': 0, 'escalate reason/detail changed': 0}
+# counts [other(codex/claude/map)]: {'answer->escalate': 1, 'escalate->answer': 0, 'answer value/index changed': 0, 'escalate reason/detail changed': 1}
+# calls_before.jsonl lines: 1527 distinct keys: 1086
+# calls_after.jsonl  lines: 1527 distinct keys: 1086
+# keys only in before: 0 / only in after: 0 (only-after = calls of the new test files; not counted as changes)
+# keys with more than one distinct result inside one run: 1
+# counts [off_or_scripted_only]: {'answer->escalate': 0, 'escalate->answer': 0, 'answer value/index changed': 0, 'escalate reason/detail changed': 0}
+# counts [other(codex/claude/map)]: {'answer->escalate': 1, 'escalate->answer': 0, 'answer value/index changed': 0, 'escalate reason/detail changed': 1}
+== [off_or_scripted_only] answer->escalate 0
+== [off_or_scripted_only] escalate->answer 0
+== real questions (off)
+real questions: same as W2-c
+== off does not import conduct_map
+False
+== G3 recount
+artifacts/w2-g/live/codex_codex: MATCH rows=64 q1_wrong=0 q2_answer_rate=0.4375 escalate_correct_rate=1.0 asks=208 (not compared, absent in the saved summary: ['order_route'])
+artifacts/w2-g/live/codex_codex_r2: MATCH rows=64 q1_wrong=0 q2_answer_rate=0.4583 escalate_correct_rate=1.0 asks=197 (not compared, absent in the saved summary: ['order_route'])
+artifacts/w2-g/live/codex_claude: MATCH rows=20 q1_wrong=0 q2_answer_rate=0.6667 escalate_correct_rate=1.0 asks=70 (not compared, absent in the saved summary: ['order_route'])
+artifacts/w2-g/live/smoke/run1: MATCH rows=6 q1_wrong=0 q2_answer_rate=1.0 escalate_correct_rate=None asks=28 (not compared, absent in the saved summary: ['order_route'])
+== G3 recount (second data set w2g2: the judged one)
+artifacts/w2-g/live/w2g2/codex_codex: MATCH rows=64 q1_wrong=0 q2_answer_rate=0.5833 escalate_correct_rate=1.0 asks=222
+artifacts/w2-g/live/w2g2/codex_claude: MATCH rows=20 q1_wrong=0 q2_answer_rate=0.75 escalate_correct_rate=1.0 asks=62
+artifacts/w2-g/live/w2g1_rerun/codex_codex_subset: MATCH rows=36 q1_wrong=0 q2_answer_rate=0.6111 escalate_correct_rate=None asks=117
+== G3 round 3: order-route re-runs (recount) and the merged 64-question results
+artifacts/w2-g/live/w2g2/codex_codex_r3_order: MATCH rows=13 q1_wrong=0 q2_answer_rate=0.0 escalate_correct_rate=1.0 asks=34
+artifacts/w2-g/live/w2g2/codex_codex_r3b_order: MATCH rows=13 q1_wrong=0 q2_answer_rate=0.5 escalate_correct_rate=1.0 asks=46
+artifacts/w2-g/live/w2g2/codex_claude_r3b_order: MATCH rows=4 q1_wrong=0 q2_answer_rate=0.75 escalate_correct_rate=None asks=18
+artifacts/w2-g/live/calib_r3/run1: MATCH rows=12 q1_wrong=0 q2_answer_rate=0.75 escalate_correct_rate=1.0 asks=36
+-- the declared id list live/w2g2_r3_subset.txt was written before the re-run (make_r3_subset.py: order_status!=null united with an order cue in the round-2 run); the merges below are recomputed from the saved runs
+-- the code at the re-runs (sha256 at the first re-run, at the second re-run, now)
+353a498c21953dce8db619112a454559c4040d9f8308c8350b67c5f6c841c4a4  verantyx/conduct_map.py
+290a47a0213912f8371f4c545c356ac361552b9bae665d932d94bf26b32f8fcb  verantyx/conduct_ask.py
+f872e5277c45b88fa6d06b7044d2774efaca25c12efbc6a0397f60060e9a05a2  verantyx/llm_choice.py
+Sat Oct  3 07:25:05 JST 2026
+7687f233d0be2db4063a174bdbc7be6b083b9ce2d31e429ca9b6709fe96a2b74  verantyx/conduct_map.py
+290a47a0213912f8371f4c545c356ac361552b9bae665d932d94bf26b32f8fcb  verantyx/conduct_ask.py
+f872e5277c45b88fa6d06b7044d2774efaca25c12efbc6a0397f60060e9a05a2  verantyx/llm_choice.py
+Sat Oct  3 07:28:52 JST 2026
+7687f233d0be2db4063a174bdbc7be6b083b9ce2d31e429ca9b6709fe96a2b74  verantyx/conduct_map.py
+290a47a0213912f8371f4c545c356ac361552b9bae665d932d94bf26b32f8fcb  verantyx/conduct_ask.py
+f872e5277c45b88fa6d06b7044d2774efaca25c12efbc6a0397f60060e9a05a2  verantyx/llm_choice.py
+merged 64 rows | replaced 13 | declared but not run []
+q1_wrong_count 0 q1_rate 0.0 | q2_answer_rate 0.5625 (48 expected answers) | escalate_correct_rate 1.0 (16 expected escalations)
+merged 64 rows | replaced 13 | declared but not run []
+q1_wrong_count 0 q1_rate 0.0 | q2_answer_rate 0.4375 (48 expected answers) | escalate_correct_rate 1.0 (16 expected escalations)
+merged 20 rows | replaced 4 | declared but not run []
+q1_wrong_count 0 q1_rate 0.0 | q2_answer_rate 0.75 (12 expected answers) | escalate_correct_rate 1.0 (8 expected escalations)
+artifacts/w2-g/live/w2g2/codex_codex_r3_order/ledger.jsonl {'variant0:決まらない': 8, 'variant0:決まる': 1, 'variant1:決まらない': 4, 'variant1:決まる': 5}
+artifacts/w2-g/live/w2g2/codex_codex_r3b_order/ledger.jsonl {'variant0:決まる': 8, 'variant1:決まる': 8}
+artifacts/w2-g/live/calib_r3/run1/ledger.jsonl {'variant0:決まらない': 2, 'variant0:決まる': 9, 'variant1:決まらない': 3, 'variant1:決まる': 9}
+artifacts/w2-g/live/w2g2/codex_claude_r3b_order/ledger.jsonl {'variant0:決まる': 3, 'variant1:決まる': 3}
+w2g2 codex_codex: total 64 wrong 0 q1_rate 0.0 q2 0.5833 escalate_correct 1.0 asks 222 elapsed {'sum_of_question_seconds': 680.59, 'median_s': 10.44, 'max_s': 22.31, 'wall_s': 233.05}
+== ledgers recounted from the raw replies (decisions, mismatches)
+artifacts/w2-g/live/w2g2/codex_codex/ledger.jsonl: decisions 90 asks 180 steps {'phases': 10, 'records': 47, 'relations': 33} mismatches 0
+artifacts/w2-g/live/w2g2/codex_claude/ledger.jsonl: decisions 24 asks 48 steps {'phases': 3, 'records': 12, 'relations': 9} mismatches 0
+artifacts/w2-g/live/w2g1_rerun/codex_codex_subset/ledger.jsonl: decisions 53 asks 106 steps {'phases': 9, 'records': 23, 'relations': 21} mismatches 0
+artifacts/w2-g/live/w2g2/codex_codex_r3_order/ledger.jsonl: decisions 13 asks 26 steps {'phases': 9, 'records': 4} mismatches 0
+artifacts/w2-g/live/w2g2/codex_codex_r3b_order/ledger.jsonl: decisions 19 asks 38 steps {'phases': 8, 'records': 4, 'relations': 7} mismatches 0
+artifacts/w2-g/live/w2g2/codex_claude_r3b_order/ledger.jsonl: decisions 6 asks 12 steps {'phases': 3, 'relations': 3} mismatches 0
+artifacts/w2-g/live/calib_r3/run1/ledger.jsonl: decisions 18 asks 36 steps {'phases': 12, 'relations': 6} mismatches 0
+TOTAL mismatches 0
+== docs numbers vs saved summaries (MISSING lines)
+MISSING lines: 0
+artifacts/w2-g/g3/off_rerun: MATCH rows=64 q1_wrong=0 q2_answer_rate=0.0625 escalate_correct_rate=1.0 asks=0
+artifacts/w2-g/g3/off: MATCH rows=64 q1_wrong=0 q2_answer_rate=0.0625 escalate_correct_rate=1.0 asks=0 (not compared, absent in the saved summary: ['order_route'])
+artifacts/w2-g/g3_w2g2/off_rerun: MATCH rows=64 q1_wrong=1 q2_answer_rate=0.0 escalate_correct_rate=0.9375 asks=0
+artifacts/w2-g/g3_w2g2/off: MATCH rows=64 q1_wrong=1 q2_answer_rate=0.0 escalate_correct_rate=0.9375 asks=0 (not compared, absent in the saved summary: ['order_route'])
+## artifacts/w2-g/live/codex_codex: over_escalate 27
+     9  step 1 readings disagree
+     5  step 2 readings disagree/invalid/failed
+     4  rule escalation not retried: FRAME_SILENT/TERM_IN_WIDER_PHRASE
+     3  decided by rule from the mapping: ANSWER_FORM_UNSUPPORTED/MAPPING_NEEDS_OPTIONS
+     2  decided by rule from the mapping: FRAME_SILENT/MAPPED_NO_OPTION_RELATED
+     1  rule answer not corroborated: RULE_BASIS_NOT_MAPPED
+     1  rule escalation not retried: FRAME_SILENT/PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION
+     1  rule escalation not retried: FRAME_SILENT/POLARITY_QUESTION_ON_A_VALUE
+     1  rule escalation not retried: QUESTION_UNREADABLE/NEGATED_QUESTION
+## artifacts/w2-g/live/codex_codex_r2: over_escalate 26
+     9  step 1 readings disagree
+     4  rule escalation not retried: FRAME_SILENT/TERM_IN_WIDER_PHRASE
+     3  decided by rule from the mapping: ANSWER_FORM_UNSUPPORTED/MAPPING_NEEDS_OPTIONS
+     2  decided by rule from the mapping: FRAME_SILENT/MAPPED_NO_OPTION_RELATED
+     2  decided by rule from the mapping: FRAME_SILENT/MAP_RECORD_DOES_NOT_DECIDE
+     1  mapping unsettled: TOO_MANY_RECORDS
+     1  rule answer not corroborated: RULE_BASIS_NOT_MAPPED
+     1  rule escalation not retried: FRAME_SILENT/PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION
+     1  rule escalation not retried: FRAME_SILENT/POLARITY_QUESTION_ON_A_VALUE
+     1  rule escalation not retried: QUESTION_UNREADABLE/NEGATED_QUESTION
+     1  step 2 readings disagree/invalid/failed
+## artifacts/w2-g/live/codex_claude: over_escalate 5
+     2  decided by rule from the mapping: FRAME_SILENT/MAPPED_NO_OPTION_RELATED
+     1  rule escalation not retried: FRAME_SILENT/PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION
+     1  rule escalation not retried: FRAME_SILENT/TERM_IN_WIDER_PHRASE
+     1  rule escalation not retried: QUESTION_UNREADABLE/NEGATED_QUESTION
+calib_r3/run1/ledger.jsonl: 36 {'codex': 36} {'phases': 24, 'relations': 12}
+codex_claude/ledger.jsonl: 70 {'codex': 38, 'claude': 32} {'records': 32, 'relations': 32, 'word_choice': 6}
+codex_codex/ledger.jsonl: 208 {'codex': 208} {'records': 104, 'word_choice': 32, 'relations': 72}
+codex_codex_r2/ledger.jsonl: 197 {'codex': 197} {'records': 104, 'word_choice': 31, 'relations': 62}
+review_t06/ledger.jsonl: 4 {'codex': 4} {'word_choice': 2, 'phases': 2}
+review_v06/ledger.jsonl: 4 {'codex': 4} {'word_choice': 2, 'records': 2}
+smoke/run1/ledger.jsonl: 28 {'codex': 28} {'word_choice': 6, 'records': 12, 'relations': 10}
+smoke2/run1/ledger.jsonl: 24 {'codex': 24} {'phases': 8, 'relations': 10, 'word_choice': 2, 'records': 4}
+smoke2/run2/ledger.jsonl: 24 {'codex': 24} {'phases': 8, 'relations': 10, 'records': 4, 'word_choice': 2}
+w2g1_rerun/codex_codex_subset/ledger.jsonl: 117 {'codex': 117} {'records': 46, 'word_choice': 11, 'phases': 18, 'relations': 42}
+w2g2/codex_claude/ledger.jsonl: 62 {'codex': 38, 'claude': 24} {'records': 24, 'word_choice': 14, 'relations': 18, 'phases': 6}
+w2g2/codex_claude_r3b_order/ledger.jsonl: 18 {'codex': 12, 'claude': 6} {'word_choice': 6, 'phases': 6, 'relations': 6}
+w2g2/codex_codex/ledger.jsonl: 222 {'codex': 222} {'records': 94, 'phases': 20, 'relations': 66, 'word_choice': 42}
+w2g2/codex_codex_r3_order/ledger.jsonl: 34 {'codex': 34} {'records': 8, 'phases': 18, 'word_choice': 8}
+w2g2/codex_codex_r3b_order/ledger.jsonl: 46 {'codex': 46} {'phases': 16, 'records': 8, 'relations': 14, 'word_choice': 8}
+TOTAL 1094 limit 1300 OK
+codex_claude runs [70, 62, 18] limit 300 OK
+artifacts/w2-g/live/codex_codex/ledger.jsonl chain OK count: 1
+artifacts/w2-g/live/codex_codex_r2/ledger.jsonl chain OK count: 1
+artifacts/w2-g/live/codex_claude/ledger.jsonl chain OK count: 1
+artifacts/w2-g/live/smoke/run1/ledger.jsonl chain OK count: 1
+artifacts/w2-g/live/smoke2/run1/ledger.jsonl chain OK count: 1
+artifacts/w2-g/live/smoke2/run2/ledger.jsonl chain OK count: 1
+artifacts/w2-g/live/w2g2/codex_codex/ledger.jsonl chain OK count: 1
+artifacts/w2-g/live/w2g2/codex_claude/ledger.jsonl chain OK count: 1
+artifacts/w2-g/live/w2g1_rerun/codex_codex_subset/ledger.jsonl chain OK count: 1
+artifacts/w2-g/live/w2g2/codex_codex_r3_order/ledger.jsonl chain OK count: 1
+artifacts/w2-g/live/w2g2/codex_codex_r3b_order/ledger.jsonl chain OK count: 1
+artifacts/w2-g/live/w2g2/codex_claude_r3b_order/ledger.jsonl chain OK count: 1
+artifacts/w2-g/live/calib_r3/run1/ledger.jsonl chain OK count: 1
+artifacts/w2-g/live/review_t06/ledger.jsonl chain OK count: 1
+artifacts/w2-g/live/review_v06/ledger.jsonl chain OK count: 1
+== guard (codex / claude starts in the tests)
+952 passed, 2 skipped in 6.21s
+0
+== Q7
+frames_read 23 terms_checked 438 hits 0
+quoted_checked 13 hits 0
+== provenance (modules outside the tree)
+verantyx modules 46 outside []
+== status outside the allowed paths
+== protected paths unchanged
+== pycache

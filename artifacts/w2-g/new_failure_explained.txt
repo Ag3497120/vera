@@ -1,0 +1,22 @@
+       0
+.........                                                                [100%]
+9 passed in 7.17s
+
+(above: git status --porcelain -- verantyx in the scratch clone after the commit, then the result of tests/bank_score/test_bs_end_to_end.py there.)
+Why test_s6_two_runs_agree_except_timing_and_recount_matches fails in the working tree: it asserts that `git status --porcelain -- verantyx` is empty
+(meta["verantyx_untouched"]), and the new file verantyx/conduct_map.py is untracked until the auditor commits it.  The same single failure
+appeared for W2-c (artifacts/w2-c/new_failure_explained.txt).  In the clean clone made with `git clone --local` (the working tree's .git is not touched),
+the diff was copied and committed, and the whole file passes (9 passed).
+
+Round 2 (same check on the round-2 code, 2026-10-03; script: scratchpad/W2-g/impl_r2/s6.sh, a `git clone --local` of this tree, the changed files copied and committed there):
+       0
+.........                                                                [100%]
+9 passed in 5.27s
+(git status --porcelain -- verantyx in the clone after the commit = 0 lines; then tests/bank_score/test_bs_end_to_end.py in the clone.)
+
+Round 3 (same check on the round-3 code, 2026-10-03; script: scratchpad/W2-g/impl_r3/s6.sh, a `git clone --local` of this tree, the three verantyx files copied and committed there):
+       0
+.........                                                                [100%]
+9 passed in 6.72s
+(git status --porcelain -- verantyx in the clone after the commit = 0 lines; then tests/bank_score/test_bs_end_to_end.py in the clone.)
+Full test run of the working tree (artifacts/w2-g/after_pytest.txt): 125 failed = the 124 of the baseline + this one test; comm -13 baseline after = test_s6 only; comm -23 = 0 lines.

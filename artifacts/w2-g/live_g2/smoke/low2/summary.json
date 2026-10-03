@@ -1,0 +1,300 @@
+{
+  "total": 1,
+  "false_answer": 0,
+  "wrong_answer": 0,
+  "correct": 0,
+  "over_escalate": 1,
+  "correct_escalate": 0,
+  "q1_wrong_count": 0,
+  "q1_rate": 0.0,
+  "answer_expected": 1,
+  "q2_answer_rate": 0.0,
+  "q2_by_category": {
+    "direct": {
+      "n": 0,
+      "correct": 0,
+      "rate": null
+    },
+    "combined": {
+      "n": 1,
+      "correct": 0,
+      "rate": 0.0
+    },
+    "oov": {
+      "n": 0,
+      "correct": 0,
+      "rate": null
+    }
+  },
+  "escalate_expected": 0,
+  "escalate_correct": 0,
+  "escalate_correct_rate": null,
+  "reason_type_match": 0,
+  "reason_type_match_rate": null,
+  "by_split": {
+    "dev": {
+      "total": 1,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 0,
+      "over_escalate": 1,
+      "correct_escalate": 0,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 1,
+      "q2_answer_rate": 0.0,
+      "q2_by_category": {
+        "direct": {
+          "n": 0,
+          "correct": 0,
+          "rate": null
+        },
+        "combined": {
+          "n": 1,
+          "correct": 0,
+          "rate": 0.0
+        },
+        "oov": {
+          "n": 0,
+          "correct": 0,
+          "rate": null
+        }
+      },
+      "escalate_expected": 0,
+      "escalate_correct": 0,
+      "escalate_correct_rate": null,
+      "reason_type_match": 0,
+      "reason_type_match_rate": null
+    }
+  },
+  "by_lang": {
+    "ja": {
+      "total": 1,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 0,
+      "over_escalate": 1,
+      "correct_escalate": 0,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 1,
+      "q2_answer_rate": 0.0,
+      "q2_by_category": {
+        "direct": {
+          "n": 0,
+          "correct": 0,
+          "rate": null
+        },
+        "combined": {
+          "n": 1,
+          "correct": 0,
+          "rate": 0.0
+        },
+        "oov": {
+          "n": 0,
+          "correct": 0,
+          "rate": null
+        }
+      },
+      "escalate_expected": 0,
+      "escalate_correct": 0,
+      "escalate_correct_rate": null,
+      "reason_type_match": 0,
+      "reason_type_match_rate": null
+    }
+  },
+  "by_permission": {
+    "可": {
+      "n": 0,
+      "correct": 0,
+      "false_or_wrong": 0,
+      "over_escalate": 0
+    },
+    "不可": {
+      "n": 1,
+      "correct": 0,
+      "false_or_wrong": 0,
+      "over_escalate": 1
+    },
+    "上げる": {
+      "n": 0,
+      "correct": 0,
+      "false_or_wrong": 0,
+      "over_escalate": 0
+    }
+  },
+  "trap": {
+    "n": 0,
+    "correct_escalate": 0,
+    "false_answer": 0
+  },
+  "oov_none": {
+    "n": 0,
+    "correct_escalate": 0,
+    "false_answer": 0
+  },
+  "by_expected_reason": {},
+  "asks": {
+    "total": 6,
+    "by_provider": {
+      "codex": 6
+    },
+    "by_step": {
+      "decides": 2,
+      "records": 2,
+      "word_choice": 2
+    },
+    "by_verdict": {
+      "PICK": 6
+    },
+    "failures": {}
+  },
+  "elapsed": {
+    "sum_of_question_seconds": 17.82,
+    "median_s": 17.82,
+    "max_s": 17.82,
+    "wall_s": 17.82
+  },
+  "escalations": {
+    "FRAME_SILENT/MAP_RECORD_DOES_NOT_DECIDE": 1
+  },
+  "escalations_where_answer_expected": {
+    "FRAME_SILENT/MAP_RECORD_DOES_NOT_DECIDE": 1
+  },
+  "mapping_outcomes": {
+    "ESCALATED:FRAME_SILENT/MAP_RECORD_DOES_NOT_DECIDE": 1
+  },
+  "exit_check_escalations": 0,
+  "step1_record_match": {
+    "step1_adopted": 1,
+    "same_set_as_expected": 1,
+    "rate": 1.0,
+    "questions_with_step1": 1
+  },
+  "answered_by_route": {
+    "CORROBORATE": {
+      "n": 1,
+      "answered": 0,
+      "correct": 0,
+      "wrong": 0
+    }
+  },
+  "order_route": {
+    "attempted": 0,
+    "phases_adopted": 0,
+    "answered": 0,
+    "answered_correct": 0
+  },
+  "wrong_or_false_ids": [],
+  "g2": {
+    "protocol": "conduct_map/v2",
+    "map_asks_by_step": {
+      "decides": 2,
+      "records": 2
+    },
+    "map_verdict_by_step": {
+      "decides": {
+        "PICK": 2
+      },
+      "records": {
+        "PICK": 2
+      }
+    },
+    "invalid_reasons": {},
+    "invalid_rate_mapping_asks": {
+      "invalid": 0,
+      "rows": 4,
+      "rate": 0.0
+    },
+    "invalid_rate_all_asks": {
+      "invalid": 0,
+      "rows": 6,
+      "rate": 0.0
+    },
+    "retries": {
+      "asks": 0,
+      "valid_reply": 0,
+      "decisions_with_retry": 0
+    },
+    "decision_status_by_step": {
+      "decides": {
+        "ADOPTED": 1
+      },
+      "records": {
+        "ADOPTED": 1
+      }
+    },
+    "decides_distribution": {
+      "adopted": {
+        "決まらない": 1
+      },
+      "not_adopted": {}
+    },
+    "ask_elapsed_ms": {
+      "all_map_asks": {
+        "n": 4,
+        "mean": 4005.0,
+        "median": 3928.5,
+        "p90": 4423,
+        "max": 4423
+      },
+      "by_step": {
+        "decides": {
+          "n": 2,
+          "mean": 4165.5,
+          "median": 4165.5,
+          "p90": 4423,
+          "max": 4423
+        },
+        "records": {
+          "n": 2,
+          "mean": 3844.5,
+          "median": 3844.5,
+          "p90": 3949,
+          "max": 3949
+        }
+      },
+      "word_choice_asks_have_no_elapsed_field": true
+    },
+    "map_asks_per_question": {
+      "n": 1,
+      "mean": 4.0,
+      "median": 4,
+      "p90": 4,
+      "max": 4
+    },
+    "all_asks_per_question_mean": 6.0,
+    "questions_over_map_cap": 0,
+    "escalation_reasons": {
+      "FRAME_SILENT": 1
+    },
+    "escalation_reasons_where_answer_expected": {
+      "FRAME_SILENT": 1
+    }
+  },
+  "config": {
+    "mode": "codex",
+    "second": "codex",
+    "map_max_asks": 24,
+    "providers": {
+      "codex": "gpt-6-luna / effort low",
+      "claude": "claude-sonnet-5-5 / effort low"
+    },
+    "map_effort": "low",
+    "map_timeout": null,
+    "question_timeout_s": 1500.0,
+    "budget": {
+      "root": "artifacts/w2-g/live_g2",
+      "total": 1140,
+      "run": 26,
+      "worst_per_question": 26
+    },
+    "workers": 1,
+    "subset": "artifacts/w2-g/g2/smoke_low2_ids.txt",
+    "wall_s": 17.82,
+    "fake_is_an_oracle_assumption": false
+  },
+  "aborted": null,
+  "not_run": [],
+  "not_run_budget": []
+}
