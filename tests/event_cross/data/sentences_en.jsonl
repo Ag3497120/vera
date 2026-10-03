@@ -1,0 +1,81 @@
+{"id": "en-001", "text": "The farmer planted the seeds.", "tags": ["simple"], "topic": "farming"}
+{"id": "en-002", "text": "A nurse measured the fever.", "tags": ["simple"], "topic": "medical"}
+{"id": "en-003", "text": "The driver stopped the bus.", "tags": ["simple"], "topic": "transport"}
+{"id": "en-004", "text": "The mechanic repaired the engine.", "tags": ["simple"], "topic": "factory"}
+{"id": "en-005", "text": "The cook chopped the onions.", "tags": ["simple"], "topic": "cooking"}
+{"id": "en-006", "text": "The teacher wrote a word on the board.", "tags": ["simple"], "topic": "school"}
+{"id": "en-007", "text": "The manager signed the budget.", "tags": ["simple"], "topic": "office"}
+{"id": "en-008", "text": "The worker opened the door.", "tags": ["simple"], "topic": "factory"}
+{"id": "en-009", "text": "The programmer fixed the bug.", "tags": ["simple"], "topic": "software"}
+{"id": "en-010", "text": "The wind shook the window.", "tags": ["simple"], "topic": "weather"}
+{"id": "en-011", "text": "The student who read the book passed the exam.", "tags": ["complex"], "topic": "school"}
+{"id": "en-012", "text": "The teacher said that the exam is tomorrow.", "tags": ["complex"], "topic": "school"}
+{"id": "en-013", "text": "The news that the factory stopped the machine reached the town.", "tags": ["complex"], "topic": "factory"}
+{"id": "en-014", "text": "The soup that my mother made was hot.", "tags": ["complex"], "topic": "cooking"}
+{"id": "en-015", "text": "The driver told the passenger that the road was closed.", "tags": ["complex"], "topic": "transport"}
+{"id": "en-016", "text": "The farmer sold the vegetables that he grew.", "tags": ["complex"], "topic": "farming"}
+{"id": "en-017", "text": "The match was cancelled because it rained.", "tags": ["connective", "passive"], "topic": "weather"}
+{"id": "en-018", "text": "The nurse gave the medicine, but the fever stayed.", "tags": ["connective", "giving"], "topic": "medical"}
+{"id": "en-019", "text": "If the machine stops, the worker calls the manager.", "tags": ["connective"], "topic": "factory"}
+{"id": "en-020", "text": "The cook washed his hands and then started the soup.", "tags": ["connective"], "topic": "cooking"}
+{"id": "en-021", "text": "The driver took a shortcut so that the bus arrived early.", "tags": ["connective"], "topic": "transport"}
+{"id": "en-022", "text": "Although the road was closed, the driver went on.", "tags": ["connective"], "topic": "transport"}
+{"id": "en-023", "text": "The team tested the program before they released it.", "tags": ["connective"], "topic": "software"}
+{"id": "en-024", "text": "The mother sang while she cooked.", "tags": ["connective"], "topic": "cooking"}
+{"id": "en-025", "text": "The clerk printed the report and gave it to the manager.", "tags": ["connective", "giving"], "topic": "office"}
+{"id": "en-026", "text": "The farmer did not plant the seeds.", "tags": ["negation", "simple"], "topic": "farming"}
+{"id": "en-027", "text": "The nurse never measured the fever.", "tags": ["negation", "simple"], "topic": "medical"}
+{"id": "en-028", "text": "The driver did not stop the bus.", "tags": ["negation", "simple"], "topic": "transport"}
+{"id": "en-029", "text": "The clerk did not give the customer a bag.", "tags": ["negation", "giving"], "topic": "shopping"}
+{"id": "en-030", "text": "The mechanic did not repair the engine.", "tags": ["negation", "simple"], "topic": "factory"}
+{"id": "en-031", "text": "The student didn't read the book.", "tags": ["negation", "simple"], "topic": "school"}
+{"id": "en-032", "text": "No worker opened the door.", "tags": ["negation"], "topic": "factory"}
+{"id": "en-033", "text": "The train is faster than the bus.", "tags": ["comparison"], "topic": "transport"}
+{"id": "en-034", "text": "My sister is taller than my brother.", "tags": ["comparison"], "topic": "housework"}
+{"id": "en-035", "text": "This road is wider than that road.", "tags": ["comparison"], "topic": "transport"}
+{"id": "en-036", "text": "The new machine is quieter than the old machine.", "tags": ["comparison"], "topic": "factory"}
+{"id": "en-037", "text": "The days in summer are longer than the days in winter.", "tags": ["comparison"], "topic": "weather"}
+{"id": "en-038", "text": "A dog is bigger than a cat.", "tags": ["comparison"], "topic": "housework"}
+{"id": "en-039", "text": "The eastern field has more water than the western field.", "tags": ["comparison"], "topic": "farming"}
+{"id": "en-040", "text": "The teacher gave the student a notebook.", "tags": ["giving"], "topic": "school"}
+{"id": "en-041", "text": "The grandfather sent the child a bicycle.", "tags": ["giving"], "topic": "housework"}
+{"id": "en-042", "text": "The manager lent the clerk a laptop.", "tags": ["giving"], "topic": "office"}
+{"id": "en-043", "text": "The nurse handed the patient a card.", "tags": ["giving"], "topic": "medical"}
+{"id": "en-044", "text": "The clerk sold the customer an apple.", "tags": ["giving"], "topic": "shopping"}
+{"id": "en-045", "text": "The doctor gave the patient a leaflet.", "tags": ["giving"], "topic": "medical"}
+{"id": "en-046", "text": "The student received a flower from the teacher.", "tags": ["giving"], "topic": "school"}
+{"id": "en-047", "text": "The window was broken by the child.", "tags": ["passive"], "topic": "housework"}
+{"id": "en-048", "text": "The bridge was built by the city.", "tags": ["passive"], "topic": "construction"}
+{"id": "en-049", "text": "The parcel was carried by the driver.", "tags": ["passive"], "topic": "transport"}
+{"id": "en-050", "text": "The match was cancelled.", "tags": ["passive"], "topic": "weather"}
+{"id": "en-051", "text": "The part was made in the factory.", "tags": ["passive", "fronted_time_place"], "topic": "factory"}
+{"id": "en-052", "text": "The letter was read by the teacher.", "tags": ["passive"], "topic": "school"}
+{"id": "en-053", "text": "The dog was petted by the child.", "tags": ["passive"], "topic": "housework"}
+{"id": "en-054", "text": "Yesterday the machine stopped in the factory.", "tags": ["fronted_time_place"], "topic": "factory"}
+{"id": "en-055", "text": "In the morning the mother grilled fish in the kitchen.", "tags": ["fronted_time_place"], "topic": "cooking"}
+{"id": "en-056", "text": "Next week the farmer will cut the wheat in the field.", "tags": ["fronted_time_place"], "topic": "farming"}
+{"id": "en-057", "text": "At the station the teacher gave the student a ticket.", "tags": ["fronted_time_place", "giving"], "topic": "transport"}
+{"id": "en-058", "text": "Last year the city built a bridge over the river.", "tags": ["fronted_time_place"], "topic": "construction"}
+{"id": "en-059", "text": "In March there was a ceremony at the school.", "tags": ["fronted_time_place"], "topic": "school"}
+{"id": "en-060", "text": "Yesterday the system stopped at the office.", "tags": ["fronted_time_place"], "topic": "software"}
+{"id": "en-061", "text": "The staff member will send the report to the manager by Friday.", "tags": ["explain", "giving"], "topic": "office"}
+{"id": "en-062", "text": "I will send the document to the director by tomorrow.", "tags": ["explain", "giving"], "topic": "office"}
+{"id": "en-063", "text": "The developer will give the new version to the users next week.", "tags": ["explain", "giving"], "topic": "software"}
+{"id": "en-064", "text": "The clerk sent the invoice to the client today.", "tags": ["explain", "giving"], "topic": "office"}
+{"id": "en-065", "text": "The foreman will hand the new parts to the workers on Monday.", "tags": ["explain", "giving"], "topic": "factory"}
+{"id": "en-066", "text": "The nurse will bring the medicine to the patient in the afternoon.", "tags": ["explain", "giving"], "topic": "medical"}
+{"id": "en-067", "text": "The driver delivers the parcels to the shop every day.", "tags": ["explain", "giving"], "topic": "transport"}
+{"id": "en-068", "text": "The administrator will tell the password to the staff by Friday.", "tags": ["explain", "giving"], "topic": "software"}
+{"id": "en-069", "text": "The sales rep will give the quote to the customer this week.", "tags": ["explain", "giving"], "topic": "shopping"}
+{"id": "en-070", "text": "The engineer will fix the program by tomorrow.", "tags": ["explain"], "topic": "software"}
+{"id": "en-071", "text": "The operator restarted the server.", "tags": ["explain", "simple"], "topic": "software"}
+{"id": "en-072", "text": "The cook will cut the vegetables before noon.", "tags": ["explain"], "topic": "cooking"}
+{"id": "en-073", "text": "The clerk will mail the contract to the client by noon.", "tags": ["explain", "giving"], "topic": "office"}
+{"id": "en-074", "text": "Hello!", "tags": ["unreadable"], "topic": "greeting"}
+{"id": "en-075", "text": "Good morning, everyone.", "tags": ["unreadable"], "topic": "greeting"}
+{"id": "en-076", "text": "Oh wow.", "tags": ["unreadable"], "topic": "greeting"}
+{"id": "en-077", "text": "The big red car of.", "tags": ["unreadable"], "topic": "transport"}
+{"id": "en-078", "text": "Book the green runs quickly under.", "tags": ["unreadable"], "topic": "school"}
+{"id": "en-079", "text": "The teacher blorped the map.", "tags": ["unreadable"], "topic": "school"}
+{"id": "en-080", "text": "Sorry about that.", "tags": ["unreadable"], "topic": "greeting"}
+{"id": "en-081", "text": "Wow, amazing!", "tags": ["unreadable"], "topic": "greeting"}

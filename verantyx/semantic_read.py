@@ -20,6 +20,9 @@ field cannot be decided (tense, modality, voice, the type of a subject, a role n
 field, is a misreading (the convention counts a structured reading of an unreadable input as one), while an abstention is not.
 What the convention has and this entry does not produce is the closed table NOT_PRODUCED (docs/READING_SOUNDNESS.md §9 is built from it).
 
+With `--events` one more key, `events`, is appended LAST (the event cross of verantyx/event_cross.py, built from this output alone); without it
+the output is unchanged to the byte, and a refused input answers the same with or without it.
+
 Exit code: 0 for readable true and false alike; 2 for an input that is refused (a typed `{"error": {"type", "detail"}}` object on standard
 output). The entry writes no file, uses no network, prints nothing but the JSON object, and gives the same output to the same input.
 """
@@ -762,9 +765,19 @@ class _Parser(argparse.ArgumentParser):
 def main(argv=None):
     parser = _Parser(prog='python -m verantyx.semantic_read', add_help=False)
     parser.add_argument('--text'); parser.add_argument('--lang')
+    argv = list(sys.argv[1:] if argv is None else argv)
+    # `--events` is NOT registered with the parser: argparse would then take its abbreviations (--e, --ev, ...) too and change
+    # the answer of argv that never contained `--events`. Only the exact argument, before any `--`, is taken out; the parser
+    # that sees the rest is the one it always was.
+    cut = argv.index('--') if '--' in argv else len(argv)
+    events = '--events' in argv[:cut]
+    argv = [a for i, a in enumerate(argv) if not (i < cut and a == '--events')]
     try:
-        args = parser.parse_args(sys.argv[1:] if argv is None else argv)
+        args = parser.parse_args(argv)
         out = read(args.text, args.lang)
+        if events:
+            from . import event_cross    # only for --events: the default output does not load the module
+            out = event_cross.attach_events(out)
         code = 0
     except ReadError as err:
         out = {'error': {'type': err.type, 'detail': err.detail}}; code = 2

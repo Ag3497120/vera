@@ -1,0 +1,20 @@
+{"id": "en-082", "text": "The doctor gave the nurse an instruction.", "tags": ["simple", "giving"], "topic": "medical"}
+{"id": "en-083", "text": "The farmer sold the customer eggs.", "tags": ["simple", "giving"], "topic": "farming"}
+{"id": "en-084", "text": "The teacher lent the student a book.", "tags": ["simple", "giving"], "topic": "school"}
+{"id": "en-085", "text": "The manager handed the clerk a key.", "tags": ["simple", "giving"], "topic": "shopping"}
+{"id": "en-086", "text": "The brother gave the sister an eraser.", "tags": ["simple", "giving"], "topic": "housework"}
+{"id": "en-087", "text": "The driver did not give the passenger a ticket.", "tags": ["negation", "giving"], "topic": "transport"}
+{"id": "en-088", "text": "The craftsman did not cut the wood.", "tags": ["negation", "simple"], "topic": "construction"}
+{"id": "en-089", "text": "The mother did not grill the fish.", "tags": ["negation", "simple"], "topic": "cooking"}
+{"id": "en-090", "text": "The student did not forget the homework.", "tags": ["negation", "simple"], "topic": "school"}
+{"id": "en-091", "text": "The doctor did not sign the form.", "tags": ["negation", "simple"], "topic": "medical"}
+{"id": "en-092", "text": "The airplane is faster than the train.", "tags": ["comparison"], "topic": "transport"}
+{"id": "en-093", "text": "The sea is wider than the river.", "tags": ["comparison"], "topic": "weather"}
+{"id": "en-094", "text": "The craftsman built a box.", "tags": ["simple"], "topic": "factory"}
+{"id": "en-095", "text": "The doctor distributed the pills.", "tags": ["simple"], "topic": "medical"}
+{"id": "en-096", "text": "The secretary sent the director a schedule.", "tags": ["explain", "giving"], "topic": "office"}
+{"id": "en-097", "text": "The engineer gave the client a program.", "tags": ["explain", "giving"], "topic": "software"}
+{"id": "en-098", "text": "The cook opened the window.", "tags": ["simple"], "topic": "cooking"}
+{"id": "en-099", "text": "The teacher drew a map.", "tags": ["simple"], "topic": "school"}
+{"id": "en-100", "text": "The nurse washed the cup.", "tags": ["simple"], "topic": "medical"}
+{"id": "en-101", "text": "The mechanic stopped the machine.", "tags": ["simple"], "topic": "factory"}

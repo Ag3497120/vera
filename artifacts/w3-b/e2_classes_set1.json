@@ -1,0 +1,1334 @@
+{
+ "counts": {
+  "ja": {
+   "a": 58,
+   "b": 20,
+   "c": 4,
+   "a_expected_abstain": 7,
+   "a_over_abstain": 51,
+   "total": 82,
+   "readable_by_reader": 24
+  },
+  "en": {
+   "a": 66,
+   "b": 15,
+   "c": 0,
+   "a_expected_abstain": 8,
+   "a_over_abstain": 58,
+   "total": 81,
+   "readable_by_reader": 15
+  },
+  "all": {
+   "a": 124,
+   "b": 35,
+   "c": 4,
+   "a_expected_abstain": 15,
+   "a_over_abstain": 109,
+   "total": 163,
+   "readable_by_reader": 39
+  }
+ },
+ "classes": {
+  "ja-001": "b",
+  "ja-002": "a",
+  "ja-003": "a",
+  "ja-004": "b",
+  "ja-005": "a",
+  "ja-006": "b",
+  "ja-007": "a",
+  "ja-008": "b",
+  "ja-009": "b",
+  "ja-010": "b",
+  "ja-011": "a",
+  "ja-012": "a",
+  "ja-013": "a",
+  "ja-014": "a",
+  "ja-015": "a",
+  "ja-016": "a",
+  "ja-017": "a",
+  "ja-018": "a",
+  "ja-019": "a",
+  "ja-020": "a",
+  "ja-021": "a",
+  "ja-022": "a",
+  "ja-023": "a",
+  "ja-024": "a",
+  "ja-025": "a",
+  "ja-026": "b",
+  "ja-027": "a",
+  "ja-028": "b",
+  "ja-029": "a",
+  "ja-030": "a",
+  "ja-031": "b",
+  "ja-032": "c",
+  "ja-033": "b",
+  "ja-034": "c",
+  "ja-035": "a",
+  "ja-036": "b",
+  "ja-037": "c",
+  "ja-038": "b",
+  "ja-039": "b",
+  "ja-040": "a",
+  "ja-041": "b",
+  "ja-042": "b",
+  "ja-043": "b",
+  "ja-044": "b",
+  "ja-045": "b",
+  "ja-046": "a",
+  "ja-047": "a",
+  "ja-048": "a",
+  "ja-049": "a",
+  "ja-050": "a",
+  "ja-051": "a",
+  "ja-052": "a",
+  "ja-053": "a",
+  "ja-054": "b",
+  "ja-055": "a",
+  "ja-056": "b",
+  "ja-057": "a",
+  "ja-058": "a",
+  "ja-059": "a",
+  "ja-060": "a",
+  "ja-061": "a",
+  "ja-062": "a",
+  "ja-063": "a",
+  "ja-064": "a",
+  "ja-065": "a",
+  "ja-066": "a",
+  "ja-067": "a",
+  "ja-068": "a",
+  "ja-069": "a",
+  "ja-070": "a",
+  "ja-071": "a",
+  "ja-072": "a",
+  "ja-073": "a",
+  "ja-074": "a",
+  "ja-075": "a",
+  "ja-076": "a",
+  "ja-077": "a",
+  "ja-078": "a",
+  "ja-079": "a",
+  "ja-080": "c",
+  "ja-081": "a",
+  "ja-082": "a",
+  "en-001": "a",
+  "en-002": "a",
+  "en-003": "b",
+  "en-004": "a",
+  "en-005": "a",
+  "en-006": "a",
+  "en-007": "b",
+  "en-008": "b",
+  "en-009": "b",
+  "en-010": "a",
+  "en-011": "a",
+  "en-012": "a",
+  "en-013": "a",
+  "en-014": "a",
+  "en-015": "a",
+  "en-016": "a",
+  "en-017": "a",
+  "en-018": "a",
+  "en-019": "a",
+  "en-020": "a",
+  "en-021": "a",
+  "en-022": "a",
+  "en-023": "a",
+  "en-024": "a",
+  "en-025": "a",
+  "en-026": "a",
+  "en-027": "a",
+  "en-028": "b",
+  "en-029": "b",
+  "en-030": "b",
+  "en-031": "a",
+  "en-032": "a",
+  "en-033": "a",
+  "en-034": "a",
+  "en-035": "a",
+  "en-036": "a",
+  "en-037": "a",
+  "en-038": "a",
+  "en-039": "a",
+  "en-040": "b",
+  "en-041": "b",
+  "en-042": "b",
+  "en-043": "b",
+  "en-044": "b",
+  "en-045": "b",
+  "en-046": "a",
+  "en-047": "a",
+  "en-048": "b",
+  "en-049": "b",
+  "en-050": "a",
+  "en-051": "a",
+  "en-052": "a",
+  "en-053": "a",
+  "en-054": "a",
+  "en-055": "a",
+  "en-056": "a",
+  "en-057": "a",
+  "en-058": "a",
+  "en-059": "a",
+  "en-060": "a",
+  "en-061": "a",
+  "en-062": "a",
+  "en-063": "a",
+  "en-064": "a",
+  "en-065": "a",
+  "en-066": "a",
+  "en-067": "a",
+  "en-068": "a",
+  "en-069": "a",
+  "en-070": "a",
+  "en-071": "a",
+  "en-072": "a",
+  "en-073": "a",
+  "en-074": "a",
+  "en-075": "a",
+  "en-076": "a",
+  "en-077": "a",
+  "en-078": "a",
+  "en-079": "a",
+  "en-080": "a",
+  "en-081": "a"
+ },
+ "detail": {
+  "ja-002": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-003": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "RECIPIENT_TYPE_UNDETERMINED:出す"
+    ]
+   }
+  },
+  "ja-005": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-007": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-011": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-012": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-013": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-014": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-015": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-016": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-017": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-018": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNSUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-019": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "RELATION_NOT_MAPPED:frame"
+    ]
+   }
+  },
+  "ja-020": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNCOVERED_PREDICATE"
+    ]
+   }
+  },
+  "ja-021": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "RELATION_NOT_MAPPED:te_chain"
+    ]
+   }
+  },
+  "ja-022": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "RELATION_NOT_MAPPED:frame"
+    ]
+   }
+  },
+  "ja-023": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNSUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-024": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-025": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "RELATION_NOT_MAPPED:frame"
+    ]
+   }
+  },
+  "ja-027": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-029": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "SUBJECT_TYPE_UNDETERMINED:電車"
+    ]
+   }
+  },
+  "ja-030": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-032": {
+   "why": "clause 0 arms differ"
+  },
+  "ja-034": {
+   "why": "clause 0 arms differ"
+  },
+  "ja-035": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-037": {
+   "why": "clause 0 arms differ"
+  },
+  "ja-040": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "PREDICATE_NORMALIZED:あげる<-くれる"
+    ]
+   }
+  },
+  "ja-046": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNDETERMINED_VOICE:passive or honorific"
+    ]
+   }
+  },
+  "ja-047": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNCOVERED_PREDICATE"
+    ]
+   }
+  },
+  "ja-048": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNCOVERED_PREDICATE"
+    ]
+   }
+  },
+  "ja-049": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-050": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNDETERMINED_VOICE:passive or honorific"
+    ]
+   }
+  },
+  "ja-051": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNDETERMINED_VOICE:passive or honorific"
+    ]
+   }
+  },
+  "ja-052": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNDETERMINED_VOICE:passive or honorific"
+    ]
+   }
+  },
+  "ja-053": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-055": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-057": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-058": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-059": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "SUBJECT_TYPE_UNDETERMINED:卒業式"
+    ]
+   }
+  },
+  "ja-060": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-061": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNMAPPED_ROLE:unresolved_0"
+    ]
+   }
+  },
+  "ja-062": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNMAPPED_ROLE:unresolved_0"
+    ]
+   }
+  },
+  "ja-063": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNMAPPED_ROLE:unresolved_0"
+    ]
+   }
+  },
+  "ja-064": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-065": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNCOVERED_PREDICATE"
+    ]
+   }
+  },
+  "ja-066": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-067": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-068": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNMAPPED_ROLE:unresolved_0"
+    ]
+   }
+  },
+  "ja-069": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-070": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNMAPPED_ROLE:unresolved_0"
+    ]
+   }
+  },
+  "ja-071": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNMAPPED_ROLE:unresolved_0"
+    ]
+   }
+  },
+  "ja-072": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-073": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-074": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-075": {
+   "sub": "abstain_expected",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-076": {
+   "sub": "abstain_expected",
+   "abstain": {
+    "kind": "unreadable_input",
+    "reasons": [
+     "NO_PREDICATE_TOKEN"
+    ]
+   }
+  },
+  "ja-077": {
+   "sub": "abstain_expected",
+   "abstain": {
+    "kind": "unreadable_input",
+    "reasons": [
+     "INTERJECTION_OR_FORMULA"
+    ]
+   }
+  },
+  "ja-078": {
+   "sub": "abstain_expected",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNREAD_SPAN:unsupported clause grammar"
+    ]
+   }
+  },
+  "ja-079": {
+   "sub": "abstain_expected",
+   "abstain": {
+    "kind": "unreadable_input",
+    "reasons": [
+     "NO_PREDICATE_TOKEN"
+    ]
+   }
+  },
+  "ja-080": {
+   "why": "expected unreadable, the reader read it"
+  },
+  "ja-081": {
+   "sub": "abstain_expected",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "NO_SUPPORTED_CLAUSE"
+    ]
+   }
+  },
+  "ja-082": {
+   "sub": "abstain_expected",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNREAD_SPAN:unsupported clause grammar"
+    ]
+   }
+  },
+  "en-001": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE"
+    ]
+   }
+  },
+  "en-002": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE"
+    ]
+   }
+  },
+  "en-004": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE"
+    ]
+   }
+  },
+  "en-005": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE:chop"
+    ]
+   }
+  },
+  "en-006": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "RECIPIENT_TYPE_UNDETERMINED:board"
+    ]
+   }
+  },
+  "en-010": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE"
+    ]
+   }
+  },
+  "en-011": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:relative clause: not representable"
+    ]
+   }
+  },
+  "en-012": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:relative or complement clause: not representable"
+    ]
+   }
+  },
+  "en-013": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:relative or complement clause: not representable",
+     "EN_UNREAD:relative clause (reduced): not representable"
+    ]
+   }
+  },
+  "en-014": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:relative or complement clause: not representable",
+     "EN_UNREAD:causative: causee not representable",
+     "EN_UNREAD:relative clause (reduced): not representable"
+    ]
+   }
+  },
+  "en-015": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:relative or complement clause: not representable"
+    ]
+   }
+  },
+  "en-016": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:relative or complement clause: not representable"
+    ]
+   }
+  },
+  "en-017": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:subordinate clause: not representable"
+    ]
+   }
+  },
+  "en-018": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:coordination: not representable"
+    ]
+   }
+  },
+  "en-019": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:subordinate clause: not representable"
+    ]
+   }
+  },
+  "en-020": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:coordination: not representable"
+    ]
+   }
+  },
+  "en-021": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:relative or complement clause: not representable",
+     "EN_UNREAD:subordinate clause: not representable"
+    ]
+   }
+  },
+  "en-022": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:subordinate clause: not representable"
+    ]
+   }
+  },
+  "en-023": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:subordinate clause: not representable"
+    ]
+   }
+  },
+  "en-024": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:subordinate clause: not representable"
+    ]
+   }
+  },
+  "en-025": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:coordination: not representable"
+    ]
+   }
+  },
+  "en-026": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE:plant"
+    ]
+   }
+  },
+  "en-027": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE"
+    ]
+   }
+  },
+  "en-031": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNDETERMINED_TENSE:past and present forms are the same"
+    ]
+   }
+  },
+  "en-032": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:negative quantifier or never: scope not representable"
+    ]
+   }
+  },
+  "en-033": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:comparison: standard/degree not representable"
+    ]
+   }
+  },
+  "en-034": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:comparison: standard/degree not representable"
+    ]
+   }
+  },
+  "en-035": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:relative or complement clause: not representable",
+     "EN_UNREAD:comparison: standard/degree not representable"
+    ]
+   }
+  },
+  "en-036": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:comparison: standard/degree not representable"
+    ]
+   }
+  },
+  "en-037": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:comparison: standard/degree not representable"
+    ]
+   }
+  },
+  "en-038": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:comparison: standard/degree not representable"
+    ]
+   }
+  },
+  "en-039": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:causative: causee not representable",
+     "EN_UNREAD:comparison: standard/degree not representable"
+    ]
+   }
+  },
+  "en-046": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE"
+    ]
+   }
+  },
+  "en-047": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:copular/adjectival predicate: not representable",
+     "EN_UNREAD:content not represented in the frame: child"
+    ]
+   }
+  },
+  "en-050": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE:cancell"
+    ]
+   }
+  },
+  "en-051": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:object + predicate of the object (small clause): not representable"
+    ]
+   }
+  },
+  "en-052": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:copular/adjectival predicate: not representable"
+    ]
+   }
+  },
+  "en-053": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE:pet"
+    ]
+   }
+  },
+  "en-054": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:content not represented in the frame: factory"
+    ]
+   }
+  },
+  "en-055": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE"
+    ]
+   }
+  },
+  "en-056": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:to/into phrase of a verb of change is a result, not a recipient"
+    ]
+   }
+  },
+  "en-057": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:predicate is not a verb",
+     "EN_UNREAD:content not represented in the frame: teacher"
+    ]
+   }
+  },
+  "en-058": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:content not represented in the frame: river"
+    ]
+   }
+  },
+  "en-059": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:predicate is not a verb"
+    ]
+   }
+  },
+  "en-060": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:content not represented in the frame: office"
+    ]
+   }
+  },
+  "en-061": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:content not represented in the frame: friday"
+    ]
+   }
+  },
+  "en-062": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "RECIPIENT_TYPE_UNDETERMINED:director"
+    ]
+   }
+  },
+  "en-063": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "RECIPIENT_TYPE_UNDETERMINED:users"
+    ]
+   }
+  },
+  "en-064": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNREPRESENTED_CONTENT:today"
+    ]
+   }
+  },
+  "en-065": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNREPRESENTED_CONTENT:on"
+    ]
+   }
+  },
+  "en-066": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNREPRESENTED_CONTENT:in"
+    ]
+   }
+  },
+  "en-067": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "QUANTIFIER_NOT_MAPPED"
+    ]
+   }
+  },
+  "en-068": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:content not represented in the frame: friday"
+    ]
+   }
+  },
+  "en-069": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNREPRESENTED_CONTENT:week"
+    ]
+   }
+  },
+  "en-070": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNREPRESENTED_CONTENT:tomorrow"
+    ]
+   }
+  },
+  "en-071": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE"
+    ]
+   }
+  },
+  "en-072": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:content not represented in the frame: noon"
+    ]
+   }
+  },
+  "en-073": {
+   "sub": "over_abstain",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:content not represented in the frame: noon"
+    ]
+   }
+  },
+  "en-074": {
+   "sub": "abstain_expected",
+   "abstain": {
+    "kind": "unreadable_input",
+    "reasons": [
+     "INTERJECTION_OR_FORMULA"
+    ]
+   }
+  },
+  "en-075": {
+   "sub": "abstain_expected",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE"
+    ]
+   }
+  },
+  "en-076": {
+   "sub": "abstain_expected",
+   "abstain": {
+    "kind": "unreadable_input",
+    "reasons": [
+     "INTERJECTION_OR_FORMULA"
+    ]
+   }
+  },
+  "en-077": {
+   "sub": "abstain_expected",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE"
+    ]
+   }
+  },
+  "en-078": {
+   "sub": "abstain_expected",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "EN_UNREAD:predicate is not a verb"
+    ]
+   }
+  },
+  "en-079": {
+   "sub": "abstain_expected",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE"
+    ]
+   }
+  },
+  "en-080": {
+   "sub": "abstain_expected",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE"
+    ]
+   }
+  },
+  "en-081": {
+   "sub": "abstain_expected",
+   "abstain": {
+    "kind": "not_supported",
+    "reasons": [
+     "UNKNOWN_PREDICATE"
+    ]
+   }
+  }
+ }
+}

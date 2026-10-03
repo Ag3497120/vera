@@ -1,0 +1,14 @@
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "役割と型の一致",
+  "searched": 648,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 280,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

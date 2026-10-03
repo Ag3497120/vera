@@ -1,0 +1,38 @@
+added lines: 39
+PROPER/NUMERIC (must be empty): []
+ENGLISH NAMES (must be empty): []
+common nouns found in added lines (list only): ['十字']
+verb lemmas found in added lines (list only): ['通す']
+english lowercase words found in added lines (list only; each with the added lines that hold it, so a reader can judge): ['answer', 'built', 'def', 'more', 'never', 'not', 'only', 'read', 'rest', 'that', 'the', 'this', 'was']
+  [answer] 1 added line(s):
+      # the answer of argv that never contained `--events`. Only the exact argument, before any `--`, is taken out; the parser
+  [built] 1 added line(s):
+      With `--events` one more key, `events`, is appended LAST (the event cross of verantyx/event_cross.py, built from this output alone); without it
+  [def] 1 added line(s):
+      def cmd_read_events(args) -> int:
+  [more] 1 added line(s):
+      With `--events` one more key, `events`, is appended LAST (the event cross of verantyx/event_cross.py, built from this output alone); without it
+  [never] 1 added line(s):
+      # the answer of argv that never contained `--events`. Only the exact argument, before any `--`, is taken out; the parser
+  [not] 4 added line(s):
+      if args.text is not None:
+      if args.lang is not None:
+      argv = [a for i, a in enumerate(argv) if not (i < cut and a == '--events')]
+  [only] 1 added line(s):
+      from . import event_cross    # only for --events: the default output does not load the module
+  [read] 2 added line(s):
+      "read-events",
+      help="read one sentence and return its event crosses (predicate = centre, "
+  [rest] 1 added line(s):
+      # that sees the rest is the one it always was.
+  [that] 2 added line(s):
+      # the answer of argv that never contained `--events`. Only the exact argument, before any `--`, is taken out; the parser
+      # that sees the rest is the one it always was.
+  [the] 6 added line(s):
+      With `--events` one more key, `events`, is appended LAST (the event cross of verantyx/event_cross.py, built from this output alone); without it
+      the output is unchanged to the byte, and a refused input answers the same with or without it.
+      # `--events` is NOT registered with the parser: argparse would then take its abbreviations (--e, --ev, ...) too and change
+  [this] 1 added line(s):
+      With `--events` one more key, `events`, is appended LAST (the event cross of verantyx/event_cross.py, built from this output alone); without it
+  [was] 1 added line(s):
+      # that sees the rest is the one it always was.
