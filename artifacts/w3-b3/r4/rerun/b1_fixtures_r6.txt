@@ -1,0 +1,12 @@
+mode=live
+rows=118
+verdicts={"abstain": 50, "correct": 68}
+verdicts_by_data={"B1_v2": {"abstain": 20, "correct": 45}, "B1_v2_r2": {"abstain": 17, "correct": 19}, "B1_v2_r3": {"abstain": 13, "correct": 4}}
+misread=0
+incomplete=0
+unjudged=0
+new_data_rows=0
+entry_expect_mismatch={"abstain_expected_but_read": 0, "read_expected_but_abstained": 0}
+reason_prefix_mismatch_among_abstained=0
+second_reason_prefixes={"PLACEMENT_ESTIMATED_GENERATED": 1, "PLACEMENT_FRAME_NOT_READ": 1, "PLACEMENT_PART_NOT_NP": 1, "PLACEMENT_PREDICATE_UNIDENTIFIED": 5, "PLACEMENT_SLOT_EVIDENCE_ONLY": 1}
+bad_verdicts={}

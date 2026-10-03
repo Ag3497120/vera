@@ -1,0 +1,21 @@
+relative rows=60 read=30 abstain=30
+  by_cut={"relative": 60}
+  by_cut_and_behavior={"relative|abstain": 30, "relative|read": 30}
+  by_entry_expect={"abstain": 47, "read": 13}
+  by_w3b3_expect={"CLAUSE_FORM_NOT_READ": 6, "CLAUSE_SCOPE_AMBIGUOUS": 9, "CLAUSE_SCOPE_NOT_LISTED": 2, "ELLIPSIS_UNDETERMINED": 2, "HEAD_ROLE_UNDETERMINED": 28, "READ": 13}
+connective rows=60 read=30 abstain=30
+  by_cut={"から": 6, "が": 6, "けれど": 6, "たら": 6, "ても": 6, "と": 6, "ながら": 6, "なら": 6, "ので": 6, "ば": 6}
+  by_cut_and_behavior={"から|abstain": 3, "から|read": 3, "が|abstain": 3, "が|read": 3, "けれど|abstain": 3, "けれど|read": 3, "たら|abstain": 3, "たら|read": 3, "ても|abstain": 3, "ても|read": 3, "と|abstain": 3, "と|read": 3, "ながら|abstain": 3, "ながら|read": 3, "なら|abstain": 3, "なら|read": 3, "ので|abstain": 3, "ので|read": 3, "ば|abstain": 3, "ば|read": 3}
+  by_entry_expect={"abstain": 31, "read": 29}
+  by_w3b3_expect={"CLAUSE_FORM_NOT_READ": 9, "CLAUSE_SCOPE_AMBIGUOUS": 7, "CLAUSE_UNREAD": 2, "ELLIPSIS_UNDETERMINED": 6, "READ": 29, "RELATION_TYPE_UNDETERMINED": 6, "W3B3_NOT_TRIGGERED": 1}
+parallel rows=30 read=15 abstain=15
+  by_cut={"て": 15, "並列": 15}
+  by_cut_and_behavior={"て|abstain": 7, "て|read": 8, "並列|abstain": 8, "並列|read": 7}
+  by_entry_expect={"abstain": 30}
+  by_w3b3_expect={"CLAUSE_FORM_NOT_READ": 6, "CLAUSE_SCOPE_AMBIGUOUS": 4, "CLAUSE_SCOPE_NOT_LISTED": 1, "CLAUSE_UNREAD": 2, "RELATION_TYPE_UNDETERMINED": 15, "W3B3_NOT_TRIGGERED": 2}
+w1a4 rows=53 read=0 abstain=53
+  by_cut={"w1a4": 53}
+  by_cut_and_behavior={"w1a4|abstain": 53}
+  by_entry_expect={"abstain": 53}
+  by_w3b3_expect={"ABSTAIN": 53}
+total rows=203

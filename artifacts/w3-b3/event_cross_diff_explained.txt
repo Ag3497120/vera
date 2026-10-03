@@ -1,0 +1,9 @@
+verantyx/event_cross.py の基点 c875ed3 からの差分（artifacts/w3-b3/event_cross.diff）の説明。削除行は 2 行だけ（`grep -c '^-[^-]' event_cross.diff` = 2）:
+  - `Filler.to_dict` の return の 2 行（`return {'surface': ..., 'flags': ...}` の 2 行）を、同じ内容の辞書 `d` を作る 2 行に置き換え、`embedded` が None でないときだけ鍵 `embedded` を最後に足す行と `return d` を足した。None のときの出力は 1 バイトも変わらない（E1_SAME・E1_EQUALS_DEV_RUN・tests の `test_a_filler_without_embedded_is_the_bases_bytes...`・`test_an_output_without_head_gives_the_same_bytes_as_the_base_module`）。
+追加（削除行なし）:
+  - `import dataclasses`（`dataclasses.replace` のため。既存の `from dataclasses import dataclass, field` の行は変えていない）
+  - 定数 `RELATION_HEAD_REASONS`（`ENTRY_FLAG_KEYS` の後ろ）
+  - `Filler` の欄 `embedded: Optional['EventCross'] = None`（最後の欄）
+  - 関数 `_check_heads`（`head` の検査）と `_embed`（埋め込み）。`_check` の最後の `return` の前に `bad.extend(_check_heads(relations, clauses))` の 1 行、`build_crosses` の `return` の前に `crosses = _embed(crosses, src['relations'])` の 1 行を足した。
+変えていない: ROLE_NAMES・RELATION_TYPES・EXPECTED_TYPES・VERDICTS・_agreement・counts の形・StubLookup・CoarseLookup。
+unchanged_functions.txt: event_cross.py の changed は ['Filler', '_check', 'build_crosses']（上の追加の範囲）、removed は空。

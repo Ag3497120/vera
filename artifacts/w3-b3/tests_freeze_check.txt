@@ -1,0 +1,5 @@
+tests/test_semantic_read_w3b3.py: FAILED
+tests/test_semantic_read_w3b3_events.py: OK
+shasum: WARNING: 1 computed checksum did NOT match
+tests/test_semantic_read_w3b3.py: OK
+tests/test_semantic_read_w3b3_events.py: OK

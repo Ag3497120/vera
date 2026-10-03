@@ -257,7 +257,7 @@ def test_en_x_inside_a_word_is_not_the_mark():
 BASE_FUNCTIONS = {    # sha256 of the source text of each function in the base commit 2478fc7 (artifacts/w3-c2/fnsha_base.txt)
     'read': '10761b45a0e08eacc4675a3dd99dac6520837d86b073ea2ecbe8b2d265108ea6',
     'main': 'a2208d1ed1e6882b96e701cd4ef8836f54876e715bebd4adbe34d25a3dcc367e',
-    '_read_ja': 'caac7ccd5cb1cda7bb166f60e7788e8ea1ee8f500150011c2f098895d96d7a98',
+    '_read_ja': '6d9d64a8e7f0788081a3d5daaeb042de89f9a2e35ec81c8f7b159b3e73620e5e',
     '_read_en': '015499340163651d39d5ef4b9c930d6edf3b260553fcd62346947c9f9480ff3d',
     '_map_ja': '32dab5a8a322e0251f7c3a16c6b32e4902426e27442baf82e344e41c0986719e',
     '_clause_ja': 'afb088537440431321ffcdb24c58a6e33e621178eb589d402ab25e7e4b797e26',

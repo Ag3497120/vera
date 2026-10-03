@@ -180,7 +180,7 @@ def test_the_functions_of_the_entry_that_are_not_the_typed_reread_are_the_base_c
         return {n.name: ast.get_source_segment(src, n) for n in ast.parse(src).body if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
     b, n = fns(base_src), fns(now)
     assert [k for k in b if k not in n] == []
-    assert [k for k in b if b[k] != n[k]] == ['_typed_reread_ja']
+    assert [k for k in b if b[k] != n[k]] == ['_read_ja', '_typed_reread_ja']    # W3-b3 (docs/READING_SOUNDNESS.md 10C K114): the two lines of `_read_ja` that call the typed re-reading and, when it refuses, the path of two predicates
     assert set(n) - set(b) >= {'typed_explain_ja'}
 
 

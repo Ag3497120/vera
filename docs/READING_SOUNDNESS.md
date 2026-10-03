@@ -1929,3 +1929,299 @@ W5-a の測定の入力 2,344(`artifacts/w5-a/scripts/entry_dump.py`)を、W3-b1
 5. `test_the_new_data_rows_are_read_and_refused_as_registered_…`: 宣言した行(`w3b2_expect_exceptions.json`)は、期待との比較をやめ、観測した結果が変わらないこと(`observed_entry`・`observed_explain`・`observed_verdict`)を確かめる形にした。ほかの行は元の厳しさのまま。新しいテスト `test_the_declared_exceptions_are_rows_of_the_frozen_data_each_explained_by_a_fact_of_the_reader_and_none_is_a_wrong_reading` が、宣言が行の実在・凍結した期待の引用・読解器の事実・誤読が無いこと・新しい経路が読んだ行が無いことを確かめる。
 
 変更後の sha256: `tests/test_semantic_read_w3b2.py` `861f62b976832f10d9d959a3945be2e3ed5df623de94f3bee7fea42e7d8231a9`(`artifacts/w3-b2/tests_freeze_after.sha256`)。弱体化かどうかは中間職の判断に任せる(H145)。
+
+## 10C. W3-b3: 埋め込みの十字 — 述語が 2 つの文を、十字の中の十字と辺として読む（事前登録 K114〜）
+
+<!-- w3b3-prereg:begin -->
+登録日時: 2026-10-03 23:17:09 +0900（`date '+%F %T %z'` の出力。直前の同じ出力は 2026-10-03 23:17:08 +0900、直後は 2026-10-03 23:17:09 +0900 で、この節（と `docs/EVENT_CROSS.md`・`docs/READING_CONVENTIONS.md` の追記）はその間に書いた。記録は `artifacts/w3-b3/prereg_time.txt`）。
+この時点で `tests/reading_soundness/w3b3_*.jsonl`・`tests/test_semantic_read_w3b3*.py` は存在しない（`artifacts/w3-b3/cut_tags.txt` は例文のタガーの出力の記録で、検査データではない）。`verantyx/` は基点 `c875ed3` のまま。
+出典: 中間職の指示書 `.claude/vera-audit/review-impl/W3-b3/plan.md` §3 と、チケット `W3-b3_embedded_crosses.prompt.md`。W1-a4（保留。表層の接続語で節を分けて、レビュー 3 ラウンドで誤読が出続けた）の **一覧**（接続語の表の形・許可の 3 語・引用の動詞 8 語）だけを写した。規則は写していない。
+目的: 述語がちょうど 2 つで切れ目がちょうど 1 つの文を、(1) 連体修飾節 → 主辞を充填物とする埋め込みの十字（主辞の腕を **型で** 決める）、(2) 閉じた接続語の節 → 別の十字と型付きの辺、として読む。各節の中の読みは **入口そのもの**（既存の規則と W3-b1/b2 の型による読解）を通し、新しい役割の規則・語の一覧・表層の規則は足さない。足してよいのは棄権を増やす門だけで、すべてここに登録する。誤読が出たらその構成を棄権に戻す（語を足して直さない）。
+
+### K114 制御の流れ・引き金・チケットの文言の読み方
+1. 配置を指定したときだけ動く。`semantic_read._read_ja` の「配置あり」の分岐の 1 行だけを変える（`_typed_reread_ja` が読めなければ `_w3b3_read_ja` を呼ぶ。読めなければ受け取った出力を **同じオブジェクトのまま** 返す）。配置なしの出力は基点と 1 バイトも変わらない（接続の文も、配置が無ければ読まない）。新しい経路が棄権した文の出力は 1 バイトも変えない（W3-b2 の K94 と同じ。棄権の型付きの理由は診断 `semantic_read.clause_scope_explain_ja` にだけ出す）。
+2. 引き金は、配置に問い合わせる前に、全文のトークンだけで決める。和文・`R._sentences` が 1 区間・節の読みの中でない（深さ 0。節の読みは `_read_ja` を呼ぶので、印で二重に止める）・述語のまとまりがちょうど 2 つ・K115 の切れ目がちょうど 1 つ・一覧にない形（K115 の「一覧外の形」）がない・2 つのまとまりが切れ目の両側に 1 つずつ。
+3. 引き金に当たった文に K116〜K120 を、K122 の順に掛ける。最初に当たった門の理由で止まる。問い合わせは、K116（トークンだけで決める門）と K117 の字面・トークン一致の検査をすべて通ってから初めて起きる。
+4. チケットの文言の読み方（判断記録 H150〜に理由）:
+   - (a) て形・連用中止の辺は **入口の出力には出さない**（入口では今の棄権のまま）。辺 `TE_UNDETERMINED`・`PARALLEL_UNDETERMINED` は診断の `edges` にだけ書く。規約 §1.2 の関係の型ではなく、`CrossReading` には入らない（採点器は規約に無い型を `readable: true` の `relations` に書くと必ず誤答にするため、受入基準 S2・S4（誤答 0）と入口の上では両立しない）。
+   - (b) 主語の省略は **は の主題だけ** で埋める（W1-a4 の最終形。チケットの「同じ文の主語」より狭い。が の主語は埋めず棄権）。
+   - (c) 主辞の腕はチケットの文言どおり（空いている腕がちょうど 1 つ ＋ 型の一致）。型の表 `TYPED_FRAMES` は広げない。
+   - (d) 1 文の切れ目はちょうど 1 つ（節は 2 つ）。3 節以上は棄権。
+   - (e) 切れ目の有無・一意性・形の門はトークンの品詞と活用形で決め、語の表層の一覧では決めない。
+
+### K115 切れ目の閉じた一覧
+全文のトークン（`R._tokens` の特徴を、最初に不変の値の列へ写したもの。タガーの節点は次の解析で別の値になる）の上で、品詞（pos1/pos2）・語彙素・活用形・隣のトークンで判定する。`cut_tags.txt` に各形のタガーの出力を残した。
+
+<!-- BEGIN table:w3b3_cuts -->
+| 切れ目 | 検出（全部満たす） | 節の種類 | 関係の型 | 時制 |
+|---|---|---|---|---|
+| `relative` | 動詞（連体形・終止形が同じ形。ている・てしまう の補助の動詞 = 直前が て/で の非自立可能は除く）、または動詞の連用形＋助動詞 た（連体形）の直後に 名詞・接頭辞 が来る。ない・れる・せる・形容詞・形状詞は対象外。直後の名詞の pos3 が 副詞可能・助数詞可能 のとき（後・前・ため・時 の型）は切れ目にせず一覧外（`CLAUSE_SCOPE_NOT_LISTED`） | 定形 | `relative` | 入口の値 |
+| `ので` | 準体助詞 の ＋ 助動詞 で（語彙素 だ）。直前が動詞か助動詞 た | 定形 | `cause` | 入口の値 |
+| `から` | pos2 が 接続助詞 の から。直前が動詞か助動詞 た | 定形 | `cause` | 入口の値 |
+| `が` | pos2 が 接続助詞 の が（格助詞 が は除く） | 定形 | `contrast` | 入口の値 |
+| `けれど` | pos2 が 接続助詞 で語彙素が けれど（けれど・けれども・けど。けれども の も 係助詞 も切れ目に入れる） | 定形 | `contrast` | 入口の値 |
+| `と` | pos2 が 接続助詞 の と。直前が動詞の終止形か、助動詞 た・ない の終止形 | 定形 | `condition`（K119 の引用の門つき） | 入口の値 |
+| `なら` | 助動詞 だ の仮定形 なら。直前が動詞の終止形（名詞＋なら は切れ目にしない） | 定形 | `condition` | `null` |
+| `ば` | pos2 が 接続助詞 の ば。直前が動詞の仮定形 | 非定形 | `condition` | `null` |
+| `たら` | 助動詞 た の仮定形 たら・だら。直前が動詞の連用形 | 非定形 | `condition` | `null` |
+| `ても` | 接続助詞 て/で ＋ 係助詞 も。直前が動詞の連用形。直後が いい・よい・かまう（許可）なら切れ目にしない | 非定形 | `concession` | `null` |
+| `ながら` | pos2 が 接続助詞 の ながら。直前が動詞の連用形 | 非定形 | `simultaneous` | `null` |
+| `て` | 接続助詞 て/で。直前が動詞の連用形。直後が 読点、または 名詞・代名詞・副詞・連体詞・接頭辞（直後が 動詞の非自立可能・から・も・は なら切れ目にしない = ている・てから・ても・ては） | 非定形 | （書かない。診断の `TE_UNDETERMINED`） | `null` |
+| `並列` | 動詞の連用形（連用形-一般）の直後が 読点 | 非定形 | （書かない。診断の `PARALLEL_UNDETERMINED`） | `null` |
+<!-- END table:w3b3_cuts -->
+
+- 非定形の切れ目（ば・たら・ても・ながら・て・並列）の直前が助動詞（来なければ・読まれても・食べたくて の型）でも切れ目に数え、節は読まない（K117 の `aux_in_nonfinite`）。
+- 切れ目のトークン（と、その直後の読点）はどの節の文字列にも入れない。それ以外のトークンはすべてどちらかの節に入る（黙って捨てない）。
+- **述語のまとまり**: `semantic_read._is_predicate_token` が真のトークンを、(a) 直前のトークンも述語のトークン（複合動詞）、(b) 直前が て/で で、その前が同じまとまり、のとき同じまとまりに入れる。
+- **一覧外の形**（引き金に当たらない。`CLAUSE_SCOPE_NOT_LISTED:<形>`）: のに（準体助詞 の の直後が 格助詞 に）、てから（て の直後が 格助詞 から）、動詞の後ろの 形状詞 助動詞語幹（よう・そう の型）、relative の直後の名詞が 副詞可能・助数詞可能（後・前・ため・時 の型）。
+- 語の一覧は使わない。表に出る語は、いい・よい・かまう（W1-a4 の K42 の表から写した許可の 3 語）と、K119 の引用の動詞 8 語だけ。
+
+### K116 切れ目の一意性と、文全体の門（トークンだけで決める。問い合わせない。順に掛ける）
+1. **形の門** `CLAUSE_FORM_NOT_READ:<理由>`: 全文に (a) 活用形が 命令形 のトークン → `imperative`、(b) 括弧・引用符（「」『』""）→ `quote`、(c) 疑問（？ ? ・終助詞 か）→ `question`、(d) 切れ目のトークン以外で `R._w3b1_marker(token) == 'conn'` のトークン（接続詞・ほかの接続助詞。ただし述語のまとまりの中の て/で、つまり直前が動詞で直後が動詞の非自立可能の て/で は除く）→ `connective_outside_cut`。
+2. **句**: 全文を、助詞（pos1 が 助詞 で、pos2 が 接続助詞・準体助詞 でないもの。連体の の は句の切れ目にしない）の連なりの直後で区切った連なり。句の助詞は連なり全体の表層。主題の句 = 先頭の句で、助詞の連なりが は で終わるもの。
+3. 主題: 関係節（`relative`）の区間（文頭から関係節の述語まで）に、は で終わる句があれば `CLAUSE_SCOPE_AMBIGUOUS:topic_in_relative`。接続の文で、は で終わる句が先頭以外にあれば `CLAUSE_SCOPE_AMBIGUOUS:topic_position`。接続の文の先頭の主題の句は従属節の文字列に入れる（読解器の chunk と同じ）。K120 の主語の埋めでだけ主節に使う。
+4. **別の切り方の数え上げ**（W1-a4 の「表層で切った」誤りを閉じる門）: 主題の句を除いた、従属節の側の述語の前の句を p1..pn とする。k=1..n について「先頭の k 個を主節の側に移した切り方」を作る。どれか 1 つでも、2 つの節のどちらにも が の句が 2 つ以上・を の句が 2 つ以上 **無い**（格の重複で壊れていない）なら、その切り方は成り立ちうるので `CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=<k>`。が・を 以外の助詞（に・で・へ・から・と ほか）は重なっても壊れない（三時に駅に）ので、重なりを壊れた証拠にしない。読み直しはしない。関係節の側の p が無ければ（切れ目の前が述語だけ）一意。
+5. k=0（移さない切り方）がすでに壊れている（どちらかの節に が か を の句が 2 つ以上ある）なら、成り立つ切り方が無いので `CLAUSE_SCOPE_AMBIGUOUS:noncontiguous`。
+- 例（構造で決まる）: `兄が買った本を弟が読んだ。` → k=1 で主節に が が 2 つ → 壊れる → 一意。`兄が駅で買った本を読んだ。` → k=1 で主節「兄が＋本を読んだ」は壊れない → 棄権。`駅で兄が本を買ったので、弟が喜んだ。` → k=1 で主節「駅で＋弟が喜んだ」は壊れない → 棄権（文頭の句の係り先が決まらない。規約 §9.2）。
+
+### K117 節の文字列・読み・既存の門の再使用
+1. 定形の節（関係節・ので・から・が・けれど・と・なら の前、主節）の文字列 = 区間の表層 ＋ `。`。
+2. 非定形の節（ば・たら・ても・ながら・て・並列 の前）の文字列 = 動詞の前のトークンの表層 ＋ その動詞の **書かれた辞書形**（`typed_edges._base` = orthBase。語彙素は使わない: 閉め の lemma は 締める、帰ら は 返る）＋ `。`。動詞と切れ目の間に助動詞があれば `CLAUSE_FORM_NOT_READ:aux_in_nonfinite`。
+3. **トークン一致の検査**: 節の文字列を `R._tokens` で解析し直し、各トークンの（表層・pos1・pos2・語彙素・活用形）が全文の同じトークンと一致すること。違ってよいのは最後のトークンの活用形だけで、(a) 定形の節の 連体形 → 終止形、(b) 非定形の節の書き換えた動詞（表層も違ってよいが orthBase と pos1 は一致）。ほかは `CLAUSE_TOKENS_DIFFER:<位置>`。
+4. 節の文字列を入口 `_read_ja(文字列, 包んだ配置)` に通す。包んだ配置は新しい `_CachedQuery`（`w3b2_trace` を持たない）。`readable: true` で節がちょうど 1 つ・関係が空でなければ `CLAUSE_UNREAD:<節の番号>:<入口の最初の理由>`。
+5. **既存の門の再使用**（基点の入口の単独の節の誤読 — 命令形・禁止・依頼・ている+ない・可能形 — が節の読みにそのまま入るのを止める）: すべての節の読みに、節の文字列のトークンと入口の述語の範囲で `R.typed_tail_ja` と `R.typed_head_derived_ja` を掛ける。当たれば `CLAUSE_FORM_NOT_READ:<その理由>`。下一段の動詞は派生の疑いで全部止まる（広い棄権。門を狭めない。被覆の損失は測って K123〜に書く）。埋め戻しの再読（K118）・主題の埋めの再読（K120）にも同じ門を掛ける。
+6. 時制: relative・ので・から・が・けれど・と の節は入口が読んだ値。なら・ば・たら・ても・ながら・て・並列 の節は `null`（規約 §4.9・§5）。と の節は入口の値（規約 §4.9 の `null` の一覧に と が無い。正解が `null` なら採点されない）。
+
+### K118 主辞の腕（`relative` だけ。型だけで決める）
+1. 主辞の名詞句 = 関係節の述語の直後から、最初の助詞の直前まで。すべて 名詞（数詞でない）・接頭辞・接尾辞 で、の・連体詞を含まず、最後のトークンの pos3 が 副詞可能・助数詞可能（`W3B2_HEAD_RELATIONAL_POS3`）でない。満たさなければ `HEAD_ROLE_UNDETERMINED:head_not_simple` / `head_relational`。
+2. 関係節の節（単独の読み）が `voice: active` でなければ `HEAD_ROLE_UNDETERMINED:voice`。
+3. 関係節の述語（入口の述語。書かれた辞書形）の型 = `R.placement_type(問い合わせ)` が direct の `P_MOVE`・`P_COMMUNICATE`（`TYPED_FRAMES` にあるもの）。それ以外・答えが無いものは `HEAD_ROLE_UNDETERMINED:frame_not_read:<型か理由>`。節の役割名が、その型の表の役割名と `recipient` の外にあれば `HEAD_ROLE_UNDETERMINED:role_outside_frame`（棄権を増やす門）。
+4. **枠が要求する腕** = その型の `TYPED_FRAMES` の行のうち 4 列目が `arg` の行（P_MOVE: agent・goal・source、P_COMMUNICATE: agent・patient）＋ 決まっていない腕（K62 の表の変更記録 1 で「読まない」に戻した `P_COMMUNICATE` の に の腕。名前は役割にしない = `NI_UNDECIDED`）。腕が埋まっているとは、単独の読みの役割に同じ役割名があること（`NI_UNDECIDED` は、関係節に に の句（格助詞 に）があれば埋まっているとする）。
+5. 空いている腕がちょうど 1 つでなければ `HEAD_ROLE_UNDETERMINED:empty_arms=<n>`。その 1 つが `NI_UNDECIDED` なら `HEAD_ROLE_UNDETERMINED:undecided_arm`。
+6. 主辞の配置の答えを `R.placement_fit(answer, その行の型)` に通し、`direct` か `all_candidates` でなければ `HEAD_ROLE_UNDETERMINED:type:<理由>`。述語の枠が CONFIRMED なら（`R.predicate_frame`）、決まった腕の助詞が枠にあり、主辞の型がすべて枠の型に入ることを確かめる（狭めるだけ。反すれば `HEAD_ROLE_UNDETERMINED:type:PLACEMENT_FRAME_*`）。
+7. **付加の腕の同点**: 空いている `adjunct` の行（place・time）のどれかも `placement_fit(answer, 行の型, adjunct=True)` で `direct`／`all_candidates` なら `HEAD_ROLE_UNDETERMINED:adjunct_tie`。
+8. **外の関係の型**: 主辞の型（direct の 1 つ、または全候補）が `ABSTRACT`・`EVENT_ACT`・`STATE_PROPERTY` のどれかを含めば `HEAD_ROLE_UNDETERMINED:outer_relation_type`（内容節・外の関係の区別がつかない。型の閉じた一覧。狭める側の門）。
+9. **埋め戻しの再読**: 決まった腕の助詞（その行の 2 列目の 1 つ目）を使い、「主辞＋助詞＋関係節の文字列」を入口に通す。読みの述語・極性・時制・態・ほかの役割が単独の読みと同じで、決まった腕に主辞がちょうど入っていなければ `HEAD_ROLE_UNDETERMINED:refill_reread`。既存の門（K117 5）も掛ける。読めた節を関係節の節として使う。
+10. 主節（主節の文字列）の読みの役割のうち、値が主辞と同じものがちょうど 1 つでなければ `HEAD_NOT_IN_HOST`。
+11. 関係節の節の `predicate_basis` は `placement_direct:<型>`、`role_basis[腕]` は W3-b2 の文法（`placement_direct:<型>` か `placement_all_candidates:<A+B>`）。入口がすでに欄を書いていれば、その欄に腕の 1 行を足す（ほかの行は変えない）。
+
+### K119 関係の表（規約 §1.2 の型と向き。節 0 = 従属節、節 1 = 主節）
+<!-- BEGIN table:w3b3_relations -->
+| 切れ目 | type | from → to | 棄権する場合（理由） |
+|---|---|---|---|
+| `relative` | `relative` | 0 → 1（＋`head`） | K118 |
+| `ので`・`から` | `cause` | 0 → 1 | なし |
+| `が`・`けれど` | `contrast` | 0 → 1 | なし |
+| `ても` | `concession` | 0 → 1 | なし |
+| `ば`・`たら`・`なら`・`と` | `condition` | 0 → 1 | 主節の tense が past → `RELATION_TYPE_UNDETERMINED:condition_past_main` |
+| `と`（追加の門） | `condition` | 0 → 1 | 主節の述語が引用の動詞 8 語（言う 思う 話す 伝える 聞く 尋ねる 答える 考える。W1-a4 から写した）にある、または主節の述語の型が direct の `P_COMMUNICATE`・`P_COGNITION`・`P_CREATE`・`P_PERCEIVE`、または型が direct でない → `RELATION_TYPE_UNDETERMINED:quote_possible` |
+| `ながら` | `simultaneous` | 0 → 1 | なし |
+| `て` | （書かない） | — | 常に `RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED`（診断の `edges` に `{"type":"TE_UNDETERMINED","from":0,"to":1}`） |
+| `並列` | （書かない） | — | 常に `RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED`（同上） |
+<!-- END table:w3b3_relations -->
+- て・並列の辺は、2 つの節が K117 で読めたときだけ診断の `edges` に書く。
+
+### K120 省略（W1-a4 のレビュー第 1〜3 ラウンドで閉じた形。順に掛ける）
+1. **主語の埋め**（唯一の形）: 先頭が主題の句 `X は`（K116 2）で、従属節（`relative` でない文の最初の節）の読みで X が agent、その節が能動。主節の側に が・は の句が無く、主節が能動で agent を持たない。このとき主節の文字列の前に `X は` を付けた文字列を入口に通し（既存の門も掛ける）、agent が X で、ほかが主節の単独の読みと同じなら、その読みを主節にする。違えば `ELLIPSIS_UNDETERMINED:subject`。
+2. **埋めないときの棄権**: 主語（agent・受身の patient・entity）の無い節があり、ほかの節の側に が・は の句があるのに 1. で埋めなかったら `ELLIPSIS_UNDETERMINED:subject`。どの節の側にも が・は の句が無ければ書かない（入力に先行詞が無い。規約 §3）。
+3. **目的語**: 能動の節で patient が無く、述語の `frames.transitivity` が `intrans` **でない**（`trans` も `unknown` も）、かつ、ほかの節に名詞の値の役割がこの節の agent と違う値で 1 つでもあれば `ELLIPSIS_UNDETERMINED:object`（W1-a4 第 3 ラウンド必須 2 を、`unknown` も含む側に広げた）。`relative` の関係節の節で、主辞を入れた腕が patient のときは対象外。
+4. **斜格**: ほかの節にある goal・source・place・recipient・instrument・companion・time がこの節に無く、(a) 2 つの節の述語が同じ語、または (b) 欠けた役割が goal・source でこの節の述語が `R._GOAL_PREDICATES` か `semantic_read._PATH_VERBS`（dev にある一覧。新しい一覧は作らない）にある → `ELLIPSIS_UNDETERMINED:<役割>`。
+
+### K121 出力
+- `clauses` = [節 0, 節 1]（述語の出現順。関係節・従属節が先）。各節は入口の読み（K117 6 の時制・K118 の主辞の腕を反映）。`relations` = K119 の 1 要素。`relative` だけ `{"type": "relative", "from": 0, "to": 1, "head": {"from_role": <関係節での腕>, "to_role": <主節での役割>}}`（`head` は規約の鍵の外。採点器は読まない。十字が使う）。
+- `clause_meta` = 各節 `{"rule": <入口の節の rule>, "span": [全文での述語の頭のトークンの始め, 切れ目（主節は文末の句点）の直前の最後のトークンの終わり]}`（全文のトークンの位置から作る）。`unsupported` = 全文の `unsupported_report`（W3-b1/b2 の型の経路と同じ）。
+- `NOT_PRODUCED` は変えない（配置なしの入口の記述）。代わりに定数 `W3B3_PRODUCED_WITH_PLACEMENT`（配置があるときに新しく出る関係の型と欄）を足し、下の表と機械で照合する。
+
+<!-- BEGIN table:w3b3_produced -->
+| 名前 | 内容 |
+|---|---|
+| `relation:relative` | 配置あり・K118 が通ったときだけ。鍵 `head` を持つ |
+| `relation:cause` | ので・から。配置ありのときだけ |
+| `relation:contrast` | が・けれど。配置ありのときだけ |
+| `relation:concession` | ても。配置ありのときだけ |
+| `relation:condition` | ば・たら・なら・と。配置ありのときだけ |
+| `relation:simultaneous` | ながら。配置ありのときだけ |
+| `relation_key:head` | `relative` の関係だけが持つ鍵（`from_role`・`to_role`）。規約の鍵の外 |
+| `tense:null` | なら・ば・たら・ても・ながら の従属節 |
+<!-- END table:w3b3_produced -->
+
+### K122 理由の型（閉じた一覧）と門の順
+- 理由の名前（`:` の前）。診断 `clause_scope_explain_ja` の `reason`。入口の出力には出ない。
+
+<!-- BEGIN table:w3b3_reasons -->
+| 理由の名前 | 細目 |
+|---|---|
+| `W3B3_NOT_TRIGGERED` | `not_reached`・`depth`・`sentences`・`groups=<n>`・`groups_not_split` |
+| `CLAUSE_SCOPE_NOT_LISTED` | 一覧外の形（K115） |
+| `CLAUSE_SCOPE_AMBIGUOUS` | `cuts=<n>`・`alternative_cut=<k>`・`topic_in_relative`・`topic_position`・`noncontiguous` |
+| `CLAUSE_FORM_NOT_READ` | `imperative`・`quote`・`question`・`connective_outside_cut`・`aux_in_nonfinite`・既存の門の理由（`PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:…`・`PLACEMENT_PREDICATE_POSSIBLY_DERIVED:…`） |
+| `CLAUSE_TOKENS_DIFFER` | 位置 |
+| `CLAUSE_UNREAD` | 節の番号と入口の最初の理由 |
+| `HEAD_ROLE_UNDETERMINED` | `head_not_simple`・`head_relational`・`voice`・`frame_not_read`・`role_outside_frame`・`empty_arms=<n>`・`undecided_arm`・`type`・`adjunct_tie`・`outer_relation_type`・`refill_reread` |
+| `HEAD_NOT_IN_HOST` | なし |
+| `RELATION_TYPE_UNDETERMINED` | `TE_UNDETERMINED`・`PARALLEL_UNDETERMINED`・`condition_past_main`・`quote_possible` |
+| `ELLIPSIS_UNDETERMINED` | `subject`・`object`・役割名 |
+<!-- END table:w3b3_reasons -->
+
+- 門の順: (1) 引き金 K114 2 → (2) 一覧外の形 → (3) 切れ目の数 → (4) 形の門 K116 1 → (5) 主題・別の切り方 K116 3〜5 → (6) 節の文字列（aux_in_nonfinite）・トークン一致 K117 1〜3 →【ここから問い合わせる】→ (7) 節の読み K117 4 → (8) 既存の門 K117 5 → (9) `relative` の主辞 K118 → (10) 関係の型 K119 → (11) 省略 K120 → 読めた。
+- （第 4 ラウンドの追記。変更記録「第 4 ラウンド」）(11) 省略 の後、読めた の前に (12) 係助詞・副助詞の門 → `CLAUSE_FORM_NOT_READ:focus_particle`。
+
+### 検査データ（手順 3 で書く。この登録の後）
+- `tests/reading_soundness/w3b3_relative.jsonl`（連体修飾 60 文）・`w3b3_connective.jsonl`（接続 60 文。K115 の接続の 11 形を各 3 文以上）・`w3b3_parallel.jsonl`（並列 30 文: て形 15・連用中止＋読点 15）、`w3b3_w1a4.jsonl`（W1-a4 のレビューの誤読の全件。棄権すべき文）。どれも日本語。`behavior: read` と `behavior: abstain` が半々（`w3b3_w1a4.jsonl` は全件 abstain）。
+- `read` の行の `expect` は **規約どおりの正解**（実装が出せるかどうかで変えない）。`entry_expect`（`read` / `abstain`）は入口の出力の予想、`w3b3_expect`（`READ` か K122 の理由）は診断の予想、て形・並列の `read` の行は `structure_expect`（2 つの節と `edges` の辺）。`abstain` の行の `expect.readable: false` は「この経路では読みが一意に決まらない」の意味（規約 §7 の読めない入力ではない）で、`abstain_why` に棄権すべき理由の型を書く。
+- 凍結の後に期待を変えない。直すべきと思ったら判断記録に書いて報告する。
+
+### 受入基準の読み方
+S1 配置なしの出力は基点とバイト一致（`w3b1_entry_dump.py --mode none` の比較）・既存の凍結データと x3 で `changed=0`・`misread=0`。S2 は中間職が未公開の文で測る。S3 W1-a4 の誤読の全件が棄権（テスト）。S4 は監査役が B1 で測る（下準備の数だけを出す）。S5 `vera observe` で EDGE の移動が動き、再観測可能率 100%。S6 既存テストの失敗集合が基線から増えない。目標の数値は書かない。測定結果は K123〜 に `w3b3_recompute.py` の出力をそのまま貼る。
+<!-- w3b3-prereg:end -->
+
+### 表の変更記録（W3-b3。登録の後に決めたこと。日時はファイルの更新時刻 `stat`）
+1. **2026-10-03 23:38（実装の最中。データの凍結・テストの凍結の後、データの測定の前）K115 の読みの明確化**。述語のまとまりから、`準体助詞 の` の直後の `助動詞 だ`（`ので` の `で`）を除く。理由: 登録した検出は `ので` を「準体助詞 の ＋ 助動詞 で」の連なり（切れ目のトークン）としているが、`semantic_read._is_predicate_token` はこの `で` を述語のトークンと数える（直前が助詞）ので、`兄が本を読んだので、弟が歌を歌った。` の述語のまとまりが 3 つになり、すべての `ので` の文が引き金に当たらなかった（凍結したテスト `test_a_connective_row_that_is_read_is_correct_and_has_the_relation_of_its_form` が失敗して見つけた）。**登録の意図（`ので` は 1 つの切れ目）に合わせる直しで、棄権を増やす側ではない**が、新しい語の一覧も表層の規則も足していない（品詞と直前のトークンの品詞だけ。`のだ` のような名詞化した述語の `だ` も同じく述語に数えない）。直した後の測定で `ので` の誤読は 0（K123 の行）。
+2. **2026-10-03 23:40（凍結したテストの変更。下の「テストの変更記録」）**。
+3. 実装での主辞の句の定義（K118 1 の実装）: 「最初の助詞の直前まで」と登録した主辞の句の次のトークンが `の`（連体の の）のときは `head_not_simple`（`兄の友達` は主辞が `兄` だけで終わらない）。登録の文言に含まれる（「の・連体詞を含まず」）ので変更ではなく、実装の読み方の記録。
+
+### K123 測定結果(登録のあと。数値は `artifacts/w3-b3/` から `tests/reading_soundness/w3b3_recompute.py` が作る。この節の行はそのまま貼った)
+
+<!-- w3b3-measured:begin -->
+- 事前登録の時刻の順（`prereg_time.txt`・`bank_freeze_time.txt`・`placement_fixture_time.txt`・`tests_freeze_time.txt`・`impl_start_time.txt`）: 登録 2026-10-03 23:17:09 +0900 < データの凍結 2026-10-03 23:25:12 +0900 < 固定の答え 2026-10-03 23:26:27 +0900 < テストの凍結 2026-10-03 23:32:33 +0900 < 実装の開始 2026-10-03 23:35:34 +0900
+- S1-1 読解器 `document_view`（x3: 凍結した日本語の銀行と 13 の例文ファイル。2217 文）: READER_UNCHANGED（`x3_cmp.txt`）
+- S1-2 凍結データの照合（`harness.py`）: sentences 500 changed 0 misread 0（`soundness_compare.txt`）。a3: A3_SAME（`a3_same.txt`）
+- S1-3 入口・配置なし（3386 入力）: NO_PLACEMENT_SAME（`none_vs_dev.txt`）
+- S1-4 入口・配置 r6、基点との差（`w3b3_delta.py`。終了コード 0）: inputs=3386 same=3344 newly_read=42 read_to_abstain=0 changed=0 refusal_changed=0 error_changed=0
+- S1-4 新しく読めた文の判定: {"CORRECT": 42}。出所: {"w3b3_connective.jsonl|newly_read": 29, "w3b3_relative.jsonl|newly_read": 13}（`delta_summary.txt`）
+- S1-4 配置への問い合わせ（基点との比較。`queries_compare.txt`）: inputs=3386 questions_base=1137 questions_now=1210 differ=49 differ_and_triggered=49 differ_not_triggered=0
+- S1-5 推定・割れた配置の偽物（`direct_only.txt`）: estimated newly_read 26 relative_read 0 to_read 0 not_in_live 0 content_differs 0
+- S1-5 推定・割れた配置の偽物（`direct_only.txt`）: multiple newly_read 26 relative_read 0 to_read 0 not_in_live 0 content_differs 0
+- 引き金（`explain_summary.txt`）: group=public japanese_inputs=2938 triggered=106 read=0
+- 引き金（`explain_summary.txt`）: group=new_data japanese_inputs=203 triggered=174 read=42
+- 切れ目の種類ごとの引き金の数と読めた数（群 public。`explain_summary.txt`）: relative 39/0, が 5/0, て 32/0, ても 3/0, と 1/0, ながら 2/0, ので 3/0, ば 1/0, 並列 20/0
+- 棄権の理由の型ごとの数（群 public・stopped。`explain_summary.txt`）: {"relative|CLAUSE_FORM_NOT_READ": 16, "relative|CLAUSE_SCOPE_AMBIGUOUS": 21, "relative|CLAUSE_UNREAD": 1, "relative|HEAD_ROLE_UNDETERMINED": 1, "が|CLAUSE_FORM_NOT_READ": 2, "が|CLAUSE_SCOPE_AMBIGUOUS": 3, "て|CLAUSE_FORM_NOT_READ": 11, "て|CLAUSE_SCOPE_AMBIGUOUS": 19, "て|CLAUSE_UNREAD": 1, "て|RELATION_TYPE_UNDETERMINED": 1, "ても|CLAUSE_FORM_NOT_READ": 1, "ても|CLAUSE_SCOPE_AMBIGUOUS": 2, "と|CLAUSE_FORM_NOT_READ": 1, "ながら|CLAUSE_SCOPE_AMBIGUOUS": 1, "ながら|CLAUSE_UNREAD": 1, "ので|CLAUSE_SCOPE_AMBIGUOUS": 2, "ので|CLAUSE_UNREAD": 1, "ば|CLAUSE_SCOPE_AMBIGUOUS": 1, "並列|CLAUSE_FORM_NOT_READ": 7, "並列|CLAUSE_SCOPE_AMBIGUOUS": 12, "並列|CLAUSE_UNREAD": 1}
+- 棄権の理由の型ごとの数（群 public・stopped_detail。`explain_summary.txt`）: {"CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_TAIL_UNINTERPRETED": 1, "CLAUSE_FORM_NOT_READ:connective_outside_cut": 5, "CLAUSE_FORM_NOT_READ:quote": 32, "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut": 36, "CLAUSE_SCOPE_AMBIGUOUS:topic_in_relative": 18, "CLAUSE_SCOPE_AMBIGUOUS:topic_position": 7, "HEAD_ROLE_UNDETERMINED:frame_not_read": 1, "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED": 1}
+- 棄権の理由の型ごとの数（群 public・not_triggered。`explain_summary.txt`）: {"CLAUSE_SCOPE_AMBIGUOUS": 158, "CLAUSE_SCOPE_NOT_LISTED": 14, "W3B3_NOT_TRIGGERED:groups": 1616, "W3B3_NOT_TRIGGERED:groups_not_split": 13, "W3B3_NOT_TRIGGERED:sentences": 2, "not_reached": 1029}
+- 切れ目の種類ごとの引き金の数と読めた数（群 new_data。`explain_summary.txt`）: relative 58/13, から 7/3, が 15/3, けれど 6/3, たら 7/3, て 13/0, ても 5/3, と 15/3, ながら 6/3, なら 7/3, ので 16/2, ば 6/3, 並列 13/0
+- 棄権の理由の型ごとの数（群 new_data・stopped。`explain_summary.txt`）: {"relative|CLAUSE_FORM_NOT_READ": 6, "relative|CLAUSE_SCOPE_AMBIGUOUS": 9, "relative|CLAUSE_UNREAD": 6, "relative|ELLIPSIS_UNDETERMINED": 2, "relative|HEAD_ROLE_UNDETERMINED": 22, "から|CLAUSE_FORM_NOT_READ": 3, "から|CLAUSE_SCOPE_AMBIGUOUS": 1, "が|CLAUSE_SCOPE_AMBIGUOUS": 10, "が|CLAUSE_UNREAD": 1, "が|ELLIPSIS_UNDETERMINED": 1, "けれど|CLAUSE_FORM_NOT_READ": 1, "けれど|CLAUSE_SCOPE_AMBIGUOUS": 1, "けれど|ELLIPSIS_UNDETERMINED": 1, "たら|CLAUSE_FORM_NOT_READ": 3, "たら|RELATION_TYPE_UNDETERMINED": 1, "て|CLAUSE_FORM_NOT_READ": 3, "て|CLAUSE_SCOPE_AMBIGUOUS": 2, "て|RELATION_TYPE_UNDETERMINED": 8, "ても|CLAUSE_FORM_NOT_READ": 1, "ても|ELLIPSIS_UNDETERMINED": 1, "と|CLAUSE_FORM_NOT_READ": 2, "と|CLAUSE_SCOPE_AMBIGUOUS": 1, "と|RELATION_TYPE_UNDETERMINED": 9, "ながら|CLAUSE_SCOPE_AMBIGUOUS": 1, "ながら|CLAUSE_UNREAD": 1, "ながら|ELLIPSIS_UNDETERMINED": 1, "なら|CLAUSE_FORM_NOT_READ": 1, "なら|CLAUSE_SCOPE_AMBIGUOUS": 1, "なら|ELLIPSIS_UNDETERMINED": 1, "なら|RELATION_TYPE_UNDETERMINED": 1, "ので|CLAUSE_FORM_NOT_READ": 10, "ので|CLAUSE_SCOPE_AMBIGUOUS": 3, "ので|ELLIPSIS_UNDETERMINED": 1, "ば|CLAUSE_FORM_NOT_READ": 1, "ば|CLAUSE_SCOPE_AMBIGUOUS": 1, "ば|RELATION_TYPE_UNDETERMINED": 1, "並列|CLAUSE_FORM_NOT_READ": 3, "並列|CLAUSE_SCOPE_AMBIGUOUS": 2, "並列|CLAUSE_UNREAD": 1, "並列|RELATION_TYPE_UNDETERMINED": 7}
+- 棄権の理由の型ごとの数（群 new_data・stopped_detail。`explain_summary.txt`）: {"CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED": 14, "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_TAIL_UNINTERPRETED": 2, "CLAUSE_FORM_NOT_READ:aux_in_nonfinite": 3, "CLAUSE_FORM_NOT_READ:connective_outside_cut": 2, "CLAUSE_FORM_NOT_READ:imperative": 9, "CLAUSE_FORM_NOT_READ:question": 4, "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut": 14, "CLAUSE_SCOPE_AMBIGUOUS:topic_in_relative": 3, "CLAUSE_SCOPE_AMBIGUOUS:topic_position": 15, "ELLIPSIS_UNDETERMINED:goal": 1, "ELLIPSIS_UNDETERMINED:object": 7, "HEAD_ROLE_UNDETERMINED:adjunct_tie": 2, "HEAD_ROLE_UNDETERMINED:empty_arms": 5, "HEAD_ROLE_UNDETERMINED:frame_not_read": 6, "HEAD_ROLE_UNDETERMINED:outer_relation_type": 3, "HEAD_ROLE_UNDETERMINED:type": 4, "HEAD_ROLE_UNDETERMINED:undecided_arm": 2, "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED": 7, "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED": 8, "RELATION_TYPE_UNDETERMINED:condition_past_main": 4, "RELATION_TYPE_UNDETERMINED:quote_possible": 8}
+- 棄権の理由の型ごとの数（群 new_data・not_triggered。`explain_summary.txt`）: {"CLAUSE_SCOPE_AMBIGUOUS": 6, "CLAUSE_SCOPE_NOT_LISTED": 6, "W3B3_NOT_TRIGGERED:groups": 17}
+- 新データ（relative 60・connective 60・parallel 30・w1a4 53。`data_entry_check.json`）: 判定 {"abstain": 33, "correct": 170}、誤読 0・不完全 0・判定不能 0
+- 新データの予想との食い違い: entry_expect 0・w3b3_expect 7・structure_expect 0（全件は `expect_mismatches.md`）
+- 新データの判定（ファイルごと。`data_entry_check.json`）: {"connective": {"abstain": 1, "correct": 59}, "parallel": {"abstain": 15, "correct": 15}, "relative": {"abstain": 17, "correct": 43}, "w1a4": {"correct": 53}}
+- fixture と live の判定（`fixture_equals_live.txt`）: FIXTURE_EQUALS_LIVE
+- 新データで入口が読んだ行: 42（切れ目の種類ごと: {"relative": 13, "から": 3, "が": 3, "けれど": 3, "たら": 3, "ても": 3, "と": 3, "ながら": 3, "なら": 3, "ので": 2, "ば": 3}）
+- 被覆の損失の内訳（規約どおり読める `behavior: read` の行のうち入口が読まなかった行を、止めた門ごとに。派生の疑いの門 `PLACEMENT_PREDICATE_POSSIBLY_DERIVED`・語尾の門 `PLACEMENT_PREDICATE_TAIL_UNINTERPRETED`・目的語の門 `ELLIPSIS_UNDETERMINED:object`・主辞の腕の各理由は細目まで。`data_entry_check.json`）: {"CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED": 5, "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut": 1, "CLAUSE_UNREAD": 2, "HEAD_ROLE_UNDETERMINED:frame_not_read": 6, "HEAD_ROLE_UNDETERMINED:type": 4, "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED": 7, "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED": 8}
+- 新データの全行（203）で止めた門のうち、既存の門と目的語の門と主辞の腕の理由ごとの数（`data_entry_check.json`）: {"ELLIPSIS_UNDETERMINED:object": 7, "HEAD_ROLE_UNDETERMINED:adjunct_tie": 2, "HEAD_ROLE_UNDETERMINED:empty_arms": 5, "HEAD_ROLE_UNDETERMINED:frame_not_read": 6, "HEAD_ROLE_UNDETERMINED:outer_relation_type": 3, "HEAD_ROLE_UNDETERMINED:type": 4, "HEAD_ROLE_UNDETERMINED:undecided_arm": 2, "PLACEMENT_PREDICATE_POSSIBLY_DERIVED": 14, "PLACEMENT_PREDICATE_TAIL_UNINTERPRETED": 2}
+- 実行時間（入口・配置 r6・今の木。基点と並行に流したので、基点との比較には使わない。`timing_r6.json`）: 3386 入力、壁時計 3.87 秒、1 入力あたり 中央値 0.958 ms・最大 87.269 ms（1 分平均の負荷 3.46 → 3.46）
+- S3 W1-a4 の誤読の全 53 文: 107 passed, 945 deselected in 0.80s、`readable: false` 53 文、基点（dev・r6）と出力が一致 53 文（`s3_pytest.txt`・`s3_live.txt`・`s3_vs_dev.txt`）
+- S3 の判定（`s3_live.txt`）: verdicts={"correct": 53}
+- S4 の下準備・自作の B1 見本 3 本（配置 r6。`b1_fixtures_r6.txt`）: {"abstain": 50, "correct": 68}、誤読 0・不完全 0
+- S4 の下準備・`multiple predicates` の棄権（群 new_data。dev と今、配置 r6。`multiple_census.txt`）: multiple_inputs=103 base_read=0 now_read=33 newly_read=33 still_abstains=70 reasons={"CLAUSE_FORM_NOT_READ": 14, "CLAUSE_SCOPE_AMBIGUOUS": 14, "CLAUSE_SCOPE_NOT_LISTED": 2, "CLAUSE_UNREAD": 8, "ELLIPSIS_UNDETERMINED": 6, "HEAD_ROLE_UNDETERMINED": 22, "RELATION_TYPE_UNDETERMINED": 4} newly_read_by_cut={"relative": 13, "から": 3, "が": 3, "けれど": 3, "たら": 3, "と": 3, "ながら": 3, "ので": 2}
+- S4 の下準備・`multiple predicates` の棄権（群 public。dev と今、配置 r6。`multiple_census.txt`）: multiple_inputs=211 base_read=0 now_read=0 newly_read=0 still_abstains=211 reasons={"CLAUSE_FORM_NOT_READ": 9, "CLAUSE_SCOPE_AMBIGUOUS": 28, "CLAUSE_SCOPE_NOT_LISTED": 6, "CLAUSE_UNREAD": 3, "HEAD_ROLE_UNDETERMINED": 1, "W3B3_NOT_TRIGGERED:groups": 157, "W3B3_NOT_TRIGGERED:groups_not_split": 6, "W3B3_NOT_TRIGGERED:not_reached": 1} newly_read_by_cut={}
+- S4 の下準備・`multiple predicates` の棄権（群 w1a4。dev と今、配置 r6。`multiple_census.txt`）: multiple_inputs=34 base_read=0 now_read=0 newly_read=0 still_abstains=34 reasons={"CLAUSE_FORM_NOT_READ": 12, "CLAUSE_SCOPE_AMBIGUOUS": 13, "CLAUSE_SCOPE_NOT_LISTED": 3, "RELATION_TYPE_UNDETERMINED": 6} newly_read_by_cut={}
+- S5 観測の EDGE（`observe_edge.txt`）: ケース 11・EDGE で出た升があるケース 10・EDGE で出た升の数 10
+- S5 再観測（`observe_edge_reobserve.json`）: 升 21・REOBSERVED 21・MISMATCH 0
+- S5 観測のテスト（配置つき。`pytest_observe_with_placement.txt`・`_dev.txt`）: 今 283 passed in 25.80s、基点 283 passed in 26.08s
+- S6 全体テスト（`pytest_full.txt`）: 119 failed, 13025 passed, 45 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 378.44s (0:06:18)。基線 `dev_c875ed3_failures.txt`（115 行）に無い失敗 4 件（`pytest_new_failures.txt`）、基線にあって今は通る 0 件（`pytest_fixed_vs_baseline.txt`）
+- S6 新しいテスト（`pytest_w3b3.txt`）: 1195 passed in 13.22s
+- 第 2 ラウンド M1 の時刻の順（`r2/docs_change_time.txt`・`r2/test_r2_freeze_time.txt`・`r2/fix_time.txt`）: 変更記録 2026-10-04 00:21:33 +0900 < 新しいテストの凍結 2026-10-04 00:22:17 +0900 < 直した時刻 2026-10-04 00:22:30 +0900
+- 第 2 ラウンド M1 の新しいテスト `tests/test_semantic_read_w3b3_r2.py` を直す前の木で流した結果（`r2/test_r2_on_unfixed_tree.txt`）: 8 failed, 48 passed in 0.53s
+- 第 2 ラウンド M1 の新しいテストを直した後の木で流した結果（`r2/pytest_r2_only_after_fix.txt`）: 56 passed in 0.53s
+- 第 2 ラウンドの自作の確認（`r2/self_probe_r2.txt`。配置 r6、に の句が時・場所・受け手の関係節。同じ書き手なので証拠にならない）: 20 文、読んだ 5 文、棄権 15 文
+- 第 4 ラウンド M1-r3 の時刻の順（`r4/docs_change_time.txt`・`r4/test_r4_freeze_time.txt`・`r4/fix_time.txt`）: 変更記録 2026-10-04 01:32:23 +0900 < 新しいテストの凍結 2026-10-04 01:32:59 +0900 < 直した時刻 2026-10-04 01:33:29 +0900
+- 第 4 ラウンド M1-r3 の新しいテスト `tests/test_semantic_read_w3b3_m1r3.py` を直す前の木で流した結果（`r4/test_r4_on_unfixed_tree.txt`）: 30 failed, 32 passed in 0.73s
+- 第 4 ラウンド M1-r3 の新しいテストを直した後の木で流した結果（`r4/pytest_r4_only_after_fix.txt`）: 62 passed in 0.50s
+- 第 4 ラウンド M1-r3 の入口での比較（配置 r6。`r4/m1r3_compare.txt`）: m1r3 abstain_now=6/6 equals_dev=6/6 controls_same=4/4 controls_readable=4/4
+- 第 4 ラウンドの流し直しの照合（`r4/rerun_cmp.txt`）: SAME 25・SAME_COUNT 2・DIFF 0
+- 第 4 ラウンドの `test_s6_…`（コミットした写し。`r4/s6_in_committed_copy.txt`）: 1 passed in 3.21s
+- 第 4 ラウンドの docstring の直し（H176。`r4/fix_docstring_time.txt`・`r4/pytest_r4_after_docstring_fix.txt`）: 直した時刻 2026-10-04 01:42:11 +0900、直した後の新しいテスト: 62 passed in 0.58s
+- S6 決め打ち検査（`check_hardcode.txt`）: PROPER/NUMERIC (must be empty): []、ENGLISH NAMES (must be empty): []。配置の答えの欄の直接の読み（`placement_field_uses.txt`）: 0 行
+- 実装の後に自分で書いた別の未公開の文（`self_probe_1.txt`・`self_probe_2.txt`。同じ書き手なので証拠にならない）: 90 文、読んだ 42 文（関係節 9 文・接続 33 文）、棄権 48 文
+- 十字（`entry_r6.jsonl` の読めた 490 文を `StubLookup` で十字にした）: `head` を持つ関係の文 13・埋め込みの十字 13・十字にできなかった文（INPUT_REJECTED を含む）0
+- 十字の E1（`e1.txt`）: E1_SAME, E1_SAME_WITH_PLACEMENT, E1_EQUALS_DEV_RUN, E1_EQUALS_DEV_RUN_WITH_PLACEMENT, E1_CODES_EQUAL_DEV
+<!-- w3b3-measured:end -->
+
+- 測定の範囲: 配置は r6（`/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r6/run1`）。r7 は使っていない。採点器（子プロセス）には配置が届かない（K72）ので、配置ありの判定はプロセス内のスクリプト（`w3b3_entry_check.py`）で取った。
+- **自作のデータで通ることは隠しの評価の証拠にならない**（自作で 100%・隠しで 0% が 3 回あった）。ここの「誤読 0・不完全 0」は 203 文の自作の期待に対するもので、S2（中間職の未公開の文）と S4（監査役の隠しバンク）の代わりにならない。自分で書いた別の未公開の文を流して中身を読んだ記録は判断記録 H165。
+
+### 既知の穴(K124〜。隠さない)
+- K124 主辞の腕を決められるのは `P_MOVE`・`P_COMMUNICATE` の述語だけ（型の表 K62 を広げていない）。`P_MOVE` は、付加の腕（`で` の場所）との同点（`adjunct_tie`）か、`東京から` のように が・を でない句を主節の側に付ける別の切り方（`alternative_cut`）で、実際にはほぼ読まない。読めたのは `P_COMMUNICATE` の述語（話す・言う・頼む）で、`に` の句で受け手が埋まり、`が` か `を` の句が先頭にある文だけ。公開の入力 3,183 文では、新しく読めた文は 0（`delta_summary.txt`）。
+- K125 下一段の動詞（開ける・閉める・食べる・伝える・教える・褒める ほか）は、派生（可能・自発）の疑いの門（K63）で全部止まる。被覆の損失は K123 の「被覆の損失の内訳」の行。門を狭めていない。
+- K126 主語の省略は `は` の主題だけで埋める。`が` の主語は埋めず、主節に主語が無い文は別の切り方が成り立つので棄権する（`alternative_cut`）。目的語の門は `unknown` の他動性も止める（`来る`・`帰る`・`着く` などの `intrans` の動詞だけが目的語なしで読める）。
+- K127 切れ目がちょうど 1 つ・述語のまとまりがちょうど 2 つの文だけ。3 節以上・入れ子の関係節・連体修飾節の中の接続は読まない。
+- K128 て形・連用中止の文は入口では棄権（`TE_UNDETERMINED`・`PARALLEL_UNDETERMINED` は診断だけ。規約の関係の型ではなく `CrossReading` に入らない）。継起・手段・付帯（原因）の区別は型では決まらない。
+- K129 英語は無し（別チケット）。英語の出力は 1 バイトも変わらない。
+- K130 引用の `と` は、引用の動詞 8 語と、主節の述語の型（`P_COMMUNICATE`・`P_COGNITION`・`P_CREATE`・`P_PERCEIVE` か direct でない型）で止める。この一覧にない引用の動詞（書く は `P_CREATE` で止まる）でも、型が direct でその 4 つでなければ `condition` で読む。型の誤りのある配置では引用を条件と読みうる（配置の型の誤りは防げない）。
+- K131 節の読みは入口に依存するので、入口が読めない節（`聞く`（逆の動詞への正規化）・`X の Y`・数詞・副詞つきの節・受身・使役・可能）を含む文は読まない（`CLAUSE_UNREAD`）。`静かに` のような形状詞は述語のトークンと数えられ、述語のまとまりが増えて引き金に当たらない（棄権が増える側）。
+- K132 `ない` の直前の `ので`（来ないので）・形容詞や名詞の直前の `ので`（忙しいので・学生なので）は切れ目に数えない（登録した検出は 動詞か た の直前だけ）ので `cuts=0` で棄権する。
+- K133 `docs/OBSERVATION.md` の既知の穴 2（「EDGE は入口から動いていない」）は、この変更で古くなった（EDGE が実データで動く。S5）。許可パスの外なので直していない。
+- K134 十字の `embedded` は 1 段まで。観測の升の鍵 `content_of_cross` は充填物の `embedded` を含めない（`observe.py` は変えていない）ので、埋め込みの十字だけが違う 2 つの読みは同じ升になる。
+- K135 配置の型が誤っている語は、型で決める経路（主辞の腕）では誤読になりうる（`取引先` {PERSON, PLACE} や `客` {NATURAL_PHENOMENON, PERSON} は割れた型として読む `all_candidates`）。型の表と配置の答えの質は、この変更の外。
+- K136 実行時間は K123 の行（`timing_r6.json`）。基点と並行に流したので、基点との比較は測っていない（受入基準ではない）。
+
+### 判断記録(H150〜。H149 まで §10B が使った)
+- H150（チケットの文言の読み方 1: て形・連用中止の辺を入口に出さない）: 採点器は規約に無い関係の型を `readable: true` の `relations` に書くと必ず誤答にする（`b1.relations_equal`）。チケット やること 3 の「て形は `TE_UNDETERMINED` として辺を張る」と受入基準 S2・S4（誤答 0）は入口の出力の上で両立しない。て形・連用中止の文は入口では今の棄権をそのまま返し、辺は診断の `edges` にだけ書き、`docs/EVENT_CROSS.md` に「`CrossReading` に入らない」と登録した。
+- H151（読み方 3: 新しい経路が棄権した文の出力は 1 バイトも変えない）: W3-b2 の K94・H134 と同じ。棄権の理由は診断 `clause_scope_explain_ja` にだけ出す。テスト `test_when_the_path_does_not_read_...` と `delta_summary.txt`（`refusal_changed` 0）で確かめた。
+- H152（読み方 5: 主語は は の主題でだけ埋める）: W1-a4 の最終形。チケットの「同じ文の主語」より狭い。`が` の主語を埋める読みは、W1-a4 のレビューで誤読が出続けた系統。
+- H153（番号の食い違い）: チケットの「§10C（K100〜）」は、§10B が K94〜K113 を使ったので、K114〜・H150〜にした（指示書 §1.5 の 8）。
+- H154（基線の行数）: 共通指示の「失敗 114 件」と `dev_c875ed3_failures.txt` は 1 行食い違う（ファイルは 115 行）。ファイルを正とした（`pytest_new_failures.txt` は `comm -13` の出力）。
+- H155（W1-a4 の一覧を写したこと）: 接続語の表の形（K115）・許可の 3 語・引用の動詞 8 語だけを `review-impl/W1-a4/plan.md` の方針から写した。W1-a4 のコードは見ていない。付録 A（51 文）にレビュー本文の「必須」の節に挙がる 2 文（`兄は来ると、母は思う。`・`兄がゆっくり、また静かに歩いた。`）を足した（`w1a4_misread_sources.md`）。
+- H156（K115 の明確化）: 表の変更記録 1。
+- H157（新しい門は棄権を増やす側だけ）: 登録で足した門 — 切れ目の直後の名詞が `副詞可能`・`助数詞可能` のときの一覧外（`CLAUSE_SCOPE_NOT_LISTED`）、`role_outside_frame`、`outer_relation_type`、`aux_in_nonfinite`、`topic_position`・`topic_in_relative` — はすべて登録した（事前登録 K115・K116・K118）。語の一覧は使わず、品詞・活用形・型の閉じた集合だけ。
+- H158（`w3b3_expect` の予想の外れ 7 件）: `expect_mismatches.md`。聞く は入口が逆の動詞に正規化するので読まない（4 件）、`X の Y`・数詞の主節を入口が読まない（2 件）、`静かに` が述語のトークンで引き金に当たらない（1 件）。どれも入口の出力は予想どおり棄権で、データは変えていない（`entry_expect` の食い違いは 0）。
+- H159（凍結したテストの変更 2 件）: 下の「テストの変更記録」。
+- H160（既存テストとの衝突 2 件。どちらも構造の衝突で、読みの正誤ではない）: (1) `tests/test_semantic_read_w3b2.py::test_the_functions_of_the_entry_that_are_not_the_typed_reread_are_the_base_commits` は、W3-b2 の基点から変わった関数が `_typed_reread_ja` だけであると主張する。(2) `tests/test_question_cross.py::test_existing_functions_and_constants_are_byte_identical_to_the_base` は `_read_ja` の本文の sha256 を固定している。指示書が求める `_read_ja` の 2 行の変更で、どちらも失敗する。既存テストは変えていない。`conflicts.md` と `proposed_test_changes.diff`（`W` には当てていない。写しに当てて 2 件が通ることを確かめた）。**S6 の「基線から増えない」はこの 2 件で満たせていない**（環境由来の `test_s6_…` は `S/committed` の複製で通ることを確かめた: `s6_in_committed_copy.txt`）。
+- H161（指示書のコマンドの食い違い 1: `soundness_compare`）: 指示書の照合の式は `s['clauses']` を読むが、`harness.py` の出力には `clauses` の鍵が無い文がある（KeyError）。文ごとの JSON 全体を比べる式に変えた（より厳しい）。結果は `changed 0・misread 0`。
+- H162（指示書のコマンドの食い違い 2: `E1_EQUALS_W3B_CURRENT`）: `artifacts/w3-b/e1_current.out` は古い基点の出力で今の dev と一致しない（dev の同じ実行とも違う行がある）。代わりに dev（`DEV`）で同じ 2 本を流した結果と比べ、**一致した**（`E1_EQUALS_DEV_RUN`・`E1_EQUALS_DEV_RUN_WITH_PLACEMENT`・`E1_CODES_EQUAL_DEV`。`e1.txt`）。
+- H163（`direct_only` の `と`）: `と` の新しい読みの数は、出力からは分からないので、診断の切れ目の種類（`と`）を同じ偽物の配置で聞いた。
+- H164（実行時間）: `timing_r6.json` の時間は、基点と今を並行に流した実行のもの。基点との比較には使わない。時間は受入基準ではない。
+- H165（自分で書いた別の未公開の文）: 実装の後に、検査データに無い文（接続・関係節・W1-a4 の 5 系統・基点の節の誤読の形・省略・時・場所・数量。件数と読めた数は K123 の行）を書いて流し、読めた文の中身を 1 つずつ読んだ。誤読と思う文は無かった（`self_probe_1.txt`・`self_probe_2.txt`）。ただし、これは自作のデータ（同じ書き手）なので証拠にならない。S2 は中間職の文で測る。
+- H166（`w3b3_data_check.py` の重なり検査）: 既存のデータ・チケット・指示書・`proto_evidence` の文との重なりは 0（`data_overlap.txt`）。`w3b3_w1a4.jsonl` はレビューの文そのものなので重なりの検査から外した。
+
+### テストの変更記録（W3-b3。凍結: `tests_freeze_time.txt`（2026-10-03 23:32:33 +0900）と `tests_freeze.sha256`。変更の後: `tests_after_change.sha256`。`tests_freeze.sha256` の照合は `tests/test_semantic_read_w3b3.py` が **変更のため一致しない**（もう 1 本の `test_semantic_read_w3b3_events.py` は一致する））
+変更は 2026-10-03 23:40:27（実装の開始 23:35:34 の後、データの測定 23:41 の前）。前後の差分の全文は `artifacts/w3-b3/tests_change.diff`。すべて、**テストの期待の誤り**（登録の文言を超えた主張）を直したもので、期待を弱めた変更ではない（検査の対象を細かく分けただけで、棄権すべき文を読む変更は 0）:
+1. `test_when_the_path_does_not_read_the_output_and_the_questions_are_the_bases_when_it_reads_only_the_path_asks_more` → `test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_are_the_bases_until_the_gates_that_need_none`: 前は「新しい経路が読まなかった文は、基点と同じ出力で、**配置への問い合わせの列も基点と同じ**」と全文に主張していた。登録（K114 3）は、問い合わせは K116 と K117 の字面・トークン一致の検査をすべて通ってから初めて起きると言うので、その後の門（主辞の腕・関係・省略）で棄権する文は、基点の問い合わせの後に新しい問い合わせをする。後: 出力は全文で基点と同じ。問い合わせの列は、基点の列が **先頭に一致**（基点の問い合わせが先に来る）、かつ、トークンだけで止まる理由（`BEFORE_ANY_QUESTION` の一覧）のときは **全体が基点と同じ**。読めた文は基点が読まなかった文。
+2. `test_semantic_read_changes_only_read_ja_and_semantic_reader_only_adds`: 前は `_read_ja` の差分の削除行を 2 行と数えていたが、実際の変更は 1 行（`return _typed_reread_ja(...)`）を 2 行（`out = ...` と `return out if ...`）にする形で、削除行は 1 行。後: 削除行は `return _typed_reread_ja(` の 1 行だけ、足した行に `_w3b3_read_ja(text, R, placement, out, unsupported_report)` がちょうど 1 つ。
+3. `test_each_head_rule_refuses_with_its_reason_and_the_output_is_the_bases`: 主節に 聞く を使った 1 文（`母が弟に話した問題を兄が聞いた。`）を 見る の文に変え、`母が弟に話した兄の友達を先生が呼んだ。`（`head_not_simple`）を外して純粋関数の単体テスト `test_the_head_noun_phrase_is_a_simple_noun_phrase_...` に移した。前の期待は、入口が 聞く（逆の動詞に正規化）と `X の Y` の主節を読まないことを見落としていた（K122 の門の順では節の読みが主辞の腕より先）。理由は変わるだけで、棄権はどちらも棄権。
+4. `test_a_head_that_is_an_estimate_or_unplaced_is_not_typed`: 主節の 聞く を 待つ に変えた（同じ理由）。
+
+### 事前登録の変更記録（W3-b3 の後で足す欄）
+なし（K114〜K122 は、表の変更記録 1 の明確化を除き、登録のまま）。
+
+#### 第 2 ラウンド（レビュー r1 の必須 M1。狭める変更。追記だけで、K118 の登録の本文は消していない）
+- **2026-10-04 00:21 K118 4 の括弧の文の変更（棄権を増やす側）**。
+  - 前（K118 4 の括弧）: 「`NI_UNDECIDED` は、関係節に に の句（格助詞 に）があれば埋まっているとする」。実装は `ni_filled = 'recipient' in c0['roles'] or <格助詞 に が関係節の先頭から述語までにある>`。
+  - 後: **`NI_UNDECIDED` が埋まっているのは、関係節を単独で読んだ節に `recipient` の役割があるときだけ**（`ni_filled = 'recipient' in c0['roles']`）。格助詞 に が recipient 以外に読まれた（時・場所ほか）、または読まれなかった関係節では、に の腕は空いている。その結果、空いている腕は patient と `NI_UNDECIDED` の 2 つになり `HEAD_ROLE_UNDETERMINED:empty_arms=2` で棄権する。ほかの規則・門・腕の数え方は変えない。語・表層の規則は足さない。
+  - 理由: S2（中間職の未公開の文 124 文）で新しい経路の誤読が 3 件。3 件とも P_COMMUNICATE の関係節で、に の句が時の名詞（recipient でない）だった。に の腕が実際には空いているのに「に がある」と数えたため、空いている腕が patient の 1 つになり、主辞が patient に置かれた。主辞は話し相手（recipient）とも話題（patient）とも読め、型でも決まらない。共通指示（誤読が出たらその構成を棄権に戻す）に従い、この構成を棄権に戻す。
+  - 出典: `.claude/vera-audit/review-impl/W3-b3/review.r1.md` の M1（規則の出所は中間職の指示書 §3.5 の 4。実装役の誤りではない）。
+  - 手順: 先にこの記録を書き（00:21）、次に新しいテスト `tests/test_semantic_read_w3b3_r2.py` を書いて凍結し、直す前の木で失敗することを記録し（`artifacts/w3-b3/r2/`）、その後で直す。
+- 第 2 ラウンドの実測（数値の行は K123 の測定の節の `w3b3_recompute.py` の出力。出力ファイルは `artifacts/w3-b3/` と `artifacts/w3-b3/r2/`）: 直す前の木で新しいテストは 8 件失敗（に の句が時の 6 文・`に` の字面を見ない検査・診断の検査）し、直した後は 56 件が通る。S1・S3・S5 の再測定は第 1 ラウンドと同じ結果（`delta_summary.txt` は same 3344・newly_read 42・CORRECT 42。`explain_summary.txt`・`data_entry_check.json`・`multiple_census.txt` は第 1 ラウンドの出力と一致した）。公開の入力 3,183 文・新データ 203 文では、この変更で出力が変わった文は 0（に の句が recipient でない P_COMMUNICATE の関係節は、これらの中では読めていなかった）。
+- 第 2 ラウンドの追加の判断記録:
+  - H167（M1 の手順）: 変更記録（00:21:33）→ 新しいテストの凍結（00:22:17）→ 直す前の木で失敗を記録 → 直す（00:22:30）の順（`r2/*_time.txt`）。直した行は `_w3b3_head_arm` の `ni_filled` の 1 行だけ。ほかの規則・門は変えていない。
+  - H168（指示書のコマンドの食い違い 3）: `w3b3_multiple_census.py` は `--placement` が必須だが、指示書 §6 のコマンドには無い。`--placement $PL` を足して流した（出力は第 1 ラウンドと一致）。
+  - H169（レビュー任意 1）: テスト入力の固定の答えに無い語が 0 であることのテストを新しいファイルに足した（`test_the_fixture_holds_every_word_of_the_test_inputs`）。既存の 2 本は変えていない。
+  - H170（レビュー任意 2）: 既知の穴 K137 に書いた。
+- 第 3 ラウンドの判断記録（レビュー r2 の M1-r2）:
+  - H171（文書の確定後に `pytest_w3b3.txt` を上書きしていた）: 第 2 ラウンドで文書と `recompute.md` を確定（00:34:28）したあとに `pytest_w3b3.txt` が 00:34:48 に上書きされ、K123 の測定の節の「S6 新しいテスト」の行（`13.04s`）が測定ファイルから再計算できなくなっていた。第 3 ラウンドでは、先に測定ファイルを確定した（新しいテスト 3 本を流し直して `pytest_w3b3.txt` を書いた: `1133 passed in 14.29s`、2026-10-04 00:51:32）。そのあとで `w3b3_recompute.py > recompute.md` を流し（01:02）、この節の 1 行を差し替え（`13.04s` → `14.29s`）、最後に `recompute_check.txt` を作り直した。以降は `artifacts/w3-b3/` と `docs/` に書いていない。製品コード・テスト・検査データは第 2 ラウンドから変えていない（`verantyx/` の更新時刻は 00:22:35 が最後）。件数 1,133 は同じで、変わったのは秒数だけ。
+  - H172（レビュー任意 1 を採らなかった理由）: `w3b3_recompute.py` に「読んだ測定ファイルの更新時刻が `recompute.md` より前か」の検査を足す案は、レビューが「必要なのは文書の行と `artifacts/w3-b3/` の 3 ファイルだけ」と限定し、`tests/reading_soundness/` に更新時刻の新しいファイルを残さないことを確かめコマンドにしているので、採らなかった（足すなら統合後。穴として K138 に書いた）。
+- K138（既知の穴の追記）: 測定ファイルを流し直したあとに `recompute.md` と文書を作り直す順は、手順の約束だけで機械的には守られていない（`w3b3_recompute.py` は読んだファイルの更新時刻を検査しない）。第 2 ラウンドの上書きはこれで起きた。確かめは、`w3b3_recompute.py` の出力と `recompute.md` の `cmp`、`missing 0`、`find artifacts/w3-b3 tests/reading_soundness -type f -newer docs/READING_SOUNDNESS.md` の 3 つを最後に流すこと。
+- K137（既知の穴の追記）: 主題の埋め（K120 の 1）は、主節が目的語なしで単独では読めない文（「X は 〜ので、自動詞た。」の型）では `CLAUSE_UNREAD:1` で止まる。安全側（棄権が増える側）だが、S4 の「読める数」を小さくする。また、に の腕を `recipient` だけで数えるようにした結果、に の句が時・場所の P_COMMUNICATE の関係節はすべて `empty_arms=2` か、入口が節を読まない（`RECIPIENT_TYPE_UNDETERMINED` など）で棄権する。
+- テストの追加（第 2 ラウンド）: `tests/test_semantic_read_w3b3_r2.py`（新規。凍結の sha256 は `artifacts/w3-b3/r2/test_r2_freeze.sha256`）。既存の `tests/test_semantic_read_w3b3.py`（`tests_after_change.sha256` と一致）・`tests/test_semantic_read_w3b3_events.py`（`tests_freeze.sha256` と一致）は第 2 ラウンドで変えていない。
+
+#### 第 4 ラウンド（レビュー r3 の必須 M1-r3。棄権を増やす変更。追記だけ）
+- **2026-10-04 01:32 K122 の門の順に (12) 係助詞・副助詞の門を足す（棄権を増やす側）**。
+  - 前: K122 の門の順は (11) 省略 → 読めた。係助詞・副助詞を見る門は無い。
+  - 後: 門の順を (11) 省略 → **(12) 係助詞・副助詞の門** → 読めた にする。規則: 文全体のトークン（`w3b3_snapshot`）のうち、`pos1 == '助詞'` かつ `pos2` が `係助詞` または `副助詞` のトークンが 1 つでもあり、それが次のどちらでもなければ棄権する（理由 `CLAUSE_FORM_NOT_READ:focus_particle`。`W3B3_REASON_NAMES` の `CLAUSE_FORM_NOT_READ` の細目で、理由の名前は増やさない。K122 の表の 1 列目は変わらない）。(a) 切れ目の接続語のトークン（`cut['tokens']` に入る位置。ても・けれども の も）。(b) 表層が `は` で、直前のトークンの `pos1` が `名詞` または `代名詞`（主題。K120 の省略の門が使う形）。したがって、格助詞の直後に重なる係助詞・副助詞は必ず棄権する。位置は、新しい経路が読むはずだった文だけに掛かるよう (11) 省略 の後・読めた の直前。出力は、棄権した文の入口の出力（基点の出力とバイト一致）。診断の形（`_w3b3_blank()` の鍵）は変えない。ほかの規則・門・腕の数え方は変えない。語・表層の規則は足さない（除外 (b) の主題の は を除く）。門は品詞（助詞の細分類）だけで決め、助詞の語の一覧を持たない。
+  - 理由: S2c（中間職の未公開の文）で新しい経路の誤読 1 件（`兄が母にも話した人を弟が呼んだ。`）。入口は単文の に の句に重なる係助詞・副助詞を落として recipient に読む（基点からの挙動。変えない）ので、2 節の経路がそれを黙って落とした読みを出した。規約の出力には、追加（も）・意外性（まで・さえ・すら）などを表す欄が無い。**誤読が出たので、その構成を棄権に戻す**（共通指示）。
+  - 出典: `.claude/vera-audit/review-impl/W3-b3/review.r3.md` の M1-r3、監査役の判断（チケット末尾）、門の位置は `review-impl/W3-b3-2/plan.md` §3。
+  - 手順: 先にこの記録（`artifacts/w3-b3/r4/docs_change_time.txt`）→ 新しいテスト `tests/test_semantic_read_w3b3_m1r3.py` の凍結（`r4/test_r4_freeze.sha256`・`r4/test_r4_freeze_time.txt`）→ 直す前の木で失敗を記録（`r4/test_r4_on_unfixed_tree.txt`）→ 直す（`r4/fix_time.txt`）。
+- 第 4 ラウンドの実測（数値の行は K123 の測定の節の `w3b3_recompute.py` の出力の「第 4 ラウンド」の行と、S1・S3・S5・S6 の行。出力ファイルは `artifacts/w3-b3/` と `artifacts/w3-b3/r4/`）: 新しいテストは直す前の木で落ち、直した後で通った。入口での比較（配置 r6）では、門に当たる 6 文が基点の出力と一致する棄権になり、対照の 4 文は直す前と同じ出力で読めた。測定の流し直しはすべて `A/` のファイルとバイト一致した（`r4/rerun_cmp.txt`）。S4 は監査役が測り、S2 は中間職が測る。
+- 第 4 ラウンドの判断記録（レビュー r3 の M1-r3）:
+  - H173（門の位置）: 門は K122 の (11) 省略 の後・読めた の直前に置いた（指示書 §3 で決まった位置。review.r3 は `w3b3_form_gate` などと書いていた）。理由 (1) 新しい経路が読むはずだった文だけに掛かり、すでに棄権している文の診断の理由は 1 つも変わらない。`explain_r6.jsonl`・`explain_summary.txt`・`data_entry_check.json` の `w3b3_expect` の食い違いがそのまま残り、流し直しのバイト一致で確かめられる。(2) `w3b3_form_gate` を変えずに済む。(3) 門は問い合わせをしないので、問い合わせの数（`queries_compare.txt`）も変わらない。
+  - H174（対照の差し替え）: review.r3 の対照 `兄は家に帰ったので、寝た。` は今の木でも読めない（`CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1`）ので、`兄は本を読んだので、歌を歌った。` に替えた（中間職の指示。`review-impl/W3-b3-2/plan.md` §1.2）。
+  - H175（任意 1 を採らなかった）: 診断に鍵を足すと全入力の `explain_r6.jsonl` が変わり、流し直しのバイト一致で確かめられなくなるため。当たったことは `reason`（`CLAUSE_FORM_NOT_READ:focus_particle`）でわかる。
+  - H176（指示書に無い判断 1: 門の docstring を ASCII だけにした）: 直した直後の全体テストで、既存のテスト `tests/test_semantic_read_w3b3.py::test_the_w3b3_section_of_the_reader_holds_no_word_of_a_sentence`（節の中の ASCII でない文字列を全部数える）が、門の docstring の日本語（品詞名と 主題の は）で落ちた。既存のテストは変えず、docstring を ASCII だけに書き直した（製品コードの動作は変わらない。関数の本体は変えていない）。直した時刻は `r4/fix_docstring_time.txt`。直した後に、新しいテスト・入口での比較・流し直し・全体テストをやり直した（`r4/pytest_r4_after_docstring_fix.txt` ほか）。凍結したテストは変えていない（sha256 の照合）。指示書 §4.1 の「docstring は英語」に従っていたが、この制約までは書かれていなかった。
+  - H177（指示書のコマンドの食い違い: 範囲の確認の正規表現）: 第 1 ラウンドの指示書の `scope_check` の正規表現 `tests/test_semantic_read_w3b3[a-z_]*\.py` は、数字の入るファイル名（`_r2`・`_m1r3`）に当たらない。`[a-z_0-9]*` に直して流した（結果は 0 バイト）。
+  - H178（指示書のコマンドの食い違い: 状態の行数）: 指示書は `status_before.txt` を 140 行としたが、実測は 143 行だった。手順 0 で先に作った `r4/before_r4.sha256`・`r4/start_time.txt` と、`r4/status_before.txt` 自身が数に入るため（追跡中の変更は 6 ファイルのまま）。
+  - H179（全体テストの負荷依存）: docstring を直した後の全体テスト（最後の実行）で、`test_gen_coarse_evidence.py::test_the_stop_signal_ends_the_run_with_an_interrupted_record` が新しく失敗した（直す前の 1 回目の実行には無かった）。単独で流すと通る（`r4/coarse_alone.txt`）。負荷依存で、今回の変更とは無関係。最後の実行の集合を `pytest_new_failures.txt` に残した。
+- K139（既知の穴の追記）: 単文の入口は、に の句に重なる 係助詞・副助詞 を落として読む（基点からの挙動。W3-b3 では変えない）。2 節の経路はこの門で止まるが、単文の経路は止まらない（review.r3 の任意 2）。
+- K140（既知の穴の追記）: 門は品詞だけで決めるので、範囲の 副助詞（駅まで）・名詞の直後の 係助詞・副助詞（兄も・本だけ）、接尾辞の直後の主題の は（〜さんは）も棄権する。棄権を増やす側で、S4 の「読める数」を小さくしうる。
+- K141（既知の穴の追記）: 「誤読 0」は試した構成の中での主張。S2c の穴は第 1 ラウンドからあり、レビューの文が突くまで見つからなかった。
+- テストの追加（第 4 ラウンド）: `tests/test_semantic_read_w3b3_m1r3.py`（新規。凍結の sha256 は `artifacts/w3-b3/r4/test_r4_freeze.sha256`）。既存の 3 本は変えていない（`artifacts/w3-b3/r4/before_r4.sha256` と一致）。

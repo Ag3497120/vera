@@ -22,6 +22,7 @@ Only the standard library is imported at module level. `read_events` imports the
 from __future__ import annotations
 
 import copy
+import dataclasses    # W3-b3: dataclasses.replace for the embedded cross (the import line below is not changed)
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Mapping, Optional, Protocol, Tuple, runtime_checkable
 
@@ -50,6 +51,9 @@ ENTRY_BASIS_KEYS: Tuple[str, ...] = ('predicate_basis', 'role_basis')
 # W3-b2: the other source field the entry writes on a clause of a type path: `role_flags` = {role: {"determiner": the demonstrative that stood before the filler}}. Not a key of the
 # convention either: the cross accepts it, checks its shape, and writes `flags['determiner']` of the filler of that role (it is not copied to the centre or to the provenance).
 ENTRY_FLAG_KEYS: Tuple[str, ...] = ('role_flags',)
+# W3-b3: the `head` of a relation of type `relative` (docs/EVENT_CROSS.md, W3-b3 の追記): {from_role: the arm of the relative clause the head fills, to_role: the role of the head in the main
+# clause}. Not a key of the convention (the scorer reads type, from, to only); the closed list of what `_check` can say is wrong about it.
+RELATION_HEAD_REASONS: Tuple[str, ...] = ('not_a_mapping', 'keys', 'type_not_relative', 'role_not_in_convention', 'values_differ', 'duplicate_target', 'nested')
 
 # The noun type ids of the coarse placement, as named in the W3-a2 working tree on 2026-10-03 (its list is append-only). Kept here as strings
 # because this module does not import the placement code (it asks a PlacementLookup). Not used to reject a type id the lookup returns.
@@ -226,10 +230,13 @@ class Filler:
     head_basis: str                    # 'surface': the reader gives no head, so the head is the surface (not guessed)
     place: PlaceResult
     flags: Mapping[str, Any] = field(default_factory=dict)
+    embedded: Optional['EventCross'] = None    # W3-b3: the cross of the relative clause whose head this filler is (the last field; written only when there is one)
 
     def to_dict(self) -> Dict[str, Any]:
-        return {'surface': self.surface, 'head': self.head, 'head_basis': self.head_basis,
-                'place': self.place.to_dict(), 'flags': _canon(dict(self.flags))}
+        d = {'surface': self.surface, 'head': self.head, 'head_basis': self.head_basis,
+             'place': self.place.to_dict(), 'flags': _canon(dict(self.flags))}
+        if self.embedded is not None: d['embedded'] = self.embedded.to_dict()
+        return d
 
 
 @dataclass(frozen=True)
@@ -336,6 +343,49 @@ def _is_index(v: Any, n: int) -> bool:
     return isinstance(v, int) and not isinstance(v, bool) and 0 <= v < n
 
 
+def _check_heads(relations: List[Any], clauses: List[Any]) -> List[str]:
+    """W3-b3: the reasons for which the `head` of a relation is not well formed (RELATION_HEAD_NOT_WELL_FORMED:<one of RELATION_HEAD_REASONS>); empty when there is none or all are well
+    formed. A relation without `head` is not looked at."""
+    bad: List[str] = []
+    heads: List[Tuple[int, int, str]] = []
+    for rel in relations:
+        if not isinstance(rel, Mapping) or 'head' not in rel: continue
+        head = rel['head']
+        if not isinstance(head, Mapping): bad.append('RELATION_HEAD_NOT_WELL_FORMED:not_a_mapping'); continue
+        if set(head) != {'from_role', 'to_role'}: bad.append('RELATION_HEAD_NOT_WELL_FORMED:keys'); continue
+        if rel.get('type') != 'relative': bad.append('RELATION_HEAD_NOT_WELL_FORMED:type_not_relative'); continue
+        from_role, to_role = head['from_role'], head['to_role']
+        if not (isinstance(from_role, str) and isinstance(to_role, str) and from_role in ROLE_NAMES and to_role in ROLE_NAMES):
+            bad.append('RELATION_HEAD_NOT_WELL_FORMED:role_not_in_convention'); continue
+        if not (_is_index(rel.get('from'), len(clauses)) and _is_index(rel.get('to'), len(clauses))): continue      # said already: RELATION_INDEX_OUT_OF_RANGE
+        a, b = clauses[rel['from']], clauses[rel['to']]
+        va = a.get('roles', {}).get(from_role) if isinstance(a, Mapping) and isinstance(a.get('roles'), Mapping) else None
+        vb = b.get('roles', {}).get(to_role) if isinstance(b, Mapping) and isinstance(b.get('roles'), Mapping) else None
+        if not (isinstance(va, str) and va.strip() and va == vb): bad.append('RELATION_HEAD_NOT_WELL_FORMED:values_differ'); continue
+        heads.append((rel['from'], rel['to'], to_role))
+    targets = [(to, role) for _, to, role in heads]
+    if len(set(targets)) != len(targets): bad.append('RELATION_HEAD_NOT_WELL_FORMED:duplicate_target')
+    receivers = {to for _, to, _ in heads}
+    if any(frm in receivers for frm, _, _ in heads): bad.append('RELATION_HEAD_NOT_WELL_FORMED:nested')
+    return bad
+
+
+def _embed(crosses: Tuple[EventCross, ...], relations: List[Any]) -> Tuple[EventCross, ...]:
+    """W3-b3: for every relation that holds a `head`, the filler of the arm `to_role` of the cross `to` holds the cross `from` (as it was built: no head of its own, one level).
+    The arms keep their order, their kind and their agreement; the counts are the counts of the crosses, which are the same."""
+    out = list(crosses)
+    for rel in relations:
+        head = rel.get('head') if isinstance(rel, Mapping) else None
+        if head is None: continue
+        cross = out[rel['to']]
+        arm = cross.arms[head['to_role']]
+        filler = dataclasses.replace(arm.fillers[0], embedded=crosses[rel['from']])
+        arms = dict(cross.arms)
+        arms[head['to_role']] = dataclasses.replace(arm, fillers=(filler,))
+        out[rel['to']] = dataclasses.replace(cross, arms=arms)
+    return tuple(out)
+
+
 def _check(read_output: Any) -> List[str]:
     """The reasons for which the reader output is refused as an input (empty when it can be crossed or is a typed abstention)."""
     if not isinstance(read_output, Mapping): return ['NOT_A_MAPPING']
@@ -394,6 +444,7 @@ def _check(read_output: Any) -> List[str]:
                 elif not all(isinstance(x, str) and x.strip() for x in value): bad.append('ROLE_VALUE_NOT_STRING:%s' % name)
             else:
                 bad.append('ROLE_VALUE_NOT_STRING:%s' % name)
+    bad.extend(_check_heads(relations, clauses))
     return list(dict.fromkeys(bad))
 
 
@@ -454,6 +505,7 @@ def build_crosses(read_output: Mapping[str, Any], lookup: Optional[PlacementLook
     if not src['readable']:
         return CrossReading('ABSTAINED', (), (), src['abstain'], lid)
     crosses = tuple(_cross(i, c, src['clause_meta'][i], lookup) for i, c in enumerate(src['clauses']))
+    crosses = _embed(crosses, src['relations'])    # W3-b3: a relative clause's cross inside the filler of its head
     return CrossReading('CROSSED', crosses, tuple(src['relations']), None, lid)
 
 

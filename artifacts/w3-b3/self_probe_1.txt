@@ -1,0 +1,46 @@
+no     兄が静かに本を読まなかったので、弟が歌を歌った。 W3B3_NOT_TRIGGERED:groups=3 | entry abstain
+no     兄がゆっくり歩かなかったから、母が来た。 CLAUSE_UNREAD:0:NO_SUPPORTED_CLAUSE | entry abstain
+no     兄がすぐ近くの店に入ったので、弟が帰った。 CLAUSE_UNREAD:0:NO_SUPPORTED_CLAUSE | entry abstain
+no     兄が来たので、母がすぐ近くの店に行った。 CLAUSE_UNREAD:1:NO_SUPPORTED_CLAUSE | entry abstain
+no     兄は帰ると、先生に言う。 RELATION_TYPE_UNDETERMINED:quote_possible | entry abstain
+no     弟は来ると、姉が言った。 RELATION_TYPE_UNDETERMINED:condition_past_main | entry abstain
+no     弟が帰ると、先生が思う。 RELATION_TYPE_UNDETERMINED:quote_possible | entry abstain
+no     弟が転んだので、兄が助けた。 CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行 | entry abstain
+no     母が歌ったので、姉が褒めた。 CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行 | entry abstain
+no     兄が来たので、しかし弟が帰った。 CLAUSE_FORM_NOT_READ:connective_outside_cut | entry abstain
+no     兄が来たが、また弟が帰った。 CLAUSE_FORM_NOT_READ:connective_outside_cut | entry abstain
+no     兄が本を読めたので、弟が歌を歌った。 CLAUSE_UNREAD:0:UNDETERMINED_MODALITY:possible potential form | entry abstain
+no     兄が来たので、弟が本を読んでいない。 CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-撥音便:助詞 | entry abstain
+no     弟が窓を開けてほしいので、兄が来た。 CLAUSE_SCOPE_AMBIGUOUS:cuts=0 | entry abstain
+no     兄が買った本を弟が読んだので、母が喜んだ。 W3B3_NOT_TRIGGERED:groups=3 | entry abstain
+READ   兄は本を読んだので、弟が歌を歌った。 [["読む", {"agent": "兄", "patient": "本"}, "+", "past"], ["歌う", {"agent": "弟", "patient": "歌"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+no     兄が来ても、弟は帰らなかった。 CLAUSE_SCOPE_AMBIGUOUS:topic_position | entry abstain
+no     昨日兄が来たので、弟が帰った。 CLAUSE_UNREAD:0:NO_SUPPORTED_CLAUSE | entry abstain
+no     今朝母が来たから、姉が来た。 CLAUSE_UNREAD:0:NO_SUPPORTED_CLAUSE | entry abstain
+no     駅で兄が来たので、弟が帰った。 CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1 | entry abstain
+no     兄が叱られたので、弟が泣いた。 CLAUSE_UNREAD:0:UNDETERMINED_VOICE:passive or honorific | entry abstain
+no     母が兄を行かせたので、弟が来た。 CLAUSE_UNREAD:0:PREDICATE_NORMALIZED:行かせる<-行く | entry abstain
+no     兄が忙しいので、弟が来た。 CLAUSE_SCOPE_AMBIGUOUS:cuts=0 | entry abstain
+no     兄が学生なので、弟が帰った。 CLAUSE_SCOPE_AMBIGUOUS:cuts=0 | entry abstain
+no     兄が来たので、弟が窓を開けた。 CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行 | entry abstain
+no     兄が来たので、弟が歌を歌いながら帰った。 W3B3_NOT_TRIGGERED:groups=3 | entry abstain
+READ   兄が来たので、弟が帰らなかった。 [["来る", {"agent": "兄"}, "+", "past"], ["帰る", {"agent": "弟"}, "-", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   兄が来なかったので、弟が帰った。 [["来る", {"agent": "兄"}, "-", "past"], ["帰る", {"agent": "弟"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   兄が来ないと、弟が帰る。 [["来る", {"agent": "兄"}, "-", "nonpast"], ["帰る", {"agent": "弟"}, "+", "nonpast"]] [{'type': 'condition', 'from': 0, 'to': 1}]
+no     兄が来ると、弟が行く。 ELLIPSIS_UNDETERMINED:object | entry abstain
+no     兄が行くなら、弟が帰る。 ELLIPSIS_UNDETERMINED:object | entry abstain
+READ   弟が帰ったら、母が来る。 [["帰る", {"agent": "弟"}, "+", null], ["来る", {"agent": "母"}, "+", "nonpast"]] [{'type': 'condition', 'from': 0, 'to': 1}]
+READ   先生が入っても、生徒が来た。 [["入る", {"agent": "先生"}, "+", null], ["来る", {"agent": "生徒"}, "+", "past"]] [{'type': 'concession', 'from': 0, 'to': 1}]
+READ   兄が本を読むと、弟が歌を歌う。 [["読む", {"agent": "兄", "patient": "本"}, "+", "nonpast"], ["歌う", {"agent": "弟", "patient": "歌"}, "+", "nonpast"]] [{'type': 'condition', 'from': 0, 'to': 1}]
+READ   母が絵を描くと、姉が歌を歌う。 [["描く", {"agent": "母", "patient": "絵"}, "+", "nonpast"], ["歌う", {"agent": "姉", "patient": "歌"}, "+", "nonpast"]] [{'type': 'condition', 'from': 0, 'to': 1}]
+READ   先生が本を読みながら、母が来た。 [["読む", {"agent": "先生", "patient": "本"}, "+", null], ["来る", {"agent": "母"}, "+", "past"]] [{'type': 'simultaneous', 'from': 0, 'to': 1}]
+READ   先生が来たので、母が兄を叱った。 [["来る", {"agent": "先生"}, "+", "past"], ["叱る", {"agent": "母", "patient": "兄"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   兄が弟を叩いたので、弟が来た。 [["叩く", {"agent": "兄", "patient": "弟"}, "+", "past"], ["来る", {"agent": "弟"}, "+", "past"]] [{'type': 'cause', 'from': 0, 'to': 1}]
+READ   父が兄に話した人を母が呼んだ。 [["話す", {"agent": "父", "patient": "人", "recipient": "兄"}, "+", "past"], ["呼ぶ", {"agent": "母", "patient": "人"}, "+", "past"]] [{'type': 'relative', 'from': 0, 'to': 1, 'head': {'from_role': 'patient', 'to_role': 'patient'}}]
+READ   母が先生に頼んだ薬を弟が飲んだ。 [["頼む", {"agent": "母", "patient": "薬", "recipient": "先生"}, "+", "past"], ["飲む", {"agent": "弟", "patient": "薬"}, "+", "past"]] [{'type': 'relative', 'from': 0, 'to': 1, 'head': {'from_role': 'patient', 'to_role': 'patient'}}]
+READ   兄が弟に言った人を母が待った。 [["言う", {"agent": "兄", "patient": "人", "recipient": "弟"}, "+", "past"], ["待つ", {"agent": "母", "patient": "人"}, "+", "past"]] [{'type': 'relative', 'from': 0, 'to': 1, 'head': {'from_role': 'patient', 'to_role': 'patient'}}]
+READ   姉が兄に話した犬を母が見た。 [["話す", {"agent": "姉", "patient": "犬", "recipient": "兄"}, "+", "past"], ["見る", {"agent": "母", "patient": "犬"}, "+", "past"]] [{'type': 'relative', 'from': 0, 'to': 1, 'head': {'from_role': 'patient', 'to_role': 'patient'}}]
+READ   母が兄に頼んだ友達が来た。 [["頼む", {"agent": "母", "patient": "友達", "recipient": "兄"}, "+", "past"], ["来る", {"agent": "友達"}, "+", "past"]] [{'type': 'relative', 'from': 0, 'to': 1, 'head': {'from_role': 'patient', 'to_role': 'agent'}}]
+READ   兄が弟に話した人が来た。 [["話す", {"agent": "兄", "patient": "人", "recipient": "弟"}, "+", "past"], ["来る", {"agent": "人"}, "+", "past"]] [{'type': 'relative', 'from': 0, 'to': 1, 'head': {'from_role': 'patient', 'to_role': 'agent'}}]
+no     先生が生徒に言った生徒が帰った。 HEAD_ROLE_UNDETERMINED:refill_reread | entry abstain
+no     母が弟に話した人を兄が呼べ。 CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:仮定形-一般:なし | entry abstain

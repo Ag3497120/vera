@@ -1,0 +1,12 @@
+mode=live
+rows=53
+verdicts={"correct": 53}
+verdicts_by_data={"w1a4": {"correct": 53}}
+misread=0
+incomplete=0
+unjudged=0
+entry_expect_mismatch=0
+w3b3_expect_mismatch=0
+structure_expect_mismatch=0
+bad_verdicts={}
+path_stopped_by_reason={"CLAUSE_FORM_NOT_READ": 13, "CLAUSE_SCOPE_AMBIGUOUS": 18, "CLAUSE_SCOPE_NOT_LISTED": 3, "RELATION_TYPE_UNDETERMINED": 6, "W3B3_NOT_TRIGGERED": 13}
