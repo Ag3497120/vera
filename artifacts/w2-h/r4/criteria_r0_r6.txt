@@ -1,0 +1,12 @@
+## -k R0 or producer or basis or order or fallback or essence or unsaid or names or lineage or relation or role
+154 passed, 85 deselected in 23.64s
+## -k R1 or UNKNOWN or DUPLICATE or DEFAULT or CYCLE or CONFLICT
+55 passed, 184 deselected in 2.73s
+## -k R2
+15 passed, 224 deselected in 0.97s
+## -k R3
+34 passed, 205 deselected in 21.93s
+## -k R4
+3 passed, 236 deselected in 0.82s
+## -k R6
+6 passed, 233 deselected in 11.13s

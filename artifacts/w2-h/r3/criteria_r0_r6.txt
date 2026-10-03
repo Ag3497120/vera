@@ -1,0 +1,21 @@
+## R0
+.................................................................        [100%]
+65 passed, 49 deselected in 0.82s
+## R1
+..................................                                       [100%]
+34 passed, 117 deselected in 0.69s
+## R2
+...............                                                          [100%]
+15 passed, 99 deselected in 0.57s
+## R3
+...........                                                              [100%]
+11 passed, 142 deselected in 8.39s
+## R4
+...                                                                      [100%]
+3 passed, 111 deselected in 0.29s
+## R6
+......                                                                   [100%]
+6 passed, 147 deselected in 6.42s
+## kind or unsaid
+......................................                                   [100%]
+38 passed, 152 deselected in 9.33s

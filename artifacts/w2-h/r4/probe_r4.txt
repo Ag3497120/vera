@@ -1,0 +1,8 @@
+(a1) agent with kinds only, rule kind=attack only: role=review kind=attack: ok -> ('gpt-6-luna xhigh', 'rule', 'rule:r_attack', {'gpt-6-luna xhigh': 'undeclared'})
+(a2) rule with kind=attack and no role, agent declares roles: ok -> ('luna', 'rule:r_attack', {'luna': 'declared'})
+(b1) only the relation said (no lineage names): verify after Sonnet: ok -> ('luna', {'implement': 'distinct_lineage'}, 'distinct', None, ['Sonnet と luna は別系統。'])
+(b2) A!=B and A!=C only: verify candidate C after implementer B: ok -> (None, 'NO_VIABLE_CANDIDATE', [('C', 'LINEAGE_UNDECLARED')], 'undeclared')
+(b3') no labels, relation same: verify after Sonnet: ok -> (None, 'NO_VIABLE_CANDIDATE', [('Opus', 'SAME_LINEAGE', "the same lineage as Sonnet ('same' relation Sonnet/Opus), already used for role implement")])
+(b3-note) both names given as labels: ok -> ('Opus', {'implement': 'distinct_lineage'}, '(a broken promise: two labels mean two lineages)')
+(b3-conflict) both labelled and a same relation between them: LINEAGE_CONFLICT agents Opus, Sonnet are one lineage (same label or a 'same' relation) but carry the different labels Anthropic系, Claude系
+{"relation_vocabulary": ["same", "distinct"], "verdicts": ["same", "distinct", "undeclared"]}

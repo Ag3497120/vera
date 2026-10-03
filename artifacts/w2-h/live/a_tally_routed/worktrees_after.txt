@@ -1,0 +1,2 @@
+/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/w2h-live.DHMZtH/a_tally_routed                                                                                                                     ddede90 [main]
+/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/w2h-live.DHMZtH/a_tally_routed/.verantyx-conduct/runs/4844609ae374403ab103cb2b283705e4/runtime/sessions/19ff050a883045b0a5a7bc892f99e8e7/worktree  df83b75 (detached HEAD)

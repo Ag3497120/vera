@@ -1,0 +1,6 @@
+$ vpy -m pytest -q -p no:cacheprovider tests/test_agent_routing.py tests/test_agent_routing_dsl.py tests/test_conduct_routing.py
+........................................................................ [ 43%]
+........................................................................ [ 87%]
+.....................                                                    [100%]
+165 passed in 23.92s
+exit=0

@@ -1,0 +1,4 @@
+$ vpy -m pytest -q -p no:cacheprovider tests/test_agent_routing.py tests/test_agent_routing_dsl.py -k R1 or UNKNOWN or DUPLICATE or DEFAULT or CYCLE
+.............................                                            [100%]
+29 passed, 100 deselected in 0.47s
+exit=0

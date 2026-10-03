@@ -1,0 +1,10 @@
+=========================== short test summary info ============================
+FAILED tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread
+1 failed in 0.23s
+=========================== short test summary info ============================
+FAILED tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread
+1 failed in 0.25s
+=========================== short test summary info ============================
+FAILED tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread
+1 failed in 0.44s
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w2h-r2-impl/base/verantyx/__init__.py

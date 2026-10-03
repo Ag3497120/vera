@@ -1,0 +1,2 @@
+implement CodexImpl rule:IMPL_FEATURE rule {'CodexImpl': 'declared'} {} declared_dsl
+verify ClaudeVerify rule:VERIFY_ANY rule {'ClaudeVerify': 'declared'} {'implement': 'distinct_lineage'} declared_dsl

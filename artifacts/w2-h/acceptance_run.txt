@@ -1,0 +1,32 @@
+## C0
+outside: []
+loaded verantyx modules: 56
+[]
+('declared_dsl', 'declared_text')
+## R0
+.....................                                                    [100%]
+21 passed, 49 deselected in 0.58s
+## R1
+..........................                                               [100%]
+26 passed, 72 deselected in 0.38s
+## R2
+...............                                                          [100%]
+15 passed, 55 deselected in 1.42s
+## R3
+........                                                                 [100%]
+8 passed, 93 deselected in 3.90s
+## R4
+...                                                                      [100%]
+3 passed, 67 deselected in 0.25s
+## R6
+......                                                                   [100%]
+6 passed, 95 deselected in 6.15s
+## step5 all new
+.........................................................                [100%]
+129 passed in 22.28s
+## R5 (existing groups)
+..........................................................               [100%]
+346 passed in 81.30s (0:01:21)
+## R5 (new legacy)
+...                                                                      [100%]
+3 passed, 28 deselected in 3.94s

@@ -1,0 +1,3 @@
+$ vpy -c import sys, verantyx.agent_routing, verantyx.project_frame, verantyx.conductor_run, verantyx.cli, verantyx.llm_choice; bad=[m.__file__ for n,m in sys.modules.items() if n.startswith('verantyx') and getattr(m,'__file__',None) and not m.__file__.startswith('/Users/motonisihikoudai/Projects/vera-impl/wt/W2-h-S/')]; print('outside:', bad); assert not bad
+outside: []
+exit=0

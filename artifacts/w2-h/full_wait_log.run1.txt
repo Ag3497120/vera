@@ -1,0 +1,3 @@
+check 1: load1=7.80 at 00:46:49Z
+starting at 00:46:49Z, load1=7.80
+finished at 00:50:05Z

@@ -1,0 +1,3 @@
+$ conduct --frame docs/frames/examples/routing_two_lineages.md --repo <temp git repo> --state-dir <scratch>/state3 --dry-run --codex-bin /opt/homebrew/bin/codex --claude-bin /opt/homebrew/bin/claude
+{"blocking": {"acceptance_items": ["The command python tally.py 1 2 3 prints 6", "The command python tally.py with no arguments prints 0"], "kind": "acceptance", "missing": "command_exit", "reason": "
+exit=0

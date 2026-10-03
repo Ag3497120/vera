@@ -1,0 +1,20 @@
+commit df83b75c0558f271b8bed51d25d8c0ea0f8dee99
+Author: Vera conductor <conductor@verantyx.invalid>
+Date:   Sat Oct 3 09:43:55 2026 +0900
+
+    conduct: NumberTally (run 4844609ae374403ab103cb2b283705e4)
+    
+    acceptance: 76687fd26ce0, e5673bde4ca5
+---
+ tally.py | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/tally.py b/tally.py
+new file mode 100644
+index 0000000..b56707f
+--- /dev/null
++++ b/tally.py
+@@ -0,0 +1,3 @@
++import sys
++
++print(sum(map(int, sys.argv[1:])))

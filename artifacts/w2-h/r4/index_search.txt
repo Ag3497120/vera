@@ -1,0 +1,30 @@
+## lineage relation 系統の関係
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "lineage relation 系統の関係",
+  "searched": 649,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 281,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## role condition optional
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "role condition optional",
+  "searched": 649,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 40,
+    "module": 281,
+    "prereg": 63,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

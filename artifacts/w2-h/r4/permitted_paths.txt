@@ -1,0 +1,21 @@
+(上が空なら許可パスのみ)
+(上が空なら触らない範囲は無傷)
+@@ -904,0 +905 @@ import subprocess as _subprocess
+@@ -905,0 +907 @@ from . import agent_runtime as _agent_runtime
+@@ -2211,0 +2214,132 @@ def _resolve_verification(frame: _project_frame.ConductFrame, implementer: str,
+@@ -2215 +2349 @@ def conduct_entry(
+@@ -2236,0 +2371,2 @@ def conduct_entry(
+@@ -2256,0 +2393,7 @@ def conduct_entry(
+@@ -2292 +2435,2 @@ def conduct_entry(
+@@ -2301 +2445,2 @@ def conduct_entry(
+@@ -2313,0 +2459,9 @@ def conduct_entry(
+@@ -2337 +2491,2 @@ def conduct_entry(
+@@ -2342,0 +2498,10 @@ def conduct_entry(
+@@ -2347,0 +2513,5 @@ def conduct_entry(
+@@ -2372 +2542 @@ def conduct_entry(
+@@ -2376 +2546 @@ def conduct_entry(
+@@ -2417,0 +2588,10 @@ def conduct_entry(
+@@ -2420 +2600 @@ def conduct_entry(
+@@ -2424,0 +2605,2 @@ def conduct_entry(
+@@ -2433,0 +2616,2 @@ def conduct_entry(
+0

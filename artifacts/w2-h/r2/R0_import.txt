@@ -1,0 +1,4 @@
+$ vpy -c import sys, verantyx.agent_routing as r; print([m for m in ('verantyx.project_frame','verantyx.conductor_run','verantyx.cli') if m in sys.modules]); print(r.BASIS_KINDS)
+[]
+('declared_dsl', 'declared_text')
+exit=0

@@ -1,0 +1,4 @@
+$ vpy -m pytest -q -p no:cacheprovider tests/test_agent_routing.py -k R0 or producer or basis or order or fallback or essence or unsaid
+...............................................                          [100%]
+47 passed, 49 deselected in 0.79s
+exit=0
