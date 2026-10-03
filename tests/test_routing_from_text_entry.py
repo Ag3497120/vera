@@ -29,6 +29,8 @@ def test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_r
     # W5-d (R-J1) a Japanese name that no naming sentence introduced is not verified without a placement: the units that were MAPPED are NAME_UNRESOLVED
     # (NAME_UNVERIFIED:<name>:NO_PLACEMENT) and nobody is routed. The earlier text of this test (W5-a round 3: two sentences UNREAD, five MAPPED) is kept in the
     # docs (w5d2-amended) and in K64 of docs/READING_SOUNDNESS.md.
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-B）: 並立（ハルとセキ）は 1 つの値に畳まず門で棄権する（W5-e の B。10E の規則 (ii)）ので、index 6 の「ハルとセキは同じ会社だ。」は
+    # NAME_UNRESOLVED でなく UNREAD（NO_SUPPORTED_CLAUSE）になる。by_status の UNREAD / NAME_UNRESOLVED の数はそれに合わせる。ほかの要素は不変
     proc = entry(r1(), TASK)
     assert proc.returncode == 0, proc.stderr
     assert proc.stdout.count("\n") == 1                      # one line
@@ -45,12 +47,12 @@ def test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_r
         {"index": 3, "status": "NAME_UNRESOLVED", "text": "モモは検証をやらない。", "reasons": ["NAME_UNVERIFIED:モモ:NO_PLACEMENT"]},
         {"index": 4, "status": "NAME_UNRESOLVED", "text": "レビューはモモがやる。", "reasons": ["NAME_UNVERIFIED:モモ:NO_PLACEMENT"]},
         {"index": 5, "status": "NAME_UNRESOLVED", "text": "ハルが攻撃をやる。", "reasons": ["NAME_UNVERIFIED:ハル:NO_PLACEMENT"]},
-        {"index": 6, "status": "NAME_UNRESOLVED", "text": "ハルとセキは同じ会社だ。", "reasons": ["NAME_UNVERIFIED:ハル:NO_PLACEMENT"]},
+        {"index": 6, "status": "UNREAD", "text": "ハルとセキは同じ会社だ。", "reasons": ["NO_SUPPORTED_CLAUSE"]},
         {"index": 7, "status": "NAME_UNRESOLVED", "text": "モモはハルより速い。", "reasons": ["NAME_UNVERIFIED:モモ:NO_PLACEMENT"]}]
     assert out["evidence"] == ["ハルは実装をやる。", "モモがテストを書く。", "セキがコードを確かめる。", "モモは検証をやらない。", "レビューはモモがやる。",
                                "ハルが攻撃をやる。", "ハルとセキは同じ会社だ。", "モモはハルより速い。"]
-    assert out["reading"]["by_status"] == {"MAPPED": 0, "COMPARISON_ONLY": 0, "UNREAD": 2, "PREDICATE_CLASS_UNKNOWN": 0, "WORK_TERM_UNKNOWN": 0,
-                                           "AMBIGUOUS_RELATION": 0, "NAME_UNRESOLVED": 6, "CONTRADICTION": 0, "UNREPRESENTABLE": 0}
+    assert out["reading"]["by_status"] == {"MAPPED": 0, "COMPARISON_ONLY": 0, "UNREAD": 3, "PREDICATE_CLASS_UNKNOWN": 0, "WORK_TERM_UNKNOWN": 0,
+                                           "AMBIGUOUS_RELATION": 0, "NAME_UNRESOLVED": 5, "CONTRADICTION": 0, "UNREPRESENTABLE": 0}
     assert out["reading"]["lookup"] == "stub-no-placement/1"
     assert out["records"]["agents"] == []                      # nothing was mapped, so no agent record exists
     assert all(a["basis"]["kind"] == "declared_text" and a["lineage"] is None for a in out["records"]["agents"])

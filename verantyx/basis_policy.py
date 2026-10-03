@@ -32,7 +32,8 @@ SCHEMA = "verantyx.basis_policy/1"
 TABLE_VERSION = 1
 #: W5-c: the 24-row table is unchanged (``TABLE_VERSION`` stays 1); the rules that sit beside it carry their
 #: own versions (docs/BASIS_POLICY.md, sections ``prereg-w5c`` and ``prereg-w5c-r3``).
-CLASSIFY_VERSION = 3
+#: W5-e (A-3): version 4 -- ``human_confirmed`` is a human source only for ``family == "memory_sovereign"`` (docs/BASIS_POLICY.md, W5-e).
+CLASSIFY_VERSION = 4
 CONFIRM_ID_VERSION = 2
 #: the basis of a source set that holds a source whose origin is unknown: not human, not (known to be) generated.
 UNKNOWN_ORIGIN = "UNKNOWN_ORIGIN"
@@ -173,7 +174,9 @@ def _document_text_holds(src: Mapping[str, Any], document_texts: Sequence[str]) 
 def _class_of(src: Any, user_documents: bool = False, document_texts: Optional[Sequence[str]] = None) -> str:
     """The class of one source: the rules of docs/BASIS_POLICY.md section prereg-w5c-r3 (the earliest rule that applies wins).
 
-    A human source is one whose origin is declared human (``human_confirmed``), the request text itself
+    A human source is one whose origin is declared human (``human_confirmed``) AND whose family is ``memory_sovereign`` (W5-e,
+    version 4: a ``document`` source claiming it is checked in the documents like any other; any other family claiming it is
+    ``unknown_origin``), the request text itself
     (``family == "user"``) and, only when ``user_documents`` is true (the caller handed these documents over in
     this very call), a ``family == "document"`` source with no origin WHOSE TEXT IS IN THOSE DOCUMENTS (W5-d: with
     ``document_texts``, the bodies of the documents handed over, it must be found in them -- ``_document_text_holds``;
@@ -188,7 +191,15 @@ def _class_of(src: Any, user_documents: bool = False, document_texts: Optional[S
     if origin == "generated":
         return "generated"
     if origin == "human_confirmed":
-        return "human"
+        # W5-e (A-3, rule v4): a claim of ``human_confirmed`` is a human source only for the sovereign's own record
+        # (``family == "memory_sovereign"``); a document source goes through the body check of A1 whatever origin it claims;
+        # any other family that claims it is ``unknown_origin``.
+        if src.get("family") == "memory_sovereign":
+            return "human"
+        if src.get("family") == "document" and user_documents \
+                and (document_texts is None or _document_text_holds(src, document_texts)):
+            return "human"
+        return "unknown_origin"
     if _is_index_family(src) and not (isinstance(origin, str) and origin in DECLARED_NON_EVIDENCE):
         return "unknown_origin"
     if origin is not None:

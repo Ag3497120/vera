@@ -130,9 +130,13 @@ def test_a_word_introduced_by_a_naming_sentence_is_a_name_even_when_the_placemen
     PlaceResult("UNKNOWN", provenance={"fake": True}),
 ])
 def test_an_estimated_unplaced_or_unknown_word_is_not_a_reason_to_stop(answer):
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A2）: 推定は構成物であり根拠にならない（W5-c 以来）ので、推定の引数だけ COMMON_NOUN_SUBJECT:…:PLACEMENT_ESTIMATED:… で止める。UNPLACED・UNKNOWN は基点（W5-d）のまま通す。3 引数とも checked == 1
     lookup = Placement(ソラ=answer)
     explained = explain("ソラは実装をやる。\n", {"ソラは実装をやる。": ja_do("ソラ")}, lookup)
-    assert [u.status for u in explained.extraction.units] == ["MAPPED"]
+    if answer.origin == "estimated":
+        assert [(u.status, u.reasons) for u in explained.extraction.units] == [("NAME_UNRESOLVED", ["COMMON_NOUN_SUBJECT:ソラ:PLACEMENT_ESTIMATED:GROUP_ORG"])]
+    else:
+        assert [u.status for u in explained.extraction.units] == ["MAPPED"]
     assert route(explained, role="implement", kind="feature")["reading"]["common_noun_check"]["checked"] == 1
 
 

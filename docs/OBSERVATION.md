@@ -1323,3 +1323,119 @@ def test_negative_question_does_not_match_affirmative_crosses(tmp_path):
 **既知の穴**: (a) TIE が FILLED に縮む（上）。(b) r7 では FALSE_NONE が増える（上。r7 の型による `TYPE_EXCLUDED_ALL`）。(c) 攻撃 120 問の 116 問には正解が無いので、r7 の FILLED 29・TIE 5 は型こそ全部 AGREE だが正しさは採点されていない（監査役の G6 で見る）。
 **この文書の担当の測定は上のとおり。全体の受入と判断は `artifacts/w5-d/DECISIONS.md` の「第 2 ラウンド（W5-d2）」と `artifacts/w5-d/r2/`。**
 <!-- w5d2-measured:end -->
+
+## W5-e の事前登録: A-1 質問の十字の「AGREE と TYPE_UNCHECKED が並ぶ」とき（`INCOMPLETE_TYPING`）
+<!-- w5e-a1-prereg:begin -->
+事前登録の時刻: 2026-10-04 03:47:48 +0900（`date '+%F %T %z'`）。この節は A-1 の新しいテスト（`tests/test_question_cross_w5e.py`）を書く前、製品コード（`verantyx/observe.py`）を直す前に確定した。上の節は 1 文字も変えない。
+
+**命中（W5-d の攻撃 A-1、`tests/attack/test_attack_w5d.py::test_obs_partial_type_agreement_does_not_hide_a_second_attested_answer`）**: 同じ交差に一致した 2 人のうち片方だけが direct、もう片方が UNPLACED／推定のとき、候補が 1 人（direct の方）だけになって `FILLED` に縮む（W5-d の申し送り 1 と同じ。二人目が答えかもしれないことを答えが隠す）。
+
+### 規則（`_observe_question` の候補の判定の直後、`cells` を作る前）
+- `kept`（AGREE の候補）が 1 つ以上あり、`dropped` に理由 `TYPE_UNCHECKED` が 1 つ以上あるとき、`FILLED`／`TIE` にせず状態 `INCOMPLETE_TYPING`（型付きの棄権）。`fillers`（残った候補）と `excluded`（除外）を **両方** 返す。答えとして出さない（`ranks` は空、`focus` は `NoMoveLicensed({'FILL_HOLE:INCOMPLETE_TYPING': 1})`）。`reasons` は先頭 `INCOMPLETE_TYPING` に既存の `extending_reasons + unread_reasons` が続く。
+- 置く位置は `if not kept: … TYPE_EXCLUDED_ALL` の直後（`NO_TYPED_CANDIDATE` と同じく元素を作らない）。`INCOMPLETE_BY_EXTENSION` も当たるときは `INCOMPLETE_TYPING` が先（どちらも棄権）。
+- 「残った候補が 1 つ以上」は `TIE`（AGREE の候補が複数）も含むので、AGREE の複数＋ TYPE_UNCHECKED の構成も `INCOMPLETE_TYPING` にする（判断。チケットの括弧書きどおり）。
+- AGREE だけ（`excluded` が型の不一致 `HOLE_TYPE_DISAGREE` だけ、または `SAME_AS_RESTRICTOR` だけ）なら従来どおり `FILLED`／`TIE`。
+- **対象外（変えない。既知の穴）**: which+N の `HOLE_TYPE_NOT_CHECKED`（`strict`。`test_which_noun_keeps_its_own_reason…` は無傷）、拡張の十字（extending）の型未確認の充填物（`test_an_unchecked_filler_of_an_extending_cross…` は無傷）。
+- `ANSWER_STATUSES` の **末尾** に `'INCOMPLETE_TYPING'` を足す（`_observe_question` の外の 1 行。閉じた一覧の契約 D11）。`HOLE_EXCLUSION_REASONS` は変えない。
+
+### 名指しの改訂（名前不変・前後の全文。標準の規則）
+`tests/test_question_cross_w5d.py` の次の 2 本を改訂する。後の全文は書き換えたあとの測定の節（`w5e-a1-amended`）に貼る。
+1. `test_a_checked_candidate_among_unchecked_ones_answers_and_the_others_stay_excluded`: AGREE の 1 人＋ TYPE_UNCHECKED の 1 人を `FILLED` で固定している → `INCOMPLETE_TYPING`（`fillers` に 1 人・`excluded` に 1 人）。
+2. `test_a02_a_time_adverb_fused_with_its_noun_is_not_a_candidate_without_a_checked_type`: 同じ構成（本・新聞が AGREE、毎日本が TYPE_UNCHECKED）を `TIE` で固定している → `INCOMPLETE_TYPING`。前半（配置なし → `NO_TYPED_CANDIDATE`）は変えない。
+
+**改訂の前の全文**
+```python
+def test_a_checked_candidate_among_unchecked_ones_answers_and_the_others_stay_excluded(tmp_path):
+    pl = write_pl(tmp_path, {'船長': 'PERSON'})
+    out, _ = ask(tmp_path, Q_SHIP, [S1, S2], placement=pl)
+    a = out['answer']
+    assert a['status'] == 'FILLED' and fills(out) == [('船長', [('s1', 0)])] and excluded(out) == [('提督', 'TYPE_UNCHECKED')]
+
+def test_a02_a_time_adverb_fused_with_its_noun_is_not_a_candidate_without_a_checked_type(tmp_path):
+    out = ask_ja_doc('花子は何を読んだ？', 'JA02')
+    a = out['answer']
+    assert a['status'] == 'NO_TYPED_CANDIDATE' and a['fillers'] == []
+    assert sorted(excluded(out)) == [('新聞', 'TYPE_UNCHECKED'), ('本', 'TYPE_UNCHECKED'), ('毎日本', 'TYPE_UNCHECKED')]
+    pl = write_pl(tmp_path, {'本': 'ARTIFACT', '新聞': 'ARTIFACT'})            # only the two real nouns are typed (direct)
+    out = ask_ja_doc('花子は何を読んだ？', 'JA02', pl)
+    a = out['answer']
+    assert a['status'] == 'TIE' and {f['surface'] for f in a['fillers']} == {'本', '新聞'}
+    assert excluded(out) == [('毎日本', 'TYPE_UNCHECKED')]                      # not hidden: it stays in `excluded`
+    assert {f['hole_type_check']['verdict'] for f in a['fillers']} == {'AGREE'}
+```
+
+### 宣言する衝突 K-A1（変えない。判断は監査役）
+`tests/test_question_cross_w5d.py::test_the_new_names_are_at_the_end_of_the_closed_lists` は `ANSWER_STATUSES[-1] == 'NO_TYPED_CANDIDATE'` と固定している。規則どおり末尾に足すと落ちる。名指しが無いので **書き換えず宣言**し、改訂案の diff を `artifacts/w5-e/proposals/k_a1.diff` に置く。
+
+### 受入（H2。測る前に固定）
+- 実装役の 185 問（配置なし・配置あり、`VERA_PLACEMENT` なし・r7 の 4 通り）と攻撃の 120 問（r7・配置なし）で誤答 0、型未確認の充填物を持つ FILLED/TIE 0。`INCOMPLETE_TYPING` に変わる問の数を報告（FILLED が減ってよい）。変更前の測定は `artifacts/w5-e/before/` にある（製品の変更の前）。
+<!-- w5e-a1-prereg:end -->
+
+## W5-e A-1 の改訂後の全文（名指しの 2 本）と宣言
+<!-- w5e-a1-amended:begin -->
+記録の時刻: 2026-10-04 03:50:01 +0900。テストの改訂は製品コードの変更（`observe.py`）の後。改訂は名前不変で、変えたのは `status` の期待 1 語と理由のコメント 1 行だけ（`git diff --stat tests/test_question_cross_w5d.py` で追加 4 行・削除 2 行。コメント 2 行＋ `status` の行の置き換え 2 行）。前の全文は上の `w5e-a1-prereg` 区間。
+
+**改訂の後の全文**
+```python
+def test_a_checked_candidate_among_unchecked_ones_answers_and_the_others_stay_excluded(tmp_path):
+    pl = write_pl(tmp_path, {'船長': 'PERSON'})
+    # W5-e（チケット W5-e の名指しの改訂）: AGREE の候補が TYPE_UNCHECKED の候補と並ぶ構成は FILLED ではなく INCOMPLETE_TYPING（A-1）。候補と除外は両方返る。
+    out, _ = ask(tmp_path, Q_SHIP, [S1, S2], placement=pl)
+    a = out['answer']
+    assert a['status'] == 'INCOMPLETE_TYPING' and fills(out) == [('船長', [('s1', 0)])] and excluded(out) == [('提督', 'TYPE_UNCHECKED')]
+
+def test_a02_a_time_adverb_fused_with_its_noun_is_not_a_candidate_without_a_checked_type(tmp_path):
+    out = ask_ja_doc('花子は何を読んだ？', 'JA02')
+    a = out['answer']
+    assert a['status'] == 'NO_TYPED_CANDIDATE' and a['fillers'] == []
+    assert sorted(excluded(out)) == [('新聞', 'TYPE_UNCHECKED'), ('本', 'TYPE_UNCHECKED'), ('毎日本', 'TYPE_UNCHECKED')]
+    pl = write_pl(tmp_path, {'本': 'ARTIFACT', '新聞': 'ARTIFACT'})            # only the two real nouns are typed (direct)
+    out = ask_ja_doc('花子は何を読んだ？', 'JA02', pl)
+    a = out['answer']
+    # W5-e（チケット W5-e の名指しの改訂）: 本・新聞（AGREE）と毎日本（TYPE_UNCHECKED）が並ぶ構成は TIE ではなく INCOMPLETE_TYPING（A-1）。
+    assert a['status'] == 'INCOMPLETE_TYPING' and {f['surface'] for f in a['fillers']} == {'本', '新聞'}
+    assert excluded(out) == [('毎日本', 'TYPE_UNCHECKED')]                      # not hidden: it stays in `excluded`
+    assert {f['hole_type_check']['verdict'] for f in a['fillers']} == {'AGREE'}
+```
+
+**宣言（K-A1。書き換えない）**: `tests/test_question_cross_w5d.py::test_the_new_names_are_at_the_end_of_the_closed_lists` は `ANSWER_STATUSES[-1] == 'NO_TYPED_CANDIDATE'` を固定しているので、規則どおり末尾に `INCOMPLETE_TYPING` を足すと落ちる。改訂案は `artifacts/w5-e/proposals/k_a1.diff`（`ANSWER_STATUSES[-2:]` の比較に変える 1 行）。
+
+**製品の変更**: `verantyx/observe.py` は `ANSWER_STATUSES` の末尾の 1 語と `_observe_question` の中の 1 つの `if`（`TYPE_EXCLUDED_ALL` の直後）と docstring の 2 行だけ。
+<!-- w5e-a1-amended:end -->
+
+
+## W5-e の測定: A-1 質問の十字（H2）
+<!-- w5e-a1-measured:begin -->
+測定の時刻: 2026-10-04 04:10:06 +0900。コマンドは `artifacts/w5-e/scripts/measure.sh`（`run_questions_both.py` を 6 通り）。変更前は `artifacts/w5-e/before/`（製品の変更の前に取った）、変更後は `artifacts/w5-e/`。凍結とテスト: `frozen_a1.sha256`・`frozen_a1_at.txt`、直す前に落ちる記録 `a1_before_fail.txt`（`15 failed, 7 passed`）。
+
+- **誤答 0**: `h2_185_place.json`・`h2_185_noplace.json`（`VERA_PLACEMENT` なし）・`h2_185_place_r7.json`・`h2_185_noplace_r7.json`（r7）・`h2_attack120.json`（なし）・`h2_attack120_r7.json` の 6 つとも `"wrong": []`・`unchecked_fillers_in_FILLED_TIE` 0。
+- **正答（CORRECT）は 185 問の 4 通りとも変更前と同じ**: place 38、noplace 26、place_r7 73、noplace_r7 66（`h2_*.json` と `before/h2_*.json`）。
+- **`INCOMPLETE_TYPING` に変わった問の数**（`h2_changes.txt`）: 185 問の 4 通りは 0 件、攻撃 120 問は配置なし 0 件・r7 で 1 件（`JA02-01` `花子は何を読んだ？`: `FILLED [本]` → `INCOMPLETE_TYPING`。`新聞`・`毎日本` は `TYPE_UNCHECKED`。W5-d2 が既知の穴に書いた形）。
+- `INCOMPLETE_TYPING` 以外へ変わった問（`h2_changes.txt`）: 185 問の 4 通りで 1 件ずつ、`Q133`（`兄か弟が鉛筆を貸した？`、正解は ILLFORMED）が `POLAR_QUESTION` → `QUESTION_NOT_READ`。原因は A-1 ではなく B-2 の門（`DISJUNCTION_UNDETERMINED`。読解器が選言の節を読まなくなった）。どちらも棄権で、`run_questions.py` の分類は `ABSTAINED` のまま。
+- **テスト**: `tests/test_question_cross_w5e.py` は `19 passed`（`new_tests_run.txt`）。名指しの改訂 2 本は通り、`tests/test_question_cross_w5d.py` の失敗は宣言した K-A1 の 1 件だけ（`29 passed, 1 failed`: `a1_w5d_run.txt`）。攻撃 A-1（`test_obs_partial_type_agreement_does_not_hide_a_second_attested_answer`）は通る。
+- **既知の穴**: which+N の `HOLE_TYPE_NOT_CHECKED` と、拡張の十字（extending）の型未確認の充填物は `INCOMPLETE_TYPING` の対象外（変えていない）。
+<!-- w5e-a1-measured:end -->
+
+## W5-e 第 2 ラウンド: K-A1 の改訂（監査役の判断 2026-10-04 04:42）
+<!-- w5e2-ka1:begin -->
+監査役の判断: 「K-A1（1）: W5-d のテストが部分的な型づけの FILLED を固定していたもの → 新しい規則に合わせて改訂」。第 1 ラウンドで宣言した衝突は `test_the_new_names_are_at_the_end_of_the_closed_lists` の 1 件（閉じた状態の一覧の末尾の名前を `NO_TYPED_CANDIDATE` で固定していた。A-1 が `INCOMPLETE_TYPING` を末尾に足した）。名前不変。中身は `ANSWER_STATUSES` の末尾の 2 つを `(NO_TYPED_CANDIDATE, INCOMPLETE_TYPING)` と固定する 1 行だけ（`artifacts/w5-e/proposals/k_a1.diff`）。ほかの行・期待は変えない。
+
+#### `tests/test_question_cross_w5d.py::test_the_new_names_are_at_the_end_of_the_closed_lists` — 改訂前の全文（基点 ca66d3e と同じ）
+```python
+def test_the_new_names_are_at_the_end_of_the_closed_lists():
+    assert O.ANSWER_STATUSES[-1] == 'NO_TYPED_CANDIDATE' and O.ANSWER_STATUSES[:10] == (
+        'FILLED', 'TIE', 'NO_ATTESTED_CELL', 'TYPE_EXCLUDED_ALL', 'HOLE_TYPE_UNDETERMINED', 'POLAR_QUESTION',
+        'DIRECTION_NOT_APPLIED', 'QUESTION_NOT_READ', 'ANCHOR_CROSS_INDEX_OUT_OF_RANGE', 'INCOMPLETE_BY_EXTENSION')
+    assert O.HOLE_EXCLUSION_REASONS == ('HOLE_TYPE_DISAGREE', 'HOLE_TYPE_NOT_CHECKED', 'SAME_AS_RESTRICTOR', 'TYPE_UNCHECKED')
+```
+
+#### `tests/test_question_cross_w5d.py::test_the_new_names_are_at_the_end_of_the_closed_lists` — 改訂後の全文
+```python
+def test_the_new_names_are_at_the_end_of_the_closed_lists():
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A1）: A-1 が INCOMPLETE_TYPING を末尾に足したので、末尾の 2 つを固定する
+    assert O.ANSWER_STATUSES[-2:] == ('NO_TYPED_CANDIDATE', 'INCOMPLETE_TYPING') and O.ANSWER_STATUSES[:10] == (
+        'FILLED', 'TIE', 'NO_ATTESTED_CELL', 'TYPE_EXCLUDED_ALL', 'HOLE_TYPE_UNDETERMINED', 'POLAR_QUESTION',
+        'DIRECTION_NOT_APPLIED', 'QUESTION_NOT_READ', 'ANCHOR_CROSS_INDEX_OUT_OF_RANGE', 'INCOMPLETE_BY_EXTENSION')
+    assert O.HOLE_EXCLUSION_REASONS == ('HOLE_TYPE_DISAGREE', 'HOLE_TYPE_NOT_CHECKED', 'SAME_AS_RESTRICTOR', 'TYPE_UNCHECKED')
+```
+<!-- w5e2-ka1:end -->

@@ -1,0 +1,17 @@
+FFFFFFF......F.FFFFFF.                                                   [100%]
+=========================== short test summary info ============================
+FAILED tests/test_routing_from_text_w5e.py::test_a2_5_an_untyped_answer_stops_the_name_with_a_typed_reason[answer0-ESTIMATED]
+FAILED tests/test_routing_from_text_w5e.py::test_a2_5_an_untyped_answer_stops_the_name_with_a_typed_reason[answer1-ESTIMATED]
+FAILED tests/test_routing_from_text_w5e.py::test_a2_5_an_untyped_answer_stops_the_name_with_a_typed_reason[answer2-UNPLACED]
+FAILED tests/test_routing_from_text_w5e.py::test_a2_5_an_untyped_answer_stops_the_name_with_a_typed_reason[answer3-UNKNOWN]
+FAILED tests/test_routing_from_text_w5e.py::test_a2_5_an_untyped_answer_stops_the_name_with_a_typed_reason[answer4-MULTIPLE]
+FAILED tests/test_routing_from_text_w5e.py::test_a2_5_an_untyped_answer_stops_the_name_with_a_typed_reason[answer5-MULTIPLE]
+FAILED tests/test_routing_from_text_w5e.py::test_a2_5_an_estimated_word_with_a_typed_candidate_is_not_a_name_either_even_for_a_person_type
+FAILED tests/test_routing_from_text_w5e.py::test_a2_a_name_that_a_naming_sentence_introduced_is_a_name_whatever_the_placement_says
+FAILED tests/test_routing_from_text_w5e.py::test_a2_one_untyped_name_stops_the_whole_text_as_a_typed_common_noun_does
+FAILED tests/test_routing_from_text_w5e.py::test_a2_r7_an_estimated_or_unplaced_common_noun_is_not_routed[\u59d4\u54e1\u4f1a\u304c\u30c6\u30b9\u30c8\u3092\u66f8\u304f\u3002-\u59d4\u54e1\u4f1a-ESTIMATED]
+FAILED tests/test_routing_from_text_w5e.py::test_a2_r7_an_estimated_or_unplaced_common_noun_is_not_routed[\u30ec\u30d3\u30e5\u30fc\u306f\u5916\u6ce8\u5148\u304c\u3084\u308b\u3002-\u5916\u6ce8\u5148-UNPLACED]
+FAILED tests/test_routing_from_text_w5e.py::test_a2_r7_an_estimated_or_unplaced_common_noun_is_not_routed[\u30ec\u30d3\u30e5\u30fc\u306f\u8ab2\u304c\u3084\u308b\u3002-\u8ab2-UNPLACED]
+FAILED tests/test_routing_from_text_w5e.py::test_a2_r7_an_estimated_or_unplaced_common_noun_is_not_routed[\u958b\u767a\u8005\u304c\u30c6\u30b9\u30c8\u3092\u66f8\u304f\u3002-\u958b\u767a\u8005-ESTIMATED]
+FAILED tests/attack/test_attack_w5d.py::test_route_r7_estimated_common_noun_is_not_mapped_as_an_agent
+14 failed, 8 passed, 10 deselected in 0.53s

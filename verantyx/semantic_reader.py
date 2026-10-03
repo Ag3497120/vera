@@ -1429,6 +1429,51 @@ def _type_gate(clause):
     return replace(clause, unsupported=(*clause.unsupported, *new)) if new else clause
 
 
+# W5-e: a coordination (と・や) or a disjunction (か) of noun phrases is neither one value of a role nor a companion: the clause is unsupported with a typed reason
+# (docs/READING_SOUNDNESS.md section 10E). UniDic has no coordinating-particle class (と is a case particle, や・か are adverbial particles), so the rule is read off the
+# surface of three closed function particles and off adjacency: the particle follows a noun-like token, noun-like tokens and の follow it without a gap, and a particle comes next.
+_COORDINATION_REASON = 'COORDINATION_UNDETERMINED'
+_DISJUNCTION_REASON = 'DISJUNCTION_UNDETERMINED'
+_COORDINATING_PARTICLES = {'と': _COORDINATION_REASON, 'や': _COORDINATION_REASON, 'か': _DISJUNCTION_REASON}
+_COORDINATION_BEFORE = ('名詞', '代名詞', '接尾辞', '数')
+_COORDINATION_RUN = ('名詞', '代名詞', '接頭辞', '接尾辞', '形状詞', '数')
+_COORDINATION_AFTER = ('格助詞', '係助詞', '副助詞')
+
+
+def _coordination_marks(sentence):
+    """(start, end, surface) of each particle token と・や・か of `sentence` that joins noun phrases: the token is a particle outside every compound particle, the token before
+    it is noun-like, the tokens after it are noun-like or の (the first one noun-like, without a gap) and the token that ends that run is a case / binding / adverbial particle."""
+    if not any(p in sentence for p in _COORDINATING_PARTICLES): return []
+    toks = _tokens(sentence); compound = _compound_token_indices(toks); marks = []
+    for i, (word, start, end) in enumerate(toks):
+        if i == 0 or i in compound or word.feature.pos1 != '助詞' or word.surface not in _COORDINATING_PARTICLES: continue
+        if toks[i - 1][0].feature.pos1 not in _COORDINATION_BEFORE: continue
+        j = i + 1
+        while j < len(toks) and (toks[j][0].feature.pos1 in _COORDINATION_RUN or (toks[j][0].feature.pos1 == '助詞' and toks[j][0].surface == 'の')):
+            if j == i + 1 and toks[j][0].feature.pos1 not in _COORDINATION_RUN: break
+            j += 1
+        if j == i + 1 or j >= len(toks): continue
+        after = toks[j][0].feature
+        if after.pos1 == '助詞' and after.pos2 in _COORDINATION_AFTER: marks.append((start, end, word.surface))
+    return marks
+
+
+def _coordination_gate(clause):
+    """W5-e: a clause stays visible as unsupported (never deleted) when it holds a coordination or a disjunction: a role whose syntactic reading marked it
+    (`gold_parallel:choice` / `gold_parallel:parallel`, read here, not made), or a joining particle (`_coordination_marks`) inside the clause body.
+    A reason already on the clause is not repeated."""
+    reasons = []
+    for role in clause.roles:
+        rule = role.rule or ''
+        if rule.endswith(':choice'): reasons.append(_DISJUNCTION_REASON)
+        elif rule.endswith(':parallel'): reasons.append(_COORDINATION_REASON)
+    body = clause.body_span or clause.span
+    for start, _end, surface in _coordination_marks(clause.span.text):
+        if body.start <= clause.span.start + start < body.end: reasons.append(_COORDINATING_PARTICLES[surface])
+    new = tuple(dict.fromkeys(r for r in reasons if r not in clause.unsupported))
+    return replace(clause, unsupported=(*clause.unsupported, *new)) if new else clause
+
+
 def document_view(documents, *, sovereigns=None, family='document'):
     started = time.perf_counter(); sources = dict(documents); clauses = []; unread = []
     from .bot import _INJECTED
@@ -1460,6 +1505,7 @@ def document_view(documents, *, sovereigns=None, family='document'):
                             item.span.source == consumed.source
                             and consumed.start <= item.span.start and item.span.end <= consumed.end)]
             cs = [_type_gate(c) for c in cs]
+            cs = [_coordination_gate(c) for c in cs]
             clauses.extend(cs); unread.extend(us)
     return View(sources,tuple(clauses),tuple(unread),(time.perf_counter()-started)*1000)
 

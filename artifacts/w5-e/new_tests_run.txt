@@ -1,0 +1,10 @@
+tests/test_basis_policy_w5e.py: 25 passed in 0.15s
+tests/test_question_cross_w5e.py: 19 passed in 0.50s
+tests/coarse_place/test_coarse_place_w5e_frame_backing.py: 10 passed in 2.11s
+tests/test_routing_from_text_w5e.py: 20 passed in 0.46s
+tests/test_semantic_read_w5e.py: 58 passed in 0.43s
+tests/test_event_cross_w5e.py: 22 passed in 0.08s
+28 passed in 0.54s
+FAILED tests/test_routing_from_text_w5b.py::test_C3_without_a_marker_relation_override_that_overlaps_only_partly_is_held_as_ambiguous_both_declarations_stand
+FAILED tests/test_routing_from_text_w5b.py::test_C3_without_a_marker_an_override_of_another_kind_about_another_name_is_held_not_a_replacement_both_statements_stand
+14 failed, 51 passed in 3.59s

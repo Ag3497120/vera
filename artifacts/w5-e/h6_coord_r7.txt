@@ -1,0 +1,1 @@
+{"abstain": 78, "correct": 2, "groups": {"and_ga": {"ABSTAIN": 16}, "comma": {"ABSTAIN": 14, "CORRECT": 2}, "issho": {"ABSTAIN": 16}, "ka_ga": {"ABSTAIN": 16}, "ya_wo": {"ABSTAIN": 16}}, "misread": 0, "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1", "rows": 80}

@@ -1,0 +1,6 @@
+tests/test_semantic_read_w3b3.py::test_semantic_read_changes_only_read_ja_and_semantic_reader_only_adds
+tests/reading_soundness/test_gates_round2.py::test_gate_conjoined_agents_are_kept[\u72ac\u3068\u732b\u304c\u5ead\u3067\u904a\u3093\u3060\u3002-\u72ac\u3068\u732b]
+tests/reading_soundness/test_gates_round2.py::test_gate_conjoined_agents_are_kept[\u5144\u3084\u5f1f\u304c\u5e97\u3067\u672c\u3092\u8cb7\u3063\u305f\u3002-\u5144\u3084\u5f1f]
+tests/test_routing_from_text_entry.py::test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader
+tests/attack/w3b3/test_attack_w3b3.py::test_frozen_read_and_abstain_expectations
+5 failed, 3955 passed in 45.99s

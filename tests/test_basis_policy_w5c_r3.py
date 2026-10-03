@@ -341,14 +341,16 @@ def test_r3_the_users_own_document_answer_is_kept_and_the_record_is_not_used(tmp
 
 # ============================================================ versions
 def test_r3_the_versions_are_as_registered():
-    assert bp.CLASSIFY_VERSION == 3 and bp.CONFIRM_ID_VERSION == 2 and bp.TABLE_VERSION == 1
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: CLASSIFY_VERSION は 4（A-3）。関数名の 3 は W5-c r3 の版の名前なので変えない
+    assert bp.CLASSIFY_VERSION == 4 and bp.CONFIRM_ID_VERSION == 2 and bp.TABLE_VERSION == 1
     assert bp.SCHEMA == "verantyx.basis_policy/1" and len(bp.TABLE) == 24
 
 
 def test_r3_the_policy_note_carries_the_classify_version_3():
     out, _rc = bp.apply_to_ask(_synthetic("answer", "ANSWER", [_fsrc("general", None)]), bp.AskPolicy(), query=Q,
                                mode="legacy", documents=[])
-    assert out["basis_policy"]["classify_version"] == 3 and out["basis_policy"]["confirm_id_version"] == 2
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 注記の classify_version は 4（A-3）。関数名の 3 は W5-c r3 の版の名前なので変えない
+    assert out["basis_policy"]["classify_version"] == 4 and out["basis_policy"]["confirm_id_version"] == 2
     assert out["basis_policy"]["table_version"] == 1
 
 

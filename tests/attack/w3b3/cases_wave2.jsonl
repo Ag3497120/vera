@@ -1,0 +1,8 @@
+{"id":"W2-01","group":"w1a4_np_adverb","lang":"ja","text":"兄がすぐ近くの店に行き、弟が帰った。","expected":{"mode":"abstain","reason":"noun_phrase_adverb"}}
+{"id":"W2-02","group":"w1a4_negative_adverb","lang":"ja","text":"兄が全く来なかったので弟が帰った。","expected":{"mode":"abstain","reason":"negative_adverb_scope"}}
+{"id":"W2-03","group":"w1a4_negative_adverb","lang":"ja","text":"兄がほとんど来なかったので弟が帰った。","expected":{"mode":"abstain","reason":"negative_adverb_scope"}}
+{"id":"W2-04","group":"w1a4_quote_to","lang":"ja","text":"兄が来ると母は思った。","expected":{"mode":"abstain","reason":"quote_or_condition"}}
+{"id":"W2-05","group":"w1a4_object_ellipsis","lang":"ja","text":"父が読んだので母が喜んだ。","expected":{"mode":"abstain","reason":"omitted_object"}}
+{"id":"W2-06","group":"w1a4_outside_conjunction","lang":"ja","text":"兄が来て、しかし弟が駅へ帰った。","expected":{"mode":"abstain","reason":"connective_outside_cut"}}
+{"id":"W2-07","group":"multi_cut","lang":"ja","text":"兄が来て、弟が帰って、母が寝た。","expected":{"mode":"abstain","reason":"three_clauses"}}
+{"id":"W2-08","group":"unlisted_tari","lang":"ja","text":"兄が駅へ行ったり、弟が家へ帰ったりした。","expected":{"mode":"abstain","reason":"unlisted_tari"}}

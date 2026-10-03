@@ -1,0 +1,7 @@
+........................................................................ [ 32%]
+........................................................................ [ 64%]
+........................................................................ [ 97%]
+.....s                                                                   [100%]
+===================== environment classification of skips ======================
+UNCLASSIFIED_SKIP: tests/attack/test_attack_w5d.py::test_frame_confirmed_partial_intersection_does_not_authorize_unbacked_type
+221 passed, 1 skipped in 7.37s

@@ -1196,7 +1196,7 @@ def run_entry(*, anchor_text: Optional[str] = None, anchor_record: Optional[str]
 ANSWER_SCHEMA = 'verantyx.question_answer/1'
 ANSWER_STATUSES: Tuple[str, ...] = ('FILLED', 'TIE', 'NO_ATTESTED_CELL', 'TYPE_EXCLUDED_ALL', 'HOLE_TYPE_UNDETERMINED', 'POLAR_QUESTION',
                                     'DIRECTION_NOT_APPLIED', 'QUESTION_NOT_READ', 'ANCHOR_CROSS_INDEX_OUT_OF_RANGE', 'INCOMPLETE_BY_EXTENSION',
-                                    'NO_TYPED_CANDIDATE')
+                                    'NO_TYPED_CANDIDATE', 'INCOMPLETE_TYPING')
 HOLE_EXCLUSION_REASONS: Tuple[str, ...] = ('HOLE_TYPE_DISAGREE', 'HOLE_TYPE_NOT_CHECKED', 'SAME_AS_RESTRICTOR', 'TYPE_UNCHECKED')
 
 
@@ -1287,6 +1287,8 @@ def _observe_question(viewpoint: Viewpoint, structure: Structure, lookup: Any, n
     W5-d: a filler is a candidate only when the hole's type was CHECKED and agrees (`_hole_type_check` AGREE: a direct answer, or a MULTIPLE all of whose types fit the
     hole); one whose type cannot be checked is excluded as TYPE_UNCHECKED, and when nothing else is left the status is NO_TYPED_CANDIDATE (an abstention: not
     TYPE_EXCLUDED_ALL, which says the types were checked and did not fit).
+    W5-e: when a candidate whose type agrees stands next to one that could not be checked (TYPE_UNCHECKED), the status is INCOMPLETE_TYPING (an abstention that returns the
+    candidates and the exclusions both), not FILLED / TIE. Agreeing candidates with only type-disagreeing ones next to them, which+N and the extending crosses are as before.
     W5-d2: without a placement of the caller's (`--placement` / an explicit lookup) the placement is `EC.default_lookup()` = the coarse placement of VERA_PLACEMENT, the
     one the event cross uses (nothing set: the stub, as before). When that lookup is not the one the structure was read with, a filler's type is checked by asking it
     about the filler's surface, and the output names it (`structure.placement`)."""
@@ -1427,6 +1429,11 @@ def _observe_question(viewpoint: Viewpoint, structure: Structure, lookup: Any, n
         for it in dropped: reasons_count['FILL_HOLE:candidate:%s' % it['reason']] = reasons_count.get('FILL_HOLE:candidate:%s' % it['reason'], 0) + 1
         return finish('TYPE_EXCLUDED_ALL', NoMoveLicensed(dict(sorted(reasons_count.items()))), qcross, fillers, excluded,
                       reasons=['EVERY_CANDIDATE_EXCLUDED_BY_THE_TYPE_OF_THE_HOLE'] + extending_reasons + unread_reasons)
+    if any(it['reason'] == 'TYPE_UNCHECKED' for it in dropped):
+        # W5-e (A-1): a candidate whose type AGREES stands next to one whose type could not be checked (UNPLACED, UNKNOWN, an estimate): the checked one may not
+        # shrink the answer to itself (FILLED) nor to the checked ones only (TIE). A typed abstention; the candidates and the exclusions are both returned (`kept` is not empty here).
+        return finish('INCOMPLETE_TYPING', NoMoveLicensed({'FILL_HOLE:INCOMPLETE_TYPING': 1}), qcross, fillers, excluded,
+                      reasons=['INCOMPLETE_TYPING'] + extending_reasons + unread_reasons)
     # --- the cells that carry the kept candidates, as elements (the realizer says each one's sentence from the STRUCTURE's cross, never from the question's)
     cells: Dict[str, Cell] = {}
     for it in sorted(kept, key=lambda x: (x['cell_key'], x['reading'], x['cross_index'])):

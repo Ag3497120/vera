@@ -123,8 +123,11 @@ def test_gate_bare_comma_pair_is_not_a_fused_agent(text):
 
 @pytest.mark.parametrize('text,agent', [('犬と猫が庭で遊んだ。', '犬と猫'), ('兄や弟が店で本を買った。', '兄や弟')])
 def test_gate_conjoined_agents_are_kept(text, agent):
-    cs, _ = supported(text)
-    assert cs and names(cs[0]).get('agent') == agent
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-B）: 旧い振る舞い（並立を 1 つの印なしの値に畳んで agent に置く）の固定を退役させた。並立（と・や）は 1 つの値に畳まず
+    # 門 COORDINATION_UNDETERMINED で棄権する（10E の規則 (ii)）: どの supported の節も agent == 並立 を持たず、COORDINATION_UNDETERMINED が unsupported に付いた節がある
+    cs, v = supported(text)
+    assert not any(names(c).get('agent') == agent for c in cs)
+    assert any('COORDINATION_UNDETERMINED' in c.unsupported for c in v.clauses)
 
 
 # ---- 8. the comparison dimension is a noun, never a degree adverb ------------------------------------------------------------------

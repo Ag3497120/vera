@@ -1,0 +1,2 @@
+FAILED tests/test_question_cross_w5d.py::test_the_new_names_are_at_the_end_of_the_closed_lists
+1 failed, 29 passed in 3.32s

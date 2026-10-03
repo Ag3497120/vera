@@ -1,0 +1,11 @@
+--- a/tests/test_question_cross_w5d.py
++++ b/tests/test_question_cross_w5d.py
+@@ -90,7 +90,7 @@
+ 
+ 
+ def test_the_new_names_are_at_the_end_of_the_closed_lists():
+-    assert O.ANSWER_STATUSES[-1] == 'NO_TYPED_CANDIDATE' and O.ANSWER_STATUSES[:10] == (
++    assert O.ANSWER_STATUSES[-2:] == ('NO_TYPED_CANDIDATE', 'INCOMPLETE_TYPING') and O.ANSWER_STATUSES[:10] == (
+         'FILLED', 'TIE', 'NO_ATTESTED_CELL', 'TYPE_EXCLUDED_ALL', 'HOLE_TYPE_UNDETERMINED', 'POLAR_QUESTION',
+         'DIRECTION_NOT_APPLIED', 'QUESTION_NOT_READ', 'ANCHOR_CROSS_INDEX_OUT_OF_RANGE', 'INCOMPLETE_BY_EXTENSION')
+     assert O.HOLE_EXCLUSION_REASONS == ('HOLE_TYPE_DISAGREE', 'HOLE_TYPE_NOT_CHECKED', 'SAME_AS_RESTRICTOR', 'TYPE_UNCHECKED')

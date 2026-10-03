@@ -51,6 +51,9 @@ ENTRY_BASIS_KEYS: Tuple[str, ...] = ('predicate_basis', 'role_basis')
 # W3-b2: the other source field the entry writes on a clause of a type path: `role_flags` = {role: {"determiner": the demonstrative that stood before the filler}}. Not a key of the
 # convention either: the cross accepts it, checks its shape, and writes `flags['determiner']` of the filler of that role (it is not copied to the centre or to the provenance).
 ENTRY_FLAG_KEYS: Tuple[str, ...] = ('role_flags',)
+# W5-e: a `role_flags` entry may also carry `coordination` (one of these three particles). The cross does not build a filler for a role that carries it (`COORDINATION_UNMARKED:<role>`):
+# the reading entry abstains on a coordination or a disjunction, so this is only the form that receives the mark (docs/EVENT_CROSS.md, W5-e).
+COORDINATION_MARKS: Tuple[str, ...] = ('と', 'や', 'か')
 # W3-b3: the `head` of a relation of type `relative` (docs/EVENT_CROSS.md, W3-b3 の追記): {from_role: the arm of the relative clause the head fills, to_role: the role of the head in the main
 # clause}. Not a key of the convention (the scorer reads type, from, to only); the closed list of what `_check` can say is wrong about it.
 RELATION_HEAD_REASONS: Tuple[str, ...] = ('not_a_mapping', 'keys', 'type_not_relative', 'role_not_in_convention', 'values_differ', 'duplicate_target', 'nested')
@@ -386,6 +389,14 @@ def _embed(crosses: Tuple[EventCross, ...], relations: List[Any]) -> Tuple[Event
     return tuple(out)
 
 
+def _flag_well_formed(flag: Any) -> bool:
+    """One role's entry of `role_flags`: a mapping whose keys are `determiner`, `coordination` or both; `determiner` a non-blank string, `coordination` one of
+    COORDINATION_MARKS (W5-e). A mapping with `determiner` alone is judged exactly as before."""
+    if not isinstance(flag, Mapping) or not flag or not set(flag) <= {'determiner', 'coordination'}: return False
+    if 'determiner' in flag and not (isinstance(flag['determiner'], str) and flag['determiner'].strip()): return False
+    return 'coordination' not in flag or (isinstance(flag['coordination'], str) and flag['coordination'] in COORDINATION_MARKS)
+
+
 def _check(read_output: Any) -> List[str]:
     """The reasons for which the reader output is refused as an input (empty when it can be crossed or is a typed abstention)."""
     if not isinstance(read_output, Mapping): return ['NOT_A_MAPPING']
@@ -430,9 +441,10 @@ def _check(read_output: Any) -> List[str]:
         if 'role_flags' in clause:
             flags = clause['role_flags']
             if not (isinstance(flags, Mapping) and flags and isinstance(roles, Mapping) and all(
-                    isinstance(k, str) and k in roles and isinstance(v, Mapping) and set(v) == {'determiner'} and isinstance(v['determiner'], str) and v['determiner'].strip()
-                    for k, v in flags.items())):
+                    isinstance(k, str) and k in roles and _flag_well_formed(v) for k, v in flags.items())):
                 bad.append('ENTRY_FLAGS_NOT_WELL_FORMED')
+            else:
+                bad.extend('COORDINATION_UNMARKED:%s' % k for k, v in flags.items() if 'coordination' in v)      # W5-e: a mark the cross cannot carry
         if 'roles' in clause and not isinstance(roles, Mapping): bad.append('ROLES_NOT_A_MAPPING'); continue
         for name, value in (roles or {}).items():
             if name not in ROLE_NAMES: bad.append('ROLE_NOT_IN_CONVENTION:%s' % (name,)); continue

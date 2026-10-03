@@ -1002,8 +1002,12 @@ def _common_noun_stop(reading: UnitReading, rels: List[Relation], introduced: se
           that could not be checked is kept in ``check`` (and shown in the output's ``reading.common_noun_check``).
     A name that a naming sentence introduced and the names of a naming sentence are not examined.
     W5-d (R-J1), Japanese only: (b) takes only a direct type that is one of the noun types (``event_cross.NOUN_TYPE_IDS``), and a name with no usable
-    placement answer (none, or ``NO_PLACEMENT``) that no naming sentence introduced is stopped as ``NAME_UNVERIFIED:<name>:NO_PLACEMENT`` (a name that
-    is placed but UNPLACED / UNKNOWN / estimated still passes, as before)."""
+    placement answer (none, or ``NO_PLACEMENT``) that no naming sentence introduced is stopped as ``NAME_UNVERIFIED:<name>:NO_PLACEMENT``.
+    W5-e2 (A-2 corrected by the auditor, 2026-10-04 04:42:38), Japanese only, on top of the W5-d rule above: a name whose placement answer is usable and ``estimated`` (any state,
+    any types) is stopped as ``COMMON_NOUN_SUBJECT:<name>:PLACEMENT_ESTIMATED:<types>`` (an estimate is a construction, not a testimony; W5-c onward). An UNPLACED / UNKNOWN answer, and a direct
+    answer with no noun type, are NOT stopped: they pass to the check against declared names, exactly as in W5-d (an UNPLACED word is a candidate name, and stopping it would stop every name).
+    Counting: an estimated name is ``checked`` (the placement answered, but not as a testimony); ``flagged`` is for the direct noun types only.
+    (This supersedes what (b) says about an estimated word. The W5-e round-1 reason ``COMMON_NOUN_SUBJECT_UNTYPED`` is retired: it is not returned.)"""
     names: List[str] = []
     for rel in rels:
         if rel.kind != "ALIAS":
@@ -1026,16 +1030,23 @@ def _common_noun_stop(reading: UnitReading, rels: List[Relation], introduced: se
         place = places.get(key)
         usable = place is not None and place.get("state") not in (None, "NO_PLACEMENT") and place.get("source") != "NO_PLACEMENT"
         typed = usable and place.get("origin") == "direct" and place.get("state") in ("DECIDED", "MULTIPLE")
+        untyped = None
         if typed and reading.lang == "ja":
             # W5-d (R-J1): a Japanese name is stopped as a common noun when its direct type is one of the noun types (event_cross.NOUN_TYPE_IDS);
             # a direct type of another kind (a predicate type, say) says nothing about the word being a common noun
             from . import event_cross
             typed = any(str(t) in event_cross.NOUN_TYPE_IDS for t in place.get("types") or [])
+        elif usable and reading.lang == "ja" and place.get("origin") == "estimated":
+            # W5-e2 (A-2, corrected by the auditor): an estimate is a construction, not a testimony, so an estimated word is not routed as an agent's name;
+            # UNPLACED / UNKNOWN (and every other answer that is not an estimate) still pass to the check against declared names, as in W5-d
+            untyped = "PLACEMENT_ESTIMATED:" + ",".join(str(t) for t in place.get("types") or [])
         if key not in seen:
             seen[key] = "flagged" if typed else ("checked" if usable else "not_checked")
             check[seen[key]] += 1
         if typed:
             return f"COMMON_NOUN_SUBJECT:{name}:PLACEMENT_DIRECT:{','.join(str(t) for t in place.get('types') or [])}"
+        if untyped is not None:
+            return f"COMMON_NOUN_SUBJECT:{name}:{untyped}"
         if reading.lang == "ja" and not usable:
             # W5-d (R-J1): with no placement answer a Japanese name that no naming sentence introduced cannot be told from a common noun
             return f"NAME_UNVERIFIED:{name}:NO_PLACEMENT"

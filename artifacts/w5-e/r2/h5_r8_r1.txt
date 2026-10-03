@@ -1,0 +1,29 @@
+r8 words 8030 8030 8030
+frame_status counts ov : {'ESTIMATED': 7900, 'CONFIRMED': 99, 'NOT_CONFIRMED': 31}
+frame_status counts ov0: {'ESTIMATED': 7900, 'CONFIRMED': 99, 'NOT_CONFIRMED': 31}
+frame_status counts ovb: {'ESTIMATED': 7900, 'CONFIRMED': 99, 'NOT_CONFIRMED': 31}
+words changed by R1 (ov vs ov0): 14
+keys that differ: {'frame_unconfirmed': 14}  | all have frame_unconfirmed['へ']==['PLACE']: True
+changed state 0
+changed origin 0
+changed top 0
+changed frame_status 0
+changed frame 0
+["向かえる", ["frame_unconfirmed"], {}, {"に": ["EVENT_ACT", "PERSON", "PLACE"]}, {"に": ["EVENT_ACT", "PERSON", "PLACE"], "へ": ["PLACE"]}]
+["嫁ぐ", ["frame_unconfirmed"], {}, {"が": ["PERSON"], "に": ["PERSON", "PLACE"]}, {"が": ["PERSON"], "に": ["PERSON", "PLACE"], "へ": ["PLACE"]}]
+["日帰りする", ["frame_unconfirmed"], {}, {"に": ["PLACE"]}, {"に": ["PLACE"], "へ": ["PLACE"]}]
+["流れ込む", ["frame_unconfirmed"], {}, {"に": ["ARTIFACT", "BODY_PART", "PLACE"]}, {"に": ["ARTIFACT", "BODY_PART", "PLACE"], "へ": ["PLACE"]}]
+["浸透する", ["frame_unconfirmed"], {}, {"に": ["ABSTRACT", "ARTIFACT", "PLACE"]}, {"に": ["ABSTRACT", "ARTIFACT", "PLACE"], "へ": ["PLACE"]}]
+["潜る", ["frame_unconfirmed"], {}, {"が": ["ANIMAL", "PERSON"], "に": ["PLACE"]}, {"が": ["ANIMAL", "PERSON"], "に": ["PLACE"], "へ": ["PLACE"]}]
+["異動する", ["frame_unconfirmed"], {}, {"が": ["GROUP_ORG", "PERSON"], "に": ["GROUP_ORG", "PLACE"]}, {"が": ["GROUP_ORG", "PERSON"], "に": ["GROUP_ORG", "PLACE"], "へ": ["PLACE"]}]
+["移す", ["frame_unconfirmed"], {}, {"から": ["ARTIFACT", "PLACE"], "が": ["GROUP_ORG", "PERSON"], "に": ["ARTIFACT", "PLACE"], "を": ["ABSTRACT", "ARTIFACT", "SUBSTANCE_FOOD"]}, {"から": ["ARTIFACT", "PLACE"], "が": ["GROUP_ORG", "PERSON"], "に": ["ARTIFACT", "PLACE"], "へ": ["PLACE"], "を": ["ABSTRACT", "ARTIFACT", "SUBSTANCE_FOOD"]}]
+["行ける", ["frame_unconfirmed"], {}, {"に": ["EVENT_ACT", "PLACE"]}, {"に": ["EVENT_ACT", "PLACE"], "へ": ["PLACE"]}]
+["送り返す", ["frame_unconfirmed"], {}, {"に": ["GROUP_ORG", "PERSON", "PLACE"], "を": ["ARTIFACT", "INFO_LANGUAGE", "SUBSTANCE_FOOD"]}, {"に": ["GROUP_ORG", "PERSON", "PLACE"], "へ": ["PLACE"], "を": ["ARTIFACT", "INFO_LANGUAGE", "SUBSTANCE_FOOD"]}]
+["逃げ込む", ["frame_unconfirmed"], {}, {"に": ["PLACE"]}, {"に": ["PLACE"], "へ": ["PLACE"]}]
+["通う", ["frame_unconfirmed"], {}, {"と": ["GROUP_ORG", "PERSON"], "に": ["PLACE"]}, {"と": ["GROUP_ORG", "PERSON"], "に": ["PLACE"], "へ": ["PLACE"]}]
+["進出する", ["frame_unconfirmed"], {}, {"が": ["GROUP_ORG", "PERSON"], "に": ["GROUP_ORG", "PLACE"]}, {"が": ["GROUP_ORG", "PERSON"], "に": ["GROUP_ORG", "PLACE"], "へ": ["PLACE"]}]
+["飛び込む", ["frame_unconfirmed"], {}, {"に": ["ARTIFACT", "EVENT_ACT", "PLACE"]}, {"に": ["ARTIFACT", "EVENT_ACT", "PLACE"], "へ": ["PLACE"]}]
+ovb(base coarse_place) r8 CONFIRMED with frame=={}: 12 ['向かえる', '嫁ぐ', '日帰りする', '流れ込む', '浸透する', '潜る', '異動する', '行ける', '送り返す', '逃げ込む', '進出する', '飛び込む']
+ov0(round1 coarse_place) r8 CONFIRMED with frame=={}: 14 ['向かえる', '嫁ぐ', '日帰りする', '流れ込む', '浸透する', '潜る', '異動する', '移す', '行ける', '送り返す', '逃げ込む', '通う', '進出する', '飛び込む']
+ov(now) r8 CONFIRMED with frame=={}: 14 ['向かえる', '嫁ぐ', '日帰りする', '流れ込む', '浸透する', '潜る', '異動する', '移す', '行ける', '送り返す', '逃げ込む', '通う', '進出する', '飛び込む']
+CONFIRMED words whose answer carries cover (axes): 0  ; with cover.ignored non-empty: 0 []

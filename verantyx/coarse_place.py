@@ -331,6 +331,41 @@ def frame_type_disagreement(ev, decided_by, dec, cfg) -> Dict[str, Any]:
     return {p: found[p] for p in order}
 
 
+def frame_backing(ev, decided_by, dec, cfg) -> Dict[str, List[str]]:
+    """W5-e (docs section 14): the noun types the distribution backs, per particle.  Pure (``frame_type_disagreement`` is not touched: the builder counts with it).
+
+    For each ``role_distribution`` arm that took part in the decision (``decided_by``), ``coarse_types.rd_analyze`` (the rule the decision itself used, the same ``base``
+    as ``frame_type_disagreement``) gives the significant noun types per particle; the backing of a particle is the UNION of those sets over the arms (a union of sets:
+    no count is added).  Returns ``{particle: [types sorted]}`` in ``ROLE_PARTICLES`` order, only for particles with at least one backed type."""
+    union: Dict[str, set] = {}
+    for k in decided_by:
+        arm = dec["arms"].get(k)
+        if arm is None or arm["arm"] != "role_distribution":
+            continue
+        base = None
+        for (a, s, _t, _n, b) in ev:
+            if a == "role_distribution" and ct.arm_key(a, s) == k and b is not None:
+                base = b
+        for p, dt in ct.rd_analyze(dict(arm["counts"]), cfg, base)["types"].items():
+            if dt:
+                union.setdefault(p, set()).update(dt)
+    return {p: sorted(union[p]) for p in ct.ROLE_PARTICLES if p in union}
+
+
+def frame_cover_unconfirmed(dec: Dict[str, Any], gen_map: Dict[str, List[str]]) -> Dict[str, List[str]]:
+    """W5-e round 2 (docs section 14.2, W3-a4 note R1): the particle a generated ``に|PLACE`` COVERED, shown as unconfirmed.  Pure.
+
+    ``coarse_types.decide_word`` (W3-a4's cover rule) lets a generated frame that has no へ pass the frame confirmation through its ``に|PLACE`` row and records
+    that in the generated-frame arm's ``cover["he_by_ni_place"]``.  Such a へ is in neither ``frame`` nor ``frame_unconfirmed``; this returns ``{へ: ["PLACE"]}``
+    for it (the type of the covering row, the model's, which the distribution does not back, so it is never put in ``frame``), only when the arm covered a へ, the frame
+    has no へ and its に has PLACE; otherwise ``{}``.  The ``ignored`` particles of the cover (K62's outside) are not shown.  The particles come from ``coarse_types``."""
+    he, ni = ct.CASE_PARTICLES_9[4], ct.CASE_PARTICLES_9[2]
+    cover = ((dec.get("arms") or {}).get(ct.GEN_FRAME_ARM) or {}).get("cover") or {}
+    if cover.get("he_by_ni_place") and he not in gen_map and "PLACE" in (gen_map.get(ni) or ()):
+        return {he: ["PLACE"]}
+    return {}
+
+
 def _direct(pl: _Placement, term: str, row, role, pred) -> Dict[str, Any]:
     ns, state, origin, top, kind, n_seen, by = row
     tops = [t for t in top.split(",") if t]
@@ -403,8 +438,23 @@ def _direct(pl: _Placement, term: str, row, role, pred) -> Dict[str, Any]:
                 part, _bar, typ = t.partition("|")
                 gen_map.setdefault(part, []).append(typ)
         order = [p for p in ct.ROLE_PARTICLES if p in gen_map]
-        frame = {p: sorted(set(gen_map[p])) for p in order if p in sig}
-        unconfirmed = {p: sorted(set(gen_map[p])) for p in order if p not in sig}
+        # W5-e (A-4): for a particle the distribution found significant, `frame` keeps only the types the distribution backs (generated frame ∩ backing);
+        # the generated types it does not back go to `frame_unconfirmed` (a particle may then be in both). A particle outside `sig` is unconfirmed whole, as before.
+        backing = frame_backing(ev, decided_by, dec, pl.cfg)
+        frame = {}
+        unconfirmed = {}
+        for p in order:
+            gen_types = set(gen_map[p])
+            backed = set(backing.get(p, ())) if p in sig else set()
+            if gen_types & backed:
+                frame[p] = sorted(gen_types & backed)
+            if gen_types - backed:
+                unconfirmed[p] = sorted(gen_types - backed)
+        # W5-e round 2 (W3-a4 note R1): a へ that the generated に|PLACE covered is shown in `frame_unconfirmed` (never in `frame`)
+        covered = frame_cover_unconfirmed(dec, gen_map)
+        if covered:
+            unconfirmed.update(covered)
+            unconfirmed = {p: unconfirmed[p] for p in ct.ROLE_PARTICLES if p in unconfirmed}
         # W5-d: a particle on which the frame contradicts the distribution leaves the frame unconfirmed
         disagreement = frame_type_disagreement(ev, decided_by, dec, pl.cfg)
         if disagreement:

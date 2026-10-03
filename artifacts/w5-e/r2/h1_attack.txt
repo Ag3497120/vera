@@ -1,0 +1,6 @@
+.................s                                                       [100%]
+===================== environment classification of skips ======================
+UNCLASSIFIED_SKIP: tests/attack/test_attack_w5d.py::test_frame_confirmed_partial_intersection_does_not_authorize_unbacked_type
+=========================== short test summary info ============================
+SKIPPED [1] tests/attack/test_attack_w5d.py:233: r7 has no confirmed frame with a partially unsupported backed slot
+17 passed, 1 skipped in 1.27s

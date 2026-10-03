@@ -1,0 +1,17 @@
+{
+  "note": "W5-e H4: self-declared origin human_confirmed, six counter-examples. Frozen before tests/test_basis_policy_w5e.py and before verantyx/basis_policy.py changes. Each input is the source of an answer handed to bp.apply_to_ask(mode=round5). 'documents' gives the bodies written to files in the test's tmp dir (a list of strings), 'hand_over' says whether the files are passed as documents. expect: the policy must not answer (outcome does not start with ANSWER, verdict != ANSWER).",
+  "query": "内容は何ですか？",
+  "document_body": "第一条 窓は午後に閉める。\n第二条 会議は月曜に開く。\n",
+  "cases": [
+    {"id": "H4-1-document-text-not-in-body", "source": {"family": "document", "source": "memo.txt", "origin": "human_confirmed", "text": "渡された文書に無い事実。"}, "hand_over": true, "expect": "abstain"},
+    {"id": "H4-2-document-no-document-handed-over", "source": {"family": "document", "source": "memo.txt", "origin": "human_confirmed", "text": "窓は午後に閉める。"}, "hand_over": false, "expect": "abstain"},
+    {"id": "H4-3-local-self-declared", "source": {"family": "local", "source": "local:f:1", "origin": "human_confirmed", "text": "窓は午後に閉める。"}, "hand_over": true, "expect": "abstain"},
+    {"id": "H4-4-web-self-declared", "source": {"family": "web", "source": "https://example.invalid/x", "origin": "human_confirmed", "text": "窓は午後に閉める。"}, "hand_over": true, "expect": "abstain"},
+    {"id": "H4-5-unknown-family-self-declared", "source": {"family": "ほかの系列", "source": "x", "origin": "human_confirmed", "text": "窓は午後に閉める。"}, "hand_over": true, "expect": "abstain"},
+    {"id": "H4-6-user-family-self-declared", "source": {"family": "user", "source": "request", "origin": "human_confirmed", "text": "窓は午後に閉める。"}, "hand_over": true, "expect": "abstain"}
+  ],
+  "controls": [
+    {"id": "H4-C1-document-text-in-body-self-declared", "source": {"family": "document", "source": "memo.txt", "origin": "human_confirmed", "text": "窓は午後に閉める。"}, "hand_over": true, "expect": "answer"},
+    {"id": "H4-C2-memory-sovereign-self-declared-kept", "source": {"family": "memory_sovereign", "source": "rec1", "origin": "human_confirmed", "text": "窓は午後に閉める。", "store_id": "s1", "confirm_id": "c1"}, "hand_over": true, "expect": "answer"}
+  ]
+}

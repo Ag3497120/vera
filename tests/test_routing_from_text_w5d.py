@@ -71,8 +71,12 @@ def test_r1_a_name_that_a_naming_sentence_introduced_passes_without_any_placemen
 @pytest.mark.parametrize("answer", [PlaceResult("UNPLACED", provenance={"fake": True}), PlaceResult("UNKNOWN", provenance={"fake": True}),
                                     PlaceResult("DECIDED", "estimated", "proximity", ("GROUP_ORG",), {"fake": True})])
 def test_r1_a_placed_word_that_the_placement_cannot_type_still_passes(answer):
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A2）: 推定は構成物であり根拠にならない（W5-c 以来）ので、推定の引数（answer2）だけ止める。UNPLACED・UNKNOWN は W5-d のまま通す
     explained = explain("ソラは実装をやる。\n", {"ソラは実装をやる。": ja_do("ソラ")}, Placement(ソラ=answer))
-    assert [u.status for u in explained.extraction.units] == ["MAPPED"]
+    if answer.origin == "estimated":
+        assert [(u.status, u.reasons) for u in explained.extraction.units] == [("NAME_UNRESOLVED", ["COMMON_NOUN_SUBJECT:ソラ:PLACEMENT_ESTIMATED:GROUP_ORG"])]
+    else:
+        assert [u.status for u in explained.extraction.units] == ["MAPPED"]
 
 
 @pytest.mark.parametrize("types", [("GROUP_ORG",), ("PERSON",), ("ARTIFACT",), ("GROUP_ORG", "PERSON"), ("P_COMMUNICATE", "PERSON")])
