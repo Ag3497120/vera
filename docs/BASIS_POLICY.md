@@ -102,6 +102,110 @@
 決め方: 通った候補の `new_text` の異なり数が 1 → 借用、0 → `FORM_NO_CANDIDATE`、2 以上 → `FORM_TIE`（同点は棄権）。
 <!-- prereg:end -->
 
+<!-- prereg-w5c:begin -->
+# 根拠の方針 — 事前登録の追記（W5-c、攻撃第 3 波の A1・A2）
+
+登録日時: 2026-10-03 19:27:14 +0900
+上の節（`prereg:begin` から `prereg:end` まで）は 1 文字も変えない。この節はその **追記** で、`tests/test_basis_policy_w5c.py` を書く前に確定した。24 行の表（節 2）は変えないので `TABLE_VERSION = 1`・`SCHEMA = "verantyx.basis_policy/1"` のまま。変わるのは「根拠の分類の規則」と「確認 id の式」で、これらには表とは別の版を付ける: `CLASSIFY_VERSION = 2`、`CONFIRM_ID_VERSION = 2`。旧版（節 3・節 5）は上に残してある（削除しない）。上の節の「この節を変えるときは `TABLE_VERSION` を上げる」は、表・式・規則を **書き換える** ときの約束。ここでは書き換えず、版の別の定数を付けて追記した。
+
+## W5-c-1. 分類の規則 v2 `classify_sources`（上から順に最初に当たったもの）
+
+閉じた語彙 `DECLARED_ORIGINS = ("generated", "human_confirmed", "constructed", "testimony")`（`origin` に製品が書く値の型の申告。語の一覧ではない）。
+
+1. dict でない → `unreadable`
+2. `origin == "generated"` → `generated`
+3. `origin == "human_confirmed"` → `human`
+4. （新）`family` が `ability_corpus.FAMILIES` のどれかと **文字列として完全一致** し、`origin` が `constructed`・`testimony` でない（鍵なし・`None`・`""`・`"GENERATED"`・未知の値・文字列でない値すべて）→ `unknown_origin`（出所不明。生成とも人とも言わない）
+5. `origin` の鍵があり値が `None` 以外 → `non_evidence`（値ごとに数える）
+6. `family == "user"` → `request_text`
+7. それ以外 → `human`
+
+`FAMILIES` は import して参照する（写さない。系列名の大文字・空白の揺れを直す処理は足さない）。
+
+別の述語 `_unknown_value(src)`: dict で、`origin` が `None` 以外かつ `DECLARED_ORIGINS` の外（文字列でない値も外）。規則 5 で `non_evidence` に数えた出典のうち、値が閉じた語彙の外のものを数える。
+
+数え方:
+- 規則 4 は `SourceClass.unknown_origin`（数）と `unknown_origin_by_family`（系列ごと）に数える。`counts`（5 鍵: `human / generated / non_evidence / request_text / unreadable`）には **入れない**（鍵の集合は変えない）。`cited` には足す（足さないと出典なしとして素通しになる）。
+- `_unknown_value` が真の出典は、従来どおり `counts["non_evidence"]`・`non_evidence_by_origin` に数え、加えて `unknown_origin_values`（値ごと）に写す。
+- `SourceClass.basis`: 規則 4 が 1 つ以上なら `"UNKNOWN_ORIGIN"`。それ以外は従来（`HUMAN / GENERATED / MIXED / NONE`。`_unknown_value` だけでは `basis` を変えない）。
+- 方針が使う根拠 `policy_basis`: 規則 4 が 1 つ以上、または `_unknown_value` が真の出典が 1 つ以上なら `"UNKNOWN_ORIGIN"`、それ以外は `basis`。
+
+## W5-c-2. `UNKNOWN_ORIGIN` の列（表の外の扱い。24 行の表には足さない）
+
+`decide` は根拠 `"UNKNOWN_ORIGIN"` を受ける。表を引かず、次のとおり決める（`MIXED` と同じ「表に無い根拠」の扱い）。`"UNKNOWN"` など他の不正な根拠は従来どおり `NOT_IN_TABLE:basis`。
+
+| 依頼の類 | 根拠 | 人が居る | 参考 ON | 結果 | `in_table` | 理由 |
+|---|---|---|---|---|---|---|
+| 事実の問い（FACTUAL） | UNKNOWN_ORIGIN | 偽・真のどちらでも | 偽・真のどちらでも | ABSTAIN | 偽 | `NOT_IN_TABLE:UNKNOWN_ORIGIN_SOURCE` |
+| 事実を主張しない依頼（NON_FACTUAL） | UNKNOWN_ORIGIN | 偽・真のどちらでも | 偽・真のどちらでも | 表の `GENERATED` の行の結果（`CONSTRUCTED`） | 偽 | `UNKNOWN_ORIGIN_READ_AS_GENERATED` |
+
+- 事実の問いでは、人が居ても `CONFIRM_REQUEST` を出さず、参考 ON でも `REFERENCE_GENERATED` にしない。出所の分からない文を「生成コーパスにはこうある」と言えないため（中身が生成とも限らない）。
+- 事実を主張しない依頼では、チケットの「生成と同じ側」に従う（材料としてのみ。型は `constructed`）。
+- 参考欄・`confirm` の生成文・`_generated_sources` は `origin == "generated"` だけ（出所不明の文は出さない）。
+
+## W5-c-3. 出力
+
+- 事実の問いで出所不明の答えを引っ込めた結果: `kind: "unknown"`、`verdict: "UNKNOWN_ORIGIN_SOURCE"`、`text`: 定型文（`出所の分からない出典があるため、答えません。`）、`sources: []`、`evidence: []`、`withheld`、`door`、`trace`。
+- 棄権の結果が出所不明の出典を持つとき: 生成の出典を持つときと同じく本文を落として組み直す。元の `text` が出所不明の出典の本文を引用していれば、定型文に置き換える。
+- 根拠が出所不明のとき、ソブリンの はい の記録で `HUMAN` に格上げしない（格上げは従来どおり `GENERATED`・`NONE` のときだけ）。
+- 出所不明の結果に `--confirm` を付けると、確認 id が存在しないので `UNKNOWN_CONFIRM_ID`（何も書かない、終了コード 1）。
+
+## W5-c-4. 確認 id v2 と宛先の束縛
+
+- `confirm_id = sha256(json.dumps({"query", "claim", "generated", "destination"}, sort_keys=True, ensure_ascii=False, separators=(",", ":")))` の先頭 24 桁。`destination = {"store_id", "structure_ref"}`（`structure_ref` は宛先のソブリンがある root の構造の台帳の最初の行から決まる、決定的で動かない識別子）。宛先が無いときは鍵 `destination` を **入れない**（W6-a の式と同じ値になる）。桁数は 24 のまま。
+- 宛先を持つのは、確認の時点でソブリンが `ACTIVE_CONSENTED` か `ACTIVE_NO_CONSENT` のときだけ。それ以外（ソブリン無し・設定が半端・DETACHED・読めない）は宛先なし。
+- 問い返しは何も書かない（台帳を作らない）。確認要求の「どこに出したか」は、(1) id の入力、(2) 保存するときの記録の payload の `destination`（追記専用の `event_log` に残る）、(3) ソブリンの口が自分以外の `destination` を拒むこと、で持つ。
+- `--confirm ID yes|no` の判定の順（最初に当たったもので終わる。どれも書かない点は同じ。書くのは最後だけ）:
+  1. いまの問いに確認 id が無い（根拠が `GENERATED` でない、または本文が無い）→ `UNKNOWN_CONFIRM_ID`、rc 1
+  2. 渡された id が、いまの問いで作りうる id（宛先の候補: いまの宛先・宛先なし・いまの root に登録された全ストア × その root の `structure_ref`）のどれとも一致しない → `UNKNOWN_CONFIRM_ID`、rc 1（別の root の id は宛先を特定できないのでここに入る。分からないことを「別の宛先」と言わない）。2 つ以上の別の宛先に一致したら `UNKNOWN_CONFIRM_ID`（同点は棄権）
+  3. いまのソブリンが `ACTIVE_*` でない → 従来の `CONFIRM_REQUEST`、rc 1
+  4. いまのソブリンが `ACTIVE_NO_CONSENT` → `NO_CONSENT`、rc 1（口は呼ばない）
+  5. 一致した宛先がいまの宛先でない → `CONFIRM_TARGET_MISMATCH`、rc 1
+  6. 書く（`CONFIRMED_HUMAN_RECORD` か `REJECTED_GENERATED_RECORDED`、rc 0）。記録の payload に `destination` を入れる
+- 3・4 を 5 より先にするのは、既存の期待（`tests/test_basis_policy_entry.py`・`tests/test_basis_policy_confirm.py`）が固定しているため。
+
+## W5-c-5. ソブリンの口の検査
+
+`append_basis_confirmation` は、同意の検査と形の検査の後、書く前に、payload に鍵 `destination` があれば: `Mapping` で鍵がちょうど `{"store_id", "structure_ref"}` でなければ `BAD_PAYLOAD`、自分（`store_id` と、その root の `structure_ref`）と等しくなければ `CONFIRM_TARGET_MISMATCH`（何も書かない）。`destination` の無い payload は従来どおり受ける。宛先を読む 2 つの口は構造の台帳を **読み取り専用** で開き、台帳が無い root に何も作らない。
+
+## W5-c-6. 版
+
+`TABLE_VERSION = 1`（変えない）、`SCHEMA`（変えない）、`CLASSIFY_VERSION = 2`、`CONFIRM_ID_VERSION = 2`。`basis_policy` の注記に `classify_version`・`confirm_id_version` を足す。
+<!-- prereg-w5c:end -->
+
+<!-- prereg-w5c-r3:begin -->
+# 根拠の方針 — 事前登録の追記（W5-c 第 3 ラウンド、監査役の判断の反映）
+
+登録日時: 2026-10-03 21:07:31 +0900
+監査役の判断の日時: 2026-10-03 20:40（チケットの末尾の節「監査役の判断」。第 2 ラウンドの申し送りへの回答）。
+この節は `tests/test_basis_policy_w5c_r3.py` を書く前、既存テストを改訂する前、製品コードを直す前に確定した。上の 2 つの節（`prereg:begin`〜`prereg:end` と `prereg-w5c:begin`〜`prereg-w5c:end`）は 1 文字も変えない。**W5-c-1 の規則 7 と W5-c-3 の 3 つ目の項目（記録による格上げ）は、この節で置き換える。** 置き換えない部分（規則 1〜6、W5-c-2 の `UNKNOWN_ORIGIN` の列、W5-c-4 の確認 id v2、W5-c-5）は今も有効。
+
+## W5-c-r3-1. 分類の規則 v3 `classify_sources`（上から順に最初に当たったもの）
+
+入力に 1 つ増える: `user_documents`（真偽）。`apply_to_ask` は `mode == "round5"` かつ `documents` が空でないときだけ真にする（ファイル名の照合はしない。`classify_sources` 単独の呼び出しの既定は偽）。
+
+1. dict でない → `unreadable`
+2. `origin == "generated"` → `generated`
+3. `origin == "human_confirmed"` → `human`
+4. `family` が `ability_corpus.FAMILIES` のどれかと文字列として完全一致し、`origin` が `constructed`・`testimony` でない → `unknown_origin`（W5-c-1 の規則 4 のまま）
+5. `origin` の鍵があり値が `None` 以外 → `non_evidence`（W5-c-1 の規則 5 のまま）
+6. `family == "user"` → `request_text`（W5-c-1 の規則 6 のまま。依頼文は `cited` に入れない）
+7. （新）`user_documents` が真で `family == "document"`（完全一致）→ `human`。ここに来るのは `origin` が鍵なしか `None` のものだけ（`origin` に値があれば規則 5 まで）
+8. （変更。W5-c-1 の規則 7 の「それ以外 → `human`」を置き換える）それ以外 → `unknown_origin`（欠落・`None` の `origin` で、規則 4 の系列でも `family: "user"` でも、利用者がこの呼び出しで渡した文書でもないもの。系列の鍵が無い・文字列でない出典も含む）
+
+理由: 原則「分からないことと偽であることを混ぜない。出所の分からない出典は人が書いたものではない」を、索引の系列でない出典にも当てる。人の出典は、`origin` が明示的に人の値（今は `human_confirmed` だけ）のときか、`family == "user"` と、利用者がこの呼び出しで渡した文書だけ。監査役の判断は「`family == "user"`（利用者が渡した文書・会話）」と利用者が渡した文書を人と明記している。製品は利用者の文書の出典を `family: "document"` で出す（`family: "user"` は依頼文の断片）。CLI で `--document` を受けるのは `--mode round5` だけで、その mode の文書は `load_documents(documents)` で渡したものだけなので、「round5 で documents を渡した呼び出しの `family: "document"`」は来歴が分かっている。規則 7 の例外を消すだけで字面どおりに戻る。
+
+数え方（W5-c-1 と同じ。規則 8 は規則 4 と同じ列に数える）: `unknown_origin`（数）と `unknown_origin_by_family`（系列ごと。系列が文字列でなければ `"(none)"`）に数え、`counts` の 5 鍵には入れず、`cited` には足す。`policy_basis` は `unknown_origin` か `unknown_origin_values` が 1 つでもあれば `UNKNOWN_ORIGIN`。
+
+## W5-c-r3-2. 記録による格上げ（W5-c-3 の 3 つ目の項目を置き換える）
+
+ソブリンの はい の記録（`human_confirmed`）で `ANSWER_HUMAN_BASIS` に格上げするのは、**元の結果の根拠が `GENERATED`**（元の結果が棄権でなく、根拠が生成の出典だけ）で、同意ありのソブリンに同じ問いの はい の記録があり、出所不明の出典が混じらない（`UNKNOWN_ORIGIN` でない）ときだけ。元の結果が棄権の場合・出典が無い場合（`NONE`）・`UNKNOWN_ORIGIN` が混じる場合・`MIXED` は格上げしない（元の棄権・素通しのまま。記録は `confirmed_records_not_used` に数える）。判断の「その生成文と確認済みの文が一致するとき」は今回は入れない（記録の claim と今の claim の照合は、既存の `tests/test_basis_policy_confirm.py` の 2 件の期待と衝突するため。判断記録 R3-J5）。
+
+## W5-c-r3-3. 版
+
+`CLASSIFY_VERSION = 3`。`TABLE_VERSION = 1`・`SCHEMA`・`CONFIRM_ID_VERSION = 2` は変えない（表と id の式は変わらない）。格上げの条件の変更に新しい定数は作らない。`basis_policy` の注記の `classify_version` は 3。
+<!-- prereg-w5c-r3:end -->
+
 # 根拠の方針（basis policy）
 
 この文書の上の節（prereg）は、テストを書く前に確定した事前登録。下は、実装した形・入口の既定・判断記録・既知の穴・測り方。数値は `artifacts/w6-a/` の出力ファイルを出典にした。
@@ -118,6 +222,9 @@
 - 結果は閉じた 6 種: `ANSWER_HUMAN_BASIS / ANSWER_FORM_FROM_GENERATED / CONSTRUCTED / CONFIRM_REQUEST / REFERENCE_GENERATED / ABSTAIN`。
 - `decide(request_kind, bases, human_present, show_reference) -> BasisDecision` は表（`TABLE`、24 鍵）を引くだけ。表に無い入力は例外にせず `ABSTAIN`、`in_table = false`、理由 `NOT_IN_TABLE:<何が>`。
 - `classify_sources(sources)`: prereg 節 3 の閉じた規則。宣言された `origin` だけを見て、系列名から生成と推測しない。
+
+- **W5-c（根拠 `UNKNOWN_ORIGIN`）**: 入力の根拠には 4 つ目 `UNKNOWN_ORIGIN` がある（出典の `origin` が出所の分かる値でない集合。規則は prereg-w5c 節 W5-c-1）。24 行の表には足さない（`TABLE_VERSION = 1` のまま）。`decide` は小さな別の表 `_UNKNOWN_ORIGIN_COLUMN` を引く: 事実の問いは `ABSTAIN`（`in_table = false`、理由 `NOT_IN_TABLE:UNKNOWN_ORIGIN_SOURCE`。人が居ても `CONFIRM_REQUEST` にならず、参考 ON でも `REFERENCE_GENERATED` にならない）、事実を主張しない依頼は表の `GENERATED` の行（`CONSTRUCTED`、理由 `UNKNOWN_ORIGIN_READ_AS_GENERATED`）。`classify_sources` の規則の版は `CLASSIFY_VERSION = 2`。
+- **W5-c（分類 v2 の要点）**: `origin` が `generated`・`human_confirmed` の出典はこれまでどおり。`ability_corpus.FAMILIES`（import して参照）のどれかを `family` に名乗る出典で、`origin` が `constructed`・`testimony` でないもの（鍵なし・`None`・`""`・`"GENERATED"`・未知の値）は `unknown_origin`（人とも生成とも言わない）。索引の系列でない出典で `origin` が閉じた語彙（`generated / human_confirmed / constructed / testimony`）の外のものは `non_evidence`（従来どおり）で、加えて `unknown_origin_values` に写し、方針の根拠は `UNKNOWN_ORIGIN` になる。索引の系列でなく `origin` が欠落・`None` の出典は **従来どおり人**（既知の穴 1）。
 
 ## 3. 入口ごとの既定
 
@@ -138,6 +245,8 @@ prereg 節 4 の表のとおり。要点:
 - `basis_policy` は常に最後の鍵。`schema`・`table_version`・`applied`・`request_kind`・`kind_class`・`basis`・`basis_original`・`human_present`・`show_reference`・`outcome`・`in_table`・`counts`・`sovereign`・`form`（`--confirm` のときは `confirm`）を持つ。
 - 出典を 1 つも宣言しない答え（依頼文だけを引く社交・理解など）は適用外として素通しし、`basis_policy.applied: false`、`reason: NO_CITED_SOURCES` を付ける（数えて記録する）。生成の出典を 1 つでも持つ結果は必ず適用される。
 
+- **W5-c（`UNKNOWN_ORIGIN` の出力）**: 事実の問いで出所不明の出典を持つ答えは、`kind: "unknown"`・`verdict: "UNKNOWN_ORIGIN_SOURCE"`・`text: "出所の分からない出典があるため、答えません。"`・`sources: []`・`evidence: []`・`withheld`（`unknown_origin_source_count` を足した）・`door`・`trace`。棄権の結果が出所不明の出典を持つときも、生成の出典のときと同じく本文を落として組み直す（元の `text` が出所不明の出典の本文を引用していれば定型文に置き換える。元の `verdict` は棄権の型なのでそのまま）。`basis_policy.counts` に `unknown_origin`・`unknown_origin_by_family`・`unknown_origin_values` を足し（`counts` の 5 鍵の側は変えない）、注記に `classify_version`・`confirm_id_version` を足す。参考欄・`confirm` は `origin == "generated"` の出典だけを出す（出所不明の文を「生成コーパスにはこうある」と言わない）。
+
 ## 5. D: 問い返しと保存の形
 
 - `CONFIRM_REQUEST` は `confirm` を持つ: `id`・`question`・`claim`・`generated_sentences`・`draft_record`・`destination`・`how_to_answer`。
@@ -147,6 +256,10 @@ prereg 節 4 の表のとおり。要点:
 - 記録の payload（全鍵）: `record: "basis_confirmation"`、`status`（`HUMAN_CONFIRMED` か `REJECTED_GENERATED`）、`origin`（はい のときだけ `"human_confirmed"`）、`witness: "user_confirmation"`、`confirm_id`、`query`、`claim`、`generated_sources: [{family, source_id, sha}]`、`table_version`。`phrase`・`cell`・`occupied`・`corrects` は入れない（昇格の候補・訂正にしない）。
 - いいえ は削除でなく追記（`REJECTED_GENERATED`）。同じ `confirm_id` の記録が複数あれば seq の最後の 1 件が効く（訂正は前進の追記）。同じ問い（`query` の完全一致。正規化しない）に効いている `HUMAN_CONFIRMED` の `claim` が 2 種類以上なら `AMBIGUOUS_CONFIRMED_RECORDS` で棄権。記録を答えに使うのは、ソブリンが ACTIVE で現在の `consent.promote` が真のときだけ（撤回後は使わない）。
 - はい の後の同じ問いは `kind: answer`、`verdict: ANSWER`、`sources[0].origin == "human_confirmed"`（`family: memory_sovereign`）で返り、`basis_origin` は付かない。
+
+- **W5-c（確認 id v2 と宛先）**: `confirm.id` の入力に宛先 `{"store_id", "structure_ref"}`（`structure_ref` はそのソブリンがある root の構造の台帳の最初の行から決まる識別子）を含める（`CONFIRM_ID_VERSION = 2`）。宛先を持つのは、問いを出す時点でソブリンが `ACTIVE_CONSENTED` か `ACTIVE_NO_CONSENT` のときだけで、それ以外は宛先なし（宛先なしの id は W6-a の式と同じ値）。`confirm.destination` は `{state, store_id, structure_ref}`、`draft_record.payload` には `destination` が入る。問い返しは何も書かない（台帳を作らない。判断 J6）。
+- **W5-c（`--confirm` の判定の順）**: (1) いまの問いに id が無い → `UNKNOWN_CONFIRM_ID`、(2) 渡された id が、いまの問いで作りうる id（宛先の候補: いまの宛先・宛先なし・いまの root に登録された全ストア）のどれとも一致しない（または 2 つ以上の別の宛先に一致する）→ `UNKNOWN_CONFIRM_ID`（別の root で出した id もここ）、(3) いまのソブリンが ACTIVE でない → `CONFIRM_REQUEST`、(4) 同意なし → `NO_CONSENT`（口は呼ばない）、(5) 一致した宛先がいまの宛先でない → `CONFIRM_TARGET_MISMATCH`（rc 1、何も書かない。出力は `confirm.issued_for`・`confirm.destination` に両方の宛先）、(6) 書く（記録の payload に `destination` を入れる）。どれも書かないのは (6) 以外。
+- **W5-c（口の検査）**: `sovereign.append_basis_confirmation` は、同意と形の検査の後、payload に `destination` があれば `Mapping` で鍵がちょうど `{"store_id", "structure_ref"}` であること（でなければ `BAD_PAYLOAD`）と、自分の宛先（`sovereign.basis_confirmation_destination`）と等しいこと（でなければ `CONFIRM_TARGET_MISMATCH`、`expected`・`given` を返す）を確かめる。`destination` の無い payload は従来どおり受ける。宛先を読む口 2 つ（`basis_confirmation_destination`・`basis_confirmation_store_ids`）は構造の台帳を読み取り専用で開き、何も作らない。
 
 ## 6. B: 参考欄の制限
 
@@ -185,6 +298,45 @@ prereg 節 4 の表のとおり。要点:
 | 素通し・壁時計の確認 | 出典を引かない社交 2 件は `applied: false` で `basis_policy` 以外は元と同じ。出典を引かない棄権 2 件は `applied: true`・`ABSTAIN` で同じく元と同じ。同じ文書の問いを 2 回実行して違うのは `elapsed_ms`・`ingest_ms` の 2 欄だけ | `passthrough_and_clock_check.txt` |
 | 事前登録の順序 | 事前登録（`prereg.txt`）がどのテストファイルの作成時刻より前 | `prereg_order.txt`, `frozen_tests.sha256` |
 
+### W5-c の実行結果（出典: `artifacts/w5-c/`）
+
+| 受入基準 | 結果 | 出力ファイル |
+|---|---|---|
+| N1 攻撃テスト 33 件 | 基点 25 件失敗・8 件成功 → 33 件成功。写しの 2 行目以降の sha256 は攻撃役が凍結した値（`3b355b5d…e2f3`）と一致 | `attack_before.txt`, `n1_attack_after.txt`, `n1_attack_copy_sha.txt` |
+| N1 出所不明の全組合せ（実装役のテスト） | 197 件成功。系列 9 × `origin` 7 通り × 元の結果の型 8 × mode 3 × 人 2 × 参考 2 × 同伴 4 = 24,192 の組合せを 63 本の中で流し、どれも `ANSWER_*`・`CONFIRM_REQUEST` が出ず、採点器の状態は abstain | `n1_tests_after.txt` |
+| N2 確認 id の宛先の束縛 | 26 件成功（別のストア・宛先なし・別の root・DETACHED・同意なし・正しい宛先・口の直接の検査・`main()` の入口） | `n2_tests_after.txt` |
+| 新しいテスト全体（`tests/test_basis_policy_w5c.py`） | 実装前 288 件失敗・7 件成功 → 295 件成功（実装前に通った 7 件は基点で既に成り立つ性質: 一覧は `w5c_tests_before_passed.txt`） | `w5c_tests_before.txt`, `w5c_tests_after.txt`, `frozen_tests.sha256` |
+| N3 既存の `tests/test_basis_policy*.py` 5 本 | 1221 件成功。基点との差分（`git diff --stat`）は 0 | `n3_existing_after.txt`, `n3_existing_diffstat.txt` |
+| ソブリンのテスト 7 本 | 178 件成功（基点と同数） | `n3_sovereign_after.txt` |
+| N4 全体 | 116 件失敗・10,977 件成功・37 件 skip・75 xfailed・75 xpassed（308.56 秒。第 3 ラウンドの全体テスト。`after_pytest.txt` の最後の行）。基線 114 件に対し、新しい失敗は 2 件（`new_failures.txt`）で、どちらも環境由来: `test_s6_two_runs_agree_except_timing_and_recount_matches`（`verantyx/` に未コミットの変更がある間だけ落ちる）と `test_speech_act_drafts_fill_new_roles_and_reread`（基点の木でも落ちる: `speech_act_on_base_tree.txt`）。基線から直った失敗は 0 件 | `after_pytest.txt`, `after_failures.txt`, `new_failures.txt`, `fixed_failures.txt` |
+| 採点器の見本 B2（25 問） | 前後とも `over_abstain=17 correct_abstain=6 unreachable=2 wrong=0 correct=0`。`compare` はバイトで 24 件不一致（`elapsed_ms` と、`basis_policy` の注記に W5-c が足した鍵のため）、時計と追加の鍵を除いて比べると差 0 | `bs_B2_before.txt`, `bs_B2_after.txt`, `bs_B2_compare.txt`, `bs_B2_semantic_compare.txt` |
+| 入口の実演（subprocess） | `UNKNOWN_ORIGIN_SOURCE`（NULL の索引。3 通りのフラグ: 無し・`--human-present`・`--human-present --show-generated-reference`。ほかに `--request-kind creative` が `CONSTRUCTED`）・`CONFIRM_TARGET_MISMATCH`（rc 1、ファイルの変化 0）・`CONFIRMED_HUMAN_RECORD`（正しい宛先、rc 0）・同じ問いが `ANSWER_HUMAN_BASIS` | `cli_demo.txt` |
+| W5-a の 3 文 | 基点 `2732274^` で 3 文とも読めていた。今は 3 文とも `AGENT_EVIDENCE_MISSING` で棄権（コードは変えていない） | `w5a_k64_three.txt`, `w5a_r4_attack.txt` |
+| 挙動が変わる入口 | 採点器の見本 B2 は変化なし。CLI の入口（legacy・`--mode round5`）に挨拶 4 文を流した出力は、基点と今で `basis_policy` 注記の新しい鍵（`classify_version`・`confirm_id_version`・`counts.unknown_origin*`）を除いて同じ（8 件中 8 件。`greeting_entrances.txt`）。規則で作る社交の返事（`round3.py` の `_social_frame`）の出力を `apply_to_ask` に直接通すと `ANSWER_HUMAN_BASIS` から `UNKNOWN_ORIGIN_SOURCE` に変わる（F1。`round3_social_frame_probe.txt`）が、方針を当てる CLI の入口からこの関数には届かない（F1 の本文）。`build/round3` のある環境の入口は `UNMEASURED_NO_ROUND3_BUILD` | `bs_B2_semantic_compare.txt`, `greeting_entrances.txt`, `round3_social_frame_probe.txt`, `families_literal_sites.txt`, `unmarked_family_sites.txt` |
+| 決め打ち検査 | 製品の追加行に攻撃テストの入力・id は無い（空） | `check_hardcode.txt` |
+| 事前登録の順序 | 事前登録 2026-10-03 19:27:14 +0900 が、新しいテストの凍結 19:30:01 より前 | `prereg.txt`, `frozen_tests.sha256` |
+
+### W5-c 第 3 ラウンドの実行結果（出典: `artifacts/w5-c/`。第 2 ラウンドの表の値のうち第 3 ラウンドで変わるのは「挙動が変わる入口」「入口の実演」「棄権・出典なしの結果の記録による格上げ」で、他は同じ件数で通る。第 2 ラウンドの行は消していない）
+
+| 受入基準・項目 | 結果 | 出力ファイル |
+|---|---|---|
+| 開始時（今の木・第 2 ラウンドの実装） | 6 本（table・w5c・entry・confirm・form・conductor）＋ `tests/test_one_request_goal_route.py` の 7 ファイルで 1,529 件成功。ツリーの状態の sha1 は指示書の `99ed76e7…53c8` と一致。隔離（読み込まれた `verantyx*`・`tools*` が木の外のもの）は `[]` | `r3_start_tests.txt`, `r3_status_start.txt`, `r3_isolation.txt` |
+| 事前登録の順序 | 事前登録 2026-10-03 21:07:31 +0900（節の取り出しの記録は 21:07:58）→ 新しいテストの凍結 21:09:48（`EXTENDED`）→ 既存テストの改訂 21:10:55（`AMENDED`）→ 製品コードの変更（`basis_policy.py` の変更はこの後）。prereg 節の sha1 は基点と同じ `1e948526…ab66`、prereg-w5c 節は書き換えていない。節を足した時点の削除行は 0 | `r3_prereg.txt`, `frozen_tests.sha256` |
+| R-a・R-b の新しいテスト（`tests/test_basis_policy_w5c_r3.py`） | 実装前 128 件失敗・10 件成功 → 138 件成功。実装前に通った 10 件は基点で既に成り立つ性質（利用者の文書の答え・生成の答えの記録による格上げ・組合せの数の足し算・`main()` の利用者の文書の答え。一覧は `r3_tests_before_passed.txt`）。凍結の後に補助関数 `_family_key` の誤りを 1 つ直した（`AMENDED` 行、R3-E3） | `r3_tests_before.txt`, `r3_tests_before_passed.txt`, `r3_tests_after.txt`, `frozen_tests.sha256` |
+| 既存テストの改訂（実装前） | W6-a の 7 関数（11 件の test id）と W5-c の 5 関数を改訂。改訂後の 4 ファイルを実装前に流して 6 件失敗・1,439 件成功（失敗は (ii) の 2 関数と w5c の 4 関数。R3-E2） | `r3_revised_tests_before.txt`, `r3_revised_tests_after.txt`, `r3_revised_tests.sha256`, `r3_revised_before_impl.txt` |
+| N1 攻撃テスト 33 件 | 33 件成功。写しの 2 行目以降の sha256 は `3b355b5d…e2f3` のまま | `n1_attack_after.txt` |
+| N1 実装役のテスト | `tests/test_basis_policy_w5c.py` 295 件成功（`-k n1_` 197 件、`-k n2_` 26 件）。`tests/test_basis_policy_w5c_r3.py` 138 件成功。規則 8 の出典（系列 12 通り × `origin` 鍵なし・`None`）の入口の関数の組合せは 11,360（`family` が `document` のときは round5・documents ありの 80 通りを別の関数で確かめる） | `w5c_tests_after.txt`, `n1_tests_after.txt`, `n2_tests_after.txt`, `r3_tests_after.txt` |
+| N1 合成（`scripts/r3_synth.py`。ソブリン 4 状態を含む） | 系列 19（索引の 9 ＋ `document`・`general`・`x`・`jawiki`・`conversation_form`・`code_parts`・`pun_lexicon`・`user`・鍵なし・`3`）× `origin` 6（鍵なし・`None`・`""`・`"zzz"`・`"human"`・`3`）× 元の型 5 × mode 3 × documents 2 × 人 2 × 参考 2 × 同伴 4 × ソブリン 4（無し・同意あり・同意あり＋同じ問いの はい の記録・同意なし）= 218,880 組合せ。出所不明の出典を持つ組合せ（スクリプトの中の独立した定義）214,400 はすべて `ABSTAIN`。`ANSWER_*`・`CONFIRM_REQUEST`・`REFERENCE_GENERATED`・素通し・出典の残り・確認の欄・記録の文の漏れ・入力の変更・ソブリンのファイルの変化（3 つのソブリンの全ファイルの sha256）は 0。出所不明を持たない 4,480 組合せの `ANSWER_HUMAN_BASIS` 1,008 は、依頼文・`human_confirmed` の同伴、利用者の文書（round5＋documents＋`family: "document"`）、同意あり＋はい の記録＋生成の同伴のどれかで説明がつく（説明のつかないもの 0） | `r3_synth.txt` |
+| N2 | 第 2 ラウンドの `n2_` 26 件が変わらず成功（`sovereign.py`・`cli.py` は変えていない: `git diff 6d20016 --stat` で `sovereign.py` 44 行・`cli.py` なし・`READING_SOUNDNESS.md` 1 行は第 2 ラウンドと同じ）。`n2_check.py` の流し直しは中間職のレビューで行う | `n2_tests_after.txt` |
+| N3 既存 5 本 | 1,221 件成功（件数は基点と同じ）。`git diff 6d20016 --stat` は `test_basis_policy_confirm.py`・`test_basis_policy_conductor.py`・`test_one_request_goal_route.py` が 0 バイト、`table`・`entry`・`form` の差分は 7 つの hunk（改訂した 7 関数）だけ。ソブリン 7 本 178 件成功、`tests/test_one_request_goal_route.py` 13 件成功 | `n3_existing_after.txt`, `r3_existing_diffstat.txt`, `n3_sovereign_after.txt`, `r3_request_goal_route.txt` |
+| N4 全体 | 116 件失敗・10,977 件成功・37 件 skip・75 xfailed・75 xpassed（308.56 秒）。基線 114 件に対し、新しい失敗は 2 件（`new_failures.txt`）で第 2 ラウンドと同じ環境由来の 2 件、基線から直った失敗は 0 件 | `after_pytest.txt`, `after_failures.txt`, `new_failures.txt`, `fixed_failures.txt` |
+| R-b 記録による格上げ | `j5_refused_probe.txt`（記録の claim を元の `text` と違う文にした）: 出所不明 3 行は `ABSTAIN`・used 0・not_used 1、生成の `answer/ANSWER` だけ `ANSWER_HUMAN_BASIS`・used 1、生成の棄権 2 行は `ABSTAIN`・used 0・not_used 1。基点との並置（`r3_record_probe.txt`）: 出典なしの `answer/ANSWER` は基点で `ANSWER_HUMAN_BASIS`（記録の文に置き換わる）→ 今は素通し（`applied: false`）、出典なし `unknown/UNKNOWN_X`・生成の `unknown/UNKNOWN_X` は基点で `ANSWER_HUMAN_BASIS` → 今は元の棄権のまま、legacy の文書・round5 で documents なしの文書は基点で `ANSWER_HUMAN_BASIS` → 今は `UNKNOWN_ORIGIN_SOURCE`、round5＋documents の文書は変わらず `ANSWER_HUMAN_BASIS` | `j5_refused_probe.txt`, `r3_record_probe.txt` |
+| 採点器の見本 B2（25 問）・B3（24 問） | 前後とも B2 は `over_abstain=17 correct_abstain=6 unreachable=2 wrong=0 correct=0`、B3 は `over_abstain=19 correct_abstain=5 wrong=0 correct=0 unreachable=0`。時計の鍵（`elapsed_ms`・`ingest_ms`・`ms`）と W5-c の追加の鍵を除いて比べると、B2・B3 とも差 0（取り除いた鍵の数は `r3_bs_<B>_compare.txt` に出している。B3 の `ms` は両側で 2 か所）。B1 は既定の入口で Vera を呼ばず、B5 は `--frames` が必須で（`docs/BANK_SCORE.md` の入口の表）、どちらも Vera を呼ばないので流していない | `r3_bs_B2_before.txt`, `r3_bs_B2_after.txt`, `r3_bs_B2_compare.txt`, `r3_bs_B3_before.txt`, `r3_bs_B3_after.txt`, `r3_bs_B3_compare.txt` |
+| 入口の実演（subprocess） | 基点と今を並べた。(a) round5＋`--document` の文書の答えは `ANSWER_HUMAN_BASIS`（基点と同じ）、(b) 同じ形の文書で `資料の出来事を一文で言い換えてください。` は `PARTIAL`（基点と同じ）、(c) NULL の索引 3 通りのフラグは、基点では `ANSWER_HUMAN_BASIS`（攻撃 A1 の再現）→ 今は `UNKNOWN_ORIGIN_SOURCE` | `r3_cli_demo.txt` |
+| 挙動が変わる入口（測ったものだけ） | 測った: B2・B3 の入口（round5＋文書。差 0）、挨拶 4 文 × legacy・round5（8 件中 8 件が `basis_policy` 注記の新しい鍵を除いて同じ）、`tests/test_one_request_goal_route.py` 13 件、全体テスト（新しい失敗は環境由来の 2 件）、上の実演（NULL の索引の legacy `ask`: `ANSWER_HUMAN_BASIS` → `UNKNOWN_ORIGIN_SOURCE`）。`origin` の印を付けずに `family` を書く製品の箇所は 36 か所（うち系列名が索引の系列と同名のもの 4、`family: "user"` 9、`family: "document"` 6）。**どの入口で棄権に変わるかを測っていない箇所は `UNMEASURED_ENTRANCE`**（推定の件数は書かない） | `r3_family_sites.txt`, `r3_greeting_entrances.txt`, `r3_cli_demo.txt` |
+| 利用者の文書の例外・記録の照合の代価（スクラッチの写しでの実測） | 例外なし（字面どおり）にすると 13 件失敗: W6-a の 5 件（`test_basis_policy_entry.py` 1・`test_basis_policy_form.py` 4）、W5-c の新しいテスト 7 件、許可パス外の `tests/test_one_request_goal_route.py::test_cli_explicit_round5_document_entry_uses_same_python_route` 1 件。記録の claim の照合（R3-J5）を入れると `tests/test_basis_policy_confirm.py` の 2 件が失敗（ほかは、記録の claim を元の `text` と違う文にした W5-c の新しいテストが落ちる） | `r3_variant_costs.txt` |
+| 決め打ち検査 | 製品の追加行に試験の入力・id は無い（空） | `check_hardcode.txt` |
+
 ## 10. 判断記録（中間職の指示書 J1〜J13。そのまま実装した）
 
 - **J1（適用点）**: 方針は `basis_policy.py` に置き、`cli.cmd_ask` が 3 つの経路（round5 / `--engine` / legacy）の戻り値すべてに 1 回だけ当てる。`cli.py` の変更は `ask` の parser の 4 引数と `cmd_ask` の配線に限る。チケットの「`cli.py`（`ask` の引数のみ）」を「引数とそれを方針へ渡す `cmd_ask` の配線」と読んだ。
@@ -213,6 +365,369 @@ prereg 節 4 の表のとおり。要点:
 - **E8**: テストを凍結した後に直したもの: `tests/test_basis_policy_entry.py` で、(1) 2 回の実行で必ず違う壁時計の欄（`ingest_ms`・`elapsed_ms`）を比較から除いた（実測: 同じ入力を 2 回実行すると 2 欄だけが違う）、(2) 出典を引かない棄権は E1 のとおり素通しでなく適用という読みに直した、(3) 場所による抜け道（E2）と読めないソブリン（E6）のテストを足した。凍結と修正の sha256 は `artifacts/w6-a/frozen_tests.sha256`（`AMENDED` / `EXTENDED` の行）。期待値を弱めた修正は無い。
 - **E9**（第 2 ラウンド）: 棄権の結果の `text` が生成の出典の本文を含むときは、その `text` を持ち越さず方針の理由の定型文（`_WITHDRAWN_TEXT`）に置き換える（B OFF のとき本文がどこにも出ないことの維持）。含まないときは元の `text` のまま。
 
+### W5-c の判断記録（中間職の指示書 J1〜J13。E1〜E6 は実装役）
+
+W5-c は攻撃第 3 波の命中 2 件（A1: 出典の `origin` の欠落・NULL が生成文を人の根拠にする。A2: 確認 id を別のソブリンへ持ち出せる）を直した。数値は `artifacts/w5-c/` の出力ファイルを出典にした。事前登録は prereg-w5c 節（登録日時 2026-10-03 19:27:14 +0900。新しいテストファイルの凍結 19:30:01 より前: `artifacts/w5-c/prereg.txt`、`artifacts/w5-c/frozen_tests.sha256`）。
+
+- **J1（A1 の範囲）**: `UNKNOWN_ORIGIN` に倒すのは (a) `family` が `ability_corpus.FAMILIES`（import して参照。写さない）のどれかで、`origin` が `generated`・`human_confirmed` 以外の出典、(b) どの系列でも `origin` が `None` 以外で、閉じた語彙 `generated / human_confirmed / constructed / testimony` の外の出典。系列が索引のものでなく `origin` が欠落・`None` の出典は **従来どおり人**（既存テストの期待が固定している。N3。既知の穴 1）。(a) は系列名から生成と推測することではなく、「生成の索引の系列を名乗るのに印が無い」ので人とは言えない、と型で返すだけ。
+- **J2（数え方）**: (a) は `SourceClass.unknown_origin`・`unknown_origin_by_family` に数え、`counts`（5 鍵）には入れない。`cited` には足す（足さないと出典なしの素通しになる）。(b) は従来どおり `non_evidence` に数え、加えて `unknown_origin_values`。`SourceClass.basis` は (a) があれば `"UNKNOWN_ORIGIN"`、方針が使う `policy_basis` は (a) か (b) があれば `"UNKNOWN_ORIGIN"`。
+- **J3（表との関係）**: 24 行の表は変えない。`decide` は `UNKNOWN_ORIGIN` を別の小さな表で扱う（事実の問いは `ABSTAIN`、事実を主張しない依頼は `GENERATED` の行）。`"UNKNOWN"` など他の不正な値は従来どおり `NOT_IN_TABLE:basis`。
+- **J4（出力）**: 事実の問いで出所不明の答えを引っ込めた結果は `UNKNOWN_ORIGIN_SOURCE`。棄権の結果が出所不明の出典を持つときは本文を落として組み直し、元の `text` が本文を引用していれば定型文に置き換える。
+- **J5（記録の格上げ）**: 根拠が `UNKNOWN_ORIGIN` のとき、はい の記録で `HUMAN` に格上げしない。
+- **J6（台帳）**: 問い返しの時点では何も書かない（`test_no_pending_question_is_stored_anywhere`・`test_p5_no_file_is_written_by_asking…` が固定している）。「どこに出したか」は (1) id の入力、(2) 保存する記録の payload の `destination`（追記専用の `event_log` に残る）、(3) ソブリンの口が自分以外の `destination` を拒むこと、で持つ。`destination` の無い payload は従来どおり受ける（`test_basis_policy_confirm.py` の口の直接の検査）。
+- **J7（id の束縛）**: id の入力に宛先 `{"store_id", "structure_ref"}` を足す。宛先を持つのは `ACTIVE_CONSENTED`・`ACTIVE_NO_CONSENT` のときだけ。宛先なしの id は W6-a の式と同じ値（`_confirm_id` の 3 引数の呼び出しが同じ値）。
+- **J8（`--confirm` の順）**: prereg-w5c 節 W5-c-4 のとおり。(3)(4) を (5) より先にするのは、既存の期待（`tests/test_basis_policy_entry.py` の同意なしのソブリンで `NO_CONSENT`、`tests/test_basis_policy_confirm.py` の `ACTIVE` でない状態の `confirm.destination.state`）が固定しているため。
+- **J9（別 root）**: 別の root で出した id は宛先を特定できないので `UNKNOWN_CONFIRM_ID`。`CONFIRM_TARGET_MISMATCH` は宛先を特定できたときだけ（分からないことを「別の宛先」と言わない）。
+- **J10（W5-c 以前の記録）**: 宛先なしの id で保存された いいえ の記録は、宛先つきの id とは一致しないので、もう いいえ済みとして効かない（もう一度問い返す。誤答にならない側）。はい の記録は問い（`query`）で効くので変わらない。
+- **J11（版）**: 24 行の表は変わらないので `TABLE_VERSION = 1`・`SCHEMA` は変えない。変わる規則に別の版を付けた: `CLASSIFY_VERSION = 2`・`CONFIRM_ID_VERSION = 2`。prereg 節の本文は 1 文字も変えず（`git diff` の削除行は 0）、その直後に新しい事前登録の節を日時つきで足した。prereg 節の「この節を変えるときは `TABLE_VERSION` を上げる」は表・式・規則の書き換えの約束で、ここでは書き換えず、旧版（節 3・節 5）を残して追記し、別の版の定数を付けた。
+- **J12（W5-a の 3 文）**: コードは変えない。`docs/READING_SOUNDNESS.md` K64 の損失の記録に追記した（`artifacts/w5-c/w5a_k64_three.txt`: 基点 `2732274^` で 3 文とも `readable=true`、今は 3 文とも `readable=false`・`AGENT_EVIDENCE_MISSING`。`artifacts/w5-c/w5a_r4_attack.txt`: 攻撃試験は 1 件失敗のまま。誤読ではなく過剰棄権）。
+- **J13（`cli.py`）**: 変えなかった（`--confirm` の終了コードは `apply_to_ask` が返す。`git diff` に `verantyx/cli.py` が無い）。
+- **E1（実装役。規則 4 の例外）**: 索引の系列を名乗る出典でも、`origin` が `constructed`・`testimony`（宣言された非証拠）のものは `unknown_origin` にせず従来どおり `non_evidence`。出所が分からないのではなく、証拠でないと宣言されているため（指示書の試験 3「`constructed`・`testimony` だけの出典は従来どおり `UNKNOWN_NO_HUMAN_BASIS`」と同じ側）。どちらも事実の問いでは `ABSTAIN` で、安全側の差は無い。
+- **E2（実装役）**: `sovereign.basis_confirmation_destination` は、構造の台帳が無い root だけでなく、その root が登録していない `store_id` にも `UnknownStore` を投げる（指示書は台帳が無いときだけ）。登録の無いストアの宛先は意味を持たず、呼び手（`_read_sovereign`・候補の列挙・口）は登録済みのストアしか渡さないので、挙動の差は出ない。
+- **E3（実装役）**: 棄権の結果が出所不明の出典を持つとき、本文を落とした定型文の理由を `UNKNOWN_ORIGIN_SOURCE` にした（指示書の規則では `UNKNOWN_NO_HUMAN_BASIS` になる）。元の `verdict` は棄権の型のままなので、見えるのは定型文の文言だけ。
+- **E4（実装役）**: `decide` は `SourceClass` を渡されたとき `policy_basis` を読む（`basis` ではなく）。指示書は `decide` に文字列の根拠を渡す形だけを書いていたが、`test_decide_accepts_a_classification_result_as_the_basis` が `SourceClass` を渡す。
+- **E5（実装役）**: `unknown_origin_values` は規則 5（`non_evidence`）で数えた出典のうち値が語彙の外のものだけで、規則 4 の出典は `unknown_origin`・`unknown_origin_by_family` にだけ数える（二重に数えない）。
+- **E6（実装役）**: 宛先の候補の列挙が完了しなかったとき（`UNKNOWN_CANDIDATES_PARTIAL`・`UNKNOWN_CANDIDATES_UNREADABLE`）、`UNKNOWN_CONFIRM_ID` の出力に `candidates_state` を型で書く。
+- **F1（実装役が見つけた挙動の変化。判断でなく発見）**: `verantyx/round3.py` の規則で作る社交の返事（`GeneralRouter._social_frame`。固定の返事で、出典は `family: "conversation"`・`origin` なし）は、基点では `ANSWER_HUMAN_BASIS` で通り、今は `UNKNOWN_ORIGIN_SOURCE` で棄権になる（`artifacts/w5-c/round3_social_frame_probe.txt`: 基点と今の木で同じ関数が作った dict を `apply_to_ask` に通した実測）。`conversation` は `ability_corpus.FAMILIES` の系列名なので、指示書の規則 4 の字面どおりの結果。直すなら上流（`round3.py` が人の出所でない出典に `origin` を付ける）で、許可パス外。ただし **方針を当てる CLI の入口からはこの関数に届かない**（第 1 ラウンドのレビュー M2 で訂正。読んだこと: `apply_to_ask` の呼び手は `verantyx/cli.py` の legacy・`--mode round5`・`--engine` の 3 枝だけ。`GeneralRouter` を作るのは `one.py` の `_round3_answer` だけで、その呼び手は `Vera.ask` の legacy 経路（`one.py:801-812`。経路が `code_qa`・`live` のとき、または `self.general is None or self.round3_root is not None` のとき）と `chat`。`_social_frame` は `GeneralRouter.answer` が社交の経路（`round3.py:27-38`）で呼ぶので、その枝のうち届きうるのは後者（`one.py:811-812`）。`--engine` は `engine_compat=True` で後者に入らない。CLI の legacy は `Vera().load_store(_load(...))` で `general` を `None` にせず（`cli.py:57,313`）`round3_root` も渡さない。`--mode round5` は `Vera.ask` が `_ask_round5` で先に返り、`_round3_answer` を呼ばない（`one.py:785-796`））。測ったこと: `artifacts/w5-c/greeting_entrances.txt`（`scripts/greeting_entrances.py`。採点器と同じ子プロセスの環境で、基点の写しと今の木に `こんにちは`・`ありがとう。`・`さようなら`・`ごめんなさい` を legacy・`--mode round5` で流した 8 件）は、legacy が `kind=social`・`applied=False` の素通し、round5 が `UNKNOWN_SOURCE_ASSET`・`UNKNOWN_UNREAD` の棄権で、基点と今で `basis_policy` 注記の新しい鍵を除いて同じ。`Vera()`（`general=None`）の `ask` は基点でも今でも `_social_frame` の出力（`kind=social`・`ANSWER`・出典の系列 `conversation`/`user`）を返すが、そこには方針が掛からない（同ファイルの最後の 2 行）。`build/round3` がある環境で `GeneralRouter` に届く入口が別にあるかは未測定（`UNMEASURED_NO_ROUND3_BUILD`）。
+
+### W5-c 第 3 ラウンドで改訂したテスト（監査役の判断 2026-10-03 20:40 による。名前は変えず、前後の全文をここに残す）
+
+件数: **W6-a のテスト 7 関数・11 件の test id**（`tests/test_basis_policy_table.py` 4 関数 4 件、`tests/test_basis_policy_entry.py` 2 関数 5 件、`tests/test_basis_policy_form.py` 1 関数 2 件）、**W5-c のテスト 5 関数**（`tests/test_basis_policy_w5c.py`。凍結の sha256 は `artifacts/w5-c/frozen_tests.sha256` の `AMENDED` 行）。これ以外の W6-a のテスト（`tests/test_basis_policy_confirm.py`・`tests/test_basis_policy_conductor.py` は全部、ほか 3 本の残り全部）と `tests/test_one_request_goal_route.py` は 1 文字も変えていない。直し方は 2 種類: (i) その関数の主張（名前）が今も成り立つものは、入力の人の出典を明示の人（`origin: "human_confirmed"`）にして期待は変えない、(ii) 主張そのものが判断で変わったもの（「それ以外は人」「`origin None` は後の規則に落ちて人」）は入力を変えず期待を新しい規則にする。assert は消していない・緩めていない。各関数の改訂の直前の行に、変えた理由の 1 行のコメントを足した（`# W5-c r3（監査役の判断 2026-10-03 20:40）: …`）。前後の全文の抜き出しは `artifacts/w5-c/r3_revised_tests_before.txt`・`r3_revised_tests_after.txt`（4 ファイルの sha256 は `r3_revised_tests.sha256` の `BEFORE`・`AFTER`）。
+
+#### R1. `tests/test_basis_policy_table.py` の `test_decide_accepts_a_classification_result_as_the_basis`
+
+- 直し方: (i) 入力の人の出典を明示の人（`origin: "human_confirmed"`）にし、期待は同じ
+- 改訂前（117〜120 行）:
+
+```python
+def test_decide_accepts_a_classification_result_as_the_basis():
+    sc = bp.classify_sources([{"family": "doc", "text": "x"}])
+    assert sc.basis == "HUMAN"
+    assert bp.decide("factual", sc, False, False).outcome == "ANSWER_HUMAN_BASIS"
+```
+
+- 改訂後（117〜121 行）:
+
+```python
+def test_decide_accepts_a_classification_result_as_the_basis():
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    sc = bp.classify_sources([{"family": "memory_sovereign", "origin": "human_confirmed", "text": "x"}])
+    assert sc.basis == "HUMAN"
+    assert bp.decide("factual", sc, False, False).outcome == "ANSWER_HUMAN_BASIS"
+```
+
+#### R2. `tests/test_basis_policy_table.py` の `test_rule4_origin_none_falls_through_to_the_later_rules`
+
+- 直し方: (ii) 入力は同じ。期待を新しい規則 8 にした（`origin: None` の `doc` は後の規則に落ちて人、ではなく出所不明）
+- 改訂前（153〜155 行）:
+
+```python
+def test_rule4_origin_none_falls_through_to_the_later_rules():
+    sc = bp.classify_sources([{"origin": None, "family": "user"}, {"origin": None, "family": "doc"}])
+    assert sc.counts["request_text"] == 1 and sc.counts["human"] == 1
+```
+
+- 改訂後（154〜157 行）:
+
+```python
+def test_rule4_origin_none_falls_through_to_the_later_rules():
+    sc = bp.classify_sources([{"origin": None, "family": "user"}, {"origin": None, "family": "doc"}])
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力は同じ。later rule の「それ以外」は人でなく出所不明（規則 8）
+    assert sc.counts["request_text"] == 1 and sc.counts["human"] == 0 and sc.unknown_origin == 1
+```
+
+#### R3. `tests/test_basis_policy_table.py` の `test_rule6_anything_else_is_human`
+
+- 直し方: (ii) 入力は同じ。期待を新しい規則 8 にした（それ以外は人、ではなく出所不明）
+- 改訂前（163〜165 行）:
+
+```python
+def test_rule6_anything_else_is_human():
+    sc = bp.classify_sources([{"family": "document", "source": "memo.txt", "text": "花子は来た。"}])
+    assert sc.counts["human"] == 1 and sc.basis == "HUMAN" and sc.cited == 1
+```
+
+- 改訂後（165〜168 行）:
+
+```python
+def test_rule6_anything_else_is_human():
+    sc = bp.classify_sources([{"family": "document", "source": "memo.txt", "text": "花子は来た。"}])
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力は同じ。origin の無い出典は、利用者が渡した文書と分かっていなければ出所不明
+    assert sc.counts["human"] == 0 and sc.unknown_origin == 1 and sc.basis == "UNKNOWN_ORIGIN" and sc.cited == 1
+```
+
+#### R4. `tests/test_basis_policy_table.py` の `test_human_and_generated_together_is_mixed`
+
+- 直し方: (i) 入力の人の出典を明示の人にし、期待は同じ
+- 改訂前（174〜176 行）:
+
+```python
+def test_human_and_generated_together_is_mixed():
+    sc = bp.classify_sources([{"family": "document"}, {"family": "local", "origin": "generated"}])
+    assert sc.basis == "MIXED" and sc.cited == 2
+```
+
+- 改訂後（177〜180 行）:
+
+```python
+def test_human_and_generated_together_is_mixed():
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    sc = bp.classify_sources([{"family": "memory_sovereign", "origin": "human_confirmed"}, {"family": "local", "origin": "generated"}])
+    assert sc.basis == "MIXED" and sc.cited == 2
+```
+
+#### R5. `tests/test_basis_policy_entry.py` の `test_a_mix_of_human_and_generated_sources_abstains`
+
+- 直し方: (i) 入力の人の出典を明示の人にし、期待は同じ（4 件の test id）
+- 改訂前（174〜182 行）:
+
+```python
+@pytest.mark.parametrize("human", [False, True])
+@pytest.mark.parametrize("ref", [False, True])
+def test_a_mix_of_human_and_generated_sources_abstains(human, ref):
+    result = _synthetic("answer", "ANSWER", [HUMAN, GEN])
+    out, rc = bp.apply_to_ask(result, bp.AskPolicy(human_present=human, show_reference=ref),
+                              query="q", mode="legacy", documents=[])
+    assert rc == 0 and out["kind"] == "unknown" and out["verdict"] == "UNKNOWN_BASIS_NOT_IN_TABLE"
+    assert out["basis_policy"]["basis"] == "MIXED" and out["basis_policy"]["in_table"] is False
+    assert out["basis_policy"]["outcome"] == "ABSTAIN"
+```
+
+- 改訂後（174〜183 行）:
+
+```python
+@pytest.mark.parametrize("human", [False, True])
+@pytest.mark.parametrize("ref", [False, True])
+def test_a_mix_of_human_and_generated_sources_abstains(human, ref):
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    result = _synthetic("answer", "ANSWER", [{**HUMAN, "origin": "human_confirmed"}, GEN])
+    out, rc = bp.apply_to_ask(result, bp.AskPolicy(human_present=human, show_reference=ref),
+                              query="q", mode="legacy", documents=[])
+    assert rc == 0 and out["kind"] == "unknown" and out["verdict"] == "UNKNOWN_BASIS_NOT_IN_TABLE"
+    assert out["basis_policy"]["basis"] == "MIXED" and out["basis_policy"]["in_table"] is False
+    assert out["basis_policy"]["outcome"] == "ABSTAIN"
+```
+
+#### R6. `tests/test_basis_policy_entry.py` の `test_a_human_answer_is_passed_through_unchanged_apart_from_the_policy_note`
+
+- 直し方: (i) 入力の人の出典を明示の人にし、期待は同じ
+- 改訂前（201〜205 行）:
+
+```python
+def test_a_human_answer_is_passed_through_unchanged_apart_from_the_policy_note():
+    result = _synthetic("answer", "ANSWER", [USER, HUMAN])
+    out, rc = bp.apply_to_ask(result, bp.AskPolicy(), query="q", mode="legacy", documents=[])
+    assert rc == 0 and _without(out, "basis_policy") == result
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS" and out["basis_policy"]["applied"] is True
+```
+
+- 改訂後（202〜207 行）:
+
+```python
+def test_a_human_answer_is_passed_through_unchanged_apart_from_the_policy_note():
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    result = _synthetic("answer", "ANSWER", [USER, {**HUMAN, "origin": "human_confirmed"}])
+    out, rc = bp.apply_to_ask(result, bp.AskPolicy(), query="q", mode="legacy", documents=[])
+    assert rc == 0 and _without(out, "basis_policy") == result
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS" and out["basis_policy"]["applied"] is True
+```
+
+#### R7. `tests/test_basis_policy_form.py` の `test_other_routes_do_not_attempt_the_borrowing`
+
+- 直し方: (i) 入力の人の出典を明示の人にし、期待は同じ（2 件の test id）
+- 改訂前（216〜222 行）:
+
+```python
+@pytest.mark.parametrize("mode, docs", [("legacy", []), ("round5", [])])
+def test_other_routes_do_not_attempt_the_borrowing(tmp_path, monkeypatch, mode, docs):
+    _index(tmp_path, {"local": ["次郎が花子に本を渡した。"]})
+    monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
+    out, _rc = bp.apply_to_ask(_doc_answer(), bp.AskPolicy(), query="q", mode=mode, documents=docs)
+    assert "form_text" not in out and out["basis_policy"]["form"]["state"] == "NOT_ATTEMPTED_ROUTE"
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"
+```
+
+- 改訂後（216〜224 行）:
+
+```python
+@pytest.mark.parametrize("mode, docs", [("legacy", []), ("round5", [])])
+def test_other_routes_do_not_attempt_the_borrowing(tmp_path, monkeypatch, mode, docs):
+    _index(tmp_path, {"local": ["次郎が花子に本を渡した。"]})
+    monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    ans = _doc_answer(); ans["sources"] = [{**s, "origin": "human_confirmed"} for s in ans["sources"]]
+    out, _rc = bp.apply_to_ask(ans, bp.AskPolicy(), query="q", mode=mode, documents=docs)
+    assert "form_text" not in out and out["basis_policy"]["form"]["state"] == "NOT_ATTEMPTED_ROUTE"
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"
+```
+
+#### R8. `tests/test_basis_policy_w5c.py` の `test_w5c_the_versions_and_the_table_are_as_registered`
+
+- 直し方: `CLASSIFY_VERSION == 3`
+- 改訂前（278〜283 行）:
+
+```python
+def test_w5c_the_versions_and_the_table_are_as_registered():
+    assert bp.TABLE_VERSION == 1 and bp.SCHEMA == "verantyx.basis_policy/1"
+    assert bp.CLASSIFY_VERSION == 2 and bp.CONFIRM_ID_VERSION == 2
+    assert len(bp.TABLE) == 24 and bp.BASES == ("HUMAN", "GENERATED", "NONE")
+    assert bp.DECLARED_ORIGINS == ("generated", "human_confirmed", "constructed", "testimony")
+    assert bp.UNKNOWN_ORIGIN == "UNKNOWN_ORIGIN"
+```
+
+- 改訂後（278〜284 行）:
+
+```python
+def test_w5c_the_versions_and_the_table_are_as_registered():
+    assert bp.TABLE_VERSION == 1 and bp.SCHEMA == "verantyx.basis_policy/1"
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 規則 7・8 が変わったので CLASSIFY_VERSION は 3（prereg-w5c-r3 節）
+    assert bp.CLASSIFY_VERSION == 3 and bp.CONFIRM_ID_VERSION == 2
+    assert len(bp.TABLE) == 24 and bp.BASES == ("HUMAN", "GENERATED", "NONE")
+    assert bp.DECLARED_ORIGINS == ("generated", "human_confirmed", "constructed", "testimony")
+    assert bp.UNKNOWN_ORIGIN == "UNKNOWN_ORIGIN"
+```
+
+#### R9. `tests/test_basis_policy_w5c.py` の `test_w5c_counts_keep_their_five_keys_and_the_new_numbers_live_beside_them`
+
+- 直し方: (i) 入力の `HUMAN` を `{**HUMAN, "origin": "human_confirmed"}` にし、期待は同じ
+- 改訂前（297〜305 行）:
+
+```python
+def test_w5c_counts_keep_their_five_keys_and_the_new_numbers_live_beside_them():
+    sc = bp.classify_sources([_src("local", None), _src("x", "zzz"), GEN, HUMAN, USER, "junk"])
+    assert set(sc.counts) == {"human", "generated", "non_evidence", "request_text", "unreadable"}
+    assert sc.counts == {"human": 1, "generated": 1, "non_evidence": 1, "request_text": 1, "unreadable": 1}
+    assert sc.unknown_origin == 1 and sc.unknown_origin_values == {"zzz": 1}
+    assert sc.cited == 5 and sc.policy_basis == "UNKNOWN_ORIGIN" and sc.basis == "UNKNOWN_ORIGIN"
+    d = sc.to_dict()
+    assert d["unknown_origin"] == 1 and d["unknown_origin_by_family"] == {"local": 1}
+    assert d["unknown_origin_values"] == {"zzz": 1}
+```
+
+- 改訂後（298〜307 行）:
+
+```python
+def test_w5c_counts_keep_their_five_keys_and_the_new_numbers_live_beside_them():
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の HUMAN を明示の人（origin: human_confirmed）にした。期待は同じ
+    sc = bp.classify_sources([_src("local", None), _src("x", "zzz"), GEN, {**HUMAN, "origin": "human_confirmed"}, USER, "junk"])
+    assert set(sc.counts) == {"human", "generated", "non_evidence", "request_text", "unreadable"}
+    assert sc.counts == {"human": 1, "generated": 1, "non_evidence": 1, "request_text": 1, "unreadable": 1}
+    assert sc.unknown_origin == 1 and sc.unknown_origin_values == {"zzz": 1}
+    assert sc.cited == 5 and sc.policy_basis == "UNKNOWN_ORIGIN" and sc.basis == "UNKNOWN_ORIGIN"
+    d = sc.to_dict()
+    assert d["unknown_origin"] == 1 and d["unknown_origin_by_family"] == {"local": 1}
+    assert d["unknown_origin_values"] == {"zzz": 1}
+```
+
+#### R10. `tests/test_basis_policy_w5c.py` の `test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis`
+
+- 直し方: (i) 最後の行の入力を明示の人にし、`[HUMAN]` が `UNKNOWN_ORIGIN` になる assert を 1 行足した（強める側）
+- 改訂前（308〜315 行）:
+
+```python
+def test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis():
+    sc = bp.classify_sources([_src("x", "zzz")])
+    assert sc.basis == "NONE" and sc.policy_basis == "UNKNOWN_ORIGIN"
+    assert sc.counts["non_evidence"] == 1 and sc.non_evidence_by_origin == {"zzz": 1}
+    assert bp.classify_sources([_src("x", "constructed")]).policy_basis == "NONE"
+    assert bp.classify_sources([_src("x", "testimony")]).policy_basis == "NONE"
+    assert bp.classify_sources([GEN]).policy_basis == "GENERATED"
+    assert bp.classify_sources([HUMAN]).policy_basis == "HUMAN"
+```
+
+- 改訂後（310〜319 行）:
+
+```python
+def test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis():
+    sc = bp.classify_sources([_src("x", "zzz")])
+    assert sc.basis == "NONE" and sc.policy_basis == "UNKNOWN_ORIGIN"
+    assert sc.counts["non_evidence"] == 1 and sc.non_evidence_by_origin == {"zzz": 1}
+    assert bp.classify_sources([_src("x", "constructed")]).policy_basis == "NONE"
+    assert bp.classify_sources([_src("x", "testimony")]).policy_basis == "NONE"
+    assert bp.classify_sources([GEN]).policy_basis == "GENERATED"
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 最後の行の入力を明示の人にした（期待は同じ）。強める側の assert を 1 行足した
+    assert bp.classify_sources([{**HUMAN, "origin": "human_confirmed"}]).policy_basis == "HUMAN"
+    assert bp.classify_sources([HUMAN]).policy_basis == "UNKNOWN_ORIGIN"
+```
+
+#### R11. `tests/test_basis_policy_w5c.py` の `test_w5c_the_policy_note_carries_the_new_versions_and_numbers`
+
+- 直し方: 注記の `classify_version == 3`
+- 改訂前（342〜349 行）:
+
+```python
+def test_w5c_the_policy_note_carries_the_new_versions_and_numbers():
+    out, _rc = bp.apply_to_ask(_synthetic("answer", "ANSWER", [_src("pro", "")]), bp.AskPolicy(), query="窓は？",
+                               mode="legacy", documents=[])
+    note = out["basis_policy"]
+    assert note["schema"] == "verantyx.basis_policy/1" and note["table_version"] == 1
+    assert note["classify_version"] == 2 and note["confirm_id_version"] == 2
+    assert note["counts"]["unknown_origin"] == 1 and note["counts"]["unknown_origin_by_family"] == {"pro": 1}
+    assert out["withheld"]["unknown_origin_source_count"] == 1
+```
+
+- 改訂後（346〜354 行）:
+
+```python
+def test_w5c_the_policy_note_carries_the_new_versions_and_numbers():
+    out, _rc = bp.apply_to_ask(_synthetic("answer", "ANSWER", [_src("pro", "")]), bp.AskPolicy(), query="窓は？",
+                               mode="legacy", documents=[])
+    note = out["basis_policy"]
+    assert note["schema"] == "verantyx.basis_policy/1" and note["table_version"] == 1
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 注記の classify_version は 3
+    assert note["classify_version"] == 3 and note["confirm_id_version"] == 2
+    assert note["counts"]["unknown_origin"] == 1 and note["counts"]["unknown_origin_by_family"] == {"pro": 1}
+    assert out["withheld"]["unknown_origin_source_count"] == 1
+```
+
+#### R12. `tests/test_basis_policy_w5c.py` の `test_w5c_known_hole_a_source_outside_the_index_families_without_origin_is_still_human`
+
+- 直し方: (ii) 穴が閉じたので期待を反転（名前は変えない）
+- 改訂前（352〜357 行）:
+
+```python
+def test_w5c_known_hole_a_source_outside_the_index_families_without_origin_is_still_human():
+    """Pinned on purpose (docs/BASIS_POLICY.md section 11, hole 1): existing tests fix this reading."""
+    out, _rc = bp.apply_to_ask(_synthetic("answer", "ANSWER", [HUMAN]), bp.AskPolicy(), query="窓は？",
+                               mode="legacy", documents=[])
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS" and out["basis_policy"]["basis"] == "HUMAN"
+    assert bp.classify_sources([{"family": "x", "text": "t"}]).policy_basis == "HUMAN"
+```
+
+- 改訂後（357〜365 行）:
+
+```python
+def test_w5c_known_hole_a_source_outside_the_index_families_without_origin_is_still_human():
+    """Closed in round 3 (docs/BASIS_POLICY.md section 11, hole 1; the auditor's decision of 2026-10-03 20:40):
+    a source outside the index families with no origin is an unknown origin, not a human one. The name is kept
+    on purpose (the auditor's rule: an existing test's name is never changed; the before/after text is in the docs)."""
+    out, _rc = bp.apply_to_ask(_synthetic("answer", "ANSWER", [HUMAN]), bp.AskPolicy(), query="窓は？",
+                               mode="legacy", documents=[])
+    assert out["basis_policy"]["outcome"] == "ABSTAIN" and out["basis_policy"]["basis"] == "UNKNOWN_ORIGIN"
+    assert out["verdict"] == "UNKNOWN_ORIGIN_SOURCE"
+    assert bp.classify_sources([{"family": "x", "text": "t"}]).policy_basis == "UNKNOWN_ORIGIN"
+```
+
+
+### W5-c 第 3 ラウンドの判断記録（中間職の指示書 R3-J1〜R3-J9。R3-E は実装役）
+
+監査役の判断（2026-10-03 20:40）と第 2 ラウンドの必須 M1・M2 を反映した。事前登録は prereg-w5c-r3 節（登録日時 2026-10-03 21:07:31 +0900）で、新しいテストの凍結（`EXTENDED`、21:09:48）・既存テストの改訂（`AMENDED`、21:10:55）・製品コードの変更より前: `artifacts/w5-c/r3_prereg.txt`、`artifacts/w5-c/frozen_tests.sha256`。数値は `artifacts/w5-c/` の出力ファイルを出典にした。
+
+- **R3-J1（規則 7 の置き換え。最重要）**: 規則 7「それ以外 → `human`」を **`unknown_origin`**（新しい規則 8）に変えた。例外は 1 つだけ（新しい規則 7）: `apply_to_ask` の `mode == "round5"` かつ `documents` が空でないとき（= 利用者がこの呼び出しで文書を渡した）、`family == "document"` で `origin` が鍵なしか `None` の出典は `human`。理由 1: 監査役の判断は「人の出典は `family == "user"`（利用者が渡した文書・会話）か…」と利用者が渡した文書を人と明記している。製品は利用者の文書の出典を `family: "document"` で出す（`one.py:1180`・`answer.py:1481,1508`・`request_goal_route.py:309`。`family: "user"` は依頼文の断片）。CLI で `--document` を受けるのは `--mode round5` だけで、その mode の文書は渡したものだけなので、来歴が分かっている（出所不明ではない）。理由 2: 例外なしの字面どおりにすると、許可パス外で改訂の許可の外の `tests/test_one_request_goal_route.py::test_cli_explicit_round5_document_entry_uses_same_python_route` が落ち、C（形の借用）が CLI の入口から届かなくなる。範囲の狭さ: legacy・`--engine`・round5 で documents なしの `family: "document"`、`general`・`jawiki`・`conversation_form`・`code_parts`・`pun_lexicon`・系列名の揺れ・系列の鍵なしの出典は `origin` が欠落・`None` なら **すべて出所不明**。`family: "document"` でも `origin` に値（`""`・`"zzz"`・`"human"`・`3`）があれば規則 5（`non_evidence`）で、語彙の外の値は `unknown_origin_values` に数えて `policy_basis = UNKNOWN_ORIGIN`。**字面どおりに戻す方法**: `_class_of` の「`if user_documents and src.get("family") == "document": return "human"`」の 2 行を消す（引数 `user_documents` は残してよい）。そのときの代価の実測は §11（第 3 ラウンドで更新した既知の穴）の (f)。
+- **R3-J2（`family == "user"`）**: 従来どおり `request_text`（依頼文。`cited` に入れない）。「利用者が渡した」と「依頼文そのものを事実の根拠に数える」は別の問いで、W6-a の J4・既存テストが固定している。
+- **R3-J3（人の `origin` の値）**: 判断が挙げた「枠・利用者の記録」の `origin` の値は製品がまだ一度も書かないので、語彙 `DECLARED_ORIGINS` に名前を作って足していない。人の明示の値は今は `human_confirmed` だけ。上流で値を決めるチケットがその値を事前登録して足す。
+- **R3-J4（記録による格上げ。review.r2 M2）**: `if b0 == "GENERATED" and mine and not has_unknown:`。元の結果が棄権・出典なし（`NONE`）・`UNKNOWN_ORIGIN` の混じる・`MIXED` のときは格上げしない（`elif mine:` の枝で `confirmed_records_not_used` に数える）。review.r2 M2 の「`b0 in ("GENERATED","NONE") and mine and not has_unknown`」より狭い（監査役の判断が後なので判断に従った）。生成の出典の棄権 3 型も、元の棄権のまま（`ABSTAIN`、used 0・not_used 1）。出典なしの答え（`answer/ANSWER`）は素通し（`applied: false`）になり、基点のように記録の文に置き換わらない。
+- **R3-J5（判断の「その生成文と確認済みの文が一致するときだけ」）**: **入れていない**。記録の claim を今の claim と照合する形は、改訂の許可の外の `tests/test_basis_policy_confirm.py` の 2 件（`test_two_confirmed_records_with_different_claims_abstain`・`test_two_confirmed_records_with_the_same_claim_are_not_a_split`）を落とす（実測は §11 の (c)）。入れ方: `mine` の条件に `e["payload"]["claim"] == claim` の 1 行を足す。許可を得て 2 件を改訂するときに入れる。
+- **R3-J6（既存テストの改訂）**: W6-a の 7 関数（11 件の test id）だけ。名前は変えない。前後の全文は上の「W5-c 第 3 ラウンドで改訂したテスト」。
+- **R3-J7（凍結済みの `tests/test_basis_policy_w5c.py`）**: 期待が判断で変わる 5 関数だけ改訂し、`frozen_tests.sha256` に `AMENDED` 行を足した。
+- **R3-J8（版）**: 分類の規則が変わったので `CLASSIFY_VERSION = 3`。`TABLE_VERSION = 1`・`SCHEMA`・`CONFIRM_ID_VERSION = 2` は変えない。格上げの条件の変更に新しい定数は作らない。
+- **R3-J9（事前登録）**: prereg-w5c 節は書き換えず、その直後に prereg-w5c-r3 節を足した。W5-c-1 の規則 7 と W5-c-3 の 3 つ目の項目はその節で置き換える。
+- **R3-E1（実装役）**: `_family_of` を `src.get("family")` で書き直した（`src["family"]` の字面を 0 件にするため。挙動は同じ: 文字列でなければ `"(none)"`）。
+- **R3-E2（実装役）**: 改訂後の `test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis` は、指示書どおり (i) に加えて `[HUMAN]` が `UNKNOWN_ORIGIN` になる assert を足したので、実装前にも落ちる。指示書は「実装前に落ちるのは (ii) の 2 関数と w5c の (ii)・版の 3 関数」と書いたが、実測は 6 件（table 2・w5c 4。`r3_revised_before_impl.txt`）。
+- **R3-E3（実装役）**: `tests/test_basis_policy_w5c_r3.py` を凍結（`EXTENDED`）した後、実装後の実行で補助関数 `_family_key` が鍵なし（番兵 `"MISSING"`）を `"(none)"` に写していない誤りに気づき、その 1 関数だけ直した（assert は変えていない。期待の弱体化ではなく仕様 prereg-w5c-r3 のとおりへの訂正）。`frozen_tests.sha256` に `AMENDED` 行（理由つき）を足した。
+- **R3-E4（実装役）**: 新しいテストに指示書の列挙にない関数を足した: 規則 7 が `origin` に値のある文書に当たらないこと、`user_documents` に依らない `family: "user"`・`human_confirmed`、系列 `document` 以外は規則 7 の対象でないこと、`withheld` の 10 通り、出典なし・利用者の文書の答えの記録との関係。
+- **R3-E5（実装役）**: `_withheld` と `_unknown_dict` に `n_unknown` を渡す呼び手は 4 か所（`apply_to_ask` の 3 か所と `_settle_confirmation` の 1 か所）で、どれも `sc` から数える。`_quoted` の判定（元の `text` が出所不明の本文を引用しているか）も `user_documents` を渡す。
+
 ## 11. 既知の穴（隠さない）
 
 - **`ORIGIN_UNMARKED_ROUND3_EVIDENCE`**: `semantic_qa`（`--mode round5` で文書なし）などの round3 の系列（`general_qa / local / pro / jawiki`）の出典には `origin` の印が付かず、この環境には `build/round3` が無いので生成物かどうか実測できない。分類は印だけを見るので、印の無い生成物は `HUMAN` に数えられうる。上流（`semantic_retrieve` / `evidence_library`）で `origin` を付けるのが筋で、許可パス外。
@@ -229,3 +744,35 @@ prereg 節 4 の表のとおり。要点:
 - **P6 は未測定**: 隠しバンクは開いていない。
 - **`python -m verantyx.cli` は現在のディレクトリの `verantyx` を先に読む**: 作業ツリー以外から実行すると別の `verantyx` が読まれる（実演の最初の試行で起きた。`cd <ツリー>` してから実行する）。
 
+### W5-c で更新した既知の穴（追記。上の穴は消していない）
+
+1. **索引の系列でない出典の `origin` 欠落は今も人**: 系列が `ability_corpus.FAMILIES` に無く `origin` が欠落・`None` の出典（`abilities.py` の `general`・`code_compose.py` の `code_parts`・`pun_lexicon`・`one.py` の `conversation_form`・`jawiki`・利用者の文書の答えの出典 `family: "document"` など）は、規則 7 で `human` のまま。理由: 製品は人の出所に `origin` の値を一度も付けておらず（文書の答えの出典に `origin` の鍵が無い）、既存テストの期待がこの読みを固定している: `tests/test_basis_policy_table.py` の `test_decide_accepts_a_classification_result_as_the_basis`（117 行）・`test_rule4_origin_none_falls_through_to_the_later_rules`（153 行）・`test_rule6_anything_else_is_human`（163 行）・`test_human_and_generated_together_is_mixed`（174 行）、`tests/test_basis_policy_entry.py`（201〜205 行、実物の round5 文書の答え 278 行付近）、`tests/test_basis_policy_form.py`（185〜246 行。文書の答えで C の借用が起きる）。上流で人の出所に `origin` を付けるか、監査役が該当テストの期待を変える許可を出すまで閉じない。W5-c の試験 `test_w5c_known_hole_a_source_outside_the_index_families_without_origin_is_still_human` がこの穴を固定している（穴が閉じたら期待を直す）。
+2. **`ORIGIN_UNMARKED_ROUND3_EVIDENCE`（一部だけ前進、実データで未測定）**: round3 の出典のうち系列名が `ability_corpus.FAMILIES` と同名のもの（`general_qa`・`local`・`pro`・`conversation`・`paraphrase_entail`・`code`）は印が無くても `UNKNOWN_ORIGIN` に倒れる。`jawiki` は同名でないので人のまま。この環境には `build/round3` が無く、入口での件数は測れない（`UNMEASURED_NO_ROUND3_BUILD`）。この系列名を `origin` なしで出す製品の箇所: `artifacts/w5-c/families_literal_sites.txt`（10 件。`abilities.py`・`round3.py`）。
+3. **別の root への id の持ち出しは `UNKNOWN_CONFIRM_ID`（J9）**: 宛先を特定できないので「別の宛先」と言わない。
+4. **`append_basis_confirmation` の直接の呼び手は `destination` を省けば束縛されない（J6）**: `vera ask --confirm` の入口は必ず `destination` を付けるが、ソブリンの口を直接呼ぶコードは省ける（口は `destination` が無い payload を従来どおり受ける。既存テストが固定）。
+5. **W5-c 以前の いいえ の記録は効かない（J10）**: 宛先なしの id で保存された `REJECTED_GENERATED` は、宛先つきの id と一致しないので、同じ問いは もう一度 `CONFIRM_REQUEST` になる（誤答にならない側）。
+6. **同意なしの宛先への持ち出しは `NO_CONSENT` が先に出る（J8）**: 別の宛先を指していても、宛先が同意なしなら `CONFIRM_TARGET_MISMATCH` でなく `NO_CONSENT`（どちらも何も書かない。rc 1）。
+7. **規則で作る社交の返事（F1）**: `GeneralRouter._social_frame`（固定の返事）の出力を `apply_to_ask` に直接通すと、`family: "conversation"` に `origin` が無いので、事実の問い（既定）では `UNKNOWN_ORIGIN_SOURCE` で棄権になる（基点では `ANSWER_HUMAN_BASIS`。`artifacts/w5-c/round3_social_frame_probe.txt`）。事実を主張しない依頼（`--request-kind creative` など）なら `CONSTRUCTED`。ただし、方針を当てる CLI の入口（legacy・`--mode round5`）からはこの関数に届かない（コードの読みと実測は §10 の F1 と `artifacts/w5-c/greeting_entrances.txt`）。`Vera()` を `general=None` で直接使う呼び手には `_social_frame` が届くが、そこには方針が掛からない。隠しバンクの B1・B2・B5 は開いていない・測っていない（採点器の子プロセスの環境で挨拶 4 文を CLI に流した出力は基点と同じ: `greeting_entrances.txt`）。`build/round3` のある環境の入口は未測定（`UNMEASURED_NO_ROUND3_BUILD`）で、監査役が測ること。
+8. **事実を主張しない依頼で出所不明の出典の答えは、生成と同じ側（`CONSTRUCTED`）で元の本文が残る**: チケットの「生成と同じ側」に従った。出所不明の文を材料に使うことが許されるかは別の判断（棄権に倒すこともできる）。
+9. **P6 の隠しバンク（B1・B2・B5）は開いていない・測っていない**: 採点器の見本 B2（25 問）は前後で意味が同じ（`artifacts/w5-c/bs_B2_semantic_compare.txt`）。
+10. **元の結果が棄権で出所不明の出典を持ち、同じ問いに はい の記録があると `ANSWER_HUMAN_BASIS` になる（J5 との非対称。第 1 ラウンドのレビュー任意 1 を受けて追記）**: 答えの側（`answer/ANSWER`）の出所不明は J5 で棄権のままだが、元が棄権（`unknown/UNKNOWN_X`・`refusal/UNKNOWN_Y`）のときは `b0 = "NONE"` なので記録で格上げされ、本文はソブリンの記録の `claim`（出所不明の本文は出ない）。生成の出典のときも同じ振る舞い（基点から）。出所不明の文を人の根拠にしているのではなく、記録（人の はい）を根拠にしている。実測: `artifacts/w5-c/j5_refused_probe.txt`（`scripts/j5_refused_probe.py`）。不具合とは扱わず、監査役の合成で驚かないよう記す。
+11. **系列名の揺れ（`"LOCAL"`・`" local"` など `ability_corpus.FAMILIES` と完全一致しない名）で `origin` が欠落・`None` の出典も人のまま**: 定義上は穴 1 に含まれる。製品の `Corpus` は `FAMILIES` 以外の系列を `ValueError` で拒むので、索引からは出ない。系列名を正規化して拾う処理は足していない（語の一覧を足して直さない）。
+
+### W5-c 第 3 ラウンドで更新した既知の穴（追記。上の穴は消していない）
+
+**閉じたもの**
+- **穴 1（索引の系列でない出典の `origin` 欠落は今も人）は第 3 ラウンドで閉じた**: `origin` が欠落・`None` の出典は、`family == "user"`（依頼文）と、round5 で documents を渡した呼び出しの `family: "document"` だけを除いて出所不明（規則 8）。`general`・`jawiki`・`conversation_form`・`code_parts`・`pun_lexicon`・系列名の揺れ・系列の鍵なしも含む。合成（`r3_synth.txt`）で出所不明の組合せの `ANSWER_*` は 0。
+- **穴 11（系列名の揺れ）も閉じた**: `"LOCAL"`・`" local"` などで `origin` が欠落・`None` の出典は出所不明。
+- **穴 10（棄権の結果・出所不明の結果が はい の記録で格上げされる）は第 3 ラウンドで閉じた**: 格上げは元の結果の根拠が生成のときだけ（R3-J4）。前後の実測は `j5_refused_probe.txt`・`r3_record_probe.txt`。
+- W6-a の §11 の最初の項目（`ORIGIN_UNMARKED_ROUND3_EVIDENCE`: 印の無い生成物は `HUMAN` に数えられうる）は、**印の無い出典が利用者の文書以外では人に数えられなくなった**ことで、危険な向き（誤って人にする）は閉じた。印を足す上流の作業（round3 系列・枠の記録）はこのチケットでは行っていない。
+
+**新しい・残る穴**
+- (a) **利用者の文書は入口の来歴（round5＋documents）で人とし、出典の本文が渡した文書に本当にあるかは方針が確かめない**。`apply_to_ask` は `mode == "round5" and bool(documents)` だけを見る（ファイル名・本文の照合はしない。R3-J1）。`apply_to_ask` を直接呼ぶ呼び手が `documents=["x"]` を渡して `family: "document"` を名乗る出典を載せれば人になる。CLI の入口で `--document` を受けるのは round5 だけ。
+- (b) **正しい答えの損失（上流で `origin` を付けるまで）**: legacy・`--engine`（ストアに入れた利用者の文書 `.documents.json` を含む）・round5 で documents なしの `family: "document"`、`general`・`jawiki`・`conversation_form`・`code_parts`・`pun_lexicon` などの出典の答えは、事実の問いでは `UNKNOWN_ORIGIN_SOURCE` で棄権になる。`origin` を付けずに `family` を書く製品の箇所は 36 か所（`r3_family_sites.txt`）。どの入口で何件が棄権に変わるかは、測ったもの（B2・B3・挨拶 8 件・`tests/test_one_request_goal_route.py`・全体テスト・入口の実演）以外は `UNMEASURED_ENTRANCE`。
+- (c) **R3-J5 の照合は入れていない**: 判断の「その生成文と確認済みの文が一致するとき」。入れ方は `mine` の条件に `e["payload"]["claim"] == claim` を足す 1 行。入れると、改訂の許可の外の `tests/test_basis_policy_confirm.py::test_two_confirmed_records_with_different_claims_abstain` と `::test_two_confirmed_records_with_the_same_claim_are_not_a_split` の 2 件が落ちる（`r3_variant_costs.txt`）。許可を得て 2 件を改訂するときに入れる。入れていない間は、記録の claim が今の生成の claim と違っても（同じ問いで はい の記録があれば）格上げする。
+- (d) **棄権の結果・出典なしの結果は はい の記録で格上げしなくなった**（誤答にならない側の損失）: 基点では出典なしの `answer/ANSWER` や、生成の出典の棄権が はい の記録の文に置き換わっていた（`r3_record_probe.txt`）。出典なしの答えは素通し（元の答えのまま、記録は `confirmed_records_not_used`）、生成の出典の棄権は元の棄権のまま。
+- (e) **判断の「枠・利用者の記録」の `origin` の値は語彙に無い**（R3-J3）。製品がまだ書かない値に名前を作っていない。人の明示の値は `human_confirmed` だけ。
+- (f) **字面どおり（R3-J1 の例外なし）に戻すときの代価**: `_class_of` の 2 行を消すと、スクラッチの写しで 13 件失敗（W6-a の 5 件: `test_basis_policy_entry.py::test_a_document_answer_keeps_its_text_and_is_typed_human_basis`・`test_basis_policy_form.py` の 4 件、W5-c の新しいテスト 7 件、許可パス外の `tests/test_one_request_goal_route.py::test_cli_explicit_round5_document_entry_uses_same_python_route` 1 件）。CLI の入口からは利用者の文書の答えが `UNKNOWN_ORIGIN_SOURCE` になり、C（形の借用）は CLI から届かなくなる（`r3_variant_costs.txt`）。戻すなら、W6-a のその 5 件と許可パス外の 1 件の改訂の許可が要る。
+- (g) 事実を主張しない依頼（`--request-kind creative` など）で出所不明の出典は、今も「生成と同じ側」（`CONSTRUCTED`）で元の本文が残る（W5-c の穴 8 のまま）。第 3 ラウンドの合成・テストは事実の問いが中心。
+- (h) 実装前に通った 10 件（`r3_tests_before_passed.txt`）は基点で既に成り立つ性質で、新しい能力の証拠ではない。
+- (i) `ORIGIN_UNMARKED_ROUND3_EVIDENCE` の実データでの件数は、この環境に `build/round3` が無いので `UNMEASURED_NO_ROUND3_BUILD` のまま。

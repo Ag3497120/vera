@@ -1716,6 +1716,7 @@ anchor: 会計係は領収書を発行しなかった。
 readable: True abstain: null
 ```
 **正しい読みの損失（文ごと・全件）**: 入口の 2,344 入力で 4 文（上）、攻撃役の 140 文で 1 文（`JA020 子犬が骨をかじった。`）、改訂した試験で 3 文（`モモがテストを書く。`・`セキがコードを確かめる。`・`会計係は領収書を発行しなかった。`）、採点器の見本で 1 問（`FX-J30` 会社が新製品を発表した。）。いずれも主語に人の正の証拠が無く、述語が 8 つの類に無い。
+**W5-c の追記（攻撃第 3 波の H1、2026-10-03）**: 攻撃役の第 3 波が W5-a に対して出した命中 3 件（`attacks/W5-a/REPORT.md` H1）の 3 文は、基点（`2732274^`）では読めていたが、今は主語の人の証拠が無いとして棄権になる。`尼僧が月報を発行した。` は基点で `readable=true`・`発行する`・`agent=尼僧`・`patient=月報`、今は `readable=false`・`AGENT_EVIDENCE_MISSING:尼僧`。`複数の人物が会報を発行した。` は基点で `readable=true`・`発行する`・`agent=複数の人物`・`patient=会報`、今は `readable=false`・`AGENT_EVIDENCE_MISSING:複数の人物`。`会社が試験機を公開した。` は基点で `readable=true`・`公開する`・`agent=会社`・`patient=試験機`、今は `readable=false`・`AGENT_EVIDENCE_MISSING:会社`（基点と今の値は `artifacts/w5-c/w5a_k64_three.txt` の実測。攻撃試験 `attacks/W5-a/test_attack_w5a_wave2_r4.py` は今も 1 件失敗: `artifacts/w5-c/w5a_r4_attack.txt`）。分類は **誤読ではなく過剰棄権**（間違った agent・patient を出してはいない）。これは W5-a の設計どおりの損失（K64 第 3 ラウンドの規則: 主語に人の正の証拠が無ければ棄権）で、W3-b2 の配置の `direct` の型で取り戻す対象。コードは変えていない（`verantyx/semantic_read.py` の差分は空）。出典: `attacks/W5-a/REPORT.md`、`artifacts/w5-c/w5a_k64_three.txt`、`artifacts/w5-c/w5a_r4_attack.txt`。
 **申し送り（W3-b1）**: これらの損失は、述語の配置の `direct` の型で主語が人・動物・乗り物と分かれば取り戻せる対象で、ここでは語を足して戻していない。原則: 誤読 0 は正読より優先（W1-a 以来の方針）。
 **既存の試験の期待を変えた件数**: 第 3 ラウンドで 2 件（test_T1 の 1・S-J21 の 1）。全ラウンドの合計は 13 件（T6 の 5・test_semantic_read_r3 の 3・test_observe の 3・test_T1 の 1・S-J21 の 1。5 ファイル 8 関数。K62・K63・K64 に前後の全文）。
 

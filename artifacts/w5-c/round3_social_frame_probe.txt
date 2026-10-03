@@ -1,0 +1,16 @@
+basis_policy loaded from: /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5c-impl/dev/verantyx/basis_policy.py
+{"input": "こんにちは", "human_present": false, "kind": "social", "verdict": "ANSWER", "outcome": "ANSWER_HUMAN_BASIS", "basis": "HUMAN", "source_families": ["conversation", "user"]}
+{"input": "こんにちは", "human_present": true, "kind": "social", "verdict": "ANSWER", "outcome": "ANSWER_HUMAN_BASIS", "basis": "HUMAN", "source_families": ["conversation", "user"]}
+{"input": "ありがとう。", "human_present": false, "kind": "social", "verdict": "ANSWER", "outcome": "ANSWER_HUMAN_BASIS", "basis": "HUMAN", "source_families": ["conversation", "user"]}
+{"input": "ありがとう。", "human_present": true, "kind": "social", "verdict": "ANSWER", "outcome": "ANSWER_HUMAN_BASIS", "basis": "HUMAN", "source_families": ["conversation", "user"]}
+{"input": "さようなら", "human_present": false, "kind": "social", "verdict": "ANSWER", "outcome": "ANSWER_HUMAN_BASIS", "basis": "HUMAN", "source_families": ["conversation", "user"]}
+{"input": "さようなら", "human_present": true, "kind": "social", "verdict": "ANSWER", "outcome": "ANSWER_HUMAN_BASIS", "basis": "HUMAN", "source_families": ["conversation", "user"]}
+
+basis_policy loaded from: /Users/motonisihikoudai/Projects/vera-impl/wt/W5-c-S/verantyx/basis_policy.py
+{"input": "こんにちは", "human_present": false, "kind": "unknown", "verdict": "UNKNOWN_ORIGIN_SOURCE", "outcome": "ABSTAIN", "basis": "UNKNOWN_ORIGIN", "source_families": ["conversation", "user"]}
+{"input": "こんにちは", "human_present": true, "kind": "unknown", "verdict": "UNKNOWN_ORIGIN_SOURCE", "outcome": "ABSTAIN", "basis": "UNKNOWN_ORIGIN", "source_families": ["conversation", "user"]}
+{"input": "ありがとう。", "human_present": false, "kind": "unknown", "verdict": "UNKNOWN_ORIGIN_SOURCE", "outcome": "ABSTAIN", "basis": "UNKNOWN_ORIGIN", "source_families": ["conversation", "user"]}
+{"input": "ありがとう。", "human_present": true, "kind": "unknown", "verdict": "UNKNOWN_ORIGIN_SOURCE", "outcome": "ABSTAIN", "basis": "UNKNOWN_ORIGIN", "source_families": ["conversation", "user"]}
+{"input": "さようなら", "human_present": false, "kind": "unknown", "verdict": "UNKNOWN_ORIGIN_SOURCE", "outcome": "ABSTAIN", "basis": "UNKNOWN_ORIGIN", "source_families": ["conversation", "user"]}
+{"input": "さようなら", "human_present": true, "kind": "unknown", "verdict": "UNKNOWN_ORIGIN_SOURCE", "outcome": "ABSTAIN", "basis": "UNKNOWN_ORIGIN", "source_families": ["conversation", "user"]}
+

@@ -115,7 +115,8 @@ def test_mixed_basis_has_its_own_reason_and_is_not_an_answer():
 
 
 def test_decide_accepts_a_classification_result_as_the_basis():
-    sc = bp.classify_sources([{"family": "doc", "text": "x"}])
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    sc = bp.classify_sources([{"family": "memory_sovereign", "origin": "human_confirmed", "text": "x"}])
     assert sc.basis == "HUMAN"
     assert bp.decide("factual", sc, False, False).outcome == "ANSWER_HUMAN_BASIS"
 
@@ -152,7 +153,8 @@ def test_rule4_other_origin_values_are_not_evidence_and_counted_by_value():
 
 def test_rule4_origin_none_falls_through_to_the_later_rules():
     sc = bp.classify_sources([{"origin": None, "family": "user"}, {"origin": None, "family": "doc"}])
-    assert sc.counts["request_text"] == 1 and sc.counts["human"] == 1
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力は同じ。later rule の「それ以外」は人でなく出所不明（規則 8）
+    assert sc.counts["request_text"] == 1 and sc.counts["human"] == 0 and sc.unknown_origin == 1
 
 
 def test_rule5_the_request_text_is_counted_and_removed_from_cited():
@@ -162,7 +164,8 @@ def test_rule5_the_request_text_is_counted_and_removed_from_cited():
 
 def test_rule6_anything_else_is_human():
     sc = bp.classify_sources([{"family": "document", "source": "memo.txt", "text": "花子は来た。"}])
-    assert sc.counts["human"] == 1 and sc.basis == "HUMAN" and sc.cited == 1
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力は同じ。origin の無い出典は、利用者が渡した文書と分かっていなければ出所不明
+    assert sc.counts["human"] == 0 and sc.unknown_origin == 1 and sc.basis == "UNKNOWN_ORIGIN" and sc.cited == 1
 
 
 def test_generated_next_to_the_request_text_is_still_generated_only():
@@ -172,7 +175,8 @@ def test_generated_next_to_the_request_text_is_still_generated_only():
 
 
 def test_human_and_generated_together_is_mixed():
-    sc = bp.classify_sources([{"family": "document"}, {"family": "local", "origin": "generated"}])
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    sc = bp.classify_sources([{"family": "memory_sovereign", "origin": "human_confirmed"}, {"family": "local", "origin": "generated"}])
     assert sc.basis == "MIXED" and sc.cited == 2
 
 

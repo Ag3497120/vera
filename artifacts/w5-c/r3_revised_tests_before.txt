@@ -1,0 +1,118 @@
+### tests/test_basis_policy_table.py :: test_decide_accepts_a_classification_result_as_the_basis (lines 117-120)
+```python
+def test_decide_accepts_a_classification_result_as_the_basis():
+    sc = bp.classify_sources([{"family": "doc", "text": "x"}])
+    assert sc.basis == "HUMAN"
+    assert bp.decide("factual", sc, False, False).outcome == "ANSWER_HUMAN_BASIS"
+```
+
+### tests/test_basis_policy_table.py :: test_rule4_origin_none_falls_through_to_the_later_rules (lines 153-155)
+```python
+def test_rule4_origin_none_falls_through_to_the_later_rules():
+    sc = bp.classify_sources([{"origin": None, "family": "user"}, {"origin": None, "family": "doc"}])
+    assert sc.counts["request_text"] == 1 and sc.counts["human"] == 1
+```
+
+### tests/test_basis_policy_table.py :: test_rule6_anything_else_is_human (lines 163-165)
+```python
+def test_rule6_anything_else_is_human():
+    sc = bp.classify_sources([{"family": "document", "source": "memo.txt", "text": "花子は来た。"}])
+    assert sc.counts["human"] == 1 and sc.basis == "HUMAN" and sc.cited == 1
+```
+
+### tests/test_basis_policy_table.py :: test_human_and_generated_together_is_mixed (lines 174-176)
+```python
+def test_human_and_generated_together_is_mixed():
+    sc = bp.classify_sources([{"family": "document"}, {"family": "local", "origin": "generated"}])
+    assert sc.basis == "MIXED" and sc.cited == 2
+```
+
+### tests/test_basis_policy_entry.py :: test_a_mix_of_human_and_generated_sources_abstains (lines 174-182)
+```python
+@pytest.mark.parametrize("human", [False, True])
+@pytest.mark.parametrize("ref", [False, True])
+def test_a_mix_of_human_and_generated_sources_abstains(human, ref):
+    result = _synthetic("answer", "ANSWER", [HUMAN, GEN])
+    out, rc = bp.apply_to_ask(result, bp.AskPolicy(human_present=human, show_reference=ref),
+                              query="q", mode="legacy", documents=[])
+    assert rc == 0 and out["kind"] == "unknown" and out["verdict"] == "UNKNOWN_BASIS_NOT_IN_TABLE"
+    assert out["basis_policy"]["basis"] == "MIXED" and out["basis_policy"]["in_table"] is False
+    assert out["basis_policy"]["outcome"] == "ABSTAIN"
+```
+
+### tests/test_basis_policy_entry.py :: test_a_human_answer_is_passed_through_unchanged_apart_from_the_policy_note (lines 201-205)
+```python
+def test_a_human_answer_is_passed_through_unchanged_apart_from_the_policy_note():
+    result = _synthetic("answer", "ANSWER", [USER, HUMAN])
+    out, rc = bp.apply_to_ask(result, bp.AskPolicy(), query="q", mode="legacy", documents=[])
+    assert rc == 0 and _without(out, "basis_policy") == result
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS" and out["basis_policy"]["applied"] is True
+```
+
+### tests/test_basis_policy_form.py :: test_other_routes_do_not_attempt_the_borrowing (lines 216-222)
+```python
+@pytest.mark.parametrize("mode, docs", [("legacy", []), ("round5", [])])
+def test_other_routes_do_not_attempt_the_borrowing(tmp_path, monkeypatch, mode, docs):
+    _index(tmp_path, {"local": ["次郎が花子に本を渡した。"]})
+    monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
+    out, _rc = bp.apply_to_ask(_doc_answer(), bp.AskPolicy(), query="q", mode=mode, documents=docs)
+    assert "form_text" not in out and out["basis_policy"]["form"]["state"] == "NOT_ATTEMPTED_ROUTE"
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"
+```
+
+### tests/test_basis_policy_w5c.py :: test_w5c_the_versions_and_the_table_are_as_registered (lines 278-283)
+```python
+def test_w5c_the_versions_and_the_table_are_as_registered():
+    assert bp.TABLE_VERSION == 1 and bp.SCHEMA == "verantyx.basis_policy/1"
+    assert bp.CLASSIFY_VERSION == 2 and bp.CONFIRM_ID_VERSION == 2
+    assert len(bp.TABLE) == 24 and bp.BASES == ("HUMAN", "GENERATED", "NONE")
+    assert bp.DECLARED_ORIGINS == ("generated", "human_confirmed", "constructed", "testimony")
+    assert bp.UNKNOWN_ORIGIN == "UNKNOWN_ORIGIN"
+```
+
+### tests/test_basis_policy_w5c.py :: test_w5c_counts_keep_their_five_keys_and_the_new_numbers_live_beside_them (lines 297-305)
+```python
+def test_w5c_counts_keep_their_five_keys_and_the_new_numbers_live_beside_them():
+    sc = bp.classify_sources([_src("local", None), _src("x", "zzz"), GEN, HUMAN, USER, "junk"])
+    assert set(sc.counts) == {"human", "generated", "non_evidence", "request_text", "unreadable"}
+    assert sc.counts == {"human": 1, "generated": 1, "non_evidence": 1, "request_text": 1, "unreadable": 1}
+    assert sc.unknown_origin == 1 and sc.unknown_origin_values == {"zzz": 1}
+    assert sc.cited == 5 and sc.policy_basis == "UNKNOWN_ORIGIN" and sc.basis == "UNKNOWN_ORIGIN"
+    d = sc.to_dict()
+    assert d["unknown_origin"] == 1 and d["unknown_origin_by_family"] == {"local": 1}
+    assert d["unknown_origin_values"] == {"zzz": 1}
+```
+
+### tests/test_basis_policy_w5c.py :: test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis (lines 308-315)
+```python
+def test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis():
+    sc = bp.classify_sources([_src("x", "zzz")])
+    assert sc.basis == "NONE" and sc.policy_basis == "UNKNOWN_ORIGIN"
+    assert sc.counts["non_evidence"] == 1 and sc.non_evidence_by_origin == {"zzz": 1}
+    assert bp.classify_sources([_src("x", "constructed")]).policy_basis == "NONE"
+    assert bp.classify_sources([_src("x", "testimony")]).policy_basis == "NONE"
+    assert bp.classify_sources([GEN]).policy_basis == "GENERATED"
+    assert bp.classify_sources([HUMAN]).policy_basis == "HUMAN"
+```
+
+### tests/test_basis_policy_w5c.py :: test_w5c_the_policy_note_carries_the_new_versions_and_numbers (lines 342-349)
+```python
+def test_w5c_the_policy_note_carries_the_new_versions_and_numbers():
+    out, _rc = bp.apply_to_ask(_synthetic("answer", "ANSWER", [_src("pro", "")]), bp.AskPolicy(), query="窓は？",
+                               mode="legacy", documents=[])
+    note = out["basis_policy"]
+    assert note["schema"] == "verantyx.basis_policy/1" and note["table_version"] == 1
+    assert note["classify_version"] == 2 and note["confirm_id_version"] == 2
+    assert note["counts"]["unknown_origin"] == 1 and note["counts"]["unknown_origin_by_family"] == {"pro": 1}
+    assert out["withheld"]["unknown_origin_source_count"] == 1
+```
+
+### tests/test_basis_policy_w5c.py :: test_w5c_known_hole_a_source_outside_the_index_families_without_origin_is_still_human (lines 352-357)
+```python
+def test_w5c_known_hole_a_source_outside_the_index_families_without_origin_is_still_human():
+    """Pinned on purpose (docs/BASIS_POLICY.md section 11, hole 1): existing tests fix this reading."""
+    out, _rc = bp.apply_to_ask(_synthetic("answer", "ANSWER", [HUMAN]), bp.AskPolicy(), query="窓は？",
+                               mode="legacy", documents=[])
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS" and out["basis_policy"]["basis"] == "HUMAN"
+    assert bp.classify_sources([{"family": "x", "text": "t"}]).policy_basis == "HUMAN"
+```

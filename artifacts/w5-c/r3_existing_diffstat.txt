@@ -1,0 +1,22 @@
+-    result = _synthetic("answer", "ANSWER", [HUMAN, GEN])
++    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
++    result = _synthetic("answer", "ANSWER", [{**HUMAN, "origin": "human_confirmed"}, GEN])
+-    result = _synthetic("answer", "ANSWER", [USER, HUMAN])
++    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
++    result = _synthetic("answer", "ANSWER", [USER, {**HUMAN, "origin": "human_confirmed"}])
+-    out, _rc = bp.apply_to_ask(_doc_answer(), bp.AskPolicy(), query="q", mode=mode, documents=docs)
++    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
++    ans = _doc_answer(); ans["sources"] = [{**s, "origin": "human_confirmed"} for s in ans["sources"]]
++    out, _rc = bp.apply_to_ask(ans, bp.AskPolicy(), query="q", mode=mode, documents=docs)
+-    sc = bp.classify_sources([{"family": "doc", "text": "x"}])
++    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
++    sc = bp.classify_sources([{"family": "memory_sovereign", "origin": "human_confirmed", "text": "x"}])
+-    assert sc.counts["request_text"] == 1 and sc.counts["human"] == 1
++    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力は同じ。later rule の「それ以外」は人でなく出所不明（規則 8）
++    assert sc.counts["request_text"] == 1 and sc.counts["human"] == 0 and sc.unknown_origin == 1
+-    assert sc.counts["human"] == 1 and sc.basis == "HUMAN" and sc.cited == 1
++    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力は同じ。origin の無い出典は、利用者が渡した文書と分かっていなければ出所不明
++    assert sc.counts["human"] == 0 and sc.unknown_origin == 1 and sc.basis == "UNKNOWN_ORIGIN" and sc.cited == 1
+-    sc = bp.classify_sources([{"family": "document"}, {"family": "local", "origin": "generated"}])
++    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
++    sc = bp.classify_sources([{"family": "memory_sovereign", "origin": "human_confirmed"}, {"family": "local", "origin": "generated"}])

@@ -28,6 +28,16 @@ from . import ability_corpus
 
 SCHEMA = "verantyx.basis_policy/1"
 TABLE_VERSION = 1
+#: W5-c: the 24-row table is unchanged (``TABLE_VERSION`` stays 1); the rules that sit beside it carry their
+#: own versions (docs/BASIS_POLICY.md, sections ``prereg-w5c`` and ``prereg-w5c-r3``).
+CLASSIFY_VERSION = 3
+CONFIRM_ID_VERSION = 2
+#: the basis of a source set that holds a source whose origin is unknown: not human, not (known to be) generated.
+UNKNOWN_ORIGIN = "UNKNOWN_ORIGIN"
+#: the closed vocabulary of ``origin`` values the product writes (a type declaration, not a list of words).
+#: Only ``generated`` and ``human_confirmed`` classify a source; the other two are declared non-evidence.
+DECLARED_NON_EVIDENCE = ("constructed", "testimony")
+DECLARED_ORIGINS = ("generated", "human_confirmed") + DECLARED_NON_EVIDENCE
 
 REQUEST_KINDS = ("factual", "creative", "paraphrase", "style", "example")
 KIND_CLASS = {"factual": "FACTUAL", "creative": "NON_FACTUAL", "paraphrase": "NON_FACTUAL",
@@ -92,21 +102,36 @@ class BasisDecision:
                 "in_table": self.in_table, "reason": self.reason, "table_version": self.table_version}
 
 
+#: W5-c: the basis ``UNKNOWN_ORIGIN`` is outside the 24-row table (like ``MIXED``). Per class of request:
+#: the table row whose basis it is read as (``None``: it abstains) and the reason it is not in the table.
+_UNKNOWN_ORIGIN_COLUMN: Dict[str, Tuple[Optional[str], str]] = {
+    "FACTUAL": (None, "NOT_IN_TABLE:UNKNOWN_ORIGIN_SOURCE"),
+    "NON_FACTUAL": ("GENERATED", "UNKNOWN_ORIGIN_READ_AS_GENERATED")}
+
+
 def decide(request_kind: Any, bases: Any, human_present: Any, show_reference: Any) -> BasisDecision:
     """Look the four inputs up in ``TABLE``. A key that cannot be formed abstains (never raises)."""
-    basis = getattr(bases, "basis", bases)
+    basis = getattr(bases, "policy_basis", None) or getattr(bases, "basis", bases)
     kind_class = KIND_CLASS.get(request_kind) if isinstance(request_kind, str) else None
     bad: List[str] = []
     if kind_class is None:
         bad.append("request_kind")
     if basis == "MIXED":
         bad.append("BASIS_MIXED_NOT_IN_TABLE")
+    elif basis == UNKNOWN_ORIGIN:
+        pass                                       # outside the table, handled below
     elif not (isinstance(basis, str) and basis in BASES):
         bad.append("basis")
     if type(human_present) is not bool:
         bad.append("human_present")
     if type(show_reference) is not bool:
         bad.append("show_reference")
+    if basis == UNKNOWN_ORIGIN and not bad:
+        read_as, why = _UNKNOWN_ORIGIN_COLUMN[kind_class]
+        row = ("ABSTAIN", "ABSTAIN") if read_as is None else TABLE[(kind_class, read_as, human_present,
+                                                                    show_reference)]
+        return BasisDecision(row[0], row[1], request_kind, kind_class, basis, human_present, show_reference,
+                             False, why)
     row = None if bad else TABLE.get((kind_class, basis, human_present, show_reference))
     if row is None:
         reason = "NOT_IN_TABLE:" + (",".join(bad) if bad else "key")
@@ -121,42 +146,102 @@ def decide(request_kind: Any, bases: Any, human_present: Any, show_reference: An
 _CLASSES = ("human", "generated", "non_evidence", "request_text", "unreadable")
 
 
+def _is_index_family(src: Mapping[str, Any]) -> bool:
+    """The source names a family of the generated-corpus index (``ability_corpus.FAMILIES``, exact string)."""
+    family = src.get("family")
+    return isinstance(family, str) and family in ability_corpus.FAMILIES
+
+
+def _class_of(src: Any, user_documents: bool = False) -> str:
+    """The class of one source: the rules of docs/BASIS_POLICY.md section prereg-w5c-r3 (the earliest rule that applies wins).
+
+    A human source is one whose origin is declared human (``human_confirmed``), the request text itself
+    (``family == "user"``) and, only when ``user_documents`` is true (the caller handed these documents over in
+    this very call), a ``family == "document"`` source with no origin. Everything else with no origin is
+    ``unknown_origin``: it is not a human source and it is not known to be a generated one either (absent,
+    ``None``, ``""``, a different spelling of a declared value, any unknown value, a family outside the index)."""
+    if not isinstance(src, dict):
+        return "unreadable"
+    origin = src.get("origin")
+    if origin == "generated":
+        return "generated"
+    if origin == "human_confirmed":
+        return "human"
+    if _is_index_family(src) and not (isinstance(origin, str) and origin in DECLARED_NON_EVIDENCE):
+        return "unknown_origin"
+    if origin is not None:
+        return "non_evidence"
+    if src.get("family") == "user":
+        return "request_text"
+    if user_documents and src.get("family") == "document":
+        return "human"
+    return "unknown_origin"
+
+
+def _unknown_value(src: Any) -> bool:
+    """An ``origin`` that is present (not ``None``) and outside the closed vocabulary ``DECLARED_ORIGINS``."""
+    if not isinstance(src, dict):
+        return False
+    origin = src.get("origin")
+    return origin is not None and not (isinstance(origin, str) and origin in DECLARED_ORIGINS)
+
+
+def _unknown_origin_sources(sources: Iterable[Any], user_documents: bool = False) -> List[Mapping[str, Any]]:
+    """The sources whose origin is unknown in either sense (class ``unknown_origin`` or an unknown value)."""
+    return [s for s in sources if isinstance(s, dict)
+            and (_class_of(s, user_documents) == "unknown_origin" or _unknown_value(s))]
+
+
 @dataclass(frozen=True)
 class SourceClass:
-    basis: str                      # HUMAN | GENERATED | MIXED | NONE
-    counts: Mapping[str, int]
+    basis: str                      # HUMAN | GENERATED | MIXED | NONE | UNKNOWN_ORIGIN
+    counts: Mapping[str, int]       # always the five keys of ``_CLASSES``
     cited: int                      # sources other than the request text itself
     non_evidence_by_origin: Mapping[str, int] = field(default_factory=dict)
+    unknown_origin: int = 0                                           # class ``unknown_origin`` (not in counts)
+    unknown_origin_by_family: Mapping[str, int] = field(default_factory=dict)
+    unknown_origin_values: Mapping[str, int] = field(default_factory=dict)   # non_evidence with a value outside the vocabulary
+
+    @property
+    def policy_basis(self) -> str:
+        """The basis the policy reads: ``UNKNOWN_ORIGIN`` as soon as one source's origin is unknown."""
+        return UNKNOWN_ORIGIN if (self.unknown_origin or self.unknown_origin_values) else self.basis
 
     def to_dict(self) -> Dict[str, Any]:
         return {"basis": self.basis, "counts": dict(self.counts), "cited": self.cited,
-                "non_evidence_by_origin": dict(self.non_evidence_by_origin)}
+                "non_evidence_by_origin": dict(self.non_evidence_by_origin),
+                "unknown_origin": self.unknown_origin,
+                "unknown_origin_by_family": dict(self.unknown_origin_by_family),
+                "unknown_origin_values": dict(self.unknown_origin_values)}
 
 
-def classify_sources(sources: Iterable[Any]) -> SourceClass:
-    """Closed rules, first match wins; the declared ``origin`` is the only evidence (no guessing)."""
+def classify_sources(sources: Iterable[Any], *, user_documents: bool = False) -> SourceClass:
+    """Closed rules, the earliest that applies wins; the declared ``origin`` is the only evidence (no guessing).
+    ``user_documents``: the caller handed documents over in this call (rule 7 of ``prereg-w5c-r3``)."""
     counts = {name: 0 for name in _CLASSES}
     by_origin: Dict[str, int] = {}
+    unknown = 0
+    unknown_by_family: Dict[str, int] = {}
+    unknown_values: Dict[str, int] = {}
     for src in sources:
-        if not isinstance(src, dict):
-            counts["unreadable"] += 1
-        elif src.get("origin") == "generated":
-            counts["generated"] += 1
-        elif src.get("origin") == "human_confirmed":
-            counts["human"] += 1
-        elif src.get("origin") is not None:
-            counts["non_evidence"] += 1
+        cls = _class_of(src, user_documents)
+        if cls == "unknown_origin":
+            unknown += 1
+            fam = _family_of(src)
+            unknown_by_family[fam] = unknown_by_family.get(fam, 0) + 1
+            continue
+        counts[cls] += 1
+        if cls == "non_evidence":
             key = str(src.get("origin"))
             by_origin[key] = by_origin.get(key, 0) + 1
-        elif src.get("family") == "user":
-            counts["request_text"] += 1
-        else:
-            counts["human"] += 1
+            if _unknown_value(src):
+                unknown_values[key] = unknown_values.get(key, 0) + 1
     human, generated = counts["human"], counts["generated"]
-    basis = ("MIXED" if human and generated else "HUMAN" if human
+    basis = (UNKNOWN_ORIGIN if unknown else "MIXED" if human and generated else "HUMAN" if human
              else "GENERATED" if generated else "NONE")
-    cited = human + generated + counts["non_evidence"] + counts["unreadable"]
-    return SourceClass(basis, counts, cited, dict(sorted(by_origin.items())))
+    cited = human + generated + counts["non_evidence"] + counts["unreadable"] + unknown
+    return SourceClass(basis, counts, cited, dict(sorted(by_origin.items())), unknown,
+                       dict(sorted(unknown_by_family.items())), dict(sorted(unknown_values.items())))
 
 
 # ================================================================== C: borrowing a phrasing
@@ -333,6 +418,7 @@ _WITHDRAWN_TEXT = {
     "UNKNOWN_BASIS_NOT_IN_TABLE": "出所の組合せが方針の表にないため、答えません。",
     "UNKNOWN_NO_HUMAN_BASIS": "人が書いた出所に根拠が見つかりません。",
     "AMBIGUOUS_CONFIRMED_RECORDS": "確認済みの記録が食い違っているため、答えません。",
+    "UNKNOWN_ORIGIN_SOURCE": "出所の分からない出典があるため、答えません。",
 }
 
 
@@ -398,7 +484,8 @@ def _text_of(src: Mapping[str, Any]) -> str:
 
 
 def _family_of(src: Mapping[str, Any]) -> str:
-    return src["family"] if isinstance(src.get("family"), str) else "(none)"
+    family = src.get("family")
+    return family if isinstance(family, str) else "(none)"
 
 
 def _source_id(src: Mapping[str, Any]) -> str:
@@ -416,12 +503,19 @@ def _generated_sources(sources: Sequence[Any]) -> List[Mapping[str, Any]]:
     return out
 
 
-def _confirm_id(query: str, claim: str, generated: Sequence[Mapping[str, Any]]) -> str:
+def _confirm_id(query: str, claim: str, generated: Sequence[Mapping[str, Any]],
+                destination: Optional[Mapping[str, Any]] = None) -> str:
+    """The id of one question (``CONFIRM_ID_VERSION`` 2). With a ``destination`` (the sovereign it is put for:
+    ``{"store_id", "structure_ref"}``) the id also depends on it; without one the key is absent, so the value is
+    the one version 1 computed."""
     cited = sorted([_family_of(s), str(s.get("source_file", "")),
                     s["line"] if isinstance(s.get("line"), int) else -1, str(s.get("sha", ""))]
                    for s in generated)
-    blob = json.dumps({"query": query, "claim": claim, "generated": cited}, sort_keys=True,
-                      ensure_ascii=False, separators=(",", ":"))
+    body: Dict[str, Any] = {"query": query, "claim": claim, "generated": cited}
+    if destination is not None:
+        body["destination"] = {"store_id": destination.get("store_id"),
+                               "structure_ref": destination.get("structure_ref")}
+    blob = json.dumps(body, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:24]
 
 
@@ -433,6 +527,7 @@ class _SovereignView:
     store_id: Optional[str] = None
     events: List[Dict[str, Any]] = field(default_factory=list)
     detail: Optional[str] = None
+    destination: Optional[Dict[str, Any]] = None     # {"store_id", "structure_ref"}; only for an ACTIVE sovereign
 
 
 def _read_sovereign(consult: bool) -> _SovereignView:
@@ -455,9 +550,13 @@ def _read_sovereign(consult: bool) -> _SovereignView:
         return _SovereignView(exc.verdict, root, sid)
     except Exception as exc:          # a memory that cannot be read is typed, never a crash of the ask
         return _SovereignView("UNKNOWN_SOVEREIGN_UNREADABLE", root, sid, detail=type(exc).__name__)
+    try:
+        destination = sov.basis_confirmation_destination(root, sid)
+    except Exception as exc:
+        return _SovereignView("UNKNOWN_SOVEREIGN_UNREADABLE", root, sid, detail=type(exc).__name__)
     if info.consent.get("promote") is not True:
-        return _SovereignView("ACTIVE_NO_CONSENT", root, sid)
-    return _SovereignView("ACTIVE_CONSENTED", root, sid, events)
+        return _SovereignView("ACTIVE_NO_CONSENT", root, sid, destination=destination)
+    return _SovereignView("ACTIVE_CONSENTED", root, sid, events, destination=destination)
 
 
 def _effective_records(events: Sequence[Mapping[str, Any]]) -> Dict[str, Mapping[str, Any]]:
@@ -480,9 +579,15 @@ def _trace(orig: Mapping[str, Any], outcome: Any) -> List[Dict[str, Any]]:
     return steps + [{"part": "basis_policy.apply", "status": "ran", "outcome": outcome}]
 
 
-def _withheld(orig: Mapping[str, Any], sources: Sequence[Any], n_generated: int) -> Dict[str, Any]:
+def _n_unknown(sc: SourceClass) -> int:
+    """The sources whose origin is unknown, counted from the classification (it knows ``user_documents``)."""
+    return sc.unknown_origin + sum(sc.unknown_origin_values.values())
+
+
+def _withheld(orig: Mapping[str, Any], sources: Sequence[Any], n_generated: int, n_unknown: int) -> Dict[str, Any]:
     return {"verdict": orig.get("verdict"), "kind": orig.get("kind"), "door": orig.get("door"),
             "basis_origin": orig.get("basis_origin"), "generated_source_count": n_generated,
+            "unknown_origin_source_count": n_unknown,
             "families": sorted({_family_of(s) for s in sources if isinstance(s, dict)})}
 
 
@@ -507,16 +612,17 @@ def abstention_verdict(verdict: Any, fallback: str) -> str:
 
 def _unknown_dict(orig: Mapping[str, Any], sources: Sequence[Any], n_generated: int, verdict: Any,
                   text: str, outcome: Any, kind: Any = "unknown",
-                  fallback: str = "UNKNOWN_NO_HUMAN_BASIS") -> Dict[str, Any]:
+                  fallback: str = "UNKNOWN_NO_HUMAN_BASIS", n_unknown: int = 0) -> Dict[str, Any]:
     """Every output the policy builds for a withdrawn answer goes through here: both halves of its type are
     normalised to the abstain side, and no marker of a partial answer (``status``) is carried."""
     return {"kind": abstention_kind(kind), "verdict": abstention_verdict(verdict, fallback), "text": text,
-            "sources": [], "evidence": [], "withheld": _withheld(orig, sources, n_generated),
+            "sources": [], "evidence": [], "withheld": _withheld(orig, sources, n_generated, n_unknown),
             "door": orig.get("door"), "trace": _trace(orig, outcome)}
 
 
 def _payload(status: str, confirm_id: str, query: str, claim: str,
-             generated: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
+             generated: Sequence[Mapping[str, Any]],
+             destination: Optional[Mapping[str, Any]] = None) -> Dict[str, Any]:
     p: Dict[str, Any] = {
         "record": "basis_confirmation", "status": status, "witness": "user_confirmation",
         "confirm_id": confirm_id, "query": query, "claim": claim,
@@ -525,6 +631,9 @@ def _payload(status: str, confirm_id: str, query: str, claim: str,
         "table_version": TABLE_VERSION}
     if status == _STATUS_YES:
         p["origin"] = "human_confirmed"
+    if destination is not None:
+        p["destination"] = {"store_id": destination.get("store_id"),
+                            "structure_ref": destination.get("structure_ref")}
     return dict(sorted(p.items()))
 
 
@@ -538,8 +647,10 @@ def _confirm_block(query: str, claim: str, generated: Sequence[Mapping[str, Any]
         "generated_sentences": [{"text": _text_of(s), "family": _family_of(s), "source_id": _source_id(s),
                                  "sha": s.get("sha"), "source_file": s.get("source_file"),
                                  "line": s.get("line")} for s in generated],
-        "draft_record": {"kind": "decision", "payload": _payload(_STATUS_YES, confirm_id, query, claim, generated)},
-        "destination": {"state": view.state, "store_id": view.store_id},
+        "draft_record": {"kind": "decision",
+                         "payload": _payload(_STATUS_YES, confirm_id, query, claim, generated, view.destination)},
+        "destination": {"state": view.state, "store_id": view.store_id,
+                        "structure_ref": (view.destination or {}).get("structure_ref")},
         "how_to_answer": f"vera ask <query> --human-present --confirm {confirm_id} yes|no"}
 
 
@@ -561,17 +672,19 @@ def apply_to_ask(result: Any, policy: AskPolicy, *, query: str, mode: str,
         return result, 0
     orig = copy.deepcopy(result)
     sources = _source_list(orig)
-    sc = classify_sources(sources)
+    user_documents = mode == "round5" and bool(documents)
+    sc = classify_sources(sources, user_documents=user_documents)
+    n_unknown = _n_unknown(sc)
     refused = _is_refused(orig)
     kind = policy.request_kind
     factual = KIND_CLASS.get(kind) == "FACTUAL"
     human = policy.human_present or policy.confirm is not None
-    b0 = "NONE" if refused else sc.basis
+    b0 = "NONE" if refused else sc.policy_basis
+    has_unknown = sc.policy_basis == UNKNOWN_ORIGIN
     generated = _generated_sources(sources)
     claim = orig.get("text") if isinstance(orig.get("text"), str) and orig.get("text") else ""
-    confirm_id = _confirm_id(query, claim, generated) if (b0 == "GENERATED" and claim) else None
-
     view = _read_sovereign(factual or policy.confirm is not None)
+    confirm_id = _confirm_id(query, claim, generated, view.destination) if (b0 == "GENERATED" and claim) else None
     notes: Dict[str, Any] = {"records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0,
                              "confirmed_records_not_used": 0, "ambiguous": False}
     basis = b0
@@ -586,7 +699,7 @@ def apply_to_ask(result: Any, policy: AskPolicy, *, query: str, mode: str,
         if b0 == "GENERATED" and confirm_id in effective and effective[confirm_id]["payload"]["status"] == _STATUS_NO:
             basis, rejected = "NONE", True
             notes["rejected_by_user"] = 1
-        if b0 in ("GENERATED", "NONE") and mine:
+        if b0 == "GENERATED" and mine and not has_unknown:
             claims = {e["payload"]["claim"] for e in mine}
             if len(claims) == 1:
                 basis = "HUMAN"
@@ -644,13 +757,16 @@ def apply_to_ask(result: Any, policy: AskPolicy, *, query: str, mode: str,
             out = {}
         else:
             block = _confirm_block(query, claim, generated, confirm_id, view)
-            out = _unknown_dict(orig, sources, sc.counts["generated"], "CONFIRM_REQUEST", block["question"], outcome)
+            out = _unknown_dict(orig, sources, sc.counts["generated"], "CONFIRM_REQUEST", block["question"], outcome,
+                                n_unknown=n_unknown)
             out["confirm"] = block
     else:                                    # REFERENCE_GENERATED and ABSTAIN
-        if refused and not sc.counts["generated"]:
+        if refused and not sc.counts["generated"] and not has_unknown:
             out = orig
         else:
-            if d.reason is not None:
+            if d.reason == "NOT_IN_TABLE:UNKNOWN_ORIGIN_SOURCE" or has_unknown:
+                withdrawn_verdict = "UNKNOWN_ORIGIN_SOURCE"
+            elif d.reason is not None:
                 withdrawn_verdict = "UNKNOWN_BASIS_NOT_IN_TABLE"
             elif notes["ambiguous"]:
                 withdrawn_verdict = "AMBIGUOUS_CONFIRMED_RECORDS"
@@ -666,13 +782,14 @@ def apply_to_ask(result: Any, policy: AskPolicy, *, query: str, mode: str,
             # a refusal keeps its own type where that type is a refusal on both halves; the bodies it
             # carried are dropped, and so is its own text when that text quotes a generated sentence
             own = orig.get("text") if isinstance(orig.get("text"), str) else ""
-            quoted = any(b and b in own for b in (_text_of(g) for g in generated))
+            quoted = any(b and b in own for b in (_text_of(g) for g in list(generated)
+                                                  + _unknown_origin_sources(sources, user_documents)))
             out = _unknown_dict(orig, sources, sc.counts["generated"], orig.get("verdict"),
                                 _WITHDRAWN_TEXT[withdrawn_verdict] if quoted else own, outcome,
-                                kind=orig.get("kind"), fallback=withdrawn_verdict)
+                                kind=orig.get("kind"), fallback=withdrawn_verdict, n_unknown=n_unknown)
         else:
             out = _unknown_dict(orig, sources, sc.counts["generated"], withdrawn_verdict,
-                                _WITHDRAWN_TEXT[withdrawn_verdict], outcome)
+                                _WITHDRAWN_TEXT[withdrawn_verdict], outcome, n_unknown=n_unknown)
 
     rc = 0
     if policy.confirm is not None:
@@ -689,7 +806,11 @@ def apply_to_ask(result: Any, policy: AskPolicy, *, query: str, mode: str,
         "request_kind": kind, "kind_class": d.kind_class, "basis": basis, "basis_original": b0,
         "human_present": human, "show_reference": policy.show_reference, "outcome": outcome,
         "in_table": d.in_table if not passthrough else None,
-        "counts": {**sc.counts, "non_evidence_by_origin": dict(sc.non_evidence_by_origin)},
+        "counts": {**sc.counts, "non_evidence_by_origin": dict(sc.non_evidence_by_origin),
+                   "unknown_origin": sc.unknown_origin,
+                   "unknown_origin_by_family": dict(sc.unknown_origin_by_family),
+                   "unknown_origin_values": dict(sc.unknown_origin_values)},
+        "classify_version": CLASSIFY_VERSION, "confirm_id_version": CONFIRM_ID_VERSION,
         "sovereign": sovereign_note, "form": form})
     if d.reason is not None and not passthrough:
         note["reason"] = d.reason
@@ -702,32 +823,89 @@ def apply_to_ask(result: Any, policy: AskPolicy, *, query: str, mode: str,
     return out, rc
 
 
+
+
+# ------------------------------------------------------------------ --confirm (W5-c: bound to a destination)
+def _destination_key(d: Optional[Mapping[str, Any]]) -> str:
+    return json.dumps(None if d is None else {"store_id": d.get("store_id"), "structure_ref": d.get("structure_ref")},
+                      sort_keys=True, ensure_ascii=False)
+
+
+def _candidate_destinations(view: _SovereignView) -> Tuple[List[Optional[Dict[str, Any]]], Optional[str]]:
+    """The destinations an id for this question could have been issued for: the current one, none, and every
+    store the current root registered (each with that root's ``structure_ref``). An id issued under another root
+    is not here (its destination cannot be told from this root). The returned reason is a typed value when the
+    enumeration of the root could not be completed."""
+    found: List[Optional[Dict[str, Any]]] = [view.destination, None]
+    state: Optional[str] = None
+    if view.root is not None:
+        from . import sovereign as sov
+        try:
+            for sid in sov.basis_confirmation_store_ids(view.root):
+                try:
+                    found.append(sov.basis_confirmation_destination(view.root, sid))
+                except sov.SovereignUnavailable:
+                    state = "UNKNOWN_CANDIDATES_PARTIAL"
+        except Exception:
+            state = "UNKNOWN_CANDIDATES_UNREADABLE"
+    unique: Dict[str, Optional[Dict[str, Any]]] = {}
+    for d in found:
+        unique.setdefault(_destination_key(d), d)
+    return list(unique.values()), state
+
+
 def _settle_confirmation(confirm: Tuple[str, str], confirm_id: Optional[str], query: str, claim: str,
                          generated: Sequence[Mapping[str, Any]], view: _SovereignView,
                          orig: Mapping[str, Any], sources: Sequence[Any],
                          sc: SourceClass, outcome: Any) -> Tuple[Dict[str, Any], int]:
-    """``--confirm ID yes|no``: write only if ID is this very question's id and the sovereign consents."""
+    """``--confirm ID yes|no``: write only if ID is an id of this very question *for this very sovereign* and the
+    sovereign consents. The order (docs/BASIS_POLICY.md, prereg-w5c section 4), the earliest that applies ends it:
+    (1) the question has no id, (2) ID is none of the ids this question can have, (3) the sovereign is not ACTIVE,
+    (4) it does not consent, (5) ID was issued for another destination, (6) write. Only (6) writes."""
     given, answer = confirm
     base = {"door": orig.get("door"), "trace": _trace(orig, outcome), "sources": [], "evidence": []}
-    if confirm_id is None or given != confirm_id:
-        return {"kind": "unknown", "verdict": "UNKNOWN_CONFIRM_ID",
-                "text": "この確認の id は、いまの問いのものではありません。何も書いていません。",
-                "wrote": 0, **base}, 1
-    if view.state not in ("ACTIVE_CONSENTED", "ACTIVE_NO_CONSENT"):
+
+    def unknown_id(why: Optional[str] = None) -> Tuple[Dict[str, Any], int]:
+        out = {"kind": "unknown", "verdict": "UNKNOWN_CONFIRM_ID",
+               "text": "この確認の id は、いまの問いのものではありません。何も書いていません。",
+               "wrote": 0, **base}
+        if why is not None:
+            out["candidates_state"] = why
+        return out, 1
+
+    if confirm_id is None:                                                           # (1)
+        return unknown_id()
+    candidates, candidates_state = _candidate_destinations(view)
+    matched = {_destination_key(d): d for d in candidates if _confirm_id(query, claim, generated, d) == given}
+    if len(matched) != 1:                                                            # (2) none, or a tie
+        return unknown_id(candidates_state)
+    issued = next(iter(matched.values()))
+    if view.state not in ("ACTIVE_CONSENTED", "ACTIVE_NO_CONSENT"):                  # (3)
         block = _confirm_block(query, claim, generated, confirm_id, view)
         return {**_unknown_dict(orig, sources, sc.counts["generated"], "CONFIRM_REQUEST", block["question"],
-                                outcome), "confirm": block, "wrote": 0}, 1
-    from . import sovereign as sov
-    status = _STATUS_YES if answer == "yes" else _STATUS_NO
-    res = sov.append_basis_confirmation(view.root, view.store_id,
-                                        _payload(status, confirm_id, query, claim, generated))
-    if res.get("verdict") != "APPENDED":
-        # the sovereign's own typed refusal (NO_CONSENT, DETACHED, ...) is kept; ``kind: unknown`` makes it an
-        # abstention to a scorer, and a verdict that is not a string becomes a typed UNKNOWN_*
-        return {"kind": "unknown",
-                "verdict": res["verdict"] if isinstance(res.get("verdict"), str) else "UNKNOWN_CONFIRM_NOT_SAVED",
+                                outcome, n_unknown=_n_unknown(sc)), "confirm": block, "wrote": 0}, 1
+
+    def not_saved(verdict: Any) -> Tuple[Dict[str, Any], int]:
+        # the sovereign's own typed refusal is kept; ``kind: unknown`` makes it an abstention to a scorer, and a
+        # verdict that is not a string becomes a typed UNKNOWN_*
+        return {"kind": "unknown", "verdict": verdict if isinstance(verdict, str) else "UNKNOWN_CONFIRM_NOT_SAVED",
                 "text": "確認を保存できませんでした。何も書いていません。", "wrote": 0,
                 "confirm": {"id": confirm_id, "answer": answer, "destination": view.state}, **base}, 1
+
+    if view.state == "ACTIVE_NO_CONSENT":                                            # (4) the door is not called
+        return not_saved("NO_CONSENT")
+    if issued != view.destination:                                                   # (5)
+        return {"kind": "unknown", "verdict": "CONFIRM_TARGET_MISMATCH",
+                "text": "この確認の id は、別の宛先に出した問いのものです。何も書いていません。", "wrote": 0,
+                "confirm": {"id": given, "answer": answer,
+                            "issued_for": dict(issued) if issued is not None else {"state": "NO_DESTINATION"},
+                            "destination": {"state": view.state, **(view.destination or {})}}, **base}, 1
+    from . import sovereign as sov                                                   # (6)
+    status = _STATUS_YES if answer == "yes" else _STATUS_NO
+    res = sov.append_basis_confirmation(view.root, view.store_id,
+                                        _payload(status, confirm_id, query, claim, generated, view.destination))
+    if res.get("verdict") != "APPENDED":
+        return not_saved(res.get("verdict"))
     verdict = "CONFIRMED_HUMAN_RECORD" if status == _STATUS_YES else "REJECTED_GENERATED_RECORDED"
     return {"kind": "confirmation", "verdict": verdict,
             "text": "確認を、人が書いた記録として保存しました。" if status == _STATUS_YES

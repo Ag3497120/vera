@@ -1,0 +1,96 @@
+verantyx/evidence_library.py:26:    def __init__(self, directory: str | Path, family: str):
+verantyx/evidence_library.py:28:        self.family = family
+verantyx/evidence_library.py:63:    def build(cls, directory: str | Path, family: str, records: Iterable[dict]) -> dict:
+verantyx/evidence_library.py:86:            source = str(record.get("source") or f"{family}:{sha}")
+verantyx/evidence_library.py:106:                leaf = f"{family}:{(count + inserted) // LEAF_CAP:06d}"
+verantyx/evidence_library.py:141:                level = {f"{family}:L{depth}:{begin // size}": Node(
+verantyx/evidence_library.py:142:                    name=f"{family}:L{depth}:{begin // size}",
+verantyx/evidence_library.py:146:            root = conduct_tree.build(stores, hierarchy=Node(name=family, children=level)) if stores else None
+verantyx/evidence_library.py:153:        return {"family": family, "rows": total, "new_rows": inserted, "leaf_cap": LEAF_CAP,
+verantyx/evidence_library.py:157:    def from_qa(cls, family_directory: Path) -> dict:
+verantyx/evidence_library.py:158:        source = sqlite3.connect(f"file:{family_directory / 'family.db'}?mode=ro", uri=True)
+verantyx/evidence_library.py:159:        checkpoint = family_directory / "evidence" / "qa_offset.json"
+verantyx/evidence_library.py:172:            result = cls.build(family_directory / "evidence", "general_qa", records())
+verantyx/evidence_library.py:212:            rows.extend(dict(row) | {"family": self.family} for row in self.con.execute(
+verantyx/semantic_retrieve.py:22:        for family in self.families:
+verantyx/semantic_retrieve.py:23:            directory = root / family / 'evidence'
+verantyx/semantic_retrieve.py:25:                library = EvidenceLibrary(directory, family)
+verantyx/semantic_retrieve.py:27:                self.libraries[family] = library
+verantyx/semantic_retrieve.py:40:        for family, library in self.libraries.items():
+verantyx/semantic_retrieve.py:78:                        dv = document_view({f'{family}:row:{rid}': row['text'] for rid,row in rows.items()}, family=family)
+verantyx/semantic_retrieve.py:84:                    key = f'{family}:row:{rid}'; texts[key] = row['text']
+verantyx/semantic_retrieve.py:85:                    sovereigns[key] = family + ':' + row['independent']
+verantyx/semantic_retrieve.py:87:                views.append(document_view(texts, sovereigns=sovereigns, family=family))
+verantyx/semantic_retrieve.py:88:                trace.append({'part': 'semantic_retrieve.Retriever', 'status': 'ran', 'family': family,
+verantyx/semantic_retrieve.py:92:                exc.trace = [*trace, {'part':'semantic_retrieve.Retriever','status':'abstained','family':family,
+verantyx/round3.py:1:"""Deterministic family handoff for general questions and composition."""
+verantyx/round3.py:9:from .family_library import FamilyLibrary, _norm, _terms
+verantyx/round3.py:28:    """Return family, requested stored slot, route reason. No evidence vote."""
+verantyx/round3.py:93:        return any((self.root / name / "family.db").exists() for name in
+verantyx/round3.py:98:    def library(self, family: str) -> FamilyLibrary | None:
+verantyx/round3.py:99:        if family in self._loaded:
+verantyx/round3.py:100:            return self._loaded[family]
+verantyx/round3.py:101:        if (self.root / family / "family.db").exists():
+verantyx/round3.py:102:            self._loaded[family] = FamilyLibrary(self.root / family, family)
+verantyx/round3.py:103:            return self._loaded[family]
+verantyx/round3.py:107:    def _trace(family: str, status: str, **details: Any) -> dict:
+verantyx/round3.py:108:        return {"part": "round3.family." + family, "status": status, "family": family, **details}
+verantyx/round3.py:111:        family, slot, reason = route(text, reading)
+verantyx/round3.py:112:        trace = [{"part": "round3.route", "status": "ran", "family": family,
+verantyx/round3.py:114:        if family == "live":
+verantyx/round3.py:118:        if family == "code_qa":
+verantyx/round3.py:124:        if family == "conversation":
+verantyx/round3.py:138:            family, slot = "general_qa", "social"
+verantyx/round3.py:139:        if family == "general_qa" and slot != "social" or family == "figurative_commonsense" and slot == "why":
+verantyx/round3.py:141:        if family == "paraphrase_entail" and abilities is not None:
+verantyx/round3.py:147:        lib = self.library(family)
+verantyx/round3.py:149:            trace.append(self._trace(family, "abstained", reason="library not built"))
+verantyx/round3.py:150:            if family == "figurative_commonsense" and slot == "why":
+verantyx/round3.py:151:                family = "general_qa"
+verantyx/round3.py:152:                lib = self.library(family)
+verantyx/round3.py:155:                    trace.append(self._trace(family, "ran", reason="causal family unavailable"))
+verantyx/round3.py:158:                               f"tools/build_round3.py で {family} を構築してください。"), trace
+verantyx/round3.py:160:        if family == "figurative_commonsense":
+verantyx/round3.py:162:        elif family == "narrative":
+verantyx/round3.py:164:        elif family == "general_qa" and slot == "social":
+verantyx/round3.py:166:        elif family == "paraphrase_entail":
+verantyx/round3.py:168:        if family == "paraphrase_entail" and kind == "pair":
+verantyx/round3.py:175:        causal_direction_unclear = (family == "figurative_commonsense" and slot == "why" and
+verantyx/round3.py:183:        trace.append(self._trace(family, "ran" if result.get("verdict") == "ANSWER" else "abstained",
+verantyx/round3.py:187:            if family == "paraphrase_entail" and kind == "pair":
+verantyx/round3.py:193:                    trace.append(self._trace(family, "abstained", reason="pair label is not transferable"))
+verantyx/round3.py:198:        if family == "code_qa":
+verantyx/round3.py:206:        if family == "figurative_commonsense" and slot == "haiku":
+verantyx/round3.py:212:        if family == "figurative_commonsense" and slot == "metaphor":
+verantyx/round3.py:218:        if family == "figurative_commonsense" and slot == "pun":
+verantyx/round3.py:224:        if family == "narrative" and slot == "story":
+verantyx/round3.py:230:        if family in ("figurative_commonsense", "narrative", "general_qa") and abilities is not None:
+verantyx/round3.py:236:        if family == "figurative_commonsense" and slot == "why":
+verantyx/round3.py:291:            used_relations.append({"family": "paraphrase_entail", "source": row["source"] + ":" + row["sha"],
+verantyx/round3.py:294:        for family in ("general_qa", "local", "pro", "jawiki"):
+verantyx/round3.py:295:            directory = self.root / family / "evidence"
+verantyx/round3.py:297:                trace.append(self._trace(family, "abstained", role="answer_sentences", reason="evidence not built"))
+verantyx/round3.py:299:            if family not in self._evidence:
+verantyx/round3.py:300:                self._evidence[family] = EvidenceLibrary(directory, family)
+verantyx/round3.py:301:            rows, route_trace = self._evidence[family].candidates(asked, related_keys=tuple(related_keys))
+verantyx/round3.py:304:            trace.append(self._trace(family, "ran" if rows else "abstained", role="answer_sentences", **route_trace))
+verantyx/round3.py:314:            sources = [{"family": row["family"], "source": row["source"], "text": row["text"],
+verantyx/round3.py:326:                      sources=[{"family": row["family"], "source": row["source"], "text": row["text"]} for row in closest])
+verantyx/round3.py:352:                "evidence": [text], "sources": [{"family": "conversation", "source": "conversation_form:" + act,
+verantyx/round3.py:353:                "text": spoken}, {"family": "user", "source": "user:turn", "text": text}],
+verantyx/round3.py:397:                sources = [{"family": lib.family, "source": f"{first['source']}:{first['sha']}",
+verantyx/round3.py:399:                           {"family": lib.family, "source": f"{second['source']}:{second['sha']}",
+verantyx/round3.py:403:                        "family": lib.family, "path": "haiku_recombination",
+verantyx/round3.py:437:                sources = [{"family": lib.family, "source": f"{first['source']}:{first['sha']}",
+verantyx/round3.py:439:                           {"family": lib.family, "source": f"{second['source']}:{second['sha']}",
+verantyx/round3.py:442:                        "evidence": lines, "sources": sources, "family": lib.family,
+verantyx/round3.py:477:                "family": lib.family, "source": source, "path": "vehicle_property_transfer",
+verantyx/round3.py:479:                "sources": [{"family": lib.family, "source": source, "text": evidence},
+verantyx/round3.py:480:                            {"family": "user", "source": "user:target", "text": target}],
+verantyx/round3.py:516:                "family": lib.family, "source": source, "path": "reading_substitution",
+verantyx/round3.py:518:                "sources": [{"family": lib.family, "source": source, "text": original},
+verantyx/round3.py:519:                            {"family": "user", "source": "user:noun", "text": noun}],
+verantyx/round3.py:535:        replies = [row for row in corpus.search(spoken, family="conversation", limit=60)
+verantyx/round3.py:540:        return dict(framed, family="conversation", source=replies[0].source, evidence=[framed["text"]],
+verantyx/round3.py:550:        rows = corpus.search(max(terms, key=len), family="code", limit=60)
+verantyx/round3.py:563:                "family": "code", "source": witness.source, "evidence": [witness.text],

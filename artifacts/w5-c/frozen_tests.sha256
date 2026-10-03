@@ -1,0 +1,7 @@
+b6d6f6b297c4921f3851a6f5ebbcc5dd2fcae157391695a7cbb1748cd8d51dc9  tests/test_basis_policy_w5c.py
+Sat Oct  3 19:30:01 JST 2026
+EXTENDED db391803c16cf01660056a9eb2d703800bf1824b4cedf0541392217131d8ee85  tests/test_basis_policy_w5c_r3.py
+Sat Oct  3 21:09:48 JST 2026
+2026-10-03 21:09:48 +0900
+AMENDED 077e3ea9ad8e275165e225423f2c68778df63cb446e8c48934fd3fe9d4f4dfa5  tests/test_basis_policy_w5c.py  2026-10-03 21:10:55 +0900  理由: 監査役の判断 2026-10-03 20:40（5 関数: test_w5c_counts_keep_their_five_keys_and_the_new_numbers_live_beside_them・test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis・test_w5c_known_hole_a_source_outside_the_index_families_without_origin_is_still_human・test_w5c_the_versions_and_the_table_are_as_registered・test_w5c_the_policy_note_carries_the_new_versions_and_numbers。名前は変えない。改訂前の sha256 は b6d6f6b297c4921f3851a6f5ebbcc5dd2fcae157391695a7cbb1748cd8d51dc9）
+AMENDED e0ba313a48ebb22f28ad459068758c5d8b5b0775885d3f26544ee96089fbb66a  tests/test_basis_policy_w5c_r3.py  2026-10-03 21:12:26 +0900  理由: 実装後の実行で、テストの補助関数 _family_key が「鍵なし（'MISSING' という番兵）」を '(none)' に写していなかった誤り（期待の弱体化ではない: 仕様 prereg-w5c-r3 の「系列が文字列でなければ (none)」のとおりに直した 1 関数。assert は変えていない）。凍結時の sha256 は db391803c16cf01660056a9eb2d703800bf1824b4cedf0541392217131d8ee85

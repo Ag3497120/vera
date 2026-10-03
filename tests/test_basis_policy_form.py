@@ -217,7 +217,9 @@ def test_a_failed_borrowing_leaves_the_human_answer_as_it_was(tmp_path, monkeypa
 def test_other_routes_do_not_attempt_the_borrowing(tmp_path, monkeypatch, mode, docs):
     _index(tmp_path, {"local": ["次郎が花子に本を渡した。"]})
     monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
-    out, _rc = bp.apply_to_ask(_doc_answer(), bp.AskPolicy(), query="q", mode=mode, documents=docs)
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    ans = _doc_answer(); ans["sources"] = [{**s, "origin": "human_confirmed"} for s in ans["sources"]]
+    out, _rc = bp.apply_to_ask(ans, bp.AskPolicy(), query="q", mode=mode, documents=docs)
     assert "form_text" not in out and out["basis_policy"]["form"]["state"] == "NOT_ATTEMPTED_ROUTE"
     assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"
 

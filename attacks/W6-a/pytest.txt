@@ -1,0 +1,940 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: /Users/motonisihikoudai/Projects/vera-impl/wt/atk-W6-a
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 33 items
+
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-legacy-origin-omitted] FAILED [  3%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-legacy-origin-null] FAILED [  6%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-round5-origin-omitted] FAILED [  9%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-round5-origin-null] FAILED [ 12%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-engine-origin-omitted] FAILED [ 15%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-engine-origin-null] FAILED [ 18%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-legacy-origin-omitted] FAILED [ 21%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-legacy-origin-null] FAILED [ 24%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-round5-origin-omitted] FAILED [ 27%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-round5-origin-null] FAILED [ 30%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-engine-origin-omitted] FAILED [ 33%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-engine-origin-null] FAILED [ 36%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-legacy-origin-omitted] FAILED [ 39%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-legacy-origin-null] FAILED [ 42%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-round5-origin-omitted] FAILED [ 45%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-round5-origin-null] FAILED [ 48%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-engine-origin-omitted] FAILED [ 51%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-engine-origin-null] FAILED [ 54%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-legacy-origin-omitted] FAILED [ 57%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-legacy-origin-null] FAILED [ 60%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-round5-origin-omitted] FAILED [ 63%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-round5-origin-null] FAILED [ 66%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-engine-origin-omitted] FAILED [ 69%]
+attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-engine-origin-null] FAILED [ 72%]
+attacks/W6-a/test_attack_basis_policy.py::test_noncanonical_origin_values_do_not_answer[empty-origin] PASSED [ 75%]
+attacks/W6-a/test_attack_basis_policy.py::test_noncanonical_origin_values_do_not_answer[uppercase-origin] PASSED [ 78%]
+attacks/W6-a/test_attack_basis_policy.py::test_uppercase_request_kind_is_typed_as_outside_the_closed_table[FACTUAL] PASSED [ 81%]
+attacks/W6-a/test_attack_basis_policy.py::test_uppercase_request_kind_is_typed_as_outside_the_closed_table[Factual] PASSED [ 84%]
+attacks/W6-a/test_attack_basis_policy.py::test_confirmation_id_from_one_sovereign_cannot_be_replayed_into_another FAILED [ 87%]
+attacks/W6-a/test_attack_basis_policy.py::test_fabricated_or_stale_confirmation_id_is_rejected_without_writing[change-id] PASSED [ 90%]
+attacks/W6-a/test_attack_basis_policy.py::test_fabricated_or_stale_confirmation_id_is_rejected_without_writing[change-query] PASSED [ 93%]
+attacks/W6-a/test_attack_basis_policy.py::test_c_does_not_borrow_polarity_changes_or_unverified_numbers[negation] PASSED [ 96%]
+attacks/W6-a/test_attack_basis_policy.py::test_c_does_not_borrow_polarity_changes_or_unverified_numbers[new-number] PASSED [100%]
+
+=================================== FAILURES ===================================
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-legacy-origin-omitted] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm0')
+origin = 'MISSING', mode = 'legacy', human = False, reference = False
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": false, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": false, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "sources": [{"family": "local", "generator": "codex", "line": 1, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm0/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-legacy-origin-null] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm1')
+origin = None, mode = 'legacy', human = False, reference = False
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": false, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": false, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "sources": [{"family": "local", "generator": "codex", "line": 1, "origin": null, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm1/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-round5-origin-omitted] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm2')
+origin = 'MISSING', mode = 'round5', human = False, reference = False
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": false, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": false, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "sources": [{"family": "local", "generator": "codex", "line": 1, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm2/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-round5-origin-null] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm3')
+origin = None, mode = 'round5', human = False, reference = False
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": false, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": false, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "sources": [{"family": "local", "generator": "codex", "line": 1, "origin": null, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm3/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-engine-origin-omitted] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm4')
+origin = 'MISSING', mode = 'engine', human = False, reference = False
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": false, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": false, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "sources": [{"family": "local", "generator": "codex", "line": 1, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm4/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-engine-origin-null] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm5')
+origin = None, mode = 'engine', human = False, reference = False
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": false, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": false, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "sources": [{"family": "local", "generator": "codex", "line": 1, "origin": null, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm5/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-legacy-origin-omitted] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm6')
+origin = 'MISSING', mode = 'legacy', human = False, reference = True
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": false, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": true, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "reference_generated": [], "reference_state": "NO_GENERATED_SOURCES", "sources": [{"family": "local", "generator": "codex", "line": 1, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm6/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-legacy-origin-null] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm7')
+origin = None, mode = 'legacy', human = False, reference = True
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": false, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": true, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "reference_generated": [], "reference_state": "NO_GENERATED_SOURCES", "sources": [{"family": "local", "generator": "codex", "line": 1, "origin": null, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm7/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-round5-origin-omitted] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm8')
+origin = 'MISSING', mode = 'round5', human = False, reference = True
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": false, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": true, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "reference_generated": [], "reference_state": "NO_GENERATED_SOURCES", "sources": [{"family": "local", "generator": "codex", "line": 1, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm8/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-round5-origin-null] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm9')
+origin = None, mode = 'round5', human = False, reference = True
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": false, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": true, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "reference_generated": [], "reference_state": "NO_GENERATED_SOURCES", "sources": [{"family": "local", "generator": "codex", "line": 1, "origin": null, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm9/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-engine-origin-omitted] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm10')
+origin = 'MISSING', mode = 'engine', human = False, reference = True
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": false, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": true, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "reference_generated": [], "reference_state": "NO_GENERATED_SOURCES", "sources": [{"family": "local", "generator": "codex", "line": 1, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm10/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-engine-origin-null] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm11')
+origin = None, mode = 'engine', human = False, reference = True
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": false, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": true, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "reference_generated": [], "reference_state": "NO_GENERATED_SOURCES", "sources": [{"family": "local", "generator": "codex", "line": 1, "origin": null, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm11/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-legacy-origin-omitted] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm12')
+origin = 'MISSING', mode = 'legacy', human = True, reference = False
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": true, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": false, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "sources": [{"family": "local", "generator": "codex", "line": 1, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm12/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-legacy-origin-null] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm13')
+origin = None, mode = 'legacy', human = True, reference = False
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": true, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": false, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "sources": [{"family": "local", "generator": "codex", "line": 1, "origin": null, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm13/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-round5-origin-omitted] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm14')
+origin = 'MISSING', mode = 'round5', human = True, reference = False
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": true, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": false, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "sources": [{"family": "local", "generator": "codex", "line": 1, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm14/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-round5-origin-null] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm15')
+origin = None, mode = 'round5', human = True, reference = False
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": true, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": false, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "sources": [{"family": "local", "generator": "codex", "line": 1, "origin": null, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm15/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-engine-origin-omitted] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm16')
+origin = 'MISSING', mode = 'engine', human = True, reference = False
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": true, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": false, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "sources": [{"family": "local", "generator": "codex", "line": 1, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm16/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-engine-origin-null] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm17')
+origin = None, mode = 'engine', human = True, reference = False
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": true, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": false, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "sources": [{"family": "local", "generator": "codex", "line": 1, "origin": null, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm17/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-legacy-origin-omitted] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm18')
+origin = 'MISSING', mode = 'legacy', human = True, reference = True
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": true, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": true, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "reference_generated": [], "reference_state": "NO_GENERATED_SOURCES", "sources": [{"family": "local", "generator": "codex", "line": 1, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm18/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-legacy-origin-null] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm19')
+origin = None, mode = 'legacy', human = True, reference = True
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": true, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": true, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "reference_generated": [], "reference_state": "NO_GENERATED_SOURCES", "sources": [{"family": "local", "generator": "codex", "line": 1, "origin": null, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm19/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-round5-origin-omitted] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm20')
+origin = 'MISSING', mode = 'round5', human = True, reference = True
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": true, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": true, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "reference_generated": [], "reference_state": "NO_GENERATED_SOURCES", "sources": [{"family": "local", "generator": "codex", "line": 1, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm20/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-round5-origin-null] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm21')
+origin = None, mode = 'round5', human = True, reference = True
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": true, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": true, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "reference_generated": [], "reference_state": "NO_GENERATED_SOURCES", "sources": [{"family": "local", "generator": "codex", "line": 1, "origin": null, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm21/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-engine-origin-omitted] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm22')
+origin = 'MISSING', mode = 'engine', human = True, reference = True
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": true, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": true, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "reference_generated": [], "reference_state": "NO_GENERATED_SOURCES", "sources": [{"family": "local", "generator": "codex", "line": 1, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm22/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+_ test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-engine-origin-null] _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm23')
+origin = None, mode = 'engine', human = True, reference = True
+
+    @pytest.mark.parametrize("origin", ["MISSING", None], ids=["origin-omitted", "origin-null"])
+    @pytest.mark.parametrize("mode", ["legacy", "round5", "engine"])
+    @pytest.mark.parametrize("human,reference", [(False, False), (False, True), (True, False), (True, True)])
+    def test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer(
+            tmp_path, origin, mode, human, reference):
+        source_path = tmp_path / "local.jsonl"
+        source_path.write_text(json.dumps({"text": "窓が光った。", "source": "generated-row-1",
+                                          "scene": "synthetic", "sha": "row-sha"}, ensure_ascii=False) + "\n",
+                              encoding="utf-8")
+        index_path = tmp_path / "index" / "local.db"
+        build(source_path, index_path, "local")
+        if origin is None:
+            with sqlite3.connect(index_path) as db:
+                db.execute("UPDATE rows SET origin = NULL")
+        hits = Corpus(tmp_path / "index").search("窓", "local", 10)
+        assert len(hits) == 1 and hits[0].text == "窓が光った。"
+        source = hits[0].cite()
+        if origin != "MISSING":
+            assert source["origin"] is None
+        else:
+            source.pop("origin")
+        out, rc = bp.apply_to_ask(_answer(source), bp.AskPolicy(human_present=human, show_reference=reference),
+                                  query=QUERY, mode=mode, documents=[])
+        assert rc == 0
+        detail = json.dumps(out, ensure_ascii=False, sort_keys=True)
+>       assert out["kind"] != "answer" and out["verdict"] != "ANSWER", detail
+E       AssertionError: {"basis_policy": {"applied": true, "basis": "HUMAN", "basis_original": "HUMAN", "counts": {"generated": 0, "human": 1, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_ROUTE"}, "human_present": true, "in_table": true, "kind_class": "FACTUAL", "outcome": "ANSWER_HUMAN_BASIS", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": true, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "UNKNOWN_NO_SOVEREIGN", "store_id": null}, "table_version": 1}, "door": "synthetic", "evidence": ["窓が光った。"], "kind": "answer", "reference_generated": [], "reference_state": "NO_GENERATED_SOURCES", "sources": [{"family": "local", "generator": "codex", "line": 1, "origin": null, "scene": "synthetic", "sha": "row-sha", "source": "generated-row-1", "source_file": "/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_generated_family_with_unm23/local.jsonl", "text": "窓が光った。"}], "text": "窓が光った。", "verdict": "ANSWER"}
+E       assert ('answer' != 'answer')
+
+attacks/W6-a/test_attack_basis_policy.py:62: AssertionError
+___ test_confirmation_id_from_one_sovereign_cannot_be_replayed_into_another ____
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1367/test_confirmation_id_from_one_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x107108f90>
+
+    def test_confirmation_id_from_one_sovereign_cannot_be_replayed_into_another(tmp_path, monkeypatch):
+        root = tmp_path / "sovereigns"
+        assert sov.create(str(root), "first", "owner-a", consent_promote=True)["verdict"] == "CREATED"
+        assert sov.create(str(root), "second", "owner-b", consent_promote=True)["verdict"] == "CREATED"
+        source = {"family": "local", "source": "g1", "source_file": "local.jsonl", "line": 1,
+                  "sha": "same-row", "text": "窓が光った。", "origin": "generated"}
+        result = _answer(source)
+        monkeypatch.setenv("VERA_SOVEREIGN_ROOT", str(root))
+        monkeypatch.setenv("VERA_SOVEREIGN_STORE", "first")
+        prompt, _ = bp.apply_to_ask(result, bp.AskPolicy(human_present=True), query=QUERY,
+                                    mode="legacy", documents=[])
+        confirm_id = prompt["confirm"]["id"]
+        assert prompt["confirm"]["destination"]["store_id"] == "first"
+    
+        monkeypatch.setenv("VERA_SOVEREIGN_STORE", "second")
+        saved, rc = bp.apply_to_ask(result, bp.AskPolicy(confirm=(confirm_id, "yes")), query=QUERY,
+                                    mode="legacy", documents=[])
+        events = sov.open_ledger(str(root), "second").events()
+        detail = json.dumps({"result": saved, "events": events}, ensure_ascii=False, sort_keys=True)
+>       assert saved.get("verdict") != "CONFIRMED_HUMAN_RECORD" and events == [], detail
+E       AssertionError: {"events": [{"id": "second:1", "kind": "decision", "payload": {"claim": "窓が光った。", "confirm_id": "730bf04d7f8c087d3c3128ce", "generated_sources": [{"family": "local", "sha": "same-row", "source_id": "local:local.jsonl:1"}], "origin": "human_confirmed", "query": "窓は？", "record": "basis_confirmation", "status": "HUMAN_CONFIRMED", "table_version": 1, "witness": "user_confirmation"}, "seq": 1, "ts": "2026-10-03T09:48:24+00:00"}], "result": {"basis_policy": {"applied": true, "basis": "GENERATED", "basis_original": "GENERATED", "confirm": {"answer": "yes", "id": "730bf04d7f8c087d3c3128ce", "result": "CONFIRMED_HUMAN_RECORD"}, "counts": {"generated": 1, "human": 0, "non_evidence": 0, "non_evidence_by_origin": {}, "request_text": 0, "unreadable": 0}, "form": {"state": "NOT_ATTEMPTED_OUTCOME"}, "human_present": true, "in_table": true, "kind_class": "FACTUAL", "outcome": "CONFIRM_REQUEST", "request_kind": "factual", "schema": "verantyx.basis_policy/1", "show_reference": false, "sovereign": {"ambiguous": false, "confirmed_records_not_used": 0, "confirmed_records_used": 0, "records_read": 0, "rejected_by_user": 0, "state": "ACTIVE_CONSENTED", "store_id": "second"}, "table_version": 1}, "confirm": {"answer": "yes", "claim": "窓が光った。", "id": "730bf04d7f8c087d3c3128ce"}, "confirm_id": "730bf04d7f8c087d3c3128ce", "door": "synthetic", "event_id": "second:1", "evidence": [], "kind": "confirmation", "sources": [], "store_id": "second", "text": "確認を、人が書いた記録として保存しました。", "trace": [{"outcome": "CONFIRM_REQUEST", "part": "basis_policy.apply", "status": "ran"}], "verdict": "CONFIRMED_HUMAN_RECORD", "wrote": 1}}
+E       assert ('CONFIRMED_HUMAN_RECORD' != 'CONFIRMED_HUMAN_RECORD')
+E        +  where 'CONFIRMED_HUMAN_RECORD' = <built-in method get of dict object at 0x10710bd00>('verdict')
+E        +    where <built-in method get of dict object at 0x10710bd00> = {'kind': 'confirmation', 'verdict': 'CONFIRMED_HUMAN_RECORD', 'text': '確認を、人が書いた記録として保存しました。', 'event_id': 'second:1', ...}.get
+
+attacks/W6-a/test_attack_basis_policy.py:101: AssertionError
+=========================== short test summary info ============================
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-legacy-origin-omitted]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-legacy-origin-null]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-round5-origin-omitted]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-round5-origin-null]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-engine-origin-omitted]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-False-engine-origin-null]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-legacy-origin-omitted]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-legacy-origin-null]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-round5-origin-omitted]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-round5-origin-null]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-engine-origin-omitted]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[False-True-engine-origin-null]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-legacy-origin-omitted]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-legacy-origin-null]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-round5-origin-omitted]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-round5-origin-null]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-engine-origin-omitted]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-False-engine-origin-null]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-legacy-origin-omitted]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-legacy-origin-null]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-round5-origin-omitted]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-round5-origin-null]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-engine-origin-omitted]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_generated_family_with_unmarked_origin_must_not_become_a_factual_answer[True-True-engine-origin-null]
+FAILED attacks/W6-a/test_attack_basis_policy.py::test_confirmation_id_from_one_sovereign_cannot_be_replayed_into_another
+========================= 25 failed, 8 passed in 0.47s =========================
