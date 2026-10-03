@@ -1,0 +1,601 @@
+# DISPLAY NOTE: long top-level keys (trace, semantic, sources of the document run, ...) are elided by a display filter (compact.py: keys over 400 chars other than confirm/basis_policy/reference_generated/withheld/form_witnesses/form_text/text/kind/verdict). The behavior is covered by the tests, not by this display.
+# fake index: /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/idx (family local; 3 rows: rain x2, one 'give' sentence)
+# sovereign (consent) : /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/sov2 / store s1 ; sovereign (no consent): /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/sov2 / store s0
+{"consent_promote": true, "content_sha256": "cde6be1257c70b5302dab1385c117f1684d89a7e704f4344412d243b0239f067", "file_sha256": "76c234e1469d681fb14fcf0aa3ea42462f15b268bcffecfe75548cadb0f7a855", "owner": "demo", "path": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/sov2/stores/s1.sqlite", "registry_seq": 1, "store_id": "s1", "verdict": "CREATED"}
+{"consent_promote": false, "content_sha256": "f1bff3ec24097010f6ea2b43b0ad58e7de41a5f73f91796a9587aa30bfd50b2f", "file_sha256": "c9aad3c78a4778c19b59537367fa35bd59e8169f84d690b52a6c87c07b3570e8", "owner": "demo", "path": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/sov2/stores/s0.sqlite", "registry_seq": 2, "store_id": "s0", "verdict": "CREATED"}
+
+## 1. ABSTAIN (A): fact question, only generated basis, no human
+
+$ vera ask 雨の日に傘を持たずに外出すると、どうなりますか？
+{
+  "kind": "unknown",
+  "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+  "text": "人が書いた出所に根拠が見つかりません。",
+  "sources": [],
+  "evidence": [],
+  "withheld": {
+    "verdict": "ANSWER",
+    "kind": "answer",
+    "door": "chat",
+    "basis_origin": "generated",
+    "generated_source_count": 2,
+    "families": [
+      "local",
+      "user"
+    ]
+  },
+  "door": "chat",
+  "trace": "<elided for display: 927 chars>",
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "factual",
+    "kind_class": "FACTUAL",
+    "basis": "GENERATED",
+    "basis_original": "GENERATED",
+    "human_present": false,
+    "show_reference": false,
+    "outcome": "ABSTAIN",
+    "in_table": true,
+    "counts": {
+      "human": 0,
+      "generated": 2,
+      "non_evidence": 0,
+      "request_text": 1,
+      "unreadable": 0,
+      "non_evidence_by_origin": {}
+    },
+    "sovereign": {
+      "state": "UNKNOWN_NO_SOVEREIGN",
+      "store_id": null,
+      "records_read": 0,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 0,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "NOT_ATTEMPTED_OUTCOME"
+    }
+  }
+}
+[rc=0]
+
+## 2. B on: reference column
+
+$ vera ask 雨の日に傘を持たずに外出すると、どうなりますか？ --show-generated-reference
+{
+  "kind": "unknown",
+  "verdict": "UNKNOWN_GENERATED_BASIS_ONLY",
+  "text": "人が書いた出所に根拠が見つかりません。",
+  "sources": [],
+  "evidence": [],
+  "withheld": {
+    "verdict": "ANSWER",
+    "kind": "answer",
+    "door": "chat",
+    "basis_origin": "generated",
+    "generated_source_count": 2,
+    "families": [
+      "local",
+      "user"
+    ]
+  },
+  "door": "chat",
+  "trace": "<elided for display: 939 chars>",
+  "reference_generated": [
+    {
+      "text": "雨の日に傘を持たずに出たら、髪が濡れた。",
+      "family": "local",
+      "source_id": "local:/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/local.jsonl:1",
+      "model": "UNKNOWN_NOT_RECORDED",
+      "effort": "UNKNOWN_NOT_RECORDED",
+      "rejected_by_user": false
+    },
+    {
+      "text": "雨の日に傘を持たずに出たら、服が濡れた。",
+      "family": "local",
+      "source_id": "local:/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/local.jsonl:2",
+      "model": "UNKNOWN_NOT_RECORDED",
+      "effort": "UNKNOWN_NOT_RECORDED",
+      "rejected_by_user": false
+    }
+  ],
+  "reference_state": "FOUND",
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "factual",
+    "kind_class": "FACTUAL",
+    "basis": "GENERATED",
+    "basis_original": "GENERATED",
+    "human_present": false,
+    "show_reference": true,
+    "outcome": "REFERENCE_GENERATED",
+    "in_table": true,
+    "counts": {
+      "human": 0,
+      "generated": 2,
+      "non_evidence": 0,
+      "request_text": 1,
+      "unreadable": 0,
+      "non_evidence_by_origin": {}
+    },
+    "sovereign": {
+      "state": "UNKNOWN_NO_SOVEREIGN",
+      "store_id": null,
+      "records_read": 0,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 0,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "NOT_ATTEMPTED_OUTCOME"
+    }
+  }
+}
+[rc=0]
+
+## 3. D: human present, sovereign s1 configured
+$ vera ask "雨の日に傘を持たずに外出すると、どうなりますか？" --human-present
+{
+  "kind": "unknown",
+  "verdict": "CONFIRM_REQUEST",
+  "text": "生成コーパスの文にもとづくと「雨の日に傘を持たずに外出すると、濡れた例が複数あります。」となります（生成された文であり、事実の証拠ではありません）。この内容は正しいですか？ はい／いいえ",
+  "sources": [],
+  "evidence": [],
+  "withheld": {
+    "verdict": "ANSWER",
+    "kind": "answer",
+    "door": "chat",
+    "basis_origin": "generated",
+    "generated_source_count": 2,
+    "families": [
+      "local",
+      "user"
+    ]
+  },
+  "door": "chat",
+  "trace": "<elided for display: 935 chars>",
+  "confirm": {
+    "id": "09b0842cbde6ed87a6b1466a",
+    "question": "生成コーパスの文にもとづくと「雨の日に傘を持たずに外出すると、濡れた例が複数あります。」となります（生成された文であり、事実の証拠ではありません）。この内容は正しいですか？ はい／いいえ",
+    "claim": "雨の日に傘を持たずに外出すると、濡れた例が複数あります。",
+    "generated_sentences": [
+      {
+        "text": "雨の日に傘を持たずに出たら、髪が濡れた。",
+        "family": "local",
+        "source_id": "local:/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/local.jsonl:1",
+        "sha": "a1",
+        "source_file": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/local.jsonl",
+        "line": 1
+      },
+      {
+        "text": "雨の日に傘を持たずに出たら、服が濡れた。",
+        "family": "local",
+        "source_id": "local:/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/local.jsonl:2",
+        "sha": "b1",
+        "source_file": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/local.jsonl",
+        "line": 2
+      }
+    ],
+    "draft_record": {
+      "kind": "decision",
+      "payload": {
+        "claim": "雨の日に傘を持たずに外出すると、濡れた例が複数あります。",
+        "confirm_id": "09b0842cbde6ed87a6b1466a",
+        "generated_sources": [
+          {
+            "family": "local",
+            "source_id": "local:/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/local.jsonl:1",
+            "sha": "a1"
+          },
+          {
+            "family": "local",
+            "source_id": "local:/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/local.jsonl:2",
+            "sha": "b1"
+          }
+        ],
+        "origin": "human_confirmed",
+        "query": "雨の日に傘を持たずに外出すると、どうなりますか？",
+        "record": "basis_confirmation",
+        "status": "HUMAN_CONFIRMED",
+        "table_version": 1,
+        "witness": "user_confirmation"
+      }
+    },
+    "destination": {
+      "state": "ACTIVE_CONSENTED",
+      "store_id": "s1"
+    },
+    "how_to_answer": "vera ask <query> --human-present --confirm 09b0842cbde6ed87a6b1466a yes|no"
+  },
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "factual",
+    "kind_class": "FACTUAL",
+    "basis": "GENERATED",
+    "basis_original": "GENERATED",
+    "human_present": true,
+    "show_reference": false,
+    "outcome": "CONFIRM_REQUEST",
+    "in_table": true,
+    "counts": {
+      "human": 0,
+      "generated": 2,
+      "non_evidence": 0,
+      "request_text": 1,
+      "unreadable": 0,
+      "non_evidence_by_origin": {}
+    },
+    "sovereign": {
+      "state": "ACTIVE_CONSENTED",
+      "store_id": "s1",
+      "records_read": 0,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 0,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "NOT_ATTEMPTED_OUTCOME"
+    }
+  }
+}
+
+## 4. yes -> human record
+
+$ vera ask 雨の日に傘を持たずに外出すると、どうなりますか？ --confirm 09b0842cbde6ed87a6b1466a yes
+{
+  "kind": "confirmation",
+  "verdict": "CONFIRMED_HUMAN_RECORD",
+  "text": "確認を、人が書いた記録として保存しました。",
+  "event_id": "s1:1",
+  "confirm_id": "09b0842cbde6ed87a6b1466a",
+  "store_id": "s1",
+  "wrote": 1,
+  "confirm": {
+    "id": "09b0842cbde6ed87a6b1466a",
+    "answer": "yes",
+    "claim": "雨の日に傘を持たずに外出すると、濡れた例が複数あります。"
+  },
+  "door": "chat",
+  "trace": "<elided for display: 935 chars>",
+  "sources": [],
+  "evidence": [],
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "factual",
+    "kind_class": "FACTUAL",
+    "basis": "GENERATED",
+    "basis_original": "GENERATED",
+    "human_present": true,
+    "show_reference": false,
+    "outcome": "CONFIRM_REQUEST",
+    "in_table": true,
+    "counts": {
+      "human": 0,
+      "generated": 2,
+      "non_evidence": 0,
+      "request_text": 1,
+      "unreadable": 0,
+      "non_evidence_by_origin": {}
+    },
+    "sovereign": {
+      "state": "ACTIVE_CONSENTED",
+      "store_id": "s1",
+      "records_read": 0,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 0,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "NOT_ATTEMPTED_OUTCOME"
+    },
+    "confirm": {
+      "id": "09b0842cbde6ed87a6b1466a",
+      "answer": "yes",
+      "result": "CONFIRMED_HUMAN_RECORD"
+    }
+  }
+}
+[rc=0]
+
+## 5. same question afterwards, no human present
+
+$ vera ask 雨の日に傘を持たずに外出すると、どうなりますか？
+{
+  "kind": "answer",
+  "verdict": "ANSWER",
+  "text": "雨の日に傘を持たずに外出すると、濡れた例が複数あります。",
+  "values": [
+    "雨の日に傘を持たずに外出すると、濡れた例が複数あります。"
+  ],
+  "evidence": [
+    "雨の日に傘を持たずに外出すると、濡れた例が複数あります。"
+  ],
+  "sources": [
+    {
+      "family": "memory_sovereign",
+      "source": "s1:1",
+      "text": "雨の日に傘を持たずに外出すると、濡れた例が複数あります。",
+      "origin": "human_confirmed",
+      "store_id": "s1",
+      "confirm_id": "09b0842cbde6ed87a6b1466a"
+    }
+  ],
+  "door": "chat",
+  "trace": "<elided for display: 938 chars>",
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "factual",
+    "kind_class": "FACTUAL",
+    "basis": "HUMAN",
+    "basis_original": "GENERATED",
+    "human_present": false,
+    "show_reference": false,
+    "outcome": "ANSWER_HUMAN_BASIS",
+    "in_table": true,
+    "counts": {
+      "human": 0,
+      "generated": 2,
+      "non_evidence": 0,
+      "request_text": 1,
+      "unreadable": 0,
+      "non_evidence_by_origin": {}
+    },
+    "sovereign": {
+      "state": "ACTIVE_CONSENTED",
+      "store_id": "s1",
+      "records_read": 1,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 1,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "NOT_ATTEMPTED_RECORD"
+    }
+  }
+}
+[rc=0]
+
+## 6. sovereign events
+{"id": "s1:1", "kind": "decision", "payload": {"claim": "雨の日に傘を持たずに外出すると、濡れた例が複数あります。", "confirm_id": "09b0842cbde6ed87a6b1466a", "generated_sources": [{"family": "local", "sha": "a1", "source_id": "local:/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/local.jsonl:1"}, {"family": "local", "sha": "b1", "source_id": "local:/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/local.jsonl:2"}], "origin": "human_confirmed", "query": "雨の日に傘を持たずに外出すると、どうなりますか？", "record": "basis_confirmation", "status": "HUMAN_CONFIRMED", "table_version": 1, "witness": "user_confirmation"}, "seq": 1, "ts": "2026-10-03T08:35:03+00:00"}
+
+## 7. no consent: sovereign s0
+
+$ vera ask 雨の日に傘を持たずに外出すると、どうなりますか？ --confirm 09b0842cbde6ed87a6b1466a yes
+{
+  "kind": "unknown",
+  "verdict": "NO_CONSENT",
+  "text": "確認を保存できませんでした。何も書いていません。",
+  "wrote": 0,
+  "confirm": {
+    "id": "09b0842cbde6ed87a6b1466a",
+    "answer": "yes",
+    "destination": "ACTIVE_NO_CONSENT"
+  },
+  "door": "chat",
+  "trace": "<elided for display: 935 chars>",
+  "sources": [],
+  "evidence": [],
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "factual",
+    "kind_class": "FACTUAL",
+    "basis": "GENERATED",
+    "basis_original": "GENERATED",
+    "human_present": true,
+    "show_reference": false,
+    "outcome": "CONFIRM_REQUEST",
+    "in_table": true,
+    "counts": {
+      "human": 0,
+      "generated": 2,
+      "non_evidence": 0,
+      "request_text": 1,
+      "unreadable": 0,
+      "non_evidence_by_origin": {}
+    },
+    "sovereign": {
+      "state": "ACTIVE_NO_CONSENT",
+      "store_id": "s0",
+      "records_read": 0,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 0,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "NOT_ATTEMPTED_OUTCOME"
+    },
+    "confirm": {
+      "id": "09b0842cbde6ed87a6b1466a",
+      "answer": "yes",
+      "result": "NO_CONSENT"
+    }
+  }
+}
+[rc=1]
+[s0 events printed above: none]
+
+## 8. E: request that claims no fact
+
+$ vera ask 雨の日に傘を持たずに外出すると、どうなりますか？ --request-kind creative
+{
+  "kind": "answer",
+  "ability": "commonsense",
+  "verdict": "ANSWER",
+  "text": "雨の日に傘を持たずに外出すると、濡れた例が複数あります。",
+  "evidence": [
+    "雨の日に傘を持たずに外出すると、どうなりますか？",
+    "雨の日に傘を持たずに出たら、髪が濡れた。",
+    "雨の日に傘を持たずに出たら、服が濡れた。"
+  ],
+  "sources": "<elided for display: 732 chars>",
+  "lines": "<elided for display: 1370 chars>",
+  "trace": "<elided for display: 1707 chars>",
+  "basis_origin": "generated",
+  "door": "chat",
+  "constructed": true,
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "creative",
+    "kind_class": "NON_FACTUAL",
+    "basis": "GENERATED",
+    "basis_original": "GENERATED",
+    "human_present": false,
+    "show_reference": false,
+    "outcome": "CONSTRUCTED",
+    "in_table": true,
+    "counts": {
+      "human": 0,
+      "generated": 2,
+      "non_evidence": 0,
+      "request_text": 1,
+      "unreadable": 0,
+      "non_evidence_by_origin": {}
+    },
+    "sovereign": {
+      "state": "NOT_CONSULTED",
+      "store_id": null,
+      "records_read": 0,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 0,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "NOT_ATTEMPTED_OUTCOME"
+    }
+  }
+}
+[rc=0]
+
+## 9. C: round5 + document, borrowed phrasing
+
+$ vera ask 花子は太郎に資料を渡しましたか？ --mode round5 --document /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/memo.txt
+{
+  "kind": "answer",
+  "verdict": "ANSWER",
+  "text": "可否: はい",
+  "values": [
+    "はい"
+  ],
+  "answer_values": [
+    [
+      "可否",
+      true
+    ]
+  ],
+  "polarity": "+",
+  "evidence": [
+    "花子は太郎に資料を渡した。"
+  ],
+  "sources": [
+    {
+      "family": "document",
+      "sovereign": "document",
+      "source": "memo.txt",
+      "clause": "8ec8bc18a416179fbf3f20dd",
+      "text": "花子は太郎に資料を渡した。",
+      "span": {
+        "source": "memo.txt",
+        "start": 0,
+        "end": 13,
+        "text": "花子は太郎に資料を渡した。"
+      }
+    }
+  ],
+  "trace": "<elided for display: 2121 chars>",
+  "semantic": "<elided for display: 6413 chars>",
+  "door": "semantic_document",
+  "multigrain_navigation": "<elided for display: 6008 chars>",
+  "runtime_mode": "round5",
+  "form_text": "花子が太郎に資料を渡した。",
+  "form_source": "generated",
+  "form_witnesses": [
+    {
+      "family": "local",
+      "source": "gen-c",
+      "text": "次郎が花子に本を渡した。",
+      "sha": "c1",
+      "scene": "贈り物",
+      "origin": "generated",
+      "generator": "codex",
+      "source_file": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/demo/local.jsonl",
+      "line": 3
+    }
+  ],
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "factual",
+    "kind_class": "FACTUAL",
+    "basis": "HUMAN",
+    "basis_original": "HUMAN",
+    "human_present": false,
+    "show_reference": false,
+    "outcome": "ANSWER_FORM_FROM_GENERATED",
+    "in_table": true,
+    "counts": {
+      "human": 1,
+      "generated": 0,
+      "non_evidence": 0,
+      "request_text": 0,
+      "unreadable": 0,
+      "non_evidence_by_origin": {}
+    },
+    "sovereign": {
+      "state": "UNKNOWN_NO_SOVEREIGN",
+      "store_id": null,
+      "records_read": 0,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 0,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "FORM_BORROWED",
+      "reasons": {
+        "CAND_NOT_ONE_CROSS": 0,
+        "CAND_CENTER_DIFFERS": 0,
+        "CAND_ROLES_DIFFER": 0,
+        "CAND_FILLER_SPAN_AMBIGUOUS": 0,
+        "CAND_REREAD_DIFFERS": 0,
+        "CAND_CONTENT_DIFFERS": 0
+      },
+      "families": {
+        "local": "FOUND",
+        "pro": "UNKNOWN_FAMILY_DB_MISSING",
+        "code": "UNKNOWN_FAMILY_DB_MISSING",
+        "conversation": "UNKNOWN_FAMILY_DB_MISSING",
+        "general_qa": "UNKNOWN_FAMILY_DB_MISSING",
+        "code_qa": "UNKNOWN_FAMILY_DB_MISSING",
+        "figurative_commonsense": "UNKNOWN_FAMILY_DB_MISSING",
+        "narrative": "UNKNOWN_FAMILY_DB_MISSING",
+        "paraphrase_entail": "UNKNOWN_FAMILY_DB_MISSING"
+      },
+      "searched_rows": 1,
+      "candidates": 1,
+      "distinct_forms": 1
+    }
+  }
+}
+[rc=0]

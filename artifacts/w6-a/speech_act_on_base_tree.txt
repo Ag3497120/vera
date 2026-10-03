@@ -1,0 +1,12 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+E   AssertionError: assert ('generation' == 'generation'
+      
+        generation and 'unknown' == 'answer'
+      
+      - answer
+      + unknown)
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w6a-impl/base_tree/tests/test_p4_abilities.py:290: AssertionError: assert ('generation' == 'generation'
+=========================== short test summary info ============================
+FAILED tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread
+1 failed, 16 deselected in 0.22s

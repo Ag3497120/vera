@@ -1,0 +1,8 @@
+09b1fd9a7bfac9a3133b0b8d9ce3938e326b87a3c3ff266fa31edbf0bceb7b49  tests/test_basis_policy_form.py
+a7f3bce83bca2086e3915b09bf8eb94d6182be5b316a0d56e4ac654ea8376910  tests/test_basis_policy_confirm.py
+ec62e156e47f86062ac325ed9183b059d2e7874b217483da4296ebc89dd77754  tests/test_basis_policy_entry.py
+8d1d80068b72b19af8d6caee13c1809dbc1c3e760a495a38b9f1e8e83ef6a989  tests/test_basis_policy_conductor.py
+AMENDED (clock keys, refusal-with-no-citation reading of §3.4 step 3): f7b2bb89d964c3614a30943b67a9f8bc2889d217511cf33733b786231029f304  tests/test_basis_policy_entry.py
+EXTENDED (nested sources, declared basis_origin): 65fb300c88209c2ef67ba421103a816d428ccfd9afa52e5524d0111665062ea0  tests/test_basis_policy_entry.py
+EXTENDED (unreadable sovereign): 184ea9e9c99eee0891d55b1afd4236924c3654e5b775e781c1ca7fb32cd16841  tests/test_basis_policy_confirm.py
+EXTENDED (round 2: half-refused types, scorer-state asserts; written before the fix) 2026-10-03 17:55:22 +0900: 1b318a8df3870ffa3f0f243b44ddda84f19c68772680378b7b1991bcb3be9a8e  tests/test_basis_policy_entry.py

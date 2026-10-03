@@ -1,0 +1,229 @@
+{
+  "kind": "answer",
+  "ability": "commonsense",
+  "verdict": "ANSWER",
+  "text": "雨の日に傘を持たずに外出すると、濡れた例が複数あります。",
+  "evidence": [
+    "雨の日に傘を持たずに外出すると、どうなりますか？",
+    "雨の日に傘を持たずに出たら、髪が濡れた。",
+    "雨の日に傘を持たずに出たら、服が濡れた。"
+  ],
+  "sources": [
+    {
+      "family": "user",
+      "source": "user:condition",
+      "text": "雨の日に傘を持たずに外出すると、どうなりますか？"
+    },
+    {
+      "family": "local",
+      "source": "gen-a",
+      "text": "雨の日に傘を持たずに出たら、髪が濡れた。",
+      "sha": "a1",
+      "scene": "雨",
+      "origin": "generated",
+      "generator": "codex",
+      "source_file": "/Users/motonisihikoudai/Projects/vera-impl/wt/W6-a-S/artifacts/w6-a/demo_inputs/local.jsonl",
+      "line": 1
+    },
+    {
+      "family": "local",
+      "source": "gen-b",
+      "text": "雨の日に傘を持たずに出たら、服が濡れた。",
+      "sha": "b1",
+      "scene": "雨",
+      "origin": "generated",
+      "generator": "codex",
+      "source_file": "/Users/motonisihikoudai/Projects/vera-impl/wt/W6-a-S/artifacts/w6-a/demo_inputs/local.jsonl",
+      "line": 2
+    }
+  ],
+  "lines": [
+    {
+      "text": "雨の日に傘を持たずに外出すると、濡れた例が複数あります。",
+      "sources": [
+        {
+          "family": "user",
+          "source": "user:condition",
+          "text": "雨の日に傘を持たずに外出すると、どうなりますか？"
+        },
+        {
+          "family": "local",
+          "source": "gen-a",
+          "text": "雨の日に傘を持たずに出たら、髪が濡れた。",
+          "sha": "a1",
+          "scene": "雨",
+          "origin": "generated",
+          "generator": "codex",
+          "source_file": "/Users/motonisihikoudai/Projects/vera-impl/wt/W6-a-S/artifacts/w6-a/demo_inputs/local.jsonl",
+          "line": 1
+        },
+        {
+          "family": "local",
+          "source": "gen-b",
+          "text": "雨の日に傘を持たずに出たら、服が濡れた。",
+          "sha": "b1",
+          "scene": "雨",
+          "origin": "generated",
+          "generator": "codex",
+          "source_file": "/Users/motonisihikoudai/Projects/vera-impl/wt/W6-a-S/artifacts/w6-a/demo_inputs/local.jsonl",
+          "line": 2
+        }
+      ],
+      "outcome": "濡れる",
+      "reread": [
+        {
+          "predicate": "持つ",
+          "agent": "",
+          "patient": "傘",
+          "recipient": "",
+          "negated": true,
+          "past": false,
+          "ambiguous": false,
+          "inferred": false
+        },
+        {
+          "predicate": "外出する",
+          "agent": "",
+          "patient": "",
+          "recipient": "",
+          "negated": false,
+          "past": false,
+          "ambiguous": false,
+          "inferred": false
+        },
+        {
+          "predicate": "濡れる",
+          "agent": "",
+          "patient": "",
+          "recipient": "",
+          "negated": false,
+          "past": true,
+          "ambiguous": true,
+          "inferred": true
+        },
+        {
+          "predicate": "ある",
+          "agent": "例",
+          "patient": "",
+          "recipient": "",
+          "negated": false,
+          "past": false,
+          "ambiguous": false,
+          "inferred": false
+        }
+      ]
+    }
+  ],
+  "trace": [
+    {
+      "part": "question.read",
+      "status": "ran",
+      "kind": "fact",
+      "asked_slot": "whether",
+      "case_frame": {
+        "subject": "",
+        "predicates": [
+          "持つ",
+          "外出する"
+        ],
+        "arguments": [
+          "傘"
+        ],
+        "attribute": "",
+        "slot": "whether",
+        "negated": true,
+        "requested_unit": "",
+        "who_role": ""
+      }
+    },
+    {
+      "part": "stage_split.split",
+      "status": "ran",
+      "verdict": "UNKNOWN_UNSEGMENTED"
+    },
+    {
+      "part": "typo_recovery.recover",
+      "status": "abstained",
+      "verdict": "LACK_OF_ASSET"
+    },
+    {
+      "part": "meaning_assets.lattice",
+      "status": "abstained",
+      "reason": "writer.json"
+    },
+    {
+      "part": "sense_split.resolve",
+      "status": "abstained",
+      "verdict": "LACK_OF_ASSET"
+    },
+    {
+      "part": "polarity.observe_negation",
+      "status": "ran",
+      "count": 1
+    },
+    {
+      "part": "intent.act_by_form",
+      "status": "ran",
+      "act": "question"
+    },
+    {
+      "part": "intent_frames.parse",
+      "status": "abstained",
+      "verdict": "NOT_APPLICABLE",
+      "reason": "question is not an instruction"
+    },
+    {
+      "part": "arm_schema.classify_intent",
+      "status": "ran",
+      "arm": null
+    },
+    {
+      "part": "skills.answer",
+      "status": "abstained",
+      "kind": null
+    },
+    {
+      "part": "abilities.Abilities.answer",
+      "status": "ran",
+      "ability": "commonsense"
+    },
+    {
+      "status": "ran",
+      "part": "question.read",
+      "kind": "fact",
+      "asked_slot": "whether",
+      "observed_negations": 1
+    },
+    {
+      "status": "ran",
+      "part": "ability_corpus.status",
+      "ability": "commonsense",
+      "family": "local",
+      "index": "INDEX_AVAILABLE"
+    },
+    {
+      "status": "ran",
+      "part": "ability_corpus.status",
+      "ability": "commonsense",
+      "family": "pro",
+      "index": "UNKNOWN_FAMILY_DB_MISSING"
+    },
+    {
+      "status": "ran",
+      "part": "event_transition.conditional",
+      "family": "local",
+      "anchor": "傘を持たずに",
+      "supported_outcomes": 1,
+      "minimum_sources": 2
+    },
+    {
+      "status": "ran",
+      "part": "event_transition.conditional",
+      "outcome": "濡れる",
+      "independent_sources": 2,
+      "reread": true
+    }
+  ],
+  "basis_origin": "generated",
+  "door": "chat"
+}

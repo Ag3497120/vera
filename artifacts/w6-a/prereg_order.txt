@@ -1,0 +1,6 @@
+1791015719 /Users/motonisihikoudai/Projects/vera-impl/wt/W6-a-S/artifacts/w6-a/prereg.txt
+1791015745 tests/test_basis_policy_table.py
+1791015959 tests/test_basis_policy_form.py
+1791016027 tests/test_basis_policy_confirm.py
+1791016112 tests/test_basis_policy_conductor.py
+1791016166 tests/test_basis_policy_entry.py

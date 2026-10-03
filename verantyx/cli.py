@@ -274,13 +274,20 @@ def cmd_ask(args) -> int:
         _print({"kind": "unknown", "verdict": "UNKNOWN_ROUTE_CONFIGURATION",
                 "reason": "--engine and --mode round5 select separate routes"})
         return 2
+    from .basis_policy import AskPolicy, apply_to_ask
+    policy = AskPolicy.from_args(args)
+    if isinstance(policy, dict):
+        _print(policy)
+        return 2
     if mode == "round5":
         from .one import Vera
         v = Vera(mode="round5")
         if documents:
             v.load_documents(documents)
-        _print(v.ask(args.query))
-        return 0
+        out, rc = apply_to_ask(v.ask(args.query), policy, query=args.query, mode="round5",
+                               documents=documents)
+        _print(out)
+        return rc
     if getattr(args, "engine", False):
         from .engine import ask as engine_ask
         from .export_sqlite import vera as load_published
@@ -295,14 +302,18 @@ def cmd_ask(args) -> int:
             return 1
         v = load_published(db)
         sp = Path(args.store)
-        _print(engine_ask(args.query, v,
-                          store_path=sp if sp.is_file() or
-                          sp.with_suffix(".documents.json").is_file() else None))
-        return 0
+        out, rc = apply_to_ask(engine_ask(args.query, v,
+                                          store_path=sp if sp.is_file() or
+                                          sp.with_suffix(".documents.json").is_file() else None),
+                               policy, query=args.query, mode="engine", documents=documents)
+        _print(out)
+        return rc
     from .one import Vera
     st = _load(args.store)
-    _print(Vera().load_store(st).ask(args.query))
-    return 0
+    out, rc = apply_to_ask(Vera().load_store(st).ask(args.query), policy, query=args.query,
+                           mode="legacy", documents=documents)
+    _print(out)
+    return rc
 
 
 def _doors(store_path: str) -> Dict[str, Any]:
@@ -1590,6 +1601,15 @@ def main(argv: Optional[list] = None) -> int:
                         "門つき。既定は手元の店のみ")
     p.add_argument("--federation", default="",
                    help="公開連合の場所(既定 $VERA_CORPUS_ROOT/build/vera.db)")
+    p.add_argument("--request-kind", choices=["factual", "creative", "paraphrase", "style", "example"],
+                   default="factual",
+                   help="事実を問う依頼(factual、既定)か、事実を主張しない依頼か(根拠の方針 W6-a)")
+    p.add_argument("--human-present", action="store_true",
+                   help="人が居る場面。生成コーパスにしか根拠が無いとき、問いとして返す")
+    p.add_argument("--show-generated-reference", action="store_true",
+                   help="参考欄(生成コーパス由来・事実の証拠ではない)を別の鍵で出す。既定は出さない")
+    p.add_argument("--confirm", nargs=2, metavar=("ID", "yes|no"), default=None,
+                   help="問い返しへの答え。yes は人が書いた記録としてソブリンに追記する")
     p.set_defaults(fn=cmd_ask)
 
     p = sub.add_parser(
