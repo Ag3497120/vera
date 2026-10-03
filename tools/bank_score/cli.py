@@ -1,4 +1,4 @@
-"""python -m tools.bank_score --bank <B1|B2|B3|B5> --items <path> ... --tree <Vera のツリー> --out <dir>"""
+"""python -m tools.bank_score --bank <B1|B2|B3|B5|B7> --items <path> ... --tree <Vera のツリー> --out <dir>"""
 from __future__ import annotations
 
 import argparse
@@ -16,7 +16,7 @@ from .classify import CLASS_JA
 from .report import build_summary, dumps, render_md, write_jsonl
 from .runner import Session
 from .score import score_observation
-from .strategies import STRATEGIES, not_applicable, observe_strategy
+from .strategies import B7_STRATEGIES, STRATEGIES, not_applicable, observe_strategy
 
 EXIT_OK, EXIT_INPUT, EXIT_INVALID = 0, 2, 3
 _OUTPUT_NAMES = ("results.jsonl", "results.partial.jsonl", "summary.json", "summary.md", "run_meta.json",
@@ -37,13 +37,14 @@ def _parser() -> argparse.ArgumentParser:
                                  description="評価バンクの採点器。Vera は既定の入口だけから別プロセスで呼ぶ。")
     ap.add_argument("--profile", default="w1s", choices=list(schema.PROFILES),
                     help="問題の形式と採点の意味（w1s: W1-s の自作見本、v2: v2 バンクの実際の形式。既定 w1s）")
-    ap.add_argument("--bank", required=True, choices=list(schema.BANKS))
+    ap.add_argument("--bank", required=True, choices=list(schema.BANKS) + ["B7"])  # B7（W6-s）は schema.BANKS に足さない（J2）
     ap.add_argument("--items", required=True)
     ap.add_argument("--quarantine")
     ap.add_argument("--frames", help="B5 の枠ファイルのディレクトリ（B5 では必須、他では不可）")
     ap.add_argument("--tree", required=True, help="測る Vera のツリー（PYTHONPATH になる）")
     ap.add_argument("--out", required=True)
-    ap.add_argument("--entry", help="入口（B1: cli|mod-semantic-read、B5: cli、B2: cli-ask-round5|cli-ask、B3: cli-ask-round5。"
+    ap.add_argument("--entry", help="入口（B1: cli|mod-semantic-read、B5: cli、B2: cli-ask-round5|cli-ask、B3: cli-ask-round5、"
+                                    "B7: cli-ask-round5-basis（--profile v2 だけ）。"
                                     "mod-semantic-read は B1 の読解の入口 `python -m verantyx.semantic_read`）")
     ap.add_argument("--timeout", type=float, default=60.0, help="1 問あたりの秒数（既定 60）")
     ap.add_argument("--python", default=sys.executable)
@@ -64,9 +65,9 @@ def _git(tree: str, *args: str) -> str | None:
 
 
 def _unit_of(bank: str, rec: dict) -> str | None:
-    """v2 の by_unit 用: B1・B3 は raw の unit、B2 は id の先頭 2 区切り（例 B2J-ABS）、B5 は frame_id。"""
+    """v2 の by_unit 用: B1・B3・B7 は raw の unit、B2 は id の先頭 2 区切り（例 B2J-ABS）、B5 は frame_id。"""
     raw = rec["raw"] or {}
-    if bank in ("B1", "B3"):
+    if bank in ("B1", "B3", "B7"):
         return raw.get("unit") if isinstance(raw.get("unit"), str) else None
     if bank == "B2":
         i = rec["id"]
@@ -131,12 +132,26 @@ def _check_provenance(sess: Session, stage: str) -> None:
         raise InvalidRun(stage, {"outside": sess.outside})
 
 
+def _b7_block(rec: dict, row: dict, strat: dict) -> dict:
+    """B7 の主の行に足す `b7`（ITEM_INVALID 以外の全行）。要約はこれだけから作る（recount が同じ関数で再計算する）。"""
+    from .v2 import b7
+    case, exp = rec["case"], rec["raw"]["expect"]
+    obs = row.get("observation") or {}
+    return {"expect_result": exp["result"], "request_kind": case["request_kind"],
+            "n_human_sources": len(case["human_sources"]), "n_generated_snippets": len(case["generated_snippets"]),
+            "human_present": case["human_present"], "show_reference": case["show_reference"],
+            "generated_only": b7.generated_only(case, exp), "outcome": obs.get("outcome"), "strategies": strat}
+
+
 def run(args: argparse.Namespace) -> int:
     bank = args.bank
     try:
         entry = adapters.check_entry(bank, args.entry)
     except ValueError as e:
         print(f"入力の誤り: {e}", file=sys.stderr)
+        return EXIT_INPUT
+    if bank == "B7" and args.profile != "v2":
+        print("入力の誤り: B7 は --profile v2 だけ", file=sys.stderr)
         return EXIT_INPUT
     if bank == "B5" and not args.frames:
         print("入力の誤り: B5 には --frames が必要", file=sys.stderr)
@@ -158,7 +173,11 @@ def run(args: argparse.Namespace) -> int:
     try:
         qinfo = schema.load_quarantine_info(args.quarantine)
         quarantine_ids = qinfo["ids"]
-        recs = schema.read_items(args.items, bank, frames, profile)
+        if bank == "B7":
+            from .v2 import b7
+            recs = b7.read_items(args.items)
+        else:
+            recs = schema.read_items(args.items, bank, frames, profile)
     except schema.InputError as e:
         print(f"入力の誤り: {e}", file=sys.stderr)
         return EXIT_INPUT
@@ -201,8 +220,19 @@ def run(args: argparse.Namespace) -> int:
                 rows.append(_row(rec, bank, entry, profile=profile, **{"class": "unreachable", "capability": reach["capability"],
                                                       "reason_detail": reach["reasons"]}))
                 continue
-            call = adapters.build_call(bank, entry, rec["case"])
-            r = sess.run_ask(seq, call["argv"], call["files"], call.get("module", "verantyx.cli"))
+            prep = extra_env = None
+            if bank == "B7":
+                prep = sess.prepare_b7(seq, rec["case"]["human_sources"], rec["case"]["generated_snippets"])
+                if "error" in prep:  # 子の入力を作れなかった問は Vera を呼ばない（型つきの実行時エラー）
+                    rows.append(_row(rec, bank, entry, profile=profile, **{
+                        "class": "runtime_error", "reason": prep["error"], "reason_detail": [prep["detail"]],
+                        "observation": {"exit_code": None, "entry": entry, "argv": []}}))
+                    continue
+                call = adapters.build_call(bank, entry, rec["case"], document=prep["document"])
+                extra_env = {"VERA_P4_INDEX": prep["p4_index"]}
+            else:
+                call = adapters.build_call(bank, entry, rec["case"])
+            r = sess.run_ask(seq, call["argv"], call["files"], call.get("module", "verantyx.cli"), extra_env=extra_env)
             vera_calls += 1
             timing["vera_calls_ms_total"] = round(timing["vera_calls_ms_total"] + r["elapsed_ms"], 1)
             _check_provenance(sess, f"item:{rec['id']}")
@@ -214,6 +244,9 @@ def run(args: argparse.Namespace) -> int:
             raw_doc = {"id": rec["id"], "entry": entry, "argv": call["argv"], "exit_code": r["exit_code"],
                        "reason": r["reason"], "stdout_json": r["stdout_json"], "stdout_text": r["stdout_text"],
                        "stderr": r["stderr"], "provenance": r["provenance"], "elapsed_ms": r["elapsed_ms"]}
+            if prep is not None:
+                raw_doc["b7_inputs"] = {"document": prep["document"], "document_sha256": prep["document_sha256"],
+                                        "p4_index": prep["p4_index"], "p4_rows": prep["p4_rows"]}
             raw_text = sess.redact(json.dumps(raw_doc, ensure_ascii=False, sort_keys=True, indent=1))
             (out / "raw" / f"{seq:04d}_{_safe(rec['id'])}.json").write_text(raw_text + "\n", encoding="utf-8")
             row_kw = {"elapsed_ms": r["elapsed_ms"]}
@@ -249,6 +282,30 @@ def run(args: argparse.Namespace) -> int:
                 srows.append(_scored(_row(rec, bank, f"strategy:{s}", profile=profile, observation=obs),
                                      score_observation(bank, rec["raw"], rec["case"], obs, profile)))
             strat_rows[s] = srows
+        if bank == "B7":
+            # B7 の戦略は主の行にも埋め込む（J12: 要約は主の行だけから作る。recount が B7 でも一致する）。
+            for s in B7_STRATEGIES:
+                srows = []
+                for rec in kept:
+                    if rec["errors"]:
+                        srows.append(_row(rec, bank, f"strategy:{s}", profile=profile, **{
+                            "class": "unscorable", "reason": "ITEM_INVALID", "reason_detail": rec["errors"]}))
+                        continue
+                    obs = observe_strategy(bank, s, rec["case"], profile)
+                    srows.append(_scored(_row(rec, bank, f"strategy:{s}", profile=profile, observation=obs),
+                                         score_observation(bank, rec["raw"], rec["case"], obs, profile)))
+                strat_rows[s] = srows
+            assert len(rows) == len(kept)
+            for i, (rec, row) in enumerate(zip(kept, rows)):
+                if rec["errors"]:
+                    continue
+                strat = {}
+                for s in B7_STRATEGIES:
+                    sr = strat_rows[s][i]
+                    assert sr["id"] == row["id"] == rec["id"]
+                    strat[s] = {"outcome": sr["observation"]["outcome"], "class": sr["class"],
+                                "class_approx": sr["class_approx"]}
+                row["b7"] = _b7_block(rec, row, strat)
     except InvalidRun as e:
         if rows:
             write_jsonl(out / "results.partial.jsonl", rows)
@@ -288,6 +345,8 @@ def run(args: argparse.Namespace) -> int:
         "quarantine": quarantine,
         "timing": timing,
     }
+    if bank == "B7":
+        meta["child_env_per_item"] = {"VERA_P4_INDEX": "<WORK>/p4/qNNNN（問ごと。生成の文が 0 本なら空のディレクトリ）"}
     if profile == "v2":
         from .v2.b3_approx import fugashi_version
         meta.update(_inputs_meta(args, frames))

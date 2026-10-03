@@ -12,7 +12,16 @@ STRATEGY_JA = {
     "echo_documents": "文書の丸写し",
     "all_labels": "全ラベル列挙",
     "first_option": "常に最初の選択肢",
+    "b7_a_human_sources": "人の出所があれば人の根拠で回答・無ければ棄権",
+    "b7_b_human_present": "人が居れば確認・居なければ棄権",
+    "b7_c_kind_then_a": "事実でない依頼は構成・事実なら (a)",
+    "b7_d_always_abstain": "常に棄権",
+    "b7_e_reference_over_c": "参考の表示が ON なら参考・OFF なら (c)",
 }
+
+# B7（W6-s）専用の表層ベースライン 5 つ。STRATEGIES（既存 6 つ）には足さない（既存バンクの要約の鍵が増えるため）。
+B7_STRATEGIES = ("b7_a_human_sources", "b7_b_human_present", "b7_c_kind_then_a", "b7_d_always_abstain",
+                 "b7_e_reference_over_c")
 
 _NA = {
     ("B1", "echo_documents"): "B1 の問題には文書が無い",
@@ -26,7 +35,29 @@ _NA = {
 
 def not_applicable(bank: str, strategy: str) -> str | None:
     """対象外ならその理由、対象なら None（黙って省かず要約に理由を出す）。"""
+    if bank == "B7":
+        return None if strategy in B7_STRATEGIES else "B7 は B7 専用の 5 戦略だけ（チケット W6-s）"
+    if strategy in B7_STRATEGIES:
+        return "b7_* は B7 専用の戦略（チケット W6-s）"
     return _NA.get((bank, strategy))
+
+
+def b7_outcome(strategy: str, case: dict) -> str:
+    """B7 の戦略が選ぶ outcome（Vera を呼ばない）。採点は Vera と同じ b7.score。J11: (e) は show_reference が真なら常に参考。"""
+    has_human = bool(case["human_sources"])
+    a = "ANSWER_HUMAN_BASIS" if has_human else "ABSTAIN"
+    c = a if case["request_kind"] == "factual" else "CONSTRUCTED"
+    if strategy == "b7_a_human_sources":
+        return a
+    if strategy == "b7_b_human_present":
+        return "CONFIRM_REQUEST" if case["human_present"] else "ABSTAIN"
+    if strategy == "b7_c_kind_then_a":
+        return c
+    if strategy == "b7_d_always_abstain":
+        return "ABSTAIN"
+    if strategy == "b7_e_reference_over_c":
+        return "REFERENCE_GENERATED" if case["show_reference"] else c
+    raise ValueError(f"B7 の戦略でない: {strategy}")
 
 
 def _blank(state: str, **kw: object) -> dict:
@@ -39,6 +70,9 @@ def _blank(state: str, **kw: object) -> dict:
 
 def observe_strategy(bank: str, strategy: str, case: dict, profile: str = "w1s") -> dict:
     """戦略の観測を作る。構成物の申告も根拠も付けない。profile は v2 でも戦略の定義を変えない（W1-s と同じ観測）。"""
+    if bank == "B7":
+        from .v2.b7 import synthetic_observation
+        return synthetic_observation(b7_outcome(strategy, case))
     if bank == "B1":
         if strategy == "empty":
             return _blank("answer", readable=True, clauses=[], relations=[])

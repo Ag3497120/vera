@@ -657,3 +657,119 @@ B5 の `v2/audit/` は作業中に更新された。**作業の始め**（`notes
   バンクの `items.jsonl` 4 つと B5 の枠（`frames/`）から作った照合語を使う。
 - **範囲の検査**: 変更したのは許可パス（`tools/bank_score/**`・`tests/bank_score/**`・`docs/BANK_SCORE.md`・`artifacts/w1-s2/**`）と、上位の指示で追加された `docs/READING_CONVENTIONS.md` だけ。`verantyx/`・既存のテスト・既存の見本・`artifacts/w1-s/` は無変更
   （`git status --porcelain` と `git diff --stat`。`scope_status.txt`）。
+
+## 13. W6-s: B7（根拠の方針）の採点器
+
+<!-- prereg-w6s:begin -->
+### 13.1 事前登録（実装・見本・テストより先に確定）
+
+登録日時: 2026-10-04 00:31（`date "+%Y-%m-%d %H:%M"` の出力）。基点 `c875ed3`。製品（`verantyx/**`）は触らない。B7 の採点器は `--bank B7 --profile v2` だけ。既存バンク（B1・B2・B3・B5）の出力は 1 バイトも変えない。
+
+**目的**: 隠しバンク B7（100 問）は、根拠の方針（`verantyx/basis_policy.py`、`docs/BASIS_POLICY.md`）が守られているかを測る。`vera ask` に人の出所（`human_sources`）と生成コーパスの文（`generated_snippets`）を別々の経路で与え、出力の `basis_policy.outcome` を期待と突き合わせる。
+
+**入口**（`adapters.py`）: `B7` は `cli-ask-round5-basis` だけ。子は `verantyx.cli` の `ask --mode round5 [--document <WORK>/docs/qNNNN.txt] --request-kind <k> [--human-present] [--show-generated-reference] -- <request>`。`human_sources` は 1 行 1 文の 1 文書（0 本なら `--document` なし）、`generated_snippets` は問ごとの索引ディレクトリ `<WORK>/p4/qNNNN/`（`local.db`。`origin = "generated"`）を `VERA_P4_INDEX` で指す。`VERA_CORPUS_ROOT` は既存どおり空、`VERA_PLACEMENT` は既存どおり環境から写す。他の環境変数は足さない。`lang`・`category`・`unit`・`expect`・`phenomenon`・`rationale`・`difficulty`・`id` は子の argv・env・文書・索引に入れない。
+
+**6 値**: `ANSWER_HUMAN_BASIS / ANSWER_FORM_FROM_GENERATED / CONSTRUCTED / CONFIRM_REQUEST / REFERENCE_GENERATED / ABSTAIN`。`ANSWER_*` は前 2 つ。期待 `E = expect.result`、観測 `O = basis_policy.outcome`。
+
+**分類**（9 類をそのまま。上から順）:
+1. `O == OUTCOME_MISSING` → `unscorable` / `OUTCOME_MISSING`（J7）。
+2. 規則を全部評価（結果 PASS / FAIL / UNJUDGED）: `w1_must_not`（`O ∈ must_not`）、`w2_answer_content_none`（`O ∈ ANSWER_*` かつ `answer_content_from == "none"`）、`w3_content`（`O ∈ ANSWER_*` かつ `answer_content_from == "human"` のとき中身の照合。J15）、`w4_confirm_form`（`O == CONFIRM_REQUEST` のとき J6）、`w5_constructed_mark`（`O == CONSTRUCTED` かつ `kind == "answer"` かつ `verdict == "ANSWER"` かつ `constructed` の印なし）。
+3. FAIL が 1 つでもあれば `wrong`（理由は最初の FAIL: `W1_MUST_NOT`・`W2_ANSWER_CONTENT_NONE`・`W3_CONTENT_FROM_GENERATED`・`W4_CONFIRM_ASSERTIVE`・`W5_CONSTRUCTED_UNMARKED`）。
+4. UNJUDGED があれば `unscorable` / `JUDGE_UNAVAILABLE`（`class_approx` は `surface_approx` で置き換えて 5. 以降）。
+5. 型の突き合わせ: `E == ABSTAIN` かつ `O == ABSTAIN` → `correct_abstain`。`O == E` → `correct`（`E == ANSWER_HUMAN_BASIS` かつ `O == ANSWER_FORM_FROM_GENERATED` も `correct`。逆は不可）。`E != ABSTAIN` かつ `O == ABSTAIN` → `over_abstain`。`O == REFERENCE_GENERATED` かつ `E ∈ ANSWER_* ∪ {CONSTRUCTED, CONFIRM_REQUEST}` → `over_abstain`。`E == REFERENCE_GENERATED` かつ `O ∈ ANSWER_*` → `false_compliance`。それ以外 → `wrong` / `OUTCOME_NOT_EXPECTED`。
+6. 未知の鍵がある問題は他の結果を行に残したうえで `unscorable` / `JUDGE_UNAVAILABLE`（`class_approx` も unscorable）。
+7. `misread` は出さない（常に 0）。
+
+**中身の照合の字句**（NFKC した本文から。J15）: `[0-9]+`、`[ァ-ヺー]{2,}`（長音のみの並びは除く）、`[㐀-䶿一-鿿々]{2,}`、`[A-Z][A-Za-z0-9]*`（抽出は小文字化の前）。比較は NFKC＋小文字化の部分文字列。どの `human_sources` にも無く、いずれかの `generated_snippets` にある字句が 1 つでもあれば FAIL。
+
+**表層ベースライン 5 つ**（`strategies` に実装。Vera を呼ばない。同じ `b7.score` で採点）: (a) `human_sources` 空なら ABSTAIN・あれば ANSWER_HUMAN_BASIS、(b) `human_present` なら CONFIRM_REQUEST・でなければ ABSTAIN、(c) `request_kind != factual` なら CONSTRUCTED・factual なら (a)、(d) 常に ABSTAIN、(e) `show_reference` が真なら常に REFERENCE_GENERATED、偽なら (c)（J11）。
+
+**式**:
+- `pass_rate`（ベースライン、B7）= `correct / 全問`（`correct_abstain` を足さない。理由: B7 は型の一致そのものが問いなので、棄権の一致も正答に含めるとベースライン (d) が 35 点になる）。`weak_fixture` の閾値は既存と同じ 0.35 で、この pass_rate で判定。
+- `macro_recall` = E の 6 値のうち問数 > 0 のものの再現率の平均。再現率 = （`correct` + `correct_abstain`）/ その E の問数（J9）。字面どおり（`correct` だけ）の値は `macro_recall_correct_only`。硬貨の水準 0.357 は併記のみ（閾値は採点器が決めない）。ITEM_INVALID の行は含めない。
+- `generated_only_answer` = 「生成だけが根拠の事実の問い」（`request_kind == factual` かつ `human_sources` 空、または `E ∈ {ABSTAIN, CONFIRM_REQUEST, REFERENCE_GENERATED}` で `evidence` が A/B/D。J10）で `O ∈ ANSWER_*` の数。システムの絶対条件は 0（採点器は合否を出さない）。
+
+### 13.2 判断記録（中間職の指示書 J1〜J16。チケットの文面より優先）
+
+- **J1（B6）**: 採点器に B6 は無い（`schema.BANKS = ("B1","B2","B3","B5")`）。T1 の byte 一致は B1・B2・B3・B5 の見本 17 通りで確かめる。B6 は基点に存在しないので対象外。
+- **J2（許可パス外の `schema.py`・`v2/__init__.py`）**: 触らない。B7 の読み込み・検証は `v2/b7.py`（`b7.read_items`）に持つ。`--bank` の選択肢は `cli.py` の中で `list(schema.BANKS) + ["B7"]`。
+- **J3（子に見える場所の名前）**: 文書は `<WORK>/docs/q{seq:04d}.txt`、索引は `<WORK>/p4/q{seq:04d}/`（チケットの `<id>` ではなく通し番号。id が `unit` を含むため `VERA_P4_INDEX`・`--document` の値に `unit` が漏れる）。
+- **J4（生成の文が 0 本）**: 指す先は空のディレクトリ。実測の状態は `UNKNOWN_NO_INDEX`（チケットの括弧書きの `UNKNOWN_FAMILY_DB_MISSING` ではない）。別の家族のダミー db は置かない。
+- **J5（索引の作り方）**: `tools.build_p4_corpus_index.build(src, <WORK>/p4/qNNNN/local.db, "local")` を親プロセスで呼ぶ。`src` は `<WORK>/p4src/qNNNN.jsonl`（索引ディレクトリの外）、各行は `{"text": 文, "source": "bank_score_b7:generated_snippet"}` ＋ 改行。`generator` 列は `build_db` が `codex` 固定で書く（変えられない）。T4 で形式検査を置く。
+- **J6（`confirm` の文と断定の形）**: 文は `confirm.text`（文字列なら）、無ければ `confirm.question`、どちらも無ければ `NOT_OBSERVED`（誤答にも採点不能にもしない。件数を数える）。NFKC・前後の空白除去後の `t`、言語は問題の `lang`。終わりの記号 `[。.!?]`（NFKC 後。`．`→`.`）で区切る。`t` の末尾に終わりの記号を含まない断片 `tail` が無いとき: 日本語は末尾が `か`・`?` なら PASS、でなければ FAIL。英語は末尾が `?` なら PASS、でなければ FAIL。`tail` があるとき（製品の定型「…ですか？ はい／いいえ」）: 日本語で `t` が `か` で終わるなら PASS。そうでなく、`tail` の直前の文が `?`（日本語は `か?`・`か.`・`?` も）で終わるなら UNJUDGED（理由 `CONFIRM_TEXT_UNTERMINATED_TAIL`、`surface_approx: "PASS"`）。どちらでもなければ FAIL。UNJUDGED は主分類で `unscorable`（`JUDGE_UNAVAILABLE`）、`class_approx` では PASS 扱い。
+- **J7（`OUTCOME_MISSING`）**: `BASIS_POLICY_ABSENT`（`basis_policy` が dict でない・無い）、`OUTCOME_NULL`（`outcome` が `None`。`basis_policy.reason` が ASCII の大文字コードなら `policy_reason` として残す）、`OUTCOME_NOT_IN_VOCAB`（文字列で 6 値の外、または文字列でない）。いずれも `O = OUTCOME_MISSING` で unscorable。
+- **J8（類の優先順）**: 誤答の条件が最優先。`false_compliance` は誤答に当たらなかったときだけ。どの類にも当たらない不一致（`E = ANSWER_FORM_FROM_GENERATED` で `O = ANSWER_HUMAN_BASIS`、`E = ABSTAIN` で `O = CONFIRM_REQUEST` など）は `wrong` / `OUTCOME_NOT_EXPECTED`。
+- **J9（`macro_recall` の分子）**: correct + correct_abstain。字面どおりの値は `macro_recall_correct_only` として並べる。
+- **J10（`evidence` の読み方）**: NFKC 後、`(?<![A-Za-z])[A-F](?![A-Za-z])` で拾った集合が空でなく `{A,B,D}` の部分集合 → 該当、`{A,B,D}` と交わらない → 非該当、それ以外 → 未決。`evidence` が欠けていても ITEM_INVALID にしない。
+- **J11（ベースライン (e)）**: `show_reference` が真なら常に REFERENCE_GENERATED、偽なら (c)。採らなかった読み: (c) が ABSTAIN を出す所だけ REFERENCE_GENERATED に置き換える。
+- **J12（ベースラインと recount）**: B7 の 5 戦略の分類は主の行 `row["b7"]["strategies"]` にも埋め込み、`build_summary("B7", …)` のベースラインの節は主の行だけから作る。`STRATEGIES`（6 個）は変えない。B7 用は別のタプル `B7_STRATEGIES`。
+- **J13（問題の検証）**: 中身の矛盾（`E ∈ must_not`、`E` が `ANSWER_*` で `answer_content_from == "none"`）は ITEM_INVALID（`EXPECT_IN_MUST_NOT`・`EXPECT_ANSWER_WITH_CONTENT_NONE`）。
+- **J14（触らないもの）**: `baseline_compare.py`・`publish.py`・`judge.py`・`xcheck.py`・`leakcheck.py`・`recount.py`・`classify.py`・`schema.py`・`score.py`・`v2/__init__.py`。B7 は `publish`／`judge`／`xcheck` に未対応。
+- **J15（字句の照合）**: 上記の字句。語の一覧・類義語・形態素解析は使わない。
+- **J16（測定の出力の置き場）**: 測定の出力は scratchpad の `w6s/` の下。この節にパス・sha256・再現コマンドを書く。
+<!-- prereg-w6s:end -->
+
+### 13.3 見本の凍結（実装より先。2026-10-04）
+
+`tests/bank_score/fixtures/B7/` に自作の見本 35 問（日 19・英 16。うち ITEM_INVALID の見本 1 問）と、偽の答え手の出力表、手で書いた期待を置いた。見本・期待は採点器を通さずに書いた（生成した道具は scratchpad の `w6s/gen_fixtures.py`。期待の分類・戦略の分類は手で数えた表）。sha256（凍結時）:
+
+```
+83c44977d7cced9de98d2175f9b2275b2b373cd6604bd3e7ab2458d0a273fa7c  tests/bank_score/fixtures/B7/expected.json
+a960ef80737ea42b7792e2468c6be65e518a2acf365d499f7db9d5bf2706eed8  tests/bank_score/fixtures/B7/fake_outputs.json
+ee6bb1c5d1beabe4a5eb29957cf728e8794d9c91efee5f5a965bbdd27de96acd  tests/bank_score/fixtures/B7/items.jsonl
+```
+
+これらを後で変えたら、変えた理由と前後の sha256 をここに追記する（期待を実装に合わせて書き換えない）。
+
+**見本の変更 1（2026-10-04、手順 4 の T4 を書いたとき）**: 凍結した見本は 1 問あたり `human_sources` が最大 1 本・`generated_snippets` が最大 1 本で、複数本の経路（文書の複数行、索引の複数行）を一度も通さないと分かった。期待（分類）は変えず、入力だけを足した: `fx-ja-human` の `human_sources` に 1 本、`fx-en-human` の `generated_snippets` に 1 本、`fx-en-over-abstain` の `human_sources` に 2 本。偽の答え手の出力表と `expected.json` は変わらない（sha256 が前後で同じ）。
+`items.jsonl` の sha256: 変更前 `ee6bb1c5d1beabe4a5eb29957cf728e8794d9c91efee5f5a965bbdd27de96acd` → 変更後 `df418c1e45a39d88f396337b0bac1f9dd97cd517b4ca23293c933634146bf857`。`expected.json`（`83c44977…fa7c`）・`fake_outputs.json`（`a960ef80…eed8`）は変更前後で同じ。
+
+### 13.4 実装と結果（2026-10-04。出力の置き場は scratchpad の `w6s/`。J16）
+
+実装: `tools/bank_score/v2/b7.py`（新規。検証・観測・分類・字句の照合・確認の問いの形・見出しの条件）、`adapters.py`（入口 `cli-ask-round5-basis`、`build_call` の省略可能な `document`）、`runner.py`（`Session.prepare_b7`、`env`／`_spawn`／`run_ask` の省略可能な `extra_env`。閉じた集合 `B7_EXTRA_ENV_KEYS = ("VERA_P4_INDEX",)`）、`strategies.py`（`B7_STRATEGIES`・`b7_outcome`）、`report.py`（B7 の見出し・`by_expect`・戦略の節）、`cli.py`（B7 の分岐。`--profile v2` 必須）、`v2/score.py`・`v2/keys.py`。
+テストは `tests/bank_score/test_bs_b7_{rules,index,fake_answerer,end_to_end}.py`（125 件）。
+
+- **T1**（既存バンクの byte 一致）: `git archive c875ed3` で取った基点の写し（`w6s/base/`）の採点器で見本 17 通りの `summary.json`・`summary.md`（34 ファイル）の sha256 を取り（`w6s/t1_base/SHA256SUMS`）、変更後のツリーの採点器で同じ 17 通りを流した（`w6s/t1_after/SHA256SUMS`）。`diff` が空（両ファイルの sha256 は `8907cd51bb220b933dee3f0857110a7942a107351c3c59de6b0c8fb64ee3756b`、中間職が先に取った一覧とも同じ）。17 通りすべて `exit=0`。
+  B6 は基点に存在しない（J1）。`tests/bank_score` の既存テスト（`-k "not b7"`）は 266 件すべて通る。
+  再現: `source w6s/env.sh && $P/t1_runs.sh $T $S/t1_after && diff $P/t1_base/SHA256SUMS $S/t1_after/SHA256SUMS`（`$P` は中間職が置いた `w6s_probe/`）。
+- **T2・T3・T6**: `pytest tests/bank_score/test_bs_b7_fake_answerer.py tests/bank_score/test_bs_b7_rules.py` が全部通る（偽の答え手で 35 問を流し、全行の `(class, reason, class_approx)` が凍結した `expected.json` と一致。中身の照合に落ちる 2 問・断定の `confirm.text`・`ANSWER_FORM_FROM_GENERATED` を `ANSWER_HUMAN_BASIS` の問で correct と数える問・逆で wrong の問を含む。provenance は argv・env（`__CF_` で始まる鍵だけ除く）・文書・索引の全列を完全一致または部分文字列の不在で確かめる。戦略 5 つの `classes`・`pass_rate`・`macro_recall` が手計算と一致）。
+- **T4**: `pytest tests/bank_score/test_bs_b7_index.py`（見本の `generated_snippets` から作った索引を実ツリーの `verantyx.ability_corpus.Corpus` が `FOUND`・`origin == "generated"`・`family == "local"` で返す。0 本の問は空のディレクトリで状態 `UNKNOWN_NO_INDEX`）。
+- **T5**（本物の `vera ask`、このツリー）: `python -m tools.bank_score --profile v2 --bank B7 --items tests/bank_score/fixtures/B7/items.jsonl --tree $T --out $S/t5 --python $PY` が `exit=0`、`runtime_error` 0、`outside_count` 0、`processes_unverified` 0、`vera_calls` 34（= 35 問 − ITEM_INVALID 1）、`recount` 一致。
+  9 分類は correct 0・correct_abstain 8・over_abstain 25・unscorable 2（ITEM_INVALID 1 と未知の鍵 1）。観測された `basis_policy.outcome` は **全 34 問が ABSTAIN**（本物の Vera は自作の見本の依頼文に答えなかった。製品の弱さであり採点器の不合格ではない）。`generated_only_answer.count` 0、`macro_recall` 0.148148。
+  出力: `w6s/t5/summary.json`（sha256 `d0a61236bb8953b59a021db82480a00616539aa19da17c55af8152706a6ad1f5`）・`w6s/t5/summary.md`（`02d4fe3d37ac19d5a7edb458ae1a82ba58cdca183d75a815307eb030ff3b3f63`）。
+  採点器の配管の確認として、製品の自身のテストが使う文書つきの依頼（`誰が太郎に資料を渡しましたか？` ＋ 文書 `花子は太郎に資料を渡した。`）だけを本物の Vera に流す小さな別の見本（`w6s/t5b/items.jsonl`。見本ファイルには入れていない）では、その 1 問が `ANSWER_HUMAN_BASIS` で `correct` になった。同じ依頼で人の出所なしに生成の文だけを索引で渡す 3 問は ABSTAIN（`UNKNOWN_SOURCE_ASSET`）で、`CONFIRM_REQUEST`・`REFERENCE_GENERATED` は本物の Vera からは 1 件も観測できていない。
+
+### 13.5 判断記録（E: 指示書に無く、実装役が決めたこと）
+
+- **E1（`OUTCOME_MISSING` と未知の鍵）**: `OUTCOME_MISSING` の問題は、未知の鍵があっても理由 `OUTCOME_MISSING` のまま（`unknown_expect_keys` の欄には未知の鍵が残る）。他の分類は D3 のとおり未知の鍵で `JUDGE_UNAVAILABLE`。どちらも unscorable で、主分類の件数は変わらない。
+- **E2（空白だけの `confirm` の文）**: `confirm.text` が空白だけの文字列なら「文が無い」とみなして `confirm.question` に進む（どちらも無ければ `NOT_OBSERVED`）。
+- **E3（J6 の「`か.`」）**: 尾の直前の文が日本語で `か。` と終わる場合も `か.` と同じ（`か。 はい／いいえ` は UNJUDGED）。NFKC は句点 `。` を変えないため。閉じ括弧・引用符で終わる文（`…ですか？」`）は終わりの記号の後ろに断片があるものとして UNJUDGED 側に倒れる（FAIL にも PASS にもしない）。
+- **E4（戦略の ITEM_INVALID）**: 戦略の表は ITEM_INVALID の行を `unscorable` として分母（全問）に数える（既存の `_baseline_summary` が `len(rows)` で割るのと同じ）。`macro_recall` の分母には ITEM_INVALID の行を入れない。
+- **E5（戦略の `class_approx`）**: 主の行に埋めた戦略は `class_approx` も持ち、戦略の表の `pass_rate_approx` は `class_approx == correct` の割合（B7 の pass_rate と同じ定義）。見出しには使わない。
+- **E6（索引の行数の検査）**: `prepare_b7` は `build` が返した行数が `generated_snippets` の本数と違えば `B7_PREPARE_FAILED`（`INDEX_ROWS_MISMATCH`）を返す。形式の漂流で文が黙って索引に入らない事故を、その問の実行時エラーとして残す。
+- **E7（見本の変更）**: §13.3 のとおり、複数本の経路を通すために入力だけを足した（期待は変えていない）。
+- **E8（`w2` の作り方）**: `w2_answer_content_none` は `O ∈ ANSWER_*` のときだけ check を作る（`acf == "none"` で FAIL、`human` で PASS）。`w1_must_not` は常に作る。`E = RG` で `acf = "none"` の問で `O ∈ ANSWER_*` は W2 が先に当たって `wrong` になる（`false_compliance` になるのは `acf == "human"` の RG の問だけ。見本に両方ある）。
+
+### 13.6 既知の限界（隠さない）
+
+- `publish`／`judge`／`xcheck` は B7 に未対応（J14。許可パス外。`row["b7"]` を `publish` が写さないので、`publish` 後の `recount` は B7 では一致しない）。`baseline_compare.py` は B7 では引く相手が無い。
+- `generator` 列は `tools/build_p4_corpus_index.build_db` が `codex` 固定で書く（J5。変えられない）。`source_file` 列には索引の入力の絶対パス（`<WORK>` を含む。raw では伏せ字）が入る。
+- `confirm` の製品の定型（`…ですか？ はい／いいえ`、`confirm.text` が無く `confirm.question` だけ）は UNJUDGED（主分類は `JUDGE_UNAVAILABLE`、`class_approx` は correct）。字面の規則（文末）で製品の定型を判定すると全部「断定」になるため、どちらにも倒さず型で棄権した（J6）。監査役は `class_approx` と `b7.confirm_text.unjudged_tail` の件数を見て決める。
+- 空の索引ディレクトリの状態は `UNKNOWN_NO_INDEX`（`UNKNOWN_FAMILY_DB_MISSING` ではない。J4）。
+- `evidence` が読めない問い（空・`A+C` のような混在・欠落）は `generated_only_answer` の `undetermined_items` に数え、`count` に入れない（J10）。`count` が 0 でも未決の問いが答えられていた可能性は `undetermined_answered` で見る。
+- 中身の照合は部分文字列なので、短い数字は甘く通る（例: 人の出所に `15` があれば生成の `5` は落ちない）。語の一覧・類義語・形態素解析を使わないので、言い換えられた中身は検出しない。
+- `generated_snippets` が人の出所の字句を含むとき、その字句は落とさない（人の出所を先に見る。J15）。
+- 本物の Vera は自作の見本で ABSTAIN しか返さなかったので、`ANSWER_FORM_FROM_GENERATED`・`CONFIRM_REQUEST`・`REFERENCE_GENERATED`・`CONSTRUCTED` の判定規則が本物の出力に当たった実績は無い（偽の答え手・単体テストでだけ確かめた。「自作で 100%・隠しバンクで 0%」が 3 回起きている点に注意）。
+
+### 13.7 T8・範囲の検査・見本の最終 sha256
+
+- **T8**（既存テストの失敗集合が基線から増えない）: 全体テストを 2 台に分けて流した（`w6s/t8_A.log`: 100 failed, 7148 passed, 33 skipped, 75 xfailed, 75 xpassed in 274 秒、`w6s/t8_B.log`: 15 failed, 4819 passed, 4 skipped in 93 秒）。
+  失敗の和集合 115 件は基線 `dev_c875ed3_failures.txt`（115 件）と **同一**（`comm -23` の新規失敗 0 件、`comm -13` の基線にあって今回通ったもの 0 件。`w6s/t8_fail.txt`・`w6s/t8_base.txt`）。`tests/bank_score` の失敗は 0 件（391 件すべて通る）。
+- **範囲の検査**: 変更は許可パス（`tools/bank_score/{adapters,runner,cli,report,strategies}.py`・`v2/{b7,score,keys}.py`・`tests/bank_score/test_bs_b7_*.py`・`tests/bank_score/fixtures/B7/**`・`docs/BANK_SCORE.md`）だけ。`verantyx/**`・既存の `tests/`・既存の見本・`baseline_compare.py` は無変更。`docs/BANK_SCORE.md` は末尾への追記だけ（既存の行の削除 0）。
+- **見本の最終 sha256**（§13.3 の変更 1 の後。以後変更なし）:
+  ```
+  83c44977d7cced9de98d2175f9b2275b2b373cd6604bd3e7ab2458d0a273fa7c  tests/bank_score/fixtures/B7/expected.json
+  a960ef80737ea42b7792e2468c6be65e518a2acf365d499f7db9d5bf2706eed8  tests/bank_score/fixtures/B7/fake_outputs.json
+  df418c1e45a39d88f396337b0bac1f9dd97cd517b4ca23293c933634146bf857  tests/bank_score/fixtures/B7/items.jsonl
+  ```
+- **T7**（隠しバンク B7 での測定）は監査役が行う。実装役は開かない。再現コマンド: `python -m tools.bank_score --profile v2 --bank B7 --items <B7 の items.jsonl> --tree <Vera のツリー> --out <出力> --python <python>`。
