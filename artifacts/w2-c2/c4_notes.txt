@@ -1,0 +1,9 @@
+C4 (第 2 ラウンド。全体試験を基点の書き出し全体で 1 回 = c4_before.txt、変更後で 1 回 = c4_after.txt):
+  基点の書き出し(git archive 5cae978 全体、.git 無し): 128 失敗 / 変更後: 117 失敗。基線ファイル(115 件)に無い失敗 = c4_new_failures.txt の 3 件。
+  変更後にだけあって、基点の書き出しの失敗集合に無いもの = c4_new_vs_before.txt の 1 件:
+  1. tests/test_conduct_ask_cli.py::test_markdown_and_jsonl_frames_give_the_same_decisions  (本当の新規失敗。w2c-f05-13。docs §10 115)
+  基線に無いが基点の書き出しでも落ちるもの(この変更と無関係):
+  2. tests/bank_score/test_bs_end_to_end.py::test_s6_...: tools/bank_score/cli.py が `git status --porcelain -- verantyx` の空を要求。verantyx/ が未コミットなら落ちる。コミット後に通るかは未確認。
+  3. tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread: 基点の書き出しでも落ちる(環境差と見る。原因は調べていない)。
+  第 1 ラウンドの新規失敗だった test_a_value_that_matches_but_whose_subject_is_not_asked_is_not_an_answer は通る(M2)。
+  基点の書き出しの失敗が基線より 13 多い(128 対 115)のは .git が無いことや環境差と見るが、原因は調べていない。c4_fixed_vs_before.txt = 基点の書き出しで落ちて変更後に通る 12 件(test_event_cross_entry の試験名が「基点のコミットと同じ答え」で、.git の無い書き出しで落ちる見込み。未確認)。

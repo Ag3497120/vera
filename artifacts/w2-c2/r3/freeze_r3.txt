@@ -1,0 +1,3 @@
+8369aa6666c319dd00bfd9c67b7e97a187520a20de1abdea13eff390faa5c601  tests/conduct_ask/w2c2/r3_sentences.jsonl
+01858991ecab0755d2102d7fc2607944a3614ca0f41a4603e229d1cf0915f5b9  tests/conduct_ask/w2c2/r3_scripts/good_d3.json
+90d957616d9d1602209fdf3cd698859ce753c8447eb4edf0da0d0b2127c7f45d  artifacts/w2-c2/r3/sentences_base.jsonl

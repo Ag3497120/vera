@@ -1,0 +1,36 @@
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Can I edit the file logs/firing.csv?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST May we modify the config file config/reader.yaml?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Is it ok to overwrite logs/firing.csv?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Can we save the report as out/report.txt?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Would it be ok to write the output to out/report.txt?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Is it fine to put the new readings into data/readings.csv?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Can I replace data/readings.csv with a new one?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST May I append a line to logs/firing.csv?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Can we copy the data to backup/data.csv?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Could we dump the readings in dumps/r.csv?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Can we rename logs/a.csv to logs/b.csv?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST May we move the old log to archive/old.csv?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Is it OK to log the readings to logs/new.csv?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Can I write the batch label into labels/b1.txt?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Are we allowed to touch docs/guide.md?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Is it fine to change the header in docs/guide.md?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST May I fix the typo in docs/guide.md?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Can we update the numbers inside reports/firing.csv?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Would it be OK to generate reports/new.csv?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST Is it ok if I add a row to data/readings.csv?
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST logs/firing.csv を編集してもよいですか？
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST config/reader.yaml を書き換えてもよいですか？
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST out/report.txt に結果を保存してもよいですか？
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST data/readings.csv に追記してもよいですか？
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST data/readings.csv の中身を直してもよいですか？
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST logs/a.csv を logs/b.csv にコピーしてもよいですか？
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST logs/old.csv を archive/ へ移動してもよいですか？
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST 報告書を reports/new.csv に出力してもよいですか？
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST reports/new.csv を生成してもよいですか？
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST 保存先を out/logs に変えてもよいですか？
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST logs/firing.csv にデータを書き込んでもよいですか？
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST docs/guide.md の見出しを変更してもよいですか？
+ANSWER!! off=FRAME_SILENT/NO_RECORD_DECIDES map=None/None docs/guide.md を修正しても大丈夫ですか？
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST docs/guide.md を更新しても問題ないですか？
+ok       off=FRAME_SILENT/NO_ALLOWLIST map=FRAME_SILENT/NO_ALLOWLIST notes/a.txt を消してもよいですか？
+ANSWERS 1

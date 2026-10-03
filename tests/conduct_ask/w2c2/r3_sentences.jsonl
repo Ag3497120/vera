@@ -1,0 +1,78 @@
+{"id": "r3s-fp-01", "frame_id": "z01_seedswap", "question": "種の発送サービスは、今回の範囲に入らないのですか？", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-02", "frame_id": "z03_festival", "question": "当番表の印刷は、しなくてもよいですか？", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-03", "frame_id": "z02_photos", "question": "原本の貸し出しは、認めないという理解で合っていますか？", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-04", "frame_id": "z01_seedswap", "question": "種の発送サービスは、今回の範囲に入れないほうがよいですか？", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-05", "frame_id": "z04_kiln", "question": "Is the glaze recipe library not in scope?", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-06", "frame_id": "z06_choir", "question": "Isn't carpool matching out of scope?", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-07", "frame_id": "z05_tideclock", "question": "Is it true that the moon phase icon is not in scope?", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-08", "frame_id": "z06_choir", "question": "Are we sure that carpool matching is not in scope?", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-09", "frame_id": "z04_kiln", "question": "Which log file layout should we avoid, CSV or JSON?", "options": ["CSV", "JSON"], "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-10", "frame_id": "z06_choir", "question": "Should we write the reminder sender rather than the attendance sheet first?", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-11", "frame_id": "z03_festival", "question": "今回の範囲から除外するのは、屋台の出店料の集金ですか？", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-12", "frame_id": "z01_seedswap", "question": "当日の来場者の人数集計以外はすべて範囲外ですか？", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-13", "frame_id": "z01_seedswap", "question": "種の発送サービスは、今回の範囲に含めなくても大丈夫ですか？", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-14", "frame_id": "z01_seedswap", "question": "種の発送サービスは、今回の範囲に含めずに進めてよいですか？", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-15", "frame_id": "z01_seedswap", "question": "種の発送サービスを入れないで進めても差し支えないですか？", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-16", "frame_id": "z01_seedswap", "question": "種の発送サービスを入れないで進めても OK ですか？", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-17", "frame_id": "z01_seedswap", "question": "種の発送サービスは、なくても問題ないですか？", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-18", "frame_id": "z01_seedswap", "question": "種の発送サービスは範囲に含めない、で合っていますか？", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-19", "frame_id": "z04_kiln", "question": "Is it OK if we don't include the glaze recipe library?", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-20", "frame_id": "z04_kiln", "question": "Is it alright if we do not build the kiln door sensor?", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-21", "frame_id": "z04_kiln", "question": "Would it be a problem if we didn't build the kiln door sensor?", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-22", "frame_id": "z04_kiln", "question": "Would it hurt if we never build the kiln door sensor?", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-23", "frame_id": "z04_kiln", "question": "Is it fine if the glaze recipe library isn't part of the first version?", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-24", "frame_id": "z04_kiln", "question": "We don't need the glaze recipe library, right?", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-25", "frame_id": "z04_kiln", "question": "The glaze recipe library isn't in scope, is it?", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-26", "frame_id": "z04_kiln", "question": "The glaze recipe library is not in scope, correct?", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fp-27", "frame_id": "z04_kiln", "question": "We should avoid the glaze recipe library, right?", "options": null, "origin": "test_form_trap_with_positive_evidence"}
+{"id": "r3s-fn-01", "frame_id": "z01_seedswap", "question": "当日の順番表を作る前に、登録フォームができていなければなりませんか？", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-02", "frame_id": "z02_photos", "question": "閲覧用のアルバムを組む前に、撮影日の一覧を作っておかなくてはいけませんか？", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-03", "frame_id": "z02_photos", "question": "取り込みの解像度は六百dpiのはずですが、合っていますか？", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-04", "frame_id": "z01_seedswap", "question": "当日の来場者の人数集計は、思いのほか手間はかかりませんが、今回の範囲に入りますか？", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-05", "frame_id": "z04_kiln", "question": "Is the kiln door sensor in scope, yes or no?", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-06", "frame_id": "z05_tideclock", "question": "Is the moon phase icon in scope, whether or not the budget grows?", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-07", "frame_id": "z04_kiln", "question": "Is the batch label printer, which is not built yet, supposed to be finished before the firing report?", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-08", "frame_id": "z06_choir", "question": "Which should we use for confirmation: a web form, or a channel that does not need a login?", "options": ["a web form", "a channel that does not need a login"], "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-09", "frame_id": "z02_photos", "question": "傷や汚れを取り除く前に、取り込みの手順は決まっている必要がありますか？", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-10", "frame_id": "z02_photos", "question": "撮影日の一覧を作る前に、傷や汚れを取り除く必要がありますか？", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-11", "frame_id": "z03_festival", "question": "最悪の場合でも、当番の登録画面は当番の時間の区切りが決まってから作りますか？", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-12", "frame_id": "z04_kiln", "question": "Is the kiln door sensor in scope, at least for the first release?", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-13", "frame_id": "z05_tideclock", "question": "Is the moon phase icon in scope even for the worst-case harbour display?", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-14", "frame_id": "z01_seedswap", "question": "種の発送サービスは、今回の範囲に含めずに、後で決めます。範囲に入りますか？", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-15", "frame_id": "z01_seedswap", "question": "種の発送サービスは、手間をかけずに作れますか？", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-16", "frame_id": "z04_kiln", "question": "Is the kiln door sensor in scope, even though nobody has set it up yet?", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-17", "frame_id": "z04_kiln", "question": "Since we won't open before spring, is the glaze recipe library in scope?", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-18", "frame_id": "z04_kiln", "question": "Is it ok to include the glaze recipe library if we have the time?", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-19", "frame_id": "z04_kiln", "question": "Can we ship the report, if the readings are right?", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-20", "frame_id": "z01_seedswap", "question": "最悪の場合は、登録フォームのデザインを変えてもよいですか？", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-fn-21", "frame_id": "z04_kiln", "question": "If we skip the pilot, should the temperature reader keep a spare log?", "options": null, "origin": "test_form_trap_without_positive_evidence_is_none"}
+{"id": "r3s-pt-01", "frame_id": "z04_kiln", "question": "Can I edit logs/firing.csv?", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-02", "frame_id": "z06_choir", "question": "Am I allowed to change settings.json?", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-03", "frame_id": "z04_kiln", "question": "Is it ok to write to data/readings.csv?", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-04", "frame_id": "z01_seedswap", "question": "docs/guide.md を編集してもよいですか？", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-05", "frame_id": "z03_festival", "question": "src/main.py を更新してもよいですか？", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-06", "frame_id": "z06_choir", "question": "May the sheet layout be by voice part, e.g. sopranos first?", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-07", "frame_id": "z04_kiln", "question": "Can the log file layout be CSV, as in export.csv?", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-08", "frame_id": "z01_seedswap", "question": "当日の連絡手段は、掲示板（例：board.html）でよいですか？", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-09", "frame_id": "z04_kiln", "question": "Is it ok to update the file logs/firing.csv?", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-10", "frame_id": "z04_kiln", "question": "May we modify the file logs/firing.csv?", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-11", "frame_id": "z04_kiln", "question": "Can we save the firing report to out/report.txt?", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-12", "frame_id": "z04_kiln", "question": "Is it ok to append the new readings to data/readings.csv?", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-13", "frame_id": "z04_kiln", "question": "May we overwrite config/reader.yaml?", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-14", "frame_id": "z04_kiln", "question": "Can we export the batch labels into exports/labels.csv?", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-15", "frame_id": "z01_seedswap", "question": "notes/list.txt に追記してもよいですか？", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-16", "frame_id": "z01_seedswap", "question": "out/order.txt に保存してもよいですか？", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-17", "frame_id": "z01_seedswap", "question": "config/seed.yaml を上書きしてもよいですか？", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-18", "frame_id": "z01_seedswap", "question": "順番表を cards/order.pdf に出力してもよいですか？", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-19", "frame_id": "z01_seedswap", "question": "notes/list.txt へ書き出してもよいですか？", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-20", "frame_id": "z01_seedswap", "question": "保存先は out/logs にしてもよいですか？", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-21", "frame_id": "z04_kiln", "question": "May we include the label printer, e.g. printer.py, in this build?", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-22", "frame_id": "z04_kiln", "question": "Can we ask the studio about plan.md?", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-pt-23", "frame_id": "z01_seedswap", "question": "当日の連絡手段は、掲示板（board.html）でよいですか？", "options": null, "origin": "test_a_path_is_a_write_target_only_right_after_or_before_a_write_verb"}
+{"id": "r3s-gh-01", "frame_id": "z01_seedswap", "question": "会場に来た人の数を数えるのは、今回やらないのですか？", "options": ["はい", "いいえ"], "origin": "test_the_gate_hands_up_a_mapped_answer_to_a_question_with_positive_evidence", "script": "good_d3"}
+{"id": "r3s-gh-02", "frame_id": "z01_seedswap", "question": "会場に来た人の数を数えるのをやめるのは、今回の方針として正しいですか？", "options": ["はい", "いいえ"], "origin": "test_the_gate_hands_up_a_mapped_answer_to_a_question_with_positive_evidence", "script": "good_d3"}
+{"id": "r3s-gh-03", "frame_id": "z04_kiln", "question": "Isn't the sensor on the oven door among the things we build?", "options": ["Yes", "No"], "origin": "test_the_gate_hands_up_a_mapped_answer_to_a_question_with_positive_evidence", "script": "good_d3"}
+{"id": "r3s-gh-04", "frame_id": "z04_kiln", "question": "Do we skip the sensor on the oven door?", "options": ["Yes", "No"], "origin": "test_the_gate_hands_up_a_mapped_answer_to_a_question_with_positive_evidence", "script": "good_d3"}
+{"id": "r3s-gp-01", "frame_id": "z01_seedswap", "question": "会場に来た人の数を数えることは、今回やっておかなければなりませんか？", "options": ["はい", "いいえ"], "origin": "test_the_gate_lets_a_mapped_answer_through_when_there_is_no_positive_evidence", "script": "good_d3"}
+{"id": "r3s-gp-02", "frame_id": "z04_kiln", "question": "Is the sensor on the oven door among the things we build, yes or no?", "options": ["Yes", "No"], "origin": "test_the_gate_lets_a_mapped_answer_through_when_there_is_no_positive_evidence", "script": "good_d3"}
+{"id": "r3s-gp-03", "frame_id": "z04_kiln", "question": "Is the sensor on the oven door among the things we build, whether or not it is cheap?", "options": ["Yes", "No"], "origin": "test_the_gate_lets_a_mapped_answer_through_when_there_is_no_positive_evidence", "script": "good_d3"}

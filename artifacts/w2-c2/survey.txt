@@ -1,0 +1,87 @@
+W2-c2 手順 2-1: 5 つの罠の基点（5cae978）での発火条件と、誤って発火しうる質問の調査
+(コードを 1 字も変える前に書いた。行番号は基点の verantyx/conduct_ask.py。新データは tests/conduct_ask/w2c2/items.jsonl、基点での発火の確認は artifacts/w2-c2/base/)
+
+============================================================
+共通: 罠が上がる場所と、対応づけ（conduct_map.resolve）に回るかどうか
+------------------------------------------------------------
+- 対応づけに回るのは、規則の結果が答えか、conduct_map.RETRY_ALLOWED にある型だけ
+  （VOCAB_UNMAPPED は detail を問わず全部、FRAME_SILENT は NO_RECORD_DECIDES 系だけ、QUESTION_UNREADABLE は PREDICATE_UNREADABLE など 4 つだけ）。
+- 5 つの罠のうち、TERM_IN_WIDER_PHRASE（FRAME_SILENT）、NEGATED_QUESTION・INVERTED_QUESTION（QUESTION_UNREADABLE）、BUILTIN_PROTECTED（HUMAN_APPROVAL_REQUIRED）、
+  NO_ALLOWLIST（FRAME_SILENT）はどれも RETRY_ALLOWED に無い。基点では、罠が当たった問は mapping.outcome = NOT_ASKED:RULE_ESCALATION_NOT_RETRIED（照会 0）。
+
+============================================================
+1. TERM_IN_WIDER_PHRASE (FRAME_SILENT)
+------------------------------------------------------------
+発火条件（基点）: _is_wider (658 行) が当たった語に m.wider を立て、_decide (2601〜2607 行) が、禁止・保護の語が無いときに上げる。
+  日本語: 語の直後が _JA_RIGHT_DENY / 『の』＋_JA_RIGHT_NO に無い語 / 許す文字以外 のとき、または語の直前が助詞・句読点でないとき、または『X の 語』の X が閉じた指示語でも枠の語でもないとき。
+  英語: 語の直前の語が機能語の表に無い（動詞・動名詞は動詞の位置でなければ）とき、または語の右に _EN_RIGHT_STOP 以外の語が続くとき。
+  どちらも形だけで、その長い語句が別の指示対象かどうかは見ていない。
+誤って発火しうる質問（同じものを指す長い語句）— 自作の 15 文（新データ WIDER/route）から:
+  - 工程名・設定名の右に『づくり』『の作成』『の設定』『の取り込み』『の選択』（日本語。名詞化や手続き名を足しただけで同じ対象）
+  - 右に『work』『step』『feature』『design』『setup』『setting』（英語。同上）
+  - 左に『いまの』『current』（今の対象を指す言い回しだが閉じた指示語の表に無い）
+  - どれも答えは枠から決まる（順序・範囲・選択・値）。基点では 15 文すべて TERM_IN_WIDER_PHRASE で上がった。
+別の対象かもしれないが証拠が無い文（transfer 6 文）: 『予備の』『次回の』『別の』『backup』『legacy』『secondary』。
+書けなかったもの: なし。
+
+============================================================
+2. NEGATED_QUESTION (QUESTION_UNREADABLE)
+------------------------------------------------------------
+発火条件（基点）: layer_negation (997 行) が、枠の語を含む文のどこかに _negated() = _NEG_JA（ない|ません|なかった|なく(?!とも)|ず(?!っ)）または _NEG_EN（not never no cannot n't …）を見つけたら上げる。
+  語彙外の経路 (2894) と mapping_gate (2791) は質問全体を見る。
+誤って発火しうる質問（否定ではない・主述語にかからない）— 自作の 16 文（新データ NEGATED/route）から:
+  - 義務の形『〜なければなりませんか』『〜なくてはいけませんか』『〜ないといけませんか』の『ません』『ない』（義務の問いで否定ではない）
+  - 『ずつ』『はず』の『ず』、副詞『例外なく』の『なく』、従属節『手間はかかりませんが』『直前でなくても』の否定
+  - 英語: 『yes or no』の no、『whether or not』の not、従属の句『no matter how small』、肢の説明の中の『does not』『doesn't』、挿入の関係節『which is not built yet』、従属の条件節『if there is no other blocker』
+  - どれも答えは枠から決まる。基点では 16 文すべて NEGATED_QUESTION で上がった。
+否定の証拠が無い文（transfer 6 文）: 『ログインしない案』『住所を載せない形式』『通知音の鳴らない設定』、'a mode that never overwrites'、'the option that doesn't show'、'a buzzer that does not need'。
+書けなかったもの: なし（英語の誤発火も書けた）。
+
+============================================================
+3. INVERTED_QUESTION (QUESTION_UNREADABLE)
+------------------------------------------------------------
+発火条件（基点）: layer_negation (1004) が、同じ範囲に _INVERT_CUE（avoid exclude except drop reject skip without unlike instead of rather than worst least / 避け 除外 除く やめ 外す 以外 最悪 最も不要）を見つけたら上げる。
+  語の境界は英語のみ（\b）。日本語は部分文字列。
+誤って発火しうる質問 — 自作の 10 文（新データ INVERTED/route）から:
+  - 工程名の中の『取り除く』の『除く』（枠自身の語）
+  - 条件節の『最悪の場合でも』
+  - 英語: 『at least』の least、『worst-case』の worst
+  - どれも答えは枠から決まる。基点では 10 文すべて INVERTED_QUESTION で上がった。
+証拠が無い文（transfer 6 文）: 条件節の『最悪の場合は』『除外する場合は』『外す場合は』、英語の従属節の 'skip'、比較節の 'unlike'、条件の 'without'。
+書けなかったもの: なし。
+
+============================================================
+4. BUILTIN_PROTECTED (HUMAN_APPROVAL_REQUIRED)
+------------------------------------------------------------
+発火条件（基点）: _builtin_protected (1616 行) = _PERM_CUE と _BUILTIN_PROTECTED が質問全体のどこかにある。使う場所は 3 つ: _layer_permission (1916。枠の語が無くパスがあるとき)、
+  2881（枠の語は当たったがどの層も決めなかったとき）、2886（枠の語が 1 つも無いとき）。conduct_map.resolve の引数 (2828) にも渡される（対応づけの出口の安全網。今回は変えない）。
+誤って発火しうる質問 — 自作の 11 文（新データ BUILTIN/route）から:
+  - 保護された語が名詞・題材・背景: 『公開される日』『削除用のボタン』『お金の支払いの様子が分かる画面』『公開の掲示板』、'password reset page' 'purchase orders' 'release notes page' 'the release is next week' 'stickers we pay for' 'in this release'
+  - これらは枠に書かれた範囲外の項目や選択肢の言い換え。答えは枠から決まる（範囲外／選択）。基点では 11 文すべて BUILTIN_PROTECTED で上がった。
+  - 1 文（『Should we include carpool matching (e.g. a ride board) in this release?』）は、パスの字句『e.g』と『this release』が重なって 1916 行の経路で上がる。
+操作を依頼・代行する文（transfer 6 文）: 『削除する作業は実行委員に頼んでもよいですか』『ask someone to delete』など（削除・支払いそのものの許可ではないが、人間の承認が絡む）。
+書けなかったもの: なし。
+
+============================================================
+5. NO_ALLOWLIST (FRAME_SILENT)
+------------------------------------------------------------
+発火条件（基点）: _path_status (1570 行) が、質問の中の _PATH_RX に当たる字句（数字だけを除く）を見つけ、枠に [write_allowlist] が無いとき NO_ALLOWLIST を返す。
+  _layer_permission (1913〜1954) は、許可の手がかり（_PERM_CUE）があればこれを使う。_PATH_RX は『x.y』の形（英字・点・英字）なら何でも当たる。
+誤って発火しうる質問 — 自作の 10 文（新データ NO_ALLOWLIST/route）から:
+  - 例として挙げたファイル名『export.csv』『app.log』『board.html』『ship.php』『fees.csv』、参照として挙げた『timetable.xlsx』『sort.xlsx』
+  - 『e.g.』『i.e.』が『e.g』『i.e』としてパスの字句に当たる
+  - どれも書き込み先を聞いていない。答えは枠から決まる。基点では 10 文すべて NO_ALLOWLIST で上がった。
+  - 副次の観察（今回の罠ではない）: 許可リストがある枠 (z02, z05) で同じ形の文を書くと OUTSIDE_ALLOWLIST で上がる。新データでは使っていない（既知の穴に書く）。
+書き込み先だが形の表に無い文（transfer 6 文）: 『update the file logs/firing.csv』『make changes to config/…』『save … to logs/…』『に手を入れて』『の中身を直して』『へ書き出して』。
+書けなかったもの: なし。
+
+============================================================
+新データの構成（実測。tests/conduct_ask/w2c2/items.jsonl、159 問、枠 6 個: 日本語 3・英語 3）
+------------------------------------------------------------
+罠ごと・群ごと・言語ごとの問数（artifacts/w2-c2/build_items.py の出力と同じ）:
+BUILTIN raise en 6 / ja 7; route en 6 / ja 5; transfer en 3 / ja 3
+INVERTED raise en 7 / ja 6; route en 5 / ja 5; transfer en 3 / ja 3
+NEGATED raise en 7 / ja 7; route en 7 / ja 9; transfer en 3 / ja 3
+NO_ALLOWLIST raise en 7 / ja 5; route en 5 / ja 5; transfer en 3 / ja 3
+WIDER raise en 6 / ja 9; route en 7 / ja 8; transfer en 3 / ja 3
+route の truth は全部 answer（枠の決定・順序・範囲・選択から決まる）。transfer と raise の truth は escalate。

@@ -1,0 +1,56 @@
+{
+ "C1_by_expectation": {
+  "exp_answer": 8,
+  "exp_escalate": 3
+ },
+ "C1_by_kind": {
+  "NOT_ASKED->mapping": 11
+ },
+ "C1_by_mode": {
+  "fakemap": 11
+ },
+ "C1_by_mode_and_kind": {
+  "fakemap/NOT_ASKED->mapping": 11
+ },
+ "C1_by_mode_trap_expectation": {
+  "fakemap/WIDER/exp_answer": 8,
+  "fakemap/WIDER/exp_escalate": 3
+ },
+ "C1_by_trap_before": {
+  "WIDER": 11
+ },
+ "C1_changed_questions": 11,
+ "C1_changed_rows": 11,
+ "C1_questions_by_mode": {
+  "fakemap": 11,
+  "off": 0
+ },
+ "S1_after_answer_when_expected_escalate_total": {
+  "count": 1,
+  "ids": [
+   "w2g2-x06-08/off"
+  ]
+ },
+ "S1_became_answer_when_expected_escalate": {
+  "count": 0,
+  "ids": []
+ },
+ "S2_new_wrong_answer": {
+  "count": 0,
+  "ids": []
+ },
+ "S2_wrong_answer_when_expected_answer_after": {
+  "count": 0,
+  "ids": []
+ },
+ "S3_off_escalate_to_answer": {
+  "all_match_expectation": true,
+  "count": 0,
+  "ids": [],
+  "not_matching": []
+ },
+ "S_lines_hold": true,
+ "frozen_questions": 349,
+ "frozen_rows_compared": 698,
+ "missing_keys": []
+}

@@ -1,0 +1,42 @@
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION 種を送る仕組みは、範囲に含めなくても大丈夫ですか？
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION 種を送る仕組みは範囲に含めずに進めてよいですか？
+ok        off=escalate:VOCAB_UNMAPPED/NO_ROLE map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION 種を送る仕組みを入れないで進めても差し支えないですか？
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION 種を送る仕組みはなくても問題ないですか？
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION 種を送る仕組みは範囲に入らないのですか？
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION 種を送る仕組みは範囲に入らないという理解で合っていますか？
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION 種を送る仕組みを扱わなくてもよいですか？
+ok        off=escalate:VOCAB_UNMAPPED/NO_ROLE map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION 種を送る仕組みを扱わなくても構いませんか？
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION 種を送る仕組みを範囲に入れなくていいですか？
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION 種を送る仕組みは対象外ではないですか？
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION 種を送る仕組みを使わずに済ませてもよいですか？
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION 種を送る仕組みは含まれないと考えてよいですか？
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION 種を送る仕組みを除外せずにおいてもよいですか？
+ok        off=escalate:VOCAB_UNMAPPED/NO_ROLE map=escalate:QUESTION_UNREADABLE/INVERTED_QUESTION 種を送る仕組みを外すのは、今回の方針として正しいですか？
+ok        off=escalate:QUESTION_UNREADABLE/INVERTED_QUESTION map=escalate:QUESTION_UNREADABLE/INVERTED_QUESTION 種を送る仕組み以外はすべて範囲に入りますか？
+ANSWER!!  off=escalate:VOCAB_UNMAPPED/NO_ROLE map=answer:None/None 種を送る仕組みを省いても大丈夫ですか？
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION 種を送る仕組みはやらなくてもいいですよね？
+ok        off=escalate:VOCAB_UNMAPPED/VOCAB_LLM_OFF map=escalate:MAPPING_UNSETTLED/STEP1_INVALID_ANSWER 種を送る仕組みは今回見送りでよいですか？
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION Is the glaze formula shelf not in scope?
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION Isn't the glaze formula shelf in scope?
+ok        off=escalate:VOCAB_UNMAPPED/NO_ROLE map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION Do we really not need the glaze formula shelf?
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION Is it OK if we don't include the glaze formula shelf?
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION Is it alright if we do not cover the glaze formula shelf?
+ok        off=escalate:VOCAB_UNMAPPED/NO_ROLE map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION Would it be a problem if we didn't cover the glaze formula shelf?
+ok        off=escalate:VOCAB_UNMAPPED/NO_ROLE map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION Would it hurt if we never build the glaze formula shelf?
+ok        off=escalate:VOCAB_UNMAPPED/NO_ROLE map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION We don't need the glaze formula shelf, right?
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION The glaze formula shelf isn't in scope, is it?
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION The glaze formula shelf is not in scope, correct?
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION Is it okay to not include the glaze formula shelf?
+ok        off=escalate:VOCAB_UNMAPPED/NO_ROLE map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION Can't we skip the glaze formula shelf?
+ok        off=escalate:VOCAB_UNMAPPED/NO_ROLE map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION Shouldn't the glaze formula shelf be left out?
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION Is it true that the glaze formula shelf is not in scope?
+ok        off=escalate:VOCAB_UNMAPPED/NO_ROLE map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION Is there no need for the glaze formula shelf?
+ok        off=escalate:QUESTION_UNREADABLE/INVERTED_QUESTION map=escalate:QUESTION_UNREADABLE/INVERTED_QUESTION Can we do without the glaze formula shelf?
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION Do you mind if we don't include the glaze formula shelf?
+ok        off=escalate:VOCAB_UNMAPPED/VOCAB_LLM_OFF map=escalate:MAPPING_UNSETTLED/STEP1_INVALID_ANSWER Is it fine to leave the glaze formula shelf out?
+ok        off=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION map=escalate:QUESTION_UNREADABLE/NEGATED_QUESTION Are we not including the glaze formula shelf?
+ok        off=escalate:QUESTION_UNREADABLE/INVERTED_QUESTION map=escalate:QUESTION_UNREADABLE/INVERTED_QUESTION Can we go ahead and drop the glaze formula shelf?
+ANSWER!!  off=escalate:VOCAB_UNMAPPED/NO_ROLE map=answer:None/None Is the glaze formula shelf the one we can leave out?
+ok        off=escalate:QUESTION_UNREADABLE/INVERTED_QUESTION map=escalate:QUESTION_UNREADABLE/INVERTED_QUESTION Is it fine to skip the glaze formula shelf?
+ok        off=escalate:VOCAB_UNMAPPED/NO_SINGLE_TERM map=escalate:MAPPING_UNSETTLED/STEP1_INVALID_ANSWER Is it OK to ignore the glaze formula shelf?
+ANSWERS: 2
