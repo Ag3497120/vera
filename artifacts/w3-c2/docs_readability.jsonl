@@ -1,0 +1,86 @@
+{"id": "QD01-S01", "text": "先生が生徒に地図を渡した。", "readable": true, "reasons": null, "cross": [{"predicate": "渡す", "roles": {"agent": "先生", "patient": "地図", "recipient": "生徒"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD01-S02", "text": "校長が生徒に地図を渡した。", "readable": true, "reasons": null, "cross": [{"predicate": "渡す", "roles": {"agent": "校長", "patient": "地図", "recipient": "生徒"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD01-S03", "text": "生徒は先生に手紙を送った。", "readable": true, "reasons": null, "cross": [{"predicate": "送る", "roles": {"agent": "生徒", "patient": "手紙", "recipient": "先生"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD01-S04", "text": "先生は駅で地図を渡さなかった。", "readable": true, "reasons": null, "cross": [{"predicate": "渡す", "roles": {"agent": "先生", "patient": "地図", "place": "駅"}, "polarity": "-", "tense": "past"}]}
+{"id": "QD01-S05", "text": "誰が鍵を持っているか。", "readable": false, "reasons": ["UNREAD_SPAN:interrogative source does not assert a fact"], "cross": null}
+{"id": "QD01-S06", "text": "生徒が図書館へ行った。", "readable": true, "reasons": null, "cross": [{"predicate": "行く", "roles": {"agent": "生徒", "goal": "図書館"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD01-S07", "text": "先生が本を読む。", "readable": true, "reasons": null, "cross": [{"predicate": "読む", "roles": {"agent": "先生", "patient": "本"}, "polarity": "+", "tense": "nonpast"}]}
+{"id": "QD01-S08", "text": "地図は古かった。", "readable": false, "reasons": ["NO_SUPPORTED_CLAUSE"], "cross": null}
+{"id": "QD01-S09", "text": "校長が地図を渡さなかった。", "readable": true, "reasons": null, "cross": [{"predicate": "渡す", "roles": {"agent": "校長", "patient": "地図"}, "polarity": "-", "tense": "past"}]}
+{"id": "QD02-S01", "text": "駅員が客に切符を渡した。", "readable": true, "reasons": null, "cross": [{"predicate": "渡す", "roles": {"agent": "駅員", "patient": "切符", "recipient": "客"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD02-S02", "text": "駅員が客に切符を渡さなかった。", "readable": true, "reasons": null, "cross": [{"predicate": "渡す", "roles": {"agent": "駅員", "patient": "切符", "recipient": "客"}, "polarity": "-", "tense": "past"}]}
+{"id": "QD02-S03", "text": "運転手が客に切符を渡す。", "readable": true, "reasons": null, "cross": [{"predicate": "渡す", "roles": {"agent": "運転手", "patient": "切符", "recipient": "客"}, "polarity": "+", "tense": "nonpast"}]}
+{"id": "QD02-S04", "text": "社長が客にカメラを売った。", "readable": true, "reasons": null, "cross": [{"predicate": "売る", "roles": {"agent": "社長", "patient": "カメラ", "recipient": "客"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD02-S05", "text": "社長が客に車を売った。", "readable": true, "reasons": null, "cross": [{"predicate": "売る", "roles": {"agent": "社長", "patient": "車", "recipient": "客"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD02-S06", "text": "客が駅へ行った。", "readable": true, "reasons": null, "cross": [{"predicate": "行く", "roles": {"agent": "客", "goal": "駅"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD02-S07", "text": "切符が渡された。", "readable": false, "reasons": ["UNDETERMINED_VOICE:passive or honorific"], "cross": null}
+{"id": "QD02-S08", "text": "客は急いでいたので駅員は切符を渡した。", "readable": false, "reasons": ["UNSUPPORTED_CLAUSE"], "cross": null}
+{"id": "QD02-S09", "text": "社長は笑顔で客に車を売った。", "readable": false, "reasons": ["NO_SUPPORTED_CLAUSE"], "cross": null}
+{"id": "QD03-S01", "text": "先生は生徒にＰＣを貸した。", "readable": true, "reasons": null, "cross": [{"predicate": "貸す", "roles": {"agent": "先生", "patient": "ＰＣ", "recipient": "生徒"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD03-S02", "text": "先生は生徒にPCを貸した。", "readable": true, "reasons": null, "cross": [{"predicate": "貸す", "roles": {"agent": "先生", "patient": "PC", "recipient": "生徒"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD03-S03", "text": "Ａ社が生徒に地図を渡した。", "readable": true, "reasons": null, "cross": [{"predicate": "渡す", "roles": {"agent": "Ａ社", "patient": "地図", "recipient": "生徒"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD03-S04", "text": "A社が生徒に地図を渡した。", "readable": true, "reasons": null, "cross": [{"predicate": "渡す", "roles": {"agent": "A社", "patient": "地図", "recipient": "生徒"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD03-S05", "text": "Ｘが生徒に地図を渡した。", "readable": true, "reasons": null, "cross": [{"predicate": "渡す", "roles": {"agent": "Ｘ", "patient": "地図", "recipient": "生徒"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD03-S06", "text": "弟が兄に本を貸した。", "readable": true, "reasons": null, "cross": [{"predicate": "貸す", "roles": {"agent": "弟", "patient": "本", "recipient": "兄"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD03-S07", "text": "兄が弟に本を貸した。", "readable": true, "reasons": null, "cross": [{"predicate": "貸す", "roles": {"agent": "兄", "patient": "本", "recipient": "弟"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD03-S08", "text": "誰が地図を渡したのか。", "readable": false, "reasons": ["UNREAD_SPAN:interrogative source does not assert a fact"], "cross": null}
+{"id": "QD04-S01", "text": "画家が絵を描いた。", "readable": true, "reasons": null, "cross": [{"predicate": "描く", "roles": {"agent": "画家", "patient": "絵"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD04-S02", "text": "画家は寺で絵を描いた。", "readable": true, "reasons": null, "cross": [{"predicate": "描く", "roles": {"agent": "画家", "patient": "絵", "place": "寺"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD04-S03", "text": "漁師が網を作った。", "readable": true, "reasons": null, "cross": [{"predicate": "作る", "roles": {"agent": "漁師", "patient": "網"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD04-S04", "text": "漁師は港から魚を送った。", "readable": true, "reasons": null, "cross": [{"predicate": "送る", "roles": {"agent": "漁師", "patient": "魚", "source": "港"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD04-S05", "text": "農夫は市場で馬を売った。", "readable": true, "reasons": null, "cross": [{"predicate": "売る", "roles": {"agent": "農夫", "patient": "馬", "place": "市場"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD04-S06", "text": "農夫が粉屋に馬を売った。", "readable": false, "reasons": ["RECIPIENT_TYPE_UNDETERMINED:粉屋"], "cross": null}
+{"id": "QD04-S07", "text": "歌手が歌を歌った。", "readable": true, "reasons": null, "cross": [{"predicate": "歌う", "roles": {"agent": "歌手", "patient": "歌"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD04-S08", "text": "歌手は舞台で歌を歌った。", "readable": false, "reasons": ["NO_SUPPORTED_CLAUSE"], "cross": null}
+{"id": "QD04-S09", "text": "大工が家を建てた。", "readable": false, "reasons": ["SUBJECT_TYPE_UNDETERMINED:object or path:大工"], "cross": null}
+{"id": "QD05-S01", "text": "先生は朝に本を読んだ。", "readable": true, "reasons": null, "cross": [{"predicate": "読む", "roles": {"agent": "先生", "patient": "本", "time": "朝"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD05-S02", "text": "先生は夜に本を読んだ。", "readable": true, "reasons": null, "cross": [{"predicate": "読む", "roles": {"agent": "先生", "patient": "本", "time": "夜"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD05-S03", "text": "看護師は朝に薬を渡した。", "readable": true, "reasons": null, "cross": [{"predicate": "渡す", "roles": {"agent": "看護師", "patient": "薬", "time": "朝"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD05-S04", "text": "先生は月曜日に地図を渡した。", "readable": true, "reasons": null, "cross": [{"predicate": "渡す", "roles": {"agent": "先生", "patient": "地図", "time": "月曜日"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD05-S05", "text": "先生は三時に来た。", "readable": true, "reasons": null, "cross": [{"predicate": "来る", "roles": {"agent": "先生", "time": "三時"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD05-S06", "text": "母は台所で料理を作った。", "readable": true, "reasons": null, "cross": [{"predicate": "作る", "roles": {"agent": "母", "patient": "料理", "place": "台所"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD05-S07", "text": "母は弁当を作りました。", "readable": true, "reasons": null, "cross": [{"predicate": "作る", "roles": {"agent": "母", "patient": "弁当"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD05-S08", "text": "姉は店で服を買った。", "readable": true, "reasons": null, "cross": [{"predicate": "買う", "roles": {"agent": "姉", "patient": "服", "place": "店"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD05-S09", "text": "兄は新聞を買う。", "readable": true, "reasons": null, "cross": [{"predicate": "買う", "roles": {"agent": "兄", "patient": "新聞"}, "polarity": "+", "tense": "nonpast"}]}
+{"id": "QD05-S10", "text": "父は昨日手紙を書いた。", "readable": false, "reasons": ["NO_SUPPORTED_CLAUSE"], "cross": null}
+{"id": "QD06-S01", "text": "犬が公園から走った。", "readable": true, "reasons": null, "cross": [{"predicate": "走る", "roles": {"agent": "犬", "source": "公園"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD06-S02", "text": "犬が森から走った。", "readable": true, "reasons": null, "cross": [{"predicate": "走る", "roles": {"agent": "犬", "source": "森"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD06-S03", "text": "社長が会社から手紙を送った。", "readable": true, "reasons": null, "cross": [{"predicate": "送る", "roles": {"agent": "社長", "patient": "手紙", "source": "会社"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD06-S04", "text": "医者は病院から薬を送った。", "readable": true, "reasons": null, "cross": [{"predicate": "送る", "roles": {"agent": "医者", "patient": "薬", "source": "病院"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD06-S05", "text": "店員が駅から荷物を送った。", "readable": true, "reasons": null, "cross": [{"predicate": "送る", "roles": {"agent": "店員", "patient": "荷物", "source": "駅"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD06-S06", "text": "犬が公園へ走った。", "readable": false, "reasons": ["RECIPIENT_TYPE_UNDETERMINED:走る"], "cross": null}
+{"id": "QD06-S07", "text": "店員が客に袋を渡さなかった。", "readable": true, "reasons": null, "cross": [{"predicate": "渡す", "roles": {"agent": "店員", "patient": "袋", "recipient": "客"}, "polarity": "-", "tense": "past"}]}
+{"id": "QD06-S08", "text": "鳥が空を飛んだ。", "readable": false, "reasons": ["PATH_ROLE_NOT_MAPPED:飛ぶ"], "cross": null}
+{"id": "QD07-S01", "text": "兄は弟に鉛筆を貸した。", "readable": true, "reasons": null, "cross": [{"predicate": "貸す", "roles": {"agent": "兄", "patient": "鉛筆", "recipient": "弟"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD07-S02", "text": "妹が姉に手紙を送った。", "readable": true, "reasons": null, "cross": [{"predicate": "送る", "roles": {"agent": "妹", "patient": "手紙", "recipient": "姉"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD07-S03", "text": "医者が看護師に薬を渡した。", "readable": true, "reasons": null, "cross": [{"predicate": "渡す", "roles": {"agent": "医者", "patient": "薬", "recipient": "看護師"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD07-S04", "text": "医者が患者に薬を渡した。", "readable": true, "reasons": null, "cross": [{"predicate": "渡す", "roles": {"agent": "医者", "patient": "薬", "recipient": "患者"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD07-S05", "text": "弟は図書館で本を読んだ。", "readable": true, "reasons": null, "cross": [{"predicate": "読む", "roles": {"agent": "弟", "patient": "本", "place": "図書館"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD07-S06", "text": "弟は図書館で本を読みました。", "readable": true, "reasons": null, "cross": [{"predicate": "読む", "roles": {"agent": "弟", "patient": "本", "place": "図書館"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD07-S07", "text": "弟は兄に鉛筆を貸した。", "readable": true, "reasons": null, "cross": [{"predicate": "貸す", "roles": {"agent": "弟", "patient": "鉛筆", "recipient": "兄"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD07-S08", "text": "王が民に金貨を配った。", "readable": false, "reasons": ["RECIPIENT_TYPE_UNDETERMINED:民"], "cross": null}
+{"id": "QD07-S09", "text": "弟は歩いて図書館へ行った。", "readable": false, "reasons": ["UNSUPPORTED_CLAUSE"], "cross": null}
+{"id": "QD08-S01", "text": "The farmer bought a horse.", "readable": true, "reasons": null, "cross": [{"predicate": "buy", "roles": {"agent": "farmer", "patient": "horse"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD08-S02", "text": "The clerk reads the newspaper.", "readable": true, "reasons": null, "cross": [{"predicate": "read", "roles": {"agent": "clerk", "patient": "newspaper"}, "polarity": "+", "tense": "nonpast"}]}
+{"id": "QD08-S03", "text": "The sailor wrote a letter.", "readable": true, "reasons": null, "cross": [{"predicate": "write", "roles": {"agent": "sailor", "patient": "letter"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD08-S04", "text": "The teacher gave the map to the student.", "readable": true, "reasons": null, "cross": [{"predicate": "give", "roles": {"agent": "teacher", "patient": "map", "recipient": "student"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD08-S05", "text": "The principal gave the map to the student.", "readable": true, "reasons": null, "cross": [{"predicate": "give", "roles": {"agent": "principal", "patient": "map", "recipient": "student"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD08-S06", "text": "The doctor did not give the medicine to the patient.", "readable": true, "reasons": null, "cross": [{"predicate": "give", "roles": {"agent": "doctor", "patient": "medicine", "recipient": "patient"}, "polarity": "-", "tense": "past"}]}
+{"id": "QD08-S07", "text": "X sold the map to the chef.", "readable": true, "reasons": null, "cross": [{"predicate": "sell", "roles": {"agent": "X", "patient": "map", "recipient": "chef"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD08-S08", "text": "The miller sold the horse to the baker.", "readable": false, "reasons": ["RECIPIENT_TYPE_UNDETERMINED:baker"], "cross": null}
+{"id": "QD09-S01", "text": "The chef sold the map to the student.", "readable": true, "reasons": null, "cross": [{"predicate": "sell", "roles": {"agent": "chef", "patient": "map", "recipient": "student"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD09-S02", "text": "The nurse gave the book to a child.", "readable": true, "reasons": null, "cross": [{"predicate": "give", "roles": {"agent": "nurse", "patient": "book", "recipient": "child"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD09-S03", "text": "The mayor built the bridge.", "readable": true, "reasons": null, "cross": [{"predicate": "build", "roles": {"agent": "mayor", "patient": "bridge"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD09-S04", "text": "The pilot flew the plane.", "readable": true, "reasons": null, "cross": [{"predicate": "fly", "roles": {"agent": "pilot", "patient": "plane"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD09-S05", "text": "The painter painted the wall.", "readable": true, "reasons": null, "cross": [{"predicate": "paint", "roles": {"agent": "painter", "patient": "wall"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD09-S06", "text": "The captain did not sell the ship.", "readable": true, "reasons": null, "cross": [{"predicate": "sell", "roles": {"agent": "captain", "patient": "ship"}, "polarity": "-", "tense": "past"}]}
+{"id": "QD09-S07", "text": "The student sent a letter to the teacher.", "readable": true, "reasons": null, "cross": [{"predicate": "send", "roles": {"agent": "student", "patient": "letter", "recipient": "teacher"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD09-S08", "text": "Who gave the map to the student?", "readable": false, "reasons": ["EN_UNREAD:relative clause: not representable"], "cross": null}
+{"id": "QD09-S09", "text": "The engineer built a bridge and the mayor opened it.", "readable": false, "reasons": ["EN_UNREAD:coordination: not representable"], "cross": null}
+{"id": "QD10-S01", "text": "The teacher gave the student a map.", "readable": true, "reasons": null, "cross": [{"predicate": "give", "roles": {"agent": "teacher", "patient": "map", "recipient": "student"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD10-S02", "text": "The gardener plants the roses.", "readable": false, "reasons": ["UNKNOWN_PREDICATE"], "cross": null}
+{"id": "QD10-S03", "text": "The student sent a letter to the teacher.", "readable": true, "reasons": null, "cross": [{"predicate": "send", "roles": {"agent": "student", "patient": "letter", "recipient": "teacher"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD10-S04", "text": "The principal sent a letter to the teacher.", "readable": true, "reasons": null, "cross": [{"predicate": "send", "roles": {"agent": "principal", "patient": "letter", "recipient": "teacher"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD10-S05", "text": "The clerk reads the newspaper.", "readable": true, "reasons": null, "cross": [{"predicate": "read", "roles": {"agent": "clerk", "patient": "newspaper"}, "polarity": "+", "tense": "nonpast"}]}
+{"id": "QD10-S06", "text": "The sailor wrote a letter.", "readable": true, "reasons": null, "cross": [{"predicate": "write", "roles": {"agent": "sailor", "patient": "letter"}, "polarity": "+", "tense": "past"}]}
+{"id": "QD10-S07", "text": "The farmer bought a horse because the market was open.", "readable": false, "reasons": ["EN_UNREAD:subordinate clause: not representable"], "cross": null}

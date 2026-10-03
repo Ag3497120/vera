@@ -1,0 +1,129 @@
+added lines: 504
+PROPER/NUMERIC (must be empty): []
+ENGLISH NAMES (must be empty): []
+common nouns found in added lines (list only): ['十字']
+verb lemmas found in added lines (list only): []
+english lowercase words found in added lines (list only; each with the added lines that hold it, so a reader can judge): ['after', 'all', 'answer', 'answered', 'broken', 'closed', 'def', 'did', 'each', 'every', 'exactly', 'form', 'found', 'got', 'kept', 'left', 'never', 'new', 'not', 'nothing', 'old', 'only', 'outside', 'passed', 'patient', 'read', 'rest', 'that', 'the', 'this', 'two', 'types', 'was', 'when', 'which', 'while', 'who', 'whom', 'wrote']
+  [after] 2 added line(s):
+      # a stranded final `to` (the preposition left behind by the wh word) is checked FIRST: the mark goes after it, so that the declarative form
+      # never keeps a stranded `to` after the mark (the reader drops a final `to` silently and would read the mark as the object)
+  [all] 1 added line(s):
+      # of the hole is expected to have (`types_except`: every type of event_cross.NOUN_TYPE_IDS except these). `unread`: why this hole is not read at all.
+  [answer] 10 added line(s):
+      Only the path of an anchor of kind `question` returns an `answer` (W3-c2): the fillers of the hole of a question, each with the ids of the structure's
+      """An observation whose anchor is a question: the `Observation` shape (so the ledger, the replay and the entry work as they do) plus `answer`."""
+      answer: Mapping[str, Any] = field(default_factory=dict)
+  [answered] 1 added line(s):
+      the hole's arm present); else []. Such a cross is NOT a match (a negated question must not be answered by a sentence that is negated in one place only);
+  [broken] 1 added line(s):
+      focus: Any = Focus(elements[0].cell.key) if len(elements) == 1 else Tie(tuple(e.cell.key for e in elements))    # a Tie is never broken
+  [closed] 1 added line(s):
+      # The closed list of the reasons that read_question itself gives (a reason of the reader is passed on as the reader wrote it).
+  [def] 26 added line(s):
+      def _nfkc(surface: str) -> str:
+      def to_dict(self) -> Dict[str, Any]:
+      def _cross_matches_question(q: EC.EventCross, hole: str, d: EC.EventCross) -> bool:
+  [did] 2 added line(s):
+      if low[0] not in ('did', 'does', 'do'): return _question_refusal('en', 'not_supported', ['EN_FORM_NOT_REWRITTEN'], plain)
+      if low[start] not in ('did', 'does', 'do'): return _question_refusal('en', 'not_supported', ['EN_FORM_NOT_REWRITTEN'], plain)
+  [each] 3 added line(s):
+      Only the path of an anchor of kind `question` returns an `answer` (W3-c2): the fillers of the hole of a question, each with the ids of the structure's
+      """docs/OBSERVATION.md, 一致の定義 (D9): the centre as it is (every key), the same arms but the hole's, each with the same kind and the surfaces
+      # --- the cells that carry the kept candidates, as elements (the realizer says each one's sentence from the STRUCTURE's cross, never from the question's)
+  [every] 3 added line(s):
+      """docs/OBSERVATION.md, 一致の定義 (D9): the centre as it is (every key), the same arms but the hole's, each with the same kind and the surfaces
+      """The roles d has beyond the question, when d is the question's cross plus MORE arms (the same centre, every other arm of the question the same,
+      # of the hole is expected to have (`types_except`: every type of event_cross.NOUN_TYPE_IDS except these). `unread`: why this hole is not read at all.
+  [exactly] 1 added line(s):
+      """The role whose value is exactly the mark, when the mark stands in exactly one value of the clause and nowhere else; else the reason."""
+  [form] 6 added line(s):
+      """The reader's `question` field without `declarative`: the declarative form holds the mark in a sentence, and no sentence with the mark is put in an output."""
+      a mark (`Ｘ` / `X`, a symbol and never a word), the declarative form is read by the same reader, and the answer is the shape of `read()` plus the last key `quest
+      """From the reading of the declarative form to the answer of read_question (D7, D2, D4, D8)."""
+  [found] 10 added line(s):
+      """The wh words of a Japanese question, found by the TOKEN: the surface of a token (or of the tokens in a row, for どうやって) that is a wh word of
+      found = []
+      found.append((row, w, a, end, restrictor, indefinite))
+  [got] 5 added line(s):
+      got = lookup.lookup(word)
+      return got if isinstance(got, EC.PlaceResult) and not got.invariant_problems() else None
+      got = _valid_place(lookup, restrictor) if isinstance(restrictor, str) and restrictor else None
+  [kept] 6 added line(s):
+      kept: List[Dict[str, Any]] = []
+      (dropped if reason else kept).append(dict(item, reason=reason))
+      fillers, excluded = group(kept, False), group(dropped, True)
+  [left] 1 added line(s):
+      # a stranded final `to` (the preposition left behind by the wh word) is checked FIRST: the mark goes after it, so that the declarative form
+  [never] 9 added line(s):
+      own sentences that attest it. The anchor's reading and the index are never evidence (docs/OBSERVATION.md, 質問の観測).
+      for key in sorted(by_surface):    # a display order (the key is text), never a choice
+      # --- the cells that carry the kept candidates, as elements (the realizer says each one's sentence from the STRUCTURE's cross, never from the question's)
+  [new] 1 added line(s):
+      # `read()` is NOT changed: it still refuses a question (UNREAD_SPAN: interrogative ...). `read_question()` is the new, separate entry. The hole is a
+  [not] 51 added line(s):
+      if q is not None: return q
+      # (docs/OBSERVATION.md, 質問の観測). Evidence = the crosses of the structure's own sentences only: not the anchor's reading, not the index.
+      if hole not in d.arms: return False
+  [nothing] 1 added line(s):
+      it is listed so that an absence is not read as "the document says nothing"."""
+  [old] 3 added line(s):
+      old = cells[it['cell_key']]
+      if _cj(coord) not in {_cj(c) for c in old.coords}:
+      cells[it['cell_key']] = replace(old, coords=tuple(sorted(old.coords + (coord,), key=_cj)))
+  [only] 5 added line(s):
+      # (docs/OBSERVATION.md, 質問の観測). Evidence = the crosses of the structure's own sentences only: not the anchor's reading, not the index.
+      import unicodedata    # the only normalisation the match uses: on the SURFACE of a filler. A predicate, a polarity, a tense, a voice are compared as they are
+      the hole's arm present); else []. Such a cross is NOT a match (a negated question must not be answered by a sentence that is negated in one place only);
+  [outside] 1 added line(s):
+      # `arms`: the roles the hole may take (the reader decides the role; a role outside this tuple is refused, never corrected). `types`: the types a filler
+  [passed] 1 added line(s):
+      # The closed list of the reasons that read_question itself gives (a reason of the reader is passed on as the reader wrote it).
+  [patient] 2 added line(s):
+      {'hole': 'PERSON', 'ja': ('誰', 'だれ'), 'en': ('who',), 'noun': False, 'arms': ('agent', 'recipient', 'patient'),
+      {'hole': 'THING', 'ja': ('何', 'なに', 'なん'), 'en': ('what',), 'noun': False, 'arms': ('patient',),
+  [read] 14 added line(s):
+      it is listed so that an absence is not read as "the document says nothing"."""
+      """The observation of an anchor that is a QUESTION (kind `question`, read by `semantic_read.read_question` to a cross with a hole). None when the anchor
+      # --- compare the question's cross with EVERY cross of EVERY read sentence of the structure (no sampling, no index, no anchor)
+  [rest] 6 added line(s):
+      # E2 (wh) and E3 (polar): <aux> <subject ...> <verb> <rest>  ->  <subject ...> <aux> <verb> <rest>  (the do of emphasis)
+      subject, verb, rest = words[start + 1:j], words[j], words[j + 1:]
+      if not rest: rest = [mark]
+  [that] 19 added line(s):
+      own sentences that attest it. The anchor's reading and the index are never evidence (docs/OBSERVATION.md, 質問の観測).
+      q = _observe_question(viewpoint, structure, lookup, neighbors, ledger)    # W3-c2: an anchor that is a question has a path of its own
+      # questions (W3-c2): a question is a cross with one typed HOLE; the cells of the structure that agree with it everywhere but the hole fill it
+  [the] 54 added line(s):
+      Only the path of an anchor of kind `question` returns an `answer` (W3-c2): the fillers of the hole of a question, each with the ids of the structure's
+      own sentences that attest it. The anchor's reading and the index are never evidence (docs/OBSERVATION.md, 質問の観測).
+      # questions (W3-c2): a question is a cross with one typed HOLE; the cells of the structure that agree with it everywhere but the hole fill it
+  [this] 3 added line(s):
+      # `arms`: the roles the hole may take (the reader decides the role; a role outside this tuple is refused, never corrected). `types`: the types a filler
+      # of the hole is expected to have (`types_except`: every type of event_cross.NOUN_TYPE_IDS except these). `unread`: why this hole is not read at all.
+      """The sorted type ids a filler of this hole is expected to have (None: decided at observation time, for which+N)."""
+  [two] 1 added line(s):
+      # The registered table (docs/EVENT_CROSS.md, 穴の型, between BEGIN table:w3c2_holes and END table:w3c2_holes; a test compares the two).
+  [types] 16 added line(s):
+      """The rules 3-7 of docs/EVENT_CROSS.md (型一致の決め方), in that order, against the types the HOLE expects (rules 1 and 2 do not apply: a filler of an
+      ARM_TIE arm is a candidate of its own, and the hole's expected types are not the role table's)."""
+      'expected': list(want), 'observed': list(place.types)}
+  [was] 1 added line(s):
+      # MARK (one symbol put where the wh word was), never a word: no word is guessed for the hole, no particle is added to make a position readable, and
+  [when] 5 added line(s):
+      """The roles d has beyond the question, when d is the question's cross plus MORE arms (the same centre, every other arm of the question the same,
+      """The observation of an anchor that is a QUESTION (kind `question`, read by `semantic_read.read_question` to a cross with a hole). None when the anchor
+      # a position that needs evidence of the type of the word (to whom, where at, to where, when) is therefore refused with the reader's own reason.
+  [which] 3 added line(s):
+      strict = bool(restrictor)    # which+N presupposes "one of the N": only a candidate whose type is checked and agrees may answer
+      {'hole': 'RESTRICTOR', 'ja': ('どの',), 'en': ('which',), 'noun': True, 'arms': None,
+      """The sorted type ids a filler of this hole is expected to have (None: decided at observation time, for which+N)."""
+  [while] 4 added line(s):
+      while i < len(toks):
+      while j < len(toks) and toks[j][2] < a + len(w): j += 1
+      while k < len(toks) and toks[k][0].feature.pos1 in ('名詞', '接尾辞'): k += 1
+  [who] 1 added line(s):
+      {'hole': 'PERSON', 'ja': ('誰', 'だれ'), 'en': ('who',), 'noun': False, 'arms': ('agent', 'recipient', 'patient'),
+  [whom] 1 added line(s):
+      # a position that needs evidence of the type of the word (to whom, where at, to where, when) is therefore refused with the reader's own reason.
+  [wrote] 1 added line(s):
+      # The closed list of the reasons that read_question itself gives (a reason of the reader is passed on as the reader wrote it).

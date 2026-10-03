@@ -1,0 +1,10 @@
+28:+HOLE_MARK_JA = 'Ｘ'        # U+FF38: a common noun for the tagger; the one symbol that replaces a wh word of a Japanese question
+29:+HOLE_MARK_EN = 'X'
+162:+    mark = HOLE_MARK_JA
+165:+    if mark in text: return _question_refusal('ja', 'not_supported', ['HOLE_MARK_IN_INPUT'], plain)
+181:+        declarative = text[:a] + mark + text[end:stop].rstrip() + '。'
+197:+    mark = HOLE_MARK_EN
+223:+            declarative = ' '.join([mark] + words[k:]) + '.'
+240:+        if not rest: rest = [mark]
+241:+        elif low[-1] == 'to': rest = rest + [mark]
+242:+        elif low[j + 1] == 'to': rest = [mark] + rest

@@ -1,0 +1,6 @@
+read entry_inputs run 1: same
+read entry_inputs run 2: same
+read entry_inputs run 3: same
+read q1_doc_inputs run 1: same
+read q1_doc_inputs run 2: same
+read q1_doc_inputs run 3: same

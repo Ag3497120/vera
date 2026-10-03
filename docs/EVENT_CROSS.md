@@ -310,3 +310,54 @@ NOT_CHECKED の理由別: ARM_TIE 0, ESTIMATED_GENERATED 0, ESTIMATED_NEAR 0, LO
 
 - W2-h2（人間の自由文の説明から分業の記録を作る）: `read_events()` と `center`・`arms`・`relations`・`abstain`。棄権（読めない）は型付きでそのまま来るので、枠に入れる側が「読めなかった」を自分で扱える。
 - W3-b2（十字を鍵にした探索の高速化）: `to_dict()` の直列化と、腕の並びが規約の順に固定されていること。述語の辞書形・態・極性が `center` にあり、腕の充填物の `surface`・`place.types` が鍵になりうる。
+
+## 穴の型（W3-c2。事前登録）
+
+（W3-c2 = 質問の十字。疑問文を「wh 語の腕だけが穴になった十字」として読むためのもの。この節は検査データ `tests/observe/question/` を作る前に書いた。）
+
+<!-- w3c2-prereg:begin -->
+登録日時: 2026-10-03 19:39:20 +0900（`date '+%Y-%m-%d %H:%M:%S %z'` の出力。直前の同じ出力は 2026-10-03 19:39:13 +0900 で、このファイルの追記はその直後に行い、この行は追記後の `date` の出力に直した。初版は書き手が日時を実際の出力より先に書いたので、実際の出力に直した。下の変更記録）
+`HOLE_TYPES_VERSION = 1`
+
+この時点で `tests/observe/question/` は存在しない。出典は中間職の指示書 `.claude/vera-audit/review-impl/W3-c2/plan.md` の D2・D4・D5・D10。
+
+穴の印: 和文 `Ｘ`（U+FF38 全角）、英文 `X`。wh 語（の区間）を、語を当てはめずにこの 1 記号に置き換えてから、既存の節の読みを呼ぶ。印は「型の証拠が要る位置」では読めないことが実測されている（誰に・どこで・どこへ・いつ）。それは仕様どおりの棄権で、語・助詞・読点を足して読ませることはしない。
+入力に印が既にあれば `HOLE_MARK_IN_INPUT` で棄権する。読んだ後、印がちょうど 1 つの節のちょうど 1 つの役割の値と完全に一致しなければ棄権する（値に現れない = `HOLE_DROPPED`、値の一部・述語・2 か所 = `HOLE_NOT_ISOLATED`）。
+
+役割の名前は `event_cross.ROLE_NAMES`（規約 §2）に写す。チケットの `location` は規約の `place` に写す。チケットの `theme` は規約に役割が無いので表に入れない（規約の閉じた一覧を増やさない。物・事の腕は `patient`）。
+`cause`・`manner` は、読解器が出さない関係（`semantic_read.NOT_PRODUCED` の `relation:cause`・`relation:manner`）で、十字の腕ではない。どんな＋N は性質で、十字に腕が無い。従ってこの 3 つは「読まない」型として表に載せ、型付きで棄権する。
+英文の where・when は、規約の英文の枠に時・場所の役割が無い（`NOT_PRODUCED['en:time and place phrases']`）ので読まない。数の問い（何人・いくつ・how many・how much）は表に無く、`WH_NOT_IN_TABLE` で棄権する。不定語（誰か・何も）は wh ではない（`WH_INDEFINITE`）。
+
+<!-- BEGIN table:w3c2_holes -->
+| 穴の型 | 和文の wh | 英文の wh | 許す腕 | 期待する型 |
+|---|---|---|---|---|
+| PERSON | 誰・だれ | who | agent・recipient・patient | PERSON・GROUP_ORG |
+| THING | 何・なに・なん | what | patient | NOUN_TYPE_IDS から PERSON・GROUP_ORG を除いた型 |
+| PLACE | どこ | where | place・goal・source | PLACE |
+| TIME | いつ | when | time | TIME |
+| RESTRICTOR | どの＋N | which＋N | ROLE_NAMES の全部（N の腕） | N の配置の型 |
+| PROPERTY | どんな＋N | — | — | — |
+| CAUSE | なぜ・どうして | why | — | — |
+| MANNER | どうやって・どう | how | — | — |
+<!-- END table:w3c2_holes -->
+
+読めない型（`—` の腕）: PROPERTY は `HOLE_NOT_AN_ARM:property`、CAUSE は `HOLE_RELATION_NOT_PRODUCED:cause`、MANNER は `HOLE_RELATION_NOT_PRODUCED:manner`。英文の PLACE・TIME は `HOLE_ROLE_NOT_PRODUCED:en:place`・`:en:time`。
+読解器が決めた穴の腕が「許す腕」の外なら `HOLE_ROLE_NOT_ALLOWED:<wh>:<役割>`（読解器が決めた役割を直さない）。
+
+### 穴の型による候補の判定（D10。観測のとき）
+
+構造の文の十字の、穴の腕の充填物の `place`（構造の lookup が引いたもの）を、本書「型一致の決め方」の規則 3〜7 と同じ順に判定する:
+3. `PlaceResult` でない・不変条件違反 → `NOT_CHECKED(LOOKUP_RESULT_INVALID)`。 4. `NO_PLACEMENT`・`UNKNOWN`・`UNPLACED` → `NOT_CHECKED(<state>)`。 5. `estimated` → `NOT_CHECKED(ESTIMATED_NEAR|ESTIMATED_GENERATED)`。 6. `MULTIPLE` → `NOT_CHECKED(MULTIPLE)`。 7. `DECIDED` かつ `direct` → 型が穴の型の集合に入れば `AGREE`、入らなければ `DISAGREE`。
+- `DISAGREE` の候補は候補から外し、`excluded` に理由 `HOLE_TYPE_DISAGREE` で残す（黙って捨てない）。`NOT_CHECKED` は外さない（分からないことを偽にしない）。
+- RESTRICTOR だけは `AGREE` 以外を全部外す（`NOT_CHECKED` は `HOLE_TYPE_NOT_CHECKED`）。どの＋N は「N の一つ」を前提にしており、型を確かめられない候補を答えにすると前提違反になるため。N 自身（NFKC で同じ充填物）は `SAME_AS_RESTRICTOR` で外す。N の型は構造の lookup が `DECIDED`・`direct` のときのその 1 型だけ。決まらなければ状態 `HOLE_TYPE_UNDETERMINED`（候補を見ない）。
+- 役割の表（`EXPECTED_TYPES`）による型一致は別の欄に写すだけで、除外に使わない（束ねず重ねる）。
+<!-- w3c2-prereg:end -->
+
+### 穴の型の事前登録の変更記録（W3-c2）
+
+（2026-10-03 19:39:20 +0900 時点: 表・規則の変更なし。登録日時の行だけ、書き手が先に書いた日時を実際の `date` の出力に直した。出典: artifacts/w3-c2/prereg.txt）
+
+### 穴の型の節で次のチケットが使うもの（W3-c2）
+
+- 質問を扱う次のチケット（`vera ask --mode round5 --document` への接続など）: `semantic_read.read_question(text, lang)`（`question` 欄: `hole_role`・`hole_type`・`wh`・`kind`・`restrictor`・`hole_mark`・`declarative`）と `semantic_read.WH_TABLE`（上の表と同じ。テストが一致を確かめる）。
+- 質問の十字から文書の文へ: `observe.run_entry(anchor_kind='question', ...)` の出力の `answer`（充填物・証拠の文 id・`status`）。`status` が FILLED・TIE 以外のときは答えを作らない。型の判定は本節の「穴の候補の判定」（`NOT_CHECKED` を除外にしない）。
