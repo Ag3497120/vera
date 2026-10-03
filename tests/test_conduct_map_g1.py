@@ -44,8 +44,9 @@ def test_g1_1_two_agreeing_readings_are_adopted_and_the_rule_answers_from_the_re
     assert res["basis"][0]["text"] == M.frame_line(F, res["basis"][0]["line"]) == "D3: SCOPE | 郷土資料の点検 | in scope"
     m = res["mapping"]
     assert m["provenance"] == "LLM_TESTIMONY_RECORD_MAPPING" and m["counts_as_evidence"] is False and m["constructed"] is True
-    assert (m["route"], m["outcome"], m["asks_used"]) == ("MAPPING_ONLY", "ANSWERED", 4)
-    assert m["step1"]["status"] == "ADOPTED" and m["step1"]["records"] == ["D3"] and m["step2"][0]["relations"] == ["一致", "矛盾"]
+    assert (m["route"], m["outcome"], m["asks_used"]) == ("MAPPING_ONLY", "ANSWERED", 8)         # records 2 + decides 2 + 2 pairs x 2
+    assert m["step1"]["status"] == "ADOPTED" and m["step1"]["records"] == ["D3"] and [x["relation"] for x in m["step2"]] == ["一致", "矛盾"]
+    assert m["decides"]["status"] == "ADOPTED" and m["decides"]["decides"] == "決まる" and m["protocol"] == "conduct_map/v2"
     assert tuple(res)[-1] == "mapping" and res["trace"]["resolver_outcomes"]["mapping"] == "ANSWERED"
 
 
@@ -62,13 +63,13 @@ def test_g1_2_step_1_disagreement_hands_the_question_up():
 
 def test_g1_2b_the_same_records_with_another_decides_also_disagree():
     res, _ = ask_map(F, Q, YN, {**GOOD, "decides2": "決まらない"})
-    assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "STEP1_DISAGREE")
+    assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "DECIDES_DISAGREE")      # v2: decides is its own step
 
 
 def test_g1_3_step_2_disagreement_hands_the_question_up():
     res, _ = ask_map(F, Q, YN, {**GOOD, "relations2": {"D3": ["矛盾", "一致"]}})
     assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "STEP2_DISAGREE")
-    assert res["mapping"]["asks_used"] == 4 and [b["id"] for b in res["basis"]] == ["D3"]
+    assert res["mapping"]["asks_used"] == 8 and [b["id"] for b in res["basis"]] == ["D3"]
 
 
 @pytest.mark.parametrize("raw", [
@@ -81,8 +82,13 @@ def test_g1_3_step_2_disagreement_hands_the_question_up():
     '{"records": [0]}',
 ])
 def test_g1_4_an_invalid_reading_of_step_1_is_not_adopted(raw):
-    res, _ = ask_map(F, Q, YN, {**GOOD, "raw2": raw})
+    # v2: every JSON reply is outside the minimal form, so it is invalid; the invalid slot is asked once more (the same raw
+    # comes back) and, invalid again, the step abstains
+    res, mp = ask_map(F, Q, YN, {**GOOD, "raw2": raw})
     assert (res["decision"], res["escalate_reason"], res["escalate_detail"]) == ("escalate", "MAPPING_UNSETTLED", "STEP1_INVALID_ANSWER")
+    rows = [e for e in mp.ledger.entries() if e["type"] == "map_ask"]
+    assert [(r["ask_index"], r["attempt"], r["verdict"]) for r in rows] == [(0, 0, "PICK"), (1, 0, "INVALID"), (1, 1, "INVALID")]
+    assert res["mapping"]["asks_used"] == 3 and res["mapping"]["retries"] == 1
     res, _ = ask_map(F, Q, YN, {**GOOD, "raw": raw})
     assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "STEP1_INVALID_ANSWER")
 
@@ -95,8 +101,11 @@ def test_g1_4_an_invalid_reading_of_step_1_is_not_adopted(raw):
     '{"relations": ["一致", "矛盾"]} 理由: 郷土資料だから',
 ])
 def test_g1_4b_an_invalid_reading_of_step_2_is_not_adopted(raw):
-    res, _ = ask_map(F, Q, YN, {**GOOD, "raw_relations2": raw})
+    # v2: a relation reply is one word; each of the two pairs asked its slot 1 twice and stayed invalid
+    res, mp = ask_map(F, Q, YN, {**GOOD, "raw_relations2": raw})
     assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "STEP2_INVALID_ANSWER")
+    assert [x["status"] for x in res["mapping"]["step2"]] == ["ABSTAINED", "ABSTAINED"] and res["mapping"]["retries"] == 2
+    assert res["mapping"]["asks_used"] == 2 + 2 + 4 + 2 and res["answer"] is None
 
 
 @pytest.mark.parametrize("kind", ["TIMEOUT", "LIMIT_REACHED", "NONZERO_EXIT", "EMPTY_OUTPUT", "NOT_FOUND"])
@@ -145,7 +154,7 @@ def test_g1_6b_none_on_one_reading_only_disagrees():
 def test_g1_7_the_records_do_not_decide_the_question():
     res, _ = ask_map(F, Q, YN, {"records": ["D3"], "decides": "決まらない"})
     assert (res["decision"], res["escalate_reason"], res["escalate_detail"]) == ("escalate", "FRAME_SILENT", "MAP_RECORD_DOES_NOT_DECIDE")
-    assert [b["id"] for b in res["basis"]] == ["D3"] and res["mapping"]["asks_used"] == 2
+    assert [b["id"] for b in res["basis"]] == ["D3"] and res["mapping"]["asks_used"] == 4          # records 2 + decides 2; no pair is asked
 
 
 def test_g1_8_the_rule_answered_but_the_mapping_names_another_record():
@@ -153,7 +162,7 @@ def test_g1_8_the_rule_answered_but_the_mapping_names_another_record():
     assert (off["decision"], off["answer"], [b["id"] for b in off["basis"]]) == ("answer", "いいえ", ["D2"])
     res, _ = ask_map(F, Q_RULE, YN, {"records": ["D3"], "decides": "決まる", "relations": {"D3": ["一致", "矛盾"]}})
     assert (res["decision"], res["escalate_reason"], res["escalate_detail"]) == ("escalate", "MAPPING_UNSETTLED", "RULE_BASIS_NOT_MAPPED")
-    assert res["mapping"]["route"] == "CORROBORATE" and res["mapping"]["step2"] == [] and res["mapping"]["asks_used"] == 2
+    assert res["mapping"]["route"] == "CORROBORATE" and res["mapping"]["step2"] == [] and res["mapping"]["asks_used"] == 4
 
 
 def test_g1_8b_the_rule_answered_and_the_mapping_decides_another_option():
@@ -178,7 +187,7 @@ def test_g1_10_the_rules_answer_is_corroborated_unchanged():
     for k in ("decision", "answer", "answer_option_index", "derivation", "resolver", "basis", "escalate_reason", "escalate_detail", "kind"):
         assert res[k] == off[k], k
     assert res["mapping"]["route"] == "CORROBORATE" and res["mapping"]["outcome"] == "CORROBORATED"
-    assert res["mapping"]["rule"]["answer"] == "いいえ" and res["mapping"]["asks_used"] == 4
+    assert res["mapping"]["rule"]["answer"] == "いいえ" and res["mapping"]["asks_used"] == 8
 
 
 def test_g1_10b_a_rule_answer_without_options_is_corroborated_by_step_1_alone():
@@ -186,7 +195,7 @@ def test_g1_10b_a_rule_answer_without_options_is_corroborated_by_step_1_alone():
     off = conduct_ask.answer_question(F, q, None)
     assert off["decision"] == "answer" and off["answer"] == "表計算ファイル"
     res, mp = ask_map(F, q, None, {"records": ["D5"], "decides": "決まる"})
-    assert (res["decision"], res["answer"], res["mapping"]["outcome"], res["mapping"]["asks_used"]) == ("answer", "表計算ファイル", "CORROBORATED", 2)
+    assert (res["decision"], res["answer"], res["mapping"]["outcome"], res["mapping"]["asks_used"]) == ("answer", "表計算ファイル", "CORROBORATED", 4)
     assert res["mapping"]["step2"] == []
     res, _ = ask_map(F, q, None, {"records": ["D6"], "decides": "決まる"})
     assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "RULE_BASIS_NOT_MAPPED")
@@ -273,7 +282,7 @@ def test_branch_a_mapped_protected_record_goes_to_a_human():
     prot = M.view_of(F).protected[0].ref.id
     res, mp = ask_map(F, Q, YN, _two([prot], {}))
     assert (res["escalate_reason"], res["escalate_detail"]) == ("HUMAN_APPROVAL_REQUIRED", "MAPPED_PROTECTED")
-    assert res["mapping"]["asks_used"] == 2            # no step 2 for a record that is only handed up
+    assert res["mapping"]["asks_used"] == 4            # records 2 + decides 2; no pair is asked for a record that is only handed up
 
 
 def test_branch_no_options_are_not_answered_by_the_mapping_alone():
@@ -283,9 +292,9 @@ def test_branch_no_options_are_not_answered_by_the_mapping_alone():
 
 def test_branch_the_ask_budget_is_enforced_before_step_2():
     script = _two(["D2", "D3"], {"D2": ["一致", "矛盾"], "D3": ["一致", "矛盾"]})
-    res, mp = ask_map(F, Q, YN, script, max_asks=5)
+    res, mp = ask_map(F, Q, YN, script, max_asks=11)      # records 2 + decides 2, then 2 records x 2 options x 2 = 8 more: one short
     assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "ASK_BUDGET")
-    assert res["mapping"]["asks_used"] == 2 and sum(1 for e in mp.ledger.entries() if e["type"] == "map_ask") == 2
+    assert res["mapping"]["asks_used"] == 4 and sum(1 for e in mp.ledger.entries() if e["type"] == "map_ask") == 4
 
 
 def test_branch_too_many_candidates_are_not_asked():

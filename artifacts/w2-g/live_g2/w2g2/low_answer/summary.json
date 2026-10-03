@@ -1,0 +1,447 @@
+{
+  "total": 48,
+  "false_answer": 0,
+  "wrong_answer": 0,
+  "correct": 15,
+  "over_escalate": 33,
+  "correct_escalate": 0,
+  "q1_wrong_count": 0,
+  "q1_rate": 0.0,
+  "answer_expected": 48,
+  "q2_answer_rate": 0.3125,
+  "q2_by_category": {
+    "direct": {
+      "n": 16,
+      "correct": 7,
+      "rate": 0.4375
+    },
+    "combined": {
+      "n": 16,
+      "correct": 3,
+      "rate": 0.1875
+    },
+    "oov": {
+      "n": 16,
+      "correct": 5,
+      "rate": 0.3125
+    }
+  },
+  "escalate_expected": 0,
+  "escalate_correct": 0,
+  "escalate_correct_rate": null,
+  "reason_type_match": 0,
+  "reason_type_match_rate": null,
+  "by_split": {
+    "dev": {
+      "total": 36,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 10,
+      "over_escalate": 26,
+      "correct_escalate": 0,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 36,
+      "q2_answer_rate": 0.2778,
+      "q2_by_category": {
+        "direct": {
+          "n": 12,
+          "correct": 6,
+          "rate": 0.5
+        },
+        "combined": {
+          "n": 12,
+          "correct": 1,
+          "rate": 0.0833
+        },
+        "oov": {
+          "n": 12,
+          "correct": 3,
+          "rate": 0.25
+        }
+      },
+      "escalate_expected": 0,
+      "escalate_correct": 0,
+      "escalate_correct_rate": null,
+      "reason_type_match": 0,
+      "reason_type_match_rate": null
+    },
+    "holdout": {
+      "total": 12,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 5,
+      "over_escalate": 7,
+      "correct_escalate": 0,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 12,
+      "q2_answer_rate": 0.4167,
+      "q2_by_category": {
+        "direct": {
+          "n": 4,
+          "correct": 1,
+          "rate": 0.25
+        },
+        "combined": {
+          "n": 4,
+          "correct": 2,
+          "rate": 0.5
+        },
+        "oov": {
+          "n": 4,
+          "correct": 2,
+          "rate": 0.5
+        }
+      },
+      "escalate_expected": 0,
+      "escalate_correct": 0,
+      "escalate_correct_rate": null,
+      "reason_type_match": 0,
+      "reason_type_match_rate": null
+    }
+  },
+  "by_lang": {
+    "ja": {
+      "total": 24,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 8,
+      "over_escalate": 16,
+      "correct_escalate": 0,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 24,
+      "q2_answer_rate": 0.3333,
+      "q2_by_category": {
+        "direct": {
+          "n": 8,
+          "correct": 4,
+          "rate": 0.5
+        },
+        "combined": {
+          "n": 8,
+          "correct": 1,
+          "rate": 0.125
+        },
+        "oov": {
+          "n": 8,
+          "correct": 3,
+          "rate": 0.375
+        }
+      },
+      "escalate_expected": 0,
+      "escalate_correct": 0,
+      "escalate_correct_rate": null,
+      "reason_type_match": 0,
+      "reason_type_match_rate": null
+    },
+    "en": {
+      "total": 24,
+      "false_answer": 0,
+      "wrong_answer": 0,
+      "correct": 7,
+      "over_escalate": 17,
+      "correct_escalate": 0,
+      "q1_wrong_count": 0,
+      "q1_rate": 0.0,
+      "answer_expected": 24,
+      "q2_answer_rate": 0.2917,
+      "q2_by_category": {
+        "direct": {
+          "n": 8,
+          "correct": 3,
+          "rate": 0.375
+        },
+        "combined": {
+          "n": 8,
+          "correct": 2,
+          "rate": 0.25
+        },
+        "oov": {
+          "n": 8,
+          "correct": 2,
+          "rate": 0.25
+        }
+      },
+      "escalate_expected": 0,
+      "escalate_correct": 0,
+      "escalate_correct_rate": null,
+      "reason_type_match": 0,
+      "reason_type_match_rate": null
+    }
+  },
+  "by_permission": {
+    "可": {
+      "n": 3,
+      "correct": 0,
+      "false_or_wrong": 0,
+      "over_escalate": 3
+    },
+    "不可": {
+      "n": 5,
+      "correct": 1,
+      "false_or_wrong": 0,
+      "over_escalate": 4
+    },
+    "上げる": {
+      "n": 0,
+      "correct": 0,
+      "false_or_wrong": 0,
+      "over_escalate": 0
+    }
+  },
+  "trap": {
+    "n": 0,
+    "correct_escalate": 0,
+    "false_answer": 0
+  },
+  "oov_none": {
+    "n": 0,
+    "correct_escalate": 0,
+    "false_answer": 0
+  },
+  "by_expected_reason": {},
+  "asks": {
+    "total": 278,
+    "by_provider": {
+      "codex": 278
+    },
+    "by_step": {
+      "decides": 74,
+      "phases": 12,
+      "records": 72,
+      "relation": 84,
+      "word_choice": 36
+    },
+    "by_verdict": {
+      "NONE": 5,
+      "PICK": 273
+    },
+    "failures": {}
+  },
+  "elapsed": {
+    "sum_of_question_seconds": 955.36,
+    "median_s": 19.43,
+    "max_s": 39.33,
+    "wall_s": 245.55
+  },
+  "escalations": {
+    "FRAME_SILENT/MAP_RECORD_DOES_NOT_DECIDE": 4,
+    "FRAME_SILENT/PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION": 3,
+    "FRAME_SILENT/TERM_IN_WIDER_PHRASE": 2,
+    "MAPPING_UNSETTLED/DECIDES_DISAGREE": 10,
+    "MAPPING_UNSETTLED/STEP1_DISAGREE": 5,
+    "MAPPING_UNSETTLED/STEP2_DISAGREE": 6,
+    "OUT_OF_RANGE/STATE_OR_REQUEST_QUESTION": 1,
+    "QUESTION_UNREADABLE/INVERTED_QUESTION": 1,
+    "QUESTION_UNREADABLE/NEGATED_QUESTION": 1
+  },
+  "escalations_where_answer_expected": {
+    "FRAME_SILENT/MAP_RECORD_DOES_NOT_DECIDE": 4,
+    "FRAME_SILENT/PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION": 3,
+    "FRAME_SILENT/TERM_IN_WIDER_PHRASE": 2,
+    "MAPPING_UNSETTLED/DECIDES_DISAGREE": 10,
+    "MAPPING_UNSETTLED/STEP1_DISAGREE": 5,
+    "MAPPING_UNSETTLED/STEP2_DISAGREE": 6,
+    "OUT_OF_RANGE/STATE_OR_REQUEST_QUESTION": 1,
+    "QUESTION_UNREADABLE/INVERTED_QUESTION": 1,
+    "QUESTION_UNREADABLE/NEGATED_QUESTION": 1
+  },
+  "mapping_outcomes": {
+    "ANSWERED": 12,
+    "CORROBORATED": 3,
+    "ESCALATED:FRAME_SILENT/MAP_RECORD_DOES_NOT_DECIDE": 4,
+    "ESCALATED:MAPPING_UNSETTLED/DECIDES_DISAGREE": 10,
+    "ESCALATED:MAPPING_UNSETTLED/STEP1_DISAGREE": 5,
+    "ESCALATED:MAPPING_UNSETTLED/STEP2_DISAGREE": 6,
+    "ESCALATED:QUESTION_UNREADABLE/INVERTED_QUESTION": 1,
+    "NOT_ASKED:RULE_ESCALATION_NOT_RETRIED": 7
+  },
+  "exit_check_escalations": 1,
+  "step1_record_match": {
+    "step1_adopted": 31,
+    "same_set_as_expected": 30,
+    "rate": 0.9677,
+    "questions_with_step1": 36
+  },
+  "answered_by_route": {
+    "CORROBORATE": {
+      "n": 10,
+      "answered": 3,
+      "correct": 3,
+      "wrong": 0
+    },
+    "MAPPING_ONLY": {
+      "n": 31,
+      "answered": 12,
+      "correct": 12,
+      "wrong": 0
+    },
+    "None": {
+      "n": 7,
+      "answered": 0,
+      "correct": 0,
+      "wrong": 0
+    }
+  },
+  "order_route": {
+    "attempted": 6,
+    "phases_adopted": 6,
+    "answered": 3,
+    "answered_correct": 3
+  },
+  "wrong_or_false_ids": [],
+  "g2": {
+    "protocol": "conduct_map/v2",
+    "map_asks_by_step": {
+      "decides": 74,
+      "phases": 12,
+      "records": 72,
+      "relation": 84
+    },
+    "map_verdict_by_step": {
+      "decides": {
+        "PICK": 74
+      },
+      "phases": {
+        "PICK": 12
+      },
+      "records": {
+        "NONE": 3,
+        "PICK": 69
+      },
+      "relation": {
+        "PICK": 84
+      }
+    },
+    "invalid_reasons": {},
+    "invalid_rate_mapping_asks": {
+      "invalid": 0,
+      "rows": 242,
+      "rate": 0.0
+    },
+    "invalid_rate_all_asks": {
+      "invalid": 0,
+      "rows": 278,
+      "rate": 0.0
+    },
+    "retries": {
+      "asks": 0,
+      "valid_reply": 0,
+      "decisions_with_retry": 0
+    },
+    "decision_status_by_step": {
+      "decides": {
+        "ABSTAINED": 10,
+        "ADOPTED": 27
+      },
+      "phases": {
+        "ADOPTED": 6
+      },
+      "records": {
+        "ABSTAINED": 5,
+        "ADOPTED": 31
+      },
+      "relation": {
+        "ABSTAINED": 6,
+        "ADOPTED": 36
+      }
+    },
+    "decides_distribution": {
+      "adopted": {
+        "決まらない": 4,
+        "決まる": 23
+      },
+      "not_adopted": {
+        "ABSTAINED": 10
+      }
+    },
+    "ask_elapsed_ms": {
+      "all_map_asks": {
+        "n": 242,
+        "mean": 6860.3,
+        "median": 5725.5,
+        "p90": 13145,
+        "max": 16876
+      },
+      "by_step": {
+        "decides": {
+          "n": 74,
+          "mean": 7285.8,
+          "median": 5768.0,
+          "p90": 13536,
+          "max": 16876
+        },
+        "phases": {
+          "n": 12,
+          "mean": 5095.7,
+          "median": 5044.0,
+          "p90": 5685,
+          "max": 6197
+        },
+        "records": {
+          "n": 72,
+          "mean": 6261.0,
+          "median": 5322.5,
+          "p90": 10605,
+          "max": 15816
+        },
+        "relation": {
+          "n": 84,
+          "mean": 7251.1,
+          "median": 6136.5,
+          "p90": 13018,
+          "max": 15326
+        }
+      },
+      "word_choice_asks_have_no_elapsed_field": true
+    },
+    "map_asks_per_question": {
+      "n": 48,
+      "mean": 5.0,
+      "median": 4.0,
+      "p90": 10,
+      "max": 12
+    },
+    "all_asks_per_question_mean": 5.79,
+    "questions_over_map_cap": 0,
+    "escalation_reasons": {
+      "FRAME_SILENT": 9,
+      "MAPPING_UNSETTLED": 21,
+      "OUT_OF_RANGE": 1,
+      "QUESTION_UNREADABLE": 2
+    },
+    "escalation_reasons_where_answer_expected": {
+      "FRAME_SILENT": 9,
+      "MAPPING_UNSETTLED": 21,
+      "OUT_OF_RANGE": 1,
+      "QUESTION_UNREADABLE": 2
+    }
+  },
+  "config": {
+    "mode": "codex",
+    "second": "codex",
+    "map_max_asks": 24,
+    "providers": {
+      "codex": "gpt-6-luna / effort low",
+      "claude": "claude-sonnet-5-5 / effort low"
+    },
+    "map_effort": "low",
+    "map_timeout": null,
+    "question_timeout_s": 2400.0,
+    "budget": {
+      "root": "artifacts/w2-g/live_g2",
+      "total": 1140,
+      "run": null,
+      "worst_per_question": 26
+    },
+    "workers": 4,
+    "subset": "artifacts/w2-g/g2/b_answer_ids.txt",
+    "wall_s": 245.55,
+    "fake_is_an_oracle_assumption": false
+  },
+  "aborted": null,
+  "not_run": [],
+  "not_run_budget": []
+}

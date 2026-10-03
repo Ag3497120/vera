@@ -1,0 +1,14 @@
+# calls_start.jsonl lines: 1527 distinct keys: 1086
+# calls_end.jsonl   lines: 1527 distinct keys: 1086
+# keys only in start: 0 / only in end: 0
+# keys with more than one distinct result inside one run: 1
+# counts [off_or_scripted_only]: {'answer->escalate': 0, 'escalate->answer': 0, 'answer value/index changed': 0, 'escalate reason/detail changed': 0}
+# counts [other(codex/claude/map)]: {'answer->escalate': 0, 'escalate->answer': 0, 'answer value/index changed': 0, 'escalate reason/detail changed': 0}
+== [off_or_scripted_only] answer->escalate 0
+== [off_or_scripted_only] escalate->answer 0
+== [off_or_scripted_only] answer value/index changed 0
+== [off_or_scripted_only] escalate reason/detail changed 0
+== [other(codex/claude/map)] answer->escalate 0
+== [other(codex/claude/map)] escalate->answer 0
+== [other(codex/claude/map)] answer value/index changed 0
+== [other(codex/claude/map)] escalate reason/detail changed 0

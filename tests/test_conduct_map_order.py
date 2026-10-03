@@ -72,16 +72,17 @@ def test_a_chain_question_is_answered_from_the_whole_graph_with_the_path_edges_a
     o = res["mapping"]["order"]
     assert o["picked"] == ["P1", "P5"] and o["relation"] == "P1<P5" and o["phases"]["status"] == "ADOPTED"
     assert o["claim"].startswith("「区画の一覧を整える」を終えてから")
-    assert res["mapping"]["asks_used"] == 6 and res["mapping"]["step1"]["records"] == ["order:ALL"]
+    # v2: records 2 + decides 2 (the whole order family) + phases 2 + decides 2 (the path edges and the phases at their ends) + 2 options x 2
+    assert res["mapping"]["asks_used"] == 12 and res["mapping"]["step1"]["records"] == ["order:ALL"]
     steps = [e["step"] for e in mp.ledger.entries() if e.get("type") == "map_ask"]
-    assert steps == ["records", "records", "phases", "phases", "relations", "relations"]
+    assert steps == ["records", "records", "decides", "decides", "phases", "phases", "decides", "decides"] + ["relation"] * 4
 
 
 def test_a_question_with_a_cue_of_the_rules_goes_to_the_order_route_first():
     q = "管理人用の表を作る前に、申し込み画面は完成している必要がありますか？"
     res, mp = ask_map(X01, q, YN, {"phases": ["P2", "P4"], "relations": {"order:P2<P4": ["一致", "矛盾"]}})
-    assert (res["decision"], res["answer"]) == ("answer", "はい") and res["mapping"]["asks_used"] == 4 and res["mapping"]["step1"] is None
-    assert [e["step"] for e in mp.ledger.entries() if e.get("type") == "map_ask"] == ["phases", "phases", "relations", "relations"]
+    assert (res["decision"], res["answer"]) == ("answer", "はい") and res["mapping"]["asks_used"] == 8 and res["mapping"]["step1"] is None
+    assert [e["step"] for e in mp.ledger.entries() if e.get("type") == "map_ask"] == ["phases", "phases", "decides", "decides"] + ["relation"] * 4
 
 
 def test_the_phases_may_be_named_in_either_order_and_the_option_decides_the_answer():
@@ -113,7 +114,7 @@ def test_two_unordered_phases_are_a_silent_frame_not_a_pick():
 def test_a_disagreement_on_the_phases_hands_the_question_up():
     res, _ = ask_map(X01, CHAIN_Q, YN, {**CHAIN, "phases2": ["P1", "P4"]})
     assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "PHASES_DISAGREE")
-    assert res["answer"] is None and res["mapping"]["asks_used"] == 4
+    assert res["answer"] is None and res["mapping"]["asks_used"] == 6          # records 2 + decides 2 + phases 2
 
 
 @pytest.mark.parametrize("kind", ["TIMEOUT", "LIMIT_REACHED"])
@@ -162,7 +163,7 @@ def test_several_phases_without_one_last_phase_are_a_silent_frame():
 def test_five_phases_named_is_not_an_order_question_the_route_takes():
     res, _ = ask_map(X01, CHAIN_Q, YN, {**CHAIN, "phases": ["P1", "P2", "P3", "P4", "P5"]})
     assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "ORDER_NOT_RESOLVED")
-    assert res["mapping"]["order"]["relation"] == "NOT_APPLICABLE:5_PHASES" and res["mapping"]["asks_used"] == 4
+    assert res["mapping"]["order"]["relation"] == "NOT_APPLICABLE:5_PHASES" and res["mapping"]["asks_used"] == 6
 
 
 def test_no_phase_named_after_the_whole_order_family_was_picked_is_unsettled():
@@ -181,13 +182,13 @@ def test_no_phase_named_for_a_question_with_a_cue_continues_with_the_records_rou
 def test_the_order_family_picked_together_with_another_record_is_unsettled():
     res, _ = ask_map(X01, CHAIN_Q, YN, {**CHAIN, "records": ["order:ALL", "D5"]})
     assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "ORDER_MIXED_WITH_OTHER_RECORDS")
-    assert res["mapping"]["order"] is None and res["mapping"]["asks_used"] == 2
+    assert res["mapping"]["order"] is None and res["mapping"]["asks_used"] == 4          # records 2 + decides 2
 
 
 def test_the_order_family_that_does_not_decide_is_handed_up_before_the_phases_are_asked():
     res, _ = ask_map(X01, CHAIN_Q, YN, {**CHAIN, "decides": "決まらない"})
     assert (res["escalate_reason"], res["escalate_detail"]) == ("FRAME_SILENT", "MAP_RECORD_DOES_NOT_DECIDE")
-    assert [b["id"] for b in res["basis"]][0] == "phase_order:P1->P2" and res["mapping"]["asks_used"] == 2
+    assert [b["id"] for b in res["basis"]][0] == "phase_order:P1->P2" and res["mapping"]["asks_used"] == 4          # records 2 + decides 2
 
 
 def test_the_single_edges_are_not_candidates_of_step_1_unless_a_rule_answer_needs_them():
@@ -305,7 +306,7 @@ def test_the_phases_ask_is_in_the_ledger_with_every_field_and_is_not_asked_twice
     res2 = conduct_ask.answer_question(X01, CHAIN_Q, YN, vocab_llm="fake", mapper=mp)
     assert first.calls + second.calls == before and res2["answer"] == "はい"
     types = [e["type"] for e in mp.ledger.entries()]
-    assert types.count("map_reuse") == 3                  # step 1, the phases step and the relations step
+    assert types.count("map_reuse") == 6                  # records, decides (the family), phases, decides (the path) and the 2 relation pairs
     assert [e for e in mp.ledger.entries() if e["type"] == "map_decision" and e["step"] == "phases"][0]["counts_as_evidence"] is False
 
 
@@ -360,25 +361,29 @@ def test_a_question_about_another_subject_is_handed_up_when_the_two_readings_say
     res, mp = ask_map(X04, DISTRICT_Q, YN_EN, {**DISTRICT, "decides_phases": "決まらない"})
     assert (res["decision"], res["escalate_reason"], res["escalate_detail"]) == ("escalate", "FRAME_SILENT", "MAP_RECORD_DOES_NOT_DECIDE")
     assert res["answer"] is None and [b["id"] for b in res["basis"]] == ["phase_order:P3->P4"]
-    assert res["mapping"]["asks_used"] == 2 and res["mapping"]["step2"] == []            # the options were never asked about
-    assert res["mapping"]["order"]["decides"] == "決まらない" and res["mapping"]["order"]["phases"]["decides"] == "決まらない"
+    assert res["mapping"]["asks_used"] == 4 and res["mapping"]["step2"] == []            # phases 2 + decides 2; the options were never asked about
+    assert res["mapping"]["order"]["decides"] == "決まらない" and res["mapping"]["order"]["decides_step"]["decides"] == "決まらない"
     rows = [e for e in mp.ledger.entries() if e.get("type") == "map_ask"]
-    assert [r["step"] for r in rows] == ["phases", "phases"] and all(r["parsed"]["decides"] == "決まらない" for r in rows)
-    dec = [e for e in mp.ledger.entries() if e.get("type") == "map_decision"][0]
-    assert dec["result"] == {"phases": ["P3", "P4"], "decides": "決まらない"} and dec["counts_as_evidence"] is False
+    assert [r["step"] for r in rows] == ["phases", "phases", "decides", "decides"]
+    assert all(r["parsed"]["decides"] == "決まらない" for r in rows[2:])
+    decs = [e for e in mp.ledger.entries() if e.get("type") == "map_decision"]
+    assert decs[0]["result"] == {"phases": ["P3", "P4"]} and decs[1]["result"] == {"decides": "決まらない"}
+    assert all(d["counts_as_evidence"] is False for d in decs)
 
 
 def test_two_readings_that_differ_only_in_decides_do_not_agree():
     res, _ = ask_map(X04, DISTRICT_Q, YN_EN, {**DISTRICT, "decides_phases": "決まる", "decides_phases2": "決まらない"})
-    assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "PHASES_DISAGREE")
-    assert res["answer"] is None and res["mapping"]["asks_used"] == 2
+    assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "DECIDES_DISAGREE")          # v2: decides is its own step
+    assert res["answer"] is None and res["mapping"]["asks_used"] == 4
 
 
 def test_the_decides_is_part_of_the_closed_form_of_the_phases_reply():
-    res, _ = ask_map(X04, DISTRICT_Q, YN_EN, {**DISTRICT, "raw_phases": '{"phases": [2, 3]}'})            # no decides: invalid
-    assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "PHASES_INVALID_ANSWER")
-    res, _ = ask_map(X04, DISTRICT_Q, YN_EN, {**DISTRICT, "raw_phases": '{"phases": [2, 3], "decides": "決まる", "answer": "Yes"}'})
-    assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "PHASES_INVALID_ANSWER") and res["answer"] is None
+    # v2: the phases reply is the numbers only; a JSON reply (with or without a decides, with an answer) and a number list with a decides
+    # word of its own are all outside the minimal form, and invalid after the second ask too
+    for raw in ('{"phases": [2, 3]}', '{"phases": [2, 3], "decides": "決まる", "answer": "Yes"}', "2,3 決まる", "2,3\n決まる"):
+        res, mp = ask_map(X04, DISTRICT_Q, YN_EN, {**DISTRICT, "raw_phases": raw})
+        assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "PHASES_INVALID_ANSWER") and res["answer"] is None
+        assert [e["attempt"] for e in mp.ledger.entries() if e["type"] == "map_ask"] == [0, 0, 1, 1]
 
 
 def test_a_rule_order_answer_is_not_corroborated_when_the_order_does_not_decide():
@@ -390,8 +395,8 @@ def test_a_rule_order_answer_is_not_corroborated_when_the_order_does_not_decide(
 def test_the_order_family_picked_by_step_1_is_also_checked_with_the_phases_decides():
     res, _ = ask_map(X01, CHAIN_Q, YN, {**CHAIN, "decides_phases": "決まらない"})
     assert (res["escalate_reason"], res["escalate_detail"]) == ("FRAME_SILENT", "MAP_RECORD_DOES_NOT_DECIDE")
-    assert res["mapping"]["step1"]["decides"] == "決まる" and res["mapping"]["order"]["decides"] == "決まらない"
-    assert res["mapping"]["asks_used"] == 4
+    assert res["mapping"]["decides"]["decides"] == "決まる" and res["mapping"]["order"]["decides"] == "決まらない"
+    assert res["mapping"]["asks_used"] == 8          # records 2 + decides 2 + phases 2 + decides 2
 
 
 def test_no_phase_named_is_recorded_as_the_fall_back_to_the_records_route():
@@ -407,10 +412,10 @@ def test_a_phases_decision_cached_in_the_older_form_is_not_reused():
     sess = mp.session("0" * 64, DISTRICT_Q, YN_EN)
     phases = cm.phase_candidates(view)
     old = {"type": "map_decision", "decision_id": "old", "key": json.dumps(
-        {"protocol": cm.PROTOCOL, "step": "phases", "frame_sha256": "0" * 64, "question": conduct_ask.nz(DISTRICT_Q), "options": list(YN_EN),
+        {"protocol": "conduct_map/v1", "step": "phases", "frame_sha256": "0" * 64, "question": conduct_ask.nz(DISTRICT_Q), "options": list(YN_EN),
          "candidates": sorted([c.id, c.text] for c in phases), "record_id": None}, ensure_ascii=False, sort_keys=True, separators=(",", ":")),
            "step": "phases", "status": "ADOPTED", "reason": "ADOPTED", "result": {"phases": ["P3", "P4"]}, "ask_ids": []}
-    assert mp._key("phases", sess, phases, None) != old["key"]
+    assert mp._key("phases", sess, [[c.id, c.text] for c in phases], None) != old["key"]          # a decision of the earlier protocol is not reused
 
 
 # ---- review 2, must-fix 2: a derived statement over several phases leaves no pair out -------------------------------------
@@ -445,17 +450,24 @@ def test_the_options_of_a_three_phase_question_are_judged_against_a_statement_th
     n = {p.id: p.name for p in M.view_of(X04).phases}
     claim = res["mapping"]["order"]["claim"]
     assert f"「{n['P1']}」を終えてからでなければ「{n['P2']}」には進めない" in claim           # the pair the previous statement left out
-    prompts = [e["prompt"] for e in mp.ledger.entries() if e.get("type") == "map_ask" and e["step"] == "relations"]
-    assert len(prompts) == 2 and all(claim in p for p in prompts)
+    prompts = [e["prompt"] for e in mp.ledger.entries() if e.get("type") == "map_ask" and e["step"] == "relation"]
+    assert len(prompts) == 6 and all(claim in p for p in prompts)          # 3 options x 2 asks, each against the whole statement
     assert (res["decision"], res["answer"], res["answer_option_index"]) == ("answer", opts[0], 0)
     assert [b["id"] for b in res["basis"]] == ["phase_order:P1->P2", "phase_order:P2->P3"]
 
 
 @pytest.mark.parametrize("variant", [0, 1])
 def test_the_phases_prompt_asks_the_closed_decides_in_both_wordings_and_shows_no_order_record(variant):
+    # v2: the closed decides is its own question (it shows the order lines and the phases at their ends, never an option); the phases
+    # question shows the phase names only, never an order line
     view = M.view_of(X04)
-    prompt = cm.build_phases_prompt(DISTRICT_Q, YN_EN, cm.phase_candidates(view), variant)
-    assert '"決まる"' in prompt and '"決まらない"' in prompt and '{"phases": []}' in prompt
-    assert "別の事業" in prompt or "だれの事業" in prompt                          # the other-subject case is named to the model
+    edge = view.edges[0]
+    lines = [edge.ref.text] + [p.ref.text for p in view.phases if p.id in (edge.before, edge.after)]
+    prompt = cm.build_decides_prompt(DISTRICT_Q, lines, variant, about=cm.ABOUT_ORDER)
+    assert "「決まる」" in prompt and "「決まらない」" in prompt and "別の事業" in prompt
+    assert all(json.dumps(x, ensure_ascii=False) in prompt for x in lines) and DISTRICT_Q in prompt
+    assert not any(o in prompt for o in YN_EN)                                    # no option is shown to this question
+    pp = cm.build_phases_prompt(DISTRICT_Q, YN_EN, cm.phase_candidates(view), variant)
+    assert "なし" in pp and "決まる" not in pp and "決まらない" not in pp
     for e in view.edges:                                                           # the model is shown phases, never an order line
-        assert e.ref.text not in prompt
+        assert e.ref.text not in pp

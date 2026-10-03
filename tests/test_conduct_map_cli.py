@@ -63,7 +63,7 @@ def test_the_mapping_key_is_last_and_only_present_when_the_mapping_is_on(script)
     res = json.loads(out)
     assert code == 0 and tuple(res) == H.KEYS + ("mapping",)
     assert res["decision"] == "answer" and res["answer"] == "はい" and res["mapping"]["outcome"] == "ANSWERED"
-    assert res["mapping"]["asks_cap"] == 8
+    assert res["mapping"]["asks_cap"] == 24
 
 
 def test_the_ask_cap_is_an_argument_and_a_small_one_hands_up(script):
@@ -118,14 +118,14 @@ def test_the_real_modes_build_the_mapper_with_the_second_provider_given(monkeypa
     seen = []
     from verantyx import conduct_map
 
-    def spy(mode, second, ledger, max_asks):
+    def spy(mode, second, ledger, max_asks, effort="low", timeout=None):
         seen.append((mode, second, ledger, max_asks))
         return M.mapper_for(F, M.YN_JA, GOOD)
     monkeypatch.setattr(conduct_map, "build_real_mapper", spy)
     res = conduct_ask.answer_question(F, Q, M.YN_JA, vocab_llm="codex", map_second="claude", map_max_asks=6)
     assert seen == [("codex", "claude", None, 6)] and res["decision"] == "answer"
     res = conduct_ask.answer_question(F, "雑誌の点検は今回の範囲に含めますか？", M.YN_JA, vocab_llm="claude")
-    assert seen[-1] == ("claude", None, None, 8) and res["mapping"]["route"] == "CORROBORATE"
+    assert seen[-1] == ("claude", None, None, 24) and res["mapping"]["route"] == "CORROBORATE"
 
 
 def _fresh(code):

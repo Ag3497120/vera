@@ -1,0 +1,174 @@
+
+=== origin of the imported modules (expected: outside [])
+verantyx modules 46 outside []
+
+=== paths outside the permitted ones (expected: no output)
+
+=== tracked files of artifacts/w2-g modified (expected: no output)
+
+=== protected paths diff against eb5b2e1 (expected: no output)
+
+=== llm_choice.py deleted lines against dev and against eb5b2e1 (expected: 0 and 0)
+0
+0
+
+=== no bytecode or cache files (expected: no output)
+
+=== G1 G2 G5 G9: the conduct_map tests and the llm_choice tests
+===================== environment classification of skips ======================
+ENV_MISSING[llm_live]: 1 skipped
+506 passed, 1 skipped in 7.28s
+============================= 121 passed in 1.33s ==============================
+
+=== 'or True' (expected 0)
+       0
+
+=== skip / xfail marks (expected: the one of test_conduct_map_live.py)
+tests/test_conduct_map_live.py:26:        pytest.skip("ENV_MISSING[llm_live]: VERA_LLM_LIVE!=1 (live provider not requested)")
+
+=== number of test functions per migrated file, before -> after (expected: after >= before)
+tests/test_conduct_map_bank.py 2 -> 10
+tests/test_conduct_map_cli.py 11 -> 11
+tests/test_conduct_map_g1.py 41 -> 41
+tests/test_conduct_map_g2.py 7 -> 7
+tests/test_conduct_map_g5.py 11 -> 11
+tests/test_conduct_map_live.py 1 -> 1
+tests/test_conduct_map_order.py 49 -> 49
+tests/test_conduct_map_reply.py 10 -> 10
+tests/test_conduct_map_unit.py 26 -> 26
+
+=== removed test lines against eb5b2e1 (all explained in the report's migration table)
+      83
+same as the saved list
+
+=== G4: the 161 questions of W2-c with off and fake (expected: diff 0 / diff 0)
+off n 161 161 diff 0 []
+fake n 161 161 diff 0 []
+
+=== G4: the calls of the existing tests against the start (expected: no change of off / scripted calls)
+# calls_start.jsonl lines: 1527 distinct keys: 1086
+# calls_end.jsonl   lines: 1527 distinct keys: 1086
+# keys only in start: 0 / only in end: 0
+# keys with more than one distinct result inside one run: 1
+# counts [off_or_scripted_only]: {'answer->escalate': 0, 'escalate->answer': 0, 'answer value/index changed': 0, 'escalate reason/detail changed': 0}
+# counts [other(codex/claude/map)]: {'answer->escalate': 0, 'escalate->answer': 0, 'answer value/index changed': 0, 'escalate reason/detail changed': 0}
+== [off_or_scripted_only] answer->escalate 0
+== [off_or_scripted_only] escalate->answer 0
+
+=== G4: real agent questions with off (expected: same)
+same
+
+=== G4: off does not import conduct_map (expected: False)
+False
+
+=== G6: the whole test suite against the baseline (expected: no new failure)
+done
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+125 failed, 5330 passed, 45 skipped, 82 xfailed, 68 xpassed, 37 subtests passed in 103.84s (0:01:43)
+===================== environment classification of skips ======================
+ENV_MISSING[eval_fixtures]: 1 skipped
+ENV_MISSING[ja_sealed1_dev_fixtures]: 1 skipped
+ENV_MISSING[llm_live]: 1 skipped
+ENV_MISSING[node]: 8 skipped
+ENV_MISSING[node_jitless_quiet]: 9 skipped
+ENV_MISSING[round5_dev_fixtures]: 1 skipped
+
+=== G6: the guard (expected: all pass, no process start recorded)
+no guard log
+===================== environment classification of skips ======================
+ENV_MISSING[llm_live]: 1 skipped
+UNCLASSIFIED_SKIP: tests/test_llm_choice_live.py::test_live_codex_closed_choice
+1081 passed, 2 skipped in 8.47s
+
+=== G7: round 1-3 numbers (expected: MISSING lines: 0)
+MISSING lines: 0
+
+=== G7: section 14 numbers (expected: MISSING lines: 0)
+MISSING lines: 0
+
+=== G7: --recount of the saved runs of rounds 1-3 (expected: all MATCH)
+artifacts/w2-g/live/codex_codex: MATCH rows=64 q1_wrong=0 q2_answer_rate=0.4375 escalate_correct_rate=1.0 asks=208 (not 
+artifacts/w2-g/live/codex_codex_r2: MATCH rows=64 q1_wrong=0 q2_answer_rate=0.4583 escalate_correct_rate=1.0 asks=197 (n
+artifacts/w2-g/live/codex_claude: MATCH rows=20 q1_wrong=0 q2_answer_rate=0.6667 escalate_correct_rate=1.0 asks=70 (not 
+artifacts/w2-g/live/smoke/run1: MATCH rows=6 q1_wrong=0 q2_answer_rate=1.0 escalate_correct_rate=None asks=28 (not compa
+artifacts/w2-g/live/w2g2/codex_codex: MATCH rows=64 q1_wrong=0 q2_answer_rate=0.5833 escalate_correct_rate=1.0 asks=222 
+artifacts/w2-g/live/w2g2/codex_claude: MATCH rows=20 q1_wrong=0 q2_answer_rate=0.75 escalate_correct_rate=1.0 asks=62 (n
+artifacts/w2-g/live/w2g2/codex_codex_r3_order: MATCH rows=13 q1_wrong=0 q2_answer_rate=0.0 escalate_correct_rate=1.0 ask
+artifacts/w2-g/live/w2g2/codex_codex_r3b_order: MATCH rows=13 q1_wrong=0 q2_answer_rate=0.5 escalate_correct_rate=1.0 as
+artifacts/w2-g/live/w2g2/codex_claude_r3b_order: MATCH rows=4 q1_wrong=0 q2_answer_rate=0.75 escalate_correct_rate=None 
+
+=== freeze: data, code and runner against the frozen sha256 (expected 0 and 0)
+0
+0
+
+=== freeze: distinct lines of the sha files taken around the real runs (expected 4) and each equal to the frozen line (expected: no output)
+       4
+
+=== G3' G8: --recount of the real runs (expected: all MATCH)
+artifacts/w2-g/live_g2/w2g3/low: MATCH rows=60 q1_wrong=0 q2_answer_rate=0.3333 escalate_correct_rate=1.0 asks=304
+artifacts/w2-g/live_g2/w2g3/xhigh: MATCH rows=60 q1_wrong=0 q2_answer_rate=0.5111 escalate_correct_rate=1.0 asks=342
+artifacts/w2-g/live_g2/w2g2/low_answer: MATCH rows=48 q1_wrong=0 q2_answer_rate=0.3125 escalate_correct_rate=None asks=278
+artifacts/w2-g/live_g2/w2g2/low_escalate: MATCH rows=16 q1_wrong=0 q2_answer_rate=None escalate_correct_rate=1.0 asks=36
+artifacts/w2-g/g2/g3_w2g3/off: MATCH rows=60 q1_wrong=0 q2_answer_rate=0.0 escalate_correct_rate=1.0 asks=0
+artifacts/w2-g/g2/g3_w2g3/fake_oracle: MATCH rows=60 q1_wrong=0 q2_answer_rate=0.8889 escalate_correct_rate=1.0 asks=423
+
+=== G3' G8: the numbers (wrong <= 5% of 60; invalid rate below 26/296 = 0.0878 at effort low)
+low total 60 wrong 0 q1_rate 0.0 correct 15 / 45 esc 15 / 15 asks 304 not_run 0
+  g2 {"invalid_rate_mapping_asks": {"invalid": 0, "rows": 274, "rate": 0.0}, "invalid_rate_all_asks": {"invalid": 0, "rows": 304, "rate": 0.0}}
+xhigh total 60 wrong 0 q1_rate 0.0 correct 23 / 45 esc 15 / 15 asks 342 not_run 0
+  g2 {"invalid_rate_mapping_asks": {"invalid": 0, "rows": 312, "rate": 0.0}, "invalid_rate_all_asks": {"invalid": 0, "rows": 342, "rate": 0.0}}
+
+=== budget (expected: TOTAL <= 1140 OK, codex only)
+w2g3/xhigh/ledger.jsonl: 342 asks, RUN_TIMEOUT questions 0, provider {'codex': 342}, effort {'xhigh': 312, 'low': 30}, step {'records': 84, 'decides': 88, 'relation': 112, 'phases': 28, 'word_choice': 30}
+ROWS 990  RUN_TIMEOUT questions 0 x 26 = 0
+BY_EFFORT {'low': 668, 'xhigh': 322} BY_STEP {'decides': 254, 'phases': 72, 'records': 268, 'relation': 292, 'word_choice': 104} BY_PROVIDER {'codex': 990}
+TOTAL 990 limit 1140 OK
+PROVIDERS ['codex'] ONLY_CODEX
+
+=== ledgers: chain OK (expected 1 for each) and the recount of the decisions (expected mismatches 0)
+artifacts/w2-g/live_g2/smoke/low/ledger.jsonl 1
+artifacts/w2-g/live_g2/smoke/xhigh/ledger.jsonl 1
+artifacts/w2-g/live_g2/smoke/low2/ledger.jsonl 1
+artifacts/w2-g/live_g2/w2g3/low/ledger.jsonl 1
+artifacts/w2-g/live_g2/w2g3/xhigh/ledger.jsonl 1
+artifacts/w2-g/live_g2/w2g2/low_answer/ledger.jsonl 1
+artifacts/w2-g/live_g2/w2g2/low_escalate/ledger.jsonl 1
+artifacts/w2-g/live_g2/w2g2/low_escalate/ledger.jsonl: decisions 15 asks 30 retries 0 steps {'decides': 1, 'phases': 1, 'records': 11, 'relation': 2} mismatches 0 row_mismatches 0
+TOTAL mismatches 0
+
+=== order of events: code freeze < data freeze < off / fake / first real ask
+artifacts/w2-g/live_g2/w2g2/low_answer/ledger.jsonl 2026-10-03T00:42:47Z
+artifacts/w2-g/live_g2/w2g2/low_escalate/ledger.jsonl 2026-10-03T00:47:55Z
+artifacts/w2-g/live_g2/w2g3/low/ledger.jsonl 2026-10-03T00:23:31Z
+artifacts/w2-g/live_g2/w2g3/xhigh/ledger.jsonl 2026-10-03T00:30:12Z
+Sat Oct  3 09:19:15 JST 2026
+Sat Oct  3 00:19:15 UTC 2026
+Sat Oct  3 09:22:53 JST 2026
+Sat Oct  3 00:22:53 UTC 2026
+-rw-r--r--  1 motonisihikoudai  staff  47102 Oct  3 09:23:02 2026 artifacts/w2-g/g2/g3_w2g3/off/results.jsonl
+
+=== end: status of the tree
+ M docs/CONDUCT_ASK.md
+ M tests/conduct_ask/map_helpers.py
+ M tests/conduct_ask/w2g/run_map_bank.py
+ M tests/test_conduct_map_bank.py
+ M tests/test_conduct_map_cli.py
+ M tests/test_conduct_map_g1.py
+ M tests/test_conduct_map_g2.py
+ M tests/test_conduct_map_g5.py
+ M tests/test_conduct_map_live.py
+ M tests/test_conduct_map_order.py
+ M tests/test_conduct_map_unit.py
+ M verantyx/conduct_ask.py
+ M verantyx/conduct_map.py
+ M verantyx/llm_choice.py
+?? tests/conduct_ask/w2g3/frames/y01_hall.md
+?? tests/conduct_ask/w2g3/frames/y02_lunch.md
+?? tests/conduct_ask/w2g3/frames/y03_usedbooks.md
+?? tests/conduct_ask/w2g3/frames/y04_hives.md
+?? tests/conduct_ask/w2g3/frames/y05_water.md
+?? tests/conduct_ask/w2g3/frames/y06_stars.md
+?? tests/conduct_ask/w2g3/items.jsonl
+?? tests/test_conduct_map_g9.py
+?? tests/test_conduct_map_reply2.py
+(done)

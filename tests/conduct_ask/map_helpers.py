@@ -32,10 +32,11 @@ def view_of(frame_path: str) -> "ca.FrameView":
 
 def mapper_for(frame_path: str, options: Optional[Sequence[str]], script: Optional[dict] = None, *,
                ledger: Optional[ChoiceLedger] = None, providers: Any = None, order_source: Any = None,
-               max_asks: int = 8, max_candidates: int = 24, max_records: int = 3) -> "cm.RecordMapper":
+               max_asks: int = cm.DEFAULT_MAX_ASKS, max_candidates: int = 24, max_records: int = 3,
+               max_parallel: int = cm.DEFAULT_MAX_PARALLEL) -> "cm.RecordMapper":
     pair = providers if providers is not None else cm.fake_pair(script or {}, view_of(frame_path), options)
     return cm.RecordMapper(pair, ledger if ledger is not None else ChoiceLedger(None), order_source=order_source or fixed_order,
-                           max_asks=max_asks, max_candidates=max_candidates, max_records=max_records)
+                           max_asks=max_asks, max_candidates=max_candidates, max_records=max_records, max_parallel=max_parallel)
 
 
 def ask_map(frame_path: str, question: str, options: Optional[Sequence[str]], script: Optional[dict] = None,

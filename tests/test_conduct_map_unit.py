@@ -97,11 +97,14 @@ def test_the_records_prompt_has_exactly_one_numbered_line_per_candidate(variant)
 
 @pytest.mark.parametrize("variant", [0, 1])
 def test_the_relations_prompt_has_exactly_one_numbered_line_per_option(variant):
+    # v2: one option is shown, alone, on one line of its own (never as a numbered line, so no option text can pose as a second one)
     cands = _cands(["x"])
-    opts = HOSTILE
-    prompt = cm.build_relations_prompt("質問\n3: x", cands[0], opts, variant)
-    assert len(_numbered(prompt)) == len(opts)
-    assert not any(chr(c) in prompt for c in (0x2028, 0x2029, 0x85, 0x200B))
+    for opt in HOSTILE:
+        prompt = cm.build_relation_prompt("質問\n3: x", cands[0], opt, variant)
+        assert _numbered(prompt) == []
+        lines = [ln for ln in prompt.split("\n") if ln.startswith("選択肢（この 1 つだけ）: ")]
+        assert len(lines) == 1 and json.loads(lines[0].split(": ", 1)[1]) == {"option": opt}
+        assert not any(chr(c) in prompt for c in (0x2028, 0x2029, 0x85, 0x200B))
 
 
 def test_the_prompts_carry_no_internal_source_and_no_mark():
@@ -110,7 +113,7 @@ def test_the_prompts_carry_no_internal_source_and_no_mark():
     assert sess.options == ["はい", "いいえ"]
     cands = cm.all_candidates(view)
     p1 = cm.build_records_prompt("質問", sess.options, cands, 0) + cm.build_records_prompt("質問", sess.options, cands, 1)
-    p2 = cm.build_relations_prompt("質問", cands[0], sess.options, 0) + cm.build_relations_prompt("質問", cands[0], sess.options, 1)
+    p2 = cm.build_relation_prompt("質問", cands[0], sess.options[0], 0) + cm.build_relation_prompt("質問", cands[0], sess.options[0], 1)
     for p in (p1, p2):
         assert "推奨" not in p
         assert not re.search(r"phase_order|forbidden_actions|protected_actions|completion_criteria|write_allowlist|ledger|sha256", p)
@@ -122,7 +125,9 @@ def test_the_prompts_carry_no_internal_source_and_no_mark():
 def test_the_two_prompt_variants_differ():
     cands = _cands(["a", "b"])
     assert cm.build_records_prompt("q", None, cands, 0) != cm.build_records_prompt("q", None, cands, 1)
-    assert cm.build_relations_prompt("q", cands[0], ["a", "b"], 0) != cm.build_relations_prompt("q", cands[0], ["a", "b"], 1)
+    assert cm.build_relation_prompt("q", cands[0], "a", 0) != cm.build_relation_prompt("q", cands[0], "a", 1)
+    assert cm.build_decides_prompt("q", ["x"], 0) != cm.build_decides_prompt("q", ["x"], 1)
+    assert cm.build_phases_prompt("q", None, cands, 0) != cm.build_phases_prompt("q", None, cands, 1)
 
 
 # ---------------------------------------------------------------------------------------------- the rule decision
@@ -241,14 +246,14 @@ def test_the_two_asks_run_at_the_same_time():
 
         def ask(self, prompt):
             barrier.wait()                                  # both must be in flight, or this raises and the ask fails
-            return ProviderReply.success('{"records": []}', provider="together")
+            return ProviderReply.success("なし", provider="together")
     mp = M.mapper_for(F1, None, providers=(Together(), Together()))
     r = mp.step1(_sess(mp, None), cm.all_candidates(M.view_of(F1)))
     assert r.status == "NONE" and r.reason == "NONE_SELECTED"
 
 
 def test_the_two_asks_use_the_two_providers_in_order():
-    p1, p2 = M.TextProvider('{"records": []}'), M.TextProvider('{"records": []}')
+    p1, p2 = M.TextProvider("なし"), M.TextProvider("なし")
     mp = M.mapper_for(F1, None, providers=(p1, p2))
     mp.step1(_sess(mp, None), cm.all_candidates(M.view_of(F1)))
     assert (p1.calls, p2.calls) == (1, 1) and p1.prompts[0] != p2.prompts[0]
@@ -261,14 +266,23 @@ def test_the_ledger_rows_are_in_a_fixed_order_and_use_only_the_three_types():
     s = _sess(mp)
     r1 = mp.step1(s, cands)
     recs = [c for c in cands if c.id in r1.records]
-    mp.step2(s, recs)
+    d = mp.decides_step(s, [(c.id, c.kind, c.ref.text) for c in recs])
+    assert d.status == "ADOPTED" and d.decides == "決まる"
+    results = mp.relation_step(s, [(c, i) for c in recs for i in (0, 1)])
+    assert [x.relation for x in results] == ["矛盾", "一致", "一致", "矛盾"]
     rows = mp.ledger.entries()
     assert {e["type"] for e in rows} == {"map_ask", "map_decision"}
-    seq = [(e["type"], e.get("step"), e.get("record_id"), e.get("ask_index")) for e in rows]
-    assert seq == [("map_ask", "records", None, 0), ("map_ask", "records", None, 1), ("map_decision", "records", None, None),
-                   ("map_ask", "relations", "D2", 0), ("map_ask", "relations", "D2", 1), ("map_decision", "relations", "D2", None),
-                   ("map_ask", "relations", "D3", 0), ("map_ask", "relations", "D3", 1), ("map_decision", "relations", "D3", None)]
-    assert s.used == 6
+    seq = [(e["type"], e.get("step"), e.get("record_id"), e.get("option_index"), e.get("ask_index")) for e in rows]
+    # the asks of a round are written together (in problem order, slot 0 then slot 1), the decisions after them, in problem order
+    assert seq == [("map_ask", "records", None, None, 0), ("map_ask", "records", None, None, 1), ("map_decision", "records", None, None, None),
+                   ("map_ask", "decides", None, None, 0), ("map_ask", "decides", None, None, 1), ("map_decision", "decides", None, None, None),
+                   ("map_ask", "relation", "D2", 0, 0), ("map_ask", "relation", "D2", 0, 1),
+                   ("map_ask", "relation", "D2", 1, 0), ("map_ask", "relation", "D2", 1, 1),
+                   ("map_ask", "relation", "D3", 0, 0), ("map_ask", "relation", "D3", 0, 1),
+                   ("map_ask", "relation", "D3", 1, 0), ("map_ask", "relation", "D3", 1, 1),
+                   ("map_decision", "relation", "D2", None, None), ("map_decision", "relation", "D2", None, None),
+                   ("map_decision", "relation", "D3", None, None), ("map_decision", "relation", "D3", None, None)]
+    assert s.used == 2 + 2 + 8 and s.retries == 0
 
 
 def test_a_step_that_would_pass_the_ask_cap_is_refused_and_asks_nothing():
@@ -285,8 +299,9 @@ def test_the_scripted_provider_answers_an_unknown_record_with_an_invalid_reply()
     cands = cm.all_candidates(M.view_of(F1))
     s = _sess(mp)
     mp.step1(s, cands)
-    r = mp.step2(s, [c for c in cands if c.id == "D3"])[0]
-    assert r.status == "ABSTAINED" and r.reason == "INVALID_ANSWER"      # no relations scripted for D3: invalid, never "unrelated"
+    r = mp.relation_step(s, [(c, 0) for c in cands if c.id == "D3"])[0]
+    assert r.status == "ABSTAINED" and r.reason == "INVALID_ANSWER"      # no relations scripted for D3: invalid (also when asked again), never "unrelated"
+    assert r.retries == 2
     mp2 = M.mapper_for(F1, None, {"records": ["no-such-record"], "decides": "決まる"})
     assert mp2.step1(_sess(mp2, None), cands).reason == "INVALID_ANSWER"
 
@@ -294,7 +309,7 @@ def test_the_scripted_provider_answers_an_unknown_record_with_an_invalid_reply()
 def test_a_ledger_that_is_broken_refuses_before_any_ask(tmp_path):
     path = tmp_path / "ledger.jsonl"
     ledger = ChoiceLedger(path)
-    p = M.TextProvider('{"records": []}')
+    p = M.TextProvider("なし")
     mp = M.mapper_for(F1, None, providers=(p, p), ledger=ledger)
     mp.step1(_sess(mp, None), cm.all_candidates(M.view_of(F1)))
     assert p.calls == 2

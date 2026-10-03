@@ -41,7 +41,27 @@ def no_process(monkeypatch):
 def test_a_step_1_reply_with_an_answer_or_an_option_number_is_invalid_and_never_used(raw):
     for key in ("raw", "raw2"):
         res, mp = ask_map(F, Q, YN, {**GOOD, key: raw})
+        if raw == "1":
+            # v2: "1" alone is the minimal form of a selection.  It is read as *shown record number 1* (here whichever record sat on
+            # that line of that ask), never as an option number or an answer; whether the two readings then agree is a matter of what
+            # the other ask picked, and an answer, if there is one, is the caller's option text
+            row = [e for e in mp.ledger.entries() if e["type"] == "map_ask" and e["step"] == "records"][0 if key == "raw" else 1]
+            assert row["parsed"]["records"] == [row["shown"][1]] and row["raw_reply"] == "1"
+            if key == "raw":
+                # slot 0 read "1" as the record on line 1 of its own order, which is not D3, so the two slots disagree and the
+                # question is handed up; the reply's "1" never becomes option 1 ("いいえ") nor an answer
+                assert (res["decision"], res["escalate_reason"], res["escalate_detail"], res["answer"]) == (
+                    "escalate", "MAPPING_UNSETTLED", "STEP1_DISAGREE", None)
+                assert res["answer_option_index"] is None
+            else:
+                # slot 1's order puts D3 on line 1, so "1" there is D3: the two slots agree on D3 and the rule answers from D3's
+                # relation to the caller's options (はい = option 0), not from the digit
+                assert (res["decision"], res["answer"], res["answer_option_index"]) == ("answer", "はい", 0)
+                assert [b["id"] for b in res["basis"]] == ["D3"]
+                assert res["answer"] != YN[1]
+            continue
         assert res["decision"] == "escalate" and res["answer"] is None and res["answer_option_index"] is None
+        # every other reply is outside the minimal form: invalid, asked once more, invalid again
         assert (res["escalate_reason"], res["escalate_detail"]) == ("MAPPING_UNSETTLED", "STEP1_INVALID_ANSWER")
         assert any(e.get("invalid_reason") for e in mp.ledger.entries() if e["type"] == "map_ask")
 
@@ -77,7 +97,9 @@ def test_no_string_of_a_reply_reaches_the_answer_or_the_basis():
     assert res["decision"] == "answer" and res["answer"] in YN
     texts = json.dumps({k: res[k] for k in ("answer", "basis", "derivation", "resolver")}, ensure_ascii=False)
     raws = [e["raw_reply"] for e in mp.ledger.entries() if e["type"] == "map_ask"]
-    assert raws and all(r.startswith("{") for r in raws)
+    # every reply of v2 is the minimal form: a number list or one of the offered words; none is JSON and none carries text of its own
+    assert raws and not any("{" in r for r in raws)
+    assert all(r in ("一致", "矛盾", "無関係", "決まる", "決まらない", "なし") or r.replace(",", "").isdigit() for r in raws)
     assert '"records"' not in texts and '"relations"' not in texts and "決まる" not in texts
 
 

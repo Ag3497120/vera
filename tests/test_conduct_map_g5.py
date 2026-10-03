@@ -19,8 +19,9 @@ Q = "地元の歴史に関する資料も、確認する本に入りますか？
 Q2 = "雑誌の点検は今回の範囲に含めますか？"
 YN = M.YN_JA
 GOOD = {"records": ["D3"], "decides": "決まる", "relations": {"D3": ["一致", "矛盾"]}}
-ASK_KEYS = {"type", "id", "decision_id", "step", "ask_index", "record_id", "frame_sha256", "question", "options", "candidates", "order",
-            "shown", "variant", "provider", "model", "effort", "prompt", "prompt_sha256", "raw_reply", "raw_truncated", "raw_len",
+ASK_KEYS = {"type", "id", "decision_id", "step", "ask_index", "attempt", "retry_of", "record_id", "option_index", "option", "frame_sha256",
+            "question", "options", "candidates", "order", "shown", "labels_shown", "variant", "provider", "model", "effort", "prompt",
+            "prompt_sha256", "raw_reply", "raw_truncated", "raw_len",
             "raw_sha256", "verdict", "parsed", "invalid_reason", "failure", "failure_detail", "returncode", "elapsed_ms", "ts",
             "seq", "prev", "hash"}
 DECISION_KEYS = {"type", "decision_id", "key", "step", "record_id", "status", "reason", "detail", "result", "ask_ids", "question",
@@ -46,17 +47,23 @@ def test_every_field_of_every_ask_is_recorded_and_only_three_row_types_exist():
     types = {e["type"] for e in rows(mp)}
     assert types == {"map_ask", "map_decision"} and "decision" not in types
     asks = rows(mp, "map_ask")
-    assert len(asks) == 4 and all(set(a) == ASK_KEYS for a in asks)
+    assert len(asks) == 8 and all(set(a) == ASK_KEYS for a in asks)          # records 2 + decides 2 + 2 pairs x 2
     a = asks[0]
     assert a["step"] == "records" and a["question"] == Q and a["options"] == YN and a["prompt_sha256"] and a["raw_reply"]
+    assert (a["attempt"], a["retry_of"], a["option_index"], a["labels_shown"]) == (0, None, None, None)
     assert a["verdict"] == "PICK" and a["provider"] == "scripted-map" and a["elapsed_ms"] >= 0 and a["raw_len"] == len(a["raw_reply"])
     assert [c["id"] for c in a["candidates"]][:2] == ["D1", "D2"] and a["shown"] and sorted(a["order"]) == list(range(len(a["candidates"])))
     decisions = rows(mp, "map_decision")
-    assert len(decisions) == 2 and all(set(d) == DECISION_KEYS for d in decisions)
+    assert len(decisions) == 4 and all(set(d) == DECISION_KEYS for d in decisions)          # records, decides, 2 pairs
     assert all(d["mapping_type"] == "LLM_TESTIMONY_RECORD_MAPPING" and d["counts_as_evidence"] is False for d in decisions)
-    assert decisions[0]["status"] == "ADOPTED" and decisions[0]["result"] == {"records": ["D3"], "decides": "決まる"}
-    assert decisions[1]["step"] == "relations" and decisions[1]["record_id"] == "D3" and decisions[1]["result"] == {"relations": ["一致", "矛盾"]}
+    assert decisions[0]["status"] == "ADOPTED" and decisions[0]["result"] == {"records": ["D3"]}
+    assert decisions[1]["step"] == "decides" and decisions[1]["result"] == {"decides": "決まる"}
+    assert [(d["step"], d["record_id"], d["result"]) for d in decisions[2:]] == [("relation", "D3", {"relation": "一致"}),
+                                                                                  ("relation", "D3", {"relation": "矛盾"})]
     assert decisions[0]["ask_ids"] == [asks[0]["id"], asks[1]["id"]]
+    pair = [a for a in asks if a["step"] == "relation"]
+    assert [(a["option_index"], a["option"]) for a in pair] == [(0, "はい"), (0, "はい"), (1, "いいえ"), (1, "いいえ")]
+    assert all(sorted(a["labels_shown"]) == sorted(["一致", "矛盾", "無関係"]) for a in pair)
 
 
 def test_a_failed_ask_is_recorded_with_its_type_and_no_raw_reply():
@@ -88,7 +95,7 @@ def test_the_ledger_chain_is_verified_by_the_llm_choice_entry(tmp_path, monkeypa
     with redirect_stdout(out):
         code = llm_choice.main(["verify", str(path)])
     summary = json.loads(out.getvalue())
-    assert code == 0 and summary["chain"] == "OK" and summary["by_type"] == {"map_ask": 4, "map_decision": 2}
+    assert code == 0 and summary["chain"] == "OK" and summary["by_type"] == {"map_ask": 8, "map_decision": 4}
     path.write_text(path.read_text(encoding="utf-8").replace('"verdict":"PICK"', '"verdict":"NONE"', 1), encoding="utf-8")
     out = io.StringIO()
     with redirect_stdout(out):
@@ -105,10 +112,10 @@ def test_the_second_identical_question_is_not_asked_again(tmp_path):
     second = conduct_ask.answer_question(F, Q, YN, vocab_llm="fake", mapper=mp)
     assert len(rows(mp, "map_ask")) == n_asks and (mp.providers[0].calls, mp.providers[1].calls) == calls
     reuse = rows(mp, "map_reuse")
-    assert len(reuse) == 2 and all(set(r) == REUSE_KEYS for r in reuse) and {r["step"] for r in reuse} == {"records", "relations"}
+    assert len(reuse) == 4 and all(set(r) == REUSE_KEYS for r in reuse) and {r["step"] for r in reuse} == {"records", "decides", "relation"}
     for k in ("decision", "answer", "answer_option_index", "derivation", "resolver", "basis"):
         assert first[k] == second[k], k
-    assert second["mapping"]["step1"]["cached"] is True and second["mapping"]["asks_used"] == 0 and first["mapping"]["asks_used"] == 4
+    assert second["mapping"]["step1"]["cached"] is True and second["mapping"]["asks_used"] == 0 and first["mapping"]["asks_used"] == 8
     assert second["mapping"]["step1"]["decision_id"] == first["mapping"]["step1"]["decision_id"]
     assert p0 is mp.providers[0]
 
@@ -119,12 +126,12 @@ def test_another_option_order_or_question_is_a_different_ask():
     n = len(rows(mp, "map_ask"))
     mp2 = M.mapper_for(F, ["いいえ", "はい"], {**GOOD, "relations": {"D3": ["矛盾", "一致"]}}, ledger=mp.ledger)
     conduct_ask.answer_question(F, Q, ["いいえ", "はい"], vocab_llm="fake", mapper=mp2)
-    assert len(rows(mp, "map_ask")) == n + 4                                  # another option order: its own ask
+    assert len(rows(mp, "map_ask")) == n + 8                                  # another option order: its own ask
     mp3 = M.mapper_for(F, YN, GOOD, ledger=mp.ledger)
     conduct_ask.answer_question(F, Q.replace("？", ""), YN, vocab_llm="fake", mapper=mp3)
-    assert len(rows(mp, "map_ask")) == n + 8                                  # another text of the question: its own ask
+    assert len(rows(mp, "map_ask")) == n + 16                                 # another text of the question: its own ask
     conduct_ask.answer_question(F, "  " + Q + "  ", YN, vocab_llm="fake", mapper=mp3)
-    assert len(rows(mp, "map_ask")) == n + 8                                  # only the whitespace differs: the same key
+    assert len(rows(mp, "map_ask")) == n + 16                                 # only the whitespace differs: the same key
 
 
 def test_an_abstention_is_reused_but_a_failure_is_not():
@@ -139,7 +146,7 @@ def test_an_abstention_is_reused_but_a_failure_is_not():
     assert r["escalate_detail"] == "STEP1_FAILED:LIMIT_REACHED" and len(rows(bad, "map_ask")) == 2
     good = M.mapper_for(F, YN, GOOD, ledger=bad.ledger)
     r = conduct_ask.answer_question(F, Q, YN, vocab_llm="fake", mapper=good)
-    assert r["decision"] == "answer" and len(rows(good, "map_ask")) == 6 and rows(good, "map_reuse") == []
+    assert r["decision"] == "answer" and len(rows(good, "map_ask")) == 10 and rows(good, "map_reuse") == []
 
 
 def test_none_on_both_readings_is_reused():

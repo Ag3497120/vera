@@ -4,7 +4,7 @@
 人間が最初に枠（`docs/frames/vera_project_frame.md` の書式）に書いた内容から答える。**枠から決まらないことは推測せず、
 理由の型を付けて人間に上げる。** 第一の目標は「誤って答えない」こと、そのうえで答えられる範囲を広げること。
 
-この文書の数値は、§1〜§12 は `artifacts/w2-c/`、§13（W2-g。LLM による枠の記録への対応づけ）は `artifacts/w2-g/` の出力から再計算できる（各節に出典と再計算コマンドを置く）。
+この文書の数値は、§1〜§12 は `artifacts/w2-c/`、§13（W2-g。LLM による枠の記録への対応づけ）は `artifacts/w2-g/`、§14（W2-g2。照会の分割と再照会）は `artifacts/w2-g/live_g2/` と `artifacts/w2-g/g2/` の出力から再計算できる（各節に出典と再計算コマンドを置く）。
 予想や未測定の値は書かない。
 
 ## 1. 使い方
@@ -13,12 +13,13 @@
 python -m verantyx.conduct_ask --frame <枠.md|枠.jsonl> --question <文> [--option <肢> ...]
                                [--vocab-llm off|fake|codex|claude] [--vocab-fake <台本.json>] [--vocab-ledger <台帳>]
                                [--map-fake <台本.json>] [--map-second codex|claude] [--map-max-asks N]
+                               [--map-effort low|medium|high|xhigh] [--map-timeout SEC]
 ```
-`--map-*` の 3 つ（W2-g）は、枠の記録への対応づけ（§13）の設定。`--vocab-llm off` では何も変わらない（§13.1）。
+`--map-*` の 5 つ（W2-g と W2-g2）は、枠の記録への対応づけ（§13・§14）の設定。`--vocab-llm off` では何も変わらない（§13.1）。
 
 - 枠の形式（Markdown / JSONL）は内容で判定する（`project_frame.load_conduct_frame`）。
 - 肢は 0 個、または 2 個以上（`--option` を繰り返す）。
-- 公開 API: `verantyx.conduct_ask.answer_question(frame_path, question, options=None, *, vocab_llm="off", vocab_fake=None, vocab_ledger=None, chooser=None, map_fake=None, map_second=None, map_max_asks=8, mapper=None) -> dict`。
+- 公開 API: `verantyx.conduct_ask.answer_question(frame_path, question, options=None, *, vocab_llm="off", vocab_fake=None, vocab_ledger=None, chooser=None, map_fake=None, map_second=None, map_max_asks=24, mapper=None, map_effort=None, map_timeout=None) -> dict`。
   `chooser` に `llm_choice.LLMChooser` を渡せば作り物のプロバイダで試せる。`mapper` に `conduct_map.RecordMapper` を渡せば、対応づけも作り物で試せる（§13）。例外は投げず、想定外の失敗は `INTERNAL_ERROR` の JSON を返す。
 - 副作用なし: 枠の隣にも作業ディレクトリにも何も書かない。`--vocab-ledger` を渡したときだけ、そのファイルに台帳を追記する（既定はメモリ上）。
 - 既定の `--vocab-llm off` では LLM の部品を作らない（`verantyx.conduct_map` も読み込まない）。`codex` / `claude` は、語彙外の経路か、枠の記録への対応づけ（§13）に入ったときに初めてプロバイダを作る。
@@ -55,7 +56,7 @@ python -m verantyx.conduct_ask --frame <枠.md|枠.jsonl> --question <文> [--op
   （順序の質問を `OTHER` や `CHOICE` と分類するため。`trace` ではなく経路が `kind` を決める）。
 - `vocab`: 語彙の対応づけを使った（または試みた）とき。枠の別名表で写したときは `provenance: "FRAME_ALIAS"`（枠の記録なので `counts_as_evidence: true`）。
   LLM の閉じた選択を使ったときは §6。使っていなければ null。
-- `mapping`（W2-g。対応づけが有効なときだけ、出力の最後に足したキー）: 対応づけの経過（候補、2 回の照会、採否）。`provenance: "LLM_TESTIMONY_RECORD_MAPPING"`、`counts_as_evidence: false`、`constructed: true`（§13.5）。
+- `mapping`（W2-g。対応づけが有効なときだけ、出力の最後に足したキー）: 対応づけの経過（候補、2 回の照会、採否）。`provenance: "LLM_TESTIMONY_RECORD_MAPPING"`、`counts_as_evidence: false`、`constructed: true`（§13.5。W2-g2 から `protocol` `effort` `decides` `retries` を足した。§14.5）。
   答えに使った枠の記録は `basis` に枠の原文のまま入り、`resolver` には対応づけだけで答えたときに限り `["mapping"]` が入る（§13.3）。off と、台本だけの `fake` にはこのキーは無い。
 - `frame_refusal`（枠が使えないときだけ足したキー）: `project_frame.FrameRefusal.as_dict()` をそのまま入れる。
 - `trace.view_skipped_records`（jsonl の枠で、この入口が読まなかった記録があるときだけ `resolver_outcomes` に入る）。
@@ -84,7 +85,7 @@ python -m verantyx.conduct_ask --frame <枠.md|枠.jsonl> --question <文> [--op
 
 W2-g の detail: `MAPPING_UNSETTLED` = `STEP1_DISAGREE` `STEP1_INVALID_ANSWER` `STEP1_FAILED:<種別>`（手順 1）、`STEP2_DISAGREE` `STEP2_INVALID_ANSWER` `STEP2_FAILED:<種別>`（手順 2。種別は `TIMEOUT` `LIMIT_REACHED` `PROVIDER_EXCEPTION` など）、
 `PHASES_DISAGREE` `PHASES_INVALID_ANSWER` `PHASES_FAILED:<種別>`（順序の経路の工程の選択。第 2 ラウンド。第 3 ラウンドから、2 回の（工程の組, `decides`）の食い違いも `PHASES_DISAGREE`）、`ORDER_NOT_RESOLVED` `ORDER_MIXED_WITH_OTHER_RECORDS`（順序の記録のまとめを選んだのに工程の組が決まらない・ほかの記録と一緒に選んだ）、
-`RULE_BASIS_EMPTY` `RULE_BASIS_NOT_CANDIDATE` `RULE_BASIS_NOT_MAPPED` `RULE_ANSWER_NOT_MAPPED[:<理由>/<detail>]`（規則の答えを裏づけない）、`TOO_MANY_CANDIDATES` `TOO_MANY_RECORDS` `ASK_BUDGET` `LEDGER_INTEGRITY`（照会しない）。
+`RULE_BASIS_EMPTY` `RULE_BASIS_NOT_CANDIDATE` `RULE_BASIS_NOT_MAPPED` `RULE_ANSWER_NOT_MAPPED[:<理由>/<detail>]`（規則の答えを裏づけない）、`TOO_MANY_CANDIDATES` `TOO_MANY_RECORDS` `ASK_BUDGET` `LEDGER_INTEGRITY`（照会しない）。W2-g2（protocol v2。§14）では、`decides` 段の `DECIDES_DISAGREE` `DECIDES_INVALID_ANSWER` `DECIDES_FAILED:<種別>`を足し、`STEP2_*` は最初に決まらなかった（記録, 肢）の組、`INVALID_ANSWER` は再照会しても無効だった意味になった。
 対応づけの結果として上げる型は `FRAME_SILENT`（`MAP_NONE` `MAP_NO_CANDIDATES` `MAP_RECORD_DOES_NOT_DECIDE` `MAPPED_NO_OPTION_RELATED` `MAP_RELATIONS_MISSING` `TIE`）、`FRAME_CONFLICT`（`MAPPED_RECORDS_DISAGREE`）、
 `HUMAN_APPROVAL_REQUIRED`（`MAPPED_PROTECTED` `BUILTIN_PROTECTED`）、`NO_OPTION_ALLOWED`（`MAPPED_NO_OPTION_AGREES`）、`ANSWER_FORM_UNSUPPORTED`（`MAPPING_NEEDS_OPTIONS`）。意味は §13.3。
 質問の形の門（第 2 ラウンド）で上げる型は W2-c の規則と同じ（`QUESTION_UNREADABLE/NEGATED_QUESTION` `INVERTED_QUESTION` `PAST_TENSE_PERMISSION`、`FRAME_SILENT/ADVICE_NOT_PERMISSION`）。順序の経路が上げる `FRAME_SILENT/UNORDERED` は規則の型と同じ名前（並列の工程）。
@@ -681,6 +682,33 @@ S-C パスは大文字・小文字まで許可リストと一致したときだ�
 92. **W2-g r3: 実プロバイダの照会の予算。** 第 2 ラウンドの 952 回に、確かめの実行 36 回、レビューの罠の再現 8 回（`live/review_t06` `live/review_v06`）、順序の 13 問の流し直し 34 回（1 回目の言い回し）と 46 回（改訂後）、claude の組の 18 回を足し、**合計 1,094 回**（`artifacts/w2-g/budget.py`。上限 1,300 以内。
     claude の組の 1 回の実行は 70・62・18 回で、すべて 300 以内）。`budget.py` は `artifacts/w2-g/live/` の台帳だけを数える。レビューの中間職が使った 62 回（レビューの作業場所の台帳）は数えていない（実装役の取り分とは別）。
 
+**W2-g2（protocol `conduct_map/v2`。監査役の追補「照会を小さく分ける」への対応）の判断記録**
+
+93. **W2-g2: 組み替えは、監査役の評価バンクの台帳の集計（無効 26 / 296、肢×3 値を 1 返答にまとめた一致の不一致 43 回、対応づけ採用のあとの「決まるか」で落ちる）だけを根拠にした。** 評価バンクの問いは見ていない。問いの形を推測してデータやプロンプトに入れていない。
+    決定の規則 `decide`・経路の振り分け・候補の絞り込み・順序の文の導出・出口の門は変えていない（追補 5: 決定の緩和はしない）。変えたのは、問いの分け方・返答の形・一致の取り方・再照会・設定だけ（§14）。
+94. **W2-g2: `decides` を別の段にし、肢を見せず、記録の原文だけで聞く**（追補 4）。v1 は記録の選択と同じ返答の中で、表示用の構成した文と肢つきで聞いていた。v2 は質問と記録の原文（`ref.text`）だけを見せる。順序の辺は `P2 -> P3: …` のように工程の id しか持たないので、両端の工程の行も一緒に見せる。
+    順序の経路の `phases` からは `decides` を外した（工程名だけを見せて前後だけを尋ねているかを聞いていた第 3 ラウンドの設計は、原文を見せる問いに置き換わった）。順序の経路は `UNORDERED`（文が無い）を `decides` より**先**に上げる（並列の工程に `決まらない` と答えさせる意味が無いため）。
+    試験の入力に対する決定（答える／上げる、肢、上げる理由の型）は変えていない。例外は詳細の名前（`STEP1_DISAGREE` が `DECIDES_DISAGREE` になる等）と、並列の工程の `decides` が先でなく `UNORDERED` が先に上がる点（旧の期待を弱めていない: どちらも `FRAME_SILENT`）。
+95. **W2-g2: `relation` は（記録, 肢）の組ごとに 1 問ずつ聞き、答えは全部の組が採用されたときだけ作る**（追補 1・5）。1 組でも採用されなければ上げる（一部の組から答えを決めない）。照会の数は `2 × 記録数 × 肢数` に増えるが、v1 の「全部が完全一致」より、無効や食い違いの影響が組ごとに閉じる。
+    上限は `2 × 組の数` が入るかを最初に確かめる（入らなければ 1 回も聞かず `ASK_BUDGET`）。
+96. **W2-g2: 返答を最小の形にし（`なし` / 番号のカンマ区切り / ラベル 1 語）、修復しない。** 文中の数字や語は拾わない。JSON の 3 つの分類器（`classify_records_reply` `classify_relations_reply` `classify_phases_reply`）と `RECORD_DECIDES` `RELATION_LABELS` は、第 1〜3 ラウンドの台帳の数え直し（G7）のために `llm_choice.py` に残した（削除行 0）。
+97. **W2-g2: 再照会は、`INVALID` のときだけ・スロットごとに 1 回だけ・同じプロバイダと同じ版で・新しい並びで。`FAILED` は再照会しない。** 指示書に無い追加が 1 つある: **もう片方のスロットが失敗しているときは、無効なスロットも再照会しない**（結果が `FAILED` に決まっているので、照会の無駄になる。decision の `detail` に `RETRY_SKIPPED_PAIR_FAILED`）。
+    上限の不足で再照会できなかった問い（`RETRY_NO_BUDGET`）は、台帳から再利用しない（上限の不足だけが原因の棄権が、上限を増やしたあとも残らないように）。それ以外の `ABSTAINED` は v1 と同じく再利用する。
+98. **W2-g2: `DEFAULT_MAX_ASKS` を 8 → 24、`max_parallel` の既定を 6 にした**（どちらも設定値で、測定値ではない）。1 記録 × 3 肢で `records` 2 + `decides` 2 + 3 組 × 2 = 10 回、再照会が各段に 1 回ずつ入っても 15 回（試験 `test_g9_8c_…`）。`conduct_ask.py` の既定も 24 に揃え、`conduct_map.DEFAULT_MAX_ASKS` と一致することを試験で固定した
+    （`conduct_ask` は off で `conduct_map` を読み込まないので、値を import できない）。`max_records` 3・`max_candidates` 24 は変えない。
+99. **W2-g2: effort は引数にし（`--map-effort`）、対応づけの照会だけに効かせた。** W1-e の語の対応づけは `low` のまま（追補の文面は対応づけの照会の effort。語の対応づけの挙動は変えない）。再利用の鍵に effort と model を入れた。claude にも同じ effort を渡すが、今回は claude を使っていない。
+    入力の拒否を 4 つ足した（`BAD_MAP_EFFORT` など。§14.4）。`--map-effort` は argparse の `choices` にせず API と同じ検査にした（CLI でも型つきの詳細が出るように）。
+100. **W2-g2: runner の予算の検査を、問いごとの予約にした**（`tests/conduct_ask/w2g/run_map_bank.py`）。1 問の最悪 = 語の対応づけ 2 + `--map-max-asks`。`--budget-root` 配下の全台帳の照会数 + 時間切れで殺された問い（最悪の数）+ 走っている問いの予約 + この問いの最悪 が `--total-budget` 以内のときだけ始める。
+    問いは**ファイルの順に**始め、最初に入らない問い（ほかに走っている問いが無い）とそれより後を全部流さず `summary.not_run_budget` に並べる（選り好みをしない）。ほかの問いが走っているだけで入らないときは、終わるのを待ってから判断する（指示書の「入らなければ止める」より、止める条件を厳しくした）。
+    **`--run-budget` の意味を変えた**: 指示書の煙試験の例（`--run-budget 40` で 3 問）は、「最悪 × 問数 ≤ 上限」の検査では始まらないので、この run 自身の台帳の照会数 + 予約が `--run-budget` 以内、の予約にした（1 問の最悪が入らなければ開始を拒否する）。第 1〜3 ラウンドの保存物の `--recount` は変わらない（MATCH）。
+    実行の並列は `--workers` 4（low）と 2（xhigh）。1 問の中は最大 6 件が並列なので、同時の codex は最大 24 件（low）と 12 件（xhigh）。利用上限に当たれば `LIMIT_REACHED`（型つきの失敗。再照会しない）で、3 問続けば runner が止まる。
+101. **W2-g2: 第 3 ラウンドのレビュー必須 1 を引き継いだ**: 第 2 のデータは 1 回目の言い回しの結果を見たあとに言い回しを変えたので、v2 の事前の手順は新しい凍結データ w2g3（枠 6・60 問。§14.7）で測る。追補 6 (b) の「第 3 ラウンドの凍結データ 48 問」は、第 3 ラウンドが G3 を判定した第 2 のデータのうち
+    **答えるのが正解の 48 問**と読み、先に 48 問、予算が残れば上げるのが正解の 16 問を流した（id の一覧 `artifacts/w2-g/g2/b_answer_ids.txt` `b_escalate_ids.txt` は第 2 のデータの `expect.decision` だけから作り、実行の前に書いた。コードの凍結（09:19:15）の直後に作ったが、どの実行よりも前）。
+102. **W2-g2: 煙試験（凍結の前。第 1 のデータの 3 問を延べ 4 回。凍結データではない）。** v2 のプロンプトで codex が最小の形を返すか・xhigh を `gpt-6-luna` が受けるか・照会 1 回の時間を確かめた。製品コードは煙試験の結果で変えていない（言い回しの変更なし）。
+    指示書は low の 3 問と xhigh の 1〜2 問（合計 40 回以内）だったが、low の 2 問（直接の 3 肢・順序）、xhigh の 1 問（直接の 3 肢）、low の 1 問（組合せ）を流し、実照会は 30 回で（`budget_g2.py`）、40 回以内。
+103. **W2-g2: 保存物を書き換えない。** `final_run.sh` `full_pytest.sh` `dump_calls.sh` `guard_run.sh` は流さず、出力先を `artifacts/w2-g/g2/` にした写し（`*_g2.sh`）で同じ検査を行った。実プロバイダの台帳は `artifacts/w2-g/live_g2/`（第 1〜3 ラウンドの台帳の `budget.py` と `docs_check.py` の合計 1,094 回を変えないため）。
+    数値の再計算は `artifacts/w2-g/g2/docs_check_g2.py`（§14.7 の表は `make_docs_tables.py` の出力そのもの。手で写していない）。
+
 ## 11. 既知の穴
 
 - 自作データは実装役が書いたため、評価バンクより易しい可能性がある。Q1 の 0 は、この検査データでの値であり、評価バンクでの値ではない。
@@ -786,23 +814,36 @@ S-C パスは大文字・小文字まで許可リストと一致したときだ�
 - 第 7 ラウンドは、第 6 の罠の誤答 14 件の 3 つの根（S-A・S-B・S-C）を閉じた形で塞ぎ、その問いを `tests/test_conduct_ask_traps6.py` で固定した（§9.12）。未知の言い回しで誤答が無いことは示せていない。
 - 予定（監査役の決定。次のチケット）: LLM を使う設定のときは、規則が出した答えも LLM の閉じた選択による対応づけ（独立 2 回の一致）で裏づけられた場合だけ採用し、食い違えば上げる。
   そのための欄として、答えに `resolver`（答えた段）と `basis`（根拠の記録の id）が必ず入ることを `artifacts/w2-c/r7/provenance.txt` で確かめた（答え 725 回・79 回・106 回すべてで問題 0。§9.12）。
+- **W2-g2（protocol v2）の既知の穴**（数値は §14.7。コード・データ・プロンプトは測定のあとに変えていない）:
+  - **正答は事前の基準を設けていない値で、評価バンクとは別物。** 新しい自作データの正答は §14.7 の表のとおりで、答えるのが正解の問いの多くを上げている。上げる理由の最多は 2 回の独立な照会が食い違うこと（`DECIDES_DISAGREE` `STEP2_DISAGREE` `STEP1_DISAGREE`）で、
+    **無効な返答（形の崩れ）の問題は小さくなった**（§14.7 の無効の率）が、「完全に一致したときだけ採用」の厳しさが残っている。規則による決定は緩めていない（追補 5）。
+  - **肢なしで好み・推奨・別の主体の値を尋ねる形（W2-g の `V06` 型）は、v2 でも `records` と `decides` の 2 回の LLM の判断だけが守り。** 新しいデータの 2 問（`PREF_NOOPT`）は、low・xhigh のどちらの実行でも上がったが、各 1 回の実行で、守りの強さは測れていない。
+  - **codex 同士は同じモデルの 2 回で、独立の証拠として弱い。** v2 の測定は codex 同士だけ（claude は使っていない）。実行はどれも 1 回で、同じ質問の揺れは測っていない（low と xhigh の差も 1 回ずつの値で、揺れの範囲内かどうかは分からない）。
+  - **`--map-effort` は対応づけの照会だけに効く。** W1-e の語の対応づけ（W2-c の語彙外の経路）は `low` のまま。
+  - **off のときは従来どおり規則だけ。** §12 の残りのリスク（まだ誰も書いていない言い回しでの誤答）はそのまま残る（§13.1）。
+  - 新しい自作データも実装役が書いた。評価バンクとの難しさの関係は分からない。上げるのが正解の問いは、日数・担当者・別のプロジェクト・好み・保護された操作・並列・枠内の矛盾などを含むが、実エージェントの質問の分布ではない。
+  - 規則側で上がる問い（`NEGATED_QUESTION` `TERM_IN_WIDER_PHRASE` `PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION` など、W2-c の閉じた許可リストに無いもの）は対応づけに回らない（`NOT_ASKED`）。「…でなければなりませんか」が否定の形として上がる問いが、新しいデータにもある。
+
 - W2-g の更新: 予定だった「規則の答えを LLM の対応づけで裏づける」を実装した（§13）。ただし `--vocab-llm off`（既定）のときは従来どおり規則だけで答えるので、この節に書いた残りのリスクは off のときそのまま残る。
   LLM を使う設定でも、裏づけは「規則が根拠にした記録を LLM が同じに選び、答えの肢が同じ」ことを確かめるだけで、規則の読み違い（記録の向き・条件など）を LLM が見抜く保証は無い（禁止の記録だけを選ぶ穴は §11）。
 
 ## 13. 枠の記録への対応づけ（W2-g。言い換えられた質問と選択肢を、LLM への閉じた選択で枠の記録に対応づける）
 
 実際の質問と選択肢は、枠の記録を自然な言い回しで言い換える。語の一致では結び付かず、規則を緩めると誤答が増える（§12）。そこで、LLM には**答えを作らせず**、閉じた選択だけを聞く（記録の選択・関係の判定、順序の質問では工程の選択。第 2 ラウンドで工程の選択を足した。§13.2）。
-答えは、対応づいた枠の記録から規則で決める（人間が最初に決めた内容から答える、という形を保つ）。実装は `verantyx/conduct_map.py`（`conduct_ask.py` からは、有効なときだけ関数の中で読み込む）。
+答えは、対応づいた枠の記録から規則で決める（人間が最初に決めた内容から答える、という形を保つ）。**§13.2〜§13.6 は第 1〜3 ラウンドの protocol `conduct_map/v1` の記述で、現在の照会の分け方・返答の形・再照会は §14（v2）。**実装は `verantyx/conduct_map.py`（`conduct_ask.py` からは、有効なときだけ関数の中で読み込む）。
 
 ### 13.1 有効になる条件と入口
 
 - `--vocab-llm off`: **無効**。`verantyx.conduct_map` を読み込まず、出力は W2-c3 統合時点と 1 問ずつ同じ（§13.8）。
 - `--vocab-llm codex|claude`: 有効（1 回目の照会のプロバイダ。2 回目は `--map-second`、既定は同じ種類の別のインスタンス。codex は `gpt-6-luna`・effort `low`、claude は `claude-sonnet-5-5`・effort `low`）。
 - `--vocab-llm fake`: `--map-fake`（台本。§13.6）か API の `mapper` が渡されたときだけ有効（§10 63）。
-- `--map-max-asks N`（既定 8）: 1 問あたりの**対応づけの照会**の上限。W2-c の語の対応づけ（最大 2 回）は別に数えるので、1 問の最悪は 10 回。N が 2 未満は `BAD_MAP_MAX_ASKS`。
-- 型付きの拒否（終了コード 2、`INPUT_REFUSALS`）: `MAP_FAKE_WITHOUT_FAKE_MODE`、`MAP_SECOND_WITHOUT_REAL_MODE`、`BAD_MAP_SECOND`、`MAPPER_WITHOUT_LLM_MODE`、`BAD_MAP_MAX_ASKS`、`MAP_SCRIPT_UNUSABLE`。
+- `--map-max-asks N`（既定 **24**。第 1〜3 ラウンドは 8。W2-g2 で、再照会と組ごとの問いに合わせて変えた設定値）: 1 問あたりの**対応づけの照会**の上限（再照会も 1 回と数える）。W2-c の語の対応づけ（最大 2 回）は別に数えるので、1 問の最悪は 26 回。N が 2 未満は `BAD_MAP_MAX_ASKS`。
+- `--map-effort low|medium|high|xhigh`（既定 `low`）と `--map-timeout SEC`（1 回の照会の時間切れ。既定はプロバイダの 240 秒）は、**対応づけの照会だけ**に効く（W1-e の語の対応づけは `low` のまま）。実プロバイダ（codex / claude）のときだけ指定できる（§14.4）。
+- 型付きの拒否（終了コード 2、`INPUT_REFUSALS`）: `MAP_FAKE_WITHOUT_FAKE_MODE`、`MAP_SECOND_WITHOUT_REAL_MODE`、`BAD_MAP_SECOND`、`MAPPER_WITHOUT_LLM_MODE`、`BAD_MAP_MAX_ASKS`、`MAP_SCRIPT_UNUSABLE`、W2-g2 で足した `BAD_MAP_EFFORT` `MAP_EFFORT_WITHOUT_REAL_MODE` `BAD_MAP_TIMEOUT` `MAP_TIMEOUT_WITHOUT_REAL_MODE`。
 
 ### 13.2 聞く 2 つ（どちらも閉じた選択。2 回の独立した照会が完全に一致したときだけ採用）
+
+**ここは v1（第 1〜3 ラウンド）の記述。現在は §14 の v2（記録の選択・`decides`・肢と記録の関係を別々の問いにし、返答を最小の形にして、無効な返答は 1 回だけ聞き直す）。**
 
 - **手順 1（質問 → 記録）**: 枠の内容の記録（決定・範囲/許可/選択の方針・工程の順序・禁止・人間の承認が必要・人間に上げる条件・守る原則・受入条件・書き込み許可。工程そのもの・別名・優先順位・goal は含めない）を候補として並べ、
   「この質問が尋ねている記録をすべて選ぶ（無ければ空）」と「選んだ記録だけで答えが決まるか（`決まる` / `決まらない`）」を 1 回の返答で聞く。返答の形は `{"records": [番号, ...], "decides": "決まる|決まらない"}` か `{"records": []}` だけ。
@@ -967,7 +1008,7 @@ S-C パスは大文字・小文字まで許可リストと一致したときだ�
 | 参考: 1 回目の言い回しの行で置き換えた場合（`live/w2g2/merged_r3a_codex_codex`） | 64 | 0（0.0） | 21 / 48（0.4375） | 16 / 16 |
 | codex と claude・取り置き 20 問（`live/w2g2/merged_r3b_codex_claude`。基は `codex_claude`、順序の 4 問を置き換え） | 20 | 0（0.0） | 9 / 12（0.75） | 8 / 8 |
 
-- **合格の基準に対し、合算した codex 同士は 誤答 0 件（0.0）・正答 27 / 48（0.5625）・上げる 16 / 16 で、3 つとも満たした**（正答の余裕は 3 問）。1 回目の言い回しでは正答 21 / 48 で基準を下回った（§10 89。両方を残している）。
+- **（W2-g2 での書き直し）G3 の事前の手順の上での値は、第 3 のデータの値（§14.7）。** 第 2 のデータの codex 同士の合算（誤答 0 件・正答 27 / 48（0.5625）・上げる 16 / 16）は、**凍結データの結果を見たあとに変えた言い回しでの参考値**で、事前の手順（1 回目の言い回し）の上の値は正答 21 / 48（0.4375）で基準（50%）に届かず**未達**だった（§10 89。両方を残している）。このため「3 つとも満たした」とは書かない。v2 の事前の手順の上の値は §14.7 の第 3 のデータ（凍結 → 1 回だけ実行）の値。
   置き換えた 13 問の前後の判定は `merged_r3b_codex_codex.txt`（正答 7 → 6、上げる 1 → 1、それ以外は同じ判定で、上げた理由が 1 問変わった。`w2g2-x06-04` は語の対応づけの偶然で正答を失った。§11）。
 - 工程の選択の `decides`（`artifacts/w2-g/live/decides_dist.txt`）: 1 回目の言い回しは版 0 が `決まらない` 8・`決まる` 1、版 1 が `決まらない` 4・`決まる` 5。改訂後（凍結データの 13 問）は版 0・版 1 とも `決まる` 8（計 16）。確かめの 12 問は `決まる` 18・`決まらない` 5（無効 1）。
 - **レビューの罠の再現（各 1 問・1 回）**: `T06`（別の事業の順序の問い）は、第 3 ラウンドのコードで `MAPPING_UNSETTLED/PHASES_DISAGREE` で上がった（`live/review_t06/`。第 2 ラウンドのコードでは誤答 `Yes`）。`V06`（肢なし・別の主体の好み）は、第 3 ラウンドのコードでも `kilograms` と誤答した（`live/review_v06/`。§11）。
@@ -994,3 +1035,236 @@ S-C パスは大文字・小文字まで許可リストと一致したときだ�
 
 この節（§10 の 63〜76 と §11 の W2-g の項を含む）の数値は、上の各 `summary.json`・`ledger.jsonl`・`budget.py`・`causes.py` の出力から再計算できる。`artifacts/w2-g/final_run.sh` が再計算のコマンドを順に流し、出力を `artifacts/w2-g/final_run.log` に残す。
 監査役の評価バンクの値はこの文書に書いていない。
+
+## 14. 照会の分割と再照会（W2-g2、protocol `conduct_map/v2`）
+
+§13 の対応づけ（第 1〜3 ラウンド。protocol `conduct_map/v1`）を、監査役の評価バンクでの実測（`--vocab-llm codex` で誤答 0・正答 1・上げた 143。台帳の集計では、返答の形が崩れて無効になったものが 26 / 296、
+肢×3 値を 1 回の返答にまとめて**全部が完全一致**を求める規則が不一致の主因、対応づけが採用されても「決まるか」の問いで落ちる）から、**台帳の集計だけを根拠に**組み替えた。評価バンクの問いは見ていない（実装役は未見）。
+**§13.2〜§13.6 は v1 の記述で、v1 の関数と台帳の形は検証のために残してある**（`llm_choice.classify_records_reply` `classify_relations_reply` `classify_phases_reply`。第 1〜3 ラウンドの台帳の数え直し `artifacts/w2-g/ledger_recheck.py` が使う）。
+現在の製品の経路は v2 で、この節が現在の仕様。決定の規則 `decide`・経路の振り分け（`retry_allowed`、CORROBORATE / MAPPING_ONLY）・候補の絞り込み・順序の文の導出・出口の門は v1 のまま変えていない（§13.3）。
+
+### 14.1 段と問い（どれも閉じた選択で、返答は最小の形）
+
+| 段（台帳の `step`） | 聞くこと | 見せるもの | 返答 | 一致の単位 |
+|---|---|---|---|---|
+| `records` | この質問が尋ねている記録をすべて選ぶ。無ければ「なし」 | 質問、肢（番号を付けない JSON の配列）、候補の記録（番号つき。表示の文は構成したもの） | `なし` か `3` / `0,4`（半角数字のカンマ区切り） | 選んだ記録の集合（元の番号に戻す） |
+| `decides` | この記録（たち）**だけ**で質問への答えが一つに決まるか | **質問と記録の原文だけ**（`ref.text`。順序の辺ならその行と両端の工程の行）。**肢は見せない** | `決まる` / `決まらない` | ラベル |
+| `relation` | **肢 1 つ**で答えた主張は、記録 1 つと一致／矛盾／無関係のどれか | 質問、記録（順序の経路では導いた文）、**その肢だけ** | `一致` / `矛盾` / `無関係` | （記録, 肢）の組ごと |
+| `phases`（順序の経路） | 質問と肢が話題にしている工程をすべて選ぶ。無ければ「なし」 | 質問、肢、工程名（番号つき） | `records` と同じ | 工程の集合 |
+
+- 流れ: `records` が採用（集合が空でない）→ `decides` → `決まる` で一致したときだけ `relation`（肢があり、人間の承認の記録を含まないとき）。順序の経路は `phases` → `order_statement` で文を導く
+  （文が無い＝並列などは `FRAME_SILENT/UNORDERED` で**先に**上げ、`decides` は聞かない）→ `decides`（辺の原文と両端の工程の行）→ `決まる` なら `relation`（導いた文 × 各肢）。
+  v1 で `records` / `phases` の返答に同居していた `decides` は、この段に分けた（工程の選択のプロンプトからは外した）。
+- **一致の判定は問いごと**: 段ごと、（記録, 肢）の組ごとに、2 回の独立な照会の一致を見て、`map_decision` を 1 行ずつ書く。記録 2 つ × 肢 2 つなら 4 つの decision。
+  答えを出すのは `decide` だけで、**全部の組が採用されたときだけ**（1 組でも採用されなければ答えない。`MAPPING_UNSETTLED/STEP2_<…>`。`mapping.step2` には全部の組の結果を残す）。一部の組から答えを決めることはしない。
+- 決定の規則は緩めていない（一致する肢がちょうど 1 つ、ほかは矛盾または無関係のときだけ答える。§13.3）。
+
+### 14.2 最小形の返答の検査（`llm_choice.classify_index_list_reply` / `classify_label_reply`。既存の関数は変えていない）
+
+返答は、前後の空白・改行（半角の空白、タブ、CR、LF）だけを除いた**全体**が、`なし`、または半角数字のカンマ区切り（`3` `0,4` `0 , 4`）、ラベルの選択なら提示した語のどれかと**完全に一致**するときだけ有効。
+全角数字、句点、引用符、コードフェンス、JSON、説明、`答え:` の見出し、先頭の 0、負数、空、no-break space、別のラベル集合の語は無効（`NOT_MINIMAL_FORM`）。範囲外の番号は `OUT_OF_RANGE`、重複は `DUPLICATE`。
+**修復しない**: 文中の数字や語を拾わない。無効は無効のまま台帳に残り、下の再照会の対象になる。`tests/test_conduct_map_reply2.py`（61 件）が有効・無効の全形を固定している。
+
+### 14.3 独立 2 回・再照会・上限
+
+- 各問いを 2 回（スロット 0 = プロバイダ 0・言い回しの版 0、スロット 1 = プロバイダ 1・版 1）、**並びを変えて並列に**聞く。並びとは、`records` / `phases` では候補の並び、`decides` / `relation` では提示するラベルの順
+  （2 回の並びが同じなら回転させる）。
+- **再照会**: スロットの返答が `INVALID` のときだけ、そのスロットを**同じプロバイダ・同じ版で 1 回だけ**、新しい並び（失敗した並びと違うもの）で聞き直す。それも無効なら、その問いは `ABSTAINED/INVALID_ANSWER` で上げる。
+  `FAILED`（時間切れ・利用上限・終了コード・例外）は再照会しない（型つきで上げる）。**もう片方のスロットが失敗しているときも再照会しない**（結果は `FAILED` に決まるので。decision の `detail` に `RETRY_SKIPPED_PAIR_FAILED`）。
+- 採否はスロットごとの**最後の有効な返答**で決める: 両方が同じ選択 → `ADOPTED`、両方が `なし` → `NONE`、どちらかが最後まで無効 → `INVALID_ANSWER`、失敗 → `FAILED:<種別>`、ほか → `DISAGREE`。多数決・3 回目・同点崩しは無い。
+- **1 問の照会の上限**（`--map-max-asks`。既定 **24**。設定値で、測定値ではない）: 再照会も 1 回として数える。対の前に `使用 + 2 ≤ 上限`、再照会の前に `使用 + 1 ≤ 上限` を確かめる。`relation` は全部の組の 2 回分（`2 × 組の数`）が入るかを**最初に**確かめ、
+  入らなければ 1 回も聞かず `ASK_BUDGET`。再照会の余地が無ければ再照会せず、その問いは無効のまま上がり、decision の `detail` は `RETRY_NO_BUDGET`（**この decision は台帳から再利用しない**。上限の不足だけが原因の棄権のため）。
+  語の対応づけ（W1-e。最大 2 回）は別に数えるので、1 問の最悪は 2 + 24 = **26 回**。
+- 並列: 同時に走らせる照会は 1 問につき `max_parallel`（既定 6。設定値）まで。台帳への書き込みは呼び出しのスレッドだけが、1 回の往復の行を問いの順に書いてから、decision を問いの順に書く。
+
+### 14.4 effort と時間切れ（`--map-effort` / `--map-timeout`）
+
+- `--map-effort low|medium|high|xhigh`（既定は指定なし = `low`）、`--map-timeout SEC`（1 回の照会の時間切れ。既定はプロバイダの 240 秒）。**対応づけの照会だけ**に効く。W1-e の語の対応づけ（`LLMChooser`、台帳の `type: "ask"`）は今のまま `low`。
+- API: `answer_question(..., map_effort=None, map_timeout=None)`。型つきの拒否（終了コード 2）: `BAD_MAP_EFFORT`（4 値以外）、`MAP_EFFORT_WITHOUT_REAL_MODE`（`--vocab-llm` が codex / claude でないのに指定）、`BAD_MAP_TIMEOUT`（正の有限の数でない）、`MAP_TIMEOUT_WITHOUT_REAL_MODE`。
+- `build_real_mapper(mode, second, ledger_path, max_asks, effort="low", timeout=None)` が `CodexProvider(effort=..., timeout=...)`（claude も同じ effort。claude は今回測っていない）を作る。照会の再利用の鍵に、2 つのプロバイダの名前・model・**effort** を入れた
+  （effort や model が違う照会の結果を、同じ問いの結果として使い回さない）。
+
+### 14.5 台帳と出力の欄
+
+- `map_ask` の足した欄: `attempt`（0 / 1）、`retry_of`（再照会なら元の行の `id`。`id` は `"<decision_id>.<slot>"` と `"<decision_id>.<slot>.r1"`）、`option_index` と `option`（`relation`）、`labels_shown`（`decides` / `relation`。提示したラベルの順。`shown` も同じ）。
+  `step` は `records` / `decides` / `relation` / `phases`。`parsed` は元の番号・語に戻したもの（`{"indexes": [...], "records": [...]}`、`{"decides": "決まる"}`、`{"relation": "一致"}`）。`map_decision` の `ask_ids` には無効だった行・再照会の行も全部入る。
+- 再利用の鍵は protocol（`conduct_map/v2`）・段・枠の sha256・質問・肢・候補（id と文）・記録 id・（`relation` なら）肢の番号と文・（`decides` なら）原文の行・2 つのプロバイダの（名前, model, effort）。v1 の decision は鍵が違うので再利用されない。
+  `ADOPTED` `NONE` `ABSTAINED`（`RETRY_NO_BUDGET` を除く）を再利用して照会せず、`map_reuse` の行を足す。同じ問いの 2 度目は照会しない（G5）。
+- 出力の `mapping`: v1 の鍵（`provenance` `counts_as_evidence` `constructed` `route` `outcome` `rule` `candidates` `asks_used` `asks_cap` `step1` `step2` `order` `exit_check`）に、`protocol` `effort` `decides`（記録の経路の `decides` 段）`retries`（その問いで行った再照会の数）を足した。
+  `step1` は `{"decision_id","status","reason","cached","retries","asks","records"}`（`decides` の鍵は無い。`decides` 段の値は `mapping.decides.decides`）。`step2` は組ごとの `{"decision_id","status","reason","cached","retries","asks","record","option_index","relation"}` の並び（記録の順 → 肢の順）。
+  `order` は `decides`（`決まる` / `決まらない` / null）と `decides_step`（その段の decision）を持つ。detail: `DECIDES_<DISAGREE|INVALID_ANSWER|FAILED:種別>`（`decides` 段）、`STEP2_<…>`（最初に決まらなかった組）、`MAP_RECORD_DOES_NOT_DECIDE`、`ASK_BUDGET`。
+
+### 14.6 作り物の台本（`ScriptedMapProvider`。**LLM の測定ではなく、仮定**）
+
+v1 の鍵（`records` `decides` `relations` `records2` `decides2` `relations2` `phases` `phases2` `decides_phases` `decides_phases2` `raw*` `fail*`）の意味を保った。`relations` は記録 id → 肢の元の順の関係の並びで、肢 1 つごとの問いにはその肢の値を返す。
+足した鍵: `raw_decides` `raw_decides2` `fail_decides` `fail_decides2`（記録の経路の `decides` 段）、`raw_decides_phases` `fail_decides_phases`（順序の経路。`…2` も）。`raw*` / `fail*` の値は、文字列なら毎回それを返し、**リストなら呼ばれるたびに先頭から順に**返す（最後の要素を繰り返す。再照会の試験用）。
+見せていない記録・台本に無い組は**無効な返答**（黙って `無関係` にしない）。試験は `tests/test_conduct_map_g9.py`（G9。16 項目。関数 34、パラメータの展開後 60 件）と、v2 に移した W2-g の既存の試験（`test_conduct_map_*.py`）。
+
+### 14.7 測定（出典 `artifacts/w2-g/live_g2/`。コードは凍結後に変えていない。再計算 `artifacts/w2-g/py.sh artifacts/w2-g/g2/docs_check_g2.py`）
+
+**手順と凍結の順序**（事前に決めたとおり）: ① コードの凍結（`artifacts/w2-g/g2/freeze_code.txt` 2026-10-03 09:19:15 JST）→ ② 新しい自作データ `tests/conduct_ask/w2g3/` を書いて凍結（`artifacts/w2-g/fixtures_freeze3.txt` 09:22:53 JST。凍結時のコードの sha256 も同じ）
+→ ③ 規則だけ（off）と作り物の神託（fake）で道筋を確認（`artifacts/w2-g/g2/g3_w2g3/`。測定ではない）→ ④ 実プロバイダ。**どの実行も 1 回だけ**で、流し直していない。煙試験（第 1 のデータの 3 問を延べ 4 回。凍結データではない）は凍結の前に流し、製品コードは煙試験で変えていない。
+
+**新しい自作データ w2g3**（`tests/conduct_ask/w2g3/`、`artifacts/w2-g/make_items3.py`、形の検査 `artifacts/w2-g/g2/fixtures3_shape.txt`。第 1・第 2 のデータ、W2-c の枠、`calib_r3`、`docs/frames/` と題材も文も共有しない）: 枠 6（日本語 3・英語 3）、60 問 = 直接・組合せ・語彙外・上げるのが正解が各 15。
+順序を尋ねる問い 14（直接 2・組合せ 9・語彙外 3。連鎖・3〜4 工程・並列の組を含む）、上げるのが正解のうち「順序の形で別の事業・別の時・日数・担当者を尋ねる問い」5 と「肢なしで好み・推奨を尋ねる問い」2、肢が 3 つ以上で答えるのが正解の問い 12（4 肢が 1）、肢なしの値の問い 6（+ 好みの肢なし 2）、
+人間の承認が必要 2・枠内の矛盾 1・並列の順序 2・過去形 1・決めていない側面 2。実プロバイダ: codex `gpt-6-luna`（1 回目・2 回目とも。並び順と言い回しを変えた別のインスタンス）。claude は使っていない。
+
+<!-- g2-tables:begin -->
+**読み（測定された事実だけ）**
+
+- 無効な返答は (a) low・(a) xhigh・(b) の 3 つの実行を合わせて 0 件だったので、**2 回目の照会（再照会）は実プロバイダでは一度も行われなかった**（再照会の挙動は作り物のプロバイダの試験 G9 だけで確かめている）。
+- 正答は、同じ 60 問・各 1 回で、low 15 / 45、xhigh 23 / 45。どちらも誤答は 0、上げるのが正解の問いは全部上げた。1 回ずつの値なので、effort の差が揺れの範囲かどうかは分からない。
+- (b) の第 2 のデータは v2 の low で 15 / 48。第 3 ラウンドの値（事前の手順の言い回し 21 / 48、改訂後 27 / 48。§13.9）より**低い**。v2 の 3 つの実行で、答えるのが正解の問いを上げた理由の最多は「2 回の独立な照会の食い違い」（`MAPPING_UNSETTLED/*_DISAGREE`。内訳は下）で、v2 は問いが段と（記録, 肢）の組に分かれた分、一致を求める回数が増えている（段ごとの内訳）。原因の特定はしていない。
+- 実行はどれも 1 回で、プロンプト・許可リスト・規則・データを測定のあとに変えていない（基準を下回った値もそのまま）。
+
+**基準に対する判定**
+
+- **G3'**（新しい凍結データ。誤って答えた件数 5% 以下）`w2g3/low`: 誤答 0 / 60（0.0）→ 満たす。正答は 15 / 45（0.3333。基準なし、報告のみ）、上げた 15 / 15（1.0。参考の基準 85% 以上）。
+- **G3'**（新しい凍結データ。誤って答えた件数 5% 以下）`w2g3/xhigh`: 誤答 0 / 60（0.0）→ 満たす。正答は 23 / 45（0.5111。基準なし、報告のみ）、上げた 15 / 15（1.0。参考の基準 85% 以上）。
+- **G8**（無効な返答の率。同じ effort low。第 3 ラウンドの台帳 26 / 296 = 0.0878（8.8%）より下がっているか）: ① 対応づけの照会の行 0 / 274 = 0.0、② 語の対応づけを含む全照会 0 / 304 = 0.0 → 下がっている。再照会の行は分母にも分子にも入れている（無効の返答は 1 回目も数える）。
+
+**実行の一覧**
+
+| 実行（出典 `artifacts/w2-g/live_g2/<ディレクトリ>`） | 流した問数 | 流せなかった問（予算） | 誤って答えた | 正しく答えた／答えるのが正解 | 上げた／上げるのが正解 | 照会数（語の対応づけ込み） | 壁時計（秒） |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 煙・low（第 1 のデータの 2 問。凍結データではない）（`smoke/low`） | 2 | 0 | 0 (0.0) | 1 / 2 | 0 / 0 | 14 | 22.93 |
+| 煙・low（同 1 問）（`smoke/low2`） | 1 | 0 | 0 (0.0) | 0 / 1 | 0 / 0 | 6 | 17.82 |
+| 煙・xhigh（同 1 問）（`smoke/xhigh`） | 1 | 0 | 0 (0.0) | 1 / 1 | 0 / 0 | 10 | 19.73 |
+| (a) low・新しい凍結データ 60 問（`w2g3/low`） | 60 | 0 | 0 (0.0) | 15 / 45 | 15 / 15 | 304 | 268.74 |
+| (a) xhigh・同じ 60 問（`w2g3/xhigh`） | 60 | 0 | 0 (0.0) | 23 / 45 | 15 / 15 | 342 | 695.6 |
+| (b) low・第 2 のデータの答えるのが正解の 48 問（`w2g2/low_answer`） | 48 | 0 | 0 (0.0) | 15 / 48 | 0 / 0 | 278 | 245.55 |
+| (b) low・同じく上げるのが正解の 16 問（`w2g2/low_escalate`） | 16 | 0 | 0 (0.0) | 0 / 0 | 16 / 16 | 36 | 36.68 |
+
+**照会 1 回あたりの所要時間と 1 問あたりの照会数**
+
+| 実行 | 対応づけの照会の数 | 所要時間 平均 (ms) | 中央値 (ms) | 90 パーセンタイル (ms) | 最大 (ms) | 1 問あたりの対応づけの照会数 平均 | 中央値 | 最大 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| `smoke/low` | 14 | 4345.1 | 4342.0 | 4838 | 5371 | 7.0 | 7.0 | 10 |
+| `smoke/low2` | 4 | 4005.0 | 3928.5 | 4423 | 4423 | 4.0 | 4 | 4 |
+| `smoke/xhigh` | 10 | 6451.4 | 6267.5 | 8376 | 8529 | 10.0 | 10 | 10 |
+| `w2g3/low` | 274 | 6694.8 | 5531.5 | 12921 | 20048 | 4.6 | 4.0 | 12 |
+| `w2g3/xhigh` | 312 | 8005.1 | 6789.5 | 12231 | 40211 | 5.2 | 4.0 | 12 |
+| `w2g2/low_answer` | 242 | 6860.3 | 5725.5 | 13145 | 16876 | 5.0 | 4.0 | 12 |
+| `w2g2/low_escalate` | 30 | 5224.1 | 5031.5 | 6368 | 8342 | 1.9 | 2.0 | 8 |
+
+| 実行 | 段 | 照会数 | 平均 (ms) | 中央値 (ms) | 90 パーセンタイル (ms) | 最大 (ms) |
+|---|---|---:|---:|---:|---:|---:|
+| `smoke/low` | decides | 4 | 3821.8 | 3865.0 | 4003 | 4003 |
+| `smoke/low` | phases | 2 | 4370.0 | 4370.0 | 4437 | 4437 |
+| `smoke/low` | records | 2 | 4343.5 | 4343.5 | 4582 | 4582 |
+| `smoke/low` | relation | 6 | 4686.2 | 4612.0 | 5371 | 5371 |
+| `smoke/low2` | decides | 2 | 4165.5 | 4165.5 | 4423 | 4423 |
+| `smoke/low2` | records | 2 | 3844.5 | 3844.5 | 3949 | 3949 |
+| `smoke/xhigh` | decides | 2 | 4735.0 | 4735.0 | 4811 | 4811 |
+| `smoke/xhigh` | records | 2 | 5546.0 | 5546.0 | 6075 | 6075 |
+| `smoke/xhigh` | relation | 6 | 7325.3 | 7256.0 | 8529 | 8529 |
+| `w2g3/low` | decides | 82 | 6721.8 | 5420.0 | 12762 | 15709 |
+| `w2g3/low` | phases | 28 | 5778.3 | 5232.5 | 8904 | 10958 |
+| `w2g3/low` | records | 84 | 6695.5 | 5205.5 | 13299 | 16225 |
+| `w2g3/low` | relation | 80 | 6987.3 | 6235.5 | 13770 | 20048 |
+| `w2g3/xhigh` | decides | 88 | 7919.3 | 6819.0 | 13083 | 21961 |
+| `w2g3/xhigh` | phases | 28 | 7314.6 | 6413.0 | 8524 | 19992 |
+| `w2g3/xhigh` | records | 84 | 9401.9 | 6999.0 | 16370 | 40211 |
+| `w2g3/xhigh` | relation | 112 | 7197.4 | 6704.0 | 9721 | 14079 |
+| `w2g2/low_answer` | decides | 74 | 7285.8 | 5768.0 | 13536 | 16876 |
+| `w2g2/low_answer` | phases | 12 | 5095.7 | 5044.0 | 5685 | 6197 |
+| `w2g2/low_answer` | records | 72 | 6261.0 | 5322.5 | 10605 | 15816 |
+| `w2g2/low_answer` | relation | 84 | 7251.1 | 6136.5 | 13018 | 15326 |
+| `w2g2/low_escalate` | decides | 2 | 4379.5 | 4379.5 | 4761 | 4761 |
+| `w2g2/low_escalate` | phases | 2 | 4774.0 | 4774.0 | 5035 | 5035 |
+| `w2g2/low_escalate` | records | 22 | 5282.9 | 5049.0 | 6448 | 8342 |
+| `w2g2/low_escalate` | relation | 4 | 5548.0 | 5601.5 | 6368 | 6368 |
+
+**無効な返答の率と再照会**
+
+| 実行 | ① 無効 / 対応づけの照会の行 | ① の率 | ② 無効 / 語の対応づけを含む全照会の行 | ② の率 | 無効の理由 | 2 回目の照会（再照会）の数 | うち有効な返答 | 再照会のあった decision の数 |
+|---|---:|---:|---:|---:|---|---:|---:|---:|
+| `smoke/low` | 0 / 14 | 0.0 | 0 / 14 | 0.0 | {} | 0 | 0 | 0 |
+| `smoke/low2` | 0 / 4 | 0.0 | 0 / 6 | 0.0 | {} | 0 | 0 | 0 |
+| `smoke/xhigh` | 0 / 10 | 0.0 | 0 / 10 | 0.0 | {} | 0 | 0 | 0 |
+| `w2g3/low` | 0 / 274 | 0.0 | 0 / 304 | 0.0 | {} | 0 | 0 | 0 |
+| `w2g3/xhigh` | 0 / 312 | 0.0 | 0 / 342 | 0.0 | {} | 0 | 0 | 0 |
+| `w2g2/low_answer` | 0 / 242 | 0.0 | 0 / 278 | 0.0 | {} | 0 | 0 | 0 |
+| `w2g2/low_escalate` | 0 / 30 | 0.0 | 0 / 36 | 0.0 | {} | 0 | 0 | 0 |
+
+**段ごとの内訳**
+
+| 実行 | 段 | 照会の verdict | decision の status |
+|---|---|---|---|
+| `smoke/low` | decides | {"PICK": 4} | {"ABSTAINED": 1, "ADOPTED": 1} |
+| `smoke/low` | phases | {"PICK": 2} | {"ADOPTED": 1} |
+| `smoke/low` | records | {"PICK": 2} | {"ADOPTED": 1} |
+| `smoke/low` | relation | {"PICK": 6} | {"ADOPTED": 3} |
+| `smoke/low2` | decides | {"PICK": 2} | {"ADOPTED": 1} |
+| `smoke/low2` | records | {"PICK": 2} | {"ADOPTED": 1} |
+| `smoke/xhigh` | decides | {"PICK": 2} | {"ADOPTED": 1} |
+| `smoke/xhigh` | records | {"PICK": 2} | {"ADOPTED": 1} |
+| `smoke/xhigh` | relation | {"PICK": 6} | {"ADOPTED": 3} |
+| `w2g3/low` | decides | {"PICK": 82} | {"ABSTAINED": 12, "ADOPTED": 29} |
+| `w2g3/low` | phases | {"NONE": 3, "PICK": 25} | {"ABSTAINED": 2, "ADOPTED": 11, "NONE": 1} |
+| `w2g3/low` | records | {"NONE": 9, "PICK": 75} | {"ABSTAINED": 6, "ADOPTED": 32, "NONE": 4} |
+| `w2g3/low` | relation | {"PICK": 80} | {"ABSTAINED": 6, "ADOPTED": 34} |
+| `w2g3/xhigh` | decides | {"PICK": 88} | {"ABSTAINED": 4, "ADOPTED": 40} |
+| `w2g3/xhigh` | phases | {"NONE": 2, "PICK": 26} | {"ADOPTED": 13, "NONE": 1} |
+| `w2g3/xhigh` | records | {"NONE": 8, "PICK": 76} | {"ABSTAINED": 6, "ADOPTED": 33, "NONE": 3} |
+| `w2g3/xhigh` | relation | {"PICK": 112} | {"ABSTAINED": 3, "ADOPTED": 53} |
+| `w2g2/low_answer` | decides | {"PICK": 74} | {"ABSTAINED": 10, "ADOPTED": 27} |
+| `w2g2/low_answer` | phases | {"PICK": 12} | {"ADOPTED": 6} |
+| `w2g2/low_answer` | records | {"NONE": 3, "PICK": 69} | {"ABSTAINED": 5, "ADOPTED": 31} |
+| `w2g2/low_answer` | relation | {"PICK": 84} | {"ABSTAINED": 6, "ADOPTED": 36} |
+| `w2g2/low_escalate` | decides | {"PICK": 2} | {"ADOPTED": 1} |
+| `w2g2/low_escalate` | phases | {"PICK": 2} | {"ADOPTED": 1} |
+| `w2g2/low_escalate` | records | {"NONE": 13, "PICK": 9} | {"ABSTAINED": 5, "ADOPTED": 1, "NONE": 5} |
+| `w2g2/low_escalate` | relation | {"PICK": 4} | {"ADOPTED": 2} |
+
+**`decides` の分布と上げた理由**
+
+| 実行 | `decides` の分布（採用） | `decides` が採用されなかった decision | 上げた理由（全体） | 上げた理由（答えるのが正解の問いだけ） |
+|---|---|---|---|---|
+| `smoke/low` | {"決まる": 1} | {"ABSTAINED": 1} | {"MAPPING_UNSETTLED": 1} | {"MAPPING_UNSETTLED": 1} |
+| `smoke/low2` | {"決まらない": 1} | {} | {"FRAME_SILENT": 1} | {"FRAME_SILENT": 1} |
+| `smoke/xhigh` | {"決まる": 1} | {} | {} | {} |
+| `w2g3/low` | {"決まらない": 5, "決まる": 24} | {"ABSTAINED": 12} | {"FRAME_SILENT": 14, "HUMAN_APPROVAL_REQUIRED": 2, "MAPPING_UNSETTLED": 26, "QUESTION_UNREADABLE": 3} | {"FRAME_SILENT": 5, "MAPPING_UNSETTLED": 22, "QUESTION_UNREADABLE": 3} |
+| `w2g3/xhigh` | {"決まらない": 9, "決まる": 31} | {"ABSTAINED": 4} | {"FRAME_CONFLICT": 1, "FRAME_SILENT": 17, "HUMAN_APPROVAL_REQUIRED": 2, "MAPPING_UNSETTLED": 14, "QUESTION_UNREADABLE": 3} | {"FRAME_CONFLICT": 1, "FRAME_SILENT": 8, "MAPPING_UNSETTLED": 10, "QUESTION_UNREADABLE": 3} |
+| `w2g2/low_answer` | {"決まらない": 4, "決まる": 23} | {"ABSTAINED": 10} | {"FRAME_SILENT": 9, "MAPPING_UNSETTLED": 21, "OUT_OF_RANGE": 1, "QUESTION_UNREADABLE": 2} | {"FRAME_SILENT": 9, "MAPPING_UNSETTLED": 21, "OUT_OF_RANGE": 1, "QUESTION_UNREADABLE": 2} |
+| `w2g2/low_escalate` | {"決まる": 1} | {} | {"FRAME_SILENT": 7, "HUMAN_APPROVAL_REQUIRED": 1, "MAPPING_UNSETTLED": 5, "QUESTION_UNREADABLE": 3} | {} |
+
+**答えるのが正解で上げた問いの内訳**
+
+- `w2g3/low`: 答えるのが正解で上げた 30 問の内訳（reason/detail） {"MAPPING_UNSETTLED/DECIDES_DISAGREE": 11, "MAPPING_UNSETTLED/STEP2_DISAGREE": 5, "MAPPING_UNSETTLED/STEP1_DISAGREE": 4, "QUESTION_UNREADABLE/NEGATED_QUESTION": 3, "FRAME_SILENT/MAP_RECORD_DOES_NOT_DECIDE": 2, "FRAME_SILENT/MAP_NONE": 1, "FRAME_SILENT/PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION": 1, "FRAME_SILENT/TERM_IN_WIDER_PHRASE": 1, "MAPPING_UNSETTLED/PHASES_DISAGREE": 1, "MAPPING_UNSETTLED/RULE_BASIS_NOT_MAPPED": 1}。うち 2 回の照会の食い違い（`MAPPING_UNSETTLED/*_DISAGREE`）が 21 問、規則だけで上がって対応づけに回らなかった（`NEGATED_QUESTION` `TERM_IN_WIDER_PHRASE` `PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION`）が 5 問。
+- `w2g3/xhigh`: 答えるのが正解で上げた 22 問の内訳（reason/detail） {"FRAME_SILENT/MAP_RECORD_DOES_NOT_DECIDE": 5, "MAPPING_UNSETTLED/DECIDES_DISAGREE": 3, "MAPPING_UNSETTLED/STEP1_DISAGREE": 3, "QUESTION_UNREADABLE/NEGATED_QUESTION": 3, "MAPPING_UNSETTLED/RULE_BASIS_NOT_MAPPED": 2, "MAPPING_UNSETTLED/STEP2_DISAGREE": 2, "FRAME_CONFLICT/MAPPED_RECORDS_DISAGREE": 1, "FRAME_SILENT/MAP_NONE": 1, "FRAME_SILENT/PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION": 1, "FRAME_SILENT/TERM_IN_WIDER_PHRASE": 1}。うち 2 回の照会の食い違い（`MAPPING_UNSETTLED/*_DISAGREE`）が 8 問、規則だけで上がって対応づけに回らなかった（`NEGATED_QUESTION` `TERM_IN_WIDER_PHRASE` `PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION`）が 5 問。
+- `w2g2/low_answer`: 答えるのが正解で上げた 33 問の内訳（reason/detail） {"MAPPING_UNSETTLED/DECIDES_DISAGREE": 10, "MAPPING_UNSETTLED/STEP2_DISAGREE": 6, "MAPPING_UNSETTLED/STEP1_DISAGREE": 5, "FRAME_SILENT/MAP_RECORD_DOES_NOT_DECIDE": 4, "FRAME_SILENT/PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION": 3, "FRAME_SILENT/TERM_IN_WIDER_PHRASE": 2, "OUT_OF_RANGE/STATE_OR_REQUEST_QUESTION": 1, "QUESTION_UNREADABLE/INVERTED_QUESTION": 1, "QUESTION_UNREADABLE/NEGATED_QUESTION": 1}。うち 2 回の照会の食い違い（`MAPPING_UNSETTLED/*_DISAGREE`）が 21 問、規則だけで上がって対応づけに回らなかった（`NEGATED_QUESTION` `TERM_IN_WIDER_PHRASE` `PERMISSION_FOR_ANOTHER_SUBJECT_OR_CONDITION`）が 6 問。
+
+**分類・言語ごとの正答**
+
+| 実行 | 直接 | 組合せ | 語彙外 | 日本語（正答／答えるべき） | 英語 |
+|---|---:|---:|---:|---:|---:|
+| `w2g3/low` | 6 / 15 | 4 / 15 | 5 / 15 | 6 / 22 | 9 / 23 |
+| `w2g3/xhigh` | 9 / 15 | 5 / 15 | 9 / 15 | 9 / 22 | 14 / 23 |
+| `w2g2/low_answer` | 7 / 16 | 3 / 16 | 5 / 16 | 8 / 24 | 7 / 24 |
+
+**(b) 第 2 のデータの流し直しと第 3 ラウンドの比較**
+
+| 実行（同じ問いの集合） | 問数 | 誤って答えた | 正しく答えた／答えるのが正解 | 上げた／上げるのが正解 |
+|---|---:|---:|---:|---:|
+| v2 low (this round) | 64 | 0 | 15 / 48 | 16 / 16 |
+| round 3 wording b (after the result was seen), same questions | 64 | 0 | 27 / 48 | 16 / 16 |
+| round 3 wording a (pre-registered), same questions | 64 | 0 | 21 / 48 | 16 / 16 |
+| round 3 wording b, all 64 | 64 | 0 | 27 / 48 | 16 / 16 |
+| round 3 wording a, all 64 | 64 | 0 | 21 / 48 | 16 / 16 |
+
+- 流せなかった問い（予算）: 0。誤答の id: []。出典 `artifacts/w2-g/g2/merge_b/summary.json`（`merge_b.py`。各行は `run_bank.judge` で判定し直した）。
+
+**予算**
+
+- **予算**（`artifacts/w2-g/g2/budget_g2.py`。台帳の `map_ask` と語の対応づけの照会の行を数える。再照会の行も 1 回）: 実装役の合計 **990 回**（上限 1,140）。provider は {"codex": 990}（claude は使っていない）、effort 別 {"low": 668, "xhigh": 322}（effort は台帳の行の値。語の対応づけは `low`）。`RUN_TIMEOUT` の問い 0（その分の加算 0）。中間職のレビューの 60 回は別の台帳で、ここには数えない。
+<!-- g2-tables:end -->
+
+
+### 14.8 再計算
+
+- 表と判定の行は `artifacts/w2-g/g2/make_docs_tables.py` の出力そのもの（上の `g2-tables` の枠の中）で、`artifacts/w2-g/py.sh artifacts/w2-g/g2/docs_check_g2.py` が枠の中身を保存物から作り直して一致を確かめ、この節の数値の行（凍結の時刻・データの形・試験の数・予算）も照合する（最後の行 `MISSING lines: N`）。
+- 各実行の `--recount`: `artifacts/w2-g/py.sh tests/conduct_ask/w2g/run_map_bank.py --items tests/conduct_ask/w2g3/items.jsonl --frames tests/conduct_ask/w2g3/frames --recount artifacts/w2-g/live_g2/w2g3/low`（`xhigh` も。第 2 のデータは `--items tests/conduct_ask/w2g2/items.jsonl --frames tests/conduct_ask/w2g2/frames`）。
+  台帳の鎖: `artifacts/w2-g/py.sh -m verantyx.llm_choice verify <ledger.jsonl>`。返答の数え直し: `artifacts/w2-g/py.sh artifacts/w2-g/g2/ledger_recheck_g2.py <ledger.jsonl>...`（`raw_reply` を最小形の読み手で読み直して、decision の status・結果・再照会の構造まで台帳と照合する）。
+- 一連の検査（G1〜G9・凍結・予算）は `artifacts/w2-g/g2/final_run_g2.sh`（出力 `artifacts/w2-g/g2/final_run_g2.log`。第 1〜3 ラウンドの保存物は書き換えない）。
+- 監査役の評価バンクの値はこの文書に書いていない。
