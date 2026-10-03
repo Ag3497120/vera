@@ -1,0 +1,9 @@
+export EXPORTED
+attach B ATTACHED
+attach C ATTACHED
+ref B == ref C: False  ref A == ref B: False
+B crashed after structure write
+C promote PROMOTED
+B rerun verdict NOTHING_TO_PROMOTE repaired_backlink 1
+B trace rows 1 other 1
+backlinks in file [('40afb8', 1, 'e461415f'), ('40afb8', 1, 'ce1203f5')]

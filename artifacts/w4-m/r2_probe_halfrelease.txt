@@ -1,0 +1,6 @@
+promote1 1
+release crashed after retire
+promote2 RELEASE_IN_PROGRESS 0
+structure promotion rows [(1, 'c1f066b72e0a03cd131325a6', True)]
+release rerun RELEASED
+after [(1, True)]

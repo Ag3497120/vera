@@ -1,0 +1,9 @@
+same noargs.out
+same noargs.rc
+same bad.out
+same bad.err
+same bad.rc
+same missing.out
+same missing.err
+same missing.rc
+same noargs.err last line

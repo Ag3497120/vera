@@ -1,0 +1,26 @@
+{
+  "verdict": "UNKNOWN_NO_DOMAINS",
+  "stages": [
+    {
+      "name": "ingest",
+      "verdict": "UNKNOWN_EMPTY_DOMAIN",
+      "detail": {
+        "domain": "x",
+        "source": "/nonexistent_dir_w4m",
+        "statutes": 0,
+        "articles": 0,
+        "documents": 0,
+        "leaves": 0,
+        "groups": {},
+        "cores": 0
+      }
+    },
+    {
+      "name": "ingest",
+      "verdict": "UNKNOWN_NO_DOMAINS",
+      "detail": {
+        "domains": []
+      }
+    }
+  ]
+}

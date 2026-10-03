@@ -1055,6 +1055,16 @@ def cmd_sovereign(args) -> int:
     """
     from .sovereign import main as _sovereign_main
 
+    if getattr(args, "sovereign_op", None):
+        # the memory sovereign operations (W4-m), kept apart from the build below
+        if args.domain:
+            args.sovereign_parser.error(
+                "--domain belongs to the build, not to the memory operations")
+        from .sovereign import memory_cli as _memory_cli
+        return _memory_cli(args)
+    if not args.domain:
+        args.sovereign_parser.error("the following arguments are required: --domain")
+
     argv: list = []
     for d in args.domain:
         argv += ["--domain", d]
@@ -1809,7 +1819,7 @@ def main(argv: Optional[list] = None) -> int:
     p = sub.add_parser(
         "sovereign",
         help="build one federated node from documents, stage by stage")
-    p.add_argument("--domain", action="append", metavar="NAME=PATH", required=True,
+    p.add_argument("--domain", action="append", metavar="NAME=PATH",
                    help="a field and the folder its documents live in")
     p.add_argument("--ask", action="append", default=[],
                    help="a question to descend after the build")
@@ -1818,6 +1828,63 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--name", default="主権")
     p.add_argument("--out", help="write the build record as JSON")
     p.set_defaults(fn=cmd_sovereign)
+    p.set_defaults(sovereign_parser=p)
+
+    # memory sovereign (W4-m): operations nested under `sovereign`. Every dest starts with
+    # `sov_` so that none of them can overwrite the build options above.
+    sov_ops = p.add_subparsers(dest="sovereign_op", metavar="OP")
+
+    def _sov_common(q, store_required=True):
+        q.add_argument("--root", dest="sov_root", required=True,
+                       help="the folder the sovereign registry and files live in (no default)")
+        q.add_argument("--store-id", dest="sov_store_id", required=store_required,
+                       help="the sovereign's name")
+        return q
+
+    q = _sov_common(sov_ops.add_parser(
+        "create", help="記憶のソブリン: create one independent store (one file, append-only inside)"))
+    q.add_argument("--owner", dest="sov_owner", required=True, help="who the store belongs to")
+    q.add_argument("--consent-promote", dest="sov_consent_promote", action="store_true",
+                   help="allow repeated observations to be promoted (off unless given)")
+    q = _sov_common(sov_ops.add_parser(
+        "consent", help="記憶のソブリン: record a consent change (appended; the latest row wins)"))
+    q.add_argument("--promote", dest="sov_promote", choices=["on", "off"], required=True)
+    q = _sov_common(sov_ops.add_parser(
+        "append", help="記憶のソブリン: append one event to the conversation ledger"))
+    q.add_argument("--kind", dest="sov_kind", required=True,
+                   choices=["utterance", "observation", "decision"])
+    q.add_argument("--payload", dest="sov_payload", required=True,
+                   help="the event payload, one line of json")
+    q = _sov_common(sov_ops.add_parser(
+        "events", help="記憶のソブリン: print the ledger, one event per line"))
+    q.add_argument("--since", dest="sov_since",
+                   help="an event id; print only the events after it")
+    _sov_common(sov_ops.add_parser(
+        "status", help="記憶のソブリン: list the registered stores and their state"),
+        store_required=False)
+    _sov_common(sov_ops.add_parser(
+        "detach", help="記憶のソブリン: cut the reference so the store cannot be read (the file stays)"))
+    q = _sov_common(sov_ops.add_parser(
+        "attach", help="記憶のソブリン: read a detached store again, or register an exported file in place"),
+        store_required=False)
+    q.add_argument("--file", dest="sov_file", help="an exported file to register where it is")
+    q = _sov_common(sov_ops.add_parser(
+        "export", help="記憶のソブリン: copy the store out as one file with its hash"))
+    q.add_argument("--to", dest="sov_to", required=True,
+                   help="where to write the copy (must not exist)")
+    q = _sov_common(sov_ops.add_parser(
+        "release", help="記憶のソブリン: let the store go, cutting the reference and keeping the hash (the file stays)"))
+    q.add_argument("--confirm", dest="sov_confirm", required=True,
+                   help="the store id again, exactly, as the explicit instruction")
+    q = _sov_common(sov_ops.add_parser(
+        "promote", help="記憶のソブリン: promote repeated observations to the structure (needs consent)"))
+    q.add_argument("--min-count", dest="sov_min_count", type=int)
+    q.add_argument("--min-days", dest="sov_min_days", type=int)
+    q = _sov_common(sov_ops.add_parser(
+        "promotions", help="記憶のソブリン: list the promotions that are still active"),
+        store_required=False)
+    q.add_argument("--all", dest="sov_all", action="store_true",
+                   help="include the retired ones, with their retire rows")
 
     p = sub.add_parser(
         "self-audit",
