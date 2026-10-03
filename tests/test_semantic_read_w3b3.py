@@ -668,12 +668,19 @@ def _functions(src):
 
 
 def test_semantic_read_changes_only_read_ja_and_semantic_reader_only_adds():
+    import difflib, hashlib      # W5-e2: function-local so that the file's top-level is unchanged
     b = _functions(git('show', '%s:verantyx/semantic_read.py' % BASE_COMMIT)); n = _functions((TREE / 'verantyx' / 'semantic_read.py').read_text(encoding='utf-8'))
     assert [k for k in b if k in n and b[k] != n[k]] == ['_read_ja'] and not [k for k in b if k not in n]
     br = _functions(git('show', '%s:verantyx/semantic_reader.py' % BASE_COMMIT)); nr = _functions((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8'))
-    # Integration (auditor, 2026-10-04): W3-b4 (merged after W3-b3) wraps the two typed-reading plans with its focus-particle gate, so these two
-    # names of the base now point at the gated plans (docs/READING_SOUNDNESS.md 10D K186). Nothing else of the base changes.
-    assert [k for k in br if k in nr and br[k] != nr[k]] in ([], ['typed_plan_u_ja', 'typed_plan_u_w3b2_ja']) and not [k for k in br if k not in nr]
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-B）: 並立・選言の門（10E）を入れる差し込み口が無く、document_view に 1 行足した。変わった関数は document_view だけで、その差は追加 1 行だけ
+    # （削除 0 行）。新しい本文の sha256 を固定する（W3-b2/b3 のハッシュ固定と同じ扱い。docs/READING_SOUNDNESS.md 10E.2）
+    # Integration (auditor, 2026-10-04): W3-b4 (merged before W5-e) also re-points the two typed-reading plans with its focus-particle gate
+    # (docs/READING_SOUNDNESS.md 10D K186); together with W5-e's document_view line these are the only base functions that differ.
+    assert sorted(k for k in br if k in nr and br[k] != nr[k]) == ['document_view', 'typed_plan_u_ja', 'typed_plan_u_w3b2_ja'] and not [k for k in br if k not in nr]
+    ndiff = [l for l in difflib.ndiff(br['document_view'].splitlines(), nr['document_view'].splitlines()) if l[:1] in '+-']
+    assert [(l[0], l[1:].strip()) for l in ndiff] == [('+', 'cs = [_coordination_gate(c) for c in cs]')], ndiff
+    assert hashlib.sha256(br['document_view'].encode('utf-8')).hexdigest() == '20b032d03e136b2b260c445d446e7de2ce642596844113f6f32d2678aeeb73fa'
+    assert hashlib.sha256(nr['document_view'].encode('utf-8')).hexdigest() == 'b37c85231d62d4611d2ffa3df7f207e86f6c22b41c7e30f20e006d7ce15d62b8'
     diff = git('diff', BASE_COMMIT, '--', 'verantyx/semantic_reader.py').splitlines()
     assert not [l for l in diff if l.startswith('-') and not l.startswith('---')]
     rd = git('diff', BASE_COMMIT, '--', 'verantyx/semantic_read.py').splitlines()

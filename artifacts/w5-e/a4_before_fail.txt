@@ -1,0 +1,11 @@
+F.FF.F.FF.FF                                                             [100%]
+=========================== short test summary info ============================
+FAILED tests/coarse_place/test_coarse_place_w5e_frame_backing.py::test_r7_every_confirmed_frame_keeps_only_backed_types_and_loses_no_generated_type
+FAILED tests/coarse_place/test_coarse_place_w5e_frame_backing.py::test_r7_the_partial_overlap_word_split_its_types
+FAILED tests/coarse_place/test_coarse_place_w5e_frame_backing.py::test_r7_the_reader_does_not_accept_the_type_the_distribution_does_not_back
+FAILED tests/coarse_place/test_coarse_place_w5e_frame_backing.py::test_synthetic_a_partial_particle_is_split_between_frame_and_unconfirmed
+FAILED tests/coarse_place/test_coarse_place_w5e_frame_backing.py::test_synthetic_a_particle_the_distribution_has_no_type_for_stays_unconfirmed_whole
+FAILED tests/coarse_place/test_coarse_place_w5e_frame_backing.py::test_synthetic_the_pure_function_and_two_queries_are_stable
+FAILED tests/attack/test_attack_w5d.py::test_route_r7_estimated_common_noun_is_not_mapped_as_an_agent
+FAILED tests/attack/test_attack_w5d.py::test_frame_confirmed_partial_intersection_does_not_authorize_unbacked_type
+8 failed, 4 passed, 10 deselected in 2.08s

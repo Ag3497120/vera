@@ -1,0 +1,15 @@
+{
+  "cases": 170,
+  "groups": {
+    "boundary": 40,
+    "ellipsis": 25,
+    "english": 15,
+    "parallel": 20,
+    "relative": 40,
+    "scope": 30
+  },
+  "placement_free_byte_mismatches": 0,
+  "configured_base_equal": 164,
+  "configured_readable": 7,
+  "configured_relative": 2
+}

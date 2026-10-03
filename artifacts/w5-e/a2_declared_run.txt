@@ -1,0 +1,567 @@
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF [ 98%]
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_______ test_yappari_sonomama_does_not_turn_an_addendum_into_replacement _______
+tests/attack/test_attack_w5b_wave2.py:219: in test_yappari_sonomama_does_not_turn_an_addendum_into_replacement
+    assert actual == {"statuses": ["MAPPED", "AMBIGUOUS_RELATION"], "auto_resolved": 0,
+E   AssertionError: assert {'statuses': ...ions_kept': 0} == {'statuses': ...ions_kept': 0}
+E     
+E     Omitting 2 identical items, use -vv to show
+E     Differing items:
+E     {'statuses': ['NAME_UNRESOLVED', 'NAME_UNRESOLVED']} != {'statuses': ['MAPPED', 'AMBIGUOUS_RELATION']}
+E     {'superseded_by': []} != {'superseded_by': [None]}
+E     Use -v to get more diff
+----------------------------- Captured stdout call -----------------------------
+OBS R2 {"additions_kept": 0, "auto_resolved": 0, "statuses": ["NAME_UNRESOLVED", "NAME_UNRESOLVED"], "superseded_by": []}
+_ test_route_r2_denial_keeps_original_and_affirmative_mismatch_does_not_replace_across_lookup_variants _
+tests/attack/test_attack_w5d.py:116: in test_route_r2_denial_keeps_original_and_affirmative_mismatch_does_not_replace_across_lookup_variants
+    assert kept.additions_kept == 1
+E   AssertionError: assert 0 == 1
+E    +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ハル:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 1, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).additions_kept
+_ test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replacement _
+tests/test_routing_from_text.py:356: in test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replacement
+    assert unit.status == "AMBIGUOUS_RELATION" and unit.reasons[0].startswith("OVERRIDE_OTHER_KIND_AND_NAME:")
+E   AssertionError: assert ('NAME_UNRESOLVED' == 'AMBIGUOUS_RELATION'
+E     
+E     - AMBIGUOUS_RELATION
+E     + NAME_UNRESOLVED)
+_ test_M1_a_copula_between_two_names_is_ambiguous_and_makes_no_alias_and_no_merge _
+tests/test_routing_from_text.py:311: in test_M1_a_copula_between_two_names_is_ambiguous_and_makes_no_alias_and_no_merge
+    assert agent_ids(explained) == ["セキ", "ハル"] and explained.records.aliases == ()
+E   AssertionError: assert ([] == ['セキ', 'ハル']
+E     
+E     Right contains 2 more items, first extra item: 'セキ'
+E     Use -v to get more diff)
+_ test_M3_a_nonpast_centre_is_read_and_a_reading_without_a_tense_is_rejected_by_the_cross_as_unread _
+tests/test_routing_from_text.py:341: in test_M3_a_nonpast_centre_is_read_and_a_reading_without_a_tense_is_rejected_by_the_cross_as_unread
+    assert explained.extraction.units[0].status == "MAPPED"
+E   AssertionError: assert 'NAME_UNRESOLVED' == 'MAPPED'
+E     
+E     - MAPPED
+E     + NAME_UNRESOLVED
+____ test_T3_a_conditional_role_rule_without_the_roles_fallback_is_refused _____
+tests/test_routing_from_text.py:528: in test_T3_a_conditional_role_rule_without_the_roles_fallback_is_refused
+    assert explained.extraction.units[0].status == "MAPPED"
+E   AssertionError: assert 'NAME_UNRESOLVED' == 'MAPPED'
+E     
+E     - MAPPED
+E     + NAME_UNRESOLVED
+_ test_T3_a_role_less_conditional_rule_needs_no_fallback_and_a_size_word_before_an_unknown_head_stops _
+tests/test_routing_from_text.py:520: in test_T3_a_role_less_conditional_rule_needs_no_fallback_and_a_size_word_before_an_unknown_head_stops
+    assert cond.table is not None and cond.abstention is None
+E   AssertionError: assert (None is not None)
+E    +  where None = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...ION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='test-fake-placement/1', unit_count=2, skipped_markup=1).table
+_ test_T3_an_unconditional_assignment_is_the_fallback_and_nothing_else_is_made_one _
+tests/test_routing_from_text.py:501: in test_T3_an_unconditional_assignment_is_the_fallback_and_nothing_else_is_made_one
+    assert by_conditions[(("role", "implement"),)].fallback and by_conditions[(("role", "verify"),)].fallback
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: (('role', 'implement'),)
+_______ test_T3_only_says_roles_or_kinds_and_otherwise_they_stay_unsaid ________
+tests/test_routing_from_text.py:540: in test_T3_only_says_roles_or_kinds_and_otherwise_they_stay_unsaid
+    assert by_id["ウィック"].roles == frozenset({"verify"}) and by_id["ウィック"].kinds is None
+           ^^^^^^^^^^^^^
+E   KeyError: 'ウィック'
+_ test_T3_records_are_declared_text_with_witnesses_that_are_substrings_and_say_only_what_was_said _
+tests/test_routing_from_text.py:483: in test_T3_records_are_declared_text_with_witnesses_that_are_substrings_and_say_only_what_was_said
+    assert r.agents and r.rules
+E   assert (())
+E    +  where () = Records(agents=(), rules=(), precedence=(), lineage_relations=(), aliases=(), constraints=(), constructed=()).agents
+__ test_T3_the_same_content_as_a_hand_written_table_gives_the_same_decisions ___
+tests/test_routing_from_text.py:564: in test_T3_the_same_content_as_a_hand_written_table_gives_the_same_decisions
+    assert ar.route(std_placed.table, request).essence() == ar.route(hand, request).essence(), fields
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verantyx/agent_routing.py:1003: in route
+    raise TypeError("route takes a RoutingTable and a RoutingRequest")
+E   TypeError: route takes a RoutingTable and a RoutingRequest
+_ test_T3_two_unconditional_assignments_of_one_role_are_refused_by_the_record_layer_and_not_made_one _
+tests/test_routing_from_text.py:511: in test_T3_two_unconditional_assignments_of_one_role_are_refused_by_the_record_layer_and_not_made_one
+    assert explained.table is None and explained.table_error[0] == "DUPLICATE_FALLBACK"
+E   AssertionError: assert (None is None and 'EMPTY_TABLE' == 'DUPLICATE_FALLBACK'
+E    +  where None = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...ION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='test-fake-placement/1', unit_count=2, skipped_markup=1).table
+E     
+E     - DUPLICATE_FALLBACK
+E     + EMPTY_TABLE)
+_______ test_constraint_human_and_wait_scopes_and_residual_and_conflict ________
+tests/test_routing_from_text.py:625: in test_constraint_human_and_wait_scopes_and_residual_and_conflict
+    assert ok["decision"] == "route"
+E   AssertionError: assert 'undecided' == 'route'
+E     
+E     - route
+E     + undecided
+____________ test_constraint_independence_veto_for_two_other_roles _____________
+tests/test_routing_from_text.py:642: in test_constraint_independence_veto_for_two_other_roles
+    assert got["abstention"]["type"] == "INDEPENDENCE_VETO" and got["agent"] is None      # モモ vs ハル: no relation is said
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: assert ('INCOMPLETE_READING' == 'INDEPENDENCE_VETO'
+E     
+E     - INDEPENDENCE_VETO
+E     + INCOMPLETE_READING)
+_________ test_constraint_prohibition_veto_does_not_try_the_next_agent _________
+tests/test_routing_from_text.py:619: in test_constraint_prohibition_veto_does_not_try_the_next_agent
+    assert got["abstention"]["type"] == "PROHIBITION_VETO" and got["agent"] is None and got["undecided_reason"] == "ABSTAINED"
+E   AssertionError: assert ('INCOMPLETE_READING' == 'PROHIBITION_VETO'
+E     
+E     - PROHIBITION_VETO
+E     + INCOMPLETE_READING)
+____ test_gate_one_unread_unit_stops_every_job_and_the_router_is_not_called ____
+tests/test_routing_from_text.py:450: in test_gate_one_unread_unit_stops_every_job_and_the_router_is_not_called
+    assert got["abstention"]["by_status"]["UNREAD"] == 1 and got["abstention"]["by_status"]["MAPPED"] == 7
+E   assert (1 == 1 and 0 == 7)
+_ test_handoff2_a_role_less_attack_rule_and_a_verify_job_do_not_make_an_independence_cycle _
+tests/test_routing_from_text.py:675: in test_handoff2_a_role_less_attack_rule_and_a_verify_job_do_not_make_an_independence_cycle
+    assert std_placed.table is not None
+E   AssertionError: assert None is not None
+E    +  where None = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...ION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='test-fake-placement/1', unit_count=8, skipped_markup=1).table
+___ test_handoff3_a_role_less_closed_choice_rule_is_chosen_for_an_answer_job ___
+tests/test_routing_from_text.py:688: in test_handoff3_a_role_less_closed_choice_rule_is_chosen_for_an_answer_job
+    table = ar.build_routing_table(records.agents, records.rules, records.precedence, records.lineage_relations)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verantyx/agent_routing.py:545: in build_routing_table
+    raise _bad("EMPTY_TABLE", "both the agent table and the routing rules need at least one entry")
+E   verantyx.agent_routing.RoutingRecordError: EMPTY_TABLE: both the agent table and the routing rules need at least one entry
+____________________ test_output_keys_order_and_basis_kinds ____________________
+tests/test_routing_from_text.py:699: in test_output_keys_order_and_basis_kinds
+    assert got["basis_kind"] in rt.BASIS_KINDS_OUT and got["evidence"] == ["ハルは実装をやる。"]
+E   AssertionError: assert (None in ('explicit', 'comparison', 'negation', 'condition', 'independence', 'precedence', ...))
+E    +  where ('explicit', 'comparison', 'negation', 'condition', 'independence', 'precedence', ...) = rt.BASIS_KINDS_OUT
+_ test_relation_alias_first_called_is_by_the_order_of_the_explanation_not_by_the_alias_direction _
+tests/test_routing_from_text.py:289: in test_relation_alias_first_called_is_by_the_order_of_the_explanation_not_by_the_alias_direction
+    assert out_of(explained)["agent"] == "クイル" and agent_ids(explained) == ["クイル"]
+E   AssertionError: assert (None == 'クイル')
+__ test_relation_alias_returns_the_first_name_and_task_names_are_mapped_to_it __
+tests/test_routing_from_text.py:282: in test_relation_alias_returns_the_first_name_and_task_names_are_mapped_to_it
+    assert got["agent"] is None and got["undecided_reason"] == "ALL_EXCLUDED" and got["abstention"] is None
+E   AssertionError: assert (None is None and 'ABSTAINED' == 'ALL_EXCLUDED'
+E     
+E     - ALL_EXCLUDED
+E     + ABSTAINED)
+_ test_relation_comparison_keeps_one_agent_only_and_comparison_only_does_not_stop _
+tests/test_routing_from_text.py:164: in test_relation_comparison_keeps_one_agent_only_and_comparison_only_does_not_stop
+    (rule,) = [r for r in explained.records.rules if r.role == "verify"]
+    ^^^^^^^
+E   ValueError: not enough values to unpack (expected 1, got 0)
+______ test_relation_condition_from_a_size_word_and_head_by_concatenation ______
+tests/test_routing_from_text.py:175: in test_relation_condition_from_a_size_word_and_head_by_concatenation
+    rule = next(r for r in explained.records.rules if r.preference == ("クイル",))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   StopIteration
+_____________ test_relation_human_and_wait_with_scope_and_residual _____________
+tests/test_routing_from_text.py:367: in test_relation_human_and_wait_with_scope_and_residual
+    assert out_of(human, role="generate", kind="bulk_generation")["undecided_reason"] == "HUMAN"
+E   AssertionError: assert 'ABSTAINED' == 'HUMAN'
+E     
+E     - HUMAN
+E     + ABSTAINED
+_ test_relation_independence_same_negated_distinct_and_a_different_phrase_is_held_as_ambiguous _
+tests/test_routing_from_text.py:184: in test_relation_independence_same_negated_distinct_and_a_different_phrase_is_held_as_ambiguous
+    assert [(r.a, r.b, r.relation) for r in same.records.lineage_relations] == [("ハル", "セキ", "same")]
+E   AssertionError: assert [] == [('ハル', 'セキ', 'same')]
+E     
+E     Right contains one more item: ('ハル', 'セキ', 'same')
+E     Use -v to get more diff
+_____ test_relation_override_replaces_exactly_the_same_scope_and_counts_it _____
+tests/test_routing_from_text.py:254: in test_relation_override_replaces_exactly_the_same_scope_and_counts_it
+    assert explained.extraction.auto_resolved == 1
+E   AssertionError: assert 0 == 1
+E    +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ハル:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).auto_resolved
+E    +    where Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ハル:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}) = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...ION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='test-fake-placement/1', unit_count=2, skipped_markup=1).extraction
+____ test_relation_override_that_overlaps_only_partly_is_held_as_ambiguous _____
+tests/test_routing_from_text.py:270: in test_relation_override_that_overlaps_only_partly_is_held_as_ambiguous
+    assert explained.extraction.units[1].status == "AMBIGUOUS_RELATION" and explained.extraction.auto_resolved == 0
+E   AssertionError: assert ('NAME_UNRESOLVED' == 'AMBIGUOUS_RELATION'
+E     
+E     - AMBIGUOUS_RELATION
+E     + NAME_UNRESOLVED)
+___ test_relation_precedence_maps_to_one_pair_of_rules_and_resolves_the_tie ____
+tests/test_routing_from_text.py:231: in test_relation_precedence_maps_to_one_pair_of_rules_and_resolves_the_tie
+    assert explained.extraction.units[3].status == "MAPPED" and len(explained.records.precedence) == 1
+E   AssertionError: assert ('NAME_UNRESOLVED' == 'MAPPED'
+E     
+E     - MAPPED
+E     + NAME_UNRESOLVED)
+_ test_relation_precedence_that_cannot_be_written_as_one_pair_is_held_as_ambiguous _
+tests/test_routing_from_text.py:242: in test_relation_precedence_that_cannot_be_written_as_one_pair_is_held_as_ambiguous
+    assert lone.extraction.units[2].status == "AMBIGUOUS_RELATION" and lone.records.precedence == ()
+E   AssertionError: assert ('NAME_UNRESOLVED' == 'AMBIGUOUS_RELATION'
+E     
+E     - AMBIGUOUS_RELATION
+E     + NAME_UNRESOLVED)
+____________ test_relation_prohibition_by_polarity_and_by_modality _____________
+tests/test_routing_from_text.py:155: in test_relation_prohibition_by_polarity_and_by_modality
+    assert [(r.kind, r.names) for r in explained.extraction.relations] == [("SUITABILITY", ("ハル",)), ("PROHIBITION", ("モモ",))]
+E   AssertionError: assert [] == [('SUITABILIT...ON', ('モモ',))]
+E     
+E     Right contains 2 more items, first extra item: ('SUITABILITY', ('ハル',))
+E     Use -v to get more diff
+___ test_relation_quantity_sets_concurrency_and_other_quantifier_forms_stop ____
+tests/test_routing_from_text.py:211: in test_relation_quantity_sets_concurrency_and_other_quantifier_forms_stop
+    assert explained.records.agents[0].concurrency == 2
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   IndexError: tuple index out of range
+_ test_relation_roles_independence_is_the_routers_default_r3_and_makes_no_record _
+tests/test_routing_from_text.py:202: in test_relation_roles_independence_is_the_routers_default_r3_and_makes_no_record
+    (rel,) = [r for r in explained.extraction.relations if r.kind == "INDEPENDENCE"]
+    ^^^^^^
+E   ValueError: not enough values to unpack (expected 1, got 0)
+__ test_relation_suitability_assign_recipient_and_perform_agent_and_role_verb __
+tests/test_routing_from_text.py:145: in test_relation_suitability_assign_recipient_and_perform_agent_and_role_verb
+    assert kinds_of(explained) == [("SUITABILITY", ("ハル",), {"role": "implement"}),
+E   AssertionError: assert [] == [('SUITABILIT...le': 'read'})]
+E     
+E     Right contains 2 more items, first extra item: ('SUITABILITY', ('ハル',), {'role': 'implement'})
+E     Use -v to get more diff
+___ test_router_call_passes_used_agents_only_no_chooser_and_the_first_names ____
+tests/test_routing_from_text.py:580: in test_router_call_passes_used_agents_only_no_chooser_and_the_first_names
+    request = seen["request"]
+              ^^^^^^^^^^^^^^^
+E   KeyError: 'request'
+________ test_router_reasons_are_written_through_from_the_routers_types ________
+tests/test_routing_from_text.py:587: in test_router_reasons_are_written_through_from_the_routers_types
+    assert out_of(std_placed, role="read", kind="read_large_file")["undecided_reason"] == "NOT_COVERED"
+E   AssertionError: assert 'ABSTAINED' == 'NOT_COVERED'
+E     
+E     - NOT_COVERED
+E     + ABSTAINED
+__________ test_router_unknown_task_names_abstain_with_their_own_type __________
+tests/test_routing_from_text.py:600: in test_router_unknown_task_names_abstain_with_their_own_type
+    assert got["abstention"]["type"] == "TASK_NAME_UNKNOWN" and got["undecided_reason"] == "ABSTAINED" and got["agent"] is None
+E   AssertionError: assert ('INCOMPLETE_READING' == 'TASK_NAME_UNKNOWN'
+E     
+E     - TASK_NAME_UNKNOWN
+E     + INCOMPLETE_READING)
+________________ test_stop_contradiction_and_conflicting_values ________________
+tests/test_routing_from_text.py:430: in test_stop_contradiction_and_conflicting_values
+    assert [u.status for u in both.extraction.units] == ["CONTRADICTION", "CONTRADICTION"]
+E   AssertionError: assert ['NAME_UNRESO...E_UNRESOLVED'] == ['CONTRADICTI...ONTRADICTION']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'CONTRADICTION'
+E     Use -v to get more diff
+_ test_stops_have_their_own_typed_status[\u30cf\u30eb\u306f\u5b9f\u88c5\u3060\u3002-reading13-MAPPED] _
+tests/test_routing_from_text.py:403: in test_stops_have_their_own_typed_status
+    assert got == status, reasons
+E   AssertionError: ['COMMON_NOUN_SUBJECT_UNTYPED:ハル:UNPLACED']
+E   assert 'NAME_UNRESOLVED' == 'MAPPED'
+E     
+E     - MAPPED
+E     + NAME_UNRESOLVED
+_ test_M1_two_agents_that_are_each_east_co_are_not_merged_and_nobody_is_routed _
+tests/test_routing_from_text_regress.py:36: in test_M1_two_agents_that_are_each_east_co_are_not_merged_and_nobody_is_routed
+    assert [s for s, _ in statuses(M1_TEXT, lookup=FakePlacement())] == ["MAPPED", "MAPPED", "AMBIGUOUS_RELATION", "AMBIGUOUS_RELATION"]
+E   AssertionError: assert ['NAME_UNRESO...OUS_RELATION'] == ['MAPPED', 'M...OUS_RELATION']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff
+________ test_M3_the_non_past_sentence_of_the_same_form_is_still_routed ________
+tests/test_routing_from_text_regress.py:95: in test_M3_the_non_past_sentence_of_the_same_form_is_still_routed
+    assert (got["decision"], got["agent"]) == ("route", "ハル")
+E   AssertionError: assert ('undecided', None) == ('route', 'ハル')
+E     
+E     At index 0 diff: 'undecided' != 'route'
+E     Use -v to get more diff
+_ test_C3_without_a_marker_an_override_of_another_kind_about_another_name_is_held_not_a_replacement_both_statements_stand _
+tests/test_routing_from_text_w5b.py:265: in test_C3_without_a_marker_an_override_of_another_kind_about_another_name_is_held_not_a_replacement_both_statements_stand
+    assert _units(explained) == ["MAPPED", "MAPPED"] and explained.extraction.auto_resolved == 0
+E   AssertionError: assert (['NAME_UNRESO...E_UNRESOLVED'] == ['MAPPED', 'MAPPED']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff)
+_ test_C3_without_a_marker_relation_override_replaces_exactly_the_same_scope_and_counts_it_both_statements_stand _
+tests/test_routing_from_text_w5b.py:241: in test_C3_without_a_marker_relation_override_replaces_exactly_the_same_scope_and_counts_it_both_statements_stand
+    assert _units(explained) == ["MAPPED", "MAPPED"]
+E   AssertionError: assert ['NAME_UNRESO...E_UNRESOLVED'] == ['MAPPED', 'MAPPED']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff
+_ test_C3_without_a_marker_relation_override_that_overlaps_only_partly_is_held_as_ambiguous_both_declarations_stand _
+tests/test_routing_from_text_w5b.py:254: in test_C3_without_a_marker_relation_override_that_overlaps_only_partly_is_held_as_ambiguous_both_declarations_stand
+    assert _units(explained) == ["MAPPED", "MAPPED"]
+E   AssertionError: assert ['NAME_UNRESO...E_UNRESOLVED'] == ['MAPPED', 'MAPPED']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff
+_ test_a_japanese_addendum_with_a_replacement_word_replaces[\u3084\u3063\u3071\u308a\u5b9f\u88c5\u306f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002-\u30eb\u30ca] _
+tests/test_routing_from_text_w5b.py:199: in test_a_japanese_addendum_with_a_replacement_word_replaces
+    assert explained.extraction.auto_resolved == 1
+E   AssertionError: assert 0 == 1
+E    +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).auto_resolved
+E    +    where Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}) = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...ION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='test-fake-placement/1', unit_count=2, skipped_markup=1).extraction
+_ test_a_japanese_addendum_with_a_replacement_word_replaces[\u5b9f\u88c5\u306f\u30df\u30e9\u3067\u306f\u306a\u304f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002-\u30eb\u30ca] _
+tests/test_routing_from_text_w5b.py:199: in test_a_japanese_addendum_with_a_replacement_word_replaces
+    assert explained.extraction.auto_resolved == 1
+E   AssertionError: assert 0 == 1
+E    +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).auto_resolved
+E    +    where Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}) = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...ION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='test-fake-placement/1', unit_count=2, skipped_markup=1).extraction
+_ test_a_japanese_addendum_without_a_marker_keeps_both_statements[\u8ffd\u4f38\uff1a] _
+tests/test_routing_from_text_w5b.py:182: in test_a_japanese_addendum_without_a_marker_keeps_both_statements
+    assert explained.extraction.auto_resolved == 0 and [r.superseded_by for r in explained.extraction.relations] == [None, None]
+E   AssertionError: assert (0 == 0 and [] == [None, None]
+E    +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=1, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).auto_resolved
+E    +    where Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=1, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}) = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...ION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='test-fake-placement/1', unit_count=2, skipped_markup=1).extraction
+E     
+E     Right contains 2 more items, first extra item: None
+E     Use -v to get more diff)
+_ test_a_japanese_addendum_without_a_marker_keeps_both_statements[\u8ffd\u8a18\uff08\u7fcc\u65e5\uff09\uff1a] _
+tests/test_routing_from_text_w5b.py:182: in test_a_japanese_addendum_without_a_marker_keeps_both_statements
+    assert explained.extraction.auto_resolved == 0 and [r.superseded_by for r in explained.extraction.relations] == [None, None]
+E   AssertionError: assert (0 == 0 and [] == [None, None]
+E    +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=1, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).auto_resolved
+E    +    where Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=1, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}) = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...ION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='test-fake-placement/1', unit_count=2, skipped_markup=1).extraction
+E     
+E     Right contains 2 more items, first extra item: None
+E     Use -v to get more diff)
+_ test_a_japanese_addendum_without_a_marker_keeps_both_statements[\u8ffd\u8a18\uff1a] _
+tests/test_routing_from_text_w5b.py:182: in test_a_japanese_addendum_without_a_marker_keeps_both_statements
+    assert explained.extraction.auto_resolved == 0 and [r.superseded_by for r in explained.extraction.relations] == [None, None]
+E   AssertionError: assert (0 == 0 and [] == [None, None]
+E    +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=1, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).auto_resolved
+E    +    where Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=1, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}) = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...ION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='test-fake-placement/1', unit_count=2, skipped_markup=1).extraction
+E     
+E     Right contains 2 more items, first extra item: None
+E     Use -v to get more diff)
+_ test_a_word_introduced_by_a_naming_sentence_is_a_name_even_when_the_placement_types_it _
+tests/test_routing_from_text_w5b.py:120: in test_a_word_introduced_by_a_naming_sentence_is_a_name_even_when_the_placement_types_it
+    assert [u.status for u in explained.extraction.units] == ["MAPPED", "MAPPED", "MAPPED"]
+E   AssertionError: assert ['NAME_UNRESO...ED', 'MAPPED'] == ['MAPPED', 'MAPPED', 'MAPPED']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff
+_ test_a_word_the_placement_types_directly_is_not_an_agent_name_and_the_check_is_counted _
+tests/test_routing_from_text_w5b.py:107: in test_a_word_the_placement_types_directly_is_not_an_agent_name_and_the_check_is_counted
+    assert statuses[0] == ("MAPPED", []) and statuses[1] == ("NAME_UNRESOLVED", ["COMMON_NOUN_SUBJECT:チーム:PLACEMENT_DIRECT:GROUP_ORG"])
+E   AssertionError: assert (('NAME_UNRESO...:ミラ:UNKNOWN']) == ('MAPPED', [])
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff)
+__ test_the_determiner_test_is_for_english_only_and_not_for_a_naming_sentence __
+tests/test_routing_from_text_w5b.py:93: in test_the_determiner_test_is_for_english_only_and_not_for_a_naming_sentence
+    assert [u.status for u in explained.extraction.units] == ["MAPPED"]
+E   AssertionError: assert ['NAME_UNRESOLVED'] == ['MAPPED']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff
+_ test_the_other_labels_replace_as_before_without_any_marker[\u66f4\u65b0\uff1a-\u5b9f\u88c5\u306f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002] _
+tests/test_routing_from_text_w5b.py:207: in test_the_other_labels_replace_as_before_without_any_marker
+    assert explained.extraction.auto_resolved == 1 and route(explained, role="implement", kind="feature")["agent"] == "ルナ"
+E   AssertionError: assert (0 == 1)
+E    +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).auto_resolved
+E    +    where Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}) = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...ION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='test-fake-placement/1', unit_count=2, skipped_markup=1).extraction
+_ test_the_other_labels_replace_as_before_without_any_marker[\u8a02\u6b63\uff1a-\u5b9f\u88c5\u306f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002] _
+tests/test_routing_from_text_w5b.py:207: in test_the_other_labels_replace_as_before_without_any_marker
+    assert explained.extraction.auto_resolved == 1 and route(explained, role="implement", kind="feature")["agent"] == "ルナ"
+E   AssertionError: assert (0 == 1)
+E    +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).auto_resolved
+E    +    where Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}) = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...ION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='test-fake-placement/1', unit_count=2, skipped_markup=1).extraction
+_ test_k2_a_common_noun_the_placement_types_is_still_stopped_next_to_a_routed_name _
+tests/test_routing_from_text_w5d.py:234: in test_k2_a_common_noun_the_placement_types_is_still_stopped_next_to_a_routed_name
+    assert [(u.status, u.reasons) for u in explained.extraction.units] == [("MAPPED", []), ("NAME_UNRESOLVED", ["COMMON_NOUN_SUBJECT:チーム:PLACEMENT_DIRECT:GROUP_ORG"])]
+E   AssertionError: assert [('NAME_UNRES...:GROUP_ORG'])] == [('MAPPED', [...:GROUP_ORG'])]
+E     
+E     At index 0 diff: ('NAME_UNRESOLVED', ['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED']) != ('MAPPED', [])
+E     Use -v to get more diff
+________ test_k2_a_japanese_name_the_placement_does_not_type_is_routed _________
+tests/test_routing_from_text_w5d.py:212: in test_k2_a_japanese_name_the_placement_does_not_type_is_routed
+    assert [u.status for u in explained.extraction.units] == ["MAPPED"]
+E   AssertionError: assert ['NAME_UNRESOLVED'] == ['MAPPED']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff
+_________ test_k2_the_other_labels_replace_as_before_without_a_marker __________
+tests/test_routing_from_text_w5d.py:226: in test_k2_the_other_labels_replace_as_before_without_a_marker
+    assert explained.extraction.auto_resolved == 1 and route(explained, role="implement", kind="feature")["agent"] == "ルナ"
+E   AssertionError: assert (0 == 1)
+E    +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).auto_resolved
+E    +    where Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}) = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...LATION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='w5d-all-unplaced/1', unit_count=2, skipped_markup=1).extraction
+______ test_k2_two_japanese_addenda_without_a_marker_keep_both_statements ______
+tests/test_routing_from_text_w5d.py:219: in test_k2_two_japanese_addenda_without_a_marker_keep_both_statements
+    assert explained.extraction.auto_resolved == 0 and [r.superseded_by for r in explained.extraction.relations] == [None, None]
+E   AssertionError: assert (0 == 0 and [] == [None, None]
+E    +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=1, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).auto_resolved
+E    +    where Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=1, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}) = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...LATION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='w5d-all-unplaced/1', unit_count=2, skipped_markup=1).extraction
+E     
+E     Right contains 2 more items, first extra item: None
+E     Use -v to get more diff)
+_____ test_r1_a_direct_type_among_the_noun_types_is_a_common_noun[types4] ______
+tests/test_routing_from_text_w5d.py:83: in test_r1_a_direct_type_among_the_noun_types_is_a_common_noun
+    assert unit.status == "NAME_UNRESOLVED" and unit.reasons == ["COMMON_NOUN_SUBJECT:班:PLACEMENT_DIRECT:" + ",".join(sorted(types))]
+E   AssertionError: assert ('NAME_UNRESOLVED' == 'NAME_UNRESOLVED'
+E     
+E       NAME_UNRESOLVED and ['COMMON_NOUN...D:班:MULTIPLE'] == ['COMMON_NOUN..._COMMUNICATE']
+E     
+E     At index 0 diff: 'COMMON_NOUN_SUBJECT_UNTYPED:班:MULTIPLE' != 'COMMON_NOUN_SUBJECT:班:PLACEMENT_DIRECT:PERSON,P_COMMUNICATE'
+E     Use -v to get more diff)
+__ test_r1_a_placed_word_that_the_placement_cannot_type_still_passes[answer0] __
+tests/test_routing_from_text_w5d.py:75: in test_r1_a_placed_word_that_the_placement_cannot_type_still_passes
+    assert [u.status for u in explained.extraction.units] == ["MAPPED"]
+E   AssertionError: assert ['NAME_UNRESOLVED'] == ['MAPPED']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff
+__ test_r1_a_placed_word_that_the_placement_cannot_type_still_passes[answer1] __
+tests/test_routing_from_text_w5d.py:75: in test_r1_a_placed_word_that_the_placement_cannot_type_still_passes
+    assert [u.status for u in explained.extraction.units] == ["MAPPED"]
+E   AssertionError: assert ['NAME_UNRESOLVED'] == ['MAPPED']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff
+__ test_r1_a_placed_word_that_the_placement_cannot_type_still_passes[answer2] __
+tests/test_routing_from_text_w5d.py:75: in test_r1_a_placed_word_that_the_placement_cannot_type_still_passes
+    assert [u.status for u in explained.extraction.units] == ["MAPPED"]
+E   AssertionError: assert ['NAME_UNRESOLVED'] == ['MAPPED']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff
+______________ test_r2_a_fragment_of_two_clauses_is_undetermined _______________
+tests/test_routing_from_text_w5d.py:159: in test_r2_a_fragment_of_two_clauses_is_undetermined
+    assert ex.units[1].status == "AMBIGUOUS_RELATION"
+E   AssertionError: assert 'NAME_UNRESOLVED' == 'AMBIGUOUS_RELATION'
+E     
+E     - AMBIGUOUS_RELATION
+E     + NAME_UNRESOLVED
+_______ test_r2_a_fragment_read_as_an_affirmative_clause_is_undetermined _______
+tests/test_routing_from_text_w5d.py:152: in test_r2_a_fragment_read_as_an_affirmative_clause_is_undetermined
+    assert [u.status for u in ex.units] == ["MAPPED", "AMBIGUOUS_RELATION"] and ex.units[1].reasons == ["MARKER_SCOPE_UNDETERMINED:そのまま"]
+E   AssertionError: assert (['NAME_UNRESO...E_UNRESOLVED'] == ['MAPPED', 'A...OUS_RELATION']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff)
+_ test_r2_a_fragment_read_as_one_negative_clause_is_a_maintenance_the_line_adds_and_replaces_nothing _
+tests/test_routing_from_text_w5d.py:144: in test_r2_a_fragment_read_as_one_negative_clause_is_a_maintenance_the_line_adds_and_replaces_nothing
+    assert [u.status for u in ex.units] == ["MAPPED", "MAPPED"]
+E   AssertionError: assert ['NAME_UNRESO...E_UNRESOLVED'] == ['MAPPED', 'MAPPED']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff
+_ test_r2_a_marker_followed_by_a_fragment_the_reader_cannot_read_is_undetermined_not_a_replacement _
+tests/test_routing_from_text_w5d.py:127: in test_r2_a_marker_followed_by_a_fragment_the_reader_cannot_read_is_undetermined_not_a_replacement
+    assert [u.status for u in ex.units] == ["MAPPED", "AMBIGUOUS_RELATION"]
+E   AssertionError: assert ['NAME_UNRESO...E_UNRESOLVED'] == ['MAPPED', 'A...OUS_RELATION']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff
+_ test_r2_a_marker_that_leads_the_clause_directly_still_replaces_japanese[\u3084\u3063\u3071\u308a\u3001\u5b9f\u88c5\u306f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002] _
+tests/test_routing_from_text_w5d.py:166: in test_r2_a_marker_that_leads_the_clause_directly_still_replaces_japanese
+    assert explained.extraction.auto_resolved == 1 and route(explained, role="implement", kind="feature")["agent"] == "ルナ"
+E   AssertionError: assert (0 == 1)
+E    +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).auto_resolved
+E    +    where Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}) = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...LATION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='w5d-all-unplaced/1', unit_count=2, skipped_markup=1).extraction
+_ test_r2_a_marker_that_leads_the_clause_directly_still_replaces_japanese[\u3084\u3063\u3071\u308a\u5b9f\u88c5\u306f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002] _
+tests/test_routing_from_text_w5d.py:166: in test_r2_a_marker_that_leads_the_clause_directly_still_replaces_japanese
+    assert explained.extraction.auto_resolved == 1 and route(explained, role="implement", kind="feature")["agent"] == "ルナ"
+E   AssertionError: assert (0 == 1)
+E    +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).auto_resolved
+E    +    where Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}) = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...LATION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='w5d-all-unplaced/1', unit_count=2, skipped_markup=1).extraction
+_ test_r2_a_marker_that_leads_the_clause_directly_still_replaces_japanese[\u5b9f\u88c5\u306f\u30df\u30e9\u3067\u306f\u306a\u304f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002] _
+tests/test_routing_from_text_w5d.py:166: in test_r2_a_marker_that_leads_the_clause_directly_still_replaces_japanese
+    assert explained.extraction.auto_resolved == 1 and route(explained, role="implement", kind="feature")["agent"] == "ルナ"
+E   AssertionError: assert (0 == 1)
+E    +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).auto_resolved
+E    +    where Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}) = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...LATION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='w5d-all-unplaced/1', unit_count=2, skipped_markup=1).extraction
+_ test_r2_the_attack_shape_with_a_reader_that_ignores_the_sentence_never_replaces _
+tests/test_routing_from_text_w5d.py:136: in test_r2_the_attack_shape_with_a_reader_that_ignores_the_sentence_never_replaces
+    assert [u.status for u in ex.units] == ["MAPPED", "AMBIGUOUS_RELATION"]
+E   AssertionError: assert ['NAME_UNRESO...E_UNRESOLVED'] == ['MAPPED', 'A...OUS_RELATION']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff
+_ test_r2_the_other_labels_replace_as_before_even_with_a_fragment_after_a_marker _
+tests/test_routing_from_text_w5d.py:190: in test_r2_the_other_labels_replace_as_before_even_with_a_fragment_after_a_marker
+    assert explained.extraction.auto_resolved == 1 and explained.extraction.units[1].status == "MAPPED"
+E   AssertionError: assert (0 == 1)
+E    +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).auto_resolved
+E    +    where Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ミラ:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 2, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}) = Explained(source='x.md', extraction=Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_N...LATION': 0, 'CONTRADICTION': 0, 'UNREPRESENTABLE': 0}}, lookup_id='w5d-all-unplaced/1', unit_count=2, skipped_markup=1).extraction
+_ test_w5d2_a_parallel_name_is_routed_when_the_placement_answers_for_each_part _
+tests/test_routing_from_text_w5d.py:269: in test_w5d2_a_parallel_name_is_routed_when_the_placement_answers_for_each_part
+    assert [u.status for u in explained.extraction.units] == ["MAPPED", "MAPPED", "MAPPED"]
+E   AssertionError: assert ['NAME_UNRESO...E_UNRESOLVED'] == ['MAPPED', 'MAPPED', 'MAPPED']
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff
+_ test_w5d2_a_part_of_a_parallel_name_that_the_placement_types_as_a_common_noun_stops_the_unit _
+tests/test_routing_from_text_w5d.py:278: in test_w5d2_a_part_of_a_parallel_name_that_the_placement_types_as_a_common_noun_stops_the_unit
+    assert first.status == "MAPPED"
+E   AssertionError: assert 'NAME_UNRESOLVED' == 'MAPPED'
+E     
+E     - MAPPED
+E     + NAME_UNRESOLVED
+______ test_w5d2_k2_the_standard_explanation_with_and_without_a_placement ______
+tests/test_routing_from_text_w5d.py:312: in test_w5d2_k2_the_standard_explanation_with_and_without_a_placement
+    assert [u.status for u in placed.extraction.units] == ["MAPPED"] * 7 + ["COMPARISON_ONLY"]
+E   AssertionError: assert ['NAME_UNRESO...ESOLVED', ...] == ['MAPPED', 'M...'MAPPED', ...]
+E     
+E     At index 0 diff: 'NAME_UNRESOLVED' != 'MAPPED'
+E     Use -v to get more diff
+=========================== short test summary info ============================
+FAILED tests/attack/test_attack_w5b_wave2.py::test_yappari_sonomama_does_not_turn_an_addendum_into_replacement
+FAILED tests/attack/test_attack_w5d.py::test_route_r2_denial_keeps_original_and_affirmative_mismatch_does_not_replace_across_lookup_variants
+FAILED tests/test_routing_from_text.py::test_D13_an_override_of_another_kind_about_another_name_is_held_not_a_replacement
+FAILED tests/test_routing_from_text.py::test_M1_a_copula_between_two_names_is_ambiguous_and_makes_no_alias_and_no_merge
+FAILED tests/test_routing_from_text.py::test_M3_a_nonpast_centre_is_read_and_a_reading_without_a_tense_is_rejected_by_the_cross_as_unread
+FAILED tests/test_routing_from_text.py::test_T3_a_conditional_role_rule_without_the_roles_fallback_is_refused
+FAILED tests/test_routing_from_text.py::test_T3_a_role_less_conditional_rule_needs_no_fallback_and_a_size_word_before_an_unknown_head_stops
+FAILED tests/test_routing_from_text.py::test_T3_an_unconditional_assignment_is_the_fallback_and_nothing_else_is_made_one
+FAILED tests/test_routing_from_text.py::test_T3_only_says_roles_or_kinds_and_otherwise_they_stay_unsaid
+FAILED tests/test_routing_from_text.py::test_T3_records_are_declared_text_with_witnesses_that_are_substrings_and_say_only_what_was_said
+FAILED tests/test_routing_from_text.py::test_T3_the_same_content_as_a_hand_written_table_gives_the_same_decisions
+FAILED tests/test_routing_from_text.py::test_T3_two_unconditional_assignments_of_one_role_are_refused_by_the_record_layer_and_not_made_one
+FAILED tests/test_routing_from_text.py::test_constraint_human_and_wait_scopes_and_residual_and_conflict
+FAILED tests/test_routing_from_text.py::test_constraint_independence_veto_for_two_other_roles
+FAILED tests/test_routing_from_text.py::test_constraint_prohibition_veto_does_not_try_the_next_agent
+FAILED tests/test_routing_from_text.py::test_gate_one_unread_unit_stops_every_job_and_the_router_is_not_called
+FAILED tests/test_routing_from_text.py::test_handoff2_a_role_less_attack_rule_and_a_verify_job_do_not_make_an_independence_cycle
+FAILED tests/test_routing_from_text.py::test_handoff3_a_role_less_closed_choice_rule_is_chosen_for_an_answer_job
+FAILED tests/test_routing_from_text.py::test_output_keys_order_and_basis_kinds
+FAILED tests/test_routing_from_text.py::test_relation_alias_first_called_is_by_the_order_of_the_explanation_not_by_the_alias_direction
+FAILED tests/test_routing_from_text.py::test_relation_alias_returns_the_first_name_and_task_names_are_mapped_to_it
+FAILED tests/test_routing_from_text.py::test_relation_comparison_keeps_one_agent_only_and_comparison_only_does_not_stop
+FAILED tests/test_routing_from_text.py::test_relation_condition_from_a_size_word_and_head_by_concatenation
+FAILED tests/test_routing_from_text.py::test_relation_human_and_wait_with_scope_and_residual
+FAILED tests/test_routing_from_text.py::test_relation_independence_same_negated_distinct_and_a_different_phrase_is_held_as_ambiguous
+FAILED tests/test_routing_from_text.py::test_relation_override_replaces_exactly_the_same_scope_and_counts_it
+FAILED tests/test_routing_from_text.py::test_relation_override_that_overlaps_only_partly_is_held_as_ambiguous
+FAILED tests/test_routing_from_text.py::test_relation_precedence_maps_to_one_pair_of_rules_and_resolves_the_tie
+FAILED tests/test_routing_from_text.py::test_relation_precedence_that_cannot_be_written_as_one_pair_is_held_as_ambiguous
+FAILED tests/test_routing_from_text.py::test_relation_prohibition_by_polarity_and_by_modality
+FAILED tests/test_routing_from_text.py::test_relation_quantity_sets_concurrency_and_other_quantifier_forms_stop
+FAILED tests/test_routing_from_text.py::test_relation_roles_independence_is_the_routers_default_r3_and_makes_no_record
+FAILED tests/test_routing_from_text.py::test_relation_suitability_assign_recipient_and_perform_agent_and_role_verb
+FAILED tests/test_routing_from_text.py::test_router_call_passes_used_agents_only_no_chooser_and_the_first_names
+FAILED tests/test_routing_from_text.py::test_router_reasons_are_written_through_from_the_routers_types
+FAILED tests/test_routing_from_text.py::test_router_unknown_task_names_abstain_with_their_own_type
+FAILED tests/test_routing_from_text.py::test_stop_contradiction_and_conflicting_values
+FAILED tests/test_routing_from_text.py::test_stops_have_their_own_typed_status[\u30cf\u30eb\u306f\u5b9f\u88c5\u3060\u3002-reading13-MAPPED]
+FAILED tests/test_routing_from_text_regress.py::test_M1_two_agents_that_are_each_east_co_are_not_merged_and_nobody_is_routed
+FAILED tests/test_routing_from_text_regress.py::test_M3_the_non_past_sentence_of_the_same_form_is_still_routed
+FAILED tests/test_routing_from_text_w5b.py::test_C3_without_a_marker_an_override_of_another_kind_about_another_name_is_held_not_a_replacement_both_statements_stand
+FAILED tests/test_routing_from_text_w5b.py::test_C3_without_a_marker_relation_override_replaces_exactly_the_same_scope_and_counts_it_both_statements_stand
+FAILED tests/test_routing_from_text_w5b.py::test_C3_without_a_marker_relation_override_that_overlaps_only_partly_is_held_as_ambiguous_both_declarations_stand
+FAILED tests/test_routing_from_text_w5b.py::test_a_japanese_addendum_with_a_replacement_word_replaces[\u3084\u3063\u3071\u308a\u5b9f\u88c5\u306f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002-\u30eb\u30ca]
+FAILED tests/test_routing_from_text_w5b.py::test_a_japanese_addendum_with_a_replacement_word_replaces[\u5b9f\u88c5\u306f\u30df\u30e9\u3067\u306f\u306a\u304f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002-\u30eb\u30ca]
+FAILED tests/test_routing_from_text_w5b.py::test_a_japanese_addendum_without_a_marker_keeps_both_statements[\u8ffd\u4f38\uff1a]
+FAILED tests/test_routing_from_text_w5b.py::test_a_japanese_addendum_without_a_marker_keeps_both_statements[\u8ffd\u8a18\uff08\u7fcc\u65e5\uff09\uff1a]
+FAILED tests/test_routing_from_text_w5b.py::test_a_japanese_addendum_without_a_marker_keeps_both_statements[\u8ffd\u8a18\uff1a]
+FAILED tests/test_routing_from_text_w5b.py::test_a_word_introduced_by_a_naming_sentence_is_a_name_even_when_the_placement_types_it
+FAILED tests/test_routing_from_text_w5b.py::test_a_word_the_placement_types_directly_is_not_an_agent_name_and_the_check_is_counted
+FAILED tests/test_routing_from_text_w5b.py::test_the_determiner_test_is_for_english_only_and_not_for_a_naming_sentence
+FAILED tests/test_routing_from_text_w5b.py::test_the_other_labels_replace_as_before_without_any_marker[\u66f4\u65b0\uff1a-\u5b9f\u88c5\u306f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002]
+FAILED tests/test_routing_from_text_w5b.py::test_the_other_labels_replace_as_before_without_any_marker[\u8a02\u6b63\uff1a-\u5b9f\u88c5\u306f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002]
+FAILED tests/test_routing_from_text_w5d.py::test_k2_a_common_noun_the_placement_types_is_still_stopped_next_to_a_routed_name
+FAILED tests/test_routing_from_text_w5d.py::test_k2_a_japanese_name_the_placement_does_not_type_is_routed
+FAILED tests/test_routing_from_text_w5d.py::test_k2_the_other_labels_replace_as_before_without_a_marker
+FAILED tests/test_routing_from_text_w5d.py::test_k2_two_japanese_addenda_without_a_marker_keep_both_statements
+FAILED tests/test_routing_from_text_w5d.py::test_r1_a_direct_type_among_the_noun_types_is_a_common_noun[types4]
+FAILED tests/test_routing_from_text_w5d.py::test_r1_a_placed_word_that_the_placement_cannot_type_still_passes[answer0]
+FAILED tests/test_routing_from_text_w5d.py::test_r1_a_placed_word_that_the_placement_cannot_type_still_passes[answer1]
+FAILED tests/test_routing_from_text_w5d.py::test_r1_a_placed_word_that_the_placement_cannot_type_still_passes[answer2]
+FAILED tests/test_routing_from_text_w5d.py::test_r2_a_fragment_of_two_clauses_is_undetermined
+FAILED tests/test_routing_from_text_w5d.py::test_r2_a_fragment_read_as_an_affirmative_clause_is_undetermined
+FAILED tests/test_routing_from_text_w5d.py::test_r2_a_fragment_read_as_one_negative_clause_is_a_maintenance_the_line_adds_and_replaces_nothing
+FAILED tests/test_routing_from_text_w5d.py::test_r2_a_marker_followed_by_a_fragment_the_reader_cannot_read_is_undetermined_not_a_replacement
+FAILED tests/test_routing_from_text_w5d.py::test_r2_a_marker_that_leads_the_clause_directly_still_replaces_japanese[\u3084\u3063\u3071\u308a\u3001\u5b9f\u88c5\u306f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002]
+FAILED tests/test_routing_from_text_w5d.py::test_r2_a_marker_that_leads_the_clause_directly_still_replaces_japanese[\u3084\u3063\u3071\u308a\u5b9f\u88c5\u306f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002]
+FAILED tests/test_routing_from_text_w5d.py::test_r2_a_marker_that_leads_the_clause_directly_still_replaces_japanese[\u5b9f\u88c5\u306f\u30df\u30e9\u3067\u306f\u306a\u304f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002]
+FAILED tests/test_routing_from_text_w5d.py::test_r2_the_attack_shape_with_a_reader_that_ignores_the_sentence_never_replaces
+FAILED tests/test_routing_from_text_w5d.py::test_r2_the_other_labels_replace_as_before_even_with_a_fragment_after_a_marker
+FAILED tests/test_routing_from_text_w5d.py::test_w5d2_a_parallel_name_is_routed_when_the_placement_answers_for_each_part
+FAILED tests/test_routing_from_text_w5d.py::test_w5d2_a_part_of_a_parallel_name_that_the_placement_types_as_a_common_noun_stops_the_unit
+FAILED tests/test_routing_from_text_w5d.py::test_w5d2_k2_the_standard_explanation_with_and_without_a_placement
+73 failed in 1.58s

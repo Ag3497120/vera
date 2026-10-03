@@ -58,11 +58,13 @@ def test_a_frame_that_contradicts_its_distribution_is_not_confirmed(built):
 
 
 def test_a_frame_whose_types_meet_the_distribution_stays_confirmed(built):
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A4）: A-4 で frame に残すのは「生成の枠 ∩ 分布の裏づけ」だけ。治具の分布（人が言葉を呟いた×14: が+PERSON・を+INFO_LANGUAGE）から手で求めた期待:
+    # 呟く の生成の枠 を=[INFO_LANGUAGE, PERSON] のうち分布が裏づけるのは INFO_LANGUAGE だけ → frame[を]=[INFO_LANGUAGE]、外れた PERSON は frame_unconfirmed[を]
     r = q("呟く", built["out"])
     assert r["frame_status"] == "CONFIRMED"
-    assert r["frame"]["を"] == ["INFO_LANGUAGE", "PERSON"]               # the intersection rule: a frame wider than the distribution stays
+    assert r["frame"]["を"] == ["INFO_LANGUAGE"]                          # the intersection rule (A-4): the PERSON the distribution does not back is not in frame
     assert r["frame"]["が"] == ["PERSON"]
-    assert "frame_disagreement" not in r and r["frame_unconfirmed"] == {}
+    assert "frame_disagreement" not in r and r["frame_unconfirmed"] == {"を": ["PERSON"]}
     assert list(r)[-4:] == ["generated_frame", "frame_status", "frame", "frame_unconfirmed"]
     r = q("囁く", built["out"])
     assert r["frame_status"] == "CONFIRMED" and r["frame"] == {"が": ["PERSON"], "を": ["INFO_LANGUAGE"]}

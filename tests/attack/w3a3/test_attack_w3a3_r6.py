@@ -1,4 +1,4 @@
-# W5-d: copied from attacks/W3-a3/test_attack_w3a3.py; revised in W5-d2 (auditor's ruling B1 2026-10-04 00:05): test_all_r6_generated_frame_upgrades
+# W5-d: copied from attacks/W3-a3/test_attack_w3a3.py; revised in W5-d2 (auditor's ruling B1 2026-10-04 00:05): test_all_r6_generated_frame_upgrades; revised in W5-e2 (auditor's ruling K-A4 2026-10-04 04:42): test_all_r6_generated_frame_upgrades again
 """Read-only attacks against the registered W3-a3 r6 placement."""
 import json
 from pathlib import Path
@@ -80,11 +80,22 @@ def test_all_r6_generated_frame_upgrades():
                                              "particle": particle, "entry": entry})
             continue
 
-        expected = {p: sorted(set(generated.get(p, []))) for p in ct.ROLE_PARTICLES
-                    if p in sig_particles and generated.get(p)}
-        if answer["frame"] != expected:
+        # W5-e2 (auditor's ruling K-A4, 2026-10-04 04:42): the frame keeps the generated types the distribution backs (generated frame ∩ the UNION over the deciding
+        # distribution arms of the significant types, ct.rd_analyze: the rule of the decision itself, NOT cp.frame_backing); the generated types it does not back, and every
+        # generated particle outside the significant ones, are in frame_unconfirmed
+        backing = {}
+        for _key, by_particle in typed_sig:
+            for particle, dist_types in by_particle.items():
+                backing.setdefault(particle, set()).update(dist_types)
+        expected = {p: sorted(set(generated[p]) & backing.get(p, set())) for p in ct.ROLE_PARTICLES
+                    if p in sig_particles and generated.get(p) and set(generated[p]) & backing.get(p, set())}
+        expected_unconfirmed = {p: sorted(set(generated[p]) - (backing.get(p, set()) if p in sig_particles else set()))
+                                for p in ct.ROLE_PARTICLES
+                                if generated.get(p) and set(generated[p]) - (backing.get(p, set()) if p in sig_particles else set())}
+        if answer["frame"] != expected or answer.get("frame_unconfirmed") != expected_unconfirmed:
             invariant_errors.append({"word": word, "reason": "frame_projection_differs",
-                                     "expected": expected, "got": answer["frame"]})
+                                     "expected": expected, "got": answer["frame"],
+                                     "expected_unconfirmed": expected_unconfirmed, "got_unconfirmed": answer.get("frame_unconfirmed")})
 
         for key, by_particle in typed_sig:
             for particle, dist_types in by_particle.items():

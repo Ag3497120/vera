@@ -199,11 +199,17 @@ def test_the_second_table_is_composed_when_it_is_asked_not_copied_when_the_modul
 # ===================================================================================================================================
 # K160: the control flow. The reader file only gains lines; the plan of W3-b4 is the plan of W3-b2 with two names of the table; the entry is not changed
 # ===================================================================================================================================
+# Integration (auditor, 2026-10-04): the two scope tests below attest the discipline of the W3-b4 ticket itself (its commit against its own base);
+# on dev other tickets merged after it (W5-e) legitimately touch coarse_place.py and insert lines into the reader, so they compare the ticket
+# commit, not the working tree.
+W3B4_BASE, W3B4_COMMIT = 'c875ed3', 'a8f1705'
+
+
 def test_the_reader_file_only_gains_lines_and_the_other_files_of_the_ticket_are_not_touched():
-    diff = git('diff', BASE_COMMIT, '--', 'verantyx/semantic_reader.py').splitlines()
+    diff = git('diff', W3B4_BASE, W3B4_COMMIT, '--', 'verantyx/semantic_reader.py').splitlines()
     assert [l for l in diff if l.startswith('-') and not l.startswith('---')] == []
     for path in ('verantyx/semantic_read.py', 'verantyx/coarse_types.py', 'verantyx/coarse_place.py', 'verantyx/event_cross.py', 'verantyx/observe.py'):
-        assert git('diff', BASE_COMMIT, '--', path) == '', path
+        assert git('diff', W3B4_BASE, W3B4_COMMIT, '--', path) == '', path
 
 
 def _plan_text(src, name, replacements=()):
@@ -240,8 +246,8 @@ def test_the_name_the_entry_calls_is_the_plan_of_w3b4_and_the_plan_of_w3b2_stays
 
 def test_the_only_readers_of_a_placement_answer_are_still_the_gate_and_the_adapter():
     """W3-b4 adds no function that reads the fields of an answer (state, origin, top, decided_by, estimate_basis)."""
-    src = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
-    base = git('show', '%s:verantyx/semantic_reader.py' % BASE_COMMIT)
+    src = git('show', '%s:verantyx/semantic_reader.py' % W3B4_COMMIT)       # the ticket's own file (see the note above)
+    base = git('show', '%s:verantyx/semantic_reader.py' % W3B4_BASE)
     rx = re.compile(r"""\[\s*['"](state|origin|top|decided_by|estimate_basis)['"]\s*\]""")
     added = src[len(base):] if src.startswith(base) else None
     assert added is not None                                    # the file only gains lines, at its end

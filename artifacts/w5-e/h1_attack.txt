@@ -1,0 +1,72 @@
+....F......s.F....                                                       [100%]
+=================================== FAILURES ===================================
+_ test_route_r2_denial_keeps_original_and_affirmative_mismatch_does_not_replace_across_lookup_variants _
+
+    def test_route_r2_denial_keeps_original_and_affirmative_mismatch_does_not_replace_across_lookup_variants():
+        neg = reading("ja", clause("変える", {"patient": "それ"}, pol="-"))
+        pos = assignment()
+        for lookup in (AllUnplaced(), PredicateTypedName()):
+            kept = explain_marker(lookup, neg)
+            assert all(r.superseded_by is None for r in kept.relations) and kept.auto_resolved == 0
+>           assert kept.additions_kept == 1
+E           AssertionError: assert 0 == 1
+E            +  where 0 = Extraction(units=[UnitResult(index=0, status='NAME_UNRESOLVED', reasons=['COMMON_NOUN_SUBJECT_UNTYPED:ハル:UNPLACED'], t...arkup=1, additions_kept=0, common_noun_check={'checked': 1, 'not_checked': 0, 'flagged': 0, 'introduced_by_naming': 0}).additions_kept
+
+tests/attack/test_attack_w5d.py:116: AssertionError
+__________________ test_frozen_read_and_abstain_expectations ___________________
+
+rows = [{'id': 'RELATIVE-001', 'group': 'relative', 'lang': 'ja', 'text': '母が弟に話した人を兄が呼んだ。', ...}, {'id': 'RELATIVE-002', 'gr...褒めた生徒を先生が紹介した。', ...}, {'id': 'RELATIVE-006', 'group': 'relative', 'lang': 'ja', 'text': '本を読んだ図書館に友人が着いた。', ...}, ...]
+
+    def test_frozen_read_and_abstain_expectations(rows):
+        def check(row):
+            expected = row["expected"]
+            if expected["mode"] == "base_parity":
+                return []
+            output = row["configured"]["output"]
+            explain = row["configured"]["explain"]
+            if expected["mode"] == "abstain":
+                if output.get("readable") is True or output.get("relations"):
+                    return ["expected abstention, got readable/relation=%r" % (output.get("relations"),)]
+                if explain.get("read") is True:
+                    return ["diagnostic says the W3-b3 path read the sentence"]
+                return []
+            bad = []
+            if output.get("readable") is not True:
+                return ["expected read, got abstention %r" % output.get("abstain")]
+            expected_relation = expected.get("relation")
+            matches = [rel for rel in output.get("relations", []) if rel.get("type") == expected_relation]
+            if len(matches) != 1:
+                bad.append("expected one %s relation, got %r" % (expected_relation, output.get("relations")))
+            if expected_relation == "relative" and len(matches) == 1:
+                rel = matches[0]
+                if rel.get("head") != expected["head"]:
+                    bad.append("expected head %r, got %r" % (expected["head"], rel.get("head")))
+            if "polarities" in expected:
+                got = [clause.get("polarity") for clause in output.get("clauses", [])]
+                if got != expected["polarities"]:
+                    bad.append("expected local polarities %r, got %r" % (expected["polarities"], got))
+            if "tense" in expected:
+                got = [clause.get("tense") for clause in output.get("clauses", [])]
+                if got != expected["tense"]:
+                    bad.append("expected local tense %r, got %r" % (expected["tense"], got))
+            for key, value in expected.get("role_values", {}).items():
+                clause_index, role = key.split(".", 1)
+                clauses = output.get("clauses", [])
+                got = clauses[int(clause_index)].get("roles", {}).get(role) if int(clause_index) < len(clauses) else None
+                if got != value:
+                    bad.append("expected %s=%r, got %r" % (key, value, got))
+            return bad
+    
+        bad = _violations(rows, check)
+>       assert not bad, "frozen outcome/role/polarity expectations failed: " + repr(bad)
+E       AssertionError: frozen outcome/role/polarity expectations failed: ['RELATIVE-018: 姉が先生に話した学生を校長が呼んだ。', 'BOUNDARY-001: 兄が駅へ行ったので弟が家へ帰った。', 'BOUNDARY-002: 兄が駅へ行ったから弟が家へ帰った。', 'BOUNDARY-003: 兄が駅へ行ったが弟が家へ帰った。', 'BOUNDARY-005: 兄が駅へ行くと弟が家へ帰る。', 'BOUNDARY-006: 兄が駅へ行けば弟が家へ帰る。', 'BOUNDARY-007: 兄が駅へ行ったら弟が家へ帰る。', 'BOUNDARY-008: 兄が駅へ行くなら弟が家へ帰る。', 'BOUNDARY-009: 兄が駅へ行っても弟が家へ帰る。', 'BOUNDARY-015: 兄が駅から来た。', 'BOUNDARY-016: 兄が駅から帰ったので弟が喜んだ。', 'BOUNDARY-029: 兄が家へ帰ったが弟が駅へ行った。', 'BOUNDARY-030: 姉が町へ出たので弟が家へ帰った。', 'BOUNDARY-031: 父が駅へ来たから母が店へ行った。', 'BOUNDARY-032: 父が駅へ行くと母が町へ来る。', 'BOUNDARY-033: 母が町へ帰れば父が駅へ出る。', 'BOUNDARY-034: 兄が店へ行ったけれど妹が家へ帰った。', 'BOUNDARY-035: 兄が店へ行ったけど妹が家へ帰った。', 'SCOPE-001: 兄が駅へ行かなかったので弟が家へ帰った。', 'SCOPE-002: 兄が家へ帰らなかったので弟が駅へ行った。', 'SCOPE-004: 姉が家へ出なかったので母が駅へ来た。', 'SCOPE-006: 兄が町へ行ったので弟が家へ帰らなかった。', 'SCOPE-025: 兄が駅へ行ったので弟が帰る。', 'SCOPE-026: 兄が駅へ行くので弟が家へ帰る。', 'SCOPE-027: 兄が家へ帰ったから弟が駅へ出た。', 'SCOPE-028: 兄が駅へ行かなかったので弟が家へ帰った。', 'SCOPE-029: 兄が駅へ行ったので弟が家へ帰った。', 'SCOPE-030: 兄が家へ帰らなかったから弟が駅へ行った。', 'ELLIPSIS-001: 兄は駅へ行ったので家へ帰った。', 'ELLIPSIS-002: 父は町へ来たから店へ戻った。', 'ELLIPSIS-003: 祖父は駅へ出たので家へ帰った。', 'ELLIPSIS-004: 姉は店へ行ったので駅へ帰った。', 'ELLIPSIS-005: 母は町へ来たので家へ出た。', 'ELLIPSIS-011: 兄が駅へ行ったので弟が帰った。', 'ELLIPSIS-016: 兄が駅へ行ったので彼が帰った。', 'ELLIPSIS-018: 太郎が帰ったので花子が笑った。', 'ELLIPSIS-021: 兄は駅へ行ったので弟が家へ帰った。', 'ELLIPSIS-022: 母が町へ来たので父が店へ行った。']
+E       assert not ['RELATIVE-018: 姉が先生に話した学生を校長が呼んだ。', 'BOUNDARY-001: 兄が駅へ行ったので弟が家へ帰った。', 'BOUNDARY-002: 兄が駅へ行ったから弟が家へ帰った。', 'BOUNDARY-003: 兄が駅へ行ったが弟が家へ帰った。', 'BOUNDARY-005: 兄が駅へ行くと弟が家へ帰る。', 'BOUNDARY-006: 兄が駅へ行けば弟が家へ帰る。', ...]
+
+tests/attack/w3b3/test_attack_w3b3.py:71: AssertionError
+===================== environment classification of skips ======================
+UNCLASSIFIED_SKIP: tests/attack/test_attack_w5d.py::test_frame_confirmed_partial_intersection_does_not_authorize_unbacked_type
+=========================== short test summary info ============================
+FAILED tests/attack/test_attack_w5d.py::test_route_r2_denial_keeps_original_and_affirmative_mismatch_does_not_replace_across_lookup_variants
+FAILED tests/attack/w3b3/test_attack_w3b3.py::test_frozen_read_and_abstain_expectations
+SKIPPED [1] tests/attack/test_attack_w5d.py:233: r7 has no confirmed frame with a partially unsupported backed slot
+2 failed, 15 passed, 1 skipped in 1.39s

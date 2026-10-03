@@ -593,3 +593,20 @@ NOT_CHECKED の理由別: ARM_TIE 0, ESTIMATED_GENERATED 0, ESTIMATED_NEAR 0, LO
 <!-- w3b3-measured-events:end -->
 
 - 観測（W3-c）: `EDGE` の移動が、この経路が書いた関係（cause・contrast・condition・concession・simultaneous・relative）で動く。関係節の文は、`crosses[to]` の腕の充填物に `embedded` が入った形になるが、観測の升の鍵 `content_of_cross`（`observe.py` 80〜91 行）は充填物の `embedded` を含めないので、升の同一性は変わらない。`TE_UNDETERMINED`・`PARALLEL_UNDETERMINED` は `CrossReading` に入らず、観測の `EDGE` の対象にならない。
+
+
+## W5-e の追記: `role_flags` の `coordination`（事前登録）
+<!-- w5e-b-event-prereg:begin -->
+事前登録の時刻: 2026-10-04 03:59:31 +0900（`date '+%F %T %z'`）。この節は `tests/test_event_cross_w5e.py` を書く前、`verantyx/event_cross.py` を直す前に確定した。上の節は 1 文字も変えない。
+
+- 読解器の入口が節に書く `role_flags` は `{役割: {"determiner": 直前の指示詞}}`（W3-b2）。W5-e で、鍵 `coordination`（値は `と`・`や`・`か` のどれか 1 つ）を **受ける形だけ** 置く: `role_flags[役割]` の鍵の集合が `{'determiner'}`・`{'coordination'}`・その両方のどれかで、値は空でない文字列（`coordination` は 3 字のどれか）なら形は正しい。`determiner` だけの入力の判定は変えない。それ以外（空・別の鍵・`coordination` の値が 3 字以外・文字列でない）は今どおり `ENTRY_FLAGS_NOT_WELL_FORMED`。
+- `role_flags[役割]` が `coordination` を持つとき、その役割は十字にしない: `INPUT_REJECTED`、理由 `COORDINATION_UNMARKED:<役割>`（`Filler.coordination` の印を作る経路は作らないので、並立・選言の印の付いた値を印なしの `FILLER` にしない）。
+- 今の読解器（W5-e）は並立・選言の節を `unsupported` に入れて棄権する（READING_SOUNDNESS.md §10E）ので、この印を出さない。製品の経路でこの理由は出ない。合成の入力のテストだけで確かめる。
+- 表層の字面で拒む守り（充填物に `か` を含む文字列を拒む）は **作らない**: `ハルとセキ` を 1 つの値として渡す経路づけの既存テスト・`赤坂` のような語を巻き込むため。
+<!-- w5e-b-event-prereg:end -->
+
+
+### W5-e の測定: `role_flags` の `coordination`
+<!-- w5e-b-event-measured:begin -->
+測定の時刻: 2026-10-04 04:10:06 +0900。`tests/test_event_cross_w5e.py` は `22 passed`（`artifacts/w5-e/new_tests_run.txt`。凍結 `frozen_b.sha256`、直す前に落ちる記録 `b_before_fail.txt`: 6 件が失敗、形の検査・`determiner` だけの入力・表層の字面で拒まないことの 16 件は直す前から通る）。`determiner` だけの入力は変更前と同じ判定（既存の `tests/test_semantic_read_w3b2_events.py` の `role_flags` のテストは無傷）。製品の経路で `COORDINATION_UNMARKED` が出ないこと: 読解器は並立・選言の節を `unsupported` に入れて棄権するので `role_flags` に `coordination` を書かない。変更は `event_cross.py` の定数 1 つ・`_flag_well_formed`（新設）・`_check` の `role_flags` の検査の 3 か所だけ。
+<!-- w5e-b-event-measured:end -->

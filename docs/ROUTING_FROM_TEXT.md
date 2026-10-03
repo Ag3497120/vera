@@ -2562,3 +2562,175 @@ def test_yappari_sonomama_does_not_turn_an_addendum_into_replacement():
 5. r7 の説明文で `ハル` は MULTIPLE（ANIMAL・GROUP_ORG・PERSON）の direct なので `COMMON_NOUN_SUBJECT` で止まる（中間職のレビュー r1 の申し送り 2）。D2-2 は偽の配置では効くが、本番の r7 で `ハル` を名前として通さない（実装役も `r7_lookups.txt` で確かめた: `ハル` は MULTIPLE・direct・ANIMAL/GROUP_ORG/PERSON、`セキ` は UNPLACED、`チーム` は DECIDED・direct・GROUP_ORG、`委員会` は DECIDED・estimated・GROUP_ORG）。安全側の過剰棄権で、G3 の r7 で「正しく振った 0」はこれと読解器による。
 **この文書の担当の測定は上のとおり。全体の受入と判断は `artifacts/w5-d/DECISIONS.md` の「第 2 ラウンド（W5-d2）」と `artifacts/w5-d/r2/`。**
 <!-- w5d2-measured:end -->
+
+## W5-e の事前登録: A-2 推定・未配置の普通名詞を担当者に振らない（`COMMON_NOUN_SUBJECT_UNTYPED`）
+<!-- w5e-a2-prereg:begin -->
+事前登録の時刻: 2026-10-04 03:53:18 +0900（`date '+%F %T %z'`）。この節は A-2 の新しいテスト（`tests/test_routing_from_text_w5e.py`）を書く前、製品コード（`verantyx/routing_from_text.py`）を直す前に確定した。上の節は 1 文字も変えない。
+
+**命中（W5-d の攻撃 A-2、`tests/attack/test_attack_w5d.py::test_route_r7_estimated_common_noun_is_not_mapped_as_an_agent`）**: r7 で `委員会` は `DECIDED`・`estimated`（GROUP_ORG）。`_common_noun_stop` の (b) は direct のときだけ止めるので、`usable=True` だが `typed=False` の分岐で素通りし、`委員会はテストを書く。` の担当者が `委員会` になる。推定は構成物で、根拠にならない（W5-c 以来の原則）。
+
+### 規則（`_common_noun_stop`。日本語・命名の文で導入されていない名前だけ。英語は変えない）
+`place` はその名前に付いた配置の答え。上から最初に当たったもの:
+1. 答えが使えない（無い・`state == NO_PLACEMENT`・`source == NO_PLACEMENT`）→ `NAME_UNVERIFIED:<名>:NO_PLACEMENT`（今どおり）。
+2. `origin == direct` で `state == DECIDED`、型が名詞型（`event_cross.NOUN_TYPE_IDS`）→ `COMMON_NOUN_SUBJECT:<名>:PLACEMENT_DIRECT:<型>`（今どおり。止める。`flagged` に数える）。
+3. `origin == direct` で `state == MULTIPLE`、**全候補が名詞型** → 2 と同じ（「全候補一致」。止める。`flagged`）。
+4. `origin == direct` で `state == DECIDED`、型が名詞型でない（述語の型など）→ **通す**（今どおり。R-J1 の「17 型に無い型だけの direct は止めない」を保つ。W5-d の写しの `PredicateTypedName` もこれに頼る）。
+5. それ以外（推定・`UNPLACED`・`UNKNOWN`・名詞型でない候補を含む `MULTIPLE`・その他の状態）→ **新しい理由** `COMMON_NOUN_SUBJECT_UNTYPED:<名>:<ESTIMATED|UNPLACED|UNKNOWN|MULTIPLE|状態>`（単位の状態は既存の `NAME_UNRESOLVED`。`UNIT_STATUSES` は増やさない）。
+
+- 「DECIDED direct の名詞型のときだけ振る」を字面どおり（direct の人・組織を担当者にする）に読むと、r7 の 60 文で `先生`・`社員` などが振られて H3（8 → 0）が落ちる。だから「振る」は **型の付いた普通名詞の印 `COMMON_NOUN_SUBJECT:…:PLACEMENT_DIRECT` を付けて止める** と読む（今どおり）。担当者になるのは、命名の文で導入された名前か、4 の（名詞型でない direct の）名前だけ。
+- `common_noun_check` の数え方は鍵を足さない: 5 は配置が答えたので `checked` に数える（`flagged` は 2・3 だけ、`not_checked` は 1 だけ）。
+- 英語は変えない（決定木は日本語の分岐の中だけ）。
+
+### 名指しの改訂（名前不変・前後の全文。標準の規則）
+`tests/test_routing_from_text_w5b.py::test_an_estimated_unplaced_or_unknown_word_is_not_a_reason_to_stop` は「止めない」を固定している。W5-c 以来の原則「推定は構成物であり根拠にならない」に合わせ、3 つの引数とも `NAME_UNRESOLVED`・理由 `COMMON_NOUN_SUBJECT_UNTYPED:ソラ:…`・`checked == 1` に改訂する（名前は変えない）。後の全文は測定の節（`w5e-a2-amended`）。
+
+**改訂の前の全文**
+```python
+@pytest.mark.parametrize("answer", [
+    PlaceResult("DECIDED", "estimated", "proximity", ("GROUP_ORG",), {"fake": True}),      # a construction is not a testimony
+    PlaceResult("UNPLACED", provenance={"fake": True}),
+    PlaceResult("UNKNOWN", provenance={"fake": True}),
+])
+def test_an_estimated_unplaced_or_unknown_word_is_not_a_reason_to_stop(answer):
+    lookup = Placement(ソラ=answer)
+    explained = explain("ソラは実装をやる。\n", {"ソラは実装をやる。": ja_do("ソラ")}, lookup)
+    assert [u.status for u in explained.extraction.units] == ["MAPPED"]
+    assert route(explained, role="implement", kind="feature")["reading"]["common_noun_check"]["checked"] == 1
+```
+（デコレータ `@pytest.mark.parametrize("answer", [...])` の引数の 3 つは、上のとおり推定（`DECIDED estimated proximity GROUP_ORG`）・`UNPLACED`・`UNKNOWN`。1 行目 `PlaceResult("DECIDED", "estimated", "proximity", ("GROUP_ORG",), {"fake": True})`）
+
+### 宣言する衝突 K-A2（実装役は解かずに宣言する。判断は監査役）
+W5-d2 の裁定 K2 は、「UNPLACED と答える偽の配置 `FakePlacement`（`tests/test_routing_from_text.py`）の下で日本語の名前は担当者に振られる」ことを前提に既存のテストを書き直した。A-2 の規則（UNPLACED は止める）はその前提を退役させる。名指しの 3 引数を除く既存のテスト（`test_routing_from_text*.py`・`tests/attack/test_attack_w5b_wave2.py`・W5-d の写しの R2 など）が、同じ原因でまとめて落ちる。**実装役はテストを書き換えず**、落ちた id を全部宣言する（一覧は測定の節）。**H3（r7 の普通名詞 60 文で振られる数 8 → 0）を満たす規則と、K2 の裁定で作られた既存テストの前提は両立しない。H1・H7 はこの分だけ満たせない。**改訂の方向（K2 の偽の配置を述語の型を direct に答えるものに変える、または名前を命名の文で導入する）は `artifacts/w5-e/proposals/k_a2.md` に文章で書く。
+
+### 受入（H3。測る前に固定）
+- W5-d の凍結の経路づけ 6 本（配置なし 4 本・r7 2 本）で誤ルート 0。r7 の普通名詞 60 文（`r7_nouns.py`）で振られる数 8 → 0（変更前は `artifacts/w5-e/before/h3_r7_nouns.json`）。正しく振った数の before との差も数で書く。
+<!-- w5e-a2-prereg:end -->
+
+## W5-e A-2 の改訂後の全文と宣言
+<!-- w5e-a2-amended:begin -->
+記録の時刻: 2026-10-04 03:56:58 +0900。テストの改訂は製品コード（`routing_from_text.py`）の変更の後。名前不変。変えたのは関数の先頭のコメント 1 行・`explained.extraction.units` の期待・`state` の導出 1 行だけ（`git diff --stat tests/test_routing_from_text_w5b.py` で追加 3 行・削除 1 行）。前の全文は上の `w5e-a2-prereg` 区間。
+
+**改訂の後の全文**
+```python
+@pytest.mark.parametrize("answer", [
+    PlaceResult("DECIDED", "estimated", "proximity", ("GROUP_ORG",), {"fake": True}),      # a construction is not a testimony
+    PlaceResult("UNPLACED", provenance={"fake": True}),
+    PlaceResult("UNKNOWN", provenance={"fake": True}),
+])
+def test_an_estimated_unplaced_or_unknown_word_is_not_a_reason_to_stop(answer):
+    # W5-e（チケット W5-e の名指しの改訂）: 推定・UNPLACED・UNKNOWN の名前は担当者に振らず COMMON_NOUN_SUBJECT_UNTYPED で止める（A-2。推定は構成物であり根拠にならない）。配置は答えたので checked に数える。
+    lookup = Placement(ソラ=answer)
+    explained = explain("ソラは実装をやる。\n", {"ソラは実装をやる。": ja_do("ソラ")}, lookup)
+    state = "ESTIMATED" if answer.origin == "estimated" else answer.state
+    assert [(u.status, u.reasons) for u in explained.extraction.units] == [("NAME_UNRESOLVED", [f"COMMON_NOUN_SUBJECT_UNTYPED:ソラ:{state}"])]
+    assert route(explained, role="implement", kind="feature")["reading"]["common_noun_check"]["checked"] == 1
+```
+
+**宣言（K-A2。書き換えない）**: 名指しの 3 引数を除く既存のテストの失敗は 73 件（`artifacts/w5-e/a2_declared.txt`）。ファイル別: `tests/test_routing_from_text.py` 36・`tests/test_routing_from_text_w5d.py` 20・`tests/test_routing_from_text_w5b.py` 13・`tests/test_routing_from_text_regress.py` 2・`tests/attack/test_attack_w5b_wave2.py` 1・`tests/attack/test_attack_w5d.py`（W5-d の写しの R2）1。原因と改訂の方向は `artifacts/w5-e/proposals/k_a2.md`。チケットの試作の 72 件に対して 1 件多い（`test_routing_from_text_w5d.py::test_r1_a_direct_type_among_the_noun_types_is_a_common_noun[types4]`）理由は、MULTIPLE の扱いを A-2 の規則（全候補が名詞型のときだけ typed）どおりに作ったため（単位は止まるまま、理由の文字列だけが変わる）。
+
+**製品の変更**: `verantyx/routing_from_text.py` の `_common_noun_stop` の中だけ（日本語の分岐。英語は変えない）。
+<!-- w5e-a2-amended:end -->
+
+
+## W5-e の測定: A-2 推定・未配置の普通名詞（H3）
+<!-- w5e-a2-measured:begin -->
+測定の時刻: 2026-10-04 04:10:06 +0900。コマンドは `artifacts/w5-e/scripts/measure.sh`（`run_bank.py` 6 本・`r7_nouns.py`）。凍結とテスト: `frozen_a2.sha256`・`frozen_a2_at.txt`、直す前に落ちる記録 `a2_before_fail.txt`（`14 failed, 8 passed`）。
+
+- **誤ルート 0**: W5-d の凍結の 6 本（配置なし 4 本・r7 2 本）は変更の前後とも `misroutes: 0`（`after_measure.log`、`before_measure.log`）。正しく振った数（`route_correct`）は 6 本とも変更前と同じ: 0・0・3・2（配置なし 4 本）、0・0（r7 2 本）（`h3_bank_compare.txt`）。
+- **r7 の普通名詞 60 文で振られる数**: 変更前 8（`before/h3_r7_nouns.json`）→ 変更後 0（`h3_r7_nouns.json`）。配置なしも 0（`h3_np_nouns.json`）。攻撃 A-2（`test_route_r7_estimated_common_noun_is_not_mapped_as_an_agent`）は通る。
+- **テスト**: `tests/test_routing_from_text_w5e.py` は `20 passed`（`new_tests_run.txt`）。名指しの改訂（`test_an_estimated_unplaced_or_unknown_word_is_not_a_reason_to_stop`、3 引数）は通る。
+- **宣言した衝突 K-A2**（書き換えていない。`a2_declared.txt`、73 件。理由と改訂の方向は `proposals/k_a2.md`）: ファイル別 `test_routing_from_text.py` 36・`test_routing_from_text_w5d.py` 20・`test_routing_from_text_w5b.py` 13・`test_routing_from_text_regress.py` 2・`attack/test_attack_w5b_wave2.py` 1・`attack/test_attack_w5d.py`（R2）1。**H1・H7 はこの分だけ満たせない。**
+<!-- w5e-a2-measured:end -->
+
+## W5-e 第 2 ラウンド: 監査役の訂正（2026-10-04 04:42:38 の判断）
+<!-- w5e2-a2-prereg:begin -->
+事前登録の時刻は `artifacts/w5-e/r2/a2_prereg_at.txt`。第 1 ラウンド（上の「W5-e の事前登録」以下）の記述は消さない。ここは訂正の追記。
+
+### 訂正後の規則（`_common_noun_stop` の日本語の分岐だけ。英語は不変。命名の文で導入された名前は従来どおり調べない）
+- **第 1 ラウンドの規則を捨てる**: 「推定・UNPLACED・UNKNOWN・名詞型でない候補を含む MULTIPLE を `COMMON_NOUN_SUBJECT_UNTYPED` で止める」は誤りだった（W5-d の R1 は「配置が名詞型を言う語＝普通名詞 → direct の名詞型なら止める／配置に無い語（UNPLACED）＝名前の候補 → 宣言された名前との照合に回す」という設計で、UNPLACED を止めると名前が全部止まる）。
+- **基点（W5-d）の判定に戻す部分**: `typed = usable and origin == "direct" and state in ("DECIDED", "MULTIPLE")`、日本語では `typed = any(str(t) in event_cross.NOUN_TYPE_IDS for t in types)`（DECIDED も MULTIPLE も同じ `any`）。止めるときの理由は従来どおり `COMMON_NOUN_SUBJECT:<名>:PLACEMENT_DIRECT:<型,…>`。
+- **足す分岐は 1 つだけ**: 日本語で配置の答えが使え（`usable`）かつ `origin == "estimated"`（state・型を問わない）なら止める。推定は構成物であり根拠にならない（W5-c 以来の原則）。理由は **既存の名前** に印を付けた `COMMON_NOUN_SUBJECT:<名>:PLACEMENT_ESTIMATED:<型,…>`（型は `place["types"]` をそのままの順で `,` 連結。空なら空文字）。
+- **通す**: `UNPLACED`・`UNKNOWN`・その他の state で direct でない答えは W5-d のまま通す（名前の照合へ。`checked` に数える）。direct の名詞型でない型（`P_COMMUNICATE` など）も通す。配置なし（`None`・`NO_PLACEMENT`）は W5-d のまま `NAME_UNVERIFIED:<名>:NO_PLACEMENT`。
+- **数え方**: 推定で止めた名前は `checked`（配置は答えたが証言ではない）。`flagged` は direct の名詞型だけ（従来どおり）。
+- **`COMMON_NOUN_SUBJECT_UNTYPED` の退役**: 第 1 ラウンドで足した理由名 `COMMON_NOUN_SUBJECT_UNTYPED` は製品から出さない（退役。第 1 ラウンドの記述は履歴として残す）。
+
+### H3 の読み方（第 2 ラウンド。測る前に固定）
+訂正後の規則では「r7 の普通名詞 60 文で振られる数 8 → 0」は成り立たない（UNPLACED を止めないため）。第 2 ラウンドの H3 は次で判定する。
+- W5-d の凍結の経路づけ 6 本で誤ルート 0（従来どおり）。
+- r7 の普通名詞 60 文で、**主語が推定・名詞型を含む direct（DECIDED／MULTIPLE）の文で振られる数 0**（変更前は 8 のうち 4＝`委員会` 2・`開発者` 2）。
+- 振られる数の合計と、その全件の語と配置の状態を報告する。全件が `UNPLACED` であること。`UNPLACED`・`UNKNOWN` 以外が 1 件でもあれば止まって報告する。
+- 「第 2 ラウンド: 8 → 4（UNPLACED の文は訂正後の規則どおり）」を測定の節に追記する（第 1 ラウンドの 8 → 0 の記述は消さない）。
+<!-- w5e2-a2-prereg:end -->
+
+### 名指しの改訂（K-A2。名前不変・前後の全文。標準の規則）
+<!-- w5e2-a2-amended:begin -->
+監査役の判断（2026-10-04 04:42:38）の指名: 「推定を主題にしたテスト（`test_r1_a_placed_word_that_the_placement_cannot_type_still_passes` など）は、推定が根拠にならない原則（W5-c 以来）に合わせて期待を改訂」。チケット名指しの w5b のテストも同じ。**改訂前は基点（`ca66d3e`）の本文**（w5b は第 1 ラウンドの改訂を捨てて基点から作り直した。第 1 ラウンドの改訂後の全文は上の `w5e-a2-amended` 区間）。推定の引数だけ止め、UNPLACED・UNKNOWN は基点どおり `MAPPED`。デコレータ・引数の並び・関数名は不変。
+
+#### `tests/test_routing_from_text_w5b.py::test_an_estimated_unplaced_or_unknown_word_is_not_a_reason_to_stop`
+
+**改訂前（基点 ca66d3e の全文）**
+```python
+@pytest.mark.parametrize("answer", [
+    PlaceResult("DECIDED", "estimated", "proximity", ("GROUP_ORG",), {"fake": True}),      # a construction is not a testimony
+    PlaceResult("UNPLACED", provenance={"fake": True}),
+    PlaceResult("UNKNOWN", provenance={"fake": True}),
+])
+def test_an_estimated_unplaced_or_unknown_word_is_not_a_reason_to_stop(answer):
+    lookup = Placement(ソラ=answer)
+    explained = explain("ソラは実装をやる。\n", {"ソラは実装をやる。": ja_do("ソラ")}, lookup)
+    assert [u.status for u in explained.extraction.units] == ["MAPPED"]
+    assert route(explained, role="implement", kind="feature")["reading"]["common_noun_check"]["checked"] == 1
+```
+
+**改訂後の全文**
+```python
+@pytest.mark.parametrize("answer", [
+    PlaceResult("DECIDED", "estimated", "proximity", ("GROUP_ORG",), {"fake": True}),      # a construction is not a testimony
+    PlaceResult("UNPLACED", provenance={"fake": True}),
+    PlaceResult("UNKNOWN", provenance={"fake": True}),
+])
+def test_an_estimated_unplaced_or_unknown_word_is_not_a_reason_to_stop(answer):
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A2）: 推定は構成物であり根拠にならない（W5-c 以来）ので、推定の引数だけ COMMON_NOUN_SUBJECT:…:PLACEMENT_ESTIMATED:… で止める。UNPLACED・UNKNOWN は基点（W5-d）のまま通す。3 引数とも checked == 1
+    lookup = Placement(ソラ=answer)
+    explained = explain("ソラは実装をやる。\n", {"ソラは実装をやる。": ja_do("ソラ")}, lookup)
+    if answer.origin == "estimated":
+        assert [(u.status, u.reasons) for u in explained.extraction.units] == [("NAME_UNRESOLVED", ["COMMON_NOUN_SUBJECT:ソラ:PLACEMENT_ESTIMATED:GROUP_ORG"])]
+    else:
+        assert [u.status for u in explained.extraction.units] == ["MAPPED"]
+    assert route(explained, role="implement", kind="feature")["reading"]["common_noun_check"]["checked"] == 1
+```
+
+#### `tests/test_routing_from_text_w5d.py::test_r1_a_placed_word_that_the_placement_cannot_type_still_passes`
+
+**改訂前（基点 ca66d3e の全文）**
+```python
+@pytest.mark.parametrize("answer", [PlaceResult("UNPLACED", provenance={"fake": True}), PlaceResult("UNKNOWN", provenance={"fake": True}),
+                                    PlaceResult("DECIDED", "estimated", "proximity", ("GROUP_ORG",), {"fake": True})])
+def test_r1_a_placed_word_that_the_placement_cannot_type_still_passes(answer):
+    explained = explain("ソラは実装をやる。\n", {"ソラは実装をやる。": ja_do("ソラ")}, Placement(ソラ=answer))
+    assert [u.status for u in explained.extraction.units] == ["MAPPED"]
+```
+
+**改訂後の全文**
+```python
+@pytest.mark.parametrize("answer", [PlaceResult("UNPLACED", provenance={"fake": True}), PlaceResult("UNKNOWN", provenance={"fake": True}),
+                                    PlaceResult("DECIDED", "estimated", "proximity", ("GROUP_ORG",), {"fake": True})])
+def test_r1_a_placed_word_that_the_placement_cannot_type_still_passes(answer):
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A2）: 推定は構成物であり根拠にならない（W5-c 以来）ので、推定の引数（answer2）だけ止める。UNPLACED・UNKNOWN は W5-d のまま通す
+    explained = explain("ソラは実装をやる。\n", {"ソラは実装をやる。": ja_do("ソラ")}, Placement(ソラ=answer))
+    if answer.origin == "estimated":
+        assert [(u.status, u.reasons) for u in explained.extraction.units] == [("NAME_UNRESOLVED", ["COMMON_NOUN_SUBJECT:ソラ:PLACEMENT_ESTIMATED:GROUP_ORG"])]
+    else:
+        assert [u.status for u in explained.extraction.units] == ["MAPPED"]
+```
+<!-- w5e2-a2-amended:end -->
+
+## W5-e 第 2 ラウンドの測定: A-2 の訂正後（H3 の第 2 ラウンドの読み方）
+<!-- w5e2-a2-measured:begin -->
+測定の時刻は上の追記の直後（`artifacts/w5-e/r2/`）。第 1 ラウンドの「8 → 0」の記述（上の `w5e-a2-measured`）は消さない。
+
+- 凍結とテスト: `frozen_a2_r2.sha256`・`frozen_a2_r2_at.txt`（事前登録 `a2_prereg_at.txt` の後）、直す前に落ちる記録 `a2_before_fail.txt`、直した後 `a2_after.txt`（A-2 に関わる 8 ファイル: 落ちるのは `test_routing_from_text_entry.py::test_T1_…` の 1 件だけ。K-B で改訂する。`1 skipped` は A-4 で攻撃のベクトルが消えた `test_frame_confirmed_partial_intersection…`）。
+- **誤ルート 0**: W5-d の凍結の経路づけ 6 本（配置なし 4 本・r7 2 本）は `misroutes: 0`（`measure.log` と同じ出力。`h3_np_*`・`h3_r7_*`）。
+- **r7 の普通名詞 60 文で振られる数: 第 2 ラウンドは 8 → 4**（`h3_r7_nouns.json`。変更前 8 は `artifacts/w5-e/before/h3_r7_nouns.json`）。振られる 4 文は `レビューは課がやる。`・`レビューは部門がやる。`・`レビューはメンバーがやる。`・`レビューは外注先がやる。` で、4 語とも r7 の配置の答えは `UNPLACED`（`h3_r7_routed_states.txt`、`all UNPLACED: True`）。訂正後の規則は UNPLACED を名前の候補として通す（W5-d のまま）ので、これは **規則どおり**。第 1 ラウンドの「8 → 0」は UNPLACED を止める誤った規則の値。推定の `委員会`・`開発者`（各 2 文、計 4 文）は止まる: **推定・名詞型を含む direct で振られる数 0**。配置なしは 0（`h3_np_nouns.json`）。
+- 残る 4 文を止めるには UNPLACED の普通名詞を名前と区別する別の証言が要る。今回の範囲外（申し送り）。
+<!-- w5e2-a2-measured:end -->

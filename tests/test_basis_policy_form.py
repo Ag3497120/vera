@@ -228,7 +228,8 @@ def test_other_routes_do_not_attempt_the_borrowing(tmp_path, monkeypatch, mode, 
     _index(tmp_path, {"local": ["次郎が花子に本を渡した。"]})
     monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
     # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
-    ans = _doc_answer(); ans["sources"] = [{**s, "origin": "human_confirmed"} for s in ans["sources"]]
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
+    ans = _doc_answer(); ans["sources"] = [{**s, "family": "memory_sovereign", "origin": "human_confirmed"} for s in ans["sources"]]
     out, _rc = bp.apply_to_ask(ans, bp.AskPolicy(), query="q", mode=mode, documents=docs)
     assert "form_text" not in out and out["basis_policy"]["form"]["state"] == "NOT_ATTEMPTED_ROUTE"
     assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"

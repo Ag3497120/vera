@@ -2187,3 +2187,363 @@ def test_all_r6_generated_frame_upgrades():
 **第 2 ラウンド（レビュー r1 の M1。日時 2026-10-04 03:17〜03:22 +0900）**: 第 1 ラウンドの `verantyx/coarse_types.py` は `"slot_min": 20,` の行のコメントの前の空白が 1 字減っていた（値は同じ。閾値の行は触らない約束だった）。その行を基点と 1 バイトも違わない形に戻した（`git diff c334fe6 -- verantyx/coarse_types.py` の `+`/`-` の行に `slot_min` は無い）。直したあとの `coarse_types.py` の sha256 は `cb7e44f9…bb91`（第 1 ラウンドは `e20bbbc7…e5b7`）で、r8/run1 の manifest の `coarse_types_sha256` と合わなくなったため、**r8/run1 は消さず上書きせず**、同じ引数で `build/coarse-W3a/full/r8/run2` を作った（抽出は `r8/stage/extract.pkl` の cache から。`builder_sha256` は `21f94de6…e7c3` のまま）。run2 は `verify` が `OK`、`content_sha256` が run1 と同じ `89bd07e6c71d883cdeafaa96e906118cbfbc3dc45b1f15f2ce65bbec783382a5`（`placement.sqlite` の sha256 も同じ `106d892e…ec4`）。run1 と run2 の manifest の違いは時刻・所要時間・`coarse_types_sha256` だけ（`manifest_r8_run1_vs_run2.txt`）。run1 は空白 1 字の違うコードで作り、run2 は直したコードで作り、内容は同じ。P6 に渡す配置はどちらでもよい（内容が同じ）が、出所の記録が commit するコードと合うのは run2。所要時間 run2 277.0 秒（`timing.txt`）。出力: `build_r8_run2.{log,started,finished,exit}`・`verify_r8_run2.txt`・`manifest_r8_run2.json`・`code_sha_run2.txt`・`readonly_after_r2.txt`。
 
 <!-- w3a4-measured:end -->
+
+## 14. W5-e: 枠の確認で `frame` に残す型は「生成の枠と分布の型の交わり」だけ（事前登録）
+<!-- w5e-a4-prereg:begin -->
+事前登録の時刻: 2026-10-04 03:50:50 +0900（`date '+%F %T %z'`）。この節は A-4 の新しいテスト（`tests/coarse_place/test_coarse_place_w5e_frame_backing.py`）を書く前、製品コード（`verantyx/coarse_place.py`）を直す前に確定した。§12 の区間・§13 の区間は変えない。§12.10 の `frame` の意味（「格上げに加わった分布の腕の有意な助詞の和集合 S の各 p について、生成の枠の p の型」）は、この節で次のとおり **狭める**。
+
+**命中（W5-d の攻撃 A-4）**: 生成の枠 `[ABSTRACT, INFO_LANGUAGE]` と分布（INFO_LANGUAGE だけ）が **一部しか交わらない** 助詞（例 `冠する` の `を`）が `CONFIRMED` のまま `frame["を"] = [ABSTRACT, INFO_LANGUAGE]` を出し、読解器（W3-b2）は frame に残った型だけを読むので、裏づけの無い `ABSTRACT` を読む。
+
+### 規則（配置側。`coarse_place._direct`。読解器は変えない）
+- `frame_status == CONFIRMED`（`_frame_status_of` の判定は変えない。`frame_type_disagreement` も変えない: builder が同じ関数を数えに使う）のとき、助詞 p ∈ S（有意な助詞の和集合）について **裏づけの型** `backed[p]` = 決定に加わった `role_distribution` の腕ごとの `coarse_types.rd_analyze(その腕の数, cfg, base)["types"][p]` の **和集合**（`frame_type_disagreement` と同じ `base` の取り方。別の関数 `frame_backing` にする）を作り、
+  - `frame[p] = sorted(gen[p] ∩ backed[p])`（空なら p を `frame` に入れない）、
+  - `frame_unconfirmed[p] = sorted(gen[p] − backed[p])`（空なら入れない）。
+- S に無い助詞（分布が有意な型を持たない助詞）の扱いは今どおり（全部 `frame_unconfirmed`）。助詞の並びは `ROLE_PARTICLES` の順。
+- 帰結: 1 つの助詞が `frame` と `frame_unconfirmed` の **両方** に出ることがある（今は出ない。型が分かれる）。`CONFIRMED` で `frame` が `{}` になりうる（r7 で何語か数える）。§12.10 の不変条件（`frame` が null でない ⇔ `CONFIRMED`、値は空でない 17 型のソート済みの並び）は保たれる。
+- `state`・`origin`・`top`・`frame_status`・`decided_by`・`axes`・`generated_frame` は 1 語も変えない。r7 の sqlite（配置の表）は変えず、判定関数の変更だけ。**r7 の CONFIRMED の語で `frame` の型が減る語を全件列挙する**（`artifacts/w5-e/h5_frames_summary.txt`。数は測ってから書く）。
+- 読解器（`semantic_reader`・`semantic_read`）は変えない。frame に残った型だけが読まれる。
+
+### 宣言する規則どうしの衝突 K-A4（変えない。判断は監査役）
+1. `tests/coarse_place/test_coarse_place_w5d_frame_types.py::test_a_frame_whose_types_meet_the_distribution_stays_confirmed`: コメントに「a frame wider than the distribution stays」と、退役する振る舞い（枠が分布より広くても `frame` に全部残る）そのものを固定している。
+2. `tests/attack/w3a3/test_attack_w3a3_r6.py::test_all_r6_generated_frame_upgrades`: `frame` が生成の枠の全射影であることを固定している。
+
+### 攻撃の写しの扱い
+攻撃 A-4（`tests/attack/test_attack_w5d.py::test_frame_confirmed_partial_intersection_does_not_authorize_unbacked_type`。写しはバイト同一）は、`partial_frame_vector()` が分布と一部しか交わらない枠のベクトルを探して見つからないとき **skip** する作りで、この変更のあと skip になる見込み。**skip は通過に数えない**。代わりに新しいテストで、(a) r7 の `CONFIRMED` の全語で `frame` の型がすべて裏づけの型、(b) `冠する` の `frame["を"] == ["INFO_LANGUAGE"]`・`frame_unconfirmed["を"] == ["ABSTRACT"]`、(c) W3-b2 の `typed_frame_check_ja` が `冠する`＋ABSTRACT を受けないこと、(d) 本物の builder で作った合成の配置でも部分交差の助詞が `frame` と `frame_unconfirmed` に分かれること、を確かめる。
+
+### 受入（H5。測る前に固定）
+- r7 の `CONFIRMED` の語で `frame` の型が減る語の全件の数と語。`state`・`origin`・`top` が変わる語は 0。
+- W3-b2 の凍結データ（r7）で誤読 0。`changed` の文は全件列挙して理由を書く（枠の型が減って棄権に変わる文だけ。ほかの理由で読みが変わった文があれば止めて報告）。
+<!-- w5e-a4-prereg:end -->
+
+
+## 14.x W5-e の測定: 枠の確認で `frame` に残す型（H5）
+<!-- w5e-a4-measured:begin -->
+測定の時刻: 2026-10-04 04:10:06 +0900。r7（`/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1`、読むだけ。表は変えていない）の `generated_frames` の全語を `artifacts/w5-e/scripts/frame_enum.py` で変更の前後に問い合わせた（`before/h5_frames.jsonl`・`h5_frames.jsonl`、要約 `h5_frames_summary.txt`）。凍結とテスト: `frozen_a4.sha256`・`frozen_a4_at.txt`、直す前に落ちる記録 `a4_before_fail.txt`（`8 failed, 4 passed`）。
+
+```
+words 4788 confirmed 35
+state/origin/top/frame_status changed 0
+frame reduced 30 non-confirmed changed 0
+frame empty after (CONFIRMED) 0 particle vanished from frame 1
+冠する {"を": ["ABSTRACT", "INFO_LANGUAGE"]} -> {"を": ["INFO_LANGUAGE"]} {"を": ["ABSTRACT"]}
+切り出す {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]} -> {"を": ["INFO_LANGUAGE"]} {"を": ["ABSTRACT", "EVENT_ACT"]}
+受け付ける {"を": ["EVENT_ACT", "GROUP_ORG", "INFO_LANGUAGE", "PERSON"]} -> {"を": ["EVENT_ACT"]} {"を": ["GROUP_ORG", "INFO_LANGUAGE", "PERSON"]}
+口ずさむ {"を": ["INFO_LANGUAGE", "WORK"]} -> {"を": ["WORK"]} {"を": ["INFO_LANGUAGE"]}
+叫ぶ {"が": ["ANIMAL", "PERSON"], "を": ["INFO_LANGUAGE"]} -> {"が": ["PERSON"], "を": ["INFO_LANGUAGE"]} {"が": ["ANIMAL"]}
+呼び掛ける {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]} -> {"を": ["EVENT_ACT"]} {"を": ["ABSTRACT", "INFO_LANGUAGE"], "に": ["GROUP_ORG", "PERSON"]}
+呼べる {"を": ["ANIMAL", "GROUP_ORG", "PERSON"]} -> {"を": ["PERSON"]} {"が": ["PERSON"], "を": ["ANIMAL", "GROUP_ORG"]}
+命ずる {"を": ["ABSTRACT", "EVENT_ACT"]} -> {"を": ["EVENT_ACT"]} {"を": ["ABSTRACT"], "に": ["GROUP_ORG", "PERSON"]}
+唱える {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]} -> {"を": ["ABSTRACT"]} {"を": ["EVENT_ACT", "INFO_LANGUAGE"]}
+問う {"を": ["ABSTRACT", "INFO_LANGUAGE", "PERSON"]} -> {"を": ["INFO_LANGUAGE"]} {"が": ["PERSON"], "を": ["ABSTRACT", "PERSON"]}
+広める {"を": ["ABSTRACT", "INFO_LANGUAGE"]} -> {"を": ["ABSTRACT"]} {"を": ["INFO_LANGUAGE"]}
+戻れる {"に": ["PLACE"], "へ": ["PLACE"]} -> {"へ": ["PLACE"]} {"が": ["ANIMAL", "ARTIFACT", "PERSON"], "に": ["PLACE"]}
+教え合う {"を": ["ABSTRACT", "INFO_LANGUAGE"]} -> {"を": ["INFO_LANGUAGE"]} {"が": ["GROUP_ORG", "PERSON"], "を": ["ABSTRACT"], "と": ["GROUP_ORG", "PERSON"]}
+旅立つ {"が": ["ANIMAL", "PERSON"], "へ": ["PLACE"]} -> {"が": ["PERSON"], "へ": ["PLACE"]} {"が": ["ANIMAL"]}
+明かす {"を": ["ABSTRACT", "INFO_LANGUAGE"]} -> {"を": ["INFO_LANGUAGE"]} {"が": ["PERSON"], "を": ["ABSTRACT"]}
+書き表す {"を": ["ABSTRACT", "INFO_LANGUAGE"]} -> {"を": ["INFO_LANGUAGE"]} {"を": ["ABSTRACT"]}
+歌える {"を": ["INFO_LANGUAGE", "WORK"]} -> {"を": ["WORK"]} {"を": ["INFO_LANGUAGE"]}
+流れ出る {"から": ["ARTIFACT", "PLACE"]} -> {"から": ["PLACE"]} {"が": ["NATURAL_PHENOMENON", "SUBSTANCE_FOOD"], "から": ["ARTIFACT"]}
+申し入れる {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]} -> {"を": ["EVENT_ACT"]} {"を": ["ABSTRACT", "INFO_LANGUAGE"], "に": ["GROUP_ORG", "PERSON"]}
+申し込める {"を": ["ABSTRACT", "ARTIFACT", "EVENT_ACT"]} -> {"を": ["EVENT_ACT"]} {"を": ["ABSTRACT", "ARTIFACT"], "に": ["GROUP_ORG", "PERSON", "PLACE"]}
+詫びる {"を": ["ABSTRACT", "EVENT_ACT"]} -> {"を": ["EVENT_ACT"]} {"を": ["ABSTRACT"], "に": ["GROUP_ORG", "PERSON"]}
+話し合う {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]} -> {"を": ["ABSTRACT", "EVENT_ACT"]} {"が": ["GROUP_ORG", "PERSON"], "を": ["INFO_LANGUAGE"], "と": ["GROUP_ORG", "PERSON"]}
+話せる {"を": ["ABSTRACT", "INFO_LANGUAGE"]} -> {"を": ["INFO_LANGUAGE"]} {"を": ["ABSTRACT"], "と": ["GROUP_ORG", "PERSON"]}
+説く {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]} -> {"を": ["ABSTRACT"]} {"を": ["EVENT_ACT", "INFO_LANGUAGE"], "に": ["PERSON"]}
+読み上げる {"を": ["INFO_LANGUAGE", "WORK"]} -> {"を": ["INFO_LANGUAGE"]} {"を": ["WORK"]}
+論ずる {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE"]} -> {"を": ["ABSTRACT"]} {"を": ["EVENT_ACT", "INFO_LANGUAGE"]}
+起き上がる {"が": ["ANIMAL", "PERSON"], "から": ["PLACE"]} -> {"が": ["PERSON"], "から": ["PLACE"]} {"が": ["ANIMAL"]}
+離れる {"から": ["ARTIFACT", "PERSON", "PLACE"]} -> {"から": ["PLACE"]} {"が": ["ARTIFACT", "PERSON", "PLACE"], "から": ["ARTIFACT", "PERSON"]}
+頼める {"を": ["ABSTRACT", "EVENT_ACT", "INFO_LANGUAGE", "PERSON"]} -> {"を": ["EVENT_ACT"]} {"を": ["ABSTRACT", "INFO_LANGUAGE", "PERSON"]}
+飛び出す {"が": ["ANIMAL", "ARTIFACT", "NATURAL_PHENOMENON", "PERSON"], "から": ["PLACE"]} -> {"が": ["ANIMAL"], "から": ["PLACE"]} {"が": ["ARTIFACT", "NATURAL_PHENOMENON", "PERSON"], "を": ["ARTIFACT", "PLACE"]}
+```
+
+- **`state`・`origin`・`top`・`frame_status` が変わった語は 0**（上の 2 行目）。`CONFIRMED` 以外で `frame` が変わった語は 0。`frame` の型が減った語は上の一覧のとおり。空の `frame` になる語は 0、助詞ごと `frame` から消える語は 1（`戻れる` の `に`。`frame_unconfirmed` に残る）。
+- **W3-b2 の凍結データ（r7）**（`h5_w3b2_check.txt`・`h5_w3b2_check.json`）: `misread=0`、`before/h5_w3b2_check.json` とバイト一致。A-4 だけを入れた時点の入口の出力は変更前と 1 行も違わなかった（その時点の `diff` の `>` は 0 行。ファイルは B を入れたあとの流しで上書きした）。最後の木で変わる行は 35 行で、全部 B の門（`COORDINATION_UNDETERMINED`／`DISJUNCTION_UNDETERMINED`）の理由が足された棄権のままの文（`h5_w3b2_changed.tsv`、`h5_w3b2_changed_summary.txt`: `gate_reason_added` 32・`gate_reason_only` 3、読めた→棄権 0・棄権→読めた 0・読みの変化 0）。枠の型が減って棄権に変わった文は 0。
+- **テスト**: `tests/coarse_place/test_coarse_place_w5e_frame_backing.py` は `10 passed`。攻撃 A-4（`test_frame_confirmed_partial_intersection_does_not_authorize_unbacked_type`）は **skip**（`partial_frame_vector()` が None: 攻撃のベクトルが消えた）。skip は通過に数えない。
+- **宣言した衝突 K-A4**（書き換えていない。`a4_after_module.txt`）: `tests/coarse_place/test_coarse_place_w5d_frame_types.py::test_a_frame_whose_types_meet_the_distribution_stays_confirmed`、`tests/attack/w3a3/test_attack_w3a3_r6.py::test_all_r6_generated_frame_upgrades`。後者は実行のたびに `tests/attack/w3a3/r6_48_queries.jsonl`・`r6_audit_summary.json` を書き換える（既存のテストの副作用。作業ツリーでは最後に基点の内容へ戻した）。
+- **既知の穴**: 1 つの助詞が `frame` と `frame_unconfirmed` の両方に出る語がある（型が分かれる）。分布の有意な型の外にある生成の型は `frame_unconfirmed` にだけ出て読解器は読まない。
+<!-- w5e-a4-measured:end -->
+
+## 14.2 W5-e 第 2 ラウンド: 覆った へ を `frame_unconfirmed` に出す（W3-a4 の申し送り R1）（事前登録）
+<!-- w5e2-r1-prereg:begin -->
+事前登録の時刻は `artifacts/w5-e/r2/r1_prereg_at.txt`。この節は新しいテスト（`tests/coarse_place/test_coarse_place_w5e2_cover.py`）を書く前、製品コード（`verantyx/coarse_place.py`）を直す前に確定した。§14 の区間は変えない（追記）。
+
+**由来**: W3-a4（`coarse_types.decide_word` の包含規則 `frame_cover_rule`）は、生成の枠が へ を持たず `に|PLACE` を持つとき、分布の有意な助詞 へ を「`に|PLACE` で覆った」ものとして枠の確認を通す（腕の `cover.he_by_ni_place` に腕の鍵が残る）。覆った へ は `frame` にも `frame_unconfirmed` にも出ないため、W3-a4 のレビューで r8 の `frame_status == CONFIRMED` なのに `frame == {}` の語が 12 語あった（申し送り R1）。
+
+### 規則（配置側。`coarse_place._direct` の CONFIRMED の分岐。`decide_word`・閾値・`frame_type_disagreement`・`frame_backing`・`_frame_status_of` は不変）
+- 新しい純粋関数 `frame_cover_unconfirmed(dec, gen_map) -> {助詞: [型]}`: `dec["arms"].get(ct.GEN_FRAME_ARM)` の `"cover"` の `"he_by_ni_place"` が **空でない**、かつ へ が `gen_map` に **無い**、かつ `gen_map.get(に)` に `PLACE` がある、ときだけ `{へ: ["PLACE"]}`。ほかは `{}`。助詞は `ct.CASE_PARTICLES_9[4]`（へ）・`[2]`（に）から取る（`coarse_types.py` に定数を足さない。W3-a4 の `HE_PARTICLE`・`NI_PLACE_SLOT` と同じ値）。
+- 型 `PLACE` は覆った行 `に|PLACE` の型（モデルが書いた型。分布の型ではない）。**生成の型であり、分布は裏づけていない**ので `frame` には入れず `frame_unconfirmed` にだけ出す。
+- `_direct` の CONFIRMED の分岐で、A-4 の `frame`／`unconfirmed` を作った直後・`frame_type_disagreement` の前に、この関数の結果を `unconfirmed` に足し、鍵を `ct.ROLE_PARTICLES` の順に並べ直す。`frame` には何も足さない。`frame_status` は変えない（CONFIRMED で `frame == {}` の語は残る。その数は報告する）。矛盾（disagreement）があれば従来どおり `frame = unconfirmed = None`。
+- `cover["ignored"]`（K62 の外の と・まで・より）は **出さない**（裁定は「覆った助詞」だけ）。r8 での件数は参考に数えて報告する。
+- `state`・`origin`・`top`・`frame_status`・`frame`・`decided_by`・`axes`・`generated_frame` は 1 語も変えない。変わる鍵は `frame_unconfirmed` だけ。
+
+### この基点での効き方
+この基点の `coarse_types.decide_word` は `cover` を書かない（W3-a4＝df4f001 の変更）ので、**この基点では r7・r8 とも答えは 1 バイトも変わらない**。W3-a4 の統合後に効く。確かめは (a) 手で作った `dec` での純粋関数の単体テスト、(b) scratchpad に df4f001 の `coarse_types.py` を重ねた複製での r8 の全数（`coarse_types.py` は許可パス外なので `$W` には置かない）、(c) r7 の不変（`$W` と重ねた複製でバイト一致）の 3 つ。
+
+### 受入（測る前に固定）
+- (b) 重ねた複製の r8（`generated_frames` 8,030 語）: 状態の数 ESTIMATED 7,900・CONFIRMED 99・NOT_CONFIRMED 31（W3-a4 のレビューの値）。R1 の有無で答えが変わる語は **14 語**、変わる鍵は `frame_unconfirmed` だけ、14 語とも `frame_unconfirmed["へ"] == ["PLACE"]` が足される。`state`・`origin`・`top`・`frame_status`・`frame` の変化 0。CONFIRMED で `frame == {}` の語は 14（基点の `coarse_place` で 12 語＝W3-a4 の R1 の 12 語、A-4 で 2 語増えて 14）。
+- (c) r7（4,788 語）は重ねた複製と `$W` でバイト一致。R1 の有無でもバイト一致。
+<!-- w5e2-r1-prereg:end -->
+
+## 14.3 W5-e 第 2 ラウンド: K-A4 の改訂（監査役の判断 2026-10-04 04:42）
+<!-- w5e2-ka4:begin -->
+監査役の判断: 「K-A4（2）: W5-d のテストが CONFIRMED の枠の型の全集合を固定していたもの → 新しい規則に合わせて改訂」。§14 の宣言のとおり、退役させた振る舞い（枠が分布より広くても `frame` に全部残る）を固定していた 2 関数を、名前を変えずに「`frame` ＝ 生成の枠 ∩ 分布の裏づけ、外れた型は `frame_unconfirmed`」へ改訂する。
+
+- `tests/coarse_place/test_coarse_place_w5d_frame_types.py::test_a_frame_whose_types_meet_the_distribution_stays_confirmed`: **期待は先に治具の分布から手で求めた**。同じファイルの builder の入力は `人が言葉を呟いた。`×14（が+PERSON・を+INFO_LANGUAGE）、`呟く` の生成の枠は `{が: [PERSON], を: [INFO_LANGUAGE, PERSON]}`。分布の裏づけは が=PERSON、を=INFO_LANGUAGE（PERSON は分布に無い）なので、`frame = {が: [PERSON], を: [INFO_LANGUAGE]}`、`frame_unconfirmed = {を: [PERSON]}`。`囁く`（枠 `{が: [PERSON], を: [INFO_LANGUAGE]}` は分布と完全に一致）の行は試して変わらなければ不変。
+- `tests/attack/w3a3/test_attack_w3a3_r6.py::test_all_r6_generated_frame_upgrades`（攻撃の写し。r6 の 48 語）: 期待の投影を「生成の枠 ∩ 分布の裏づけ（決定に加わった `role_distribution` の腕ごとの `ct.rd_analyze(...)["types"]` の和集合）」に、外れた型は `frame_unconfirmed` に変える。**期待は `cp.frame_backing`（製品の関数）で作らない**（製品の関数で期待を作ると検査にならない）。`ct.rd_analyze` は判定の規則そのものなので使う。ほかの assert（48 語の導出・2 回の問い合わせのバイト同一・`state`/`origin`/`generated_frame`/`namespace`/`top`・生成の枠の型・腕の判定・NOT_CONFIRMED の形・`disjoint_slot_conflicts`）は変えない。写しなので原本とは一致しなくなる（前後の sha256 は `artifacts/w5-e/r2/attack_copies_r2.sha256`）。
+
+### 改訂前の全文
+
+#### `tests/coarse_place/test_coarse_place_w5d_frame_types.py::test_a_frame_whose_types_meet_the_distribution_stays_confirmed` — 改訂前
+```python
+def test_a_frame_whose_types_meet_the_distribution_stays_confirmed(built):
+    r = q("呟く", built["out"])
+    assert r["frame_status"] == "CONFIRMED"
+    assert r["frame"]["を"] == ["INFO_LANGUAGE", "PERSON"]               # the intersection rule: a frame wider than the distribution stays
+    assert r["frame"]["が"] == ["PERSON"]
+    assert "frame_disagreement" not in r and r["frame_unconfirmed"] == {}
+    assert list(r)[-4:] == ["generated_frame", "frame_status", "frame", "frame_unconfirmed"]
+    r = q("囁く", built["out"])
+    assert r["frame_status"] == "CONFIRMED" and r["frame"] == {"が": ["PERSON"], "を": ["INFO_LANGUAGE"]}
+    assert "frame_disagreement" not in r
+```
+
+#### `tests/attack/w3a3/test_attack_w3a3_r6.py::test_all_r6_generated_frame_upgrades` — 改訂前
+```python
+def test_all_r6_generated_frame_upgrades():
+    # W5-d2 (auditor's ruling B1, K5): the invariants follow the rule of W5-d (docs/COARSE_PLACEMENT.md section 13): a predicate that a generated frame placed direct
+    # is CONFIRMED only when no particle of the frame contradicts the distribution that backed it; a contradicted one is NOT_CONFIRMED (frame null, the contradiction
+    # in frame_disagreement). The derivation of the 48 words, the byte identity of two queries, state/origin/generated_frame/namespace/top, the type of the
+    # generated frame, and the verdict of every distribution arm are as they were; the number of NOT_CONFIRMED words is not asserted (it is written to the summary).
+    pl, why = cp._open(PLACEMENT)
+    assert pl is not None, why
+    rows = pl.con.execute(
+        "SELECT word FROM headwords WHERE origin='direct' AND by LIKE '%gen_frame%' ORDER BY word"
+    ).fetchall()
+    words = [row[0] for row in rows]
+    assert len(words) == 48
+
+    results, frame_conflicts, invariant_errors, byte_diffs, not_confirmed = [], [], [], [], []
+    for word in words:
+        answer = cp.query(word, placement=PLACEMENT)
+        again = cp.query(word, placement=PLACEMENT)
+        if _json_bytes(answer) != _json_bytes(again):
+            byte_diffs.append(word)
+        results.append(answer)
+
+        if not (answer["state"] == "DECIDED" and answer["origin"] == "direct"
+                and answer.get("generated_frame") is True
+                and answer["frame_status"] in ("CONFIRMED", "NOT_CONFIRMED")
+                and answer["namespace"] == "P" and answer["top"]):
+            invariant_errors.append({"word": word, "answer": answer})
+            continue
+
+        gf = pl.generated_frame(word)
+        generated = gf[5] if gf else {}
+        if not gf or gf[4] != answer["top"][0]:
+            invariant_errors.append({"word": word, "reason": "generated_type_differs",
+                                     "generated_type": gf[4] if gf else None,
+                                     "answer_top": answer["top"]})
+        sig_particles, typed_sig = set(), []
+        for key, arm in answer["axes"].items():
+            if not key.startswith("role_distribution@") or not arm["met"]:
+                continue
+            raw = [r for r in pl.evidence(word)
+                   if r[0] == "role_distribution" and key.endswith("@" + r[1])]
+            counts = {r[2]: r[3] for r in raw}
+            base = raw[0][4] if raw else None
+            analysis = ct.rd_analyze(counts, pl.cfg, base)
+            sig_particles.update(analysis["sig"])
+            typed_sig.append((key, analysis["types"]))
+            if ct.arm_verdict("role_distribution", counts, pl.cfg, base) != answer["top"]:
+                invariant_errors.append({"word": word, "arm": key, "reason": "arm_top_differs"})
+
+        if answer["frame_status"] == "NOT_CONFIRMED":
+            not_confirmed.append(word)
+            disagreement = answer.get("frame_disagreement")
+            if answer["frame"] is not None or "frame_unconfirmed" in answer \
+                    or not isinstance(disagreement, dict) or not disagreement:
+                invariant_errors.append({"word": word, "reason": "not_confirmed_shape", "frame": answer["frame"],
+                                         "frame_disagreement": disagreement,
+                                         "has_frame_unconfirmed": "frame_unconfirmed" in answer})
+                continue
+            for particle, entry in disagreement.items():
+                gen_types = set(entry.get("generated") or [])
+                arms = entry.get("distribution") or {}
+                if not gen_types or not arms or any(gen_types & set(dt) for dt in arms.values()):
+                    invariant_errors.append({"word": word, "reason": "disagreement_types_meet",
+                                             "particle": particle, "entry": entry})
+            continue
+
+        expected = {p: sorted(set(generated.get(p, []))) for p in ct.ROLE_PARTICLES
+                    if p in sig_particles and generated.get(p)}
+        if answer["frame"] != expected:
+            invariant_errors.append({"word": word, "reason": "frame_projection_differs",
+                                     "expected": expected, "got": answer["frame"]})
+
+        for key, by_particle in typed_sig:
+            for particle, dist_types in by_particle.items():
+                if not dist_types:
+                    continue
+                frame_types = set(answer["frame"].get(particle, []))
+                if not frame_types or not frame_types.intersection(dist_types):
+                    frame_conflicts.append({"word": word, "source": key, "particle": particle,
+                                            "distribution_types": dist_types,
+                                            "confirmed_frame_types": sorted(frame_types)})
+
+    (OUT / "r6_48_queries.jsonl").write_text(
+        "".join(json.dumps(x, ensure_ascii=False, separators=(",", ":")) + "\n" for x in results),
+        encoding="utf-8")
+    summary = {"derived_words": len(words), "queried": len(results),
+               "byte_differences": byte_diffs, "invariant_errors": invariant_errors,
+               "disjoint_slot_conflicts": frame_conflicts, "not_confirmed": not_confirmed}
+    (OUT / "r6_audit_summary.json").write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    assert not byte_diffs
+    assert not invariant_errors
+    assert not frame_conflicts, "confirmed frame slot types contradict significant distribution types"
+```
+
+### 改訂後の全文
+
+#### `tests/coarse_place/test_coarse_place_w5d_frame_types.py::test_a_frame_whose_types_meet_the_distribution_stays_confirmed` — 改訂後
+```python
+def test_a_frame_whose_types_meet_the_distribution_stays_confirmed(built):
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A4）: A-4 で frame に残すのは「生成の枠 ∩ 分布の裏づけ」だけ。治具の分布（人が言葉を呟いた×14: が+PERSON・を+INFO_LANGUAGE）から手で求めた期待:
+    # 呟く の生成の枠 を=[INFO_LANGUAGE, PERSON] のうち分布が裏づけるのは INFO_LANGUAGE だけ → frame[を]=[INFO_LANGUAGE]、外れた PERSON は frame_unconfirmed[を]
+    r = q("呟く", built["out"])
+    assert r["frame_status"] == "CONFIRMED"
+    assert r["frame"]["を"] == ["INFO_LANGUAGE"]                          # the intersection rule (A-4): the PERSON the distribution does not back is not in frame
+    assert r["frame"]["が"] == ["PERSON"]
+    assert "frame_disagreement" not in r and r["frame_unconfirmed"] == {"を": ["PERSON"]}
+    assert list(r)[-4:] == ["generated_frame", "frame_status", "frame", "frame_unconfirmed"]
+    r = q("囁く", built["out"])
+    assert r["frame_status"] == "CONFIRMED" and r["frame"] == {"が": ["PERSON"], "を": ["INFO_LANGUAGE"]}
+    assert "frame_disagreement" not in r
+```
+
+#### `tests/attack/w3a3/test_attack_w3a3_r6.py::test_all_r6_generated_frame_upgrades` — 改訂後
+```python
+def test_all_r6_generated_frame_upgrades():
+    # W5-d2 (auditor's ruling B1, K5): the invariants follow the rule of W5-d (docs/COARSE_PLACEMENT.md section 13): a predicate that a generated frame placed direct
+    # is CONFIRMED only when no particle of the frame contradicts the distribution that backed it; a contradicted one is NOT_CONFIRMED (frame null, the contradiction
+    # in frame_disagreement). The derivation of the 48 words, the byte identity of two queries, state/origin/generated_frame/namespace/top, the type of the
+    # generated frame, and the verdict of every distribution arm are as they were; the number of NOT_CONFIRMED words is not asserted (it is written to the summary).
+    pl, why = cp._open(PLACEMENT)
+    assert pl is not None, why
+    rows = pl.con.execute(
+        "SELECT word FROM headwords WHERE origin='direct' AND by LIKE '%gen_frame%' ORDER BY word"
+    ).fetchall()
+    words = [row[0] for row in rows]
+    assert len(words) == 48
+
+    results, frame_conflicts, invariant_errors, byte_diffs, not_confirmed = [], [], [], [], []
+    for word in words:
+        answer = cp.query(word, placement=PLACEMENT)
+        again = cp.query(word, placement=PLACEMENT)
+        if _json_bytes(answer) != _json_bytes(again):
+            byte_diffs.append(word)
+        results.append(answer)
+
+        if not (answer["state"] == "DECIDED" and answer["origin"] == "direct"
+                and answer.get("generated_frame") is True
+                and answer["frame_status"] in ("CONFIRMED", "NOT_CONFIRMED")
+                and answer["namespace"] == "P" and answer["top"]):
+            invariant_errors.append({"word": word, "answer": answer})
+            continue
+
+        gf = pl.generated_frame(word)
+        generated = gf[5] if gf else {}
+        if not gf or gf[4] != answer["top"][0]:
+            invariant_errors.append({"word": word, "reason": "generated_type_differs",
+                                     "generated_type": gf[4] if gf else None,
+                                     "answer_top": answer["top"]})
+        sig_particles, typed_sig = set(), []
+        for key, arm in answer["axes"].items():
+            if not key.startswith("role_distribution@") or not arm["met"]:
+                continue
+            raw = [r for r in pl.evidence(word)
+                   if r[0] == "role_distribution" and key.endswith("@" + r[1])]
+            counts = {r[2]: r[3] for r in raw}
+            base = raw[0][4] if raw else None
+            analysis = ct.rd_analyze(counts, pl.cfg, base)
+            sig_particles.update(analysis["sig"])
+            typed_sig.append((key, analysis["types"]))
+            if ct.arm_verdict("role_distribution", counts, pl.cfg, base) != answer["top"]:
+                invariant_errors.append({"word": word, "arm": key, "reason": "arm_top_differs"})
+
+        if answer["frame_status"] == "NOT_CONFIRMED":
+            not_confirmed.append(word)
+            disagreement = answer.get("frame_disagreement")
+            if answer["frame"] is not None or "frame_unconfirmed" in answer \
+                    or not isinstance(disagreement, dict) or not disagreement:
+                invariant_errors.append({"word": word, "reason": "not_confirmed_shape", "frame": answer["frame"],
+                                         "frame_disagreement": disagreement,
+                                         "has_frame_unconfirmed": "frame_unconfirmed" in answer})
+                continue
+            for particle, entry in disagreement.items():
+                gen_types = set(entry.get("generated") or [])
+                arms = entry.get("distribution") or {}
+                if not gen_types or not arms or any(gen_types & set(dt) for dt in arms.values()):
+                    invariant_errors.append({"word": word, "reason": "disagreement_types_meet",
+                                             "particle": particle, "entry": entry})
+            continue
+
+        # W5-e2 (auditor's ruling K-A4, 2026-10-04 04:42): the frame keeps the generated types the distribution backs (generated frame ∩ the UNION over the deciding
+        # distribution arms of the significant types, ct.rd_analyze: the rule of the decision itself, NOT cp.frame_backing); the generated types it does not back, and every
+        # generated particle outside the significant ones, are in frame_unconfirmed
+        backing = {}
+        for _key, by_particle in typed_sig:
+            for particle, dist_types in by_particle.items():
+                backing.setdefault(particle, set()).update(dist_types)
+        expected = {p: sorted(set(generated[p]) & backing.get(p, set())) for p in ct.ROLE_PARTICLES
+                    if p in sig_particles and generated.get(p) and set(generated[p]) & backing.get(p, set())}
+        expected_unconfirmed = {p: sorted(set(generated[p]) - (backing.get(p, set()) if p in sig_particles else set()))
+                                for p in ct.ROLE_PARTICLES
+                                if generated.get(p) and set(generated[p]) - (backing.get(p, set()) if p in sig_particles else set())}
+        if answer["frame"] != expected or answer.get("frame_unconfirmed") != expected_unconfirmed:
+            invariant_errors.append({"word": word, "reason": "frame_projection_differs",
+                                     "expected": expected, "got": answer["frame"],
+                                     "expected_unconfirmed": expected_unconfirmed, "got_unconfirmed": answer.get("frame_unconfirmed")})
+
+        for key, by_particle in typed_sig:
+            for particle, dist_types in by_particle.items():
+                if not dist_types:
+                    continue
+                frame_types = set(answer["frame"].get(particle, []))
+                if not frame_types or not frame_types.intersection(dist_types):
+                    frame_conflicts.append({"word": word, "source": key, "particle": particle,
+                                            "distribution_types": dist_types,
+                                            "confirmed_frame_types": sorted(frame_types)})
+
+    (OUT / "r6_48_queries.jsonl").write_text(
+        "".join(json.dumps(x, ensure_ascii=False, separators=(",", ":")) + "\n" for x in results),
+        encoding="utf-8")
+    summary = {"derived_words": len(words), "queried": len(results),
+               "byte_differences": byte_diffs, "invariant_errors": invariant_errors,
+               "disjoint_slot_conflicts": frame_conflicts, "not_confirmed": not_confirmed}
+    (OUT / "r6_audit_summary.json").write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    assert not byte_diffs
+    assert not invariant_errors
+    assert not frame_conflicts, "confirmed frame slot types contradict significant distribution types"
+```
+
+流した結果: `tests/coarse_place` と `tests/attack/w3a3/test_attack_w3a3_r6.py` は全通過（`artifacts/w5-e/r2/` の `k_a4_run.txt`）。後者は実行のたびに `r6_48_queries.jsonl`（と `r6_audit_summary.json`）を書き換える既存の副作用があり、流した直後に基点の内容へ戻した（改訂後の出力は `artifacts/w5-e/r2/r6_48_queries.after_ka4.jsonl` に写した）。
+<!-- w5e2-ka4:end -->
+
+## 14.2.x W5-e 第 2 ラウンドの測定: 覆った へ の R1（重ねた複製で r8 の全数）
+<!-- w5e2-r1-measured:begin -->
+事前登録（`r1_prereg_at.txt`）→ テストの凍結（`frozen_r1cover.sha256`・`frozen_r1cover_at.txt`）→ 直す前に落ちる記録（`r1cover_before_fail.txt`: `13 failed, 5 passed`）→ 製品（`coarse_place.frame_cover_unconfirmed` と `_direct` の数行）の順。出力はすべて `artifacts/w5-e/r2/`。
+
+- **この基点（`$W`）では r7・r8 とも答えは 1 バイトも変わらない**: r7 の全 4,788 語を `frame_enum.py` で問い合わせ、第 1 ラウンドの `h5_frames.jsonl` とバイト一致（`h5_frames.jsonl`）。`coarse_types.py` は 1 行も変えていない（`git diff ca66d3e -- verantyx/coarse_types.py` は空）。新しいテスト `tests/coarse_place/test_coarse_place_w5e2_cover.py` は 18 件通過（純粋関数 5 通り以上・実在の r7 の語を `decide_word` を包んで `cover` を足した上で `_direct` に通す確かめ・r7 の不変）。
+- **重ねた複製**（`$T/ov` = 今の `$W` の製品＋df4f001 の `coarse_types.py`、`ov0` = 同じで `coarse_place.py` だけ第 1 ラウンドの版、`ovb` = 同じで `coarse_place.py` だけ基点の版。スクリプトは `artifacts/w5-e/r2/scripts/`）で r8（`/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/run2`）の `generated_frames` 8,030 語を問い合わせた（`h5_r8_r1.txt`）:
+  - 状態の数は 3 つとも ESTIMATED 7,900・CONFIRMED 99・NOT_CONFIRMED 31（W3-a4 のレビューの値と一致＝重ねた複製が正しい）。
+  - R1 の有無（`ov` 対 `ov0`）で答えが変わる語は **14 語**、違う鍵は `frame_unconfirmed` だけ、14 語とも `frame_unconfirmed["へ"] == ["PLACE"]` が足される: 向かえる・嫁ぐ・日帰りする・流れ込む・浸透する・潜る・異動する・移す・行ける・送り返す・逃げ込む・通う・進出する・飛び込む。`state`・`origin`・`top`・`frame_status`・`frame` の変化は 0。
+  - CONFIRMED で `frame == {}` の語: 基点の `coarse_place`（`ovb`）で 12 語（W3-a4 の R1 の 12 語）、第 1 ラウンドの版（`ov0`）と今（`ov`）で 14 語（A-4 で `移す`・`通う` が増える: この 2 語の に は有意な助詞だが分布が型を裏づけないので `frame` から外れる）。R1 は `frame` を変えないので 14 語は残る。**覆った へ は `frame_unconfirmed` に出るようになった**（`frame_status` は変えていない）。
+  - 参考: r8 の CONFIRMED 99 語のうち、`decide_word` が `cover` を記録する語は 99、`he_by_ni_place` が空でない語は 14（上の 14 語と同じ）、`cover["ignored"]` が空でない語は **0**（`h5_r8_ignored.txt`）。したがって `ignored` を出さない判断は r8 では何の語にも影響しない。
+- r7（4,788 語）: 重ねた複製（`ov`）と `$W` の答えはバイト一致、R1 の有無（`ov` と `ov0`）でもバイト一致（`$T/q` の `cmp`。このツリーの `h5_frames.jsonl` との一致は上のとおり）。
+- **W3-a4（df4f001）の統合後に効く**: 統合後に r8 で `frame_unconfirmed["へ"] == ["PLACE"]` の 14 語を確かめてほしい。
+<!-- w5e2-r1-measured:end -->

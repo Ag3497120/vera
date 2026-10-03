@@ -278,7 +278,8 @@ def test_n1_through_a_real_subprocess_a_null_origin_index_never_answers(tmp_path
 def test_w5c_the_versions_and_the_table_are_as_registered():
     assert bp.TABLE_VERSION == 1 and bp.SCHEMA == "verantyx.basis_policy/1"
     # W5-c r3（監査役の判断 2026-10-03 20:40）: 規則 7・8 が変わったので CLASSIFY_VERSION は 3（prereg-w5c-r3 節）
-    assert bp.CLASSIFY_VERSION == 3 and bp.CONFIRM_ID_VERSION == 2
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: CLASSIFY_VERSION は 4（A-3: human_confirmed を人と分類するのは family == memory_sovereign のときだけ。prereg の節 W5-e A-3）
+    assert bp.CLASSIFY_VERSION == 4 and bp.CONFIRM_ID_VERSION == 2
     assert len(bp.TABLE) == 24 and bp.BASES == ("HUMAN", "GENERATED", "NONE")
     assert bp.DECLARED_ORIGINS == ("generated", "human_confirmed", "constructed", "testimony")
     assert bp.UNKNOWN_ORIGIN == "UNKNOWN_ORIGIN"
@@ -297,7 +298,8 @@ def test_w5c_rule_4_an_index_family_without_a_declared_origin_is_unknown(family,
 
 def test_w5c_counts_keep_their_five_keys_and_the_new_numbers_live_beside_them():
     # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の HUMAN を明示の人（origin: human_confirmed）にした。期待は同じ
-    sc = bp.classify_sources([_src("local", None), _src("x", "zzz"), GEN, {**HUMAN, "origin": "human_confirmed"}, USER, "junk"])
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
+    sc = bp.classify_sources([_src("local", None), _src("x", "zzz"), GEN, {**HUMAN, "family": "memory_sovereign", "origin": "human_confirmed"}, USER, "junk"])
     assert set(sc.counts) == {"human", "generated", "non_evidence", "request_text", "unreadable"}
     assert sc.counts == {"human": 1, "generated": 1, "non_evidence": 1, "request_text": 1, "unreadable": 1}
     assert sc.unknown_origin == 1 and sc.unknown_origin_values == {"zzz": 1}
@@ -315,7 +317,8 @@ def test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basi
     assert bp.classify_sources([_src("x", "testimony")]).policy_basis == "NONE"
     assert bp.classify_sources([GEN]).policy_basis == "GENERATED"
     # W5-c r3（監査役の判断 2026-10-03 20:40）: 最後の行の入力を明示の人にした（期待は同じ）。強める側の assert を 1 行足した
-    assert bp.classify_sources([{**HUMAN, "origin": "human_confirmed"}]).policy_basis == "HUMAN"
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
+    assert bp.classify_sources([{**HUMAN, "family": "memory_sovereign", "origin": "human_confirmed"}]).policy_basis == "HUMAN"
     assert bp.classify_sources([HUMAN]).policy_basis == "UNKNOWN_ORIGIN"
 
 
@@ -349,7 +352,8 @@ def test_w5c_the_policy_note_carries_the_new_versions_and_numbers():
     note = out["basis_policy"]
     assert note["schema"] == "verantyx.basis_policy/1" and note["table_version"] == 1
     # W5-c r3（監査役の判断 2026-10-03 20:40）: 注記の classify_version は 3
-    assert note["classify_version"] == 3 and note["confirm_id_version"] == 2
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 注記の classify_version は 4
+    assert note["classify_version"] == 4 and note["confirm_id_version"] == 2
     assert note["counts"]["unknown_origin"] == 1 and note["counts"]["unknown_origin_by_family"] == {"pro": 1}
     assert out["withheld"]["unknown_origin_source_count"] == 1
 

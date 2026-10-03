@@ -1,0 +1,18 @@
+== frozen.sha256
+tests/reading_soundness/w5e_coordination.jsonl: OK
+== frozen_a3.sha256
+artifacts/w5-e/h4_inputs.json: OK
+tests/test_basis_policy_w5e.py: OK
+tests/attack/test_attack_w5d.py: OK
+== frozen_a1.sha256
+tests/test_question_cross_w5e.py: OK
+== frozen_a4.sha256
+tests/coarse_place/test_coarse_place_w5e_frame_backing.py: OK
+== frozen_a2.sha256
+tests/test_routing_from_text_w5e.py: OK
+== frozen_b.sha256
+tests/reading_soundness/w5e_coordination_check.py: OK
+tests/test_semantic_read_w5e.py: FAILED
+tests/test_event_cross_w5e.py: OK
+tests/test_semantic_read_w5e.py: OK
+shasum: WARNING: 1 computed checksum did NOT match

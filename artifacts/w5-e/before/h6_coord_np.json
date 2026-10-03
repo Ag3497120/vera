@@ -1,0 +1,767 @@
+{
+ "summary": {
+  "placement": null,
+  "rows": 80,
+  "groups": {
+   "and_ga": {
+    "ABSTAIN": 15,
+    "MISREAD": 1
+   },
+   "comma": {
+    "ABSTAIN": 14,
+    "CORRECT": 2
+   },
+   "issho": {
+    "ABSTAIN": 16
+   },
+   "ka_ga": {
+    "ABSTAIN": 15,
+    "MISREAD": 1
+   },
+   "ya_wo": {
+    "ABSTAIN": 16
+   }
+  },
+  "misread": 2,
+  "correct": 2,
+  "abstain": 76
+ },
+ "rows": [
+  {
+   "id": "W5E-AND_GA-001",
+   "group": "and_ga",
+   "text": "佐藤さんと鈴木さんが会議に出席した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "RECIPIENT_TYPE_UNDETERMINED:出席する"
+   ]
+  },
+  {
+   "id": "W5E-AND_GA-002",
+   "group": "and_ga",
+   "text": "ミラとルナが画面を見つめた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "AGENT_EVIDENCE_MISSING:ルナ"
+   ]
+  },
+  {
+   "id": "W5E-AND_GA-003",
+   "group": "and_ga",
+   "text": "午前と午後が入れ替わった。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-AND_GA-004",
+   "group": "and_ga",
+   "text": "駅と病院が地図に載っている。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-AND_GA-005",
+   "group": "and_ga",
+   "text": "営業部と開発部が資料を作った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-AND_GA-006",
+   "group": "and_ga",
+   "text": "キャンディとチョコがテーブルに並んだ。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-AND_GA-007",
+   "group": "and_ga",
+   "text": "田中と山田は新聞を読んだ。",
+   "verdict": "MISREAD",
+   "why": "expected an abstention, the sentence was read",
+   "clauses": [
+    {
+     "predicate": "読む",
+     "roles": {
+      "agent": "山田",
+      "patient": "新聞",
+      "companion": "田中"
+     },
+     "polarity": "+",
+     "tense": "past",
+     "modality": null,
+     "voice": "active"
+    }
+   ]
+  },
+  {
+   "id": "W5E-AND_GA-008",
+   "group": "and_ga",
+   "text": "父と母も旅行に出かけた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-AND_GA-009",
+   "group": "and_ga",
+   "text": "先生と生徒の本を机に置いた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-AND_GA-010",
+   "group": "and_ga",
+   "text": "兄と姉と妹が夕食を作った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-AND_GA-011",
+   "group": "and_ga",
+   "text": "犬と猫が雪の庭を走り回った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-AND_GA-012",
+   "group": "and_ga",
+   "text": "医者と看護師が部屋に入った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-AND_GA-013",
+   "group": "and_ga",
+   "text": "雨と風が窓を叩いた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-AND_GA-014",
+   "group": "and_ga",
+   "text": "彼と彼女が橋を渡った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-AND_GA-015",
+   "group": "and_ga",
+   "text": "社長と専務が契約書に署名した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-AND_GA-016",
+   "group": "and_ga",
+   "text": "東京と大阪が大会を開いた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-001",
+   "group": "ya_wo",
+   "text": "紅茶やコーヒーを注文した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-002",
+   "group": "ya_wo",
+   "text": "雑誌や新聞を棚に戻した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-003",
+   "group": "ya_wo",
+   "text": "りんごやみかんを買った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-004",
+   "group": "ya_wo",
+   "text": "机や椅子を倉庫に運んだ。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-005",
+   "group": "ya_wo",
+   "text": "手紙やはがきを郵便局に出した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-006",
+   "group": "ya_wo",
+   "text": "ペンやノートが鞄に入っている。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-007",
+   "group": "ya_wo",
+   "text": "姉や妹が市場で野菜を買った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "AGENT_EVIDENCE_MISSING:姉や妹"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-008",
+   "group": "ya_wo",
+   "text": "先生や生徒は校庭に集まった。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-009",
+   "group": "ya_wo",
+   "text": "山や海も旅の目的地になった。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-010",
+   "group": "ya_wo",
+   "text": "ギターやピアノの音が部屋に響いた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-011",
+   "group": "ya_wo",
+   "text": "会議や出張に参加した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-012",
+   "group": "ya_wo",
+   "text": "犬や猫や鳥を庭で飼った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-013",
+   "group": "ya_wo",
+   "text": "田中さんや鈴木さんが挨拶した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-014",
+   "group": "ya_wo",
+   "text": "夏や冬の服を箱に詰めた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-015",
+   "group": "ya_wo",
+   "text": "傘やコートを玄関に置いた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-YA_WO-016",
+   "group": "ya_wo",
+   "text": "レポートや資料を提出した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-001",
+   "group": "ka_ga",
+   "text": "犬か猫が庭に入った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-002",
+   "group": "ka_ga",
+   "text": "社長か専務が契約書に署名する。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-003",
+   "group": "ka_ga",
+   "text": "紅茶かコーヒーを注文した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-004",
+   "group": "ka_ga",
+   "text": "ミラかルナが画面を見つめた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-005",
+   "group": "ka_ga",
+   "text": "月曜か火曜に会議を開く。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-006",
+   "group": "ka_ga",
+   "text": "駅か病院が目印になる。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-007",
+   "group": "ka_ga",
+   "text": "兄か姉は夕食を作った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNMAPPED_ROLE:topic"
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-008",
+   "group": "ka_ga",
+   "text": "本か雑誌を棚に戻した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-009",
+   "group": "ka_ga",
+   "text": "田中さんか山田さんも出席した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-010",
+   "group": "ka_ga",
+   "text": "赤か青の傘を買った。",
+   "verdict": "MISREAD",
+   "why": "expected an abstention, the sentence was read",
+   "clauses": [
+    {
+     "predicate": "買う",
+     "roles": {
+      "patient": "赤か青の傘"
+     },
+     "polarity": "+",
+     "tense": "past",
+     "modality": null,
+     "voice": "active"
+    }
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-011",
+   "group": "ka_ga",
+   "text": "東京か大阪で大会を開いた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-012",
+   "group": "ka_ga",
+   "text": "彼か彼女が橋を渡る。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-013",
+   "group": "ka_ga",
+   "text": "手紙かはがきを郵便局に出した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-014",
+   "group": "ka_ga",
+   "text": "ペンかノートが鞄に入っている。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-015",
+   "group": "ka_ga",
+   "text": "医者か看護師が部屋に入った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W5E-KA_GA-016",
+   "group": "ka_ga",
+   "text": "午前か午後が空いている。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W5E-COMMA-001",
+   "group": "comma",
+   "text": "ミラと、ルナが来た。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "SUBJECT_TYPE_UNDETERMINED:ルナ"
+   ]
+  },
+  {
+   "id": "W5E-COMMA-002",
+   "group": "comma",
+   "text": "太郎と、次郎が笑った。",
+   "verdict": "CORRECT"
+  },
+  {
+   "id": "W5E-COMMA-003",
+   "group": "comma",
+   "text": "田中さんと、山田さんが到着した。",
+   "verdict": "CORRECT"
+  },
+  {
+   "id": "W5E-COMMA-004",
+   "group": "comma",
+   "text": "先生と、生徒が手紙を読んだ。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-COMMA-005",
+   "group": "comma",
+   "text": "兄と、弟が本を買った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-COMMA-006",
+   "group": "comma",
+   "text": "姉と、妹が料理を作った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-COMMA-007",
+   "group": "comma",
+   "text": "父と、母が荷物を運んだ。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-COMMA-008",
+   "group": "comma",
+   "text": "社長と、専務が書類を確認した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-COMMA-009",
+   "group": "comma",
+   "text": "医者と、看護師が患者を見た。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-COMMA-010",
+   "group": "comma",
+   "text": "ハルと、セキが地図を描いた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "AGENT_EVIDENCE_MISSING:セキ"
+   ]
+  },
+  {
+   "id": "W5E-COMMA-011",
+   "group": "comma",
+   "text": "祖父と、祖母が畑を耕した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-COMMA-012",
+   "group": "comma",
+   "text": "彼と、彼女が窓を開けた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-COMMA-013",
+   "group": "comma",
+   "text": "隊長と、隊員が道を探した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-COMMA-014",
+   "group": "comma",
+   "text": "店長と、店員が棚を片付けた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-COMMA-015",
+   "group": "comma",
+   "text": "友人と、私が到着した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-COMMA-016",
+   "group": "comma",
+   "text": "監督と、選手が試合を見た。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-001",
+   "group": "issho",
+   "text": "太郎が花子と一緒に帰った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-002",
+   "group": "issho",
+   "text": "ミラがルナと一緒に歌った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-003",
+   "group": "issho",
+   "text": "兄が友人と一緒に走った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-004",
+   "group": "issho",
+   "text": "姉が母と一緒に料理を作った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-005",
+   "group": "issho",
+   "text": "先生が生徒と一緒に本を読んだ。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-006",
+   "group": "issho",
+   "text": "社長が専務と一緒に出張した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-007",
+   "group": "issho",
+   "text": "祖父が祖母と一緒に畑を耕した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-008",
+   "group": "issho",
+   "text": "私が彼女と一緒に笑った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-009",
+   "group": "issho",
+   "text": "弟が友達と一緒に泳いだ。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-010",
+   "group": "issho",
+   "text": "父が叔父と一緒に魚を釣った。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-011",
+   "group": "issho",
+   "text": "店長が店員と一緒に棚を片付けた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-012",
+   "group": "issho",
+   "text": "隊長が隊員と一緒に道を探した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-013",
+   "group": "issho",
+   "text": "ハルがセキと一緒に地図を描いた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-014",
+   "group": "issho",
+   "text": "彼が彼女と一緒に窓を開けた。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-015",
+   "group": "issho",
+   "text": "山田さんが鈴木さんと一緒に到着した。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W5E-ISSHO-016",
+   "group": "issho",
+   "text": "監督が選手と一緒に試合を見た。",
+   "verdict": "ABSTAIN",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,33 @@
+........................................................................ [ 43%]
+FFF.F..F.......F.......FFF................................FFF....F...FFF [ 86%]
+FFFFF....F..FFFF.FF....                                                  [100%]
+=========================== short test summary info ============================
+FAILED test_routing_from_text.py::test_T4_the_module_uses_no_regular_expression_no_direct_table_and_no_lineage_label
+FAILED test_routing_from_text.py::test_T4_every_constant_entry_is_listed_in_the_docs
+FAILED test_routing_from_text.py::test_T4_closed_lists_are_what_the_docs_say
+FAILED test_routing_from_text.py::test_M4_the_docs_list_every_constant_entry_that_is_a_word_of_the_first_six_explanations
+FAILED test_routing_from_text_regress.py::test_M1_the_entry_says_the_same - j...
+FAILED test_routing_from_text_regress.py::test_M3_the_non_past_sentence_of_the_same_form_is_still_routed
+FAILED test_routing_from_text_w5b.py::test_the_determiner_test_is_for_english_only_and_not_for_a_naming_sentence
+FAILED test_routing_from_text_w5b.py::test_a_word_the_placement_types_directly_is_not_an_agent_name_and_the_check_is_counted
+FAILED test_routing_from_text_w5b.py::test_a_word_introduced_by_a_naming_sentence_is_a_name_even_when_the_placement_types_it
+FAILED test_routing_from_text_w5d.py::test_r1_a_placed_word_that_the_placement_cannot_type_still_passes[answer0]
+FAILED test_routing_from_text_w5d.py::test_r1_a_placed_word_that_the_placement_cannot_type_still_passes[answer1]
+FAILED test_routing_from_text_w5d.py::test_r1_a_placed_word_that_the_placement_cannot_type_still_passes[answer2]
+FAILED test_routing_from_text_w5d.py::test_r1_a_direct_type_among_the_noun_types_is_a_common_noun[types4]
+FAILED test_routing_from_text_w5d.py::test_r2_a_marker_followed_by_a_fragment_the_reader_cannot_read_is_undetermined_not_a_replacement
+FAILED test_routing_from_text_w5d.py::test_r2_the_attack_shape_with_a_reader_that_ignores_the_sentence_never_replaces
+FAILED test_routing_from_text_w5d.py::test_r2_a_fragment_read_as_one_negative_clause_is_a_maintenance_the_line_adds_and_replaces_nothing
+FAILED test_routing_from_text_w5d.py::test_r2_a_fragment_read_as_an_affirmative_clause_is_undetermined
+FAILED test_routing_from_text_w5d.py::test_r2_a_fragment_of_two_clauses_is_undetermined
+FAILED test_routing_from_text_w5d.py::test_r2_a_marker_that_leads_the_clause_directly_still_replaces_japanese[\u3084\u3063\u3071\u308a\u5b9f\u88c5\u306f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002]
+FAILED test_routing_from_text_w5d.py::test_r2_a_marker_that_leads_the_clause_directly_still_replaces_japanese[\u3084\u3063\u3071\u308a\u3001\u5b9f\u88c5\u306f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002]
+FAILED test_routing_from_text_w5d.py::test_r2_a_marker_that_leads_the_clause_directly_still_replaces_japanese[\u5b9f\u88c5\u306f\u30df\u30e9\u3067\u306f\u306a\u304f\u30eb\u30ca\u306b\u4efb\u305b\u308b\u3002]
+FAILED test_routing_from_text_w5d.py::test_r2_the_other_labels_replace_as_before_even_with_a_fragment_after_a_marker
+FAILED test_routing_from_text_w5d.py::test_k2_a_japanese_name_the_placement_does_not_type_is_routed
+FAILED test_routing_from_text_w5d.py::test_k2_two_japanese_addenda_without_a_marker_keep_both_statements
+FAILED test_routing_from_text_w5d.py::test_k2_the_other_labels_replace_as_before_without_a_marker
+FAILED test_routing_from_text_w5d.py::test_k2_a_common_noun_the_placement_types_is_still_stopped_next_to_a_routed_name
+FAILED test_routing_from_text_w5d.py::test_w5d2_a_parallel_name_is_routed_when_the_placement_answers_for_each_part
+FAILED test_routing_from_text_w5d.py::test_w5d2_a_part_of_a_parallel_name_that_the_placement_types_as_a_common_noun_stops_the_unit
+28 failed, 139 passed in 0.56s

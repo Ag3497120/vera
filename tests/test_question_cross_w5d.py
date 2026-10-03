@@ -83,13 +83,15 @@ def test_a02_a_time_adverb_fused_with_its_noun_is_not_a_candidate_without_a_chec
     pl = write_pl(tmp_path, {'本': 'ARTIFACT', '新聞': 'ARTIFACT'})            # only the two real nouns are typed (direct)
     out = ask_ja_doc('花子は何を読んだ？', 'JA02', pl)
     a = out['answer']
-    assert a['status'] == 'TIE' and {f['surface'] for f in a['fillers']} == {'本', '新聞'}
+    # W5-e（チケット W5-e の名指しの改訂）: 本・新聞（AGREE）と毎日本（TYPE_UNCHECKED）が並ぶ構成は TIE ではなく INCOMPLETE_TYPING（A-1）。
+    assert a['status'] == 'INCOMPLETE_TYPING' and {f['surface'] for f in a['fillers']} == {'本', '新聞'}
     assert excluded(out) == [('毎日本', 'TYPE_UNCHECKED')]                      # not hidden: it stays in `excluded`
     assert {f['hole_type_check']['verdict'] for f in a['fillers']} == {'AGREE'}
 
 
 def test_the_new_names_are_at_the_end_of_the_closed_lists():
-    assert O.ANSWER_STATUSES[-1] == 'NO_TYPED_CANDIDATE' and O.ANSWER_STATUSES[:10] == (
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A1）: A-1 が INCOMPLETE_TYPING を末尾に足したので、末尾の 2 つを固定する
+    assert O.ANSWER_STATUSES[-2:] == ('NO_TYPED_CANDIDATE', 'INCOMPLETE_TYPING') and O.ANSWER_STATUSES[:10] == (
         'FILLED', 'TIE', 'NO_ATTESTED_CELL', 'TYPE_EXCLUDED_ALL', 'HOLE_TYPE_UNDETERMINED', 'POLAR_QUESTION',
         'DIRECTION_NOT_APPLIED', 'QUESTION_NOT_READ', 'ANCHOR_CROSS_INDEX_OUT_OF_RANGE', 'INCOMPLETE_BY_EXTENSION')
     assert O.HOLE_EXCLUSION_REASONS == ('HOLE_TYPE_DISAGREE', 'HOLE_TYPE_NOT_CHECKED', 'SAME_AS_RESTRICTOR', 'TYPE_UNCHECKED')
@@ -136,9 +138,10 @@ def test_all_disagree_is_type_excluded_all_and_any_unchecked_among_them_is_no_ty
 
 def test_a_checked_candidate_among_unchecked_ones_answers_and_the_others_stay_excluded(tmp_path):
     pl = write_pl(tmp_path, {'船長': 'PERSON'})
+    # W5-e（チケット W5-e の名指しの改訂）: AGREE の候補が TYPE_UNCHECKED の候補と並ぶ構成は FILLED ではなく INCOMPLETE_TYPING（A-1）。候補と除外は両方返る。
     out, _ = ask(tmp_path, Q_SHIP, [S1, S2], placement=pl)
     a = out['answer']
-    assert a['status'] == 'FILLED' and fills(out) == [('船長', [('s1', 0)])] and excluded(out) == [('提督', 'TYPE_UNCHECKED')]
+    assert a['status'] == 'INCOMPLETE_TYPING' and fills(out) == [('船長', [('s1', 0)])] and excluded(out) == [('提督', 'TYPE_UNCHECKED')]
 
 
 def test_which_noun_keeps_its_own_reason_for_an_unchecked_candidate(tmp_path):

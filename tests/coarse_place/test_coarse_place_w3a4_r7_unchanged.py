@@ -1,7 +1,11 @@
 """W3-a4 (docs section 12.17, P1): the answers of r7 do not change with the new cover rule.  The values in
 ``data/w3a4_r7_answer_sha.tsv`` are the sha256 of ``json.dumps(answer, ensure_ascii=False)`` for the words
 the new rule would change, the 13 NOT_CONFIRMED words of W5-d and the 48 direct generated-frame words,
-taken with the code before W3-a4.  The test does not skip: it needs r7."""
+taken with the code before W3-a4.  The test does not skip: it needs r7.
+
+Integration (auditor, 2026-10-04): W5-e (A-4, docs/COARSE_PLACEMENT.md) makes a CONFIRMED frame keep only the types the distribution
+backs, which changes the `frame` of 30 CONFIRMED words on r7 on purpose (frame_status, state, origin and top unchanged); the hashes of
+those 30 rows were re-frozen under dev with W5-e. The 43 other rows are the original W3-a4 values."""
 import hashlib
 import json
 from pathlib import Path

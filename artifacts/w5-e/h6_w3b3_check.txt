@@ -1,0 +1,19 @@
+mode=live
+rows=203
+verdicts={"abstain": 33, "correct": 170}
+verdicts_by_data={"connective": {"abstain": 1, "correct": 59}, "parallel": {"abstain": 15, "correct": 15}, "relative": {"abstain": 17, "correct": 43}, "w1a4": {"correct": 53}}
+misread=0
+incomplete=0
+unjudged=0
+entry_expect_mismatch=0
+w3b3_expect_mismatch=7
+structure_expect_mismatch=0
+bad_verdicts={}
+path_stopped_by_reason={"CLAUSE_FORM_NOT_READ": 34, "CLAUSE_SCOPE_AMBIGUOUS": 38, "CLAUSE_SCOPE_NOT_LISTED": 6, "CLAUSE_UNREAD": 9, "ELLIPSIS_UNDETERMINED": 8, "HEAD_ROLE_UNDETERMINED": 22, "RELATION_TYPE_UNDETERMINED": 27, "W3B3_NOT_TRIGGERED": 17}
+W3B3_EXPECT_MISMATCH W3B3-REL-018 兄が歌った歌を姉が聞いた。 expect=HEAD_ROLE_UNDETERMINED:frame_not_read got=CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く
+W3B3_EXPECT_MISMATCH W3B3-REL-028 母が弟に話した知らせを兄が聞いた。 expect=HEAD_ROLE_UNDETERMINED:type got=CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く
+W3B3_EXPECT_MISMATCH W3B3-REL-039 母が弟に話した問題を兄が聞いた。 expect=HEAD_ROLE_UNDETERMINED:outer_relation_type got=CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く
+W3B3_EXPECT_MISMATCH W3B3-REL-043 母が弟に話した理由を兄が聞いた。 expect=HEAD_ROLE_UNDETERMINED:outer_relation_type got=CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く
+W3B3_EXPECT_MISMATCH W3B3-REL-053 母が弟に話した兄の友達を先生が呼んだ。 expect=HEAD_ROLE_UNDETERMINED:head_not_simple got=CLAUSE_UNREAD:1:UNSUPPORTED_CLAUSE
+W3B3_EXPECT_MISMATCH W3B3-REL-054 母が弟に話した三人の客を兄が呼んだ。 expect=HEAD_ROLE_UNDETERMINED:head_not_simple got=CLAUSE_UNREAD:1:UNSUPPORTED_CLAUSE
+W3B3_EXPECT_MISMATCH W3B3-PAR-027 兄が静かに本を読み、弟が歌を歌った。 expect=CLAUSE_UNREAD got=W3B3_NOT_TRIGGERED:groups=3

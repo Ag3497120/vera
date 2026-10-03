@@ -1,0 +1,51 @@
+.FFFFFFFFFFFF...F.                                                       [100%]
+=================================== FAILURES ===================================
+E   AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/coarse_place/test_coarse_place_w5e2_cover.py:40: AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+E   AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/coarse_place/test_coarse_place_w5e2_cover.py:54: AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+E   AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/coarse_place/test_coarse_place_w5e2_cover.py:54: AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+E   AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/coarse_place/test_coarse_place_w5e2_cover.py:54: AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+E   AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/coarse_place/test_coarse_place_w5e2_cover.py:54: AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+E   AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/coarse_place/test_coarse_place_w5e2_cover.py:54: AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+E   AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/coarse_place/test_coarse_place_w5e2_cover.py:54: AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+E   AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/coarse_place/test_coarse_place_w5e2_cover.py:58: AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+E   AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/coarse_place/test_coarse_place_w5e2_cover.py:63: AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+E   AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/coarse_place/test_coarse_place_w5e2_cover.py:71: AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+E   AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/coarse_place/test_coarse_place_w5e2_cover.py:79: AttributeError: module 'verantyx.coarse_place' has no attribute 'frame_cover_unconfirmed'
+E   AssertionError: assert {'を': ['ABSTR...ON', 'PLACE']} == {'を': ['ABSTR...へ': ['PLACE']}
+      
+      Omitting 2 identical items, use -vv to show
+      Right contains 1 more item:
+      {'へ': ['PLACE']}
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/coarse_place/test_coarse_place_w5e2_cover.py:112: AssertionError: assert {'を': ['ABSTR...ON', 'PLACE']} == {'を': ['ABSTR...へ': ['PLACE']}
+E   AssertionError: assert [] == ['申し込める']
+      
+      Right contains one more item: '申し込める'
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-e-S/tests/coarse_place/test_coarse_place_w5e2_cover.py:148: AssertionError: assert [] == ['申し込める']
+=========================== short test summary info ============================
+FAILED tests/coarse_place/test_coarse_place_w5e2_cover.py::test_a_covered_he_is_unconfirmed_with_the_type_of_the_covering_row
+FAILED tests/coarse_place/test_coarse_place_w5e2_cover.py::test_nothing_is_added_when_the_decision_covered_no_he[dec0]
+FAILED tests/coarse_place/test_coarse_place_w5e2_cover.py::test_nothing_is_added_when_the_decision_covered_no_he[dec1]
+FAILED tests/coarse_place/test_coarse_place_w5e2_cover.py::test_nothing_is_added_when_the_decision_covered_no_he[dec2]
+FAILED tests/coarse_place/test_coarse_place_w5e2_cover.py::test_nothing_is_added_when_the_decision_covered_no_he[dec3]
+FAILED tests/coarse_place/test_coarse_place_w5e2_cover.py::test_nothing_is_added_when_the_decision_covered_no_he[dec4]
+FAILED tests/coarse_place/test_coarse_place_w5e2_cover.py::test_nothing_is_added_when_the_decision_covered_no_he[dec5]
+FAILED tests/coarse_place/test_coarse_place_w5e2_cover.py::test_nothing_is_added_when_the_frame_has_he_itself
+FAILED tests/coarse_place/test_coarse_place_w5e2_cover.py::test_nothing_is_added_when_the_ni_row_is_not_place
+FAILED tests/coarse_place/test_coarse_place_w5e2_cover.py::test_the_ignored_particles_are_not_shown
+FAILED tests/coarse_place/test_coarse_place_w5e2_cover.py::test_the_function_does_not_change_its_arguments
+FAILED tests/coarse_place/test_coarse_place_w5e2_cover.py::test_r7_a_confirmed_word_whose_frame_has_ni_place_and_no_he_gets_he_in_unconfirmed_only
+FAILED tests/coarse_place/test_coarse_place_w5e2_cover.py::test_r7_the_cover_never_changes_anything_but_frame_unconfirmed
+13 failed, 5 passed in 0.23s

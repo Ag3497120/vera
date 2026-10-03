@@ -1,0 +1,66 @@
+=== 並立 と や か 棄権
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "並立 と や か 棄権",
+  "searched": 681,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 73,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+=== INCOMPLETE_TYPING
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "INCOMPLETE_TYPING",
+  "searched": 681,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 73,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+=== human_confirmed
+{
+  "verdict": "ANSWER",
+  "query": "human_confirmed",
+  "searched": 681,
+  "hits": [
+    {
+      "kind": "door",
+      "name": "propose_web_evidence",
+      "about": "Quarantine ONE raw web-search excerpt, verbatim, for human review",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "record_verified_url",
+      "about": "Register a human- or agent-confirmed URL for a named destination",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "module",
+      "name": "failure_domains",
+=== frame_unconfirmed
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "frame_unconfirmed",
+  "searched": 681,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 73,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

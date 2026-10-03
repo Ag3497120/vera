@@ -1,0 +1,4 @@
+FAILED tests/test_question_cross_w5d.py::test_a02_a_time_adverb_fused_with_its_noun_is_not_a_candidate_without_a_checked_type
+FAILED tests/test_question_cross_w5d.py::test_the_new_names_are_at_the_end_of_the_closed_lists
+FAILED tests/test_question_cross_w5d.py::test_a_checked_candidate_among_unchecked_ones_answers_and_the_others_stay_excluded
+3 failed, 397 passed in 27.37s

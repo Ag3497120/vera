@@ -1,0 +1,4 @@
+r8 CONFIRMED words: 
+with a cover record: 99
+he_by_ni_place non-empty: 14 ['向かえる', '嫁ぐ', '日帰りする', '流れ込む', '浸透する', '潜る', '異動する', '移す', '行ける', '送り返す', '逃げ込む', '通う', '進出する', '飛び込む']
+cover.ignored non-empty: 0

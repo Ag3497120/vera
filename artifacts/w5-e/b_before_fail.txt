@@ -1,0 +1,44 @@
+FFFFFFFFFFFFFFFFFFFFFFFFFFFF......................FF..FFFFFFFFFF........ [ 90%]
+........                                                                 [100%]
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w5e.py::test_b_the_six_hits_of_the_attack_are_abstentions_with_a_typed_reason[none-PARALLEL-002]
+FAILED tests/test_semantic_read_w5e.py::test_b_the_six_hits_of_the_attack_are_abstentions_with_a_typed_reason[none-PARALLEL-003]
+FAILED tests/test_semantic_read_w5e.py::test_b_the_six_hits_of_the_attack_are_abstentions_with_a_typed_reason[none-PARALLEL-008]
+FAILED tests/test_semantic_read_w5e.py::test_b_the_six_hits_of_the_attack_are_abstentions_with_a_typed_reason[none-PARALLEL-011]
+FAILED tests/test_semantic_read_w5e.py::test_b_the_six_hits_of_the_attack_are_abstentions_with_a_typed_reason[none-PARALLEL-017]
+FAILED tests/test_semantic_read_w5e.py::test_b_the_six_hits_of_the_attack_are_abstentions_with_a_typed_reason[none-PARALLEL-020]
+FAILED tests/test_semantic_read_w5e.py::test_b_the_six_hits_of_the_attack_are_abstentions_with_a_typed_reason[r7-PARALLEL-002]
+FAILED tests/test_semantic_read_w5e.py::test_b_the_six_hits_of_the_attack_are_abstentions_with_a_typed_reason[r7-PARALLEL-003]
+FAILED tests/test_semantic_read_w5e.py::test_b_the_six_hits_of_the_attack_are_abstentions_with_a_typed_reason[r7-PARALLEL-008]
+FAILED tests/test_semantic_read_w5e.py::test_b_the_six_hits_of_the_attack_are_abstentions_with_a_typed_reason[r7-PARALLEL-011]
+FAILED tests/test_semantic_read_w5e.py::test_b_the_six_hits_of_the_attack_are_abstentions_with_a_typed_reason[r7-PARALLEL-017]
+FAILED tests/test_semantic_read_w5e.py::test_b_the_six_hits_of_the_attack_are_abstentions_with_a_typed_reason[r7-PARALLEL-020]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_question_goes_through_the_same_gate[none]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_question_goes_through_the_same_gate[r7]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_particle_after_the_run_is_enough_not_only_a_case_particle[none-\u592a\u90ce\u3068\u82b1\u5b50\u306f\u624b\u7d19\u3092\u8aad\u3093\u3060\u3002]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_particle_after_the_run_is_enough_not_only_a_case_particle[none-\u592a\u90ce\u3068\u82b1\u5b50\u306e\u672c\u3092\u8aad\u3093\u3060\u3002]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_particle_after_the_run_is_enough_not_only_a_case_particle[none-\u5148\u751f\u304c\u592a\u90ce\u3068\u6b21\u90ce\u306b\u672c\u3092\u6e21\u3057\u305f\u3002]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_particle_after_the_run_is_enough_not_only_a_case_particle[none-\u672c\u3084\u96d1\u8a8c\u3092\u8aad\u3093\u3060\u3002]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_particle_after_the_run_is_enough_not_only_a_case_particle[none-\u72ac\u3068\u732b\u304c\u5ead\u3092\u8d70\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_particle_after_the_run_is_enough_not_only_a_case_particle[none-\u5144\u3084\u5f1f\u3082\u65c5\u306b\u51fa\u305f\u3002]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_particle_after_the_run_is_enough_not_only_a_case_particle[none-\u5144\u3068\u59c9\u3068\u59b9\u304c\u5915\u98df\u3092\u4f5c\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_particle_after_the_run_is_enough_not_only_a_case_particle[r7-\u592a\u90ce\u3068\u82b1\u5b50\u306f\u624b\u7d19\u3092\u8aad\u3093\u3060\u3002]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_particle_after_the_run_is_enough_not_only_a_case_particle[r7-\u592a\u90ce\u3068\u82b1\u5b50\u306e\u672c\u3092\u8aad\u3093\u3060\u3002]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_particle_after_the_run_is_enough_not_only_a_case_particle[r7-\u5148\u751f\u304c\u592a\u90ce\u3068\u6b21\u90ce\u306b\u672c\u3092\u6e21\u3057\u305f\u3002]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_particle_after_the_run_is_enough_not_only_a_case_particle[r7-\u672c\u3084\u96d1\u8a8c\u3092\u8aad\u3093\u3060\u3002]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_particle_after_the_run_is_enough_not_only_a_case_particle[r7-\u72ac\u3068\u732b\u304c\u5ead\u3092\u8d70\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_particle_after_the_run_is_enough_not_only_a_case_particle[r7-\u5144\u3084\u5f1f\u3082\u65c5\u306b\u51fa\u305f\u3002]
+FAILED tests/test_semantic_read_w5e.py::test_b_a_particle_after_the_run_is_enough_not_only_a_case_particle[r7-\u5144\u3068\u59c9\u3068\u59b9\u304c\u5915\u98df\u3092\u4f5c\u3063\u305f\u3002]
+FAILED tests/test_semantic_read_w5e.py::test_b_known_cost_a_ka_that_leads_a_noun_run_fires_even_when_it_is_not_a_disjunction[none]
+FAILED tests/test_semantic_read_w5e.py::test_b_known_cost_a_ka_that_leads_a_noun_run_fires_even_when_it_is_not_a_disjunction[r7]
+FAILED tests/test_semantic_read_w5e.py::test_b_the_gate_reads_the_role_marks_of_the_syntactic_reading
+FAILED tests/test_semantic_read_w5e.py::test_b_the_gate_does_not_repeat_a_reason_and_keeps_the_old_ones
+FAILED tests/test_semantic_read_w5e.py::test_b_the_gate_does_not_stop_the_other_sentence_of_a_document
+FAILED tests/test_semantic_read_w5e.py::test_b_the_marks_are_a_function_of_the_tokens_only
+FAILED tests/test_event_cross_w5e.py::test_a_role_that_carries_a_coordination_mark_is_not_made_a_cross[\u3068]
+FAILED tests/test_event_cross_w5e.py::test_a_role_that_carries_a_coordination_mark_is_not_made_a_cross[\u3084]
+FAILED tests/test_event_cross_w5e.py::test_a_role_that_carries_a_coordination_mark_is_not_made_a_cross[\u304b]
+FAILED tests/test_event_cross_w5e.py::test_the_mark_together_with_a_determiner_is_well_formed_and_rejected_for_the_mark_only
+FAILED tests/test_event_cross_w5e.py::test_every_marked_role_is_named_once - ...
+FAILED tests/test_event_cross_w5e.py::test_a_mark_on_one_role_does_not_make_the_other_role_a_problem
+40 failed, 40 passed in 0.46s

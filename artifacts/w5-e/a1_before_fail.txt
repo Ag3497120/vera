@@ -1,0 +1,18 @@
+FFFFFFFFFFFF.....FFF..                                                   [100%]
+=========================== short test summary info ============================
+FAILED tests/test_question_cross_w5e.py::test_a1_one_direct_witness_and_one_unplaced_witness_is_incomplete_typing
+FAILED tests/test_question_cross_w5e.py::test_a1_every_way_of_not_being_checked_makes_the_agreeing_one_incomplete[est-spec0]
+FAILED tests/test_question_cross_w5e.py::test_a1_every_way_of_not_being_checked_makes_the_agreeing_one_incomplete[gen-spec1]
+FAILED tests/test_question_cross_w5e.py::test_a1_every_way_of_not_being_checked_makes_the_agreeing_one_incomplete[unp-spec2]
+FAILED tests/test_question_cross_w5e.py::test_a1_every_way_of_not_being_checked_makes_the_agreeing_one_incomplete[unk-spec3]
+FAILED tests/test_question_cross_w5e.py::test_a1_every_way_of_not_being_checked_makes_the_agreeing_one_incomplete[multi-spec4]
+FAILED tests/test_question_cross_w5e.py::test_a1_a_word_that_is_not_in_the_placement_at_all_is_unchecked_too
+FAILED tests/test_question_cross_w5e.py::test_a1_two_agreeing_candidates_and_an_unchecked_one_are_incomplete_not_a_tie
+FAILED tests/test_question_cross_w5e.py::test_a1_the_order_of_the_sentences_does_not_matter
+FAILED tests/test_question_cross_w5e.py::test_a1_the_same_in_english_the_rule_does_not_depend_on_the_language
+FAILED tests/test_question_cross_w5e.py::test_a1_the_time_adverb_fused_with_its_noun_next_to_two_checked_nouns
+FAILED tests/test_question_cross_w5e.py::test_a1_incomplete_typing_comes_before_incomplete_by_extension
+FAILED tests/test_question_cross_w5e.py::test_a1_the_closed_lists - Assertion...
+FAILED tests/test_question_cross_w5e.py::test_a1_the_output_is_json_and_the_word_answer_is_not_in_the_abstention
+FAILED tests/attack/test_attack_w5d.py::test_obs_partial_type_agreement_does_not_hide_a_second_attested_answer
+15 failed, 7 passed, 9 deselected in 0.72s

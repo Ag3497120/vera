@@ -1,0 +1,15 @@
+items: 62  errors: 0
+route questions (a route is the right answer): 43  routed correctly: 0  abstained: 43  routed to a different agent: 0
+undecided questions (undecided is the right answer): 19  answered undecided: 19  returned an agent: 0
+misroutes: 0   (= undecided answered with an agent + a route answered with a different agent)
+correct in total: 19 of 62   (always abstain would be correct on 19)
+undecided_reason: {"ABSTAINED": 62}
+abstention.type: {"INCOMPLETE_READING": 62}
+basis_kind: {"None": 62}
+units by status, per explanation:
+  e1: 0 of 9 units read and mapped (UNREAD 9); 10 questions
+  e2: 0 of 13 units read and mapped (UNREAD 13); 11 questions
+  e3: 0 of 10 units read and mapped (UNREAD 10); 10 questions
+  e4: 0 of 13 units read and mapped (UNREAD 13); 10 questions
+  e5: 0 of 10 units read and mapped (UNREAD 9, NAME_UNRESOLVED 1); 10 questions
+  e6: 0 of 10 units read and mapped (UNREAD 10); 11 questions

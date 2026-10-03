@@ -2566,3 +2566,326 @@ K186 の門は型の再読（経路 U・U3）の計画にだけ掛かる。**読
 3. 新しいテスト 7 本（`FOCUS_ROWS = DATA[333:339]`・`X_REFUSED`・`ungate(monkeypatch)` を足した。門を外すのは `monkeypatch.setattr(R, …)` だけで、他のテストに漏れない）: `test_the_focus_gate_decides_by_parts_of_speech_and_adjacency_only`（12 文の門の返り値の完全一致と、門の関数の文字列定数が品詞の名と理由の書式だけであること）、`test_the_six_sentences_of_review_w3b4_2_are_appended_as_refused_rows_and_the_frozen_rows_stay`（`DATA[333:339]` の id・文・期待・`w3b4_expect`・経路・配置が r7 の答えのまま（seed に持ち上げていない）・先頭 333・323・318 行の sha256）、`test_the_six_sentences_were_misread_without_the_focus_gate_and_the_gate_refuses_them`（門があれば 6 文とも棄権、外すと goal 倉庫 で `misread`）、`test_the_focus_gate_closes_the_hole_of_v1_with_the_real_placement_r7`（v1 の P_MOVE の 4 文）、`test_the_cost_of_the_focus_gate_correct_readings_with_mo_and_wa_after_a_case_particle_are_refused`（代価の記録）、`test_the_focus_gate_changes_no_diagnosis_and_no_output_of_the_frozen_rows`（凍結 333 行の出力・診断が門の有無で同一）、`test_the_focus_gate_is_on_the_plans_of_paths_u_and_u3_only`（S4 は包まない）。
 
 `artifacts/w3-b4/tools/run_rows.py` は変えていない（6 行は既存の判定で通る）。弱体化は無い（削除した assert はすべて強い形に置き換え、凍結した行の期待は 1 行も書き換えていない）。
+
+
+## 10E. W5-e: 並立（と・や）と選言（か）を 1 つの値に畳まない（事前登録）
+<!-- w5e-b-prereg:begin -->
+事前登録の時刻: 2026-10-04 03:59:31 +0900（`date '+%F %T %z'`）。この節は検査データ（`tests/reading_soundness/w5e_coordination.jsonl`）を書く前、新しいテスト（`tests/test_semantic_read_w5e.py`・`tests/test_event_cross_w5e.py`）を書く前、製品コード（`verantyx/semantic_reader.py`・`verantyx/event_cross.py`）を直す前に確定した。§10〜§10C の本文は 1 文字も変えない。
+
+**命中**
+- **B-1**（W3-b3 の攻撃 6 文の 1 種）: 「太郎と花子が手紙を読んだ。」が agent 花子・companion 太郎 に分割される（`_case_role` の と の分岐）。「AとBが」は並立（AとB＝一つの主語）か共同（Aと、Bが）かが割れ、基点は分割して companion に置く（誤読）。
+- **B-2**（同 1 種）: 「太郎か花子が本を買った。」の選言が単一の値「太郎か花子」の agent になる（構文の読み `gold_parallel` が 1 つの役割 `gold_parallel:choice` として読む）。どちらかを選ばない選言を 1 つの充填物に畳むのは型の誤り。
+
+### 規則（D1・D2。**(ii) 棄権だけ。(i)（1 つの充填物に印を付けて置く）は採らない**）
+- 採らない理由: 攻撃役の凍結の期待は並立の 20 文すべて `abstain`。r7 では `兄`・`弟`・`父`・`母`・`太郎` が direct の PERSON なので、(i) を入れると読めてしまう並立の文が出て H1 が落ちる。チケットは (ii) だけに倒すことを許している。**`Filler.coordination` は足さない**（作るものが無い欄は置かない）。
+- **並立助詞は UniDic に無い**: このツリーの形態素解析（`semantic_reader._tokens` = fugashi＋UniDic）は `と` を 助詞/格助詞、`や`・`か` を 助詞/副助詞 と付け、`並立助詞` は付けない（実測: `artifacts/w5-e/h6_pos_probe.txt`、`has 並立助詞 pos2 ... False`）。だから規則は **閉じた 3 つの機能語の助詞の字面（`と`・`や`・`か`）と隣接** で決める。内容語の一覧は使わない（名詞の語彙には触れない。3 つは助詞の閉じた類）。
+- 当たる形（すべてのトークンは `_tokens` の切り方。`clause.span.text` を切る）:
+  1. 助詞のトークン（品詞 1 が `助詞`）の字面が `と`・`や`・`か` で、`_compound_token_indices` に入らない（`と共に` などの複合助詞は除く）。
+  2. その **直前のトークン** が名詞類（品詞 1 が `名詞`・`代名詞`・`接尾辞`・`数`）。
+  3. **直後のトークン** から、名詞類（`名詞`・`代名詞`・`接頭辞`・`接尾辞`・`形状詞`・`数`）と助詞 `の` が切れ目なく続き（1 トークン以上）、
+  4. その次のトークンが助詞（品詞 2 が `格助詞`・`係助詞`・`副助詞`）。
+  - → `か` なら `DISJUNCTION_UNDETERMINED`、`と`・`や` なら `COORDINATION_UNDETERMINED`。当たった助詞の位置が、その節の `body_span`（無ければ `span`）の中にあるときだけ、その節の `unsupported` に理由を足す（2 節の文で、並立の無い方の節まで止めない）。既にある理由は重ねない。
+  - 読点で切れる「太郎と、花子が」は直後が `、` なので当たらず、companion の読みのまま。「花子が太郎と話した」は直後が動詞で当たらない。「太郎と共に花子が来た」は `と共に` が複合助詞で当たらない。
+  - チケットの「格助詞の直前」より広く、**係助詞（は・も）・副助詞の直前** も入れる。基点で「太郎と花子は手紙を読んだ。」が agent 花子・companion 太郎、「太郎と花子の本を読んだ。」が companion 太郎・patient 花子の本、「先生が太郎と次郎に本を渡した。」が companion 太郎・recipient 次郎 と読まれるのが同じ誤りだから（広げて増えるのは棄権だけ）。
+- 構文の読み `verantyx/constructions/gold_parallel.py`（許可パスの外。**変えない**）が、選言を `Role.rule == "gold_parallel:choice"`、並列を `gold_parallel:parallel` として 1 つの役割に読む。読解器の側で、節の役割の `rule` が `:choice` で終われば `DISJUNCTION_UNDETERMINED`、`:parallel` で終われば `COORDINATION_UNDETERMINED` を節に付ける（構文の側が付けた印を読むだけ）。
+- 入口 `semantic_read.py`（許可パスの外）は変えないので、`abstain.reasons` は `NO_SUPPORTED_CLAUSE`／`UNSUPPORTED_CLAUSE` のまま。新しい理由は `unsupported[].reasons` に出る。質問（`read_question`）も `document_view` を通るので同じ門を通る。
+
+### 置く場所と区画
+- `semantic_reader.document_view` の既存の行 `cs = [_type_gate(c) for c in cs]` は **変えず**、その直後に **1 行足す**（`cs = [_coordination_gate(c) for c in cs]`）。新しい関数 `_coordination_gate(clause)`・`_coordination_marks(sentence)` は `document_view` の直前に足す。`semantic_reader.py` は **行を足すだけ**（`git diff c875ed3 -- verantyx/semantic_reader.py | grep -c '^-[^-]'` が 0）。新しいコードは `# W3-b3:` の印より前に置き、末尾の型の表の区画（W3-b4 が変更中）には触らない。
+- `event_cross.py`: `_check` の `role_flags` の検査を、鍵が `{'determiner'}`・`{'coordination'}`・その両方のどれか（値は空でない文字列。`coordination` は `と`・`や`・`か` のどれか）に広げ、`coordination` の鍵を持つ役割は十字にしない（`INPUT_REJECTED`、理由 `COORDINATION_UNMARKED:<role>`）。今の読解器はこの印を出す前に棄権するので、製品の経路でこの理由は出ない（合成の入力のテストだけで確かめる。EVENT_CROSS.md に書く）。表層の字面（「か」を含む文字列）で拒む守りは作らない（`ハルとセキ` を 1 つの値として渡す経路づけの既存テスト・`赤坂` のような語を巻き込むため）。
+
+### 代価（棄権に倒れる正しい読み。既知の穴として先に書く）
+- 「花子は姉と映画を見た。」「太郎が友達と公園で遊んだ。」の companion は隣接に当たるので棄権する。「太郎が花子と一緒に行った。」も `一緒` が名詞なので棄権する（基点でもこの形は `ambiguous case role: に` で棄権している）。
+- `か` が名詞に続く不定の用法（「何か本を読んだ」）は 3・4 に当たるので棄権する（誤読ではなく棄権の増加）。
+- 並立を 1 つの印なしの値に畳む読み（W1-a の門の既存テスト `test_gate_conjoined_agents_are_kept` の 2 引数: `犬と猫が庭で遊んだ。`・`兄や弟が店で本を買った。`）はこの変更で退役する。
+
+### 宣言する衝突 K-B（実装役は解かずに宣言する。判断は監査役）
+1. `tests/test_semantic_read_w3b2.py::test_the_reader_file_only_gains_lines` は、基点の関数が不変であること（既存の行の書き換えが無いこと）を求める。**足すだけなら通る**。
+2. `tests/test_semantic_read_w3b3.py::test_semantic_read_changes_only_read_ja_and_semantic_reader_only_adds` は、c875ed3 のどの関数も変わっていないことを求める。基点の関数を変えずに読解の経路へ門を入れる差し込み口は無く、`document_view` に 1 行足すだけで落ちる（名前の付け替えで逃げない）。
+3. `tests/reading_soundness/test_gates_round2.py::test_gate_conjoined_agents_are_kept` の 2 引数（上のとおり退役する読み）。
+4. `tests/test_routing_from_text_entry.py::test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader`（本物の読解器で `ハルとセキは同じ会社だ。` が `NAME_UNRESOLVED` になることを固定。係助詞 は の前まで門を広げたので `UNREAD` に変わる）。
+5. 攻撃の写し `tests/attack/w3b3/test_attack_w3b3.py::test_frozen_read_and_abstain_expectations`（K-W3B3）は **落ちる** ままのはず: 攻撃役自身が違反に数えなかった被覆の棄権の行が残るため。基点で落ちる行の一覧の部分集合で、差がちょうど命中の 6 行（PARALLEL-002・003・008・011・017・020）であることを示す。
+
+### 検査データ（H6。期待を先に凍結する。実装の出力を見て決めない）
+- `tests/reading_soundness/w5e_coordination.jsonl`: 「AとBが」「AやBを」「AかBが」「Aと、Bが」「Aと一緒に」の各 15 文以上。各行 `{"id","group","text","expect"}`。`expect` は `"abstain"`（並立の 3 群）か `{"read_or_abstain": {"roles": {...}}}`（`Aと、Bが`・`Aと一緒に`: 読むなら役割がこの通り、棄権してもよい）。攻撃役の 170 文と中間職の試作の文は使わない（`artifacts/w5-e/` に重なりの検査を残す）。
+- 判定器 `tests/reading_soundness/w5e_coordination_check.py`: 各行を `semantic_read.read(text, 'ja')` に通し、`abstain` の行が `readable` なら MISREAD、`read_or_abstain` の行が読めて節が 1 つでないか役割の辞書が期待と違えば MISREAD、棄権は ABSTAIN、期待どおりの読みは CORRECT。群ごとの数と MISREAD の全行を出す。配置なし・r7 の両方で流す。
+- 既存の凍結データ（`ja_r1`〜`ja_r10`・`en`、W3-b2・W3-b3 の入力）は変更前と変更後を比べ、読めた→棄権で理由が `COORDINATION_UNDETERMINED`／`DISJUNCTION_UNDETERMINED` のものは全件を表にし、ほかの変化と「読み→別の読み」は 0 であることを確かめる。
+
+### 受入（H6。測る前に固定）
+- 既存の凍結データで誤読 0。新しい凍結データの 5 群（各 15 文以上）で誤読 0（配置なし・r7）。中間職の未公開の文（並立 30 文以上）は中間職が測る。
+<!-- w5e-b-prereg:end -->
+
+
+### 10E の測定（W5-e。登録のあと。出力は `artifacts/w5-e/`）
+<!-- w5e-b-measured:begin -->
+測定の時刻: 2026-10-04 04:10:06 +0900。凍結: `frozen.sha256`（`w5e_coordination.jsonl`、時刻 `frozen_at.txt` = 04:00:18。登録 `b_prereg_at.txt` = 03:59:31 より後、製品コードの最初の変更より前）、判定器とテスト `frozen_b.sha256`（時刻 `frozen_b_at.txt`）。直す前に落ちる記録 `b_before_fail.txt`（`40 failed, 40 passed`）。
+
+- **新しい凍結データ（H6。80 文 = 5 群 × 16 文。期待は実装の出力を見る前に書いた）**: 判定器 `tests/reading_soundness/w5e_coordination_check.py`。変更前（`before/h6_coord_np.json`）: 配置なし `{"and_ga": {"ABSTAIN": 15, "MISREAD": 1}, "comma": {"ABSTAIN": 14, "CORRECT": 2}, "issho": {"ABSTAIN": 16}, "ka_ga": {"ABSTAIN": 15, "MISREAD": 1}, "ya_wo": {"ABSTAIN": 16}}`・`misread` 2（`W5E-AND_GA-007` `田中と山田は新聞を読んだ。`・`W5E-KA_GA-010` `赤か青の傘を買った。`）。変更後: 配置なし `{"and_ga": {"ABSTAIN": 16}, "comma": {"ABSTAIN": 14, "CORRECT": 2}, "issho": {"ABSTAIN": 16}, "ka_ga": {"ABSTAIN": 16}, "ya_wo": {"ABSTAIN": 16}}`・`misread` 0（`h6_coord_np.json`）、r7 `{"and_ga": {"ABSTAIN": 16}, "comma": {"ABSTAIN": 14, "CORRECT": 2}, "issho": {"ABSTAIN": 16}, "ka_ga": {"ABSTAIN": 16}, "ya_wo": {"ABSTAIN": 16}}`・`misread` 0（`h6_coord_r7.json`）。`Aと、Bが` は 14 文が棄権・2 文が期待どおりの companion の読み、`Aと一緒に` は 16 文とも棄権。攻撃役の 170 文・登録の例文との重なりは 0（`w5e_coordination_overlap_check.txt`）。
+- **既存の凍結データ（H6）**: `harness.py`（ja_r1〜r10・en の 500 文、配置なし）は変更前後で 0 文が変化・`misread` 0（`h6_soundness_compare.txt`）。`a3_check.py` は `rows=33 failed=0`。W3-b3 の入口の測定（r7、203 行）は `misread=0` で `before/h6_w3b3_check.json` とバイト一致（`h6_w3b3_check.txt`）。入口の出力の全行比較（`scripts/compare_entry.py`）: W3-b2 の入力 3183 行は 35 行が変わり、W3-b3 の入力 3386 行は配置なし・r7 とも 36 行が変わるが、**変わった行はすべて棄権のままの文**で、読めた→棄権・棄権→読めた・読みの変化は 0（`h5_w3b2_changed_summary.txt`・`h6_changed_none_summary.txt`・`h6_changed_r7_summary.txt`、表は `*.tsv`）。変わるのは理由の欄に門の理由が足されること（と、`UNSUPPORTED_CLAUSE` が `NO_SUPPORTED_CLAUSE` に移ること）だけ。
+- **攻撃の写し**（`attack_copies.sha256`: 原本とバイト一致。`attack_originals_w3b3.sha256` は原本の sha256）: `tests/attack/w3b3` は `run_attack.py`・`run_wave2.py` を最後の木で流して `results/` を作った（`placement_free_byte_mismatches` 0）。`test_parallel_and_disjunctive_filler_cases_are_not_read_as_single_winners` と wave2 を含む 4 本は通る。`test_frozen_read_and_abstain_expectations` は **落ちる**（K-W3B3）: 落ちる行は 44 → 38 で、新しく落ちる行は 0、消えた行はちょうど PARALLEL-002・003・008・011・017・020 の 6 行（`h1_w3b3_frozen_base.txt`・`h1_w3b3_frozen_after.txt`）。残りは攻撃役自身が違反に数えなかった被覆の棄権の行。
+- **新しいテスト**: `tests/test_semantic_read_w5e.py` は `58 passed`、`tests/test_event_cross_w5e.py` は `22 passed`（`new_tests_run.txt`）。
+- **宣言した衝突 K-B と K-W3B3**（書き換えていない。`b_new_failures.txt`、基線に無い失敗は 5 件）:
+- `tests/attack/w3b3/test_attack_w3b3.py::test_frozen_read_and_abstain_expectations`
+- `tests/reading_soundness/test_gates_round2.py::test_gate_conjoined_agents_are_kept[\u5144\u3084\u5f1f\u304c\u5e97\u3067\u672c\u3092\u8cb7\u3063\u305f\u3002-\u5144\u3084\u5f1f]`
+- `tests/reading_soundness/test_gates_round2.py::test_gate_conjoined_agents_are_kept[\u72ac\u3068\u732b\u304c\u5ead\u3067\u904a\u3093\u3060\u3002-\u72ac\u3068\u732b]`
+- `tests/test_routing_from_text_entry.py::test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader`
+- `tests/test_semantic_read_w3b3.py::test_semantic_read_changes_only_read_ja_and_semantic_reader_only_adds`
+  `git diff c875ed3 -- verantyx/semantic_reader.py` の削除行は 0、変更の塊は 2 つとも `# W3-b3:` の印より前（`document_view` の直前の 45 行と `document_view` の中の 1 行）。
+- **登録の文の訂正（代価の節）**: 「花子は姉と映画を見た。」「太郎が友達と公園で遊んだ。」「太郎が花子と一緒に行った。」は、変更前から `ambiguous case role: と`／`に` で棄権していた（基点の読解器は、人を示す と の句を companion とするのは一部の形だけ）。だからこの変更の代価として実測で増えた棄権は、凍結データの範囲では 0（読めた→棄権が 0）。登録の「棄権に倒れる正しい読み」は、基点で読めていた形（`太郎と花子は…` など）に当たる。`何か本を読んだ。` は基点が先に疑問の源として棄権し節が作られないので、門の理由は付かない（`tests/test_semantic_read_w5e.py` の該当テストの記録）。
+- **既知の穴（隠さない）**: 生成した形の探索 `scripts/probe_holes.py`（19,638 文。凍結データではなく、期待を先に凍結していない探索。出力 `h6_known_holes_probe.txt`）で、門の外で今も読める形がある: (a) `AともBともが`・`AとはBが` のように と の直後に係助詞が来る形（15 文）、(b) `なり`・`とも`・`ほか` は UniDic が名詞的な接尾辞・名詞とするので、`AなりB`・`AともB`・`AほかB` が 1 つの値（`太郎なり花子` など）として読まれる（なり 130・とも 279・ほか 49 文）、(c) `AにBと話した`（recipient＋companion。並立ではない）。(b) は B-2 と同じ型の畳み込みで、この変更では閉じていない（助詞の字面の閉じた 3 つだけを見る規則のため。語を足して直す道は取らなかった）。`と`・`や`・`か` の隣接の判定は文の品詞で決まり、未公開の文の誤読 0 は試した構成の中での主張。
+<!-- w5e-b-measured:end -->
+
+## 10E.2 W5-e 第 2 ラウンド: K-B の改訂（監査役の判断 2026-10-04 04:42）
+<!-- w5e2-kb:begin -->
+監査役の判断: 「K-B（4）: W3-b3 の「基点の関数は不変」の構造テスト（`document_view` の 1 行）は、W3-b2/b3 のハッシュ固定と同じ扱いで改訂を許可（新しいハッシュ・理由を記す）。W1-a の門の「並立を 1 つの印なしの値に畳む」2 件は旧い振る舞いの固定 → 改訂。経路づけの入口の「ハルとセキは同じ会社だ。」が UNREAD になる 1 件 → 期待を改訂（並立の棄権は設計どおり）」。名前は変えない。
+
+1. **構造テスト** `test_semantic_read_changes_only_read_ja_and_semantic_reader_only_adds`（`tests/test_semantic_read_w3b3.py`）: `semantic_reader.py` で基点（`ca66d3e`）から変わった関数の一覧を `[]` から `['document_view']` に。加えて、基点と今の `document_view` の本文の行差分（`difflib.ndiff`）が **追加 1 行 `cs = [_coordination_gate(c) for c in cs]` だけ** であること（削除 0 行）と、新しい本文の sha256 を固定する。理由: 並立（と・や）と選言（か）を 1 つの値に畳まない門 `_coordination_gate`（10E）を、基点の関数を変えずに入れる差し込み口が無く、`document_view` の `cs` の直後に 1 行足した（W3-b2/b3 のハッシュ固定と同じ扱い）。ハッシュは `ast.get_source_segment`（このテストの `_functions` と同じ）の本文の sha256: 基点 `20b032d03e136b2b260c445d446e7de2ce642596844113f6f32d2678aeeb73fa`、新 `b37c85231d62d4611d2ffa3df7f207e86f6c22b41c7e30f20e006d7ce15d62b8`。ほかの行（`semantic_read.py` の 1 関数・`semantic_reader.py` の「削除行が無い」）は変えない。
+2. **W1-a の門** `test_gate_conjoined_agents_are_kept`（`tests/reading_soundness/test_gates_round2.py`、2 引数 `犬と猫が庭で遊んだ。`・`兄や弟が店で本を買った。`）: 旧い振る舞い（並立を 1 つの印なしの値 `犬と猫` に畳んで agent に置く）の固定なので、`cs, v = supported(text)` として、`cs` のどの節も `agent == <並立>` を持たず、`v.clauses` に `COORDINATION_UNDETERMINED` を `unsupported` に持つ節があること、に改訂（10E の規則 (ii) の棄権）。引数・デコレータ・名前は不変。
+3. **経路づけの入口** `test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader`（`tests/test_routing_from_text_entry.py`）: index 6（`ハルとセキは同じ会社だ。`）の期待を `{'status': 'UNREAD', 'reasons': ['NO_SUPPORTED_CLAUSE']}` に（並立の棄権は設計どおり。門の理由が付いた節は supported でなくなり `NO_SUPPORTED_CLAUSE`）。ほかの要素は不変。ただし `by_status` の数（`UNREAD` 2→3・`NAME_UNRESOLVED` 6→5）は index 6 の帰結なので、実測（`k_b_run.txt` の前の失敗の出力）に合わせて同じ関数の中で改めた（指示書は index 6 だけと書いたが、集計はその 1 文の移動の帰結）。
+
+### 改訂前の全文
+
+#### `tests/test_semantic_read_w3b3.py::test_semantic_read_changes_only_read_ja_and_semantic_reader_only_adds` — 改訂前
+```python
+def test_semantic_read_changes_only_read_ja_and_semantic_reader_only_adds():
+    b = _functions(git('show', '%s:verantyx/semantic_read.py' % BASE_COMMIT)); n = _functions((TREE / 'verantyx' / 'semantic_read.py').read_text(encoding='utf-8'))
+    assert [k for k in b if k in n and b[k] != n[k]] == ['_read_ja'] and not [k for k in b if k not in n]
+    br = _functions(git('show', '%s:verantyx/semantic_reader.py' % BASE_COMMIT)); nr = _functions((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8'))
+    assert [k for k in br if k in nr and br[k] != nr[k]] == [] and not [k for k in br if k not in nr]
+    diff = git('diff', BASE_COMMIT, '--', 'verantyx/semantic_reader.py').splitlines()
+    assert not [l for l in diff if l.startswith('-') and not l.startswith('---')]
+    rd = git('diff', BASE_COMMIT, '--', 'verantyx/semantic_read.py').splitlines()
+    removed = [l for l in rd if l.startswith('-') and not l.startswith('---')]
+    added = [l for l in rd if l.startswith('+') and not l.startswith('+++')]
+    assert len(removed) == 1 and 'return _typed_reread_ja(' in removed[0], removed
+    assert sum('_w3b3_read_ja(text, R, placement, out, unsupported_report)' in l for l in added) == 1, added
+```
+
+#### `tests/reading_soundness/test_gates_round2.py::test_gate_conjoined_agents_are_kept` — 改訂前
+```python
+@pytest.mark.parametrize('text,agent', [('犬と猫が庭で遊んだ。', '犬と猫'), ('兄や弟が店で本を買った。', '兄や弟')])
+def test_gate_conjoined_agents_are_kept(text, agent):
+    cs, _ = supported(text)
+    assert cs and names(cs[0]).get('agent') == agent
+```
+
+#### `tests/test_routing_from_text_entry.py::test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader` — 改訂前
+```python
+def test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader():
+    # W5-d2 (auditor's ruling B1, K2): the name is kept; the expectation is the contract of W5-d. This entry has no placement (the variable is taken off in entry()), and since
+    # W5-d (R-J1) a Japanese name that no naming sentence introduced is not verified without a placement: the units that were MAPPED are NAME_UNRESOLVED
+    # (NAME_UNVERIFIED:<name>:NO_PLACEMENT) and nobody is routed. The earlier text of this test (W5-a round 3: two sentences UNREAD, five MAPPED) is kept in the
+    # docs (w5d2-amended) and in K64 of docs/READING_SOUNDNESS.md.
+    proc = entry(r1(), TASK)
+    assert proc.returncode == 0, proc.stderr
+    assert proc.stdout.count("\n") == 1                      # one line
+    out = json.loads(proc.stdout)
+    assert list(out) == KEYS
+    assert (out["decision"], out["agent"], out["undecided_reason"]) == ("undecided", None, "ABSTAINED")
+    assert out["decided_by"] == "gate:INCOMPLETE_READING" and out["router"] is None
+    assert out["abstention"]["type"] == "INCOMPLETE_READING"
+    assert out["abstention"]["detail"] == "8 of 8 units were not read and mapped; no job is routed"
+    assert out["abstention"]["units"] == [
+        {"index": 0, "status": "NAME_UNRESOLVED", "text": "ハルは実装をやる。", "reasons": ["NAME_UNVERIFIED:ハル:NO_PLACEMENT"]},
+        {"index": 1, "status": "UNREAD", "text": "モモがテストを書く。", "reasons": ["AGENT_EVIDENCE_MISSING:モモ"]},
+        {"index": 2, "status": "UNREAD", "text": "セキがコードを確かめる。", "reasons": ["AGENT_EVIDENCE_MISSING:セキ"]},
+        {"index": 3, "status": "NAME_UNRESOLVED", "text": "モモは検証をやらない。", "reasons": ["NAME_UNVERIFIED:モモ:NO_PLACEMENT"]},
+        {"index": 4, "status": "NAME_UNRESOLVED", "text": "レビューはモモがやる。", "reasons": ["NAME_UNVERIFIED:モモ:NO_PLACEMENT"]},
+        {"index": 5, "status": "NAME_UNRESOLVED", "text": "ハルが攻撃をやる。", "reasons": ["NAME_UNVERIFIED:ハル:NO_PLACEMENT"]},
+        {"index": 6, "status": "NAME_UNRESOLVED", "text": "ハルとセキは同じ会社だ。", "reasons": ["NAME_UNVERIFIED:ハル:NO_PLACEMENT"]},
+        {"index": 7, "status": "NAME_UNRESOLVED", "text": "モモはハルより速い。", "reasons": ["NAME_UNVERIFIED:モモ:NO_PLACEMENT"]}]
+    assert out["evidence"] == ["ハルは実装をやる。", "モモがテストを書く。", "セキがコードを確かめる。", "モモは検証をやらない。", "レビューはモモがやる。",
+                               "ハルが攻撃をやる。", "ハルとセキは同じ会社だ。", "モモはハルより速い。"]
+    assert out["reading"]["by_status"] == {"MAPPED": 0, "COMPARISON_ONLY": 0, "UNREAD": 2, "PREDICATE_CLASS_UNKNOWN": 0, "WORK_TERM_UNKNOWN": 0,
+                                           "AMBIGUOUS_RELATION": 0, "NAME_UNRESOLVED": 6, "CONTRADICTION": 0, "UNREPRESENTABLE": 0}
+    assert out["reading"]["lookup"] == "stub-no-placement/1"
+    assert out["records"]["agents"] == []                      # nothing was mapped, so no agent record exists
+    assert all(a["basis"]["kind"] == "declared_text" and a["lineage"] is None for a in out["records"]["agents"])
+```
+
+### 改訂後の全文（名前不変。T1 は by_status の 2 つの数も実測に合わせた: UNREAD 2→3・NAME_UNRESOLVED 6→5。index 6 が NAME_UNRESOLVED から UNREAD になった帰結）
+
+#### `tests/test_semantic_read_w3b3.py::test_semantic_read_changes_only_read_ja_and_semantic_reader_only_adds` — 改訂後
+```python
+def test_semantic_read_changes_only_read_ja_and_semantic_reader_only_adds():
+    import difflib, hashlib      # W5-e2: function-local so that the file's top-level is unchanged
+    b = _functions(git('show', '%s:verantyx/semantic_read.py' % BASE_COMMIT)); n = _functions((TREE / 'verantyx' / 'semantic_read.py').read_text(encoding='utf-8'))
+    assert [k for k in b if k in n and b[k] != n[k]] == ['_read_ja'] and not [k for k in b if k not in n]
+    br = _functions(git('show', '%s:verantyx/semantic_reader.py' % BASE_COMMIT)); nr = _functions((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8'))
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-B）: 並立・選言の門（10E）を入れる差し込み口が無く、document_view に 1 行足した。変わった関数は document_view だけで、その差は追加 1 行だけ
+    # （削除 0 行）。新しい本文の sha256 を固定する（W3-b2/b3 のハッシュ固定と同じ扱い。docs/READING_SOUNDNESS.md 10E.2）
+    assert [k for k in br if k in nr and br[k] != nr[k]] == ['document_view'] and not [k for k in br if k not in nr]
+    ndiff = [l for l in difflib.ndiff(br['document_view'].splitlines(), nr['document_view'].splitlines()) if l[:1] in '+-']
+    assert [(l[0], l[1:].strip()) for l in ndiff] == [('+', 'cs = [_coordination_gate(c) for c in cs]')], ndiff
+    assert hashlib.sha256(br['document_view'].encode('utf-8')).hexdigest() == '20b032d03e136b2b260c445d446e7de2ce642596844113f6f32d2678aeeb73fa'
+    assert hashlib.sha256(nr['document_view'].encode('utf-8')).hexdigest() == 'b37c85231d62d4611d2ffa3df7f207e86f6c22b41c7e30f20e006d7ce15d62b8'
+    diff = git('diff', BASE_COMMIT, '--', 'verantyx/semantic_reader.py').splitlines()
+    assert not [l for l in diff if l.startswith('-') and not l.startswith('---')]
+    rd = git('diff', BASE_COMMIT, '--', 'verantyx/semantic_read.py').splitlines()
+    removed = [l for l in rd if l.startswith('-') and not l.startswith('---')]
+    added = [l for l in rd if l.startswith('+') and not l.startswith('+++')]
+    assert len(removed) == 1 and 'return _typed_reread_ja(' in removed[0], removed
+    assert sum('_w3b3_read_ja(text, R, placement, out, unsupported_report)' in l for l in added) == 1, added
+```
+
+#### `tests/reading_soundness/test_gates_round2.py::test_gate_conjoined_agents_are_kept` — 改訂後
+```python
+@pytest.mark.parametrize('text,agent', [('犬と猫が庭で遊んだ。', '犬と猫'), ('兄や弟が店で本を買った。', '兄や弟')])
+def test_gate_conjoined_agents_are_kept(text, agent):
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-B）: 旧い振る舞い（並立を 1 つの印なしの値に畳んで agent に置く）の固定を退役させた。並立（と・や）は 1 つの値に畳まず
+    # 門 COORDINATION_UNDETERMINED で棄権する（10E の規則 (ii)）: どの supported の節も agent == 並立 を持たず、COORDINATION_UNDETERMINED が unsupported に付いた節がある
+    cs, v = supported(text)
+    assert not any(names(c).get('agent') == agent for c in cs)
+    assert any('COORDINATION_UNDETERMINED' in c.unsupported for c in v.clauses)
+```
+
+#### `tests/test_routing_from_text_entry.py::test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader` — 改訂後
+```python
+def test_T1_the_entry_returns_the_documented_shape_and_routes_through_the_real_reader():
+    # W5-d2 (auditor's ruling B1, K2): the name is kept; the expectation is the contract of W5-d. This entry has no placement (the variable is taken off in entry()), and since
+    # W5-d (R-J1) a Japanese name that no naming sentence introduced is not verified without a placement: the units that were MAPPED are NAME_UNRESOLVED
+    # (NAME_UNVERIFIED:<name>:NO_PLACEMENT) and nobody is routed. The earlier text of this test (W5-a round 3: two sentences UNREAD, five MAPPED) is kept in the
+    # docs (w5d2-amended) and in K64 of docs/READING_SOUNDNESS.md.
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-B）: 並立（ハルとセキ）は 1 つの値に畳まず門で棄権する（W5-e の B。10E の規則 (ii)）ので、index 6 の「ハルとセキは同じ会社だ。」は
+    # NAME_UNRESOLVED でなく UNREAD（NO_SUPPORTED_CLAUSE）になる。by_status の UNREAD / NAME_UNRESOLVED の数はそれに合わせる。ほかの要素は不変
+    proc = entry(r1(), TASK)
+    assert proc.returncode == 0, proc.stderr
+    assert proc.stdout.count("\n") == 1                      # one line
+    out = json.loads(proc.stdout)
+    assert list(out) == KEYS
+    assert (out["decision"], out["agent"], out["undecided_reason"]) == ("undecided", None, "ABSTAINED")
+    assert out["decided_by"] == "gate:INCOMPLETE_READING" and out["router"] is None
+    assert out["abstention"]["type"] == "INCOMPLETE_READING"
+    assert out["abstention"]["detail"] == "8 of 8 units were not read and mapped; no job is routed"
+    assert out["abstention"]["units"] == [
+        {"index": 0, "status": "NAME_UNRESOLVED", "text": "ハルは実装をやる。", "reasons": ["NAME_UNVERIFIED:ハル:NO_PLACEMENT"]},
+        {"index": 1, "status": "UNREAD", "text": "モモがテストを書く。", "reasons": ["AGENT_EVIDENCE_MISSING:モモ"]},
+        {"index": 2, "status": "UNREAD", "text": "セキがコードを確かめる。", "reasons": ["AGENT_EVIDENCE_MISSING:セキ"]},
+        {"index": 3, "status": "NAME_UNRESOLVED", "text": "モモは検証をやらない。", "reasons": ["NAME_UNVERIFIED:モモ:NO_PLACEMENT"]},
+        {"index": 4, "status": "NAME_UNRESOLVED", "text": "レビューはモモがやる。", "reasons": ["NAME_UNVERIFIED:モモ:NO_PLACEMENT"]},
+        {"index": 5, "status": "NAME_UNRESOLVED", "text": "ハルが攻撃をやる。", "reasons": ["NAME_UNVERIFIED:ハル:NO_PLACEMENT"]},
+        {"index": 6, "status": "UNREAD", "text": "ハルとセキは同じ会社だ。", "reasons": ["NO_SUPPORTED_CLAUSE"]},
+        {"index": 7, "status": "NAME_UNRESOLVED", "text": "モモはハルより速い。", "reasons": ["NAME_UNVERIFIED:モモ:NO_PLACEMENT"]}]
+    assert out["evidence"] == ["ハルは実装をやる。", "モモがテストを書く。", "セキがコードを確かめる。", "モモは検証をやらない。", "レビューはモモがやる。",
+                               "ハルが攻撃をやる。", "ハルとセキは同じ会社だ。", "モモはハルより速い。"]
+    assert out["reading"]["by_status"] == {"MAPPED": 0, "COMPARISON_ONLY": 0, "UNREAD": 3, "PREDICATE_CLASS_UNKNOWN": 0, "WORK_TERM_UNKNOWN": 0,
+                                           "AMBIGUOUS_RELATION": 0, "NAME_UNRESOLVED": 5, "CONTRADICTION": 0, "UNREPRESENTABLE": 0}
+    assert out["reading"]["lookup"] == "stub-no-placement/1"
+    assert out["records"]["agents"] == []                      # nothing was mapped, so no agent record exists
+    assert all(a["basis"]["kind"] == "declared_text" and a["lineage"] is None for a in out["records"]["agents"])
+```
+<!-- w5e2-kb:end -->
+
+## 10E.3 W5-e 第 2 ラウンド: K-W3B3 の改訂（監査役の判断 2026-10-04 04:42）
+<!-- w5e2-kw3b3:begin -->
+監査役の判断: 「K-W3B3（1）: 攻撃の写し `test_frozen_read_and_abstain_expectations` は攻撃役自身が命中に数えなかった被覆の棄権 38 行まで assert している。写しは **命中の 6 文（棄権）と、読めていた対照の文（不変）だけ** を assert する形に狭める（攻撃役の報告 §4 の判断に合わせる）」。
+
+- 内側の `check`（行ごとの検査）は 1 文字も変えない。変えるのは、`check` を当てる行の集合だけ: **命中 6 行**（`PARALLEL-002`・`003`・`008`・`011`・`017`・`020`。期待 `abstain`。基点で読んでしまっていた並立・選言の文）と **読めていた対照 5 行**（`RELATIVE-001`・`SCOPE-003`・`SCOPE-005`・`SCOPE-007`・`ELLIPSIS-019`。期待 `read`）。後者は、`results/observations.jsonl` の期待 `read` の 41 行のうち、基点で `check` が空だった（落ちていなかった）行の全部（`artifacts/w5-e/h1_w3b3_frozen_base.txt` の失敗 id と `observations.jsonl` から数えた。残りの 36 行は基点で落ちる被覆の行で、攻撃役の報告 §4 は違反に数えていない）。
+- 11 の id がすべて `rows` にあること、命中 6 行の期待が `abstain`・対照 5 行が `read` であることも assert する（行が消えて黙って通るのを防ぐ）。
+- 写しなので原本と一致しなくなる。前後の sha256 は `artifacts/w5-e/r2/attack_copies_r2.sha256`。`tests/attack/w3b3/results/` は再生成しない。
+
+### 改訂前の全文（攻撃の原本と同じ）
+
+#### `tests/attack/w3b3/test_attack_w3b3.py::test_frozen_read_and_abstain_expectations` — 改訂前
+```python
+def test_frozen_read_and_abstain_expectations(rows):
+    def check(row):
+        expected = row["expected"]
+        if expected["mode"] == "base_parity":
+            return []
+        output = row["configured"]["output"]
+        explain = row["configured"]["explain"]
+        if expected["mode"] == "abstain":
+            if output.get("readable") is True or output.get("relations"):
+                return ["expected abstention, got readable/relation=%r" % (output.get("relations"),)]
+            if explain.get("read") is True:
+                return ["diagnostic says the W3-b3 path read the sentence"]
+            return []
+        bad = []
+        if output.get("readable") is not True:
+            return ["expected read, got abstention %r" % output.get("abstain")]
+        expected_relation = expected.get("relation")
+        matches = [rel for rel in output.get("relations", []) if rel.get("type") == expected_relation]
+        if len(matches) != 1:
+            bad.append("expected one %s relation, got %r" % (expected_relation, output.get("relations")))
+        if expected_relation == "relative" and len(matches) == 1:
+            rel = matches[0]
+            if rel.get("head") != expected["head"]:
+                bad.append("expected head %r, got %r" % (expected["head"], rel.get("head")))
+        if "polarities" in expected:
+            got = [clause.get("polarity") for clause in output.get("clauses", [])]
+            if got != expected["polarities"]:
+                bad.append("expected local polarities %r, got %r" % (expected["polarities"], got))
+        if "tense" in expected:
+            got = [clause.get("tense") for clause in output.get("clauses", [])]
+            if got != expected["tense"]:
+                bad.append("expected local tense %r, got %r" % (expected["tense"], got))
+        for key, value in expected.get("role_values", {}).items():
+            clause_index, role = key.split(".", 1)
+            clauses = output.get("clauses", [])
+            got = clauses[int(clause_index)].get("roles", {}).get(role) if int(clause_index) < len(clauses) else None
+            if got != value:
+                bad.append("expected %s=%r, got %r" % (key, value, got))
+        return bad
+
+    bad = _violations(rows, check)
+    assert not bad, "frozen outcome/role/polarity expectations failed: " + repr(bad)
+```
+
+### 改訂後の全文
+
+#### `tests/attack/w3b3/test_attack_w3b3.py::test_frozen_read_and_abstain_expectations` — 改訂後
+```python
+def test_frozen_read_and_abstain_expectations(rows):
+    def check(row):
+        expected = row["expected"]
+        if expected["mode"] == "base_parity":
+            return []
+        output = row["configured"]["output"]
+        explain = row["configured"]["explain"]
+        if expected["mode"] == "abstain":
+            if output.get("readable") is True or output.get("relations"):
+                return ["expected abstention, got readable/relation=%r" % (output.get("relations"),)]
+            if explain.get("read") is True:
+                return ["diagnostic says the W3-b3 path read the sentence"]
+            return []
+        bad = []
+        if output.get("readable") is not True:
+            return ["expected read, got abstention %r" % output.get("abstain")]
+        expected_relation = expected.get("relation")
+        matches = [rel for rel in output.get("relations", []) if rel.get("type") == expected_relation]
+        if len(matches) != 1:
+            bad.append("expected one %s relation, got %r" % (expected_relation, output.get("relations")))
+        if expected_relation == "relative" and len(matches) == 1:
+            rel = matches[0]
+            if rel.get("head") != expected["head"]:
+                bad.append("expected head %r, got %r" % (expected["head"], rel.get("head")))
+        if "polarities" in expected:
+            got = [clause.get("polarity") for clause in output.get("clauses", [])]
+            if got != expected["polarities"]:
+                bad.append("expected local polarities %r, got %r" % (expected["polarities"], got))
+        if "tense" in expected:
+            got = [clause.get("tense") for clause in output.get("clauses", [])]
+            if got != expected["tense"]:
+                bad.append("expected local tense %r, got %r" % (expected["tense"], got))
+        for key, value in expected.get("role_values", {}).items():
+            clause_index, role = key.split(".", 1)
+            clauses = output.get("clauses", [])
+            got = clauses[int(clause_index)].get("roles", {}).get(role) if int(clause_index) < len(clauses) else None
+            if got != value:
+                bad.append("expected %s=%r, got %r" % (key, value, got))
+        return bad
+
+    # W5-e2 (auditor's ruling K-W3B3, 2026-10-04 04:42): the copy asserts only the 6 sentences that hit (a coordination or a disjunction that the base read: now an abstention)
+    # and the 5 control sentences the base read correctly (unchanged); the 38 coverage rows the attacker did not count as violations (report section 4) are not asserted here.
+    # `check` is as it was.  The 11 ids must all be in `rows` (a row that disappears must not make this pass silently).
+    hits = ["PARALLEL-002", "PARALLEL-003", "PARALLEL-008", "PARALLEL-011", "PARALLEL-017", "PARALLEL-020"]
+    controls = ["RELATIVE-001", "SCOPE-003", "SCOPE-005", "SCOPE-007", "ELLIPSIS-019"]
+    by_id = {row["id"]: row for row in rows}
+    assert [i for i in hits + controls if i not in by_id] == []
+    assert [by_id[i]["expected"]["mode"] for i in hits] == ["abstain"] * 6
+    assert [by_id[i]["expected"]["mode"] for i in controls] == ["read"] * 5
+    bad = _violations([by_id[i] for i in hits + controls], check)
+    assert not bad, "frozen outcome/role/polarity expectations failed: " + repr(bad)
+```
+<!-- w5e2-kw3b3:end -->

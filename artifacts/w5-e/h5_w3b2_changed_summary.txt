@@ -1,0 +1,1 @@
+rows 3183 changed 35 {"gate_reason_added": 32, "gate_reason_only": 3}
