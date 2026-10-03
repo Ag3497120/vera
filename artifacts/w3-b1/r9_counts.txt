@@ -1,0 +1,6 @@
+rows 60
+path S4 entry_expect abstain: 24
+path S4 entry_expect read: 6
+path U entry_expect abstain: 24
+path U entry_expect read: 6
+tails {"beki": 2, "desire": 3, "desirepast": 3, "imp": 5, "kamo": 2, "neg": 2, "negpast": 3, "nomore": 4, "nonpast": 2, "oku": 2, "past": 5, "please": 2, "polneg": 2, "prog": 2, "progneg": 2, "prognegpast": 3, "progpast": 2, "progpolneg": 2, "proh": 4, "rashii": 2, "shimau": 2, "souda": 2, "youda": 2}

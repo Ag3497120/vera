@@ -1,0 +1,16 @@
+rows 78 validate_item_errors 0
+('S4', 'dekiru', 'abstain') 2
+('S4', 'godan_plain', 'read') 4
+('S4', 'ichidan_plain', 'abstain') 5
+('S4', 'ichidan_upper', 'read') 2
+('S4', 'potential', 'abstain') 14
+('S4', 'ranuki', 'abstain') 2
+('S4', 'sa_not_a', 'read') 3
+('S4', 'short_causative', 'abstain') 7
+('S4', 'spontaneous', 'abstain') 2
+('U', 'godan_plain', 'read') 7
+('U', 'ichidan_plain', 'abstain') 6
+('U', 'potential', 'abstain') 17
+('U', 'sa_not_a', 'read') 3
+('U', 'short_causative', 'abstain') 4
+{'past': 35, 'nonpast': 14, 'neg': 12, 'negpast': 17}

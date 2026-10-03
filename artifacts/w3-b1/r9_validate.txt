@@ -1,0 +1,2 @@
+rows 60 validate_item_errors 0
+{('U', 'read'): 6, ('U', 'abstain'): 24, ('S4', 'read'): 6, ('S4', 'abstain'): 24}

@@ -1,0 +1,10 @@
+## 弟が公園へ歩けた。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["RECIPIENT_TYPE_UNDETERMINED:歩ける", "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行"]}, "unsupported": [], "clause_meta": []}
+## 先生が公園へ歩かした。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["RECIPIENT_TYPE_UNDETERMINED:歩かす", "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:五段-サ行"]}, "unsupported": [], "clause_meta": []}
+## 兄が山へ登った。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "登る", "roles": {"agent": "兄", "goal": "山"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active", "predicate_basis": "placement_direct:P_MOVE", "role_basis": {"agent": "placement_direct:PERSON", "goal": "placement_direct:PLACE"}}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [4, 6]}]}
+## 兄が夕方、手紙を渡した。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE", "PLACEMENT_SLOT_EVIDENCE_ONLY:part:夕方"]}, "unsupported": [{"predicate": "渡す", "span": [8, 10], "reasons": ["unrepresented source content"]}], "clause_meta": []}
+## 母が昼、本を返した。
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "返す", "roles": {"agent": "母", "patient": "本", "time": "昼"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active", "role_basis": {"time": "placement_direct:TIME"}}], "relations": [], "abstain": null, "unsupported": [{"predicate": "返す", "span": [6, 8], "reasons": ["unrepresented source content"]}], "clause_meta": [{"rule": "frame", "span": [6, 8]}]}

@@ -1,0 +1,421 @@
+--- frozen(empty) w3b1_expect_exceptions.json
++++ round-1 state w3b1_expect_exceptions.json
+@@ -1 +1,417 @@
+-{"exceptions": []}
++{
++ "exceptions": [
++  {
++   "id": "W3B1-U-063",
++   "input": "そして兄が弟に名乗った。",
++   "kind": "reason_differs",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": "PLACEMENT_REREAD_ABSTAINS"
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE",
++     "PLACEMENT_PART_NONE"
++    ]
++   },
++   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_REREAD_ABSTAINS: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]]]"
++  },
++  {
++   "id": "W3B1-U-065",
++   "input": "母が先生に断るだろう。",
++   "kind": "reason_differs",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": "PLACEMENT_REREAD_ABSTAINS"
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "UNREAD_SPAN:volitional source does not assert a fact"
++    ]
++   },
++   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_REREAD_ABSTAINS: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [] and unread [\"volitional source does not assert a fact\"]"
++  },
++  {
++   "id": "W3B1-S4-028",
++   "input": "姉が大晦日、床を磨いた。",
++   "kind": "trigger_not_reached",
++   "registered": {
++    "entry_expect": "read",
++    "expect_reason_prefix": null
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "registered as read, the entry abstains (the safe direction): the typed path was not reached or did not read it, see the reasons. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-S4-029",
++   "input": "父が大晦日、窓を洗った。",
++   "kind": "trigger_not_reached",
++   "registered": {
++    "entry_expect": "read",
++    "expect_reason_prefix": null
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "registered as read, the entry abstains (the safe direction): the typed path was not reached or did not read it, see the reasons. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-S4-030",
++   "input": "先生が大晦日、本を読んだ。",
++   "kind": "trigger_not_reached",
++   "registered": {
++    "entry_expect": "read",
++    "expect_reason_prefix": null
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "registered as read, the entry abstains (the safe direction): the typed path was not reached or did not read it, see the reasons. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-S4-031",
++   "input": "弟が春休み、本を読んだ。",
++   "kind": "trigger_not_reached",
++   "registered": {
++    "entry_expect": "read",
++    "expect_reason_prefix": null
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "registered as read, the entry abstains (the safe direction): the typed path was not reached or did not read it, see the reasons. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-S4-032",
++   "input": "妹が春休み、絵を描いた。",
++   "kind": "trigger_not_reached",
++   "registered": {
++    "entry_expect": "read",
++    "expect_reason_prefix": null
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "registered as read, the entry abstains (the safe direction): the typed path was not reached or did not read it, see the reasons. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-S4-033",
++   "input": "生徒が春休み、手紙を書いた。",
++   "kind": "trigger_not_reached",
++   "registered": {
++    "entry_expect": "read",
++    "expect_reason_prefix": null
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "registered as read, the entry abstains (the safe direction): the typed path was not reached or did not read it, see the reasons. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-S4-034",
++   "input": "兄が年明け、窓を開けた。",
++   "kind": "trigger_not_reached",
++   "registered": {
++    "entry_expect": "read",
++    "expect_reason_prefix": null
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "registered as read, the entry abstains (the safe direction): the typed path was not reached or did not read it, see the reasons. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-S4-035",
++   "input": "母が年明け、床を磨いた。",
++   "kind": "trigger_not_reached",
++   "registered": {
++    "entry_expect": "read",
++    "expect_reason_prefix": null
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "registered as read, the entry abstains (the safe direction): the typed path was not reached or did not read it, see the reasons. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-S4-036",
++   "input": "姉が年明け、手紙を書いた。",
++   "kind": "trigger_not_reached",
++   "registered": {
++    "entry_expect": "read",
++    "expect_reason_prefix": null
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "registered as read, the entry abstains (the safe direction): the typed path was not reached or did not read it, see the reasons. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-S4-049",
++   "input": "兄が夜明け、窓を開けた。",
++   "kind": "reason_differs",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": "PLACEMENT_DIRECT_VIA_GENERATED"
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_DIRECT_VIA_GENERATED: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-S4-051",
++   "input": "弟が連休、本を読んだ。",
++   "kind": "reason_differs",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": "PLACEMENT_DIRECT_VIA_GENERATED"
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_DIRECT_VIA_GENERATED: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-S4-052",
++   "input": "姉が週明け、手紙を書いた。",
++   "kind": "reason_differs",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": "PLACEMENT_DIRECT_VIA_GENERATED"
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_DIRECT_VIA_GENERATED: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-S4-054",
++   "input": "母が梅雨、靴を磨いた。",
++   "kind": "baseline_reads",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": "PLACEMENT_MULTIPLE"
++   },
++   "observed": {
++    "readable": true,
++    "roles": [
++     {
++      "agent": "母",
++      "patient": "梅雨、靴"
++     }
++    ],
++    "verdict": "incomplete"
++   },
++   "why": "the base commit already reads this sentence the same way (the output with no placement is identical), so no typed path was reached; the reading is wrong (judge: incomplete), which is an existing hole of the reader / the English frame, not of this change. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
++  },
++  {
++   "id": "W3B1-S4-059",
++   "input": "弟が夕べ、本を読んだ。",
++   "kind": "baseline_reads",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": "PLACEMENT_UNPLACED"
++   },
++   "observed": {
++    "readable": true,
++    "roles": [
++     {
++      "agent": "弟",
++      "patient": "夕べ、本"
++     }
++    ],
++    "verdict": "incomplete"
++   },
++   "why": "the base commit already reads this sentence the same way (the output with no placement is identical), so no typed path was reached; the reading is wrong (judge: incomplete), which is an existing hole of the reader / the English frame, not of this change. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
++  },
++  {
++   "id": "W3B1-S4-060",
++   "input": "姉が冬休み、絵を描いた。",
++   "kind": "reason_differs",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": "PLACEMENT_UNPLACED"
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_UNPLACED: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-S4-067",
++   "input": "兄が三回、窓を開けた。",
++   "kind": "reason_differs",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": "PLACEMENT_PART_MARKER:quant"
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "QUANTIFIER_NOT_MAPPED:numeral"
++    ]
++   },
++   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_PART_MARKER:quant: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
++  },
++  {
++   "id": "W3B1-S4-068",
++   "input": "母が二回、手紙を書いた。",
++   "kind": "reason_differs",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": "PLACEMENT_PART_MARKER:quant"
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "QUANTIFIER_NOT_MAPPED:numeral"
++    ]
++   },
++   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_PART_MARKER:quant: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
++  },
++  {
++   "id": "W3B1-S4-069",
++   "input": "弟が五回、皿を洗った。",
++   "kind": "reason_differs",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": "PLACEMENT_PART_MARKER:quant"
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "QUANTIFIER_NOT_MAPPED:numeral"
++    ]
++   },
++   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_PART_MARKER:quant: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
++  },
++  {
++   "id": "W3B1-S4-070",
++   "input": "姉が十回、靴を磨いた。",
++   "kind": "reason_differs",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": "PLACEMENT_PART_MARKER:quant"
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "QUANTIFIER_NOT_MAPPED:numeral"
++    ]
++   },
++   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_PART_MARKER:quant: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", []]]"
++  },
++  {
++   "id": "W3B1-S4-071",
++   "input": "母が冬の夜、窓を閉めた。",
++   "kind": "reason_differs",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": "PLACEMENT_PART_NO_ROLE"
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_PART_NO_ROLE: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-S4-072",
++   "input": "兄が冬の朝、手紙を書いた。",
++   "kind": "reason_differs",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": "PLACEMENT_PART_NO_ROLE"
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_PART_NO_ROLE: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-S4-073",
++   "input": "弟が冬の昼、本を読んだ。",
++   "kind": "reason_differs",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": "PLACEMENT_PART_NO_ROLE"
++   },
++   "observed": {
++    "readable": false,
++    "reasons": [
++     "NO_SUPPORTED_CLAUSE"
++    ]
++   },
++   "why": "abstains as registered, but the second reason is not the registered prefix PLACEMENT_PART_NO_ROLE: the typed path that was expected to answer was not reached. the reader (document_view) returns clauses [[\"frame\", [\"unrepresented source content\"]], [\"np_internal\", [\"ill-typed role: time phrase fused with participant\"]]]"
++  },
++  {
++   "id": "W3B1-EN-015",
++   "input": "The girl cleaned the room quietly.",
++   "kind": "baseline_reads",
++   "registered": {
++    "entry_expect": "abstain",
++    "expect_reason_prefix": null
++   },
++   "observed": {
++    "readable": true,
++    "roles": [
++     {
++      "agent": "girl",
++      "patient": "room quietly"
++     }
++    ],
++    "verdict": "incomplete"
++   },
++   "why": "the base commit already reads this sentence the same way (the output with no placement is identical), so no typed path was reached; the reading is wrong (judge: incomplete), which is an existing hole of the reader / the English frame, not of this change."
++  }
++ ]
++}

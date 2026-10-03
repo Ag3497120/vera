@@ -1,0 +1,84 @@
+--- round-1 state tests/test_semantic_read_w3b1.py
++++ round-2 state tests/test_semantic_read_w3b1.py
+@@ -20,9 +20,21 @@
+ 
+ TREE = Path(__file__).resolve().parent.parent
+ RS = TREE / 'tests' / 'reading_soundness'
+-sys.path.insert(0, str(RS))
+-import w3b1_fakes as F    # noqa: E402
+ 
++
++def _load_by_path(name, path):
++    """Load a helper module by its path under a unique name. sys.path is NOT changed: a directory put at the front of sys.path for the rest of the session
++    would shadow same-named modules of other test directories (tests/observe/measure.py against tests/event_cross/measure.py)."""
++    if name in sys.modules: return sys.modules[name]
++    spec = importlib.util.spec_from_file_location(name, str(path))
++    mod = importlib.util.module_from_spec(spec)
++    sys.modules[name] = mod
++    spec.loader.exec_module(mod)
++    return mod
++
++
++F = _load_by_path('w3b1_fakes', RS / 'w3b1_fakes.py')
++
+ from tools.bank_score.v2 import b1    # noqa: E402
+ from verantyx import coarse_types as CT    # noqa: E402
+ from verantyx import semantic_read as SR    # noqa: E402
+@@ -111,7 +123,10 @@
+             if role in EC.EXPECTED_TYPES:
+                 seen.add(role)
+                 assert set(exp) == set(EC.EXPECTED_TYPES[role]), (t, role)
+-    assert seen == {'agent', 'recipient', 'place', 'time'}
++    # the roles of the table in the docs (the current K62 table) that the event cross also registers: nothing is skipped silently
++    docs_roles = {row[1] for row in block('w3b1_frames')}
++    assert seen == {role for role in docs_roles if role in EC.EXPECTED_TYPES}
++    assert seen == {'agent', 'place', 'time'}      # `recipient` was in the registered table and was returned to "not read" (K62 table change record 1)
+     patient = [exp for rows in R.TYPED_FRAMES.values() for role, parts, exp, kind in rows if role == 'patient'][0]
+     assert set(patient) == set(CT.NOUN_TYPES) - {'TIME', 'QUANTITY', 'PLACE'} and len(patient) == 14
+     assert set(EC.NOUN_TYPE_IDS) == set(CT.NOUN_TYPES)
+@@ -472,7 +487,7 @@
+     ids = {r['id']: r for r in DATA}
+     assert len({e['id'] for e in EXCEPTIONS}) == len(EXCEPTIONS)
+     for e in EXCEPTIONS:
+-        assert e['id'] in ids and e.get('why') and e['kind'] in ('trigger_not_reached', 'baseline_reads', 'reason_differs')
++        assert e['id'] in ids and e.get('why') and e['kind'] in ('trigger_not_reached', 'baseline_reads', 'reason_differs', 'row_returned_to_abstain')
+         row = ids[e['id']]
+         out = read(row['input'], F.FixtureQuery(), row['lang'])
+         # the exact output is pinned: a change of behaviour (better or worse) shows here
+--- round-1 state tests/test_semantic_read_w3b1_events.py
++++ round-2 state tests/test_semantic_read_w3b1_events.py
+@@ -2,6 +2,7 @@
+ the entry decided by a type (`predicate_basis`, `role_basis`) into its provenance. Existing expectations of tests/test_event_cross*.py are not changed.
+ """
+ import copy
++import importlib.util
+ import io
+ import json
+ import os
+@@ -12,11 +13,22 @@
+ import pytest
+ 
+ TREE = Path(__file__).resolve().parent.parent
+-sys.path.insert(0, str(TREE / 'tests' / 'reading_soundness'))
+-sys.path.insert(0, str(TREE / 'tests' / 'event_cross'))
+-import w3b1_fakes as F    # noqa: E402
+-import fakes              # noqa: E402
+ 
++
++def _load_by_path(name, path):
++    """Load a helper module by its path under a unique name. sys.path is NOT changed: a directory put at the front of sys.path for the rest of the session
++    would shadow same-named modules of other test directories (tests/observe/measure.py against tests/event_cross/measure.py: the two W3-c tests of o4)."""
++    if name in sys.modules: return sys.modules[name]
++    spec = importlib.util.spec_from_file_location(name, str(path))
++    mod = importlib.util.module_from_spec(spec)
++    sys.modules[name] = mod
++    spec.loader.exec_module(mod)
++    return mod
++
++
++F = _load_by_path('w3b1_fakes', TREE / 'tests' / 'reading_soundness' / 'w3b1_fakes.py')
++fakes = _load_by_path('w3b1_event_cross_fakes', TREE / 'tests' / 'event_cross' / 'fakes.py')
++
+ from verantyx import event_cross as EC    # noqa: E402
+ from verantyx import semantic_read as SR    # noqa: E402
+ 

@@ -1,0 +1,32 @@
+mode=live
+rows=78
+verdicts={"abstain": 43, "correct": 24, "misread": 11}
+verdicts_by_data={"ja_r10": {"abstain": 43, "correct": 24, "misread": 11}}
+misread=11
+incomplete=0
+unjudged=0
+new_data_rows=78
+entry_expect_mismatch={"abstain_expected_but_read": 16, "read_expected_but_abstained": 4}
+reason_prefix_mismatch_among_abstained=0
+second_reason_prefixes={"PLACEMENT_DIRECT_VIA_GENERATED": 1, "PLACEMENT_PART_NO_ROLE": 1, "PLACEMENT_REREAD_ABSTAINS": 20, "PLACEMENT_SLOT_EVIDENCE_ONLY": 20, "PLACEMENT_UNPLACED": 1}
+bad_verdicts={"bad_verdict_produced_by_the_placement": 11, "bad_verdict_total": 11}
+READ_EXPECTED_BUT_ABSTAINED W3B1-R10-S4-027 父が週末、靴を洗った。 ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_SLOT_EVIDENCE_ONLY:part:週末']
+READ_EXPECTED_BUT_ABSTAINED W3B1-R10-S4-029 母が夏、絵を描く。 ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_SLOT_EVIDENCE_ONLY:part:夏']
+READ_EXPECTED_BUT_ABSTAINED W3B1-R10-S4-030 弟が秋、本を読まなかった。 ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_SLOT_EVIDENCE_ONLY:part:秋']
+READ_EXPECTED_BUT_ABSTAINED W3B1-R10-S4-033 兄が夕方、手紙を渡した。 ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_SLOT_EVIDENCE_ONLY:part:夕方']
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-001 弟が公園へ歩けた。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-003 馬が村へ歩けない。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-004 兄が寺へ歩けなかった。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-018 先生が公園へ歩かした。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-019 母が庭へ歩かす。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-020 兄が橋へ歩かさなかった。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-021 父が広場へ歩かさない。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-022 猫が庭へ出た。 verdict=correct identical_to_no_placement=True
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-024 弟が広場へ出なかった。 verdict=correct identical_to_no_placement=True
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-025 兄が駅から離れた。 verdict=correct identical_to_no_placement=True
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-026 母が病院へ出かけた。 verdict=correct identical_to_no_placement=True
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-U-027 姉が港へ出かけなかった。 verdict=correct identical_to_no_placement=True
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-S4-015 先生が放課後、生徒を走らした。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-S4-017 母が休日、妹を走らさなかった。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-S4-019 店員が夜、学生を走らした。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R10-S4-020 姉が昼、手紙を書かした。 verdict=misread identical_to_no_placement=False

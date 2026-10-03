@@ -1,0 +1,19 @@
+196a197,202
+> # the two rows that were read before the gate on a head that may be a derived verb (docs K63, table change record 3, review.r3.md M8) and are returned to abstain by it
+> # (the head is a shimo-ichidan verb); the output is fixed as it is (declared, not hidden), and without the gate the row is read correctly
+> RETURNED_BY_DERIVED_GATE = {
+>     'W3B1-R9-S4-001': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行'],
+>     'W3B1-R9-S4-006': ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行'],
+> }
+197a204
+> 
+206a214,222
+>         return
+>     if row['id'] in RETURNED_BY_DERIVED_GATE:
+>         assert row['entry_expect'] == 'read'
+>         assert out['readable'] is False and out['abstain']['reasons'] == RETURNED_BY_DERIVED_GATE[row['id']], out
+>         saved = R.typed_head_derived_ja
+>         R.typed_head_derived_ja = lambda toks, clause: None
+>         try: without_gate = SR.read(row['input'], 'ja', placement=F.FixtureQuery())
+>         finally: R.typed_head_derived_ja = saved
+>         assert without_gate['readable'] is True and b1.judge(row['expect'], 'ja', without_gate)['verdict'] == 'correct'

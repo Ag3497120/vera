@@ -1,0 +1,24 @@
+# W3-b1: 提案の差分(適用しない。tools/ は許可パスの外)。採点器(tools.bank_score)の子プロセスは環境を作り直す(runner.py の env())ので、
+# VERA_PLACEMENT が届かず、配置あり(--placement / VERA_PLACEMENT)の入口は採点器では測れない。監査役が隠しバンクで配置ありを測るには、
+# 次のように、親の環境に VERA_PLACEMENT があるときだけ子に渡す。run_meta の env にも出るので、配置あり/なしの取り違えは記録に残る。
+# 注意: 子プロセスの来歴(provenance)が木の外のファイルへのアクセスを `outside` に数えるなら、配置のディレクトリも数えられる
+# (配置は木の外の読み取り専用の物。数えられた件数は報告に書く)。
+--- a/tools/bank_score/runner.py
++++ b/tools/bank_score/runner.py
+@@ -134,13 +134,16 @@ class Runner:
+ 
+     def env(self, prov: Path) -> dict[str, str]:
+-        return {
++        e = {
+             "PATH": os.environ.get("PATH", ""),
+             "PYTHONPATH": self.tree,
+             "PYTHONDONTWRITEBYTECODE": "1",
+             "HOME": str(self.work / "home"),
+             "VERA_CORPUS_ROOT": self.corpus_root,
+             "BANK_SCORE_PROVENANCE": str(prov),
+             "LANG": "C.UTF-8",
+             "PYTHONIOENCODING": "utf-8",
+         }
++        if os.environ.get("VERA_PLACEMENT"):      # W3-b1: a placement is passed only when the parent names one
++            e["VERA_PLACEMENT"] = os.environ["VERA_PLACEMENT"]
++        return e

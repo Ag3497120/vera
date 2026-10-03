@@ -1,0 +1,45 @@
+mode=live
+rows=60
+verdicts={"abstain": 15, "correct": 28, "incomplete": 1, "misread": 16}
+verdicts_by_data={"ja_r9": {"abstain": 15, "correct": 28, "incomplete": 1, "misread": 16}}
+misread=16
+incomplete=1
+unjudged=0
+new_data_rows=60
+entry_expect_mismatch={"abstain_expected_but_read": 33, "read_expected_but_abstained": 0}
+reason_prefix_mismatch_among_abstained=0
+second_reason_prefixes={"PLACEMENT_PART_NOT_NP": 1, "PLACEMENT_REREAD_ABSTAINS": 8}
+bad_verdicts={"bad_verdict_identical_to_no_placement": 1, "bad_verdict_produced_by_the_placement": 16, "bad_verdict_total": 17}
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-007 猫が庭へ走っている。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-008 犬が森へ走っていた。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-009 鳥が島へ飛んでいない。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-010 馬が畑へ走っていません。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-011 兄が橋へ歩いていなかった。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-012 弟が広場へ歩きません。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-013 犬が庭へ走るな。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-014 鳥が島へ飛ぶな。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-015 兄が寺へ歩け。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-016 弟が港へ走れ。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-017 馬が森へ走るまい。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-018 姉が広場へ歩くまい。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-020 弟が橋へ走りたかった。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-021 妹が町へ飛びたかった。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-023 母が寺へ歩いてしまった。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-024 父が港へ走っておく。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-U-030 兄が駅から村へ歩いていなかった。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-007 兄が夜、本を読んでいる。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-008 母が昼、手紙を書いていた。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-009 姉が冬、窓を閉めていない。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-010 弟が休日、皿を洗っていなかった。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-011 妹が平日、靴を磨いていません。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-012 父が月末、絵を描きません。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-013 先生が夜、本を読むな。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-014 生徒が昼、窓を開けるな。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-015 学生が冬、手紙を書け。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-016 祖父が休日、窓を閉めろ。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-018 兄が年末、皿を洗うまい。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-019 姉が月末、本を読むまい。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-021 妹が誕生日、手紙を書きたかった。 verdict=misread identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-024 先生が冬、本を読んでしまった。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-025 生徒が休日、食器を洗っておく。 verdict=correct identical_to_no_placement=False
+ABSTAIN_EXPECTED_BUT_READ W3B1-R9-S4-030 姉が放課後、本を読むべきだ。 verdict=incomplete identical_to_no_placement=True

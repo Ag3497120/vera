@@ -1,0 +1,16 @@
+UNCHANGED_SINCE_R3 verantyx/event_cross.py
+UNCHANGED_SINCE_R3 tests/test_semantic_read.py
+UNCHANGED_SINCE_R3 tests/test_semantic_read_w3b1.py
+UNCHANGED_SINCE_R3 tests/test_semantic_read_w3b1_events.py
+CHANGED_SINCE_R3 docs/EVENT_CROSS.md
+semantic_read.py removed-or-changed lines since r3: 0
+semantic_reader.py removed-or-changed lines since r3: 0
+semantic_reader.py removed lines since base: 0
+>     # K63 (table change record 3): the head may be a derived verb (a potential, a spontaneous or a short causative looks like a verb of its own); checked after the
+>     # ending, so the reasons of everything refused before are unchanged
+>     derived = R.typed_head_derived_ja(toks, typed['clause'])
+>     if derived:
+>         return refuse(derived)
+_voice_ja unchanged_since_base True
+_potential_suspect unchanged_since_base True
+typed_tail_ja unchanged_since_r3 True

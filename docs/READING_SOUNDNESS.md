@@ -657,7 +657,396 @@ B1 v2 の第 3 ラウンドの自作の見本(`tests/bank_score/fixtures/B1_v2_r
 ### 9.3 入口が出さない型(`NOT_PRODUCED`)と、見本での内訳
 入口が出さない型の一覧(正本は `semantic_read.NOT_PRODUCED`。出さないものは棄権し、近い型に押し込まない)と、自作の 3 つの B1 v2 の見本の結果(B1_v2: 正読 35・正しい棄権 13・棄権 17・誤読 0、B1_v2_r2: 正読 11・正しい棄権 8・棄権 17・誤読 0、B1_v2_r3: 正読 4・正しい棄権 0・棄権 13・誤読 0。9 分類。W1-a3 の測定)は、§6 の X4・X5 の表(`recompute.md`)にある。
 
-## 10. W5-a（攻撃役の命中への対応。K62〜）
+
+> **統合の注記（監査役、2026-10-03）**: W5-a と W3-b1 は同時に進み、どちらも §10 を「K62〜」で始めた。番号の衝突を避けるため両方をそのまま残し、W3-b1 の節を §10、W5-a の節を §10A とする（本文中の K62〜K64 の参照は、それぞれの節の中で読む。番号は書き換えない＝削除しない）。
+
+## 10. W3-b1: 語の直接の型で読む(事前登録 K62〜)
+
+<!-- w3b1-prereg:begin -->
+登録日時: 2026-10-03 14:32:17 +0900(`date '+%Y-%m-%d %H:%M:%S %z'` の出力。直前の同じ出力は 2026-10-03 14:31:13 +0900、直後は 2026-10-03 14:32:17 +0900 で、この節はその間に書いた)
+この時点で `tests/reading_soundness/ja_r8.jsonl`・`en_r4.jsonl`・`tests/test_semantic_read_w3b1*.py` は存在しない(型の成員の一覧 `artifacts/w3-b1/type_members.txt` と、表の各行の確認 `artifacts/w3-b1/frame_review.md` は、この登録より前に作った)。
+出典: 中間職の指示書 `.claude/vera-audit/review-impl/W3-b1/plan.md` §3。目的: 読解器が語の型が分からないために棄権している所を、粗い配置(`coarse_place.query`)の **`origin=direct` かつ `DECIDED` の型だけ** を正の証拠として読めるようにする。表層の規則は足さない。足すのは型の表と証拠の門だけ。誤読が出たら、その構成(表の行)を **棄権に戻す**(語や表層の規則を足して直さない)。表を広げる変更は、このチケットでは禁止(狭める変更だけ。変更は下の「表の変更記録」に日時つきで全件書く)。
+
+### K62 型の表と証拠の門
+
+配置の述語は 13 型。次の 2 型だけを読み、残りの 11 型は読まない。助詞は格助詞だけ(は・も・の は行に無い)。「期待する型」は名詞 17 型の id。種類の「付加」は、役割が time・place のとき(証拠の門 5 を掛ける)。役割 → 期待する型は、`docs/EVENT_CROSS.md` の事前登録の表にある役割(現在の表では agent・place・time。登録時は recipient も。変更記録 1)では **それと同じ**(テストが `event_cross.EXPECTED_TYPES` と機械照合する)。表に無い役割(goal・source・patient)の集合だけ、この表で決める。表の行の中身は型 id・役割名・助詞だけで、語は書かない。
+
+<!-- BEGIN table:w3b1_frames -->
+| 述語の型 | 役割 | 助詞 | 期待する型 | 種類 |
+|---|---|---|---|---|
+| `P_MOVE` | agent | が | PERSON GROUP_ORG ANIMAL | 項 |
+| `P_MOVE` | goal | へ | PLACE | 項 |
+| `P_MOVE` | source | から | PLACE | 項 |
+| `P_MOVE` | place | で | PLACE | 付加 |
+| `P_MOVE` | time | に | TIME | 付加 |
+| `P_COMMUNICATE` | agent | が | PERSON GROUP_ORG ANIMAL | 項 |
+| `P_COMMUNICATE` | patient | を | PERSON GROUP_ORG ANIMAL PLANT ARTIFACT SUBSTANCE_FOOD EVENT_ACT STATE_PROPERTY ABSTRACT INFO_LANGUAGE BODY_PART NATURAL_PHENOMENON WORK IDENTIFIER | 項 |
+| `P_COMMUNICATE` | place | で | PLACE | 付加 |
+| `P_COMMUNICATE` | time | に | TIME | 付加 |
+<!-- END table:w3b1_frames -->
+
+`P_MOVE` の に+PLACE・を・まで、`P_COMMUNICATE` の と(引用)・に+人(登録時は行があったが、下の「表の変更記録」1 で「読まない」に戻した)は、表に行が無い(助詞が枠に無いか、型が合わないので棄権する)。
+
+読まない型(13 型のうち 11。名前は理由の短い名):
+
+<!-- BEGIN table:w3b1_not_read -->
+| 述語の型 | 名前 | 理由(型と助詞) |
+|---|---|---|
+| `P_GIVE` | NI_ROLE_SPLIT | に の役割が成員で割れる(agent・recipient か beneficiary・goal) |
+| `P_CHANGE` | NI_RESULT_OR_TIME | に が result か time か |
+| `P_CREATE` | NI_RECIPIENT_OR_BENEFICIARY | に+人 が recipient か beneficiary か |
+| `P_PERCEIVE` | NI_SOURCE_OR_RECIPIENT | に が source か recipient か |
+| `P_EXIST` | GA_ENTITY_OR_AGENT | が が entity(存在)か agent(居住)か |
+| `P_POSSESS` | PARTICLE_ROLE_UNDECIDED | 助詞と役割の対応が型で決まらない |
+| `P_ACT` | PARTICLE_ROLE_UNDECIDED | 助詞と役割の対応が型で決まらない |
+| `P_STATE` | ADJECTIVAL_PREDICATE | 形容詞・形状詞の述語(入口は形容詞の節を写さない) |
+| `P_COGNITION` | TO_QUOTATION_NI_UNDECIDED | と の引用(関係を写さない)、に が決まらない |
+| `P_EMOTION` | NI_DE_CAUSE_OR_PLACE | に・で が名詞句の cause か place か |
+| `P_CONSUME` | NI_ROLE_UNDECIDED | に の役割が決まらない(授受・手助けの動詞が同居) |
+<!-- END table:w3b1_not_read -->
+
+英語は読まない(前置詞の列。配置に英語の述語が 0 件、日常語の名詞に direct が無い)。根拠は `artifacts/w3-b1/frame_review.md`(行ごとの確認)。
+
+**証拠の門(配置の答えを決定に使う唯一の関数 `semantic_reader.placement_type(answer, *, adjunct=False)`)**。上から順に最初に当たったもの:
+
+1. 契約の不変条件(`docs/COARSE_PLACEMENT.md` §11.6: `DECIDED` ⇔ `len(top)==1`、`MULTIPLE` ⇔ 2 以上、ほかの state ⇔ 空、`estimated` ⇔ `constructed` ⇔ `estimate_basis ∈ {proximity, generated}`、`direct` ⇒ `estimate_basis is None`、`direct` の答えに `decided_by` がある)を破る → `PLACEMENT_INVALID`
+2. `NO_PLACEMENT` → `PLACEMENT_NO_PLACEMENT:<placement.reason>`、`UNKNOWN` → `PLACEMENT_UNKNOWN`、`UNPLACED` → `PLACEMENT_UNPLACED`、`MULTIPLE` → `PLACEMENT_MULTIPLE`
+3. `origin == estimated` → `proximity` なら `PLACEMENT_ESTIMATED_NEAR`、`generated` なら `PLACEMENT_ESTIMATED_GENERATED`
+4. `decided_by` に `gen_definition` を含む → `PLACEMENT_DIRECT_VIA_GENERATED`(§11.6 の提案: 格上げした直接は分けて扱う余地。保守的な側を採る)
+5. `adjunct=True`(役割が time・place)で、`decided_by` の腕が **すべて** `role@` で始まる → `PLACEMENT_SLOT_EVIDENCE_ONLY`(役割の分布の腕は「その位置に出た」ことしか数えず、副詞的な名詞が同じ位置に出る)
+6. それ以外(`DECIDED`・`direct`)→ その型
+
+問い合わせは **語だけ**(`context_role`・`context_predicate` を渡さない。役割の位置で推定した型で役割を決める循環を避ける)。語は出力に書く値の表記そのもの(先頭の指示の連体詞を外した後)で、主辞を取り出す規則は作らない(複合語・の 句は全体で問い合わせ、未配置・推定なら棄権)。述語は書かれた動詞の辞書形。`coarse_place.query` は必ず実在のパス付きで呼ぶ(`None` を渡さない。`VERA_COARSE_PLACEMENT` は読まない)。
+
+### K63 読む条件
+
+和文だけ。配置が指定されているとき、入口はまず今の経路を走らせ、今の経路が `readable: true` なら出力を 1 バイトも変えずに返す。今の経路が棄権し、次の 2 つの引き金のどちらかに当たる節があるときだけ、型で決めさせ、その結果を **今の写しの規則(`_map_ja`・`_clause_ja`)にもう一度通して** 返す。読めなければ、今の棄権の理由を先頭に残したまま `PLACEMENT_*` の理由を 1 つ足す。引き金に当たらない棄権は出力を変えない。
+
+**経路 U(未知の述語。述語の型で項を読む)**
+- 引き金(すべて満たす): 入力が 1 文、`view.unread` が空、節がちょうど 1 つで `rule == 'frame'`、`conditions` が空、`clause.predicate` が読解器の 4 つの一覧(`_TRANSFER_PREDICATES`・`_GOAL_PREDICATES`・`_PLACEMENT_PREDICATES`・`_LOCATION_PREDICATES`)のどれにも無い。さらに (U1) `unsupported == ()` で `recipient` という名の役割がある、または (U2) `set(unsupported) == {'ambiguous case role: に'}` で `ambiguous` という名の役割の `rule` がすべて `case:に:location|goal|time`。読解器が自分で割れると言った他の理由(`ambiguous frame role`・`unrepresented source content` ほか)が 1 つでもあれば引き金に当たらない(型で上書きしない)。
+- 手順(最初に失敗した所の理由を 1 つ足して棄権): (1) 態が能動でなければ棄権。(2) 述語の配置(書かれた述語を問い合わせ)が門を通り、型が `P_` で始まり、読む型である。(3) 節のすべての役割について、助詞が枠のどれかの行にあり、値の配置が門を通り、期待する型に入る。候補の行がちょうど 1 つ(0 は不一致、2 以上は `PLACEMENT_ROLE_TIE`)。候補が付加の行なら門 5 を掛ける。読解器が役割名を決めているのに表の役割と違えば `PLACEMENT_READER_DISAGREES`(読解器の名が `recipient`・`ambiguous` のときだけ表が決める)。同じ役割が 2 つなら棄権。(4) 通れば、述語・態・経路の動詞とサ変の門・極性・時制・モダリティ・文全体の検査(量化の語・数詞・授受の補助動詞・文頭の接続詞・述語の覆い)は今のコードのまま走り、役割の写しのループだけが表で決めた役割に置き換わる。
+- 出力の節に、`predicate_basis: "placement_direct:<P_型>"` と `role_basis: {"<役割>": "placement_direct:<型>"}`(節のすべての役割)を **最後の鍵として** 足す。
+
+**経路 S4(表せない部分を時・場所として読む。述語の型は使わない)**
+- 引き金: 入力が 1 文、`unread` が空、frame の節がちょうど 1 つ、`conditions` が空、`set(unsupported) == {'unrepresented source content'}`。U の引き金と同時には当たらない。
+- 部分の取り出し(全文のトークンで行う。区間だけを解析し直さない): 覆い = 節のすべての役割の区間 + 述語の区間 + サ変の名詞。部分 = 覆われていない連続したトークンで、品詞が `_CONTENT_WORDS` に入るもの。部分が 0 なら `PLACEMENT_PART_NONE`。
+- 部分ごと(1 つでも通らなければ棄権): (1) 部分のトークンがすべて名詞・接頭辞・接尾辞で、数詞を含まない(副詞・形容詞・形状詞は `PLACEMENT_PART_NOT_NP:<品詞>`、数詞は `PLACEMENT_PART_MARKER:quant`)。(2) 部分の前のトークンが、文頭・補助記号・覆われたトークン・覆われた区間の格助詞のどれかである(連体詞・動詞・助動詞などが直前にあれば `PLACEMENT_PART_NOT_ISOLATED`。名詞句の修飾を落とさないため)。(3) 部分の直後が、補助記号の `、`(助詞 ∅)か助詞(その表層)で、そのさらに次が助詞(には・では・にも・は)でない(`PLACEMENT_PART_NOT_FOLLOWED`・`PLACEMENT_PART_PARTICLE:<連なり>`)。(4) 標識(K64)が、部分のトークン・直後の助詞のどれかにあれば `PLACEMENT_PART_MARKER:<型>`。文のどこかに接続詞のトークンがあれば(覆われていても)`PLACEMENT_PART_MARKER:conn`。(5) 構成(下の表)。(6) 通れば、`time`・`place`(規約 §2 の既にある役割名だけ)の役割として節に足し、`role_basis`(足した役割だけ)を出し、今の写しにもう一度通す。既に同じ役割があれば `DUPLICATE_ROLE` で棄権。
+
+構成の表(部分の主辞の配置が `DECIDED`・`direct` のとき。型は `placement_type(…, adjunct=True)` で決める):
+
+<!-- BEGIN table:w3b1_part_constructions -->
+| 型 | 助詞 | 役割 |
+|---|---|---|
+| TIME | ∅(、) | time |
+| TIME | に | time |
+| PLACE | で | place |
+<!-- END table:w3b1_part_constructions -->
+
+この表に無い組(は・も・の・と・や・から・まで・を・が、数量・様態の型 など)は `PLACEMENT_PART_NO_ROLE:<型>:<助詞>` で棄権する(規約 §2 に様態・数量の役割は無い。数量は `quantifiers` で、入口は出さない)。
+
+**述語の語尾の門(経路 U・S4 の両方。表の変更記録 2。レビュー第 2 ラウンド M7)**: 型で決めた役割で今の写しに通し直した結果が読めても、述語の語尾が **今の規則が極性・時制を決める形** でなければ読まない。「述語の区間の末尾のトークン」を主辞、主辞より後ろのトークン(文末の句点 `。`・`.`・`．` 1 つを除く。`！`・`？` は尾に残る)を尾と呼ぶ。通すのは次の 4 つの形だけ(動詞の活用形と助動詞の原形だけで書く。語の一覧ではない):
+
+<!-- BEGIN table:w3b1_tail_gate -->
+| 主辞(動詞) | 尾 |
+|---|---|
+| 終止形 | 空 |
+| 連用形 | 助動詞(原形 た・終止形)1 つ |
+| 未然形 | 助動詞(原形 ない・終止形)1 つ |
+| 未然形 | 助動詞(原形 ない・連用形)1 つと、助動詞(原形 た・終止形)1 つ |
+<!-- END table:w3b1_tail_gate -->
+
+これ以外はすべて `PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:<主辞の活用形>:<尾の最初のトークンの品詞(尾が空なら「なし」)>` で棄権する。主辞が動詞でない・主辞が見つからないときも同じ理由(活用形の欄は `head`)。**語尾の一覧は作らない**: 通す形を閉じた構造で決め、それ以外(ている・ていない・ません・禁止の な・まい・たい・命令形・てください・てしまう・ておく・ようだ・らしい・そうだ・かもしれない・べきだ・受身・使役 など)は、今の規則が値を決めるかどうかを調べずに一括して棄権する(「広く棄権に倒す」)。門は、型の決定と今の写しの再実行が **どちらも通った後にだけ** 掛ける(これまでの棄権の理由と順は変わらない。通らなかった文の出力は 1 バイトも変えない)。通す 4 つの形は、凍結したテストが読むと求めている単純否定(`test_path_u_does_not_touch_voice_polarity_tense_or_modality`)と、今の規則が極性・時制を決める単純な過去・非過去の形である。この門は読む範囲を狭めるだけで、表(K62)・構成の表・標識の一覧(K64)には触れない。
+
+**派生の疑いの門(経路 U・S4 の両方。表の変更記録 3。レビュー第 3 ラウンド M8)**: 語尾の門が通した(`None` を返した)文に **だけ**、さらに掛ける。語尾の門で棄権した文の理由は変わらない(門の順は 型の決定 → 今の写しの再実行 → 語尾の門 → 派生の疑いの門)。述語の主辞(語尾の門と同じ、述語の区間の末尾のトークン)の活用型(`feature.cType`)と原形(`orthBase`)が、次の閉じた構造のどれかに当たれば読まない。可能動詞(五段の可能形・ら抜き)・自発・受身や尊敬と同形の語・短い使役(〜す)は、タガーの出力では元の動詞とは別の独立した下一段・五段の動詞として現れる。今の規則はそれを派生形として扱わず、述語を派生形のまま、modality(規約 §3 の可能形は元の動詞に ability)・voice(規約 §4 の使役は元の動詞に causative)を付けずに返す。語の一覧は作らず、活用型と原形の末尾の構造だけで決める。
+
+<!-- BEGIN table:w3b1_derived_gate -->
+| 主辞の活用型 | 原形の末尾 | 理由 |
+|---|---|---|
+| 下一段 | 問わない | PLACEMENT_PREDICATE_POSSIBLY_DERIVED:<活用型> |
+| 五段-サ行 | ア段+す | PLACEMENT_PREDICATE_POSSIBLY_DERIVED:<活用型> |
+<!-- END table:w3b1_derived_gate -->
+
+1 行目は活用型が `下一段` で始まるすべての行(下一段-カ行・下一段-マ行 など)。2 行目の「ア段+す」は、原形の最後の 2 字が「五十音のア段の仮名(清音・濁音・半濁音: あ か さ た な は ま や ら わ が ざ だ ば ぱ)+ す」であること。送り仮名が漢字に吸われる語(原形の最後から 2 字目が漢字)は当たらない。理由は `PLACEMENT_PREDICATE_POSSIBLY_DERIVED:<主辞の活用型>`(1 番目の理由は今のまま、2 番目に足す)。`feature.lemma`(語彙素)は使わない(可能動詞を元の動詞に寄せ、漢字も正規化するので、表記に依る規則になる)。サ変の可能の できる(上一段)は門の対象にしない(入口の既存の標識 `_MODAL_MARKS` が棄権させる。語を足さない)。この門は答えの欄(state・origin・top・decided_by・estimate_basis)を読まず、配置を問い合わせない。読む範囲を狭めるだけで、表(K62)・構成の表・標識の一覧(K64)・語尾の門には触れない。
+
+**事前に「読まない」と登録する構成**(検査データは棄権すべき側で入れる): ∅+TIME のうち門 5 で落ちるもの(役割の腕だけの TIME)、は+TIME(主題)、様態(副詞・形状詞)、数量(数詞・助数詞)、の で名詞にかかる部分、述語が複数の文、サ変の述語(配置に無い)、は の主題の節(読解器が割れると言う)、受身・使役、英語。
+
+### K64 標識の一覧(W1-a4 の指示書 §3.5 の一覧をそのまま写した。和文だけ。規則は写さない。照合はトークンの表層と原形)
+
+<!-- BEGIN table:w3b1_markers -->
+| 型 | 語 |
+|---|---|
+| neg | ない ず ぬ ません なかっ 全然 決して あまり 少しも ろくに めったに 必ずしも 全く |
+| cond | もし もしも 万一 仮に たとえ ば たら なら 場合 |
+| quant | (数詞 pos2) 入口の `_QUANT_SURFACES` の語 よく いつも 時々 たまに 少し たくさん ほとんど だけ しか ばかり のみ さえ |
+| conn | (接続詞 pos1)(接続助詞 pos2) また さらに そして しかし だから でも |
+| quote | 「 」 『 』 という そうだ らしい |
+| modal | たぶん きっと おそらく ぜひ どうか どうやら もしかすると まるで |
+| time_aspect | もう まだ すでに ずっと 急に 突然 やっと ついに 再び |
+<!-- END table:w3b1_markers -->
+
+### K65 理由の型(閉じた一覧)と出所の欄と配置の指定
+
+理由は `abstain.reasons` の **2 番目** に足す(1 番目は今の理由のまま。`kind` は今のまま)。名前を変えるなら、ここに登録してからテストを書く。
+
+<!-- BEGIN table:w3b1_reasons -->
+| 理由 | 意味 |
+|---|---|
+| PLACEMENT_NO_PLACEMENT:<reason> | 配置が使えない(UNSET・MISSING・UNREADABLE・MANIFEST_MISMATCH) |
+| PLACEMENT_INVALID[:<問題>] | 答えが契約を破る・空の語 |
+| PLACEMENT_UNKNOWN | 材料に無く近さからも作れない |
+| PLACEMENT_UNPLACED | 材料にあるが決める証拠が足りない |
+| PLACEMENT_MULTIPLE | 型が割れた(同点は棄権) |
+| PLACEMENT_ESTIMATED_NEAR | 推定(近さ)。構成であって証言でない |
+| PLACEMENT_ESTIMATED_GENERATED | 推定(生成)。構成であって証言でない |
+| PLACEMENT_DIRECT_VIA_GENERATED | 生成した定義の格上げで direct になった語 |
+| PLACEMENT_SLOT_EVIDENCE_ONLY | 付加の語で、役割の分布の腕だけが決め手 |
+| PLACEMENT_VOICE_NOT_ACTIVE | 態が能動でない(表は能動の枠だけ) |
+| PLACEMENT_PREDICATE_NORMALIZED | 書かれた述語が読解器の述語と違う |
+| PLACEMENT_NOT_PREDICATE_TYPE | 述語の型が P_ で始まらない |
+| PLACEMENT_FRAME_NOT_READ:<型> | 読まない型 |
+| PLACEMENT_PARTICLE_NOT_IN_FRAME:<型>:<助詞> | 助詞が枠のどの行にも無い |
+| PLACEMENT_TYPE_MISMATCH:<型>:<助詞>:<名詞の型> | 名詞の型が期待する型に入らない |
+| PLACEMENT_ROLE_TIE | 候補の行が 2 つ以上 |
+| PLACEMENT_READER_DISAGREES:<読解器>:<表> | 読解器が決めた役割名と表が違う |
+| PLACEMENT_DUPLICATE_ROLE:<役割> | 同じ役割が 2 つ |
+| PLACEMENT_PART_NONE | 表せない部分が見つからない |
+| PLACEMENT_PART_NOT_NP:<品詞> | 部分が名詞句でない |
+| PLACEMENT_PART_NOT_ISOLATED | 部分の直前に覆われていない修飾などがある |
+| PLACEMENT_PART_NOT_FOLLOWED | 部分の直後が助詞でも `、` でもない |
+| PLACEMENT_PART_PARTICLE:<連なり> | 助詞が連なる(には・では・にも・は) |
+| PLACEMENT_PART_MARKER:<型> | 否定・条件・量化・接続・引用などの標識(K64) |
+| PLACEMENT_PART_NO_ROLE:<型>:<助詞> | 構成の表に無い組 |
+| PLACEMENT_PREDICATE_UNIDENTIFIED | 英語: 動詞が特定できない |
+| PLACEMENT_REREAD_ABSTAINS:<理由> | 型で決めた役割で今の写しにもう一度通したが、今の規則が棄権した |
+| PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:<活用形>:<品詞> | 述語の語尾が K63 の語尾の門の 4 つの形のどれでもない(変更記録 2) |
+| PLACEMENT_PREDICATE_POSSIBLY_DERIVED:<活用型> | 主辞が下一段、または五段-サ行で原形の末尾がア段+す(派生した動詞の疑い。変更記録 3) |
+<!-- END table:w3b1_reasons -->
+
+門の理由(`PLACEMENT_NO_PLACEMENT`・`INVALID`・`UNKNOWN`・`UNPLACED`・`MULTIPLE`・`ESTIMATED_*`・`DIRECT_VIA_GENERATED`・`SLOT_EVIDENCE_ONLY`)には、語の位置を `:<位置>:<語>`(位置は `predicate`・助詞・`part`)で付ける。英語の `UNKNOWN_PREDICATE` には、配置が指定されているときだけ、先頭の動詞の `en.lemma` を問い合わせた門の理由(`...:predicate:<語>`)か、門が型を返しても `PLACEMENT_FRAME_NOT_READ:en` を足す(英語は読まない)。英語の付加語(`UNREPRESENTED_CONTENT:<語>`)は変えない。
+
+**出所の欄**: 型で決めた節にだけ、節の鍵を最後に足す。U は `predicate_basis`(`placement_direct:<P_型>`)のあとに `role_basis`、S4 は `role_basis` だけ。既存の鍵の値と順は変えない。上位の鍵は足さない。十字は `ENTRY_BASIS_KEYS = ('predicate_basis', 'role_basis')` を受け入れ、節にあるときだけ `provenance` に同じ名前・同じ値で写す(`center` には入れない)。`CLAUSE_KEYS` は変えない(規約 §1.1 の表と一致するテストがある)。
+
+**配置の指定**: `semantic_read.read(text, lang=None, *, placement=<番兵>)`(番兵は `VERA_PLACEMENT`。空・未設定は配置なし、`None` は配置なし、文字列はパス、`query(term)` を持つ物はそのまま)。`main()` は `--` より前の完全一致の `--placement=<dir>`・`--placement <dir>` だけを取り出す(パーサには登録しない。略記は今までどおり `BAD_ARGUMENTS`)。値なし・空・2 回は `BAD_ARGUMENTS`。順位は 引数 ＞ `VERA_PLACEMENT`。配置なしのとき出力は基点とバイト一致で、`coarse_place`・`coarse_types`・`event_cross` を import しない。
+
+### 表の変更記録
+
+登録後の変更はすべてここに、日時・前後の差・理由・出典を書く(狭める変更だけ)。登録したときの本文は `artifacts/w3-b1/PREREG.md`(変えない)。この節(現在の表)と `PREREG.md` の差は、この記録にある変更だけである(`artifacts/w3-b1/prereg_vs_docs_r2.diff`)。
+
+1. **2026-10-03 15:28:43 +0900(`date '+%F %T %z'` の出力)。`P_COMMUNICATE` の `recipient / に / PERSON GROUP_ORG` の行を「読まない」に戻した。**
+   - 前: K62 の表の 10 行(P_MOVE 5・P_COMMUNICATE 5)。後: 9 行(P_COMMUNICATE は agent が・patient を・place で・time に の 4 行)。`semantic_reader.TYPED_FRAMES` と上の表は同じ並びで 9 行。ほかの行・読まない型・K63・K64・K65 は変えない。
+   - 理由: この型の成員(`呼ぶ`・`誘う`・`呼び出す`・`記す` など)は に を **行き先・書き付ける先(規約 §2 の goal)** で取る(「人を〜に呼ぶ」「人を〜に誘う」)。助詞 に の役割は P_COMMUNICATE の型だけでは決まらない(受け手か行き先か)。登録時の確認 `frame_review.md` の「誘う・呼ぶ・褒める は に では取らないので衝突しない」は **誤りだった**(成員の一覧を通読して見落とした)。配置の名詞の型が direct の GROUP_ORG(学校・会社・チームなど)なので型の門を通り、goal を recipient と読む誤読が出た。
+   - 出典: 中間職のレビュー第 1 ラウンド `review-impl/W3-b1/review.r1.md` の M1(未公開の文 130 文のうち 7 文が誤読。基点は 7 文とも棄権)。語の除外・PERSON だけ残す・述語ごとの例外は **足していない**(行ごと戻しただけ)。
+   - 影響: 凍結データ `ja_r8.jsonl` は変えない。`entry_expect: read` だった P_COMMUNICATE の行は棄権に変わり、`tests/reading_soundness/w3b1_expect_exceptions.json` に種類 `row_returned_to_abstain` で全件を申告した(件数は K66 の表と「読み方」)。
+
+2. **2026-10-03 16:12:52 +0900(`date '+%F %T %z'` の出力。この記録はその直後に書いた。直前は `artifacts/w3-b1/r3_gate_prereg_time.txt` の `before`)。経路 U・S4 に「述語の語尾の門」を足した(読む範囲を狭める。型の表 K62・構成の表・標識の一覧 K64 は変えない)。**
+   - 前: 型の決定と今の写しの再実行が通れば、述語の語尾に関わらず読む。後: K63 の「述語の語尾の門」の 4 つの形(終止形・連用形+た・未然形+ない・未然形+なかっ+た)の述語だけを読み、それ以外は `PLACEMENT_PREDICATE_TAIL_UNINTERPRETED` で棄権する。門は再実行が通った後にだけ掛ける(これまでの棄権の理由と順は変わらない)。
+   - 理由: 新しい経路は、基点が別の理由(表せない部分・受け手の型が決まらない)で棄権していた節の棄権を外し、極性・時制・モダリティを今の規則に任せる。今の規則は、述語の後ろの「ている+ない」「ません(ている の後)」「禁止の な」「まい」「たい」「命令形」を解釈しない(基点の入口でも `姉が本を読んでいない。`・`姉が本を読むな。` は `polarity: "+"`・`modality: null`)ので、新しい経路が棄権を外した節で、規則の欠けがそのまま誤読として出る。レビュー第 2 ラウンドの未公開の文 122 文(第 3・4 群)で新しい経路が作った誤読 14 件がそれである(第 1 ラウンドの M1 の型の誤りとは別の型の誤り)。
+   - 出典: レビュー第 2 ラウンド `review-impl/W3-b1/review.r2.md` の M7。直し方の方針も M7 のとおり: 読む規則・語の一覧・基点の規則を変えず、新しい経路が読む節の語尾を閉じた構造で狭める。M7 の第 1 案(「既存の規則がその語を使ったか」で判定する読み取り専用の補助)は採らず、第 2 案(広く棄権に倒す)を採った(判断記録 H117)。
+   - 影響: 凍結データ `ja_r8.jsonl`・`en_r4.jsonl` は変えない(読む期待の行はすべて単純な過去形で、4 つの形に入る。実測は K66)。新しい凍結データ `tests/reading_soundness/ja_r9.jsonl`(語尾の型を持つ文)を、門を書く前に、期待を先に書いて凍結する。
+3. **2026-10-03 17:09:34 +0900(`date '+%F %T %z'` の出力。この記録はその直後に書いた。直前・直後は `artifacts/w3-b1/r4_gate_prereg_time.txt` の `before`・`after`)。経路 U・S4 に「派生の疑いの門」を足した(読む範囲を狭める。型の表 K62・構成の表・標識の一覧 K64・語尾の門は変えない)。**
+   - 前: 型の決定・今の写しの再実行・語尾の門(4 つの形)が通れば読む。後: さらに K63 の「派生の疑いの門」(主辞の活用型が下一段、または五段-サ行で原形の末尾がア段+す)に当たる述語は `PLACEMENT_PREDICATE_POSSIBLY_DERIVED:<活用型>` で棄権する。語尾の門が `None` を返した後にだけ掛ける(これまでの棄権の理由と順は変わらない)。
+   - 理由: 新しい経路は、基点が別の理由で棄権していた節の棄権を外す。可能動詞と短い使役(〜す)は、タガーの出力では独立した下一段・五段の動詞として現れる(語尾の門の 4 つの形に入る)ので、新しい経路は述語を派生形のまま、modality・voice を付けずに返す。基点の `_potential_suspect` は を を取る動詞(`transitivity(lemma) == 'trans'`)を例外にして疑わないので、基点の規則には頼れない。
+   - 出典: レビュー第 3 ラウンド `review-impl/W3-b1/review.r3.md` の M8(可能動詞)と、第 4 ラウンドの指示書 `review-impl/W3-b1-4/plan.md` §1.3(同じ型の短い使役)。直し方は M8 の (b): 活用型で広く棄権に倒す(語の一覧・表層の規則・基点の規則の変更は無い)。
+   - 影響: 凍結データ `ja_r8.jsonl`・`en_r4.jsonl`・`ja_r9.jsonl` は変えない。`ja_r8` の読む期待の行のうち主辞が下一段の行は棄権に変わり、`tests/reading_soundness/w3b1_expect_exceptions.json` に種類 `row_returned_to_abstain` で全件を申告する。`ja_r9` の同じ行は `tests/test_semantic_read_w3b1_r3.py` で申告する。新しい凍結データ `tests/reading_soundness/ja_r10.jsonl`(可能動詞・短い使役・比べの文)を、門を書く前に、期待を先に書いて凍結する。
+<!-- w3b1-prereg:end -->
+
+### K66 測定結果(登録のあと。数値は `artifacts/w3-b1/` から `tests/reading_soundness/w3b1_recompute.py` が作る。この表の行はそのまま貼った)
+
+日時の順(出典: `artifacts/w3-b1/` の `type_members.txt` < `prereg_time.txt` < `bank_freeze_r8_time.txt` < `w3b1_tests_freeze_time.txt`): 型の成員の一覧 → 事前登録(K62〜K65) → 検査データの凍結 → テストの凍結 → 実装 → 初めての入口での測定。テストは凍結のあとに直した(下の「テストの変更記録」)。
+
+第 3 ラウンド(レビュー M7)の日時の順(出典: `r3_gate_prereg_time.txt` < `bank_freeze_r9_time.txt`): 語尾の門の登録(表の変更記録 2。2026-10-03 16:12:52 +0900。直前 16:12:33、直後 16:13:06)→ 検査データ `ja_r9.jsonl` の凍結(2026-10-03 16:14:40 +0900)→ 門を入れる前の入口での測定(`r9_before_gate_live.txt`)→ 門の実装 → 新しいテスト `tests/test_semantic_read_w3b1_r3.py`(門の実装のあとに書いた。凍結したテスト 2 本は変えていない)→ 測定の取り直し。
+
+第 4 ラウンド(レビュー M8。可能動詞・短い使役)の日時の順(出典: `r10_placement_answers_time.txt`・`r10_placement_answers_batch2_time.txt` < `r4_gate_prereg_time.txt` < `bank_freeze_r10_time.txt` < `r10_before_gate_time.txt` < `r4_impl_time.txt` < `w3b1_tests_freeze_r4_time.txt`): 経路 U の動詞の配置の問い合わせ(2026-10-03 17:06:38 と 17:08:05 +0900。データを書く前。読解器・入口には通していない)→ 派生の疑いの門の登録(表の変更記録 3。17:09:34。直前・直後も同じ秒)→ 検査データ `ja_r10.jsonl` の凍結(17:11:28)→ 門を入れる前の入口での測定(`r10_before_gate_live.txt`。17:12:38)→ 門の実装(`r4_impl_time.txt`。17:13:36)→ 申告の更新 → 新しいテスト `tests/test_semantic_read_w3b1_r4.py`(門の実装のあとに書いた。テスト凍結 17:17:10。凍結したテスト 2 本は変えていない)→ 測定の取り直し。第 3 ラウンドの測定物は `r3_` の名前で残した。
+
+| item | value | source (artifacts/w3-b1/) |
+|---|---|---|
+| new data: rows (ja_r8 / en_r4) | 213 (197 / 16) | tests/reading_soundness/ja_r8.jsonl, en_r4.jsonl |
+| new data: path U, read-expected / abstain-expected | 45 / 65 | ja_r8.jsonl, en_r4.jsonl (r8_counts.txt) |
+| new data: path S4, read-expected / abstain-expected | 36 / 51 | ja_r8.jsonl, en_r4.jsonl (r8_counts.txt) |
+| new data: path EN, read-expected / abstain-expected | 0 / 16 | ja_r8.jsonl, en_r4.jsonl (r8_counts.txt) |
+| new data: path U, rows per predicate type (read-expected + abstain-expected) | P_ACT 0+4, P_CHANGE 0+4, P_COGNITION 0+4, P_COMMUNICATE 21+12, P_CONSUME 0+4, P_CREATE 0+4, P_EMOTION 0+4, P_EXIST 0+4, P_GIVE 0+4, P_MOVE 24+8, P_PERCEIVE 0+4, P_POSSESS 0+4, P_STATE 0+5 | ja_r8.jsonl |
+| round 3 data ja_r9: rows (path U / path S4) | 60 (30 / 30) | tests/reading_soundness/ja_r9.jsonl, r9_counts.txt |
+| round 3 data ja_r9: read-expected / abstain-expected, path U and path S4 | 6 / 24, 6 / 24 | ja_r9.jsonl, r9_counts.txt |
+| ja_r9 through the entry with the placement, without the gate on the ending (written before the gate): verdicts | abstain 15, correct 28, incomplete 1, misread 16 | r9_before_gate_live.json |
+| ja_r9 without the gate: abstain-expected rows the entry reads | 33 | r9_before_gate_live.json |
+| ja_r9 through the entry with the placement, with the gate on the ending: verdicts | abstain 49, correct 10, incomplete 1 | r9_entry_check.json |
+| ja_r9 with the gate: misread / incomplete / UNJUDGED | 0 / 1 / 0 | r9_entry_check.json |
+| ja_r9 with the gate: bad verdicts identical to the output with no placement | 1 of 1 | r9_entry_check.json |
+| ja_r9 with the gate: read-expected rows the entry abstains on / abstain-expected rows the entry reads | 2 / 1 | r9_entry_check.json |
+| ja_r9 with the gate: second reasons by prefix | PLACEMENT_PART_NOT_NP 1, PLACEMENT_PREDICATE_POSSIBLY_DERIVED 2, PLACEMENT_PREDICATE_TAIL_UNINTERPRETED 32, PLACEMENT_REREAD_ABSTAINS 8 | r9_entry_check.json |
+| round 4 data ja_r10: rows (path U / path S4) | 78 (37 / 41) | tests/reading_soundness/ja_r10.jsonl, r10_counts.txt |
+| round 4 data ja_r10: read-expected / abstain-expected, path U and path S4 | 10 / 27, 9 / 32 | ja_r10.jsonl, r10_counts.txt |
+| round 4 data ja_r10: rows by kind | dekiru 2, godan_plain 11, ichidan_plain 11, ichidan_upper 2, potential 31, ranuki 2, sa_not_a 6, short_causative 11, spontaneous 2 | ja_r10.jsonl, r10_counts.txt |
+| ja_r10 through the entry with the placement, without the gate on a head that may be a derived verb (written before the gate): verdicts | abstain 43, correct 24, misread 11 | r10_before_gate_live.json |
+| ja_r10 without the gate: misread / incomplete / UNJUDGED | 11 / 0 / 0 | r10_before_gate_live.json |
+| ja_r10 through the entry with the placement, with the gate: verdicts | abstain 54, correct 24 | r10_entry_check.json |
+| ja_r10 with the gate: misread / incomplete / UNJUDGED | 0 / 0 / 0 | r10_entry_check.json |
+| ja_r10 with the gate: read-expected rows the entry abstains on / abstain-expected rows the entry reads | 4 / 5 | r10_entry_check.json |
+| ja_r10 with the gate: second reasons by prefix | PLACEMENT_DIRECT_VIA_GENERATED 1, PLACEMENT_PART_NO_ROLE 1, PLACEMENT_PREDICATE_POSSIBLY_DERIVED 11, PLACEMENT_REREAD_ABSTAINS 20, PLACEMENT_SLOT_EVIDENCE_ONLY 20, PLACEMENT_UNPLACED 1 | r10_entry_check.json |
+| ja_r10 rows that the gate on a head that may be a derived verb stopped, by path and kind | S4 short_causative 4, U potential 3, U short_causative 4 | r10_entry_check.json, ja_r10.jsonl |
+| ja_r10 rows read by the entry with the gate, by path and kind | S4 godan_plain 1, S4 ichidan_upper 2, S4 sa_not_a 2, U godan_plain 7, U ichidan_plain 5, U sa_not_a 3 | r10_entry_check.json, ja_r10.jsonl |
+| ja_r10 with the gate, S4 dekiru: read / second reasons by prefix | PLACEMENT_PART_NO_ROLE 1, PLACEMENT_UNPLACED 1 | r10_entry_check.json, ja_r10.jsonl |
+| ja_r10 with the gate, S4 godan_plain: read / second reasons by prefix | PLACEMENT_SLOT_EVIDENCE_ONLY 3, read 1 | r10_entry_check.json, ja_r10.jsonl |
+| ja_r10 with the gate, S4 ichidan_plain: read / second reasons by prefix | PLACEMENT_SLOT_EVIDENCE_ONLY 5 | r10_entry_check.json, ja_r10.jsonl |
+| ja_r10 with the gate, S4 ichidan_upper: read / second reasons by prefix | read 2 | r10_entry_check.json, ja_r10.jsonl |
+| ja_r10 with the gate, S4 potential: read / second reasons by prefix | PLACEMENT_DIRECT_VIA_GENERATED 1, PLACEMENT_REREAD_ABSTAINS 2, PLACEMENT_SLOT_EVIDENCE_ONLY 8, one reason only 3 | r10_entry_check.json, ja_r10.jsonl |
+| ja_r10 with the gate, S4 ranuki: read / second reasons by prefix | PLACEMENT_REREAD_ABSTAINS 2 | r10_entry_check.json, ja_r10.jsonl |
+| ja_r10 with the gate, S4 sa_not_a: read / second reasons by prefix | PLACEMENT_SLOT_EVIDENCE_ONLY 1, read 2 | r10_entry_check.json, ja_r10.jsonl |
+| ja_r10 with the gate, S4 short_causative: read / second reasons by prefix | PLACEMENT_PREDICATE_POSSIBLY_DERIVED 4, PLACEMENT_SLOT_EVIDENCE_ONLY 3 | r10_entry_check.json, ja_r10.jsonl |
+| ja_r10 with the gate, S4 spontaneous: read / second reasons by prefix | PLACEMENT_REREAD_ABSTAINS 2 | r10_entry_check.json, ja_r10.jsonl |
+| ja_r10 with the gate, U godan_plain: read / second reasons by prefix | read 7 | r10_entry_check.json, ja_r10.jsonl |
+| ja_r10 with the gate, U ichidan_plain: read / second reasons by prefix | one reason only 1, read 5 | r10_entry_check.json, ja_r10.jsonl |
+| ja_r10 with the gate, U potential: read / second reasons by prefix | PLACEMENT_PREDICATE_POSSIBLY_DERIVED 3, PLACEMENT_REREAD_ABSTAINS 14 | r10_entry_check.json, ja_r10.jsonl |
+| ja_r10 with the gate, U sa_not_a: read / second reasons by prefix | read 3 | r10_entry_check.json, ja_r10.jsonl |
+| ja_r10 with the gate, U short_causative: read / second reasons by prefix | PLACEMENT_PREDICATE_POSSIBLY_DERIVED 4 | r10_entry_check.json, ja_r10.jsonl |
+| round 3 -> round 4 (same inputs): read with the placement in round 3 and abstained in round 4, by the file the input comes from | ja_r8.jsonl 4, ja_r9.jsonl 2 | r3_entry_live.jsonl, entry_live.jsonl |
+| round 3 -> round 4 (same inputs): read in both with a different output / abstained in round 3 and read in round 4 / abstained in both with a different output | 0 / 0 / 0 | r3_entry_live.jsonl, entry_live.jsonl |
+| ja_r8 rows read with the placement before the gate that the gate returned to abstention | 4 of 53 | r2_entry_live.jsonl, entry_live.jsonl |
+| inputs read with the placement before the gate and after it with a different output | 0 | r2_entry_live.jsonl, entry_live.jsonl |
+| entry with the placement on the new data: verdicts | abstain 118, correct 92, incomplete 3 | r8_entry_check.json |
+| entry with the placement on the new data: misread / incomplete / UNJUDGED | 0 / 3 / 0 | r8_entry_check.json |
+| entry with the placement on the new data: bad verdicts identical to the output with no placement | 3 of 3 | r8_entry_check.json |
+| new data: read-expected rows the entry abstains on / abstain-expected rows the entry reads | 34 / 3 | r8_entry_check.json |
+| new data: abstained rows whose second reason is not the registered prefix | 16 | r8_entry_check.json |
+| declared exceptions (w3b1_expect_exceptions.json) by kind | baseline_reads 3, reason_differs 16, row_returned_to_abstain 25, trigger_not_reached 9 | tests/reading_soundness/w3b1_expect_exceptions.json |
+| base-commit comparison: inputs (x3 + English + B1 samples + event cross sentences + new data) | 2899 | entry_dev.jsonl, entry_live.jsonl |
+| base-commit comparison: same / reason_changed | 2468 / 365 | entry_dev.jsonl, entry_live.jsonl, base_diff_summary.txt |
+| base-commit comparison: false->readable / readable->false | 66 / 0 | entry_dev.jsonl, entry_live.jsonl, base_diff_summary.txt |
+| base-commit comparison: changed (source fields taken out) / changed (as they are) / error_changed | 0 / 0 / 0 | entry_dev.jsonl, entry_live.jsonl |
+| false->readable by the file the input comes from | ja_r10.jsonl 9, ja_r8.jsonl 47, ja_r9.jsonl 10 | base_diff.jsonl |
+| false->readable verdicts | CORRECT 66 | base_diff.jsonl |
+| reason_changed: reasons added, by prefix | PLACEMENT_DIRECT_VIA_GENERATED 3, PLACEMENT_ESTIMATED_GENERATED 5, PLACEMENT_ESTIMATED_NEAR 2, PLACEMENT_FRAME_NOT_READ 79, PLACEMENT_MULTIPLE 11, PLACEMENT_NOT_PREDICATE_TYPE 1, PLACEMENT_PART_MARKER 7, PLACEMENT_PART_NONE 2, PLACEMENT_PART_NOT_FOLLOWED 3, PLACEMENT_PART_NOT_ISOLATED 3, PLACEMENT_PART_NOT_NP 17, PLACEMENT_PART_NO_ROLE 3, PLACEMENT_PART_PARTICLE 2, PLACEMENT_PREDICATE_POSSIBLY_DERIVED 17, PLACEMENT_PREDICATE_TAIL_UNINTERPRETED 32, PLACEMENT_PREDICATE_UNIDENTIFIED 32, PLACEMENT_REREAD_ABSTAINS 28, PLACEMENT_SLOT_EVIDENCE_ONLY 34, PLACEMENT_TYPE_MISMATCH 30, PLACEMENT_UNKNOWN 26, PLACEMENT_UNPLACED 24, PLACEMENT_VOICE_NOT_ACTIVE 4 | entry_dev.jsonl, entry_live.jsonl |
+| x3 sentences in the comparison: count / newly readable with the placement | 2217 / 0 | entry_dev.jsonl, entry_live.jsonl |
+| reader (document_view) on the x3 sentences: byte-for-byte as the base commit | yes (2217 lines) | x3_after.jsonl, x3_dev.jsonl |
+| frozen banks (harness): sentences / changed / misread | 500 / 0 / 0 | soundness_compare.txt |
+| a3_check output same as the base commit | yes | a3_dev.txt, a3_after.txt |
+| entry with no placement: output equal to the base commit on all inputs | yes | entry_none.jsonl, entry_dev.jsonl |
+| answers rewritten to estimated only: newly readable / readable and changed | 0 / 0 | a3_direct_only.txt |
+| answers rewritten to multiple only: newly readable / readable and changed | 0 / 0 | a3_direct_only.txt |
+| B1 sample B1_v2 through the scorer (no placement reaches the child process): correct / correct_abstain / over_abstain / misread / wrong | 35 / 13 / 17 / 0 / 0 | bs_B1_v2/summary.json |
+| B1 sample B1_v2_r2 through the scorer (no placement reaches the child process): correct / correct_abstain / over_abstain / misread / wrong | 11 / 8 / 17 / 0 / 0 | bs_B1_v2_r2/summary.json |
+| B1 sample B1_v2_r3 through the scorer (no placement reaches the child process): correct / correct_abstain / over_abstain / misread / wrong | 4 / 0 / 13 / 0 / 0 | bs_B1_v2_r3/summary.json |
+| B1 samples in-process with the placement: verdicts | abstain 47, correct 71; misread 0, incomplete 0 | b1_fixtures_live.json |
+| placement questions over all inputs: total / most for one input / inputs with a question | 611 / 4 / 362 | queries_live.json |
+| placement answers by state/origin/basis | DECIDED/direct/None 543, DECIDED/estimated/generated 5, DECIDED/estimated/proximity 2, MULTIPLE/direct/None 11, UNKNOWN/None/None 26, UNPLACED/None/None 24 | queries_live.json |
+| time per input with the placement (median / mean / max, ms) at 1-min load 2.55 | 0.696 / 0.934 / 82.065 | timing_live.json |
+| time per input with no placement (median / mean / max, ms) at 1-min load 3.91 | 0.607 / 0.906 / 61.836 | timing_none.json |
+| members of the two read types: members / frames tried / newly readable | 111 / 222 / 102 | probe_members.txt |
+| placement predicates (ns=P headwords): all / written with ASCII only | 10971 / 0 | probe_members.txt |
+| event cross with the placement, event_cross_sentences: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED | 70 / 174 / 36 / 1 / 137 | events_live.json |
+| event cross with the placement, new_data: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED | 81 / 203 / 115 / 0 / 88 | events_live.json |
+| event cross with the placement, rest: sentences read / arms / AGREE / DISAGREE / NOT_CHECKED | 241 / 578 / 181 / 7 / 390 | events_live.json |
+| event cross DISAGREE arms in all (and how many of them were typed by the entry) | 8 (0) | events_live.json |
+
+読み方(数字の外の説明。数は上の表にある):
+- **x3 の和文と B1 見本では、新しく読めた文は 0、読めていた文の変化も 0**。新しく読めたのは、この企てで作った検査データ(ja_r8)の文だけ。配置を使う入口が基点より多く読めるかどうかは、このチケットの測定では x3・B1 見本で示せていない(隠しバンクは監査役が測る。採点器の子プロセスに配置が届かない点は K72)。
+- 新しく読めた文はすべて、検査データの期待(規約どおりの読み)と `b1.judge` で一致(CORRECT)。誤読は 0。
+- 新データの `incomplete` 3 件は、どれも **配置なしの出力と同一**(基点がすでに誤って読む文。K68)。この変更が作った誤読・不完全読みは 0。
+- 凍結した 213 行のうち、期待の食い違いは 53 行(`w3b1_expect_exceptions.json` に全件、入口の出力そのままと理由つきで申告。種類別の件数は上の表。第 3 ラウンドの末は 49 行で、第 4 ラウンドで 4 行増えた): 読む期待で棄権した 34(K69 の 9 と、表の変更記録 1 で行を戻したための 21=`row_returned_to_abstain` と、表の変更記録 3 の派生の疑いの門のための 4=`row_returned_to_abstain`)、棄権の期待で基点が読んでいた 3(K68)、棄権はしたが 2 番目の理由が登録の接頭辞と違う 16(K70 の 13 と、表の変更記録 1 で行を戻したために別の理由が先に付くようになった 3)。**棄権の期待の行を、この変更が読んだ件数は 0。**
+- 表の変更記録 1(`recipient に` の行を戻した)の前後(登録したままの表を記憶の中で戻して測った。`artifacts/w3-b1/before_row_returned.txt`、`tests/reading_soundness/w3b1_before_row_returned.py`): 基点との比較の `false->readable` は 72 から 51(21 件が棄権に変わった。どれも検査データの文)、検査データ 213 行の判定は `correct` 117・`abstain`(過剰棄権)93・`incomplete` 3 から `correct` 96・`abstain` 114・`incomplete` 3。誤読・誤答(wrong・misread)は両方で 0。減っただけで、ほかの挙動は変えていない。
+- **第 3 ラウンド(語尾の門。表の変更記録 2)**: 門を入れる前の入口で、`ja_r9`(語尾の型を持つ文 60 文。門を書く前に凍結)は 誤読 16・不完全 1(上の表の「without the gate」の行)。門を入れたあと 誤読 0・不完全 1。不完全 1 件は **配置なしの出力と同一**(基点がすでに読む文。K79)。読む期待の 12 文(終止形・過去・単純否定の 4 つの形)はすべて読めて CORRECT。棄権の期待で読んだのは基点の 1 文だけ。`ja_r8` で門の前に読めていた 53 文は、門のあとも出力が同じ(門が棄権に戻した文は 0。`false->readable` 51 はそのまま、新しく読めた 12 文は `ja_r9` の読む期待の行)。(これは第 3 ラウンドの末の状態。第 4 ラウンドの派生の疑いの門で、この 53 文のうち 4 文が棄権に戻った。上の第 4 ラウンドの項。)誤読 0 は、`r9_entry_check.txt`・`base_diff_summary.txt`(`readable->false 0`・`changed 0`)・`b1_fixtures_live.txt` で確かめた。
+- **第 4 ラウンド(派生の疑いの門。表の変更記録 3)**: 門を入れる前の入口で、`ja_r10`(78 文。門を書く前に凍結)は 誤読 11(上の表の「without the gate」の行。内訳は 経路 U の `歩ける` の 3 文と `歩かす` の 4 文、経路 S4 の短い使役の 4 文。可能動詞を `modality: null`・使役を `voice: active` で、述語を派生形のまま返す)。門を入れたあと 誤読 0・不完全 0。門が止めた行は 11(上の表。門の前の誤読 11 と同じ行)。読む期待の行のうち、時の語が証拠の門 5(`PLACEMENT_SLOT_EVIDENCE_ONLY`)で落ちた 4 行は棄権(K85)。棄権の期待で読んだ 5 行はすべて基点がすでに正しく読む文(出力が配置なしと同一。テストの `BASELINE_READS`)。
+  - **棄権に戻った文(全件。第 3 ラウンドの入口の出力 `r3_entry_live.jsonl` と今の `entry_live.jsonl` の比較 `r3_vs_r4_live.txt`: 共通の入力 2821 文のうち変わったのは 6 文で、すべて「読めていた → `PLACEMENT_PREDICATE_POSSIBLY_DERIVED` で棄権」。ほかの出力は 1 バイトも変わっていない)**。どれも主辞が下一段で、正しい読みだった(第 3 ラウンドの `false->readable` 63 件はすべて CORRECT)。1 番目の理由は `NO_SUPPORTED_CLAUSE`:
+    - `ja_r8` `W3B1-S4-003` 姉が夜、扉を閉めた。 — `PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行`
+    - `ja_r8` `W3B1-S4-004` 兄が冬、窓を閉めた。 — `PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行`
+    - `ja_r8` `W3B1-S4-013` 父が平日、窓を開けた。 — `PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行`
+    - `ja_r8` `W3B1-S4-021` 妹が放課後、窓を開けた。 — `PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行`
+    - `ja_r9` `W3B1-R9-S4-001` 兄が夜、窓を開けた。 — `PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行`
+    - `ja_r9` `W3B1-R9-S4-006` 父が年末、扉を閉めなかった。 — `PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行`
+  - 申告: `ja_r8` の `w3b1_expect_exceptions.json` は 49 件から 53 件(足したのは上の `ja_r8` の 4 行で、種類は `row_returned_to_abstain`。既存の 49 件はバイト単位で同じ。`w3b1_expect_exceptions_changes_r4.diff`)。`ja_r9` の 2 行は `tests/test_semantic_read_w3b1_r3.py` の `RETURNED_BY_DERIVED_GATE` に出力そのままで申告し、門を外せば正しく読めることをテストが確かめる(H122)。
+  - `ja_r10` の門のあとの様子(上の表の「with the gate, <経路> <種類>」の行): 経路 U の可能動詞 17 文のうち 14 文は、門の前から今の規則の `UNDETERMINED_MODALITY:possible potential form`(基点の `_potential_suspect`)で棄権し、門が止めたのは `歩ける` の 3 文だけ(`歩く` は を を取る動詞として基点の疑いの例外に入る。K82)。経路 S4 の可能動詞 14 文は、門に届く前に別の理由(時の語が門 5 で落ちる 8・今の規則の可能形の疑い 2・型の門の理由 1・2 番目の理由なし 3)で棄権し、門の働きを `ja_r10` では測れていない(K85。この型はレビューの 6 文と書けた・書けない を新しいテストで確かめた)。短い使役は U の 4 文・S4 の 4 文を門が止めた(S4 の残り 3 文は門 5 で先に落ちる)。
+  - 基点との比較(上の表): `false->readable` 66(すべて CORRECT。`ja_r8` 47・`ja_r9` 10・`ja_r10` 9)、`readable->false` 0、`changed` 0、`error_changed` 0。誤読 0 は `r10_entry_check.txt`・`r9_entry_check.txt`・`r8_entry_check.txt`・`b1_fixtures_live.txt`・`base_diff_summary.txt` で確かめた。新しい経路が作った不完全読み 0(`ja_r8` の 3 件・`ja_r9` の 1 件は配置なしの出力と同一)。
+
+### 既知の穴(K67〜。隠さない)
+
+- **K67 英語は読まない**(H104)。配置の述語(ns=P)の見出し語は 10971 のうち ASCII だけで書かれたものが 0(`probe_members.txt`)。日常語の名詞も direct の型が当てにならないので、英語の表は作らず、`UNKNOWN_PREDICATE` に配置の答えの理由を 1 つ足すだけ。
+- **K68 基点がすでに誤って読む文が検査データに 3 行ある**(`W3B1-S4-054` 梅雨・`W3B1-S4-059` 夕べ・`W3B1-EN-015` quietly)。和文は、読解器が時の語＋「、」＋名詞を 1 つの patient(`梅雨、靴`)とする 2 つ目の節(`np_internal`)を支持された節として返す。英語は `quietly` が patient に入る(`room quietly`)。どちらも基点の出力と同一で、配置の経路は通らない(読解器・英語の枠は許可パスの外。直さない)。この 3 行は凍結のまま、`b1.judge` は `incomplete`。基点の誤り(穴)として申告する。
+- **K69 読む期待で棄権した 9 行**(大晦日・春休み・年明け の ∅+時)。読解器が `frame` の節のほかに `np_internal` の節(`大晦日、床` を 1 つの patient とする。支持されない節)も返すので、引き金の「節がちょうど 1 つ」に当たらない。安全な側の損失で、直さない(引き金を広げる変更は表を広げるのと同じ扱いで、このチケットでは禁止)。
+- **K70 理由の食い違い 13 行(表の変更記録 1 のあとは 16 行。増えた 3 行は、`に+人` が型の不一致で先に落ちるようになったもの。申告は `reason_differs`)**: 引き金に当たらず(読解器の節が 2 つ・数詞を読解器が先に `QUANTIFIER_NOT_MAPPED:numeral` にする・未読の区間・ほか)、登録した 2 番目の理由が付かない。すべて棄権している。
+- **K71 配置の述語の型の誤りは防げない**。`probe_members.txt`: 読む 2 型の成員 111 語を 4 つの枠に入れて 222 文、うち 102 文が新しく読める(`recipient に` の行を戻す前は 148 文、第 3 ラウンドの末は 124 文。第 4 ラウンドの派生の疑いの門で 22 文が棄権に戻った)(`在る`・`すむ`・`なくなる`・`戻す` など、へ＋場所の枠が不自然な語が通る。不自然な文の読みは何も言わないが、型が誤って P_MOVE・P_COMMUNICATE に入った語が自然な文で誤読を作る可能性は、検査データと x3 では 0 件、監査役の隠しバンクでだけ測れる)。名詞の型の誤り(例: 人名が TIME・PLACE)も同じ(`probe_members.txt` の標本)。誤りが見つかったら、その行を「読まない」に戻す(語を足して直さない)。
+- **K72 採点器の子プロセスに配置が届かない**(`tools/bank_score/runner.py` の `env()` が環境を作り直す)。採点器で流した結果は配置なしの結果で、基点と同じ(`BS_SAME_AS_DEV`)。配置ありの B1 は、プロセス内の `w3b1_entry_check.py`(または提案の差分 `proposed_runner_env.diff` を適用した採点器)で測る。
+- **K73 は の主題の節・受身・使役・述語が複数の文・サ変の述語**は読まない(読解器が割れると言う、表は能動の枠だけ、配置にサ変の見出しが無い=`勉強する` などが UNKNOWN、K63)。対象外のまま。
+- **K74 型の表は 2 型だけ**。読む型を増やす・助詞の行を増やす・「読まない」を「読む」にする変更は、成員の確認(`frame_review.md`)と登録の変更記録を先に書いてからにする。
+- **K75 配置の問い合わせは語の表記そのまま**(複合語・の 句は全体で問い合わせる。主辺を取り出す規則は作らない)。「兄の友人」などは UNKNOWN で棄権する。読める文が少ない原因の 1 つ。
+- **K76 型で読んだ節の `unsupported` には、読解器が言った理由が残る**(U2 の `ambiguous case role: に` など。上書きしたものを記録として残すため。U1 は理由が空)。
+- **K77 型で読み直した節は、極性・時制・モダリティを今の写しの規則に任せるので、基点の規則の欠けは誤答だけでなく誤読(極性・モダリティ)になる。この変更(表の変更記録 2)で、解釈されない語尾を持つ節は新しい経路では読まない**(レビュー第 1 ラウンド M5 の申告が、第 2 ラウンド M7 で誤読と分かった)。基点の入口は、述語の後ろの「ている+ない」「ません(ている の後)」「禁止の な」「まい」「たい」「命令形」を解釈せず、`姉が本を読んでいない。`・`姉が本を読むな。` を `polarity: "+"`・`modality: null` で読む(基点の既存の誤読。この企ての許可パスの外で、別のチケットが要る)。型で読み直す経路は、基点がそれらの文を別の理由で棄権していたのを外すので、同じ欠けが新しく読めた文の誤読として出た(レビュー第 2 ラウンド: 未公開の 122 文で 14 件)。語尾の門(K63)は、型の決定と今の写しの再実行が通った後に、述語の語尾が 4 つの形(終止形・連用形+た・未然形+ない・未然形+なかっ+た)のどれかでなければ `PLACEMENT_PREDICATE_TAIL_UNINTERPRETED` で棄権する。それ以外の語尾は、今の規則が解釈するかどうかを調べずに一括して棄権する(H117)。測定: 検査データ `ja_r9` は 上の表。可能動詞・短い使役も同じ型(M8): タガーの出力では元の動詞とは別の独立した下一段・五段の動詞として現れるので、4 つの形を通り、述語が派生形のまま `modality`・`voice` なしで返った(第 4 ラウンドの門と K82〜K86)。
+- **K78 `PLACEMENT_REREAD_ABSTAINS` と S4 の読み直しは、基点が棄権した文を読み直す**。基点が読めた文は 1 バイトも変えない(`readable->false 0`・`changed 0`)が、基点が棄権した文を新しく読む。基点が棄権した理由(`unsupported`)の一部は、読解器が「ここは割れる」と言ったものを型で上書きしたもの(U2 の `ambiguous case role: に`。K76 のとおり記録として残す)。
+- **K79 基点がすでに読んでしまう語尾の文がある**(`ja_r9` の `W3B1-R9-S4-030` 姉が放課後、本を読むべきだ。)。基点の入口が `modality: null` で読む(べき を解釈しない)ので、配置なしの出力と同一で `incomplete`(新しい経路の誤読ではない。この変更は基点の出力を 1 バイトも変えない)。K77 のとおり基点の規則の欠けで、別のチケットが要る。検査データの `ja_r9` の `incomplete` 1 件はこれで、テストはこの 1 行を `BASELINE_READS` に固定している(出力が基点と同一であることを確かめる)。
+- **K80 語尾の門は述語の後ろだけを見る**。述語の前の語(役割の間の副詞・標識)が極性・モダリティを動かす場合は、引き金(U は `unsupported == ()`、S4 は部分の標識 K64)に任せていて、`ja_r9` は述語の前に語尾の型の語を置いていない。門を通る 4 つの形(とくに単純否定 2 形)が今の規則で正しく読まれることは、検査データ(ja_r8・ja_r9 の読む期待の行と、凍結したテストの単純否定の文)と未公開の文での測定だけが根拠で、証明ではない。門は広く棄権に倒すので、読めない文(受身・使役・丁寧の ます・ている・命令 など。棄権の型が `PLACEMENT_PREDICATE_TAIL_UNINTERPRETED`)が増える(`ja_r9` の棄権の期待 48 行のうち、門で棄権したのは上の表の件数)。受身・丁寧・ている などを読み直す変更は、表を広げるのと同じ扱いで、このチケットでは禁止。
+- **K81 `ja_r9` の検査文は、型の門を通る語だけで作った(語尾の門だけを測る)**。型の門の誤り(direct の型の誤配置)と語尾の誤りが重なる文は、`ja_r9` では測れていない(型の門は `ja_r8`・凍結テストが測る)。
+
+- **K82 基点の `_potential_suspect` の を の例外(基点の既存の誤読。許可パスの外・別のチケット)**: 基点(配置なし)が `姉が皿を洗えた。`・`姉が冬に皿を洗えた。`・`姉が絵を描けた。`・`姉が手紙を書けた。`・`兄が字を書けない。` を述語 `洗える`・`描ける`・`書ける`、`modality: null` で読む(`artifacts/w3-b1/r4_base_potential_reads.txt`)。原因は `semantic_read._potential_suspect` が `transitivity(lemma) == 'trans'`(を を取る動詞)を可能形の疑いから外す例外。規約 §3 は可能形を元の動詞に `modality: ability` とする。この企ては基点の関数を変えない(第 4 ラウンドの約束)。新しい経路では門(K63・表の変更記録 3)が同じ型を棄権に戻す。基点そのものの穴は残る(隠しバンクの基点の誤読 0 は、バンクにこの形が無いか別の理由で棄権しているためと見る)。
+- **K83 派生の疑いの門は下一段の動詞を全部棄権に倒す代償**: 可能形でない下一段の動詞(閉める・開ける・食べる・出る の型)の正しい読みも、新しい経路では失う。測定した件数: 第 3 ラウンドで読めていた 6 文(`ja_r8` 4・`ja_r9` 2。上の「読み方」に全件)。`ja_r10` の比べの文(下一段で可能形でない 11 行)は、基点がすでに読む 5 行(U)と、基点の理由だけで棄権する 1 行(U。`GOAL_TYPE_UNDETERMINED`)と、時の語が門 5 で先に落ちる 5 行(S4)で、この門の代償を数えていない。五段-サ行で原形の末尾がア段+すの語彙動詞(動かす・飛ばす の型。使役でない)も同じく棄権する(件数は測っていない)。
+- **K84 門はタガーの切り方に頼る**: 門は主辞のトークンの活用型と原形だけを見る。タガーが派生形を「元の動詞の別の活用形 + 助動詞」に切る場合(例 `死ねた` を `死ぬ/五段/仮定形 + た` と切ることがある)は、語尾の門(4 つの形)が受け持つ(仮定形 + た は 4 つの形に入らず棄権)。4 つの形のうちに派生形が入る別の切り方(下一段でも五段-サ行でもない活用型の独立した動詞として出る派生形)があれば、この門も語尾の門も防がない。ら抜きの可能形(見れた・食べれた)は、`ja_r10` の 2 文で下一段として出て、今の規則(`possible potential form`)が棄権した。サ変の可能の できる(上一段)は門の対象にせず、入口の既存の標識で棄権する(`ja_r10` の 2 文とテスト)。受身・尊敬と同形の下一段・自発(思える)は下一段の門の対象。 ただし この「入口の既存の標識で棄権する」は **かなの できる だけ** の話である(`_MODAL_MARKS` は `ことができ|できる|できた|できな` を含み、漢字の `出来た`・`事が出来た` には当たらない)。漢字の場合は標識ではなく別の理由で棄権する: 私の 4 文(`r4r2_kanji_dekiru_probe.txt`。配置あり・live)では、`妹が夜、勉強出来た。`・`弟が冬、勉強出来なかった。` が `NO_SUPPORTED_CLAUSE` + `PLACEMENT_PART_NOT_FOLLOWED`、`妹が夜、手紙を書く事が出来た。` が `NO_SUPPORTED_CLAUSE` だけ(配置なしと同一)で、どれも読まなかった。規則は変えていない(レビュー第 4 ラウンド r1 の任意の改善 2)。
+- **K85 `ja_r10` の経路 S4 の行は、時の語の選び方のために、門に届かないものが多い**: 時の語を配置の答え(`r8_placement_answers.jsonl`)から選んだが、証拠の門 5 を通る語かどうかを確かめなかった。S4 の可能動詞 14 文のうち門に届いたのは 0 文(上の表の「S4 potential」の行)で、S4 の可能動詞の穴(`洗えた`・`描けた`・`書けた` を読んでいた誤読)は `ja_r10` では測れていない。読む期待の行のうち 4 行(`W3B1-R10-S4-027`・`029`・`030`・`033`)は、時の語が門 5 で落ちて棄権する(データの選び方の誤りで、門の誤りではない)。データは直さず、テストの `READ_EXPECTED_BUT_ABSTAINED` に出力そのままで申告した。可能動詞の S4 は、レビューの 6 文と `書けた`・`書けない` を新しいテスト(時の語を型で与える `MapQuery`)で確かめた(門の前は読んで誤読、門のあとは棄権。`r4_probe_before_gate.txt`)。
+- **K86 経路 U の可能動詞の多くは、門の前から今の規則が棄権する**: `ja_r10` の U の可能動詞 17 文のうち 14 文は `UNDETERMINED_MODALITY:possible potential form`(基点の `_potential_suspect`)で棄権し、門が止めたのは `歩ける` の 3 文(歩く は を を取る動詞)。配置が `DECIDED direct P_MOVE` と答える可能動詞は `歩ける`・`行ける`・`戻れる`・`向かえる`・`移れる` の 5 語(`走れる`・`飛べる`・`帰れる` などは `UNPLACED`。`r10_placement_answers.jsonl`)で、語の選び方による測定の限界がある。
+
+### 判断記録(H100〜。W1-a4 が H66〜H97 を使ったので衝突を避けた)
+
+| 番号 | 判断 | 理由・根拠 |
+|---|---|---|
+| H100 | 配置の問い合わせは語だけ(`context_role`・`context_predicate` を渡さない)。必ず実在のパスつきで呼び、`None` を渡さない。`VERA_COARSE_PLACEMENT` は読まない(環境変数は `VERA_PLACEMENT` だけ) | 役割の位置で推定した型で役割を決める循環を避ける(十字の `PlacementLookup` と同じ理由)。`coarse_place.query` は `placement=None` のとき自分の環境変数を読むので、読解器・十字が `None` を渡すと指定していない配置を使ってしまう。`CoarseQuery` はパスつきでしか呼ばない(テスト `test_the_query_adapter_asks_for_the_word_only_with_a_real_path`) |
+| H101 | 生成した定義で直接に格上げされた語(`decided_by` に `gen_definition`)を使わない(門 4) | `docs/COARSE_PLACEMENT.md` §11.6 の提案(分けて扱う余地)を保守的な側で採った。検査データの該当: `PLACEMENT_DIRECT_VIA_GENERATED` が 2 件(K66 の表) |
+| H102 | 付加(時・場所)の語で、決め手の腕がすべて `role@` のものを使わない(門 5) | 役割の分布の腕は「その位置に出た」ことしか数えず、副詞的な名詞(一緒に・実際に・様態)が同じ位置に出る。表の「付加」の行だけに掛ける。検査データの該当: `PLACEMENT_SLOT_EVIDENCE_ONLY` が 16 件(K66 の表) |
+| H103 | `event_cross.py` の変更は 3 点: (a) 既定の lookup(`default_lookup`・`CoarseLookup`)、(b) `ENTRY_BASIS_KEYS` を `_check` が受け入れる、(c) `_cross` がそれを `provenance` に写す | チケットは「差し替えのみ」と書くが、「十字はこれを写す」には (b)(c) が要る。`CLAUSE_KEYS` に足すと規約 §1.1 の表と一致する既存テスト(`test_convention_clause_keys_equal_the_table_of_section_1_1`)が落ちるので、別の定数にした。`center` には入れない(W3-c の `semantic_realize` が center を比べる) |
+| H104 | 英語は読まない。`UNKNOWN_PREDICATE` に理由を 1 つ足すだけ(`_clause_en` 由来は先頭の動詞の `en.lemma` を問い合わせて門の理由か `PLACEMENT_FRAME_NOT_READ:en`、動詞が特定できない 627 行の方は `PLACEMENT_PREDICATE_UNIDENTIFIED`) | K67 |
+| H105 | 出所の欄(`predicate_basis`・`role_basis`)は節に置き、十字は `provenance` に写す | H103。型で決めた節だけに、節の最後の鍵として足す。既存の鍵の値と順は変えない |
+| H106 | 読まない型 11 と、`P_MOVE` の に+PLACE・を・まで | `artifacts/w3-b1/frame_review.md`(成員の確認。例の語は型 1 つにつき 3 語まで) |
+| H107 | 態が能動でない・態の判定が棄権したときの理由は、どちらも `PLACEMENT_VOICE_NOT_ACTIVE` | 表は能動の枠だけ。`_voice_ja` の理由は 1 番目の理由(今の理由)の側に残る。`_voice_ja` は変えていない(`voice_unchanged.txt`) |
+| H108 | 部分(S4)の直前に覆われない修飾(連体詞など)があれば読まない(`PLACEMENT_PART_NOT_ISOLATED`) | K63 に登録した。名詞句の修飾を落とさないため。表層の規則ではなく、棄権を増やす側の門 |
+| H109 | 型で読み直して今の写しが棄権したときは、`PLACEMENT_REREAD_ABSTAINS:<今の規則の理由>` | 型で決めた役割でも、量化・モダリティ・接続の規則は今のコードのまま走る。それが棄権したことを理由に残す(K65 の登録済みの名前) |
+| H110 | 型で読んだ節に、読解器が言った理由(`unsupported`)を残す | K76。自動で解決したものも数えて記録する原則 |
+| H111 | **凍結したテストを実装のあとに直した**(「テストの変更記録」)。期待の食い違い 25 行は、データの期待を直さず、`w3b1_expect_exceptions.json` に出力そのままと理由つきで申告し、テストはその出力を固定する | 凍結したデータの期待を後から直さない(指示書)。直すべきと思ったのは検査データでなく、読解器の挙動の予想(2 つ目の節 `np_internal`・数詞・基点の誤読)で、データの期待ではなく予想が外れた。申告のテスト(`test_declared_exceptions_are_real_and_each_has_a_reason`)は、各行の出力が変わっても(良くなっても悪くなっても)、食い違いが無くなっても落ちる |
+| H112 | 引き金は指示書どおり(U1・U2・S4)。S4 の「節がちょうど 1 つ」を広げない | K69。読解器が 2 つ目の節を返す文を読むには、その節の理由を型で上書きすることになり、「読解器が自分で割れると言った所を型で上書きしない」に反する |
+| H113 | **`P_COMMUNICATE` の `recipient / に / PERSON GROUP_ORG` の行を「読まない」に戻した**(表の変更記録 1。2026-10-03 15:28:43 +0900) | レビュー第 1 ラウンド M1。成員(呼ぶ・誘う・呼び出す・記す)が に を goal で取り、型だけでは受け手か行き先か決まらない。未公開の文で誤読 7 件(基点は棄権)。登録時の確認(`frame_review.md`)が誤りだった。狭める変更だけ(語の除外・述語の例外は足していない)。ほかの行は変えない。戻したあとの測定は全部取り直した(K66 の表) |
+| H114 | 登録した本文 `artifacts/w3-b1/PREREG.md` は変えず、docs の現在の表(K62)だけを直し、変更記録に前後の差を書いた | 登録時の本文を保存するため(`prereg_vs_docs_r2.diff` は変更記録 1 の差だけであることを示す) |
+| H115 | 凍結データ `ja_r8.jsonl` は変えず、期待を満たさなくなった行は `w3b1_expect_exceptions.json` に種類 `row_returned_to_abstain`(読む期待の 21 行)または `reason_differs`(棄権の期待で理由の接頭辞が変わった 3 行)で全件申告した。申告の根拠は、登録したままの表を記憶の中で戻したときに期待を満たす行であること(`tests/reading_soundness/w3b1_mk_exceptions.py`) | 凍結したデータの期待を後から直さない(指示書)。申告したテストは出力そのものを固定し、読んでいないことを確かめる |
+| H116 | 新しいテストは補助モジュール(`w3b1_fakes.py`・`tests/event_cross/fakes.py`)を **パスを指定して一意の名前で読み込む**。`sys.path` を変えない | レビュー M6。モジュール読み込み時の `sys.path.insert(0, tests/event_cross)` が、全体テストの収集のあと `tests/observe/measure.py` より前に `tests/event_cross/measure.py` を置き、W3-c の o4 のテスト 2 件(関数の中の `import measure`)が落ちた。W3-c・十字のテストのファイルは変えていない |
+| H117 | **語尾の門は第 2 案(広く棄権に倒す)を採った**。述語の主辞の後ろが 4 つの形(終止形・連用形+た・未然形+ない・未然形+なかっ+た)でなければ棄権する(K63・表の変更記録 2) | レビュー第 2 ラウンド M7 は、第 1 案(「既存の規則がその語を使ったか」を返す読み取り専用の補助)を、外から確かめられなければ第 2 案にしてよいとした。極性・時制・モダリティは `document_view`(`c.polarity`・`c.time`・`c.modality`)と入口の `_MODAL_MARKS` などに散らばって決まり、「どの語が使われたか」を返す補助を、既存の規則を変えずに安全に足せるかは確かめられなかった(この企ての許可パスは `semantic_reader.py` の既存の関数を 1 文字も変えない約束で、補助が既存の判定と食い違えば、それ自体が新しい規則になる)。新しい語尾の一覧は作らない(W1-a4 の「検出が局所的すぎる」穴を避ける)。通す 4 つの形は、凍結したテストが読むと求める単純否定(`test_path_u_does_not_touch_voice_polarity_tense_or_modality`)と、今の規則が決める単純な過去・非過去だけ。代償: ている・ません・受身・使役 などは、今の規則が正しく読むものも含めて読まない(K80) |
+| H118 | 語尾の門は、型の決定と今の写しの再実行が **通った後** に掛ける(`semantic_read._typed_reread_ja`) | 先に掛けると、これまで別の理由(`PLACEMENT_REREAD_ABSTAINS`・`PLACEMENT_VOICE_NOT_ACTIVE` など)で棄権していた文の理由が変わり、凍結したテスト(`歩きたい` は `PLACEMENT_REREAD_ABSTAINS`)と `ja_r8` の期待の理由が変わる。後に掛ければ、門で変わるのは「これまで読めていた文」の出力だけで、棄権の理由と順は変わらない(`r8_entry_check` が第 2 ラウンドと同じ出力であることで確かめた) |
+| H119 | `ja_r9` の固定の配置の答えは別のファイル `w3b1_placement_fixture_r9.json` に置き、`w3b1_fakes.FixtureQuery` は両方から答える | ラウンド 1 の `w3b1_placement_fixture.json` と作成スクリプトの sha256(`placement_fixture.sha256`)を変えないため。`FIXTURE['answers']`(ラウンド 1 の語)は変えない |
+
+| H120 | **派生の疑いの門は M8 の (b)(主辞の活用型が下一段なら広く棄権)を採り、短い使役は 五段-サ行 で原形の末尾がア段+す の主辞を棄権する**(表の変更記録 3。2026-10-03 17:09:34 +0900) | 判定を活用型と原形の末尾の仮名という閉じた構造だけで決め、語の一覧・辞書の検索に頼らない。採らなかった案 (a)(基点の `_potential_suspect` の e 段→u 段の構造を `transitivity` の例外なしで使う)は、タガーの辞書に候補の動詞があること(1 語のトークン・未知語でない)に依り、辞書に無い・2 トークンに切れる候補が素通りする穴が残る(中間職の指示書 §3.2 の判断。私は (a) を実装して測っていない)。3 ラウンド続けて「引き継いだ規則の欠けが、棄権を外したところで誤読になる」型が出ているので、辞書の検索に頼らない広い形にした。`feature.lemma`(語彙素)は使わない(可能動詞を元の動詞に寄せ(書け→書く)、漢字も正規化する(閉め→締める)ので、表記に依る規則になる)。五段-サ行 を全部棄権すると 引き返す・渡す・返す など使役でない語も失うので、原形の末尾の仮名(ア段+す)で区切る。代償は K83 |
+| H121 | 派生の疑いの門は、語尾の門が `None` を返した後にだけ掛ける(別の関数 `typed_head_derived_ja`。`typed_tail_ja` は変えない) | 語尾の門で棄権する文(`母が冬、窓を閉めるな。` は `PLACEMENT_PREDICATE_TAIL_UNINTERPRETED`)と、再実行で棄権する文(`猫が庭へ歩きたい。` は `PLACEMENT_REREAD_ABSTAINS`)の理由と順を変えないため。第 3 ラウンドのテストが `typed_tail_ja` を直接呼んで理由を固定している。通した文の理由だけが 2 番目に足される |
+| H122 | `ja_r8` の申告は生成器(`w3b1_mk_exceptions.py`)に「派生の疑いの門を外せば期待を満たすか」の分岐を足して作り直し、`ja_r9` の 2 行は第 3 ラウンドのテストに `RETURNED_BY_DERIVED_GATE`(出力そのままの固定)を足して申告した。登録したままの表を戻して測る質問(変更記録 1)は、新しい門を外して流す | 前例は H111・表の変更記録 1。新しい門は変更記録 1 を決めたときには無かったので、その質問では門を外す。こうしないと既存の 49 件の分類が動く(最初に流したとき 8 件が動いたので直した。直したあと、既存の 49 件はバイト単位で同じ) |
+| H123 | `ja_r10` の経路 S4 の時の語が門 5 で落ちたこと(K85)と、基点がすでに読む U の行 5 件は、データを直さず、新しいテストで出力そのままを申告した | 凍結したデータの期待を後から直さない(指示書)。データの選び方の誤りは K85 に書き、可能動詞の S4 はレビューの文で別に確かめた |
+| H124 | `できる` は門の対象にしない | 上一段で、語の一覧になる。入口の既存の標識(`_MODAL_MARKS`)が棄権させる(`ja_r10` の 2 文とテストで確かめた。理由は `PLACEMENT_PART_NO_ROLE`・`PLACEMENT_UNPLACED` で、派生の門ではない) |
+| H125 | 申告の生成器は「派生の疑いの門だけを外せば期待を満たすか」(変更記録 3 の質問)を先に問い、満たすならその行の原因は変更記録 3 とする。登録したままの表を戻す質問(変更記録 1)は、変更記録 3 の質問が否のときだけ原因にする。両方で満たす行の `why` に両方を併記することはしなかった | レビュー第 4 ラウンド r1 の M1: `S4-003`・`004`・`013`・`021` は門を外すだけで期待を満たす(K62 の行を戻すことと無関係)のに、変更記録 1 の質問が先に当たって `why` が変更記録 1 を名指ししていた。出力・種類・既存 49 件は変わらず、4 件の `why` だけが変わった。併記(任意の改善 1)は、`why` に変更記録 1 の名が入り、原因の取り違えと見分けがつかなくなるので採らなかった(両方で満たす行は今のデータでは上の 4 行で、どれも変更記録 3 が原因) |
+
+### テストの変更記録(凍結したテストの変更。凍結: `w3b1_tests_freeze_time.txt`(2026-10-03 14:48:46 +0900)と、その sha256 `w3b1_tests_freeze.sha256`)
+
+差分の全文(測定物): 凍結 → 第 1 ラウンド末 `w3b1_tests_changes_r1.diff`(`test_semantic_read_w3b1.py`。凍結時の写しの sha256 は `eee9dcab…` で凍結の記録と一致)と `w3b1_expect_exceptions_changes_r1.diff`(凍結時は空の `{"exceptions": []}`)。第 1 ラウンド末 → 第 2 ラウンド末 `w3b1_tests_changes_r2.diff`(`test_semantic_read_w3b1.py` と `test_semantic_read_w3b1_events.py`)と `w3b1_expect_exceptions_changes_r2.diff`(削除行 0。第 1 ラウンドの 25 件は変えず、24 件を足しただけ)。第 2 ラウンド末の sha256 は `w3b1_tests_freeze_r2.sha256`(日時は `w3b1_tests_freeze_r2_time.txt`)。
+
+第 1 ラウンド(凍結のあと、実装を入れて流したときに見つかった **テストの誤り** を直した。`w3b1_tests_changes_r1.diff` の全行はここの 1〜5 に入る):
+1. `test_the_table_holds_type_ids_...`: 助詞の正規表現 `[がをにへでから]` が 2 文字の `から` に当たらなかった(テストの誤り)。`が|を|に|へ|で|から` に直した。
+2. `test_part_constructions_in_the_docs_...`: docs のセルは `∅(、)`。コードの助詞は `''`。比較で `(、)` を落とすようにした。
+3. `test_path_u_reads_...`: `unsupported` が空でないと仮定したのは誤り(U1 は理由が空)。「基点の棄権の `unsupported` と同じ」に直した。
+4. `test_path_s4_registered_unread_constructions`: `母が三回、手紙を書いた。` を「引き金に当たる」とした予想は誤り(読解器が先に数詞で棄権する)。「基点と同じ(足されるのは標識の理由だけ)」の群に移し(期待は `PLACEMENT_PART_MARKER:quant` から `None`)、数詞・限定の標識・の は、S4 の計画を直接呼ぶ新しいテスト(`test_path_s4_plan_registered_marks_and_constructions_called_directly`。この関数と補助 `_s4_plan` が差分の追加行)で確かめる。
+5. 検査データの行のテスト: 期待を満たさない行の申告の仕組み(`w3b1_expect_exceptions.json`)を足した。凍結のとき、このファイルは空(`{"exceptions": []}`)で、凍結の sha256 に入れてある。申告の行は、出力そのまま(`test_declared_exceptions_are_real_and_each_has_a_reason` が、出力が変わっても・食い違いが無くなっても落ちる形で固定)・食い違いがあること・基点と同一(読んだ行)を確かめる。差分には、旧 `_unlisted_exception` の `_exception` への書き換え、`kind` の閉じた集合の検査、鍵の一意の検査、`baseline_reads` の確認が含まれる。
+
+第 2 ラウンド(レビュー第 1 ラウンドの必須の修正による。弱体化はしていない):
+6. `test_the_expected_types_of_a_role_are_those_of_the_event_cross_table`(M1-4): 表から `recipient` が消えるので `assert seen == {'agent', 'recipient', 'place', 'time'}` を、「docs の K62 の表に現れる役割のうち `EC.EXPECTED_TYPES` にあるもの」と等しい、に置き換え、さらに現在の表で `{'agent', 'place', 'time'}` であることも確かめる。各行の型が `EC.EXPECTED_TYPES` と一致する検査は変えない。
+7. 申告の種類(M1-3): `test_declared_exceptions_are_real_and_each_has_a_reason` が許す `kind` に `row_returned_to_abstain` を足した(ほかの検査は変えない。出力を固定し、読んでいないことを確かめる形のまま)。`w3b1_expect_exceptions.json` は 25 件に 24 件(`row_returned_to_abstain` 21・`reason_differs` 3)を足した 49 件。生成は `w3b1_mk_exceptions.py`(登録したままの表を記憶の中で戻したときに期待を満たす行だけを、表の変更の結果として分類する)。
+8. 補助モジュールの読み込み(M6): `test_semantic_read_w3b1.py` と `test_semantic_read_w3b1_events.py` の、モジュール直下の `sys.path.insert` と `import w3b1_fakes` / `import fakes` を、パスを指定して一意の名前で読み込む関数 `_load_by_path` に置き換えた。テストの期待は変えていない。W3-c・十字のテストのファイルは変えていない。
+9. (テスト以外。参考) `tests/reading_soundness/w3b1_before_row_returned.py` を足した(変更記録 1 の前後の測定。テストではない)。
+
+表の変更記録(K62 の表・K63 の構成・K64 の標識・K65 の理由): **登録のあと、変更 3 件**(上の「表の変更記録」の 1: `P_COMMUNICATE` の `recipient に` の行を戻した。2: 述語の語尾の門を足した=読む範囲を狭める。3: 派生の疑いの門を足した=読む範囲を狭める)。
+
+第 3 ラウンド(レビュー第 2 ラウンドの必須の修正 M7による。凍結したテスト 2 本 `test_semantic_read_w3b1.py`・`test_semantic_read_w3b1_events.py` は **変えていない**。sha256 は `w3b1_tests_freeze_r2.sha256` のとおり):
+10. 新しいテスト `tests/test_semantic_read_w3b1_r3.py` を足した(語尾の門と `ja_r9`。門の実装のあとに書いた。K66 の日時の順)。凍結したテストの期待は 1 つも変えていない。
+11. (テスト以外。参考)補助 `tests/reading_soundness/w3b1_fakes.py` の `FixtureQuery` が、ラウンド 1 の固定の答え(`FIXTURE`)に加えて `w3b1_placement_fixture_r9.json`(`ja_r9` の語)からも答えるようにした(`FIXTURE` は変えない。H119)。凍結の記録 `w3b1_tests_freeze_r2.sha256` の `w3b1_fakes.py` の sha256 は、この変更で変わった(第 3 ラウンドの記録 `w3b1_tests_freeze_r3.sha256`)。測定の補助 `w3b1_entry_check.py`・`w3b1_entry_dump.py`・`w3b1_base_diff.py`・`w3b1_events_measure.py`・`w3b1_recompute.py` は `ja_r9` を入力に加えた。
+
+第 4 ラウンド(レビュー第 3 ラウンドの必須の修正 M8による。凍結したテスト 2 本 `test_semantic_read_w3b1.py`・`test_semantic_read_w3b1_events.py` は **変えていない**。凍結の記録 `w3b1_tests_freeze_r4.sha256`(日時は `w3b1_tests_freeze_r4_time.txt`)。第 3 ラウンドの記録 `w3b1_tests_freeze_r3.sha256` と照合して食い違うのは次の 3 ファイルだけで、どれも意図した変更):
+12. `tests/test_semantic_read_w3b1_r3.py`: `ja_r9` の読む期待の 2 行(`W3B1-R9-S4-001`・`006`)が派生の疑いの門で棄権に戻ったので、`RETURNED_BY_DERIVED_GATE`(出力の `reasons` そのままの固定)を足し、`test_every_row_of_ja_r9_with_the_fixture` の先頭の分岐に 1 つ足した(その行は 読む期待・出力が棄権で `reasons` が固定と完全一致・門を外すと読めて `b1.judge` が `correct`、の 3 つを確かめて返す)。ほかの行の確かめは 1 文字も変えていない。差分は足した行だけ(`w3b1_tests_changes_r4.diff`。`^<` の行 0)。期待の弱体化ではなく、棄権に戻った行を出力つきで申告する形(H122)。
+13. `tests/reading_soundness/w3b1_fakes.py`(補助): `FIXTURE_R10`(`w3b1_placement_fixture_r10.json`。`ja_r10` の語)を足し、`ANSWERS` を r10 → r9 → r1 の順に重ねた(ラウンド 1 の `FIXTURE` は変えない)。ファイルが無ければ読み込みで失敗させる(`FIXTURE_R9` が黙って空の答えに落ちていたのも同じ厳しい読み込みに直した。レビュー第 3 ラウンドの任意の改善)。`content_sha256` が `FIXTURE` と同じこと、同じ語の答えが 3 つの固定で食い違わないことを assert する。
+14. `tests/reading_soundness/w3b1_expect_exceptions.json`(申告): 49 件に `row_returned_to_abstain` 4 件(`ja_r8` の `W3B1-S4-003`・`004`・`013`・`021`)を足した 53 件。既存の 49 件はバイト単位で同じ(`w3b1_expect_exceptions_changes_r4.diff` は足した行だけ)。生成器 `w3b1_mk_exceptions.py` に「派生の疑いの門を外せば期待を満たすか」の分岐を足し、変更記録 1 の質問は門を外して流すようにした(H122)。
+15. 新しいテスト `tests/test_semantic_read_w3b1_r4.py` を足した(派生の疑いの門・`ja_r10`・レビューの文。門の実装のあとに書いた。K66 の日時の順)。凍結したテストの期待は 1 つも変えていない。
+16. (テスト以外。参考)測定の補助 `w3b1_entry_check.py`・`w3b1_entry_dump.py`・`w3b1_base_diff.py`・`w3b1_events_measure.py`・`w3b1_recompute.py`・`check_hardcode.py` は `ja_r10` を入力に加えた(`w3b1_recompute.py` には第 4 ラウンドの行を足した)。
+
+第 4 ラウンドのレビュー r1(必須の修正 M1: 申告の理由の取り違え)による(凍結したテスト 2 本は変えていない。凍結の記録 `w3b1_tests_freeze_r4.sha256` は取り直した。日時は `w3b1_tests_freeze_r4_time.txt`。取り直す前の写しは scratchpad に残してある):
+17. `tests/reading_soundness/w3b1_mk_exceptions.py`(生成器)と `w3b1_expect_exceptions.json`(申告)と `tests/test_semantic_read_w3b1_r4.py`(新テストに 1 件): 生成器が変更記録 3 の質問(今の表のまま門だけを外せば期待を満たすか)を先に問い、変更記録 1 の質問は、それが否のときだけ原因にする(H125)。`W3B1-S4-003`・`004`・`013`・`021` の `why` が変更記録 1 から変更記録 3 に変わった(`kind`・`observed`・件数 53・既存の 49 件はバイト単位で同じ。`w3b1_expect_exceptions_changes_r4.diff` は取り直し、`^<` の行 0)。新テスト `test_the_declared_rows_stopped_by_the_derived_gate_name_table_change_record_3_as_the_cause_and_not_record_1` は、申告の中の「出力の 2 番目の理由が派生の門」の行の `why` が変更記録 3 を名指しし変更記録 1 を名指ししないことを確かめる(取り違えていた直前の申告ファイルでは 4 行とも落ちる)。期待・出力の固定は変えていない。
+
+## 10A. W5-a（攻撃役の命中への対応。K62〜。§10 の W3-b1 の K62〜 とは別の系列）
 
 攻撃役（codex gpt-6-luna xhigh）が出した、実行して失敗を確認した反例のうち、読解の入口に関する 5 件（W1-a3 の H1〜H4。H2 の「unsupported があるのに readable」は別の件として数える）を直した。
 この節は**追記だけ**で、既存の節は書き換えない。撤回は次の 2 つ: **§4.6 の規則 2c（動作主の句が無く、主語が人でないことの正の証拠だけで passive）と §9.2 の 6 の (3) は K62 で撤回**。
