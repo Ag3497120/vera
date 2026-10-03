@@ -1,0 +1,226 @@
+{
+ "inputs_in_group": 241,
+ "by_particle_of_the_unsupported_reason": {
+  "ni": 120,
+  "de": 121
+ },
+ "with_read_columns": true,
+ "groups": [
+  {
+   "count": 56,
+   "readable_before": 0,
+   "readable_after": 30,
+   "first_inputs": [
+    "兄が校庭で走った。",
+    "弟が歩道で走った。",
+    "姉が森林で歩いた。"
+   ],
+   "key": "ambiguous case role: で | case:で:place|means | in_reader_list=False | predicate=DECIDED/P_MOVE"
+  },
+  {
+   "count": 42,
+   "readable_before": 0,
+   "readable_after": 23,
+   "first_inputs": [
+    "兄が校舎で名乗った。",
+    "弟がホテルで断った。",
+    "母がアパートで断った。"
+   ],
+   "key": "ambiguous case role: で | case:で:place|means | in_reader_list=False | predicate=DECIDED/P_COMMUNICATE"
+  },
+  {
+   "count": 35,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "母が野菜をスープに変えた。",
+    "母が息子に作文を直した。",
+    "父が靴を次男に直した。"
+   ],
+   "key": "ambiguous case role: に | case:に:result|beneficiary | in_reader_list=False | predicate=DECIDED/P_CHANGE"
+  },
+  {
+   "count": 20,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "祖母が昔話を孫娘に言い換えた。",
+    "兄が文章を若旦那に訳した。",
+    "祖父が手順を家来に言い換えた。"
+   ],
+   "key": "ambiguous case role: に | case:に:result|beneficiary | in_reader_list=False | predicate=DECIDED/P_COMMUNICATE"
+  },
+  {
+   "count": 19,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "母は釣りに行った。",
+    "弟は見学に来た。",
+    "叔父は荷造りに戻った。"
+   ],
+   "key": "ambiguous case role: に | case:に:goal|purpose|addressee | in_reader_list=True | predicate=DECIDED/P_MOVE"
+  },
+  {
+   "count": 17,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "APIサーバーがリクエストをJSONに変換した。",
+    "担当者が書類を電子データに変換した。",
+    "看護師が患者に資料を要約した。"
+   ],
+   "key": "ambiguous case role: に | case:に:result|beneficiary | in_reader_list=False | predicate=UNKNOWN/UNKNOWN"
+  },
+  {
+   "count": 13,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "工場が鉄を部品に仕上げた。",
+    "祖母が羽織を長男に仕立てた。",
+    "職人が着物を新郎に仕立てた。"
+   ],
+   "key": "ambiguous case role: に | case:に:result|beneficiary | in_reader_list=False | predicate=DECIDED/P_CREATE"
+  },
+  {
+   "count": 10,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "来週、農家が畑で麦を刈る。",
+    "兄が川で窓を洗った。",
+    "母が森で靴を洗った。"
+   ],
+   "key": "ambiguous case role: で | case:で:place|means | in_reader_list=False | predicate=DECIDED/P_ACT"
+  },
+  {
+   "count": 5,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "猫が校舎で眠った。",
+    "犬が基地で眠った。",
+    "母が隠れ家で休んだ。"
+   ],
+   "key": "ambiguous case role: で | case:で:place|means | in_reader_list=False | predicate=DECIDED/P_EXIST"
+  },
+  {
+   "count": 5,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "弟が壁を灰色に塗った。",
+    "職人が柱を黒に塗った。",
+    "店主が看板を緑に塗った。"
+   ],
+   "key": "ambiguous case role: に | case:に:location|goal|time | in_reader_list=False | predicate=DECIDED/P_ACT"
+  },
+  {
+   "count": 4,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "技師が設計図を模型に起こした。",
+    "係が写真を四つの山にまとめた。",
+    "先生が黒板に字を書いた。"
+   ],
+   "key": "ambiguous case role: に | case:に:location|goal|time | in_reader_list=False | predicate=DECIDED/P_CREATE"
+  },
+  {
+   "count": 3,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "母が子供を庭に走らせた。",
+    "店長がアルバイトにシフトを調整した。",
+    "村が町に発展した。"
+   ],
+   "key": "ambiguous case role: に | case:に:location|goal|time | in_reader_list=False | predicate=UNKNOWN/UNKNOWN"
+  },
+  {
+   "count": 2,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "兄が校庭で絵を描いた。",
+    "姉が神社で手紙を書いた。"
+   ],
+   "key": "ambiguous case role: で | case:で:place|means | in_reader_list=False | predicate=DECIDED/P_CREATE"
+  },
+  {
+   "count": 2,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "妹が校庭で泣いた。",
+    "弟が神社で笑った。"
+   ],
+   "key": "ambiguous case role: で | case:で:place|means | in_reader_list=False | predicate=DECIDED/P_EMOTION"
+  },
+  {
+   "count": 2,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "夕方に、母が居間で手紙を読んだ。",
+    "兄が基地で絵を見た。"
+   ],
+   "key": "ambiguous case role: で | case:で:place|means | in_reader_list=False | predicate=DECIDED/P_PERCEIVE"
+  },
+  {
+   "count": 1,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "窓が風で開いた。"
+   ],
+   "key": "ambiguous case role: で | case:で:place|means | in_reader_list=False | predicate=DECIDED/P_CHANGE"
+  },
+  {
+   "count": 1,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "試合は雨で延期された。"
+   ],
+   "key": "ambiguous case role: で | case:で:place|means | in_reader_list=False | predicate=UNKNOWN/UNKNOWN"
+  },
+  {
+   "count": 1,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "祖母が襖を白に張り替えた。"
+   ],
+   "key": "ambiguous case role: に | case:に:location|goal|time | in_reader_list=False | predicate=DECIDED/P_CHANGE"
+  },
+  {
+   "count": 1,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "艦隊に出動が命じられた。"
+   ],
+   "key": "ambiguous case role: に | case:に:location|goal|time | in_reader_list=False | predicate=DECIDED/P_COMMUNICATE"
+  },
+  {
+   "count": 1,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "先生が実際に山へ登った。"
+   ],
+   "key": "ambiguous case role: に | case:に:location|goal|time | in_reader_list=False | predicate=DECIDED/P_MOVE"
+  },
+  {
+   "count": 1,
+   "readable_before": 0,
+   "readable_after": 0,
+   "first_inputs": [
+    "祖父が孫に名前を選んだ。"
+   ],
+   "key": "ambiguous case role: に | case:に:result|beneficiary | in_reader_list=False | predicate=DECIDED/P_COGNITION"
+  }
+ ]
+}

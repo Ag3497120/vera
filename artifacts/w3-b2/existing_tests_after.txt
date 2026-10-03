@@ -1,0 +1,59 @@
+.......................F................F................F.............. [  2%]
+........................................................................ [  5%]
+........................................................................ [  8%]
+..............................................F......................... [ 11%]
+........................................................................ [ 14%]
+........................................................................ [ 16%]
+........................................................................ [ 19%]
+........................................................................ [ 22%]
+........................................................................ [ 25%]
+........................................................................ [ 28%]
+........................................................................ [ 31%]
+........................................................................ [ 33%]
+........................................................................ [ 36%]
+........................................................................ [ 39%]
+........................................................................ [ 42%]
+........................................................................ [ 45%]
+........................................................................ [ 47%]
+........................................................................ [ 50%]
+........................................................................ [ 53%]
+........................................................................ [ 56%]
+........................................................................ [ 59%]
+........................................................................ [ 62%]
+........................................................................ [ 64%]
+........................................................................ [ 67%]
+........................................................................ [ 70%]
+........................................................................ [ 73%]
+........................................................................ [ 76%]
+........................................................................ [ 78%]
+........................................................................ [ 81%]
+........................................................................ [ 84%]
+........................................................................ [ 87%]
+........................................................................ [ 90%]
+........................................................................ [ 93%]
+........................................................................ [ 95%]
+........................................................................ [ 98%]
+................................                                         [100%]
+=================================== FAILURES ===================================
+E   AssertionError: ('verantyx.semantic_reader', ['_placement_answer_problems', 'placement_fit', 'placement_type', 'predicate_frame'])
+    assert {'_placement_...dicate_frame'} <= {'_placement_...acement_type'}
+      
+      Extra items in the left set:
+      'predicate_frame'
+      'placement_fit'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b1.py:243: AssertionError: ('verantyx.semantic_reader', ['_placement_answer_problems', 'placement_fit', 'placement_type', 'predicate_frame'])
+E   AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '歩く', 'roles': {'agent': '猫', 'goal': '庭'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+    assert True is False
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b1.py:80: AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '歩く', 'roles': {'agent': '猫', 'goal': '庭'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E   AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '書く', 'roles': {'agent': '母', 'patient': '手紙', 'time': '夜'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+    assert True is False
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b1.py:80: AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '書く', 'roles': {'agent': '母', 'patient': '手紙', 'time': '夜'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E   AssertionError: [{'predicate': '読む', 'roles': {'agent': '弟', 'patient': '本', 'time': '冬'}, 'polarity': '+', 'tense': 'past', ...}]
+    assert True is False
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b1.py:480: AssertionError: [{'predicate': '読む', 'roles': {'agent': '弟', 'patient': '本', 'time': '冬'}, 'polarity': '+', 'tense': 'past', ...}]
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w3b1.py::test_only_the_gate_and_the_query_adapter_read_the_fields_of_an_answer
+FAILED tests/test_semantic_read_w3b1.py::test_path_u_abstains_with_the_typed_reason_of_the_first_decision_that_fails[over13-PLACEMENT_MULTIPLE:\u304c:\u732b]
+FAILED tests/test_semantic_read_w3b1.py::test_path_s4_registered_unread_constructions[\u6bcd\u304c\u3053\u306e\u591c\u3001\u624b\u7d19\u3092\u66f8\u3044\u305f\u3002-PLACEMENT_PART_NOT_ISOLATED]
+FAILED tests/test_semantic_read_w3b1.py::test_every_row_of_the_new_data_with_the_fixture[W3B1-S4-084]
+4 failed, 2548 passed in 14.48s

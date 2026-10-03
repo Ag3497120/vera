@@ -1,0 +1,43 @@
+--- prop_orig/tests/test_semantic_read_w3b1.py	2026-10-03 21:45:19
++++ prop2/tests/test_semantic_read_w3b1.py	2026-10-03 21:45:36
+@@ -239,7 +239,8 @@
+             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and pat.search(ast.get_source_segment(src, node) or ''):
+                 offenders.add(node.name)
+         # nested functions are inside their parents' segments, so only top-level and method names matter here
+-        allowed = {'placement_type'}
++        # W3-b2 (proposal): the gate for a SET of allowed types and the reader of the frame are two more readers of the fields of an answer (docs 10B K95)
++        allowed = {'placement_type', 'placement_fit', 'predicate_frame'}
+         assert offenders <= allowed | {'_placement_answer_problems'}, (module.__name__, sorted(offenders))
+     assert 'placement_type' in {n.name for n in ast.walk(ast.parse(Path(R.__file__).read_text(encoding='utf-8'))) if isinstance(n, ast.FunctionDef)}
+ 
+@@ -307,7 +308,8 @@
+     ({'庭': F.bare('UNPLACED')}, 'PLACEMENT_UNPLACED:へ:庭'),
+     ({'庭': F.bare('NO_PLACEMENT', 'MISSING')}, 'PLACEMENT_NO_PLACEMENT:MISSING:へ:庭'),
+     ({'猫': F.answer('PLACE')}, 'PLACEMENT_TYPE_MISMATCH:P_MOVE:が:PLACE'),
+-    ({'猫': F.answer(['ANIMAL', 'PERSON'])}, 'PLACEMENT_MULTIPLE:が:猫'),
++    # W3-b2 (proposal): [ANIMAL, PERSON] is now READ (every candidate is in the agent's set: K95); a split with a candidate outside stays refused
++    ({'猫': F.answer(['ANIMAL', 'ABSTRACT'])}, 'PLACEMENT_MULTIPLE:が:猫'),
+     ({'猫': F.bare('UNKNOWN')}, 'PLACEMENT_UNKNOWN:が:猫'),
+ ])
+ def test_path_u_abstains_with_the_typed_reason_of_the_first_decision_that_fails(over, prefix):
+@@ -389,7 +391,8 @@
+ 
+ @pytest.mark.parametrize('text,prefix', [
+     ('母がそっと手紙を書いた。', 'PLACEMENT_PART_NOT_NP:副詞'),
+-    ('母がこの夜、手紙を書いた。', 'PLACEMENT_PART_NOT_ISOLATED'),
++    # W3-b2 (proposal): この is now an expressed mark (K97 D1): the unread one of the question word is どの
++    ('母がどの夜、手紙を書いた。', 'PLACEMENT_PART_NOT_ISOLATED'),
+     ('そして母が夜、手紙を書いた。', 'PLACEMENT_PART_MARKER:conn'),
+     ('母が夜だけ手紙を書いた。', None),
+     ('母が三回、手紙を書いた。', None),
+--- prop_orig/tests/reading_soundness/ja_r8.jsonl	2026-10-03 21:45:19
++++ prop2/tests/reading_soundness/ja_r8.jsonl	2026-10-03 21:45:36
+@@ -191,7 +191,7 @@
+ {"id": "W3B1-S4-081", "lang": "ja", "behavior": "abstain", "input": "兄が夜、窓を開けた。弟が夜、窓を閉めた。", "text": "兄が夜、窓を開けた。弟が夜、窓を閉めた。", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "path": "S4", "pred_type": null, "construction": "two sentences", "entry_expect": "abstain", "expect_reason_prefix": null, "note": "2 文。入力が 1 文でないので引き金に当たらない。"}
+ {"id": "W3B1-S4-082", "lang": "ja", "behavior": "abstain", "input": "母が冬、手紙を書いた。姉が冬、手紙を読んだ。", "text": "母が冬、手紙を書いた。姉が冬、手紙を読んだ。", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "path": "S4", "pred_type": null, "construction": "two sentences", "entry_expect": "abstain", "expect_reason_prefix": null, "note": "2 文。"}
+ {"id": "W3B1-S4-083", "lang": "ja", "behavior": "read", "input": "兄がこの夜、窓を開けた。", "text": "兄がこの夜、窓を開けた。", "expect": {"readable": true, "clauses": [{"predicate": "開ける", "roles": {"agent": "兄", "time": "夜", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "must_not": [{"clause": 0, "role": "place", "value": "夜"}]}, "path": "S4", "pred_type": null, "construction": "time:連体詞+名詞", "entry_expect": "abstain", "expect_reason_prefix": "PLACEMENT_PART_NOT_ISOLATED", "note": "部分の直前に覆われない連体詞がある。修飾を落とさない(指示の連体詞を外す規則は役割の句の中だけ)。"}
+-{"id": "W3B1-S4-084", "lang": "ja", "behavior": "read", "input": "弟がその冬、本を読んだ。", "text": "弟がその冬、本を読んだ。", "expect": {"readable": true, "clauses": [{"predicate": "読む", "roles": {"agent": "弟", "time": "冬", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "must_not": [{"clause": 0, "role": "place", "value": "冬"}]}, "path": "S4", "pred_type": null, "construction": "time:連体詞+名詞", "entry_expect": "abstain", "expect_reason_prefix": "PLACEMENT_PART_NOT_ISOLATED", "note": "部分の直前に覆われない連体詞がある。修飾を落とさない(指示の連体詞を外す規則は役割の句の中だけ)。"}
++{"id": "W3B1-S4-084", "lang": "ja", "behavior": "read", "input": "弟がその冬、本を読んだ。", "text": "弟がその冬、本を読んだ。", "expect": {"readable": true, "clauses": [{"predicate": "読む", "roles": {"agent": "弟", "time": "冬", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "must_not": [{"clause": 0, "role": "place", "value": "冬"}]}, "path": "S4", "pred_type": null, "construction": "time:連体詞+名詞", "entry_expect": "read", "expect_reason_prefix": null, "note": "部分の直前に覆われない連体詞がある。修飾を落とさない(指示の連体詞を外す規則は役割の句の中だけ)。"}
+ {"id": "W3B1-S4-085", "lang": "ja", "behavior": "read", "input": "母があの夜、手紙を書いた。", "text": "母があの夜、手紙を書いた。", "expect": {"readable": true, "clauses": [{"predicate": "書く", "roles": {"agent": "母", "time": "夜", "patient": "手紙"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "must_not": [{"clause": 0, "role": "place", "value": "夜"}]}, "path": "S4", "pred_type": null, "construction": "time:連体詞+名詞", "entry_expect": "abstain", "expect_reason_prefix": "PLACEMENT_PART_NOT_ISOLATED", "note": "部分の直前に覆われない連体詞がある。修飾を落とさない(指示の連体詞を外す規則は役割の句の中だけ)。"}
+ {"id": "W3B1-S4-086", "lang": "ja", "behavior": "read", "input": "兄が川で窓を洗った。", "text": "兄が川で窓を洗った。", "expect": {"readable": true, "clauses": [{"predicate": "洗う", "roles": {"agent": "兄", "place": "川", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "must_not": [{"clause": 0, "role": "instrument", "value": "川"}]}, "path": "S4", "pred_type": null, "construction": "place:で:PLACE (reader says ambiguous)", "entry_expect": "abstain", "expect_reason_prefix": null, "note": "読解器は で の句を場所|手段で割れると言う(unsupported ambiguous case role: で)。引き金の外。型で上書きしない。"}
+ {"id": "W3B1-S4-087", "lang": "ja", "behavior": "read", "input": "母が森で靴を洗った。", "text": "母が森で靴を洗った。", "expect": {"readable": true, "clauses": [{"predicate": "洗う", "roles": {"agent": "母", "place": "森", "patient": "靴"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "must_not": [{"clause": 0, "role": "instrument", "value": "森"}]}, "path": "S4", "pred_type": null, "construction": "place:で:PLACE (reader says ambiguous)", "entry_expect": "abstain", "expect_reason_prefix": null, "note": "同上。"}

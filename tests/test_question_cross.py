@@ -266,7 +266,7 @@ BASE_FUNCTIONS = {    # sha256 of the source text of each function in the base c
     '_refusal': '38eb3788267daf33badd1a2ae111ed1b556c353feb875d434b0b16999ce7d32e',
     '_answer': '5b3b9b5e074df602db8afc926a42e2bb0326776184bb603f94dc9639030ce5ed',
     '_placement_query': 'df3693b40146942ed53f442af2ea1343d4b64ae8b5b8de188558a728ca10d9e8',
-    '_typed_reread_ja': 'fd2b60731abaf1b911bb2e33c55069b314c1507296fcaeede9550b5f857e829f',
+    '_typed_reread_ja': '38d3884caca141daa72c915b669337cef2c8cac9c7366c8dce02c954f0fe9c17',  # integration: W3-b2 changed this function (typed reading stage 2), not W3-c2
     '_clause_en': '73694bde0e09aeef83b89ccb1500e2a7cc455f3f05c3fa145a4d6c1c668ac51d',
 }
 BASE_CONSTANTS = {

@@ -1,0 +1,27 @@
+- 新データ(`w3b2_frame.jsonl`・`w3b2_multiple.jsonl`・`w3b2_determiner.jsonl`・`w3b2_no.jsonl`。凍結 2026-10-03 21:22:52 +0900): frame rows=86 read=36 abstain=50; multiple rows=62 read=30 abstain=32; determiner rows=74 read=37 abstain=37; no rows=62 read=35 abstain=27。(`data_counts.txt`)
+- 新データ 284 行を入口(配置 r6 の実物)に通した判定: correct 113・abstain 171・misread 0・incomplete 0・UNJUDGED 0。(`data_entry_check.json`)
+- ファイル別の判定: determiner: abstain 40 correct 34; frame: abstain 54 correct 32; multiple: abstain 32 correct 30; no: abstain 45 correct 17。
+- 新データの期待(凍結)を満たさない行: `entry_expect` 25 行・`w3b2_expect` 37 行。うち宣言ずみ(`w3b2_expect_exceptions.json`。読解器の事実で説明できる行)は 25 行・37 行、宣言なしは 0 行・0 行。(`data_entry_check.txt`)
+- 宣言した 37 行の理由(読解器だけを見た事実 `w3b2_common.exception_kind`): reader_gives_no_predicate_clause 7 行・reader_reads_a_second_clause 12 行・reader_reads_it_alone 1 行・reader_reads_the_phrase_as_two_roles 13 行・reader_unsupported_beyond_the_registered_set 4 行。宣言した行で新しい経路が読んだ行は 0、誤読は 0。
+- 固定の答え(`w3b2_placement_fixture.json`)で流した結果と実物で流した結果は、`mode=` の行を除いて一致した: FIXTURE_EQUALS_LIVE。(`fixture_equals_live.txt`)
+- W3-b1(基点 `3b31258`、配置 r6)との差(`w3b2_delta.py`。入力 3183): same=3070 newly_read=113 frame_stopped=0 read_to_abstain_other=0 changed=0 refusal_changed=0 error_changed=0。(`delta_summary.txt`)
+- 新しく読めた文の判定: {"CORRECT": 113}。出所別: {"ja_r8.jsonl|newly_read": 1, "w3b2_determiner.jsonl|newly_read": 34, "w3b2_frame.jsonl|newly_read": 32, "w3b2_multiple.jsonl|newly_read": 30, "w3b2_no.jsonl|newly_read": 16}。
+- 公開の入力(`artifacts/w3-b1/entry_inputs.txt` の 2,899 文)で新しく読めた文: 1。(`delta.jsonl` の `newly_read` のうち出所が `w3b2_` で始まらないもの)
+- 枠で読めなくなった文(`frame_stopped`): 0。他の差(`read_to_abstain_other`・`changed`・`refusal_changed`・`error_changed`): 0 のみ(`delta_summary.txt` の 1 行目の数)。
+- 配置なし: 入口の出力は基点と一致(`NO_PLACEMENT_SAME`)、読解器の出力は基点と一致(`READER_UNCHANGED`、2217 文)、凍結データの照合 `sentences 500 changed 0 misread 0`、a3 `A3_SAME`。
+- 推定・割れの偽物(R3): estimated newly_readable 0 readable_changed 0・multiple newly_readable 0 readable_changed 0。(`direct_only.txt`)
+- B1 の自作見本 3 本(配置 r6 の実物): rows=118・verdicts={"abstain": 50, "correct": 68}・misread=0・incomplete=0。(`b1_fixtures_r6.txt`)
+- 格の曖昧(で・に)だけで棄権した公開の入力(1 文・1 節): 前 122 文(で 6・に 116)、新しい経路で読めた数 0。(`census_de_ni.json`・`census_after.json`)
+- 同じ数えを新データを足した入力で: 241 文(で 121・に 120)、新しい経路で読めた数 53(うち で の曖昧 53)。
+- 入力 3183 文(配置 r6)での型の段の数: inputs=3183 with_a_typed_step=656 / triggers (w3b1/w3b2)={"None/None": 2527, "None/U3": 121, "S4/None": 67, "S4/S4": 155, "U/None": 48, "U/U": 265}。
+- 型の段の W3-b2 の結果(理由の最初の部分ごと): {"PLACEMENT_DETERMINER_ROLE_UNTYPED": 8, "PLACEMENT_DIRECT_VIA_GENERATED": 7, "PLACEMENT_DUPLICATE_ROLE": 11, "PLACEMENT_ESTIMATED_GENERATED": 84, "PLACEMENT_FRAME_NOT_READ": 74, "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED": 4, "PLACEMENT_FRAME_TYPE_NOT_CONFIRMED": 2, "PLACEMENT_HEAD_RELATIONAL": 6, "PLACEMENT_MULTIPLE": 45, "PLACEMENT_NOT_PREDICATE_TYPE": 1, "PLACEMENT_PART_MARKER": 7, "PLACEMENT_PART_NONE": 12, "PLACEMENT_PART_NOT_FOLLOWED": 3, "PLACEMENT_PART_NOT_ISOLATED": 9, "PLACEMENT_PART_NOT_NP": 17, "PLACEMENT_PART_NO_ROLE": 3, "PLACEMENT_PART_PARTICLE": 2, "PLACEMENT_PREDICATE_POSSIBLY_DERIVED": 1, "PLACEMENT_SLOT_EVIDENCE_ONLY": 60, "PLACEMENT_TYPE_MISMATCH": 27, "PLACEMENT_UNKNOWN": 25, "PLACEMENT_UNPLACED": 15, "PLACEMENT_VOICE_NOT_ACTIVE": 5, "PLACEMENT_W3B2_NOT_TRIGGERED": 1421, "READ": 113}。
+- 配置 r6 で述語の枠が確認済みの語: 48 語(P_COMMUNICATE 38・P_MOVE 10。枠に入っている助詞: から 5・が 4・に 1・へ 6・を 38)。(`confirmed_frames.json`)
+- 全体テスト(`pytest_full.txt` の最終行): 120 failed, 11267 passed, 45 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 327.10s (0:05:27)。基線(`dev_3b31258_failures.txt`)に無い失敗 5 件、基線にあって今は通る 0 件。(`pytest_new_failures.txt`・`pytest_fixed_vs_baseline.txt`)
+- 既存の凍結テスト・データとの衝突: `existing_tests_after.txt` の失敗 4 件(`w3b1_conflicts.md`: (A) 3・(A2) 1・(B) 0・(C) 0)。
+- 決め打ち検査(`w3b2_check_hardcode.py`): added lines: 435、PROPER/NUMERIC (must be empty): []、ENGLISH NAMES (must be empty): []。(`check_hardcode.txt`)
+- 群 `event_cross_sentences`(配置 r6 の実物を lookup にした十字): 読めた文 69・型の経路の節を持つ文 0・腕 171・AGREE 35・AGREE_ALL_CANDIDATES 0・DISAGREE 0・NOT_CHECKED 136・`flags.determiner` を持つ充填物 0。(`events_r6.json`)
+- 群 `new_data`(配置 r6 の実物を lookup にした十字): 読めた文 68・型の経路の節を持つ文 56・腕 177・AGREE 103・AGREE_ALL_CANDIDATES 0・DISAGREE 0・NOT_CHECKED 74・`flags.determiner` を持つ充填物 1。(`events_r6.json`)
+- 群 `rest`(配置 r6 の実物を lookup にした十字): 読めた文 198・型の経路の節を持つ文 0・腕 479・AGREE 155・AGREE_ALL_CANDIDATES 2・DISAGREE 4・NOT_CHECKED 318・`flags.determiner` を持つ充填物 0。(`events_r6.json`)
+- 群 `w3b2_data`(配置 r6 の実物を lookup にした十字): 読めた文 113・型の経路の節を持つ文 112・腕 264・AGREE 168・AGREE_ALL_CANDIDATES 26・DISAGREE 0・NOT_CHECKED 70・`flags.determiner` を持つ充填物 34。(`events_r6.json`)
+- `AGREE_ALL_CANDIDATES` の腕の全件数: 28、`DISAGREE` の全件数: 4。全件の文・役割・値・型は `events_r6_summary.txt`。
+- `--events` なしの出力の一致(E1。`e1.txt`): E1_SAME・E1_EQUALS_BASE_COMMIT_RUN・E1_SAME_WITH_PLACEMENT。

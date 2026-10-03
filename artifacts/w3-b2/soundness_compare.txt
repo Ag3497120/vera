@@ -1,0 +1,3 @@
+keys of a sentence: ['abstain_ok', 'clauses', 'escalated', 'false_pass', 'gold_kind', 'id', 'result', 'targets_all_pass', 'text', 'type', 'unread']
+sentences 500 changed 0 misread 0
+whole file equal apart from tree paths: True

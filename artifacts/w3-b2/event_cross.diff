@@ -1,0 +1,85 @@
+diff --git a/verantyx/event_cross.py b/verantyx/event_cross.py
+index 48b023f..ace2015 100644
+--- a/verantyx/event_cross.py
++++ b/verantyx/event_cross.py
+@@ -47,6 +47,9 @@ CENTER_KEYS: Tuple[str, ...] = tuple(k for k in CLAUSE_KEYS if k != 'roles')
+ # They are NOT keys of the convention (CLAUSE_KEYS stays the table of docs/READING_CONVENTIONS.md 1.1): the cross accepts them and copies them to the
+ # provenance of the cross, never to its centre.
+ ENTRY_BASIS_KEYS: Tuple[str, ...] = ('predicate_basis', 'role_basis')
++# W3-b2: the other source field the entry writes on a clause of a type path: `role_flags` = {role: {"determiner": the demonstrative that stood before the filler}}. Not a key of the
++# convention either: the cross accepts it, checks its shape, and writes `flags['determiner']` of the filler of that role (it is not copied to the centre or to the provenance).
++ENTRY_FLAG_KEYS: Tuple[str, ...] = ('role_flags',)
+ 
+ # The noun type ids of the coarse placement, as named in the W3-a2 working tree on 2026-10-03 (its list is append-only). Kept here as strings
+ # because this module does not import the placement code (it asks a PlacementLookup). Not used to reject a type id the lookup returns.
+@@ -69,6 +72,8 @@ EXPECTED_TYPES: Dict[str, frozenset] = {
+ EXPECTED_TYPES_VERSION = '1'
+ 
+ VERDICTS: Tuple[str, ...] = ('AGREE', 'DISAGREE', 'NOT_CHECKED')
++# W3-b2: a verdict that exists beside the three, counted under its own key only when it occurs (a count without it has the form it always had).
++EXTRA_VERDICTS: Tuple[str, ...] = ('AGREE_ALL_CANDIDATES',)
+ NOT_CHECKED_REASONS: Tuple[str, ...] = (
+     'ARM_TIE', 'ROLE_NOT_IN_TABLE', 'LOOKUP_RESULT_INVALID', 'NO_PLACEMENT', 'UNKNOWN', 'UNPLACED',
+     'ESTIMATED_NEAR', 'ESTIMATED_GENERATED', 'MULTIPLE')
+@@ -203,7 +208,7 @@ def default_lookup(placement: Optional[str] = None) -> Any:
+ # ---------------------------------------------------------------------------------------------------------------------------------
+ @dataclass(frozen=True)
+ class TypeAgreement:
+-    verdict: str                       # AGREE | DISAGREE | NOT_CHECKED
++    verdict: str                       # AGREE | DISAGREE | NOT_CHECKED | AGREE_ALL_CANDIDATES (a split placement of which every type the role expects)
+     reason: Optional[str] = None       # one of NOT_CHECKED_REASONS when NOT_CHECKED, else None
+     expected: Optional[Tuple[str, ...]] = None
+     observed: Optional[Tuple[str, ...]] = None
+@@ -289,7 +294,7 @@ class CrossReading:
+             for arm in cross.arms.values():
+                 c['arms'] += 1
+                 if arm.kind == 'ARM_TIE': c['arm_ties'] += 1
+-                c['agreement'][arm.agreement.verdict] += 1
++                c['agreement'][arm.agreement.verdict] = c['agreement'].get(arm.agreement.verdict, 0) + 1     # an extra verdict gets its key at the end, when it first occurs
+                 if arm.agreement.verdict == 'NOT_CHECKED': c['not_checked_by_reason'][arm.agreement.reason] += 1
+         return c
+ 
+@@ -313,7 +318,11 @@ def _agreement(role: str, kind: str, place: Any) -> TypeAgreement:
+     if place.state in ('NO_PLACEMENT', 'UNKNOWN', 'UNPLACED'): return TypeAgreement('NOT_CHECKED', place.state)
+     if place.origin == 'estimated':
+         return TypeAgreement('NOT_CHECKED', 'ESTIMATED_NEAR' if place.estimate_basis == 'proximity' else 'ESTIMATED_GENERATED')
+-    if place.state == 'MULTIPLE': return TypeAgreement('NOT_CHECKED', 'MULTIPLE')
++    if place.state == 'MULTIPLE':
++        # W3-b2: a split placement is not a tie to break: when every candidate is a type the role expects, whichever it is the arm agrees. One candidate outside: not checked.
++        if all(t in EXPECTED_TYPES[role] for t in place.types):
++            return TypeAgreement('AGREE_ALL_CANDIDATES', None, tuple(sorted(EXPECTED_TYPES[role])), tuple(place.types))
++        return TypeAgreement('NOT_CHECKED', 'MULTIPLE')
+     # state DECIDED and origin direct (the invariants above leave no other case)
+     expected = tuple(sorted(EXPECTED_TYPES[role]))
+     observed = tuple(place.types)
+@@ -360,7 +369,7 @@ def _check(read_output: Any) -> List[str]:
+         for key in CLAUSE_REQUIRED_KEYS:
+             if key not in clause: bad.append('MISSING_FIELD:%s' % key)
+         for key in clause:
+-            if key in ENTRY_BASIS_KEYS: continue
++            if key in ENTRY_BASIS_KEYS or key in ENTRY_FLAG_KEYS: continue
+             if key not in CLAUSE_KEYS: bad.append('UNKNOWN_CLAUSE_KEY:%s' % (key,))
+         basis = clause.get('predicate_basis')
+         if 'predicate_basis' in clause and not (isinstance(basis, str) and basis.strip()): bad.append('ENTRY_BASIS_NOT_WELL_FORMED:predicate_basis')
+@@ -368,6 +377,12 @@ def _check(read_output: Any) -> List[str]:
+         if 'role_basis' in clause and not (isinstance(rbasis, Mapping) and rbasis and all(isinstance(k, str) and isinstance(v, str) and v.strip() for k, v in rbasis.items())):
+             bad.append('ENTRY_BASIS_NOT_WELL_FORMED:role_basis')
+         roles = clause.get('roles')
++        if 'role_flags' in clause:
++            flags = clause['role_flags']
++            if not (isinstance(flags, Mapping) and flags and isinstance(roles, Mapping) and all(
++                    isinstance(k, str) and k in roles and isinstance(v, Mapping) and set(v) == {'determiner'} and isinstance(v['determiner'], str) and v['determiner'].strip()
++                    for k, v in flags.items())):
++                bad.append('ENTRY_FLAGS_NOT_WELL_FORMED')
+         if 'roles' in clause and not isinstance(roles, Mapping): bad.append('ROLES_NOT_A_MAPPING'); continue
+         for name, value in (roles or {}).items():
+             if name not in ROLE_NAMES: bad.append('ROLE_NOT_IN_CONVENTION:%s' % (name,)); continue
+@@ -402,6 +417,8 @@ def _filler(value: str, role: str, clause: Mapping[str, Any], lookup: Any) -> Fi
+     quant = clause.get('quantifiers')
+     flags: Dict[str, Any] = {}
+     if isinstance(quant, Mapping) and role in quant: flags['quantifier'] = copy.deepcopy(quant[role])
++    marks = clause.get('role_flags')
++    if isinstance(marks, Mapping) and isinstance(marks.get(role), Mapping) and marks[role].get('determiner'): flags['determiner'] = marks[role]['determiner']      # W3-b2
+     return Filler(surface=value, head=value, head_basis='surface', place=_place_of(lookup, value), flags=flags)
+ 
+ 

@@ -1,0 +1,604 @@
+{
+ "note": "rows of the frozen data whose registered expectation the entry does not meet because of a fact about the reader of the base commit (kind). The data is not changed. Written by w3b2_mk_exceptions.py with the fixture of the placement r6.",
+ "kinds": [
+  "reader_gives_no_predicate_clause",
+  "reader_reads_a_second_clause",
+  "reader_reads_the_phrase_as_two_roles",
+  "reader_reads_it_alone",
+  "reader_unsupported_beyond_the_registered_set"
+ ],
+ "exceptions": [
+  {
+   "id": "W3B2-FRAME-015",
+   "input": "生徒が校庭で回った。",
+   "kind": "reader_gives_no_predicate_clause",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-018",
+   "input": "姉が神社で願った。",
+   "kind": "reader_gives_no_predicate_clause",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-022",
+   "input": "祖母が隠れ家で願った。",
+   "kind": "reader_gives_no_predicate_clause",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-036",
+   "input": "先生が夜にホテルで願った。",
+   "kind": "reader_gives_no_predicate_clause",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-FRAME-043",
+   "input": "姉がゲートで願った。",
+   "kind": "reader_gives_no_predicate_clause",
+   "entry_expect": "abstain",
+   "w3b2_expect": "PLACEMENT_MULTIPLE",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-MULTIPLE-032",
+   "input": "住民が神社で願った。",
+   "kind": "reader_gives_no_predicate_clause",
+   "entry_expect": "abstain",
+   "w3b2_expect": "PLACEMENT_MULTIPLE",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-007",
+   "input": "祖母がこの春休み、絵を描いた。",
+   "kind": "reader_reads_a_second_clause",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-008",
+   "input": "店員がその年明け、靴を磨いた。",
+   "kind": "reader_reads_a_second_clause",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-DETERMINER-011",
+   "input": "弟がこの大晦日、靴を磨いた。",
+   "kind": "reader_reads_a_second_clause",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-001",
+   "input": "兄が祖父の畑へ走った。",
+   "kind": "reader_reads_the_phrase_as_two_roles",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:祖父の畑",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-002",
+   "input": "母が先生の庭へ歩いた。",
+   "kind": "reader_reads_the_phrase_as_two_roles",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:先生の庭",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-003",
+   "input": "姉が叔父の村へ歩いた。",
+   "kind": "reader_reads_the_phrase_as_two_roles",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:叔父の村",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-004",
+   "input": "弟が隣人の港へ走った。",
+   "kind": "reader_reads_the_phrase_as_two_roles",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:隣人の港",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-005",
+   "input": "妹が友人の橋へ歩いた。",
+   "kind": "reader_reads_the_phrase_as_two_roles",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:友人の橋",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-006",
+   "input": "父が祖母の寺へ歩いた。",
+   "kind": "reader_reads_the_phrase_as_two_roles",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:祖母の寺",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-007",
+   "input": "祖父が母の台所へ歩いた。",
+   "kind": "reader_reads_the_phrase_as_two_roles",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_ESTIMATED_NEAR:へ:母の台所",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-008",
+   "input": "先生が生徒の玄関へ走った。",
+   "kind": "reader_reads_the_phrase_as_two_roles",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:生徒の玄関",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-009",
+   "input": "店員が店長の倉庫へ走った。",
+   "kind": "reader_reads_the_phrase_as_two_roles",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:店長の倉庫",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-013",
+   "input": "兄が友人の隣へ走った。",
+   "kind": "reader_reads_the_phrase_as_two_roles",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:友人の隣",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-014",
+   "input": "姉が祖父の横へ歩いた。",
+   "kind": "reader_reads_the_phrase_as_two_roles",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_UNKNOWN:へ:祖父の横",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_DUPLICATE_ROLE:goal",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-015",
+   "input": "母が先生の方へ歩いた。",
+   "kind": "reader_reads_it_alone",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "read",
+   "observed_verdict": "correct",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-027",
+   "input": "先生が島のホテルで願った。",
+   "kind": "reader_gives_no_predicate_clause",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": null,
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-028",
+   "input": "兄が校庭で弟の犬を呼んだ。",
+   "kind": "reader_unsupported_beyond_the_registered_set",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-031",
+   "input": "先生が国道で祖母の猫を呼んだ。",
+   "kind": "reader_unsupported_beyond_the_registered_set",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-032",
+   "input": "兄が去年の大晦日、窓を拭いた。",
+   "kind": "reader_reads_a_second_clause",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-033",
+   "input": "姉が学校の春休み、本を読んだ。",
+   "kind": "reader_reads_a_second_clause",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-034",
+   "input": "母が町の祝日、皿を洗った。",
+   "kind": "reader_reads_a_second_clause",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-035",
+   "input": "弟が去年の年明け、手紙を書いた。",
+   "kind": "reader_reads_a_second_clause",
+   "entry_expect": "read",
+   "w3b2_expect": "READ",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-036",
+   "input": "兄が友人の前へ走った。",
+   "kind": "reader_reads_the_phrase_as_two_roles",
+   "entry_expect": "abstain",
+   "w3b2_expect": "PLACEMENT_HEAD_RELATIONAL",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:前",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:前",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-037",
+   "input": "姉が祖父の後へ歩いた。",
+   "kind": "reader_reads_the_phrase_as_two_roles",
+   "entry_expect": "abstain",
+   "w3b2_expect": "PLACEMENT_HEAD_RELATIONAL",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": "U",
+    "w3b1": "PLACEMENT_MULTIPLE:へ:後",
+    "w3b2_trigger": "U",
+    "w3b2": "PLACEMENT_MULTIPLE:へ:後",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-044",
+   "input": "兄が夏の夕方、窓を拭いた。",
+   "kind": "reader_reads_a_second_clause",
+   "entry_expect": "abstain",
+   "w3b2_expect": "PLACEMENT_HEAD_RELATIONAL",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-045",
+   "input": "姉が春の夜、手紙を書いた。",
+   "kind": "reader_reads_a_second_clause",
+   "entry_expect": "abstain",
+   "w3b2_expect": "PLACEMENT_HEAD_RELATIONAL",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-046",
+   "input": "母が冬の休日、靴を磨いた。",
+   "kind": "reader_reads_a_second_clause",
+   "entry_expect": "abstain",
+   "w3b2_expect": "PLACEMENT_HEAD_RELATIONAL",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-047",
+   "input": "弟が秋の平日、本を読んだ。",
+   "kind": "reader_reads_a_second_clause",
+   "entry_expect": "abstain",
+   "w3b2_expect": "PLACEMENT_HEAD_RELATIONAL",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-059",
+   "input": "兄が校庭で友人の挨拶を断った。",
+   "kind": "reader_unsupported_beyond_the_registered_set",
+   "entry_expect": "abstain",
+   "w3b2_expect": "PLACEMENT_MULTIPLE",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-060",
+   "input": "姉が神社で先生の日程を断った。",
+   "kind": "reader_unsupported_beyond_the_registered_set",
+   "entry_expect": "abstain",
+   "w3b2_expect": "PLACEMENT_MULTIPLE",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  },
+  {
+   "id": "W3B2-NO-061",
+   "input": "友人の客が庭へ走った。",
+   "kind": "reader_reads_a_second_clause",
+   "entry_expect": "abstain",
+   "w3b2_expect": "PLACEMENT_MULTIPLE",
+   "observed_entry": "abstain",
+   "observed_verdict": "abstain",
+   "observed_explain": {
+    "w3b1_trigger": null,
+    "w3b1": null,
+    "w3b2_trigger": null,
+    "w3b2": "PLACEMENT_W3B2_NOT_TRIGGERED",
+    "frame": null
+   }
+  }
+ ]
+}

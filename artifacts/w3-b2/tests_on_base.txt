@@ -1,0 +1,307 @@
+FFFFF...FFFFFFFFFFFFFFFFFFFF.FFFFFFFFFF.FF......F..FFF...FF..FFFFFFFFFFF [ 61%]
+FF.F....FF.F.F....FFF...FF.FFFFFFFFFFFFFF.FF.                            [100%]
+=================================== FAILURES ===================================
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'W3B2_AMBIGUOUS_RULES'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:110: AttributeError: module 'verantyx.semantic_reader' has no attribute 'W3B2_AMBIGUOUS_RULES'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'W3B2_DEMONSTRATIVES'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:114: AttributeError: module 'verantyx.semantic_reader' has no attribute 'W3B2_DEMONSTRATIVES'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'W3B2_HEAD_RELATIONAL_POS3'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:119: AttributeError: module 'verantyx.semantic_reader' has no attribute 'W3B2_HEAD_RELATIONAL_POS3'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'W3B2_REASON_NAMES'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:124: AttributeError: module 'verantyx.semantic_reader' has no attribute 'W3B2_REASON_NAMES'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'W3B2_ROLE_BASIS_RE'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:130: AttributeError: module 'verantyx.semantic_reader' has no attribute 'W3B2_ROLE_BASIS_RE'
+E   AssertionError: assert [] == ['_typed_reread_ja']
+      
+      Right contains one more item: '_typed_reread_ja'
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:175: AssertionError: assert [] == ['_typed_reread_ja']
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'placement_fit'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:187: AttributeError: module 'verantyx.semantic_reader' has no attribute 'placement_fit'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'placement_fit'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:192: AttributeError: module 'verantyx.semantic_reader' has no attribute 'placement_fit'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'placement_fit'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:198: AttributeError: module 'verantyx.semantic_reader' has no attribute 'placement_fit'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'placement_fit'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:205: AttributeError: module 'verantyx.semantic_reader' has no attribute 'placement_fit'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'placement_fit'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:210: AttributeError: module 'verantyx.semantic_reader' has no attribute 'placement_fit'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'placement_fit'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:214: AttributeError: module 'verantyx.semantic_reader' has no attribute 'placement_fit'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'placement_fit'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:221: AttributeError: module 'verantyx.semantic_reader' has no attribute 'placement_fit'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:230: AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:238: AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:256: AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:256: AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:256: AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:256: AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:256: AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:256: AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:256: AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:256: AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:256: AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_frame'
+E   assert False is True
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:264: assert False is True
+E   IndexError: list index out of range
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:282: IndexError: list index out of range
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:303: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:303: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:303: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:303: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:303: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:303: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:303: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:312: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:325: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:338: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   assert False is True
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:352: assert False is True
+E   assert (False is True)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:383: assert (False is True)
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:411: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   assert True is False
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:428: assert True is False
+E   AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '走る', 'roles': {'agent': '会社', 'goal': '庭'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+    assert True is False
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:92: AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '走る', 'roles': {'agent': '会社', 'goal': '庭'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E   AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '走る', 'roles': {'agent': '猫', 'goal': '庭'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+    assert True is False
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:92: AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '走る', 'roles': {'agent': '猫', 'goal': '庭'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:469: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'no_phrase_head'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:501: AttributeError: module 'verantyx.semantic_reader' has no attribute 'no_phrase_head'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'no_phrase_head'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:501: AttributeError: module 'verantyx.semantic_reader' has no attribute 'no_phrase_head'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'no_phrase_head'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:501: AttributeError: module 'verantyx.semantic_reader' has no attribute 'no_phrase_head'
+E   assert False is True
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:530: assert False is True
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'typed_plan_u_w3b2_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:540: AttributeError: module 'verantyx.semantic_reader' has no attribute 'typed_plan_u_w3b2_ja'
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:554: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:554: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:563: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   assert (False is True)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:569: assert (False is True)
+E   assert False is True
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:576: assert False is True
+E   assert False is True
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:593: assert False is True
+E   assert False is True
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:606: assert False is True
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:620: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AssertionError: assert 'abstain' == 'correct'
+      
+      - correct
+      + abstain
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:635: AssertionError: assert 'abstain' == 'correct'
+E   AssertionError: dict_keys(['same_refusal', 'same_read'])
+    assert None
+     +  where None = <built-in method get of dict object at 0x1172a5bc0>('newly_read')
+     +    where <built-in method get of dict object at 0x1172a5bc0> = {'same_refusal': ['兄が校庭で走った。', '弟が歩道で走った。', '姉が森林で歩いた。', '妹が山頂で歩いた。', '母が神社で歩いた。', '父が国道で歩いた。', ...], 'same_read': ['母が先生の方へ歩いた。', '猫が庭へ走った。', '馬が森へ走った。', '鳥が島へ飛んだ。', '兄が村へ歩いた。', '弟が港へ走った。', ...]}.get
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:716: AssertionError: dict_keys(['same_refusal', 'same_read'])
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:723: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:749: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'W3B2_ROLE_BASIS_RE'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:769: AttributeError: module 'verantyx.semantic_reader' has no attribute 'W3B2_ROLE_BASIS_RE'
+E   AssertionError: W3B2-MULTIPLE-001
+    assert {'schema': 'v...ses': [], ...} == {'schema': 'v...ses': [], ...}
+      
+      Omitting 7 identical items, use -vv to show
+      Differing items:
+      {'abstain': {'kind': 'not_supported', 'reasons': ['RECIPIENT_TYPE_UNDETERMINED:走る', 'PLACEMENT_ESTIMATED_NEAR:predicate:走る']}} != {'abstain': {'kind': 'not_supported', 'reasons': ['RECIPIENT_TYPE_UNDETERMINED:走る']}}
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:814: AssertionError: W3B2-MULTIPLE-001
+E   AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2.py:823: AttributeError: module 'verantyx.semantic_read' has no attribute 'typed_explain_ja'
+E   AssertionError: assert ('NOT_CHECKED', 'MULTIPLE') == ('AGREE_ALL_CANDIDATES', None)
+      
+      At index 0 diff: 'NOT_CHECKED' != 'AGREE_ALL_CANDIDATES'
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:64: AssertionError: assert ('NOT_CHECKED', 'MULTIPLE') == ('AGREE_ALL_CANDIDATES', None)
+E   AssertionError: assert 'NOT_CHECKED' == 'AGREE_ALL_CANDIDATES'
+      
+      - AGREE_ALL_CANDIDATES
+      + NOT_CHECKED
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:92: AssertionError: assert 'NOT_CHECKED' == 'AGREE_ALL_CANDIDATES'
+E   AttributeError: module 'verantyx.event_cross' has no attribute 'EXTRA_VERDICTS'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:101: AttributeError: module 'verantyx.event_cross' has no attribute 'EXTRA_VERDICTS'
+E   AssertionError: assert ['AGREE', 'DI...'NOT_CHECKED'] == ['AGREE', 'DI...L_CANDIDATES']
+      
+      Right contains one more item: 'AGREE_ALL_CANDIDATES'
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:119: AssertionError: assert ['AGREE', 'DI...'NOT_CHECKED'] == ['AGREE', 'DI...L_CANDIDATES']
+E   AssertionError: assert {'AGREE': 0, ...T_CHECKED': 2} == {'AGREE': 0, ...ANDIDATES': 1}
+      
+      Omitting 2 identical items, use -vv to show
+      Differing items:
+      {'NOT_CHECKED': 2} != {'NOT_CHECKED': 1}
+      Right contains 1 more item:
+      {'AGREE_ALL_CANDIDATES': 1}
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:129: AssertionError: assert {'AGREE': 0, ...T_CHECKED': 2} == {'AGREE': 0, ...ANDIDATES': 1}
+E   AssertionError: assert 'INPUT_REJECTED' == 'CROSSED'
+      
+      - CROSSED
+      + INPUT_REJECTED
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:138: AssertionError: assert 'INPUT_REJECTED' == 'CROSSED'
+E   IndexError: tuple index out of range
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:147: IndexError: tuple index out of range
+E   AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+      
+        INPUT_REJECTED and 'ENTRY_FLAGS_NOT_WELL_FORMED' in ['UNKNOWN_CLAUSE_KEY:role_flags'])
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:158: AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+E   AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+      
+        INPUT_REJECTED and 'ENTRY_FLAGS_NOT_WELL_FORMED' in ['UNKNOWN_CLAUSE_KEY:role_flags'])
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:158: AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+E   AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+      
+        INPUT_REJECTED and 'ENTRY_FLAGS_NOT_WELL_FORMED' in ['UNKNOWN_CLAUSE_KEY:role_flags'])
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:158: AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+E   AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+      
+        INPUT_REJECTED and 'ENTRY_FLAGS_NOT_WELL_FORMED' in ['UNKNOWN_CLAUSE_KEY:role_flags'])
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:158: AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+E   AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+      
+        INPUT_REJECTED and 'ENTRY_FLAGS_NOT_WELL_FORMED' in ['UNKNOWN_CLAUSE_KEY:role_flags'])
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:158: AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+E   AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+      
+        INPUT_REJECTED and 'ENTRY_FLAGS_NOT_WELL_FORMED' in ['UNKNOWN_CLAUSE_KEY:role_flags'])
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:158: AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+E   AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+      
+        INPUT_REJECTED and 'ENTRY_FLAGS_NOT_WELL_FORMED' in ['UNKNOWN_CLAUSE_KEY:role_flags'])
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:158: AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+E   AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+      
+        INPUT_REJECTED and 'ENTRY_FLAGS_NOT_WELL_FORMED' in ['UNKNOWN_CLAUSE_KEY:role_flags'])
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:158: AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+E   AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+      
+        INPUT_REJECTED and 'ENTRY_FLAGS_NOT_WELL_FORMED' in ['UNKNOWN_CLAUSE_KEY:role_flags'])
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:158: AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+E   AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+      
+        INPUT_REJECTED and 'ENTRY_FLAGS_NOT_WELL_FORMED' in ['UNKNOWN_CLAUSE_KEY:role_flags'])
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:158: AssertionError: assert ('INPUT_REJECTED' == 'INPUT_REJECTED'
+E   IndexError: tuple index out of range
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:171: IndexError: tuple index out of range
+E   assert (False is True)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b2-S/tests/test_semantic_read_w3b2_events.py:190: assert (False is True)
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w3b2.py::test_the_ambiguous_rules_of_u3_are_the_two_of_the_docs
+FAILED tests/test_semantic_read_w3b2.py::test_the_demonstratives_are_the_three_of_the_ticket_and_not_the_question_word
+FAILED tests/test_semantic_read_w3b2.py::test_the_relational_pos3_are_the_two_of_the_docs
+FAILED tests/test_semantic_read_w3b2.py::test_the_reasons_of_the_docs_are_the_names_of_the_code_in_the_same_order
+FAILED tests/test_semantic_read_w3b2.py::test_the_role_basis_grammar_is_the_one_of_the_docs_and_accepts_exactly_the_four_forms
+FAILED tests/test_semantic_read_w3b2.py::test_the_functions_of_the_entry_that_are_not_the_typed_reread_are_the_base_commits
+FAILED tests/test_semantic_read_w3b2.py::test_fit_direct_inside_and_outside_the_allowed_set
+FAILED tests/test_semantic_read_w3b2.py::test_fit_a_split_answer_whose_every_candidate_is_allowed_is_all_candidates_in_alphabetical_order
+FAILED tests/test_semantic_read_w3b2.py::test_fit_a_split_answer_with_one_candidate_outside_is_the_reason_of_w3b1_with_the_same_text
+FAILED tests/test_semantic_read_w3b2.py::test_fit_an_estimated_split_is_the_estimated_reason_even_when_every_candidate_fits
+FAILED tests/test_semantic_read_w3b2.py::test_fit_a_split_answer_a_generated_definition_decided_is_not_used
+FAILED tests/test_semantic_read_w3b2.py::test_fit_an_adjunct_decided_only_by_role_distributions_is_not_used_split_or_not
+FAILED tests/test_semantic_read_w3b2.py::test_fit_the_other_reasons_are_the_reasons_of_the_gate
+FAILED tests/test_semantic_read_w3b2.py::test_predicate_frame_without_a_frame_status_or_not_confirmed_is_the_table_only
+FAILED tests/test_semantic_read_w3b2.py::test_predicate_frame_confirmed_gives_the_particles_and_the_types_as_sets
+FAILED tests/test_semantic_read_w3b2.py::test_predicate_frame_that_breaks_the_invariants_of_section_12_10_is_invalid[<lambda>-NAMESPACE_NOT_P]
+FAILED tests/test_semantic_read_w3b2.py::test_predicate_frame_that_breaks_the_invariants_of_section_12_10_is_invalid[<lambda>-NOT_DECIDED_DIRECT]
+FAILED tests/test_semantic_read_w3b2.py::test_predicate_frame_that_breaks_the_invariants_of_section_12_10_is_invalid[<lambda>-GEN_FRAME_NOT_IN_DECIDED_BY]
+FAILED tests/test_semantic_read_w3b2.py::test_predicate_frame_that_breaks_the_invariants_of_section_12_10_is_invalid[<lambda>-FRAME_NOT_A_MAPPING]
+FAILED tests/test_semantic_read_w3b2.py::test_predicate_frame_that_breaks_the_invariants_of_section_12_10_is_invalid[<lambda>-PARTICLE_NOT_CASE:\u307b\u304b]
+FAILED tests/test_semantic_read_w3b2.py::test_predicate_frame_that_breaks_the_invariants_of_section_12_10_is_invalid[<lambda>-TYPES_NOT_A_SORTED_LIST:\u3092_0]
+FAILED tests/test_semantic_read_w3b2.py::test_predicate_frame_that_breaks_the_invariants_of_section_12_10_is_invalid[<lambda>-TYPES_NOT_A_SORTED_LIST:\u3092_1]
+FAILED tests/test_semantic_read_w3b2.py::test_predicate_frame_that_breaks_the_invariants_of_section_12_10_is_invalid[<lambda>-TYPES_NOT_A_SORTED_LIST:\u3092_2]
+FAILED tests/test_semantic_read_w3b2.py::test_predicate_frame_that_breaks_the_invariants_of_section_12_10_is_invalid[<lambda>-FRAME_STATUS_UNEXPECTED]
+FAILED tests/test_semantic_read_w3b2.py::test_u3_reads_a_place_with_the_type_of_a_place_and_says_where_every_role_came_from
+FAILED tests/test_semantic_read_w3b2.py::test_u3_with_a_patient_of_a_type_the_table_holds_and_a_time_with_ni
+FAILED tests/test_semantic_read_w3b2.py::test_u3_does_not_read_a_place_that_is_not_a_place_in_the_registered_sense[\u6756-answer0-PLACEMENT_TYPE_MISMATCH]
+FAILED tests/test_semantic_read_w3b2.py::test_u3_does_not_read_a_place_that_is_not_a_place_in_the_registered_sense[\u7a93\u53e3-answer1-PLACEMENT_MULTIPLE]
+FAILED tests/test_semantic_read_w3b2.py::test_u3_does_not_read_a_place_that_is_not_a_place_in_the_registered_sense[\u5eca\u4e0b-answer2-PLACEMENT_SLOT_EVIDENCE_ONLY]
+FAILED tests/test_semantic_read_w3b2.py::test_u3_does_not_read_a_place_that_is_not_a_place_in_the_registered_sense[\u53d7\u4ed8-answer3-PLACEMENT_SLOT_EVIDENCE_ONLY]
+FAILED tests/test_semantic_read_w3b2.py::test_u3_does_not_read_a_place_that_is_not_a_place_in_the_registered_sense[\u30c6\u30e9\u30b9-answer4-PLACEMENT_DIRECT_VIA_GENERATED]
+FAILED tests/test_semantic_read_w3b2.py::test_u3_does_not_read_a_place_that_is_not_a_place_in_the_registered_sense[\u8535-answer5-PLACEMENT_ESTIMATED_GENERATED]
+FAILED tests/test_semantic_read_w3b2.py::test_u3_does_not_read_a_place_that_is_not_a_place_in_the_registered_sense[\u571f\u9593-answer6-PLACEMENT_UNPLACED]
+FAILED tests/test_semantic_read_w3b2.py::test_u3_does_not_read_when_the_predicate_is_not_of_a_type_the_table_reads_or_is_split
+FAILED tests/test_semantic_read_w3b2.py::test_u3_is_asked_only_for_the_two_registered_rules_and_asks_nothing_before_it_is_decided
+FAILED tests/test_semantic_read_w3b2.py::test_u3_does_not_override_a_role_the_reader_decided_with_another_name
+FAILED tests/test_semantic_read_w3b2.py::test_u_reads_a_split_agent_when_every_candidate_is_in_the_agents_set_and_says_so
+FAILED tests/test_semantic_read_w3b2.py::test_u3_reads_a_split_patient_when_every_candidate_is_in_the_tables_patient_set_and_not_when_one_is_outside
+FAILED tests/test_semantic_read_w3b2.py::test_d2_does_not_read_a_split_place_after_a_demonstrative
+FAILED tests/test_semantic_read_w3b2.py::test_a_sentence_w3b1_reads_is_stopped_when_the_confirmed_frame_has_no_such_particle
+FAILED tests/test_semantic_read_w3b2.py::test_a_sentence_w3b1_reads_is_stopped_when_the_type_is_not_in_the_frame_for_that_particle
+FAILED tests/test_semantic_read_w3b2.py::test_a_frame_that_breaks_the_invariants_stops_a_sentence_w3b1_reads_with_the_invalid_reason
+FAILED tests/test_semantic_read_w3b2.py::test_u3_with_a_confirmed_frame_that_has_no_de_is_not_read_and_one_with_a_wrong_type_for_ga_neither
+FAILED tests/test_semantic_read_w3b2.py::test_no_phrase_head_is_the_part_after_the_last_no_when_the_structure_is_a_noun_chain
+FAILED tests/test_semantic_read_w3b2.py::test_no_phrase_head_does_not_apply_without_the_structure
+FAILED tests/test_semantic_read_w3b2.py::test_no_phrase_head_names_the_relational_nouns_by_the_part_of_speech_not_by_a_word_list
+FAILED tests/test_semantic_read_w3b2.py::test_u_reads_x_no_y_by_the_type_of_the_head_and_writes_the_whole_phrase_as_the_value
+FAILED tests/test_semantic_read_w3b2.py::test_the_plan_of_w3b2_asks_the_head_of_x_no_y_and_never_the_whole_phrase
+FAILED tests/test_semantic_read_w3b2.py::test_u_does_not_read_a_phrase_whose_head_is_a_relational_noun_even_when_the_placement_says_place[\u524d-top0-by0-PLACEMENT_HEAD_RELATIONAL:\u526f\u8a5e\u53ef\u80fd]
+FAILED tests/test_semantic_read_w3b2.py::test_u_does_not_read_a_phrase_whose_head_is_a_relational_noun_even_when_the_placement_says_place[\u4e2d-PLACE-by1-PLACEMENT_HEAD_RELATIONAL:\u526f\u8a5e\u53ef\u80fd]
+FAILED tests/test_semantic_read_w3b2.py::test_a_head_that_the_placement_does_not_place_is_not_read_and_the_reason_is_the_gates
+FAILED tests/test_semantic_read_w3b2.py::test_u3_reads_a_place_x_no_y_by_the_head_which_the_reader_does_not_know
+FAILED tests/test_semantic_read_w3b2.py::test_s4_merges_two_runs_joined_by_one_no_into_one_part_and_types_it_by_its_head
+FAILED tests/test_semantic_read_w3b2.py::test_d1_a_demonstrative_before_a_time_part_is_dropped_from_the_value_and_written_as_a_mark
+FAILED tests/test_semantic_read_w3b2.py::test_d2_a_demonstrative_outside_the_span_of_a_role_the_reader_typed_is_a_mark_of_that_role_only_when_the_type_is_in_the_table
+FAILED tests/test_semantic_read_w3b2.py::test_d2_does_not_read_a_role_that_has_no_place_in_the_type_table_whatever_the_placement_says
+FAILED tests/test_semantic_read_w3b2.py::test_the_mark_does_not_change_what_b1_judges
+FAILED tests/test_semantic_read_w3b2.py::test_every_difference_from_w3b1_is_a_sentence_read_now_or_a_sentence_stopped_by_a_frame_on_all_the_data
+FAILED tests/test_semantic_read_w3b2.py::test_the_diagnosis_says_read_exactly_when_the_entry_reads_with_the_new_path_on_all_the_data
+FAILED tests/test_semantic_read_w3b2.py::test_the_new_data_rows_are_read_and_refused_as_registered_and_judged_correct_when_read
+FAILED tests/test_semantic_read_w3b2.py::test_every_output_of_the_new_data_has_the_registered_shape
+FAILED tests/test_semantic_read_w3b2.py::test_the_new_data_with_the_estimated_fake_reads_nothing_the_reader_did_not_read_alone
+FAILED tests/test_semantic_read_w3b2.py::test_the_new_path_is_reachable_from_the_default_entry_with_a_placement_object_and_the_diagnosis_has_no_effect_on_read
+FAILED tests/test_semantic_read_w3b2_events.py::test_a_split_placement_whose_every_type_the_role_expects_is_agree_all_candidates
+FAILED tests/test_semantic_read_w3b2_events.py::test_the_split_rule_is_decided_by_the_set_of_types_not_by_their_order_and_never_changes_the_arm
+FAILED tests/test_semantic_read_w3b2_events.py::test_verdicts_and_the_entry_keys_are_what_they_were_and_the_extra_verdict_is_apart
+FAILED tests/test_semantic_read_w3b2_events.py::test_counts_with_the_new_verdict_get_it_as_the_last_key_of_agreement_only
+FAILED tests/test_semantic_read_w3b2_events.py::test_a_clause_set_that_mixes_the_verdicts_counts_each_once
+FAILED tests/test_semantic_read_w3b2_events.py::test_role_flags_are_accepted_and_written_to_the_flags_of_the_filler_of_that_role_only
+FAILED tests/test_semantic_read_w3b2_events.py::test_the_flags_of_a_filler_that_has_a_quantifier_hold_both
+FAILED tests/test_semantic_read_w3b2_events.py::test_a_role_flags_of_a_bad_shape_is_refused_with_its_own_reason[bad0]
+FAILED tests/test_semantic_read_w3b2_events.py::test_a_role_flags_of_a_bad_shape_is_refused_with_its_own_reason[bad1]
+FAILED tests/test_semantic_read_w3b2_events.py::test_a_role_flags_of_a_bad_shape_is_refused_with_its_own_reason[bad2]
+FAILED tests/test_semantic_read_w3b2_events.py::test_a_role_flags_of_a_bad_shape_is_refused_with_its_own_reason[bad3]
+FAILED tests/test_semantic_read_w3b2_events.py::test_a_role_flags_of_a_bad_shape_is_refused_with_its_own_reason[bad4]
+FAILED tests/test_semantic_read_w3b2_events.py::test_a_role_flags_of_a_bad_shape_is_refused_with_its_own_reason[bad5]
+FAILED tests/test_semantic_read_w3b2_events.py::test_a_role_flags_of_a_bad_shape_is_refused_with_its_own_reason[bad6]
+FAILED tests/test_semantic_read_w3b2_events.py::test_a_role_flags_of_a_bad_shape_is_refused_with_its_own_reason[\u3053\u306e]
+FAILED tests/test_semantic_read_w3b2_events.py::test_a_role_flags_of_a_bad_shape_is_refused_with_its_own_reason[bad8]
+FAILED tests/test_semantic_read_w3b2_events.py::test_a_role_flags_of_a_bad_shape_is_refused_with_its_own_reason[None]
+FAILED tests/test_semantic_read_w3b2_events.py::test_the_provenance_of_the_cross_still_copies_only_the_two_basis_keys
+FAILED tests/test_semantic_read_w3b2_events.py::test_the_entry_output_with_a_demonstrative_and_a_split_agent_is_crossed_and_counted
+82 failed, 35 passed in 6.12s

@@ -45,6 +45,12 @@
 
 （2026-10-03 09:35 時点: 変更なし。出典: artifacts/w3-b/prereg.txt）
 
+1. **2026-10-03 21:07:46 +0900（`date '+%F %T %z'` の出力。W3-b2 の事前登録 `docs/READING_SOUNDNESS.md` §10B と同じ時刻で、この記録はその間に書いた）。W3-b2 の 3 つの変更。表の中身 `EXPECTED_TYPES` と `EXPECTED_TYPES_VERSION` は変えない（変えたのは表でなく、規則と欄）。**
+   - (1) 型一致の規則 6 を分ける。前: `state == MULTIPLE`（直接でも）→ `NOT_CHECKED(MULTIPLE)`。後: `state == MULTIPLE`（直接。推定は規則 5 で先に外れる）で、型が **すべて** 表の集合に入る → `AGREE_ALL_CANDIDATES`（`expected` は表の集合の辞書順、`observed` は型の辞書順。どの候補であっても期待に合う）、1 つでも外れれば `NOT_CHECKED(MULTIPLE)`。ほかの規則・順は変えない（役割が表に無い・腕が ARM_TIE などは規則 1・2 で先に外れるので `AGREE_ALL_CANDIDATES` にならない）。
+   - (2) 数えの形。`VERDICTS` は 3 値のまま。新しい定数 `EXTRA_VERDICTS = ('AGREE_ALL_CANDIDATES',)`。`CrossReading.counts['agreement']` は、`AGREE_ALL_CANDIDATES` の腕が 1 つ以上あるときだけ最後に鍵 `AGREE_ALL_CANDIDATES` を足す（0 件の出力は今と 1 バイトも同じ。`counts` の上位の鍵は増やさない）。`observe`（W3-c）は `verdict == 'AGREE'` だけを許可に使うので、`AGREE_ALL_CANDIDATES` は許可にならない（保守的な側）。
+   - (3) 入口の新しい欄。定数 `ENTRY_FLAG_KEYS = ('role_flags',)`（`ENTRY_BASIS_KEYS` は変えない）。`_check` は節の鍵 `role_flags` を受け入れ、形（`{役割名: {"determiner": 空でない文字列}}`、役割名は節の `roles` にあるもの、鍵は `determiner` だけ）を確かめ、破れば `ENTRY_FLAGS_NOT_WELL_FORMED`。`_filler` は `role_flags[役割]['determiner']` があれば充填物の `flags['determiner']` に写す（`quantifier` と同じ扱い。中心 `center` には入れない）。
+   - 理由と出典: チケット W3-b2 の やること 4（十字の `agreement` に `AGREE_ALL_CANDIDATES` を足す）と やること 5（指示詞を充填物の `flags.determiner` に写す）。(3) はチケットの許可（「agreement の値の追加のみ」）を超えるが、やること 5 が「充填物の `flags.determiner` に写す」と求め、充填物は十字にしか無く、入口の新しい欄を `_check` が受け入れなければ `--events` が `INPUT_REJECTED` になるため、最小の変更として採る（中間職の指示書 §3.6 が決めたもの。判断記録 H134 以降に書く）。
+
 ## 目的と三層の中での位置
 
 十字の設計（オーナーの最終目標の設計）: **中心は事象（述語）、腕は役割、語は腕を埋める充填物で、語の型は粗い配置から来る**。三層は、語の配置（粗い配置）、事象の十字（この文書）、談話の関係（節の間の関係）。
@@ -361,3 +367,23 @@ NOT_CHECKED の理由別: ARM_TIE 0, ESTIMATED_GENERATED 0, ESTIMATED_NEAR 0, LO
 
 - 質問を扱う次のチケット（`vera ask --mode round5 --document` への接続など）: `semantic_read.read_question(text, lang)`（`question` 欄: `hole_role`・`hole_type`・`wh`・`kind`・`restrictor`・`hole_mark`・`declarative`）と `semantic_read.WH_TABLE`（上の表と同じ。テストが一致を確かめる）。
 - 質問の十字から文書の文へ: `observe.run_entry(anchor_kind='question', ...)` の出力の `answer`（充填物・証拠の文 id・`status`）。`status` が FILLED・TIE 以外のときは答えを作らない。型の判定は本節の「穴の候補の判定」（`NOT_CHECKED` を除外にしない）。
+
+## W3-b2 の追記(型による読解の第 2 段の十字)
+
+事前登録した変更は「事前登録の変更記録」の 1(`AGREE_ALL_CANDIDATES`・数えの鍵・`role_flags`)。`EXPECTED_TYPES` の表と `EXPECTED_TYPES_VERSION` は変えていない。既存の節の文(K87 の申し送りの 4 行を含む)は変えていない。
+
+- 型一致の規則 6: 割れた配置(直接)で、型がすべて表の集合に入るなら `AGREE_ALL_CANDIDATES`(どの候補であっても期待に合う)、1 つでも外れれば今までどおり `NOT_CHECKED(MULTIPLE)`。推定の割れは規則 5 で先に `NOT_CHECKED(ESTIMATED_NEAR / ESTIMATED_GENERATED)` になる。`observe`(W3-c)は `AGREE` だけを許可に使うので、`AGREE_ALL_CANDIDATES` は許可にならない。
+- 数え: `VERDICTS` は 3 値のまま。`AGREE_ALL_CANDIDATES` の腕が 1 つ以上あるときだけ `counts['agreement']` の最後に鍵が付く(0 件の出力は今までと同じ形)。
+- `role_flags`: 入口が型の経路で読んだ節の新しい鍵(`{役割: {"determiner": "この"}}`)。形が悪ければ `ENTRY_FLAGS_NOT_WELL_FORMED`。充填物の `flags.determiner` に写す(中心・出所の欄には入れない)。
+- 実データの件数(出典 `artifacts/w3-b2/events_r6.json`・`events_r6_summary.txt`。配置 r6 の実物を lookup にした。`w3b2_events_measure.py`。`AGREE_ALL_CANDIDATES` と `DISAGREE` の全件の文・役割・値・型は `events_r6_summary.txt`):
+
+<!-- w3b2-measured-events:begin -->
+- 群 `event_cross_sentences`(配置 r6 の実物を lookup にした十字): 読めた文 69・型の経路の節を持つ文 0・腕 171・AGREE 35・AGREE_ALL_CANDIDATES 0・DISAGREE 0・NOT_CHECKED 136・`flags.determiner` を持つ充填物 0。(`events_r6.json`)
+- 群 `new_data`(配置 r6 の実物を lookup にした十字): 読めた文 68・型の経路の節を持つ文 56・腕 177・AGREE 103・AGREE_ALL_CANDIDATES 0・DISAGREE 0・NOT_CHECKED 74・`flags.determiner` を持つ充填物 1。(`events_r6.json`)
+- 群 `rest`(配置 r6 の実物を lookup にした十字): 読めた文 198・型の経路の節を持つ文 0・腕 479・AGREE 155・AGREE_ALL_CANDIDATES 2・DISAGREE 4・NOT_CHECKED 318・`flags.determiner` を持つ充填物 0。(`events_r6.json`)
+- 群 `w3b2_data`(配置 r6 の実物を lookup にした十字): 読めた文 113・型の経路の節を持つ文 112・腕 264・AGREE 168・AGREE_ALL_CANDIDATES 26・DISAGREE 0・NOT_CHECKED 70・`flags.determiner` を持つ充填物 34。(`events_r6.json`)
+- `AGREE_ALL_CANDIDATES` の腕の全件数: 28、`DISAGREE` の全件数: 4。全件の文・役割・値・型は `events_r6_summary.txt`。
+- `--events` なしの出力の一致(E1。`e1.txt`): E1_SAME・E1_EQUALS_BASE_COMMIT_RUN・E1_SAME_WITH_PLACEMENT。
+<!-- w3b2-measured-events:end -->
+
+- 既知の穴: 十字は値の表層全体を問い合わせるので、入口が主辞の型で読んだ役割(`role_basis` の `_head`)と十字の型の一致の判定が食い違いうる(`docs/READING_SOUNDNESS.md` K104)。`DISAGREE` の腕は今までどおり申告であって修理ではない。

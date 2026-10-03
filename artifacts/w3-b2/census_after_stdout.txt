@@ -1,0 +1,17 @@
+inputs_in_group=122 by_particle={"de": 6, "ni": 116}
+31 readable_before=0 readable_after=0	ambiguous case role: に | case:に:result|beneficiary | in_reader_list=False | predicate=DECIDED/P_CHANGE	['母が野菜をスープに変えた。', '母が息子に作�
+20 readable_before=0 readable_after=0	ambiguous case role: に | case:に:result|beneficiary | in_reader_list=False | predicate=DECIDED/P_COMMUNICATE	['祖母が昔話を孫娘に言い換えた。', '兄が文
+19 readable_before=0 readable_after=0	ambiguous case role: に | case:に:goal|purpose|addressee | in_reader_list=True | predicate=DECIDED/P_MOVE	['母は釣りに行った。', '弟は見学に来た。', '叔
+17 readable_before=0 readable_after=0	ambiguous case role: に | case:に:result|beneficiary | in_reader_list=False | predicate=UNKNOWN/UNKNOWN	['APIサーバーがリクエストをJSONに変換した。', '�
+13 readable_before=0 readable_after=0	ambiguous case role: に | case:に:result|beneficiary | in_reader_list=False | predicate=DECIDED/P_CREATE	['工場が鉄を部品に仕上げた。', '祖母が羽織を�
+5 readable_before=0 readable_after=0	ambiguous case role: に | case:に:location|goal|time | in_reader_list=False | predicate=DECIDED/P_ACT	['弟が壁を灰色に塗った。', '職人が柱を黒に塗った
+4 readable_before=0 readable_after=0	ambiguous case role: に | case:に:location|goal|time | in_reader_list=False | predicate=DECIDED/P_CREATE	['技師が設計図を模型に起こした。', '係が写真を
+3 readable_before=0 readable_after=0	ambiguous case role: で | case:で:place|means | in_reader_list=False | predicate=DECIDED/P_ACT	['来週、農家が畑で麦を刈る。', '兄が川で窓を洗った。'
+3 readable_before=0 readable_after=0	ambiguous case role: に | case:に:location|goal|time | in_reader_list=False | predicate=UNKNOWN/UNKNOWN	['母が子供を庭に走らせた。', '店長がアルバイト�
+1 readable_before=0 readable_after=0	ambiguous case role: で | case:で:place|means | in_reader_list=False | predicate=DECIDED/P_CHANGE	['窓が風で開いた。']
+1 readable_before=0 readable_after=0	ambiguous case role: で | case:で:place|means | in_reader_list=False | predicate=DECIDED/P_PERCEIVE	['夕方に、母が居間で手紙を読んだ。']
+1 readable_before=0 readable_after=0	ambiguous case role: で | case:で:place|means | in_reader_list=False | predicate=UNKNOWN/UNKNOWN	['試合は雨で延期された。']
+1 readable_before=0 readable_after=0	ambiguous case role: に | case:に:location|goal|time | in_reader_list=False | predicate=DECIDED/P_CHANGE	['祖母が襖を白に張り替えた。']
+1 readable_before=0 readable_after=0	ambiguous case role: に | case:に:location|goal|time | in_reader_list=False | predicate=DECIDED/P_COMMUNICATE	['艦隊に出動が命じられた。']
+1 readable_before=0 readable_after=0	ambiguous case role: に | case:に:location|goal|time | in_reader_list=False | predicate=DECIDED/P_MOVE	['先生が実際に山へ登った。']
+1 readable_before=0 readable_after=0	ambiguous case role: に | case:に:result|beneficiary | in_reader_list=False | predicate=DECIDED/P_COGNITION	['祖父が孫に名前を選んだ。']

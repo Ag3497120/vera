@@ -1,0 +1,77 @@
+mode=live
+rows=284
+verdicts={"abstain": 171, "correct": 113}
+verdicts_by_data={"determiner": {"abstain": 40, "correct": 34}, "frame": {"abstain": 54, "correct": 32}, "multiple": {"abstain": 32, "correct": 30}, "no": {"abstain": 45, "correct": 17}}
+misread=0
+incomplete=0
+unjudged=0
+entry_expect_mismatch=25
+w3b2_expect_mismatch=37
+entry_expect_mismatch_declared=25
+entry_expect_mismatch_undeclared=0
+w3b2_expect_mismatch_declared=37
+w3b2_expect_mismatch_undeclared=0
+bad_verdicts={}
+words_missing_from_the_fixture=[]
+ENTRY_EXPECT_MISMATCH(declared) W3B2-FRAME-015 生徒が校庭で回った。 expect=read readable=False verdict=abstain reasons=['NO_PREDICATE_TOKEN']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-FRAME-018 姉が神社で願った。 expect=read readable=False verdict=abstain reasons=['NO_PREDICATE_TOKEN']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-FRAME-022 祖母が隠れ家で願った。 expect=read readable=False verdict=abstain reasons=['NO_PREDICATE_TOKEN']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-FRAME-036 先生が夜にホテルで願った。 expect=read readable=False verdict=abstain reasons=['NO_PREDICATE_TOKEN']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-DETERMINER-007 祖母がこの春休み、絵を描いた。 expect=read readable=False verdict=abstain reasons=['UNSUPPORTED_CLAUSE']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-DETERMINER-008 店員がその年明け、靴を磨いた。 expect=read readable=False verdict=abstain reasons=['NO_SUPPORTED_CLAUSE']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-DETERMINER-011 弟がこの大晦日、靴を磨いた。 expect=read readable=False verdict=abstain reasons=['UNSUPPORTED_CLAUSE']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-001 兄が祖父の畑へ走った。 expect=read readable=False verdict=abstain reasons=['RECIPIENT_TYPE_UNDETERMINED:走る', 'PLACEMENT_UNKNOWN:へ:祖父の畑']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-002 母が先生の庭へ歩いた。 expect=read readable=False verdict=abstain reasons=['RECIPIENT_TYPE_UNDETERMINED:歩く', 'PLACEMENT_UNKNOWN:へ:先生の庭']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-003 姉が叔父の村へ歩いた。 expect=read readable=False verdict=abstain reasons=['RECIPIENT_TYPE_UNDETERMINED:歩く', 'PLACEMENT_UNKNOWN:へ:叔父の村']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-004 弟が隣人の港へ走った。 expect=read readable=False verdict=abstain reasons=['RECIPIENT_TYPE_UNDETERMINED:走る', 'PLACEMENT_ESTIMATED_NEAR:へ:隣人の港']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-005 妹が友人の橋へ歩いた。 expect=read readable=False verdict=abstain reasons=['RECIPIENT_TYPE_UNDETERMINED:歩く', 'PLACEMENT_ESTIMATED_NEAR:へ:友人の橋']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-006 父が祖母の寺へ歩いた。 expect=read readable=False verdict=abstain reasons=['RECIPIENT_TYPE_UNDETERMINED:歩く', 'PLACEMENT_ESTIMATED_NEAR:へ:祖母の寺']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-007 祖父が母の台所へ歩いた。 expect=read readable=False verdict=abstain reasons=['RECIPIENT_TYPE_UNDETERMINED:歩く', 'PLACEMENT_ESTIMATED_NEAR:へ:母の台所']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-008 先生が生徒の玄関へ走った。 expect=read readable=False verdict=abstain reasons=['RECIPIENT_TYPE_UNDETERMINED:走る', 'PLACEMENT_UNKNOWN:へ:生徒の玄関']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-009 店員が店長の倉庫へ走った。 expect=read readable=False verdict=abstain reasons=['RECIPIENT_TYPE_UNDETERMINED:走る', 'PLACEMENT_UNKNOWN:へ:店長の倉庫']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-013 兄が友人の隣へ走った。 expect=read readable=False verdict=abstain reasons=['RECIPIENT_TYPE_UNDETERMINED:走る', 'PLACEMENT_UNKNOWN:へ:友人の隣']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-014 姉が祖父の横へ歩いた。 expect=read readable=False verdict=abstain reasons=['RECIPIENT_TYPE_UNDETERMINED:歩く', 'PLACEMENT_UNKNOWN:へ:祖父の横']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-027 先生が島のホテルで願った。 expect=read readable=False verdict=abstain reasons=['NO_PREDICATE_TOKEN']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-028 兄が校庭で弟の犬を呼んだ。 expect=read readable=False verdict=abstain reasons=['NO_SUPPORTED_CLAUSE']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-031 先生が国道で祖母の猫を呼んだ。 expect=read readable=False verdict=abstain reasons=['NO_SUPPORTED_CLAUSE']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-032 兄が去年の大晦日、窓を拭いた。 expect=read readable=False verdict=abstain reasons=['NO_SUPPORTED_CLAUSE']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-033 姉が学校の春休み、本を読んだ。 expect=read readable=False verdict=abstain reasons=['NO_SUPPORTED_CLAUSE']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-034 母が町の祝日、皿を洗った。 expect=read readable=False verdict=abstain reasons=['NO_SUPPORTED_CLAUSE']
+ENTRY_EXPECT_MISMATCH(declared) W3B2-NO-035 弟が去年の年明け、手紙を書いた。 expect=read readable=False verdict=abstain reasons=['NO_SUPPORTED_CLAUSE']
+W3B2_EXPECT_MISMATCH(declared) W3B2-FRAME-015 生徒が校庭で回った。 expect=READ got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': None, 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-FRAME-018 姉が神社で願った。 expect=READ got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': None, 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-FRAME-022 祖母が隠れ家で願った。 expect=READ got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': None, 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-FRAME-036 先生が夜にホテルで願った。 expect=READ got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': None, 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-FRAME-043 姉がゲートで願った。 expect=PLACEMENT_MULTIPLE got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': None, 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-MULTIPLE-032 住民が神社で願った。 expect=PLACEMENT_MULTIPLE got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': None, 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-DETERMINER-007 祖母がこの春休み、絵を描いた。 expect=READ got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-DETERMINER-008 店員がその年明け、靴を磨いた。 expect=READ got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-DETERMINER-011 弟がこの大晦日、靴を磨いた。 expect=READ got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-001 兄が祖父の畑へ走った。 expect=READ got={'w3b1_trigger': 'U', 'w3b1': 'PLACEMENT_UNKNOWN:へ:祖父の畑', 'w3b2_trigger': 'U', 'w3b2': 'PLACEMENT_DUPLICATE_ROLE:goal', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-002 母が先生の庭へ歩いた。 expect=READ got={'w3b1_trigger': 'U', 'w3b1': 'PLACEMENT_UNKNOWN:へ:先生の庭', 'w3b2_trigger': 'U', 'w3b2': 'PLACEMENT_DUPLICATE_ROLE:goal', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-003 姉が叔父の村へ歩いた。 expect=READ got={'w3b1_trigger': 'U', 'w3b1': 'PLACEMENT_UNKNOWN:へ:叔父の村', 'w3b2_trigger': 'U', 'w3b2': 'PLACEMENT_DUPLICATE_ROLE:goal', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-004 弟が隣人の港へ走った。 expect=READ got={'w3b1_trigger': 'U', 'w3b1': 'PLACEMENT_ESTIMATED_NEAR:へ:隣人の港', 'w3b2_trigger': 'U', 'w3b2': 'PLACEMENT_DUPLICATE_ROLE:goal', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-005 妹が友人の橋へ歩いた。 expect=READ got={'w3b1_trigger': 'U', 'w3b1': 'PLACEMENT_ESTIMATED_NEAR:へ:友人の橋', 'w3b2_trigger': 'U', 'w3b2': 'PLACEMENT_DUPLICATE_ROLE:goal', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-006 父が祖母の寺へ歩いた。 expect=READ got={'w3b1_trigger': 'U', 'w3b1': 'PLACEMENT_ESTIMATED_NEAR:へ:祖母の寺', 'w3b2_trigger': 'U', 'w3b2': 'PLACEMENT_DUPLICATE_ROLE:goal', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-007 祖父が母の台所へ歩いた。 expect=READ got={'w3b1_trigger': 'U', 'w3b1': 'PLACEMENT_ESTIMATED_NEAR:へ:母の台所', 'w3b2_trigger': 'U', 'w3b2': 'PLACEMENT_DUPLICATE_ROLE:goal', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-008 先生が生徒の玄関へ走った。 expect=READ got={'w3b1_trigger': 'U', 'w3b1': 'PLACEMENT_UNKNOWN:へ:生徒の玄関', 'w3b2_trigger': 'U', 'w3b2': 'PLACEMENT_DUPLICATE_ROLE:goal', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-009 店員が店長の倉庫へ走った。 expect=READ got={'w3b1_trigger': 'U', 'w3b1': 'PLACEMENT_UNKNOWN:へ:店長の倉庫', 'w3b2_trigger': 'U', 'w3b2': 'PLACEMENT_DUPLICATE_ROLE:goal', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-013 兄が友人の隣へ走った。 expect=READ got={'w3b1_trigger': 'U', 'w3b1': 'PLACEMENT_UNKNOWN:へ:友人の隣', 'w3b2_trigger': 'U', 'w3b2': 'PLACEMENT_DUPLICATE_ROLE:goal', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-014 姉が祖父の横へ歩いた。 expect=READ got={'w3b1_trigger': 'U', 'w3b1': 'PLACEMENT_UNKNOWN:へ:祖父の横', 'w3b2_trigger': 'U', 'w3b2': 'PLACEMENT_DUPLICATE_ROLE:goal', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-015 母が先生の方へ歩いた。 expect=READ got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': None, 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-027 先生が島のホテルで願った。 expect=READ got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': None, 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-028 兄が校庭で弟の犬を呼んだ。 expect=READ got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-031 先生が国道で祖母の猫を呼んだ。 expect=READ got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-032 兄が去年の大晦日、窓を拭いた。 expect=READ got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-033 姉が学校の春休み、本を読んだ。 expect=READ got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-034 母が町の祝日、皿を洗った。 expect=READ got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-035 弟が去年の年明け、手紙を書いた。 expect=READ got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-036 兄が友人の前へ走った。 expect=PLACEMENT_HEAD_RELATIONAL got={'w3b1_trigger': 'U', 'w3b1': 'PLACEMENT_MULTIPLE:へ:前', 'w3b2_trigger': 'U', 'w3b2': 'PLACEMENT_MULTIPLE:へ:前', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-037 姉が祖父の後へ歩いた。 expect=PLACEMENT_HEAD_RELATIONAL got={'w3b1_trigger': 'U', 'w3b1': 'PLACEMENT_MULTIPLE:へ:後', 'w3b2_trigger': 'U', 'w3b2': 'PLACEMENT_MULTIPLE:へ:後', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-044 兄が夏の夕方、窓を拭いた。 expect=PLACEMENT_HEAD_RELATIONAL got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-045 姉が春の夜、手紙を書いた。 expect=PLACEMENT_HEAD_RELATIONAL got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-046 母が冬の休日、靴を磨いた。 expect=PLACEMENT_HEAD_RELATIONAL got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-047 弟が秋の平日、本を読んだ。 expect=PLACEMENT_HEAD_RELATIONAL got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-059 兄が校庭で友人の挨拶を断った。 expect=PLACEMENT_MULTIPLE got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-060 姉が神社で先生の日程を断った。 expect=PLACEMENT_MULTIPLE got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
+W3B2_EXPECT_MISMATCH(declared) W3B2-NO-061 友人の客が庭へ走った。 expect=PLACEMENT_MULTIPLE got={'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': 'PLACEMENT_W3B2_NOT_TRIGGERED', 'frame': None}
