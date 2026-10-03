@@ -15,6 +15,11 @@ from verantyx import coarse_place as cp
 from verantyx import coarse_types as ct
 
 R7 = "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r7/run1"
+# Integration (auditor, 2026-10-04): the suite runs split across two machines and the registered build lives outside the tree, so a machine without
+# it SKIPS with a visible reason instead of failing (same treatment as the other r7-pinned tests). Where r7 exists nothing changes.
+import os as _os
+import pytest as _pytest
+pytestmark = _pytest.mark.skipif(not _os.path.isdir(R7), reason="ENV_MISSING[coarse placement r7/run1]")
 HERE = Path(__file__).resolve().parent
 ROUND1 = HERE.parent.parent / "artifacts" / "w5-e" / "h5_frames.jsonl"          # the r7 frame fields at the end of round 1 (measured)
 
