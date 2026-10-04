@@ -1,0 +1,10 @@
+== /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W10-f01-impl/r3/base
+----------------------------------------
+abc -> <closed, no response>
+-1 -> <TIMEOUT: connection still open>
+2 -> HTTP/1.0 400 Bad Request
+== /Users/motonisihikoudai/Projects/vera-impl/wt/W10-f01-S
+----------------------------------------
+abc -> <closed, no response>
+-1 -> <TIMEOUT: connection still open>
+2 -> HTTP/1.0 400 Bad Request

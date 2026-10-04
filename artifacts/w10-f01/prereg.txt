@@ -1,0 +1,5 @@
+# ls -R /Users/motonisihikoudai/Projects/vera-impl/wt/W10-f01-S/artifacts/w10-f01/data (検査データ作成前)
+docs
+
+/Users/motonisihikoudai/Projects/vera-impl/wt/W10-f01-S/artifacts/w10-f01/data/docs:
+2026-10-04 11:37:49 +0900

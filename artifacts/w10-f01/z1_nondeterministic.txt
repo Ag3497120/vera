@@ -1,0 +1,15 @@
+== case 2: base run a vs b differ (only these lines; masked below as ingest_ms / elapsed_ms)
+<       "ingest_ms": 4.625874978955835
+>       "ingest_ms": 4.17799997376278
+<       "elapsed_ms": 0.5
+>       "elapsed_ms": 0.499
+== case 3: base run a vs b differ (only these lines; masked below as ingest_ms / elapsed_ms)
+<       "ingest_ms": 4.434083006344736
+>       "ingest_ms": 4.472458967939019
+<       "elapsed_ms": 0.574
+>       "elapsed_ms": 0.608
+== case 4: base run a vs b differ (only these lines; masked below as ingest_ms / elapsed_ms)
+<       "ingest_ms": 4.352124989964068
+>       "ingest_ms": 4.329708986915648
+<       "elapsed_ms": 3.923
+>       "elapsed_ms": 3.277

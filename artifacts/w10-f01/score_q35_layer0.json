@@ -1,0 +1,65 @@
+{
+ "questions": 120,
+ "answered_by_run": 120,
+ "missing": [],
+ "http_or_shape_errors": [],
+ "layers": {
+  "0": 120
+ },
+ "wrong": 0,
+ "generated_only_answers": 0,
+ "generated_only_answer_ids": [],
+ "one": {
+  "n": 50,
+  "correct": 21,
+  "wrong": 0,
+  "missed": 29,
+  "missed_by": {
+   "TESTIMONY|STRUCTURE_UNDETERMINED|QUESTION_NOT_READ": 22,
+   "TESTIMONY|NO_RECORD|NO_ATTESTED_CELL": 3,
+   "TESTIMONY|NO_RECORD|NO_TYPED_CANDIDATE": 3,
+   "TESTIMONY|NO_RECORD|TYPE_EXCLUDED_ALL": 1
+  },
+  "wrong_ids": []
+ },
+ "none": {
+  "n": 50,
+  "correct": 50,
+  "wrong": 0,
+  "llm_called": 50,
+  "testimony_shown": 50,
+  "record_marked_sentences": 0,
+  "wrong_ids": [],
+  "wrong_reasons": {}
+ },
+ "creative": {
+  "n": 20,
+  "constructed": 20,
+  "abstained": 0,
+  "wrong": 0,
+  "abstained_by": {},
+  "wrong_ids": []
+ },
+ "latency_ms": {
+  "vera_ms_llm_called": {
+   "n": 99,
+   "median": 56.2,
+   "max": 115.9
+  },
+  "vera_ms_llm_not_called": {
+   "n": 21,
+   "median": 46.5,
+   "max": 156.5
+  },
+  "llm_ms": {
+   "n": 99,
+   "median": 7524.1,
+   "max": 33690.2
+  },
+  "wall_ms": {
+   "n": 120,
+   "median": 6417.4,
+   "max": 33743.3
+  }
+ }
+}

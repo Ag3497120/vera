@@ -1340,8 +1340,38 @@ def cmd_serve(args) -> int:
     def save() -> None:
         st.save(store_path)
 
-    return serve_http(st, save, port=args.port, default_model=model,
-                       jgen_endpoint=args.jgen_endpoint, store_path=store_path)
+    if getattr(args, "backend", None) is None:      # W10-f01: without --backend this is exactly the daemon it was
+        return serve_http(st, save, port=args.port, default_model=model,
+                           jgen_endpoint=args.jgen_endpoint, store_path=store_path)
+    return _serve_fusion(args, st, save, store_path)
+
+
+def _serve_fusion(args, st, save, store_path) -> int:
+    """W10-f01: `vera serve --backend ollama --model M [--document f ...] [--strict]` -- one entrance, OpenAI- and Ollama-compatible (docs/FUSION.md)."""
+    import os
+    from .vera_server import FusionConfig, serve as serve_http
+
+    def refuse(verdict: str, reason: str) -> int:
+        _print({"kind": "unknown", "verdict": verdict, "reason": reason})
+        return 2
+
+    if not args.model:
+        return refuse("MODEL_REQUIRED", "--backend ollama needs --model")
+    if args.strict and args.free:
+        return refuse("STRICT_AND_FREE", "--strict (layer 1) and --free (layer 0) cannot be combined")
+    documents = list(args.document or [])
+    for item in documents:
+        if not Path(item).exists():
+            return refuse("DOCUMENT_NOT_FOUND", item)
+    if bool(args.sovereign_root) != bool(args.sovereign_store):
+        return refuse("SOVEREIGN_NEEDS_BOTH", "--sovereign-root and --sovereign-store go together")
+    if args.sovereign_root:
+        os.environ["VERA_SOVEREIGN_ROOT"] = args.sovereign_root
+        os.environ["VERA_SOVEREIGN_STORE"] = args.sovereign_store
+    if args.placement:
+        os.environ["VERA_PLACEMENT"] = args.placement
+    fusion = FusionConfig.load(model=args.model, documents=documents, strict=args.strict, ollama_url=args.ollama_url, timeout=args.llm_timeout)
+    return serve_http(st, save, port=args.port, default_model=args.model, jgen_endpoint=args.jgen_endpoint, store_path=store_path, fusion=fusion)
 
 
 def cmd_setup(args) -> int:
@@ -2147,6 +2177,19 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--jgen-endpoint", default=None, dest="jgen_endpoint",
                     help="e.g. http://127.0.0.1:8766 — the IDE's JGenAgentServer (N4), "
                          "only needed if a request sets \"backend\": \"jgen\"")
+    # W10-f01: one entrance for OpenAI-compatible (/v1/chat/completions) and Ollama-compatible (/api/chat) clients (docs/FUSION.md).
+    # NOT `--store`: the top-level --store (CrossStore path) would be overwritten by a sub-parser default (D1); the sovereign is named by the two options below.
+    p.add_argument("--backend", choices=["ollama"], default=None,
+                   help="W10-f01: put Vera in front of a local LLM (layer 0: the LLM answers, every sentence is typed record/testimony/constructed/unread)")
+    p.add_argument("--model", default=None, help="W10-f01: the Ollama model the entrance calls (required with --backend)")
+    p.add_argument("--document", action="append", default=None, help="W10-f01: a document (file or folder) that is the record; repeatable")
+    p.add_argument("--strict", action="store_true", help="W10-f01: layer 1 -- bind the LLM with a grammar built from the record; nothing outside the grammar is said")
+    p.add_argument("--free", action="store_true", help="W10-f01: layer 0 spelled out (the default); cannot be combined with --strict")
+    p.add_argument("--sovereign-root", default=None, dest="sovereign_root", help="W10-f01: VERA_SOVEREIGN_ROOT for the basis policy")
+    p.add_argument("--sovereign-store", default=None, dest="sovereign_store", help="W10-f01: VERA_SOVEREIGN_STORE for the basis policy")
+    p.add_argument("--placement", default=None, help="W10-f01: sets VERA_PLACEMENT (the placement directory; without it a factual question has no typed candidate)")
+    p.add_argument("--ollama-url", default="http://127.0.0.1:11434", dest="ollama_url", help="W10-f01: the Ollama server")
+    p.add_argument("--llm-timeout", type=float, default=180.0, dest="llm_timeout", help="W10-f01: seconds to wait for the LLM before LLM_UNAVAILABLE (TIMEOUT)")
     p.set_defaults(fn=cmd_serve)
 
     p = sub.add_parser("setup", help="interactive settings (LLM, allocation)")
