@@ -1,0 +1,11 @@
+E   AssertionError: assert (200 == 200 and 'STRUCTURE_UNDETERMINED' == 'QUESTION_CROSS'
+E   AssertionError: ('弟が犬を三回呼んだ。', {'text': '弟が犬を三回呼んだ。', 'read': True, 'mark': None, 'unread_reason': None, ...})
+E   AssertionError: ('弟が犬を三回呼んだ。', {'text': '弟が犬を三回呼んだ。', 'read': True, 'mark': None, 'unread_reason': None, ...})
+E   AssertionError: ('factual', [{'text': '弟が犬を三回呼んだ。', 'read': True, 'mark': None, 'unread_reason': None, ...}])
+E   AssertionError: assert not True
+FAILED tests/test_serve_fusion.py::test_concurrent_http_requests_read_on_the_one_vera_thread
+FAILED tests/test_serve_fusion.py::test_verify_does_not_mark_a_sentence_with_an_extra_count_as_record[factual]
+FAILED tests/test_serve_fusion.py::test_verify_does_not_mark_a_sentence_with_an_extra_count_as_record[creative]
+FAILED tests/test_serve_fusion.py::test_layer0_llm_sentence_with_an_extra_count_is_not_record_marked
+FAILED tests/test_serve_fusion.py::test_the_candidate_check_of_layer1_also_sees_quantifiers
+5 failed, 55 deselected in 0.87s

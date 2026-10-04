@@ -1,0 +1,12 @@
+# git status --short
+ M verantyx/cli.py
+ M verantyx/vera_server.py
+?? artifacts/w10-f01/
+?? docs/FUSION.md
+?? tests/test_serve_fusion.py
+?? tests/test_serve_fusion_ollama.py
+?? verantyx/decode_grammar.py
+# 許可パス外 (空であること)
+# 禁止ファイルの diff --stat (空であること)
+# 読み込み元 (空であること)
+53 []
