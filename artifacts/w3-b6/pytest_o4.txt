@@ -1,0 +1,10 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/motonisihikoudai/Projects/vera-impl/wt/W3-b6-S
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collected 50 items / 42 deselected / 8 selected
+
+tests/test_semantic_read_w3b6.py ........                                [100%]
+
+======================= 8 passed, 42 deselected in 0.84s =======================

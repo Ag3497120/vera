@@ -1,0 +1,2408 @@
+[
+ {
+  "id": "W3B6-N2-R-001",
+  "input": "船が港に停泊した。",
+  "rule": "K273",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "role_frame:停泊する:が:ARTIFACT",
+   "place": "role_frame:停泊する:に:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-N2-R-002",
+  "input": "住民が警察に通報した。",
+  "rule": "K270",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "NOT_RUN",
+  "diag": null,
+  "plan": "NOT_CALLED",
+  "path_expect": "base",
+  "path": "base",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "keyless_same": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-N2-R-003",
+  "input": "社員が上司に連絡した。",
+  "rule": "K270",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "NOT_RUN",
+  "diag": null,
+  "plan": "NOT_CALLED",
+  "path_expect": "base",
+  "path": "base",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "keyless_same": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-N2-R-004",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "patient": "placement_direct:ARTIFACT",
+   "instrument": "role_frame:打つ:で:ARTIFACT"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-N2-R-005",
+  "input": "妹が地震で驚いた。",
+  "rule": "K273",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "cause": "role_frame:驚く:で:NATURAL_PHENOMENON"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-N2-R-006",
+  "input": "係員が校庭で書類を確認した。",
+  "rule": "K273",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "role_frame:確認する:が:PERSON",
+   "patient": "role_frame:確認する:を:INFO_LANGUAGE",
+   "place": "role_frame:確認する:で:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-N2-X-007",
+  "input": "先生が生徒を校庭に集めた。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+  "diag": "PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行",
+  "plan": "READ",
+  "path_expect": "R-blocked",
+  "path": "R-blocked",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "patient": "placement_direct:PERSON",
+   "goal": "role_frame:集める:に:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "PLACEMENT_FRAME_NOT_READ:P_ACT"
+  ]
+ },
+ {
+  "id": "W3B6-N2-R-007b",
+  "input": "兄が箱を工場に押した。",
+  "rule": "K273",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "patient": "placement_direct:ARTIFACT",
+   "goal": "role_frame:押す:に:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-N2-A-008",
+  "input": "店員が商品を箱に分けた。",
+  "rule": "K270",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "PLACEMENT_W3B2_NOT_TRIGGERED",
+  "diag": "PLACEMENT_W3B2_NOT_TRIGGERED",
+  "plan": "NOT_CALLED",
+  "path_expect": "none",
+  "path": "none",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-N2-R-009",
+  "input": "友人が駅で待った。",
+  "rule": "K270",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "NOT_RUN",
+  "diag": null,
+  "plan": "NOT_CALLED",
+  "path_expect": "base",
+  "path": "base",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "keyless_same": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-N2-R-010",
+  "input": "業者が倉庫から工場へ荷物を運んだ。",
+  "rule": "K270",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "NOT_RUN",
+  "diag": null,
+  "plan": "NOT_CALLED",
+  "path_expect": "base",
+  "path": "base",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "keyless_same": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K270-A-001",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K270",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_NOT_CONFIRMED:ESTIMATED",
+  "diag": "ROLE_FRAME_NOT_CONFIRMED:ESTIMATED",
+  "plan": "ROLE_FRAME_NOT_CONFIRMED:ESTIMATED",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "keyless_same": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K270-A-002",
+  "input": "妹が地震で驚いた。",
+  "rule": "K270",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_NOT_CONFIRMED:NO_ROLE_FRAME",
+  "diag": "ROLE_FRAME_NOT_CONFIRMED:NO_ROLE_FRAME",
+  "plan": "ROLE_FRAME_NOT_CONFIRMED:NO_ROLE_FRAME",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "keyless_same": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K270-A-003",
+  "input": "先生が生徒を校庭に集めた。",
+  "rule": "K270",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に",
+  "diag": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に",
+  "plan": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "keyless_same": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "PLACEMENT_FRAME_NOT_READ:P_ACT"
+  ]
+ },
+ {
+  "id": "W3B6-K270-A-004",
+  "input": "板が大工に金槌で打たれた。",
+  "rule": "K270",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "PLACEMENT_W3B2_NOT_TRIGGERED",
+  "diag": "PLACEMENT_W3B2_NOT_TRIGGERED",
+  "plan": "NOT_CALLED",
+  "path_expect": "none",
+  "path": "none",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K270-A-005",
+  "input": "大工が金槌でも板を打った。",
+  "rule": "K270",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:で:も",
+  "diag": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:で:も",
+  "plan": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:で:も",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K270-A-006",
+  "input": "大工が金槌とハンマーで板を打った。",
+  "rule": "K270",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "PLACEMENT_W3B2_NOT_TRIGGERED",
+  "diag": "PLACEMENT_W3B2_NOT_TRIGGERED",
+  "plan": "NOT_CALLED",
+  "path_expect": "none",
+  "path": "none",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K270-A-007",
+  "input": "大工が金槌で板を打つと言った。",
+  "rule": "K270",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "PLACEMENT_W3B2_NOT_TRIGGERED",
+  "diag": "PLACEMENT_W3B2_NOT_TRIGGERED",
+  "plan": "NOT_CALLED",
+  "path_expect": "none",
+  "path": "none",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K270-R-008",
+  "input": "兄が箱を工場に押した。",
+  "rule": "K270",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "patient": "placement_direct:ARTIFACT",
+   "goal": "role_frame:押す:に:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K270-R-009",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K270",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "patient": "placement_direct:ARTIFACT",
+   "instrument": "role_frame:打つ:で:ARTIFACT"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K270-A-010",
+  "input": "先生が生徒を校庭に集めた。",
+  "rule": "K270",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_NOT_CONFIRMED:ESTIMATED",
+  "diag": "ROLE_FRAME_NOT_CONFIRMED:ESTIMATED",
+  "plan": "ROLE_FRAME_NOT_CONFIRMED:ESTIMATED",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "keyless_same": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "PLACEMENT_FRAME_NOT_READ:P_ACT"
+  ]
+ },
+ {
+  "id": "W3B6-K271-R-001",
+  "input": "係員が病院から校庭で書類を確認した。",
+  "rule": "K271",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "role_frame:確認する:が:PERSON",
+   "patient": "role_frame:確認する:を:INFO_LANGUAGE",
+   "source": "role_frame:確認する:から:PLACE",
+   "place": "role_frame:確認する:で:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K271-R-002",
+  "input": "係員が病院へ校庭で書類を確認した。",
+  "rule": "K271",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "role_frame:確認する:が:PERSON",
+   "patient": "role_frame:確認する:を:INFO_LANGUAGE",
+   "goal": "role_frame:確認する:へ:PLACE",
+   "place": "role_frame:確認する:で:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K271-R-003",
+  "input": "兄が箱を教室に押した。",
+  "rule": "K271",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "patient": "placement_direct:ARTIFACT",
+   "goal": "role_frame:押す:に:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K271-R-004",
+  "input": "兄が公園に走った。",
+  "rule": "K271",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "goal": "role_frame:走る:に:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K271-A-005",
+  "input": "船が港に停泊した。",
+  "rule": "K271",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_PARTICLE_NOT_DECLARED:が",
+  "diag": "ROLE_FRAME_PARTICLE_NOT_DECLARED:が",
+  "plan": "ROLE_FRAME_PARTICLE_NOT_DECLARED:が",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "SUBJECT_TYPE_UNDETERMINED:船",
+   "PLACEMENT_TYPE_MISMATCH:P_MOVE:が:ARTIFACT"
+  ]
+ },
+ {
+  "id": "W3B6-K271-A-006",
+  "input": "船が港に停泊した。",
+  "rule": "K271",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_TYPE_NOT_DECLARED:が:ARTIFACT",
+  "diag": "ROLE_FRAME_TYPE_NOT_DECLARED:が:ARTIFACT",
+  "plan": "ROLE_FRAME_TYPE_NOT_DECLARED:が:ARTIFACT",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "SUBJECT_TYPE_UNDETERMINED:船",
+   "PLACEMENT_TYPE_MISMATCH:P_MOVE:が:ARTIFACT"
+  ]
+ },
+ {
+  "id": "W3B6-K271-A-007",
+  "input": "船が港に停泊した。",
+  "rule": "K271",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_TABLE_CONFLICT:が:agent:patient",
+  "diag": "ROLE_FRAME_TABLE_CONFLICT:が:agent:patient",
+  "plan": "ROLE_FRAME_TABLE_CONFLICT:が:agent:patient",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "SUBJECT_TYPE_UNDETERMINED:船",
+   "PLACEMENT_TYPE_MISMATCH:P_MOVE:が:ARTIFACT"
+  ]
+ },
+ {
+  "id": "W3B6-K271-A-008",
+  "input": "係員が病院から校庭で書類を確認した。",
+  "rule": "K271",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_PARTICLE_NOT_DECLARED:を",
+  "diag": "ROLE_FRAME_PARTICLE_NOT_DECLARED:を",
+  "plan": "ROLE_FRAME_PARTICLE_NOT_DECLARED:を",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-001",
+  "input": "妹が物音で驚いた。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_UNPLACED",
+  "diag": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_UNPLACED",
+  "plan": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_UNPLACED",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-002",
+  "input": "係員が受付で書類を確認した。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "diag": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "plan": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-003",
+  "input": "大工が釘で板を打った。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_ESTIMATED_GENERATED",
+  "diag": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_ESTIMATED_GENERATED",
+  "plan": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_ESTIMATED_GENERATED",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-004",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_UNKNOWN",
+  "diag": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_UNKNOWN",
+  "plan": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_UNKNOWN",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-005",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "diag": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "plan": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-006",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_NO_PLACEMENT",
+  "diag": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_NO_PLACEMENT:UNSPECIFIED",
+  "plan": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_NO_PLACEMENT:UNSPECIFIED",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-1D01",
+  "input": "兄が右で打った。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "diag": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "plan": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-1M01",
+  "input": "兄が右で打った。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "diag": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "plan": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-1D02",
+  "input": "兄が右で皿を洗った。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "diag": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "plan": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-1M02",
+  "input": "兄が右で皿を洗った。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "diag": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "plan": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-1D03",
+  "input": "兄が右で皿を拭いた。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "diag": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "plan": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-1M03",
+  "input": "兄が右で皿を拭いた。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "diag": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "plan": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-1D04",
+  "input": "兄が右で絵を描いた。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "diag": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "plan": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-1M04",
+  "input": "兄が右で絵を描いた。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "diag": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "plan": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-1D05",
+  "input": "弟が右で記事を書いた。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "diag": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "plan": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-1M05",
+  "input": "弟が右で記事を書いた。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "diag": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "plan": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_MULTIPLE",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-2D01",
+  "input": "監督が左で騒いだ。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "diag": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "plan": "ROLE_FRAME_FILLER_RELATIVE_POSITION:で",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-2D02",
+  "input": "店員が左に昇った。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:左",
+  "diag": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:左",
+  "plan": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:左",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "RECIPIENT_TYPE_UNDETERMINED:昇る",
+   "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:RELATIVE_POSITION"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-2D04",
+  "input": "兄が箱を右に押した。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_RELATIVE_POSITION:に",
+  "diag": "ROLE_FRAME_FILLER_RELATIVE_POSITION:に",
+  "plan": "ROLE_FRAME_FILLER_RELATIVE_POSITION:に",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "PLACEMENT_FRAME_NOT_READ:P_ACT"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-2M05",
+  "input": "兄が箱を右に押した。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_NOT_DIRECT:に:PLACEMENT_MULTIPLE",
+  "diag": "ROLE_FRAME_FILLER_NOT_DIRECT:に:PLACEMENT_MULTIPLE",
+  "plan": "ROLE_FRAME_FILLER_NOT_DIRECT:に:PLACEMENT_MULTIPLE",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "PLACEMENT_FRAME_NOT_READ:P_ACT"
+  ]
+ },
+ {
+  "id": "W3B6-K272-A-2M03",
+  "input": "店員が左に昇った。",
+  "rule": "K272",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:左",
+  "diag": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:左",
+  "plan": "PLACEMENT_SLOT_EVIDENCE_ONLY:に:左",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "RECIPIENT_TYPE_UNDETERMINED:昇る",
+   "PLACEMENT_MULTIPLE:に:左"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-001",
+  "input": "大工が壁で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_TYPE_NOT_DECLARED:で:PLACE",
+  "diag": "ROLE_FRAME_TYPE_NOT_DECLARED:で:PLACE",
+  "plan": "ROLE_FRAME_TYPE_NOT_DECLARED:で:PLACE",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-002",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_SPLIT:で:ARTIFACT",
+  "diag": "ROLE_FRAME_SPLIT:で:ARTIFACT",
+  "plan": "ROLE_FRAME_SPLIT:で:ARTIFACT",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-003",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_PARTICLE_NOT_DECLARED:で",
+  "diag": "ROLE_FRAME_PARTICLE_NOT_DECLARED:で",
+  "plan": "ROLE_FRAME_PARTICLE_NOT_DECLARED:で",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-004",
+  "input": "先生が生徒を校庭に集めた。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_PARTICLE_NOT_DECLARED:に",
+  "diag": "ROLE_FRAME_PARTICLE_NOT_DECLARED:に",
+  "plan": "ROLE_FRAME_PARTICLE_NOT_DECLARED:に",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "PLACEMENT_FRAME_NOT_READ:P_ACT"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-005",
+  "input": "先生が生徒を校庭に集めた。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_SPLIT:に:PLACE",
+  "diag": "ROLE_FRAME_SPLIT:に:PLACE",
+  "plan": "ROLE_FRAME_SPLIT:に:PLACE",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "PLACEMENT_FRAME_NOT_READ:P_ACT"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-901",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_INVALID:NOT_A_MAPPING",
+  "diag": "ROLE_FRAME_INVALID:NOT_A_MAPPING",
+  "plan": "ROLE_FRAME_INVALID:NOT_A_MAPPING",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-902",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_INVALID:NOT_A_MAPPING",
+  "diag": "ROLE_FRAME_INVALID:NOT_A_MAPPING",
+  "plan": "ROLE_FRAME_INVALID:NOT_A_MAPPING",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-903",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_INVALID:PARTICLE_NOT_CASE:は",
+  "diag": "ROLE_FRAME_INVALID:PARTICLE_NOT_CASE:は",
+  "plan": "ROLE_FRAME_INVALID:PARTICLE_NOT_CASE:は",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-904",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_INVALID:ROLE_NOT_IN_CONVENTION:で:tool",
+  "diag": "ROLE_FRAME_INVALID:ROLE_NOT_IN_CONVENTION:で:tool",
+  "plan": "ROLE_FRAME_INVALID:ROLE_NOT_IN_CONVENTION:で:tool",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-905",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_INVALID:TYPE_NOT_NOUN:で:RELATIVE_POSITION",
+  "diag": "ROLE_FRAME_INVALID:TYPE_NOT_NOUN:で:RELATIVE_POSITION",
+  "plan": "ROLE_FRAME_INVALID:TYPE_NOT_NOUN:で:RELATIVE_POSITION",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-906",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_INVALID:TYPES_NOT_A_LIST:で",
+  "diag": "ROLE_FRAME_INVALID:TYPES_NOT_A_LIST:で",
+  "plan": "ROLE_FRAME_INVALID:TYPES_NOT_A_LIST:で",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-907",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_INVALID:ENTRY_NOT_A_MAPPING:で",
+  "diag": "ROLE_FRAME_INVALID:ENTRY_NOT_A_MAPPING:で",
+  "plan": "ROLE_FRAME_INVALID:ENTRY_NOT_A_MAPPING:で",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-908",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_INVALID:ROLE_DUPLICATED:で:instrument",
+  "diag": "ROLE_FRAME_INVALID:ROLE_DUPLICATED:で:instrument",
+  "plan": "ROLE_FRAME_INVALID:ROLE_DUPLICATED:で:instrument",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-909",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_INVALID:STATUS_UNKNOWN",
+  "diag": "ROLE_FRAME_INVALID:STATUS_UNKNOWN",
+  "plan": "ROLE_FRAME_INVALID:STATUS_UNKNOWN",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-910",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_INVALID:ENTRY_KEYS:で",
+  "diag": "ROLE_FRAME_INVALID:ENTRY_KEYS:で",
+  "plan": "ROLE_FRAME_INVALID:ENTRY_KEYS:で",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-911",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_INVALID:ENTRIES_NOT_A_LIST:で",
+  "diag": "ROLE_FRAME_INVALID:ENTRIES_NOT_A_LIST:で",
+  "plan": "ROLE_FRAME_INVALID:ENTRIES_NOT_A_LIST:で",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-912",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_INVALID:FRAME_WITHOUT_CONFIRMED",
+  "diag": "ROLE_FRAME_INVALID:FRAME_WITHOUT_CONFIRMED",
+  "plan": "ROLE_FRAME_INVALID:FRAME_WITHOUT_CONFIRMED",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-913",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_INVALID:TYPES_NOT_A_LIST:で",
+  "diag": "ROLE_FRAME_INVALID:TYPES_NOT_A_LIST:で",
+  "plan": "ROLE_FRAME_INVALID:TYPES_NOT_A_LIST:で",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-A-914",
+  "input": "大工が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で",
+  "diag": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で",
+  "plan": "PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "keyless_same": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K274-R-001",
+  "input": "兄が箱を倉庫から工場に押した。",
+  "rule": "K274",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "patient": "placement_direct:ARTIFACT",
+   "source": "placement_direct:PLACE",
+   "goal": "role_frame:押す:に:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K274-R-002",
+  "input": "兄が箱を倉庫から工場へ押した。",
+  "rule": "K274",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "W3-b4",
+  "path": "W3-b4",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "patient": "placement_direct:ARTIFACT",
+   "goal": "placement_direct:PLACE",
+   "source": "placement_direct:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true,
+   "keyless_same": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K274-A-003",
+  "input": "兄が箱を倉庫から工場へ押した。",
+  "rule": "K274",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_TABLE_CONFLICT:から:source:goal",
+  "diag": "ROLE_FRAME_TABLE_CONFLICT:から:source:goal",
+  "plan": "ROLE_FRAME_TABLE_CONFLICT:から:source:goal",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "RECIPIENT_TYPE_UNDETERMINED:押す",
+   "PLACEMENT_FRAME_NOT_READ:P_ACT"
+  ]
+ },
+ {
+  "id": "W3B6-K274-A-004",
+  "input": "兄が箱を倉庫から工場へ押した。",
+  "rule": "K274",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_TABLE_CONFLICT:が:agent:patient",
+  "diag": "ROLE_FRAME_TABLE_CONFLICT:が:agent:patient",
+  "plan": "ROLE_FRAME_TABLE_CONFLICT:が:agent:patient",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "RECIPIENT_TYPE_UNDETERMINED:押す",
+   "PLACEMENT_FRAME_NOT_READ:P_ACT"
+  ]
+ },
+ {
+  "id": "W3B6-K274-A-005",
+  "input": "兄が箱を倉庫から工場に押した。",
+  "rule": "K274",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_TABLE_CONFLICT:から:source:goal",
+  "diag": "ROLE_FRAME_TABLE_CONFLICT:から:source:goal",
+  "plan": "ROLE_FRAME_TABLE_CONFLICT:から:source:goal",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "PLACEMENT_FRAME_NOT_READ:P_ACT"
+  ]
+ },
+ {
+  "id": "W3B6-K274-A-006",
+  "input": "兄が箱を倉庫から工場に押した。",
+  "rule": "K274",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_TABLE_CONFLICT:を:patient:goal",
+  "diag": "ROLE_FRAME_TABLE_CONFLICT:を:patient:goal",
+  "plan": "ROLE_FRAME_TABLE_CONFLICT:を:patient:goal",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "PLACEMENT_FRAME_NOT_READ:P_ACT"
+  ]
+ },
+ {
+  "id": "W3B6-K274-A-007",
+  "input": "姉がナイフで肉を切った。",
+  "rule": "K274",
+  "entry_expect": "abstain",
+  "entry": "read",
+  "verdict": "misread",
+  "w3b6_expect": "ROLE_FRAME_TABLE_CONFLICT:が:agent:experiencer+patient",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "U3",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "patient": "placement_direct:SUBSTANCE_FOOD",
+   "instrument": "role_frame:切る:で:ARTIFACT"
+  },
+  "checks": {
+   "entry": false,
+   "diag": false,
+   "plan": false,
+   "path": false
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K274-A-008",
+  "input": "姉が箱を部屋から廊下へ押した。",
+  "rule": "K274",
+  "entry_expect": "abstain",
+  "entry": "read",
+  "verdict": "misread",
+  "w3b6_expect": "ROLE_FRAME_TABLE_CONFLICT:へ:goal:place+source",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "U",
+  "path": "W3-b4",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "patient": "placement_direct:ARTIFACT",
+   "goal": "placement_direct:PLACE",
+   "source": "placement_direct:PLACE"
+  },
+  "checks": {
+   "entry": false,
+   "diag": false,
+   "plan": false,
+   "path": false
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K274-R-009",
+  "input": "姉がナイフで肉を切った。",
+  "rule": "K274",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "patient": "placement_direct:SUBSTANCE_FOOD",
+   "instrument": "role_frame:切る:で:ARTIFACT"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K275-A-001",
+  "input": "大工が帽子で板を打った。",
+  "rule": "K275",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_SLOT_EVIDENCE_ONLY",
+  "diag": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_SLOT_EVIDENCE_ONLY",
+  "plan": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_SLOT_EVIDENCE_ONLY",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K275-A-002",
+  "input": "係員が廊下で書類を確認した。",
+  "rule": "K275",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_SLOT_EVIDENCE_ONLY",
+  "diag": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_SLOT_EVIDENCE_ONLY",
+  "plan": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_SLOT_EVIDENCE_ONLY",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K275-A-003",
+  "input": "弟が試験で泣いた。",
+  "rule": "K275",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_SLOT_EVIDENCE_ONLY",
+  "diag": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_SLOT_EVIDENCE_ONLY",
+  "plan": "ROLE_FRAME_FILLER_NOT_DIRECT:で:PLACEMENT_SLOT_EVIDENCE_ONLY",
+  "path_expect": "U3",
+  "path": "U3",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE"
+  ]
+ },
+ {
+  "id": "W3B6-K275-R-004",
+  "input": "弟が洪水で泣いた。",
+  "rule": "K275",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "cause": "role_frame:泣く:で:NATURAL_PHENOMENON"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K275-R-005",
+  "input": "兄が地震で驚いた。",
+  "rule": "K275",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "cause": "role_frame:驚く:で:NATURAL_PHENOMENON"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K276-A-001",
+  "input": "船が港に岸に停泊した。",
+  "rule": "K276",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_MULTIPLE_FILLERS:に",
+  "diag": "ROLE_FRAME_MULTIPLE_FILLERS:に",
+  "plan": "ROLE_FRAME_MULTIPLE_FILLERS:に",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "PLACEMENT_TYPE_MISMATCH:P_MOVE:が:ARTIFACT"
+  ]
+ },
+ {
+  "id": "W3B6-K276-A-002",
+  "input": "兄が公園に駅に走った。",
+  "rule": "K276",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_MULTIPLE_FILLERS:に",
+  "diag": "ROLE_FRAME_MULTIPLE_FILLERS:に",
+  "plan": "ROLE_FRAME_MULTIPLE_FILLERS:に",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  ]
+ },
+ {
+  "id": "W3B6-K276-A-003",
+  "input": "鳥が山に川に飛んだ。",
+  "rule": "K276",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_MULTIPLE_FILLERS:に",
+  "diag": "ROLE_FRAME_MULTIPLE_FILLERS:に",
+  "plan": "ROLE_FRAME_MULTIPLE_FILLERS:に",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  ]
+ },
+ {
+  "id": "W3B6-K276-A-004",
+  "input": "弟が公園に庭に走った。",
+  "rule": "K276",
+  "entry_expect": "abstain",
+  "entry": "abstain",
+  "verdict": "correct",
+  "w3b6_expect": "ROLE_FRAME_MULTIPLE_FILLERS:に",
+  "diag": "ROLE_FRAME_MULTIPLE_FILLERS:に",
+  "plan": "ROLE_FRAME_MULTIPLE_FILLERS:に",
+  "path_expect": "U",
+  "path": "U",
+  "role_basis": null,
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true
+  },
+  "declared_exception": false,
+  "reasons": [
+   "NO_SUPPORTED_CLAUSE",
+   "PLACEMENT_TYPE_MISMATCH:P_MOVE:に:PLACE"
+  ]
+ },
+ {
+  "id": "W3B6-K273-R-001",
+  "input": "船が湖に停泊した。",
+  "rule": "K273",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "role_frame:停泊する:が:ARTIFACT",
+   "place": "role_frame:停泊する:に:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K273-R-002",
+  "input": "兄が箱を体育館に押した。",
+  "rule": "K273",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "patient": "placement_direct:ARTIFACT",
+   "goal": "role_frame:押す:に:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K273-R-003",
+  "input": "母が金槌で板を打った。",
+  "rule": "K273",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "patient": "placement_direct:ARTIFACT",
+   "instrument": "role_frame:打つ:で:ARTIFACT"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K273-R-004",
+  "input": "大工がタガネで板を打った。",
+  "rule": "K273",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "patient": "placement_direct:ARTIFACT",
+   "instrument": "role_frame:打つ:で:ARTIFACT"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K273-R-005",
+  "input": "職員が校庭で書類を確認した。",
+  "rule": "K273",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "role_frame:確認する:が:PERSON",
+   "patient": "role_frame:確認する:を:INFO_LANGUAGE",
+   "place": "role_frame:確認する:で:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K273-R-006",
+  "input": "弟が事故で泣いた。",
+  "rule": "K273",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "cause": "role_frame:泣く:で:EVENT_ACT"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K273-R-007",
+  "input": "妹が雷で驚いた。",
+  "rule": "K273",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "cause": "role_frame:驚く:で:NATURAL_PHENOMENON"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K273-R-008",
+  "input": "弟が公園に走った。",
+  "rule": "K273",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "goal": "role_frame:走る:に:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ },
+ {
+  "id": "W3B6-K273-R-009",
+  "input": "兄が箱を倉庫に押した。",
+  "rule": "K273",
+  "entry_expect": "read",
+  "entry": "read",
+  "verdict": "correct",
+  "w3b6_expect": "READ",
+  "diag": "READ",
+  "plan": "READ",
+  "path_expect": "R",
+  "path": "R",
+  "role_basis": {
+   "agent": "placement_direct:PERSON",
+   "patient": "placement_direct:ARTIFACT",
+   "goal": "role_frame:押す:に:PLACE"
+  },
+  "checks": {
+   "entry": true,
+   "diag": true,
+   "plan": true,
+   "path": true,
+   "role_basis": true
+  },
+  "declared_exception": false,
+  "reasons": null
+ }
+]

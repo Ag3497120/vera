@@ -2854,6 +2854,19 @@ typed_plan_u_w3b2_v1_ja = typed_plan_u_w3b2_ja          # the plan of W3-b2 (row
 # semantic_read.py is not changed: the entry looks up `R.typed_plan_u_w3b2_ja` each time it runs, so paths U and U3 read with v2 once the name is this plan
 typed_plan_u_w3b2_ja = typed_plan_u_w3b4_ja
 
+# W3-b6 (docs/READING_SOUNDNESS.md section 10I, K270, H270): stage R. The plan of W3-b4/W3-b5 stays, body unchanged, under a name of its own; the name the round-4 gate below wraps
+# becomes "that plan, then stage R" (stage R itself is at the end of this file and is looked up when it is called).
+import functools as _w3b6_functools
+typed_plan_u_w3b4_body_ja = typed_plan_u_w3b4_ja
+
+
+def _typed_plan_u_w3b6_ja(clause, toks, query, *, voice, written, strip, role_map):
+    """K270: the plan of W3-b4 (`typed_plan_u_w3b4_body_ja`), then stage R on what it decided or refused (`typed_plan_u_w3b6_stage_r_ja`)."""
+    return typed_plan_u_w3b6_stage_r_ja(typed_plan_u_w3b4_body_ja, clause, toks, query, voice=voice, written=written, strip=strip, role_map=role_map)
+
+
+typed_plan_u_w3b4_ja = _w3b6_functools.update_wrapper(_typed_plan_u_w3b6_ja, typed_plan_u_w3b4_body_ja)
+
 
 # ===================================================================================================================================
 # W3-b4 round 4 (docs 10D K186, the auditor's decision 2): the gate of a focus particle right after a case particle, on the plans of paths U and U3 (the plan of
@@ -3330,3 +3343,135 @@ def w1a5_explain_ja(text, placement=None):
     from . import semantic_read as E
     E.read(text, 'ja', placement=placement)
     return {k: (dict(v) if isinstance(v, dict) else list(v) if isinstance(v, list) else v) for k, v in W1A5_LAST.items()}
+
+
+# ===================================================================================================================================
+# W3-b6: the role frame of a predicate as the way to read what the table of K62 has no opinion about (docs/READING_SOUNDNESS.md section 10I, K270-K277).
+# The answer of a predicate may carry `role_frame_status` and `role_frame` ({particle: [{"role", "types"}]}, contract of W3-a6 D8); `role_frame_unconfirmed` is never read.
+# Stage R runs after the plan of W3-b4 (the wiring is above, next to `typed_plan_u_w3b2_ja = typed_plan_u_w3b4_ja`) and only on what that plan left to the table: a filler
+# the plan decided is checked against the frame (K274), a filler the table has no opinion about is read when exactly one role declared for its particle holds its type (K273).
+# No word and no surface rule: the reasons are a closed list, the kinds of the roles a closed table.
+# ===================================================================================================================================
+W3B6_REASON_NAMES = ('ROLE_FRAME_NOT_CONFIRMED', 'ROLE_FRAME_FILLER_NOT_DIRECT', 'ROLE_FRAME_FILLER_RELATIVE_POSITION', 'ROLE_FRAME_TYPE_NOT_DECLARED', 'ROLE_FRAME_SPLIT',
+                     'ROLE_FRAME_PARTICLE_NOT_DECLARED', 'ROLE_FRAME_INVALID', 'ROLE_FRAME_TABLE_CONFLICT', 'ROLE_FRAME_MULTIPLE_FILLERS')
+W3B6_ROLE_KINDS = {'agent': 'arg', 'patient': 'arg', 'goal': 'arg', 'source': 'arg', 'place': 'adjunct', 'time': 'adjunct',
+                   'recipient': 'arg', 'result': 'arg', 'quotation': 'arg', 'entity': 'arg', 'value': 'arg', 'attribute': 'arg', 'causer': 'arg', 'causee': 'arg', 'experiencer': 'arg',
+                   'instrument': 'adjunct', 'companion': 'adjunct', 'cause': 'adjunct', 'standard': 'adjunct', 'beneficiary': 'adjunct'}
+
+
+def predicate_role_frame(answer):
+    """K273, the only reader of the role frame of the answer of a predicate (it reads `role_frame_status` and `role_frame`, nothing else of the answer):
+    ('absent', None) when there is no `role_frame_status`; ('not_confirmed', status) for ESTIMATED / NO_ROLE_FRAME with a null frame; ('confirmed', {particle: ((role, frozenset(types)), ...)})
+    for a CONFIRMED frame that keeps the contract; else (None, 'ROLE_FRAME_INVALID:<problem>')."""
+    if not isinstance(answer, dict) or 'role_frame_status' not in answer: return 'absent', None
+
+    def bad(problem): return None, 'ROLE_FRAME_INVALID:' + problem
+    status = answer['role_frame_status']
+    if status not in ('CONFIRMED', 'ESTIMATED', 'NO_ROLE_FRAME'): return bad('STATUS_UNKNOWN')
+    if 'role_frame' not in answer: return bad('MISSING_ROLE_FRAME')
+    frame = answer['role_frame']
+    if status != 'CONFIRMED':
+        if frame is not None: return bad('FRAME_WITHOUT_CONFIRMED')
+        return 'not_confirmed', status
+    if not isinstance(frame, dict): return bad('NOT_A_MAPPING')
+    from .coarse_types import NOUN_TYPES
+    from .event_cross import ROLE_NAMES
+    out = {}
+    for particle, entries in frame.items():
+        if particle not in _CASE_PARTICLES_9: return bad('PARTICLE_NOT_CASE:%s' % (particle,))
+        if not (isinstance(entries, list) and entries): return bad('ENTRIES_NOT_A_LIST:%s' % (particle,))
+        rows, seen = [], set()
+        for entry in entries:
+            if not isinstance(entry, dict): return bad('ENTRY_NOT_A_MAPPING:%s' % (particle,))
+            if set(entry) != {'role', 'types'}: return bad('ENTRY_KEYS:%s' % (particle,))
+            role, types = entry['role'], entry['types']
+            if not (isinstance(role, str) and role in ROLE_NAMES): return bad('ROLE_NOT_IN_CONVENTION:%s:%s' % (particle, role))
+            if not (isinstance(types, list) and types and all(isinstance(t, str) and t for t in types)): return bad('TYPES_NOT_A_LIST:%s' % (particle,))
+            for t in types:
+                if t not in NOUN_TYPES: return bad('TYPE_NOT_NOUN:%s:%s' % (particle, t))
+            if role in seen: return bad('ROLE_DUPLICATED:%s:%s' % (particle, role))
+            seen.add(role)
+            rows.append((role, frozenset(types)))
+        out[particle] = tuple(rows)
+    return 'confirmed', out
+
+
+def _w3b6_conflict(toks, pairs, basis, frame):
+    """K274: the reason of a disagreement between a role the other paths decided (`pairs` of (name, role), `basis` of the plan) and the frame, else None. A disagreement is: for a type
+    of the filler the frame of the particle holds in one or more roles and the role of the table is none of them (review r1 M1; the roles are joined with '+', sorted). The frame is looked up for every particle that has one (the particles of the
+    subject and the object too: they are not READ by stage R, they are only CHECKED here)."""
+    for name, role in pairs:
+        particle = _particle_after(toks, role.span.end)
+        if particle not in frame or name not in basis or basis[name].startswith('role_frame:'): continue
+        for typ in _basis_types(basis[name]):
+            holding = [r for r, types in frame[particle] if typ in types]
+            if holding and name not in holding: return 'ROLE_FRAME_TABLE_CONFLICT:%s:%s:%s' % (particle, name, '+'.join(sorted(holding)))
+    return None
+
+
+def typed_plan_u_w3b6_stage_r_ja(body, clause, toks, query, *, voice, written, strip, role_map):
+    """K270-K277, stage R: (typed, None) or (None, reason), the same as the plan `body` (the plan of W3-b4, called first, unchanged). What `body` refused for a reason that is not "the table has
+    no opinion" is returned as it is, with no question asked; with no `role_frame_status` in the answer of the predicate nothing is done (the object `body` returned is returned)."""
+    no_opinion = ('PLACEMENT_FRAME_NOT_READ:', 'PLACEMENT_PARTICLE_NOT_IN_FRAME:', 'PLACEMENT_TYPE_MISMATCH:')
+    typed, why = body(clause, toks, query, voice=voice, written=written, strip=strip, role_map=role_map)
+    if typed is None and not why.startswith(no_opinion): return None, why
+    answer_p = query.query(written)
+    if 'role_frame_status' not in answer_p: return typed, why
+    kind, info = predicate_role_frame(answer_p)
+    if kind is None: return None, info
+    if kind == 'not_confirmed':
+        return (typed, why) if typed is not None else (None, 'ROLE_FRAME_NOT_CONFIRMED:' + info)
+    frame = info
+    if typed is not None:                                                    # case A: the table read it; stage R only checks (K274)
+        conflict = _w3b6_conflict(toks, typed['roles'], typed['role_basis'], frame)
+        return (None, conflict) if conflict else (typed, why)
+    ptype, _ = placement_type(answer_p)                                       # case B: the table had no opinion about something (the gates of the predicate are passed)
+    fkind, finfo = predicate_frame(answer_p)
+    if fkind is None: return None, finfo
+    read_particles = _CASE_PARTICLES_9[2:]                                    # K271: the particles of the subject and of the object (the first two keys) are not read
+    chosen, basis, by_frame = [], {}, 0
+    for role in clause.roles:
+        particle = _particle_after(toks, role.span.end)
+        one, why1 = body(replace(clause, roles=(role,)), toks, query, voice=voice, written=written, strip=strip, role_map=role_map)
+        if one is not None:                                                   # the table read this filler: what it decided stays; K274 against the frame
+            name = one['roles'][0][0]
+            if name in basis: return None, 'PLACEMENT_DUPLICATE_ROLE:' + name
+            conflict = _w3b6_conflict(toks, one['roles'], one['role_basis'], frame)
+            if conflict: return None, conflict
+            chosen.append((name, role)); basis[name] = one['role_basis'][name]
+            continue
+        if not why1.startswith(no_opinion): return None, why1               # a gate of the filler or of the predicate: not overridden
+        named = role.name not in ('recipient', 'ambiguous')
+        decided = None
+        if named:
+            decided = 'agent' if role.name == 'agent' else role_map.get(role.name)
+            if decided is None: return None, why
+        else:
+            if particle not in read_particles: return None, why
+            if sum(1 for r in clause.roles if _particle_after(toks, r.span.end) == particle) > 1: return None, 'ROLE_FRAME_MULTIPLE_FILLERS:' + particle
+        value = strip(role)
+        if not value: return None, 'PLACEMENT_INVALID:EMPTY_TERM:%s' % (particle,)
+        question = _w3b2_not_demonstrative(toks, role)
+        if question: return None, question
+        head, relational = no_phrase_head(toks, role.span.end - len(value), role.span.end)
+        if relational: return None, relational
+        typ, why2 = placement_type(query.query(head or value))
+        if why2: return None, 'ROLE_FRAME_FILLER_NOT_DIRECT:%s:%s' % (particle, why2)
+        if typ == 'RELATIVE_POSITION': return None, 'ROLE_FRAME_FILLER_RELATIVE_POSITION:' + particle
+        if particle not in frame: return None, 'ROLE_FRAME_PARTICLE_NOT_DECLARED:' + particle
+        holding = [r for r, types in frame[particle] if typ in types]
+        if not holding: return None, 'ROLE_FRAME_TYPE_NOT_DECLARED:%s:%s' % (particle, typ)
+        if len(holding) > 1: return None, 'ROLE_FRAME_SPLIT:%s:%s' % (particle, typ)
+        found = holding[0]
+        if named and found != decided: return None, 'ROLE_FRAME_TABLE_CONFLICT:%s:%s:%s' % (particle, decided, found)
+        if fkind == 'confirmed':
+            if particle not in finfo: return None, 'PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:%s:%s' % (ptype, particle)
+            if typ not in finfo[particle]: return None, 'PLACEMENT_FRAME_TYPE_NOT_CONFIRMED:%s:%s:%s' % (ptype, particle, typ)
+        if W3B6_ROLE_KINDS[found] == 'adjunct':
+            _, why3 = placement_type(query.query(head or value), adjunct=True)
+            if why3: return None, 'ROLE_FRAME_FILLER_NOT_DIRECT:%s:%s' % (particle, why3)
+        if found in basis: return None, 'PLACEMENT_DUPLICATE_ROLE:' + found
+        chosen.append((found, role)); basis[found] = 'role_frame:%s:%s:%s' % (written, particle, typ)
+        by_frame += 1
+    if by_frame == 0: return None, why
+    return {'mode': 'override', 'roles': chosen, 'predicate_basis': 'placement_direct:' + ptype, 'role_basis': basis, 'clause': replace(clause, unsupported=())}, None

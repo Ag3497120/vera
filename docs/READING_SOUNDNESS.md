@@ -4529,3 +4529,146 @@ K-F2（10H の既存の K261・K-F2 の文は消さない。追記）: このチ
 ```
   `typed_relational_filler_ja` の docstring 1 行。前: `"""W5-f (docs 10H): refuse place, goal, source or で fillers whose head is 名詞/普通名詞/副詞可能."""` 後: `"""W5-f r3: retracted by the auditor (2026-10-04 13:30); not called. Kept as the record of K261 (docs 10H.e)."""` 本体は変わっていない（関数は残り、どこからも呼ばれない）。基点 0041606 からの `semantic_reader.py` の削除行は 0（`git diff 0041606 -- verantyx/semantic_reader.py | grep -c '^-[^-]'`）。
 - 注記（回帰データの独立性）: w5f_gates_r3.jsonl と w5f_gates_r3b.jsonl の F1 の文は、門が決め手になる形を探って選んだ（棄権の行の出力を見たうえで選んだ）。期待は文の設計どおりの abstain なので回帰データとしては有効だが、独立した証拠になるのは中間職・監査役の未公開の文のほうである。
+
+
+## 10I. W3-b6: 読解器が述語の役割つきの枠を使う（事前登録 K270〜）
+
+<!-- w3b6-prereg:begin -->
+起票 2026-10-04（基点 dev `51c9693`）。チケット `review-impl/prompts/W3-b6_reader_role_frames.prompt.md`、中間職の指示書 `review-impl/W3-b6/plan.md`。この節は、検査データ（`tests/reading_soundness/ja_r13.jsonl`）・テスト・実装より **前** に書く（時刻は `artifacts/w3-b6/prereg_time.txt`）。
+
+### 目的
+充填物の型でも述語の型の枠でも、で・に・へ・から の役割は決まらない（K183・K220）。述語ごとには役割はほぼ決まる。配置側の W3-a6（r9、未統合）は述語ごとに `role_frame = {助詞: [{"role", "types"}]}` を分布の腕で確認した役割だけ `role_frame_status: CONFIRMED` で出す。読解器は、問い合わせの答えの **契約** にだけ依存して、その枠を読む段 R を持つ。配置 r9 がまだ無いので、検査は偽の答え（`synthetic_contract`）で行い、r9 での実測（O5）は W3-a6 統合後に監査役が行う。
+
+### 問い合わせの答えの契約（W3-a6 §12.18 D8。読解器はこれだけを前提にする）
+- 配置が `role_frames` の表を持つときだけ、答えの末尾に 3 鍵がこの順で付く: `role_frame_status` ∈ {`CONFIRMED`, `ESTIMATED`, `NO_ROLE_FRAME`}、`role_frame`（CONFIRMED のときだけ `{助詞: [{"role", "types"}]}`、他は null）、`role_frame_unconfirmed`（読解器は **読まない**）。
+- 表の無い配置（r7・r8）と配置なしでは 3 鍵は無い。鍵が無ければ段 R は何もしない（K277）。
+- 役割名は `event_cross.ROLE_NAMES`（20）、型は `coarse_types.NOUN_TYPES` の id、助詞は格助詞 9 種（`_CASE_PARTICLES_9`）。
+
+### 規則
+- **K270 入口**: 段 R は W3-b4 の経路 U/U3 と同じ入口（能動態・述語が正規化されていない・K186 の係助詞の門・W5-f の引用の門・並立の門・埋め込みの十字の門を通った後、単一の述語の節）でだけ呼ぶ。新しい入口は作らない。述語の答えの `role_frame_status` が無い → 基点と同じ出力（理由も出さない）。`ESTIMATED`・`NO_ROLE_FRAME` で表が読めなかった文 → `ROLE_FRAME_NOT_CONFIRMED:<status>`。
+- **K271 読む助詞**: に・で・へ・から・と・まで・より（`_CASE_PARTICLES_9` から が・を を除いた 7 つ。関数の中で導く）。が・を は段 R で「読む」対象でない（既存の経路が決める）。枠が が/を に別の役割を宣言していても、読む材料には使わない。ただし K274 の食い違いの検査と、表が確かめていない既存の名前の確認（H271）には使う。
+- **K272 充填物**: 充填物の主辞の配置の答えが direct の 1 型（`placement_type` の門をそのまま通す。MULTIPLE・UNPLACED・UNKNOWN・推定・候補のみ → `ROLE_FRAME_FILLER_NOT_DIRECT:<助詞>:<理由>`）。型が `RELATIVE_POSITION` → `ROLE_FRAME_FILLER_RELATIVE_POSITION:<助詞>`（枠は宣言できない型。理由を分けて数える）。
+- **K273 決め方**: `role_frame[助詞]` の役割のうち `types` が充填物の型を含むものを数える。1 → その役割で読む（`role_basis` は `role_frame:<述語>:<助詞>:<型>`、`predicate_basis` は `placement_direct:<述語の型>`）。0 → `ROLE_FRAME_TYPE_NOT_DECLARED:<助詞>:<型>`。2 以上 → `ROLE_FRAME_SPLIT:<助詞>:<型>`。助詞が枠に無い → `ROLE_FRAME_PARTICLE_NOT_DECLARED:<助詞>`。枠の形が契約を外れる → `ROLE_FRAME_INVALID:<problem>`（文全体を棄権。黙って読まない。problem は下の閉じた一覧）。
+- **K274 表との関係**: 既存の経路（規約の表・K62 v2・W3-b1〜b5）が同じ充填物に既に役割を与えているとき、枠の役割と一致すれば既存の読みをそのまま返す（`role_basis` は既存のまま。段 R は何も足さない）。食い違えば文を棄権 `ROLE_FRAME_TABLE_CONFLICT:<助詞>:<既存の役割>:<枠の役割>`（「食い違い」= 既存の役割の型の充填物 T について、その助詞の枠で T を含む役割がちょうど 1 つあり、それが既存と違う）。段 R が新しく読めるのは、既存の経路がその充填物を未対応に残したときだけ（`recipient`・`ambiguous`、または表が「型を読まない／助詞の行が無い／型の行が無い」と言った充填物）。枠は表を上書きしない。
+- **K275 kind（項か付加か）**: 枠は kind を持たない。段 R で読んだ役割の kind は、表の値（agent・patient・goal・source = arg、place・time = adjunct）か、表に無い役割は H274 の事前登録（`table:w3b6_role_kinds`）。kind の効き目は付加の門（`role@` の腕だけの direct を使わない）だけで、出力には出ない。
+- **K276 複数の充填物**: 同じ助詞の（未対応の）充填物が節に 2 つ以上あれば段 R は読まない（`ROLE_FRAME_MULTIPLE_FILLERS:<助詞>`）。並立は既存の門が先に棄権する。
+- **K277 不変**: 配置なし・r7・r8（3 鍵なし）では読解の出力が基点と byte 一致。既存の凍結データはすべて不変。新しい定数は理由名の閉じた一覧 `W3B6_REASON_NAMES` と K275 の kind の表 `W3B6_ROLE_KINDS` だけ。語の一覧・表層の規則は作らない。
+
+### 段 R の手順（指示書 2.3 の具体）
+`NO_OPINION` = 計画（W3-b4）の拒否理由が `PLACEMENT_FRAME_NOT_READ:`・`PLACEMENT_PARTICLE_NOT_IN_FRAME:`・`PLACEMENT_TYPE_MISMATCH:` で始まる（表が意見を持たないだけで、充填物や述語の門で止まったのではない）。
+1. 計画の本体（`typed_plan_u_w3b4_body_ja`、W3-b4/W3-b5 の関数。変えない）を呼ぶ。拒否で `NO_OPINION` でない → そのまま返す（段 R の外。問い合わせもしない）。
+2. `role_frame_status` の鍵が答えに無い → 計画の戻り値のオブジェクトをそのまま返す。`predicate_role_frame` が INVALID → `(None, 'ROLE_FRAME_INVALID:…')`（読めた文でも棄権）。`not_confirmed` → 読めた文はそのまま、読めなかった文は `ROLE_FRAME_NOT_CONFIRMED:<status>`。
+3. 場合 A（計画が読んだ）: K274 の食い違いだけを見て、無ければ読みをそのまま返す。場合 B（`NO_OPINION`）: 役割を節の順に 1 つずつ見る。(1) その役割だけで計画に問うて表が読んだ → その役割と basis（K274 の検査）。(2) 表が `NO_OPINION` 以外の理由で止まった → その理由で棄権。(3) 表が意見を持たない → 未対応の名前（`recipient`・`ambiguous`）は助詞が K271 の 7 つで K276・充填物の門・K272・K273 を通るとき、読解器が名前を与えていた役割（agent・patient・source など）は **枠が同じ役割を一意に宣言するときだけ** 残す（H271）。枠で 1 つも読めなかったときは計画の理由のまま。
+
+### 契約外の形の problem（`ROLE_FRAME_INVALID:<problem>` の閉じた一覧。検査の順）
+`STATUS_UNKNOWN`（3 値の外）、`MISSING_ROLE_FRAME`（status があり `role_frame` の鍵が無い）、`FRAME_WITHOUT_CONFIRMED`（CONFIRMED でないのに `role_frame` が null でない）、`NOT_A_MAPPING`（CONFIRMED で dict でない。null を含む）、`PARTICLE_NOT_CASE:<助詞>`、`ENTRIES_NOT_A_LIST:<助詞>`（空でない list でない）、`ENTRY_NOT_A_MAPPING:<助詞>`、`ENTRY_KEYS:<助詞>`（鍵が `role`・`types` ちょうどでない）、`ROLE_NOT_IN_CONVENTION:<助詞>:<役割>`、`TYPES_NOT_A_LIST:<助詞>`（空でない文字列の list でない）、`TYPE_NOT_NOUN:<助詞>:<型>`（`RELATIVE_POSITION` は今の `NOUN_TYPES` に無いので枠に書けば INVALID）、`ROLE_DUPLICATED:<助詞>:<役割>`（同じ助詞に同じ役割が 2 つ）。読む鍵は `role_frame_status` と `role_frame` の 2 つだけ（`role_frame_unconfirmed` は読まない。コードに現れない）。
+
+### 理由名（`W3B6_REASON_NAMES` の順。段 R の理由は出力に出ない: `typed_explain_ja(...)['w3b2']` と計画の戻り値で見る）
+<!-- BEGIN table:w3b6_reasons -->
+| 理由 | 書式 | 規則 |
+|---|---|---|
+| `ROLE_FRAME_NOT_CONFIRMED` | `ROLE_FRAME_NOT_CONFIRMED:<status>` | K270 |
+| `ROLE_FRAME_FILLER_NOT_DIRECT` | `ROLE_FRAME_FILLER_NOT_DIRECT:<助詞>:<placement_type の理由>` | K272, K275 |
+| `ROLE_FRAME_FILLER_RELATIVE_POSITION` | `ROLE_FRAME_FILLER_RELATIVE_POSITION:<助詞>` | K272 |
+| `ROLE_FRAME_TYPE_NOT_DECLARED` | `ROLE_FRAME_TYPE_NOT_DECLARED:<助詞>:<型>` | K273 |
+| `ROLE_FRAME_SPLIT` | `ROLE_FRAME_SPLIT:<助詞>:<型>` | K273 |
+| `ROLE_FRAME_PARTICLE_NOT_DECLARED` | `ROLE_FRAME_PARTICLE_NOT_DECLARED:<助詞>` | K273 |
+| `ROLE_FRAME_INVALID` | `ROLE_FRAME_INVALID:<problem>` | K273 |
+| `ROLE_FRAME_TABLE_CONFLICT` | `ROLE_FRAME_TABLE_CONFLICT:<助詞>:<既存の役割>:<枠の役割>` | K274 |
+| `ROLE_FRAME_MULTIPLE_FILLERS` | `ROLE_FRAME_MULTIPLE_FILLERS:<助詞>` | K276 |
+<!-- END table:w3b6_reasons -->
+
+再利用する既存の理由（名前を変えない）: `PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED`・`PLACEMENT_FRAME_TYPE_NOT_CONFIRMED`・`PLACEMENT_DUPLICATE_ROLE`・`PLACEMENT_INVALID:EMPTY_TERM`・`PLACEMENT_HEAD_RELATIONAL`・`PLACEMENT_DETERMINER_NOT_READ`。
+
+### K275 の kind の表（`W3B6_ROLE_KINDS`。20 役割）
+<!-- BEGIN table:w3b6_role_kinds -->
+| 役割 | kind | 出所 |
+|---|---|---|
+| agent | arg | 表 |
+| patient | arg | 表 |
+| goal | arg | 表 |
+| source | arg | 表 |
+| place | adjunct | 表 |
+| time | adjunct | 表 |
+| recipient | arg | H274 |
+| result | arg | H274 |
+| quotation | arg | H274 |
+| entity | arg | H274 |
+| value | arg | H274 |
+| attribute | arg | H274 |
+| causer | arg | H274 |
+| causee | arg | H274 |
+| experiencer | arg | H274 |
+| instrument | adjunct | H274 |
+| companion | adjunct | H274 |
+| cause | adjunct | H274 |
+| standard | adjunct | H274 |
+| beneficiary | adjunct | H274 |
+<!-- END table:w3b6_role_kinds -->
+
+### 判断記録（事前登録）
+- **H270 配線の位置**: チケットは「末尾に追記」「`typed_plan_u_w3b4_ja` の呼び出し元 1 箇所」と言うが、末尾で `typed_plan_u_w3b2_ja` を包み直すと既存の凍結テスト 3 本（`w3b4::test_the_name_the_entry_calls…`・`w3b5::test_the_plan_of_w3b4_only_gains_lines…`・`w1a5::test_the_function_of_the_base_entry…`）が落ちる。そこで挿入 2 か所（削除行 0）: A = `typed_plan_u_w3b2_ja = typed_plan_u_w3b4_ja` の直後に、元の関数を `typed_plan_u_w3b4_body_ja` として残し、`typed_plan_u_w3b4_ja` を「その計画、次に段 R」の包みに差し替える（`functools.update_wrapper`）。B = 段 R の本体・契約の読み手・定数をファイル末尾に追記。意味はチケットどおり。
+- **H271 表が確かめていない既存の名前（チケットより厳しい側）**: 読まない型・行の無い助詞では、表は が・を の充填物を確かめておらず、override の読み直しでは読解器自身の型の検査も走らない。そこで、読解器が名前を与えていた役割は、枠が同じ役割を一意に宣言するときだけ残し（basis は `role_frame:…`）、それ以外は K272/K273 の理由で棄権する。枠が別の役割を言えば K274 の食い違い。数を減らす方向。
+- **H272**: `recipient`・`ambiguous` を「未対応に残った充填物」とするのは、W3-b4 の計画が同じ 2 つを「表に任せる名前」として扱っている（`PLACEMENT_READER_DISAGREES` の検査）のに合わせる。
+- **H273**: 段 R に入るのは計画の理由が `NO_OPINION` のときだけ。`FRAME_GENERATED_DOES_NOT_LICENSE` や充填物の門（`PLACEMENT_MULTIPLE:…`・`PLACEMENT_ESTIMATED_*:…` など）は上書きしない。したがって、助詞が表に行を持つ型で MULTIPLE の充填物は、段 R の理由でなく計画の理由で棄権する。
+- **H274**: 表に無い 14 役割の kind は中間職の決定として上の表に事前登録した。
+- **H275**: チケットの「表が読まない述語型（11 型）」は W3-b1 の v1 表 `TYPED_FRAMES_NOT_READ` の数。今の計画（W3-b4/b5）が使う表は `TYPED_FRAMES_NOT_READ_W3B4` の 8 型。
+- **H276 到達の事実（`artifacts/w3-b6/reach_base.txt`、コードを触る前に測定）**: W3-a6 N2 の 11 行のうち、基点の読解器がすでに読むのは 通報する・連絡する・待つ・運ぶ（へ・から）。段 R に届くのは 停泊する（U）・打つ（U3）・驚く（U3）・確認する（で が曖昧な文。U3）・集める（U）。分ける の に は計画の引き金がどちらも掛からない（`PLACEMENT_W3B2_NOT_TRIGGERED`）。K270 が新しい入口を禁じているので引き金は足さない: 分ける の行は `NOT_REACHED:TRIGGER_NONE` として未達と報告する。K274 は、基点の読解器と W3-b1 の経路 U が読んだ文を見ない（段 R はそれらの後ろの W3-b2 の計画の中にある）: 既知の穴。K271 の と・まで・より は、段 R を呼ぶ入口の文に現れない（と は並立で、まで・より は読解器が「表せない内容」とする）: 機構は持つが入口から届かない（既知の穴）。
+- **H277**: 検査の枠はすべて作り物（`frame_source: synthetic_contract`）。r9 の実物の枠は無い。普通名詞の型と述語の型は r8 の答えを写し、r8 で estimated の述語を direct にした行には `placement_source: synthetic` と note を付ける。
+<!-- w3b6-prereg:end -->
+
+<!-- w3b6-results:begin -->
+### 検査データの変更記録（凍結後。元の凍結ファイルは消さない）
+凍結（`artifacts/w3-b6/bank_freeze.sha256`、`bank_freeze_time.txt`）は実装の開始（`impl_start_time.txt`）より前。実装を通した最初の実行で、**実装の誤りでなく期待（データ・道具・テスト）の側の誤り** が見つかったので、次を直した（元のファイルは `artifacts/w3-b6/*.frozen_r1.*` に残す。全文の差分は `ja_r13.frozen_r1.jsonl` と `tests/reading_soundness/ja_r13.jsonl` の比較）。直した後の sha256 は `bank_freeze.r3.sha256`（時刻 `bank_freeze.r3_time.txt`）。`r2` は実装の前にテストの 2 点（表 `w3b6_role_kinds` の行の順の比較、凍結ファイルの探し方）を直した記録。
+1. `W3B6-K272-A-2D02`・`2M03`（店員が左に昇った。）の期待の理由を `ROLE_FRAME_FILLER_RELATIVE_POSITION:に` / `PLACEMENT_MULTIPLE:に:左` から `PLACEMENT_SLOT_EVIDENCE_ONLY:に:左` に変更。理由: P_MOVE の に の行は time（付加）で、表の付加の門（腕が `role@` だけ）が NO_OPINION より前に止める（H273）。どちらも棄権のままで、誤読の問題ではない。代わりに、表が に の行を持たない P_ACT で相対位置の語の に を確かめる行を **追加**（`W3B6-K272-A-2D04`・`2M05`: 兄が箱を右に押した。）。
+2. `W3B6-K274-A-003`・`004` の `path` を `W3-b4` から `U` に変更（棄権する行の `path` は引き金の名前と決めたのに、基点の経路名を書いていた）。
+3. 道具 `run_rows.py` と生成器 `make_bank.py`: 引き金が掛からず計画が呼ばれない行（`PLACEMENT_W3B2_NOT_TRIGGERED`）の計画の期待を `NOT_CALLED` と導く（4 行。以前は診断の理由と同じ文字列を計画の期待に写していた）。
+4. テスト: 棄権する行の judge の判定は `correct`（読めない行を読まなかった）なので比較を直した。INVALID の problem の数え方（`split(':')[1]`）を直した。相対位置のテストを 15 行（追加 2）に合わせて直した。
+5. r4（O4 の `-k` で選ばれるようにテストの名前を直し、K274 の食い違いのテストを 1 つ追加）: 下の「r4」。
+r4（実装の後、検査データ・期待・コードは変えない。テストだけ）: O4 の `-k "relative_position or invalid or conflict or unconfirmed"` で K274 の食い違いと INVALID のテストが選ばれるよう、テスト 3 本の名前を変え（`test_an_invalid_frame_…` ×2、`test_when_the_frame_agrees_the_table_is_not_touched_…`）、K274 の食い違いのテストを 1 つ追加し、スコープのテストが、全体テストの実行中に既存のテストが書き換える `tests/attack/w3a3/r6_48_queries.jsonl`（このチケットの変更ではない。実行後に `git checkout` で戻した）を数えないようにした。sha256 は `bank_freeze.r4.sha256`（`bank_freeze.r4_time.txt`）。データ `ja_r13.jsonl` の sha256 は r3 から変わらない。
+
+### 測定結果（コマンドと出力。すべて `artifacts/w3-b6/` の下）
+- **O1（配置なし・r8 で基点 `51c9693` と byte 一致）**: 基点の出力は `before/`（取得時刻 `before/taken_time.txt`）。実装後の同じ道具の出力 `entry_none.after.jsonl`・`entry_r8.after.jsonl`（4,149 文）。`entry_none_compare.txt`: `readable_before=286 readable_after=286 changed=0`、`entry_r8_compare.txt`: `readable_before=458 readable_after=458 changed=0`。`cmp` はすべて 0: 配置なし・r8 の出力・r8 の問い合わせの記録（`entry_r8_queries.after.json`＝問い合わせの数と語が同じ）・`soundness.after.json`（`harness.py`）・`w3b4_rows.after.json`（ja_r10_w3b4）・`w3b5_rows.after.json`（ja_r11）が `before/` と一致。
+- **O2（凍結データ ja_r13.jsonl、93 行）**: `data_check.txt`（`run_rows.py`）: `rows=93 read=28 abstain=65 misread=0 incomplete=0 unjudged=0 mismatches={}`、`read rows judged correct: 28 of 28 read`。経路の内訳（実測）: R 23 行（読む 23）、R-blocked 1 行（計画は読むが入口の読み直しの門が止める: 集める）、U 19・U3 41・none 4（棄権）、W3-b4 1 行・base 4 行（読む）。規則ごとの行数（読む／棄権）: K270 6／9、K271 4／4、K272 0／21、K273 14／20、K274 2／4、K275 2／3、K276 0／4。r8 の語だけの行 57、作り物の語を含む行 36（`placement_source`・`synthetic_words`・`note` に書いてある）。テスト `pytest_w3b6.txt`: `50 passed`。
+- **11 行（W3-a6 N2。出力 `data_check.json` の `path`・`diag`・`role_basis` から）**:
+
+| N2 の行 | 文（行 id） | 経路（実測） | 結果 |
+|---|---|---|---|
+| 停泊する に=place | 船が港に停泊した。（N2-R-001） | R | 読む（agent 船・place 港。基点では `SUBJECT_TYPE_UNDETERMINED:船` で棄権） |
+| 通報する に=recipient | 住民が警察に通報した。（N2-R-002） | base | 読む（基点が読む。枠を付けても出力は同じ。段 R の手柄ではない） |
+| 連絡する に=recipient | 社員が上司に連絡した。（N2-R-003） | base | 読む（同上） |
+| 打つ で=instrument | 大工が金槌で板を打った。（N2-R-004） | R | 読む（instrument 金槌） |
+| 驚く で=cause | 妹が地震で驚いた。（N2-R-005） | R | 読む（cause 地震。原文の 物音 は r8 で UNPLACED: K272-A-001 で棄権） |
+| 確認する で=place | 係員が校庭で書類を確認した。（N2-R-006） | R | 読む（place 校庭。原文の 受付 は r8 で MULTIPLE: K272-A-002 で棄権） |
+| 集める に=goal | 先生が生徒を校庭に集めた。（N2-X-007） | R-blocked | **出力は棄権**（計画は goal と読む: `plan=READ`。入口の読み直しの K63 の門 `PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行` が止める。この門は変えない）。同じ構成を押す で読む行 N2-R-007b（兄が箱を工場に押した。経路 R・goal 工場）を置いた。未達: `NOT_READ:HEAD_DERIVED_GATE` |
+| 分ける に=result | 店員が商品を箱に分けた。（N2-A-008） | none | **未達 `NOT_REACHED:TRIGGER_NONE`**（計画の引き金が掛からない。K270 により引き金は足さない） |
+| 待つ で=place | 友人が駅で待った。（N2-R-009） | base | 読む（基点が読む） |
+| 運ぶ へ=goal・から=source | 業者が倉庫から工場へ荷物を運んだ。（N2-R-010） | base | 読む（基点が読む） |
+
+  したがって、段 R が新しく読んだのは 停泊する・打つ・驚く・確認する（と、集める の代わりの 押す）。基点が読む 4 述語（5 行）は変わらず、集める と 分ける の 2 行は読めていない（原因は上の表）。
+- **O4**: `pytest_o4.txt`: `8 passed`（相対位置 右＝RELATIVE_POSITION direct と MULTIPLE [PLACE, RELATIVE_POSITION] の両方で、W3-b4 の束 d の 5 文と W3-b5 の反例の型の文が棄権: `W3B6-K272-A-1D01〜1M05`・`2D01〜2M05`。`role_frame` の形を 12 通りの problem で壊すと `ROLE_FRAME_INVALID:<problem>`（データ 13 行・単体 19 件）。表との食い違いは `ROLE_FRAME_TABLE_CONFLICT`（場合 A・場合 B、K274 の 5 行）。`role_frame_unconfirmed` を壊しても出力・診断は不変）。
+- **O6（既存テストの失敗集合）**: `pytest_full.txt`（全体、1 回目＝r4 の前）: `117 failed, 15372 passed`。基線との差 `pytest_new_failures.txt`: 2 件 = `tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches`（指示書にある、未コミットの間だけ失敗する環境由来の 1 件）と、このチケットの `test_the_change_is_two_insertions_…`（全体テストの実行中に既存のテストが `tests/attack/w3a3/r6_48_queries.jsonl` を書き換えるのを数えて落ちた。r4 で直した）。基線にあって今回無い失敗: 0 件。r4 の後の全体テスト（`pytest_full.r4.txt`、基線との差 `pytest_new_failures.r4.txt`）: `116 failed, 15374 passed`。基線との差は `test_s6_two_runs_agree_except_timing_and_recount_matches` の 1 件だけ（指示書が環境由来と書いている、未コミットの間だけ失敗する 1 件）。基線の 115 件に対して基線にあって今回無い失敗は 0 件（`pytest_fixed_vs_baseline.r4.txt`）。このチケットのテストは全体の実行でも通る。
+- 関係するテスト `pytest_related.after.txt`: `3049 passed, 1 skipped`（基点 `before/pytest_related.txt` は `3000 passed, 1 skipped`。差 49 = 新しいテスト）。
+
+### 既知の穴（隠さない）
+1. **O5 は未測定**: 枠はすべて作り物（`synthetic_contract`）。r9 の実物の枠・実物の `role_frame` の形（W3-a6 統合後）での B1 の誤読・誤答・正読の増分は、監査役が測る。契約の形（役割名・型・助詞・3 鍵の順）を読解器が正しく読めることは偽の答えでしか確かめていない。
+2. **O3（中間職の未公開の文 40 文以上）は未実施**: 実装役は流さない。`artifacts/w3-b6/tools/run_rows.py --data FILE --out JSON` が、`ja_r13.jsonl` と同じ形（`input`・`expect`・`placement` があればよい。他の鍵は付いているものだけ検査）の任意の jsonl を流す。
+3. **K274 は基点の読解器と W3-b1 の経路 U が読んだ文を見ない**（段 R は W3-b2/W3-b4 の計画の中にある。基点が読む 4 述語がその例）。
+4. **集める は入口の門で読めない**（K63 の head 派生の門）。N2 の 集める の行は計画の戻り値でのみ goal。**分ける は計画の引き金が掛からず読めない**（K270 で引き金を足さない約束）。
+5. **K271 の と・まで・より は入口から届かない**: と は並立で、まで・より は読解器が表せない内容として別の経路（S4）に回り、段 R を呼ぶ計画（U・U3）に入らない（`reach_particles.txt`、道具 `tools/reach_particles.py`）。機構は持つが、届く文が無いので文では確かめていない（読む 7 つのうち文で確かめたのは に・で・へ・から）。
+6. **K276（同じ助詞の充填物 2 つ）は、1 つ目が recipient・2 つ目が ambiguous の に のときにしか入口に届かない**（で が 2 つの文は `duplicate role in clause` で引き金が掛からない）。データの 4 行は すべて に。
+7. **表が に の行（付加の time）を持つ型（P_MOVE・P_COMMUNICATE）では、相対位置の語の に は表の付加の門 `PLACEMENT_SLOT_EVIDENCE_ONLY` が先に止める**（H273。段 R の理由 `ROLE_FRAME_FILLER_RELATIVE_POSITION:に` は表に に の行が無い P_ACT でのみ出る）。どちらも棄権で誤読ではない。
+8. 偽の答えの `role_frame_unconfirmed` の形（`{助詞: [{role, reason}]}`）は W3-a6 の契約の写しではなく推測（読まないので影響しない）。
+9. 作り物の語を含む行（36 行）は r8 の状態と違う（`synthetic_words`）。とくに、r8 で estimated の述語（停泊する・確認する・分ける・通報する・連絡する）と、K272 の機構の行（金槌 を UNKNOWN／MULTIPLE／NO_PLACEMENT にした行）。r9 の状態は未知。
+10. H271（表が確かめていない名前は、枠の一意の確認が無ければ残さない）により、チケットの文言（「が・を は既存の経路が決める」）より厳しく棄権する。例: 停泊する の が・確認する の が・を は、枠が宣言しなければ読まない。数は減る方向。
+### レビュー r1 による K274 の変更記録（第 2 ラウンド。登録部分 `w3b6-prereg` は書き換えない）
+- **時刻**: 検査データ・テストの凍結 2026-10-04 18:43:52 +0900（`bank_freeze.r5_time.txt`、sha256 は `bank_freeze.r5.sha256`）。コードを直したのはその後（凍結の時点で新しい行・テストが落ちることを `tests_before_fix.r2.txt`・`data_check.before_fix.r2.txt` に記録: 4 failed、K274-A-007・008 が `misread`）。元の凍結ファイルは `ja_r13.frozen_r4.jsonl`・`make_bank.frozen_r4.py`・`test_semantic_read_w3b6.frozen_r4.py` に残した。
+- **前の定義（登録の K274、r1 の実装）**: 「食い違い」= 既存の役割の型の充填物 T について、その助詞の枠で T を含む役割が **ちょうど 1 つ** あり、それが既存と違う（`len(holding) == 1 and holding[0] != name`）。
+- **後の定義（r2）**: 「食い違い」= 既存の役割の型の充填物 T について、その助詞の枠で T を含む役割が **1 つ以上** あり、**既存の役割がそのどれでもない**（`holding and name not in holding`）。理由の書式は `ROLE_FRAME_TABLE_CONFLICT:<助詞>:<既存の役割>:<枠の役割>` のまま、枠の役割が 2 つ以上のときは `'+'.join(sorted(holding))`（`:` で 4 つに分かれることは変わらない）。T を含む役割が 0 のとき（枠がその型を宣言しない）は食い違いとしない（変更なし）。
+- **理由**: チケット K274「食い違えば棄権」「枠は表を上書きしない」に合わせる。登録の「ちょうど 1 つ」はチケットより狭く、2 つ以上の役割を宣言しそのどれも既存の役割でない枠（どう解釈しても食い違う）を通した。中間職の指示書 §2.3 の誤り（レビュー r1 M1）。例（r1 の実装で読んでしまった）: 姉がナイフで肉を切った。（枠 が: patient|experiencer）が、表の agent を残したまま instrument を足して読んだ。
+- **方向**: 棄権が増える方向のみ（読む→棄権）。棄権→読む は起こりえない（条件を広げただけで、読む側の分岐は触っていない）。
+- **既存の行への影響**: 実測 `rows_changed.r2.txt`: 旧 93 行のうち結果（`data_check.json` の行の内容）が変わった行は 0。旧 93 行はすべて同じ結果（読む 28・棄権 65）。
+- **追加した行（3）**: `W3B6-K274-A-007`（場合 B、`ROLE_FRAME_TABLE_CONFLICT:が:agent:experiencer+patient`、棄権）・`W3B6-K274-A-008`（場合 A、基点では読める文。`ROLE_FRAME_TABLE_CONFLICT:へ:goal:place+source`、棄権）・`W3B6-K274-R-009`（対照: 枠の 2 役割に表の agent を含めると読む。棄権が増えすぎないこと）。テスト `test_a_conflict_between_…` の行数 5 → 7、場合 A の対照に K274-A-008 を追加、新しいテスト `test_r2_a_frame_with_two_roles_…` を追加（既存の期待は弱めていない）。
+- **r2 の実測**（コマンドは `impl.r2.md`）: `pytest_w3b6.r2.txt` 51 passed。`data_check.r2.txt`: `rows=96 read=29 abstain=67 misread=0 incomplete=0 unjudged=0 mismatches={}`、読んだ 29 行すべて正。規則ごと（読む／棄権）: K270 6/9、K271 4/4、K272 0/21、K273 14/20、K274 3/6、K275 2/3、K276 0/4。作り物の行 36・r8 の行 60。**O1**: `entry_none.r2.jsonl`・`entry_r8.r2.jsonl`・`entry_r8_queries.r2.json` が `before/` と byte 一致（4,149 文）。harness・W3-b4 の行・W3-b5 の行も `before/` と byte 一致。関係するテスト `pytest_related.r2.txt`: 3000 passed, 1 skipped（基点と同じ）。
+- 上の「O2（… 93 行）」ほかの r1 の数値はそのまま残す（r1 の時点の実測）。r2 の数値はこの節が正。
+<!-- w3b6-results:end -->
