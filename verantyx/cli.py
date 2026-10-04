@@ -884,6 +884,315 @@ def cmd_review_ai_facts(args) -> int:
 
 
 def cmd_chat(args) -> int:
+    if getattr(args, "mode", "lab") == "round5":
+        import os
+        import shlex
+        import tempfile
+
+        from . import observe
+        from .basis_policy import AskPolicy, apply_to_ask
+        from .one import Vera
+        from .tui import read_input
+
+        if getattr(args, "engine", False):
+            _print({"kind": "unknown", "verdict": "UNKNOWN_ROUTE_CONFIGURATION",
+                    "reason": "--engine cannot be combined with --mode round5; Round5 chat uses one.Vera.ask"})
+            return 2
+
+        documents = list(getattr(args, "document", []) or [])
+        one_v = Vera(mode="round5")
+        loaded = one_v.load_documents(documents) if documents else {"loaded": 0, "skipped": []}
+        if documents:
+            print(f"[round5] 読込文書: {loaded['loaded']}件（この対話のみ）")
+            for skipped in loaded["skipped"]:
+                print(f"[round5] 読込保留: {skipped}")
+        else:
+            print("[round5] 読込文書: 0件（この対話のみ）")
+
+        placement = os.environ.get("VERA_PLACEMENT", "").strip()
+        if not placement:
+            print("[round5] 配置: 配置無し; 型の質問観測は動きません")
+        else:
+            placement_path = Path(placement)
+            placement_sha = None
+            try:
+                if placement_path.is_dir():
+                    manifest_path = placement_path / "manifest.json"
+                    if manifest_path.is_file():
+                        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+                        value = manifest.get("content_sha256") if isinstance(manifest, dict) else None
+                        if isinstance(value, str) and value:
+                            placement_sha = value
+                    if placement_sha is None:
+                        database_path = placement_path / "placement.sqlite"
+                        if database_path.is_file():
+                            placement_sha = hashlib.sha256(database_path.read_bytes()).hexdigest()
+                elif placement_path.is_file():
+                    placement_sha = hashlib.sha256(placement_path.read_bytes()).hexdigest()
+            except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+                placement_sha = None
+            if placement_sha is None:
+                print(f"[round5] 配置: 設定あり ({placement}); content_sha256=UNKNOWN_UNREADABLE")
+            else:
+                print(f"[round5] 配置: 設定あり ({placement}); content_sha256={placement_sha}")
+
+        originals = getattr(getattr(one_v, "bot", None), "original_texts", {})
+        source_count = len(originals) if isinstance(originals, dict) else 0
+        print(f"[round5] 読込文書数: {source_count}")
+        print("[round5] 使える経路: 質問 — Vera.ask → _round5_question_cross → basis_policy.apply_to_ask")
+        print("[round5] 使える経路: 生成 — observe.run_entry (文書構造を観測)")
+        print("[round5] 使える経路: 分業 — cmd_route → routing_from_text.emit")
+        print("[round5] 使える経路: 読解 — semantic_read.read / event_cross.attach_events")
+        print("[round5] コマンド: /doc <path>, /docs, /gen <text> [FACE_SWAP:role|EDGE:relation] [range], "
+              "/route <explanation> <task-json>, /read <text>, /json on|off, /help, /quit")
+        observe_placement = getattr(args, "placement", None)
+        if observe_placement:
+            print(f"[round5] 生成配置JSON: {observe_placement}")
+        else:
+            print("[round5] 生成配置JSON: 無し")
+
+        json_enabled = bool(getattr(args, "json", False))
+
+        def loaded_sources() -> dict:
+            bot = getattr(one_v, "bot", None)
+            current = getattr(bot, "original_texts", {})
+            return current if isinstance(current, dict) else {}
+
+        def show_round5_result(out: dict) -> None:
+            status = out.get("status")
+            verdict = out.get("verdict")
+            if status == "PARTIAL_COMPLETENESS_UNVERIFIED" or verdict == "PARTIAL":
+                print("PARTIAL_COMPLETENESS_UNVERIFIED")
+                _print_round5_chat_result(out, one_v)
+                policy = out.get("basis_policy")
+                outcome = policy.get("outcome") if isinstance(policy, dict) else "UNKNOWN"
+                print(f"basis_policy.outcome: {outcome}")
+                return
+
+            label = verdict
+            if not isinstance(label, str) or not label:
+                abstain = out.get("abstain")
+                label = abstain.get("type") if isinstance(abstain, dict) else "UNKNOWN_RESULT"
+            print(label)
+            if verdict == "ANSWER" or out.get("kind") == "answer":
+                body = out.get("text")
+                if isinstance(body, str) and body:
+                    print(f"答え: {body}")
+            elif isinstance(out.get("reason"), str) and out["reason"]:
+                print(f"理由: {out['reason']}")
+
+            evidence_printed = False
+            source_texts = loaded_sources()
+            sources = out.get("sources")
+            if isinstance(sources, (list, tuple)):
+                for source in sources:
+                    if not isinstance(source, dict):
+                        continue
+                    source_name = source.get("source") or source.get("id")
+                    sentence = source.get("text")
+                    if not isinstance(source_name, str) or not isinstance(sentence, str):
+                        continue
+                    line_no = source.get("line")
+                    if type(line_no) is not int:
+                        span = source.get("span")
+                        start = span.get("start") if isinstance(span, dict) else None
+                        original = source_texts.get(source_name)
+                        if type(start) is int and isinstance(original, str) and 0 <= start <= len(original):
+                            line_no = original[:start].count("\n") + 1
+                    if type(line_no) is int:
+                        print(f"根拠: {source_name}:{line_no}: {sentence}")
+                    else:
+                        print(f"根拠: {source_name}: {sentence}")
+                    evidence_printed = True
+            if not evidence_printed:
+                evidence = out.get("evidence")
+                if isinstance(evidence, (list, tuple)):
+                    for item in evidence:
+                        if isinstance(item, str):
+                            print(f"根拠(返却値): {item}")
+
+            policy = out.get("basis_policy")
+            outcome = policy.get("outcome") if isinstance(policy, dict) else "UNKNOWN"
+            print(f"basis_policy.outcome: {outcome}")
+
+        def show_observation(stdout: str) -> None:
+            try:
+                result = json.loads(stdout)
+            except (TypeError, json.JSONDecodeError):
+                print(stdout, end="" if stdout.endswith("\n") else "\n")
+                return
+
+            claims = {"OBSERVED_OCCUPIED": "OBSERVED", "CONSTRUCTED_UNOCCUPIED": "CONSTRUCTED"}
+            displayed = 0
+
+            def show_element(element: Any) -> None:
+                nonlocal displayed
+                if not isinstance(element, dict):
+                    return
+                displayed += 1
+                claim = claims.get(element.get("claim"), "UNKNOWN")
+                realization = element.get("realization")
+                sentence = realization.get("text") if isinstance(realization, dict) else None
+                print(f"{claim}: {sentence if isinstance(sentence, str) and sentence else '実現文なし'}")
+                coords = element.get("coords")
+                if coords is not None:
+                    print("座標: " + json.dumps(coords, ensure_ascii=False, separators=(",", ":")))
+
+            show_element(result.get("anchor"))
+            for rank in result.get("ranks", []):
+                if isinstance(rank, dict):
+                    for element in rank.get("elements", []):
+                        show_element(element)
+            focus = result.get("focus")
+            focus_kind = focus.get("kind") if isinstance(focus, dict) else None
+            if focus_kind == "NO_MOVE_LICENSED":
+                print("UNKNOWN: 配置近傍の無い移動先は未確認です (NO_MOVE_LICENSED)")
+            if displayed == 0:
+                print(f"UNKNOWN: 観測要素なし ({focus_kind or 'UNKNOWN'})")
+
+        def bad_command(verdict: str, **fields: Any) -> None:
+            _print({"kind": "unknown", "verdict": verdict, **fields})
+
+        while True:
+            raw = read_input("入力> ")
+            if raw is None:
+                print()
+                break
+            line = raw.strip()
+            if not line:
+                continue
+            if line == "/quit":
+                break
+            if not line.startswith("/"):
+                ask_args = argparse.Namespace(
+                    query=raw, mode="round5", document=list(documents),
+                    request_kind=getattr(args, "request_kind", "factual"),
+                    human_present=getattr(args, "human_present", False),
+                    show_generated_reference=getattr(args, "show_generated_reference", False), confirm=None,
+                )
+                policy = AskPolicy.from_args(ask_args)
+                if isinstance(policy, dict):
+                    out, _rc = policy, 2
+                else:
+                    result = _round5_question_cross(one_v.ask(raw), documents, raw)
+                    out, _rc = apply_to_ask(result, policy, query=raw, mode="round5", documents=documents)
+                if json_enabled:
+                    _print(out)
+                else:
+                    show_round5_result(out)
+                continue
+
+            command_match = re.match(r"(\S+)(?:\s+(.*))?$", line, re.DOTALL)
+            command = command_match.group(1) if command_match else line
+            argument = command_match.group(2) if command_match and command_match.group(2) else ""
+            if command == "/help":
+                print("コマンド: /doc <path>, /docs, /gen <text> [FACE_SWAP:role|EDGE:relation] [range], "
+                      "/route <explanation> <task-json>, /read <text>, /json on|off, /help, /quit")
+            elif command == "/json":
+                try:
+                    values = shlex.split(argument)
+                except ValueError as exc:
+                    bad_command("UNKNOWN_BAD_ARGUMENTS", command=command, detail=str(exc))
+                    continue
+                if values == ["on"]:
+                    json_enabled = True
+                    print("JSON: on")
+                elif values == ["off"]:
+                    json_enabled = False
+                    print("JSON: off")
+                else:
+                    bad_command("UNKNOWN_BAD_ARGUMENTS", command=command, want=["on", "off"])
+            elif command == "/doc":
+                try:
+                    values = shlex.split(argument)
+                except ValueError as exc:
+                    bad_command("UNKNOWN_BAD_ARGUMENTS", command=command, detail=str(exc))
+                    continue
+                if len(values) != 1 or not values[0]:
+                    bad_command("UNKNOWN_BAD_ARGUMENTS", command=command, want="one document path")
+                    continue
+                path = values[0]
+                try:
+                    loaded_doc = one_v.load_documents([path])
+                except (OSError, ValueError) as exc:
+                    bad_command("UNKNOWN_DOCUMENT_LOAD", path=path, detail=f"{type(exc).__name__}: {exc}")
+                    continue
+                documents.append(path)
+                print(f"読み込み: {path} (source documents={loaded_doc.get('loaded', 0)})")
+                for skipped in loaded_doc.get("skipped", []):
+                    print(f"読み込み保留: {skipped}")
+            elif command == "/docs":
+                names = list(loaded_sources())
+                if not names:
+                    print("読み込み済み文書: なし")
+                else:
+                    print("読み込み済み文書:")
+                    for name in names:
+                        print(f"  {name}")
+            elif command == "/gen":
+                work = argument.rstrip()
+                range_value = None
+                range_match = re.search(r"\s+([0-9]+)$", work)
+                if range_match:
+                    range_value = int(range_match.group(1))
+                    work = work[:range_match.start()].rstrip()
+                direction = ""
+                direction_match = re.search(
+                    r"\s+((?:FACE_SWAP|EDGE):[^,\s]+(?:,(?:FACE_SWAP|EDGE):[^,\s]+)*)$", work)
+                if direction_match:
+                    direction = direction_match.group(1)
+                    work = work[:direction_match.start()].rstrip()
+                anchor_text = work.strip()
+                if anchor_text[:1] in ("'", '"'):
+                    try:
+                        quoted = shlex.split(anchor_text)
+                    except ValueError as exc:
+                        bad_command("UNKNOWN_BAD_ARGUMENTS", command=command, detail=str(exc))
+                        continue
+                    if len(quoted) == 1:
+                        anchor_text = quoted[0]
+                try:
+                    records, _where, _loaded_count, _skipped = _qc_records(documents)
+                    with tempfile.TemporaryFile(mode="w+t", encoding="utf-8", newline="\n") as structure_file:
+                        for record in records:
+                            structure_file.write(json.dumps(record, ensure_ascii=False, separators=(",", ":")) + "\n")
+                        structure_file.flush()
+                        structure_file.seek(0)
+                        observation = observe.run_entry(
+                            anchor_text=anchor_text, anchor_kind="seed", direction=direction, range_=range_value,
+                            structure_path=f"/dev/fd/{structure_file.fileno()}", placement_path=observe_placement,
+                        )
+                except (OSError, ValueError) as exc:
+                    bad_command("UNKNOWN_GENERATION_INPUT", detail=f"{type(exc).__name__}: {exc}")
+                    continue
+                if observation.error is not None:
+                    if not observe_placement:
+                        print("NO_MOVE_LICENSED: 配置の近傍が無いため面の移動は許可されません",
+                              file=sys.stderr if json_enabled else sys.stdout)
+                    _print(observation.error)
+                else:
+                    if not observe_placement:
+                        print("NO_MOVE_LICENSED: 配置の近傍が無いため面の移動は許可されません",
+                              file=sys.stderr if json_enabled else sys.stdout)
+                    if json_enabled:
+                        sys.stdout.write(observation.stdout)
+                    else:
+                        show_observation(observation.stdout)
+            elif command == "/route":
+                route_match = re.match(r'''(?s)\s*(?:"([^"]+)"|'([^']+)'|(\S+))\s+(.+?)\s*$''', argument)
+                if not route_match:
+                    bad_command("UNKNOWN_BAD_ARGUMENTS", command=command, want="explanation path and task JSON or path")
+                    continue
+                explanation = route_match.group(1) or route_match.group(2) or route_match.group(3)
+                task_argument = route_match.group(4).strip()
+                cmd_route(argparse.Namespace(explanation=explanation, task=task_argument))
+            elif command == "/read":
+                cmd_read_events(argparse.Namespace(text=argument, lang=None))
+            else:
+                bad_command("UNKNOWN_COMMAND", command=command)
+
+        return 0
+
     from .config import VeraConfig
     from .one import Vera
 
@@ -1954,6 +2263,15 @@ def main(argv: Optional[list] = None) -> int:
                    help="lab: deterministic only; hybrid: local LLM; round5: explicit experimental one.Vera.ask route")
     p.add_argument("--document", action="append", default=[],
                    help="source file/folder for --mode round5 (repeatable; loaded for this session only)")
+    p.add_argument("--request-kind", choices=["factual", "creative", "paraphrase", "style", "example"],
+                   default="factual", help="round5 chat request kind (same basis policy as `vera ask`)")
+    p.add_argument("--human-present", action="store_true",
+                   help="round5 chat policy: a human is present in this scene")
+    p.add_argument("--show-generated-reference", action="store_true",
+                   help="round5 chat policy: show generated material in its separate reference field")
+    p.add_argument("--placement", default=None,
+                   help="round5 chat /gen: one JSON file of placements and neighbours, as in `vera observe`")
+    p.add_argument("--json", action="store_true", help="round5 chat: print raw result dictionaries")
     p.add_argument("--llm", default="llama3.2",
                    help="Ollama model name for hybrid mode")
     p.add_argument("--lang", default="auto",

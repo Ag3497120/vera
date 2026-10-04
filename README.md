@@ -2,6 +2,8 @@
 
 **A model-free knowledge and reasoning research engine with source evidence and typed refusals.**
 
+Run the round5 interactive CLI with `vera chat --mode round5`; see [docs/CHAT.md](docs/CHAT.md) for commands and limits.
+
 Vera stores knowledge as *crosses* — one per concept, with a core meaning and
 accumulating factual facets — and reasons by **multi-frontier consensus
 search**: several sections explore toward a center, and an answer ships only
