@@ -4672,3 +4672,18 @@ r4（実装の後、検査データ・期待・コードは変えない。テス
 - **r2 の実測**（コマンドは `impl.r2.md`）: `pytest_w3b6.r2.txt` 51 passed。`data_check.r2.txt`: `rows=96 read=29 abstain=67 misread=0 incomplete=0 unjudged=0 mismatches={}`、読んだ 29 行すべて正。規則ごと（読む／棄権）: K270 6/9、K271 4/4、K272 0/21、K273 14/20、K274 3/6、K275 2/3、K276 0/4。作り物の行 36・r8 の行 60。**O1**: `entry_none.r2.jsonl`・`entry_r8.r2.jsonl`・`entry_r8_queries.r2.json` が `before/` と byte 一致（4,149 文）。harness・W3-b4 の行・W3-b5 の行も `before/` と byte 一致。関係するテスト `pytest_related.r2.txt`: 3000 passed, 1 skipped（基点と同じ）。
 - 上の「O2（… 93 行）」ほかの r1 の数値はそのまま残す（r1 の時点の実測）。r2 の数値はこの節が正。
 <!-- w3b6-results:end -->
+
+## 10J. W10-f04: 穴つきの十字（読解が充填物の配置で棄権する文を、文ごと捨てずに「穴の型」つきで返す）（事前登録 K280〜K287）
+
+事前登録の全文は `docs/FUSION.md` §6（2026-10-04、実装・検査データの凍結より前）。ここには読解の側の規則だけを再掲する。**読解器（`semantic_reader.py`）の規則は変えない**: `read()`・`read_question()` の出力は基点と byte 一致で、新しい入口 `semantic_read.read_with_holes` が `read()` の出力の末尾に `holes_status`・`holes`・`partial` を足す。
+- K280 穴の条件: 棄権理由が充填物の配置（UNPLACED・MULTIPLE・UNKNOWN、助詞は 9 つの格助詞）に由来するときだけ。述語・構成・係助詞・引用・並立・照応・複文・`part` は従来どおり棄権（穴にしない）。`expected_types` = 探針（その語だけを DECIDED/direct の型 T に差し替えて再読）で読める T の集合 ∩ 読解器の表（K62 v2・段 R の枠）がその助詞に許す型。空なら穴にしない。穴の腕以外が型で変わるなら穴にしない。1 文の穴は最大 2、探針の組み合わせは 17×17 以内。
+- 第 3 ラウンドの裁定（`docs/FUSION.md` §6.6）: 候補が選ぶのは **語** だけで、**構造**（助詞の役割）は Vera が決める。穴の語の配置が型を与えない（UNPLACED／UNKNOWN）なら `GATE_A_HOLE_WORD_UNPLACED`、配置の型がこの文で 1 つの役割に落ちない（ある型で読めない／役割が違う）なら `GATE_A_ROLE_SPLIT`（門 (a4)）、型を注入した元の文の再読が穴の腕・中心・他の腕で元と合わなければ `GATE_B_REREAD_MISMATCH`（門 (b')）で採用しない。1 穴の文は構造上 (a4) で採用されない（K95 が読める語はそもそも穴にならない）。
+- 穴は「この語はここに入る語が足りない」という位置の申告であって、型の推定ではない。型を決めるのは配置と表、候補を出すのは後段の LLM、採用するのは再読の門（`docs/FUSION.md` §6.2 K282）。
+- 測定結果は `artifacts/w10-f04/` の出力から機械で貼る（下の結果欄）。
+
+### 10J 結果欄
+穴の抽出の測定は `docs/FUSION.md` §6.5（出力 `artifacts/w10-f04/p2_holes.txt`）:
+```
+rows=138 hole_expected=62 hole_got=62 wrong_hole=0 missed=0 types_outside_table=0 empty_types=0 status_mismatch=0 expected_types_differ_from_oracle=0
+status_counts {'HOLES_FOUND': 62, 'NOT_A_FILLER_CAUSE': 52, 'HOLE_NOT_PROBE_READABLE': 14, 'LANG_NOT_SUPPORTED': 4, 'READ': 3, 'NO_PLACEMENT': 3}
+```

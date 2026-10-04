@@ -1,0 +1,15 @@
+{
+ "mode": "live",
+ "inputs": 4149,
+ "questions_total": 2602,
+ "questions_max_per_input": 4,
+ "inputs_with_a_question": 1527,
+ "answers_by_state_origin_basis": {
+  "DECIDED/direct/None": 1807,
+  "DECIDED/estimated/generated": 611,
+  "DECIDED/estimated/proximity": 8,
+  "MULTIPLE/direct/None": 129,
+  "UNKNOWN/None/None": 17,
+  "UNPLACED/None/None": 30
+ }
+}

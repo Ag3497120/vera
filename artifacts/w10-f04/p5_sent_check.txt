@@ -1,0 +1,2 @@
+rows=168 messages_checked=351 leaked_sentence=0 leaked_sentence_sha=0 leaked_other_arm=0
+note: rows_with_direct_call=21 send nothing (their messages are 0); two_hole_rows=40, of which 40 sent the OTHER hole's word as a hole (J5: a hole's word is sent; `others` below = arms whose value is a string in partial.roles, so a hole is never counted as another arm)

@@ -1,0 +1,2010 @@
+[
+ {
+  "id": "H-POS-001",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "time",
+    "particle": "に",
+    "head": "山田",
+    "span": [
+     2,
+     4
+    ],
+    "expected_types": [
+     "TIME"
+    ],
+    "role_candidates": [
+     "time"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:に:山田"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-002",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "time",
+    "particle": "に",
+    "head": "本社",
+    "span": [
+     2,
+     4
+    ],
+    "expected_types": [
+     "TIME"
+    ],
+    "role_candidates": [
+     "time"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:に:本社"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-003",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "time",
+    "particle": "に",
+    "head": "山田",
+    "span": [
+     2,
+     4
+    ],
+    "expected_types": [
+     "TIME"
+    ],
+    "role_candidates": [
+     "time"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:に:山田"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-004",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "time",
+    "particle": "に",
+    "head": "東京",
+    "span": [
+     2,
+     4
+    ],
+    "expected_types": [
+     "TIME"
+    ],
+    "role_candidates": [
+     "time"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:に:東京"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-005",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "time",
+    "particle": "に",
+    "head": "本社",
+    "span": [
+     3,
+     5
+    ],
+    "expected_types": [
+     "TIME"
+    ],
+    "role_candidates": [
+     "time"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:に:本社"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-006",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "time",
+    "particle": "に",
+    "head": "左",
+    "span": [
+     3,
+     4
+    ],
+    "expected_types": [
+     "TIME"
+    ],
+    "role_candidates": [
+     "time"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:に:左"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-007",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "time",
+    "particle": "に",
+    "head": "山田",
+    "span": [
+     3,
+     5
+    ],
+    "expected_types": [
+     "TIME"
+    ],
+    "role_candidates": [
+     "time"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:に:山田"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-008",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "time",
+    "particle": "に",
+    "head": "望遠レンズ",
+    "span": [
+     3,
+     8
+    ],
+    "expected_types": [
+     "TIME"
+    ],
+    "role_candidates": [
+     "time"
+    ],
+    "placement_state": "UNPLACED",
+    "why": "PLACEMENT_UNPLACED:に:望遠レンズ"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-009",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "time",
+    "particle": "に",
+    "head": "搬出口",
+    "span": [
+     3,
+     6
+    ],
+    "expected_types": [
+     "TIME"
+    ],
+    "role_candidates": [
+     "time"
+    ],
+    "placement_state": "UNKNOWN",
+    "why": "PLACEMENT_UNKNOWN:に:搬出口"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-010",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "time",
+    "particle": "に",
+    "head": "警察",
+    "span": [
+     3,
+     5
+    ],
+    "expected_types": [
+     "TIME"
+    ],
+    "role_candidates": [
+     "time"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:に:警察"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-011",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "time",
+    "particle": "に",
+    "head": "顧客",
+    "span": [
+     3,
+     5
+    ],
+    "expected_types": [
+     "TIME"
+    ],
+    "role_candidates": [
+     "time"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:に:顧客"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-012",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "time",
+    "particle": "に",
+    "head": "友人",
+    "span": [
+     3,
+     5
+    ],
+    "expected_types": [
+     "TIME"
+    ],
+    "role_candidates": [
+     "time"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:に:友人"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-013",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "time",
+    "particle": "に",
+    "head": "隊員",
+    "span": [
+     3,
+     5
+    ],
+    "expected_types": [
+     "TIME"
+    ],
+    "role_candidates": [
+     "time"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:に:隊員"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-014",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "time",
+    "particle": "に",
+    "head": "相手",
+    "span": [
+     3,
+     5
+    ],
+    "expected_types": [
+     "TIME"
+    ],
+    "role_candidates": [
+     "time"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:に:相手"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-015",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "agent",
+    "particle": "が",
+    "head": "手紙",
+    "span": [
+     0,
+     2
+    ],
+    "expected_types": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "role_candidates": [
+     "agent"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:が:手紙"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-016",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "図書館",
+    "span": [
+     2,
+     5
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:へ:図書館"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-017",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "time",
+    "particle": "に",
+    "head": "客",
+    "span": [
+     2,
+     3
+    ],
+    "expected_types": [
+     "TIME"
+    ],
+    "role_candidates": [
+     "time"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:に:客"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-018",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "place",
+    "particle": "で",
+    "head": "窓口",
+    "span": [
+     2,
+     4
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "place"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:で:窓口"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-019",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "place",
+    "particle": "で",
+    "head": "ホール",
+    "span": [
+     2,
+     5
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "place"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:で:ホール"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-020",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "place",
+    "particle": "で",
+    "head": "交番",
+    "span": [
+     2,
+     4
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "place"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:で:交番"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-021",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "place",
+    "particle": "で",
+    "head": "土間",
+    "span": [
+     2,
+     4
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "place"
+    ],
+    "placement_state": "UNPLACED",
+    "why": "PLACEMENT_UNPLACED:で:土間"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-022",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "place",
+    "particle": "で",
+    "head": "広間",
+    "span": [
+     2,
+     4
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "place"
+    ],
+    "placement_state": "UNPLACED",
+    "why": "PLACEMENT_UNPLACED:で:広間"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-023",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "place",
+    "particle": "で",
+    "head": "座敷",
+    "span": [
+     3,
+     5
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "place"
+    ],
+    "placement_state": "UNPLACED",
+    "why": "PLACEMENT_UNPLACED:で:座敷"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-024",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "place",
+    "particle": "で",
+    "head": "屋根裏",
+    "span": [
+     2,
+     5
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "place"
+    ],
+    "placement_state": "UNPLACED",
+    "why": "PLACEMENT_UNPLACED:で:屋根裏"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-025",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "agent",
+    "particle": "が",
+    "head": "夫婦",
+    "span": [
+     0,
+     2
+    ],
+    "expected_types": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "role_candidates": [
+     "agent"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:が:夫婦"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-026",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "agent",
+    "particle": "が",
+    "head": "友人",
+    "span": [
+     0,
+     2
+    ],
+    "expected_types": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "role_candidates": [
+     "agent"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:が:友人"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-027",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "agent",
+    "particle": "が",
+    "head": "夫婦",
+    "span": [
+     0,
+     2
+    ],
+    "expected_types": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "role_candidates": [
+     "agent"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:が:夫婦"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-028",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "agent",
+    "particle": "が",
+    "head": "住民",
+    "span": [
+     0,
+     2
+    ],
+    "expected_types": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "role_candidates": [
+     "agent"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:が:住民"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-029",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "agent",
+    "particle": "が",
+    "head": "隊員",
+    "span": [
+     0,
+     2
+    ],
+    "expected_types": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "role_candidates": [
+     "agent"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:が:隊員"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-030",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "agent",
+    "particle": "が",
+    "head": "親子",
+    "span": [
+     0,
+     2
+    ],
+    "expected_types": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "role_candidates": [
+     "agent"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:が:親子"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-031",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "agent",
+    "particle": "が",
+    "head": "一行",
+    "span": [
+     0,
+     2
+    ],
+    "expected_types": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "role_candidates": [
+     "agent"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:が:一行"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-032",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "agent",
+    "particle": "が",
+    "head": "艦隊",
+    "span": [
+     0,
+     2
+    ],
+    "expected_types": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "role_candidates": [
+     "agent"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:が:艦隊"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-033",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "agent",
+    "particle": "が",
+    "head": "客",
+    "span": [
+     0,
+     1
+    ],
+    "expected_types": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "role_candidates": [
+     "agent"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:が:客"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-034",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "agent",
+    "particle": "が",
+    "head": "鹿",
+    "span": [
+     0,
+     1
+    ],
+    "expected_types": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "role_candidates": [
+     "agent"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:が:鹿"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-035",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "図書館",
+    "span": [
+     2,
+     5
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:へ:図書館"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-036",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "家",
+    "span": [
+     2,
+     3
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:へ:家"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-037",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "谷",
+    "span": [
+     2,
+     3
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:へ:谷"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-038",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "役所",
+    "span": [
+     2,
+     4
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:へ:役所"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-039",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "本部",
+    "span": [
+     2,
+     4
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:へ:本部"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-040",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "銀行",
+    "span": [
+     2,
+     4
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:へ:銀行"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-041",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "研究所",
+    "span": [
+     3,
+     6
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:へ:研究所"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-042",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "職場",
+    "span": [
+     3,
+     5
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:へ:職場"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-043",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "patient",
+    "particle": "を",
+    "head": "挨拶",
+    "span": [
+     6,
+     8
+    ],
+    "expected_types": [
+     "ABSTRACT",
+     "ANIMAL",
+     "ARTIFACT",
+     "BODY_PART",
+     "EVENT_ACT",
+     "GROUP_ORG",
+     "IDENTIFIER",
+     "INFO_LANGUAGE",
+     "NATURAL_PHENOMENON",
+     "PERSON",
+     "PLANT",
+     "STATE_PROPERTY",
+     "SUBSTANCE_FOOD",
+     "WORK"
+    ],
+    "role_candidates": [
+     "patient"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:を:挨拶"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-044",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "patient",
+    "particle": "を",
+    "head": "勝利",
+    "span": [
+     6,
+     8
+    ],
+    "expected_types": [
+     "ABSTRACT",
+     "ANIMAL",
+     "ARTIFACT",
+     "BODY_PART",
+     "EVENT_ACT",
+     "GROUP_ORG",
+     "IDENTIFIER",
+     "INFO_LANGUAGE",
+     "NATURAL_PHENOMENON",
+     "PERSON",
+     "PLANT",
+     "STATE_PROPERTY",
+     "SUBSTANCE_FOOD",
+     "WORK"
+    ],
+    "role_candidates": [
+     "patient"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:を:勝利"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-045",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "patient",
+    "particle": "を",
+    "head": "日程",
+    "span": [
+     5,
+     7
+    ],
+    "expected_types": [
+     "ABSTRACT",
+     "ANIMAL",
+     "ARTIFACT",
+     "BODY_PART",
+     "EVENT_ACT",
+     "GROUP_ORG",
+     "IDENTIFIER",
+     "INFO_LANGUAGE",
+     "NATURAL_PHENOMENON",
+     "PERSON",
+     "PLANT",
+     "STATE_PROPERTY",
+     "SUBSTANCE_FOOD",
+     "WORK"
+    ],
+    "role_candidates": [
+     "patient"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:を:日程"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-046",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "patient",
+    "particle": "を",
+    "head": "地図",
+    "span": [
+     7,
+     9
+    ],
+    "expected_types": [
+     "ABSTRACT",
+     "ANIMAL",
+     "ARTIFACT",
+     "BODY_PART",
+     "EVENT_ACT",
+     "GROUP_ORG",
+     "IDENTIFIER",
+     "INFO_LANGUAGE",
+     "NATURAL_PHENOMENON",
+     "PERSON",
+     "PLANT",
+     "STATE_PROPERTY",
+     "SUBSTANCE_FOOD",
+     "WORK"
+    ],
+    "role_candidates": [
+     "patient"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:を:地図"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-047",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "place",
+    "particle": "で",
+    "head": "窓口",
+    "span": [
+     2,
+     4
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "place"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:で:窓口"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-048",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "place",
+    "particle": "で",
+    "head": "ホール",
+    "span": [
+     2,
+     5
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "place"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:で:ホール"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-049",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "place",
+    "particle": "で",
+    "head": "交番",
+    "span": [
+     2,
+     4
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "place"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:で:交番"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-050",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "山の上",
+    "span": [
+     2,
+     5
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "UNKNOWN",
+    "why": "PLACEMENT_UNKNOWN:へ:山の上"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-051",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "橋の上",
+    "span": [
+     2,
+     5
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "UNKNOWN",
+    "why": "PLACEMENT_UNKNOWN:へ:橋の上"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-052",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "祖父の家",
+    "span": [
+     2,
+     6
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "UNKNOWN",
+    "why": "PLACEMENT_UNKNOWN:へ:祖父の家"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-053",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "agent",
+    "particle": "が",
+    "head": "先生の夫婦",
+    "span": [
+     0,
+     5
+    ],
+    "expected_types": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "role_candidates": [
+     "agent"
+    ],
+    "placement_state": "UNKNOWN",
+    "why": "PLACEMENT_UNKNOWN:が:先生の夫婦"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-054",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "前",
+    "span": [
+     5,
+     6
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:へ:前"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-055",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "patient",
+    "particle": "を",
+    "head": "机",
+    "span": [
+     2,
+     3
+    ],
+    "expected_types": [
+     "ABSTRACT",
+     "ANIMAL",
+     "ARTIFACT",
+     "BODY_PART",
+     "EVENT_ACT",
+     "GROUP_ORG",
+     "IDENTIFIER",
+     "INFO_LANGUAGE",
+     "NATURAL_PHENOMENON",
+     "PERSON",
+     "PLANT",
+     "STATE_PROPERTY",
+     "SUBSTANCE_FOOD",
+     "WORK"
+    ],
+    "role_candidates": [
+     "patient"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:を:机"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-056",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "source",
+    "particle": "から",
+    "head": "前",
+    "span": [
+     5,
+     6
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "source"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:から:前"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-057",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "patient",
+    "particle": "を",
+    "head": "荷物",
+    "span": [
+     2,
+     4
+    ],
+    "expected_types": [
+     "ABSTRACT",
+     "ANIMAL",
+     "ARTIFACT",
+     "BODY_PART",
+     "EVENT_ACT",
+     "GROUP_ORG",
+     "IDENTIFIER",
+     "INFO_LANGUAGE",
+     "NATURAL_PHENOMENON",
+     "PERSON",
+     "PLANT",
+     "STATE_PROPERTY",
+     "SUBSTANCE_FOOD",
+     "WORK"
+    ],
+    "role_candidates": [
+     "patient"
+    ],
+    "placement_state": "UNPLACED",
+    "why": "PLACEMENT_UNPLACED:を:荷物"
+   }
+  ]
+ },
+ {
+  "id": "H-POS-058",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "patient",
+    "particle": "を",
+    "head": "机",
+    "span": [
+     2,
+     3
+    ],
+    "expected_types": [
+     "ABSTRACT",
+     "ANIMAL",
+     "ARTIFACT",
+     "BODY_PART",
+     "EVENT_ACT",
+     "GROUP_ORG",
+     "IDENTIFIER",
+     "INFO_LANGUAGE",
+     "NATURAL_PHENOMENON",
+     "PERSON",
+     "PLANT",
+     "STATE_PROPERTY",
+     "SUBSTANCE_FOOD",
+     "WORK"
+    ],
+    "role_candidates": [
+     "patient"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:を:机"
+   }
+  ]
+ },
+ {
+  "id": "H-POS2-001",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "agent",
+    "particle": "が",
+    "head": "家族",
+    "span": [
+     0,
+     2
+    ],
+    "expected_types": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "role_candidates": [
+     "agent"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:が:家族"
+   },
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "図書館",
+    "span": [
+     3,
+     6
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:へ:図書館"
+   }
+  ]
+ },
+ {
+  "id": "H-POS2-002",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "agent",
+    "particle": "が",
+    "head": "警察",
+    "span": [
+     0,
+     2
+    ],
+    "expected_types": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "role_candidates": [
+     "agent"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:が:警察"
+   },
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "家",
+    "span": [
+     3,
+     4
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:へ:家"
+   }
+  ]
+ },
+ {
+  "id": "H-POS2-003",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "agent",
+    "particle": "が",
+    "head": "家族",
+    "span": [
+     0,
+     2
+    ],
+    "expected_types": [
+     "ANIMAL",
+     "GROUP_ORG",
+     "PERSON"
+    ],
+    "role_candidates": [
+     "agent"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:が:家族"
+   },
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "銀行",
+    "span": [
+     3,
+     5
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:へ:銀行"
+   }
+  ]
+ },
+ {
+  "id": "H-POS2-004",
+  "status": "HOLES_FOUND",
+  "holes": [
+   {
+    "arm": "patient",
+    "particle": "を",
+    "head": "荷物",
+    "span": [
+     2,
+     4
+    ],
+    "expected_types": [
+     "ABSTRACT",
+     "ANIMAL",
+     "ARTIFACT",
+     "BODY_PART",
+     "EVENT_ACT",
+     "GROUP_ORG",
+     "IDENTIFIER",
+     "INFO_LANGUAGE",
+     "NATURAL_PHENOMENON",
+     "PERSON",
+     "PLANT",
+     "STATE_PROPERTY",
+     "SUBSTANCE_FOOD",
+     "WORK"
+    ],
+    "role_candidates": [
+     "patient"
+    ],
+    "placement_state": "UNPLACED",
+    "why": "PLACEMENT_UNPLACED:を:荷物"
+   },
+   {
+    "arm": "goal",
+    "particle": "へ",
+    "head": "後",
+    "span": [
+     5,
+     6
+    ],
+    "expected_types": [
+     "PLACE"
+    ],
+    "role_candidates": [
+     "goal"
+    ],
+    "placement_state": "MULTIPLE",
+    "why": "PLACEMENT_MULTIPLE:へ:後"
+   }
+  ]
+ },
+ {
+  "id": "H-NEG-001",
+  "status": "NOT_A_FILLER_CAUSE:NO_SUPPORTED_CLAUSE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-002",
+  "status": "NOT_A_FILLER_CAUSE:NO_SUPPORTED_CLAUSE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-003",
+  "status": "NOT_A_FILLER_CAUSE:NO_SUPPORTED_CLAUSE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-004",
+  "status": "NOT_A_FILLER_CAUSE:NO_SUPPORTED_CLAUSE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-005",
+  "status": "NOT_A_FILLER_CAUSE:NO_SUPPORTED_CLAUSE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-006",
+  "status": "NOT_A_FILLER_CAUSE:NO_SUPPORTED_CLAUSE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-007",
+  "status": "NOT_A_FILLER_CAUSE:NO_SUPPORTED_CLAUSE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-008",
+  "status": "NOT_A_FILLER_CAUSE:NO_SUPPORTED_CLAUSE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-009",
+  "status": "HOLE_NOT_PROBE_READABLE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-010",
+  "status": "HOLE_NOT_PROBE_READABLE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-011",
+  "status": "HOLE_NOT_PROBE_READABLE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-012",
+  "status": "HOLE_NOT_PROBE_READABLE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-013",
+  "status": "HOLE_NOT_PROBE_READABLE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-014",
+  "status": "HOLE_NOT_PROBE_READABLE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-015",
+  "status": "HOLE_NOT_PROBE_READABLE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-016",
+  "status": "HOLE_NOT_PROBE_READABLE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-017",
+  "status": "HOLE_NOT_PROBE_READABLE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-018",
+  "status": "HOLE_NOT_PROBE_READABLE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-019",
+  "status": "HOLE_NOT_PROBE_READABLE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-020",
+  "status": "HOLE_NOT_PROBE_READABLE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-021",
+  "status": "HOLE_NOT_PROBE_READABLE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-022",
+  "status": "HOLE_NOT_PROBE_READABLE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-023",
+  "status": "NOT_A_FILLER_CAUSE:UNCOVERED_PREDICATE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-024",
+  "status": "NOT_A_FILLER_CAUSE:UNDETERMINED_VOICE:passive or honorific",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-025",
+  "status": "NOT_A_FILLER_CAUSE:UNDETERMINED_VOICE:passive or honorific",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-026",
+  "status": "NOT_A_FILLER_CAUSE:UNDETERMINED_VOICE:passive or spontaneous",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-027",
+  "status": "NOT_A_FILLER_CAUSE:NO_SUPPORTED_CLAUSE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-028",
+  "status": "NOT_A_FILLER_CAUSE:NO_SUPPORTED_CLAUSE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-029",
+  "status": "NOT_A_FILLER_CAUSE:NO_SUPPORTED_CLAUSE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-030",
+  "status": "NOT_A_FILLER_CAUSE:UNCOVERED_PREDICATE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-031",
+  "status": "NOT_A_FILLER_CAUSE:SUBJECT_TYPE_UNDETERMINED:授業",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-032",
+  "status": "NOT_A_FILLER_CAUSE:SUBJECT_TYPE_UNDETERMINED:人口",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-033",
+  "status": "NOT_A_FILLER_CAUSE:UNCOVERED_PREDICATE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-034",
+  "status": "NOT_A_FILLER_CAUSE:AGENT_EVIDENCE_MISSING:会社",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-035",
+  "status": "NOT_A_FILLER_CAUSE:QUANTIFIER_NOT_MAPPED:numeral",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-036",
+  "status": "NOT_A_FILLER_CAUSE:UNSUPPORTED_CLAUSE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-037",
+  "status": "NOT_A_FILLER_CAUSE:PREDICATE_VALUE_NOT_MAPPED",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-038",
+  "status": "NOT_A_FILLER_CAUSE:MAIN_PREDICATE_NOT_READ",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-039",
+  "status": "NOT_A_FILLER_CAUSE:PREDICATE_VALUE_NOT_MAPPED",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-040",
+  "status": "NOT_A_FILLER_CAUSE:PREDICATE_VALUE_NOT_MAPPED",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-041",
+  "status": "NOT_A_FILLER_CAUSE:UNSUPPORTED_CLAUSE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-042",
+  "status": "NOT_A_FILLER_CAUSE:UNSUPPORTED_CLAUSE",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-043",
+  "status": "NOT_A_FILLER_CAUSE:UNMAPPED_ROLE:attribute",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-044",
+  "status": "NOT_A_FILLER_CAUSE:UNMAPPED_ROLE:attribute",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-045",
+  "status": "NOT_A_FILLER_CAUSE:UNMAPPED_ROLE:attribute",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-046",
+  "status": "NOT_A_FILLER_CAUSE:MAIN_PREDICATE_NOT_READ",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-047",
+  "status": "NOT_A_FILLER_CAUSE:MAIN_PREDICATE_NOT_READ",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-048",
+  "status": "NOT_A_FILLER_CAUSE:UNREAD_SPAN:unsupported double negation",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-049",
+  "status": "NOT_A_FILLER_CAUSE:UNREAD_SPAN:unsupported double negation",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-050",
+  "status": "NOT_A_FILLER_CAUSE:UNREAD_SPAN:unsupported double negation",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-051",
+  "status": "NOT_A_FILLER_CAUSE:INTERJECTION_OR_FORMULA",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-052",
+  "status": "NOT_A_FILLER_CAUSE:INTERJECTION_OR_FORMULA",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-053",
+  "status": "NOT_A_FILLER_CAUSE:INTERJECTION_OR_FORMULA",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-054",
+  "status": "NOT_A_FILLER_CAUSE:NO_PREDICATE_TOKEN",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-055",
+  "status": "NOT_A_FILLER_CAUSE:NO_PREDICATE_TOKEN",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-056",
+  "status": "NOT_A_FILLER_CAUSE:NO_PREDICATE_TOKEN",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-057",
+  "status": "LANG_NOT_SUPPORTED",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-058",
+  "status": "NOT_A_FILLER_CAUSE:RECIPIENT_TYPE_UNDETERMINED:歩ける",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-059",
+  "status": "NOT_A_FILLER_CAUSE:RECIPIENT_TYPE_UNDETERMINED:歩ける",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-060",
+  "status": "NOT_A_FILLER_CAUSE:RECIPIENT_TYPE_UNDETERMINED:歩ける",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-061",
+  "status": "NOT_A_FILLER_CAUSE:UNDETERMINED_MODALITY:possible potential form",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-062",
+  "status": "NOT_A_FILLER_CAUSE:UNDETERMINED_MODALITY:possible potential form",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-063",
+  "status": "NOT_A_FILLER_CAUSE:UNDETERMINED_MODALITY:possible potential form",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-064",
+  "status": "NOT_A_FILLER_CAUSE:GOAL_TYPE_UNDETERMINED:森",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-065",
+  "status": "NOT_A_FILLER_CAUSE:SUBJECT_TYPE_UNDETERMINED:会社",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-066",
+  "status": "NOT_A_FILLER_CAUSE:QUANTIFIER_NOT_MAPPED:ばかり",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-067",
+  "status": "NOT_A_FILLER_CAUSE:ASPECT_NOT_IN_CONVENTION:みる",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-068",
+  "status": "READ",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-069",
+  "status": "READ",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-070",
+  "status": "READ",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-071",
+  "status": "NO_PLACEMENT",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-072",
+  "status": "NO_PLACEMENT",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-073",
+  "status": "NO_PLACEMENT",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-074",
+  "status": "LANG_NOT_SUPPORTED",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-075",
+  "status": "LANG_NOT_SUPPORTED",
+  "holes": []
+ },
+ {
+  "id": "H-NEG-076",
+  "status": "LANG_NOT_SUPPORTED",
+  "holes": []
+ }
+]

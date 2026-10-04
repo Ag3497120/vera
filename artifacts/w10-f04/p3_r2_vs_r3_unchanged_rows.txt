@@ -1,0 +1,3 @@
+rows_without_r3_marker=53 groups={'A1': 12, 'A2': 11, 'BACKEND': 10, 'OPEN': 6, 'NONE': 2, 'A3': 12} differing_from_r2=0 []
+direct_call_rows=21 (B 11, C 10): the result of the direct call is checked against the unchanged expectation (mismatch=0 in p3_fake.txt)
+changed_by_ruling_A=29 by r2 group {'ADOPT': 15, 'D': 11, 'BACKEND': 2, 'A3R': 1}

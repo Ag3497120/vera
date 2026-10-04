@@ -1,0 +1,209 @@
+"""W10-f04 (O2, K284): the testimony ledger -- append only, hash chain, tamper detection (rewrite / delete / truncate / reorder), reread_agreed counted by DIFFERENT sentences, the frozen rule of
+promotion, `vera ledger list|show|confirm`."""
+import json
+from pathlib import Path
+
+import pytest
+
+from verantyx import cli
+from verantyx import fill_candidates as F
+from verantyx import llm_backend as LB
+from verantyx import llm_choice as LC
+from verantyx import semantic_read as S
+from verantyx.testimony_ledger import LedgerError, TestimonyLedger, key_of, sentence_sha256
+from tests.test_w10f04_holes import FakePlacement, decided, fake
+
+
+def clock():
+    n = [0]
+
+    def c():
+        n[0] += 1
+        return '2026-10-04T00:00:%02dZ' % n[0]
+    return c
+
+
+def decision(fill_id, word='図書館', cand='駅', typ='PLACE', role='goal', sentence='母が図書館へ歩いた。', status='ADOPTED'):
+    return {'fill_id': fill_id, 'word': word, 'declaration': {'type': typ, 'role': role, 'near_words': [cand]}, 'candidate': cand if status == 'ADOPTED' else None, 'hole': {'particle': 'へ'},
+            'provenance': {'backend': 'fake', 'model': 'm', 'version': ''}, 'context': {'doc_id': 'd', 'sentence_sha256': sentence_sha256(sentence)}, 'gate_log': [], 'status': status,
+            'reason': 'ADOPTED' if status == 'ADOPTED' else 'GATE_D_TIE', 'choice_decision_id': 'c-' + fill_id, 'basis': 'LLM_TESTIMONY_FILL:m:c-' + fill_id, 'mask_user_text': True, 'records_checked': 0}
+
+
+def ledger(tmp_path, n=3, name='t.jsonl'):
+    return TestimonyLedger(tmp_path / name, clock=clock(), promote_n=n, id_source=iter('abcdef0123456789%02d' % i for i in range(100)).__next__)
+
+
+def test_there_is_no_update_and_no_delete_api():
+    public = {n for n in dir(TestimonyLedger) if not n.startswith('_')}
+    assert not {n for n in public if any(w in n for w in ('update', 'delete', 'remove', 'rewrite', 'truncate', 'pop', 'clear'))}
+
+
+def test_rows_are_chained_and_a_header_names_the_store(tmp_path):
+    led = ledger(tmp_path)
+    led.record_decision(decision('f1'))
+    rows = led.entries()
+    assert [r['type'] for r in rows] == ['header', 'testimony'] and rows[1]['prev'] == rows[0]['hash'] and rows[0]['store_id'] == led.store_id
+    again = TestimonyLedger(tmp_path / 't.jsonl')          # reopening verifies every line and keeps the store id
+    assert again.store_id == led.store_id and len(again.entries()) == 2
+
+
+def tamper(tmp_path, how):
+    led = ledger(tmp_path)
+    for i in range(4):
+        led.record_decision(decision('f%d' % i, sentence='文%d' % i))
+    path = tmp_path / 't.jsonl'
+    lines = path.read_text(encoding='utf-8').split('\n')[:-1]
+    if how == 'rewrite':
+        row = json.loads(lines[2]); row['candidate'] = '山'; lines[2] = json.dumps(row, ensure_ascii=False)
+    elif how == 'delete':
+        del lines[2]
+    elif how == 'truncate':
+        lines = lines[:-2]
+    elif how == 'reorder':
+        lines[2], lines[3] = lines[3], lines[2]
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+    return path
+
+
+@pytest.mark.parametrize('how', ['rewrite', 'delete', 'truncate', 'reorder'])
+def test_tampering_is_detected(tmp_path, how):
+    path = tamper(tmp_path, how)
+    with pytest.raises(LC.LedgerIntegrityError):
+        TestimonyLedger(path)
+
+
+def test_a_broken_ledger_refuses_to_be_extended(tmp_path):
+    led = ledger(tmp_path)
+    led.record_decision(decision('f1'))
+    p = tmp_path / 't.jsonl'
+    p.write_text(p.read_text(encoding='utf-8').replace('"駅"', '"山"', 1), encoding='utf-8')
+    with pytest.raises(LC.LedgerIntegrityError):
+        led.record_decision(decision('f2'))
+
+
+def test_not_adopted_and_backend_failed_rows_are_kept_and_never_promotable(tmp_path):
+    led = ledger(tmp_path)
+    led.record_decision(decision('f1', status='NOT_ADOPTED'))
+    led.record_decision(dict(decision('f2', status='BACKEND_FAILED'), reason='BACKEND_FAILED:TIMEOUT'))
+    assert [r['type'] for r in led.entries()] == ['header', 'not_adopted', 'backend_failed'] and led.listing() == [] and led.fold() == {}
+
+
+def test_reread_agreed_is_counted_by_different_sentences_only(tmp_path):
+    led = ledger(tmp_path, n=3)
+    led.record_decision(decision('f1', sentence='文A'))
+    r = led.record_decision(decision('f2', sentence='文A'))              # the same sentence again: not a re-agreement
+    assert r['extra'] == [] and led.fold()[key_of('図書館', '駅', 'PLACE', 'goal')]['state'] == 'unconfirmed'
+    assert len(led.record_decision(decision('f3', sentence='文B'))['extra']) == 1
+    assert led.record_decision(decision('f4', sentence='文B'))['extra'] == []
+    g = led.fold()[key_of('図書館', '駅', 'PLACE', 'goal')]
+    assert g['state'] == 'reread_agreed:1' and g['reread_agreed'] == 1 and g['promotable'] is False
+
+
+def test_promotion_by_reread_agreed_at_n(tmp_path):
+    led = ledger(tmp_path, n=3)
+    for i in range(4):
+        led.record_decision(decision('f%d' % i, sentence='文%d' % i))
+        g = led.fold()[key_of('図書館', '駅', 'PLACE', 'goal')]
+        assert g['promotable'] is (i >= 3), i
+    assert g['state'] == 'reread_agreed:3'
+    (row,) = led.promote_pending()
+    assert row['type'] == 'promotable' and led.promote_pending() == []        # once per key
+    assert TestimonyLedger(tmp_path / 't.jsonl', promote_n=4).fold()[key_of('図書館', '駅', 'PLACE', 'goal')]['promotable'] is False       # the number is a setting; the rule is frozen
+
+
+def test_promotion_by_distribution_backing(tmp_path):
+    led = ledger(tmp_path)
+    led.record_decision(decision('f1'))
+    assert led.listing()[0]['promotable'] is False
+    led.mark_distribution_backed('図書館', '駅', 'PLACE', 'goal', 'f1', decided('PLACE'))
+    assert led.mark_distribution_backed('図書館', '駅', 'PLACE', 'goal', 'f1', decided('PLACE')) is None
+    g = led.fold()[key_of('図書館', '駅', 'PLACE', 'goal')]
+    assert g['state'] == 'distribution_backed' and g['promotable'] is True
+
+
+def test_promotion_by_a_human_and_the_confirm_ids(tmp_path):
+    led = ledger(tmp_path)
+    led.record_decision(decision('f1'))
+    c = led.confirm('f1')
+    assert c['store_id'] == led.store_id and len(c['confirm_id']) >= 8 and c['fill_id'] == 'f1'
+    g = led.fold()[key_of('図書館', '駅', 'PLACE', 'goal')]
+    assert g['state'] == 'human_confirmed' and g['promotable'] is True
+    with pytest.raises(LedgerError):
+        led.confirm('nope')
+
+
+def test_conflicting_testimony_blocks_all_but_a_human(tmp_path):
+    led = ledger(tmp_path)
+    led.record_decision(decision('f1', cand='駅'))
+    led.record_decision(decision('f2', cand='港'))
+    led.mark_distribution_backed('図書館', '駅', 'PLACE', 'goal', 'f1', decided('PLACE'))
+    g = led.fold()[key_of('図書館', '駅', 'PLACE', 'goal')]
+    assert g['promotable'] is False and g['blocked_by'] == 'CONFLICTING_TESTIMONY'
+    led.confirm('f1')
+    assert led.fold()[key_of('図書館', '駅', 'PLACE', 'goal')]['promotable'] is True
+
+
+def test_promotion_changes_no_placement(tmp_path):
+    p = fake()
+    before = json.dumps(p.answers, ensure_ascii=False, sort_keys=True)
+    led = ledger(tmp_path, n=1)
+    led.record_decision(decision('f1')); led.record_decision(decision('f2', sentence='文2')); led.promote_pending()
+    assert json.dumps(p.answers, ensure_ascii=False, sort_keys=True) == before and not hasattr(led, 'place')
+
+
+def test_the_ledger_keeps_working_through_ask_and_gate(tmp_path):
+    led = ledger(tmp_path)
+    p = FakePlacement(dict(fake().answers, **{'図書館': decided('PLACE')}))        # later the placement itself says it: distribution backing is written at the adoption
+    ho = S.read_with_holes('母が図書館へ歩いた。', placement=fake())
+    fb = LB.FakeBackend([{'raw': json.dumps({'type': 'PLACE', 'role': 'goal', 'near_words': ['駅']}, ensure_ascii=False)}, {'pick': '駅'}, {'pick': '駅'}])
+    d = F.ask_and_gate(ho, text='母が図書館へ歩いた。', chat=lambda m, msgs, f: LB.chat('fake', m, msgs, f, fake=fb), model='m', placement=p, ledger=led, order_source=lambda n: list(range(n)),
+                       choice_ledger=LC.ChoiceLedger(None))
+    assert d.status == 'ADOPTED'
+    assert [r['type'] for r in led.entries()] == ['header', 'testimony', 'distribution_backed', 'promotable']
+
+
+def test_the_backend_name_does_not_change_the_ledger_decisions(tmp_path):
+    cols = []
+    for i, name in enumerate(('ollama', 'fake')):
+        led = TestimonyLedger(tmp_path / ('n%d.jsonl' % i), promote_n=3)
+        ho = S.read_with_holes('母が図書館へ歩いた。', placement=fake())
+        fb = LB.FakeBackend([{'raw': json.dumps({'type': 'PLACE', 'role': 'goal', 'near_words': ['駅']}, ensure_ascii=False)}, {'pick': '駅'}, {'pick': '駅'}])
+        F.ask_and_gate(ho, text='母が図書館へ歩いた。', chat=lambda m, msgs, f: LB.chat('fake', m, msgs, f, fake=fb), model='m', backend_name=name, placement=fake(), ledger=led,
+                       order_source=lambda n: list(range(n)), choice_ledger=LC.ChoiceLedger(None))
+        cols.append([(r['type'], r.get('status'), r.get('reason'), r.get('candidate'), r.get('gate_log')) for r in led.entries() if r['type'] != 'header'])
+    assert cols[0] == cols[1] and cols[0][0][0] == 'testimony'
+
+
+def run_cli(args, capsys):
+    ns = cli.argparse.Namespace(**args)
+    code = cli.cmd_ledger(ns)
+    return code, capsys.readouterr().out
+
+
+def test_vera_ledger_list_show_confirm(tmp_path, capsys):
+    led = ledger(tmp_path)
+    led.record_decision(decision('f1'))
+    base = dict(ledger_file=str(tmp_path / 't.jsonl'), promote_n=3, json=False, id=None)
+    code, out = run_cli(dict(base, ledger_op='list'), capsys)
+    assert code == 0 and '図書館 -> 駅' in out and 'state=unconfirmed' in out and 'promotable=no' in out and 'f1' in out
+    code, out = run_cli(dict(base, ledger_op='list', json=True), capsys)
+    assert json.loads(out)['testimonies'][0]['fill_id'] == 'f1'
+    code, out = run_cli(dict(base, ledger_op='show', id='f1'), capsys)
+    shown = json.loads(out)
+    assert code == 0 and shown['rows'][0]['type'] == 'testimony' and shown['fold']['state'] == 'unconfirmed'
+    code, out = run_cli(dict(base, ledger_op='confirm', id='f1'), capsys)
+    c = json.loads(out)
+    assert code == 0 and c['store_id'] == led.store_id and c['confirm_id'] and c['kind'] == 'human_confirmed'
+    code, out = run_cli(dict(base, ledger_op='list'), capsys)
+    assert 'state=human_confirmed' in out and 'promotable=yes' in out
+    assert run_cli(dict(base, ledger_op='show', id='zzz'), capsys)[0] == 2
+    assert run_cli(dict(base, ledger_op='confirm', id=None), capsys)[0] == 2
+
+
+def test_vera_ledger_on_a_broken_ledger_exits_3(tmp_path, capsys):
+    led = ledger(tmp_path)
+    led.record_decision(decision('f1'))
+    p = tmp_path / 't.jsonl'
+    p.write_text(p.read_text(encoding='utf-8').replace('"駅"', '"山"', 1), encoding='utf-8')
+    code, out = run_cli(dict(ledger_file=str(p), promote_n=3, json=False, id=None, ledger_op='list'), capsys)
+    assert code == 3 and json.loads(out)['verdict'] == 'LEDGER_INTEGRITY'

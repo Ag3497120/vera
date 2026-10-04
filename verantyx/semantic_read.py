@@ -1551,6 +1551,180 @@ def main(argv=None):
     return code
 
 
+# ---------------------------------------------------------------------------------------------------------------------------------
+# W10-f04: a sentence the reader abstains on because of a FILLER's placement is returned with a typed hole instead of being thrown away (docs/FUSION.md section 6, K280;
+# docs/READING_SOUNDNESS.md section 10J). `read()` and the reader's rules are NOT changed: this is a new entry that calls `read()` and adds three keys at the END of its output.
+# The hole is a position ("a word of one of these types is missing here"), never a guess of the word and never a type for the word: the types come from the reader's own tables.
+# ---------------------------------------------------------------------------------------------------------------------------------
+HOLES_VERSION = 1
+HOLES_STATUSES = ('HOLES_FOUND', 'READ', 'NO_PLACEMENT', 'LANG_NOT_SUPPORTED', 'NOT_A_FILLER_CAUSE', 'HOLE_NOT_PROBE_READABLE', 'HOLE_NO_EXPECTED_TYPES',
+                  'HOLE_CROSS_DEPENDS_ON_TYPE', 'HOLE_TOO_MANY', 'HOLE_COMPLEX_FILLER')
+_HOLE_FILLER_REASON = re.compile(r'^PLACEMENT_(UNPLACED|MULTIPLE|UNKNOWN):([^:]+):(.+)$')
+
+
+class _HoleProbe:
+    """A placement that answers DECIDED / direct / `hole_probe` with the given type for the forced words only; every other word goes to the real placement (answers are kept in `shared`,
+    they do not change). `id` is its own value, never the real placement's."""
+    def __init__(self, inner, forced, shared):
+        self.inner, self.forced, self.shared = inner, dict(forced), shared
+        self.id = 'hole-probe:' + ','.join('%s=%s' % kv for kv in sorted(self.forced.items()))
+
+    def query(self, term):
+        if term in self.forced:
+            return {'state': 'DECIDED', 'top': [self.forced[term]], 'origin': 'direct', 'estimate_basis': None, 'constructed': False, 'decided_by': ['hole_probe']}
+        if term not in self.shared: self.shared[term] = self.inner.query(term)
+        return self.shared[term]
+
+
+def _hole_filler_of(reasons, skip=()):
+    """The first (particle, word, reason) of a filler-placement reason on one of the nine case particles, else None."""
+    from . import semantic_reader as R
+    for r in reasons:
+        if not isinstance(r, str): continue
+        m = _HOLE_FILLER_REASON.match(r)
+        if m and m.group(2) in R._CASE_PARTICLES_9 and m.group(3) not in skip: return m.group(2), m.group(3), r
+    return None
+
+
+def _hole_reasons(text, query):
+    out = read(text, 'ja', placement=query)
+    reasons = list(((out.get('abstain') or {}).get('reasons')) or [])
+    explain = typed_explain_ja(text, query)
+    reasons += [v for v in explain.values() if isinstance(v, str) and v != 'READ']
+    return reasons
+
+
+def _hole_arm(clause, term, noun_type):
+    """The role of `term` in a probed clause when exactly one role holds it and the reader's role basis names the forced type; else None."""
+    names = [k for k, v in (clause.get('roles') or {}).items() if v == term]
+    if len(names) != 1: return None
+    basis = ((clause.get('role_basis') or {}).get(names[0])) or ''
+    return names[0] if noun_type in basis.rsplit(':', 1)[-1].split('+') else None
+
+
+def _hole_probe_ok(out):
+    return bool(out.get('readable')) and len(out.get('clauses') or []) == 1 and not out.get('relations')
+
+
+def _hole_table_types(query, clause, particle):
+    """K280 step 4: the types the reader's tables (K62 v2 incl. W3-b4/b5 rows, stage R's role frame) allow for `particle` of the predicate type the reader decided (read, not copied)."""
+    from . import semantic_reader as R
+    basis = clause.get('predicate_basis') or ''
+    ptype = basis.split(':', 1)[1] if basis.startswith('placement_direct:') else None
+    if ptype is None: return frozenset()
+    types = set()
+    for (t, _role, parts, exp, _kind, _lic) in R.typed_frames_w3b5_rows():
+        if t == ptype and particle in parts: types |= set(exp)
+    answer = query.query(clause['predicate'])
+    if R.placement_type(answer)[0] == ptype:
+        rk, rinfo = R.predicate_role_frame(answer)
+        if rk == 'confirmed' and particle in rinfo:
+            for _role, ts in rinfo[particle]: types |= set(ts)
+        fk, finfo = R.predicate_frame(answer)
+        if fk == 'confirmed': types &= set(finfo.get(particle, ()))
+    return frozenset(types)
+
+
+def probe_with_types(text, forced, *, placement=_UNSET):
+    """`read()` of `text` where the words in `forced` ({word: noun type}) are answered DECIDED / direct / `hole_probe` with that type and every other word by the real placement (the probe of
+    K280). Not a reading: used to find the types a hole may hold and, by the gate of docs/FUSION.md K282, to check a candidate. The placement that is not given is the real one; no placement -> ReadError."""
+    query = _placement_query(placement)
+    if query is None: raise ReadError('BAD_ARGUMENTS', 'a probe needs a placement')
+    return read(text, 'ja', placement=_HoleProbe(query, forced, {}))
+
+
+def read_with_holes(text, lang=None, *, placement=_UNSET, max_holes=2):
+    """The reading of `text` as `read()` gives it (every key, value and order unchanged, `readable` and `abstain` too), plus the LAST keys `holes_status`, `holes` and `partial`:
+    `holes` = [{arm, particle, head, span, expected_types, role_candidates, placement_state, why}] (the sets are written in string order, not ranked), `partial` = the one clause the probe read with
+    each hole arm written as {'hole': i} (no type of the probe is in it). A hole is made only when the reason of the abstention is the placement of a FILLER (K280); everything else keeps the
+    abstention and gets `holes: []` and the reason in `holes_status`. Raises ReadError for an input that `read()` refuses."""
+    import itertools
+    from . import semantic_reader as R
+    from .coarse_types import NOUN_TYPES
+    chosen = check_input(text, lang)
+    query = _placement_query(placement) if chosen == 'ja' else None
+    out = read(text, lang, placement=query if query is not None else None) if chosen == 'ja' else read(text, lang, placement=placement)
+    res = dict(out)
+
+    def done(status, holes=(), partial=None):
+        res['holes_status'], res['holes'], res['partial'] = status, list(holes), partial
+        return res
+    if chosen != 'ja': return done('LANG_NOT_SUPPORTED')
+    if out['readable']: return done('READ')
+    if query is None: return done('NO_PLACEMENT')
+    reasons = _hole_reasons(text, query)
+    first = _hole_filler_of(reasons)
+    if first is None:
+        head = (out.get('abstain') or {}).get('reasons') or ['NONE']
+        return done('NOT_A_FILLER_CAUSE:%s' % head[0])
+    shared = {}
+    terms = [first]                       # [(particle, word, why)]
+    types = tuple(sorted(NOUN_TYPES))
+
+    def combos_for(tms):
+        got = []
+        for combo in itertools.product(types, repeat=len(tms)):
+            q = read(text, 'ja', placement=_HoleProbe(query, {t[1]: c for t, c in zip(tms, combo)}, shared))
+            if _hole_probe_ok(q): got.append((combo, q['clauses'][0]))
+        return got
+
+    while True:
+        got = combos_for(terms)
+        if got: break
+        # not read: which filler stops it once the known ones are typed? (K280 step 7)
+        nxt = set()
+        for combo in itertools.product(types, repeat=len(terms)):
+            pl = _HoleProbe(query, {t[1]: c for t, c in zip(terms, combo)}, shared)
+            f = _hole_filler_of(_hole_reasons(text, pl), skip={t[1] for t in terms})
+            if f is not None: nxt.add(f)
+            if len(nxt) > 1: break
+        if not nxt: return done('HOLE_NOT_PROBE_READABLE')
+        if len(nxt) > 1 or len(terms) + 1 > max_holes: return done('HOLE_TOO_MANY')
+        terms.append(sorted(nxt)[0])
+    # arms and the shape of the cross that does not depend on the types
+    arms_of, shapes = [], set()
+    per_term_types = [set() for _ in terms]
+    per_term_roles = [set() for _ in terms]
+    for combo, clause in got:
+        names = []
+        for i, (t, c) in enumerate(zip(terms, combo)):
+            name = _hole_arm(clause, t[1], c)
+            if name is None: return done('HOLE_COMPLEX_FILLER')
+            names.append(name)
+        if len(set(names)) != len(names): return done('HOLE_COMPLEX_FILLER')
+        for i, (c, name) in enumerate(zip(combo, names)):
+            per_term_types[i].add(c); per_term_roles[i].add(name)
+        rest = {k: v for k, v in clause.items() if k not in ('roles', 'role_basis')}
+        rest['roles'] = {k: v for k, v in clause['roles'].items() if k not in names}
+        rest['role_basis'] = {k: v for k, v in (clause.get('role_basis') or {}).items() if k not in names}
+        shapes.add(json.dumps(rest, ensure_ascii=False, sort_keys=True))
+        arms_of.append((combo, clause, names))
+    if len(shapes) != 1: return done('HOLE_CROSS_DEPENDS_ON_TYPE')
+    holes, spans = [], []
+    for i, (particle, word, why) in enumerate(terms):
+        at = text.find(word + particle)
+        if at < 0 or text.count(word + particle) != 1: return done('HOLE_COMPLEX_FILLER')
+        table = frozenset().union(*[_hole_table_types(query, cl, particle) for _c, cl, _n in arms_of])
+        expected = sorted(per_term_types[i] & table)
+        if not expected: return done('HOLE_NO_EXPECTED_TYPES')
+        roles = sorted(per_term_roles[i])
+        state = _HOLE_FILLER_REASON.match(why).group(1)          # the state is in the reason (the fields of an answer are read in the gate alone)
+        holes.append({'arm': roles[0] if len(roles) == 1 else None, 'particle': particle, 'head': word, 'span': [at, at + len(word)], 'expected_types': expected,
+                      'role_candidates': roles, 'placement_state': state, 'why': why})
+    combo, clause, names = arms_of[0]
+    pr = {k: v for k, v in clause.items() if k not in ('roles', 'role_basis')}
+    roles, basis = {}, {}
+    hole_name = {nm: i for i, nm in enumerate(names)}
+    for k, v in clause['roles'].items():
+        if k in hole_name:
+            key = holes[hole_name[k]]['arm'] or '?%d' % hole_name[k]
+            roles[key] = {'hole': hole_name[k]}; basis[key] = 'hole'
+        else:
+            roles[k] = v; basis[k] = (clause.get('role_basis') or {}).get(k)
+    pr['roles'], pr['role_basis'] = roles, basis
+    return done('HOLES_FOUND', holes, pr)
+
+
 from .semantic_reader import w1a5_wrap as _w1a5_wrap      # W1-a5 (docs/READING_SOUNDNESS.md section 10G, K210): the reading entry, then aspect / floating quantity / adverb mark
 _read_ja = _w1a5_wrap(_read_ja)
 if __name__ == '__main__':

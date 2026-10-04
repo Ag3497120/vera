@@ -1,0 +1,1377 @@
+[
+ {
+  "id": "F-ADOPT-01",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "駅",
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-02",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "公園",
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   },
+   {
+    "word": "市役所",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_ESTIMATED_NEAR"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-03",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "皿",
+  "gate_log": [
+   {
+    "word": "皿",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-04",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "本",
+  "gate_log": [
+   {
+    "word": "本",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-05",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "絵",
+  "gate_log": [
+   {
+    "word": "絵",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-06",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "兄",
+  "gate_log": [
+   {
+    "word": "兄",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-07",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "先生",
+  "gate_log": [
+   {
+    "word": "先生",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-08",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "姉",
+  "gate_log": [
+   {
+    "word": "姉",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-09",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "港",
+  "gate_log": [
+   {
+    "word": "港",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-10",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "駅",
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   },
+   {
+    "word": "午後",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_UNPLACED"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-11",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "弟",
+  "gate_log": [
+   {
+    "word": "弟",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-12",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "達成",
+  "gate_log": [
+   {
+    "word": "達成",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-13",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "公園",
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-14",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "論文",
+  "gate_log": [
+   {
+    "word": "論文",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-15",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "妹",
+  "gate_log": [
+   {
+    "word": "妹",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   },
+   {
+    "word": "山田",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_MULTIPLE"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_ESTIMATED_NEAR",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "市役所",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_ESTIMATED_NEAR"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-02",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "切符",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_UNPLACED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-03",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_MULTIPLE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "手紙",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_MULTIPLE"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-04",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_DIRECT_VIA_GENERATED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "傘",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_DIRECT_VIA_GENERATED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-05",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_TYPE_NOT_EXPECTED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "母",
+    "gate": "a1",
+    "reason": "GATE_A_TYPE_NOT_EXPECTED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-06",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_TYPE_NOT_EXPECTED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "a1",
+    "reason": "GATE_A_TYPE_NOT_EXPECTED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-07",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_TYPE_NOT_EXPECTED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "先生",
+    "gate": "a1",
+    "reason": "GATE_A_TYPE_NOT_EXPECTED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-08",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_ESTIMATED_GENERATED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "昨日",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_ESTIMATED_GENERATED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-09",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_MULTIPLE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "山田",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_MULTIPLE"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-10",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_TYPE_NOT_EXPECTED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "a1",
+    "reason": "GATE_A_TYPE_NOT_EXPECTED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-11",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "午後",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_UNPLACED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-12",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "荷物",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_UNPLACED"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "皿",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-02",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "本",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-03",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-04",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "先生",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-05",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-06",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "港",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-07",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "絵",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-08",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "会社",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-09",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "小説",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-10",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-11",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-B-01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "玄関",
+    "gate": "b",
+    "reason": "GATE_B_REREAD_NOT_READABLE",
+    "realize": null
+   }
+  ]
+ },
+ {
+  "id": "F-B-02",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "窓辺",
+    "gate": "b",
+    "reason": "GATE_B_REREAD_NOT_READABLE",
+    "realize": null
+   }
+  ]
+ },
+ {
+  "id": "F-B-03",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "校門",
+    "gate": "b",
+    "reason": "GATE_B_REREAD_NOT_READABLE",
+    "realize": null
+   }
+  ]
+ },
+ {
+  "id": "F-B-04",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "中庭",
+    "gate": "b",
+    "reason": "GATE_B_REREAD_NOT_READABLE",
+    "realize": null
+   }
+  ]
+ },
+ {
+  "id": "F-B-05",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "入口",
+    "gate": "b",
+    "reason": "GATE_B_REREAD_NOT_READABLE",
+    "realize": null
+   }
+  ]
+ },
+ {
+  "id": "F-B-06",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "壁",
+    "gate": "b",
+    "reason": "GATE_B_REREAD_NOT_READABLE",
+    "realize": null
+   }
+  ]
+ },
+ {
+  "id": "F-B-07",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "台",
+    "gate": "b",
+    "reason": "GATE_B_REREAD_NOT_READABLE",
+    "realize": null
+   }
+  ]
+ },
+ {
+  "id": "F-B-08",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "隅",
+    "gate": "b",
+    "reason": "GATE_B_REREAD_NOT_READABLE",
+    "realize": null
+   }
+  ]
+ },
+ {
+  "id": "F-B-09",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "渓谷",
+    "gate": "b",
+    "reason": "GATE_B_REREAD_NOT_READABLE",
+    "realize": null
+   }
+  ]
+ },
+ {
+  "id": "F-B-10",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "近く",
+    "gate": "b",
+    "reason": "GATE_B_REREAD_NOT_READABLE",
+    "realize": null
+   }
+  ]
+ },
+ {
+  "id": "F-B-11",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "隣",
+    "gate": "b",
+    "reason": "GATE_B_REREAD_NOT_READABLE",
+    "realize": null
+   }
+  ]
+ },
+ {
+  "id": "F-C-01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   }
+  ]
+ },
+ {
+  "id": "F-C-02",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "皿",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   }
+  ]
+ },
+ {
+  "id": "F-C-03",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "兄",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   }
+  ]
+ },
+ {
+  "id": "F-C-04",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "港",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   }
+  ]
+ },
+ {
+  "id": "F-C-05",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   }
+  ]
+ },
+ {
+  "id": "F-C-06",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "弟",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   }
+  ]
+ },
+ {
+  "id": "F-C-07",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "達成",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   }
+  ]
+ },
+ {
+  "id": "F-C-08",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   }
+  ]
+ },
+ {
+  "id": "F-C-09",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "本",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   }
+  ]
+ },
+ {
+  "id": "F-C-10",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "先生",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   }
+  ]
+ },
+ {
+  "id": "F-D-01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_TIE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   },
+   {
+    "word": "公園",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-D-02",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_TIE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "港",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   },
+   {
+    "word": "山",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-D-03",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_TIE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "皿",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   },
+   {
+    "word": "箱",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-D-04",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_TIE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "兄",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   },
+   {
+    "word": "姉",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-D-05",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_TIE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   },
+   {
+    "word": "港",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-D-06",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_TIE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   },
+   {
+    "word": "川",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-D-07",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_CHOICE_NOT_PASSING",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   },
+   {
+    "word": "玄関",
+    "gate": "b",
+    "reason": "GATE_B_REREAD_NOT_READABLE",
+    "realize": null
+   }
+  ]
+ },
+ {
+  "id": "F-D-08",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_CHOICE_NOT_PASSING",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   },
+   {
+    "word": "窓辺",
+    "gate": "b",
+    "reason": "GATE_B_REREAD_NOT_READABLE",
+    "realize": null
+   }
+  ]
+ },
+ {
+  "id": "F-D-09",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_CHOICE_NOT_PASSING",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   },
+   {
+    "word": "校門",
+    "gate": "b",
+    "reason": "GATE_B_REREAD_NOT_READABLE",
+    "realize": null
+   }
+  ]
+ },
+ {
+  "id": "F-D-10",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_CHOICE_ABSTAINED:NONE_SELECTED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-D-11",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_CHOICE_ABSTAINED:NONE_SELECTED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "兄",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-BACKEND-01",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:TIMEOUT",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-02",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:TIMEOUT",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-03",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:CONNECT_FAILED",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-04",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:CONNECT_FAILED",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-05",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:HTTP_ERROR",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-06",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:HTTP_ERROR",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-07",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:BAD_RESPONSE",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-08",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:BAD_RESPONSE",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-09",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:EMPTY_CONTENT",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-10",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:EMPTY_CONTENT",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-11",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:TIMEOUT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-BACKEND-12",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:CONNECT_FAILED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "兄",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ },
+ {
+  "id": "F-OPEN-01",
+  "status": "NOT_ADOPTED",
+  "reason": "OPEN_DECLARATION_INVALID:NOT_JSON",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-OPEN-02",
+  "status": "NOT_ADOPTED",
+  "reason": "OPEN_DECLARATION_INVALID:TYPE_NOT_IN_ENUM",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-OPEN-03",
+  "status": "NOT_ADOPTED",
+  "reason": "OPEN_DECLARATION_INVALID:ROLE_NOT_IN_ENUM",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-OPEN-04",
+  "status": "NOT_ADOPTED",
+  "reason": "OPEN_DECLARATION_INVALID:NEAR_WORDS",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-OPEN-05",
+  "status": "NOT_ADOPTED",
+  "reason": "OPEN_DECLARATION_INVALID:KEYS",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-OPEN-06",
+  "status": "NOT_ADOPTED",
+  "reason": "OPEN_DECLARATION_INVALID:KEYS",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-NONE-01",
+  "status": "NOT_ADOPTED",
+  "reason": "NO_CANDIDATE_WORDS",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-NONE-02",
+  "status": "NOT_ADOPTED",
+  "reason": "NO_CANDIDATE_WORDS",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-A3-01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "夜",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-02",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "昼",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-03",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "冬",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-04",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "秋",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-05",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "夏",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-06",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "鳥",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-07",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-08",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "鳥",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-09",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-10",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "学校",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-11",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-12",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "小説",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3R-01",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "夏",
+  "gate_log": [
+   {
+    "word": "夏",
+    "gate": "passed",
+    "reason": null,
+    "realize": "REFUSED",
+    "c_note": null
+   }
+  ]
+ }
+]

@@ -713,6 +713,75 @@ def cmd_read_events(args) -> int:
     return semantic_read.main(argv)
 
 
+def cmd_read(args) -> int:
+    """W10-f04 (docs/FUSION.md section 6, J1): `vera read --text T [--lang L] [--placement DIR]` is `python -m verantyx.semantic_read` (byte for byte); with `--holes` the sentence a reader abstains
+    on because of a filler's placement is returned with its typed holes (`semantic_read.read_with_holes`) and a `display` of them."""
+    from . import semantic_read
+
+    if not getattr(args, "holes", False):
+        argv = []
+        if args.text is not None:
+            argv.append("--text=" + args.text)
+        if args.lang is not None:
+            argv.append("--lang=" + args.lang)
+        if args.placement is not None:
+            argv.append("--placement=" + args.placement)
+        return semantic_read.main(argv)
+    from . import observe
+    try:
+        out = semantic_read.read_with_holes(args.text, args.lang, placement=semantic_read._UNSET if args.placement is None else args.placement,
+                                            max_holes=args.max_holes)
+        out["display"] = observe.describe_holes(out, args.text)
+        code = 0
+    except semantic_read.ReadError as err:
+        out, code = {"error": {"type": err.type, "detail": err.detail}}, 2
+    sys.stdout.write(json.dumps(out, ensure_ascii=False) + "\n")
+    return code
+
+
+def cmd_ledger(args) -> int:
+    """W10-f04 (O2, docs/FUSION.md section 6.2 K284): the testimony ledger. `list` (one line per adopted candidate: id, word -> candidate, declared type, state, promotable), `show <id>` (every row of
+    that testimony and its folded state), `confirm <id>` (a human confirms: writes `human_confirmed` with the ledger's store_id and a new confirm_id). Never changes a placement. Exit 2: a bad
+    argument or no such id; 3: the ledger is broken (nothing is appended)."""
+    from .llm_choice import LedgerIntegrityError
+    from .testimony_ledger import LedgerError, TestimonyLedger
+
+    path = Path(args.ledger_file)
+    if args.ledger_op != "list" and not args.id:
+        _print({"kind": "unknown", "verdict": "ID_REQUIRED", "reason": "ledger %s needs an id" % args.ledger_op})
+        return 2
+    if not path.exists():
+        _print({"kind": "unknown", "verdict": "LEDGER_NOT_FOUND", "reason": str(path)})
+        return 2
+    try:
+        led = TestimonyLedger(path, promote_n=args.promote_n)
+        if args.ledger_op == "list":
+            rows = led.listing()
+            if args.json:
+                _print({"store_id": led.store_id, "promote_n": led.promote_n, "testimonies": rows})
+            else:
+                print("store_id=%s promote_n=%d testimonies=%d" % (led.store_id, led.promote_n, len(rows)))
+                for r in rows:
+                    print("%s  %s -> %s  type=%s role=%s  state=%s  promotable=%s%s" % (r["fill_id"], r["word"], r["candidate"], r["declared_type"], r["role"], r["state"],
+                                                                                   "yes" if r["promotable"] else "no", "  (%s)" % r["blocked_by"] if r["blocked_by"] else ""))
+            return 0
+        if args.ledger_op == "show":
+            shown = led.show(args.id)
+            if shown is None:
+                _print({"kind": "unknown", "verdict": "NO_SUCH_ID", "reason": args.id})
+                return 2
+            _print(shown)
+            return 0
+        _print(dict(led.confirm(args.id), kind="human_confirmed"))
+        return 0
+    except LedgerIntegrityError as exc:
+        _print({"kind": "unknown", "verdict": "LEDGER_INTEGRITY", "reason": "%s line %s %s" % (exc.kind, exc.line_no, exc.detail)})
+        return 3
+    except LedgerError as exc:
+        _print({"kind": "unknown", "verdict": exc.type, "reason": exc.detail})
+        return 2
+
+
 def cmd_observe(args) -> int:
     """視点(錨・向き・範囲・状態)から構造を観測し、見えた十字を実現器で文にして json で 1 行返す(docs/OBSERVATION.md)。
 
@@ -1665,7 +1734,11 @@ def _serve_fusion(args, st, save, store_path) -> int:
         return 2
 
     if not args.model:
-        return refuse("MODEL_REQUIRED", "--backend ollama needs --model")
+        return refuse("MODEL_REQUIRED", "--backend %s needs --model" % args.backend)
+    if args.backend == "openai" and not (args.api_base or os.environ.get("VERA_LLM_API_BASE")):
+        return refuse("API_BASE_REQUIRED", "--backend openai needs --api-base or VERA_LLM_API_BASE")
+    if args.fill and not args.ledger_file:
+        return refuse("LEDGER_REQUIRED", "--fill needs --ledger-file (the testimony ledger)")
     if args.strict and args.free:
         return refuse("STRICT_AND_FREE", "--strict (layer 1) and --free (layer 0) cannot be combined")
     documents = list(args.document or [])
@@ -1679,7 +1752,20 @@ def _serve_fusion(args, st, save, store_path) -> int:
         os.environ["VERA_SOVEREIGN_STORE"] = args.sovereign_store
     if args.placement:
         os.environ["VERA_PLACEMENT"] = args.placement
-    fusion = FusionConfig.load(model=args.model, documents=documents, strict=args.strict, ollama_url=args.ollama_url, timeout=args.llm_timeout)
+    fill = None
+    if args.fill:
+        from . import fill_candidates as FC
+        from .llm_choice import LedgerIntegrityError
+        from .testimony_ledger import TestimonyLedger
+        try:
+            ledger = TestimonyLedger(args.ledger_file)
+        except LedgerIntegrityError as exc:
+            return refuse("LEDGER_INTEGRITY", "%s line %s %s" % (exc.kind, exc.line_no, exc.detail))
+        fill = FC.FillConfig(ledger=ledger, model=args.fill_model, backend_name=args.backend, mask_user_text=not args.no_mask_user_text, max_doc_holes=args.fill_max_holes)
+    fusion = FusionConfig.load(model=args.model, documents=documents, strict=args.strict, ollama_url=args.ollama_url, timeout=args.llm_timeout,
+                               backend=args.backend, api_base=args.api_base, api_key=os.environ.get("VERA_LLM_API_KEY"), fill=fill)
+    if fill is not None:
+        _print({"fill": {"ledger": args.ledger_file, "mask_user_text": fill.mask_user_text, "documents": fusion.fill_stats}})
     return serve_http(st, save, port=args.port, default_model=args.model, jgen_endpoint=args.jgen_endpoint, store_path=store_path, fusion=fusion)
 
 
@@ -2128,6 +2214,27 @@ def main(argv: Optional[list] = None) -> int:
     p.set_defaults(fn=cmd_read_events)
 
     p = sub.add_parser(
+        "read",
+        help="read one sentence (same output as `python -m verantyx.semantic_read`); with --holes a sentence the reader "
+             "abstains on because of a filler's placement is returned with its typed holes (docs/FUSION.md section 6)")
+    p.add_argument("--text", default=None)
+    p.add_argument("--lang", default=None)
+    p.add_argument("--placement", default=None, help="the placement directory (without it: VERA_PLACEMENT)")
+    p.add_argument("--holes", action="store_true", help="W10-f04: add holes_status / holes / partial / display")
+    p.add_argument("--max-holes", type=int, default=2, dest="max_holes", help="W10-f04: at most this many holes in one sentence (default 2)")
+    p.set_defaults(fn=cmd_read)
+
+    p = sub.add_parser(
+        "ledger",
+        help="W10-f04: the testimony ledger of LLM candidates (append-only, hash-chained): list | show <id> | confirm <id> (a human confirms)")
+    p.add_argument("ledger_op", choices=["list", "show", "confirm"])
+    p.add_argument("id", nargs="?", default=None)
+    p.add_argument("--ledger-file", required=True, dest="ledger_file")
+    p.add_argument("--promote-n", type=int, default=3, dest="promote_n", help="reread_agreed rows needed to be promotable (default 3)")
+    p.add_argument("--json", action="store_true", help="list as one json line")
+    p.set_defaults(fn=cmd_ledger)
+
+    p = sub.add_parser(
         "observe",
         help="observe a structure from a viewpoint (anchor, direction, range, ledger state) and realize "
              "what is seen as one json line; every clause carries its coordinate (docs/OBSERVATION.md)")
@@ -2497,7 +2604,7 @@ def main(argv: Optional[list] = None) -> int:
                          "only needed if a request sets \"backend\": \"jgen\"")
     # W10-f01: one entrance for OpenAI-compatible (/v1/chat/completions) and Ollama-compatible (/api/chat) clients (docs/FUSION.md).
     # NOT `--store`: the top-level --store (CrossStore path) would be overwritten by a sub-parser default (D1); the sovereign is named by the two options below.
-    p.add_argument("--backend", choices=["ollama"], default=None,
+    p.add_argument("--backend", choices=["ollama", "openai"], default=None,
                    help="W10-f01: put Vera in front of a local LLM (layer 0: the LLM answers, every sentence is typed record/testimony/constructed/unread)")
     p.add_argument("--model", default=None, help="W10-f01: the Ollama model the entrance calls (required with --backend)")
     p.add_argument("--document", action="append", default=None, help="W10-f01: a document (file or folder) that is the record; repeatable")
@@ -2508,6 +2615,13 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--placement", default=None, help="W10-f01: sets VERA_PLACEMENT (the placement directory; without it a factual question has no typed candidate)")
     p.add_argument("--ollama-url", default="http://127.0.0.1:11434", dest="ollama_url", help="W10-f01: the Ollama server")
     p.add_argument("--llm-timeout", type=float, default=180.0, dest="llm_timeout", help="W10-f01: seconds to wait for the LLM before LLM_UNAVAILABLE (TIMEOUT)")
+    p.add_argument("--api-base", default=None, dest="api_base", help="W10-f04: the OpenAI-compatible API base for --backend openai (else VERA_LLM_API_BASE); the key is VERA_LLM_API_KEY")
+    # W10-f04 (docs/FUSION.md section 6): the candidate mouth. Off unless --fill: without it nothing in any output changes.
+    p.add_argument("--fill", action="store_true", help="W10-f04: ask the LLM for candidates for typed holes (testimony only, written to --ledger-file; never a record)")
+    p.add_argument("--ledger-file", default=None, dest="ledger_file", help="W10-f04: the testimony ledger (append-only, hash-chained); required with --fill")
+    p.add_argument("--fill-model", default=None, dest="fill_model", help="W10-f04: the model that proposes candidates (default: --model)")
+    p.add_argument("--no-mask-user-text", action="store_true", dest="no_mask_user_text", help="W10-f04: send the user's sentence to the backend (the default is to send only the hole, the types and the roles)")
+    p.add_argument("--fill-max-holes", type=int, default=30, dest="fill_max_holes", help="W10-f04: holes asked when the documents are loaded (more are counted as skipped_holes)")
     p.set_defaults(fn=cmd_serve)
 
     p = sub.add_parser("setup", help="interactive settings (LLM, allocation)")

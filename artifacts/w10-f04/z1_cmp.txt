@@ -1,0 +1,13 @@
+case 1: same (byte-identical, both runs)
+case 2: same (byte-identical after masking ingest_ms and elapsed_ms, the only lines that differ between two runs of the base)
+case 3: same (byte-identical after masking ingest_ms and elapsed_ms, the only lines that differ between two runs of the base)
+case 4: same (byte-identical after masking ingest_ms and elapsed_ms, the only lines that differ between two runs of the base)
+case 5: same (byte-identical, both runs)
+case 6: same (byte-identical, both runs)
+case 7: same (byte-identical, both runs)
+case 8: same (byte-identical, both runs)
+case 9: same (byte-identical, both runs)
+case 10: same (byte-identical, both runs)
+case 11: same (byte-identical, both runs)
+case 12: same (byte-identical, both runs)
+stderr: every case/run not listed as STDERR DIFFERENT above is byte-identical
