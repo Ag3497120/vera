@@ -16,11 +16,13 @@ SOURCE_TWO_EVENT = "花子が太郎に資料を渡した。太郎が資料を読
 EXPECTED_TWO_EVENT = "花子が太郎に資料を渡した。また、太郎が資料を読んだ。"
 
 
+# Integration (auditor, 2026-10-04): W7-chat (docs/CHAT.md) gives the round5 REPL a closed command set that ends with `/quit`;
+# the legacy `:quit` of the lab/hybrid REPLs is no longer the round5 exit, so these tests exit with `/quit`.
 def test_explicit_round5_chat_uses_raw_public_api_and_displays_partial_evidence(
         tmp_path, monkeypatch, capsys):
     source = tmp_path / "memo.txt"
     source.write_text(SOURCE, encoding="utf-8")
-    inputs = iter([RAW, ":quit"])
+    inputs = iter([RAW, "/quit"])
     monkeypatch.setattr("verantyx.tui.read_input", lambda _prompt: next(inputs))
 
     seen = []
@@ -87,7 +89,7 @@ def test_round5_documents_require_explicit_mode_and_engine_route_is_rejected(
 
 
 def test_chat_default_keeps_legacy_mode_and_raw_user_message(tmp_path, monkeypatch, capsys):
-    inputs = iter(["ミオの居室を教えてください。", ":quit"])
+    inputs = iter(["ミオの居室を教えてください。", "/quit"])
     monkeypatch.setattr("verantyx.tui.read_input", lambda _prompt: next(inputs))
     monkeypatch.setattr(VeraConfig, "load",
                         classmethod(lambda _cls: VeraConfig(hf_store_repo="")))
@@ -113,7 +115,7 @@ def test_round5_chat_same_two_event_request_remains_explicitly_partial(
         tmp_path, monkeypatch, capsys):
     source = tmp_path / "memo.txt"
     source.write_text(SOURCE_TWO_EVENT, encoding="utf-8")
-    inputs = iter([RAW_TWO_EVENT, ":quit"])
+    inputs = iter([RAW_TWO_EVENT, "/quit"])
     monkeypatch.setattr("verantyx.tui.read_input", lambda _prompt: next(inputs))
 
     seen = []
