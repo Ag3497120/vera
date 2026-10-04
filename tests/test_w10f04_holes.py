@@ -53,7 +53,9 @@ def fake_two_holes():
 
 
 def test_noun_types_are_17():
-    assert len(NOUN_TYPES) == 17          # J3: the ticket's "18" is read as the 17 of coarse_types.NOUN_TYPES
+    # Integration of W3-a6 (auditor, 2026-10-05): the ticket's "18" became true (RELATIVE_POSITION); the 17 are the frame types. Name kept.
+    from verantyx.coarse_types import FRAME_NOUN_TYPES
+    assert len(NOUN_TYPES) == 18 and len(FRAME_NOUN_TYPES) == 17 and 'RELATIVE_POSITION' not in FRAME_NOUN_TYPES
 
 
 def test_a_hole_on_a_fake_placement():
