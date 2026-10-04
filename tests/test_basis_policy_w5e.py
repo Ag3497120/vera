@@ -16,6 +16,8 @@ HERE = Path(__file__).resolve().parent
 H4 = json.loads((HERE.parent / "artifacts" / "w5-e" / "h4_inputs.json").read_text(encoding="utf-8"))
 QUERY = H4["query"]
 BODY = H4["document_body"]
+W5F_MEMORY_IDS = {"store_id": "store-w5f-test", "confirm_id": "0123456789abcdef01234567"}
+W5F_RETIRED_CONTROLS = {"H4-C2-memory-sovereign-self-declared-kept"}
 
 
 @pytest.fixture(autouse=True)
@@ -45,15 +47,21 @@ def test_h4_a_self_declared_human_confirmed_never_answers(case, tmp_path):
 
 @pytest.mark.parametrize("case", H4["controls"], ids=lambda c: c["id"])
 def test_h4_controls_that_are_really_human_still_answer(case, tmp_path):
+    # W5-f（F-4、分類の規則 v5）: 凍結対照のうち退役した自己申告例だけを UNKNOWN_ORIGIN として扱う。
     out, _ = _run(case, tmp_path)
+    if case["id"] in W5F_RETIRED_CONTROLS:
+        assert out["basis_policy"]["basis_original"] == "UNKNOWN_ORIGIN", json.dumps(out, ensure_ascii=False)
+        assert out["verdict"] != "ANSWER" and out["kind"] != "answer"
+        return
     assert out["basis_policy"]["basis_original"] == "HUMAN" and out["basis_policy"]["outcome"].startswith("ANSWER"), json.dumps(out, ensure_ascii=False)
     assert out["verdict"] == "ANSWER"
 
 
 def test_a3_the_classify_version_is_4_and_the_note_carries_it(tmp_path):
-    assert bp.CLASSIFY_VERSION == 4
+    # W5-f（F-4、分類の規則 v5）: 注記と分類器の版を 5 に更新する。
+    assert bp.CLASSIFY_VERSION == 5
     out, _ = _run(H4["controls"][0], tmp_path)
-    assert out["basis_policy"]["classify_version"] == 4
+    assert out["basis_policy"]["classify_version"] == 5
     assert bp.TABLE_VERSION == 1 and bp.CONFIRM_ID_VERSION == 2      # nothing else moved
 
 
@@ -95,9 +103,9 @@ def test_a3_a_missing_family_that_claims_human_confirmed_is_unknown_origin():
 
 
 def test_a3_the_sovereigns_records_are_human():
-    assert _cls({"family": "memory_sovereign", "origin": "human_confirmed", "store_id": "s1", "confirm_id": "c1"}) == "human"
-    # not made a condition (a documented known hole: the strings can be claimed too)
-    assert _cls({"family": "memory_sovereign", "origin": "human_confirmed"}) == "human"
+    # W5-f（F-4、分類の規則 v5）: id の形が合えば人、欠落すれば unknown_origin にする。
+    assert _cls({**W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed"}) == "human"
+    assert _cls({"family": "memory_sovereign", "origin": "human_confirmed"}) == "unknown_origin"
 
 
 def test_a3_generated_goes_first_and_is_never_lifted_by_the_body_check():

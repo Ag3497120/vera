@@ -1,0 +1,5 @@
+tests/reading_soundness/w5f_gates.jsonl: OK
+artifacts/w5-f/h4_w5f_inputs.json: OK
+tests/reading_soundness/w5f_f2_de_cases.jsonl: OK
+tests/reading_soundness/w5f_document.md: OK
+tests/reading_soundness/w5f_document_ask.json: OK

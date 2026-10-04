@@ -1,0 +1,32 @@
+{"id": "A01", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_ORIGIN_SOURCE", "basis_original": "UNKNOWN_ORIGIN", "what": "nonexistent document path"}
+{"id": "A02", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_ORIGIN_SOURCE", "basis_original": "UNKNOWN_ORIGIN", "what": "empty document"}
+{"id": "A03", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_ORIGIN_SOURCE", "basis_original": "UNKNOWN_ORIGIN", "what": "one character differs"}
+{"id": "A04", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_ORIGIN_SOURCE", "basis_original": "UNKNOWN_ORIGIN", "what": "text in a document that was NOT handed over"}
+{"id": "A05", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_ORIGIN_SOURCE", "basis_original": "UNKNOWN_ORIGIN", "what": "whitespace-only text"}
+{"id": "A06", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_ORIGIN_SOURCE", "basis_original": "UNKNOWN_ORIGIN", "what": "sha256 of another document"}
+{"id": "A07", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_ORIGIN_SOURCE", "basis_original": "UNKNOWN_ORIGIN", "what": "directory whose only file is unsupported"}
+{"id": "A08", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_ORIGIN_SOURCE", "basis_original": "UNKNOWN_ORIGIN", "what": "legacy mode: documents do not make a human source"}
+{"id": "A09", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_ORIGIN_SOURCE", "basis_original": "UNKNOWN_ORIGIN", "what": "one found, one not"}
+{"id": "A10", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_ORIGIN_SOURCE", "basis_original": "UNKNOWN_ORIGIN", "what": "zero-width space inside"}
+{"id": "A11", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_ORIGIN_SOURCE", "basis_original": "UNKNOWN_ORIGIN", "what": "family spelled differently"}
+{"id": "A12", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_ORIGIN_SOURCE", "basis_original": "UNKNOWN_ORIGIN", "what": "empty origin string"}
+{"id": "A13", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_ORIGIN_SOURCE", "basis_original": "UNKNOWN_ORIGIN", "what": "no documents at all"}
+{"id": "AC1", "ok": true, "outcome": "ANSWER_HUMAN_BASIS", "verdict": "ANSWER", "basis_original": "HUMAN", "what": "control: in the document"}
+{"id": "AC2", "ok": true, "outcome": "ANSWER_HUMAN_BASIS", "verdict": "ANSWER", "basis_original": "HUMAN", "what": "control: NFKC (half-width kana in the document)"}
+{"id": "AC3", "ok": true, "outcome": "ANSWER_HUMAN_BASIS", "verdict": "ANSWER", "basis_original": "HUMAN", "what": "control: directory with the document"}
+{"id": "D01", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_GENERATED_BASIS_ONLY", "differs": 1, "what": "'会議が3時に始まる。 '"}
+{"id": "D02", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_GENERATED_BASIS_ONLY", "differs": 1, "what": "'会議が３時に始まる。'"}
+{"id": "D03", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_GENERATED_BASIS_ONLY", "differs": 1, "what": "'会議が3時に始まる'"}
+{"id": "D04", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_GENERATED_BASIS_ONLY", "differs": 1, "what": "'会議が3時に始まる。\\u200b'"}
+{"id": "D05", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_GENERATED_BASIS_ONLY", "differs": 1, "what": "'会議が 3時に始まる。'"}
+{"id": "D06", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_GENERATED_BASIS_ONLY", "differs": 1, "what": "'会議が3時に始まる！'"}
+{"id": "D07", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_GENERATED_BASIS_ONLY", "differs": 1, "what": "'会議が3時に始まる。。'"}
+{"id": "D08", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_GENERATED_BASIS_ONLY", "differs": 1, "what": "'会議が4時に始まる。'"}
+{"id": "D09", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_GENERATED_BASIS_ONLY", "differs": 1, "what": "'会議が3時に始まる。'"}
+{"id": "D10", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_GENERATED_BASIS_ONLY", "differs": 1, "what": "'会議が3時に始まる。\\r\\n'"}
+{"id": "D11", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_GENERATED_BASIS_ONLY", "differs": 1, "what": "'\\ufeff会議が3時に始まる。'"}
+{"id": "D12", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_GENERATED_BASIS_ONLY", "differs": 1, "what": "'会議が3時に始まる｡'"}
+{"id": "D13", "ok": true, "outcome": "ABSTAIN", "verdict": "UNKNOWN_GENERATED_BASIS_ONLY", "what": "same claim, other query"}
+{"id": "DC1", "ok": true, "outcome": "ANSWER_HUMAN_BASIS", "verdict": "ANSWER", "what": "control: same sentence"}
+{"id": "D14", "ok": true, "outcome": "ABSTAIN", "verdict": "AMBIGUOUS_CONFIRMED_RECORDS", "what": "two different confirmed claims (one equal)"}
+SUMMARY {"n": 31, "fails": []}

@@ -1,0 +1,8 @@
+proposal=K165-remove-P_ACT-source-から-PLACE
+cases_before=[{"id": "D06", "readable": true, "reasons": null, "roles": {"agent": "姉", "goal": "倉庫", "patient": "箱", "source": "東"}, "text": "姉が東から倉庫へ箱を運んだ。"}, {"id": "D08", "readable": false, "reasons": ["RECIPIENT_TYPE_UNDETERMINED:叱る", "PLACEMENT_VOICE_NOT_ACTIVE"], "roles": null, "text": "兄が上司から倉庫へ叱られた。"}, {"id": "D10", "readable": true, "reasons": null, "roles": {"agent": "弟", "goal": "倉庫", "source": "右"}, "text": "弟が右から倉庫へ打った。"}]
+cases_after=[{"id": "D06", "readable": true, "reasons": null, "roles": {"agent": "姉", "goal": "倉庫", "patient": "箱", "source": "東"}, "text": "姉が東から倉庫へ箱を運んだ。"}, {"id": "D08", "readable": false, "reasons": ["RECIPIENT_TYPE_UNDETERMINED:叱る", "PLACEMENT_VOICE_NOT_ACTIVE"], "roles": null, "text": "兄が上司から倉庫へ叱られた。"}, {"id": "D10", "readable": false, "reasons": ["RECIPIENT_TYPE_UNDETERMINED:打つ", "PLACEMENT_FRAME_NOT_READ:P_ACT"], "roles": null, "text": "弟が右から倉庫へ打った。"}]
+tree=/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W5-f-codex/proposal_clone
+mode=live inputs=4149 readable=458
+mode=r8 inputs=4149 readable_before=458 readable_after=458 changed=9 transitions={"abstain_reason_changed": 9}
+mode=r8 inputs=4149 readable_before=458 readable_after=458 changed=0 transitions={}
+rows 649 649 misread_before 171 misread_after 171 changed_selected_fields 0

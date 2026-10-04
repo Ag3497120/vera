@@ -1630,3 +1630,520 @@ def test_r3_the_policy_note_carries_the_classify_version_3():
     assert out["basis_policy"]["table_version"] == 1
 ```
 <!-- w5e2-ka3:end -->
+
+## W5-f の事前登録: F-4 ソブリンの自己申告（分類の規則 v5）と定義の注記（F-5）
+<!-- w5f-prereg:begin -->
+事前登録の時刻: 2026-10-04 08:40:13 +0900（`date '+%F %T %z'` の出力。`artifacts/w5-f/prereg_time.txt`）。この節は検査データ（`artifacts/w5-f/h4_w5f_inputs.json`）・新しいテスト（`tests/test_basis_policy_w5f.py`）を書く前、製品コード（`verantyx/basis_policy.py`）を直す前に確定した。上の節は 1 文字も変えない。出典: 中間職の指示書 `.claude/vera-audit/review-impl/W5-f/plan.md` D4・D6、攻撃の報告 `attacks/reports/W5-e/`。
+
+**命中（W5-e の攻撃、`tests/attack/test_attack_w5e_a3_sovereign_self_claim.py`）**: `family == "memory_sovereign"`・`origin == "human_confirmed"` を `store_id`・`confirm_id` **無しで** 渡しても v4 の `_class_of` は `human` にする（4 形態すべて `ANSWER_HUMAN_BASIS`）。
+
+### 規則 v5（`_class_of`。上から最初に当たったもの。v4 からの差は 4 だけ）
+1. dict でない → `unreadable`（v4 のまま）
+2. `origin == "generated"` → `generated`（v4 のまま。**generated が先**）
+3. `family == "document"` かつ `origin == "human_confirmed"` → A1 と同じ本文照合（v4 のまま）
+4. `origin == "human_confirmed"` かつ `family == "memory_sovereign"` → **`store_id` と `confirm_id` の両方が空でない文字列で、かつ `confirm_id` が W5-c の式（query・claim・generated の sha256 の先頭 24 桁。`_confirm_id`）の形（長さ 24 の小文字の 16 進）のときだけ `human`。それ以外は `unknown_origin`**（棄権側。大文字・数値・23 桁・25 桁・16 進でない字は通さない）。
+5. `origin == "human_confirmed"`（それ以外の `family`）→ `unknown_origin`（v4 のまま）
+6. 以降は v4 のまま（索引の系列 → `unknown_origin`、`origin` の値あり → `non_evidence`、`family == "user"` → `request_text`、`user_documents` が真の document → A1 の照合、それ以外 → `unknown_origin`）
+
+- `CLASSIFY_VERSION = 5`（4 から）。`TABLE_VERSION`・`CONFIRM_ID_VERSION`・`SCHEMA` は変えない。`basis_policy` の注記の `classify_version` は 5。
+- ソブリンから実際に来る記録（W6-a の D の格上げ。`apply_to_ask` が記録から作る `family: "memory_sovereign"` の出典）は `store_id = view.store_id`・`confirm_id = payload["confirm_id"]`（24 桁）を持つので従来どおり `ANSWER_HUMAN_BASIS`（新しいテストで確かめる）。
+- **既知の穴（隠さない）**: 形（24 桁の小文字の 16 進）の合う id 自体は自己申告できる。ソブリンの台帳と突き合わせる照合はこのチケットの範囲外（`sovereign.py` に触らない）。
+- 退役する振る舞い: 「id の無い `memory_sovereign` ＋ `human_confirmed` を人とする」（v4 の規則 4 の注記。W5-e が既知の穴として残したもの）。これを固定していた既存テストは改訂する（名前不変。前後の全文は下の「改訂の記録」に S5 で貼る）。改訂の対象は次の 16 関数（試作で落ちた 21 件）: `test_basis_policy_entry.py` の `test_a_mix_of_human_and_generated_sources_abstains`・`test_a_human_answer_is_passed_through_unchanged_apart_from_the_policy_note`、`test_basis_policy_form.py` の `test_other_routes_do_not_attempt_the_borrowing`、`test_basis_policy_table.py` の `test_decide_accepts_a_classification_result_as_the_basis`・`test_rule3_human_confirmed_origin_is_human`・`test_human_and_generated_together_is_mixed`、`test_basis_policy_w5c.py` の `test_w5c_counts_keep_their_five_keys_and_the_new_numbers_live_beside_them`・`test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis`・`test_w5c_the_versions_and_the_table_are_as_registered`・`test_w5c_the_policy_note_carries_the_new_versions_and_numbers`、`test_basis_policy_w5c_r3.py` の `test_r3_the_request_text_and_a_declared_human_confirmation_do_not_depend_on_user_documents`・`test_r3_the_versions_are_as_registered`・`test_r3_the_policy_note_carries_the_classify_version_3`、`test_basis_policy_w5e.py` の `test_a3_the_classify_version_is_4_and_the_note_carries_it`・`test_a3_the_sovereigns_records_are_human`・`test_h4_controls_that_are_really_human_still_answer[H4-C2-memory-sovereign-self-declared-kept]`（H4 の凍結入力 `artifacts/w5-e/h4_inputs.json` は書き換えない。関数の中で、退役した対照の id の集合 `W5F_RETIRED_CONTROLS` を `unknown_origin` ／ANSWER でないことの確認に回す）。関数名の 3・4 はその版の名前なので変えない。これら以外の basis 系の失敗が出たら改訂せず止めて報告する。
+
+### F-5 の定義の注記（cli.py は変えない）
+本文照合（W5-c/W5-d の A1、`basis_policy._document_texts`）と後段の出典の `text`（`cli._qc_records`／`_qc_sources`）は、どちらも **`document_loaders`（`load_paths`／`load_directory`）が返す `Document.text`＝読込後の本文** に対して定義する。元のファイルの逐字の文字列ではない（Markdown のリンクは表示語だけ、見出しの `#` は外れる、コード・URL・表の行は消える）。出典の `line` は読込後の本文の行番号。今の振る舞いがこの定義どおりなので `cli.py` は変えない。攻撃の写し（W3-c4 の `test_markdown_link_evidence_text_is_a_literal_source_substring`）は元の Markdown 文字列の部分文字列を求めるので、定義上落ちる（宣言 K-C4。意味上の誤答ではない）。
+
+### 旧版 v4 の `_class_of`（変更前の全文。直す前に貼る）
+```python
+def _class_of(src: Any, user_documents: bool = False, document_texts: Optional[Sequence[str]] = None) -> str:
+    """The class of one source: the rules of docs/BASIS_POLICY.md section prereg-w5c-r3 (the earliest rule that applies wins).
+
+    A human source is one whose origin is declared human (``human_confirmed``) AND whose family is ``memory_sovereign`` (W5-e,
+    version 4: a ``document`` source claiming it is checked in the documents like any other; any other family claiming it is
+    ``unknown_origin``), the request text itself
+    (``family == "user"``) and, only when ``user_documents`` is true (the caller handed these documents over in
+    this very call), a ``family == "document"`` source with no origin WHOSE TEXT IS IN THOSE DOCUMENTS (W5-d: with
+    ``document_texts``, the bodies of the documents handed over, it must be found in them -- ``_document_text_holds``;
+    a document source not found there is ``unknown_origin``). ``document_texts is None`` is the older contract: the
+    caller has checked it himself (the product never calls it so: ``apply_to_ask`` always passes the bodies).
+    Everything else with no origin is ``unknown_origin``: it is not a human source and it is not known to be a
+    generated one either (absent, ``None``, ``""``, a different spelling of a declared value, any unknown value,
+    a family outside the index)."""
+    if not isinstance(src, dict):
+        return "unreadable"
+    origin = src.get("origin")
+    if origin == "generated":
+        return "generated"
+    if origin == "human_confirmed":
+        # W5-e (A-3, rule v4): a claim of ``human_confirmed`` is a human source only for the sovereign's own record
+        # (``family == "memory_sovereign"``); a document source goes through the body check of A1 whatever origin it claims;
+        # any other family that claims it is ``unknown_origin``.
+        if src.get("family") == "memory_sovereign":
+            return "human"
+        if src.get("family") == "document" and user_documents \
+                and (document_texts is None or _document_text_holds(src, document_texts)):
+            return "human"
+        return "unknown_origin"
+    if _is_index_family(src) and not (isinstance(origin, str) and origin in DECLARED_NON_EVIDENCE):
+        return "unknown_origin"
+    if origin is not None:
+        return "non_evidence"
+    if src.get("family") == "user":
+        return "request_text"
+    if user_documents and src.get("family") == "document":
+        if document_texts is None or _document_text_holds(src, document_texts):
+            return "human"
+        return "unknown_origin"
+    return "unknown_origin"
+```
+<!-- w5f-prereg:end -->
+
+## W5-f の実測結果（分類の規則 v5）
+測定記録: 2026-10-04 10:01:23 +0900（`artifacts/w5-f/s6_docs_time.txt`）。
+
+- `CLASSIFY_VERSION=5`、`TABLE_VERSION=1`、`CONFIRM_ID_VERSION=2`（`artifacts/w5-f/i3_versions.txt`）。
+- W5-f の新しい形状検査・既存の根拠ポリシー 6 モジュールは合わせて 1,612 件通過（`artifacts/w5-f/basis_policy_related_acceptance.txt`）。改訂した各モジュールの個別出力と変更前後の関数全文はこの節の S5 記録に続けてある。
+- W5-d の凍結探りは 31 件、失敗 0（`artifacts/w5-f/i3_b_check_r2.txt`）。根拠方針と関連攻撃は 59 件通過、1 件 skip（`artifacts/w5-f/i3_tests.txt`）。skip は既存の `test_frame_confirmed_partial_intersection_does_not_authorize_unbacked_type` が、r7 に該当する確認済み枠が無いため自ら宣言したもの。
+- H4-C2 の凍結入力は書き換えず、`W5F_RETIRED_CONTROLS` だけを退役例として扱った。記号の形を満たす識別子が実在記録に結びつくかはこの変更では照合しない（既知の穴）。
+
+
+### W5-f S5 entry: before（2026-10-04 09:42:47 +0900）
+
+#### `tests/test_basis_policy_entry.py::test_a_mix_of_human_and_generated_sources_abstains`
+
+```python
+@pytest.mark.parametrize("human", [False, True])
+@pytest.mark.parametrize("ref", [False, True])
+def test_a_mix_of_human_and_generated_sources_abstains(human, ref):
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
+    result = _synthetic("answer", "ANSWER", [{**HUMAN, "family": "memory_sovereign", "origin": "human_confirmed"}, GEN])
+    out, rc = bp.apply_to_ask(result, bp.AskPolicy(human_present=human, show_reference=ref),
+                              query="q", mode="legacy", documents=[])
+    assert rc == 0 and out["kind"] == "unknown" and out["verdict"] == "UNKNOWN_BASIS_NOT_IN_TABLE"
+    assert out["basis_policy"]["basis"] == "MIXED" and out["basis_policy"]["in_table"] is False
+    assert out["basis_policy"]["outcome"] == "ABSTAIN"
+```
+
+#### `tests/test_basis_policy_entry.py::test_a_human_answer_is_passed_through_unchanged_apart_from_the_policy_note`
+
+```python
+def test_a_human_answer_is_passed_through_unchanged_apart_from_the_policy_note():
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
+    result = _synthetic("answer", "ANSWER", [USER, {**HUMAN, "family": "memory_sovereign", "origin": "human_confirmed"}])
+    out, rc = bp.apply_to_ask(result, bp.AskPolicy(), query="q", mode="legacy", documents=[])
+    assert rc == 0 and _without(out, "basis_policy") == result
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS" and out["basis_policy"]["applied"] is True
+```
+
+
+
+### W5-f S5 entry: after（2026-10-04 09:43:40 +0900）
+
+#### `tests/test_basis_policy_entry.py::test_a_mix_of_human_and_generated_sources_abstains`
+
+```python
+@pytest.mark.parametrize("human", [False, True])
+@pytest.mark.parametrize("ref", [False, True])
+def test_a_mix_of_human_and_generated_sources_abstains(human, ref):
+    # W5-f（F-4、分類の規則 v5）: 退役した自己申告の入力に有効な識別子を与え、人と生成の混合を検査する。
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
+    result = _synthetic("answer", "ANSWER", [{**HUMAN, **W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed"}, GEN])
+    out, rc = bp.apply_to_ask(result, bp.AskPolicy(human_present=human, show_reference=ref),
+                              query="q", mode="legacy", documents=[])
+    assert rc == 0 and out["kind"] == "unknown" and out["verdict"] == "UNKNOWN_BASIS_NOT_IN_TABLE"
+    assert out["basis_policy"]["basis"] == "MIXED" and out["basis_policy"]["in_table"] is False
+    assert out["basis_policy"]["outcome"] == "ABSTAIN"
+```
+
+#### `tests/test_basis_policy_entry.py::test_a_human_answer_is_passed_through_unchanged_apart_from_the_policy_note`
+
+```python
+def test_a_human_answer_is_passed_through_unchanged_apart_from_the_policy_note():
+    # W5-f（F-4、分類の規則 v5）: 退役した自己申告の入力に有効な識別子を与え、人の回答の通過を検査する。
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
+    result = _synthetic("answer", "ANSWER", [USER, {**HUMAN, **W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed"}])
+    out, rc = bp.apply_to_ask(result, bp.AskPolicy(), query="q", mode="legacy", documents=[])
+    assert rc == 0 and _without(out, "basis_policy") == result
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS" and out["basis_policy"]["applied"] is True
+```
+
+
+
+### W5-f S5 form: before（2026-10-04 09:44:24 +0900）
+
+#### `tests/test_basis_policy_form.py::test_other_routes_do_not_attempt_the_borrowing`
+
+```python
+@pytest.mark.parametrize("mode, docs", [("legacy", []), ("round5", [])])
+def test_other_routes_do_not_attempt_the_borrowing(tmp_path, monkeypatch, mode, docs):
+    _index(tmp_path, {"local": ["次郎が花子に本を渡した。"]})
+    monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
+    ans = _doc_answer(); ans["sources"] = [{**s, "family": "memory_sovereign", "origin": "human_confirmed"} for s in ans["sources"]]
+    out, _rc = bp.apply_to_ask(ans, bp.AskPolicy(), query="q", mode=mode, documents=docs)
+    assert "form_text" not in out and out["basis_policy"]["form"]["state"] == "NOT_ATTEMPTED_ROUTE"
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"
+```
+
+
+
+### W5-f S5 form: after（2026-10-04 09:44:51 +0900）
+
+#### `tests/test_basis_policy_form.py::test_other_routes_do_not_attempt_the_borrowing`
+
+```python
+@pytest.mark.parametrize("mode, docs", [("legacy", []), ("round5", [])])
+def test_other_routes_do_not_attempt_the_borrowing(tmp_path, monkeypatch, mode, docs):
+    # W5-f（F-4、分類の規則 v5）: 有効な識別子を持つソブリン出典で経路の分類を確かめる。
+    _index(tmp_path, {"local": ["次郎が花子に本を渡した。"]})
+    monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
+    ans = _doc_answer(); ans["sources"] = [{**s, **W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed"} for s in ans["sources"]]
+    out, _rc = bp.apply_to_ask(ans, bp.AskPolicy(), query="q", mode=mode, documents=docs)
+    assert "form_text" not in out and out["basis_policy"]["form"]["state"] == "NOT_ATTEMPTED_ROUTE"
+    assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"
+```
+
+
+
+### W5-f S5 table: before（2026-10-04 09:45:03 +0900）
+
+#### `tests/test_basis_policy_table.py::test_decide_accepts_a_classification_result_as_the_basis`
+
+```python
+def test_decide_accepts_a_classification_result_as_the_basis():
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    sc = bp.classify_sources([{"family": "memory_sovereign", "origin": "human_confirmed", "text": "x"}])
+    assert sc.basis == "HUMAN"
+    assert bp.decide("factual", sc, False, False).outcome == "ANSWER_HUMAN_BASIS"
+```
+
+#### `tests/test_basis_policy_table.py::test_rule3_human_confirmed_origin_is_human`
+
+```python
+def test_rule3_human_confirmed_origin_is_human():
+    sc = bp.classify_sources([{"family": "memory_sovereign", "origin": "human_confirmed"}])
+    assert sc.counts["human"] == 1 and sc.basis == "HUMAN"
+```
+
+#### `tests/test_basis_policy_table.py::test_human_and_generated_together_is_mixed`
+
+```python
+def test_human_and_generated_together_is_mixed():
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    sc = bp.classify_sources([{"family": "memory_sovereign", "origin": "human_confirmed"}, {"family": "local", "origin": "generated"}])
+    assert sc.basis == "MIXED" and sc.cited == 2
+```
+
+
+
+### W5-f S5 table: after（2026-10-04 09:45:26 +0900）
+
+#### `tests/test_basis_policy_table.py::test_decide_accepts_a_classification_result_as_the_basis`
+
+```python
+def test_decide_accepts_a_classification_result_as_the_basis():
+    # W5-f（F-4、分類の規則 v5）: 有効な識別子を持つソブリン出典の分類結果を渡す。
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    sc = bp.classify_sources([{**W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed", "text": "x"}])
+    assert sc.basis == "HUMAN"
+    assert bp.decide("factual", sc, False, False).outcome == "ANSWER_HUMAN_BASIS"
+```
+
+#### `tests/test_basis_policy_table.py::test_rule3_human_confirmed_origin_is_human`
+
+```python
+def test_rule3_human_confirmed_origin_is_human():
+    # W5-f（F-4、分類の規則 v5）: 条件を満たす識別子とともに規則 3 を確かめる。
+    sc = bp.classify_sources([{**W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed"}])
+    assert sc.counts["human"] == 1 and sc.basis == "HUMAN"
+```
+
+#### `tests/test_basis_policy_table.py::test_human_and_generated_together_is_mixed`
+
+```python
+def test_human_and_generated_together_is_mixed():
+    # W5-f（F-4、分類の規則 v5）: 条件を満たすソブリン出典と生成出典を混ぜる。
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
+    sc = bp.classify_sources([{**W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed"}, {"family": "local", "origin": "generated"}])
+    assert sc.basis == "MIXED" and sc.cited == 2
+```
+
+
+
+### W5-f S5 w5c: before（2026-10-04 09:45:35 +0900）
+
+#### `tests/test_basis_policy_w5c.py::test_w5c_the_versions_and_the_table_are_as_registered`
+
+```python
+def test_w5c_the_versions_and_the_table_are_as_registered():
+    assert bp.TABLE_VERSION == 1 and bp.SCHEMA == "verantyx.basis_policy/1"
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 規則 7・8 が変わったので CLASSIFY_VERSION は 3（prereg-w5c-r3 節）
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: CLASSIFY_VERSION は 4（A-3: human_confirmed を人と分類するのは family == memory_sovereign のときだけ。prereg の節 W5-e A-3）
+    assert bp.CLASSIFY_VERSION == 4 and bp.CONFIRM_ID_VERSION == 2
+    assert len(bp.TABLE) == 24 and bp.BASES == ("HUMAN", "GENERATED", "NONE")
+    assert bp.DECLARED_ORIGINS == ("generated", "human_confirmed", "constructed", "testimony")
+    assert bp.UNKNOWN_ORIGIN == "UNKNOWN_ORIGIN"
+```
+
+#### `tests/test_basis_policy_w5c.py::test_w5c_counts_keep_their_five_keys_and_the_new_numbers_live_beside_them`
+
+```python
+def test_w5c_counts_keep_their_five_keys_and_the_new_numbers_live_beside_them():
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の HUMAN を明示の人（origin: human_confirmed）にした。期待は同じ
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
+    sc = bp.classify_sources([_src("local", None), _src("x", "zzz"), GEN, {**HUMAN, "family": "memory_sovereign", "origin": "human_confirmed"}, USER, "junk"])
+    assert set(sc.counts) == {"human", "generated", "non_evidence", "request_text", "unreadable"}
+    assert sc.counts == {"human": 1, "generated": 1, "non_evidence": 1, "request_text": 1, "unreadable": 1}
+    assert sc.unknown_origin == 1 and sc.unknown_origin_values == {"zzz": 1}
+    assert sc.cited == 5 and sc.policy_basis == "UNKNOWN_ORIGIN" and sc.basis == "UNKNOWN_ORIGIN"
+    d = sc.to_dict()
+    assert d["unknown_origin"] == 1 and d["unknown_origin_by_family"] == {"local": 1}
+    assert d["unknown_origin_values"] == {"zzz": 1}
+```
+
+#### `tests/test_basis_policy_w5c.py::test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis`
+
+```python
+def test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis():
+    sc = bp.classify_sources([_src("x", "zzz")])
+    assert sc.basis == "NONE" and sc.policy_basis == "UNKNOWN_ORIGIN"
+    assert sc.counts["non_evidence"] == 1 and sc.non_evidence_by_origin == {"zzz": 1}
+    assert bp.classify_sources([_src("x", "constructed")]).policy_basis == "NONE"
+    assert bp.classify_sources([_src("x", "testimony")]).policy_basis == "NONE"
+    assert bp.classify_sources([GEN]).policy_basis == "GENERATED"
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 最後の行の入力を明示の人にした（期待は同じ）。強める側の assert を 1 行足した
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
+    assert bp.classify_sources([{**HUMAN, "family": "memory_sovereign", "origin": "human_confirmed"}]).policy_basis == "HUMAN"
+    assert bp.classify_sources([HUMAN]).policy_basis == "UNKNOWN_ORIGIN"
+```
+
+#### `tests/test_basis_policy_w5c.py::test_w5c_the_policy_note_carries_the_new_versions_and_numbers`
+
+```python
+def test_w5c_the_policy_note_carries_the_new_versions_and_numbers():
+    out, _rc = bp.apply_to_ask(_synthetic("answer", "ANSWER", [_src("pro", "")]), bp.AskPolicy(), query="窓は？",
+                               mode="legacy", documents=[])
+    note = out["basis_policy"]
+    assert note["schema"] == "verantyx.basis_policy/1" and note["table_version"] == 1
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 注記の classify_version は 3
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 注記の classify_version は 4
+    assert note["classify_version"] == 4 and note["confirm_id_version"] == 2
+    assert note["counts"]["unknown_origin"] == 1 and note["counts"]["unknown_origin_by_family"] == {"pro": 1}
+    assert out["withheld"]["unknown_origin_source_count"] == 1
+```
+
+
+
+### W5-f S5 w5c: after（2026-10-04 09:46:00 +0900）
+
+#### `tests/test_basis_policy_w5c.py::test_w5c_the_versions_and_the_table_are_as_registered`
+
+```python
+def test_w5c_the_versions_and_the_table_are_as_registered():
+    # W5-f（F-4、分類の規則 v5）: 分類の版だけが 5 に進んだことを確かめる。
+    assert bp.TABLE_VERSION == 1 and bp.SCHEMA == "verantyx.basis_policy/1"
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 規則 7・8 が変わったので CLASSIFY_VERSION は 3（prereg-w5c-r3 節）
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: CLASSIFY_VERSION は 4（A-3: human_confirmed を人と分類するのは family == memory_sovereign のときだけ。prereg の節 W5-e A-3）
+    assert bp.CLASSIFY_VERSION == 5 and bp.CONFIRM_ID_VERSION == 2
+    assert len(bp.TABLE) == 24 and bp.BASES == ("HUMAN", "GENERATED", "NONE")
+    assert bp.DECLARED_ORIGINS == ("generated", "human_confirmed", "constructed", "testimony")
+    assert bp.UNKNOWN_ORIGIN == "UNKNOWN_ORIGIN"
+```
+
+#### `tests/test_basis_policy_w5c.py::test_w5c_counts_keep_their_five_keys_and_the_new_numbers_live_beside_them`
+
+```python
+def test_w5c_counts_keep_their_five_keys_and_the_new_numbers_live_beside_them():
+    # W5-f（F-4、分類の規則 v5）: 自己申告出典に有効な識別子を与え、件数を確かめる。
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の HUMAN を明示の人（origin: human_confirmed）にした。期待は同じ
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
+    sc = bp.classify_sources([_src("local", None), _src("x", "zzz"), GEN, {**HUMAN, **W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed"}, USER, "junk"])
+    assert set(sc.counts) == {"human", "generated", "non_evidence", "request_text", "unreadable"}
+    assert sc.counts == {"human": 1, "generated": 1, "non_evidence": 1, "request_text": 1, "unreadable": 1}
+    assert sc.unknown_origin == 1 and sc.unknown_origin_values == {"zzz": 1}
+    assert sc.cited == 5 and sc.policy_basis == "UNKNOWN_ORIGIN" and sc.basis == "UNKNOWN_ORIGIN"
+    d = sc.to_dict()
+    assert d["unknown_origin"] == 1 and d["unknown_origin_by_family"] == {"local": 1}
+    assert d["unknown_origin_values"] == {"zzz": 1}
+```
+
+#### `tests/test_basis_policy_w5c.py::test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis`
+
+```python
+def test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis():
+    # W5-f（F-4、分類の規則 v5）: 人の分類を保つ入力には有効な識別子を明示する。
+    sc = bp.classify_sources([_src("x", "zzz")])
+    assert sc.basis == "NONE" and sc.policy_basis == "UNKNOWN_ORIGIN"
+    assert sc.counts["non_evidence"] == 1 and sc.non_evidence_by_origin == {"zzz": 1}
+    assert bp.classify_sources([_src("x", "constructed")]).policy_basis == "NONE"
+    assert bp.classify_sources([_src("x", "testimony")]).policy_basis == "NONE"
+    assert bp.classify_sources([GEN]).policy_basis == "GENERATED"
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 最後の行の入力を明示の人にした（期待は同じ）。強める側の assert を 1 行足した
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
+    assert bp.classify_sources([{**HUMAN, **W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed"}]).policy_basis == "HUMAN"
+    assert bp.classify_sources([HUMAN]).policy_basis == "UNKNOWN_ORIGIN"
+```
+
+#### `tests/test_basis_policy_w5c.py::test_w5c_the_policy_note_carries_the_new_versions_and_numbers`
+
+```python
+def test_w5c_the_policy_note_carries_the_new_versions_and_numbers():
+    # W5-f（F-4、分類の規則 v5）: 注記に分類版 5 が出ることを確かめる。
+    out, _rc = bp.apply_to_ask(_synthetic("answer", "ANSWER", [_src("pro", "")]), bp.AskPolicy(), query="窓は？",
+                               mode="legacy", documents=[])
+    note = out["basis_policy"]
+    assert note["schema"] == "verantyx.basis_policy/1" and note["table_version"] == 1
+    # W5-c r3（監査役の判断 2026-10-03 20:40）: 注記の classify_version は 3
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 注記の classify_version は 4
+    assert note["classify_version"] == 5 and note["confirm_id_version"] == 2
+    assert note["counts"]["unknown_origin"] == 1 and note["counts"]["unknown_origin_by_family"] == {"pro": 1}
+    assert out["withheld"]["unknown_origin_source_count"] == 1
+```
+
+
+
+### W5-f S5 w5c_r3: before（2026-10-04 09:46:17 +0900）
+
+#### `tests/test_basis_policy_w5c_r3.py::test_r3_the_request_text_and_a_declared_human_confirmation_do_not_depend_on_user_documents`
+
+```python
+@pytest.mark.parametrize("user_documents", [False, True])
+def test_r3_the_request_text_and_a_declared_human_confirmation_do_not_depend_on_user_documents(user_documents):
+    sc = bp.classify_sources([USER, HUMAN_CONFIRMED], user_documents=user_documents)
+    assert sc.counts["request_text"] == 1 and sc.counts["human"] == 1 and sc.unknown_origin == 0
+    assert sc.cited == 1 and sc.basis == "HUMAN"
+```
+
+#### `tests/test_basis_policy_w5c_r3.py::test_r3_the_versions_are_as_registered`
+
+```python
+def test_r3_the_versions_are_as_registered():
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: CLASSIFY_VERSION は 4（A-3）。関数名の 3 は W5-c r3 の版の名前なので変えない
+    assert bp.CLASSIFY_VERSION == 4 and bp.CONFIRM_ID_VERSION == 2 and bp.TABLE_VERSION == 1
+    assert bp.SCHEMA == "verantyx.basis_policy/1" and len(bp.TABLE) == 24
+```
+
+#### `tests/test_basis_policy_w5c_r3.py::test_r3_the_policy_note_carries_the_classify_version_3`
+
+```python
+def test_r3_the_policy_note_carries_the_classify_version_3():
+    out, _rc = bp.apply_to_ask(_synthetic("answer", "ANSWER", [_fsrc("general", None)]), bp.AskPolicy(), query=Q,
+                               mode="legacy", documents=[])
+    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 注記の classify_version は 4（A-3）。関数名の 3 は W5-c r3 の版の名前なので変えない
+    assert out["basis_policy"]["classify_version"] == 4 and out["basis_policy"]["confirm_id_version"] == 2
+    assert out["basis_policy"]["table_version"] == 1
+```
+
+
+
+### W5-f S5 w5c_r3: after（2026-10-04 09:46:36 +0900）
+
+#### `tests/test_basis_policy_w5c_r3.py::test_r3_the_request_text_and_a_declared_human_confirmation_do_not_depend_on_user_documents`
+
+```python
+@pytest.mark.parametrize("user_documents", [False, True])
+def test_r3_the_request_text_and_a_declared_human_confirmation_do_not_depend_on_user_documents(user_documents):
+    # W5-f（F-4、分類の規則 v5）: 宣言出典に有効な識別子があれば user_documents の有無で分類が変わらない。
+    sc = bp.classify_sources([USER, HUMAN_CONFIRMED], user_documents=user_documents)
+    assert sc.counts["request_text"] == 1 and sc.counts["human"] == 1 and sc.unknown_origin == 0
+    assert sc.cited == 1 and sc.basis == "HUMAN"
+```
+
+#### `tests/test_basis_policy_w5c_r3.py::test_r3_the_versions_are_as_registered`
+
+```python
+def test_r3_the_versions_are_as_registered():
+    # W5-f（F-4、分類の規則 v5）: 分類版は 5。関数名の r3 は W5-c の版の名前なので維持する。
+    assert bp.CLASSIFY_VERSION == 5 and bp.CONFIRM_ID_VERSION == 2 and bp.TABLE_VERSION == 1
+    assert bp.SCHEMA == "verantyx.basis_policy/1" and len(bp.TABLE) == 24
+```
+
+#### `tests/test_basis_policy_w5c_r3.py::test_r3_the_policy_note_carries_the_classify_version_3`
+
+```python
+def test_r3_the_policy_note_carries_the_classify_version_3():
+    # W5-f（F-4、分類の規則 v5）: 注記の分類版も 5。既存の関数名は維持する。
+    out, _rc = bp.apply_to_ask(_synthetic("answer", "ANSWER", [_fsrc("general", None)]), bp.AskPolicy(), query=Q,
+                               mode="legacy", documents=[])
+    assert out["basis_policy"]["classify_version"] == 5 and out["basis_policy"]["confirm_id_version"] == 2
+    assert out["basis_policy"]["table_version"] == 1
+```
+
+
+
+### W5-f S5 w5e: before（2026-10-04 09:46:52 +0900）
+
+#### `tests/test_basis_policy_w5e.py::test_h4_controls_that_are_really_human_still_answer`
+
+```python
+@pytest.mark.parametrize("case", H4["controls"], ids=lambda c: c["id"])
+def test_h4_controls_that_are_really_human_still_answer(case, tmp_path):
+    out, _ = _run(case, tmp_path)
+    assert out["basis_policy"]["basis_original"] == "HUMAN" and out["basis_policy"]["outcome"].startswith("ANSWER"), json.dumps(out, ensure_ascii=False)
+    assert out["verdict"] == "ANSWER"
+```
+
+#### `tests/test_basis_policy_w5e.py::test_a3_the_classify_version_is_4_and_the_note_carries_it`
+
+```python
+def test_a3_the_classify_version_is_4_and_the_note_carries_it(tmp_path):
+    assert bp.CLASSIFY_VERSION == 4
+    out, _ = _run(H4["controls"][0], tmp_path)
+    assert out["basis_policy"]["classify_version"] == 4
+    assert bp.TABLE_VERSION == 1 and bp.CONFIRM_ID_VERSION == 2      # nothing else moved
+```
+
+#### `tests/test_basis_policy_w5e.py::test_a3_the_sovereigns_records_are_human`
+
+```python
+def test_a3_the_sovereigns_records_are_human():
+    assert _cls({"family": "memory_sovereign", "origin": "human_confirmed", "store_id": "s1", "confirm_id": "c1"}) == "human"
+    # not made a condition (a documented known hole: the strings can be claimed too)
+    assert _cls({"family": "memory_sovereign", "origin": "human_confirmed"}) == "human"
+```
+
+
+
+### W5-f S5 w5e: after（2026-10-04 09:47:14 +0900）
+
+#### `tests/test_basis_policy_w5e.py::test_h4_controls_that_are_really_human_still_answer`
+
+```python
+@pytest.mark.parametrize("case", H4["controls"], ids=lambda c: c["id"])
+def test_h4_controls_that_are_really_human_still_answer(case, tmp_path):
+    # W5-f（F-4、分類の規則 v5）: 凍結対照のうち退役した自己申告例だけを UNKNOWN_ORIGIN として扱う。
+    out, _ = _run(case, tmp_path)
+    if case["id"] in W5F_RETIRED_CONTROLS:
+        assert out["basis_policy"]["basis_original"] == "UNKNOWN_ORIGIN", json.dumps(out, ensure_ascii=False)
+        assert out["verdict"] != "ANSWER" and out["kind"] != "answer"
+        return
+    assert out["basis_policy"]["basis_original"] == "HUMAN" and out["basis_policy"]["outcome"].startswith("ANSWER"), json.dumps(out, ensure_ascii=False)
+    assert out["verdict"] == "ANSWER"
+```
+
+#### `tests/test_basis_policy_w5e.py::test_a3_the_classify_version_is_4_and_the_note_carries_it`
+
+```python
+def test_a3_the_classify_version_is_4_and_the_note_carries_it(tmp_path):
+    # W5-f（F-4、分類の規則 v5）: 注記と分類器の版を 5 に更新する。
+    assert bp.CLASSIFY_VERSION == 5
+    out, _ = _run(H4["controls"][0], tmp_path)
+    assert out["basis_policy"]["classify_version"] == 5
+    assert bp.TABLE_VERSION == 1 and bp.CONFIRM_ID_VERSION == 2      # nothing else moved
+```
+
+#### `tests/test_basis_policy_w5e.py::test_a3_the_sovereigns_records_are_human`
+
+```python
+def test_a3_the_sovereigns_records_are_human():
+    # W5-f（F-4、分類の規則 v5）: id の形が合えば人、欠落すれば unknown_origin にする。
+    assert _cls({**W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed"}) == "human"
+    assert _cls({"family": "memory_sovereign", "origin": "human_confirmed"}) == "unknown_origin"
+```

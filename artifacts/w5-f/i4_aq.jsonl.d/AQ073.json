@@ -1,0 +1,227 @@
+{
+  "kind": "answer",
+  "verdict": "ANSWER",
+  "text": "手紙",
+  "values": [
+    "手紙"
+  ],
+  "evidence": [
+    "姉は夜に手紙を書いた。"
+  ],
+  "sources": [
+    {
+      "family": "document",
+      "source": "AD07.txt",
+      "line": 6,
+      "text": "姉は夜に手紙を書いた。",
+      "sentence_id": "AD07.txt#6:1"
+    }
+  ],
+  "door": "question_cross",
+  "question_cross": {
+    "state": "FILLED",
+    "reason": null,
+    "mapped_to": "ANSWER",
+    "hole_role": "patient",
+    "hole_type": [
+      "ABSTRACT",
+      "ANIMAL",
+      "ARTIFACT",
+      "BODY_PART",
+      "EVENT_ACT",
+      "IDENTIFIER",
+      "INFO_LANGUAGE",
+      "NATURAL_PHENOMENON",
+      "PLACE",
+      "PLANT",
+      "QUANTITY",
+      "STATE_PROPERTY",
+      "SUBSTANCE_FOOD",
+      "TIME",
+      "WORK"
+    ],
+    "coord": [
+      {
+        "origin": {
+          "kind": "structure",
+          "id": "AD07.txt#6:1",
+          "cross_index": 0
+        },
+        "moves": []
+      }
+    ],
+    "structure": {
+      "sentences": 9,
+      "crossed": 9,
+      "unread": 0,
+      "reasons": []
+    },
+    "documents": {
+      "loaded": 1,
+      "skipped": []
+    }
+  },
+  "trace": [
+    {
+      "part": "one.round5_route",
+      "status": "ran",
+      "code_intent": false,
+      "content_intent": false,
+      "decision_input": "raw_request",
+      "fallback": false
+    },
+    {
+      "part": "question.read_semantic",
+      "status": "ran",
+      "plans": 0,
+      "obligations": 0,
+      "unread": [
+        {
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 10,
+            "text": "姉は夜に何を書いた？"
+          },
+          "reason": "unsupported request grammar"
+        }
+      ]
+    },
+    {
+      "part": "semantic_reader.document_view",
+      "status": "ran",
+      "clauses": 9,
+      "source_unread": [],
+      "source_unread_count": 0,
+      "source_unread_truncated": false,
+      "ingest_ms": 3.7040000315755606
+    },
+    {
+      "part": "multigrain_source_binding",
+      "status": "abstained",
+      "reason": "candidate-view pass did not return ANSWER",
+      "candidate_verdict": "UNKNOWN_UNREAD",
+      "full_original_view_required": true
+    },
+    {
+      "leaves": 1,
+      "nodes": 1,
+      "arity": 6,
+      "status": "skipped",
+      "reason": "fewer leaves than one routing node",
+      "part": "semantic_route.LeafTree"
+    },
+    {
+      "part": "remedy.remedy",
+      "status": "ran",
+      "verdict": "UNKNOWN_UNREAD",
+      "how_to_resolve": "質問された事項を示す出典を追加してください。"
+    },
+    {
+      "part": "ask_back.question",
+      "status": "abstained",
+      "reason": "verdict has no human-answerable candidate",
+      "asks": ""
+    },
+    {
+      "part": "coverage.document_needed",
+      "status": "abstained",
+      "reason": "no domain witnesses"
+    },
+    {
+      "part": "gap_graph.refusal_to_gap",
+      "status": "abstained",
+      "reason": "no opt-in gap_path"
+    },
+    {
+      "part": "grow.log_refusal",
+      "status": "abstained",
+      "reason": "no queue opt-in or different verdict"
+    },
+    {
+      "part": "multigrain_adapter.retrieve_multigrain_candidates",
+      "status": "ran",
+      "verdict": "CANDIDATE_SOURCE_LEAF_MATCHED",
+      "selected_candidate": "姉",
+      "source_identity_status": "identity_unverified",
+      "independent_source_count": null,
+      "source_binding_status": "BOUND",
+      "source_binding_reason": "candidate leaf IDs and exact original Clause spans were rederived",
+      "candidate_views_supplied_to_answer_verifier": true,
+      "candidate_document_id_cited_after_full_view_check": false,
+      "candidate_sentence_span_cited_after_full_view_check": null,
+      "candidate_clause_span_cited_after_full_view_check": false,
+      "candidate_clause_span_match_count": 0,
+      "candidate_clause_span_causal_influence_proven": false,
+      "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+      "bound_source_supplied_to_goal_consumer": false,
+      "licenses_goal_realization": false
+    },
+    {
+      "part": "question_cross",
+      "status": "ran",
+      "state": "FILLED",
+      "mapped_to": "ANSWER"
+    }
+  ],
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "factual",
+    "kind_class": "FACTUAL",
+    "basis": "HUMAN",
+    "basis_original": "HUMAN",
+    "human_present": false,
+    "show_reference": false,
+    "outcome": "ANSWER_HUMAN_BASIS",
+    "in_table": true,
+    "counts": {
+      "human": 1,
+      "generated": 0,
+      "non_evidence": 0,
+      "request_text": 0,
+      "unreadable": 0,
+      "non_evidence_by_origin": {},
+      "unknown_origin": 0,
+      "unknown_origin_by_family": {},
+      "unknown_origin_values": {}
+    },
+    "classify_version": 5,
+    "confirm_id_version": 2,
+    "sovereign": {
+      "state": "UNKNOWN_NO_SOVEREIGN",
+      "store_id": null,
+      "records_read": 0,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 0,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "UNKNOWN_NO_INDEX",
+      "reasons": {
+        "CAND_NOT_ONE_CROSS": 0,
+        "CAND_CENTER_DIFFERS": 0,
+        "CAND_ROLES_DIFFER": 0,
+        "CAND_FILLER_SPAN_AMBIGUOUS": 0,
+        "CAND_REREAD_DIFFERS": 0,
+        "CAND_CONTENT_DIFFERS": 0
+      },
+      "families": {
+        "local": "UNKNOWN_NO_INDEX",
+        "pro": "UNKNOWN_NO_INDEX",
+        "code": "UNKNOWN_NO_INDEX",
+        "conversation": "UNKNOWN_NO_INDEX",
+        "general_qa": "UNKNOWN_NO_INDEX",
+        "code_qa": "UNKNOWN_NO_INDEX",
+        "figurative_commonsense": "UNKNOWN_NO_INDEX",
+        "narrative": "UNKNOWN_NO_INDEX",
+        "paraphrase_entail": "UNKNOWN_NO_INDEX"
+      },
+      "searched_rows": 0,
+      "candidates": 0,
+      "distinct_forms": 0
+    }
+  }
+}

@@ -20,6 +20,7 @@ from verantyx.event_cross import read_events
 
 HUMAN = "花子は太郎に資料を渡した。"
 FORM = "花子が太郎に資料を渡した。"
+W5F_MEMORY_IDS = {"store_id": "store-w5f-test", "confirm_id": "0123456789abcdef01234567"}
 
 
 @pytest.fixture(autouse=True)
@@ -225,11 +226,12 @@ def test_a_failed_borrowing_leaves_the_human_answer_as_it_was(tmp_path, monkeypa
 
 @pytest.mark.parametrize("mode, docs", [("legacy", []), ("round5", [])])
 def test_other_routes_do_not_attempt_the_borrowing(tmp_path, monkeypatch, mode, docs):
+    # W5-f（F-4、分類の規則 v5）: 有効な識別子を持つソブリン出典で経路の分類を確かめる。
     _index(tmp_path, {"local": ["次郎が花子に本を渡した。"]})
     monkeypatch.setenv("VERA_P4_INDEX", str(tmp_path / "idx"))
     # W5-c r3（監査役の判断 2026-10-03 20:40）: 入力の人の出典を明示の人（origin: human_confirmed）にした。期待は同じ
     # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 人の出典の入力を memory_sovereign（ソブリンの記録由来）にした（自己申告の human_confirmed は人にしない）。期待は同じ
-    ans = _doc_answer(); ans["sources"] = [{**s, "family": "memory_sovereign", "origin": "human_confirmed"} for s in ans["sources"]]
+    ans = _doc_answer(); ans["sources"] = [{**s, **W5F_MEMORY_IDS, "family": "memory_sovereign", "origin": "human_confirmed"} for s in ans["sources"]]
     out, _rc = bp.apply_to_ask(ans, bp.AskPolicy(), query="q", mode=mode, documents=docs)
     assert "form_text" not in out and out["basis_policy"]["form"]["state"] == "NOT_ATTEMPTED_ROUTE"
     assert out["basis_policy"]["outcome"] == "ANSWER_HUMAN_BASIS"

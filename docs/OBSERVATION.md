@@ -1713,3 +1713,23 @@ def test_the_new_names_are_at_the_end_of_the_closed_lists():
     assert O.HOLE_EXCLUSION_REASONS == ('HOLE_TYPE_DISAGREE', 'HOLE_TYPE_NOT_CHECKED', 'SAME_AS_RESTRICTOR', 'TYPE_UNCHECKED')
 ```
 <!-- w5e2-ka1:end -->
+
+## W5-f の事前登録: F-5 文書 QA の後段の本文照合の定義（W3-c4 の攻撃への答え）
+<!-- w5f-prereg:begin -->
+事前登録の時刻: 2026-10-04 08:40:13 +0900（`date '+%F %T %z'` の出力。`artifacts/w5-f/prereg_time.txt`）。上の節は 1 文字も変えない。出典: 中間職の指示書 `.claude/vera-audit/review-impl/W5-f/plan.md` D6、攻撃の報告 `attacks/reports/W3-c4/`。
+
+**命中**: 後段の `sources[].text` が「元の Markdown 文字列には無く、読込後の本文にだけある」（攻撃の写し `test_markdown_link_evidence_text_is_a_literal_source_substring`）。意味上の誤答ではない（攻撃役自身が「本文照合の定義の揺れ」と書いた）。
+
+**定義（規則の変更ではなく明記）**: 本文照合（W5-c/W5-d の A1。`basis_policy._document_texts`）と後段の出典の `text`（`cli._qc_records` が `document_loaders` の `Document.text` を行・文に切り、`_qc_sources` がその文を返す）は、どちらも **読込後の本文**（`document_loaders.load_paths`／`load_directory` が返す `Document.text`）に対して定義する。元のファイルの逐字の文字列ではない: Markdown のリンクは表示語だけ、見出しの `#` は `document_loaders._from_markdown` が読込時に外す、コード・URL・表の行は消える。出典の `line` は読込後の本文の行番号。
+- `cli.py` は変えない（実測では今の振る舞いがこの定義どおり。測定で出典の `text` が読込後の本文の部分文字列でない行が見つかったときだけ `_qc_records` の切り出しを直す）。
+- **宣言 K-C4**: 攻撃の写し `tests/attack/test_attack_w3c4.py::test_markdown_link_evidence_text_is_a_literal_source_substring` は、この定義では定義上落ちる。写しはバイト同一のまま変えない。判断は監査役。
+- 新しいテスト（`tests/test_ask_question_cross_w5f.py`）: r8 の配置で、見出し記法つき・リンクつきの Markdown を `--document` に渡し、`sources[].text` が `document_loaders.load_paths` の返す本文の部分文字列で、`#`・`](` を含まず、`line` が読込後の本文の行番号と一致する（r8 が無ければ `ENV_MISSING` の skip）。
+- I4 の測定の形: 既存の W3-c4 の検査データ（`tests/observe/question_ask/` の `questions.jsonl` と `extra2/`）を `run_ask.py --tree new --mode inproc` で変更前（`artifacts/w5-f/before/`）と後で流し、問ごとに verdict・text・sources の `{source, line, text}` を比べて、変わった問を全件 `artifacts/w5-f/i4_changed.tsv` に出す。
+<!-- w5f-prereg:end -->
+
+## W5-f 実測結果（後段の本文照合）
+測定記録: 2026-10-04 10:01:23 +0900（`artifacts/w5-f/s6_docs_time.txt`）。
+
+- W3-c4 の主検査 111 問は変更前後とも CORRECT 68 / WRONG 0 / FALSE_NONE 1 / ABSTAINED 16 / NOT_RUN 26。extra2 の 42 問も CORRECT 19 / WRONG 0 / FALSE_NONE 0 / ABSTAINED 16 / NOT_RUN 7。両方とも問別の verdict・text・`sources[].{source,line,text}` の変更は 0（`artifacts/w5-f/i4_score_compare.txt`・`artifacts/w5-f/i4_changed.tsv`）。
+- 見出し・リンクを含む追加 Markdown 質問を含む質問十字テスト群は 73 件通過（`artifacts/w5-f/i4_tests.txt`）。`cli.py` は変更していない。
+- W3-c4 の攻撃写しは「元の Markdown 文字列の部分文字列」を要求するため、この定義では通らない（宣言 K-C4、`artifacts/w5-f/i1_attack.txt`）。読込後の本文から切り出した出典が定義に一致することは追加テストで確認した。

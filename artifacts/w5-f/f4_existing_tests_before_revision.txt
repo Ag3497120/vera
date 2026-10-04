@@ -1,0 +1,153 @@
+........................................................................ [  4%]
+........................................................................ [  8%]
+........................................................................ [ 13%]
+........................................................................ [ 17%]
+........................................................................ [ 22%]
+........................................................................ [ 26%]
+........................................................................ [ 31%]
+..........FFFF..F....................................................... [ 35%]
+........................................................................ [ 40%]
+........................................................................ [ 44%]
+........................................................................ [ 49%]
+........................................................................ [ 53%]
+........................................................................ [ 58%]
+........................................................................ [ 62%]
+........................................................................ [ 67%]
+...............................FF.....................F...F.....F....... [ 71%]
+........................................................................ [ 76%]
+........................................................................ [ 80%]
+...................................................F.................... [ 85%]
+..................................FF.............F...................... [ 89%]
+.........................................................FF............. [ 94%]
+....................................................................FF.. [ 98%]
+......FF..........F.....                                                 [100%]
+=================================== FAILURES ===================================
+E   AssertionError: assert (0 == 0 and 'unknown' == 'unknown'
+      
+        unknown and 'UNKNOWN_ORIGIN_SOURCE' == 'UNKNOWN_BASIS_NOT_IN_TABLE'
+      
+      - UNKNOWN_BASIS_NOT_IN_TABLE
+      + UNKNOWN_ORIGIN_SOURCE)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_entry.py:182: AssertionError: assert (0 == 0 and 'unknown' == 'unknown'
+E   AssertionError: assert (0 == 0 and 'unknown' == 'unknown'
+      
+        unknown and 'UNKNOWN_ORIGIN_SOURCE' == 'UNKNOWN_BASIS_NOT_IN_TABLE'
+      
+      - UNKNOWN_BASIS_NOT_IN_TABLE
+      + UNKNOWN_ORIGIN_SOURCE)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_entry.py:182: AssertionError: assert (0 == 0 and 'unknown' == 'unknown'
+E   AssertionError: assert (0 == 0 and 'unknown' == 'unknown'
+      
+        unknown and 'UNKNOWN_ORIGIN_SOURCE' == 'UNKNOWN_BASIS_NOT_IN_TABLE'
+      
+      - UNKNOWN_BASIS_NOT_IN_TABLE
+      + UNKNOWN_ORIGIN_SOURCE)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_entry.py:182: AssertionError: assert (0 == 0 and 'unknown' == 'unknown'
+E   AssertionError: assert (0 == 0 and 'unknown' == 'unknown'
+      
+        unknown and 'UNKNOWN_ORIGIN_SOURCE' == 'UNKNOWN_BASIS_NOT_IN_TABLE'
+      
+      - UNKNOWN_BASIS_NOT_IN_TABLE
+      + UNKNOWN_ORIGIN_SOURCE)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_entry.py:182: AssertionError: assert (0 == 0 and 'unknown' == 'unknown'
+E   AssertionError: assert (0 == 0 and {'kind': 'unk...ces': [], ...} == {'kind': 'ans...: 'chat', ...}
+      
+      Omitting 1 identical items, use -vv to show
+      Differing items:
+      {'sources': []} != {'sources': [{'family': 'user', 'source': 'user:request', 'text': '窓は？'}, {'family': 'memory_sovereign', 'sovereign': 'document', 'source': 'memo.txt', 'text': '窓が光った。', ...}]}
+      {'kind': 'unknown'} != {'kind': 'answer'}
+      {'text': '出所の分からない出典があるため、答えません。'} != {'text': '窓が光ります。'}
+      {'evidence': []} != {'evidence': ['窓は？', '窓が光った。']}...
+      
+      ...Full output truncated (11 lines hidden), use '-vv' to show)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_entry.py:208: AssertionError: assert (0 == 0 and {'kind': 'unk...ces': [], ...} == {'kind': 'ans...: 'chat', ...}
+E   AssertionError: assert ('form_text' not in {'kind': 'unknown', 'verdict': 'UNKNOWN_ORIGIN_SOURCE', 'text': '出所の分からない出典があるため、答えません。', 'sources': [], ...} and 'NOT_ATTEMPTED_OUTCOME' == 'NOT_ATTEMPTED_ROUTE'
+      
+      - NOT_ATTEMPTED_ROUTE
+      ?               -
+      + NOT_ATTEMPTED_OUTCOME
+      ?                  +++)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_form.py:234: AssertionError: assert ('form_text' not in {'kind': 'unknown', 'verdict': 'UNKNOWN_ORIGIN_SOURCE', 'text': '出所の分からない出典があるため、答えません。', 'sources': [], ...} and 'NOT_ATTEMPTED_OUTCOME' == 'NOT_ATTEMPTED_ROUTE'
+E   AssertionError: assert ('form_text' not in {'kind': 'unknown', 'verdict': 'UNKNOWN_ORIGIN_SOURCE', 'text': '出所の分からない出典があるため、答えません。', 'sources': [], ...} and 'NOT_ATTEMPTED_OUTCOME' == 'NOT_ATTEMPTED_ROUTE'
+      
+      - NOT_ATTEMPTED_ROUTE
+      ?               -
+      + NOT_ATTEMPTED_OUTCOME
+      ?                  +++)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_form.py:234: AssertionError: assert ('form_text' not in {'kind': 'unknown', 'verdict': 'UNKNOWN_ORIGIN_SOURCE', 'text': '出所の分からない出典があるため、答えません。', 'sources': [], ...} and 'NOT_ATTEMPTED_OUTCOME' == 'NOT_ATTEMPTED_ROUTE'
+E   AssertionError: assert 'UNKNOWN_ORIGIN' == 'HUMAN'
+      
+      - HUMAN
+      + UNKNOWN_ORIGIN
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_table.py:120: AssertionError: assert 'UNKNOWN_ORIGIN' == 'HUMAN'
+E   assert (0 == 1)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_table.py:144: assert (0 == 1)
+E   AssertionError: assert ('UNKNOWN_ORIGIN' == 'MIXED'
+      
+      - MIXED
+      + UNKNOWN_ORIGIN)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_table.py:180: AssertionError: assert ('UNKNOWN_ORIGIN' == 'MIXED'
+E   assert (5 == 4)
+     +  where 5 = bp.CLASSIFY_VERSION
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_w5c.py:282: assert (5 == 4)
+E   AssertionError: assert {'human': 0, ...text': 1, ...} == {'human': 1, ...text': 1, ...}
+      
+      Omitting 4 identical items, use -vv to show
+      Differing items:
+      {'human': 0} != {'human': 1}
+      Use -v to get more diff
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_w5c.py:304: AssertionError: assert {'human': 0, ...text': 1, ...} == {'human': 1, ...text': 1, ...}
+E   AssertionError: assert 'UNKNOWN_ORIGIN' == 'HUMAN'
+      
+      - HUMAN
+      + UNKNOWN_ORIGIN
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_w5c.py:321: AssertionError: assert 'UNKNOWN_ORIGIN' == 'HUMAN'
+E   assert (5 == 4)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_w5c.py:356: assert (5 == 4)
+E   assert (1 == 1 and 0 == 1)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_w5c_r3.py:118: assert (1 == 1 and 0 == 1)
+E   assert (1 == 1 and 0 == 1)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_w5c_r3.py:118: assert (1 == 1 and 0 == 1)
+E   assert (5 == 4)
+     +  where 5 = bp.CLASSIFY_VERSION
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_w5c_r3.py:345: assert (5 == 4)
+E   assert (5 == 4)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_w5c_r3.py:353: assert (5 == 4)
+E   AssertionError: {"kind": "unknown", "verdict": "UNKNOWN_ORIGIN_SOURCE", "text": "出所の分からない出典があるため、答えません。", "sources": [], "evidence": [], "withheld": {"verdict": "ANSWER", "kind": "answer", "door": "t", "basis_origin": null, "generated_source_count": 0, "unknown_origin_source_count": 1, "families": ["memory_sovereign"]}, "door": "t", "trace": [{"part": "basis_policy.apply", "status": "ran", "outcome": "ABSTAIN"}], "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "UNKNOWN_ORIGIN", "basis_original": "UNKNOWN_ORIGIN", "human_present": false, "show_reference": false, "outcome": "ABSTAIN", "in_table": false, "counts": {"human": 0, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 1, "unknown_origin_by_family": {"memory_sovereign": 1}, "unknown_origin_values": {}}, "classify_version": 5, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "NOT_ATTEMPTED_OUTCOME"}, "reason": "NOT_IN_TABLE:UNKNOWN_ORIGIN_SOURCE"}}
+    assert ('UNKNOWN_ORIGIN' == 'HUMAN'
+      
+      - HUMAN
+      + UNKNOWN_ORIGIN)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_w5e.py:49: AssertionError: {"kind": "unknown", "verdict": "UNKNOWN_ORIGIN_SOURCE", "text": "出所の分からない出典があるため、答えません。", "sources": [], "evidence": [], "withheld": {"verdict": "ANSWER", "kind": "answer", "door": "t", "basis_origin": null, "generated_source_count": 0, "unknown_origin_source_count": 1, "families": ["memory_sovereign"]}, "door": "t", "trace": [{"part": "basis_policy.apply", "status": "ran", "outcome": "ABSTAIN"}], "basis_policy": {"schema": "verantyx.basis_policy/1", "table_version": 1, "applied": true, "request_kind": "factual", "kind_class": "FACTUAL", "basis": "UNKNOWN_ORIGIN", "basis_original": "UNKNOWN_ORIGIN", "human_present": false, "show_reference": false, "outcome": "ABSTAIN", "in_table": false, "counts": {"human": 0, "generated": 0, "non_evidence": 0, "request_text": 0, "unreadable": 0, "non_evidence_by_origin": {}, "unknown_origin": 1, "unknown_origin_by_family": {"memory_sovereign": 1}, "unknown_origin_values": {}}, "classify_version": 5, "confirm_id_version": 2, "sovereign": {"state": "UNKNOWN_NO_SOVEREIGN", "store_id": null, "records_read": 0, "rejected_by_user": 0, "confirmed_records_used": 0, "confirmed_records_not_used": 0, "ambiguous": false}, "form": {"state": "NOT_ATTEMPTED_OUTCOME"}, "reason": "NOT_IN_TABLE:UNKNOWN_ORIGIN_SOURCE"}}
+E   assert 5 == 4
+     +  where 5 = bp.CLASSIFY_VERSION
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_w5e.py:54: assert 5 == 4
+E   AssertionError: assert 'unknown_origin' == 'human'
+      
+      - human
+      + unknown_origin
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_w5e.py:98: AssertionError: assert 'unknown_origin' == 'human'
+=========================== short test summary info ============================
+FAILED tests/test_basis_policy_entry.py::test_a_mix_of_human_and_generated_sources_abstains[False-False]
+FAILED tests/test_basis_policy_entry.py::test_a_mix_of_human_and_generated_sources_abstains[False-True]
+FAILED tests/test_basis_policy_entry.py::test_a_mix_of_human_and_generated_sources_abstains[True-False]
+FAILED tests/test_basis_policy_entry.py::test_a_mix_of_human_and_generated_sources_abstains[True-True]
+FAILED tests/test_basis_policy_entry.py::test_a_human_answer_is_passed_through_unchanged_apart_from_the_policy_note
+FAILED tests/test_basis_policy_form.py::test_other_routes_do_not_attempt_the_borrowing[legacy-docs0]
+FAILED tests/test_basis_policy_form.py::test_other_routes_do_not_attempt_the_borrowing[round5-docs1]
+FAILED tests/test_basis_policy_table.py::test_decide_accepts_a_classification_result_as_the_basis
+FAILED tests/test_basis_policy_table.py::test_rule3_human_confirmed_origin_is_human
+FAILED tests/test_basis_policy_table.py::test_human_and_generated_together_is_mixed
+FAILED tests/test_basis_policy_w5c.py::test_w5c_the_versions_and_the_table_are_as_registered
+FAILED tests/test_basis_policy_w5c.py::test_w5c_counts_keep_their_five_keys_and_the_new_numbers_live_beside_them
+FAILED tests/test_basis_policy_w5c.py::test_w5c_a_value_outside_the_closed_vocabulary_alone_changes_the_policy_basis_not_the_basis
+FAILED tests/test_basis_policy_w5c.py::test_w5c_the_policy_note_carries_the_new_versions_and_numbers
+FAILED tests/test_basis_policy_w5c_r3.py::test_r3_the_request_text_and_a_declared_human_confirmation_do_not_depend_on_user_documents[False]
+FAILED tests/test_basis_policy_w5c_r3.py::test_r3_the_request_text_and_a_declared_human_confirmation_do_not_depend_on_user_documents[True]
+FAILED tests/test_basis_policy_w5c_r3.py::test_r3_the_versions_are_as_registered
+FAILED tests/test_basis_policy_w5c_r3.py::test_r3_the_policy_note_carries_the_classify_version_3
+FAILED tests/test_basis_policy_w5e.py::test_h4_controls_that_are_really_human_still_answer[H4-C2-memory-sovereign-self-declared-kept]
+FAILED tests/test_basis_policy_w5e.py::test_a3_the_classify_version_is_4_and_the_note_carries_it
+FAILED tests/test_basis_policy_w5e.py::test_a3_the_sovereigns_records_are_human
+21 failed, 1587 passed in 8.60s
+exit=1

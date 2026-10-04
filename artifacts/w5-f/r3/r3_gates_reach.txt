@@ -1,0 +1,16 @@
+W5F-F1-115	readable=True	{"agent": "兄", "patient": "荷車", "source": "倉庫"}	{"agent": "兄", "patient": "荷車", "source": "倉庫"}
+W5F-F1-116	readable=True	{"agent": "姉", "patient": "箱", "source": "港"}	{"agent": "姉", "patient": "箱", "source": "港"}
+W5F-F1-117	readable=True	{"agent": "弟", "patient": "荷物", "source": "駅"}	{"agent": "弟", "patient": "荷物", "source": "駅"}
+W5F-F1-118	readable=True	{"agent": "母", "patient": "机", "source": "広場"}	{"agent": "母", "patient": "机", "source": "広場"}
+W5F-F1-119	readable=True	{"agent": "父", "patient": "箱", "source": "畑"}	{"agent": "父", "patient": "箱", "source": "畑"}
+W5F-F1-120	readable=True	{"agent": "叔母", "patient": "荷車", "source": "店"}	{"agent": "叔母", "patient": "荷車", "source": "店"}
+W5F-F1-121	readable=True	{"agent": "祖母", "patient": "台車", "source": "市場"}	{"agent": "祖母", "patient": "台車", "source": "市場"}
+W5F-F1-122	readable=True	{"agent": "妹", "patient": "箱", "goal": "港"}	{"agent": "妹", "patient": "箱", "goal": "港"}
+W5F-F1-123	readable=True	{"agent": "兄", "patient": "荷物", "goal": "工場"}	{"agent": "兄", "patient": "荷物", "goal": "工場"}
+W5F-F1-124	readable=True	{"agent": "姉", "patient": "台車", "source": "駅"}	{"agent": "姉", "patient": "台車", "source": "駅"}
+W5F-F1-125	readable=True	{"agent": "弟", "patient": "机", "goal": "公園"}	{"agent": "弟", "patient": "机", "goal": "公園"}
+W5F-F1-126	readable=True	{"agent": "父", "patient": "箱", "goal": "畑"}	{"agent": "父", "patient": "箱", "goal": "畑"}
+W5F-F1-127	readable=True	{"agent": "叔父", "patient": "荷車", "source": "店"}	{"agent": "叔父", "patient": "荷車", "source": "店"}
+W5F-F1-128	readable=True	{"agent": "兄", "patient": "箱", "place": "広場"}	{"agent": "兄", "patient": "箱", "place": "広場"}
+W5F-F1-129	readable=True	{"agent": "兄", "patient": "荷物", "source": "駅"}	{"agent": "兄", "patient": "荷物", "source": "駅"}
+W5F-F1-130	readable=True	{"agent": "姉", "patient": "箱", "source": "駅"}	{"agent": "姉", "patient": "箱", "source": "駅"}

@@ -1,0 +1,6 @@
+{"id":"W5F-F2DE-001","group":"F2","text":"職員が上で荷車を押した。","expect":"abstain","gate_reason":"RELATIONAL_NOUN_FILLER:place","placement":{"職員":"PERSON","上":"PLACE","荷車":"ARTIFACT","押す":"P_ACT"}}
+{"id":"W5F-F2DE-002","group":"F2","text":"店員が前で台車を押した。","expect":"abstain","gate_reason":"RELATIONAL_NOUN_FILLER:place","placement":{"店員":"PERSON","前":"PLACE","台車":"ARTIFACT","押す":"P_ACT"}}
+{"id":"W5F-F2DE-003","group":"F2","text":"先生が中で箱を押した。","expect":"abstain","gate_reason":"RELATIONAL_NOUN_FILLER:place","placement":{"先生":"PERSON","中":"PLACE","箱":"ARTIFACT","押す":"P_ACT"}}
+{"id":"W5F-F2DE-004","group":"F2","text":"職員が広場で荷車を押した。","expect":"read_or_abstain","gate_reason":"RELATIONAL_NOUN_FILLER:place","placement":{"職員":"PERSON","広場":"PLACE","荷車":"ARTIFACT","押す":"P_ACT"},"roles":{"agent":"職員","place":"広場","patient":"荷車"}}
+{"id":"W5F-F2DE-005","group":"F2","text":"店員が倉庫で台車を押した。","expect":"read_or_abstain","gate_reason":"RELATIONAL_NOUN_FILLER:place","placement":{"店員":"PERSON","倉庫":"PLACE","台車":"ARTIFACT","押す":"P_ACT"},"roles":{"agent":"店員","place":"倉庫","patient":"台車"}}
+{"id":"W5F-F2DE-006","group":"F2","text":"先生が校庭で箱を押した。","expect":"read_or_abstain","gate_reason":"RELATIONAL_NOUN_FILLER:place","placement":{"先生":"PERSON","校庭":"PLACE","箱":"ARTIFACT","押す":"P_ACT"},"roles":{"agent":"先生","place":"校庭","patient":"箱"}}

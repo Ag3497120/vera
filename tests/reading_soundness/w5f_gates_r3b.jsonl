@@ -1,0 +1,14 @@
+{"id": "W5F-F1-133", "group": "F1", "text": "弟が広場で　も石を蹴った。", "expect": "abstain", "placement": {"弟": "PERSON", "広場": "PLACE", "石": "ARTIFACT", "蹴る": "P_ACT"}}
+{"id": "W5F-F1-134", "group": "F1", "text": "母が台所で 　は皿を洗った。", "expect": "abstain", "placement": {"母": "PERSON", "台所": "PLACE", "皿": "ARTIFACT", "洗う": "P_ACT"}}
+{"id": "W5F-F1-135", "group": "F1", "text": "姉が教室で「も」本を読んだ。", "expect": "abstain", "placement": {"姉": "PERSON", "教室": "PLACE", "本": "ARTIFACT", "読む": "P_ACT"}}
+{"id": "W5F-F1-136", "group": "F1", "text": "姉が車庫で　こそ自転車を磨いた。", "expect": "abstain", "placement": null}
+{"id": "W5F-F1-137", "group": "F1", "text": "姉が妹に　も手紙を渡した。", "expect": "abstain", "placement": {"姉": "PERSON", "妹": "PERSON", "手紙": "ARTIFACT", "渡す": "P_ACT"}}
+{"id": "W5F-F1-138", "group": "F1", "text": "母が弟に 　は菓子を配った。", "expect": "abstain", "placement": {"母": "PERSON", "弟": "PERSON", "菓子": "ARTIFACT", "配る": "P_ACT"}}
+{"id": "W5F-F1-139", "group": "F1", "text": "父が兄に「も」小包を送った。", "expect": "abstain", "placement": {"父": "PERSON", "兄": "PERSON", "小包": "ARTIFACT", "送る": "P_ACT"}}
+{"id": "W5F-F1-140", "group": "F1", "text": "叔母が姪に　さえ花を贈った。", "expect": "abstain", "placement": null}
+{"id": "W5F-F1-141", "group": "F1", "text": "弟が広場で石を蹴った。", "expect": "read_or_abstain", "placement": {"弟": "PERSON", "広場": "PLACE", "石": "ARTIFACT", "蹴る": "P_ACT"}, "roles": {"agent": "弟", "patient": "石", "place": "広場"}}
+{"id": "W5F-F1-142", "group": "F1", "text": "母が台所で皿を洗った。", "expect": "read_or_abstain", "placement": {"母": "PERSON", "台所": "PLACE", "皿": "ARTIFACT", "洗う": "P_ACT"}, "roles": {"agent": "母", "patient": "皿", "place": "台所"}}
+{"id": "W5F-F1-143", "group": "F1", "text": "兄が倉庫で荷車を引いた。", "expect": "read_or_abstain", "placement": null, "roles": {"agent": "兄", "patient": "荷車", "place": "倉庫"}}
+{"id": "W5F-F1-144", "group": "F1", "text": "姉が車庫で自転車を磨いた。", "expect": "read_or_abstain", "placement": null, "roles": {"agent": "姉", "patient": "自転車", "place": "車庫"}}
+{"id": "W5F-F1-145", "group": "F1", "text": "姉が妹に手紙を渡した。", "expect": "read_or_abstain", "placement": {"姉": "PERSON", "妹": "PERSON", "手紙": "ARTIFACT", "渡す": "P_ACT"}, "roles": {"agent": "姉", "patient": "手紙", "recipient": "妹"}}
+{"id": "W5F-F1-146", "group": "F1", "text": "母が弟に菓子を配った。", "expect": "read_or_abstain", "placement": {"母": "PERSON", "弟": "PERSON", "菓子": "ARTIFACT", "配る": "P_ACT"}, "roles": {"agent": "母", "patient": "菓子", "recipient": "弟"}}

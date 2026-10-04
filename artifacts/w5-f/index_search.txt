@@ -1,0 +1,60 @@
+### 係助詞 門 引用符
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "係助詞 門 引用符",
+  "searched": 686,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 78,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 並立 繋辞 とも
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "並立 繋辞 とも",
+  "searched": 686,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 78,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### memory_sovereign confirm_id
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "memory_sovereign confirm_id",
+  "searched": 686,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 78,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 本文照合 document_loaders
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "本文照合 document_loaders",
+  "searched": 686,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 78,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

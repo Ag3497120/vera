@@ -1,0 +1,24 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_J11_a_tie_the_records_cannot_settle_puts_the_closed_question_to_the_chooser_and_records_the_testimony _
+
+tmp_path = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-976/test_J11_a_tie_the_records_can0')
+
+    def test_J11_a_tie_the_records_cannot_settle_puts_the_closed_question_to_the_chooser_and_records_the_testimony(tmp_path):
+        chooser, prompts = fake_chooser(["CodexImplB"])
+        run = routed_execute(tmp_path / "r", routed_frame(tie_conduct_spec()), routing_chooser=chooser)
+>       assert run.out["outcome"] == "COMPLETE" and len(prompts) == 2
+E       AssertionError: assert ('ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E         
+E         - COMPLETE
+E         + ACCEPTANCE_UNVERIFIED)
+
+chooser    = <verantyx.llm_choice.LLMChooser object at 0x1094aae10>
+prompts    = ['次の語は、下の候補のどれに意味が最も近いですか。\n質問文: "この仕事に最も合うエージェントはどれか"\n語: "job role=implement kind=feature size=small"\n候補（1行に「番号: JS...l=gpt-6-luna", "the human said so"]}\n返答は {"choice": 番号} または {"choice": null} のJSON1つだけ。理由の説明、候補以外の語、2つ以上の選択はすべて無効です。']
+run        = Run(outcome=ConductOutcome(verdict='RUN_INCOMPLETE', exit_code=1, refusal=None, ledger='/private/tmp/pytest-of-motonis...Path('/private/tmp/pytest-of-motonisihikoudai/pytest-976/test_J11_a_tie_the_records_can0/r/pids'), before={}, after={})
+tmp_path   = PosixPath('/private/tmp/pytest-of-motonisihikoudai/pytest-976/test_J11_a_tie_the_records_can0')
+
+tests/test_conduct_routing.py:203: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_conduct_routing.py::test_J11_a_tie_the_records_cannot_settle_puts_the_closed_question_to_the_chooser_and_records_the_testimony
+1 failed, 42 deselected in 2.34s

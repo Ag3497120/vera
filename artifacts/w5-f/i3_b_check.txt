@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-d/review_r1_evidence/frozen/b_check.py", line 48, in <module>
+    assert sov.create(root, "s1", "owner", consent_promote=True)["verdict"] == "CREATED"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

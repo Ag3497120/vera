@@ -700,6 +700,7 @@ def test_the_focus_gate_closes_the_hole_of_v1_with_the_real_placement_r7(monkeyp
         assert ex['w3b1'] == ex['w3b2'] == GATE_PREFIX + 'へ:' + part, (text, ex)
         assert out['abstain']['reasons'][1] == GATE_PREFIX + 'へ:' + part, out['abstain']
     ungate(monkeypatch)
+    monkeypatch.setattr(R, '_quoted_focus_public_gate', lambda entry, text, out: out)  # W5-f r3（F-1 の公開の門。docs 10H.e）: 型の段の門の効き目を確かめるため、公開の門も外す
     for text, part in cases:
         out = SR.read(text, placement=R.CoarseQuery(R7))
         assert out['readable'] is True and out['clauses'][0]['roles'] == {'agent': '兄', 'goal': '倉庫'}, (text, out)

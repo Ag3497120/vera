@@ -1,0 +1,10 @@
+{
+  "id": "W5F-DOC-001",
+  "question": "先生は何を読んだ？",
+  "expect": {
+    "verdict": "ANSWER",
+    "text": "本",
+    "source_text": "先生は本を読んだ。",
+    "line": 3
+  }
+}

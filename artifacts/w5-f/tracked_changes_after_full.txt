@@ -1,0 +1,12 @@
+docs/BASIS_POLICY.md
+docs/OBSERVATION.md
+docs/READING_SOUNDNESS.md
+tests/attack/w3a3/r6_48_queries.jsonl
+tests/test_basis_policy_entry.py
+tests/test_basis_policy_form.py
+tests/test_basis_policy_table.py
+tests/test_basis_policy_w5c.py
+tests/test_basis_policy_w5c_r3.py
+tests/test_basis_policy_w5e.py
+verantyx/basis_policy.py
+verantyx/semantic_reader.py
