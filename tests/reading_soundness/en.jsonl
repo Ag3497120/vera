@@ -1,0 +1,57 @@
+{"id": "E0-01", "type": "E0", "text": "Ken gave Lisa the book.", "gold": {"kind": "frame", "frame": {"predicate": "give", "agent": "Ken", "patient": "book", "recipient": "Lisa", "negated": false}}, "note": ""}
+{"id": "E0-02", "type": "E0", "text": "The engineer updated the server.", "gold": {"kind": "frame", "frame": {"predicate": "update", "agent": "engineer", "patient": "server", "recipient": "", "negated": false}}, "note": ""}
+{"id": "E0-03", "type": "E0", "text": "The report was written by the intern.", "gold": {"kind": "frame", "frame": {"predicate": "write", "agent": "intern", "patient": "report", "recipient": "", "negated": false}}, "note": ""}
+{"id": "E0-04", "type": "E0", "text": "Nora sent the package to Paul.", "gold": {"kind": "frame", "frame": {"predicate": "send", "agent": "Nora", "patient": "package", "recipient": "Paul", "negated": false}}, "note": ""}
+{"id": "E0-05", "type": "E0", "text": "The teacher handed the students the worksheets.", "gold": {"kind": "frame", "frame": {"predicate": "hand", "agent": "teacher", "patient": "worksheet", "recipient": "student", "negated": false}}, "note": ""}
+{"id": "E0-06", "type": "E0", "text": "The contract was signed by the director.", "gold": {"kind": "frame", "frame": {"predicate": "sign", "agent": "director", "patient": "contract", "recipient": "", "negated": false}}, "note": ""}
+{"id": "E0-07", "type": "E0", "text": "The nurse showed Ben the results.", "gold": {"kind": "frame", "frame": {"predicate": "show", "agent": "nurse", "patient": "result", "recipient": "Ben", "negated": false}}, "note": ""}
+{"id": "E0-08", "type": "E0", "text": "Mia sold the bike to Tom.", "gold": {"kind": "frame", "frame": {"predicate": "sell", "agent": "Mia", "patient": "bike", "recipient": "Tom", "negated": false}}, "note": ""}
+{"id": "E1-01", "type": "E1", "text": "The clerk did not send the invoice to Mia.", "gold": {"kind": "frame", "frame": {"predicate": "send", "agent": "clerk", "patient": "invoice", "recipient": "Mia", "negated": true}}, "note": "単純否定(読めてよい)"}
+{"id": "E1-02", "type": "E1", "text": "Nora did not call Paul.", "gold": {"kind": "frame", "frame": {"predicate": "call", "agent": "Nora", "patient": "Paul", "recipient": "", "negated": true}}, "note": "単純否定"}
+{"id": "E1-03", "type": "E1", "text": "The manager did not approve the budget.", "gold": {"kind": "frame", "frame": {"predicate": "approve", "agent": "manager", "patient": "budget", "recipient": "", "negated": true}}, "note": "単純否定"}
+{"id": "E1-04", "type": "E1", "text": "Nobody approved the budget.", "gold": {"kind": "unsupported"}, "note": "否定代名詞"}
+{"id": "E1-05", "type": "E1", "text": "No clerk sent the invoice to Mia.", "gold": {"kind": "unsupported"}, "note": "否定の決定詞"}
+{"id": "E1-06", "type": "E1", "text": "The auditor found nothing in the report.", "gold": {"kind": "unsupported"}, "note": "nothing"}
+{"id": "E1-07", "type": "E1", "text": "The intern never read the manual.", "gold": {"kind": "unsupported"}, "note": "never"}
+{"id": "E1-08", "type": "E1", "text": "None of the servers accepted the update.", "gold": {"kind": "unsupported"}, "note": "none"}
+{"id": "E2-01", "type": "E2", "text": "Every engineer updated the server.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E2-02", "type": "E2", "text": "Each clerk sent an invoice to Mia.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E2-03", "type": "E2", "text": "All students passed the exam.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E2-04", "type": "E2", "text": "Some engineers did not update the server.", "gold": {"kind": "unsupported"}, "note": "量化+否定"}
+{"id": "E2-05", "type": "E2", "text": "Most customers approved the plan.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E2-06", "type": "E2", "text": "Exactly two teams submitted the report.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E2-07", "type": "E2", "text": "At least three nurses signed the form.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E2-08", "type": "E2", "text": "No clerk signed every form.", "gold": {"kind": "unsupported"}, "note": "否定+量化"}
+{"id": "E2-09", "type": "E2", "text": "Not every clerk sent the invoice.", "gold": {"kind": "unsupported"}, "note": "否定+量化"}
+{"id": "E3-01", "type": "E3", "text": "The report that the intern wrote was long.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E3-02", "type": "E3", "text": "The engineer who updated the server left.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E3-03", "type": "E3", "text": "The invoice which Mia sent was late.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E3-04", "type": "E3", "text": "The clerk whom Ken praised signed the form.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E3-05", "type": "E3", "text": "The manager who approved the budget resigned.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E3-06", "type": "E3", "text": "The server that the engineer updated crashed.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E3-07", "type": "E3", "text": "A student who read the manual passed the exam.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E3-08", "type": "E3", "text": "The package that Nora sent to Paul arrived.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E4-01", "type": "E4", "text": "The manager made the intern rewrite the report.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E4-02", "type": "E4", "text": "The teacher let the students leave early.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E4-03", "type": "E4", "text": "The director had the clerk sign the form.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E4-04", "type": "E4", "text": "She got the engineer to fix the server.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E4-05", "type": "E4", "text": "The coach made the players run.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E4-06", "type": "E4", "text": "Mom let the children play outside.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E4-07", "type": "E4", "text": "He had his assistant book the flights.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E4-08", "type": "E4", "text": "The doctor got the patient to rest.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E5-01", "type": "E5", "text": "The new model is faster than the old model.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E5-02", "type": "E5", "text": "Anna is taller than Ben.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E5-03", "type": "E5", "text": "This server is as fast as that server.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E5-04", "type": "E5", "text": "The red box is the heaviest box.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E5-05", "type": "E5", "text": "Tokyo is larger than Osaka.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E5-06", "type": "E5", "text": "Ken types more quickly than Lisa.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E5-07", "type": "E5", "text": "The north room is less crowded than the south room.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E5-08", "type": "E5", "text": "This route is the shortest route.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E6-01", "type": "E6", "text": "Although the engineer updated the server, the site crashed.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E6-02", "type": "E6", "text": "The clerk sent the invoice because Mia asked.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E6-03", "type": "E6", "text": "When the manager approved the budget, the team cheered.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E6-04", "type": "E6", "text": "If the intern writes the report, Ken will sign it.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E6-05", "type": "E6", "text": "The clerk waited while Mia signed the form.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E6-06", "type": "E6", "text": "After the engineer updated the server, the site recovered.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E6-07", "type": "E6", "text": "Ken left unless Mia called.", "gold": {"kind": "unsupported"}, "note": ""}
+{"id": "E6-08", "type": "E6", "text": "The team cheered after the manager approved the budget.", "gold": {"kind": "unsupported"}, "note": ""}

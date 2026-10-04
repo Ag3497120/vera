@@ -1,0 +1,369 @@
+{
+ "lemmas": {
+  "先生": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "漁師": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "母": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "校長": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "社長": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "課長": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "駅員": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "医者": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "看護師": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "店主": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "運転手": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "画家": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "弟": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "姉": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "兄": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "祖父": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "隣人": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "猟師": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "教授": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "歌手": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "農夫": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "会長": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "妹": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "cook": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "pilot": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "mayor": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "doctor": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "PERSON"
+   ]
+  },
+  "本": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "手紙": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "新聞": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "資料": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "地図": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "切符": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "薬": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "書類": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "絵": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "歌": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "荷物": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "鍵": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "雑誌": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "財布": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "手帳": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "傘": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "切手": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "米": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "論文": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "soup": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "plane": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "bridge": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "report": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ARTIFACT"
+   ]
+  },
+  "魚": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ANIMAL"
+   ]
+  },
+  "鳥": {
+   "state": "DECIDED",
+   "origin": "direct",
+   "types": [
+    "ANIMAL"
+   ]
+  }
+ },
+ "neighbors": {}
+}

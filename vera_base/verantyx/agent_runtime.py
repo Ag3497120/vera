@@ -7,6 +7,7 @@ passes the declared path allowlist.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import fcntl
 import math
@@ -25,7 +26,9 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from . import agent_adapter
-from .agent_adapter import AgentEvent, CodexExecAdapter
+from .agent_adapter import (AgentEvent, CodexExecAdapter, LaunchSpec, claude_print_launch,
+                            codex_exec_launch, validate_allowed_tools, validate_effort,
+                            validate_model, validate_permission_mode)
 
 
 RUNTIME_SCHEMA = "agent-runtime-v1"
@@ -33,6 +36,10 @@ DEFAULT_TIMEOUT_SECONDS = 300.0
 DEFAULT_OUTPUT_LIMIT = 65536
 DEFAULT_DIFF_LIMIT = 5 * 1024 * 1024
 _TASK_LINE = re.compile(r"^Current frame task:\s*(.*?)\s*$", re.M)
+_BACKENDS = frozenset({"codex", "command", "codex-exec", "claude-print"})
+# Backends that start the real program with its prompt on stdin (a file, so the child
+# sees end-of-file) instead of the older argument-array / FIFO shape.
+_STDIN_FILE_BACKENDS = frozenset({"codex-exec", "claude-print"})
 _TERMINAL_EVENTS = frozenset({
     "SESSION_ACCEPTED", "SESSION_REJECTED", "SESSION_PROCESS_FAILED",
     "SESSION_OUTPUT_LIMIT", "SESSION_TIMED_OUT", "SESSION_CANCELLED",
@@ -204,6 +211,18 @@ def _atomic_json(path: Path, value: Mapping[str, Any]) -> None:
     os.replace(temporary, path)
 
 
+def _write_private(path: Path, text: str) -> None:
+    """Write ``text`` to a new owner-only file and make it durable."""
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        view = memoryview(text.encode("utf-8"))
+        while view:
+            view = view[os.write(fd, view):]
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
 _SUPERVISOR = r'''import fcntl, json, os, select, signal, subprocess, sys, time
 session = sys.argv[1]
 with open(os.path.join(session, "command.json"), "r", encoding="utf-8") as stream:
@@ -211,7 +230,10 @@ with open(os.path.join(session, "command.json"), "r", encoding="utf-8") as strea
 lock_fd = os.open(config["lock"], os.O_RDWR)
 fcntl.flock(lock_fd, fcntl.LOCK_EX)
 signal.signal(signal.SIGTERM, lambda *_: None)
-fifo_fd = os.open(config["fifo"], os.O_RDWR | os.O_NONBLOCK)
+if config.get("stdin_path"):
+    fifo_fd = os.open(config["stdin_path"], os.O_RDONLY)
+else:
+    fifo_fd = os.open(config["fifo"], os.O_RDWR | os.O_NONBLOCK)
 child = subprocess.Popen(config["command"], cwd=config["cwd"], stdin=fifo_fd,
                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                         close_fds=True, env=os.environ.copy())
@@ -220,6 +242,7 @@ out_fd = os.open(config["output"], os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
 total = 0
 limit = config["output_limit"]
 overflow = False
+drained_once = False
 try:
     while True:
         if time.time() >= config["deadline_wall"]:
@@ -250,7 +273,12 @@ try:
                     pass
                 sys.exit(75)
         elif child.poll() is not None:
-            break
+            # The child may have written its last bytes between the select above and this poll (a loaded
+            # machine makes that window real).  Look once more before giving up on the pipe; a grandchild
+            # that keeps the pipe open and silent still ends the loop on the next pass.
+            if drained_once:
+                break
+            drained_once = True
     code = child.wait()
 finally:
     try:
@@ -296,6 +324,17 @@ class RuntimeHandle:
     lock: Any = field(default_factory=threading.RLock)
 
 
+@dataclass(eq=False)
+class DryRunHandle:
+    """Returned by a dry-run ``start``: nothing was launched, only planned."""
+
+    session_id: str
+    task_id: str
+    session_dir: Path
+    plan: dict[str, Any]
+    stopped: bool = False
+
+
 class AgentRuntime:
     """A bounded ``AgentAdapter`` backed by a real isolated child process.
 
@@ -303,6 +342,12 @@ class AgentRuntime:
     its sandbox set to workspace write for the private worktree. The sandbox's
     default network policy remains in force; no network-enabling option is
     added. ``command:<exe>`` invokes the executable directly without a shell.
+
+    ``codex-exec`` and ``claude-print`` start the real programs from a
+    :class:`LaunchSpec`: the prompt is written to a file that becomes the child's
+    stdin, so the child reads to end-of-file and is never left waiting.  With
+    ``dry_run=True`` they build exactly the same prompt and ``LaunchSpec`` but create
+    no worktree, no FIFO and no process; the plan goes to ``on_plan`` and ``planned``.
     """
 
     def __init__(
@@ -318,12 +363,63 @@ class AgentRuntime:
         diff_limit: int = DEFAULT_DIFF_LIMIT,
         poll_interval: float = 0.02,
         env: Mapping[str, str] | None = None,
+        model: str | None = None,
+        effort: str | None = None,
+        dry_run: bool = False,
+        on_plan: Any = None,
+        keep_worktree_on_accept: bool = False,
+        claude_permission_mode: str | None = None,
+        claude_allowed_tools: Any = None,
+        read_only: bool = False,
     ):
         self.repo = _git_root(repo)
-        self.allowed_paths = normalize_allowlist(allowed_paths)
-        if backend not in {"codex", "command"}:
-            raise ValueError("backend must be codex or command")
+        if not isinstance(read_only, bool):
+            raise ValueError("read_only must be a bool")
+        if backend not in _BACKENDS:
+            raise ValueError("backend must be codex, command, codex-exec or claude-print")
+        self.read_only = read_only
+        if read_only:
+            # A verifier session (W2-b): it may read the worktree and change nothing.  The empty
+            # allowlist is what makes any change a "write allowlist violation" when it ends.
+            if backend not in _STDIN_FILE_BACKENDS:
+                raise ValueError("read_only applies only to the codex-exec and claude-print backends")
+            if claude_permission_mode is not None or claude_allowed_tools is not None:
+                raise ValueError("read_only sets the claude permission options itself; do not pass them")
+            if keep_worktree_on_accept:
+                raise ValueError("a read_only session's worktree is always discarded")
+            if allowed_paths is not None and len(tuple(allowed_paths)) != 0:
+                raise ValueError("a read_only session has no write allowlist")
+            self.allowed_paths: tuple[str, ...] = ()
+        else:
+            self.allowed_paths = normalize_allowlist(allowed_paths)
         self.backend = backend
+        if backend in _STDIN_FILE_BACKENDS:
+            self.model = validate_model(model)
+            self.effort = validate_effort(effort)
+        else:
+            if model is not None or effort is not None or dry_run:
+                raise ValueError("model, effort and dry_run apply only to the codex-exec and claude-print backends")
+            self.model = self.effort = None
+        if not isinstance(dry_run, bool):
+            raise ValueError("dry_run must be a bool")
+        if on_plan is not None and not callable(on_plan):
+            raise ValueError("on_plan must be callable")
+        if not isinstance(keep_worktree_on_accept, bool):
+            raise ValueError("keep_worktree_on_accept must be a bool")
+        self.keep_worktree_on_accept = keep_worktree_on_accept
+        self.claude_permission_mode: str | None = None
+        self.claude_allowed_tools: tuple[str, ...] | None = None
+        if claude_permission_mode is not None or claude_allowed_tools is not None:
+            if backend != "claude-print":
+                raise ValueError("claude_permission_mode and claude_allowed_tools apply only to the "
+                                 "claude-print backend")
+            if claude_permission_mode is not None:
+                self.claude_permission_mode = validate_permission_mode(claude_permission_mode)
+            if claude_allowed_tools is not None:
+                self.claude_allowed_tools = validate_allowed_tools(claude_allowed_tools)
+        self.dry_run = dry_run
+        self.on_plan = on_plan
+        self.planned: list[dict[str, Any]] = []
         self.executable = executable
         self.timeout_seconds = _finite_positive(timeout_seconds, "timeout_seconds")
         for name, value in (("output_limit", output_limit), ("diff_limit", diff_limit)):
@@ -400,6 +496,81 @@ class AgentRuntime:
             raise ValueError("command executable must not be empty")
         return [*executable, "--", brief]
 
+    _PROTOCOL_TEXT = (
+        "\n\nRuntime event protocol: write newline-delimited JSON events only. "
+        "Use QUESTION {type,id,text,options?}, CLAIM {type,task,evidence}, "
+        "DONE {type}, ERROR {type,message?}, or OTHER {type,text}. "
+        "Do not include prose outside those events."
+    )
+
+    _VERIFIER_TEXT = (
+        "\n\nYou are a read-only verifier.  Creating, changing or deleting any file in the current "
+        "directory makes the verification fail and the directory is thrown away.  Reply with the verdict "
+        "line exactly as the brief describes, and nothing that looks like another verdict line."
+    )
+
+    def _build_prompt(self, brief: str) -> str:
+        """The text the agent receives; real launches and dry runs both come through here."""
+        if self.read_only:
+            return brief + self._VERIFIER_TEXT
+        prompt = brief + self._PROTOCOL_TEXT
+        if self.backend in _STDIN_FILE_BACKENDS:
+            prompt += ("\nWrite allowlist (enforced after exit): " + ", ".join(self.allowed_paths) +
+                       ". A change outside these paths rejects the whole session.")
+            prompt += ("\nYour work: make the GOAL records of the current frame task true by editing files in "
+                       "the current directory, only within the write allowlist."
+                       "\nWhen you exit, the conductor runs the frame's acceptance commands itself in this "
+                       "directory; your own DONE or CLAIM events do not decide completion."
+                       "\nDo not run git commands that change history or references (commit, branch, reset, "
+                       "checkout); the conductor commits.")
+        return prompt
+
+    def _launch_spec(self, session_dir: Path, worktree: Path) -> LaunchSpec:
+        """The one place the stdin-file backends turn settings into an argument array."""
+        prompt_path = session_dir / "prompt.txt"
+        if self.backend == "codex-exec":
+            return codex_exec_launch(executable=self.executable, model=self.model, effort=self.effort,
+                                     workdir=worktree, prompt_path=prompt_path,
+                                     last_message_path=session_dir / "last_message.txt",
+                                     sandbox="read-only" if self.read_only else "workspace-write")
+        if self.read_only:
+            return claude_print_launch(
+                executable=self.executable, model=self.model, effort=self.effort, workdir=worktree,
+                prompt_path=prompt_path, permission_mode=agent_adapter.VERIFIER_CLAUDE_PERMISSION_MODE,
+                allowed_tools=agent_adapter.VERIFIER_CLAUDE_ALLOWED_TOOLS,
+                disallowed_tools=agent_adapter.VERIFIER_CLAUDE_DISALLOWED_TOOLS)
+        return claude_print_launch(executable=self.executable, model=self.model, effort=self.effort,
+                                   workdir=worktree, prompt_path=prompt_path,
+                                   permission_mode=self.claude_permission_mode,
+                                   allowed_tools=self.claude_allowed_tools)
+
+    def _plan_record(self, spec: LaunchSpec, prompt: str, task_id: str, session_id: str,
+                     base_commit: str) -> dict[str, Any]:
+        digest = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
+        return {
+            "backend": spec.backend, "argv": list(spec.argv), "cwd": spec.cwd,
+            "stdin": {"mode": "file", "path": spec.stdin_path, "sha256": digest, "chars": len(prompt)},
+            "output_path": spec.output_path, "prompt": prompt, "allowlist": list(self.allowed_paths),
+            "task_id": task_id, "session_id": session_id, "base_commit": base_commit,
+            "model": self.model, "effort": self.effort, "dry_run": self.dry_run,
+        }
+
+    def _plan(self, brief: str, task_id: str, session_id: str, session_dir: Path,
+              worktree: Path) -> DryRunHandle:
+        """Build the launch exactly as ``start`` would and record it, starting nothing."""
+        base_commit = os.fsdecode(_git(self.repo, "rev-parse", "HEAD")).strip()
+        prompt = self._build_prompt(brief)
+        spec = self._launch_spec(session_dir, worktree)
+        _write_private(Path(spec.stdin_path), prompt)
+        plan = self._plan_record(spec, prompt, task_id, session_id, base_commit)
+        self._append(session_id, "SESSION_PLANNED", task_id=task_id, argv=list(spec.argv), cwd=spec.cwd,
+                     prompt_sha256=plan["stdin"]["sha256"], base_commit=base_commit,
+                     allowlist=list(self.allowed_paths))
+        self.planned.append(plan)
+        if self.on_plan is not None:
+            self.on_plan(plan)
+        return DryRunHandle(session_id, task_id, session_dir, plan)
+
     def start(self, brief: str) -> RuntimeHandle:
         if not isinstance(brief, str) or len(brief) > agent_adapter.MAX_BRIEF_CHARS:
             raise ValueError("brief must be bounded text")
@@ -411,6 +582,8 @@ class AgentRuntime:
         session_dir = self.sessions_dir / session_id
         session_dir.mkdir(mode=0o700)
         worktree = session_dir / "worktree"
+        if self.dry_run:
+            return self._plan(brief, task_id, session_id, session_dir, worktree)
         self._append(session_id, "SESSION_CREATED", task_id=task_id,
                      repo=os.fspath(self.repo), allowlist=list(self.allowed_paths),
                      base_commit=os.fsdecode(_git(self.repo, "rev-parse", "HEAD")).strip())
@@ -420,26 +593,37 @@ class AgentRuntime:
             _git(self.repo, "worktree", "add", "--detach", os.fspath(worktree),
                  os.fsdecode(_git(self.repo, "rev-parse", "HEAD")).strip(), timeout=60)
             self._append(session_id, "WORKTREE_CREATED", worktree=os.fspath(worktree))
-            prompt = (
-                brief + "\n\nRuntime event protocol: write newline-delimited JSON events only. "
-                "Use QUESTION {type,id,text,options?}, CLAIM {type,task,evidence}, "
-                "DONE {type}, ERROR {type,message?}, or OTHER {type,text}. "
-                "Do not include prose outside those events."
-            )
-            command = self._command(worktree, prompt)
+            prompt = self._build_prompt(brief)
+            stdin_file: Path | None = None
+            if self.backend in _STDIN_FILE_BACKENDS:
+                spec = self._launch_spec(session_dir, worktree)
+                command = list(spec.argv)
+                stdin_file = Path(spec.stdin_path)
+                _write_private(stdin_file, prompt)
+                if self.on_plan is not None:
+                    self.on_plan(self._plan_record(
+                        spec, prompt, task_id, session_id,
+                        os.fsdecode(_git(self.repo, "rev-parse", "HEAD")).strip()))
+            else:
+                command = self._command(worktree, prompt)
             fifo = session_dir / "agent.stdin"
             lock_path = session_dir / "agent.lock"
             output = session_dir / "agent.output"
             status_path = session_dir / "agent.status.json"
-            os.mkfifo(fifo, 0o600)
+            if stdin_file is None:
+                os.mkfifo(fifo, 0o600)
             lock_path.touch(mode=0o600)
-            fifo_fd = os.open(fifo, os.O_RDWR | os.O_NONBLOCK)
+            if stdin_file is None:
+                fifo_fd = os.open(fifo, os.O_RDWR | os.O_NONBLOCK)
             started_wall = time.time()
             deadline_wall = started_wall + self.timeout_seconds
             config = {"command": command, "cwd": os.fspath(worktree), "fifo": os.fspath(fifo),
                       "lock": os.fspath(lock_path),
                       "output": os.fspath(output), "status": os.fspath(status_path),
                       "output_limit": self.output_limit, "deadline_wall": deadline_wall}
+            if stdin_file is not None:
+                del config["fifo"]
+                config["stdin_path"] = os.fspath(stdin_file)
             _atomic_json(session_dir / "command.json", config)
             process = subprocess.Popen(
                 [sys.executable, "-c", _SUPERVISOR, os.fspath(session_dir)],
@@ -602,6 +786,12 @@ class AgentRuntime:
             raise PermissionError("write allowlist violation: " + ", ".join(unsafe[:16]))
         return changed
 
+    def discard_worktree(self, handle: RuntimeHandle) -> None:
+        """Remove the worktree of a session accepted with ``keep_worktree_on_accept``."""
+        if not isinstance(handle, RuntimeHandle):
+            raise TypeError("handle was not created by this runtime")
+        self._remove_worktree(handle.worktree)
+
     def _remove_worktree(self, path: Path) -> None:
         if not path.exists():
             return
@@ -667,6 +857,11 @@ class AgentRuntime:
     def _finalize_process(self, handle: RuntimeHandle) -> None:
         if handle.finalized:
             return
+        # The caller read the output and only then saw the process gone; whatever the supervisor wrote
+        # in between would be dropped here.  Read once more now that the process is known to be done.
+        self._read_output(handle)
+        if handle.finalized:  # _read_output may have failed the session (output limit)
+            return
         self._finish_output(handle)
         status = self._status(handle)
         if status is None:
@@ -677,6 +872,11 @@ class AgentRuntime:
                     return
             else:
                 code = -1
+            if time.time() >= handle.deadline_wall:
+                # The supervisor kills its own group at the deadline and never writes a status:
+                # past the deadline that is a timeout, not an unexplained exit status.
+                self._fail(handle, "agent execution timed out", "SESSION_TIMED_OUT")
+                return
             status = {"exit_code": code, "output_limit": False}
         if status.get("output_limit") or handle.output_offset >= self.output_limit:
             self._kill_remaining_group(handle)
@@ -718,8 +918,10 @@ class AgentRuntime:
         self._kill_remaining_group(handle)
         self._record_terminal(handle, "SESSION_ACCEPTED", artifact_sha256=digest,
                               artifact_path=os.fspath(handle.session_dir / "artifact.patch"),
-                              changed_paths=list(changed), exit_code=status["exit_code"])
-        self._remove_worktree(handle.worktree)
+                              changed_paths=list(changed), exit_code=status["exit_code"],
+                              worktree_kept=self.keep_worktree_on_accept)
+        if not self.keep_worktree_on_accept:
+            self._remove_worktree(handle.worktree)
         handle.pending.extend(self._take_held(handle))
         handle.replay_finished = True
 
@@ -838,6 +1040,8 @@ class AgentRuntime:
         return handle
 
     def poll(self, handle: RuntimeHandle) -> list[AgentEvent]:
+        if isinstance(handle, DryRunHandle):
+            return []
         if not isinstance(handle, RuntimeHandle) or handle.session_id not in self.handles and not handle.recovered:
             raise TypeError("handle was not created by this runtime")
         with handle.lock:
@@ -873,6 +1077,8 @@ class AgentRuntime:
             return []
 
     def send(self, handle: RuntimeHandle, text: str) -> None:
+        if isinstance(handle, DryRunHandle):
+            return
         if not isinstance(handle, RuntimeHandle):
             raise TypeError("handle was not created by this runtime")
         if not isinstance(text, str) or len(text) > agent_adapter.MAX_LINE_CHARS:
@@ -888,6 +1094,11 @@ class AgentRuntime:
                 return
 
     def stop(self, handle: RuntimeHandle) -> None:
+        if isinstance(handle, DryRunHandle):
+            if not handle.stopped:
+                handle.stopped = True
+                self._append(handle.session_id, "DRY_RUN_STOPPED", task_id=handle.task_id)
+            return
         if not isinstance(handle, RuntimeHandle):
             raise TypeError("handle was not created by this runtime")
         with handle.lock:
@@ -912,5 +1123,5 @@ class AgentRuntime:
 
 AgentRuntimeAdapter = AgentRuntime
 
-__all__ = ["AgentRuntime", "AgentRuntimeAdapter", "RuntimeHandle", "RuntimeError",
+__all__ = ["AgentRuntime", "AgentRuntimeAdapter", "DryRunHandle", "RuntimeHandle", "RuntimeError",
            "normalize_allowlist"]

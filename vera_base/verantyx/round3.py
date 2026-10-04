@@ -123,8 +123,12 @@ class GeneralRouter:
             return result, trace
         if family == "conversation":
             social = self._conversation_supply(text, reading)
+            from .ability_corpus import Corpus
+            index = "INDEX_AVAILABLE" if social else Corpus().status("conversation")
             trace.append(self._trace("conversation", "ran" if social else "abstained",
-                                     role="social_supply", verdict=social.get("verdict") if social else "UNKNOWN_NO_STRICT_TURN"))
+                                     role="social_supply", index=index,
+                                     verdict=social.get("verdict") if social else (
+                                         index if index.startswith("UNKNOWN_") else "UNKNOWN_NO_STRICT_TURN")))
             if social:
                 return social, trace
             trace.append(self._trace("general_qa", "abstained", role="social_not_factual"))
@@ -193,8 +197,10 @@ class GeneralRouter:
                 return result, trace
         if family == "code_qa":
             supplemental = self._code_supply(text)
+            from .ability_corpus import Corpus
             trace.append(self._trace("code", "ran" if supplemental else "abstained",
-                                     reason="separate P4 code corpus"))
+                                     reason="separate P4 code corpus",
+                                     index="INDEX_AVAILABLE" if supplemental else Corpus().status("code")))
             if supplemental:
                 return supplemental, trace
         if family == "figurative_commonsense" and slot == "haiku":
@@ -515,7 +521,7 @@ class GeneralRouter:
 
     @staticmethod
     def _conversation_supply(text: str, reading: Any = None) -> dict | None:
-        from .ability_corpus import Corpus
+        from .ability_corpus import Corpus, basis_mark
         if reading is None:
             from .question import read
             reading = read(text)
@@ -530,12 +536,13 @@ class GeneralRouter:
                    if _norm(row.text) == _norm(spoken)]
         if not replies:
             return None
-        return dict(framed, family="conversation", source=replies[0].source,
-                    evidence=[framed["text"]], sources=[row.cite() for row in replies], path="speech_act_supply")
+        cites = [row.cite() for row in replies]
+        return dict(framed, family="conversation", source=replies[0].source, evidence=[framed["text"]],
+                    sources=cites, path="speech_act_supply", **basis_mark(cites))
 
     @staticmethod
     def _code_supply(text: str) -> dict | None:
-        from .ability_corpus import Corpus
+        from .ability_corpus import Corpus, basis_mark
         corpus = Corpus()
         terms = [t for t in _terms(text) if t.casefold() not in {"コード", "関数", "実装", "プログラム", "python", "javascript"}]
         if not terms:
@@ -554,4 +561,4 @@ class GeneralRouter:
         witness = scored[0][1]
         return {"kind": "answer", "verdict": "ANSWER", "text": witness.text,
                 "family": "code", "source": witness.source, "evidence": [witness.text],
-                "sources": [witness.cite()], "path": "code_supply"}
+                "sources": [witness.cite()], "path": "code_supply", **basis_mark([witness.cite()])}

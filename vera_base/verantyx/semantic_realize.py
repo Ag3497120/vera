@@ -834,3 +834,189 @@ __all__ = [
     "realize_refusal", "realize_variants", "refusal_sentence", "summarize_entity", "summary_entity_from_request",
     "verify_sentence",
 ]
+
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# W3-c: realize an OBSERVED event cross (verantyx/observe.py). Added at the end of the module; nothing above is changed.
+#
+# The input is the dict form of a cross (the centre and the arms of `verantyx.event_cross.EventCross.to_dict()`), not a reader IR clause.
+# The role names of the convention are written with the names the IR clause uses (place -> location, source -> origin) only to build ONE
+# canonical sentence with the existing `_surface_text` (topic は, the default role order, plain style). Two checks decide whether it is
+# returned: (1) the sentence is read again by the reading entry and must give exactly one cross with the same content (centre keys and,
+# per arm, role / kind / surfaces; the placement is not part of the content); (2) every content lemma of the sentence belongs to the
+# predicate or to ONE filler (each tagged on its own, not concatenated), and every function word is in the closed sets above.
+# The sentence never contains a word that is not in the observation. Other ways of saying the same thing are returned by
+# `observed_variants` and are never chosen here.
+# ---------------------------------------------------------------------------------------------------------------------------------
+from .semantic_ir import Role  # noqa: E402  (added with the W3-c block; the import line at the top of the module is not touched)
+
+_OBSERVED_ROLE_TO_IR = {"agent": "agent", "patient": "patient", "recipient": "recipient", "goal": "goal",
+                        "place": "location", "source": "origin"}
+_OBSERVED_CENTRE_NOT_EXPRESSED = ("quantifiers", "scope", "comparison")
+
+
+def _observed_content(center: Any, arms: Any) -> tuple[Any, ...]:
+    """The content of a cross as a comparable value (see docs/OBSERVATION.md P1): centre keys, and per arm role / kind / surfaces."""
+    return (tuple(sorted((str(k), repr(v)) for k, v in dict(center).items())),
+            tuple(sorted((str(role), arm["kind"], tuple(f["surface"] for f in arm["fillers"])) for role, arm in dict(arms).items())))
+
+
+def _observed_arm_surfaces(arms: Any) -> list[str]:
+    return [f["surface"] for _role, arm in dict(arms).items() for f in arm["fillers"]]
+
+
+def check_observed_lineage(sentence: str, predicate: str, surfaces: Iterable[str]) -> dict[str, Any]:
+    """Every content lemma of `sentence` is a lemma of the predicate or of one filler surface (each tagged ALONE); every function word is in
+    the closed sets of this module. The same loop as `check_term_lineage`, with the licensed lemmas taken from the pieces."""
+    tagger = _tagger()
+    licensed: set[str] = set()
+    for piece in (predicate, *surfaces):
+        for word in tagger(piece):
+            if word.feature.pos1 in _CONTENT_POS:
+                licensed.add(_lemma(word))
+    extra: list[tuple[str, str]] = []
+    unexpected: list[str] = []
+    for token in tagger(sentence):
+        pos = token.feature.pos1
+        if pos in _CONTENT_POS:
+            if token.surface in _NEG_AUX_SURFACES and pos in ("形容詞", "助動詞"):
+                continue
+            lemma = _lemma(token)
+            if lemma not in licensed:
+                extra.append((token.surface, lemma))
+        elif pos == "助詞" and token.surface in _PARTICLES:
+            continue
+        elif pos == "助動詞" and _lemma(token) in _AUX_LEMMAS:
+            continue
+        elif (pos == "補助記号" and token.surface
+              and all(ch in _PUNCT or unicodedata.category(ch).startswith("P") for ch in token.surface)):
+            continue
+        else:
+            unexpected.append(token.surface)
+    passed = not extra and not unexpected
+    return {
+        "passed": passed,
+        "detail": "all content lemmas belong to the predicate or a filler" if passed else "content or function token is unlicensed",
+        "extra_lemmas": [{"surface": surface, "lemma": lemma} for surface, lemma in extra],
+        "unexpected_tokens": unexpected,
+    }
+
+
+def _observed_roundtrip(sentence: str, center: Any, arms: Any) -> dict[str, Any]:
+    """Read `sentence` again with the reading entry: exactly one cross, with the same content as the observed one."""
+    from . import event_cross, semantic_read
+
+    try:
+        out = semantic_read.read(sentence, "ja")
+    except Exception as exc:
+        return {"passed": False, "detail": "reader raised " + type(exc).__name__, "crosses": 0}
+    got = event_cross.build_crosses(out)
+    if got.status != "CROSSED":
+        return {"passed": False, "detail": "generated text was not read (" + got.status + ")", "crosses": 0}
+    if len(got.crosses) != 1:
+        return {"passed": False, "detail": "generated text did not read as exactly one cross", "crosses": len(got.crosses)}
+    cross = got.crosses[0].to_dict()
+    same = _observed_content(cross["center"], cross["arms"]) == _observed_content(center, arms)
+    return {"passed": same, "detail": "single-cross content matches" if same else "generated content differs from the observed cross",
+            "crosses": 1}
+
+
+def _observed_clause(center: Any, arms: Any, cell_id: Any, lang: Any, rule: Any) -> tuple[Clause | None, Refused | None]:
+    """A source-less IR clause that only carries the pieces `_surface_text` reads (no lineage claim is made on it)."""
+    ids = (str(cell_id),) if isinstance(cell_id, str) and cell_id else ()
+
+    def no(reason: str, detail: str) -> tuple[None, Refused]:
+        return None, Refused(reason if reason in REFUSAL_REASONS else "UNSUPPORTED_RULE", detail, ids)
+
+    if lang != "ja":
+        return no("NOT_REALIZABLE", "only Japanese crosses are realized")
+    if rule != "frame":
+        return no("UNSUPPORTED_RULE", "only crosses of the frame rule are realized")
+    if center.get("voice") != "active":
+        return no("UNSUPPORTED_MODALITY", "only active voice is realized")
+    if center.get("modality") is not None:
+        return no("UNSUPPORTED_MODALITY", "only asserted crosses are realized")
+    if center.get("tense") not in ("past", "nonpast"):
+        return no("ROLE_NOT_REALIZABLE", "tense is outside the closed set")
+    if center.get("polarity") not in ("+", "-"):
+        return no("ROLE_NOT_REALIZABLE", "polarity is outside the closed set")
+    if any(key in center for key in _OBSERVED_CENTRE_NOT_EXPRESSED):
+        return no("ROLE_NOT_REALIZABLE", "quantifiers, scope and comparison are not expressed by this realizer")
+    predicate = center.get("predicate")
+    if not isinstance(predicate, str) or not predicate:
+        return no("ROLE_NOT_REALIZABLE", "the centre has no predicate")
+    if "agent" not in arms:
+        return no("ROLE_NOT_REALIZABLE", "the cross has no agent arm")
+    roles: list[Role] = []
+    text = ""
+    for role, arm in dict(arms).items():
+        if role not in _OBSERVED_ROLE_TO_IR:
+            return no("ROLE_NOT_REALIZABLE", "role " + str(role) + " is outside the realizable set")
+        if arm.get("kind") != "FILLER" or len(arm.get("fillers", ())) != 1:
+            return no("ROLE_NOT_REALIZABLE", "arm " + str(role) + " is not a single filler (" + str(arm.get("kind")) + ")")
+        surface = arm["fillers"][0]["surface"]
+        span = Span("observed", len(text), len(text) + len(surface), surface)
+        text += surface
+        roles.append(Role(_OBSERVED_ROLE_TO_IR[role], surface, span))
+    whole = Span("observed", 0, len(text), text)
+    clause = Clause(str(cell_id), Variable("event_observed", "event"), predicate, whole, tuple(roles), whole,
+                    polarity=center["polarity"], modality="assert", time=center["tense"], rule="frame")
+    return clause, None
+
+
+def realize_observed(center: Any, arms: Any, lang: Any, *, cell_id: Any, rule: Any = None) -> Realized | Refused:
+    """One sentence for an observed cross, or a typed refusal. `rule` is the reader rule of the clause the cross came from."""
+    clause, refused = _observed_clause(center, arms, cell_id, lang, rule)
+    if refused is not None:
+        return refused
+    ids = (str(cell_id),) if isinstance(cell_id, str) and cell_id else ()
+    sentence, detail = _surface_text(clause, "plain")
+    if sentence is None:
+        reason = "CONJUGATION_UNKNOWN" if "conjugation" in detail else "ROLE_NOT_REALIZABLE"
+        return Refused(reason, detail, ids)
+    checks = {"roundtrip": _observed_roundtrip(sentence, center, arms),
+              "term_lineage": check_observed_lineage(sentence, clause.predicate, _observed_arm_surfaces(arms))}
+    if not checks["roundtrip"]["passed"]:
+        return Refused("ROUNDTRIP_MISMATCH", checks["roundtrip"]["detail"], ids, checks=checks)
+    if not checks["term_lineage"]["passed"]:
+        return Refused("TERM_LINEAGE_MISMATCH", checks["term_lineage"]["detail"], ids, checks=checks)
+    if len(sentence) > MAX_CHARS:
+        return Refused("BUDGET", "output character budget exceeded", ids, checks=checks)
+    return Realized(sentence, str(cell_id), (), "plain", "observed-cross", checks)
+
+
+def observed_variants(center: Any, arms: Any, lang: Any, *, cell_id: Any, rule: Any = None) -> tuple[Realized | Refused, ...]:
+    """The other verified ways of saying the same cross (polite style, が as the agent particle, reversed role order). Listed, never chosen.
+    The canonical sentence of `realize_observed` is not repeated here."""
+    clause, refused = _observed_clause(center, arms, cell_id, lang, rule)
+    if refused is not None:
+        return (refused,)
+    ids = (str(cell_id),) if isinstance(cell_id, str) and cell_id else ()
+    names = [r.name for r in clause.roles]
+    first = tuple(_ordered_frame_roles({n: None for n in names}))
+    orderings = [first] if len(first) < 2 else [first, tuple(reversed(first))]
+    canonical, _ = _surface_text(clause, "plain")
+    results: list[Realized | Refused] = []
+    seen: set[str] = set()
+    for style, topic, order in itertools.product(("plain", "polite"), ("は", "が"), orderings):
+        sentence, detail = _surface_text(clause, style, topic=topic, role_order=order)
+        if sentence is None:
+            results.append(Refused("ROLE_NOT_REALIZABLE", detail, ids))
+            continue
+        if sentence == canonical or sentence in seen:
+            continue
+        seen.add(sentence)
+        checks = {"roundtrip": _observed_roundtrip(sentence, center, arms),
+                  "term_lineage": check_observed_lineage(sentence, clause.predicate, _observed_arm_surfaces(arms)),
+                  "variant": {"style": style, "topic": topic, "role_order": list(order)}}
+        if not checks["roundtrip"]["passed"]:
+            results.append(Refused("ROUNDTRIP_MISMATCH", checks["roundtrip"]["detail"], ids, text=sentence, checks=checks))
+        elif not checks["term_lineage"]["passed"]:
+            results.append(Refused("TERM_LINEAGE_MISMATCH", checks["term_lineage"]["detail"], ids, text=sentence, checks=checks))
+        else:
+            results.append(Realized(sentence, str(cell_id), (), style, "observed-cross-variant", checks))
+    return tuple(results)
+
+
+# `__all__` above is left as it was; the W3-c names are added to it here.
+__all__.extend(["check_observed_lineage", "observed_variants", "realize_observed"])

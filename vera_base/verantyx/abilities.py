@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from . import compose_frame, connective_render, core_abilities, frames, realize
-from .ability_corpus import Corpus, Witness
+from .ability_corpus import Corpus, Witness, basis_mark
 from .typed_edges import _tagger
 
 
@@ -167,7 +167,7 @@ def _reply(kind: str, lines: list[dict], trace: list[dict], *, created: bool = F
     return {"kind": "compose" if created else "answer", "ability": kind,
             "verdict": "CREATED" if created else "ANSWER", "text": text,
             "evidence": [s["text"] for s in sources], "sources": sources,
-            "lines": lines, "trace": trace}
+            "lines": lines, "trace": trace, **basis_mark(sources)}
 
 
 def _line(text: str, sources: list[dict], **extra: Any) -> dict:
@@ -662,7 +662,8 @@ class Abilities:
             candidates = [c for c in candidates if focus in "".join(
                 str(c["frame"][k]) for k in ("agent", "patient", "recipient"))]
         trace.append({"part": "ability_corpus.search", "family": family,
-                      "topic": topic, "frames": len(candidates)})
+                      "topic": topic, "frames": len(candidates),
+                      "index": self.corpus.status(family)})
         if not candidates:
             from .say import say
             r = say(topic, k=2, db=self.general, scan=600, via_index=True) if self.general.exists() else {}
@@ -1052,6 +1053,7 @@ class Abilities:
         return None
 
     def commonsense(self, text: str, trace: list[dict]) -> dict:
+        trace += [{"part": "ability_corpus.status", "ability": "commonsense", "family": f, "index": self.corpus.status(f)} for f in ("local", "pro")]
         action = self._action_from_examples(text, trace)
         if action is not None:
             return action

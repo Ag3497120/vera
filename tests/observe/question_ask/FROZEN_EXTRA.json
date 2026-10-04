@@ -1,0 +1,7 @@
+{
+ "frozen_at": "2026-10-04 02:26:31 +0900",
+ "reason": "the first freeze (FROZEN.json, 2026-10-04 02:12:32) holds 2 questions without a document, the registered scale is 4: three more were added before they were run (they cannot reach the later stage: no document is handed over)",
+ "files": {
+  "questions_nodoc.jsonl": "bb4e984c8b547f410ec2d3927b31c0de68331b53cf4732d5bf99dcfcaa36d0f0"
+ }
+}

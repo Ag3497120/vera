@@ -14,6 +14,7 @@ and never evidence.
 from __future__ import annotations
 
 import json
+import re
 from collections import Counter
 from dataclasses import dataclass
 from typing import Literal, Tuple
@@ -23,6 +24,26 @@ from . import lattice as _lattice
 from .granularity import decompose_units
 from .semantic_ir import Span, View
 from .vocabulary import Vocabulary, attest, runs
+
+
+# Whitespace and Japanese characters (CJK symbols and punctuation, hiragana, katakana, CJK ideographs).
+# This class covers every character of ``vocabulary._RUN`` (kanji, katakana, ー, 々, 〆), so a run
+# that ``runs()`` already counts is never split out a second time here.
+_JAPANESE_OR_SPACE = re.compile(
+    "[\\s\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\u3400-\u4dbf\u4e00-\u9fff]+"
+)
+
+
+def _source_words(text: str) -> set[str]:
+    """Distinct source words that count as projection work.
+
+    The words of ``runs(text)`` (kanji / katakana runs) plus the pieces left after splitting the text at
+    whitespace and Japanese characters: Latin, accented Latin, Cyrillic, Hangul and similar words, and a
+    Latin word that directly follows Japanese (``Alice猫`` gives ``Alice`` and ``猫``). Hiragana and Japanese
+    punctuation only separate words; counting them as words would inflate the work of every Japanese document.
+    For text made only of ASCII words separated by whitespace this equals ``set(text.split())``.
+    """
+    return set(runs(text)) | {piece for piece in _JAPANESE_OR_SPACE.split(text or "") if piece}
 
 
 CandidateKind = Literal[
@@ -260,14 +281,16 @@ def unknown_candidates(
         )
 
     source_counts: Counter = Counter()
+    work_words: set[str] = set()
     corpora = []
     for source in sorted(view.sources):
         counts = runs(view.sources[source])
         source_counts.update(counts)
+        work_words |= _source_words(view.sources[source])
         corpora.append((source, view.sources[source]))
     work = (len(view.clauses)
             + sum(len(clause.roles) for clause in view.clauses)
-            + len(source_counts))
+            + len(work_words))
     if work > budget:
         return _budget_refusal(term)
 

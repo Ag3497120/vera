@@ -417,7 +417,7 @@ def _locative_readings(ctx: ConstructionContext) -> tuple[list[Clause], list[Spa
                     break
                 setting = Role(_RELATIONAL_PREDICATES.get(base.predicate, "setting"),
                                role.span.text, role.span, "case")
-            elif role.name in ("recipient", "setting") and following == "に":
+            elif role.name in ("recipient", "setting", "location") and following == "に":   # location: W1-a typed re-read of a locative に
                 candidate = Role(_RELATIONAL_PREDICATES.get(base.predicate, "setting"),
                                  role.span.text, role.span, "case")
                 if setting is not None:

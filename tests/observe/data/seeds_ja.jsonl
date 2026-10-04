@@ -1,0 +1,31 @@
+{"id": "J01", "text": "司書は学生に辞書を貸した。", "tags": ["transfer", "past"], "topic": "図書館", "note": "L01 の組: 主語だけ違う J02 と、受け手だけ違う J03 がある"}
+{"id": "J02", "text": "教授は学生に辞書を貸した。", "tags": ["transfer", "past", "pair:agent"], "topic": "大学", "note": "J01 の主語を教授に替えた文"}
+{"id": "J03", "text": "司書は部下に辞書を貸した。", "tags": ["transfer", "past", "pair:recipient"], "topic": "図書館", "note": "J01 の受け手を部下に替えた文"}
+{"id": "J04", "text": "司書は学生に辞書を貸さなかった。", "tags": ["transfer", "negation"], "topic": "図書館", "note": "J01 の否定"}
+{"id": "J05", "text": "駅員は乗客に切符を渡した。", "tags": ["transfer", "past"], "topic": "交通", "note": "主語の近傍が 1 つだけの錨"}
+{"id": "J06", "text": "車掌は乗客に切符を渡した。", "tags": ["transfer", "past", "pair:agent"], "topic": "交通", "note": "J05 の主語を車掌に替えた文"}
+{"id": "J07", "text": "受付は客に鍵を渡した。", "tags": ["transfer", "past"], "topic": "職場", "note": ""}
+{"id": "J08", "text": "祖母は縁側で団子を作った。", "tags": ["place", "past"], "topic": "家庭", "note": "場所の腕がある"}
+{"id": "J09", "text": "祖母は台所で団子を作った。", "tags": ["place", "past", "pair:place"], "topic": "家庭", "note": "J08 の場所を台所に替えた文"}
+{"id": "J10", "text": "叔父は縁側で団子を作った。", "tags": ["place", "past", "pair:agent"], "topic": "家庭", "note": "J08 の主語を叔父に替えた文"}
+{"id": "J11", "text": "職人は工房で人形を作った。", "tags": ["place", "past"], "topic": "工芸", "note": ""}
+{"id": "J12", "text": "職人は工房で人形を作らなかった。", "tags": ["place", "negation"], "topic": "工芸", "note": "J11 の否定"}
+{"id": "J13", "text": "農家は市場で果物を売った。", "tags": ["place", "past"], "topic": "農業", "note": ""}
+{"id": "J14", "text": "漁師は市場で魚を売った。", "tags": ["place", "past"], "topic": "漁業", "note": ""}
+{"id": "J15", "text": "店員は客に傘を売った。", "tags": ["transfer", "past"], "topic": "商店", "note": ""}
+{"id": "J16", "text": "弟は絵を描いた。", "tags": ["simple", "past"], "topic": "学校", "note": ""}
+{"id": "J17", "text": "姉は手紙を書いた。", "tags": ["simple", "past"], "topic": "家庭", "note": ""}
+{"id": "J18", "text": "兄は荷物を運んだ。", "tags": ["simple", "past"], "topic": "家庭", "note": ""}
+{"id": "J19", "text": "技師は機械を点検した。", "tags": ["simple", "past"], "topic": "工場", "note": ""}
+{"id": "J20", "text": "母は窓を開けなかった。", "tags": ["simple", "negation"], "topic": "家庭", "note": ""}
+{"id": "J21", "text": "会計係は領収書を発行しなかった。", "tags": ["simple", "negation"], "topic": "職場", "note": ""}
+{"id": "J22", "text": "兄は駅から家へ帰った。", "tags": ["source", "goal", "past"], "topic": "移動", "note": "起点と到達点"}
+{"id": "J23", "text": "配達員は倉庫から店へ荷物を運んだ。", "tags": ["source", "goal", "past"], "topic": "物流", "note": "起点と到達点と対象"}
+{"id": "J24", "text": "先生は教室へ歩いた。", "tags": ["goal", "past"], "topic": "学校", "note": "到達点だけ"}
+{"id": "J25", "text": "猫は縁側で眠る。", "tags": ["place", "nonpast"], "topic": "家庭", "note": "非過去"}
+{"id": "J26", "text": "妹は毎日学校へ通う。", "tags": ["goal", "nonpast", "quantity-word"], "topic": "学校", "note": "時の語があり、読めないかもしれない"}
+{"id": "J27", "text": "ごきげんよう。", "tags": ["unreadable", "greeting"], "topic": "挨拶", "note": "読めない例"}
+{"id": "J28", "text": "明日は雨が降るかもしれない。", "tags": ["unreadable", "modality"], "topic": "天気", "note": "読めない例（推量）"}
+{"id": "J29", "text": "彼女が来たので、私たちは出発した。", "tags": ["unreadable", "multi-clause"], "topic": "移動", "note": "読めない例（複数の節）"}
+{"id": "J30", "text": "本を読みたい。", "tags": ["unreadable", "desire"], "topic": "読書", "note": "読めない例（願望）"}
+{"id": "J31", "text": "美しい。", "tags": ["unreadable", "no-subject"], "topic": "形容", "note": "読めない例"}

@@ -224,6 +224,10 @@ def _role_chain(ctx: ConstructionContext, start: int, end: int) -> tuple[Role, .
         term = text[term_start:term_end]
         if any(mark in term for mark in "。？！"):
             return None
+        # A constituent that swallows a が/は-marked phrase (<noun>が<noun>) is two constituents; this char scan cannot split them.
+        if any(item.start >= term_start and item.end <= term_end and item.token.feature.pos1 == "助詞"
+               and item.token.surface in ("が", "は") for item in ctx.tokens):
+            return None
         span = Span(ctx.sentence_span.source, ctx.sentence_span.start + term_start,
                     ctx.sentence_span.start + term_end, term)
         roles.append(Role(name, term, span, "literal"))

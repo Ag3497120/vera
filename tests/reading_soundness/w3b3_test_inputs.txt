@@ -1,0 +1,49 @@
+# W3-b3: sentences the tests use that are not rows of the frozen data (so the placement fixture holds their words). One per line; '#' lines are comments.
+# not cuts / not listed forms
+弟と兄が来た。
+駅から兄が来た。
+東京なら兄が来る。
+兄が来てから弟が帰った。
+兄が本を読んでいる。
+だから兄が来た。
+兄が来たのに、弟が帰った。
+兄が来るために、弟が帰った。
+兄が来るように、弟が帰った。
+兄が来た後に弟が帰った。
+# uniqueness examples (the three of K116 and one with a topic in the relative clause)
+兄が買った本を弟が読んだ。
+兄が駅で買った本を読んだ。
+駅で兄が本を買ったので、弟が喜んだ。
+兄は母が作った料理を食べた。
+# the misreads of the base entry (single clauses) placed in a clause of a connective sentence
+兄が本を読んでいないので、弟が歌を歌った。
+兄が来たので、弟が本を読んでいない。
+兄が手紙を書けたので、弟が歌を歌った。
+兄が来たので、弟が話せた。
+兄が来たので、弟が窓を開けるな。
+兄が来たから、弟が窓を開けて。
+# subject fill by the topic
+兄は本を読んだので、歌を歌った。
+兄が本を読んだので、歌を歌った。
+兄は本を読んだが、母が歌を歌った。
+兄は来たので、母は帰った。
+兄は本を読みながら、歌を歌った。
+兄は来ると、弟が帰る。
+# English: the eleven sentences of W1-a4 (the English path is not changed)
+The man carefully did not open the box.
+The teacher did not open the window quickly.
+The boy did not quickly open the window.
+The teacher did not answer quickly, so the student left.
+But the teacher called the doctor, the student slept.
+The teacher asked if the student slept.
+The teacher checked if the student slept.
+The boy wondered if the girl left.
+The boy cooked dinner, so the girl washed the dishes.
+The man fixed the car, but the woman cooked dinner.
+The teacher did not open the window because the student slept.
+# the base misreads of single sentences (not the new path's; the tests check that they are still the base's output)
+母が料理を作れ。
+料理を作れ。
+窓を開けるな。
+窓を開けて。
+だから兄が歩いた。

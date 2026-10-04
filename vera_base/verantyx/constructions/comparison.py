@@ -74,9 +74,17 @@ def _dimension_bounds(text: str, start: int, end: int, pred_start: int,
     while dimension.endswith(("が", "は", "の")):
         dimension = dimension[:-1].rstrip()
     dim_start = start + left
-    if dimension:
+    if dimension and _names_a_dimension(dimension):
         return dim_start, dim_start + len(dimension), dimension
     return pred_start, pred_end, lemma
+
+
+def _names_a_dimension(phrase: str) -> bool:
+    """The words between より/ほど and the adjective name the dimension (背, 人口, 体重) only when they end in a noun. A degree
+    adverb (ずっと, もっと, かなり) or an adverbial form (大幅に) is not a dimension: then the adjective itself is."""
+    from ..typed_edges import _tagger
+    content = [w for w in _tagger()(phrase) if w.feature.pos1 not in ("助詞", "補助記号", "記号")]
+    return bool(content) and content[-1].feature.pos1 in ("名詞", "代名詞")
 
 
 def _trim_end(text: str) -> int:

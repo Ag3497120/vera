@@ -5,13 +5,19 @@ meaning-assets alias and sense indexes can narrow that list and name why a
 term is present, but a shelf redirect is never an adopted project alias.
 Only an exact frame term, an active testimony alias, or two agreeing closed
 choice asks can resolve an option.  Every other case escalates.
+
+An optional ``chooser`` (``verantyx.llm_choice.LLMChooser``) can be passed, or
+set on the frame as ``vocab_chooser``.  It is never used by default.  With a
+chooser the candidates are narrowed by role (only terms that can be an option
+answer), a single candidate is still asked twice, and an adopted mapping is
+recorded as non-evidence testimony that cites its ledger decision.
 """
 from __future__ import annotations
 
 import hashlib
 import sqlite3
 import unicodedata
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any, Literal, Mapping, Optional
 
 from . import memory_frame
@@ -20,6 +26,19 @@ from .memory_frame import WriteRejected, normalize_np
 
 ResolutionStatus = Literal["EXACT", "ALIAS", "ADOPTED", "ESCALATE"]
 _UNSET = object()
+
+# Which (record kind, slot) pairs can be the target of an agent option mapping.
+# ``conductor.ProjectFrame._answer_choice`` compares an option's canonical term
+# with POLICY.answer (backed by a DECISION), and only for these three question
+# kinds.  Every other question kind has no option-mapping role.
+_OPTION_SLOT_ROLES = frozenset({("DECISION", "choice"), ("POLICY", "answer")})
+_OPTION_ROLES: dict[str, frozenset] = {
+    "CHOICE": _OPTION_SLOT_ROLES,
+    "DESIGN_PREFERENCE": _OPTION_SLOT_ROLES,
+    "FEATURE_SELECTION": _OPTION_SLOT_ROLES,
+}
+LLM_CHOICE_BY = "llm-choice"
+LLM_MAPPING_TYPE = "LLM_TESTIMONY_MAPPING"
 
 
 @dataclass(frozen=True)
@@ -44,6 +63,12 @@ class VocabularyResolution:
     source_refs: tuple[str, ...] = ()
     asset_status: tuple[str, ...] = ()
     reason: str = ""
+    support: str = ""            # "frame" (exact) or "testimony" (alias / adopted)
+    outcome: str = ""            # typed outcome of the LLM path, "" when it was not used
+    ledger_ids: tuple[str, ...] = ()
+    chooser_source: str = ""     # "argument" / "frame" / "" (no chooser)
+    question_kind: str = ""
+    question_kind_source: str = ""   # "explicit" / "classified" / ""
 
 
 def _key(value: str) -> str:
@@ -90,8 +115,10 @@ class ConductorVocabulary:
         *,
         aliases: Any = _UNSET,
         senses: Any = _UNSET,
+        chooser: Any = None,
     ):
         self.frame = frame
+        self._chooser = chooser
         self._aliases = aliases
         self._senses = senses
         self._asset_errors: dict[str, str] = {}
@@ -99,6 +126,15 @@ class ConductorVocabulary:
     @property
     def memory(self) -> Any:
         return self.frame.memory
+
+    def effective_chooser(self) -> tuple[Any, str]:
+        """(chooser, source).  ``(None, "")`` is the default: no model is ever asked."""
+        if self._chooser is not None:
+            return self._chooser, "argument"
+        framed = getattr(self.frame, "vocab_chooser", None)
+        if framed is not None:
+            return framed, "frame"
+        return None, ""
 
     def _load(self, name: str) -> Any:
         attr = "_" + name
@@ -152,6 +188,28 @@ class ConductorVocabulary:
                 if rid:
                     terms[key][1].append(rid)
         return {key: (value, _unique(ids)) for key, (value, ids) in terms.items()}
+
+    def _frame_term_roles(self) -> dict[str, set[tuple[str, str]]]:
+        """Normalized term -> the (record kind, slot) pairs it occupies in the active frame."""
+        roles: dict[str, set[tuple[str, str]]] = {}
+        for record in self._active_records():
+            if record.get("kind") == "ALIAS":
+                continue
+            kind = str(record.get("kind", ""))
+            for slot, value in record.get("slots", {}).items():
+                if isinstance(value, str) and value.strip():
+                    key = _key(value)
+                    if key:
+                        roles.setdefault(key, set()).add((kind, str(slot)))
+        return roles
+
+    def role_candidates(self, surface: str, question_kind: str) -> tuple[VocabularyCandidate, ...]:
+        """``candidates()`` narrowed to terms whose frame role can answer this question kind."""
+        allowed = _OPTION_ROLES.get(question_kind, frozenset())
+        if not allowed:
+            return ()
+        roles = self._frame_term_roles()
+        return tuple(c for c in self.candidates(surface) if roles.get(_key(c.term), set()) & allowed)
 
     def frame_terms(self) -> tuple[str, ...]:
         """Return the frame's canonical terms in stable display order."""
@@ -247,8 +305,12 @@ class ConductorVocabulary:
             surface, "ALIAS", target[0], record_ids=_unique(r.get("id") for r in active),
             source_refs=("frame:ALIAS testimony",), asset_status=self._asset_status()), True
 
-    def resolve(self, surface: str, context: str = "") -> VocabularyResolution:
+    def resolve(self, surface: str, context: str = "", *, question_kind: Optional[str] = None) -> VocabularyResolution:
         """Resolve one option using exact match, adopted alias, then closed choice."""
+        return self._resolve(surface, context, question_kind, None)
+
+    def _resolve(self, surface: str, context: str, question_kind: Optional[str],
+                 options: Optional[list[str]]) -> VocabularyResolution:
         raw = surface.strip() if isinstance(surface, str) else ""
         statuses = self._asset_status()
         if not raw:
@@ -261,10 +323,12 @@ class ConductorVocabulary:
             ids = exact[1]
             candidate = VocabularyCandidate(exact[0], ids)
             return VocabularyResolution(raw, "EXACT", exact[0], (candidate,), ids,
-                                         asset_status=statuses)
+                                         asset_status=statuses, support="frame")
 
         prior, found = self._matching_alias(raw)
         if found:
+            if prior.status == "ALIAS":
+                prior = replace(prior, support="testimony")
             return prior  # active or attempted testimony always precedes another ask
 
         candidates = self.candidates(raw)
@@ -272,6 +336,10 @@ class ConductorVocabulary:
         if not candidates:
             return VocabularyResolution(raw, "ESCALATE", asset_status=statuses,
                                         reason="no frame terms match the attested lexical entry")
+        chooser, chooser_source = self.effective_chooser()
+        if chooser is not None:
+            return self._resolve_with_chooser(raw, context, question_kind, options, chooser, chooser_source,
+                                              statuses)
         resolver = getattr(self.memory, "resolver", None)
         if resolver is None:
             return VocabularyResolution(raw, "ESCALATE", candidates=candidates,
@@ -303,9 +371,74 @@ class ConductorVocabulary:
                                     (record["id"],),
                                     _unique(ref for c in candidates for ref in c.lexical_refs), statuses)
 
-    def resolve_options(self, options: list[str], context: str = "") -> tuple[VocabularyResolution, ...]:
+    def resolve_options(self, options: list[str], context: str = "", *,
+                        question_kind: Optional[str] = None) -> tuple[VocabularyResolution, ...]:
         """Annotate each supplied option; this method never selects an option."""
-        return tuple(self.resolve(option, context) for option in options)
+        return tuple(self._resolve(option, context, question_kind, list(options)) for option in options)
+
+    def _resolve_with_chooser(self, raw: str, context: str, question_kind: Optional[str],
+                              options: Optional[list[str]], chooser: Any, chooser_source: str,
+                              statuses: tuple[str, ...]) -> VocabularyResolution:
+        """Opt-in path: role-narrowed candidates, then an LLM closed choice (testimony, not evidence)."""
+        from .llm_choice import ChoiceCandidate
+
+        if question_kind is not None:
+            kind, kind_source = str(question_kind), "explicit"
+        else:
+            from .conductor import classify_question
+
+            kind, kind_source = classify_question(context, options), "classified"
+        meta = dict(asset_status=statuses, chooser_source=chooser_source, question_kind=kind,
+                    question_kind_source=kind_source)
+        candidates = self.role_candidates(raw, kind)
+        if not candidates:
+            why = ("question kind has no option-mapping role" if kind not in _OPTION_ROLES
+                   else "no frame term in an option-answer role matches the attested lexical entry")
+            return VocabularyResolution(raw, "ESCALATE", reason=why, outcome="NO_ROLE_CANDIDATES", **meta)
+
+        refs = _unique(ref for c in candidates for ref in c.lexical_refs)
+        sentences = {str(r.get("id", "")): str(r.get("sentence", "")) for r in self._active_records()}
+        asked = [ChoiceCandidate(c.term, tuple(s for s in (sentences.get(i, "") for i in c.frame_record_ids) if s))
+                 for c in candidates]
+        decision = chooser.choose(raw, asked, question=context)
+        ledger_ids = tuple(x for x in (decision.decision_id, *decision.ask_ids, decision.reuse_decision_id) if x)
+
+        if decision.status == "ADOPTED":
+            witness = {
+                "kind": "testimony", "by": LLM_CHOICE_BY, "scope": "agent-option", "word": raw,
+                "asks": [dict(a) for a in decision.asks], "support": "testimony",
+                "protocol": "llm_choice/v1", "counts_as_evidence": False, "mapping_type": LLM_MAPPING_TYPE,
+                "ledger_decision_id": decision.decision_id,
+                "candidate_terms": [c.term for c in candidates],
+                "vocabulary_refs": list(refs),
+                "frame_record_ids": list(_unique(rid for c in candidates for rid in c.frame_record_ids)),
+            }
+            record = self.adopt_alias(raw, str(decision.choice), witness=witness)
+            return VocabularyResolution(
+                raw, "ADOPTED", str(decision.choice), candidates, (record["id"],), refs, statuses,
+                support="testimony", outcome="LLM_ADOPTED_CACHED" if decision.cached else "LLM_ADOPTED",
+                ledger_ids=ledger_ids, chooser_source=chooser_source, question_kind=kind,
+                question_kind_source=kind_source)
+
+        reason = f"{decision.status}: {decision.reason}" + (f" ({decision.detail})" if decision.detail else "")
+        if decision.status == "ABSTAINED":
+            # An abstention is a recorded attempt; a failure or refusal is not (it must stay retryable).
+            self._append_llm_alias_event(raw, decision, candidates)
+        return VocabularyResolution(raw, "ESCALATE", candidates=candidates, source_refs=refs, reason=reason,
+                                    outcome=f"LLM_{decision.status}:{decision.reason}", ledger_ids=ledger_ids,
+                                    **meta)
+
+    def _append_llm_alias_event(self, surface: str, decision: Any,
+                                candidates: tuple[VocabularyCandidate, ...]) -> None:
+        self.memory._append({
+            "op": "alias", "scope": "agent-option", "word": surface, "choice": None,
+            "status": "NONE" if decision.reason == "NONE_SELECTED" else "UNRESOLVED",
+            "asks": [dict(a) for a in decision.asks], "by": LLM_CHOICE_BY, "support": "testimony",
+            "candidate_terms": [c.term for c in candidates],
+            "vocabulary_refs": list(_unique(ref for c in candidates for ref in c.lexical_refs)),
+            "record_id": None, "ledger_decision_id": decision.decision_id, "reason": decision.reason,
+            "ts": self.memory.now(),
+        })
 
     def adopt_alias(
         self,
@@ -336,6 +469,8 @@ class ConductorVocabulary:
         by = str(witness.get("by", ""))
         if by == "llm-closed-choice":
             self._validate_closed_choice(witness, target[0])
+        elif by == LLM_CHOICE_BY:
+            self._validate_llm_choice(witness, raw, target[0])
         elif not by.startswith("human:"):
             raise WriteRejected("alias adoption must cite closed-choice asks or an identified human")
 
@@ -355,17 +490,39 @@ class ConductorVocabulary:
         provenance = dict(witness)
         provenance.update({"kind": "testimony", "scope": "agent-option", "word": raw,
                            "support": "testimony", "canonical": target[0]})
+        if by == LLM_CHOICE_BY:
+            # typed as constructed testimony whatever the caller wrote
+            provenance.update({"counts_as_evidence": False, "mapping_type": LLM_MAPPING_TYPE})
         record = self.memory.write("ALIAS", "vocabulary testimony", witness=provenance,
                                    supersedes=supersedes, subject=alias_key, value=target[0])
-        self.memory._append({
+        event = {
             "op": "alias", "scope": "agent-option", "word": raw,
             "choice": target[0], "status": "ADOPT", "asks": provenance.get("asks", []),
             "by": by, "support": "testimony",
             "candidate_terms": list(provenance.get("candidate_terms", [target[0]])),
             "vocabulary_refs": list(provenance.get("vocabulary_refs", [])),
             "record_id": record["id"], "supersedes": supersedes, "ts": self.memory.now(),
-        })
+        }
+        if "ledger_decision_id" in provenance:
+            event["ledger_decision_id"] = provenance["ledger_decision_id"]
+            event["mapping_type"] = provenance.get("mapping_type")
+            event["counts_as_evidence"] = False
+        self.memory._append(event)
         return record
+
+    def _validate_llm_choice(self, witness: Mapping[str, Any], word: str, canonical: str) -> None:
+        """An ``llm-choice`` witness is only as good as the ledger decision it cites."""
+        chooser, _source = self.effective_chooser()
+        ledger = getattr(chooser, "ledger", None)
+        verify = getattr(ledger, "verify_adoption", None)
+        if verify is None:
+            raise WriteRejected("llm-choice testimony needs a chooser with a ledger to check it against")
+        decision_id = witness.get("ledger_decision_id")
+        terms = witness.get("candidate_terms")
+        if not isinstance(decision_id, str) or not decision_id or not isinstance(terms, (list, tuple)) or not terms:
+            raise WriteRejected("llm-choice testimony must cite a ledger decision and its candidate terms")
+        if not verify(decision_id, word, canonical, list(terms)):
+            raise WriteRejected("the ledger holds no ADOPTED decision matching this word, choice and candidates")
 
     @staticmethod
     def _validate_closed_choice(witness: Mapping[str, Any], canonical: str) -> None:

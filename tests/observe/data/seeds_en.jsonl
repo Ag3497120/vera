@@ -1,0 +1,18 @@
+{"id": "E01", "text": "The pilot landed the plane.", "tags": ["simple", "past"], "topic": "aviation", "note": "pair with E02"}
+{"id": "E02", "text": "The captain landed the plane.", "tags": ["simple", "past", "pair:agent"], "topic": "aviation", "note": "E01 with another agent"}
+{"id": "E03", "text": "The librarian lent the student a dictionary.", "tags": ["transfer", "past"], "topic": "library", "note": ""}
+{"id": "E04", "text": "The librarian did not lend the student a dictionary.", "tags": ["transfer", "negation"], "topic": "library", "note": "E03 negated"}
+{"id": "E05", "text": "The chef cooked the soup.", "tags": ["simple", "past"], "topic": "kitchen", "note": ""}
+{"id": "E06", "text": "The farmer harvested the corn.", "tags": ["simple", "past"], "topic": "farm", "note": ""}
+{"id": "E07", "text": "The sailor tied the rope.", "tags": ["simple", "past"], "topic": "sea", "note": ""}
+{"id": "E08", "text": "The painter sold the customer a picture.", "tags": ["transfer", "past"], "topic": "art", "note": "pair with E09"}
+{"id": "E09", "text": "The sculptor sold the customer a picture.", "tags": ["transfer", "past", "pair:agent"], "topic": "art", "note": "E08 with another agent"}
+{"id": "E10", "text": "The plumber repaired the pipe.", "tags": ["simple", "past"], "topic": "trade", "note": ""}
+{"id": "E11", "text": "The pupils sang.", "tags": ["intransitive"], "topic": "school", "note": "may not be read"}
+{"id": "E12", "text": "Hello there.", "tags": ["unreadable", "greeting"], "topic": "greeting", "note": "not a proposition"}
+{"id": "E13", "text": "It might rain tomorrow.", "tags": ["unreadable", "modality"], "topic": "weather", "note": "not read"}
+{"id": "E14", "text": "The clerk handed the visitor a pass.", "tags": ["transfer", "past"], "topic": "office", "note": ""}
+{"id": "E15", "text": "The banker did not sign the contract.", "tags": ["simple", "negation"], "topic": "bank", "note": ""}
+{"id": "E16", "text": "The gardener planted a tree.", "tags": ["simple", "past"], "topic": "garden", "note": ""}
+{"id": "E17", "text": "The gardener planted trees in the garden.", "tags": ["place", "past"], "topic": "garden", "note": "prepositional place; may not be read"}
+{"id": "E18", "text": "If it rains, the match is cancelled.", "tags": ["unreadable", "condition"], "topic": "sport", "note": "two clauses; not read"}

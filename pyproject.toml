@@ -9,17 +9,19 @@ description = "Vera base for Japanese: a chat and checker with no weights (rules
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
-dependencies = ["fugashi>=1.3", "unidic-lite>=1.0.8"]
+dependencies = ["fugashi>=1.5,<2", "unidic-lite==1.0.8"]
 
 [project.urls]
 Homepage = "https://github.com/Ag3497120/vera"
 
 [project.scripts]
+vera = "verantyx.cli:main"
+vera-chat = "vera_base.chat_entry:main"
 vera-server = "vera_base.server:main"
 vera-bot = "vera_base.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["vera_base*"]
+include = ["vera_base*", "verantyx"]
 
 [tool.setuptools.package-data]
 "vera_base" = ["data/*.json"]

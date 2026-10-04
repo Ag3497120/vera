@@ -1,0 +1,82 @@
+{
+ "stages": {
+  "inputs": {
+   "date": "2026-10-03 12:38:40 +0900",
+   "note": "文・配置・台帳・コーパスの元・視点（観測器には 1 度も通していない。読解器も種の文には通していない）",
+   "files": {
+    "seeds_ja.jsonl": "6ba72c13e41f6359fd993f9f23df2b968146af96e72a7e0510317a199546d7eb",
+    "seeds_en.jsonl": "b54358ece802f6a6df4765b216178c8070bd3e9e454cc754c7f0b4b73a62feb8",
+    "placement.json": "2f4d02280c04bf0a1e1f671bdfc7d7aa9a6ec45834ec404a152c933ce313d435",
+    "corpus_root/out/sentences.jsonl": "d54c6afedde13a904268cf2eb109106e2e7a4457ae47e87f1bcbed2d6e53cd80",
+    "viewpoints.jsonl": "ae65b5747424585dbb3abb5c42df7d1b5a863e31347ec97e7895333e510f4bb4",
+    "ledgers/L01.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ledgers/L02.jsonl": "0361720f68ed855eb4b7dbca0a9ac8222eb1b4651e930d221e80d322e64469c3",
+    "ledgers/L03.jsonl": "83af75e3f7dae953c4a2ab14138802aa4a584f92bad03201ce4c46ab8239772f",
+    "ledgers/L04.jsonl": "b434d8e700f1befffd15d76df20e511c2e0d4efe2fb1dc8ef0b7f61b88e5ff9e",
+    "ledgers/L05.jsonl": "380b650687932161a74cb8d3dbe4938b68b6b946e1b1f1f8af73a913a33e6019",
+    "ledgers/L06.jsonl": "68be31e0407e7a504da209cd1cf808702971287144d82b4c7d35215512d561fb",
+    "ledgers/L07.jsonl": "fbf9bf2ffeb3cdf7d5e6629cbaf57d17d0004c2770f78069f3516ada2f8eaff2",
+    "ledgers/L08.jsonl": "413089bf98e9cd1bed5246ef7f61defa27d7d1dcf53f689ce8748804c821193f",
+    "ledgers/L09.jsonl": "a358fd5b27d87eb5b82bfbd9bd7118ca29819b1827892fe16bde3708e6a117bd",
+    "ledgers/L10.jsonl": "be6f5501756db83cf789acbe0442545f7754983adb4faa6add49ce08989ae86b"
+   }
+  },
+  "inputs_add1": {
+   "date": "2026-10-03 12:39:30 +0900",
+   "note": "視点の追記（文は 1 つも足していない）。読解器の通し（reader_seed_obs.jsonl, 12:39:02）で J08・J10・J11・J12・J25 が「で」の曖昧で読めないと分かったので、読める J09 と E08 を錨にしたケースを足した。期待はまだ書いていない。",
+   "files": {
+    "viewpoints_add1.jsonl": "df25d2119ae528710ace8ef85a9caccea2a5aaf3ee69979df6fb9671facd4307"
+   }
+  },
+  "expected": {
+   "date": "2026-10-03 12:41:30 +0900",
+   "note": "期待を規則・凍結した入力・読解器の出力（reader_seed_obs.jsonl）から書いた。観測器の出力は 1 度も見ていない。",
+   "files": {
+    "expected.jsonl": "53535687564321a95dddb803c2c63d06b4a864eabb9ecad8d51d288a4a7b04c6",
+    "expected_add1.jsonl": "dfadcedb907710b13aa3a25a6f3fd20cbaf6ac0e6f9754e7d5e3865508f746af",
+    "make_expected.py": "f53c959e04b17cf9e6a8658699629b322c9ce0e9290b9fd937fbd089b6f95ccf"
+   }
+  },
+  "first_observation": {
+   "date": "2026-10-03 12:44:44 +0900",
+   "note": "凍結データに観測器を初めて通した時刻（期待・入力の凍結のあと）",
+   "files": {}
+  },
+  "disagreements": {
+   "date": "2026-10-03 12:45:10 +0900",
+   "note": "最初の観測と期待の食い違い（94 ケース中 3 ケース・4 件）。期待は直していない。",
+   "files": {
+    "disagreements.json": "e884be6fd3dbce401cea627bbb2ec74b8b3d3766335f57094fe47e051092618b"
+   }
+  },
+  "disagreements_o4": {
+   "date": "2026-10-03 12:47:46 +0900",
+   "note": "O4 の期待の旗と測定の食い違い（3 行）。期待は直していない。",
+   "files": {
+    "disagreements_o4.json": "a6f13ab5cafcb3525a8772bf51a35363b29ff360afaee63c9404ce1cd04d5a9b"
+   }
+  },
+  "inputs_r2": {
+   "date": "2026-10-03 13:19:40 +0900",
+   "note": "round 2: two ledgers and three viewpoints for the rule of change record 3 (observer not run under the new rule; the observer was last run under the old rule at 12:47)",
+   "files": {
+    "ledgers/L11.jsonl": "2f7c08ad84c045ff9fb2c31e47dd1b8b6f8b5fc6a347cd385062683b80cb0258",
+    "ledgers/L12.jsonl": "50dd99de7641694170912c2e8d4877824240996f78314efe4066f6aaa1e8c6cd",
+    "viewpoints_r2.jsonl": "f4f3873c2516485d66b0ddd67a5f765696cdc8d9f9ec53c39b716ea0c82c8beb"
+   }
+  },
+  "expected_r2": {
+   "date": "2026-10-03 13:19:43 +0900",
+   "note": "round 2: expectations written by hand-rule (make_expected_r2.py) for the six O4 rows (they supersede the TURNS rows of expected.jsonl) and LG11 LG12 LG13, before the observer ran under the changed definition of U. The observer's output was not looked at.",
+   "files": {
+    "expected_r2.jsonl": "0672383e62f40a1d67032bc3030a41a19c30e40a36dd7e36a049ee3fb342f42e",
+    "make_expected_r2.py": "580880926b0210295bcda2c7d9a025cee8fe5f356b16e2f2f6261eaffcfe6bfc"
+   }
+  },
+  "first_observation_r2": {
+   "date": "2026-10-03 13:21:27 +0900",
+   "note": "round 2: the observer is run on the frozen r2 inputs and expectations under the changed definition of U for the first time (the code had been edited just before; one earlier CLI call with no ledger, for the zero-count list of realization refusals, does not touch the ledger rule)",
+   "files": {}
+  }
+ }
+}

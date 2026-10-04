@@ -1,0 +1,14 @@
+{
+ "frozen_at": "2026-10-04 03:25:36 +0900",
+ "reason": "round 2 (M1): written predicate forms; written and frozen before the rule was built and before any run",
+ "files": {
+  "extra2/build_extra2.py": "5c5003b4aeb38fa22d6c7116254d6e183b3797808bcbb7448fccb41fec0d5933",
+  "extra2/check_extra2.py": "89f5c070507872fceff3b64eb9ed636ed3c26c9ebcb0b911e4d8593b4b65c5a8",
+  "extra2/docs/X01.txt": "1a97f887555b50e7dd35c2969d99f5b19f1e35d5608c8725fe74c33ed96a48bb",
+  "extra2/docs/X02.txt": "c0d819fdac59fa5c1db5aec6591bad43e9e12ac4db38ef2c5d642b6b171b92a4",
+  "extra2/docs/X03.txt": "e8794ecc9d8270d1a3a0d6b7011febb8b49400b4eb6bd7f1bd99c72d95d5f380",
+  "extra2/docs/X04.txt": "0d49cf45fe212ccce32a808e3d6c6f4de23cf5763bf8fd9ed7ef1e40b0c8d8f6",
+  "extra2/placement_extra2.json": "bf9944d8ad16d8f9216cd97c9a62f5332460e5eb417fb82f94220bebb9236426",
+  "extra2/questions.jsonl": "a78048c41d3c3b6f3e7e298f2dcb84f58c5bb74526fb4c2e6eae2bef00da8bbc"
+ }
+}

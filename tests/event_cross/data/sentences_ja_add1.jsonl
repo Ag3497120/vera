@@ -1,0 +1,21 @@
+{"id": "ja-083", "text": "医者が看護師に指示を出した。", "tags": ["simple", "giving"], "topic": "medical"}
+{"id": "ja-084", "text": "農家が客に卵を売った。", "tags": ["simple", "giving"], "topic": "farming"}
+{"id": "ja-085", "text": "先生が学生に本を貸した。", "tags": ["simple", "giving"], "topic": "school"}
+{"id": "ja-086", "text": "店長が店員に鍵を渡した。", "tags": ["simple", "giving"], "topic": "shopping"}
+{"id": "ja-087", "text": "兄が弟に消しゴムをあげた。", "tags": ["simple", "giving"], "topic": "housework"}
+{"id": "ja-088", "text": "運転手は乗客に切符を渡さなかった。", "tags": ["negation", "giving"], "topic": "transport"}
+{"id": "ja-089", "text": "職人は木を切らなかった。", "tags": ["negation", "simple"], "topic": "construction"}
+{"id": "ja-090", "text": "母は魚を焼かなかった。", "tags": ["negation", "simple"], "topic": "cooking"}
+{"id": "ja-091", "text": "看護師は患者の熱を測らなかった。", "tags": ["negation", "simple"], "topic": "medical"}
+{"id": "ja-092", "text": "学生は宿題を忘れなかった。", "tags": ["negation", "simple"], "topic": "school"}
+{"id": "ja-093", "text": "飛行機は電車より速い。", "tags": ["comparison"], "topic": "transport"}
+{"id": "ja-094", "text": "この橋はあの橋より長い。", "tags": ["comparison"], "topic": "construction"}
+{"id": "ja-095", "text": "海は川より広い。", "tags": ["comparison"], "topic": "weather"}
+{"id": "ja-096", "text": "新しい工場は古い工場より大きい。", "tags": ["comparison"], "topic": "factory"}
+{"id": "ja-097", "text": "医者が薬を配った。", "tags": ["simple"], "topic": "medical"}
+{"id": "ja-098", "text": "職人が箱を作った。", "tags": ["simple"], "topic": "factory"}
+{"id": "ja-099", "text": "店員が棚に商品を並べた。", "tags": ["simple"], "topic": "shopping"}
+{"id": "ja-100", "text": "夕方に、母が居間で手紙を読んだ。", "tags": ["fronted_time_place"], "topic": "housework"}
+{"id": "ja-101", "text": "昨日、先生が教室で地図を配った。", "tags": ["fronted_time_place"], "topic": "school"}
+{"id": "ja-102", "text": "秘書が部長に予定表を送った。", "tags": ["explain", "giving"], "topic": "office"}
+{"id": "ja-103", "text": "技術者が客にソフトを渡した。", "tags": ["explain", "giving"], "topic": "software"}

@@ -1,0 +1,7 @@
+{"id": "T7-01", "type": "T7", "text": "2025年3月5日に東京で会議が開かれた。", "gold": {"kind": "clauses", "alternatives": [[{"predicate": ["開く"], "polarity": "+", "roles": {"patient": "会議", "place": "東京", "time": "2025年3月5日"}}]]}, "note": "受身・動作主なし"}
+{"id": "T7-02", "type": "T7", "text": "今朝、妹が駅で傘を買った。", "gold": {"kind": "clauses", "alternatives": [[{"predicate": ["買う"], "polarity": "+", "roles": {"agent": "妹", "patient": "傘", "place": "駅", "time": "今朝"}}]]}, "note": ""}
+{"id": "T7-03", "type": "T7", "text": "APIサーバーがリクエストをJSONに変換した。", "gold": {"kind": "clauses", "alternatives": [[{"predicate": ["変換する"], "polarity": "+", "roles": {"agent": "APIサーバー", "patient": "リクエスト", "result": "JSON"}}]]}, "note": ""}
+{"id": "T7-04", "type": "T7", "text": "このモデルは前のモデルより速い。", "gold": {"kind": "clauses", "alternatives": [[{"predicate": ["速い"], "polarity": "+", "roles": {"entity": "このモデル", "standard": "前のモデル", "dimension": "速い", "direction": {"term": "greater"}}}]]}, "note": ""}
+{"id": "T7-05", "type": "T7", "text": "先生が生徒に作文を書かせた。", "gold": {"kind": "clauses", "alternatives": [[{"predicate": ["書く"], "polarity": "+", "roles": {"causer": "先生", "causee": "生徒", "patient": "作文"}}]]}, "note": ""}
+{"id": "T7-06", "type": "T7", "text": "彼は報告書を送らないわけではない。", "gold": {"kind": "clauses", "alternatives": [[{"predicate": ["送る"], "polarity": "+", "roles": {"agent": "彼", "patient": "報告書"}}]]}, "note": "二重否定は内側の動詞・肯定(gold_double_neg の流儀)"}
+{"id": "T7-07", "type": "T7", "text": "ありがとう。", "gold": {"kind": "none"}, "note": "挨拶は構造化しない"}
