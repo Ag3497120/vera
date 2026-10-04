@@ -11,6 +11,7 @@ import pytest
 from verantyx import cli, observe, semantic_read as S, semantic_reader as R
 from verantyx.coarse_types import NOUN_TYPES
 
+# Integration (auditor, 2026-10-04): r8 is a build artefact that only the Pro has; on a machine without it these tests are skipped as ENV_MISSING (the W5-e2/W3-b4 pattern), never failed.
 R8 = '/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/run2'
 DATA = Path(__file__).parent / 'fusion' / 'w10f04' / 'holes.jsonl'
 BASE_COMMIT = '338809e'
@@ -80,7 +81,7 @@ def test_probe_does_not_change_the_default_read():
     before = json.dumps(S.read('母が図書館へ歩いた。', placement=p), ensure_ascii=False)
     S.read_with_holes('母が図書館へ歩いた。', placement=p)
     assert json.dumps(S.read('母が図書館へ歩いた。', placement=p), ensure_ascii=False) == before
-    assert Path(R8).exists()
+    if not Path(R8).exists(): pytest.skip('ENV_MISSING[coarse placement r8/run2]')
     b = json.dumps(S.read('母が荷物を港へ押した。', placement=R8), ensure_ascii=False)
     S.read_with_holes('母が荷物を港へ押した。', placement=R8)
     assert json.dumps(S.read('母が荷物を港へ押した。', placement=R8), ensure_ascii=False) == b
@@ -125,7 +126,7 @@ def _rows():
 
 
 def test_frozen_rows_no_wrong_hole_and_expected_types_inside_the_table():
-    assert Path(R8).exists(), 'the placement r8 is the reference of this ticket'
+    if not Path(R8).exists(): pytest.skip('ENV_MISSING[coarse placement r8/run2]')       # the placement r8 is the reference of this ticket
     rows = _rows()
     assert sum(1 for r in rows if r['is_hole']) >= 30 and sum(1 for r in rows if not r['is_hole']) >= 30
     wrong, missed, outside, bad_status = [], [], [], []
@@ -170,6 +171,7 @@ def test_vera_read_without_holes_is_the_module_byte_for_byte(placement):
 
 
 def test_vera_read_holes_prints_the_holes_and_a_display(capsys):
+    if not Path(R8).exists(): pytest.skip('ENV_MISSING[coarse placement r8/run2]')
     class A:
         holes = True
         max_holes = 2
