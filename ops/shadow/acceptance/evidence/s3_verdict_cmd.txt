@@ -1,0 +1,2 @@
+answer の entry が 0 件だったため、shadow_verdict.py は 1 回も実行していない（実行したコマンドなし）。確認: grep -c '"shadow_class": "answer"' ops/shadow/acceptance/ask_log.jsonl -> 0
+r2 も同じ: grep -c '"shadow_class": "answer"' ops/shadow/acceptance/ask_log.r2.jsonl -> 0（verdict は付けていない）

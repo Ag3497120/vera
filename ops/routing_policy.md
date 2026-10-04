@@ -1,0 +1,1 @@
+推奨構成はオーナーが承認したもので、次のとおりに分業する。指示書は Opus 5.5 の medium が書く。製品の規則の実装は Sonnet 5.5 の medium が行う。builder、配置、生成、採点器など長い処理の実装は codex gpt-6-luna の max が行う。レビューは Opus 5.5 の high が行う。攻撃は codex の max が行う。コーパスと枠の生成は codex の low が行う。監査役は Fable である。

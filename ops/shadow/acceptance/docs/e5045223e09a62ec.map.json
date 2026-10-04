@@ -1,0 +1,44 @@
+[
+ {
+  "id": "plan:1",
+  "doc": "ops/decisions/basis_policy.md",
+  "section": "## オーナーの決定（2026-10-03 17:10。事前登録として扱う）",
+  "text_sha256": "0fbadb8ef272d623c066e946d03ac8582e426b6ad4139beabe03bf01d3a77369"
+ },
+ {
+  "id": "plan:2",
+  "doc": "ops/decisions/goals.md",
+  "section": "## 目的の順序（オーナーの発言 1〜10）",
+  "text_sha256": "9e5d3bf252ef535c3c2c1317f2d76a939016b7b41cf4de85f1dc756a30903648"
+ },
+ {
+  "id": "plan:3",
+  "doc": "ops/decisions/prohibitions.md",
+  "section": "## 場所と権限",
+  "text_sha256": "e9b50cf1898cf1c47399d41ed185fbe4d569354f64586f21336dc711a52695a9"
+ },
+ {
+  "id": "plan:4",
+  "doc": "ops/decisions/prohibitions.md",
+  "section": "## 守る原則（破ると不合格）",
+  "text_sha256": "30b780ec93374cfffcb09c8a9b2ad9ef9bba9748dcebc014134e5fea8ab53a47"
+ },
+ {
+  "id": "plan:5",
+  "doc": "ops/decisions/recommended_config.md",
+  "section": "## 推奨構成（オーナー承認 2026-10-04 09:40）",
+  "text_sha256": "a9d2f298121d2b97d9878abcde93c9a2b32fe405816f7c7cdc710825814bf534"
+ },
+ {
+  "id": "plan:6",
+  "doc": "ops/decisions/three_abilities.md",
+  "section": "## 3 能力の基準（オーナーの発言 4）",
+  "text_sha256": "e7800865d3253c998f4c44354566438355729633f546bd1ae1a3566765e35062"
+ },
+ {
+  "id": "plan:7",
+  "doc": "ops/decisions/three_abilities.md",
+  "section": "## 3 能力の「できた」（監査役の運用化）",
+  "text_sha256": "f3d59e1d8e100f198273a0d69d08303bd709af1d8805f869b4ee00aea637df69"
+ }
+]
