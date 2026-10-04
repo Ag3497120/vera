@@ -495,18 +495,29 @@ def test_the_wiring_the_plan_of_w3b4_stays_under_a_name_and_the_entry_calls_it_t
     assert ast.dump(base_fn) == ast.dump(now_fn)
 
 
+# Integration (auditor, 2026-10-04): the scope test attests the discipline of the W3-b6 ticket itself (its commit against its own base); on dev other tickets merged
+# after it legitimately touch other files, so it compares the ticket commit, not the working tree (the W3-b4 pattern), and is skipped where the history is absent.
+W3B6_COMMIT = 'b52bffd'
+
+
+def _has_history():
+    return subprocess.run(['git', '-C', str(TREE), 'cat-file', '-e', W3B6_COMMIT + '^{commit}'], capture_output=True).returncode == 0 and \
+        subprocess.run(['git', '-C', str(TREE), 'cat-file', '-e', BASE_COMMIT + '^{commit}'], capture_output=True).returncode == 0
+
+
+@pytest.mark.skipif(not _has_history(), reason='ENV_MISSING[git history of the ticket commit]')
 def test_the_change_is_two_insertions_in_the_reader_and_nothing_else_outside_the_allowed_paths():
-    diff = git('diff', '-U0', BASE_COMMIT, '--', 'verantyx/semantic_reader.py').splitlines()
+    diff = git('diff', '-U0', BASE_COMMIT, W3B6_COMMIT, '--', 'verantyx/semantic_reader.py').splitlines()
     assert [l for l in diff if l.startswith('-') and not l.startswith('---')] == []
     hunks = [l for l in diff if l.startswith('@@')]
     assert len(hunks) == 2 and all(re.match(r'@@ -\d+(,0)? \+\d+(,\d+)? @@', h) for h in hunks)
     # `tests/attack/w3a3/r6_48_queries.jsonl` is rewritten by an existing test of the suite while it runs (a side effect, not a change of this ticket): it is not counted
-    changed = (set(git('diff', '--name-only', BASE_COMMIT).split()) - {'tests/attack/w3a3/r6_48_queries.jsonl'}) | set(git('ls-files', '--others', '--exclude-standard').split())
+    changed = set(git('diff', '--name-only', BASE_COMMIT, W3B6_COMMIT).split()) - {'tests/attack/w3a3/r6_48_queries.jsonl'}
     for p in changed:
         assert (p == 'verantyx/semantic_reader.py' or p == 'docs/READING_SOUNDNESS.md' or p.startswith('tests/test_semantic_read_w3b6') or p.startswith('tests/reading_soundness/')
                 or p.startswith('artifacts/w3-b6/')), p
-    assert git('diff', '--name-only', BASE_COMMIT, '--', 'verantyx').split() == ['verantyx/semantic_reader.py']
-    docs_diff = git('diff', '-U0', BASE_COMMIT, '--', 'docs/READING_SOUNDNESS.md').splitlines()
+    assert git('diff', '--name-only', BASE_COMMIT, W3B6_COMMIT, '--', 'verantyx').split() == ['verantyx/semantic_reader.py']
+    docs_diff = git('diff', '-U0', BASE_COMMIT, W3B6_COMMIT, '--', 'docs/READING_SOUNDNESS.md').splitlines()
     assert [l for l in docs_diff if l.startswith('-') and not l.startswith('---')] == []
 
 
