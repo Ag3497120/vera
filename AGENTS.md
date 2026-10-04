@@ -46,3 +46,4 @@
 - **実装は codex（gpt-6-luna、effort max）** が行う。Sonnet は codex を起動して待つ運転係で、製品・テスト・docs を編集しない。
 - 攻撃役は codex（gpt-6-luna、effort max）。コーパス・枠の生成は codex **effort low**（変更なし）。
 - 2026-10-04 09:00 追記: Claude の週間上限の都合で、実装とレビューの往復は **codex（max）だけ** で回す（`codex_loop.sh`: 実装 codex → レビュー codex、承認まで最大 3 往復）。Claude は監査役（Fable）と、統合前の最終レビュー（Opus medium、1 回）だけに使う。
+- 2026-10-04 09:40（オーナー承認の推奨構成。以後の起動から）: 指示書 = Opus 5.5 **medium**／製品の規則の実装 = Sonnet 5.5 **medium**／builder・配置・生成・採点器など長い処理の実装 = codex gpt-6-luna **max**／レビュー = Opus 5.5 **high**／攻撃 = codex max／コーパス・枠の生成 = codex low。走行中の codex-only ループ（W5-f・W3-a6・W7-chat・W7-release）はそのまま完走させ、統合前に Opus high のレビューを 1 回掛ける。
