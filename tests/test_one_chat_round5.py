@@ -41,7 +41,7 @@ def test_explicit_round5_chat_uses_raw_public_api_and_displays_partial_evidence(
 
     assert result == 0
     assert seen == [("round5", RAW)]
-    assert "loaded 1 source document(s) for this session" in dialogue
+    assert "読込文書: 1件" in dialogue      # Integration (auditor, 2026-10-04): W7-chat prints the startup lines in Japanese
     assert "PARTIAL_COMPLETENESS_UNVERIFIED" in dialogue
     assert "limited_projection_equivalent=True" in dialogue
     assert "full_semantic_equivalent=未確認" in dialogue
@@ -89,7 +89,7 @@ def test_round5_documents_require_explicit_mode_and_engine_route_is_rejected(
 
 
 def test_chat_default_keeps_legacy_mode_and_raw_user_message(tmp_path, monkeypatch, capsys):
-    inputs = iter(["ミオの居室を教えてください。", "/quit"])
+    inputs = iter(["ミオの居室を教えてください。", ":quit"])      # the legacy REPL keeps :quit
     monkeypatch.setattr("verantyx.tui.read_input", lambda _prompt: next(inputs))
     monkeypatch.setattr(VeraConfig, "load",
                         classmethod(lambda _cls: VeraConfig(hf_store_repo="")))
