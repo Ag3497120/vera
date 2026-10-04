@@ -1,0 +1,2 @@
+2026-10-04 17:56:59 +0900
+2026-10-04 19:13:50 +0900  bank_freeze.r6.sha256: integration (auditor). Only tests/test_semantic_read_w3b6.py changed: the scope test compares the ticket commit b52bffd against the base 51c9693 instead of the working tree, and is skipped without git history (ENV_MISSING). No data row, expectation or product line changed.

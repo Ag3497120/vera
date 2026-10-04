@@ -1,0 +1,60 @@
+船が港に停泊した。
+  none: ABSTAIN ['SUBJECT_TYPE_UNDETERMINED:船']
+  r8:   ABSTAIN ['SUBJECT_TYPE_UNDETERMINED:船', 'PLACEMENT_ESTIMATED_GENERATED:predicate:停泊する']
+  trigger(w3b1,w3b2)=(U,U) w3b1=PLACEMENT_ESTIMATED_GENERATED:predicate:停泊する w3b2=PLACEMENT_ESTIMATED_GENERATED:predicate:停泊する
+住民が警察に通報した。
+  none: READ [('通報する', {'agent': '住民', 'recipient': '警察'})]
+  r8:   READ [('通報する', {'agent': '住民', 'recipient': '警察'})]
+  trigger(w3b1,w3b2)=(None,None) w3b1=None w3b2=None
+社員が上司に連絡した。
+  none: READ [('連絡する', {'agent': '社員', 'recipient': '上司'})]
+  r8:   READ [('連絡する', {'agent': '社員', 'recipient': '上司'})]
+  trigger(w3b1,w3b2)=(None,None) w3b1=None w3b2=None
+大工が金槌で板を打った。
+  none: ABSTAIN ['NO_SUPPORTED_CLAUSE']
+  r8:   ABSTAIN ['NO_SUPPORTED_CLAUSE']
+  trigger(w3b1,w3b2)=(None,U3) w3b1=None w3b2=PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で
+妹が地震で驚いた。
+  none: ABSTAIN ['NO_SUPPORTED_CLAUSE']
+  r8:   ABSTAIN ['NO_SUPPORTED_CLAUSE']
+  trigger(w3b1,w3b2)=(None,U3) w3b1=None w3b2=PLACEMENT_PARTICLE_NOT_IN_FRAME:P_EMOTION:で
+係員が病院で書類を確認した。
+  none: READ [('確認する', {'agent': '係員', 'patient': '書類', 'place': '病院'})]
+  r8:   READ [('確認する', {'agent': '係員', 'patient': '書類', 'place': '病院'})]
+  trigger(w3b1,w3b2)=(None,None) w3b1=None w3b2=None
+先生が生徒を校庭に集めた。
+  none: ABSTAIN ['NO_SUPPORTED_CLAUSE']
+  r8:   ABSTAIN ['NO_SUPPORTED_CLAUSE', 'PLACEMENT_FRAME_NOT_READ:P_ACT']
+  trigger(w3b1,w3b2)=(U,U) w3b1=PLACEMENT_FRAME_NOT_READ:P_ACT w3b2=PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:に
+店員が商品を箱に分けた。
+  none: ABSTAIN ['NO_SUPPORTED_CLAUSE']
+  r8:   ABSTAIN ['NO_SUPPORTED_CLAUSE']
+  trigger(w3b1,w3b2)=(None,None) w3b1=None w3b2=PLACEMENT_W3B2_NOT_TRIGGERED
+店員が箱に分けた。
+  none: ABSTAIN ['NO_SUPPORTED_CLAUSE']
+  r8:   ABSTAIN ['NO_SUPPORTED_CLAUSE']
+  trigger(w3b1,w3b2)=(None,None) w3b1=None w3b2=PLACEMENT_W3B2_NOT_TRIGGERED
+店員が荷物を箱に分けた。
+  none: ABSTAIN ['NO_SUPPORTED_CLAUSE']
+  r8:   ABSTAIN ['NO_SUPPORTED_CLAUSE']
+  trigger(w3b1,w3b2)=(None,None) w3b1=None w3b2=PLACEMENT_W3B2_NOT_TRIGGERED
+店員が商品を箱へ分けた。
+  none: ABSTAIN ['RECIPIENT_TYPE_UNDETERMINED:分ける']
+  r8:   ABSTAIN ['RECIPIENT_TYPE_UNDETERMINED:分ける', 'PLACEMENT_ESTIMATED_GENERATED:predicate:分ける']
+  trigger(w3b1,w3b2)=(U,U) w3b1=PLACEMENT_ESTIMATED_GENERATED:predicate:分ける w3b2=PLACEMENT_ESTIMATED_GENERATED:predicate:分ける
+店員が商品を箱で分けた。
+  none: ABSTAIN ['NO_SUPPORTED_CLAUSE']
+  r8:   ABSTAIN ['NO_SUPPORTED_CLAUSE']
+  trigger(w3b1,w3b2)=(None,U3) w3b1=None w3b2=PLACEMENT_ESTIMATED_GENERATED:predicate:分ける
+先生が生徒をグループに分けた。
+  none: READ [('分ける', {'agent': '先生', 'patient': '生徒', 'result': 'グループ'})]
+  r8:   READ [('分ける', {'agent': '先生', 'patient': '生徒', 'result': 'グループ'})]
+  trigger(w3b1,w3b2)=(None,None) w3b1=None w3b2=None
+友人が駅で待った。
+  none: READ [('待つ', {'agent': '友人', 'place': '駅'})]
+  r8:   READ [('待つ', {'agent': '友人', 'place': '駅'})]
+  trigger(w3b1,w3b2)=(None,None) w3b1=None w3b2=None
+業者が倉庫から工場へ荷物を運んだ。
+  none: READ [('運ぶ', {'agent': '業者', 'patient': '荷物', 'goal': '工場', 'source': '倉庫'})]
+  r8:   READ [('運ぶ', {'agent': '業者', 'patient': '荷物', 'goal': '工場', 'source': '倉庫'})]
+  trigger(w3b1,w3b2)=(None,None) w3b1=None w3b2=None

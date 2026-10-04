@@ -1,0 +1,520 @@
+....FFF..F.FFFFFFFFFFFFFFFFFFFFFFFF.FFFFF..FFFFFF                        [100%]
+=================================== FAILURES ===================================
+_____ test_no_row_is_misread_and_every_row_does_what_the_registration_says _____
+
+    def test_no_row_is_misread_and_every_row_does_what_the_registration_says():
+        recs, problems = records()
+        bad = [(i, [k for k, ok in x['checks'].items() if not ok], x['diag'], x['plan'], x['path']) for i, x in recs.items() if not all(x['checks'].values())]
+>       assert problems.get('misread', 0) == 0 and problems.get('incomplete', 0) == 0 and problems.get('UNJUDGED', 0) == 0, problems
+E       AssertionError: {'mismatch_entry': 25, 'mismatch_diag': 80, 'mismatch_plan': 84, 'mismatch_path': 24, ...}
+E       assert (2 == 0)
+E        +  where 2 = <built-in method get of dict object at 0x11ad69900>('misread', 0)
+E        +    where <built-in method get of dict object at 0x11ad69900> = {'mismatch_entry': 25, 'mismatch_diag': 80, 'mismatch_plan': 84, 'mismatch_path': 24, ...}.get
+
+tests/test_semantic_read_w3b6.py:161: AssertionError
+_ test_the_rows_that_are_read_are_judged_correct_and_a_read_row_never_reads_less_or_more_than_expected _
+
+    def test_the_rows_that_are_read_are_judged_correct_and_a_read_row_never_reads_less_or_more_than_expected():
+        recs, _ = records()
+        for r in DATA:
+            x = recs[r['id']]
+>           if r['behavior'] == 'read': assert x['entry'] == 'read' and x['verdict'] == 'correct', (r['id'], x)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: ('W3B6-N2-R-001', {'id': 'W3B6-N2-R-001', 'input': '船が港に停泊した。', 'rule': 'K273', 'entry_expect': 'read', ...})
+E           assert ('abstain' == 'read'
+E             
+E             - read
+E             + abstain)
+
+tests/test_semantic_read_w3b6.py:169: AssertionError
+___ test_a_row_the_frame_reads_is_read_by_stage_r_and_says_so_in_role_basis ____
+
+    def test_a_row_the_frame_reads_is_read_by_stage_r_and_says_so_in_role_basis():
+        recs, _ = records()
+        stage_r = [r for r in DATA if r['path'] == 'R']
+        assert len(stage_r) >= 20
+        for r in stage_r:
+            x = recs[r['id']]
+>           assert x['entry'] == 'read' and x['path'] == 'R' and x['diag'] == 'READ', r['id']
+E           AssertionError: W3B6-N2-R-001
+E           assert ('abstain' == 'read'
+E             
+E             - read
+E             + abstain)
+
+tests/test_semantic_read_w3b6.py:179: AssertionError
+_ test_the_diagnosis_of_a_status_that_is_not_confirmed_names_the_status_and_a_missing_key_gives_the_reason_of_the_base _
+
+    def test_the_diagnosis_of_a_status_that_is_not_confirmed_names_the_status_and_a_missing_key_gives_the_reason_of_the_base():
+        for r in DATA:
+            pred = next(s for s in r['placement'].values() if s.get('namespace') == 'P')
+            st = pred.get('role_frame_status', 'ABSENT')
+            if st in ('ESTIMATED', 'NO_ROLE_FRAME') and pred.get('role_frame') is None and r['path'] in ('U', 'U3'):
+>               assert explain(r)['w3b2'] == 'ROLE_FRAME_NOT_CONFIRMED:' + st, r['id']
+E               AssertionError: W3B6-K270-A-001
+E               assert 'PLACEMENT_PA...FRAME:P_ACT:で' == 'ROLE_FRAME_N...MED:ESTIMATED'
+E                 
+E                 - ROLE_FRAME_NOT_CONFIRMED:ESTIMATED
+E                 + PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で
+
+tests/test_semantic_read_w3b6.py:217: AssertionError
+_ test_a_word_of_relative_position_is_refused_both_as_direct_and_as_split_with_a_frame_that_declares_place _
+
+    def test_a_word_of_relative_position_is_refused_both_as_direct_and_as_split_with_a_frame_that_declares_place():
+        rows = [r for r in DATA if r['id'].startswith('W3B6-K272-A-1') or r['id'].startswith('W3B6-K272-A-2')]
+        assert len(rows) == 13
+        recs, _ = records()
+        sources = collections.Counter()
+        for r in rows:
+            x = recs[r['id']]
+            assert x['entry'] == 'abstain'
+            spec = r['placement'].get('右') or r['placement'].get('左')
+            assert 'RELATIVE_POSITION' in spec['top']
+>           if spec['top'] == ['RELATIVE_POSITION']: assert x['diag'] == 'ROLE_FRAME_FILLER_RELATIVE_POSITION:' + r['particle'], r['id']
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: W3B6-K272-A-1D01
+E           assert 'PLACEMENT_PA...FRAME:P_ACT:で' == 'ROLE_FRAME_F...VE_POSITION:で'
+E             
+E             - ROLE_FRAME_FILLER_RELATIVE_POSITION:で
+E             + PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で
+
+tests/test_semantic_read_w3b6.py:254: AssertionError
+_ test_relative_position_is_not_a_type_a_frame_may_declare_and_a_frame_that_writes_it_is_invalid _
+
+    def test_relative_position_is_not_a_type_a_frame_may_declare_and_a_frame_that_writes_it_is_invalid():
+        assert 'RELATIVE_POSITION' not in CT.NOUN_TYPES
+        r = BY_ID['W3B6-K273-A-905']
+        assert 'RELATIVE_POSITION' in json.dumps(r['placement'], ensure_ascii=False)
+>       assert explain(r)['w3b2'] == 'ROLE_FRAME_INVALID:TYPE_NOT_NOUN:で:RELATIVE_POSITION'
+E       AssertionError: assert 'PLACEMENT_PA...FRAME:P_ACT:で' == 'ROLE_FRAME_I...TIVE_POSITION'
+E         
+E         - ROLE_FRAME_INVALID:TYPE_NOT_NOUN:で:RELATIVE_POSITION
+E         + PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で
+
+tests/test_semantic_read_w3b6.py:271: AssertionError
+_ test_a_frame_that_breaks_the_contract_refuses_the_whole_sentence_with_the_reason_of_the_problem _
+
+    def test_a_frame_that_breaks_the_contract_refuses_the_whole_sentence_with_the_reason_of_the_problem():
+        rows = [r for r in DATA if r['id'].startswith('W3B6-K273-A-9') and r['id'] != 'W3B6-K273-A-914']
+        assert len(rows) >= 8
+        recs, _ = records()
+        for r in rows:
+            x = recs[r['id']]
+>           assert x['entry'] == 'abstain' and x['diag'].startswith('ROLE_FRAME_INVALID:'), r['id']
+E           AssertionError: W3B6-K273-A-901
+E           assert ('abstain' == 'abstain'
+E             
+E               abstain and False)
+E            +  where False = <built-in method startswith of str object at 0x12abd8350>('ROLE_FRAME_INVALID:')
+E            +    where <built-in method startswith of str object at 0x12abd8350> = 'PLACEMENT_PARTICLE_NOT_IN_FRAME:P_ACT:で'.startswith
+
+tests/test_semantic_read_w3b6.py:283: AssertionError
+_ test_a_frame_that_breaks_the_contract_refuses_even_a_sentence_the_table_reads _
+
+    def test_a_frame_that_breaks_the_contract_refuses_even_a_sentence_the_table_reads():
+        r = json.loads(json.dumps(BY_ID['W3B6-K274-R-002']))        # the table reads it (W3-b4); a broken frame on the predicate stops it
+        pred_word = next(w for w, s in r['placement'].items() if s.get('namespace') == 'P')
+        r['placement'][pred_word]['role_frame'] = {'は': [{'role': 'agent', 'types': ['PERSON']}]}
+        assert read(BY_ID['W3B6-K274-R-002'])['readable']
+        out = read(r)
+>       assert not out['readable']
+E       assert not True
+
+tests/test_semantic_read_w3b6.py:293: AssertionError
+_____________ test_predicate_role_frame_reads_a_well_formed_frame ______________
+
+    def test_predicate_role_frame_reads_a_well_formed_frame():
+>       kind, info = R.predicate_role_frame(_answer('CONFIRMED', GOOD))
+                     ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:311: AttributeError
+____ test_predicate_role_frame_names_each_problem[<lambda>-STATUS_UNKNOWN] _____
+
+make = <function <lambda> at 0x11acdede0>, problem = 'STATUS_UNKNOWN'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+__ test_predicate_role_frame_names_each_problem[<lambda>-MISSING_ROLE_FRAME] ___
+
+make = <function <lambda> at 0x11acdee80>, problem = 'MISSING_ROLE_FRAME'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+_ test_predicate_role_frame_names_each_problem[<lambda>-FRAME_WITHOUT_CONFIRMED0] _
+
+make = <function <lambda> at 0x11acdef20>, problem = 'FRAME_WITHOUT_CONFIRMED'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+_ test_predicate_role_frame_names_each_problem[<lambda>-FRAME_WITHOUT_CONFIRMED1] _
+
+make = <function <lambda> at 0x11acdefc0>, problem = 'FRAME_WITHOUT_CONFIRMED'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+____ test_predicate_role_frame_names_each_problem[<lambda>-NOT_A_MAPPING0] _____
+
+make = <function <lambda> at 0x11acdf060>, problem = 'NOT_A_MAPPING'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+____ test_predicate_role_frame_names_each_problem[<lambda>-NOT_A_MAPPING1] _____
+
+make = <function <lambda> at 0x11acdf100>, problem = 'NOT_A_MAPPING'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+____ test_predicate_role_frame_names_each_problem[<lambda>-NOT_A_MAPPING2] _____
+
+make = <function <lambda> at 0x11acdf1a0>, problem = 'NOT_A_MAPPING'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+_ test_predicate_role_frame_names_each_problem[<lambda>-PARTICLE_NOT_CASE:\u306f] _
+
+make = <function <lambda> at 0x11acdf240>, problem = 'PARTICLE_NOT_CASE:は'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+_ test_predicate_role_frame_names_each_problem[<lambda>-ENTRIES_NOT_A_LIST:\u3067_0] _
+
+make = <function <lambda> at 0x11acdf2e0>, problem = 'ENTRIES_NOT_A_LIST:で'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+_ test_predicate_role_frame_names_each_problem[<lambda>-ENTRIES_NOT_A_LIST:\u3067_1] _
+
+make = <function <lambda> at 0x11acdf380>, problem = 'ENTRIES_NOT_A_LIST:で'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+_ test_predicate_role_frame_names_each_problem[<lambda>-ENTRY_NOT_A_MAPPING:\u3067] _
+
+make = <function <lambda> at 0x11acdf420>, problem = 'ENTRY_NOT_A_MAPPING:で'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+__ test_predicate_role_frame_names_each_problem[<lambda>-ENTRY_KEYS:\u3067_0] __
+
+make = <function <lambda> at 0x11acdf4c0>, problem = 'ENTRY_KEYS:で'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+__ test_predicate_role_frame_names_each_problem[<lambda>-ENTRY_KEYS:\u3067_1] __
+
+make = <function <lambda> at 0x11acdf560>, problem = 'ENTRY_KEYS:で'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+_ test_predicate_role_frame_names_each_problem[<lambda>-ROLE_NOT_IN_CONVENTION:\u3067:tool] _
+
+make = <function <lambda> at 0x11acdf600>
+problem = 'ROLE_NOT_IN_CONVENTION:で:tool'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+_ test_predicate_role_frame_names_each_problem[<lambda>-TYPES_NOT_A_LIST:\u3067_0] _
+
+make = <function <lambda> at 0x11acdf6a0>, problem = 'TYPES_NOT_A_LIST:で'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+_ test_predicate_role_frame_names_each_problem[<lambda>-TYPES_NOT_A_LIST:\u3067_1] _
+
+make = <function <lambda> at 0x11acdf740>, problem = 'TYPES_NOT_A_LIST:で'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+_ test_predicate_role_frame_names_each_problem[<lambda>-TYPES_NOT_A_LIST:\u3067_2] _
+
+make = <function <lambda> at 0x11acdf7e0>, problem = 'TYPES_NOT_A_LIST:で'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+_ test_predicate_role_frame_names_each_problem[<lambda>-TYPE_NOT_NOUN:\u3067:RELATIVE_POSITION] _
+
+make = <function <lambda> at 0x11acdf880>
+problem = 'TYPE_NOT_NOUN:で:RELATIVE_POSITION'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+_ test_predicate_role_frame_names_each_problem[<lambda>-ROLE_DUPLICATED:\u3067:instrument] _
+
+make = <function <lambda> at 0x11acdf920>
+problem = 'ROLE_DUPLICATED:で:instrument'
+
+    @pytest.mark.parametrize('make,problem', PROBLEMS)
+    def test_predicate_role_frame_names_each_problem(make, problem):
+>       assert R.predicate_role_frame(make()) == (None, 'ROLE_FRAME_INVALID:' + problem)
+               ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'predicate_role_frame'
+
+tests/test_semantic_read_w3b6.py:349: AttributeError
+_ test_the_reader_of_the_contract_reads_two_keys_and_the_code_never_names_role_frame_unconfirmed _
+
+    def test_the_reader_of_the_contract_reads_two_keys_and_the_code_never_names_role_frame_unconfirmed():
+        src = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
+>       i = src.index('# W3-b6:')
+            ^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: substring not found
+
+tests/test_semantic_read_w3b6.py:360: ValueError
+___ test_the_reasons_and_the_kinds_of_the_docs_are_the_constants_of_the_code ___
+
+    def test_the_reasons_and_the_kinds_of_the_docs_are_the_constants_of_the_code():
+>       assert [r[0] for r in block('w3b6_reasons')] == list(R.W3B6_REASON_NAMES)
+                                                             ^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'W3B6_REASON_NAMES'
+
+tests/test_semantic_read_w3b6.py:385: AttributeError
+_ test_the_reason_names_of_stage_r_are_the_closed_list_and_the_gate_reasons_are_reused_by_name _
+
+    def test_the_reason_names_of_stage_r_are_the_closed_list_and_the_gate_reasons_are_reused_by_name():
+        src = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
+>       section = src[src.index('# W3-b6:'):]
+                      ^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: substring not found
+
+tests/test_semantic_read_w3b6.py:409: ValueError
+_______ test_the_particles_stage_r_reads_are_the_seven_without_ga_and_wo _______
+
+    def test_the_particles_stage_r_reads_are_the_seven_without_ga_and_wo():
+        src = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
+>       section = src[src.index('# W3-b6:'):]
+                      ^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: substring not found
+
+tests/test_semantic_read_w3b6.py:422: ValueError
+_ test_the_table_is_never_overwritten_the_output_of_a_sentence_the_table_reads_is_the_output_of_the_base _
+
+    def test_the_table_is_never_overwritten_the_output_of_a_sentence_the_table_reads_is_the_output_of_the_base():
+        r = BY_ID['W3B6-K274-R-002']
+        out = read(r)
+        assert out['readable'] and out['clauses'][0]['roles'] == {'agent': '兄', 'patient': '箱', 'goal': '工場', 'source': '倉庫'}
+        typed, why = R.typed_plan_u_w3b2_ja.ungated(*_plan_args(r), **_plan_kwargs(r))
+        assert why is None and all(not v.startswith('role_frame:') for v in typed['role_basis'].values())
+>       body = R.typed_plan_u_w3b4_body_ja(*_plan_args(r)[:3], **_plan_kwargs(r))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.semantic_reader' has no attribute 'typed_plan_u_w3b4_body_ja'
+
+tests/test_semantic_read_w3b6.py:434: AttributeError
+_ test_the_wiring_the_plan_of_w3b4_stays_under_a_name_and_the_entry_calls_it_then_stage_r _
+
+    def test_the_wiring_the_plan_of_w3b4_stays_under_a_name_and_the_entry_calls_it_then_stage_r():
+>       assert R.typed_plan_u_w3b4_ja.__wrapped__ is R.typed_plan_u_w3b4_body_ja
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute '__wrapped__'
+
+tests/test_semantic_read_w3b6.py:471: AttributeError
+_ test_the_change_is_two_insertions_in_the_reader_and_nothing_else_outside_the_allowed_paths _
+
+    def test_the_change_is_two_insertions_in_the_reader_and_nothing_else_outside_the_allowed_paths():
+        diff = git('diff', '-U0', BASE_COMMIT, '--', 'verantyx/semantic_reader.py').splitlines()
+        assert [l for l in diff if l.startswith('-') and not l.startswith('---')] == []
+        hunks = [l for l in diff if l.startswith('@@')]
+>       assert len(hunks) == 2 and all(re.match(r'@@ -\d+(,0)? \+\d+(,\d+)? @@', h) for h in hunks)
+E       assert (0 == 2)
+E        +  where 0 = len([])
+
+tests/test_semantic_read_w3b6.py:485: AssertionError
+_ test_the_top_level_definitions_of_the_base_are_unchanged_and_the_new_constants_are_the_two_registered _
+
+    def test_the_top_level_definitions_of_the_base_are_unchanged_and_the_new_constants_are_the_two_registered():
+        base = ast.parse(git('show', '%s:verantyx/semantic_reader.py' % BASE_COMMIT))
+        now = ast.parse((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8'))
+    
+        def defs(tree):
+            out = {}
+            for n in tree.body:
+                if isinstance(n, (ast.FunctionDef, ast.ClassDef)) and n.name not in out: out[n.name] = ast.dump(n)
+            return out
+        b, n = defs(base), defs(now)
+        assert {k: v for k, v in n.items() if k in b} == b
+>       assert set(n) - set(b) == {'_typed_plan_u_w3b6_ja', 'predicate_role_frame', 'typed_plan_u_w3b6_stage_r_ja'} | {k for k in n if k.startswith('_w3b6_')}
+E       AssertionError: assert set() == {'_typed_plan...6_stage_r_ja'}
+E         
+E         Extra items in the right set:
+E         'predicate_role_frame'
+E         '_typed_plan_u_w3b6_ja'
+E         'typed_plan_u_w3b6_stage_r_ja'
+E         Use -v to get more diff
+
+tests/test_semantic_read_w3b6.py:506: AssertionError
+_ test_the_end_of_the_reader_has_no_word_of_a_sentence_and_assigns_none_of_the_names_of_the_entry _
+
+    def test_the_end_of_the_reader_has_no_word_of_a_sentence_and_assigns_none_of_the_names_of_the_entry():
+        src = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
+>       i = src.index('# W3-b6:')
+            ^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: substring not found
+
+tests/test_semantic_read_w3b6.py:524: ValueError
+_______________ test_the_data_and_the_tests_are_the_frozen_ones ________________
+
+    def test_the_data_and_the_tests_are_the_frozen_ones():
+        freezes = sorted(A.glob('bank_freeze*.sha256'))       # the first is the freeze before the implementation; a later one (bank_freeze.r2.sha256 ...) records a change declared in docs 10I
+>       assert freezes and freezes[0].name == 'bank_freeze.sha256'
+E       assert ([])
+
+tests/test_semantic_read_w3b6.py:537: AssertionError
+_ test_the_prereg_is_before_the_freeze_and_the_freeze_before_the_implementation _
+
+    def test_the_prereg_is_before_the_freeze_and_the_freeze_before_the_implementation():
+        pre = (A / 'prereg_time.txt').read_text(encoding='utf-8').split('\n')[0]
+>       frz = (A / 'bank_freeze_time.txt').read_text(encoding='utf-8').strip()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_semantic_read_w3b6.py:547: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/pathlib.py:1058: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b6-S/artifacts/w3-b6/bank_freeze_time.txt')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/motonisihikoudai/Projects/vera-impl/wt/W3-b6-S/artifacts/w3-b6/bank_freeze_time.txt'
+
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/pathlib.py:1044: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w3b6.py::test_no_row_is_misread_and_every_row_does_what_the_registration_says
+FAILED tests/test_semantic_read_w3b6.py::test_the_rows_that_are_read_are_judged_correct_and_a_read_row_never_reads_less_or_more_than_expected
+FAILED tests/test_semantic_read_w3b6.py::test_a_row_the_frame_reads_is_read_by_stage_r_and_says_so_in_role_basis
+FAILED tests/test_semantic_read_w3b6.py::test_the_diagnosis_of_a_status_that_is_not_confirmed_names_the_status_and_a_missing_key_gives_the_reason_of_the_base
+FAILED tests/test_semantic_read_w3b6.py::test_a_word_of_relative_position_is_refused_both_as_direct_and_as_split_with_a_frame_that_declares_place
+FAILED tests/test_semantic_read_w3b6.py::test_relative_position_is_not_a_type_a_frame_may_declare_and_a_frame_that_writes_it_is_invalid
+FAILED tests/test_semantic_read_w3b6.py::test_a_frame_that_breaks_the_contract_refuses_the_whole_sentence_with_the_reason_of_the_problem
+FAILED tests/test_semantic_read_w3b6.py::test_a_frame_that_breaks_the_contract_refuses_even_a_sentence_the_table_reads
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_reads_a_well_formed_frame
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-STATUS_UNKNOWN]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-MISSING_ROLE_FRAME]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-FRAME_WITHOUT_CONFIRMED0]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-FRAME_WITHOUT_CONFIRMED1]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-NOT_A_MAPPING0]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-NOT_A_MAPPING1]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-NOT_A_MAPPING2]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-PARTICLE_NOT_CASE:\u306f]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-ENTRIES_NOT_A_LIST:\u3067_0]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-ENTRIES_NOT_A_LIST:\u3067_1]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-ENTRY_NOT_A_MAPPING:\u3067]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-ENTRY_KEYS:\u3067_0]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-ENTRY_KEYS:\u3067_1]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-ROLE_NOT_IN_CONVENTION:\u3067:tool]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-TYPES_NOT_A_LIST:\u3067_0]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-TYPES_NOT_A_LIST:\u3067_1]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-TYPES_NOT_A_LIST:\u3067_2]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-TYPE_NOT_NOUN:\u3067:RELATIVE_POSITION]
+FAILED tests/test_semantic_read_w3b6.py::test_predicate_role_frame_names_each_problem[<lambda>-ROLE_DUPLICATED:\u3067:instrument]
+FAILED tests/test_semantic_read_w3b6.py::test_the_reader_of_the_contract_reads_two_keys_and_the_code_never_names_role_frame_unconfirmed
+FAILED tests/test_semantic_read_w3b6.py::test_the_reasons_and_the_kinds_of_the_docs_are_the_constants_of_the_code
+FAILED tests/test_semantic_read_w3b6.py::test_the_reason_names_of_stage_r_are_the_closed_list_and_the_gate_reasons_are_reused_by_name
+FAILED tests/test_semantic_read_w3b6.py::test_the_particles_stage_r_reads_are_the_seven_without_ga_and_wo
+FAILED tests/test_semantic_read_w3b6.py::test_the_table_is_never_overwritten_the_output_of_a_sentence_the_table_reads_is_the_output_of_the_base
+FAILED tests/test_semantic_read_w3b6.py::test_the_wiring_the_plan_of_w3b4_stays_under_a_name_and_the_entry_calls_it_then_stage_r
+FAILED tests/test_semantic_read_w3b6.py::test_the_change_is_two_insertions_in_the_reader_and_nothing_else_outside_the_allowed_paths
+FAILED tests/test_semantic_read_w3b6.py::test_the_top_level_definitions_of_the_base_are_unchanged_and_the_new_constants_are_the_two_registered
+FAILED tests/test_semantic_read_w3b6.py::test_the_end_of_the_reader_has_no_word_of_a_sentence_and_assigns_none_of_the_names_of_the_entry
+FAILED tests/test_semantic_read_w3b6.py::test_the_data_and_the_tests_are_the_frozen_ones
+FAILED tests/test_semantic_read_w3b6.py::test_the_prereg_is_before_the_freeze_and_the_freeze_before_the_implementation

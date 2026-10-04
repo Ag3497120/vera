@@ -1,0 +1,9 @@
+rows=96 read=29 abstain=67 misread=0 incomplete=0 unjudged=0 mismatches={}
+read rows judged correct: 29 of 29 read
+path R rows=24 read=24
+path R-blocked rows=1 read=0
+path U rows=20 read=0
+path U3 rows=42 read=0
+path W3-b4 rows=1 read=1
+path base rows=4 read=4
+path none rows=4 read=0

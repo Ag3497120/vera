@@ -1,0 +1,63 @@
+....FF..................................F.........F                      [100%]
+=================================== FAILURES ===================================
+_____ test_no_row_is_misread_and_every_row_does_what_the_registration_says _____
+
+    def test_no_row_is_misread_and_every_row_does_what_the_registration_says():
+        recs, problems = records()
+        bad = [(i, [k for k, ok in x['checks'].items() if not ok], x['diag'], x['plan'], x['path']) for i, x in recs.items() if not all(x['checks'].values())]
+>       assert problems.get('misread', 0) == 0 and problems.get('incomplete', 0) == 0 and problems.get('UNJUDGED', 0) == 0, problems
+E       AssertionError: {'misread': 2, 'mismatch_entry': 2, 'mismatch_diag': 2, 'mismatch_plan': 2, ...}
+E       assert (2 == 0)
+E        +  where 2 = <built-in method get of dict object at 0x11b27e5c0>('misread', 0)
+E        +    where <built-in method get of dict object at 0x11b27e5c0> = {'misread': 2, 'mismatch_entry': 2, 'mismatch_diag': 2, 'mismatch_plan': 2, ...}.get
+
+tests/test_semantic_read_w3b6.py:161: AssertionError
+_ test_the_rows_that_are_read_are_judged_correct_and_a_read_row_never_reads_less_or_more_than_expected _
+
+    def test_the_rows_that_are_read_are_judged_correct_and_a_read_row_never_reads_less_or_more_than_expected():
+        recs, _ = records()
+        for r in DATA:
+            x = recs[r['id']]
+            if r['behavior'] == 'read': assert x['entry'] == 'read' and x['verdict'] == 'correct', (r['id'], x)
+>           else: assert x['entry'] == 'abstain' and x['verdict'] == 'correct', (r['id'], x)      # the judge calls a refusal of a row that must be refused `correct`
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: ('W3B6-K274-A-007', {'id': 'W3B6-K274-A-007', 'input': '姉がナイフで肉を切った。', 'rule': 'K274', 'entry_expect': 'abstain', ...})
+E           assert ('read' == 'abstain'
+E             
+E             - abstain
+E             + read)
+
+tests/test_semantic_read_w3b6.py:170: AssertionError
+_ test_a_conflict_between_the_frame_and_what_the_table_decided_refuses_the_sentence_and_never_overwrites_the_table _
+
+    def test_a_conflict_between_the_frame_and_what_the_table_decided_refuses_the_sentence_and_never_overwrites_the_table():
+        rows = [r for r in DATA if r['id'].startswith('W3B6-K274-A-')] + [BY_ID['W3B6-K271-A-007']]
+        assert len(rows) == 7                    # r2 (review r1 M1): +K274-A-007 (case B) and K274-A-008 (case A): the frame holds the type in 2 roles, none of them is the one of the table
+        recs, _ = records()
+        for r in rows:
+            x = recs[r['id']]
+>           assert x['entry'] == 'abstain' and x['diag'].startswith('ROLE_FRAME_TABLE_CONFLICT:') and x['plan'] == x['diag'], r['id']
+E           AssertionError: W3B6-K274-A-007
+E           assert ('read' == 'abstain'
+E             
+E             - abstain
+E             + read)
+
+tests/test_semantic_read_w3b6.py:434: AssertionError
+_ test_r2_a_frame_with_two_roles_for_the_type_none_of_them_the_one_of_the_table_is_a_conflict_but_one_that_includes_it_is_not _
+
+    def test_r2_a_frame_with_two_roles_for_the_type_none_of_them_the_one_of_the_table_is_a_conflict_but_one_that_includes_it_is_not():
+        a7, a8, r9 = BY_ID['W3B6-K274-A-007'], BY_ID['W3B6-K274-A-008'], BY_ID['W3B6-K274-R-009']
+>       assert explain(a7)['w3b2'] == 'ROLE_FRAME_TABLE_CONFLICT:が:agent:experiencer+patient' and not read(a7)['readable']
+E       AssertionError: assert ('READ' == 'ROLE_FRAME_T...encer+patient'
+E         
+E         - ROLE_FRAME_TABLE_CONFLICT:が:agent:experiencer+patient
+E         + READ)
+
+tests/test_semantic_read_w3b6.py:572: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w3b6.py::test_no_row_is_misread_and_every_row_does_what_the_registration_says
+FAILED tests/test_semantic_read_w3b6.py::test_the_rows_that_are_read_are_judged_correct_and_a_read_row_never_reads_less_or_more_than_expected
+FAILED tests/test_semantic_read_w3b6.py::test_a_conflict_between_the_frame_and_what_the_table_decided_refuses_the_sentence_and_never_overwrites_the_table
+FAILED tests/test_semantic_read_w3b6.py::test_r2_a_frame_with_two_roles_for_the_type_none_of_them_the_one_of_the_table_is_a_conflict_but_one_that_includes_it_is_not
+4 failed, 47 passed in 1.51s
