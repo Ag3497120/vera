@@ -1,0 +1,3 @@
+holes=32 sentences=30 adopted=0 not_adopted_by_reason={"GATE_A_NOT_PLACED": 13, "NO_CANDIDATE_PASSED": 6, "GATE_D_TIE": 12, "GATE_D_CHOICE_ABSTAINED": 1} backend_failed=0
+vera_ms p50=8.3 p95=54.2 total=466.7 | llm_ms p50=2591.7 p95=5240.3 total=88798.2
+realize_status_of_passed_words {'REFUSED': 25, 'SKIPPED_OTHER_HOLES': 9}

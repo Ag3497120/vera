@@ -1,0 +1,2743 @@
+[
+ {
+  "id": "F-ADOPT-01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "GROUP_ORG",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "GROUP_ORG": null,
+     "PLACE": "goal"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-02",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "GROUP_ORG",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "GROUP_ORG": null,
+     "PLACE": "goal"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   },
+   {
+    "word": "市役所",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_ESTIMATED_NEAR"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-03",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "皿",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNPLACED",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-04",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "本",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNPLACED",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-05",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "絵",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNPLACED",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-06",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "兄",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "NATURAL_PHENOMENON",
+     "PERSON"
+    ],
+    "role_by_type": {
+     "NATURAL_PHENOMENON": null,
+     "PERSON": "agent"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-07",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "先生",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "NATURAL_PHENOMENON",
+     "PERSON"
+    ],
+    "role_by_type": {
+     "NATURAL_PHENOMENON": null,
+     "PERSON": "agent"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-08",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "姉",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "NATURAL_PHENOMENON",
+     "PERSON"
+    ],
+    "role_by_type": {
+     "NATURAL_PHENOMENON": null,
+     "PERSON": "agent"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-09",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "港",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "GROUP_ORG",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "GROUP_ORG": null,
+     "PLACE": "goal"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-10",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "GROUP_ORG",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "GROUP_ORG": null,
+     "PLACE": "goal"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   },
+   {
+    "word": "午後",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_UNPLACED"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-11",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "弟",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "NATURAL_PHENOMENON",
+     "PERSON"
+    ],
+    "role_by_type": {
+     "NATURAL_PHENOMENON": null,
+     "PERSON": "agent"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-12",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "達成",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "EVENT_ACT",
+     "PLACE",
+     "TIME"
+    ],
+    "role_by_type": {
+     "EVENT_ACT": "patient",
+     "PLACE": null,
+     "TIME": null
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-13",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "ABSTRACT",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "ABSTRACT": null,
+     "PLACE": "place"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-14",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "論文",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNPLACED",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-15",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "妹",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "NATURAL_PHENOMENON",
+     "PERSON"
+    ],
+    "role_by_type": {
+     "NATURAL_PHENOMENON": null,
+     "PERSON": "agent"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   },
+   {
+    "word": "山田",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_MULTIPLE"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_ESTIMATED_NEAR",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "市役所",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_ESTIMATED_NEAR"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-02",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "切符",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_UNPLACED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-03",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_MULTIPLE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "手紙",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_MULTIPLE"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-04",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_DIRECT_VIA_GENERATED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "傘",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_DIRECT_VIA_GENERATED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-05",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_TYPE_NOT_EXPECTED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "母",
+    "gate": "a1",
+    "reason": "GATE_A_TYPE_NOT_EXPECTED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-06",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_TYPE_NOT_EXPECTED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "a1",
+    "reason": "GATE_A_TYPE_NOT_EXPECTED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-07",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_TYPE_NOT_EXPECTED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "先生",
+    "gate": "a1",
+    "reason": "GATE_A_TYPE_NOT_EXPECTED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-08",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_ESTIMATED_GENERATED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "昨日",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_ESTIMATED_GENERATED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-09",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_MULTIPLE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "山田",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_MULTIPLE"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-10",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_TYPE_NOT_EXPECTED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "a1",
+    "reason": "GATE_A_TYPE_NOT_EXPECTED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-11",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "午後",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_UNPLACED"
+   }
+  ]
+ },
+ {
+  "id": "F-A1-12",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_NOT_PLACED:PLACEMENT_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "荷物",
+    "gate": "a1",
+    "reason": "GATE_A_NOT_PLACED:PLACEMENT_UNPLACED"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "皿",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-02",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "本",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-03",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-04",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "先生",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-05",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-06",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "港",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-07",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "絵",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-08",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "会社",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-09",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "小説",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-10",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-A2-11",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_MISMATCH",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "a2",
+    "reason": "GATE_A_DECLARED_TYPE_MISMATCH"
+   }
+  ]
+ },
+ {
+  "id": "F-B-01",
+  "call": "gate_b",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-B-02",
+  "call": "gate_b",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-B-03",
+  "call": "gate_b",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-B-04",
+  "call": "gate_b",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-B-05",
+  "call": "gate_b",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-B-06",
+  "call": "gate_b",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-B-07",
+  "call": "gate_b",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-B-08",
+  "call": "gate_b",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-B-09",
+  "call": "gate_b",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-B-10",
+  "call": "gate_b",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-B-11",
+  "call": "gate_b",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_B_REREAD_NOT_READABLE",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-C-01",
+  "call": "gate_c",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-C-02",
+  "call": "gate_c",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-C-03",
+  "call": "gate_c",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-C-04",
+  "call": "gate_c",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-C-05",
+  "call": "gate_c",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-C-06",
+  "call": "gate_c",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-C-07",
+  "call": "gate_c",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-C-08",
+  "call": "gate_c",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-C-09",
+  "call": "gate_c",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-C-10",
+  "call": "gate_c",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-D-01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "GROUP_ORG",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "GROUP_ORG": null,
+     "PLACE": "goal"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   },
+   {
+    "word": "公園",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "GROUP_ORG",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "GROUP_ORG": null,
+     "PLACE": "goal"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-D-02",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "港",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "GROUP_ORG",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "GROUP_ORG": null,
+     "PLACE": "goal"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   },
+   {
+    "word": "山",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "GROUP_ORG",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "GROUP_ORG": null,
+     "PLACE": "goal"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-D-03",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "皿",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNPLACED",
+    "hole_word_types": [],
+    "role_by_type": {}
+   },
+   {
+    "word": "箱",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNPLACED",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-D-04",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "兄",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "NATURAL_PHENOMENON",
+     "PERSON"
+    ],
+    "role_by_type": {
+     "NATURAL_PHENOMENON": null,
+     "PERSON": "agent"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   },
+   {
+    "word": "姉",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "NATURAL_PHENOMENON",
+     "PERSON"
+    ],
+    "role_by_type": {
+     "NATURAL_PHENOMENON": null,
+     "PERSON": "agent"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-D-05",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "GROUP_ORG",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "GROUP_ORG": null,
+     "PLACE": "goal"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   },
+   {
+    "word": "港",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "GROUP_ORG",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "GROUP_ORG": null,
+     "PLACE": "goal"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-D-06",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "GROUP_ORG",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "GROUP_ORG": null,
+     "PLACE": "goal"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   },
+   {
+    "word": "川",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "GROUP_ORG",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "GROUP_ORG": null,
+     "PLACE": "goal"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-D-07",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "ABSTRACT",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "ABSTRACT": null,
+     "PLACE": "place"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   },
+   {
+    "word": "玄関",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "ABSTRACT",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "ABSTRACT": null,
+     "PLACE": "place"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-D-08",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "ABSTRACT",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "ABSTRACT": null,
+     "PLACE": "place"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   },
+   {
+    "word": "窓辺",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "ABSTRACT",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "ABSTRACT": null,
+     "PLACE": "place"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-D-09",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "ABSTRACT",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "ABSTRACT": null,
+     "PLACE": "place"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   },
+   {
+    "word": "校門",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "ABSTRACT",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "ABSTRACT": null,
+     "PLACE": "place"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-D-10",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "GROUP_ORG",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "GROUP_ORG": null,
+     "PLACE": "goal"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-D-11",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "兄",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "NATURAL_PHENOMENON",
+     "PERSON"
+    ],
+    "role_by_type": {
+     "NATURAL_PHENOMENON": null,
+     "PERSON": "agent"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-BACKEND-01",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:TIMEOUT",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-02",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:TIMEOUT",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-03",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:CONNECT_FAILED",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-04",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:CONNECT_FAILED",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-05",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:HTTP_ERROR",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-06",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:HTTP_ERROR",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-07",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:BAD_RESPONSE",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-08",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:BAD_RESPONSE",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-09",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:EMPTY_CONTENT",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-10",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:EMPTY_CONTENT",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-BACKEND-11",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "GROUP_ORG",
+     "PLACE"
+    ],
+    "role_by_type": {
+     "GROUP_ORG": null,
+     "PLACE": "goal"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-BACKEND-12",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "兄",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "NATURAL_PHENOMENON",
+     "PERSON"
+    ],
+    "role_by_type": {
+     "NATURAL_PHENOMENON": null,
+     "PERSON": "agent"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-OPEN-01",
+  "status": "NOT_ADOPTED",
+  "reason": "OPEN_DECLARATION_INVALID:NOT_JSON",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-OPEN-02",
+  "status": "NOT_ADOPTED",
+  "reason": "OPEN_DECLARATION_INVALID:TYPE_NOT_IN_ENUM",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-OPEN-03",
+  "status": "NOT_ADOPTED",
+  "reason": "OPEN_DECLARATION_INVALID:ROLE_NOT_IN_ENUM",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-OPEN-04",
+  "status": "NOT_ADOPTED",
+  "reason": "OPEN_DECLARATION_INVALID:NEAR_WORDS",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-OPEN-05",
+  "status": "NOT_ADOPTED",
+  "reason": "OPEN_DECLARATION_INVALID:KEYS",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-OPEN-06",
+  "status": "NOT_ADOPTED",
+  "reason": "OPEN_DECLARATION_INVALID:KEYS",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-NONE-01",
+  "status": "NOT_ADOPTED",
+  "reason": "NO_CANDIDATE_WORDS",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-NONE-02",
+  "status": "NOT_ADOPTED",
+  "reason": "NO_CANDIDATE_WORDS",
+  "candidate": null,
+  "gate_log": []
+ },
+ {
+  "id": "F-A3-01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "夜",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-02",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "昼",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-03",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "冬",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-04",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "秋",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-05",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "夏",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-06",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "鳥",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-07",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-08",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "鳥",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-09",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-10",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "学校",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-11",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3-12",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "小説",
+    "gate": "a3",
+    "reason": "GATE_A_DECLARED_TYPE_NOT_OF_HOLE_WORD"
+   }
+  ]
+ },
+ {
+  "id": "F-A3R-01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "夏",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "PLACE",
+     "TIME"
+    ],
+    "role_by_type": {
+     "PLACE": null,
+     "TIME": "time"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-A4U-01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "夜",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNPLACED",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-A4U-02",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "夏",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNPLACED",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-A4U-03",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "冬",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNKNOWN",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-A4U-04",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNPLACED",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-A4U-05",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNPLACED",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-A4U-06",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "港",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNPLACED",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-A4U-07",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "山",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNPLACED",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-A4U-08",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "川",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNKNOWN",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-A4U-09",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "駅",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNKNOWN",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-A4U-10",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "公園",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNKNOWN",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-A4U-11",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "兄",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNKNOWN",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-A4U-12",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "本",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNPLACED",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-A4U-13",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_HOLE_WORD_UNPLACED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "昼",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNPLACED",
+    "hole_word_types": [],
+    "role_by_type": {}
+   },
+   {
+    "word": "冬",
+    "gate": "a4",
+    "reason": "GATE_A_HOLE_WORD_UNPLACED",
+    "hole_word_state": "UNPLACED",
+    "hole_word_types": [],
+    "role_by_type": {}
+   }
+  ]
+ },
+ {
+  "id": "F-A4S-01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "夏",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "PLACE",
+     "TIME"
+    ],
+    "role_by_type": {
+     "PLACE": null,
+     "TIME": "time"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-A4S-02",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "兵士",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "PERSON",
+     "QUANTITY"
+    ],
+    "role_by_type": {
+     "PERSON": "agent",
+     "QUANTITY": null
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-A4S-03",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "夜",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "PLACE",
+     "TIME"
+    ],
+    "role_by_type": {
+     "PLACE": null,
+     "TIME": "time"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-A4S-04",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "冬",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "PLACE",
+     "TIME"
+    ],
+    "role_by_type": {
+     "PLACE": null,
+     "TIME": "time"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-A4S-05",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "夏",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "PLACE",
+     "TIME"
+    ],
+    "role_by_type": {
+     "PLACE": null,
+     "TIME": "time"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-A4S-06",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "夜",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "PLACE",
+     "TIME"
+    ],
+    "role_by_type": {
+     "PLACE": null,
+     "TIME": "time"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-A4S-07",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "冬",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "PLACE",
+     "TIME"
+    ],
+    "role_by_type": {
+     "PLACE": null,
+     "TIME": "time"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-A4S-08",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "夏",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "PLACE",
+     "TIME"
+    ],
+    "role_by_type": {
+     "PLACE": null,
+     "TIME": "time"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-A4S-09",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "夜",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "PLACE",
+     "TIME"
+    ],
+    "role_by_type": {
+     "PLACE": null,
+     "TIME": "time"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-A4S-10",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "冬",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "PLACE",
+     "TIME"
+    ],
+    "role_by_type": {
+     "PLACE": null,
+     "TIME": "time"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-A4S-11",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "夏",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "PLACE",
+     "TIME"
+    ],
+    "role_by_type": {
+     "PLACE": null,
+     "TIME": "time"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-A4S-12",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "夜",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "PLACE",
+     "TIME"
+    ],
+    "role_by_type": {
+     "PLACE": null,
+     "TIME": "time"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-A4S-13",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_A_ROLE_SPLIT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "冬",
+    "gate": "a4",
+    "reason": "GATE_A_ROLE_SPLIT",
+    "hole_word_state": "MULTIPLE",
+    "hole_word_types": [
+     "PLACE",
+     "QUANTITY",
+     "TIME"
+    ],
+    "role_by_type": {
+     "PLACE": null,
+     "QUANTITY": null,
+     "TIME": "time"
+    },
+    "split_kind": "TYPE_NOT_READ"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-N01",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "犬",
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-N02",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "兄",
+  "gate_log": [
+   {
+    "word": "兄",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-N03",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "姉",
+  "gate_log": [
+   {
+    "word": "姉",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-N04",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "猫",
+  "gate_log": [
+   {
+    "word": "猫",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-N05",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "弟",
+  "gate_log": [
+   {
+    "word": "弟",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-N06",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "先生",
+  "gate_log": [
+   {
+    "word": "先生",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-N07",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "鳥",
+  "gate_log": [
+   {
+    "word": "鳥",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-N08",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "妹",
+  "gate_log": [
+   {
+    "word": "妹",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-N09",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "犬",
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-N10",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "猫",
+  "gate_log": [
+   {
+    "word": "猫",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-N11",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "母",
+  "gate_log": [
+   {
+    "word": "母",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-ADOPT-N12",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "鳥",
+  "gate_log": [
+   {
+    "word": "鳥",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-BP-01",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "鳥",
+  "gate_log": [
+   {
+    "word": "鳥",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-BP-02",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "先生",
+  "gate_log": [
+   {
+    "word": "先生",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-BP-03",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "母",
+  "gate_log": [
+   {
+    "word": "母",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-BP-04",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "犬",
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-BP-05",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "兄",
+  "gate_log": [
+   {
+    "word": "兄",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-BP-06",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "弟",
+  "gate_log": [
+   {
+    "word": "弟",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-BP-07",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "猫",
+  "gate_log": [
+   {
+    "word": "猫",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-BP-08",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "姉",
+  "gate_log": [
+   {
+    "word": "姉",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-BP-09",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "鳥",
+  "gate_log": [
+   {
+    "word": "鳥",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-BP-10",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "犬",
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-BP-11",
+  "status": "ADOPTED",
+  "reason": "ADOPTED",
+  "candidate": "兵士",
+  "gate_log": [
+   {
+    "word": "兵士",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-D-N01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_TIE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   },
+   {
+    "word": "猫",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-D-N02",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_TIE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "兄",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   },
+   {
+    "word": "姉",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-D-N03",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_TIE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "鳥",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   },
+   {
+    "word": "犬",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-D-N04",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_TIE",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "弟",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   },
+   {
+    "word": "妹",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-D-N05",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_CHOICE_ABSTAINED:NONE_SELECTED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "先生",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-D-N06",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_CHOICE_ABSTAINED:NONE_SELECTED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "鳥",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-D-N07",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_CHOICE_ABSTAINED:NONE_SELECTED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "妹",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-D-N08",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_CHOICE_NOT_PASSING",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   },
+   {
+    "word": "猫",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-D-N09",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_CHOICE_NOT_PASSING",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "兄",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   },
+   {
+    "word": "姉",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-D-N10",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_D_CHOICE_NOT_PASSING",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "鳥",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   },
+   {
+    "word": "犬",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-C-N01",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   }
+  ]
+ },
+ {
+  "id": "F-C-N02",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "姉",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   }
+  ]
+ },
+ {
+  "id": "F-C-N03",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "猫",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   }
+  ]
+ },
+ {
+  "id": "F-C-N04",
+  "status": "NOT_ADOPTED",
+  "reason": "GATE_C_CONTRADICTS_RECORD:rec0",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "鳥",
+    "gate": "c",
+    "reason": "GATE_C_CONTRADICTS_RECORD:rec0"
+   }
+  ]
+ },
+ {
+  "id": "F-BACKEND-N01",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:TIMEOUT",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "犬",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ },
+ {
+  "id": "F-BACKEND-N02",
+  "status": "BACKEND_FAILED",
+  "reason": "BACKEND_FAILED:CONNECT_FAILED",
+  "candidate": null,
+  "gate_log": [
+   {
+    "word": "姉",
+    "gate": "passed",
+    "reason": null,
+    "realize": "SKIPPED_OTHER_HOLES",
+    "c_note": null,
+    "a4_role": "agent",
+    "b_prime": "PASSED"
+   }
+  ]
+ }
+]
