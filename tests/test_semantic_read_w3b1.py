@@ -129,7 +129,8 @@ def test_the_expected_types_of_a_role_are_those_of_the_event_cross_table():
     assert seen == {role for role in docs_roles if role in EC.EXPECTED_TYPES}
     assert seen == {'agent', 'place', 'time'}      # `recipient` was in the registered table and was returned to "not read" (K62 table change record 1)
     patient = [exp for rows in R.TYPED_FRAMES.values() for role, parts, exp, kind in rows if role == 'patient'][0]
-    assert set(patient) == set(CT.NOUN_TYPES) - {'TIME', 'QUANTITY', 'PLACE'} and len(patient) == 14
+    # Integration of W3-a6 (auditor, 2026-10-05): NOUN_TYPES gained RELATIVE_POSITION (18); the frame types of the reader's rows stay the 17 of FRAME_NOUN_TYPES
+    assert set(patient) == set(CT.FRAME_NOUN_TYPES) - {'TIME', 'QUANTITY', 'PLACE'} and len(patient) == 14
     assert set(EC.NOUN_TYPE_IDS) == set(CT.NOUN_TYPES)
 
 

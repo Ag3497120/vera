@@ -62,7 +62,8 @@ RELATION_HEAD_REASONS: Tuple[str, ...] = ('not_a_mapping', 'keys', 'type_not_rel
 # because this module does not import the placement code (it asks a PlacementLookup). Not used to reject a type id the lookup returns.
 NOUN_TYPE_IDS: Tuple[str, ...] = (
     'PERSON', 'GROUP_ORG', 'ANIMAL', 'PLANT', 'ARTIFACT', 'SUBSTANCE_FOOD', 'PLACE', 'TIME', 'QUANTITY', 'EVENT_ACT', 'STATE_PROPERTY',
-    'ABSTRACT', 'INFO_LANGUAGE', 'BODY_PART', 'NATURAL_PHENOMENON', 'WORK', 'IDENTIFIER')
+    'ABSTRACT', 'INFO_LANGUAGE', 'BODY_PART', 'NATURAL_PHENOMENON', 'WORK', 'IDENTIFIER',
+    'RELATIVE_POSITION')      # appended 2026-10-05 at the integration of W3-a6 (the 18th noun type; the list is append-only, see above)
 
 # The registered table (docs/EVENT_CROSS.md, section "事前登録"): the type the convention says a role holds. Roles that the convention does
 # not tie to a type are NOT in the table.

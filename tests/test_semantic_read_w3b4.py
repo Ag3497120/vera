@@ -145,7 +145,8 @@ def test_two_rows_of_one_type_and_one_particle_have_disjoint_expected_types_so_t
 
 
 def test_the_roles_that_the_event_cross_types_have_the_same_types_and_patient_is_the_fourteen_types():
-    fourteen = tuple(t for t in CT.NOUN_TYPES if t not in ('TIME', 'QUANTITY', 'PLACE'))
+    # Integration of W3-a6 (auditor, 2026-10-05): NOUN_TYPES gained RELATIVE_POSITION (18); the frame types of the reader's rows stay the 17 of FRAME_NOUN_TYPES
+    fourteen = tuple(t for t in CT.FRAME_NOUN_TYPES if t not in ('TIME', 'QUANTITY', 'PLACE'))
     assert len(fourteen) == 14
     for t, rows in R.typed_frames_v2().items():
         for role, parts, exp, kind in rows:
