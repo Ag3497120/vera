@@ -1,0 +1,2 @@
+{'verantyx.coarse_types': '/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/verantyx/coarse_types.py', 'verantyx.coarse_place': '/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/verantyx/coarse_place.py', 'tools.gen_coarse_evidence': '/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/tools/gen_coarse_evidence.py', 'tools.build_coarse_placement': '/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/tools/build_coarse_placement.py'}
+outside: []

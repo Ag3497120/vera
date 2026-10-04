@@ -1,0 +1,569 @@
+{
+  "generated_at_utc": "2026-10-04T14:10:04+00:00",
+  "ticket": "W3-a6 r9",
+  "ledger_policy": "gen_role_v2 と gen_ntype は既存の統合JSONL・summaryのみ読取。台帳再実行・読取・変更なし。",
+  "placement_run1": {
+    "path": "build/coarse-W3a/full/r9/run1",
+    "source_role_generation": "gen_role",
+    "build_started_at_utc": "2026-10-04T10:43:14Z",
+    "build_finished_at_utc": "2026-10-04T10:47:43Z",
+    "duration_sec": 268.2,
+    "content_sha256": "72945370d9299600e1beca212fc2ed286940506d47fdd0fb50e403ee7bacb5a9",
+    "placement_file_sha256": "f653064eef49236dd4bf996f56e619d107e38f18e75835c64da4723c05b0e7f7",
+    "manifest_file_sha256": "2436d45914420853c840a2cca82fcb9a947f795de8a898ade1b33664192ffd53",
+    "config_role_frame_min_sources": 1,
+    "headwords": 1766903,
+    "evidence": {
+      "alias": 303605,
+      "definition": 568904,
+      "definition_recovered": 8273,
+      "frame": 1090,
+      "gen_definition": 19526,
+      "gen_frame": 8030,
+      "gen_frame_slot": 24894,
+      "gen_relpos": 292,
+      "hearst": 16818,
+      "ns_vote": 1136,
+      "paren_alias": 98078,
+      "pos_class": 8125,
+      "role": 401243,
+      "role_distribution": 252778,
+      "sahen": 56890,
+      "seed": 656,
+      "slot": 139626,
+      "title_qualifier": 38056
+    },
+    "role_frames": {
+      "batches_failed": 0,
+      "batches_ok": 208,
+      "batches_total": 208,
+      "calls": 208,
+      "dropped_by_reason": {
+        "abstained": 242,
+        "dup_word": 0,
+        "excluded_term": 0,
+        "invalid": 0,
+        "not_in_material": 0,
+        "ns_not_predicate": 0
+      },
+      "effort": "low",
+      "generation_summary": {
+        "batches_failed": 0,
+        "batches_ok": 208,
+        "batches_total": 208,
+        "calls": 208,
+        "effort": "low",
+        "kind": "role",
+        "model": "gpt-6-luna",
+        "sum_call_sec": 8263.8,
+        "wall_sec": 2083.9,
+        "words_abstained": 242,
+        "words_answered": 8266,
+        "words_dup_dropped": 0,
+        "words_foreign_dropped": 0,
+        "words_frame_dup_particle": 5,
+        "words_invalid": 8,
+        "words_missing": 32,
+        "words_requested": 8311,
+        "words_role_dup": 0,
+        "words_unavailable_total": 274
+      },
+      "generation_summary_path": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/build/coarse-W3a/full/r9/gen_role/summary.json",
+      "generation_summary_sha256": "2169d035ef0e2ccd57404fae764384b3df9b3094faf3bdfed40ac63d37987dac",
+      "lines": 8266,
+      "model": "gpt-6-luna",
+      "models": [
+        "gpt-6-luna:low"
+      ],
+      "outcomes": {
+        "CONFIRMED": 2246,
+        "ESTIMATED": 5778,
+        "confirmed_roles_by_particle": {
+          "から": 28,
+          "が": 469,
+          "で": 46,
+          "と": 35,
+          "に": 444,
+          "へ": 26,
+          "まで": 0,
+          "より": 0,
+          "を": 1426
+        },
+        "confirmed_roles_by_role": {
+          "agent": 178,
+          "attribute": 1,
+          "beneficiary": 1,
+          "cause": 18,
+          "causee": 3,
+          "causer": 0,
+          "companion": 33,
+          "entity": 289,
+          "experiencer": 9,
+          "goal": 253,
+          "instrument": 10,
+          "patient": 1385,
+          "place": 128,
+          "quotation": 9,
+          "recipient": 61,
+          "result": 15,
+          "source": 50,
+          "standard": 25,
+          "time": 3,
+          "value": 3
+        },
+        "not_in_material": 0,
+        "ns_not_predicate": 0,
+        "split": 7,
+        "unconfirmed_by_why": {
+          "NOT_BACKED": 9959,
+          "PARTLY_BACKED": 2114,
+          "SPLIT": 8
+        }
+      },
+      "path": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/build/coarse-W3a/full/r9/gen_role/role_frames.jsonl",
+      "read_sec": 0.1,
+      "rows_read": 8024,
+      "sha256": "4b82cb786dd11691f409f4926a2ccd8329060c0e628564e503945051947c9e41",
+      "sum_call_sec": 8263.8,
+      "used": 8024,
+      "wall_sec": 2083.9
+    },
+    "generated_noun_types": {
+      "batches_failed": 0,
+      "batches_ok": 69,
+      "batches_total": 69,
+      "calls": 69,
+      "dropped_by_reason": {
+        "abstained": 17,
+        "dup_word": 0,
+        "excluded_term": 0,
+        "invalid": 0,
+        "not_in_material": 0,
+        "ns_not_noun": 0
+      },
+      "effort": "low",
+      "generation_summary": {
+        "batches_failed": 0,
+        "batches_ok": 69,
+        "batches_total": 69,
+        "calls": 69,
+        "effort": "low",
+        "kind": "ntype",
+        "model": "gpt-6-luna",
+        "sum_call_sec": 1822.6,
+        "wall_sec": 461.4,
+        "words_abstained": 17,
+        "words_answered": 2721,
+        "words_dup_dropped": 0,
+        "words_foreign_dropped": 0,
+        "words_invalid": 0,
+        "words_missing": 0,
+        "words_no_type": 1,
+        "words_requested": 2721,
+        "words_unavailable_total": 17
+      },
+      "generation_summary_path": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/build/coarse-W3a/full/r9/gen_ntype/summary.json",
+      "generation_summary_sha256": "91ffd2b42ffb6429a15e6b5216162b0b698aadd31c56009044dfc79b42629ac2",
+      "lines": 2721,
+      "model": "gpt-6-luna",
+      "models": [
+        "gpt-6-luna:low"
+      ],
+      "outcomes": {
+        "GENERATED_NOT_DECIDING": 0,
+        "RELPOS_ADDED": 292,
+        "direct_relative_position": 0,
+        "not_in_material": 0,
+        "ns_not_noun": 0,
+        "relpos_declared": 292
+      },
+      "path": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/build/coarse-W3a/full/r9/gen_ntype/noun_types.jsonl",
+      "read_sec": 0.0,
+      "rows_read": 2704,
+      "sha256": "b7d616a76d7cbf3b3383cf6d22e3b0732b4abd53eca106cc16bfc002dadec698",
+      "sum_call_sec": 1822.6,
+      "used": 2704,
+      "wall_sec": 461.4
+    }
+  },
+  "placement_run2": {
+    "path": "build/coarse-W3a/full/r9/run2",
+    "source_role_generation": "gen_role_v2",
+    "build_started_at_utc": "2026-10-04T13:55:00Z",
+    "build_finished_at_utc": "2026-10-04T14:02:54Z",
+    "duration_sec": 474.0,
+    "content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+    "placement_file_sha256": "900c899eead892698af9db42649721a763ee9063d4362e65e3348703782373aa",
+    "manifest_file_sha256": "4ae28d61184b11cb0d74036dcdc3c371872f6d67b4f103cf539d3f5a09372f0c",
+    "config_role_frame_min_sources": 1,
+    "headwords": 1766903,
+    "evidence": {
+      "alias": 303605,
+      "definition": 568904,
+      "definition_recovered": 8273,
+      "frame": 1090,
+      "gen_definition": 19526,
+      "gen_frame": 8030,
+      "gen_frame_slot": 24894,
+      "gen_relpos": 292,
+      "hearst": 16818,
+      "ns_vote": 1136,
+      "paren_alias": 98078,
+      "pos_class": 8125,
+      "role": 401243,
+      "role_distribution": 252778,
+      "sahen": 56890,
+      "seed": 656,
+      "slot": 139626,
+      "title_qualifier": 38056
+    },
+    "role_frames": {
+      "batches_failed": 0,
+      "batches_ok": 208,
+      "batches_total": 208,
+      "calls": 208,
+      "dropped_by_reason": {
+        "abstained": 160,
+        "dup_word": 0,
+        "excluded_term": 0,
+        "invalid": 0,
+        "not_in_material": 0,
+        "ns_not_predicate": 0
+      },
+      "effort": "low",
+      "generation_summary": {
+        "batches_failed": 0,
+        "batches_ok": 208,
+        "batches_total": 208,
+        "calls": 208,
+        "effort": "low",
+        "kind": "role",
+        "model": "gpt-6-luna",
+        "sum_call_sec": 12327.2,
+        "wall_sec": 3109.9,
+        "words_abstained": 160,
+        "words_answered": 8255,
+        "words_dup_dropped": 0,
+        "words_foreign_dropped": 0,
+        "words_frame_dup_particle": 42,
+        "words_invalid": 13,
+        "words_missing": 1,
+        "words_requested": 8311,
+        "words_role_dup": 0,
+        "words_unavailable_total": 161
+      },
+      "generation_summary_path": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/build/coarse-W3a/full/r9/gen_role_v2/summary.json",
+      "generation_summary_sha256": "568301906e820314f15b9af0c7ec6ca69c64af774353d12037ecea9ac1d61437",
+      "lines": 8255,
+      "model": "gpt-6-luna",
+      "models": [
+        "gpt-6-luna:low"
+      ],
+      "outcomes": {
+        "CONFIRMED": 2474,
+        "ESTIMATED": 5621,
+        "confirmed_roles_by_particle": {
+          "から": 34,
+          "が": 621,
+          "で": 173,
+          "と": 45,
+          "に": 576,
+          "へ": 38,
+          "まで": 7,
+          "より": 0,
+          "を": 1432
+        },
+        "confirmed_roles_by_role": {
+          "agent": 268,
+          "attribute": 0,
+          "beneficiary": 1,
+          "cause": 40,
+          "causee": 1,
+          "causer": 0,
+          "companion": 40,
+          "entity": 344,
+          "experiencer": 15,
+          "goal": 362,
+          "instrument": 37,
+          "patient": 1391,
+          "place": 198,
+          "quotation": 10,
+          "recipient": 81,
+          "result": 27,
+          "source": 59,
+          "standard": 21,
+          "time": 31,
+          "value": 0
+        },
+        "not_in_material": 0,
+        "ns_not_predicate": 0,
+        "split": 2,
+        "unconfirmed_by_why": {
+          "NOT_BACKED": 18078,
+          "PARTLY_BACKED": 2426,
+          "SPLIT": 2
+        }
+      },
+      "path": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/build/coarse-W3a/full/r9/gen_role_v2/role_frames.jsonl",
+      "read_sec": 0.3,
+      "rows_read": 8095,
+      "sha256": "16454e075ecc296ca4e84b2d1531d7824a9b800283cc8762bd37c282ec437ee2",
+      "sum_call_sec": 12327.2,
+      "used": 8095,
+      "wall_sec": 3109.9
+    },
+    "generated_noun_types": {
+      "batches_failed": 0,
+      "batches_ok": 69,
+      "batches_total": 69,
+      "calls": 69,
+      "dropped_by_reason": {
+        "abstained": 17,
+        "dup_word": 0,
+        "excluded_term": 0,
+        "invalid": 0,
+        "not_in_material": 0,
+        "ns_not_noun": 0
+      },
+      "effort": "low",
+      "generation_summary": {
+        "batches_failed": 0,
+        "batches_ok": 69,
+        "batches_total": 69,
+        "calls": 69,
+        "effort": "low",
+        "kind": "ntype",
+        "model": "gpt-6-luna",
+        "sum_call_sec": 1822.6,
+        "wall_sec": 461.4,
+        "words_abstained": 17,
+        "words_answered": 2721,
+        "words_dup_dropped": 0,
+        "words_foreign_dropped": 0,
+        "words_invalid": 0,
+        "words_missing": 0,
+        "words_no_type": 1,
+        "words_requested": 2721,
+        "words_unavailable_total": 17
+      },
+      "generation_summary_path": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/build/coarse-W3a/full/r9/gen_ntype/summary.json",
+      "generation_summary_sha256": "91ffd2b42ffb6429a15e6b5216162b0b698aadd31c56009044dfc79b42629ac2",
+      "lines": 2721,
+      "model": "gpt-6-luna",
+      "models": [
+        "gpt-6-luna:low"
+      ],
+      "outcomes": {
+        "GENERATED_NOT_DECIDING": 0,
+        "RELPOS_ADDED": 292,
+        "direct_relative_position": 0,
+        "not_in_material": 0,
+        "ns_not_noun": 0,
+        "relpos_declared": 292
+      },
+      "path": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/build/coarse-W3a/full/r9/gen_ntype/noun_types.jsonl",
+      "read_sec": 0.1,
+      "rows_read": 2704,
+      "sha256": "b7d616a76d7cbf3b3383cf6d22e3b0732b4abd53eca106cc16bfc002dadec698",
+      "sum_call_sec": 1822.6,
+      "used": 2704,
+      "wall_sec": 461.4
+    }
+  },
+  "generation": {
+    "gen_ntype": {
+      "summary_path": "build/coarse-W3a/full/r9/gen_ntype/summary.json",
+      "summary_sha256": "91ffd2b42ffb6429a15e6b5216162b0b698aadd31c56009044dfc79b42629ac2",
+      "kind": "ntype",
+      "model": "gpt-6-luna",
+      "effort": "low",
+      "calls": 69,
+      "batches_total": 69,
+      "batches_ok": 69,
+      "batches_failed": 0,
+      "words_requested": 2721,
+      "words_answered": 2721,
+      "words_abstained": 17,
+      "words_missing": 0,
+      "words_invalid": 0,
+      "words_frame_dup_particle": null,
+      "wall_sec": 461.4,
+      "sum_call_sec": 1822.6,
+      "output_sha256": "b7d616a76d7cbf3b3383cf6d22e3b0732b4abd53eca106cc16bfc002dadec698"
+    },
+    "gen_role_run1": {
+      "summary_path": "build/coarse-W3a/full/r9/gen_role/summary.json",
+      "summary_sha256": "2169d035ef0e2ccd57404fae764384b3df9b3094faf3bdfed40ac63d37987dac",
+      "kind": "role",
+      "model": "gpt-6-luna",
+      "effort": "low",
+      "calls": 208,
+      "batches_total": 208,
+      "batches_ok": 208,
+      "batches_failed": 0,
+      "words_requested": 8311,
+      "words_answered": 8266,
+      "words_abstained": 242,
+      "words_missing": 32,
+      "words_invalid": 8,
+      "words_frame_dup_particle": 5,
+      "wall_sec": 2083.9,
+      "sum_call_sec": 8263.8,
+      "output_sha256": "4b82cb786dd11691f409f4926a2ccd8329060c0e628564e503945051947c9e41"
+    },
+    "gen_role_v2": {
+      "summary_path": "build/coarse-W3a/full/r9/gen_role_v2/summary.json",
+      "summary_sha256": "568301906e820314f15b9af0c7ec6ca69c64af774353d12037ecea9ac1d61437",
+      "kind": "role",
+      "model": "gpt-6-luna",
+      "effort": "low",
+      "calls": 208,
+      "batches_total": 208,
+      "batches_ok": 208,
+      "batches_failed": 0,
+      "words_requested": 8311,
+      "words_answered": 8255,
+      "words_abstained": 160,
+      "words_missing": 1,
+      "words_invalid": 13,
+      "words_frame_dup_particle": 42,
+      "wall_sec": 3109.9,
+      "sum_call_sec": 12327.2,
+      "output_sha256": "16454e075ecc296ca4e84b2d1531d7824a9b800283cc8762bd37c282ec437ee2"
+    }
+  },
+  "n4_d9": {
+    "selected_role_frame_min_sources": 1,
+    "n4_meets_threshold": true,
+    "confirmed_role_rows_at_selected_threshold": 21,
+    "obvious_errors_at_selected_threshold": 0,
+    "visual_labels_are_gold": false,
+    "n4_summary_sha256": "78bd9e681a10a5139c3dc1c726531647e618c52b81a7dbbd21f55d341900a1f9",
+    "visual_labels_sha256": "69e961749a54a2313e4fbda9e90fbdbbe5077b2fc3190f75954161bc9edcd714"
+  },
+  "claim_rates_by_particle": {
+    "が": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 3329,
+        "rate_pct": 40.0553
+      },
+      "v2": {
+        "claimed_words": 5036,
+        "rate_pct": 60.5944
+      },
+      "change_percentage_points": 20.539
+    },
+    "を": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 5145,
+        "rate_pct": 61.9059
+      },
+      "v2": {
+        "claimed_words": 5405,
+        "rate_pct": 65.0343
+      },
+      "change_percentage_points": 3.1284
+    },
+    "に": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 2340,
+        "rate_pct": 28.1555
+      },
+      "v2": {
+        "claimed_words": 4255,
+        "rate_pct": 51.1972
+      },
+      "change_percentage_points": 23.0418
+    },
+    "で": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 363,
+        "rate_pct": 4.3677
+      },
+      "v2": {
+        "claimed_words": 3160,
+        "rate_pct": 38.0219
+      },
+      "change_percentage_points": 33.6542
+    },
+    "へ": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 166,
+        "rate_pct": 1.9974
+      },
+      "v2": {
+        "claimed_words": 398,
+        "rate_pct": 4.7888
+      },
+      "change_percentage_points": 2.7915
+    },
+    "と": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 427,
+        "rate_pct": 5.1378
+      },
+      "v2": {
+        "claimed_words": 909,
+        "rate_pct": 10.9373
+      },
+      "change_percentage_points": 5.7995
+    },
+    "から": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 400,
+        "rate_pct": 4.8129
+      },
+      "v2": {
+        "claimed_words": 1320,
+        "rate_pct": 15.8826
+      },
+      "change_percentage_points": 11.0697
+    },
+    "まで": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 16,
+        "rate_pct": 0.1925
+      },
+      "v2": {
+        "claimed_words": 297,
+        "rate_pct": 3.5736
+      },
+      "change_percentage_points": 3.3811
+    },
+    "より": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 6,
+        "rate_pct": 0.0722
+      },
+      "v2": {
+        "claimed_words": 40,
+        "rate_pct": 0.4813
+      },
+      "change_percentage_points": 0.4091
+    }
+  },
+  "measurements": {
+    "n2_summary_sha256": "5b99ed028d27c86181feceee910e048613dc1142e0be274b69e8776a0f89c09b",
+    "n3_summary_sha256": "c1732b74804a8524e42e931d981945229fbfa6b767b5790f74503b21be4fd226",
+    "n5_summary_sha256": "33d2690d2e8f7d8c0851c126f81b1976a715d4a6d2665dfb261ab2c8942e1520",
+    "run2_verify_sha256": "a529f91129729681fdce9dc5f26130ff5d641a561df233e5aac32db430ec2f99"
+  }
+}

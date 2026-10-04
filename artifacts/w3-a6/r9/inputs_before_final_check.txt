@@ -1,0 +1,8 @@
+build/coarse-W3a/full/r9/gen_ntype/noun_types.jsonl: OK
+build/coarse-W3a/full/r9/gen_ntype/summary.json: OK
+build/coarse-W3a/full/r9/gen_role/role_frames.jsonl: OK
+build/coarse-W3a/full/r9/gen_role/summary.json: OK
+build/coarse-W3a/full/r9/gen_role_v2/role_frames.jsonl: OK
+build/coarse-W3a/full/r9/gen_role_v2/summary.json: OK
+build/coarse-W3a/full/r9/run1/manifest.json: OK
+build/coarse-W3a/full/r9/extract_r9.pkl: OK

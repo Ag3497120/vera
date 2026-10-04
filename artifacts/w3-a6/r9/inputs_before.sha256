@@ -1,0 +1,8 @@
+b7d616a76d7cbf3b3383cf6d22e3b0732b4abd53eca106cc16bfc002dadec698  build/coarse-W3a/full/r9/gen_ntype/noun_types.jsonl
+91ffd2b42ffb6429a15e6b5216162b0b698aadd31c56009044dfc79b42629ac2  build/coarse-W3a/full/r9/gen_ntype/summary.json
+4b82cb786dd11691f409f4926a2ccd8329060c0e628564e503945051947c9e41  build/coarse-W3a/full/r9/gen_role/role_frames.jsonl
+2169d035ef0e2ccd57404fae764384b3df9b3094faf3bdfed40ac63d37987dac  build/coarse-W3a/full/r9/gen_role/summary.json
+16454e075ecc296ca4e84b2d1531d7824a9b800283cc8762bd37c282ec437ee2  build/coarse-W3a/full/r9/gen_role_v2/role_frames.jsonl
+568301906e820314f15b9af0c7ec6ca69c64af774353d12037ecea9ac1d61437  build/coarse-W3a/full/r9/gen_role_v2/summary.json
+2436d45914420853c840a2cca82fcb9a947f795de8a898ade1b33664192ffd53  build/coarse-W3a/full/r9/run1/manifest.json
+7972cc236bae2953b06915eabe82a037dfce47a314877edb5a63ce43df1eef49  build/coarse-W3a/full/r9/extract_r9.pkl

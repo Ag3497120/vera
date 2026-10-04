@@ -1,0 +1,79 @@
+{"state": "DONE", "calls_total": 207, "calls_this_run": 207, "batches": 69, "batches_ok": 0, "capped": false, "deadline_hit": false, "wall_sec": 11.6}
+{"state": "COLLECTED", "rows": 0, "bad": [], "out_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+{
+ "batch_size": 40,
+ "batches_failed": 69,
+ "batches_ok": 0,
+ "batches_total": 69,
+ "calls": 207,
+ "calls_per_word_answered": null,
+ "calls_per_word_requested": 0.07607,
+ "effort": "low",
+ "end_status": {
+  "failed": 207
+ },
+ "failure_reasons": {
+  "failed": 207
+ },
+ "kind": "ntype",
+ "ledger_sha256": "c6cc9428abf35e7ef76bbe80d8f8f1c4cc51fd198cab8a640db504f83ce105ca",
+ "max_calls": 207,
+ "max_retries": 2,
+ "model": "gpt-6-luna",
+ "not_run_cap": 0,
+ "not_run_other": 0,
+ "ok_rate": 0.0,
+ "prompt_template_sha256": "a22e217ad80fc6bd043864b6ee414ef931d3b174a08f1522ce6555b6a9496a29",
+ "schema_sha256": "e3db31ed9adba39b1a53979cbe84f5113bd778c90c1437a753ce8a67e995825e",
+ "slots": 4,
+ "sum_call_sec": 45.8,
+ "wall_sec": 11.6,
+ "words_abstained": 0,
+ "words_answered": 0,
+ "words_dup_dropped": 0,
+ "words_foreign_dropped": 0,
+ "words_invalid": 0,
+ "words_missing": 0,
+ "words_no_type": 0,
+ "words_requested": 2721
+}
+{"state": "DONE", "calls_total": 624, "calls_this_run": 624, "batches": 208, "batches_ok": 0, "capped": false, "deadline_hit": false, "wall_sec": 35.3}
+{"state": "COLLECTED", "rows": 0, "bad": [], "out_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+{
+ "batch_size": 40,
+ "batches_failed": 208,
+ "batches_ok": 0,
+ "batches_total": 208,
+ "calls": 624,
+ "calls_per_word_answered": null,
+ "calls_per_word_requested": 0.07508,
+ "effort": "low",
+ "end_status": {
+  "failed": 624
+ },
+ "failure_reasons": {
+  "failed": 624
+ },
+ "kind": "role",
+ "ledger_sha256": "34346e5c9223a6102bb13c89850ff8fc5c41ca25dba2c47ba30b221149fcb6e8",
+ "max_calls": 624,
+ "max_retries": 2,
+ "model": "gpt-6-luna",
+ "not_run_cap": 0,
+ "not_run_other": 0,
+ "ok_rate": 0.0,
+ "prompt_template_sha256": "ade8ca7d2752d7547711e6613b5f7d00d5adb7656ae9183100938ed5c9e8c4d8",
+ "schema_sha256": "2d5a9ed449bfdd4899e13048c4e40ddce895ffaa72b2b77f0702773159ddf5f1",
+ "slots": 4,
+ "sum_call_sec": 140.2,
+ "wall_sec": 35.3,
+ "words_abstained": 0,
+ "words_answered": 0,
+ "words_dup_dropped": 0,
+ "words_foreign_dropped": 0,
+ "words_frame_dup_particle": 0,
+ "words_invalid": 0,
+ "words_missing": 0,
+ "words_requested": 8311,
+ "words_role_dup": 0
+}

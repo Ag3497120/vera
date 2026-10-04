@@ -1,0 +1,4 @@
+r8 generated_frames 8030
+r8 generated sahen frames 3485
+direct P_MOVE/P_COMMUNICATE among r8 generated sahen frames 70
+direct P_MOVE/P_COMMUNICATE total in generated_frames 130

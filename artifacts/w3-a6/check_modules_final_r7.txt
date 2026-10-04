@@ -1,0 +1,7 @@
+verantyx /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/verantyx/__init__.py
+verantyx.coarse_types /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/verantyx/coarse_types.py
+verantyx.coarse_place /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/verantyx/coarse_place.py
+verantyx.semantic_read /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/verantyx/semantic_read.py
+verantyx.semantic_reader /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/verantyx/semantic_reader.py
+verantyx.event_cross /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/verantyx/event_cross.py
+outside_tree []

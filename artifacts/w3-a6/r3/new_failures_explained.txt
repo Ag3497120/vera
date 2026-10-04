@@ -1,0 +1,12 @@
+N7 第3ラウンド: artifacts/w3-a6/r3/pytest_full.txt と after_failures.txt を、
+/Users/motonisihikoudai/Projects/vera-impl/baselines/dev_0041606_failures.txt
+から作った base_ids.txt と比較した。失敗IDの差分は new_failures.txt / fixed_failures.txt。
+差分件数: 新規 74、解消 0。C1 の衝突 5 件、conduct 系 68 件、S6 1 件。
+
+C1 の 5 件:
+- tests/coarse_place/test_coarse_place_types.py::test_inventory_only_grows
+- tests/test_gen_coarse_evidence_pred.py の述語プロンプト・schema の2件
+- tests/test_semantic_read_w3b1.py の型一致1件
+- tests/test_semantic_read_w3b4.py の型一致1件
+
+conduct 系 68 件は基線に無い失敗としてそのまま残す。sandbox 検査の失敗を原因と断定せず、環境由来として免責していない。S6 1 件も原因未確定で、免責していない。N7 は未達。

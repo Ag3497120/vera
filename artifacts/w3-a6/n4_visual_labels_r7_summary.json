@@ -1,0 +1,10 @@
+{
+  "sample_words": 60,
+  "role_claims": 81,
+  "correct": 57,
+  "suspicious": 17,
+  "obvious_errors": 7,
+  "abstained_words": 2,
+  "missing_words": 0,
+  "labels_sha256": "bb8ca1644a3b5d090682775183843231e5e315a605f443614b5a30a97c626ec3"
+}

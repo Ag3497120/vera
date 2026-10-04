@@ -1,0 +1,36 @@
+{
+ "term": "斜め向かい",
+ "namespace": null,
+ "state": "UNPLACED",
+ "origin": null,
+ "estimate_basis": null,
+ "constructed": false,
+ "top": [],
+ "candidates": [],
+ "axes": {},
+ "neighbors": [],
+ "seen_in_material": true,
+ "context": {
+  "role": null,
+  "predicate": null
+ },
+ "placement": {
+  "path": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/build/coarse-W3a/full/r9/run2",
+  "content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+  "reason": null
+ },
+ "spelling": {
+  "query": "斜め向かい",
+  "normalized": "斜め向かい",
+  "normalization": "NFKC",
+  "kana": "DISTINCT",
+  "kana_variant": null,
+  "why": null
+ },
+ "frame_generated": null,
+ "frame_status": "NO_ANSWER",
+ "frame": null,
+ "role_frame_status": "NO_ROLE_FRAME",
+ "role_frame": null,
+ "role_frame_unconfirmed": null
+}

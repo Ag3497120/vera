@@ -1,0 +1,3 @@
+bfc7998e989b615fa871c33dbcbeafd02626715216defc29c433e8274750d1b7  /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/codex-w3-a6-r2/n1/r7_before.tsv
+5db28ae6e323bfe10e107bd47550c657958818b15f962705a2567952eb6d941a  /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/codex-w3-a6-r2/n1/r8_before.tsv
+a506a76cf8a262dbc4047444d4363b7486d56032eff77fa57b458cfa38ee2c27  /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/codex-w3-a6-r2/n1/none_before.tsv

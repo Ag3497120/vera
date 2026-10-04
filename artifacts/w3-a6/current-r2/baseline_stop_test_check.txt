@@ -1,0 +1,2 @@
+b5b2c5a416e1e0d178451d68d61a1abd51da8d61604d6ae6d8d6fd8718ab8cd8  /Users/motonisihikoudai/Projects/vera-impl/baselines/dev_0041606_failures.txt
+rg_exit=1 (1 means no matching line)

@@ -1,0 +1,19 @@
+W3-a6 生成計画（current round 1）
+事前登録: docs/COARSE_PLACEMENT.md §12.18、生成前凍結 2026-10-04 16:00 +0900
+
+入力と凍結:
+- 名詞型: artifacts/w3-a6/current-r1/needs_ntype.jsonl, 2,721 語, 69 束, 上限 207 呼び出し。
+- 役割枠: artifacts/w3-a6/current-r1/needs_role.jsonl, 8,311 語, 208 束, 上限 624 呼び出し。
+- 対象一覧は r8/run2 から作り直し、従前の凍結一覧との cmp が両方 exit 0。
+- 期待ファイル SHA-256: bea8c8a1dd97dbb6b1f5c4bd7d44c44ac7b322036cc2366027e714b37814af33。
+- 名詞型 template/schema SHA-256: a22e217ad80fc6bd043864b6ee414ef931d3b174a08f1522ce6555b6a9496a29 / e3db31ed9adba39b1a53979cbe84f5113bd778c90c1437a753ce8a67e995825e。
+- 役割枠 template/schema SHA-256: 681af73d25ac03a21afe840c7d9bc953d587f0ae4bc67ba8945460f89b77117d / 2d5a9ed449bfdd4899e13048c4e40ddce895ffaa72b2b77f0702773159ddf5f1。
+
+実行条件:
+- model gpt-6-luna、effort low、batch-size 40、slots 4、max-retries 2。
+- 名詞型を先に完了・collect・summarize し、次に役割枠を実行する。二形式は同時に起動しない。
+- 合計最大 831 回（事前登録上限 1,500 回以内）。試しの束は実行しない。
+- ネットワークが使われるのは gen_coarse_evidence.py run が codex を起動する間だけ。
+
+スクリプト: artifacts/w3-a6/current-r1/generate_and_collect.sh
+生成 ledger/frames: build/coarse-W3a/full/r9/gen_ntype/ と gen_role/。

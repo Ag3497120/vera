@@ -1,0 +1,114 @@
+bt_full ledger files: 320
+SANDBOX_CHECK rows: 56
+SANDBOX_SELFCHECK_FAILED rows: 55
+policy-acceptance_time_l0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+policy-agent_claims_and_0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+policy-expected_nonzero_0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+policy-fail_beats_unveri0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+policy-refusals_mixed0/run/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+policy-sandbox_blocks_es0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+policy-side_effects_not_0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+policy-unverified_only0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+routed0/r/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+run-S1_runs_long_then_fi0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+run-S2_finishes_at_once_0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+run-S7_claims_done_but_a0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+run-control_complete_at_0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+run-control_limit_senten0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+run-prose_lines0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+run-state_inside_the_rep0/repo/.verantyx-conduct/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_J11_a_tie_the_records_can0/r/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_J1_a_routed_frame_needs_a0/b/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_J1_a_routed_frame_needs_a0/c/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_R0_a_table_from_another_p0/r/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_R3_a_verifier_of_another_0/r/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_R3_an_explicit_independen0/r/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_R3_lineage_unsaid_a_known0/r/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_R3_lineage_unsaid_an_expl0/r/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_R3_relation_a_distinct_re0/r/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_R3_role_a_verifier_chosen0/r/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_R6_the_ledger_only_grows_0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_R6_the_ledger_only_grows_0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_a_table_without_a_verify_0/r/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_r3_without_a_working_sand0/state/ledger.jsonl: error=SANDBOX_NOT_FOUND exit_code=None sandbox=/nonexistent/sandbox-exec stderr=None
+test_r6_a_real_claude_start_re0/w/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_the_limits_are_in_the_run0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_the_runtime_reads_the_out0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+test_the_toy_frame_runs_end_to0/s/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B1_honest_and_pas0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B2a_hardcoded_the0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B2b_always_hardco0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B3_findings_witho0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B3_sandbox_self_c0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B3iii_pass_that_t0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B4b_cli_without_a0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B4c_frame_opts_ou0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B4d_cli_configure0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B4d_cli_skips_ver0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B4e_python_defaul0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B5a_verifier_writ0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B5b_verifier_writ0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B5b_verifier_writ1/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B5c_verifier_exit0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B5d_verifier_exce0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B5e_verifier_hits0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-B5f_verifier_give0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-M_input_too_large0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-M_retry_brief_too0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-M_same_model_code0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+
+verify-M_verifier_progra0/state/ledger.jsonl: error=SANDBOX_SELFCHECK_FAILED exit_code=71 sandbox=/usr/bin/sandbox-exec stderr=sandbox-exec: sandbox_apply: Operation not permitted
+

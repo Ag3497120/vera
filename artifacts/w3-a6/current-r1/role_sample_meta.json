@@ -1,0 +1,1 @@
+{"population": 8311, "sample": 60, "seed": 20261004, "rule": "sample(sorted(unique(needs_role.words)), 60)", "sha256": "a134ac9c47060072911630ee8de7f9fadaca3f1c480a3afe9c7710af983da198"}

@@ -1,0 +1,26 @@
+{
+ "boundary_freq": 16,
+ "by_ns": {
+  "P": 8311
+ },
+ "by_state": {
+  "DECIDED": 8311
+ },
+ "content_sha256": "89bd07e6c71d883cdeafaa96e906118cbfbc3dc45b1f15f2ce65bbec783382a5",
+ "counts": {
+  "from_generated_frames": 8030,
+  "from_seeds_pred": 281,
+  "not_headword": 0,
+  "ns_not_predicate": 0,
+  "overlap": 0
+ },
+ "kind": "role",
+ "last_freq": 16,
+ "n_at_boundary": 89,
+ "n_requested": 1000000,
+ "out": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/artifacts/w3-a6/needs_role.jsonl",
+ "out_sha256": "bd059e8a1a1885577a5e03395163f901cdafa90146d2716cd9dd9bbb640af92d",
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/run2",
+ "rule": "every word of the generated_frames table of the placement, union the words of the hand-written predicate seeds that are headwords whose namespace holds P; ordered by n_seen descending; every word whose n_seen equals that of the n-th is included; display order inside one frequency = string order; no test data is read",
+ "total": 8311
+}

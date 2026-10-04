@@ -1,0 +1,88 @@
+{"total": 2721, "boundary_freq": 2, "n_at_boundary": 1}
+{"total": 8311, "boundary_freq": 16, "n_at_boundary": 89}
+artifacts/w3-a6/current-r1/needs_ntype.jsonl: OK
+artifacts/w3-a6/current-r1/needs_role.jsonl: OK
+artifacts/w3-a6/current-r1/needs_ntype.meta.json: OK
+artifacts/w3-a6/current-r1/needs_role.meta.json: OK
+artifacts/w3-a6/current-r1/prompt_ntype_r6.txt: OK
+artifacts/w3-a6/current-r1/prompt_role_r6.txt: OK
+artifacts/w3-a6/current-r1/generate_and_collect.sh: OK
+tools/gen_coarse_evidence.py: OK
+tests/coarse_place/data/w3a6_expect.json: OK
+tests/coarse_place/test_coarse_place_w3a6_gen.py: OK
+tests/coarse_place/test_coarse_place_w3a6_role_check.py: OK
+{"state": "DONE", "calls_total": 69, "calls_this_run": 69, "batches": 69, "batches_ok": 69, "capped": false, "deadline_hit": false, "wall_sec": 461.4}
+{"state": "COLLECTED", "rows": 2721, "bad": [], "out_sha256": "b7d616a76d7cbf3b3383cf6d22e3b0732b4abd53eca106cc16bfc002dadec698"}
+{
+ "batch_size": 40,
+ "batches_failed": 0,
+ "batches_ok": 69,
+ "batches_total": 69,
+ "calls": 69,
+ "calls_per_word_answered": 0.02536,
+ "calls_per_word_requested": 0.02536,
+ "effort": "low",
+ "end_status": {
+  "ok": 69
+ },
+ "failure_reasons": {},
+ "kind": "ntype",
+ "ledger_sha256": "e4059738a691b379b066445a91d45644c3ca07767cc41d3d0f4fadf123aec56b",
+ "max_calls": 207,
+ "max_retries": 2,
+ "model": "gpt-6-luna",
+ "not_run_cap": 0,
+ "not_run_other": 0,
+ "ok_rate": 1.0,
+ "prompt_template_sha256": "a22e217ad80fc6bd043864b6ee414ef931d3b174a08f1522ce6555b6a9496a29",
+ "schema_sha256": "e3db31ed9adba39b1a53979cbe84f5113bd778c90c1437a753ce8a67e995825e",
+ "slots": 4,
+ "sum_call_sec": 1822.6,
+ "wall_sec": 461.4,
+ "words_abstained": 17,
+ "words_answered": 2721,
+ "words_dup_dropped": 0,
+ "words_foreign_dropped": 0,
+ "words_invalid": 0,
+ "words_missing": 0,
+ "words_no_type": 1,
+ "words_requested": 2721
+}
+{"state": "DONE", "calls_total": 208, "calls_this_run": 208, "batches": 208, "batches_ok": 208, "capped": false, "deadline_hit": false, "wall_sec": 2083.9}
+{"state": "COLLECTED", "rows": 8266, "bad": [], "out_sha256": "4b82cb786dd11691f409f4926a2ccd8329060c0e628564e503945051947c9e41"}
+{
+ "batch_size": 40,
+ "batches_failed": 0,
+ "batches_ok": 208,
+ "batches_total": 208,
+ "calls": 208,
+ "calls_per_word_answered": 0.02516,
+ "calls_per_word_requested": 0.02503,
+ "effort": "low",
+ "end_status": {
+  "ok": 208
+ },
+ "failure_reasons": {},
+ "kind": "role",
+ "ledger_sha256": "49072ed02b7193441f9da000210705e311e49aede92eab6ccb64e95812c69413",
+ "max_calls": 624,
+ "max_retries": 2,
+ "model": "gpt-6-luna",
+ "not_run_cap": 0,
+ "not_run_other": 0,
+ "ok_rate": 1.0,
+ "prompt_template_sha256": "63835f9c7d50794904e7b1d389216825ee249fa60c38a72965d0cf197cbb0f0e",
+ "schema_sha256": "2d5a9ed449bfdd4899e13048c4e40ddce895ffaa72b2b77f0702773159ddf5f1",
+ "slots": 4,
+ "sum_call_sec": 8263.8,
+ "wall_sec": 2083.9,
+ "words_abstained": 242,
+ "words_answered": 8266,
+ "words_dup_dropped": 0,
+ "words_foreign_dropped": 0,
+ "words_frame_dup_particle": 5,
+ "words_invalid": 8,
+ "words_missing": 32,
+ "words_requested": 8311,
+ "words_role_dup": 0
+}

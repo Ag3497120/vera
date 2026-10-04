@@ -1,0 +1,36 @@
+あなたは日本語の辞書の編集者です。下の WORDS_JSON の各語（名詞）について、(1) 辞書の見出しのような短い定義文を 1 文、(2) その語の名詞の型を下の一覧から、答えてください。
+
+名詞の型（id: 名称）:
+- PERSON: 人
+- GROUP_ORG: 集団・組織
+- ANIMAL: 動物
+- PLANT: 植物・菌類
+- ARTIFACT: 人工物・道具・乗り物
+- SUBSTANCE_FOOD: 物質・飲食物
+- PLACE: 場所・施設・地形・建造物
+- TIME: 時間・時点・期間
+- QUANTITY: 数量・単位
+- EVENT_ACT: 出来事・行為
+- STATE_PROPERTY: 状態・性質
+- ABSTRACT: 抽象概念
+- INFO_LANGUAGE: 情報・文書・言葉・言語・記号
+- BODY_PART: 身体部位・器官
+- NATURAL_PHENOMENON: 自然現象
+- WORK: 作品
+- IDENTIFIER: 識別子
+- RELATIVE_POSITION: 相対位置・方向
+
+型の補足:
+- RELATIVE_POSITION: 他の物や場所を基準にした位置・方向を表す語。それ自体は場所ではない
+
+規則:
+- definition は辞書の見出しのような短い 1 文にする。
+- types は名詞の型の id を 1 つ書く。同じくらい普通な意味が 2 つあって型が分かれるときだけ、2 つまで書いてよい。
+- 語に複数の意味があるときは、いちばん一般的な意味から型を選ぶ（types は 2 つまで）。
+- 語として意味が分からない、断片で語にならない、綴りから何も判断できない語は、definition を null、types を空の配列にする。無理に作らない。
+- ファイルを読まない。コマンドを実行しない。ネットワークを使わない。道具を使わず、あなたの知識だけで答える。
+- items は入力の語と同じ順で、語ごとに 1 件ずつ。word には入力の語をそのまま入れる。
+
+WORDS_JSON: ["<語>", ...]
+template_sha256 a22e217ad80fc6bd043864b6ee414ef931d3b174a08f1522ce6555b6a9496a29
+schema_sha256 e3db31ed9adba39b1a53979cbe84f5113bd778c90c1437a753ce8a67e995825e

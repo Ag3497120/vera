@@ -1,0 +1,576 @@
+FF..FF............F.....F..........F.FFF.F.FFF.....F.FF...F...F...F..... [ 40%]
+....................FFFFFF.FFF.FFFF..............F...............FFFFFFF [ 81%]
+FFFFFF.FFFFFFFFFFFFFFF.FFFFF....F                                        [100%]
+=================================== FAILURES ===================================
+_ test_a_routed_run_starts_the_codex_implementer_and_the_claude_verifier_by_the_routers_decisions _
+tests/test_conduct_routing.py:37: in test_a_routed_run_starts_the_codex_implementer_and_the_claude_verifier_by_the_routers_decisions
+    assert run.out["verdict"] == "RUN_COMPLETE" and run.out["outcome"] == "COMPLETE"
+E   AssertionError: assert ('RUN_INCOMPLETE' == 'RUN_COMPLETE'
+E     
+E     - RUN_COMPLETE
+E     + RUN_INCOMPLETE
+E     ?     ++)
+_ test_R6_one_decision_is_one_row_and_a_decision_row_holds_declared_keys_only __
+tests/test_conduct_routing.py:73: in test_R6_one_decision_is_one_row_and_a_decision_row_holds_declared_keys_only
+    assert measured[0]["outcome"] == "COMPLETE" and measured[0]["rounds"] == 1 and measured[0]["elapsed_seconds"] > 0
+E   AssertionError: assert ('ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED)
+_ test_R3_a_verifier_of_another_lineage_is_taken_over_one_of_the_same_lineage_and_the_exclusion_is_in_the_ledger _
+tests/test_conduct_routing.py:111: in test_R3_a_verifier_of_another_lineage_is_taken_over_one_of_the_same_lineage_and_the_exclusion_is_in_the_ledger
+    assert run.out["outcome"] == "COMPLETE"
+E   AssertionError: assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_R3_an_explicit_independent_of_none_lets_the_same_lineage_verify_and_the_ledger_says_so _
+tests/test_conduct_routing.py:121: in test_R3_an_explicit_independent_of_none_lets_the_same_lineage_verify_and_the_ledger_says_so
+    assert run.out["outcome"] == "COMPLETE", run.one("RUN_FINISHED")
+E   AssertionError: {'attempts': 1, 'blocking_kind': 'ACCEPTANCE_UNVERIFIED', 'complete': False, 'completed': [], ...}
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_J11_a_tie_the_records_cannot_settle_puts_the_closed_question_to_the_chooser_and_records_the_testimony _
+tests/test_conduct_routing.py:203: in test_J11_a_tie_the_records_cannot_settle_puts_the_closed_question_to_the_chooser_and_records_the_testimony
+    assert run.out["outcome"] == "COMPLETE" and len(prompts) == 2
+E   AssertionError: assert ('ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED)
+__ test_a_table_without_a_verify_role_keeps_the_verification_required_default __
+tests/test_conduct_routing.py:261: in test_a_table_without_a_verify_role_keeps_the_verification_required_default
+    assert run.out["outcome"] == "VERIFIER_NOT_CONFIGURED" and run.one("RUN_LIMITS")["verification"] == {"mode": "required_unconfigured"}
+E   AssertionError: assert ('ACCEPTANCE_UNVERIFIED' == 'VERIFIER_NOT_CONFIGURED'
+E     
+E     - VERIFIER_NOT_CONFIGURED
+E     + ACCEPTANCE_UNVERIFIED)
+_ test_R0_a_table_from_another_producer_that_says_everything_runs_like_the_dsls _
+tests/test_conduct_routing.py:400: in test_R0_a_table_from_another_producer_that_says_everything_runs_like_the_dsls
+    assert run.out["outcome"] == "COMPLETE", run.out.get("refusal")
+E   AssertionError: None
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_R3_lineage_unsaid_an_explicit_independent_of_none_runs_and_does_not_make_up_whether_the_lineages_match _
+tests/test_conduct_routing.py:441: in test_R3_lineage_unsaid_an_explicit_independent_of_none_runs_and_does_not_make_up_whether_the_lineages_match
+    assert run.out["outcome"] == "COMPLETE", run.out.get("refusal")
+E   AssertionError: None
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+__ test_R3_lineage_unsaid_a_known_pair_of_lineages_still_runs_and_says_false ___
+tests/test_conduct_routing.py:451: in test_R3_lineage_unsaid_a_known_pair_of_lineages_still_runs_and_says_false
+    assert run.out["outcome"] == "COMPLETE", run.out.get("refusal")
+E   AssertionError: None
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_R3_role_a_verifier_chosen_by_a_rule_with_no_role_runs_and_the_decision_says_its_role_was_not_declared _
+tests/test_conduct_routing.py:478: in test_R3_role_a_verifier_chosen_by_a_rule_with_no_role_runs_and_the_decision_says_its_role_was_not_declared
+    assert run.out["outcome"] == "COMPLETE", run.out.get("refusal")
+E   AssertionError: None
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_R3_relation_a_distinct_relation_between_the_agents_lets_the_run_through_and_the_ledger_cites_it _
+tests/test_conduct_routing.py:507: in test_R3_relation_a_distinct_relation_between_the_agents_lets_the_run_through_and_the_ledger_cites_it
+    assert run.out["outcome"] == "COMPLETE", run.out.get("refusal")
+E   AssertionError: None
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_r1_a_five_second_agent_is_awaited_and_the_conductor_runs_the_acceptance_itself _
+tests/test_conduct_run.py:70: in test_r1_a_five_second_agent_is_awaited_and_the_conductor_runs_the_acceptance_itself
+    assert run.out["outcome"] == "COMPLETE" and run.out["verdict"] == "RUN_COMPLETE"
+E   AssertionError: assert ('ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED)
+----------------------------- Captured stdout call -----------------------------
+R1 elapsed_seconds=5.489
+_ test_r2_each_scenario_ends_in_its_own_type_and_leaves_no_process[S1_runs_long_then_finishes] _
+tests/test_conduct_run.py:90: in test_r2_each_scenario_ends_in_its_own_type_and_leaves_no_process
+    assert run.out["outcome"] == expected, run.one("RUN_FINISHED")
+E   AssertionError: {'attempts': 1, 'blocking_kind': 'ACCEPTANCE_UNVERIFIED', 'complete': False, 'completed': [], ...}
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_r2_each_scenario_ends_in_its_own_type_and_leaves_no_process[S2_finishes_at_once_human_judgment_left] _
+tests/test_conduct_run.py:90: in test_r2_each_scenario_ends_in_its_own_type_and_leaves_no_process
+    assert run.out["outcome"] == expected, run.one("RUN_FINISHED")
+E   AssertionError: {'attempts': 1, 'blocking_kind': 'ACCEPTANCE_UNVERIFIED', 'complete': False, 'completed': [], ...}
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'HUMAN_JUDGMENT_PENDING'
+E     
+E     - HUMAN_JUDGMENT_PENDING
+E     + ACCEPTANCE_UNVERIFIED
+_ test_r2_each_scenario_ends_in_its_own_type_and_leaves_no_process[S7_claims_done_but_acceptance_fails] _
+tests/test_conduct_run.py:90: in test_r2_each_scenario_ends_in_its_own_type_and_leaves_no_process
+    assert run.out["outcome"] == expected, run.one("RUN_FINISHED")
+E   AssertionError: {'attempts': 1, 'blocking_kind': 'ACCEPTANCE_UNVERIFIED', 'complete': False, 'completed': [], ...}
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'ACCEPTANCE_FAILED'
+E     
+E     - ACCEPTANCE_FAILED
+E     ?             - -
+E     + ACCEPTANCE_UNVERIFIED
+E     ?            ++++++
+_____ test_r2_control_an_agent_that_ends_at_once_and_does_well_is_complete _____
+tests/test_conduct_run.py:115: in test_r2_control_an_agent_that_ends_at_once_and_does_well_is_complete
+    assert run.out["outcome"] == "COMPLETE" and len(run.of("COMMIT")) == 1
+E   AssertionError: assert ('ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED)
+_ test_r2_control_a_usage_limit_sentence_is_not_a_limit_when_the_agent_exited_zero_and_worked _
+tests/test_conduct_run.py:123: in test_r2_control_a_usage_limit_sentence_is_not_a_limit_when_the_agent_exited_zero_and_worked
+    assert run.out["outcome"] == "COMPLETE"
+E   AssertionError: assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_________ test_r2_prose_lines_are_not_questions_and_do_not_end_the_run _________
+tests/test_conduct_run.py:144: in test_r2_prose_lines_are_not_questions_and_do_not_end_the_run
+    assert run.out["outcome"] == "COMPLETE"
+E   AssertionError: assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_r4_a_complete_run_commits_only_inside_the_worktree_and_leaves_the_repository_alone _
+tests/test_conduct_run.py:178: in test_r4_a_complete_run_commits_only_inside_the_worktree_and_leaves_the_repository_alone
+    commit = run.one("COMMIT")
+             ^^^^^^^^^^^^^^^^^
+tests/test_conduct_run_support.py:122: in one
+    assert len(found) == 1, (kind, [r["type"] for r in self.rows])
+E   AssertionError: ('COMMIT', ['CONDUCT_INVOKED', 'FRAME_READ', 'FRAME_COMPILED', 'RUN_LIMITS', 'REPO_GUARD', 'AGENT_START_CALLED', ...])
+E   assert 0 == 1
+E    +  where 0 = len([])
+_ test_r4_the_state_directory_inside_the_repository_is_not_a_repository_change _
+tests/test_conduct_run.py:217: in test_r4_the_state_directory_inside_the_repository_is_not_a_repository_change
+    assert run.out["outcome"] == "COMPLETE"
+E   AssertionError: assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_r3_a_relative_program_is_looked_up_in_the_worktree_not_the_callers_directory _
+tests/test_conduct_run_policy.py:89: in test_r3_a_relative_program_is_looked_up_in_the_worktree_not_the_callers_directory
+    assert (result["error"], result["exit_code"], result["stdout"]) == (None, 0, "ran-here\n")
+E   AssertionError: assert (None, 71, '') == (None, 0, 'ran-here\n')
+E     
+E     At index 1 diff: 71 != 0
+E     Use -v to get more diff
+______ test_r3_stdout_is_capped_in_the_row_but_its_full_size_is_reported _______
+tests/test_conduct_run_policy.py:96: in test_r3_stdout_is_capped_in_the_row_but_its_full_size_is_reported
+    assert result["exit_code"] == 0 and result["stdout_bytes"] == 100000
+E   assert (71 == 0)
+______ test_r3_the_command_sees_its_own_tmpdir_and_no_bytecode_is_written ______
+tests/test_conduct_run_policy.py:105: in test_r3_the_command_sees_its_own_tmpdir_and_no_bytecode_is_written
+    assert result["stdout"].split() == [str(work[1]), "1"]
+E   AssertionError: assert [] == ['/private/tm..._o0/tmp', '1']
+E     
+E     Right contains 2 more items, first extra item: '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/codex-w3-a6-r2/bt-conduct/test_r3_the_command_sees_its_o0/tmp'
+E     Use -v to get more diff
+_ test_r3_the_sandbox_stops_a_write_outside_the_worktree_and_allows_one_inside _
+tests/test_conduct_run_policy.py:115: in test_r3_the_sandbox_stops_a_write_outside_the_worktree_and_allows_one_inside
+    assert inside["exit_code"] == 0 and (work[0] / "inside.txt").exists()
+E   assert (71 == 0)
+____________________ test_r3_the_sandbox_stops_network_use _____________________
+tests/test_conduct_run_policy.py:125: in test_r3_the_sandbox_stops_network_use
+    assert _run_acceptance_command([PYTHON, "-c", code], str(work[0]), work[1], 30)["exit_code"] == 7
+E   assert 71 == 7
+______ test_r3_a_command_over_its_time_limit_is_killed_with_its_children _______
+tests/test_conduct_run_policy.py:138: in test_r3_a_command_over_its_time_limit_is_killed_with_its_children
+    assert result["error"] == "COMMAND_TIMED_OUT" and result["exit_code"] is None
+E   AssertionError: assert (None == 'COMMAND_TIMED_OUT')
+___________ test_r3_what_the_agent_says_never_adds_or_runs_a_command ___________
+tests/test_conduct_run_policy.py:197: in test_r3_what_the_agent_says_never_adds_or_runs_a_command
+    assert run.out["outcome"] == "COMPLETE"
+E   AssertionError: assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_r3_network_shell_string_and_outside_path_commands_are_refused_with_their_reasons _
+tests/test_conduct_run_policy.py:208: in test_r3_network_shell_string_and_outside_path_commands_are_refused_with_their_reasons
+    assert [(c["status"], c["refusal_reason"]) for c in commands] == [
+E   AssertionError: assert [('ERROR', No...DE_WORKTREE')] == [('PASS', Non...DE_WORKTREE')]
+E     
+E     At index 0 diff: ('ERROR', None) != ('PASS', None)
+E     Use -v to get more diff
+_ test_r3_one_failing_criterion_makes_the_run_fail_but_every_criterion_still_runs _
+tests/test_conduct_run_policy.py:219: in test_r3_one_failing_criterion_makes_the_run_fail_but_every_criterion_still_runs
+    assert _statuses(run) == ["FAIL", "PASS"]
+E   AssertionError: assert ['ERROR', 'ERROR'] == ['FAIL', 'PASS']
+E     
+E     At index 0 diff: 'ERROR' != 'FAIL'
+E     Use -v to get more diff
+___ test_r3_files_made_by_an_acceptance_command_are_listed_but_not_committed ___
+tests/test_conduct_run_policy.py:233: in test_r3_files_made_by_an_acceptance_command_are_listed_but_not_committed
+    assert run.out["outcome"] == "COMPLETE"
+E   AssertionError: assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_r3_a_command_that_slips_past_the_static_check_is_stopped_by_the_sandbox _
+tests/test_conduct_run_policy.py:240: in test_r3_a_command_that_slips_past_the_static_check_is_stopped_by_the_sandbox
+    assert run.out["outcome"] == "ACCEPTANCE_FAILED"
+E   AssertionError: assert 'ACCEPTANCE_UNVERIFIED' == 'ACCEPTANCE_FAILED'
+E     
+E     - ACCEPTANCE_FAILED
+E     ?             - -
+E     + ACCEPTANCE_UNVERIFIED
+E     ?            ++++++
+______ test_r3_a_criterion_over_its_time_limit_is_an_error_not_a_failure _______
+tests/test_conduct_run_policy.py:248: in test_r3_a_criterion_over_its_time_limit_is_an_error_not_a_failure
+    assert [(c["status"], c["error"]) for c in commands] == [("PASS", None), ("ERROR", "COMMAND_TIMED_OUT")]
+E   AssertionError: assert [('ERROR', 'S...UNAVAILABLE')] == [('PASS', Non...D_TIMED_OUT')]
+E     
+E     At index 0 diff: ('ERROR', 'SANDBOX_UNAVAILABLE') != ('PASS', None)
+E     Use -v to get more diff
+_________ test_r3_the_expected_exit_code_is_compared_not_assumed_zero __________
+tests/test_conduct_run_policy.py:255: in test_r3_the_expected_exit_code_is_compared_not_assumed_zero
+    assert _statuses(run) == ["PASS"] and run.one("ACCEPTANCE_COMMAND")["exit_code"] == 3
+E   AssertionError: assert (['ERROR'] == ['PASS']
+E     
+E     At index 0 diff: 'ERROR' != 'PASS'
+E     Use -v to get more diff)
+_ test_r6_a_real_claude_start_receives_the_write_permission_at_the_end_of_its_arguments _
+tests/test_conduct_run_settings.py:97: in test_r6_a_real_claude_start_receives_the_write_permission_at_the_end_of_its_arguments
+    assert run.out["outcome"] == "COMPLETE"
+E   AssertionError: assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+___________ test_the_toy_frame_runs_end_to_end_with_a_scripted_codex ___________
+tests/test_conduct_run_settings.py:154: in test_the_toy_frame_runs_end_to_end_with_a_scripted_codex
+    assert (code, out["verdict"], out["outcome"]) == (0, "RUN_COMPLETE", "COMPLETE"), err
+E   AssertionError: 
+E   assert (1, 'RUN_INCO...E_UNVERIFIED') == (0, 'RUN_COMP...', 'COMPLETE')
+E     
+E     At index 0 diff: 1 != 0
+E     Use -v to get more diff
+_ test_b1_an_honest_implementation_and_a_confirmed_pass_complete_and_the_ledger_shows_every_stage _
+tests/test_conduct_verify.py:126: in test_b1_an_honest_implementation_and_a_confirmed_pass_complete_and_the_ledger_shows_every_stage
+    assert run.out["outcome"] == "COMPLETE" and run.out["verdict"] == "RUN_COMPLETE", run.one("RUN_FINISHED")
+E   AssertionError: {'attempts': 1, 'blocking_kind': 'ACCEPTANCE_UNVERIFIED', 'complete': False, 'completed': [], ...}
+E   assert ('ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED)
+_ test_b2_a_hardcoded_first_attempt_is_sent_back_with_the_re_run_finding_and_the_fix_completes _
+tests/test_conduct_verify.py:151: in test_b2_a_hardcoded_first_attempt_is_sent_back_with_the_re_run_finding_and_the_fix_completes
+    assert run.out["outcome"] == "COMPLETE", run.one("RUN_FINISHED")
+E   AssertionError: {'attempts': 1, 'blocking_kind': 'ACCEPTANCE_UNVERIFIED', 'complete': False, 'completed': [], ...}
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_b2_always_hardcoded_with_the_default_two_retries_ends_as_verification_failed _
+tests/test_conduct_verify.py:176: in test_b2_always_hardcoded_with_the_default_two_retries_ends_as_verification_failed
+    assert run.out["outcome"] == "VERIFICATION_FAILED" and run.out["verdict"] == "RUN_INCOMPLETE"
+E   AssertionError: assert ('ACCEPTANCE_UNVERIFIED' == 'VERIFICATION_FAILED'
+E     
+E     - VERIFICATION_FAILED
+E     + ACCEPTANCE_UNVERIFIED)
+___________ test_b2_zero_retries_stops_after_one_implementer_attempt ___________
+tests/test_conduct_verify.py:195: in test_b2_zero_retries_stops_after_one_implementer_attempt
+    assert (run.code, run.out["outcome"]) == (1, "VERIFICATION_FAILED"), run.err
+E   AssertionError: 
+E   assert (1, 'ACCEPTANCE_UNVERIFIED') == (1, 'VERIFICATION_FAILED')
+E     
+E     At index 1 diff: 'ACCEPTANCE_UNVERIFIED' != 'VERIFICATION_FAILED'
+E     Use -v to get more diff
+_ test_b3_i_a_failure_without_evidence_is_not_counted_and_nothing_is_sent_back _
+tests/test_conduct_verify.py:208: in test_b3_i_a_failure_without_evidence_is_not_counted_and_nothing_is_sent_back
+    row = run.of("VERIFIER_EVIDENCE")[0]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   IndexError: list index out of range
+__________ test_b3_ii_a_finding_that_does_not_reproduce_is_not_valid ___________
+tests/test_conduct_verify.py:221: in test_b3_ii_a_finding_that_does_not_reproduce_is_not_valid
+    assert len(evidence) == 1                                                # the repeated command ran once
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   assert 0 == 1
+E    +  where 0 = len([])
+_ test_b3_iii_a_pass_that_the_conductors_run_contradicts_is_not_a_pass[1-FAIL-CONTRADICTED] _
+tests/test_conduct_verify.py:239: in test_b3_iii_a_pass_that_the_conductors_run_contradicts_is_not_a_pass
+    row = run.of("VERIFIER_EVIDENCE")[index - 1]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   IndexError: list index out of range
+_ test_b3_iii_a_pass_that_the_conductors_run_contradicts_is_not_a_pass[2-FAIL-CONTRADICTED] _
+tests/test_conduct_verify.py:239: in test_b3_iii_a_pass_that_the_conductors_run_contradicts_is_not_a_pass
+    row = run.of("VERIFIER_EVIDENCE")[index - 1]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   IndexError: list index out of range
+_ test_b3_iii_a_pass_that_the_conductors_run_contradicts_is_not_a_pass[3-REFUSED-UNVERIFIED] _
+tests/test_conduct_verify.py:239: in test_b3_iii_a_pass_that_the_conductors_run_contradicts_is_not_a_pass
+    row = run.of("VERIFIER_EVIDENCE")[index - 1]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   IndexError: list index out of range
+________ test_b3_the_sandbox_is_never_skipped_when_its_self_check_fails ________
+tests/test_conduct_verify.py:253: in test_b3_the_sandbox_is_never_skipped_when_its_self_check_fails
+    assert [(r["status"], r["error"], r["conclusion"]) for r in rows] == [("ERROR", "SANDBOX_UNAVAILABLE", "UNVERIFIED")] * 2
+E   AssertionError: assert [] == [('ERROR', 'S...'UNVERIFIED')]
+E     
+E     Right contains 2 more items, first extra item: ('ERROR', 'SANDBOX_UNAVAILABLE', 'UNVERIFIED')
+E     Use -v to get more diff
+_ test_b4_a_without_a_verifier_the_run_stops_after_the_acceptance_and_nothing_is_completed _
+tests/test_conduct_verify.py:263: in test_b4_a_without_a_verifier_the_run_stops_after_the_acceptance_and_nothing_is_completed
+    assert run.out["outcome"] == "VERIFIER_NOT_CONFIGURED" and run.out["verdict"] == "RUN_INCOMPLETE"
+E   AssertionError: assert ('ACCEPTANCE_UNVERIFIED' == 'VERIFIER_NOT_CONFIGURED'
+E     
+E     - VERIFIER_NOT_CONFIGURED
+E     + ACCEPTANCE_UNVERIFIED)
+_______________ test_b4_b_the_cli_requires_a_verifier_by_default _______________
+tests/test_conduct_verify.py:274: in test_b4_b_the_cli_requires_a_verifier_by_default
+    assert (run.code, run.out["verdict"], run.out["outcome"]) == (1, "RUN_INCOMPLETE", "VERIFIER_NOT_CONFIGURED"), run.err
+E   AssertionError: 
+E   assert (1, 'RUN_INCO...E_UNVERIFIED') == (1, 'RUN_INCO...T_CONFIGURED')
+E     
+E     At index 2 diff: 'ACCEPTANCE_UNVERIFIED' != 'VERIFIER_NOT_CONFIGURED'
+E     Use -v to get more diff
+_ test_b4_c_a_frame_that_opts_out_completes_and_the_ledger_says_nothing_was_verified _
+tests/test_conduct_verify.py:306: in test_b4_c_a_frame_that_opts_out_completes_and_the_ledger_says_nothing_was_verified
+    assert run.out["outcome"] == "COMPLETE"
+E   AssertionError: assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_b4_d_the_command_line_can_skip_verification_on_purpose_even_over_a_configured_verifier _
+tests/test_conduct_verify.py:317: in test_b4_d_the_command_line_can_skip_verification_on_purpose_even_over_a_configured_verifier
+    assert (run.code, run.out["verdict"], run.out["outcome"]) == (0, "RUN_COMPLETE", "COMPLETE"), run.err
+E   AssertionError: 
+E   assert (1, 'RUN_INCO...E_UNVERIFIED') == (0, 'RUN_COMP...', 'COMPLETE')
+E     
+E     At index 0 diff: 1 != 0
+E     Use -v to get more diff
+_ test_b4_e_the_python_default_keeps_the_w2a_ending_and_records_that_no_verifier_was_requested _
+tests/test_conduct_verify.py:327: in test_b4_e_the_python_default_keeps_the_w2a_ending_and_records_that_no_verifier_was_requested
+    assert run.out["outcome"] == "COMPLETE"
+E   AssertionError: assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[a] __
+tests/test_conduct_verify.py:348: in test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind
+    assert run.out["outcome"] == expected, run.one("RUN_FINISHED")
+E   AssertionError: {'attempts': 1, 'blocking_kind': 'ACCEPTANCE_UNVERIFIED', 'complete': False, 'completed': [], ...}
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'VERIFIER_MODIFIED_WORKTREE'
+E     
+E     - VERIFIER_MODIFIED_WORKTREE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[b] __
+tests/test_conduct_verify.py:348: in test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind
+    assert run.out["outcome"] == expected, run.one("RUN_FINISHED")
+E   AssertionError: {'attempts': 1, 'blocking_kind': 'ACCEPTANCE_UNVERIFIED', 'complete': False, 'completed': [], ...}
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'VERIFIER_MODIFIED_WORKTREE'
+E     
+E     - VERIFIER_MODIFIED_WORKTREE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[c] __
+tests/test_conduct_verify.py:348: in test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind
+    assert run.out["outcome"] == expected, run.one("RUN_FINISHED")
+E   AssertionError: {'attempts': 1, 'blocking_kind': 'ACCEPTANCE_UNVERIFIED', 'complete': False, 'completed': [], ...}
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'VERIFIER_FAILED'
+E     
+E     - VERIFIER_FAILED
+E     + ACCEPTANCE_UNVERIFIED
+_ test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[d] __
+tests/test_conduct_verify.py:348: in test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind
+    assert run.out["outcome"] == expected, run.one("RUN_FINISHED")
+E   AssertionError: {'attempts': 1, 'blocking_kind': 'ACCEPTANCE_UNVERIFIED', 'complete': False, 'completed': [], ...}
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'VERIFIER_TIMED_OUT'
+E     
+E     - VERIFIER_TIMED_OUT
+E     + ACCEPTANCE_UNVERIFIED
+_ test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[e] __
+tests/test_conduct_verify.py:348: in test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind
+    assert run.out["outcome"] == expected, run.one("RUN_FINISHED")
+E   AssertionError: {'attempts': 1, 'blocking_kind': 'ACCEPTANCE_UNVERIFIED', 'complete': False, 'completed': [], ...}
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'VERIFIER_LIMIT_REACHED'
+E     
+E     - VERIFIER_LIMIT_REACHED
+E     + ACCEPTANCE_UNVERIFIED
+_ test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[f] __
+tests/test_conduct_verify.py:348: in test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind
+    assert run.out["outcome"] == expected, run.one("RUN_FINISHED")
+E   AssertionError: {'attempts': 1, 'blocking_kind': 'ACCEPTANCE_UNVERIFIED', 'complete': False, 'completed': [], ...}
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'VERIFIER_OUTPUT_INVALID'
+E     
+E     - VERIFIER_OUTPUT_INVALID
+E     + ACCEPTANCE_UNVERIFIED
+_____ test_b5_a_verifier_that_writes_its_own_copy_is_caught_by_the_runtime _____
+tests/test_conduct_verify.py:362: in test_b5_a_verifier_that_writes_its_own_copy_is_caught_by_the_runtime
+    exited = run.one("VERIFIER_EXITED")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_conduct_run_support.py:122: in one
+    assert len(found) == 1, (kind, [r["type"] for r in self.rows])
+E   AssertionError: ('VERIFIER_EXITED', ['CONDUCT_INVOKED', 'FRAME_READ', 'FRAME_COMPILED', 'RUN_LIMITS', 'REPO_GUARD', 'AGENT_START_CALLED', ...])
+E   assert 0 == 1
+E    +  where 0 = len([])
+_ test_b5_a_verifier_that_writes_the_implementers_worktree_or_the_repository_is_caught_by_the_conductor _
+tests/test_conduct_verify.py:370: in test_b5_a_verifier_that_writes_the_implementers_worktree_or_the_repository_is_caught_by_the_conductor
+    guard = impl.one("VERIFIER_WORKTREE_GUARD")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_conduct_run_support.py:122: in one
+    assert len(found) == 1, (kind, [r["type"] for r in self.rows])
+E   AssertionError: ('VERIFIER_WORKTREE_GUARD', ['CONDUCT_INVOKED', 'FRAME_READ', 'FRAME_COMPILED', 'RUN_LIMITS', 'REPO_GUARD', 'AGENT_START_CALLED', ...])
+E   assert 0 == 1
+E    +  where 0 = len([])
+__________ test_b5_the_six_verifier_failures_are_six_different_types ___________
+tests/test_conduct_verify.py:386: in test_b5_the_six_verifier_failures_are_six_different_types
+    assert types == {"VERIFIER_MODIFIED_WORKTREE", "VERIFIER_FAILED", "VERIFIER_TIMED_OUT", "VERIFIER_LIMIT_REACHED",
+E   AssertionError: assert {'ACCEPTANCE_UNVERIFIED'} == {'VERIFIER_FA...ER_TIMED_OUT'}
+E     
+E     Extra items in the left set:
+E     'ACCEPTANCE_UNVERIFIED'
+E     Extra items in the right set:
+E     'VERIFIER_LIMIT_REACHED'
+E     'VERIFIER_FAILED'
+E     'VERIFIER_MODIFIED_WORKTREE'...
+E     
+E     ...Full output truncated (3 lines hidden), use '-vv' to show
+__ test_b5_a_timed_out_verifier_is_stopped_by_its_own_deadline_not_by_a_guess __
+tests/test_conduct_verify.py:394: in test_b5_a_timed_out_verifier_is_stopped_by_its_own_deadline_not_by_a_guess
+    exited = runs["B5d_verifier_exceeds_its_time"].one("VERIFIER_EXITED")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_conduct_run_support.py:122: in one
+    assert len(found) == 1, (kind, [r["type"] for r in self.rows])
+E   AssertionError: ('VERIFIER_EXITED', ['CONDUCT_INVOKED', 'FRAME_READ', 'FRAME_COMPILED', 'RUN_LIMITS', 'REPO_GUARD', 'AGENT_START_CALLED', ...])
+E   assert 0 == 1
+E    +  where 0 = len([])
+_ test_b5_a_usage_limit_sentence_with_no_verdict_is_a_limit_and_not_an_invalid_output _
+tests/test_conduct_verify.py:399: in test_b5_a_usage_limit_sentence_with_no_verdict_is_a_limit_and_not_an_invalid_output
+    exited = runs["B5e_verifier_hits_a_usage_limit"].one("VERIFIER_EXITED")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_conduct_run_support.py:122: in one
+    assert len(found) == 1, (kind, [r["type"] for r in self.rows])
+E   AssertionError: ('VERIFIER_EXITED', ['CONDUCT_INVOKED', 'FRAME_READ', 'FRAME_COMPILED', 'RUN_LIMITS', 'REPO_GUARD', 'AGENT_START_CALLED', ...])
+E   assert 0 == 1
+E    +  where 0 = len([])
+_______ test_b6_the_implementers_self_report_never_reaches_the_verifier ________
+tests/test_conduct_verify.py:406: in test_b6_the_implementers_self_report_never_reaches_the_verifier
+    assert run.out["outcome"] == "COMPLETE"
+E   AssertionError: assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_the_verifier_is_launched_read_only_and_the_implementer_keeps_its_write_sandbox _
+tests/test_conduct_verify.py:448: in test_the_verifier_is_launched_read_only_and_the_implementer_keeps_its_write_sandbox
+    planned = run.one("VERIFIER_LAUNCH_PLANNED")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_conduct_run_support.py:122: in one
+    assert len(found) == 1, (kind, [r["type"] for r in self.rows])
+E   AssertionError: ('VERIFIER_LAUNCH_PLANNED', ['CONDUCT_INVOKED', 'FRAME_READ', 'FRAME_COMPILED', 'RUN_LIMITS', 'REPO_GUARD', 'AGENT_START_CALLED', ...])
+E   assert 0 == 1
+E    +  where 0 = len([])
+________ test_the_same_model_as_the_implementer_is_allowed_and_recorded ________
+tests/test_conduct_verify.py:462: in test_the_same_model_as_the_implementer_is_allowed_and_recorded
+    assert run.out["outcome"] == "HUMAN_JUDGMENT_PENDING", run.one("RUN_FINISHED")
+E   AssertionError: {'attempts': 1, 'blocking_kind': 'ACCEPTANCE_UNVERIFIED', 'complete': False, 'completed': [], ...}
+E   assert 'ACCEPTANCE_UNVERIFIED' == 'HUMAN_JUDGMENT_PENDING'
+E     
+E     - HUMAN_JUDGMENT_PENDING
+E     + ACCEPTANCE_UNVERIFIED
+_________ test_a_verifier_brief_over_the_limit_is_not_cut_and_not_sent _________
+tests/test_conduct_verify.py:477: in test_a_verifier_brief_over_the_limit_is_not_cut_and_not_sent
+    assert run.out["outcome"] == "VERIFIER_INPUT_TOO_LARGE"
+E   AssertionError: assert 'ACCEPTANCE_UNVERIFIED' == 'VERIFIER_INPUT_TOO_LARGE'
+E     
+E     - VERIFIER_INPUT_TOO_LARGE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_findings_that_do_not_fit_the_retry_brief_stop_the_run_instead_of_being_cut _
+tests/test_conduct_verify.py:485: in test_findings_that_do_not_fit_the_retry_brief_stop_the_run_instead_of_being_cut
+    assert run.out["outcome"] == "RETRY_BRIEF_TOO_LARGE"
+E   AssertionError: assert 'ACCEPTANCE_UNVERIFIED' == 'RETRY_BRIEF_TOO_LARGE'
+E     
+E     - RETRY_BRIEF_TOO_LARGE
+E     + ACCEPTANCE_UNVERIFIED
+_ test_a_missing_verifier_program_is_a_start_failure_and_the_candidate_is_discarded _
+tests/test_conduct_verify.py:498: in test_a_missing_verifier_program_is_a_start_failure_and_the_candidate_is_discarded
+    assert run.out["outcome"] == "VERIFIER_START_FAILED"
+E   AssertionError: assert 'ACCEPTANCE_UNVERIFIED' == 'VERIFIER_START_FAILED'
+E     
+E     - VERIFIER_START_FAILED
+E     + ACCEPTANCE_UNVERIFIED
+__ test_the_runtime_reads_the_output_once_more_when_it_finds_the_process_gone __
+tests/test_conduct_verify_supervisor.py:80: in test_the_runtime_reads_the_output_once_more_when_it_finds_the_process_gone
+    assert run.out["outcome"] == "COMPLETE"
+E   AssertionError: assert 'ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED
+=========================== short test summary info ============================
+FAILED tests/test_conduct_routing.py::test_a_routed_run_starts_the_codex_implementer_and_the_claude_verifier_by_the_routers_decisions
+FAILED tests/test_conduct_routing.py::test_R6_one_decision_is_one_row_and_a_decision_row_holds_declared_keys_only
+FAILED tests/test_conduct_routing.py::test_R3_a_verifier_of_another_lineage_is_taken_over_one_of_the_same_lineage_and_the_exclusion_is_in_the_ledger
+FAILED tests/test_conduct_routing.py::test_R3_an_explicit_independent_of_none_lets_the_same_lineage_verify_and_the_ledger_says_so
+FAILED tests/test_conduct_routing.py::test_J11_a_tie_the_records_cannot_settle_puts_the_closed_question_to_the_chooser_and_records_the_testimony
+FAILED tests/test_conduct_routing.py::test_a_table_without_a_verify_role_keeps_the_verification_required_default
+FAILED tests/test_conduct_routing.py::test_R0_a_table_from_another_producer_that_says_everything_runs_like_the_dsls
+FAILED tests/test_conduct_routing.py::test_R3_lineage_unsaid_an_explicit_independent_of_none_runs_and_does_not_make_up_whether_the_lineages_match
+FAILED tests/test_conduct_routing.py::test_R3_lineage_unsaid_a_known_pair_of_lineages_still_runs_and_says_false
+FAILED tests/test_conduct_routing.py::test_R3_role_a_verifier_chosen_by_a_rule_with_no_role_runs_and_the_decision_says_its_role_was_not_declared
+FAILED tests/test_conduct_routing.py::test_R3_relation_a_distinct_relation_between_the_agents_lets_the_run_through_and_the_ledger_cites_it
+FAILED tests/test_conduct_run.py::test_r1_a_five_second_agent_is_awaited_and_the_conductor_runs_the_acceptance_itself
+FAILED tests/test_conduct_run.py::test_r2_each_scenario_ends_in_its_own_type_and_leaves_no_process[S1_runs_long_then_finishes]
+FAILED tests/test_conduct_run.py::test_r2_each_scenario_ends_in_its_own_type_and_leaves_no_process[S2_finishes_at_once_human_judgment_left]
+FAILED tests/test_conduct_run.py::test_r2_each_scenario_ends_in_its_own_type_and_leaves_no_process[S7_claims_done_but_acceptance_fails]
+FAILED tests/test_conduct_run.py::test_r2_control_an_agent_that_ends_at_once_and_does_well_is_complete
+FAILED tests/test_conduct_run.py::test_r2_control_a_usage_limit_sentence_is_not_a_limit_when_the_agent_exited_zero_and_worked
+FAILED tests/test_conduct_run.py::test_r2_prose_lines_are_not_questions_and_do_not_end_the_run
+FAILED tests/test_conduct_run.py::test_r4_a_complete_run_commits_only_inside_the_worktree_and_leaves_the_repository_alone
+FAILED tests/test_conduct_run.py::test_r4_the_state_directory_inside_the_repository_is_not_a_repository_change
+FAILED tests/test_conduct_run_policy.py::test_r3_a_relative_program_is_looked_up_in_the_worktree_not_the_callers_directory
+FAILED tests/test_conduct_run_policy.py::test_r3_stdout_is_capped_in_the_row_but_its_full_size_is_reported
+FAILED tests/test_conduct_run_policy.py::test_r3_the_command_sees_its_own_tmpdir_and_no_bytecode_is_written
+FAILED tests/test_conduct_run_policy.py::test_r3_the_sandbox_stops_a_write_outside_the_worktree_and_allows_one_inside
+FAILED tests/test_conduct_run_policy.py::test_r3_the_sandbox_stops_network_use
+FAILED tests/test_conduct_run_policy.py::test_r3_a_command_over_its_time_limit_is_killed_with_its_children
+FAILED tests/test_conduct_run_policy.py::test_r3_what_the_agent_says_never_adds_or_runs_a_command
+FAILED tests/test_conduct_run_policy.py::test_r3_network_shell_string_and_outside_path_commands_are_refused_with_their_reasons
+FAILED tests/test_conduct_run_policy.py::test_r3_one_failing_criterion_makes_the_run_fail_but_every_criterion_still_runs
+FAILED tests/test_conduct_run_policy.py::test_r3_files_made_by_an_acceptance_command_are_listed_but_not_committed
+FAILED tests/test_conduct_run_policy.py::test_r3_a_command_that_slips_past_the_static_check_is_stopped_by_the_sandbox
+FAILED tests/test_conduct_run_policy.py::test_r3_a_criterion_over_its_time_limit_is_an_error_not_a_failure
+FAILED tests/test_conduct_run_policy.py::test_r3_the_expected_exit_code_is_compared_not_assumed_zero
+FAILED tests/test_conduct_run_settings.py::test_r6_a_real_claude_start_receives_the_write_permission_at_the_end_of_its_arguments
+FAILED tests/test_conduct_run_settings.py::test_the_toy_frame_runs_end_to_end_with_a_scripted_codex
+FAILED tests/test_conduct_verify.py::test_b1_an_honest_implementation_and_a_confirmed_pass_complete_and_the_ledger_shows_every_stage
+FAILED tests/test_conduct_verify.py::test_b2_a_hardcoded_first_attempt_is_sent_back_with_the_re_run_finding_and_the_fix_completes
+FAILED tests/test_conduct_verify.py::test_b2_always_hardcoded_with_the_default_two_retries_ends_as_verification_failed
+FAILED tests/test_conduct_verify.py::test_b2_zero_retries_stops_after_one_implementer_attempt
+FAILED tests/test_conduct_verify.py::test_b3_i_a_failure_without_evidence_is_not_counted_and_nothing_is_sent_back
+FAILED tests/test_conduct_verify.py::test_b3_ii_a_finding_that_does_not_reproduce_is_not_valid
+FAILED tests/test_conduct_verify.py::test_b3_iii_a_pass_that_the_conductors_run_contradicts_is_not_a_pass[1-FAIL-CONTRADICTED]
+FAILED tests/test_conduct_verify.py::test_b3_iii_a_pass_that_the_conductors_run_contradicts_is_not_a_pass[2-FAIL-CONTRADICTED]
+FAILED tests/test_conduct_verify.py::test_b3_iii_a_pass_that_the_conductors_run_contradicts_is_not_a_pass[3-REFUSED-UNVERIFIED]
+FAILED tests/test_conduct_verify.py::test_b3_the_sandbox_is_never_skipped_when_its_self_check_fails
+FAILED tests/test_conduct_verify.py::test_b4_a_without_a_verifier_the_run_stops_after_the_acceptance_and_nothing_is_completed
+FAILED tests/test_conduct_verify.py::test_b4_b_the_cli_requires_a_verifier_by_default
+FAILED tests/test_conduct_verify.py::test_b4_c_a_frame_that_opts_out_completes_and_the_ledger_says_nothing_was_verified
+FAILED tests/test_conduct_verify.py::test_b4_d_the_command_line_can_skip_verification_on_purpose_even_over_a_configured_verifier
+FAILED tests/test_conduct_verify.py::test_b4_e_the_python_default_keeps_the_w2a_ending_and_records_that_no_verifier_was_requested
+FAILED tests/test_conduct_verify.py::test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[a]
+FAILED tests/test_conduct_verify.py::test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[b]
+FAILED tests/test_conduct_verify.py::test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[c]
+FAILED tests/test_conduct_verify.py::test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[d]
+FAILED tests/test_conduct_verify.py::test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[e]
+FAILED tests/test_conduct_verify.py::test_b5_each_verifier_failure_has_its_own_type_and_leaves_nothing_behind[f]
+FAILED tests/test_conduct_verify.py::test_b5_a_verifier_that_writes_its_own_copy_is_caught_by_the_runtime
+FAILED tests/test_conduct_verify.py::test_b5_a_verifier_that_writes_the_implementers_worktree_or_the_repository_is_caught_by_the_conductor
+FAILED tests/test_conduct_verify.py::test_b5_the_six_verifier_failures_are_six_different_types
+FAILED tests/test_conduct_verify.py::test_b5_a_timed_out_verifier_is_stopped_by_its_own_deadline_not_by_a_guess
+FAILED tests/test_conduct_verify.py::test_b5_a_usage_limit_sentence_with_no_verdict_is_a_limit_and_not_an_invalid_output
+FAILED tests/test_conduct_verify.py::test_b6_the_implementers_self_report_never_reaches_the_verifier
+FAILED tests/test_conduct_verify.py::test_the_verifier_is_launched_read_only_and_the_implementer_keeps_its_write_sandbox
+FAILED tests/test_conduct_verify.py::test_the_same_model_as_the_implementer_is_allowed_and_recorded
+FAILED tests/test_conduct_verify.py::test_a_verifier_brief_over_the_limit_is_not_cut_and_not_sent
+FAILED tests/test_conduct_verify.py::test_findings_that_do_not_fit_the_retry_brief_stop_the_run_instead_of_being_cut
+FAILED tests/test_conduct_verify.py::test_a_missing_verifier_program_is_a_start_failure_and_the_candidate_is_discarded
+FAILED tests/test_conduct_verify_supervisor.py::test_the_runtime_reads_the_output_once_more_when_it_finds_the_process_gone
+68 failed, 109 passed in 44.52s

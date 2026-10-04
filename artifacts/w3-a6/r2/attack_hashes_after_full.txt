@@ -1,0 +1,2 @@
+25b492cb0cd385994e7666a44083387e9e66ac1fea9c6ad3f8c75bed927aebb2  tests/attack/w3a3/r6_48_queries.jsonl
+962492c2457a52401e6493d02adebbf5e4fa9592c1e2e3723ae76b5161111717  tests/attack/w3a3/r6_audit_summary.json

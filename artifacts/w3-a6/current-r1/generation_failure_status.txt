@@ -1,0 +1,4 @@
+gen_ntype True 411793
+gen_role True 1274904
+ntype_statuses {'failed': 207}
+last {'ev': 'end', 'batch': 'b00065_6621b84ad3b2', 'attempt': 3, 'status': 'failed', 'reason': 'EXIT_1', 'code': None, 'sec': 0.197}

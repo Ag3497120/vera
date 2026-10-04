@@ -1,0 +1,126 @@
+{
+  "manifest": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/artifacts/w3-a6/r9/manifest.json",
+  "manifest_sha256": "d9572ecf157a761f099b3e45b13fd77c094ddad95625967958e567c756ffc523",
+  "requested_role_words": 8311,
+  "run1_content_sha256": "72945370d9299600e1beca212fc2ed286940506d47fdd0fb50e403ee7bacb5a9",
+  "run2_content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+  "claim_rates_by_particle": {
+    "が": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 3329,
+        "rate_pct": 40.0553
+      },
+      "v2": {
+        "claimed_words": 5036,
+        "rate_pct": 60.5944
+      },
+      "change_percentage_points": 20.539
+    },
+    "を": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 5145,
+        "rate_pct": 61.9059
+      },
+      "v2": {
+        "claimed_words": 5405,
+        "rate_pct": 65.0343
+      },
+      "change_percentage_points": 3.1284
+    },
+    "に": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 2340,
+        "rate_pct": 28.1555
+      },
+      "v2": {
+        "claimed_words": 4255,
+        "rate_pct": 51.1972
+      },
+      "change_percentage_points": 23.0418
+    },
+    "で": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 363,
+        "rate_pct": 4.3677
+      },
+      "v2": {
+        "claimed_words": 3160,
+        "rate_pct": 38.0219
+      },
+      "change_percentage_points": 33.6542
+    },
+    "へ": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 166,
+        "rate_pct": 1.9974
+      },
+      "v2": {
+        "claimed_words": 398,
+        "rate_pct": 4.7888
+      },
+      "change_percentage_points": 2.7915
+    },
+    "と": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 427,
+        "rate_pct": 5.1378
+      },
+      "v2": {
+        "claimed_words": 909,
+        "rate_pct": 10.9373
+      },
+      "change_percentage_points": 5.7995
+    },
+    "から": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 400,
+        "rate_pct": 4.8129
+      },
+      "v2": {
+        "claimed_words": 1320,
+        "rate_pct": 15.8826
+      },
+      "change_percentage_points": 11.0697
+    },
+    "まで": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 16,
+        "rate_pct": 0.1925
+      },
+      "v2": {
+        "claimed_words": 297,
+        "rate_pct": 3.5736
+      },
+      "change_percentage_points": 3.3811
+    },
+    "より": {
+      "denominator_words": 8311,
+      "numerator_basis": "配置DBに採択された異なる述語語で、その助詞の申告が1件以上ある語数",
+      "run1": {
+        "claimed_words": 6,
+        "rate_pct": 0.0722
+      },
+      "v2": {
+        "claimed_words": 40,
+        "rate_pct": 0.4813
+      },
+      "change_percentage_points": 0.4091
+    }
+  }
+}

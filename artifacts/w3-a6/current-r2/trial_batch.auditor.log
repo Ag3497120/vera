@@ -1,0 +1,58 @@
+artifacts/w3-a6/current-r2/freeze.inputs: OK
+artifacts/w3-a6/current-r2/prereg_time.txt: OK
+artifacts/w3-a6/current-r2/docs_prereg.sha256: OK
+artifacts/w3-a6/current-r2/auditor_run1_rates.txt: OK
+artifacts/w3-a6/current-r2/needs_role_v2.jsonl: OK
+artifacts/w3-a6/current-r2/needs_role_v2.meta.json: OK
+artifacts/w3-a6/current-r2/trial_needs_role_v2.jsonl: OK
+artifacts/w3-a6/current-r2/prompt_role_v2.txt: OK
+artifacts/w3-a6/current-r2/generate_and_collect.sh: OK
+artifacts/w3-a6/current-r2/trial_batch.sh: OK
+tools/gen_coarse_evidence.py: OK
+verantyx/coarse_types.py: OK
+tests/coarse_place/test_coarse_place_types.py: OK
+tests/test_gen_coarse_evidence_pred.py: OK
+tests/coarse_place/test_coarse_place_w3a6_gen.py: OK
+tests/coarse_place/data/w3a6_expect.json: OK
+{"state": "DONE", "calls_total": 1, "calls_this_run": 1, "batches": 1, "batches_ok": 1, "capped": false, "deadline_hit": false, "wall_sec": 67.4}
+{"state": "COLLECTED", "rows": 40, "bad": [], "out_sha256": "702a4ad564b45de2a767a8b293d1306ffe945b209298d30b095139b25780d9fe"}
+{
+ "batch_size": 40,
+ "batches_failed": 0,
+ "batches_ok": 1,
+ "batches_total": 1,
+ "calls": 1,
+ "calls_per_word_answered": 0.025,
+ "calls_per_word_requested": 0.025,
+ "effort": "low",
+ "end_status": {
+  "ok": 1
+ },
+ "failure_reasons": {},
+ "kind": "role",
+ "ledger_sha256": "6aa0e38f893e7121f8793fc5a97b5bd2f78fc3bb86322e0e5486b65a5b5e0d66",
+ "max_calls": 1,
+ "max_retries": 0,
+ "model": "gpt-6-luna",
+ "not_run_cap": 0,
+ "not_run_other": 0,
+ "ok_rate": 1.0,
+ "prompt_template_sha256": "3a94675837b5f5550ecf98687506a7d70169fd0dd19c5040b9bd536500bca70f",
+ "schema_sha256": "2d5a9ed449bfdd4899e13048c4e40ddce895ffaa72b2b77f0702773159ddf5f1",
+ "slots": 1,
+ "sum_call_sec": 67.4,
+ "wall_sec": 67.4,
+ "words_abstained": 1,
+ "words_answered": 40,
+ "words_dup_dropped": 0,
+ "words_foreign_dropped": 0,
+ "words_frame_dup_particle": 0,
+ "words_invalid": 0,
+ "words_missing": 0,
+ "words_requested": 40,
+ "words_role_dup": 0
+}
+で: 20/40 = 50.0%; run1=4.5%; target>run1 (at least 2/40)
+へ: 10/40 = 25.0%; run1=2.1%; target>run1 (at least 1/40)
+から: 11/40 = 27.5%; run1=5.0%; target>run1 (at least 3/40)
+trial_threshold=PASS

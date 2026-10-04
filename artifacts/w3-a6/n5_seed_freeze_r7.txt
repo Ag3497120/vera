@@ -1,0 +1,5 @@
+{
+  "source": "verantyx/coarse_types.py:SEEDS_PRED",
+  "words": 281,
+  "sha256": "34af5824ddb5bbda00ac71a52951a1beb15a85805e3fa0458fa6d1ea20cf4b05"
+}
