@@ -131,7 +131,7 @@ def test_the_expected_types_of_a_role_are_those_of_the_event_cross_table():
     patient = [exp for rows in R.TYPED_FRAMES.values() for role, parts, exp, kind in rows if role == 'patient'][0]
     # Integration of W3-a6 (auditor, 2026-10-05): NOUN_TYPES gained RELATIVE_POSITION (18); the frame types of the reader's rows stay the 17 of FRAME_NOUN_TYPES
     assert set(patient) == set(CT.FRAME_NOUN_TYPES) - {'TIME', 'QUANTITY', 'PLACE'} and len(patient) == 14
-    assert set(EC.NOUN_TYPE_IDS) == set(CT.NOUN_TYPES)
+    assert set(EC.NOUN_TYPE_IDS) == set(CT.FRAME_NOUN_TYPES)      # the reader, the question cross and the routing keep the 17 frame types (W3-a6 ticket: the reader's type table does not change)
 
 
 def test_adjunct_rows_are_exactly_the_time_and_place_rows():
