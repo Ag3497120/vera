@@ -12,6 +12,11 @@ from verantyx import cli
 
 
 R8 = "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/run2"
+# Integration (auditor, 2026-10-04): the suite runs split across two machines and the registered build lives outside the tree, so a machine
+# without it SKIPS the r8-dependent tests with a visible reason instead of failing (same treatment as the other r7/r8-pinned tests).
+import os as _os
+import pytest as _pytest
+pytestmark = _pytest.mark.skipif(not _os.path.isdir(R8), reason="ENV_MISSING[coarse placement r8/run2]")
 VOLATILE = {"ingest_ms", "elapsed_ms"}
 
 
