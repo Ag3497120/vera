@@ -1,0 +1,4 @@
+i2_entry_none.jsonl inputs 4149 readable 286 separated_only=True would_stop 0 []
+i2_entry_none.jsonl inputs 4149 readable 286 separated_only=False would_stop 2 ['山田さんは学生ではない。', '中野区最東端の駅でもある。']
+i2_entry_r8.jsonl inputs 4149 readable 458 separated_only=True would_stop 0 []
+i2_entry_r8.jsonl inputs 4149 readable 458 separated_only=False would_stop 2 ['山田さんは学生ではない。', '中野区最東端の駅でもある。']

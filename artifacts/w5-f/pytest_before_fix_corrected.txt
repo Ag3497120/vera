@@ -1,0 +1,177 @@
+FFFF..FF...........................FFF.FFFFFFFFFFF..FF                   [100%]
+=================================== FAILURES ===================================
+E   AssertionError: [{"id":"A054","category":"after-he","input":"兄が荷車を倉庫へ「も」押した。","roles":{"agent":"兄","patient":"荷車","goal":"倉庫"},"pred_type":"P_ACT"},{"id":"A059","category":"after-he","input":"兄が荷車を倉庫へ「は」押した。","roles":{"agent":"兄","patient":"荷車","goal":"倉庫"},"pred_type":"P_ACT"},{"id":"D01","category":"へ-recipient","input":"店員が店へ注文した。","roles":{"agent":"店員","goal":"店"},"pred_type":"P_ACT"},{"id":"D03","category":"へ-recipient","input":"兄が店へ電話した。","roles":{"agent":"兄","goal":"店"},"pred_type":"P_ACT"},{"id":"D10","category":"from-direction","input":"弟が右から倉庫へ打った。","roles":{"agent":"弟","goal":"倉庫","source":"右"},"pred_type":"P_ACT"}]
+    assert not [{'id': 'A054', 'category': 'after-he', 'input': '兄が荷車を倉庫へ「も」押した。', 'roles': {'agent': '兄', 'patient': '荷車', 'goal': '...10', 'category': 'from-direction', 'input': '弟が右から倉庫へ打った。', 'roles': {'agent': '弟', 'goal': '倉庫', 'source': '右'}, ...}]
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/attack/test_attack_w3b4.py:185: AssertionError: [{"id":"A054","category":"after-he","input":"兄が荷車を倉庫へ「も」押した。","roles":{"agent":"兄","patient":"荷車","goal":"倉庫"},"pred_type":"P_ACT"},{"id":"A059","category":"after-he","input":"兄が荷車を倉庫へ「は」押した。","roles":{"agent":"兄","patient":"荷車","goal":"倉庫"},"pred_type":"P_ACT"},{"id":"D01","category":"へ-recipient","input":"店員が店へ注文した。","roles":{"agent":"店員","goal":"店"},"pred_type":"P_ACT"},{"id":"D03","category":"へ-recipient","input":"兄が店へ電話した。","roles":{"agent":"兄","goal":"店"},"pred_type":"P_ACT"},{"id":"D10","category":"from-direction","input":"弟が右から倉庫へ打った。","roles":{"agent":"弟","goal":"倉庫","source":"右"},"pred_type":"P_ACT"}]
+E   AssertionError: [{"id":"A004","input":"兄が荷車を倉庫へ「さえ」押した。","expected_case":"へ","expected_focus":"さえ"},{"id":"A026","input":"兄が荷車を倉庫へなんか押した。","expected_case":"へ","expected_focus":"なんか"},{"id":"A027","input":"兄が荷車を倉庫へ、なんか押した。","expected_case":"へ","expected_focus":"なんか"},{"id":"A028","input":"兄が荷車を倉庫へ　なんか押した。","expected_case":"へ","expected_focus":"なんか"},{"id":"A029","input":"兄が荷車を倉庫へ「なんか」押した。","expected_case":"へ","expected_focus":"なんか"},{"id":"A030","input":"兄が荷車を倉庫へ なんか 押した。","expected_case":"へ","expected_focus":"なんか"},{"id":"A039","input":"兄が荷車を倉庫へ「ほど」押した。","expected_case":"へ","expected_focus":"ほど"},{"id":"A046","input":"兄が荷車を倉庫へでも押した。","expected_case":"へ","expected_focus":"でも"},{"id":"A050","input":"兄が荷車を倉庫へ でも 押した。","expected_case":"へ","expected_focus":"でも"},{"id":"A054","input":"兄が荷車を倉庫へ「も」押した。","expected_case":"へ","expected_focus":"も"},{"id":"A059","input":"兄が荷車を倉庫へ「は」押した。","expected_case":"へ","expected_focus":"は"},{"id":"C002","input":"兄が荷車をさえ倉庫へ押した。","expected_case":"を","expected_focus":"さえ"},{"id":"C006","input":"兄が荷車をなんか倉庫へ押した。","expected_case":"を","expected_focus":"なんか"},{"id":"C016","input":"兄が工場からなんか倉庫へ走った。","expected_case":"から","expected_focus":"なんか"},{"id":"C020","input":"兄が工場からでも倉庫へ走った。","expected_case":"から","expected_focus":"でも"},{"id":"C026","input":"兄が去年になんか倉庫へ走った。","expected_case":"に","expected_focus":"なんか"},{"id":"C030","input":"兄が去年にでも倉庫へ走った。","expected_case":"に","expected_focus":"でも"},{"id":"C036","input":"兄が国道でなんか倉庫へ走った。","expected_case":"で","expected_focus":"なんか"},{"id":"C038","input":"兄が国道でほど倉庫へ走った。","expected_case":"で","expected_focus":"ほど"}]
+    assert not [{'id': 'A004', 'input': '兄が荷車を倉庫へ「さえ」押した。', 'expected_case': 'へ', 'expected_focus': 'さえ'}, {'id': 'A026', 'input': '兄...ected_focus': 'なんか'}, {'id': 'A030', 'input': '兄が荷車を倉庫へ なんか 押した。', 'expected_case': 'へ', 'expected_focus': 'なんか'}, ...]
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/attack/test_attack_w3b4.py:197: AssertionError: [{"id":"A004","input":"兄が荷車を倉庫へ「さえ」押した。","expected_case":"へ","expected_focus":"さえ"},{"id":"A026","input":"兄が荷車を倉庫へなんか押した。","expected_case":"へ","expected_focus":"なんか"},{"id":"A027","input":"兄が荷車を倉庫へ、なんか押した。","expected_case":"へ","expected_focus":"なんか"},{"id":"A028","input":"兄が荷車を倉庫へ　なんか押した。","expected_case":"へ","expected_focus":"なんか"},{"id":"A029","input":"兄が荷車を倉庫へ「なんか」押した。","expected_case":"へ","expected_focus":"なんか"},{"id":"A030","input":"兄が荷車を倉庫へ なんか 押した。","expected_case":"へ","expected_focus":"なんか"},{"id":"A039","input":"兄が荷車を倉庫へ「ほど」押した。","expected_case":"へ","expected_focus":"ほど"},{"id":"A046","input":"兄が荷車を倉庫へでも押した。","expected_case":"へ","expected_focus":"でも"},{"id":"A050","input":"兄が荷車を倉庫へ でも 押した。","expected_case":"へ","expected_focus":"でも"},{"id":"A054","input":"兄が荷車を倉庫へ「も」押した。","expected_case":"へ","expected_focus":"も"},{"id":"A059","input":"兄が荷車を倉庫へ「は」押した。","expected_case":"へ","expected_focus":"は"},{"id":"C002","input":"兄が荷車をさえ倉庫へ押した。","expected_case":"を","expected_focus":"さえ"},{"id":"C006","input":"兄が荷車をなんか倉庫へ押した。","expected_case":"を","expected_focus":"なんか"},{"id":"C016","input":"兄が工場からなんか倉庫へ走った。","expected_case":"から","expected_focus":"なんか"},{"id":"C020","input":"兄が工場からでも倉庫へ走った。","expected_case":"から","expected_focus":"でも"},{"id":"C026","input":"兄が去年になんか倉庫へ走った。","expected_case":"に","expected_focus":"なんか"},{"id":"C030","input":"兄が去年にでも倉庫へ走った。","expected_case":"に","expected_focus":"でも"},{"id":"C036","input":"兄が国道でなんか倉庫へ走った。","expected_case":"で","expected_focus":"なんか"},{"id":"C038","input":"兄が国道でほど倉庫へ走った。","expected_case":"で","expected_focus":"ほど"}]
+E   AssertionError: [{"id":"D10","input":"弟が右から倉庫へ打った。","forced_direct_type":{"右":"PLACE"},"roles":{"agent":"弟","goal":"倉庫","source":"右"},"control_abstains":true}]
+    assert not [{'id': 'D10', 'input': '弟が右から倉庫へ打った。', 'forced_direct_type': {'右': 'PLACE'}, 'roles': {'agent': '弟', 'goal': '倉庫', 'source': '右'}, ...}]
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/attack/test_attack_w3b4.py:221: AssertionError: [{"id":"D10","input":"弟が右から倉庫へ打った。","forced_direct_type":{"右":"PLACE"},"roles":{"agent":"弟","goal":"倉庫","source":"右"},"control_abstains":true}]
+E   AssertionError: [{"id":"A054","input":"兄が荷車を倉庫へ「も」押した。","roles":{"agent":"兄","patient":"荷車","goal":"倉庫"},"abstain":null},{"id":"A059","input":"兄が荷車を倉庫へ「は」押した。","roles":{"agent":"兄","patient":"荷車","goal":"倉庫"},"abstain":null},{"id":"D10","input":"弟が右から倉庫へ打った。","roles":{"agent":"弟","goal":"倉庫","source":"右"},"abstain":null}]
+    assert not [{'id': 'A054', 'input': '兄が荷車を倉庫へ「も」押した。', 'roles': {'agent': '兄', 'patient': '荷車', 'goal': '倉庫'}, 'abstain': None}, ...: None}, {'id': 'D10', 'input': '弟が右から倉庫へ打った。', 'roles': {'agent': '弟', 'goal': '倉庫', 'source': '右'}, 'abstain': None}]
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/attack/test_attack_w3b4.py:237: AssertionError: [{"id":"A054","input":"兄が荷車を倉庫へ「も」押した。","roles":{"agent":"兄","patient":"荷車","goal":"倉庫"},"abstain":null},{"id":"A059","input":"兄が荷車を倉庫へ「は」押した。","roles":{"agent":"兄","patient":"荷車","goal":"倉庫"},"abstain":null},{"id":"D10","input":"弟が右から倉庫へ打った。","roles":{"agent":"弟","goal":"倉庫","source":"右"},"abstain":null}]
+E   AssertionError: [{"id":"P02","input":"兄が上司から叱られた。","roles":{"agent":"上司","patient":"兄"},"abstain":null},{"id":"P03","input":"兄が右から打った。","roles":{"agent":"兄","source":"右"},"abstain":null},{"id":"P10","input":"兄が失敗を悔やんだ。","roles":{"agent":"兄","patient":"失敗"},"abstain":null},{"id":"P11","input":"兄が穴を掘った。","roles":{"agent":"兄","patient":"穴"},"abstain":null}]
+    assert not [{'id': 'P02', 'input': '兄が上司から叱られた。', 'roles': {'agent': '上司', 'patient': '兄'}, 'abstain': None}, {'id': 'P03', 'inpu... '失敗'}, 'abstain': None}, {'id': 'P11', 'input': '兄が穴を掘った。', 'roles': {'agent': '兄', 'patient': '穴'}, 'abstain': None}]
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/attack/test_attack_w3b4.py:273: AssertionError: [{"id":"P02","input":"兄が上司から叱られた。","roles":{"agent":"上司","patient":"兄"},"abstain":null},{"id":"P03","input":"兄が右から打った。","roles":{"agent":"兄","source":"右"},"abstain":null},{"id":"P10","input":"兄が失敗を悔やんだ。","roles":{"agent":"兄","patient":"失敗"},"abstain":null},{"id":"P11","input":"兄が穴を掘った。","roles":{"agent":"兄","patient":"穴"},"abstain":null}]
+E   AssertionError: {'verdict': 'ANSWER', 'text': '本', 'source': {'family': 'document', 'source': 'linked.md', 'line': 1, 'text': '先生は本を読んだ。', ...}, 'raw_document_line': '先生は[本](https://example.org/book)を読んだ。', ...}
+    assert '先生は本を読んだ。' in '先生は[本](https://example.org/book)を読んだ。\n'
+----------------------------- Captured stdout call -----------------------------
+{"basis_outcome": "ANSWER_HUMAN_BASIS", "raw_document_line": "先生は[本](https://example.org/book)を読んだ。", "source": {"family": "document", "line": 1, "sentence_id": "linked.md#1:1", "source": "linked.md", "text": "先生は本を読んだ。"}, "text": "本", "verdict": "ANSWER"}
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/attack/test_attack_w3c4.py:66: AssertionError: {'verdict': 'ANSWER', 'text': '本', 'source': {'family': 'document', 'source': 'linked.md', 'line': 1, 'text': '先生は本を読んだ。', ...}, 'raw_document_line': '先生は[本](https://example.org/book)を読んだ。', ...}
+E   AssertionError: [('no_ids', 'HUMAN', 'ANSWER_HUMAN_BASIS', {'human': 1, 'generated': 0, 'non_evidence': 0, 'request_text': 0, ...}), (... ('empty_ids', 'HUMAN', 'ANSWER_HUMAN_BASIS', {'human': 1, 'generated': 0, 'non_evidence': 0, 'request_text': 0, ...})]
+    assert False
+     +  where False = all(<generator object test_a3_unverified_memory_sovereign_labels_do_not_make_human_basis.<locals>.<genexpr> at 0x1382cb2e0>)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/attack/test_attack_w5e_a3_sovereign_self_claim.py:46: AssertionError: [('no_ids', 'HUMAN', 'ANSWER_HUMAN_BASIS', {'human': 1, 'generated': 0, 'non_evidence': 0, 'request_text': 0, ...}), (... ('empty_ids', 'HUMAN', 'ANSWER_HUMAN_BASIS', {'human': 1, 'generated': 0, 'non_evidence': 0, 'request_text': 0, ...})]
+E   AssertionError: {"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "だ", "roles": {"entity": "犯人", "value": "太郎と花子"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "copula", "span": [3, 8]}]}
+    assert (not True)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/attack/test_attack_w5e_coordination_copula_and_tomo.py:18: AssertionError: {"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "だ", "roles": {"entity": "犯人", "value": "太郎と花子"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "copula", "span": [3, 8]}]}
+E   AssertionError: {"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "話す", "roles": {"companion": "太郎とも花子"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [8, 10]}]}
+    assert (not True)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/attack/test_attack_w5e_coordination_copula_and_tomo.py:18: AssertionError: {"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": true, "clauses": [{"predicate": "話す", "roles": {"companion": "太郎とも花子"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [], "abstain": null, "unsupported": [], "clause_meta": [{"rule": "frame", "span": [8, 10]}]}
+E   AssertionError: F1 {"CORRECT": 16, "MISREAD": 14}
+      F2 {"CORRECT": 16, "MISREAD": 18}
+      F3 {"ABSTAIN": 12, "CORRECT": 11, "MISREAD": 7}
+      MISREAD {"group": "F1", "id": "W5F-F1-001", "readable": true, "roles": {"agent": "姉", "goal": "駅", "patient": "台車"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-002", "readable": true, "roles": {"agent": "妹", "goal": "港", "patient": "箱"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-003", "readable": true, "roles": {"agent": "父", "goal": "畑", "patient": "箱"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-004", "readable": true, "roles": {"agent": "母", "goal": "広場", "patient": "自転車"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-005", "readable": true, "roles": {"agent": "叔母", "goal": "病院", "patient": "机"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-006", "readable": true, "roles": {"agent": "祖母", "goal": "駅", "patient": "箱", "source": "市場"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-008", "readable": true, "roles": {"agent": "兄", "goal": "広場", "patient": "台車"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-009", "readable": true, "roles": {"agent": "姉", "goal": "港", "patient": "荷物"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-010", "readable": true, "roles": {"agent": "妹", "goal": "駅", "patient": "自転車"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-011", "readable": true, "roles": {"agent": "父", "goal": "工場", "patient": "机", "source": "畑"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-013", "readable": true, "roles": {"agent": "叔父", "goal": "工場", "patient": "荷物"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-014", "readable": true, "roles": {"agent": "姉", "goal": "店", "patient": "台車", "source": "公園"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-015", "readable": true, "roles": {"agent": "兄", "goal": "学校"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-016", "readable": true, "roles": {"agent": "妹", "goal": "市場"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-001", "readable": true, "roles": {"agent": "妹", "goal": "上", "patient": "箱"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-002", "readable": true, "roles": {"agent": "兄", "goal": "前", "patient": "台車"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-003", "readable": true, "roles": {"agent": "姉", "goal": "中", "patient": "箱"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-004", "readable": true, "roles": {"agent": "父", "goal": "先", "patient": "机"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-005", "readable": true, "roles": {"agent": "母", "goal": "後", "patient": "荷物"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-006", "readable": true, "roles": {"agent": "叔母", "goal": "近く", "patient": "箱"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-007", "readable": true, "roles": {"agent": "祖母", "goal": "遠く", "patient": "台車"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-008", "readable": true, "roles": {"agent": "弟", "goal": "辺り", "patient": "荷物"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-009", "readable": true, "roles": {"agent": "兄", "goal": "駅", "patient": "箱", "source": "上"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-010", "readable": true, "roles": {"agent": "姉", "goal": "広場", "patient": "机", "source": "中"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-011", "readable": true, "roles": {"agent": "妹", "goal": "港", "patient": "台車", "source": "前"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-012", "readable": true, "roles": {"agent": "父", "goal": "校庭", "patient": "荷物", "source": "近く"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-013", "readable": true, "roles": {"agent": "兄", "goal": "上"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-014", "readable": true, "roles": {"agent": "姉", "goal": "港", "source": "中"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-015", "readable": true, "roles": {"agent": "弟", "place": "前"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-016", "readable": true, "roles": {"agent": "妹", "place": "近く"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-017", "readable": true, "roles": {"agent": "母", "goal": "駅", "source": "遠く"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-018", "readable": true, "roles": {"agent": "父", "place": "辺り"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-001", "readable": true, "roles": {"entity": "優勝者", "value": "健太と大輔"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-002", "readable": true, "roles": {"entity": "担当", "value": "次郎と美咲"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-003", "readable": true, "roles": {"entity": "会長", "value": "由紀や誠"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-006", "readable": true, "roles": {"entity": "首謀者", "value": "店長や課長"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-007", "readable": true, "roles": {"entity": "窓口", "value": "総務課と経理課"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-008", "readable": true, "roles": {"entity": "責任者", "value": "部長と課長の二人"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-009", "readable": true, "roles": {"entity": "講師", "value": "佐知と花音"}, "status": "MISREAD"}
+      summary {"groups": {"F1": {"CORRECT": 16, "MISREAD": 14}, "F2": {"CORRECT": 16, "MISREAD": 18}, "F3": {"ABSTAIN": 12, "CORRECT": 11, "MISREAD": 7}}, "misread": 39, "mode": "fake", "rows": 94}
+      
+    assert 1 == 0
+     +  where 1 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '/Users/motonisihikoudai/Projects/vera-im...D": 18}, "F3": {"ABSTAIN": 12, "CORRECT": 11, "MISREAD": 7}}, "misread": 39, "mode": "fake", "rows": 94}\n', stderr='').returncode
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:60: AssertionError: F1 {"CORRECT": 16, "MISREAD": 14}
+E   AssertionError: F1 {"ABSTAIN": 30}
+      F2 {"ABSTAIN": 34}
+      F3 {"ABSTAIN": 12, "CORRECT": 11, "MISREAD": 7}
+      MISREAD {"group": "F3", "id": "W5F-F3-001", "readable": true, "roles": {"entity": "優勝者", "value": "健太と大輔"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-002", "readable": true, "roles": {"entity": "担当", "value": "次郎と美咲"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-003", "readable": true, "roles": {"entity": "会長", "value": "由紀や誠"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-006", "readable": true, "roles": {"entity": "首謀者", "value": "店長や課長"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-007", "readable": true, "roles": {"entity": "窓口", "value": "総務課と経理課"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-008", "readable": true, "roles": {"entity": "責任者", "value": "部長と課長の二人"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-009", "readable": true, "roles": {"entity": "講師", "value": "佐知と花音"}, "status": "MISREAD"}
+      summary {"groups": {"F1": {"ABSTAIN": 30}, "F2": {"ABSTAIN": 34}, "F3": {"ABSTAIN": 12, "CORRECT": 11, "MISREAD": 7}}, "misread": 7, "mode": "none", "rows": 94}
+      
+    assert 1 == 0
+     +  where 1 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '/Users/motonisihikoudai/Projects/vera-im...IN": 34}, "F3": {"ABSTAIN": 12, "CORRECT": 11, "MISREAD": 7}}, "misread": 7, "mode": "none", "rows": 94}\n', stderr='').returncode
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:60: AssertionError: F1 {"ABSTAIN": 30}
+E   AssertionError: F1 {"ABSTAIN": 16, "CORRECT": 8, "MISREAD": 6}
+      F2 {"ABSTAIN": 21, "CORRECT": 7, "MISREAD": 6}
+      F3 {"ABSTAIN": 12, "CORRECT": 11, "MISREAD": 7}
+      MISREAD {"group": "F1", "id": "W5F-F1-001", "readable": true, "roles": {"agent": "姉", "goal": "駅", "patient": "台車"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-003", "readable": true, "roles": {"agent": "父", "goal": "畑", "patient": "箱"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-006", "readable": true, "roles": {"agent": "祖母", "goal": "駅", "patient": "箱", "source": "市場"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-008", "readable": true, "roles": {"agent": "兄", "goal": "広場", "patient": "台車"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-014", "readable": true, "roles": {"agent": "姉", "goal": "店", "patient": "台車", "source": "公園"}, "status": "MISREAD"}
+      MISREAD {"group": "F1", "id": "W5F-F1-016", "readable": true, "roles": {"agent": "妹", "goal": "市場"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-003", "readable": true, "roles": {"agent": "姉", "goal": "中", "patient": "箱"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-007", "readable": true, "roles": {"agent": "祖母", "goal": "遠く", "patient": "台車"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-009", "readable": true, "roles": {"agent": "兄", "goal": "駅", "patient": "箱", "source": "上"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-013", "readable": true, "roles": {"agent": "兄", "goal": "上"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-014", "readable": true, "roles": {"agent": "姉", "goal": "港", "source": "中"}, "status": "MISREAD"}
+      MISREAD {"group": "F2", "id": "W5F-F2-017", "readable": true, "roles": {"agent": "母", "goal": "駅", "source": "遠く"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-001", "readable": true, "roles": {"entity": "優勝者", "value": "健太と大輔"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-002", "readable": true, "roles": {"entity": "担当", "value": "次郎と美咲"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-003", "readable": true, "roles": {"entity": "会長", "value": "由紀や誠"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-006", "readable": true, "roles": {"entity": "首謀者", "value": "店長や課長"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-007", "readable": true, "roles": {"entity": "窓口", "value": "総務課と経理課"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-008", "readable": true, "roles": {"entity": "責任者", "value": "部長と課長の二人"}, "status": "MISREAD"}
+      MISREAD {"group": "F3", "id": "W5F-F3-009", "readable": true, "roles": {"entity": "講師", "value": "佐知と花音"}, "status": "MISREAD"}
+      summary {"groups": {"F1": {"ABSTAIN": 16, "CORRECT": 8, "MISREAD": 6}, "F2": {"ABSTAIN": 21, "CORRECT": 7, "MISREAD": 6}, "F3": {"ABSTAIN": 12, "CORRECT": 11, "MISREAD": 7}}, "misread": 19, "mode": "r8", "rows": 94}
+      
+    assert 1 == 0
+     +  where 1 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '/Users/motonisihikoudai/Projects/vera-im...READ": 6}, "F3": {"ABSTAIN": 12, "CORRECT": 11, "MISREAD": 7}}, "misread": 19, "mode": "r8", "rows": 94}\n', stderr='').returncode
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:60: AssertionError: F1 {"ABSTAIN": 16, "CORRECT": 8, "MISREAD": 6}
+E   AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'goal': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+    assert not True
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:98: AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'goal': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E   AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'goal': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+    assert not True
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:98: AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'goal': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E   AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'goal': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+    assert not True
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:98: AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'goal': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E   AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'goal': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+    assert not True
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:98: AssertionError: {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'goal': '倉庫'}, 'polarity': '+', 'tense': 'past', ...}], ...}
+E   AssertionError: ('W5F-F2DE-001', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '職員', 'patient': '荷車', 'place': '上'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+    assert not True
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:116: AssertionError: ('W5F-F2DE-001', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '職員', 'patient': '荷車', 'place': '上'}, 'polarity': '+', 'tense': 'past', ...}], ...})
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'typed_quoted_focus_after_case_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:134: AttributeError: module 'verantyx.semantic_reader' has no attribute 'typed_quoted_focus_after_case_ja'
+E   AttributeError: module 'verantyx.semantic_reader' has no attribute 'typed_quoted_focus_after_case_ja'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:147: AttributeError: module 'verantyx.semantic_reader' has no attribute 'typed_quoted_focus_after_case_ja'
+E   AssertionError: no_ids
+    assert 'human' == 'unknown_origin'
+      
+      - unknown_origin
+      + human
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_w5f.py:45: AssertionError: no_ids
+E   assert 4 == 5
+     +  where 4 = bp.CLASSIFY_VERSION
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_basis_policy_w5f.py:86: assert 4 == 5
+E   AssertionError: assert 3 == 1
+     +  where 3 = len({'documents': [Document(source='w5f_document.md', text='読書記録\n\n先生は本を読んだ。\n', published='')], 'loaded': 1, 'skipped': []})
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_ask_question_cross_w5f.py:32: AssertionError: assert 3 == 1
+=========================== short test summary info ============================
+FAILED tests/attack/test_attack_w3b4.py::test_the_150_preregistered_safety_cases_are_not_returned_as_readings
+FAILED tests/attack/test_attack_w3b4.py::test_the_gate_catches_registered_adjacent_focus_particles_even_across_markers
+FAILED tests/attack/test_attack_w3b4.py::test_a_false_direct_placement_can_turn_unregistered_roles_into_patient_or_agent_reads
+FAILED tests/attack/test_attack_w3b4.py::test_the_real_r8_run2_entry_has_no_preregistered_misread
+FAILED tests/attack/test_attack_w3b4.py::test_the_twelve_examples_from_the_attack_instruction_do_not_produce_lossy_reads_on_r8
+FAILED tests/attack/test_attack_w3c4.py::test_markdown_link_evidence_text_is_a_literal_source_substring
+FAILED tests/attack/test_attack_w5e_a3_sovereign_self_claim.py::test_a3_unverified_memory_sovereign_labels_do_not_make_human_basis
+FAILED tests/attack/test_attack_w5e_coordination_copula_and_tomo.py::test_b_a_coordinated_noun_phrase_is_not_returned_as_one_role_value[\u72af\u4eba\u306f\u592a\u90ce\u3068\u82b1\u5b50\u3060\u3002]
+FAILED tests/attack/test_attack_w5e_coordination_copula_and_tomo.py::test_b_a_coordinated_noun_phrase_is_not_returned_as_one_role_value[\u592a\u90ce\u3068\u3082\u82b1\u5b50\u3068\u3082\u8a71\u3057\u305f\u3002]
+FAILED tests/test_semantic_read_w5f.py::test_registered_reading_data_has_no_misread[fake]
+FAILED tests/test_semantic_read_w5f.py::test_registered_reading_data_has_no_misread[none]
+FAILED tests/test_semantic_read_w5f.py::test_registered_reading_data_has_no_misread_with_r8
+FAILED tests/test_semantic_read_w5f.py::test_quoted_focus_cases_abstain_with_the_registered_reason[fake-A054]
+FAILED tests/test_semantic_read_w5f.py::test_quoted_focus_cases_abstain_with_the_registered_reason[fake-A059]
+FAILED tests/test_semantic_read_w5f.py::test_quoted_focus_cases_abstain_with_the_registered_reason[r8-A054]
+FAILED tests/test_semantic_read_w5f.py::test_quoted_focus_cases_abstain_with_the_registered_reason[r8-A059]
+FAILED tests/test_semantic_read_w5f.py::test_relational_filler_boundary_with_the_place_de_rows_temporarily_restored
+FAILED tests/test_semantic_read_w5f.py::test_the_new_focus_gate_leaves_only_the_registered_morphological_misses
+FAILED tests/test_semantic_read_w5f.py::test_new_gate_functions_use_only_registered_pos_particle_and_reason_literals
+FAILED tests/test_basis_policy_w5f.py::test_frozen_self_claim_shapes_abstain_without_answering
+FAILED tests/test_basis_policy_w5f.py::test_classification_version_moves_only_to_five
+FAILED tests/test_ask_question_cross_w5f.py::test_sources_match_the_loaded_markdown_text_and_loaded_line_numbers
+22 failed, 32 passed in 4.76s
+exit=1

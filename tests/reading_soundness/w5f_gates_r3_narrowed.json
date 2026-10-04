@@ -1,0 +1,13 @@
+{
+  "note": "W5-f r3 review r1 (must-fix 1): registered abstain rows of w5f_gates_r3.jsonl whose public-entry reasons do NOT carry the F-1 gate prefix, because another refusal stops the row first. 'stopped_by' is the reason prefix the entry actually prints (all three modes); 'gate' is the prefix the F-1 gate function returns when called directly with separated_only=True (null = the gate does not fire: a known hole).",
+  "rows": {
+    "W5F-F1-103": {"stopped_by": "NO_SUPPORTED_CLAUSE", "gate": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:から", "why": "だけ (quantifier) leaves no supported clause"},
+    "W5F-F1-106": {"stopped_by": "QUANTIFIER_NOT_MAPPED", "gate": "PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:から", "why": "しか is a quantifier particle not mapped"},
+    "W5F-F1-108": {"stopped_by": "RECIPIENT_TYPE_UNDETERMINED", "gate": "PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:へ", "why": "へ-goal of a P_ACT verb stops at the type stage even without the quote (the false-placement control rows 122/123/125/126 stop the same way)"},
+    "W5F-F1-109": {"stopped_by": "RECIPIENT_TYPE_UNDETERMINED", "gate": "PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:へ", "why": "same as 108"},
+    "W5F-F1-111": {"stopped_by": "RECIPIENT_TYPE_UNDETERMINED", "gate": "PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:へ", "why": "same as 108"},
+    "W5F-F1-112": {"stopped_by": "RECIPIENT_TYPE_UNDETERMINED", "gate": "PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:へ", "why": "same as 108"},
+    "W5F-F1-113": {"stopped_by": "UNSUPPORTED_CLAUSE", "gate": "PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:から", "why": "the quoted 「ゆく」 is read as a second predicate"},
+    "W5F-F1-114": {"stopped_by": "NO_SUPPORTED_CLAUSE", "gate": null, "why": "fugashi reads で in 「で、さえ」 as an auxiliary verb, so the F-1 gate (case particle) does not apply: KNOWN HOLE, refused for another reason"}
+  }
+}

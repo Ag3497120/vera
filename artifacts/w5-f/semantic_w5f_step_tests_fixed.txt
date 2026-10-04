@@ -1,0 +1,17 @@
+........F.F                                                              [100%]
+=================================== FAILURES ===================================
+E   AssertionError: ('W5F-F2DE-004', {'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': None, ...})
+    assert None is not None
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:114: AssertionError: ('W5F-F2DE-004', {'w3b1_trigger': None, 'w3b1': None, 'w3b2_trigger': None, 'w3b2': None, ...})
+E   AssertionError: ('typed_relational_filler_ja', {'RELATIONAL_NOUN_FILLER:%s', 'roles'})
+    assert {'RELATIONAL_...ce', 'で', ...} <= {'COORDINATIO...CASE:%s', ...}
+      
+      Extra items in the left set:
+      'roles'
+      'RELATIONAL_NOUN_FILLER:%s'
+/Users/motonisihikoudai/Projects/vera-impl/wt/W5-f-S/tests/test_semantic_read_w5f.py:156: AssertionError: ('typed_relational_filler_ja', {'RELATIONAL_NOUN_FILLER:%s', 'roles'})
+=========================== short test summary info ============================
+FAILED tests/test_semantic_read_w5f.py::test_relational_filler_boundary_with_the_place_de_rows_temporarily_restored
+FAILED tests/test_semantic_read_w5f.py::test_new_gate_functions_use_only_registered_pos_particle_and_reason_literals
+2 failed, 9 passed in 1.68s
+exit=1

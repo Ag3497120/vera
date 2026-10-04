@@ -1458,6 +1458,34 @@ def _coordination_marks(sentence):
     return marks
 
 
+def _coordination_in_value(sentence):
+    """W5-f (docs 10H): noun-like と・や・か links whose following token is noun-like, even before a copula."""
+    if not any(p in sentence for p in _COORDINATING_PARTICLES): return []
+    toks = _tokens(sentence); compound = _compound_token_indices(toks); marks = []
+    for i, (word, start, end) in enumerate(toks):
+        if i == 0 or i in compound or word.feature.pos1 != '助詞' or word.surface not in _COORDINATING_PARTICLES: continue
+        if toks[i - 1][0].feature.pos1 not in _COORDINATION_BEFORE or i + 1 >= len(toks): continue
+        if toks[i + 1][0].feature.pos1 not in _COORDINATION_RUN: continue
+        marks.append((start, end, word.surface))
+    return marks
+
+
+def _coordination_tomo(sentence):
+    """W5-f (docs 10H): positions of adjacent noun-like と+も particles or the とも suffix."""
+    if 'とも' not in sentence and 'と' not in sentence: return []
+    toks = _tokens(sentence); compound = _compound_token_indices(toks); marks = []
+    for i, (word, start, end) in enumerate(toks):
+        if i == 0 or i in compound or toks[i - 1][0].feature.pos1 not in _COORDINATION_BEFORE: continue
+        if toks[i - 1][2] != start: continue
+        if word.feature.pos1 == '接尾辞' and word.surface == 'とも':
+            marks.append((start, end)); continue
+        if word.feature.pos1 != '助詞' or word.feature.pos2 != '格助詞' or word.surface != 'と' or i + 1 >= len(toks): continue
+        next_word, next_start, next_end = toks[i + 1]
+        if next_start == end and next_word.feature.pos1 == '助詞' and next_word.feature.pos2 == '係助詞' and next_word.surface == 'も':
+            marks.append((start, next_end))
+    return marks
+
+
 def _coordination_gate(clause):
     """W5-e: a clause stays visible as unsupported (never deleted) when it holds a coordination or a disjunction: a role whose syntactic reading marked it
     (`gold_parallel:choice` / `gold_parallel:parallel`, read here, not made), or a joining particle (`_coordination_marks`) inside the clause body.
@@ -1470,6 +1498,14 @@ def _coordination_gate(clause):
     body = clause.body_span or clause.span
     for start, _end, surface in _coordination_marks(clause.span.text):
         if body.start <= clause.span.start + start < body.end: reasons.append(_COORDINATING_PARTICLES[surface])
+    for start, end, surface in _coordination_in_value(clause.span.text):
+        absolute_start, absolute_end = clause.span.start + start, clause.span.start + end
+        if any(role.name in ('value', 'entity') and role.span.start <= absolute_start and absolute_end <= role.span.end
+               for role in clause.roles):
+            reasons.append(_COORDINATING_PARTICLES[surface])
+    tomo_count = sum(1 for start, _end in _coordination_tomo(clause.span.text)
+                     if body.start <= clause.span.start + start < body.end)
+    if tomo_count >= 2: reasons.append(_COORDINATION_REASON)
     new = tuple(dict.fromkeys(r for r in reasons if r not in clause.unsupported))
     return replace(clause, unsupported=(*clause.unsupported, *new)) if new else clause
 
@@ -2836,12 +2872,71 @@ def typed_focus_after_case_ja(toks, clause):
     return None
 
 
+def _quoted_focus_after_case_reason(toks, lo, hi, text, *, separated_only=False):
+    """W5-f F-1 r3 (docs 10H.e): after a case particle, skip symbols/blanks; refuse a 1-2 char symbol-bracketed fragment or a focus particle."""
+    inside = [t for t in toks if t[1] >= lo and t[2] <= hi]
+    for offset, (word, _start, _end) in enumerate(inside):
+        if word.feature.pos1 != '助詞' or word.feature.pos2 != '格助詞': continue
+        j = offset + 1
+        while j < len(inside) and inside[j][0].feature.pos1 in ('補助記号', '空白', '記号'):
+            opener = inside[j][0]
+            if opener.feature.pos1 == '記号' or (opener.feature.pos1 == '補助記号' and opener.feature.pos2 not in ('読点', '句点', '括弧閉')):
+                if opener.feature.pos2 == '括弧開':
+                    k = next((k for k in range(j + 1, len(inside)) if inside[k][0].feature.pos1 == '補助記号' and inside[k][0].feature.pos2 == '括弧閉'), None)
+                else:
+                    k = next((k for k in range(j + 1, len(inside)) if inside[k][0].surface == opener.surface), None)
+                if k is not None:
+                    fragment = text[inside[j][2] - lo:inside[k][1] - lo].strip()
+                    if 1 <= len(fragment) <= 2:
+                        return 'PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:%s' % word.surface
+            j += 1
+        if j >= len(inside): continue
+        separated = j > offset + 1 or inside[j][1] > inside[j - 1][2]
+        first = inside[j][0]
+        if first.feature.pos1 == '助詞' and first.feature.pos2 in ('係助詞', '副助詞') and (separated or not separated_only):
+            return 'PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:%s:%s' % (word.surface, first.surface)
+    return None
+
+
+def typed_quoted_focus_after_case_ja(toks, clause):
+    """W5-f (docs 10H): refuse a short bracketed fragment after a case particle, or a focus particle past quote symbols."""
+    return _quoted_focus_after_case_reason(toks, clause.span.start, clause.span.end, clause.span.text)
+
+
+def _quoted_focus_public_gate(entry, text, out):
+    """W5-f r2: preserve quote-gate refusals on the public path after direct and typed reading."""
+    reason = _quoted_focus_after_case_reason(_tokens(text), 0, len(text), text, separated_only=True)
+    if reason is None or not out.get('readable'): return out
+    unsupported = list(out.get('unsupported') or ())
+    clauses, meta = out.get('clauses') or (), out.get('clause_meta') or ()
+    predicate = clauses[0].get('predicate') if len(clauses) == 1 else None
+    span = meta[0].get('span') if len(meta) == 1 else [0, len(text)]
+    record = {'predicate': predicate, 'span': span, 'reasons': [reason]}
+    if not any(reason in item.get('reasons', ()) for item in unsupported if isinstance(item, dict)):
+        unsupported.append(record)
+    return entry._refusal('ja', 'not_supported', [reason], unsupported)
+
+
+def typed_relational_filler_ja(toks, typed):
+    """W5-f r3: retracted by the auditor (2026-10-04 13:30); not called. Kept as the record of K261 (docs 10H.e)."""
+    for name, role in (typed.get('roles') or ()):
+        if name not in ('place', 'goal', 'source') and _particle_after(toks, role.span.end) != 'で': continue
+        head = next((t[0] for t in reversed(toks) if t[1] >= role.span.start and t[2] == role.span.end), None)
+        if head is None: continue
+        feature = head.feature
+        if (feature.pos1, feature.pos2, feature.pos3) == ('名詞', '普通名詞', '副詞可能'):
+            return 'RELATIONAL_NOUN_FILLER:%s' % name
+    return None
+
+
 def _typed_plan_focus_gated(plan):
     """K186: the plan `plan` (same arguments), then the gate on what it decided to read. The plan itself is kept as the attribute `ungated`."""
     def gated(clause, toks, query, *, voice, written, strip, role_map):
         typed, why = plan(clause, toks, query, voice=voice, written=written, strip=strip, role_map=role_map)
         if typed is None: return typed, why
         focus = typed_focus_after_case_ja(toks, clause)
+        if focus: return None, focus
+        focus = typed_quoted_focus_after_case_ja(toks, clause)
         if focus: return None, focus
         return typed, why
     gated.__name__ = plan.__name__ + '_focus_gated'
@@ -3224,6 +3319,7 @@ def w1a5_wrap(base):
                 result = _w1a5_reread(E, text, out, record)
         finally:
             W1A5_DEPTH[0] = 0
+        result = _quoted_focus_public_gate(E, text, result)
         W1A5_LAST.clear(); W1A5_LAST.update(record)
         return result
     return wrapped

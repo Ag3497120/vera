@@ -1,0 +1,4 @@
+F1 {"ABSTAIN": 14, "CORRECT": 16}
+F2 {"ABSTAIN": 18, "CORRECT": 16}
+F3 {"ABSTAIN": 19, "CORRECT": 11}
+summary {"groups": {"F1": {"ABSTAIN": 14, "CORRECT": 16}, "F2": {"ABSTAIN": 18, "CORRECT": 16}, "F3": {"ABSTAIN": 19, "CORRECT": 11}}, "misread": 0, "mode": "fake", "rows": 94}

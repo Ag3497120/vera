@@ -1,0 +1,32 @@
+{"id": "W5F-F1-101", "group": "F1", "text": "兄が荷車を倉庫から も押した。", "expect": "abstain", "placement": null}
+{"id": "W5F-F1-102", "group": "F1", "text": "姉が箱を港から  は蹴った。", "expect": "abstain", "placement": null}
+{"id": "W5F-F1-103", "group": "F1", "text": "弟が荷物を駅から　だけ引いた。", "expect": "abstain", "placement": null}
+{"id": "W5F-F1-104", "group": "F1", "text": "母が机を広場から、こそ押した。", "expect": "abstain", "placement": null}
+{"id": "W5F-F1-105", "group": "F1", "text": "父が箱を畑から・すら叩いた。", "expect": "abstain", "placement": null}
+{"id": "W5F-F1-106", "group": "F1", "text": "叔母が荷車を店から…しか戻した。", "expect": "abstain", "placement": null}
+{"id": "W5F-F1-107", "group": "F1", "text": "祖母が台車を市場から〜まで押した。", "expect": "abstain", "placement": null}
+{"id": "W5F-F1-108", "group": "F1", "text": "妹が箱を港へ\"も\"蹴った。", "expect": "abstain", "placement": {"妹": "PERSON", "箱": "ARTIFACT", "港": "PLACE", "蹴る": "P_ACT"}}
+{"id": "W5F-F1-109", "group": "F1", "text": "兄が荷物を工場へ'は'引っ張った。", "expect": "abstain", "placement": {"兄": "PERSON", "荷物": "ARTIFACT", "工場": "PLACE", "引っ張る": "P_ACT"}}
+{"id": "W5F-F1-110", "group": "F1", "text": "姉が台車を駅から[も]押した。", "expect": "abstain", "placement": {"姉": "PERSON", "台車": "ARTIFACT", "駅": "PLACE", "押す": "P_ACT"}}
+{"id": "W5F-F1-111", "group": "F1", "text": "弟が机を公園へ★は★戻した。", "expect": "abstain", "placement": {"弟": "PERSON", "机": "ARTIFACT", "公園": "PLACE", "戻す": "P_ACT"}}
+{"id": "W5F-F1-112", "group": "F1", "text": "父が箱を畑へ 「も」 叩いた。", "expect": "abstain", "placement": {"父": "PERSON", "箱": "ARTIFACT", "畑": "PLACE", "叩く": "P_ACT"}}
+{"id": "W5F-F1-113", "group": "F1", "text": "叔父が荷車を店から「ゆく」押した。", "expect": "abstain", "placement": {"叔父": "PERSON", "荷車": "ARTIFACT", "店": "PLACE", "押す": "P_ACT"}}
+{"id": "W5F-F1-114", "group": "F1", "text": "兄が広場で、さえ箱を押した。", "expect": "abstain", "placement": {"兄": "PERSON", "広場": "PLACE", "箱": "ARTIFACT", "押す": "P_ACT"}}
+{"id": "W5F-F1-115", "group": "F1", "text": "兄が荷車を倉庫から押した。", "expect": "read_or_abstain", "placement": null, "roles": {"agent": "兄", "patient": "荷車", "source": "倉庫"}}
+{"id": "W5F-F1-116", "group": "F1", "text": "姉が箱を港から蹴った。", "expect": "read_or_abstain", "placement": null, "roles": {"agent": "姉", "patient": "箱", "source": "港"}}
+{"id": "W5F-F1-117", "group": "F1", "text": "弟が荷物を駅から引いた。", "expect": "read_or_abstain", "placement": null, "roles": {"agent": "弟", "patient": "荷物", "source": "駅"}}
+{"id": "W5F-F1-118", "group": "F1", "text": "母が机を広場から押した。", "expect": "read_or_abstain", "placement": null, "roles": {"agent": "母", "patient": "机", "source": "広場"}}
+{"id": "W5F-F1-119", "group": "F1", "text": "父が箱を畑から叩いた。", "expect": "read_or_abstain", "placement": null, "roles": {"agent": "父", "patient": "箱", "source": "畑"}}
+{"id": "W5F-F1-120", "group": "F1", "text": "叔母が荷車を店から戻した。", "expect": "read_or_abstain", "placement": null, "roles": {"agent": "叔母", "patient": "荷車", "source": "店"}}
+{"id": "W5F-F1-121", "group": "F1", "text": "祖母が台車を市場から押した。", "expect": "read_or_abstain", "placement": null, "roles": {"agent": "祖母", "patient": "台車", "source": "市場"}}
+{"id": "W5F-F1-122", "group": "F1", "text": "妹が箱を港へ蹴った。", "expect": "read_or_abstain", "placement": {"妹": "PERSON", "箱": "ARTIFACT", "港": "PLACE", "蹴る": "P_ACT"}, "roles": {"agent": "妹", "patient": "箱", "goal": "港"}}
+{"id": "W5F-F1-123", "group": "F1", "text": "兄が荷物を工場へ引っ張った。", "expect": "read_or_abstain", "placement": {"兄": "PERSON", "荷物": "ARTIFACT", "工場": "PLACE", "引っ張る": "P_ACT"}, "roles": {"agent": "兄", "patient": "荷物", "goal": "工場"}}
+{"id": "W5F-F1-124", "group": "F1", "text": "姉が台車を駅から押した。", "expect": "read_or_abstain", "placement": {"姉": "PERSON", "台車": "ARTIFACT", "駅": "PLACE", "押す": "P_ACT"}, "roles": {"agent": "姉", "patient": "台車", "source": "駅"}}
+{"id": "W5F-F1-125", "group": "F1", "text": "弟が机を公園へ戻した。", "expect": "read_or_abstain", "placement": {"弟": "PERSON", "机": "ARTIFACT", "公園": "PLACE", "戻す": "P_ACT"}, "roles": {"agent": "弟", "patient": "机", "goal": "公園"}}
+{"id": "W5F-F1-126", "group": "F1", "text": "父が箱を畑へ叩いた。", "expect": "read_or_abstain", "placement": {"父": "PERSON", "箱": "ARTIFACT", "畑": "PLACE", "叩く": "P_ACT"}, "roles": {"agent": "父", "patient": "箱", "goal": "畑"}}
+{"id": "W5F-F1-127", "group": "F1", "text": "叔父が荷車を店から押した。", "expect": "read_or_abstain", "placement": {"叔父": "PERSON", "荷車": "ARTIFACT", "店": "PLACE", "押す": "P_ACT"}, "roles": {"agent": "叔父", "patient": "荷車", "source": "店"}}
+{"id": "W5F-F1-128", "group": "F1", "text": "兄が広場で箱を押した。", "expect": "read_or_abstain", "placement": {"兄": "PERSON", "広場": "PLACE", "箱": "ARTIFACT", "押す": "P_ACT"}, "roles": {"agent": "兄", "patient": "箱", "place": "広場"}}
+{"id": "W5F-F1-129", "group": "F1", "text": "兄が荷物を駅から 引いた。", "expect": "read_or_abstain", "placement": null, "roles": {"agent": "兄", "patient": "荷物", "source": "駅"}}
+{"id": "W5F-F1-130", "group": "F1", "text": "姉が箱を、駅から蹴った。", "expect": "read_or_abstain", "placement": null, "roles": {"agent": "姉", "patient": "箱", "source": "駅"}}
+{"id": "W5F-F1-131", "group": "F1", "text": "姉が机を店から 、は戻した。", "expect": "abstain", "placement": null}
+{"id": "W5F-F1-132", "group": "F1", "text": "妹が荷車を広場から「も」叩いた。", "expect": "abstain", "placement": {"妹": "PERSON", "荷車": "ARTIFACT", "広場": "PLACE", "叩く": "P_ACT"}}

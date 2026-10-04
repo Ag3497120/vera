@@ -4219,3 +4219,313 @@ def test_the_misread_sentences_of_round_1_and_of_the_plan_are_refused():
      assert explain_of(text, {**ok, '駅': noun('PLACE', ('role@jawiki',))})['w3b2'] == 'READ'            # an argument (goal) is not asked for evidence beyond role@: the gate is for adjuncts
      out = SR.read(text, placement=F.MapQuery(ok))
 ```
+
+## 10H. W5-f: 攻撃第 6 波の修正（読解の側） — 引用符の中の係助詞・方向の語・繋辞の値の並立と「とも…とも」（事前登録 K260〜）
+
+<!-- w5f-prereg:begin -->
+登録日時: 2026-10-04 08:40:13 +0900（`date '+%F %T %z'` の出力。記録は `artifacts/w5-f/prereg_time.txt`）。直前のコミットは `0041606`（dev。W3-b5 統合済み）。
+この時点で `tests/reading_soundness/w5f_gates.jsonl`・`w5f_gates_check.py`・`tests/test_semantic_read_w5f.py`・`tests/attack/` の W5-f の写しは存在しない（製品コードも基点のまま）。この登録より前に作ったのは、品詞の実測（`artifacts/w5-f/pos_tags.txt`。`scripts/pos.py` の出力）と変更前の測定（`artifacts/w5-f/before/`）だけ。
+出典: 中間職の指示書 `.claude/vera-audit/review-impl/W5-f/plan.md` §2 D1〜D3・D5・D8 と、チケット `W5-f_attack_fixes_6.prompt.md`、攻撃の報告（`attacks/reports/W3-b4/`・`W5-e/`・`W3-c4/`、`WAVE6_SUMMARY.md`）。番号は K260〜（事前登録・測定・既知の穴）、判断記録は H260〜。
+
+### K260 F-1: 格助詞の直後の、引用符で括った 1〜2 字（係助詞の門の補い）
+- 命中: 「兄が荷車を倉庫へ「も」押した。」。引用符で括った も・は は形態素が `記号` になり、K186 の門（格助詞の直後の `係助詞`／`副助詞`。`補助記号`・`空白` だけを飛ばす）を抜けて、`goal=倉庫` と読まれる。
+- 規則（新しい関数 `typed_quoted_focus_after_case_ja(toks, clause)`。品詞と隣接だけ。語の一覧なし）: 節の範囲のトークンで、`助詞/格助詞` のトークンごとに
+  - (a) その後ろで品詞の大分類が `補助記号`・`空白`・`記号` でない最初のトークンが `助詞/係助詞` か `助詞/副助詞` → `PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:<格助詞>:<助詞>`（K186 と同じ理由の形。飛ばすものに `記号` を足しただけ）。
+  - (b) その後ろを `空白` と `補助記号`（`括弧開`・`括弧閉` 以外）だけ飛ばした最初のトークンが `補助記号/括弧開` で、その後ろの最初の `補助記号/括弧閉` までの中身が **1〜2 字**（文字数。トークンの数・品詞は問わない。引用符の中身を読む規則は足さない）→ `PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:<格助詞>`。括られた断片が格助詞に続く形は読まない、という狭め。
+- 置き場所: `typed_focus_after_case_ja`（K186。本体の文字列定数を `tests/test_semantic_read_w3b4.py` が閉じた集合で固定しているので **書き換えない**）の直後、`_typed_plan_focus_gated` の前に新しい関数として足し、`_typed_plan_focus_gated` の内側の `gated` が K186 の門のあとに呼ぶ。名前の差し替えは足さない（W3-b4・W3-b5 のテストが末尾の代入・`ungated`・`__name__` を固定）。
+- 掛かる範囲: 型の段（経路 U・U3。`typed_plan_u_ja`・`typed_plan_u_w3b2_ja`）の読みだけ。経路 S4 は K186 と同じく門の外（K188 と同じ既知の穴）。
+- 代価（正読の減少。誤読ではない）: 「が「はい」と」「を「倉庫」へ」のように格助詞の直後に 1〜2 字の括弧があると、中身が何であれ棄権する。
+
+### K261 F-2: 方向・位置の語と から・へ・で（読解器の門。品詞だけ）
+- 命中: 「弟が右から倉庫へ打った。」で `source=右`（r8 では 右＝PLACE direct）。W3-b4 の で（手段）・W3-b5 の に の反例も同じ種類の語（相対位置・方向の語）に集中する。
+- 規則（新しい関数 `typed_relational_filler_ja(toks, typed)`。配置の側ではなく、型の段が読みを決めたあとの門）: 型の読みの `roles`（`(役割名, role)` の並び）のうち、役割名が `place`・`goal`・`source` のいずれか、または役割の直後の助詞が `で` であるものについて、充填物の主辞（役割の終わりで終わるトークン）の品詞が `名詞/普通名詞/副詞可能`（UniDic の細分類 `pos1/pos2/pos3`。`lemma`・`goshu`・表層は見ない）なら `RELATIONAL_NOUN_FILLER:<役割名>` で棄権する。語の一覧は作らない。
+- 「候補にしない」を「計画が決めたあとに棄権」で作る理由: 計画は役割ごとに行をちょうど 1 つ選ぶので、その充填物を候補から外せば行が残らず棄権になり、結果は同じ。計画の本体・W3-b5 の行・表を変えずに済む（チケットが禁止）。`time`／`に` の行は対象外（チケットの列挙に無い。時の語の多くが 副詞可能 なので入れると時の読みを全部止める）。
+- **品詞の実測（`artifacts/w5-f/pos_tags.txt`。fugashi＋UniDic。`scripts/pos.py` の出力そのまま）**: `副詞可能` なのは 前・上・中・先・朝 など。**右・左・後ろ・下・横・隣・向こう・東・北・外・奥・手前・側・裏・表・脇・正面・背後・内側、および 段差・坂・口 はすべて `名詞/普通名詞/一般`**（店・倉庫・畑と同じ分類）。UniDic の素性（pos1〜pos4）に方向・位置の区別は無い。
+- **宣言 K-F2**: したがって、チケットの規則（品詞の細分類だけ・語の一覧を作らない）では **右・左・後ろ などは捕まらない**。W3-b4 の D10（弟が右から倉庫へ打った。）・束 d（右で…）・W3-b5 の反例（右・段差・坂 など）は、この門では棄権しない。I1 の D10 と I2 の「F-2 の門で束 d（右）・W3-b5 の反例の型が棄権する」は **このチケットの規則では満たせない**。捕まらない語を一覧で足すことはしない（`AGENTS.md`・チケットの禁止）。棄権の範囲は 副詞可能 に狭く保つ。直す道は監査役の判断（(i) K165 の作法で `P_ACT` の `source/から` 行を外す。表を触る。(ii) 配置側の W3-a6: 相対位置の語に `RELATIONAL_PLACE` の型を立てる／MULTIPLE にする。このチケットでは `$T` の複製で測るだけ）。右 が通ることをテストで固定しない。
+- 配置側の恒久策は別チケット W3-a6 への申し送り。
+
+### K262 F-3: 繋辞の値の並立と「NP とも NP とも」
+- 命中: 「犯人は太郎と花子だ。」が `value=太郎と花子` と読まれる（並立の門は役割の値だけを見て、繋辞の value を見ない）。「太郎とも花子とも話した。」が 1 つの値に畳まれる。
+- 規則（W5-e の区画。`_coordination_marks`・`document_view` は変えない。`_coordination_gate` の本体に検査を 2 つ足す）:
+  - 新しい関数 `_coordination_in_value(sentence)`: と・や・か の助詞トークン（複合助詞の中は除く）で、直前が名詞類（`_COORDINATION_BEFORE`）、直後が名詞類（`_COORDINATION_RUN`）のもの。並びの終わりの品詞は問わない（繋辞の値は だ・です で終わる）。`_coordination_gate` で、その位置が **役割名 `value`・`entity` の役割の span の中** にあれば `COORDINATION_UNDETERMINED`（か なら `DISJUNCTION_UNDETERMINED`。対応表 `_COORDINATING_PARTICLES`）。
+  - 新しい関数 `_coordination_tomo(sentence)`: 名詞類の直後の「と（助詞）＋も（係助詞）」か「とも（接尾辞）」の位置。節の本文（`body_span`）の中に 2 つ以上あれば `COORDINATION_UNDETERMINED`。1 つ（太郎とも話した。）は今どおり。UniDic に並立助詞は無く、1 つ目の「とも」は 1 トークンで `接尾辞/名詞的/副詞可能`、2 つ目は `と/助詞/格助詞`＋`も/助詞/係助詞`（`pos_tags.txt`）。
+- 代価: 繋辞の value・entity の中に、並立に見える と・や・か があれば（括弧の中のかな読みを含む）棄権する。読めたものが棄権に変わるだけで、誤読は増やさない。
+
+### K263 宣言（実装役は解かない。判断は監査役）
+- **K-F2**: 上のとおり（右 が捕まらない）。
+- **K-HE**: W3-b4 の D01・D03（偽配置で「店へ注文した」「店へ電話した」の `goal=店`）にはチケットの規則が無い。表は触らない約束なので何もしない。材料は `artifacts/w5-f/proposals/k_he.md`（測るだけ）。
+- **K-W3B4-GATE**: 攻撃の写し `test_the_gate_catches…` は K186 の関数だけを呼ぶので、F-1 の新しい関数の効き目はその写しには出ない。新しいテストで、K186＋F-1 の 2 関数の素通りを数えて記録する（形態素の分割で、格助詞や焦点の助詞がトークンとして無い文が残る。なんか＝`なん/代名詞`＋`か`、`で/助動詞`＋`も`、`さえ/動詞` など）。
+- **K-P**: W3-b4 の写しの `test_the_twelve_examples…` の P02・P03・P10・P11 は、読解器だけで読む文（型の段の外）の穴。範囲外。
+- **K-C4**: 後述（`docs/OBSERVATION.md`・`docs/BASIS_POLICY.md` の W5-f）。
+
+### K264 F-6（docs のみ）
+W5-e の既知の穴「UNPLACED の普通名詞（課・部門・メンバー・外注先）が名前として振られる」は、配置 r9 以降で UNPLACED が減るまで **既知の穴として残す**（このチケットでは触らない）。
+
+### K265 検査データと判定（実装に通す前に書いて凍結）
+- `tests/reading_soundness/w5f_gates.jsonl`: 各行 `{id, group, text, expect, roles?, placement}`。`group` は F1・F2・F3、各群 20 行以上で読む／棄権が半々。`expect` は `abstain`（読めたら誤読）か `read_or_abstain`（読むなら `roles` のとおり。棄権してもよい）。`placement` は F1・F2 では語→型の辞書（偽配置）、F3 は `null`。文は攻撃役の文・この節に出てくる文・既存の検査データの文を使わず、期待は文の設計から先に書く（出力を見て決めない）。F2 の棄権の行には 右・左 などの一般の名詞を入れない（K-F2。入れると定義上誤読になる）。
+- 判定器 `tests/reading_soundness/w5f_gates_check.py`（`--mode fake|none|r8`）: `abstain` の行が読めたら MISREAD、`read_or_abstain` の行が読めて節が 1 つでないか役割が違えば MISREAD、棄権は ABSTAIN、期待どおりは CORRECT。合格は **MISREAD 0**。
+- 時刻の順: 登録 < 凍結 < 落ちる記録 < 製品コード < 既存テストの改訂。
+<!-- w5f-prereg:end -->
+
+### 10H.a K266: F-2 の `で` 行を戻したときの副詞可能／一般の境界（補助検査）
+<!-- w5f-supp-prereg:begin -->
+登録日時: 2026-10-04 09:12:06 +0900（`date '+%F %T %z'` の出力）。本文の検査データと製品コードはまだ変えない。出典: W5-f 指示書 §2 D2・§3 S3。
+
+- 補助検査データ `tests/reading_soundness/w5f_f2_de_cases.jsonl` は、型段の P_ACT に `('place', ('で',), ('PLACE',), 'adjunct')` を一時的に戻した場合の境界だけを測る。3 型すべての行をメモリ上で戻すが、検査文の述語型は P_ACT。
+- 期待を文の設計から先に固定する。`上`・`前`・`中`（実測品詞 `名詞/普通名詞/副詞可能`）は `RELATIONAL_NOUN_FILLER:place` で棄権。`広場`・`倉庫`・`校庭`（実測品詞 `名詞/普通名詞/一般`）はこの理由で棄権せず、読むなら `agent`・`place`・`patient` の値が登録どおり。配置は `職員`・`店員`・`先生`=PERSON、`荷車`・`台車`・`箱`=ARTIFACT、場所=PLACE、`押す`=P_ACT。
+- 凍結後に測定し、製品規則を直すための語の一覧には使わない。この追加検査は K265 の本文データを変更しない。
+<!-- w5f-supp-prereg:end -->
+
+追加判断 K266-1（2026-10-04 09:12 +0900 の測定記録）: `w5f_f2_de_cases.jsonl` は製品変更前の既定表で測るのではなく、登録どおり P_ACT の `place/で` 行を一時復元してから全件を実行する。既定表での到達結果は `artifacts/w5-f/w5f_f2_de_reach.txt` に保存した。既定表では復元対象の行が無いため、同ファイルで U3 に到達しない対照がある。
+
+## 10H.b K267: W5-f の見出し＋リンク文書 QA 入力
+<!-- w5f-doc-prereg:begin -->
+登録日時: 2026-10-04 09:19:10 +0900（`date '+%F %T %z'` の出力）。検査入力ファイルと製品コードはまだ変えない。出典: W5-f 指示書 D6・S3 F-5。
+
+- `tests/reading_soundness/w5f_document.md` の全文は `# 読書記録`、空行、`## 先生は[本](https://example.org/book)を読んだ。` の 3 行。質問は `tests/reading_soundness/w5f_document_ask.json` の `先生は何を読んだ？`。
+- 期待: r8 の `ask --mode round5 --document` が ANSWER を返す。`sources[].text` は `document_loaders.load_paths` の `Document.text` の部分文字列であり `#` と `](` を含まず、`line` はその本文上の該当行（3）。
+- 凍結は K266 の補助入力と別の `frozen_doc.sha256`・`frozen_doc_at.txt` に記録する。元ファイルの逐字照合は期待しない（K-C4）。
+<!-- w5f-doc-prereg:end -->
+
+## 10H.c W5-f 実測結果
+測定記録: 2026-10-04 10:01:23 +0900（`artifacts/w5-f/s6_docs_time.txt`）。数値は同ディレクトリの実行出力から転記した。
+
+- K265 の 94 行は fake・none・r8 の各モードで誤読 0（`artifacts/w5-f/i2_gates_fake.txt`・`artifacts/w5-f/i2_gates_none.txt`・`artifacts/w5-f/i2_gates_r8.txt`）。fake の F1 は CORRECT 16 / ABSTAIN 14、F2 は 16 / 18、F3 は 11 / 19。none は F1 全 30・F2 全 34 が棄権し、F3 は CORRECT 11 / ABSTAIN 19。r8 は F1 CORRECT 8 / ABSTAIN 22、F2 7 / 27、F3 11 / 19。
+- 既存の凍結読解データは 500 文で変更 0、誤読 0（`artifacts/w5-f/i2_soundness_compare.txt`）。4,149 入力の入口は、none が読める 286→286、r8 が 458→458。両モードとも変更 9 件。全件で `unsupported[].reasons` に `COORDINATION_UNDETERMINED` が加わり、最終 abstain reason は `NO_SUPPORTED_CLAUSE`（`artifacts/w5-f/i2_entry_reason_changes.txt`、行別は `artifacts/w5-f/i2_entry_changed_none.tsv`・`artifacts/w5-f/i2_entry_changed_r8.tsv`）。
+- W3-b4 は 339 行、誤読・未判定・期待不一致 0、読解 4/4（`artifacts/w5-f/i2_w3b4_rows.txt`）。W3-b5 は 649 行、誤読・未判定・期待不一致 0、読解 6/6（`artifacts/w5-f/i2_w3b5_rows.txt`）。
+- `f2probe.py` の行復元測定では、`上`・`前`・`中`が `RELATIONAL_NOUN_FILLER` で棄権し、`右`・`畑`・`校庭`は読解された（`artifacts/w5-f/k_f2_right.txt`）。K-F2 のとおり、右をこの品詞規則で止めることはできない。
+- 参考測定として scratch clone で `P_ACT` の `source/から/PLACE` 行を外した。fake と実配置 r8 の両方で D10（右）は読解から棄権になった一方、D06（東）は読解のまま、D08（受身）は変更前から棄権。4,149 件では読める数 458→458、追加の変更 0（`artifacts/w5-f/proposals/k_f2.md`・`artifacts/w5-f/proposals/k_f2_current_vs_proposal.txt`）。W3-b5 登録行の比較は基点・実装後とも誤読 171/649、選択した出力欄の差 0（`artifacts/w5-f/proposals/k_f2_w3b5_registered_compare.txt`）。この表変更は製品には適用していない。
+- K-HE の参考測定として scratch clone で `P_ACT` の `goal/へ/PLACE` 行を外した結果、W3-b4 の P_ACT 64 行が全て棄権し、読解 4→0、入口期待不一致 4、型期待不一致 12（`artifacts/w5-f/proposals/k_he.md`）。製品の表は変更していない。
+- W5-d 凍結探り 31 件は失敗 0（`artifacts/w5-f/i3_b_check_r2.txt`）。既存の型読解固定群と W5-f のゲートテストは 2,746 件通過（`artifacts/w5-f/reader_related_acceptance.txt`）。補助データの復元境界を含む W5-f 単独テストは 11 件通過（`artifacts/w5-f/semantic_w5f_step_tests_final.txt`）。
+- W3-b4 攻撃の 5 テストと W3-c4 の 1 テストは残る（合計 6 failed, 32 passed; `artifacts/w5-f/i1_attack.txt`）。宣言 K-F2・K-HE・K-W3B4-GATE・K-P・K-C4 の範囲で、攻撃写しの期待は変更していない。
+- 中間職の未公開文は開かず、I5 の B1/B6/B7 測定は行っていない。
+
+追加判断 K267-1（2026-10-04 10:07:20 +0900）: 上の K267 登録には `frozen_doc.sha256`・`frozen_doc_at.txt` と記したが、実際の K266/K267 補助入力は 3 ファイルまとめて `artifacts/w5-f/frozen_sup.sha256`・`frozen_sup_at.txt` にコード変更前の時刻で記録した。K267 の Markdown と質問 JSON の hash も同 manifest にある。専用ファイル名の記載はこの追記で訂正する。
+
+### 10H.d W5-f 第2ラウンドの再検査登録
+登録日時: 2026-10-04 11:35:49 +0900。製品コード・新しい検査入力はまだ変更しない。出典: Codex 独立レビュー r1 の必須修正 1〜3、既存の K265/K266/K267 登録。
+
+- F-1 はレビュー r1 が実装差分の確認前に凍結した `/private/tmp/w5f_review_r1/holdout.r1.jsonl` の F1_A01,A02,A03,A04,A07,A09,A11,A12,A13,A14,A20 を用いる。期待は各公開入口（配置なし・fake・r8）で棄権し、理由に `PLACEMENT_QUOTED_PARTICLE_AFTER_CASE` を含むこと。入力の登録・凍結はレビュー側の `PREREG.r1.md`・`FREEZE.r1.md` にあり、以後変更しない。
+- F-2 は同じ凍結入力の F2_A01〜F2_A32 と F2_R01〜F2_R32 を再検査する。方向語の棄権と具体的な場所名の読み対照の両方をそのまま判定する。品詞・語彙素・表記で同じ一般名詞を語ごとに区別する追加規則は作らない。両方を同時に満たせる根拠が見つからない場合は構成を `undetermined` と記録し、要件を満たしたとは扱わない。
+- I6 は全体テストを最後に一度実行し、保存した `FAILED`/`ERROR` 行を基線ファイルと比較する。基線外の失敗は実行できた失敗ごとに詳細を確認し、原因の裏付けがない限り環境由来へ分類しない。テスト期待の変更・skip/xfail 化は行わない。
+- 出力は `artifacts/w5-f/` に保存する。数値や分類は実行出力からだけ報告する。
+
+### 10H.e W5-f 第 3 ラウンド（監査役の判断 2026-10-04 13:30:13 +0900 を受けて）
+<!-- w5f-r3-prereg:begin -->
+登録日時: 2026-10-04 13:51:14 +0900。製品コード・検査データはまだ変更しない。
+
+**K260 v2（F-1 の門の作り直し。規則は品詞・隣接・文字数だけ。語の一覧・表層の語の判定は持たない）**
+範囲 [lo, hi) のトークン列で、助詞/格助詞 の各トークン p について:
+- 括られた断片: p の直後から、大分類が 補助記号・空白・記号 のトークンが続く間、各トークン o が「開き」になれる（記号、または補助記号で細分類が 読点・句点・括弧閉 でない）なら閉じを探す。o の細分類が 括弧開 なら次の 補助記号/括弧閉、そうでなければ o と同じ表層の次のトークン（"…"・'…'・★…★ のような対の記号）。閉じがあり、開きの終わり〜閉じの始まりの文字列を引数なしの strip() した長さが 1〜2 なら PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:<p> で棄権する。
+- 隔てた係助詞/副助詞: p の直後の 補助記号・空白・記号 を全部飛ばした最初のトークン t が 助詞/係助詞 または 助詞/副助詞 なら PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:<p>:<t> で棄権する。引数 separated_only=True のときは、隔てがあるとき（飛ばしたトークンが 1 つ以上、または t の始まりが直前のトークンの終わりより後。半角空白はトークンにならないので文字位置の隙間で見る）だけ。
+- 呼び方: 型の段 typed_quoted_focus_after_case_ja は separated_only=False（隣接も止める）、公開の入口 _quoted_focus_public_gate は separated_only=True。
+
+代価（登録）: (1) 「なんか」（3 字）は捕まらない（K-W3B4-GATE の 15 文は不変の見込み）。(2) 括弧の中の 1〜2 字は中身が何でも棄権する。(3) 公開の入口で隔てのない「では」「でも」は止めない（止めると正しい読みが消える。件数は S6 の自分の測定で後から書く）。
+
+**K261 撤回（F-2）**: 監査役の判断（2026-10-04 13:30）により F-2 の門を外す。gated からの typed_relational_filler_ja の呼び出しだけを外し（削除行 0）、関数は呼ばない形で残す（K261 の記録）。チケットの「_relational_noun_filler_reason」はツリーの実名 typed_relational_filler_ja のこと。K-F2 は「このチケットでは塞がない。W3-a6 の RELATIVE_POSITION 型（配置側）で塞ぎ、W3-b6 で棄権を確かめる」に書き換える（10H の既存の K261・K-F2 の文は消さない）。F-2 のテストは名前を test_the_retracted_relational_filler_gate_is_kept_but_never_called に変える。
+
+**検査データ（D3）**: w5f_gates.jsonl の F2 の棄権 18 行は expect を deferred_w3b6 に変え deferred_by を足す（ほかは 1 バイトも変えない）。deferred_w3b6 は DEFERRED_READ／DEFERRED_ABSTAIN と数え、誤読に数えない。追加は w5f_gates_r3.jsonl（F1: 棄権 12 以上・対照 12 以上、追記のみ）。凍結は新しい manifest frozen_r3.sha256（既存の frozen.sha256・frozen_sup.sha256 は書き換えない）。
+
+**既存テストの改訂（D4、1 件）**: tests/test_semantic_read_w3b4.py::test_the_focus_gate_closes_the_hole_of_v1_with_the_real_placement_r7 に monkeypatch 1 行を足す（公開の門も外して型の段の門の効き目を確かめるため）。前後の全文は S5 で貼る。
+
+**宣言の再掲（D6、裁定待ち）**: I1 の残り 6 本（K-F2、K-HE の D01・D03、K-W3B4-GATE、K-P、K-C4）。K-HE・K-P・K-W3B4-GATE・K-C4 は監査役の裁定待ちで、実装役は解かない。I5 と全体テストは監査役が測る。
+<!-- w5f-r3-prereg:end -->
+
+#### 10H.e 記録 1: 既存・追加テストの前後の全文（日時 2026-10-04 14:00:57 +0900）
+**D4（既存テスト 1 件の改訂。名前不変。追加は 1 行）** 前:
+```python
+def test_the_focus_gate_closes_the_hole_of_v1_with_the_real_placement_r7(monkeypatch):
+    if not os.path.isdir(R7): pytest.skip('the placement r7 is not on this machine')
+    cases = (('兄が倉庫へさえ走った。', 'さえ'), ('兄が倉庫へすら走った。', 'すら'), ('兄が倉庫へまで走った。', 'まで'), ('兄が倉庫へ、さえ走った。', 'さえ'))
+    for text, part in cases:
+        out = SR.read(text, placement=R.CoarseQuery(R7))
+        ex = SR.typed_explain_ja(text, R.CoarseQuery(R7))
+        assert out['readable'] is False, text
+        assert ex['w3b1'] == ex['w3b2'] == GATE_PREFIX + 'へ:' + part, (text, ex)
+        assert out['abstain']['reasons'][1] == GATE_PREFIX + 'へ:' + part, out['abstain']
+    ungate(monkeypatch)
+    for text, part in cases:
+        out = SR.read(text, placement=R.CoarseQuery(R7))
+        assert out['readable'] is True and out['clauses'][0]['roles'] == {'agent': '兄', 'goal': '倉庫'}, (text, out)
+        assert b1.judge(X_REFUSED, 'ja', out)['verdict'] == 'misread', (text, out)
+        assert SR.typed_explain_ja(text, R.CoarseQuery(R7))['w3b1'] == 'READ'
+```
+後:
+```python
+def test_the_focus_gate_closes_the_hole_of_v1_with_the_real_placement_r7(monkeypatch):
+    if not os.path.isdir(R7): pytest.skip('the placement r7 is not on this machine')
+    cases = (('兄が倉庫へさえ走った。', 'さえ'), ('兄が倉庫へすら走った。', 'すら'), ('兄が倉庫へまで走った。', 'まで'), ('兄が倉庫へ、さえ走った。', 'さえ'))
+    for text, part in cases:
+        out = SR.read(text, placement=R.CoarseQuery(R7))
+        ex = SR.typed_explain_ja(text, R.CoarseQuery(R7))
+        assert out['readable'] is False, text
+        assert ex['w3b1'] == ex['w3b2'] == GATE_PREFIX + 'へ:' + part, (text, ex)
+        assert out['abstain']['reasons'][1] == GATE_PREFIX + 'へ:' + part, out['abstain']
+    ungate(monkeypatch)
+    monkeypatch.setattr(R, '_quoted_focus_public_gate', lambda entry, text, out: out)  # W5-f r3（F-1 の公開の門。docs 10H.e）: 型の段の門の効き目を確かめるため、公開の門も外す
+    for text, part in cases:
+        out = SR.read(text, placement=R.CoarseQuery(R7))
+        assert out['readable'] is True and out['clauses'][0]['roles'] == {'agent': '兄', 'goal': '倉庫'}, (text, out)
+        assert b1.judge(X_REFUSED, 'ja', out)['verdict'] == 'misread', (text, out)
+        assert SR.typed_explain_ja(text, R.CoarseQuery(R7))['w3b1'] == 'READ'
+```
+
+**D2（この ticket で足したテストの改名と本体の差し替え。基点には無いテスト）** 前（名前 test_relational_filler_boundary_with_the_place_de_rows_temporarily_restored）:
+```python
+def test_relational_filler_boundary_with_the_place_de_rows_temporarily_restored(monkeypatch):
+    fakes = _load_fakes()
+    rows = _read_jsonl(TREE / "tests" / "reading_soundness" / "w5f_f2_de_cases.jsonl")
+    de_row = ("place", ("で",), ("PLACE",), "adjunct")
+    for pred_type in ("P_ACT", "P_CREATE", "P_EMOTION"):
+        monkeypatch.setitem(R.TYPED_FRAMES_W3B4, pred_type,
+                           tuple(R.TYPED_FRAMES_W3B4[pred_type]) + (de_row,))
+
+    for row in rows:
+        query = fakes.MapQuery({term: fakes.answer(kind, term=term) for term, kind in row["placement"].items()})
+        out = SR.read(row["text"], "ja", placement=query)
+        explanation = SR.typed_explain_ja(row["text"], query)
+        if row["expect"] == "abstain":
+            assert explanation["w3b2_trigger"] is not None, (row["id"], explanation)
+            assert not out["readable"], (row["id"], out)
+            assert explanation["w3b2"] == row["gate_reason"], (row["id"], explanation)
+        else:
+            assert explanation["w3b2"] != row["gate_reason"], (row["id"], explanation)
+            if out["readable"]:
+                assert out["clauses"][0]["roles"] == row["roles"], (row["id"], out)
+```
+後:
+```python
+def test_the_retracted_relational_filler_gate_is_kept_but_never_called(monkeypatch):
+    # W5-f r3: the auditor retracted F-2 (2026-10-04 13:30); the function is kept as the K261 record and is never called.
+    assert callable(R.typed_relational_filler_ja)
+    calls = []
+    real = R.typed_relational_filler_ja
+    monkeypatch.setattr(R, "typed_relational_filler_ja", lambda *args, **kwargs: calls.append(args) or real(*args, **kwargs))
+    fakes = _load_fakes()
+    rows = _read_jsonl(TREE / "tests" / "reading_soundness" / "w5f_f2_de_cases.jsonl")
+    de_row = ("place", ("で",), ("PLACE",), "adjunct")
+    for pred_type in ("P_ACT", "P_CREATE", "P_EMOTION"):
+        monkeypatch.setitem(R.TYPED_FRAMES_W3B4, pred_type,
+                            tuple(R.TYPED_FRAMES_W3B4[pred_type]) + (de_row,))
+
+    for row in rows:
+        query = fakes.MapQuery({term: fakes.answer(kind, term=term) for term, kind in row["placement"].items()})
+        SR.read(row["text"], "ja", placement=query)
+        explanation = SR.typed_explain_ja(row["text"], query)
+        assert not str(explanation["w3b2"]).startswith("RELATIONAL_NOUN_FILLER"), (row["id"], explanation)
+    assert calls == []
+```
+
+**D3（test_registered_data_is_frozen_and_balanced と _assert_frozen。この ticket で足したテスト）** 前:
+```python
+def _assert_frozen():
+    for manifest in (TREE / "artifacts" / "w5-f" / "frozen.sha256",
+                     TREE / "artifacts" / "w5-f" / "frozen_sup.sha256"):
+        for line in manifest.read_text(encoding="utf-8").splitlines():
+            digest, relative = line.split(None, 1)
+            assert hashlib.sha256((TREE / relative.strip()).read_bytes()).hexdigest() == digest, relative
+```
+```python
+def test_registered_data_is_frozen_and_balanced():
+    _assert_frozen()
+    rows = _read_jsonl(DATA)
+    groups = sorted({row["group"] for row in rows})
+    assert groups == ["F1", "F2", "F3"]
+    for group in groups:
+        expectations = [row["expect"] for row in rows if row["group"] == group]
+        assert len(expectations) >= 20
+        assert abs(expectations.count("abstain") - expectations.count("read_or_abstain")) <= 2
+```
+後:
+```python
+def _assert_frozen():
+    # later manifests win for the same path (W5-f r3 appended frozen_r3.sha256; the older ones are history)
+    digests = {}
+    for name in ("frozen.sha256", "frozen_sup.sha256", "frozen_r3.sha256"):
+        for line in (TREE / "artifacts" / "w5-f" / name).read_text(encoding="utf-8").splitlines():
+            digest, relative = line.split(None, 1)
+            digests[relative.strip()] = digest
+    for relative, digest in digests.items():
+        assert hashlib.sha256((TREE / relative).read_bytes()).hexdigest() == digest, relative
+```
+```python
+def test_registered_data_is_frozen_and_balanced():
+    _assert_frozen()
+    rows = _read_jsonl(DATA) + _read_jsonl(DATA_R3)
+    assert len({row["id"] for row in rows}) == len(rows)
+    groups = sorted({row["group"] for row in rows})
+    assert groups == ["F1", "F2", "F3"]
+    for group in groups:
+        expectations = [row["expect"] for row in rows if row["group"] == group]
+        if group == "F2":
+            deferred = [row["id"] for row in rows if row["group"] == "F2" and row["expect"] == "deferred_w3b6"]
+            assert deferred == ["W5F-F2-%03d" % number for number in range(1, 19)]
+            assert expectations.count("read_or_abstain") >= 16
+            continue
+        judged = expectations.count("abstain") + expectations.count("read_or_abstain")
+        assert judged >= 20
+        assert abs(expectations.count("abstain") - expectations.count("read_or_abstain")) <= 2
+```
+
+#### 10H.e 記録 2: r3 の実測（数は出力ファイルからそのまま）
+- 検査データ（凍結 frozen_r3.sha256。w5f_gates.jsonl 94 行＋w5f_gates_r3.jsonl 32 行 = 126 行。出力 artifacts/w5-f/r3/i2_gates_{fake,none,r8}.txt）。誤読は fake=0、none=0、r8=0。群ごと: fake: F1 {"ABSTAIN": 30, "CORRECT": 32} / F2 {"CORRECT": 16, "DEFERRED_READ": 18} / F3 {"ABSTAIN": 19, "CORRECT": 11}。F2 の 18 行は DEFERRED_* と数える（誤読ではない）。
+- 凍結の経緯: w5f_gates_r3.jsonl は最初 30 行（棄権 14・対照 16）で凍結した（frozen_r3_first.sha256・frozen_r3_at_first.txt）。F1 の均衡の規則（|棄権 − 読む| ≤ 2、2 ファイル合算）が 4 になったので、**追記のみ** で棄権 2 行（W5F-F1-131, 132）を足して凍結し直した（最初の 30 行は cmp で同一）。追記の前に棄権の行の出力は見ていない。
+- 届く確かめ（r2 のコードの公開の入口、none と fake。対照の 16 行すべて readable=True）: artifacts/w5-f/r3/r3_gates_reach.txt。null 配置の最初の案（へ・goal）は none で読めなかった（対照が届かない）ため、から・source の対照に書き直した（棄権の行の出力は見ていない）。
+- harness 500 文: 変化 0・誤読 0（i2_soundness_compare.txt）。入口の 4,149 入力: none・r8 とも r2 の出力とバイト一致（ENTRY_SAME_AS_R2）。W3-b4 の 339 行・W3-b5 の 649 行（偽配置）: misread=0（i2_w3b4_rows.txt・i2_w3b5_rows.txt）。
+- 代価 (3) の実測（cost_unseparated.txt。自分の関数を直接呼ぶ）: 4,149 入力のうち読める出力は none で 286・r8 で 458。separated_only=True で止まる件数は none・r8 とも 0。separated_only=False なら none・r8 とも 2 件（「山田さんは学生ではない。」「中野区最東端の駅でもある。」）が止まる。だから公開の入口は隔てがあるときだけ止める。
+- 公開の入口の限界（既知の穴）: 「広場で、さえ」は fugashi が で を 助動詞 と読むため格助詞の門に入らず、門では止まらない（W5F-F1-114。入口は別の理由で棄権し誤読 0）。
+- I1: 6 failed, 32 passed。落ちる 6 本は r2 と同じ名前で、id の出現も r2 と同一（i1_attack.txt、i1_ids.txt）。I3: 59 passed, 1 skipped、CLASSIFY_VERSION=5（i3_tests.txt・i3_versions.txt）。I4: aq 111 問・extra2 42 問とも changed=0、cross テスト 73 passed（i4_*.txt）。
+- 関係するテスト（related_tests.txt。全体テストは流していない）: 106 failed。基線に無い失敗は写しの宣言 6 本だけ（related_new_failures.txt）。
+
+K-F2（10H の既存の K261・K-F2 の文は消さない。追記）: このチケットでは塞がない。W3-a6 の RELATIVE_POSITION 型（配置側）で塞ぎ、W3-b6 で棄権を確かめる。F-2 の検査データ 18 行は deferred_w3b6 として DEFERRED_READ／DEFERRED_ABSTAIN の数だけを出す。
+
+#### 10H.e 記録 3: r3 レビュー r1 の修正（追記。上の記録は書き換えない）
+- 記録 2 の「門の関数が 12 行以上」に相当する記述は実測と違った。棄権 16 行（w5f_gates_r3.jsonl）のうち、公開の入口の出力に門の理由（PLACEMENT_FOCUS_/QUOTED_PARTICLE_AFTER_CASE）が出るのは 8 行（101・102・104・105・107・110・131・132）。残り 8 行（103・106・108・109・111・112・113・114）は別の理由で先に止まり、その行は tests/reading_soundness/w5f_gates_r3_narrowed.json に id ごとに記録した（114 は門の関数が None＝で を 助動詞 と読む既知の穴）。テストはしきい値をやめ、集合の等号で確かめる。
+- 門が決め手になる格助詞は、既存の行では から だけだった。w5f_gates_r3b.jsonl（W5F-F1-133〜146、追記のみ）で で 4 行・に 4 行を足し、公開の入口の出力に門の理由が出る棄権行は から 8・で 4・に 4（計 16。none・fake・r8 とも同じ。artifacts/w5-f/r3/r3b_gate_kinds.txt）。公開の門を素通しにすると、記録に無い棄権 16 行がすべて読める（tests の test_r3_without_the_public_gate_…）。
+- 検査データは 140 行（w5f_gates.jsonl 94＋w5f_gates_r3.jsonl 32＋w5f_gates_r3b.jsonl 14）。誤読は fake=0・none=0・r8=0（artifacts/w5-f/r3/r3b_gates_{fake,none,r8}.txt）。F1: fake {"ABSTAIN": 38, "CORRECT": 38}、none {"ABSTAIN": 58, "CORRECT": 18}、r8 {"ABSTAIN": 50, "CORRECT": 26}。
+
+#### 10H.e 記録 4: r3 レビュー r2 の修正（追記。上の記録は書き換えない。日時 2026-10-04 14:37 +0900）
+- **D3 の取り下げ（検査データは追記のみ）**: 記録の上の D3 は w5f_gates.jsonl の F2 の 18 行（W5F-F2-001〜018）の expect を deferred_w3b6 に書き換えるとしたが、監査役の実行上の注意（凍結済みの行は書き換えず、期待を外す行は narrowed の記録で）に反するので取り下げた。w5f_gates.jsonl は凍結時（frozen.sha256 の 3edf7cae…）のバイト列に戻した（`shasum -a 256 -c artifacts/w5-f/frozen.sha256` が全行 OK、`grep -c deferred_w3b6 tests/reading_soundness/w5f_gates.jsonl` が 0）。18 行は expect=abstain のままで、棄権の期待を外したことは新しいファイル `tests/reading_soundness/w5f_gates_f2_narrowed.json`（ちょうど 18 行、各行 expect_was=abstain・now=deferred_w3b6・deferred_by）に記録した。判定器 `w5f_gates_check.py` はこの記録の id を DEFERRED_READ／DEFERRED_ABSTAIN と数え（誤読に数えない）、記録の id がデータにあり group=F2・expect=abstain であることを assert する。凍結は新しい manifest `artifacts/w5-f/frozen_r3c.sha256`（時刻 `frozen_r3c_at.txt` はテストと測定の前）。既存の manifest は書き換えない（同じパスは後の manifest が勝つ）。
+- **テストの前後（名前不変）** `tests/test_semantic_read_w5f.py::test_registered_data_is_frozen_and_balanced` の F2 の枝。前:
+```python
+            deferred = [row["id"] for row in rows if row["group"] == "F2" and row["expect"] == "deferred_w3b6"]
+            assert deferred == ["W5F-F2-%03d" % number for number in range(1, 19)]
+            assert expectations.count("read_or_abstain") >= 16
+            continue
+```
+  後:
+```python
+            # W5-f r3 review r2: the frozen rows are not rewritten; the narrowing is a separate record
+            assert not [row for row in rows if row["expect"] == "deferred_w3b6"]
+            recorded = sorted(json.loads(NARROWED_F2.read_text(encoding="utf-8"))["rows"])
+            assert recorded == ["W5F-F2-%03d" % number for number in range(1, 19)]
+            by_id = {row["id"]: row for row in rows}
+            assert all(by_id[row_id]["group"] == "F2" and by_id[row_id]["expect"] == "abstain" for row_id in recorded)
+            assert expectations.count("read_or_abstain") >= 16
+            continue
+```
+  `_assert_frozen` の manifest の並びに `frozen_r3c.sha256` を末尾に 1 つ足した。
+- **F-2 の撤回で変えた製品コードの前後（呼び出しを外しただけ。削除行 0）** `verantyx/semantic_reader.py` の `_typed_plan_focus_gated` の `gated`。前（r2）:
+```python
+    def gated(clause, toks, query, *, voice, written, strip, role_map):
+        typed, why = plan(clause, toks, query, voice=voice, written=written, strip=strip, role_map=role_map)
+        if typed is None: return typed, why
+        focus = typed_focus_after_case_ja(toks, clause)
+        if focus: return None, focus
+        focus = typed_quoted_focus_after_case_ja(toks, clause) or typed_relational_filler_ja(toks, typed)
+        if focus: return None, focus
+        return typed, why
+```
+  後（r3）:
+```python
+    def gated(clause, toks, query, *, voice, written, strip, role_map):
+        typed, why = plan(clause, toks, query, voice=voice, written=written, strip=strip, role_map=role_map)
+        if typed is None: return typed, why
+        focus = typed_focus_after_case_ja(toks, clause)
+        if focus: return None, focus
+        focus = typed_quoted_focus_after_case_ja(toks, clause)
+        if focus: return None, focus
+        return typed, why
+```
+  `typed_relational_filler_ja` の docstring 1 行。前: `"""W5-f (docs 10H): refuse place, goal, source or で fillers whose head is 名詞/普通名詞/副詞可能."""` 後: `"""W5-f r3: retracted by the auditor (2026-10-04 13:30); not called. Kept as the record of K261 (docs 10H.e)."""` 本体は変わっていない（関数は残り、どこからも呼ばれない）。基点 0041606 からの `semantic_reader.py` の削除行は 0（`git diff 0041606 -- verantyx/semantic_reader.py | grep -c '^-[^-]'`）。
+- 注記（回帰データの独立性）: w5f_gates_r3.jsonl と w5f_gates_r3b.jsonl の F1 の文は、門が決め手になる形を探って選んだ（棄権の行の出力を見たうえで選んだ）。期待は文の設計どおりの abstain なので回帰データとしては有効だが、独立した証拠になるのは中間職・監査役の未公開の文のほうである。

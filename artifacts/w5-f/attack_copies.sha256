@@ -1,0 +1,24 @@
+# Source-to-target mapping; all entries below were checked with cmp before hashing.
+# W3-b4/test_attack_w3b4.py -> tests/attack/test_attack_w3b4.py
+# W3-c4/test_attack_w3c4.py -> tests/attack/test_attack_w3c4.py
+# W5-e/test_attack_a1_boundary_mixes.py -> tests/attack/test_attack_w5e_a1_boundary_mixes.py
+# W5-e/test_attack_a3_sovereign_self_claim.py -> tests/attack/test_attack_w5e_a3_sovereign_self_claim.py
+# W5-e/test_attack_coordination_copula_and_tomo.py -> tests/attack/test_attack_w5e_coordination_copula_and_tomo.py
+# W3-b4 report/prereg/replay files -> tests/attack/w3b4/; W5-e report/frozen files -> tests/attack/w5e/; W3-c4 report -> tests/attack/w3c4/
+# Sha256 values follow.
+4cafecb761e9d218fcbf00df3d169e7497b9a1d0d25b2f0527ad5e54760047a6  tests/attack/test_attack_w3b4.py
+24b4a3092d70a20008aa888d5e9976d669216fde2dcd657c6d70ec213404805b  tests/attack/test_attack_w3c4.py
+d86156d683fd832e2df08e58cd9b36a3794869ee1a661a64804101097380cb43  tests/attack/test_attack_w5e_a1_boundary_mixes.py
+9ff3cbe861b1d6ed5fd938ed93f425eb838640850042102c6603942762750053  tests/attack/test_attack_w5e_a3_sovereign_self_claim.py
+06a7f61a4f6dea243a2bc32b0d5dc0f2e97231afd6d2d578d333afadd00304ed  tests/attack/test_attack_w5e_coordination_copula_and_tomo.py
+739231f510dce674719f94d4f6fe4db7c712714a1aaa88827de9103aa7d6e5b7  tests/attack/w3b4/K188_PREREG.md
+4d2f9755a5b7f2934b05c6e24290f3450463b2bd56effdb5b39b407a36d9c917  tests/attack/w3b4/PREREG.md
+8965be51face9e2fa3d22f52e9486c2b263c36531b9d278e9f92bb33a574fcd4  tests/attack/w3b4/PROMPT_EXAMPLES_PREREG.md
+dea3bb3fff1df049b12ff7455d966ef5409fad3b3ec8fb5e3c206125f9a45ea0  tests/attack/w3b4/REPORT.md
+98503e1c36644fba1fdbee404ff1fffd0786017e2f2ed2856e563462236dc9d9  tests/attack/w3b4/ROLE_OVERLAP_PREREG.md
+f4037812491d95a4147e7d5a10dbd9a7cc84cb3a0b6c5603c302df425aa86ba5  tests/attack/w3b4/replay.py
+849c3945d9b7c3eff4c8b49ee888704a860583a5957d13638a3be65124b60c7b  tests/attack/w5e/REPORT.md
+dda83d6f049e154236707be95efc36a629fd438eebabb61a6c2bde9c25ffcb81  tests/attack/w5e/frozen.sha256
+a995dbf7a7275db2ca7d1cdf7af2e5dd6358e77578f834f66e2f1d7a9bfc9e76  tests/attack/w5e/frozen_a1.sha256
+206b8ec4f1aaba6e1d2ae7e29d975cefd2664a333a8d720458b03090e89222da  tests/attack/w5e/frozen_a1_r2.sha256
+596b882a061b06881b40bd3c7963527463ca501422013c3592462d26b81d3d0f  tests/attack/w3c4/REPORT.md

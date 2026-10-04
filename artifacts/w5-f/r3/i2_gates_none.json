@@ -1,0 +1,982 @@
+{
+  "mode": "none",
+  "rows": 126,
+  "misread": 0,
+  "groups": {
+    "F1": {
+      "ABSTAIN": 50,
+      "CORRECT": 12
+    },
+    "F2": {
+      "ABSTAIN": 16,
+      "DEFERRED_ABSTAIN": 18
+    },
+    "F3": {
+      "ABSTAIN": 19,
+      "CORRECT": 11
+    }
+  },
+  "results": [
+    {
+      "id": "W5F-F1-001",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-002",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-003",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-004",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-005",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-006",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-008",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-009",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-010",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-011",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-013",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-014",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-015",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-016",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-017",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-018",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-019",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-020",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-021",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-022",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-023",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-024",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-025",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-026",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-027",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-028",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-029",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-030",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-031",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-032",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-001",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-002",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-003",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-004",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-005",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-006",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-007",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-008",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-009",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-010",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-011",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-012",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-013",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-014",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-015",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-016",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-017",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-018",
+      "group": "F2",
+      "status": "DEFERRED_ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-019",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-020",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-021",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-022",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-023",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-024",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-025",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-026",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-027",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-028",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-029",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-030",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-031",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-032",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-033",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F2-035",
+      "group": "F2",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-001",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-002",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-003",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-004",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-005",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-006",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-007",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-008",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-009",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-010",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-011",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-012",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-013",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-014",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-015",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-016",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-017",
+      "group": "F3",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "entity": "優勝者",
+        "value": "健太"
+      }
+    },
+    {
+      "id": "W5F-F3-018",
+      "group": "F3",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "entity": "隊長",
+        "value": "剛志"
+      }
+    },
+    {
+      "id": "W5F-F3-019",
+      "group": "F3",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "entity": "窓口",
+        "value": "総務課"
+      }
+    },
+    {
+      "id": "W5F-F3-020",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-021",
+      "group": "F3",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "entity": "受付",
+        "value": "由紀"
+      }
+    },
+    {
+      "id": "W5F-F3-022",
+      "group": "F3",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "entity": "担当者",
+        "value": "鈴木"
+      }
+    },
+    {
+      "id": "W5F-F3-023",
+      "group": "F3",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "entity": "秘書",
+        "value": "剛志"
+      }
+    },
+    {
+      "id": "W5F-F3-024",
+      "group": "F3",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "companion": "次郎"
+      }
+    },
+    {
+      "id": "W5F-F3-025",
+      "group": "F3",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "companion": "美咲"
+      }
+    },
+    {
+      "id": "W5F-F3-026",
+      "group": "F3",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "agent": "健太",
+        "companion": "由紀"
+      }
+    },
+    {
+      "id": "W5F-F3-027",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-028",
+      "group": "F3",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F3-029",
+      "group": "F3",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "entity": "講師",
+        "value": "花音"
+      }
+    },
+    {
+      "id": "W5F-F3-030",
+      "group": "F3",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "entity": "司会",
+        "value": "優太"
+      }
+    },
+    {
+      "id": "W5F-F1-101",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-102",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-103",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-104",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-105",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-106",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-107",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-108",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-109",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-110",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-111",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-112",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-113",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-114",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-115",
+      "group": "F1",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "agent": "兄",
+        "patient": "荷車",
+        "source": "倉庫"
+      }
+    },
+    {
+      "id": "W5F-F1-116",
+      "group": "F1",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "agent": "姉",
+        "patient": "箱",
+        "source": "港"
+      }
+    },
+    {
+      "id": "W5F-F1-117",
+      "group": "F1",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "agent": "弟",
+        "patient": "荷物",
+        "source": "駅"
+      }
+    },
+    {
+      "id": "W5F-F1-118",
+      "group": "F1",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "agent": "母",
+        "patient": "机",
+        "source": "広場"
+      }
+    },
+    {
+      "id": "W5F-F1-119",
+      "group": "F1",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "agent": "父",
+        "patient": "箱",
+        "source": "畑"
+      }
+    },
+    {
+      "id": "W5F-F1-120",
+      "group": "F1",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "agent": "叔母",
+        "patient": "荷車",
+        "source": "店"
+      }
+    },
+    {
+      "id": "W5F-F1-121",
+      "group": "F1",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "agent": "祖母",
+        "patient": "台車",
+        "source": "市場"
+      }
+    },
+    {
+      "id": "W5F-F1-122",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-123",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-124",
+      "group": "F1",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "agent": "姉",
+        "patient": "台車",
+        "source": "駅"
+      }
+    },
+    {
+      "id": "W5F-F1-125",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-126",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-127",
+      "group": "F1",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "agent": "叔父",
+        "patient": "荷車",
+        "source": "店"
+      }
+    },
+    {
+      "id": "W5F-F1-128",
+      "group": "F1",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "agent": "兄",
+        "patient": "箱",
+        "place": "広場"
+      }
+    },
+    {
+      "id": "W5F-F1-129",
+      "group": "F1",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "agent": "兄",
+        "patient": "荷物",
+        "source": "駅"
+      }
+    },
+    {
+      "id": "W5F-F1-130",
+      "group": "F1",
+      "status": "CORRECT",
+      "readable": true,
+      "roles": {
+        "agent": "姉",
+        "patient": "箱",
+        "source": "駅"
+      }
+    },
+    {
+      "id": "W5F-F1-131",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    },
+    {
+      "id": "W5F-F1-132",
+      "group": "F1",
+      "status": "ABSTAIN",
+      "readable": false,
+      "roles": null
+    }
+  ]
+}

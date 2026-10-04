@@ -1,0 +1,30 @@
+ M docs/BASIS_POLICY.md
+ M docs/OBSERVATION.md
+ M docs/READING_SOUNDNESS.md
+ M tests/test_basis_policy_entry.py
+ M tests/test_basis_policy_form.py
+ M tests/test_basis_policy_table.py
+ M tests/test_basis_policy_w5c.py
+ M tests/test_basis_policy_w5c_r3.py
+ M tests/test_basis_policy_w5e.py
+ M tests/test_semantic_read_w3b4.py
+ M verantyx/basis_policy.py
+ M verantyx/semantic_reader.py
+?? artifacts/w5-f/
+?? tests/attack/test_attack_w3b4.py
+?? tests/attack/test_attack_w3c4.py
+?? tests/attack/test_attack_w5e_a1_boundary_mixes.py
+?? tests/attack/test_attack_w5e_a3_sovereign_self_claim.py
+?? tests/attack/test_attack_w5e_coordination_copula_and_tomo.py
+?? tests/attack/w3b4/
+?? tests/attack/w3c4/
+?? tests/attack/w5e/
+?? tests/reading_soundness/w5f_document.md
+?? tests/reading_soundness/w5f_document_ask.json
+?? tests/reading_soundness/w5f_f2_de_cases.jsonl
+?? tests/reading_soundness/w5f_gates.jsonl
+?? tests/reading_soundness/w5f_gates_check.py
+?? tests/reading_soundness/w5f_gates_r3.jsonl
+?? tests/test_ask_question_cross_w5f.py
+?? tests/test_basis_policy_w5f.py
+?? tests/test_semantic_read_w5f.py

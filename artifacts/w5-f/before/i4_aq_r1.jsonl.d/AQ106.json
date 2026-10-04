@@ -1,0 +1,525 @@
+{
+  "kind": "unknown",
+  "verdict": "UNKNOWN_UNREAD",
+  "text": "この要求を裏づける導出を確認できません。",
+  "reason": "mandatory request spans remain unread",
+  "phase": "reader",
+  "values": [],
+  "evidence": [],
+  "sources": [],
+  "trace": [
+    {
+      "part": "one.round5_route",
+      "status": "ran",
+      "code_intent": false,
+      "content_intent": false,
+      "decision_input": "raw_request",
+      "fallback": false
+    },
+    {
+      "part": "question.read_semantic",
+      "status": "ran",
+      "plans": 0,
+      "obligations": 0,
+      "unread": [
+        {
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 26,
+            "text": "What did the sailor write?"
+          },
+          "reason": "unsupported request grammar"
+        }
+      ]
+    },
+    {
+      "part": "semantic_reader.document_view",
+      "status": "ran",
+      "clauses": 0,
+      "source_unread": [
+        {
+          "span": {
+            "source": "AD10.txt",
+            "start": 0,
+            "end": 32,
+            "text": "The gardener planted the roses.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD10.txt",
+            "start": 32,
+            "end": 98,
+            "text": "The cook bought the flour. The waiter sold the tray to the guest.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD10.txt",
+            "start": 98,
+            "end": 124,
+            "text": "The pilot flew the plane.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD10.txt",
+            "start": 124,
+            "end": 161,
+            "text": "The sailor did not write the letter.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD10.txt",
+            "start": 161,
+            "end": 202,
+            "text": "The editor sent a letter to the teacher.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD10.txt",
+            "start": 202,
+            "end": 244,
+            "text": "The student sent a letter to the teacher.\n"
+          },
+          "reason": "unsupported clause grammar"
+        }
+      ],
+      "source_unread_count": 6,
+      "source_unread_truncated": false,
+      "ingest_ms": 3.1769589986652136
+    },
+    {
+      "leaves": 1,
+      "nodes": 1,
+      "arity": 6,
+      "status": "skipped",
+      "reason": "fewer leaves than one routing node",
+      "part": "semantic_route.LeafTree"
+    },
+    {
+      "part": "remedy.remedy",
+      "status": "ran",
+      "verdict": "UNKNOWN_UNREAD",
+      "how_to_resolve": "質問された事項を示す出典を追加してください。"
+    },
+    {
+      "part": "ask_back.question",
+      "status": "abstained",
+      "reason": "verdict has no human-answerable candidate",
+      "asks": ""
+    },
+    {
+      "part": "coverage.document_needed",
+      "status": "abstained",
+      "reason": "no domain witnesses"
+    },
+    {
+      "part": "gap_graph.refusal_to_gap",
+      "status": "abstained",
+      "reason": "no opt-in gap_path"
+    },
+    {
+      "part": "grow.log_refusal",
+      "status": "abstained",
+      "reason": "no queue opt-in or different verdict"
+    },
+    {
+      "part": "multigrain_adapter.retrieve_multigrain_candidates",
+      "status": "ran",
+      "verdict": "CANDIDATE_SOURCE_LEAF_MATCHED",
+      "selected_candidate": "sailor",
+      "source_identity_status": "identity_unverified",
+      "independent_source_count": null,
+      "source_binding_status": "HOLD",
+      "source_binding_reason": "selected candidate has no exact occurrence in a source-reader Clause span",
+      "candidate_views_supplied_to_answer_verifier": false,
+      "candidate_document_id_cited_after_full_view_check": false,
+      "candidate_sentence_span_cited_after_full_view_check": null,
+      "candidate_clause_span_cited_after_full_view_check": false,
+      "candidate_clause_span_match_count": 0,
+      "candidate_clause_span_causal_influence_proven": false,
+      "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+      "bound_source_supplied_to_goal_consumer": false,
+      "licenses_goal_realization": false
+    },
+    {
+      "part": "question_cross",
+      "status": "ran",
+      "state": "NO_ATTESTED_CELL",
+      "mapped_to": "ORIGINAL"
+    }
+  ],
+  "semantic": {
+    "version": "round5a",
+    "verified": false,
+    "request": {
+      "text": "What did the sailor write?",
+      "plans": [],
+      "obligations": [],
+      "covered": [],
+      "unread": [
+        {
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 26,
+            "text": "What did the sailor write?"
+          },
+          "reason": "unsupported request grammar"
+        }
+      ],
+      "stages": [],
+      "rules": [
+        "typed unread"
+      ]
+    },
+    "unread": [
+      {
+        "span": {
+          "source": "question",
+          "start": 0,
+          "end": 26,
+          "text": "What did the sailor write?"
+        },
+        "reason": "unsupported request grammar"
+      }
+    ],
+    "budget": {
+      "limits": {
+        "parse": 32,
+        "depth": 8,
+        "candidates": 256,
+        "bindings": 64,
+        "steps": 4096
+      },
+      "steps": 0,
+      "candidates": 0,
+      "peak_bindings": 0
+    }
+  },
+  "door": "semantic_document",
+  "remedy": {
+    "verdict": "UNKNOWN_UNREAD",
+    "needs_registration": true,
+    "note": "no remedy recorded for this verdict",
+    "register": "質問された事項を示す出典を追加してください。"
+  },
+  "how_to_resolve": "質問された事項を示す出典を追加してください。",
+  "multigrain_navigation": {
+    "kind": "multigrain_candidates",
+    "verdict": "CANDIDATE_SOURCE_LEAF_MATCHED",
+    "raw_question": "What did the sailor write?",
+    "selector_query": "What did the sailor write?",
+    "candidate_limit": 8,
+    "selector_query_origin": "raw_question",
+    "query_terms": [
+      "What",
+      "did",
+      "the",
+      "sailor",
+      "write"
+    ],
+    "selected_candidate": "sailor",
+    "resolution_verdict": "ANSWER",
+    "resolution_item": "sailor",
+    "resolution_as_core": [
+      "sailor"
+    ],
+    "resolution_as_facet_only": [],
+    "resolution_missing": [
+      "What",
+      "did",
+      "the",
+      "write"
+    ],
+    "resolution_agreeing": 3,
+    "resolution_of": 4,
+    "candidates": [
+      {
+        "item": "sailor",
+        "resolution_views": [
+          "g2",
+          "g3",
+          "whole"
+        ],
+        "sources": [
+          {
+            "leaf": "AD10.txt",
+            "domain_path": [],
+            "path": [
+              "AD10.txt"
+            ],
+            "source_label": "AD10.txt",
+            "canonical_source_id": null,
+            "identity_status": "identity_unverified",
+            "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+            "grain_witnesses": [
+              {
+                "member": "whole",
+                "rung": "whole",
+                "size": 0,
+                "matched_feature_count": 1
+              },
+              {
+                "member": "g3",
+                "rung": "g3",
+                "size": 3,
+                "matched_feature_count": 4
+              },
+              {
+                "member": "g2",
+                "rung": "g2",
+                "size": 2,
+                "matched_feature_count": 5
+              }
+            ]
+          }
+        ],
+        "source_leaf_match_count": 1,
+        "independent_source_count": null,
+        "source_identity_status": "identity_unverified",
+        "selected_by_existing_constellation": true,
+        "source_reference_count": 1,
+        "source_references_truncated": false,
+        "selection_used_resolution_views": true
+      }
+    ],
+    "grain_trace": [
+      {
+        "member": "whole",
+        "rungs": [
+          [
+            "whole",
+            0
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": "sailor",
+        "rung_readings": {
+          "whole": "sailor"
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": true,
+        "independent_source_vote": false
+      },
+      {
+        "member": "g3",
+        "rungs": [
+          [
+            "g3",
+            3
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": "sailor",
+        "rung_readings": {
+          "g3": "sailor"
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": true,
+        "independent_source_vote": false
+      },
+      {
+        "member": "g2",
+        "rungs": [
+          [
+            "g2",
+            2
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": "sailor",
+        "rung_readings": {
+          "g2": "sailor"
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": true,
+        "independent_source_vote": false
+      },
+      {
+        "member": "g1",
+        "rungs": [
+          [
+            "g1",
+            1
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": null,
+        "rung_readings": {
+          "g1": null
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": false,
+        "independent_source_vote": false
+      }
+    ],
+    "query_destinations": [
+      {
+        "leaf": "AD10.txt",
+        "domain_path": [],
+        "path": [
+          "AD10.txt"
+        ],
+        "source_label": "AD10.txt",
+        "canonical_source_id": null,
+        "identity_status": "identity_unverified",
+        "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash."
+      }
+    ],
+    "query_divisions_from_constellation": [
+      "AD10.txt"
+    ],
+    "query_divisions_are_partial": true,
+    "surface_route": {
+      "verdict": "ROUTED",
+      "leaf": "AD10.txt",
+      "trail": [
+        "AD10.txt"
+      ],
+      "selected_leaf": "AD10.txt",
+      "route_kind": "single_leaf_or_unbuilt",
+      "via_api": [
+        "Base.lower"
+      ],
+      "used_for_candidate_selection": false
+    },
+    "source_identity_status": "identity_unverified",
+    "independent_source_count": null,
+    "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+    "trace": {
+      "calls": {
+        "FullConstellation.ask": 1,
+        "resolution.ask_member_reads": 4,
+        "resolution.Ladder.vote_for_selection": 4,
+        "resolution.Ladder.vote_for_grain_trace": 4,
+        "FullConstellation.ask.hierarchy.gather": 1,
+        "source_tree_leaf_walk": 1,
+        "source_tree_nodes_visited": 1,
+        "source_tree_leaves_visited": 1,
+        "Base.lower": 1,
+        "conduct_tree.descend": 0,
+        "surface.route": 0
+      },
+      "candidate_selection": "FullConstellation.ask(raw_question); its existing resolution consensus is the selector",
+      "selector_query": "What did the sailor write?",
+      "source_join": "exact candidate core key plus configured source-leaf grain features",
+      "query_division_note": "FullConstellation.ask exposes at most six leaf names from its gather result",
+      "structural_views_are_source_votes": false,
+      "elapsed_ms": 0.454
+    },
+    "used_for_answer": false,
+    "used_for_goal_realization": false,
+    "authority": "navigation_only_unverified",
+    "truth_claim": false,
+    "source_binding": {
+      "version": "multigrain-source-binding-v1",
+      "status": "HOLD",
+      "reason": "selected candidate has no exact occurrence in a source-reader Clause span",
+      "candidate": "sailor",
+      "registry_sha256": "4c4eaddb6039a97d78f198c21602aad7f492313e31488d32a349a04a66b1937a",
+      "scope": "document identity and original-text location only",
+      "goal_relation_scope": "same-owner local explicit argument spans only",
+      "source_truth_status": "UNCLASSIFIED; no truth or authority claim",
+      "independent_source_count": null,
+      "selections": []
+    },
+    "candidate_views_supplied_to_answer_verifier": false,
+    "candidate_document_id_cited_after_full_view_check": false,
+    "candidate_sentence_span_cited_after_full_view_check": null,
+    "candidate_clause_span_cited_after_full_view_check": false,
+    "candidate_clause_span_match_count": 0,
+    "candidate_clause_span_causal_influence_proven": false,
+    "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+    "candidate_goal_status": null
+  },
+  "runtime_mode": "round5",
+  "question_cross": {
+    "state": "NO_ATTESTED_CELL",
+    "reason": "NO_MATCHING_CROSS_IN_READ_SENTENCES",
+    "mapped_to": "ORIGINAL",
+    "hole_role": "patient",
+    "hole_type": [
+      "ABSTRACT",
+      "ANIMAL",
+      "ARTIFACT",
+      "BODY_PART",
+      "EVENT_ACT",
+      "IDENTIFIER",
+      "INFO_LANGUAGE",
+      "NATURAL_PHENOMENON",
+      "PLACE",
+      "PLANT",
+      "QUANTITY",
+      "STATE_PROPERTY",
+      "SUBSTANCE_FOOD",
+      "TIME",
+      "WORK"
+    ],
+    "coord": null,
+    "structure": {
+      "sentences": 7,
+      "crossed": 6,
+      "unread": 1,
+      "reasons": [
+        "NO_MATCHING_CROSS_IN_READ_SENTENCES",
+        "UNREAD_SENTENCES:1"
+      ]
+    },
+    "documents": {
+      "loaded": 1,
+      "skipped": []
+    }
+  },
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "factual",
+    "kind_class": "FACTUAL",
+    "basis": "NONE",
+    "basis_original": "NONE",
+    "human_present": false,
+    "show_reference": false,
+    "outcome": "ABSTAIN",
+    "in_table": true,
+    "counts": {
+      "human": 0,
+      "generated": 0,
+      "non_evidence": 0,
+      "request_text": 0,
+      "unreadable": 0,
+      "non_evidence_by_origin": {},
+      "unknown_origin": 0,
+      "unknown_origin_by_family": {},
+      "unknown_origin_values": {}
+    },
+    "classify_version": 4,
+    "confirm_id_version": 2,
+    "sovereign": {
+      "state": "UNKNOWN_NO_SOVEREIGN",
+      "store_id": null,
+      "records_read": 0,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 0,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "NOT_ATTEMPTED_OUTCOME"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_J11_a_tie_the_records_cannot_settle_puts_the_closed_question_to_the_chooser_and_records_the_testimony _
+tests/test_conduct_routing.py:203: in test_J11_a_tie_the_records_cannot_settle_puts_the_closed_question_to_the_chooser_and_records_the_testimony
+    assert run.out["outcome"] == "COMPLETE" and len(prompts) == 2
+E   AssertionError: assert ('ACCEPTANCE_UNVERIFIED' == 'COMPLETE'
+E     
+E     - COMPLETE
+E     + ACCEPTANCE_UNVERIFIED)
+=========================== short test summary info ============================
+FAILED tests/test_conduct_routing.py::test_J11_a_tie_the_records_cannot_settle_puts_the_closed_question_to_the_chooser_and_records_the_testimony
+1 failed, 42 deselected in 3.26s

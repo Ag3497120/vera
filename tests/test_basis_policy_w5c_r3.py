@@ -25,7 +25,8 @@ OTHER_CLAIM = "人の答え。"          # the sentence a human confirmed: diffe
 GEN = {"family": "local", "source": "g0", "text": BODY, "sha": "w", "origin": "generated",
        "generator": "codex", "source_file": "f.jsonl", "line": 4}
 USER = {"family": "user", "source": "user:request", "text": "窓は？"}
-HUMAN_CONFIRMED = {"family": "memory_sovereign", "source": "e1", "text": BODY, "origin": "human_confirmed"}
+HUMAN_CONFIRMED = {"family": "memory_sovereign", "source": "e1", "text": BODY, "origin": "human_confirmed",
+                   "store_id": "store-w5f-test", "confirm_id": "0123456789abcdef01234567"}
 DOC = {"family": "document", "sovereign": "document", "source": "memo.txt", "text": BODY}   # no ``origin`` key
 MEMO_ARG = ["memo.txt"]
 
@@ -114,6 +115,7 @@ def test_r3_rule_7_applies_to_the_family_document_and_to_nothing_else(family, or
 
 @pytest.mark.parametrize("user_documents", [False, True])
 def test_r3_the_request_text_and_a_declared_human_confirmation_do_not_depend_on_user_documents(user_documents):
+    # W5-f（F-4、分類の規則 v5）: 宣言出典に有効な識別子があれば user_documents の有無で分類が変わらない。
     sc = bp.classify_sources([USER, HUMAN_CONFIRMED], user_documents=user_documents)
     assert sc.counts["request_text"] == 1 and sc.counts["human"] == 1 and sc.unknown_origin == 0
     assert sc.cited == 1 and sc.basis == "HUMAN"
@@ -341,16 +343,16 @@ def test_r3_the_users_own_document_answer_is_kept_and_the_record_is_not_used(tmp
 
 # ============================================================ versions
 def test_r3_the_versions_are_as_registered():
-    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: CLASSIFY_VERSION は 4（A-3）。関数名の 3 は W5-c r3 の版の名前なので変えない
-    assert bp.CLASSIFY_VERSION == 4 and bp.CONFIRM_ID_VERSION == 2 and bp.TABLE_VERSION == 1
+    # W5-f（F-4、分類の規則 v5）: 分類版は 5。関数名の r3 は W5-c の版の名前なので維持する。
+    assert bp.CLASSIFY_VERSION == 5 and bp.CONFIRM_ID_VERSION == 2 and bp.TABLE_VERSION == 1
     assert bp.SCHEMA == "verantyx.basis_policy/1" and len(bp.TABLE) == 24
 
 
 def test_r3_the_policy_note_carries_the_classify_version_3():
+    # W5-f（F-4、分類の規則 v5）: 注記の分類版も 5。既存の関数名は維持する。
     out, _rc = bp.apply_to_ask(_synthetic("answer", "ANSWER", [_fsrc("general", None)]), bp.AskPolicy(), query=Q,
                                mode="legacy", documents=[])
-    # W5-e2（監査役の判断 2026-10-04 04:42、K-A3）: 注記の classify_version は 4（A-3）。関数名の 3 は W5-c r3 の版の名前なので変えない
-    assert out["basis_policy"]["classify_version"] == 4 and out["basis_policy"]["confirm_id_version"] == 2
+    assert out["basis_policy"]["classify_version"] == 5 and out["basis_policy"]["confirm_id_version"] == 2
     assert out["basis_policy"]["table_version"] == 1
 
 

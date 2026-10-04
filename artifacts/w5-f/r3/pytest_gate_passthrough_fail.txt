@@ -1,0 +1,11 @@
+# public gate (_quoted_focus_public_gate) replaced by a pass-through via -p plugin (/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w5f3-impl/passplug.py); -k public_entry
+E           AssertionError: ('none', 'W5F-F1-101', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'source': '倉庫'}, 'polarity': '+', 'tense': 'past', 
+E           assert not True
+E           AssertionError: ('fake', 'W5F-F1-101', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'source': '倉庫'}, 'polarity': '+', 'tense': 'past', 
+E           assert not True
+E           AssertionError: ('r8', 'W5F-F1-101', {'schema': 'verantyx.semantic_read/1', 'lang': 'ja', 'readable': True, 'clauses': [{'predicate': '押す', 'roles': {'agent': '兄', 'patient': '荷車', 'source': '倉庫'}, 'polarity': '+', 'tense': 'past', ..
+E           assert not True
+FAILED tests/test_semantic_read_w5f.py::test_r3_separated_focus_particles_abstain_on_the_public_entry[none]
+FAILED tests/test_semantic_read_w5f.py::test_r3_separated_focus_particles_abstain_on_the_public_entry[fake]
+FAILED tests/test_semantic_read_w5f.py::test_r3_separated_focus_particles_abstain_on_the_public_entry[r8]
+3 failed, 16 deselected in 0.28s

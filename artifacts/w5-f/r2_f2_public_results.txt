@@ -1,0 +1,4 @@
+none {"control_abstain": 8, "control_read": 24, "direction_other_abstain": 32, "direction_read": 0, "direction_target_reason": 0}
+fake {"control_abstain": 8, "control_read": 24, "direction_other_abstain": 32, "direction_read": 0, "direction_target_reason": 0}
+r8 {"control_abstain": 8, "control_read": 24, "direction_other_abstain": 32, "direction_read": 0, "direction_target_reason": 0}
+SUMMARY {'input_sha256': 'aea0fb3f6b8158dc8884851e019bd538ee7f2c0305f4e2808c40c26dc6732617', 'direction_cases': 32, 'place_controls': 32}

@@ -1,0 +1,5 @@
+SAME W3-b4/test_attack_w3b4.py tests/attack/test_attack_w3b4.py
+SAME W3-c4/test_attack_w3c4.py tests/attack/test_attack_w3c4.py
+SAME W5-e/test_attack_a1_boundary_mixes.py tests/attack/test_attack_w5e_a1_boundary_mixes.py
+SAME W5-e/test_attack_a3_sovereign_self_claim.py tests/attack/test_attack_w5e_a3_sovereign_self_claim.py
+SAME W5-e/test_attack_coordination_copula_and_tomo.py tests/attack/test_attack_w5e_coordination_copula_and_tomo.py
