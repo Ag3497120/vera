@@ -1,0 +1,3 @@
+<!-- ops-meta {"schema": "vera.ops.decision/1", "source": "/Users/motonisihikoudai/Projects/vera-impl/wt/W8-shadow-S/AGENTS.md", "source_lines": "49-49", "source_sha256": "bc4608e18fc6e6feaaeaca6ea6d304e5a134806ce6b9d60159bdec5923bc3c5e", "copied_at": "2026-10-04 09:25:48 +0900", "copied_by": "implementer", "sections": {"## 推奨構成（オーナー承認 2026-10-04 09:40）": "owner"}, "recorded_by": "auditor"} -->
+## 推奨構成（オーナー承認 2026-10-04 09:40）
+- 2026-10-04 09:40（オーナー承認の推奨構成。以後の起動から）: 指示書 = Opus 5.5 **medium**／製品の規則の実装 = Sonnet 5.5 **medium**／builder・配置・生成・採点器など長い処理の実装 = codex gpt-6-luna **max**／レビュー = Opus 5.5 **high**／攻撃 = codex max／コーパス・枠の生成 = codex low。走行中の codex-only ループ（W5-f・W3-a6・W7-chat・W7-release）はそのまま完走させ、統合前に Opus high のレビューを 1 回掛ける。

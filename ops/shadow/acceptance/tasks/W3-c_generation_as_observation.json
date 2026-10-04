@@ -1,0 +1,1 @@
+{"jobs":[{"job":"implement","task":{"role":"implement","kind":"feature","size":"medium"}},{"job":"review","task":{"role":"review","kind":"review","size":"medium"}},{"job":"attack","task":{"role":"verify","kind":"attack","size":"medium"}}],"author":"mid (W8-shadow plan, provisional)"}
