@@ -1,0 +1,10 @@
+{
+  "visual_role_rows": 152,
+  "precheck_only": true,
+  "labels": {
+    "正しい": 129,
+    "疑わしい": 17,
+    "誤り": 6
+  },
+  "output": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/artifacts/w3-a6/r9/n4_visual_labels_run2.jsonl"
+}

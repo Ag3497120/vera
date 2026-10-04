@@ -1,0 +1,8 @@
+ docs/COARSE_PLACEMENT.md                      | 202 ++++++++++++++
+ tests/coarse_place/test_coarse_place_types.py |   3 +-
+ tests/test_gen_coarse_evidence_pred.py        |   8 +-
+ tools/build_coarse_placement.py               | 326 +++++++++++++++++++++-
+ tools/gen_coarse_evidence.py                  | 382 +++++++++++++++++++++++++-
+ verantyx/coarse_place.py                      |  41 ++-
+ verantyx/coarse_types.py                      | 160 +++++++++++
+ 7 files changed, 1111 insertions(+), 11 deletions(-)

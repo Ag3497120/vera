@@ -1,0 +1,5 @@
+r7_cmp_exit=0
+r8_cmp_exit=0
+none_cmp_exit=0
+entry_none_cmp_exit=0
+entry_r8_cmp_exit=0

@@ -1,0 +1,27 @@
+{
+ "boundary_freq": 2,
+ "by_ns": {
+  "N": 2720,
+  "NP": 1
+ },
+ "by_state": {
+  "DECIDED": 2180,
+  "MULTIPLE": 541
+ },
+ "content_sha256": "89bd07e6c71d883cdeafaa96e906118cbfbc3dc45b1f15f2ce65bbec783382a5",
+ "kind": "ntype",
+ "last_freq": 2,
+ "n_at_boundary": 1,
+ "n_requested": 60000,
+ "out": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/artifacts/w3-a6/current-r1/needs_ntype.jsonl",
+ "out_sha256": "6a871edbad30eee41fc98e3a6e74db036feae237ec3e3366c45fffc1b6e28424",
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/build/coarse-W3a/full/r8/run2",
+ "reasons": {
+  "definition_like_arm": 168200,
+  "no_place": 821858,
+  "not_direct": 774124,
+  "ns_not_noun": 0
+ },
+ "rule": "headwords whose origin is direct, whose top holds PLACE, whose namespace holds N and whose by (arm names, the part before the @) holds no definition-like arm (definition, definition_recovered, title_qualifier, alias, paren_alias, seed); the first failing condition is counted per reason; ordered by n_seen descending; every word whose n_seen equals that of the n-th is included; display order inside one frequency = string order; no test data is read",
+ "total": 2721
+}

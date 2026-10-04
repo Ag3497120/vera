@@ -1,0 +1,34 @@
+{
+  "N2": {
+    "expected_predicates": 10,
+    "expected_role_rows": 11,
+    "claimed_expected_roles": 4,
+    "confirmed_expected_roles": 1,
+    "unconfirmed_expected_roles": 4,
+    "confirmed_backing_checks_pass": true,
+    "query_status_counts_by_expected_row": {
+      "CONFIRMED": 8,
+      "ESTIMATED": 3
+    }
+  },
+  "N3": {
+    "required_terms": 15,
+    "required_terms_not_lone_direct_place": 15,
+    "required_terms_lone_direct_place": 0,
+    "changed_nouns_from_place": 292,
+    "changed_noun_visual_labels": {
+      "正しい": 253,
+      "疑わしい": 37,
+      "誤り": 2
+    },
+    "changed_noun_obvious_errors": 2,
+    "changed_noun_obvious_error_rate": 0.00684931506849315,
+    "changed_noun_unassessed": 0
+  },
+  "N5": {
+    "seed_words": 281,
+    "same": 281,
+    "different": 0,
+    "differences": []
+  }
+}

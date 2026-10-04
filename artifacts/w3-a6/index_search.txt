@@ -1,0 +1,75 @@
+### 役割 枠 助詞 生成
+{
+  "verdict": "ANSWER",
+  "query": "役割 枠 助詞 生成",
+  "searched": 686,
+  "hits": [
+    {
+      "kind": "prereg",
+      "name": "PREREG",
+      "about": "登録日時: 2026-10-03 18:49:53 +0900 から 2026-10-03 18:51:03 +0900 の間（`date '+%F %T %z'` の出力。`artifacts/w3-a3/prereg_time.txt` の `before` と `after`。この節はその間に書いた）",
+      "where": "artifacts/w3-a3/PREREG.md"
+    }
+  ],
+  "total_hits": 1
+}
+### 相対位置 場所
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "相対位置 場所",
+  "searched": 686,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 78,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 名詞の型 追加
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "名詞の型 追加",
+  "searched": 686,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 78,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 生成 一覧 needs
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "生成 一覧 needs",
+  "searched": 686,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 78,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 問い合わせ 鍵 追加
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "問い合わせ 鍵 追加",
+  "searched": 686,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 54,
+    "module": 289,
+    "prereg": 78,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

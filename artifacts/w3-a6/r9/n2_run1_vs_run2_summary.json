@@ -1,0 +1,28 @@
+{
+  "run1": {
+    "expected_predicates": 10,
+    "expected_role_rows": 11,
+    "claimed_expected_roles": 4,
+    "confirmed_expected_roles": 1,
+    "unconfirmed_expected_roles": 4,
+    "status_counts_by_expected_row": {
+      "CONFIRMED": 8,
+      "ESTIMATED": 3
+    },
+    "confirmed_backing_checks_pass": true
+  },
+  "run2": {
+    "expected_predicates": 10,
+    "expected_role_rows": 11,
+    "claimed_expected_roles": 10,
+    "confirmed_expected_roles": 2,
+    "unconfirmed_expected_roles": 9,
+    "status_counts_by_expected_row": {
+      "CONFIRMED": 8,
+      "ESTIMATED": 3
+    },
+    "confirmed_backing_checks_pass": true
+  },
+  "changed_claim_rows": 6,
+  "changed_confirmation_rows": 1
+}

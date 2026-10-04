@@ -1,0 +1,3 @@
+loaded 24
+outside []
+root /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/verantyx/__init__.py

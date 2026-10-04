@@ -1,0 +1,53 @@
+{
+  "1": {
+    "role_frame_min_sources": 1,
+    "sample_words": 60,
+    "sample_word_status": {
+      "CONFIRMED": 16,
+      "ESTIMATED": 42,
+      "NO_ROLE_FRAME": 2
+    },
+    "confirmed_role_rows": 21,
+    "confirmed_visual_labels": {
+      "正しい": 20,
+      "疑わしい": 1
+    },
+    "confirmed_obvious_errors": 0,
+    "obvious_error_rate": 0.0,
+    "rate_is_unmeasured": false
+  },
+  "2": {
+    "role_frame_min_sources": 2,
+    "sample_words": 60,
+    "sample_word_status": {
+      "CONFIRMED": 5,
+      "ESTIMATED": 53,
+      "NO_ROLE_FRAME": 2
+    },
+    "confirmed_role_rows": 6,
+    "confirmed_visual_labels": {
+      "正しい": 5,
+      "疑わしい": 1
+    },
+    "confirmed_obvious_errors": 0,
+    "obvious_error_rate": 0.0,
+    "rate_is_unmeasured": false
+  },
+  "3": {
+    "role_frame_min_sources": 3,
+    "sample_words": 60,
+    "sample_word_status": {
+      "CONFIRMED": 5,
+      "ESTIMATED": 53,
+      "NO_ROLE_FRAME": 2
+    },
+    "confirmed_role_rows": 6,
+    "confirmed_visual_labels": {
+      "正しい": 5,
+      "疑わしい": 1
+    },
+    "confirmed_obvious_errors": 0,
+    "obvious_error_rate": 0.0,
+    "rate_is_unmeasured": false
+  }
+}

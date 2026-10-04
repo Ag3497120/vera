@@ -21,6 +21,7 @@ TICKET_TRAP_WORDS = ["土手", "分母", "器官", "空母", "民家", "商社",
 
 
 def test_inventory_only_grows():
+    """2026-10-04 20:38:46 +0900: before 17, now 18 NOUN_TYPES because RELATIVE_POSITION was added; retain the old 17 ids."""
     assert FROZEN_NOUN_TYPES <= set(ct.NOUN_TYPES)
     assert FROZEN_PRED_TYPES <= set(ct.PRED_TYPES)
     assert set(ct.type_ids("N")) == set(ct.NOUN_TYPES)
@@ -28,7 +29,7 @@ def test_inventory_only_grows():
     assert all(t.startswith("P_") for t in ct.PRED_TYPES)
     assert not any(t.startswith("P_") for t in ct.NOUN_TYPES)
     assert ct.type_namespace("P_GIVE") == "P" and ct.type_namespace("PLACE") == "N"
-    assert 17 == len(ct.NOUN_TYPES) and 13 == len(ct.PRED_TYPES)
+    assert 18 == len(ct.NOUN_TYPES) and 13 == len(ct.PRED_TYPES)
 
 
 def test_seed_limits_and_known_types():

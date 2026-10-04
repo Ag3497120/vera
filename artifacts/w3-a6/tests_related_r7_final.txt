@@ -1,0 +1,57 @@
+........................................................................ [ 19%]
+.................................F...................................... [ 39%]
+........................................................................ [ 59%]
+........................................................................ [ 79%]
+............................................................FF.......... [ 99%]
+.                                                                        [100%]
+=================================== FAILURES ===================================
+__________________________ test_inventory_only_grows ___________________________
+
+    def test_inventory_only_grows():
+        assert FROZEN_NOUN_TYPES <= set(ct.NOUN_TYPES)
+        assert FROZEN_PRED_TYPES <= set(ct.PRED_TYPES)
+        assert set(ct.type_ids("N")) == set(ct.NOUN_TYPES)
+        assert set(ct.type_ids("P")) == set(ct.PRED_TYPES)
+        assert all(t.startswith("P_") for t in ct.PRED_TYPES)
+        assert not any(t.startswith("P_") for t in ct.NOUN_TYPES)
+        assert ct.type_namespace("P_GIVE") == "P" and ct.type_namespace("PLACE") == "N"
+>       assert 17 == len(ct.NOUN_TYPES) and 13 == len(ct.PRED_TYPES)
+E       AssertionError: assert (17 == 18)
+E        +  where 18 = len({'PERSON': '人', 'GROUP_ORG': '集団・組織', 'ANIMAL': '動物', 'PLANT': '植物・菌類', ...})
+E        +    where {'PERSON': '人', 'GROUP_ORG': '集団・組織', 'ANIMAL': '動物', 'PLANT': '植物・菌類', ...} = ct.NOUN_TYPES
+
+tests/coarse_place/test_coarse_place_types.py:31: AssertionError
+_ test_the_predicate_prompt_lists_the_closed_inventories_from_coarse_types_and_no_test_word _
+
+    def test_the_predicate_prompt_lists_the_closed_inventories_from_coarse_types_and_no_test_word():
+        h = gce.PRED_PROMPT_HEAD
+        for k, v in ct.PRED_TYPES.items():
+            assert "- %s: %s" % (k, v) in h
+        for k, v in ct.NOUN_TYPES.items():
+>           assert "- %s: %s" % (k, v) in h
+E           AssertionError: assert ('- %s: %s' % ('RELATIVE_POSITION', '相対位置・方向')) in 'あなたは日本語の文法辞書の編集者です。下の WORDS_JSON の各語（動詞）について、(1) 述語の型を下の述語の型の一覧から 1 つ、(2) その語が普通に取る格の枠（助詞ごとに、その助詞で取る名詞の型）を答えてください。\n\...だけ選ぶ。\n- ファイルを読まない。コマンドを実行しない。ネットワークを使わない。道具を使わず、あなたの知識だけで答える。\n- items は入力の語と同じ順で、語ごとに 1 件ずつ。word には入力の語をそのまま入れる。\n\n'
+
+tests/test_gen_coarse_evidence_pred.py:152: AssertionError
+_________ test_the_schema_is_closed_and_its_enums_are_the_inventories __________
+
+    def test_the_schema_is_closed_and_its_enums_are_the_inventories():
+        s = gce.PRED_SCHEMA
+        item = s["properties"]["items"]["items"]
+        assert s["additionalProperties"] is False and item["additionalProperties"] is False
+        assert item["required"] == ["word", "ptype", "frame"]
+        assert set(item["properties"]["ptype"]["enum"]) == set(ct.PRED_TYPES) | {None}
+        fr = item["properties"]["frame"]["items"]
+        assert fr["additionalProperties"] is False and fr["required"] == ["particle", "types"]
+        assert fr["properties"]["particle"]["enum"] == list(ct.CASE_PARTICLES_9) and len(fr["properties"]["particle"]["enum"]) == 9
+>       assert fr["properties"]["types"]["items"]["enum"] == list(ct.NOUN_TYPES) and len(ct.NOUN_TYPES) == 17
+E       AssertionError: assert (['PERSON', 'G...CE_FOOD', ...] == ['PERSON', 'G...CE_FOOD', ...]
+E         
+E         Right contains one more item: 'RELATIVE_POSITION'
+E         Use -v to get more diff)
+
+tests/test_gen_coarse_evidence_pred.py:185: AssertionError
+=========================== short test summary info ============================
+FAILED tests/coarse_place/test_coarse_place_types.py::test_inventory_only_grows
+FAILED tests/test_gen_coarse_evidence_pred.py::test_the_predicate_prompt_lists_the_closed_inventories_from_coarse_types_and_no_test_word
+FAILED tests/test_gen_coarse_evidence_pred.py::test_the_schema_is_closed_and_its_enums_are_the_inventories
+3 failed, 358 passed in 23.58s

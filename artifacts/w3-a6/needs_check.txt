@@ -1,0 +1,3 @@
+ntype_total 2721 missing_expected []
+role_total 8311 missing_expected []
+role_rows 11 distinct_predicates 10

@@ -1,0 +1,16 @@
+W3-a6 生成計画（current round 1、最終プロンプト版）
+時刻: 2026-10-04 16:02:15 +0900
+
+最終凍結:
+- needs_ntype: 2,721 語、69 束、最大 207 呼び出し。
+- needs_role: 8,311 語、208 束、最大 624 呼び出し。
+- 期待 SHA-256: bea8c8a1dd97dbb6b1f5c4bd7d44c44ac7b322036cc2366027e714b37814af33。
+- ntype template/schema SHA-256: a22e217ad80fc6bd043864b6ee414ef931d3b174a08f1522ce6555b6a9496a29 / e3db31ed9adba39b1a53979cbe84f5113bd778c90c1437a753ce8a67e995825e。
+- role template/schema SHA-256: ade8ca7d2752d7547711e6613b5f7d00d5adb7656ae9183100938ed5c9e8c4d8 / 2d5a9ed449bfdd4899e13048c4e40ddce895ffaa72b2b77f0702773159ddf5f1。
+- 同条件で作った既存 needs 一覧と再抽出した両一覧は cmp 一致。Direct sahen 70 語は r8 generated_frames 8,030 語の内数。
+
+実行:
+- gpt-6-luna、effort low、batch size 40、slots 4、max-retries 2。
+- ntype 完了後に collect/summarize、続けて role を実行し collect/summarize。並行起動なし。
+- 合計最大 831 呼び出し。試しの束なし。ネットワークを使うのは各 `run` が codex を起動する間だけ。
+- 実行スクリプト: `generate_and_collect.sh`。出力: `build/coarse-W3a/full/r9/gen_ntype/`、`gen_role/`。

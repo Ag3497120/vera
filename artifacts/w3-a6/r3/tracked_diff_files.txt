@@ -1,0 +1,5 @@
+docs/COARSE_PLACEMENT.md
+tools/build_coarse_placement.py
+tools/gen_coarse_evidence.py
+verantyx/coarse_place.py
+verantyx/coarse_types.py

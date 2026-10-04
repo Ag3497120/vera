@@ -1,0 +1,19 @@
+sh -n generate_and_collect.sh: PASS
+sh -n trial_batch.sh: PASS
+prompt snapshot cmp: PASS
+artifacts/w3-a6/current-r2/freeze.inputs: OK
+artifacts/w3-a6/current-r2/prereg_time.txt: OK
+artifacts/w3-a6/current-r2/docs_prereg.sha256: OK
+artifacts/w3-a6/current-r2/auditor_run1_rates.txt: OK
+artifacts/w3-a6/current-r2/needs_role_v2.jsonl: OK
+artifacts/w3-a6/current-r2/needs_role_v2.meta.json: OK
+artifacts/w3-a6/current-r2/trial_needs_role_v2.jsonl: OK
+artifacts/w3-a6/current-r2/prompt_role_v2.txt: OK
+artifacts/w3-a6/current-r2/generate_and_collect.sh: OK
+artifacts/w3-a6/current-r2/trial_batch.sh: OK
+tools/gen_coarse_evidence.py: OK
+verantyx/coarse_types.py: OK
+tests/coarse_place/test_coarse_place_types.py: OK
+tests/test_gen_coarse_evidence_pred.py: OK
+tests/coarse_place/test_coarse_place_w3a6_gen.py: OK
+tests/coarse_place/data/w3a6_expect.json: OK

@@ -145,12 +145,13 @@ def test_the_noun_prompt_and_its_hash_did_not_change():
 
 # --- the prompt and the schema ---------------------------------------------------------------------
 def test_the_predicate_prompt_lists_the_closed_inventories_from_coarse_types_and_no_test_word():
+    """2026-10-04 20:38:46 +0900: before this test read 17 NOUN_TYPES; now check the same 17 FRAME_NOUN_TYPES because predicates exclude the new 18th id."""
     h = gce.PRED_PROMPT_HEAD
     for k, v in ct.PRED_TYPES.items():
         assert "- %s: %s" % (k, v) in h
-    for k, v in ct.NOUN_TYPES.items():
+    for k, v in ct.FRAME_NOUN_TYPES.items():
         assert "- %s: %s" % (k, v) in h
-    assert len(re.findall(r"^- P_[A-Z]+:", h, re.M)) == 13 and len(re.findall(r"^- [A-Z_]+: ", h, re.M)) == 13 + 17
+    assert len(re.findall(r"^- P_[A-Z]+:", h, re.M)) == 13 and len(re.findall(r"^- [A-Z_]+: ", h, re.M)) == 13 + len(ct.FRAME_NOUN_TYPES)
     assert "が を に で へ と から まで より" in h
     p = gce.build_prompt_pred(["アア", "イイ"])
     assert p.splitlines()[-1] == 'WORDS_JSON: ["アア", "イイ"]'
@@ -174,6 +175,7 @@ def test_the_predicate_prompt_lists_the_closed_inventories_from_coarse_types_and
 
 
 def test_the_schema_is_closed_and_its_enums_are_the_inventories():
+    """2026-10-04 20:38:46 +0900: before the enum used NOUN_TYPES (17); now it uses FRAME_NOUN_TYPES (17) while NOUN_TYPES is 18, preserving the predicate contract."""
     s = gce.PRED_SCHEMA
     item = s["properties"]["items"]["items"]
     assert s["additionalProperties"] is False and item["additionalProperties"] is False
@@ -182,7 +184,7 @@ def test_the_schema_is_closed_and_its_enums_are_the_inventories():
     fr = item["properties"]["frame"]["items"]
     assert fr["additionalProperties"] is False and fr["required"] == ["particle", "types"]
     assert fr["properties"]["particle"]["enum"] == list(ct.CASE_PARTICLES_9) and len(fr["properties"]["particle"]["enum"]) == 9
-    assert fr["properties"]["types"]["items"]["enum"] == list(ct.NOUN_TYPES) and len(ct.NOUN_TYPES) == 17
+    assert fr["properties"]["types"]["items"]["enum"] == list(ct.FRAME_NOUN_TYPES) and len(ct.FRAME_NOUN_TYPES) == 17
 
 
 def test_the_prompt_command_prints_both_hashes(capsys):

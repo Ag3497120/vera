@@ -1,0 +1,1700 @@
+{
+  "thresholds": {
+    "1": {
+      "role_frame_min_sources": 1,
+      "sample_words": 60,
+      "sample_word_status": {
+        "CONFIRMED": 16,
+        "ESTIMATED": 42,
+        "NO_ROLE_FRAME": 2
+      },
+      "confirmed_role_rows": 21,
+      "confirmed_visual_labels": {
+        "正しい": 20,
+        "疑わしい": 1
+      },
+      "confirmed_obvious_errors": 0,
+      "obvious_error_rate": 0.0,
+      "rate_is_unmeasured": false
+    },
+    "2": {
+      "role_frame_min_sources": 2,
+      "sample_words": 60,
+      "sample_word_status": {
+        "CONFIRMED": 5,
+        "ESTIMATED": 53,
+        "NO_ROLE_FRAME": 2
+      },
+      "confirmed_role_rows": 6,
+      "confirmed_visual_labels": {
+        "正しい": 5,
+        "疑わしい": 1
+      },
+      "confirmed_obvious_errors": 0,
+      "obvious_error_rate": 0.0,
+      "rate_is_unmeasured": false
+    },
+    "3": {
+      "role_frame_min_sources": 3,
+      "sample_words": 60,
+      "sample_word_status": {
+        "CONFIRMED": 5,
+        "ESTIMATED": 53,
+        "NO_ROLE_FRAME": 2
+      },
+      "confirmed_role_rows": 6,
+      "confirmed_visual_labels": {
+        "正しい": 5,
+        "疑わしい": 1
+      },
+      "confirmed_obvious_errors": 0,
+      "obvious_error_rate": 0.0,
+      "rate_is_unmeasured": false
+    }
+  },
+  "configured_role_frame_min_sources": 1,
+  "n4_meets_threshold": true,
+  "query_projection_mismatches": [
+    {
+      "word": "印字する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "agent",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ARTIFACT",
+                "INFO_LANGUAGE",
+                "WORK"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "goal",
+              "types": [
+                "ARTIFACT",
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "で": [
+            {
+              "role": "instrument",
+              "types": [
+                "ARTIFACT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "つぼむ",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "entity",
+              "types": [
+                "ARTIFACT",
+                "BODY_PART",
+                "PLANT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "BODY_PART",
+                "PLANT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "新設する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ARTIFACT",
+                "GROUP_ORG",
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "goal",
+              "types": [
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "総括する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "agent",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ABSTRACT",
+                "EVENT_ACT",
+                "INFO_LANGUAGE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "standard",
+              "types": [
+                "ABSTRACT",
+                "EVENT_ACT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "で": [
+            {
+              "role": "instrument",
+              "types": [
+                "ARTIFACT",
+                "INFO_LANGUAGE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "持ち回る",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "agent",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ARTIFACT",
+                "INFO_LANGUAGE",
+                "SUBSTANCE_FOOD"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "goal",
+              "types": [
+                "GROUP_ORG",
+                "PERSON",
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "吸引する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "agent",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ABSTRACT",
+                "ARTIFACT",
+                "BODY_PART",
+                "SUBSTANCE_FOOD"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "goal",
+              "types": [
+                "ARTIFACT",
+                "PERSON",
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "遣う",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ABSTRACT",
+                "ARTIFACT",
+                "SUBSTANCE_FOOD"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "recipient",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "入店する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "に": [
+            {
+              "role": "goal",
+              "types": [
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "申し伝える",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "EVENT_ACT",
+                "INFO_LANGUAGE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "recipient",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "から": [
+            {
+              "role": "source",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "始末する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "agent",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ABSTRACT",
+                "ARTIFACT",
+                "EVENT_ACT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "で": [
+            {
+              "role": "instrument",
+              "types": [
+                "ARTIFACT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "アップロードする",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ARTIFACT",
+                "INFO_LANGUAGE",
+                "WORK"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "goal",
+              "types": [
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "で": [
+            {
+              "role": "instrument",
+              "types": [
+                "ARTIFACT",
+                "INFO_LANGUAGE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "へ": [
+            {
+              "role": "goal",
+              "types": [
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "から": [
+            {
+              "role": "source",
+              "types": [
+                "ARTIFACT",
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "取り合わせる",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ARTIFACT",
+                "INFO_LANGUAGE",
+                "SUBSTANCE_FOOD"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "と": [
+            {
+              "role": "companion",
+              "types": [
+                "ARTIFACT",
+                "SUBSTANCE_FOOD"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "抜け替わる",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "entity",
+              "types": [
+                "ARTIFACT",
+                "BODY_PART",
+                "PLANT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "繰り上がる",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "entity",
+              "types": [
+                "EVENT_ACT",
+                "QUANTITY",
+                "TIME"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "goal",
+              "types": [
+                "QUANTITY",
+                "TIME"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "否決する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ABSTRACT",
+                "EVENT_ACT",
+                "INFO_LANGUAGE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "cause",
+              "types": [
+                "ABSTRACT",
+                "EVENT_ACT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "忍び込む",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "に": [
+            {
+              "role": "goal",
+              "types": [
+                "ARTIFACT",
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "へ": [
+            {
+              "role": "goal",
+              "types": [
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "から": [
+            {
+              "role": "source",
+              "types": [
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "内線する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "IDENTIFIER",
+                "INFO_LANGUAGE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "見くらべる",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "agent",
+              "types": [
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ARTIFACT",
+                "INFO_LANGUAGE",
+                "WORK"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "と": [
+            {
+              "role": "standard",
+              "types": [
+                "ARTIFACT",
+                "INFO_LANGUAGE",
+                "WORK"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "解任する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "から": [
+            {
+              "role": "source",
+              "types": [
+                "GROUP_ORG"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "寄進する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ABSTRACT",
+                "ARTIFACT",
+                "SUBSTANCE_FOOD"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "recipient",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "へ": [
+            {
+              "role": "goal",
+              "types": [
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "看る",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ANIMAL",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "place",
+              "types": [
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "で": [
+            {
+              "role": "instrument",
+              "types": [
+                "ARTIFACT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "なめす",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ARTIFACT",
+                "SUBSTANCE_FOOD"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "result",
+              "types": [
+                "ARTIFACT",
+                "SUBSTANCE_FOOD"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "で": [
+            {
+              "role": "instrument",
+              "types": [
+                "ARTIFACT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "差し出せる",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ABSTRACT",
+                "ARTIFACT",
+                "INFO_LANGUAGE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "recipient",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "細分する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ABSTRACT",
+                "INFO_LANGUAGE",
+                "QUANTITY"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "result",
+              "types": [
+                "ABSTRACT",
+                "QUANTITY"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "相殺する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ABSTRACT",
+                "QUANTITY",
+                "SUBSTANCE_FOOD"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "で": [
+            {
+              "role": "instrument",
+              "types": [
+                "ABSTRACT",
+                "ARTIFACT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "と": [
+            {
+              "role": "companion",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "感じ取れる",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "experiencer",
+              "types": [
+                "ANIMAL",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "EVENT_ACT",
+                "INFO_LANGUAGE",
+                "STATE_PROPERTY"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "捻る",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "agent",
+              "types": [
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ARTIFACT",
+                "BODY_PART",
+                "SUBSTANCE_FOOD"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "goal",
+              "types": [
+                "ARTIFACT",
+                "BODY_PART"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "きざむ",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ABSTRACT",
+                "ARTIFACT",
+                "BODY_PART",
+                "SUBSTANCE_FOOD"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "で": [
+            {
+              "role": "instrument",
+              "types": [
+                "ARTIFACT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "仲直りする",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "と": [
+            {
+              "role": "companion",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "揺られる",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "に": [
+            {
+              "role": "agent",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "で": [
+            {
+              "role": "cause",
+              "types": [
+                "EVENT_ACT",
+                "NATURAL_PHENOMENON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "計上する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "agent",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ABSTRACT",
+                "EVENT_ACT",
+                "QUANTITY"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "goal",
+              "types": [
+                "ABSTRACT",
+                "IDENTIFIER"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "で": [
+            {
+              "role": "cause",
+              "types": [
+                "ABSTRACT",
+                "EVENT_ACT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "実装する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ABSTRACT",
+                "ARTIFACT",
+                "EVENT_ACT",
+                "INFO_LANGUAGE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "goal",
+              "types": [
+                "ARTIFACT",
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "で": [
+            {
+              "role": "place",
+              "types": [
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "体操する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "agent",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "BODY_PART",
+                "EVENT_ACT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "で": [
+            {
+              "role": "place",
+              "types": [
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "生い茂る",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "entity",
+              "types": [
+                "PLANT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "place",
+              "types": [
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "揶揄する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ANIMAL",
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "負担する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ABSTRACT",
+                "EVENT_ACT",
+                "QUANTITY"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "recipient",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "礼する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "agent",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "変速する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ARTIFACT"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "result",
+              "types": [
+                "STATE_PROPERTY"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "標識する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "agent",
+              "types": [
+                "GROUP_ORG",
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ARTIFACT",
+                "INFO_LANGUAGE",
+                "PLACE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "で": [
+            {
+              "role": "instrument",
+              "types": [
+                "ARTIFACT",
+                "INFO_LANGUAGE"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "食べ残す",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "SUBSTANCE_FOOD"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "謳歌する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "を": [
+            {
+              "role": "patient",
+              "types": [
+                "ABSTRACT",
+                "EVENT_ACT",
+                "STATE_PROPERTY"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    },
+    {
+      "word": "逝去する",
+      "threshold": 1,
+      "actual": [
+        "ESTIMATED",
+        null,
+        {
+          "が": [
+            {
+              "role": "agent",
+              "types": [
+                "PERSON"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ],
+          "に": [
+            {
+              "role": "time",
+              "types": [
+                "TIME"
+              ],
+              "why": "NOT_BACKED"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        "ESTIMATED",
+        null,
+        null
+      ]
+    }
+  ],
+  "sample_sha256": "bc4cf24c64c420ead8bcbc7f62c3b5ee4ea44da4a5bcca71130d40e0e17969e8",
+  "visual_labels_sha256": "69e961749a54a2313e4fbda9e90fbdbbe5077b2fc3190f75954161bc9edcd714",
+  "run2_content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21"
+}

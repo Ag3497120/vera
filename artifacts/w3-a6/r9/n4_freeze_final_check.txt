@@ -1,0 +1,3 @@
+artifacts/w3-a6/r9/n4_claims_run2_prefreeze.jsonl: OK
+artifacts/w3-a6/r9/n4_visual_labels_run2.jsonl: OK
+artifacts/w3-a6/r9/n4_claims_run2_prefreeze.jsonl: OK

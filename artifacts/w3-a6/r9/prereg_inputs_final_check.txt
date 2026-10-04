@@ -1,0 +1,6 @@
+tests/coarse_place/data/w3a6_expect.json: OK
+artifacts/w3-a6/n4_claims_prefreeze.jsonl: OK
+artifacts/w3-a6/n3_relpos_visual_labels_r7.jsonl: OK
+artifacts/w3-a6/n5_seed_words_prefreeze.jsonl: OK
+artifacts/w3-a6/current-r2/needs_role_v2.jsonl: OK
+artifacts/w3-a6/current-r2/prompt_role_v2.txt: OK

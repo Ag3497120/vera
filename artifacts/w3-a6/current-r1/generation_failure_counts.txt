@@ -1,0 +1,3 @@
+kind calls status exit stderr_terminal_line
+gen_ntype 207 {('failed', 1): 207} {'Error: failed to initialize in-process app-server client: Operation not permitted (os error 1)': 207} outputs 0
+gen_role 624 {('failed', 1): 624} {'Error: failed to initialize in-process app-server client: Operation not permitted (os error 1)': 624} outputs 0

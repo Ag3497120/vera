@@ -1,0 +1,11 @@
+artifacts/w3-a6/current-r1/needs_ntype.jsonl: OK
+artifacts/w3-a6/current-r1/needs_role.jsonl: OK
+artifacts/w3-a6/current-r1/needs_ntype.meta.json: OK
+artifacts/w3-a6/current-r1/needs_role.meta.json: OK
+artifacts/w3-a6/current-r1/prompt_ntype_r6.txt: OK
+artifacts/w3-a6/current-r1/prompt_role_r6.txt: OK
+artifacts/w3-a6/current-r1/generate_and_collect.sh: OK
+tools/gen_coarse_evidence.py: OK
+tests/coarse_place/data/w3a6_expect.json: OK
+tests/coarse_place/test_coarse_place_w3a6_gen.py: OK
+tests/coarse_place/test_coarse_place_w3a6_role_check.py: OK

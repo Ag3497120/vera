@@ -1,0 +1,4 @@
+source: /Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a6/codex/impl.r8.prompt.md
+source_sha256: 6825bd88a49b82add146e1a365b53376a21a8979a31ce5957d601fb5fd764368
+source_statement: audit judgment 4 instruction (2026-10-04 20:35 +0900)
+run1_claim_rates: で=4.5%, へ=2.1%, から=5.0%

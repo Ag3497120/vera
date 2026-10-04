@@ -69,10 +69,24 @@ WORDS_PREFIX = "WORDS_JSON: "
 # are not touched.  The inventories are listed FROM coarse_types, never copied by hand.
 PRED_PARTICLES = ct.CASE_PARTICLES_9
 
+# Typical particle-to-role associations used as guidance, not deterministic rules.
+# Keep this at the level of grammatical relations: never enumerate predicate words.
+ROLE_PARTICLE_GUIDANCE = {
+    "が": "主語（他動詞の主語・人や動物や組織が主語の自動詞は agent、それ以外の自動詞などは entity。使役の causer、述語の意味に応じ experiencer や attribute もありうる）",
+    "を": "動作対象は patient、使役で実際に動作する項は causee。経路・範囲・起点など別の用法は、述語の普通の意味に合う役割を選ぶ",
+    "に": "recipient・goal・result・place・time・beneficiary・causee。受身の動作主の agent や、述語の意味に合う experiencer・attribute などもありうる",
+    "で": "place・instrument・cause。一緒に行う集団を表す companion なども、述語の普通の用法ならありうる",
+    "へ": "移動・設置の到達点である goal",
+    "と": "companion・quotation・standard・value など、述語の普通の意味に合う役割",
+    "から": "起点・出どころの source、原因の cause、開始時点の time。受身の動作主の agent なども規約に合えばありうる",
+    "まで": "期限・時点の time、移動や範囲の終端である goal・place",
+    "より": "比較の基準である standard、起点・出どころの source。受身の動作主の agent なども規約に合えばありうる",
+}
+
 
 def _pred_prompt_head() -> str:
     ptypes = "\n".join("- %s: %s" % (k, v) for k, v in ct.PRED_TYPES.items())
-    ntypes = "\n".join("- %s: %s" % (k, v) for k, v in ct.NOUN_TYPES.items())
+    ntypes = "\n".join("- %s: %s" % (k, v) for k, v in ct.FRAME_NOUN_TYPES.items())
     return (
         "あなたは日本語の文法辞書の編集者です。下の WORDS_JSON の各語（動詞）について、"
         "(1) 述語の型を下の述語の型の一覧から 1 つ、(2) その語が普通に取る格の枠（助詞ごとに、その助詞で取る名詞の型）を答えてください。\n"
@@ -102,7 +116,85 @@ PRED_SCHEMA = {"type": "object", "additionalProperties": False, "required": ["it
                            "properties": {
                                "particle": {"type": "string", "enum": list(PRED_PARTICLES)},
                                "types": {"type": "array", "items": {
-                                   "type": "string", "enum": list(ct.NOUN_TYPES)}}}}}}}}}}
+                                   "type": "string", "enum": list(ct.FRAME_NOUN_TYPES)}}}}}}}}}}
+
+
+# --- W3-a6: the noun-type form (``--kind ntype``) and the role-frame form (``--kind role``).  Their own prompts and schemas
+# (the noun and predicate ones above are not touched).  The inventories are listed FROM coarse_types; no example word,
+# no list of words is written in a prompt: the only words it holds are the batch's (WORDS_JSON).
+def _ntype_prompt_head() -> str:
+    ntypes = "\n".join("- %s: %s" % (k, v) for k, v in ct.NOUN_TYPES.items())
+    notes = "\n".join("- %s: %s" % (k, v) for k, v in ct.NOUN_TYPE_NOTES.items())
+    return (
+        "あなたは日本語の辞書の編集者です。下の WORDS_JSON の各語（名詞）について、"
+        "(1) 辞書の見出しのような短い定義文を 1 文、(2) その語の名詞の型を下の一覧から、答えてください。\n"
+        "\n名詞の型（id: 名称）:\n" + ntypes + "\n"
+        "\n型の補足:\n" + notes + "\n"
+        "\n規則:\n"
+        "- definition は辞書の見出しのような短い 1 文にする。\n"
+        "- types は名詞の型の id を 1 つ書く。同じくらい普通な意味が 2 つあって型が分かれるときだけ、2 つまで書いてよい。\n"
+        "- 語に複数の意味があるときは、いちばん一般的な意味から型を選ぶ（types は 2 つまで）。\n"
+        "- 語として意味が分からない、断片で語にならない、綴りから何も判断できない語は、definition を null、types を空の配列にする。無理に作らない。\n"
+        "- ファイルを読まない。コマンドを実行しない。ネットワークを使わない。道具を使わず、あなたの知識だけで答える。\n"
+        "- items は入力の語と同じ順で、語ごとに 1 件ずつ。word には入力の語をそのまま入れる。\n"
+        "\n")
+
+
+NTYPE_PROMPT_HEAD = _ntype_prompt_head()
+NTYPE_SCHEMA = {"type": "object", "additionalProperties": False, "required": ["items"],
+                "properties": {"items": {"type": "array", "items": {
+                    "type": "object", "additionalProperties": False,
+                    "required": ["word", "definition", "types"],
+                    "properties": {
+                        "word": {"type": "string"},
+                        "definition": {"type": ["string", "null"]},
+                        "types": {"type": "array", "items": {"type": "string", "enum": list(ct.NOUN_TYPES)}}}}}}}
+
+
+def _role_prompt_head() -> str:
+    roles = "\n".join("- %s: %s" % (k, ct.ROLE_DESCRIPTIONS[k]) for k in ct.ROLE_NAMES)
+    ntypes = "\n".join("- %s: %s" % (k, v) for k, v in ct.FRAME_NOUN_TYPES.items())
+    particles = "\n".join("- %s: %s" % (p, ROLE_PARTICLE_GUIDANCE[p]) for p in PRED_PARTICLES)
+    return (
+        "あなたは日本語の文法辞書の編集者です。下の WORDS_JSON の各語（述語）について、その語が普通に取る格の枠を、"
+        "助詞ごとに、その助詞の項が果たす役割と、その役割で来る名詞の型で答えてください。\n"
+        "\n役割（id: 何を入れるか）:\n" + roles + "\n"
+        "\n名詞の型（id: 名称）:\n" + ntypes + "\n"
+        "\n助詞は次の 9 種だけ: " + " ".join(PRED_PARTICLES) + "\n"
+        "\n助詞ごとの典型的な役割（対応は目安であり、助詞だけで役割を決めない）:\n" + particles + "\n"
+        "\n規則:\n"
+        "- frame は [{\"particle\": 助詞, \"roles\": [{\"role\": 役割の id, \"types\": [名詞の型の id, ...]}, ...]}, ...] の配列。"
+        "この語の最も普通の意味で、述語が普通に伴う格をすべて書く。中心的な項だけに限定せず、時間・場所・原因・手段・同行・起点・終点・比較基準などの付加格も、"
+        "この述語に普通に伴うものなら含める。典型表に無い役割でも、役割一覧にあり意味が合えば書く。\n"
+        "- 同じ助詞は 1 回だけ書く。同じ助詞に別の役割があるときは、その助詞の roles に役割を分けて並べる。同じ助詞の中で同じ役割を 2 回書かない。\n"
+        "- 同じ助詞に役割が 2 つ以上あるときは、役割ごとの型をそれぞれ申告する。同じ型を複数の役割に申告してよい。types は空にしない。\n"
+        "- が の項は、人・動物・組織なら agent、それ以外なら entity にする。\n"
+        "- 判断できない語、断片で語にならない語は、frame を null にする。無理に作らない。\n"
+        "- 語に複数の意味があるときは、いちばん一般的な意味を 1 つだけ選ぶ。\n"
+        "- ファイルを読まない。コマンドを実行しない。ネットワークを使わない。道具を使わず、あなたの知識だけで答える。\n"
+        "- items は入力の語と同じ順で、語ごとに 1 件ずつ。word には入力の語をそのまま入れる。\n"
+        "\n")
+
+
+ROLE_PROMPT_HEAD = _role_prompt_head()
+ROLE_SCHEMA = {"type": "object", "additionalProperties": False, "required": ["items"],
+               "properties": {"items": {"type": "array", "items": {
+                   "type": "object", "additionalProperties": False,
+                   "required": ["word", "frame"],
+                   "properties": {
+                       "word": {"type": "string"},
+                       "frame": {"type": ["array", "null"], "items": {
+                           "type": "object", "additionalProperties": False,
+                           "required": ["particle", "roles"],
+                           "properties": {
+                               "particle": {"type": "string", "enum": list(PRED_PARTICLES)},
+                               "roles": {"type": "array", "items": {
+                                   "type": "object", "additionalProperties": False,
+                                   "required": ["role", "types"],
+                                   "properties": {
+                                       "role": {"type": "string", "enum": list(ct.ROLE_NAMES)},
+                                       "types": {"type": "array", "items": {
+                                           "type": "string", "enum": list(ct.FRAME_NOUN_TYPES)}}}}}}}}}}}}}
 
 
 def now_utc() -> str:
@@ -136,6 +228,22 @@ def build_prompt_pred(words: Sequence[str]) -> str:
 
 def prompt_template_sha256_pred() -> str:
     return sha256_text(PRED_PROMPT_HEAD + WORDS_PREFIX)
+
+
+def build_prompt_ntype(words: Sequence[str]) -> str:
+    return NTYPE_PROMPT_HEAD + WORDS_PREFIX + json.dumps(list(words), ensure_ascii=False) + "\n"
+
+
+def prompt_template_sha256_ntype() -> str:
+    return sha256_text(NTYPE_PROMPT_HEAD + WORDS_PREFIX)
+
+
+def build_prompt_role(words: Sequence[str]) -> str:
+    return ROLE_PROMPT_HEAD + WORDS_PREFIX + json.dumps(list(words), ensure_ascii=False) + "\n"
+
+
+def prompt_template_sha256_role() -> str:
+    return sha256_text(ROLE_PROMPT_HEAD + WORDS_PREFIX)
 
 
 def schema_sha256(schema: dict) -> str:
@@ -313,7 +421,117 @@ SAHEN_NEEDS_RULE = (
     "no test data is read")
 
 
+#: W3-a6: the arms whose votes come from a dictionary-like sentence; a word one of them placed is not asked again
+DEFINITION_LIKE_ARMS = tuple(a for a in ct.TIER2_ARMS if a != "hearst") + ("seed",)
+
+NTYPE_NEEDS_RULE = (
+    "headwords whose origin is direct, whose top holds PLACE, whose namespace holds N and whose by (arm names, "
+    "the part before the @) holds no definition-like arm (definition, definition_recovered, title_qualifier, alias, "
+    "paren_alias, seed); the first failing condition is counted per reason; ordered by n_seen descending; every word "
+    "whose n_seen equals that of the n-th is included; display order inside one frequency = string order; "
+    "no test data is read")
+ROLE_NEEDS_RULE = (
+    "every word of the generated_frames table of the placement, union the words of the hand-written predicate seeds "
+    "that are headwords whose namespace holds P; ordered by n_seen descending; every word whose n_seen equals that of "
+    "the n-th is included; display order inside one frequency = string order; no test data is read")
+
+
+def select_needs_ntype(placement: str, n: int):
+    """W3-a6 (docs 12.18, D3): the nouns to ask a noun type of.  Returns (rows, boundary, reasons)."""
+    con = sqlite3.connect("file:%s?mode=ro" % os.path.join(placement, "placement.sqlite"), uri=True)
+    reasons = collections.Counter()
+    rows = []
+    try:
+        for word, ns, state, origin, top, kind, n_seen, by in con.execute(
+                "SELECT word, ns, state, origin, top, kind, n_seen, by FROM headwords"):
+            if origin != "direct":
+                reasons["not_direct"] += 1
+            elif "PLACE" not in (top or "").split(","):
+                reasons["no_place"] += 1
+            elif "N" not in (ns or ""):
+                reasons["ns_not_noun"] += 1
+            elif {a.split("@")[0] for a in (by or "").split("+") if a} & set(DEFINITION_LIKE_ARMS):
+                reasons["definition_like_arm"] += 1
+            else:
+                rows.append((word, ns, state, top, kind, n_seen, by))
+    finally:
+        con.close()
+    rows.sort(key=lambda r: (-r[5], r[0]))
+    if len(rows) > n:
+        boundary = rows[n - 1][5]
+        rows = [r for r in rows if r[5] >= boundary]
+    else:
+        boundary = rows[-1][5] if rows else None
+    out = [{"rank": i, "word": w, "freq": f, "state": st, "ns": ns, "top": top, "kind": kind, "by": by}
+           for i, (w, ns, st, top, kind, f, by) in enumerate(rows, 1)]
+    return out, boundary, {k: reasons.get(k, 0) for k in ("not_direct", "no_place", "ns_not_noun", "definition_like_arm")}
+
+
+def select_needs_role(placement: str, n: int):
+    """W3-a6 (docs 12.18, D4): the predicates to ask a role frame of.  Returns (rows, boundary, counts)."""
+    con = sqlite3.connect("file:%s?mode=ro" % os.path.join(placement, "placement.sqlite"), uri=True)
+    try:
+        gf = {r[0] for r in con.execute("SELECT word FROM generated_frames")}
+        seeds = {w for ws in ct.SEEDS_PRED.values() for w in ws}
+        heads = {}
+        for w in sorted(gf | seeds):
+            r = con.execute("SELECT ns, state, kind, n_seen FROM headwords WHERE word=?", (w,)).fetchone()
+            if r is not None:
+                heads[w] = r
+    finally:
+        con.close()
+    rows, not_headword, not_pred = [], 0, 0
+    for w in sorted(gf | seeds):
+        h = heads.get(w)
+        if h is None:
+            not_headword += 1
+        elif "P" not in (h[0] or ""):
+            not_pred += 1
+        else:
+            rows.append((w, h[0], h[1], h[2], h[3]))
+    rows.sort(key=lambda r: (-r[4], r[0]))
+    if len(rows) > n:
+        boundary = rows[n - 1][4]
+        rows = [r for r in rows if r[4] >= boundary]
+    else:
+        boundary = rows[-1][4] if rows else None
+    out = [{"rank": i, "word": w, "freq": f, "state": st, "ns": ns, "kind": kind,
+            "source": ("generated_frames" if w in gf else "seed")}
+           for i, (w, ns, st, kind, f) in enumerate(rows, 1)]
+    return out, boundary, {"from_generated_frames": len(gf), "from_seeds_pred": len(seeds),
+                           "overlap": len(gf & seeds), "not_headword": not_headword, "ns_not_predicate": not_pred}
+
+
+def cmd_needs_w3a6(args) -> int:
+    """``needs --kind ntype|role``: the same files as ``cmd_needs`` (a jsonl list and a meta), made from the placement alone."""
+    if args.kind == "ntype":
+        rows, boundary, counts = select_needs_ntype(args.placement, args.n)
+        rule = NTYPE_NEEDS_RULE
+    else:
+        rows, boundary, counts = select_needs_role(args.placement, args.n)
+        rule = ROLE_NEEDS_RULE
+    manifest = json.load(open(os.path.join(args.placement, "manifest.json"), encoding="utf-8"))
+    with open(args.out, "w", encoding="utf-8") as f:
+        for r in rows:
+            f.write(json.dumps(r, ensure_ascii=False) + "\n")
+    meta = {"placement": os.path.abspath(args.placement), "content_sha256": manifest.get("content_sha256"),
+            "rule": rule, "kind": args.kind, "n_requested": args.n, "total": len(rows), "boundary_freq": boundary,
+            "n_at_boundary": sum(1 for r in rows if r["freq"] == boundary),
+            "last_freq": rows[-1]["freq"] if rows else None,
+            "by_ns": dict(collections.Counter(r["ns"] for r in rows)),
+            "by_state": dict(collections.Counter(r["state"] for r in rows)),
+            "reasons" if args.kind == "ntype" else "counts": counts,
+            "out": os.path.abspath(args.out), "out_sha256": sha256_file(args.out)}
+    with open(args.meta, "w", encoding="utf-8") as f:
+        json.dump(meta, f, ensure_ascii=False, indent=1, sort_keys=True)
+        f.write("\n")
+    print(json.dumps({k: meta[k] for k in ("total", "boundary_freq", "n_at_boundary")}, ensure_ascii=False))
+    return 0
+
+
 def cmd_needs(args) -> int:
+    if getattr(args, "kind", "noun") in ("ntype", "role"):
+        return cmd_needs_w3a6(args)
     min_uses = getattr(args, "sahen_min_uses", None)
     excl = list(getattr(args, "exclude_frames", None) or [])
     reasons = None
@@ -548,7 +766,7 @@ def parse_output_pred(batch_words: Sequence[str], data):
                 break
             part, ts = e.get("particle"), e.get("types")
             if (not isinstance(part, str) or part not in PRED_PARTICLES or not isinstance(ts, list)
-                    or any((not isinstance(t, str)) or t not in ct.NOUN_TYPES for t in ts)):
+                    or any((not isinstance(t, str)) or t not in ct.FRAME_NOUN_TYPES for t in ts)):
                 ok = False
                 break
             if part in frame:
@@ -567,12 +785,135 @@ def parse_output_pred(batch_words: Sequence[str], data):
                      "frame_dup_particle": frame_dup}
 
 
+def _by_word(batch_words: Sequence[str], data):
+    """The shared part of the W3-a6 readers: ``(seen, foreign)`` -- the items of the batch's words (a foreign item counts)."""
+    items = data.get("items") if isinstance(data, dict) else None
+    if not isinstance(items, list):
+        raise ValueError("NO_ITEMS")
+    inb = set(batch_words)
+    seen: Dict[str, list] = collections.defaultdict(list)
+    foreign = 0
+    for it in items:
+        if not isinstance(it, dict) or not isinstance(it.get("word"), str) or it["word"] not in inb:
+            foreign += 1
+            continue
+        seen[it["word"]].append(it)
+    return seen, foreign
+
+
+def parse_output_ntype(batch_words: Sequence[str], data):
+    """The answers of one noun-type batch (W3-a6).  Like ``parse_output`` (``foreign``, ``dup_dropped`` -- a word that comes
+    back twice is not taken --, ``missing``); a null definition with no type is an abstention (``abstained``); a type outside
+    the closed inventory, a repeated type or more than two types drops the word (``invalid``); a definition with no type is
+    taken and counted ``no_type``.  ``answers[w] = (definition or None, sorted types)``."""
+    seen, foreign = _by_word(batch_words, data)
+    answers: Dict[str, Tuple[Optional[str], List[str]]] = {}
+    dup = invalid = no_type = abst = 0
+    for w in batch_words:
+        got = seen.get(w)
+        if not got:
+            continue
+        if len(got) > 1:
+            dup += 1
+            continue
+        d, ts = got[0].get("definition"), got[0].get("types")
+        if not isinstance(ts, list) or (d is not None and not isinstance(d, str)):
+            invalid += 1
+            continue
+        if d is None and not ts:
+            answers[w] = (None, [])
+            abst += 1
+            continue
+        if (any((not isinstance(t, str)) or t not in ct.NOUN_TYPES for t in ts) or len(set(ts)) != len(ts)
+                or len(ts) > 2):
+            invalid += 1
+            continue
+        if not ts:
+            no_type += 1
+        answers[w] = (d, sorted(ts))
+    missing = sum(1 for w in batch_words if w not in seen)
+    return answers, {"foreign": foreign, "dup_dropped": dup, "missing": missing, "abstained": abst,
+                     "answered": len(answers), "invalid": invalid, "no_type": no_type}
+
+
+def parse_output_role(batch_words: Sequence[str], data):
+    """The answers of one role-frame batch (W3-a6).  Like ``parse_output_pred``; ``frame`` null is an abstention
+    (``answers[w] = None``).  A role or a particle or a type outside the closed inventories, an empty or repeated type
+    list, or a malformed entry drops the word (``invalid``); a particle named twice (``frame_dup_particle``) or a role named
+    twice inside one particle (``role_dup``) drops the word as well: no entry is chosen by order.  Otherwise
+    ``answers[w] = {particle: [{"role", "types": sorted}]}`` (particles in ``CASE_PARTICLES_9`` order, roles in
+    ``ROLE_NAMES`` order)."""
+    seen, foreign = _by_word(batch_words, data)
+    answers: Dict[str, Optional[Dict[str, List[dict]]]] = {}
+    dup = invalid = frame_dup = role_dup = abst = 0
+    for w in batch_words:
+        got = seen.get(w)
+        if not got:
+            continue
+        if len(got) > 1:
+            dup += 1
+            continue
+        fr = got[0].get("frame")
+        if fr is None:
+            answers[w] = None
+            abst += 1
+            continue
+        if not isinstance(fr, list):
+            invalid += 1
+            continue
+        frame: Dict[str, Dict[str, List[str]]] = {}
+        bad = dupflag = rdupflag = False
+        for e in fr:
+            if not isinstance(e, dict) or not isinstance(e.get("particle"), str) or e["particle"] not in PRED_PARTICLES \
+                    or not isinstance(e.get("roles"), list):
+                bad = True
+                break
+            part = e["particle"]
+            if part in frame:
+                dupflag = True
+            if not e["roles"]:
+                bad = True
+                break
+            roles = frame.setdefault(part, {})
+            for r in e["roles"]:
+                rn, ts = (r.get("role"), r.get("types")) if isinstance(r, dict) else (None, None)
+                if (not isinstance(rn, str) or rn not in ct.ROLE_NAMES or not isinstance(ts, list) or not ts
+                        or any((not isinstance(t, str)) or t not in ct.FRAME_NOUN_TYPES for t in ts)
+                        or len(set(ts)) != len(ts)):
+                    bad = True
+                    break
+                if rn in roles:
+                    rdupflag = True
+                roles[rn] = sorted(ts)
+            if bad:
+                break
+        if bad:
+            invalid += 1
+            continue
+        if dupflag:
+            frame_dup += 1
+            continue
+        if rdupflag:
+            role_dup += 1
+            continue
+        answers[w] = {p: [{"role": rn, "types": frame[p][rn]} for rn in sorted(frame[p], key=ct.ROLE_NAMES.index)]
+                      for p in PRED_PARTICLES if p in frame and frame[p]}
+    missing = sum(1 for w in batch_words if w not in seen)
+    return answers, {"foreign": foreign, "dup_dropped": dup, "missing": missing, "abstained": abst,
+                     "answered": len(answers), "invalid": invalid, "frame_dup_particle": frame_dup,
+                     "role_dup": role_dup}
+
+
 #: what differs between the noun form and the predicate form of a run (the rest is shared)
 KINDS = {
     "noun": {"schema": SCHEMA, "prompt": build_prompt, "parse": parse_output,
              "template_sha": prompt_template_sha256},
     "pred": {"schema": PRED_SCHEMA, "prompt": build_prompt_pred, "parse": parse_output_pred,
              "template_sha": prompt_template_sha256_pred},
+    "ntype": {"schema": NTYPE_SCHEMA, "prompt": build_prompt_ntype, "parse": parse_output_ntype,
+              "template_sha": prompt_template_sha256_ntype},
+    "role": {"schema": ROLE_SCHEMA, "prompt": build_prompt_role, "parse": parse_output_role,
+             "template_sha": prompt_template_sha256_role},
 }
 
 
@@ -823,12 +1164,28 @@ def cmd_collect(args) -> int:
     lines = []
     bad = []
     pred = getattr(args, "kind", "noun") == "pred"
+    kind = getattr(args, "kind", "noun")
     for bid in sorted(firsts):
         e = firsts[bid]
         words = words_of[(bid, e["attempt"])]
         path = e["out_path"]
         if not path or not os.path.exists(path) or sha256_file(path) != e["out_sha256"]:
             bad.append({"batch": bid, "reason": "OUTPUT_FILE_CHANGED_OR_MISSING"})
+            continue
+        if kind in ("ntype", "role"):
+            answers, _st = KINDS[kind]["parse"](words, json.load(open(path, encoding="utf-8")))
+            prov = {"origin": "generated", "model": MODEL, "effort": EFFORT, "batch_id": bid,
+                    "attempt": e["attempt"], "out_sha256": e["out_sha256"]}
+            for w in words:
+                if w not in answers:
+                    continue        # missing, duplicated or invalid: no row (not an abstention)
+                if kind == "ntype":
+                    d, ts = answers[w]
+                    row = {"word": w, "definition": d, "types": ts, "abstained": d is None and not ts,
+                           "provenance": prov}
+                else:
+                    row = {"word": w, "frame": answers[w], "abstained": answers[w] is None, "provenance": prov}
+                lines.append(json.dumps(row, ensure_ascii=False) + "\n")
             continue
         if pred:
             answers, _st = parse_output_pred(words, json.load(open(path, encoding="utf-8")))
@@ -870,7 +1227,7 @@ def summarize(out_dir: str, kind: Optional[str] = None) -> dict:
     meta = bmeta["meta"]
     kind = kind or meta.get("kind", "noun")
     parse = KINDS[kind]["parse"]
-    invalid = frame_dup = 0
+    invalid = frame_dup = no_type = role_dup = 0
     limit = 1 + int(meta.get("max_retries", 2))
     starts, ok, calls = ledger_state(events)
     firsts = _first_ok(events)
@@ -890,6 +1247,8 @@ def summarize(out_dir: str, kind: Optional[str] = None) -> dict:
         _a, st = parse(words, json.load(open(path, encoding="utf-8")))
         invalid += st.get("invalid", 0)
         frame_dup += st.get("frame_dup_particle", 0)
+        no_type += st.get("no_type", 0)
+        role_dup += st.get("role_dup", 0)
         ans += st["answered"]
         abst += st["abstained"]
         miss += st["missing"]
@@ -902,6 +1261,12 @@ def summarize(out_dir: str, kind: Optional[str] = None) -> dict:
     capped = calls >= int(meta.get("max_calls", 10 ** 9))
     extra = ({"kind": "pred", "words_invalid": invalid, "words_frame_dup_particle": frame_dup,
               "schema_sha256": meta.get("schema_sha256")} if kind == "pred" else {})
+    if kind == "ntype":
+        extra = {"kind": "ntype", "words_invalid": invalid, "words_no_type": no_type,
+                 "schema_sha256": meta.get("schema_sha256")}
+    elif kind == "role":
+        extra = {"kind": "role", "words_invalid": invalid, "words_frame_dup_particle": frame_dup,
+                 "words_role_dup": role_dup, "schema_sha256": meta.get("schema_sha256")}
     return dict(extra, **{
         "model": MODEL, "effort": EFFORT, "slots": meta.get("slots"),
         "batch_size": meta.get("batch_size"), "max_calls": meta.get("max_calls"),
@@ -938,6 +1303,13 @@ def cmd_summarize(args) -> int:
 
 
 def cmd_prompt(args) -> int:
+    kind = getattr(args, "kind", "noun")
+    if kind in ("ntype", "role"):
+        head = NTYPE_PROMPT_HEAD if kind == "ntype" else ROLE_PROMPT_HEAD
+        print(head + WORDS_PREFIX + '["<語>", ...]')
+        print("template_sha256 " + KINDS[kind]["template_sha"]())
+        print("schema_sha256 " + schema_sha256(KINDS[kind]["schema"]))
+        return 0
     if getattr(args, "kind", "noun") == "pred":
         print(PRED_PROMPT_HEAD + WORDS_PREFIX + '["<語>", ...]')
         print("template_sha256 " + prompt_template_sha256_pred())
@@ -951,7 +1323,7 @@ def cmd_prompt(args) -> int:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     sub = ap.add_subparsers(dest="cmd", required=True)
-    kinds = ("noun", "pred")
+    kinds = ("noun", "pred", "ntype", "role")
     n = sub.add_parser("needs")
     n.add_argument("--kind", choices=kinds, default="noun")
     n.add_argument("--stage-cache", default=None, help="pred: the extraction cache (verbs are told by it)")

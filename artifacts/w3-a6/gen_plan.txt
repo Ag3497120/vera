@@ -1,0 +1,10 @@
+対象一覧と上限（生成は未実施）
+
+ntype: 対象 2,721 語、40 語束で 69 束、3 回/束まで 207 回。
+出典: needs_ntype.meta.json（total, n_requested, boundary_freq, n_at_boundary）
+
+role: 対象 8,311 語、40 語束で 208 束、3 回/束まで 624 回。
+出典: needs_role.meta.json（total, n_requested, boundary_freq, n_at_boundary）
+
+両形式の最大呼び出し数は合計 831 回で、事前登録した上限 1,500 回以内。
+これは上限の計画値で、実呼び出しは 0 回。依頼文のネットワーク禁止に従い、モデル生成・試しの束・本番生成を行っていない。

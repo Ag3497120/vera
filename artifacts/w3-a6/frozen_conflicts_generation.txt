@@ -1,0 +1,1 @@
+cases 5 output /Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/artifacts/w3-a6/frozen_conflicts.md

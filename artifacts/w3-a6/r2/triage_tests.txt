@@ -1,0 +1,31 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_________ test_the_stop_signal_ends_the_run_with_an_interrupted_record _________
+tests/test_gen_coarse_evidence.py:498: in test_the_stop_signal_ends_the_run_with_an_interrupted_record
+    out, err = p.communicate(timeout=20)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:1209: in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:2116: in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:1253: in _check_timeout
+    raise TimeoutExpired(
+E   subprocess.TimeoutExpired: Command '['/Users/motonisihikoudai/vera-wiring/env/bin/python', '/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/tools/gen_coarse_evidence.py', 'run', '--needs', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/codex-w3-a6-r2/bt-triage/test_the_stop_signal_ends_the_0/needs.jsonl', '--out-dir', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/codex-w3-a6-r2/bt-triage/test_the_stop_signal_ends_the_0/G', '--codex-bin', '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/codex-w3-a6-r2/bt-triage/test_the_stop_signal_ends_the_0/fakecodex', '--batch-size', '2', '--slots', '2']' timed out after 20 seconds
+___________ test_s6_two_runs_agree_except_timing_and_recount_matches ___________
+tests/bank_score/test_bs_end_to_end.py:99: in test_s6_two_runs_agree_except_timing_and_recount_matches
+    assert meta["child_env"]["HOME"] == "<WORK>/home" and meta["verantyx_untouched"] is True
+E   AssertionError: assert ('<WORK>/home' == '<WORK>/home'
+E     
+E       <WORK>/home and False is True)
+----------------------------- Captured stdout call -----------------------------
+B2 entry=cli-ask-round5 total=4 correct=0 wrong=0 misread=0 over_abstain=2 correct_abstain=1 false_compliance=0 unreachable=1 runtime_error=0 unscorable=0
+correct_rate=0.0 wrong_rate=0.0 false_compliance_rate=0.0
+B2 entry=cli-ask-round5 total=4 correct=0 wrong=0 misread=0 over_abstain=2 correct_abstain=1 false_compliance=0 unreachable=1 runtime_error=0 unscorable=0
+correct_rate=0.0 wrong_rate=0.0 false_compliance_rate=0.0
+一致: 12 ファイル（除いた欄: results ['elapsed_ms'], raw ['elapsed_ms', 'ingest_ms', 'ms'], run_meta ['timing']）
+recount /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/codex-w3-a6-r2/bt-triage/test_s6_two_runs_agree_except_0/a: summary.json 一致 / summary.md 一致
+=========================== short test summary info ============================
+FAILED tests/test_gen_coarse_evidence.py::test_the_stop_signal_ends_the_run_with_an_interrupted_record
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+2 failed in 23.78s

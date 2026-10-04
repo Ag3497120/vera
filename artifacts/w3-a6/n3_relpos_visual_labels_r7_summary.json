@@ -1,0 +1,7 @@
+{
+  "relative_position_claims": 292,
+  "correct": 253,
+  "suspicious": 37,
+  "obvious_errors": 2,
+  "labels_sha256": "6a9874cf48b82afe01932db3a9409993cf24fbdb09861c36e3a501413f08d85a"
+}
