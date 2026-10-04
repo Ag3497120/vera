@@ -3374,7 +3374,7 @@ def predicate_role_frame(answer):
         if frame is not None: return bad('FRAME_WITHOUT_CONFIRMED')
         return 'not_confirmed', status
     if not isinstance(frame, dict): return bad('NOT_A_MAPPING')
-    from .coarse_types import NOUN_TYPES
+    from .coarse_types import FRAME_NOUN_TYPES as NOUN_TYPES      # integration of W3-a6 (auditor, 2026-10-05): a role frame may declare only the 17 frame types (D1); RELATIVE_POSITION in a frame stays invalid
     from .event_cross import ROLE_NAMES
     out = {}
     for particle, entries in frame.items():

@@ -167,11 +167,13 @@ def test_open_declaration_outside_the_schema(raw, why):
 
 
 def test_the_open_schema_is_closed_and_built_from_the_17_types():
+    # Integration of W3-a6 (auditor, 2026-10-05): NOUN_TYPES gained RELATIVE_POSITION (18). The open declaration asks the type of the hole WORD, and a word can be a
+    # relative position, so the enum follows NOUN_TYPES (18); a RELATIVE_POSITION claim never matches a place/goal hole and falls at (a2)/(a3). Name kept.
     p = fake()
     d, fb = decide('母が図書館へ歩いた。', [op('PLACE', [])], p)
     fmt = fb.sent[0]['fmt']
     assert fmt['additionalProperties'] is False and fmt['properties']['type']['enum'] == sorted(S.NOUN_TYPES if hasattr(S, 'NOUN_TYPES') else __import__('verantyx.coarse_types', fromlist=['x']).NOUN_TYPES)
-    assert len(fmt['properties']['type']['enum']) == 17 and fmt['properties']['role']['enum'] == ['goal', None] and fmt['properties']['near_words']['maxItems'] == 5
+    assert len(fmt['properties']['type']['enum']) == len(__import__('verantyx.coarse_types', fromlist=['x']).NOUN_TYPES) == 18 and fmt['properties']['role']['enum'] == ['goal', None] and fmt['properties']['near_words']['maxItems'] == 5
     assert d.reason == 'NO_CANDIDATE_WORDS'
 
 

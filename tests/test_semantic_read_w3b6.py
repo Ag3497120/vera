@@ -265,7 +265,8 @@ def test_a_word_of_relative_position_is_refused_both_as_direct_and_as_split_with
 
 
 def test_relative_position_is_not_a_type_a_frame_may_declare_and_a_frame_that_writes_it_is_invalid():
-    assert 'RELATIVE_POSITION' not in CT.NOUN_TYPES
+    # Integration of W3-a6 (auditor, 2026-10-05): RELATIVE_POSITION is now a NOUN type (18) but not a FRAME type (FRAME_NOUN_TYPES, 17): a frame that writes it stays invalid
+    assert 'RELATIVE_POSITION' in CT.NOUN_TYPES and 'RELATIVE_POSITION' not in CT.FRAME_NOUN_TYPES
     r = BY_ID['W3B6-K273-A-905']
     assert 'RELATIVE_POSITION' in json.dumps(r['placement'], ensure_ascii=False)
     assert explain(r)['w3b2'] == 'ROLE_FRAME_INVALID:TYPE_NOT_NOUN:で:RELATIVE_POSITION'
