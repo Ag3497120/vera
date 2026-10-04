@@ -67,6 +67,22 @@ The coarse placement (a 290 MB SQLite built from the corpus) is **not** in the r
 reading path and typed question answering do not run. Build one with `tools/build_coarse_placement.py` (see
 [docs/COARSE_PLACEMENT.md](docs/COARSE_PLACEMENT.md)) and point `VERA_PLACEMENT` at it.
 
+### One endpoint with a language model (fusion, layers 0–1)
+
+```sh
+ollama pull qwen3.5:4b
+vera serve --backend ollama --model qwen3.5:4b --document ./memo.txt          # layer 0: answer + provenance labels
+vera serve --backend ollama --model qwen3.5:4b --document ./memo.txt --strict # layer 1: grammar-bound decoding
+```
+
+`/v1/chat/completions` (OpenAI-compatible) and `/api/chat` (Ollama-compatible). The model answers; Vera reads the
+question, answers facts that are in your documents from the records with evidence, and labels every sentence and arm
+of the reply as *record / testimony / constructed / unread* in the `vera` field. With `--strict` the decoder is bound
+by a grammar built from the records and unreadable questions are answered with a typed abstention instead of a call.
+Measured with Qwen3.5-4B on the ticket's test set: wrong answers 0 in both layers; record questions answered 21/50
+(layer 0) and 18/50 (layer 1); 50/50 questions without a record abstained; 20/20 creative requests came back as
+CONSTRUCTED. Details and the response schema: [docs/FUSION.md](docs/FUSION.md).
+
 ### How it is built
 
 - **Reading** — `verantyx/semantic_read.py`, `semantic_reader.py`; contract in
@@ -157,6 +173,16 @@ REPL のコマンド: `/doc <path>` `/docs` `/read <文>` `/gen <文> [FACE_SWAP
 `/route <agents.md> <task.json>` `/json on|off` `/help` `/quit`。詳細は [docs/CHAT.md](docs/CHAT.md)。
 
 粗い配置（コーパスから作る 290 MB の SQLite）はリポジトリに **含みません**。無いと型による読解と型つきの質問回答は動きません。`tools/build_coarse_placement.py` で作り（[docs/COARSE_PLACEMENT.md](docs/COARSE_PLACEMENT.md)）、`VERA_PLACEMENT` で指します。
+
+### 言語モデルと一つの入口（融合の層 0・1）
+
+```sh
+ollama pull qwen3.5:4b
+vera serve --backend ollama --model qwen3.5:4b --document ./memo.txt          # 層 0: 答え＋出所の型
+vera serve --backend ollama --model qwen3.5:4b --document ./memo.txt --strict # 層 1: 文法で縛る復号
+```
+
+`/v1/chat/completions`（OpenAI 互換）と `/api/chat`（Ollama 互換）。モデルが答え、Vera は問いを読み、文書にある事実は記録から証拠つきで答え、返答の各文・各腕に **記録／証言／構成／未読** の型を `vera` 欄で付けます。`--strict` では記録から作った文法が復号を縛り、読めない問いには LLM を呼ばずに型つきで棄権します。Qwen3.5-4B でチケットの検査データを測った結果: 両層とも誤答 0、記録にある問いの正答は層 0 で 21/50・層 1 で 18/50、記録に無い問い 50/50 棄権、創作の依頼 20/20 が構成。応答の形は [docs/FUSION.md](docs/FUSION.md)。
 
 ### つくり
 
