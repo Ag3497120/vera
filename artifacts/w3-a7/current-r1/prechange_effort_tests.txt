@@ -1,0 +1,124 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+__ test_effort_is_in_runtime_manifest_ledger_summary_and_collected_rows[low] ___
+
+env = (PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1724/test_effor...folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1724/test_effort_is_in_runtime_mani0/G'))
+effort = 'low'
+
+    @pytest.mark.parametrize("effort", ["low", "medium", "high"])
+    def test_effort_is_in_runtime_manifest_ledger_summary_and_collected_rows(env, effort):
+        tmp, needs, G = env
+        fake = make_fake(tmp)
+>       assert run(tmp, needs, G, fake, "--effort", effort, "--limit-batches", "1",
+                   "--max-retries", "0") == 0
+
+tests/test_gen_coarse_evidence.py:378: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_gen_coarse_evidence.py:95: in run
+    return gce.main(["run", "--needs", str(needs), "--out-dir", str(out_dir),
+tools/gen_coarse_evidence.py:1361: in main
+    args = ap.parse_args(argv)
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/argparse.py:1877: in parse_args
+    self.error(msg % ' '.join(argv))
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/argparse.py:2640: in error
+    self.exit(2, _('%(prog)s: error: %(message)s\n') % args)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = ArgumentParser(prog='__main__.py', usage=None, description='Generate short definition sentences for the words the plac...its on stdin otherwise).\n', formatter_class=<class 'argparse.HelpFormatter'>, conflict_handler='error', add_help=True)
+status = 2
+message = '__main__.py: error: unrecognized arguments: --effort low\n'
+
+    def exit(self, status=0, message=None):
+        if message:
+            self._print_message(message, _sys.stderr)
+>       _sys.exit(status)
+E       SystemExit: 2
+
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/argparse.py:2627: SystemExit
+----------------------------- Captured stderr call -----------------------------
+usage: __main__.py [-h] {needs,run,collect,summarize,prompt} ...
+__main__.py: error: unrecognized arguments: --effort low
+_ test_effort_is_in_runtime_manifest_ledger_summary_and_collected_rows[medium] _
+
+env = (PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1724/test_effor...folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1724/test_effort_is_in_runtime_mani1/G'))
+effort = 'medium'
+
+    @pytest.mark.parametrize("effort", ["low", "medium", "high"])
+    def test_effort_is_in_runtime_manifest_ledger_summary_and_collected_rows(env, effort):
+        tmp, needs, G = env
+        fake = make_fake(tmp)
+>       assert run(tmp, needs, G, fake, "--effort", effort, "--limit-batches", "1",
+                   "--max-retries", "0") == 0
+
+tests/test_gen_coarse_evidence.py:378: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_gen_coarse_evidence.py:95: in run
+    return gce.main(["run", "--needs", str(needs), "--out-dir", str(out_dir),
+tools/gen_coarse_evidence.py:1361: in main
+    args = ap.parse_args(argv)
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/argparse.py:1877: in parse_args
+    self.error(msg % ' '.join(argv))
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/argparse.py:2640: in error
+    self.exit(2, _('%(prog)s: error: %(message)s\n') % args)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = ArgumentParser(prog='__main__.py', usage=None, description='Generate short definition sentences for the words the plac...its on stdin otherwise).\n', formatter_class=<class 'argparse.HelpFormatter'>, conflict_handler='error', add_help=True)
+status = 2
+message = '__main__.py: error: unrecognized arguments: --effort medium\n'
+
+    def exit(self, status=0, message=None):
+        if message:
+            self._print_message(message, _sys.stderr)
+>       _sys.exit(status)
+E       SystemExit: 2
+
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/argparse.py:2627: SystemExit
+----------------------------- Captured stderr call -----------------------------
+usage: __main__.py [-h] {needs,run,collect,summarize,prompt} ...
+__main__.py: error: unrecognized arguments: --effort medium
+__ test_effort_is_in_runtime_manifest_ledger_summary_and_collected_rows[high] __
+
+env = (PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1724/test_effor...folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1724/test_effort_is_in_runtime_mani2/G'))
+effort = 'high'
+
+    @pytest.mark.parametrize("effort", ["low", "medium", "high"])
+    def test_effort_is_in_runtime_manifest_ledger_summary_and_collected_rows(env, effort):
+        tmp, needs, G = env
+        fake = make_fake(tmp)
+>       assert run(tmp, needs, G, fake, "--effort", effort, "--limit-batches", "1",
+                   "--max-retries", "0") == 0
+
+tests/test_gen_coarse_evidence.py:378: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_gen_coarse_evidence.py:95: in run
+    return gce.main(["run", "--needs", str(needs), "--out-dir", str(out_dir),
+tools/gen_coarse_evidence.py:1361: in main
+    args = ap.parse_args(argv)
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/argparse.py:1877: in parse_args
+    self.error(msg % ' '.join(argv))
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/argparse.py:2640: in error
+    self.exit(2, _('%(prog)s: error: %(message)s\n') % args)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = ArgumentParser(prog='__main__.py', usage=None, description='Generate short definition sentences for the words the plac...its on stdin otherwise).\n', formatter_class=<class 'argparse.HelpFormatter'>, conflict_handler='error', add_help=True)
+status = 2
+message = '__main__.py: error: unrecognized arguments: --effort high\n'
+
+    def exit(self, status=0, message=None):
+        if message:
+            self._print_message(message, _sys.stderr)
+>       _sys.exit(status)
+E       SystemExit: 2
+
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/argparse.py:2627: SystemExit
+----------------------------- Captured stderr call -----------------------------
+usage: __main__.py [-h] {needs,run,collect,summarize,prompt} ...
+__main__.py: error: unrecognized arguments: --effort high
+=========================== short test summary info ============================
+FAILED tests/test_gen_coarse_evidence.py::test_effort_is_in_runtime_manifest_ledger_summary_and_collected_rows[low]
+FAILED tests/test_gen_coarse_evidence.py::test_effort_is_in_runtime_manifest_ledger_summary_and_collected_rows[medium]
+FAILED tests/test_gen_coarse_evidence.py::test_effort_is_in_runtime_manifest_ledger_summary_and_collected_rows[high]
+3 failed, 28 deselected in 0.33s

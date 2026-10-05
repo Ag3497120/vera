@@ -1,0 +1,4 @@
+needs_rows 8311 needs_exact_copy True needs_sha256 bd059e8a1a1885577a5e03395163f901cdafa90146d2716cd9dd9bbb640af92d
+trial_rows 40 trial_exact_copy True trial_is_N4_first40 True trial_sha256 595c460a8495075479ed0c1ca7aea030ef6b6426431fdbf8d23b9e17f3edb56e
+n4_sample_rows 60
+prompt_exact_copy True

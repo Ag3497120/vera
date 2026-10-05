@@ -1,0 +1,17 @@
+{
+  "baseline_count": 116,
+  "current_count": 184,
+  "shared_count": 115,
+  "new_count": 69,
+  "resolved_count": 1,
+  "delta": 68,
+  "new_by_file": {
+    "tests/test_conduct_routing.py": 11,
+    "tests/test_conduct_run.py": 9,
+    "tests/test_conduct_run_policy.py": 13,
+    "tests/test_conduct_run_settings.py": 2,
+    "tests/test_conduct_verify.py": 32,
+    "tests/test_conduct_verify_supervisor.py": 1,
+    "tests/test_gen_coarse_evidence.py": 1
+  }
+}
