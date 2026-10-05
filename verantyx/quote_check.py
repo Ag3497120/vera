@@ -14,6 +14,8 @@ LLM も読解器も呼ばない純粋な関数。形態素解析は品詞を見�
   - 第 5 ラウンド（§9.16）: R12 = 要素が無く、内容語が問いの語の繰り返しだけなら問いの語も被覆の対象に戻す。内容語が 0 個なら確かめられない（規則 3e、NO_CONTENT_TO_CHECK）
   - 印 = unanchored（引用 0／捏造あり）-> conflict（食い違い）-> unanchored（要素が引用に無い）-> unanchored（確かめる語が無い。規則 3c）
         -> unanchored（内容語が引用に無い。規則 3b）-> unanchored（確かめる中身が無い。規則 3e）-> unanchored（極性が違う。規則 3d）-> anchored
+  - W16-t3b（§10）: R13 役割の助詞（名詞の連なりの直後の格助詞・は・が・も の組が支えの引用と違う。3g）、R14 時制（同じ述語の見出し語で過去と非過去が違う。3h）、
+    R15 1 つの引用で支える（答えの項目が 1 つの引用に全部は現れない。3f）、R16 出典の名前（ディレクトリの部分が記録と違う exact は relocated）。いずれも anchored の直前だけ。
   - 文書間の食い違い (ii) = 文書（記録の source）が 1 つに決まる実在引用どうしを比べる。2 つ以上の文書に一致する引用（doc_undetermined）は、
     文書の候補の集合が交わらない引用との間でだけ比べる（R6′。交わる引用どうしは同じ文書かもしれないので比べない）
 漢数字・単位の一覧は answer.py / answer_slots.py のものを使い、ここでは新しく作らない。
@@ -292,6 +294,69 @@ def _same_source(given: str, recorded: str) -> bool:
     return g == r or os.path.basename(g) == os.path.basename(r)
 
 
+def _dir_differs(given: str, recorded: str) -> bool:
+    """R16: 与えられた source がディレクトリの部分を持ち、記録の source のディレクトリと違う。"""
+    gd = os.path.dirname(norm(given))
+    return bool(gd) and gd != os.path.dirname(norm(recorded))
+
+
+# --- 役割の助詞・時制（W16-t3b。品詞・見出し語・助動詞だけ。語の一覧は作らない） -----------------------------------------------------------------
+
+_NOUNISH = ("名詞", "接頭辞")
+
+
+def _is_nounish(t) -> bool:
+    return t[1] in _NOUNISH or (t[1] == "接尾辞" and t[2] == "名詞的")
+
+
+def _roles(toks) -> Dict[str, set]:
+    """R13: 名詞の連なり（内容語の名詞で終わるもの）の直後の格助詞（の を除く）・は・も の組の集合。は・が・も は同じ組。"""
+    out: Dict[str, set] = {}
+    i = 0
+    while i < len(toks):
+        if _is_nounish(toks[i]):
+            j = i
+            while j + 1 < len(toks) and _is_nounish(toks[j + 1]):
+                j += 1
+            last = toks[j]
+            if j + 1 < len(toks) and last[1] in ("名詞", "接尾辞") and last[2] != "非自立可能":
+                p = toks[j + 1]
+                if p[1] == "助詞" and ((p[2] == "格助詞" and p[0] != "の") or p[0] in ("は", "も")):
+                    key = "".join(t[0] for t in toks[i:j + 1])
+                    out.setdefault(key, set()).add("は" if p[0] in ("は", "が", "も") else p[0])
+            i = j + 1
+        else:
+            i += 1
+    return out
+
+
+def _tenses(toks) -> Dict[str, set]:
+    """R14: 述語（動詞・形容詞、形状詞＋だ／です）の見出し語ごとの時制の集合。見出し語 た の助動詞があれば過去、連なりが て／で で終わるなら決めない、それ以外は非過去。"""
+    out: Dict[str, set] = {}
+    for i, t in enumerate(toks):
+        if not (t[1] in _VERBAL or (t[1] == "形状詞" and i + 1 < len(toks) and toks[i + 1][1] == "助動詞" and toks[i + 1][3] in ("だ", "です"))):
+            continue
+        j = i + 1
+        chain = []
+        while j < len(toks) and (toks[j][1] == "助動詞" or (toks[j][1] == "助詞" and toks[j][2] == "接続助詞" and toks[j][0] in ("て", "で"))
+                                 or (toks[j][1] in _VERBAL and toks[j][2] == "非自立可能")):
+            chain.append(toks[j])
+            j += 1
+        if any(c[1] == "助動詞" and c[3] == "た" for c in chain):
+            tense = "past"
+        elif chain and chain[-1][1] == "助詞":
+            continue
+        else:
+            tense = "nonpast"
+        out.setdefault(t[3] or t[0], set()).add(tense)
+    return out
+
+
+def _differs(a: Dict[str, set], q: Dict[str, set]) -> List[str]:
+    """答えの鍵のうち、引用にもあり、答えの集合が引用の集合の部分集合でないもの（答えの出現順）。"""
+    return [k for k, v in a.items() if k in q and not v <= q[k]]
+
+
 # --- 結果 -------------------------------------------------------------------------------------------------------------------------------------
 
 @dataclass
@@ -349,6 +414,11 @@ def check(answer: Any, quotes: Any, records, reason: Optional[str] = None, quest
             pos = [(s, q["line"]) for s in hit if (s, q["line"]) in normed and nq in normed[(s, q["line"])]]
             if pos:
                 found = "exact"
+                if all(_dir_differs(q["source"], k[0]) for k in pos):      # R16: ディレクトリの部分が記録と違う出典は exact にしない（pos は変えない）
+                    found = "relocated"
+                    item["relocated_to"] = ["%s:%d" % k for k in pos]
+                    item["source_claimed"] = q["source"]
+                    item["source_record"] = list(dict.fromkeys(k[0] for k in pos))
             else:
                 pos = [k for k, v in normed.items() if nq in v]
                 if pos:
@@ -439,6 +509,9 @@ def check(answer: Any, quotes: Any, records, reason: Optional[str] = None, quest
     polarity: Optional[Dict[str, Any]] = None
     choice = False
     no_content = False
+    split = False
+    role_diff: List[str] = []
+    tense_diff: List[str] = []
     if valid and not answer_bad:
         words, ok = _content_words(answer, a_dn)
         tagger_down = tagger_down or not ok
@@ -465,6 +538,15 @@ def check(answer: Any, quotes: Any, records, reason: Optional[str] = None, quest
                         uncovered.append(wd[0])
             else:
                 no_content = True
+        # R15: 答えの項目（要素と、3b で被覆を確かめる内容語）が 1 つの実在した引用に全部現れること。
+        # 問いの語の繰り返しでも、実在した引用のどれかに現れる語は項目に入れる（第 2 ラウンド §10.12。どの引用にも無い問いの語は従来どおり入れない）
+        checked = [wd for wd in words if not _covered(wd, qtoks) or any(_covered(wd, t) for t in ttoks_each)]
+        if not a_els and words and not checked:
+            checked = list(words)
+        support = [j for j in range(len(valid))
+                   if all(any(x["kind"] == e["kind"] and x["value"] == e["value"] for x in valid[j][1]) for e in a_els)
+                   and all(_covered(wd, ttoks_each[j]) for wd in checked)]
+        split = not support
         atoks, ok = _analyze(answer)
         tagger_down = tagger_down or not ok
         preds = _predicates(atoks)
@@ -480,6 +562,15 @@ def check(answer: Any, quotes: Any, records, reason: Optional[str] = None, quest
             qn = [_negated(toks) for toks in ttoks_each]
             if any(x != an for x in qn):
                 polarity = {"answer_negated": an, "quotes_negated": qn}
+        # R13・R14: 支えの引用とだけ比べる（どれか 1 つで食い違えば落とす）
+        a_roles, a_tenses = _roles(atoks), _tenses(atoks)
+        for j in support:
+            for k in _differs(a_roles, _roles(ttoks_each[j])):
+                if k not in role_diff:
+                    role_diff.append(k)
+            for k in _differs(a_tenses, _tenses(ttoks_each[j])):
+                if k not in tense_diff:
+                    tense_diff.append(k)
     if tagger_down:                                      # 固有名・内容語を照合できないので「すべて引用に現れる」を確かめられない（M1）
         reason = reason or "NAME_TAGGER_UNAVAILABLE"
     if not q_out or any(q["found"] == "fabricated" for q in q_out) or answer_bad:
@@ -499,6 +590,15 @@ def check(answer: Any, quotes: Any, records, reason: Optional[str] = None, quest
     elif polarity is not None:
         verdict = UNANCHORED
         reason = reason or "POLARITY_DIFFERS"
+    elif split:
+        verdict = UNANCHORED
+        reason = reason or "ANSWER_SPLIT_ACROSS_QUOTES"
+    elif role_diff:
+        verdict = UNANCHORED
+        reason = reason or "ROLE_PARTICLE_DIFFERS:" + "、".join(role_diff)
+    elif tense_diff:
+        verdict = UNANCHORED
+        reason = reason or "TENSE_DIFFERS:" + "、".join(tense_diff)
     else:
         verdict = ANCHORED
     if verdict == UNANCHORED and uncovered and not reason and not any(q["found"] == "fabricated" for q in q_out):

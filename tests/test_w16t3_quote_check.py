@@ -97,7 +97,11 @@ def test_no_quotes_is_unanchored(records):
 
 
 def test_source_is_matched_by_basename_and_nfkc(records):
+    """Integration (auditor, 2026-10-06, W16-t3b R16): a cited source whose directory differs from the record's is relocated,
+    not exact (old expectation for "docs/D1.txt": exact). A bare file name still matches by basename (exact)."""
     r = first(records, "", [q("docs/D1.txt", 1, "貸出は70日以内とする。")])
+    assert r.quotes[0]["found"] == "relocated"
+    r = first(records, "", [q("D1.txt", 1, "貸出は70日以内とする。")])
     assert r.quotes[0]["found"] == "exact"
     r = first(records, "", [q(D1, 4, "ＡＢＣ商事の担当は三十人である。")])        # 全角英字は NFKC で同じ
     assert r.quotes[0]["found"] == "exact"

@@ -15,6 +15,8 @@ R3B = os.path.join(os.path.dirname(__file__), "..", "artifacts", "w16-t3", "r3b"
 CASES = [json.loads(l) for l in open(os.path.join(R3B, "cases_r3b.jsonl"), encoding="utf-8") if l.strip()]
 # 誤答の型 = C1〜C3（第 3 ラウンドの 27 件）と N1・N2・N3 の期待が anchored でないもの。C4-b（正しい言い換えの偽の錨なし）と R6 は数えない
 WRONG_TYPES = ("C1", "C2", "C3", "N1", "N2", "N3")
+# W16-t3b R14 (tense) narrowed these two frozen rows from anchored to unanchored; the frozen data is left unchanged.
+W16T3B_TENSE = ("C4-a3", "C4-a4")
 
 
 def test_cases_are_frozen():
@@ -38,6 +40,11 @@ def test_case(case, tmp_path):
     rec = G.load_records(paths)
     res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
     d = res.to_dict()
+    if case["id"] in W16T3B_TENSE:
+        # Integration (auditor, 2026-10-06, W16-t3b R14): the answer's tense differs from the quote's (受け取ります/受け取った,
+        # 設けました/設ける), so the answer is no longer anchored. Old frozen expectation: anchored (lemma match only).
+        assert d["verdict"] == "unanchored" and (d.get("reason") or "").startswith("TENSE_DIFFERS:"), d
+        return
     assert d["verdict"] == case["expect"], (d, case["note"])
     if case["expect_reason_prefix"]:
         assert (d.get("reason") or "").startswith(case["expect_reason_prefix"]), d
