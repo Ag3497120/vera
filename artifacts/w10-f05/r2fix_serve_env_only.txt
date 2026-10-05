@@ -1,0 +1,1 @@
+placement_layer {'name': 'bicycle-real', 'status': 'OK', 'growth': {'words_direct': 3, 'words_human': 0, 'words_estimated': 65, 'last_grown': '2026-10-05T08:30:35+0900'}}

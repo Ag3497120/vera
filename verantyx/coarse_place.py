@@ -754,10 +754,17 @@ def _append_role_frame(term: str, r: Dict[str, Any], placement: Optional[str]) -
 
 def query(term: str, *, context_role: Optional[str] = None,
           context_predicate: Optional[str] = None,
-          placement: Optional[str] = None) -> Dict[str, Any]:
+          placement: Optional[str] = None,
+          layer: Optional[str] = None) -> Dict[str, Any]:
     """The coarse type(s) of ``term`` (``_query_inner`` below holds the steps and the full description) with
     the W3-a3 keys appended LAST to every answer: ``frame_status`` and ``frame`` (see the module docstring
-    and docs section 12.10).  The steps themselves are not touched by W3-a3."""
+    and docs section 12.10).  The steps themselves are not touched by W3-a3.
+
+    W10-f05 (docs section 12.19): ``layer`` (a placement layer: a path or a name; without it the variable
+    ``VERA_PLACEMENT_LAYER``) puts a domain overlay on the base answer -- used only for a word the base leaves
+    UNPLACED / UNKNOWN / MULTIPLE (K290) -- and appends the two keys ``layer`` and ``layer_status`` at the very end.
+    Without a layer (and with the variable unset or empty) the answer is returned exactly as before, no key added.
+    ``layer=False`` is the base alone whatever the variable says (what the layer's own growth uses: a layer never props itself up)."""
     r = _query_inner(term, context_role=context_role, context_predicate=context_predicate,
                      placement=placement)
     if "frame_status" not in r:
@@ -773,6 +780,11 @@ def query(term: str, *, context_role: Optional[str] = None,
             r = dict(items[:cut] + [("spelling", sp)] + items[cut:])
     r = _insert_frame_generated(term, r, placement)       # W3-b5: one key more, before W3-a3's tail
     r = _append_role_frame(term, r, placement)             # W3-a6: the role frame is the final query field group
+    spec = (None if layer is False else layer if layer is not None and str(layer).strip() != "" else os.environ.get("VERA_PLACEMENT_LAYER"))
+    if spec is not None and str(spec).strip() != "":       # W10-f05: the layer is looked at only when one was asked for (K297)
+        from . import placement_layer
+        base_pl, _why = _open(placement)
+        r = placement_layer.apply(r, str(spec), base_pl)
     return r
 
 

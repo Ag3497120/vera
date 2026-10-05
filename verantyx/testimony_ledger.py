@@ -21,7 +21,7 @@ from typing import Any, Callable, Dict, List, Optional, Sequence
 from .llm_choice import ChoiceLedger, LedgerIntegrityError
 
 SCHEMA = "verantyx.testimony_ledger/1"
-ROW_TYPES = ("header", "testimony", "not_adopted", "backend_failed", "reread_agreed", "distribution_backed", "human_confirmed", "promotable")
+ROW_TYPES = ("header", "testimony", "not_adopted", "backend_failed", "reread_agreed", "distribution_backed", "human_confirmed", "promotable", "promoted_to_layer")
 STATES = ("unconfirmed", "reread_agreed", "distribution_backed", "human_confirmed")
 DEFAULT_PROMOTE_N = 3
 
@@ -163,6 +163,62 @@ class TestimonyLedger:
             if g["promotable"] and k not in marked:
                 out.append(self._append({"type": "promotable", "key": k, "word": g["word"], "candidate": g["candidate"], "state": g["state"], "promote_n": self.promote_n,
                                          "fill_id": g["fill_ids"][0]}))
+        return out
+
+    # ---- W10-f05 (O3, K294): the way into a placement layer ----------------------------------------------------------------------------
+    def record_promoted_to_layer(self, *, key: str, word: str, candidate: str, declared_type: str, layer_name: str, layer_base_sha256: Optional[str], origin: str,
+                                 decided_by: Sequence[str], evidence: Dict[str, Any], fill_id: Optional[str], from_seq: Sequence[int]) -> Dict[str, Any]:
+        """Appends the `promoted_to_layer` row of one layer write (the layer module calls this BEFORE it writes its row, and names the returned `seq`). Appends only; this module never changes a layer."""
+        return self._append({"type": "promoted_to_layer", "key": key, "word": _nfkc(word), "candidate": _nfkc(candidate), "declared_type": declared_type, "layer_name": layer_name,
+                             "layer_base_sha256": layer_base_sha256, "origin": origin, "decided_by": list(decided_by), "evidence": evidence, "fill_id": fill_id,
+                             "from_seq": list(from_seq)})
+
+    def promotion_plan(self, layer_name: str, base_query: Optional[Callable[[str], Dict[str, Any]]] = None) -> List[Dict[str, Any]]:
+        """What `vera ledger promote --layer <name>` would write, one item per key of the folded view; changes neither a layer nor the ledger. Item keys: `key, word, candidate, declared_type,
+        fill_id, origin` (the layer origin, or None) `skip` (a closed reason, or None), `decided_by, evidence, role_frame, from_seq`. The rules (docs/COARSE_PLACEMENT.md section 12.19, K290/K291, J10):
+        a human confirmation -> `layer_human` (direct); a re-reading agreement of at least N alone -> `layer_estimated` (never direct); the word already DECIDED in the base -> `SKIP_BASE_DECIDED`;
+        a distribution-backed row alone: the fill's testimony says the base decided it (`SKIP_BASE_DECIDED`), the grow's is already in the layer (`SKIP_ALREADY_IN_LAYER`);
+        the same (key, layer, origin) already in the ledger -> `SKIP_ALREADY_PROMOTED`. `base_query(word)` is the base placement's answer (None: not asked)."""
+        entries = self.entries()
+        done = {(e.get("key"), e.get("layer_name"), e.get("origin")) for e in entries if e.get("type") == "promoted_to_layer"}
+        in_layer = {(e.get("key"), e.get("layer_name")) for e in entries if e.get("type") == "promoted_to_layer"}
+        tests = {}
+        for e in entries:
+            if e.get("type") == "testimony":
+                tests.setdefault(key_of(e["word"], e["candidate"], e["declaration"]["type"], e["declaration"].get("role")), e)
+        out: List[Dict[str, Any]] = []
+        for k, g in self.fold().items():
+            t = tests[k]
+            decl = t.get("declaration") or {}
+            item = {"key": k, "word": _nfkc(g["word"]), "candidate": g["candidate"], "declared_type": g["declared_type"], "fill_id": g["fill_ids"][0], "origin": None, "skip": None,
+                    "decided_by": [], "evidence": {"ledger_key": k, "reread_agreed": g["reread_agreed"], "state": g["state"], "model": (t.get("provenance") or {}).get("model")},
+                    "role_frame": decl.get("frame") if isinstance(decl.get("frame"), dict) and decl.get("frame") else None,
+                    "from_seq": [h["seq"] for h in g["history"] if h["type"] in ("testimony", "reread_agreed", "distribution_backed", "human_confirmed")]}
+            if not g["promotable"]:
+                item["skip"] = "NOT_PROMOTABLE:%s" % (g["blocked_by"] or g["state"])
+            else:
+                decided = False
+                if base_query is not None:
+                    try:
+                        decided = base_query(item["word"]).get("state") == "DECIDED"
+                    except Exception:
+                        decided = False
+                from_grow = str(t.get("basis") or "").startswith("LLM_TESTIMONY_PLACEMENT")
+                if decided:
+                    item["skip"] = "SKIP_BASE_DECIDED"
+                elif g["human_confirmed"]:
+                    item["origin"], item["decided_by"] = "layer_human", ["layer_human"]
+                elif g["reread_agreed"] >= self.promote_n:
+                    item["origin"] = "layer_estimated"
+                elif g["distribution_backed"]:
+                    item["skip"] = "SKIP_ALREADY_IN_LAYER" if from_grow else "SKIP_BASE_DECIDED"
+                else:
+                    item["skip"] = "SKIP_NO_LAYER_RULE"
+                if item["origin"] is not None and (k, layer_name, item["origin"]) in done:
+                    item["skip"], item["origin"] = "SKIP_ALREADY_PROMOTED", None
+                elif item["skip"] == "SKIP_ALREADY_IN_LAYER" and (k, layer_name) not in in_layer:
+                    item["skip"] = "SKIP_DISTRIBUTION_ONLY_NOT_IN_THIS_LAYER"
+            out.append(item)
         return out
 
     def listing(self) -> List[Dict[str, Any]]:

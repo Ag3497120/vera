@@ -19,6 +19,7 @@ import time
 import unicodedata
 import uuid
 from dataclasses import dataclass, field
+from types import SimpleNamespace
 from typing import Any, Callable, Dict, List, Optional, Sequence
 
 from . import cross_tokens as CT
@@ -61,7 +62,7 @@ class FillDecision:
     context: Dict[str, Any] = field(default_factory=dict)
     mask_user_text: bool = True
     records_checked: int = 0                  # records REALLY compared in gate (c) (0: none, or not comparable: see gate_log[].c_note)
-    sovereign_checked: bool = False           # J13: gate (c) never looks at the sovereign's claims (they are not sentence records)
+    sovereign_checked: bool = False           # J13 (W10-f05): True only when gate (c) REALLY compared at least one of the sovereign's utterances (VERA_SOVEREIGN_* set and consented); else False
     timing: Dict[str, float] = field(default_factory=dict)
     cross_tokens_version: str = CROSS_TOKENS_VERSION
 
@@ -370,8 +371,8 @@ def _gate_c(text: str, hole_result: Dict[str, Any], hi: int, word: str, query: A
     `records_checked` is the number of records that were REALLY compared with the sentence that has the candidate in it; it is 0 when no comparison could be made, and `note` then says why
     (`GATE_C_NOT_CHECKED:NOT_READABLE`, `GATE_C_NOT_CHECKED:OTHER_HOLES_NOT_READABLE`) -- the sentence is not refused for that (conservative reading of K282: no record is not a contradiction), but the
     non-check is on the record. With other holes in the sentence they are typed by the probe (as in gate b), every typing the reader accepts is compared, and a contradiction under any of them refuses.
-    J13: only the records of the loaded documents are compared; the sovereign's claims are not sentence records (`decode_grammar._sovereign_summary`: SOVEREIGN_CLAIM_NOT_A_SENTENCE), so
-    `FillDecision.sovereign_checked` is always False."""
+    J13 (W10-f05): this function compares whatever `records.crosses` it is given; `ask_and_gate` calls it once with the documents' records and, when `VERA_SOVEREIGN_*` is set, once more with the sovereign's
+    utterances (`_sovereign_crosses`), and `FillDecision.sovereign_checked` is True only when that second call really compared one."""
     crosses = []
     for rid, c in (getattr(records, "crosses", None) or {}).items():
         if c is not None:
@@ -402,6 +403,34 @@ def _gate_c(text: str, hole_result: Dict[str, Any], hi: int, word: str, query: A
             if c["roles"] == roles and center.get("polarity") in ("+", "-") and cl.get("polarity") in ("+", "-") and center["polarity"] != cl.get("polarity"):
                 return "GATE_C_CONTRADICTS_RECORD:%s" % rid, len(crosses), None
     return None, len(crosses), None
+
+
+def _sovereign_crosses() -> Optional[Dict[str, Any]]:
+    """W10-f05 (J13): the sovereign's utterances as sentence crosses for gate (c), or None when neither `VERA_SOVEREIGN_ROOT` nor `VERA_SOVEREIGN_STORE` is set (then nothing here changes: no key in
+    `gate_log`, `sovereign_checked` False). Read once per `ask_and_gate`. Only an `ACTIVE_CONSENTED` sovereign (`basis_policy._read_sovereign`, the reader the basis policy uses) contributes: its `utterance`
+    events whose `payload.text` (observe) or `payload.phrase` is a string and that the reader reads as one clause (`decode_grammar.cross_of`). Returns `{"state", "crosses": {event id: cross}, "unread": n}`."""
+    import os
+    if not (os.environ.get("VERA_SOVEREIGN_ROOT") or os.environ.get("VERA_SOVEREIGN_STORE")):
+        return None
+    from . import basis_policy as BP
+    from . import decode_grammar as DG
+    view = BP._read_sovereign(True)
+    crosses: Dict[str, Any] = {}
+    unread = 0
+    if view.state == "ACTIVE_CONSENTED":
+        for e in view.events:
+            if e.get("kind") != "utterance":
+                continue
+            p = e.get("payload") if isinstance(e.get("payload"), dict) else {}
+            text = p.get("text") if isinstance(p.get("text"), str) else p.get("phrase") if isinstance(p.get("phrase"), str) else None
+            if text is None:
+                continue
+            c, _why = DG.cross_of(text)
+            if c is None:
+                unread += 1
+            else:
+                crosses[str(e.get("id") or e.get("seq"))] = c
+    return {"state": view.state, "crosses": crosses, "unread": unread}
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------
@@ -462,10 +491,12 @@ def ask_and_gate(hole_result: Dict[str, Any], *, text: str, chat: Callable, mode
     clock = _Clock()
     shared: Dict[str, Any] = {}
     done = {}
+    sov = _sovereign_crosses()                    # J13: None unless VERA_SOVEREIGN_* is set
+    sov_checked = [False]
 
     def finish(status: str, reason: str, **kw) -> FillDecision:
         d = FillDecision(status, reason, word=h["head"], hole=h, timing={"llm_ms": round(clock.llm_ms, 3), "vera_ms": round((time.perf_counter() - t_start) * 1000.0 - clock.llm_ms, 3)},
-                         **dict(base, **kw))
+                         sovereign_checked=bool(sov_checked[0]), **dict(base, **kw))
         if ledger is not None:
             try:
                 rec = ledger.record_decision(d.to_dict())
@@ -533,7 +564,19 @@ def ask_and_gate(hole_result: Dict[str, Any], *, text: str, chat: Callable, mode
         if why_c is not None:
             log.append({"word": w, "gate": "c", "reason": why_c})
             continue
-        log.append({"word": w, "gate": "passed", "reason": None, "realize": realize, "c_note": note_c, "a4_role": a4["role"], "b_prime": "PASSED"})
+        c_sov = None
+        if sov is not None:                        # J13: the same gate (c), against the sovereign's utterances
+            why_s, n_s, note_s = _gate_c(text, hole_result, hole, w, query, SimpleNamespace(crosses=sov["crosses"]), shared)
+            c_sov = {"state": sov["state"], "compared": n_s, "note": note_s if note_s is not None else (None if sov["state"] == "ACTIVE_CONSENTED" else "SOVEREIGN_NOT_COMPARED:%s" % sov["state"])}
+            if n_s > 0:
+                sov_checked[0] = True
+            if why_s is not None:
+                log.append({"word": w, "gate": "c", "reason": why_s.replace("GATE_C_CONTRADICTS_RECORD:", "GATE_C_CONTRADICTS_SOVEREIGN:", 1), "c_sovereign": c_sov})
+                continue
+        row = {"word": w, "gate": "passed", "reason": None, "realize": realize, "c_note": note_c, "a4_role": a4["role"], "b_prime": "PASSED"}
+        if c_sov is not None:
+            row["c_sovereign"] = c_sov
+        log.append(row)
         passed.append(w)
     if not passed:
         if a4 is not None and not a4["ok"]:         # J18: (a4) is a property of the hole, not of a word: its reason is the decision's reason whatever the number of candidates

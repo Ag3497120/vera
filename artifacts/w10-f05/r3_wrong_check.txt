@@ -1,0 +1,44 @@
+{
+ "intended_wrong": [
+  "スプロケット",
+  "フレーム",
+  "ペダル",
+  "ホイール",
+  "午前",
+  "客"
+ ],
+ "declared_type": {
+  "スプロケット": "PLANT",
+  "フレーム": "PERSON",
+  "ペダル": "EVENT_ACT",
+  "ホイール": "PLACE",
+  "午前": "PLACE",
+  "客": "ARTIFACT"
+ },
+ "in_layer": {
+  "スプロケット": [],
+  "フレーム": [
+   "layer_estimated"
+  ],
+  "ペダル": [
+   "layer_estimated"
+  ],
+  "ホイール": [
+   "layer_estimated"
+  ],
+  "午前": [
+   "layer_estimated"
+  ],
+  "客": [
+   "layer_estimated"
+  ]
+ },
+ "became_direct": 0,
+ "only_estimated": 5,
+ "not_written": 1,
+ "grow_not_written_reasons": {
+  "DECLARATION_NULL": 5,
+  "HYPERNYM_TYPE_DISAGREES": 1
+ }
+}
+RESULT intended-wrong words that became direct: 0 (must be 0); estimated only: 5; not written: 1
