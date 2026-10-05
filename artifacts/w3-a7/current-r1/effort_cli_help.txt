@@ -1,0 +1,28 @@
+usage: gen_coarse_evidence.py run [-h] [--kind {noun,pred,ntype,role}] --needs
+                                  NEEDS --out-dir OUT_DIR --codex-bin
+                                  CODEX_BIN [--effort {low,medium,high}]
+                                  [--batch-size BATCH_SIZE] [--slots SLOTS]
+                                  [--max-calls MAX_CALLS]
+                                  [--max-retries MAX_RETRIES]
+                                  [--timeout TIMEOUT]
+                                  [--deadline-sec DEADLINE_SEC]
+                                  [--limit-batches LIMIT_BATCHES]
+                                  [--extra-config EXTRA_CONFIG]
+
+options:
+  -h, --help            show this help message and exit
+  --kind {noun,pred,ntype,role}
+  --needs NEEDS
+  --out-dir OUT_DIR
+  --codex-bin CODEX_BIN
+                        path of the codex executable (no default)
+  --effort {low,medium,high}
+                        model reasoning effort (default: low)
+  --batch-size BATCH_SIZE
+  --slots SLOTS
+  --max-calls MAX_CALLS
+  --max-retries MAX_RETRIES
+  --timeout TIMEOUT
+  --deadline-sec DEADLINE_SEC
+  --limit-batches LIMIT_BATCHES
+  --extra-config EXTRA_CONFIG

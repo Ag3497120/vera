@@ -1,0 +1,32 @@
+{
+  "n2_rows": 11,
+  "n4_word_particle_rows": 540,
+  "n4_sample_words": 60,
+  "particles_per_n4_word": 9,
+  "cause_counts_nonexclusive": {
+    "CLAIM_ABSENT": 376,
+    "DISTRIBUTION_NO_ARM": 191,
+    "NO_SHARED_TYPE": 16,
+    "PARTLY_BACKED": 15,
+    "SOURCE_ABSENT": 316,
+    "SUPPORTED": 19,
+    "UNCLASSIFIED": 27
+  },
+  "n2_r10_causes": {
+    "CLAIM_ABSENT": 2,
+    "DISTRIBUTION_NO_ARM": 6,
+    "NO_SHARED_TYPE": 1,
+    "SOURCE_ABSENT": 1,
+    "SUPPORTED": 2
+  },
+  "n4_causes": {
+    "CLAIM_ABSENT": 374,
+    "DISTRIBUTION_NO_ARM": 185,
+    "NO_SHARED_TYPE": 15,
+    "PARTLY_BACKED": 15,
+    "SOURCE_ABSENT": 315,
+    "SUPPORTED": 17,
+    "UNCLASSIFIED": 27
+  },
+  "source_rows_are_not_combined": true
+}

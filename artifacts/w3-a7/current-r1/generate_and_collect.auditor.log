@@ -1,0 +1,73 @@
+docs/COARSE_PLACEMENT.md: OK
+tools/gen_coarse_evidence.py: OK
+tools/build_coarse_placement.py: OK
+verantyx/coarse_types.py: OK
+verantyx/coarse_place.py: OK
+verantyx/semantic_reader.py: OK
+verantyx/semantic_read.py: OK
+tests/test_gen_coarse_evidence.py: OK
+tests/test_gen_coarse_evidence_trial_gate.py: OK
+artifacts/w3-a7/current-r1/needs_role_v3.jsonl: OK
+artifacts/w3-a7/current-r1/trial_needs_role_v3.jsonl: OK
+artifacts/w3-a7/current-r1/prompt_role_v2.txt: OK
+artifacts/w3-a7/current-r1/default_low_before/batches.json: OK
+artifacts/w3-a7/current-r1/default_low_before/schema.json: OK
+artifacts/w3-a7/current-r1/default_low_before/ledger.jsonl: OK
+artifacts/w3-a7/current-r1/default_low_before/command.out: OK
+artifacts/w3-a7/current-r1/generate_and_collect.sh: OK
+artifacts/w3-a7/current-r1/trial_batch.sh: OK
+artifacts/w3-a7/current-r1/product_before.sha256: OK
+artifacts/w3-a7/current-r1/tests_and_data_frozen.sha256: OK
+artifacts/w3-a7/current-r1/scripts_frozen.sha256: OK
+artifacts/w3-a7/current-r1/freeze.inputs: OK
+artifacts/w3-a7/current-r1/final_freeze_check.txt: OK
+artifacts/w3-a7/current-r2/trial_judge.py: OK
+artifacts/w3-a7/current-r2/trial_test_cases.json: OK
+artifacts/w3-a7/current-r2/trial_test_freeze.sha256: OK
+artifacts/w3-a7/current-r2/trial_test_freeze.r2.sha256: OK
+artifacts/w3-a7/current-r2/trial_source_state.txt: OK
+artifacts/w3-a7/current-r2/prechange_missing_pass_repro.py: OK
+artifacts/w3-a7/current-r2/prechange_missing_pass_repro.txt: OK
+artifacts/w3-a7/current-r2/prechange_record.sha256: OK
+artifacts/w3-a7/current-r2/prechange_replay.sha256: OK
+artifacts/w3-a7/current-r2/prechange_r1_freeze.sha256: OK
+artifacts/w3-a6/r9/n4_claims_run2_prefreeze.jsonl: OK
+artifacts/w3-a6/r9/n4_visual_labels_run2.jsonl: OK
+{"state": "DONE", "calls_total": 208, "calls_this_run": 208, "batches": 208, "batches_ok": 208, "capped": false, "deadline_hit": false, "wall_sec": 3222.2}
+{"state": "COLLECTED", "rows": 8275, "bad": [], "out_sha256": "0d90267b4fe43aecc5122678cb6d4c58df9682a10958e28daa44f6ce6e94393c"}
+{
+ "batch_size": 40,
+ "batches_failed": 0,
+ "batches_ok": 208,
+ "batches_total": 208,
+ "calls": 208,
+ "calls_per_word_answered": 0.02514,
+ "calls_per_word_requested": 0.02503,
+ "effort": "medium",
+ "end_status": {
+  "ok": 208
+ },
+ "failure_reasons": {},
+ "kind": "role",
+ "ledger_sha256": "8f48fd13351d908739e7300ae8cdd70cd2c68ce9aeffd8165e012a9d64ab5ebd",
+ "max_calls": 624,
+ "max_retries": 2,
+ "model": "gpt-6-luna",
+ "not_run_cap": 0,
+ "not_run_other": 0,
+ "ok_rate": 1.0,
+ "prompt_template_sha256": "3a94675837b5f5550ecf98687506a7d70169fd0dd19c5040b9bd536500bca70f",
+ "schema_sha256": "2d5a9ed449bfdd4899e13048c4e40ddce895ffaa72b2b77f0702773159ddf5f1",
+ "slots": 4,
+ "sum_call_sec": 12835.8,
+ "wall_sec": 3222.2,
+ "words_abstained": 164,
+ "words_answered": 8275,
+ "words_dup_dropped": 0,
+ "words_foreign_dropped": 0,
+ "words_frame_dup_particle": 16,
+ "words_invalid": 19,
+ "words_missing": 1,
+ "words_requested": 8311,
+ "words_role_dup": 0
+}

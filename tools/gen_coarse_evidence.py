@@ -982,6 +982,7 @@ def judge(exit_code, stdout: str, stderr: str, out_path: str, batch_words, timed
 def cmd_run(args) -> int:
     kind = getattr(args, "kind", "noun")
     spec = KINDS[kind]
+    effort = getattr(args, "effort", EFFORT)
     words = read_needs_words(args.needs)
     batches = make_batches(words, args.batch_size)
     out_dir = os.path.abspath(args.out_dir)
@@ -1005,8 +1006,13 @@ def cmd_run(args) -> int:
         if [b["id"] for b in old["batches"]] != [b["id"] for b in batches]:
             print(json.dumps({"state": "NEEDS_LIST_CHANGED", "batches_file": bpath}))
             return EXIT_LIST_CHANGED
+        old_effort = old.get("meta", {}).get("effort", EFFORT)
+        if old_effort != effort:
+            print(json.dumps({"state": "EFFORT_CHANGED", "batches_file": bpath,
+                              "existing_effort": old_effort, "requested_effort": effort}))
+            return EXIT_LIST_CHANGED
     meta = {"batch_size": args.batch_size, "max_retries": args.max_retries,
-            "max_calls": args.max_calls, "slots": args.slots, "model": MODEL, "effort": EFFORT,
+            "max_calls": args.max_calls, "slots": args.slots, "model": MODEL, "effort": effort,
             "needs": os.path.abspath(args.needs), "needs_sha256": sha256_file(args.needs),
             "prompt_template_sha256": spec["template_sha"]()}
     if kind != "noun":
@@ -1085,7 +1091,7 @@ def cmd_run(args) -> int:
             out_path = os.path.join(out_dir, "raw", "%s.a%d.last.json" % (b["id"], attempt))
             prompt = spec["prompt"](b["words"])
             argv = [args.codex_bin, "exec", "-m", MODEL,
-                    "-c", "model_reasoning_effort=" + json.dumps(EFFORT),
+                    "-c", "model_reasoning_effort=" + json.dumps(effort),
                     "-c", "service_tier=" + json.dumps(TIER),
                     "-s", "read-only", "--skip-git-repo-check", "--ephemeral",
                     "--disable", "browser_use", "--disable", "computer_use",
@@ -1159,6 +1165,9 @@ def _batch_words(events: Sequence[dict]) -> Dict[Tuple[str, int], List[str]]:
 def cmd_collect(args) -> int:
     ledger_path = os.path.join(args.out_dir, "ledger.jsonl")
     events = read_ledger(ledger_path)
+    bpath = os.path.join(args.out_dir, "batches.json")
+    bmeta = json.load(open(bpath, encoding="utf-8")) if os.path.exists(bpath) else {"meta": {}}
+    effort = bmeta.get("meta", {}).get("effort", EFFORT)
     firsts = _first_ok(events)
     words_of = _batch_words(events)
     lines = []
@@ -1174,7 +1183,7 @@ def cmd_collect(args) -> int:
             continue
         if kind in ("ntype", "role"):
             answers, _st = KINDS[kind]["parse"](words, json.load(open(path, encoding="utf-8")))
-            prov = {"origin": "generated", "model": MODEL, "effort": EFFORT, "batch_id": bid,
+            prov = {"origin": "generated", "model": MODEL, "effort": effort, "batch_id": bid,
                     "attempt": e["attempt"], "out_sha256": e["out_sha256"]}
             for w in words:
                 if w not in answers:
@@ -1195,7 +1204,7 @@ def cmd_collect(args) -> int:
                 pt, fr = answers[w]
                 lines.append(json.dumps({
                     "word": w, "ptype": pt, "frame": fr, "abstained": pt is None,
-                    "provenance": {"origin": "generated", "model": MODEL, "effort": EFFORT,
+                    "provenance": {"origin": "generated", "model": MODEL, "effort": effort,
                                    "batch_id": bid, "attempt": e["attempt"],
                                    "out_sha256": e["out_sha256"]}}, ensure_ascii=False) + "\n")
             continue
@@ -1206,7 +1215,7 @@ def cmd_collect(args) -> int:
             d, h = answers[w]
             lines.append(json.dumps({
                 "word": w, "definition": d, "hypernym": h, "abstained": d is None and h is None,
-                "provenance": {"origin": "generated", "model": MODEL, "effort": EFFORT,
+                "provenance": {"origin": "generated", "model": MODEL, "effort": effort,
                                "batch_id": bid, "attempt": e["attempt"],
                                "out_sha256": e["out_sha256"]}}, ensure_ascii=False) + "\n")
     with open(args.out, "w", encoding="utf-8") as f:
@@ -1268,7 +1277,7 @@ def summarize(out_dir: str, kind: Optional[str] = None) -> dict:
         extra = {"kind": "role", "words_invalid": invalid, "words_frame_dup_particle": frame_dup,
                  "words_role_dup": role_dup, "schema_sha256": meta.get("schema_sha256")}
     return dict(extra, **{
-        "model": MODEL, "effort": EFFORT, "slots": meta.get("slots"),
+        "model": MODEL, "effort": meta.get("effort", EFFORT), "slots": meta.get("slots"),
         "batch_size": meta.get("batch_size"), "max_calls": meta.get("max_calls"),
         "max_retries": meta.get("max_retries"),
         "calls": calls, "batches_total": len(ids), "batches_ok": len(ok & set(ids)),
@@ -1340,6 +1349,8 @@ def main(argv=None) -> int:
     r.add_argument("--needs", required=True)
     r.add_argument("--out-dir", required=True)
     r.add_argument("--codex-bin", required=True, help="path of the codex executable (no default)")
+    r.add_argument("--effort", choices=("low", "medium", "high"), default=EFFORT,
+                   help="model reasoning effort (default: low)")
     r.add_argument("--batch-size", type=int, default=40)
     r.add_argument("--slots", type=int, default=12)
     r.add_argument("--max-calls", type=int, default=2000)

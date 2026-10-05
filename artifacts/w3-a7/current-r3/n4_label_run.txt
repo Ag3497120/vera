@@ -1,0 +1,1 @@
+{"labels": 139, "confirmed_labels": 17, "label_counts": {"正しい": 123, "疑わしい": 8, "誤り": 8, "UNCLASSIFIED": 0}, "evidence_type": "testimony"}

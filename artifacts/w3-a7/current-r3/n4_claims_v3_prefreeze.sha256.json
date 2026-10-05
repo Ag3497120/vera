@@ -1,0 +1,8 @@
+{
+  "path": "artifacts/w3-a7/current-r3/n4_claims_v3_prefreeze.jsonl",
+  "sha256": "f216d28ecbdbe78ae958133bae0eb4018c5dd289a48dce83a36ceca6be31c982",
+  "rows": 139,
+  "sample_words": 60,
+  "confirmed_roles_to_review": 17,
+  "visual_label_evidence_type": "testimony"
+}

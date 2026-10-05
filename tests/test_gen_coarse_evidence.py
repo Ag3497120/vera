@@ -353,6 +353,63 @@ def test_the_child_gets_a_closed_stdin_even_when_the_parents_stdin_stays_open(en
 
 
 # --- the required arguments -----------------------------------------------------------------
+def test_default_low_keeps_the_preregistered_role_batches_and_schema_byte_identical(tmp_path):
+    needs = TREE / "artifacts/w3-a7/current-r1/needs_role_v3.jsonl"
+    before = TREE / "artifacts/w3-a7/current-r1/default_low_before"
+    out_dir = tmp_path / "default_low"
+    assert gce.main(["run", "--kind", "role", "--needs", str(needs), "--out-dir", str(out_dir),
+                     "--codex-bin", "/bin/false", "--batch-size", "40", "--slots", "4",
+                     "--max-calls", "624", "--max-retries", "2", "--limit-batches", "0"]) == 0
+    assert (out_dir / "batches.json").read_bytes() == (before / "batches.json").read_bytes()
+    assert (out_dir / "schema.json").read_bytes() == (before / "schema.json").read_bytes()
+    assert json.loads((out_dir / "batches.json").read_text(encoding="utf-8"))["meta"]["effort"] == "low"
+
+
+def test_role_prompt_is_byte_identical_to_the_frozen_v2(capsys):
+    assert gce.main(["prompt", "--kind", "role"]) == 0
+    assert capsys.readouterr().out.encode("utf-8") == (
+        TREE / "artifacts/w3-a7/current-r1/prompt_role_v2.txt").read_bytes()
+
+
+@pytest.mark.parametrize("effort", ["low", "medium", "high"])
+def test_effort_is_in_runtime_manifest_ledger_summary_and_collected_rows(env, effort):
+    tmp, needs, G = env
+    fake = make_fake(tmp)
+    assert run(tmp, needs, G, fake, "--effort", effort, "--limit-batches", "1",
+               "--max-retries", "0") == 0
+    meta = json.loads((G / "batches.json").read_text(encoding="utf-8"))["meta"]
+    assert meta["effort"] == effort
+    start = starts(G)[0]
+    assert 'model_reasoning_effort="%s"' % effort in start["argv"]
+    assert gce.summarize(str(G))["effort"] == effort
+    out = tmp / "collected.jsonl"
+    assert gce.main(["collect", "--out-dir", str(G), "--out", str(out)]) == 0
+    rows = [json.loads(line) for line in out.read_text(encoding="utf-8").splitlines()]
+    assert rows and all(row["provenance"]["effort"] == effort for row in rows)
+
+
+def test_an_out_dir_cannot_mix_effort_values(env, capsys):
+    tmp, needs, G = env
+    fake = make_fake(tmp)
+    assert run(tmp, needs, G, fake, "--effort", "low", "--limit-batches", "1",
+               "--max-retries", "0") == 0
+    ledger_before = (G / "ledger.jsonl").read_bytes()
+    batches_before = (G / "batches.json").read_bytes()
+    assert run(tmp, needs, G, fake, "--effort", "medium", "--limit-batches", "1",
+               "--max-retries", "0") == gce.EXIT_LIST_CHANGED
+    assert '"state": "EFFORT_CHANGED"' in capsys.readouterr().out
+    assert (G / "ledger.jsonl").read_bytes() == ledger_before
+    assert (G / "batches.json").read_bytes() == batches_before
+    assert len(calls(tmp)) == 1
+
+
+def test_effort_rejects_values_outside_the_closed_cli_choices(env):
+    tmp, needs, G = env
+    fake = make_fake(tmp)
+    with pytest.raises(SystemExit):
+        run(tmp, needs, G, fake, "--effort", "urgent")
+
+
 def test_the_model_effort_and_sandbox_are_in_the_command_and_codex_bin_is_required(env):
     tmp, needs, G = env
     fake = make_fake(tmp)

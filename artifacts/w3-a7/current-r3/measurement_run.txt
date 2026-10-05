@@ -1,0 +1,1 @@
+{"n2_rows": 11, "n3_terms": 15, "n4_words": 60, "n5_words": 281, "output": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a7-S/artifacts/w3-a7/current-r3"}

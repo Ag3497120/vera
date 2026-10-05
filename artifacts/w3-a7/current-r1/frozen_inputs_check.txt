@@ -1,0 +1,9 @@
+docs/COARSE_PLACEMENT.md: OK
+tests/test_gen_coarse_evidence.py: OK
+artifacts/w3-a7/current-r1/needs_role_v3.jsonl: OK
+artifacts/w3-a7/current-r1/trial_needs_role_v3.jsonl: OK
+artifacts/w3-a7/current-r1/prompt_role_v2.txt: OK
+artifacts/w3-a7/current-r1/default_low_before/batches.json: OK
+artifacts/w3-a7/current-r1/default_low_before/schema.json: OK
+artifacts/w3-a6/r9/n4_claims_run2_prefreeze.jsonl: OK
+artifacts/w3-a6/r9/n4_visual_labels_run2.jsonl: OK

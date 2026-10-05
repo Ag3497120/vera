@@ -1,0 +1,238 @@
+{
+  "evidence_type": "generated",
+  "claim_rate_definition": "distinct accepted role-frame words with a nonempty typed claim for the particle",
+  "requested_word_denominator": "all requested words; accepted-only numerator as in r9 manifest",
+  "accepted_word_denominator": "distinct nonnull role-frame rows accepted by the builder",
+  "v2_generation": {
+    "summary_path": "build/coarse-W3a/full/r9/gen_role_v2/summary.json",
+    "summary_sha256": "568301906e820314f15b9af0c7ec6ca69c64af774353d12037ecea9ac1d61437",
+    "kind": "role",
+    "model": "gpt-6-luna",
+    "effort": "low",
+    "calls": 208,
+    "batches_total": 208,
+    "batches_ok": 208,
+    "batches_failed": 0,
+    "words_requested": 8311,
+    "words_answered": 8255,
+    "words_abstained": 160,
+    "words_missing": 1,
+    "words_invalid": 13,
+    "words_frame_dup_particle": 42,
+    "wall_sec": 3109.9,
+    "sum_call_sec": 12327.2,
+    "output_sha256": "16454e075ecc296ca4e84b2d1531d7824a9b800283cc8762bd37c282ec437ee2"
+  },
+  "v3_generation": {
+    "batches_failed": 0,
+    "batches_ok": 208,
+    "batches_total": 208,
+    "calls": 208,
+    "effort": "medium",
+    "kind": "role",
+    "model": "gpt-6-luna",
+    "sum_call_sec": 12835.8,
+    "wall_sec": 3222.2,
+    "words_abstained": 164,
+    "words_answered": 8275,
+    "words_dup_dropped": 0,
+    "words_foreign_dropped": 0,
+    "words_frame_dup_particle": 16,
+    "words_invalid": 19,
+    "words_missing": 1,
+    "words_requested": 8311,
+    "words_role_dup": 0,
+    "words_unavailable_total": 165
+  },
+  "r9_run2": {
+    "content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+    "manifest_sha256": "4ae28d61184b11cb0d74036dcdc3c371872f6d67b4f103cf539d3f5a09372f0c",
+    "placement_sha256": "900c899eead892698af9db42649721a763ee9063d4362e65e3348703782373aa",
+    "role_frame_rows": 8095
+  },
+  "r10_run1": {
+    "content_sha256": "7482bdc08ce757cfd09678cecb19371415a9cf6cd73a247606dd8237e687b3e6",
+    "manifest_sha256": "bd863a99e8ac1ce32d1d9adebb8b3f37f3e8f6226c034d49d22d762616b7783a",
+    "placement_sha256": "a6619e624a5eb8dd883a27401e3ddc1aa3530b4bfb68c6cb759ab61e7548e484",
+    "role_frame_rows": 8111
+  },
+  "effort_comparison": {
+    "v2": "low",
+    "v3": "medium"
+  },
+  "claim_rates_by_particle": {
+    "が": {
+      "v2": {
+        "requested_denominator": 8311,
+        "requested_numerator": 5036,
+        "requested_rate_pct": 60.5944,
+        "accepted_denominator": 8095,
+        "accepted_numerator": 5036,
+        "accepted_rate_pct": 62.2112
+      },
+      "v3": {
+        "requested_denominator": 8311,
+        "requested_numerator": 5953,
+        "requested_rate_pct": 71.628,
+        "accepted_denominator": 8111,
+        "accepted_numerator": 5953,
+        "accepted_rate_pct": 73.3942
+      },
+      "accepted_rate_change_percentage_points": 11.1829
+    },
+    "を": {
+      "v2": {
+        "requested_denominator": 8311,
+        "requested_numerator": 5405,
+        "requested_rate_pct": 65.0343,
+        "accepted_denominator": 8095,
+        "accepted_numerator": 5405,
+        "accepted_rate_pct": 66.7696
+      },
+      "v3": {
+        "requested_denominator": 8311,
+        "requested_numerator": 5298,
+        "requested_rate_pct": 63.7468,
+        "accepted_denominator": 8111,
+        "accepted_numerator": 5298,
+        "accepted_rate_pct": 65.3187
+      },
+      "accepted_rate_change_percentage_points": -1.4509
+    },
+    "に": {
+      "v2": {
+        "requested_denominator": 8311,
+        "requested_numerator": 4255,
+        "requested_rate_pct": 51.1972,
+        "accepted_denominator": 8095,
+        "accepted_numerator": 4255,
+        "accepted_rate_pct": 52.5633
+      },
+      "v3": {
+        "requested_denominator": 8311,
+        "requested_numerator": 3925,
+        "requested_rate_pct": 47.2266,
+        "accepted_denominator": 8111,
+        "accepted_numerator": 3925,
+        "accepted_rate_pct": 48.3911
+      },
+      "accepted_rate_change_percentage_points": -4.1722
+    },
+    "で": {
+      "v2": {
+        "requested_denominator": 8311,
+        "requested_numerator": 3160,
+        "requested_rate_pct": 38.0219,
+        "accepted_denominator": 8095,
+        "accepted_numerator": 3160,
+        "accepted_rate_pct": 39.0364
+      },
+      "v3": {
+        "requested_denominator": 8311,
+        "requested_numerator": 2477,
+        "requested_rate_pct": 29.8039,
+        "accepted_denominator": 8111,
+        "accepted_numerator": 2477,
+        "accepted_rate_pct": 30.5388
+      },
+      "accepted_rate_change_percentage_points": -8.4977
+    },
+    "へ": {
+      "v2": {
+        "requested_denominator": 8311,
+        "requested_numerator": 398,
+        "requested_rate_pct": 4.7888,
+        "accepted_denominator": 8095,
+        "accepted_numerator": 398,
+        "accepted_rate_pct": 4.9166
+      },
+      "v3": {
+        "requested_denominator": 8311,
+        "requested_numerator": 385,
+        "requested_rate_pct": 4.6324,
+        "accepted_denominator": 8111,
+        "accepted_numerator": 385,
+        "accepted_rate_pct": 4.7466
+      },
+      "accepted_rate_change_percentage_points": -0.17
+    },
+    "と": {
+      "v2": {
+        "requested_denominator": 8311,
+        "requested_numerator": 909,
+        "requested_rate_pct": 10.9373,
+        "accepted_denominator": 8095,
+        "accepted_numerator": 909,
+        "accepted_rate_pct": 11.2292
+      },
+      "v3": {
+        "requested_denominator": 8311,
+        "requested_numerator": 786,
+        "requested_rate_pct": 9.4573,
+        "accepted_denominator": 8111,
+        "accepted_numerator": 786,
+        "accepted_rate_pct": 9.6905
+      },
+      "accepted_rate_change_percentage_points": -1.5386
+    },
+    "から": {
+      "v2": {
+        "requested_denominator": 8311,
+        "requested_numerator": 1320,
+        "requested_rate_pct": 15.8826,
+        "accepted_denominator": 8095,
+        "accepted_numerator": 1320,
+        "accepted_rate_pct": 16.3064
+      },
+      "v3": {
+        "requested_denominator": 8311,
+        "requested_numerator": 1173,
+        "requested_rate_pct": 14.1138,
+        "accepted_denominator": 8111,
+        "accepted_numerator": 1173,
+        "accepted_rate_pct": 14.4618
+      },
+      "accepted_rate_change_percentage_points": -1.8445
+    },
+    "まで": {
+      "v2": {
+        "requested_denominator": 8311,
+        "requested_numerator": 297,
+        "requested_rate_pct": 3.5736,
+        "accepted_denominator": 8095,
+        "accepted_numerator": 297,
+        "accepted_rate_pct": 3.6689
+      },
+      "v3": {
+        "requested_denominator": 8311,
+        "requested_numerator": 231,
+        "requested_rate_pct": 2.7794,
+        "accepted_denominator": 8111,
+        "accepted_numerator": 231,
+        "accepted_rate_pct": 2.848
+      },
+      "accepted_rate_change_percentage_points": -0.8209
+    },
+    "より": {
+      "v2": {
+        "requested_denominator": 8311,
+        "requested_numerator": 40,
+        "requested_rate_pct": 0.4813,
+        "accepted_denominator": 8095,
+        "accepted_numerator": 40,
+        "accepted_rate_pct": 0.4941
+      },
+      "v3": {
+        "requested_denominator": 8311,
+        "requested_numerator": 30,
+        "requested_rate_pct": 0.361,
+        "accepted_denominator": 8111,
+        "accepted_numerator": 30,
+        "accepted_rate_pct": 0.3699
+      },
+      "accepted_rate_change_percentage_points": -0.1243
+    }
+  },
+  "n4_visual_labels_are_gold": false,
+  "role_generation_ledger_read": false
+}
