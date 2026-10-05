@@ -1,0 +1,22 @@
+set	id	question	answer_result_values	reading_type	reading_state	reading_reason
+w3c4	AQ014	医者は患者に薬を渡したか？	["はい"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3c4	AQ015	誰が誰に書類を渡した？	["看護師", "医者"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3c4	AQ019	医者が患者に薬を渡した。	["はい"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3c4_b2like	BQ009	田中部長は資料を読んだ？	["いいえ"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	ext_range:multi-0	田中は本を読む？	["いいえ"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	ext_range:multi-3	田中は本を読まない？	["はい"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	prohibition:ctl-neg-田中	田中は本を読む？	["いいえ"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	prohibition:ctl-negq-田中	田中は本を読まない？	["はい"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	prohibition:ctl-neg-佐藤	佐藤は鍵を持ち出す？	["いいえ"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	prohibition:ctl-negq-佐藤	佐藤は鍵を持ち出さない？	["はい"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	prohibition:ctl-neg-鈴木	鈴木は答えを見る？	["いいえ"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	prohibition:ctl-negq-鈴木	鈴木は答えを見ない？	["はい"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	prohibition:ctl-neg-高橋	高橋は書類を捨てる？	["いいえ"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	prohibition:ctl-negq-高橋	高橋は書類を捨てない？	["はい"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	prohibition_nde:nde-ctl-0	運転手は酒を飲む？	["いいえ"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	prohibition_nde:nde-ctl-1	作業員は荷物を運ぶ？	["いいえ"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	prohibition_nde:nde-ctl-2	生徒は手紙を読む？	["いいえ"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	prohibition_nde:nde-ctl-3	受付は友人を呼ぶ？	["いいえ"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	prohibition_nde:nde-ctl-4	委員は候補者を選ぶ？	["いいえ"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	prohibition_nde:nde-ctl-5	店員は財布を盗む？	["いいえ"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3f1	prohibition_nde:nde-ctl-6	医者は薬を頼む？	["いいえ"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE

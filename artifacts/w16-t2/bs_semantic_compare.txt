@@ -1,0 +1,6 @@
+== B2
+raw files compared: 23 results rows: 25 25 summary equal: True
+differences after dropping clock keys and tmp names: 0
+== B7
+raw files compared: 34 results rows: 35 35 summary equal: True
+differences after dropping clock keys and tmp names: 0

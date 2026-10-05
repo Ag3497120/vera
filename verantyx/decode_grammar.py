@@ -1,8 +1,8 @@
 """W10-f01 -- 融合の層 0・1: 入力の読解、記録から作る復号の文法、出力の検証、根拠の方針 (docs/FUSION.md §1)。
 
 HTTP も LLM の呼び出しも持たない純粋な関数。LLM の返答は ``conclude`` に引数で渡す。
-``semantic_*``・``observe``・``basis_policy``・``event_cross``・``sovereign`` と ``cli._qc_run``/``cli._qc_records`` は呼ぶだけで変えない。
-``cli`` は関数の中で遅延 import する（循環を避ける）。
+``semantic_*``・``observe``・``basis_policy``・``event_cross``・``sovereign`` と ``doc_answer``（文書に答える唯一の関数。`vera ask`・`vera chat` と同じ）は呼ぶだけで変えない。
+このモジュールは ``cli`` を import しない（W16-t2: 層の逆転をやめた）。
 
 層 0（既定）: LLM が答える。記録が答えを持つ事実の問いは記録が答え。それ以外の LLM の文は 証言（factual）／構成（非 factual）／未読 の印つき。
 層 1（strict）: 文法で縛る。文法の外の語は出ない。読めない・記録に候補が無い入力では LLM を呼ばない。
@@ -16,6 +16,8 @@ import re
 import unicodedata
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Sequence, Tuple
+
+from . import doc_answer
 
 SCHEMA = "verantyx.fusion/1"
 
@@ -33,7 +35,7 @@ FIXED_TEXT = {
 }
 
 READING_TYPES = ("QUESTION_CROSS", "RECORDS", "NO_RECORD", "STRUCTURE_UNDETERMINED")
-#: `_qc_run` の question_cross.state のうち「記録に当たる十字が無い」もの（閉じた一覧）。これ以外の state は STRUCTURE_UNDETERMINED（保守側）。
+#: `doc_answer` の question_cross.state のうち「記録に当たる十字が無い」もの（閉じた一覧）。これ以外の state は STRUCTURE_UNDETERMINED（保守側）。
 NO_RECORD_STATES = ("NO_ATTESTED_CELL", "NO_TYPED_CANDIDATE", "TYPE_EXCLUDED_ALL", "DOCUMENTS_NOT_LOADED")
 ANSWER_OUTCOMES = ("ANSWER_HUMAN_BASIS", "ANSWER_FORM_FROM_GENERATED", "REFERENCE_GENERATED")
 #: 節の十字の鍵は固定の一覧ではなく「roles 以外の全ての鍵」（回数 quantifiers などの修飾も十字の一部。閉じた一覧の外は保守側に倒す）。r2 の訂正（docs/FUSION.md §1.9）
@@ -43,21 +45,13 @@ _ARM_CENTER_KEYS = ("predicate", "polarity", "tense", "modality", "voice")
 _JA_CHAR = re.compile("[぀-ヿ㐀-䶿一-鿿]")
 _MAX_TOKENS = 120
 
-_BASE_UNKNOWN = {"kind": "unknown", "verdict": "UNKNOWN_UNREAD", "text": "", "sources": [], "trace": []}
-
-
 def _nfkc(text: Any) -> str:
     return unicodedata.normalize("NFKC", str(text)).strip()
 
 
-def _split_re():
-    from . import cli
-    return re.compile(cli._QC_SPLIT)
-
-
 def split_sentences(text: str) -> List[str]:
-    """本文を文に分ける。`cli._QC_SPLIT` と同じ切り方（行ごとに切る）。"""
-    cut = _split_re()
+    """本文を文に分ける。`doc_answer.QC_SPLIT` と同じ切り方（行ごとに切る）。"""
+    cut = re.compile(doc_answer.QC_SPLIT)
     out: List[str] = []
     for line in str(text).split("\n"):
         out.extend(x.strip() for x in cut.split(line) if x.strip())
@@ -100,12 +94,12 @@ def cross_of(text: str, *, mode: str = "strict", assume: Any = None) -> Tuple[Op
 
 
 class Records:
-    """渡された文書の文（`cli._qc_records` と同じ切り方）と、各文の再読。サーバ起動時に 1 回作る。"""
+    """渡された文書の文（`doc_answer.records` と同じ切り方）と、各文の再読。サーバ起動時に 1 回作る。`prepared` は `doc_answer.answer` に渡す読み手（文書に答える経路は 1 本）。"""
 
     def __init__(self, documents: Sequence[str]):
-        from . import cli
         self.documents = [str(d) for d in documents]
-        self.records, self.where, self.n_loaded, self.skipped = cli._qc_records(self.documents)
+        self.prepared = doc_answer.prepare(self.documents)
+        self.records, self.where, self.n_loaded, self.skipped = self.prepared.records, self.prepared.where, self.prepared.n_loaded, self.prepared.skipped
         self.crosses: Dict[str, Optional[Dict[str, Any]]] = {}
         self.cross_reason: Dict[str, Optional[str]] = {}
         self.by_text: Dict[str, List[str]] = {}
@@ -136,27 +130,59 @@ def _reading(type_: str, state: Optional[str], reason: Optional[str], qc: Option
             "filler": filler, "sources": list(sources or [])}
 
 
+def _mapped_answer(res: Dict[str, Any], records: Records) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
+    """The answer of the round5 reading itself (door semantic_document) as one record reading: exactly one (role, value) pair, `values == [value]`, and every source sentence
+    is exactly one sentence of the documents (the same text once, the same source). (reading, None) or (None, reason): no guessing here, a tie or a doubt abstains."""
+    pairs = res.get("answer_values")
+    if not (isinstance(pairs, list) and len(pairs) == 1 and isinstance(pairs[0], (list, tuple)) and len(pairs[0]) == 2 and all(isinstance(x, str) for x in pairs[0])):
+        return None, "NOT_ONE_ROLE_VALUE"
+    role, value = pairs[0]
+    if res.get("values") != [value] or not value:
+        return None, "VALUES_DIFFER"
+    srcs: List[Dict[str, Any]] = []
+    for s in res.get("sources") or []:
+        text = s.get("text") if isinstance(s, dict) else None
+        ids = records.by_text.get(_nfkc(text), []) if isinstance(text, str) else []
+        if len(ids) != 1:
+            return None, "SOURCE_SENTENCE_NOT_UNIQUE"
+        src = records.source_of(ids[0])
+        name = (s.get("span") or {}).get("source") if isinstance(s.get("span"), dict) else s.get("source")
+        if name is not None and name != src["source"]:
+            return None, "SOURCE_DIFFERS"
+        if not any(t["sentence_id"] == ids[0] for t in srcs):
+            srcs.append({k: src[k] for k in ("source", "line", "text", "sentence_id")})
+    if not srcs:
+        return None, "NO_SOURCE"
+    return _reading("QUESTION_CROSS", "FILLED", res.get("door"), {"hole_role": role, "hole_type": None}, srcs, value), None
+
+
 def read_turn(question: str, request_kind: str, records: Records, documents: Sequence[str]) -> Tuple[Dict[str, Any], Optional[Dict[str, Any]]]:
-    """入力を読む（docs/FUSION.md §1.2 の 2）。(reading, qc の結果)。"""
+    """入力を読む（docs/FUSION.md §1.2 の 2）。(reading, 答えの dict)。文書に答える関数 `doc_answer.answer`（ask・chat と同じ。まず round5 の本読み、止まったときだけ後段）を通す。配置の有無で経路を分けない（W16-t2、裁定 5）。"""
     from . import basis_policy as bp
     if bp.KIND_CLASS.get(request_kind) != "FACTUAL":
         why = None if records.n_loaded else "NO_DOCUMENTS"
         return _reading("RECORDS", None, why), None
     if records.n_loaded == 0:
         return _reading("NO_RECORD", "DOCUMENTS_NOT_LOADED", "NO_DOCUMENTS"), None
-    from . import cli
     try:
-        res = cli._qc_run(dict(_BASE_UNKNOWN), list(documents), question)
+        res = doc_answer.answer(question, records.prepared)
     except Exception as exc:
         return _reading("STRUCTURE_UNDETERMINED", "ERROR", "%s: %s" % (type(exc).__name__, exc)), None
     qc = res.get("question_cross") or {}
     state, reason = qc.get("state"), qc.get("reason")
-    if res.get("verdict") == "ANSWER" and state == "FILLED" and isinstance(res.get("text"), str) and res.get("sources"):
-        srcs = [{k: s[k] for k in ("source", "line", "text", "sentence_id")} for s in res["sources"]]
-        return _reading("QUESTION_CROSS", state, reason, qc, srcs, res["text"]), res
+    if res.get("verdict") == "ANSWER":
+        if res.get("door") == "question_cross":
+            if state == "FILLED" and isinstance(res.get("text"), str) and res.get("sources"):
+                srcs = [{k: s[k] for k in ("source", "line", "text", "sentence_id")} for s in res["sources"]]
+                return _reading("QUESTION_CROSS", state, reason, qc, srcs, res["text"]), res
+        else:
+            reading, why = _mapped_answer(res, records)
+            if reading is not None:
+                return reading, res
+            return _reading("STRUCTURE_UNDETERMINED", "ROUND5_ANSWER_NOT_MAPPED", "%s:%s" % (res.get("door"), why)), res
     if state in NO_RECORD_STATES:
         return _reading("NO_RECORD", state, reason, qc), res
-    return _reading("STRUCTURE_UNDETERMINED", state if state else "UNKNOWN_STATE", reason or res.get("verdict"), qc), res
+    return _reading("STRUCTURE_UNDETERMINED", state if state else (res.get("verdict") or "UNKNOWN_STATE"), reason or res.get("verdict"), qc), res
 
 
 # --- 文法 ------------------------------------------------------------------------------------------------------------------------------------

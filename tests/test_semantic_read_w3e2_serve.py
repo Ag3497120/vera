@@ -23,7 +23,7 @@ def doc(tmp_path):
 
 def turn(doc, reply, mode, strict=False, kind='factual'):
     cfg = VS.FusionConfig.load(model='fake', documents=[doc], llm_chat=chat_for(reply), read_mode=mode, strict=strict)
-    r = VS.fusion_turn([{'role': 'user', 'content': '誰が走りましたか。'}], {'request_kind': kind, 'human_present': False}, cfg)
+    r = VS.fusion_turn([{'role': 'user', 'content': '誰が来ましたか。'}], {'request_kind': kind, 'human_present': False}, cfg)
     r['vera'].pop('timing', None)
     return r
 

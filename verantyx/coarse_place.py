@@ -98,8 +98,29 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from . import coarse_types as ct
 
-ENV_PLACEMENT = "VERA_COARSE_PLACEMENT"
-NO_PLACEMENT_REASONS = ("UNSET", "MISSING", "UNREADABLE", "MANIFEST_MISMATCH")
+PLACEMENT_ENV = "VERA_PLACEMENT"            # W16-t2: the one name of the placement in the environment
+ENV_PLACEMENT = "VERA_COARSE_PLACEMENT"     # kept as a compatible alias: read, never preferred
+NO_PLACEMENT_REASONS = ("UNSET", "MISSING", "UNREADABLE", "MANIFEST_MISMATCH", "PLACEMENT_ENV_CONFLICT")
+
+
+class PlacementEnvConflict(ValueError):
+    """Both VERA_PLACEMENT and VERA_COARSE_PLACEMENT are set (not empty) and name different places: a typed error, never a silent choice."""
+    error = "PLACEMENT_ENV_CONFLICT"
+
+    def __init__(self, detail: Dict[str, str]):
+        super().__init__("PLACEMENT_ENV_CONFLICT: %s=%r vs %s=%r" % (PLACEMENT_ENV, detail.get(PLACEMENT_ENV), ENV_PLACEMENT, detail.get(ENV_PLACEMENT)))
+        self.detail = detail
+
+
+def placement_from_env() -> Optional[str]:
+    """W16-t2: the placement the environment names. VERA_PLACEMENT is the one; VERA_COARSE_PLACEMENT is read as a compatible alias. An empty value is unset.
+    Both set and different after os.path.abspath(expanduser(strip)) -> PlacementEnvConflict (never a pick). None when neither is set. `_open(None)` uses this too."""
+    main, alias = (os.environ.get(PLACEMENT_ENV) or "").strip(), (os.environ.get(ENV_PLACEMENT) or "").strip()
+    if main and alias:
+        if os.path.abspath(os.path.expanduser(main)) != os.path.abspath(os.path.expanduser(alias)):
+            raise PlacementEnvConflict({PLACEMENT_ENV: main, ENV_PLACEMENT: alias})
+        return main
+    return main or alias or None
 EXIT_OK, EXIT_NO_PLACEMENT, EXIT_BAD_ARGS = 0, 2, 64
 
 _CACHE: Dict[str, "_Placement"] = {}
@@ -245,7 +266,10 @@ def _no_placement(term: str, reason: str, path: Optional[str],
 def _open(path: Optional[str]):
     """(placement, None) or (None, (reason, path))."""
     if path is None or str(path).strip() == "":
-        path = os.environ.get(ENV_PLACEMENT)
+        try:
+            path = placement_from_env()
+        except PlacementEnvConflict:
+            return None, ("PLACEMENT_ENV_CONFLICT", None)
     if path is None or str(path).strip() == "":
         return None, ("UNSET", None)
     path = os.path.abspath(os.path.expanduser(str(path)))

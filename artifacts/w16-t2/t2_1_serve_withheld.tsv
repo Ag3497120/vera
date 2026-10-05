@@ -1,0 +1,5 @@
+set	id	question	answer_result_values	reading_type	reading_state	reading_reason
+w3c4	AQ014	医者は患者に薬を渡したか？	["はい"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3c4	AQ015	誰が誰に書類を渡した？	["看護師", "医者"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3c4	AQ019	医者が患者に薬を渡した。	["はい"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE
+w3c4_b2like	BQ009	田中部長は資料を読んだ？	["いいえ"]	STRUCTURE_UNDETERMINED	ROUND5_ANSWER_NOT_MAPPED	semantic_document:NOT_ONE_ROLE_VALUE

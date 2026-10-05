@@ -256,159 +256,60 @@ def cmd_forget(args) -> int:
     return 0 if removed else 1
 
 
-# --- W3-c4: the question cross as a LATER STAGE of `vera ask --mode round5 --document` (docs/OBSERVATION.md, 文書 QA の後段（W3-c4）) ---------------------------
-# Only when the round5 reading stopped with one of these two abstentions (closed set, registered before the build) and a document was handed over: the sentences of the
-# documents are observed from the cross of the question (observe.observe_question_records, in memory, no file). Anything else is returned as the same object.
-_QC_TRIGGER = ("UNKNOWN_UNREAD", "UNKNOWN_NO_EVIDENCE")
-_QC_SPLIT = r"(?<=。)|(?<=\.)(?=\s)"
-_QC_PAIRS = (("「", "」"), ("『", "』"), ("“", "”"))
+# --- W3-c4 / W16-t2: the later stage (the question cross of the sentences of the documents) and the sentences of the documents live in doc_answer.py, the one function that answers
+# from documents (docs/OBSERVATION.md, W16-t2). Kept here are only the names that tests and other modules import or patch; each is a line over doc_answer. ---
+from . import doc_answer
+
+_QC_TRIGGER = doc_answer.QC_TRIGGER
+_qc_predicate_form = doc_answer.predicate_form
 
 
 def _qc_records(documents):
-    """Documents read as `one.Vera.load_documents` reads them -> ([{"id","text"}], {id: {"source","line","text"}}, loaded, skipped)."""
-    from .document_loaders import load_directory, load_paths
-    loaded, skipped = [], []
-    for item in documents:
-        path = Path(item)
-        res = load_directory(str(path)) if path.is_dir() else load_paths([str(path)])
-        loaded.extend(res["documents"])
-        skipped.extend(res["skipped"])
-    cut = re.compile(_QC_SPLIT)
-    records, where = [], {}
-    for doc in loaded:
-        for line_no, line in enumerate(doc.text.split("\n"), 1):
-            pieces = [x.strip() for x in cut.split(line) if x.strip()]
-            for k, piece in enumerate(pieces, 1):
-                sid = "%s#%d:%d" % (doc.source, line_no, k)
-                records.append({"id": sid, "text": piece})
-                # a '.' cut that may not be the end of a sentence (an abbreviation, an initial): the piece before it is one token ending in '.', or the
-                # piece after it starts with a lower-case letter. Both pieces next to such a cut are possibly the middle of a sentence: never the evidence of an answer.
-                after = k < len(pieces) and piece.endswith(".") and pieces[k][:1].islower()
-                before = k > 1 and pieces[k - 2].endswith(".") and (len(pieces[k - 2].split()) == 1 or piece[:1].islower())
-                where.setdefault(sid, {"source": doc.source, "line": line_no, "text": piece, "cut_uncertain": bool(after or before)})
-    return records, where, len(loaded), [{"verdict": x.get("verdict"), "path": x.get("path")} for x in skipped]
-
-
-def _qc_sources(evidence, where):
-    """The sentences that attest a filler, in the observer's order, each sentence once."""
-    out, seen = [], set()
-    for ev in evidence:
-        sid = ev["reading"]
-        if sid in seen:
-            continue
-        seen.add(sid)
-        w = where[sid]
-        out.append({"family": "document", "source": w["source"], "line": w["line"], "text": w["text"], "sentence_id": sid})
-    return out
-
-
-def _qc_quotes_open(text):
-    return any(text.count(a) != text.count(b) for a, b in _QC_PAIRS) or text.count('"') % 2 == 1
-
-
-_QC_END = "。．.！!？? \t\r\n　"
-
-
-def _qc_predicate_form(text, tail):
-    """Round 2 (M1). The reader gives `読みたかった` / `読みたがった` / `読んだらしかった` / a final `読んだら` the same clause as the plain past `読んだ` (it does not see the
-    conjugated mark). So an evidence sentence of Japanese is an answer only when its WRITTEN predicate (from the reader's span of the predicate to the end of the sentence) is the end
-    of the question as it was written. None: it is. Otherwise the reason: PREDICATE_POSITION_UNKNOWN (no single clause / no span) or PREDICATE_FORM_DIFFERS. Reads only; no word list."""
-    from . import semantic_read
-    try:
-        out = semantic_read.read(text)
-    except Exception:
-        return "PREDICATE_POSITION_UNKNOWN"
-    if not isinstance(out, dict) or out.get("lang") != "ja":
-        return None                                 # not applied to other languages (docs/OBSERVATION.md, 事前登録の変更記録 第 2 ラウンド)
-    meta, clauses = out.get("clause_meta") or [], out.get("clauses") or []
-    if not out.get("readable") or len(meta) != 1 or len(clauses) != 1 or not isinstance(meta[0], dict):
-        return "PREDICATE_POSITION_UNKNOWN"
-    span = meta[0].get("span")
-    if not (isinstance(span, (list, tuple)) and len(span) == 2 and all(type(i) is int for i in span) and 0 <= span[0] <= span[1] <= len(text)):
-        return "PREDICATE_POSITION_UNKNOWN"
-    written = text[span[0]:].rstrip(_QC_END)
-    return None if written and tail.endswith(written) else "PREDICATE_FORM_DIFFERS"
-
-
-def _qc_wrap(result, qc, step_state, observed, mapped):
-    """The ORIGINAL form: a shallow copy of the result plus `question_cross` and one step of the trace (the original is not modified)."""
-    out = dict(result)
-    out["question_cross"] = qc
-    out["trace"] = list(result.get("trace") or []) + [{"part": "question_cross", "status": "ran" if observed else "abstained",
-                                                        "state": step_state, "mapped_to": mapped}]
-    return out
-
-
-def _qc_info(state, reason, mapped, answer, coord, structure, documents):
-    q = (answer or {}).get("question") or {}
-    return {"state": state, "reason": reason, "mapped_to": mapped, "hole_role": q.get("hole_role"), "hole_type": q.get("hole_type"),
-            "coord": coord, "structure": structure, "documents": documents}
-
-
-def _qc_run(result, documents, query):
-    from .observe import observe_question_records
-    records, where, n_loaded, skipped = _qc_records(documents)
-    docs_info = {"loaded": n_loaded, "skipped": skipped}
-    if n_loaded == 0:
-        return _qc_wrap(result, _qc_info("DOCUMENTS_NOT_LOADED", None, "ORIGINAL", None, None, None, docs_info), "DOCUMENTS_NOT_LOADED", False, "ORIGINAL")
-    try:
-        obs = observe_question_records(query, records)
-    except ValueError as exc:
-        marker = "BAD_ARGUMENTS:STRUCTURE_INVALID:"
-        if not str(exc).startswith(marker):
-            raise
-        return _qc_wrap(result, _qc_info("STRUCTURE_INVALID", str(exc)[len(marker):], "ORIGINAL", None, None, None, docs_info), "STRUCTURE_INVALID", False, "ORIGINAL")
-    answer = obs.get("answer")
-    if not answer:
-        return _qc_wrap(result, _qc_info("NOT_A_QUESTION", None, "ORIGINAL", None, None, None, docs_info), "NOT_A_QUESTION", False, "ORIGINAL")
-    state = answer["status"]
-    reasons = answer.get("reasons") or []
-    structure = {"sentences": answer["structure"]["sentences"], "crossed": answer["structure"]["crossed"],
-                 "unread": answer["structure"]["unread"], "reasons": reasons}
-    coord = [c for rank in (obs.get("ranks") or [])[:1] for el in rank["elements"] for c in el["coords"]]
-    reason = reasons[0] if reasons else None
-
-    def original(why=None):
-        return _qc_wrap(result, _qc_info(state, why or reason, "ORIGINAL", answer, None, structure, docs_info), state, True, "ORIGINAL")
-
-    if state not in ("FILLED", "TIE"):
-        return original()
-    rows = answer["fillers"]
-    cands = [(row["surface"], _qc_sources(row["evidence"], where)) for row in rows]
-    tail = query.strip().rstrip("？?").rstrip()     # the question as written, without its final question mark
-    for surface, srcs in cands:                     # a surface that is not in its own evidence, or evidence cut in the middle of a quotation, is not an answer
-        if not any(surface in s["text"] for s in srcs):
-            return original("SURFACE_NOT_IN_EVIDENCE")
-        if any(_qc_quotes_open(s["text"]) for s in srcs):
-            return original("QUOTE_UNBALANCED_EVIDENCE")
-        if any(where[s["sentence_id"]]["cut_uncertain"] for s in srcs):
-            return original("PERIOD_CUT_UNCERTAIN")
-        for s in srcs:                              # the written predicate of the evidence is the end of the question (round 2, M1)
-            why = _qc_predicate_form(s["text"], tail)
-            if why:
-                return original(why)
-    if state == "FILLED" and len(rows) == 1:
-        surface, srcs = cands[0]
-        qc = _qc_info("FILLED", reason, "ANSWER", answer, coord, structure, docs_info)
-        return {"kind": "answer", "verdict": "ANSWER", "text": surface, "values": [surface], "evidence": [s["text"] for s in srcs], "sources": srcs,
-                "door": "question_cross", "question_cross": qc,
-                "trace": list(result.get("trace") or []) + [{"part": "question_cross", "status": "ran", "state": "FILLED", "mapped_to": "ANSWER"}]}
-    why = "SURFACES_DIFFER:%d" % len(rows) if state == "FILLED" else reason
-    qc = _qc_info(state, why, "AMBIGUOUS_QUESTION_CROSS_TIE", answer, coord, structure, docs_info)
-    return {"kind": "unknown", "verdict": "AMBIGUOUS_QUESTION_CROSS_TIE", "text": "",
-            "candidates": [{"text": surface, "sources": srcs} for surface, srcs in cands], "sources": [], "evidence": [],
-            "door": "question_cross", "question_cross": qc,
-            "trace": list(result.get("trace") or []) + [{"part": "question_cross", "status": "ran", "state": state, "mapped_to": "AMBIGUOUS_QUESTION_CROSS_TIE"}]}
+    """Documents read as `one.Vera.load_documents` reads them -> ([{"id","text"}], {id: {"source","line","text"}}, loaded, skipped) (doc_answer.records)."""
+    return doc_answer.records(documents)
 
 
 def _round5_question_cross(result, documents, query):
-    if not (documents and isinstance(result, dict) and result.get("verdict") in _QC_TRIGGER):
-        return result
+    """The later stage of `ask --mode round5 --document` (doc_answer.later_stage; the written-predicate check is this module's `_qc_predicate_form`, looked up when called).
+    Only when the round5 reading stopped with UNKNOWN_UNREAD / UNKNOWN_NO_EVIDENCE and a document was handed over; anything else comes back as the same object.
+    The closed lists, as doc_answer.py writes them -- states: the answer statuses of observe, NOT_A_QUESTION, DOCUMENTS_NOT_LOADED, STRUCTURE_INVALID, ERROR; reasons that keep the original
+    abstention: SURFACE_NOT_IN_EVIDENCE, QUOTE_UNBALANCED_EVIDENCE, PERIOD_CUT_UNCERTAIN, PREDICATE_FORM_DIFFERS, PREDICATE_POSITION_UNKNOWN; a tie of surfaces: SURFACES_DIFFER:<n>."""
+    return doc_answer.later_stage(result, documents, query, predicate_form=_qc_predicate_form)
+
+
+def _placement_env_error():
+    """None, or the typed error (a dict to print, exit 2) when VERA_PLACEMENT and VERA_COARSE_PLACEMENT name different places (W16-t2)."""
+    from . import coarse_place
     try:
-        return _qc_run(result, documents, query)
-    except Exception as exc:    # the one outer frame of the later stage: it must never break the abstention that was already there
-        info = _qc_info("ERROR", "%s: %s" % (type(exc).__name__, exc), "ORIGINAL", None, None, None, None)
-        return _qc_wrap(result, info, "ERROR", False, "ORIGINAL")
+        coarse_place.placement_from_env()
+    except coarse_place.PlacementEnvConflict as exc:
+        return {"kind": "unknown", "verdict": exc.error, "reason": str(exc), "detail": exc.detail}
+    return None
+
+
+def _resolve_placement_env(placement_arg):
+    """`vera serve`: the placement of the process is VERA_PLACEMENT (the readers below read it). `--placement` wins (and the compatible name is dropped, it cannot disagree with the
+    argument); without it the environment is read through `coarse_place.placement_from_env` and the compatible name alone is written to VERA_PLACEMENT. A conflict is the typed error."""
+    import os
+    from . import coarse_place
+    if placement_arg:
+        os.environ[coarse_place.PLACEMENT_ENV] = placement_arg
+        os.environ.pop(coarse_place.ENV_PLACEMENT, None)
+        return None
+    err = _placement_env_error()
+    if err:
+        return err
+    resolved = coarse_place.placement_from_env()
+    if resolved:
+        os.environ[coarse_place.PLACEMENT_ENV] = resolved
+    return None
+
+
+def _round5_answer(query, prepared, policy, documents):
+    """The one path of `ask --mode round5` and `chat --mode round5`: AskPolicy given -> doc_answer.answer (this module's later stage) -> the basis policy. (output dict, exit code)."""
+    from .basis_policy import apply_to_ask
+    res = doc_answer.answer(query, prepared, stage=_round5_question_cross)
+    return apply_to_ask(res, policy, query=query, mode="round5", documents=documents)
 
 
 def cmd_ask(args) -> int:
@@ -420,8 +321,8 @@ def cmd_ask(args) -> int:
     engine.ask が束ねている層のどれも CLI からは届かなかった。
     `--engine` はその単一入口を CLI にも開ける。既定は据え置き。
     """
-    mode = getattr(args, "mode", "legacy")
     documents = list(getattr(args, "document", None) or [])
+    mode = getattr(args, "mode", None) or ("round5" if documents else "legacy")
     if documents and mode != "round5":
         _print({"kind": "unknown", "verdict": "UNKNOWN_ROUTE_CONFIGURATION",
                 "reason": "--document requires --mode round5"})
@@ -436,13 +337,11 @@ def cmd_ask(args) -> int:
         _print(policy)
         return 2
     if mode == "round5":
-        from .one import Vera
-        v = Vera(mode="round5")
-        if documents:
-            v.load_documents(documents)
-        res = _round5_question_cross(v.ask(args.query), documents, args.query)
-        out, rc = apply_to_ask(res, policy, query=args.query, mode="round5",
-                               documents=documents)
+        err = _placement_env_error()
+        if err:
+            _print(err)
+            return 2
+        out, rc = _round5_answer(args.query, doc_answer.prepare(documents), policy, documents)
         _print(out)
         return rc
     if getattr(args, "engine", False):
@@ -837,7 +736,10 @@ def _ledger_promote(args, led) -> int:
     layer_path, layer_name, why = placement_layer.resolve(args.layer)
     if layer_path is None:
         return refuse("LAYER_UNAVAILABLE:%s" % why, args.layer)
-    placement = args.placement or os.environ.get("VERA_PLACEMENT") or None
+    try:
+        placement = args.placement or coarse_place.placement_from_env() or None
+    except coarse_place.PlacementEnvConflict as exc:
+        return refuse(exc.error, str(exc))
     pl, nop = coarse_place._open(placement)
     if pl is None:
         return refuse("NO_PLACEMENT", nop[0] if nop else "UNSET")
@@ -1091,12 +993,11 @@ def cmd_review_ai_facts(args) -> int:
 
 def cmd_chat(args) -> int:
     if getattr(args, "mode", "lab") == "round5":
-        import os
         import shlex
         import tempfile
 
-        from . import observe
-        from .basis_policy import AskPolicy, apply_to_ask
+        from . import coarse_place, observe
+        from .basis_policy import AskPolicy
         from .one import Vera
         from .tui import read_input
 
@@ -1105,6 +1006,10 @@ def cmd_chat(args) -> int:
                     "reason": "--engine cannot be combined with --mode round5; Round5 chat uses one.Vera.ask"})
             return 2
 
+        err = _placement_env_error()
+        if err:
+            _print(err)
+            return 2
         documents = list(getattr(args, "document", []) or [])
         one_v = Vera(mode="round5")
         loaded = one_v.load_documents(documents) if documents else {"loaded": 0, "skipped": []}
@@ -1115,7 +1020,7 @@ def cmd_chat(args) -> int:
         else:
             print("[round5] 読込文書: 0件（この対話のみ）")
 
-        placement = os.environ.get("VERA_PLACEMENT", "").strip()
+        placement = coarse_place.placement_from_env() or ""
         if not placement:
             print("[round5] 配置: 配置無し; 型の質問観測は動きません")
         else:
@@ -1145,7 +1050,7 @@ def cmd_chat(args) -> int:
         originals = getattr(getattr(one_v, "bot", None), "original_texts", {})
         source_count = len(originals) if isinstance(originals, dict) else 0
         print(f"[round5] 読込文書数: {source_count}")
-        print("[round5] 使える経路: 質問 — Vera.ask → _round5_question_cross → basis_policy.apply_to_ask")
+        print("[round5] 使える経路: 質問 — doc_answer.answer（Vera.ask → 後段）→ basis_policy.apply_to_ask")
         print("[round5] 使える経路: 生成 — observe.run_entry (文書構造を観測)")
         print("[round5] 使える経路: 分業 — cmd_route → routing_from_text.emit")
         print("[round5] 使える経路: 読解 — semantic_read.read / event_cross.attach_events")
@@ -1280,8 +1185,7 @@ def cmd_chat(args) -> int:
                 if isinstance(policy, dict):
                     out, _rc = policy, 2
                 else:
-                    result = _round5_question_cross(one_v.ask(raw), documents, raw)
-                    out, _rc = apply_to_ask(result, policy, query=raw, mode="round5", documents=documents)
+                    out, _rc = _round5_answer(raw, doc_answer.Prepared.of(one_v, documents), policy, documents)
                 if json_enabled:
                     _print(out)
                 else:
@@ -1402,31 +1306,15 @@ def cmd_chat(args) -> int:
     from .config import VeraConfig
     from .one import Vera
 
-    round5 = args.mode == "round5"
-    documents = list(getattr(args, "document", []) or [])
-    if documents and not round5:
+    # (mode round5 returned above; what follows is lab / hybrid only -- W16-t2 removed the unreachable round5 branches, see artifacts/w16-t2/chat_dead_branch.txt)
+    if list(getattr(args, "document", []) or []):
         _print({"kind": "unknown", "verdict": "UNKNOWN_ROUTE_CONFIGURATION",
                 "reason": "--document requires --mode round5"})
         return 2
-    if round5 and getattr(args, "engine", False):
-        _print({"kind": "unknown", "verdict": "UNKNOWN_ROUTE_CONFIGURATION",
-                "reason": "--engine cannot be combined with --mode round5; Round5 chat uses one.Vera.ask"})
-        return 2
 
-    if round5:
-        # The explicit experimental route stays local and uses the public
-        # one.Vera.ask API. Source documents are session inputs, not persisted.
-        st = _load(args.store)
-        one_v = Vera(mode="round5").load_store(st)
-        if documents:
-            loaded = one_v.load_documents(documents)
-            print(f"[round5] loaded {loaded['loaded']} source document(s) for this session")
-            for skipped in loaded["skipped"]:
-                print(f"[round5] skipped source: {skipped}")
-    else:
-        cfg = VeraConfig.load()
-        st = _load(args.store, base_repo=cfg.hf_store_repo)
-        one_v = Vera().load_store(st)
+    cfg = VeraConfig.load()
+    st = _load(args.store, base_repo=cfg.hf_store_repo)
+    one_v = Vera().load_store(st)
     store_path = Path(args.store)
 
     if args.mode == "hybrid":
@@ -1519,10 +1407,7 @@ def cmd_chat(args) -> int:
                 print("      出典: %s" % "、".join(map(str, src_[:2])))
             continue
 
-        out = one_v.ask(raw if round5 else line)
-        if round5:
-            _print_round5_chat_result(out, one_v)
-            continue
+        out = one_v.ask(line)
         if out.get("status") == "PARTIAL_COMPLETENESS_UNVERIFIED":
             body = (out.get("text") or "").strip()
             if body:
@@ -1748,7 +1633,11 @@ def _cmd_placement_layer(args) -> int:
 
     if not args.layer:
         return refuse("LAYER_REQUIRED", "placement %s needs --layer" % args.store)
-    placement = args.placement or os.environ.get("VERA_PLACEMENT") or None
+    from . import coarse_place as _cp
+    try:
+        placement = args.placement or _cp.placement_from_env() or None
+    except _cp.PlacementEnvConflict as exc:
+        return refuse(exc.error, str(exc))
     if args.store == "growth":
         from . import coarse_place
         from .llm_choice import LedgerIntegrityError
@@ -1980,8 +1869,9 @@ def _serve_no_llm(args, st, save, store_path) -> int:
     if args.sovereign_root:
         os.environ["VERA_SOVEREIGN_ROOT"] = args.sovereign_root
         os.environ["VERA_SOVEREIGN_STORE"] = args.sovereign_store
-    if args.placement:
-        os.environ["VERA_PLACEMENT"] = args.placement
+    err = _resolve_placement_env(args.placement)
+    if err:
+        return refuse(err["verdict"], err["reason"])
     try:
         tiers = [CT.parse_tier(t) for t in (args.tier or [])]
         if args.layer and not any(n == "layer" for n, _ in tiers):
@@ -2021,8 +1911,9 @@ def _serve_fusion(args, st, save, store_path) -> int:
     if args.sovereign_root:
         os.environ["VERA_SOVEREIGN_ROOT"] = args.sovereign_root
         os.environ["VERA_SOVEREIGN_STORE"] = args.sovereign_store
-    if args.placement:
-        os.environ["VERA_PLACEMENT"] = args.placement
+    err = _resolve_placement_env(args.placement)
+    if err:
+        return refuse(err["verdict"], err["reason"])
     read_mode = _read_mode(args)
     if read_mode is None:
         return refuse("BAD_READ_MODE", "VERA_READ_MODE must be strict or assume")
@@ -2452,8 +2343,8 @@ def main(argv: Optional[list] = None) -> int:
 
     p = sub.add_parser("ask", help="one-shot question (typed verdict)")
     p.add_argument("query")
-    p.add_argument("--mode", choices=["legacy", "round5"], default="legacy",
-                   help="explicit raw-request route; round5 can read --document inputs")
+    p.add_argument("--mode", choices=["legacy", "round5"], default=None,
+                   help="raw-request route; without it: round5 when --document is given, legacy otherwise (an explicit legacy with --document is refused)")
     p.add_argument("--document", action="append", default=[],
                    help="source document for --mode round5 (repeatable; this slice accepts one source event)")
     p.add_argument("--engine", action="store_true",

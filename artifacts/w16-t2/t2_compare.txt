@@ -1,0 +1,134 @@
+== u4 (old=old_u4.jsonl new=new_u4.jsonl, n=11)
+  new_ask_abstain: 4
+  new_ask_correct: 7
+  new_chat_abstain: 4
+  new_chat_correct: 7
+  new_serve_abstain: 4
+  new_serve_correct: 7
+  old_ask_abstain: 4
+  old_ask_correct: 7
+  old_serve_abstain: 9
+  old_serve_correct: 2
+  -- changed rows (any entrance differs from old ask/serve, or entrances differ) 5 --
+  U01 誰が花子に本を渡したか | gold=ANSWER['太郎'] | old ask=correct ['太郎'], old serve=abstain None | new ask=correct ['太郎'], new serve=correct ['太郎'], new chat=correct ['太郎']
+  U02 誰が花子に本を渡しましたか | gold=ANSWER['太郎'] | old ask=correct ['太郎'], old serve=abstain None | new ask=correct ['太郎'], new serve=correct ['太郎'], new chat=correct ['太郎']
+  U05 太郎は誰に本を渡したか | gold=ANSWER['花子'] | old ask=correct ['花子'], old serve=abstain None | new ask=correct ['花子'], new serve=correct ['花子'], new chat=correct ['花子']
+  U09 誰が花子に本を渡した | gold=ANSWER['太郎'] | old ask=correct ['太郎'], old serve=abstain None | new ask=correct ['太郎'], new serve=correct ['太郎'], new chat=correct ['太郎']
+  U11 太郎は誰に本を渡した？ | gold=ANSWER['花子'] | old ask=correct ['花子'], old serve=abstain None | new ask=correct ['花子'], new serve=correct ['花子'], new chat=correct ['花子']
+== own60 (old=old_own60.jsonl new=new_own60.jsonl, n=60)
+  new_ask_abstain: 35
+  new_ask_correct: 24
+  new_ask_wrong: 1
+  new_chat_abstain: 35
+  new_chat_correct: 24
+  new_chat_wrong: 1
+  new_serve_abstain: 35
+  new_serve_correct: 24
+  new_serve_wrong: 1
+  old_ask_abstain: 35
+  old_ask_correct: 24
+  old_ask_wrong: 1
+  old_serve_abstain: 53
+  old_serve_correct: 7
+  -- changed rows (any entrance differs from old ask/serve, or entrances differ) 18 --
+  O01 誰が生徒にノートを配ったか | gold=ANSWER['先生'] | old ask=correct ['先生'], old serve=abstain None | new ask=correct ['先生'], new serve=correct ['先生'], new chat=correct ['先生']
+  O02 誰が生徒にノートを配りましたか | gold=ANSWER['先生'] | old ask=correct ['先生'], old serve=abstain None | new ask=correct ['先生'], new serve=correct ['先生'], new chat=correct ['先生']
+  O04 誰が生徒にノートを配った | gold=ANSWER['先生'] | old ask=correct ['先生'], old serve=abstain None | new ask=correct ['先生'], new serve=correct ['先生'], new chat=correct ['先生']
+  O08 先生は誰にノートを配ったか | gold=ANSWER['生徒'] | old ask=correct ['生徒'], old serve=abstain None | new ask=correct ['生徒'], new serve=correct ['生徒'], new chat=correct ['生徒']
+  O09 先生は誰にノートを配った？ | gold=ANSWER['生徒'] | old ask=correct ['生徒'], old serve=abstain None | new ask=correct ['生徒'], new serve=correct ['生徒'], new chat=correct ['生徒']
+  O11 生徒はどこで手紙を書いたか | gold=ANSWER['教室'] | old ask=correct ['教室'], old serve=abstain None | new ask=correct ['教室'], new serve=correct ['教室'], new chat=correct ['教室']
+  O12 誰が教室で手紙を書いた？ | gold=ANSWER['生徒'] | old ask=correct ['生徒'], old serve=abstain None | new ask=correct ['生徒'], new serve=correct ['生徒'], new chat=correct ['生徒']
+  O13 誰が教室で手紙を書きましたか | gold=ANSWER['生徒'] | old ask=correct ['生徒'], old serve=abstain None | new ask=correct ['生徒'], new serve=correct ['生徒'], new chat=correct ['生徒']
+  O19 誰が図書館へ行った？ | gold=ANSWER['弟'] | old ask=correct ['弟'], old serve=abstain None | new ask=correct ['弟'], new serve=correct ['弟'], new chat=correct ['弟']
+  O23 客はどこで野菜を買ったか | gold=ANSWER['市場'] | old ask=correct ['市場'], old serve=abstain None | new ask=correct ['市場'], new serve=correct ['市場'], new chat=correct ['市場']
+  O29 誰が店で魚を買わなかったか | gold=ANSWER['母'] | old ask=correct ['母'], old serve=abstain None | new ask=correct ['母'], new serve=correct ['母'], new chat=correct ['母']
+  O38 誰が小説を読んだ？ | gold=ABSTAIN[] | old ask=wrong ['次郎'], old serve=abstain None | new ask=wrong ['次郎'], new serve=wrong ['次郎'], new chat=wrong ['次郎']
+  O42 誰が庭で木を植えたか | gold=ANSWER['父'] | old ask=correct ['父'], old serve=abstain None | new ask=correct ['父'], new serve=correct ['父'], new chat=correct ['父']
+  O44 父はどこで木を植えましたか | gold=ANSWER['庭'] | old ask=correct ['庭'], old serve=abstain None | new ask=correct ['庭'], new serve=correct ['庭'], new chat=correct ['庭']
+  O47 校長はどこで挨拶をしたか | gold=ANSWER['体育館'] | old ask=correct ['体育館'], old serve=abstain None | new ask=correct ['体育館'], new serve=correct ['体育館'], new chat=correct ['体育館']
+  O49 医者はどこで患者に薬を渡したか | gold=ANSWER['病院'] | old ask=correct ['病院'], old serve=abstain None | new ask=correct ['病院'], new serve=correct ['病院'], new chat=correct ['病院']
+  O54 漁師はどこで魚を捕ったか | gold=ANSWER['海'] | old ask=correct ['海'], old serve=abstain None | new ask=correct ['海'], new serve=correct ['海'], new chat=correct ['海']
+  O58 誰が妹に人形を贈ったか | gold=ANSWER['姉'] | old ask=correct ['姉'], old serve=abstain None | new ask=correct ['姉'], new serve=correct ['姉'], new chat=correct ['姉']
+== w3c4 (old=old_w3c4.jsonl new=new_w3c4.jsonl, n=111)
+  correct_to_abstain_ask: 2
+  correct_to_abstain_chat: 2
+  correct_to_abstain_serve: 2
+  correct_to_nonCorrect_ask: 2
+  correct_to_nonCorrect_chat: 2
+  correct_to_nonCorrect_serve: 2
+  new_ask_abstain: 57
+  new_ask_correct: 51
+  new_ask_notjudged: 3
+  new_chat_abstain: 57
+  new_chat_correct: 51
+  new_chat_notjudged: 3
+  new_serve_abstain: 60
+  new_serve_correct: 51
+  old_ask_abstain: 57
+  old_ask_correct: 51
+  old_ask_notjudged: 3
+  old_serve_abstain: 61
+  old_serve_correct: 50
+  -- changed rows (any entrance differs from old ask/serve, or entrances differ) 8 --
+  AQ003 誰が橋を建てた？ | gold=ANSWER['技師'] | old ask=correct ['技師'], old serve=abstain None | new ask=correct ['技師'], new serve=correct ['技師'], new chat=correct ['技師']
+  AQ014 医者は患者に薬を渡したか？ | gold=NOT_JUDGED[] | old ask=notjudged ['はい'], old serve=abstain None | new ask=notjudged ['はい'], new serve=abstain None, new chat=notjudged ['はい']
+  AQ015 誰が誰に書類を渡した？ | gold=NOT_JUDGED[] | old ask=notjudged ['看護師', '医者'], old serve=abstain None | new ask=notjudged ['看護師', '医者'], new serve=abstain None, new chat=notjudged ['看護師', '医者']
+  AQ019 医者が患者に薬を渡した。 | gold=NOT_JUDGED[] | old ask=notjudged ['はい'], old serve=abstain None | new ask=notjudged ['はい'], new serve=abstain None, new chat=notjudged ['はい']
+  AQ021 誰が市場で馬を売った？ | gold=ANSWER['農夫'] | old ask=abstain None, old serve=correct ['農夫'] | new ask=abstain None, new serve=abstain None, new chat=abstain None
+  AQ022 誰が港から魚を送った？ | gold=ANSWER['漁師'] | old ask=abstain None, old serve=correct ['漁師'] | new ask=abstain None, new serve=abstain None, new chat=abstain None
+  AQ047 誰が民に金貨を配った？ | gold=ANSWER['王'] | old ask=correct ['王'], old serve=abstain None | new ask=correct ['王'], new serve=correct ['王'], new chat=correct ['王']
+  AQ069 誰が店で服を買った？ | gold=ANSWER['父'] | old ask=correct ['父'], old serve=abstain None | new ask=correct ['父'], new serve=correct ['父'], new chat=correct ['父']
+== w3c4_b2like (old=old_w3c4_b2like.jsonl new=new_w3c4_b2like.jsonl, n=47)
+  new_ask_abstain: 20
+  new_ask_correct: 25
+  new_ask_notjudged: 1
+  new_ask_wrong: 1
+  new_chat_abstain: 20
+  new_chat_correct: 25
+  new_chat_notjudged: 1
+  new_chat_wrong: 1
+  new_serve_abstain: 21
+  new_serve_correct: 25
+  new_serve_wrong: 1
+  old_ask_abstain: 20
+  old_ask_correct: 25
+  old_ask_notjudged: 1
+  old_ask_wrong: 1
+  old_serve_abstain: 28
+  old_serve_correct: 19
+  -- changed rows (any entrance differs from old ask/serve, or entrances differ) 8 --
+  BQ002 誰が佐藤さんに報告書を渡しましたか？ | gold=ANSWER['森田課長'] | old ask=wrong ['森田'], old serve=abstain None | new ask=wrong ['森田'], new serve=wrong ['森田'], new chat=wrong ['森田']
+  BQ005 田中部長はどこへ行った？ | gold=ANSWER['会議'] | old ask=correct ['会議'], old serve=abstain None | new ask=correct ['会議'], new serve=correct ['会議'], new chat=correct ['会議']
+  BQ006 誰が顧客に見積書を送った？ | gold=ANSWER['鈴木さん'] | old ask=correct ['鈴木さん'], old serve=abstain None | new ask=correct ['鈴木さん'], new serve=correct ['鈴木さん'], new chat=correct ['鈴木さん']
+  BQ009 田中部長は資料を読んだ？ | gold=NOT_JUDGED[] | old ask=notjudged ['いいえ'], old serve=abstain None | new ask=notjudged ['いいえ'], new serve=abstain None, new chat=notjudged ['いいえ']
+  BQ017 誰がお客に傘を売った？ | gold=ANSWER['店長'] | old ask=correct ['店長'], old serve=abstain None | new ask=correct ['店長'], new serve=correct ['店長'], new chat=correct ['店長']
+  BQ021 誰が店長に手紙を書いた？ | gold=ANSWER['お客'] | old ask=correct ['お客'], old serve=abstain None | new ask=correct ['お客'], new serve=correct ['お客'], new chat=correct ['お客']
+  BQ023 店員は何を受け取らなかった？ | gold=ANSWER['荷物'] | old ask=correct ['荷物'], old serve=abstain None | new ask=correct ['荷物'], new serve=correct ['荷物'], new chat=correct ['荷物']
+  BQ031 生徒は図書館で何を借りた？ | gold=ANSWER['本'] | old ask=correct ['本'], old serve=abstain None | new ask=correct ['本'], new serve=correct ['本'], new chat=correct ['本']
+== TOTAL ==
+  correct_to_abstain_ask: 2
+  correct_to_abstain_chat: 2
+  correct_to_abstain_serve: 2
+  correct_to_nonCorrect_ask: 2
+  correct_to_nonCorrect_chat: 2
+  correct_to_nonCorrect_serve: 2
+  new_ask_abstain: 116
+  new_ask_correct: 107
+  new_ask_notjudged: 4
+  new_ask_wrong: 2
+  new_chat_abstain: 116
+  new_chat_correct: 107
+  new_chat_notjudged: 4
+  new_chat_wrong: 2
+  new_serve_abstain: 120
+  new_serve_correct: 107
+  new_serve_wrong: 2
+  old_ask_abstain: 116
+  old_ask_correct: 107
+  old_ask_notjudged: 4
+  old_ask_wrong: 2
+  old_serve_abstain: 151
+  old_serve_correct: 78
+wrong (new, all entrances): ask=2 serve=2 chat=2
+wrong that is NOT in old (new regressions into wrong): ask=0 serve=0 chat=0
+AnswerResult mismatch count: 0

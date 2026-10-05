@@ -1,0 +1,26 @@
+--- c/tests/test_ask_question_cross.py	2026-10-05 23:28:31
++++ d/tests/test_ask_question_cross.py	2026-10-05 23:28:31
+@@ -10,6 +10,7 @@
+ import pytest
+ 
+ from verantyx import cli
++from verantyx import doc_answer
+ from verantyx import event_cross as EC
+ from verantyx import observe as O
+ 
+@@ -378,13 +379,13 @@
+ 
+ 
+ def test_the_states_and_reasons_are_the_closed_lists():
+-    src = Path(cli.__file__).read_text(encoding='utf-8')
++    src = Path(doc_answer.__file__).read_text(encoding='utf-8')
+     states = set(O.ANSWER_STATUSES) | {'NOT_A_QUESTION', 'DOCUMENTS_NOT_LOADED', 'STRUCTURE_INVALID', 'ERROR'}
+     assert len(O.ANSWER_STATUSES) == 12 and len(states) == 16    # Integration (auditor, 2026-10-04): W5-e (A-1) added INCOMPLETE_TYPING to observe.ANSWER_STATUSES (was 11 / 15 at W3-c4)
+     for word in ('SURFACE_NOT_IN_EVIDENCE', 'QUOTE_UNBALANCED_EVIDENCE', 'PERIOD_CUT_UNCERTAIN', 'PREDICATE_FORM_DIFFERS', 'PREDICATE_POSITION_UNKNOWN', 'SURFACES_DIFFER',
+                  'DOCUMENTS_NOT_LOADED', 'STRUCTURE_INVALID', 'NOT_A_QUESTION'):
+         assert word in src
+-    assert 'tempfile' not in src.split('def _qc_records')[1].split('def cmd_ask')[0]               # no file is made by the stage
++    assert 'tempfile' not in src.split('def records')[1].split('def later_stage')[0]               # no file is made by the stage
+ 
+ 
+ # ---------------------------------------------------------------------------------------------------------------------------------
