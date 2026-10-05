@@ -1,0 +1,278 @@
+2,11c2,11
+< mod-desire-00	modal	次郎は小説を読みたかった。	誰が小説を読んだ？	ANSWER	["次郎"]	None	True	
+< mod-desire-00	modal	次郎は小説を読みたかった。	次郎は小説を読んだ？	ANSWER	["はい"]	None	True	
+< mod-desire-01	modal	花子は新聞を買いたい。	誰が新聞を買う？	ANSWER	["花子"]	None	False	
+< mod-desire-01	modal	花子は新聞を買いたい。	花子は新聞を買う？	ANSWER	["はい"]	None	False	
+< mod-desire-02	modal	太郎が弁当を作りたいです。	誰が弁当を作る？	ANSWER	["太郎"]	None	False	
+< mod-desire-02	modal	太郎が弁当を作りたいです。	太郎は弁当を作る？	ANSWER	["はい"]	None	False	
+< mod-desire-03	modal	美咲は弁当を食べたがっていた。	誰が弁当を食べた？	ANSWER	["美咲"]	None	True	
+< mod-desire-03	modal	美咲は弁当を食べたがっていた。	美咲は弁当を食べた？	ANSWER	["はい"]	None	True	
+< mod-desire-04	modal	健太は窓を開けたかったです。	誰が窓を開けた？	ANSWER	["健太"]	None	True	
+< mod-desire-04	modal	健太は窓を開けたかったです。	健太は窓を開けた？	ANSWER	["はい"]	None	True	
+---
+> mod-desire-00	modal	次郎は小説を読みたかった。	誰が小説を読んだ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> mod-desire-00	modal	次郎は小説を読みたかった。	次郎は小説を読んだ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> mod-desire-01	modal	花子は新聞を買いたい。	誰が新聞を買う？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> mod-desire-01	modal	花子は新聞を買いたい。	花子は新聞を買う？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> mod-desire-02	modal	太郎が弁当を作りたいです。	誰が弁当を作る？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> mod-desire-02	modal	太郎が弁当を作りたいです。	太郎は弁当を作る？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> mod-desire-03	modal	美咲は弁当を食べたがっていた。	誰が弁当を食べた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> mod-desire-03	modal	美咲は弁当を食べたがっていた。	美咲は弁当を食べた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> mod-desire-04	modal	健太は窓を開けたかったです。	誰が窓を開けた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> mod-desire-04	modal	健太は窓を開けたかったです。	健太は窓を開けた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+16,21c16,21
+< mod-desire-07	modal	次郎は車を洗いたかった。	誰が車を洗った？	ANSWER	["次郎"]	None	True	
+< mod-desire-07	modal	次郎は車を洗いたかった。	次郎は車を洗った？	ANSWER	["はい"]	None	True	
+< mod-desire-08	modal	花子は荷物を運びたい。	誰が荷物を運ぶ？	ANSWER	["花子"]	None	False	
+< mod-desire-08	modal	花子は荷物を運びたい。	花子は荷物を運ぶ？	ANSWER	["はい"]	None	False	
+< mod-desire-09	modal	太郎は地図を見たがっていた。	誰が地図を見た？	ANSWER	["太郎"]	None	True	
+< mod-desire-09	modal	太郎は地図を見たがっていた。	太郎は地図を見た？	ANSWER	["はい"]	None	True	
+---
+> mod-desire-07	modal	次郎は車を洗いたかった。	誰が車を洗った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> mod-desire-07	modal	次郎は車を洗いたかった。	次郎は車を洗った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> mod-desire-08	modal	花子は荷物を運びたい。	誰が荷物を運ぶ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> mod-desire-08	modal	花子は荷物を運びたい。	花子は荷物を運ぶ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> mod-desire-09	modal	太郎は地図を見たがっていた。	誰が地図を見た？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> mod-desire-09	modal	太郎は地図を見たがっていた。	太郎は地図を見た？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+28,31c28,31
+< mod-potential-00	modal	花子は地図を見られた。	誰が地図を見た？	ANSWER	["花子"]	None	False	
+< mod-potential-00	modal	花子は地図を見られた。	花子は地図を見た？	ANSWER	["はい"]	None	False	
+< mod-potential-01	modal	太郎が地図を調べられる。	誰が地図を調べる？	ANSWER	["太郎"]	None	False	
+< mod-potential-01	modal	太郎が地図を調べられる。	太郎は地図を調べる？	ANSWER	["はい"]	None	False	
+---
+> mod-potential-00	modal	花子は地図を見られた。	誰が地図を見た？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+> mod-potential-00	modal	花子は地図を見られた。	花子は地図を見た？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+> mod-potential-01	modal	太郎が地図を調べられる。	誰が地図を調べる？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+> mod-potential-01	modal	太郎が地図を調べられる。	太郎は地図を調べる？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+34,37c34,37
+< mod-potential-03	modal	健太は窓を開けられた。	誰が窓を開けた？	ANSWER	["健太"]	None	False	
+< mod-potential-03	modal	健太は窓を開けられた。	健太は窓を開けた？	ANSWER	["はい"]	None	False	
+< mod-potential-04	modal	由美が手紙を届けられる。	誰が手紙を届ける？	ANSWER	["由美"]	None	False	
+< mod-potential-04	modal	由美が手紙を届けられる。	由美は手紙を届ける？	ANSWER	["はい"]	None	False	
+---
+> mod-potential-03	modal	健太は窓を開けられた。	誰が窓を開けた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+> mod-potential-03	modal	健太は窓を開けられた。	健太は窓を開けた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+> mod-potential-04	modal	由美が手紙を届けられる。	誰が手紙を届ける？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+> mod-potential-04	modal	由美が手紙を届けられる。	由美は手紙を届ける？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+40,41c40,41
+< mod-potential-06	modal	次郎は報告書を書けた。	誰が報告書を書いた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	True	
+< mod-potential-06	modal	次郎は報告書を書けた。	次郎は報告書を書いた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	True	
+---
+> mod-potential-06	modal	次郎は報告書を書けた。	誰が報告書を書いた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	MODALITY_NOT_READ:potential
+> mod-potential-06	modal	次郎は報告書を書けた。	次郎は報告書を書いた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	MODALITY_NOT_READ:potential
+44,45c44,45
+< mod-potential-08	modal	太郎は箱を運べた。	誰が箱を運んだ？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	True	
+< mod-potential-08	modal	太郎は箱を運べた。	太郎は箱を運んだ？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	True	
+---
+> mod-potential-08	modal	太郎は箱を運べた。	誰が箱を運んだ？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	MODALITY_NOT_READ:potential
+> mod-potential-08	modal	太郎は箱を運べた。	太郎は箱を運んだ？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	MODALITY_NOT_READ:potential
+108,109c108,109
+< mod-conditional-01	modal	由美がパンを食べたら、	誰がパンを食べた？	ANSWER	["由美"]	None	True	
+< mod-conditional-01	modal	由美がパンを食べたら、	由美はパンを食べた？	ANSWER	["はい"]	None	True	
+---
+> mod-conditional-01	modal	由美がパンを食べたら、	誰がパンを食べた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+> mod-conditional-01	modal	由美がパンを食べたら、	由美はパンを食べた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+114,121c114,121
+< mod-conditional-04	modal	花子が日記を書けば、	誰が日記を書く？	ANSWER	["花子"]	None	True	
+< mod-conditional-04	modal	花子が日記を書けば、	花子は日記を書く？	ANSWER	["はい"]	None	True	
+< mod-conditional-05	modal	太郎が車を洗ったら、	誰が車を洗った？	ANSWER	["太郎"]	None	True	
+< mod-conditional-05	modal	太郎が車を洗ったら、	太郎は車を洗った？	ANSWER	["はい"]	None	True	
+< mod-conditional-06	modal	美咲が荷物を運べば、	誰が荷物を運ぶ？	ANSWER	["美咲"]	None	True	
+< mod-conditional-06	modal	美咲が荷物を運べば、	美咲は荷物を運ぶ？	ANSWER	["はい"]	None	True	
+< mod-conditional-07	modal	健太が地図を見たら、	誰が地図を見た？	ANSWER	["健太"]	None	True	
+< mod-conditional-07	modal	健太が地図を見たら、	健太は地図を見た？	ANSWER	["はい"]	None	True	
+---
+> mod-conditional-04	modal	花子が日記を書けば、	誰が日記を書く？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+> mod-conditional-04	modal	花子が日記を書けば、	花子は日記を書く？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+> mod-conditional-05	modal	太郎が車を洗ったら、	誰が車を洗った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+> mod-conditional-05	modal	太郎が車を洗ったら、	太郎は車を洗った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+> mod-conditional-06	modal	美咲が荷物を運べば、	誰が荷物を運ぶ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+> mod-conditional-06	modal	美咲が荷物を運べば、	美咲は荷物を運ぶ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+> mod-conditional-07	modal	健太が地図を見たら、	誰が地図を見た？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+> mod-conditional-07	modal	健太が地図を見たら、	健太は地図を見た？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+158,159c158,159
+< mod-hearsay-00	modal	大輔は弁当を食べたらしかった。	誰が弁当を食べた？	ANSWER	["大輔"]	None	True	
+< mod-hearsay-00	modal	大輔は弁当を食べたらしかった。	大輔は弁当を食べた？	ANSWER	["はい"]	None	True	
+---
+> mod-hearsay-00	modal	大輔は弁当を食べたらしかった。	誰が弁当を食べた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:hearsay	False	MODALITY_NOT_READ:hearsay
+> mod-hearsay-00	modal	大輔は弁当を食べたらしかった。	大輔は弁当を食べた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:hearsay	False	MODALITY_NOT_READ:hearsay
+166,167c166,167
+< mod-hearsay-04	modal	美咲は皿を洗ったらしかった。	誰が皿を洗った？	ANSWER	["美咲"]	None	True	
+< mod-hearsay-04	modal	美咲は皿を洗ったらしかった。	美咲は皿を洗った？	ANSWER	["はい"]	None	True	
+---
+> mod-hearsay-04	modal	美咲は皿を洗ったらしかった。	誰が皿を洗った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:hearsay	False	MODALITY_NOT_READ:hearsay
+> mod-hearsay-04	modal	美咲は皿を洗ったらしかった。	美咲は皿を洗った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:hearsay	False	MODALITY_NOT_READ:hearsay
+174,175c174,175
+< mod-hearsay-08	modal	次郎は新聞を読んだらしかった。	誰が新聞を読んだ？	ANSWER	["次郎"]	None	True	
+< mod-hearsay-08	modal	次郎は新聞を読んだらしかった。	次郎は新聞を読んだ？	ANSWER	["はい"]	None	True	
+---
+> mod-hearsay-08	modal	次郎は新聞を読んだらしかった。	誰が新聞を読んだ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:hearsay	False	MODALITY_NOT_READ:hearsay
+> mod-hearsay-08	modal	次郎は新聞を読んだらしかった。	次郎は新聞を読んだ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:hearsay	False	MODALITY_NOT_READ:hearsay
+190,194c190,194
+< modr-06	range	次郎は本を読み、絵を描きたかった。	誰が本を読んだ？	ANSWER	["次郎"]	None	False	
+< modr-07	range	花子は手紙を書き、荷物を運びたかった。	誰が手紙を書いた？	ANSWER	["花子"]	None	False	
+< modr-08	range	次郎は本を読んで、花子は絵を描きたかった。	誰が本を読んだ？	ANSWER	["次郎"]	None	False	
+< modr-09	range	太郎は窓を開けて、美咲は箱を運びたかった。	誰が窓を開けた？	ANSWER	["太郎"]	None	False	
+< modr-10	range	次郎は小説が読めた。	誰が小説を読んだ？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	
+---
+> modr-06	range	次郎は本を読み、絵を描きたかった。	誰が本を読んだ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire,MODALITY_NOT_READ:desire
+> modr-07	range	花子は手紙を書き、荷物を運びたかった。	誰が手紙を書いた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire,MODALITY_NOT_READ:desire
+> modr-08	range	次郎は本を読んで、花子は絵を描きたかった。	誰が本を読んだ？	ANSWER	["次郎"]	None	False	MODALITY_NOT_READ:desire
+> modr-09	range	太郎は窓を開けて、美咲は箱を運びたかった。	誰が窓を開けた？	ANSWER	["太郎"]	None	False	MODALITY_NOT_READ:desire
+> modr-10	range	次郎は小説が読めた。	誰が小説を読んだ？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	MODALITY_NOT_READ:potential
+196,199c196,199
+< modr-12	range	次郎は小説を読みたかった。花子は手紙を書いた。	誰が手紙を書いた？	ANSWER	["花子"]	None	False	
+< modr-13	range	次郎は小説を読みたかった。花子は手紙を書いた。	誰が小説を読んだ？	ANSWER	["次郎"]	None	False	
+< modr-14	range	太郎は荷物を運んだ。美咲は箱を開けたかった。	誰が荷物を運んだ？	ANSWER	["太郎"]	None	False	
+< modr-15	range	太郎は荷物を運んだ。美咲は箱を開けたかった。	誰が箱を開けた？	ANSWER	["美咲"]	None	False	
+---
+> modr-12	range	次郎は小説を読みたかった。花子は手紙を書いた。	誰が手紙を書いた？	ANSWER	["花子"]	None	False	MODALITY_NOT_READ:desire
+> modr-13	range	次郎は小説を読みたかった。花子は手紙を書いた。	誰が小説を読んだ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> modr-14	range	太郎は荷物を運んだ。美咲は箱を開けたかった。	誰が荷物を運んだ？	ANSWER	["太郎"]	None	False	MODALITY_NOT_READ:desire
+> modr-15	range	太郎は荷物を運んだ。美咲は箱を開けたかった。	誰が箱を開けた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+202,231c202,231
+< ttl-00	title	森田課長が書類を運んだ。	誰が書類を運んだ？	ANSWER	["森田"]	None	True	
+< ttl-01	title	店員が山本課長に本を渡した。	店員は誰に本を渡した？	ANSWER	["山本"]	None	False	
+< ttl-02	title	記者が中村課長を取材した。	記者が誰を取材した？	ANSWER	["中村"]	None	True	
+< ttl-03	title	木村部長が書類を運んだ。	誰が書類を運んだ？	ANSWER	["木村"]	None	True	
+< ttl-04	title	店員が小林部長に本を渡した。	店員は誰に本を渡した？	ANSWER	["小林"]	None	False	
+< ttl-05	title	記者が加藤部長を取材した。	記者が誰を取材した？	ANSWER	["加藤"]	None	True	
+< ttl-06	title	吉田社長が書類を運んだ。	誰が書類を運んだ？	ANSWER	["吉田"]	None	True	
+< ttl-07	title	店員が斎藤社長に本を渡した。	店員は誰に本を渡した？	ANSWER	["斎藤"]	None	False	
+< ttl-08	title	記者が森田社長を取材した。	記者が誰を取材した？	ANSWER	["森田"]	None	True	
+< ttl-09	title	山本係長が書類を運んだ。	誰が書類を運んだ？	ANSWER	["山本"]	None	True	
+< ttl-10	title	店員が中村係長に本を渡した。	店員は誰に本を渡した？	ANSWER	["中村"]	None	True	
+< ttl-11	title	記者が木村係長を取材した。	記者が誰を取材した？	ANSWER	["木村"]	None	True	
+< ttl-12	title	小林教授が書類を運んだ。	誰が書類を運んだ？	ANSWER	["小林"]	None	True	
+< ttl-13	title	店員が加藤教授に本を渡した。	店員は誰に本を渡した？	ANSWER	["加藤"]	None	False	
+< ttl-14	title	記者が吉田教授を取材した。	記者が誰を取材した？	ANSWER	["吉田"]	None	True	
+< ttl-15	title	斎藤先生が書類を運んだ。	誰が書類を運んだ？	ANSWER	["斎藤"]	None	True	
+< ttl-16	title	店員が森田先生に本を渡した。	店員は誰に本を渡した？	ANSWER	["森田"]	None	False	
+< ttl-17	title	記者が山本先生を取材した。	記者が誰を取材した？	ANSWER	["山本"]	None	True	
+< ttl-18	title	中村監督が書類を運んだ。	誰が書類を運んだ？	ANSWER	["中村"]	None	True	
+< ttl-19	title	店員が木村監督に本を渡した。	店員は誰に本を渡した？	ANSWER	["木村"]	None	False	
+< ttl-20	title	記者が小林監督を取材した。	記者が誰を取材した？	ANSWER	["小林"]	None	True	
+< ttl-21	title	加藤選手が書類を運んだ。	誰が書類を運んだ？	ANSWER	["加藤"]	None	True	
+< ttl-22	title	店員が吉田選手に本を渡した。	店員は誰に本を渡した？	ANSWER	["吉田"]	None	False	
+< ttl-23	title	記者が斎藤選手を取材した。	記者が誰を取材した？	ANSWER	["斎藤"]	None	True	
+< ttl-24	title	森田店長が書類を運んだ。	誰が書類を運んだ？	ANSWER	["森田"]	None	True	
+< ttl-25	title	店員が山本店長に本を渡した。	店員は誰に本を渡した？	ANSWER	["山本"]	None	False	
+< ttl-26	title	記者が中村店長を取材した。	記者が誰を取材した？	ANSWER	["中村"]	None	True	
+< ttl-27	title	木村医師が書類を運んだ。	誰が書類を運んだ？	ANSWER	["木村"]	None	True	
+< ttl-28	title	店員が小林医師に本を渡した。	店員は誰に本を渡した？	ANSWER	["小林"]	None	False	
+< ttl-29	title	記者が加藤医師を取材した。	記者が誰を取材した？	ANSWER	["加藤"]	None	True	
+---
+> ttl-00	title	森田課長が書類を運んだ。	誰が書類を運んだ？	ANSWER	["森田課長"]	None	True	
+> ttl-01	title	店員が山本課長に本を渡した。	店員は誰に本を渡した？	ANSWER	["山本課長"]	None	False	
+> ttl-02	title	記者が中村課長を取材した。	記者が誰を取材した？	ANSWER	["中村課長"]	None	True	
+> ttl-03	title	木村部長が書類を運んだ。	誰が書類を運んだ？	ANSWER	["木村部長"]	None	True	
+> ttl-04	title	店員が小林部長に本を渡した。	店員は誰に本を渡した？	ANSWER	["小林部長"]	None	False	
+> ttl-05	title	記者が加藤部長を取材した。	記者が誰を取材した？	ANSWER	["加藤部長"]	None	True	
+> ttl-06	title	吉田社長が書類を運んだ。	誰が書類を運んだ？	ANSWER	["吉田社長"]	None	True	
+> ttl-07	title	店員が斎藤社長に本を渡した。	店員は誰に本を渡した？	ANSWER	["斎藤社長"]	None	False	
+> ttl-08	title	記者が森田社長を取材した。	記者が誰を取材した？	ANSWER	["森田社長"]	None	True	
+> ttl-09	title	山本係長が書類を運んだ。	誰が書類を運んだ？	ANSWER	["山本係長"]	None	True	
+> ttl-10	title	店員が中村係長に本を渡した。	店員は誰に本を渡した？	ANSWER	["中村係長"]	None	True	
+> ttl-11	title	記者が木村係長を取材した。	記者が誰を取材した？	ANSWER	["木村係長"]	None	True	
+> ttl-12	title	小林教授が書類を運んだ。	誰が書類を運んだ？	ANSWER	["小林教授"]	None	True	
+> ttl-13	title	店員が加藤教授に本を渡した。	店員は誰に本を渡した？	ANSWER	["加藤教授"]	None	False	
+> ttl-14	title	記者が吉田教授を取材した。	記者が誰を取材した？	ANSWER	["吉田教授"]	None	True	
+> ttl-15	title	斎藤先生が書類を運んだ。	誰が書類を運んだ？	ANSWER	["斎藤先生"]	None	True	
+> ttl-16	title	店員が森田先生に本を渡した。	店員は誰に本を渡した？	ANSWER	["森田先生"]	None	False	
+> ttl-17	title	記者が山本先生を取材した。	記者が誰を取材した？	ANSWER	["山本先生"]	None	True	
+> ttl-18	title	中村監督が書類を運んだ。	誰が書類を運んだ？	ANSWER	["中村監督"]	None	True	
+> ttl-19	title	店員が木村監督に本を渡した。	店員は誰に本を渡した？	ANSWER	["木村監督"]	None	False	
+> ttl-20	title	記者が小林監督を取材した。	記者が誰を取材した？	ANSWER	["小林監督"]	None	True	
+> ttl-21	title	加藤選手が書類を運んだ。	誰が書類を運んだ？	ANSWER	["加藤選手"]	None	True	
+> ttl-22	title	店員が吉田選手に本を渡した。	店員は誰に本を渡した？	ANSWER	["吉田選手"]	None	False	
+> ttl-23	title	記者が斎藤選手を取材した。	記者が誰を取材した？	ANSWER	["斎藤選手"]	None	True	
+> ttl-24	title	森田店長が書類を運んだ。	誰が書類を運んだ？	ANSWER	["森田店長"]	None	True	
+> ttl-25	title	店員が山本店長に本を渡した。	店員は誰に本を渡した？	ANSWER	["山本店長"]	None	False	
+> ttl-26	title	記者が中村店長を取材した。	記者が誰を取材した？	ANSWER	["中村店長"]	None	True	
+> ttl-27	title	木村医師が書類を運んだ。	誰が書類を運んだ？	ANSWER	["木村医師"]	None	True	
+> ttl-28	title	店員が小林医師に本を渡した。	店員は誰に本を渡した？	ANSWER	["小林医師"]	None	False	
+> ttl-29	title	記者が加藤医師を取材した。	記者が誰を取材した？	ANSWER	["加藤医師"]	None	True	
+247,252c247,252
+< ttlm-00	title_mixed	中村課長が書類を運んだ。中村が書類を運んだ。	誰が書類を運んだ？	ANSWER	["中村"]	None	False	
+< ttlm-01	title_mixed	加藤部長が書類を運んだ。加藤が書類を運んだ。	誰が書類を運んだ？	ANSWER	["加藤"]	None	False	
+< ttlm-02	title_mixed	森田社長が書類を運んだ。森田が書類を運んだ。	誰が書類を運んだ？	ANSWER	["森田"]	None	False	
+< ttlm-03	title_mixed	木村教授が書類を運んだ。木村が書類を運んだ。	誰が書類を運んだ？	ANSWER	["木村"]	None	False	
+< ttlm-04	title_mixed	吉田監督が書類を運んだ。吉田が書類を運んだ。	誰が書類を運んだ？	ANSWER	["吉田"]	None	False	
+< ttlm-05	title_mixed	山本店長が書類を運んだ。山本が書類を運んだ。	誰が書類を運んだ？	ANSWER	["山本"]	None	False	
+---
+> ttlm-00	title_mixed	中村課長が書類を運んだ。中村が書類を運んだ。	誰が書類を運んだ？	AMBIGUOUS	[]	distinct independently verified answers remain	False	
+> ttlm-01	title_mixed	加藤部長が書類を運んだ。加藤が書類を運んだ。	誰が書類を運んだ？	AMBIGUOUS	[]	distinct independently verified answers remain	False	
+> ttlm-02	title_mixed	森田社長が書類を運んだ。森田が書類を運んだ。	誰が書類を運んだ？	AMBIGUOUS	[]	distinct independently verified answers remain	False	
+> ttlm-03	title_mixed	木村教授が書類を運んだ。木村が書類を運んだ。	誰が書類を運んだ？	AMBIGUOUS	[]	distinct independently verified answers remain	False	
+> ttlm-04	title_mixed	吉田監督が書類を運んだ。吉田が書類を運んだ。	誰が書類を運んだ？	AMBIGUOUS	[]	distinct independently verified answers remain	False	
+> ttlm-05	title_mixed	山本店長が書類を運んだ。山本が書類を運んだ。	誰が書類を運んだ？	AMBIGUOUS	[]	distinct independently verified answers remain	False	
+260,270c260,270
+< ttlr-07	range	加藤社長が山本さんに本を渡した。	誰が山本さんに本を渡した？	ANSWER	["加藤"]	None	True	
+< cv-desire-00	converse_modal	花子は本を借りたかった。	誰が本を借りた？	ANSWER	["花子"]	None	False	
+< cv-desire-00	converse_modal	花子は本を借りたかった。	花子は本を借りた？	ANSWER	["はい"]	None	False	
+< cv-desire-01	converse_modal	次郎は傘を借りたがっていた。	誰が傘を借りた？	ANSWER	["次郎"]	None	False	
+< cv-desire-01	converse_modal	次郎は傘を借りたがっていた。	次郎は傘を借りた？	ANSWER	["はい"]	None	False	
+< cv-desire-02	converse_modal	美咲は友人から本をもらいたかった。	誰が本をもらった？	ANSWER	["美咲"]	None	True	
+< cv-desire-02	converse_modal	美咲は友人から本をもらいたかった。	美咲は本をもらった？	ANSWER	["はい"]	None	True	
+< cv-potential-03	converse_modal	花子は本を借りられた。	誰が本を借りた？	ANSWER	["花子"]	None	False	
+< cv-potential-03	converse_modal	花子は本を借りられた。	花子は本を借りた？	ANSWER	["はい"]	None	False	
+< cv-potential-04	converse_modal	次郎が傘を借りられる。	誰が傘を借りる？	ANSWER	["次郎"]	None	False	
+< cv-potential-04	converse_modal	次郎が傘を借りられる。	次郎は傘を借りる？	ANSWER	["はい"]	None	False	
+---
+> ttlr-07	range	加藤社長が山本さんに本を渡した。	誰が山本さんに本を渡した？	ANSWER	["加藤社長"]	None	True	
+> cv-desire-00	converse_modal	花子は本を借りたかった。	誰が本を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> cv-desire-00	converse_modal	花子は本を借りたかった。	花子は本を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> cv-desire-01	converse_modal	次郎は傘を借りたがっていた。	誰が傘を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> cv-desire-01	converse_modal	次郎は傘を借りたがっていた。	次郎は傘を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> cv-desire-02	converse_modal	美咲は友人から本をもらいたかった。	誰が本をもらった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> cv-desire-02	converse_modal	美咲は友人から本をもらいたかった。	美咲は本をもらった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+> cv-potential-03	converse_modal	花子は本を借りられた。	誰が本を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+> cv-potential-03	converse_modal	花子は本を借りられた。	花子は本を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+> cv-potential-04	converse_modal	次郎が傘を借りられる。	誰が傘を借りる？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+> cv-potential-04	converse_modal	次郎が傘を借りられる。	次郎は傘を借りる？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+273,288c273,288
+< cv-potential-06	converse_modal	花子は友人から本を借りられた。	誰が本を借りた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	
+< cv-potential-06	converse_modal	花子は友人から本を借りられた。	花子は本を借りた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	
+< cv-desire-07	converse_modal	花子は本を借り、手紙を書きたかった。	誰が本を借りた？	ANSWER	["花子"]	None	False	
+< cv-desire-07	converse_modal	花子は本を借り、手紙を書きたかった。	花子は本を借りた？	ANSWER	["はい"]	None	False	
+< cv-desire-08	converse_modal	花子は本を借りて、手紙を書きたかった。	誰が本を借りた？	ANSWER	["花子"]	None	False	
+< cv-desire-08	converse_modal	花子は本を借りて、手紙を書きたかった。	花子は本を借りた？	ANSWER	["はい"]	None	False	
+< cv-desire-09	converse_modal	次郎は友人から傘をもらい、荷物を運びたかった。	誰が傘をもらった？	ANSWER	["次郎"]	None	False	
+< cv-desire-09	converse_modal	次郎は友人から傘をもらい、荷物を運びたかった。	次郎は傘をもらった？	ANSWER	["はい"]	None	False	
+< cv-desire-10	converse_modal	太郎は傘を借りて、窓を開けたがっていた。	誰が傘を借りた？	ANSWER	["太郎"]	None	False	
+< cv-desire-10	converse_modal	太郎は傘を借りて、窓を開けたがっていた。	太郎は傘を借りた？	ANSWER	["はい"]	None	False	
+< cv-potential-11	converse_modal	花子は本を借り、箱を開けられた。	誰が本を借りた？	ANSWER	["花子"]	None	False	
+< cv-potential-11	converse_modal	花子は本を借り、箱を開けられた。	花子は本を借りた？	ANSWER	["はい"]	None	False	
+< cv-potential-12	converse_modal	次郎は傘を借りて、窓を開けられた。	誰が傘を借りた？	ANSWER	["次郎"]	None	False	
+< cv-potential-12	converse_modal	次郎は傘を借りて、窓を開けられた。	次郎は傘を借りた？	ANSWER	["はい"]	None	False	
+< cv-desire-13	converse_modal	次郎は本を読み、絵を描きたかった。	誰が本を読んだ？	ANSWER	["次郎"]	None	False	
+< cv-desire-13	converse_modal	次郎は本を読み、絵を描きたかった。	次郎は本を読んだ？	ANSWER	["はい"]	None	False	
+---
+> cv-potential-06	converse_modal	花子は友人から本を借りられた。	誰が本を借りた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	MODALITY_NOT_READ:potential
+> cv-potential-06	converse_modal	花子は友人から本を借りられた。	花子は本を借りた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	MODALITY_NOT_READ:potential
+> cv-desire-07	converse_modal	花子は本を借り、手紙を書きたかった。	誰が本を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire,MODALITY_NOT_READ:desire
+> cv-desire-07	converse_modal	花子は本を借り、手紙を書きたかった。	花子は本を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire,MODALITY_NOT_READ:desire
+> cv-desire-08	converse_modal	花子は本を借りて、手紙を書きたかった。	誰が本を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire,MODALITY_NOT_READ:desire
+> cv-desire-08	converse_modal	花子は本を借りて、手紙を書きたかった。	花子は本を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire,MODALITY_NOT_READ:desire
+> cv-desire-09	converse_modal	次郎は友人から傘をもらい、荷物を運びたかった。	誰が傘をもらった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire,MODALITY_NOT_READ:desire
+> cv-desire-09	converse_modal	次郎は友人から傘をもらい、荷物を運びたかった。	次郎は傘をもらった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire,MODALITY_NOT_READ:desire
+> cv-desire-10	converse_modal	太郎は傘を借りて、窓を開けたがっていた。	誰が傘を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire,MODALITY_NOT_READ:desire
+> cv-desire-10	converse_modal	太郎は傘を借りて、窓を開けたがっていた。	太郎は傘を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire,MODALITY_NOT_READ:desire
+> cv-potential-11	converse_modal	花子は本を借り、箱を開けられた。	誰が本を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential,MODALITY_NOT_READ:potential
+> cv-potential-11	converse_modal	花子は本を借り、箱を開けられた。	花子は本を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential,MODALITY_NOT_READ:potential
+> cv-potential-12	converse_modal	次郎は傘を借りて、窓を開けられた。	誰が傘を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential,MODALITY_NOT_READ:potential
+> cv-potential-12	converse_modal	次郎は傘を借りて、窓を開けられた。	次郎は傘を借りた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential,MODALITY_NOT_READ:potential
+> cv-desire-13	converse_modal	次郎は本を読み、絵を描きたかった。	誰が本を読んだ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire,MODALITY_NOT_READ:desire
+> cv-desire-13	converse_modal	次郎は本を読み、絵を描きたかった。	次郎は本を読んだ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire,MODALITY_NOT_READ:desire
+303c303
+< cvi-08	ichidan_control	次郎は本を借りて、花子は絵を描きたかった。	誰が本を借りた？	ANSWER	["次郎"]	None	False	
+---
+> cvi-08	ichidan_control	次郎は本を借りて、花子は絵を描きたかった。	誰が本を借りた？	ANSWER	["次郎"]	None	False	MODALITY_NOT_READ:desire
+306,308c306,308
+< cvr-00	range	花子は先生に本を届けられた。	誰が本を届けた？	ANSWER	["先生"]	None	False	
+< cvr-01	range	次郎は友人から傘を借りられない。	誰が傘を借りた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	
+< cvr-02	range	花子は本を借りられなかった。	誰が本を借りた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	
+---
+> cvr-00	range	花子は先生に本を届けられた。	誰が本を届けた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+> cvr-01	range	次郎は友人から傘を借りられない。	誰が傘を借りた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	MODALITY_NOT_READ:potential
+> cvr-02	range	花子は本を借りられなかった。	誰が本を借りた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	MODALITY_NOT_READ:potential

@@ -3829,3 +3829,102 @@ def w3c7_explain_ja(text, placement):
     probe = _W3C7Probe(query)
     SR._read_ja(text, probe)
     return dict(blank, **probe.w3c7_trace) if probe.w3c7_trace else blank
+
+
+# W16-t1b: modality gate (K800). A clause whose predicate carries a modal auxiliary (desire, potential, conjecture, appearance, conditional,
+# volition, hearsay) is not an event: the reader abstains with MODALITY_NOT_READ:<kind>. The test reads only the part of speech, the
+# conjugation form and the lexeme of the auxiliaries behind the predicate (no list of surface strings). Appended at the end of the file as one
+# section; the functions above are not changed. Only a clause that is still supported (unsupported empty, modality assert) is touched.
+_W16T1B_TOK = _w1a5_namedtuple('_W16T1B_TOK', 'surface pos1 pos2 cform ctype lemma lform pron start end')
+_W16T1B_DESIRE = ('たい', 'たがる', '欲しい')
+_W16T1B_VOICE = ('れる', 'られる')
+_W16T1B_ICHIDAN = ('上一段', '下一段', 'カ行変格')
+_W16T1B_TOPIC = ('は', 'が', 'も')
+
+
+def _w16t1b_tokens(text):
+    out = []
+    for word, start, end in _tokens(text):
+        f = word.feature
+        out.append(_W16T1B_TOK(word.surface, f.pos1, f.pos2, str(f.cForm), str(f.cType), getattr(f, 'lemma', None) or word.surface, str(getattr(f, 'lForm', None) or ''), str(getattr(f, 'pronBase', None) or ''), start, end))
+    return out
+
+
+def _w16t1b_in_chain(t):
+    return (t.pos1 == '助動詞' or (t.pos1 == '助詞' and t.pos2 == '接続助詞') or (t.pos1 in ('動詞', '形容詞') and t.pos2 == '非自立可能')
+            or (t.pos1 in ('形状詞', '名詞') and t.pos2 == '助動詞語幹'))
+
+
+def _w16t1b_kind(toks, clause, base):
+    """The kind of modality that the predicate of the clause carries, or ''. `base` is the offset of the sentence in its source."""
+    lo, hi = clause.predicate_span.start - base, clause.predicate_span.end - base
+    k = max((i for i, t in enumerate(toks) if lo <= t.start and t.end <= hi), default=None)
+    if k is None: return ''
+    j = k + 1
+    while j < len(toks) and _w16t1b_in_chain(toks[j]): j += 1
+    chain = toks[k + 1:j]
+    head = toks[k]
+    if head.cform.startswith('意志推量形'): return 'volition'
+    if head.cform.startswith('仮定形') or any(t.cform.startswith('仮定形') for t in chain): return 'conditional'
+    for n, t in enumerate(chain):
+        before = toks[k + n]
+        if t.pos1 == '助動詞' and t.lemma in _W16T1B_DESIRE: return 'desire'
+        if t.pos1 == '形容詞' and t.lemma in _W16T1B_DESIRE: return 'desire'
+        if t.pos1 == '助動詞' and t.lemma == 'らしい': return 'hearsay'
+        if t.pos1 == '助動詞' and t.cform.startswith('意志推量形'): return 'conjecture' if t.lemma in ('だ', 'です') else 'volition'
+        if t.pos2 == '助動詞語幹':
+            return 'hearsay' if t.lemma.endswith('伝聞') or (t.lemma.startswith('そう') and not before.cform.startswith('連用形')) else 'appearance'
+    # 可能動詞（K818）: 下一段の動詞で、語彙素の読み（lForm）より基本形の読み（pronBase）が 1 拍長い＝語彙素が別の五段動詞で、下一段の形は五段の語幹＋え/け…る の派生
+    # （書け: カク→カケル。開け: アケル→アケル で同じ）。表記の違い（立てる/建てる）・長音（イーカエル）・濁点（ヅ/ズ）は同じ長さなので残る。
+    if head.pos1 == '動詞' and head.ctype.startswith('下一段') and head.lform and len(head.pron) == len(head.lform) + 1: return 'potential'
+    if chain and chain[0].pos1 == '助動詞' and chain[0].lemma in _W16T1B_VOICE and head.ctype.startswith(_W16T1B_ICHIDAN):
+        # 一段＋れる/られる（K817）: は/が/も の付く主語の役が patient 以外で読まれている（能動、または転換の枠で助動詞が落ちた）ときだけ止める。patient なら受身として正しい。
+        subject = _w16t1b_subject(toks, clause, base)
+        if subject is not None and subject.name != 'patient': return 'potential'
+    return ''
+
+
+def _w16t1b_subject(toks, clause, base):
+    """The role whose span is followed by は/が/も (the topic or subject of the clause), whatever the name of the role is; None if there is none."""
+    for r in clause.roles:
+        mark = [t for t in toks if t.start == r.span.end - base]
+        if mark and mark[0].pos1 == '助詞' and mark[0].pos2 in ('係助詞', '格助詞') and mark[0].surface in _W16T1B_TOPIC: return r
+    return None
+
+
+def _w16t1b_gate(view):
+    todo = {}
+    for clause in view.clauses:
+        if clause.unsupported or clause.modality != 'assert': continue
+        raw = view.sources.get(clause.span.source)
+        if raw is None: continue
+        base = clause.span.start
+        kind = _w16t1b_kind(_w16t1b_tokens(raw[base:clause.span.end]), clause, base)
+        if kind: todo[clause.id] = kind
+    if not todo: return view
+    # 並列の作用域（K817）: 型が付いた節と同じ文で述語が前にある節のうち、主語（は/が/も の付く役）または agent の span が同じものにも同じ型を付ける。
+    cache = {}
+    def keys(c):
+        raw = view.sources[c.span.source]
+        toks = cache.setdefault(c.span, _w16t1b_tokens(raw[c.span.start:c.span.end]))
+        subject = _w16t1b_subject(toks, c, c.span.start)
+        spans = [r.span for r in c.roles if r.name == 'agent'] + ([subject.span] if subject is not None else [])
+        return {(x.start, x.end) for x in spans}
+    scope = {}
+    for clause in view.clauses:
+        if clause.id not in todo: continue
+        mine = keys(clause)
+        for other in view.clauses:
+            if (other.id != clause.id and other.id not in todo and not other.unsupported and other.modality == 'assert'
+                    and other.span == clause.span and other.predicate_span.start < clause.predicate_span.start and mine & keys(other)):
+                scope[other.id] = todo[clause.id]
+    todo.update(scope)
+    clauses = tuple(replace(c, unsupported=('MODALITY_NOT_READ:' + todo[c.id],)) if c.id in todo else c for c in view.clauses)
+    return View(view.sources, clauses, view.unread, view.ingest_ms)
+
+
+def _w16t1b_document_view(documents, *, sovereigns=None, family='document', _base_view=document_view):
+    return _w16t1b_gate(_base_view(documents, sovereigns=sovereigns, family=family))
+
+
+document_view = _w16t1b_document_view

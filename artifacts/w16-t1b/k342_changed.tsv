@@ -1,0 +1,35 @@
+set	id	before_verdict	before_values	before_text	after_verdict	after_values	after_text	direction
+extra2	X001	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X002	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X003	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X004	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X005	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X006	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X007	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X008	ANSWER	["先生"]	agent: 先生	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	それ以外
+extra2	X009	ANSWER	["漁師"]	agent: 漁師	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	それ以外
+extra2	X010	ANSWER	["母"]	agent: 母	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	それ以外
+extra2	X011	ANSWER	["本"]	本	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	それ以外
+extra2	X012	ANSWER	["魚"]	魚	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	それ以外
+extra2	X013	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X014	ANSWER	["地図"]	地図	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	それ以外
+extra2	X015	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X016	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X017	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X018	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X019	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X020	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X021	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X022	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X023	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X027	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X028	ANSWER	["論文"]	論文	ANSWER	["論文"]	論文	values・text 同じ（ほかの欄だけ違う）
+extra2	X029	ANSWER	["歌"]	歌	ANSWER	["歌"]	歌	values・text 同じ（ほかの欄だけ違う）
+extra2	X030	ANSWER	["米"]	米	ANSWER	["米"]	米	values・text 同じ（ほかの欄だけ違う）
+extra2	X032	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X033	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X034	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X035	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X036	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+extra2	X037	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	values・text 同じ（ほかの欄だけ違う）
+b2like	BQ002	ANSWER	["森田"]	agent: 森田	ANSWER	["森田課長"]	agent: 森田課長	短縮が直った

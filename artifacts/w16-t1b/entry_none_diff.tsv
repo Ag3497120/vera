@@ -1,0 +1,7 @@
+idx	class	text	before_readable	after_readable	before_reasons	after_reasons	after_unsupported
+646	abstain_reason_changed	子供が野菜を食べられた。	False	False	["UNDETERMINED_VOICE:れる/られる with an object"]	["NO_SUPPORTED_CLAUSE"]	[["MODALITY_NOT_READ:potential"]]
+2611	abstain_reason_changed	兄が弟に名乗りたい。	False	False	["RECIPIENT_TYPE_UNDETERMINED:名乗る"]	["NO_SUPPORTED_CLAUSE"]	[["MODALITY_NOT_READ:desire"]]
+2779	abstain_reason_changed	兄が湖へ歩きたい。	False	False	["RECIPIENT_TYPE_UNDETERMINED:歩く"]	["NO_SUPPORTED_CLAUSE"]	[["MODALITY_NOT_READ:desire"]]
+2780	abstain_reason_changed	弟が橋へ走りたかった。	False	False	["RECIPIENT_TYPE_UNDETERMINED:走る"]	["NO_SUPPORTED_CLAUSE"]	[["MODALITY_NOT_READ:desire"]]
+2781	abstain_reason_changed	妹が町へ飛びたかった。	False	False	["RECIPIENT_TYPE_UNDETERMINED:飛ぶ"]	["NO_SUPPORTED_CLAUSE"]	[["MODALITY_NOT_READ:desire"]]
+4090	abstain_reason_changed	先生が課長に申告したい。	False	False	["RECIPIENT_TYPE_UNDETERMINED:申告する"]	["NO_SUPPORTED_CLAUSE"]	[["MODALITY_NOT_READ:desire"]]

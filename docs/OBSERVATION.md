@@ -2027,3 +2027,7 @@ def turn(doc, reply, mode, strict=False, kind='factual'):
 - **B2・B7 の公開の写し**（`bs_B2_*_r2.txt`・`bs_B7_*_r2.txt`、`bs_B2_semantic_compare_r2.txt`・`bs_B7_semantic_compare_r2.txt`）: 前後で時計の鍵・一時ディレクトリ名・読み込んだモジュール数を除いて同一（差 0。生の `tools.bank_score.compare` は第 1 ラウンドと同じく 24 件・35 件の不一致を出す。時計の鍵などの差で、意味のある差ではないことを `bank_compare.py` で確かめた）。公開の写しは前後とも correct=0 なので弱い証拠。
 - **再現**: `artifacts/w16-t2/COMMANDS.md`。W3-c4（配置あり）の new を別名で流し直し、`new_w3c4_r2.jsonl` と 111 行すべてで ask・serve・chat が一致（`rerun_check_r2.txt`）。
 - **行数**（`loc_r2.txt`）: `verantyx/` の総行数 152,897（基点 152,712、差 +185。裁定 3 の枠 +202 以内）。
+
+## W16-t1b: 既知の穴の更新（W3-c4 の 7）
+
+`docs/OBSERVATION.md` 1437 行の項目 7（充填物が語の一部）について、W16-t1b（K801）で主経路（`ask --mode round5`・`semantic_execute`／`semantic_verify` の Project）の答えは、読解器が読んだ充填物の**表記のまま**（`森田課長` → `森田課長`）返すようになった。束縛の鍵（`term` = `canonical`）は変えていない。同じ問いに 2 つの表記が出る文書（`森田課長` と `森田`）は `AMBIGUOUS`。後段（`question_cross`）は変えていない。測定は `docs/READING_SOUNDNESS.md` §10M・`artifacts/w16-t1b/`。

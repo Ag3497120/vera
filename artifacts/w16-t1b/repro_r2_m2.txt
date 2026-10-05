@@ -1,0 +1,8 @@
+花子は本を借り、手紙を書きたかった。 | 誰が本を借りた？
+UNKNOWN_UNSUPPORTED_EVIDENCE [] MODALITY_NOT_READ:desire
+花子は本を借りて、手紙を書きたかった。 | 誰が本を借りた？
+UNKNOWN_UNSUPPORTED_EVIDENCE [] MODALITY_NOT_READ:desire
+花子は本を借りられた。 | 誰が本を借りた？
+UNKNOWN_UNSUPPORTED_EVIDENCE [] MODALITY_NOT_READ:potential
+次郎は花子に褒められた。 | 誰が次郎を褒めた？
+ANSWER ['花子'] None

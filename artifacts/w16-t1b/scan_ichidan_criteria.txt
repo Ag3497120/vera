@@ -1,0 +1,5 @@
+A_lemma_ne_orth tokens 162 types 49 of all-tokens 490
+B_lform_ne_pron tokens 61 types 24 of all-tokens 490
+C_pron_len_plus1 tokens 40 types 17 of all-tokens 490
+false-positive examples of A (same lForm/pronBase): [('立てる', '建てる'), ('纏める', 'まとめる'), ('締める', '閉める'), ('止める', '停める'), ('上げる', 'あげる'), ('言い替える', '言い換える'), ('書き替える', '書き換える'), ('収める', '納める')]
+false-positive examples of B (long vowel / dakuten): [('片付ける', '片付ける'), ('申し上げる', '申し上げる'), ('設ける', '設ける'), ('言い替える', '言い換える'), ('名付ける', '名付ける'), ('名付ける', '名づける'), ('続ける', '続ける')]

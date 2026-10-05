@@ -88,7 +88,9 @@ def test_no_wrong_answer_and_no_error_on_the_frozen_questions(name, questions, d
 
 
 def test_extra2_no_stage_answer_where_the_document_says_another_form(monkeypatch, tmp_path):
-    """Round 2 (M1): every question of extra2 that expects no stage answer gets neither a stage answer nor a stage tie; the controls written in the same form still answer."""
+    """Round 2 (M1): every question of extra2 that expects no stage answer gets neither a stage answer nor a stage tie; the controls written in the same form still answer.
+    Integration (auditor ruling 2026-10-06, W16-t1b K800): the three controls X011 (先生は何を読みたかった？), X012 (漁師は何を運びたがった？) and X014 (課長は何を見たがっていた？) ask about a desire
+    sentence, which the reader no longer reads as an event, so they are abstentions now (answer -> abstention, the direction the ruling allows; measured: 3 controls still answer, 3 are lost). The floor of the answered controls is lowered from 6 to the measured 3 for exactly that reason. Old expectation: `len(controls) >= 6`."""
     monkeypatch.delenv('VERA_PLACEMENT', raising=False)
     fp = O.FilePlacement.from_path(str(DATA / 'extra2' / 'placement_extra2.json'))
     monkeypatch.setattr(EC, 'default_lookup', lambda *a, **k: fp)
@@ -106,4 +108,5 @@ def test_extra2_no_stage_answer_where_the_document_says_another_form(monkeypatch
         if q.get('expect_no_stage_answer'): assert not stage, (q['id'], q['text'], o.get('text'))
         if stage and o.get('verdict') == 'ANSWER': answered[q['id']] = o['text']
     controls = {q['id']: q['truth']['fillers'][0] for q in qs if q['category'] in ('control_match', 'control_plain') and q['id'] in answered}
-    assert len(controls) >= 6 and all(answered[i] == f for i, f in controls.items())
+    assert len(controls) >= 3 and all(answered[i] == f for i, f in controls.items())
+    assert not {'X011', 'X012', 'X014'} & set(answered), sorted(answered)     # the three desire-sentence controls abstain (K800); nothing else of the controls was lost

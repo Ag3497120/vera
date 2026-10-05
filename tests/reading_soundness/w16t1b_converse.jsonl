@@ -1,0 +1,35 @@
+{"id": "cv-desire-00", "kind": "converse_modal", "modality": "desire", "kind_ja": "願望", "gate": true, "document": "花子は本を借りたかった。", "questions": ["誰が本を借りた？", "花子は本を借りた？"]}
+{"id": "cv-desire-01", "kind": "converse_modal", "modality": "desire", "kind_ja": "願望", "gate": true, "document": "次郎は傘を借りたがっていた。", "questions": ["誰が傘を借りた？", "次郎は傘を借りた？"]}
+{"id": "cv-desire-02", "kind": "converse_modal", "modality": "desire", "kind_ja": "願望", "gate": true, "document": "美咲は友人から本をもらいたかった。", "questions": ["誰が本をもらった？", "美咲は本をもらった？"]}
+{"id": "cv-potential-03", "kind": "converse_modal", "modality": "potential", "kind_ja": "可能", "gate": true, "document": "花子は本を借りられた。", "questions": ["誰が本を借りた？", "花子は本を借りた？"]}
+{"id": "cv-potential-04", "kind": "converse_modal", "modality": "potential", "kind_ja": "可能", "gate": true, "document": "次郎が傘を借りられる。", "questions": ["誰が傘を借りる？", "次郎は傘を借りる？"]}
+{"id": "cv-potential-05", "kind": "converse_modal", "modality": "potential", "kind_ja": "可能", "gate": false, "document": "美咲も本を借りられた。", "questions": ["誰が本を借りた？", "美咲は本を借りた？"]}
+{"id": "cv-potential-06", "kind": "converse_modal", "modality": "potential", "kind_ja": "可能", "gate": false, "document": "花子は友人から本を借りられた。", "questions": ["誰が本を借りた？", "花子は本を借りた？"]}
+{"id": "cv-desire-07", "kind": "converse_modal", "modality": "desire", "kind_ja": "願望（作用域）", "gate": true, "document": "花子は本を借り、手紙を書きたかった。", "questions": ["誰が本を借りた？", "花子は本を借りた？"]}
+{"id": "cv-desire-08", "kind": "converse_modal", "modality": "desire", "kind_ja": "願望（作用域）", "gate": true, "document": "花子は本を借りて、手紙を書きたかった。", "questions": ["誰が本を借りた？", "花子は本を借りた？"]}
+{"id": "cv-desire-09", "kind": "converse_modal", "modality": "desire", "kind_ja": "願望（作用域）", "gate": true, "document": "次郎は友人から傘をもらい、荷物を運びたかった。", "questions": ["誰が傘をもらった？", "次郎は傘をもらった？"]}
+{"id": "cv-desire-10", "kind": "converse_modal", "modality": "desire", "kind_ja": "願望（作用域）", "gate": true, "document": "太郎は傘を借りて、窓を開けたがっていた。", "questions": ["誰が傘を借りた？", "太郎は傘を借りた？"]}
+{"id": "cv-potential-11", "kind": "converse_modal", "modality": "potential", "kind_ja": "可能（作用域）", "gate": true, "document": "花子は本を借り、箱を開けられた。", "questions": ["誰が本を借りた？", "花子は本を借りた？"]}
+{"id": "cv-potential-12", "kind": "converse_modal", "modality": "potential", "kind_ja": "可能（作用域）", "gate": true, "document": "次郎は傘を借りて、窓を開けられた。", "questions": ["誰が傘を借りた？", "次郎は傘を借りた？"]}
+{"id": "cv-desire-13", "kind": "converse_modal", "modality": "desire", "kind_ja": "願望（作用域・agent の先行節）", "gate": true, "document": "次郎は本を読み、絵を描きたかった。", "questions": ["誰が本を読んだ？", "次郎は本を読んだ？"]}
+{"id": "cvp-00", "kind": "passive_control", "document": "次郎は花子に褒められた。", "questions": [{"q": "誰が次郎を褒めた？", "expect_values": ["花子"]}]}
+{"id": "cvp-01", "kind": "passive_control", "document": "太郎は先生に叱られた。", "questions": [{"q": "誰が太郎を叱った？", "expect_values": ["先生"]}]}
+{"id": "cvp-02", "kind": "passive_control", "document": "翔太は直美に叱られた。", "questions": [{"q": "誰が翔太を叱った？", "expect_values": ["直美"]}]}
+{"id": "cvp-03", "kind": "passive_control", "document": "健太は先生に助けられた。", "questions": [{"q": "誰が健太を助けた？", "expect_values": ["先生"]}]}
+{"id": "cvp-04", "kind": "passive_control", "document": "由美は友人に見られた。", "questions": [{"q": "誰が由美を見た？", "expect_values": ["友人"]}]}
+{"id": "cvp-05", "kind": "passive_control", "document": "大輔は母に呼ばれた。", "questions": [{"q": "誰が大輔を呼んだ？", "expect_values": ["母"]}]}
+{"id": "cvi-00", "kind": "ichidan_control", "document": "次郎は窓を開けた。", "questions": [{"q": "誰が窓を開けた？", "expect_values": ["次郎"]}]}
+{"id": "cvi-01", "kind": "ichidan_control", "document": "花子は資料を調べた。", "questions": [{"q": "誰が資料を調べた？", "expect_values": ["花子"]}]}
+{"id": "cvi-02", "kind": "ichidan_control", "document": "太郎は荷物を届けた。", "questions": [{"q": "誰が荷物を届けた？", "expect_values": ["太郎"]}]}
+{"id": "cvi-03", "kind": "ichidan_control", "document": "美咲は友人に写真を見せた。", "questions": [{"q": "誰が写真を見せた？", "expect_values": ["美咲"]}]}
+{"id": "cvi-04", "kind": "ichidan_control", "document": "先生は生徒に英語を教えた。", "questions": [{"q": "誰が英語を教えた？", "expect_values": ["先生"]}]}
+{"id": "cvi-05", "kind": "ichidan_control", "document": "花子は次郎から本を借りた。", "questions": [{"q": "誰が本を借りた？", "expect_values": ["花子"]}]}
+{"id": "cvi-06", "kind": "ichidan_control", "document": "花子は友人から本をもらった。", "questions": [{"q": "誰が本をもらった？", "expect_values": ["花子"]}]}
+{"id": "cvi-07", "kind": "ichidan_control", "document": "次郎は傘を借りた。", "questions": [{"q": "次郎は傘を借りた？", "expect_values": ["はい"]}]}
+{"id": "cvi-08", "kind": "ichidan_control", "document": "次郎は本を借りて、花子は絵を描きたかった。", "questions": [{"q": "誰が本を借りた？", "expect_values": ["次郎"]}]}
+{"id": "cvt-00", "kind": "title_control", "document": "木村様が書類を運んだ。", "questions": [{"q": "誰が書類を運んだ？", "expect_values": ["木村様"]}]}
+{"id": "cvt-01", "kind": "title_control", "document": "店員が小林さんに本を渡した。", "questions": [{"q": "店員は誰に本を渡した？", "expect_values": ["小林さん"]}]}
+{"id": "cvr-00", "kind": "range", "document": "花子は先生に本を届けられた。", "questions": ["誰が本を届けた？"]}
+{"id": "cvr-01", "kind": "range", "document": "次郎は友人から傘を借りられない。", "questions": ["誰が傘を借りた？"]}
+{"id": "cvr-02", "kind": "range", "document": "花子は本を借りられなかった。", "questions": ["誰が本を借りた？"]}
+{"id": "cvr-03", "kind": "range", "document": "次郎は小説を読み、窓を開けた。", "questions": ["誰が小説を読んだ？"]}

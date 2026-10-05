@@ -531,16 +531,24 @@ def _mine(items):
 
 
 def test_with_the_key_frame_generated_taken_out_every_row_of_the_data_is_read_and_explained_as_the_base_commit_does(base_tree):
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the K800 rows are the only rows that differ from the base commit; old expectation: no row differs."""
     items = [{'text': r['input'], 'answers': {w: a for w, a in query_of(r, strip=True).mapping.items()}} for r in DATA]
     base = _child(base_tree, items)
     now = _mine(items)
-    assert [i for i, (b, n) in enumerate(zip(base, now)) if b != n] == []
+    # Integration (auditor ruling 2026-10-06, W16-t1b K800): the only rows that differ from the base commit are the K800 rows (a desire sentence: abstention -> abstention with a new reason);
+    # old expectation: no row differs
+    assert [i for i, (b, n) in enumerate(zip(base, now)) if b != n] == [i for i, r in enumerate(DATA) if r['id'] in K800_ROWS]
+    assert all(_k800_stopped(r, now[i]['read']) and not now[i]['read']['readable'] for i, r in enumerate(DATA) if r['id'] in K800_ROWS)
     assert base[0]['explain'] is not None and len(now) == len(DATA)
 
 
 def test_with_no_placement_every_row_of_the_data_is_what_the_entry_of_the_base_commit_says(base_tree):
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the K800 rows are the only rows that differ from the base commit; old expectation: the outputs are equal."""
     items = [{'text': r['input'], 'answers': None} for r in DATA]
-    assert _child(base_tree, items) == _mine(items)
+    base, now = _child(base_tree, items), _mine(items)
+    # Integration (auditor ruling 2026-10-06, W16-t1b K800): only the K800 rows differ (abstention -> abstention with MODALITY_NOT_READ:<kind>); old expectation: `base == now`
+    assert [i for i, (b, n) in enumerate(zip(base, now)) if b != n] == [i for i, r in enumerate(DATA) if r['id'] in K800_ROWS]
+    assert all(_k800_stopped(r, now[i]['read']) and not now[i]['read']['readable'] for i, r in enumerate(DATA) if r['id'] in K800_ROWS)
 
 
 # ===================================================================================================================================
@@ -623,14 +631,28 @@ def _row_ids():
     return [r['id'] for r in DATA]
 
 
+# Integration (auditor ruling 2026-10-06, W16-t1b K800): the rows of the data whose input carries a modal auxiliary (先生が課長に申告したい。, desire). The modality gate stops the clause before the
+# placement is asked, so the row is an abstention with MODALITY_NOT_READ:<kind> in the unsupported list and the typed step is not triggered (abstention -> abstention, only the reason changes).
+K800_ROWS = {'W3B5-NIRECIP-A-060': 'desire'}
+
+
+def _k800_stopped(row, out):
+    return 'MODALITY_NOT_READ:' + K800_ROWS[row['id']] in [r for u in out['unsupported'] for r in u['reasons']]
+
+
 @pytest.mark.parametrize('row', DATA, ids=_row_ids())
 def test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read(row):
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): for the row W3B5-NIRECIP-A-060 the explain says PLACEMENT_W3B2_NOT_TRIGGERED and the reader abstains with
+    MODALITY_NOT_READ:desire; old expectation: ex['w3b2'] == NARROWED_ROWS[id]['observed_w3b2'] (the typed step's reason). Every other row is unchanged."""
     q = query_of(row)
     out = SR.read(row['input'], placement=q)
     verdict = b1.judge(row['expect'], 'ja', out)['verdict']
     assert verdict not in ('misread', 'incomplete', 'UNJUDGED'), (verdict, out)           # L3: a misread is never allowed (K206: the row of the table that made it goes)
     ex = SR.typed_explain_ja(row['input'], query_of(row))
     entry = 'read' if out['readable'] else 'abstain'
+    if row['id'] in K800_ROWS:
+        assert entry == 'abstain' and ex['w3b2'] == 'PLACEMENT_W3B2_NOT_TRIGGERED' and _k800_stopped(row, out) and row['entry_expect'] == 'abstain'
+        return
     if row['id'] in NARROWED_ROWS:
         nr = NARROWED_ROWS[row['id']]
         assert entry == 'abstain' and ex['w3b2'] == nr['observed_w3b2'] and nr['frozen_entry_expect'] == row['entry_expect'] and nr['frozen_w3b5_expect'] == row['w3b5_expect']

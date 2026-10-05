@@ -166,6 +166,9 @@ def s4_map():
     return {w: F.answer('TIME', decided_by=['definition']) for w in ('昼', '冬', '休日', '夜', '年末')}
 
 
+K800_KIND = {'猫が庭へ歩けた。': 'potential', '兄が駅へ歩けなかった。': 'potential', '兄が駅へ歩けない。': 'potential'}    # Integration (auditor ruling 2026-10-06, W16-t1b K800/K818): potential-verb rows of REVIEW that the modality gate stops first
+
+
 REVIEW = [   # the six misreads of the review (round 3) and the two the review's author found next to them; the short causatives of the plan (section 1.3)
     ('猫が庭へ歩けた。', u_map), ('兄が駅へ歩けなかった。', u_map), ('兄が駅へ歩けない。', u_map),
     ('姉が冬、皿を洗えた。', s4_map), ('姉が年末、皿を洗えなかった。', s4_map), ('姉が休日、絵を描けた。', s4_map),
@@ -177,18 +180,31 @@ REVIEW = [   # the six misreads of the review (round 3) and the two the review's
 
 @pytest.mark.parametrize('text,mapper', REVIEW, ids=[t for t, _ in REVIEW])
 def test_the_sentences_of_the_review_and_the_short_causatives_are_abstentions_with_the_readers_reason_first(text, mapper):
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800/K818): the three potential-verb sentences of K800_KIND are stopped by the modality gate before the placement is asked:
+    ['NO_SUPPORTED_CLAUSE'] with MODALITY_NOT_READ:potential in the unsupported list (abstention -> abstention, only the reason changes); old expectation: rs[0] == the reader's reason,
+    len(rs) == 2 and rs[1].startswith(DERIVED + ':'). The other rows are unchanged."""
     out = SR.read(text, placement=F.MapQuery(mapper()))
     rs = reasons(out)
     plain = SR.read(text, placement=None)
     assert plain['readable'] is False
+    if text in K800_KIND:
+        assert rs == ['NO_SUPPORTED_CLAUSE'] and 'MODALITY_NOT_READ:' + K800_KIND[text] in [r for u in out['unsupported'] for r in u['reasons']], rs
+        assert out['clauses'] == []
+        return
     assert rs[0] == plain['abstain']['reasons'][0] and len(rs) == 2 and rs[1].startswith(DERIVED + ':'), rs
     assert out['clauses'] == []
 
 
 @pytest.mark.parametrize('text,mapper', REVIEW, ids=[t for t, _ in REVIEW])
 def test_without_the_gate_the_same_sentences_are_read_in_the_derived_form_which_is_what_the_gate_stops(text, mapper, monkeypatch):
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800/K818): for the three potential-verb sentences of K800_KIND the K800 modality gate stops the clause as well, so even with the derived gate
+    taken out they are not read (readable False, MODALITY_NOT_READ:potential in the unsupported list); old expectation: readable True, modality None, voice active (the derived-form misreading).
+    The other rows are unchanged."""
     no_gate(monkeypatch)
     out = SR.read(text, placement=F.MapQuery(mapper()))
+    if text in K800_KIND:
+        assert out['readable'] is False and 'MODALITY_NOT_READ:' + K800_KIND[text] in [r for u in out['unsupported'] for r in u['reasons']]
+        return
     assert out['readable'] is True
     c = out['clauses'][0]
     assert c['modality'] is None and c['voice'] == 'active'                       # the derived form returned with no modality / voice: the misreading
@@ -208,10 +224,12 @@ def test_the_gate_asks_the_placement_the_same_questions_with_and_without_it(monk
 # 4. the gate is after the ending gate and the reread: the reasons of everything refused before are unchanged
 # ---------------------------------------------------------------------------------------------------------------------------------
 def test_the_derived_gate_is_after_the_tail_gate_and_the_reread():
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): 猫が庭へ歩きたい。 (a desire sentence) is stopped by the modality gate first: ['NO_SUPPORTED_CLAUSE'] with MODALITY_NOT_READ:desire
+    in the unsupported list; old expectation: reasons(out)[1].startswith('PLACEMENT_REREAD_ABSTAINS:'). The other two rows are unchanged."""
     out = SR.read('母が冬、窓を閉めるな。', placement=F.MapQuery(s4_map()))
     assert reasons(out)[1].startswith(TAIL + ':') and len(reasons(out)) == 2          # 閉める is a shimo-ichidan verb, but the tail gate refuses it first
     out = SR.read('猫が庭へ歩きたい。', placement=F.MapQuery(u_map()))
-    assert reasons(out)[1].startswith('PLACEMENT_REREAD_ABSTAINS:')
+    assert reasons(out) == ['NO_SUPPORTED_CLAUSE'] and 'MODALITY_NOT_READ:desire' in [r for u in out['unsupported'] for r in u['reasons']]
     out = SR.read('兄が駅へ歩け。', placement=F.MapQuery(u_map()))
     assert reasons(out)[1].startswith(TAIL + ':命令形')
 
@@ -290,14 +308,19 @@ def test_every_row_of_ja_r10_with_the_fixture(row, monkeypatch):
 
 
 def test_the_gate_itself_stopped_rows_of_each_derived_kind_on_the_paths_where_the_data_reaches_it():
-    gated = set()
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800/K818): a potential verb (歩けた) is a possible form of the K800 kind 'potential' and is stopped by the modality gate before the derived gate
+    is reached (abstention -> abstention, only the reason changes: ['NO_SUPPORTED_CLAUSE'] with MODALITY_NOT_READ:potential in the unsupported list). So the pair ('U', 'potential') is checked on
+    `gated | stopped_by_k800`; old expectation: ('U', 'potential') in the derived gate's pairs. The two short-causative pairs are unchanged."""
+    gated = set(); stopped_by_k800 = set()
     for row in R10:
         out = SR.read(row['input'], 'ja', placement=F.FixtureQuery())
         rs = out['abstain']['reasons'] if not out['readable'] else []
         if len(rs) == 2 and rs[1].startswith(DERIVED + ':'): gated.add((row['path'], row['derived']))
+        if 'MODALITY_NOT_READ:potential' in [r for u in out['unsupported'] for r in u['reasons']]: stopped_by_k800.add((row['path'], row['derived']))
     # the data reaches the gate with a potential on path U (a verb the base commit's own suspicion does not catch), with a short causative on both paths; the rows of
     # the other kinds may be stopped earlier (K83, K84: the time words of some S4 rows fail the evidence gate 5 before the gate is reached)
-    assert {('U', 'potential'), ('U', 'short_causative'), ('S4', 'short_causative')} <= gated, gated
+    assert {('U', 'short_causative'), ('S4', 'short_causative')} <= gated, gated
+    assert ('U', 'potential') in (gated | stopped_by_k800), (gated, stopped_by_k800)
 
 
 
