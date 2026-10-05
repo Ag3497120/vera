@@ -1,0 +1,33 @@
+257c257
+<     assert res['content'] == G.MARK_TESTIMONY + '\n次郎が地図を渡した。'
+---
+>     assert res['content'] == G.MARK_TESTIMONY + '\n次郎が地図を渡した。\n（記録で確かめられません）'
+372c372,373
+<     assert [m['role'] for m in llm.calls[0]['messages']] == ['user', 'assistant', 'user']        # layer 0 hands the whole conversation to the LLM
+---
+>     assert [m['role'] for m in llm.calls[0]['messages']] == ['system', 'user', 'assistant', 'user']        # layer 0 hands the whole conversation to the LLM, behind the document system message (W16-t3 K650)
+>     assert llm.calls[0]['messages'][1:] == [{'role': 'user', 'content': '誰が地図を渡した？'}, {'role': 'assistant', 'content': '太郎です'}, {'role': 'user', 'content': '太郎は何を買った？'}]
+421c422
+<     assert chunks[0]['choices'][0]['delta']['content'] == G.MARK_TESTIMONY + '\n次郎が本を読んだ。'
+---
+>     assert chunks[0]['choices'][0]['delta']['content'] == G.MARK_TESTIMONY + '\n次郎が本を読んだ。\n（記録で確かめられません）'
+430c431
+<     assert lines[0]['message']['content'].endswith('次郎が本を読んだ。') and lines[-1]['done_reason'] == 'stop'
+---
+>     assert lines[0]['message']['content'].endswith('次郎が本を読んだ。\n（記録で確かめられません）') and lines[-1]['done_reason'] == 'stop'
+618c619
+<     assert seen == [(None, 50)]
+---
+>     assert seen == [(G.QUOTE_SCHEMA, 50)]
+762c763
+<     assert set(l0) == VERA_KEYS and set(l0['reading']) == READING_KEYS and set(l0['llm']) == LLM_KEYS
+---
+>     assert set(l0) == VERA_KEYS | {'quote_check'} and set(l0['reading']) == READING_KEYS and set(l0['llm']) == LLM_KEYS
+98c98
+<     assert set(res['vera']) == {'schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'timing'}
+---
+>     assert set(res['vera']) == {'schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'quote_check', 'timing'}
+154c154
+<     assert 'placement_layer' not in base['vera'] and list(base['vera']) == ['schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'timing']
+---
+>     assert 'placement_layer' not in base['vera'] and list(base['vera']) == ['schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'quote_check', 'timing']

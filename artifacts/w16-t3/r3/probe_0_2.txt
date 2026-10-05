@@ -1,0 +1,6 @@
+森です unanchored ANSWER_CONTENT_NOT_IN_QUOTE:森
+北辰工業です unanchored ANSWER_CONTENT_NOT_IN_QUOTE:北辰、工業
+林です anchored None
+担当は林です anchored None
+unanchored
+{('doc.txt', 1): '担当は林である。'}

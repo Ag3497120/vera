@@ -151,7 +151,7 @@ def test_serve_adds_placement_layer_only_with_a_layer_and_leaves_the_fusion_laye
     layer = make_layer(tmp_path, [('ウサギ', 'ANIMAL'), ('図書館', 'PLACE'), ('ディレイラー', 'ARTIFACT')])
     monkeypatch.setenv(PL.ENV_LAYER, '')
     base = turn(cfg_of(tmp_path))
-    assert 'placement_layer' not in base['vera'] and list(base['vera']) == ['schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'timing']
+    assert 'placement_layer' not in base['vera'] and list(base['vera']) == ['schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'quote_check', 'timing']
     cfg = cfg_of(tmp_path, layer=layer)
     assert os.environ[PL.ENV_LAYER] == layer
     res = turn(cfg)

@@ -1,0 +1,37 @@
+T3-2: W14 の C 系（Vera 既定、qwen3.5:4b、温度 0）。run1 = /Users/motonisihikoudai/Projects/vera-impl/wt/W14-bench-S/artifacts/w14-bench/run1/C/results.jsonl、今回 = /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3-S/artifacts/w16-t3/r3/w14/C/results.jsonl
+行数: run1 256、今回 256
+
+旧の物差し（score.vera_verified_sources の合計。reading.sources と provenance の evidence）を同じスクリプトで再計算:
+  run1: 出所の数の合計 0、1 つ以上ある行 0 / 256
+  今回: 出所の数の合計 0、1 つ以上ある行 0 / 256
+
+今回の行のうち vera.quote_check がある行: 255 / 256（0 なら W14 の木を測っている）
+印の分布（行）: {"anchored": 144, "unanchored": 108, "conflict": 3, "(鍵なし)": 1}
+anchored のうち答えの要素が 0 個の行: 31 / 144
+reason の分布: {"null": 254, "ANSWER_CONTENT_NOT_IN_QUOTE:行わ": 1}
+引用 160 個の found の分布: {'exact': 148, 'relocated': 11, 'fabricated': 1}
+
+「Vera が確かめた出典」（新: exact／relocated の引用の位置）:
+  実在した引用の数: 159
+  行ごとに重複を除いた位置の数の合計: 159（1 つ以上ある行 153 / 256）
+  docset をまたいで重複を除いた位置の数: 96
+  （run1 の 0 は 旧の物差し。新と旧は定義が違うので、この 2 つの数を直接の比較に使わない）
+
+印 × W14 の cat（参考。正解との突き合わせは人の採点の領分で、合否には使わない）:
+  ANS    {"anchored": 40}
+  CONTRA {"unanchored": 11, "anchored": 1}
+  INJ_A  {"anchored": 8}
+  INJ_N  {"anchored": 5, "unanchored": 3}
+  MULTI_A {"(鍵なし)": 1, "anchored": 10, "unanchored": 1}
+  MULTI_N {"unanchored": 2, "anchored": 6}
+  NONE   {"unanchored": 31, "anchored": 1}
+  NUM    {"anchored": 16}
+  PARA   {"anchored": 57, "unanchored": 60, "conflict": 3}
+
+outcome の分布: {"TESTIMONY": 255, "LLM_UNAVAILABLE": 1}
+reading.type の分布: {"STRUCTURE_UNDETERMINED": 250, "NO_RECORD": 6}
+ok でない行: 0
+wall_ms の合計: 今回 2575 秒、run1 1327 秒
+wall_ms の合計（3 つ）: run1 1327 秒、第 2 ラウンド 2541 秒、今回 2575 秒
+reason ANSWER_CONTENT_NOT_IN_QUOTE の行: 1、REPLY_NOT_JSON の行: 0（num_predict で JSON が切れた可能性）
+llm.error.type の分布: {"null": 255, "TIMEOUT": 1}

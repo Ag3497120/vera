@@ -1898,3 +1898,628 @@ W10-f04 の J10（門 (b) の実現 → 再読が、実現器が型つきの十�
 - `vera placement growth --layer L --ledger-file F`: 台帳に `assumption` 行があるとき、最後の鍵 `assumption: {rows, words, promoted_words, assumption_rate}`（`assumption_rate` = 仮定した語のうち、この層への `promoted_to_layer` 行が無い語の割合）。
 - `vera serve` の `--strict-read` は文法の層 1 の `--strict` とは別物。
 - 第 3 ラウンド: 出所 `surface` の仮定は強い名前の形（固有名詞・未知語・見出し語が表層のひらがな）だけ、P2 の が は型のある（動物・集団・人）充填物だけ、表層の仮定は台帳で再読の一致だけでは `promotable` にならない（`blocked_by: SURFACE_ASSUMPTION`）。詳細は READING_SOUNDNESS.md §10L.6。
+
+
+## 9. W16-t3: 層 0 の引用照合（K650–K653）（事前登録 2026-10-05 23:12:37 +0900）
+
+チケット W16-t3（T3）。層 0 の事実の問いで、文書を LLM に渡し、`{answer, quotes[]}` の JSON で答えさせ、Vera が **読解なしで** 引用の実在と答えの要素（数値・日付・固有名）の食い違いを照合する。LLM の答えは **証言のまま**（`MARK_TESTIMONY` を残し、`outcome` は `TESTIMONY`、`origin` は `testimony`）。この節の「事前登録」の小節は、検査データを作る前に書いた。
+
+### 9.1 照合の規則（事前登録）
+
+- **正規化 norm**: NFKC → 連続する空白を半角空白 1 つ → 前後の空白を除く。
+- **行の本文**: 記録で `(source, line)` が同じ文を k の順に連結。前の文が「。」で終わるときは空文字、それ以外は半角空白 1 つ。
+- **出典の一致**: 引用の `source` が記録の `source` と NFKC で完全一致、または `os.path.basename` が一致すれば同じ文書。
+- **引用の実在**: (1) norm(text) が空 → `fabricated`。(2) 指定の `(source, line)` の行の本文に norm で部分一致 → `exact`。(3) 他の行（全文書）のどれかに部分一致 → `relocated`（一致した行が 2 つ以上でも `relocated`。全部を `relocated_to` に残し、勝者を選ばない）。(4) どこにも無い → `fabricated`。型の違う引用（list でない・dict でない・`source`/`text` が文字列でない・`line` が int でない（bool も不可））は落とさず `fabricated` にして数え、`reason: BAD_QUOTE_TYPE` を付ける。
+- **答えの要素**（答えからだけ取る。重なる範囲は 日付・時刻 → 数値 → 固有名 の順で先に取ったものが持つ）:
+  - 日付・時刻 `date`: アラビア数字・漢数字の `年 月 日 時 分`（1 組ごとに 1 要素。例 `2026年4月1日` は `2026年`・`4月`・`1日` の 3 要素。`午前`／`午後` が直前にあれば値に含める）と `[月火水木金土日]曜日`。相対語（明日・来週・翌日・前日）は取らない（チケットの「相対語は除く」。判断 J1: 年月日と曜日は取る）。
+  - 数値 `number`: アラビア数字（`,` 区切り・小数）と、単位が直後に付く漢数字。**値は「数の値＋単位」の文字列**（`3万円` は `3万円`。30000 には直さない。漢数字は数の値に直す: `三百円` → `300円`）。読めない漢数字の並びは要素にせず `skipped` に数える。単位・漢数字の一覧は `answer_slots._VALUE`／`answer._NUMBER` から取り出し、新しく書かない。
+  - 固有名 `name`: 形態素解析の品詞 `pos2 == 固有名詞` の語の連続、カタカナ 2 文字以上の連続、`さん`・`様` の直前の名詞の連続。重なるものは、開始が早く長いものを 1 つ。
+- **要素の照合**: 答えの要素と同じ `(kind, value)` が、`exact`／`relocated` の引用から **同じ関数で取り出した** 要素にあれば、その引用の位置（`source:line`。relocated は全部）を `found_in` に入れる。文字列の部分一致ではない（`3` と `30` を取り違えない）。無ければ `found_in: null`。
+- **食い違い** `conflicts`: (i) 答えの要素が `found_in: null` で、実在する引用に **同じ種類（数値・日付は同じ単位）** の要素が 1 つ以上ある → `{kind, answer_value, values: [{value, source, line}]}`。(ii) 実在する引用が 2 つ以上の文書から来て、同じ種類の要素の値の集合が文書間で違う → `{kind, answer_value: null, values}`（答えに出ているかは問わない）。
+- **印**（答え全体に 1 つ。上から最初に当たったもの）: 1. 引用が 0 個、または `fabricated` が 1 つでもある → `unanchored`。2. `conflicts` が 1 つ以上 → `conflict`。3. `found_in: null` の要素が 1 つでもある → `unanchored`。4. それ以外 → `anchored`（要素 0 個でもここに来る。T3-1 で数を出す）。
+- **返答が JSON として読めない／`answer` が文字列でない**: `quotes = []` として照合し、`reason` に `REPLY_NOT_JSON`／`ANSWER_NOT_A_STRING` → 規則 1 で `unanchored`。本文は LLM の返答（raw）のまま。
+- `quote_check` の鍵: `verdict`・`quotes`・`elements`・`conflicts`（チケットのとおり）。足してよいのは `reason`（理由があるときだけ）。`quotes` の項目に `relocated_to` が付くことがある。
+
+### 9.2 T3-1 の集合の作り方と測る量（事前登録）
+
+- 答えあり 40 = W14 公開データ（`benchmarks/public_v1/data/questions.jsonl`）の `cat == "ANS"` の 40 問。答え無し 20 = `cat == "NONE"` を docset（S1〜S4）ごとに id 昇順で先頭 5 問。
+- 各問に候補 1 つ。id 昇順で並べた中で偶数番目（0 始まり）を誤答にする（ANS 20・NONE 10、計 30）。
+- 正しい候補: ANS は `answer = q.answer`、`quotes = [{source: evidence.doc, line: evidence.line, text: その行の全文}]`。NONE は `answer = "文書に記載がありません"`、`quotes = []`。
+- 誤答（ANS、誤答の中で交互に）: W1 = `answer = distractors[0].value`、引用は正しい候補のまま。W2 = 同じ答えで、引用の text を「元の行の `q.answer` を `distractors[0].value` に置き換えたもの」にした（捏造の引用）。
+- 誤答（NONE、交互に）: 同じ docset の ANS を id 昇順に並べ、同じ順位の問いの `distractors[0]` を借りる。N1 = `answer = その value`、`quotes = [{distractor の doc・line・その行の全文}]`（実在する、関連の無い行を引いた形）。N2 = 同じ答えで、`quotes` の text を「問いの文末の「。」の前に value を入れた文」にした（捏造）。
+- 文書は docset の全ファイル。記録は `G.load_records` で読む。
+- **測る量**: 検出率 = 誤答の候補のうち印が `anchored` 以外になった数 ÷ 誤答の候補の数。(a) LLM 自身の引用を信じる = 「引用が 1 つ以上あれば正しいとみなす」。(a) の検出 = 誤答の候補のうち引用が 0 個のもの。(b) = Vera の照合。誤検出率 = 正しい ANS の候補（20）のうち印が `anchored` 以外になった数 ÷ 20。NONE の正しい候補（引用なしの「文書に記載がありません」）は印の分布だけを別に出し、誤検出の分母に入れない。誤答の型（W1/W2/N1/N2）ごとの検出率、要素 0 個で `anchored` になった候補の数も出す。
+- 予想・目標値は書かない。上乗せ（(b) − (a)）が 0 ならそう報告する。
+
+### 9.3 実装した仕様（本文の 1 行と鍵）
+
+- **quote_mode**（`decode_grammar.quote_mode`）: 層 0・FACTUAL・LLM を呼ぶ・記録が答えない・文書が 1 つ以上読み込まれている。偽の経路（層 1・非 factual・文書なし・LLM を呼ばない・記録が答える）は基点と byte 一致（K653）。
+- **K650**: `llm_messages` は quote_mode のとき、クライアントの会話の先頭に system を 1 つ足す（`[文書名:行番号] 行の本文`。同じ行の文は 1 行にまとめる）。`vera_server.fusion_turn` が `fmt = G.quote_format(turn, records)`（`G.QUOTE_SCHEMA`）を LLM に渡す。Ollama は `format`、OpenAI 互換は `response_format`（strict）。
+- **K651**: `verantyx/quote_check.py: check(answer, quotes, records) -> QuoteCheck`（§9.1 の規則）。
+- **K652**: `vera.quote_check = {verdict, quotes[{source,line,text,found,(relocated_to)}], elements[{kind,value,found_in}], conflicts[...], (reason)}`。`outcome` の直後・`timing` の前（`conclude` の最後の鍵）。本文は `MARK_TESTIMONY + "\n" + answer` の後に 1 行: 錨あり `（引用の出典: <source>:<line>、…）`／錨なし `（記録で確かめられません）`／食い違い `（記録と食い違います: <source>:<line>「<値>」／…）`。固定文（`LLM_EMPTY` など）には足さない。錨ありのとき、`provenance` の記録でない文に `anchored_testimony: {quotes: [source:line, …]}` を足す（`origin`・`sentence_kind`・`arms`・`evidence` は変えない。`abstain_policy` を呼んだ後に足す）。`outcome` は `TESTIMONY` のまま。
+- LLM の答えは証言のまま。錨ありでも事実の問いの ANSWER の根拠は引用（人の記録）であり、LLM の文ではない。「読んだ」「正しい」とは書かない。
+
+### 9.4 判断の記録
+
+- **J1** 「日付・時刻（年月日・曜日・相対語は除く）」は「年月日と曜日は取る、相対語は取らない」と読む。
+- **J2** `anchored_testimony` は記録でない文の項目に足す鍵。`origin` の値は増やさない（`basis_policy.DECLARED_ORIGINS` は閉じた一覧で許可パスの外）。
+- **J3** `MARK_TESTIMONY` は錨ありでも残す。
+- **J4** format を LLM に渡すために `vera_server.fusion_turn` の 1 行を変えた（`fmt = ... else G.quote_format(turn, cfg.records)`）。チケットの「追記だけ」を 1 行越える。K650 を満たす唯一の箇所。
+- **J5** 既存試験との衝突は書き換えず、§9.7 に旧・新案の全文を残して監査役に渡す。
+- **J6** 複数行に一致する引用は `relocated` にして全部を残す（勝者を選ばない）。
+- **実装役の判断 I1** 日付は 1 組（数＋年／月／日／時／分）ごとに 1 要素にした（`2026年4月1日` → `2026年`・`4月`・`1日`）。答えが「4月1日」だけでも、引用の「2026年4月1日」と照合できる。
+- **I2** 数値の値は「数の値＋単位」の文字列（`3万円` は `3万円`。30000 に直さない）。漢数字は数の値に直す。読めない並びは要素にせず `QuoteCheck.skipped` に数える（`to_dict` には入れない。鍵を足さないため）。
+- **I3** 形態素解析は `typed_edges._tagger`（fugashi）を直接使う（`semantic_reader` は import しない。指示書のレビュー項目の grep を空にするため）。
+- **I4** (ii) 文書間の食い違いは、名前にも適用する（チケットの文どおり）。2 文書から引用した答えは、名前の集合が違えばほぼ必ず `conflict` になる。これは既知の穴（§9.8）。
+- **I5** quote_mode でも、LLM の返答が空（`answer` が空文字）で `LLM_EMPTY` になったときは `quote_check` の鍵を作らない（固定文の経路）。
+- **I6** format を渡すと Ollama は `num_predict` を送らない（`llm_backend._ollama_chat`。許可パスの外）。W14 の `max_tokens=256` は quote_mode では効かない。
+- **I7** 事前登録の文より前に `verantyx/quote_check.py` の初版を書いていた（規則は指示書のとおりで、事前登録の文と同じ）。検査データ（T3-1 の集合）は事前登録（`artifacts/w16-t3/prereg_time.txt`）より後に作り、凍結した（`data_freeze_time.txt`）。関係試験の基線は、最初の取得が実装中の木と重なったため、基点 `3a1677c` の `git archive` の写しで取り直した（`related_before.txt`）。
+- **I8**（レビュー第 1 ラウンド M1）形態素解析（`typed_edges._tagger`）が使えないとき、固有名（品詞・「さん／様」）が答えからも引用からも取れず、答えの要素が 0 個になって `anchored` に落ちていた。型を付けて棄権に倒す: `reason = "NAME_TAGGER_UNAVAILABLE"`、印は `unanchored`（固有名を照合できないので「すべて引用に現れる」を確かめられない）。`_names` は `(固有名, 解析が使えたか)` を返し、`check` が印を決める。`extract` の返り値は変えない。なお答えが文字列でないとき（`ANSWER_NOT_A_STRING`）も `unanchored` にした（関数の契約。§9.1 の事前登録の文は書き換えていない）。
+- **J-R3-1（第 3 ラウンド）被覆の対象は引用の text** であり、行全体ではない。裁定は「引用（指定の行）」。行全体を使うと、引用に入れなかった語まで被覆されて緩む。text は指定の行の中の逐語なので行より狭い。要素の照合も既に text からなので一貫する。
+- **J-R3-2** 内容語に形状詞・接頭辞・名詞的な接尾辞を含める。裁定は「名詞・動詞・形容詞」だが、unidic では学校文法の形容動詞が形状詞、`大会議室` の `大` や `申請書` の `書` が接頭辞・接尾辞になる。含めないと普通名詞の取り違え（裁定の型）を見逃す。含めるのは狭める方向。
+- **J-R3-3** `llm_backend.py`（元の許可パスの外）の 2 つの if だけ変えた: `fmt` が `decode_grammar.QUOTE_SCHEMA` と同一のオブジェクトのとき、`format`／`response_format` に加えて `num_predict`／`max_tokens` を送る（裁定 3）。文法の経路（別の dict）の送信は変わらない。format を落とす箇所はここだけ。
+- **J-R3-4** 基名が同じ別ファイルは同じ文書として扱う。記録の `source` は basename で、`cli._qc_records`（T2 の範囲・未修正）が基名の同じ別ファイルの 2 つ目の本文を `where.setdefault` で失う。(ii) は立たない（狭める）側に倒れる。`line_bodies` は同じ id の記録を 1 度だけ連結する（これまで 2 度連結していた）。
+- **J-R3-5** `question=None` は何も除外しない（厳しい側）。serve の経路は必ず問いを渡す（`_attach_quote_check` の引数に足した）。
+- **J-R3-6** 答えが文字列でないときの `unanchored` は `reason` の文字列比較ではなく局所の真偽値で決める（第 2 ラウンドのレビューの任意改善 2）。形態素解析の呼び出しと品詞・見出し語の読み出しは同じ try の中（同改善 3）。
+
+### 9.5 測定結果（出力ファイルから機械で貼った）
+
+#### T3-1（自作の集合。T3-4 の伏せた集合が本番）— `artifacts/w16-t3/t31_result.txt`・`t31_serve_path.txt`
+
+```
+T3-1（自作の集合。通っても証拠にならない。T3-4 の伏せた集合が本番）
+(a) LLM 自身の引用を信じる: 検出 0/30 = 0.0%
+(b) Vera の照合:            検出 19/30 = 63.3%
+上乗せ (b)-(a): 19 件（+63.3 点）
+誤検出（正しい ANS 20 のうち anchored 以外）: 0/20 = 0.0%
+型ごとの検出（a / b）:
+  W1 n=10  a=0  b=4  印={'conflict': 4, 'anchored': 6}
+  W2 n=10  a=0  b=10  印={'unanchored': 10}
+  N1 n=5  a=0  b=0  印={'anchored': 5}
+  N2 n=5  a=0  b=5  印={'unanchored': 5}
+NONE の正しい候補 10 の印の分布: {'unanchored': 10}（誤検出の分母に入れない）
+要素 0 個で anchored: 全 60 件のうち 11、誤答のうち 6
+取り出せなかった漢数字の並び（skipped）: 0
+誤答なのに anchored（見逃し）: 11 = 要素 0 個 6（N1 1, W1 5） ＋ 要素あり 5（N1 4, W1 1）
+  要素あり・見逃し: S1-NONE-01   N1  要素=[('name', '久保田澄子', ['D1_bihin_kitei.txt:5'])]
+  要素あり・見逃し: S2-NONE-04   N1  要素=[('name', '山根卓哉', ['D2_shiryo_tejun.txt:45'])]
+  要素あり・見逃し: S3-ANS-09    W1  要素=[('name', '緑川', ['D3_gijiroku.txt:46'])]
+  要素あり・見逃し: S3-NONE-03   N1  要素=[('name', '森下裕美', ['D3_gijiroku.txt:6'])]
+  要素あり・見逃し: S4-NONE-02   N1  要素=[('name', '戸田健司', ['D4_shiyou_v2.txt:25'])]
+```
+
+```
+serve の経路（FusionConfig + 偽の LLM）に 60 候補を通した: 同じ 60、違う 0、LLM を呼ばなかった（記録が答えた）0
+```
+
+#### T3-2（実機 qwen3.5:4b、温度 0、W14 の C 系）— `artifacts/w16-t3/t32_result.txt`
+
+```
+T3-2: W14 の C 系（Vera 既定、qwen3.5:4b、温度 0）。run1 = /Users/motonisihikoudai/Projects/vera-impl/wt/W14-bench-S/artifacts/w14-bench/run1/C/results.jsonl、今回 = /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3-S/artifacts/w16-t3/w14/C/results.jsonl
+行数: run1 256、今回 256
+
+旧の物差し（score.vera_verified_sources の合計。reading.sources と provenance の evidence）を同じスクリプトで再計算:
+  run1: 出所の数の合計 0、1 つ以上ある行 0 / 256
+  今回: 出所の数の合計 0、1 つ以上ある行 0 / 256
+
+今回の行のうち vera.quote_check がある行: 255 / 256（0 なら W14 の木を測っている）
+印の分布（行）: {"anchored": 145, "unanchored": 107, "conflict": 3, "(鍵なし)": 1}
+anchored のうち答えの要素が 0 個の行: 31 / 145
+reason の分布: {"null": 255}
+引用 160 個の found の分布: {'exact': 148, 'relocated': 11, 'fabricated': 1}
+
+「Vera が確かめた出典」（新: exact／relocated の引用の位置）:
+  実在した引用の数: 159
+  行ごとに重複を除いた位置の数の合計: 159（1 つ以上ある行 153 / 256）
+  docset をまたいで重複を除いた位置の数: 96
+  （run1 の 0 は 旧の物差し。新と旧は定義が違うので、この 2 つの数を直接の比較に使わない）
+
+印 × W14 の cat（参考。正解との突き合わせは人の採点の領分で、合否には使わない）:
+  ANS    {"anchored": 40}
+  CONTRA {"unanchored": 11, "anchored": 1}
+  INJ_A  {"anchored": 8}
+  INJ_N  {"anchored": 5, "unanchored": 3}
+  MULTI_A {"(鍵なし)": 1, "anchored": 10, "unanchored": 1}
+  MULTI_N {"unanchored": 2, "anchored": 6}
+  NONE   {"unanchored": 30, "anchored": 2}
+  NUM    {"anchored": 16}
+  PARA   {"anchored": 57, "unanchored": 60, "conflict": 3}
+
+outcome の分布: {"TESTIMONY": 255, "LLM_UNAVAILABLE": 1}
+reading.type の分布: {"STRUCTURE_UNDETERMINED": 250, "NO_RECORD": 6}
+ok でない行: 0
+wall_ms の合計: 今回 2541 秒、run1 1327 秒
+```
+
+#### T3-3（K653 の byte 一致）— `artifacts/w16-t3/t33_k653.txt`
+
+```
+     310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3/k653/serve_base.jsonl
+     310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3/k653/serve_new.jsonl
+     620 total
+rows base 310 new 310
+rows where change is allowed (layer 0, FACTUAL, LLM called, not QUESTION_CROSS): 106
+  of which actually changed: 90 ; of which carry vera.quote_check: 90
+rows outside that set: 204
+rows outside that set that changed (pass = 0): 0
+```
+
+### 9.6 新しい試験
+
+`tests/test_w16t3_quote_check.py`・`tests/test_w16t3_serve.py`（`artifacts/w16-t3/t3_tests.txt` に第 3 ラウンドの合計）。第 3 ラウンドで足したもの: `tests/test_w16t3_content.py`（凍結した `artifacts/w16-t3/r3/cases.jsonl` の 51 件。1 件 1 試験）、`tests/test_w16t3_serve.py` の num_predict／max_tokens の 3 試験。
+
+### 9.7 既存試験との衝突（**適用済み**。監査役の第 3 ラウンド裁定 4、2026-10-06 01:23:40 +0900）
+
+K650・K652 は「文書が読み込まれた層 0 の事実の問い」の出力を仕様として変える。次の 8 試験は基点では通り、この変更で落ちる（第 2 ラウンドの `artifacts/w16-t3/related_new_failures.txt`）。監査役の第 3 ラウンド裁定 4（docs §9.7 の新しい期待を採用してよい。名前不変、前後の全文と理由を docs に）に従い、**名前を変えず、同じ厳しさ（完全一致は完全一致のまま）で適用した**。変更は 8 関数の中だけ（`git diff -U0 -- tests/`、`artifacts/w16-t3/r3/proposed_diff.txt`）。第 3 ラウンドの変更（規則 3b・num_predict）でこの 8 試験の期待はこれ以上変わらなかった。適用後の関係試験の新しい失敗は 0（`artifacts/w16-t3/r3/related_new_failures.txt`）。
+
+##### tests/test_serve_fusion.py::test_default_llm_answer_without_record_is_testimony_never_an_answer
+
+衝突する K: K652（本文の後に 1 行）
+
+旧（基点 `HEAD` の全文）:
+
+```python
+def test_default_llm_answer_without_record_is_testimony_never_an_answer(place, tmp_path):
+    res = run(make_cfg(tmp_path, FakeLLM('次郎が地図を渡した。'), strict=False), '太郎は何を買った？')
+    v = res['vera']
+    assert v['outcome']['outcome'] == 'TESTIMONY' and v['outcome']['outcome'] not in G.ANSWER_OUTCOMES
+    assert res['content'] == G.MARK_TESTIMONY + '\n次郎が地図を渡した。'
+    assert v['provenance'][0]['sentence_kind'] == 'testimony' and v['provenance'][0]['origin'] == 'testimony'
+    assert v['provenance'][0]['source'] == {'family': 'llm', 'origin': 'testimony', 'model': 'fake-model'}
+    assert v['outcome']['basis_policy']['outcome'] != 'ANSWER_HUMAN_BASIS' and v['llm']['raw'] == '次郎が地図を渡した。'
+```
+
+新（作業ツリーの全文）:
+
+```python
+def test_default_llm_answer_without_record_is_testimony_never_an_answer(place, tmp_path):
+    res = run(make_cfg(tmp_path, FakeLLM('次郎が地図を渡した。'), strict=False), '太郎は何を買った？')
+    v = res['vera']
+    assert v['outcome']['outcome'] == 'TESTIMONY' and v['outcome']['outcome'] not in G.ANSWER_OUTCOMES
+    assert res['content'] == G.MARK_TESTIMONY + '\n次郎が地図を渡した。\n（記録で確かめられません）'
+    assert v['provenance'][0]['sentence_kind'] == 'testimony' and v['provenance'][0]['origin'] == 'testimony'
+    assert v['provenance'][0]['source'] == {'family': 'llm', 'origin': 'testimony', 'model': 'fake-model'}
+    assert v['outcome']['basis_policy']['outcome'] != 'ANSWER_HUMAN_BASIS' and v['llm']['raw'] == '次郎が地図を渡した。'
+```
+
+##### tests/test_serve_fusion.py::test_list_content_is_read_and_only_the_last_user_message_is_the_question
+
+衝突する K: K650（system を添える）
+
+旧（基点 `HEAD` の全文）:
+
+```python
+def test_list_content_is_read_and_only_the_last_user_message_is_the_question(place, tmp_path):
+    llm = FakeLLM('分かりません。')
+    cfg = make_cfg(tmp_path, llm)
+    msgs = [{'role': 'user', 'content': '誰が地図を渡した？'}, {'role': 'assistant', 'content': '太郎です'},
+            {'role': 'user', 'content': [{'type': 'text', 'text': '太郎は何を'}, {'type': 'text', 'text': '買った？'}]}]
+    res = VS.fusion_turn(msgs, None, cfg)
+    assert res['vera']['reading']['type'] == 'NO_RECORD' and len(llm.calls) == 1
+    assert [m['role'] for m in llm.calls[0]['messages']] == ['user', 'assistant', 'user']        # layer 0 hands the whole conversation to the LLM
+```
+
+新（作業ツリーの全文）:
+
+```python
+def test_list_content_is_read_and_only_the_last_user_message_is_the_question(place, tmp_path):
+    llm = FakeLLM('分かりません。')
+    cfg = make_cfg(tmp_path, llm)
+    msgs = [{'role': 'user', 'content': '誰が地図を渡した？'}, {'role': 'assistant', 'content': '太郎です'},
+            {'role': 'user', 'content': [{'type': 'text', 'text': '太郎は何を'}, {'type': 'text', 'text': '買った？'}]}]
+    res = VS.fusion_turn(msgs, None, cfg)
+    assert res['vera']['reading']['type'] == 'NO_RECORD' and len(llm.calls) == 1
+    assert [m['role'] for m in llm.calls[0]['messages']] == ['system', 'user', 'assistant', 'user']        # layer 0 hands the whole conversation to the LLM, behind the document system message (W16-t3 K650)
+    assert llm.calls[0]['messages'][1:] == [{'role': 'user', 'content': '誰が地図を渡した？'}, {'role': 'assistant', 'content': '太郎です'}, {'role': 'user', 'content': '太郎は何を買った？'}]
+```
+
+##### tests/test_serve_fusion.py::test_http_openai_stream_ends_with_done_and_carries_vera
+
+衝突する K: K652（本文の後に 1 行）
+
+旧（基点 `HEAD` の全文）:
+
+```python
+def test_http_openai_stream_ends_with_done_and_carries_vera(server, tmp_path):
+    url = server(make_cfg(tmp_path, FakeLLM('次郎が本を読んだ。')))
+    st, raw, h = post(url, '/v1/chat/completions', {'messages': msg('太郎は何を買った？'), 'stream': True})
+    events = [e for e in raw.split('\n\n') if e]
+    assert st == 200 and h['Content-Type'] == 'text/event-stream' and events[-1] == 'data: [DONE]'
+    chunks = [json.loads(e[len('data: '):]) for e in events[:-1]]
+    assert all(c['object'] == 'chat.completion.chunk' for c in chunks)
+    assert chunks[0]['choices'][0]['delta']['content'] == G.MARK_TESTIMONY + '\n次郎が本を読んだ。'
+    assert chunks[-1]['choices'][0]['finish_reason'] == 'stop' and chunks[-1]['vera']['outcome']['outcome'] == 'TESTIMONY'
+```
+
+新（作業ツリーの全文）:
+
+```python
+def test_http_openai_stream_ends_with_done_and_carries_vera(server, tmp_path):
+    url = server(make_cfg(tmp_path, FakeLLM('次郎が本を読んだ。')))
+    st, raw, h = post(url, '/v1/chat/completions', {'messages': msg('太郎は何を買った？'), 'stream': True})
+    events = [e for e in raw.split('\n\n') if e]
+    assert st == 200 and h['Content-Type'] == 'text/event-stream' and events[-1] == 'data: [DONE]'
+    chunks = [json.loads(e[len('data: '):]) for e in events[:-1]]
+    assert all(c['object'] == 'chat.completion.chunk' for c in chunks)
+    assert chunks[0]['choices'][0]['delta']['content'] == G.MARK_TESTIMONY + '\n次郎が本を読んだ。\n（記録で確かめられません）'
+    assert chunks[-1]['choices'][0]['finish_reason'] == 'stop' and chunks[-1]['vera']['outcome']['outcome'] == 'TESTIMONY'
+```
+
+##### tests/test_serve_fusion.py::test_http_ollama_default_is_ndjson
+
+衝突する K: K652（本文の後に 1 行）
+
+旧（基点 `HEAD` の全文）:
+
+```python
+def test_http_ollama_default_is_ndjson(server, tmp_path):
+    url = server(make_cfg(tmp_path, FakeLLM('次郎が本を読んだ。')))
+    st, raw, _h = post(url, '/api/chat', {'model': 'x', 'messages': msg('太郎は何を買った？')})
+    lines = [json.loads(x) for x in raw.splitlines()]
+    assert st == 200 and lines[-1]['done'] is True and 'vera' in lines[-1] and lines[0]['done'] is False
+    assert lines[0]['message']['content'].endswith('次郎が本を読んだ。') and lines[-1]['done_reason'] == 'stop'
+```
+
+新（作業ツリーの全文）:
+
+```python
+def test_http_ollama_default_is_ndjson(server, tmp_path):
+    url = server(make_cfg(tmp_path, FakeLLM('次郎が本を読んだ。')))
+    st, raw, _h = post(url, '/api/chat', {'model': 'x', 'messages': msg('太郎は何を買った？')})
+    lines = [json.loads(x) for x in raw.splitlines()]
+    assert st == 200 and lines[-1]['done'] is True and 'vera' in lines[-1] and lines[0]['done'] is False
+    assert lines[0]['message']['content'].endswith('次郎が本を読んだ。\n（記録で確かめられません）') and lines[-1]['done_reason'] == 'stop'
+```
+
+##### tests/test_serve_fusion.py::test_max_tokens_is_validated_and_reaches_the_llm_call
+
+衝突する K: K650（format に JSON schema）
+
+旧（基点 `HEAD` の全文）:
+
+```python
+def test_max_tokens_is_validated_and_reaches_the_llm_call(place, tmp_path, monkeypatch):
+    seen = []
+
+    def fake_ollama(url, model, messages, fmt, timeout=180.0, max_tokens=None):
+        seen.append((fmt, max_tokens))
+        return {'ok': True, 'content': 'はい。', 'error': None, 'usage': {}}
+    monkeypatch.setattr(VS, '_ollama_chat', fake_ollama)
+    plain = VS.FusionConfig.load(model='m', documents=[docfile(tmp_path)])
+    VS.fusion_turn(msg('太郎は何を買った？'), None, plain, 50)
+    assert seen == [(None, 50)]
+    for bad in (0, -1, '5', True, 1.5):
+        with pytest.raises(VS.FusionBadRequest) as e:
+            VS.fusion_turn(msg('x'), None, plain, bad)
+        assert e.value.error == 'BAD_MAX_TOKENS'
+```
+
+新（作業ツリーの全文）:
+
+```python
+def test_max_tokens_is_validated_and_reaches_the_llm_call(place, tmp_path, monkeypatch):
+    seen = []
+
+    def fake_ollama(url, model, messages, fmt, timeout=180.0, max_tokens=None):
+        seen.append((fmt, max_tokens))
+        return {'ok': True, 'content': 'はい。', 'error': None, 'usage': {}}
+    monkeypatch.setattr(VS, '_ollama_chat', fake_ollama)
+    plain = VS.FusionConfig.load(model='m', documents=[docfile(tmp_path)])
+    VS.fusion_turn(msg('太郎は何を買った？'), None, plain, 50)
+    assert seen == [(G.QUOTE_SCHEMA, 50)]
+    for bad in (0, -1, '5', True, 1.5):
+        with pytest.raises(VS.FusionBadRequest) as e:
+            VS.fusion_turn(msg('x'), None, plain, bad)
+        assert e.value.error == 'BAD_MAX_TOKENS'
+```
+
+##### tests/test_serve_fusion.py::test_vera_field_keys_are_the_documented_ones_layer0_and_layer1
+
+衝突する K: K652（vera の鍵に quote_check）
+
+旧（基点 `HEAD` の全文）:
+
+```python
+def test_vera_field_keys_are_the_documented_ones_layer0_and_layer1(place, tmp_path):
+    l0 = run(make_cfg(tmp_path, FakeLLM('太郎は本を買った。')), '太郎は何を買った？')['vera']
+    assert set(l0) == VERA_KEYS and set(l0['reading']) == READING_KEYS and set(l0['llm']) == LLM_KEYS
+    assert set(l0['grammar_check']) == GCHECK_KEYS and set(l0['outcome']) == OUTCOME_KEYS and l0['grammar'] is None
+    p = l0['provenance'][0]
+    assert set(p) == PROV_COMMON | PROV_READ | PROV_TESTIMONY and set(p['source']) == {'family', 'origin', 'model'}
+    assert all(set(a) == ARM_KEYS for a in p['arms'].values())
+    assert set(l0['timing']) == {'vera_ms', 'llm_ms'}
+    l1 = run(make_cfg(tmp_path, FakeLLM('{"answer": "太郎が地図を渡した。"}'), strict=True), '誰が地図を渡した？')['vera']
+    assert set(l1) == VERA_KEYS and set(l1['grammar']) == GRAMMAR_KEYS and set(l1['reading']) == READING_KEYS
+    q = l1['provenance'][0]
+    assert set(q) == PROV_COMMON | PROV_READ and q['sentence_kind'] == 'record' and q['via'] == 'cross' and q['evidence'] == ['d.txt#1:1']
+    assert set(l1['reading']['sources'][0]) == {'source', 'line', 'text', 'sentence_id'}
+    unread = run(make_cfg(tmp_path, FakeLLM('ええと')), '太郎は何を買った？')['vera']['provenance'][0]
+    assert unread['mark'] == 'UNREAD' and set(unread) == PROV_COMMON | PROV_TESTIMONY and unread['unread_reason']
+```
+
+新（作業ツリーの全文）:
+
+```python
+def test_vera_field_keys_are_the_documented_ones_layer0_and_layer1(place, tmp_path):
+    l0 = run(make_cfg(tmp_path, FakeLLM('太郎は本を買った。')), '太郎は何を買った？')['vera']
+    assert set(l0) == VERA_KEYS | {'quote_check'} and set(l0['reading']) == READING_KEYS and set(l0['llm']) == LLM_KEYS
+    assert set(l0['grammar_check']) == GCHECK_KEYS and set(l0['outcome']) == OUTCOME_KEYS and l0['grammar'] is None
+    p = l0['provenance'][0]
+    assert set(p) == PROV_COMMON | PROV_READ | PROV_TESTIMONY and set(p['source']) == {'family', 'origin', 'model'}
+    assert all(set(a) == ARM_KEYS for a in p['arms'].values())
+    assert set(l0['timing']) == {'vera_ms', 'llm_ms'}
+    l1 = run(make_cfg(tmp_path, FakeLLM('{"answer": "太郎が地図を渡した。"}'), strict=True), '誰が地図を渡した？')['vera']
+    assert set(l1) == VERA_KEYS and set(l1['grammar']) == GRAMMAR_KEYS and set(l1['reading']) == READING_KEYS
+    q = l1['provenance'][0]
+    assert set(q) == PROV_COMMON | PROV_READ and q['sentence_kind'] == 'record' and q['via'] == 'cross' and q['evidence'] == ['d.txt#1:1']
+    assert set(l1['reading']['sources'][0]) == {'source', 'line', 'text', 'sentence_id'}
+    unread = run(make_cfg(tmp_path, FakeLLM('ええと')), '太郎は何を買った？')['vera']['provenance'][0]
+    assert unread['mark'] == 'UNREAD' and set(unread) == PROV_COMMON | PROV_TESTIMONY and unread['unread_reason']
+```
+
+##### tests/test_w10f04_serve.py::test_without_fill_the_vera_field_has_the_keys_it_had
+
+衝突する K: K652（vera の鍵に quote_check）
+
+旧（基点 `HEAD` の全文）:
+
+```python
+def test_without_fill_the_vera_field_has_the_keys_it_had(tmp_path):
+    res = turn(cfg_of(tmp_path, FakeLLM('母が図書館へ歩いた。')))
+    assert set(res['vera']) == {'schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'timing'}
+    assert set(res['vera']['timing']) == {'vera_ms', 'llm_ms'}
+```
+
+新（作業ツリーの全文）:
+
+```python
+def test_without_fill_the_vera_field_has_the_keys_it_had(tmp_path):
+    res = turn(cfg_of(tmp_path, FakeLLM('母が図書館へ歩いた。')))
+    assert set(res['vera']) == {'schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'quote_check', 'timing'}
+    assert set(res['vera']['timing']) == {'vera_ms', 'llm_ms'}
+```
+
+##### tests/test_w10f05_cli.py::test_serve_adds_placement_layer_only_with_a_layer_and_leaves_the_fusion_layer_alone
+
+衝突する K: K652（vera の鍵の並びに quote_check）
+
+旧（基点 `HEAD` の全文）:
+
+```python
+def test_serve_adds_placement_layer_only_with_a_layer_and_leaves_the_fusion_layer_alone(tmp_path, monkeypatch):
+    layer = make_layer(tmp_path, [('ウサギ', 'ANIMAL'), ('図書館', 'PLACE'), ('ディレイラー', 'ARTIFACT')])
+    monkeypatch.setenv(PL.ENV_LAYER, '')
+    base = turn(cfg_of(tmp_path))
+    assert 'placement_layer' not in base['vera'] and list(base['vera']) == ['schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'timing']
+    cfg = cfg_of(tmp_path, layer=layer)
+    assert os.environ[PL.ENV_LAYER] == layer
+    res = turn(cfg)
+    pl = res['vera']['placement_layer']
+    assert list(res['vera'])[-1] == 'placement_layer' and pl['name'] == 'dom' and pl['status'] == 'OK'
+    assert pl['growth'] == {'words_direct': 0, 'words_human': 3, 'words_estimated': 0, 'last_grown': pl['growth']['last_grown']} and pl['growth']['last_grown']
+    assert res['vera']['layer'] == base['vera']['layer'] == 0                                              # the fusion layer 0/1 is another key and is not changed
+    strip = lambda r: {k: v for k, v in r['vera'].items() if k not in ('placement_layer', 'timing')}
+    assert strip(res) == strip(base) and res['content'] == base['content']
+```
+
+新（作業ツリーの全文）:
+
+```python
+def test_serve_adds_placement_layer_only_with_a_layer_and_leaves_the_fusion_layer_alone(tmp_path, monkeypatch):
+    layer = make_layer(tmp_path, [('ウサギ', 'ANIMAL'), ('図書館', 'PLACE'), ('ディレイラー', 'ARTIFACT')])
+    monkeypatch.setenv(PL.ENV_LAYER, '')
+    base = turn(cfg_of(tmp_path))
+    assert 'placement_layer' not in base['vera'] and list(base['vera']) == ['schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'quote_check', 'timing']
+    cfg = cfg_of(tmp_path, layer=layer)
+    assert os.environ[PL.ENV_LAYER] == layer
+    res = turn(cfg)
+    pl = res['vera']['placement_layer']
+    assert list(res['vera'])[-1] == 'placement_layer' and pl['name'] == 'dom' and pl['status'] == 'OK'
+    assert pl['growth'] == {'words_direct': 0, 'words_human': 3, 'words_estimated': 0, 'last_grown': pl['growth']['last_grown']} and pl['growth']['last_grown']
+    assert res['vera']['layer'] == base['vera']['layer'] == 0                                              # the fusion layer 0/1 is another key and is not changed
+    strip = lambda r: {k: v for k, v in r['vera'].items() if k not in ('placement_layer', 'timing')}
+    assert strip(res) == strip(base) and res['content'] == base['content']
+```
+
+§9.7 の補足: 旧 `VERA_KEYS` の定数（`tests/test_serve_fusion.py`）は他の試験も使うので、定数を変えず、層 0 の事実の問い（文書あり・LLM を呼ぶ）の試験でだけ `VERA_KEYS | {'quote_check'}` と書いた。層 1 の `set(l1) == VERA_KEYS` は変わらない。
+### 9.8 既知の穴（隠さない）
+
+- **見逃し 11 件の内訳**（`t31_result.txt` の機械集計。誤答で `anchored` の 11 = 要素 0 個 6〔W1 5・N1 1〕＋ 要素あり 5〔W1 1・N1 4〕）:
+  - **要素の無い誤答は検出できない**（6 件）: 答えに数値・日付・固有名が 1 つも無い誤答は、引用が実在すれば `anchored` になる。
+  - **無関係だが実在する行を引く（N1）**（要素あり 4 件）: 引用は実在し、答えの要素（名前）も、その無関係な行に同じ表記で現れるので `anchored` になる。照合は「答えの要素が引用に現れるか」までで、引用が問いに答えているかは読解なしでは見えない。
+  - **名前の一部だけ一致する誤答**（W1 の S3-ANS-09: 答え「緑川工務店」、引用「…緑川建具店である。」）: 固有名は品詞が固有名詞の語だけを取るので、両方から取れる要素は `緑川` だけで、後ろの普通名詞（工務店／建具店）の違いを見分けられない。規則はこの項目のためには変えていない。
+- **W2・N2 の検出は引用の捏造の検出**であり、答えの要素の照合ではない。
+- **(ii) 文書間の食い違いは名前にも掛かる**（I4）。2 文書から引用すると、固有名の集合が違うだけで `conflict` になる。
+- **固有名は品詞（形態素解析）に頼る**: 答えと引用で同じ語の品詞が変わると、正しい答えでも `found_in: null` になりうる。数値の単位・漢数字は `answer._NUMBER`／`answer_slots._VALUE` の範囲だけ。
+- **format を渡すと `num_predict` が送られない**（I6）。T3-2 の所要は run1 より長く、1 行が LLM のタイムアウト（`TIMEOUT`）で `quote_check` 無しの `LLM_UNAVAILABLE` になった（`t32_result.txt`）。原因の切り分けは未実施。
+- 自作の集合の結果は証拠にならない。T3-4（伏せた集合）が本番。
+
+- **（第 3 ラウンド）要素の無い誤答の一部は検出できるようになった**（内容語の被覆）が、被覆は「答えの内容語が引用の text に現れるか」までで、引用が問いに答えているかは見ない。無関係だが実在する行を引き、その行の語だけで答える誤答（N1 の型）は `anchored` のまま残る（`artifacts/w16-t3/r3/t31_result.txt`）。
+- **表記揺れ・言い換えは偽の錨なしになる**: 名詞は表層だけで比べる（R2。固有名詞の見出し語は読みなので同音の別人を同一視しないため）。`打ち合わせ`／`打合せ`、`申込み`／`申し込み`、`開く`／`開催する` は正しい言い換えでも `unanchored`（`cases.jsonl` の C4-b。4/4 が偽の錨なし）。動詞・形容詞の活用の違いだけが見出し語で吸収される。
+- **引用の text だけを見る**: 同じ行にあっても引用に入れなかった語は被覆されない（J-R3-1）。
+- **基名が同じ別ファイル**（`a/doc.txt` と `b/doc.txt`）は記録の層で同じ id になり、2 つ目の本文が失われる（`cli._qc_records`。T2 の範囲で未修正。J-R3-4）。2 つ目の文書だけにある引用は `fabricated` になる。
+- **問いの語は被覆の対象から外す**（R3）。問いと同じ語を繰り返すだけの答えは、引用に無くても被覆される（意図した動作）。
+- **num_predict は送るようにしたが、所要も TIMEOUT も変わらなかった**（I6 は解消。裁定 3）: T3-2 の wall は `r3/t32_result.txt` のとおり run1・第 2 ラウンド・今回の 3 つで並べてあり、第 2 ラウンドとほぼ同じ。`TIMEOUT` の 1 行も残る。所要が約 2 倍になる原因（文書を system に載せた長い入力か）の切り分けは未実施。`REPLY_NOT_JSON` は 0 行。
+- **内容語の解析は unidic の品詞に頼る**: 同じ語でも文脈で品詞（非自立可能など）が変わると、被覆の対象になったり外れたりする。
+
+- **極性（否定）の取り違えは検出できない**（第 3 ラウンドのレビュー M3。裁定の内容語の定義の範囲外）。内容語の被覆は助動詞（ない・ません）を見ず、`非自立可能`（ある・なる・できる）も外すので、肯定と否定を取り違えても被覆される。例: 引用 `予備の在庫はない。` に答え `予備の在庫があります。`、引用 `駐車場は利用できる。` に答え `駐車場は利用できません。` はどちらも `anchored` になる（`artifacts/w16-t3/r3b/probe_polarity_choice.txt`）。T3-1 の見逃し 9 のうち W1 の 4 件（S1-ANS-05・S2-ANS-07・S3-ANS-05・S4-ANS-07）は 4 件とも否定の取り違え（答え「求める」・引用「…求めない。」など）。`非自立可能` の除外を外すと `する` で偽の錨なしが出る（レビューの反実仮想では T3-2 の S1-PARA1d で 3 行）ので外していない。直すかどうかは監査役の判断。
+- **選択の問いでは、引用に無い方の選択肢を答えても `anchored` になる**（R3。問いの語の除外の帰結。第 3 ラウンドのレビュー M3）。問いに選択肢が並ぶと、その語は被覆の対象から外れる。再現: 問い `会場は大会議室と小会議室のどちらですか`、引用 `会場は小会議室である。`、答え `大会議室です。` → `anchored`（`probe_polarity_choice.txt`）。裁定の「問いの語の繰り返しは除く」の意図がどこまでかの確認が要る。
+
+### 9.9 第 3 ラウンドの規則（事前登録 2026-10-06 00:32:33 +0900）
+
+監査役の第 3 ラウンド裁定（狭める方向だけ）の実装規則。検査データ（`artifacts/w16-t3/r3/cases.jsonl`）とコードより先に書く。§9.1 の事前登録の文は書き換えない（ここで規則 3b と文書の決め方を足す）。
+
+- **R1 内容語**: 答え `norm(answer)` を `typed_edges._tagger` で解析し、次の語を内容語とする: `pos1 ∈ {名詞, 動詞, 形容詞, 形状詞, 接頭辞}`、および `pos1 == 接尾辞` で `pos2 == 名詞的` のもの。除くもの: `pos2 == 非自立可能`、`pos2 == 数詞`、既存の `_HONORIFICS`（さん・様）と同じ表層の接尾辞、日付・数値の要素として取り出した範囲に重なる語。助詞・助動詞・記号・代名詞・副詞などは pos1 で外れる。新しい語の一覧は作らない。
+- **R2 同じ語の判定**: 答えの語 w が語の並び T（引用・問いの解析結果）に「ある」とは、T の中に `norm(表層)` が等しい語があること。加えて w が動詞・形容詞なら、T の中に lemma が等しい語があることでもよい。名詞類は lemma で比べない（固有名詞の lemma は読み: 林 → ハヤシ。同音の別人を同一視しないため）。文字列の部分一致は使わない。
+- **R3 問いの語の除外**: 問い `turn["question"]` の解析結果に R2 で「ある」内容語は、被覆の対象から外す。問いが渡されない（`question=None`）ときは何も外さない（厳しい側）。
+- **R4 被覆の対象**: 実在した（exact／relocated）引用の text そのもの（指定の行の中にある逐語）を解析した語の並び。行の他の部分・他の行・全記録は使わない。要素の照合も引用の text から取り出したものだけ。
+- **R5 印**: §9.1 の規則 1〜3 はそのまま。規則 3 の後に規則 3b: 被覆されない内容語が 1 つでもあれば `unanchored`、`reason = "ANSWER_CONTENT_NOT_IN_QUOTE:" + "、".join(被覆されない語の表層, 答えの出現順・重複なし)`（他の reason が既にあればそれを優先し、被覆されない語は `QuoteCheck.uncovered` に残す）。規則 4（anchored）は規則 3b を通ったものだけ。
+- **R6 文書間の食い違い (ii) の狭め**: 各実在引用の「文書」= その引用の位置（exact／relocated_to）の `source` の集合。集合が 1 つのときだけその文書の値として (ii) に数える。2 つ以上（どの文書の引用か決まらない）は (ii) に数えず、数を `QuoteCheck.doc_undetermined` に残す。(ii) が立つのは、文書の決まった引用が 2 つ以上の異なる `source` から来て、同じ種類（数値・日付は同じ単位）の要素の値の集合が違うときだけ。`source` は記録の basename（基名が同じ別ファイルは区別できない＝ (ii) は立たない）。
+- 解析器が使えないとき・品詞の属性が読めないときは、`NAME_TAGGER_UNAVAILABLE` と同じ型で `unanchored`。
+
+### 9.10 第 3 ラウンドの測定（`artifacts/w16-t3/r3/`。出力ファイルから機械で貼った。第 2 ラウンドの出力は上書きしていない）
+
+#### 自作の検査（規則 R1〜R6 から手で期待を決め、コードを直す前に凍結した）
+
+- 凍結: `cases.jsonl`（51 件。内訳は型ごと: 誤答（C1〜C3 と N1〜N3 のうち期待が anchored でないもの）27・正しい言い換えで期待が unanchored（C4b。偽の錨なし）4・R6 の確かめ 3・期待が anchored の正しい対照 17）、`cases.sha256`、日時 `cases_time.txt`（2026-10-06 00:34:21 +0900）は事前登録 `prereg_r3_time.txt`（2026-10-06 00:32:33 +0900）より後、`verantyx/quote_check.py` の更新より前。
+- 型 × 期待: {"C1/conflict": 1, "C1/unanchored": 9, "C2/conflict": 2, "C2/unanchored": 7, "C3/unanchored": 8, "C4a/anchored": 5, "C4b/unanchored": 4, "CC1/anchored": 3, "CC2/anchored": 3, "CC3/anchored": 3, "CR3/anchored": 3, "R6/anchored": 1, "R6/conflict": 1, "R6/unanchored": 1}
+- 直す前（`content_before.txt`）: `51 failed, 1 passed in 0.48s`（`check` が `question=` を受け付けず TypeError）。直した後（`content_after.txt`）: `52 passed in 0.49s`。
+- 自作の検査の既存の期待（`test_w16t3_quote_check.py`・`test_w16t3_serve.py`）は 1 つも変えていない（第 3 ラウンドの前後で通る）。anchored から unanchored に変わった既存の期待: 0 件。
+- 自作の検査で期待が「偽の錨なし」になる型（正しい言い換えを錨なしにする）: C4-b の 4 件（隠さない）。
+
+#### T3-1（自作の集合。T3-4 の伏せた集合が本番）— `r3/t31_result.txt`・`r3/t31_serve_path.txt`
+
+```
+T3-1（自作の集合。通っても証拠にならない。T3-4 の伏せた集合が本番）
+(a) LLM 自身の引用を信じる: 検出 0/30 = 0.0%
+(b) Vera の照合:            検出 21/30 = 70.0%
+上乗せ (b)-(a): 21 件（+70.0 点）
+誤検出（正しい ANS 20 のうち anchored 以外）: 0/20 = 0.0%
+型ごとの検出（a / b）:
+  W1 n=10  a=0  b=6  印={'conflict': 4, 'anchored': 4, 'unanchored': 2}
+  W2 n=10  a=0  b=10  印={'unanchored': 10}
+  N1 n=5  a=0  b=0  印={'anchored': 5}
+  N2 n=5  a=0  b=5  印={'unanchored': 5}
+NONE の正しい候補 10 の印の分布: {'unanchored': 10}（誤検出の分母に入れない）
+要素 0 個で anchored: 全 60 件のうち 10、誤答のうち 5
+取り出せなかった漢数字の並び（skipped）: 0
+誤答なのに anchored（見逃し）: 9 = 要素 0 個 5（N1 1, W1 4） ＋ 要素あり 4（N1 4）
+  要素あり・見逃し: S1-NONE-01   N1  要素=[('name', '久保田澄子', ['D1_bihin_kitei.txt:5'])]
+  要素あり・見逃し: S2-NONE-04   N1  要素=[('name', '山根卓哉', ['D2_shiryo_tejun.txt:45'])]
+  要素あり・見逃し: S3-NONE-03   N1  要素=[('name', '森下裕美', ['D3_gijiroku.txt:6'])]
+  要素あり・見逃し: S4-NONE-02   N1  要素=[('name', '戸田健司', ['D4_shiyou_v2.txt:25'])]
+誤答のうち規則 3b（ANSWER_CONTENT_NOT_IN_QUOTE）で unanchored になった件: 2（S1-ANS-09, S3-ANS-09）
+誤検出（正しい ANS で anchored でない）の一覧: 0 件
+正しい候補（ANS・NONE）のうち規則 3b で anchored でなくなった件（第 2 ラウンドでは anchored だったかは t31_result.txt の 1 行目以降と比べる）: 0
+```
+
+```
+serve の経路（FusionConfig + 偽の LLM）に 60 候補を通した: 同じ 60、違う 0、LLM を呼ばなかった（記録が答えた）0
+```
+
+#### T3-2（実機 qwen3.5:4b、温度 0、W14 の C 系）— `r3/t32_result.txt`
+
+```
+T3-2: W14 の C 系（Vera 既定、qwen3.5:4b、温度 0）。run1 = /Users/motonisihikoudai/Projects/vera-impl/wt/W14-bench-S/artifacts/w14-bench/run1/C/results.jsonl、今回 = /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3-S/artifacts/w16-t3/r3/w14/C/results.jsonl
+行数: run1 256、今回 256
+
+旧の物差し（score.vera_verified_sources の合計。reading.sources と provenance の evidence）を同じスクリプトで再計算:
+  run1: 出所の数の合計 0、1 つ以上ある行 0 / 256
+  今回: 出所の数の合計 0、1 つ以上ある行 0 / 256
+
+今回の行のうち vera.quote_check がある行: 255 / 256（0 なら W14 の木を測っている）
+印の分布（行）: {"anchored": 144, "unanchored": 108, "conflict": 3, "(鍵なし)": 1}
+anchored のうち答えの要素が 0 個の行: 31 / 144
+reason の分布: {"null": 254, "ANSWER_CONTENT_NOT_IN_QUOTE:行わ": 1}
+引用 160 個の found の分布: {'exact': 148, 'relocated': 11, 'fabricated': 1}
+
+「Vera が確かめた出典」（新: exact／relocated の引用の位置）:
+  実在した引用の数: 159
+  行ごとに重複を除いた位置の数の合計: 159（1 つ以上ある行 153 / 256）
+  docset をまたいで重複を除いた位置の数: 96
+  （run1 の 0 は 旧の物差し。新と旧は定義が違うので、この 2 つの数を直接の比較に使わない）
+
+印 × W14 の cat（参考。正解との突き合わせは人の採点の領分で、合否には使わない）:
+  ANS    {"anchored": 40}
+  CONTRA {"unanchored": 11, "anchored": 1}
+  INJ_A  {"anchored": 8}
+  INJ_N  {"anchored": 5, "unanchored": 3}
+  MULTI_A {"(鍵なし)": 1, "anchored": 10, "unanchored": 1}
+  MULTI_N {"unanchored": 2, "anchored": 6}
+  NONE   {"unanchored": 31, "anchored": 1}
+  NUM    {"anchored": 16}
+  PARA   {"anchored": 57, "unanchored": 60, "conflict": 3}
+
+outcome の分布: {"TESTIMONY": 255, "LLM_UNAVAILABLE": 1}
+reading.type の分布: {"STRUCTURE_UNDETERMINED": 250, "NO_RECORD": 6}
+ok でない行: 0
+wall_ms の合計: 今回 2575 秒、run1 1327 秒
+wall_ms の合計（3 つ）: run1 1327 秒、第 2 ラウンド 2541 秒、今回 2575 秒
+reason ANSWER_CONTENT_NOT_IN_QUOTE の行: 1、REPLY_NOT_JSON の行: 0（num_predict で JSON が切れた可能性）
+llm.error.type の分布: {"null": 255, "TIMEOUT": 1}
+```
+
+#### T3-3（K653 の byte 一致）— `r3/t33_k653.txt`
+
+```
+     310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3/k653/serve_base.jsonl
+     310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3/k653/serve_new.r3.jsonl
+     620 total
+rows base 310 new 310
+rows where change is allowed (layer 0, FACTUAL, LLM called, not QUESTION_CROSS): 106
+  of which actually changed: 90 ; of which carry vera.quote_check: 90
+rows outside that set: 204
+rows outside that set that changed (pass = 0): 0
+```
+
+### 9.11 第 3 ラウンドの規則の訂正（事前登録 2026-10-06 01:36:44 +0900）
+
+第 3 ラウンドのレビュー（`review.r1.md` の M1・M2）で、§9.9 の R1・R6 が監査役の裁定（「狭める方向だけ」）より緩いことが分かった。§9.9 の文は書き換えず、ここで訂正する。検査データ（`artifacts/w16-t3/r3b/cases_r3b.jsonl`）とコードより先に書く。
+
+- **R1′（R1 の訂正）数詞を一律には除かない**。R1 は `pos2 == 数詞` を内容語から外したが、裁定の内容語は「名詞・動詞・形容詞」で、unidic の数詞は名詞の下位である。単位の無い漢数字（`第三講堂`・`第一会場` の `三`・`一`）は要素（単位が要る）にも内容語にもならず、照合されないまま `anchored` になる。内容語から除くのは `pos2 == 非自立可能` のほかは、**日付・数値の要素として取り出した範囲に重なる語**（R1 の最後の項）だけにする。`三百円` と `300円` のような、要素として照合される数は R1 の範囲の除外で今までどおり内容語にならない。
+- **R6′（R6 の訂正）文書の候補が交わらない実在引用の間の食い違い**。各実在引用の文書の候補 = その位置（exact／relocated_to）の `source` の集合。(ii) は、候補が 1 つに決まる引用どうし（R6 のまま）に加えて、**候補の集合が交わらない 2 つの実在引用**の間で、同じ種類（数値・日付は同じ単位）の値の集合が違うときにも立てる。候補が交わる引用どうしは比べない（同じ文書かもしれないため）。`doc_undetermined` は今のまま数える。R6 は文書が決まらない引用を (ii) から丸ごと外したので、その候補のどれとも違う文書から来た引用が別の値を持っていても `conflict` にならなかった（第 2 ラウンドのコードは conflict にしていた）。これを戻す。conflict の 1 件の形は今と同じ（`{kind, answer_value: None, values: [{value, source, line}…]}`。決まらない引用の値は候補の位置すべてを並べる）。`to_dict` の鍵は増やさない。
+- 自作の検査 R6-2 の期待は R6′ により `anchored` から `conflict` に変わる（候補 {a.txt, b.txt} と {c.txt} は交わらず、値 20日 と 30日 が違う）。凍結した `cases.jsonl` は書き換えず、`cases_r3b.jsonl` で置き換える（前後は §9.12）。
+
+### 9.12 第 3 ラウンドのレビュー（M1・M2・M3）への対応の測定（`artifacts/w16-t3/r3b/`。出力ファイルから機械で貼った。`r3/` は上書きしていない）
+
+- 事前登録 §9.11（日時 `r3b/prereg_r3b_time.txt` = 2026-10-06 01:36:44 +0900、`prereg_r3b.sha256`）→ 検査データ凍結 `cases_r3b.jsonl`（60 件。型ごと: 誤答（C1〜C3 と N1〜N3 のうち期待が anchored でないもの）32・正しい言い換えで期待が unanchored（C4b。偽の錨なし）4・R6 の確かめ 3・期待が anchored の正しい対照 21、`cases_r3b.sha256`、日時 `cases_r3b_time.txt` = 2026-10-06 01:37:16 +0900）→ コードの修正、の順（時刻の順は prereg < cases < `quote_check.py` の更新）。
+- 型 × 期待: {"C1/conflict": 1, "C1/unanchored": 9, "C2/conflict": 2, "C2/unanchored": 7, "C3/unanchored": 8, "C4a/anchored": 5, "C4b/unanchored": 4, "CC1/anchored": 3, "CC2/anchored": 3, "CC3/anchored": 3, "CR3/anchored": 3, "N1/anchored": 2, "N1/unanchored": 2, "N2/anchored": 1, "N2/unanchored": 2, "N3/anchored": 1, "N3/conflict": 1, "R6/conflict": 2, "R6/unanchored": 1}
+- 直す前（`content_before.txt`）の末尾: `4 failed, 57 passed in 0.45s`（R6-2・N1-01・N1-02・N3-01 の 4 件が赤）。直した後（`content_after.txt`）: `61 passed in 0.42s`。
+- **凍結した期待を後から変えたもの（1 件）: R6-2**。`cases.jsonl` は書き換えず、`cases_r3b.jsonl` で置き換えた。理由は §9.11 の R6′（候補 {a.txt, b.txt} と {c.txt} が交わらず、20日 と 30日 が違う）。
+
+旧（`r3/cases.jsonl` の R6-2 の全文）:
+
+```json
+{"id": "R6-2", "type": "R6", "docs": {"a.txt": "納期は20日である。", "b.txt": "納期は20日である。", "c.txt": "納期は30日である。"}, "question": "納期はいつですか", "answer": "納期は20日です。", "quotes": [{"source": "a.txt", "line": 7, "text": "納期は20日である。"}, {"source": "c.txt", "line": 1, "text": "納期は30日である。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "引用 A(行番号が違う -> relocated)は a.txt と b.txt の両方に一致し文書が決まらない -> (ii)に数えない(doc_undetermined=1)。引用 B は c.txt の 30日 だが文書が 1 つなので単独 -> (ii)は立たない。答えの 20日 は A に現れる。"}
+```
+
+新（`r3b/cases_r3b.jsonl` の R6-2 の全文）:
+
+```json
+{"id": "R6-2", "type": "R6", "docs": {"a.txt": "納期は20日である。", "b.txt": "納期は20日である。", "c.txt": "納期は30日である。"}, "question": "納期はいつですか", "answer": "納期は20日です。", "quotes": [{"source": "a.txt", "line": 7, "text": "納期は20日である。"}, {"source": "c.txt", "line": 1, "text": "納期は30日である。"}], "expect": "conflict", "expect_reason_prefix": null, "note": "R6′ による変更（第 3 ラウンドのレビュー M2）。旧の期待は anchored（旧の note: 引用 A(行番号が違う -> relocated)は a.txt と b.txt の両方に一致し文書が決まらない -> (ii)に数えない(doc_undetermined=1)。引用 B は c.txt の 30日 だが文書が 1 つなので単独 -> (ii)は立たない。答えの 20日 は A に現れる。）。新: 引用 A の文書の候補 {a.txt, b.txt} と引用 B の候補 {c.txt} は交わらず、20日 と 30日 の値が違うので (ii) が立つ -> conflict。"}
+```
+
+#### T3-1（自作の集合）— `r3b/t31_result.txt`（`r3/` と byte 一致。M1・M2 の修正で印は 1 つも変わらない）
+
+```
+T3-1（自作の集合。通っても証拠にならない。T3-4 の伏せた集合が本番）
+(a) LLM 自身の引用を信じる: 検出 0/30 = 0.0%
+(b) Vera の照合:            検出 21/30 = 70.0%
+上乗せ (b)-(a): 21 件（+70.0 点）
+誤検出（正しい ANS 20 のうち anchored 以外）: 0/20 = 0.0%
+型ごとの検出（a / b）:
+  W1 n=10  a=0  b=6  印={'conflict': 4, 'anchored': 4, 'unanchored': 2}
+  W2 n=10  a=0  b=10  印={'unanchored': 10}
+  N1 n=5  a=0  b=0  印={'anchored': 5}
+  N2 n=5  a=0  b=5  印={'unanchored': 5}
+NONE の正しい候補 10 の印の分布: {'unanchored': 10}（誤検出の分母に入れない）
+要素 0 個で anchored: 全 60 件のうち 10、誤答のうち 5
+取り出せなかった漢数字の並び（skipped）: 0
+誤答なのに anchored（見逃し）: 9 = 要素 0 個 5（N1 1, W1 4） ＋ 要素あり 4（N1 4）
+  要素あり・見逃し: S1-NONE-01   N1  要素=[('name', '久保田澄子', ['D1_bihin_kitei.txt:5'])]
+  要素あり・見逃し: S2-NONE-04   N1  要素=[('name', '山根卓哉', ['D2_shiryo_tejun.txt:45'])]
+  要素あり・見逃し: S3-NONE-03   N1  要素=[('name', '森下裕美', ['D3_gijiroku.txt:6'])]
+  要素あり・見逃し: S4-NONE-02   N1  要素=[('name', '戸田健司', ['D4_shiyou_v2.txt:25'])]
+誤答のうち規則 3b（ANSWER_CONTENT_NOT_IN_QUOTE）で unanchored になった件: 2（S1-ANS-09, S3-ANS-09）
+誤検出（正しい ANS で anchored でない）の一覧: 0 件
+正しい候補（ANS・NONE）のうち規則 3b で anchored でなくなった件（第 2 ラウンドでは anchored だったかは t31_result.txt の 1 行目以降と比べる）: 0
+```
+
+#### T3-2（実機は流し直さず、保存した raw を再照合）— `r3b/t32_recheck.txt`
+
+```
+保存された結果: /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3-S/artifacts/w16-t3/r3/w14/C/results.jsonl
+quote_check のある行: 255
+今の QC.check の to_dict が保存と同一: 255
+違う行: 0
+```
+
+#### T3-3（K653 の byte 一致）— `r3b/t33_k653.txt`
+
+```
+rows base 310 new 310
+rows where change is allowed (layer 0, FACTUAL, LLM called, not QUESTION_CROSS): 106
+  of which actually changed: 90 ; of which carry vera.quote_check: 90
+rows outside that set: 204
+rows outside that set that changed (pass = 0): 0
+```

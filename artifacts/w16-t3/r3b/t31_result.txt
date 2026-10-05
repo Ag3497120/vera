@@ -1,0 +1,83 @@
+T3-1（自作の集合。通っても証拠にならない。T3-4 の伏せた集合が本番）
+(a) LLM 自身の引用を信じる: 検出 0/30 = 0.0%
+(b) Vera の照合:            検出 21/30 = 70.0%
+上乗せ (b)-(a): 21 件（+70.0 点）
+誤検出（正しい ANS 20 のうち anchored 以外）: 0/20 = 0.0%
+型ごとの検出（a / b）:
+  W1 n=10  a=0  b=6  印={'conflict': 4, 'anchored': 4, 'unanchored': 2}
+  W2 n=10  a=0  b=10  印={'unanchored': 10}
+  N1 n=5  a=0  b=0  印={'anchored': 5}
+  N2 n=5  a=0  b=5  印={'unanchored': 5}
+NONE の正しい候補 10 の印の分布: {'unanchored': 10}（誤検出の分母に入れない）
+要素 0 個で anchored: 全 60 件のうち 10、誤答のうち 5
+取り出せなかった漢数字の並び（skipped）: 0
+誤答なのに anchored（見逃し）: 9 = 要素 0 個 5（N1 1, W1 4） ＋ 要素あり 4（N1 4）
+  要素あり・見逃し: S1-NONE-01   N1  要素=[('name', '久保田澄子', ['D1_bihin_kitei.txt:5'])]
+  要素あり・見逃し: S2-NONE-04   N1  要素=[('name', '山根卓哉', ['D2_shiryo_tejun.txt:45'])]
+  要素あり・見逃し: S3-NONE-03   N1  要素=[('name', '森下裕美', ['D3_gijiroku.txt:6'])]
+  要素あり・見逃し: S4-NONE-02   N1  要素=[('name', '戸田健司', ['D4_shiyou_v2.txt:25'])]
+誤答のうち規則 3b（ANSWER_CONTENT_NOT_IN_QUOTE）で unanchored になった件: 2（S1-ANS-09, S3-ANS-09）
+誤検出（正しい ANS で anchored でない）の一覧: 0 件
+正しい候補（ANS・NONE）のうち規則 3b で anchored でなくなった件（第 2 ラウンドでは anchored だったかは t31_result.txt の 1 行目以降と比べる）: 0
+
+候補ごとの印:
+  S1-ANS-01    W1   wrong=True  quotes=1 found=exact elements=1 -> conflict
+  S1-ANS-02    OK   wrong=False quotes=1 found=exact elements=1 -> anchored
+  S1-ANS-03    W2   wrong=True  quotes=1 found=fabricated elements=1 -> unanchored
+  S1-ANS-04    OK   wrong=False quotes=1 found=exact elements=1 -> anchored
+  S1-ANS-05    W1   wrong=True  quotes=1 found=exact elements=0 -> anchored
+  S1-ANS-06    OK   wrong=False quotes=1 found=exact elements=0 -> anchored
+  S1-ANS-07    W2   wrong=True  quotes=1 found=fabricated elements=0 -> unanchored
+  S1-ANS-08    OK   wrong=False quotes=1 found=exact elements=1 -> anchored
+  S1-ANS-09    W1   wrong=True  quotes=1 found=exact elements=0 -> unanchored
+  S1-ANS-10    OK   wrong=False quotes=1 found=exact elements=0 -> anchored
+  S1-NONE-01   N1   wrong=True  quotes=1 found=exact elements=1 -> anchored
+  S1-NONE-02   OK   wrong=False quotes=0 found=- elements=0 -> unanchored
+  S1-NONE-03   N2   wrong=True  quotes=1 found=fabricated elements=1 -> unanchored
+  S1-NONE-04   OK   wrong=False quotes=0 found=- elements=0 -> unanchored
+  S1-NONE-05   N1   wrong=True  quotes=1 found=exact elements=0 -> anchored
+  S2-ANS-01    W2   wrong=True  quotes=1 found=fabricated elements=1 -> unanchored
+  S2-ANS-02    OK   wrong=False quotes=1 found=exact elements=1 -> anchored
+  S2-ANS-03    W1   wrong=True  quotes=1 found=exact elements=1 -> conflict
+  S2-ANS-04    OK   wrong=False quotes=1 found=exact elements=1 -> anchored
+  S2-ANS-05    W2   wrong=True  quotes=1 found=fabricated elements=0 -> unanchored
+  S2-ANS-06    OK   wrong=False quotes=1 found=exact elements=0 -> anchored
+  S2-ANS-07    W1   wrong=True  quotes=1 found=exact elements=0 -> anchored
+  S2-ANS-08    OK   wrong=False quotes=1 found=exact elements=1 -> anchored
+  S2-ANS-09    W2   wrong=True  quotes=1 found=fabricated elements=0 -> unanchored
+  S2-ANS-10    OK   wrong=False quotes=1 found=exact elements=1 -> anchored
+  S2-NONE-01   OK   wrong=False quotes=0 found=- elements=0 -> unanchored
+  S2-NONE-02   N2   wrong=True  quotes=1 found=fabricated elements=1 -> unanchored
+  S2-NONE-03   OK   wrong=False quotes=0 found=- elements=0 -> unanchored
+  S2-NONE-04   N1   wrong=True  quotes=1 found=exact elements=1 -> anchored
+  S2-NONE-05   OK   wrong=False quotes=0 found=- elements=0 -> unanchored
+  S3-ANS-01    W1   wrong=True  quotes=1 found=exact elements=1 -> conflict
+  S3-ANS-02    OK   wrong=False quotes=1 found=exact elements=1 -> anchored
+  S3-ANS-03    W2   wrong=True  quotes=1 found=fabricated elements=1 -> unanchored
+  S3-ANS-04    OK   wrong=False quotes=1 found=exact elements=1 -> anchored
+  S3-ANS-05    W1   wrong=True  quotes=1 found=exact elements=0 -> anchored
+  S3-ANS-06    OK   wrong=False quotes=1 found=exact elements=0 -> anchored
+  S3-ANS-07    W2   wrong=True  quotes=1 found=fabricated elements=0 -> unanchored
+  S3-ANS-08    OK   wrong=False quotes=1 found=exact elements=2 -> anchored
+  S3-ANS-09    W1   wrong=True  quotes=1 found=exact elements=1 -> unanchored
+  S3-ANS-10    OK   wrong=False quotes=1 found=exact elements=1 -> anchored
+  S3-NONE-01   N2   wrong=True  quotes=1 found=fabricated elements=1 -> unanchored
+  S3-NONE-02   OK   wrong=False quotes=0 found=- elements=0 -> unanchored
+  S3-NONE-03   N1   wrong=True  quotes=1 found=exact elements=1 -> anchored
+  S3-NONE-04   OK   wrong=False quotes=0 found=- elements=0 -> unanchored
+  S3-NONE-05   N2   wrong=True  quotes=1 found=fabricated elements=0 -> unanchored
+  S4-ANS-01    W2   wrong=True  quotes=1 found=fabricated elements=1 -> unanchored
+  S4-ANS-02    OK   wrong=False quotes=1 found=exact elements=1 -> anchored
+  S4-ANS-03    W1   wrong=True  quotes=1 found=exact elements=1 -> conflict
+  S4-ANS-04    OK   wrong=False quotes=1 found=exact elements=1 -> anchored
+  S4-ANS-05    W2   wrong=True  quotes=1 found=fabricated elements=0 -> unanchored
+  S4-ANS-06    OK   wrong=False quotes=1 found=exact elements=0 -> anchored
+  S4-ANS-07    W1   wrong=True  quotes=1 found=exact elements=0 -> anchored
+  S4-ANS-08    OK   wrong=False quotes=1 found=exact elements=1 -> anchored
+  S4-ANS-09    W2   wrong=True  quotes=1 found=fabricated elements=2 -> unanchored
+  S4-ANS-10    OK   wrong=False quotes=1 found=exact elements=2 -> anchored
+  S4-NONE-01   OK   wrong=False quotes=0 found=- elements=0 -> unanchored
+  S4-NONE-02   N1   wrong=True  quotes=1 found=exact elements=1 -> anchored
+  S4-NONE-03   OK   wrong=False quotes=0 found=- elements=0 -> unanchored
+  S4-NONE-04   N2   wrong=True  quotes=1 found=fabricated elements=1 -> unanchored
+  S4-NONE-05   OK   wrong=False quotes=0 found=- elements=0 -> unanchored

@@ -95,7 +95,7 @@ def strip_timing(res):
 
 def test_without_fill_the_vera_field_has_the_keys_it_had(tmp_path):
     res = turn(cfg_of(tmp_path, FakeLLM('母が図書館へ歩いた。')))
-    assert set(res['vera']) == {'schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'timing'}
+    assert set(res['vera']) == {'schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'quote_check', 'timing'}
     assert set(res['vera']['timing']) == {'vera_ms', 'llm_ms'}
 
 

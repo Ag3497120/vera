@@ -389,6 +389,35 @@ def plan_turn(question: str, request_kind: str, records: Records, documents: Seq
     return turn
 
 
+# --- W16-t3: 層 0 の事実の問いの引用照合（K650-K653。docs/FUSION.md §9） -----------------------------------------------------------------------
+
+QUOTE_SCHEMA = {"type": "object",
+                "properties": {"answer": {"type": "string"},
+                               "quotes": {"type": "array", "items": {"type": "object",
+                                                                      "properties": {"source": {"type": "string"}, "line": {"type": "integer"}, "text": {"type": "string"}},
+                                                                      "required": ["source", "line", "text"], "additionalProperties": False}}},
+                "required": ["answer", "quotes"], "additionalProperties": False}
+
+
+def quote_mode(turn: Dict[str, Any], records: Records) -> bool:
+    """層 0 の事実の問いで、記録が答えを持たず LLM を呼び、文書が読み込まれているとき。偽の経路は基点と 1 バイトも変えない。"""
+    from . import basis_policy as bp
+    return bool(turn["layer"] == 0 and bp.KIND_CLASS.get(turn["request_kind"]) == "FACTUAL" and turn["call_llm"]
+                and turn["record_answer"] is None and records.n_loaded > 0)
+
+
+def quote_format(turn: Dict[str, Any], records: Records) -> Optional[Dict[str, Any]]:
+    return QUOTE_SCHEMA if quote_mode(turn, records) else None
+
+
+def _quote_system(records: Records) -> str:
+    from . import quote_check as QC
+    lines = "\n".join("[%s:%d] %s" % (src, ln, body) for (src, ln), body in QC.line_bodies(records).items())
+    return ("利用者の文書は次のとおりです（各行の先頭が [文書名:行番号]）。\n%s\n\n"
+            "問いに、JSON で answer と、根拠にした文の逐語の quotes（source・line・text）を返してください。"
+            "文書に無いときは、answer に文書に記載が無いと書き、quotes を空にしてください。" % lines)
+
+
 def llm_messages(turn: Dict[str, Any], client_messages: Sequence[Dict[str, Any]], records: Records) -> List[Dict[str, Any]]:
     """LLM に渡す messages。層 0 の事実の問いはクライアントの会話をそのまま。非 factual は文書を前に添える。層 1 は問いだけ。"""
     from . import basis_policy as bp
@@ -401,7 +430,9 @@ def llm_messages(turn: Dict[str, Any], client_messages: Sequence[Dict[str, Any]]
             sys_msg = ("利用者の文書は次のとおりです。\n%s\n\n依頼に、文書の語だけを使い、JSON の answer に語の配列（左から順に並べたもの）で答えてください。" % doc_lines)
         return [{"role": "system", "content": sys_msg}, {"role": "user", "content": turn["question"]}]
     msgs = [{"role": m.get("role", "user"), "content": _content_text(m.get("content"))} for m in client_messages]
-    if not factual and records.n_loaded:
+    if quote_mode(turn, records):
+        msgs.insert(0, {"role": "system", "content": _quote_system(records)})
+    elif not factual and records.n_loaded:
         msgs.insert(0, {"role": "system", "content": "利用者の文書は次のとおりです。依頼はこの文書の内容に基づいて答えてください。\n" + doc_lines})
     return msgs
 
@@ -432,6 +463,7 @@ def conclude(turn: Dict[str, Any], llm: Optional[Dict[str, Any]], records: Recor
     provenance: List[Dict[str, Any]] = []
     outcome: Dict[str, Any] = {"outcome": None, "content_shown": False, "reason": None, "basis_policy": None}
     content = ""
+    qc_field: Optional[Dict[str, Any]] = None
 
     def fixed(kind: str, reason: Optional[str] = None, policy_note: Optional[Dict[str, Any]] = None) -> None:
         nonlocal content
@@ -463,6 +495,9 @@ def conclude(turn: Dict[str, Any], llm: Optional[Dict[str, Any]], records: Recor
         else:
             raw = llm.get("content")
             text: Optional[str] = raw if isinstance(raw, str) else ""
+            qparsed = _parse_quote_reply(raw) if quote_mode(turn, records) else None
+            if qparsed is not None:
+                text = qparsed[0] if qparsed[0] is not None else text
             if grammar is not None:
                 ok, text, why = check_grammar(grammar, raw)
                 gcheck.update({"in_grammar": ok, "reason": why})
@@ -480,6 +515,8 @@ def conclude(turn: Dict[str, Any], llm: Optional[Dict[str, Any]], records: Recor
                         shown = _finish_factual(turn, text, provenance, records, model, human_present, outcome, fixed, abstain_policy, grammar)
                         if shown is not None:
                             content = shown
+                            if qparsed is not None and outcome.get("outcome") == "TESTIMONY":
+                                content, qc_field = _attach_quote_check(content, qparsed, records, provenance, turn.get("question"))
                     else:
                         content = _finish_nonfactual(turn, text, records, model, human_present, outcome, fixed)
     vera = {"schema": SCHEMA, "layer": layer, "request_kind": rk,
@@ -488,7 +525,49 @@ def conclude(turn: Dict[str, Any], llm: Optional[Dict[str, Any]], records: Recor
                         if grammar else None),
             "grammar_id": grammar["id"] if grammar else None,
             "llm": llm_field, "grammar_check": gcheck, "provenance": provenance, "outcome": outcome}
+    if qc_field is not None:
+        vera["quote_check"] = qc_field            # W16-t3 (K652): `vera` の最後の鍵。quote_mode が偽の経路には作らない
     return content, vera
+
+
+def _parse_quote_reply(raw: Any) -> Tuple[Optional[str], Any, Optional[str]]:
+    """quote_mode の返答を読む -> (answer か None, quotes, reason)。読めなければ (None, [], 理由の型)。"""
+    import json
+    if not isinstance(raw, str):
+        return None, [], "REPLY_NOT_JSON"
+    try:
+        obj = json.loads(raw)
+    except ValueError:
+        return None, [], "REPLY_NOT_JSON"
+    if not isinstance(obj, dict):
+        return None, [], "REPLY_NOT_JSON"
+    ans = obj.get("answer")
+    if not isinstance(ans, str):
+        return None, [], "ANSWER_NOT_A_STRING"
+    return ans, obj.get("quotes", []), None
+
+
+def _attach_quote_check(content: str, parsed: Tuple[Optional[str], Any, Optional[str]], records: Records, provenance: List[Dict[str, Any]], question: Optional[str] = None) -> Tuple[str, Dict[str, Any]]:
+    """証言の本文の後に 1 行を足し、`vera.quote_check` を作る。方針（abstain_policy）は呼び終わっている。"""
+    from . import quote_check as QC
+    ans, quotes, reason = parsed
+    qc = QC.check(ans if ans is not None else "", quotes, records, reason=reason, question=question)
+    if qc.verdict == QC.ANCHORED:
+        line = "（引用の出典: %s）" % "、".join(qc.anchor_positions)
+        for p in provenance:
+            if p.get("sentence_kind") != "record":
+                p["anchored_testimony"] = {"quotes": list(qc.anchor_positions)}
+    elif qc.verdict == QC.CONFLICT:
+        vals = []
+        for c in qc.conflicts:
+            for v in c["values"]:
+                s = "%s:%d「%s」" % (v["source"], v["line"], v["value"])
+                if s not in vals:
+                    vals.append(s)
+        line = "（記録と食い違います: %s）" % "／".join(vals)
+    else:
+        line = "（記録で確かめられません）"
+    return content + "\n" + line, qc.to_dict()
 
 
 def _finish_factual(turn, text, provenance, records, model, human_present, outcome, fixed, abstain_policy, grammar) -> Optional[str]:
