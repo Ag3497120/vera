@@ -1,0 +1,6 @@
+32 Counter({'SP': 10, 'RO': 6, 'TE': 6, 'SR': 6, 'H': 4}) 28
+RO Counter({'unanchored': 4, 'anchored': 2})
+TE Counter({'unanchored': 4, 'anchored': 2})
+SP Counter({'unanchored': 8, 'anchored': 2})
+SR Counter({'anchored': 6})
+H Counter({'unanchored': 3, 'anchored': 1})

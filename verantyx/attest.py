@@ -298,42 +298,72 @@ def number_present(n: str, filetext: str) -> bool:
     return re.search(r"(?<![\w.])(?<![A-Za-z0-9]-)" + re.escape(n) + r"(?!\w)(?!\.\d)", t) is not None
 
 
-# ===================================================================== T7 ledger (assumed shape, docs/ATTEST.md)
-def _row_sha(row: Dict[str, Any]) -> str:
-    body = {k: v for k, v in row.items() if k != "sha"}
-    return hashlib.sha256(json.dumps(body, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest()
+# ===================================================================== T7 ledger (verified by T7's own verify, docs/ATTEST.md revision 7)
+def _t7_locate(path: str) -> Tuple[Optional[Path], Path]:
+    """(ledger dir, events.jsonl). A directory, or a file named exactly events.jsonl, can be given to T7's verify; any other file name cannot (dir None)."""
+    p = Path(path)
+    if p.is_dir():
+        return p, p / "events.jsonl"
+    if p.name == "events.jsonl":
+        return p.parent, p
+    return None, p
 
 
-def load_events(path: str) -> Tuple[Optional[List[Dict[str, Any]]], str]:
-    """(events, '') for a ledger whose assumed chain verifies, else (None, why). Only kinds test_run / process_exit are events."""
+def _unverified(status: str, problems: List[Dict[str, Any]]) -> Dict[str, Any]:
+    return {"status": status, "problems": problems}
+
+
+def check_ledger(path: str, expected_head: Optional[str] = None) -> Tuple[Optional[List[Dict[str, Any]]], Optional[Dict[str, Any]], Optional[bytes]]:
+    """(events, None, bytes) only when ledger_events.verify (the T7 verify, with expected_head if given) says OK for THIS file;
+    else (None, {"status", "problems"}, None). The events are read from the very bytes that were checked. Only kinds test_run / process_exit are events."""
+    from . import ledger_events as _LE
+    d, ev = _t7_locate(path)
+    if d is None:
+        return None, _unverified("UNVERIFIED", [{"line": None, "type": "LEDGER_PATH_NOT_T7"}]), None
     try:
-        rows = [json.loads(ln) for ln in Path(path).read_text(encoding="utf-8").splitlines() if ln.strip()]
-    except (OSError, ValueError) as e:
-        return None, "unreadable: %s" % type(e).__name__
-    prev = None
-    for i, r in enumerate(rows):
-        if not isinstance(r, dict) or "sha" not in r or r.get("sha") != _row_sha(r):
-            return None, "row %d: sha does not match" % i
-        ok_prev = (r.get("prev") in (None, "", "0" * 64)) if i == 0 else (r.get("prev") == prev)
-        if not ok_prev:
-            return None, "row %d: prev does not chain" % i
-        prev = r["sha"]
+        b0 = ev.read_bytes()
+        v = _LE.verify(d, expected_head=expected_head)
+        b1 = ev.read_bytes()
+        text = b0.decode("utf-8")
+    except (OSError, UnicodeError) as e:
+        return None, _unverified("UNVERIFIED", [{"line": None, "type": "LEDGER_UNREADABLE", "error": type(e).__name__}]), None
+    except Exception as e:                              # a verifier fault is never a verification
+        return None, _unverified("UNVERIFIED", [{"line": None, "type": "LEDGER_VERIFY_FAILED", "error": type(e).__name__}]), None
+    if b0 != b1:
+        return None, _unverified("UNVERIFIED", [{"line": None, "type": "LEDGER_CHANGED_DURING_VERIFY"}]), None
+    if v.get("status") != "OK":
+        return None, _unverified(str(v.get("status")), list(v.get("problems") or [])), None
     events = []
-    for r in rows:
+    for ln in text.split("\n"):
+        if not ln.strip():
+            continue
+        r = json.loads(ln)
         if r.get("kind") in ("test_run", "process_exit") and isinstance(r.get("data"), dict):
-            d = r["data"]
+            d_ = r["data"]
             argv = None
-            if isinstance(d.get("argv"), list) and all(isinstance(x, str) for x in d["argv"]):
-                argv = list(d["argv"])
-            elif isinstance(d.get("cmd"), str):
+            if isinstance(d_.get("argv"), list) and all(isinstance(x, str) for x in d_["argv"]):
+                argv = list(d_["argv"])
+            elif isinstance(d_.get("cmd"), str):
                 try:
-                    argv = shlex.split(d["cmd"])
+                    argv = shlex.split(d_["cmd"])
                 except ValueError:
                     argv = None
-            code = d.get("exit_code", d.get("returncode"))
+            code = d_.get("exit_code", d_.get("returncode"))
             if argv is not None and type(code) is int:
                 events.append({"argv": argv, "code": code, "sha": r["sha"], "kind": r["kind"]})
+    return events, None, b0
+
+
+def load_events(path: str, expected_head: Optional[str] = None) -> Tuple[Optional[List[Dict[str, Any]]], str]:
+    """(events, '') for a ledger that T7's verify passes, else (None, why)."""
+    events, check, _ = check_ledger(path, expected_head)
+    if events is None:
+        return None, "status=%s" % check["status"]
     return events, ""
+
+
+def _problem_text(problems: List[Dict[str, Any]]) -> str:
+    return ", ".join("%s@%s" % (p.get("type"), p["line"]) if p.get("line") is not None else str(p.get("type")) for p in problems) or "なし"
 
 
 def _is_pytest_argv(argv: Sequence[str]) -> Optional[List[str]]:
@@ -393,13 +423,15 @@ def F(sig: str, mark: str, reason: str, claimed: Any = None, actual: Any = None,
 class Verifier:
     def __init__(self, tree: str, *, ledger: Optional[str] = None, rerun: bool = False, base: Optional[str] = None, rev: Optional[str] = None,
                  search_dirs: Sequence[str] = (), partial: bool = False, history: bool = False, timeout: float = DEFAULT_TIMEOUT,
-                 cache: Optional[Dict[Tuple[str, ...], Tuple[Optional[int], bytes, bytes]]] = None) -> None:
+                 cache: Optional[Dict[Tuple[str, ...], Tuple[Optional[int], bytes, bytes]]] = None, ledger_head: Optional[str] = None) -> None:
         self.tree = os.path.abspath(tree)
         self.real_tree = os.path.realpath(self.tree)
         self.ledger_path, self.rerun, self.base, self.rev = ledger, rerun, base, rev
         self.search_dirs, self.partial, self.history, self.timeout = list(search_dirs), partial, history, timeout
         self._events: Optional[List[Dict[str, Any]]] = None
-        self._ledger_why = ""
+        self.ledger_head = ledger_head
+        self._ledger_check: Optional[Dict[str, Any]] = None
+        self._ledger_bytes: Optional[bytes] = None
         self._ledger_loaded = False
         self._runs: Dict[Tuple[str, ...], Tuple[Optional[int], bytes, bytes]] = cache if cache is not None else {}
         self._collect: Dict[str, Tuple[Optional[int], bytes, bytes]] = {}
@@ -532,7 +564,7 @@ class Verifier:
             return
         self._ledger_loaded = True
         if self.ledger_path:
-            self._events, self._ledger_why = load_events(self.ledger_path)
+            self._events, self._ledger_check, self._ledger_bytes = check_ledger(self.ledger_path, self.ledger_head)
 
     def _run_cached(self, argv: List[str]) -> Tuple[Optional[int], bytes, bytes]:
         key = tuple(argv)
@@ -543,15 +575,18 @@ class Verifier:
     def exit_code_for(self, argv_claim: List[str], match: Callable[[List[str]], bool], rerun_cmd: Optional[str], match_code: Optional[Callable[[List[str], int], bool]] = None) -> Dict[str, Any]:
         """{'code': int, 'source': ..., 'raw': str} or {'reason': R, 'raw': str}. Ledger events first, then (only with --rerun) an allowed re-run."""
         self._load_ledger()
-        reason, raw = "NO_EVENT", "台帳にも再実行にも、この出来事の観測が無い"
+        reason, raw, why_ev = "NO_EVENT", "台帳にも再実行にも、この出来事の観測が無い", None
         if self.ledger_path:
             if self._events is None:
-                reason, raw = "LEDGER_UNVERIFIED", "台帳が検証できない（%s）" % self._ledger_why
+                chk = self._ledger_check or _unverified("UNVERIFIED", [])
+                reason = "LEDGER_UNVERIFIED"
+                raw = "台帳が T7 の検証を通らない（status=%s、問題: %s）" % (chk["status"], _problem_text(chk["problems"]))
+                why_ev = {"ledger": self.ledger_path, "status": chk["status"], "problems": chk["problems"]}
             else:
                 hit = [e for e in self._events if match(e["argv"]) and (match_code is None or match_code(e["argv"], e["code"]))]
                 codes = sorted({e["code"] for e in hit})
                 if len(codes) == 1:
-                    lb = Path(self.ledger_path).read_bytes()
+                    lb = self._ledger_bytes or b""
                     evd = {"path": self.ledger_path, "sha256": sha256_bytes(lb), "event_sha": sorted({e["sha"] for e in hit})}
                     return {"code": codes[0], "source": "ledger", "raw": "台帳の出来事の終了コード: %d" % codes[0], "evidence": evd}
                 if len(codes) > 1:
@@ -565,7 +600,10 @@ class Verifier:
                 return {"reason": "RERUN_TIMEOUT", "raw": "再実行が %s 秒を超えた" % self.timeout}
             return {"code": rc, "source": "rerun", "raw": "再実行の終了コード: %d" % rc,
                     "evidence": {"argv": list(argv), "stdout_sha256": sha256_bytes(out), "stderr_sha256": sha256_bytes(err)}}
-        return {"reason": reason, "raw": raw}
+        out = {"reason": reason, "raw": raw}
+        if why_ev is not None:
+            out["evidence"] = why_ev
+        return out
 
     def exit_fact(self, cmd: Optional[str], claimed: int) -> Dict[str, Any]:
         if cmd is None:
@@ -585,7 +623,7 @@ class Verifier:
     @staticmethod
     def _exit_result(sig: str, claimed: Any, ev: Dict[str, Any], passed: bool = False) -> Dict[str, Any]:
         if "reason" in ev:
-            return F(sig, TESTIMONY, ev["reason"], claimed, None, None, ev["raw"])
+            return F(sig, TESTIMONY, ev["reason"], claimed, None, ev.get("evidence"), ev["raw"])
         want = 0 if passed else claimed
         if ev["code"] == want:
             return F(sig, RECORD, "MATCH", claimed, ev["code"], ev.get("evidence"), ev["raw"])
@@ -724,12 +762,15 @@ def _result_claim(extractor: str, idx: int, c: Dict[str, Any], facts: List[Dict[
 
 def run_attest(report_text: str, tree: str, *, ledger: Optional[str] = None, rerun: bool = False, base: Optional[str] = None, rev: Optional[str] = None,
                extractors: Sequence[str] = ("V", "a"), partial: bool = False, search_dirs: Sequence[str] = (), history: bool = False,
-               timeout: float = DEFAULT_TIMEOUT, report_path: Optional[str] = None, cache: Optional[Dict[Tuple[str, ...], Tuple[Optional[int], bytes, bytes]]] = None) -> Dict[str, Any]:
-    v = Verifier(tree, ledger=ledger, rerun=rerun, base=base, rev=rev, search_dirs=search_dirs, partial=partial, history=history, timeout=timeout, cache=cache)
+               timeout: float = DEFAULT_TIMEOUT, report_path: Optional[str] = None, cache: Optional[Dict[Tuple[str, ...], Tuple[Optional[int], bytes, bytes]]] = None,
+               ledger_head: Optional[str] = None) -> Dict[str, Any]:
+    v = Verifier(tree, ledger=ledger, rerun=rerun, base=base, rev=rev, search_dirs=search_dirs, partial=partial, history=history, timeout=timeout, cache=cache, ledger_head=ledger_head)
     out: Dict[str, Any] = {"schema": SCHEMA, "report": {"path": report_path, "sha256": sha256_bytes(report_text.encode("utf-8"))}, "tree": {"path": v.real_tree},
                            "flags": {"ledger": ledger, "rerun": rerun, "base": base, "rev": rev, "extractors": list(extractors), "partial_tree": partial,
                                      "search_dirs": list(search_dirs), "history": history},
                            "extractors": {}, "notes": []}
+    if ledger_head is not None:
+        out["flags"]["ledger_head"] = ledger_head
     rc, so, _ = v._git("rev-parse", "HEAD")
     out["tree"]["head"] = so.decode().strip() if rc == 0 else None
     found_section = False
@@ -792,7 +833,8 @@ def cli_main(args: Any) -> int:
     res = run_attest(text, str(tree), ledger=getattr(args, "ledger", None), rerun=bool(getattr(args, "rerun", False)), base=getattr(args, "base", None),
                      rev=getattr(args, "rev", None), extractors=sel, partial=bool(getattr(args, "partial_tree", False)),
                      search_dirs=list(getattr(args, "search_dir", None) or []), history=bool(getattr(args, "history", False)),
-                     timeout=float(getattr(args, "timeout", DEFAULT_TIMEOUT)), report_path=str(report))
+                     timeout=float(getattr(args, "timeout", DEFAULT_TIMEOUT)), report_path=str(report),
+                     ledger_head=getattr(args, "ledger_head", None))
     if led is not None:
         attest_id = hashlib.sha256(json.dumps([res["report"]["sha256"], res["flags"]], sort_keys=True).encode()).hexdigest()[:16]
         for ex, e in res["extractors"].items():

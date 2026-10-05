@@ -1,0 +1,107 @@
+diff artifacts/w16-t6/synth/synth_lib.py new/artifacts/w16-t6/synth/synth_lib.py
+--- a/artifacts/w16-t6/synth/synth_lib.py	2026-10-06 04:23:47
++++ b/artifacts/w16-t6/synth/synth_lib.py	2026-10-06 04:23:47
+@@ -48,8 +48,12 @@
+         (tree / p).write_text(c, encoding="utf-8")
+     led = None
+     if case["ledger"] is not None:
+-        led = Path(root) / (case["id"] + ".ledger.jsonl")
+-        led.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in case["ledger"]), encoding="utf-8")
++        from verantyx import ledger_events as LE
++        ldir = Path(root) / (case["id"] + ".ledger")
++        for r in case["ledger"]:
++            kind = r["kind"] if r["kind"] in LE.KINDS else "owner_utterance"          # "note" is not a T7 kind
++            LE.append(ldir, kind, {"type": "agent", "id": "synth"}, r["data"])
++        led = ldir / "events.jsonl"
+     return tree, led
+ 
+ 
+diff tests/test_w16t6_basis.py new/tests/test_w16t6_basis.py
+--- a/tests/test_w16t6_basis.py	2026-10-06 04:23:47
++++ b/tests/test_w16t6_basis.py	2026-10-06 04:23:47
+@@ -8,20 +8,19 @@
+ FAIL = "def test_a():\n    assert False\n"
+ 
+ 
+-def _row(kind, data, prev):
+-    r = {"ts": "t", "kind": kind, "actor": "x", "data": data, "prev": prev}
+-    r["sha"] = hashlib.sha256(json.dumps(r, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
+-    return r
++import itertools
+ 
++from verantyx import ledger_events as LE
+ 
++_N = itertools.count()
++
++
+ def ledger(tmp_path, runs):
+-    rows, prev = [], None
++    """A T7-layout ledger (<dir>/events.jsonl + HEAD) made by T7's own append; a fresh dir per call."""
++    d = tmp_path / ("led%d" % next(_N))
+     for argv, code in runs:
+-        rows.append(_row("test_run", {"argv": argv, "exit_code": code}, prev))
+-        prev = rows[-1]["sha"]
+-    p = tmp_path / "ev.jsonl"
+-    p.write_text("".join(json.dumps(r) + "\n" for r in rows))
+-    return str(p)
++        LE.append(d, "test_run", {"type": "agent", "id": "x"}, {"argv": argv, "exit_code": code})
++    return str(d / "events.jsonl")
+ 
+ 
+ def tree(tmp_path, files):
+diff tests/test_w16t6_ledger.py new/tests/test_w16t6_ledger.py
+--- a/tests/test_w16t6_ledger.py	2026-10-06 04:23:47
++++ b/tests/test_w16t6_ledger.py	2026-10-06 04:23:47
+@@ -9,14 +9,17 @@
+ from verantyx.testimony_ledger import LedgerError, TestimonyLedger
+ 
+ 
++from verantyx import ledger_events as LE
++
++
+ def _row(kind, data, prev):
+-    r = {"ts": "t", "kind": kind, "actor": "x", "data": data, "prev": prev}
+-    r["sha"] = hashlib.sha256(json.dumps(r, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
++    r = {"ts": "t", "kind": kind, "actor": {"type": "agent", "id": "x"}, "data": data, "prev": prev}
++    r["sha"] = LE.sha_of(r)
+     return r
+ 
+ 
+ def chain(events):
+-    rows, prev = [], None
++    rows, prev = [], LE.GENESIS
+     for k, d in events:
+         rows.append(_row(k, d, prev))
+         prev = rows[-1]["sha"]
+@@ -24,7 +27,10 @@
+ 
+ 
+ def write(path, rows):
+-    path.write_text("".join(json.dumps(r) + "\n" for r in rows))
++    """T7 layout: path is <dir>/events.jsonl; HEAD = the last row's stored sha."""
++    path.parent.mkdir(parents=True, exist_ok=True)
++    path.write_text("".join(LE.canonical(r) + "\n" for r in rows))
++    (path.parent / "HEAD").write_text(rows[-1]["sha"] + "\n")
+ 
+ 
+ RES = {"attest_id": "a1", "claim_id": "V-1", "extractor": "V", "mark": "MISMATCH", "reason": "SHA_DIFFERS", "report": {"path": "r.md", "sha256": "0" * 64},
+@@ -67,8 +73,8 @@
+     (tmp_path / "tests").mkdir()
+     (tmp_path / "tests" / "a.py").write_text("def test_a():\n    assert True\n")
+     (tmp_path / "pytest.ini").write_text("")
+-    good = chain([("note", {"t": 1}), ("test_run", {"cmd": "python -m x run", "exit_code": 3}), ("process_exit", {"argv": ["pytest", "-q", "tests/a.py"], "returncode": 0})])
+-    p = tmp_path / "ev.jsonl"
++    good = chain([("owner_utterance", {"t": 1}), ("test_run", {"cmd": "python -m x run", "exit_code": 3}), ("process_exit", {"argv": ["pytest", "-q", "tests/a.py"], "returncode": 0})])
++    p = tmp_path / "led" / "events.jsonl"
+     write(p, good)
+     v = Verifier(str(tmp_path), ledger=str(p))
+     f = v.exit_fact("python -m x run", 3)
+@@ -98,7 +104,7 @@
+ def test_ledger_event_beats_rerun_and_unverified_falls_back_to_rerun(tmp_path, monkeypatch):
+     (tmp_path / "tests").mkdir()
+     (tmp_path / "tests" / "a.py").write_text("def test_a():\n    assert True\n")
+-    p = tmp_path / "ev.jsonl"
++    p = tmp_path / "led" / "events.jsonl"
+     write(p, chain([("test_run", {"cmd": "pytest -q tests/a.py", "exit_code": 1})]))
+     calls = []
+     monkeypatch.setattr(attest, "_spawn", lambda *a, **k: (calls.append(a) or (0, b"", b"")))

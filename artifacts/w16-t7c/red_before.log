@@ -1,0 +1,449 @@
+.FFFFFFFFFFFFFFFFFFFFFFFFFFFF..FFF                                       [100%]
+=================================== FAILURES ===================================
+___________________ test_c1_variant_redacted[fw_prefix_only] ___________________
+
+form = 'fullwidth', name = 'fw_prefix_only'
+text = 'ヘッダは ｓｋ－abcdefghijklmnop です'
+secrets = ['sk-abcdefghijklmnop', 'ｓｋ－abcdefghijklmnop']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+_______________________ test_c1_variant_redacted[fw_all] _______________________
+
+form = 'fullwidth', name = 'fw_all', text = 'ヘッダは ｓｋ－ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐ です'
+secrets = ['sk-abcdefghijklmnop', 'ｓｋ－ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐ']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+_________________ test_c1_variant_redacted[fw_japanese_nogap] __________________
+
+form = 'fullwidth', name = 'fw_japanese_nogap', text = '鍵はｓｋ－ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐです'
+secrets = ['sk-abcdefghijklmnop', 'ｓｋ－ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐ']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+_____________________ test_c1_variant_redacted[fw_quoted] ______________________
+
+form = 'fullwidth', name = 'fw_quoted'
+text = 'curl -H "x: ｓｋ－ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐ"'
+secrets = ['sk-abcdefghijklmnop', 'ｓｋ－ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐ']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+______________________ test_c1_variant_redacted[fw_akia] _______________________
+
+form = 'fullwidth', name = 'fw_akia', text = 'ヘッダは ＡＫＩＡＺＺＺＺＹＹＹＹＸＸＸＸＷＷＷＷ です'
+secrets = ['AKIAZZZZYYYYXXXXWWWW', 'ＡＫＩＡＺＺＺＺＹＹＹＹＸＸＸＸＷＷＷＷ']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+_______________________ test_c1_variant_redacted[fw_ghp] _______________________
+
+form = 'fullwidth', name = 'fw_ghp'
+text = 'ヘッダは ｇｈｐ＿ＭｎＯｐＭｎＯｐＭｎＯｐＭｎＯｐＭｎＯｐＭｎＯｐ です'
+secrets = ['ghp_MnOpMnOpMnOpMnOpMnOpMnOp', 'ｇｈｐ＿ＭｎＯｐＭｎＯｐＭｎＯｐＭｎＯｐＭｎＯｐＭｎＯｐ']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+____________________ test_c1_variant_redacted[fw_fe63_dash] ____________________
+
+form = 'fullwidth', name = 'fw_fe63_dash', text = 'ヘッダは sk﹣abcdefghijklmnop です'
+secrets = ['sk-abcdefghijklmnop', 'sk﹣abcdefghijklmnop']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+__________________ test_c1_variant_redacted[fw_bearer_window] __________________
+
+form = 'fullwidth', name = 'fw_bearer_window'
+text = 'ヘッダは Ｂｅａｒｅｒ\u3000zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz です'
+secrets = ['zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz', 'Ｂｅａｒｅｒ\u3000zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+____________________ test_c1_variant_redacted[fw_password] _____________________
+
+form = 'fullwidth', name = 'fw_password'
+text = 'ヘッダは ｐａｓｓｗｏｒｄ＝ｈｕｎｔｅｒ２ｈｕｎｔｅｒ２ です'
+secrets = ['hunter2hunter2', 'ｐａｓｓｗｏｒｄ＝ｈｕｎｔｅｒ２ｈｕｎｔｅｒ２']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+______________________ test_c1_variant_redacted[pct_dash] ______________________
+
+form = 'percent', name = 'pct_dash', text = 'ヘッダは sk%2Dabcdefghijklmnop です'
+secrets = ['sk-abcdefghijklmnop', 'sk%2Dabcdefghijklmnop']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+___________________ test_c1_variant_redacted[pct_dash_lower] ___________________
+
+form = 'percent', name = 'pct_dash_lower'
+text = 'ヘッダは sk%2dabcdefghijklmnop です'
+secrets = ['sk-abcdefghijklmnop', 'sk%2dabcdefghijklmnop']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+______________________ test_c1_variant_redacted[pct_all] _______________________
+
+form = 'percent', name = 'pct_all'
+text = 'ヘッダは %73%6B%2D%61%62%63%64%65%66%67%68%69%6A%6B%6C%6D%6E%6F%70 です'
+secrets = ['sk-abcdefghijklmnop', '%73%6B%2D%61%62%63%64%65%66%67%68%69%6A%6B%6C%6D%6E%6F%70']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+_____________________ test_c1_variant_redacted[pct_double] _____________________
+
+form = 'percent', name = 'pct_double', text = 'ヘッダは sk%252Dabcdefghijklmnop です'
+secrets = ['sk-abcdefghijklmnop', 'sk%252Dabcdefghijklmnop']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+___________________ test_c1_variant_redacted[pct_url_query] ____________________
+
+form = 'percent', name = 'pct_url_query'
+text = 'see https://h.example/?x=sk%2Dabcdefghijklmnop&y=1'
+secrets = ['sk-abcdefghijklmnop', 'sk%2Dabcdefghijklmnop']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+__________________ test_c1_variant_redacted[pct_bearer_space] __________________
+
+form = 'percent', name = 'pct_bearer_space'
+text = 'ヘッダは Bearer%20zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz です'
+secrets = ['zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz', 'Bearer%20zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+______________________ test_c1_variant_redacted[pct_akia] ______________________
+
+form = 'percent', name = 'pct_akia', text = 'ヘッダは %41KIAZZZZYYYYXXXXWWWW です'
+secrets = ['AKIAZZZZYYYYXXXXWWWW', '%41KIAZZZZYYYYXXXXWWWW']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+__________________ test_c1_variant_redacted[pct_bearer_plus] ___________________
+
+form = 'percent', name = 'pct_bearer_plus'
+text = 'ヘッダは Bearer+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz です'
+secrets = ['zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz', 'Bearer+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+_____________________ test_c1_variant_redacted[b64_padded] _____________________
+
+form = 'base64', name = 'b64_padded'
+text = 'ヘッダは c2stYWJjZGVmZ2hpamtsbW5vcA== です'
+secrets = ['sk-abcdefghijklmnop', 'c2stYWJjZGVmZ2hpamtsbW5vcA==']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+____________________ test_c1_variant_redacted[b64_unpadded] ____________________
+
+form = 'base64', name = 'b64_unpadded'
+text = 'ヘッダは c2stYWJjZGVmZ2hpamtsbW5vcA です'
+secrets = ['sk-abcdefghijklmnop', 'c2stYWJjZGVmZ2hpamtsbW5vcA']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+____________________ test_c1_variant_redacted[b64_urlsafe] _____________________
+
+form = 'base64', name = 'b64_urlsafe'
+text = 'ヘッダは cGFzc3dvcmQ9aHU_bnRlcjJodW50ZXIy です'
+secrets = ['password=hu?nter2hunter2', 'cGFzc3dvcmQ9aHU_bnRlcjJodW50ZXIy']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+____________________ test_c1_variant_redacted[b64_password] ____________________
+
+form = 'base64', name = 'b64_password'
+text = 'ヘッダは cGFzc3dvcmQ9aHVudGVyMmh1bnRlcjI= です'
+secrets = ['hunter2hunter2', 'password=hunter2hunter2', 'cGFzc3dvcmQ9aHVudGVyMmh1bnRlcjI=']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+___________________ test_c1_variant_redacted[b64_basic_auth] ___________________
+
+form = 'base64', name = 'b64_basic_auth'
+text = 'Authorization: Basic dXNlcjpzay1hYmNkZWZnaGlqa2xtbm9w'
+secrets = ['sk-abcdefghijklmnop', 'dXNlcjpzay1hYmNkZWZnaGlqa2xtbm9w']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+____________________ test_c1_variant_redacted[b64_in_token] ____________________
+
+form = 'base64', name = 'b64_in_token'
+text = 'ヘッダは x=c2stYWJjZGVmZ2hpamtsbW5vcA== です'
+secrets = ['sk-abcdefghijklmnop', 'c2stYWJjZGVmZ2hpamtsbW5vcA==']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+______________________ test_c1_variant_redacted[b64_akia] ______________________
+
+form = 'base64', name = 'b64_akia'
+text = 'ヘッダは QUtJQVpaWlpZWVlZWFhYWFdXV1c= です'
+secrets = ['AKIAZZZZYYYYXXXXWWWW', 'QUtJQVpaWlpZWVlZWFhYWFdXV1c=']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:99: AssertionError
+______________________ test_marker_names_are_one_of_three ______________________
+
+    def test_marker_names_are_one_of_three():
+        out, _ = L.redact("ヘッダは " + fw(SK) + " です")
+>       assert out == "ヘッダは [REDACTED:sk:nfkc] です"
+E       AssertionError: assert 'ヘッダは ｓｋ－ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐ です' == 'ヘッダは [REDACTED:sk:nfkc] です'
+E         
+E         - ヘッダは [REDACTED:sk:nfkc] です
+E         + ヘッダは ｓｋ－ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐ です
+
+tests/test_w16t7c_redact_variants.py:108: AssertionError
+______________________________ test_marker_safety ______________________________
+
+    def test_marker_safety():
+        for t, _rx, _g in L.REDACT_PATTERNS:
+            for var in ("nfkc", "pct", "b64"):
+                m = "[REDACTED:%s:%s]" % (t, var)
+                assert L.redact(m) == (m, 0), m
+                assert L.redact("x " + m + " y")[1] == 0, m
+                assert L.redact('"' + m + '"')[1] == 0, m
+>               assert L.redact(m + m)[1] == 0, m
+E               AssertionError: [REDACTED:gh_token:nfkc]
+E               assert 1 == 0
+
+tests/test_w16t7c_redact_variants.py:122: AssertionError
+__________________________ test_window_across_tokens ___________________________
+
+    def test_window_across_tokens():
+        for text, sec in (("ヘッダは " + fw("Bearer") + "　" + ZB, [ZB]),
+                          ("ヘッダは " + fw("pass" + "word") + "： " + HUNTER, [HUNTER])):
+            out, n = L.redact(text)
+>           assert n >= 1 and leaks(out, sec) == []
+E           assert (0 >= 1)
+
+tests/test_w16t7c_redact_variants.py:130: AssertionError
+_____________________ test_marker_adjacent_to_variant_key ______________________
+
+    def test_marker_adjacent_to_variant_key():
+        out, n = L.redact("[REDACTED:sk]" + fw(SK))
+>       assert n >= 1 and leaks(out, [SK, fw(SK)]) == []
+E       assert (0 >= 1)
+
+tests/test_w16t7c_redact_variants.py:135: AssertionError
+________________ test_hook_route_variant_not_in_ledger[fw_all] _________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2240/test_hook_route_variant_not_in0')
+name = 'fw_all'
+
+    @pytest.mark.parametrize("name", ["fw_all", "b64_padded", "pct_dash"])
+    def test_hook_route_variant_not_in_ledger(tmp_path, name):
+        form, _n, text, secrets = next(x for x in VARIANTS if x[1] == name)
+        d, rs = _hook_prompt(tmp_path, text)
+>       assert len(rs) == 1 and rs[0]["data"]["redactions"] >= 1
+E       AssertionError: assert (1 == 1 and 0 >= 1)
+E        +  where 1 = len([{'actor': {'id': 'unknown', 'type': 'owner'}, 'data': {'redactions': 0, 'session_id': 'unknown', 'source': 'claude_co...ｍｎｏｐ です'}, 'kind': 'owner_utterance', 'prev': '0000000000000000000000000000000000000000000000000000000000000000', ...}])
+
+tests/test_w16t7c_redact_variants.py:186: AssertionError
+______________ test_hook_route_variant_not_in_ledger[b64_padded] _______________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2240/test_hook_route_variant_not_in1')
+name = 'b64_padded'
+
+    @pytest.mark.parametrize("name", ["fw_all", "b64_padded", "pct_dash"])
+    def test_hook_route_variant_not_in_ledger(tmp_path, name):
+        form, _n, text, secrets = next(x for x in VARIANTS if x[1] == name)
+        d, rs = _hook_prompt(tmp_path, text)
+>       assert len(rs) == 1 and rs[0]["data"]["redactions"] >= 1
+E       AssertionError: assert (1 == 1 and 0 >= 1)
+E        +  where 1 = len([{'actor': {'id': 'unknown', 'type': 'owner'}, 'data': {'redactions': 0, 'session_id': 'unknown', 'source': 'claude_co...cA== です'}, 'kind': 'owner_utterance', 'prev': '0000000000000000000000000000000000000000000000000000000000000000', ...}])
+
+tests/test_w16t7c_redact_variants.py:186: AssertionError
+_______________ test_hook_route_variant_not_in_ledger[pct_dash] ________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2240/test_hook_route_variant_not_in2')
+name = 'pct_dash'
+
+    @pytest.mark.parametrize("name", ["fw_all", "b64_padded", "pct_dash"])
+    def test_hook_route_variant_not_in_ledger(tmp_path, name):
+        form, _n, text, secrets = next(x for x in VARIANTS if x[1] == name)
+        d, rs = _hook_prompt(tmp_path, text)
+>       assert len(rs) == 1 and rs[0]["data"]["redactions"] >= 1
+E       AssertionError: assert (1 == 1 and 0 >= 1)
+E        +  where 1 = len([{'actor': {'id': 'unknown', 'type': 'owner'}, 'data': {'redactions': 0, 'session_id': 'unknown', 'source': 'claude_co...mnop です'}, 'kind': 'owner_utterance', 'prev': '0000000000000000000000000000000000000000000000000000000000000000', ...}])
+
+tests/test_w16t7c_redact_variants.py:186: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[fw_prefix_only]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[fw_all]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[fw_japanese_nogap]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[fw_quoted]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[fw_akia]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[fw_ghp]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[fw_fe63_dash]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[fw_bearer_window]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[fw_password]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[pct_dash]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[pct_dash_lower]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[pct_all]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[pct_double]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[pct_url_query]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[pct_bearer_space]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[pct_akia]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[pct_bearer_plus]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_padded]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_unpadded]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_urlsafe]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_password]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_basic_auth]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_in_token]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_akia]
+FAILED tests/test_w16t7c_redact_variants.py::test_marker_names_are_one_of_three
+FAILED tests/test_w16t7c_redact_variants.py::test_marker_safety - AssertionEr...
+FAILED tests/test_w16t7c_redact_variants.py::test_window_across_tokens - asse...
+FAILED tests/test_w16t7c_redact_variants.py::test_marker_adjacent_to_variant_key
+FAILED tests/test_w16t7c_redact_variants.py::test_hook_route_variant_not_in_ledger[fw_all]
+FAILED tests/test_w16t7c_redact_variants.py::test_hook_route_variant_not_in_ledger[b64_padded]
+FAILED tests/test_w16t7c_redact_variants.py::test_hook_route_variant_not_in_ledger[pct_dash]
+31 failed, 3 passed in 1.96s

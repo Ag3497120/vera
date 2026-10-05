@@ -1,0 +1,11 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W16-t6b/mig/new
+plugins: anyio-4.14.2
+collected 23 items
+
+tests/test_w16t6_basis.py .............                                  [ 56%]
+tests/test_w16t6_ledger.py .....                                         [ 78%]
+tests/test_w16t6_synth.py .....                                          [100%]
+
+============================= 23 passed in 10.71s ==============================

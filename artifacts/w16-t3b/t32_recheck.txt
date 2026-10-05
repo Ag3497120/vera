@@ -1,0 +1,8 @@
+quote_check のある行: 255
+基点のコードの to_dict が保存と同一: 251
+新しいコードの to_dict が保存と同一: 251
+基点と新で to_dict が違う行: 0
+基点の印の分布: {'anchored': 140, 'unanchored': 112, 'conflict': 3}
+新の印の分布: {'anchored': 140, 'unanchored': 112, 'conflict': 3}
+anchored 以外 -> anchored: 0
+reason の分布（新）: {None: 250, 'YESNO_NOT_CHECKED': 2, 'POLARITY_DIFFERS': 1, 'NO_CONTENT_TO_CHECK': 1, 'ANSWER_CONTENT_NOT_IN_QUOTE:行わ': 1}

@@ -97,6 +97,7 @@ T7（`verantyx/ledger_events.py`）は別軌道で、このツリーに無い。
 - 使う kind は `test_run`・`process_exit`。`data` から終了コード（`exit_code` または `returncode`）とコマンド（`cmd` または `argv`）を読む。コマンドの一致は shlex で正規化した argv の完全一致（`tests_added` の「通った」は、argv に pytest の呼び出しとそのパスを含む出来事）。
 - **仮定した連鎖の規則**: `sha = sha256(canonical JSON(行から sha を除く、sort_keys、ensure_ascii=False、separators=(",",":")))`、`prev` = 前の行の `sha`（最初の行は `null`・空・64 個の `0` のいずれか）。合わなければ台帳全体を `LEDGER_UNVERIFIED`（その出来事は TESTIMONY）。**T7 統合後にこの規則を合わせる必要がある**。
 - 同じコマンドの出来事が複数あり終了コードが割れる → `AMBIGUOUS_EVENT`。
+- **訂正（W16-t6b、2026-10-06）**: 上の「仮定した連鎖の規則」は廃止した。台帳は T7 の検証（ledger_events.verify）で確かめる。改訂 7 を見よ。
 
 ### 終了コード（CLI、凍結）
 0 = 申告が 1 件以上あり全部 RECORD／1 = MISMATCH が 1 件以上／4 = MISMATCH 無しで TESTIMONY あり（完了の段が無い場合も）／2 = 引数の誤り／3 = `--record` の台帳が壊れている（何も書かない）。
@@ -166,6 +167,44 @@ T7（`verantyx/ledger_events.py`）は別軌道で、このツリーに無い。
 6. **第 3 ラウンドの改訂（2026-10-06）: 0 件の収集の確定**: `pytest --collect-only -q` はモジュール単位の skip（`importorskip`・`skip(allow_module_level=True)`）と 0 件のファイルを同じ「`no tests collected`、終了 5」で出す。そこで終了 5 のときは `-q` 無しの許可形 `pytest --collect-only <spec>` で収集し直し、要約行が `collected 0 items` だけ（skipped・error・deselected・xfail が付かない）のときだけ実際の値 0 とする。`skipped` が付けば TESTIMONY `COLLECT_SKIPPED`（件数を観測できない）、読めなければ `COLLECT_FAILED`。改訂 5 (b) は、この条件で置き換わる。
    再測定: 合成 40 件の `t6_1_synth.txt`・`.json` はバイト単位で同一、再生の 4 ファイルも同一。
    「0 件が通った」と申告されたとき `test_passed` が終了 5 と食い違う件（レビューの任意 1）は、今回は仕様を変えず既知の挙動として残す。
+
+7. **W16-t6b（K605/K606、2026-10-06）: 台帳は T7 の検証を通ったものだけを使う**（発見: 攻撃 1 波 a16。`prev` が null の genesis を持つ改ざんされた台帳が、T7 の `vera events verify` では TAMPERED（BAD_SHAPE・PREV_MISMATCH）なのに、attest では終了コードの事実が RECORD になった。原因は上の「仮定した連鎖の規則」）。狭める方向だけの修正。
+   - 台帳の場所: `--ledger` に渡すのは、ディレクトリ（`<dir>/events.jsonl` を使う）か、名前がちょうど `events.jsonl` のファイル。それ以外の名前のファイルは T7 の検証に掛けられないので未検証（問題の型 `LEDGER_PATH_NOT_T7`）。別のファイルを検証して渡されたファイルを読む取り違えを作らない。
+   - 検証: `verantyx.ledger_events.verify(<dir>, expected_head=ledger_head)`（`vera events verify` と同じ関数）。検証の前後で events.jsonl の bytes を比べ、違えば未検証（`LEDGER_CHANGED_DURING_VERIFY`）。読めなければ未検証（`LEDGER_UNREADABLE`）。出来事は検証した bytes から作る。
+   - `status` が `OK` のときだけ従来どおり（出来事の読み方・RECORD/MISMATCH の evidence のキーと値は不変）。`OK` 以外（`TAMPERED`・`TORN_TAIL`・`HEAD_MISMATCH`・`EMPTY`）は、その台帳から取る事実（`exit:*` と `test_passed:*` の台帳の経路）をすべて TESTIMONY（理由 `LEDGER_UNVERIFIED`）にする。`EMPTY` は `OK` ではないので未検証（出来事が 1 つも無いので結果はどちらでも TESTIMONY）。理由の型は増やしていない。
+   - 未検証の evidence: `{"ledger": <渡されたパス>, "status": <verify の status>, "problems": <verify の問題の全件（line・type ほか）>}`、observation は「台帳が T7 の検証を通らない（status=…、問題: TYPE@行, …）」。ほかの TESTIMONY（`NO_EVENT` など）の evidence は `None` のまま。`--rerun` への落ち方は変えない（未検証の台帳と `--rerun` なら再実行の結果を使う）。
+   - HEAD の固定: `run_attest(..., ledger_head=<sha>)` / `Verifier(..., ledger_head=...)`。`ledger_head` が None のとき `flags` にキーを足さない（台帳を使わない出力と `--record` の `attest_id` を byte 不変に保つため）。**CLI には旗が無い**（`cli.py` はこのチケットの許可パスの外）。1 行の提案は `artifacts/w16-t6b/proposed_cli_ledger_head.diff`（未適用）。
+   - → 訂正（第 2 ラウンド、裁定 3）: 上の「CLI には旗が無い」は事実でなくなった。`--ledger-head SHA` を CLI に追加した（7b を見よ）。
+   - 旧い「仮定した連鎖の規則」と `_row_sha` は消した（旧い文はこの文書に残し、訂正の印を付けた）。
+   - **既知の限界（直さない）**: (1) HEAD を固定しないとき、全行を T7 の規則で計算し直し HEAD ファイルも書き換えた偽造は `verify` が OK を返す（T7 の性質）ので、attest も RECORD にする。止まるのは `ledger_head` を渡したときだけ（`tests/test_w16t6b_ledger_verify.py::test_replace_recomputed_with_head_not_pinned_is_still_record`）。(2) `vera run` が作る台帳の `process_exit` は `argv`/`cmd` を持たない（`process_start` と `run_id` で結ぶ必要がある）ので、終了コードの事実は取らない（NO_EVENT のまま。結ぶのは RECORD を広げる変更なので、このチケットではしない）。
+   - 影響（実測）: 既存の T6 テスト 11 件が赤くなる（`artifacts/w16-t6b/t6_existing_after.txt`、一覧と移行案は `existing_test_impact.md`・`proposed_t6_test_migration.diff`・`proposed_migration_pytest.txt`。これらのテストの台帳は T7 の形ではなかった）。合成 40 件では台帳つき 8 件のうち 7 件（S05・S06・S10・S19・S26・S27・S35）の台帳由来の事実 20 件が RECORD／MISMATCH から TESTIMONY に下がり、上がった事実は 0（`synth_diff.txt`）。再生 173 本の出力 4 ファイルは変更前後で同一（`replay_cmp.txt`）。台帳なし・正しい T7 の台帳・`vera run` の台帳の `--json` 出力と `--record` の行は byte 不変（`k606_cmp.txt`）。
+   - → 訂正（第 2 ラウンド、裁定 1）: 上の「既存の T6 テスト 11 件が赤くなる」は、台帳の fixture を T7 の形へ移行して解消した（assert は不変）。4 ファイル 29＋新 30 が通る（`t6_four_plus_new_r2.txt`）。詳細は 7b。
+
+7b. **W16-t6b 第 2 ラウンド（2026-10-06）: CLI の `--ledger-head`、既存テストの台帳を T7 の形へ移行、再測定**（裁定 1〜4）
+   - CLI: `vera attest <report> --tree T --ledger <events.jsonl|dir> --ledger-head SHA`（`verantyx/cli.py` の attest の登録に 1 行だけ追記）。`--ledger-head` を渡すと、全行と HEAD を T7 の規則で計算し直した偽造・末尾の切り捨ても `EXPECTED_HEAD_MISMATCH` で LEDGER_UNVERIFIED（終了コード 4）。試験: `tests/test_w16t6b_cli_head.py` 5 件（赤: `artifacts/w16-t6b/red_r2_cli.txt` 3 failed・2 passed、緑: `green_r2_cli.txt` 5 passed。赤の理由は argparse の `unrecognized arguments: --ledger-head`）。
+   - **開示（T7 の性質）**: `--ledger-head` を渡さないとき、全行と HEAD を計算し直した偽造は T7 の verify が OK を返すので RECORD のまま（`test_cli_recomputed_forgery_without_head_is_still_record` が期待として固定）。HEAD の固定は台帳の外（人が控えた sha）から渡す。
+   - `vera run` の台帳と `run_id` で結ばない（NO_EVENT のまま）ことは、このチケットでは広げない（裁定 4）。
+   - 移行（裁定 1）: `artifacts/w16-t6b/proposed_t6_test_migration.diff` を適用した。対象は 3 ファイル `tests/test_w16t6_basis.py`・`tests/test_w16t6_ledger.py`・`artifacts/w16-t6/synth/synth_lib.py`（実体化。diff の一部であり、裁定の文言に名前は無いが diff を名指しで承認している）。台帳の fixture を T7 の形（`ledger_events.append`。`note` は T7 の種類に無いので `owner_utterance`）に作り直しただけで、assert を含む変更行は 0（`git diff` の `^[+-][^+-].*assert` の件数 0）。凍結物 `cases.jsonl`・`expected.jsonl` は不変（sha は `freeze_r2_start.sha256` のとおり一致）。適用後、T6 の 4 ファイル（29）＋新 `test_w16t6b_ledger_verify.py`（30）が 59 passed（`t6_four_plus_new_r2.txt`）。fixture を移した既存テスト 11 件の一覧は `existing_test_impact.md`（名前は変えていない）。
+   - **合成 40 件（裁定 2）**: 仮定の形の台帳のまま新しい規則に掛けると、台帳つき 8 件のうち 7 件・20 事実が TESTIMONY（LEDGER_UNVERIFIED）に下がる（`synth_diff.txt`、上がった事実 0）。全件:
+
+     | case | extractor | claim | 事実 | 前の印/理由 | 後の印/理由 |
+     |---|---|---|---|---|---|
+     | S05 | V, a, b | V-1, a-1, b-1 | exit:python -m pytest -q tests/test_a.py | RECORD/MATCH | TESTIMONY/LEDGER_UNVERIFIED |
+     | S06 | V, a, b | V-1, a-1, b-1 | exit:python -m verantyx.tool run | RECORD/MATCH | TESTIMONY/LEDGER_UNVERIFIED |
+     | S10 | V, a, b | V-1, a-1, b-1 | test_passed:tests/test_e.py | RECORD/MATCH | TESTIMONY/LEDGER_UNVERIFIED |
+     | S19 | V, a, b | V-1, a-1, b-1 | test_passed:tests/test_i.py | RECORD/MATCH | TESTIMONY/LEDGER_UNVERIFIED |
+     | S26 | V, a, b | V-1, a-1, b-1 | exit:python -m pytest -q tests/test_a.py | MISMATCH/EXIT_CODE_DIFFERS | TESTIMONY/LEDGER_UNVERIFIED |
+     | S27 | V, a, b | V-1, a-1, b-1 | exit:python -m verantyx.tool run | MISMATCH/EXIT_CODE_DIFFERS | TESTIMONY/LEDGER_UNVERIFIED |
+     | S35 | V, b | V-1, b-1 | exit:pytest -q tests/test_a.py | RECORD/MATCH | TESTIMONY/LEDGER_UNVERIFIED |
+
+     （3+3+3+3+3+3+2 = 20 事実。S35 に a の行が無い理由は調べていない。`synth_diff.txt` の出力のとおり。）このときの指標は V/a/b とも detected 22→20、false_positive 0、missed 0（`synth_after/t6_1_synth.txt`・`synth_diff.txt`）。
+   - **文言**: T6 の測定の数（22/22 など）は仮定の形の台帳での値で、T7 の検証の後は台帳由来の事実が証言になる。偽の RECORD は 0 のまま（TESTIMONY から RECORD／MISMATCH に上がった事実 0、`synth_diff.txt`・`synth_diff_mig.txt`）。
+   - **移行後の合成の再測定（実測、`synth_diff_mig.txt`・`synth_after_mig/`）**: 合成の台帳を T7 の形で実体化すると検証を通るので、出力は変更前（`synth_before`）と変わらない: 変わったケース 0、上がった事実 0、その他の印の変化 0、`t6_1_synth.json`・`t6_1_synth.txt` は `synth_before` と byte 同一で、凍結物 `artifacts/w16-t6/t6_1_synth.json` とも byte 同一（V/a/b とも detected 22・missed 0・false_positive 0）。つまり 22/22 は「T7 の形の台帳」でも成り立ち、下がるのは台帳が T7 の形でない（検証を通らない）ときだけ。
+   - K606 の再測定（CLI 変更後、`k606_cmp_r2.txt`）: 台帳なし・正しい T7 の台帳（led_add）・`vera run` の台帳（led_run）の `--json`・テキスト・終了コード・`--record` の終了コードの 12 項目すべて同一。`--record` の行（ts/hash/seq/store_id/prev/sha を除く）も同一で、`attest_id` は 6ebeca5158394128・b6dd6fc13b063e03・49856716544ddcc7 のまま（`k606_rec_cmp.py`）。
+   - 再生 173 本の再測定（`replay_cmp_r2.txt`、`replay_norm_cmp_r2.txt`）: `summary.txt`・`mismatches.tsv` は byte 同一。`results.jsonl` の 1 行（317）と `labels.tsv` の 1 行（318）だけが違い、違いは 64 桁の sha256 の値 1 か所のみ（sha を伏せると同一）。この sha は報告 `W3-c4/impl.r2.md` の主張が指す作業ツリーの `verantyx/cli.py` の sha256 で、`cli.py` に承認された 1 行を足したため変わった（変更前 df2c4b10…、変更後 87673ed0…）。印・理由・件数は不変。ツリーのファイルの sha を証拠に含める限り、そのファイルを変えた後は byte 同一にならない。
+   - a16 の CLI（`a16_cli_r2.json`、`a16_cli_r2.rc`）: 変更前（`a16_cli.json`）と byte 同一、終了コード 4。
+   - 3 つの分岐（`LEDGER_CHANGED_DURING_VERIFY`・`LEDGER_VERIFY_FAILED`・`LEDGER_UNREADABLE`）の回帰試験 `tests/test_w16t6b_branches.py`（3 件、`branches_r2.txt`）。第 1 ラウンドの実装で最初から緑（赤は取れなかった）。
+   - 関係テスト: `related_tests_r2.txt`（202 passed。branches 3 件を足した後の実測）。
 
 ## 結果（測定の後に追記。数値は出力ファイルから）
 

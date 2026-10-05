@@ -1,0 +1,10 @@
+--- a/verantyx/cli.py	2026-10-06 04:22:54
++++ b/verantyx/cli.py	2026-10-06 04:22:54
+@@ -2892,6 +2892,7 @@
+     p.add_argument("report", help="the report (the completion section and/or an attest JSON block)")
+     p.add_argument("--tree", required=True, help="the work tree to check the claims against")
+     p.add_argument("--ledger", default=None, help="a T7 events ledger (jsonl): test_run / process_exit events give exit codes")
++    p.add_argument("--ledger-head", default=None, help="the HEAD sha you pinned for --ledger (T7 verify --head): a truncated or fully recomputed ledger is then unverified")
+     p.add_argument("--rerun", action="store_true", help="re-run an allowed form (pytest / python -m pytest on tests/*.py) when no ledger event exists")
+     p.add_argument("--base", default=None, help="git rev: a 'changed' claim must differ from it")
+     p.add_argument("--rev", default=None, help="git rev: check file sha256 against that revision instead of the work tree")

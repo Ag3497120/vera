@@ -2883,3 +2883,438 @@ quote_check・本文の最後の 1 行以外も違う行: 0
 変更後: 434 passed in 62.30s (0:01:02)
 新しい失敗: 0 byte
 ```
+
+## 10. W16-t3b: 引用の照合の狭め（R13–R16）（事前登録 2026-10-06 04:23:45 +0900）
+
+攻撃の第 2 波（W16-atk1b）が破った 4 つの型を狭める。**狭める方向だけ**（今 anchored でない行の verdict・reason は変えない）。読解器は使わない。品詞・見出し語・活用形（助動詞）だけ。この節は検査データ・コードより先に書く。予想・目標値は書かない。§9 の既存の文は変えない。
+
+### 10.1 共通
+- 形態素解析は今の `_analyze`（`(表層, pos1, pos2, 見出し語, 開始, 終了)`）だけ。`semantic_reader`・`decode_grammar` の新しい関数は使わない。語の一覧を新しく作らない（助詞は品詞＋チケットが名指しした は・が・も・の だけ）。
+- **印の順**（上から最初に当たったもの。既存の 1〜3d は変えない）: 1 -> 2 conflict -> 3 -> 3c YESNO_NOT_CHECKED -> 3b ANSWER_CONTENT_NOT_IN_QUOTE -> 3e NO_CONTENT_TO_CHECK -> 3d POLARITY_DIFFERS -> **3f ANSWER_SPLIT_ACROSS_QUOTES（R15）-> 3g ROLE_PARTICLE_DIFFERS:<語>（R13）-> 3h TENSE_DIFFERS:<見出し語>（R14）** -> 4 anchored。新しい段は anchored の直前だけ。先に付いた reason は上書きしない（`reason = reason or …`）。`to_dict` の鍵は増やさない（R16 の relocated の項目の鍵を除く）。
+- 計算は「規則 3b の準備」のブロック（`if valid and not answer_bad:`）の中で行う。
+
+### 10.2 R15 1 つの引用で支える
+- 照合する項目 = 答えの要素 `a_els` ＋ 3b で被覆を確かめる内容語 `checked`。`checked = [wd for wd in words if not _covered(wd, qtoks)]`（選択の問いでは `qtoks` は空）。R12 (i)（要素が空・`words` が空でない・`checked` が空）のときは `checked = words`。
+- 実在した引用 j が **支え** = `a_els` のすべてが j の要素に同じ `(kind, value)` で現れ、かつ `checked` のすべてが j の解析に `_covered`。
+- 支えが 1 つも無ければ 3f。項目が空なら全部の引用が支え。理由は `ANSWER_SPLIT_ACROSS_QUOTES`（後ろに語を付けない）。
+
+### 10.3 R13 役割の助詞
+- 語の単位 = **名詞の連なり**: `pos1 ∈ {名詞, 接頭辞}` または `(pos1 == 接尾辞 かつ pos2 == 名詞的)` の連続する最大の並び。最後の語が `pos1 ∈ {名詞, 接尾辞}` で `pos2 != 非自立可能` のときだけ扱う。鍵 = 連なりの表層の連結。
+- 連なりの直後の 1 語が助詞で、`pos2 == 格助詞`（表層 `の` を除く）または表層が `は`・`も` のとき、その **組** を記録する。`は`・`が`・`も` は 1 つの組。それ以外は表層そのもの（を・に・へ・と・で・から・より …）。
+- 答えの連なり N の組の集合 `A[N]`、支えの引用 j の `Q_j[N]`。N が `Q_j` にあり `A[N]` が `Q_j[N]` の部分集合でないとき食い違う。支えのどれか 1 つで食い違えば 3g。理由 `ROLE_PARTICLE_DIFFERS:` ＋ 食い違った語を答えの出現順・重複なしで `、` 連結。
+
+### 10.4 R14 時制
+- 述語 = `pos1 ∈ {動詞, 形容詞}`（非自立可能も含む）、または形状詞で直後が助動詞 `だ`・`です`。
+- 述語の後ろの連なり = 直後から続く、助動詞・接続助詞 `て`／`で`・`pos2 == 非自立可能` の動詞／形容詞 の最大の並び。連なりに **見出し語 `た` の助動詞** があれば過去。無く、連なりの最後が接続助詞なら **決まらない**（比べない）。それ以外は非過去。
+- 答えの見出し語 L の時制の集合 `A[L]`、支えの引用 j の `Q_j[L]`（決まらないものは入れない）。L が `Q_j` にあり `A[L]` が `Q_j[L]` の部分集合でないとき食い違う。支えのどれか 1 つで食い違えば 3h。理由 `TENSE_DIFFERS:` ＋ 見出し語（unidic のまま。表層に直さない）を答えの出現順・重複なしで `、` 連結。
+
+### 10.5 R16 出典の名前
+- `_dir_differs(given, recorded)` = `norm(given)` の `os.path.dirname` が空でなく、`norm(recorded)` の dirname と違う。
+- 今の exact（basename 一致した記録の指定行に部分一致）で `pos` が取れたとき、**`pos` のすべての位置で `_dir_differs`** なら `found = "relocated"`、`relocated_to`、`source_claimed`（与えられたまま）、`source_record`（`pos` の source を重複なく出現順に list）を持つ。**`pos` は変えない**（印・found_in・conflicts は R16 で変わらない）。項目の鍵の順は `source, line, text, relocated_to, source_claimed, source_record, found`。
+- ディレクトリの部分の無い source は従来どおり basename で一致（exact）。
+
+### 10.6 判断（J-t3b）
+1. R13 の単位は名詞の連なり（名詞 1 語では `支店` が答えにも引用にも が と を を持ち Q01 を見逃す）。
+2. は・が・も 以外（を・に・へ・と …）は別の組。語の一覧を足さない。正しい言い換えでも別の組なら偽の錨なしになる（開示する）。
+3. て／で で終わる連なりは時制を決めない。たら は見出し語 た なので過去に数える。
+4. R13・R14 は R15 の支えの引用とだけ比べる。支えが複数なら 1 つでも食い違えば落とす。
+5. R16 は印を変えず `found` と鍵だけを変える。`./x`・絶対パスもディレクトリの部分を持つので relocated。
+6. 新しい段は anchored の直前。順は R15 -> R13 -> R14。
+
+### 10.7 検査データの決まり（Q1。コードより先に凍結する）
+- `artifacts/w16-t3b/cases.jsonl`。合計 24 件以上。型 RO（R13）・TE（R14）・SP（R15）・SR（R16）が各 4 件以上、各型に正しい対照（expect が anchored、SR は expect_found が exact）が 1 件以上。H は規則どおりの偽の錨なし・閉じない型の開示（任意）。
+- 期待は規則から手で決める（コードを流して決めない）。文は攻撃の Q01〜Q04 の 4 文を除き自分で書く。
+- 直す前の赤は誤答側（RO・TE・SP の誤答、SR の `expect_found` が relocated の項目）に出ること。
+
+### 10.8 訂正（cases_b。コードより後に凍結）
+
+凍結済みの `cases.jsonl` の 2 件の期待を、コードを書いた後に別名で訂正した（`cases.jsonl` は書き換えない。W16-t3 §9.16b と同じやり方）。順序は下の時刻・mtime のとおり: 事前登録 -> cases 凍結 -> 直す前の赤 -> コード -> **cases_b 凍結（コードより後）**。
+- **RO-02**: 答え `係長が課長に書類を渡した。` の `係長` は、引用側（`…係長に…`）で形態素 `係`＋`長` に分かれ、答えでは 1 語の `係長` になる。既存の規則 3b（内容語の被覆）が先に落とし、verdict は unanchored のままだが reason が `ANSWER_CONTENT_NOT_IN_QUOTE:` になり、R13 を確かめる項目にならなかった。期待を決めるとき、形態素の分かれ方（連なりの単位）を確かめなかった。1 語に解析される `部長` に替えた別の文にした。
+- **SP-05**: 問いに `営業課` が入っており、R3（問いの語は被覆から除く）で答えの `営業`・`課`・`課長` が照合する項目から外れ、`鈴木` だけが残って引用 2 が支えになる。規則どおり anchored（期待の読み違い。R3 を R15 の項目に当てはめるのを忘れた）。問いを `課長の名前を教えてください` に替えて R15 の項目にし、元の問いの形は規則どおり anchored になる閉じない型 **H-05** として残した。
+`make_cases_b.py` は上の 3 点だけを変え、他の 25 件は byte 一致（`cases.jsonl` の 27 件 + H-05 = cases_b の件数は下の型の表）。
+
+### 10.9 測定結果（`artifacts/w16-t3b/` の出力を機械で貼った）
+
+#### 順序と凍結（第 1 ラウンド: `mtime_order.txt`・`prereg_time.txt`・`cases_time.txt`・`cases_b_time.txt`）
+```
+1791228225 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/artifacts/w16-t3b/prereg.txt
+1791228318 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/artifacts/w16-t3b/cases.jsonl
+1791228328 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/artifacts/w16-t3b/cases_before.txt
+1791228345 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/verantyx/quote_check.py
+1791228381 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/artifacts/w16-t3b/cases_b.jsonl
+2026-10-06 04:23:45 artifacts/w16-t3b/prereg.txt
+2026-10-06 04:25:18 artifacts/w16-t3b/cases.jsonl
+2026-10-06 04:25:28 artifacts/w16-t3b/cases_before.txt
+2026-10-06 04:25:45 verantyx/quote_check.py
+2026-10-06 04:26:21 artifacts/w16-t3b/cases_b.jsonl
+prereg_time: 2026-10-06 04:23:45 +0900
+cases_time:  2026-10-06 04:25:18 +0900
+cases_b_time: 2026-10-06 04:26:21 +0900
+```
+
+凍結 sha（`prereg.sha256`・`cases.sha256`・`cases_b.sha256`。第 2 ラウンドの `prereg2.sha256`・`cases_c.sha256` は §10.13）:
+```
+17f2a8878baf7bece4fabfb4f045d50dfb2b007f4ab9b3a40b92a667e391732f  prereg.txt
+4bd1d9ade8d5b11c5e3ae7cb7019bca5740ac6100e6d3c4116ed8dc63ce361ac  cases.jsonl
+ca2adfa2fa1fea8be8ef1f233e89574acc437ced5144a2c91847d0ec83f2f320  cases_b.jsonl
+```
+
+#### Q1 の件数: 型 × 期待 × 凍結版（チケットの文「4 つの型で 24 件以上」は RO・TE・SP・SR の合計。H は数えに入れない。表は機械で出した）
+```
+cases.jsonl（凍結版）: 27 件、RO+TE+SP+SR = 23 件
+  RO 合計  6  {'unanchored': 4, 'anchored': 2}
+  TE 合計  6  {'unanchored': 4, 'anchored': 2}
+  SP 合計  5  {'unanchored': 4, 'anchored': 1}
+  SR 合計  6  {'anchored': 6}
+  H  合計  4  {'unanchored': 3, 'anchored': 1}
+cases_b.jsonl（凍結版）: 28 件、RO+TE+SP+SR = 23 件
+  RO 合計  6  {'unanchored': 4, 'anchored': 2}
+  TE 合計  6  {'unanchored': 4, 'anchored': 2}
+  SP 合計  5  {'unanchored': 4, 'anchored': 1}
+  SR 合計  6  {'anchored': 6}
+  H  合計  5  {'unanchored': 3, 'anchored': 2}
+cases_c.jsonl（凍結版）: 32 件、RO+TE+SP+SR = 28 件
+  RO 合計  6  {'unanchored': 4, 'anchored': 2}
+  TE 合計  6  {'unanchored': 4, 'anchored': 2}
+  SP 合計 10  {'unanchored': 8, 'anchored': 2}
+  SR 合計  6  {'anchored': 6}
+  H  合計  4  {'unanchored': 3, 'anchored': 1}
+```
+cases.jsonl は 23 件（RO 6・TE 6・SP 5・SR 6）で 24 件に 1 件足りなかった（第 1 ラウンドのレビューの指摘。事前登録 §10.7 は H を含めた合計 24 と読み替えていた）。cases_c は第 2 ラウンドで SP を足して 28 件（H を数えに入れない）。試験 `test_cases_counts` は cases_c でこの合計を assert する。
+
+#### 直す前の赤・直した後（第 1 ラウンド: `cases_before.txt`・`cases_b_before.txt`・`cases_after.txt`）
+- `cases_before.txt`（凍結の cases.jsonl × 基点のコード）の末尾: `19 failed, 10 passed in 0.53s`
+- `cases_b_before.txt`（cases_b × 基点のコード。`git archive HEAD` の写しで流した）の末尾: `19 failed, 11 passed in 0.44s`
+- cases_b_before の失敗:
+```
+FAILED tests/test_w16t3b_cases.py::test_case[RO-01]
+FAILED tests/test_w16t3b_cases.py::test_case[RO-02]
+FAILED tests/test_w16t3b_cases.py::test_case[RO-03]
+FAILED tests/test_w16t3b_cases.py::test_case[RO-04]
+FAILED tests/test_w16t3b_cases.py::test_case[TE-01]
+FAILED tests/test_w16t3b_cases.py::test_case[TE-02]
+FAILED tests/test_w16t3b_cases.py::test_case[TE-03]
+FAILED tests/test_w16t3b_cases.py::test_case[TE-04]
+FAILED tests/test_w16t3b_cases.py::test_case[SP-01]
+FAILED tests/test_w16t3b_cases.py::test_case[SP-02]
+FAILED tests/test_w16t3b_cases.py::test_case[SP-03]
+FAILED tests/test_w16t3b_cases.py::test_case[SP-05]
+FAILED tests/test_w16t3b_cases.py::test_case[SR-01]
+FAILED tests/test_w16t3b_cases.py::test_case[SR-02]
+FAILED tests/test_w16t3b_cases.py::test_case[SR-03]
+FAILED tests/test_w16t3b_cases.py::test_case[SR-04]
+FAILED tests/test_w16t3b_cases.py::test_case[H-01]
+FAILED tests/test_w16t3b_cases.py::test_case[H-02]
+FAILED tests/test_w16t3b_cases.py::test_case[H-03]
+```
+
+#### 攻撃の 4 形（`attack_four.txt`。期待は unanchored／unanchored／unanchored／relocated）
+```
+unanchored
+unanchored
+unanchored
+relocated
+```
+
+#### T3-1（`t31/t31_result.txt` の先頭と `t31_diff.txt`）
+```
+T3-1（自作の集合。通っても証拠にならない。T3-4 の伏せた集合が本番）
+(a) LLM 自身の引用を信じる: 検出 0/30 = 0.0%
+(b) Vera の照合:            検出 25/30 = 83.3%
+上乗せ (b)-(a): 25 件（+83.3 点）
+誤検出（正しい ANS 20 のうち anchored 以外）: 0/20 = 0.0%
+型ごとの検出（a / b）:
+```
+```
+印か reason が変わった行: 0 / 60
+to_dict（全体）が変わった行: 0 / 60
+誤答で anchored -> 非 anchored になった数: 0
+正しい ANS（wrong=false, cat=ANS）で anchored -> 非 anchored（偽の錨なしの増加）: 0
+anchored 以外 -> anchored（あってはならない）: 0
+```
+
+#### T3-2（保存した raw の再照合。`t32_recheck.txt`）
+```
+quote_check のある行: 255
+基点のコードの to_dict が保存と同一: 251
+新しいコードの to_dict が保存と同一: 251
+基点と新で to_dict が違う行: 0
+基点の印の分布: {'anchored': 140, 'unanchored': 112, 'conflict': 3}
+新の印の分布: {'anchored': 140, 'unanchored': 112, 'conflict': 3}
+anchored 以外 -> anchored: 0
+reason の分布（新）: {None: 250, 'YESNO_NOT_CHECKED': 2, 'POLARITY_DIFFERS': 1, 'NO_CONTENT_TO_CHECK': 1, 'ANSWER_CONTENT_NOT_IN_QUOTE:行わ': 1}
+```
+
+#### K653（`t33_k653.txt`）
+```
+     310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3b-impl/serve_base.jsonl
+     310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3b-impl/serve_new2.jsonl
+     620 total
+rows base 310 new 310
+rows where change is allowed (layer 0, FACTUAL, LLM called, not QUESTION_CROSS): 87
+  of which actually changed: 0 ; of which carry vera.quote_check: 0
+rows outside that set: 223
+rows outside that set that changed (pass = 0): 0
+違う行: 0 / 310
+quote_check・本文の最後の 1 行以外も違う行: 0
+```
+
+#### 関係試験（`related_before.txt`・`related_after.txt`・`related_new_failures.txt`）
+```
+変更前: 435 passed in 69.64s (0:01:09)
+変更後: 3 failed, 471 passed in 68.15s (0:01:08)
+新しい失敗:
+FAILED tests/test_w16t3_content.py::test_case[C4-a3] - AssertionError: ({'ver...
+FAILED tests/test_w16t3_content.py::test_case[C4-a4] - AssertionError: ({'ver...
+FAILED tests/test_w16t3_quote_check.py::test_source_is_matched_by_basename_and_nfkc
+```
+
+#### 10.10 既存試験との衝突（3 件。書き換えていない。監査役への申し送り）
+許可パス（`verantyx/quote_check.py`・`tests/test_w16t3b_*.py`・本節・`artifacts/w16-t3b/**`）の外にある既存試験 3 件が、チケットの規則と正面から衝突して赤になる。名前の変更・skip・xfail・期待の弱化はしていない。W16-t3 の J-R5-1 の先例にならい、許可されたら当てる差分を `artifacts/w16-t3b/proposed_existing_tests.diff`（ツリーには当てていない）に、写しで通ることの確認を `proposed_check.txt` に残した。
+1. `tests/test_w16t3_quote_check.py::test_source_is_matched_by_basename_and_nfkc` の 1 行目: `q("docs/D1.txt", 1, "貸出は70日以内とする。")` に `found == "exact"` を求める。**R16（§10.5）と衝突**: 記録の source は `D1.txt`（ディレクトリの部分なし）、与えられた `docs/D1.txt` はディレクトリの部分を持つので `relocated`。新案: `found == "relocated"` と `source_record == ["D1.txt"]` にし、ファイル名だけの `D1.txt` は exact のまま（試験の名前は変えない）。
+2. `tests/test_w16t3_content.py::test_case[C4-a3]`（凍結 `artifacts/w16-t3/r3b/cases_r3b.jsonl`）: 引用 `書類を受け取った。`・答え `書類を受け取ります。` に `anchored` を求める。**R14（§10.4）と衝突**: 同じ見出し語 `受け取る` で過去と非過去が食い違う。正しい言い換えが落ちる偽の錨なし（既知の穴の節）。新案: `unanchored`／`TENSE_DIFFERS:受け取る`。
+3. `tests/test_w16t3_content.py::test_case[C4-a4]`: 引用 `部会を設ける。`・答え `部会を設けました。` に `anchored` を求める。**R14 と衝突**: `設ける` で非過去と過去。新案: `unanchored`／`TENSE_DIFFERS:設ける`。
+新案の 2・3 は凍結データを書き換えず、2 件の `expect`・`expect_reason_prefix`・`note` だけ替えた写し `artifacts/w16-t3b/proposed_apply/cases_r3b_t3b.jsonl`（他の行は byte 一致）を `tests/test_w16t3_content.py` が読む形にする。**差分はこの写しを新しいファイルとして自分で作る**ので、`git archive HEAD` の木に `patch -p1 < artifacts/w16-t3b/proposed_existing_tests.diff` だけで当てられる（第 2 ラウンドで、第 1 ラウンドの差分が `proposed/` の置き場所と合っていなかったのを直した。`artifacts/w16-t3b/proposed/cases_r3b_t3b.jsonl` は参照用の写しで同じ内容）。いずれも「正しい答えが落ちる」側への変更で、誤答を通す変更ではない。**監査役への申し送り: この 3 件の期待を替えることの承認をお願いする。**
+旧・新の全文（`proposed_existing_tests.diff` 全文）:
+```
+--- a/tests/test_w16t3_content.py
++++ b/tests/test_w16t3_content.py
+@@ -12,7 +12,9 @@
+ 
+ R3 = os.path.join(os.path.dirname(__file__), "..", "artifacts", "w16-t3", "r3")
+ R3B = os.path.join(os.path.dirname(__file__), "..", "artifacts", "w16-t3", "r3b")
+-CASES = [json.loads(l) for l in open(os.path.join(R3B, "cases_r3b.jsonl"), encoding="utf-8") if l.strip()]
++# W16-t3b: C4-a3・C4-a4 の期待だけ替えた写し（R14。凍結の cases_r3b.jsonl は書き換えない。この差分が新しいファイルとして置く）を読む
++T3B = os.path.join(os.path.dirname(__file__), "..", "artifacts", "w16-t3b", "proposed_apply")
++CASES = [json.loads(l) for l in open(os.path.join(T3B, "cases_r3b_t3b.jsonl"), encoding="utf-8") if l.strip()]
+ # 誤答の型 = C1〜C3（第 3 ラウンドの 27 件）と N1・N2・N3 の期待が anchored でないもの。C4-b（正しい言い換えの偽の錨なし）と R6 は数えない
+ WRONG_TYPES = ("C1", "C2", "C3", "N1", "N2", "N3")
+ 
+--- a/tests/test_w16t3_quote_check.py
++++ b/tests/test_w16t3_quote_check.py
+@@ -98,6 +98,9 @@
+ 
+ def test_source_is_matched_by_basename_and_nfkc(records):
+     r = first(records, "", [q("docs/D1.txt", 1, "貸出は70日以内とする。")])
++    assert r.quotes[0]["found"] == "relocated"                       # W16-t3b R16: ディレクトリの部分が記録と違う出典は exact にしない
++    assert r.quotes[0]["source_record"] == ["D1.txt"]
++    r = first(records, "", [q("D1.txt", 1, "貸出は70日以内とする。")])
+     assert r.quotes[0]["found"] == "exact"
+     r = first(records, "", [q(D1, 4, "ＡＢＣ商事の担当は三十人である。")])        # 全角英字は NFKC で同じ
+     assert r.quotes[0]["found"] == "exact"
+--- /dev/null
++++ b/artifacts/w16-t3b/proposed_apply/cases_r3b_t3b.jsonl
+@@ -0,0 +1,60 @@
++{"id": "C1-01", "type": "C1", "docs": {"doc.txt": "発注先は凜翔商事である。"}, "question": "発注先はどこですか", "answer": "発注先は蒼嶺工業です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "発注先は凜翔商事である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "答えの 蒼・嶺・工業 が引用に無い(R1/R4)。問いの 発注・先 は R3 で除外。"}
++{"id": "C1-02", "type": "C1", "docs": {"doc.txt": "資材は鳳凰電機から仕入れた。"}, "question": "資材はどこから仕入れましたか", "answer": "資材は雲雀製作所から仕入れました。", "quotes": [{"source": "doc.txt", "line": 1, "text": "資材は鳳凰電機から仕入れた。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "雲雀・製作・所 が未被覆。仕入れ は動詞で lemma 一致、資材は問いの語。"}
++{"id": "C1-03", "type": "C1", "docs": {"doc.txt": "納入元は玄武産業と決まった。"}, "question": "納入元はどこですか", "answer": "納入元は翡翠運輸です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "納入元は玄武産業と決まった。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "翡翠・運輸 が未被覆。"}
++{"id": "C1-04", "type": "C1", "docs": {"doc.txt": "保守は朱雀設備が担当する。"}, "question": "保守は誰が担当しますか", "answer": "保守は白虎工務店が担当します。", "quotes": [{"source": "doc.txt", "line": 1, "text": "保守は朱雀設備が担当する。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "白虎・工務・店(接尾辞名詞的) が未被覆。担当は被覆。"}
++{"id": "C1-05", "type": "C1", "docs": {"doc.txt": "契約は麒麟物産と結んだ。"}, "question": "契約は誰と結びましたか", "answer": "契約は青龍製紙と結びました。", "quotes": [{"source": "doc.txt", "line": 1, "text": "契約は麒麟物産と結んだ。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "青龍・製紙 が未被覆。結ぶ は動詞 lemma 一致。"}
++{"id": "C1-06", "type": "C1", "docs": {"doc.txt": "取引先は暁星化学である。"}, "question": "取引先はどこですか", "answer": "取引先は黎明技研です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "取引先は暁星化学である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "黎明・技研 が未被覆。"}
++{"id": "C1-07", "type": "C1", "docs": {"doc.txt": "委託先はヴェルモント社である。"}, "question": "委託先はどこですか", "answer": "委託先はソルディア社です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "委託先はヴェルモント社である。"}], "expect": "conflict", "expect_reason_prefix": null, "note": "カタカナの連続は固有名の要素(§9.1)。答えの ソルディア と引用の ヴェルモント は同じ種類で値が違う -> (i) conflict。規則 3b より前の規則 2。"}
++{"id": "C1-08", "type": "C1", "docs": {"doc.txt": "請負は旭光建設株式会社である。"}, "question": "請負はどこですか", "answer": "請負は紫苑建設株式会社です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "請負は旭光建設株式会社である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "紫苑 だけが未被覆。建設・株式・会社 は被覆。1 語でも未被覆なら unanchored。"}
++{"id": "C1-09", "type": "C1", "docs": {"doc.txt": "この件は営業部が受け持つ。"}, "question": "この件は誰が受け持ちますか", "answer": "この件は蒼嶺工業が受け持ちます。", "quotes": [{"source": "doc.txt", "line": 1, "text": "この件は営業部が受け持つ。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "引用に社名が無く、答えの 蒼・嶺・工業 が未被覆。"}
++{"id": "C1-10", "type": "C1", "docs": {"doc.txt": "設置は琥珀電工が行った。"}, "question": "設置は誰が行いましたか", "answer": "設置は瑠璃電工が行いました。", "quotes": [{"source": "doc.txt", "line": 1, "text": "設置は琥珀電工が行った。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "瑠璃・電工(電工は引用にもある=被覆) のうち 瑠璃 が未被覆。行い/行っ は lemma 行う で一致。"}
++{"id": "C2-01", "type": "C2", "docs": {"doc.txt": "担当は林である。"}, "question": "担当は誰ですか", "answer": "担当は森です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "担当は林である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "林/森 は普通名詞で固有名の要素にならない。森 が未被覆。"}
++{"id": "C2-02", "type": "C2", "docs": {"doc.txt": "窓口は楠である。"}, "question": "窓口は誰ですか", "answer": "窓口は椿です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "窓口は楠である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "椿 が未被覆。"}
++{"id": "C2-03", "type": "C2", "docs": {"doc.txt": "受付は梶である。"}, "question": "受付は誰ですか", "answer": "受付は榊です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "受付は梶である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "榊 が未被覆。"}
++{"id": "C2-04", "type": "C2", "docs": {"doc.txt": "責任者は葵である。"}, "question": "責任者は誰ですか", "answer": "責任者は楓です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "責任者は葵である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "楓 が未被覆。責任・者 は問いの語。"}
++{"id": "C2-05", "type": "C2", "docs": {"doc.txt": "点検は柏が行う。"}, "question": "点検は誰が行いますか", "answer": "点検は杉が行います。", "quotes": [{"source": "doc.txt", "line": 1, "text": "点検は柏が行う。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "杉 が未被覆。行い は lemma 行う で一致。"}
++{"id": "C2-06", "type": "C2", "docs": {"doc.txt": "係は桐山である。"}, "question": "係は誰ですか", "answer": "係は菅です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "係は桐山である。"}], "expect": "conflict", "expect_reason_prefix": null, "note": "桐山・菅 はどちらも固有名詞(名の要素)。同じ種類で値が違うので (i) conflict。"}
++{"id": "C2-07", "type": "C2", "docs": {"doc.txt": "運転は菅である。"}, "question": "運転は誰ですか", "answer": "運転は桐山です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "運転は菅である。"}], "expect": "conflict", "expect_reason_prefix": null, "note": "C2-06 の逆向き。(i) conflict。"}
++{"id": "C2-08", "type": "C2", "docs": {"doc.txt": "担当は林である。"}, "question": "担当は誰ですか", "answer": "担当は小林です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "担当は林である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "小林(固有名詞 1 語)は林と表層が違う。部分一致は使わない(R2)。引用に名の要素が無いので conflict でなく、要素が引用に無い+3b で unanchored。"}
++{"id": "C2-09", "type": "C2", "docs": {"doc.txt": "担当は小林である。"}, "question": "担当は誰ですか", "answer": "担当は林です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "担当は小林である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "林 は 小林 に含まれるが語として別。被覆されない(R2 部分一致なし)。"}
++{"id": "C3-01", "type": "C3", "docs": {"doc.txt": "会場は大会議室である。"}, "question": "会場はどこですか", "answer": "会場は小会議室です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "会場は大会議室である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "違いは接頭辞 大/小 だけ。接頭辞は内容語(R1)なので 小 が未被覆。"}
++{"id": "C3-02", "type": "C3", "docs": {"doc.txt": "会場は小会議室である。"}, "question": "会場はどこですか", "answer": "会場は大会議室です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "会場は小会議室である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "C3-01 の逆。大 が未被覆。"}
++{"id": "C3-03", "type": "C3", "docs": {"doc.txt": "提出するのは申請書である。"}, "question": "提出するのは何ですか", "answer": "提出するのは申請用紙です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "提出するのは申請書である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "書(接尾辞名詞的)は引用にあるが答えは 用・紙(接尾辞)。用・紙 が未被覆。提出 は問いの語、する は非自立可能で除外。"}
++{"id": "C3-04", "type": "C3", "docs": {"doc.txt": "保管場所は倉庫である。"}, "question": "保管場所はどこですか", "answer": "保管場所は書庫です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "保管場所は倉庫である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "書庫 が未被覆。"}
++{"id": "C3-05", "type": "C3", "docs": {"doc.txt": "資料は書庫にある。"}, "question": "資料はどこにありますか", "answer": "資料は倉庫にあります。", "quotes": [{"source": "doc.txt", "line": 1, "text": "資料は書庫にある。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "倉庫 が未被覆。ある は非自立可能で除外。"}
++{"id": "C3-06", "type": "C3", "docs": {"doc.txt": "受け取りは窓口である。"}, "question": "受け取りはどこですか", "answer": "受け取りは受付です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "受け取りは窓口である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "受付 が未被覆。"}
++{"id": "C3-07", "type": "C3", "docs": {"doc.txt": "保存先は金庫である。"}, "question": "保存先はどこですか", "answer": "保存先は戸棚です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "保存先は金庫である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "戸棚 が未被覆。"}
++{"id": "C3-08", "type": "C3", "docs": {"doc.txt": "道具は箱に入れる。"}, "question": "道具はどこに入れますか", "answer": "道具は袋に入れます。", "quotes": [{"source": "doc.txt", "line": 1, "text": "道具は箱に入れる。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "袋 が未被覆。入れる は動詞 lemma 一致。"}
++{"id": "C4-a1", "type": "C4a", "docs": {"doc.txt": "定例会議を行った。"}, "question": "何をしましたか", "answer": "定例会議を行いました。", "quotes": [{"source": "doc.txt", "line": 1, "text": "定例会議を行った。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "行っ/行い は lemma 行う で一致(動詞)。定例・会議 は表層一致。"}
++{"id": "C4-a2", "type": "C4a", "docs": {"doc.txt": "窓口は朝に開く。"}, "question": "窓口はいつ開きますか", "answer": "窓口は朝に開きます。", "quotes": [{"source": "doc.txt", "line": 1, "text": "窓口は朝に開く。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "開く/開き は lemma 一致。朝 は表層一致。"}
++{"id": "C4-a3", "type": "C4a", "docs": {"doc.txt": "書類を受け取った。"}, "question": "書類をどうしましたか", "answer": "書類を受け取ります。", "quotes": [{"source": "doc.txt", "line": 1, "text": "書類を受け取った。"}], "expect": "unanchored", "expect_reason_prefix": "TENSE_DIFFERS:受け取る", "note": "（W16-t3b で替えた）受け取っ/受け取り は lemma 受け取る で一致するが、引用は過去（た）・答えは非過去（ます）。R14 で TENSE_DIFFERS:受け取る。偽の錨なし（正しい言い換えが落ちる）として開示。"}
++{"id": "C4-a4", "type": "C4a", "docs": {"doc.txt": "部会を設ける。"}, "question": "何をしますか", "answer": "部会を設けました。", "quotes": [{"source": "doc.txt", "line": 1, "text": "部会を設ける。"}], "expect": "unanchored", "expect_reason_prefix": "TENSE_DIFFERS:設ける", "note": "（W16-t3b で替えた）設ける/設け は lemma 一致するが、引用は非過去・答えは過去（ました）。R14 で TENSE_DIFFERS:設ける。偽の錨なし（正しい言い換えが落ちる）として開示。"}
++{"id": "C4-a5", "type": "C4a", "docs": {"doc.txt": "報告書を提出した。"}, "question": "何をしましたか", "answer": "報告書を提出しました。", "quotes": [{"source": "doc.txt", "line": 1, "text": "報告書を提出した。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "報告・書・提出 は表層一致。し/ます/た は除外/対象外。"}
++{"id": "C4-b1", "type": "C4b", "docs": {"doc.txt": "説明会を開く。"}, "question": "何をしますか", "answer": "説明会を開催します。", "quotes": [{"source": "doc.txt", "line": 1, "text": "説明会を開く。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "開催(名詞)は引用の 開く(動詞)と表層も lemma も違う。偽の錨なしになる型として記録(隠さない)。"}
++{"id": "C4-b2", "type": "C4b", "docs": {"doc.txt": "打ち合わせは月末にある。"}, "question": "打ち合わせはいつですか", "answer": "打合せは月末にあります。", "quotes": [{"source": "doc.txt", "line": 1, "text": "打ち合わせは月末にある。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "名詞は表層でだけ比べる(R2)。打合せ ≠ 打ち合わせ。表記揺れによる偽の錨なし。打ち合わせ は問いにあるが表層が違うので除外されない。"}
++{"id": "C4-b3", "type": "C4b", "docs": {"doc.txt": "荷物を運び込む。"}, "question": "荷物をどうしますか", "answer": "荷物を搬入します。", "quotes": [{"source": "doc.txt", "line": 1, "text": "荷物を運び込む。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "搬入 が未被覆(言い換え)。荷物 は問いの語。"}
++{"id": "C4-b4", "type": "C4b", "docs": {"doc.txt": "申込みは受け付けない。"}, "question": "申込みはどうなりますか", "answer": "申し込みは受け付けません。", "quotes": [{"source": "doc.txt", "line": 1, "text": "申込みは受け付けない。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "申し込み ≠ 申込み(名詞は表層だけ)。表記揺れ。"}
++{"id": "CC1-01", "type": "CC1", "docs": {"doc.txt": "発注先は凜翔商事である。"}, "question": "発注先はどこですか", "answer": "発注先は凜翔商事です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "発注先は凜翔商事である。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "正しい答え。翔 の名の要素が引用に同表記で現れる。商事 被覆。"}
++{"id": "CC1-02", "type": "CC1", "docs": {"doc.txt": "契約は麒麟物産と結んだ。"}, "question": "契約は誰と結びましたか", "answer": "契約は麒麟物産と結びました。", "quotes": [{"source": "doc.txt", "line": 1, "text": "契約は麒麟物産と結んだ。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "正しい答え。結ぶ は lemma 一致。"}
++{"id": "CC1-03", "type": "CC1", "docs": {"doc.txt": "取引先は暁星化学である。"}, "question": "取引先はどこですか", "answer": "取引先は暁星化学です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "取引先は暁星化学である。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "正しい答え。"}
++{"id": "CC2-01", "type": "CC2", "docs": {"doc.txt": "担当は林である。"}, "question": "担当は誰ですか", "answer": "担当は林です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "担当は林である。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "正しい答え。"}
++{"id": "CC2-02", "type": "CC2", "docs": {"doc.txt": "係は桐山である。"}, "question": "係は誰ですか", "answer": "係は桐山です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "係は桐山である。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "正しい答え。名の要素 桐山 が引用にある。"}
++{"id": "CC2-03", "type": "CC2", "docs": {"doc.txt": "点検は柏が行う。"}, "question": "点検は誰が行いますか", "answer": "点検は柏が行います。", "quotes": [{"source": "doc.txt", "line": 1, "text": "点検は柏が行う。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "正しい答え。行う lemma 一致。"}
++{"id": "CC3-01", "type": "CC3", "docs": {"doc.txt": "会場は大会議室である。"}, "question": "会場はどこですか", "answer": "会場は大会議室です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "会場は大会議室である。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "正しい答え(接頭辞・接尾辞も被覆)。"}
++{"id": "CC3-02", "type": "CC3", "docs": {"doc.txt": "提出するのは申請書である。"}, "question": "提出するのは何ですか", "answer": "提出するのは申請書です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "提出するのは申請書である。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "正しい答え。"}
++{"id": "CC3-03", "type": "CC3", "docs": {"doc.txt": "保管場所は倉庫である。"}, "question": "保管場所はどこですか", "answer": "保管場所は倉庫です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "保管場所は倉庫である。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "正しい答え。"}
++{"id": "CR3-01", "type": "CR3", "docs": {"doc.txt": "東雲商事から購入した。"}, "question": "購入先はどこですか", "answer": "購入先は東雲商事です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "東雲商事から購入した。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "答えの 購入・先 は問いの語(R3)。先 は引用に無いが問いにあるので除外。東雲・商事 は被覆。"}
++{"id": "CR3-02", "type": "CR3", "docs": {"doc.txt": "契約は麒麟物産と結んだ。"}, "question": "契約先はどこですか", "answer": "契約先は麒麟物産です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "契約は麒麟物産と結んだ。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "契約・先 は問いの語。麒麟・物産 は被覆。"}
++{"id": "CR3-03", "type": "CR3", "docs": {"doc.txt": "倉庫に保管する。"}, "question": "保管場所はどこですか", "answer": "保管場所は倉庫です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "倉庫に保管する。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "保管・場所 は問いの語(場所 は引用に無い)。倉庫 は被覆。"}
++{"id": "R6-1", "type": "R6", "docs": {"a.txt": "予算は300万円である。", "b.txt": "予算は500万円である。"}, "question": "予算はいくらですか", "answer": "予算は300万円です。", "quotes": [{"source": "a.txt", "line": 1, "text": "予算は300万円である。"}, {"source": "b.txt", "line": 1, "text": "予算は500万円である。"}], "expect": "conflict", "expect_reason_prefix": null, "note": "(i)ではなく (ii): 別名 a.txt/b.txt の実在引用(それぞれ 1 文書に決まる)で 万円 の値が 300 と 500 で違う -> conflict。"}
++{"id": "R6-2", "type": "R6", "docs": {"a.txt": "納期は20日である。", "b.txt": "納期は20日である。", "c.txt": "納期は30日である。"}, "question": "納期はいつですか", "answer": "納期は20日です。", "quotes": [{"source": "a.txt", "line": 7, "text": "納期は20日である。"}, {"source": "c.txt", "line": 1, "text": "納期は30日である。"}], "expect": "conflict", "expect_reason_prefix": null, "note": "R6′ による変更（第 3 ラウンドのレビュー M2）。旧の期待は anchored（旧の note: 引用 A(行番号が違う -> relocated)は a.txt と b.txt の両方に一致し文書が決まらない -> (ii)に数えない(doc_undetermined=1)。引用 B は c.txt の 30日 だが文書が 1 つなので単独 -> (ii)は立たない。答えの 20日 は A に現れる。）。新: 引用 A の文書の候補 {a.txt, b.txt} と引用 B の候補 {c.txt} は交わらず、20日 と 30日 の値が違うので (ii) が立つ -> conflict。"}
++{"id": "R6-3", "type": "R6", "docs": {"a/doc.txt": "予算は300万円である。", "b/doc.txt": "予算は500万円である。"}, "question": "予算はいくらですか", "answer": "予算は300万円です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "予算は300万円である。"}, {"source": "doc.txt", "line": 1, "text": "予算は500万円である。"}], "expect": "unanchored", "expect_reason_prefix": null, "note": "基名が同じ別ディレクトリ(a/doc.txt, b/doc.txt)。記録の source は basename で同じ id になり 2 つ目の本文は失われる(指示書 0.3)。2 つ目の引用 500万円 は記録に無く fabricated -> unanchored。conflict は立たない。"}
++{"id": "N1-01", "type": "N1", "docs": {"doc.txt": "集合は第二ホールである。"}, "question": "集合はどこですか", "answer": "集合は第八ホールです。", "quotes": [{"source": "doc.txt", "line": 1, "text": "集合は第二ホールである。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "R1′: 単位の無い漢数字 八 は要素にならず、数詞でも内容語に入る。引用に 八 が無い。第 と ホール は被覆される。"}
++{"id": "N1-02", "type": "N1", "docs": {"doc.txt": "出席番号は第八組である。"}, "question": "出席番号は何組ですか", "answer": "出席番号は第三組です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "出席番号は第八組である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "R1′: 三 が引用に無い（組 は単位の一覧に無い）。"}
++{"id": "N1-03", "type": "N1", "docs": {"doc.txt": "出席番号は第八組である。"}, "question": "出席番号は何組ですか", "answer": "出席番号は第八組です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "出席番号は第八組である。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "N1-02 の正しい対照。八 が引用にある。"}
++{"id": "N1-04", "type": "N1", "docs": {"doc.txt": "参加費は五百円である。"}, "question": "参加費はいくらですか", "answer": "参加費は500円です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "参加費は五百円である。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "R1′ の対照: 500円 と 五百円 は数値の要素として同じ値で照合される。内容語から外れるのは日付・数値の範囲に重なる語（円・五百）だけ。"}
++{"id": "N2-01", "type": "N2", "docs": {"doc.txt": "契約先は暁星物産である。"}, "question": "契約先はどこですか", "answer": "契約先は藍染商会です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "契約先は暁星物産である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "未知の会社名の取り違え。藍染・商会 は普通名詞で要素にならず、引用に無い。"}
++{"id": "N2-02", "type": "N2", "docs": {"doc.txt": "窓口担当は桂である。"}, "question": "窓口担当はだれですか", "answer": "窓口担当は柏です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "窓口担当は桂である。"}], "expect": "unanchored", "expect_reason_prefix": "ANSWER_CONTENT_NOT_IN_QUOTE:", "note": "一字の姓の取り違え。引用の 桂 は固有名詞（要素）、答えの 柏 は普通名詞（要素にならない）で、内容語 柏 が引用に無い。"}
++{"id": "N2-03", "type": "N2", "docs": {"doc.txt": "窓口担当は桂である。"}, "question": "窓口担当はだれですか", "answer": "窓口担当は桂です。", "quotes": [{"source": "doc.txt", "line": 1, "text": "窓口担当は桂である。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "N2-02 の正しい対照。固有名 桂 が引用に同じ表記である。"}
++{"id": "N3-01", "type": "N3", "docs": {"a.txt": "定員は40名である。", "b.txt": "定員は40名である。", "c.txt": "定員は60名である。"}, "question": "定員は何名ですか", "answer": "定員は40名です。", "quotes": [{"source": "a.txt", "line": 9, "text": "定員は40名である。"}, {"source": "c.txt", "line": 1, "text": "定員は60名である。"}], "expect": "conflict", "expect_reason_prefix": null, "note": "R6′: 引用 A は a.txt と b.txt に一致（候補 {a, b}）、引用 B は {c}。候補が交わらず 40名 と 60名 が違う -> conflict。"}
++{"id": "N3-02", "type": "N3", "docs": {"a.txt": "定員は40名である。", "b.txt": "定員は40名である。\n定員は60名である。"}, "question": "定員は何名ですか", "answer": "定員は40名です。", "quotes": [{"source": "a.txt", "line": 9, "text": "定員は40名である。"}, {"source": "b.txt", "line": 2, "text": "定員は60名である。"}], "expect": "anchored", "expect_reason_prefix": null, "note": "R6′ の対照: 引用 A の候補 {a, b} と引用 B の候補 {b} は交わる（同じ文書かもしれない）ので比べない。答えの 40名 は A にある。"}
+```
+
+`proposed_check.txt` の末尾（`git archive HEAD` の写しに新しいコードと `artifacts/w16-t3b/` を重ね、差分を `patch -p1 <` だけで当て、T3 の `tests/test_w16t3_*.py` と本件の `tests/test_w16t3b_*.py` を流した）: `209 passed in 1.42s`
+
+#### 10.11 既知の穴（隠さない）
+例はすべて実際に流した出力（`artifacts/w16-t3b/holes_probe.txt`。作るスクリプトは `artifacts/w16-t3b/scripts/holes_probe.py`）から機械で貼った。各行の正誤（correct／wrong）は手で決め、分類（閉じない型・偽の錨なし）は出力から機械で付けた。いずれも規則どおりの動きで、広げて直さない（語の一覧を足さない）。
+- **正しい言い換えが落ちる（偽の錨なし）**: R13 は受け身・目的語の主題化（は／を）・対称な と・に と へ（H-01〜H-03、N-01）、R14 は連用中止形（N-02。連なりが空なので非過去と数える）・丁寧形の時制違い（N-03、既存の C4-a3・C4-a4。§10.10）。理由の見出し語は unidic のもの（`為る` など）。
+- **閉じない型（誤答が anchored のまま）**: R14 は て で終わる連なりを比べない（N-04。引用が非過去で答えが過去の誤答が通る）、名詞＋だ の述語は対象外（N-05）。H-04（`鍵を開けた。` × `鍵を開けて、点検した。`）は引用が過去なので **正しい答えの対照**（anchored が正しい。閉じない型ではない）。
+- 名詞の連なりの切れ方が答えと引用で違う語（N-06）は R13 の対象にならず、既存の 3b が先に落とす（誤答は落ちる）。R13 は 連なり ＋ 直後の助詞の 1 語だけを見る（係り受けは見ない）。
+- R15（第 2 ラウンドの改訂後）: 問いの語の繰り返しでも、実在した引用のどれかに現れる語は項目に入れるので、N-08・N-09 は ANSWER_SPLIT_ACROSS_QUOTES で落ちる。問いの語がどの引用にも無い答えは項目に入れず、1 つの引用で支えられれば anchored（N-07、SP-09）。
+- R16 は印を変えない（`found` と鍵だけ）。記録の source はファイル名だけなので、ディレクトリの部分を持つ source（`./x`・絶対パス含む）はすべて relocated。
+- 数値の根拠は出力ファイルだけ。T3 の伏せた集合・基線は監査役が測る（実装役は流していない）。
+
+#### holes_probe.txt（全文）
+```
+id    正誤(手)    印           reason                          分類 / 種類
+H-01  correct  unanchored  ROLE_PARTICLE_DIFFERS:報告書       偽の錨なし / R13 受け身（は／を の組が違う）
+      Q: 報告書の扱いを教えてください | A: 報告書は承認された。 | 引用: 委員会が報告書を承認した。
+H-02  correct  unanchored  ROLE_PARTICLE_DIFFERS:経理課、営業課   偽の錨なし / R13 対称な と の入れ替え
+      Q: 研修の担当を教えてください | A: 経理課と営業課が合同で研修した。 | 引用: 営業課と経理課が合同で研修した。
+H-03  correct  unanchored  ROLE_PARTICLE_DIFFERS:会議室       偽の錨なし / R13 に と へ は別の組
+      Q: 委員の行き先を教えてください | A: 委員は会議室に向かった。 | 引用: 委員は会議室へ向かった。
+H-04  correct  anchored    -                               ok / R14 て で終わる連なりは比べない（引用が過去）
+      Q: 鍵の扱いを教えてください | A: 鍵を開けた。 | 引用: 鍵を開けて、点検した。
+N-01  correct  unanchored  ROLE_PARTICLE_DIFFERS:出張届       偽の錨なし / R13 目的語の主題化（は／を）
+      Q: 出張届はどうなりましたか | A: 出張届は課長が受理した。 | 引用: 課長が出張届を受理した。
+N-02  correct  unanchored  TENSE_DIFFERS:拭く                偽の錨なし / R14 連用中止形（`拭き、`）は連なりが空なので非過去と数える
+      Q: 窓はどうしましたか | A: 窓を拭いた。 | 引用: 窓を拭き、床を掃いた。
+N-03  correct  unanchored  TENSE_DIFFERS:為る                偽の錨なし / R14 丁寧形の時制違い（同じ見出し語で過去と非過去）
+      Q: 新人はどうなりますか | A: 新人を採用しました。 | 引用: 新人を採用する。
+N-04  wrong    anchored    -                               閉じない型 / R14 て で終わる連なり（引用が非過去）
+      Q: 扉はどうしましたか | A: 扉を閉めた。 | 引用: 扉を閉めて、施錠する。
+N-05  wrong    anchored    -                               閉じない型 / R14 名詞＋だ の述語は対象外
+      Q: 当番は誰でしたか | A: 当番は山本だった。 | 引用: 当番は山本だ。
+N-06  wrong    unanchored  ANSWER_CONTENT_NOT_IN_QUOTE:係長  ok / 名詞の連なりの切れ方が答えと引用で違う語（係長 は引用で 係＋長）は R13 でなく既存の 3b が先に落とす（reason が R13 でない。誤答は落ちる）
+      Q: 書類はどうなりましたか | A: 係長が課長に書類を渡した。 | 引用: 課長が係長に書類を渡した。
+N-07  correct  anchored    -                               ok / R15 正しい対照: 問いの語（受付）がどの引用にも無い。項目に入れないので 1 つの引用で支えられれば anchored
+      Q: 受付は何時に開きますか | A: 受付は午前9時に開く。 | 引用: 窓口は午前9時に開く。
+N-08  wrong    unanchored  ANSWER_SPLIT_ACROSS_QUOTES      ok / R15 問いの語の繰り返し・主語が引用 1、述語が引用 2（改訂で閉じた型の別の文）
+      Q: 売店はいつ営業しますか | A: 売店は祝日も営業する。 | 引用: 売店は日曜に休む。 / 食堂は祝日も営業する。
+N-09  wrong    unanchored  ANSWER_SPLIT_ACROSS_QUOTES      ok / R15 答えの主語が問いに無く、1 つの引用に主語と述語が揃わない（要素なし）
+      Q: 巡回は誰がしますか | A: 守衛は昼間に対応する。 | 引用: 守衛は夜間に巡回する。 / 受付は昼間に対応する。
+```
+
+
+### 10.12 第 2 ラウンドの改訂（事前登録 2026-10-06 04:43:41 +0900）
+
+中間職の第 1 ラウンドのレビュー（changes_requested）を受けた改訂。この節は cases_c・コードの改訂より先に書く。予想・目標値は書かない。§10.1〜10.8 の文は変えない（§10.9〜10.11 は測定の貼り付けと開示で、必須 2・3 の指摘どおり機械で貼り直す。第 1 ラウンドの版は `artifacts/w16-t3b/round1/docs_10_9_to_10_11.md` に残す）。
+- **R15 の項目の定義の改訂（狭める方向だけ。3f の段の中だけ）**: 項目 = 要素 `a_els` ＋ `[wd for wd in words if not _covered(wd, qtoks) or any(_covered(wd, t) for t in ttoks_each)]`。つまり問いの語の繰り返しでも、実在した引用の **どれかに** 現れる語は項目に入れる。どの引用にも無い問いの語は従来どおり項目に入れない（1 つの引用で支えられる正しい答えを落とさないため）。R12 (i)（`not a_els and words and not checked` のとき `checked = words`）はそのまま残す。
+- **理由**: §10.2 は `checked` を 3b の集合と同じにしたが、答えの主語が問いの語の繰り返しで固有名の要素でないとき、内容の側だけを持つ別の引用が支えになり、合成した誤答が anchored になる（凍結前の SP-05 の期待は unanchored で、コードを書いた後に問いを替えて緑にしたが、同じ型の入力は閉じていなかった。cases_b の H-05 はその開示）。チケットの文「答えの照合する項目（要素と内容語）は 1 つの実在した引用の text の中に全部」は問いの語の繰り返しを除外していない。
+- **cases_c.jsonl（Q1 の件数の数え方。H は数えに入れない）**: 1. `cases.jsonl` の 27 件（RO-02 だけは cases_b の訂正版。凍結前の SP-05 は元の期待 unanchored・`ANSWER_SPLIT_ACROSS_QUOTES` のまま）。2. cases_b の SP-05 の訂正版（id `SP-05b`）。3. 問いの語の繰り返しの型の SP を新しく 4 件以上（誤答 3 以上で普通名詞の主語を 2 件以上、正しい対照 1 以上。対照は問いの語がどの引用にも無く 1 つの引用で支えられる答え。文は自分で書き、第 1 ラウンドのレビューの probe の写しにしない）。cases_b の H-05 は入れない（元の SP-05 と同じ入力で、期待が anchored の「穴を固定する」期待になるため）。期待は規則から手で決め、コードを流して決めない。
+- **件数の試験**: `tests/test_w16t3b_cases.py::test_cases_counts` は cases_c について RO・TE・SP・SR の 4 型の合計が 24 以上（H を数えに入れない）、各型 4 以上、各型に正しい対照 1 以上を assert する。cases_c の凍結（sha256）の時刻は改訂のコードより前でなければならない（mtime を残す）。
+- **順序**: 事前登録（本節）-> cases_c 凍結 -> 第 1 ラウンドのコード × cases_c の赤（`cases_c_before.txt`）-> コードの改訂 -> 測り直し（T3-1・T3-2・K653）。
+- **試験の方針**: 誤答が anchored であることを assert する試験は置かない（H-05 の期待は cases_c に入れない）。
+- **既知の穴の開示（必須 3）**: 開示の例はすべて実装役が流して出力を残したもの（`artifacts/w16-t3b/holes_probe.txt`、作るスクリプトは `scripts/holes_probe.py`）から機械で貼る。H-04（`鍵を開けた。` × `鍵を開けて、点検した。`）は引用が過去なので正しい答えの対照（て で終わる連なりは比べない）。閉じない型の例は新しい文で示す。名詞＋だ の述語は R14 の対象外、連用中止形（`開け、`）は連なりが空なので非過去と数える、を開示に足す（規則は変えない）。
+
+### 10.13 第 2 ラウンドの測定（`artifacts/w16-t3b/` の出力を機械で貼った）
+
+#### 順序と凍結（`mtime_order_r2.txt`・`prereg2_time.txt`・`cases_c_time.txt`）
+```
+1791229421 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/artifacts/w16-t3b/prereg2.txt
+1791229433 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/artifacts/w16-t3b/cases_c.jsonl
+1791229455 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/artifacts/w16-t3b/cases_c_before.txt
+1791229460 verantyx/quote_check.py
+prereg2_time: 2026-10-06 04:43:41 +0900
+cases_c_time: 2026-10-06 04:43:53 +0900
+1db12106aa8b7dc1127973f9e02cf4133c913f31ed637256635e66fd9ff6c210  prereg2.txt
+cba8628384bd6ab9fafe2db87aa71627bd6a6c5449cf317535c731f2a0f071e4  cases_c.jsonl
+```
+
+#### cases_c の型 × 期待（`cases_c_types.txt`）
+```
+32 Counter({'SP': 10, 'RO': 6, 'TE': 6, 'SR': 6, 'H': 4}) 28
+RO Counter({'unanchored': 4, 'anchored': 2})
+TE Counter({'unanchored': 4, 'anchored': 2})
+SP Counter({'unanchored': 8, 'anchored': 2})
+SR Counter({'anchored': 6})
+H Counter({'unanchored': 3, 'anchored': 1})
+```
+
+#### 直す前の赤・直した後（第 1 ラウンドのコード × cases_c = `cases_c_before.txt`、改訂後 = `cases_c_after.txt`）
+- 失敗の件数（`grep -c '^FAILED' cases_c_before.txt`）と末尾: `4 failed, 30 passed in 0.44s`
+- 直す前の失敗:
+```
+FAILED tests/test_w16t3b_cases.py::test_case[SP-05]
+FAILED tests/test_w16t3b_cases.py::test_case[SP-06]
+FAILED tests/test_w16t3b_cases.py::test_case[SP-07]
+FAILED tests/test_w16t3b_cases.py::test_case[SP-08]
+```
+- 直した後（cases_c と rules）の末尾: `39 passed in 0.45s`
+
+#### 攻撃の 4 形（改訂後。`attack_four.txt`。期待は unanchored／unanchored／unanchored／relocated）
+```
+unanchored
+unanchored
+unanchored
+relocated
+```
+
+#### T3-1（改訂後。`t31/t31_result.txt` の先頭と `t31_diff.txt`。基点 = ecde332 の写し）
+```
+T3-1（自作の集合。通っても証拠にならない。T3-4 の伏せた集合が本番）
+(a) LLM 自身の引用を信じる: 検出 0/30 = 0.0%
+(b) Vera の照合:            検出 25/30 = 83.3%
+上乗せ (b)-(a): 25 件（+83.3 点）
+誤検出（正しい ANS 20 のうち anchored 以外）: 0/20 = 0.0%
+型ごとの検出（a / b）:
+```
+```
+印か reason が変わった行: 0 / 60
+to_dict（全体）が変わった行: 0 / 60
+誤答で anchored -> 非 anchored になった数: 0
+正しい ANS（wrong=false, cat=ANS）で anchored -> 非 anchored（偽の錨なしの増加）: 0
+anchored 以外 -> anchored（あってはならない）: 0
+```
+
+#### T3-2（改訂後。`t32_recheck.txt`）
+```
+quote_check のある行: 255
+基点のコードの to_dict が保存と同一: 251
+新しいコードの to_dict が保存と同一: 251
+基点と新で to_dict が違う行: 0
+基点の印の分布: {'anchored': 140, 'unanchored': 112, 'conflict': 3}
+新の印の分布: {'anchored': 140, 'unanchored': 112, 'conflict': 3}
+anchored 以外 -> anchored: 0
+reason の分布（新）: {None: 250, 'YESNO_NOT_CHECKED': 2, 'POLARITY_DIFFERS': 1, 'NO_CONTENT_TO_CHECK': 1, 'ANSWER_CONTENT_NOT_IN_QUOTE:行わ': 1}
+```
+
+#### K653（改訂後。`t33_k653.txt`）
+```
+     310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3b-impl/serve_base.jsonl
+     310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3b-impl/serve_new2.jsonl
+     620 total
+rows base 310 new 310
+rows where change is allowed (layer 0, FACTUAL, LLM called, not QUESTION_CROSS): 87
+  of which actually changed: 0 ; of which carry vera.quote_check: 0
+rows outside that set: 223
+rows outside that set that changed (pass = 0): 0
+違う行: 0 / 310
+quote_check・本文の最後の 1 行以外も違う行: 0
+```
+
+#### 関係試験（改訂後。`related_before.txt`・`related_after.txt`・`related_new_failures.txt`）
+```
+変更前: 435 passed in 69.64s (0:01:09)
+変更後: 3 failed, 471 passed in 68.15s (0:01:08)
+新しい失敗:
+FAILED tests/test_w16t3_content.py::test_case[C4-a3] - AssertionError: ({'ver...
+FAILED tests/test_w16t3_content.py::test_case[C4-a4] - AssertionError: ({'ver...
+FAILED tests/test_w16t3_quote_check.py::test_source_is_matched_by_basename_and_nfkc
+```
+
+既存試験 3 件との衝突の提案（§10.10）は第 2 ラウンドで差分を自己完結に作り直した。写しの確認: `209 passed in 1.42s`

@@ -1,0 +1,76 @@
+.........F.............................................................. [ 15%]
+FF...................................................................... [ 30%]
+........................................................................ [ 45%]
+........................................................................ [ 60%]
+........................................................................ [ 75%]
+........................................................................ [ 91%]
+..........................................                               [100%]
+=================================== FAILURES ===================================
+_________________ test_source_is_matched_by_basename_and_nfkc __________________
+
+records = <verantyx.decode_grammar.Records object at 0x11b111a50>
+
+    def test_source_is_matched_by_basename_and_nfkc(records):
+        r = first(records, "", [q("docs/D1.txt", 1, "貸出は70日以内とする。")])
+>       assert r.quotes[0]["found"] == "exact"
+E       AssertionError: assert 'relocated' == 'exact'
+E         
+E         - exact
+E         + relocated
+
+tests/test_w16t3_quote_check.py:101: AssertionError
+_______________________________ test_case[C4-a3] _______________________________
+
+case = {'id': 'C4-a3', 'type': 'C4a', 'docs': {'doc.txt': '書類を受け取った。'}, 'question': '書類をどうしましたか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2286/test_case_C4_a3_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+        res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+        d = res.to_dict()
+>       assert d["verdict"] == case["expect"], (d, case["note"])
+E       AssertionError: ({'verdict': 'unanchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '書類を受け取った。', 'found': 'exact'}], 'elements': [], 'conflicts': [], ...}, '受け取っ/受け取り は lemma 受け取る で一致。')
+E       assert 'unanchored' == 'anchored'
+E         
+E         - anchored
+E         + unanchored
+E         ? ++
+
+tests/test_w16t3_content.py:41: AssertionError
+_______________________________ test_case[C4-a4] _______________________________
+
+case = {'id': 'C4-a4', 'type': 'C4a', 'docs': {'doc.txt': '部会を設ける。'}, 'question': '何をしますか', ...}
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2286/test_case_C4_a4_0')
+
+    @pytest.mark.parametrize("case", CASES, ids=[c["id"] for c in CASES])
+    def test_case(case, tmp_path):
+        paths = []
+        for name, body in case["docs"].items():
+            p = tmp_path / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(body + "\n", encoding="utf-8")
+            paths.append(str(p))
+        rec = G.load_records(paths)
+        res = QC.check(case["answer"], case["quotes"], rec, question=case["question"])
+        d = res.to_dict()
+>       assert d["verdict"] == case["expect"], (d, case["note"])
+E       AssertionError: ({'verdict': 'unanchored', 'quotes': [{'source': 'doc.txt', 'line': 1, 'text': '部会を設ける。', 'found': 'exact'}], 'elements': [], 'conflicts': [], ...}, '設ける/設け は lemma 一致。')
+E       assert 'unanchored' == 'anchored'
+E         
+E         - anchored
+E         + unanchored
+E         ? ++
+
+tests/test_w16t3_content.py:41: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w16t3_quote_check.py::test_source_is_matched_by_basename_and_nfkc
+FAILED tests/test_w16t3_content.py::test_case[C4-a3] - AssertionError: ({'ver...
+FAILED tests/test_w16t3_content.py::test_case[C4-a4] - AssertionError: ({'ver...
+3 failed, 471 passed in 68.15s (0:01:08)

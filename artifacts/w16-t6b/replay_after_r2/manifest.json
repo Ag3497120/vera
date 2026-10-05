@@ -1,0 +1,1045 @@
+{
+ "frozen_at": "2026-10-05T23:14:27+09:00",
+ "root": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl",
+ "rule": "impl.r*.md, mtime in [2026-10-02 00:00, 2026-10-05 23:59:59] local, directory name not starting with W16-; .bak directories included; date evidence is mtime (not under git)",
+ "reports": [
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W0-1/impl.r1.md",
+   "dir": "W0-1",
+   "mtime": "2026-10-02T23:40:50+09:00",
+   "sha256": "a726e32bc144aa0b6bf6af03565910a37da39659312ae693e2de175d6aa6c1e4"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W0-1/impl.r2.md",
+   "dir": "W0-1",
+   "mtime": "2026-10-02T23:54:52+09:00",
+   "sha256": "5388aed2df128becb02a386b4ba0637580cc287d2bf710f8633ce72981745652"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W0-1/impl.r3.md",
+   "dir": "W0-1",
+   "mtime": "2026-10-03T00:06:57+09:00",
+   "sha256": "3ecac243c9834611f35d324f4b9fc8e82a9eb95108734d211a15cd54c812d8d3"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-a/impl.r1.md",
+   "dir": "W1-a",
+   "mtime": "2026-10-03T01:41:14+09:00",
+   "sha256": "c6926979170593f39eddeb6422c3a44e754f941fe99ca3227c64f1288c6095eb"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-a/impl.r2.md",
+   "dir": "W1-a",
+   "mtime": "2026-10-03T02:43:01+09:00",
+   "sha256": "fb8cc1cfc082f23d07fedfc8dcd83f6a96310950512be26753025ebff5b7ac5b"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-a/impl.r3.md",
+   "dir": "W1-a",
+   "mtime": "2026-10-03T03:12:56+09:00",
+   "sha256": "9d87380bc784cdd539398f1690a36d06eb0391c3f36d121c5e0a5663fd21b2d9"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-a2/impl.r1.md",
+   "dir": "W1-a2",
+   "mtime": "2026-10-03T05:42:49+09:00",
+   "sha256": "982b157af1a9549b1c57eb4e1a40106d3af3880f2128e30ca774fa59e673e5f5"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-a2/impl.r2.md",
+   "dir": "W1-a2",
+   "mtime": "2026-10-03T06:59:59+09:00",
+   "sha256": "8098a710fe55915d503bc9a20198c4b7a1424825d745d09fa9cfa7cdc88cc170"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-a2/impl.r3.md",
+   "dir": "W1-a2",
+   "mtime": "2026-10-03T07:56:14+09:00",
+   "sha256": "e2f47a79ad69643785b9c4e5fa968ee31d31f730caa5151628b70b301f6bd854"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-a3/impl.r1.md",
+   "dir": "W1-a3",
+   "mtime": "2026-10-03T08:49:09+09:00",
+   "sha256": "a90998da1364a81177d2db9b88ffc83e4bd2ffb0f25421ae2105e3a21f4f9eca"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-a4/impl.r1.md",
+   "dir": "W1-a4",
+   "mtime": "2026-10-03T12:06:39+09:00",
+   "sha256": "2bf2f6ee6d02259fb95966ac9fcb56b79c1dfa92dae419b790622981497cc2d8"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-a4/impl.r2.md",
+   "dir": "W1-a4",
+   "mtime": "2026-10-03T12:52:55+09:00",
+   "sha256": "0a44ca4b2a730d9eb26603cc95774ddeea9dae78e8f338d738d7d565e1668cc0"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-a4/impl.r3.md",
+   "dir": "W1-a4",
+   "mtime": "2026-10-03T13:32:48+09:00",
+   "sha256": "379fa5dffbc85805b40be79af1036c8f8661eec7c144f00f1832cde838a2139d"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-a5/impl.r1.md",
+   "dir": "W1-a5",
+   "mtime": "2026-10-04T05:57:45+09:00",
+   "sha256": "448a1c8e2dcb3e2d5e1e6f281e2a4619e267a0ccdcc56bf167c307c394a8a084"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-a5-2/impl.r2.md",
+   "dir": "W1-a5-2",
+   "mtime": "2026-10-04T07:22:57+09:00",
+   "sha256": "f80b5bd269e272d2b0d8ea14a71ae6edde1def8aa824dbb5aeb5186208121401"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-b/impl.r1.md",
+   "dir": "W1-b",
+   "mtime": "2026-10-02T23:29:17+09:00",
+   "sha256": "3547ce94f15ad8fdcf0bcc291120bcd1aa410e6d0683d980557f0eab878f001c"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-b/impl.r2.md",
+   "dir": "W1-b",
+   "mtime": "2026-10-02T23:40:00+09:00",
+   "sha256": "3a1b0ecb8212492f819cf9dc13fb49ea64d4483a0c35e89022c7009c58e06a34"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-b/impl.r3.md",
+   "dir": "W1-b",
+   "mtime": "2026-10-02T23:49:17+09:00",
+   "sha256": "215db11cf4c30e7c459e80c43e62d720cda907f0eb0887347f3a79648bd0d182"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-c/impl.r1.md",
+   "dir": "W1-c",
+   "mtime": "2026-10-02T23:38:39+09:00",
+   "sha256": "427222e4b64f19543d820741461f263377e0a890b0e515761f31200e4206b741"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-c2/impl.r1.md",
+   "dir": "W1-c2",
+   "mtime": "2026-10-03T00:24:52+09:00",
+   "sha256": "80517036829b2655c1edc8df07224cec031bfe4440df4916c7c3f1472a01c890"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-d/impl.r1.md",
+   "dir": "W1-d",
+   "mtime": "2026-10-03T00:02:38+09:00",
+   "sha256": "d5a64b7e140140778652ee416d07655f967129223c3557451eb6f472341c4aad"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-d/impl.r2.md",
+   "dir": "W1-d",
+   "mtime": "2026-10-03T00:17:03+09:00",
+   "sha256": "169007d496b6d8ef96ef3835791807d6b214f65a4b7aa2134358a47aec31d728"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-e/impl.r1.md",
+   "dir": "W1-e",
+   "mtime": "2026-10-02T23:48:29+09:00",
+   "sha256": "3d50abdd5a36dc65fff184f480eb04e06d9d86846cdad341dc0f35359da2e82a"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-e/impl.r2.md",
+   "dir": "W1-e",
+   "mtime": "2026-10-02T23:58:50+09:00",
+   "sha256": "da692ed7862196a96239e6b6936d18f18add97b1d65b446381a78396e351e417"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-f/impl.r1.md",
+   "dir": "W1-f",
+   "mtime": "2026-10-03T05:57:36+09:00",
+   "sha256": "c4e36fe49e2992917487dd33fe49140be6ee3f54370faa3a716515bc1b15556c"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-f/impl.r2.md",
+   "dir": "W1-f",
+   "mtime": "2026-10-03T06:27:57+09:00",
+   "sha256": "9a53f34a6db1eaefd0528c4e96defdb6e997c3ae1500b9521da14b71a7f28375"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-f/impl.r3.md",
+   "dir": "W1-f",
+   "mtime": "2026-10-03T06:43:18+09:00",
+   "sha256": "453587d6e941b0f9eb5025631411e8875efa4d048062a57dd7c04d9a49e2aaf0"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-g/impl.r1.md",
+   "dir": "W1-g",
+   "mtime": "2026-10-03T07:22:18+09:00",
+   "sha256": "732d630fc772765a2488e2361bcd9213b4c7734e9755027437e8e5d58b78d1a2"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-g/impl.r2.md",
+   "dir": "W1-g",
+   "mtime": "2026-10-03T07:37:45+09:00",
+   "sha256": "a724265291acf0f8552d975934acc1b2b8ea7c9e9ffb5b341e99225889cc89d7"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-s/impl.r1.md",
+   "dir": "W1-s",
+   "mtime": "2026-10-03T00:00:57+09:00",
+   "sha256": "85d8d79f552aa27dd93601cd94ce76f18d3b535ccfb474e60be45baed7767b3b"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-s/impl.r2.md",
+   "dir": "W1-s",
+   "mtime": "2026-10-03T00:17:08+09:00",
+   "sha256": "9d7388a275a3201213ec6215048699cf592cad94a6b87339de7ab407d6d13157"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-s2/impl.r1.md",
+   "dir": "W1-s2",
+   "mtime": "2026-10-03T01:40:32+09:00",
+   "sha256": "e34d031a6b0bff3014260361f86fe8016c96fa5ba1b7efbce70189a0c38e8370"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-s2/impl.r2.md",
+   "dir": "W1-s2",
+   "mtime": "2026-10-03T02:03:33+09:00",
+   "sha256": "51dd3b58083ebbfeae6b19c5266a3e4da0441c8fbc74df71309dbecd6bce66c0"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W1-s2/impl.r3.md",
+   "dir": "W1-s2",
+   "mtime": "2026-10-03T02:14:25+09:00",
+   "sha256": "520febf76d694662b0d347f185566ac4ad97a0e005c41d44dd6767a657627124"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W10-f01/impl.r1.md",
+   "dir": "W10-f01",
+   "mtime": "2026-10-04T12:47:26+09:00",
+   "sha256": "d7863fc95316e94944972113fe5563b67a48562a6428b6dbcff4c972eefcabbf"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W10-f01/impl.r2.md",
+   "dir": "W10-f01",
+   "mtime": "2026-10-04T14:42:32+09:00",
+   "sha256": "f76cd77a13835026f3e97c7182cf1281e0a03152eb57c6d28b0935bbe0473062"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W10-f01/impl.r3.md",
+   "dir": "W10-f01",
+   "mtime": "2026-10-04T15:10:28+09:00",
+   "sha256": "c112d9824cf412bad68700590e083736ced678325ff63fa015ef5566805b2af3"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W10-f03/impl.r1.md",
+   "dir": "W10-f03",
+   "mtime": "2026-10-04T18:03:33+09:00",
+   "sha256": "76fc7ddc14398c418c68c3484a8d0551cc6072743fd93ab1b0e727fce4d5acf1"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W10-f04/impl.r1.md",
+   "dir": "W10-f04",
+   "mtime": "2026-10-04T22:34:18+09:00",
+   "sha256": "e1b9c01303043db3b65e184dba72534052fee26d34ff98da231190b842b36d71"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W10-f04/impl.r2.md",
+   "dir": "W10-f04",
+   "mtime": "2026-10-04T21:37:41+09:00",
+   "sha256": "c041eaf87b08c910646e034644b67b5cb618c11b0609fb6b8dd59a9ae9411cef"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W10-f05/impl.r1.md",
+   "dir": "W10-f05",
+   "mtime": "2026-10-05T08:06:54+09:00",
+   "sha256": "3f8c1f18f699e3ebb43d9bc8a4f88fb57158c68fb38541308e5c9f5ea2a4ba3c"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W10-f05/impl.r3.md",
+   "dir": "W10-f05",
+   "mtime": "2026-10-05T09:00:09+09:00",
+   "sha256": "4398a823d701a8a56cb14934593832fa77a9eb15a94aef52db799bbebad901f0"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W11-cleanroom/impl.r1.md",
+   "dir": "W11-cleanroom",
+   "mtime": "2026-10-04T22:31:16+09:00",
+   "sha256": "2f0c12c919a1a330c008d805753c2fc3a5ed05a3a0fae6242212b4cc89d6059a"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W11-cleanroom/impl.r2.md",
+   "dir": "W11-cleanroom",
+   "mtime": "2026-10-04T22:53:19+09:00",
+   "sha256": "98d8d69c73908e3b1ff3f44906ec130f8436e02e65f5c4b77509127728681159"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W11-cleanroom/impl.r3.md",
+   "dir": "W11-cleanroom",
+   "mtime": "2026-10-04T22:08:50+09:00",
+   "sha256": "1b6d4cba76802317f142b674fdbe2285595a09e51c6d4081e835a7607d982bca"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W11-cleanroom/impl.r4.md",
+   "dir": "W11-cleanroom",
+   "mtime": "2026-10-04T22:53:19+09:00",
+   "sha256": "98d8d69c73908e3b1ff3f44906ec130f8436e02e65f5c4b77509127728681159"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W12-c1/impl.r1.md",
+   "dir": "W12-c1",
+   "mtime": "2026-10-05T15:16:42+09:00",
+   "sha256": "2afb80747dce12456f2e1a823872f88b761f36729cdd4a704e9c32d06c126518"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W12-c1/impl.r2.md",
+   "dir": "W12-c1",
+   "mtime": "2026-10-05T15:36:46+09:00",
+   "sha256": "bb56d509f8200f87e7955dcc337e9c4d407862df822f31046b4fe54da36eb48e"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W13-h1/impl.r1.md",
+   "dir": "W13-h1",
+   "mtime": "2026-10-05T15:28:23+09:00",
+   "sha256": "dd5badb13dc4dc526d919e5b0691e90d5c7b8741741ef8d9be923ddb76c3bb4e"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W13-h1/impl.r2.md",
+   "dir": "W13-h1",
+   "mtime": "2026-10-05T15:57:09+09:00",
+   "sha256": "1d991d0958b405cf3353817f0095cfe431852a3323ca3b5b507e6d9f59c762b5"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W13-h1/impl.r3.md",
+   "dir": "W13-h1",
+   "mtime": "2026-10-05T16:13:33+09:00",
+   "sha256": "b1552dff866243cb3aba23fe95d5eafee501e9b3c1fe4803f476dffe7136cebc"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-a/impl.r1.md",
+   "dir": "W2-a",
+   "mtime": "2026-10-03T01:31:44+09:00",
+   "sha256": "ae6b365a0dcd952abb12fb8fb169aff927a4343a66a3eb83305b78ad15cbf742"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-b/impl.r1.md",
+   "dir": "W2-b",
+   "mtime": "2026-10-03T04:37:52+09:00",
+   "sha256": "d136e6b719fed049814a74eb181b8454a98fbd74e77f948c1e477afe30267a02"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-b/impl.r2.md",
+   "dir": "W2-b",
+   "mtime": "2026-10-03T06:04:13+09:00",
+   "sha256": "c954b33ed14e546addbaf3fbed8ea3ffbc5b2723c1e2f882d10dd2a011c1f156"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-b2/impl.r1.md",
+   "dir": "W2-b2",
+   "mtime": "2026-10-03T07:38:00+09:00",
+   "sha256": "04e3a46c31680757676240e297eb189d2e7688dd400afb357360bc8f308df980"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-b2/impl.r2.md",
+   "dir": "W2-b2",
+   "mtime": "2026-10-03T08:13:03+09:00",
+   "sha256": "acb92ca51796ff9510b2c0498c9d83a03648696402037ecc52dbf53f8c2dcc07"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-c/impl.r1.md",
+   "dir": "W2-c",
+   "mtime": "2026-10-03T01:47:39+09:00",
+   "sha256": "b93267f2bb7319e4921c59de81304b1b7ccecb30ed44286abe312991d1ac4095"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-c/impl.r2.md",
+   "dir": "W2-c",
+   "mtime": "2026-10-03T02:14:40+09:00",
+   "sha256": "b52de6389082a238275b25090326f21e1214264a3842cc514b3ef04fe3799275"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-c/impl.r3.md",
+   "dir": "W2-c",
+   "mtime": "2026-10-03T02:46:43+09:00",
+   "sha256": "875459f092b601018e69efe1d55fa7caa79a64b917924d359edea7371b9cd677"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-c2/impl.r1.md",
+   "dir": "W2-c2",
+   "mtime": "2026-10-03T12:10:46+09:00",
+   "sha256": "0fd4186b850829c46699040d49ee71a135d53870aaf0d05c9362a43ad0e07147"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-c2/impl.r2.md",
+   "dir": "W2-c2",
+   "mtime": "2026-10-03T13:00:34+09:00",
+   "sha256": "1e9123e6389ae250494433fddf5e1f1844fbbd53010957c82517da728413f7cc"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-c3/impl.r1.md",
+   "dir": "W2-c3",
+   "mtime": "2026-10-03T14:09:59+09:00",
+   "sha256": "b6a05c928c084ee579aadbb79e3bf86da02ebc5f2c6b6741ab4daad49c11e1cb"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-c3/impl.r2.md",
+   "dir": "W2-c3",
+   "mtime": "2026-10-03T03:55:37+09:00",
+   "sha256": "1962976ee92e195fcded3853b0202018c74a84538e8a2d4f7045ad5c76947cb7"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-c3/impl.r3.md",
+   "dir": "W2-c3",
+   "mtime": "2026-10-03T04:15:51+09:00",
+   "sha256": "de971ee64d1099165e58f77477053040c6d4b1075dd62bac2a6f0b540ff748ce"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-c3.W2-c-r4.bak/impl.r1.md",
+   "dir": "W2-c3.W2-c-r4.bak",
+   "mtime": "2026-10-03T03:28:17+09:00",
+   "sha256": "641dc1114a960f1ca02545ce8169185a54aa881668889331e26cfc7f47dce59d"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-c3.W2-c-r4.bak/impl.r2.md",
+   "dir": "W2-c3.W2-c-r4.bak",
+   "mtime": "2026-10-03T03:55:37+09:00",
+   "sha256": "1962976ee92e195fcded3853b0202018c74a84538e8a2d4f7045ad5c76947cb7"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-c3.W2-c-r4.bak/impl.r3.md",
+   "dir": "W2-c3.W2-c-r4.bak",
+   "mtime": "2026-10-03T04:15:51+09:00",
+   "sha256": "de971ee64d1099165e58f77477053040c6d4b1075dd62bac2a6f0b540ff748ce"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-c4/impl.r1.md",
+   "dir": "W2-c4",
+   "mtime": "2026-10-03T05:01:43+09:00",
+   "sha256": "bacb428be2cbd4a5fcbc46b1a5cae6596a3fc7d8cd37389164f2d812c65a7d25"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-d/impl.r1.md",
+   "dir": "W2-d",
+   "mtime": "2026-10-03T04:38:13+09:00",
+   "sha256": "1353955d40c019e062e2681d161de3ea9ceada1ed8b3405110a000a39b5527bf"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-d/impl.r2.md",
+   "dir": "W2-d",
+   "mtime": "2026-10-03T05:17:23+09:00",
+   "sha256": "a0b35930ac74ee4f8265e8b9c070bb1416f4bf1c473bf5fcfe86c30cb44a4175"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-d/impl.r3.md",
+   "dir": "W2-d",
+   "mtime": "2026-10-03T05:47:45+09:00",
+   "sha256": "941fd3fd67d7660a40149795fe442ffd64827abb7701e3321be125b14c31ffe6"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-g/impl.r1.md",
+   "dir": "W2-g",
+   "mtime": "2026-10-03T06:23:39+09:00",
+   "sha256": "28d75564e840bd522d995c2b98d6e9c1a3aa57aa371678de2a4d86804c92dfd4"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-g/impl.r2.md",
+   "dir": "W2-g",
+   "mtime": "2026-10-03T07:08:26+09:00",
+   "sha256": "bbd631ff7fa533e9537c389f00b3c32d5b6a9cc634450775460af97d835afd20"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-g/impl.r3.md",
+   "dir": "W2-g",
+   "mtime": "2026-10-03T07:37:52+09:00",
+   "sha256": "747801d2efdbd2024075b808fb56b11ef5781ccb5ed8c7c3737859076a2da16b"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-g2/impl.r1.md",
+   "dir": "W2-g2",
+   "mtime": "2026-10-03T09:59:22+09:00",
+   "sha256": "f6056b74825f8528cb48e4dfbce94c93af136d7dc72ef619283c3140f97b74d3"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-g2/impl.r2.md",
+   "dir": "W2-g2",
+   "mtime": "2026-10-03T10:20:59+09:00",
+   "sha256": "726c95089161ef74cc6f11fe040525bdf4778deae10d7ca719dfd908dfa1e14f"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-h/impl.r1.md",
+   "dir": "W2-h",
+   "mtime": "2026-10-03T10:03:24+09:00",
+   "sha256": "831ed8f2cc2fd764b5628acf9d32fcba24d9c22c144407689bd87c48b3991d31"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-h/impl.r2.md",
+   "dir": "W2-h",
+   "mtime": "2026-10-03T10:26:44+09:00",
+   "sha256": "99d85b236c7b8fa67587cceff7bd1496466ca3c945769e399cfd0a8ff0016db3"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-h/impl.r3.md",
+   "dir": "W2-h",
+   "mtime": "2026-10-03T11:07:48+09:00",
+   "sha256": "abbdf6e6aec0bb8f475bd3ec2587d92cc04670fad75283470025e4ce6bfef9cb"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-h2/impl.r1.md",
+   "dir": "W2-h2",
+   "mtime": "2026-10-03T13:09:43+09:00",
+   "sha256": "9924f2d3aac347b919e8974e2df3acfe2136c37eb084b8ca12abb373410c88e8"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-h2/impl.r2.md",
+   "dir": "W2-h2",
+   "mtime": "2026-10-03T13:42:57+09:00",
+   "sha256": "c4ef9f6d2b99842a3a860bccd6bdc3da4cd6446cddfc7f58097cc9e4a46fd079"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W2-h4/impl.r1.md",
+   "dir": "W2-h4",
+   "mtime": "2026-10-03T11:55:40+09:00",
+   "sha256": "87d73fccbf913386a4bce8e90a96972a8fb17b39132b582f9a23d254f75ad39c"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a/impl.r1.md",
+   "dir": "W3-a",
+   "mtime": "2026-10-03T07:06:31+09:00",
+   "sha256": "df4adedaf325ab9eb126d4c5d4d69a0fbe6e1ce85d9c2259dc9a124ee99d7415"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a/impl.r2.md",
+   "dir": "W3-a",
+   "mtime": "2026-10-03T08:17:56+09:00",
+   "sha256": "e40191bdd980d7762c9b7b95ea758c80c745b779deaf3a6bfa1adfa5359b1025"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a2/impl.r1.md",
+   "dir": "W3-a2",
+   "mtime": "2026-10-03T12:02:04+09:00",
+   "sha256": "248eea3b7207a03402e90dd49a951e9a681b900672e5e1590b1196ab1415d6df"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a2/impl.r2.md",
+   "dir": "W3-a2",
+   "mtime": "2026-10-03T13:07:49+09:00",
+   "sha256": "96ef3367dc1bf713926f28d75c5e6171228afdba4c1d8bcce81348a8c538d736"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a3/impl.r1.md",
+   "dir": "W3-a3",
+   "mtime": "2026-10-03T20:01:09+09:00",
+   "sha256": "d8d92efaaa5e0382d34e32edf988fcb179a8f3f38b0f452a1e619b7dc4dbc964"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a4/impl.r1.md",
+   "dir": "W3-a4",
+   "mtime": "2026-10-04T03:01:51+09:00",
+   "sha256": "9f4bb099374a86b22ba1fd466030f7a9c8a77521bb390e24bfa8b1062ff2b365"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a4/impl.r2.md",
+   "dir": "W3-a4",
+   "mtime": "2026-10-04T03:26:22+09:00",
+   "sha256": "342867e134b417cc8f1ad8c0b8b1974095ebcde89b71441101b9a7920550af67"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a4/impl.r3.md",
+   "dir": "W3-a4",
+   "mtime": "2026-10-04T03:44:41+09:00",
+   "sha256": "f4d3e206e04820f33e559df09fd698b78494d66af1cd21519b0c99270df4110e"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a6/impl.r1.md",
+   "dir": "W3-a6",
+   "mtime": "2026-10-04T16:39:25+09:00",
+   "sha256": "2c552d27f92a3194334b1183c2a29f7b7b3728b957727918060259ca1bce333a"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a6/impl.r1.previous_attempt.md",
+   "dir": "W3-a6",
+   "mtime": "2026-10-04T16:32:59+09:00",
+   "sha256": "a8d0b5da90cb366d498d5d84935e23b4334bdc9b7362f5c2f1abfeaf1fa64512"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a6/impl.r10.md",
+   "dir": "W3-a6",
+   "mtime": "2026-10-05T01:06:24+09:00",
+   "sha256": "58ea86e16f8df280785914215e689273f75a3a53f5c1e5dd77ea49d5168a9c3d"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a6/impl.r2.md",
+   "dir": "W3-a6",
+   "mtime": "2026-10-04T12:05:22+09:00",
+   "sha256": "5e91ebd7e18972b37421a72835b66569d64dcde0d0f9d8f439df09501a03d4e4"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a6/impl.r3.md",
+   "dir": "W3-a6",
+   "mtime": "2026-10-04T13:04:03+09:00",
+   "sha256": "43b3f5c1ce4ae6fe694352c2e343dbbdea3acdd595311802160304b657a77845"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a6/impl.r5.md",
+   "dir": "W3-a6",
+   "mtime": "2026-10-04T17:15:41+09:00",
+   "sha256": "2c552d27f92a3194334b1183c2a29f7b7b3728b957727918060259ca1bce333a"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a6/impl.r6.md",
+   "dir": "W3-a6",
+   "mtime": "2026-10-04T17:37:23+09:00",
+   "sha256": "b4c65411d9c885276439e06645114ab26205244fc40d657069dd8828053e6708"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a6/impl.r7.md",
+   "dir": "W3-a6",
+   "mtime": "2026-10-04T19:58:55+09:00",
+   "sha256": "e69b7f9b4f499bcc6491c0a807bb06b69e243598f83638c4985b124af2881c79"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a6/impl.r8.md",
+   "dir": "W3-a6",
+   "mtime": "2026-10-04T21:11:15+09:00",
+   "sha256": "53bb7d634b3bfbe1bad499ab872bdb4d03e3558fdeb662dc5b19aaa37581e56f"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a6/impl.r9.md",
+   "dir": "W3-a6",
+   "mtime": "2026-10-04T23:43:44+09:00",
+   "sha256": "4dddd232c95891a1552b9bd1fd83be57e570302280cd7c97d9f98676a1f973ac"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a7/impl.r1.md",
+   "dir": "W3-a7",
+   "mtime": "2026-10-05T07:39:56+09:00",
+   "sha256": "acd828350487c1d15bbce4346b3ea9d29ea0ef4a8dccdc825e7eafaa0ee0eb3b"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a7/impl.r2.md",
+   "dir": "W3-a7",
+   "mtime": "2026-10-05T08:58:30+09:00",
+   "sha256": "6517560bac2e16448af616d4da21ae96c886b10c82fd29d61732b3749b1245fa"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a7/impl.r3.md",
+   "dir": "W3-a7",
+   "mtime": "2026-10-05T11:09:32+09:00",
+   "sha256": "5d8bd9112365ad446452db95d269691cc2fdcdc42559a7d89213db36e1f9d1e0"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b/impl.r1.md",
+   "dir": "W3-b",
+   "mtime": "2026-10-03T09:56:13+09:00",
+   "sha256": "7d4e13a4af0dc66898b2ef0bcfe84ced4ffb1df82e2cab1db0a5cb40dcc42402"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b/impl.r2.md",
+   "dir": "W3-b",
+   "mtime": "2026-10-03T10:19:34+09:00",
+   "sha256": "ed8950c67fd430ca3cfa2ff80df5eaf834c95d45c5560e7fcb8027256ea05020"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b1/impl.r2.md",
+   "dir": "W3-b1",
+   "mtime": "2026-10-03T15:48:30+09:00",
+   "sha256": "a0a2f4e4976bec236027d581814029394fc92b47303e11b11623e4c81da42a5a"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b1/impl.r3.md",
+   "dir": "W3-b1",
+   "mtime": "2026-10-03T16:35:02+09:00",
+   "sha256": "d1d0cebc4ff4891f218980da727e318cc7c0c07b481fee51e93818a4709358b8"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b1-4/impl.r1.md",
+   "dir": "W3-b1-4",
+   "mtime": "2026-10-03T17:31:10+09:00",
+   "sha256": "3dd5f8037e9784bc89c0fa3939166d6130b4dc5e34faf450521ac97fca153ecf"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b1-4/impl.r2.md",
+   "dir": "W3-b1-4",
+   "mtime": "2026-10-03T17:55:41+09:00",
+   "sha256": "51be24d2b80370a18e50e39718a6396830587a01457b37c4a96e5705ff614e9a"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b1-5/impl.r1.md",
+   "dir": "W3-b1-5",
+   "mtime": "2026-10-03T18:59:22+09:00",
+   "sha256": "64ec1ceb24fa89a2ba5a0660747981b05996b582d1a81a9e3da4b1b392fcbb5a"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b2/impl.r1.md",
+   "dir": "W3-b2",
+   "mtime": "2026-10-03T22:03:26+09:00",
+   "sha256": "42252828385ecb2b0b3e9a0c79c59ccc503b839d6295525c9e83647ce171d37b"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b3/impl.r1.md",
+   "dir": "W3-b3",
+   "mtime": "2026-10-04T00:01:16+09:00",
+   "sha256": "0ddb7583ad3d39bb08915455de53828676fe540563d5cd5d5cc9ee8cfa9a2b36"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b3/impl.r2.md",
+   "dir": "W3-b3",
+   "mtime": "2026-10-04T00:35:59+09:00",
+   "sha256": "93949e4210f96cee0de50308b2d1c9319487c2e625926b95f721292e82052875"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b3/impl.r3.md",
+   "dir": "W3-b3",
+   "mtime": "2026-10-04T01:03:15+09:00",
+   "sha256": "9da3ce96a44e1a85ca2f7963d0935a3dc3aa5be30f67ab0de85390de4cd33355"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b3-2/impl.r1.md",
+   "dir": "W3-b3-2",
+   "mtime": "2026-10-04T01:53:07+09:00",
+   "sha256": "bea6b05b93e7fda45810114201b6c00216a737bbbf28aeaaf43e1d6f7b35d300"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b4/impl.r1.md",
+   "dir": "W3-b4",
+   "mtime": "2026-10-04T01:49:27+09:00",
+   "sha256": "24d04fa2e1c2482263e80a0b69fc39d4aac5c1830705f54accf06d06472a5aa7"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b4/impl.r2.md",
+   "dir": "W3-b4",
+   "mtime": "2026-10-04T02:26:59+09:00",
+   "sha256": "d28f38b858ec93a8c6c4f09949232a320127952e13f746002f4afd815572b782"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b4-2/impl.r1.md",
+   "dir": "W3-b4-2",
+   "mtime": "2026-10-04T03:23:55+09:00",
+   "sha256": "78391d2c227fa4d33ad98e97b0d594f5d498aad7478dad7453ac3acc42e5edd4"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b4-3/impl.r1.md",
+   "dir": "W3-b4-3",
+   "mtime": "2026-10-04T04:17:34+09:00",
+   "sha256": "0a22b1d24ce5bd31e8a10444f1af6a0caa7f80ab304be15f4469f59ee8b8ecfa"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b5/impl.r1.md",
+   "dir": "W3-b5",
+   "mtime": "2026-10-04T07:03:19+09:00",
+   "sha256": "e4853dff211a25c080fd6154aac9bea5a36f39b15798223fcfad162c8d26fcf3"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b5/impl.r2.md",
+   "dir": "W3-b5",
+   "mtime": "2026-10-04T07:48:55+09:00",
+   "sha256": "7b56613bf4e3f70248215f9541f7675ab984d81d16f1e6dbb78b7e839016adf0"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b6/impl.r1.md",
+   "dir": "W3-b6",
+   "mtime": "2026-10-04T18:21:58+09:00",
+   "sha256": "cf0d1798cf0f735b780355ddad5ff93871f4433946ad02079dadc6e68be24fe1"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-b6/impl.r2.md",
+   "dir": "W3-b6",
+   "mtime": "2026-10-04T18:55:51+09:00",
+   "sha256": "90d43ba2b50b9bc407fd864b2a923052636f3f8c289d6b21b4b736d17bfb88d0"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-c/impl.r1.md",
+   "dir": "W3-c",
+   "mtime": "2026-10-03T13:00:13+09:00",
+   "sha256": "c64b70c84ed9f9db9f52ed13879219acc59f382d53fff343f2271c0df03d182b"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-c/impl.r2.md",
+   "dir": "W3-c",
+   "mtime": "2026-10-03T13:34:55+09:00",
+   "sha256": "cb91ffe2567f7523fca2da6ad825d300f777b9c8b2a4c80d8e9695ecb9f21878"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-c2/impl.r1.md",
+   "dir": "W3-c2",
+   "mtime": "2026-10-03T20:20:58+09:00",
+   "sha256": "ac107f0386f90d181b68316d1e38d81c36a40416f90194a71b1f7611f8ba128a"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-c2/impl.r2.md",
+   "dir": "W3-c2",
+   "mtime": "2026-10-03T20:45:14+09:00",
+   "sha256": "12fcbd40367532a116014cb55f4c0cf9044968d29b62314822717735ca8348ed"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-c4/impl.r1.md",
+   "dir": "W3-c4",
+   "mtime": "2026-10-04T03:03:22+09:00",
+   "sha256": "3b75631d836d0269831d9838ac909b01eb59ce1d7b3703d082ff47e7dffbb2fd"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-c4/impl.r2.md",
+   "dir": "W3-c4",
+   "mtime": "2026-10-04T03:49:49+09:00",
+   "sha256": "7a51d299a8645a769c5175d9549f6d5a3fc8d8202edd508c917967abac104986"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-c7/impl.r1.md",
+   "dir": "W3-c7",
+   "mtime": "2026-10-05T07:59:00+09:00",
+   "sha256": "6b35ae4f44cda44640c8166938cdecb15e6e7ad3e496e01d622ca94b6b7b831b"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-c7/impl.r2.md",
+   "dir": "W3-c7",
+   "mtime": "2026-10-05T08:34:48+09:00",
+   "sha256": "e1f9f3e0d5295b5056ad260dae80d38f8c83f26a77f3a9a636c9db077cbda3ec"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-c7/impl.r3.md",
+   "dir": "W3-c7",
+   "mtime": "2026-10-05T08:48:21+09:00",
+   "sha256": "ad53382ec4e2b72b8f9ab9c1c37b2d93bcb40fccfba356d366af6faeb614740f"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-c7/impl.r4.md",
+   "dir": "W3-c7",
+   "mtime": "2026-10-05T09:32:37+09:00",
+   "sha256": "c28d98679b15a921c53cc3d186b4b45076e245d38a4bf1a7dddf5c9074257136"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-d1/impl.r1.md",
+   "dir": "W3-d1",
+   "mtime": "2026-10-05T07:53:42+09:00",
+   "sha256": "752224b678cd5850779a7ce7f33e21f6c56ef1ff2a31c2feefc3e086302bdd77"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-d1/impl.r2.md",
+   "dir": "W3-d1",
+   "mtime": "2026-10-05T08:24:13+09:00",
+   "sha256": "072583ec1c4cbe17bad7d9f2927cb577aa83c3dd0702420cd1d0c8620230e21c"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-e2/impl.r1.md",
+   "dir": "W3-e2",
+   "mtime": "2026-10-05T14:49:43+09:00",
+   "sha256": "e23a5ace4c94b2a5ad2558467b009c160fa3bd88a960b70c085ef8665cdeb661"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-e2/impl.r2.md",
+   "dir": "W3-e2",
+   "mtime": "2026-10-05T15:13:13+09:00",
+   "sha256": "8e0fbbfcb49466cca4cb1d000f52ed00381764fdc4a1dcac158e9d5339f394ba"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-f1/impl.r1.md",
+   "dir": "W3-f1",
+   "mtime": "2026-10-05T20:26:49+09:00",
+   "sha256": "a6c209989551cde4613874149436de89fb55bc630867f825e717e218020167a5"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-f1/impl.r2.md",
+   "dir": "W3-f1",
+   "mtime": "2026-10-05T20:59:28+09:00",
+   "sha256": "8696b913cd7a3362415f8205dcbac356b88322916f93547c479507c8583aa29b"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-f1/impl.r3.md",
+   "dir": "W3-f1",
+   "mtime": "2026-10-05T21:25:54+09:00",
+   "sha256": "9e50f29ccfd9973ec8ffb5c1ddc2c8f772c74d624ff2532fff1d9cac2daa4540"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W4-m/impl.r1.md",
+   "dir": "W4-m",
+   "mtime": "2026-10-03T12:37:24+09:00",
+   "sha256": "0b44a0ddf06632258963186d77bb6fdb5a3faf0d41ae1ad1531e03e2ed04d166"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W4-m/impl.r2.md",
+   "dir": "W4-m",
+   "mtime": "2026-10-03T13:00:22+09:00",
+   "sha256": "ac627d3f33e74e0aadc138e0ff5fe5bc6db60b66ee3885f9ce64690308734b83"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W4-m/impl.r3.md",
+   "dir": "W4-m",
+   "mtime": "2026-10-03T13:12:12+09:00",
+   "sha256": "29715ab8dd8a098c3eeb4ed5a58d676d5b9d0f76a34f39d017a2944e683d777b"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-a/impl.r1.md",
+   "dir": "W5-a",
+   "mtime": "2026-10-03T15:01:17+09:00",
+   "sha256": "ccc739feaa66d89d548b7501a68b873548342a7c1afa43a7548c71e0e911ba5d"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-a2/impl.r1.md",
+   "dir": "W5-a2",
+   "mtime": "2026-10-03T15:55:39+09:00",
+   "sha256": "fefb4be61d34e534e29783c27615d4f30696e51316daba29ced067300477638c"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-a3/impl.r1.md",
+   "dir": "W5-a3",
+   "mtime": "2026-10-03T16:35:35+09:00",
+   "sha256": "d4105cd24a559e11d8d588febad2d8eda13ad779579fccc0bd8f63230b42adaf"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-b/impl.r1.md",
+   "dir": "W5-b",
+   "mtime": "2026-10-03T16:33:13+09:00",
+   "sha256": "aef0b73325c92f6574b8c819c5556f54bab4e6a2d544f273e13c6001dd4df70b"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-b/impl.r3.md",
+   "dir": "W5-b",
+   "mtime": "2026-10-03T17:30:38+09:00",
+   "sha256": "0b9c5d036f2409d954b6a258d54bdcf611fa065e971291b26f632f69eb80f314"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-c/impl.r1.md",
+   "dir": "W5-c",
+   "mtime": "2026-10-03T19:50:23+09:00",
+   "sha256": "a47931ff1374238e817aeb0a178bc43d694da0d53601885676435d5b94866fb1"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-c/impl.r2.md",
+   "dir": "W5-c",
+   "mtime": "2026-10-03T20:18:29+09:00",
+   "sha256": "5aa1243b2b5fa0b0460537b9cc36487070d9f81e4ff996291537947a435ec71b"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-c3/impl.r1.md",
+   "dir": "W5-c3",
+   "mtime": "2026-10-03T21:28:22+09:00",
+   "sha256": "a90f6b438d1cc9d0f43c45ea8048a9150fa09119a881c0f440b998c005ee247f"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-d/impl.r1.md",
+   "dir": "W5-d",
+   "mtime": "2026-10-03T23:38:33+09:00",
+   "sha256": "60d3950feddc848c433f12c4c6b92f75eaed8ffe2f91bc922ab3d9c9552733be"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-d2/impl.r2.md",
+   "dir": "W5-d2",
+   "mtime": "2026-10-04T01:23:54+09:00",
+   "sha256": "4c39be34fc1a88f93d13b19db84b542e74832c64a66871307a612e8b7edf826f"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-e/impl.r1.md",
+   "dir": "W5-e",
+   "mtime": "2026-10-04T04:18:06+09:00",
+   "sha256": "29e315cb962c681cf1faa45030f1aee051ccbda9518bcd98f193f94f75781527"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-e2/impl.r1.md",
+   "dir": "W5-e2",
+   "mtime": "2026-10-04T05:23:07+09:00",
+   "sha256": "e690fd6adcd250f4a453f98301c0d1ed2d7c4b2633f00869fec0b94d4f662006"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-f/impl.r1.md",
+   "dir": "W5-f",
+   "mtime": "2026-10-04T10:29:41+09:00",
+   "sha256": "bfe9e84e5d9bb17d34cff52702c6498f06de768ccc15efcb7d1c4ab2e3b02701"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-f/impl.r2.md",
+   "dir": "W5-f",
+   "mtime": "2026-10-04T12:35:06+09:00",
+   "sha256": "94a385c47de6e6a97515119558a36c3d60966c58d610d5e21fe05e298a55b393"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-f-3/impl.r1.md",
+   "dir": "W5-f-3",
+   "mtime": "2026-10-04T14:01:41+09:00",
+   "sha256": "f4d0d2b75c00f6b23134651357d4dec51aca3ec6b7ad954e57ab099106bbf452"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-f-3/impl.r2.md",
+   "dir": "W5-f-3",
+   "mtime": "2026-10-04T14:23:47+09:00",
+   "sha256": "ea8d024ce8777603ff685efe83f459dc470f4077c40b2977556f15ed86c56208"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W5-f-3/impl.r3.md",
+   "dir": "W5-f-3",
+   "mtime": "2026-10-04T14:38:29+09:00",
+   "sha256": "cef959a8bc21a23e2029672633a3e56ff04e3871bca558fb5d992b9ea5927214"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W6-a/impl.r1.md",
+   "dir": "W6-a",
+   "mtime": "2026-10-03T17:44:15+09:00",
+   "sha256": "b5b296bf67aaeaf0a7817de8f1f3c3e953509cc336d9ce4a18bfaacc0da67c18"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W6-a/impl.r2.md",
+   "dir": "W6-a",
+   "mtime": "2026-10-03T18:03:26+09:00",
+   "sha256": "a59cdc906662fb8db5dc54c4b4c2b2709f8901f00758201802284709500ec51d"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W6-s/impl.r1.md",
+   "dir": "W6-s",
+   "mtime": "2026-10-04T00:55:21+09:00",
+   "sha256": "2f93ab4bacdf28fda0f3e9fa9f8cde0c2dd0782c61d9e9d82fbad29894f67842"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W6-v1/impl.r1.md",
+   "dir": "W6-v1",
+   "mtime": "2026-10-05T16:03:58+09:00",
+   "sha256": "8d6c17a6d8162dcc17747804e5c9f751be018386098b8c308fe1737b1c30cbfc"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W7-chat/impl.r1.md",
+   "dir": "W7-chat",
+   "mtime": "2026-10-04T11:57:13+09:00",
+   "sha256": "dc7a4a974ba9e0a6104e0c98ae175b99b048cb0ffe9548e8a7250d0a0b4be1c3"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W7-release/impl.r1.md",
+   "dir": "W7-release",
+   "mtime": "2026-10-04T10:32:02+09:00",
+   "sha256": "bafe5ba9374560c49c28dc9b558da2d2684ad7651b24f8a5e58d2c40a8e48c17"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W8-shadow/impl.r1.md",
+   "dir": "W8-shadow",
+   "mtime": "2026-10-04T09:42:01+09:00",
+   "sha256": "752872b5a8b263a03cb40f15f523f56ea1c252814adba77897b6825775223d43"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W8-shadow/impl.r2.md",
+   "dir": "W8-shadow",
+   "mtime": "2026-10-04T10:06:11+09:00",
+   "sha256": "f8b1b6184e81e63fdd34a33baa4590e9b8f55f1ecdb06d106271b324e5a2740e"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W8-shadow/impl.r3.md",
+   "dir": "W8-shadow",
+   "mtime": "2026-10-04T10:29:26+09:00",
+   "sha256": "b3695f5d64a80a6a53aa6298a281fa43e11ed6d63c1dfe11c7788e5538910355"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W8-shadow-2/impl.r1.md",
+   "dir": "W8-shadow-2",
+   "mtime": "2026-10-05T15:52:06+09:00",
+   "sha256": "7539507ea213530f19233642ad67d817913bf5f9ceb5882e8889d4f9cabd65e6"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W9-site/impl.r1.md",
+   "dir": "W9-site",
+   "mtime": "2026-10-04T11:19:10+09:00",
+   "sha256": "1d9eee2776b6626689409423079770e80186273f29b06a7de1ba6bbdbbf97e2b"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W9-site-2/impl.r1.md",
+   "dir": "W9-site-2",
+   "mtime": "2026-10-04T11:34:52+09:00",
+   "sha256": "8569ca504818886c59f39d4d0284e20a0738a003fe67533002a532d36f5794d8"
+  },
+  {
+   "path": "/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W9-site-2/impl.r2.md",
+   "dir": "W9-site-2",
+   "mtime": "2026-10-04T11:47:18+09:00",
+   "sha256": "5c5155b4d4fa9a54267fdc6aaa4b99a9a96b4710dab787a6dd58917639d1b16f"
+  }
+ ]
+}
