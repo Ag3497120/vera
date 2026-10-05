@@ -1,0 +1,129 @@
+usage: vera [-h] [--store STORE]
+            {pour,remember,forget,ask,index,read-events,read,ledger,realize,observe,route,mcp-config,tool,documents,domain,doctor,stats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,push-store}
+            ...
+
+vera — CLI for Verantyx Vera α (lab + chat in one binary).
+
+Knowledge:
+  vera pour --source synthetic|wikitext|hf:<name>[#config][:field]|file:<path>
+  vera remember "The bright apple is sweet ."
+  vera ask "what is apple"
+  vera forget apple
+  vera stats
+  vera chat                    interactive REPL (knowledge + math + code)
+
+Math / logic:
+  vera math "x + 3 = 7"        wire arithmetic / typed equations
+  vera simplify "x + 0"        term rewriting (rules are data)
+
+Code reasoning:
+  vera code ingest <path>
+  vera code ask "who calls foo"
+
+Lab:
+  vera lab                     run the fork self-test suites
+  vera mcp                     start the MCP server (see docs/MCP.md)
+
+Conductor:
+  vera conduct --frame F --repo R --adapter codex|claude|fake [--dry-run]
+                               read a project frame and start (or plan) an agent
+                               (see docs/CONDUCT_ENTRY.md); a frame with an [agents]
+                               table is routed: omit --adapter (docs/AGENT_ROUTING.md)
+
+Default store: ./vera_store.json (override with --store).
+
+positional arguments:
+  {pour,remember,forget,ask,index,read-events,read,ledger,realize,observe,route,mcp-config,tool,documents,domain,doctor,stats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,push-store}
+    pour                stream a corpus into the store
+    remember            teach one sentence
+    forget              delete a core (really deletes)
+    ask                 one-shot question (typed verdict)
+    index               does this already exist? one search over doors,
+                        commands, modules, forks and every prereg/result —
+                        derived, never listed
+    read-events         read one sentence and return its event crosses
+                        (predicate = centre, roles = arms, words = fillers) as
+                        one line; same output as `python -m
+                        verantyx.semantic_read --text=... --events`
+    read                read one sentence (same output as `python -m
+                        verantyx.semantic_read`); with --holes a sentence the
+                        reader abstains on because of a filler's placement is
+                        returned with its typed holes (docs/FUSION.md section
+                        6)
+    ledger              W10-f04: the testimony ledger of LLM candidates
+                        (append-only, hash-chained): list | show <id> |
+                        confirm <id> (a human confirms)
+    realize             validate a cross-token line and realize one supported
+                        event cross as a sentence
+    observe             observe a structure from a viewpoint (anchor,
+                        direction, range, ledger state) and realize what is
+                        seen as one json line; every clause carries its
+                        coordinate (docs/OBSERVATION.md)
+    route               read a human's free-text explanation of the agents and
+                        route one job (reading -> event cross -> relations ->
+                        records -> router); one line out, 'undecided' (typed)
+                        whenever any sentence could not be read
+    mcp-config          print (or install) the MCP snippet pointing a client
+                        at this binary and this store
+    tool                call any of the MCP doors from the CLI (same doors,
+                        second entrance — nothing is rewritten per command)
+    documents           load documents into the store from the CLI — PDF,
+                        Word, HTML, CSV, JSON, text; a directory is walked
+    domain              register/inspect domain vocabularies
+    doctor              self-check both faces on THIS machine: the covenant
+                        guard (G1-G4) and the standalone device (S1-S4). Exit
+                        1 if broken
+    stats               store statistics
+    conduct             read a project frame (.md or .jsonl) and start an
+                        implementation agent; exit 0 ok/planned, 1 incomplete,
+                        2 typed refusal, 3 internal error
+    guard               covenant guard fast path: no federation load,
+                        covenants.json only — for Claude Code hooks (stdin:
+                        JSON payload)
+    heartbeat           Milestone M: scan growth signals, draft+verify
+                        candidate domain modules, queue for human review
+                        (never auto-activates)
+    propose-ai-facts    quarantine sentence candidates from an AI's FINAL text
+                        (never thinking/chain-of-thought)
+    review-ai-facts     review quarantined AI-proposed facts (arrow-key
+                        accept/reject)
+    chat                interactive REPL (lab | hybrid | round5)
+    math                wire arithmetic / typed equations
+    simplify            term rewriting (algebra rules)
+    code                code reasoning: ingest / ask
+    compile             read your documents into a checkable store (no
+                        training)
+    verify              check what an AI wrote against your compiled documents
+    hub                 speak across centre edges (core to core), no model
+    lab                 run fork self-test suites
+    mcp                 start MCP server (stdio)
+    field               the full local app for a municipal desk (127.0.0.1, no
+                        network)
+    lexicon             ask the configured static dictionary about a word
+    self-evolve         prove defects from the documents themselves, repair,
+                        and keep
+    placement           simulate which facts go on the faces, before shipping
+                        a store
+    sovereign           build one federated node from documents, stage by
+                        stage
+    self-audit          find structural signals of defects, with no person
+                        reading
+    audit               drop documents in a browser and read what the engine
+                        did
+    serve               Milestone N: HTTP+SSE daemon (Vera as harness, not an
+                        MCP tool) — POST /agent/run, GET /events?run_id=, GET
+                        /agent/run/<id>
+    setup               interactive settings (LLM, allocation)
+    wizard              guided data-placement (arrow keys)
+    agent               agent mode: tools + ReAct + approvals
+    obfuscate           reversible identifier obfuscation, mapping encrypted
+                        with a key derived from your store's personal state
+    deobfuscate         restore original names
+    watermark           leak attribution: register an owner's naming-variant,
+                        or identify candidate owners of an obfuscated file
+                        (evidence, not proof — see docs/WATERMARK.md)
+    push-store          upload the store to HuggingFace
+
+options:
+  -h, --help            show this help message and exit
+  --store STORE         store path (default: config, else vera_store.json)

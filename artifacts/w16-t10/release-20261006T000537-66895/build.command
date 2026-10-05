@@ -1,0 +1,1 @@
+/Users/motonisihikoudai/vera-wiring/env/bin/python -m pip wheel --no-index --no-deps --no-build-isolation --wheel-dir <WORKTREE>/artifacts/w16-t10/release-20261006T000537-66895/wheel <SMOKE_TMP>/source

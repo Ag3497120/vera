@@ -1,0 +1,1 @@
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE", "PLACEMENT_UNPLACED:part:結局"]}, "unsupported": [{"predicate": "買う", "span": [11, 13], "reasons": ["unrepresented source content"]}], "clause_meta": []}

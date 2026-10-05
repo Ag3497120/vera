@@ -1,0 +1,7 @@
+Processing /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t10-S/artifacts/w16-t10/baseline-20261005T234940-62094/wheel/verantyx_vera-0.1.0a1-py3-none-any.whl
+Installing collected packages: verantyx-vera
+  Attempting uninstall: verantyx-vera
+    Found existing installation: verantyx-vera 0.1.0a1
+    Not uninstalling verantyx-vera at /opt/homebrew/lib/python3.11/site-packages, outside environment /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t10-smoke.V2Isvn/venv
+    Can't uninstall 'verantyx-vera'. No files were found to uninstall.
+Successfully installed verantyx-vera-0.1.0a1

@@ -1,0 +1,13 @@
+{
+  "http_status": 200,
+  "body": {
+    "object": "list",
+    "data": [
+      {
+        "id": "vera-no-llm",
+        "object": "model",
+        "owned_by": "vera"
+      }
+    ]
+  }
+}

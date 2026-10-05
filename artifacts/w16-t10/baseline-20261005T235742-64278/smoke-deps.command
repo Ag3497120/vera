@@ -1,0 +1,1 @@
+/Users/motonisihikoudai/vera-wiring/env/bin/python /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t10-S/tools/release/link_smoke_deps.py /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t10-smoke.TWdcsX/venv/lib/python3.11/site-packages

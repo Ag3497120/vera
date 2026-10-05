@@ -1,0 +1,4 @@
+verantyx/cli.py
+verantyx/lang_data/ja_grammar.json
+verantyx/lang_data/roles_learned.json
+verantyx/lang_data/transitivity.json
