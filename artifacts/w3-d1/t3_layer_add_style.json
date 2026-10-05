@@ -1,0 +1,39 @@
+{
+ "schema": "verantyx.realize_forms/1",
+ "version": 1,
+ "lang": "ja",
+ "styles": {
+  "polite_casual": {
+   "verb": {
+    "affirmative": {
+     "nonpast": [
+      "i",
+      "ます"
+     ],
+     "past": [
+      "i",
+      "ました"
+     ]
+    },
+    "negative": {
+     "nonpast": [
+      "a",
+      "ないです"
+     ],
+     "past": [
+      "a",
+      "なかったです"
+     ]
+    }
+   },
+   "copula": {
+    "affirmative": "です",
+    "affirmative_adjective": "です",
+    "affirmative_aru": "です",
+    "negative": "ではありません"
+   },
+   "measure": "です",
+   "period": "。"
+  }
+ }
+}

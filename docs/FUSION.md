@@ -1873,3 +1873,12 @@ def test_the_document_hole_budget_counts_what_it_skips(tmp_path):
     assert cfg.fill_stats['holes_asked'] == 1 and cfg.fill_stats['skipped_holes'] == 3
 ```
 
+
+## J10（W3-d1 で閉じた）
+
+W10-f04 の J10（門 (b) の実現 → 再読が、実現器が型つきの十字を拒み、再読を配置なしで行い、主題を は で書くため、候補を埋めた文に課せなかった）を W3-d1 で閉じた。上の J10 の記述（歴史として残す）は書き換えていない。
+
+- 実現器は渡された配置で自分の文を読み直し（`semantic_realize._reread_check`、K312）、主題の助詞を表（`verantyx/data/realize_forms_ja.json` の `topic_particles`）の順に試して、**出す文そのもの** が再読一致と語の系譜の検査を通った最初の候補を出す（K315）。`cross_tokens.realize_tokens(..., placement=)` は配置を実現器に渡す。仕様は `docs/REALIZE.md`。
+- `fill_candidates._gate_b` の呼び出しは変えていない（docstring だけ更新）。既定 `require_realize=False` も変えていない。オンにするかは監査役の判断。
+- 実測（`artifacts/w3-d1/`）: `母が図書館へ歩いた。` ＋ `駅`/PLACE は `(None,'REALIZED')`（以前は `REFUSED`）。W10-f04 の台本と同じ型の表（`tests/test_w3d1_gate_b.py`）で、通る行 7・実現の段で落ちる行 6（`t4_pytest.txt`）。
+- 期待の変更が要るテスト 1 件（`tests/test_w10f04_fill.py::test_realize_is_recorded_and_can_be_required`、197・198 行）は編集していない。旧い期待・新しい期待・実測は `artifacts/w3-d1/j10_expectation_change.md`。

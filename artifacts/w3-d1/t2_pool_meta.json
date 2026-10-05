@@ -1,0 +1,7 @@
+{
+ "chosen": 100,
+ "distinct_texts": 4149,
+ "eligible": 319,
+ "excluded_ReadError_LANG_MISMATCH": 245,
+ "excluded_not_crossed": 3585
+}

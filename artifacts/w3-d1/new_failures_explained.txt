@@ -1,0 +1,16 @@
+new_failures.txt (the failures of `pytest tests` that the baseline dev_6bc410d_failures.txt does not have) has 2 lines:
+
+1. tests/test_w10f04_fill.py::test_realize_is_recorded_and_can_be_required
+   Planned change by closing J10 (waiting for the auditor's decision). Old and new expectations, and the measured output: artifacts/w3-d1/j10_expectation_change.md.
+   The test file is not edited, not skipped, not xfailed.
+
+2. tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+   Environmental, named in the ticket ("test_s6_... fails only while the tree is uncommitted"). Run alone it fails at
+   `meta["verantyx_untouched"] is True`, which tools/bank_score/cli.py:335 computes as `git status --porcelain -- verantyx` being empty.
+   This tree has uncommitted changes under verantyx/ (this ticket's own product change), so the check cannot be true before the auditor commits.
+   Everything before that assertion in the test passed (the HOME and the 4 / 3 counts).
+
+Gone from the failure list (it was in the baseline, not in this run): tests/test_one_trace.py::test_every_default_integration_part_has_a_trace (the ticket names test_one_trace as environment dependent).
+
+`pytest tests` was run (not a bare `pytest`): a bare run stops at 68 collection errors in the committed copies under artifacts/ (artifacts/w3-b5/tests_r1_copy/..., artifacts/w3-b6/*.frozen_r*.py),
+which are unrelated to this ticket; the output of that attempt is kept as pytest_full_collect_errors_from_artifacts_dir.txt.

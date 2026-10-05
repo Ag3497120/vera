@@ -1,0 +1,55 @@
+$ vera realize --help | head -5
+usage: vera realize [-h] [--lang {ja,en}] [--placement PLACEMENT]
+                    [--forms FORMS]
+                    [tokens]
+
+positional arguments:
+
+$ vera realize "<t2_pool 1 行目の tokens>" --placement r9
+{
+  "schema": "verantyx.cross_tokens/1",
+  "status": "REALIZED",
+  "text": "妹は庭で遊んだ。",
+  "cell_key": "cell:{\"arms\":[{\"kind\":\"FILLER\",\"role\":\"agent\",\"surfaces\":[\"妹\"]},{\"kind\":\"FILLER\",\"role\":\"place\",\"surfaces\":[\"庭\"]}],\"center\":{\"modality\":null,\"polarity\":\"+\",\"predicate\":\"遊ぶ\",\"tense\":\"past\",\"voice\":\"active\"}}",
+  "checks": {
+    "roundtrip": {
+      "passed": true,
+      "detail": "single-cross facts match with the same placement",
+      "diff": "",
+      "crosses": 1
+    },
+    "reread": {
+      "passed": true,
+      "detail": "single-cross facts match with the same placement",
+      "diff": "",
+      "crosses": 1
+    },
+    "term_lineage": {
+      "passed": true,
+      "detail": "all content lemmas belong to the predicate or a filler",
+      "extra_lemmas": [],
+      "unexpected_tokens": []
+    },
+    "topic_attempts": [
+      {
+        "topic": "は",
+        "passed": true,
+        "reason": null
+      }
+    ]
+  }
+}
+
+$ vera realize "<同じ tokens>"  (配置なし)
+{
+  "schema": "verantyx.cross_tokens/1",
+  "status": "REALIZED",
+  "text": "妹は庭で遊んだ。",
+  "checks": {
+    "roundtrip": {
+      "passed": true,
+      "detail": "single-cross content matches",
+      "crosses": 1
+    },
+    "term_lineage": {
+      "passed": true,

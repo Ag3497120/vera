@@ -782,6 +782,21 @@ def cmd_ledger(args) -> int:
         return 2
 
 
+def cmd_realize(args) -> int:
+    """十字トークン列を検証し、Vera の既存実現器で文に戻す。"""
+    from .cross_tokens import realize_tokens
+
+    tokens = sys.stdin.read() if args.tokens == "-" else args.tokens
+    if args.tokens == "-" and tokens.endswith("\n"):
+        tokens = tokens[:-1]
+        if tokens.endswith("\r"):
+            tokens = tokens[:-1]
+    # W3-d1: `--forms` lays a user's forms table (added styles / endings) over the base table; a refused table is a typed result and exit code 2.
+    result = realize_tokens(tokens, args.lang, placement=args.placement, forms=args.forms)
+    _print(result)
+    return 2 if result.get("reason") in ("FORMS_OVERRIDE_REFUSED", "FORMS_INVALID", "FORMS_NOT_FOUND") else 0
+
+
 def cmd_observe(args) -> int:
     """視点(錨・向き・範囲・状態)から構造を観測し、見えた十字を実現器で文にして json で 1 行返す(docs/OBSERVATION.md)。
 
@@ -2233,6 +2248,18 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--promote-n", type=int, default=3, dest="promote_n", help="reread_agreed rows needed to be promotable (default 3)")
     p.add_argument("--json", action="store_true", help="list as one json line")
     p.set_defaults(fn=cmd_ledger)
+
+    p = sub.add_parser(
+        "realize",
+        help="validate a cross-token line and realize one supported event cross as a sentence",
+    )
+    p.add_argument("tokens", nargs="?", default="-",
+                   help="one canonical line from `verantyx.cross_tokens` (default: stdin)")
+    p.add_argument("--lang", choices=["ja", "en"], default="ja")
+    p.add_argument("--placement", default=None, help="placement used for the required reread check")
+    p.add_argument("--forms", default=None,
+                   help="a user's forms table laid over the base table (VERA_REALIZE_FORMS is read too); it may only add styles/roles/order entries")
+    p.set_defaults(fn=cmd_realize)
 
     p = sub.add_parser(
         "observe",

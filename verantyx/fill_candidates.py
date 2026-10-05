@@ -321,9 +321,10 @@ def _content(out: Dict[str, Any]) -> Optional[Dict[str, Any]]:
 def _gate_b(text: str, hole_result: Dict[str, Any], hi: int, word: str, wtype: str, query: Any, placement_path: Optional[str], shared: Dict[str, Any],
             require_realize: bool = False) -> tuple:
     """(b) the sentence with the candidate in the hole, read again with the real placement, is the cross of the probe (the hole's arm written as the candidate, everything else as it was) and
-    the candidate's arm is one of the hole's roles; a single-hole cross is then realized and read back (`cross_tokens.realize_tokens`). (reason or None, realize status). J10: the realizer reads its
-    sentence back WITHOUT the placement (`semantic_realize._observed_roundtrip`) and writes the topic with は, so a typed cross (an agent and a goal) is refused whichever the candidate is; the step is
-    therefore recorded (`realize`) and required only with `require_realize=True` (the substituted sentence read with the real placement is the check that is always made)."""
+    the candidate's arm is one of the hole's roles; a single-hole cross is then realized and read back (`cross_tokens.realize_tokens`). (reason or None, realize status). J10 (closed by W3-d1): the realizer
+    used to read its sentence back WITHOUT the placement and to write the topic with は, so a typed cross (an agent and a goal) was refused whichever the candidate was; it now reads the sentence
+    with the placement passed here and tries the topic particles of its forms table in order (`semantic_realize`, K312/K315). The default is unchanged: the step is recorded (`realize`) and required
+    only with `require_realize=True` (the substituted sentence read with the real placement is the check that is always made)."""
     holes = hole_result["holes"]
     hole = holes[hi]
     others = [h for j, h in enumerate(holes) if j != hi]

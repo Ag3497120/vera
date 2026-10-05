@@ -1,0 +1,56 @@
+{
+ "plain_independent_reread_mismatch_among_realized": 0,
+ "plain_independent_reread_unreadable_among_realized": 0,
+ "plain_realized": 46,
+ "plain_refusal_reasons": {
+  "ROLE_NOT_REALIZABLE/role result is outside": 10,
+  "ROLE_NOT_REALIZABLE/role time is outside": 23,
+  "ROLE_NOT_REALIZABLE/the cross has no": 4,
+  "ROUNDTRIP_MISMATCH/REREAD_MISMATCH:roles": 2,
+  "UNSUPPORTED_MODALITY/only active voice is": 4,
+  "UNSUPPORTED_RULE/only crosses of the": 11
+ },
+ "plain_refused": 54,
+ "plain_topic_of_realized": {
+  "が": 13,
+  "は": 33
+ },
+ "plain_vs_tokens_text": {
+  "both_realized_same_text": 46,
+  "not_both": 54
+ },
+ "polite_reference": {
+  "independent_reread_mismatch_among_realized": 0,
+  "realized": 36,
+  "refusal_reasons": {
+   "ROLE_NOT_REALIZABLE/role result is outside": 10,
+   "ROLE_NOT_REALIZABLE/role time is outside": 23,
+   "ROLE_NOT_REALIZABLE/the cross has no": 4,
+   "ROUNDTRIP_MISMATCH/REREAD_MISMATCH:NOT_CROSSED": 10,
+   "ROUNDTRIP_MISMATCH/REREAD_MISMATCH:roles": 2,
+   "UNSUPPORTED_MODALITY/only active voice is": 4,
+   "UNSUPPORTED_RULE/only crosses of the": 11
+  },
+  "refused": 64,
+  "topic_of_realized": {
+   "が": 3,
+   "は": 33
+  },
+  "unreadable_among_realized": 0
+ },
+ "rows": 100,
+ "tokens_independent_reread_mismatch_among_realized": 0,
+ "tokens_independent_reread_unreadable_among_realized": 0,
+ "tokens_refusal_reasons": {
+  "ROLE_NOT_REALIZABLE/role result is outside": 10,
+  "ROLE_NOT_REALIZABLE/role time is outside": 23,
+  "ROLE_NOT_REALIZABLE/the cross has no": 4,
+  "ROUNDTRIP_MISMATCH/REREAD_MISMATCH:roles": 2,
+  "UNSUPPORTED_MODALITY/only active voice is": 4,
+  "UNSUPPORTED_RULE/only crosses of the": 11
+ },
+ "tokens_status": {
+  "REALIZED": 46,
+  "REFUSED": 54
+ }
+}
