@@ -1,0 +1,49 @@
+w3c7_multi.jsonl rows=26 out_read=4 out_abstain=22 v_correct=17 v_abstain=9 v_misread=0 v_incomplete=0 v_UNJUDGED=0 entry_mismatch=9 expect_mismatch=9 structure_mismatch=9
+w3c7_te.jsonl rows=26 out_read=10 out_abstain=16 v_correct=23 v_abstain=3 v_misread=0 v_incomplete=0 v_UNJUDGED=0 entry_mismatch=3 expect_mismatch=5 structure_mismatch=3
+w3c7_quote.jsonl rows=26 out_read=6 out_abstain=20 v_correct=19 v_abstain=7 v_misread=0 v_incomplete=0 v_UNJUDGED=0 entry_mismatch=7 expect_mismatch=7 structure_mismatch=7
+w3c7_sharing.jsonl rows=26 out_read=4 out_abstain=22 v_correct=17 v_abstain=9 v_misread=0 v_incomplete=0 v_UNJUDGED=0 entry_mismatch=9 expect_mismatch=16 structure_mismatch=9
+w3c7_anaphora.jsonl rows=26 out_read=9 out_abstain=17 v_correct=22 v_abstain=4 v_misread=0 v_incomplete=0 v_UNJUDGED=0 entry_mismatch=4 expect_mismatch=4 structure_mismatch=4
+TOTAL rows=130 out_read=33 out_abstain=97 v_correct=98 v_abstain=32 v_misread=0 v_incomplete=0 v_UNJUDGED=0 entry_mismatch=32 expect_mismatch=41 structure_mismatch=32
+misread=0 incomplete=0 unjudged=0
+MISMATCH W3C7-MULTI-002 妹が戸を閉めると、弟が寝るが、兄が飯を食べる。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行 flags=ees
+MISMATCH W3C7-MULTI-004 生徒が窓を開けるなら、妹が来るから、先生が残った。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行 flags=ees
+MISMATCH W3C7-MULTI-006 生徒が本を買うが、先生が寝るが、母が来る。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行 flags=ees
+MISMATCH W3C7-MULTI-007 妹が歌を歌ったので、姉が落ちるから、生徒が戸を閉めた。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行 flags=ees
+MISMATCH W3C7-MULTI-008 先生が飯を食べるから、生徒が絵を描くから、弟が帰る。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行 flags=ees
+MISMATCH W3C7-MULTI-009 弟が薬を飲んだけれど、兄が来るので、妹が絵を描いたけれど、姉が飯を食べる。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行 flags=ees
+MISMATCH W3C7-MULTI-011 妹が絵を描くと、姉が来るので、先生が寝ると、弟が戸を閉める。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行 flags=ees
+MISMATCH W3C7-MULTI-012 姉が薬を飲むが、弟が本を買うけれど、母が絵を描くので、先生が寝る。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行 flags=ees
+MISMATCH W3C7-MULTI-013 母が弟に話した人を兄が呼んだので、姉が窓を開けた。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行 flags=ees
+MISMATCH W3C7-TE-001 先生が飯を食べて、姉が落ちる。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=T reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行 flags=ees
+MISMATCH W3C7-TE-008 妹が戸を閉め、先生が座った。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=T reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行 flags=ees
+MISMATCH W3C7-TE-011 先生が戸を閉め、妹が起きた。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=T reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行 flags=ees
+MISMATCH W3C7-TE-016 母は窓を開け、戸を閉めた。 verdict=correct readable=False entry_expect=abstain w3c7_expect=SUBJECT_SHARING_NOT_READ path=T reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行 flags=e
+MISMATCH W3C7-TE-024 先生が食べて、生徒が窓を開けた。 verdict=correct readable=False entry_expect=abstain w3c7_expect=ROLE_SHARING_NOT_READ path=T reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行 flags=e
+MISMATCH W3C7-QUOTE-003 先生が弟が絵を描いたと伝えた。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=Q reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行 flags=ees
+MISMATCH W3C7-QUOTE-004 弟が先生が窓を開けたと叫んだ。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=Q reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行 flags=ees
+MISMATCH W3C7-QUOTE-005 弟が兄が窓を開けたと話した。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=Q reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行 flags=ees
+MISMATCH W3C7-QUOTE-006 母が先生が落ちたと考えた。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=Q reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行 flags=ees
+MISMATCH W3C7-QUOTE-011 母は兄が帰ったと答えた。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=Q reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行 flags=ees
+MISMATCH W3C7-QUOTE-012 先生は生徒が本を読んだと答えた。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=Q reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行 flags=ees
+MISMATCH W3C7-QUOTE-013 姉は妹が歌を歌ったと答えた。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=Q reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行 flags=ees
+MISMATCH W3C7-SHARE-001 先生が寝たが、弟が残ったので、妹が窓を開けた。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行 flags=ees
+MISMATCH W3C7-SHARE-002 弟が窓を開けるが、生徒が寝るが、妹が立つ。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行 flags=ees
+MISMATCH W3C7-SHARE-003 生徒が本を読むから、妹が寝るので、先生が来る。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行 flags=ees
+MISMATCH W3C7-SHARE-004 生徒が立つが、妹が飯を食べるけれど、弟が本を読んだ。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行 flags=ees
+MISMATCH W3C7-SHARE-005 母が来るから、姉が歌を歌うので、妹が窓を開けた。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行 flags=ees
+MISMATCH W3C7-SHARE-006 生徒が帰ったから、母が戸を閉めたので、兄が残る。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行 flags=ees
+MISMATCH W3C7-SHARE-007 弟が窓を開けて、兄が座った。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=T reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行 flags=ees
+MISMATCH W3C7-SHARE-010 兄が来て、先生が戸を閉めた。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=T reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行 flags=ees
+MISMATCH W3C7-SHARE-011 弟が座って、先生が窓を開けた。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=T reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行 flags=ees
+MISMATCH W3C7-SHARE-014 兄は本を読んだので、歌を歌ったが、弟が窓を開けた。 verdict=correct readable=False entry_expect=abstain w3c7_expect=SUBJECT_SHARING_NOT_READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行 flags=e
+MISMATCH W3C7-SHARE-015 母は薬を飲んだから、戸を閉めたけれど、姉が飯を食べた。 verdict=correct readable=False entry_expect=abstain w3c7_expect=SUBJECT_SHARING_NOT_READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行 flags=e
+MISMATCH W3C7-SHARE-016 先生は絵を描いたが、本を買ったので、生徒が窓を開けた。 verdict=correct readable=False entry_expect=abstain w3c7_expect=SUBJECT_SHARING_NOT_READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行 flags=e
+MISMATCH W3C7-SHARE-017 姉は飯を食べて、薬を飲んだ。 verdict=correct readable=False entry_expect=abstain w3c7_expect=SUBJECT_SHARING_NOT_READ path=T reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行 flags=e
+MISMATCH W3C7-SHARE-018 妹は戸を閉めて、窓を開けた。 verdict=correct readable=False entry_expect=abstain w3c7_expect=SUBJECT_SHARING_NOT_READ path=T reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行 flags=e
+MISMATCH W3C7-SHARE-019 歌を歌って、母が飯を食べた。 verdict=correct readable=False entry_expect=abstain w3c7_expect=SUBJECT_SHARING_NOT_READ path=T reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行 flags=e
+MISMATCH W3C7-SHARE-025 生徒が窓を開けたので、妹が帰ったが、母が喜んだ。 verdict=correct readable=False entry_expect=abstain w3c7_expect=ROLE_SHARING_NOT_READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行 flags=e
+MISMATCH W3C7-ANA-003 姉が本を読んだから、妹が寝たけれど、先生が立った。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行 flags=ees
+MISMATCH W3C7-ANA-009 妹が立ったから、弟が飯を食べたので、兄が寝た。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行 flags=ees
+MISMATCH W3C7-ANA-015 先生が帰って、生徒が飯を食べた。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=T reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行 flags=ees
+MISMATCH W3C7-ANA-025 先生が窓を開けたから、生徒が帰ったが、母が立った。 verdict=abstain readable=False entry_expect=read w3c7_expect=READ path=M reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行 flags=ees
+words_missing_from_the_fixture=[]

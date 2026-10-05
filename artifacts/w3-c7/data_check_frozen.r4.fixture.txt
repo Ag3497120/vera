@@ -1,0 +1,8 @@
+w3c7_multi.jsonl rows=26 out_read=4 out_abstain=22 v_correct=26 v_abstain=0 v_misread=0 v_incomplete=0 v_UNJUDGED=0 entry_mismatch=0 expect_mismatch=0 structure_mismatch=0
+w3c7_te.jsonl rows=26 out_read=10 out_abstain=16 v_correct=26 v_abstain=0 v_misread=0 v_incomplete=0 v_UNJUDGED=0 entry_mismatch=0 expect_mismatch=0 structure_mismatch=0
+w3c7_quote.jsonl rows=26 out_read=6 out_abstain=20 v_correct=26 v_abstain=0 v_misread=0 v_incomplete=0 v_UNJUDGED=0 entry_mismatch=0 expect_mismatch=0 structure_mismatch=0
+w3c7_sharing.jsonl rows=26 out_read=4 out_abstain=22 v_correct=26 v_abstain=0 v_misread=0 v_incomplete=0 v_UNJUDGED=0 entry_mismatch=0 expect_mismatch=0 structure_mismatch=0
+w3c7_anaphora.jsonl rows=26 out_read=9 out_abstain=17 v_correct=26 v_abstain=0 v_misread=0 v_incomplete=0 v_UNJUDGED=0 entry_mismatch=0 expect_mismatch=0 structure_mismatch=0
+TOTAL rows=130 out_read=33 out_abstain=97 v_correct=130 v_abstain=0 v_misread=0 v_incomplete=0 v_UNJUDGED=0 entry_mismatch=0 expect_mismatch=0 structure_mismatch=0
+misread=0 incomplete=0 unjudged=0
+words_missing_from_the_fixture=[]

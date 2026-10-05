@@ -1,0 +1,9976 @@
+{
+ "summary": {
+  "rows": 203,
+  "verdicts": {
+   "abstain": 18,
+   "correct": 185
+  },
+  "verdicts_by_data": {
+   "relative": {
+    "abstain": 17,
+    "correct": 43
+   },
+   "connective": {
+    "abstain": 1,
+    "correct": 59
+   },
+   "parallel": {
+    "correct": 30
+   },
+   "w1a4": {
+    "correct": 53
+   }
+  },
+  "misread": 0,
+  "incomplete": 0,
+  "unjudged": 0,
+  "entry_expect_mismatch": 15,
+  "w3b3_expect_mismatch": 7,
+  "structure_expect_mismatch": 0,
+  "bad_verdicts": {},
+  "path_stopped_by_reason": {
+   "CLAUSE_FORM_NOT_READ": 34,
+   "CLAUSE_SCOPE_AMBIGUOUS": 38,
+   "CLAUSE_SCOPE_NOT_LISTED": 6,
+   "CLAUSE_UNREAD": 9,
+   "ELLIPSIS_UNDETERMINED": 8,
+   "HEAD_ROLE_UNDETERMINED": 22,
+   "RELATION_TYPE_UNDETERMINED": 27,
+   "W3B3_NOT_TRIGGERED": 17
+  }
+ },
+ "words_missing_from_the_fixture": [],
+ "entry_expect_mismatch": [
+  {
+   "id": "W3B3-PAR-001",
+   "input": "兄が本を読んで、弟が歌を歌った。",
+   "entry_expect": "abstain",
+   "readable": true,
+   "verdict": "correct",
+   "reasons": null,
+   "explain_reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED"
+  },
+  {
+   "id": "W3B3-PAR-002",
+   "input": "母が絵を描いて、姉が手紙を書いた。",
+   "entry_expect": "abstain",
+   "readable": true,
+   "verdict": "correct",
+   "reasons": null,
+   "explain_reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED"
+  },
+  {
+   "id": "W3B3-PAR-003",
+   "input": "先生が本を読んで、生徒が薬を飲んだ。",
+   "entry_expect": "abstain",
+   "readable": true,
+   "verdict": "correct",
+   "reasons": null,
+   "explain_reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED"
+  },
+  {
+   "id": "W3B3-PAR-004",
+   "input": "兄が来て弟が帰った。",
+   "entry_expect": "abstain",
+   "readable": true,
+   "verdict": "correct",
+   "reasons": null,
+   "explain_reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED"
+  },
+  {
+   "id": "W3B3-PAR-005",
+   "input": "姉が着いて母が座った。",
+   "entry_expect": "abstain",
+   "readable": true,
+   "verdict": "correct",
+   "reasons": null,
+   "explain_reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED"
+  },
+  {
+   "id": "W3B3-PAR-006",
+   "input": "父が起きて、祖父が立った。",
+   "entry_expect": "abstain",
+   "readable": true,
+   "verdict": "correct",
+   "reasons": null,
+   "explain_reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED"
+  },
+  {
+   "id": "W3B3-PAR-007",
+   "input": "弟が転んで、兄が来た。",
+   "entry_expect": "abstain",
+   "readable": true,
+   "verdict": "correct",
+   "reasons": null,
+   "explain_reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED"
+  },
+  {
+   "id": "W3B3-PAR-008",
+   "input": "母が戻って、姉が着いた。",
+   "entry_expect": "abstain",
+   "readable": true,
+   "verdict": "correct",
+   "reasons": null,
+   "explain_reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED"
+  },
+  {
+   "id": "W3B3-PAR-016",
+   "input": "兄が本を読み、弟が歌を歌った。",
+   "entry_expect": "abstain",
+   "readable": true,
+   "verdict": "correct",
+   "reasons": null,
+   "explain_reason": "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED"
+  },
+  {
+   "id": "W3B3-PAR-017",
+   "input": "母が絵を描き、姉が手紙を書いた。",
+   "entry_expect": "abstain",
+   "readable": true,
+   "verdict": "correct",
+   "reasons": null,
+   "explain_reason": "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED"
+  },
+  {
+   "id": "W3B3-PAR-018",
+   "input": "先生が本を読み、生徒が薬を飲んだ。",
+   "entry_expect": "abstain",
+   "readable": true,
+   "verdict": "correct",
+   "reasons": null,
+   "explain_reason": "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED"
+  },
+  {
+   "id": "W3B3-PAR-019",
+   "input": "兄が着き、弟が帰った。",
+   "entry_expect": "abstain",
+   "readable": true,
+   "verdict": "correct",
+   "reasons": null,
+   "explain_reason": "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED"
+  },
+  {
+   "id": "W3B3-PAR-020",
+   "input": "姉が戻り、母が座った。",
+   "entry_expect": "abstain",
+   "readable": true,
+   "verdict": "correct",
+   "reasons": null,
+   "explain_reason": "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED"
+  },
+  {
+   "id": "W3B3-PAR-021",
+   "input": "父が起き、祖父が立った。",
+   "entry_expect": "abstain",
+   "readable": true,
+   "verdict": "correct",
+   "reasons": null,
+   "explain_reason": "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED"
+  },
+  {
+   "id": "W3B3-PAR-022",
+   "input": "弟が転び、兄が来た。",
+   "entry_expect": "abstain",
+   "readable": true,
+   "verdict": "correct",
+   "reasons": null,
+   "explain_reason": "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED"
+  }
+ ],
+ "w3b3_expect_mismatch": [
+  {
+   "id": "W3B3-REL-018",
+   "input": "兄が歌った歌を姉が聞いた。",
+   "w3b3_expect": "HEAD_ROLE_UNDETERMINED:frame_not_read",
+   "got": "CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く",
+   "read": false
+  },
+  {
+   "id": "W3B3-REL-028",
+   "input": "母が弟に話した知らせを兄が聞いた。",
+   "w3b3_expect": "HEAD_ROLE_UNDETERMINED:type",
+   "got": "CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く",
+   "read": false
+  },
+  {
+   "id": "W3B3-REL-039",
+   "input": "母が弟に話した問題を兄が聞いた。",
+   "w3b3_expect": "HEAD_ROLE_UNDETERMINED:outer_relation_type",
+   "got": "CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く",
+   "read": false
+  },
+  {
+   "id": "W3B3-REL-043",
+   "input": "母が弟に話した理由を兄が聞いた。",
+   "w3b3_expect": "HEAD_ROLE_UNDETERMINED:outer_relation_type",
+   "got": "CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く",
+   "read": false
+  },
+  {
+   "id": "W3B3-REL-053",
+   "input": "母が弟に話した兄の友達を先生が呼んだ。",
+   "w3b3_expect": "HEAD_ROLE_UNDETERMINED:head_not_simple",
+   "got": "CLAUSE_UNREAD:1:UNSUPPORTED_CLAUSE",
+   "read": false
+  },
+  {
+   "id": "W3B3-REL-054",
+   "input": "母が弟に話した三人の客を兄が呼んだ。",
+   "w3b3_expect": "HEAD_ROLE_UNDETERMINED:head_not_simple",
+   "got": "CLAUSE_UNREAD:1:UNSUPPORTED_CLAUSE",
+   "read": false
+  },
+  {
+   "id": "W3B3-PAR-027",
+   "input": "兄が静かに本を読み、弟が歌を歌った。",
+   "w3b3_expect": "CLAUSE_UNREAD",
+   "got": "W3B3_NOT_TRIGGERED:groups=3",
+   "read": false
+  }
+ ],
+ "structure_expect_mismatch": [],
+ "rows": [
+  {
+   "id": "W3B3-REL-001",
+   "data": "relative",
+   "input": "母が弟に話した人を兄が呼んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "母が弟に話した。",
+     "人を兄が呼んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が弟に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "母",
+        "patient": "人",
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active",
+       "predicate_basis": "placement_direct:P_COMMUNICATE",
+       "role_basis": {
+        "patient": "placement_direct:PERSON"
+       }
+      },
+      "reason": null
+     },
+     {
+      "text": "人を兄が呼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "呼ぶ",
+       "roles": {
+        "agent": "兄",
+        "patient": "人"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "patient",
+     "basis": "placement_direct:PERSON",
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": [
+      "PERSON"
+     ]
+    },
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-REL-002",
+   "data": "relative",
+   "input": "姉が妹に頼んだ友達を先生が呼んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "姉が妹に頼んだ。",
+     "友達を先生が呼んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が妹に頼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "頼む",
+       "roles": {
+        "agent": "姉",
+        "patient": "友達",
+        "recipient": "妹"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active",
+       "predicate_basis": "placement_direct:P_COMMUNICATE",
+       "role_basis": {
+        "patient": "placement_direct:PERSON"
+       }
+      },
+      "reason": null
+     },
+     {
+      "text": "友達を先生が呼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "呼ぶ",
+       "roles": {
+        "agent": "先生",
+        "patient": "友達"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "patient",
+     "basis": "placement_direct:PERSON",
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": [
+      "PERSON"
+     ]
+    },
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-REL-003",
+   "data": "relative",
+   "input": "兄が先生に言った生徒を母が待った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      7,
+      8
+     ]
+    },
+    "clause_texts": [
+     "兄が先生に言った。",
+     "生徒を母が待った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が先生に言った。",
+      "readable": true,
+      "clause": {
+       "predicate": "言う",
+       "roles": {
+        "agent": "兄",
+        "patient": "生徒",
+        "recipient": "先生"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active",
+       "predicate_basis": "placement_direct:P_COMMUNICATE",
+       "role_basis": {
+        "patient": "placement_direct:PERSON"
+       }
+      },
+      "reason": null
+     },
+     {
+      "text": "生徒を母が待った。",
+      "readable": true,
+      "clause": {
+       "predicate": "待つ",
+       "roles": {
+        "agent": "母",
+        "patient": "生徒"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "patient",
+     "basis": "placement_direct:PERSON",
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": [
+      "PERSON"
+     ]
+    },
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-REL-004",
+   "data": "relative",
+   "input": "父が祖母に話した犬を兄が見た。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      7,
+      8
+     ]
+    },
+    "clause_texts": [
+     "父が祖母に話した。",
+     "犬を兄が見た。"
+    ],
+    "clause_reads": [
+     {
+      "text": "父が祖母に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "父",
+        "patient": "犬",
+        "recipient": "祖母"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active",
+       "predicate_basis": "placement_direct:P_COMMUNICATE",
+       "role_basis": {
+        "patient": "placement_direct:ANIMAL"
+       }
+      },
+      "reason": null
+     },
+     {
+      "text": "犬を兄が見た。",
+      "readable": true,
+      "clause": {
+       "predicate": "見る",
+       "roles": {
+        "agent": "兄",
+        "patient": "犬"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "patient",
+     "basis": "placement_direct:ANIMAL",
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": [
+      "ANIMAL"
+     ]
+    },
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-REL-005",
+   "data": "relative",
+   "input": "母が姉に話した本を弟が読んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "母が姉に話した。",
+     "本を弟が読んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が姉に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "母",
+        "patient": "本",
+        "recipient": "姉"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active",
+       "predicate_basis": "placement_direct:P_COMMUNICATE",
+       "role_basis": {
+        "patient": "placement_direct:INFO_LANGUAGE"
+       }
+      },
+      "reason": null
+     },
+     {
+      "text": "本を弟が読んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "読む",
+       "roles": {
+        "agent": "弟",
+        "patient": "本"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "patient",
+     "basis": "placement_direct:INFO_LANGUAGE",
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": [
+      "INFO_LANGUAGE"
+     ]
+    },
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-REL-006",
+   "data": "relative",
+   "input": "兄が弟に頼んだ花を母が買った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "兄が弟に頼んだ。",
+     "花を母が買った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が弟に頼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "頼む",
+       "roles": {
+        "agent": "兄",
+        "patient": "花",
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active",
+       "predicate_basis": "placement_direct:P_COMMUNICATE",
+       "role_basis": {
+        "patient": "placement_direct:PLANT"
+       }
+      },
+      "reason": null
+     },
+     {
+      "text": "花を母が買った。",
+      "readable": true,
+      "clause": {
+       "predicate": "買う",
+       "roles": {
+        "agent": "母",
+        "patient": "花"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "patient",
+     "basis": "placement_direct:PLANT",
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": [
+      "PLANT"
+     ]
+    },
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-REL-007",
+   "data": "relative",
+   "input": "姉が母に頼んだ薬を弟が飲んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "姉が母に頼んだ。",
+     "薬を弟が飲んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が母に頼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "頼む",
+       "roles": {
+        "agent": "姉",
+        "patient": "薬",
+        "recipient": "母"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active",
+       "predicate_basis": "placement_direct:P_COMMUNICATE",
+       "role_basis": {
+        "patient": "placement_direct:SUBSTANCE_FOOD"
+       }
+      },
+      "reason": null
+     },
+     {
+      "text": "薬を弟が飲んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "飲む",
+       "roles": {
+        "agent": "弟",
+        "patient": "薬"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "patient",
+     "basis": "placement_direct:SUBSTANCE_FOOD",
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": [
+      "SUBSTANCE_FOOD"
+     ]
+    },
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-REL-008",
+   "data": "relative",
+   "input": "祖父が兄に話した絵を姉が描いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      7,
+      8
+     ]
+    },
+    "clause_texts": [
+     "祖父が兄に話した。",
+     "絵を姉が描いた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "祖父が兄に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "祖父",
+        "patient": "絵",
+        "recipient": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active",
+       "predicate_basis": "placement_direct:P_COMMUNICATE",
+       "role_basis": {
+        "patient": "placement_direct:WORK"
+       }
+      },
+      "reason": null
+     },
+     {
+      "text": "絵を姉が描いた。",
+      "readable": true,
+      "clause": {
+       "predicate": "描く",
+       "roles": {
+        "agent": "姉",
+        "patient": "絵"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "patient",
+     "basis": "placement_direct:WORK",
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": [
+      "WORK"
+     ]
+    },
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-REL-009",
+   "data": "relative",
+   "input": "先生が生徒に言った歌を弟が歌った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      8,
+      9
+     ]
+    },
+    "clause_texts": [
+     "先生が生徒に言った。",
+     "歌を弟が歌った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "先生が生徒に言った。",
+      "readable": true,
+      "clause": {
+       "predicate": "言う",
+       "roles": {
+        "agent": "先生",
+        "patient": "歌",
+        "recipient": "生徒"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active",
+       "predicate_basis": "placement_direct:P_COMMUNICATE",
+       "role_basis": {
+        "patient": "placement_direct:WORK"
+       }
+      },
+      "reason": null
+     },
+     {
+      "text": "歌を弟が歌った。",
+      "readable": true,
+      "clause": {
+       "predicate": "歌う",
+       "roles": {
+        "agent": "弟",
+        "patient": "歌"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "patient",
+     "basis": "placement_direct:WORK",
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": [
+      "WORK"
+     ]
+    },
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-REL-010",
+   "data": "relative",
+   "input": "母が弟に話した客を兄が呼んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "母が弟に話した。",
+     "客を兄が呼んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が弟に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "母",
+        "patient": "客",
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active",
+       "predicate_basis": "placement_direct:P_COMMUNICATE",
+       "role_basis": {
+        "patient": "placement_all_candidates:NATURAL_PHENOMENON+PERSON"
+       }
+      },
+      "reason": null
+     },
+     {
+      "text": "客を兄が呼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "呼ぶ",
+       "roles": {
+        "agent": "兄",
+        "patient": "客"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "patient",
+     "basis": "placement_all_candidates:NATURAL_PHENOMENON+PERSON",
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": [
+      "NATURAL_PHENOMENON",
+      "PERSON"
+     ]
+    },
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-REL-011",
+   "data": "relative",
+   "input": "歌を弟に頼んだ人を兄が呼んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "歌を弟に頼んだ。",
+     "人を兄が呼んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "歌を弟に頼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "頼む",
+       "roles": {
+        "agent": "人",
+        "patient": "歌",
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active",
+       "predicate_basis": "placement_direct:P_COMMUNICATE",
+       "role_basis": {
+        "agent": "placement_direct:PERSON"
+       }
+      },
+      "reason": null
+     },
+     {
+      "text": "人を兄が呼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "呼ぶ",
+       "roles": {
+        "agent": "兄",
+        "patient": "人"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "agent",
+     "basis": "placement_direct:PERSON",
+     "empty_arms": [
+      "agent"
+     ],
+     "candidates": [
+      "PERSON"
+     ]
+    },
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-REL-012",
+   "data": "relative",
+   "input": "本を妹に話した先生を母が待った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "本を妹に話した。",
+     "先生を母が待った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "本を妹に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "先生",
+        "patient": "本",
+        "recipient": "妹"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active",
+       "predicate_basis": "placement_direct:P_COMMUNICATE",
+       "role_basis": {
+        "agent": "placement_direct:PERSON"
+       }
+      },
+      "reason": null
+     },
+     {
+      "text": "先生を母が待った。",
+      "readable": true,
+      "clause": {
+       "predicate": "待つ",
+       "roles": {
+        "agent": "母",
+        "patient": "先生"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "agent",
+     "basis": "placement_direct:PERSON",
+     "empty_arms": [
+      "agent"
+     ],
+     "candidates": [
+      "PERSON"
+     ]
+    },
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-REL-013",
+   "data": "relative",
+   "input": "絵を先生に言った生徒を弟が呼んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      7,
+      8
+     ]
+    },
+    "clause_texts": [
+     "絵を先生に言った。",
+     "生徒を弟が呼んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "絵を先生に言った。",
+      "readable": true,
+      "clause": {
+       "predicate": "言う",
+       "roles": {
+        "agent": "生徒",
+        "patient": "絵",
+        "recipient": "先生"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active",
+       "predicate_basis": "placement_direct:P_COMMUNICATE",
+       "role_basis": {
+        "agent": "placement_direct:PERSON"
+       }
+      },
+      "reason": null
+     },
+     {
+      "text": "生徒を弟が呼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "呼ぶ",
+       "roles": {
+        "agent": "弟",
+        "patient": "生徒"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "agent",
+     "basis": "placement_direct:PERSON",
+     "empty_arms": [
+      "agent"
+     ],
+     "candidates": [
+      "PERSON"
+     ]
+    },
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-REL-014",
+   "data": "relative",
+   "input": "兄が書いた手紙を母が読んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄が書いた。",
+     "手紙を母が読んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が書いた。",
+      "readable": true,
+      "clause": {
+       "predicate": "書く",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "手紙を母が読んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "読む",
+       "roles": {
+        "agent": "母",
+        "patient": "手紙"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:frame_not_read:P_CREATE",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-015",
+   "data": "relative",
+   "input": "母が作った料理を姉が持った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "母が作った。",
+     "料理を姉が持った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が作った。",
+      "readable": true,
+      "clause": {
+       "predicate": "作る",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "料理を姉が持った。",
+      "readable": true,
+      "clause": {
+       "predicate": "持つ",
+       "roles": {
+        "agent": "姉",
+        "patient": "料理"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:frame_not_read:P_CREATE",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-016",
+   "data": "relative",
+   "input": "姉が描いた絵を弟が見た。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "姉が描いた。",
+     "絵を弟が見た。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が描いた。",
+      "readable": true,
+      "clause": {
+       "predicate": "描く",
+       "roles": {
+        "agent": "姉"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "絵を弟が見た。",
+      "readable": true,
+      "clause": {
+       "predicate": "見る",
+       "roles": {
+        "agent": "弟",
+        "patient": "絵"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:frame_not_read:P_CREATE",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-017",
+   "data": "relative",
+   "input": "母が買った花を姉が見た。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "母が買った。",
+     "花を姉が見た。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が買った。",
+      "readable": true,
+      "clause": {
+       "predicate": "買う",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "花を姉が見た。",
+      "readable": true,
+      "clause": {
+       "predicate": "見る",
+       "roles": {
+        "agent": "姉",
+        "patient": "花"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:frame_not_read:P_GIVE",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-018",
+   "data": "relative",
+   "input": "兄が歌った歌を姉が聞いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄が歌った。",
+     "歌を姉が聞いた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が歌った。",
+      "readable": true,
+      "clause": {
+       "predicate": "歌う",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "歌を姉が聞いた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-019",
+   "data": "relative",
+   "input": "先生が読んだ本を弟が持った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      5,
+      6
+     ]
+    },
+    "clause_texts": [
+     "先生が読んだ。",
+     "本を弟が持った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "先生が読んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "読む",
+       "roles": {
+        "agent": "先生"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "本を弟が持った。",
+      "readable": true,
+      "clause": {
+       "predicate": "持つ",
+       "roles": {
+        "agent": "弟",
+        "patient": "本"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:frame_not_read:PLACEMENT_ESTIMATED_GENERATED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-020",
+   "data": "relative",
+   "input": "弟が飲んだ薬を母が買った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "弟が飲んだ。",
+     "薬を母が買った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "弟が飲んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "飲む",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "薬を母が買った。",
+      "readable": true,
+      "clause": {
+       "predicate": "買う",
+       "roles": {
+        "agent": "母",
+        "patient": "薬"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:frame_not_read:P_CONSUME",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-021",
+   "data": "relative",
+   "input": "先生が生徒に教えた歌を弟が歌った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      8,
+      9
+     ]
+    },
+    "clause_texts": [
+     "先生が生徒に教えた。",
+     "歌を弟が歌った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "先生が生徒に教えた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-022",
+   "data": "relative",
+   "input": "母が弟に伝えた人を兄が呼んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "母が弟に伝えた。",
+     "人を兄が呼んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が弟に伝えた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-023",
+   "data": "relative",
+   "input": "兄が褒めた生徒を母が待った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄が褒めた。",
+     "生徒を母が待った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が褒めた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-024",
+   "data": "relative",
+   "input": "母が開けた窓を弟が見た。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "母が開けた。",
+     "窓を弟が見た。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が開けた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-025",
+   "data": "relative",
+   "input": "母が弟に話した部屋を兄が見た。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "母が弟に話した。",
+     "部屋を兄が見た。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が弟に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "母",
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "部屋を兄が見た。",
+      "readable": true,
+      "clause": {
+       "predicate": "見る",
+       "roles": {
+        "agent": "兄",
+        "patient": "部屋"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": null,
+     "basis": null,
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": []
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:type:mismatch:PLACE",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-026",
+   "data": "relative",
+   "input": "父が兄に話した医者を母が呼んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "父が兄に話した。",
+     "医者を母が呼んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "父が兄に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "父",
+        "recipient": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "医者を母が呼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "呼ぶ",
+       "roles": {
+        "agent": "母",
+        "patient": "医者"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": null,
+     "basis": null,
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": []
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:type:PLACEMENT_MULTIPLE",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-027",
+   "data": "relative",
+   "input": "兄が弟に頼んだ荷物を母が持った。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "兄が弟に頼んだ。",
+     "荷物を母が持った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が弟に頼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "頼む",
+       "roles": {
+        "agent": "兄",
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "荷物を母が持った。",
+      "readable": true,
+      "clause": {
+       "predicate": "持つ",
+       "roles": {
+        "agent": "母",
+        "patient": "荷物"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": null,
+     "basis": null,
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": []
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:type:PLACEMENT_UNPLACED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-028",
+   "data": "relative",
+   "input": "母が弟に話した知らせを兄が聞いた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "母が弟に話した。",
+     "知らせを兄が聞いた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が弟に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "母",
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "知らせを兄が聞いた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-029",
+   "data": "relative",
+   "input": "兄が弟に話した家を母が見た。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "兄が弟に話した。",
+     "家を母が見た。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が弟に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "兄",
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "家を母が見た。",
+      "readable": true,
+      "clause": {
+       "predicate": "見る",
+       "roles": {
+        "agent": "母",
+        "patient": "家"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": null,
+     "basis": null,
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": []
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:type:PLACEMENT_MULTIPLE",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-030",
+   "data": "relative",
+   "input": "東京から大阪へ行った兄を母が呼んだ。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      9,
+      10
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-031",
+   "data": "relative",
+   "input": "駅で母が弟に話した人を兄が呼んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      8,
+      9
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-032",
+   "data": "relative",
+   "input": "庭で兄が先生に言った生徒を母が待った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      9,
+      10
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-033",
+   "data": "relative",
+   "input": "三時に父が祖母に話した犬を兄が見た。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      10,
+      11
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-034",
+   "data": "relative",
+   "input": "学校で姉が母に頼んだ薬を弟が飲んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      9,
+      10
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-035",
+   "data": "relative",
+   "input": "弟に歌を頼んだ人を兄が呼んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-036",
+   "data": "relative",
+   "input": "母は弟に話した人を兄が呼んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_in_relative",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-037",
+   "data": "relative",
+   "input": "兄は先生に言った生徒を母が待った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      7,
+      8
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_in_relative",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-038",
+   "data": "relative",
+   "input": "姉は妹に頼んだ友達を先生が呼んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_in_relative",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-039",
+   "data": "relative",
+   "input": "母が弟に話した問題を兄が聞いた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "母が弟に話した。",
+     "問題を兄が聞いた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が弟に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "母",
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "問題を兄が聞いた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-040",
+   "data": "relative",
+   "input": "兄が先生に言った約束を母が待った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      7,
+      8
+     ]
+    },
+    "clause_texts": [
+     "兄が先生に言った。",
+     "約束を母が待った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が先生に言った。",
+      "readable": true,
+      "clause": {
+       "predicate": "言う",
+       "roles": {
+        "agent": "兄",
+        "recipient": "先生"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "約束を母が待った。",
+      "readable": true,
+      "clause": {
+       "predicate": "待つ",
+       "roles": {
+        "agent": "母",
+        "patient": "約束"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "patient",
+     "basis": "placement_direct:EVENT_ACT",
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": [
+      "EVENT_ACT"
+     ]
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:outer_relation_type",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-041",
+   "data": "relative",
+   "input": "姉が妹に頼んだ質問を先生が待った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "姉が妹に頼んだ。",
+     "質問を先生が待った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が妹に頼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "頼む",
+       "roles": {
+        "agent": "姉",
+        "recipient": "妹"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "質問を先生が待った。",
+      "readable": true,
+      "clause": {
+       "predicate": "待つ",
+       "roles": {
+        "agent": "先生",
+        "patient": "質問"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "patient",
+     "basis": "placement_direct:EVENT_ACT",
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": [
+      "EVENT_ACT"
+     ]
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:outer_relation_type",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-042",
+   "data": "relative",
+   "input": "父が兄に話した手紙を母が読んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "父が兄に話した。",
+     "手紙を母が読んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "父が兄に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "父",
+        "recipient": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "手紙を母が読んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "読む",
+       "roles": {
+        "agent": "母",
+        "patient": "手紙"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "patient",
+     "basis": "placement_all_candidates:ABSTRACT+IDENTIFIER+INFO_LANGUAGE+WORK",
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": [
+      "ABSTRACT",
+      "IDENTIFIER",
+      "INFO_LANGUAGE",
+      "WORK"
+     ]
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:outer_relation_type",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-043",
+   "data": "relative",
+   "input": "母が弟に話した理由を兄が聞いた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "母が弟に話した。",
+     "理由を兄が聞いた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が弟に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "母",
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "理由を兄が聞いた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_UNREAD:1:PREDICATE_NORMALIZED:伝える<-聞く",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-044",
+   "data": "relative",
+   "input": "母が話した人を兄が呼んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "母が話した。",
+     "人を兄が呼んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "人を兄が呼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "呼ぶ",
+       "roles": {
+        "agent": "兄",
+        "patient": "人"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": null,
+     "basis": null,
+     "empty_arms": [
+      "patient",
+      "NI_UNDECIDED"
+     ],
+     "candidates": []
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:empty_arms=2",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-045",
+   "data": "relative",
+   "input": "兄が言った生徒を母が待った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄が言った。",
+     "生徒を母が待った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が言った。",
+      "readable": true,
+      "clause": {
+       "predicate": "言う",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "生徒を母が待った。",
+      "readable": true,
+      "clause": {
+       "predicate": "待つ",
+       "roles": {
+        "agent": "母",
+        "patient": "生徒"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": null,
+     "basis": null,
+     "empty_arms": [
+      "patient",
+      "NI_UNDECIDED"
+     ],
+     "candidates": []
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:empty_arms=2",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-046",
+   "data": "relative",
+   "input": "姉が頼んだ友達を先生が呼んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "姉が頼んだ。",
+     "友達を先生が呼んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が頼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "頼む",
+       "roles": {
+        "agent": "姉"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "友達を先生が呼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "呼ぶ",
+       "roles": {
+        "agent": "先生",
+        "patient": "友達"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": null,
+     "basis": null,
+     "empty_arms": [
+      "patient",
+      "NI_UNDECIDED"
+     ],
+     "candidates": []
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:empty_arms=2",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-047",
+   "data": "relative",
+   "input": "母が人を弟に話した部屋を兄が見た。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      8,
+      9
+     ]
+    },
+    "clause_texts": [
+     "母が人を弟に話した。",
+     "部屋を兄が見た。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が人を弟に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "母",
+        "patient": "人",
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "部屋を兄が見た。",
+      "readable": true,
+      "clause": {
+       "predicate": "見る",
+       "roles": {
+        "agent": "兄",
+        "patient": "部屋"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": null,
+     "basis": null,
+     "empty_arms": [],
+     "candidates": []
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:empty_arms=0",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-048",
+   "data": "relative",
+   "input": "兄が本を先生に言った場所を母が見た。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      9,
+      10
+     ]
+    },
+    "clause_texts": [
+     "兄が本を先生に言った。",
+     "場所を母が見た。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が本を先生に言った。",
+      "readable": true,
+      "clause": {
+       "predicate": "言う",
+       "roles": {
+        "agent": "兄",
+        "patient": "本",
+        "recipient": "先生"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "場所を母が見た。",
+      "readable": true,
+      "clause": {
+       "predicate": "見る",
+       "roles": {
+        "agent": "母",
+        "patient": "場所"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": null,
+     "basis": null,
+     "empty_arms": [],
+     "candidates": []
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:empty_arms=0",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-049",
+   "data": "relative",
+   "input": "母が薬を頼んだ人を兄が呼んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "母が薬を頼んだ。",
+     "人を兄が呼んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が薬を頼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "頼む",
+       "roles": {
+        "agent": "母",
+        "patient": "薬"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "人を兄が呼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "呼ぶ",
+       "roles": {
+        "agent": "兄",
+        "patient": "人"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": null,
+     "basis": null,
+     "empty_arms": [
+      "NI_UNDECIDED"
+     ],
+     "candidates": []
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:undecided_arm",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-050",
+   "data": "relative",
+   "input": "姉が本を頼んだ友達を先生が呼んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "姉が本を頼んだ。",
+     "友達を先生が呼んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が本を頼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "頼む",
+       "roles": {
+        "agent": "姉",
+        "patient": "本"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "友達を先生が呼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "呼ぶ",
+       "roles": {
+        "agent": "先生",
+        "patient": "友達"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": null,
+     "basis": null,
+     "empty_arms": [
+      "NI_UNDECIDED"
+     ],
+     "candidates": []
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:undecided_arm",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-051",
+   "data": "relative",
+   "input": "兄が東京から歩いた町を弟が見た。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      8,
+      9
+     ]
+    },
+    "clause_texts": [
+     "兄が東京から歩いた。",
+     "町を弟が見た。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が東京から歩いた。",
+      "readable": true,
+      "clause": {
+       "predicate": "歩く",
+       "roles": {
+        "agent": "兄",
+        "source": "東京"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "町を弟が見た。",
+      "readable": true,
+      "clause": {
+       "predicate": "見る",
+       "roles": {
+        "agent": "弟",
+        "patient": "町"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "goal",
+     "basis": "placement_direct:PLACE",
+     "empty_arms": [
+      "goal"
+     ],
+     "candidates": [
+      "PLACE"
+     ]
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:adjunct_tie",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-052",
+   "data": "relative",
+   "input": "母が大阪から走った村を弟が見た。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      8,
+      9
+     ]
+    },
+    "clause_texts": [
+     "母が大阪から走った。",
+     "村を弟が見た。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が大阪から走った。",
+      "readable": true,
+      "clause": {
+       "predicate": "走る",
+       "roles": {
+        "agent": "母",
+        "source": "大阪"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "村を弟が見た。",
+      "readable": true,
+      "clause": {
+       "predicate": "見る",
+       "roles": {
+        "agent": "弟",
+        "patient": "村"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "goal",
+     "basis": "placement_direct:PLACE",
+     "empty_arms": [
+      "goal"
+     ],
+     "candidates": [
+      "PLACE"
+     ]
+    },
+    "edges": [],
+    "reason": "HEAD_ROLE_UNDETERMINED:adjunct_tie",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-053",
+   "data": "relative",
+   "input": "母が弟に話した兄の友達を先生が呼んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "母が弟に話した。",
+     "兄の友達を先生が呼んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が弟に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "母",
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "兄の友達を先生が呼んだ。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_UNREAD:1:UNSUPPORTED_CLAUSE"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_UNREAD:1:UNSUPPORTED_CLAUSE",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-054",
+   "data": "relative",
+   "input": "母が弟に話した三人の客を兄が呼んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "母が弟に話した。",
+     "三人の客を兄が呼んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が弟に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "母",
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "三人の客を兄が呼んだ。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_UNREAD:1:UNSUPPORTED_CLAUSE"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_UNREAD:1:UNSUPPORTED_CLAUSE",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-055",
+   "data": "relative",
+   "input": "兄が先生に言った後に母が来た。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_NOT_LISTED:後",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-056",
+   "data": "relative",
+   "input": "母が弟に話した時に兄が来た。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_NOT_LISTED:時",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-057",
+   "data": "relative",
+   "input": "母が弟に話した人を呼べ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:imperative",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-058",
+   "data": "relative",
+   "input": "母が弟に話した人を兄が呼んだか。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:question",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-059",
+   "data": "relative",
+   "input": "母が弟に話した人が歩いた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "母が弟に話した。",
+     "人が歩いた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が弟に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "母",
+        "patient": "人",
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active",
+       "predicate_basis": "placement_direct:P_COMMUNICATE",
+       "role_basis": {
+        "patient": "placement_direct:PERSON"
+       }
+      },
+      "reason": null
+     },
+     {
+      "text": "人が歩いた。",
+      "readable": true,
+      "clause": {
+       "predicate": "歩く",
+       "roles": {
+        "agent": "人"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "patient",
+     "basis": "placement_direct:PERSON",
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": [
+      "PERSON"
+     ]
+    },
+    "edges": [],
+    "reason": "ELLIPSIS_UNDETERMINED:object",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-REL-060",
+   "data": "relative",
+   "input": "兄が先生に言った生徒が走った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "relative",
+     "connective": "",
+     "token_span": [
+      7,
+      8
+     ]
+    },
+    "clause_texts": [
+     "兄が先生に言った。",
+     "生徒が走った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が先生に言った。",
+      "readable": true,
+      "clause": {
+       "predicate": "言う",
+       "roles": {
+        "agent": "兄",
+        "patient": "生徒",
+        "recipient": "先生"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active",
+       "predicate_basis": "placement_direct:P_COMMUNICATE",
+       "role_basis": {
+        "patient": "placement_direct:PERSON"
+       }
+      },
+      "reason": null
+     },
+     {
+      "text": "生徒が走った。",
+      "readable": true,
+      "clause": {
+       "predicate": "走る",
+       "roles": {
+        "agent": "生徒"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": {
+     "arm": "patient",
+     "basis": "placement_direct:PERSON",
+     "empty_arms": [
+      "patient"
+     ],
+     "candidates": [
+      "PERSON"
+     ]
+    },
+    "edges": [],
+    "reason": "ELLIPSIS_UNDETERMINED:object",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-001",
+   "data": "connective",
+   "input": "兄が本を読んだので、弟が歌を歌った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      7,
+      9
+     ]
+    },
+    "clause_texts": [
+     "兄が本を読んだ。",
+     "弟が歌を歌った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が本を読んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "読む",
+       "roles": {
+        "agent": "兄",
+        "patient": "本"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が歌を歌った。",
+      "readable": true,
+      "clause": {
+       "predicate": "歌う",
+       "roles": {
+        "agent": "弟",
+        "patient": "歌"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-002",
+   "data": "connective",
+   "input": "母が兄を叱ったので、兄が帰った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      7,
+      9
+     ]
+    },
+    "clause_texts": [
+     "母が兄を叱った。",
+     "兄が帰った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が兄を叱った。",
+      "readable": true,
+      "clause": {
+       "predicate": "叱る",
+       "roles": {
+        "agent": "母",
+        "patient": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "兄が帰った。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-003",
+   "data": "connective",
+   "input": "姉が窓を開けたので、母が戸を閉めた。",
+   "verdict": "abstain",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      7,
+      9
+     ]
+    },
+    "clause_texts": [
+     "姉が窓を開けた。",
+     "母が戸を閉めた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が窓を開けた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-004",
+   "data": "connective",
+   "input": "駅で兄が本を読んだので、弟が歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      9,
+      11
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-005",
+   "data": "connective",
+   "input": "妹が転んだので、姉が起こした。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      5,
+      7
+     ]
+    },
+    "clause_texts": [
+     "妹が転んだ。",
+     "姉が起こした。"
+    ],
+    "clause_reads": [
+     {
+      "text": "妹が転んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "転ぶ",
+       "roles": {
+        "agent": "妹"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "姉が起こした。",
+      "readable": true,
+      "clause": {
+       "predicate": "起こす",
+       "roles": {
+        "agent": "姉"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "ELLIPSIS_UNDETERMINED:object",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-006",
+   "data": "connective",
+   "input": "弟が帰ったので、姉が手紙を書け。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      5,
+      7
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:imperative",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-007",
+   "data": "connective",
+   "input": "弟が薬を飲んだから、兄が来た。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "から",
+     "connective": "から",
+     "token_span": [
+      7,
+      9
+     ]
+    },
+    "clause_texts": [
+     "弟が薬を飲んだ。",
+     "兄が来た。"
+    ],
+    "clause_reads": [
+     {
+      "text": "弟が薬を飲んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "飲む",
+       "roles": {
+        "agent": "弟",
+        "patient": "薬"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "兄が来た。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-008",
+   "data": "connective",
+   "input": "母が絵を描いたから、父が起きた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "から",
+     "connective": "から",
+     "token_span": [
+      7,
+      9
+     ]
+    },
+    "clause_texts": [
+     "母が絵を描いた。",
+     "父が起きた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が絵を描いた。",
+      "readable": true,
+      "clause": {
+       "predicate": "描く",
+       "roles": {
+        "agent": "母",
+        "patient": "絵"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "父が起きた。",
+      "readable": true,
+      "clause": {
+       "predicate": "起きる",
+       "roles": {
+        "agent": "父"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-009",
+   "data": "connective",
+   "input": "兄が弟を叩いたから、母が兄を叱った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "から",
+     "connective": "から",
+     "token_span": [
+      7,
+      9
+     ]
+    },
+    "clause_texts": [
+     "兄が弟を叩いた。",
+     "母が兄を叱った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が弟を叩いた。",
+      "readable": true,
+      "clause": {
+       "predicate": "叩く",
+       "roles": {
+        "agent": "兄",
+        "patient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "母が兄を叱った。",
+      "readable": true,
+      "clause": {
+       "predicate": "叱る",
+       "roles": {
+        "agent": "母",
+        "patient": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-010",
+   "data": "connective",
+   "input": "兄が来たから、弟は帰った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "から",
+     "connective": "から",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-011",
+   "data": "connective",
+   "input": "兄が来たから、弟が帰りましたか。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "から",
+     "connective": "から",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:question",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-012",
+   "data": "connective",
+   "input": "兄が来たから、しかし弟が帰った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "から",
+     "connective": "から",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:connective_outside_cut",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-013",
+   "data": "connective",
+   "input": "兄が本を読んだが、弟が歌を歌った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "が",
+     "connective": "が",
+     "token_span": [
+      7,
+      8
+     ]
+    },
+    "clause_texts": [
+     "兄が本を読んだ。",
+     "弟が歌を歌った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が本を読んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "読む",
+       "roles": {
+        "agent": "兄",
+        "patient": "本"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が歌を歌った。",
+      "readable": true,
+      "clause": {
+       "predicate": "歌う",
+       "roles": {
+        "agent": "弟",
+        "patient": "歌"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-014",
+   "data": "connective",
+   "input": "先生が生徒を許したが、母が兄を叱った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "が",
+     "connective": "が",
+     "token_span": [
+      9,
+      10
+     ]
+    },
+    "clause_texts": [
+     "先生が生徒を許した。",
+     "母が兄を叱った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "先生が生徒を許した。",
+      "readable": true,
+      "clause": {
+       "predicate": "許す",
+       "roles": {
+        "agent": "先生",
+        "patient": "生徒"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "母が兄を叱った。",
+      "readable": true,
+      "clause": {
+       "predicate": "叱る",
+       "roles": {
+        "agent": "母",
+        "patient": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-015",
+   "data": "connective",
+   "input": "姉が来たが、弟が帰った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "が",
+     "connective": "が",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "姉が来た。",
+     "弟が帰った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が来た。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "姉"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が帰った。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-016",
+   "data": "connective",
+   "input": "兄が駅に着いたが、弟が帰った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "が",
+     "connective": "が",
+     "token_span": [
+      7,
+      8
+     ]
+    },
+    "clause_texts": [
+     "兄が駅に着いた。",
+     "弟が帰った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が駅に着いた。",
+      "readable": true,
+      "clause": {
+       "predicate": "着く",
+       "roles": {
+        "agent": "兄",
+        "goal": "駅"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が帰った。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "ELLIPSIS_UNDETERMINED:goal",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-017",
+   "data": "connective",
+   "input": "兄が来たが、帰った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "が",
+     "connective": "が",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-018",
+   "data": "connective",
+   "input": "兄が静かに来たが、弟が帰らなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "が",
+     "connective": "が",
+     "token_span": [
+      7,
+      8
+     ]
+    },
+    "clause_texts": [
+     "兄が静かに来た。",
+     "弟が帰らなかった。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が静かに来た。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_UNREAD:0:NO_SUPPORTED_CLAUSE"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_UNREAD:0:NO_SUPPORTED_CLAUSE",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-019",
+   "data": "connective",
+   "input": "兄が弟を呼んだけれど、弟が来た。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "けれど",
+     "connective": "けれど",
+     "token_span": [
+      7,
+      10
+     ]
+    },
+    "clause_texts": [
+     "兄が弟を呼んだ。",
+     "弟が来た。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が弟を呼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "呼ぶ",
+       "roles": {
+        "agent": "兄",
+        "patient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が来た。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-020",
+   "data": "connective",
+   "input": "母が花を買ったけど、姉が絵を描いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "けれど",
+     "connective": "けど",
+     "token_span": [
+      7,
+      9
+     ]
+    },
+    "clause_texts": [
+     "母が花を買った。",
+     "姉が絵を描いた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が花を買った。",
+      "readable": true,
+      "clause": {
+       "predicate": "買う",
+       "roles": {
+        "agent": "母",
+        "patient": "花"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "姉が絵を描いた。",
+      "readable": true,
+      "clause": {
+       "predicate": "描く",
+       "roles": {
+        "agent": "姉",
+        "patient": "絵"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-021",
+   "data": "connective",
+   "input": "父が起きたけれども、祖父が座った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "けれど",
+     "connective": "けれども",
+     "token_span": [
+      5,
+      9
+     ]
+    },
+    "clause_texts": [
+     "父が起きた。",
+     "祖父が座った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "父が起きた。",
+      "readable": true,
+      "clause": {
+       "predicate": "起きる",
+       "roles": {
+        "agent": "父"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "祖父が座った。",
+      "readable": true,
+      "clause": {
+       "predicate": "座る",
+       "roles": {
+        "agent": "祖父"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-022",
+   "data": "connective",
+   "input": "庭で母が絵を描いたけれど、姉が歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "けれど",
+     "connective": "けれど",
+     "token_span": [
+      9,
+      12
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-023",
+   "data": "connective",
+   "input": "母が弟に話したけれど、兄が帰った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "けれど",
+     "connective": "けれど",
+     "token_span": [
+      7,
+      10
+     ]
+    },
+    "clause_texts": [
+     "母が弟に話した。",
+     "兄が帰った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が弟に話した。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "母",
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "兄が帰った。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "ELLIPSIS_UNDETERMINED:object",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-024",
+   "data": "connective",
+   "input": "兄が本を読んでいるけれど、弟が歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "けれど",
+     "connective": "けれど",
+     "token_span": [
+      9,
+      12
+     ]
+    },
+    "clause_texts": [
+     "兄が本を読んでいる。",
+     "弟が歌を歌った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が本を読んでいる。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-撥音便:助詞"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-撥音便:助詞",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-025",
+   "data": "connective",
+   "input": "兄が来ると、弟が帰る。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "と",
+     "connective": "と",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄が来る。",
+     "弟が帰る。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が来る。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が帰る。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-026",
+   "data": "connective",
+   "input": "姉が着くと、母が座る。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "と",
+     "connective": "と",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "姉が着く。",
+     "母が座る。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が着く。",
+      "readable": true,
+      "clause": {
+       "predicate": "着く",
+       "roles": {
+        "agent": "姉"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "母が座る。",
+      "readable": true,
+      "clause": {
+       "predicate": "座る",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-027",
+   "data": "connective",
+   "input": "先生が入ると、生徒が立つ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "と",
+     "connective": "と",
+     "token_span": [
+      5,
+      6
+     ]
+    },
+    "clause_texts": [
+     "先生が入る。",
+     "生徒が立つ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "先生が入る。",
+      "readable": true,
+      "clause": {
+       "predicate": "入る",
+       "roles": {
+        "agent": "先生"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "生徒が立つ。",
+      "readable": true,
+      "clause": {
+       "predicate": "立つ",
+       "roles": {
+        "agent": "生徒"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-028",
+   "data": "connective",
+   "input": "兄が来ると、弟が帰った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "と",
+     "connective": "と",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄が来る。",
+     "弟が帰った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が来る。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が帰った。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "RELATION_TYPE_UNDETERMINED:condition_past_main",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-029",
+   "data": "connective",
+   "input": "弟が帰ると、先生が話す。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "と",
+     "connective": "と",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "弟が帰る。",
+     "先生が話す。"
+    ],
+    "clause_reads": [
+     {
+      "text": "弟が帰る。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "先生が話す。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "agent": "先生"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "RELATION_TYPE_UNDETERMINED:quote_possible",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-030",
+   "data": "connective",
+   "input": "姉が戻ると、母が見る。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "と",
+     "connective": "と",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "姉が戻る。",
+     "母が見る。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が戻る。",
+      "readable": true,
+      "clause": {
+       "predicate": "戻る",
+       "roles": {
+        "agent": "姉"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "母が見る。",
+      "readable": true,
+      "clause": {
+       "predicate": "見る",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "RELATION_TYPE_UNDETERMINED:quote_possible",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-031",
+   "data": "connective",
+   "input": "兄が来るなら、弟が帰る。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "なら",
+     "connective": "なら",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [
+     "兄が来る。",
+     "弟が帰る。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が来る。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が帰る。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-032",
+   "data": "connective",
+   "input": "姉が戻るなら、母が着く。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "なら",
+     "connective": "なら",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [
+     "姉が戻る。",
+     "母が着く。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が戻る。",
+      "readable": true,
+      "clause": {
+       "predicate": "戻る",
+       "roles": {
+        "agent": "姉"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "母が着く。",
+      "readable": true,
+      "clause": {
+       "predicate": "着く",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-033",
+   "data": "connective",
+   "input": "父が起きるなら、祖父が座る。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "なら",
+     "connective": "なら",
+     "token_span": [
+      5,
+      7
+     ]
+    },
+    "clause_texts": [
+     "父が起きる。",
+     "祖父が座る。"
+    ],
+    "clause_reads": [
+     {
+      "text": "父が起きる。",
+      "readable": true,
+      "clause": {
+       "predicate": "起きる",
+       "roles": {
+        "agent": "父"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "祖父が座る。",
+      "readable": true,
+      "clause": {
+       "predicate": "座る",
+       "roles": {
+        "agent": "祖父"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-034",
+   "data": "connective",
+   "input": "兄が来るなら、弟が帰った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNCOVERED_PREDICATE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "なら",
+     "connective": "なら",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [
+     "兄が来る。",
+     "弟が帰った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が来る。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が帰った。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "RELATION_TYPE_UNDETERMINED:condition_past_main",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-035",
+   "data": "connective",
+   "input": "兄が来るなら、母が見る。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNCOVERED_PREDICATE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "なら",
+     "connective": "なら",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [
+     "兄が来る。",
+     "母が見る。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が来る。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "母が見る。",
+      "readable": true,
+      "clause": {
+       "predicate": "見る",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "ELLIPSIS_UNDETERMINED:object",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-036",
+   "data": "connective",
+   "input": "兄が来るなら、弟は帰る。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNCOVERED_PREDICATE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "なら",
+     "connective": "なら",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-037",
+   "data": "connective",
+   "input": "兄が来れば、弟が帰る。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ば",
+     "connective": "ば",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄が来る。",
+     "弟が帰る。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が来る。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が帰る。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-038",
+   "data": "connective",
+   "input": "母が戻れば、姉が着く。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ば",
+     "connective": "ば",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "母が戻る。",
+     "姉が着く。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が戻る。",
+      "readable": true,
+      "clause": {
+       "predicate": "戻る",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "姉が着く。",
+      "readable": true,
+      "clause": {
+       "predicate": "着く",
+       "roles": {
+        "agent": "姉"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-039",
+   "data": "connective",
+   "input": "弟が入れば、兄が立つ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ば",
+     "connective": "ば",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "弟が入る。",
+     "兄が立つ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "弟が入る。",
+      "readable": true,
+      "clause": {
+       "predicate": "入る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "兄が立つ。",
+      "readable": true,
+      "clause": {
+       "predicate": "立つ",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-040",
+   "data": "connective",
+   "input": "兄が来なければ、弟が帰る。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ば",
+     "connective": "ば",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:aux_in_nonfinite",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-041",
+   "data": "connective",
+   "input": "兄が来れば、弟が帰った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNCOVERED_PREDICATE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ば",
+     "connective": "ば",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄が来る。",
+     "弟が帰った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が来る。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が帰った。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "RELATION_TYPE_UNDETERMINED:condition_past_main",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-042",
+   "data": "connective",
+   "input": "駅で兄が来れば、弟が帰る。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNCOVERED_PREDICATE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ば",
+     "connective": "ば",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-043",
+   "data": "connective",
+   "input": "兄が着いたら、弟が帰る。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "たら",
+     "connective": "たら",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [
+     "兄が着く。",
+     "弟が帰る。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が着く。",
+      "readable": true,
+      "clause": {
+       "predicate": "着く",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が帰る。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-044",
+   "data": "connective",
+   "input": "姉が戻ったら、母が来る。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "たら",
+     "connective": "たら",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [
+     "姉が戻る。",
+     "母が来る。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が戻る。",
+      "readable": true,
+      "clause": {
+       "predicate": "戻る",
+       "roles": {
+        "agent": "姉"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "母が来る。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-045",
+   "data": "connective",
+   "input": "弟が転んだら、兄が起きる。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "たら",
+     "connective": "だら",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [
+     "弟が転ぶ。",
+     "兄が起きる。"
+    ],
+    "clause_reads": [
+     {
+      "text": "弟が転ぶ。",
+      "readable": true,
+      "clause": {
+       "predicate": "転ぶ",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "兄が起きる。",
+      "readable": true,
+      "clause": {
+       "predicate": "起きる",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-046",
+   "data": "connective",
+   "input": "兄が着いたら、弟が帰った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "たら",
+     "connective": "たら",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [
+     "兄が着く。",
+     "弟が帰った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が着く。",
+      "readable": true,
+      "clause": {
+       "predicate": "着く",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が帰った。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "RELATION_TYPE_UNDETERMINED:condition_past_main",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-047",
+   "data": "connective",
+   "input": "兄が着いたら、窓を閉めろ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "たら",
+     "connective": "たら",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:imperative",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-048",
+   "data": "connective",
+   "input": "兄が着いたら、弟が帰るか。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "たら",
+     "connective": "たら",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:question",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-049",
+   "data": "connective",
+   "input": "兄が来ても、弟が帰る。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ても",
+     "connective": "ても",
+     "token_span": [
+      3,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄が来る。",
+     "弟が帰る。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が来る。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が帰る。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-050",
+   "data": "connective",
+   "input": "姉が戻っても、母が座る。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ても",
+     "connective": "ても",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [
+     "姉が戻る。",
+     "母が座る。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が戻る。",
+      "readable": true,
+      "clause": {
+       "predicate": "戻る",
+       "roles": {
+        "agent": "姉"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "母が座る。",
+      "readable": true,
+      "clause": {
+       "predicate": "座る",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-051",
+   "data": "connective",
+   "input": "先生が入っても、生徒が立った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ても",
+     "connective": "ても",
+     "token_span": [
+      5,
+      7
+     ]
+    },
+    "clause_texts": [
+     "先生が入る。",
+     "生徒が立った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "先生が入る。",
+      "readable": true,
+      "clause": {
+       "predicate": "入る",
+       "roles": {
+        "agent": "先生"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "生徒が立った。",
+      "readable": true,
+      "clause": {
+       "predicate": "立つ",
+       "roles": {
+        "agent": "生徒"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-052",
+   "data": "connective",
+   "input": "兄が褒められても、弟が帰る。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ても",
+     "connective": "ても",
+     "token_span": [
+      6,
+      8
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:aux_in_nonfinite",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-053",
+   "data": "connective",
+   "input": "兄が歌っても、弟が歩いた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ても",
+     "connective": "ても",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [
+     "兄が歌う。",
+     "弟が歩いた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が歌う。",
+      "readable": true,
+      "clause": {
+       "predicate": "歌う",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が歩いた。",
+      "readable": true,
+      "clause": {
+       "predicate": "歩く",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "ELLIPSIS_UNDETERMINED:object",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-054",
+   "data": "connective",
+   "input": "兄が来てもいい。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:形容詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-055",
+   "data": "connective",
+   "input": "兄が本を読みながら、弟が歌を歌った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ながら",
+     "connective": "ながら",
+     "token_span": [
+      6,
+      9
+     ]
+    },
+    "clause_texts": [
+     "兄が本を読む。",
+     "弟が歌を歌った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が本を読む。",
+      "readable": true,
+      "clause": {
+       "predicate": "読む",
+       "roles": {
+        "agent": "兄",
+        "patient": "本"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が歌を歌った。",
+      "readable": true,
+      "clause": {
+       "predicate": "歌う",
+       "roles": {
+        "agent": "弟",
+        "patient": "歌"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-056",
+   "data": "connective",
+   "input": "母が絵を描きながら、姉が歌を歌った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ながら",
+     "connective": "ながら",
+     "token_span": [
+      6,
+      9
+     ]
+    },
+    "clause_texts": [
+     "母が絵を描く。",
+     "姉が歌を歌った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が絵を描く。",
+      "readable": true,
+      "clause": {
+       "predicate": "描く",
+       "roles": {
+        "agent": "母",
+        "patient": "絵"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "姉が歌を歌った。",
+      "readable": true,
+      "clause": {
+       "predicate": "歌う",
+       "roles": {
+        "agent": "姉",
+        "patient": "歌"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-057",
+   "data": "connective",
+   "input": "先生が本を読みながら、生徒が薬を飲んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ながら",
+     "connective": "ながら",
+     "token_span": [
+      7,
+      10
+     ]
+    },
+    "clause_texts": [
+     "先生が本を読む。",
+     "生徒が薬を飲んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "先生が本を読む。",
+      "readable": true,
+      "clause": {
+       "predicate": "読む",
+       "roles": {
+        "agent": "先生",
+        "patient": "本"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "生徒が薬を飲んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "飲む",
+       "roles": {
+        "agent": "生徒",
+        "patient": "薬"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": null,
+    "read": true
+   }
+  },
+  {
+   "id": "W3B3-CON-058",
+   "data": "connective",
+   "input": "兄が歌いながら、弟は歩いた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ながら",
+     "connective": "ながら",
+     "token_span": [
+      4,
+      7
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-059",
+   "data": "connective",
+   "input": "母が歌いながら、姉が帰った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ながら",
+     "connective": "ながら",
+     "token_span": [
+      4,
+      7
+     ]
+    },
+    "clause_texts": [
+     "母が歌う。",
+     "姉が帰った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が歌う。",
+      "readable": true,
+      "clause": {
+       "predicate": "歌う",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "姉が帰った。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "姉"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "ELLIPSIS_UNDETERMINED:object",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-CON-060",
+   "data": "connective",
+   "input": "兄が静かに歌いながら、弟が歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ながら",
+     "connective": "ながら",
+     "token_span": [
+      7,
+      10
+     ]
+    },
+    "clause_texts": [
+     "兄が静かに歌う。",
+     "弟が歌を歌った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が静かに歌う。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_UNREAD:0:NO_SUPPORTED_CLAUSE"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_UNREAD:0:NO_SUPPORTED_CLAUSE",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-001",
+   "data": "parallel",
+   "input": "兄が本を読んで、弟が歌を歌った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "て",
+     "connective": "で",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "兄が本を読む。",
+     "弟が歌を歌った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が本を読む。",
+      "readable": true,
+      "clause": {
+       "predicate": "読む",
+       "roles": {
+        "agent": "兄",
+        "patient": "本"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が歌を歌った。",
+      "readable": true,
+      "clause": {
+       "predicate": "歌う",
+       "roles": {
+        "agent": "弟",
+        "patient": "歌"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [
+     {
+      "type": "TE_UNDETERMINED",
+      "from": 0,
+      "to": 1
+     }
+    ],
+    "reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-002",
+   "data": "parallel",
+   "input": "母が絵を描いて、姉が手紙を書いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "て",
+     "connective": "て",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [
+     "母が絵を描く。",
+     "姉が手紙を書いた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が絵を描く。",
+      "readable": true,
+      "clause": {
+       "predicate": "描く",
+       "roles": {
+        "agent": "母",
+        "patient": "絵"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "姉が手紙を書いた。",
+      "readable": true,
+      "clause": {
+       "predicate": "書く",
+       "roles": {
+        "agent": "姉",
+        "patient": "手紙"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [
+     {
+      "type": "TE_UNDETERMINED",
+      "from": 0,
+      "to": 1
+     }
+    ],
+    "reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-003",
+   "data": "parallel",
+   "input": "先生が本を読んで、生徒が薬を飲んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "て",
+     "connective": "で",
+     "token_span": [
+      7,
+      8
+     ]
+    },
+    "clause_texts": [
+     "先生が本を読む。",
+     "生徒が薬を飲んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "先生が本を読む。",
+      "readable": true,
+      "clause": {
+       "predicate": "読む",
+       "roles": {
+        "agent": "先生",
+        "patient": "本"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "生徒が薬を飲んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "飲む",
+       "roles": {
+        "agent": "生徒",
+        "patient": "薬"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [
+     {
+      "type": "TE_UNDETERMINED",
+      "from": 0,
+      "to": 1
+     }
+    ],
+    "reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-004",
+   "data": "parallel",
+   "input": "兄が来て弟が帰った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "て",
+     "connective": "て",
+     "token_span": [
+      3,
+      4
+     ]
+    },
+    "clause_texts": [
+     "兄が来る。",
+     "弟が帰った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が来る。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が帰った。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [
+     {
+      "type": "TE_UNDETERMINED",
+      "from": 0,
+      "to": 1
+     }
+    ],
+    "reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-005",
+   "data": "parallel",
+   "input": "姉が着いて母が座った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "て",
+     "connective": "て",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "姉が着く。",
+     "母が座った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が着く。",
+      "readable": true,
+      "clause": {
+       "predicate": "着く",
+       "roles": {
+        "agent": "姉"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "母が座った。",
+      "readable": true,
+      "clause": {
+       "predicate": "座る",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [
+     {
+      "type": "TE_UNDETERMINED",
+      "from": 0,
+      "to": 1
+     }
+    ],
+    "reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-006",
+   "data": "parallel",
+   "input": "父が起きて、祖父が立った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "て",
+     "connective": "て",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "父が起きる。",
+     "祖父が立った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "父が起きる。",
+      "readable": true,
+      "clause": {
+       "predicate": "起きる",
+       "roles": {
+        "agent": "父"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "祖父が立った。",
+      "readable": true,
+      "clause": {
+       "predicate": "立つ",
+       "roles": {
+        "agent": "祖父"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [
+     {
+      "type": "TE_UNDETERMINED",
+      "from": 0,
+      "to": 1
+     }
+    ],
+    "reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-007",
+   "data": "parallel",
+   "input": "弟が転んで、兄が来た。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "て",
+     "connective": "で",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "弟が転ぶ。",
+     "兄が来た。"
+    ],
+    "clause_reads": [
+     {
+      "text": "弟が転ぶ。",
+      "readable": true,
+      "clause": {
+       "predicate": "転ぶ",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "兄が来た。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [
+     {
+      "type": "TE_UNDETERMINED",
+      "from": 0,
+      "to": 1
+     }
+    ],
+    "reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-008",
+   "data": "parallel",
+   "input": "母が戻って、姉が着いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "て",
+     "connective": "て",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "母が戻る。",
+     "姉が着いた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が戻る。",
+      "readable": true,
+      "clause": {
+       "predicate": "戻る",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "姉が着いた。",
+      "readable": true,
+      "clause": {
+       "predicate": "着く",
+       "roles": {
+        "agent": "姉"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [
+     {
+      "type": "TE_UNDETERMINED",
+      "from": 0,
+      "to": 1
+     }
+    ],
+    "reason": "RELATION_TYPE_UNDETERMINED:TE_UNDETERMINED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-009",
+   "data": "parallel",
+   "input": "兄が読みたくて、弟が歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "て",
+     "connective": "て",
+     "token_span": [
+      6,
+      7
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:aux_in_nonfinite",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-010",
+   "data": "parallel",
+   "input": "兄が来てから、弟が帰った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_NOT_LISTED:てから",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-011",
+   "data": "parallel",
+   "input": "兄が本を読んでいて、弟が歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "て",
+     "connective": "て",
+     "token_span": [
+      8,
+      9
+     ]
+    },
+    "clause_texts": [
+     "兄が本を読んでいる。",
+     "弟が歌った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が本を読んでいる。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-撥音便:助詞"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_TAIL_UNINTERPRETED:連用形-撥音便:助詞",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-012",
+   "data": "parallel",
+   "input": "兄が来て、弟が帰って、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=3",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-013",
+   "data": "parallel",
+   "input": "駅で兄が来て、弟が帰った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "て",
+     "connective": "て",
+     "token_span": [
+      5,
+      6
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-014",
+   "data": "parallel",
+   "input": "兄が来て、弟が帰れ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "て",
+     "connective": "て",
+     "token_span": [
+      3,
+      4
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:imperative",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-015",
+   "data": "parallel",
+   "input": "兄が来て、弟は帰った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "て",
+     "connective": "て",
+     "token_span": [
+      3,
+      4
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-016",
+   "data": "parallel",
+   "input": "兄が本を読み、弟が歌を歌った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "並列",
+     "connective": "、",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [
+     "兄が本を読む。",
+     "弟が歌を歌った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が本を読む。",
+      "readable": true,
+      "clause": {
+       "predicate": "読む",
+       "roles": {
+        "agent": "兄",
+        "patient": "本"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が歌を歌った。",
+      "readable": true,
+      "clause": {
+       "predicate": "歌う",
+       "roles": {
+        "agent": "弟",
+        "patient": "歌"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [
+     {
+      "type": "PARALLEL_UNDETERMINED",
+      "from": 0,
+      "to": 1
+     }
+    ],
+    "reason": "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-017",
+   "data": "parallel",
+   "input": "母が絵を描き、姉が手紙を書いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "並列",
+     "connective": "、",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [
+     "母が絵を描く。",
+     "姉が手紙を書いた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が絵を描く。",
+      "readable": true,
+      "clause": {
+       "predicate": "描く",
+       "roles": {
+        "agent": "母",
+        "patient": "絵"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "姉が手紙を書いた。",
+      "readable": true,
+      "clause": {
+       "predicate": "書く",
+       "roles": {
+        "agent": "姉",
+        "patient": "手紙"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [
+     {
+      "type": "PARALLEL_UNDETERMINED",
+      "from": 0,
+      "to": 1
+     }
+    ],
+    "reason": "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-018",
+   "data": "parallel",
+   "input": "先生が本を読み、生徒が薬を飲んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "並列",
+     "connective": "、",
+     "token_span": [
+      5,
+      7
+     ]
+    },
+    "clause_texts": [
+     "先生が本を読む。",
+     "生徒が薬を飲んだ。"
+    ],
+    "clause_reads": [
+     {
+      "text": "先生が本を読む。",
+      "readable": true,
+      "clause": {
+       "predicate": "読む",
+       "roles": {
+        "agent": "先生",
+        "patient": "本"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "生徒が薬を飲んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "飲む",
+       "roles": {
+        "agent": "生徒",
+        "patient": "薬"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [
+     {
+      "type": "PARALLEL_UNDETERMINED",
+      "from": 0,
+      "to": 1
+     }
+    ],
+    "reason": "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-019",
+   "data": "parallel",
+   "input": "兄が着き、弟が帰った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "並列",
+     "connective": "、",
+     "token_span": [
+      2,
+      4
+     ]
+    },
+    "clause_texts": [
+     "兄が着く。",
+     "弟が帰った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が着く。",
+      "readable": true,
+      "clause": {
+       "predicate": "着く",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が帰った。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [
+     {
+      "type": "PARALLEL_UNDETERMINED",
+      "from": 0,
+      "to": 1
+     }
+    ],
+    "reason": "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-020",
+   "data": "parallel",
+   "input": "姉が戻り、母が座った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "並列",
+     "connective": "、",
+     "token_span": [
+      2,
+      4
+     ]
+    },
+    "clause_texts": [
+     "姉が戻る。",
+     "母が座った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が戻る。",
+      "readable": true,
+      "clause": {
+       "predicate": "戻る",
+       "roles": {
+        "agent": "姉"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "母が座った。",
+      "readable": true,
+      "clause": {
+       "predicate": "座る",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [
+     {
+      "type": "PARALLEL_UNDETERMINED",
+      "from": 0,
+      "to": 1
+     }
+    ],
+    "reason": "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-021",
+   "data": "parallel",
+   "input": "父が起き、祖父が立った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "並列",
+     "connective": "、",
+     "token_span": [
+      2,
+      4
+     ]
+    },
+    "clause_texts": [
+     "父が起きる。",
+     "祖父が立った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "父が起きる。",
+      "readable": true,
+      "clause": {
+       "predicate": "起きる",
+       "roles": {
+        "agent": "父"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "祖父が立った。",
+      "readable": true,
+      "clause": {
+       "predicate": "立つ",
+       "roles": {
+        "agent": "祖父"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [
+     {
+      "type": "PARALLEL_UNDETERMINED",
+      "from": 0,
+      "to": 1
+     }
+    ],
+    "reason": "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-022",
+   "data": "parallel",
+   "input": "弟が転び、兄が来た。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "abstain",
+   "reasons": null,
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "並列",
+     "connective": "、",
+     "token_span": [
+      2,
+      4
+     ]
+    },
+    "clause_texts": [
+     "弟が転ぶ。",
+     "兄が来た。"
+    ],
+    "clause_reads": [
+     {
+      "text": "弟が転ぶ。",
+      "readable": true,
+      "clause": {
+       "predicate": "転ぶ",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": null,
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "兄が来た。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [
+     {
+      "type": "PARALLEL_UNDETERMINED",
+      "from": 0,
+      "to": 1
+     }
+    ],
+    "reason": "RELATION_TYPE_UNDETERMINED:PARALLEL_UNDETERMINED",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-023",
+   "data": "parallel",
+   "input": "駅で兄が本を読み、弟が歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "並列",
+     "connective": "、",
+     "token_span": [
+      6,
+      8
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-024",
+   "data": "parallel",
+   "input": "兄が来、弟が帰り、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=3",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-025",
+   "data": "parallel",
+   "input": "兄が本を読み、弟は歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "並列",
+     "connective": "、",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-026",
+   "data": "parallel",
+   "input": "兄が本を読み、弟が歌を歌え。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "並列",
+     "connective": "、",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:imperative",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-027",
+   "data": "parallel",
+   "input": "兄が静かに本を読み、弟が歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=3",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-028",
+   "data": "parallel",
+   "input": "兄が本を読み、しかし弟が歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "並列",
+     "connective": "、",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:connective_outside_cut",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-029",
+   "data": "parallel",
+   "input": "兄が本を読み、弟が歌を歌いましたか。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "並列",
+     "connective": "、",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:question",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-PAR-030",
+   "data": "parallel",
+   "input": "兄がすぐ近くの店に行き、弟が帰った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "並列",
+     "connective": "、",
+     "token_span": [
+      9,
+      11
+     ]
+    },
+    "clause_texts": [
+     "兄がすぐ近くの店に行く。",
+     "弟が帰った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄がすぐ近くの店に行く。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_UNREAD:0:NO_SUPPORTED_CLAUSE"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_UNREAD:0:NO_SUPPORTED_CLAUSE",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-001",
+   "data": "w1a4",
+   "input": "兄は静かに本を読まなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:形状詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:cuts=0",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-002",
+   "data": "w1a4",
+   "input": "兄がゆっくり歩かなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:副詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-003",
+   "data": "w1a4",
+   "input": "弟は丁寧に字を書かなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:形状詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:cuts=0",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-004",
+   "data": "w1a4",
+   "input": "母はそっと窓を閉めなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:副詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-005",
+   "data": "w1a4",
+   "input": "兄がすぐ帰らなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:副詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-006",
+   "data": "w1a4",
+   "input": "兄が慎重にドアを開けなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_FOLLOWED"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:cuts=0",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-007",
+   "data": "w1a4",
+   "input": "兄がとても喜ばなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:副詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-008",
+   "data": "w1a4",
+   "input": "兄が来ないので、母がすぐ帰らなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:cuts=0",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-009",
+   "data": "w1a4",
+   "input": "母が簡単に窓を開けなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:形状詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:cuts=0",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-010",
+   "data": "w1a4",
+   "input": "兄がすぐ近くの店に行った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:副詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-011",
+   "data": "w1a4",
+   "input": "兄がすぐ隣の部屋に入った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:副詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-012",
+   "data": "w1a4",
+   "input": "母がすぐ前の店で本を買った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:副詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-013",
+   "data": "w1a4",
+   "input": "兄がとても近くの店に行った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:副詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-014",
+   "data": "w1a4",
+   "input": "手紙を書くように、本を読んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_NOT_LISTED:よう",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-015",
+   "data": "w1a4",
+   "input": "先生が教えるように、生徒が練習した。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_NOT_LISTED:よう",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-016",
+   "data": "w1a4",
+   "input": "兄が歩くように、弟が歩いた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_NOT_LISTED:よう",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-017",
+   "data": "w1a4",
+   "input": "窓を開けたら、戸を閉めろ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "たら",
+     "connective": "たら",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:imperative",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-018",
+   "data": "w1a4",
+   "input": "窓を開けるなら、戸を閉めよ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNCOVERED_PREDICATE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "なら",
+     "connective": "なら",
+     "token_span": [
+      5,
+      7
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:imperative",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-019",
+   "data": "w1a4",
+   "input": "窓を開けたので、戸を閉めろ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      5,
+      7
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:imperative",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-020",
+   "data": "w1a4",
+   "input": "兄が来たので、母が料理を作れ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      4,
+      6
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:imperative",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-021",
+   "data": "w1a4",
+   "input": "兄がとても喜んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:副詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-022",
+   "data": "w1a4",
+   "input": "本は兄が買ったので、読んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      7,
+      9
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-023",
+   "data": "w1a4",
+   "input": "客は店員が案内したので、席に座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      9,
+      11
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-024",
+   "data": "w1a4",
+   "input": "兄は駅に行ったが、弟は行かなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "が",
+     "connective": "が",
+     "token_span": [
+      7,
+      8
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-025",
+   "data": "w1a4",
+   "input": "兄は駅に行ったが、弟は着かなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "が",
+     "connective": "が",
+     "token_span": [
+      7,
+      8
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-026",
+   "data": "w1a4",
+   "input": "兄は東京から来たが、弟は来なかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "が",
+     "connective": "が",
+     "token_span": [
+      8,
+      9
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-027",
+   "data": "w1a4",
+   "input": "兄が公園で遊んだが、弟は遊ばなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "が",
+     "connective": "が",
+     "token_span": [
+      8,
+      9
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-028",
+   "data": "w1a4",
+   "input": "兄は駅に着いたが、弟は着かなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "が",
+     "connective": "が",
+     "token_span": [
+      7,
+      8
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-029",
+   "data": "w1a4",
+   "input": "兄は来ると、母に言う。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "と",
+     "connective": "と",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄は来る。",
+     "母に言う。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄は来る。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "母に言う。",
+      "readable": true,
+      "clause": {
+       "predicate": "言う",
+       "roles": {
+        "recipient": "母"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "RELATION_TYPE_UNDETERMINED:quote_possible",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-030",
+   "data": "w1a4",
+   "input": "兄は行くと、先生に話す。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "と",
+     "connective": "と",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄は行く。",
+     "先生に話す。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄は行く。",
+      "readable": true,
+      "clause": {
+       "predicate": "行く",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "先生に話す。",
+      "readable": true,
+      "clause": {
+       "predicate": "話す",
+       "roles": {
+        "recipient": "先生"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "RELATION_TYPE_UNDETERMINED:quote_possible",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-031",
+   "data": "w1a4",
+   "input": "弟は帰ると、姉に伝える。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "と",
+     "connective": "と",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "弟は帰る。",
+     "姉に伝える。"
+    ],
+    "clause_reads": [
+     {
+      "text": "弟は帰る。",
+      "readable": true,
+      "clause": {
+       "predicate": "帰る",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "姉に伝える。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-032",
+   "data": "w1a4",
+   "input": "兄は来ると、母に答える。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "と",
+     "connective": "と",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄は来る。",
+     "母に答える。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄は来る。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "母に答える。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-033",
+   "data": "w1a4",
+   "input": "兄は勝つと、弟に言う。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "と",
+     "connective": "と",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄は勝つ。",
+     "弟に言う。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄は勝つ。",
+      "readable": true,
+      "clause": {
+       "predicate": "勝つ",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟に言う。",
+      "readable": true,
+      "clause": {
+       "predicate": "言う",
+       "roles": {
+        "recipient": "弟"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "RELATION_TYPE_UNDETERMINED:quote_possible",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-034",
+   "data": "w1a4",
+   "input": "兄が来ると、母が言う。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "と",
+     "connective": "と",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄が来る。",
+     "母が言う。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が来る。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "母が言う。",
+      "readable": true,
+      "clause": {
+       "predicate": "言う",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "RELATION_TYPE_UNDETERMINED:quote_possible",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-035",
+   "data": "w1a4",
+   "input": "兄は来ると母に言う。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "と",
+     "connective": "と",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄は来る。",
+     "母に言う。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄は来る。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "母に言う。",
+      "readable": true,
+      "clause": {
+       "predicate": "言う",
+       "roles": {
+        "recipient": "母"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "RELATION_TYPE_UNDETERMINED:quote_possible",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-036",
+   "data": "w1a4",
+   "input": "兄が来ると、母が書く。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "と",
+     "connective": "と",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [
+     "兄が来る。",
+     "母が書く。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が来る。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "母が書く。",
+      "readable": true,
+      "clause": {
+       "predicate": "書く",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": "nonpast",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "RELATION_TYPE_UNDETERMINED:quote_possible",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-037",
+   "data": "w1a4",
+   "input": "姉が泣いたから、兄が慰めた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "から",
+     "connective": "から",
+     "token_span": [
+      5,
+      7
+     ]
+    },
+    "clause_texts": [
+     "姉が泣いた。",
+     "兄が慰めた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "姉が泣いた。",
+      "readable": true,
+      "clause": {
+       "predicate": "泣く",
+       "roles": {
+        "agent": "姉"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "兄が慰めた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-038",
+   "data": "w1a4",
+   "input": "弟が転んだので、兄が助けた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      5,
+      7
+     ]
+    },
+    "clause_texts": [
+     "弟が転んだ。",
+     "兄が助けた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "弟が転んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "転ぶ",
+       "roles": {
+        "agent": "弟"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "兄が助けた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-039",
+   "data": "w1a4",
+   "input": "先生が来たので、生徒が迎えた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      5,
+      7
+     ]
+    },
+    "clause_texts": [
+     "先生が来た。",
+     "生徒が迎えた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "先生が来た。",
+      "readable": true,
+      "clause": {
+       "predicate": "来る",
+       "roles": {
+        "agent": "先生"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "生徒が迎えた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-040",
+   "data": "w1a4",
+   "input": "犬が吠えたので、兄が叱った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      5,
+      7
+     ]
+    },
+    "clause_texts": [
+     "犬が吠えた。",
+     "兄が叱った。"
+    ],
+    "clause_reads": [
+     {
+      "text": "犬が吠えた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-041",
+   "data": "w1a4",
+   "input": "兄が歌ったので、弟が褒めた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      5,
+      7
+     ]
+    },
+    "clause_texts": [
+     "兄が歌った。",
+     "弟が褒めた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "兄が歌った。",
+      "readable": true,
+      "clause": {
+       "predicate": "歌う",
+       "roles": {
+        "agent": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "弟が褒めた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-042",
+   "data": "w1a4",
+   "input": "母が呼んだので、兄が答えた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      5,
+      7
+     ]
+    },
+    "clause_texts": [
+     "母が呼んだ。",
+     "兄が答えた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が呼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "呼ぶ",
+       "roles": {
+        "agent": "母"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "兄が答えた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-043",
+   "data": "w1a4",
+   "input": "母が兄を呼んだので、兄が答えた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "ので",
+     "connective": "ので",
+     "token_span": [
+      7,
+      9
+     ]
+    },
+    "clause_texts": [
+     "母が兄を呼んだ。",
+     "兄が答えた。"
+    ],
+    "clause_reads": [
+     {
+      "text": "母が兄を呼んだ。",
+      "readable": true,
+      "clause": {
+       "predicate": "呼ぶ",
+       "roles": {
+        "agent": "母",
+        "patient": "兄"
+       },
+       "polarity": "+",
+       "tense": "past",
+       "modality": null,
+       "voice": "active"
+      },
+      "reason": null
+     },
+     {
+      "text": "兄が答えた。",
+      "readable": false,
+      "clause": null,
+      "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行"
+     }
+    ],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-044",
+   "data": "w1a4",
+   "input": "兄が大胆に、しかし慎重に進んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:形状詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:cuts=0",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-045",
+   "data": "w1a4",
+   "input": "兄が静かに、そして丁寧に皿を洗った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:形状詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=3",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-046",
+   "data": "w1a4",
+   "input": "兄が静かに、または丁寧に皿を洗った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:形状詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=3",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-047",
+   "data": "w1a4",
+   "input": "兄が静かに、でも丁寧に皿を洗った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:形状詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=3",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-048",
+   "data": "w1a4",
+   "input": "兄は東京の駅に行ったが、弟は行かなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "が",
+     "connective": "が",
+     "token_span": [
+      10,
+      11
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-049",
+   "data": "w1a4",
+   "input": "兄は駅へ行ったが、弟は行かなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "が",
+     "connective": "が",
+     "token_span": [
+      7,
+      8
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-050",
+   "data": "w1a4",
+   "input": "兄はゆっくり駅に行ったが、弟は行かなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "が",
+     "connective": "が",
+     "token_span": [
+      11,
+      12
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-051",
+   "data": "w1a4",
+   "input": "兄は弟と公園に行ったが、姉は行かなかった。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "が",
+     "connective": "が",
+     "token_span": [
+      10,
+      11
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-052",
+   "data": "w1a4",
+   "input": "兄は来ると、母は思う。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ],
+   "explain": {
+    "triggered": true,
+    "cut": {
+     "kind": "と",
+     "connective": "と",
+     "token_span": [
+      4,
+      5
+     ]
+    },
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+    "read": false
+   }
+  },
+  {
+   "id": "W3B3-W1A4-053",
+   "data": "w1a4",
+   "input": "兄がゆっくり、また静かに歩いた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE",
+    "PLACEMENT_PART_NOT_NP:副詞"
+   ],
+   "explain": {
+    "triggered": false,
+    "cut": null,
+    "clause_texts": [],
+    "clause_reads": [],
+    "head": null,
+    "edges": [],
+    "reason": "W3B3_NOT_TRIGGERED:groups=1",
+    "read": false
+   }
+  }
+ ]
+}

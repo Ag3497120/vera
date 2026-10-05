@@ -1,0 +1,2 @@
+r8 queries cmp=0
+r9 queries cmp=0

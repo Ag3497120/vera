@@ -1,0 +1,852 @@
+{
+ "summary": {
+  "w3c7_sup.jsonl": {
+   "rows": 34,
+   "out_read": 25,
+   "v_correct": 34,
+   "entry_mismatch": 0,
+   "expect_mismatch": 0,
+   "structure_mismatch": 0,
+   "out_abstain": 9
+  }
+ },
+ "total": {
+  "rows": 34,
+  "out_read": 25,
+  "v_correct": 34,
+  "entry_mismatch": 0,
+  "expect_mismatch": 0,
+  "structure_mismatch": 0,
+  "out_abstain": 9
+ },
+ "words_missing_from_the_fixture": [],
+ "rows": [
+  {
+   "id": "W3C7-SUP-001",
+   "file": "w3c7_sup.jsonl",
+   "input": "生徒が来るから、妹が起きると、兄が立つ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "condition",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-002",
+   "file": "w3c7_sup.jsonl",
+   "input": "妹が本を買うけれど、生徒が座ったけれど、弟が起きる。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "contrast",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "contrast",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-003",
+   "file": "w3c7_sup.jsonl",
+   "input": "兄が絵を描くけれど、生徒が残るので、先生が歌を歌う。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "contrast",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-004",
+   "file": "w3c7_sup.jsonl",
+   "input": "母が薬を飲んだので、兄が来たので、先生が本を読んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-005",
+   "file": "w3c7_sup.jsonl",
+   "input": "兄が薬を飲むので、妹が落ちるけれど、弟が絵を描く。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "contrast",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-006",
+   "file": "w3c7_sup.jsonl",
+   "input": "姉が来るなら、妹が歌を歌うので、兄が落ちる。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "condition",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-007",
+   "file": "w3c7_sup.jsonl",
+   "input": "兄が座ったので、弟が薬を飲むと、姉が立つなら、母が本を読む。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "condition",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "kind": "finite",
+     "type": "condition",
+     "from": 2,
+     "to": 3
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-008",
+   "file": "w3c7_sup.jsonl",
+   "input": "姉が立つなら、兄が本を買うなら、弟が本を読むと、生徒が歌を歌う。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "condition",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "condition",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "kind": "finite",
+     "type": "condition",
+     "from": 2,
+     "to": 3
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-009",
+   "file": "w3c7_sup.jsonl",
+   "input": "兄が残るので、生徒が絵を描くと、母が帰るから、先生が本を買った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "condition",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 2,
+     "to": 3
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-010",
+   "file": "w3c7_sup.jsonl",
+   "input": "姉が座るなら、兄が来るから、妹が帰ったけれど、先生が落ちた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "condition",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "kind": "finite",
+     "type": "contrast",
+     "from": 2,
+     "to": 3
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-011",
+   "file": "w3c7_sup.jsonl",
+   "input": "兄が落ちて、母が帰った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "te",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-012",
+   "file": "w3c7_sup.jsonl",
+   "input": "兄が本を買って弟が落ちる。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "te",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-013",
+   "file": "w3c7_sup.jsonl",
+   "input": "兄が薬を飲んで、母が起きる。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "te",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-014",
+   "file": "w3c7_sup.jsonl",
+   "input": "兄が立ち、母が残る。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "parallel",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-015",
+   "file": "w3c7_sup.jsonl",
+   "input": "生徒が帰り、母が落ちる。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "parallel",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-016",
+   "file": "w3c7_sup.jsonl",
+   "input": "妹が本を買い、姉が本を読んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "parallel",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-017",
+   "file": "w3c7_sup.jsonl",
+   "input": "妹が姉が絵を描いたと言った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-018",
+   "file": "w3c7_sup.jsonl",
+   "input": "先生が姉が帰ったと思った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-019",
+   "file": "w3c7_sup.jsonl",
+   "input": "姉が妹が残ったと叫んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-020",
+   "file": "w3c7_sup.jsonl",
+   "input": "母が兄が落ちたと話した。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-021",
+   "file": "w3c7_sup.jsonl",
+   "input": "弟が先生が来たと知った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-022",
+   "file": "w3c7_sup.jsonl",
+   "input": "弟が母が本を買ったと書いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-023",
+   "file": "w3c7_sup.jsonl",
+   "input": "生徒が先生が起きると言う。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-024",
+   "file": "w3c7_sup.jsonl",
+   "input": "弟が生徒が残ると思う。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-025",
+   "file": "w3c7_sup.jsonl",
+   "input": "母が弟に話した人を兄が呼んだので、姉が絵を描いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "relative",
+     "type": "relative",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SUP-026",
+   "file": "w3c7_sup.jsonl",
+   "input": "兄が帰ったので、母が弟に話した人を姉が呼んだが、妹が絵を描いた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "RELATIVE_NESTED_NOT_READ",
+   "path": "M",
+   "reason": "RELATIVE_NESTED_NOT_READ:attachment",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SUP-027",
+   "file": "w3c7_sup.jsonl",
+   "input": "兄は本を読んだので、歌を歌ったが、弟が絵を描いた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "SUBJECT_SHARING_NOT_READ",
+   "path": "M",
+   "reason": "SUBJECT_SHARING_NOT_READ:1",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SUP-028",
+   "file": "w3c7_sup.jsonl",
+   "input": "母は薬を飲んだから、本を買ったけれど、姉が歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "SUBJECT_SHARING_NOT_READ",
+   "path": "M",
+   "reason": "SUBJECT_SHARING_NOT_READ:1",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SUP-029",
+   "file": "w3c7_sup.jsonl",
+   "input": "姉は本を読んで、薬を飲んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "SUBJECT_SHARING_NOT_READ",
+   "path": "T",
+   "reason": "SUBJECT_SHARING_NOT_READ:1",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-SUP-030",
+   "file": "w3c7_sup.jsonl",
+   "input": "歌を歌って、母が本を読んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "SUBJECT_SHARING_NOT_READ",
+   "path": "T",
+   "reason": "SUBJECT_SHARING_NOT_READ:0",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-SUP-031",
+   "file": "w3c7_sup.jsonl",
+   "input": "兄が笑ったので、弟が帰ったが、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ROLE_SHARING_NOT_READ",
+   "path": "M",
+   "reason": "ROLE_SHARING_NOT_READ:patient",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SUP-032",
+   "file": "w3c7_sup.jsonl",
+   "input": "母が飲み、姉が歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ROLE_SHARING_NOT_READ",
+   "path": "T",
+   "reason": "ROLE_SHARING_NOT_READ:patient",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-SUP-033",
+   "file": "w3c7_sup.jsonl",
+   "input": "兄が帰ったので、母が弟に話した人を姉が呼んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "RELATIVE_NESTED_NOT_READ",
+   "path": "M",
+   "reason": "RELATIVE_NESTED_NOT_READ:attachment",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SUP-034",
+   "file": "w3c7_sup.jsonl",
+   "input": "兄が来たが、母が弟に話した人を姉が呼んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "RELATIVE_NESTED_NOT_READ",
+   "path": "M",
+   "reason": "RELATIVE_NESTED_NOT_READ:attachment",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  }
+ ]
+}
