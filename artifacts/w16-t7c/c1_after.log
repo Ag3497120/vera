@@ -1,0 +1,43 @@
+形	名前	件数	漏れ	冪等	出力の先頭40字（印以外は秘密を含まない場合だけ）
+fullwidth	fw_prefix_only	1	無し	冪等	ヘッダは [REDACTED:sk:nfkc] です
+fullwidth	fw_all	1	無し	冪等	ヘッダは [REDACTED:sk:nfkc] です
+fullwidth	fw_japanese_nogap	1	無し	冪等	[REDACTED:sk:nfkc]
+fullwidth	fw_quoted	1	無し	冪等	curl -H "x: [REDACTED:sk:nfkc]"
+fullwidth	fw_akia	1	無し	冪等	ヘッダは [REDACTED:aws_akia:nfkc] です
+fullwidth	fw_ghp	1	無し	冪等	ヘッダは [REDACTED:gh_token:nfkc] です
+fullwidth	fw_fe63_dash	1	無し	冪等	ヘッダは [REDACTED:sk:nfkc] です
+fullwidth	fw_bearer_window	1	無し	冪等	ヘッダは [REDACTED:bearer:nfkc] です
+fullwidth	fw_password	1	無し	冪等	ヘッダは [REDACTED:kv_secret:nfkc] です
+percent	pct_dash	1	無し	冪等	ヘッダは [REDACTED:sk:pct] です
+percent	pct_dash_lower	1	無し	冪等	ヘッダは [REDACTED:sk:pct] です
+percent	pct_all	1	無し	冪等	ヘッダは [REDACTED:sk:pct] です
+percent	pct_double	1	無し	冪等	ヘッダは [REDACTED:sk:pct] です
+percent	pct_url_query	1	無し	冪等	see [REDACTED:sk:pct]
+percent	pct_bearer_space	1	無し	冪等	ヘッダは [REDACTED:bearer:pct] です
+percent	pct_akia	1	無し	冪等	ヘッダは [REDACTED:aws_akia:pct] です
+percent	pct_bearer_plus	1	無し	冪等	ヘッダは [REDACTED:bearer:pct] です
+base64	b64_padded	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_unpadded	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_urlsafe	1	無し	冪等	ヘッダは [REDACTED:kv_secret:b64] です
+base64	b64_password	1	無し	冪等	ヘッダは [REDACTED:kv_secret:b64] です
+base64	b64_basic_auth	1	無し	冪等	Authorization: Basic [REDACTED:sk:b64]
+base64	b64_in_token	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_akia	1	無し	冪等	ヘッダは [REDACTED:aws_akia:b64] です
+base64	b64_prefix_underscore	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_prefix_hyphen	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_url_path	1	無し	冪等	see [REDACTED:sk:b64] now
+base64	b64_ja_json_prefix_underscore	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_ja_json_url_path	1	無し	冪等	see [REDACTED:sk:b64] now
+base64	b64_ja_json_prefix_hyphen	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_alnum_prefix1	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_alnum_prefix3	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_alnum_prefix4	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_alnum_suffix	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_alnum_both	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_ja_json_suffix_hyphen	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_ja_json_suffix_underscore	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_ja_json_both_hyphen	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_ja_json_name_backup	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_ja_json_urlsafe_suffix_plus	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+base64	b64_ja_json_urlsafe_suffix_slash	1	無し	冪等	ヘッダは [REDACTED:sk:b64] です
+total 41 bad 0

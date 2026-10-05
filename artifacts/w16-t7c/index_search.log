@@ -1,0 +1,14 @@
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "秘匿 redact 変形 base64 NFKC",
+  "searched": 709,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 59,
+    "module": 305,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

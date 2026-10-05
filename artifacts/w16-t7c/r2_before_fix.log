@@ -1,0 +1,49 @@
+.FFF                                                                     [100%]
+=================================== FAILURES ===================================
+_______________ test_c1_variant_redacted[b64_prefix_underscore] ________________
+
+form = 'base64', name = 'b64_prefix_underscore'
+text = 'ヘッダは id_c2stYWJjZGVmZ2hpamtsbW5vcA== です'
+secrets = ['sk-abcdefghijklmnop', 'c2stYWJjZGVmZ2hpamtsbW5vcA==']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:104: AssertionError
+_________________ test_c1_variant_redacted[b64_prefix_hyphen] __________________
+
+form = 'base64', name = 'b64_prefix_hyphen'
+text = 'ヘッダは x-c2stYWJjZGVmZ2hpamtsbW5vcA== です'
+secrets = ['sk-abcdefghijklmnop', 'c2stYWJjZGVmZ2hpamtsbW5vcA==']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:104: AssertionError
+____________________ test_c1_variant_redacted[b64_url_path] ____________________
+
+form = 'base64', name = 'b64_url_path'
+text = 'see https://h.example/download/c2stYWJjZGVmZ2hpamtsbW5vcA== now'
+secrets = ['sk-abcdefghijklmnop', 'c2stYWJjZGVmZ2hpamtsbW5vcA==']
+
+    @pytest.mark.parametrize("form,name,text,secrets", VARIANTS, ids=[x[1] for x in VARIANTS])
+    def test_c1_variant_redacted(form, name, text, secrets):
+        out, n = L.redact(text)
+>       assert n >= 1, "伏せの件数 0"
+E       AssertionError: 伏せの件数 0
+E       assert 0 >= 1
+
+tests/test_w16t7c_redact_variants.py:104: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_prefix_underscore]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_prefix_hyphen]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_url_path]
+3 failed, 1 passed, 33 deselected in 0.11s
