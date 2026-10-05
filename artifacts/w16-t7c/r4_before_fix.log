@@ -1,0 +1,9 @@
+....................................FFFFFF.........                      [100%]
+=========================== short test summary info ============================
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_ja_json_suffix_hyphen]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_ja_json_suffix_underscore]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_ja_json_both_hyphen]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_ja_json_name_backup]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_ja_json_urlsafe_suffix_plus]
+FAILED tests/test_w16t7c_redact_variants.py::test_c1_variant_redacted[b64_ja_json_urlsafe_suffix_slash]
+6 failed, 45 passed in 1.85s
