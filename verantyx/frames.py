@@ -129,10 +129,25 @@ def attested(verb: str, rel: str, noun: str) -> bool:
 
 
 def canonical(name: str) -> str:
-    """Convention-neutral participant key: 小林医師 / 医師の小林 / 小林 -> 小林."""
+    """Convention-neutral participant key: 小林医師 / 医師の小林 / 小林 -> 小林.
+
+    The role suffix is stripped only for 名前（固有名詞）＋役職: the suffix must
+    start on a morpheme boundary and the morpheme before it must be a proper
+    noun. Otherwise the written form is the key as it is (W3-f1, K340): a kinship
+    word of two characters is one word, not a name plus a role."""
     for r in sorted(ROLES, key=len, reverse=True):
         if name.endswith(r) and len(name) > len(r):
-            return name[: -len(r)]
+            cut, end, last = len(name) - len(r), 0, None
+            for tok in _tagger()(name):
+                end += len(tok.surface)
+                if end == cut:
+                    last = tok
+                    break
+                if end > cut:
+                    break
+            if last is not None and last.feature.pos2 == "固有名詞":
+                return name[:cut]
+            return name
     if "の" in name:
         left, right = name.rsplit("の", 1)
         if is_role(left.split("の")[-1]):

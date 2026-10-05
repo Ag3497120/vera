@@ -1,0 +1,8 @@
+# W3-f1 判断の記録
+
+1. **許可パス外の `verantyx/frames.py` を 1 関数だけ変えた。** チケットの許可パスは observe/answer*/document_ingest/cross_store/semantic_names/question。原因はどれでもなく `frames.canonical()`（チケットの候補に「`frames.ROLES`（親族の表）との照合で 1 字目が選ばれる経路」として挙がっている）。実測: 出力の `semantic.proof` で agent の `term` が `叔` なのに `span.text` は `叔父`＝文書の節を作った時点で鍵が 1 字（`artifacts/w3-f1/repro_before_1.json`）。呼び出し側（`semantic_reader.py`・`semantic_verify.py`）は同じ関数を文書・問い・検証の全部で使う。`semantic_reader.py` はチケットで禁止。値の側（observe/answer）で表記を差し替える直し方は、鍵が衝突する偽の「はい」（叔母の文書に叔父を問うと可否: はい、`repro_before_2.json`・`range_before.tsv`）が残るので採らない。`canonical()` 以外の行は変えていない。
+2. **直し方**: 役職の接尾で割る枝に 2 条件（接尾の始まりが `_tagger()` の形態素の境目、境目の直前の形態素が `pos2 == 固有名詞`）。満たさなければ表記そのまま（棄権や空文字に倒さない）。語の一覧は足していない（`check_hardcode.txt` rc=1）。`の` の枝は未変更。接尾の最長一致で選んだ役職が条件を満たさないとき、より短い役職や `の` の枝には落とさず、そのまま `name` を返す（`妹の夫` が `夫` に短縮されるのを避けるため）。キャッシュは入れていない（`canonical()` 以外の行を増やさないため）。
+3. 検査データの雛形は指示書どおり（対照の「田中」で 3 雛形とも ANSWER は `a1_after.txt` の対照 3 件で確認。雛形は変えていない）。
+4. バンクの採点器は、指示書の `--entry` どおりだと B1 `cli` は全問 unreachable になった（`--python` の既定が venv でないことも原因の一つ）。`--python <venv python>` を付け、B1 は `--entry mod-semantic-read`、B2 は `cli-ask-round5` で測った。使った値は COMMANDS.md。B2 の公開の写しは 25 問中 correct 0（over_abstain 17・correct_abstain 6・unreachable 2）で、前後とも同じ。
+5. K342 の比較: 問ごとに `exit_code` と stdout の JSON 全体を、`nondeterministic_keys.txt`（W3-c4 のもの: `ingest_ms`・`elapsed_ms`）の値だけ 0 にして比べた（`k342_compare.py`）。aq・extra2 は同じ基点を 2 回流した対照で差が 0 件。w3c2・b2like は対照を取っていない（時間のかかる cli 経路のため。非決定の値は `ingest_ms`・`elapsed_ms` のマスクだけで足りたが、2 回目は流していない）。
+6. K342 の「それ以外」2 件（AQ025・AQ028）は規則を緩めずそのまま報告する。原因の分析は OBSERVATION の K342 の行と `k342_aq025_cause.txt`（問い側の `農夫→農` の短縮が直った結果。値・text 不変。「短縮が直る方向」に分類）。

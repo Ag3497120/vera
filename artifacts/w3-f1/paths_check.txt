@@ -1,0 +1,5 @@
+ M docs/OBSERVATION.md
+ M verantyx/frames.py
+?? artifacts/w3-f1/
+?? tests/reading_soundness/w3f1_kinship.jsonl
+?? tests/test_w3f1_kinship_answer.py

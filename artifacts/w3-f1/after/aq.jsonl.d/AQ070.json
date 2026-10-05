@@ -1,0 +1,1111 @@
+{
+  "kind": "answer",
+  "verdict": "ANSWER",
+  "text": "agent: 弟",
+  "values": [
+    "弟"
+  ],
+  "answer_values": [
+    [
+      "agent",
+      "弟"
+    ]
+  ],
+  "polarity": "+",
+  "evidence": [
+    "弟は兄に鉛筆を貸した。"
+  ],
+  "sources": [
+    {
+      "family": "document",
+      "sovereign": "document",
+      "source": "AD07.txt",
+      "clause": "ef635760323c790d43d8a531",
+      "text": "弟は兄に鉛筆を貸した。",
+      "span": {
+        "source": "AD07.txt",
+        "start": 47,
+        "end": 58,
+        "text": "弟は兄に鉛筆を貸した。"
+      }
+    }
+  ],
+  "trace": [
+    {
+      "part": "one.round5_route",
+      "status": "ran",
+      "code_intent": false,
+      "content_intent": false,
+      "decision_input": "raw_request",
+      "fallback": false
+    },
+    {
+      "part": "question.read_semantic",
+      "status": "ran",
+      "plans": 1,
+      "obligations": 8,
+      "unread": []
+    },
+    {
+      "part": "semantic_reader.document_view",
+      "status": "ran",
+      "clauses": 9,
+      "source_unread": [],
+      "source_unread_count": 0,
+      "source_unread_truncated": false,
+      "ingest_ms": 3.698791959322989
+    },
+    {
+      "part": "multigrain_source_binding",
+      "status": "ran",
+      "selected_source_views": 2,
+      "authority": "original-source span location only",
+      "full_original_view_required": true
+    },
+    {
+      "part": "semantic_execute.Producer",
+      "status": "ran",
+      "sovereign": "document",
+      "steps": 40,
+      "proposals": 0,
+      "candidates": 1,
+      "peak_bindings": 0,
+      "plan_depth": 4,
+      "unresolved_alternative_derivations": []
+    },
+    {
+      "part": "semantic_verify.Checker.gate",
+      "status": "ran",
+      "sovereign": "document",
+      "verified_answers": 0,
+      "shared_steps": 96
+    },
+    {
+      "part": "semantic_execute.Producer",
+      "status": "ran",
+      "sovereign": "document",
+      "steps": 155,
+      "proposals": 1,
+      "candidates": 2,
+      "peak_bindings": 1,
+      "plan_depth": 4,
+      "unresolved_alternative_derivations": []
+    },
+    {
+      "part": "semantic_verify.Checker.gate",
+      "status": "ran",
+      "sovereign": "document",
+      "verified_answers": 1,
+      "shared_steps": 385
+    },
+    {
+      "part": "semantic_execute.Producer",
+      "status": "ran",
+      "sovereign": "document",
+      "steps": 456,
+      "proposals": 1,
+      "candidates": 5,
+      "peak_bindings": 1,
+      "plan_depth": 4,
+      "unresolved_alternative_derivations": []
+    },
+    {
+      "part": "semantic_verify.Checker.gate",
+      "status": "ran",
+      "sovereign": "document",
+      "verified_answers": 1,
+      "shared_steps": 692
+    },
+    {
+      "part": "multigrain_adapter.retrieve_multigrain_candidates",
+      "status": "ran",
+      "verdict": "CANDIDATE_SOURCE_LEAF_MATCHED",
+      "selected_candidate": "兄",
+      "source_identity_status": "identity_unverified",
+      "independent_source_count": null,
+      "source_binding_status": "BOUND",
+      "source_binding_reason": "candidate leaf IDs and exact original Clause spans were rederived",
+      "candidate_views_supplied_to_answer_verifier": true,
+      "candidate_document_id_cited_after_full_view_check": true,
+      "candidate_sentence_span_cited_after_full_view_check": null,
+      "candidate_clause_span_cited_after_full_view_check": true,
+      "candidate_clause_span_match_count": 1,
+      "candidate_clause_span_causal_influence_proven": false,
+      "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+      "bound_source_supplied_to_goal_consumer": false,
+      "licenses_goal_realization": false
+    }
+  ],
+  "semantic": {
+    "version": "round5a",
+    "verified": true,
+    "request": {
+      "text": "誰が兄に鉛筆を貸した？",
+      "plans": [
+        {
+          "nodes": [
+            {
+              "id": "n0",
+              "op": "Bind",
+              "inputs": [],
+              "pattern": {
+                "predicate": "貸す",
+                "roles": [
+                  [
+                    "patient",
+                    "鉛筆"
+                  ],
+                  [
+                    "recipient",
+                    "兄"
+                  ],
+                  [
+                    "agent",
+                    {
+                      "name": "v1",
+                      "sort": "entity"
+                    }
+                  ]
+                ],
+                "polarity": "+",
+                "modality": "assert",
+                "time": "past",
+                "event": null
+              },
+              "tests": [],
+              "terms": [],
+              "target": null,
+              "relation": "",
+              "unit": "",
+              "absolute": false,
+              "choices": [],
+              "outputs": [],
+              "obligations": [
+                "o0",
+                "o1",
+                "o2",
+                "o3",
+                "o4",
+                "o5",
+                "o6"
+              ],
+              "span": {
+                "source": "question",
+                "start": 0,
+                "end": 11,
+                "text": "誰が兄に鉛筆を貸した？"
+              }
+            },
+            {
+              "id": "n1",
+              "op": "ApplyCondition",
+              "inputs": [
+                "n0"
+              ],
+              "pattern": null,
+              "tests": [],
+              "terms": [],
+              "target": null,
+              "relation": "",
+              "unit": "",
+              "absolute": false,
+              "choices": [],
+              "outputs": [],
+              "obligations": [],
+              "span": null
+            },
+            {
+              "id": "n2",
+              "op": "Except",
+              "inputs": [
+                "n1"
+              ],
+              "pattern": null,
+              "tests": [],
+              "terms": [],
+              "target": null,
+              "relation": "",
+              "unit": "",
+              "absolute": false,
+              "choices": [],
+              "outputs": [],
+              "obligations": [],
+              "span": null
+            },
+            {
+              "id": "n3",
+              "op": "Project",
+              "inputs": [
+                "n2"
+              ],
+              "pattern": null,
+              "tests": [],
+              "terms": [],
+              "target": null,
+              "relation": "",
+              "unit": "",
+              "absolute": false,
+              "choices": [],
+              "outputs": [
+                {
+                  "label": "agent",
+                  "term": {
+                    "name": "v1",
+                    "sort": "entity"
+                  },
+                  "obligation": "o7",
+                  "unit": "",
+                  "span": {
+                    "source": "question",
+                    "start": 0,
+                    "end": 11,
+                    "text": "誰が兄に鉛筆を貸した？"
+                  }
+                }
+              ],
+              "obligations": [
+                "o7"
+              ],
+              "span": null
+            }
+          ],
+          "root": "n3"
+        }
+      ],
+      "obligations": [
+        {
+          "id": "o0",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 11,
+            "text": "誰が兄に鉛筆を貸した？"
+          },
+          "kind": "relation",
+          "node": "n0",
+          "detail": "貸す"
+        },
+        {
+          "id": "o1",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 11,
+            "text": "誰が兄に鉛筆を貸した？"
+          },
+          "kind": "role",
+          "node": "n0",
+          "detail": "patient"
+        },
+        {
+          "id": "o2",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 11,
+            "text": "誰が兄に鉛筆を貸した？"
+          },
+          "kind": "role",
+          "node": "n0",
+          "detail": "recipient"
+        },
+        {
+          "id": "o3",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 11,
+            "text": "誰が兄に鉛筆を貸した？"
+          },
+          "kind": "role",
+          "node": "n0",
+          "detail": "agent"
+        },
+        {
+          "id": "o4",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 11,
+            "text": "誰が兄に鉛筆を貸した？"
+          },
+          "kind": "polarity",
+          "node": "n0",
+          "detail": "+"
+        },
+        {
+          "id": "o5",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 11,
+            "text": "誰が兄に鉛筆を貸した？"
+          },
+          "kind": "modality",
+          "node": "n0",
+          "detail": "assert"
+        },
+        {
+          "id": "o6",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 11,
+            "text": "誰が兄に鉛筆を貸した？"
+          },
+          "kind": "time",
+          "node": "n0",
+          "detail": "past"
+        },
+        {
+          "id": "o7",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 11,
+            "text": "誰が兄に鉛筆を貸した？"
+          },
+          "kind": "output",
+          "node": "n3",
+          "detail": "agent"
+        }
+      ],
+      "covered": [
+        {
+          "source": "question",
+          "start": 0,
+          "end": 11,
+          "text": "誰が兄に鉛筆を貸した？"
+        }
+      ],
+      "unread": [],
+      "stages": [],
+      "rules": [
+        "frame/edge/stage candidates",
+        "nominal-path",
+        "role-wh",
+        "relational-plan"
+      ]
+    },
+    "plan": {
+      "nodes": [
+        {
+          "id": "n0",
+          "op": "Bind",
+          "inputs": [],
+          "pattern": {
+            "predicate": "貸す",
+            "roles": [
+              [
+                "patient",
+                "鉛筆"
+              ],
+              [
+                "recipient",
+                "兄"
+              ],
+              [
+                "agent",
+                {
+                  "name": "v1",
+                  "sort": "entity"
+                }
+              ]
+            ],
+            "polarity": "+",
+            "modality": "assert",
+            "time": "past",
+            "event": null
+          },
+          "tests": [],
+          "terms": [],
+          "target": null,
+          "relation": "",
+          "unit": "",
+          "absolute": false,
+          "choices": [],
+          "outputs": [],
+          "obligations": [
+            "o0",
+            "o1",
+            "o2",
+            "o3",
+            "o4",
+            "o5",
+            "o6"
+          ],
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 11,
+            "text": "誰が兄に鉛筆を貸した？"
+          }
+        },
+        {
+          "id": "n1",
+          "op": "ApplyCondition",
+          "inputs": [
+            "n0"
+          ],
+          "pattern": null,
+          "tests": [],
+          "terms": [],
+          "target": null,
+          "relation": "",
+          "unit": "",
+          "absolute": false,
+          "choices": [],
+          "outputs": [],
+          "obligations": [],
+          "span": null
+        },
+        {
+          "id": "n2",
+          "op": "Except",
+          "inputs": [
+            "n1"
+          ],
+          "pattern": null,
+          "tests": [],
+          "terms": [],
+          "target": null,
+          "relation": "",
+          "unit": "",
+          "absolute": false,
+          "choices": [],
+          "outputs": [],
+          "obligations": [],
+          "span": null
+        },
+        {
+          "id": "n3",
+          "op": "Project",
+          "inputs": [
+            "n2"
+          ],
+          "pattern": null,
+          "tests": [],
+          "terms": [],
+          "target": null,
+          "relation": "",
+          "unit": "",
+          "absolute": false,
+          "choices": [],
+          "outputs": [
+            {
+              "label": "agent",
+              "term": {
+                "name": "v1",
+                "sort": "entity"
+              },
+              "obligation": "o7",
+              "unit": "",
+              "span": {
+                "source": "question",
+                "start": 0,
+                "end": 11,
+                "text": "誰が兄に鉛筆を貸した？"
+              }
+            }
+          ],
+          "obligations": [
+            "o7"
+          ],
+          "span": null
+        }
+      ],
+      "root": "n3"
+    },
+    "proof": {
+      "nodes": [
+        {
+          "id": "p0",
+          "op": "Source",
+          "plan_node": "",
+          "parents": [],
+          "clause": {
+            "id": "ef635760323c790d43d8a531",
+            "event": {
+              "name": "event_ef635760323c790d43d8a531",
+              "sort": "event"
+            },
+            "predicate": "貸す",
+            "predicate_span": {
+              "source": "AD07.txt",
+              "start": 54,
+              "end": 56,
+              "text": "貸し"
+            },
+            "roles": [
+              {
+                "name": "agent",
+                "term": "弟",
+                "span": {
+                  "source": "AD07.txt",
+                  "start": 47,
+                  "end": 48,
+                  "text": "弟"
+                },
+                "rule": "frame"
+              },
+              {
+                "name": "patient",
+                "term": "鉛筆",
+                "span": {
+                  "source": "AD07.txt",
+                  "start": 51,
+                  "end": 53,
+                  "text": "鉛筆"
+                },
+                "rule": "frame"
+              },
+              {
+                "name": "recipient",
+                "term": "兄",
+                "span": {
+                  "source": "AD07.txt",
+                  "start": 49,
+                  "end": 50,
+                  "text": "兄"
+                },
+                "rule": "frame"
+              }
+            ],
+            "span": {
+              "source": "AD07.txt",
+              "start": 47,
+              "end": 58,
+              "text": "弟は兄に鉛筆を貸した。"
+            },
+            "body_span": {
+              "source": "AD07.txt",
+              "start": 47,
+              "end": 58,
+              "text": "弟は兄に鉛筆を貸した。"
+            },
+            "polarity": "+",
+            "modality": "assert",
+            "time": "past",
+            "conditions": [],
+            "condition_spans": [],
+            "exceptions": [],
+            "exception_spans": [],
+            "exception_of": "",
+            "rule": "frame",
+            "sovereign": "document",
+            "family": "document",
+            "unsupported": []
+          },
+          "bindings": [],
+          "covers": [],
+          "answer": []
+        },
+        {
+          "id": "p1",
+          "op": "Bind",
+          "plan_node": "n0",
+          "parents": [
+            "p0"
+          ],
+          "clause": null,
+          "bindings": [
+            [
+              "v1",
+              "弟"
+            ]
+          ],
+          "covers": [
+            "o0",
+            "o1",
+            "o2",
+            "o3",
+            "o4",
+            "o5",
+            "o6"
+          ],
+          "answer": []
+        },
+        {
+          "id": "p2",
+          "op": "ApplyCondition",
+          "plan_node": "n1",
+          "parents": [
+            "p1"
+          ],
+          "clause": null,
+          "bindings": [
+            [
+              "v1",
+              "弟"
+            ]
+          ],
+          "covers": [
+            "o0",
+            "o1",
+            "o2",
+            "o3",
+            "o4",
+            "o5",
+            "o6"
+          ],
+          "answer": []
+        },
+        {
+          "id": "p3",
+          "op": "Except",
+          "plan_node": "n2",
+          "parents": [
+            "p2"
+          ],
+          "clause": null,
+          "bindings": [
+            [
+              "v1",
+              "弟"
+            ]
+          ],
+          "covers": [
+            "o0",
+            "o1",
+            "o2",
+            "o3",
+            "o4",
+            "o5",
+            "o6"
+          ],
+          "answer": []
+        },
+        {
+          "id": "p4",
+          "op": "Project",
+          "plan_node": "n3",
+          "parents": [
+            "p3"
+          ],
+          "clause": null,
+          "bindings": [
+            [
+              "v1",
+              "弟"
+            ]
+          ],
+          "covers": [
+            "o0",
+            "o1",
+            "o2",
+            "o3",
+            "o4",
+            "o5",
+            "o6",
+            "o7"
+          ],
+          "answer": [
+            [
+              "agent",
+              "弟"
+            ]
+          ]
+        }
+      ],
+      "root": "p4",
+      "sovereign": "document"
+    },
+    "attempts": [
+      {
+        "sovereign": "document",
+        "plan": "n3",
+        "answers": 0
+      },
+      {
+        "sovereign": "document",
+        "plan": "n3",
+        "answers": 1
+      },
+      {
+        "sovereign": "document",
+        "plan": "n3",
+        "answers": 1
+      }
+    ],
+    "budget": {
+      "limits": {
+        "parse": 32,
+        "depth": 8,
+        "candidates": 256,
+        "bindings": 64,
+        "steps": 4096
+      },
+      "steps": 692,
+      "candidates": 5,
+      "peak_bindings": 1
+    }
+  },
+  "door": "semantic_document",
+  "multigrain_navigation": {
+    "kind": "multigrain_candidates",
+    "verdict": "CANDIDATE_SOURCE_LEAF_MATCHED",
+    "raw_question": "誰が兄に鉛筆を貸した？",
+    "selector_query": "誰が兄に鉛筆を貸した？",
+    "candidate_limit": 8,
+    "selector_query_origin": "raw_question",
+    "query_terms": [
+      "兄",
+      "鉛筆"
+    ],
+    "selected_candidate": "兄",
+    "resolution_verdict": "ANSWER",
+    "resolution_item": "兄",
+    "resolution_as_core": [
+      "兄"
+    ],
+    "resolution_as_facet_only": [
+      "鉛筆"
+    ],
+    "resolution_missing": [],
+    "resolution_agreeing": 4,
+    "resolution_of": 4,
+    "candidates": [
+      {
+        "item": "兄",
+        "resolution_views": [
+          "g1",
+          "g2",
+          "g3",
+          "whole"
+        ],
+        "sources": [
+          {
+            "leaf": "AD07.txt",
+            "domain_path": [],
+            "path": [
+              "AD07.txt"
+            ],
+            "source_label": "AD07.txt",
+            "canonical_source_id": null,
+            "identity_status": "identity_unverified",
+            "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+            "grain_witnesses": [
+              {
+                "member": "whole",
+                "rung": "whole",
+                "size": 0,
+                "matched_feature_count": 1
+              },
+              {
+                "member": "g3",
+                "rung": "g3",
+                "size": 3,
+                "matched_feature_count": 1
+              },
+              {
+                "member": "g2",
+                "rung": "g2",
+                "size": 2,
+                "matched_feature_count": 1
+              },
+              {
+                "member": "g1",
+                "rung": "g1",
+                "size": 1,
+                "matched_feature_count": 1
+              }
+            ]
+          }
+        ],
+        "source_leaf_match_count": 1,
+        "independent_source_count": null,
+        "source_identity_status": "identity_unverified",
+        "selected_by_existing_constellation": true,
+        "source_reference_count": 1,
+        "source_references_truncated": false,
+        "selection_used_resolution_views": true
+      }
+    ],
+    "grain_trace": [
+      {
+        "member": "whole",
+        "rungs": [
+          [
+            "whole",
+            0
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": "兄",
+        "rung_readings": {
+          "whole": "兄"
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": true,
+        "independent_source_vote": false
+      },
+      {
+        "member": "g3",
+        "rungs": [
+          [
+            "g3",
+            3
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": "兄",
+        "rung_readings": {
+          "g3": "兄"
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": true,
+        "independent_source_vote": false
+      },
+      {
+        "member": "g2",
+        "rungs": [
+          [
+            "g2",
+            2
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": "兄",
+        "rung_readings": {
+          "g2": "兄"
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": true,
+        "independent_source_vote": false
+      },
+      {
+        "member": "g1",
+        "rungs": [
+          [
+            "g1",
+            1
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": "兄",
+        "rung_readings": {
+          "g1": "兄"
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": true,
+        "independent_source_vote": false
+      }
+    ],
+    "query_destinations": [
+      {
+        "leaf": "AD07.txt",
+        "domain_path": [],
+        "path": [
+          "AD07.txt"
+        ],
+        "source_label": "AD07.txt",
+        "canonical_source_id": null,
+        "identity_status": "identity_unverified",
+        "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash."
+      }
+    ],
+    "query_divisions_from_constellation": [
+      "AD07.txt"
+    ],
+    "query_divisions_are_partial": true,
+    "surface_route": {
+      "verdict": "ROUTED",
+      "leaf": "AD07.txt",
+      "trail": [
+        "AD07.txt"
+      ],
+      "selected_leaf": "AD07.txt",
+      "route_kind": "single_leaf_or_unbuilt",
+      "via_api": [
+        "Base.lower"
+      ],
+      "used_for_candidate_selection": false
+    },
+    "source_identity_status": "identity_unverified",
+    "independent_source_count": null,
+    "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+    "trace": {
+      "calls": {
+        "FullConstellation.ask": 1,
+        "resolution.ask_member_reads": 4,
+        "resolution.Ladder.vote_for_selection": 4,
+        "resolution.Ladder.vote_for_grain_trace": 4,
+        "FullConstellation.ask.hierarchy.gather": 1,
+        "source_tree_leaf_walk": 1,
+        "source_tree_nodes_visited": 1,
+        "source_tree_leaves_visited": 1,
+        "Base.lower": 1,
+        "conduct_tree.descend": 0,
+        "surface.route": 0
+      },
+      "candidate_selection": "FullConstellation.ask(raw_question); its existing resolution consensus is the selector",
+      "selector_query": "誰が兄に鉛筆を貸した？",
+      "source_join": "exact candidate core key plus configured source-leaf grain features",
+      "query_division_note": "FullConstellation.ask exposes at most six leaf names from its gather result",
+      "structural_views_are_source_votes": false,
+      "elapsed_ms": 0.58
+    },
+    "used_for_answer": false,
+    "used_for_goal_realization": false,
+    "authority": "source_location_hypothesis",
+    "truth_claim": false,
+    "source_binding": {
+      "version": "multigrain-source-binding-v1",
+      "status": "BOUND",
+      "reason": "candidate leaf IDs and exact original Clause spans were rederived",
+      "candidate": "兄",
+      "registry_sha256": "a0c872eafe75d2ccc30706ac507f03170bed4f4659ede23de77013166f2af6af",
+      "scope": "document identity and original-text location only",
+      "goal_relation_scope": "same-owner local explicit argument spans only",
+      "source_truth_status": "UNCLASSIFIED; no truth or authority claim",
+      "independent_source_count": null,
+      "selections": [
+        {
+          "source_id": "AD07.txt",
+          "original_sha256": "9648912238839227aa205cc8ec22ee1fed34fde43a54e5e1ce7b97209e0de5c0",
+          "leaf_id": "AD07.txt",
+          "leaf_path": [
+            "AD07.txt"
+          ],
+          "candidate": "兄",
+          "candidate_spans": [
+            [
+              36,
+              37
+            ]
+          ],
+          "sentence_text": "兄が妹に鉛筆を貸した。",
+          "sentence_span": {
+            "source": "AD07.txt",
+            "start": 36,
+            "end": 47
+          },
+          "clause_ids": [
+            "bc4d1954e84902fc1c8af28d"
+          ],
+          "predicates": [
+            "貸す"
+          ],
+          "request_target_anchor": null,
+          "target_role": null,
+          "target_argument_span": null,
+          "target_case_particle_span": null,
+          "candidate_role": null,
+          "candidate_argument_span": null,
+          "source_frame_id": null,
+          "source_frame_evidence_clause_id": null,
+          "source_assertion_status": null
+        },
+        {
+          "source_id": "AD07.txt",
+          "original_sha256": "9648912238839227aa205cc8ec22ee1fed34fde43a54e5e1ce7b97209e0de5c0",
+          "leaf_id": "AD07.txt",
+          "leaf_path": [
+            "AD07.txt"
+          ],
+          "candidate": "兄",
+          "candidate_spans": [
+            [
+              49,
+              50
+            ]
+          ],
+          "sentence_text": "弟は兄に鉛筆を貸した。",
+          "sentence_span": {
+            "source": "AD07.txt",
+            "start": 47,
+            "end": 58
+          },
+          "clause_ids": [
+            "ef635760323c790d43d8a531"
+          ],
+          "predicates": [
+            "貸す"
+          ],
+          "request_target_anchor": null,
+          "target_role": null,
+          "target_argument_span": null,
+          "target_case_particle_span": null,
+          "candidate_role": null,
+          "candidate_argument_span": null,
+          "source_frame_id": null,
+          "source_frame_evidence_clause_id": null,
+          "source_assertion_status": null
+        }
+      ]
+    },
+    "candidate_views_supplied_to_answer_verifier": true,
+    "candidate_document_id_cited_after_full_view_check": true,
+    "candidate_sentence_span_cited_after_full_view_check": null,
+    "candidate_clause_span_cited_after_full_view_check": true,
+    "candidate_clause_span_match_count": 1,
+    "candidate_clause_span_causal_influence_proven": false,
+    "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+    "candidate_goal_status": null
+  },
+  "runtime_mode": "round5",
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "factual",
+    "kind_class": "FACTUAL",
+    "basis": "HUMAN",
+    "basis_original": "HUMAN",
+    "human_present": false,
+    "show_reference": false,
+    "outcome": "ANSWER_HUMAN_BASIS",
+    "in_table": true,
+    "counts": {
+      "human": 1,
+      "generated": 0,
+      "non_evidence": 0,
+      "request_text": 0,
+      "unreadable": 0,
+      "non_evidence_by_origin": {},
+      "unknown_origin": 0,
+      "unknown_origin_by_family": {},
+      "unknown_origin_values": {}
+    },
+    "classify_version": 5,
+    "confirm_id_version": 2,
+    "sovereign": {
+      "state": "UNKNOWN_NO_SOVEREIGN",
+      "store_id": null,
+      "records_read": 0,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 0,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "UNKNOWN_NO_INDEX",
+      "reasons": {
+        "CAND_NOT_ONE_CROSS": 0,
+        "CAND_CENTER_DIFFERS": 0,
+        "CAND_ROLES_DIFFER": 0,
+        "CAND_FILLER_SPAN_AMBIGUOUS": 0,
+        "CAND_REREAD_DIFFERS": 0,
+        "CAND_CONTENT_DIFFERS": 0
+      },
+      "families": {
+        "local": "UNKNOWN_NO_INDEX",
+        "pro": "UNKNOWN_NO_INDEX",
+        "code": "UNKNOWN_NO_INDEX",
+        "conversation": "UNKNOWN_NO_INDEX",
+        "general_qa": "UNKNOWN_NO_INDEX",
+        "code_qa": "UNKNOWN_NO_INDEX",
+        "figurative_commonsense": "UNKNOWN_NO_INDEX",
+        "narrative": "UNKNOWN_NO_INDEX",
+        "paraphrase_entail": "UNKNOWN_NO_INDEX"
+      },
+      "searched_rows": 0,
+      "candidates": 0,
+      "distinct_forms": 0
+    }
+  }
+}

@@ -1733,3 +1733,37 @@ def test_the_new_names_are_at_the_end_of_the_closed_lists():
 - W3-c4 の主検査 111 問は変更前後とも CORRECT 68 / WRONG 0 / FALSE_NONE 1 / ABSTAINED 16 / NOT_RUN 26。extra2 の 42 問も CORRECT 19 / WRONG 0 / FALSE_NONE 0 / ABSTAINED 16 / NOT_RUN 7。両方とも問別の verdict・text・`sources[].{source,line,text}` の変更は 0（`artifacts/w5-f/i4_score_compare.txt`・`artifacts/w5-f/i4_changed.tsv`）。
 - 見出し・リンクを含む追加 Markdown 質問を含む質問十字テスト群は 73 件通過（`artifacts/w5-f/i4_tests.txt`）。`cli.py` は変更していない。
 - W3-c4 の攻撃写しは「元の Markdown 文字列の部分文字列」を要求するため、この定義では通らない（宣言 K-C4、`artifacts/w5-f/i1_attack.txt`）。読込後の本文から切り出した出典が定義に一致することは追加テストで確認した。
+
+## W3-f1 の事前登録: 答えの値の全表記（K340–K342）
+
+登録時刻: 2026-10-05 15:06:53 +0900（`artifacts/w3-f1/prereg_time.txt`）。検査データを書く前、製品コードを変える前に登録する。
+
+### 規則（チケットから）
+- **K340**: 答えの値は、読解器が読んだ充填物の表記そのまま（NFKC）。切り出し・正規化・見出し語化で短くしない。短くなる経路はすべて、棄権で逃げずに元の表記を返すように直す。
+- **K341**: 修正は原因の 1 箇所。修正の前に、現象を再現するテストを凍結（検査データ 60 文以上: 親族・人の 2 字以上の名詞 × 役割 3 × 問い）。修正の後に全件が全文字で返ること。
+- **K342**: 既存の凍結データ（B 系の公開の写し、W3-c4・W5-c の検査データ）の答えが byte 不変であること。変わる行は全件列挙（短縮が直る方向だけ許す）。
+
+### 検査データの型
+- 名詞 25 語: 父・母・祖父・祖母・叔父・叔母・伯父・伯母・兄・姉・弟・妹・息子・娘・夫・妻・孫・友人・同僚・上司・部下・先輩・後輩・店主・教師。
+- 役割 3 の雛形（X に名詞）: agent は文書「Xが肥料を運んだ。」／問い「誰が肥料を運んだ？」、recipient は文書「店員がXに本を渡した。」／問い「店員は誰に本を渡した？」、patient は文書「医師がXを診察した。」／問い「医師が誰を診察した？」。
+- 偽の肯定の 6 対（polar）: 文書「Bが肥料を運んだ。」／問い「Aは肥料を運んだ？」、(A,B) = (叔父,叔母)・(叔母,叔父)・(祖父,祖母)・(祖母,祖父)・(伯父,伯母)・(伯母,伯父)。
+- 合計 75 + 6 = 81 件。対照として同じ 3 雛形を名前「田中」で流す 3 件。
+
+### 判定の式
+- 役割の問い: `verdict == "ANSWER"` かつ `values == [名詞の全表記]`。
+- 偽の肯定の対: `verdict == "ANSWER"` かつ `text` に「はい」を含む、が起きないこと（それ以外の verdict・いいえ・棄権は可）。
+- 経路: `verantyx.cli.main` の既定の入口（`ask --mode round5 --document`）。
+
+## W3-f1 実測結果: 答えの値の全表記（K340–K342）
+
+数値はすべて `artifacts/w3-f1/` のファイルから（出典を併記）。
+
+- **原因**: `verantyx/frames.py` の `canonical()` が、`ROLES` の `父`・`母` などの接尾で名前を割り、`叔父` を名前 `叔` ＋役職 `父` として鍵を `叔` にしていた。文書・問い・検証の全部が同じ関数を使うので、答えの値が短くなり、`叔父` と `叔母` の鍵（`叔`）が衝突して偽の「はい」も出ていた（`repro_before_1.json`・`repro_before_2.json`）。許可パス外の 1 ファイルだが、値の側で直すと偽の肯定が残る（`DECISIONS.md` 1）。
+- **修正**: `canonical()` の接尾の枝に 2 条件（接尾の始まりが形態素の境目、直前の形態素が固有名詞）。満たさなければ表記そのまま。語の一覧は足していない（`check_hardcode.txt`）。
+- **誤答の範囲（修正前）**: 検査データ 81 件（名詞 25 語 × 役割 3 ＋ 偽の肯定 6 対）のうち 24 件が誤り。祖父・祖母・叔父・叔母・伯父・伯母の 6 語 × 役割 3 = 18 件は 1 字目だけ（祖・叔・伯）で ANSWER、偽の肯定 6 対はすべて「可否: はい」（`range_before_truncated.tsv`）。父・母・兄・姉・弟・妹・息子・娘・夫・妻・孫・友人・同僚・上司・部下・先輩・後輩・店主・教師は全表記で返った（`range_before.tsv`）。
+- **修正後**: 同じ 81 件で 1 字でも欠けた ANSWER は 0、偽の「はい」は 0（`range_after_truncated.tsv` は見出しだけ。偽の肯定 6 対は UNKNOWN_NO_EVIDENCE、`range_after.tsv`）。テスト `tests/test_w3f1_kinship_answer.py` は修正前 24 失敗・61 通過（`a1_before.txt`）、修正後 85 通過（`a1_after.txt`）。再現（叔父が肥料を運んだ）は `values: ["叔父"]`（`repro_after_1.json`）。
+- **frames 層の調査**: 凍結データの文 7050 文を読み、agent/patient/recipient の値で canonical が短くなる組は 24 組 → 4 組（森田課長→森田・田中部長→田中・先生の夫婦→夫婦・祖父の家→家）。前は 叔父・叔母・祖父・祖母・伯父・伯母・農夫・曾孫・孫娘・新妻・兄の友人 等（`census_before.tsv`・`census_after.tsv`。文数と組数は `census_before.log`＝7050 文・24 組、`census_after.log`＝7050 文・4 組。前は基点 `af5594a` の `frames.py` ＋同じ凍結データで取り直した）。`frames.regression()` の false の集合は前後同じ（`relative`・`rel_trans`、`frames_regression_*.txt`）。
+- **K342**: 質問 aq 111・extra2 42・w3c2 185・b2like 47 の ask 出力を問ごとに全文比較（`ingest_ms`・`elapsed_ms` をマスク）。変化は 3 問（`k342_changed.tsv`、`k342_summary.txt`）。Q069（w3c2）は verdict・values・text 同じで、内部の term が `農` → `農夫` になっただけ（短縮が直る方向）。**「それ以外」が 2 問**: AQ025（誰が農夫に小麦を渡さなかった？）と AQ028（誰が農夫に小麦を渡した？）は、どちらも棄権のまま型が `UNKNOWN_UNREAD`（問いが読めない）→ `UNKNOWN_UNSUPPORTED_EVIDENCE`（文書の節が読めない）に変わった。値は無く、text は同じ。aq の score は ABSTAINED 16→14・NOT_RUN 26→28、CORRECT/WRONG は不変（`before/aq_score.json`・`after/aq_score.json`）。extra2・w3c2・b2like の score は同一。aq・extra2 の同じ基点 2 回の対照で差は 0 件。**原因（実測、`k342_aq025_cause.txt`）**: 基点では問い側の `農夫` が `canonical` で `農` に短縮され、問い「誰が農夫に小麦を渡さなかった？」そのものが読めなかった（`before/aq.jsonl` の AQ025: `question.read_semantic` の `plans=0`・`unread` = `unsupported request grammar`、問いの全文）。修正後は問いが読め（`plans=1`・`obligations=8`・`unread=[]`、Bind の pattern に `recipient: 農夫`）、棄権の理由は文書の見出し「町の記録」の `source_unread`（`unsupported clause grammar`、基点でも同じ）に移った。単文の切り分け（基点→修正後）: 「粉屋が農夫に小麦を渡した。」／「誰が農夫に小麦を渡した？」は `UNKNOWN_UNREAD`→`ANSWER ['粉屋']`、対照の「田中」は前後とも `ANSWER ['粉屋']`、「叔父」は `UNKNOWN_UNREAD`→`ANSWER ['粉屋']`。分類: 問い側の短縮が直った結果で、値・text は不変（CORRECT 68・WRONG 0 も不変）。規則は緩めていない。
+- **公開バンクの写し**: B1（mod-semantic-read）・B2（cli-ask-round5）の問別の結果は前後で同一（`bs_compare.txt`、`bs_B1_*.txt`・`bs_B2_*.txt`）。B2 の公開の写し 25 問に親族名詞を含む項目は 0 件（`b2_public_kin_count.txt`）。
+- **テスト**: 関係テストの失敗の集合は前後同一（`related_before.txt`・`related_after.txt`）。全体テスト（第 2 ラウンドで負荷 1 分平均 6.9 のときに 1 回だけ流し直し。`pytest_full_load_before.txt`）: `pytest_full.txt` の最終行 `117 failed, 15976 passed, 38 skipped, 81 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 627.62s (0:10:27)`、ERROR 0。`after_failures.txt` はこの同じファイルの `^(FAILED|ERROR)` 行（117 件）。基線 `dev_bfb17b8_failures.txt`（115）との差 `new_failures.txt` は 3 件、基線にあって通った `fixed_failures.txt` は 1 件（test_one_trace）。3 件の分類は `new_failures_classified.txt` と、基点（git 付きの clean な写し）でも全体テストを 1 回流した `pytest_full_base.txt`（116 failed、`after_failures_base.txt`）: (a) `test_p4_abilities::test_speech_act_drafts_fill_new_roles_and_reread` と (b) `test_gen_coarse_evidence::test_the_stop_signal_ends_the_run_with_an_interrupted_record` は基点の全体走行でも落ちる（チケットが環境由来と書いた系統。(b) は単独では基点・修正後とも通る。全体走行でだけ落ちる）。(c) `bank_score/test_bs_end_to_end::test_s6_two_runs_agree_except_timing_and_recount_matches` の理由は `tools/bank_score/cli.py:335` の `verantyx_untouched`（`git status --porcelain -- verantyx` が空でないと False）で、`verantyx/frames.py` が未コミットだから落ちる。git 付きの写しで未コミットのとき落ち（`new_failures_classified.txt`）、写しの中だけでコミットすると `1 passed`、基点の clean な git 写しでは全体走行でも通る（`after_failures_base.txt` に無い）。したがってコミット後に消える見込み。第 1 ラウンドの報告にあった test_conduct_ask_w5b・test_w10f04_serve の失敗は、今回の全体走行では出なかった（負荷由来で再現しない）。
+- **既知の穴**: 固有名詞と判定されない姓（`原`・`星` など）＋役職は割られなくなる（`原先生` は鍵が `原先生` のまま。`canonical_probe.txt`）。「X は誰を V？」（は＋誰を）は基点でも `UNKNOWN_UNREAD`（対象外）。

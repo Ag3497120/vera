@@ -1,0 +1,32 @@
+# 基点（HEAD af5594a、git 付きの clean な写し）での 3 件
+..F                                                                      [100%]
+=================================== FAILURES ===================================
+E   AssertionError: assert ('generation' == 'generation'
+      
+        generation and 'unknown' == 'answer'
+      
+      - answer
+      + unknown)
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/f1r2/cb/tests/test_p4_abilities.py:290: AssertionError: assert ('generation' == 'generation'
+=========================== short test summary info ============================
+FAILED tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread
+1 failed, 2 passed in 8.19s
+
+# 修正後（未コミット、git 付きの写し。git status --porcelain -- verantyx が空でない）での 3 件
+ M verantyx/frames.py
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/f1r2/cn/tests/bank_score/test_bs_end_to_end.py:99: AssertionError: assert ('<WORK>/home' == '<WORK>/home'
+E   AssertionError: assert ('generation' == 'generation'
+      
+        generation and 'unknown' == 'answer'
+      
+      - answer
+      + unknown)
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/f1r2/cn/tests/test_p4_abilities.py:290: AssertionError: assert ('generation' == 'generation'
+=========================== short test summary info ============================
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+FAILED tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread
+2 failed, 1 passed in 8.24s
+
+# 修正後を写しの中だけでコミットしたあとの s6（W にはコミットしていない）
+.                                                                        [100%]
+1 passed in 7.11s
