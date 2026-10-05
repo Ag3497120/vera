@@ -200,9 +200,11 @@ def test_verdict_order_unanchored_before_conflict_before_missing_element(records
     assert first(records, "久保田澄江", [ok]).verdict == "anchored"
 
 
-def test_no_elements_with_a_real_quote_is_anchored(records):
+def test_no_elements_with_a_real_quote_is_not_anchored(records):
+    """旧い期待: anchored（第 1 ラウンド。要素が無ければ確かめる物が無いので錨あり）。
+    監査役の裁定 第 5 ラウンド 3 で改めた: 要素も確かめる内容語も無い答えは「確かめた」と言えないので unanchored（NO_CONTENT_TO_CHECK）。"""
     r = first(records, "そうです", [q(D1, 5, "予備の行である。")])
-    assert r.elements == [] and r.verdict == "anchored"
+    assert r.elements == [] and r.verdict == "unanchored" and r.reason == "NO_CONTENT_TO_CHECK"
 
 
 def test_year_month_day_components_are_matched_one_by_one(records):

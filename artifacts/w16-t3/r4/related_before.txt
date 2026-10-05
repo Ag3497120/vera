@@ -1,0 +1,27 @@
+........................................................................ [ 19%]
+........................................................................ [ 39%]
+........................................................................ [ 58%]
+........................................................................ [ 78%]
+....................F................................................... [ 97%]
+........                                                                 [100%]
+=================================== FAILURES ===================================
+_ test_serve_adds_placement_layer_only_with_a_layer_and_leaves_the_fusion_layer_alone _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2186/test_serve_adds_placement_laye0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x12bbd7a10>
+
+    def test_serve_adds_placement_layer_only_with_a_layer_and_leaves_the_fusion_layer_alone(tmp_path, monkeypatch):
+        layer = make_layer(tmp_path, [('ウサギ', 'ANIMAL'), ('図書館', 'PLACE'), ('ディレイラー', 'ARTIFACT')])
+        monkeypatch.setenv(PL.ENV_LAYER, '')
+        base = turn(cfg_of(tmp_path))
+>       assert 'placement_layer' not in base['vera'] and list(base['vera']) == ['schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'quote_check', 'timing']
+E       AssertionError: assert ('placement_layer' not in {'schema': 'verantyx.fusion/1', 'layer': 0, 'request_kind': 'factual', 'reading': {'type': 'QUESTION_CROSS', 'state': 'FILLED', 'reason': 'semantic_document', 'hole_role': 'agent', ...}, ...} and ['schema', 'l...mmar_id', ...] == ['schema', 'l...mmar_id', ...]
+E         
+E         At index 10 diff: 'timing' != 'quote_check'
+E         Right contains one more item: 'timing'
+E         Use -v to get more diff)
+
+tests/test_w10f05_cli.py:154: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w10f05_cli.py::test_serve_adds_placement_layer_only_with_a_layer_and_leaves_the_fusion_layer_alone
+1 failed, 367 passed in 67.94s (0:01:07)

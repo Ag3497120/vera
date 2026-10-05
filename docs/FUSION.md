@@ -1964,6 +1964,16 @@ W10-f04 の J10（門 (b) の実現 → 再読が、実現器が型つきの十�
 - **J-R3-4** 基名が同じ別ファイルは同じ文書として扱う。記録の `source` は basename で、`cli._qc_records`（T2 の範囲・未修正）が基名の同じ別ファイルの 2 つ目の本文を `where.setdefault` で失う。(ii) は立たない（狭める）側に倒れる。`line_bodies` は同じ id の記録を 1 度だけ連結する（これまで 2 度連結していた）。
 - **J-R3-5** `question=None` は何も除外しない（厳しい側）。serve の経路は必ず問いを渡す（`_attach_quote_check` の引数に足した）。
 - **J-R3-6** 答えが文字列でないときの `unanchored` は `reason` の文字列比較ではなく局所の真偽値で決める（第 2 ラウンドのレビューの任意改善 2）。形態素解析の呼び出しと品詞・見出し語の読み出しは同じ try の中（同改善 3）。
+- **J-R4-1（第 4 ラウンド。撤回）** 応答の語を含まない答え（`そうです。`）を `NO_CONTENT_TO_CHECK` で `unanchored` にする案は、既存の試験 `test_no_elements_with_a_real_quote_is_anchored`（答え `そうです` → `anchored`）と衝突したので撤回した（§9.13b）。3c は応答の語（感動詞・`違う`）を含む答えだけ。
+- **J-R4-2** `tests/test_w10f05_cli.py` 154 行目を dev `a7507b3` の行に戻した（§9.7 の末尾。T2 の merge で記録が答える経路になり、`quote_check` が作られないため。`git diff a7507b3 -- tests/test_w10f05_cli.py` は空）。
+- **J-R4-3** `違う`（動詞）を応答の語に入れた。裁定の文（はい・いいえ・ええ・違う 等）の名指しどおりで、他の語は足していない。
+- **J-R4-4** 3c に当たる答えでは、3b の未被覆が `違う` だけのとき理由は `YESNO_NOT_CHECKED` を優先する（verdict は同じ）。
+- **J-R4-5** 3c・3d の判定に使う解析は、答えの全文（`_analyze(answer)`）と各実在引用の text。問いは、選択の問いかどうかの判定（R11）と、3c の条件 (c)（内容語が問いの語の繰り返しかどうか。R3 の `_covered(wd, qtoks)`。選択の問いでは `qtoks` は空。§9.13c）に使う。第 5 ラウンドからは R12（K654。問いの語の繰り返しを除いた残りが空かどうか。§9.16）にも使う。
+- **J-R5-1（第 5 ラウンド。裁定 3 との衝突）** 裁定 2 は R28（そうです。）・E07／G13（はい、支払います。）の型を閉じることを求め、裁定 3 は「ほかの既存の試験の期待は変えない」と定める。第 4 ラウンドの凍結データの O-02（`cases_r4b.jsonl`、`そうです。` → `anchored`）と YC-02（`cases_r4c.jsonl`、`はい、社内の人が務めます。` → `anchored`）はこの 2 つの型を既知の穴として `anchored` と書いたもので、K654 を入れると必ず赤になる。裁定 2 の目的を優先し、期待を強める側（anchored → unanchored）だけ替えた。凍結済みのファイルは書き換えていない: O-02 は `tests/test_w16t3_r4.py` の読み先を `cases_r4.jsonl`（最初に凍結した版。O-02 の期待は `unanchored`／`NO_CONTENT_TO_CHECK`）に戻し、YC-02 は `r5/cases_r4c_r5.jsonl`（YC-02 の `expect`・`expect_reason_prefix`・`note` だけ替えた写し。他の 10 件は byte 一致）を読む。**監査役への申し送り: この 2 件の期待を替えたことの確認をお願いする。**
+- **J-R5-2** `そう（です）` は 3c の応答の語に入れない（§9.16）。
+- **J-R5-3** `その通りです。` は `通り` が名詞（普通名詞）で内容語 1 個なので 3b に落ちる（§9.16、H-03）。
+- **J-R5-4** `非自立可能` の述語だけの答え（`できません。`）は内容語 0 個で、正しい答えでも `NO_CONTENT_TO_CHECK`（F-01。偽の錨なし）。
+- **J-R5-5** R2（名詞と動詞の表層一致）は変えない。閉じない型は §9.8 に開示（H-01・H-02）。
 
 ### 9.5 測定結果（出力ファイルから機械で貼った）
 
@@ -2325,6 +2335,19 @@ def test_serve_adds_placement_layer_only_with_a_layer_and_leaves_the_fusion_laye
 ```
 
 §9.7 の補足: 旧 `VERA_KEYS` の定数（`tests/test_serve_fusion.py`）は他の試験も使うので、定数を変えず、層 0 の事実の問い（文書あり・LLM を呼ぶ）の試験でだけ `VERA_KEYS | {'quote_check'}` と書いた。層 1 の `set(l1) == VERA_KEYS` は変わらない。
+
+##### （第 4 ラウンド）tests/test_w10f05_cli.py の同じ試験の 154 行目を dev の期待に戻した
+
+第 3 ラウンドの裁定 4 で足した `'quote_check'` を外し、154 行目は dev `a7507b3` の行と byte 一致（`git diff a7507b3 -- tests/test_w10f05_cli.py` は 0 行）。理由: 統合した T2 の変更で、この試験の問い（記録が `QUESTION_CROSS` で答える）は LLM を呼ばなくなり、`quote_check` の鍵は作られない。`-vv` の出力 `r4/w10f05_vv.txt`（戻す前）は `At index 10 diff: 'timing' != 'quote_check'`。期待は弱まらない（完全一致の assert のまま）。名前・他の行は変えていない。
+
+戻す前の全文（154 行目）:
+
+    assert 'placement_layer' not in base['vera'] and list(base['vera']) == ['schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'quote_check', 'timing']
+
+戻した後の全文（154 行目）:
+
+    assert 'placement_layer' not in base['vera'] and list(base['vera']) == ['schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'timing']
+
 ### 9.8 既知の穴（隠さない）
 
 - **見逃し 11 件の内訳**（`t31_result.txt` の機械集計。誤答で `anchored` の 11 = 要素 0 個 6〔W1 5・N1 1〕＋ 要素あり 5〔W1 1・N1 4〕）:
@@ -2347,6 +2370,23 @@ def test_serve_adds_placement_layer_only_with_a_layer_and_leaves_the_fusion_laye
 
 - **極性（否定）の取り違えは検出できない**（第 3 ラウンドのレビュー M3。裁定の内容語の定義の範囲外）。内容語の被覆は助動詞（ない・ません）を見ず、`非自立可能`（ある・なる・できる）も外すので、肯定と否定を取り違えても被覆される。例: 引用 `予備の在庫はない。` に答え `予備の在庫があります。`、引用 `駐車場は利用できる。` に答え `駐車場は利用できません。` はどちらも `anchored` になる（`artifacts/w16-t3/r3b/probe_polarity_choice.txt`）。T3-1 の見逃し 9 のうち W1 の 4 件（S1-ANS-05・S2-ANS-07・S3-ANS-05・S4-ANS-07）は 4 件とも否定の取り違え（答え「求める」・引用「…求めない。」など）。`非自立可能` の除外を外すと `する` で偽の錨なしが出る（レビューの反実仮想では T3-2 の S1-PARA1d で 3 行）ので外していない。直すかどうかは監査役の判断。
 - **選択の問いでは、引用に無い方の選択肢を答えても `anchored` になる**（R3。問いの語の除外の帰結。第 3 ラウンドのレビュー M3）。問いに選択肢が並ぶと、その語は被覆の対象から外れる。再現: 問い `会場は大会議室と小会議室のどちらですか`、引用 `会場は小会議室である。`、答え `大会議室です。` → `anchored`（`probe_polarity_choice.txt`）。裁定の「問いの語の繰り返しは除く」の意図がどこまでかの確認が要る。
+
+- **（第 4 ラウンド）極性・はい／いいえ・選択の問いは閉じた（ただし範囲つき）**: 答えに述語があるときの否定の有無の食い違い（3d）、応答の語だけの答え（3c）、選択の問いでの問いの語の被覆（R11）。以下は残る穴。
+- **F 型の偽の錨なし（規則どおり。誤検出として数える）**: 否定は有無だけを見るので、引用の連体修飾・条件の中の否定（`役員でない会員には、議事録を配る。`／`雨天でない場合は…`）に対して肯定の正しい答え（`配ります`）は `POLARITY_DIFFERS` で `unanchored` になる（F-01・F-02）。選択の問いでは問いの語（`会場は`）を繰り返す正しい答えも、引用に無ければ `ANSWER_CONTENT_NOT_IN_QUOTE` で `unanchored`（F-03）。直すために「問いと同じ否定は除く」などの語の規則を足していない（安全側で残す）。
+- **`AかBですか`（`か` が 1 か所）は選択の問いにならない**: R11 は `どちら`／`どっち`、または 名詞・接尾辞 の直後の `か` が 2 か所以上。`会議は東館か西館ですか` の取り違えは、問いの語として被覆から外れるため見逃す。語を足して直さない。
+- **否定は有無だけで数を数えない**: 二重否定（`行わないわけではない`）も「有り」。引用が否定、答えも否定の二重否定なら比べて一致する。
+- **述語の無い答えの否定は比べない**: `月曜日です`（名詞＋です）は述語でないので、引用が `月曜日は休まない` でも `anchored`（O-01）。
+- **`そうです` は確かめないまま `anchored`（J-R4-1 の撤回の帰結）**: 要素・述語・内容語が無く、応答の語も無い答えは、実在する引用があれば `anchored`（既存の試験 `test_no_elements_with_a_real_quote_is_anchored` と同じ型。O-02 は `cases_r4b.jsonl` で `anchored`）。「anchored = 確かめた」の主張に穴が残る。（第 5 ラウンドで閉じた。§9.16）
+- **偽の conflict（P16／P17 の型。第 3 ラウンドのレビューの申し送り 2。裁定 5 で残す）**: 実在する 2 つの引用の同じ種類の要素（固有名・数値）が文書間で違うと、答えに関係なく `conflict` になる。安全側。
+- **偽の錨なし（P03 の型。R1′ の帰結。裁定 5 で残す）**: `第7窓口` と `第七窓口` のように、表記が違うだけの正しい答えは数詞が内容語として比べられ `unanchored` になる。
+- **形態素解析の分割が文脈で揺れる**: 同じ語 `東館` が `、` の直後では `東`＋`館`、`は` の直後では `東館` の 1 語になる（unidic。自作の検査データの作成中に確認）。語の表層で比べるので、引用と答えで分割が違うと正しい答えでも未被覆になりうる（偽の錨なし）。
+
+- **（第 4 ラウンド、レビュー M1 の後）はい／いいえ＋問いの語の繰り返し（§9.13c）**: `はい、現金です。`（問い `支払いは現金ですか`）は、引用に同じ語が有っても `YESNO_NOT_CHECKED` で `unanchored`（YQF-01・YQF-02。規則どおりの偽の錨なし。誤検出として数える）。
+- **述語を伴う答えは極性だけ（残る穴）**: `はい、社内の人が務めます。`（引用 `…外部の専門家が務める。`、YC-02）は、答えの内容語が問いの語の繰り返しと引用の語で被覆され、極性（否定の有無）が合うので `anchored`（誤答。§9.13c が 3c を述語の無い答えに限るため）。（第 5 ラウンドで閉じた。§9.16）
+- **問いの語だけの答え（応答の語なし）**: `現金です。`（問い `支払いは現金ですか`、引用 `支払いはカードで行う。`）は R3 により被覆され、述語も要素も応答の語も無いので `anchored`（誤答。レビュー E02）。`できます。`（問い `展示室は撮影できますか`、引用 `展示室は撮影禁止だ。`）も同じ型（レビュー R31）。裁定 3 の範囲外。（第 5 ラウンドで閉じた。§9.16）
+- **（第 5 ラウンド）reason の変化**: 述語が `非自立可能` だけの否定の答えは `POLARITY_DIFFERS` から `NO_CONTENT_TO_CHECK` に reason が変わる（verdict は同じ。§9.16c）。
+- **（第 5 ラウンド）閉じたもの**: `そうです` 型・問いの語だけの答え・述語つきの言い直しは R12（K654）で閉じた（O-02・YC-02・E02 型・R31 型。検査データ `cases_r5` の SO・QO・PR）。
+- **（第 5 ラウンド）残る穴（J-R5-3〜5）**: (1) `その通りです。` は `通り` が名詞なので R12 でなく 3b に落ち、引用に `通り` があれば `anchored`（裁定の例との違い。H-03 は引用に無い場合）。(2) `できません。`・`あります。` など `非自立可能` の述語だけの正しい答えは内容語 0 個で `NO_CONTENT_TO_CHECK`（偽の錨なし。F-01。T3-2 の再照合では S4-ANS-06 の 1 行）。(3) R2 により、答えの動詞と引用の名詞の表層が等しければ被覆される（`はい、支払います。` + 引用に名詞 `支払い`。H-01）。(4) 答えが問いの要の語を落とした言い直し（`はい、行います。`、問い `…隔週で行いますか`。H-02）は、答えに無い問いの語は求めないので閉じない。いずれも `anchored` になりうる（確かめていないのに確かめたと言う型）。
 
 ### 9.9 第 3 ラウンドの規則（事前登録 2026-10-06 00:32:33 +0900）
 
@@ -2525,4 +2565,321 @@ rows where change is allowed (layer 0, FACTUAL, LLM called, not QUESTION_CROSS):
   of which actually changed: 90 ; of which carry vera.quote_check: 90
 rows outside that set: 204
 rows outside that set that changed (pass = 0): 0
+```
+
+### 9.13 第 4 ラウンドの規則（事前登録 2026-10-06 02:13:45 +0900）
+
+監査役の第 4 ラウンドの裁定（チケット末尾）に基づく。§9.1〜§9.12 の文は書き換えない。以下は検査データ（`artifacts/w16-t3/r4/cases_r4.jsonl`）とコードより先に書く。予想・目標値は書かない。品詞・見出し語は `typed_edges._tagger`（unidic）の `pos1`・`pos2`・`lemma`。語の一覧は作らない。使う語彙は品詞名と、裁定が名指した `ない`・`ず`・`無い`・`だ`・`です`・`違う`・`どちら`・`どっち`・`か` だけ。
+
+- **R7 否定の有無** `neg(text)`: 解析した語に、`pos1 == 助動詞` かつ `lemma ∈ {ない, ず}`、または `pos1 == 形容詞` かつ `lemma == 無い` の語が 1 つでもあれば真。接頭辞（不・未・非）・名詞は数えない。有無だけで、数は数えない（二重否定も「有り」）。
+- **R8 述語の有無** `has_pred(answer)`: 答えに `pos1 ∈ {動詞, 形容詞}` の語がある（`非自立可能` の `ある`・`できる`・`する` も含む）、または `形状詞` の直後に `pos1 == 助動詞` かつ `lemma ∈ {だ, です}` の語がある。名詞＋です（`月曜日です`）は述語なし。
+- **R9 極性（規則 3d）**: `has_pred(answer)` が真のときだけ、`neg(answer)` と、実在した（exact／relocated）引用の text ごとの `neg(text)` を比べる。1 つでも違えば `unanchored`、理由 `POLARITY_DIFFERS`。引用が 2 つ以上で極性が割れていれば、答えはどちらかと必ず違うので `unanchored`（勝者を選ばない）。
+- **R10 応答の語（規則 3c）**: 応答の語 = `pos1 == 感動詞` の語、および `pos1 == 動詞` かつ `lemma == 違う` の語（裁定が名指しした語）。答えが (a) 要素 0 個、(b) 述語（R8）が `違う` 以外に無い、(c) 内容語（R1′）が `違う` 以外に無い、の 3 つを満たし、かつ応答の語を 1 つ以上含むなら `unanchored`、理由 `YESNO_NOT_CHECKED`。
+  - **J-R4-1**: (a)(b)(c) を満たし、応答の語を含まない答え（`そうです。` のように確かめる語が 1 つも無い）も `unanchored`、理由 `NO_CONTENT_TO_CHECK`。裁定の「確かめていないのに anchored」を閉じる狭める側の読み。
+  - **J-R4-4**: `違います。` は内容語が `違う` だけで、`違う` が引用に無いと規則 3b が先に `ANSWER_CONTENT_NOT_IN_QUOTE:違う` を立てる。(a)(b)(c) を満たす答えでは、3b の未被覆が `違う` だけのとき、理由は `YESNO_NOT_CHECKED` を優先する（`違う` を応答の語として扱うため。verdict は同じ `unanchored`）。
+- **R11 選択の問い**: 問いの解析結果に、表層が `どちら` または `どっち` の語がある、または「`pos1 ∈ {名詞, 接尾辞}` の語の直後に `pos1 == 助詞` で表層 `か` の語」が 2 か所以上あるとき、選択の問いとする。選択の問いでは R3（問いの語を被覆の対象から外す）を使わない。`AかBですか`（`か` が 1 か所）は選択の問いにならない（既知の穴として §9.8 に書く。語を足して直さない）。
+- **印の順**（上から最初に当たったもの。既存の 1〜3b は変えない）: 1 unanchored（引用 0／捏造／答えが文字列でない）→ 2 conflict → 3 unanchored（解析不可／要素が引用に無い）→ 3b unanchored（`ANSWER_CONTENT_NOT_IN_QUOTE`）→ **3c unanchored（`YESNO_NOT_CHECKED`／`NO_CONTENT_TO_CHECK`）→ 3d unanchored（`POLARITY_DIFFERS`）** → 4 anchored。3c・3d は anchored を unanchored にするだけ（conflict と先の理由の unanchored は変えない。先の理由があれば上書きしない。J-R4-4 の場合を除く）。`to_dict` の鍵は増やさない。
+- 解析できないとき（形態素解析が使えない）は既存の `NAME_TAGGER_UNAVAILABLE` の経路に入り、`unanchored`。
+- **検査データ**（`cases_r4.jsonl`、期待は上の規則から手で決める。文は T3-1・W14・cases_r3b・伏せた集合の写しでなく、新しく書く）: 極性の取り違え P 8（`ない`・`ぬ`・`なかった`・形容詞 `ない`・`ではない`・`ません`・割れた 2 引用）／極性の対照 PC 4（否定どうし 2・肯定どうし 1・接頭辞を含む肯定 1）／はい・いいえ Y 4／述語つきの応答 YP 2／選択の取り違え S 4／選択の対照 SC 2／規則どおりの偽の錨なし F 3（誤検出として数える）／その他の対照 O 2。計 29。
+
+### 9.13b 第 4 ラウンドの規則の訂正（J-R4-1 の撤回。記録 2026-10-06 02:15:53 +0900。コードを書いた後の訂正であることを隠さない）
+
+§9.13 の J-R4-1（応答の語を含まない答え `そうです。` を `NO_CONTENT_TO_CHECK` で `unanchored` にする）を実装して関係試験を流したところ、既存の試験 `tests/test_w16t3_quote_check.py::test_no_elements_with_a_real_quote_is_anchored`（答え `そうです`・要素なし → `anchored`）が赤になった。指示書は第 3 ラウンドまでの `tests/test_w16t3_*.py` を触らないと定め、期待の変更は監査役の許可の範囲に限る。裁定 3 の文面（はい／いいえ・ええ・違う 等の応答の語だけ）は `そうです` を名指していない。よって **J-R4-1 を撤回**し、3c は応答の語（感動詞・`違う`）を含む答えだけに掛ける。`そうです` は引き続き要素・述語・内容語が無いまま `anchored` になる（既知の穴。§9.8 に書く）。
+- 検査データ: 凍結済みの `cases_r4.jsonl`（直す前の赤の記録に使った）は残し、O-02 の期待だけを `anchored` に変えた `cases_r4b.jsonl` を作って試験の対象にする（`cases_r4b.sha256`）。他の 28 件は同一。
+- コードは 3c の条件に「応答の語を含む」を足しただけ（`NO_CONTENT_TO_CHECK` の理由は出さない）。
+
+### 9.13c 規則 3c (c) の訂正（事前登録 2026-10-06 02:34:17 +0900。第 4 ラウンドのレビュー r1 の必須 M1。検査データとコードより先に書く）
+
+§9.13 と §9.13b の文は書き換えない。R10 の (c)「内容語（R1′）が `違う` 以外に無い」は、第 3 ラウンドの裁定 1 の「内容語 = 問いの語の繰り返しを除く」で読む。
+- **R10 (c) の読み**: 答えの内容語（R1′）のうち、`違う` 以外のものがすべて **問いの語の繰り返し**（R3 の `_covered(wd, qtoks)` が真）であること。選択の問い（R11）では `qtoks` は空なので、何も繰り返しとはみなさない。`qtoks` は R11 を当てた後のものを使う。
+- 帰結: `はい、現金です。`（問い `支払いは現金ですか`）は内容語が問いの語の繰り返しだけなので、応答の語だけの答えとして `unanchored`、理由 `YESNO_NOT_CHECKED`。**引用に同じ語がある正しい答え**（引用 `支払いは現金で行う。`）も同じく `YESNO_NOT_CHECKED` になる。これは規則どおりの偽の錨なしとして数える（誤検出に入れる）。
+- 述語を伴う答え（`はい、社内の人が務めます。`）は 3c に当たらない（述語が `違う` 以外にある。(b)）。3d の極性の検査だけに掛かる。極性が合えば `anchored` になる穴が残る。§9.8 で開示する。
+- 他の規則・`to_dict`・`reason` の優先順位・R10 の (a)(b)・応答の語の定義・J-R4-1 の撤回は変えない。anchored を unanchored にする方向だけ（広げない）。
+- 検査データ: `artifacts/w16-t3/r4/cases_r4c.jsonl`（8 件以上。応答の語＋問いの語の繰り返しだけの誤答、同じ形の正しい答え、対照）。文は新しく書く。コードの前に凍結する（`cases_r4c.sha256`、`cases_r4c_time.txt`）。直す前の赤を `cases_r4c_before.txt` に残す。
+
+### 9.14 第 4 ラウンドの測定（`artifacts/w16-t3/r4/`。出力ファイルから機械で貼った。`r3/`・`r3b/` は上書きしていない）
+
+#### 順序と凍結
+- 事前登録 §9.13（日時 `r4/prereg_r4_time.txt` = 2026-10-06 02:13:45 +0900、`prereg_r4.sha256`）→ 検査データ凍結 `cases_r4.jsonl`（29 件、`cases_r4.sha256`、日時 `cases_r4_time.txt` = 2026-10-06 02:14:36 +0900）→ 直す前の赤（`cases_before.txt`）→ コード。コードを書いた後に J-R4-1 を撤回した（§9.13b。`cases_r4b.jsonl`、`cases_r4b.sha256`、日時 `cases_r4b_time.txt` = 2026-10-06 02:15:53 +0900。O-02 の期待だけ違う）。
+- 型 × 期待（`cases_r4b.jsonl`）: {"F/unanchored": 3, "O/anchored": 2, "P/unanchored": 8, "PC/anchored": 4, "S/unanchored": 4, "SC/anchored": 2, "Y/unanchored": 4, "YP/anchored": 1, "YP/unanchored": 1}
+- 直す前（`cases_before.txt`）の末尾: `21 failed, 10 passed in 0.49s`（赤 21 件 = P 8・Y 4・YP-02・S 4・F 3・O-02 のほか、対照（PC・SC・YP-01・O-01）と凍結の試験は通った）。直した後（`cases_after.txt`）: `31 passed in 0.39s`。
+- 3 つの t3 試験＋新規（`t3_tests.txt`）: `134 passed in 1.16s`。
+
+#### T3-1（自作の集合。T3-4 の伏せた集合が本番）— `r4/t31_result.txt`・`r4/t31_diff.txt`・`r4/t31_serve_path.txt`
+- T3-1（自作の集合。通っても証拠にならない。T3-4 の伏せた集合が本番）
+- (a) LLM 自身の引用を信じる: 検出 0/30 = 0.0%
+- (b) Vera の照合:            検出 25/30 = 83.3%
+- 上乗せ (b)-(a): 25 件（+83.3 点）
+- 誤検出（正しい ANS 20 のうち anchored 以外）: 0/20 = 0.0%
+- 型ごとの検出（a / b）:
+```
+  W1 n=10  a=0  b=10  印={'conflict': 4, 'unanchored': 6}
+  W2 n=10  a=0  b=10  印={'unanchored': 10}
+  N1 n=5  a=0  b=0  印={'anchored': 5}
+  N2 n=5  a=0  b=5  印={'unanchored': 5}
+NONE の正しい候補 10 の印の分布: {'unanchored': 10}（誤検出の分母に入れない）
+要素 0 個で anchored: 全 60 件のうち 6、誤答のうち 1
+取り出せなかった漢数字の並び（skipped）: 0
+誤答なのに anchored（見逃し）: 5 = 要素 0 個 1（N1 1） ＋ 要素あり 4（N1 4）
+  要素あり・見逃し: S1-NONE-01   N1  要素=[('name', '久保田澄子', ['D1_bihin_kitei.txt:5'])]
+  要素あり・見逃し: S2-NONE-04   N1  要素=[('name', '山根卓哉', ['D2_shiryo_tejun.txt:45'])]
+  要素あり・見逃し: S3-NONE-03   N1  要素=[('name', '森下裕美', ['D3_gijiroku.txt:6'])]
+  要素あり・見逃し: S4-NONE-02   N1  要素=[('name', '戸田健司', ['D4_shiyou_v2.txt:25'])]
+誤答のうち規則 3b（ANSWER_CONTENT_NOT_IN_QUOTE）で unanchored になった件: 2（S1-ANS-09, S3-ANS-09）
+誤検出（正しい ANS で anchored でない）の一覧: 0 件
+正しい候補（ANS・NONE）のうち規則 3b で anchored でなくなった件（第 2 ラウンドでは anchored だったかは t31_result.txt の 1 行目以降と比べる）: 0
+```
+（上の貼り付けは第 4 ラウンドの `paste_docs_r4.py` が先頭 6 行で切れていたのを、`paste_docs_r4c.py` が `r4/t31_result.txt` の「候補ごとの印」の直前まで補った。）
+- 第 3 ラウンド（`r3b/t31_result.txt`）との印の変化（全件。`t31_diff.txt`）:
+
+```
+S1-ANS-05 W1 wrong=True anchored->unanchored reason=POLARITY_DIFFERS 引用=通常の使用による摩耗や破損について、使用者に弁償を求めない。
+S2-ANS-07 W1 wrong=True anchored->unanchored reason=POLARITY_DIFFERS 引用=返却を求めない依頼者には、試料を返さない。
+S3-ANS-05 W1 wrong=True anchored->unanchored reason=POLARITY_DIFFERS 引用=小雨のときは、防災訓練を中止しない。
+S4-ANS-07 W1 wrong=True anchored->unanchored reason=POLARITY_DIFFERS 引用=2回目の延長は、認めない。
+印か reason が変わった行: 4 / 60
+誤答で anchored -> 非 anchored になった数: 4
+正しい ANS（wrong=false, cat=ANS）で anchored -> 非 anchored（偽の錨なしの増加）: 0
+anchored 以外 -> anchored（あってはならない）: 0
+```
+- serve の経路（`t31_serve_path.txt` の 1 行目）: serve の経路（FusionConfig + 偽の LLM）に 60 候補を通した: 同じ 55、違う 0、LLM を呼ばなかった（記録が答えた）5。変更前（`t31_serve_path_before.txt`）: serve の経路（FusionConfig + 偽の LLM）に 60 候補を通した: 同じ 55、違う 0、LLM を呼ばなかった（記録が答えた）5。第 3 ラウンドの 60 件「同じ 60」から「記録が答えた 5」に変わったのは、統合した W16-t2 で記録が `QUESTION_CROSS` で答える問いが増えたため（T3 の規則の効果ではない。S1-ANS-04/08/09・S3-ANS-03/04）。
+
+#### T3-2（実機は流し直さず、保存した raw を再照合）— `r4/t32_recheck.txt`
+```
+保存された結果: /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3-S/artifacts/w16-t3/r3/w14/C/results.jsonl
+quote_check のある行: 255
+今の QC.check の to_dict が保存と同一: 252
+違う行: 3
+S2-ANS-06 rep=0 cat=ANS anchored -> unanchored reason=YESNO_NOT_CHECKED 答え=いいえ 引用=1人だけで確認した結果は、依頼者へ送らない。 問い=1人だけで確認した結果を依頼者へ送りますか。
+S3-ANS-07 rep=0 cat=ANS anchored -> unanchored reason=YESNO_NOT_CHECKED 答え=いいえ 引用=役員でない会員には、議事録を配らない。 問い=役員でない会員に議事録を配りますか。
+S4-ANS-05 rep=0 cat=ANS anchored -> unanchored reason=POLARITY_DIFFERS 答え=設けない 引用=返却が遅れた利用者には、延滞の罰則を設ける。 問い=予約の取り消しについて、利用者に罰則を設けますか。
+保存の印の分布（255 行すべて）: {'anchored': 144, 'unanchored': 108, 'conflict': 3}
+今の印の分布（255 行すべて）: {'anchored': 141, 'unanchored': 111, 'conflict': 3}
+anchored 以外 -> anchored: 0
+reason の分布（今）: {None: 251, 'YESNO_NOT_CHECKED': 2, 'POLARITY_DIFFERS': 1, 'ANSWER_CONTENT_NOT_IN_QUOTE:行わ': 1}
+```
+
+#### T3-3（K653 の byte 一致。基線は dev `a7507b3` の写し）— `r4/t33_k653.txt`
+```
+310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3/r4work/serve_base_a7507b3.jsonl
+     310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3/r4work/serve_new.r4.jsonl
+     620 total
+rows base 310 new 310
+rows where change is allowed (layer 0, FACTUAL, LLM called, not QUESTION_CROSS): 87
+  of which actually changed: 71 ; of which carry vera.quote_check: 71
+rows outside that set: 223
+rows outside that set that changed (pass = 0): 0
+```
+- 基線を基点 `3a1677c` から dev `a7507b3` に替えた理由: T2 の merge で serve の出力が変わり、古い基線では「外」の 35 行が変わって見える。基線は `git archive a7507b3` の写しで取り直した（中間職の写しと `cmp` 一致）。
+- 第 3 ラウンド後の写し（`serve_head.jsonl`）と今回の 310 行を比べると、違う行は 0（`r4/t33_verdict_changes.txt`）。
+
+#### 関係試験（18 ファイル＋新規）
+- 変更前（`related_before.txt`）: `1 failed, 367 passed in 67.94s (0:01:07)`（落ちた 1 件は `test_w10f05_cli.py` の 154 行目。§9.7 の第 4 ラウンドの項）。
+- 変更後（`related_after.txt`）: `399 passed in 67.43s (0:01:07)`。新しい失敗 0（`related_new_failures.txt` が 0 byte）。
+- 監査役の「関係テスト 236 passed」の集合には `test_w10f05_cli.py` が入っていなかったと見られる（上の 18 ファイルでは変更前に 1 件落ちた）。
+
+### 9.15 第 4 ラウンドのレビュー M1・M2 への対応（`artifacts/w16-t3/r4c/`。出力ファイルから機械で貼った。`r4/` は上書きしていない）
+
+#### 順序と凍結（M1）
+- 事前登録 §9.13c（日時 `r4/prereg_r4c_time.txt` = 2026-10-06 02:34:17 +0900、`r4/prereg_r4c.sha256`）→ 検査データ凍結 `r4/cases_r4c.jsonl`（11 件、`cases_r4c.sha256`、日時 `r4/cases_r4c_time.txt` = 2026-10-06 02:34:35 +0900）→ 直す前の赤（`r4/cases_r4c_before.txt`）→ コード（`quote_check.py` の 3c の (c) だけ）。
+- 型 × 期待: {"F/unanchored": 2, "YC/anchored": 3, "YC/unanchored": 1, "YQ/unanchored": 5}
+- 直す前の末尾: `7 failed, 6 passed, 31 deselected in 0.38s`。直した後（`r4/cases_r4c_after.txt`、cases_r4b も含む）: `44 passed in 0.45s`。3 つの t3 試験＋新規（`r4/t3_tests_c.txt`）: `147 passed in 1.19s`。
+- コードの前後の mtime（ナノ秒）は報告に記録した（赤の記録 < `quote_check.py`）。
+
+#### T3-1（`r4c/t31_result.txt`）
+- `t31_result.txt`・`t31_result.json`・`t31_serve_path.txt` を `r4/` のものと比べると、`t31_result.txt` は 同一（cmp 一致）、`t31_result.json` は 同一（cmp 一致）、`t31_serve_path.txt` は 同一（cmp 一致）。よって 60 件の印・誤検出 0/20・検出 25/30 は r4 から変わらない（偽の錨なしの増加 0）。
+```
+T3-1（自作の集合。通っても証拠にならない。T3-4 の伏せた集合が本番）
+(a) LLM 自身の引用を信じる: 検出 0/30 = 0.0%
+(b) Vera の照合:            検出 25/30 = 83.3%
+上乗せ (b)-(a): 25 件（+83.3 点）
+誤検出（正しい ANS 20 のうち anchored 以外）: 0/20 = 0.0%
+型ごとの検出（a / b）:
+  W1 n=10  a=0  b=10  印={'conflict': 4, 'unanchored': 6}
+  W2 n=10  a=0  b=10  印={'unanchored': 10}
+  N1 n=5  a=0  b=0  印={'anchored': 5}
+  N2 n=5  a=0  b=5  印={'unanchored': 5}
+NONE の正しい候補 10 の印の分布: {'unanchored': 10}（誤検出の分母に入れない）
+要素 0 個で anchored: 全 60 件のうち 6、誤答のうち 1
+取り出せなかった漢数字の並び（skipped）: 0
+誤答なのに anchored（見逃し）: 5 = 要素 0 個 1（N1 1） ＋ 要素あり 4（N1 4）
+  要素あり・見逃し: S1-NONE-01   N1  要素=[('name', '久保田澄子', ['D1_bihin_kitei.txt:5'])]
+  要素あり・見逃し: S2-NONE-04   N1  要素=[('name', '山根卓哉', ['D2_shiryo_tejun.txt:45'])]
+  要素あり・見逃し: S3-NONE-03   N1  要素=[('name', '森下裕美', ['D3_gijiroku.txt:6'])]
+  要素あり・見逃し: S4-NONE-02   N1  要素=[('name', '戸田健司', ['D4_shiyou_v2.txt:25'])]
+誤答のうち規則 3b（ANSWER_CONTENT_NOT_IN_QUOTE）で unanchored になった件: 2（S1-ANS-09, S3-ANS-09）
+誤検出（正しい ANS で anchored でない）の一覧: 0 件
+正しい候補（ANS・NONE）のうち規則 3b で anchored でなくなった件（第 2 ラウンドでは anchored だったかは t31_result.txt の 1 行目以降と比べる）: 0
+```
+
+#### T3-2（保存した raw の再照合、`r4c/t32_recheck.txt`）
+- `r4/t32_recheck.txt` と 同一（cmp 一致）。255 行のうち違う 3（S2-ANS-06・S3-ANS-07・S4-ANS-05）は r4 と同じ。「anchored 以外 -> anchored」は 0。
+- 3 行の分類（W14 の正解 `benchmarks/public_v1` の `answer` を読み取りで引いた）: S2-ANS-06（正解 `送らない`）・S3-ANS-07（正解 `配らない`）は答え `いいえ` が正しく、`YESNO_NOT_CHECKED` は規則どおりの偽の錨なし。S4-ANS-05（正解 `設けない`）は答えが正しいが、引用は distractor の行（`延滞の罰則を設ける`）で答えと逆のことを言っており、`unanchored`（`POLARITY_DIFFERS`）は正しい検出（以前の `anchored` は確かめていないのに anchored だった）。
+
+#### T3-3（K653、`r4c/t33_k653.txt`）
+```
+310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3/r4work/serve_base_a7507b3.jsonl
+     310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3/r4work/serve_new.r4c.jsonl
+     620 total
+rows base 310 new 310
+rows where change is allowed (layer 0, FACTUAL, LLM called, not QUESTION_CROSS): 87
+  of which actually changed: 71 ; of which carry vera.quote_check: 71
+rows outside that set: 223
+rows outside that set that changed (pass = 0): 0
+```
+- 今回の serve の 310 行は r4 の出力と 同一（`cmp`）（この句はスクリプトの固定の文言で、`cmp` は手で確かめた。J-R4c-3）。
+
+#### 関係試験（18 ファイル＋新規、`r4c/related_after.txt`）
+- `412 passed in 65.23s (0:01:05)`
+
+#### 開示（レビュー任意 2・3）
+- 検査データ F-01 の文 `役員でない会員には、議事録を配る。` は T3-1 の `items.jsonl` にある文と同一（指示書が F 型の例として出した文のため）。
+- 検査データ YC-02 の文は、中間職が第 4 ラウンド r1 の指示に例として書いた文と同一。
+- 凍結版 `cases_r4.jsonl` の型 × 期待は O-02 だけが `unanchored`（`NO_CONTENT_TO_CHECK`）。`cases_r4b.jsonl`（試験の対象）は O-02 が `anchored`。取り違えないこと。
+
+### 9.16 第 5 ラウンドの規則（事前登録 2026-10-06 02:53:39 +0900。監査役の裁定 第 5 ラウンド 2）
+
+監査役の第 5 ラウンドの裁定（チケット末尾）に基づく。§9.1〜§9.15 の文は書き換えない。以下は検査データ（`artifacts/w16-t3/r5/cases_r5.jsonl`）とコードより先に書く。予想・目標値は書かない。
+
+- **R12（K654）確かめる中身の無い答え**: 規則 3b の準備の中で、`words` = 答えの内容語（R1′。`_content_words(answer, a_dn)`）、`qtoks` = R11 を当てた後の問いの解析（選択の問いでは空）、`rest` = `words` のうち `_covered(wd, qtoks)` でないもの。**答えの要素が空で `rest` も空**のとき:
+  - (i) `words` が空でなければ、`words` のすべて（問いの語の繰り返しを含む）を被覆の対象に戻す。各語が実在引用の解析で `_covered` でなければ `uncovered` に足す。→ 既存の 3b の理由 `ANSWER_CONTENT_NOT_IN_QUOTE:<語>`。
+  - (ii) `words` が空なら `no_content` を立てる。→ 新しい規則 3e: `unanchored`、理由 `NO_CONTENT_TO_CHECK`。
+  - 述語のある答えは今までどおり 3d（極性）にも掛かる（条件は変えない）。`question=None` では `qtoks` が空なので `rest == words` で、(i) は起きず (ii) だけが起きうる。
+- **印の順**（上から最初に当たったもの。1〜3c は変えない）: 1 unanchored（引用 0／捏造／答えが文字列でない）→ 2 conflict → 3 unanchored（解析不可／要素が引用に無い）→ 3c `YESNO_NOT_CHECKED` → 3b `ANSWER_CONTENT_NOT_IN_QUOTE`（R12 (i) を含む）→ **3e `NO_CONTENT_TO_CHECK`（R12 (ii)。新）** → 3d `POLARITY_DIFFERS` → 4 anchored。先に付いた理由は上書きしない。`to_dict` の鍵は増やさない。anchored を unanchored にする方向だけで、conflict と既存の理由の unanchored は変わらない。
+- **検査データ**（`cases_r5.jsonl`、期待は上の規則から手で決める。文は T3-1・W14・既存の `cases_r4*.jsonl`・指示書の例の写しでなく、新しく書く）: `SO`（そうです型）3 以上・`QO`（問いの語だけ）3 以上・`PR`（述語つきの言い直し。誤答 2 以上と正しい言い直し 2 以上）4 以上・`C`（対照）2 以上。任意で `H`（閉じない型）と `F`（偽の錨なし）。合計 12 以上。
+
+判断（J-R5-*）:
+- **J-R5-1（裁定 3 との衝突）**: 裁定 2 は「R28（そうです。）・E07／G13（はい、支払います。）の型が閉じる」と求め、裁定 3 は「ほかの既存の試験の期待は変えない」と定める。ところが第 4 ラウンドの凍結データには、この 2 つの型を既知の穴として `anchored` と書いた項目がある（`cases_r4b.jsonl` の O-02 = `そうです。`、`cases_r4c.jsonl` の YC-02 = `はい、社内の人が務めます。`）。K654 を入れるとこの 2 件は必ず赤になる。裁定 2 の目的を優先し、期待を強める側（anchored → unanchored）だけ替える。凍結済みのファイルは書き換えない。O-02 は `tests/test_w16t3_r4.py` の読み先を `cases_r4b.jsonl` から `cases_r4.jsonl`（最初に凍結した版。O-02 の期待は `unanchored`／`NO_CONTENT_TO_CHECK`）に戻す。YC-02 は新しいファイル `r5/cases_r4c_r5.jsonl`（`cases_r4c.jsonl` の YC-02 の `expect`・`expect_reason_prefix`・`note` だけ替えた写し）を読む。監査役への申し送り: この 2 件の期待を替えたことを確認してほしい。
+- **J-R5-2**: `そう（です）` は 3c の応答の語に入れない（入れると `そうです` が `YESNO_NOT_CHECKED` になり、裁定 3 の改訂後の期待 `NO_CONTENT_TO_CHECK` と食い違う）。
+- **J-R5-3**: `その通りです。` は `通り` が名詞（普通名詞）で内容語 1 個なので、R12 (i) → 3b に落ちる（引用に `通り` があれば anchored）。裁定が `NO_CONTENT_TO_CHECK` の例に挙げる文との違いとして開示する。語の一覧は作らない。
+- **J-R5-4**: `できる`・`ある`・`する` など `非自立可能` の述語だけの答え（`できません。`・`あります。`）は内容語 0 個なので、正しい答えでも `NO_CONTENT_TO_CHECK`（偽の錨なし。誤検出として数える）。
+- **J-R5-5**: R2（名詞と動詞の表層が等しければ被覆）は変えない。引用に同じ表層の名詞があれば `はい、支払います。` は anchored のまま。答えが問いの要の語を落とす言い直し（答えに無い問いの語は求めない）も閉じない。
+
+### 9.16b SO-03 の理由の訂正（記録 2026-10-06 02:56:08 +0900。コードを書いた後の訂正であることを隠さない）
+
+`cases_r5.jsonl`（凍結 2026-10-06 02:55:10 +0900）の SO-03（答え `左様です。`）の期待を、私は §9.16 の規則から `NO_CONTENT_TO_CHECK` と決めたが、`左様` は形状詞で、R1′（§9.9 R1）の内容語に **入る**（`pos1 ∈ {名詞, 動詞, 形容詞, 形状詞, …}`）。内容語は 1 個で、問いの語でないので R12 でなく既存の 3b が動き、理由は `ANSWER_CONTENT_NOT_IN_QUOTE:左様` になる（印は `unanchored` で期待どおり）。期待を決めるときに内容語の定義を読み違えた（品詞は見たが、形状詞が内容語かを §9.9 で確かめなかった）。`cases_r5.jsonl` は書き換えず、SO-03 の `expect_reason_prefix` と `note` だけ替えた `cases_r5b.jsonl`（`make_cases_r5b.py`。他の 19 件は byte 一致）を凍結し、`tests/test_w16t3_r5.py` はこれを読む（凍結の検査は両方）。SO の「内容語 0 個」の型は SO-01・SO-02・SO-04 の 3 件。事前登録の順序: 事前登録 → cases_r5 凍結 → 試験の変更と赤 → コード → **cases_r5b の凍結（コードより後）**。
+
+### 9.16c 第 5 ラウンドのレビュー r1 M2 への対応（記録 2026-10-06。§9.16 の文は書き換えず、ここで訂正する。コードは変えていない）
+
+- **§9.16 の一文の訂正**: §9.16（印の順の行）の「anchored を unanchored にする方向だけで、conflict と既存の理由の unanchored は変わらない」は、**verdict については正しいが reason については偽**。印の順で 3e（`NO_CONTENT_TO_CHECK`）が 3d（`POLARITY_DIFFERS`）より先なので、述語が `非自立可能`（ある・できる）だけで、極性が引用と食い違う答えは、第 4 ラウンドの `POLARITY_DIFFERS` から `NO_CONTENT_TO_CHECK` に reason が変わる（verdict は unanchored のまま。`polarity` の欄も計算される）。例（レビュー r1 の実測。第 4 ラウンドの写し OLD と今のコード NEW）: `ありません。`（問い `予備の鍵はありますか`）・`いいえ、ありません。`・`できません。`（問い `会員は当日予約できますか`）・`できません。`（問い なし）は OLD `POLARITY_DIFFERS` → NEW `NO_CONTENT_TO_CHECK`。`予約できません。` は内容語 `予約` があるので R12 は動かず、OLD・NEW とも `POLARITY_DIFFERS`。裁定は reason の優先を定めていないので、指示書の印の順のままにした。
+- **測定集合には該当行が無かった**: T3-1（60 件）・T3-2 の再照合（255 行）・K653（310 行）で reason だけが変わった行は 0（`artifacts/w16-t3/r5/t31_diff.txt`・`t32_recheck.txt`・`t33_k653.txt`）。だから測定からは気づけなかった。この挙動は `tests/test_w16t3_r5.py::test_r12_no_content_reason_precedes_polarity`（コードの後に書いた特性の試験。凍結データではない）で固定した。
+- **SO-03 は R12 の項目ではない**: `左様です。`（SO-03）は直す前（第 4 ラウンドの写し）も `unanchored`（`ANSWER_CONTENT_NOT_IN_QUOTE:左様`。`左様` は形状詞で内容語。§9.16b）で、R12 で印も理由も変わらない。`cases_before.txt` の SO-03 の赤は reason の assert だけで、R12 の証拠ではない。R12 で anchored → unanchored に変わった SO は SO-01・SO-02・SO-04 の 3 件。`test_cases_r5_counts` は SO-03 を id で除いて数える。
+
+### 9.17 第 5 ラウンドの測定（`artifacts/w16-t3/r5/`。出力ファイルから機械で貼った。`r3/`〜`r4c/` は上書きしていない）
+
+#### 順序と凍結
+```
+prereg: 2026-10-06 02:53:39 +0900
+cases_r5/cases_r4c_r5: 2026-10-06 02:55:10 +0900
+cases_r5b: 2026-10-06 02:56:08 +0900
+```
+mtime（`mtime_order.txt`。事前登録 → cases_r5 → 直す前の赤 → quote_check.py）:
+```
+1791222819.965084017 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3-S/artifacts/w16-t3/r5/prereg_r5.txt
+1791222910.610734622 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3-S/artifacts/w16-t3/r5/cases_r5.jsonl
+1791222925.911996641 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3-S/artifacts/w16-t3/r5/cases_before.txt
+1791222937.969615250 verantyx/quote_check.py
+```
+凍結 sha（`cases_r5.sha256`・`cases_r5b.sha256`）:
+```
+dd27c18a662c8c4b068010943ff9f62e236060769280182a24c3080ff9b9adff  cases_r5.jsonl
+671e94c980eff8de07d60a10e7492db295d4772f2316d88514e1212ddea5f5da  cases_r4c_r5.jsonl
+9833fc4acd28409f7cb9dd2b54911497cf56ef6ea3fbe0a556ea5b6cbb7293ad  cases_r5b.jsonl
+```
+#### 検査データ（cases_r5b。20 件）の型 × 期待
+```
+{"C/anchored": 3, "C/unanchored": 1, "F/unanchored": 1, "H/anchored": 2, "H/unanchored": 1, "PR/anchored": 2, "PR/unanchored": 3, "QO/unanchored": 3, "SO/unanchored": 4}
+```
+#### 直す前／後（`cases_before.txt`・`cases_after.txt`。w16t3_r5・w16t3_r4・w16t3_quote_check）
+```
+直す前:
+FAILED tests/test_w16t3_r5.py::test_case_r5[SO-01] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[SO-02] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[SO-03] - AssertionError: {'verdic...
+FAILED tests/test_w16t3_r5.py::test_case_r5[SO-04] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[QO-01] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[QO-02] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[QO-03] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[PR-01] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[PR-02] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[PR-03] - AssertionError: ({'verdi...
+FAILED tests/test_w16t3_r5.py::test_case_r5[F-01] - AssertionError: ({'verdic...
+FAILED tests/test_w16t3_r4.py::test_case[O-02] - AssertionError: ({'verdict':...
+FAILED tests/test_w16t3_r4.py::test_case_r4c[YC-02] - AssertionError: ({'verd...
+FAILED tests/test_w16t3_quote_check.py::test_no_elements_with_a_real_quote_is_not_anchored
+14 failed, 77 passed in 0.82s
+直した後:
+91 passed in 0.73s
+```
+#### w16t3 の試験（`t3_tests.txt`）
+```
+169 passed in 1.28s
+```
+#### T3-1（`t31_result.txt` の先頭・`t31_diff.txt` 全文）
+```
+T3-1（自作の集合。通っても証拠にならない。T3-4 の伏せた集合が本番）
+(a) LLM 自身の引用を信じる: 検出 0/30 = 0.0%
+(b) Vera の照合:            検出 25/30 = 83.3%
+上乗せ (b)-(a): 25 件（+83.3 点）
+誤検出（正しい ANS 20 のうち anchored 以外）: 0/20 = 0.0%
+型ごとの検出（a / b）:
+--- t31_diff.txt ---
+印か reason が変わった行: 0 / 60
+誤答で anchored -> 非 anchored になった数: 0
+正しい ANS（wrong=false, cat=ANS）で anchored -> 非 anchored（偽の錨なしの増加）: 0
+anchored 以外 -> anchored（あってはならない）: 0
+```
+#### T3-2（保存した raw の再照合。`t32_recheck.txt`）
+```
+今の QC.check の to_dict が保存と同一: 251
+違う行: 4
+S2-ANS-06 rep=0 cat=ANS anchored -> unanchored reason=YESNO_NOT_CHECKED 答え=いいえ 引用=1人だけで確認した結果は、依頼者へ送らない。 問い=1人だけで確認した結果を依頼者へ送りますか。
+S3-ANS-07 rep=0 cat=ANS anchored -> unanchored reason=YESNO_NOT_CHECKED 答え=いいえ 引用=役員でない会員には、議事録を配らない。 問い=役員でない会員に議事録を配りますか。
+S4-ANS-05 rep=0 cat=ANS anchored -> unanchored reason=POLARITY_DIFFERS 答え=設けない 引用=返却が遅れた利用者には、延滞の罰則を設ける。 問い=予約の取り消しについて、利用者に罰則を設けますか。
+S4-ANS-06 rep=0 cat=ANS anchored -> unanchored reason=NO_CONTENT_TO_CHECK 答え=できません 引用=利用者カードを持たない者は、予約できない。 問い=利用者カードを持たない一般の利用者は、予約できますか。
+保存の印の分布（255 行すべて）: {'anchored': 144, 'unanchored': 108, 'conflict': 3}
+今の印の分布（255 行すべて）: {'anchored': 140, 'unanchored': 112, 'conflict': 3}
+anchored 以外 -> anchored: 0
+reason の分布（今）: {None: 250, 'YESNO_NOT_CHECKED': 2, 'POLARITY_DIFFERS': 1, 'NO_CONTENT_TO_CHECK': 1, 'ANSWER_CONTENT_NOT_IN_QUOTE:行わ': 1}
+```
+r4c との差（`t32_recheck_vs_r4c.diff`）:
+```
+3,4c3,4
+< 今の QC.check の to_dict が保存と同一: 252
+< 違う行: 3
+---
+> 今の QC.check の to_dict が保存と同一: 251
+> 違う行: 4
+7a8
+> S4-ANS-06 rep=0 cat=ANS anchored -> unanchored reason=NO_CONTENT_TO_CHECK 答え=できません 引用=利用者カードを持たない者は、予約できない。 問い=利用者カードを持たない一般の利用者は、予約できますか。
+9c10
+< 今の印の分布（255 行すべて）: {'anchored': 141, 'unanchored': 111, 'conflict': 3}
+---
+> 今の印の分布（255 行すべて）: {'anchored': 140, 'unanchored': 112, 'conflict': 3}
+11c12
+< reason の分布（今）: {None: 251, 'YESNO_NOT_CHECKED': 2, 'POLARITY_DIFFERS': 1, 'ANSWER_CONTENT_NOT_IN_QUOTE:行わ': 1}
+---
+> reason の分布（今）: {None: 250, 'YESNO_NOT_CHECKED': 2, 'POLARITY_DIFFERS': 1, 'NO_CONTENT_TO_CHECK': 1, 'ANSWER_CONTENT_NOT_IN_QUOTE:行わ': 1}
+```
+r4c から増えた行（1 行）の分類（W14 公開バンクの正解 `answer` を引いた。読み取りのみ）:
+- `S4-ANS-06` 答え `できません`、W14 の正解 `予約できない`（distractors [{"doc": "D4_shiyou_v2.txt", "line": 20, "value": "予約できる"}]）。答えは正解と同じ内容（否定）で正しい → **正しい答えの偽の錨なし**（J-R5-4。分類は私が正解の文字列を読んで判断した）。
+#### K653（`t33_k653.txt`・`t33_vs_r4c.txt`）
+```
+310 $SC/r4work/serve_base_a7507b3.jsonl
+     310 $SC/r5work/serve_new.r5.jsonl
+     620 total
+rows base 310 new 310
+rows where change is allowed (layer 0, FACTUAL, LLM called, not QUESTION_CROSS): 87
+  of which actually changed: 71 ; of which carry vera.quote_check: 71
+rows outside that set: 223
+rows outside that set that changed (pass = 0): 0
+--- t33_vs_r4c.txt ---
+違う行: 0 / 310
+quote_check・本文の最後の 1 行以外も違う行: 0
+```
+#### 関係試験（`related_before.txt`・`related_after.txt`・`related_new_failures.txt`）
+```
+変更前: 412 passed in 65.17s (0:01:05)
+変更後: 434 passed in 62.30s (0:01:02)
+新しい失敗: 0 byte
 ```

@@ -1,0 +1,16 @@
+3,4c3,4
+< 今の QC.check の to_dict が保存と同一: 252
+< 違う行: 3
+---
+> 今の QC.check の to_dict が保存と同一: 251
+> 違う行: 4
+7a8
+> S4-ANS-06 rep=0 cat=ANS anchored -> unanchored reason=NO_CONTENT_TO_CHECK 答え=できません 引用=利用者カードを持たない者は、予約できない。 問い=利用者カードを持たない一般の利用者は、予約できますか。
+9c10
+< 今の印の分布（255 行すべて）: {'anchored': 141, 'unanchored': 111, 'conflict': 3}
+---
+> 今の印の分布（255 行すべて）: {'anchored': 140, 'unanchored': 112, 'conflict': 3}
+11c12
+< reason の分布（今）: {None: 251, 'YESNO_NOT_CHECKED': 2, 'POLARITY_DIFFERS': 1, 'ANSWER_CONTENT_NOT_IN_QUOTE:行わ': 1}
+---
+> reason の分布（今）: {None: 250, 'YESNO_NOT_CHECKED': 2, 'POLARITY_DIFFERS': 1, 'NO_CONTENT_TO_CHECK': 1, 'ANSWER_CONTENT_NOT_IN_QUOTE:行わ': 1}

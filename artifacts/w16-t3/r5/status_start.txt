@@ -1,0 +1,15 @@
+ M docs/FUSION.md
+ M tests/test_w10f05_cli.py
+ M verantyx/quote_check.py
+?? artifacts/w16-t3/r4/
+?? artifacts/w16-t3/r4c/
+?? artifacts/w16-t3/r5/
+?? artifacts/w16-t3/scripts/make_cases_r4.py
+?? artifacts/w16-t3/scripts/make_cases_r4b.py
+?? artifacts/w16-t3/scripts/make_cases_r4c.py
+?? artifacts/w16-t3/scripts/paste_docs_r4.py
+?? artifacts/w16-t3/scripts/paste_docs_r4c.py
+?? artifacts/w16-t3/scripts/recheck_t32_r4.py
+?? artifacts/w16-t3/scripts/t31_diff_r4.py
+?? tests/test_w16t3_r4.py
+0a1853f Integration (auditor): merge dev a7507b3 (W16-t2 one answer path, W16-t6/t7/t8/t10) into ticket/W16-t3 before round 4

@@ -6,9 +6,14 @@ LLM も読解器も呼ばない純粋な関数。形態素解析は品詞を見�
   - 行の本文 = 同じ (source, line) の記録の文を k の順に連結（前の文が「。」で終わるなら空、でなければ半角空白 1 つ）
   - 引用の実在 = exact（指定行に部分一致）／relocated（他の行に一致。複数行なら全部を残す＝勝者を選ばない）／fabricated
   - 答えの要素 = 日付・時刻（年月日時分・曜日） -> 数値（単位つき） -> 固有名。引用から同じ関数で取り出した要素と比べる（部分一致ではない）
-  - 内容語の被覆（第 3 ラウンド）= 答えの内容語（名詞・動詞・形容詞・形状詞・接頭辞・名詞的な接尾辞。非自立可能・数詞・「さん／様」・日付数値の範囲は除く）が
+  - 内容語の被覆（第 3 ラウンド）= 答えの内容語（名詞・動詞・形容詞・形状詞・接頭辞・名詞的な接尾辞。非自立可能・「さん／様」・日付数値の要素の範囲は除く。数詞は除かない（R1′））が
     実在した引用の text に現れること。表層が等しい、または動詞・形容詞なら見出し語が等しい。名詞は表層だけ（固有名詞の見出し語は読み）。部分一致は使わない。問いの語は除く。
-  - 印 = unanchored（引用 0／捏造あり）-> conflict（食い違い）-> unanchored（要素が引用に無い）-> unanchored（内容語が引用に無い。規則 3b）-> anchored
+  - 第 4 ラウンド（§9.13）: R7 否定の有無（助動詞 ない・ず／形容詞 無い。有無だけ）、R8 述語の有無（動詞・形容詞、形状詞＋だ／です）、
+    R9 極性 = 答えに述語があるとき、答えと各実在引用の否定の有無を比べる（規則 3d）、R10 応答の語（感動詞・動詞 違う）と問いの語の繰り返しだけの答えは確かめられない（規則 3c。§9.13c）、
+    R11 選択の問い（どちら／どっち、または名詞・接尾辞の直後の か が 2 か所以上）では問いの語を被覆から除かない。
+  - 第 5 ラウンド（§9.16）: R12 = 要素が無く、内容語が問いの語の繰り返しだけなら問いの語も被覆の対象に戻す。内容語が 0 個なら確かめられない（規則 3e、NO_CONTENT_TO_CHECK）
+  - 印 = unanchored（引用 0／捏造あり）-> conflict（食い違い）-> unanchored（要素が引用に無い）-> unanchored（確かめる語が無い。規則 3c）
+        -> unanchored（内容語が引用に無い。規則 3b）-> unanchored（確かめる中身が無い。規則 3e）-> unanchored（極性が違う。規則 3d）-> anchored
   - 文書間の食い違い (ii) = 文書（記録の source）が 1 つに決まる実在引用どうしを比べる。2 つ以上の文書に一致する引用（doc_undetermined）は、
     文書の候補の集合が交わらない引用との間でだけ比べる（R6′。交わる引用どうしは同じ文書かもしれないので比べない）
 漢数字・単位の一覧は answer.py / answer_slots.py のものを使い、ここでは新しく作らない。
@@ -234,6 +239,34 @@ def _covered(word, toks) -> bool:
     return False
 
 
+# --- 否定・述語・応答の語・選択の問い（第 4 ラウンド。品詞と見出し語だけで決める。語の一覧は作らない） ---------------------------------------
+
+def _negated(toks) -> bool:
+    """R7: 助動詞 ない・ず、または形容詞 無い が 1 つでもあれば真（有無だけ。接頭辞・名詞は数えない）。"""
+    return any((t[1] == "助動詞" and t[3] in ("ない", "ず")) or (t[1] == "形容詞" and t[3] == "無い") for t in toks)
+
+
+def _is_chigau(t) -> bool:
+    return t[1] == "動詞" and t[3] == "違う"
+
+
+def _predicates(toks):
+    """R8: 述語の語（動詞・形容詞、形状詞の直後の だ／です）の位置の並び。"""
+    out = []
+    for i, t in enumerate(toks):
+        if t[1] in _VERBAL or (t[1] == "助動詞" and t[3] in ("だ", "です") and i > 0 and toks[i - 1][1] == "形状詞"):
+            out.append(i)
+    return out
+
+
+def _is_choice(qtoks) -> bool:
+    """R11: どちら／どっち、または 名詞・接尾辞 の直後の助詞 か が 2 か所以上。"""
+    if any(t[0] in ("どちら", "どっち") for t in qtoks):
+        return True
+    n = sum(1 for i in range(1, len(qtoks)) if qtoks[i][0] == "か" and qtoks[i][1] == "助詞" and qtoks[i - 1][1] in ("名詞", "接尾辞"))
+    return n >= 2
+
+
 # --- 記録の行 ---------------------------------------------------------------------------------------------------------------------------------
 
 def line_bodies(records) -> Dict[Tuple[str, int], str]:
@@ -272,6 +305,8 @@ class QuoteCheck:
     anchor_positions: List[str] = field(default_factory=list)   # 実在した引用の source:line（初出順・重複なし）
     uncovered: List[str] = field(default_factory=list)   # 引用に現れない答えの内容語（to_dict には入れない）
     doc_undetermined: int = 0                            # 文書が 1 つに決まらない実在引用の数（to_dict には入れない）
+    polarity: Optional[Dict[str, Any]] = None            # 規則 3d: {answer_negated, quotes_negated}（to_dict には入れない）
+    choice_question: bool = False                        # R11（to_dict には入れない）
 
     def to_dict(self) -> Dict[str, Any]:
         d: Dict[str, Any] = {"verdict": self.verdict, "quotes": self.quotes, "elements": self.elements, "conflicts": self.conflicts}
@@ -398,22 +433,53 @@ def check(answer: Any, quotes: Any, records, reason: Optional[str] = None, quest
                     ln = next(k[1] for pos, els in det for k in pos if k[0] == doc and any(x["kind"] == kind and x["value"] == v for x in els))
                     vals.append({"value": v, "source": doc, "line": ln})
             conflicts.append({"kind": kind, "answer_value": None, "values": vals})
-    # 規則 3b: 答えの内容語が実在した引用の text に現れるか（R1〜R4）
+    # 規則 3b: 答えの内容語が実在した引用の text に現れるか（R1〜R4）。第 4 ラウンドの 3c・3d もここで準備する
     uncovered: List[str] = []
+    no_check: Optional[str] = None
+    polarity: Optional[Dict[str, Any]] = None
+    choice = False
+    no_content = False
     if valid and not answer_bad:
         words, ok = _content_words(answer, a_dn)
         tagger_down = tagger_down or not ok
-        if words:
-            qtoks, ok = _analyze(question) if question else ([], True)
+        qtoks, ok = _analyze(question) if question else ([], True)
+        tagger_down = tagger_down or not ok
+        choice = _is_choice(qtoks)
+        if choice:                                       # R11: 選択の問いでは問いの語を除かない
+            qtoks = []
+        ttoks_each: List[Any] = []
+        ttoks: List[Any] = []
+        for t in valid_texts:
+            toks, ok = _analyze(t)
             tagger_down = tagger_down or not ok
-            ttoks: List[Any] = []
-            for t in valid_texts:
-                toks, ok = _analyze(t)
-                tagger_down = tagger_down or not ok
-                ttoks.extend(toks)
-            for wd in words:
-                if not _covered(wd, ttoks) and not _covered(wd, qtoks) and wd[0] not in uncovered:
-                    uncovered.append(wd[0])
+            ttoks_each.append(toks)
+            ttoks.extend(toks)
+        for wd in words:
+            if not _covered(wd, ttoks) and not _covered(wd, qtoks) and wd[0] not in uncovered:
+                uncovered.append(wd[0])
+        # R12（K654、§9.16）: 要素が無く、問いの語の繰り返しを除くと内容語も残らない答えは、問いの語の繰り返しも被覆の対象に戻す。内容語が 0 個なら確かめる語が無い
+        if not a_els and all(_covered(wd, qtoks) for wd in words):
+            if words:
+                for wd in words:
+                    if not _covered(wd, ttoks) and wd[0] not in uncovered:
+                        uncovered.append(wd[0])
+            else:
+                no_content = True
+        atoks, ok = _analyze(answer)
+        tagger_down = tagger_down or not ok
+        preds = _predicates(atoks)
+        # 規則 3c（R10）: 要素・述語（違う 以外）が無く、内容語が 違う 以外はすべて問いの語の繰り返し（R3。選択の問いでは qtoks は空。§9.13c）で、応答の語を含む答えは、はい／いいえを確かめていない
+        # （応答の語を含まない答え「そうです」は 3c の対象にしない。J-R4-1 の撤回のまま。第 5 ラウンドからは R12 (ii) -> 規則 3e で NO_CONTENT_TO_CHECK。§9.16）
+        if (not a_els and not any(not _is_chigau(atoks[i]) for i in preds)
+                and all((wd[1] == "動詞" and wd[2] == "違う") or _covered(wd, qtoks) for wd in words)
+                and any(t[1] == "感動詞" or _is_chigau(t) for t in atoks)):
+            no_check = "YESNO_NOT_CHECKED"
+        # 規則 3d（R9）: 述語のある答えは、答えと各実在引用の否定の有無を比べる
+        if preds:
+            an = _negated(atoks)
+            qn = [_negated(toks) for toks in ttoks_each]
+            if any(x != an for x in qn):
+                polarity = {"answer_negated": an, "quotes_negated": qn}
     if tagger_down:                                      # 固有名・内容語を照合できないので「すべて引用に現れる」を確かめられない（M1）
         reason = reason or "NAME_TAGGER_UNAVAILABLE"
     if not q_out or any(q["found"] == "fabricated" for q in q_out) or answer_bad:
@@ -422,10 +488,19 @@ def check(answer: Any, quotes: Any, records, reason: Optional[str] = None, quest
         verdict = CONFLICT
     elif tagger_down or any(e["found_in"] is None for e in elements):
         verdict = UNANCHORED
+    elif no_check:
+        verdict = UNANCHORED
+        reason = reason or no_check
     elif uncovered:
         verdict = UNANCHORED
+    elif no_content:
+        verdict = UNANCHORED
+        reason = reason or "NO_CONTENT_TO_CHECK"
+    elif polarity is not None:
+        verdict = UNANCHORED
+        reason = reason or "POLARITY_DIFFERS"
     else:
         verdict = ANCHORED
     if verdict == UNANCHORED and uncovered and not reason and not any(q["found"] == "fabricated" for q in q_out):
         reason = "ANSWER_CONTENT_NOT_IN_QUOTE:" + "、".join(uncovered)
-    return QuoteCheck(verdict, q_out, elements, conflicts, reason, skipped, anchor, uncovered, undetermined)
+    return QuoteCheck(verdict, q_out, elements, conflicts, reason, skipped, anchor, uncovered, undetermined, polarity, choice)

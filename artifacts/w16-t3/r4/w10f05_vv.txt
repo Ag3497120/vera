@@ -1,0 +1,35 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/motonisihikoudai/vera-wiring/env/bin/python
+rootdir: /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3-S
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 1 item
+
+tests/test_w10f05_cli.py::test_serve_adds_placement_layer_only_with_a_layer_and_leaves_the_fusion_layer_alone FAILED [100%]
+
+=================================== FAILURES ===================================
+_ test_serve_adds_placement_layer_only_with_a_layer_and_leaves_the_fusion_layer_alone _
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2187/test_serve_adds_placement_laye0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x116e10550>
+
+    def test_serve_adds_placement_layer_only_with_a_layer_and_leaves_the_fusion_layer_alone(tmp_path, monkeypatch):
+        layer = make_layer(tmp_path, [('ウサギ', 'ANIMAL'), ('図書館', 'PLACE'), ('ディレイラー', 'ARTIFACT')])
+        monkeypatch.setenv(PL.ENV_LAYER, '')
+        base = turn(cfg_of(tmp_path))
+>       assert 'placement_layer' not in base['vera'] and list(base['vera']) == ['schema', 'layer', 'request_kind', 'reading', 'grammar', 'grammar_id', 'llm', 'grammar_check', 'provenance', 'outcome', 'quote_check', 'timing']
+E       AssertionError: assert ('placement_layer' not in {'schema': 'verantyx.fusion/1', 'layer': 0, 'request_kind': 'factual', 'reading': {'type': 'QUESTION_CROSS', 'state': 'FILLED', 'reason': 'semantic_document', 'hole_role': 'agent', ...}, ...} and ['schema', 'l...mmar_id', ...] == ['schema', 'l...mmar_id', ...]
+E         
+E         At index 10 diff: 'timing' != 'quote_check'
+E         Right contains one more item: 'timing'
+E         
+E         Full diff:
+E           [
+E               'schema',...
+E         
+E         ...Full output truncated (12 lines hidden), use '-vv' to show)
+
+tests/test_w10f05_cli.py:154: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w10f05_cli.py::test_serve_adds_placement_layer_only_with_a_layer_and_leaves_the_fusion_layer_alone
+============================== 1 failed in 0.66s ===============================
