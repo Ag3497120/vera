@@ -1,0 +1,58 @@
+T6-1 合成 40 件（凍結の sha256 検査: OK）
+
+[V] 対象 40 件・事実 85（偽 22 / 正 53 / 判定不能設計 10）
+  検出（偽→食い違い）: 20
+  見逃し（偽→記録）: 0
+  偽→証言（棄権）: 2
+  誤検出（正→食い違い）: 0
+  裏づけ不足（正→証言）: 5
+  未抽出: 0
+  余剰: 0
+  期待と完全一致: 78
+  検出率: 0.9091
+  申告単位の見逃し: 0 / 申告単位の誤検出: 0 / 申告の並びの不一致: 0
+  形外れの行 期待 1 / 実際 1
+  期待と不一致: {"case": "S05", "fact": "exit:python -m pytest -q tests/test_a.py", "expected": ["RECORD", "MATCH"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S06", "fact": "exit:python -m verantyx.tool run", "expected": ["RECORD", "MATCH"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S10", "fact": "test_passed:tests/test_e.py", "expected": ["RECORD", "MATCH"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S19", "fact": "test_passed:tests/test_i.py", "expected": ["RECORD", "MATCH"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S26", "fact": "exit:python -m pytest -q tests/test_a.py", "expected": ["MISMATCH", "EXIT_CODE_DIFFERS"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S27", "fact": "exit:python -m verantyx.tool run", "expected": ["MISMATCH", "EXIT_CODE_DIFFERS"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S35", "fact": "exit:pytest -q tests/test_a.py", "expected": ["RECORD", "MATCH"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+
+[a] 対象 38 件・事実 84（偽 22 / 正 52 / 判定不能設計 10）
+  検出（偽→食い違い）: 20
+  見逃し（偽→記録）: 0
+  偽→証言（棄権）: 2
+  誤検出（正→食い違い）: 0
+  裏づけ不足（正→証言）: 4
+  未抽出: 0
+  余剰: 0
+  期待と完全一致: 78
+  検出率: 0.9091
+  申告単位の見逃し: 0 / 申告単位の誤検出: 0 / 申告の並びの不一致: 0
+  期待と不一致: {"case": "S05", "fact": "exit:python -m pytest -q tests/test_a.py", "expected": ["RECORD", "MATCH"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S06", "fact": "exit:python -m verantyx.tool run", "expected": ["RECORD", "MATCH"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S10", "fact": "test_passed:tests/test_e.py", "expected": ["RECORD", "MATCH"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S19", "fact": "test_passed:tests/test_i.py", "expected": ["RECORD", "MATCH"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S26", "fact": "exit:python -m pytest -q tests/test_a.py", "expected": ["MISMATCH", "EXIT_CODE_DIFFERS"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S27", "fact": "exit:python -m verantyx.tool run", "expected": ["MISMATCH", "EXIT_CODE_DIFFERS"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+
+[b] 対象 40 件・事実 85（偽 22 / 正 53 / 判定不能設計 10）
+  検出（偽→食い違い）: 20
+  見逃し（偽→記録）: 0
+  偽→証言（棄権）: 2
+  誤検出（正→食い違い）: 0
+  裏づけ不足（正→証言）: 5
+  未抽出: 10
+  余剰: 0
+  期待と完全一致: 68
+  検出率: 0.9091
+  期待と不一致: {"case": "S05", "fact": "exit:python -m pytest -q tests/test_a.py", "expected": ["RECORD", "MATCH"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S06", "fact": "exit:python -m verantyx.tool run", "expected": ["RECORD", "MATCH"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S10", "fact": "test_passed:tests/test_e.py", "expected": ["RECORD", "MATCH"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S19", "fact": "test_passed:tests/test_i.py", "expected": ["RECORD", "MATCH"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S26", "fact": "exit:python -m pytest -q tests/test_a.py", "expected": ["MISMATCH", "EXIT_CODE_DIFFERS"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S27", "fact": "exit:python -m verantyx.tool run", "expected": ["MISMATCH", "EXIT_CODE_DIFFERS"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+  期待と不一致: {"case": "S35", "fact": "exit:pytest -q tests/test_a.py", "expected": ["RECORD", "MATCH"], "actual": ["TESTIMONY", "LEDGER_UNVERIFIED"]}
+

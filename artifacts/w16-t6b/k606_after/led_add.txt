@@ -1,0 +1,5 @@
+vera attest  report=/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t6b-S/artifacts/w16-t6b/k606_fixture/rep.md  tree=/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t6b-S/artifacts/w16-t6b/k606_fixture/tree
+[V] 申告 1 件: 記録 1 / 証言 0 / 食い違い 0（読み飛ばした形外れの行 0）
+  V-1 行2 記録 MATCH [acceptance] - 受入 A1: `python -m pytest -q tests/test_a.py -p no:cacheprovider` を実行し、終了コード 0
+      記録 MATCH exit:python -m pytest -q tests/test_a.py -p no:cacheprovider  申告=0 実際=0
+[a] 申告 0 件: 記録 0 / 証言 0 / 食い違い 0（読み飛ばした形外れの行 0）

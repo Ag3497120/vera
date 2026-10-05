@@ -1,0 +1,20 @@
+case	mark	reason	problem_types
+a16	RECORD	MATCH	
+a16v_prev_empty	RECORD	MATCH	
+a16v_actor_str	RECORD	MATCH	
+a16v_kind_note	TESTIMONY	NO_EVENT	
+a16v_extra_key	RECORD	MATCH	
+replace	RECORD	MATCH	
+delete	RECORD	MATCH	
+reorder	RECORD	MATCH	
+truncate	RECORD	MATCH	
+truncate+head(pinned)	RECORD	MATCH(head-not-supported)	
+replace+head(pinned)	RECORD	MATCH(head-not-supported)	
+replace+head(not pinned, known limit)	RECORD	MATCH	
+naive	TESTIMONY	LEDGER_UNVERIFIED	
+no_head	RECORD	MATCH	
+name(ev.jsonl)	RECORD	MATCH	
+dir	TESTIMONY	LEDGER_UNVERIFIED	
+good_exit3	RECORD	MATCH	
+good_exit0_mismatch	MISMATCH	EXIT_CODE_DIFFERS	
+good_other_cmd	TESTIMONY	NO_EVENT	
