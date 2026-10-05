@@ -1855,3 +1855,7 @@ def test_the_new_names_are_at_the_end_of_the_closed_lists():
 - **テスト**: 関係テストは 3 failed, 1780 passed, 3 xfailed, 6 xpassed で失敗の集合が第 2 ラウンドと同一（`ext3_related_after.txt`）。frames 回帰は同一。全体テストは 116 failed, 16198 passed（`ext3_pytest_full.txt`）。失敗の集合は第 2 ラウンドと同一（`ext3_after_failures.txt`）、基線 115 件に対する新しい 2 件（`test_s6_…`・`test_p4_abilities::test_speech_act_drafts…`）も同じ（`ext3_new_failures.txt`、分類は `ext2_new_failures_classified.txt`）。passed が 48 増えたのは新しいテストの分（47 行＋凍結検査 1）。
 - **既知の穴（基点からの誤答、このチケットの範囲外、別チケットの候補）**: 時の語の語彙。「山田さんが再来週東京で働く。」→ `ANSWER ['再来週東京']`。再来週・再来年・再来月・先々週・先々月・一昨年・毎夕・夕べ・昨夕・昨晩・明晩・宵・隔週・おととし が `_vt_is_time` で時と判定されず、時の語と場所の融合の検査に入らない（`ext3_time_lexicon_gap.txt`。基点でも同じ答え）。直すには接頭辞 `再来`／`先々`／`一昨` ＋ 助数詞可能の 週・月・年と、普通名詞・一般の時の語を読解器・検証器で同じ形態素の条件に揃える（別チケット）。
 - **その他の既知の穴**: 撥音便の丁寧形の根は frame の読み（`semantic_reader.py`）が本動詞を肯定で返すことで、検証器での棄権は対症（読解器の禁止の読みは別チケット）。`verdict.PROHIBIT` に丁寧形が無いことの申し送りは DECISIONS 14 のまま。時の語の切り出し（明日 = time・東京 = place）は未実施（棄権）。
+
+## W16-t1b: 既知の穴の更新（W3-c4 の 7）
+
+`docs/OBSERVATION.md` 1437 行の項目 7（充填物が語の一部）について、W16-t1b（K801）で主経路（`ask --mode round5`・`semantic_execute`／`semantic_verify` の Project）の答えは、読解器が読んだ充填物の**表記のまま**（`森田課長` → `森田課長`）返すようになった。束縛の鍵（`term` = `canonical`）は変えていない。同じ問いに 2 つの表記が出る文書（`森田課長` と `森田`）は `AMBIGUOUS`。後段（`question_cross`）は変えていない。測定は `docs/READING_SOUNDNESS.md` §10M・`artifacts/w16-t1b/`。

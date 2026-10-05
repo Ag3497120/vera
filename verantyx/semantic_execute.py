@@ -308,6 +308,34 @@ class Producer:
                             (clause.id,) if clause.exceptions else ()))
         return self._dedup(rows)
 
+    def _written(self, plan: Plan, op: Operator, row: Row, answer: tuple) -> tuple:
+        """W16-t1b K801: a string answer is the written form of the filler the sources wrote, not its canonical (title-stripped) key.
+        The binding (term) is unchanged; only the answer made from it. Two written forms for one answer -> abstain."""
+        from .frames import canonical
+        roles_of: dict[str, set] = {}
+        for node in plan.nodes:
+            if node.op == "Bind" and node.pattern is not None:
+                for name, term in node.pattern.roles:
+                    if isinstance(term, Variable):
+                        roles_of.setdefault(term.name, set()).add(name)
+        by_id = {c.id: c for c in self.clauses}
+        out = []
+        for (label, value), o in zip(answer, op.outputs):
+            if isinstance(o.term, Variable) and not o.unit and isinstance(value, str):
+                names = roles_of.get(o.term.name, ())
+                forms = set()
+                for ident in row.sources:
+                    clause = by_id.get(ident)
+                    for r in (clause.roles if clause is not None else ()):
+                        if r.name in names and r.term == value and canonical(r.span.text) == r.term:
+                            forms.add(r.span.text)
+                if len(forms) > 1:
+                    raise Unresolved("UNKNOWN_AMBIGUOUS", "answer written forms differ")
+                if len(forms) == 1:
+                    value = next(iter(forms))
+            out.append((label, value))
+        return tuple(out)
+
     def _scope(self, op: Operator, rows: list[Row]) -> list[Row]:
         out = []
         for row in rows:
@@ -406,6 +434,7 @@ class Producer:
                             self.refusals.add(("UNKNOWN_CONDITION", "unresolved source scope at Project")); continue
                         answer = tuple((o.label, Quantity(_quantity(_get(o.term, env), o.unit), o.unit)
                                         if o.unit else _get(o.term, env)) for o in op.outputs)
+                        answer = self._written(plan, op, row, answer)
                     else:
                         raise Unresolved("UNKNOWN_OPERATOR", op.op)
                     if op.target is not None and not typed(env.get(op.target.name), op.target.sort):

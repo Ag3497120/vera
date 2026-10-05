@@ -1,0 +1,2 @@
+?? artifacts/w16-t1b/
+d44d23a ops/decisions: owner decisions for the 5-day plan (D14 yes, freeze B with T8, network not granted, hooks with verbatim utterances)

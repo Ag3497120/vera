@@ -334,11 +334,16 @@ def test_the_misreads_of_the_base_entry_do_not_enter_through_a_clause(text):
 
 def test_the_base_misreads_alone_are_still_the_base_output_and_the_clause_gates_see_them():
     """The five single-sentence misreads of the base (probe_w1a4_en.txt) are not this path's: unchanged. A clause that the base entry misreads alone has a reason in one of the two
-    existing gates (the ending, the derived verb)."""
+    existing gates (the ending, the derived verb).
+    Integration (auditor ruling 2026-10-06, W16-t1b K800/K818): the potential form 兄が手紙を書けた。 is a modal sentence of the K800 kind 'potential' and is no longer read as an event (the reader
+    abstains with MODALITY_NOT_READ:potential; answer -> abstention, the direction the ruling allows); old expectation: `readable is True` and the two existing gates see it (typed_head_derived_ja).
+    The other two clauses are unchanged."""
     from types import SimpleNamespace as NS
     for text in ('母が料理を作れ。', '料理を作れ。', '窓を開けるな。', '窓を開けて。', 'だから兄が歩いた。'):
         assert SR.read(text, placement=F.FixtureQuery()) == BASE.read(text, placement=F.FixtureQuery()), text
-    for clause in ('兄が本を読んでいない。', '兄が手紙を書けた。', '兄が窓を開けた。'):
+    stopped = SR.read('兄が手紙を書けた。', placement=None)
+    assert stopped['readable'] is False and 'MODALITY_NOT_READ:potential' in [r for u in stopped['unsupported'] for r in u['reasons']]
+    for clause in ('兄が本を読んでいない。', '兄が窓を開けた。'):
         out = SR.read(clause, placement=None)
         assert out['readable'] is True, clause
         sp = out['clause_meta'][0]['span']
@@ -697,10 +702,29 @@ def _functions(src):
 
 
 def test_semantic_read_changes_only_read_ja_and_semantic_reader_only_adds():
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the wrapper `document_view = _w16t1b_document_view` is checked after the two `_functions` calls (it calls the function of the base commit
+    and gates the result); old expectation: the assignment at the end of the file did not exist, the text of `document_view` was the def with the one W5-e line."""
     import difflib, hashlib      # W5-e2: function-local so that the file's top-level is unchanged
     b = _functions(git('show', '%s:verantyx/semantic_read.py' % BASE_COMMIT)); n = _functions((TREE / 'verantyx' / 'semantic_read.py').read_text(encoding='utf-8'))
     assert [k for k in b if k in n and b[k] != n[k]] == ['_read_ja'] and not [k for k in b if k not in n]
     br = _functions(git('show', '%s:verantyx/semantic_reader.py' % BASE_COMMIT)); nr = _functions((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8'))
+    # Integration (auditor ruling 2026-10-06, W16-t1b K800): the end of the reader wraps `document_view` (`document_view = _w16t1b_document_view`, which only calls the function of the base commit and
+    # gates its result). The def of `document_view` itself is still the one of W5-e (checked below, byte for byte); the wrapper is checked here: the last top-level assignment of the name,
+    # the keyword default of the wrapper that reaches the base function, a body that only calls the base function and the gate, and the module attribute. Old expectation: `_functions` took the
+    # assignment as the text of `document_view`, so the diff of `document_view` was only the W5-e line.
+    src_now = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
+    tree_now = ast.parse(src_now)
+    defs_dv = [n for n in tree_now.body if isinstance(n, ast.FunctionDef) and n.name == 'document_view']
+    assigns_dv = [n for n in tree_now.body if isinstance(n, ast.Assign) and [ast.unparse(t) for t in n.targets] == ['document_view']]
+    assert len(defs_dv) == 1 and [ast.unparse(n.value) for n in assigns_dv] == ['_w16t1b_document_view'] and assigns_dv[0].lineno > defs_dv[0].lineno
+    nr['document_view'] = ast.get_source_segment(src_now, defs_dv[0])
+    wrapper = [n for n in tree_now.body if isinstance(n, ast.FunctionDef) and n.name == '_w16t1b_document_view']
+    assert len(wrapper) == 1 and [ast.unparse(d) for d in wrapper[0].args.kw_defaults if d is not None][-1] == 'document_view' and len(wrapper[0].body) == 1
+    assert ast.unparse(wrapper[0].body[0]) == "return _w16t1b_gate(_base_view(documents, sovereigns=sovereigns, family=family))"
+    import inspect      # function-local: the top-level of the file is unchanged
+    base_fn = R._w16t1b_document_view.__kwdefaults__['_base_view']
+    assert R.document_view is R._w16t1b_document_view and base_fn is not R.document_view and base_fn.__name__ == 'document_view'
+    assert inspect.getsource(base_fn).strip() == nr['document_view'].strip()
     # W5-e2（監査役の判断 2026-10-04 04:42、K-B）: 並立・選言の門（10E）を入れる差し込み口が無く、document_view に 1 行足した。変わった関数は document_view だけで、その差は追加 1 行だけ
     # （削除 0 行）。新しい本文の sha256 を固定する（W3-b2/b3 のハッシュ固定と同じ扱い。docs/READING_SOUNDNESS.md 10E.2）
     # Integration (auditor, 2026-10-04): W3-b4 (merged before W5-e) also re-points the two typed-reading plans with its focus-particle gate

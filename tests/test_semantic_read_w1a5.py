@@ -149,9 +149,12 @@ GRAMMAR = {
 
 
 def _section_of_the_reader():
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the section ends before the next ticket's mark `# W16-t1b:` (the modality gate appended at the end of the reader, attested by
+    tests/test_w16t1b_*.py); old expectation: the section runs from `# W1-a5:` to the end of the file."""
     src = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
     i = src.index('# W1-a5:')
-    return ast.parse(src[i:])
+    j = src.index('# W16-t1b:') if '# W16-t1b:' in src else len(src)
+    return ast.parse(src[i:j])
 
 
 def _registered_words():

@@ -5070,3 +5070,524 @@ W3E2-P3-029  r9 ハルはグリスへ荷物を運んだ。  expect=assumed  | r3
 - **仮定の不変性ゲート**: 段 E2（仮定つきの読み）は、同じ証拠で並ぶ別の仮定（同点の崩し方）のすべてに替えても十字が変わらないときだけ採用する。変われば `ASSUMPTION_UNDETERMINED` で棄権。vera1 の配置の不変性（「配置は情報を増やせない」）と同じ論法。決定論の同点崩しは一致を捏造する（`CLAUDE.md`: 73.3% → 23.7%）。
 - **粒度の階段を未知語の出所に（出所 d'）**: 名前・造語を 2 字／1 字の段で見て、既知の形態素と繋がるか（ザクる ← ザク？、カタカナ列の人名の形）。型は繋がれば `ASSUMPTION_SOURCE_D_PRIME`、繋がらなければ `UNKNOWN_NO_EVIDENCE`。対照は `granularity.control`（同じ字の無作為な組み合わせ）。採用は不変性ゲートを通ったときだけ。
 - **語彙層の出所 (c) の使い方**: 語彙層（`build/initial-layers/vocab/vocab.sqlite`、スキーマ `verantyx.vocab_layer/1`）は独立出現 ≥3 の語だけ。`origin_class` が `human`（jawiki）の語を先に使い（`attested_human`）、`generated` だけの語は別の型 `attested_generated` として申告して **合算しない**。`in_base_material: true` の語は r9 の素材にも入っている。
+
+## 10M. W16-t1b: 法の助動詞の節を出来事として読まない・名前＋肩書きの答えを表記のまま返す（事前登録 K800〜）
+
+事前登録の時刻は `artifacts/w16-t1b/prereg_time.txt`（検査データ・テスト・製品コードより前）。基点 dev `3a1677c`（作業ツリーの HEAD は `d44d23a`、製品の差なし）。狭める方向だけ。
+
+### 規則
+- **K800 法の助動詞**: 述語に 願望（たい・たがる・てほしい・ほしい）、可能（られる・れる の可能、ことができる）、推量・様態（だろう・でしょう・かもしれない・らしい・ようだ・そうだ（様態））、仮定（ば・たら・なら で終わる主節でない形）、意志（よう・う・つもり）が付く節は、出来事として読まない。読解器は `MODALITY_NOT_READ:<種類>` で棄権する（法を読む規則は v1 で足さない）。否定・過去・丁寧・相（ている 等、W1-a5 の範囲）は従来どおり。判定は品詞・活用形・語彙素（助動詞・補助形容詞）だけで、表層の文字列の一覧は作らない。
+- **K801 名前＋肩書きの答え**: 答えの値は読解器が読んだ充填物の表記そのまま（W3-f1 K340 の徹底）。QA の経路で充填物の末尾の普通名詞（肩書き・役職）を落とす処理を外す。外すと別の誤りが出る形は棄権に倒す（同じ問いに 2 つの表記が出るときは AMBIGUOUS）。
+- **K802 不変**: それ以外の文の読みと答えは byte 不変。変わった行は全件列挙（読める→棄権、または 切れた値→全体の値 の 2 方向だけを許す。法の対象の文での「棄権→棄権で理由だけ変化」は第 3 の向きとして別に数え申し送る）。
+
+### 設計の要約
+- K801: `semantic_execute.py`・`semantic_verify.py` の答えを作る 3 箇所（producer の Project、checker の audit と proof）だけ。束縛・`term`・`_calc` の本体は変えない。Project の直後に、変数の値が str のとき、その変数を束ねた役の根拠の節の `span.text` のうち `r.term == 値 かつ canonical(r.span.text) == r.term`（`!= span.text` の条件は付けない。H805）のものの `span.text` を集め、1 つならその表記（term と同じなら値のまま）、2 つ以上なら棄権、0 なら従来どおり。checker は producer を import せず自分で書く。
+- K800: `semantic_reader.py` の末尾の 1 節（`# W16-t1b:` の印から末尾まで、関数名は `_w16t1b_`）に `document_view` を包む門を足す。基点の関数の本体は変えない。門は unsupported が空で modality が assert の節だけにかけ、`unsupported=('MODALITY_NOT_READ:<kind>',)` を付ける。判定は品詞・活用形・語彙素だけ。
+- 一段＋られる は、は/が/も の主語が agent として読まれている（能動の読みで助動詞が落ちた）ときだけ止める。受身として読まれた節は残す。
+- 並列の作用域: 型が付いた節と同じ文で、述語が前にあり agent の span が同じ節にも同じ型を付ける。
+
+### 種類の対応表（理由は ASCII の閉じた集合）
+| 日本語 | 理由 |
+|---|---|
+| 願望（たい・たがる・てほしい・ほしい） | `MODALITY_NOT_READ:desire` |
+| 可能（一段＋られる） | `MODALITY_NOT_READ:potential` |
+| 推量（だろう・でしょう） | `MODALITY_NOT_READ:conjecture` |
+| 様態（そう・よう） | `MODALITY_NOT_READ:appearance` |
+| 仮定（ば・たら・なら） | `MODALITY_NOT_READ:conditional` |
+| 意志（う・よう） | `MODALITY_NOT_READ:volition` |
+| 伝聞（らしい・そうだ（伝聞）） | `MODALITY_NOT_READ:hearsay` |
+
+### 判定の式（テストにそのまま書く）
+- 法 `kind=modal`: ask（問いは「誰が<目的語>を<述語の普通形>？」と「<主語>は<目的語>を<述語の普通形>？」の 2 つ）の `verdict != "ANSWER"`。かつ `semantic_read.read(文, placement=None)['readable'] is False`。
+- 法で `gate=true` の行（形の種類から **データを作るときに** 決める: たい・たがる・てほしい・てもらいたい・一段＋られる（は/が 主語）・らしかった・ば/たら の断片）: さらに `semantic_read` の `unsupported[].reasons` のどれかが `MODALITY_NOT_READ:<その行の kind>`、ask の `reason` が `MODALITY_NOT_READ:<kind>` を含む。
+- 法の対照 `kind=modal_control`（法を外した同じ文）: `verdict == "ANSWER"` かつ `values == expect_values`。
+- 肩書き `kind=title`: `verdict == "ANSWER"` かつ `values == [名前＋肩書き]`（NFKC で比較）。
+- 肩書きの対照 `kind=title_control`（肩書きの無い名前、さん付き、肩書き＋の＋名前 など）: `verdict == "ANSWER"` かつ `values == expect_values`。
+- 肩書きの混在 `kind=title_mixed`（同じ人が `森田課長` と `森田` の両方で書かれた文書）: `not (verdict == "ANSWER" and values == [名前だけ])`。
+- 範囲を測るだけの集合 `kind=range`（合否に入れないと宣言）: べき（当為）、五段＋れる、肩書きが名前の前（技師ユン・部長田中）、並列の作用域（同じ主語／違う主語）、ことができる・可能動詞、2 文の文書で片方だけ法。
+- 記録する副次の量: 法の行のうち reason に `MODALITY_NOT_READ` を含む行の数と kind の内訳。
+
+### 測定結果（W16-t1b。出力は `artifacts/w16-t1b/` のファイル）
+- 事前登録 `prereg_time.txt` = 2026-10-06 00:35:43 +0900 → 検査データ・テストの凍結 `freeze.sha256` = 00:38:07 → 修正前のテスト `a1_before.txt`（`95 failed, 143 passed`。落ちたのは法 59 件（modal の ask 20・読めてしまう 15・gated 24）と肩書き 36 件（title 30・title_mixed 6）。対照 `modal_control`・`title_control` は 0 件落ち）→ 製品の変更（`verantyx/` の mtime 00:46）。
+- A1（後）`a1_after.txt`: `tests/test_w16t1b_*.py tests/test_w3f1_*.py` = `6 failed, 538 passed`。落ちた 6 件は下の K810・K811（自作の凍結データの gate と可能動詞の行。データは変えていない）。肩書き（title 36・title_mixed 6・title_control 9）と W3-f1 は全部通る。
+- 再現: `repro_before_*.json` → `['森田']`・`['次郎']`・`['はい']`・`['次郎']`、`repro_after_*.json` → `['森田課長']`、`UNKNOWN_UNSUPPORTED_EVIDENCE`（reason `MODALITY_NOT_READ:desire`）×2、`…:potential`。`repro_after_read.json`・`repro_after_read_r9.txt`: `readable` false、unsupported に `MODALITY_NOT_READ:desire`、最終理由 `NO_SUPPORTED_CLAUSE`。
+- 受身は残る: `次郎は花子に褒められた。`→`花子`（`range_after.tsv`）。並列: 同じ主語（`次郎は本を読み、絵を描きたかった。`）は棄権、違う主語（`次郎は本を読んで、花子は絵を描きたかった。`）は `次郎`。
+- 範囲（`range_before.tsv`・`range_after.tsv` 259 行、変わった行 `range_changed.tsv` 85 行）: kind ごとの `MODALITY_NOT_READ` は desire・potential・hearsay・conditional のみ（`reason_after.tsv`。conjecture・volition・appearance は 0＝基点で既に棄権）。
+- K802（`k342_summary.txt`・`k342_classified.tsv`・`entry_*_diff.txt`・`bs_*_compare.txt`・`CHANGES.md`）: aq 111・w3c2 185 は byte 不変（マスク後）。extra2 42 のうち 33 行、b2like 47 のうち 1 行が変化。入口 4,149 文は配置なし・r9 とも 4,143 同一・6 行が「棄権→棄権（理由の変化）」で、読める数は 286→286・377→377。バンクの公開の写し B1・B2・B3 は `results.jsonl` が前後で一致（`run_meta.json` の時間とツリー状態の欄だけ違う）。
+- 関係テスト `related_before.txt`（`55 failed, 8240 passed`）→ `related_after.txt`（`81 failed, 8214 passed`）。新しい失敗 26 件は全部 K800 由来で `EXISTING_TEST_CONFLICTS.md` に全件、K801 由来は 0。
+
+### 判断記録（H800〜）
+- H800: K800 の門は `semantic_reader.py` 末尾の 1 節（`_w16t1b_*`）。`constructions/**` では門を作れない（`_read_constructions` は未読の節があるときだけ呼ばれ、既存の節に unsupported を付けられない）。
+- H801: 門は unsupported が空で modality が assert の節だけ。既に棄権している節の理由は変えない。
+- H802: K801 の表記の書き換えは `semantic_execute.py` と `semantic_verify.py` の答えを作る 3 箇所（producer の Project・checker の audit・checker の proof）。`term`・束縛・`_calc` の本体は変えない。checker は producer を import しない。同じ問いに 2 つの表記が出る文書（`森田課長` と `森田`）は `AMBIGUOUS`。
+- H803: 既存テストは 1 文字も変えず、衝突 26 件を `EXISTING_TEST_CONFLICTS.md` に残した（監査役の裁定）。
+- H804: 凍結後にデータ・テストを変えていない。K810・K811 の失敗はそのまま残した。
+
+### 既知の穴（K810〜）
+- K810: 凍結データの `gate=true` の 4 行（`mod-desire-05`・`mod-potential-02`・`mod-potential-05`・`mod-conditional-00`）は、基点で既に別の理由で棄権している節（`ill-typed role…`・`unrepresented source content`・`unsupported clause grammar`）なので、設計（H801）どおり理由を足さず、`MODALITY_NOT_READ:<kind>` の判定が落ちる。ask は ANSWER にならない（K800 の中身は満たす）。事前登録の `gate` の一覧（てもらいたい・は/が/も の一段＋られる・ば）を作る前に基点で確かめなかったデータ側の誤り。
+- K811: `書けた`・`運べた` のような可能動詞（`mod-potential-06`・`mod-potential-08`）は、下一段の普通の動詞と形態素の見分けがつかず（`開けた` と同じ）、基点で出来事として読めてしまう。語彙表なしでは棄権に倒せない。**B1 の「法はすべて棄権」はこの 2 行で満たせていない**。
+- K812: 五段＋れる（`読まれた`）と べき（当為）は範囲外で基点のまま答える（`range_after.tsv`）。
+- K813: 法の対象の文での「棄権→棄権で理由だけ変化」6 行（入口）と、extra2 の副次の欄だけの変化（`UNREAD_SENTENCES` の数）。K802 の 2 方向の外。
+- K814: `semantic_read` の最終理由は `NO_SUPPORTED_CLAUSE`（`MODALITY_NOT_READ:<kind>` は `unsupported[].reasons`）。
+- K815: 後段 question_cross が「先生は何を読みたかった？」に答える能力が失われる（extra2 X011・X012・X014 が CORRECT → ABSTAINED）。
+- K816: 既存テスト 26 件の衝突（構造 7・振る舞い 19。`EXISTING_TEST_CONFLICTS.md`）。B5 は満たせない見込み。
+
+### 第 2 ラウンド（事前登録 K817〜。時刻は `artifacts/w16-t1b/prereg_r2_time.txt`。製品・新しい検査データ・新しいテストより前）
+第 1 ラウンドの記述（上の測定結果・判断記録・既知の穴）のうち、K810・K811・K816・H803・H804 と、設計の要約の K801 の行は **第 2 ラウンドで古くなった**（下の「第 2 ラウンドの結果」で上書きの訂正を書く。既存の行は削除しない）。中間職のレビュー（`review.r1.md`）の M1〜M6 に対応する。
+- **K817 転換の枠（`借りる`→`貸す`＋recipient）の主語**: 読解器は `借りる`・`もらう` などを `貸す`・`与える` の型（patient・recipient）で読むため、主語の役の名前は `agent` ではない。K800 の門が役の名前を前提にしていたので、可能（一段＋られる）と並列の作用域が届かなかった（伏せた B3 の誤答 1 件）。直し方: 役の名前でなく「**は/が/も が直後に付く span を持つ役（主語）**」を使う。(a) 可能: 述語の動詞が一段で直後が れる/られる の助動詞のとき、主語の役が **patient 以外** で読まれていれば（能動か転換の枠で助動詞が落ちた）止め、patient で読まれていれば（受身として正しい）残す。(b) 並列の作用域: 型が付いた節と同じ文で述語が前にある節のうち、主語の span または agent の span が（開始・終了とも）同じ節に同じ型を付ける。品詞・活用形・語彙素と span だけで判定し、表層の文字列の一覧は作らない。
+- **K818 可能動詞は語彙素で見分ける**: UniDic の素性で、動詞・下一段の語の **語彙素（lemma）と基本形の表記（orthBase）が違う**（`書け`: lemma `書く`・orthBase `書ける`。`開け`: lemma `開ける`・orthBase `開ける`＝同じ）とき、可能動詞（五段動詞の可能形）として `potential`。仮定形（`書けば`）は従来どおり `conditional`。
+- **K819 凍結の訂正（gate の 4 行）**: 凍結データの `gate=true` のうち、基点で出来事として読めない（readable false）行は、門が（設計 H801 どおり）既に棄権している節に触らないので `MODALITY_NOT_READ` が付かない。`gate` は「基点が出来事として読む文」だけが true、という **形の規則** に直す。変わるのは `gate` の欄だけ。
+- 新しい検査データ `tests/reading_soundness/w16t1b_converse.jsonl`（kind と判定の式）:
+  - `converse_modal`（転換の枠の 願望・可能・作用域、事前に決めた: 借りる・もらう 系）: ask の `verdict != "ANSWER"`（全問）かつ `semantic_read.read(文, placement=None)['readable'] is False`。`gate=true` の行はさらに `unsupported[].reasons` に `MODALITY_NOT_READ:<kind>`。
+  - `passive_control`（受身。正しく読める）: `verdict == "ANSWER"` かつ `values == expect_values`（基点と同じ）。
+  - `ichidan_control`（可能動詞でない下一段の普通の動詞・転換の枠の普通の文・主語の違う並列）: 同上。
+  - `title_control`（第 1 ラウンドの凍結 9 行に足す対照）: 同上。
+  - `range`（合否に入れない、と宣言）: 二重目的語の受身（`花子は先生に本を届けられた。`）、`借りる`＋`られる` の別形。
+- 判定: 上の式を `tests/test_w16t1b_converse.py` にそのまま書く。数の下限は `test_data_is_frozen` に書く（converse_modal ≥ 10、passive_control ≥ 5、ichidan_control ≥ 5、title_control ≥ 2）。
+- K802 の取り直し（K342 の 4 本・入口 4,149 文・バンクの公開の写し・関係テスト）を行い、変わった行を全件 `CHANGES.md` に分類する。
+- 既存テストの改訂は監査役の裁定（2026-10-06 00:37:31）の範囲だけ。改訂の前後の全文は下の「第 2 ラウンドの結果」に書く。
+
+### 第 2 ラウンドの結果（W16-t1b。出力は `artifacts/w16-t1b/` のファイル。上の第 1 ラウンドの測定結果・K810・K811・K816・H803・H804 はこの節で上書きされる）
+- **事前登録の順序**: 第 2 ラウンドの事前登録 `prereg_r2_time.txt` = 01:17:47 → 新しい検査データ・テストの凍結 `freeze_r2.sha256`（最初の版は `freeze_r2.first.sha256`、01:19:27）→ 製品の変更。
+- **K817（転換の枠の主語）**: 門を「は/が/も が直後に付く span を持つ役（主語）」で組み直した（`_w16t1b_subject`）。可能（一段＋れる/られる）は主語の役が patient 以外のとき止め、patient（受身）なら残す。並列の作用域は、主語または agent の span が同じ先行の節に同じ型を付ける。確認: `repro_r2_m2.txt`（借りて・借り＋願望の 2 文と `借りられた` は `MODALITY_NOT_READ`、`次郎は花子に褒められた。` は `['花子']`）。新データ `tests/reading_soundness/w16t1b_converse.jsonl`（converse_modal 14・passive_control 6・ichidan_control 9・title_control 2・range 4）と `tests/test_w16t1b_converse.py`。前（基点の木にテストを置いて実行）`a2_before.txt`、後 `a2_after.txt`（`598 passed`: `tests/test_w16t1b_*.py`・`tests/test_w3f1_*.py`）。
+- **K818（可能動詞）**: 下一段の動詞で、**基本形の読み（pronBase）が語彙素の読み（lForm）より 1 拍長い**ものを `potential` とする（`書け`: カク→カケル。`開け`: アケル→アケル で同じ＝残る）。レビューの案（lemma と orthBase の違い）は、入口 4,149 文の下一段 490 語のうち 162 語（49 の型。立てる/建てる・締める/閉める・上げる/あげる など表記の違い）を可能に誤って拾うことが測定で分かったので採らなかった（`scan_ichidan_criteria.txt`: A=lemma≠orthBase 162 語、B=lForm≠pronBase 61 語（長音・濁点 `イーカエル`・`ツズケル` を誤って拾う）、C=1 拍長い 40 語・17 型。C の 17 型は全て真の可能形: `scan_ichidan_potential.txt`）。凍結データの `mod-potential-06`・`mod-potential-08` は通る。
+- **K819（gate の 4 行）**: `mk_data.py` が「基点（HEAD の写し）の `document_view` に unsupported が空で modality が assert の節がある文だけ gate=true」という形の規則（`base_gate.py`）で `w16t1b_modality.jsonl` を再生成する。変わったのは `mod-desire-05`・`mod-potential-02`・`mod-potential-05`・`mod-conditional-00` の `gate` の欄だけ（`DECISIONS.md` 13。判定の式・他の行・assert は不変）。新データの gate は、さらに「基点が最初の問いに ANSWER する」を条件に足した（`mk_data_r2.py`。理由: ask の理由に `MODALITY_NOT_READ` が出るのは基点が答えていた形だけ。2 行が凍結の直後の試走で ask の理由が基点のままと分かり、`freeze_r2.first.sha256` の版から作り直した。DECISIONS 14）。
+- **M3 の結果（K802 の取り直し）**:
+  - K342 の 4 本（`k342_summary_r2.txt`）: aq 0 行・w3c2 0 行・b2like 1 行（BQ002 `森田`→`森田課長`）・extra2 33 行（第 1 ラウンドと同じ。X008〜X010 `ANSWER`→`MODALITY_NOT_READ:desire`、X011・X012・X014 `ANSWER`→`UNKNOWN_UNREAD`、残りは理由／副次の欄だけ）。extra2 の score は CORRECT 19→23・ABSTAINED 16→12・WRONG 0→0（`after_r2/extra2_score.json`）。
+  - 入口 4,149 文（配置なし・r9 とも `entry_*_diff_r2.txt`）: `{'same': 4130, 'abstain_reason_changed': 19}`、読める→棄権 0、棄権→読める 0。読める数は 286・377 で前後同じ。変わった 19 行は全部「棄権→棄権（理由だけ変化）」: 第 1 ラウンドの 6 行（願望 5・`食べられた` 1）に、可能動詞 13 行（歩ける 3・行ける 3・戻れる 3・向かえる 3・移れる 1。理由が `RECIPIENT_TYPE_UNDETERMINED`・`UNDETERMINED_MODALITY:possible potential form` → `NO_SUPPORTED_CLAUSE`＋`MODALITY_NOT_READ:potential`）が加わった。全件は `entry_none_diff_r2.tsv`。
+  - バンクの公開の写し B1〜B3（`bs_B*_compare_r2.txt`）: 差は `run_meta.json` だけ（第 1 ラウンドと同じ）。
+  - 自作の範囲（`range_before_r2.tsv`・`range_after_r2.tsv` 308 行）: converse_modal の ANSWER 24 行が全て `UNKNOWN_UNSUPPORTED_EVIDENCE` に、modal の ANSWER 40 行が全て同じく棄権に。modal・converse の残り（`UNKNOWN_NO_EVIDENCE` 4＋65 など）は基点のまま。対照（modal_control 42・passive_control 6・ichidan_control 9・title 36・title_control 11）は全て ANSWER のまま同じ値。範囲の行: `花子は先生に本を届けられた。`→`['先生']` が棄権（可能として止まる。二重目的語の受身。答え→棄権の向き）。
+- **M1（既存テストの改訂）**: 監査役の裁定（2026-10-06 00:37:31）の範囲で改訂した 10 ファイル・34 件（全件の前後は `revised_tests_table.tsv`、差分の全文は下）。K800 の対象でない文の期待は変えていない（`git diff -- tests/` の削除行 20 本は全て上の改訂の対象の行）。skip・xfail の追加 0（`grep` rc=1）。`document_view` の差し替え（裁定 3）は `tests/test_w16t1b_gate_reach.py` で確かめた: `document_view` を import する verantyx の全モジュール（module level 6: compositional_goal・meaning_bridge・meaning_goal_bridge・memory_frame・semantic_polarity・semantic_retrieve、関数の中 3: multigrain_source_binding・one・semantic_realize）と `semantic_read` が、import の順 6 通りのどれでも包んだ関数を掴む。基点の関数を掴むものは 0 なので、差し替えは続け、入口に門を当てる案は不要（K800 は完了）。
+  - 構造のテストの改訂: `test_semantic_read_w3b6.py`（名前の登録に `w16t1b` を含む名前と `document_view` の再代入を足した）、`test_semantic_read_w3c7.py`・`test_semantic_read_w1a5.py`（節の終わりを次の `# W16-t1b:` の印の前までにした）、`test_semantic_read_w3b3.py`（包んだ関数が基点の関数を呼ぶだけであることを AST と `__kwdefaults__` で検査）。**ファイルの hash を固定する `test_semantic_read_w3b6.py::test_the_data_and_the_tests_are_the_frozen_ones` は w3b6 のテストの変更に追随が要り、前例（W3-c7 の統合 `dad9a18`）どおり `artifacts/w3-b6/bank_freeze.r9.sha256`（r8 の写しで w3b6 のテストの hash 1 行だけ更新）を足した。これはチケットの許可パスの外の 1 ファイル（追加のみ）。**
+  - 関係テスト（`related_files.txt` ＋ `tests/test_w16t1b_*.py`）: 基点の失敗 `related_before.txt` = `55 failed, 8240 passed` → 第 2 ラウンドの最終 `related_after_r2.txt` = `55 failed, 8540 passed`。新しい失敗 0、消えた失敗 0（`related_diff_r2.txt` は空）。
+- **H805**: K801 の表記の集合は `r.term == 値 かつ canonical(r.span.text) == r.term`（`!=` を付けない）。理由: 同じ人が `森田課長` と `森田` の両方で書かれた文書を `AMBIGUOUS` にするには、表記が term と同じ役も候補に含める必要がある（DECISIONS 8）。設計の要約の K801 の行をコードどおりに直した。
+- **H806**: K810 は K819 で解消（凍結の `gate` の 4 行を形の規則で直した）。K811 は K818 で解消（可能動詞は 1 拍長い規則で止める）。K816（既存テスト 26 件の衝突）は M1 で解消。H803・H804 は第 1 ラウンドの記録で、第 2 ラウンドは凍結データの `gate` の欄の 4 行を変えた（K819）。
+
+#### 既存テスト改訂の差分の全文（`artifacts/w16-t1b/tests_revision.diff` と同じ。`-` が旧い、`+` が新しい）
+```diff
+diff --git a/tests/test_ask_question_cross.py b/tests/test_ask_question_cross.py
+index f19a1d1..a053b82 100644
+--- a/tests/test_ask_question_cross.py
++++ b/tests/test_ask_question_cross.py
+@@ -12,4 +12,5 @@ import pytest
+ from verantyx import cli
+ from verantyx import event_cross as EC
++from verantyx import semantic_read as SRD
+ from verantyx import observe as O
+ 
+@@ -404,4 +405,14 @@ def place_forms(tmp_path, monkeypatch):
+ 
+ 
++# Integration (auditor ruling 2026-10-06, W16-t1b K800): the sentences of this file that carry a modal auxiliary and the kind the reader abstains with.
++K800_KIND = {'先生は本を読みたかった。': 'desire', '母は手紙を書きたかったです。': 'desire', '漁師は魚を運びたがった。': 'desire', '課長は地図を見たがっていた。': 'desire',
++             '社長は資料を渡したらしかった。': 'hearsay', '先生は本を読んだらしかった。': 'hearsay', '駅員は切符を渡したら。': 'conditional', '先生は本を読んだら。': 'conditional',
++             '校長は雑誌を読みたかった。': 'desire'}
++
++
++def reader_unsupported_reasons(sentence):
++    return [r for u in SRD.read(sentence, placement=None).get('unsupported') or [] for r in u.get('reasons') or []]
++
++
+ @pytest.mark.parametrize('sentence,tail,want', [
+     ('先生は本を読んだ。', '先生は何を読んだ', None),                        # the same written predicate
+@@ -418,4 +429,11 @@ def place_forms(tmp_path, monkeypatch):
+ ])
+ def test_predicate_form_check_directly(sentence, tail, want):
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): a sentence that carries a modal auxiliary (desire たい, hearsay らしい, conditional たら) is not read as an event,
++    so the reader gives no clause and the check answers PREDICATE_POSITION_UNKNOWN (the reader abstains with MODALITY_NOT_READ:<kind>). Old expectations kept in the table above:
++    先生は本を読みたかった。/読みたかった = None, and PREDICATE_FORM_DIFFERS for 読みたかった・読んだらしかった・読んだら (a clause was read and its form differed).
++    The rows without a modal auxiliary are unchanged."""
++    if sentence in K800_KIND:
++        assert 'MODALITY_NOT_READ:' + K800_KIND[sentence] in reader_unsupported_reasons(sentence)
++        want = 'PREDICATE_POSITION_UNKNOWN'
+     assert cli._qc_predicate_form(sentence, tail) == want
+ 
+@@ -423,4 +441,6 @@ def test_predicate_form_check_directly(sentence, tail, want):
+ @pytest.mark.parametrize('sentence,question', FORMS)
+ def test_a_desire_or_hearsay_sentence_is_not_the_answer_of_a_plain_past_question(tmp_path, capsys, place_forms, sentence, question):
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): for the desire / hearsay / conditional sentences of FORMS the abstention pair is now
++    (NO_ATTESTED_CELL, NO_MATCHING_CROSS_IN_READ_SENTENCES) with MODALITY_NOT_READ:<kind> in the reader's reasons; old expectation: (FILLED, PREDICATE_FORM_DIFFERS) for every row except the te-miru one."""
+     path = doc_file(tmp_path, 'f.txt', sentence + '\n')
+     rc, out = ask(tmp_path, capsys, [path], question)
+@@ -430,4 +450,9 @@ def test_a_desire_or_hearsay_sentence_is_not_the_answer_of_a_plain_past_question
+     # NO_ATTESTED_CELL / NO_MATCHING_CROSS_IN_READ_SENTENCES instead of a FILLED cell rejected by the form check; the verdict is the same abstention.
+     want = (('NO_ATTESTED_CELL', 'NO_MATCHING_CROSS_IN_READ_SENTENCES'),) if ('てみ' in sentence or 'でみ' in sentence) else (('FILLED', 'PREDICATE_FORM_DIFFERS'),)   # 読んでみた: the voiced te-form
++    # Integration (auditor ruling 2026-10-06, W16-t1b K800): for a desire / hearsay / conditional sentence the document sentence is not read as an event either (the reader abstains with
++    # MODALITY_NOT_READ:<kind>), so the cross reports the same abstention as for the te-miru sentence instead of a FILLED cell rejected by the form check; old expectation: (FILLED, PREDICATE_FORM_DIFFERS)
++    if sentence in K800_KIND:
++        assert 'MODALITY_NOT_READ:' + K800_KIND[sentence] in reader_unsupported_reasons(sentence)
++        want = (('NO_ATTESTED_CELL', 'NO_MATCHING_CROSS_IN_READ_SENTENCES'),)
+     assert out['question_cross']['mapped_to'] == 'ORIGINAL' and (out['question_cross']['state'], out['question_cross']['reason']) in want
+     assert qc_steps(out)[0]['mapped_to'] == 'ORIGINAL'
+@@ -435,11 +460,15 @@ def test_a_desire_or_hearsay_sentence_is_not_the_answer_of_a_plain_past_question
+ 
+ def test_the_same_written_form_in_the_question_is_answered_verbatim(tmp_path, capsys, place_forms):
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): a desire sentence is not read as an event, so even the question written in the same form (先生は何を読みたかった？) is no longer
++    answered (answer -> abstention, the direction the ruling allows; the later stage is not touched in this ticket). Old expectation: ANSWER 本 through the door question_cross, sources[0]['sentence_id'] == 'f.txt#1:1',
++    out['text'] in out['sources'][0]['text']."""
+     path = doc_file(tmp_path, 'f.txt', '先生は本を読みたかった。\n')
+     rc, out = ask(tmp_path, capsys, [path], '先生は何を読みたかった？')
+-    assert out['verdict'] == 'ANSWER' and out['door'] == 'question_cross' and out['text'] == '本' and out['sources'][0]['sentence_id'] == 'f.txt#1:1'
+-    assert out['text'] in out['sources'][0]['text']
++    assert 'MODALITY_NOT_READ:desire' in reader_unsupported_reasons('先生は本を読みたかった。')
++    assert out['verdict'] == 'UNKNOWN_UNREAD' and out.get('door') != 'question_cross' and out.get('text') != '本'
+ 
+ 
+ def test_a_tie_whose_candidate_is_written_in_another_form_is_not_a_tie_of_answers(tmp_path, monkeypatch):
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the reason of the check is PREDICATE_POSITION_UNKNOWN because the desire sentence is not read as an event; old expectation: PREDICATE_FORM_DIFFERS."""
+     path = doc_file(tmp_path, 't.txt', '先生は本を読んだ。\n校長は雑誌を読みたかった。\n')
+     monkeypatch.setattr(O, 'observe_question_records', lambda q, r, **k: fake_obs(
+@@ -447,5 +476,8 @@ def test_a_tie_whose_candidate_is_written_in_another_form_is_not_a_tie_of_answer
+     orig = trigger()
+     out = cli._round5_question_cross(orig, [path], '誰かは何を読んだ？')
+-    check_original(out, orig, 'TIE', 'PREDICATE_FORM_DIFFERS')
++    # Integration (auditor ruling 2026-10-06, W16-t1b K800): the second candidate is the desire sentence 校長は雑誌を読みたかった。, which the reader no longer reads as an event, so the
++    # tie is checked with the reason PREDICATE_POSITION_UNKNOWN (abstention -> abstention, only the reason changes); old expectation: 'PREDICATE_FORM_DIFFERS'
++    assert 'MODALITY_NOT_READ:desire' in reader_unsupported_reasons('校長は雑誌を読みたかった。')
++    check_original(out, orig, 'TIE', 'PREDICATE_POSITION_UNKNOWN')
+ 
+ 
+diff --git a/tests/test_ask_question_cross_data.py b/tests/test_ask_question_cross_data.py
+index f7e3783..d7fbfa7 100644
+--- a/tests/test_ask_question_cross_data.py
++++ b/tests/test_ask_question_cross_data.py
+@@ -89,5 +89,8 @@ def test_no_wrong_answer_and_no_error_on_the_frozen_questions(name, questions, d
+ 
+ def test_extra2_no_stage_answer_where_the_document_says_another_form(monkeypatch, tmp_path):
+-    """Round 2 (M1): every question of extra2 that expects no stage answer gets neither a stage answer nor a stage tie; the controls written in the same form still answer."""
++    """Round 2 (M1): every question of extra2 that expects no stage answer gets neither a stage answer nor a stage tie; the controls written in the same form still answer.
++    Integration (auditor ruling 2026-10-06, W16-t1b K800): the three controls X011 (先生は何を読みたかった？), X012 (漁師は何を運びたがった？) and X014 (課長は何を見たがっていた？) ask about a desire
++    sentence, which the reader no longer reads as an event, so they are abstentions now (answer -> abstention, the direction the ruling allows; measured: 3 controls still answer, 3 are lost). The floor of the answered controls is lowered from 6 to the measured 3 for exactly that reason. Old expectation: `len(controls) >= 6`."""
+     monkeypatch.delenv('VERA_PLACEMENT', raising=False)
+     fp = O.FilePlacement.from_path(str(DATA / 'extra2' / 'placement_extra2.json'))
+@@ -107,3 +110,4 @@ def test_extra2_no_stage_answer_where_the_document_says_another_form(monkeypatch
+         if stage and o.get('verdict') == 'ANSWER': answered[q['id']] = o['text']
+     controls = {q['id']: q['truth']['fillers'][0] for q in qs if q['category'] in ('control_match', 'control_plain') and q['id'] in answered}
+-    assert len(controls) >= 6 and all(answered[i] == f for i, f in controls.items())
++    assert len(controls) >= 3 and all(answered[i] == f for i, f in controls.items())
++    assert not {'X011', 'X012', 'X014'} & set(answered), sorted(answered)     # the three desire-sentence controls abstain (K800); nothing else of the controls was lost
+diff --git a/tests/test_semantic_read_w1a5.py b/tests/test_semantic_read_w1a5.py
+index d107745..990f49c 100644
+--- a/tests/test_semantic_read_w1a5.py
++++ b/tests/test_semantic_read_w1a5.py
+@@ -150,7 +150,10 @@ GRAMMAR = {
+ 
+ def _section_of_the_reader():
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the section ends before the next ticket's mark `# W16-t1b:` (the modality gate appended at the end of the reader, attested by
++    tests/test_w16t1b_*.py); old expectation: the section runs from `# W1-a5:` to the end of the file."""
+     src = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
+     i = src.index('# W1-a5:')
+-    return ast.parse(src[i:])
++    j = src.index('# W16-t1b:') if '# W16-t1b:' in src else len(src)
++    return ast.parse(src[i:j])
+ 
+ 
+diff --git a/tests/test_semantic_read_w3b1.py b/tests/test_semantic_read_w3b1.py
+index 4aea563..689c098 100644
+--- a/tests/test_semantic_read_w3b1.py
++++ b/tests/test_semantic_read_w3b1.py
+@@ -353,9 +353,13 @@ def test_path_u_a_gate_five_adjunct_is_read_only_with_more_than_slot_evidence():
+ 
+ def test_path_u_does_not_touch_voice_polarity_tense_or_modality():
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the desire sentence 猫が庭へ歩きたい。 is stopped by the modality gate before the placement is asked, so its reasons are
++    ['NO_SUPPORTED_CLAUSE'] with MODALITY_NOT_READ:desire in the unsupported list (abstention -> abstention, only the reason changes); old expectation:
++    reasons(modal)[1].startswith('PLACEMENT_REREAD_ABSTAINS:'). The negation row is unchanged."""
+     base = F.MapQuery(base_map())
+     neg = read('猫が庭へ歩かなかった。', base)
+     assert neg['readable'] and neg['clauses'][0]['polarity'] == '-'
+     modal = read('猫が庭へ歩きたい。', F.MapQuery(base_map()))
+-    assert modal['readable'] is False and reasons(modal)[1].startswith('PLACEMENT_REREAD_ABSTAINS:')
++    assert modal['readable'] is False and reasons(modal) == ['NO_SUPPORTED_CLAUSE']
++    assert 'MODALITY_NOT_READ:desire' in [r for u in modal['unsupported'] for r in u['reasons']]
+     q = read('猫が庭へ歩いたか。', F.MapQuery(base_map()))
+     assert q['readable'] is False
+@@ -503,5 +507,9 @@ def test_every_row_of_the_new_data_with_the_fixture(row):
+ 
+ 
++K800_ROWS = {'W3B1-U-064': 'desire'}      # Integration (auditor ruling 2026-10-06, W16-t1b K800): the rows of the data whose input carries a modal auxiliary, and the kind
++
++
+ def test_declared_exceptions_are_real_and_each_has_a_reason():
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): W3B1-U-064 (兄が弟に名乗りたい。, a desire sentence) is stopped by the modality gate: abstention -> abstention with a new reason. Old expectation: the observed reasons of the data file."""
+     ids = {r['id']: r for r in DATA}
+     assert len({e['id'] for e in EXCEPTIONS}) == len(EXCEPTIONS)
+@@ -512,5 +520,10 @@ def test_declared_exceptions_are_real_and_each_has_a_reason():
+         # the exact output is pinned: a change of behaviour (better or worse) shows here
+         assert out['readable'] == e['observed']['readable']
+-        if not out['readable']:
++        if e['id'] in K800_ROWS:
++            # Integration (auditor ruling 2026-10-06, W16-t1b K800): the input carries a desire auxiliary (名乗りたい), so the modality gate stops it first: the reasons are
++            # ['NO_SUPPORTED_CLAUSE'] with MODALITY_NOT_READ:<kind> in the unsupported list; old expectation: the pinned reasons of the data file (RECIPIENT_TYPE_UNDETERMINED:名乗る, ...)
++            assert out['abstain']['reasons'] == ['NO_SUPPORTED_CLAUSE'], e['id']
++            assert 'MODALITY_NOT_READ:' + K800_ROWS[e['id']] in [r for u in out['unsupported'] for r in u['reasons']], e['id']
++        elif not out['readable']:
+             assert out['abstain']['reasons'] == e['observed']['reasons'], e['id']
+         else:
+diff --git a/tests/test_semantic_read_w3b1_r3.py b/tests/test_semantic_read_w3b1_r3.py
+index a399a29..f21f5e7 100644
+--- a/tests/test_semantic_read_w3b1_r3.py
++++ b/tests/test_semantic_read_w3b1_r3.py
+@@ -155,4 +155,7 @@ def test_a_typed_reading_with_a_plain_ending_is_still_read_and_the_polarity_and_
+ 
+ 
++K800_KIND = {'弟が港へ走りたかった。': 'desire'}     # Integration (auditor ruling 2026-10-06, W16-t1b K800): the rows of the list below that the modality gate stops first
++
++
+ @pytest.mark.parametrize('text,mapping', [
+     ('姉が昼、本を読んでいない。', s4_map()), ('姉が昼、本を読んでいなかった。', s4_map()), ('姉が昼、本を読んでいません。', s4_map()),
+@@ -162,8 +165,15 @@ def test_a_typed_reading_with_a_plain_ending_is_still_read_and_the_polarity_and_
+ ])
+ def test_the_thirteen_misreads_of_the_review_are_abstentions_now_with_the_readers_reason_first(text, mapping):
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): for 弟が港へ走りたかった。 (a desire sentence) the modality gate stops the clause before the placement is asked, so the reasons are
++    ['NO_SUPPORTED_CLAUSE'] with MODALITY_NOT_READ:desire in the unsupported list (abstention -> abstention, only the reason changes); old expectation: len(rs) == 2 and rs[1].startswith(TAIL + ':').
++    The other twelve rows are unchanged."""
+     out = SR.read(text, placement=F.MapQuery(mapping))
+     rs = reasons(out)
+     plain = SR.read(text, placement=None)
+     assert plain['readable'] is False                          # the base commit refuses them
++    if text in K800_KIND:
++        assert rs == ['NO_SUPPORTED_CLAUSE'] and 'MODALITY_NOT_READ:' + K800_KIND[text] in [r for u in out['unsupported'] for r in u['reasons']], rs
++        assert out['clauses'] == []
++        return
+     assert rs[0] == plain['abstain']['reasons'][0] and len(rs) == 2 and rs[1].startswith(TAIL + ':'), rs
+     assert out['clauses'] == []
+@@ -171,6 +181,8 @@ def test_the_thirteen_misreads_of_the_review_are_abstentions_now_with_the_reader
+ 
+ def test_the_gate_is_after_the_reread_so_an_earlier_refusal_keeps_its_reason():
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): 猫が庭へ歩きたい。 (a desire sentence) is stopped by the modality gate first: ['NO_SUPPORTED_CLAUSE'] with MODALITY_NOT_READ:desire in the
++    unsupported list; old expectation: reasons(out)[1].startswith('PLACEMENT_REREAD_ABSTAINS:'). The second row (a sentence without a modal auxiliary) is unchanged."""
+     out = SR.read('猫が庭へ歩きたい。', placement=F.MapQuery(u_map()))
+-    assert reasons(out)[1].startswith('PLACEMENT_REREAD_ABSTAINS:')           # the frozen test of round 1 asks for exactly this
++    assert reasons(out) == ['NO_SUPPORTED_CLAUSE'] and 'MODALITY_NOT_READ:desire' in [r for u in out['unsupported'] for r in u['reasons']]
+     out = SR.read('猫は庭へ歩いた。', placement=F.MapQuery(u_map()))
+     assert len(reasons(out)) == 1                                              # a trigger the typed paths do not answer: no placement reason at all
+diff --git a/tests/test_semantic_read_w3b1_r4.py b/tests/test_semantic_read_w3b1_r4.py
+index e425c47..72fedcd 100644
+--- a/tests/test_semantic_read_w3b1_r4.py
++++ b/tests/test_semantic_read_w3b1_r4.py
+@@ -167,4 +167,7 @@ def s4_map():
+ 
+ 
++K800_KIND = {'猫が庭へ歩けた。': 'potential', '兄が駅へ歩けなかった。': 'potential', '兄が駅へ歩けない。': 'potential'}    # Integration (auditor ruling 2026-10-06, W16-t1b K800/K818): potential-verb rows of REVIEW that the modality gate stops first
++
++
+ REVIEW = [   # the six misreads of the review (round 3) and the two the review's author found next to them; the short causatives of the plan (section 1.3)
+     ('猫が庭へ歩けた。', u_map), ('兄が駅へ歩けなかった。', u_map), ('兄が駅へ歩けない。', u_map),
+@@ -178,8 +181,15 @@ REVIEW = [   # the six misreads of the review (round 3) and the two the review's
+ @pytest.mark.parametrize('text,mapper', REVIEW, ids=[t for t, _ in REVIEW])
+ def test_the_sentences_of_the_review_and_the_short_causatives_are_abstentions_with_the_readers_reason_first(text, mapper):
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800/K818): the three potential-verb sentences of K800_KIND are stopped by the modality gate before the placement is asked:
++    ['NO_SUPPORTED_CLAUSE'] with MODALITY_NOT_READ:potential in the unsupported list (abstention -> abstention, only the reason changes); old expectation: rs[0] == the reader's reason,
++    len(rs) == 2 and rs[1].startswith(DERIVED + ':'). The other rows are unchanged."""
+     out = SR.read(text, placement=F.MapQuery(mapper()))
+     rs = reasons(out)
+     plain = SR.read(text, placement=None)
+     assert plain['readable'] is False
++    if text in K800_KIND:
++        assert rs == ['NO_SUPPORTED_CLAUSE'] and 'MODALITY_NOT_READ:' + K800_KIND[text] in [r for u in out['unsupported'] for r in u['reasons']], rs
++        assert out['clauses'] == []
++        return
+     assert rs[0] == plain['abstain']['reasons'][0] and len(rs) == 2 and rs[1].startswith(DERIVED + ':'), rs
+     assert out['clauses'] == []
+@@ -188,6 +198,12 @@ def test_the_sentences_of_the_review_and_the_short_causatives_are_abstentions_wi
+ @pytest.mark.parametrize('text,mapper', REVIEW, ids=[t for t, _ in REVIEW])
+ def test_without_the_gate_the_same_sentences_are_read_in_the_derived_form_which_is_what_the_gate_stops(text, mapper, monkeypatch):
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800/K818): for the three potential-verb sentences of K800_KIND the K800 modality gate stops the clause as well, so even with the derived gate
++    taken out they are not read (readable False, MODALITY_NOT_READ:potential in the unsupported list); old expectation: readable True, modality None, voice active (the derived-form misreading).
++    The other rows are unchanged."""
+     no_gate(monkeypatch)
+     out = SR.read(text, placement=F.MapQuery(mapper()))
++    if text in K800_KIND:
++        assert out['readable'] is False and 'MODALITY_NOT_READ:' + K800_KIND[text] in [r for u in out['unsupported'] for r in u['reasons']]
++        return
+     assert out['readable'] is True
+     c = out['clauses'][0]
+@@ -209,8 +225,10 @@ def test_the_gate_asks_the_placement_the_same_questions_with_and_without_it(monk
+ # ---------------------------------------------------------------------------------------------------------------------------------
+ def test_the_derived_gate_is_after_the_tail_gate_and_the_reread():
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): 猫が庭へ歩きたい。 (a desire sentence) is stopped by the modality gate first: ['NO_SUPPORTED_CLAUSE'] with MODALITY_NOT_READ:desire
++    in the unsupported list; old expectation: reasons(out)[1].startswith('PLACEMENT_REREAD_ABSTAINS:'). The other two rows are unchanged."""
+     out = SR.read('母が冬、窓を閉めるな。', placement=F.MapQuery(s4_map()))
+     assert reasons(out)[1].startswith(TAIL + ':') and len(reasons(out)) == 2          # 閉める is a shimo-ichidan verb, but the tail gate refuses it first
+     out = SR.read('猫が庭へ歩きたい。', placement=F.MapQuery(u_map()))
+-    assert reasons(out)[1].startswith('PLACEMENT_REREAD_ABSTAINS:')
++    assert reasons(out) == ['NO_SUPPORTED_CLAUSE'] and 'MODALITY_NOT_READ:desire' in [r for u in out['unsupported'] for r in u['reasons']]
+     out = SR.read('兄が駅へ歩け。', placement=F.MapQuery(u_map()))
+     assert reasons(out)[1].startswith(TAIL + ':命令形')
+@@ -291,12 +309,17 @@ def test_every_row_of_ja_r10_with_the_fixture(row, monkeypatch):
+ 
+ def test_the_gate_itself_stopped_rows_of_each_derived_kind_on_the_paths_where_the_data_reaches_it():
+-    gated = set()
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800/K818): a potential verb (歩けた) is a possible form of the K800 kind 'potential' and is stopped by the modality gate before the derived gate
++    is reached (abstention -> abstention, only the reason changes: ['NO_SUPPORTED_CLAUSE'] with MODALITY_NOT_READ:potential in the unsupported list). So the pair ('U', 'potential') is checked on
++    `gated | stopped_by_k800`; old expectation: ('U', 'potential') in the derived gate's pairs. The two short-causative pairs are unchanged."""
++    gated = set(); stopped_by_k800 = set()
+     for row in R10:
+         out = SR.read(row['input'], 'ja', placement=F.FixtureQuery())
+         rs = out['abstain']['reasons'] if not out['readable'] else []
+         if len(rs) == 2 and rs[1].startswith(DERIVED + ':'): gated.add((row['path'], row['derived']))
++        if 'MODALITY_NOT_READ:potential' in [r for u in out['unsupported'] for r in u['reasons']]: stopped_by_k800.add((row['path'], row['derived']))
+     # the data reaches the gate with a potential on path U (a verb the base commit's own suspicion does not catch), with a short causative on both paths; the rows of
+     # the other kinds may be stopped earlier (K83, K84: the time words of some S4 rows fail the evidence gate 5 before the gate is reached)
+-    assert {('U', 'potential'), ('U', 'short_causative'), ('S4', 'short_causative')} <= gated, gated
++    assert {('U', 'short_causative'), ('S4', 'short_causative')} <= gated, gated
++    assert ('U', 'potential') in (gated | stopped_by_k800), (gated, stopped_by_k800)
+ 
+ 
+diff --git a/tests/test_semantic_read_w3b3.py b/tests/test_semantic_read_w3b3.py
+index 2fef578..8438203 100644
+--- a/tests/test_semantic_read_w3b3.py
++++ b/tests/test_semantic_read_w3b3.py
+@@ -335,9 +335,14 @@ def test_the_misreads_of_the_base_entry_do_not_enter_through_a_clause(text):
+ def test_the_base_misreads_alone_are_still_the_base_output_and_the_clause_gates_see_them():
+     """The five single-sentence misreads of the base (probe_w1a4_en.txt) are not this path's: unchanged. A clause that the base entry misreads alone has a reason in one of the two
+-    existing gates (the ending, the derived verb)."""
++    existing gates (the ending, the derived verb).
++    Integration (auditor ruling 2026-10-06, W16-t1b K800/K818): the potential form 兄が手紙を書けた。 is a modal sentence of the K800 kind 'potential' and is no longer read as an event (the reader
++    abstains with MODALITY_NOT_READ:potential; answer -> abstention, the direction the ruling allows); old expectation: `readable is True` and the two existing gates see it (typed_head_derived_ja).
++    The other two clauses are unchanged."""
+     from types import SimpleNamespace as NS
+     for text in ('母が料理を作れ。', '料理を作れ。', '窓を開けるな。', '窓を開けて。', 'だから兄が歩いた。'):
+         assert SR.read(text, placement=F.FixtureQuery()) == BASE.read(text, placement=F.FixtureQuery()), text
+-    for clause in ('兄が本を読んでいない。', '兄が手紙を書けた。', '兄が窓を開けた。'):
++    stopped = SR.read('兄が手紙を書けた。', placement=None)
++    assert stopped['readable'] is False and 'MODALITY_NOT_READ:potential' in [r for u in stopped['unsupported'] for r in u['reasons']]
++    for clause in ('兄が本を読んでいない。', '兄が窓を開けた。'):
+         out = SR.read(clause, placement=None)
+         assert out['readable'] is True, clause
+@@ -698,8 +703,27 @@ def _functions(src):
+ 
+ def test_semantic_read_changes_only_read_ja_and_semantic_reader_only_adds():
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the wrapper `document_view = _w16t1b_document_view` is checked after the two `_functions` calls (it calls the function of the base commit
++    and gates the result); old expectation: the assignment at the end of the file did not exist, the text of `document_view` was the def with the one W5-e line."""
+     import difflib, hashlib      # W5-e2: function-local so that the file's top-level is unchanged
+     b = _functions(git('show', '%s:verantyx/semantic_read.py' % BASE_COMMIT)); n = _functions((TREE / 'verantyx' / 'semantic_read.py').read_text(encoding='utf-8'))
+     assert [k for k in b if k in n and b[k] != n[k]] == ['_read_ja'] and not [k for k in b if k not in n]
+     br = _functions(git('show', '%s:verantyx/semantic_reader.py' % BASE_COMMIT)); nr = _functions((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8'))
++    # Integration (auditor ruling 2026-10-06, W16-t1b K800): the end of the reader wraps `document_view` (`document_view = _w16t1b_document_view`, which only calls the function of the base commit and
++    # gates its result). The def of `document_view` itself is still the one of W5-e (checked below, byte for byte); the wrapper is checked here: the last top-level assignment of the name,
++    # the keyword default of the wrapper that reaches the base function, a body that only calls the base function and the gate, and the module attribute. Old expectation: `_functions` took the
++    # assignment as the text of `document_view`, so the diff of `document_view` was only the W5-e line.
++    src_now = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
++    tree_now = ast.parse(src_now)
++    defs_dv = [n for n in tree_now.body if isinstance(n, ast.FunctionDef) and n.name == 'document_view']
++    assigns_dv = [n for n in tree_now.body if isinstance(n, ast.Assign) and [ast.unparse(t) for t in n.targets] == ['document_view']]
++    assert len(defs_dv) == 1 and [ast.unparse(n.value) for n in assigns_dv] == ['_w16t1b_document_view'] and assigns_dv[0].lineno > defs_dv[0].lineno
++    nr['document_view'] = ast.get_source_segment(src_now, defs_dv[0])
++    wrapper = [n for n in tree_now.body if isinstance(n, ast.FunctionDef) and n.name == '_w16t1b_document_view']
++    assert len(wrapper) == 1 and [ast.unparse(d) for d in wrapper[0].args.kw_defaults if d is not None][-1] == 'document_view' and len(wrapper[0].body) == 1
++    assert ast.unparse(wrapper[0].body[0]) == "return _w16t1b_gate(_base_view(documents, sovereigns=sovereigns, family=family))"
++    import inspect      # function-local: the top-level of the file is unchanged
++    base_fn = R._w16t1b_document_view.__kwdefaults__['_base_view']
++    assert R.document_view is R._w16t1b_document_view and base_fn is not R.document_view and base_fn.__name__ == 'document_view'
++    assert inspect.getsource(base_fn).strip() == nr['document_view'].strip()
+     # W5-e2（監査役の判断 2026-10-04 04:42、K-B）: 並立・選言の門（10E）を入れる差し込み口が無く、document_view に 1 行足した。変わった関数は document_view だけで、その差は追加 1 行だけ
+     # （削除 0 行）。新しい本文の sha256 を固定する（W3-b2/b3 のハッシュ固定と同じ扱い。docs/READING_SOUNDNESS.md 10E.2）
+diff --git a/tests/test_semantic_read_w3b5.py b/tests/test_semantic_read_w3b5.py
+index 4498c99..7ec27dc 100644
+--- a/tests/test_semantic_read_w3b5.py
++++ b/tests/test_semantic_read_w3b5.py
+@@ -532,14 +532,22 @@ def _mine(items):
+ 
+ def test_with_the_key_frame_generated_taken_out_every_row_of_the_data_is_read_and_explained_as_the_base_commit_does(base_tree):
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the K800 rows are the only rows that differ from the base commit; old expectation: no row differs."""
+     items = [{'text': r['input'], 'answers': {w: a for w, a in query_of(r, strip=True).mapping.items()}} for r in DATA]
+     base = _child(base_tree, items)
+     now = _mine(items)
+-    assert [i for i, (b, n) in enumerate(zip(base, now)) if b != n] == []
++    # Integration (auditor ruling 2026-10-06, W16-t1b K800): the only rows that differ from the base commit are the K800 rows (a desire sentence: abstention -> abstention with a new reason);
++    # old expectation: no row differs
++    assert [i for i, (b, n) in enumerate(zip(base, now)) if b != n] == [i for i, r in enumerate(DATA) if r['id'] in K800_ROWS]
++    assert all(_k800_stopped(r, now[i]['read']) and not now[i]['read']['readable'] for i, r in enumerate(DATA) if r['id'] in K800_ROWS)
+     assert base[0]['explain'] is not None and len(now) == len(DATA)
+ 
+ 
+ def test_with_no_placement_every_row_of_the_data_is_what_the_entry_of_the_base_commit_says(base_tree):
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the K800 rows are the only rows that differ from the base commit; old expectation: the outputs are equal."""
+     items = [{'text': r['input'], 'answers': None} for r in DATA]
+-    assert _child(base_tree, items) == _mine(items)
++    base, now = _child(base_tree, items), _mine(items)
++    # Integration (auditor ruling 2026-10-06, W16-t1b K800): only the K800 rows differ (abstention -> abstention with MODALITY_NOT_READ:<kind>); old expectation: `base == now`
++    assert [i for i, (b, n) in enumerate(zip(base, now)) if b != n] == [i for i, r in enumerate(DATA) if r['id'] in K800_ROWS]
++    assert all(_k800_stopped(r, now[i]['read']) and not now[i]['read']['readable'] for i, r in enumerate(DATA) if r['id'] in K800_ROWS)
+ 
+ 
+@@ -624,6 +632,17 @@ def _row_ids():
+ 
+ 
++# Integration (auditor ruling 2026-10-06, W16-t1b K800): the rows of the data whose input carries a modal auxiliary (先生が課長に申告したい。, desire). The modality gate stops the clause before the
++# placement is asked, so the row is an abstention with MODALITY_NOT_READ:<kind> in the unsupported list and the typed step is not triggered (abstention -> abstention, only the reason changes).
++K800_ROWS = {'W3B5-NIRECIP-A-060': 'desire'}
++
++
++def _k800_stopped(row, out):
++    return 'MODALITY_NOT_READ:' + K800_ROWS[row['id']] in [r for u in out['unsupported'] for r in u['reasons']]
++
++
+ @pytest.mark.parametrize('row', DATA, ids=_row_ids())
+ def test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_correct_when_read(row):
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): for the row W3B5-NIRECIP-A-060 the explain says PLACEMENT_W3B2_NOT_TRIGGERED and the reader abstains with
++    MODALITY_NOT_READ:desire; old expectation: ex['w3b2'] == NARROWED_ROWS[id]['observed_w3b2'] (the typed step's reason). Every other row is unchanged."""
+     q = query_of(row)
+     out = SR.read(row['input'], placement=q)
+@@ -632,4 +651,7 @@ def test_every_row_of_the_data_is_read_or_refused_as_registered_and_judged_corre
+     ex = SR.typed_explain_ja(row['input'], query_of(row))
+     entry = 'read' if out['readable'] else 'abstain'
++    if row['id'] in K800_ROWS:
++        assert entry == 'abstain' and ex['w3b2'] == 'PLACEMENT_W3B2_NOT_TRIGGERED' and _k800_stopped(row, out) and row['entry_expect'] == 'abstain'
++        return
+     if row['id'] in NARROWED_ROWS:
+         nr = NARROWED_ROWS[row['id']]
+diff --git a/tests/test_semantic_read_w3b6.py b/tests/test_semantic_read_w3b6.py
+index 66c4946..de9b352 100644
+--- a/tests/test_semantic_read_w3b6.py
++++ b/tests/test_semantic_read_w3b6.py
+@@ -526,4 +526,6 @@ def test_the_change_is_two_insertions_in_the_reader_and_nothing_else_outside_the
+ 
+ def test_the_top_level_definitions_of_the_base_are_unchanged_and_the_new_constants_are_the_two_registered():
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the names of the W16-t1b section (containing 'w16t1b') and the second assignment of `document_view` are registered; old expectation: the sets
++    without them (the registered names of W3-b6 only)."""
+     base = ast.parse(git('show', '%s:verantyx/semantic_reader.py' % BASE_COMMIT))
+     now = ast.parse((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8'))
+@@ -537,5 +539,7 @@ def test_the_top_level_definitions_of_the_base_are_unchanged_and_the_new_constan
+     assert {k: v for k, v in n.items() if k in b} == b
+     # Integration of W3-c7 (auditor, 2026-10-05): the definitions of stage C7 (names starting with '_w3c7_' or containing 'w3c7') are added by a later ticket and are attested by its own tests
+-    assert {k for k in set(n) - set(b) if 'w3c7' not in k.lower()} == {'_typed_plan_u_w3b6_ja', 'predicate_role_frame', 'typed_plan_u_w3b6_stage_r_ja'} | {k for k in n if k.startswith('_w3b6_')}
++    # Integration of W16-t1b (auditor ruling 2026-10-06, K800): the definitions of the modality gate (names containing 'w16t1b': `_w16t1b_tokens`, `_w16t1b_in_chain`, `_w16t1b_kind`, `_w16t1b_subject`,
++    # `_w16t1b_gate`, `_w16t1b_document_view`) are added at the end of the reader by that ticket and are attested by its own tests (tests/test_w16t1b_*.py, the wrapper in test_semantic_read_w3b3.py)
++    assert {k for k in set(n) - set(b) if 'w3c7' not in k.lower() and 'w16t1b' not in k.lower()} == {'_typed_plan_u_w3b6_ja', 'predicate_role_frame', 'typed_plan_u_w3b6_stage_r_ja'} | {k for k in n if k.startswith('_w3b6_')}
+ 
+     def assigned(tree):
+@@ -547,6 +551,7 @@ def test_the_top_level_definitions_of_the_base_are_unchanged_and_the_new_constan
+             elif isinstance(node, (ast.AnnAssign, ast.AugAssign)) and isinstance(node.target, ast.Name): out.add(node.target.id)
+         return out
+-    new_names = {k for k in assigned(now) - assigned(base) if 'w3c7' not in k.lower()}      # integration of W3-c7: its constants are attested by its own tests
+-    assert new_names == {'W3B6_REASON_NAMES', 'W3B6_ROLE_KINDS', 'typed_plan_u_w3b4_body_ja', 'typed_plan_u_w3b4_ja'}, new_names     # the last is the wrapped plan (H270): a def in the base, assigned again here
++    new_names = {k for k in assigned(now) - assigned(base) if 'w3c7' not in k.lower() and 'w16t1b' not in k.lower()}      # integration of W3-c7: its constants are attested by its own tests; integration of W16-t1b (auditor ruling 2026-10-06): its five constants `_W16T1B_*` likewise
++    # W16-t1b (K800) also assigns the name `document_view` again at the end of the reader (the wrapper `document_view = _w16t1b_document_view`; a def in the base, like the wrapped plan below); old expectation: the set without it
++    assert new_names == {'W3B6_REASON_NAMES', 'W3B6_ROLE_KINDS', 'typed_plan_u_w3b4_body_ja', 'typed_plan_u_w3b4_ja', 'document_view'}, new_names     # the last but one is the wrapped plan (H270): a def in the base, assigned again here
+     consts = [name for name in new_names if not callable(getattr(R, name))]
+     assert sorted(consts) == ['W3B6_REASON_NAMES', 'W3B6_ROLE_KINDS']
+diff --git a/tests/test_semantic_read_w3c7.py b/tests/test_semantic_read_w3c7.py
+index 944aad3..b269726 100644
+--- a/tests/test_semantic_read_w3c7.py
++++ b/tests/test_semantic_read_w3c7.py
+@@ -346,6 +346,10 @@ def test_the_closed_tables_of_the_docs_are_the_constants_of_the_code():
+ 
+ def _section():
++    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the section ends before the next ticket's mark `# W16-t1b:` (the modality gate appended at the end of the reader, attested by
++    tests/test_w16t1b_*.py); old expectation: the section runs from `# W3-c7:` to the end of the file."""
+     src = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
+-    return src[src.index('# W3-c7:'):]
++    i = src.index('# W3-c7:')
++    j = src.index('# W16-t1b:') if '# W16-t1b:' in src else len(src)
++    return src[i:j]
+ 
+ 
+```
+
+#### 第 2 ラウンドの既知の穴（K820〜）
+- K820: 一段＋られる の二重目的語の受身（`花子は先生に本を届けられた。`）は、主語の役が patient でなく recipient として読まれるため可能として止まる（以前は `['先生']` と答えた）。答え→棄権の向き。受身として正しい読みを失う over-abstention。
+- K821: 可能動詞の判定は UniDic の読みの長さ（pronBase が lForm より 1 拍長い）に依存する。UniDic が持たない語・読みが欠ける語は `lform` が空で判定されず、基点のまま答える（穴）。入口 4,149 文では下一段 490 語のうち 40 語・17 型が該当（`scan_ichidan_criteria.txt`）。
+- K822: 凍結の `gate` の 4 行は第 2 ラウンドで作り直した（K819）。抜き取り用に変更前の写しと sha は `DECISIONS.md` 13 にある。
+- K823: 範囲外のまま: `べき`（当為）、五段＋れる（`読まれた`）は基点のまま答える（K812）。
