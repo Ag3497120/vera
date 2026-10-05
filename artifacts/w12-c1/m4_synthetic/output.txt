@@ -1,0 +1,5 @@
+$ why_not_gained.py qa.jsonl doc.txt law_k2.sqlite run_none.jsonl run_layer.jsonl  (synthetic: s1 wrong in both, s2 correct only with layer, s3 unanswerable answered only without layer, s4 abstain both)
+{"counts": {"WRONG_BOTH": 1, "GAINED": 1, "WRONG_WITHOUT_LAYER": 1}, "answerable": 2, "routed": 1, "wrong": 2}
+{"id": "s1", "question": "誰が大根をおろした？", "why": "WRONG_BOTH", "routed": true, "layer_words_in_text": ["大根"], "direct_layer_words_in_text": ["大根"], "holder_sentences": ["祖母が大根をおろした。"], "without_layer": {"verdict":
+{"id": "s2", "question": "誰が魚を焼いた？", "why": "GAINED", "routed": false, "layer_words_in_text": [], "direct_layer_words_in_text": [], "holder_sentences": ["父が魚を焼いた。"], "without_layer": {"verdict": "ABSTAIN", "values": [], "reason"
+{"id": "s3", "question": "誰が肉を煮た？", "why": "WRONG_WITHOUT_LAYER", "unanswerable": true, "routed": false, "layer_words_in_text": [], "direct_layer_words_in_text": [], "holder_sentences": [], "without_layer": {"verdict": "ANSWER", "values": ["x"]},

@@ -1,0 +1,59 @@
+{
+ "base_law_user": {
+  "config": "base_law_user",
+  "peak_rss_bytes": 107003904,
+  "questions": 50,
+  "rounds": 3,
+  "rounds_in_percentiles": 2,
+  "samples": 100,
+  "stages": [
+   "base:base",
+   "law+user:layer",
+   "law+user:missing",
+   "law:layer",
+   "vocab:missing"
+  ],
+  "start_to_first_answer_ms_incl_stage_loading": 1097.8,
+  "vera_ms": {
+   "max": 354.411,
+   "mean": 228.123,
+   "p50": 327.909,
+   "p95": 337.286
+  },
+  "wall_ms_of_fusion_turn": {
+   "p50": 327.923,
+   "p95": 337.299
+  },
+  "warmup_round_excluded": true
+ },
+ "base_only": {
+  "config": "base_only",
+  "peak_rss_bytes": 102924288,
+  "questions": 50,
+  "rounds": 3,
+  "rounds_in_percentiles": 2,
+  "samples": 100,
+  "stages": [
+   "base:base"
+  ],
+  "start_to_first_answer_ms_incl_stage_loading": 677.4,
+  "vera_ms": {
+   "max": 141.664,
+   "mean": 78.815,
+   "p50": 106.113,
+   "p95": 111.368
+  },
+  "wall_ms_of_fusion_turn": {
+   "p50": 106.123,
+   "p95": 111.377
+  },
+  "warmup_round_excluded": true
+ },
+ "shipped_bytes": {
+  "combined_law_bicycle_sqlite": 430080,
+  "law_layer_sqlite": 278528,
+  "r9_placement_sqlite": 305909760,
+  "vocab_sqlite": 14925824
+ },
+ "uptime": "14:16  up 4 days, 13:29, 2 users, load averages: 2.99 3.30 4.28"
+}

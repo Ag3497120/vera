@@ -1,0 +1,9 @@
+# bicycle (30 questions): none / law / law+bicycle
+SUMMARY (questions 30)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/artifacts/w12-c1/x4_bicycle/qa_none.jsonl: correct 8 wrong 0 abstained 22 | gained vs first [] lost []
+/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/artifacts/w12-c1/x4_bicycle/qa_law.jsonl: correct 8 wrong 0 abstained 22 | gained vs first [] lost []
+/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/artifacts/w12-c1/x4_bicycle/qa_user.jsonl: correct 8 wrong 0 abstained 22 | gained vs first [] lost []
+# pottery (15 questions): none / law
+SUMMARY (questions 15)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/artifacts/w12-c1/x4_pottery/qa_none.jsonl: correct 10 wrong 0 abstained 5 | gained vs first [] lost []
+/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/artifacts/w12-c1/x4_pottery/qa_law.jsonl: correct 10 wrong 0 abstained 5 | gained vs first [] lost []

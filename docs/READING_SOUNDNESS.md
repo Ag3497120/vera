@@ -5063,3 +5063,10 @@ W3E2-P3-029  r9 ハルはグリスへ荷物を運んだ。  expect=assumed  | r3
 ```
 - **第 3 ラウンドのレビュー対応（r1）**: `test_the_documents_result_of_a_frozen_row_is_the_registered_one` を足した（`expect.documents_result` を持つ 10 行の trace の documents の項を登録値と突き合わせる）。`test_r3_the_name_form_strength_is_from_the_tagger_only` の空の assert を `_w3e2_name_form(t)`（弱い形は P1 の候補のまま）に直した。上の 7 行・29 行の全文を写した。製品コードは変えていない。
 - **テストの変更**（このチケットの自作テストだけ。期待を弱めたのではなく、裁定で動きが狭まったことに合わせた）: `test_p2_reads_wa_as_an_agent_only_beside_wo` の `ナナがザクった。`（配置なし）を、r9 では assumed・配置なしでは strict（`P2_GA_FILLER_NOT_TYPED`）の 2 つの assert に。`test_the_note_names_every_type_that_was_assumed` の `ソラが走った。` を `ミナが走った。` に（ソラは弱い形）、注記は `（ミナを集団・組織または人として）`。`test_frozen_row` は全行を判定する（`FROZEN_DOCUMENT_ROWS` の除外を外した）。`..._have_no_document_row_for_the_word` は語を `added_reason` から取る（v3 では期待が棄権で `assumptions` が空）。
+## W12-c1 → W3-e2/W3-e3 申し送り（§10L 向け）
+
+規則の事前登録だけ。実装はしない（W3-e2 の後の W3-e3）。全文と根拠は `docs/INITIAL_LAYERS.md` §3・§4。§10L はこの木にまだ無いので、既存の節の中には書かない。
+
+- **仮定の不変性ゲート**: 段 E2（仮定つきの読み）は、同じ証拠で並ぶ別の仮定（同点の崩し方）のすべてに替えても十字が変わらないときだけ採用する。変われば `ASSUMPTION_UNDETERMINED` で棄権。vera1 の配置の不変性（「配置は情報を増やせない」）と同じ論法。決定論の同点崩しは一致を捏造する（`CLAUDE.md`: 73.3% → 23.7%）。
+- **粒度の階段を未知語の出所に（出所 d'）**: 名前・造語を 2 字／1 字の段で見て、既知の形態素と繋がるか（ザクる ← ザク？、カタカナ列の人名の形）。型は繋がれば `ASSUMPTION_SOURCE_D_PRIME`、繋がらなければ `UNKNOWN_NO_EVIDENCE`。対照は `granularity.control`（同じ字の無作為な組み合わせ）。採用は不変性ゲートを通ったときだけ。
+- **語彙層の出所 (c) の使い方**: 語彙層（`build/initial-layers/vocab/vocab.sqlite`、スキーマ `verantyx.vocab_layer/1`）は独立出現 ≥3 の語だけ。`origin_class` が `human`（jawiki）の語を先に使い（`attested_human`）、`generated` だけの語は別の型 `attested_generated` として申告して **合算しない**。`in_base_material: true` の語は r9 の素材にも入っている。

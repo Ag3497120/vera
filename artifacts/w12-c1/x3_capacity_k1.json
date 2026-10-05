@@ -1,0 +1,18 @@
+{
+ "CAPACITY": 24,
+ "MAX_ARMS": 6,
+ "N_FACES": 4,
+ "layers": {
+  "control.sqlite": {
+   "V_direct_words": 16805,
+   "fits_one_node": false,
+   "layers_for_V": 5
+  },
+  "law.sqlite": {
+   "V_direct_words": 16748,
+   "fits_one_node": false,
+   "layers_for_V": 5
+  }
+ },
+ "rule": "depth = ceil(log_6(V / 4)); one node routes on at most CAPACITY = 24 distinct terms (hierarchy docstring)"
+}

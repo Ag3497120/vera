@@ -1,0 +1,11 @@
+{
+ "bytes": 8544256,
+ "ids_max": 312321,
+ "ids_min": 276,
+ "rows": 9694,
+ "rows_sha256": "3578135955d975d4264a51d22275970234d1420bc604f53e30849000d5b480be",
+ "scene": "法律と暮らし",
+ "sha256": "4eb7b10322ee7d83698d275748f6363e0bff6048ca507c5daf80c7f4dffd0b93",
+ "source_db": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/general_qa.db",
+ "source_db_bytes": 507125760
+}

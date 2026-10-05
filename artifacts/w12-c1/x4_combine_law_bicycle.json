@@ -1,0 +1,36 @@
+{
+ "conflict_words": [],
+ "growth": {
+  "base_content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+  "last_grown": "2026-10-05T13:38:05+0900",
+  "layer": "law+bicycle",
+  "layer_status": "OK",
+  "ledger": {
+   "by_type": {
+    "header": 1,
+    "promoted_to_layer": 563
+   },
+   "chain_mismatch": 0,
+   "chain_mismatch_ids": [],
+   "chain_ok": true,
+   "promoted_to_layer": 563,
+   "rows": 564,
+   "store_id": "cbb0f2f5ed284fdf"
+  },
+  "rows": 563,
+  "words": {
+   "conflict": 0,
+   "direct": 498,
+   "estimated": 61,
+   "human": 0
+  },
+  "words_total": 559
+ },
+ "note": "a word with two direct types abstains at query time (LAYER_CONFLICT); it is counted here, not resolved",
+ "out": "build/initial-layers/combined/law+bicycle.sqlite",
+ "out_sha256": "367a338952d9fa8b8f562ca232aac7b39dba1cb98d4706a28097cc7499545769",
+ "sources": {
+  "law_k2": 495,
+  "r4_layer_real": 68
+ }
+}

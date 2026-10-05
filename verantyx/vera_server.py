@@ -195,6 +195,8 @@ def _last_user_text(messages) -> str:
 
 def fusion_turn(messages, vera_opts, cfg: FusionConfig, max_tokens: Optional[int] = None) -> Dict[str, Any]:
     """1 ターン（設計書 §5 の (1)〜(6)）。{"content","vera","usage"}。入力が不正なら FusionBadRequest。"""
+    if getattr(cfg, "tiers", None) is not None:       # W12-c1: `serve --no-llm --tier ...` -- the staircase runs each stage through this same function (confidence_tiers.TierRunner)
+        return cfg.tiers.turn(messages, vera_opts, cfg, max_tokens)
     from . import basis_policy as bp
     from . import decode_grammar as G
     if not isinstance(messages, list) or not all(isinstance(m, dict) for m in messages):
@@ -216,6 +218,9 @@ def fusion_turn(messages, vera_opts, cfg: FusionConfig, max_tokens: Optional[int
         t = G.plan_turn(question, rk, cfg.records, cfg.documents, strict=cfg.strict)
         return t, (G.llm_messages(t, messages, cfg.records) if t["call_llm"] else None)
     turn, llm_msgs = cfg.run_vera(_plan)
+    if getattr(cfg, "no_llm", False):                 # W12-c1: the entrance that never calls an LLM (confidence_tiers.no_llm_plan)
+        from . import confidence_tiers as CT
+        turn, llm_msgs = CT.no_llm_plan(turn), None
     llm = None
     llm_ms = 0.0
     if turn["call_llm"]:
@@ -232,6 +237,8 @@ def fusion_turn(messages, vera_opts, cfg: FusionConfig, max_tokens: Optional[int
     if cfg.fill is not None:      # W10-f04 (7): the candidate mouth only ANNOTATES `vera` (provenance arms, holes, ledger ids); the content and the outcome are already decided
         fill_llm_ms = cfg.run_vera(_fill_annotate, cfg, turn, vera)
     total_ms = (time.perf_counter() - t0) * 1000.0
+    if getattr(cfg, "no_llm", False):
+        CT.no_llm_annotate(turn, vera)
     vera["timing"] = {"vera_ms": round(total_ms - llm_ms - fill_llm_ms, 3), "llm_ms": round(llm_ms, 3)}
     if cfg.fill is not None:
         vera["timing"]["fill_llm_ms"] = round(fill_llm_ms, 3)
