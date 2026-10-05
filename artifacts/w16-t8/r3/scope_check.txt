@@ -1,0 +1,4 @@
+outside_allowed exit=1
+forbidden_diff_stat_end
+       0
+pyc_exit=1

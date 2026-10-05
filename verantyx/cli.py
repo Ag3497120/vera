@@ -2521,6 +2521,13 @@ def main(argv: Optional[list] = None) -> int:
     p.set_defaults(fn=cmd_ledger)
 
     p = sub.add_parser(
+        "confirm",
+        help="W16-t8 (K681): a human's confirmation of a word's type / a predicate's role frame, written into a placement layer: suggest | set | frame | list | undo")
+    from . import confirm_cli
+    confirm_cli.add_arguments(p)
+    p.set_defaults(fn=confirm_cli.run)
+
+    p = sub.add_parser(
         "realize",
         help="validate a cross-token line and realize one supported event cross as a sentence",
     )

@@ -1,0 +1,1 @@
+{"summary": {"direct50": {"words": 50, "ok": 50}, "multi_in": {"words": 10, "ok": 10}, "multi_out": {"words": 10, "ok": 10}}, "failed": [], "all_ok": true}

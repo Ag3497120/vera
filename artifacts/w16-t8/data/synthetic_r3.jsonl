@@ -1,0 +1,19 @@
+{"id": "k01", "text": "田中が駅へ移動した。", "expect": "ABSTAIN", "group": "frame_kept"}
+{"id": "k02", "text": "鈴木が倉庫へ移動した。", "expect": "ABSTAIN", "group": "frame_kept"}
+{"id": "k13", "text": "太郎が病院へ移動した。", "expect": "ABSTAIN", "group": "frame_kept"}
+{"id": "k14", "text": "田中が空港へ移動した。", "expect": "ABSTAIN", "group": "frame_kept"}
+{"id": "k15", "text": "田中が駅へ避難した。", "expect": "ABSTAIN", "group": "frame_kept"}
+{"id": "k16", "text": "鈴木が倉庫へ避難した。", "expect": "ABSTAIN", "group": "frame_kept"}
+{"id": "k17", "text": "太郎が病院へ避難した。", "expect": "ABSTAIN", "group": "frame_kept"}
+{"id": "k18", "text": "鈴木が空港へ避難した。", "expect": "ABSTAIN", "group": "frame_kept"}
+{"id": "r01", "text": "田中が学校へ出向いた。", "expect": [{"predicate": "出向く", "roles": {"agent": "田中", "goal": "学校"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "frame_reach"}
+{"id": "r02", "text": "鈴木が会社へ出向いた。", "expect": [{"predicate": "出向く", "roles": {"agent": "鈴木", "goal": "会社"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "frame_reach"}
+{"id": "r04", "text": "太郎が会社へ転勤した。", "expect": [{"predicate": "転勤する", "roles": {"agent": "太郎", "goal": "会社"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "frame_reach"}
+{"id": "r05", "text": "田中が学校へ転勤した。", "expect": [{"predicate": "転勤する", "roles": {"agent": "田中", "goal": "学校"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "frame_reach"}
+{"id": "r08", "text": "太郎が学校へ赴いた。", "expect": [{"predicate": "赴く", "roles": {"agent": "太郎", "goal": "学校"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "frame_reach"}
+{"id": "c01", "text": "田中が本を読んだ。", "expect": null, "group": "control"}
+{"id": "c02", "text": "鈴木が手紙を書いた。", "expect": null, "group": "control"}
+{"id": "c03", "text": "太郎が走った。", "expect": null, "group": "control"}
+{"id": "c04", "text": "整備士が倉庫で点検した。", "expect": null, "group": "control"}
+{"id": "c05", "text": "山田が学校で勉強した。", "expect": null, "group": "control"}
+{"id": "c06", "text": "鈴木が机を拭いた。", "expect": null, "group": "control"}

@@ -1,0 +1,60 @@
+sentence_id	text	status	op	word	particle	role	candidates	reason	reachable	why
+candidate_pool_3.txt#1:1	田中が工房へ移送した。	ABSTAIN	set	移送する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#2:1	鈴木が工房へ遠征した。	ABSTAIN	set	遠征する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#3:1	太郎が工房へ旅行した。	READ								
+candidate_pool_3.txt#4:1	整備士が工房へ出陣した。	ABSTAIN	set	出陣する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#5:1	田中が工房へ上京した。	ABSTAIN	set	上京する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#6:1	鈴木が工房へ来訪した。	ABSTAIN	set	来訪する				PLACEMENT_UNPLACED	true	
+candidate_pool_3.txt#7:1	太郎が工房へ来日した。	ABSTAIN	set	来日する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#8:1	整備士が工房へ渡航した。	ABSTAIN	frame	渡航する	が			PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	true	PREDICATE_TYPE_SET_FIRST:P_MOVE (vera confirm frame needs a confirmed type of the predicate)
+candidate_pool_3.txt#9:1	田中が工房へ入場した。	ABSTAIN	set	入場する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#10:1	鈴木が工房へ退場した。	ABSTAIN	set	退場する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#11:1	太郎が工房へ通勤した。	ABSTAIN	set	通勤する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#12:1	整備士が工房へ通学した。	ABSTAIN	set	通学する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#13:1	田中が工房へ疎開した。	ABSTAIN	set	疎開する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#14:1	鈴木が工房へ亡命した。	ABSTAIN	set	亡命する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#15:1	太郎が工房へ進軍した。	ABSTAIN	set	進軍する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#16:1	整備士が工房へ行進した。	ABSTAIN	set	行進する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#17:1	田中が工房へ出動した。	ABSTAIN	set	出動する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#18:1	鈴木が工房へ出社した。	ABSTAIN	set	出社する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#19:1	太郎が工房へ登校した。	ABSTAIN	set	登校する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#20:1	整備士が工房へ下山した。	ABSTAIN	set	下山する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#21:1	田中が工房へ登頂した。	ABSTAIN	set	登頂する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#22:1	鈴木が工房へ到達した。	ABSTAIN	set	到達する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#23:1	太郎が工房へ滞在した。	ABSTAIN	none	工房				PLACE_TYPE_UNDETERMINED:工房	false	NOT_REACHABLE_BY_CONFIRMATION
+candidate_pool_3.txt#24:1	整備士が工房へ潜入した。	ABSTAIN	set	潜入する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#25:1	田中が工房へ突入した。	ABSTAIN	set	突入する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#26:1	鈴木が工房へ接近した。	ABSTAIN	set	接近する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#27:1	太郎が工房へ集合した。	ABSTAIN	set	集合する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#28:1	整備士が工房へ巡回した。	ABSTAIN	set	巡回する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#29:1	田中が工房へ往復した。	ABSTAIN	set	往復する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+candidate_pool_3.txt#30:1	鈴木が工房へ飛来した。	ABSTAIN	set	飛来する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+# sentences=30 read=1 abstained=29 refused_input=0 abstained_with_reachable_candidate=28 abstained_unreachable_only=1
+# blocks	frame	渡航する	1 sentence(s)
+# blocks	set	上京する	1 sentence(s)
+# blocks	set	下山する	1 sentence(s)
+# blocks	set	亡命する	1 sentence(s)
+# blocks	set	入場する	1 sentence(s)
+# blocks	set	出動する	1 sentence(s)
+# blocks	set	出社する	1 sentence(s)
+# blocks	set	出陣する	1 sentence(s)
+# blocks	set	到達する	1 sentence(s)
+# blocks	set	巡回する	1 sentence(s)
+# blocks	set	往復する	1 sentence(s)
+# blocks	set	接近する	1 sentence(s)
+# blocks	set	来日する	1 sentence(s)
+# blocks	set	来訪する	1 sentence(s)
+# blocks	set	潜入する	1 sentence(s)
+# blocks	set	疎開する	1 sentence(s)
+# blocks	set	登校する	1 sentence(s)
+# blocks	set	登頂する	1 sentence(s)
+# blocks	set	移送する	1 sentence(s)
+# blocks	set	突入する	1 sentence(s)
+# blocks	set	行進する	1 sentence(s)
+# blocks	set	退場する	1 sentence(s)
+# blocks	set	通勤する	1 sentence(s)
+# blocks	set	通学する	1 sentence(s)
+# blocks	set	進軍する	1 sentence(s)
+# blocks	set	遠征する	1 sentence(s)
+# blocks	set	集合する	1 sentence(s)
+# blocks	set	飛来する	1 sentence(s)

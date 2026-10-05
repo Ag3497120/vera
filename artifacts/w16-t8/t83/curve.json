@@ -1,0 +1,199 @@
+{
+ "schema": "verantyx.t8_measure/1",
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/build/coarse-W3a/full/r9/run2",
+ "confirmations_total": 20,
+ "steps_requested": [
+  0,
+  5,
+  10,
+  15,
+  20,
+  25,
+  30,
+  35,
+  40,
+  45,
+  50
+ ],
+ "steps_run": [
+  0,
+  5,
+  10,
+  15,
+  20
+ ],
+ "steps_skipped_beyond_rows": [
+  25,
+  30,
+  35,
+  40,
+  45,
+  50
+ ],
+ "slope_formula": "sum((k-kbar)(y-ybar))/sum((k-kbar)^2), y = newly_read, over the steps run",
+ "sets": {
+  "train": {
+   "n": 40,
+   "per_k": [
+    {
+     "k": 0,
+     "readable": 0,
+     "newly_read": 0,
+     "lost": 0,
+     "correct": 0,
+     "misread": 0,
+     "unjudged": 0
+    },
+    {
+     "k": 5,
+     "readable": 10,
+     "newly_read": 10,
+     "lost": 0,
+     "correct": 10,
+     "misread": 0,
+     "unjudged": 0
+    },
+    {
+     "k": 10,
+     "readable": 20,
+     "newly_read": 20,
+     "lost": 0,
+     "correct": 20,
+     "misread": 0,
+     "unjudged": 0
+    },
+    {
+     "k": 15,
+     "readable": 30,
+     "newly_read": 30,
+     "lost": 0,
+     "correct": 30,
+     "misread": 0,
+     "unjudged": 0
+    },
+    {
+     "k": 20,
+     "readable": 40,
+     "newly_read": 40,
+     "lost": 0,
+     "correct": 40,
+     "misread": 0,
+     "unjudged": 0
+    }
+   ],
+   "overlap": null,
+   "slope": 2.0,
+   "misread_total_over_k": 0
+  },
+  "test": {
+   "n": 16,
+   "per_k": [
+    {
+     "k": 0,
+     "readable": 0,
+     "newly_read": 0,
+     "lost": 0,
+     "correct": 0,
+     "misread": 0,
+     "unjudged": 0
+    },
+    {
+     "k": 5,
+     "readable": 0,
+     "newly_read": 0,
+     "lost": 0,
+     "correct": 0,
+     "misread": 0,
+     "unjudged": 0
+    },
+    {
+     "k": 10,
+     "readable": 0,
+     "newly_read": 0,
+     "lost": 0,
+     "correct": 0,
+     "misread": 0,
+     "unjudged": 0
+    },
+    {
+     "k": 15,
+     "readable": 0,
+     "newly_read": 0,
+     "lost": 0,
+     "correct": 0,
+     "misread": 0,
+     "unjudged": 0
+    },
+    {
+     "k": 20,
+     "readable": 0,
+     "newly_read": 0,
+     "lost": 0,
+     "correct": 0,
+     "misread": 0,
+     "unjudged": 0
+    }
+   ],
+   "overlap": [],
+   "slope": 0.0,
+   "misread_total_over_k": 0,
+   "verdict": "TEST_DISJOINT_FROM_CONFIRMED"
+  },
+  "real": {
+   "n": 12,
+   "per_k": [
+    {
+     "k": 0,
+     "readable": 3,
+     "newly_read": 0,
+     "lost": 0,
+     "correct": 0,
+     "misread": 0,
+     "unjudged": 3
+    },
+    {
+     "k": 5,
+     "readable": 4,
+     "newly_read": 1,
+     "lost": 0,
+     "correct": 1,
+     "misread": 0,
+     "unjudged": 3
+    },
+    {
+     "k": 10,
+     "readable": 6,
+     "newly_read": 3,
+     "lost": 0,
+     "correct": 3,
+     "misread": 0,
+     "unjudged": 3
+    },
+    {
+     "k": 15,
+     "readable": 7,
+     "newly_read": 4,
+     "lost": 0,
+     "correct": 4,
+     "misread": 0,
+     "unjudged": 3
+    },
+    {
+     "k": 20,
+     "readable": 8,
+     "newly_read": 5,
+     "lost": 0,
+     "correct": 5,
+     "misread": 0,
+     "unjudged": 3
+    }
+   ],
+   "overlap": null,
+   "slope": 0.26,
+   "misread_total_over_k": 0
+  }
+ },
+ "owner_minutes": null,
+ "minutes_per_newly_read_real_at_last_k": null,
+ "misread_detail": []
+}

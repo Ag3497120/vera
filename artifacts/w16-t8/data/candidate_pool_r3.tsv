@@ -1,0 +1,34 @@
+group	id	text	predicate	base	after_set	after_set_and_frame
+frame_kept	k01	田中が駅へ移動した。	移動する	RECIPIENT_TYPE_UNDETERMINED:移動する+PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	READ	
+frame_kept	k02	鈴木が倉庫へ移動した。	移動する	RECIPIENT_TYPE_UNDETERMINED:移動する+PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	READ	
+frame_kept	k03	山田が病院へ移動した。	移動する	RECIPIENT_TYPE_UNDETERMINED:移動する+PLACEMENT_MULTIPLE:が:山田	RECIPIENT_TYPE_UNDETERMINED:移動する+PLACEMENT_MULTIPLE:が:山田	
+frame_kept	k04	田中が空港へ出発した。	出発する	READ	READ	
+frame_kept	k05	鈴木が駅へ出発した。	出発する	READ	READ	
+frame_kept	k06	山田が倉庫へ出発した。	出発する	READ	READ	
+frame_kept	k07	田中が机を移した。	移す	READ	READ	
+frame_kept	k08	鈴木が荷物を移した。	移す	READ	READ	
+frame_kept	k09	田中が駅に通った。	通う	READ	READ	
+frame_kept	k10	鈴木が病院に通った。	通う	READ	READ	
+frame_kept	k11	田中が倉庫へ引っ越した。	引っ越す	READ	READ	
+frame_kept	k12	山田が駅へ引っ越した。	引っ越す	READ	READ	
+frame_kept	k13	太郎が病院へ移動した。	移動する	RECIPIENT_TYPE_UNDETERMINED:移動する+PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	READ	
+frame_kept	k14	田中が空港へ移動した。	移動する	RECIPIENT_TYPE_UNDETERMINED:移動する+PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	READ	
+frame_kept	k15	田中が駅へ避難した。	避難する	RECIPIENT_TYPE_UNDETERMINED:避難する+PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	READ	
+frame_kept	k16	鈴木が倉庫へ避難した。	避難する	RECIPIENT_TYPE_UNDETERMINED:避難する+PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	READ	
+frame_kept	k17	太郎が病院へ避難した。	避難する	RECIPIENT_TYPE_UNDETERMINED:避難する+PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	READ	
+frame_kept	k18	鈴木が空港へ避難した。	避難する	RECIPIENT_TYPE_UNDETERMINED:避難する+PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	READ	
+frame_reach	r01	田中が学校へ出向いた。	出向く	RECIPIENT_TYPE_UNDETERMINED:出向く+PLACEMENT_ESTIMATED_GENERATED:predicate:出向く	RECIPIENT_TYPE_UNDETERMINED:出向く+PLACEMENT_TYPE_MISMATCH:P_MOVE:へ:GROUP_ORG	READ
+frame_reach	r02	鈴木が会社へ出向いた。	出向く	RECIPIENT_TYPE_UNDETERMINED:出向く+PLACEMENT_ESTIMATED_GENERATED:predicate:出向く	RECIPIENT_TYPE_UNDETERMINED:出向く+PLACEMENT_TYPE_MISMATCH:P_MOVE:へ:GROUP_ORG	READ
+frame_reach	r03	山田が学校へ出向いた。	出向く	RECIPIENT_TYPE_UNDETERMINED:出向く+PLACEMENT_ESTIMATED_GENERATED:predicate:出向く	RECIPIENT_TYPE_UNDETERMINED:出向く+PLACEMENT_MULTIPLE:が:山田	RECIPIENT_TYPE_UNDETERMINED:出向く+PLACEMENT_MULTIPLE:が:山田
+frame_reach	r04	太郎が会社へ転勤した。	転勤する	RECIPIENT_TYPE_UNDETERMINED:転勤する+PLACEMENT_ESTIMATED_GENERATED:predicate:転勤する	RECIPIENT_TYPE_UNDETERMINED:転勤する+PLACEMENT_TYPE_MISMATCH:P_MOVE:へ:GROUP_ORG	READ
+frame_reach	r05	田中が学校へ転勤した。	転勤する	RECIPIENT_TYPE_UNDETERMINED:転勤する+PLACEMENT_ESTIMATED_GENERATED:predicate:転勤する	RECIPIENT_TYPE_UNDETERMINED:転勤する+PLACEMENT_TYPE_MISMATCH:P_MOVE:へ:GROUP_ORG	READ
+frame_reach	r06	鈴木が会社へ出張した。	出張する	READ	READ	READ
+frame_reach	r07	山田が会社へ出張した。	出張する	READ	READ	READ
+frame_reach	r08	太郎が学校へ赴いた。	赴く	RECIPIENT_TYPE_UNDETERMINED:赴く+PLACEMENT_ESTIMATED_GENERATED:predicate:赴く	RECIPIENT_TYPE_UNDETERMINED:赴く+PLACEMENT_TYPE_MISMATCH:P_MOVE:へ:GROUP_ORG	READ
+control	c01	田中が本を読んだ。		READ		
+control	c02	鈴木が手紙を書いた。		READ		
+control	c03	太郎が走った。		READ		
+control	c04	整備士が倉庫で点検した。		READ		
+control	c05	山田が学校で勉強した。		READ		
+control	c06	鈴木が机を拭いた。		READ		
+# candidates=32 (frame_kept 18, frame_reach 8, control 6)

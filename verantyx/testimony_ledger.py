@@ -21,7 +21,7 @@ from typing import Any, Callable, Dict, List, Optional, Sequence
 from .llm_choice import ChoiceLedger, LedgerIntegrityError
 
 SCHEMA = "verantyx.testimony_ledger/1"
-ROW_TYPES = ("header", "testimony", "not_adopted", "backend_failed", "reread_agreed", "distribution_backed", "human_confirmed", "promotable", "promoted_to_layer", "assumption")
+ROW_TYPES = ("header", "testimony", "not_adopted", "backend_failed", "reread_agreed", "distribution_backed", "human_confirmed", "promotable", "promoted_to_layer", "human_confirmation", "human_confirmation_undone", "assumption")
 TESTIMONY_TYPES = ("testimony", "assumption")       # W3-e2 (K334): an assumption row is folded, confirmed and promoted like a testimony (only when its declared type is ONE noun type)
 STATES = ("unconfirmed", "reread_agreed", "distribution_backed", "human_confirmed")
 DEFAULT_PROMOTE_N = 3
@@ -214,6 +214,21 @@ class TestimonyLedger:
         return self._append({"type": "promoted_to_layer", "key": key, "word": _nfkc(word), "candidate": _nfkc(candidate), "declared_type": declared_type, "layer_name": layer_name,
                              "layer_base_sha256": layer_base_sha256, "origin": origin, "decided_by": list(decided_by), "evidence": evidence, "fill_id": fill_id,
                              "from_seq": list(from_seq)})
+
+    # ---- W16-t8 (K681): a human's confirmation made through `vera confirm` (docs/COARSE_PLACEMENT.md 12.21) ---------------------------------------------------------------
+    def record_human_confirmation(self, *, kind: str, word: str, type: str, frame: Optional[Dict[str, Any]], by: str, reason: Optional[str], layer_name: str) -> Dict[str, Any]:
+        """Appends a `human_confirmation` row (`kind`: type | frame) with a new `confirm_id`; the layer row follows (`placement_layer.write_entry` appends `promoted_to_layer` and names this row's seq). Appends only."""
+        confirm_id = self._new_id()
+        row = self._append({"type": "human_confirmation", "kind": kind, "word": _nfkc(word), "declared_type": type, "frame": frame, "by": by, "reason": reason, "layer_name": layer_name,
+                            "store_id": self.store_id, "confirm_id": confirm_id})
+        return {"row": row, "confirm_id": confirm_id}
+
+    def record_human_confirmation_undone(self, *, undoes: str, word: str, by: str, reason: Optional[str], layer_name: str) -> Dict[str, Any]:
+        """Appends a `human_confirmation_undone` row naming the `confirm_id` it undoes (a new `confirm_id` of its own). The earlier rows are never changed."""
+        confirm_id = self._new_id()
+        row = self._append({"type": "human_confirmation_undone", "undoes": undoes, "word": _nfkc(word), "by": by, "reason": reason, "layer_name": layer_name,
+                            "store_id": self.store_id, "confirm_id": confirm_id})
+        return {"row": row, "confirm_id": confirm_id}
 
     def promotion_plan(self, layer_name: str, base_query: Optional[Callable[[str], Dict[str, Any]]] = None) -> List[Dict[str, Any]]:
         """What `vera ledger promote --layer <name>` would write, one item per key of the folded view; changes neither a layer nor the ledger. Item keys: `key, word, candidate, declared_type,

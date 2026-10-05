@@ -1,0 +1,134 @@
+# ---- tests/test_w16t8_layer.py::test_a_human_predicate_answer_has_no_twelve_ten_frame_and_a_frame_row_makes_a_role_frame (r3, after)
+def test_a_human_predicate_answer_has_no_twelve_ten_frame_and_a_frame_row_makes_a_role_frame(tmp_path):
+    # r3 (監査役の裁定 2026-10-06 00:24): a human `set` changes the type only; the base's 12.10 frame and role frame stay.  A frame row overlays the role frame (the base's entry has backed_by: J15, the reader refuses it).
+    L = Layer(tmp_path)
+    L.human('移動する', 'P_MOVE')
+    base = base_answer('DECIDED', ['P_MOVE'], term='移動する', decided_by=('gen_frame',))
+    base['role_frame_status'], base['role_frame'] = 'CONFIRMED', {'を': [{'role': 'patient', 'types': ['ARTIFACT'], 'backed_by': ['x']}]}
+    a = PL.apply(base, L.path, BASE)
+    assert (a['frame_status'], a['frame']) == ('CONFIRMED', {'が': ['PERSON']})                  # the base's 12.10 frame is kept, with gen_frame after the human's id
+    assert a['decided_by'] == ['human:%016x' % 1, 'gen_frame']
+    assert (a['role_frame_status'], a['role_frame']) == ('CONFIRMED', base['role_frame'])        # the base's role frame (with backed_by) is carried over byte for byte
+    assert R._placement_answer_problems(a) == [] and R.predicate_role_frame(a)[0] is None and R.predicate_role_frame(a)[1].startswith('ROLE_FRAME_INVALID')
+    L.human('移動する', 'P_MOVE', kind='frame', frame={'particle': 'へ', 'role': 'goal', 'types': ['PLACE']})
+    L.human('移動する', 'P_MOVE', kind='frame', frame={'particle': 'が', 'role': 'agent', 'types': ['PERSON']})
+    L.human('移動する', 'P_MOVE', kind='frame', frame={'particle': 'が', 'role': 'agent', 'types': ['GROUP_ORG']})
+    a = PL.apply(base, L.path, BASE)
+    assert a['role_frame_status'] == 'CONFIRMED' and a['axes']['layer']['frame_confirm_ids'] == ['%016x' % n for n in (2, 3, 4)]
+    assert a['role_frame'] == {'が': [{'role': 'agent', 'types': ['GROUP_ORG', 'PERSON']}], 'を': [{'role': 'patient', 'types': ['ARTIFACT'], 'backed_by': ['x']}],
+                               'へ': [{'role': 'goal', 'types': ['PLACE']}]}
+    assert a['frame'] == {'が': ['PERSON']} and R.predicate_frame(a) == ('confirmed', {'が': frozenset({'PERSON'})})
+    assert R.placement_type(a) == ('P_MOVE', None)
+    # J15 (not fixed here): the base's backed_by entry stays in the frame, so the reader still refuses the role frame of this predicate
+    assert R.predicate_role_frame(a)[0] is None
+
+# ---- tests/test_w16t8_confirm_cli.py::test_frame_needs_a_confirmed_predicate_type_first_and_then_makes_a_role_frame (r3, after)
+def test_frame_needs_a_confirmed_predicate_type_first_and_then_makes_a_role_frame(env):
+    # r3 (監査役の裁定 2026-10-06 00:24): the expected values of the answer after the `frame` row changed (a `set` keeps the base's frames); see docs 12.21.7
+    rc, out = env.write('frame', '移動する', 'が', 'agent', 'PERSON')
+    assert (rc, out['verdict']) == (2, 'PREDICATE_TYPE_NOT_CONFIRMED') and not Path(env.layer).exists() and not Path(env.ledger).exists()
+    env.write('set', '移動する', 'P_MOVE')
+    rc, out = env.write('frame', '移動する', 'が', 'agent', 'PERSON', 'GROUP_ORG', '--reason', 'r')
+    assert rc == 0 and out['frame'] == {'particle': 'が', 'role': 'agent', 'types': ['GROUP_ORG', 'PERSON']}
+    a = CP.query('移動する', placement=R9, layer=env.layer)
+    assert a['layer_status'] == 'HUMAN_CONFIRMED_USED' and a['role_frame_status'] == 'CONFIRMED'
+    # r3 (監査役の裁定 2026-10-06 00:24): the 12.10 frame of the base stays (a `set` changes the type only) and the base's role frame is kept with the human's entry laid over it
+    assert a['frame_status'] == 'CONFIRMED' and a['frame'] == {'へ': ['PLACE']} and a['decided_by'][-1] == 'gen_frame'
+    base = CP.query('移動する', placement=R9, layer=False)
+    assert a['role_frame'] == dict(base['role_frame'], が=[{'role': 'agent', 'types': ['GROUP_ORG', 'PERSON']}]) and list(a['role_frame']) == ['が', 'に', 'へ']
+    assert PL.is_confirm_row(PL.open_layer(env.layer)[0].entries('移動する')[-1])
+
+# ---- tests/test_w16t8_confirm_cli.py::test_suggest_with_a_layer_reads_with_it_and_restores_the_environment (r3, after)
+def test_suggest_with_a_layer_reads_with_it_and_restores_the_environment(env, tmp_path, monkeypatch):
+    # r3: the expected value of the first sentence changed (see the comment below); the second sentence keeps the old intent (suggest reads with the layer)
+    text = tmp_path / 't.txt'
+    text.write_text('田中が整備室へ移動した。\n', encoding='utf-8')
+    env.write('set', '整備室', 'PLACE')
+    env.write('set', '移動する', 'P_MOVE')
+    monkeypatch.setenv(PL.ENV_LAYER, 'sentinel')
+    rc, out = env.run('suggest', '--text', str(text), '--layer', env.layer)
+    # r3 (監査役の裁定 2026-10-06 00:24): was READ.  The `set` of 移動する keeps the base's 12.10 frame ({へ: PLACE}), which refuses the subject が: the sentence stays abstained and suggest says why it is not reachable
+    row = out.splitlines()[1].split('\t')
+    assert (row[2], row[3], row[8], row[9], row[10]) == ('ABSTAIN', 'frame', 'PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が', 'false', 'BASE_FRAME_1210_KEPT')
+    import os
+    assert os.environ[PL.ENV_LAYER] == 'sentinel'
+    t2 = tmp_path / 't2.txt'
+    t2.write_text('田中が整備室へ出向いた。\n', encoding='utf-8')
+    env.write('set', '出向く', 'P_MOVE')
+    rc, out = env.run('suggest', '--text', str(t2), '--layer', env.layer)
+    assert out.splitlines()[1].split('\t')[2] == 'READ'
+    rc, out = env.run('suggest', '--text', str(text))                                                    # without the layer (the variable is 'sentinel': a name without a root): not read
+    assert 'ABSTAIN' in out
+
+# ---- tests/test_w16t8_synthetic.py::test_the_confirmations_suggest_named_make_more_targets_readable (r3, after)
+def test_the_confirmations_suggest_named_make_more_targets_readable(flow):
+    # r3 (監査役の裁定 2026-10-06 00:24): was readable_after == n (26), abstained_after == [], written == in_truth, truth_not_named == [].  A `set` of 移動する no longer drops the base's 12.10 frame, which refuses
+    # the subject が: t01-t09 (the 移動する sentences) stay abstained and suggest says they are not reachable; the other 17 are read.
+    s, _ = flow
+    t = s['groups']['target']
+    assert t['readable_before'] < t['readable_after']
+    assert (t['readable_before'], t['readable_after'], t['n']) == (0, 17, 26)
+    assert t['abstained_after'] == ['t%02d' % i for i in range(1, 10)]
+    assert (s['confirmations_written'], s['confirmations_in_truth']) == (9, 10) and s['truth_not_named'] == ['移動する']
+    assert len(s['rounds']) <= 3
+
+# ---- tests/test_w16t8_synthetic.py::test_three_or_more_decided_words_were_overridden_by_a_human (r3, after)
+def test_three_or_more_decided_words_were_overridden_by_a_human(flow):
+    s, out = flow
+    assert len(s['overrode_decided']) >= 3
+    over = json.loads((Path(out) / 't82_base_decided.json').read_text())
+    # r3: 移動する is in the truth list but suggest no longer names it (its 12.10 frame is not reachable), so it was never confirmed: its answer is the base's (BASE_DECIDED)
+    for o in over:
+        if o['word'] == '移動する':
+            assert o['layer_status'] == 'BASE_DECIDED' and not o['decided_by'][0].startswith('human:')
+        else:
+            assert o['layer_status'] == 'HUMAN_CONFIRMED_USED' and o['decided_by'][0].startswith('human:')
+    decided = [o for o in over if o['base_state'] == 'DECIDED' and o['decided_by'][0].startswith('human:')]
+    assert len(decided) >= 3 and {o['word'] for o in decided} == set(s['overrode_decided']) == {'学校', '会社', '移住する', '出向く', '赴く'}
+    assert any(o['base_origin'] == 'direct' for o in decided) and any(o['base_origin'] == 'estimated' for o in decided)
+
+# ---- tests/test_w16t8_synthetic.py::test_suggest_names_the_frame_and_the_frame_row_is_written (r3, after)
+def test_suggest_names_the_frame_and_the_frame_row_is_written(flow_frame):
+    # r3 (監査役の裁定 2026-10-06 00:24): was: suggest names `frame 移動する へ` as reachable, the flow writes `set` + `frame` (2 confirmations).  Now suggest still names the frame but says it is NOT reachable
+    # (the base's 12.10 frame and role frame of 移動する are kept; J15), the flow writes nothing for it, and the only `set` rows suggest names are the filler nouns that the truth list does not hold.
+    s, out = flow_frame
+    first = (Path(out) / 't82_suggest_round1.tsv').read_text(encoding='utf-8').splitlines()
+    head = first[0].split('\t')
+    rows = [dict(zip(head, ln.split('\t'))) for ln in first[1:] if ln and not ln.startswith('#')]
+    fr = [r for r in rows if r['op'] == 'frame' and r['word'] == '移動する']
+    assert fr and all(r['reachable'] == 'false' for r in fr)
+    assert {r['why'] for r in fr if r['particle'] == 'が'} == {'BASE_FRAME_1210_KEPT'}
+    assert {r['why'] for r in fr if r['particle'] == 'へ'} == {'BASE_ROLE_FRAME_INVALID:ROLE_FRAME_INVALID:ENTRY_KEYS:に (J15)'}
+    listed = json.loads((Path(out) / 't82_list.json').read_text())['confirmations']
+    assert listed == [] and s['confirmations_written'] == 0 and s['truth_not_named'] == ['移動する', '移動する']
+    assert s['rounds'][0]['named'] == ['学校', '会社', '山田'] and s['rounds'][0]['written'] == []
+
+# ---- tests/test_w16t8_synthetic.py::test_the_frame_makes_the_organisation_goal_sentences_readable_as_the_frame_says (r3, after)
+def test_the_frame_makes_the_organisation_goal_sentences_readable_as_the_frame_says(flow_frame):
+    s, out = flow_frame
+    t = s['groups']['target']
+    # r3 (監査役の裁定 2026-10-06 00:24): was readable_after == 4, abstained_after == ['f05'], 移動する in overrode_decided.  Nothing is confirmed any more (see the test above): the five stay abstained.
+    assert t['readable_before'] == 0 and t['readable_after'] == 0 and t['misread'] == []
+    assert t['abstained_after'] == ['f01', 'f02', 'f03', 'f04', 'f05'] and t['changed_output'] == []
+    assert s['groups']['control']['changed_output'] == [] and s['groups']['control']['misread'] == []
+    assert s['overrode_decided'] == []
+
+# ---- tests/test_w16t8_synthetic.py::test_the_set_alone_does_not_read_the_organisation_goal_sentences (r3, after)
+def test_the_set_alone_does_not_read_the_organisation_goal_sentences(tmp_path):
+    rows = [json.loads(x) for x in open(Path(DATA) / 'synthetic_frame.jsonl', encoding='utf-8')]
+    layer, ledger = str(tmp_path / 'l.sqlite'), str(tmp_path / 'g.jsonl')
+    rc, _ = F._cli(['confirm', 'set', '移動する', 'P_MOVE', '--by', 't', '--layer', layer, '--ledger-file', ledger, '--placement', R9])
+    assert rc == 0
+    after = F._read_all(rows, R9, layer)
+    for r, rd in zip(rows, after):
+        if r['group'] == 'target':
+            assert not rd.get('readable'), r['text']                                # without the frame the type table refuses the goal (GROUP_ORG)
+        if r['group'] == 'frame_not_restrictive':
+            assert not rd.get('readable'), r['text']                                # r3 (was: readable): the base's 12.10 frame of 移動する stays after the `set` and refuses the subject が
+
+# ---- tests/test_w16t8_synthetic.py::test_a_human_frame_adds_but_does_not_restrict (r3, after)
+def test_a_human_frame_adds_but_does_not_restrict(flow_frame):
+    s, out = flow_frame
+    g = s['groups']['frame_not_restrictive']
+    # r3 (監査役の裁定 2026-10-06 00:24): was not_stopped == 3 (the PLACE goals were read although the declared frame lists GROUP_ORG only).  With nothing confirmed they are not read; no misreading.
+    assert g['n'] == 3 and g['not_stopped'] == 0 and g['misread'] == []

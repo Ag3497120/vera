@@ -1,0 +1,21 @@
+set	k	n	readable	newly_read	lost	correct	misread	unjudged
+train	0	40	0	0	0	0	0	0
+train	5	40	10	10	0	10	0	0
+train	10	40	20	20	0	20	0	0
+train	15	40	30	30	0	30	0	0
+train	20	40	40	40	0	40	0	0
+test	0	16	0	0	0	0	0	0
+test	5	16	0	0	0	0	0	0
+test	10	16	0	0	0	0	0	0
+test	15	16	0	0	0	0	0	0
+test	20	16	0	0	0	0	0	0
+real	0	12	3	0	0	0	0	3
+real	5	12	4	1	0	1	0	3
+real	10	12	6	3	0	3	0	3
+real	15	12	7	4	0	4	0	3
+real	20	12	8	5	0	5	0	3
+# slope	train	2.000000
+# slope	test	0.000000
+# slope	real	0.260000
+# test_verdict	TEST_DISJOINT_FROM_CONFIRMED	overlap=0
+# owner_minutes	null

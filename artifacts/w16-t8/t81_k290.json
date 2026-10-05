@@ -1,0 +1,1246 @@
+{
+ "placement": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-a6-S/build/coarse-W3a/full/r9/run2",
+ "placement_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+ "summary": {
+  "direct50": {
+   "words": 50,
+   "ok": 50
+  },
+  "multi_in": {
+   "words": 10,
+   "ok": 10
+  },
+  "multi_out": {
+   "words": 10,
+   "ok": 10
+  }
+ },
+ "failed": [],
+ "all_ok": true,
+ "rows": [
+  {
+   "word": "ヘンリー・ヘルソン",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "いわもとじ",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PLACE"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PLACE"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "せいでん",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PLACE"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PLACE"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "板倉俊彦",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "落合一泰",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "羽渕紅洲",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "ぶつもいん",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PLACE"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PLACE"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "内田未来",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "内山つかさ",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "あまぞん鼈鏡",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PLANT"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PLANT"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "釣アンナ恵都子",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "納見佳容",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "漁府輝羽",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "タンプ",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "GROUP_ORG"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "GROUP_ORG"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "鼻下長紳士回顧録",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "WORK"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "WORK"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "うるまシティプラザ",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PLACE"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PLACE"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "重光昭夫",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "広島北部農業協同組合",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "GROUP_ORG"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "GROUP_ORG"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "中部・北陸実業団対抗女子駅伝競走",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "EVENT_ACT"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "EVENT_ACT"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "灰胸水鶏",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "ANIMAL"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "ANIMAL"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "荒木正見",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "東北職業能力開発大学校",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PLACE"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PLACE"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "和珅",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "初薬師",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "TIME"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "TIME"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "黎愍帝",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "中村隼",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "来栖七郎",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "Erbium",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "SUBSTANCE_FOOD"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "SUBSTANCE_FOOD"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "三沢航空科学館",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PLACE"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PLACE"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "ロシアぶんがく",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "ABSTRACT"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "ABSTRACT"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "NECK",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "WORK"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "WORK"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "ケー・ウンスク",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "アサバスカ湖",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PLACE"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PLACE"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "デジタル権",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "INFO_LANGUAGE"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "INFO_LANGUAGE"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "フォーダム大学",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "GROUP_ORG"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "GROUP_ORG"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "仮名化",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "EVENT_ACT"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "EVENT_ACT"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "アンディ・バーマン",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "キャバーブ",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "SUBSTANCE_FOOD"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "SUBSTANCE_FOOD"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "変態怪談 し放題され放題",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "WORK"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "WORK"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "野猿街道",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PLACE"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PLACE"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "琴平町",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PLACE"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PLACE"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "選択乗車",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "ABSTRACT"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "ABSTRACT"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "ミンダナオじしん",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "NATURAL_PHENOMENON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "NATURAL_PHENOMENON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "鹿児島造園技術専門校",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PLACE"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PLACE"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "当然",
+   "kind": "direct50",
+   "layer_type": "P_GIVE",
+   "base_state": "DECIDED",
+   "base_top": [
+    "P_STATE"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "P_STATE"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "希金属",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "SUBSTANCE_FOOD"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "SUBSTANCE_FOOD"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "西島啓晃",
+   "kind": "direct50",
+   "layer_type": "GROUP_ORG",
+   "base_state": "DECIDED",
+   "base_top": [
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "短編小説集",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "WORK"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "WORK"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "よさほいぶし",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "WORK"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "WORK"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "桂南光",
+   "kind": "direct50",
+   "layer_type": "PERSON",
+   "base_state": "DECIDED",
+   "base_top": [
+    "INFO_LANGUAGE"
+   ],
+   "layer": "base",
+   "layer_status": "BASE_DECIDED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "INFO_LANGUAGE"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "SHOWA GROUP",
+   "kind": "multi_in",
+   "layer_type": "GROUP_ORG",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "GROUP_ORG",
+    "PLACE"
+   ],
+   "layer": "overlay:layer",
+   "layer_status": "LAYER_DIRECT_USED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "GROUP_ORG"
+   ],
+   "identical_but_two_keys": false,
+   "ok": true
+  },
+  {
+   "word": "マック・スウェイン",
+   "kind": "multi_in",
+   "layer_type": "GROUP_ORG",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "layer": "overlay:layer",
+   "layer_status": "LAYER_DIRECT_USED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "GROUP_ORG"
+   ],
+   "identical_but_two_keys": false,
+   "ok": true
+  },
+  {
+   "word": "括弧",
+   "kind": "multi_in",
+   "layer_type": "ABSTRACT",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "ABSTRACT",
+    "INFO_LANGUAGE"
+   ],
+   "layer": "overlay:layer",
+   "layer_status": "LAYER_DIRECT_USED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "ABSTRACT"
+   ],
+   "identical_but_two_keys": false,
+   "ok": true
+  },
+  {
+   "word": "緑",
+   "kind": "multi_in",
+   "layer_type": "PLACE",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "PLACE",
+    "STATE_PROPERTY"
+   ],
+   "layer": "overlay:layer",
+   "layer_status": "LAYER_DIRECT_USED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "PLACE"
+   ],
+   "identical_but_two_keys": false,
+   "ok": true
+  },
+  {
+   "word": "統一",
+   "kind": "multi_in",
+   "layer_type": "ABSTRACT",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "ABSTRACT",
+    "EVENT_ACT"
+   ],
+   "layer": "overlay:layer",
+   "layer_status": "LAYER_DIRECT_USED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "ABSTRACT"
+   ],
+   "identical_but_two_keys": false,
+   "ok": true
+  },
+  {
+   "word": "ALL外為ナビ!",
+   "kind": "multi_in",
+   "layer_type": "INFO_LANGUAGE",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "INFO_LANGUAGE",
+    "WORK"
+   ],
+   "layer": "overlay:layer",
+   "layer_status": "LAYER_DIRECT_USED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "INFO_LANGUAGE"
+   ],
+   "identical_but_two_keys": false,
+   "ok": true
+  },
+  {
+   "word": "佐々十郎",
+   "kind": "multi_in",
+   "layer_type": "GROUP_ORG",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "layer": "overlay:layer",
+   "layer_status": "LAYER_DIRECT_USED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "GROUP_ORG"
+   ],
+   "identical_but_two_keys": false,
+   "ok": true
+  },
+  {
+   "word": "使用後",
+   "kind": "multi_in",
+   "layer_type": "ARTIFACT",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "ARTIFACT",
+    "EVENT_ACT",
+    "TIME"
+   ],
+   "layer": "overlay:layer",
+   "layer_status": "LAYER_DIRECT_USED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "ARTIFACT"
+   ],
+   "identical_but_two_keys": false,
+   "ok": true
+  },
+  {
+   "word": "しれい",
+   "kind": "multi_in",
+   "layer_type": "NATURAL_PHENOMENON",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "NATURAL_PHENOMENON",
+    "PLACE"
+   ],
+   "layer": "overlay:layer",
+   "layer_status": "LAYER_DIRECT_USED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "NATURAL_PHENOMENON"
+   ],
+   "identical_but_two_keys": false,
+   "ok": true
+  },
+  {
+   "word": "おかわり",
+   "kind": "multi_in",
+   "layer_type": "EVENT_ACT",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "EVENT_ACT",
+    "PERSON",
+    "SUBSTANCE_FOOD"
+   ],
+   "layer": "overlay:layer",
+   "layer_status": "LAYER_DIRECT_USED",
+   "answer_state": "DECIDED",
+   "answer_top": [
+    "EVENT_ACT"
+   ],
+   "identical_but_two_keys": false,
+   "ok": true
+  },
+  {
+   "word": "ヒロシ・ヤング",
+   "kind": "multi_out",
+   "layer_type": "GROUP_ORG",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "ARTIFACT",
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "LAYER_TYPE_NOT_AMONG_CANDIDATES",
+   "answer_state": "MULTIPLE",
+   "answer_top": [
+    "ARTIFACT",
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "辰野千寿",
+   "kind": "multi_out",
+   "layer_type": "ANIMAL",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "LAYER_TYPE_NOT_AMONG_CANDIDATES",
+   "answer_state": "MULTIPLE",
+   "answer_top": [
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "オフサイドポジション",
+   "kind": "multi_out",
+   "layer_type": "PERSON",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "PLACE",
+    "RELATIVE_POSITION"
+   ],
+   "layer": "base",
+   "layer_status": "LAYER_TYPE_NOT_AMONG_CANDIDATES",
+   "answer_state": "MULTIPLE",
+   "answer_top": [
+    "PLACE",
+    "RELATIVE_POSITION"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "しばたし",
+   "kind": "multi_out",
+   "layer_type": "PERSON",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "GROUP_ORG",
+    "PLACE"
+   ],
+   "layer": "base",
+   "layer_status": "LAYER_TYPE_NOT_AMONG_CANDIDATES",
+   "answer_state": "MULTIPLE",
+   "answer_top": [
+    "GROUP_ORG",
+    "PLACE"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "ミレニアム・マンボ",
+   "kind": "multi_out",
+   "layer_type": "PERSON",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "PLACE",
+    "WORK"
+   ],
+   "layer": "base",
+   "layer_status": "LAYER_TYPE_NOT_AMONG_CANDIDATES",
+   "answer_state": "MULTIPLE",
+   "answer_top": [
+    "PLACE",
+    "WORK"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "サヨナラ勝ち",
+   "kind": "multi_out",
+   "layer_type": "PERSON",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "EVENT_ACT",
+    "WORK"
+   ],
+   "layer": "base",
+   "layer_status": "LAYER_TYPE_NOT_AMONG_CANDIDATES",
+   "answer_state": "MULTIPLE",
+   "answer_top": [
+    "EVENT_ACT",
+    "WORK"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "ジョン・ベルーシ",
+   "kind": "multi_out",
+   "layer_type": "ANIMAL",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "LAYER_TYPE_NOT_AMONG_CANDIDATES",
+   "answer_state": "MULTIPLE",
+   "answer_top": [
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "日本列島ここが真ん中",
+   "kind": "multi_out",
+   "layer_type": "PERSON",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "INFO_LANGUAGE",
+    "WORK"
+   ],
+   "layer": "base",
+   "layer_status": "LAYER_TYPE_NOT_AMONG_CANDIDATES",
+   "answer_state": "MULTIPLE",
+   "answer_top": [
+    "INFO_LANGUAGE",
+    "WORK"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "ポート",
+   "kind": "multi_out",
+   "layer_type": "PERSON",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "IDENTIFIER",
+    "INFO_LANGUAGE",
+    "PLACE"
+   ],
+   "layer": "base",
+   "layer_status": "LAYER_TYPE_NOT_AMONG_CANDIDATES",
+   "answer_state": "MULTIPLE",
+   "answer_top": [
+    "IDENTIFIER",
+    "INFO_LANGUAGE",
+    "PLACE"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  },
+  {
+   "word": "スタッフォード・ビーア",
+   "kind": "multi_out",
+   "layer_type": "ANIMAL",
+   "base_state": "MULTIPLE",
+   "base_top": [
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "layer": "base",
+   "layer_status": "LAYER_TYPE_NOT_AMONG_CANDIDATES",
+   "answer_state": "MULTIPLE",
+   "answer_top": [
+    "GROUP_ORG",
+    "PERSON"
+   ],
+   "identical_but_two_keys": true,
+   "ok": true
+  }
+ ]
+}
