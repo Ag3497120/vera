@@ -1,0 +1,34 @@
+## 足した文体で出力が変わった例（マキがリオに青鍵を渡さない。 を実現）
+層なし: 8 文
+   マキはリオに青鍵を渡さない。
+   マキは青鍵をリオに渡さない。
+   マキがリオに青鍵を渡さない。
+   マキが青鍵をリオに渡さない。
+   マキはリオに青鍵を渡しません。
+   マキは青鍵をリオに渡しません。
+   マキがリオに青鍵を渡しません。
+   マキが青鍵をリオに渡しません。
+層あり(t3_layer_add_style.json): 12 文
+   plain マキはリオに青鍵を渡さない。
+   plain マキは青鍵をリオに渡さない。
+   plain マキがリオに青鍵を渡さない。
+   plain マキが青鍵をリオに渡さない。
+   polite マキはリオに青鍵を渡しません。
+   polite マキは青鍵をリオに渡しません。
+   polite マキがリオに青鍵を渡しません。
+   polite マキが青鍵をリオに渡しません。
+   polite_casual マキはリオに青鍵を渡さないです。
+   polite_casual マキは青鍵をリオに渡さないです。
+   polite_casual マキがリオに青鍵を渡さないです。
+   polite_casual マキが青鍵をリオに渡さないです。
+t3_layer_override_particle.json -> FORMS_OVERRIDE_REFUSED
+t3_layer_override_style.json -> FORMS_OVERRIDE_REFUSED
+
+## CLI（plan の T3 のコマンド）
+{
+  "schema": "verantyx.cross_tokens/1",
+  "status": "REFUSED",
+  "reason": "FORMS_OVERRIDE_REFUSED",
+  "detail": "/Users/motonisihikoudai/Projects/vera-impl/wt/W3-d1-S/artifacts/w3-d1/t3_layer_override_particle.json: role_particle.patient cannot be overridden (K311: only additions)",
+}
+exit=2

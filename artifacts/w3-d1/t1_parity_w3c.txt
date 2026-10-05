@@ -1,0 +1,5 @@
+checked 134, mismatch 0
+clauses_compared 170 (each with realize_clause plain, realize_clause polite, realize_variants)
+files sentences_ja.jsonl, sentences_ja_add1.jsonl, seeds_ja.jsonl
+base_commit 6bc410d
+base_semantic_realize_sha256 e3ae6e08b468632b1b000a73556ef47d8950e3e04fe62e3f4d53b69696f79b42

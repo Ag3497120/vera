@@ -301,8 +301,11 @@ def _contains_embedded(cross: EC.EventCross) -> bool:
     return False
 
 
-def realize_tokens(tokens: str, lang: str = "ja", *, placement: str | None = None) -> dict[str, Any]:
+def realize_tokens(tokens: str, lang: str = "ja", *, placement: str | None = None, forms: Any = None) -> dict[str, Any]:
     """Realize one supported cross and require an independent cross-key reread.
+
+    W3-d1: `placement` is also handed to the realizer, which reads its sentence with that same placement (K312) and tries the topic particles of the
+    forms table in order (K315); `forms` is a layer forms table (K311). A refused table is a typed result, never a silent abstention.
 
     Collections and embedded/related crosses remain fully serializable, but the
     current sentence realizer cannot express their topology, so this API abstains.
@@ -324,13 +327,18 @@ def realize_tokens(tokens: str, lang: str = "ja", *, placement: str | None = Non
     from . import observe, semantic_read, semantic_realize
 
     key = observe.cell_key_of(cross)
-    result = semantic_realize.realize_observed(
-        dict(cross.center),
-        {role: arm.to_dict() for role, arm in cross.arms.items()},
-        lang,
-        cell_id=key,
-        rule=cross.provenance.get("rule"),
-    )
+    try:
+        result = semantic_realize.realize_observed(
+            dict(cross.center),
+            {role: arm.to_dict() for role, arm in cross.arms.items()},
+            lang,
+            cell_id=key,
+            rule=cross.provenance.get("rule"),
+            placement=placement,
+            forms=forms,
+        )
+    except semantic_realize.FormsError as exc:
+        return {"schema": SCHEMA, "status": "REFUSED", "reason": exc.reason, "detail": exc.detail, "cell_key": key}
     if isinstance(result, semantic_realize.Refused):
         return {"schema": SCHEMA, "status": "REFUSED", "reason": result.reason,
                 "detail": result.detail, "checks": result.checks or {}, "cell_key": key}

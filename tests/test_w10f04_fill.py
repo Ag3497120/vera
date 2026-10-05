@@ -194,8 +194,10 @@ def test_the_gate_b_reread_rejects_a_slot_the_reader_does_not_read(r8):
 def test_realize_is_recorded_and_can_be_required(r8):
     q = S._placement_query(r8)
     ho = S.read_with_holes('母が図書館へ歩いた。', placement=r8)            # r3: the gate itself, on a one-hole sentence (the realizer step exists only there)
-    assert F._gate_b('母が図書館へ歩いた。', ho, 0, '駅', 'PLACE', q, r8, {}) == (None, 'REFUSED')         # J10: the realizer cannot read back a typed goal cross
-    assert F._gate_b('母が図書館へ歩いた。', ho, 0, '駅', 'PLACE', q, r8, {}, True) == ('GATE_B_REALIZE_REFUSED', 'REFUSED')
+    # Integration of W3-d1 (auditor, 2026-10-05): the realizer now accepts a typed cross and rereads with the same placement, so J10 is closed: the gate
+    # realizes `母が駅へ歩いた。` and reads it back (REALIZED). The frozen value REFUSED was the hole W3-d1 was opened for.
+    assert F._gate_b('母が図書館へ歩いた。', ho, 0, '駅', 'PLACE', q, r8, {}) == (None, 'REALIZED')
+    assert F._gate_b('母が図書館へ歩いた。', ho, 0, '駅', 'PLACE', q, r8, {}, True) == (None, 'REALIZED')
     d, _ = decide('ウサギが図書館へ走った。', [op2(['犬']), {'pick': '犬'}, {'pick': '犬'}], r8, HOLE2)
     assert d.status == 'ADOPTED' and d.gate_log[0]['realize'] == 'SKIPPED_OTHER_HOLES'                       # in a two-hole sentence the step is skipped, and the record says so
 

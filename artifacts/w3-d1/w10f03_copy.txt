@@ -1,0 +1,20 @@
+W10-f03 のクローン（wt/W10-f03-S）から写した部分（開いたのはこの 2 ファイルだけ。make_pairs.py・run_pipeline.py は開いていない・写していない）
+
+W10-f03 側のファイルの sha256（実装前に計測）:
+  0b545abb2526fc2012deaea106b882dcde6b6600f8f0c87f2606e8bfa3c9fcc3  tools/fusion/evaluate_model.py   (301 行)
+  2b2e4d17940381bfc5056d171ba5e3bb23869fe0bdb7782bd960c1ea23f94b60  verantyx/cli.py
+
+写した行範囲:
+  verantyx/cli.py
+    cmd_realize                     716-726   -> verantyx/cli.py の cmd_realize（本体は同じ。realize_tokens に forms=args.forms を渡し、FORMS_* のとき終了コード 2 を返すよう変更）
+    realize のサブパーサ            2113-2121 -> verantyx/cli.py の "realize" サブパーサ（--forms を足した）
+  tools/fusion/evaluate_model.py
+    _identity                       50-64     -> そのまま
+    _mismatch_labels                66-93     -> そのまま
+    _realize_via_cli                95-121    -> forms 引数を足し、FORMS_* の型つき答え（終了コード 2・JSON）を ABSTAINED にせず返すようにした
+  写していない: モジュール先頭の make_pairs の import、PROMPT、_heldout_candidates（28-48）、evaluate（123-281、Ollama を呼ぶ）、main（282-、evaluate を呼ぶ）
+  新しく書いた: reread_match（元の文の同一性と、`vera realize` の文を同じ配置で再読した同一性の比較）、JSONL を数える main
+
+このツリー側の sha256（実装後）:
+  f9a7926dc00684c63c6860cd53008342abf49de077da5bbaecf98abe95336ee1  tools/fusion/evaluate_model.py
+  8a8299c3a45eb993692600defba2afdf3d4653c2fed06bf7d454d4b0d23d7740  verantyx/cli.py
