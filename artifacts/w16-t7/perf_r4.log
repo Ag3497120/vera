@@ -1,0 +1,9 @@
+ 0:24  up 4 days, 23:36, 2 users, load averages: 6.83 6.38 6.53
+password= x11000 len 99000 sec 5.38 n 1
+sk- x33000 + a*20 len 99020 sec 3.11 n 1
+日本語と英字 200000 len 200000 sec 0.01 n 0
+Bearer x7000 + z*30 len 49030 sec 0.00 n 1
+AKIA x25000 len 100000 sec 0.02 n 1
+task-management-system-abcdef -> ('ta[REDACTED:sk]', 1)
+risk-assessment-procedure -> ('ri[REDACTED:sk]', 1)
+ask-questions-about-it-now -> ('a[REDACTED:sk]', 1)

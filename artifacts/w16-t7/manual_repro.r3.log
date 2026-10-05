@@ -1,0 +1,11 @@
+== 実測1 run --keep-args
+rc=0
+grep 完成形 (rc=1 が正):
+grep_rc=1
+{"child":{"lstart":"Mon Oct 5 23:42:55 2026","pid":59292},"descendants":[{"argv0":"sh","cmd":"sh -c sleep 1.5; : [REDACTED:aws_akia]","cmd_sha256":"a0b52eb2f788fd73142ea579624c8a689968b5e866452003dfe92320f3e5c4b6","lstart":"Mon Oct 5 23:42:55 2026","pid":59294},{"argv0":"sleep","cmd":"sleep 1.5","cmd_sha256":"7e98e814ec9e2f8f7fdfaa481717ac1988030a042187e92f40c83eaf4a4d4285","lstart":"Mon Oct 5 23:
+== 実測2 hook
+rc=0
+{"actor":{"id":"unknown","type":"owner"},"data":{"redactions":2,"session_id":"unknown","source":"claude_code","text":"止めて。鍵は [REDACTED:aws_akia] です"},"kind":"owner_utterance","prev":"0000000000000000000000000000000000000000000000000000000000000000","sha":"f9bea6db14c01ec65660c9da8a7f3cc3511446272b66e7c29655f6c4d7a11a0d","ts":"2026-10-05T14:42:59.833047Z"}
+
+grep_rc=1
+{"head": "f9bea6db14c01ec65660c9da8a7f3cc3511446272b66e7c29655f6c4d7a11a0d", "n": 1, "problems": [], "status": "OK"}

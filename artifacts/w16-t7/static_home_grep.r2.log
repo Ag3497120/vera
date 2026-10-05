@@ -1,0 +1,2 @@
+verantyx/hooks_templates.py:4:- 利用者の全体設定（~/.claude・~/.codex）は読まない・書かない。このモジュールはホームを展開する呼び出しを持たない。
+grep_rc=0

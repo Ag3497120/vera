@@ -2994,6 +2994,9 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--private", action="store_true")
     p.set_defaults(fn=cmd_push_store)
 
+    from .run_recorder import register_cli as _w16t7_register   # W16-t7: run / events / hooks
+    _w16t7_register(sub)
+
     args = ap.parse_args(argv)
     if getattr(args, "cmd", None) in ("read", "ask", "chat", "serve") and getattr(args, "layer", None):
         import os

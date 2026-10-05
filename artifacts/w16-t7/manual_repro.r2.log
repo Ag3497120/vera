@@ -1,0 +1,36 @@
+## r2 手での再現（レビュー r1 の反例）
+### 必須1: 秘密でない token 語＋改行／パスワード＋タブ
+hook_rc=0
+hook_rc=0
+{"actor": {"id": "unknown", "type": "owner"}, "data": {"redactions": 0, "session_id": "unknown", "source": "claude_code", "text": "新しい token:\nabcdefg を試して"}, "kind": "owner_utterance", "prev": "000000000000000000000000000000000000000000000000000
+{"actor": {"id": "unknown", "type": "owner"}, "data": {"redactions": 1, "session_id": "unknown", "source": "claude_code", "text": "password=\t[REDACTED:kv_secret]"}, "kind": "owner_utterance", "prev": "fc0f1b738fb4784930e0e772826635d8363cc5c047d0f58c9371ba2619
+grep_secret_rc=1
+### 必須2: 途中で切れた台帳／ファイルで塞いだ台帳
+{"error": "TORN_TAIL_BLOCKS_APPEND", "detail": "最終行が改行で終わっていない。verify を見て人が直す", "child_started": false}
+rc=2
+ls: /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t7r2/marker1: No such file or directory
+{"error": "LEDGER_NOT_WRITABLE", "detail": "NotADirectoryError: [Errno 20] Not a directory: '/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t7r2/filed/sub'", "child_started": false}
+rc=2
+ls: /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t7r2/marker2: No such file or directory
+rc=0
+{"head": "aca00adef964515ba1917bdd9a4e993b979e1d58545ab57870b41d3598acd969", "n": 2, "problems": [], "status": "OK"}
+### 必須3: シンボリックリンク
+{"detail": "<project>/.claude または settings.json がシンボリックリンク。実体が不明なので書かない", "status": "REFUSED_SYMLINK_SETTINGS", "target": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t7r2/projS/.claude/settings.json"}
+rc=2
+{"detail": "<project>/.claude または settings.json がシンボリックリンク。実体が不明なので書かない", "status": "REFUSED_SYMLINK_SETTINGS", "target": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t7r2/projS/.claude/settings.json"}
+rc=2
+{"theme":"dark"}
+### 必須4: docs
+19:- 行: LINE_UNPARSABLE（途中の壊れた行）、TORN_TAIL（最終行だけ改行無しで JSON 不正。書き込み中の中断の疑い）、BAD_SHAPE
+21:- **status の閉じた一覧**: `OK` / `EMPTY` / `TAMPERED` / `TORN_TAIL` / `HEAD_MISMATCH`。複数当たるときの優先順は TAMPERED > TORN_TAIL > HE
+73:- 最終行が改行で終わっていない（TORN_TAIL）台帳には、追記を拒否する（`TORN_TAIL_BLOCKS_APPEND`）。黙って直さない。人�
+78:- `vera run` は子を起動する前に process_start を検査し（`preflight`）、追記できない台帳（TORN_TAIL・書けない・秘密の形が�
+### T7-1(a) 孤児
+{"actor": {"id": "53367", "type": "process"}, "data": {"child_exit_code": -15, "child_status": "exited", "descendants_seen": 2, "duration_s": 1.198, "redactions": 0, "run_id": "da7793fe228e44ce90afaf0
+{"actor": {"id": "53369", "type": "process"}, "data": {"argv0": "sleep", "cmd_sha256": "64e51478126e1137c02359f5b04ffa62
+{"actor": {"id": "53370", "type": "process"}, "data": {"argv0": "sleep", "cmd_sha256": "64e51478126e1137c02359f5b04ffa62
+{"appended": 0, "recorder_vanished": 0, "still_alive": [{"argv0": "sleep", "lstart": "Mon Oct 5 23:25:05 2026", "pid": 53369, "run_id": "da7793fe228e44ce90afaf08de954579"}, {"argv0": "sleep", "lstart": "Mon Oct 5 23:25:05 2026", "pid": 53370, "run_id": "da7793fe228e44ce90afaf08de954579"}]}
+{"appended": 2, "recorder_vanished": 0, "still_alive": []}
+{"appended": 0, "recorder_vanished": 0, "still_alive": []}
+{"head": "a0ba330cf3a6520607c6ed6bf648c7ade7334b6c144b36ab494516eead01abcd", "n": 6, "problems": [], "status": "OK"}
+verify_rc=0
