@@ -1,0 +1,5 @@
+## fake verantyx/ in cwd; --python+--code-root install
+{"_vera": {"code_root": "/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7b-S", "code_root_source": "--code-root", "form": "dash_P", "python": "/Users/motonisihikoudai/vera-wiring/env/bin/python", "python_source": "--python", "python_version": "3.11"}, "added": 6, "selftest": {"n": 6, "ok": true}, "stale_vera_hooks": 0, "status": "WRITTEN", "target": "/private/tmp/claude-501/-Users-motonisihiko
+## bad python
+{"_vera": {"code_root": "/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7b-S", "code_root_source": "--code-root", "form": "dash_c_syspath", "python": "/nonexistent/py", "python_source": "--python", "python_version": "UNKNOWN_PROBE_FAILED"}, "detail": "生成した hook のコマンドが偽の入力で終了 0・台帳 1 行にならなかったので書かない", "selftest": {"cases": [{"eve
+ls proj3:

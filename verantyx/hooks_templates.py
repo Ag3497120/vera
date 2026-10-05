@@ -4,7 +4,8 @@
 - 利用者の全体設定（~/.claude・~/.codex）は読まない・書かない。このモジュールはホームを展開する呼び出しを持たない。
   拒否の判定に要る「ホーム」は環境変数 HOME（と pwd のホーム）を読むだけ。
 - 書き込みは `_write_settings_atomic` の 1 関数だけ。書き先の組み立ては `install_project` の中だけ。
-- hook から呼ばれる側（`events add … --from …`）は標準出力に何も出さず、常に終了コード 0。失敗は標準エラーと rejects.jsonl に型つきで残す。
+- hook から呼ばれる側（`events add … --from …`）は標準出力に何も出さず、取り込みの失敗は終了コード 0（標準エラーと rejects.jsonl に型つきで残す）。
+  W16-t7b: 引数の誤りは 2 ではなく 1（--from claude-code のとき）。hook のコマンドは ` || exit 1` で、どんな失敗も 1 にする。
 """
 from __future__ import annotations
 
@@ -27,11 +28,74 @@ def default_vera_cmd() -> str:
     return shlex.quote(sys.executable) + " -m verantyx.cli"
 
 
-def claude_code_template(vera_cmd: Optional[str] = None, keep_args: bool = False) -> dict:
-    c = vera_cmd or default_vera_cmd()
+class PinError(Exception):
+    """読み込むコードを固定できない（型つきの拒否）。"""
+
+    def __init__(self, code: str, detail: str = ""):
+        super().__init__(code)
+        self.code, self.detail = code, detail
+
+
+def _probe_python_version(python: str) -> Optional[tuple]:
+    if python == sys.executable:
+        return (sys.version_info[0], sys.version_info[1])
+    try:
+        r = subprocess.run([python, "-c", "import sys;print(sys.version_info[0], sys.version_info[1])"],
+                           capture_output=True, text=True, timeout=5)
+        if r.returncode == 0:
+            a, b = r.stdout.split()
+            return (int(a), int(b))
+    except Exception:
+        pass
+    return None
+
+
+def resolve_pin(python: Optional[str] = None, code_root: Optional[str] = None) -> dict:
+    """hook のコマンドに埋め込む「どの python が、どの verantyx を読むか」。
+
+    python は resolve しない（venv の bin/python はシンボリックリンクで、辿ると venv の外の素の Python になる）。
+    code_root の既定は、いま読み込まれている verantyx パッケージの親ディレクトリ。
+    """
+    if getattr(sys, "frozen", False) and not (python and code_root):
+        raise PinError("PIN_UNRESOLVABLE_FROZEN", "凍結された実行物では python と code_root を固定できない。--python と --code-root を渡す")
+    py = str(Path(python).absolute()) if python else str(Path(sys.executable).absolute())
+    root = str(Path(code_root).resolve()) if code_root else str(Path(__file__).resolve().parent.parent)
+    ver = _probe_python_version(py)
+    if ver is None:
+        vs, form = "UNKNOWN_PROBE_FAILED", "dash_c_syspath"
+    else:
+        vs = f"{ver[0]}.{ver[1]}"
+        form = "dash_P" if ver >= (3, 11) else "dash_c_syspath"
+    return {"python": py, "python_source": "--python" if python else "sys.executable",
+            "code_root": root, "code_root_source": "--code-root" if code_root else "loaded_package",
+            "python_version": vs, "form": form}
+
+
+def _dash_c_code(code_root: str) -> str:
+    return ("import sys,runpy; sys.path[0]=" + repr(code_root)
+            + "; runpy.run_module('verantyx.cli', run_name='__main__', alter_sys=True)")
+
+
+def pinned_shell_prefix(pin: dict) -> str:
+    q = shlex.quote
+    if pin["form"] == "dash_P":
+        return f"PYTHONPATH={q(pin['code_root'])} {q(pin['python'])} -P -m verantyx.cli"
+    return f"{q(pin['python'])} -c {q(_dash_c_code(pin['code_root']))}"
+
+
+def pinned_argv_prefix(pin: dict) -> list:
+    if pin["form"] == "dash_P":
+        return ["/usr/bin/env", "PYTHONPATH=" + pin["code_root"], pin["python"], "-P", "-m", "verantyx.cli"]
+    return [pin["python"], "-c", _dash_c_code(pin["code_root"])]
+
+
+def claude_code_template(vera_cmd: Optional[str] = None, keep_args: bool = False, pin: Optional[dict] = None) -> dict:
+    """vera_cmd があればそれを前置き（固定しない。従来どおり）。無ければ pin（既定は実行中の解決）で固定する。
+    どちらの場合も末尾に ` || exit 1`（どんな失敗も 1＝止めない誤り。2 は Claude Code が入力を止める特別な値）。"""
+    c = vera_cmd or pinned_shell_prefix(pin or resolve_pin(None, None))
 
     def entry(kind, matcher=None, extra=""):
-        h = {"type": "command", "command": f"{c} events add {kind} --stdin --from claude-code {LEDGER_ARG}{extra}", "timeout": 10}
+        h = {"type": "command", "command": f"{c} events add {kind} --stdin --from claude-code {LEDGER_ARG}{extra} || exit 1", "timeout": 10}
         e = {"hooks": [h]}
         if matcher:
             e = {"matcher": matcher, "hooks": [h]}
@@ -46,13 +110,34 @@ def claude_code_template(vera_cmd: Optional[str] = None, keep_args: bool = False
     }}
 
 
-def codex_notify_line(vera_cmd: Optional[str], project: Optional[str]) -> str:
-    base = shlex.split(vera_cmd) if vera_cmd else [sys.executable, "-m", "verantyx.cli"]
+_SELFTEST_PAYLOADS = {
+    "UserPromptSubmit": {"session_id": "vera-selftest", "hook_event_name": "UserPromptSubmit", "prompt": "vera hook selftest"},
+    "PostToolUse": {"session_id": "vera-selftest", "hook_event_name": "PostToolUse", "tool_name": "Bash",
+                    "tool_input": {"command": "true"}, "tool_response": {"exit_code": 0}},
+}
+
+
+def selftest_cases(tpl: dict) -> list:
+    """(event, command, payload_str) の 6 組。入力は固定の偽物（git を呼ばない）。"""
+    out = []
+    for ev in EVENTS_ORDER:
+        payload = _SELFTEST_PAYLOADS.get(ev) or {"session_id": "vera-selftest", "hook_event_name": ev}
+        out.append((ev, tpl[ev][0]["hooks"][0]["command"], json.dumps(payload)))
+    return out
+
+
+def codex_notify_line(vera_cmd: Optional[str], project: Optional[str], pin: Optional[dict] = None) -> str:
+    if vera_cmd:
+        base, note = shlex.split(vera_cmd), {"form": "vera_cmd_override"}
+    else:
+        note = pin or resolve_pin(None, None)
+        base = pinned_argv_prefix(note)
     ledger = str((Path(project) if project else Path.cwd()).resolve() / ".vera" / "ledger")
     arr = base + ["events", "add", "agent_stop", "--from", "codex", "--ledger-dir", ledger]
     return ("# Codex の notify は 1 つしか置けない。既に notify がある場合は、これに置き換えると既存の通知先が止まる。\n"
             "# このコマンドは出力するだけで、~/.codex/config.toml を読まない・書かない。置くかどうかはオーナーが決める。\n"
             "# Codex は $CLAUDE_PROJECT_DIR を展開しないので --ledger-dir は絶対パス。\n"
+            "# _vera: " + json.dumps(note, ensure_ascii=False, sort_keys=True) + "\n"
             "notify = " + json.dumps(arr) + "\n")
 
 
@@ -77,7 +162,7 @@ def _home_candidates() -> list:
     return out
 
 
-def install_project(project, write: bool, vera_cmd: Optional[str] = None, keep_args: bool = False) -> tuple:
+def install_project(project, write: bool, vera_cmd: Optional[str] = None, keep_args: bool = False, pin: Optional[dict] = None) -> tuple:
     """(終了コード, 結果の辞書)。書き先は常に <project>/.claude/settings.json だけ。--write が無ければ何も書かない。"""
     proj = Path(project).resolve()
     target = proj / ".claude" / "settings.json"
@@ -107,7 +192,8 @@ def install_project(project, write: bool, vera_cmd: Optional[str] = None, keep_a
                 raise ValueError("shape")
         except Exception:
             return 2, {"status": "REFUSED_UNPARSABLE_SETTINGS", "target": str(target)}
-    tpl = claude_code_template(vera_cmd, keep_args)["hooks"]
+    note = {"form": "vera_cmd_override"} if vera_cmd else (pin or resolve_pin(None, None))
+    tpl = claude_code_template(vera_cmd, keep_args, pin=pin)["hooks"]
     merged = dict(existing)
     hooks = dict(existing.get("hooks", {}))
     added = 0
@@ -123,19 +209,40 @@ def install_project(project, write: bool, vera_cmd: Optional[str] = None, keep_a
     merged["hooks"] = hooks
     if not write:
         return 0, {"status": "NOT_WRITTEN_NO_FLAG", "target": str(target), "would_add": added,
-                   "would_write": merged, "detail": "書くには --write を付ける"}
+                   "would_write": merged, "detail": "書くには --write を付ける", "_vera": note}
+    # 書く前の自己検査: 生成したコマンドを <project> を cwd にして偽の入力で 1 回ずつ実行する（台帳は一時ディレクトリ）
+    from . import run_recorder as R
+    st = R.run_hook_selftest(proj, selftest_cases(tpl))
+    if not st["ok"]:
+        return 2, {"status": "REFUSED_HOOK_SELFTEST", "target": str(target), "selftest": st, "_vera": note,
+                   "detail": "生成した hook のコマンドが偽の入力で終了 0・台帳 1 行にならなかったので書かない"}
+    stale = sum(1 for e in existing.get("hooks", {}).values() if isinstance(e, list)
+                for x in e if isinstance(x, dict) for h in x.get("hooks", []) if isinstance(h, dict)
+                and "-m verantyx.cli events add" in str(h.get("command", "")) and not str(h.get("command", "")).endswith(" || exit 1"))
     _write_settings_atomic(target, merged)
-    return 0, {"status": "WRITTEN", "target": str(target), "added": added}
+    return 0, {"status": "WRITTEN", "target": str(target), "added": added, "selftest": {"ok": True, "n": len(st["cases"])},
+               "stale_vera_hooks": stale, "_vera": note}
 
 
 def cmd_hooks(args) -> int:
+    if args.vera_cmd and (getattr(args, "python", None) or getattr(args, "code_root", None)):
+        print("vera hooks: error: --vera-cmd は --python／--code-root と同時に指定できない", file=sys.stderr)
+        return 2
+    pin = None
+    if not args.vera_cmd:
+        try:
+            pin = resolve_pin(getattr(args, "python", None), getattr(args, "code_root", None))
+        except PinError as e:
+            print(json.dumps({"status": e.code, "detail": e.detail}, ensure_ascii=False, sort_keys=True), file=sys.stderr)
+            return 2
     if args.hk_cmd == "print":
         if args.claude_code:
-            print(json.dumps(claude_code_template(args.vera_cmd, args.keep_args), ensure_ascii=False, indent=2))
+            print(json.dumps(claude_code_template(args.vera_cmd, args.keep_args, pin=pin), ensure_ascii=False, indent=2))
+            print(json.dumps({"_vera": pin or {"form": "vera_cmd_override"}}, ensure_ascii=False, sort_keys=True), file=sys.stderr)
         else:
-            sys.stdout.write(codex_notify_line(args.vera_cmd, args.project))
+            sys.stdout.write(codex_notify_line(args.vera_cmd, args.project, pin))
         return 0
-    rc, out = install_project(args.project, args.write, args.vera_cmd, args.keep_args)
+    rc, out = install_project(args.project, args.write, args.vera_cmd, args.keep_args, pin)
     print(json.dumps(out, ensure_ascii=False, sort_keys=True))
     return rc
 
