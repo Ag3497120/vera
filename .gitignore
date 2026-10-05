@@ -37,3 +37,5 @@ viewer/view3d.json
 # 番人の分野コーパス実験(2026-08-21): 生成物は再現可能なので置かない
 experiments/guard/corpus/guard_store.json
 experiments/guard/corpus/_nonint_backup/
+# auditor 2026-10-05: scratch recomputation outputs
+artifacts/w14-bench/run1/tmpcalc/

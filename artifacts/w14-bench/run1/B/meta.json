@@ -1,0 +1,92 @@
+{
+ "backend": "ollama",
+ "data_frozen_sha256": "d187cf28e049552777972cf1c50f6025caf592250c5464c7a86791e7af53f62e",
+ "ended": "2026-10-05 17:48:35 +0900",
+ "failures": 0,
+ "git_head": "07ff4a080345be189940fc9fac7212d6d2f1bf83",
+ "limit": null,
+ "max_tokens": 256,
+ "model": "qwen3.5:4b",
+ "model_digest": "2a654d98e6fba55d452b7043684e9b57a947e393bbffa62485a7aac05ee4eefd",
+ "ollama_ps_after_first": {
+  "models": [
+   {
+    "context_length": 262144,
+    "details": {
+     "families": [
+      "qwen35"
+     ],
+     "family": "qwen35",
+     "format": "gguf",
+     "parameter_size": "4.7B",
+     "parent_model": "",
+     "quantization_level": "Q4_K_M"
+    },
+    "digest": "2a654d98e6fba55d452b7043684e9b57a947e393bbffa62485a7aac05ee4eefd",
+    "expires_at": "2026-10-05T17:46:03.938812+09:00",
+    "model": "qwen3.5:4b",
+    "name": "qwen3.5:4b",
+    "size": 13906854542,
+    "size_vram": 13906854542
+   }
+  ]
+ },
+ "ollama_ps_end": {
+  "models": [
+   {
+    "context_length": 262144,
+    "details": {
+     "families": [
+      "qwen35"
+     ],
+     "family": "qwen35",
+     "format": "gguf",
+     "parameter_size": "4.7B",
+     "parent_model": "",
+     "quantization_level": "Q4_K_M"
+    },
+    "digest": "2a654d98e6fba55d452b7043684e9b57a947e393bbffa62485a7aac05ee4eefd",
+    "expires_at": "2026-10-05T17:53:35.877783+09:00",
+    "model": "qwen3.5:4b",
+    "name": "qwen3.5:4b",
+    "size": 13906854542,
+    "size_vram": 13906854542
+   }
+  ]
+ },
+ "ollama_ps_start": {
+  "models": [
+   {
+    "context_length": 262144,
+    "details": {
+     "families": [
+      "qwen35"
+     ],
+     "family": "qwen35",
+     "format": "gguf",
+     "parameter_size": "4.7B",
+     "parent_model": "",
+     "quantization_level": "Q4_K_M"
+    },
+    "digest": "2a654d98e6fba55d452b7043684e9b57a947e393bbffa62485a7aac05ee4eefd",
+    "expires_at": "2026-10-05T17:46:01.728685+09:00",
+    "model": "qwen3.5:4b",
+    "name": "qwen3.5:4b",
+    "size": 13906854542,
+    "size_vram": 13906854542
+   }
+  ]
+ },
+ "only_docset": null,
+ "placement": null,
+ "ports": {},
+ "rows": 256,
+ "started": "2026-10-05 17:41:01 +0900",
+ "strict": false,
+ "system": "B",
+ "temperature": 0,
+ "think": false,
+ "uptime_end": "17:48  up 4 days, 17:01, 2 users, load averages: 6.82 5.46 5.27",
+ "uptime_start": "17:41  up 4 days, 16:53, 2 users, load averages: 4.05 4.12 5.10",
+ "verantyx_files": []
+}
