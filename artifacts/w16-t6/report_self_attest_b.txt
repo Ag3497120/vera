@@ -1,0 +1,28 @@
+vera attest  report=/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W16-t6/impl.r1.md  tree=/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t6-S
+[b] 申告 11 件: 記録 5 / 証言 6 / 食い違い 0（読み飛ばした形外れの行 0）
+  b-1 行21 証言 NO_EVENT [tests_added] - コマンド: `shasum -a 256 -c artifacts/w16-t6/synth/freeze.sha256`(→ `A/synth/freeze_check.tx
+      記録 MATCH test_exists:tests/test_w16t6_synth.py  申告="exists" 実際="ある"
+      記録 MATCH test_count:tests/test_w16t6_synth.py  申告=5 実際=5
+      証言 NO_EVENT test_passed:tests/test_w16t6_synth.py  申告="passed" 実際=null
+  b-2 行41 証言 NO_EVENT [tests_added] - コマンド: `$PY -m pytest -q -p no:cacheprovider tests/test_w16t6_rerun.py`(→ `A/t6_4_rerun.t
+      記録 MATCH test_exists:tests/test_w16t6_rerun.py  申告="exists" 実際="ある"
+      記録 MATCH test_count:tests/test_w16t6_rerun.py  申告=50 実際=50
+      証言 NO_EVENT test_passed:tests/test_w16t6_rerun.py  申告="passed" 実際=null
+  b-3 行45 証言 AMBIGUOUS_CLAIM [tests_added] - 関係テスト: `$PY -m pytest -q -p no:cacheprovider tests/test_w16t6_*.py tests/test_semantic_r
+      証言 AMBIGUOUS_CLAIM test_count:tests/test_semantic_read_w3e2_ledger.py  申告=null 実際=null
+  b-4 行49 証言 NO_EVENT [acceptance] - `$PY -m verantyx.cli attest --help | head -20`(→ `A/cli_help.txt`)。手で 1 件: 合成 S28 の木で `v
+      証言 NO_EVENT exit:$PY -m verantyx.cli attest --help | head -20  申告=0 実際=null
+  b-5 行49 証言 EVIDENCE_NOT_IN_TREE [number] - `$PY -m verantyx.cli attest --help | head -20`(→ `A/cli_help.txt`)。手で 1 件: 合成 S28 の木で `v
+      証言 EVIDENCE_NOT_IN_TREE number:終了コード 0@A/cli_help.txt  申告=["0"] 実際=null
+  b-6 行74 証言 NO_EVENT [acceptance] - 受入 T6-4: `pytest -q tests/test_w16t6_rerun.py` を実行し、終了コード 0、出力 artifacts/w16-t6/t6_4_rer
+      証言 NO_EVENT exit:pytest -q tests/test_w16t6_rerun.py  申告=0 実際=null
+  b-7 行74 記録 MATCH [file_sha] - 受入 T6-4: `pytest -q tests/test_w16t6_rerun.py` を実行し、終了コード 0、出力 artifacts/w16-t6/t6_4_rer
+      記録 MATCH file_sha:artifacts/w16-t6/t6_4_rerun.txt  申告="edac76b59a2cb5e360e8259c33e1c49c7228831011e9b34db00d2929b293a76f" 実際="edac76b59a2cb5e360e8259c33e1c49c7228831011e9b34db00d2929b293a76f"
+  b-8 行75 記録 MATCH [file_sha] - 変更: verantyx/cli.py(sha256 20c9cf2f6f68099052b4e095b07ad11fdf69f06d3bd345e12329c86cecbc1
+      記録 MATCH file_sha:verantyx/cli.py  申告="20c9cf2f6f68099052b4e095b07ad11fdf69f06d3bd345e12329c86cecbc179f" 実際="20c9cf2f6f68099052b4e095b07ad11fdf69f06d3bd345e12329c86cecbc179f"
+  b-9 行75 記録 MATCH [file_sha] - 変更: verantyx/cli.py(sha256 20c9cf2f6f68099052b4e095b07ad11fdf69f06d3bd345e12329c86cecbc1
+      記録 MATCH file_sha:verantyx/testimony_ledger.py  申告="50c73b69a0a3b64586c9ff5f9a995ed44083c36434e40614d0e5ce7630ff98d9" 実際="50c73b69a0a3b64586c9ff5f9a995ed44083c36434e40614d0e5ce7630ff98d9"
+  b-10 行78 記録 MATCH [number] - 数値 T6-1: 「検出 22、見逃し 0、誤検出 0」は artifacts/w16-t6/t6_1_synth.txt にある。
+      記録 MATCH number:検出 22、見逃し 0、誤検出 0@artifacts/w16-t6/t6_1_synth.txt  申告=["22", "0"] 実際={"found": ["22", "0"]}
+  b-11 行79 記録 MATCH [number] - 数値 T6-3: 「申告 443 件」は artifacts/w16-t6/replay/summary.txt にある。
+      記録 MATCH number:申告 443 件@artifacts/w16-t6/replay/summary.txt  申告=["443"] 実際={"found": ["443"]}

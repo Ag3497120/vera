@@ -25,6 +25,9 @@ ROW_TYPES = ("header", "testimony", "not_adopted", "backend_failed", "reread_agr
 TESTIMONY_TYPES = ("testimony", "assumption")       # W3-e2 (K334): an assumption row is folded, confirmed and promoted like a testimony (only when its declared type is ONE noun type)
 STATES = ("unconfirmed", "reread_agreed", "distribution_backed", "human_confirmed")
 DEFAULT_PROMOTE_N = 3
+ATTESTATION_ROW_TYPES = ("attestation",)           # W16-t6 (K603 (5)): kept OUT of ROW_TYPES on purpose (an existing test pins ROW_TYPES); an attestation row has no fill_id/key/word, so fold() never sees it
+ATTESTATION_MARKS = ("RECORD", "TESTIMONY", "MISMATCH")
+ATTESTATION_EXTRACTORS = ("V", "a", "b")           # the LLM judge (c) is generated: it is never written here
 
 
 def foldable(e: Dict[str, Any]) -> bool:
@@ -277,3 +280,19 @@ class TestimonyLedger:
                 k = key_of(e["word"], e["candidate"], e["declaration"]["type"], e["declaration"].get("role"))
                 fold = self.fold().get(k)
         return {"fill_id": fill_id, "rows": rows, "fold": fold}
+
+    # ---- W16-t6 (T6): `vera attest` results ---------------------------------------------------------------------------------------
+    def record_attestation(self, result: Dict[str, Any]) -> Dict[str, Any]:
+        """One checked claim of `vera attest` -> one `attestation` row (`kind: attestation`): {attest_id, claim_id, extractor (V|a|b), mark, reason, facts, report, tree, flags}.
+        The row has no fill_id / key / word, so `fold()`, `listing()`, `show()` and `promotion_plan()` do not change. An LLM judge's answer is generated, not evidence: it is refused."""
+        if result.get("extractor") not in ATTESTATION_EXTRACTORS:
+            raise LedgerError("ATTESTATION_EXTRACTOR_NOT_RECORDABLE", str(result.get("extractor")))
+        if result.get("mark") not in ATTESTATION_MARKS:
+            raise LedgerError("ATTESTATION_BAD_MARK", str(result.get("mark")))
+        facts = [dict(f, observation=str(f.get("observation") or "")[:300]) for f in (result.get("facts") or [])]
+        row = {"type": "attestation", "kind": "attestation"}
+        for k in ("attest_id", "claim_id", "extractor", "mark", "reason", "report", "tree", "flags", "claim_text", "line"):
+            if k in result:
+                row[k] = result[k]
+        row["facts"] = facts
+        return self._append(row)
