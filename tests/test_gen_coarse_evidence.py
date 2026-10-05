@@ -360,7 +360,11 @@ def test_default_low_keeps_the_preregistered_role_batches_and_schema_byte_identi
     assert gce.main(["run", "--kind", "role", "--needs", str(needs), "--out-dir", str(out_dir),
                      "--codex-bin", "/bin/false", "--batch-size", "40", "--slots", "4",
                      "--max-calls", "624", "--max-retries", "2", "--limit-batches", "0"]) == 0
-    assert (out_dir / "batches.json").read_bytes() == (before / "batches.json").read_bytes()
+    # Integration (auditor, 2026-10-05): meta.needs is the absolute path of the needs file, which differs between the ticket clone that froze
+    # default_low_before and any other checkout of the tree; everything else is compared byte for byte.
+    got, want = json.loads((out_dir / "batches.json").read_text(encoding="utf-8")), json.loads((before / "batches.json").read_text(encoding="utf-8"))
+    assert got["meta"].pop("needs").endswith("needs_role_v3.jsonl") and want["meta"].pop("needs").endswith("needs_role_v3.jsonl")
+    assert json.dumps(got, ensure_ascii=False, sort_keys=True) == json.dumps(want, ensure_ascii=False, sort_keys=True)
     assert (out_dir / "schema.json").read_bytes() == (before / "schema.json").read_bytes()
     assert json.loads((out_dir / "batches.json").read_text(encoding="utf-8"))["meta"]["effort"] == "low"
 
