@@ -90,8 +90,12 @@ class FusionConfig:
 
     def __init__(self, *, model: str, documents, records, strict: bool = False, ollama_url: str = "http://127.0.0.1:11434",
                  timeout: float = 180.0, llm_chat: Optional[Callable] = None, backend: str = "ollama", api_base: Optional[str] = None,
-                 api_key: Optional[str] = None, fill: Any = None, layer: Optional[str] = None) -> None:
+                 api_key: Optional[str] = None, fill: Any = None, layer: Optional[str] = None, read_mode: str = "assume", assume_ledger: Any = None) -> None:
         self.model = model
+        if read_mode not in ("strict", "assume"):
+            raise FusionBadRequest("BAD_READ_MODE", "read_mode must be strict or assume")
+        self.read_mode = read_mode            # W3-e2 (K333): the sentences of the LLM's reply are re-read with stage E2 in `assume`; the RECORD's sentences are always read strictly (D15)
+        self.assume_ledger = assume_ledger    # W3-e2: a testimony ledger every assumption is written to (and whose promotable rows are a source), or None
         self.layer = None                     # W10-f05: a placement layer (a name or a path) or None (nothing in any output changes)
         if layer is not None and str(layer).strip() != "":
             from . import placement_layer as PL
@@ -119,6 +123,14 @@ class FusionConfig:
         # （coarse_place は禁止ファイル）、ThreadingHTTPServer はリクエストごとにスレッドを作るため。LLM の呼び出しはこのスレッドの外。
         self._vera_thread = concurrent.futures.ThreadPoolExecutor(max_workers=1, thread_name_prefix="vera-fusion")
 
+    def assume_config(self) -> Any:
+        """W3-e2: the `AssumeConfig` of stage E2 for the sentences of a reply: the documents (source (c)), the ledger when there is one, NO back end (serve never asks a model for a type: the reply
+        is already a model's, and a testimony would be asked about a testimony). None in strict mode."""
+        if self.read_mode != "assume":
+            return None
+        from . import semantic_read
+        return semantic_read.AssumeConfig(documents=self.documents, ledger=self.assume_ledger)
+
     def run_vera(self, fn: Callable, *args: Any, **kwargs: Any) -> Any:
         """Vera の側の処理を専用スレッドで実行して結果を返す（例外はそのまま呼び出し側に出る）。"""
         return self._vera_thread.submit(fn, *args, **kwargs).result()
@@ -126,11 +138,11 @@ class FusionConfig:
     @classmethod
     def load(cls, *, model: str, documents, strict: bool = False, ollama_url: str = "http://127.0.0.1:11434",
              timeout: float = 180.0, llm_chat: Optional[Callable] = None, backend: str = "ollama", api_base: Optional[str] = None,
-             api_key: Optional[str] = None, fill: Any = None, layer: Optional[str] = None) -> "FusionConfig":
+             api_key: Optional[str] = None, fill: Any = None, layer: Optional[str] = None, read_mode: str = "assume", assume_ledger: Any = None) -> "FusionConfig":
         """文書の読み込み（各文の再読）も専用スレッドで行う入口。本番の起動（cli）はこれを使う。"""
         from . import decode_grammar as G
         self = cls(model=model, documents=documents, records=None, strict=strict, ollama_url=ollama_url, timeout=timeout, llm_chat=llm_chat,
-                   backend=backend, api_base=api_base, api_key=api_key, fill=fill, layer=layer)
+                   backend=backend, api_base=api_base, api_key=api_key, fill=fill, layer=layer, read_mode=read_mode, assume_ledger=assume_ledger)
         self.records = self.run_vera(G.load_records, list(documents))
         if fill is not None:                  # W10-f04 (8): the unread sentences of the documents get the candidate mouth; the record is NOT changed (only the ledger is written)
             self.run_vera(self._fill_documents)
@@ -215,7 +227,7 @@ def fusion_turn(messages, vera_opts, cfg: FusionConfig, max_tokens: Optional[int
         except Exception as exc:       # 差し込まれた LLM も本物も、落とさずに型で返す
             llm = {"ok": False, "content": None, "error": {"type": "CONNECT_FAILED", "detail": "%s: %s" % (type(exc).__name__, exc)}}
         llm_ms = (time.perf_counter() - t1) * 1000.0
-    content, vera = cfg.run_vera(G.conclude, turn, llm, cfg.records, model=cfg.model, human_present=human)
+    content, vera = cfg.run_vera(G.conclude, turn, llm, cfg.records, model=cfg.model, human_present=human, read_mode=cfg.read_mode, assume=cfg.assume_config())
     fill_llm_ms = 0.0
     if cfg.fill is not None:      # W10-f04 (7): the candidate mouth only ANNOTATES `vera` (provenance arms, holes, ledger ids); the content and the outcome are already decided
         fill_llm_ms = cfg.run_vera(_fill_annotate, cfg, turn, vera)

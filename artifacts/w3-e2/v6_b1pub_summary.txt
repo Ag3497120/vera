@@ -1,0 +1,1 @@
+{"items": 83, "strict_read": 33, "strict_abstain": 50, "assumed_correct": 0, "assumed_wrong": 0, "assumed_abstain": 50, "assumed_wrong_rate": null, "rate_denominator": 0, "over_a_tenth": false, "strict_verdicts": {"abstain": 38, "correct": 45}}

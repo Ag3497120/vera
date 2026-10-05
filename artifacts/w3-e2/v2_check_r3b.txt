@@ -1,0 +1,3 @@
+w3e2_p1.jsonl rows=49 assumed_expected=19 assumed_ok=19 abstain_expected=30 abstain_ok=30 wrong_assumption=0 wrong_source=0 documents_rows=6 documents_ok=6
+w3e2_p2.jsonl rows=33 assumed_expected=15 assumed_ok=15 abstain_expected=18 abstain_ok=18 wrong_assumption=0 wrong_source=0 documents_rows=0 documents_ok=0
+w3e2_p3.jsonl rows=29 assumed_expected=13 assumed_ok=13 abstain_expected=16 abstain_ok=16 wrong_assumption=0 wrong_source=0 documents_rows=5 documents_ok=5

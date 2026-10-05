@@ -1726,6 +1726,591 @@ def read_with_holes(text, lang=None, *, placement=_UNSET, max_holes=2):
     return done('HOLES_FOUND', holes, pr)
 
 
+# ---------------------------------------------------------------------------------------------------------------------------------
+# W3-e2: assumed reading (docs/READING_SOUNDNESS.md section 10L, K330-K336). Nothing above this line is changed.
+# `read()` is NOT changed and is not rebound: `read_in_mode()` is the new entry. Stage E2 runs only AFTER every other stage has abstained (it receives `read()`'s output), and only when
+# the reason of the abstention is one of three premises: P1 a name's type, P2 a coined predicate (a verb without a type), P3 the type of an unplaced common noun. The premise is assumed,
+# the sentence is read again, and the assumption is put OUT in the answer (`assumptions`, `assumption_note`). Everything else (a particle's role that splits, which clause something
+# hangs on, a predicate's type, anaphora, an omitted subject) keeps its abstention.
+# ---------------------------------------------------------------------------------------------------------------------------------
+W3E2_MODES = ('strict', 'assume')
+W3E2_REASONS = ('ASSUMPTION_UNDETERMINED', 'ASSUMPTION_BACKEND_FAILED')
+W3E2_KINDS = ('name_type', 'nonce_predicate', 'noun_type')
+W3E2_SOURCES = ('layer', 'ledger', 'documents', 'surface')          # and 'llm:<model>'
+W3E2_P1_TYPES = ('GROUP_ORG', 'PERSON', 'PLACE')                    # K330: the types a name may be assumed to have
+W3E2_P3_TYPES = ('ANIMAL', 'GROUP_ORG', 'PERSON', 'PLACE')          # the types that have a stand-in (the others cannot change a reading: see the docs, known holes)
+# One representative word per type (K330.4): a stand-in is put where the unknown word is, so that the reader's own surface rules (which do not look at a placement) can read the sentence;
+# it never appears in an output. Measured: artifacts/w3-e2/s1_standins.txt (one token, DECIDED to that type in r8 and r9).
+W3E2_STANDINS = {'PERSON': '田中', 'GROUP_ORG': '国連', 'PLACE': '京都', 'ANIMAL': '犬'}
+W3E2_PREMISE_REASON = re.compile(r'^(RECIPIENT_TYPE_UNDETERMINED|GOAL_TYPE_UNDETERMINED|PLACE_TYPE_UNDETERMINED|SUBJECT_TYPE_UNDETERMINED|AGENT_EVIDENCE_MISSING):([^:]+)$')
+W3E2_P2_GA_TYPES = ('ANIMAL', 'GROUP_ORG', 'PERSON')                # round 3 ruling 5: P2 reads a が phrase as the agent only when its filler has one of these types
+W3E2_PARTICLE_DEFAULT_OK = ('が', 'は', 'を')                       # K331.2: the particles whose role stays the same for every candidate type
+W3E2_NOTE_FORMS = {'typed': '（{word}を{label}として）', 'untyped': '（{word}を{assumed}のどれかとして）', 'nonce_predicate': '（{word}を動詞として）'}
+W3E2_EXPLAIN_REASONS = ('NOT_A_PREMISE_REASON', 'WORD_NOT_ONE_TOKEN', 'NOT_A_NAME_FORM_OR_UNPLACED_NOUN', 'NO_PLACEMENT_FOR_P3', 'STANDIN_GATE_FAILED', 'NO_CANDIDATE_READS',
+                        'P2_FORM_NOT_READ', 'BASE_HAS_UNUSABLE_TYPE', 'TOO_MANY_PREMISES', 'SOURCE_UNAVAILABLE:documents', 'ASSUMED', 'UNDETERMINED', 'BACKEND_FAILED', 'P2_GA_FILLER_NOT_TYPED')
+_W3E2_KANA_KANJI = re.compile('^[゠-ヿ一-鿿㐀-䶿ー]+$')
+_W3E2_KATAKANA = re.compile('^[゠-ヿー]+$')
+
+
+class AssumeConfig:
+    """What stage E2 may ask. `layer`: a layer spec (placement_layer) or an object with `entries(word)`; None -> VERA_PLACEMENT_LAYER. `ledger`: a testimony ledger (`fold()`; with
+    `record_assumption` every assumption is written to it). `documents`: the documents (source (c)). `chat`: the back end for source (e) (`chat(model, messages, fmt)`), None -> no (e).
+    `mask_user_text`: the sentence is never sent when True (the default)."""
+    def __init__(self, layer=None, ledger=None, documents=(), chat=None, model=None, backend_name='fake', mask_user_text=True, doc_id=None):
+        self.layer, self.ledger, self.documents, self.chat, self.model = layer, ledger, tuple(documents or ()), chat, model
+        self.backend_name, self.mask_user_text, self.doc_id = backend_name, bool(mask_user_text), doc_id
+
+
+def _w3e2_nfkc(s):
+    return unicodedata.normalize('NFKC', str(s)).strip()
+
+
+def _w3e2_tokens(text):
+    """The tokens of `text` as plain tuples (surface, pos1, pos2, cType, cForm, lemma, start, end, is_unk), taken at once: a tagger node is invalid after the next call to the tagger. Indices 0-7
+    are read by P2 and the stand-in gate; `is_unk` (the tagger's unknown-word mark, round 3 ruling 2) is last."""
+    from . import semantic_reader as R
+    return [(w.surface, w.feature.pos1, w.feature.pos2, w.feature.cType, w.feature.cForm, w.feature.lemma, a, b, bool(getattr(w, 'is_unk', False))) for w, a, b in R._tokens(text)]
+
+
+def _w3e2_name_form(word_tok):
+    """K330.2: from the part of speech and the characters only: one noun token that is a proper noun, or a common noun / numeral whose lemma differs from the surface (or has none), written in katakana
+    or kanji only. No list of words."""
+    surface, pos1, pos2, _ct, _cf, lemma = word_tok[:6]
+    if pos1 != '名詞' or not _W3E2_KANA_KANJI.match(surface):
+        return False
+    if pos2 == '固有名詞':
+        return True
+    # a common noun / numeral written in katakana whose lemma is not the surface (ミナ -> みな, ナナ -> 七): a name's form. A lemma with a gloss (フレーム-frame) is a dictionary word, not a name.
+    return pos2 in ('普通名詞', '数詞') and _W3E2_KATAKANA.match(surface) is not None and lemma != surface and '-' not in (lemma or '')
+
+
+def _w3e2_hira(s):
+    """Katakana ァ(U+30A1)..ヶ(U+30F6) -> hiragana (minus U+0060); every other character stays."""
+    return ''.join(chr(ord(c) - 0x60) if '\u30a1' <= c <= '\u30f6' else c for c in s)
+
+
+def _w3e2_name_form_strong(tok):
+    """Round 3 ruling 2: the name form that source (d) may decide on. A noun that is (i) a proper noun, or (ii) marked unknown by the tagger, or (iii) written in katakana only with a lemma that is the
+    surface in hiragana (ミナ -> みな). A katakana word that the dictionary has as a common noun with a lemma of its own (リンゴ -> 林檎, リク -> 陸) is a weak form: a P1 candidate, never decided by (d).
+    From the part of speech, the unknown mark and the characters only. No list of words."""
+    surface, pos1, pos2, _ct, _cf, lemma = tok[:6]
+    if pos1 != '名詞':
+        return False
+    if pos2 == '固有名詞' or (len(tok) > 8 and tok[8]):
+        return True
+    return _W3E2_KATAKANA.match(surface) is not None and bool(lemma) and lemma == _w3e2_hira(surface)
+
+
+# --- P2: a coined predicate -----------------------------------------------------------------------------------------------------------
+def _w3e2_p2_read(text, T):
+    """K330.3: a sentence with no predicate token whose tail is `<stem><ending>` with a stem of 1-2 noun / adverb / interjection tokens after the last particle and an ending of the closed table
+    (た after っ; る; ら+ない; ら+なかっ+た; り+ます; り+まし+た). Roles by the default of が -> agent, は -> agent only beside を, を -> patient only. Returns (clause, span, stem, {role: particle}) or None."""
+    end = len(T)
+    while end and T[end - 1][0] in ('。', '．'):
+        end -= 1
+    if end < 3:
+        return None
+
+    def is_(i, surface, pos1, ct=None, cf=None, lemma=None):
+        t = T[i]
+        return t[0] == surface and t[1] == pos1 and (ct is None or t[3] == ct) and (cf is None or t[4] == cf) and (lemma is None or t[5] == lemma)
+    pol, tense, stem_end, strip = '+', 'nonpast', None, False
+    if end >= 3 and is_(end - 1, 'た', '助動詞', '助動詞-タ') and is_(end - 2, 'なかっ', '形容詞', '形容詞', '連用形-促音便', '無い') and is_(end - 3, 'ら', '接尾辞'):
+        pol, tense, stem_end = '-', 'past', end - 3
+    elif end >= 3 and is_(end - 1, 'た', '助動詞', '助動詞-タ') and is_(end - 2, 'まし', '助動詞', '助動詞-マス', '連用形-一般', 'ます') and is_(end - 3, 'り', '助動詞', '文語助動詞-リ'):
+        pol, tense, stem_end = '+', 'past', end - 3
+    elif end >= 2 and is_(end - 1, 'ない', '形容詞', '形容詞', '終止形-一般', '無い') and is_(end - 2, 'ら', '接尾辞'):
+        pol, tense, stem_end = '-', 'nonpast', end - 2
+    elif end >= 2 and is_(end - 1, 'ます', '助動詞', '助動詞-マス', '終止形-一般', 'ます') and is_(end - 2, 'り', '助動詞', '文語助動詞-リ'):
+        pol, tense, stem_end = '+', 'nonpast', end - 2
+    elif end >= 1 and is_(end - 1, 'る', '助動詞', '文語下二段-ラ行', '終止形-一般', 'れる'):
+        pol, tense, stem_end = '+', 'nonpast', end - 1
+    elif end >= 2 and is_(end - 1, 'た', '助動詞', '助動詞-タ', '終止形-一般', 'た'):
+        if is_(end - 2, 'っ', '補助記号'):
+            pol, tense, stem_end = '+', 'past', end - 2
+        elif T[end - 2][0].endswith('っ') and len(T[end - 2][0]) > 1 and T[end - 2][1] in ('副詞', '名詞', '感動詞'):
+            pol, tense, stem_end, strip = '+', 'past', end - 1, True
+    if stem_end is None:
+        return None
+    last_particle = max((i for i in range(stem_end) if T[i][1] == '助詞'), default=-1)
+    stem_toks = list(range(last_particle + 1, stem_end))
+    if last_particle < 1 or not 1 <= len(stem_toks) <= 2 or any(T[i][1] not in ('名詞', '副詞', '感動詞') for i in stem_toks):
+        return None
+    stem = ''.join(T[i][0] for i in stem_toks)
+    if strip:
+        stem = stem[:-1]
+    if len(stem) < 2 or (len(stem_toks) == 2 and any(T[k][1] != '名詞' for k in stem_toks)):
+        return None
+    roles, particles, i = {}, {}, 0
+    while i <= last_particle:
+        j = i
+        while j <= last_particle and T[j][1] != '助詞':
+            if T[j][1] not in ('名詞', '代名詞', '接尾辞', '接頭辞'):
+                return None
+            j += 1
+        if j == i or j > last_particle:
+            return None
+        particle = T[j][0]
+        phrase = ''.join(T[k][0] for k in range(i, j))
+        if particle in ('は', 'が') and T[j][2] in ('係助詞', '格助詞'):
+            if 'agent' in roles:
+                return None
+            roles['agent'] = phrase; particles['agent'] = particle
+        elif particle == 'を' and T[j][2] == '格助詞':
+            if 'patient' in roles:
+                return None
+            roles['patient'] = phrase; particles['patient'] = particle
+        else:
+            return None
+        i = j + 1
+    if particles.get('agent') == 'は' and 'patient' not in roles:
+        return None       # r1 review 2 (K336): は alone is a topic: agent or patient splits (the reader abstains the same form of a known verb); は is an agent only beside を
+    roles = {k: roles[k] for k in ('agent', 'patient') if k in roles}
+    clause = {'predicate': stem + 'る', 'roles': roles, 'polarity': pol, 'tense': tense, 'modality': None, 'voice': 'active'}
+    return clause, [T[stem_toks[0]][6], T[end - 1][7]], stem, particles
+
+
+# --- P1 / P3: the stand-in reading ----------------------------------------------------------------------------------------------------
+def _w3e2_map_spans(obj, at, delta, hi):
+    """Moves every `span` ([start, end] of ints) of a read output back from the stand-in's text to the original's: a position after the stand-in's start moves by `delta`."""
+    def f(p):
+        return p if p <= at else min(p + delta, hi)
+    if isinstance(obj, dict):
+        return {k: ([f(obj[k][0]), f(obj[k][1])] if k == 'span' and isinstance(obj[k], list) and len(obj[k]) == 2 and all(type(x) is int for x in obj[k])
+                    else _w3e2_map_spans(v, at, delta, hi)) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_w3e2_map_spans(x, at, delta, hi) for x in obj]
+    return obj
+
+
+def _w3e2_swap_strings(obj, a, b):
+    if isinstance(obj, str):
+        return obj.replace(a, b)
+    if isinstance(obj, dict):
+        return {k: _w3e2_swap_strings(v, a, b) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_w3e2_swap_strings(x, a, b) for x in obj]
+    return obj
+
+
+def _w3e2_standin_read(text, toks, i, word, T, query):
+    """D6 gates (i)-(iv) for one type T: the output of `read()` of the text with the stand-in of T in place of the word, mapped back to the original (the stand-in never survives), or None."""
+    stand = W3E2_STANDINS[T]
+    at = toks[i][6]
+    if text.count(word) != 1 or text[at:at + len(word)] != word:
+        return None
+    swapped = text[:at] + stand + text[at + len(word):]
+    try:
+        toks2 = _w3e2_tokens(swapped)
+    except Exception:
+        return None
+    if len(toks2) != len(toks) or toks2[i][0] != stand or toks2[i][1] != '名詞':
+        return None
+    for k in range(len(toks)):
+        if k != i and toks[k][:3] != toks2[k][:3]:
+            return None
+    try:
+        o2 = read(swapped, 'ja', placement=query)
+    except ReadError:
+        return None
+    if not o2.get('readable') or len(o2.get('clauses') or []) != 1:
+        return None
+    clause = o2['clauses'][0]
+    holders = [r for r, v in (clause.get('roles') or {}).items() if v == stand]
+    flat = json.dumps({k: v for k, v in o2.items() if k not in ('schema',)}, ensure_ascii=False)
+    if len(holders) != 1 or flat.count(stand) != 1:
+        return None
+    delta = len(word) - len(stand)
+    back = _w3e2_swap_strings(_w3e2_map_spans(o2, at, delta, len(text)), stand, word)
+    for m in back.get('clause_meta') or []:
+        sp = m.get('span')
+        if isinstance(sp, list) and not (0 <= sp[0] <= sp[1] <= len(text) and text[sp[0]:sp[1]]):
+            return None
+    return {'out': back, 'role': holders[0]}
+
+
+def _w3e2_hole_probe_read(text, word, T, query, hole):
+    """D7: the placement answers the word with type T for the probe (the probe of W10-f04, `_HoleProbe`); the reading is the reader's own, with the word in place (no stand-in). None when it does not
+    read as one clause or when the word is not in exactly one role whose basis names T."""
+    try:
+        o = read(text, 'ja', placement=_HoleProbe(query, {word: T}, {}))
+    except ReadError:
+        return None
+    if not _hole_probe_ok(o):
+        return None
+    role = _hole_arm(o['clauses'][0], word, T)
+    return None if role is None else {'out': o, 'role': role}
+
+
+def _w3e2_placement_view(query, word):
+    """(state, types) of what the placement says of the word, only through the gates of the reader (`placement_fit`; no field of an answer is read here): ('UNPLACED' | 'UNKNOWN', []), ('TYPES',
+    [the one type of a direct decided answer, or the candidates of a direct split answer]), or ('UNUSABLE', []) when the base has a type the reader cannot use (an estimate, a generated definition), ('OTHER', []) for everything else (no placement: no information)."""
+    from . import semantic_reader as R
+    from .coarse_types import NOUN_TYPES
+    try:
+        kind, info = R.placement_fit(query.query(word), set(NOUN_TYPES))
+    except Exception:
+        return 'OTHER', []
+    if kind in ('direct', 'all_candidates', 'mismatch'):
+        return 'TYPES', sorted(info)
+    if str(info).startswith(('PLACEMENT_ESTIMATED', 'PLACEMENT_DIRECT_VIA_GENERATED', 'PLACEMENT_INVALID:ESTIMATE')):
+        return 'UNUSABLE', []     # r1 review 1 (D9): the base HAS a type (an estimate / a generated definition) that the reader cannot use: no premise is assumed on top of it
+    return {'PLACEMENT_UNPLACED': 'UNPLACED', 'PLACEMENT_UNKNOWN': 'UNKNOWN'}.get(info, 'OTHER'), []
+
+
+def _w3e2_same_cross(a, b, word):
+    """The two readings are the same cross but for the type (the clause fields and the role the word is in; the `role_basis` is not compared)."""
+    def norm(r):
+        c = dict(r['out']['clauses'][0])
+        c.pop('role_basis', None)
+        return json.dumps({'c': c, 'r': r['role'], 'rel': r['out'].get('relations'), 'u': r['out'].get('unsupported')}, ensure_ascii=False, sort_keys=True)
+    return norm(a) == norm(b)
+
+
+# --- the sources -----------------------------------------------------------------------------------------------------------------------
+def _w3e2_layer_types(word, cfg):
+    """(a): the types a layer holds for the word: its direct types; if none, its estimated types. [] when the layer says nothing or is not there."""
+    spec, layer = cfg.layer, None
+    if spec is None:
+        from . import placement_layer as PL
+        spec = PL.spec_from_env()
+    if spec is None:
+        return []
+    if hasattr(spec, 'entries'):
+        layer = spec
+    else:
+        from . import placement_layer as PL
+        layer, _why = PL.open_layer(spec)
+        if layer is None:
+            return []
+    from . import placement_layer as PL
+    f = PL.fold(layer.entries(_w3e2_nfkc(word)))
+    return sorted(f['direct']) if f['direct'] else sorted(f['estimated'])
+
+
+def _w3e2_ledger_types(word, cfg):
+    """(b): the types the ledger has as `promotable` for the word (one noun type each)."""
+    led = cfg.ledger
+    if led is None or not hasattr(led, 'fold'):
+        return []
+    from .coarse_types import NOUN_TYPES
+    w = _w3e2_nfkc(word)
+    return sorted({g['declared_type'] for g in led.fold().values() if _w3e2_nfkc(g['word']) == w and g.get('promotable') and g.get('declared_type') in NOUN_TYPES})
+
+
+def _w3e2_documents(cfg, path):
+    """The documents of `cfg` as W10-f05 reads them (cached on `cfg`): [(source, hearst Counter)], the base and the placement's configuration. Each existing file path is one document (`placement_grow.
+    read_documents`, source `doc:<sha12>`); every other string is a sentence and all of them together are ONE document. The calls are those of `placement_grow.grow()` (`bcp.tokenize`,
+    `bcp.analyze`, `acc['hearst']`), nothing is re-implemented."""
+    key = (tuple(cfg.documents), path)
+    got = getattr(cfg, '_w3e2_doc_cache', None)
+    if got is not None and got[0] == key:
+        return got[1]
+    import fugashi
+    from collections import Counter
+    from . import placement_grow as PG, coarse_place
+    bcp, _gce = PG._tools()
+    pl = coarse_place._open(path)[0] if path else None       # no placement: the base's types are missing (never the environment's)
+    if pl is None:
+        res = None
+    else:
+        pcfg = dict(pl.cfg)
+        pcfg['rd_min_sources'] = pcfg['role_frame_min_sources'] = 1       # the default `min_sources` of grow
+        paths = [d for d in cfg.documents if isinstance(d, str) and os.path.isfile(d)]
+        loose = [d for d in cfg.documents if not (isinstance(d, str) and os.path.isfile(d))]
+        docs = []
+        if paths:
+            docs += [(d['source'], d['records']) for d in PG.read_documents(paths)['docs']]
+        if loose:
+            text = '\n'.join(str(x) for x in loose)
+            docs.append(('doc:%s' % PG._sha(text)[:12], [t for t in re.split(r'(?<=[。！？\n])', text) if t.strip()]))
+        tagger, maxc, hearst = fugashi.Tagger(), pcfg['max_word_chars'], []
+        for src, records in docs:
+            acc = bcp._empty_acc()
+            for rec in records:
+                bcp.analyze(bcp.tokenize(tagger, rec), acc, maxc)
+            hearst.append((src, acc['hearst']))
+        res = {'hearst': hearst, 'base': PG._Base(path), 'cfg': pcfg, 'bcp': bcp}
+    cfg._w3e2_doc_cache = (key, res)
+    return res
+
+
+def _w3e2_document_rows(word, cfg, path):
+    """The documents' rows for one word, built as `grow()` builds `doc_rows` for a noun (W10-f05): ('hearst', source, type, n, None) per document and type. None when the documents cannot be read
+    (no placement for the base's types)."""
+    d = _w3e2_documents(cfg, path)
+    if d is None:
+        return None
+    rows = []
+    for src, hearst in d['hearst']:
+        hs = {}
+        for (a, y), n in hearst.items():
+            if a == word:
+                t = d['bcp'].type_of(y, d['base'], d['cfg']['min_suffix_chars'])
+                if t:
+                    hs[t] = hs.get(t, 0) + n
+        rows += [('hearst', src, t, n, None) for t, n in sorted(hs.items())]
+    return rows
+
+
+def _w3e2_document_types(word, cfg, path):
+    """(c): ('NONE', []) the documents say nothing decisive (no row, or no type is decided directly); ('TYPES', [T..]) the types the documents decide DIRECTLY, each through W10-f05's own
+    `decide_candidate(word, {'kind': 'noun', 'type': T}, rows, cfg)` (a type passes when it writes `layer_confirmed`); ('UNAVAILABLE', []) when the documents cannot be read."""
+    from . import placement_grow as PG
+    from .coarse_types import NOUN_TYPES
+    rows = _w3e2_document_rows(word, cfg, path)
+    if rows is None:
+        return 'UNAVAILABLE', []
+    if not rows:
+        return 'NONE', []
+    pcfg = _w3e2_documents(cfg, path)['cfg']
+    passed = sorted(T for T in NOUN_TYPES if PG.decide_candidate(word, {'kind': 'noun', 'type': T}, rows, pcfg).get('write') == 'layer_confirmed')
+    return ('TYPES', passed) if passed else ('NONE', [])
+
+
+def _w3e2_choose(word, particle, kind, reads, cands, cfg, trace, path=None, surface_block=None, ask=None):
+    """K331/D11: the sources in order. `reads`: {type: reading} of the candidate types that read. Returns ('ASSUMED', 'T' or 'T1+T2', source) | ('UNDETERMINED', None, None) |
+    ('BACKEND_FAILED', 'T1+T2', None). A source that has information and does not give ONE readable type stops the search (a lower source never overrides a higher one's conflict).
+    `cands`: every type the premise allows (the LLM is asked among ALL of them, so that its answer carries information; an answer that is not a type that reads decides nothing).
+    Round 3: `surface_block` (a closed reason) skips (d) and goes on to (e); `ask` (rulings 3) is the candidate list the LLM is asked among when it is wider than `cands` (the base's candidates)."""
+    readable = sorted(reads)
+    for name, got in (('layer', _w3e2_layer_types(word, cfg)), ('ledger', _w3e2_ledger_types(word, cfg))):
+        if not got:
+            continue
+        trace['sources'].append({'source': name, 'types': got})
+        if len(got) == 1 and got[0] in reads:
+            return 'ASSUMED', got[0], name
+        return 'UNDETERMINED', None, None
+    if cfg.documents:
+        state, got = _w3e2_document_types(word, cfg, path)
+        if state == 'UNAVAILABLE':
+            trace['sources'].append({'source': 'documents', 'result': 'SOURCE_UNAVAILABLE:documents'})
+        elif state == 'TYPES':
+            trace['sources'].append({'source': 'documents', 'types': got})
+            if len(got) == 1 and got[0] in reads:
+                return 'ASSUMED', got[0], 'documents'
+            return 'UNDETERMINED', None, None
+        else:
+            # round 3 ruling 4: a document row of a type outside the types that read is a (weak) counter-evidence: stop here, neither (d) nor (e) goes on
+            rows = _w3e2_document_rows(word, cfg, path) or []
+            other = sorted({r[2] for r in rows} - set(reads))
+            if other:
+                trace['sources'].append({'source': 'documents', 'result': 'NOT_DECISIVE_COUNTER', 'types': other})
+                return 'UNDETERMINED', None, None
+            trace['sources'].append({'source': 'documents', 'result': 'NOT_DECISIVE'})
+    if kind == 'name_type' and particle in W3E2_PARTICLE_DEFAULT_OK and readable:
+        if surface_block:
+            trace['sources'].append({'source': 'surface', 'result': surface_block})
+        else:
+            first = reads[readable[0]]
+            if all(_w3e2_same_cross(first, reads[t], word) for t in readable[1:]):
+                trace['sources'].append({'source': 'surface', 'types': readable})
+                return 'ASSUMED', '+'.join(readable), 'surface'
+            trace['sources'].append({'source': 'surface', 'result': 'ROLE_SPLITS'})
+    if cfg.chat is not None and cfg.model:
+        from . import fill_candidates as FC
+        ans = FC.ask_assumption_type(word, particle, trace.get('predicate'), list(ask or sorted(cands)), chat=cfg.chat, model=cfg.model, backend_name=cfg.backend_name,
+                                     mask_user_text=cfg.mask_user_text, text=trace.get('text'))
+        trace['sources'].append({'source': 'llm', 'status': ans['status'], 'answers': ans['answers']})
+        if ans['status'] == 'AGREED':
+            if ans['type'] in reads:
+                return 'ASSUMED', ans['type'], 'llm:%s' % cfg.model
+            trace['sources'][-1]['result'] = 'TYPE_NOT_READABLE'
+        if ans['status'] == 'BACKEND_FAILED':
+            return 'BACKEND_FAILED', '+'.join(readable), None
+    return 'UNDETERMINED', None, None
+
+
+def assumption_note_ja(assumptions):
+    """The words put in the answer: （ミナを人として）; a type that was not narrowed to one: （ミナを人または集団・組織として）, the types in the order of `assumed` (r1 review 6: the assumption is
+    "one of these", and the others are excluded, so it is said); a coined predicate: （ザクを動詞として）."""
+    from .coarse_types import NOUN_TYPES
+    out = []
+    for a in assumptions:
+        if a['kind'] == 'nonce_predicate':
+            out.append(W3E2_NOTE_FORMS['nonce_predicate'].format(word=a['word']))
+            continue
+        types = str(a['assumed']).split('+')
+        if types and all(t in NOUN_TYPES for t in types):
+            out.append(W3E2_NOTE_FORMS['typed'].format(word=a['word'], label='または'.join(NOUN_TYPES[t] for t in types)))
+        else:
+            out.append(W3E2_NOTE_FORMS['untyped'].format(word=a['word'], assumed=a['assumed']))
+    return ''.join(out)
+
+
+# --- the stage -----------------------------------------------------------------------------------------------------------------------------
+def _w3e2_attempt(text, query, out, cfg):
+    """One abstained `read()` output -> {'status': ASSUMED | UNDETERMINED | BACKEND_FAILED | NOT_APPLICABLE, 'why': a reason of W3E2_EXPLAIN_REASONS, 'out': the assumed reading (ASSUMED),
+    'added': the reason to put at the end of the abstention, 'trace': ...}. Changes nothing, writes nothing."""
+    trace = {'sources': [], 'candidates': [], 'text': text}
+    na = lambda why: {'status': 'NOT_APPLICABLE', 'why': why, 'trace': trace}
+    reasons = list((out.get('abstain') or {}).get('reasons') or [])
+    if not reasons:
+        return na('NOT_A_PREMISE_REASON')
+    toks = _w3e2_tokens(text)
+    first = reasons[0]
+    # ---- P2
+    if first == 'NO_PREDICATE_TOKEN':
+        got = _w3e2_p2_read(text, toks)
+        if got is None:
+            return na('P2_FORM_NOT_READ')
+        clause, span, stem, particles = got
+        clause = dict(clause)
+        if particles.get('agent') == 'が':
+            ph = (clause.get('roles') or {}).get('agent')
+            bstate, btop = _w3e2_placement_view(query, ph) if (query is not None and isinstance(ph, str)) else ('OTHER', [])
+            ltypes = _w3e2_layer_types(ph, cfg) if isinstance(ph, str) else []
+            typed = (bstate == 'TYPES' and btop and set(btop) <= set(W3E2_P2_GA_TYPES)) or (ltypes and set(ltypes) <= set(W3E2_P2_GA_TYPES))
+            if not typed:
+                trace['p2_agent'] = {'phrase': ph, 'base': [bstate, btop], 'layer': ltypes}
+                return na('P2_GA_FILLER_NOT_TYPED')
+        clause['role_basis'] = {r: 'particle_default:%s' % particles[r] for r in clause['roles']}
+        clause['predicate_basis'] = 'assumed:nonce_predicate'
+        trace['kind'] = 'nonce_predicate'
+        new = dict(out)
+        new.update({'readable': True, 'clauses': [clause], 'relations': [], 'abstain': None, 'clause_meta': [{'rule': 'assumed_nonce_predicate', 'span': span}]})
+        a = {'word': stem, 'kind': 'nonce_predicate', 'assumed': 'UNTYPED_VERB', 'alternatives': [], 'source': 'surface', 'ledger_id': None}
+        return {'status': 'ASSUMED', 'why': 'ASSUMED', 'out': new, 'assumptions': [a], 'trace': trace, 'premise': 'P2'}
+    # ---- P1 / P3: one filler word
+    m = W3E2_PREMISE_REASON.match(first)
+    hole = None
+    if not m:
+        # D7: a reason that is the placement of a FILLER (a typed hole of W10-f04): exactly one hole whose word the placement leaves UNPLACED / UNKNOWN
+        if query is None:
+            return na('NOT_A_PREMISE_REASON')
+        try:
+            ho = read_with_holes(text, 'ja', placement=query)
+        except ReadError:
+            return na('NOT_A_PREMISE_REASON')
+        if ho.get('holes_status') != 'HOLES_FOUND' or len(ho['holes']) != 1 or ho['holes'][0]['placement_state'] not in ('UNPLACED', 'UNKNOWN'):
+            return na('NOT_A_PREMISE_REASON')
+        hole = ho['holes'][0]
+    word = hole['head'] if hole else m.group(2)
+    where = [i for i, t in enumerate(toks) if t[0] == word]
+    if len(where) != 1 or text.count(word) != 1:
+        return na('WORD_NOT_ONE_TOKEN')
+    i = where[0]
+    wt = toks[i]
+    name = _w3e2_name_form(wt)
+    state, top = None, []
+    if query is not None:
+        state, top = _w3e2_placement_view(query, word)
+    if state == 'UNUSABLE' and hole is None:
+        return na('BASE_HAS_UNUSABLE_TYPE')
+    if hole is not None:
+        if name or wt[2] == '固有名詞':
+            premise, kind, cands = 'P1', 'name_type', [t for t in W3E2_P1_TYPES if t in hole['expected_types']]
+        elif wt[1] == '名詞' and wt[2] == '普通名詞':
+            premise, kind, cands = 'P3', 'noun_type', list(hole['expected_types'])
+        else:
+            return na('NOT_A_NAME_FORM_OR_UNPLACED_NOUN')
+    elif name:
+        premise, kind, cands = 'P1', 'name_type', list(W3E2_P1_TYPES)
+        if state == 'TYPES':          # D9: the base placement narrows the candidates, it is not a source
+            cands = [t for t in cands if t in top]
+    elif wt[1] == '名詞' and wt[2] == '普通名詞':
+        if query is None:
+            return na('NO_PLACEMENT_FOR_P3')
+        if state != 'UNPLACED':
+            return na('NOT_A_NAME_FORM_OR_UNPLACED_NOUN')
+        premise, kind, cands = 'P3', 'noun_type', list(W3E2_P3_TYPES)
+    else:
+        return na('NOT_A_NAME_FORM_OR_UNPLACED_NOUN')
+    surface_block, ask = None, None
+    if kind == 'name_type' and not _w3e2_name_form_strong(wt):
+        surface_block = 'WEAK_NAME_FORM'                              # round 3 ruling 2: a dictionary katakana word is a candidate, never decided by (d)
+    if kind == 'name_type' and hole is None and state == 'TYPES' and set(top) - set(W3E2_P1_TYPES):
+        surface_block = 'BASE_OUTSIDE_P1_TYPES'                       # ruling 3 (named before WEAK_NAME_FORM: the more specific reason; (d) is skipped either way): the base's candidates do not fit the P1 types: (d) does not decide; the LLM is asked among the base's candidates
+        ask = sorted(top)
+    particle = hole['particle'] if hole else (toks[i + 1][0] if i + 1 < len(toks) and toks[i + 1][1] == '助詞' else '')
+    reads = {}
+    for T in sorted(cands):
+        r = _w3e2_hole_probe_read(text, word, T, query, hole) if hole else _w3e2_standin_read(text, toks, i, word, T, query)
+        if r is not None:
+            reads[T] = r
+    trace['candidates'] = sorted(cands); trace['readable'] = sorted(reads); trace['premise'] = premise
+    if not reads:
+        return na('NO_CANDIDATE_READS' if cands else 'STANDIN_GATE_FAILED')
+    preds = {r['out']['clauses'][0].get('predicate') for r in reads.values()}      # r1 review 3 (D13): the predicate's lemma is sent to the back end when every readable candidate reads the same one
+    trace['predicate'] = preds.pop() if len(preds) == 1 else None
+    verdict, assumed, source = _w3e2_choose(word, particle, kind, reads, cands, cfg, trace, getattr(query, 'path', None), surface_block=surface_block, ask=ask)
+    if verdict == 'UNDETERMINED':
+        return {'status': 'UNDETERMINED', 'why': 'UNDETERMINED', 'added': 'ASSUMPTION_UNDETERMINED:%s:%s' % (word, particle), 'trace': trace, 'premise': premise}
+    if verdict == 'BACKEND_FAILED':
+        return {'status': 'BACKEND_FAILED', 'why': 'BACKEND_FAILED', 'added': 'ASSUMPTION_BACKEND_FAILED:%s:%s' % (word, assumed), 'trace': trace, 'premise': premise}
+    chosen = sorted(set(assumed.split('+')))
+    pick = reads[chosen[0]]
+    new = dict(out)
+    body = dict(pick['out'])
+    clause = dict(body['clauses'][0])
+    basis = dict(clause.get('role_basis') or {})
+    basis[pick['role']] = 'assumed:%s' % assumed
+    clause['role_basis'] = basis
+    body['clauses'] = [clause]
+    for k in ('readable', 'clauses', 'relations', 'abstain', 'unsupported', 'clause_meta'):
+        if k in body:
+            new[k] = body[k]
+    new['abstain'] = None
+    alternatives = sorted(set(ask or cands) - set(chosen))
+    a = {'word': word, 'kind': kind, 'assumed': assumed, 'alternatives': alternatives, 'source': source, 'ledger_id': None}
+    return {'status': 'ASSUMED', 'why': 'ASSUMED', 'out': new, 'assumptions': [a], 'trace': trace, 'premise': premise}
+
+
+def assumption_explain_ja(text, placement=_UNSET, assume=None):
+    """What stage E2 does with a sentence, for a person (never put in a product output): the premise, the candidate types, the types that read, the sources in the order they were looked at, and the
+    decision with a closed reason (W3E2_EXPLAIN_REASONS). Reads, writes nothing (the ledger is not written)."""
+    cfg = assume or AssumeConfig()
+    query = _placement_query(placement)
+    out = read(text, 'ja', placement=query)
+    if out.get('readable'):
+        return {'status': 'NOT_APPLICABLE', 'why': 'NOT_A_PREMISE_REASON', 'strict_readable': True}
+    r = _w3e2_attempt(text, query, out, cfg)
+    return {k: v for k, v in r.items() if k not in ('out',)}
+
+
+def read_in_mode(text, lang=None, *, placement=_UNSET, mode='strict', assume=None):
+    """K333: `mode='strict'` is `read()` (the same object). `mode='assume'`: `read()`'s output when it is readable or when stage E2 does not apply (a last key `read_mode: 'strict'`); an assumed reading
+    (`read_mode: 'assumed'`, `assumptions`, `strict`, `assumption_note` after the cross); or the strict abstention with `ASSUMPTION_UNDETERMINED:<word>:<particle>` / `ASSUMPTION_BACKEND_FAILED:<word>:<type>`
+    as the LAST reason (`read_mode: 'strict'`). The environment is NOT read here but for the placement and the layer (the entry of a product reads VERA_READ_MODE)."""
+    if mode not in W3E2_MODES:
+        raise ReadError('BAD_ARGUMENTS', 'mode must be one of %s' % (W3E2_MODES,))
+    if mode == 'strict':
+        return read(text, lang, placement=placement)
+    chosen = check_input(text, lang)
+    query = _placement_query(placement) if chosen == 'ja' else None
+    out = read(text, lang, placement=query if chosen == 'ja' else placement)
+    res = dict(out)
+    if chosen != 'ja' or out.get('readable') or not (out.get('abstain') or {}).get('reasons'):
+        res['read_mode'] = 'strict'
+        return res
+    cfg = assume or AssumeConfig()
+    r = _w3e2_attempt(text, query, out, cfg)
+    st = r['status']
+    if st == 'ASSUMED':
+        new = r['out']
+        asm = [dict(a) for a in r['assumptions']]
+        led = cfg.ledger
+        if led is not None and hasattr(led, 'record_assumption'):
+            from . import testimony_ledger as TL
+            for a in asm:
+                row = led.record_assumption({'word': a['word'], 'kind': a['kind'], 'assumed': a['assumed'], 'source': a['source'], 'alternatives': a['alternatives'],
+                                             'sentence_sha256': TL.sentence_sha256(text), 'doc_id': cfg.doc_id, 'model': cfg.model,
+                                             'sentence': None if cfg.mask_user_text else text})
+                a['ledger_id'] = row['row']['fill_id']
+        new = dict(new)
+        new['read_mode'] = 'assumed'
+        new['assumptions'] = asm
+        new['strict'] = {'readable': False, 'abstain': out['abstain']}
+        new['assumption_note'] = assumption_note_ja(asm)
+        return new
+    if st in ('UNDETERMINED', 'BACKEND_FAILED'):
+        ab = dict(out['abstain'])
+        ab['reasons'] = list(ab['reasons']) + [r['added']]
+        res['abstain'] = ab
+    res['read_mode'] = 'strict'
+    return res
+
+
 from .semantic_reader import w1a5_wrap as _w1a5_wrap      # W1-a5 (docs/READING_SOUNDNESS.md section 10G, K210): the reading entry, then aspect / floating quantity / adverb mark
 _read_ja = _w1a5_wrap(_read_ja)
 if __name__ == '__main__':

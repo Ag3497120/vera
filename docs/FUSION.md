@@ -1891,3 +1891,10 @@ W10-f04 の J10（門 (b) の実現 → 再読が、実現器が型つきの十�
 - **文書駆動の育成**: `vera placement grow --documents f… --layer <name> --backend ollama|openai|fake --ledger-file L [--placement 基底]`。`vera placement growth --layer <name> [--ledger-file L] [--list]` が育ちの指標（§7: 層の語数・台帳の行数・昇格数・最後に育った時刻・`chain_ok`）。既存の `vera placement <store>`（面の配置のシミュレーション）は変えない（先頭の引数が `grow`／`growth` のときだけ新しい口）。
 - **入口**: `vera read/ask/serve/chat --layer`（`VERA_PLACEMENT_LAYER`）。`vera serve` の `vera` 欄は、層を指定したとき（`--layer`、または環境変数 `VERA_PLACEMENT_LAYER` だけでもよい。どちらも無い・空なら鍵なし）だけ最後に `placement_layer = {name, status, growth: {words_direct, words_human, words_estimated, last_grown}}` を足す。既存の `vera.layer`（融合の層 0/1）は変えない。
 - **門 (c) のソブリン（J13）**: `VERA_SOVEREIGN_*` が設定されているとき、門 (c) は文書の記録に加えて、`ACTIVE_CONSENTED` のソブリンの発話（十字にできたもの）とも矛盾を比べる。矛盾 → `GATE_C_CONTRADICTS_SOVEREIGN:<event_id>`。`sovereign_checked` は実際に 1 件以上比べたときだけ True。同意なし・設定なし・比べた数 0 は False。設定なしでは `gate_log` に鍵を足さない。
+
+
+## 8. W3-e2: 仮定つきの読み（docs/READING_SOUNDNESS.md §10L）
+- `vera serve`（`fusion_turn`）は LLM の返答の文を再読するとき、既定で段 E2（`--strict-read`／`VERA_READ_MODE=strict` で厳格）を使う。仮定の語が入った腕は `vera.provenance[].arms[*]` の `kind: 'assumed'`（`evidence: []`、鍵は `surface`・`kind`・`evidence` のまま）。その文には鍵 `assumptions` が付く。仮定のある文は十字の一致で `record` にならず（逐語の一致は従来どおり）、事実の問いの `ANSWER` の根拠にならない。記録（文書）の文は常に strict で読む。
+- `vera placement growth --layer L --ledger-file F`: 台帳に `assumption` 行があるとき、最後の鍵 `assumption: {rows, words, promoted_words, assumption_rate}`（`assumption_rate` = 仮定した語のうち、この層への `promoted_to_layer` 行が無い語の割合）。
+- `vera serve` の `--strict-read` は文法の層 1 の `--strict` とは別物。
+- 第 3 ラウンド: 出所 `surface` の仮定は強い名前の形（固有名詞・未知語・見出し語が表層のひらがな）だけ、P2 の が は型のある（動物・集団・人）充填物だけ、表層の仮定は台帳で再読の一致だけでは `promotable` にならない（`blocked_by: SURFACE_ASSUMPTION`）。詳細は READING_SOUNDNESS.md §10L.6。

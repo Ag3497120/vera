@@ -4902,3 +4902,164 @@ W3-b3 と同じ引き金（配置あり・和文・1 区間・深さ 0）。述�
 - 引用の「主語の句を持たない中身」は数えない（`split=0` で棄権）。括弧つきの引用は W3-b3 の形の門で棄権。
 - 3 節以上で形が引用の と が混ざる文は、切れ目の数の不一致（`CLAUSE_SCOPE_AMBIGUOUS:cuts=`）が先に止めるので、`QUOTE_CONTENT_NOT_READ:multi_clause` は 3 節以上では実際には到達しない（防御として残した）。
 <!-- w3c7-results:end -->
+
+
+## 10L. W3-e2: 仮定つきの読み（事前登録 K330〜K336）
+
+<!-- BEGIN w3e2-prereg -->
+事前登録の時刻: 2026-10-05 12:33 +0900（検査データの凍結 `artifacts/w3-e2/data_freeze_time.txt`・実装の最初の変更より前。時刻は `artifacts/w3-e2/prereg_time.txt`）。
+
+### 仮定を立ててよい前提（オーナーの決定 2026-10-05: B を既定にする・前提は 3 つに限る）
+- **K330**: 仮定を立ててよい前提は閉じた 3 つ。P1 名前の型（PERSON・GROUP_ORG・PLACE のどれか 1 つ）／P2 造語の述語（型の無い動詞）／P3 未知の名詞の型（18 型のどれか 1 つ）。
+  - K330.1 P1 の理由の表: 最初の理由が `RECIPIENT_TYPE_UNDETERMINED:<語>`・`GOAL_TYPE_UNDETERMINED:<語>`・`PLACE_TYPE_UNDETERMINED:<語>`・`SUBJECT_TYPE_UNDETERMINED:<語>`（`object or path:` の形は除く）・`AGENT_EVIDENCE_MISSING:<語>` で、語が単一トークンの充填物（述語でない）のとき。および W10-f04 の穴（`PLACEMENT_(UNPLACED|UNKNOWN):<助詞>:<語>`）で主辞が固有名の形のとき。
+  - K330.2 固有名の形の判定は品詞と文字種だけ: 1 トークンで品詞が 名詞-固有名詞、または 名詞-普通名詞 で見出し語が表層と食い違う（見出し語無しを含む）、かつ表層がカタカナ・漢字だけ。語の一覧は作らない。
+  - K330.3 P2 の語尾の表（トークンの品詞・活用型・活用形・見出し語。`artifacts/w3-e2/s1_p2_tokens.txt` の実測）: た（助動詞-タ、直前が っ か、語幹の末尾の っ）／る（助動詞・文語下二段-ラ行・見出し語 れる）／ら＋ない（接尾辞 ら・形容詞 無い）／ら＋なかっ＋た／り（文語助動詞-リ）＋ます／り＋まし＋た。られ・られる（受身・可能・尊敬が割れる）は読まない。語幹は 助詞の後ろ・語尾の前の 1〜2 トークン（名詞・副詞・感動詞）。
+  - K330.4 代役の表（P1 の読み直し、出力には出ない）: PERSON=田中、GROUP_ORG=国連、PLACE=京都（`artifacts/w3-e2/s1_standins.txt`: r8・r9 とも DECIDED でその型、`_is_person_phrase`／`_is_place_phrase` がその型どおり）。門 (i) 語が文に 1 回・1 トークン (ii) 置換後の解析で他のトークン列が同じで代役が 1 トークン (iii) 置換後の文が strict で読め、代役がちょうど 1 つの役割の値と一致 (iv) span を長さの差で元の文に戻して 元の語を指す。
+- **K331**: 出所の順は (a) 利用者の層 → (b) 台帳の `promotable` → (c) 文書の分布 → (d) 表層 → (e) LLM（2 回問うて一致、秘匿オン）。
+  - K331.1 情報のある出所が割れている、またはその型が「読める候補」に無いときは次へ進まず `ASSUMPTION_UNDETERMINED:<語>:<助詞>` で棄権（下位が上位の衝突を上書きしない）。
+  - K331.2 (d) は P1・P2 だけ。助詞が が／は／を で、読める候補の型すべてで十字が同じとき。に・へ・で・から・と は決めない。P3 は (d) 無し。
+- **K332**: 出力。仮定なしの文は `read()` の dict の最後に `read_mode: 'strict'` を足すだけ。仮定つきは読んだ十字の後ろに `read_mode: 'assumed'`・`assumptions`・`strict: {readable:false, abstain}`・`assumption_note` をこの順で。役割の `role_basis` は `assumed:<型>`（P2 は `particle_default:<助詞>`、`predicate_basis: 'assumed:nonce_predicate'`）。決まらなかった文は strict の理由の末尾に `ASSUMPTION_UNDETERMINED:<語>:<助詞>` か `ASSUMPTION_BACKEND_FAILED:<語>:<型>` を 1 つ足す。仮定は 1 文に 1 つ（前提が 2 つ以上は働かない）。
+- **K333**: `semantic_read.read()` は 1 字も変えず、新しい入口 `read_in_mode(text, lang, *, placement, mode='strict'|'assume', assume=None)` を足す。ライブラリの既定は strict。製品の入口（`vera read`・`vera chat`・`vera serve`・`fusion_turn`）の既定は assume、`--strict-read`／`VERA_READ_MODE=strict` で strict。
+- **K334**: 台帳（O2）の行 `assumption`（語・仮定・出所・文脈・文の sha）。昇格は W10-f04/f05 の規則のまま。畳み込みに入るのは型が `NOUN_TYPES` の 1 つのものだけ（`UNTYPED_VERB`・`+` つきの型は入らない）。`vera placement growth` に `assumption`（`assumption_rate`）。
+- **K335**: 採点の階級 `assumed_correct`・`assumed_wrong`・`assumed_abstain`（strict で棄権の項目だけが対象）。誤読 0・誤答 0 は strict の階級にだけ掛ける。`assumed_wrong / (assumed_correct + assumed_wrong)` を報告し、1 割を超えたら出所を狭める方向だけで直す。
+- **K336**: 仮定しないもの: 役割が割れる助詞の役割・節の掛かり先・述語の型・照応・省略された主語。
+
+### 判断記録（中間職の裁定 D1〜D17。チケットの文言からの逸脱を含む）
+- J-E2-1 (D1) `read()` を変えず新しい入口 `read_in_mode`: `tests/test_semantic_read_w3b2.py::test_the_functions_of_the_entry_that_are_not_the_typed_reread_are_the_base_commits`、`tests/test_semantic_read_w3b3.py::test_semantic_read_changes_only_read_ja_and_semantic_reader_only_adds`（トップレベルの代入も名前で拾う）。
+- J-E2-2 (D2) 段 E2 の本体は `semantic_read.py` の新しい節（`semantic_reader.py` は変えない）: `tests/test_semantic_read_w3c7.py::_section` が `# W3-c7:` から末尾までの文字列を検査するため。
+- J-E2-3 (D3) `vera read` は段 E2 が働かなかった文では従来の `semantic_read.main(argv)` と同じバイト: `tests/test_w10f05_cli.py::test_read_without_holes_is_byte_identical_without_a_layer`。
+- J-E2-4 (D4) 仮定の明示の形は `realize_forms_ja.json` ではなく節の定数 `W3E2_NOTE_FORMS`: `verantyx/semantic_realize.py` の `_check_table`（最上位の鍵が完全一致）と `tests/test_w3d1_forms.py`。
+- J-E2-5 (D5) 台帳 `ROW_TYPES` の末尾に `assumption`、メソッド `record_assumption`、畳み込みの `type == "testimony"` を `("testimony","assumption")` に広げる。
+- J-E2-6 (D6) P1 の読み直しは代役（K330.4）。配置で ミナ を PERSON に固定しても `_recipient_ja` が `_is_person_phrase`（配置を見ない）で決めるため読めない。
+- J-E2-7 (D7) P1・P3 の配置由来の棄権は `read_with_holes` と `_HoleProbe`。J-E2-8 (D8) 仮定は 1 文に 1 つ。J-E2-9 (D9) 基底の配置は候補を狭めるだけで出所ではない。J-E2-10 (D10) 表層は P1・P2 のみ。J-E2-11 (D11) 出所の順と衝突は棄権。J-E2-12 (D12) 表層の判定は が／は／を。J-E2-13 (D13) LLM は `fill_candidates.ask_assumption_type`（2 回一致・秘匿オン・失敗は `ASSUMPTION_BACKEND_FAILED`）。
+- J-E2-14 (D14) (c) 文書の分布は `placement_grow.grow()` の内部に直書きで関数でない。薄い関数を書き、grow の `doc_rows` と一致しなければ `SOURCE_UNAVAILABLE:documents` で使わない（結果は §10L の結果欄）。
+- J-E2-15 (D15) serve の記録の再読は strict のまま、assume は LLM の返答の再読だけ。仮定の腕は `kind: 'assumed'`・`evidence: []`。J-E2-16 (D16) `vera ask` は読む経路が無く（問いは `read_question`・K336/V5）、`--strict-read` を足さない。J-E2-17 (D17) `FusionConfig.read_mode` の既定は S8 の前提確認の結果で決める（結果欄に書く）。
+<!-- END w3e2-prereg -->
+
+
+### 10L.1 結果（出力は `artifacts/w3-e2/` のファイルを機械で貼ったもの。手で書いた数値は無い）
+- **V1 strict の byte 一致**（`v1_entry.txt`・`v1_frozen.txt`・`v1_serve.txt`）: entry none SAME / entry r8 SAME / entry r9 SAME / frozen none SAME / frozen r9 SAME / b1pub SAME / serve strict SAME。参考（合否に使わない）: `--read-mode assume` の serve と before の差: rows 310 310 differing rows 0（`v1_serve_assume_diff.txt`）。
+- **V2 凍結データ（第 3 ラウンド、データ v3）**（`v2_check_r3.txt`・`v2_check_r3.json`。v2 から 7 行を直し 29 行を足した v3。変更は 10L.6、v2 までの結果は第 2 ラウンドの `v2_check.txt`）:
+  - `w3e2_p1.jsonl rows=49 assumed_expected=19 assumed_ok=19 abstain_expected=30 abstain_ok=30 wrong_assumption=0 wrong_source=0 documents_rows=6 documents_ok=6`
+  - `w3e2_p2.jsonl rows=33 assumed_expected=15 assumed_ok=15 abstain_expected=18 abstain_ok=18 wrong_assumption=0 wrong_source=0 documents_rows=0 documents_ok=0`
+  - `w3e2_p3.jsonl rows=29 assumed_expected=13 assumed_ok=13 abstain_expected=16 abstain_ok=16 wrong_assumption=0 wrong_source=0 documents_rows=5 documents_ok=5`
+  FAIL の行は 0（`grep -c FAIL v2_check_r3.txt` = 0）。裁定 1 で、凍結の documents の 3 行（P1-014・P3-012・P3-013）の期待は「棄権（ASSUMPTION_UNDETERMINED）」に直った（10L.6）。実装の前の判定は `v3_preimpl_check.txt`（FAIL はちょうど 23 行。実装の後に 0 行）。
+  事後の行（凍結データとは別。`w3e2_c_posthoc.jsonl`、時刻 `data_posthoc_time.txt`、`v2_posthoc_check.txt`）: `w3e2_c_posthoc.jsonl rows=5 assumed_expected=3 assumed_ok=3 abstain_expected=2 abstain_ok=2 wrong_assumption=0 wrong_source=0 documents_rows=5 documents_ok=5`
+- **V3**: 中間職の未公開 60 文は実装役は流していない（見ていない）。
+- **V4（第 3 ラウンド。実機 qwen3.5:4b、各 2 回。`v4_real_llm_r3.txt`・`v4_cycle_r3.txt`）**: r9 の `ハルはミナに本を渡した。` → 後段に問う候補は基底の候補の全体 [PERSON, QUANTITY]（第 2 ラウンドは狭めた PERSON の 1 つだけを問うていた）。2 回とも QUANTITY と答え、QUANTITY は読める型でないので `ASSUMPTION_UNDETERMINED:ミナ:に`（第 2 ラウンドは仮定 PERSON・出所 llm）。r9 の `ハルはリクに手紙を送った。` → PERSON・出所 `llm:qwen3.5:4b`・alternatives [ANIMAL]。r9 の `モモが落ちた。` → trace に `BASE_OUTSIDE_P1_TYPES`、後段が 2 回 PERSON と答え PERSON・出所 llm（alternatives [ANIMAL]。目視では桃かもしれず、仮定の誤りの可能性がある例）。配置なしの `ハルはナギに住んでいる。` → PLACE・出所 llm。配置なしの `ハルはミナに本を渡した。` と `リンゴが落ちた。`（trace に `WEAK_NAME_FORM`）→ 後段は PLACE と答え、読めない型なので棄権。cycle: case H は昇格のあと strict で読めて `read_mode` が付かない（`assumption_rate` 0.5 → 0.0）、case S は昇格後も出所 layer の仮定のまま（0.5 → 0.0。第 2 ラウンドと同じ）。
+- **V5**: `tests/test_semantic_read_w3e2_serve.py`（事実の問いで仮定の腕しか無い返答は `ANSWER_HUMAN_BASIS` にならない・記録にならない、`origin: assumed` は人に数えられない、`vera.provenance[].arms[*].kind == 'assumed'`、`--strict-read` では出ない）。
+- **V6（公開の B1 の見本。正解データではない。第 3 ラウンド）**（`v6_b1pub_r9_r3/summary.json`）: 項目 83、strict で読めた 33・棄権 50（階級は第 2 ラウンドの `v6_b1pub_r9/summary.json` と同じ: `diff` で一致）。assume の `assumed_correct` 0・`assumed_wrong` 0・`assumed_abstain` 50（率は分母 0 で null）。
+- **V7（第 3 ラウンドの最終のコード）**（`pytest_full_r3.txt`・`failures_r3.sorted.txt`・`new_failures_r3.txt`）: 最後の行 `117 failed, 16063 passed, 38 skipped, 81 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 611.87s (0:10:11)`。基線 `dev_bfb17b8_failures.txt` に無い失敗は 3 件（`test_s6_two_runs_agree…`・`test_default_low_keeps_the_preregistered_role_batches…`・`test_speech_act_drafts_fill_new_roles_and_reread`）で、第 2 ラウンドと同じ 3 件（第 2 ラウンドで基点 bfb17b8 でも同じく失敗することを `new_failures_check.txt` で確認済み。今回は基点で再確認していない）。`test_the_stop_signal_…` は今回は基線の外に出なかった。全体テストの副作用で書き換わる `tests/attack/w3a3/r6_48_queries.jsonl` は `git checkout` で戻した。
+- S1-5（`s1_serve_fake_sentences.txt`）: serve 系のテストの文を assume で読んだ結果 `sentences 41 touched_by_stage_E2 0`。これが `FusionConfig` の既定を `assume` に置いてよい根拠（D17: 既存の期待が変わらない。serve 系の 150 テストも通った）。
+
+### 10L.2 実装したこと
+- `semantic_read.read_in_mode`・`AssumeConfig`・`assumption_explain_ja`・`assumption_note_ja`（`semantic_read.py` の新しい節。`read()`・`_read_ja`・既存の段・`semantic_reader.py` は 1 字も変えていない）。
+- `fill_candidates.ask_assumption_type`、`testimony_ledger.record_assumption`（`ROW_TYPES` の末尾に `assumption`）、`cli._read_mode`・`_read_assume`・`_chat_read`・`_growth_with_assumption`、`decode_grammar.cross_of/verify/conclude` の `read_mode`・`assume`（キーワード専用・既定は従来）、`FusionConfig.read_mode`（既定 `assume`）、`tools/bank_score/v2/assumed.py`。
+
+### 10L.3 変更記録（事前登録の区間の外。事前登録の区間は書き換えていない）
+- **データの v1 → v2**（`artifacts/w3-e2/data_amendment.txt`、v1 は `artifacts/w3-e2/frozen_v1/`、v1 の sha・時刻は `data_freeze.v1.sha256`・`data_freeze_time.v1.txt`）: v1 は実装の前に凍結した。実行して、データ側の書き間違い（D9 の狭めの適用漏れ・2 トークンの複合語・複数の未知語がある文）が 9 行で見つかり（行を 2 つ足した）、v2 は **実装の後に** その行だけを直した（実装を期待に合わせたのではない）。変更した行と理由は `data_amendment.txt`。
+- **K330.2 の追加**: 名詞-数詞（ナナ=七）で表層がカタカナ・見出し語が表層と食い違うものを固有名の形に足した。見出し語に `-`（辞書の語釈。フレーム-frame）がある普通名詞は固有名の形ではない（P3 に回る）。
+- **K330.4 の代役の表**: P3 は 4 型（PERSON=田中・GROUP_ORG=国連・PLACE=京都・ANIMAL=犬。`s1_standins.txt`）。P3 は 18 型の仮定が可能という文言だが、読解器の規則（受け手・行き先・場所・主語の判定）が配置を見ず表層の規則で決まるため、代役の無い型は読みを変えられない。
+- **K330.3 の語幹**: 助詞の後ろの 1 トークン（名詞・副詞・感動詞）、または 2 トークンで両方が名詞。副詞＋語幹（そっとザクった）は読まない。
+- **D13**: 後段には候補の型の全部（P1 は 3 型、P3 は 4 型、穴の経路は expected_types）を番号で示して 2 回問い、答えが「読める型」でなければ決めない（読める型が 1 つだけのときに後段に確認を求めても情報が増えないため）。秘匿オンでも語（と助詞・述語の見出し語）は送る（語を送らないと型を問えない）。文と他の語は送らない。
+- **検査データの fake の後段**: 別ファイル `w3e2_fake_llm.jsonl` は作らず、各行の `sources.llm`（`{answers: [..]}` か `{error: ..}`）に置いた。
+- **D7 の穴の経路**: 実装した（`test_the_hole_path_...`: r8 の `兄が土間で歩いた。`）。凍結データの行は代役の経路のものだけ。
+- **D16**: `vera ask` に `--strict-read` を足していない（利用者の文を `read()` で読む経路が無い。問いは `read_question`・K336）。
+
+### 10L.4 既知の穴（隠さない）
+- **出所 (c) 文書は、`XなどのY`（hearst）の行がある語にだけ働く**（第 2 ラウンドで実装。10L.5 必須 4）: W10-f05 が文書から作る名詞の行は hearst だけなので、文書に `XなどのY` の形が無い語では行が 0 で、(c) は何も言わず次の出所に進む（凍結の P1-014・P3-012・P3-013 の期待は第 3 ラウンドの裁定 1 で棄権に直った: 10L.6）。**配置なしでは文書の型の基底が無く、(c) は文書を読めない（`SOURCE_UNAVAILABLE:documents`）ので、文書が別の型を示していても見えない（裁定 4 の弱い反証が働かない）。** 直していない。
+- **名前の型の仮定は、層に昇格しても strict では読めないまま**: P1（ミナ など）の読みは代役の経路で、読解器の `_recipient_ja` などが `_is_person_phrase`（配置を見ない）で決めるため、層に PERSON と書いても strict の読みは変わらない。昇格した語は出所 `layer` の仮定として残る（`v4_cycle.txt` の case S）。「使うほど仮定が減る」が実際に成り立つのは配置を見る枠（穴の経路。case H: 昇格のあと strict で読めて `read_mode` が付かない）だけ。`assumption_rate` は昇格した語を数えるので、case S では 0.0 でも仮定は残る。
+- P3 の仮定は 4 型（上）。他の型は代役が無く読みを変えられないので、読めずに棄権のまま。
+- 出所 (d) の表層は が・は・を だけ。読める型が 2 つ以上あるときの仮定は `T1+T2`（「（ソラを集団・組織または人として）」と、仮定した型を全部名指して出す。他の型は外している）で、台帳の畳み込みには入らず昇格しない。
+- 後段（実機）は決まらないことがある（2 回の答えの一致が要る）。再現性の保証は無い（`v4_real_llm_more.txt` は 1 回の実行）。
+- P2 の `られた`・`られる`・他の格助詞・副詞・読点・複文は読まない（読める文の範囲は狭い）。serve の P2 の文は `_w3b3_gates` の形の門で再読の十字にならないことがある。
+- 申し送り 1〜4（カタカナの普通名詞・MULTIPLE の狭め・文書の弱い反証・P2 の が）は第 3 ラウンドで閉じた（上と 10L.6）。
+- D9 の狭め: 基底の配置が MULTIPLE で型の候補に PLACE が無い語（ミナ は r9 で PERSON／QUANTITY）は、層や後段が PLACE と言っても仮定しない（配置は情報を増やせない）。
+- V3（中間職の未公開 60 文）と V6（B1 の r9 の隠しバンク）は実装役が測っていない。公開の見本の assumed は 0 件で、assumed_wrong の率は測れていない。
+- **P1 の「名前の形」（第 3 ラウンドで閉じた）**: 第 2 ラウンドはカタカナの普通名詞を広く拾い `リンゴが落ちた。` を仮定して読んでいた。裁定 2 で、P1 の候補になる形のうち出所 (d) 表層で決めてよいのは強い名前の形（固有名詞・未知語の印・見出し語が表層のひらがな）だけになった。辞書に普通名詞として載るカタカナ語（リンゴ・ミカン・ヒカリ・リク・ソラ・モモ）は (d) では仮定しない（層・台帳・文書・後段なら可）。**残る穴: 強い・弱いの判定は解析器の辞書に依る。辞書にない普通名詞（カタカナの新語・外来語）は未知語の印が付くので強い扱いになり、`ヨモが走った。` のように表層で名前と仮定される。**
+- **P2 の が（第 3 ラウンドで閉じた）**: 裁定 5 で、が の句を動作主にするのは充填物が基底か層で ANIMAL・GROUP_ORG・PERSON の型を持つときだけになった。`本がザクった。` は棄権（`P2_GA_FILLER_NOT_TYPED`）。
+- **台帳の自己強化（第 3 ラウンドで閉じた）**: 出所 `surface` の仮定の再読の一致は N に数えない（`reread_agreed` の数と `state` には出る。N に届かないときは `blocked_by: SURFACE_ASSUMPTION`）。分布か人の確認で昇格する。**残る穴: 出所 `layer`・`llm:*` の仮定の再読は今までどおり数える。`promotion_plan` の `origin` の式（`reread_agreed >= N` → `layer_estimated`）は変えていないので、分布で `promotable` になった鍵に出所 surface の再読が N 以上あれば、origin は `layer_estimated` になる（人の確認があれば `layer_human`）。**
+- **人と場所が割れる に を後段が決める例は作れていない**（上の V4）。
+
+### 10L.5 第 2 ラウンドの変更記録（レビュー r1 への対応。事前登録の区間は書き換えていない）
+- **必須 1（D9 からの逸脱の訂正）**: 第 1 ラウンドは、基底の配置が **推定**（`PLACEMENT_ESTIMATED_*`・生成定義・`PLACEMENT_INVALID:ESTIMATE_BASIS_UNKNOWN`）で型を持つ語を「情報なし」と扱い、`ミカンが腐った。`（r9 は ミカン を `SUBSTANCE_FOOD` と推定）に P1 を立てて `agent: ミカン` と読んでいた（strict の `SUBJECT_TYPE_UNDETERMINED` を仮定で越えた）。直し: 基底が型を持つが読解器が使えないときは P1 も P3 も立てない（`BASE_HAS_UNUSABLE_TYPE`、答えの欄は読まず `placement_fit` の門の理由だけを見る）。`test_a_word_the_base_types_by_an_estimate_gets_no_premise`。
+- **必須 2**: P2 は は を、を の句があるときだけ動作主にする（は だけの文は topic で動作主か対象が割れる。strict が既知の動詞の同じ形を `NO_SUPPORTED_CLAUSE` で棄権するのと揃えた）。`本はザクった。`・`ハルはザクった。` は strict のまま（`P2_FORM_NOT_READ`）。凍結データは変わらない。`test_p2_reads_wa_as_an_agent_only_beside_wo`。
+- **必須 3**: 後段に述語の見出し語を送る（読めた候補がすべて同じ述語のとき。`述語: 渡す`）。文・他の語は送らない。`test_the_masked_message_does_not_hold_the_sentence` に追記。
+- **必須 4**: 出所 (c) を実装した。`_w3e2_documents`・`_w3e2_document_rows`・`_w3e2_document_types`: grow と同じ呼び出し（`bcp.tokenize`→`bcp.analyze`→`acc['hearst']`→`bcp.type_of`）で語の行を作り、18 型それぞれを `decide_candidate(word, {kind: noun, type: T}, rows, cfg)` に掛けて `layer_confirmed`（direct）で通った型が **1 つだけ** で、それが読める型なら出所 `documents`。2 つ以上、または読めない型なら棄権（D11）。direct の型が無ければ（行が無い・行が足りない）何も言わず次へ。文書は、存在するファイルのパスなら 1 ファイル 1 文書（`read_documents`、出所 `doc:<sha12>`）、それ以外の文字列は全部まとめて 1 文書。`test_the_document_rows_are_those_grow_writes`: 自転車の文書で grow が台帳に書いた `doc_rows` と、薄い関数の行が一致する（ディレイラー・チェーンリング。`['hearst', 'doc:c2d800d37937', 'ARTIFACT', 2, null]`）。凍結の 3 行は期待を書き換えず、上の V2 のとおり読めていない（テストの関数から外した理由と代わりの測定を V2 の欄に書いた）。事後の行 5 件（`w3e2_c_posthoc.jsonl`。凍結データと混ぜない。(c) が働く 3 行と棄権 2 行）は期待どおり。
+- **必須 5**: `cycle.py` で層を先に作ってから測る語を昇格する形に直し、`assumption_rate` を前後で出した（V4 の欄）。
+- **必須 6**: 注記は仮定した型を全部名指す。`（ミナを人として）`・`（ソラを集団・組織または人として）`（順は `assumed` の文字列の順）。事前登録の K332 と D12 の「型は決めずに」は、この記述が置き換える（`W3E2_NOTE_FORMS['untyped']` は型名が表に無いときの保険だけ）。`test_the_note_names_every_type_that_was_assumed`。
+- 任意の改善 4（docstring の位置・死んだ行）は直した。1〜3 は直していない（`vera serve --strict-read` の CLI での 310 行は取っていない。関数の経路 `FusionConfig.load(read_mode='strict')` で SAME）。
+
+### 10L.6 第 3 ラウンドの変更記録（監査役の裁定 1〜5、2026-10-05 14:17:28 +0900。事前登録の区間は書き換えていない。製品は狭める方向だけ）
+- **順序**: データ v3 の凍結（2026-10-05 14:30:47 +0900、`data_freeze_time.txt`、sha `data_freeze.sha256`）は製品コードの変更の前。凍結の時点の `semantic_read.py`・`testimony_ledger.py` の sha は `r3_freeze_product_sha.txt`（第 2 ラウンドの終わりと同じ）。実装の前の判定 `v3_preimpl_check.txt` の FAIL はちょうど 23 行（P1-004・006・031・032・034〜041・043〜047、P2-010・012・027・028・029、P3-027）、実装の後は 0 行（`v2_check_r3.txt`）。7 行の置き換えと 29 行の追加は中間職が用意した行で、1 行ずつ読んで期待が裁定と D-r3-* から導けることを確かめた。
+- **裁定 1（D-r3-1）**: P1-014・P3-012・P3-013 の期待を「棄権（`added_reason: ASSUMPTION_UNDETERMINED:<語>:<助詞>`）」に改訂し、(c) の結果を `expect.documents_result` に書いた。P1-014 は配置なしなので実際の (c) は `SOURCE_UNAVAILABLE:documents`（裁定の文言の NOT_DECISIVE ではない。書き換えずに実際の値を書いた）、P3-012・P3-013 は `NOT_DECISIVE`。事後の行 `W3E2-C-005` は v3 の P3-013 と同じ入力・同じ期待（`v2_posthoc_check_r3.txt` の `documents_ok=5` の 1 件はこの行）。
+- **裁定 2（D-r3-2）**: `_w3e2_name_form_strong`（固有名詞・`is_unk`・見出し語＝表層のひらがな）。`_w3e2_name_form` は変えない。弱い形は P1 の候補だが (d) では決めない。`_w3e2_tokens` の末尾（添字 8）に `is_unk`。リク（陸）・ソラ（空）・モモ（桃）も弱い（辞書の普通名詞）。
+- **裁定 3（D-r3-3）**: 基底が `TYPES` で候補が P1 の型に収まらないとき (d) では決めず（trace `BASE_OUTSIDE_P1_TYPES`）、後段には基底の候補の全体を問う。`alternatives` は問うた候補 − 採った型。読む・採るのは `reads` の中だけ。（指示書は「`surface_block` が未設定なら」と書いたが、指示書の確かめ方（モモの trace に `BASE_OUTSIDE_P1_TYPES`）に合わせ、より具体的な理由として `WEAK_NAME_FORM` より優先して名付けた。どちらでも (d) は飛ばされ、動きは同じ。）
+- **裁定 4（D-r3-4）**: (c) が決め手にならないとき、文書の行の型に読める型（`reads`）の外のものが 1 つでもあれば、その場で棄権（trace `NOT_DECISIVE_COUNTER`、(d)・(e) に進まない）。行の型がすべて読める型の中なら `NOT_DECISIVE` で次へ。
+- **裁定 5a（D-r3-5a）**: P2 の が は、句の基底の型（候補が空でなく ANIMAL・GROUP_ORG・PERSON の中）か層の型がその集合の中のときだけ動作主。それ以外は `P2_GA_FILLER_NOT_TYPED`（strict の棄権のまま）。`W3E2_P2_GA_TYPES`。
+- **裁定 5b（D-r3-5b）**: `TestimonyLedger.fold()`: 出所 `surface` の assumption 行の `fill_id` を持つ `reread_agreed` は N に数えない。`fold` の dict に鍵は足していない（局所変数）。
+- **データ v2 → v3**: 変えた 7 行（P1-004・P1-006・P1-014・P2-010・P2-012・P3-012・P3-013）の前後の全文と理由、足した 29 行（P1-031〜049、P2-027〜033、P3-027〜029）は `artifacts/w3-e2/data_amendment.txt` の末尾（v2 は `frozen_v2/`）。変えた行の理由の要旨: P1-004（r9 は ミナ を PERSON/QUANTITY とするので基底が P1 の型に収まらず (d) で決めない、裁定 3）、P1-006（リクは弱い形、r8 は ANIMAL/PERSON、裁定 2・3）、P1-014・P3-012・P3-013（裁定 1）、P2-010・P2-012（配置も層も無く ハル に型が無い、裁定 5）。足した行は リンゴ・ミカン・ヒカリ・モモ・ヨモ（都市の文書）・本がザクった・型のある が・層・後段で読める反対側を含む。
+
+  以下は `artifacts/w3-e2/data_amendment.txt` の該当行をそのまま写したもの（裁定 1 の「前後の全文を §10L の変更記録に」。BEFORE が v2、AFTER が v3。時刻は凍結 2026-10-05 14:30:47 +0900）。
+
+  変えた 7 行（前後の全文）:
+
+```text
+[W3E2-P1-004] reason: r3 ruling 3: r9 gives PERSON/QUANTITY, not inside the P1 types -> no (d)
+BEFORE: {"id": "W3E2-P1-004", "premise": "P1", "input": "ミナが走った。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "ミナ", "kind": "name_type", "assumed": "PERSON", "source": "surface"}], "clauses": [{"predicate": "走る", "roles": {"agent": "ミナ"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "SUBJECT_TYPE_UNDETERMINED:ミナ", "added_reason": null}, "note": "d: surface, が; v2: r9 knows ミナ as PERSON/QUANTITY, so D9 narrows the candidates to PERSON (v1 expected GROUP_ORG+PERSON: a slip against D9)"}
+AFTER:  {"id": "W3E2-P1-004", "premise": "P1", "input": "ミナが走った。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "SUBJECT_TYPE_UNDETERMINED:ミナ", "added_reason": "ASSUMPTION_UNDETERMINED:ミナ:が"}, "note": "d: surface, が; v2: r9 knows ミナ as PERSON/QUANTITY, so D9 narrows the candidates to PERSON (v1 expected GROUP_ORG+PERSON: a slip against D9) | v3: r3 ruling 3: r9 gives PERSON/QUANTITY, not inside the P1 types -> no (d)"}
+[W3E2-P1-006] reason: r3 ruling 2+3: リク (lemma 陸) is not a name form for (d); r8 gives ANIMAL/PERSON
+BEFORE: {"id": "W3E2-P1-006", "premise": "P1", "input": "リクが本を読んだ。", "placement": "r8", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "リク", "kind": "name_type", "assumed": "PERSON", "source": "surface"}], "clauses": [{"predicate": "読む", "roles": {"agent": "リク", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "AGENT_EVIDENCE_MISSING:リク", "added_reason": null}, "note": "d: AGENT_EVIDENCE_MISSING; v2: r8 knows リク as ANIMAL/PERSON, D9 narrows to PERSON (v1 slip)"}
+AFTER:  {"id": "W3E2-P1-006", "premise": "P1", "input": "リクが本を読んだ。", "placement": "r8", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "AGENT_EVIDENCE_MISSING:リク", "added_reason": "ASSUMPTION_UNDETERMINED:リク:が"}, "note": "d: AGENT_EVIDENCE_MISSING; v2: r8 knows リク as ANIMAL/PERSON, D9 narrows to PERSON (v1 slip) | v3: r3 ruling 2+3: リク (lemma 陸) is not a name form for (d); r8 gives ANIMAL/PERSON"}
+[W3E2-P2-010] reason: r3 ruling 5: no placement and no layer: ハル has no type -> が is not read
+BEFORE: {"id": "W3E2-P2-010", "premise": "P2", "input": "ハルがザクった。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "ザク", "kind": "nonce_predicate", "assumed": "UNTYPED_VERB", "source": "surface"}], "clauses": [{"predicate": "ザクる", "roles": {"agent": "ハル"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "NO_PREDICATE_TOKEN", "added_reason": null}, "note": ""}
+AFTER:  {"id": "W3E2-P2-010", "premise": "P2", "input": "ハルがザクった。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "NO_PREDICATE_TOKEN", "added_reason": null}, "note": " | v3: r3 ruling 5: no placement and no layer: ハル has no type -> が is not read"}
+[W3E2-P2-012] reason: r3 ruling 5
+BEFORE: {"id": "W3E2-P2-012", "premise": "P2", "input": "ハルがヨモります。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "ヨモ", "kind": "nonce_predicate", "assumed": "UNTYPED_VERB", "source": "surface"}], "clauses": [{"predicate": "ヨモる", "roles": {"agent": "ハル"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "abstain_reason": "NO_PREDICATE_TOKEN", "added_reason": null}, "note": ""}
+AFTER:  {"id": "W3E2-P2-012", "premise": "P2", "input": "ハルがヨモります。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "NO_PREDICATE_TOKEN", "added_reason": null}, "note": " | v3: r3 ruling 5"}
+[W3E2-P1-014] reason: r3 ruling 1: no placement -> the documents cannot be read (SOURCE_UNAVAILABLE:documents); に splits -> abstain
+BEFORE: {"id": "W3E2-P1-014", "premise": "P1", "input": "ハルはミナに本を渡した。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["ミナはよく本を読んだ。", "先生がミナに本を渡した。"], "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "ミナ", "kind": "name_type", "assumed": "PERSON", "source": "documents"}], "clauses": [{"predicate": "渡す", "roles": {"agent": "ハル", "patient": "本", "recipient": "ミナ"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "RECIPIENT_TYPE_UNDETERMINED:ミナ", "added_reason": null}, "note": "c: documents (may be SOURCE_UNAVAILABLE:documents)"}
+AFTER:  {"id": "W3E2-P1-014", "premise": "P1", "input": "ハルはミナに本を渡した。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["ミナはよく本を読んだ。", "先生がミナに本を渡した。"], "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "RECIPIENT_TYPE_UNDETERMINED:ミナ", "added_reason": "ASSUMPTION_UNDETERMINED:ミナ:に", "documents_result": "SOURCE_UNAVAILABLE:documents"}, "note": "c: documents (may be SOURCE_UNAVAILABLE:documents) | v3: r3 ruling 1: no placement -> the documents cannot be read (SOURCE_UNAVAILABLE:documents); に splits -> abstain"}
+[W3E2-P3-012] reason: r3 ruling 1: the documents hold no XなどのY row for the word (NOT_DECISIVE) -> abstain
+BEFORE: {"id": "W3E2-P3-012", "premise": "P3", "input": "ハルはケーシングに手紙を送った。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["店主がケーシングを発注した。", "ケーシングは店にある。"], "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "ケーシング", "kind": "noun_type", "assumed": "GROUP_ORG", "source": "documents"}], "clauses": [{"predicate": "送る", "roles": {"agent": "ハル", "patient": "手紙", "recipient": "ケーシング"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "RECIPIENT_TYPE_UNDETERMINED:ケーシング", "added_reason": null}, "note": "c (may be SOURCE_UNAVAILABLE:documents)"}
+AFTER:  {"id": "W3E2-P3-012", "premise": "P3", "input": "ハルはケーシングに手紙を送った。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["店主がケーシングを発注した。", "ケーシングは店にある。"], "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "RECIPIENT_TYPE_UNDETERMINED:ケーシング", "added_reason": "ASSUMPTION_UNDETERMINED:ケーシング:に", "documents_result": "NOT_DECISIVE"}, "note": "c (may be SOURCE_UNAVAILABLE:documents) | v3: r3 ruling 1: the documents hold no XなどのY row for the word (NOT_DECISIVE) -> abstain"}
+[W3E2-P3-013] reason: r3 ruling 1: as P3-012
+BEFORE: {"id": "W3E2-P3-013", "premise": "P3", "input": "ハルはフルードへ荷物を運んだ。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["フルードの工房がある。", "客がフルードへ行った。"], "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "フルード", "kind": "noun_type", "assumed": "PLACE", "source": "documents"}], "clauses": [{"predicate": "運ぶ", "roles": {"agent": "ハル", "patient": "荷物", "goal": "フルード"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "GOAL_TYPE_UNDETERMINED:フルード", "added_reason": null}, "note": "c"}
+AFTER:  {"id": "W3E2-P3-013", "premise": "P3", "input": "ハルはフルードへ荷物を運んだ。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["フルードの工房がある。", "客がフルードへ行った。"], "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "GOAL_TYPE_UNDETERMINED:フルード", "added_reason": "ASSUMPTION_UNDETERMINED:フルード:へ", "documents_result": "NOT_DECISIVE"}, "note": "c | v3: r3 ruling 1: as P3-012"}
+```
+
+  足した 29 行（id・入力・期待・理由）:
+
+```text
+W3E2-P1-031  none リンゴが落ちた。  expect=abstain  | r3 ruling 2: a dictionary katakana common noun (lemma 林檎) is not a name form for (d)
+W3E2-P1-032  none リンゴが本を読んだ。  expect=abstain  | r3 ruling 2
+W3E2-P1-033  none リンゴが落ちた。  expect=assumed  | r3 ruling 2: (a) layer may still assume
+W3E2-P1-034  none リンゴが落ちた。  expect=assumed  | r3 ruling 2: (e) may still assume
+W3E2-P1-035  none ミカンが腐った。  expect=abstain  | r3 ruling 2 (lemma 蜜柑)
+W3E2-P1-036  none ミカンが本を読んだ。  expect=abstain  | r3 ruling 2
+W3E2-P1-037  none ミカンが腐った。  expect=assumed  | r3 ruling 2: (e) may still assume
+W3E2-P1-038  none ヒカリが消えた。  expect=abstain  | r3 ruling 2 (lemma 光)
+W3E2-P1-039  r9 モモが落ちた。  expect=abstain  | r3 ruling 3: r9 gives ANIMAL/PERSON; not inside the P1 types -> no (d)
+W3E2-P1-040  r9 モモが本を読んだ。  expect=abstain  | r3 ruling 3
+W3E2-P1-041  r9 モモが落ちた。  expect=assumed  | r3 ruling 3: (e) may assume; asked among the base candidates
+W3E2-P1-042  r9 モモが落ちた。  expect=assumed  | r3 ruling 3: (a) may assume
+W3E2-P1-043  r9 モモが落ちた。  expect=abstain  | r3 ruling 3: the back end says ANIMAL, which does not read
+W3E2-P1-044  r9 ヨモが走った。  expect=abstain  | r3 ruling 4: one weak document row says PLACE -> no (d)
+W3E2-P1-045  r9 ヨモが本を読んだ。  expect=abstain  | r3 ruling 4
+W3E2-P1-046  r8 ヨモが走った。  expect=abstain  | r3 ruling 4
+W3E2-P1-047  r9 ヨモが走った。  expect=abstain  | r3 ruling 4 (D-r3-4): the weak counter-evidence stops the search, (e) is not asked
+W3E2-P1-048  r9 ヨモが走った。  expect=assumed  | r3 ruling 4 contrast: no documents -> (d)
+W3E2-P1-049  r9 ヨモが走った。  expect=assumed  | r3 ruling 4 contrast: the weak row is a type that reads -> not a counter, (d) as before
+W3E2-P2-027  none 本がザクった。  expect=abstain  | r3 ruling 5: が with a filler of no animate type
+W3E2-P2-028  r9 本がザクった。  expect=abstain  | r3 ruling 5: 本 is INFO_LANGUAGE at r9
+W3E2-P2-029  r9 机がザクった。  expect=abstain  | r3 ruling 5: 机 is ARTIFACT/PLACE at r9
+W3E2-P2-030  r9 ハルがザクった。  expect=assumed  | r3 ruling 5: ハル is ANIMAL/GROUP_ORG/PERSON at r9
+W3E2-P2-031  r9 先生がザクった。  expect=assumed  | r3 ruling 5: 先生 PERSON
+W3E2-P2-032  r9 犬がザクった。  expect=assumed  | r3 ruling 5: 犬 ANIMAL
+W3E2-P2-033  none ハルがザクった。  expect=assumed  | r3 ruling 5: the layer gives the type
+W3E2-P3-027  r9 ハルはグリスへ荷物を運んだ。  expect=abstain  | r3 ruling 4: one weak document row says ARTIFACT -> stop (also for P3)
+W3E2-P3-028  r9 ハルはグリスへ荷物を運んだ。  expect=assumed  | r3 ruling 4 contrast: the weak row is a type that reads
+W3E2-P3-029  r9 ハルはグリスへ荷物を運んだ。  expect=assumed  | r3 ruling 4: (a) is above (c)
+```
+- **第 3 ラウンドのレビュー対応（r1）**: `test_the_documents_result_of_a_frozen_row_is_the_registered_one` を足した（`expect.documents_result` を持つ 10 行の trace の documents の項を登録値と突き合わせる）。`test_r3_the_name_form_strength_is_from_the_tagger_only` の空の assert を `_w3e2_name_form(t)`（弱い形は P1 の候補のまま）に直した。上の 7 行・29 行の全文を写した。製品コードは変えていない。
+- **テストの変更**（このチケットの自作テストだけ。期待を弱めたのではなく、裁定で動きが狭まったことに合わせた）: `test_p2_reads_wa_as_an_agent_only_beside_wo` の `ナナがザクった。`（配置なし）を、r9 では assumed・配置なしでは strict（`P2_GA_FILLER_NOT_TYPED`）の 2 つの assert に。`test_the_note_names_every_type_that_was_assumed` の `ソラが走った。` を `ミナが走った。` に（ソラは弱い形）、注記は `（ミナを集団・組織または人として）`。`test_frozen_row` は全行を判定する（`FROZEN_DOCUMENT_ROWS` の除外を外した）。`..._have_no_document_row_for_the_word` は語を `added_reason` から取る（v3 では期待が棄権で `assumptions` が空）。

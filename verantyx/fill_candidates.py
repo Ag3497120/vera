@@ -654,3 +654,58 @@ def fill_sentence(text: str, fill: FillConfig, chat: Callable, model: str, *, re
         out["decisions"].append(d)
         out["holes"].append(dict(h, decision=d.to_dict()))
     return out
+
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# W3-e2 (docs/READING_SOUNDNESS.md section 10L, K331 (e), D13): the type of ONE word for an assumed reading. Nothing above this line is changed.
+# ---------------------------------------------------------------------------------------------------------------------------------
+ASSUMPTION_ASK_STATUSES = ("AGREED", "SPLIT", "NULL", "OUT_OF_CANDIDATES", "BACKEND_FAILED")
+
+
+def assumption_messages(word: str, particle: str, predicate: Optional[str], candidates: Sequence[str], text: Optional[str] = None) -> List[Dict[str, str]]:
+    """The fixed sentence form Vera writes. With the mask on (`text` None) the user's sentence and the other words of it are NOT sent: the word, its particle, the predicate's lemma (when the reader knows
+    one) and the closed list of types. The word itself has to be sent: a type of a word cannot be answered about a mask."""
+    system = ("あなたは Vera の語彙の提案者です。Vera が型を知らない語の型を、候補の一覧から 1 つ選びます。答えは JSON 1 つだけで、説明は書きません。"
+              "分からなければ null。選んだ型を採用するかどうかは Vera が決めます。")
+    lines = ["語「%s」（助詞「%s」の位置にある、Vera が型を知らない語）。" % (word, particle or "（なし）"), "述語: %s" % (predicate or MASK_UNKNOWN), "他の語: %s" % MASK_UNKNOWN]
+    if text is not None:
+        lines.append("文: %s" % json.dumps(text, ensure_ascii=False))
+    lines.append("語「%s」そのものの型を、次の番号から 1 つ選んでください（分からなければ null）:" % word)
+    for i, t in enumerate(candidates):
+        lines.append("%d: %s" % (i, t))
+    lines.append('出力: {"choice": 番号またはnull} の JSON 1 つだけ。')
+    return [{"role": "system", "content": system}, {"role": "user", "content": "\n".join(lines)}]
+
+
+def ask_assumption_type(word: str, particle: str, predicate: Optional[str], candidates: Sequence[str], *, chat: Callable, model: str, backend_name: str = "fake",
+                        mask_user_text: bool = True, text: Optional[str] = None) -> Dict[str, Any]:
+    """Asks TWICE (a closed schema: the number of one candidate or null) and takes a type only when both answers are the same candidate. Returns {"type": the type or None, "status":
+    AGREED | SPLIT | NULL | OUT_OF_CANDIDATES | BACKEND_FAILED, "answers": [the types or None], "calls": n, "error": the typed failure or None}. A failure is BACKEND_FAILED (never SPLIT or NULL);
+    an answer outside the numbered list is OUT_OF_CANDIDATES. Nothing here reads a sentence: the sentence is sent only with `mask_user_text=False`."""
+    cands = list(candidates)
+    clock = _Clock()
+    answers: List[Optional[str]] = []
+    messages = assumption_messages(word, particle, predicate, cands, None if mask_user_text else text)
+    schema = {"type": "object", "properties": {"choice": {"type": ["integer", "null"]}}, "required": ["choice"], "additionalProperties": False}
+    for _ in range(2):
+        res = clock.call(chat, model, messages, schema)
+        if not res.get("ok"):
+            return {"type": None, "status": "BACKEND_FAILED", "answers": answers, "calls": clock.calls, "error": (res.get("error") or {}).get("type", "BAD_RESPONSE")}
+        try:
+            data = json.loads(res.get("content") or "", object_pairs_hook=_unique)
+        except (TypeError, ValueError):
+            return {"type": None, "status": "OUT_OF_CANDIDATES", "answers": answers + ["NOT_JSON"], "calls": clock.calls, "error": None}
+        if not isinstance(data, dict) or set(data) != {"choice"}:
+            return {"type": None, "status": "OUT_OF_CANDIDATES", "answers": answers + ["KEYS"], "calls": clock.calls, "error": None}
+        c = data["choice"]
+        if c is None:
+            answers.append(None)
+        elif type(c) is int and 0 <= c < len(cands):
+            answers.append(cands[c])
+        else:
+            return {"type": None, "status": "OUT_OF_CANDIDATES", "answers": answers + ["OUT_OF_LIST"], "calls": clock.calls, "error": None}
+    if answers[0] is None and answers[1] is None:
+        return {"type": None, "status": "NULL", "answers": answers, "calls": clock.calls, "error": None}
+    if answers[0] is None or answers[0] != answers[1]:
+        return {"type": None, "status": "SPLIT", "answers": answers, "calls": clock.calls, "error": None}
+    return {"type": answers[0], "status": "AGREED", "answers": answers, "calls": clock.calls, "error": None}

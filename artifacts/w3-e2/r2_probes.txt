@@ -1,0 +1,8 @@
+リンゴが落ちた。 none assumed （リンゴを集団・組織または人として） None
+ヒカリが消えた。 none assumed （ヒカリを集団・組織または人として） None
+ミカンが腐った。 r9 strict None ['SUBJECT_TYPE_UNDETERMINED:ミカン']
+モモが落ちた。 r9 assumed （モモを人として） None
+本はザクった。 none strict None ['NO_PREDICATE_TOKEN']
+ハルはザクった。 none strict None ['NO_PREDICATE_TOKEN']
+ハルは本をザクった。 none assumed （ザクを動詞として） None
+ソラが走った。 none assumed （ソラを集団・組織または人として） None

@@ -66,12 +66,13 @@ def split_sentences(text: str) -> List[str]:
 
 # --- 文の十字 --------------------------------------------------------------------------------------------------------------------------------
 
-def cross_of(text: str) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
-    """文を再読し、節が 1 つで relations が無く、日本語なら述語の 4 形と派生の門を通ったものだけ十字を返す。(十字, None) か (None, 理由)。"""
+def cross_of(text: str, *, mode: str = "strict", assume: Any = None) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
+    """文を再読し、節が 1 つで relations が無く、日本語なら述語の 4 形と派生の門を通ったものだけ十字を返す。(十字, None) か (None, 理由)。
+    W3-e2: `mode='assume'` (keyword only; the default is the old behaviour) reads with stage E2; a cross made of an assumption carries `assumptions` (the list of the reader's `assumptions`)."""
     from . import semantic_read
     from . import semantic_reader as R
     try:
-        out = semantic_read.read(text)
+        out = semantic_read.read(text) if mode == "strict" else semantic_read.read_in_mode(text, mode="assume", assume=assume)
     except Exception as exc:  # 読めない文は未読。落とさない
         return None, "READ_ERROR:%s" % type(exc).__name__
     if not isinstance(out, dict) or not out.get("readable"):
@@ -93,7 +94,9 @@ def cross_of(text: str) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
             written = text[span[0]:].rstrip("。．.！!？? \t\r\n　")
     c = clauses[0]
     return {"arm_center": tuple((k, c.get(k)) for k in _ARM_CENTER_KEYS), "center": tuple(sorted(((k, c[k]) for k in c if k not in _NON_CENTER_KEYS), key=lambda kv: kv[0])), "roles": {r: _nfkc(v) for r, v in (c.get("roles") or {}).items()},
-            "raw_roles": dict(c.get("roles") or {}), "lang": out.get("lang"), "written_predicate": written}, None
+            "raw_roles": dict(c.get("roles") or {}), "lang": out.get("lang"), "written_predicate": written,
+            **({"assumptions": [dict(a) for a in out["assumptions"]], "assumed_roles": sorted(r for r, b in (c.get("role_basis") or {}).items() if str(b).startswith(("assumed:", "particle_default:"))),
+                "assumed_predicate": c.get("predicate_basis") == "assumed:nonce_predicate"} if out.get("read_mode") == "assumed" else {})}, None
 
 
 class Records:
@@ -287,14 +290,16 @@ def check_grammar(grammar: Dict[str, Any], content: Any) -> Tuple[bool, Optional
 
 # --- 検証 ------------------------------------------------------------------------------------------------------------------------------------
 
-def verify(text: str, records: Records, request_kind: str, model: str = "") -> List[Dict[str, Any]]:
-    """本文を文に分け、各文を再読し、腕ごとに 記録／証言（factual）／構成（非 factual）を付ける。読めない文は UNREAD。"""
+def verify(text: str, records: Records, request_kind: str, model: str = "", *, read_mode: str = "strict", assume: Any = None) -> List[Dict[str, Any]]:
+    """本文を文に分け、各文を再読し、腕ごとに 記録／証言（factual）／構成（非 factual）を付ける。読めない文は UNREAD。
+    W3-e2: with `read_mode='assume'` a sentence read through an assumption has the key `assumptions` and its arms that hold the assumed word (all arms for a coined predicate) are `kind: 'assumed'`,
+    `evidence: []`; such a sentence is never a record by cross (a verbatim match of the record's text still is). The record's own sentences (`Records`) are always read strictly."""
     from . import basis_policy as bp
     other = "testimony" if bp.KIND_CLASS.get(request_kind) == "FACTUAL" else "constructed"
     items: List[Dict[str, Any]] = []
     for s in split_sentences(text):
         ids_verbatim = records.by_text.get(_nfkc(s), [])
-        cross, why = cross_of(s)
+        cross, why = cross_of(s, mode=read_mode, assume=assume) if read_mode == "assume" else cross_of(s)
         item: Dict[str, Any] = {"text": s, "read": cross is not None, "mark": None if cross is not None else "UNREAD", "unread_reason": why,
                                 "sentence_kind": other, "origin": other, "evidence": [], "arms": {}, "center_kind": other, "via": None}
         if other == "testimony":
@@ -309,6 +314,13 @@ def verify(text: str, records: Records, request_kind: str, model: str = "") -> L
                 hit = [i for i in ev_arm if records.crosses[i]["roles"].get(role) == surf]
                 item["arms"][role] = {"surface": cross["raw_roles"].get(role), "kind": "record" if hit else other, "evidence": hit}
             full = [i for i in ev_center if records.crosses[i]["roles"] == cross["roles"]]
+            if cross.get("assumptions"):
+                item["assumptions"] = cross["assumptions"]
+                for role in item["arms"]:
+                    if cross["assumed_predicate"] or role in cross["assumed_roles"]:
+                        item["arms"][role] = {"surface": item["arms"][role]["surface"], "kind": "assumed", "evidence": []}
+                item["center_kind"] = other
+                full = []
             if full:
                 item.update({"sentence_kind": "record", "origin": "record", "evidence": full, "via": "cross"})
         if ids_verbatim and item["sentence_kind"] != "record":
@@ -408,7 +420,7 @@ def _testimony_result(items: Sequence[Dict[str, Any]], type_: str, model: str) -
     return {"kind": "unknown", "verdict": "UNKNOWN_%s" % type_, "text": "", "sources": srcs, "trace": []}
 
 
-def conclude(turn: Dict[str, Any], llm: Optional[Dict[str, Any]], records: Records, *, model: str, human_present: bool = False) -> Tuple[str, Dict[str, Any]]:
+def conclude(turn: Dict[str, Any], llm: Optional[Dict[str, Any]], records: Records, *, model: str, human_present: bool = False, read_mode: str = "strict", assume: Any = None) -> Tuple[str, Dict[str, Any]]:
     """読解・（LLM の返答）・検証・方針 -> (本文, vera 欄)。`llm` は {"ok","content","error","raw_status"} か None（呼ばなかったとき）。"""
     from . import basis_policy as bp
     rk, reading, grammar, layer = turn["request_kind"], turn["reading"], turn["grammar"], turn["layer"]
@@ -463,7 +475,7 @@ def conclude(turn: Dict[str, Any], llm: Optional[Dict[str, Any]], records: Recor
                 if not text:
                     fixed("LLM_EMPTY", "empty content")
                 else:
-                    provenance = verify(text, records, rk, model)
+                    provenance = verify(text, records, rk, model, read_mode=read_mode, assume=assume) if read_mode == "assume" else verify(text, records, rk, model)
                     if factual:
                         shown = _finish_factual(turn, text, provenance, records, model, human_present, outcome, fixed, abstain_policy, grammar)
                         if shown is not None:

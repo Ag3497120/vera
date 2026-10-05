@@ -1,0 +1,26 @@
+=== case H
+read 兄が土間で歩いた。 -> read_mode assumed assumptions [{'word': '土間', 'kind': 'noun_type', 'assumed': 'PLACE', 'alternatives': [], 'source': 'llm:qwen3.5:4b', 'ledger_id': '8821c6038e5e479e'}] reasons None
+read 母が広間で名乗った。 -> read_mode assumed assumptions [{'word': '広間', 'kind': 'noun_type', 'assumed': 'PLACE', 'alternatives': [], 'source': 'llm:qwen3.5:4b', 'ledger_id': '0238023657224715'}] reasons None
+seed assumption 土間 PLACE llm:qwen3.5:4b
+confirm 土間 -> 0 human_confirmed
+promote 土間 -> 0 {"layer_confirmed": 0, "layer_estimated": 0, "layer_human": 1}
+measured assumption 広間 PLACE llm:qwen3.5:4b ledger_id 0238023657224715
+growth before promote: assumption {'rows': 2, 'words': 2, 'promoted_words': 1, 'assumption_rate': 0.5} None
+confirm 広間 -> 0 human_confirmed
+promote 広間 -> 0 {"layer_confirmed": 0, "layer_estimated": 0, "layer_human": 1}
+read after promote -> read_mode None readable True assumptions None reasons None
+growth after promote: assumption {'rows': 2, 'words': 2, 'promoted_words': 2, 'assumption_rate': 0.0}
+RESULT H: next read has read_mode=None (a strict reading has none)
+=== case S
+read ハルはミナへ荷物を運んだ。 -> read_mode assumed assumptions [{'word': 'ミナ', 'kind': 'name_type', 'assumed': 'PLACE', 'alternatives': ['GROUP_ORG', 'PERSON'], 'source': 'llm:qwen3.5:4b', 'ledger_id': '74196d644fcc4984'}] reasons None
+read ハルはリクへ荷物を運んだ。 -> read_mode assumed assumptions [{'word': 'リク', 'kind': 'name_type', 'assumed': 'PLACE', 'alternatives': ['GROUP_ORG', 'PERSON'], 'source': 'llm:qwen3.5:4b', 'ledger_id': '37b7229e1fd649a6'}] reasons None
+seed assumption ミナ PLACE llm:qwen3.5:4b
+confirm ミナ -> 0 human_confirmed
+promote ミナ -> 0 {"layer_confirmed": 0, "layer_estimated": 0, "layer_human": 1}
+measured assumption リク PLACE llm:qwen3.5:4b ledger_id 37b7229e1fd649a6
+growth before promote: assumption {'rows': 2, 'words': 2, 'promoted_words': 1, 'assumption_rate': 0.5} None
+confirm リク -> 0 human_confirmed
+promote リク -> 0 {"layer_confirmed": 0, "layer_estimated": 0, "layer_human": 1}
+read after promote -> read_mode assumed readable True assumptions [{'word': 'リク', 'kind': 'name_type', 'assumed': 'PLACE', 'alternatives': ['GROUP_ORG', 'PERSON'], 'source': 'layer', 'ledger_id': '71ad3ac2e12e402d'}] reasons None
+growth after promote: assumption {'rows': 3, 'words': 2, 'promoted_words': 2, 'assumption_rate': 0.0}
+RESULT S: next read has read_mode=assumed (a strict reading has none)

@@ -1,0 +1,16 @@
+none ハルはミナに本を渡した。 run1 UNDETERMINED None readable ['GROUP_ORG', 'PERSON'] pred 渡す sources [{'source': 'llm', 'status': 'AGREED', 'answers': ['PLACE', 'PLACE'], 'result': 'TYPE_NOT_READABLE'}] ASSUMPTION_UNDETERMINED:ミナ:に
+none ハルはミナに本を渡した。 run2 UNDETERMINED None readable ['GROUP_ORG', 'PERSON'] pred 渡す sources [{'source': 'llm', 'status': 'AGREED', 'answers': ['PLACE', 'PLACE'], 'result': 'TYPE_NOT_READABLE'}] ASSUMPTION_UNDETERMINED:ミナ:に
+none ハルはソラに本を渡した。 run1 UNDETERMINED None readable ['GROUP_ORG', 'PERSON'] pred 渡す sources [{'source': 'llm', 'status': 'AGREED', 'answers': ['PLACE', 'PLACE'], 'result': 'TYPE_NOT_READABLE'}] ASSUMPTION_UNDETERMINED:ソラ:に
+none ハルはソラに本を渡した。 run2 UNDETERMINED None readable ['GROUP_ORG', 'PERSON'] pred 渡す sources [{'source': 'llm', 'status': 'AGREED', 'answers': ['PLACE', 'PLACE'], 'result': 'TYPE_NOT_READABLE'}] ASSUMPTION_UNDETERMINED:ソラ:に
+none ハルはナギに住んでいる。 run1 ASSUMED [('ナギ', 'PLACE', ['GROUP_ORG', 'PERSON'], 'llm:qwen3.5:4b')] readable ['PLACE'] pred 住む sources [{'source': 'llm', 'status': 'AGREED', 'answers': ['PLACE', 'PLACE']}] None
+none ハルはナギに住んでいる。 run2 ASSUMED [('ナギ', 'PLACE', ['GROUP_ORG', 'PERSON'], 'llm:qwen3.5:4b')] readable ['PLACE'] pred 住む sources [{'source': 'llm', 'status': 'AGREED', 'answers': ['PLACE', 'PLACE']}] None
+none ハルはナギに手紙を送った。 run1 NOT_APPLICABLE None readable None pred None sources None None
+none ハルはナギに手紙を送った。 run2 NOT_APPLICABLE None readable None pred None sources None None
+r9 ハルはミナに本を渡した。 run1 ASSUMED [('ミナ', 'PERSON', [], 'llm:qwen3.5:4b')] readable ['PERSON'] pred 渡す sources [{'source': 'llm', 'status': 'AGREED', 'answers': ['PERSON', 'PERSON']}] None
+r9 ハルはミナに本を渡した。 run2 ASSUMED [('ミナ', 'PERSON', [], 'llm:qwen3.5:4b')] readable ['PERSON'] pred 渡す sources [{'source': 'llm', 'status': 'AGREED', 'answers': ['PERSON', 'PERSON']}] None
+r9 ハルはソラに本を渡した。 run1 UNDETERMINED None readable ['GROUP_ORG', 'PERSON'] pred 渡す sources [{'source': 'llm', 'status': 'AGREED', 'answers': ['PLACE', 'PLACE'], 'result': 'TYPE_NOT_READABLE'}] ASSUMPTION_UNDETERMINED:ソラ:に
+r9 ハルはソラに本を渡した。 run2 UNDETERMINED None readable ['GROUP_ORG', 'PERSON'] pred 渡す sources [{'source': 'llm', 'status': 'AGREED', 'answers': ['PLACE', 'PLACE'], 'result': 'TYPE_NOT_READABLE'}] ASSUMPTION_UNDETERMINED:ソラ:に
+r9 ハルはナギに住んでいる。 run1 ASSUMED [('ナギ', 'PLACE', ['GROUP_ORG', 'PERSON'], 'llm:qwen3.5:4b')] readable ['PLACE'] pred 住む sources [{'source': 'llm', 'status': 'AGREED', 'answers': ['PLACE', 'PLACE']}] None
+r9 ハルはナギに住んでいる。 run2 ASSUMED [('ナギ', 'PLACE', ['GROUP_ORG', 'PERSON'], 'llm:qwen3.5:4b')] readable ['PLACE'] pred 住む sources [{'source': 'llm', 'status': 'AGREED', 'answers': ['PLACE', 'PLACE']}] None
+r9 ハルはナギに手紙を送った。 run1 NOT_APPLICABLE None readable None pred None sources None None
+r9 ハルはナギに手紙を送った。 run2 NOT_APPLICABLE None readable None pred None sources None None

@@ -21,9 +21,20 @@ from typing import Any, Callable, Dict, List, Optional, Sequence
 from .llm_choice import ChoiceLedger, LedgerIntegrityError
 
 SCHEMA = "verantyx.testimony_ledger/1"
-ROW_TYPES = ("header", "testimony", "not_adopted", "backend_failed", "reread_agreed", "distribution_backed", "human_confirmed", "promotable", "promoted_to_layer")
+ROW_TYPES = ("header", "testimony", "not_adopted", "backend_failed", "reread_agreed", "distribution_backed", "human_confirmed", "promotable", "promoted_to_layer", "assumption")
+TESTIMONY_TYPES = ("testimony", "assumption")       # W3-e2 (K334): an assumption row is folded, confirmed and promoted like a testimony (only when its declared type is ONE noun type)
 STATES = ("unconfirmed", "reread_agreed", "distribution_backed", "human_confirmed")
 DEFAULT_PROMOTE_N = 3
+
+
+def foldable(e: Dict[str, Any]) -> bool:
+    """W3-e2 (D5): a testimony row, or an assumption row whose declared type is exactly one of the 18 noun types (never `UNTYPED_VERB`, never a `+` joined type: those are shown, not folded)."""
+    if e.get("type") == "testimony":
+        return True
+    if e.get("type") != "assumption":
+        return False
+    from .coarse_types import NOUN_TYPES
+    return (e.get("declaration") or {}).get("type") in NOUN_TYPES
 
 
 def _nfkc(s: Any) -> str:
@@ -94,7 +105,7 @@ class TestimonyLedger:
         if status == "ADOPTED":
             decl = decision["declaration"]
             k = key_of(decision["word"], decision["candidate"], decl["type"], decl.get("role"))
-            same = [e for e in self.entries() if e.get("type") == "testimony" and e.get("fill_id") != decision["fill_id"] and
+            same = [e for e in self.entries() if foldable(e) and e.get("fill_id") != decision["fill_id"] and
                     key_of(e["word"], e["candidate"], e["declaration"]["type"], e["declaration"].get("role")) == k]
             sha = (decision.get("context") or {}).get("sentence_sha256")
             seen = {(e.get("context") or {}).get("sentence_sha256") for e in same} | {(e.get("context") or {}).get("sentence_sha256") for e in self.entries()
@@ -102,6 +113,29 @@ class TestimonyLedger:
             if same and sha not in seen:
                 extra.append(self._append({"type": "reread_agreed", "fill_id": decision["fill_id"], "key": k, "word": decision["word"], "candidate": decision["candidate"],
                                            "context": decision.get("context")}))
+        return {"row": row, "extra": extra}
+
+    def record_assumption(self, a: Dict[str, Any]) -> Dict[str, Any]:
+        """W3-e2 (K334, D5): one assumption of stage E2 -> one `assumption` row (`kind: assumption`): `{word, kind: name_type|nonce_predicate|noun_type, assumed, source, alternatives,
+        sentence_sha256, doc_id, sentence (only when the caller does not mask), model}`. The declared type is the assumed type; when it is one noun type the row is folded like a testimony
+        (a second sentence with the same key writes `reread_agreed`; N of them, a distribution or a human confirmation make it promotable). Returns {'row', 'extra'}."""
+        word, assumed = a["word"], a["assumed"]
+        fill_id = a.get("fill_id") or self._new_id()
+        ctx = {"doc_id": a.get("doc_id"), "sentence_sha256": a["sentence_sha256"]}
+        if a.get("sentence") is not None:
+            ctx["sentence"] = a["sentence"]
+        row = self._append({"type": "assumption", "kind": "assumption", "assumption_kind": a["kind"], "fill_id": fill_id, "word": word, "candidate": word,
+                            "declaration": {"type": assumed, "role": None}, "source": a["source"], "alternatives": list(a.get("alternatives") or []),
+                            "context": ctx, "provenance": {"stage": "W3-e2", "model": a.get("model")}, "basis": "ASSUMPTION"})
+        extra: List[Dict[str, Any]] = []
+        if foldable(row):
+            k = key_of(word, word, assumed, None)
+            same = [e for e in self.entries() if foldable(e) and e.get("fill_id") != fill_id and key_of(e["word"], e["candidate"], e["declaration"]["type"], e["declaration"].get("role")) == k]
+            seen = {(e.get("context") or {}).get("sentence_sha256") for e in same} | {(e.get("context") or {}).get("sentence_sha256") for e in self.entries()
+                                                                                    if e.get("type") == "reread_agreed" and e.get("key") == k}
+            if same and a["sentence_sha256"] not in seen:
+                extra.append(self._append({"type": "reread_agreed", "fill_id": fill_id, "key": k, "word": word, "candidate": word, "context": ctx}))
+            extra += self.promote_pending()
         return {"row": row, "extra": extra}
 
     def mark_distribution_backed(self, word: str, candidate: str, declared_type: str, role: Optional[str], fill_id: str, placement_answer: Dict[str, Any]) -> Optional[Dict[str, Any]]:
@@ -115,7 +149,7 @@ class TestimonyLedger:
 
     def confirm(self, fill_id: str) -> Dict[str, Any]:
         """A human confirms an adopted testimony (`vera ledger confirm <id>`): a `human_confirmed` row with the ledger's `store_id` and a new `confirm_id`."""
-        rows = [e for e in self.entries() if e.get("type") == "testimony" and e.get("fill_id") == fill_id]
+        rows = [e for e in self.entries() if foldable(e) and e.get("fill_id") == fill_id]
         if not rows:
             raise LedgerError("NO_SUCH_TESTIMONY", fill_id)
         t = rows[0]
@@ -130,17 +164,22 @@ class TestimonyLedger:
         entries = self.entries()
         groups: Dict[str, Dict[str, Any]] = {}
         for e in entries:
-            if e.get("type") == "testimony":
+            if foldable(e):
                 d = e["declaration"]
                 k = key_of(e["word"], e["candidate"], d["type"], d.get("role"))
                 g = groups.setdefault(k, {"key": k, "word": e["word"], "candidate": e["candidate"], "declared_type": d["type"], "role": d.get("role"), "fill_ids": [],
                                           "reread_agreed": 0, "distribution_backed": False, "human_confirmed": False, "history": []})
-                g["fill_ids"].append(e["fill_id"]); g["history"].append({"seq": e["seq"], "type": "testimony", "fill_id": e["fill_id"]})
+                g["fill_ids"].append(e["fill_id"]); g["history"].append({"seq": e["seq"], "type": e["type"], "fill_id": e["fill_id"]})
+        # W3-e2 round 3 (ruling 5): a re-reading of a SURFACE assumption (source == 'surface') is shown in `reread_agreed` but not counted toward N (the surface would confirm itself)
+        surface_fills = {e.get("fill_id") for e in entries if e.get("type") == "assumption" and e.get("source") == "surface"}
+        counted: Dict[str, int] = {}
         for e in entries:
             g = groups.get(e.get("key")) if e.get("type") in ("reread_agreed", "distribution_backed", "human_confirmed", "promotable") else None
             if g is None: continue
             g["history"].append({"seq": e["seq"], "type": e["type"], "fill_id": e.get("fill_id")})
-            if e["type"] == "reread_agreed": g["reread_agreed"] += 1
+            if e["type"] == "reread_agreed":
+                g["reread_agreed"] += 1
+                if e.get("fill_id") not in surface_fills: counted[g["key"]] = counted.get(g["key"], 0) + 1
             elif e["type"] == "distribution_backed": g["distribution_backed"] = True
             elif e["type"] == "human_confirmed": g["human_confirmed"] = True
         by_word: Dict[str, set] = {}
@@ -149,9 +188,12 @@ class TestimonyLedger:
         for g in groups.values():
             g["state"] = ("human_confirmed" if g["human_confirmed"] else "distribution_backed" if g["distribution_backed"] else
                           "reread_agreed:%d" % g["reread_agreed"] if g["reread_agreed"] else "unconfirmed")
-            earned = g["human_confirmed"] or g["distribution_backed"] or g["reread_agreed"] >= self.promote_n
+            n_counted = counted.get(g["key"], 0)
+            earned = g["human_confirmed"] or g["distribution_backed"] or n_counted >= self.promote_n
             conflict = len(by_word[_nfkc(g["word"])]) > 1
             g["blocked_by"] = "CONFLICTING_TESTIMONY" if (earned and conflict and not g["human_confirmed"]) else None
+            if not earned and g["reread_agreed"] >= self.promote_n:
+                g["blocked_by"] = "SURFACE_ASSUMPTION"
             g["promotable"] = bool(earned and g["blocked_by"] is None)
         return groups
 
@@ -184,7 +226,7 @@ class TestimonyLedger:
         in_layer = {(e.get("key"), e.get("layer_name")) for e in entries if e.get("type") == "promoted_to_layer"}
         tests = {}
         for e in entries:
-            if e.get("type") == "testimony":
+            if foldable(e):
                 tests.setdefault(key_of(e["word"], e["candidate"], e["declaration"]["type"], e["declaration"].get("role")), e)
         out: List[Dict[str, Any]] = []
         for k, g in self.fold().items():
@@ -193,7 +235,7 @@ class TestimonyLedger:
             item = {"key": k, "word": _nfkc(g["word"]), "candidate": g["candidate"], "declared_type": g["declared_type"], "fill_id": g["fill_ids"][0], "origin": None, "skip": None,
                     "decided_by": [], "evidence": {"ledger_key": k, "reread_agreed": g["reread_agreed"], "state": g["state"], "model": (t.get("provenance") or {}).get("model")},
                     "role_frame": decl.get("frame") if isinstance(decl.get("frame"), dict) and decl.get("frame") else None,
-                    "from_seq": [h["seq"] for h in g["history"] if h["type"] in ("testimony", "reread_agreed", "distribution_backed", "human_confirmed")]}
+                    "from_seq": [h["seq"] for h in g["history"] if h["type"] in ("testimony", "assumption", "reread_agreed", "distribution_backed", "human_confirmed")]}
             if not g["promotable"]:
                 item["skip"] = "NOT_PROMOTABLE:%s" % (g["blocked_by"] or g["state"])
             else:
@@ -231,7 +273,7 @@ class TestimonyLedger:
             return None
         fold = None
         for e in rows:
-            if e["type"] == "testimony":
+            if foldable(e):
                 k = key_of(e["word"], e["candidate"], e["declaration"]["type"], e["declaration"].get("role"))
                 fold = self.fold().get(k)
         return {"fill_id": fill_id, "rows": rows, "fold": fold}

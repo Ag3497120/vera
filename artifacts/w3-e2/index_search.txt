@@ -1,0 +1,65 @@
+### 仮定
+{
+  "verdict": "ANSWER",
+  "query": "仮定",
+  "searched": 698,
+  "hits": [
+    {
+      "kind": "results",
+      "name": "RESULTS",
+      "about": "実測結果: 汎化 — 手で与えれば通る。自動化はまだ届かない",
+      "where": "experiments/generalisation/RESULTS.md"
+    },
+    {
+### assume
+{
+  "verdict": "ANSWER",
+  "query": "assume",
+  "searched": 698,
+  "hits": [
+    {
+      "kind": "door",
+      "name": "survey_assets",
+      "about": "What this machine actually has — presence only, never ability.",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+### 造語
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "造語",
+  "searched": 698,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 57,
+    "module": 296,
+    "prereg": 80,
+    "results": 44
+  },
+### 代役
+{
+  "verdict": "ANSWER",
+  "query": "代役",
+  "searched": 698,
+  "hits": [
+    {
+      "kind": "results",
+      "name": "RESULTS",
+      "about": "実測結果: junk門 — Aは採用(中立)、Bは棄却(実害)",
+      "where": "experiments/junk_gate/RESULTS.md"
+    }
+  ],
+### read_mode
+{
+  "verdict": "ANSWER",
+  "query": "read_mode",
+  "searched": 698,
+  "hits": [
+    {
+      "kind": "module",
+      "name": "contract_reader",
+      "about": "Conservative raw reader; whole-clause accounting blocks silent requirement loss.",
+      "where": "verantyx/contract_reader.py"
+    },
+    {
