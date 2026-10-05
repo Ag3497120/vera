@@ -1,0 +1,7 @@
+ran 15 layer none
+ran 15 layer /Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/law_k2/law_k2.sqlite
+score exit code (0 = no wrong answer in any run): 0
+{"file": "/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/artifacts/w12-c1/x4_pottery/qa_law.jsonl", "questions": 15, "correct": 10, "wrong": 0, "abstained": 5, "answerable": {"correct": 10, "wrong": 0, "abstained": 0}, "unanswerable": {"correct": 0, "wrong": 0, "abstained": 5}, "verdicts": {"ANSWER": 10, "UNKNOWN_NO_EVIDENCE": 5}, "wrong_items": [], "to_check": []}
+SUMMARY (questions 15)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/artifacts/w12-c1/x4_pottery/qa_none.jsonl: correct 10 wrong 0 abstained 5 | gained vs first [] lost []
+/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/artifacts/w12-c1/x4_pottery/qa_law.jsonl: correct 10 wrong 0 abstained 5 | gained vs first [] lost []

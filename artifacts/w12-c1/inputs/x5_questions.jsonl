@@ -1,0 +1,50 @@
+{"id": "bicycle:a01", "set": "bicycle", "question": "誰がディレイラーを調整した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["整備士"]}}
+{"id": "bicycle:a02", "set": "bicycle", "question": "誰がスプロケットを交換した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["店主"]}}
+{"id": "bicycle:a03", "set": "bicycle", "question": "誰がチェーンリングを点検した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["客"]}}
+{"id": "bicycle:a04", "set": "bicycle", "question": "誰がボトムブラケットを外した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["整備士"]}}
+{"id": "bicycle:a05", "set": "bicycle", "question": "誰がチェーンを清掃した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["見習い"]}}
+{"id": "bicycle:a06", "set": "bicycle", "question": "誰がリムを調整した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["整備士"]}}
+{"id": "bicycle:a07", "set": "bicycle", "question": "誰がニップルを回した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["店主"]}}
+{"id": "bicycle:a08", "set": "bicycle", "question": "誰がハブに注油した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["見習い"]}}
+{"id": "bicycle:a09", "set": "bicycle", "question": "誰がブレーキシューを交換した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["店主"]}}
+{"id": "bicycle:a10", "set": "bicycle", "question": "誰がアウターケーシングを切った？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["整備士"]}}
+{"id": "bicycle:a11", "set": "bicycle", "question": "誰がカセットを外した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["店主"]}}
+{"id": "bicycle:a12", "set": "bicycle", "question": "誰がタイヤを外した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["見習い"]}}
+{"id": "bicycle:a13", "set": "bicycle", "question": "誰がペダルを外した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["店主"]}}
+{"id": "bicycle:a14", "set": "bicycle", "question": "誰がサドルの高さを調整した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["客"]}}
+{"id": "bicycle:a15", "set": "bicycle", "question": "誰がバーテープを巻いた？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["整備士"]}}
+{"id": "bicycle:a16", "set": "bicycle", "question": "誰がシーラントを注入した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["整備士"]}}
+{"id": "bicycle:a17", "set": "bicycle", "question": "誰がブレーキホースを切った？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["見習い"]}}
+{"id": "bicycle:a18", "set": "bicycle", "question": "誰がブレーキフルードを補充した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["店主"]}}
+{"id": "bicycle:a19", "set": "bicycle", "question": "店主は何を補充した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["ブレーキフルード"]}}
+{"id": "bicycle:a20", "set": "bicycle", "question": "誰がエアロスポークを交換した？", "documents": ["inputs/domain_bicycle.txt"], "expect": {"verdict": "ANSWER", "values": ["店主"]}}
+{"id": "bicycle:n01", "set": "bicycle", "question": "誰がディレイラーを溶接した？", "documents": ["inputs/domain_bicycle.txt"], "expect": "ABSTAIN"}
+{"id": "bicycle:n02", "set": "bicycle", "question": "誰がスプロケットを塗装した？", "documents": ["inputs/domain_bicycle.txt"], "expect": "ABSTAIN"}
+{"id": "bicycle:n03", "set": "bicycle", "question": "誰がブレーキシューを磨いた？", "documents": ["inputs/domain_bicycle.txt"], "expect": "ABSTAIN"}
+{"id": "bicycle:n04", "set": "bicycle", "question": "誰がフレームを交換した？", "documents": ["inputs/domain_bicycle.txt"], "expect": "ABSTAIN"}
+{"id": "bicycle:n05", "set": "bicycle", "question": "誰がハンドルバーを外した？", "documents": ["inputs/domain_bicycle.txt"], "expect": "ABSTAIN"}
+{"id": "bicycle:n06", "set": "bicycle", "question": "誰がリムを交換した？", "documents": ["inputs/domain_bicycle.txt"], "expect": "ABSTAIN"}
+{"id": "bicycle:n07", "set": "bicycle", "question": "誰がペダルを調整した？", "documents": ["inputs/domain_bicycle.txt"], "expect": "ABSTAIN"}
+{"id": "bicycle:n08", "set": "bicycle", "question": "誰がサドルを交換した？", "documents": ["inputs/domain_bicycle.txt"], "expect": "ABSTAIN"}
+{"id": "bicycle:n09", "set": "bicycle", "question": "誰がチューブを溶接した？", "documents": ["inputs/domain_bicycle.txt"], "expect": "ABSTAIN"}
+{"id": "bicycle:n10", "set": "bicycle", "question": "誰がステムを交換した？", "documents": ["inputs/domain_bicycle.txt"], "expect": "ABSTAIN"}
+{"id": "pottery:q01", "set": "pottery", "question": "誰が轆轤を回した？", "documents": ["inputs/domain_pottery.txt"], "expect": {"verdict": "ANSWER", "values": ["陶芸家"]}}
+{"id": "pottery:q02", "set": "pottery", "question": "誰が釉薬を調合した？", "documents": ["inputs/domain_pottery.txt"], "expect": {"verdict": "ANSWER", "values": ["弟子"]}}
+{"id": "pottery:q03", "set": "pottery", "question": "誰が高台を削った？", "documents": ["inputs/domain_pottery.txt"], "expect": {"verdict": "ANSWER", "values": ["師匠"]}}
+{"id": "pottery:q04", "set": "pottery", "question": "誰が湯呑を成形した？", "documents": ["inputs/domain_pottery.txt"], "expect": {"verdict": "ANSWER", "values": ["陶芸家"]}}
+{"id": "pottery:q05", "set": "pottery", "question": "誰が化粧土を塗った？", "documents": ["inputs/domain_pottery.txt"], "expect": {"verdict": "ANSWER", "values": ["陶芸家"]}}
+{"id": "pottery:q06", "set": "pottery", "question": "誰が石膏型を洗った？", "documents": ["inputs/domain_pottery.txt"], "expect": {"verdict": "ANSWER", "values": ["弟子"]}}
+{"id": "pottery:q07", "set": "pottery", "question": "誰が登り窯を焚いた？", "documents": ["inputs/domain_pottery.txt"], "expect": {"verdict": "ANSWER", "values": ["師匠"]}}
+{"id": "pottery:q08", "set": "pottery", "question": "誰が呉須を溶いた？", "documents": ["inputs/domain_pottery.txt"], "expect": {"verdict": "ANSWER", "values": ["弟子"]}}
+{"id": "pottery:q09", "set": "pottery", "question": "誰が匣鉢を運んだ？", "documents": ["inputs/domain_pottery.txt"], "expect": {"verdict": "ANSWER", "values": ["弟子"]}}
+{"id": "pottery:q10", "set": "pottery", "question": "誰が天目茶碗を仕上げた？", "documents": ["inputs/domain_pottery.txt"], "expect": {"verdict": "ANSWER", "values": ["陶芸家"]}}
+{"id": "pottery:u01", "set": "pottery", "question": "誰が轆轤を壊した？", "documents": ["inputs/domain_pottery.txt"], "expect": "ABSTAIN"}
+{"id": "pottery:u02", "set": "pottery", "question": "誰が釉薬を捨てた？", "documents": ["inputs/domain_pottery.txt"], "expect": "ABSTAIN"}
+{"id": "pottery:u03", "set": "pottery", "question": "誰が湯呑を割った？", "documents": ["inputs/domain_pottery.txt"], "expect": "ABSTAIN"}
+{"id": "pottery:u04", "set": "pottery", "question": "誰が匣鉢を洗った？", "documents": ["inputs/domain_pottery.txt"], "expect": "ABSTAIN"}
+{"id": "pottery:u05", "set": "pottery", "question": "誰が化粧土を買った？", "documents": ["inputs/domain_pottery.txt"], "expect": "ABSTAIN"}
+{"id": "f01:Q036", "set": "f01", "question": "大工は何を直した？", "documents": ["inputs/docs_f01"], "expect": {"verdict": "ANSWER", "values": ["屋根"]}}
+{"id": "f01:Q070", "set": "f01", "question": "誰が窓を開ける？", "documents": ["inputs/docs_f01"], "expect": "ABSTAIN"}
+{"id": "f01:Q038", "set": "f01", "question": "料理人は何を焼いた？", "documents": ["inputs/docs_f01"], "expect": {"verdict": "ANSWER", "values": ["魚"]}}
+{"id": "f01:Q052", "set": "f01", "question": "花子は何を壊した？", "documents": ["inputs/docs_f01"], "expect": "ABSTAIN"}
+{"id": "f01:Q020", "set": "f01", "question": "鈴木さんは何を洗った？", "documents": ["inputs/docs_f01"], "expect": {"verdict": "ANSWER", "values": ["果物"]}}

@@ -1,0 +1,43 @@
+{
+ "base_content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+ "domain": "law_k2",
+ "domain_direct_candidates": 23487,
+ "domain_placement": "/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/law_k2/placement",
+ "domain_placement_content_sha256": "e63a50b25266b915dddd590ccaf028dc3972ff20c0c10357a55a70305a33b860",
+ "growth": {
+  "base_content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+  "last_grown": "2026-10-05T13:37:03+0900",
+  "layer": "law_k2",
+  "layer_status": "OK",
+  "ledger": {
+   "by_type": {
+    "header": 1,
+    "promoted_to_layer": 495
+   },
+   "chain_mismatch": 0,
+   "chain_mismatch_ids": [],
+   "chain_ok": true,
+   "promoted_to_layer": 495,
+   "rows": 496,
+   "store_id": "fc6d885fbd044d6a"
+  },
+  "rows": 495,
+  "words": {
+   "conflict": 0,
+   "direct": 495,
+   "estimated": 0,
+   "human": 0
+  },
+  "words_total": 495
+ },
+ "layer": "/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/law_k2/law_k2.sqlite",
+ "layer_reused_after_check": false,
+ "layer_sha256": "551ba469191f76b87a558a176a3bbc319efc68b25977a7513d5d57316106e433",
+ "not_written": {
+  "BASE_DECIDED": 22984,
+  "TYPE_NOT_AMONG_BASE_CANDIDATES": 8
+ },
+ "scene": "法律と暮らし",
+ "seconds": 0.6,
+ "written": 495
+}

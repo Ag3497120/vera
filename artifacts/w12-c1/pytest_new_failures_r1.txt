@@ -1,0 +1,4 @@
+# the two failures not in the baseline list also fail on the base tree 5e7df09 (git archive), run alone: not caused by W12-c1
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+FAILED tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread
+2 failed in 5.77s

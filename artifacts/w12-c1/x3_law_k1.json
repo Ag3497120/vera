@@ -1,0 +1,202 @@
+{
+ "capacity": {
+  "CAPACITY": 24,
+  "MAX_ARMS": 6,
+  "N_FACES": 4,
+  "layers": {
+   "control.sqlite": {
+    "V_direct_words": 16805,
+    "fits_one_node": false,
+    "layers_for_V": 5
+   },
+   "law.sqlite": {
+    "V_direct_words": 16748,
+    "fits_one_node": false,
+    "layers_for_V": 5
+   }
+  },
+  "rule": "depth = ceil(log_6(V / 4)); one node routes on at most CAPACITY = 24 distinct terms (hierarchy docstring)"
+ },
+ "control": {
+  "builder": {
+   "max_rss_bytes": 11278532608,
+   "seconds_real": 343.22
+  },
+  "domain_db": {
+   "bytes": 8065024,
+   "control_of_scene": "法律と暮らし",
+   "ids_max": 317380,
+   "ids_min": 18,
+   "n": 9694,
+   "population": 307729,
+   "rows": 9694,
+   "rows_sha256": "574a8aed953b1c0fb49362a6bf2a977b3bd716849fe4cdd943a711e7acd69afd",
+   "seed": 20261005,
+   "sha256": "2d534d49fb4df911c362df4b255e3b44116ded47eb42f13988de7ad2ef88016c",
+   "source_db": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/general_qa.db",
+   "source_db_bytes": 507125760
+  },
+  "layer": {
+   "base_content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+   "domain": "control",
+   "domain_direct_candidates": 998597,
+   "domain_placement": "/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/control/placement",
+   "domain_placement_content_sha256": "f1d076f06e553c1301aeb044dc37d3310681208883110a422fe5c94f2e600e16",
+   "growth": {
+    "base_content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+    "last_grown": "2026-10-05T13:33:32+0900",
+    "layer": "control",
+    "layer_status": "OK",
+    "ledger": {
+     "by_type": {
+      "header": 1,
+      "promoted_to_layer": 16805
+     },
+     "chain_mismatch": 0,
+     "chain_mismatch_ids": [],
+     "chain_ok": true,
+     "promoted_to_layer": 16805,
+     "rows": 16806,
+     "store_id": "1ef08ba407a34a20"
+    },
+    "rows": 16805,
+    "words": {
+     "conflict": 0,
+     "direct": 16805,
+     "estimated": 0,
+     "human": 0
+    },
+    "words_total": 16805
+   },
+   "layer": "/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/control/control.sqlite",
+   "layer_reused_after_check": false,
+   "layer_sha256": "7139d12b08429261eb4a926662f4867a0f213e655420d9af3ed772ac13d6c766",
+   "not_written": {
+    "BASE_DECIDED": 981772,
+    "DUPLICATE_AFTER_NFKC": 8,
+    "TYPE_NOT_AMONG_BASE_CANDIDATES": 12
+   },
+   "scene": "(control: 9694 random rows of general_qa outside 法律と暮らし, seed 20261005)",
+   "seconds": 24.3,
+   "written": 16805
+  },
+  "placement": {
+   "args_generated_flags": {
+    "frozen": null,
+    "generated": null,
+    "generated_frames": null,
+    "generated_frames_ledger": null,
+    "generated_ledger": null
+   },
+   "builder_sha256": "3ec866bd04f9b945bdd583e43e59e35647dfb3a0fa681fcaecc75d1c37100143",
+   "config_sha256": "f57dc99854ac24a5f5749ea2352fdbf15b77ba854e51784082951c43cdd5e888",
+   "content_sha256": "f1d076f06e553c1301aeb044dc37d3310681208883110a422fe5c94f2e600e16",
+   "families": "general_qa",
+   "headwords_by_state_origin": {
+    "DECIDED/direct": 998597,
+    "MULTIPLE/direct": 4186,
+    "UNPLACED/": 549495
+   }
+  },
+  "summary": {
+   "domain_direct_candidates": 998597,
+   "layer_words_direct": 16805,
+   "not_written": {
+    "BASE_DECIDED": 981772,
+    "DUPLICATE_AFTER_NFKC": 8,
+    "TYPE_NOT_AMONG_BASE_CANDIDATES": 12
+   },
+   "written": 16805
+  }
+ },
+ "law": {
+  "builder": {
+   "max_rss_bytes": 11160371200,
+   "seconds_real": 311.05
+  },
+  "domain_db": {
+   "bytes": 8544256,
+   "ids_max": 312321,
+   "ids_min": 276,
+   "rows": 9694,
+   "rows_sha256": "3578135955d975d4264a51d22275970234d1420bc604f53e30849000d5b480be",
+   "scene": "法律と暮らし",
+   "sha256": "4eb7b10322ee7d83698d275748f6363e0bff6048ca507c5daf80c7f4dffd0b93",
+   "source_db": "/Users/motonisihikoudai/Projects/vera-impl/build/p4-W1c/general_qa.db",
+   "source_db_bytes": 507125760
+  },
+  "layer": {
+   "base_content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+   "domain": "law",
+   "domain_direct_candidates": 995838,
+   "domain_placement": "/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/law/placement",
+   "domain_placement_content_sha256": "5f90eb083fda2207ef8fada9d69b75996b7cc017a80153da10f01d129e3fb694",
+   "growth": {
+    "base_content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+    "last_grown": "2026-10-05T13:33:31+0900",
+    "layer": "law",
+    "layer_status": "OK",
+    "ledger": {
+     "by_type": {
+      "header": 1,
+      "promoted_to_layer": 16748
+     },
+     "chain_mismatch": 0,
+     "chain_mismatch_ids": [],
+     "chain_ok": true,
+     "promoted_to_layer": 16748,
+     "rows": 16749,
+     "store_id": "21522087ae904a6e"
+    },
+    "rows": 16748,
+    "words": {
+     "conflict": 0,
+     "direct": 16748,
+     "estimated": 0,
+     "human": 0
+    },
+    "words_total": 16748
+   },
+   "layer": "/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/law/law.sqlite",
+   "layer_reused_after_check": false,
+   "layer_sha256": "8f31913e115d6d2997c32b153b37713392f193f0389623b33aa1d2315ae98072",
+   "not_written": {
+    "BASE_DECIDED": 979070,
+    "DUPLICATE_AFTER_NFKC": 8,
+    "TYPE_NOT_AMONG_BASE_CANDIDATES": 12
+   },
+   "scene": "法律と暮らし",
+   "seconds": 24.0,
+   "written": 16748
+  },
+  "placement": {
+   "args_generated_flags": {
+    "frozen": null,
+    "generated": null,
+    "generated_frames": null,
+    "generated_frames_ledger": null,
+    "generated_ledger": null
+   },
+   "builder_sha256": "3ec866bd04f9b945bdd583e43e59e35647dfb3a0fa681fcaecc75d1c37100143",
+   "config_sha256": "f57dc99854ac24a5f5749ea2352fdbf15b77ba854e51784082951c43cdd5e888",
+   "content_sha256": "5f90eb083fda2207ef8fada9d69b75996b7cc017a80153da10f01d129e3fb694",
+   "families": "general_qa",
+   "headwords_by_state_origin": {
+    "DECIDED/direct": 995838,
+    "MULTIPLE/direct": 4205,
+    "UNPLACED/": 549857
+   }
+  },
+  "summary": {
+   "domain_direct_candidates": 995838,
+   "layer_words_direct": 16748,
+   "not_written": {
+    "BASE_DECIDED": 979070,
+    "DUPLICATE_AFTER_NFKC": 8,
+    "TYPE_NOT_AMONG_BASE_CANDIDATES": 12
+   },
+   "written": 16748
+  }
+ },
+ "law_vs_control_note": "a law layer of about the size of the control layer means the layer is an effect of narrowing the material to a subset of general_qa, not of the law scene (K409; vera1's granularity.control reasoning)"
+}

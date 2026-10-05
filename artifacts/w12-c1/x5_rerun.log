@@ -1,0 +1,2 @@
+inproc questions 50 llm_calls 0
+env -u VERA_PLACEMENT_LAYER -u VERA_PLACEMENT_LAYER_ROOT -u  -u       inproc   11.87s user 0.65s system 99% cpu 12.555 total

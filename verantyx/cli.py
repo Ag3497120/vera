@@ -1842,10 +1842,56 @@ def cmd_serve(args) -> int:
     def save() -> None:
         st.save(store_path)
 
+    if getattr(args, "no_llm", False):               # W12-c1: the entrance that never calls an LLM (a new function; the branches below are unchanged)
+        return _serve_no_llm(args, st, save, store_path)
+    if getattr(args, "profile", None) is not None or getattr(args, "tier", None):
+        _print({"kind": "unknown", "verdict": "PROFILE_NEEDS_NO_LLM" if getattr(args, "profile", None) is not None else "TIER_NEEDS_NO_LLM",
+                "reason": "--profile and --tier belong to `serve --no-llm`; without it the entrance is unchanged"})
+        return 2
     if getattr(args, "backend", None) is None:      # W10-f01: without --backend this is exactly the daemon it was
         return serve_http(st, save, port=args.port, default_model=model,
                            jgen_endpoint=args.jgen_endpoint, store_path=store_path)
     return _serve_fusion(args, st, save, store_path)
+
+
+def _serve_no_llm(args, st, save, store_path) -> int:
+    """W12-c1 (docs/INITIAL_LAYERS.md section 6): `vera serve --no-llm [--profile strict|assume] [--tier NAME=SPEC ...] [--document f ...] [--placement P] [--layer L]`.
+    No LLM is ever called: a record answers (QUESTION_CROSS), everything else is a typed abstention. `vera.confidence_tiers` says how many stages of Vera's own structure agreed."""
+    import os
+    from . import confidence_tiers as CT
+    from .vera_server import FusionConfig, serve as serve_http
+
+    def refuse(verdict: str, reason: str) -> int:
+        _print({"kind": "unknown", "verdict": verdict, "reason": reason})
+        return 2
+
+    for flag, given in (("--backend", args.backend is not None), ("--model", args.model is not None), ("--strict", bool(args.strict)), ("--free", bool(args.free)),
+                        ("--fill", bool(args.fill))):
+        if given:
+            return refuse("NO_LLM_WITH_BACKEND", "--no-llm never calls an LLM; it cannot be combined with %s" % flag)
+    profile = args.profile or "strict"
+    documents = list(args.document or [])
+    for item in documents:
+        if not Path(item).exists():
+            return refuse("DOCUMENT_NOT_FOUND", item)
+    if bool(args.sovereign_root) != bool(args.sovereign_store):
+        return refuse("SOVEREIGN_NEEDS_BOTH", "--sovereign-root and --sovereign-store go together")
+    if args.sovereign_root:
+        os.environ["VERA_SOVEREIGN_ROOT"] = args.sovereign_root
+        os.environ["VERA_SOVEREIGN_STORE"] = args.sovereign_store
+    if args.placement:
+        os.environ["VERA_PLACEMENT"] = args.placement
+    try:
+        tiers = [CT.parse_tier(t) for t in (args.tier or [])]
+        if args.layer and not any(n == "layer" for n, _ in tiers):
+            tiers.append(("layer", args.layer))          # the user's own layer given with --layer is one more stage after the base; the base stage never sees it
+        runner = CT.TierRunner(tiers, documents, profile=profile, order=("base", "vocab", "law", "law+user") if args.tier else ("base",), with_default_missing=bool(args.tier))
+    except CT.TierError as exc:
+        return refuse(exc.error, exc.detail)
+    fusion = FusionConfig(model="vera-no-llm", documents=documents, records=None, strict=False)
+    fusion.no_llm, fusion.tiers = True, runner
+    _print({"serve": {"no_llm": True, "profile": profile, "tiers": [{"name": s.name, "kind": s.kind} for s in runner.stages], "documents": len(documents)}})
+    return serve_http(st, save, port=args.port, default_model="vera-no-llm", jgen_endpoint=args.jgen_endpoint, store_path=store_path, fusion=fusion)
 
 
 def _serve_fusion(args, st, save, store_path) -> int:
@@ -2785,6 +2831,10 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--no-mask-user-text", action="store_true", dest="no_mask_user_text", help="W10-f04: send the user's sentence to the backend (the default is to send only the hole, the types and the roles)")
     p.add_argument("--fill-max-holes", type=int, default=30, dest="fill_max_holes", help="W10-f04: holes asked when the documents are loaded (more are counted as skipped_holes)")
     p.add_argument("--layer", default=None, help="W10-f05: a placement layer (a name in $VERA_PLACEMENT_LAYER_ROOT, or a path) put on the base placement: it answers only for the words the base leaves undecided. Sets VERA_PLACEMENT_LAYER." + " `vera.placement_layer` is added to each response.")
+    # W12-c1 (docs/INITIAL_LAYERS.md section 6): the entrance that never calls an LLM. Without --no-llm none of these does anything (--profile and --tier are refused).
+    p.add_argument("--no-llm", action="store_true", dest="no_llm", help="W12-c1: never call an LLM: a record answers, everything else is a typed abstention; `vera.confidence_tiers` is added to each response")
+    p.add_argument("--profile", choices=["strict", "assume"], default=None, help="W12-c1 (with --no-llm): strict (default) or assume (the assumed reading arrives with W3-e3: until then the answer is strict's and says assumptions_status)")
+    p.add_argument("--tier", action="append", default=None, help="W12-c1 (with --no-llm): NAME=SPEC, a stage of the staircase (vocab=<vocab.sqlite>, law=<layer>, law+user=<layer>); repeatable. The base stage is implicit.")
     p.set_defaults(fn=cmd_serve)
 
     p = sub.add_parser("setup", help="interactive settings (LLM, allocation)")

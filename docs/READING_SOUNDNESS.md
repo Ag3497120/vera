@@ -4902,3 +4902,11 @@ W3-b3 と同じ引き金（配置あり・和文・1 区間・深さ 0）。述�
 - 引用の「主語の句を持たない中身」は数えない（`split=0` で棄権）。括弧つきの引用は W3-b3 の形の門で棄権。
 - 3 節以上で形が引用の と が混ざる文は、切れ目の数の不一致（`CLAUSE_SCOPE_AMBIGUOUS:cuts=`）が先に止めるので、`QUOTE_CONTENT_NOT_READ:multi_clause` は 3 節以上では実際には到達しない（防御として残した）。
 <!-- w3c7-results:end -->
+
+## W12-c1 → W3-e2/W3-e3 申し送り（§10L 向け）
+
+規則の事前登録だけ。実装はしない（W3-e2 の後の W3-e3）。全文と根拠は `docs/INITIAL_LAYERS.md` §3・§4。§10L はこの木にまだ無いので、既存の節の中には書かない。
+
+- **仮定の不変性ゲート**: 段 E2（仮定つきの読み）は、同じ証拠で並ぶ別の仮定（同点の崩し方）のすべてに替えても十字が変わらないときだけ採用する。変われば `ASSUMPTION_UNDETERMINED` で棄権。vera1 の配置の不変性（「配置は情報を増やせない」）と同じ論法。決定論の同点崩しは一致を捏造する（`CLAUDE.md`: 73.3% → 23.7%）。
+- **粒度の階段を未知語の出所に（出所 d'）**: 名前・造語を 2 字／1 字の段で見て、既知の形態素と繋がるか（ザクる ← ザク？、カタカナ列の人名の形）。型は繋がれば `ASSUMPTION_SOURCE_D_PRIME`、繋がらなければ `UNKNOWN_NO_EVIDENCE`。対照は `granularity.control`（同じ字の無作為な組み合わせ）。採用は不変性ゲートを通ったときだけ。
+- **語彙層の出所 (c) の使い方**: 語彙層（`build/initial-layers/vocab/vocab.sqlite`、スキーマ `verantyx.vocab_layer/1`）は独立出現 ≥3 の語だけ。`origin_class` が `human`（jawiki）の語を先に使い（`attested_human`）、`generated` だけの語は別の型 `attested_generated` として申告して **合算しない**。`in_base_material: true` の語は r9 の素材にも入っている。

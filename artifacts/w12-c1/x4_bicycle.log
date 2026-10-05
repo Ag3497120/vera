@@ -1,0 +1,8 @@
+ran 30 layer none
+ran 30 layer /Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/law_k2/law_k2.sqlite
+ran 30 layer /Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/combined/law+bicycle.sqlite
+score exit code (0 = no wrong answer in any run): 0
+SUMMARY (questions 30)
+/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/artifacts/w12-c1/x4_bicycle/qa_none.jsonl: correct 8 wrong 0 abstained 22 | gained vs first [] lost []
+/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/artifacts/w12-c1/x4_bicycle/qa_law.jsonl: correct 8 wrong 0 abstained 22 | gained vs first [] lost []
+/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/artifacts/w12-c1/x4_bicycle/qa_user.jsonl: correct 8 wrong 0 abstained 22 | gained vs first [] lost []

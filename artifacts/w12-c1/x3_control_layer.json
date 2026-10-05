@@ -1,0 +1,44 @@
+{
+ "base_content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+ "domain": "control",
+ "domain_direct_candidates": 998597,
+ "domain_placement": "/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/control/placement",
+ "domain_placement_content_sha256": "f1d076f06e553c1301aeb044dc37d3310681208883110a422fe5c94f2e600e16",
+ "growth": {
+  "base_content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+  "last_grown": "2026-10-05T13:33:32+0900",
+  "layer": "control",
+  "layer_status": "OK",
+  "ledger": {
+   "by_type": {
+    "header": 1,
+    "promoted_to_layer": 16805
+   },
+   "chain_mismatch": 0,
+   "chain_mismatch_ids": [],
+   "chain_ok": true,
+   "promoted_to_layer": 16805,
+   "rows": 16806,
+   "store_id": "1ef08ba407a34a20"
+  },
+  "rows": 16805,
+  "words": {
+   "conflict": 0,
+   "direct": 16805,
+   "estimated": 0,
+   "human": 0
+  },
+  "words_total": 16805
+ },
+ "layer": "/Users/motonisihikoudai/Projects/vera-impl/wt/W12-c1-S/build/initial-layers/control/control.sqlite",
+ "layer_reused_after_check": false,
+ "layer_sha256": "7139d12b08429261eb4a926662f4867a0f213e655420d9af3ed772ac13d6c766",
+ "not_written": {
+  "BASE_DECIDED": 981772,
+  "DUPLICATE_AFTER_NFKC": 8,
+  "TYPE_NOT_AMONG_BASE_CANDIDATES": 12
+ },
+ "scene": "(control: 9694 random rows of general_qa outside 法律と暮らし, seed 20261005)",
+ "seconds": 24.3,
+ "written": 16805
+}

@@ -1,0 +1,4 @@
+import os
+def test_env_clean():
+    for k in ('VERA_PLACEMENT_LAYER','VERA_PLACEMENT_LAYER_ROOT','VERA_PLACEMENT','VERA_SOVEREIGN_ROOT','VERA_SOVEREIGN_STORE'):
+        assert os.environ.get(k) is None, k

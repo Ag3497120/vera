@@ -1,0 +1,62 @@
+# NOT ground truth: a look by the implementer at the words drawn with random.Random(20261004).sample(sorted(direct words of the law layer), min(60, n)). judgement (correct / doubtful / wrong) and reason were filled by hand.
+word	type	r9_state	r9_top	judgement	reason
+グレブナーきてい	ABSTRACT	UNKNOWN			
+Registered Trademark	INFO_LANGUAGE	UNKNOWN			
+ユハ・カンクネン	PLACE	UNKNOWN			
+律速	ABSTRACT	UNPLACED			
+ヘトリスヘイジ	PERSON	UNPLACED			
+シャトルかつらだい	GROUP_ORG	UNKNOWN			
+アッティリオ・ベッテガ	PLACE	UNKNOWN			
+袴腰山 (曖昧さ回避)	PERSON	UNKNOWN			
+ウンピョンしょうぼうしょ	PLACE	UNKNOWN			
+御機嫌好う	EVENT_ACT	UNKNOWN			
+可附番	ABSTRACT	UNKNOWN			
+セイブサンゴヘビ	ANIMAL	UNKNOWN			
+ダイエリシス	INFO_LANGUAGE	UNKNOWN			
+すいちゅうカメラ	ARTIFACT	UNKNOWN			
+バルテリ・ボータス	PLACE	UNKNOWN			
+コルガス	SUBSTANCE_FOOD	UNPLACED			
+ブックマークレット	QUANTITY	UNPLACED			
+手助け	EVENT_ACT	MULTIPLE	EVENT_ACT,NATURAL_PHENOMENON		
+フィアット・126	ARTIFACT	UNKNOWN			
+シボレー・アスカ	ARTIFACT	UNKNOWN			
+オンダラビ・スリ	QUANTITY	UNKNOWN			
+バズマーケティング	PERSON	UNKNOWN			
+うんちしたのはだれよ!	WORK	UNKNOWN			
+エマヌエル・ピロ	PLACE	UNKNOWN			
+桑原晴民	PLACE	UNKNOWN			
+水稲農林313号	QUANTITY	UNKNOWN			
+ツー・リーディング	ARTIFACT	UNKNOWN			
+多重円板	ABSTRACT	UNKNOWN			
+Uptime	QUANTITY	UNKNOWN			
+トヨタ・カローラレビン	ARTIFACT	UNKNOWN			
+ホラヒメグモ科	ANIMAL	UNKNOWN			
+崔斗天	PERSON	UNKNOWN			
+外他流	GROUP_ORG	UNKNOWN			
+ヒュンダイ・ラフェスタ	ARTIFACT	UNKNOWN			
+ホンダ・フリードハイブリッド	ARTIFACT	UNKNOWN			
+三菱・コルディア	ARTIFACT	UNKNOWN			
+7人制サッカー	EVENT_ACT	UNKNOWN			
+2023年山梨県知事選挙	EVENT_ACT	UNKNOWN			
+串	ARTIFACT	MULTIPLE	ANIMAL,ARTIFACT,PLACE		
+ザック・フェア	PERSON	UNKNOWN			
+アタナス・ストイメノフ	PLANT	UNKNOWN			
+マリエル・ラベック	ARTIFACT	UNKNOWN			
+沸騰点	QUANTITY	UNKNOWN			
+やかまし村のクリスマス	WORK	UNKNOWN			
+チップ・ガナッシ	PLACE	UNKNOWN			
+アリラン祭	EVENT_ACT	UNKNOWN			
+単二電池	ARTIFACT	UNKNOWN			
+マハギ無差別殺人事件	PERSON	UNKNOWN			
+発疹	ABSTRACT	MULTIPLE	ABSTRACT,STATE_PROPERTY		
+天然資源環境省	GROUP_ORG	UNKNOWN			
+D-1グランプリ	EVENT_ACT	UNKNOWN			
+セルフランセ	QUANTITY	UNPLACED			
+Shell (プログラミング言語)	INFO_LANGUAGE	UNKNOWN			
+レモンイエロー	STATE_PROPERTY	UNPLACED			
+ラドリー・メツガー	PERSON	UNPLACED			
+霧の浮舟	SUBSTANCE_FOOD	UNKNOWN			
+久留米ナンバー	GROUP_ORG	UNKNOWN			
+操縦席	ARTIFACT	UNPLACED			
+生物学的性別	STATE_PROPERTY	UNKNOWN			
+苫小牧ナンバー	GROUP_ORG	UNKNOWN			

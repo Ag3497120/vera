@@ -1,0 +1,15 @@
+ docs/READING_SOUNDNESS.md |  8 ++++++++
+ verantyx/cli.py           | 50 +++++++++++++++++++++++++++++++++++++++++++++++
+ verantyx/vera_server.py   |  7 +++++++
+ 3 files changed, 65 insertions(+)
+ M docs/READING_SOUNDNESS.md
+ M verantyx/cli.py
+ M verantyx/vera_server.py
+?? artifacts/w12-c1/
+?? docs/INITIAL_LAYERS.md
+?? tests/test_w12c1_domain.py
+?? tests/test_w12c1_nollm.py
+?? tests/test_w12c1_tiers.py
+?? tests/test_w12c1_vocab.py
+?? tools/build_initial_layers.py
+?? verantyx/confidence_tiers.py
