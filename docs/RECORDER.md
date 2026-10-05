@@ -174,3 +174,68 @@
 - **15.2 の「全体も線形」と 15.3 末尾の「10 秒を超える入力は password= 系を除いて無い」は、次の形については正しくない（R10）**: 1 つのトークンの中に、短い base64 らしい連続部分が多数あると、候補の数が連続部分ごとに積み上がり、時間が 2 乗に伸びる。レビュアーの実測: 連続部分の数 k = 2,000・4,000・8,000 で 0.27・0.99・3.89 秒（k を 2 倍にすると約 4 倍）。10 秒を超える k は測っていないが、2 乗の伸びなので k が約 13,000 を超えると 10 秒を超える見込み（推測。測っていない）。hook には 10 秒の timeout があり、超えると hook は打ち切られ、その出来事は台帳に残らない（打ち切りのときの終了の扱いは Claude Code 側で、ここでは測っていない）。
 - **未開示だった漏れの形（R9）**: 鍵の base64 の前に、別の字集合の区切り字が 16 個を超えて並び、後ろに同じ字集合の区切り字が接する形（例: ハイフンで 18 個つないだ名前＋base64＋`-v2`、URL の 17 個の `/` の区切り＋base64＋`/download`）は漏れる（レビュアーの実測で件数 0）。始点の候補を区切り字の先頭側・末尾側 16 個に限っているため。
 - どちらも狭める修正は行わず、開示として残す（秘密の伏せは「過剰に伏せる側に倒す最善の努力」で、漏れない保証ではない）。
+
+## 16. W16-t7d: 発話の作者（UserPromptSubmit に混ざるシステムの通知）と訂正の行
+
+**事前登録**（2026-10-06 06:16:00 +0900。テストと実装より前に書く。数値は実測の後で「16.7 実測（追記）」に足す）。
+
+### 16.1 背景
+Claude Code は背景タスクの完了の通知（`<task-notification>…</task-notification>`）などを、利用者の発話と同じ経路（UserPromptSubmit）で hook に渡す。基点（d1942e2）の取り込みは入力だけを見て kind `owner_utterance`・actor type `owner` と書くので、システムの通知がオーナーの発話として台帳に残る。狭める修正として、塊の開始・終了のタグの形だけで作者を分ける（中身は読まない）。
+
+### 16.2 塊の判定（`ledger_events.split_system_blocks`、純関数・I/O なし）
+- `SYSTEM_BLOCK_TAGS = (("task-notification", "task_notification"), ("system-reminder", "system_reminder"))`（生のタグ名, 記録用のコード名）。**この 2 つだけ**（J4）。
+- 左から走査し、残りの文字列で最も早く現れる `<NAME>`（完全一致、属性・空白なし）を探す。見つかったらその後ろで最初の `</NAME>` までを 1 塊とする（入れ子は数えない）。閉じが無ければ `MALFORMED`・`UNCLOSED_TAG`。塊の終わりから続ける。
+- 塊の外の部分に既知のタグの閉じ `</NAME>` が 1 つでもあれば `MALFORMED`・`UNOPENED_CLOSE_TAG`（J6）。
+- 塊 0 個 → `OWNER_ONLY`。塊 1 個以上で残りが `strip()` で空 → `SYSTEM_ONLY`。残りが空でない → `MIXED`。
+- 返り値 `{"status", "blocks": [(start, end, code)…], "remainder", "reason"（MALFORMED のみ）}`。
+- **判定は redact の前の生の prompt で行う**（下の 16.6）。
+
+### 16.3 行の組み立て（`ledger_events.claude_code_prompt_rows(prompt, source, session_id)`）
+| status | 行 | actor | data（redact の前） |
+|---|---|---|---|
+| OWNER_ONLY | owner_utterance 1 行 | owner | `{text, source, session_id}`（基点と完全に同じキー・値。キーを足さない） |
+| SYSTEM_ONLY | system_message 1 行 | system | `{text: prompt, source, session_id, tags: [コード名…（現れた順）], attributed_by: "tag_shape"}` |
+| MIXED | system_message → owner_utterance の 2 行（この順に固定） | system / owner | system: `{text: 塊を改行でつないだもの, source, session_id, tags, attributed_by, turn_sha256, part: 1, parts: 2}`／owner: `{text: 残り.strip(), source, session_id, attributed_by, turn_sha256, part: 2, parts: 2}` |
+| MALFORMED | user_turn_unattributed 1 行 | unknown | `{text: prompt, source, session_id, attributed_by, reason}`（reason は `UNCLOSED_TAG`・`UNOPENED_CLOSE_TAG`） |
+| MIXED だが分割で伏せが変わる | user_turn_unattributed 1 行 | unknown | `{text: 生の prompt 全体を伏せたもの（基点の 1 行と同じ伏せ）, …, reason: "SECRET_NEAR_BLOCK_BOUNDARY"}`（第 2 ラウンドで追加。16.8） |
+- `turn_sha256` は生の prompt の sha256（2 行を結ぶ）。各行の data は既存の `redact_obj` で伏せ、`redactions` を入れる。
+
+### 16.4 語彙の受け付け（J2）
+- `KINDS`・`ACTOR_TYPES` は 1 byte も変えない（T7 の語彙。既存の試験が固定している）。新しい定数 `KINDS_T7D = (system_message, user_turn_unattributed, correction)`、`ACTOR_TYPES_T7D = (system, unknown)`、受け付けの和 `ALL_KINDS`・`ALL_ACTOR_TYPES` を作り、受け付けの判定（`preflight`・`append`・`_check_actor`・`_row_shape_ok`）だけをこの和に置き換える。
+- **kind ごとに許す actor type**（第 2 ラウンド。`ACTOR_TYPES_BY_KIND`）: T7 の 10 種の kind は従来の `ACTOR_TYPES = (owner, agent, process)` だけ、`system_message` は `system` だけ、`user_turn_unattributed` は `unknown` だけ、`correction` は `owner`・`agent` だけ。`append`・`preflight`・`verify`（`_row_shape_ok`）がこの組を使う。T7 の kind に新しい actor type が来たときの `UNKNOWN_ACTOR_TYPE` の文言と `verify` の結果（`BAD_SHAPE`）は基点と byte 一致（`k732_compare.log`・試験 A11・A11b）。
+- `events add` の `choices` は変えない（J5）。手で `correction`・`system_message` は書けない。
+
+### 16.5 訂正（`vera events correct`）
+- 台帳は追記専用。取り違えた行は書き換えず、kind `correction` の行を追記する。
+- `vera events correct --refers <sha または 8 字以上の接頭辞> --kind-should-be {system_message,owner_utterance,user_turn_unattributed} --note <理由> --actor-type {owner,agent} --actor-id <訂正した人> [--ledger-dir D]`。`--note`・`--actor-type`・`--actor-id` は必須（既定値なし。作者を推測しない）。
+- 本体 `append_correction`: verify が OK でなければ `LEDGER_UNVERIFIED`／接頭辞 8 字未満 `PREFIX_TOO_SHORT`／0 件 `NOT_FOUND`／複数 `AMBIGUOUS_PREFIX`／参照先が発話の 3 種の kind 以外 `NOT_AN_ATTRIBUTION_ROW`／同じ kind `NO_CHANGE`／理由が空白だけ `NOTE_REQUIRED`。
+- 行の data: `{refers, refers_kind, refers_actor, kind_should_be, actor_should_be: {type, id}, note}`。kind→actor type の表（固定）: system_message→system、owner_utterance→owner、user_turn_unattributed→unknown。既存の `append` で追記する（連鎖・HEAD は既存の仕組み）。
+- 終了コード: 成功 0（書いた行を 1 行 JSON で出す）。`NOT_FOUND`・`LEDGER_UNVERIFIED` は 1、それ以外の型つきの誤りは 2。出力は `{"error": code, "detail": …}`。
+- 同じ行への複数の訂正を許す。どれが正しいかを順序で決めず、全部を示す（同点は棄権）。
+- `events tail`／`show`／`grep` は、訂正された行に表示用のキー `corrected_by`（訂正の要約の配列）を付ける。**台帳には書かない表示用のキーなので、出力を sha の再計算に使うときは先に外す**。訂正の無い行・台帳では出力は変わらない。
+
+### 16.6 判断記録（J1〜J6）と 実測の発見
+- **J1**: 取り込みの分岐の実体は `verantyx/hooks_templates.py` の `ingest_cli`（`build_claude_code_event` ではない）にあり、許可パスの外。`ingest_cli` の中だけを最小に変え、判定・行の組み立ては `ledger_events.py` に置く。
+- **J2**: 上の 16.4。**J3**: `cmd_events` の `tail`・`show`・`grep` に注記を通す。**J4**: 塊のタグは 2 つだけ（実装役は本物の台帳を開けず実測できないので、語を足さない）。**J5**: `events add` の choices は不変。**J6**: 閉じタグだけの入力は `user_turn_unattributed`。
+- **発見**（中間職の実測）: 秘匿の型 `sk`（左境界なし）が `task-notification` の `sk-notification` に当たり、台帳に残る本文では `<task-notification>` が `<ta[REDACTED:sk]>` に化ける。したがって (1) 塊の判定は redact の前の生の prompt で行う、(2) data にはタグを生の名前でなくコード名（`task_notification`・`system_reminder`）で入れる。**本物の台帳の取り違えた行の本文は `<ta[REDACTED:sk]>` で始まっている**（統合後に監査役が訂正するときの手がかり）。
+
+### 16.7 実測（追記。すべて `artifacts/w16-t7d/` の下）
+- **U1**: 事前登録のテスト 35 件（凍結 sha256 は `tests_frozen_sha256.txt`）。実装前の赤は `red_before.log`（27 失敗・8 成功。成功は従来どおりの部分: A3 の CLI 経由・A6 の 3 件・A10・語彙不変・`show` の AMBIGUOUS・`events add` の choices）。実装後は `green_after.log`（36 成功。1 件は下の変更で追加した A6b）。凍結後の変更 1 件は `prereg_changes.md`（指示書の A6 の例が規則 4 / J6 と矛盾したため、期待を規則に合わせて直した）。
+- **実物の経路**（`c2.log`）: 通知だけ・利用者の文だけ・混在・閉じない塊の 4 入力が、system_message／owner_utterance／system_message+owner_utterance／user_turn_unattributed の 5 行になり、rc はすべて 0、verify は OK（n=5）、`rejects.jsonl` は無い。
+- **U2**（`u2_demo.log`）: 基点のコードで通知だけを渡すと kind owner_utterance・actor owner・本文 `<ta[REDACTED:sk]>…`（取り違えの再現）。新しいコードの `events correct` で訂正の行を追記（rc 0）、verify は前後とも OK で n が 1→2、HEAD が訂正の行の sha。`show`／`tail` は訂正された行に `corrected_by` を付ける。**訂正の `--note` に生の `task-notification` と書くと、秘匿の型 sk に当たって `ta[REDACTED:sk]` になる**（`u2_demo.log` の note。既存の秘匿の挙動で、変えていない）。note には `task_notification` のようにコード名で書くとよい。
+- **K732**（`k732_compare.log`、第 2 ラウンドで拡張）: 訂正の無い台帳で `events tail -n 5`・`tail -n 0`・`verify`・`grep`（既知・未知の kind）・`show`（既存・短すぎる・無い sha）と、T7 の kind に新しい actor type を渡した `events add` の拒否が、標準出力・標準エラー・終了コードの 3 つとも基点と一致。`hooks print --claude-code` は code_root を `<ROOT>` に正規化して一致。hook の他の出来事の (kind, actor, data) の一致は試験 A10。
+- **第 2 ラウンドの試験**: `tests/test_w16t7d_review1.py`（A11〜A13）。修正前の赤は `red_before_r2.log`（16 失敗・2 成功）、修正後の 3 本 54 件は `green_after.log`。
+- **split の計算量**（`split_scaling.log`）: `split_system_blocks` は `<system-reminder></system-reminder>` を k 個並べた入力で k=5000・10000・20000・40000（175,000〜1,400,000 字）が 0.004・0.008・0.017・0.034 秒で、k に比例する。混在の `claude_code_prompt_rows` 全体は同じログのとおり 1,520,003 字で 3.67 秒（基点の `build_claude_code_event` は 1.01 秒。伏せの検査で伏せの処理を 3 回掛けるため約 3.6 倍。hook の timeout 10 秒の内側）。
+- **U3**（`t7_existing_after.log`・`t6_before.log`・`t6_after.log`）: 既存の T7 系 6 本は 158 成功（基点と同じ）。t6 系 4 本は前 43 成功・後 43 成功。既存テストの差分は無い。
+
+### 16.8 既知の穴（隠さない）
+- **前方互換は無い**: 新しい kind（`system_message`・`user_turn_unattributed`・`correction`）の行を含む台帳は、W16-t7d より前のコードの `verify` では `BAD_SHAPE`・`TAMPERED`（rc 1）になる（`downgrade_verify.log`: 訂正の行を足した合成の台帳が、基点のコードで `{"n": 2, "problems": [{"line": 2, "type": "BAD_SHAPE"}], "status": "TAMPERED"}`、新しいコードで `OK`）。本物の台帳に訂正を書く前に、その台帳を verify するすべての経路（hook の code_root、attest、CI、ほかのクローン）を W16-t7d 以後のコードにそろえる。
+- **分割と秘密の伏せ**: 伏せの規則は前後の文脈に依存するので、混在を塊と残りに分けてから別々に伏せると、秘密の形が塊の境界をまたぐ入力（例 `token=<system-reminder>abcdefgh9</system-reminder>`）で基点の 1 行と違う結果になりうる（第 1 ラウンドのレビューで実測）。第 2 ラウンドで安全側に倒した: 分けた 2 行の伏せの件数の和と、区間ごとに伏せて並べ直した結果が、全体を伏せた結果（基点）と一致しないときは、2 行に分けず `user_turn_unattributed`（reason `SECRET_NEAR_BLOCK_BOUNDARY`、text は全体を基点と同じ規則で伏せたもの）にする。出力は `mixed_redaction_probe.log`（上の 3 例は基点と同じ伏せ。基点が伏せない `Bearer …` の例は基点と同じく伏せない）。件数は `source`・`session_id` の伏せも含むので、session_id が秘密の形のときも安全側（1 行）に落ちる。作者の分け（owner / system）より伏せの一致を優先する。この検査のため混在の処理時間は基点の約 3.6 倍（上の実測）。
+- 形だけの判定なので、利用者が既知のタグで自分の文を囲めば system_message になる（作者の認証ではない）。
+- 塊の中身に同名の閉じタグがあると、そこで塊が切れて残りに閉じタグが出て `user_turn_unattributed` になる（安全側）。
+- `task-notification`・`system-reminder` 以外のシステムの差し込みは従来どおり owner_utterance（J4）。
+- 属性つきの開き（`<task-notification attr="1">`）は塊と見なさないが、完全一致の閉じタグが残るので `user_turn_unattributed` になる（安全側。owner とも system とも断定しない）。
+- 混在の 2 行は別々の flock で書くので、間に他の行が入りうる（`turn_sha256` で結ぶ）。2 行目だけ失敗すると 1 行目だけ残る（reject に残る）。
+- `corrected_by` は表示用のキーで、`tail`／`show` の出力を sha の再計算に使う利用者はこのキーを外す必要がある。
+- 訂正の行そのものも「書く権限のある者の主張」であり、正しさを保証しない（testimony）。同じ行への複数の訂正は全部を示し、勝者を作らない。
+- `events correct` は verify が `OK` でない台帳（空の台帳 `EMPTY` を含む）を `LEDGER_UNVERIFIED` で拒否する。

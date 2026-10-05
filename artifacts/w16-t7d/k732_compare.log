@@ -1,0 +1,13 @@
+SAME(rc=0, stdout     1245 bytes, stderr        0 bytes): events tail -n 5
+SAME(rc=0, stdout        0 bytes, stderr        0 bytes): events tail -n 0
+SAME(rc=0, stdout      117 bytes, stderr        0 bytes): events verify
+SAME(rc=0, stdout      873 bytes, stderr        0 bytes): events grep approval
+SAME(rc=0, stdout      372 bytes, stderr        0 bytes): events grep owner_utterance
+SAME(rc=2, stdout       46 bytes, stderr        0 bytes): events grep nosuch
+SAME(rc=0, stdout      291 bytes, stderr        0 bytes): events show 852b195f1b
+SAME(rc=2, stdout       58 bytes, stderr        0 bytes): events show abc
+SAME(rc=1, stdout       47 bytes, stderr        0 bytes): events show ffffffffff
+SAME(rc=2, stdout      114 bytes, stderr        0 bytes): events add approval --actor-type system (rejection)
+SAME(rc=2, stdout      114 bytes, stderr        0 bytes): events add approval --actor-type unknown (rejection)
+SAME(rc=2, stdout      114 bytes, stderr        0 bytes): events add owner_utterance --actor-type unknown (rejection)
+SAME(normalized code_root -> <ROOT>,     2325 bytes): hooks print --claude-code

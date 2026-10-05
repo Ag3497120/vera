@@ -1,0 +1,45 @@
+### 発話の作者の判定
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "発話の作者の判定",
+  "searched": 709,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 59,
+    "module": 305,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 訂正の行
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "訂正の行",
+  "searched": 709,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 59,
+    "module": 305,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### system message attribution
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "system message attribution",
+  "searched": 709,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 59,
+    "module": 305,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

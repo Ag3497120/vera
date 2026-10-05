@@ -413,6 +413,12 @@ def ingest_cli(args, ledger: Path) -> int:
                 L.reject(ledger, "PAYLOAD_NOT_OBJECT", source=args.src, sha256=L.args_sha256(raw))
                 return 0
             kind, actor, data = build_claude_code_event(args.kind, p, bool(args.keep_args))
+            rows = [(kind, actor, data)]
+            if kind == "owner_utterance":
+                # W16-t7d: 作者は塊のタグの形で、redact の前の生の prompt から判定する（build_claude_code_event は変えない）
+                ev = p.get("hook_event_name")
+                src = f"claude_code.{ev}" if isinstance(ev, str) else "claude_code"
+                rows = L.claude_code_prompt_rows(p["prompt"], src, actor["id"])
         else:
             raw = args.payload or ""
             if not raw:
@@ -426,8 +432,9 @@ def ingest_cli(args, ledger: Path) -> int:
             if not isinstance(p, dict):
                 L.reject(ledger, "PAYLOAD_NOT_OBJECT", source=args.src, sha256=L.args_sha256(raw))
                 return 0
-            kind, actor, data = build_codex_event(p)
-        L.append(ledger, kind, actor, data)
+            rows = [build_codex_event(p)]
+        for kind, actor, data in rows:
+            L.append(ledger, kind, actor, data)
     except L.LedgerError as e:
         L.reject(ledger, e.code, source=args.src, detail=e.detail)
         print(f"vera events: {e.code}", file=sys.stderr)

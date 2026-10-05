@@ -380,6 +380,18 @@ def _manual_add(args, ledger: Path) -> int:
     return 0
 
 
+def _cmd_correct(args, ledger: Path) -> int:
+    """W16-t7d K731: 取り違えた行の訂正の行を追記する（行そのものは書き換えない）。"""
+    actor = {"type": args.actor_type, "id": args.actor_id}
+    try:
+        row = L.append_correction(ledger, args.refers, args.kind_should_be, args.note, actor)
+    except L.LedgerError as e:
+        _pj({"error": e.code, "detail": e.detail})
+        return 1 if e.code in ("NOT_FOUND", "LEDGER_UNVERIFIED") else 2
+    _pj(row)
+    return 0
+
+
 def cmd_events(args) -> int:
     ledger = L.resolve_dir(getattr(args, "ledger_dir", None) or getattr(args, "ledger_dir_top", None))
     act = args.ev_cmd
@@ -390,16 +402,21 @@ def cmd_events(args) -> int:
         return _manual_add(args, ledger)
     if act == "tail":
         rows = L.read_events(ledger)
+        idx = L.corrections_index(rows)
         for r in rows[-max(0, args.n):] if args.n else []:
-            _pj(r)
+            _pj(L.annotate_corrections(r, idx))
         return 0
+    if act == "correct":
+        return _cmd_correct(args, ledger)
     if act == "grep":
-        if args.kind not in L.KINDS:
+        if args.kind not in L.ALL_KINDS:
             _pj({"error": "UNKNOWN_KIND", "detail": args.kind})
             return 2
-        for r in L.read_events(ledger):
+        all_rows = L.read_events(ledger)
+        idx = L.corrections_index(all_rows)
+        for r in all_rows:
             if r.get("kind") == args.kind:
-                _pj(r)
+                _pj(L.annotate_corrections(r, idx))
         return 0
     if act == "show":
         if len(args.sha) < 8:
@@ -412,7 +429,7 @@ def cmd_events(args) -> int:
         if len(m) > 1:
             _pj({"error": "AMBIGUOUS_PREFIX", "candidates": [r["sha"] for r in m]})
             return 2
-        _pj(m[0])
+        _pj(L.annotate_corrections(m[0], L.corrections_index(L.read_events(ledger))))
         return 0
     if act == "verify":
         v = L.verify(ledger, expected_head=args.head)
@@ -487,6 +504,12 @@ def register_cli(sub) -> None:
     q = es.add_parser("verify", parents=[common])
     q.add_argument("--head", default=None, help="externally pinned HEAD sha (e.g. git show HEAD:.vera/ledger/HEAD)")
     es.add_parser("sweep", parents=[common])
+    q = es.add_parser("correct", parents=[common], help="append a correction row for a misattributed utterance row (the ledger is never rewritten)")
+    q.add_argument("--refers", required=True, help="sha (or >= 8-char prefix) of the row being corrected")
+    q.add_argument("--kind-should-be", required=True, choices=["system_message", "owner_utterance", "user_turn_unattributed"])
+    q.add_argument("--note", required=True)
+    q.add_argument("--actor-type", required=True, choices=["owner", "agent"])
+    q.add_argument("--actor-id", required=True)
     q = es.add_parser("add", parents=[common])
     q._exit1_when_claude_code = True
     q.add_argument("kind", choices=list(L.KINDS) + ["auto"])

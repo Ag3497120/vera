@@ -25,6 +25,14 @@ KINDS = (
     "process_interrupted", "process_orphaned", "approval", "commit", "test_run",
 )
 ACTOR_TYPES = ("owner", "agent", "process")
+# W16-t7d: T7 の語彙（上の 2 つ）は変えない。新しい語彙は別の定数で足し、受け付けの判定だけ和を使う。
+KINDS_T7D = ("system_message", "user_turn_unattributed", "correction")
+ACTOR_TYPES_T7D = ("system", "unknown")
+ALL_KINDS = KINDS + KINDS_T7D
+ALL_ACTOR_TYPES = ACTOR_TYPES + ACTOR_TYPES_T7D
+# kind ごとに許す actor type。T7 の kind は従来の ACTOR_TYPES だけ（新しい actor type は受け付けない）。
+ACTOR_TYPES_BY_KIND = dict({k: ACTOR_TYPES for k in KINDS},
+                           system_message=("system",), user_turn_unattributed=("unknown",), correction=("owner", "agent"))
 ROW_KEYS = {"ts", "kind", "actor", "data", "prev", "sha"}
 DEFAULT_DIR = ".vera/ledger"
 
@@ -303,9 +311,10 @@ def _last_byte(path: Path) -> bytes:
         return f.read(1)
 
 
-def _check_actor(actor) -> dict:
-    if not isinstance(actor, dict) or actor.get("type") not in ACTOR_TYPES or not isinstance(actor.get("id"), str):
-        raise LedgerError("UNKNOWN_ACTOR_TYPE", f"actor.type は {ACTOR_TYPES}、actor.id は文字列")
+def _check_actor(actor, kind=None) -> dict:
+    allowed = ACTOR_TYPES_BY_KIND.get(kind, ACTOR_TYPES)
+    if not isinstance(actor, dict) or actor.get("type") not in allowed or not isinstance(actor.get("id"), str):
+        raise LedgerError("UNKNOWN_ACTOR_TYPE", f"actor.type は {allowed}、actor.id は文字列")
     out = {"type": actor["type"], "id": actor["id"]}
     if actor.get("model") is not None:
         out["model"] = str(actor["model"])
@@ -314,9 +323,9 @@ def _check_actor(actor) -> dict:
 
 def preflight(ledger_dir, kind: str, actor: dict, data: dict) -> None:
     """追記が通る状態かを、書かずに確かめる。だめなら LedgerError（型つき）。vera run が子を起動する前に呼ぶ。"""
-    if kind not in KINDS:
+    if kind not in ALL_KINDS:
         raise LedgerError("UNKNOWN_KIND", str(kind))
-    actor = _check_actor(actor)
+    actor = _check_actor(actor, kind)
     if not isinstance(data, dict):
         raise LedgerError("BAD_DATA", "data は辞書")
     if redact_obj(data)[1] or redact_obj(actor)[1]:
@@ -342,9 +351,9 @@ def preflight(ledger_dir, kind: str, actor: dict, data: dict) -> None:
 
 def append(ledger_dir, kind: str, actor: dict, data: dict) -> dict:
     """flock の中で 1 行を追記し HEAD を更新する。書いた行を返す。"""
-    if kind not in KINDS:
+    if kind not in ALL_KINDS:
         raise LedgerError("UNKNOWN_KIND", str(kind))
-    actor = _check_actor(actor)
+    actor = _check_actor(actor, kind)
     if not isinstance(data, dict):
         raise LedgerError("BAD_DATA", "data は辞書")
     # 安全網: 呼び出し側が redact し忘れた秘密は台帳に入れない（黙って伏せず、拒否して型で知らせる）
@@ -423,10 +432,10 @@ def reject(ledger_dir, reason: str, **detail) -> None:
 def _row_shape_ok(r) -> bool:
     if not isinstance(r, dict) or set(r) != ROW_KEYS:
         return False
-    if r["kind"] not in KINDS:
+    if r["kind"] not in ALL_KINDS:
         return False
     a = r["actor"]
-    if not isinstance(a, dict) or a.get("type") not in ACTOR_TYPES or not isinstance(a.get("id"), str):
+    if not isinstance(a, dict) or a.get("type") not in ACTOR_TYPES_BY_KIND[r["kind"]] or not isinstance(a.get("id"), str):
         return False
     return isinstance(r["data"], dict) and isinstance(r["prev"], str) and isinstance(r["sha"], str) and isinstance(r["ts"], str)
 
@@ -502,3 +511,151 @@ def verify(ledger_dir, expected_head: Optional[str] = None) -> dict:
 
 def find_by_prefix(ledger_dir, prefix: str) -> list:
     return [r for r in read_events(ledger_dir) if isinstance(r.get("sha"), str) and r["sha"].startswith(prefix)]
+
+
+# ---- W16-t7d: UserPromptSubmit の作者の判定と、取り違えた行の訂正 --------------------------
+# 判定は塊の開始・終了のタグの形だけ（中身は読まない）。生の prompt に対して行う（redact の前。
+# `task-notification` は秘匿の型 sk に当たって台帳の本文では `<ta[REDACTED:sk]>` になるため）。
+SYSTEM_BLOCK_TAGS = (("task-notification", "task_notification"), ("system-reminder", "system_reminder"))
+_CORRECTABLE_KINDS = ("owner_utterance", "system_message", "user_turn_unattributed")
+_ACTOR_TYPE_OF_KIND = {"system_message": "system", "owner_utterance": "owner", "user_turn_unattributed": "unknown"}
+
+
+def split_system_blocks(text: str) -> dict:
+    """{"status": OWNER_ONLY|SYSTEM_ONLY|MIXED|MALFORMED, "blocks": [(start, end, code)], "remainder": str, "reason": (MALFORMED のみ)}。
+    I/O なし。塊の中身は読まない。"""
+    blocks = []
+    pos = 0
+    n = len(text)
+    nxt = {raw: -2 for raw, _c in SYSTEM_BLOCK_TAGS}  # 各タグの次の出現位置（-1 = もう無い、-2 = 未探索）。pos を越えたときだけ探し直す
+    while pos < n:
+        best = None
+        for raw, code in SYSTEM_BLOCK_TAGS:
+            i = nxt[raw]
+            if i == -2 or (i >= 0 and i < pos):
+                i = nxt[raw] = text.find(f"<{raw}>", pos)
+            if i >= 0 and (best is None or i < best[0]):
+                best = (i, raw, code)
+        if best is None:
+            break
+        i, raw, code = best
+        j = text.find(f"</{raw}>", i + len(raw) + 2)
+        if j < 0:
+            return {"status": "MALFORMED", "blocks": blocks, "remainder": text, "reason": "UNCLOSED_TAG"}
+        end = j + len(raw) + 3
+        blocks.append((i, end, code))
+        pos = end
+    parts, cur = [], 0
+    for s0, e0, _c in blocks:
+        parts.append(text[cur:s0])
+        cur = e0
+    parts.append(text[cur:])
+    remainder = "".join(parts)
+    if any(f"</{raw}>" in remainder for raw, _c in SYSTEM_BLOCK_TAGS):
+        return {"status": "MALFORMED", "blocks": blocks, "remainder": remainder, "reason": "UNOPENED_CLOSE_TAG"}
+    if not blocks:
+        return {"status": "OWNER_ONLY", "blocks": [], "remainder": text}
+    if not remainder.strip():
+        return {"status": "SYSTEM_ONLY", "blocks": blocks, "remainder": remainder}
+    return {"status": "MIXED", "blocks": blocks, "remainder": remainder}
+
+
+def _finalize_data(data: dict) -> dict:
+    d, n = redact_obj(data)
+    d["redactions"] = n
+    return d
+
+
+def _split_redaction_consistent(prompt: str, sp: dict, row_redactions: int) -> bool:
+    """MIXED を 2 行に分けても、全体を伏せた結果（基点の 1 行）と同じ部分が伏せられるか。
+    塊・塊の間の各区間を別々に伏せて元の順に並べ直した結果が全体の結果と一致し、かつ実際に書く 2 行の伏せの件数の和（row_redactions）が
+    全体の件数と一致するときだけ True（件数が違うのは、連結した text で伏せ方が変わったとき）。"""
+    full, nfull = redact_obj({"text": prompt})
+    segs, cur = [], 0
+    for s0, e0, _c in sp["blocks"]:
+        segs.append(prompt[cur:s0])
+        segs.append(prompt[s0:e0])
+        cur = e0
+    segs.append(prompt[cur:])
+    red = [redact_obj({"text": x}) for x in segs]
+    return "".join(r[0]["text"] for r in red) == full["text"] and sum(r[1] for r in red) == nfull == row_redactions
+
+
+def claude_code_prompt_rows(prompt: str, source: str, session_id: str) -> list:
+    """UserPromptSubmit の prompt（生）から、台帳に書く (kind, actor, data) の並びを作る。data は redact 済み。"""
+    sp = split_system_blocks(prompt)
+    base = {"source": source, "session_id": session_id}
+    st = sp["status"]
+    if st == "OWNER_ONLY":
+        return [("owner_utterance", {"type": "owner", "id": session_id}, _finalize_data({"text": prompt, **base}))]
+    if st == "SYSTEM_ONLY":
+        tags = [c for _s, _e, c in sp["blocks"]]
+        return [("system_message", {"type": "system", "id": session_id},
+                 _finalize_data({"text": prompt, **base, "tags": tags, "attributed_by": "tag_shape"}))]
+    if st == "MIXED":
+        tags = [c for _s, _e, c in sp["blocks"]]
+        tsha = args_sha256(prompt)
+        sys_text = "\n".join(prompt[s0:e0] for s0, e0, _c in sp["blocks"])
+        rows = [
+            ("system_message", {"type": "system", "id": session_id},
+             _finalize_data({"text": sys_text, **base, "tags": tags, "attributed_by": "tag_shape",
+                             "turn_sha256": tsha, "part": 1, "parts": 2})),
+            ("owner_utterance", {"type": "owner", "id": session_id},
+             _finalize_data({"text": sp["remainder"].strip(), **base, "attributed_by": "tag_shape",
+                             "turn_sha256": tsha, "part": 2, "parts": 2})),
+        ]
+        if _split_redaction_consistent(prompt, sp, sum(r[2]["redactions"] for r in rows)):
+            return rows
+        # 秘密の形が塊の境界をまたぐと、分けてから伏せた結果が全体を伏せた結果（基点）と食い違い、漏れうる。作者を断定せず全体を伏せて 1 行にする。
+        return [("user_turn_unattributed", {"type": "unknown", "id": session_id},
+                 _finalize_data({"text": prompt, **base, "attributed_by": "tag_shape", "reason": "SECRET_NEAR_BLOCK_BOUNDARY"}))]
+    return [("user_turn_unattributed", {"type": "unknown", "id": session_id},
+             _finalize_data({"text": prompt, **base, "attributed_by": "tag_shape", "reason": sp["reason"]}))]
+
+
+def append_correction(ledger_dir, refers: str, kind_should_be: str, note: str, actor: dict) -> dict:
+    """取り違えた行は書き換えず、訂正の行を追記する。書いた行を返す。型つきの失敗は LedgerError。"""
+    st = verify(ledger_dir)
+    if st["status"] not in ("OK",):
+        raise LedgerError("LEDGER_UNVERIFIED", str(st["status"]))
+    if not isinstance(refers, str) or len(refers) < 8:
+        raise LedgerError("PREFIX_TOO_SHORT", "8 文字以上")
+    m = find_by_prefix(ledger_dir, refers)
+    if not m:
+        raise LedgerError("NOT_FOUND", refers)
+    if len(m) > 1:
+        raise LedgerError("AMBIGUOUS_PREFIX", ",".join(r["sha"] for r in m))
+    target = m[0]
+    if target.get("kind") not in _CORRECTABLE_KINDS:
+        raise LedgerError("NOT_AN_ATTRIBUTION_ROW", str(target.get("kind")))
+    if kind_should_be not in _CORRECTABLE_KINDS:
+        raise LedgerError("UNKNOWN_KIND", str(kind_should_be))
+    if kind_should_be == target.get("kind"):
+        raise LedgerError("NO_CHANGE", str(kind_should_be))
+    if not isinstance(note, str) or not note.strip():
+        raise LedgerError("NOTE_REQUIRED")
+    actor = _check_actor(actor, "correction")
+    ta = target.get("actor") if isinstance(target.get("actor"), dict) else {}
+    data = {"refers": target["sha"], "refers_kind": target["kind"], "refers_actor": ta,
+            "kind_should_be": kind_should_be,
+            "actor_should_be": {"type": _ACTOR_TYPE_OF_KIND[kind_should_be], "id": ta.get("id")},
+            "note": note}
+    return append(ledger_dir, "correction", actor, _finalize_data(data))
+
+
+def corrections_index(rows) -> dict:
+    """{参照先 sha: [訂正の要約…]}（台帳の順）。要約 = {sha, kind_should_be, actor_should_be, note}。"""
+    idx = {}
+    for r in rows:
+        if isinstance(r, dict) and r.get("kind") == "correction" and isinstance(r.get("data"), dict):
+            d = r["data"]
+            if isinstance(d.get("refers"), str):
+                idx.setdefault(d["refers"], []).append({"sha": r.get("sha"), "kind_should_be": d.get("kind_should_be"),
+                                                         "actor_should_be": d.get("actor_should_be"), "note": d.get("note")})
+    return idx
+
+
+def annotate_corrections(row: dict, idx: dict) -> dict:
+    """訂正が無ければ受け取った dict をそのまま返す。あれば表示用のキー corrected_by を足した写しを返す（台帳には書かない）。"""
+    c = idx.get(row.get("sha")) if isinstance(row, dict) else None
+    return dict(row, corrected_by=c) if c else row

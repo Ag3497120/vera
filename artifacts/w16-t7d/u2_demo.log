@@ -1,0 +1,15 @@
+## baseline reproduces misattribution
+rc=0
+c4b11feea79c4c318bb5198dabc43f8e240b8574e8e94a66a5dc238cdfd84666
+owner_utterance owner '<ta[REDACTED:sk]>\n<task-id>x</task-id>\n<'
+{"head": "c4b11feea79c4c318bb5198dabc43f8e240b8574e8e94a66a5dc238cdfd84666", "n": 1, "problems": [], "status": "OK"}
+## correct
+{"actor": {"id": "W16-t7d-impl", "type": "agent"}, "data": {"actor_should_be": {"id": "s1", "type": "system"}, "kind_should_be": "system_message", "note": "UserPromptSubmit で届いた task_notification の塊", "redactions": 0, "refers": "c4b11feea79c4c318bb5198dabc43f8e240b8574e8e94a66a5dc238cdfd84666", "refers_actor": {"id": "s1", "type": "owner"}, "refers_kind": "owner_utterance"}, "kind": "correction", "prev": "c4b11feea79c4c318bb5198dabc43f8e240b8574e8e94a66a5dc238cdfd84666", "sha": "328516ffe20d7a3ce7ddc23fb5dcdeff8aa3d8c350e7ffa9b86c22107a665ba7", "ts": "2026-10-05T21:37:50.341449Z"}
+rc=0
+{"head": "328516ffe20d7a3ce7ddc23fb5dcdeff8aa3d8c350e7ffa9b86c22107a665ba7", "n": 2, "problems": [], "status": "OK"}
+328516ffe20d7a3ce7ddc23fb5dcdeff8aa3d8c350e7ffa9b86c22107a665ba7
+## show
+{"actor": {"id": "s1", "type": "owner"}, "corrected_by": [{"actor_should_be": {"id": "s1", "type": "system"}, "kind_should_be": "system_message", "note": "UserPromptSubmit で届いた task_notification の塊", "sha": "328516ffe20d7a3ce7ddc23fb5dcdeff8aa3d8c350e7ffa9b86c22107a665ba7"}], "data": {"redactions": 2, "session_id": "s1", "source": "claude_code.UserPromptSubmit", "text": "<ta[REDACTED:sk]>\n<task-id>x</task-id>\n</ta[REDACTED:sk]>"}, "kind": "owner_utterance", "prev": "0000000000000000000000000000000000000000000000000000000000000000", "sha": "c4b11feea79c4c318bb5198dabc43f8e240b8574e8e94a66a5dc238cdfd84666", "ts": "2026-10-05T21:37:49.694571Z"}
+## tail -n 2
+{"actor": {"id": "s1", "type": "owner"}, "corrected_by": [{"actor_should_be": {"id": "s1", "type": "system"}, "kind_should_be": "system_message", "note": "UserPromptSubmit で届いた task_notification の塊", "sha": "328516ffe20d7a3ce7ddc23fb5dcdeff8aa3d8c350e7ffa9b86c22107a665ba7"}], "data": {"redactions": 2, "session_id": "s1", "source": "claude_code.UserPromptSubmit", "text": "<ta[REDACTED:sk]>\n<task-id>x</task-id>\n</ta[REDACTED:sk]>"}, "kind": "owner_utterance", "prev": "0000000000000000000000000000000000000000000000000000000000000000", "sha": "c4b11feea79c4c318bb5198dabc43f8e240b8574e8e94a66a5dc238cdfd84666", "ts": "2026-10-05T21:37:49.694571Z"}
+{"actor": {"id": "W16-t7d-impl", "type": "agent"}, "data": {"actor_should_be": {"id": "s1", "type": "system"}, "kind_should_be": "system_message", "note": "UserPromptSubmit で届いた task_notification の塊", "redactions": 0, "refers": "c4b11feea79c4c318bb5198dabc43f8e240b8574e8e94a66a5dc238cdfd84666", "refers_actor": {"id": "s1", "type": "owner"}, "refers_kind": "owner_utterance"}, "kind": "correction", "prev": "c4b11feea79c4c318bb5198dabc43f8e240b8574e8e94a66a5dc238cdfd84666", "sha": "328516ffe20d7a3ce7ddc23fb5dcdeff8aa3d8c350e7ffa9b86c22107a665ba7", "ts": "2026-10-05T21:37:50.341449Z"}
