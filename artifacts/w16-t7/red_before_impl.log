@@ -1,0 +1,762 @@
+EFEEEEEEEEEEFFFFF.FFFFFFFFFFFFFFFFFFFFFFFF                               [100%]
+==================================== ERRORS ====================================
+__________________ ERROR at setup of test_row_shape_and_chain __________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_row_shape_and_chain0')
+
+    @pytest.fixture
+    def led(tmp_path):
+>       from verantyx import ledger_events as L
+E       ImportError: cannot import name 'ledger_events' from 'verantyx' (/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/__init__.py)
+
+tests/test_w16t7_ledger.py:28: ImportError
+________________ ERROR at setup of test_rewrite_is_sha_mismatch ________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_rewrite_is_sha_mismatch0')
+
+    @pytest.fixture
+    def led(tmp_path):
+>       from verantyx import ledger_events as L
+E       ImportError: cannot import name 'ledger_events' from 'verantyx' (/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/__init__.py)
+
+tests/test_w16t7_ledger.py:28: ImportError
+____________ ERROR at setup of test_delete_middle_is_prev_mismatch _____________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_delete_middle_is_prev_mis0')
+
+    @pytest.fixture
+    def led(tmp_path):
+>       from verantyx import ledger_events as L
+E       ImportError: cannot import name 'ledger_events' from 'verantyx' (/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/__init__.py)
+
+tests/test_w16t7_ledger.py:28: ImportError
+_________________ ERROR at setup of test_swap_is_prev_mismatch _________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_swap_is_prev_mismatch0')
+
+    @pytest.fixture
+    def led(tmp_path):
+>       from verantyx import ledger_events as L
+E       ImportError: cannot import name 'ledger_events' from 'verantyx' (/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/__init__.py)
+
+tests/test_w16t7_ledger.py:28: ImportError
+_____________ ERROR at setup of test_truncate_tail_head_untouched ______________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_truncate_tail_head_untouc0')
+
+    @pytest.fixture
+    def led(tmp_path):
+>       from verantyx import ledger_events as L
+E       ImportError: cannot import name 'ledger_events' from 'verantyx' (/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/__init__.py)
+
+tests/test_w16t7_ledger.py:28: ImportError
+____________ ERROR at setup of test_extra_after_head_points_to_line ____________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_extra_after_head_points_t0')
+
+    @pytest.fixture
+    def led(tmp_path):
+>       from verantyx import ledger_events as L
+E       ImportError: cannot import name 'ledger_events' from 'verantyx' (/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/__init__.py)
+
+tests/test_w16t7_ledger.py:28: ImportError
+_______________________ ERROR at setup of test_torn_tail _______________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_torn_tail0')
+
+    @pytest.fixture
+    def led(tmp_path):
+>       from verantyx import ledger_events as L
+E       ImportError: cannot import name 'ledger_events' from 'verantyx' (/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/__init__.py)
+
+tests/test_w16t7_ledger.py:28: ImportError
+___________________ ERROR at setup of test_unparsable_middle ___________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_unparsable_middle0')
+
+    @pytest.fixture
+    def led(tmp_path):
+>       from verantyx import ledger_events as L
+E       ImportError: cannot import name 'ledger_events' from 'verantyx' (/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/__init__.py)
+
+tests/test_w16t7_ledger.py:28: ImportError
+__________________ ERROR at setup of test_bad_shape_extra_key __________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_bad_shape_extra_key0')
+
+    @pytest.fixture
+    def led(tmp_path):
+>       from verantyx import ledger_events as L
+E       ImportError: cannot import name 'ledger_events' from 'verantyx' (/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/__init__.py)
+
+tests/test_w16t7_ledger.py:28: ImportError
+_____________________ ERROR at setup of test_head_missing ______________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_head_missing0')
+
+    @pytest.fixture
+    def led(tmp_path):
+>       from verantyx import ledger_events as L
+E       ImportError: cannot import name 'ledger_events' from 'verantyx' (/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/__init__.py)
+
+tests/test_w16t7_ledger.py:28: ImportError
+_____________________ ERROR at setup of test_expected_head _____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_expected_head0')
+
+    @pytest.fixture
+    def led(tmp_path):
+>       from verantyx import ledger_events as L
+E       ImportError: cannot import name 'ledger_events' from 'verantyx' (/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/__init__.py)
+
+tests/test_w16t7_ledger.py:28: ImportError
+=================================== FAILURES ===================================
+__________________________________ test_empty __________________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_empty0')
+
+    def test_empty(tmp_path):
+>       from verantyx import ledger_events as L
+E       ImportError: cannot import name 'ledger_events' from 'verantyx' (/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/__init__.py)
+
+tests/test_w16t7_ledger.py:58: ImportError
+_____________________ test_unknown_kind_and_actor_rejected _____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_unknown_kind_and_actor_re0')
+
+    def test_unknown_kind_and_actor_rejected(tmp_path):
+>       from verantyx import ledger_events as L
+E       ImportError: cannot import name 'ledger_events' from 'verantyx' (/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/__init__.py)
+
+tests/test_w16t7_ledger.py:155: ImportError
+____________________ test_cli_verify_exit_codes_and_tamper _____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_cli_verify_exit_codes_and0')
+
+    def test_cli_verify_exit_codes_and_tamper(tmp_path):
+        d = tmp_path / "c"
+        for i in range(3):
+            r = cli("events", "--ledger-dir", str(d), "add", "approval", "--actor-type", "owner", "--actor-id", "o", "--text", f"ok {i}")
+>           assert r.returncode == 0, r.stderr
+E           AssertionError: usage: vera [-h] [--store STORE]
+E                         {pour,remember,forget,ask,index,read-events,read,ledger,realize,observe,route,mcp-config,tool,documents,domain,doctor,stats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,push-store}
+E                         ...
+E             vera: error: argument cmd: invalid choice: 'events' (choose from 'pour', 'remember', 'forget', 'ask', 'index', 'read-events', 'read', 'ledger', 'realize', 'observe', 'route', 'mcp-config', 'tool', 'documents', 'domain', 'doctor', 'stats', 'conduct', 'guard', 'heartbeat', 'propose-ai-facts', 'review-ai-facts', 'chat', 'math', 'simplify', 'code', 'compile', 'verify', 'hub', 'lab', 'mcp', 'field', 'lexicon', 'self-evolve', 'placement', 'sovereign', 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')
+E             
+E           assert 2 == 0
+E            +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'events', '--ledger... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_ledger.py:167: AssertionError
+___________________________ test_cli_tail_show_grep ____________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_cli_tail_show_grep0')
+
+    def test_cli_tail_show_grep(tmp_path):
+        d = tmp_path / "q"
+        for i in range(3):
+            cli("events", "add", "approval", "--ledger-dir", str(d), "--actor-type", "owner", "--actor-id", "o", "--text", f"ok {i}")
+        cli("events", "add", "agent_stop", "--ledger-dir", str(d), "--actor-type", "agent", "--actor-id", "a")
+        out = cli("events", "tail", "-n", "2", "--ledger-dir", str(d)).stdout.strip().splitlines()
+>       assert len(out) == 2 and json.loads(out[-1])["kind"] == "agent_stop"
+E       assert (0 == 2)
+E        +  where 0 = len([])
+
+tests/test_w16t7_ledger.py:183: AssertionError
+_________________ test_print_claude_code_is_valid_hooks_shape __________________
+
+    def test_print_claude_code_is_valid_hooks_shape():
+>       t = template()
+            ^^^^^^^^^^
+
+tests/test_w16t7_hooks.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def template():
+        r = cli("hooks", "print", "--claude-code")
+>       assert r.returncode == 0, r.stderr
+E       AssertionError: usage: vera [-h] [--store STORE]
+E                     {pour,remember,forget,ask,index,read-events,read,ledger,realize,observe,route,mcp-config,tool,documents,domain,doctor,stats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,push-store}
+E                     ...
+E         vera: error: argument cmd: invalid choice: 'hooks' (choose from 'pour', 'remember', 'forget', 'ask', 'index', 'read-events', 'read', 'ledger', 'realize', 'observe', 'route', 'mcp-config', 'tool', 'documents', 'domain', 'doctor', 'stats', 'conduct', 'guard', 'heartbeat', 'propose-ai-facts', 'review-ai-facts', 'chat', 'math', 'simplify', 'code', 'compile', 'verify', 'hub', 'lab', 'mcp', 'field', 'lexicon', 'self-evolve', 'placement', 'sovereign', 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'print', '... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_hooks.py:32: AssertionError
+____________________________ test_print_codex_toml _____________________________
+
+    def test_print_codex_toml():
+        r = cli("hooks", "print", "--codex")
+>       assert r.returncode == 0
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'print', '... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_hooks.py:76: AssertionError
+______________ test_user_prompt_verbatim_japanese_multiline_emoji ______________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_user_prompt_verbatim_japa0')
+
+    def test_user_prompt_verbatim_japanese_multiline_emoji(tmp_path):
+>       t = template()
+            ^^^^^^^^^^
+
+tests/test_w16t7_hooks.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def template():
+        r = cli("hooks", "print", "--claude-code")
+>       assert r.returncode == 0, r.stderr
+E       AssertionError: usage: vera [-h] [--store STORE]
+E                     {pour,remember,forget,ask,index,read-events,read,ledger,realize,observe,route,mcp-config,tool,documents,domain,doctor,stats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,push-store}
+E                     ...
+E         vera: error: argument cmd: invalid choice: 'hooks' (choose from 'pour', 'remember', 'forget', 'ask', 'index', 'read-events', 'read', 'ledger', 'realize', 'observe', 'route', 'mcp-config', 'tool', 'documents', 'domain', 'doctor', 'stats', 'conduct', 'guard', 'heartbeat', 'propose-ai-facts', 'review-ai-facts', 'chat', 'math', 'simplify', 'code', 'compile', 'verify', 'hub', 'lab', 'mcp', 'field', 'lexicon', 'self-evolve', 'placement', 'sovereign', 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'print', '... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_hooks.py:32: AssertionError
+____________________ test_hook_never_fails_and_logs_rejects ____________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_hook_never_fails_and_logs0')
+
+    def test_hook_never_fails_and_logs_rejects(tmp_path):
+>       t = template()
+            ^^^^^^^^^^
+
+tests/test_w16t7_hooks.py:104: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def template():
+        r = cli("hooks", "print", "--claude-code")
+>       assert r.returncode == 0, r.stderr
+E       AssertionError: usage: vera [-h] [--store STORE]
+E                     {pour,remember,forget,ask,index,read-events,read,ledger,realize,observe,route,mcp-config,tool,documents,domain,doctor,stats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,push-store}
+E                     ...
+E         vera: error: argument cmd: invalid choice: 'hooks' (choose from 'pour', 'remember', 'forget', 'ask', 'index', 'read-events', 'read', 'ledger', 'realize', 'observe', 'route', 'mcp-config', 'tool', 'documents', 'domain', 'doctor', 'stats', 'conduct', 'guard', 'heartbeat', 'propose-ai-facts', 'review-ai-facts', 'chat', 'math', 'simplify', 'code', 'compile', 'verify', 'hub', 'lab', 'mcp', 'field', 'lexicon', 'self-evolve', 'placement', 'sovereign', 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'print', '... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_hooks.py:32: AssertionError
+_________________ test_hook_unwritable_ledger_still_exits_zero _________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_hook_unwritable_ledger_st0')
+
+    def test_hook_unwritable_ledger_still_exits_zero(tmp_path):
+        blocker = tmp_path / "blk"
+        blocker.write_text("file, not dir")
+>       t = template()
+            ^^^^^^^^^^
+
+tests/test_w16t7_hooks.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def template():
+        r = cli("hooks", "print", "--claude-code")
+>       assert r.returncode == 0, r.stderr
+E       AssertionError: usage: vera [-h] [--store STORE]
+E                     {pour,remember,forget,ask,index,read-events,read,ledger,realize,observe,route,mcp-config,tool,documents,domain,doctor,stats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,push-store}
+E                     ...
+E         vera: error: argument cmd: invalid choice: 'hooks' (choose from 'pour', 'remember', 'forget', 'ask', 'index', 'read-events', 'read', 'ledger', 'realize', 'observe', 'route', 'mcp-config', 'tool', 'documents', 'domain', 'doctor', 'stats', 'conduct', 'guard', 'heartbeat', 'propose-ai-facts', 'review-ai-facts', 'chat', 'math', 'simplify', 'code', 'compile', 'verify', 'hub', 'lab', 'mcp', 'field', 'lexicon', 'self-evolve', 'placement', 'sovereign', 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'print', '... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_hooks.py:32: AssertionError
+_________________________ test_stop_and_subagent_stop __________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_stop_and_subagent_stop0')
+
+    def test_stop_and_subagent_stop(tmp_path):
+>       t = template()
+            ^^^^^^^^^^
+
+tests/test_w16t7_hooks.py:124: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def template():
+        r = cli("hooks", "print", "--claude-code")
+>       assert r.returncode == 0, r.stderr
+E       AssertionError: usage: vera [-h] [--store STORE]
+E                     {pour,remember,forget,ask,index,read-events,read,ledger,realize,observe,route,mcp-config,tool,documents,domain,doctor,stats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,push-store}
+E                     ...
+E         vera: error: argument cmd: invalid choice: 'hooks' (choose from 'pour', 'remember', 'forget', 'ask', 'index', 'read-events', 'read', 'ledger', 'realize', 'observe', 'route', 'mcp-config', 'tool', 'documents', 'domain', 'doctor', 'stats', 'conduct', 'guard', 'heartbeat', 'propose-ai-facts', 'review-ai-facts', 'chat', 'math', 'simplify', 'code', 'compile', 'verify', 'hub', 'lab', 'mcp', 'field', 'lexicon', 'self-evolve', 'placement', 'sovereign', 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'print', '... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_hooks.py:32: AssertionError
+_______________________ test_posttooluse_classification ________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_posttooluse_classificatio0')
+
+    def test_posttooluse_classification(tmp_path):
+>       t = template()
+            ^^^^^^^^^^
+
+tests/test_w16t7_hooks.py:152: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def template():
+        r = cli("hooks", "print", "--claude-code")
+>       assert r.returncode == 0, r.stderr
+E       AssertionError: usage: vera [-h] [--store STORE]
+E                     {pour,remember,forget,ask,index,read-events,read,ledger,realize,observe,route,mcp-config,tool,documents,domain,doctor,stats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,push-store}
+E                     ...
+E         vera: error: argument cmd: invalid choice: 'hooks' (choose from 'pour', 'remember', 'forget', 'ask', 'index', 'read-events', 'read', 'ledger', 'realize', 'observe', 'route', 'mcp-config', 'tool', 'documents', 'domain', 'doctor', 'stats', 'conduct', 'guard', 'heartbeat', 'propose-ai-facts', 'review-ai-facts', 'chat', 'math', 'simplify', 'code', 'compile', 'verify', 'hub', 'lab', 'mcp', 'field', 'lexicon', 'self-evolve', 'placement', 'sovereign', 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'print', '... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_hooks.py:32: AssertionError
+______________________ test_commit_outside_repo_head_null ______________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_commit_outside_repo_head_0')
+
+    def test_commit_outside_repo_head_null(tmp_path):
+>       t = template()
+            ^^^^^^^^^^
+
+tests/test_w16t7_hooks.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def template():
+        r = cli("hooks", "print", "--claude-code")
+>       assert r.returncode == 0, r.stderr
+E       AssertionError: usage: vera [-h] [--store STORE]
+E                     {pour,remember,forget,ask,index,read-events,read,ledger,realize,observe,route,mcp-config,tool,documents,domain,doctor,stats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,push-store}
+E                     ...
+E         vera: error: argument cmd: invalid choice: 'hooks' (choose from 'pour', 'remember', 'forget', 'ask', 'index', 'read-events', 'read', 'ledger', 'realize', 'observe', 'route', 'mcp-config', 'tool', 'documents', 'domain', 'doctor', 'stats', 'conduct', 'guard', 'heartbeat', 'propose-ai-facts', 'review-ai-facts', 'chat', 'math', 'simplify', 'code', 'compile', 'verify', 'hub', 'lab', 'mcp', 'field', 'lexicon', 'self-evolve', 'placement', 'sovereign', 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'print', '... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_hooks.py:32: AssertionError
+________________________ test_session_start_end_mapping ________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_session_start_end_mapping0')
+
+    def test_session_start_end_mapping(tmp_path):
+>       t = template()
+            ^^^^^^^^^^
+
+tests/test_w16t7_hooks.py:186: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def template():
+        r = cli("hooks", "print", "--claude-code")
+>       assert r.returncode == 0, r.stderr
+E       AssertionError: usage: vera [-h] [--store STORE]
+E                     {pour,remember,forget,ask,index,read-events,read,ledger,realize,observe,route,mcp-config,tool,documents,domain,doctor,stats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,push-store}
+E                     ...
+E         vera: error: argument cmd: invalid choice: 'hooks' (choose from 'pour', 'remember', 'forget', 'ask', 'index', 'read-events', 'read', 'ledger', 'realize', 'observe', 'route', 'mcp-config', 'tool', 'documents', 'domain', 'doctor', 'stats', 'conduct', 'guard', 'heartbeat', 'propose-ai-facts', 'review-ai-facts', 'chat', 'math', 'simplify', 'code', 'compile', 'verify', 'hub', 'lab', 'mcp', 'field', 'lexicon', 'self-evolve', 'placement', 'sovereign', 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'print', '... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_hooks.py:32: AssertionError
+____________________________ test_codex_notify_argv ____________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_codex_notify_argv0')
+
+    def test_codex_notify_argv(tmp_path):
+        d = tmp_path / "led"
+        payload = json.dumps({"type": "agent-turn-complete", "thread-id": "th1", "turn-id": "t1", "input-messages": ["a", "b"], "last-assistant-message": "done"})
+        r = cli("events", "add", "agent_stop", "--from", "codex", "--ledger-dir", str(d), payload)
+>       assert r.returncode == 0 and r.stdout == ""
+E       assert (2 == 0)
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'events', 'add', 'a... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_hooks.py:199: AssertionError
+___________________ test_install_without_flag_writes_nothing ___________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_install_without_flag_writ0')
+
+    def test_install_without_flag_writes_nothing(tmp_path):
+        r = cli("hooks", "install", "--project", str(tmp_path))
+>       assert r.returncode == 0 and "NOT_WRITTEN_NO_FLAG" in r.stdout
+E       assert (2 == 0)
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'install',... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_hooks.py:210: AssertionError
+________________ test_install_write_idempotent_keeps_other_keys ________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_install_write_idempotent_0')
+
+    def test_install_write_idempotent_keeps_other_keys(tmp_path):
+        (tmp_path / ".claude").mkdir()
+        s = tmp_path / ".claude" / "settings.json"
+        s.write_text(json.dumps({"permissions": {"allow": ["Bash(ls)"]}, "hooks": {"Stop": [{"hooks": [{"type": "command", "command": "echo mine"}]}]}}))
+        for _ in range(2):
+            r = cli("hooks", "install", "--project", str(tmp_path), "--write")
+>           assert r.returncode == 0, r.stdout + r.stderr
+E           AssertionError: usage: vera [-h] [--store STORE]
+E                         {pour,remember,forget,ask,index,read-events,read,ledger,realize,observe,route,mcp-config,tool,documents,domain,doctor,stats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,push-store}
+E                         ...
+E             vera: error: argument cmd: invalid choice: 'hooks' (choose from 'pour', 'remember', 'forget', 'ask', 'index', 'read-events', 'read', 'ledger', 'realize', 'observe', 'route', 'mcp-config', 'tool', 'documents', 'domain', 'doctor', 'stats', 'conduct', 'guard', 'heartbeat', 'propose-ai-facts', 'review-ai-facts', 'chat', 'math', 'simplify', 'code', 'compile', 'verify', 'hub', 'lab', 'mcp', 'field', 'lexicon', 'self-evolve', 'placement', 'sovereign', 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')
+E             
+E           assert 2 == 0
+E            +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'install',... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_hooks.py:220: AssertionError
+_______________________ test_install_write_creates_file ________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_install_write_creates_fil0')
+
+    def test_install_write_creates_file(tmp_path):
+        r = cli("hooks", "install", "--project", str(tmp_path), "--write")
+>       assert r.returncode == 0
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'install',... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_hooks.py:231: AssertionError
+______________________ test_install_refuses_user_settings ______________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_install_refuses_user_sett0')
+
+    def test_install_refuses_user_settings(tmp_path):
+        home = tmp_path / "home"
+        (home / ".claude").mkdir(parents=True)
+        env = _env(HOME=str(home))
+        for proj in (home, home / ".claude", home / ".claude" / "x"):
+            r = cli("hooks", "install", "--project", str(proj), "--write", env=env)
+>           assert r.returncode == 2 and "REFUSED_USER_SETTINGS" in r.stdout, (proj, r.stdout, r.stderr)
+E           AssertionError: (PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_insta... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')
+E             ")
+E           assert (2 == 2 and 'REFUSED_USER_SETTINGS' in '')
+E            +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'install',... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+E            +  and   '' = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'install',... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").stdout
+
+tests/test_w16t7_hooks.py:241: AssertionError
+_______________________ test_install_refuses_unparsable ________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_install_refuses_unparsabl0')
+
+    def test_install_refuses_unparsable(tmp_path):
+        (tmp_path / ".claude").mkdir()
+        (tmp_path / ".claude" / "settings.json").write_text("{broken")
+        r = cli("hooks", "install", "--project", str(tmp_path), "--write")
+>       assert r.returncode != 0 and "REFUSED_UNPARSABLE_SETTINGS" in r.stdout
+E       assert (2 != 0 and 'REFUSED_UNPARSABLE_SETTINGS' in '')
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'install',... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+E        +  and   '' = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'hooks', 'install',... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").stdout
+
+tests/test_w16t7_hooks.py:249: AssertionError
+_____ test_static_no_home_expansion_and_user_settings_path_only_in_install _____
+
+    def test_static_no_home_expansion_and_user_settings_path_only_in_install():
+        for m in MODS:
+>           tree = ast.parse((ROOT / "verantyx" / m).read_text(encoding="utf-8"))
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_w16t7_hooks.py:283: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/pathlib.py:1058: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/hooks_templates.py')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/hooks_templates.py'
+
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/pathlib.py:1044: FileNotFoundError
+_______________ test_static_write_calls_are_in_allowed_functions _______________
+
+    def test_static_write_calls_are_in_allowed_functions():
+        """hooks_templates.py で書き込みの呼び出しがあるのは settings を書く 1 関数だけ。"""
+>       tree = ast.parse((ROOT / "verantyx" / "hooks_templates.py").read_text(encoding="utf-8"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_w16t7_hooks.py:298: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/pathlib.py:1058: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/hooks_templates.py')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/hooks_templates.py'
+
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/pathlib.py:1044: FileNotFoundError
+________________________ test_redact_function_patterns _________________________
+
+    def test_redact_function_patterns():
+>       from verantyx import ledger_events as L
+E       ImportError: cannot import name 'ledger_events' from 'verantyx' (/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t7-S/verantyx/__init__.py)
+
+tests/test_w16t7_redact.py:53: ImportError
+_____________________ test_events_add_tool_call_keep_args ______________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_events_add_tool_call_keep0')
+
+    def test_events_add_tool_call_keep_args(tmp_path):
+        d = tmp_path / "l"
+        r = cli("events", "add", "tool_call", "--ledger-dir", str(d), "--actor-type", "agent", "--actor-id", "a",
+                "--tool-name", "Bash", "--args", json.dumps({"command": f"curl -H 'x: {KEY}' https://e"}), "--keep-args")
+>       assert r.returncode == 0, r.stderr
+E       AssertionError: usage: vera [-h] [--store STORE]
+E                     {pour,remember,forget,ask,index,read-events,read,ledger,realize,observe,route,mcp-config,tool,documents,domain,doctor,stats,conduct,guard,heartbeat,propose-ai-facts,review-ai-facts,chat,math,simplify,code,compile,verify,hub,lab,mcp,field,lexicon,self-evolve,placement,sovereign,self-audit,audit,serve,setup,wizard,agent,obfuscate,deobfuscate,watermark,push-store}
+E                     ...
+E         vera: error: argument cmd: invalid choice: 'events' (choose from 'pour', 'remember', 'forget', 'ask', 'index', 'read-events', 'read', 'ledger', 'realize', 'observe', 'route', 'mcp-config', 'tool', 'documents', 'domain', 'doctor', 'stats', 'conduct', 'guard', 'heartbeat', 'propose-ai-facts', 'review-ai-facts', 'chat', 'math', 'simplify', 'code', 'compile', 'verify', 'hub', 'lab', 'mcp', 'field', 'lexicon', 'self-evolve', 'placement', 'sovereign', 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'events', 'add', 't... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_redact.py:68: AssertionError
+_______________________ test_no_keep_args_stores_no_body _______________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_no_keep_args_stores_no_bo0')
+
+    def test_no_keep_args_stores_no_body(tmp_path):
+        d = tmp_path / "l"
+        harmless = "harmlesswordXYZ"
+        r = cli("events", "add", "tool_call", "--ledger-dir", str(d), "--actor-type", "agent", "--actor-id", "a",
+                "--tool-name", "Bash", "--args", json.dumps({"command": f"echo {harmless} {KEY}"}))
+>       assert r.returncode == 0
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'events', 'add', 't... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_redact.py:79: AssertionError
+_______________ test_hook_posttooluse_with_and_without_keep_args _______________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_hook_posttooluse_with_and0')
+
+    def test_hook_posttooluse_with_and_without_keep_args(tmp_path):
+        harmless = "harmlesswordXYZ"
+        pl = json.dumps({"session_id": "s", "hook_event_name": "PostToolUse", "tool_name": "Bash",
+                         "tool_input": {"command": f"echo {harmless} {KEY} {KV}"}})
+        for extra, key in (((), "off"), (("--keep-args",), "on")):
+            proj = tmp_path / key
+            proj.mkdir()
+>           c, _ = _hook_cmd(*extra)
+                   ^^^^^^^^^^^^^^^^^
+
+tests/test_w16t7_redact.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_w16t7_redact.py:87: in _hook_cmd
+    return json.loads(r.stdout)["hooks"]["PostToolUse"][0]["hooks"][0]["command"], json.loads(r.stdout)["hooks"]["UserPromptSubmit"][0]["hooks"][0]["command"]
+           ^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/json/__init__.py:346: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.decoder.JSONDecoder object at 0x107baef50>, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+>           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/json/decoder.py:355: JSONDecodeError
+____________ test_owner_utterance_with_key_is_redacted_and_counted _____________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_owner_utterance_with_key_0')
+
+    def test_owner_utterance_with_key_is_redacted_and_counted(tmp_path):
+        proj = tmp_path / "p"
+        proj.mkdir()
+>       _, c = _hook_cmd()
+               ^^^^^^^^^^^
+
+tests/test_w16t7_redact.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_w16t7_redact.py:87: in _hook_cmd
+    return json.loads(r.stdout)["hooks"]["PostToolUse"][0]["hooks"][0]["command"], json.loads(r.stdout)["hooks"]["UserPromptSubmit"][0]["hooks"][0]["command"]
+           ^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/json/__init__.py:346: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.decoder.JSONDecoder object at 0x107baef50>, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+>           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/json/decoder.py:355: JSONDecodeError
+__________________ test_rejects_file_has_no_plaintext_secret ___________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_rejects_file_has_no_plain0')
+
+    def test_rejects_file_has_no_plaintext_secret(tmp_path):
+        proj = tmp_path / "p"
+        proj.mkdir()
+>       _, c = _hook_cmd()
+               ^^^^^^^^^^^
+
+tests/test_w16t7_redact.py:127: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_w16t7_redact.py:87: in _hook_cmd
+    return json.loads(r.stdout)["hooks"]["PostToolUse"][0]["hooks"][0]["command"], json.loads(r.stdout)["hooks"]["UserPromptSubmit"][0]["hooks"][0]["command"]
+           ^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/json/__init__.py:346: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.decoder.JSONDecoder object at 0x107baef50>, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+>           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/json/decoder.py:355: JSONDecodeError
+_______________ test_vera_run_keep_args_redacts_argv_everywhere ________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_vera_run_keep_args_redact0')
+
+    def test_vera_run_keep_args_redacts_argv_everywhere(tmp_path):
+        d = tmp_path / "l"
+        r = cli("run", "--ledger-dir", str(d), "--keep-args", "--", "sh", "-c", f"echo {KEY}; sleep 0")
+>       assert r.returncode == 0
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'run', '--ledger-di... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_redact.py:137: AssertionError
+_________________ test_vera_run_without_keep_args_has_no_argv __________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_vera_run_without_keep_arg0')
+
+    def test_vera_run_without_keep_args_has_no_argv(tmp_path):
+        d = tmp_path / "l"
+        r = cli("run", "--ledger-dir", str(d), "--", "sh", "-c", f"echo harmlesswordXYZ {KEY}; sleep 0")
+>       assert r.returncode == 0
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-m', 'verantyx.cli', 'run', '--ledger-di... 'self-audit', 'audit', 'serve', 'setup', 'wizard', 'agent', 'obfuscate', 'deobfuscate', 'watermark', 'push-store')\n").returncode
+
+tests/test_w16t7_redact.py:146: AssertionError
+____________________________ test_argv0_is_redacted ____________________________
+
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_argv0_is_redacted0')
+
+    def test_argv0_is_redacted(tmp_path):
+        d = tmp_path / "l"
+        script = tmp_path / ("tool-" + KEY)
+        script.write_text("#!/bin/sh\nexit 0\n")
+        script.chmod(0o755)
+        cli("run", "--ledger-dir", str(d), "--", str(script))
+>       assert_clean(d, ALL)
+
+tests/test_w16t7_redact.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+d = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-1949/test_argv0_is_redacted0/l')
+secrets = ['sk-ant-api03-AAAAAAAAAAAAAAAAAAAAb9Zb9Zb9Zb9Zb9Z', 'ghp_QQQQQQQQQQQQQQQQQQQQQQQQ7', 'AKIAABCDEFGHIJKLMNOP', 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz', 'hunter2hunter2']
+
+    def assert_clean(d, secrets):
+        b = all_bytes(d)
+>       assert b, "台帳に何も無い"
+E       AssertionError: 台帳に何も無い
+E       assert b''
+
+tests/test_w16t7_redact.py:47: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w16t7_ledger.py::test_empty - ImportError: cannot import na...
+FAILED tests/test_w16t7_ledger.py::test_unknown_kind_and_actor_rejected - Imp...
+FAILED tests/test_w16t7_ledger.py::test_cli_verify_exit_codes_and_tamper - As...
+FAILED tests/test_w16t7_ledger.py::test_cli_tail_show_grep - assert (0 == 2)
+FAILED tests/test_w16t7_hooks.py::test_print_claude_code_is_valid_hooks_shape
+FAILED tests/test_w16t7_hooks.py::test_print_codex_toml - assert 2 == 0
+FAILED tests/test_w16t7_hooks.py::test_user_prompt_verbatim_japanese_multiline_emoji
+FAILED tests/test_w16t7_hooks.py::test_hook_never_fails_and_logs_rejects - As...
+FAILED tests/test_w16t7_hooks.py::test_hook_unwritable_ledger_still_exits_zero
+FAILED tests/test_w16t7_hooks.py::test_stop_and_subagent_stop - AssertionErro...
+FAILED tests/test_w16t7_hooks.py::test_posttooluse_classification - Assertion...
+FAILED tests/test_w16t7_hooks.py::test_commit_outside_repo_head_null - Assert...
+FAILED tests/test_w16t7_hooks.py::test_session_start_end_mapping - AssertionE...
+FAILED tests/test_w16t7_hooks.py::test_codex_notify_argv - assert (2 == 0)
+FAILED tests/test_w16t7_hooks.py::test_install_without_flag_writes_nothing - ...
+FAILED tests/test_w16t7_hooks.py::test_install_write_idempotent_keeps_other_keys
+FAILED tests/test_w16t7_hooks.py::test_install_write_creates_file - assert 2 ...
+FAILED tests/test_w16t7_hooks.py::test_install_refuses_user_settings - Assert...
+FAILED tests/test_w16t7_hooks.py::test_install_refuses_unparsable - assert (2...
+FAILED tests/test_w16t7_hooks.py::test_static_no_home_expansion_and_user_settings_path_only_in_install
+FAILED tests/test_w16t7_hooks.py::test_static_write_calls_are_in_allowed_functions
+FAILED tests/test_w16t7_redact.py::test_redact_function_patterns - ImportErro...
+FAILED tests/test_w16t7_redact.py::test_events_add_tool_call_keep_args - Asse...
+FAILED tests/test_w16t7_redact.py::test_no_keep_args_stores_no_body - assert ...
+FAILED tests/test_w16t7_redact.py::test_hook_posttooluse_with_and_without_keep_args
+FAILED tests/test_w16t7_redact.py::test_owner_utterance_with_key_is_redacted_and_counted
+FAILED tests/test_w16t7_redact.py::test_rejects_file_has_no_plaintext_secret
+FAILED tests/test_w16t7_redact.py::test_vera_run_keep_args_redacts_argv_everywhere
+FAILED tests/test_w16t7_redact.py::test_vera_run_without_keep_args_has_no_argv
+FAILED tests/test_w16t7_redact.py::test_argv0_is_redacted - AssertionError: ...
+ERROR tests/test_w16t7_ledger.py::test_row_shape_and_chain - ImportError: can...
+ERROR tests/test_w16t7_ledger.py::test_rewrite_is_sha_mismatch - ImportError:...
+ERROR tests/test_w16t7_ledger.py::test_delete_middle_is_prev_mismatch - Impor...
+ERROR tests/test_w16t7_ledger.py::test_swap_is_prev_mismatch - ImportError: c...
+ERROR tests/test_w16t7_ledger.py::test_truncate_tail_head_untouched - ImportE...
+ERROR tests/test_w16t7_ledger.py::test_extra_after_head_points_to_line - Impo...
+ERROR tests/test_w16t7_ledger.py::test_torn_tail - ImportError: cannot import...
+ERROR tests/test_w16t7_ledger.py::test_unparsable_middle - ImportError: canno...
+ERROR tests/test_w16t7_ledger.py::test_bad_shape_extra_key - ImportError: can...
+ERROR tests/test_w16t7_ledger.py::test_head_missing - ImportError: cannot imp...
+ERROR tests/test_w16t7_ledger.py::test_expected_head - ImportError: cannot im...
+30 failed, 1 passed, 1 deselected, 11 errors in 9.21s

@@ -1,0 +1,22 @@
+(a) after 3s: [('process_start', 47703, None)]
+(a) vera run rc= 143
+(a) after SIGTERM to job: [('process_start', 47703, None), ('process_interrupted', None, 'SIGTERM'), ('process_orphaned', 47705, None), ('process_orphaned', 47706, None)]
+--- (a) sweep while alive rc=0
+{"appended": 0, "recorder_vanished": 0, "still_alive": [{"argv0": "sleep", "lstart": "Mon Oct 5 23:11:31 2026", "pid": 47705, "run_id": "f0b5e243b0da47f8874bb09a1ea6ed72"}, {"argv0": "sleep", "lstart": "Mon Oct 5 23:11:31 2026", "pid": 47706, "run_id": "f0b5e243b0da47f8874bb09a1ea6ed72"}]}
+--- (a) sweep after 28s rc=0
+{"appended": 2, "recorder_vanished": 0, "still_alive": []}
+(a) final: [('process_start', 47703, None), ('process_interrupted', None, 'SIGTERM'), ('process_orphaned', 47705, None), ('process_orphaned', 47706, None), ('process_exit', 47705, None), ('process_exit', 47706, None)]
+--- (a) verify rc=0
+{"head": "9b4a7d93068cb2442b9a4ead71df20376c797bbc5889b929d8653731cf8f1d7b", "n": 6, "problems": [], "status": "OK"}
+(b) command: /Users/motonisihikoudai/vera-wiring/env/bin/python -m verantyx.cli events add owner_utterance --stdin --from claude-code --ledger-dir "${CLAUDE_PROJECT_DIR:-.}/.vera/ledger"
+(b) hook rc= 0 stdout= '' stderr= ''
+(b) {"actor": {"id": "s1", "type": "owner"}, "data": {"redactions": 0, "session_id": "s1", "source": "claude_code.UserPromptSubmit", "text": "全部止めて。\n子プロセスも"}, "kind": "owner_utterance", "prev": "0000000000000000000000000000000000000000000000000000000000000000", "sha": "472dafe43a49ca86dd2844e5a2f5b830b28c01f03d78777f5d1380fd8a416662", "ts": "2026-10-05T14:12:05.248151Z"}
+
+(b) verbatim: True
+--- (c) verify intact rc=0
+{"head": "16036dacfc98b5b997bdb67d7e6b060e976e2d1e66de6e2894463428133f0968", "n": 3, "problems": [], "status": "OK"}
+--- (c) verify after deleting line 2 rc=1
+{"head": "16036dacfc98b5b997bdb67d7e6b060e976e2d1e66de6e2894463428133f0968", "n": 2, "problems": [{"line": 2, "type": "PREV_MISMATCH"}], "status": "TAMPERED"}
+--- (T7-2) install without --write rc=0
+{"detail": "書くには --write を付ける", "status": "NOT_WRITTEN_NO_FLAG", "target": "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t7/projX_r1/.claude/settings.json", "would_add": 6, "would_write": {"hooks": {"PostToolUse": [{"hooks": [{"command": "/Users/motonisihikoudai/vera-wiring/env/bin/python -m verantyx.cli events add auto --stdin --from claude-code --ledger-dir \"${CLAUDE_PROJECT_DIR:-.}/.vera/ledger\"", "timeout": 10, "type": "command"}], "matcher": "Bash"}], "SessionEnd": [{"hooks": [{"command": "/Users/motonisihikoudai/vera-wiring/env/bin/python -m verantyx.cli events add auto --stdin --from claude-code --ledger-dir \"${CLAUDE_PROJECT_DIR:-.}/.vera/ledger\"", "timeout": 10, "type": "command"}]}], "SessionStart": [{"hooks": [{"command": "/Users/motonisihikoudai/vera-wiring/env/bin/python -m verantyx.cli events add auto --stdin --from claude-code --ledger-dir \"${CLAUDE_PROJECT_DIR:-.}/.vera/ledger\"", "timeout": 10, "type": "command"}]}], "Stop": [{"hooks": [{"command": "/Users/motonisihikoudai/vera-wiring/env/bin/python -m verantyx.cli events add agent_stop --stdin --from claude-code --ledger-dir \"${CLAUDE_PROJECT_DIR:-.}/.vera/ledger\"", "timeout": 10, "type": "command"}]}], "SubagentStop": [{"hooks": [{"command": "/Users/motonisihikoudai/vera-wiring/env/bin/python -m verantyx.cli events add agent_stop --stdin --from claude-code --ledger-dir \"${CLAUDE_PROJECT_DIR:-.}/.vera/ledger\"", "timeout": 10, "type": "command"}]}], "UserPromptSubmit": [{"hooks": [{"command": "/Users/motonisihikoudai/vera-wiring/env/bin/python -m verantyx.cli events add owner_utterance --stdin --from claude-code --ledger-dir \"${CLAUDE_PROJECT_DIR:-.}/.vera/ledger\"", "timeout": 10, "type": "command"}]}]}}}
+(T7-2) .claude exists: False

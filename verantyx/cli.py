@@ -3019,6 +3019,9 @@ def main(argv: Optional[list] = None) -> int:
                    help="fetch: 存在しない展開先 directory")
     p.set_defaults(fn=cmd_placement_dispatch)
 
+    from .run_recorder import register_cli as _w16t7_register   # W16-t7: run / events / hooks
+    _w16t7_register(sub)
+
     args = ap.parse_args(argv)
     if getattr(args, "cmd", None) in ("read", "ask", "chat", "serve") and getattr(args, "layer", None):
         import os

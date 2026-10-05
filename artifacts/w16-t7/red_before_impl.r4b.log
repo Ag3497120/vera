@@ -1,0 +1,12 @@
+            out, n = L.redact(src)
+>           assert val not in out and "hunter2" not in out
+E           AssertionError: assert ('hunter2hunter2' not in 'password: [...nter2hunter2'
+E             
+E             'hunter2hunter2' is contained here:
+E               password: [REDACTED:kv_secret] hunter2hunter2
+E             ?                                ++++++++++++++)
+
+tests/test_w16t7_redact.py:370: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w16t7_redact.py::test_r4_password_password_value_redacted
+1 failed, 30 deselected in 0.12s
