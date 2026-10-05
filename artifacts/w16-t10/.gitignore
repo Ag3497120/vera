@@ -1,0 +1,2 @@
+# auditor 2026-10-06: built wheels are reproducible from source; their sha256 are in wheels.sha256
+*.whl

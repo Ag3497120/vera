@@ -1,0 +1,12 @@
+diff --git a/pyproject.toml b/pyproject.toml
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -21,6 +21,8 @@
+ [tool.setuptools.packages.find]
+ include = ["vera_base*"]
++namespaces = true
+ 
+ [tool.setuptools.package-data]
+ "vera_base" = ["data/*.json"]
+ "vera_base.verantyx" = ["lang_data/*.json", "data/*.json"]
++"*" = ["*.json", "*.html"]

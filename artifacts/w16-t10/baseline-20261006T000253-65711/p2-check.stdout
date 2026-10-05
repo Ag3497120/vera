@@ -1,0 +1,1 @@
+{"constructions_present": false, "data_present": false, "failed_package_path_count": 0, "missing_opened_wheel_member_count": 0, "missing_opened_wheel_members": [], "note": "wheel 内の Python module import は Python-level open tracer の対象外", "opened_package_path_count": 6, "verdict": "FAIL"}

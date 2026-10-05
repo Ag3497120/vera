@@ -2994,6 +2994,14 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--private", action="store_true")
     p.set_defaults(fn=cmd_push_store)
 
+    from .placement_fetch import dispatch as cmd_placement_dispatch
+    p = sub.choices["placement"]
+    p.add_argument("--from", dest="source", default=None,
+                   help="fetch: tar URL。隣に .sha256 sidecar が必要です")
+    p.add_argument("--dest", default=None,
+                   help="fetch: 存在しない展開先 directory")
+    p.set_defaults(fn=cmd_placement_dispatch)
+
     args = ap.parse_args(argv)
     if getattr(args, "cmd", None) in ("read", "ask", "chat", "serve") and getattr(args, "layer", None):
         import os

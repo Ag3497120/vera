@@ -1,0 +1,9 @@
+Processing /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t10-smoke.EsyitB/source
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: verantyx-vera
+  Building wheel for verantyx-vera (pyproject.toml): started
+  Building wheel for verantyx-vera (pyproject.toml): finished with status 'done'
+  Created wheel for verantyx-vera: filename=verantyx_vera-0.1.0a1-py3-none-any.whl size=2476901 sha256=d696eb492281b0b31f2f3ddbf9f5946140971f6a01bbffa1399709e18aed04ad
+  Stored in directory: /private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pip-ephem-wheel-cache-gctw0of8/wheels/b4/9a/0c/7c336bb7b8b655b676e43e4bf822af75f0c1b235697cea204b
+Successfully built verantyx-vera

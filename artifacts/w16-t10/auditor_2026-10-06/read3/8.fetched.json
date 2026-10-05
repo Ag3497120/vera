@@ -1,0 +1,1 @@
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE", "PLACEMENT_VOICE_NOT_ACTIVE"]}, "unsupported": [{"predicate": "走らせる", "span": [7, 9], "reasons": ["ambiguous case role: に"]}], "clause_meta": []}

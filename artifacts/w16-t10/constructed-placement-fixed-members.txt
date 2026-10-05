@@ -1,0 +1,2 @@
+manifest.json
+placement.sqlite

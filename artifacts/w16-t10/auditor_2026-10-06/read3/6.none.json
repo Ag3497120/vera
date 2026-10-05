@@ -1,0 +1,1 @@
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["NO_SUPPORTED_CLAUSE"]}, "unsupported": [{"predicate": "起こす", "span": [10, 13], "reasons": ["ambiguous case role: に"]}], "clause_meta": []}
