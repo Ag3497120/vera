@@ -1,0 +1,10 @@
+# loc (round 2). commands: find verantyx -name '*.py' | xargs cat | wc -l ; git diff --numstat 3a1677c -- verantyx ; wc -l verantyx/doc_answer.py
+find verantyx -name '*.py' | xargs cat | wc -l:
+  152897
+base: 152712 (budget +202 -> 152914 at most)
+git diff --numstat 3a1677c -- verantyx (added removed file; doc_answer.py is untracked, below):
+82	191	verantyx/cli.py
+27	3	verantyx/coarse_place.py
+49	23	verantyx/decode_grammar.py
+3	1	verantyx/vera_server.py
+     242 verantyx/doc_answer.py

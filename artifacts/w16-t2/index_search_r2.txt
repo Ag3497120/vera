@@ -1,0 +1,62 @@
+## 配置の環境変数
+{
+  "verdict": "ANSWER",
+  "query": "配置の環境変数",
+  "searched": 700,
+  "hits": [
+    {
+      "kind": "door",
+      "name": "explain_placement",
+      "about": "Where would this sentence land, and why — core, facets, poles,",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "command",
+      "name": "placement",
+      "about": "simulate which facts go on the faces, before shipping a store",
+      "where": "verantyx/cli.py"
+    },
+    {
+      "kind": "module",
+      "name": "placement",
+      "about": "Placement simulation — decide what goes on the faces BEFORE shipping.",
+      "where": "verantyx/placement.py"
+    },
+    {
+      "kind": "module",
+      "name": "placement_explain",
+      "about": "Where would this sentence land, and why — the placement inspector.",
+      "where": "verantyx/placement_explain.py"
+    },
+    {
+## 文書に答える経路
+{
+  "verdict": "ANSWER",
+  "query": "文書に答える経路",
+  "searched": 700,
+  "hits": [
+    {
+      "kind": "door",
+      "name": "compile_documents",
+      "about": "Read the user's documents (.txt/.md files or folders, comma",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "ingest_documents",
+      "about": "Ingest several source documents about one event and PRESERVE their",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "load_documents",
+      "about": "Read files (or a folder) into the store — PDF, Word, HTML, CSV,",
+      "where": "verantyx/mcp_server.py"
+    },
+    {
+      "kind": "door",
+      "name": "vera_ask_documents",
+      "about": "Answer from the loaded documents only — quote, or say nothing.",
+      "where": "verantyx/mcp_server.py"
+    },
+    {

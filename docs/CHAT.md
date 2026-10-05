@@ -5,7 +5,7 @@
 対象は round5 の対話入口だけとする。実装前に次を固定する。
 
 - `/` で始まる入力は `/doc`、`/docs`、`/gen`、`/route`、`/read`、`/json`、`/help`、`/quit` の閉じた集合として扱う。集合外は `UNKNOWN_COMMAND`。
-- 質問は `cmd_ask` と同じ `Vera.ask` → `_round5_question_cross` → `basis_policy.apply_to_ask` を通す。同一引数の JSON dict は一致し、`basis_policy.outcome` も一致する。
+- 質問は `cmd_ask` と同じ `doc_answer.answer`（`Vera.ask` → 後段 `_round5_question_cross`）→ `basis_policy.apply_to_ask` を通す（W16-t2: 文書に答える経路は 1 本。`vera serve` も同じ関数）。同一引数の JSON dict は一致し、`basis_policy.outcome` も一致する。
 - R2 の手元確認用に、次の4文をテスト専用の fixture として固定し、`VERA_PLACEMENT` に r8/run2 を設定する。期待は、地図の質問に先生を証拠付きで返す、兄の質問に妹を証拠付きで返す、荷物の行先は型付き棄権にする。
   1. `先生が生徒に地図を渡した。`
   2. `兄が妹を呼んだ。`
@@ -52,7 +52,7 @@ vera chat --mode round5 [--document PATH ...] [--request-kind KIND]
 
 | 入力 | 呼ぶ入口 | 結果 |
 |---|---|---|
-| 質問文 | `Vera.ask` → `_round5_question_cross` → `basis_policy.apply_to_ask` | 判定、答え、根拠文書・行・文、`basis_policy.outcome` |
+| 質問文 | `doc_answer.answer`（`Vera.ask` → `_round5_question_cross`）→ `basis_policy.apply_to_ask` | 判定、答え、根拠文書・行・文、`basis_policy.outcome` |
 | `/doc PATH` | `Vera.load_documents` | 文書をこの対話に追加 |
 | `/docs` | 読み込んだ `Vera` の文書 | 読み込んだ文書名を表示 |
 | `/gen 文 [方向] [range]` | `observe.run_entry`（`--placement JSON` があれば渡す） | 実現文、主張型、座標を表示 |

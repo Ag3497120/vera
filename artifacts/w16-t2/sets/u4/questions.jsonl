@@ -1,0 +1,11 @@
+{"id": "U01", "docs": ["doc.txt"], "question": "誰が花子に本を渡したか", "gold": {"verdict": "ANSWER", "values": ["太郎"]}}
+{"id": "U02", "docs": ["doc.txt"], "question": "誰が花子に本を渡しましたか", "gold": {"verdict": "ANSWER", "values": ["太郎"]}}
+{"id": "U03", "docs": ["doc.txt"], "question": "花子に本を渡したのは誰ですか", "gold": {"verdict": "ANSWER", "values": ["太郎"]}}
+{"id": "U04", "docs": ["doc.txt"], "question": "太郎は花子に何を渡したか", "gold": {"verdict": "ANSWER", "values": ["本"]}}
+{"id": "U05", "docs": ["doc.txt"], "question": "太郎は誰に本を渡したか", "gold": {"verdict": "ANSWER", "values": ["花子"]}}
+{"id": "U06", "docs": ["doc.txt"], "question": "花子はどこで物理学を学んでいるか", "gold": {"verdict": "ANSWER", "values": ["東京の大学", "大学"]}}
+{"id": "U07", "docs": ["doc.txt"], "question": "その本はいつ出版されたか", "gold": {"verdict": "ANSWER", "values": ["昨年"]}}
+{"id": "U08", "docs": ["doc.txt"], "question": "誰が花子に本を渡した？", "gold": {"verdict": "ANSWER", "values": ["太郎"]}}
+{"id": "U09", "docs": ["doc.txt"], "question": "誰が花子に本を渡した", "gold": {"verdict": "ANSWER", "values": ["太郎"]}}
+{"id": "U10", "docs": ["doc.txt"], "question": "太郎は花子に何を渡した？", "gold": {"verdict": "ANSWER", "values": ["本"]}}
+{"id": "U11", "docs": ["doc.txt"], "question": "太郎は誰に本を渡した？", "gold": {"verdict": "ANSWER", "values": ["花子"]}}

@@ -1,0 +1,111 @@
+{"id": "AQ001", "docs": ["AD01.txt"], "question": "誰が患者に薬を渡した？", "gold": {"verdict": "ANSWER", "values": ["医者"]}, "category": "existing"}
+{"id": "AQ002", "docs": ["AD01.txt"], "question": "看護師は医者に何を渡した？", "gold": {"verdict": "ANSWER", "values": ["書類"]}, "category": "one"}
+{"id": "AQ003", "docs": ["AD01.txt"], "question": "誰が橋を建てた？", "gold": {"verdict": "ANSWER", "values": ["技師"]}, "category": "one"}
+{"id": "AQ004", "docs": ["AD01.txt"], "question": "院長は会議室で何を配った？", "gold": {"verdict": "ANSWER", "values": ["資料"]}, "category": "one"}
+{"id": "AQ005", "docs": ["AD01.txt"], "question": "患者はどこへ行った？", "gold": {"verdict": "ANSWER", "values": ["受付"]}, "category": "one"}
+{"id": "AQ006", "docs": ["AD01.txt"], "question": "誰が薬を渡さなかった？", "gold": {"verdict": "ANSWER", "values": ["看護師"]}, "category": "one"}
+{"id": "AQ007", "docs": ["AD01.txt"], "question": "係員は患者に何を渡した？", "gold": {"verdict": "ANSWER", "values": ["番号"]}, "category": "one"}
+{"id": "AQ008", "docs": ["AD01.txt"], "question": "技師は病院から何を送った？", "gold": {"verdict": "ANSWER", "values": ["機械"]}, "category": "one"}
+{"id": "AQ009", "docs": ["AD01.txt"], "question": "院長は朝に何を書いた？", "gold": {"verdict": "ANSWER", "values": ["手紙"]}, "category": "one"}
+{"id": "AQ010", "docs": ["AD01.txt"], "question": "誰が患者に番号を渡した？", "gold": {"verdict": "ANSWER", "values": ["係員"]}, "category": "one"}
+{"id": "AQ011", "docs": ["AD01.txt"], "question": "医者は看護師に何を渡した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "none"}
+{"id": "AQ012", "docs": ["AD01.txt"], "question": "誰が書類を送った？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "none"}
+{"id": "AQ013", "docs": ["AD01.txt"], "question": "看護師は患者に何を渡した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "none"}
+{"id": "AQ014", "docs": ["AD01.txt"], "question": "医者は患者に薬を渡したか？", "gold": {"verdict": "NOT_JUDGED", "values": [], "truth_kind": "YESNO"}, "category": "illformed"}
+{"id": "AQ015", "docs": ["AD01.txt"], "question": "誰が誰に書類を渡した？", "gold": {"verdict": "NOT_JUDGED", "values": [], "truth_kind": "ILLFORMED"}, "category": "illformed"}
+{"id": "AQ016", "docs": ["AD01.txt"], "question": "医者か看護師が薬を渡した？", "gold": {"verdict": "NOT_JUDGED", "values": [], "truth_kind": "ILLFORMED"}, "category": "illformed"}
+{"id": "AQ017", "docs": ["AD01.txt"], "question": "誰かが薬を渡した？", "gold": {"verdict": "NOT_JUDGED", "values": [], "truth_kind": "ILLFORMED"}, "category": "illformed"}
+{"id": "AQ018", "docs": ["AD01.txt"], "question": "今日の天気はどうですか？", "gold": {"verdict": "NOT_JUDGED", "values": [], "truth_kind": "ILLFORMED"}, "category": "illformed"}
+{"id": "AQ019", "docs": ["AD01.txt"], "question": "医者が患者に薬を渡した。", "gold": {"verdict": "NOT_JUDGED", "values": [], "truth_kind": "ILLFORMED"}, "category": "declarative"}
+{"id": "AQ020", "docs": [], "question": "誰が患者に薬を渡した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "nodoc"}
+{"id": "AQ021", "docs": ["AD02.txt"], "question": "誰が市場で馬を売った？", "gold": {"verdict": "ANSWER", "values": ["農夫"]}, "category": "one"}
+{"id": "AQ022", "docs": ["AD02.txt"], "question": "誰が港から魚を送った？", "gold": {"verdict": "ANSWER", "values": ["漁師"]}, "category": "one"}
+{"id": "AQ023", "docs": ["AD02.txt"], "question": "船長は漁師に何を貸した？", "gold": {"verdict": "ANSWER", "values": ["網"]}, "category": "one"}
+{"id": "AQ024", "docs": ["AD02.txt"], "question": "誰が歌を歌った？", "gold": {"verdict": "ANSWER", "values": ["歌手"]}, "category": "one"}
+{"id": "AQ025", "docs": ["AD02.txt"], "question": "誰が農夫に小麦を渡さなかった？", "gold": {"verdict": "ANSWER", "values": ["粉屋"]}, "category": "one"}
+{"id": "AQ026", "docs": ["AD02.txt"], "question": "農夫は市場で何を売った？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "SPLIT"}, "category": "split"}
+{"id": "AQ027", "docs": ["AD02.txt"], "question": "粉屋は農夫に何を渡した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "negonly"}
+{"id": "AQ028", "docs": ["AD02.txt"], "question": "誰が農夫に小麦を渡した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "negonly"}
+{"id": "AQ029", "docs": ["AD02.txt"], "question": "漁師は港から何を売った？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "none"}
+{"id": "AQ030", "docs": [], "question": "農夫は市場で何を売った？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "nodoc"}
+{"id": "AQ031", "docs": ["AD03.txt"], "question": "生徒は図書館で何を読んだ？", "gold": {"verdict": "ANSWER", "values": ["本"]}, "category": "one"}
+{"id": "AQ032", "docs": ["AD03.txt"], "question": "父は朝に何を買った？", "gold": {"verdict": "ANSWER", "values": ["新聞"]}, "category": "one"}
+{"id": "AQ033", "docs": ["AD03.txt"], "question": "校長は何を渡さなかった？", "gold": {"verdict": "ANSWER", "values": ["地図"]}, "category": "one"}
+{"id": "AQ034", "docs": ["AD03.txt"], "question": "先生は生徒に何を貸した？", "gold": {"verdict": "ANSWER", "values": ["本"]}, "category": "one"}
+{"id": "AQ035", "docs": ["AD03.txt"], "question": "校長は生徒に何を貸した？", "gold": {"verdict": "ANSWER", "values": ["本"]}, "category": "one"}
+{"id": "AQ036", "docs": ["AD03.txt"], "question": "誰が生徒に本を貸した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "SPLIT"}, "category": "split"}
+{"id": "AQ037", "docs": ["AD03.txt"], "question": "誰が地図を渡した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "hearsay"}
+{"id": "AQ038", "docs": ["AD03.txt"], "question": "誰が車を売った？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "hearsay"}
+{"id": "AQ039", "docs": ["AD04.txt"], "question": "先生は生徒に何を貸した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "SPLIT"}, "category": "notation"}
+{"id": "AQ040", "docs": ["AD04.txt"], "question": "誰が客に車を売った？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "SPLIT"}, "category": "notation"}
+{"id": "AQ041", "docs": ["AD04.txt"], "question": "店員は客に何を売った？", "gold": {"verdict": "ANSWER", "values": ["カメラ"]}, "category": "one"}
+{"id": "AQ042", "docs": ["AD04.txt"], "question": "誰が客にカメラを売った？", "gold": {"verdict": "ANSWER", "values": ["店員"]}, "category": "one"}
+{"id": "AQ043", "docs": ["AD04.txt"], "question": "社長は会社から何を送った？", "gold": {"verdict": "ANSWER", "values": ["手紙"]}, "category": "one"}
+{"id": "AQ044", "docs": ["AD04.txt"], "question": "誰が会社から手紙を送った？", "gold": {"verdict": "ANSWER", "values": ["社長"]}, "category": "one"}
+{"id": "AQ045", "docs": ["AD04.txt"], "question": "社長は客に何を売った？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "none"}
+{"id": "AQ046", "docs": ["AD04.txt"], "question": "店員は生徒に何を貸した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "none"}
+{"id": "AQ047", "docs": ["AD05.txt"], "question": "誰が民に金貨を配った？", "gold": {"verdict": "ANSWER", "values": ["王"]}, "category": "one"}
+{"id": "AQ048", "docs": ["AD05.txt"], "question": "王は民に何を配った？", "gold": {"verdict": "ANSWER", "values": ["金貨"]}, "category": "one"}
+{"id": "AQ049", "docs": ["AD05.txt"], "question": "王は宮殿で何を書いた？", "gold": {"verdict": "ANSWER", "values": ["手紙"]}, "category": "one"}
+{"id": "AQ050", "docs": ["AD05.txt"], "question": "誰が王に鍵を渡した？", "gold": {"verdict": "ANSWER", "values": ["大臣"]}, "category": "one"}
+{"id": "AQ051", "docs": ["AD05.txt"], "question": "画家は寺で何を描いた？", "gold": {"verdict": "ANSWER", "values": ["絵"]}, "category": "one"}
+{"id": "AQ052", "docs": ["AD05.txt"], "question": "誰が城へ行った？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "SPLIT"}, "category": "split"}
+{"id": "AQ053", "docs": ["AD05.txt"], "question": "大臣は民に何を配った？", "gold": {"verdict": "ANSWER", "values": ["穀物"]}, "category": "unplaced"}
+{"id": "AQ054", "docs": ["AD05.txt"], "question": "商人は兵士に何を売った？", "gold": {"verdict": "ANSWER", "values": ["剣"]}, "category": "unplaced"}
+{"id": "AQ055", "docs": ["AD05.txt"], "question": "王は兵士に何を渡した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "none"}
+{"id": "AQ056", "docs": ["AD05.txt"], "question": "誰が剣を買った？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "none"}
+{"id": "AQ057", "docs": ["AD06.txt"], "question": "館長は何を読んだ？", "gold": {"verdict": "ANSWER", "values": ["本"]}, "category": "one"}
+{"id": "AQ058", "docs": ["AD06.txt"], "question": "誰が客に地図を渡した？", "gold": {"verdict": "ANSWER", "values": ["案内係"]}, "category": "existing"}
+{"id": "AQ059", "docs": ["AD06.txt"], "question": "案内係は客に何を渡した？", "gold": {"verdict": "ANSWER", "values": ["地図"]}, "category": "existing"}
+{"id": "AQ060", "docs": ["AD06.txt"], "question": "館長はどこへ行った？", "gold": {"verdict": "ANSWER", "values": ["展示室"]}, "category": "one"}
+{"id": "AQ061", "docs": ["AD06.txt"], "question": "誰が客に鍵を貸した？", "gold": {"verdict": "ANSWER", "values": ["警備員"]}, "category": "one"}
+{"id": "AQ062", "docs": ["AD06.txt"], "question": "学生は教室で何を描いた？", "gold": {"verdict": "ANSWER", "values": ["絵"]}, "category": "one"}
+{"id": "AQ063", "docs": ["AD06.txt"], "question": "案内係は何を売らなかった？", "gold": {"verdict": "ANSWER", "values": ["地図"]}, "category": "one"}
+{"id": "AQ064", "docs": ["AD06.txt"], "question": "教授は学生に何を渡した？", "gold": {"verdict": "ANSWER", "values": ["資料"]}, "category": "one"}
+{"id": "AQ065", "docs": ["AD06.txt"], "question": "誰が学生に資料を渡した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "SPLIT"}, "category": "split"}
+{"id": "AQ066", "docs": ["AD06.txt"], "question": "案内係は何を売った？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "negonly"}
+{"id": "AQ067", "docs": ["AD06.txt"], "question": "警備員は客に何を渡した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "none"}
+{"id": "AQ068", "docs": ["AD07.txt"], "question": "母は台所で何を作った？", "gold": {"verdict": "ANSWER", "values": ["料理"]}, "category": "one"}
+{"id": "AQ069", "docs": ["AD07.txt"], "question": "誰が店で服を買った？", "gold": {"verdict": "ANSWER", "values": ["父"]}, "category": "one"}
+{"id": "AQ070", "docs": ["AD07.txt"], "question": "誰が兄に鉛筆を貸した？", "gold": {"verdict": "ANSWER", "values": ["弟"]}, "category": "existing"}
+{"id": "AQ071", "docs": ["AD07.txt"], "question": "兄は妹に何を貸した？", "gold": {"verdict": "ANSWER", "values": ["鉛筆"]}, "category": "one"}
+{"id": "AQ072", "docs": ["AD07.txt"], "question": "父は何を買わなかった？", "gold": {"verdict": "ANSWER", "values": ["新聞"]}, "category": "one"}
+{"id": "AQ073", "docs": ["AD07.txt"], "question": "姉は夜に何を書いた？", "gold": {"verdict": "ANSWER", "values": ["手紙"]}, "category": "one"}
+{"id": "AQ074", "docs": ["AD07.txt"], "question": "姉は図書館で何を読んだ？", "gold": {"verdict": "ANSWER", "values": ["本"]}, "category": "one"}
+{"id": "AQ075", "docs": ["AD07.txt"], "question": "母は何を作りました？", "gold": {"verdict": "ANSWER", "values": ["弁当"]}, "category": "one"}
+{"id": "AQ076", "docs": ["AD07.txt"], "question": "誰が妹に鉛筆を貸した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "SPLIT"}, "category": "split"}
+{"id": "AQ077", "docs": ["AD07.txt"], "question": "妹は兄に何を貸した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "none"}
+{"id": "AQ078", "docs": ["AD08.txt"], "question": "Who gave the map to the student?", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "SPLIT"}, "category": "split"}
+{"id": "AQ079", "docs": ["AD08.txt"], "question": "Who wrote a letter?", "gold": {"verdict": "ANSWER", "values": ["sailor"]}, "category": "one"}
+{"id": "AQ080", "docs": ["AD08.txt"], "question": "What did the sailor write?", "gold": {"verdict": "ANSWER", "values": ["letter"]}, "category": "one"}
+{"id": "AQ081", "docs": ["AD08.txt"], "question": "Who bought the flour?", "gold": {"verdict": "ANSWER", "values": ["baker"]}, "category": "one"}
+{"id": "AQ082", "docs": ["AD08.txt"], "question": "What did the baker buy?", "gold": {"verdict": "ANSWER", "values": ["flour"]}, "category": "one"}
+{"id": "AQ083", "docs": ["AD08.txt"], "question": "What did the doctor read?", "gold": {"verdict": "ANSWER", "values": ["report"]}, "category": "one"}
+{"id": "AQ084", "docs": ["AD08.txt"], "question": "Who flew the plane?", "gold": {"verdict": "ANSWER", "values": ["pilot"]}, "category": "existing"}
+{"id": "AQ085", "docs": ["AD08.txt"], "question": "What did the farmer sell to the miller?", "gold": {"verdict": "ANSWER", "values": ["horse"]}, "category": "one"}
+{"id": "AQ086", "docs": ["AD08.txt"], "question": "Who sold the horse to the miller?", "gold": {"verdict": "ANSWER", "values": ["farmer"]}, "category": "unplaced"}
+{"id": "AQ087", "docs": ["AD08.txt"], "question": "Who gave the key to the guest?", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "negonly"}
+{"id": "AQ088", "docs": ["AD08.txt"], "question": "What did the clerk give to the guest?", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "negonly"}
+{"id": "AQ089", "docs": ["AD08.txt"], "question": "Did the baker buy the flour?", "gold": {"verdict": "NOT_JUDGED", "values": [], "truth_kind": "YESNO"}, "category": "illformed"}
+{"id": "AQ090", "docs": ["AD08.txt"], "question": "Who gave what to the student?", "gold": {"verdict": "NOT_JUDGED", "values": [], "truth_kind": "ILLFORMED"}, "category": "illformed"}
+{"id": "AQ091", "docs": ["AD08.txt"], "question": "The pilot flew the plane.", "gold": {"verdict": "NOT_JUDGED", "values": [], "truth_kind": "ILLFORMED"}, "category": "declarative"}
+{"id": "AQ092", "docs": ["AD09.txt"], "question": "Who built the bridge?", "gold": {"verdict": "ANSWER", "values": ["mayor"]}, "category": "existing"}
+{"id": "AQ093", "docs": ["AD09.txt"], "question": "What did the mayor build?", "gold": {"verdict": "ANSWER", "values": ["bridge"]}, "category": "one"}
+{"id": "AQ094", "docs": ["AD09.txt"], "question": "Who gave the medicine to the child?", "gold": {"verdict": "ANSWER", "values": ["nurse"]}, "category": "one"}
+{"id": "AQ095", "docs": ["AD09.txt"], "question": "What did the student send to the teacher?", "gold": {"verdict": "ANSWER", "values": ["letter"]}, "category": "one"}
+{"id": "AQ096", "docs": ["AD09.txt"], "question": "Who painted the wall?", "gold": {"verdict": "ANSWER", "values": ["artist"]}, "category": "one"}
+{"id": "AQ097", "docs": ["AD09.txt"], "question": "What did the artist paint?", "gold": {"verdict": "ANSWER", "values": ["wall"]}, "category": "one"}
+{"id": "AQ098", "docs": ["AD09.txt"], "question": "Who cooked the soup?", "gold": {"verdict": "ANSWER", "values": ["chef"]}, "category": "one"}
+{"id": "AQ099", "docs": ["AD09.txt"], "question": "Who sold the ship?", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "negonly"}
+{"id": "AQ100", "docs": ["AD09.txt"], "question": "What did the captain sell?", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "negonly"}
+{"id": "AQ101", "docs": ["AD09.txt"], "question": "Did the mayor build the bridge?", "gold": {"verdict": "NOT_JUDGED", "values": [], "truth_kind": "YESNO"}, "category": "illformed"}
+{"id": "AQ102", "docs": ["AD10.txt"], "question": "What did the waiter sell to the guest?", "gold": {"verdict": "ANSWER", "values": ["tray"]}, "category": "one"}
+{"id": "AQ103", "docs": ["AD10.txt"], "question": "Who sold the tray to the guest?", "gold": {"verdict": "ANSWER", "values": ["waiter"]}, "category": "one"}
+{"id": "AQ104", "docs": ["AD10.txt"], "question": "Who planted the roses?", "gold": {"verdict": "ANSWER", "values": ["gardener"]}, "category": "one"}
+{"id": "AQ105", "docs": ["AD10.txt"], "question": "Who bought the flour?", "gold": {"verdict": "ANSWER", "values": ["cook"]}, "category": "one"}
+{"id": "AQ106", "docs": ["AD10.txt"], "question": "What did the sailor write?", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "NONE"}, "category": "negonly"}
+{"id": "AQ107", "docs": ["AD08.txt", "AD10.txt"], "question": "Who bought the flour?", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "SPLIT"}, "category": "twodoc"}
+{"id": "AQ108", "docs": ["AD08.txt", "AD10.txt"], "question": "Who flew the plane?", "gold": {"verdict": "ANSWER", "values": ["pilot"]}, "category": "twodoc"}
+{"id": "AQ109", "docs": ["AD09.txt", "AD10.txt"], "question": "Who sent a letter to the teacher?", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "SPLIT"}, "category": "twodoc"}
+{"id": "AQ110", "docs": ["AD08.txt", "AD08.txt"], "question": "Who wrote a letter?", "gold": {"verdict": "ANSWER", "values": ["sailor"]}, "category": "twodoc"}
+{"id": "AQ111", "docs": ["dir_ae"], "question": "誰が客に荷物を渡した？", "gold": {"verdict": "ABSTAIN", "values": [], "truth_kind": "SPLIT"}, "category": "twodoc"}

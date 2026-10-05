@@ -251,7 +251,9 @@ def _layer_summary(cfg: FusionConfig) -> Dict[str, Any]:
     """W10-f05 (docs/FUSION.md section 7): `{name, status, growth: {words_direct, words_human, words_estimated, last_grown}}` of the layer the entrance was started with."""
     from . import coarse_place
     from . import placement_layer as PL
-    base_pl, _why = coarse_place._open(os.environ.get("VERA_PLACEMENT"))
+    base_pl, why = coarse_place._open(None)
+    if why and why[0] == "PLACEMENT_ENV_CONFLICT":
+        return {"name": PL.resolve(cfg.layer)[1] or cfg.layer, "status": "PLACEMENT_ENV_CONFLICT", "growth": None}
     g = PL.growth(cfg.layer, None, getattr(base_pl, "sha", None))
     path, name, _w = PL.resolve(cfg.layer)
     if g.get("layer_status") != "OK":

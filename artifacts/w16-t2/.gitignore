@@ -1,0 +1,24 @@
+# auditor 2026-10-06: per-row run outputs over 1 MB are not committed (reproducible from COMMANDS.md); sha256 in large_outputs.sha256
+/exp_trigger_own60.jsonl
+/exp_trigger_w3c4.jsonl
+/exp_trigger_w3c4_b2like.jsonl
+/new_own60.jsonl
+/new_own60_noplace_r2.jsonl
+/new_own60_r2.jsonl
+/new_w3c4.jsonl
+/new_w3c4_b2like.jsonl
+/new_w3c4_b2like_noplace_r2.jsonl
+/new_w3c4_b2like_r2.jsonl
+/new_w3c4_noplace_r2.jsonl
+/new_w3c4_r2.jsonl
+/new_w3f1_noplace_r2.jsonl
+/new_w3f1_r2.jsonl
+/old_own60_noplace_r2.jsonl
+/old_own60_r2.jsonl
+/old_w3c4.jsonl
+/old_w3c4_b2like_noplace_r2.jsonl
+/old_w3c4_b2like_r2.jsonl
+/old_w3c4_noplace_r2.jsonl
+/old_w3c4_r2.jsonl
+/old_w3f1_noplace_r2.jsonl
+/old_w3f1_r2.jsonl

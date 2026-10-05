@@ -1,0 +1,25 @@
+不一致 24 件 (/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t2-impl/bs_B2_before と /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t2-impl/bs_B2_after)
+  raw/0001_b2s-001.json: 不一致
+  raw/0002_b2s-002.json: 不一致
+  raw/0003_b2s-003.json: 不一致
+  raw/0004_b2s-004.json: 不一致
+  raw/0005_b2s-005.json: 不一致
+  raw/0006_b2s-006.json: 不一致
+  raw/0007_b2s-007.json: 不一致
+  raw/0008_b2s-008.json: 不一致
+  raw/0009_b2s-009.json: 不一致
+  raw/0010_b2s-010.json: 不一致
+  raw/0011_b2s-011.json: 不一致
+  raw/0012_b2s-012.json: 不一致
+  raw/0013_b2s-013.json: 不一致
+  raw/0014_b2s-014.json: 不一致
+  raw/0015_b2s-015.json: 不一致
+  raw/0016_b2s-016.json: 不一致
+  raw/0017_b2s-017.json: 不一致
+  raw/0018_b2s-018.json: 不一致
+  raw/0019_b2s-019.json: 不一致
+  raw/0022_b2s-022.json: 不一致
+  raw/0023_b2s-023.json: 不一致
+  raw/0024_b2s-024.json: 不一致
+  raw/0025_b2s-025.json: 不一致
+  run_meta.json: 不一致
