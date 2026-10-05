@@ -1,0 +1,583 @@
+{
+  "kind": "unknown",
+  "verdict": "CONFLICT",
+  "text": "この要求を裏づける導出を確認できません。",
+  "reason": "applicable opposing evidence",
+  "phase": "producer",
+  "values": [],
+  "evidence": [],
+  "sources": [],
+  "trace": [
+    {
+      "part": "one.round5_route",
+      "status": "ran",
+      "code_intent": false,
+      "content_intent": false,
+      "decision_input": "raw_request",
+      "fallback": false
+    },
+    {
+      "part": "question.read_semantic",
+      "status": "ran",
+      "plans": 1,
+      "obligations": 8,
+      "unread": []
+    },
+    {
+      "part": "semantic_reader.document_view",
+      "status": "ran",
+      "clauses": 12,
+      "source_unread": [],
+      "source_unread_count": 0,
+      "source_unread_truncated": false,
+      "ingest_ms": 106.05308297090232
+    },
+    {
+      "leaves": 1,
+      "nodes": 1,
+      "arity": 6,
+      "status": "skipped",
+      "reason": "fewer leaves than one routing node",
+      "part": "semantic_route.LeafTree"
+    },
+    {
+      "part": "remedy.remedy",
+      "status": "ran",
+      "verdict": "CONFLICT",
+      "how_to_resolve": "質問された事項を示す出典を追加してください。"
+    },
+    {
+      "part": "ask_back.question",
+      "status": "abstained",
+      "reason": "verdict has no human-answerable candidate",
+      "asks": ""
+    },
+    {
+      "part": "coverage.document_needed",
+      "status": "abstained",
+      "reason": "no domain witnesses"
+    },
+    {
+      "part": "gap_graph.refusal_to_gap",
+      "status": "abstained",
+      "reason": "no opt-in gap_path"
+    },
+    {
+      "part": "grow.log_refusal",
+      "status": "abstained",
+      "reason": "no queue opt-in or different verdict"
+    },
+    {
+      "part": "multigrain_adapter.retrieve_multigrain_candidates",
+      "status": "ran",
+      "verdict": "UNKNOWN_NOT_PRESENT",
+      "selected_candidate": null,
+      "source_identity_status": "UNKNOWN_NO_SOURCE_MATCH",
+      "independent_source_count": null,
+      "source_binding_status": "HOLD",
+      "source_binding_reason": "adapter did not find a source-leaf candidate",
+      "candidate_views_supplied_to_answer_verifier": false,
+      "candidate_document_id_cited_after_full_view_check": false,
+      "candidate_sentence_span_cited_after_full_view_check": null,
+      "candidate_clause_span_cited_after_full_view_check": false,
+      "candidate_clause_span_match_count": 0,
+      "candidate_clause_span_causal_influence_proven": false,
+      "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+      "bound_source_supplied_to_goal_consumer": false,
+      "licenses_goal_realization": false
+    }
+  ],
+  "semantic": {
+    "version": "round5a",
+    "verified": false,
+    "request": {
+      "text": "駅員は客に切符を渡さなかったか？",
+      "plans": [
+        {
+          "nodes": [
+            {
+              "id": "n0",
+              "op": "Bind",
+              "inputs": [],
+              "pattern": {
+                "predicate": "渡す",
+                "roles": [
+                  [
+                    "agent",
+                    "駅員"
+                  ],
+                  [
+                    "patient",
+                    "切符"
+                  ],
+                  [
+                    "recipient",
+                    "客"
+                  ]
+                ],
+                "polarity": "*",
+                "modality": "assert",
+                "time": "past",
+                "event": null
+              },
+              "tests": [],
+              "terms": [],
+              "target": {
+                "name": "v1",
+                "sort": "value"
+              },
+              "relation": "whether-negative",
+              "unit": "",
+              "absolute": false,
+              "choices": [],
+              "outputs": [],
+              "obligations": [
+                "o0",
+                "o1",
+                "o2",
+                "o3",
+                "o4",
+                "o5",
+                "o6"
+              ],
+              "span": {
+                "source": "question",
+                "start": 0,
+                "end": 16,
+                "text": "駅員は客に切符を渡さなかったか？"
+              }
+            },
+            {
+              "id": "n1",
+              "op": "ApplyCondition",
+              "inputs": [
+                "n0"
+              ],
+              "pattern": null,
+              "tests": [],
+              "terms": [],
+              "target": null,
+              "relation": "",
+              "unit": "",
+              "absolute": false,
+              "choices": [],
+              "outputs": [],
+              "obligations": [],
+              "span": null
+            },
+            {
+              "id": "n2",
+              "op": "Except",
+              "inputs": [
+                "n1"
+              ],
+              "pattern": null,
+              "tests": [],
+              "terms": [],
+              "target": null,
+              "relation": "",
+              "unit": "",
+              "absolute": false,
+              "choices": [],
+              "outputs": [],
+              "obligations": [],
+              "span": null
+            },
+            {
+              "id": "n3",
+              "op": "Project",
+              "inputs": [
+                "n2"
+              ],
+              "pattern": null,
+              "tests": [],
+              "terms": [],
+              "target": null,
+              "relation": "",
+              "unit": "",
+              "absolute": false,
+              "choices": [],
+              "outputs": [
+                {
+                  "label": "可否",
+                  "term": {
+                    "name": "v1",
+                    "sort": "value"
+                  },
+                  "obligation": "o7",
+                  "unit": "",
+                  "span": {
+                    "source": "question",
+                    "start": 0,
+                    "end": 16,
+                    "text": "駅員は客に切符を渡さなかったか？"
+                  }
+                }
+              ],
+              "obligations": [
+                "o7"
+              ],
+              "span": null
+            }
+          ],
+          "root": "n3"
+        }
+      ],
+      "obligations": [
+        {
+          "id": "o0",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 16,
+            "text": "駅員は客に切符を渡さなかったか？"
+          },
+          "kind": "relation",
+          "node": "n0",
+          "detail": "渡す"
+        },
+        {
+          "id": "o1",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 16,
+            "text": "駅員は客に切符を渡さなかったか？"
+          },
+          "kind": "role",
+          "node": "n0",
+          "detail": "agent"
+        },
+        {
+          "id": "o2",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 16,
+            "text": "駅員は客に切符を渡さなかったか？"
+          },
+          "kind": "role",
+          "node": "n0",
+          "detail": "patient"
+        },
+        {
+          "id": "o3",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 16,
+            "text": "駅員は客に切符を渡さなかったか？"
+          },
+          "kind": "role",
+          "node": "n0",
+          "detail": "recipient"
+        },
+        {
+          "id": "o4",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 16,
+            "text": "駅員は客に切符を渡さなかったか？"
+          },
+          "kind": "polarity",
+          "node": "n0",
+          "detail": "*"
+        },
+        {
+          "id": "o5",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 16,
+            "text": "駅員は客に切符を渡さなかったか？"
+          },
+          "kind": "modality",
+          "node": "n0",
+          "detail": "assert"
+        },
+        {
+          "id": "o6",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 16,
+            "text": "駅員は客に切符を渡さなかったか？"
+          },
+          "kind": "time",
+          "node": "n0",
+          "detail": "past"
+        },
+        {
+          "id": "o7",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 16,
+            "text": "駅員は客に切符を渡さなかったか？"
+          },
+          "kind": "output",
+          "node": "n3",
+          "detail": "可否"
+        }
+      ],
+      "covered": [
+        {
+          "source": "question",
+          "start": 0,
+          "end": 16,
+          "text": "駅員は客に切符を渡さなかったか？"
+        }
+      ],
+      "unread": [],
+      "stages": [],
+      "rules": [
+        "frame/edge/stage candidates",
+        "nominal-path",
+        "role-wh",
+        "relational-plan"
+      ]
+    },
+    "unread": [],
+    "budget": {
+      "limits": {
+        "parse": 32,
+        "depth": 8,
+        "candidates": 256,
+        "bindings": 64,
+        "steps": 4096
+      },
+      "steps": 54,
+      "candidates": 6,
+      "peak_bindings": 0
+    }
+  },
+  "door": "semantic_document",
+  "remedy": {
+    "verdict": "CONFLICT",
+    "needs_registration": true,
+    "note": "no remedy recorded for this verdict",
+    "register": "質問された事項を示す出典を追加してください。"
+  },
+  "how_to_resolve": "質問された事項を示す出典を追加してください。",
+  "multigrain_navigation": {
+    "kind": "multigrain_candidates",
+    "verdict": "UNKNOWN_NOT_PRESENT",
+    "raw_question": "駅員は客に切符を渡さなかったか？",
+    "selector_query": "駅員は客に切符を渡さなかったか？",
+    "candidate_limit": 8,
+    "selector_query_origin": "raw_question",
+    "query_terms": [
+      "駅員",
+      "客",
+      "切符",
+      "渡"
+    ],
+    "selected_candidate": null,
+    "resolution_verdict": "UNKNOWN_NOT_PRESENT",
+    "resolution_item": null,
+    "resolution_as_core": [
+      "駅員",
+      "客",
+      "切符"
+    ],
+    "resolution_as_facet_only": [
+      "渡"
+    ],
+    "resolution_missing": [],
+    "resolution_agreeing": 0,
+    "resolution_of": 4,
+    "candidates": [],
+    "grain_trace": [
+      {
+        "member": "whole",
+        "rungs": [
+          [
+            "whole",
+            0
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": null,
+        "rung_readings": {
+          "whole": null
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": false,
+        "independent_source_vote": false
+      },
+      {
+        "member": "g3",
+        "rungs": [
+          [
+            "g3",
+            3
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": null,
+        "rung_readings": {
+          "g3": null
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": false,
+        "independent_source_vote": false
+      },
+      {
+        "member": "g2",
+        "rungs": [
+          [
+            "g2",
+            2
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": null,
+        "rung_readings": {
+          "g2": null
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": false,
+        "independent_source_vote": false
+      },
+      {
+        "member": "g1",
+        "rungs": [
+          [
+            "g1",
+            1
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": null,
+        "rung_readings": {
+          "g1": null
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": false,
+        "independent_source_vote": false
+      }
+    ],
+    "query_destinations": [
+      {
+        "leaf": "QD02.txt",
+        "domain_path": [],
+        "path": [
+          "QD02.txt"
+        ],
+        "source_label": "QD02.txt",
+        "canonical_source_id": null,
+        "identity_status": "identity_unverified",
+        "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash."
+      }
+    ],
+    "query_divisions_from_constellation": [
+      "QD02.txt"
+    ],
+    "query_divisions_are_partial": true,
+    "surface_route": {
+      "verdict": "ROUTED",
+      "leaf": "QD02.txt",
+      "trail": [
+        "QD02.txt"
+      ],
+      "selected_leaf": "QD02.txt",
+      "route_kind": "single_leaf_or_unbuilt",
+      "via_api": [
+        "Base.lower"
+      ],
+      "used_for_candidate_selection": false
+    },
+    "source_identity_status": "UNKNOWN_NO_SOURCE_MATCH",
+    "independent_source_count": null,
+    "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+    "trace": {
+      "calls": {
+        "FullConstellation.ask": 1,
+        "resolution.ask_member_reads": 4,
+        "resolution.Ladder.vote_for_selection": 4,
+        "resolution.Ladder.vote_for_grain_trace": 4,
+        "FullConstellation.ask.hierarchy.gather": 1,
+        "source_tree_leaf_walk": 1,
+        "source_tree_nodes_visited": 1,
+        "source_tree_leaves_visited": 1,
+        "Base.lower": 1,
+        "conduct_tree.descend": 0,
+        "surface.route": 0
+      },
+      "candidate_selection": "FullConstellation.ask(raw_question); its existing resolution consensus is the selector",
+      "selector_query": "駅員は客に切符を渡さなかったか？",
+      "source_join": "exact candidate core key plus configured source-leaf grain features",
+      "query_division_note": "FullConstellation.ask exposes at most six leaf names from its gather result",
+      "structural_views_are_source_votes": false,
+      "elapsed_ms": 3.138
+    },
+    "used_for_answer": false,
+    "used_for_goal_realization": false,
+    "authority": "navigation_only_unverified",
+    "truth_claim": false,
+    "source_binding": {
+      "version": "multigrain-source-binding-v1",
+      "status": "HOLD",
+      "reason": "adapter did not find a source-leaf candidate",
+      "candidate": "",
+      "registry_sha256": "4ad49cd60795d0674b5fadd38cccfc8d15305064ac7ef71e5f4cd054b887414c",
+      "scope": "document identity and original-text location only",
+      "goal_relation_scope": "same-owner local explicit argument spans only",
+      "source_truth_status": "UNCLASSIFIED; no truth or authority claim",
+      "independent_source_count": null,
+      "selections": []
+    },
+    "candidate_views_supplied_to_answer_verifier": false,
+    "candidate_document_id_cited_after_full_view_check": false,
+    "candidate_sentence_span_cited_after_full_view_check": null,
+    "candidate_clause_span_cited_after_full_view_check": false,
+    "candidate_clause_span_match_count": 0,
+    "candidate_clause_span_causal_influence_proven": false,
+    "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+    "candidate_goal_status": null
+  },
+  "runtime_mode": "round5",
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "factual",
+    "kind_class": "FACTUAL",
+    "basis": "NONE",
+    "basis_original": "NONE",
+    "human_present": false,
+    "show_reference": false,
+    "outcome": "ABSTAIN",
+    "in_table": true,
+    "counts": {
+      "human": 0,
+      "generated": 0,
+      "non_evidence": 0,
+      "request_text": 0,
+      "unreadable": 0,
+      "non_evidence_by_origin": {},
+      "unknown_origin": 0,
+      "unknown_origin_by_family": {},
+      "unknown_origin_values": {}
+    },
+    "classify_version": 5,
+    "confirm_id_version": 2,
+    "sovereign": {
+      "state": "UNKNOWN_NO_SOVEREIGN",
+      "store_id": null,
+      "records_read": 0,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 0,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "NOT_ATTEMPTED_OUTCOME"
+    }
+  }
+}

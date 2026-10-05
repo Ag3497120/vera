@@ -1,0 +1,983 @@
+{
+  "kind": "answer",
+  "verdict": "ANSWER",
+  "text": "patient: 本",
+  "values": [
+    "本"
+  ],
+  "answer_values": [
+    [
+      "patient",
+      "本"
+    ]
+  ],
+  "polarity": "+",
+  "evidence": [
+    "生徒は図書館で本を借りた。"
+  ],
+  "sources": [
+    {
+      "family": "document",
+      "sovereign": "document",
+      "source": "BA03.txt",
+      "clause": "efb2dce934fc35a6db7b6981",
+      "text": "生徒は図書館で本を借りた。",
+      "span": {
+        "source": "BA03.txt",
+        "start": 74,
+        "end": 87,
+        "text": "生徒は図書館で本を借りた。"
+      }
+    }
+  ],
+  "trace": [
+    {
+      "part": "one.round5_route",
+      "status": "ran",
+      "code_intent": false,
+      "content_intent": false,
+      "decision_input": "raw_request",
+      "fallback": false
+    },
+    {
+      "part": "question.read_semantic",
+      "status": "ran",
+      "plans": 1,
+      "obligations": 8,
+      "unread": []
+    },
+    {
+      "part": "semantic_reader.document_view",
+      "status": "ran",
+      "clauses": 11,
+      "source_unread": [],
+      "source_unread_count": 0,
+      "source_unread_truncated": false,
+      "ingest_ms": 89.71249999012798
+    },
+    {
+      "leaves": 1,
+      "nodes": 1,
+      "arity": 6,
+      "status": "skipped",
+      "reason": "fewer leaves than one routing node",
+      "part": "semantic_route.LeafTree"
+    },
+    {
+      "part": "semantic_execute.Producer",
+      "status": "ran",
+      "sovereign": "document",
+      "steps": 59,
+      "proposals": 1,
+      "candidates": 1,
+      "peak_bindings": 1,
+      "plan_depth": 4,
+      "unresolved_alternative_derivations": []
+    },
+    {
+      "part": "semantic_verify.Checker.gate",
+      "status": "ran",
+      "sovereign": "document",
+      "verified_answers": 1,
+      "shared_steps": 334
+    },
+    {
+      "part": "multigrain_adapter.retrieve_multigrain_candidates",
+      "status": "ran",
+      "verdict": "CANDIDATE_SOURCE_LEAF_MATCHED",
+      "selected_candidate": "生徒",
+      "source_identity_status": "identity_unverified",
+      "independent_source_count": null,
+      "source_binding_status": "HOLD",
+      "source_binding_reason": "candidate sentence contains an unsupported or nonasserted clause",
+      "candidate_views_supplied_to_answer_verifier": false,
+      "candidate_document_id_cited_after_full_view_check": false,
+      "candidate_sentence_span_cited_after_full_view_check": null,
+      "candidate_clause_span_cited_after_full_view_check": false,
+      "candidate_clause_span_match_count": 0,
+      "candidate_clause_span_causal_influence_proven": false,
+      "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+      "bound_source_supplied_to_goal_consumer": false,
+      "licenses_goal_realization": false
+    }
+  ],
+  "semantic": {
+    "version": "round5a",
+    "verified": true,
+    "request": {
+      "text": "生徒は図書館で何を借りた？",
+      "plans": [
+        {
+          "nodes": [
+            {
+              "id": "n0",
+              "op": "Bind",
+              "inputs": [],
+              "pattern": {
+                "predicate": "貸す",
+                "roles": [
+                  [
+                    "recipient",
+                    "生徒"
+                  ],
+                  [
+                    "place",
+                    "図書館"
+                  ],
+                  [
+                    "patient",
+                    {
+                      "name": "v1",
+                      "sort": "entity"
+                    }
+                  ]
+                ],
+                "polarity": "+",
+                "modality": "assert",
+                "time": "past",
+                "event": null
+              },
+              "tests": [],
+              "terms": [],
+              "target": null,
+              "relation": "",
+              "unit": "",
+              "absolute": false,
+              "choices": [],
+              "outputs": [],
+              "obligations": [
+                "o0",
+                "o1",
+                "o2",
+                "o3",
+                "o4",
+                "o5",
+                "o6"
+              ],
+              "span": {
+                "source": "question",
+                "start": 0,
+                "end": 13,
+                "text": "生徒は図書館で何を借りた？"
+              }
+            },
+            {
+              "id": "n1",
+              "op": "ApplyCondition",
+              "inputs": [
+                "n0"
+              ],
+              "pattern": null,
+              "tests": [],
+              "terms": [],
+              "target": null,
+              "relation": "",
+              "unit": "",
+              "absolute": false,
+              "choices": [],
+              "outputs": [],
+              "obligations": [],
+              "span": null
+            },
+            {
+              "id": "n2",
+              "op": "Except",
+              "inputs": [
+                "n1"
+              ],
+              "pattern": null,
+              "tests": [],
+              "terms": [],
+              "target": null,
+              "relation": "",
+              "unit": "",
+              "absolute": false,
+              "choices": [],
+              "outputs": [],
+              "obligations": [],
+              "span": null
+            },
+            {
+              "id": "n3",
+              "op": "Project",
+              "inputs": [
+                "n2"
+              ],
+              "pattern": null,
+              "tests": [],
+              "terms": [],
+              "target": null,
+              "relation": "",
+              "unit": "",
+              "absolute": false,
+              "choices": [],
+              "outputs": [
+                {
+                  "label": "patient",
+                  "term": {
+                    "name": "v1",
+                    "sort": "entity"
+                  },
+                  "obligation": "o7",
+                  "unit": "",
+                  "span": {
+                    "source": "question",
+                    "start": 0,
+                    "end": 13,
+                    "text": "生徒は図書館で何を借りた？"
+                  }
+                }
+              ],
+              "obligations": [
+                "o7"
+              ],
+              "span": null
+            }
+          ],
+          "root": "n3"
+        }
+      ],
+      "obligations": [
+        {
+          "id": "o0",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 13,
+            "text": "生徒は図書館で何を借りた？"
+          },
+          "kind": "relation",
+          "node": "n0",
+          "detail": "貸す"
+        },
+        {
+          "id": "o1",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 13,
+            "text": "生徒は図書館で何を借りた？"
+          },
+          "kind": "role",
+          "node": "n0",
+          "detail": "recipient"
+        },
+        {
+          "id": "o2",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 13,
+            "text": "生徒は図書館で何を借りた？"
+          },
+          "kind": "role",
+          "node": "n0",
+          "detail": "place"
+        },
+        {
+          "id": "o3",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 13,
+            "text": "生徒は図書館で何を借りた？"
+          },
+          "kind": "role",
+          "node": "n0",
+          "detail": "patient"
+        },
+        {
+          "id": "o4",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 13,
+            "text": "生徒は図書館で何を借りた？"
+          },
+          "kind": "polarity",
+          "node": "n0",
+          "detail": "+"
+        },
+        {
+          "id": "o5",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 13,
+            "text": "生徒は図書館で何を借りた？"
+          },
+          "kind": "modality",
+          "node": "n0",
+          "detail": "assert"
+        },
+        {
+          "id": "o6",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 13,
+            "text": "生徒は図書館で何を借りた？"
+          },
+          "kind": "time",
+          "node": "n0",
+          "detail": "past"
+        },
+        {
+          "id": "o7",
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 13,
+            "text": "生徒は図書館で何を借りた？"
+          },
+          "kind": "output",
+          "node": "n3",
+          "detail": "patient"
+        }
+      ],
+      "covered": [
+        {
+          "source": "question",
+          "start": 0,
+          "end": 13,
+          "text": "生徒は図書館で何を借りた？"
+        }
+      ],
+      "unread": [],
+      "stages": [],
+      "rules": [
+        "frame/edge/stage candidates",
+        "nominal-path",
+        "role-wh",
+        "relational-plan"
+      ]
+    },
+    "plan": {
+      "nodes": [
+        {
+          "id": "n0",
+          "op": "Bind",
+          "inputs": [],
+          "pattern": {
+            "predicate": "貸す",
+            "roles": [
+              [
+                "recipient",
+                "生徒"
+              ],
+              [
+                "place",
+                "図書館"
+              ],
+              [
+                "patient",
+                {
+                  "name": "v1",
+                  "sort": "entity"
+                }
+              ]
+            ],
+            "polarity": "+",
+            "modality": "assert",
+            "time": "past",
+            "event": null
+          },
+          "tests": [],
+          "terms": [],
+          "target": null,
+          "relation": "",
+          "unit": "",
+          "absolute": false,
+          "choices": [],
+          "outputs": [],
+          "obligations": [
+            "o0",
+            "o1",
+            "o2",
+            "o3",
+            "o4",
+            "o5",
+            "o6"
+          ],
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 13,
+            "text": "生徒は図書館で何を借りた？"
+          }
+        },
+        {
+          "id": "n1",
+          "op": "ApplyCondition",
+          "inputs": [
+            "n0"
+          ],
+          "pattern": null,
+          "tests": [],
+          "terms": [],
+          "target": null,
+          "relation": "",
+          "unit": "",
+          "absolute": false,
+          "choices": [],
+          "outputs": [],
+          "obligations": [],
+          "span": null
+        },
+        {
+          "id": "n2",
+          "op": "Except",
+          "inputs": [
+            "n1"
+          ],
+          "pattern": null,
+          "tests": [],
+          "terms": [],
+          "target": null,
+          "relation": "",
+          "unit": "",
+          "absolute": false,
+          "choices": [],
+          "outputs": [],
+          "obligations": [],
+          "span": null
+        },
+        {
+          "id": "n3",
+          "op": "Project",
+          "inputs": [
+            "n2"
+          ],
+          "pattern": null,
+          "tests": [],
+          "terms": [],
+          "target": null,
+          "relation": "",
+          "unit": "",
+          "absolute": false,
+          "choices": [],
+          "outputs": [
+            {
+              "label": "patient",
+              "term": {
+                "name": "v1",
+                "sort": "entity"
+              },
+              "obligation": "o7",
+              "unit": "",
+              "span": {
+                "source": "question",
+                "start": 0,
+                "end": 13,
+                "text": "生徒は図書館で何を借りた？"
+              }
+            }
+          ],
+          "obligations": [
+            "o7"
+          ],
+          "span": null
+        }
+      ],
+      "root": "n3"
+    },
+    "proof": {
+      "nodes": [
+        {
+          "id": "p0",
+          "op": "Source",
+          "plan_node": "",
+          "parents": [],
+          "clause": {
+            "id": "efb2dce934fc35a6db7b6981",
+            "event": {
+              "name": "event_efb2dce934fc35a6db7b6981",
+              "sort": "event"
+            },
+            "predicate": "貸す",
+            "predicate_span": {
+              "source": "BA03.txt",
+              "start": 83,
+              "end": 85,
+              "text": "借り"
+            },
+            "roles": [
+              {
+                "name": "patient",
+                "term": "本",
+                "span": {
+                  "source": "BA03.txt",
+                  "start": 81,
+                  "end": 82,
+                  "text": "本"
+                },
+                "rule": "frame"
+              },
+              {
+                "name": "recipient",
+                "term": "生徒",
+                "span": {
+                  "source": "BA03.txt",
+                  "start": 74,
+                  "end": 76,
+                  "text": "生徒"
+                },
+                "rule": "frame"
+              },
+              {
+                "name": "place",
+                "term": "図書館",
+                "span": {
+                  "source": "BA03.txt",
+                  "start": 77,
+                  "end": 80,
+                  "text": "図書館"
+                },
+                "rule": "case"
+              }
+            ],
+            "span": {
+              "source": "BA03.txt",
+              "start": 74,
+              "end": 87,
+              "text": "生徒は図書館で本を借りた。"
+            },
+            "body_span": {
+              "source": "BA03.txt",
+              "start": 74,
+              "end": 87,
+              "text": "生徒は図書館で本を借りた。"
+            },
+            "polarity": "+",
+            "modality": "assert",
+            "time": "past",
+            "conditions": [],
+            "condition_spans": [],
+            "exceptions": [],
+            "exception_spans": [],
+            "exception_of": "",
+            "rule": "frame",
+            "sovereign": "document",
+            "family": "document",
+            "unsupported": []
+          },
+          "bindings": [],
+          "covers": [],
+          "answer": []
+        },
+        {
+          "id": "p1",
+          "op": "Bind",
+          "plan_node": "n0",
+          "parents": [
+            "p0"
+          ],
+          "clause": null,
+          "bindings": [
+            [
+              "v1",
+              "本"
+            ]
+          ],
+          "covers": [
+            "o0",
+            "o1",
+            "o2",
+            "o3",
+            "o4",
+            "o5",
+            "o6"
+          ],
+          "answer": []
+        },
+        {
+          "id": "p2",
+          "op": "ApplyCondition",
+          "plan_node": "n1",
+          "parents": [
+            "p1"
+          ],
+          "clause": null,
+          "bindings": [
+            [
+              "v1",
+              "本"
+            ]
+          ],
+          "covers": [
+            "o0",
+            "o1",
+            "o2",
+            "o3",
+            "o4",
+            "o5",
+            "o6"
+          ],
+          "answer": []
+        },
+        {
+          "id": "p3",
+          "op": "Except",
+          "plan_node": "n2",
+          "parents": [
+            "p2"
+          ],
+          "clause": null,
+          "bindings": [
+            [
+              "v1",
+              "本"
+            ]
+          ],
+          "covers": [
+            "o0",
+            "o1",
+            "o2",
+            "o3",
+            "o4",
+            "o5",
+            "o6"
+          ],
+          "answer": []
+        },
+        {
+          "id": "p4",
+          "op": "Project",
+          "plan_node": "n3",
+          "parents": [
+            "p3"
+          ],
+          "clause": null,
+          "bindings": [
+            [
+              "v1",
+              "本"
+            ]
+          ],
+          "covers": [
+            "o0",
+            "o1",
+            "o2",
+            "o3",
+            "o4",
+            "o5",
+            "o6",
+            "o7"
+          ],
+          "answer": [
+            [
+              "patient",
+              "本"
+            ]
+          ]
+        }
+      ],
+      "root": "p4",
+      "sovereign": "document"
+    },
+    "attempts": [
+      {
+        "sovereign": "document",
+        "plan": "n3",
+        "answers": 1
+      }
+    ],
+    "budget": {
+      "limits": {
+        "parse": 32,
+        "depth": 8,
+        "candidates": 256,
+        "bindings": 64,
+        "steps": 4096
+      },
+      "steps": 334,
+      "candidates": 1,
+      "peak_bindings": 1
+    }
+  },
+  "door": "semantic_document",
+  "multigrain_navigation": {
+    "kind": "multigrain_candidates",
+    "verdict": "CANDIDATE_SOURCE_LEAF_MATCHED",
+    "raw_question": "生徒は図書館で何を借りた？",
+    "selector_query": "生徒は図書館で何を借りた？",
+    "candidate_limit": 8,
+    "selector_query_origin": "raw_question",
+    "query_terms": [
+      "生徒",
+      "図書館"
+    ],
+    "selected_candidate": "生徒",
+    "resolution_verdict": "ANSWER",
+    "resolution_item": "生徒",
+    "resolution_as_core": [
+      "生徒"
+    ],
+    "resolution_as_facet_only": [
+      "図書館"
+    ],
+    "resolution_missing": [],
+    "resolution_agreeing": 4,
+    "resolution_of": 4,
+    "candidates": [
+      {
+        "item": "生徒",
+        "resolution_views": [
+          "g1",
+          "g2",
+          "g3",
+          "whole"
+        ],
+        "sources": [
+          {
+            "leaf": "BA03.txt",
+            "domain_path": [],
+            "path": [
+              "BA03.txt"
+            ],
+            "source_label": "BA03.txt",
+            "canonical_source_id": null,
+            "identity_status": "identity_unverified",
+            "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+            "grain_witnesses": [
+              {
+                "member": "whole",
+                "rung": "whole",
+                "size": 0,
+                "matched_feature_count": 1
+              },
+              {
+                "member": "g3",
+                "rung": "g3",
+                "size": 3,
+                "matched_feature_count": 1
+              },
+              {
+                "member": "g2",
+                "rung": "g2",
+                "size": 2,
+                "matched_feature_count": 1
+              },
+              {
+                "member": "g1",
+                "rung": "g1",
+                "size": 1,
+                "matched_feature_count": 2
+              }
+            ]
+          }
+        ],
+        "source_leaf_match_count": 1,
+        "independent_source_count": null,
+        "source_identity_status": "identity_unverified",
+        "selected_by_existing_constellation": true,
+        "source_reference_count": 1,
+        "source_references_truncated": false,
+        "selection_used_resolution_views": true
+      }
+    ],
+    "grain_trace": [
+      {
+        "member": "whole",
+        "rungs": [
+          [
+            "whole",
+            0
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": "生徒",
+        "rung_readings": {
+          "whole": "生徒"
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": true,
+        "independent_source_vote": false
+      },
+      {
+        "member": "g3",
+        "rungs": [
+          [
+            "g3",
+            3
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": "生徒",
+        "rung_readings": {
+          "g3": "生徒"
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": true,
+        "independent_source_vote": false
+      },
+      {
+        "member": "g2",
+        "rungs": [
+          [
+            "g2",
+            2
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": "生徒",
+        "rung_readings": {
+          "g2": "生徒"
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": true,
+        "independent_source_vote": false
+      },
+      {
+        "member": "g1",
+        "rungs": [
+          [
+            "g1",
+            1
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": "生徒",
+        "rung_readings": {
+          "g1": "生徒"
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": true,
+        "independent_source_vote": false
+      }
+    ],
+    "query_destinations": [
+      {
+        "leaf": "BA03.txt",
+        "domain_path": [],
+        "path": [
+          "BA03.txt"
+        ],
+        "source_label": "BA03.txt",
+        "canonical_source_id": null,
+        "identity_status": "identity_unverified",
+        "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash."
+      }
+    ],
+    "query_divisions_from_constellation": [
+      "BA03.txt"
+    ],
+    "query_divisions_are_partial": true,
+    "surface_route": {
+      "verdict": "ROUTED",
+      "leaf": "BA03.txt",
+      "trail": [
+        "BA03.txt"
+      ],
+      "selected_leaf": "BA03.txt",
+      "route_kind": "single_leaf_or_unbuilt",
+      "via_api": [
+        "Base.lower"
+      ],
+      "used_for_candidate_selection": false
+    },
+    "source_identity_status": "identity_unverified",
+    "independent_source_count": null,
+    "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+    "trace": {
+      "calls": {
+        "FullConstellation.ask": 1,
+        "resolution.ask_member_reads": 4,
+        "resolution.Ladder.vote_for_selection": 4,
+        "resolution.Ladder.vote_for_grain_trace": 4,
+        "FullConstellation.ask.hierarchy.gather": 1,
+        "source_tree_leaf_walk": 1,
+        "source_tree_nodes_visited": 1,
+        "source_tree_leaves_visited": 1,
+        "Base.lower": 1,
+        "conduct_tree.descend": 0,
+        "surface.route": 0
+      },
+      "candidate_selection": "FullConstellation.ask(raw_question); its existing resolution consensus is the selector",
+      "selector_query": "生徒は図書館で何を借りた？",
+      "source_join": "exact candidate core key plus configured source-leaf grain features",
+      "query_division_note": "FullConstellation.ask exposes at most six leaf names from its gather result",
+      "structural_views_are_source_votes": false,
+      "elapsed_ms": 0.673
+    },
+    "used_for_answer": false,
+    "used_for_goal_realization": false,
+    "authority": "navigation_only_unverified",
+    "truth_claim": false,
+    "source_binding": {
+      "version": "multigrain-source-binding-v1",
+      "status": "HOLD",
+      "reason": "candidate sentence contains an unsupported or nonasserted clause",
+      "candidate": "生徒",
+      "registry_sha256": "0e7383ca1ad5c42fb43b3ae1b5d0b9f05a7144a503eb372f6cf16bd6b6bb8b79",
+      "scope": "document identity and original-text location only",
+      "goal_relation_scope": "same-owner local explicit argument spans only",
+      "source_truth_status": "UNCLASSIFIED; no truth or authority claim",
+      "independent_source_count": null,
+      "selections": []
+    },
+    "candidate_views_supplied_to_answer_verifier": false,
+    "candidate_document_id_cited_after_full_view_check": false,
+    "candidate_sentence_span_cited_after_full_view_check": null,
+    "candidate_clause_span_cited_after_full_view_check": false,
+    "candidate_clause_span_match_count": 0,
+    "candidate_clause_span_causal_influence_proven": false,
+    "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+    "candidate_goal_status": null
+  },
+  "runtime_mode": "round5",
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "factual",
+    "kind_class": "FACTUAL",
+    "basis": "HUMAN",
+    "basis_original": "HUMAN",
+    "human_present": false,
+    "show_reference": false,
+    "outcome": "ANSWER_HUMAN_BASIS",
+    "in_table": true,
+    "counts": {
+      "human": 1,
+      "generated": 0,
+      "non_evidence": 0,
+      "request_text": 0,
+      "unreadable": 0,
+      "non_evidence_by_origin": {},
+      "unknown_origin": 0,
+      "unknown_origin_by_family": {},
+      "unknown_origin_values": {}
+    },
+    "classify_version": 5,
+    "confirm_id_version": 2,
+    "sovereign": {
+      "state": "UNKNOWN_NO_SOVEREIGN",
+      "store_id": null,
+      "records_read": 0,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 0,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "FORM_SOURCE_NOT_ONE_CROSS",
+      "reasons": {
+        "CAND_NOT_ONE_CROSS": 0,
+        "CAND_CENTER_DIFFERS": 0,
+        "CAND_ROLES_DIFFER": 0,
+        "CAND_FILLER_SPAN_AMBIGUOUS": 0,
+        "CAND_REREAD_DIFFERS": 0,
+        "CAND_CONTENT_DIFFERS": 0
+      },
+      "families": {},
+      "searched_rows": 0,
+      "candidates": 0,
+      "distinct_forms": 0
+    }
+  }
+}

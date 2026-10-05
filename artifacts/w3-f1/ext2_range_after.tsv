@@ -1,0 +1,197 @@
+file	id	kind	group	document	question	verdict	values	text	reason
+w3f1_prohibition.jsonl	aux-エージェント-てはならない	aux_polar	てはならない	エージェントは評価バンクを開いてはならない。	エージェントはならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-エージェント-てはいけない	aux_polar	てはいけない	エージェントは鍵を持ち出してはいけない。	エージェントはいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-エージェント-ではならない	aux_polar	ではならない	エージェントは友人を呼んではならない。	エージェントはならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-エージェント-ではならない	main_polar	ではならない	エージェントは友人を呼んではならない。	エージェントは友人を呼ぶ？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-エージェント-ではいけない	aux_polar	ではいけない	エージェントは公園で遊んではいけない。	エージェントはいけない？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-エージェント-てはなりません	aux_polar	てはなりません	エージェントは書類を捨ててはなりません。	エージェントはなりません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-エージェント-てはなりません	main_polar	てはなりません	エージェントは書類を捨ててはなりません。	エージェントは書類を捨てる？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+w3f1_prohibition.jsonl	aux-エージェント-てはいけません	aux_polar	てはいけません	エージェントは窓を開けてはいけません。	エージェントはいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-エージェント-てはいけなかった	aux_polar	てはいけなかった	エージェントは評価バンクを開いてはいけなかった。	エージェントはいけなかった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-エージェント-てはいけなかった	main_polar	てはいけなかった	エージェントは評価バンクを開いてはいけなかった。	エージェントは評価バンクを開く？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-社員-てはならない	aux_polar	てはならない	社員は鍵を持ち出してはならない。	社員はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-てはいけない	aux_polar	てはいけない	社員は答えを見てはいけない。	社員はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-社員-てはいけない	main_polar	てはいけない	社員は答えを見てはいけない。	社員は答えを見る？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-社員-ではならない	aux_polar	ではならない	社員は酒を飲んではならない。	社員はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-ではいけない	aux_polar	ではいけない	社員は友人を呼んではいけない。	社員はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-社員-ではいけない	main_polar	ではいけない	社員は友人を呼んではいけない。	社員は友人を呼ぶ？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-社員-てはなりません	aux_polar	てはなりません	社員は窓を開けてはなりません。	社員はなりません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-てはいけません	aux_polar	てはいけません	社員は評価バンクを開いてはいけません。	社員はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-社員-てはいけません	main_polar	てはいけません	社員は評価バンクを開いてはいけません。	社員は評価バンクを開く？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+w3f1_prohibition.jsonl	aux-社員-てはいけなかった	aux_polar	てはいけなかった	社員は鍵を持ち出してはいけなかった。	社員はいけなかった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-てはならない	aux_polar	てはならない	学生は答えを見てはならない。	学生はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-学生-てはならない	main_polar	てはならない	学生は答えを見てはならない。	学生は答えを見る？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-学生-てはいけない	aux_polar	てはいけない	学生は秘密を話してはいけない。	学生はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-ではならない	aux_polar	ではならない	学生は本を読んではならない。	学生はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-学生-ではならない	main_polar	ではならない	学生は本を読んではならない。	学生は本を読む？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-学生-ではいけない	aux_polar	ではいけない	学生は酒を飲んではいけない。	学生はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-てはなりません	aux_polar	てはなりません	学生は評価バンクを開いてはなりません。	学生はなりません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-学生-てはなりません	main_polar	てはなりません	学生は評価バンクを開いてはなりません。	学生は評価バンクを開く？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+w3f1_prohibition.jsonl	aux-学生-てはいけません	aux_polar	てはいけません	学生は鍵を持ち出してはいけません。	学生はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-てはいけなかった	aux_polar	てはいけなかった	学生は答えを見てはいけなかった。	学生はいけなかった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-学生-てはいけなかった	main_polar	てはいけなかった	学生は答えを見てはいけなかった。	学生は答えを見る？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-患者-てはならない	aux_polar	てはならない	患者は秘密を話してはならない。	患者はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-患者-てはいけない	aux_polar	てはいけない	患者は書類を捨ててはいけない。	患者はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-患者-てはいけない	main_polar	てはいけない	患者は書類を捨ててはいけない。	患者は書類を捨てる？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-患者-ではならない	aux_polar	ではならない	患者は公園で遊んではならない。	患者はならない？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-患者-ではいけない	aux_polar	ではいけない	患者は本を読んではいけない。	患者はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-患者-ではいけない	main_polar	ではいけない	患者は本を読んではいけない。	患者は本を読む？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-患者-てはなりません	aux_polar	てはなりません	患者は鍵を持ち出してはなりません。	患者はなりません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-患者-てはいけません	aux_polar	てはいけません	患者は答えを見てはいけません。	患者はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-患者-てはいけません	main_polar	てはいけません	患者は答えを見てはいけません。	患者は答えを見る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+w3f1_prohibition.jsonl	aux-患者-てはいけなかった	aux_polar	てはいけなかった	患者は秘密を話してはいけなかった。	患者はいけなかった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-子供-てはならない	aux_polar	てはならない	子供は書類を捨ててはならない。	子供はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-子供-てはならない	main_polar	てはならない	子供は書類を捨ててはならない。	子供は書類を捨てる？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-子供-てはいけない	aux_polar	てはいけない	子供は窓を開けてはいけない。	子供はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-子供-ではならない	aux_polar	ではならない	子供は友人を呼んではならない。	子供はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-子供-ではならない	main_polar	ではならない	子供は友人を呼んではならない。	子供は友人を呼ぶ？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-子供-ではいけない	aux_polar	ではいけない	子供は公園で遊んではいけない。	子供はいけない？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-子供-てはなりません	aux_polar	てはなりません	子供は答えを見てはなりません。	子供はなりません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-子供-てはなりません	main_polar	てはなりません	子供は答えを見てはなりません。	子供は答えを見る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+w3f1_prohibition.jsonl	aux-子供-てはいけません	aux_polar	てはいけません	子供は秘密を話してはいけません。	子供はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-子供-てはいけなかった	aux_polar	てはいけなかった	子供は書類を捨ててはいけなかった。	子供はいけなかった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-子供-てはいけなかった	main_polar	てはいけなかった	子供は書類を捨ててはいけなかった。	子供は書類を捨てる？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-職員-てはならない	aux_polar	てはならない	職員は窓を開けてはならない。	職員はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-てはいけない	aux_polar	てはいけない	職員は評価バンクを開いてはいけない。	職員はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-職員-てはいけない	main_polar	てはいけない	職員は評価バンクを開いてはいけない。	職員は評価バンクを開く？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-職員-ではならない	aux_polar	ではならない	職員は酒を飲んではならない。	職員はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-ではいけない	aux_polar	ではいけない	職員は友人を呼んではいけない。	職員はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-職員-ではいけない	main_polar	ではいけない	職員は友人を呼んではいけない。	職員は友人を呼ぶ？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_prohibition.jsonl	aux-職員-てはなりません	aux_polar	てはなりません	職員は秘密を話してはなりません。	職員はなりません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-てはいけません	aux_polar	てはいけません	職員は書類を捨ててはいけません。	職員はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-職員-てはいけません	main_polar	てはいけません	職員は書類を捨ててはいけません。	職員は書類を捨てる？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+w3f1_prohibition.jsonl	aux-職員-てはいけなかった	aux_polar	てはいけなかった	職員は窓を開けてはいけなかった。	職員はいけなかった？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	ctl-neg-田中	control		田中は本を読まない。	田中は本を読む？	ANSWER	["いいえ"]	可否: いいえ	
+w3f1_prohibition.jsonl	ctl-negq-田中	control		田中は本を読まない。	田中は本を読まない？	ANSWER	["はい"]	可否: はい	
+w3f1_prohibition.jsonl	ctl-neg-佐藤	control		佐藤は鍵を持ち出さない。	佐藤は鍵を持ち出す？	ANSWER	["いいえ"]	可否: いいえ	
+w3f1_prohibition.jsonl	ctl-negq-佐藤	control		佐藤は鍵を持ち出さない。	佐藤は鍵を持ち出さない？	ANSWER	["はい"]	可否: はい	
+w3f1_prohibition.jsonl	ctl-neg-鈴木	control		鈴木は答えを見ない。	鈴木は答えを見る？	ANSWER	["いいえ"]	可否: いいえ	
+w3f1_prohibition.jsonl	ctl-negq-鈴木	control		鈴木は答えを見ない。	鈴木は答えを見ない？	ANSWER	["はい"]	可否: はい	
+w3f1_prohibition.jsonl	ctl-neg-高橋	control		高橋は書類を捨てない。	高橋は書類を捨てる？	ANSWER	["いいえ"]	可否: いいえ	
+w3f1_prohibition.jsonl	ctl-negq-高橋	control		高橋は書類を捨てない。	高橋は書類を捨てない？	ANSWER	["はい"]	可否: はい	
+w3f1_time_place.jsonl	fused-00	fused	明日	山田さんが明日東京で働く。	どこで働く？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-01	fused	明日	田中が明日公園で新聞を買う。	田中はどこで新聞を買う？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-02	fused	明日	佐藤さんが明日会議室で昼食を食べる。	佐藤さんはどこで昼食を食べる？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-03	fused	明日	鈴木が明日食堂で本を読む。	鈴木はどこで本を読む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-04	fused	今日	田中が今日駅前で新聞を買う。	田中はどこで新聞を買う？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	unsupported source quantifier/exception/time
+w3f1_time_place.jsonl	fused-05	fused	今日	佐藤さんが今日図書館で昼食を食べる。	佐藤さんはどこで昼食を食べる？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	unsupported source quantifier/exception/time
+w3f1_time_place.jsonl	fused-06	fused	今日	鈴木が今日東京で本を読む。	鈴木はどこで本を読む？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	unsupported source quantifier/exception/time
+w3f1_time_place.jsonl	fused-07	fused	今日	高橋さんが今日公園で写真を撮る。	高橋さんはどこで写真を撮る？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	unsupported source quantifier/exception/time
+w3f1_time_place.jsonl	fused-08	fused	昨日	佐藤さんが昨日食堂で昼食を食べた。	佐藤さんはどこで昼食を食べた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	unsupported source quantifier/exception/time
+w3f1_time_place.jsonl	fused-09	fused	昨日	鈴木が昨日大阪で本を読んだ。	鈴木はどこで本を読んだ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	unsupported source quantifier/exception/time
+w3f1_time_place.jsonl	fused-10	fused	昨日	高橋さんが昨日駅前で写真を撮った。	高橋さんはどこで写真を撮った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	unsupported source quantifier/exception/time
+w3f1_time_place.jsonl	fused-11	fused	昨日	中村が昨日図書館で資料を作った。	中村はどこで資料を作った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	unsupported source quantifier/exception/time
+w3f1_time_place.jsonl	fused-12	fused	来週	鈴木が来週公園で本を読む。	鈴木はどこで本を読む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-13	fused	来週	高橋さんが来週会議室で写真を撮る。	高橋さんはどこで写真を撮る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-14	fused	来週	中村が来週食堂で資料を作る。	中村はどこで資料を作る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-15	fused	来週	山田さんが来週大阪で働く。	どこで働く？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-16	fused	毎朝	高橋さんが毎朝図書館で写真を撮る。	高橋さんはどこで写真を撮る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-17	fused	毎朝	中村が毎朝東京で資料を作る。	中村はどこで資料を作る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-18	fused	毎朝	山田さんが毎朝公園で働く。	どこで働く？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-19	fused	毎朝	田中が毎朝会議室で新聞を買う。	田中はどこで新聞を買う？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-20	fused	午後	中村が午後大阪で資料を作る。	中村はどこで資料を作る？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	unsupported source quantifier/exception/time
+w3f1_time_place.jsonl	fused-21	fused	午後	山田さんが午後駅前で働く。	どこで働く？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	unsupported source quantifier/exception/time
+w3f1_time_place.jsonl	fused-22	fused	午後	田中が午後図書館で新聞を買う。	田中はどこで新聞を買う？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	unsupported source quantifier/exception/time
+w3f1_time_place.jsonl	fused-23	fused	午後	佐藤さんが午後東京で昼食を食べる。	佐藤さんはどこで昼食を食べる？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	unsupported source quantifier/exception/time
+w3f1_time_place.jsonl	fused-24	fused	今朝	山田さんが今朝会議室で働く。	どこで働く？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-25	fused	今朝	田中が今朝食堂で新聞を買う。	田中はどこで新聞を買う？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-26	fused	今朝	佐藤さんが今朝大阪で昼食を食べる。	佐藤さんはどこで昼食を食べる？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-27	fused	今朝	鈴木が今朝駅前で本を読む。	鈴木はどこで本を読む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-28	fused	夕方	田中が夕方東京で新聞を買う。	田中はどこで新聞を買う？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-29	fused	夕方	佐藤さんが夕方公園で昼食を食べる。	佐藤さんはどこで昼食を食べる？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-30	fused	夕方	鈴木が夕方会議室で本を読む。	鈴木はどこで本を読む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-31	fused	夕方	高橋さんが夕方食堂で写真を撮る。	高橋さんはどこで写真を撮る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-32	fused	週末	佐藤さんが週末駅前で昼食を食べる。	佐藤さんはどこで昼食を食べる？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-33	fused	週末	鈴木が週末図書館で本を読む。	鈴木はどこで本を読む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-34	fused	週末	高橋さんが週末東京で写真を撮る。	高橋さんはどこで写真を撮る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-35	fused	週末	中村が週末公園で資料を作る。	中村はどこで資料を作る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-36	fused	先月	鈴木が先月食堂で本を読んだ。	鈴木はどこで本を読んだ？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-37	fused	先月	高橋さんが先月大阪で写真を撮った。	高橋さんはどこで写真を撮った？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-38	fused	先月	中村が先月駅前で資料を作った。	中村はどこで資料を作った？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-39	fused	先月	山田さんが先月図書館で働いた。	どこで働いた？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-40	fused	2030年	高橋さんが2030年公園で写真を撮る。	高橋さんはどこで写真を撮る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-41	fused	2030年	中村が2030年会議室で資料を作る。	中村はどこで資料を作る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-42	fused	2030年	山田さんが2030年食堂で働く。	どこで働く？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-43	fused	2030年	田中が2030年大阪で新聞を買う。	田中はどこで新聞を買う？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	ctl-plain-0	control		山田さんが東京で働く。	どこで働く？	ANSWER	["東京"]	place: 東京	
+w3f1_time_place.jsonl	ctl-comma-0	control	明日	明日、山田さんが東京で働く。	どこで働く？	ANSWER	["東京"]	place: 東京	
+w3f1_time_place.jsonl	ctl-plain-1	control		田中が駅前で新聞を買う。	田中はどこで新聞を買う？	ANSWER	["駅前"]	place: 駅前	
+w3f1_time_place.jsonl	ctl-comma-1	control	来週	来週、田中が駅前で新聞を買う。	田中はどこで新聞を買う？	ANSWER	["駅前"]	place: 駅前	
+w3f1_time_place.jsonl	ctl-plain-2	control		佐藤さんが図書館で昼食を食べる。	佐藤さんはどこで昼食を食べる？	ANSWER	["図書館"]	place: 図書館	
+w3f1_time_place.jsonl	ctl-comma-2	control	週末	週末、佐藤さんが図書館で昼食を食べる。	佐藤さんはどこで昼食を食べる？	ANSWER	["図書館"]	place: 図書館	
+w3f1_time_place.jsonl	ctl-plain-3	control		鈴木が食堂で本を読む。	鈴木はどこで本を読む？	ANSWER	["食堂"]	place: 食堂	
+w3f1_time_place.jsonl	ctl-comma-3	control	毎朝	毎朝、鈴木が食堂で本を読む。	鈴木はどこで本を読む？	ANSWER	["食堂"]	place: 食堂	
+w3f1_time_place.jsonl	ctl-plain-4	control		高橋さんが会議室で写真を撮る。	高橋さんはどこで写真を撮る？	ANSWER	["会議室"]	place: 会議室	
+w3f1_time_place.jsonl	ctl-comma-4	control	夕方	夕方、高橋さんが会議室で写真を撮る。	高橋さんはどこで写真を撮る？	ANSWER	["会議室"]	place: 会議室	
+w3f1_time_place.jsonl	ctl-plain-5	control		中村が公園で資料を作る。	中村はどこで資料を作る？	ANSWER	["公園"]	place: 公園	
+w3f1_time_place.jsonl	ctl-comma-5	control	今朝	今朝、中村が公園で資料を作る。	中村はどこで資料を作る？	ANSWER	["公園"]	place: 公園	
+w3f1_ext_range.jsonl	temo-ika-0	range	てもいけない	学生は答えを見てもいけない。	学生はいけない？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+w3f1_ext_range.jsonl	temo-nara-0	range	てもならない	学生は答えを見てもならない。	学生はならない？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+w3f1_ext_range.jsonl	temo-ika-1	range	てもいけない	社員は鍵を持ち出してもいけない。	社員はいけない？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+w3f1_ext_range.jsonl	temo-nara-1	range	てもならない	社員は鍵を持ち出してもならない。	社員はならない？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+w3f1_ext_range.jsonl	temo-ika-2	range	てもいけない	患者は薬を飲んでもいけない。	患者はいけない？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+w3f1_ext_range.jsonl	temo-nara-2	range	てもならない	患者は薬を飲んでもならない。	患者はならない？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+w3f1_ext_range.jsonl	cha-0	range	ちゃいけない	学生は答えを見ちゃいけない。	学生はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	cha-1	range	ちゃいけない	社員は鍵を持ち出しちゃいけない。	社員はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	ja-0	range	じゃいけない	子供は酒を飲んじゃいけない。	子供はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	ja-1	range	じゃいけない	学生は本を読んじゃいけない。	学生はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	nakute-nara-0	range	なくてはならない	田中は本を読まなくてはならない。	田中はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	nakute-ike-0	range	なくてはいけない	田中は本を読まなくてはいけない。	田中はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	nakute-nara-1	range	なくてはならない	佐藤は書類を出さなくてはならない。	佐藤はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	nakute-ike-1	range	なくてはいけない	佐藤は書類を出さなくてはいけない。	佐藤はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	nakute-nara-2	range	なくてはならない	鈴木は鍵を返さなくてはならない。	鈴木はならない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	nakute-ike-2	range	なくてはいけない	鈴木は鍵を返さなくてはいけない。	鈴木はいけない？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	place-time-0	range	場所の後ろに時の語	田中が東京で明日働く。	どこで働く？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	unrepresented source content
+w3f1_ext_range.jsonl	place-time-1	range	場所の後ろに時の語	山田さんが大阪で来週働く。	どこで働く？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	unrepresented source content
+w3f1_ext_range.jsonl	place-time-2	range	場所の後ろに時の語	佐藤さんが駅前で毎朝新聞を買う。	佐藤さんはどこで新聞を買う？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_ext_range.jsonl	goal-fused-0	range	着点（基点は時の語なしでも答えない）	山田さんが明日東京に行く。	山田さんはどこに行く？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with participant
+w3f1_ext_range.jsonl	goal-plain-0	range	着点（基点は時の語なしでも答えない）	山田さんが東京に行く。	山田さんはどこに行く？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+w3f1_ext_range.jsonl	past-time-0	range	過去の時の語＋現在形（基点が棄権する形）	昨日、田中が駅前で新聞を買う。	田中はどこで新聞を買う？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	unsupported source quantifier/exception/time
+w3f1_ext_range.jsonl	multi-0	range	複数文	田中は本を読まない。社員は鍵を持ち出してはならない。	田中は本を読む？	ANSWER	["いいえ"]	可否: いいえ	
+w3f1_ext_range.jsonl	multi-1	range	複数文	山田さんが明日東京で働く。田中が大阪で働く。	田中はどこで働く？	ANSWER	["大阪"]	place: 大阪	
+w3f1_ext_range.jsonl	multi-2	range	複数文	山田さんが明日東京で働く。田中が大阪で働く。	山田さんはどこで働く？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_ext_range.jsonl	multi-3	range	複数文	学生は答えを見てはいけない。田中は本を読まない。	田中は本を読まない？	ANSWER	["はい"]	可否: はい	
+w3f1_time_place_suffix.jsonl	sfx-fused-00	fused	来週	山田さんが来週港で働く。	どこで働く？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-01	fused	来週	田中が来週室で新聞を買う。	田中はどこで新聞を買う？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-02	fused	来週	佐藤さんが来週港で昼食を食べる。	佐藤さんはどこで昼食を食べる？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-03	fused	毎朝	田中が毎朝館で新聞を買う。	田中はどこで新聞を買う？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-04	fused	毎朝	佐藤さんが毎朝院で昼食を食べる。	佐藤さんはどこで昼食を食べる？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-05	fused	毎朝	鈴木が毎朝館で本を読む。	鈴木はどこで本を読む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-06	fused	明後日	佐藤さんが明後日室で昼食を食べる。	佐藤さんはどこで昼食を食べる？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-07	fused	明後日	鈴木が明後日港で本を読む。	鈴木はどこで本を読む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-08	fused	明後日	高橋さんが明後日室で写真を撮る。	高橋さんはどこで写真を撮る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-09	fused	今夜	鈴木が今夜院で本を読む。	鈴木はどこで本を読む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-10	fused	今夜	高橋さんが今夜館で写真を撮る。	高橋さんはどこで写真を撮る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-11	fused	今夜	中村が今夜院で資料を作る。	中村はどこで資料を作る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-12	fused	来月	高橋さんが来月港で写真を撮る。	高橋さんはどこで写真を撮る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-13	fused	来月	中村が来月室で資料を作る。	中村はどこで資料を作る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-14	fused	来月	山田さんが来月港で働く。	どこで働く？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-15	fused	先週	中村が先週館で資料を作った。	中村はどこで資料を作った？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-16	fused	先週	山田さんが先週院で働いた。	どこで働いた？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-17	fused	先週	田中が先週館で新聞を買った。	田中はどこで新聞を買った？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-18	fused	去年	山田さんが去年室で働いた。	どこで働いた？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-19	fused	去年	田中が去年港で新聞を買った。	田中はどこで新聞を買った？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-20	fused	去年	佐藤さんが去年室で昼食を食べた。	佐藤さんはどこで昼食を食べた？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-21	fused	翌朝	田中が翌朝院で新聞を買う。	田中はどこで新聞を買う？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-22	fused	翌朝	佐藤さんが翌朝館で昼食を食べる。	佐藤さんはどこで昼食を食べる？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-23	fused	翌朝	鈴木が翌朝院で本を読む。	鈴木はどこで本を読む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-24	fused	毎晩	佐藤さんが毎晩港で昼食を食べる。	佐藤さんはどこで昼食を食べる？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-25	fused	毎晩	鈴木が毎晩室で本を読む。	鈴木はどこで本を読む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-26	fused	毎晩	高橋さんが毎晩港で写真を撮る。	高橋さんはどこで写真を撮る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-27	fused	明日	鈴木が明日園で本を読む。	鈴木はどこで本を読む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-28	fused	明日	高橋さんが明日館で写真を撮る。	高橋さんはどこで写真を撮る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-fused-29	fused	明日	中村が明日院で資料を作る。	中村はどこで資料を作る？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place_suffix.jsonl	sfx-ctl-plain-0	control		山田さんが港で働く。	どこで働く？	ANSWER	["港"]	place: 港	
+w3f1_time_place_suffix.jsonl	sfx-ctl-plain-1	control		田中が店で新聞を買う。	田中はどこで新聞を買う？	ANSWER	["店"]	place: 店	
+w3f1_time_place_suffix.jsonl	sfx-ctl-plain-2	control		佐藤さんが館で昼食を食べる。	佐藤さんはどこで昼食を食べる？	ANSWER	["館"]	place: 館	
+w3f1_time_place_suffix.jsonl	sfx-ctl-plain-3	control		鈴木が庁で本を読む。	鈴木はどこで本を読む？	ANSWER	["庁"]	place: 庁	
+w3f1_time_place_suffix.jsonl	sfx-ctl-plain-4	control		高橋さんが室で写真を撮る。	高橋さんはどこで写真を撮る？	ANSWER	["室"]	place: 室	
+w3f1_time_place_suffix.jsonl	sfx-ctl-plain-5	control		中村が園で資料を作る。	中村はどこで資料を作る？	ANSWER	["園"]	place: 園	
+w3f1_time_place_suffix.jsonl	sfx-ctl-plain-6	control		山田さんが院で働く。	どこで働く？	ANSWER	["院"]	place: 院	
+w3f1_time_place_suffix.jsonl	sfx-ctl-plain-7	control		田中が城で新聞を買う。	田中はどこで新聞を買う？	ANSWER	["城"]	place: 城	
+w3f1_time_place_suffix.jsonl	sfx-ctl-comma-0	control	明日	明日、山田さんが港で働く。	どこで働く？	ANSWER	["港"]	place: 港	
+w3f1_time_place_suffix.jsonl	sfx-ctl-comma-1	control	来週	来週、田中が館で新聞を買う。	田中はどこで新聞を買う？	ANSWER	["館"]	place: 館	
+w3f1_time_place_suffix.jsonl	sfx-ctl-comma-2	control	毎朝	毎朝、佐藤さんが室で昼食を食べる。	佐藤さんはどこで昼食を食べる？	ANSWER	["室"]	place: 室	
+w3f1_time_place_suffix.jsonl	sfx-ctl-comma-3	control	今夜	今夜、鈴木が院で本を読む。	鈴木はどこで本を読む？	ANSWER	["院"]	place: 院	
+w3f1_time_place_suffix.jsonl	sfx-ctl-comma-4	control	来月	来月、高橋さんが港で写真を撮る。	高橋さんはどこで写真を撮る？	ANSWER	["港"]	place: 港	
+w3f1_time_place_suffix.jsonl	sfx-ctl-comma-5	control	明後日	明後日、中村が館で資料を作る。	中村はどこで資料を作る？	ANSWER	["館"]	place: 館	

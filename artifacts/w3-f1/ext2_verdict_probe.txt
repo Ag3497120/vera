@@ -1,0 +1,7 @@
+verantyx at /Users/motonisihikoudai/Projects/vera-impl/wt/W3-f1-S/verantyx/__init__.py
+社員は鍵を持ち出してはなりません。 -> 社員は鍵を持ち出した。 => CONTRADICTED
+社員は鍵を持ち出してはなりません。 -> 社員は鍵を持ち出さなかった。 => SUPPORTED
+社員は鍵を持ち出してはなりません。 -> 社員は鍵を持ち出してはならない。 => DIFFERENT
+学生は答えを見てはいけません。 -> 学生は答えを見た。 => CONTRADICTED
+職員は書類を捨ててはいけませんでした。 -> 職員は書類を捨てた。 => CONTRADICTED
+利用者は館内で飲食してはいけません。 -> 利用者は館内で飲食した。 => CONTRADICTED

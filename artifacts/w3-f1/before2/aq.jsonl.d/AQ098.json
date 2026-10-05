@@ -1,0 +1,526 @@
+{
+  "kind": "unknown",
+  "verdict": "UNKNOWN_UNREAD",
+  "text": "この要求を裏づける導出を確認できません。",
+  "reason": "mandatory request spans remain unread",
+  "phase": "reader",
+  "values": [],
+  "evidence": [],
+  "sources": [],
+  "trace": [
+    {
+      "part": "one.round5_route",
+      "status": "ran",
+      "code_intent": false,
+      "content_intent": false,
+      "decision_input": "raw_request",
+      "fallback": false
+    },
+    {
+      "part": "question.read_semantic",
+      "status": "ran",
+      "plans": 0,
+      "obligations": 0,
+      "unread": [
+        {
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 20,
+            "text": "Who cooked the soup?"
+          },
+          "reason": "unsupported request grammar"
+        }
+      ]
+    },
+    {
+      "part": "semantic_reader.document_view",
+      "status": "ran",
+      "clauses": 0,
+      "source_unread": [
+        {
+          "span": {
+            "source": "AD09.txt",
+            "start": 0,
+            "end": 28,
+            "text": "The mayor built the bridge.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD09.txt",
+            "start": 28,
+            "end": 63,
+            "text": "The captain did not sell the ship.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD09.txt",
+            "start": 63,
+            "end": 105,
+            "text": "The nurse gave the medicine to the child.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD09.txt",
+            "start": 105,
+            "end": 147,
+            "text": "The student sent a letter to the teacher.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD09.txt",
+            "start": 147,
+            "end": 173,
+            "text": "The chef cooked the soup.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD09.txt",
+            "start": 173,
+            "end": 202,
+            "text": "The artist painted the wall.\n"
+          },
+          "reason": "unsupported clause grammar"
+        }
+      ],
+      "source_unread_count": 6,
+      "source_unread_truncated": false,
+      "ingest_ms": 4.869333002716303
+    },
+    {
+      "leaves": 1,
+      "nodes": 1,
+      "arity": 6,
+      "status": "skipped",
+      "reason": "fewer leaves than one routing node",
+      "part": "semantic_route.LeafTree"
+    },
+    {
+      "part": "remedy.remedy",
+      "status": "ran",
+      "verdict": "UNKNOWN_UNREAD",
+      "how_to_resolve": "質問された事項を示す出典を追加してください。"
+    },
+    {
+      "part": "ask_back.question",
+      "status": "abstained",
+      "reason": "verdict has no human-answerable candidate",
+      "asks": ""
+    },
+    {
+      "part": "coverage.document_needed",
+      "status": "abstained",
+      "reason": "no domain witnesses"
+    },
+    {
+      "part": "gap_graph.refusal_to_gap",
+      "status": "abstained",
+      "reason": "no opt-in gap_path"
+    },
+    {
+      "part": "grow.log_refusal",
+      "status": "abstained",
+      "reason": "no queue opt-in or different verdict"
+    },
+    {
+      "part": "multigrain_adapter.retrieve_multigrain_candidates",
+      "status": "ran",
+      "verdict": "AMBIGUOUS",
+      "selected_candidate": null,
+      "source_identity_status": "identity_unverified",
+      "independent_source_count": null,
+      "source_binding_status": "HOLD",
+      "source_binding_reason": "adapter did not find a source-leaf candidate",
+      "candidate_views_supplied_to_answer_verifier": false,
+      "candidate_document_id_cited_after_full_view_check": false,
+      "candidate_sentence_span_cited_after_full_view_check": null,
+      "candidate_clause_span_cited_after_full_view_check": false,
+      "candidate_clause_span_match_count": 0,
+      "candidate_clause_span_causal_influence_proven": false,
+      "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+      "bound_source_supplied_to_goal_consumer": false,
+      "licenses_goal_realization": false
+    },
+    {
+      "part": "question_cross",
+      "status": "ran",
+      "state": "QUESTION_NOT_READ",
+      "mapped_to": "ORIGINAL"
+    }
+  ],
+  "semantic": {
+    "version": "round5a",
+    "verified": false,
+    "request": {
+      "text": "Who cooked the soup?",
+      "plans": [],
+      "obligations": [],
+      "covered": [],
+      "unread": [
+        {
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 20,
+            "text": "Who cooked the soup?"
+          },
+          "reason": "unsupported request grammar"
+        }
+      ],
+      "stages": [],
+      "rules": [
+        "typed unread"
+      ]
+    },
+    "unread": [
+      {
+        "span": {
+          "source": "question",
+          "start": 0,
+          "end": 20,
+          "text": "Who cooked the soup?"
+        },
+        "reason": "unsupported request grammar"
+      }
+    ],
+    "budget": {
+      "limits": {
+        "parse": 32,
+        "depth": 8,
+        "candidates": 256,
+        "bindings": 64,
+        "steps": 4096
+      },
+      "steps": 0,
+      "candidates": 0,
+      "peak_bindings": 0
+    }
+  },
+  "door": "semantic_document",
+  "remedy": {
+    "verdict": "UNKNOWN_UNREAD",
+    "needs_registration": true,
+    "note": "no remedy recorded for this verdict",
+    "register": "質問された事項を示す出典を追加してください。"
+  },
+  "how_to_resolve": "質問された事項を示す出典を追加してください。",
+  "multigrain_navigation": {
+    "kind": "multigrain_candidates",
+    "verdict": "AMBIGUOUS",
+    "raw_question": "Who cooked the soup?",
+    "selector_query": "Who cooked the soup?",
+    "candidate_limit": 8,
+    "selector_query_origin": "raw_question",
+    "query_terms": [
+      "Who",
+      "cooked",
+      "the",
+      "soup"
+    ],
+    "selected_candidate": null,
+    "resolution_verdict": "AMBIGUOUS",
+    "resolution_item": null,
+    "resolution_as_core": [],
+    "resolution_as_facet_only": [
+      "cooked",
+      "soup"
+    ],
+    "resolution_missing": [
+      "Who",
+      "the"
+    ],
+    "resolution_agreeing": 1,
+    "resolution_of": 4,
+    "candidates": [
+      {
+        "item": "chef",
+        "resolution_views": [
+          "g2"
+        ],
+        "sources": [
+          {
+            "leaf": "AD09.txt",
+            "domain_path": [],
+            "path": [
+              "AD09.txt"
+            ],
+            "source_label": "AD09.txt",
+            "canonical_source_id": null,
+            "identity_status": "identity_unverified",
+            "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+            "grain_witnesses": [
+              {
+                "member": "g2",
+                "rung": "g2",
+                "size": 2,
+                "matched_feature_count": 1
+              }
+            ]
+          }
+        ],
+        "source_leaf_match_count": 1,
+        "independent_source_count": null,
+        "source_identity_status": "identity_unverified",
+        "selected_by_existing_constellation": false,
+        "source_reference_count": 1,
+        "source_references_truncated": false,
+        "selection_used_resolution_views": true
+      },
+      {
+        "item": "student",
+        "resolution_views": [
+          "g1"
+        ],
+        "sources": [
+          {
+            "leaf": "AD09.txt",
+            "domain_path": [],
+            "path": [
+              "AD09.txt"
+            ],
+            "source_label": "AD09.txt",
+            "canonical_source_id": null,
+            "identity_status": "identity_unverified",
+            "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+            "grain_witnesses": [
+              {
+                "member": "g1",
+                "rung": "g1",
+                "size": 1,
+                "matched_feature_count": 5
+              }
+            ]
+          }
+        ],
+        "source_leaf_match_count": 1,
+        "independent_source_count": null,
+        "source_identity_status": "identity_unverified",
+        "selected_by_existing_constellation": false,
+        "source_reference_count": 1,
+        "source_references_truncated": false,
+        "selection_used_resolution_views": true
+      }
+    ],
+    "grain_trace": [
+      {
+        "member": "whole",
+        "rungs": [
+          [
+            "whole",
+            0
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": null,
+        "rung_readings": {
+          "whole": null
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": false,
+        "independent_source_vote": false
+      },
+      {
+        "member": "g3",
+        "rungs": [
+          [
+            "g3",
+            3
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": null,
+        "rung_readings": {
+          "g3": null
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": false,
+        "independent_source_vote": false
+      },
+      {
+        "member": "g2",
+        "rungs": [
+          [
+            "g2",
+            2
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": "chef",
+        "rung_readings": {
+          "g2": "chef"
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": true,
+        "independent_source_vote": false
+      },
+      {
+        "member": "g1",
+        "rungs": [
+          [
+            "g1",
+            1
+          ]
+        ],
+        "grammar": "raw",
+        "member_reading": "student",
+        "rung_readings": {
+          "g1": "student"
+        },
+        "role": "resolution_view",
+        "used_by_existing_candidate_selection": true,
+        "participated_with_candidate": true,
+        "independent_source_vote": false
+      }
+    ],
+    "query_destinations": [
+      {
+        "leaf": "AD09.txt",
+        "domain_path": [],
+        "path": [
+          "AD09.txt"
+        ],
+        "source_label": "AD09.txt",
+        "canonical_source_id": null,
+        "identity_status": "identity_unverified",
+        "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash."
+      }
+    ],
+    "query_divisions_from_constellation": [
+      "AD09.txt"
+    ],
+    "query_divisions_are_partial": true,
+    "surface_route": {
+      "verdict": "ROUTED",
+      "leaf": "AD09.txt",
+      "trail": [
+        "AD09.txt"
+      ],
+      "selected_leaf": "AD09.txt",
+      "route_kind": "single_leaf_or_unbuilt",
+      "via_api": [
+        "Base.lower"
+      ],
+      "used_for_candidate_selection": false
+    },
+    "source_identity_status": "identity_unverified",
+    "independent_source_count": null,
+    "identity_note": "CrossStore stores source_labels and source_meta by display label; its provenance records timestamps and sentence snippets, not a canonical source key or content hash.",
+    "trace": {
+      "calls": {
+        "FullConstellation.ask": 1,
+        "resolution.ask_member_reads": 4,
+        "resolution.Ladder.vote_for_selection": 4,
+        "resolution.Ladder.vote_for_grain_trace": 4,
+        "FullConstellation.ask.hierarchy.gather": 1,
+        "source_tree_leaf_walk": 1,
+        "source_tree_nodes_visited": 1,
+        "source_tree_leaves_visited": 1,
+        "Base.lower": 1,
+        "conduct_tree.descend": 0,
+        "surface.route": 0
+      },
+      "candidate_selection": "FullConstellation.ask(raw_question); its existing resolution consensus is the selector",
+      "selector_query": "Who cooked the soup?",
+      "source_join": "exact candidate core key plus configured source-leaf grain features",
+      "query_division_note": "FullConstellation.ask exposes at most six leaf names from its gather result",
+      "structural_views_are_source_votes": false,
+      "elapsed_ms": 0.82
+    },
+    "used_for_answer": false,
+    "used_for_goal_realization": false,
+    "authority": "navigation_only_unverified",
+    "truth_claim": false,
+    "source_binding": {
+      "version": "multigrain-source-binding-v1",
+      "status": "HOLD",
+      "reason": "adapter did not find a source-leaf candidate",
+      "candidate": "",
+      "registry_sha256": "8369dc82db3883b4dd8922cf5631739454f0660c8060322f4795521a80c6e50e",
+      "scope": "document identity and original-text location only",
+      "goal_relation_scope": "same-owner local explicit argument spans only",
+      "source_truth_status": "UNCLASSIFIED; no truth or authority claim",
+      "independent_source_count": null,
+      "selections": []
+    },
+    "candidate_views_supplied_to_answer_verifier": false,
+    "candidate_document_id_cited_after_full_view_check": false,
+    "candidate_sentence_span_cited_after_full_view_check": null,
+    "candidate_clause_span_cited_after_full_view_check": false,
+    "candidate_clause_span_match_count": 0,
+    "candidate_clause_span_causal_influence_proven": false,
+    "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+    "candidate_goal_status": null
+  },
+  "runtime_mode": "round5",
+  "question_cross": {
+    "state": "QUESTION_NOT_READ",
+    "reason": "READER_ABSTAINED",
+    "mapped_to": "ORIGINAL",
+    "hole_role": null,
+    "hole_type": null,
+    "coord": null,
+    "structure": {
+      "sentences": 6,
+      "crossed": 5,
+      "unread": 1,
+      "reasons": [
+        "READER_ABSTAINED"
+      ]
+    },
+    "documents": {
+      "loaded": 1,
+      "skipped": []
+    }
+  },
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "factual",
+    "kind_class": "FACTUAL",
+    "basis": "NONE",
+    "basis_original": "NONE",
+    "human_present": false,
+    "show_reference": false,
+    "outcome": "ABSTAIN",
+    "in_table": true,
+    "counts": {
+      "human": 0,
+      "generated": 0,
+      "non_evidence": 0,
+      "request_text": 0,
+      "unreadable": 0,
+      "non_evidence_by_origin": {},
+      "unknown_origin": 0,
+      "unknown_origin_by_family": {},
+      "unknown_origin_values": {}
+    },
+    "classify_version": 5,
+    "confirm_id_version": 2,
+    "sovereign": {
+      "state": "UNKNOWN_NO_SOVEREIGN",
+      "store_id": null,
+      "records_read": 0,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 0,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "NOT_ATTEMPTED_OUTCOME"
+    }
+  }
+}

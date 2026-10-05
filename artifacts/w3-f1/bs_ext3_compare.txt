@@ -1,0 +1,4 @@
+B2 ref bs_B2_before_ext items 25 after 25 differing 0 []
+B2 ref bs_B2_after_ext2 items 25 after 25 differing 0 []
+B1 ref bs_B1_before_ext items 26 after 26 differing 0 []
+B1 ref bs_B1_after_ext2 items 26 after 26 differing 0 []

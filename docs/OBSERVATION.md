@@ -1733,3 +1733,125 @@ def test_the_new_names_are_at_the_end_of_the_closed_lists():
 - W3-c4 の主検査 111 問は変更前後とも CORRECT 68 / WRONG 0 / FALSE_NONE 1 / ABSTAINED 16 / NOT_RUN 26。extra2 の 42 問も CORRECT 19 / WRONG 0 / FALSE_NONE 0 / ABSTAINED 16 / NOT_RUN 7。両方とも問別の verdict・text・`sources[].{source,line,text}` の変更は 0（`artifacts/w5-f/i4_score_compare.txt`・`artifacts/w5-f/i4_changed.tsv`）。
 - 見出し・リンクを含む追加 Markdown 質問を含む質問十字テスト群は 73 件通過（`artifacts/w5-f/i4_tests.txt`）。`cli.py` は変更していない。
 - W3-c4 の攻撃写しは「元の Markdown 文字列の部分文字列」を要求するため、この定義では通らない（宣言 K-C4、`artifacts/w5-f/i1_attack.txt`）。読込後の本文から切り出した出典が定義に一致することは追加テストで確認した。
+
+## W3-f1 の事前登録: 答えの値の全表記（K340–K342）
+
+登録時刻: 2026-10-05 15:06:53 +0900（`artifacts/w3-f1/prereg_time.txt`）。検査データを書く前、製品コードを変える前に登録する。
+
+### 規則（チケットから）
+- **K340**: 答えの値は、読解器が読んだ充填物の表記そのまま（NFKC）。切り出し・正規化・見出し語化で短くしない。短くなる経路はすべて、棄権で逃げずに元の表記を返すように直す。
+- **K341**: 修正は原因の 1 箇所。修正の前に、現象を再現するテストを凍結（検査データ 60 文以上: 親族・人の 2 字以上の名詞 × 役割 3 × 問い）。修正の後に全件が全文字で返ること。
+- **K342**: 既存の凍結データ（B 系の公開の写し、W3-c4・W5-c の検査データ）の答えが byte 不変であること。変わる行は全件列挙（短縮が直る方向だけ許す）。
+
+### 検査データの型
+- 名詞 25 語: 父・母・祖父・祖母・叔父・叔母・伯父・伯母・兄・姉・弟・妹・息子・娘・夫・妻・孫・友人・同僚・上司・部下・先輩・後輩・店主・教師。
+- 役割 3 の雛形（X に名詞）: agent は文書「Xが肥料を運んだ。」／問い「誰が肥料を運んだ？」、recipient は文書「店員がXに本を渡した。」／問い「店員は誰に本を渡した？」、patient は文書「医師がXを診察した。」／問い「医師が誰を診察した？」。
+- 偽の肯定の 6 対（polar）: 文書「Bが肥料を運んだ。」／問い「Aは肥料を運んだ？」、(A,B) = (叔父,叔母)・(叔母,叔父)・(祖父,祖母)・(祖母,祖父)・(伯父,伯母)・(伯母,伯父)。
+- 合計 75 + 6 = 81 件。対照として同じ 3 雛形を名前「田中」で流す 3 件。
+
+### 判定の式
+- 役割の問い: `verdict == "ANSWER"` かつ `values == [名詞の全表記]`。
+- 偽の肯定の対: `verdict == "ANSWER"` かつ `text` に「はい」を含む、が起きないこと（それ以外の verdict・いいえ・棄権は可）。
+- 経路: `verantyx.cli.main` の既定の入口（`ask --mode round5 --document`）。
+
+## W3-f1 実測結果: 答えの値の全表記（K340–K342）
+
+数値はすべて `artifacts/w3-f1/` のファイルから（出典を併記）。
+
+- **原因**: `verantyx/frames.py` の `canonical()` が、`ROLES` の `父`・`母` などの接尾で名前を割り、`叔父` を名前 `叔` ＋役職 `父` として鍵を `叔` にしていた。文書・問い・検証の全部が同じ関数を使うので、答えの値が短くなり、`叔父` と `叔母` の鍵（`叔`）が衝突して偽の「はい」も出ていた（`repro_before_1.json`・`repro_before_2.json`）。許可パス外の 1 ファイルだが、値の側で直すと偽の肯定が残る（`DECISIONS.md` 1）。
+- **修正**: `canonical()` の接尾の枝に 2 条件（接尾の始まりが形態素の境目、直前の形態素が固有名詞）。満たさなければ表記そのまま。語の一覧は足していない（`check_hardcode.txt`）。
+- **誤答の範囲（修正前）**: 検査データ 81 件（名詞 25 語 × 役割 3 ＋ 偽の肯定 6 対）のうち 24 件が誤り。祖父・祖母・叔父・叔母・伯父・伯母の 6 語 × 役割 3 = 18 件は 1 字目だけ（祖・叔・伯）で ANSWER、偽の肯定 6 対はすべて「可否: はい」（`range_before_truncated.tsv`）。父・母・兄・姉・弟・妹・息子・娘・夫・妻・孫・友人・同僚・上司・部下・先輩・後輩・店主・教師は全表記で返った（`range_before.tsv`）。
+- **修正後**: 同じ 81 件で 1 字でも欠けた ANSWER は 0、偽の「はい」は 0（`range_after_truncated.tsv` は見出しだけ。偽の肯定 6 対は UNKNOWN_NO_EVIDENCE、`range_after.tsv`）。テスト `tests/test_w3f1_kinship_answer.py` は修正前 24 失敗・61 通過（`a1_before.txt`）、修正後 85 通過（`a1_after.txt`）。再現（叔父が肥料を運んだ）は `values: ["叔父"]`（`repro_after_1.json`）。
+- **frames 層の調査**: 凍結データの文 7050 文を読み、agent/patient/recipient の値で canonical が短くなる組は 24 組 → 4 組（森田課長→森田・田中部長→田中・先生の夫婦→夫婦・祖父の家→家）。前は 叔父・叔母・祖父・祖母・伯父・伯母・農夫・曾孫・孫娘・新妻・兄の友人 等（`census_before.tsv`・`census_after.tsv`。文数と組数は `census_before.log`＝7050 文・24 組、`census_after.log`＝7050 文・4 組。前は基点 `af5594a` の `frames.py` ＋同じ凍結データで取り直した）。`frames.regression()` の false の集合は前後同じ（`relative`・`rel_trans`、`frames_regression_*.txt`）。
+- **K342**: 質問 aq 111・extra2 42・w3c2 185・b2like 47 の ask 出力を問ごとに全文比較（`ingest_ms`・`elapsed_ms` をマスク）。変化は 3 問（`k342_changed.tsv`、`k342_summary.txt`）。Q069（w3c2）は verdict・values・text 同じで、内部の term が `農` → `農夫` になっただけ（短縮が直る方向）。**「それ以外」が 2 問**: AQ025（誰が農夫に小麦を渡さなかった？）と AQ028（誰が農夫に小麦を渡した？）は、どちらも棄権のまま型が `UNKNOWN_UNREAD`（問いが読めない）→ `UNKNOWN_UNSUPPORTED_EVIDENCE`（文書の節が読めない）に変わった。値は無く、text は同じ。aq の score は ABSTAINED 16→14・NOT_RUN 26→28、CORRECT/WRONG は不変（`before/aq_score.json`・`after/aq_score.json`）。extra2・w3c2・b2like の score は同一。aq・extra2 の同じ基点 2 回の対照で差は 0 件。**原因（実測、`k342_aq025_cause.txt`）**: 基点では問い側の `農夫` が `canonical` で `農` に短縮され、問い「誰が農夫に小麦を渡さなかった？」そのものが読めなかった（`before/aq.jsonl` の AQ025: `question.read_semantic` の `plans=0`・`unread` = `unsupported request grammar`、問いの全文）。修正後は問いが読め（`plans=1`・`obligations=8`・`unread=[]`、Bind の pattern に `recipient: 農夫`）、棄権の理由は文書の見出し「町の記録」の `source_unread`（`unsupported clause grammar`、基点でも同じ）に移った。単文の切り分け（基点→修正後）: 「粉屋が農夫に小麦を渡した。」／「誰が農夫に小麦を渡した？」は `UNKNOWN_UNREAD`→`ANSWER ['粉屋']`、対照の「田中」は前後とも `ANSWER ['粉屋']`、「叔父」は `UNKNOWN_UNREAD`→`ANSWER ['粉屋']`。分類: 問い側の短縮が直った結果で、値・text は不変（CORRECT 68・WRONG 0 も不変）。規則は緩めていない。
+- **公開バンクの写し**: B1（mod-semantic-read）・B2（cli-ask-round5）の問別の結果は前後で同一（`bs_compare.txt`、`bs_B1_*.txt`・`bs_B2_*.txt`）。B2 の公開の写し 25 問に親族名詞を含む項目は 0 件（`b2_public_kin_count.txt`）。
+- **テスト**: 関係テストの失敗の集合は前後同一（`related_before.txt`・`related_after.txt`）。全体テスト（第 2 ラウンドで負荷 1 分平均 6.9 のときに 1 回だけ流し直し。`pytest_full_load_before.txt`）: `pytest_full.txt` の最終行 `117 failed, 15976 passed, 38 skipped, 81 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 627.62s (0:10:27)`、ERROR 0。`after_failures.txt` はこの同じファイルの `^(FAILED|ERROR)` 行（117 件）。基線 `dev_bfb17b8_failures.txt`（115）との差 `new_failures.txt` は 3 件、基線にあって通った `fixed_failures.txt` は 1 件（test_one_trace）。3 件の分類は `new_failures_classified.txt` と、基点（git 付きの clean な写し）でも全体テストを 1 回流した `pytest_full_base.txt`（116 failed、`after_failures_base.txt`）: (a) `test_p4_abilities::test_speech_act_drafts_fill_new_roles_and_reread` と (b) `test_gen_coarse_evidence::test_the_stop_signal_ends_the_run_with_an_interrupted_record` は基点の全体走行でも落ちる（チケットが環境由来と書いた系統。(b) は単独では基点・修正後とも通る。全体走行でだけ落ちる）。(c) `bank_score/test_bs_end_to_end::test_s6_two_runs_agree_except_timing_and_recount_matches` の理由は `tools/bank_score/cli.py:335` の `verantyx_untouched`（`git status --porcelain -- verantyx` が空でないと False）で、`verantyx/frames.py` が未コミットだから落ちる。git 付きの写しで未コミットのとき落ち（`new_failures_classified.txt`）、写しの中だけでコミットすると `1 passed`、基点の clean な git 写しでは全体走行でも通る（`after_failures_base.txt` に無い）。したがってコミット後に消える見込み。第 1 ラウンドの報告にあった test_conduct_ask_w5b・test_w10f04_serve の失敗は、今回の全体走行では出なかった（負荷由来で再現しない）。
+- **既知の穴**: 固有名詞と判定されない姓（`原`・`星` など）＋役職は割られなくなる（`原先生` は鍵が `原先生` のまま。`canonical_probe.txt`）。「X は誰を V？」（は＋誰を）は基点でも `UNKNOWN_UNREAD`（対象外）。
+
+## W3-f1 拡張の事前登録: 禁止の形・時間名詞と場所の融合
+
+登録時刻: 2026-10-05 20:06:25 +0900（`artifacts/w3-f1/prereg_ext_time.txt`）。検査データを書く前、製品コードを変える前に登録する。誤答 1（親族の切り詰め）は上の節のとおり修正・凍結済みで、ここでは扱わない。
+
+### 規則（チケットの監査役の拡張から。狭める方向だけ）
+- (2) 「てはならない／てはいけない／ではならない」の補助の否定（て／で（／ちゃ／じゃ）＋ は／も の直後の `なる`・`いける` の否定）から可否の答えを出さない。禁止の読みは v1 で読まない → 型つき棄権 `PROHIBITION_NOT_READ`。
+- (3) 場所・着点の値に時の語が連結していたら、その値で答えない。v1 は時の語を切り出さず棄権する（切り出しは読解器の仕事で、このチケットでは変更禁止のファイル）。
+
+### 判定の式（テストにそのまま書く）
+- 禁止 `kind=aux_polar`（補助を問う可否）: `verdict != "ANSWER"`。
+- 禁止 `kind=main_polar`（本動詞を問う可否）: `verdict != "ANSWER"`（禁止を肯定・否定の事実として答えない）。
+- 禁止 `kind=control`（普通の否定・肯定）: `verdict == "ANSWER"` かつ `values == expect_values`。
+- 時と場所 `kind=fused`: `not (verdict == "ANSWER" and any(time_word in v for v in values))`、かつ `verdict == "ANSWER"` なら `values == [place]`。
+- 時と場所 `kind=control`（時の語が無い／読点で離れている／文頭）: `verdict == "ANSWER"` かつ `values == expect_values`。
+
+### 範囲を測るだけの集合（合否に入れない、と事前に宣言）
+`ても`（`てもいけない`・`てもならない`）、`ちゃ`・`じゃ`（`ちゃいけない`・`じゃいけない`）、`なくてはならない`・`なくてはいけない`（義務の形）、場所の後ろに時の語（「東京で明日働く」）、複数文の文書。前後の結果を全件 TSV に出し、報告に全件列挙する。
+
+### 記録する副次の量
+禁止の `aux_polar` で、修正後の `reason` に `PROHIBITION_NOT_READ` を含む行の数（全件の表は `artifacts/w3-f1/ext_reason_after.tsv`）。
+
+## W3-f1 拡張の実測結果: 禁止の形・時間名詞と場所の融合
+
+数値はすべて `artifacts/w3-f1/` のファイルから（出典を併記）。
+
+- **原因（誤答 2）**: `verantyx/constructions/negation.py` の `_event_reading()` が、`開い/て/は/なら/ない` の補助 `なら`（見出し語 `なる`）を否定の出来事として読み、偽の否定の節を作っていた。直し: 補助が接続助詞 て/で/ちゃ/じゃ（＋ は/も）の直後の `なる`・`いける` のとき、節を消さず `unsupported=("PROHIBITION_NOT_READ",)` を付ける（形態素の品詞・見出し語で判定。語は機能語のみ）。丁寧形の本動詞の問いが残ったため `verantyx/verdict.py` の `PROHIBIT` に丁寧形の語幹 4 つを足した（`DECISIONS.md` 7）。
+- **原因（誤答 3）**: `verantyx/semantic_verify.py` の `_vt_check_roles()` は、時の語と融合した語を出来事の参加者にしか検査していなかった。場所・着点・方向にも同じ検査を 1 本足し、融合していれば `UNKNOWN_INVALID_PROOF`（v1 は切り出さず棄権）。
+- **検査データ（凍結 `freeze_ext.sha256`）**: 禁止 70 件（aux_polar 42・main_polar 20・control 8）、時と場所 56 件（fused 44・control 12）、範囲だけ 26 件。修正前に 77 件が落ち（`a1_ext_before.txt`: 77 failed, 51 passed。aux/main 45 件、fused 32 件）、control は全部通った。修正後は誤答 1 の 85 件と合わせて 213 passed（`a1_ext_after.txt`）。凍結の作り直し 1 回（`DECISIONS.md` 11）。
+- **範囲（`ext_range_before.tsv`・`ext_range_after.tsv`・`ext_range_changed.tsv`）**: aux_polar は修正前 ANSWER 39・NO_EVIDENCE 3 → 修正後 39 件が `UNKNOWN_UNSUPPORTED_EVIDENCE`（reason `PROHIBITION_NOT_READ`、`ext_reason_after.tsv`）、3 件は NO_EVIDENCE のまま。main_polar は ANSWER 6 → 0。fused は ANSWER 32 → `UNKNOWN_INVALID_PROOF` 32（残り 12 は時の語 今日・昨日・午後 で修正前から棄権）。control 20 件は不変。範囲だけの集合 26 件: `ちゃ`・`じゃ`・`なくては` の 10 件は ANSWER はい → 棄権（PROHIBITION_NOT_READ）、複数文の 1 件（multi-2「山田さんはどこで働く？」）は 明日東京 → `UNKNOWN_INVALID_PROOF`、**`てもいけない`・`てもならない` の 6 件は ANSWER はい のまま**（frame の読み、`semantic_reader.py`。未修正）。
+- **K342**: 前の流しと対照の差 0（aq 111・extra2 42）。修正の前後で aq 111・extra2 42・w3c2 185・b2like 47 の差 0（`k342_ext_summary.txt`、`k342_ext_changed.tsv` は見出しのみ）。基点 dev からの通算は 3 件（AQ025・AQ028・w3c2 Q069、誤答 1 の修正による。`k342_total_summary.txt`・`k342_total_changed.tsv`）。
+- **公開バンクの写し**: B2（25 問）・B1（26 問）とも前後で問ごとの結果が同一（`bs_ext_compare.txt`、`bs_B1_*_ext.txt`・`bs_B2_*_ext.txt`）。B1 の `てはならない`／`てはいけない` を含む 4 項目も不変。
+- **テスト**: 関係テストの失敗の集合は前後で同一（3 failed, 1780 passed, 3 xfailed, 6 xpassed。`ext_related_before.txt`・`ext_related_after.txt`）。frames 回帰も同一。全体テストは 116 failed・16105 passed（`ext_pytest_full.txt`）。基線 115 件から新しい 2 件（`test_p4_abilities…`: 基点でも落ちる／`test_s6_…`: `verantyx/` 未コミットによる。`ext_new_failures_classified.txt`）、基線から消えた 1 件（`test_one_trace…`、`ext_fixed_failures.txt`）。
+- **既知の穴**: `てもいけない` 系は未修正。時の語の切り出し（明日 は time、東京 は place）は読解器の仕事で未実施（棄権にとどめた）。検証器の `Rejected` は ask 全体を棄権にするため、同じ文書の別の文から答えられる問いも、融合した場所の節が証明に入れば棄権になる。`_vt_time_fused` は場所の名に時の字を含むもの（`元日神社`）を融合と判定しうる（棄権の向き。K342・バンクの差は 0）。禁止文は読まず棄権するだけで、禁止の読みそのものは v1 に無い。
+
+## W3-f1 拡張 第 2 ラウンドの事前登録: 時の語＋接尾辞の場所の融合（追記）
+
+登録時刻: `artifacts/w3-f1/prereg_ext2_time.txt`（検査データを書く前、`semantic_verify.py` のこの直しを入れる前）。中間職のレビュー（第 3 版指示書・第 1 ラウンド）の必須 1 への対応。上の「拡張の事前登録」と「拡張の実測結果」は書き換えない。
+
+### 規則（狭める方向だけ。上の (3) の直し漏れの補い）
+場所・着点・方向の値が「時の語＋形態素解析で `接尾辞` と付く語」（来週港・毎朝店 など。港・店・湖・館・海・庁・室・園・院・城・街 が `接尾辞` と付くことは `_vt_tokens` で事前に確かめ `artifacts/w3-f1/suffix_tokens_probe.txt` に保存）に連結していたら、その値で答えない（型つき棄権）。`_vt_time_fused` 自体は変えない。
+
+### 判定の式（テストにそのまま書く。上の `fused`・`control` と同じ）
+- `kind=fused`: `not (verdict == "ANSWER" and any(time_word in v for v in values))`、かつ `verdict == "ANSWER"` なら `values == [place]`。
+- `kind=control`（時の語なし／読点で離れている）: `verdict == "ANSWER"` かつ `values == expect_values`。
+データ `tests/reading_soundness/w3f1_time_place_suffix.jsonl`、テスト `tests/test_w3f1_time_place_suffix_answer.py`、凍結 sha は `artifacts/w3-f1/freeze_ext2.sha256`。時の語 10 種 × 接尾辞の場所 11 種から 30 件の fused、対照 17 件。修正前に fused が落ち control が通ることを `artifacts/w3-f1/a1_ext2_before.txt` に保存する。
+
+### 過剰な棄権の範囲を測る（合否に入れない）
+時の字で始まる地名・施設名（明日香村・春日部・朝霞・秋葉原・朝日町・今市・元日神社 ほか）が新しい条件で True になるかの表を `artifacts/w3-f1/ext2_overabstain_probe.txt` に出し、True になったものは DECISIONS に全件列挙する。
+
+## W3-f1 拡張 第 2 ラウンドの実測結果: 接尾辞の場所の融合・`verdict.py` を戻した（追記。上の実測結果の節の記述を次のとおり訂正する）
+
+数値はすべて `artifacts/w3-f1/` のファイルから。
+- **訂正**: 上の「拡張の実測結果」の原因（誤答 2）に書いた「`verantyx/verdict.py` の `PROHIBIT` に丁寧形の語幹 4 つを足した」は **撤回した**。`verdict.py` は基点に戻した（`git diff --stat -- verantyx/verdict.py` は空）。`verdict.judge` は `vera ask` 以外の機能にも使われ、判定の向きが広がるため。丁寧形の本動詞の問いは、検証器の frame の枝（`semantic_verify.license_clause`）で、接続助詞 て/で/ちゃ/じゃ（＋は/も）の直後の `なる`／`いける` を含む否定の文を型つき棄権（`PROHIBITION_NOT_READ`）にして直した。`verdict` の判定は基点と同じ（`ext2_verdict_probe.txt`）。
+- **直し（誤答 3 の残り）**: `semantic_verify._vt_time_suffix_fused` を足し、`_vt_check_roles` の既存の `elif` に `or` で加えた（`_vt_time_fused` は不変）。検査データ `w3f1_time_place_suffix.jsonl`（fused 30・control 14、凍結 `freeze_ext2.sha256`）: 修正前 30 failed（fused 30、control 全部通る。`a1_ext2_before.txt`）、修正後は全 test_w3f1_* 258 passed（`a1_ext2_after.txt`）。凍結の作り直し 1 回（DECISIONS 15）。
+- **範囲**: `てもいけない`・`てもならない` の 6 件（第 1 ラウンドは ANSWER はい のまま）も `UNKNOWN_INVALID_PROOF` になった。main_polar 丁寧形 6 件は `UNKNOWN_NO_EVIDENCE` → `UNKNOWN_INVALID_PROOF`。第 1 ラウンドの範囲の ほかの行は不変（`ext2_range_after.tsv`）。接尾辞のデータ 44 行: fused 30 → `UNKNOWN_INVALID_PROOF`、control 14 → ANSWER。
+- **過剰な棄権**: 92 語の表（`ext2_overabstain_probe.txt`）で新しく True になったのは本当の融合の 10 語だけ。実在の地名・施設名は新しく True にならない。
+- **K342**: 前の流し（`before_ext`）対 後（`after_ext2`）は aq 111・extra2 42・w3c2 185・b2like 47 すべて `masked_differ=0`（`k342_ext2_summary.txt`）。基点 dev からの通算は 3 件（AQ025・AQ028・w3c2 Q069）で第 1 ラウンドと同一（`k342_total2_summary.txt`・`k342_total2_changed.tsv`）。
+- **公開バンクの写し**: B2・B1 とも問ごとに差 0（`bs_ext2_compare.txt`）。B2 は correct=0 wrong=0、B1 は correct=2 wrong=2（`bs_*_after_ext2.txt`、前後同じ）。
+- **テスト**: 関係テストは 3 failed, 1780 passed, 3 xfailed, 6 xpassed で失敗の集合が前と同一（`ext2_related_after.txt`）。frames 回帰は同一。全体テストは 116 failed, 16150 passed（`ext2_pytest_full.txt`）。失敗の集合は第 1 ラウンドと同一。
+- **既知の穴**: 時の語の切り出し（明日 = time、東京 = place）は読解器の仕事で未実施（棄権）。`s6` はコミット後の確認が要る。普通形の禁止の補助の問いの一部は `PROHIBITION_NOT_READ` でなく `UNKNOWN_NO_EVIDENCE`（誤答ではない）。
+
+## W3-f1 拡張 第 3 ラウンドの事前登録: 撥音便の丁寧形の禁止（追記）
+
+登録時刻: `artifacts/w3-f1/prereg_ext3.txt`（検査データを書く前、`semantic_verify.py` のこの直しを入れる前）。中間職のレビュー（第 3 版指示書・第 2 ラウンド）の必須 1 への対応。上の事前登録・実測結果の節は書き換えない。なお、第 2 ラウンドの事前登録の「接尾辞の場所 11 種・対照 17 件」は作り直しの前の数で、凍結版は fused 30・control 14（DECISIONS 15）。
+
+### 規則（狭める方向だけ）
+`て/で/ちゃ/じゃ（＋は/も）＋なる/いける` を含む文の本動詞を問う可否は、frame の読みが本動詞を肯定で返す場合（撥音便の丁寧形: 飲んではいけません）も、証明に使わない（型つき棄権 `PROHIBITION_NOT_READ`）。すなわち第 2 ラウンドの条件の `frame.negated` への依存を外す。
+
+### 判定の式（テストにそのまま書く。第 1 ラウンドの禁止と同じ）
+- `kind=main_polar`・`kind=aux_polar`: `verdict != "ANSWER"`。
+- `kind=control`（`<主語>は<目的語>を<撥音便の動詞>まない。` → `…<動詞>？` = いいえ）: `verdict == "ANSWER"` かつ `values == expect_values`。
+データ `tests/reading_soundness/w3f1_prohibition_nde.jsonl`、テスト `tests/test_w3f1_prohibition_nde_answer.py`、凍結 `artifacts/w3-f1/freeze_ext3.sha256`。main_polar ≥12（撥音便の動詞 ≥4 種 × 丁寧形 4 種）、aux_polar ≥6、control ≥4。凍結の前に、基点（第 2 ラウンドの W）で main_polar が `ANSWER` になる行だけを残す（空振りを入れない）ことを `artifacts/w3-f1/ext3_base_probe.txt` に表で残す。
+
+### 範囲の再測定（合否に入れない）
+`ext2_range_after.tsv` と直した後の差を全行 `ext3_range_changed.tsv` に出す。
+
+## W3-f1 拡張 第 3 ラウンドの実測結果: 撥音便の丁寧形の禁止・時の語の語彙の穴（追記）
+
+数値はすべて `artifacts/w3-f1/` のファイルから。
+- **直し**: `semantic_verify.license_clause` の frame の枝の条件から `frame.negated` を外した（`if _vt_te_auxiliary(words):`）。frame の読みは撥音便の丁寧形（飲んではいけません・飲んではなりません・飲んでもいけません）で本動詞を肯定として返し、第 2 ラウンドの条件を素通りして「運転手は酒を飲む？」= はい になっていた（`ext3_base_probe.txt`: 修正前の main_polar 20 件はすべて ANSWER はい）。
+- **検査データ**: `w3f1_prohibition_nde.jsonl`（main_polar 20・aux_polar 20・control 7、凍結 `freeze_ext3.sha256`）。空振りの 12 行（`ませんでした` 形、修正前から NO_EVIDENCE）は凍結の前に除いた（`ext3_drop_ids.txt`）。修正前 20 failed・28 passed（`a1_ext3_before.txt`）、修正後 test_w3f1_* 5 本で 306 passed（`a1_ext3_after.txt`）。
+- **範囲**: 5 データ 243 行（`ext3_range_after.tsv`）。第 2 ラウンドの 196 行と比べ変わった行は 0（`ext3_range_changed.tsv` は見出しのみ）。独自の検査 48 文（`ext3_extra_probe.tsv`）で ANSWER は 0。
+- **K342**: 第 2 ラウンドの後（`after_ext2`）対 今回の後（`after_ext3`）は aq 111・extra2 42・w3c2 185・b2like 47 すべて `masked_differ=0`（`k342_ext3_summary.txt`）。基点 dev からの通算は第 2 ラウンドと同一の 3 件（`k342_total3_summary.txt`、`k342_total2_changed.tsv` と `diff` 同一）。
+- **公開バンクの写し**: B2・B1 とも前（`bs_*_before_ext`）・第 2 ラウンドの後と問ごとに差 0（`bs_ext3_compare.txt`、`bs_*_after_ext3.txt`）。B2 correct=0 wrong=0、B1 correct=2 wrong=2（変わらず）。
+- **テスト**: 関係テストは 3 failed, 1780 passed, 3 xfailed, 6 xpassed で失敗の集合が第 2 ラウンドと同一（`ext3_related_after.txt`）。frames 回帰は同一。全体テストは 116 failed, 16198 passed（`ext3_pytest_full.txt`）。失敗の集合は第 2 ラウンドと同一（`ext3_after_failures.txt`）、基線 115 件に対する新しい 2 件（`test_s6_…`・`test_p4_abilities::test_speech_act_drafts…`）も同じ（`ext3_new_failures.txt`、分類は `ext2_new_failures_classified.txt`）。passed が 48 増えたのは新しいテストの分（47 行＋凍結検査 1）。
+- **既知の穴（基点からの誤答、このチケットの範囲外、別チケットの候補）**: 時の語の語彙。「山田さんが再来週東京で働く。」→ `ANSWER ['再来週東京']`。再来週・再来年・再来月・先々週・先々月・一昨年・毎夕・夕べ・昨夕・昨晩・明晩・宵・隔週・おととし が `_vt_is_time` で時と判定されず、時の語と場所の融合の検査に入らない（`ext3_time_lexicon_gap.txt`。基点でも同じ答え）。直すには接頭辞 `再来`／`先々`／`一昨` ＋ 助数詞可能の 週・月・年と、普通名詞・一般の時の語を読解器・検証器で同じ形態素の条件に揃える（別チケット）。
+- **その他の既知の穴**: 撥音便の丁寧形の根は frame の読み（`semantic_reader.py`）が本動詞を肯定で返すことで、検証器での棄権は対症（読解器の禁止の読みは別チケット）。`verdict.PROHIBIT` に丁寧形が無いことの申し送りは DECISIONS 14 のまま。時の語の切り出し（明日 = time・東京 = place）は未実施（棄権）。

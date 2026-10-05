@@ -1,0 +1,4 @@
+set	id	before_verdict	before_values	before_text	after_verdict	after_values	after_text	direction
+aq	AQ025	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	それ以外
+aq	AQ028	UNKNOWN_UNREAD	[]	この要求を裏づける導出を確認できません。	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	それ以外
+w3c2	Q069	ANSWER	["はい"]	可否: はい	ANSWER	["はい"]	可否: はい	values・text 同じ（ほかの欄だけ違う）

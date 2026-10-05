@@ -1,0 +1,20 @@
+# AQ025/AQ028 の原因の切り分け（単文）。before=基点 HEAD(af5594a) の git archive の写し、after=W3-f1-S
+# 実行: probe.py <tree>（verantyx.cli ask <問い> --mode round5 --document <単文>）
+## before
+粉屋が農夫に小麦を渡した。 / 誰が農夫に小麦を渡した？ -> UNKNOWN_UNREAD values=[]
+粉屋が田中に小麦を渡した。 / 誰が田中に小麦を渡した？ -> ANSWER values=['粉屋']
+粉屋が叔父に小麦を渡した。 / 誰が叔父に小麦を渡した？ -> UNKNOWN_UNREAD values=[]
+粉屋が農夫に小麦を渡さなかった。 / 誰が農夫に小麦を渡さなかった？ -> UNKNOWN_UNREAD values=[]
+## after
+粉屋が農夫に小麦を渡した。 / 誰が農夫に小麦を渡した？ -> ANSWER values=['粉屋']
+粉屋が田中に小麦を渡した。 / 誰が田中に小麦を渡した？ -> ANSWER values=['粉屋']
+粉屋が叔父に小麦を渡した。 / 誰が叔父に小麦を渡した？ -> ANSWER values=['粉屋']
+粉屋が農夫に小麦を渡さなかった。 / 誰が農夫に小麦を渡さなかった？ -> ANSWER values=['粉屋']
+
+## AQ025（aq の本物の問い）の trace（before/aq.jsonl・after/aq.jsonl から抜粋）
+before verdict= UNKNOWN_UNREAD reason= mandatory request spans remain unread
+  question.read_semantic plans= 0 obligations= 0 unread= [{"span": {"source": "question", "start": 0, "end": 15, "text": "誰が農夫に小麦を渡さなかった？"}, "reason": "unsupported request grammar"}]
+  document_view source_unread= [{"span": {"source": "AD02.txt", "start": 0, "end": 5, "text": "町の記録\n"}, "reason": "unsupported clause grammar"}]
+after verdict= UNKNOWN_UNSUPPORTED_EVIDENCE reason= source clauses remain unread
+  question.read_semantic plans= 1 obligations= 8 unread= []
+  document_view source_unread= [{"span": {"source": "AD02.txt", "start": 0, "end": 5, "text": "町の記録\n"}, "reason": "unsupported clause grammar"}]

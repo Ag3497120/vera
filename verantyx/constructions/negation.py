@@ -208,6 +208,18 @@ def _all_event_coverage(tagged, predicates, records, scope):
                for word, start, end in tagged)
 
 
+def _auxiliary_after_te(tagged, event_index):
+    """True when the negated event word is the auxiliary of a prohibition/obligation form
+    (V-te/de [wa/mo] naranai / ikenai): a function word after a conjunctive particle, not an event."""
+    word = tagged[event_index][0]
+    if word.feature.pos2 != "非自立可能" or _base(word) not in ("なる", "いける"):
+        return False
+    k = event_index - 1
+    if k >= 0 and tagged[k][0].feature.pos1 == "助詞" and tagged[k][0].surface in ("は", "も"):
+        k -= 1
+    return k >= 0 and tagged[k][0].feature.pos2 == "接続助詞" and tagged[k][0].surface in ("て", "で", "ちゃ", "じゃ")
+
+
 def _event_reading(ctx: ConstructionContext, body_start: int, body: str):
     if (not body or _BLOCKED.search(body) or any(mark in body for mark in "「」『』:：")
             or body.rstrip().endswith(("?", "？"))):
@@ -280,6 +292,7 @@ def _event_reading(ctx: ConstructionContext, body_start: int, body: str):
         modality=_AFFIRMATIVE_DOUBLE if kind == "double" else "assert",
         time="past" if body.rstrip(_PUNCT).endswith(("なかった", "ませんでした")) else "nonpast",
         rule="negation",
+        unsupported=(("PROHIBITION_NOT_READ",) if _auxiliary_after_te(tagged, event_index) else ()),
         sovereign=ctx.clauses[-1].sovereign if ctx.clauses else "document",
         family=ctx.clauses[-1].family if ctx.clauses else "document",
     )

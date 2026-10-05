@@ -1,0 +1,4 @@
+items 25
+kin_containing 0 []
+kin_followed_by_が/は 0 []
+(コマンド: python3 artifacts/w3-f1/b2_kin_count.py。公開の写し B2 は 25 問で、うち親族名詞を含む項目は上のとおり)

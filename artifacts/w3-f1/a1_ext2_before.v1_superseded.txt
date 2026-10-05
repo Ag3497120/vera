@@ -1,0 +1,40 @@
+
+    @pytest.mark.parametrize("row", [r for r in ROWS if r["kind"] == "control"], ids=lambda r: r["id"])
+    def test_plain_place_still_answers(row, tmp_path):
+        out = ask(tmp_path, row["document"], row["question"])
+>       assert out.get("verdict") == "ANSWER", out.get("verdict")
+E       AssertionError: UNKNOWN_NO_EVIDENCE
+E       assert 'UNKNOWN_NO_EVIDENCE' == 'ANSWER'
+E         
+E         - ANSWER
+E         + UNKNOWN_NO_EVIDENCE
+
+tests/test_w3f1_time_place_suffix_answer.py:50: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-00]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-02]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-04]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-07]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-08]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-09]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-11]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-12]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-13]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-14]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-16]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-17]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-18]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-19]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-20]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-21]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-22]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-23]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-24]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-25]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-28]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_time_word_is_not_fused_into_the_place[sfx-fused-29]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_plain_place_still_answers[sfx-ctl-plain-2]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_plain_place_still_answers[sfx-ctl-plain-10]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_plain_place_still_answers[sfx-ctl-comma-1]
+FAILED tests/test_w3f1_time_place_suffix_answer.py::test_plain_place_still_answers[sfx-ctl-comma-5]
+26 failed, 22 passed in 1.06s

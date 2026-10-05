@@ -1,0 +1,272 @@
+{
+  "kind": "unknown",
+  "verdict": "AMBIGUOUS_QUESTION_CROSS_TIE",
+  "text": "",
+  "candidates": [
+    {
+      "text": "principal",
+      "sources": [
+        {
+          "family": "document",
+          "source": "AD08.txt",
+          "line": 2,
+          "text": "The principal gave the map to the student.",
+          "sentence_id": "AD08.txt#2:2"
+        }
+      ]
+    },
+    {
+      "text": "teacher",
+      "sources": [
+        {
+          "family": "document",
+          "source": "AD08.txt",
+          "line": 2,
+          "text": "The teacher gave the map to the student.",
+          "sentence_id": "AD08.txt#2:1"
+        }
+      ]
+    }
+  ],
+  "sources": [],
+  "evidence": [],
+  "door": "question_cross",
+  "question_cross": {
+    "state": "TIE",
+    "reason": "UNREAD_SENTENCES:2",
+    "mapped_to": "AMBIGUOUS_QUESTION_CROSS_TIE",
+    "hole_role": "agent",
+    "hole_type": [
+      "GROUP_ORG",
+      "PERSON"
+    ],
+    "coord": [
+      {
+        "origin": {
+          "kind": "structure",
+          "id": "AD08.txt#2:2",
+          "cross_index": 0
+        },
+        "moves": []
+      },
+      {
+        "origin": {
+          "kind": "structure",
+          "id": "AD08.txt#2:1",
+          "cross_index": 0
+        },
+        "moves": []
+      }
+    ],
+    "structure": {
+      "sentences": 8,
+      "crossed": 6,
+      "unread": 2,
+      "reasons": [
+        "UNREAD_SENTENCES:2"
+      ]
+    },
+    "documents": {
+      "loaded": 1,
+      "skipped": []
+    }
+  },
+  "trace": [
+    {
+      "part": "one.round5_route",
+      "status": "ran",
+      "code_intent": false,
+      "content_intent": false,
+      "decision_input": "raw_request",
+      "fallback": false
+    },
+    {
+      "part": "question.read_semantic",
+      "status": "ran",
+      "plans": 0,
+      "obligations": 0,
+      "unread": [
+        {
+          "span": {
+            "source": "question",
+            "start": 0,
+            "end": 32,
+            "text": "Who gave the map to the student?"
+          },
+          "reason": "unsupported request grammar"
+        }
+      ]
+    },
+    {
+      "part": "semantic_reader.document_view",
+      "status": "ran",
+      "clauses": 0,
+      "source_unread": [
+        {
+          "span": {
+            "source": "AD08.txt",
+            "start": 0,
+            "end": 41,
+            "text": "The farmer sold the horse to the miller.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD08.txt",
+            "start": 41,
+            "end": 125,
+            "text": "The teacher gave the map to the student. The principal gave the map to the student.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD08.txt",
+            "start": 125,
+            "end": 152,
+            "text": "The sailor wrote a letter.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD08.txt",
+            "start": 152,
+            "end": 197,
+            "text": "The clerk did not give the key to the guest.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD08.txt",
+            "start": 197,
+            "end": 225,
+            "text": "The baker bought the flour.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD08.txt",
+            "start": 225,
+            "end": 253,
+            "text": "The doctor read the report.\n"
+          },
+          "reason": "unsupported clause grammar"
+        },
+        {
+          "span": {
+            "source": "AD08.txt",
+            "start": 253,
+            "end": 279,
+            "text": "The pilot flew the plane.\n"
+          },
+          "reason": "unsupported clause grammar"
+        }
+      ],
+      "source_unread_count": 7,
+      "source_unread_truncated": false,
+      "ingest_ms": 3.8731669774279
+    },
+    {
+      "leaves": 1,
+      "nodes": 1,
+      "arity": 6,
+      "status": "skipped",
+      "reason": "fewer leaves than one routing node",
+      "part": "semantic_route.LeafTree"
+    },
+    {
+      "part": "remedy.remedy",
+      "status": "ran",
+      "verdict": "UNKNOWN_UNREAD",
+      "how_to_resolve": "質問された事項を示す出典を追加してください。"
+    },
+    {
+      "part": "ask_back.question",
+      "status": "abstained",
+      "reason": "verdict has no human-answerable candidate",
+      "asks": ""
+    },
+    {
+      "part": "coverage.document_needed",
+      "status": "abstained",
+      "reason": "no domain witnesses"
+    },
+    {
+      "part": "gap_graph.refusal_to_gap",
+      "status": "abstained",
+      "reason": "no opt-in gap_path"
+    },
+    {
+      "part": "grow.log_refusal",
+      "status": "abstained",
+      "reason": "no queue opt-in or different verdict"
+    },
+    {
+      "part": "multigrain_adapter.retrieve_multigrain_candidates",
+      "status": "ran",
+      "verdict": "CANDIDATE_SOURCE_LEAF_MATCHED",
+      "selected_candidate": "teacher",
+      "source_identity_status": "identity_unverified",
+      "independent_source_count": null,
+      "source_binding_status": "HOLD",
+      "source_binding_reason": "selected candidate has no exact occurrence in a source-reader Clause span",
+      "candidate_views_supplied_to_answer_verifier": false,
+      "candidate_document_id_cited_after_full_view_check": false,
+      "candidate_sentence_span_cited_after_full_view_check": null,
+      "candidate_clause_span_cited_after_full_view_check": false,
+      "candidate_clause_span_match_count": 0,
+      "candidate_clause_span_causal_influence_proven": false,
+      "citation_granularity": "source_id_and_exact_candidate_clause_span_match",
+      "bound_source_supplied_to_goal_consumer": false,
+      "licenses_goal_realization": false
+    },
+    {
+      "part": "question_cross",
+      "status": "ran",
+      "state": "TIE",
+      "mapped_to": "AMBIGUOUS_QUESTION_CROSS_TIE"
+    }
+  ],
+  "basis_policy": {
+    "schema": "verantyx.basis_policy/1",
+    "table_version": 1,
+    "applied": true,
+    "request_kind": "factual",
+    "kind_class": "FACTUAL",
+    "basis": "NONE",
+    "basis_original": "NONE",
+    "human_present": false,
+    "show_reference": false,
+    "outcome": "ABSTAIN",
+    "in_table": true,
+    "counts": {
+      "human": 0,
+      "generated": 0,
+      "non_evidence": 0,
+      "request_text": 0,
+      "unreadable": 0,
+      "non_evidence_by_origin": {},
+      "unknown_origin": 0,
+      "unknown_origin_by_family": {},
+      "unknown_origin_values": {}
+    },
+    "classify_version": 5,
+    "confirm_id_version": 2,
+    "sovereign": {
+      "state": "UNKNOWN_NO_SOVEREIGN",
+      "store_id": null,
+      "records_read": 0,
+      "rejected_by_user": 0,
+      "confirmed_records_used": 0,
+      "confirmed_records_not_used": 0,
+      "ambiguous": false
+    },
+    "form": {
+      "state": "NOT_ATTEMPTED_OUTCOME"
+    }
+  }
+}

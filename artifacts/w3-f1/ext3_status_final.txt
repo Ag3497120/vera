@@ -1,0 +1,5 @@
+ M artifacts/w3-f1/COMMANDS.md
+ M artifacts/w3-f1/DECISIONS.md
+ M docs/OBSERVATION.md
+ M verantyx/constructions/negation.py
+ M verantyx/semantic_verify.py

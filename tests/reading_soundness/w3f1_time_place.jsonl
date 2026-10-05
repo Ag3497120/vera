@@ -1,0 +1,56 @@
+{"id": "fused-00", "kind": "fused", "time_word": "明日", "place": "東京", "document": "山田さんが明日東京で働く。", "question": "どこで働く？"}
+{"id": "fused-01", "kind": "fused", "time_word": "明日", "place": "公園", "document": "田中が明日公園で新聞を買う。", "question": "田中はどこで新聞を買う？"}
+{"id": "fused-02", "kind": "fused", "time_word": "明日", "place": "会議室", "document": "佐藤さんが明日会議室で昼食を食べる。", "question": "佐藤さんはどこで昼食を食べる？"}
+{"id": "fused-03", "kind": "fused", "time_word": "明日", "place": "食堂", "document": "鈴木が明日食堂で本を読む。", "question": "鈴木はどこで本を読む？"}
+{"id": "fused-04", "kind": "fused", "time_word": "今日", "place": "駅前", "document": "田中が今日駅前で新聞を買う。", "question": "田中はどこで新聞を買う？"}
+{"id": "fused-05", "kind": "fused", "time_word": "今日", "place": "図書館", "document": "佐藤さんが今日図書館で昼食を食べる。", "question": "佐藤さんはどこで昼食を食べる？"}
+{"id": "fused-06", "kind": "fused", "time_word": "今日", "place": "東京", "document": "鈴木が今日東京で本を読む。", "question": "鈴木はどこで本を読む？"}
+{"id": "fused-07", "kind": "fused", "time_word": "今日", "place": "公園", "document": "高橋さんが今日公園で写真を撮る。", "question": "高橋さんはどこで写真を撮る？"}
+{"id": "fused-08", "kind": "fused", "time_word": "昨日", "place": "食堂", "document": "佐藤さんが昨日食堂で昼食を食べた。", "question": "佐藤さんはどこで昼食を食べた？"}
+{"id": "fused-09", "kind": "fused", "time_word": "昨日", "place": "大阪", "document": "鈴木が昨日大阪で本を読んだ。", "question": "鈴木はどこで本を読んだ？"}
+{"id": "fused-10", "kind": "fused", "time_word": "昨日", "place": "駅前", "document": "高橋さんが昨日駅前で写真を撮った。", "question": "高橋さんはどこで写真を撮った？"}
+{"id": "fused-11", "kind": "fused", "time_word": "昨日", "place": "図書館", "document": "中村が昨日図書館で資料を作った。", "question": "中村はどこで資料を作った？"}
+{"id": "fused-12", "kind": "fused", "time_word": "来週", "place": "公園", "document": "鈴木が来週公園で本を読む。", "question": "鈴木はどこで本を読む？"}
+{"id": "fused-13", "kind": "fused", "time_word": "来週", "place": "会議室", "document": "高橋さんが来週会議室で写真を撮る。", "question": "高橋さんはどこで写真を撮る？"}
+{"id": "fused-14", "kind": "fused", "time_word": "来週", "place": "食堂", "document": "中村が来週食堂で資料を作る。", "question": "中村はどこで資料を作る？"}
+{"id": "fused-15", "kind": "fused", "time_word": "来週", "place": "大阪", "document": "山田さんが来週大阪で働く。", "question": "どこで働く？"}
+{"id": "fused-16", "kind": "fused", "time_word": "毎朝", "place": "図書館", "document": "高橋さんが毎朝図書館で写真を撮る。", "question": "高橋さんはどこで写真を撮る？"}
+{"id": "fused-17", "kind": "fused", "time_word": "毎朝", "place": "東京", "document": "中村が毎朝東京で資料を作る。", "question": "中村はどこで資料を作る？"}
+{"id": "fused-18", "kind": "fused", "time_word": "毎朝", "place": "公園", "document": "山田さんが毎朝公園で働く。", "question": "どこで働く？"}
+{"id": "fused-19", "kind": "fused", "time_word": "毎朝", "place": "会議室", "document": "田中が毎朝会議室で新聞を買う。", "question": "田中はどこで新聞を買う？"}
+{"id": "fused-20", "kind": "fused", "time_word": "午後", "place": "大阪", "document": "中村が午後大阪で資料を作る。", "question": "中村はどこで資料を作る？"}
+{"id": "fused-21", "kind": "fused", "time_word": "午後", "place": "駅前", "document": "山田さんが午後駅前で働く。", "question": "どこで働く？"}
+{"id": "fused-22", "kind": "fused", "time_word": "午後", "place": "図書館", "document": "田中が午後図書館で新聞を買う。", "question": "田中はどこで新聞を買う？"}
+{"id": "fused-23", "kind": "fused", "time_word": "午後", "place": "東京", "document": "佐藤さんが午後東京で昼食を食べる。", "question": "佐藤さんはどこで昼食を食べる？"}
+{"id": "fused-24", "kind": "fused", "time_word": "今朝", "place": "会議室", "document": "山田さんが今朝会議室で働く。", "question": "どこで働く？"}
+{"id": "fused-25", "kind": "fused", "time_word": "今朝", "place": "食堂", "document": "田中が今朝食堂で新聞を買う。", "question": "田中はどこで新聞を買う？"}
+{"id": "fused-26", "kind": "fused", "time_word": "今朝", "place": "大阪", "document": "佐藤さんが今朝大阪で昼食を食べる。", "question": "佐藤さんはどこで昼食を食べる？"}
+{"id": "fused-27", "kind": "fused", "time_word": "今朝", "place": "駅前", "document": "鈴木が今朝駅前で本を読む。", "question": "鈴木はどこで本を読む？"}
+{"id": "fused-28", "kind": "fused", "time_word": "夕方", "place": "東京", "document": "田中が夕方東京で新聞を買う。", "question": "田中はどこで新聞を買う？"}
+{"id": "fused-29", "kind": "fused", "time_word": "夕方", "place": "公園", "document": "佐藤さんが夕方公園で昼食を食べる。", "question": "佐藤さんはどこで昼食を食べる？"}
+{"id": "fused-30", "kind": "fused", "time_word": "夕方", "place": "会議室", "document": "鈴木が夕方会議室で本を読む。", "question": "鈴木はどこで本を読む？"}
+{"id": "fused-31", "kind": "fused", "time_word": "夕方", "place": "食堂", "document": "高橋さんが夕方食堂で写真を撮る。", "question": "高橋さんはどこで写真を撮る？"}
+{"id": "fused-32", "kind": "fused", "time_word": "週末", "place": "駅前", "document": "佐藤さんが週末駅前で昼食を食べる。", "question": "佐藤さんはどこで昼食を食べる？"}
+{"id": "fused-33", "kind": "fused", "time_word": "週末", "place": "図書館", "document": "鈴木が週末図書館で本を読む。", "question": "鈴木はどこで本を読む？"}
+{"id": "fused-34", "kind": "fused", "time_word": "週末", "place": "東京", "document": "高橋さんが週末東京で写真を撮る。", "question": "高橋さんはどこで写真を撮る？"}
+{"id": "fused-35", "kind": "fused", "time_word": "週末", "place": "公園", "document": "中村が週末公園で資料を作る。", "question": "中村はどこで資料を作る？"}
+{"id": "fused-36", "kind": "fused", "time_word": "先月", "place": "食堂", "document": "鈴木が先月食堂で本を読んだ。", "question": "鈴木はどこで本を読んだ？"}
+{"id": "fused-37", "kind": "fused", "time_word": "先月", "place": "大阪", "document": "高橋さんが先月大阪で写真を撮った。", "question": "高橋さんはどこで写真を撮った？"}
+{"id": "fused-38", "kind": "fused", "time_word": "先月", "place": "駅前", "document": "中村が先月駅前で資料を作った。", "question": "中村はどこで資料を作った？"}
+{"id": "fused-39", "kind": "fused", "time_word": "先月", "place": "図書館", "document": "山田さんが先月図書館で働いた。", "question": "どこで働いた？"}
+{"id": "fused-40", "kind": "fused", "time_word": "2030年", "place": "公園", "document": "高橋さんが2030年公園で写真を撮る。", "question": "高橋さんはどこで写真を撮る？"}
+{"id": "fused-41", "kind": "fused", "time_word": "2030年", "place": "会議室", "document": "中村が2030年会議室で資料を作る。", "question": "中村はどこで資料を作る？"}
+{"id": "fused-42", "kind": "fused", "time_word": "2030年", "place": "食堂", "document": "山田さんが2030年食堂で働く。", "question": "どこで働く？"}
+{"id": "fused-43", "kind": "fused", "time_word": "2030年", "place": "大阪", "document": "田中が2030年大阪で新聞を買う。", "question": "田中はどこで新聞を買う？"}
+{"id": "ctl-plain-0", "kind": "control", "document": "山田さんが東京で働く。", "question": "どこで働く？", "expect_values": ["東京"], "time_word": "", "place": "東京"}
+{"id": "ctl-comma-0", "kind": "control", "document": "明日、山田さんが東京で働く。", "question": "どこで働く？", "expect_values": ["東京"], "time_word": "明日", "place": "東京"}
+{"id": "ctl-plain-1", "kind": "control", "document": "田中が駅前で新聞を買う。", "question": "田中はどこで新聞を買う？", "expect_values": ["駅前"], "time_word": "", "place": "駅前"}
+{"id": "ctl-comma-1", "kind": "control", "document": "来週、田中が駅前で新聞を買う。", "question": "田中はどこで新聞を買う？", "expect_values": ["駅前"], "time_word": "来週", "place": "駅前"}
+{"id": "ctl-plain-2", "kind": "control", "document": "佐藤さんが図書館で昼食を食べる。", "question": "佐藤さんはどこで昼食を食べる？", "expect_values": ["図書館"], "time_word": "", "place": "図書館"}
+{"id": "ctl-comma-2", "kind": "control", "document": "週末、佐藤さんが図書館で昼食を食べる。", "question": "佐藤さんはどこで昼食を食べる？", "expect_values": ["図書館"], "time_word": "週末", "place": "図書館"}
+{"id": "ctl-plain-3", "kind": "control", "document": "鈴木が食堂で本を読む。", "question": "鈴木はどこで本を読む？", "expect_values": ["食堂"], "time_word": "", "place": "食堂"}
+{"id": "ctl-comma-3", "kind": "control", "document": "毎朝、鈴木が食堂で本を読む。", "question": "鈴木はどこで本を読む？", "expect_values": ["食堂"], "time_word": "毎朝", "place": "食堂"}
+{"id": "ctl-plain-4", "kind": "control", "document": "高橋さんが会議室で写真を撮る。", "question": "高橋さんはどこで写真を撮る？", "expect_values": ["会議室"], "time_word": "", "place": "会議室"}
+{"id": "ctl-comma-4", "kind": "control", "document": "夕方、高橋さんが会議室で写真を撮る。", "question": "高橋さんはどこで写真を撮る？", "expect_values": ["会議室"], "time_word": "夕方", "place": "会議室"}
+{"id": "ctl-plain-5", "kind": "control", "document": "中村が公園で資料を作る。", "question": "中村はどこで資料を作る？", "expect_values": ["公園"], "time_word": "", "place": "公園"}
+{"id": "ctl-comma-5", "kind": "control", "document": "今朝、中村が公園で資料を作る。", "question": "中村はどこで資料を作る？", "expect_values": ["公園"], "time_word": "今朝", "place": "公園"}

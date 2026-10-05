@@ -1,0 +1,60 @@
+id	kind	form	document	question	verdict	values	text	reason
+nde-main-0-0	main_polar	んではいけません	運転手は酒を飲んではいけません。	運転手は酒を飲む？	ANSWER	["はい"]	可否: はい	
+nde-aux-0-0	aux_polar	んではいけません	運転手は酒を飲んではいけません。	運転手はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+nde-main-0-1	main_polar	んではなりません	運転手は酒を飲んではなりません。	運転手は酒を飲む？	ANSWER	["はい"]	可否: はい	
+nde-main-0-2	main_polar	んでもいけません	運転手は酒を飲んでもいけません。	運転手は酒を飲む？	ANSWER	["はい"]	可否: はい	
+nde-aux-0-2	aux_polar	んでもいけません	運転手は酒を飲んでもいけません。	運転手はいけません？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+nde-main-0-3	main_polar	んではいけませんでした	運転手は酒を飲んではいけませんでした。	運転手は酒を飲む？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+nde-main-0-4	main_polar	んではなりませんでした	運転手は酒を飲んではなりませんでした。	運転手は酒を飲む？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+nde-aux-0-4	aux_polar	んではなりませんでした	運転手は酒を飲んではなりませんでした。	運転手はなりませんでした？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+nde-main-1-0	main_polar	んではいけません	作業員は荷物を運んではいけません。	作業員は荷物を運ぶ？	ANSWER	["はい"]	可否: はい	
+nde-aux-1-0	aux_polar	んではいけません	作業員は荷物を運んではいけません。	作業員はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+nde-main-1-1	main_polar	んではなりません	作業員は荷物を運んではなりません。	作業員は荷物を運ぶ？	ANSWER	["はい"]	可否: はい	
+nde-main-1-2	main_polar	んでもいけません	作業員は荷物を運んでもいけません。	作業員は荷物を運ぶ？	ANSWER	["はい"]	可否: はい	
+nde-aux-1-2	aux_polar	んでもいけません	作業員は荷物を運んでもいけません。	作業員はいけません？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+nde-main-1-4	main_polar	んではなりませんでした	作業員は荷物を運んではなりませんでした。	作業員は荷物を運ぶ？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+nde-aux-1-4	aux_polar	んではなりませんでした	作業員は荷物を運んではなりませんでした。	作業員はなりませんでした？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+nde-main-2-0	main_polar	んではいけません	生徒は手紙を読んではいけません。	生徒は手紙を読む？	ANSWER	["はい"]	可否: はい	
+nde-aux-2-0	aux_polar	んではいけません	生徒は手紙を読んではいけません。	生徒はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+nde-main-2-1	main_polar	んではなりません	生徒は手紙を読んではなりません。	生徒は手紙を読む？	ANSWER	["はい"]	可否: はい	
+nde-main-2-2	main_polar	んでもいけません	生徒は手紙を読んでもいけません。	生徒は手紙を読む？	ANSWER	["はい"]	可否: はい	
+nde-aux-2-2	aux_polar	んでもいけません	生徒は手紙を読んでもいけません。	生徒はいけません？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+nde-main-2-3	main_polar	んではいけませんでした	生徒は手紙を読んではいけませんでした。	生徒は手紙を読む？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+nde-main-2-4	main_polar	んではなりませんでした	生徒は手紙を読んではなりませんでした。	生徒は手紙を読む？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+nde-aux-2-4	aux_polar	んではなりませんでした	生徒は手紙を読んではなりませんでした。	生徒はなりませんでした？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+nde-main-3-0	main_polar	んではいけません	受付は友人を呼んではいけません。	受付は友人を呼ぶ？	ANSWER	["はい"]	可否: はい	
+nde-aux-3-0	aux_polar	んではいけません	受付は友人を呼んではいけません。	受付はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+nde-main-3-2	main_polar	んでもいけません	受付は友人を呼んでもいけません。	受付は友人を呼ぶ？	ANSWER	["はい"]	可否: はい	
+nde-aux-3-2	aux_polar	んでもいけません	受付は友人を呼んでもいけません。	受付はいけません？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+nde-main-3-3	main_polar	んではいけませんでした	受付は友人を呼んではいけませんでした。	受付は友人を呼ぶ？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+nde-main-3-4	main_polar	んではなりませんでした	受付は友人を呼んではなりませんでした。	受付は友人を呼ぶ？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+nde-aux-3-4	aux_polar	んではなりませんでした	受付は友人を呼んではなりませんでした。	受付はなりませんでした？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+nde-main-4-0	main_polar	んではいけません	委員は候補者を選んではいけません。	委員は候補者を選ぶ？	ANSWER	["はい"]	可否: はい	
+nde-aux-4-0	aux_polar	んではいけません	委員は候補者を選んではいけません。	委員はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+nde-main-4-1	main_polar	んではなりません	委員は候補者を選んではなりません。	委員は候補者を選ぶ？	ANSWER	["はい"]	可否: はい	
+nde-main-4-2	main_polar	んでもいけません	委員は候補者を選んでもいけません。	委員は候補者を選ぶ？	ANSWER	["はい"]	可否: はい	
+nde-aux-4-2	aux_polar	んでもいけません	委員は候補者を選んでもいけません。	委員はいけません？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+nde-main-4-3	main_polar	んではいけませんでした	委員は候補者を選んではいけませんでした。	委員は候補者を選ぶ？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+nde-main-4-4	main_polar	んではなりませんでした	委員は候補者を選んではなりませんでした。	委員は候補者を選ぶ？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+nde-aux-4-4	aux_polar	んではなりませんでした	委員は候補者を選んではなりませんでした。	委員はなりませんでした？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+nde-main-5-0	main_polar	んではいけません	店員は財布を盗んではいけません。	店員は財布を盗む？	ANSWER	["はい"]	可否: はい	
+nde-aux-5-0	aux_polar	んではいけません	店員は財布を盗んではいけません。	店員はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+nde-main-5-1	main_polar	んではなりません	店員は財布を盗んではなりません。	店員は財布を盗む？	ANSWER	["はい"]	可否: はい	
+nde-main-5-2	main_polar	んでもいけません	店員は財布を盗んでもいけません。	店員は財布を盗む？	ANSWER	["はい"]	可否: はい	
+nde-aux-5-2	aux_polar	んでもいけません	店員は財布を盗んでもいけません。	店員はいけません？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+nde-main-5-3	main_polar	んではいけませんでした	店員は財布を盗んではいけませんでした。	店員は財布を盗む？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+nde-main-6-0	main_polar	んではいけません	医者は薬を頼んではいけません。	医者は薬を頼む？	ANSWER	["はい"]	可否: はい	
+nde-aux-6-0	aux_polar	んではいけません	医者は薬を頼んではいけません。	医者はいけません？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+nde-main-6-1	main_polar	んではなりません	医者は薬を頼んではなりません。	医者は薬を頼む？	ANSWER	["はい"]	可否: はい	
+nde-main-6-2	main_polar	んでもいけません	医者は薬を頼んでもいけません。	医者は薬を頼む？	ANSWER	["はい"]	可否: はい	
+nde-aux-6-2	aux_polar	んでもいけません	医者は薬を頼んでもいけません。	医者はいけません？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+nde-main-6-3	main_polar	んではいけませんでした	医者は薬を頼んではいけませんでした。	医者は薬を頼む？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+nde-main-6-4	main_polar	んではなりませんでした	医者は薬を頼んではなりませんでした。	医者は薬を頼む？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+nde-aux-6-4	aux_polar	んではなりませんでした	医者は薬を頼んではなりませんでした。	医者はなりませんでした？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ
+nde-ctl-0	control	ない	運転手は酒を飲まない。	運転手は酒を飲む？	ANSWER	["いいえ"]	可否: いいえ	
+nde-ctl-1	control	ない	作業員は荷物を運ばない。	作業員は荷物を運ぶ？	ANSWER	["いいえ"]	可否: いいえ	
+nde-ctl-2	control	ない	生徒は手紙を読まない。	生徒は手紙を読む？	ANSWER	["いいえ"]	可否: いいえ	
+nde-ctl-3	control	ない	受付は友人を呼ばない。	受付は友人を呼ぶ？	ANSWER	["いいえ"]	可否: いいえ	
+nde-ctl-4	control	ない	委員は候補者を選ばない。	委員は候補者を選ぶ？	ANSWER	["いいえ"]	可否: いいえ	
+nde-ctl-5	control	ない	店員は財布を盗まない。	店員は財布を盗む？	ANSWER	["いいえ"]	可否: いいえ	
+nde-ctl-6	control	ない	医者は薬を頼まない。	医者は薬を頼む？	ANSWER	["いいえ"]	可否: いいえ	

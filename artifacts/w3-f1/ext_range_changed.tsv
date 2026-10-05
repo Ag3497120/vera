@@ -1,0 +1,89 @@
+file	id	kind	group	document	question	before_verdict	before_values	before_reason	after_verdict	after_values	after_reason
+w3f1_prohibition.jsonl	aux-エージェント-てはならない	aux_polar	てはならない	エージェントは評価バンクを開いてはならない。	エージェントはならない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-エージェント-てはいけない	aux_polar	てはいけない	エージェントは鍵を持ち出してはいけない。	エージェントはいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-エージェント-ではならない	aux_polar	ではならない	エージェントは友人を呼んではならない。	エージェントはならない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-エージェント-てはなりません	aux_polar	てはなりません	エージェントは書類を捨ててはなりません。	エージェントはなりません？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-エージェント-てはなりません	main_polar	てはなりません	エージェントは書類を捨ててはなりません。	エージェントは書類を捨てる？	ANSWER	["いいえ"]		UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation
+w3f1_prohibition.jsonl	aux-エージェント-てはいけません	aux_polar	てはいけません	エージェントは窓を開けてはいけません。	エージェントはいけません？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-エージェント-てはいけなかった	aux_polar	てはいけなかった	エージェントは評価バンクを開いてはいけなかった。	エージェントはいけなかった？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-てはならない	aux_polar	てはならない	社員は鍵を持ち出してはならない。	社員はならない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-てはいけない	aux_polar	てはいけない	社員は答えを見てはいけない。	社員はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-ではならない	aux_polar	ではならない	社員は酒を飲んではならない。	社員はならない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-ではいけない	aux_polar	ではいけない	社員は友人を呼んではいけない。	社員はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-てはなりません	aux_polar	てはなりません	社員は窓を開けてはなりません。	社員はなりません？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-社員-てはいけません	aux_polar	てはいけません	社員は評価バンクを開いてはいけません。	社員はいけません？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-社員-てはいけません	main_polar	てはいけません	社員は評価バンクを開いてはいけません。	社員は評価バンクを開く？	ANSWER	["いいえ"]		UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation
+w3f1_prohibition.jsonl	aux-社員-てはいけなかった	aux_polar	てはいけなかった	社員は鍵を持ち出してはいけなかった。	社員はいけなかった？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-てはならない	aux_polar	てはならない	学生は答えを見てはならない。	学生はならない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-てはいけない	aux_polar	てはいけない	学生は秘密を話してはいけない。	学生はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-ではならない	aux_polar	ではならない	学生は本を読んではならない。	学生はならない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-ではいけない	aux_polar	ではいけない	学生は酒を飲んではいけない。	学生はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-てはなりません	aux_polar	てはなりません	学生は評価バンクを開いてはなりません。	学生はなりません？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-学生-てはなりません	main_polar	てはなりません	学生は評価バンクを開いてはなりません。	学生は評価バンクを開く？	ANSWER	["いいえ"]		UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation
+w3f1_prohibition.jsonl	aux-学生-てはいけません	aux_polar	てはいけません	学生は鍵を持ち出してはいけません。	学生はいけません？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-学生-てはいけなかった	aux_polar	てはいけなかった	学生は答えを見てはいけなかった。	学生はいけなかった？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-患者-てはならない	aux_polar	てはならない	患者は秘密を話してはならない。	患者はならない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-患者-てはいけない	aux_polar	てはいけない	患者は書類を捨ててはいけない。	患者はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-患者-ではいけない	aux_polar	ではいけない	患者は本を読んではいけない。	患者はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-患者-てはなりません	aux_polar	てはなりません	患者は鍵を持ち出してはなりません。	患者はなりません？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-患者-てはいけません	aux_polar	てはいけません	患者は答えを見てはいけません。	患者はいけません？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-患者-てはいけません	main_polar	てはいけません	患者は答えを見てはいけません。	患者は答えを見る？	ANSWER	["いいえ"]		UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation
+w3f1_prohibition.jsonl	aux-患者-てはいけなかった	aux_polar	てはいけなかった	患者は秘密を話してはいけなかった。	患者はいけなかった？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-子供-てはならない	aux_polar	てはならない	子供は書類を捨ててはならない。	子供はならない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-子供-てはいけない	aux_polar	てはいけない	子供は窓を開けてはいけない。	子供はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-子供-ではならない	aux_polar	ではならない	子供は友人を呼んではならない。	子供はならない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-子供-てはなりません	aux_polar	てはなりません	子供は答えを見てはなりません。	子供はなりません？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-子供-てはなりません	main_polar	てはなりません	子供は答えを見てはなりません。	子供は答えを見る？	ANSWER	["いいえ"]		UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation
+w3f1_prohibition.jsonl	aux-子供-てはいけません	aux_polar	てはいけません	子供は秘密を話してはいけません。	子供はいけません？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-子供-てはいけなかった	aux_polar	てはいけなかった	子供は書類を捨ててはいけなかった。	子供はいけなかった？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-てはならない	aux_polar	てはならない	職員は窓を開けてはならない。	職員はならない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-てはいけない	aux_polar	てはいけない	職員は評価バンクを開いてはいけない。	職員はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-ではならない	aux_polar	ではならない	職員は酒を飲んではならない。	職員はならない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-ではいけない	aux_polar	ではいけない	職員は友人を呼んではいけない。	職員はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-てはなりません	aux_polar	てはなりません	職員は秘密を話してはなりません。	職員はなりません？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	aux-職員-てはいけません	aux_polar	てはいけません	職員は書類を捨ててはいけません。	職員はいけません？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_prohibition.jsonl	main-職員-てはいけません	main_polar	てはいけません	職員は書類を捨ててはいけません。	職員は書類を捨てる？	ANSWER	["いいえ"]		UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation
+w3f1_prohibition.jsonl	aux-職員-てはいけなかった	aux_polar	てはいけなかった	職員は窓を開けてはいけなかった。	職員はいけなかった？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_time_place.jsonl	fused-00	fused	明日	山田さんが明日東京で働く。	どこで働く？	ANSWER	["明日東京"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-01	fused	明日	田中が明日公園で新聞を買う。	田中はどこで新聞を買う？	ANSWER	["明日公園"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-02	fused	明日	佐藤さんが明日会議室で昼食を食べる。	佐藤さんはどこで昼食を食べる？	ANSWER	["明日会議室"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-03	fused	明日	鈴木が明日食堂で本を読む。	鈴木はどこで本を読む？	ANSWER	["明日食堂"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-12	fused	来週	鈴木が来週公園で本を読む。	鈴木はどこで本を読む？	ANSWER	["来週公園"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-13	fused	来週	高橋さんが来週会議室で写真を撮る。	高橋さんはどこで写真を撮る？	ANSWER	["来週会議室"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-14	fused	来週	中村が来週食堂で資料を作る。	中村はどこで資料を作る？	ANSWER	["来週食堂"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-15	fused	来週	山田さんが来週大阪で働く。	どこで働く？	ANSWER	["来週大阪"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-16	fused	毎朝	高橋さんが毎朝図書館で写真を撮る。	高橋さんはどこで写真を撮る？	ANSWER	["毎朝図書館"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-17	fused	毎朝	中村が毎朝東京で資料を作る。	中村はどこで資料を作る？	ANSWER	["毎朝東京"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-18	fused	毎朝	山田さんが毎朝公園で働く。	どこで働く？	ANSWER	["毎朝公園"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-19	fused	毎朝	田中が毎朝会議室で新聞を買う。	田中はどこで新聞を買う？	ANSWER	["毎朝会議室"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-24	fused	今朝	山田さんが今朝会議室で働く。	どこで働く？	ANSWER	["今朝会議室"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-25	fused	今朝	田中が今朝食堂で新聞を買う。	田中はどこで新聞を買う？	ANSWER	["今朝食堂"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-26	fused	今朝	佐藤さんが今朝大阪で昼食を食べる。	佐藤さんはどこで昼食を食べる？	ANSWER	["今朝大阪"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-27	fused	今朝	鈴木が今朝駅前で本を読む。	鈴木はどこで本を読む？	ANSWER	["今朝駅前"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-28	fused	夕方	田中が夕方東京で新聞を買う。	田中はどこで新聞を買う？	ANSWER	["夕方東京"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-29	fused	夕方	佐藤さんが夕方公園で昼食を食べる。	佐藤さんはどこで昼食を食べる？	ANSWER	["夕方公園"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-30	fused	夕方	鈴木が夕方会議室で本を読む。	鈴木はどこで本を読む？	ANSWER	["夕方会議室"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-31	fused	夕方	高橋さんが夕方食堂で写真を撮る。	高橋さんはどこで写真を撮る？	ANSWER	["夕方食堂"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-32	fused	週末	佐藤さんが週末駅前で昼食を食べる。	佐藤さんはどこで昼食を食べる？	ANSWER	["週末駅前"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-33	fused	週末	鈴木が週末図書館で本を読む。	鈴木はどこで本を読む？	ANSWER	["週末図書館"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-34	fused	週末	高橋さんが週末東京で写真を撮る。	高橋さんはどこで写真を撮る？	ANSWER	["週末東京"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-35	fused	週末	中村が週末公園で資料を作る。	中村はどこで資料を作る？	ANSWER	["週末公園"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-36	fused	先月	鈴木が先月食堂で本を読んだ。	鈴木はどこで本を読んだ？	ANSWER	["先月食堂"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-37	fused	先月	高橋さんが先月大阪で写真を撮った。	高橋さんはどこで写真を撮った？	ANSWER	["先月大阪"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-38	fused	先月	中村が先月駅前で資料を作った。	中村はどこで資料を作った？	ANSWER	["先月駅前"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-39	fused	先月	山田さんが先月図書館で働いた。	どこで働いた？	ANSWER	["先月図書館"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-40	fused	2030年	高橋さんが2030年公園で写真を撮る。	高橋さんはどこで写真を撮る？	ANSWER	["2030年公園"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-41	fused	2030年	中村が2030年会議室で資料を作る。	中村はどこで資料を作る？	ANSWER	["2030年会議室"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-42	fused	2030年	山田さんが2030年食堂で働く。	どこで働く？	ANSWER	["2030年食堂"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_time_place.jsonl	fused-43	fused	2030年	田中が2030年大阪で新聞を買う。	田中はどこで新聞を買う？	ANSWER	["2030年大阪"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction
+w3f1_ext_range.jsonl	cha-0	range	ちゃいけない	学生は答えを見ちゃいけない。	学生はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	cha-1	range	ちゃいけない	社員は鍵を持ち出しちゃいけない。	社員はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	ja-0	range	じゃいけない	子供は酒を飲んじゃいけない。	子供はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	ja-1	range	じゃいけない	学生は本を読んじゃいけない。	学生はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	nakute-nara-0	range	なくてはならない	田中は本を読まなくてはならない。	田中はならない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	nakute-ike-0	range	なくてはいけない	田中は本を読まなくてはいけない。	田中はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	nakute-nara-1	range	なくてはならない	佐藤は書類を出さなくてはならない。	佐藤はならない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	nakute-ike-1	range	なくてはいけない	佐藤は書類を出さなくてはいけない。	佐藤はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	nakute-nara-2	range	なくてはならない	鈴木は鍵を返さなくてはならない。	鈴木はならない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	nakute-ike-2	range	なくてはいけない	鈴木は鍵を返さなくてはいけない。	鈴木はいけない？	ANSWER	["はい"]		UNKNOWN_UNSUPPORTED_EVIDENCE	[]	PROHIBITION_NOT_READ
+w3f1_ext_range.jsonl	multi-2	range	複数文	山田さんが明日東京で働く。田中が大阪で働く。	山田さんはどこで働く？	ANSWER	["明日東京"]		UNKNOWN_INVALID_PROOF	[]	ill-typed role: time phrase fused with place/goal/direction

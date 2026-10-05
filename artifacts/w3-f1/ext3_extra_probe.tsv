@@ -1,0 +1,49 @@
+id	kind	form	document	question	verdict	values	text	reason
+x0	main_polar	読んではいけません	学生は本を読んではいけません。	学生は本を読む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x1	main_polar	読んではなりません	学生は本を読んではなりません。	学生は本を読む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x2	main_polar	読んでもいけません	学生は本を読んでもいけません。	学生は本を読む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x3	main_polar	読んではいけない	学生は本を読んではいけない。	学生は本を読む？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+x4	main_polar	呼んではいけません	客は店員を呼んではいけません。	客は店員を呼ぶ？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x5	main_polar	呼んではなりません	客は店員を呼んではなりません。	客は店員を呼ぶ？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x6	main_polar	呼んでもいけません	客は店員を呼んでもいけません。	客は店員を呼ぶ？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x7	main_polar	呼んではいけない	客は店員を呼んではいけない。	客は店員を呼ぶ？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+x8	main_polar	飲んではいけません	子供は水を飲んではいけません。	子供は水を飲む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x9	main_polar	飲んではなりません	子供は水を飲んではなりません。	子供は水を飲む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x10	main_polar	飲んでもいけません	子供は水を飲んでもいけません。	子供は水を飲む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x11	main_polar	飲んではいけない	子供は水を飲んではいけない。	子供は水を飲む？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+x12	main_polar	運んではいけません	係員は書類を運んではいけません。	係員は書類を運ぶ？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x13	main_polar	運んではなりません	係員は書類を運んではなりません。	係員は書類を運ぶ？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x14	main_polar	運んでもいけません	係員は書類を運んでもいけません。	係員は書類を運ぶ？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x15	main_polar	運んではいけない	係員は書類を運んではいけない。	係員は書類を運ぶ？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+x16	main_polar	盗んではいけません	社員は情報を盗んではいけません。	社員は情報を盗む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x17	main_polar	盗んではなりません	社員は情報を盗んではなりません。	社員は情報を盗む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x18	main_polar	盗んでもいけません	社員は情報を盗んでもいけません。	社員は情報を盗む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x19	main_polar	盗んではいけない	社員は情報を盗んではいけない。	社員は情報を盗む？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+x20	main_polar	飲んではいけません	患者は薬を飲んではいけません。	患者は薬を飲む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x21	main_polar	飲んではなりません	患者は薬を飲んではなりません。	患者は薬を飲む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x22	main_polar	飲んでもいけません	患者は薬を飲んでもいけません。	患者は薬を飲む？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x23	main_polar	飲んではいけない	患者は薬を飲んではいけない。	患者は薬を飲む？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+x24	main_polar	書いてはいけません	社員は手紙を書いてはいけません。	社員は手紙を書く？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x25	main_polar	書いてはなりません	社員は手紙を書いてはなりません。	社員は手紙を書く？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x26	main_polar	書いてもいけません	社員は手紙を書いてもいけません。	社員は手紙を書く？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x27	main_polar	書いてはいけない	社員は手紙を書いてはいけない。	社員は手紙を書く？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+x28	main_polar	写してはいけません	学生は答えを写してはいけません。	学生は答えを写す？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x29	main_polar	写してはなりません	学生は答えを写してはなりません。	学生は答えを写す？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x30	main_polar	写してもいけません	学生は答えを写してもいけません。	学生は答えを写す？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x31	main_polar	写してはいけない	学生は答えを写してはいけない。	学生は答えを写す？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+x32	main_polar	持ってはいけません	店員は商品を持ってはいけません。	店員は商品を持つ？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x33	main_polar	持ってはなりません	店員は商品を持ってはなりません。	店員は商品を持つ？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x34	main_polar	持ってもいけません	店員は商品を持ってもいけません。	店員は商品を持つ？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x35	main_polar	持ってはいけない	店員は商品を持ってはいけない。	店員は商品を持つ？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+x36	main_polar	使ってはいけません	職員は書類を使ってはいけません。	職員は書類を使う？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x37	main_polar	使ってはなりません	職員は書類を使ってはなりません。	職員は書類を使う？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x38	main_polar	使ってもいけません	職員は書類を使ってもいけません。	職員は書類を使う？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x39	main_polar	使ってはいけない	職員は書類を使ってはいけない。	職員は書類を使う？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+x40	main_polar	開けてはいけません	子供は窓を開けてはいけません。	子供は窓を開ける？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x41	main_polar	開けてはなりません	子供は窓を開けてはなりません。	子供は窓を開ける？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x42	main_polar	開けてもいけません	子供は窓を開けてもいけません。	子供は窓を開ける？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x43	main_polar	開けてはいけない	子供は窓を開けてはいけない。	子供は窓を開ける？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation
+x44	main_polar	持ち出してはいけません	社員は鍵を持ち出してはいけません。	社員は鍵を持ち出す？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x45	main_polar	持ち出してはなりません	社員は鍵を持ち出してはなりません。	社員は鍵を持ち出す？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x46	main_polar	持ち出してもいけません	社員は鍵を持ち出してもいけません。	社員は鍵を持ち出す？	UNKNOWN_INVALID_PROOF	[]	この要求を裏づける導出を確認できません。	PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de
+x47	main_polar	持ち出してはいけない	社員は鍵を持ち出してはいけない。	社員は鍵を持ち出す？	UNKNOWN_NO_EVIDENCE	[]	この要求を裏づける導出を確認できません。	no complete supported derivation

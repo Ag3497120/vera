@@ -1,0 +1,25 @@
+id	kind	noun	verdict	values	text	flag
+agent-祖父	role	祖父	ANSWER	["祖"]	agent: 祖	TRUNCATED
+recipient-祖父	role	祖父	ANSWER	["祖"]	recipient: 祖	TRUNCATED
+patient-祖父	role	祖父	ANSWER	["祖"]	patient: 祖	TRUNCATED
+agent-祖母	role	祖母	ANSWER	["祖"]	agent: 祖	TRUNCATED
+recipient-祖母	role	祖母	ANSWER	["祖"]	recipient: 祖	TRUNCATED
+patient-祖母	role	祖母	ANSWER	["祖"]	patient: 祖	TRUNCATED
+agent-叔父	role	叔父	ANSWER	["叔"]	agent: 叔	TRUNCATED
+recipient-叔父	role	叔父	ANSWER	["叔"]	recipient: 叔	TRUNCATED
+patient-叔父	role	叔父	ANSWER	["叔"]	patient: 叔	TRUNCATED
+agent-叔母	role	叔母	ANSWER	["叔"]	agent: 叔	TRUNCATED
+recipient-叔母	role	叔母	ANSWER	["叔"]	recipient: 叔	TRUNCATED
+patient-叔母	role	叔母	ANSWER	["叔"]	patient: 叔	TRUNCATED
+agent-伯父	role	伯父	ANSWER	["伯"]	agent: 伯	TRUNCATED
+recipient-伯父	role	伯父	ANSWER	["伯"]	recipient: 伯	TRUNCATED
+patient-伯父	role	伯父	ANSWER	["伯"]	patient: 伯	TRUNCATED
+agent-伯母	role	伯母	ANSWER	["伯"]	agent: 伯	TRUNCATED
+recipient-伯母	role	伯母	ANSWER	["伯"]	recipient: 伯	TRUNCATED
+patient-伯母	role	伯母	ANSWER	["伯"]	patient: 伯	TRUNCATED
+polar-叔父-叔母	polar	叔父	ANSWER	["はい"]	可否: はい	FALSE_YES
+polar-叔母-叔父	polar	叔母	ANSWER	["はい"]	可否: はい	FALSE_YES
+polar-祖父-祖母	polar	祖父	ANSWER	["はい"]	可否: はい	FALSE_YES
+polar-祖母-祖父	polar	祖母	ANSWER	["はい"]	可否: はい	FALSE_YES
+polar-伯父-伯母	polar	伯父	ANSWER	["はい"]	可否: はい	FALSE_YES
+polar-伯母-伯父	polar	伯母	ANSWER	["はい"]	可否: はい	FALSE_YES
