@@ -38,6 +38,28 @@ reading is ambiguous Vera abstains. The principle throughout is *zero misreading
 Six adversarial waves (codex at maximum effort) produced 35 hits; all are fixed or recorded as known holes.
 Nothing was ever answered wrongly on any bank.
 
+### Update 2026-10-05 (what changed since 2026-10-04, and what we learned)
+
+**New in the package** (all off by default unless noted; the default outputs of `vera read / ask / serve` are byte-identical to the previous release when the new options are not used):
+
+- **Assumed reading** (`vera read/ask/chat/serve` default mode `assume`; the library function `semantic_read.read` stays strict). When the only thing missing is a *premise* — a name's type, a coined verb, an unknown noun's type — Vera reads with an explicit assumption and says so (`assumptions`, `read_mode: assumed`, the note "（ミナを人として）"). Structure is never assumed (role-splitting particles, clause attachment, anaphora still abstain). Measured on unseen sentences: strict misreads 0, wrong assumptions 0/19. `--strict-read` or `VERA_READ_MODE=strict` turns it off.
+- **Compound sentences v1**: 3–4 finite/relative clauses, て-form and continuative with two subjects, quotation edges; subject sharing across clauses and anaphora abstain. Unseen sentences: misreads 0.
+- **Predicate role frames and placement r9** (`role_frame` in the placement query; `RELATIVE_POSITION` noun type) — the reader consumes confirmed frames (stage R).
+- **Holes and the LLM intake mouths**: typed holes in a cross, a candidate mouth (`vera serve --fill --ledger-file`), an append-only hash-chained testimony ledger (`vera ledger`), a swappable backend (`ollama` / OpenAI-compatible API / `fake`), provenance kind `testimony_fill`. Candidates never become the basis of a factual answer.
+- **Placement layers and document-driven growth** (`vera placement grow --documents … --layer`, `vera ledger promote`): a per-user/domain layer that never overrides the base placement; words become `direct` only when the documents' own distribution (or a human) confirms them.
+- **Realizer rules/forms split** (`verantyx/data/realize_forms_ja.json`), typed crosses realized and re-read with the same placement, `vera realize`.
+- `vera serve --no-llm`, `--profile strict|assume`, `confidence_tiers` (how many independent tiers gave the same answer; abstentions are not counted as agreement).
+
+**What we measured and did not get** (negative results are kept on purpose):
+
+- Hidden bank B1 (reading) stays at correct 11 / misread 0 / wrong 0 across r9, compound v1 and assumed reading. The remaining abstentions are structural: multi-sentence inputs, 「」quotations with honorific names, noun-phrase-only inputs, passive/causative, quantifiers — not missing premises.
+- A higher reasoning effort for the role-frame generation (r10) did **not** improve recall of adjunct particles; the bottleneck is corpus coverage (which predicate–particle pairs occur significantly), not generation effort. r10 was not adopted.
+- Loading one document does not yet grow a layer (3 direct words out of 69 candidates; QA gain 0); growth needs several documents or human confirmation. Pre-built "initial layers" from the generated corpus did not capture a domain and are not shipped.
+
+**Known defect (fix in progress, ticket W3-f1)**: document QA (`vera ask --mode round5 --document`) answers a two-character kinship noun subject with its first character only (叔父 → 「叔」, 祖母 → 「祖」). The reader itself reads the sentence correctly; the defect is in the QA path. Until it is fixed, treat answers that are a single character as suspect.
+
+**Direction** (decided 2026-10-04/05, recorded in [docs/decisions/](docs/decisions/)): Vera is a weightless structural kernel whose rules are frozen as *base v1* and which grows by data (placements, documents, ledgers, memory); the LLM is a replaceable component that supplies words, never structure; no fine-tuning. The first product is "narrow and never lies, and grows as you use it": sourced QA over your documents, a checking front-end for an existing LLM, and a memory-and-gate for long-running agents (an Anthropic/OpenAI-compatible endpoint that IDE agents can mount). A public, adversarial comparison protocol (version conflicts, near-miss distractors, plausible-but-absent questions, prompt injection inside documents, paraphrase stability, many documents) is being built so the claim can be checked rather than believed.
+
 ### What it cannot do yet
 
 - Free conversation, long documents, complex Japanese; English has no placement, so the typed path does not run.
@@ -147,6 +169,28 @@ MIT (Vera). Base models keep their own licenses.
 | 自由会話 | 隠しバンク B2（286 問）: 正答 0、誤答 0 |
 
 攻撃 6 波（codex の最大努力）で命中 35。すべて修正済みか既知の穴として記録済み。どのバンクでも誤った答えを出したことはありません。
+
+### 2026-10-05 の更新（10-04 以降に変わったことと、分かったこと）
+
+**パッケージに入ったもの**（注記のないものは既定でオフ。新しい選択肢を使わなければ `vera read / ask / serve` の既定の出力は前回と byte 一致）:
+
+- **仮定つきの読み**（`vera read/ask/chat/serve` の既定は `assume`、ライブラリ関数 `semantic_read.read` は strict のまま）。欠けているのが **前提** だけ——名前の型・造語の述語・未知の名詞の型——のとき、仮定を立てて読み、仮定を明示する（`assumptions`、`read_mode: assumed`、注記「（ミナを人として）」）。構造は仮定しない（役割が割れる助詞・節の掛かり先・照応は棄権のまま）。未公開文での実測: strict の誤読 0、仮定の誤り 0/19。`--strict-read` または `VERA_READ_MODE=strict` でオフ。
+- **複文 v1**: 定形・連体の 3〜4 節、両節に主語のある て形・連用中止、引用の辺。節をまたぐ主語の共有と照応は棄権。未公開文で誤読 0。
+- **述語の役割つきの枠と配置 r9**（問い合わせの `role_frame`、名詞の型 `RELATIVE_POSITION`）。読解器は確認済みの枠を使う（段 R）。
+- **穴と LLM の受け入れ口**: 型つきの穴、候補の口（`vera serve --fill --ledger-file`）、追記専用・ハッシュ連鎖の証言の台帳（`vera ledger`）、差し替え可能な後段（`ollama`／OpenAI 互換 API／`fake`）、出所の印 `testimony_fill`。候補は事実の問いの根拠にならない。
+- **配置の層と文書駆動の育成**（`vera placement grow --documents … --layer`、`vera ledger promote`）: 基底を上書きしない利用者・分野ごとの層。語が `direct` になるのは文書群自身の分布（または人）が確認したときだけ。
+- **実現器の規則と形の表の分離**（`verantyx/data/realize_forms_ja.json`）、型つきの十字を同じ配置で実現・再読、`vera realize`。
+- `vera serve --no-llm`、`--profile strict|assume`、`confidence_tiers`（独立した段のうちいくつが同じ答えを出したか。棄権の一致は数えない）。
+
+**測って得られなかったこと**（負の結果は意図して残す）:
+
+- 隠しバンク B1（読解）は r9・複文 v1・仮定つきの読みを入れても 正読 11／誤読 0／誤答 0 のまま。残る棄権は構造によるもの——複数文の入力、「」の引用と敬称つきの名前、名詞句だけの入力、受身・使役、数量——で、前提の欠落ではない。
+- 役割の枠の生成で推論の effort を上げても（r10）付加的な格の再現は上がらなかった。律速は生成の effort ではなくコーパスの被覆（どの述語と助詞の組が有意に出るか）。r10 は採用していない。
+- 文書を 1 本入れただけでは層は育たない（候補 69 のうち direct 3、QA の増分 0）。育つには複数の文書か人の確認が要る。生成コーパスから作った「初期搭載の層」は分野を捉えず、配布していない。
+
+**既知の欠陥（修正中、チケット W3-f1）**: 文書 QA（`vera ask --mode round5 --document`）が、2 字の親族名詞の主語を 1 字目だけで答える（叔父 → 「叔」、祖母 → 「祖」）。読解器自体は正しく読んでおり、欠陥は QA の経路にある。直るまで、1 文字だけの答えは疑ってください。
+
+**方向**（2026-10-04/05 に決定、[docs/decisions/](docs/decisions/) に記録）: Vera は無重みの構造カーネルで、規則は *ベース v1* として凍結し、データ（配置・文書・台帳・記憶）で育つ。LLM は語を供給する差し替え可能な部品で、構造は供給しない。微調整はしない。最初の製品は「狭くて嘘をつかない、使うほど育つ」: 自分の文書への根拠つき QA、既存 LLM の前段の検査器、長く走るエージェントの記憶と門（IDE のエージェントが装着できる Anthropic／OpenAI 互換の入口）。主張を信じるのでなく検証できるよう、公開の敵対的な比較プロトコル（版の衝突・近い誤り・無いが尤もらしい問い・文書内の注入・言い換えの揺れ・多文書）を作っている。
 
 ### まだできないこと
 

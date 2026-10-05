@@ -5,14 +5,18 @@ the morphological term-lineage check. It never writes a store or evidence.
 """
 from __future__ import annotations
 
+import copy
 import itertools
+import json
+import os
 import re
 import unicodedata
 from dataclasses import dataclass, replace
 from decimal import Decimal
+from pathlib import Path
 from typing import Any, Iterable
 
-from .realize import conjugate
+from .realize import _class as _verb_class
 from .semantic_ir import Clause, Nominal, Quantity, Span, Variable
 from .typed_edges import _tagger
 
@@ -31,13 +35,309 @@ _PARTICLES = frozenset(("は", "が", "を", "に", "で", "から", "へ", "の
 _AUX_LEMMAS = frozenset(("た", "ます", "ず", "だ", "です", "ない"))
 _NEG_AUX_SURFACES = frozenset(("ない", "なかっ", "なく", "ありません"))
 _PUNCT = frozenset("。！？!?、,．.")
-_ROLE_ORDER = ("recipient", "goal", "patient", "origin", "location")
-_ROLE_PARTICLE = {
-    "recipient": "に", "goal": "へ", "patient": "を", "origin": "から",
-    "location": "で",
-}
 _SUMMARY_ABOUT = re.compile(r"(.+?)\u306b\u3064\u3044\u3066\u6559\u3048\u3066[。！？?]*$")
 _SUMMARY_GATHER = re.compile(r"(.+?)\u3092\u307e\u3068\u3081\u3066[。！？?]*$")
+
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# W3-d1: the forms table. The RULES stay in this module (which roles are required, the order in which roles are written with their particles,
+# where the predicate is conjugated, and the read-back checks); the FORMS are data (verantyx/data/realize_forms_ja.json): role -> particle,
+# the default order of roles, the topic particles, per style the verb endings / copula endings / measure ending / full stop, and the
+# conjugation tables. A layer table (VERA_REALIZE_FORMS, `forms=`, `--forms`) may only ADD styles, roles and trailing order entries (K311).
+# Kept in the code on purpose (named in docs/REALIZE.md): the connector `また、` of summarize_entity and the `：「」` of realize_refusal.
+# ---------------------------------------------------------------------------------------------------------------------------------
+REALIZE_FORMS_VERSION = 1
+FORMS_SCHEMA = "verantyx.realize_forms/1"
+FORMS_REASONS = frozenset(("FORMS_OVERRIDE_REFUSED", "FORMS_INVALID", "FORMS_NOT_FOUND"))
+_FORMS_PATH = Path(__file__).with_name("data") / "realize_forms_ja.json"
+_FORMS_ENV = "VERA_REALIZE_FORMS"
+_TOP_KEYS = ("schema", "version", "lang", "role_particle", "role_order", "topic_particles", "styles", "conjugation", "copula")
+_STEMS = ("dict", "i", "a", "ta")
+_STYLE_KEYS = frozenset(("verb", "copula", "measure", "period"))
+_COPULA_ENDINGS = frozenset(("affirmative", "affirmative_adjective", "affirmative_aru", "negative"))
+_CONJ_SHAPE = {
+    "godan": {"a", "i", "ta", "ta_special"}, "ichidan": {"drop", "ta_suffix"},
+    "suru": {"drop", "stem", "ta_suffix"}, "kuru": {"stem", "ta_suffix"},
+}
+_COPULA_TABLE_KEYS = frozenset(("topic", "attribute_link", "substance_link"))
+
+
+class FormsError(Exception):
+    """A forms table was refused: `reason` is one of FORMS_REASONS."""
+
+    def __init__(self, reason: str, detail: str = "") -> None:
+        super().__init__(reason + (": " + detail if detail else ""))
+        self.reason = reason
+        self.detail = detail
+
+
+class FormsTable(dict):
+    """A composed forms table (the base table, with the layers on top). Read only by convention: nothing in this module mutates one."""
+
+
+def _fe(reason: str, detail: str) -> FormsError:
+    return FormsError(reason, detail)
+
+
+def _nonempty_str(value: Any) -> bool:
+    return isinstance(value, str) and bool(value)
+
+
+def _check_style(name: Any, style: Any, where: str) -> None:
+    if not _nonempty_str(name):
+        raise _fe("FORMS_INVALID", where + ": a style name must be a non-empty string")
+    if not isinstance(style, dict):
+        raise _fe("FORMS_INVALID", where + ": style " + name + " is not an object")
+    missing, extra = sorted(_STYLE_KEYS - set(style)), sorted(set(style) - _STYLE_KEYS)
+    if missing or extra:
+        raise _fe("FORMS_INVALID", where + ": style " + name + " has missing keys " + repr(missing) + " / unknown keys " + repr(extra))
+    verb = style["verb"]
+    if not isinstance(verb, dict) or set(verb) != {"affirmative", "negative"}:
+        raise _fe("FORMS_INVALID", where + ": style " + name + ": verb needs exactly affirmative and negative")
+    for pol in ("affirmative", "negative"):
+        slots = verb[pol]
+        if not isinstance(slots, dict) or set(slots) != {"nonpast", "past"}:
+            raise _fe("FORMS_INVALID", where + ": style " + name + ": verb." + pol + " needs exactly nonpast and past")
+        for tense, slot in slots.items():
+            if (not isinstance(slot, list) or len(slot) != 2 or slot[0] not in _STEMS or not isinstance(slot[1], str)):
+                raise _fe("FORMS_INVALID", where + ": style " + name + ": verb." + pol + "." + tense + " must be [stem, ending] with stem in " + repr(_STEMS))
+    cop = style["copula"]
+    if not isinstance(cop, dict) or set(cop) != _COPULA_ENDINGS or not all(isinstance(v, str) for v in cop.values()):
+        raise _fe("FORMS_INVALID", where + ": style " + name + ": copula needs exactly " + repr(sorted(_COPULA_ENDINGS)) + " as strings")
+    if not _nonempty_str(style["measure"]) or not _nonempty_str(style["period"]):
+        raise _fe("FORMS_INVALID", where + ": style " + name + ": measure and period must be non-empty strings")
+
+
+def _check_conjugation(conj: Any, where: str) -> None:
+    if not isinstance(conj, dict) or set(conj) != set(_CONJ_SHAPE):
+        raise _fe("FORMS_INVALID", where + ": conjugation needs exactly " + repr(sorted(_CONJ_SHAPE)))
+    for kind, keys in _CONJ_SHAPE.items():
+        spec = conj[kind]
+        if not isinstance(spec, dict) or set(spec) != keys:
+            raise _fe("FORMS_INVALID", where + ": conjugation." + kind + " needs exactly " + repr(sorted(keys)))
+    g = conj["godan"]
+    for key in ("a", "i", "ta"):
+        if not isinstance(g[key], dict) or not all(_nonempty_str(k) and _nonempty_str(v) for k, v in g[key].items()):
+            raise _fe("FORMS_INVALID", where + ": conjugation.godan." + key + " must map final kana to strings")
+    if not (set(g["a"]) == set(g["i"]) == set(g["ta"])):
+        raise _fe("FORMS_INVALID", where + ": conjugation.godan tables must cover the same final kana")
+    sp = g["ta_special"]
+    if not isinstance(sp, dict) or set(sp) != {"suffix", "form"} or not all(_nonempty_str(v) for v in sp.values()):
+        raise _fe("FORMS_INVALID", where + ": conjugation.godan.ta_special needs suffix and form")
+    for kind in ("ichidan", "suru"):
+        if type(conj[kind]["drop"]) is not int or conj[kind]["drop"] < 0:
+            raise _fe("FORMS_INVALID", where + ": conjugation." + kind + ".drop must be a non-negative integer")
+    for kind in ("ichidan", "suru", "kuru"):
+        if not isinstance(conj[kind]["ta_suffix"], str):
+            raise _fe("FORMS_INVALID", where + ": conjugation." + kind + ".ta_suffix must be a string")
+    for kind in ("suru", "kuru"):
+        if not _nonempty_str(conj[kind]["stem"]):
+            raise _fe("FORMS_INVALID", where + ": conjugation." + kind + ".stem must be a non-empty string")
+
+
+def _check_table(table: Any, where: str) -> None:
+    """The structure of a complete table (the base table, and every composed table)."""
+    if not isinstance(table, dict) or set(table) != set(_TOP_KEYS):
+        keys = sorted(set(table) ^ set(_TOP_KEYS)) if isinstance(table, dict) else "not an object"
+        raise _fe("FORMS_INVALID", where + ": a table has exactly the keys " + repr(_TOP_KEYS) + " (differs: " + str(keys) + ")")
+    if table["schema"] != FORMS_SCHEMA:
+        raise _fe("FORMS_INVALID", where + ": unknown schema " + repr(table["schema"]))
+    if table["version"] != REALIZE_FORMS_VERSION or type(table["version"]) is not int:
+        raise _fe("FORMS_INVALID", where + ": version must be " + str(REALIZE_FORMS_VERSION))
+    if table["lang"] != "ja":
+        raise _fe("FORMS_INVALID", where + ": lang must be ja")
+    rp = table["role_particle"]
+    if not isinstance(rp, dict) or not all(_nonempty_str(k) and _nonempty_str(v) for k, v in rp.items()):
+        raise _fe("FORMS_INVALID", where + ": role_particle must map role names to particles")
+    for key in ("role_order", "topic_particles"):
+        seq = table[key]
+        if (not isinstance(seq, list) or not all(_nonempty_str(x) for x in seq) or len(set(seq)) != len(seq)
+                or (key == "topic_particles" and not seq)):
+            raise _fe("FORMS_INVALID", where + ": " + key + " must be a list of distinct strings" + (" (not empty)" if key == "topic_particles" else ""))
+    styles = table["styles"]
+    if not isinstance(styles, dict) or "plain" not in styles:
+        raise _fe("FORMS_INVALID", where + ": styles must be an object that has plain")
+    for name, style in styles.items():
+        _check_style(name, style, where)
+    _check_conjugation(table["conjugation"], where)
+    cop = table["copula"]
+    if not isinstance(cop, dict) or set(cop) != _COPULA_TABLE_KEYS or not all(_nonempty_str(v) for v in cop.values()):
+        raise _fe("FORMS_INVALID", where + ": copula needs exactly " + repr(sorted(_COPULA_TABLE_KEYS)))
+
+
+def _read_forms_file(path: Any) -> dict[str, Any]:
+    try:
+        p = Path(os.fspath(path))
+    except TypeError as exc:
+        raise _fe("FORMS_INVALID", "a forms path must be a path string") from exc
+    if not p.is_file():
+        raise _fe("FORMS_NOT_FOUND", str(p))
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, ValueError) as exc:
+        raise _fe("FORMS_INVALID", str(p) + ": " + type(exc).__name__) from exc
+    if not isinstance(data, dict):
+        raise _fe("FORMS_INVALID", str(p) + ": the top level must be an object")
+    return data
+
+
+def _extend_list(base: list, layer: Any, name: str, where: str) -> list:
+    if not isinstance(layer, list) or not all(_nonempty_str(x) for x in layer):
+        raise _fe("FORMS_INVALID", where + ": " + name + " must be a list of strings")
+    n = len(base)
+    if layer[:n] == base:
+        add = layer[n:]
+    elif not (set(layer) & set(base)):
+        add = layer
+    else:
+        raise _fe("FORMS_OVERRIDE_REFUSED", where + ": " + name + " may only be extended at its end (reordering or dropping existing entries is refused)")
+    if len(set(add)) != len(add):
+        raise _fe("FORMS_INVALID", where + ": " + name + " repeats an entry")
+    return base + add
+
+
+def _apply_layer(base: dict[str, Any], layer: Any, where: str) -> dict[str, Any]:
+    """K311: a layer can only ADD (styles, roles with their particle, trailing order entries). Anything that gives an existing key another value
+    is FORMS_OVERRIDE_REFUSED; the layer as a whole is then not loaded. A key outside the closed set is FORMS_INVALID."""
+    if not isinstance(layer, dict):
+        raise _fe("FORMS_INVALID", where + ": the top level must be an object")
+    unknown = sorted(set(layer) - set(_TOP_KEYS))
+    if unknown:
+        raise _fe("FORMS_INVALID", where + ": unknown keys " + repr(unknown))
+    out = copy.deepcopy(dict(base))
+    if "schema" in layer and layer["schema"] != base["schema"]:
+        raise _fe("FORMS_INVALID", where + ": unknown schema " + repr(layer["schema"]))
+    if "lang" in layer and layer["lang"] != base["lang"]:
+        raise _fe("FORMS_INVALID", where + ": lang differs from the base table")
+    if "version" in layer and layer["version"] != base["version"]:
+        raise _fe("FORMS_OVERRIDE_REFUSED", where + ": a layer cannot change the version")
+    if "role_particle" in layer:
+        rp = layer["role_particle"]
+        if not isinstance(rp, dict) or not all(_nonempty_str(k) and _nonempty_str(v) for k, v in rp.items()):
+            raise _fe("FORMS_INVALID", where + ": role_particle must map role names to particles")
+        for role, particle in rp.items():
+            if role in base["role_particle"]:
+                if base["role_particle"][role] != particle:
+                    raise _fe("FORMS_OVERRIDE_REFUSED", where + ": role_particle." + role + " cannot be overridden (K311: only additions)")
+            else:
+                out["role_particle"][role] = particle
+    for key in ("role_order", "topic_particles"):
+        if key in layer:
+            out[key] = _extend_list(base[key], layer[key], key, where)
+    if "styles" in layer:
+        styles = layer["styles"]
+        if not isinstance(styles, dict):
+            raise _fe("FORMS_INVALID", where + ": styles must be an object")
+        for name, style in styles.items():
+            if name in base["styles"]:
+                if style != base["styles"][name]:
+                    raise _fe("FORMS_OVERRIDE_REFUSED", where + ": style " + str(name) + " cannot be overridden (K311: only additions)")
+            else:
+                _check_style(name, style, where)
+                out["styles"][name] = copy.deepcopy(style)
+    for key in ("conjugation", "copula"):
+        if key in layer and layer[key] != base[key]:
+            raise _fe("FORMS_OVERRIDE_REFUSED", where + ": " + key + " cannot be overridden (K311: only additions)")
+    _check_table(out, where)
+    return out
+
+
+_BASE_TABLE: FormsTable | None = None
+_COMPOSED: dict[tuple, FormsTable] = {}
+
+
+def base_forms() -> FormsTable:
+    global _BASE_TABLE
+    if _BASE_TABLE is None:
+        data = _read_forms_file(_FORMS_PATH)
+        _check_table(data, str(_FORMS_PATH))
+        _BASE_TABLE = FormsTable(data)
+    return _BASE_TABLE
+
+
+def load_forms(forms: Any = None) -> FormsTable:
+    """The composed table: the base table, then the layers of the variable VERA_REALIZE_FORMS (os.pathsep separated; read at EVERY call), then
+    the explicit `forms` (a path, a list of paths, or a mapping that is a layer). A FormsTable is returned as it is. Raises FormsError."""
+    if isinstance(forms, FormsTable):
+        return forms
+    layers: list[Any] = [p.strip() for p in os.environ.get(_FORMS_ENV, "").split(os.pathsep) if p.strip()]
+    if forms is not None:
+        layers.extend(forms if isinstance(forms, (list, tuple)) else [forms])
+    if not layers:
+        return base_forms()
+    key = None
+    if all(not isinstance(x, dict) for x in layers):
+        try:
+            stamps = []
+            for x in layers:
+                p = Path(os.fspath(x))
+                st = p.stat() if p.is_file() else None
+                stamps.append((str(p.resolve()), st.st_mtime_ns if st else None, st.st_size if st else None))
+            key = tuple(stamps)
+        except (OSError, TypeError):
+            key = None
+        if key is not None and key in _COMPOSED:
+            return _COMPOSED[key]
+    table: dict[str, Any] = dict(base_forms())
+    for item in layers:
+        if isinstance(item, dict):
+            table = _apply_layer(table, item, "<layer>")
+        else:
+            table = _apply_layer(table, _read_forms_file(item), str(item))
+    composed = FormsTable(table)
+    if key is not None:
+        if len(_COMPOSED) > 32:
+            _COMPOSED.clear()
+        _COMPOSED[key] = composed
+    return composed
+
+
+def _style_names(table: FormsTable) -> tuple[str, ...]:
+    return tuple(table["styles"])
+
+
+def _style_detail(table: FormsTable) -> str:
+    return "style must be " + " or ".join(_style_names(table))
+
+
+def _verb_stems(verb: str, table: FormsTable) -> dict[str, str] | None:
+    """The stems of a verb by the rule of its class (the class is decided here, by the tagger); the shapes of the stems are the table's."""
+    conj = table["conjugation"]
+    kind = _verb_class(verb)
+    if kind == "suru":
+        spec = conj["suru"]
+        base = verb[:len(verb) - spec["drop"]] + spec["stem"]
+        return {"dict": verb, "i": base, "a": base, "ta": base + spec["ta_suffix"]}
+    if kind == "kuru":
+        spec = conj["kuru"]
+        return {"dict": verb, "i": spec["stem"], "a": spec["stem"], "ta": spec["stem"] + spec["ta_suffix"]}
+    if kind == "ichidan":
+        spec = conj["ichidan"]
+        base = verb[:len(verb) - spec["drop"]]
+        return {"dict": verb, "i": base, "a": base, "ta": base + spec["ta_suffix"]}
+    godan = conj["godan"]
+    last = verb[-1]
+    if last not in godan["a"]:
+        return None
+    special = godan["ta_special"]
+    ta = special["form"] if verb.endswith(special["suffix"]) else verb[:-1] + godan["ta"][last]
+    return {"dict": verb, "i": verb[:-1] + godan["i"][last], "a": verb[:-1] + godan["a"][last], "ta": ta}
+
+
+def conjugate_by_style(verb: str, style: str, *, past: bool = False, neg: bool = False, forms: Any = None) -> str | None:
+    """The verb form of `style` from the forms table. With the default table this returns exactly what `realize.conjugate(verb, past=, neg=,
+    polite=(style == "polite"))` returns, including None for a godan verb whose last kana is not in the table."""
+    table = load_forms(forms)
+    stems = _verb_stems(verb, table)
+    if stems is None:
+        return None
+    stem, ending = table["styles"][style]["verb"]["negative" if neg else "affirmative"]["past" if past else "nonpast"]
+    return stems[stem] + ending
+
+
+_BASE = base_forms()
+_ROLE_ORDER = tuple(_BASE["role_order"])
+_ROLE_PARTICLE = dict(_BASE["role_particle"])
 
 
 @dataclass(frozen=True)
@@ -233,12 +533,18 @@ def check_round_trip(clause: Clause, sentence: str) -> dict[str, Any]:
     return {"passed": True, "detail": "single-clause projection matches", "clauses": 1, "unread": 0}
 
 
-def verify_sentence(clause: Clause, sentence: str) -> dict[str, Any]:
-    """Run both independent acceptance checks and report them separately."""
-    return {
-        "roundtrip": check_round_trip(clause, sentence),
-        "term_lineage": check_term_lineage(clause, sentence),
-    }
+def verify_sentence(clause: Any, sentence: str, *, placement: Any = None, forms: Any = None) -> dict[str, Any]:
+    """Run the acceptance checks and report them separately.
+
+    `placement=None` with a source Clause is the original pair of checks, unchanged. In every other case (a placement is given, or the input is a typed
+    cross: a reader clause dict or an EventCross) the sentence is read AGAIN with the placement that was passed (explicitly, never from VERA_PLACEMENT)
+    and must come back as the same cross (K312); the result then also has `reread` and `status`."""
+    if placement is None and isinstance(clause, Clause):
+        return {
+            "roundtrip": check_round_trip(clause, sentence),
+            "term_lineage": check_term_lineage(clause, sentence),
+        }
+    return _verify_typed(clause, sentence, placement, forms)
 
 
 def _role_map(clause: Clause) -> dict[str, Any]:
@@ -256,43 +562,52 @@ def _surface(role: Any, overrides: dict[str, str] | None = None) -> str:
     return role.span.text
 
 
-def _ordered_frame_roles(roles: dict[str, Any], order: Iterable[str] | None = None) -> list[str]:
+def _ordered_frame_roles(roles: dict[str, Any], order: Iterable[str] | None = None,
+                         table: FormsTable | None = None) -> list[str]:
     names = [name for name in roles if name != "agent"]
     if order is not None:
         return list(order)
-    index = {name: i for i, name in enumerate(_ROLE_ORDER)}
+    default = (table if table is not None else _BASE)["role_order"]
+    index = {name: i for i, name in enumerate(default)}
     return sorted(names, key=lambda name: (index.get(name, len(index)), name))
 
 
-def _surface_text(clause: Clause, style: str, *, topic: str = "は",
+def _surface_text(clause: Clause, style: str, *, topic: str | None = None,
                   role_order: Iterable[str] | None = None,
                   overrides: dict[str, str] | None = None,
-                  polarity: str | None = None, time: str | None = None) -> tuple[str | None, str]:
+                  polarity: str | None = None, time: str | None = None,
+                  forms: Any = None) -> tuple[str | None, str]:
+    table = load_forms(forms)
+    if style not in table["styles"]:
+        return None, "style is not in the forms table"
+    st = table["styles"][style]
     roles = _role_map(clause)
     pol = polarity if polarity is not None else clause.polarity
     if clause.rule == "frame":
-        supported = {"agent", "patient", "recipient", "origin", "location", "goal"}
-        if set(roles) - supported or "agent" not in roles:
+        topic = table["topic_particles"][0] if topic is None else topic
+        particles = table["role_particle"]
+        if set(roles) - (set(particles) | {"agent"}) or "agent" not in roles:
             return None, "frame needs a supported agent/case role set"
-        if topic not in ("は", "が"):
+        if topic not in table["topic_particles"]:
             return None, "agent particle is outside the closed set"
-        ordered = _ordered_frame_roles(roles, role_order)
+        ordered = _ordered_frame_roles(roles, role_order, table)
         if set(ordered) != set(roles) - {"agent"} or len(ordered) != len(roles) - 1:
             return None, "role-order variant does not preserve all roles"
         try:
-            verb = conjugate(clause.predicate, past=(time or clause.time) == "past",
-                             neg=pol == "-", polite=style == "polite")
+            verb = conjugate_by_style(clause.predicate, style, past=(time or clause.time) == "past",
+                                      neg=pol == "-", forms=table)
         except Exception:
             verb = None
         if not verb:
             return None, "conjugation returned no supported form"
         text = _surface(roles["agent"], overrides) + topic
         for name in ordered:
-            particle = _ROLE_PARTICLE.get(name)
+            particle = particles.get(name)
             if not particle:
                 return None, "role has no licensed particle"
             text += _surface(roles[name], overrides) + particle
-        return text + verb + "。", ""
+        return text + verb + st["period"], ""
+    link = table["copula"]
     if clause.rule == "copula":
         if clause.predicate not in ("identity", "property"):
             return None, "copula predicate is outside the closed set"
@@ -306,19 +621,20 @@ def _surface_text(clause: Clause, style: str, *, topic: str = "は",
         value_is_adjective = any(t.feature.pos1 in ("形容詞", "形状詞") for t in value_tokens)
         if pol == "-" and value_is_adjective:
             return None, "reader has no projection-preserving negative adjective copula"
-        if style == "polite":
-            ending = "ではありません" if pol == "-" else "です"
-        elif pol == "-":
-            ending = "ではない"
+        endings = st["copula"]
+        if pol == "-":
+            ending = endings["negative"]
         elif value_is_adjective:
-            ending = ""
-        else:
+            ending = endings["affirmative_adjective"]
+        elif endings["affirmative_aru"] != endings["affirmative"]:
             source_lemmas = {_lemma(t) for t in _tagger()(clause.span.text)
                              if t.feature.pos1 in _CONTENT_POS}
-            ending = "である" if "有る" in source_lemmas or "ある" in source_lemmas else "だ"
+            ending = endings["affirmative_aru"] if "有る" in source_lemmas or "ある" in source_lemmas else endings["affirmative"]
+        else:
+            ending = endings["affirmative"]
         # The attribute's source span already includes its nominal surface.
-        head = entity + ("の" + attr if attr else "")
-        return head + "は" + value + ending + "。", ""
+        head = entity + (link["attribute_link"] + attr if attr else "")
+        return head + link["topic"] + value + ending + st["period"], ""
     if clause.rule == "measure":
         if clause.predicate.split(".", 1)[0] != "measure" or not {"entity", "value"} <= set(roles):
             return None, "measure needs entity and value roles"
@@ -328,17 +644,37 @@ def _surface_text(clause: Clause, style: str, *, topic: str = "は",
         if not isinstance(value.term, Quantity):
             return None, "measure value is not a typed quantity"
         label = _surface(roles["entity"], overrides)
-        text = label + "は" + _surface(value, overrides)
+        text = label + link["topic"] + _surface(value, overrides)
         if "substance" in roles:
-            text += "の" + _surface(roles["substance"], overrides)
-        return text + ("です。" if style == "polite" else "だ。"), ""
+            text += link["substance_link"] + _surface(roles["substance"], overrides)
+        return text + st["measure"] + st["period"], ""
     return None, "rule is outside the closed v1 set"
 
 
-def realize_clause(clause: Clause, style: str = "plain") -> Realized | Refused:
-    if style not in ("plain", "polite"):
-        return _fail("INVALID_STYLE", "style must be plain or polite", clause if isinstance(clause, Clause) else None)
+def _clause_checks_ok(checks: dict[str, Any]) -> bool:
+    return all(checks[key]["passed"] for key in ("roundtrip", "term_lineage", "reread") if key in checks)
+
+
+def _checks_failure(clause: Clause, checks: dict[str, Any]) -> Refused:
+    if not checks["roundtrip"]["passed"]:
+        return _fail("ROUNDTRIP_MISMATCH", checks["roundtrip"]["detail"], clause, checks)
+    if not checks["term_lineage"]["passed"]:
+        return _fail("TERM_LINEAGE_MISMATCH", checks["term_lineage"]["detail"], clause, checks)
+    return _fail("ROUNDTRIP_MISMATCH", checks["reread"]["detail"], clause, checks)
+
+
+def realize_clause(clause: Any, style: str = "plain", *, placement: Any = None, forms: Any = None) -> Realized | Refused:
+    """One verified sentence for a source Clause, or for a typed cross (a `semantic_read.read` clause dict or an EventCross).
+
+    `placement`: the placement the sentence is read again with (K312); with one, the topic particles of the forms table are tried in the table's order
+    and the first whose OWN sentence passes every check is returned, every attempt being recorded in checks["topic_attempts"] (K315). `forms`: a layer
+    table (path, list of paths, or mapping) on top of the base table and VERA_REALIZE_FORMS; a bad table raises FormsError."""
+    table = load_forms(forms)
+    if style not in table["styles"]:
+        return _fail("INVALID_STYLE", _style_detail(table), clause if isinstance(clause, Clause) else None)
     if not isinstance(clause, Clause):
+        if _is_typed_cross(clause):
+            return _realize_typed(clause, style, placement, table)
         return _fail("INVALID_PROVENANCE", "a source Clause is required")
     valid, detail = _has_lineage(clause)
     if not valid:
@@ -357,22 +693,44 @@ def realize_clause(clause: Clause, style: str = "plain") -> Realized | Refused:
         return _fail("ROLE_NOT_REALIZABLE", "frame time is outside the closed set", clause)
     if clause.rule != "frame" and clause.time:
         return _fail("ROLE_NOT_REALIZABLE", "copula/measure time is not represented by the reader", clause)
-    sentence, detail = _surface_text(clause, style)
-    if sentence is None:
-        reason = "CONJUGATION_UNKNOWN" if clause.rule == "frame" and "conjugation" in detail else "ROLE_NOT_REALIZABLE"
-        return _fail(reason, detail, clause)
-    checks = verify_sentence(clause, sentence)
-    if not checks["roundtrip"]["passed"]:
-        return _fail("ROUNDTRIP_MISMATCH", checks["roundtrip"]["detail"], clause, checks)
-    if not checks["term_lineage"]["passed"]:
-        return _fail("TERM_LINEAGE_MISMATCH", checks["term_lineage"]["detail"], clause, checks)
-    if len(sentence) > MAX_CHARS:
-        return _fail("BUDGET", "output character budget exceeded", clause, checks)
-    return Realized(sentence, clause.id, _source_spans(clause), style, "inverse-reader", checks)
+    if placement is None:
+        sentence, detail = _surface_text(clause, style, forms=table)
+        if sentence is None:
+            reason = "CONJUGATION_UNKNOWN" if clause.rule == "frame" and "conjugation" in detail else "ROLE_NOT_REALIZABLE"
+            return _fail(reason, detail, clause)
+        checks = verify_sentence(clause, sentence)
+        if not checks["roundtrip"]["passed"]:
+            return _fail("ROUNDTRIP_MISMATCH", checks["roundtrip"]["detail"], clause, checks)
+        if not checks["term_lineage"]["passed"]:
+            return _fail("TERM_LINEAGE_MISMATCH", checks["term_lineage"]["detail"], clause, checks)
+        if len(sentence) > MAX_CHARS:
+            return _fail("BUDGET", "output character budget exceeded", clause, checks)
+        return Realized(sentence, clause.id, _source_spans(clause), style, "inverse-reader", checks)
+    topics = tuple(table["topic_particles"]) if clause.rule == "frame" else (table["topic_particles"][0],)
+    attempts: list[dict[str, Any]] = []
+    last: Refused | None = None
+    for topic in topics:
+        sentence, detail = _surface_text(clause, style, topic=topic, forms=table)
+        if sentence is None:
+            reason = "CONJUGATION_UNKNOWN" if clause.rule == "frame" and "conjugation" in detail else "ROLE_NOT_REALIZABLE"
+            return _fail(reason, detail, clause)
+        checks = verify_sentence(clause, sentence, placement=placement, forms=table)
+        if _clause_checks_ok(checks):
+            if len(sentence) > MAX_CHARS:
+                return _fail("BUDGET", "output character budget exceeded", clause, checks)
+            checks["topic_attempts"] = attempts + [{"topic": topic, "passed": True, "reason": None}]
+            return Realized(sentence, clause.id, _source_spans(clause), style, "inverse-reader", checks)
+        last = _checks_failure(clause, checks)
+        attempts.append({"topic": topic, "passed": False, "text": sentence, "reason": last.detail})
+        checks["topic_attempts"] = list(attempts)
+    assert last is not None and last.checks is not None
+    return replace(last, checks={**last.checks, "topic_attempts": attempts})
 
 
-def realize_variants(clause: Clause) -> tuple[Realized | Refused, ...]:
-    """Return verified plain/polite, は/が and role-order surfaces."""
+def realize_variants(clause: Clause, *, placement: Any = None, forms: Any = None) -> tuple[Realized | Refused, ...]:
+    """Return verified surfaces for every style of the forms table (plain, polite, and the styles of a layer), every topic particle and role order.
+    With a `placement` each sentence is also read again with it (K312); the variants are listed, never chosen."""
+    table = load_forms(forms)
     if not isinstance(clause, Clause):
         return (_fail("INVALID_PROVENANCE", "a source Clause is required"),)
     try:
@@ -382,25 +740,27 @@ def realize_variants(clause: Clause) -> tuple[Realized | Refused, ...]:
     non_agent = list(roles) if clause.rule != "frame" else [r for r in roles if r != "agent"]
     orderings: list[tuple[str, ...] | None] = [None]
     if clause.rule == "frame" and len(non_agent) >= 2:
-        first = tuple(_ordered_frame_roles(roles))
+        first = tuple(_ordered_frame_roles(roles, None, table))
         reversed_order = tuple(reversed(first))
         orderings = [first, reversed_order] if first != reversed_order else [first]
-    particles = ("は", "が") if clause.rule == "frame" and "agent" in roles else ("は",)
+    particles = tuple(table["topic_particles"]) if clause.rule == "frame" and "agent" in roles else (table["copula"]["topic"],)
     results: list[Realized | Refused] = []
     seen: set[str] = set()
-    for style, topic, order in itertools.product(("plain", "polite"), particles, orderings):
-        sentence, detail = _surface_text(clause, style, topic=topic, role_order=order)
+    for style, topic, order in itertools.product(_style_names(table), particles, orderings):
+        sentence, detail = _surface_text(clause, style, topic=topic, role_order=order, forms=table)
         if sentence is None:
             results.append(_fail("ROLE_NOT_REALIZABLE", detail, clause))
             continue
         if sentence in seen:
             continue
         seen.add(sentence)
-        checks = verify_sentence(clause, sentence)
+        checks = verify_sentence(clause, sentence, placement=placement, forms=table)
         if not checks["roundtrip"]["passed"]:
             results.append(_fail("ROUNDTRIP_MISMATCH", checks["roundtrip"]["detail"], clause, checks))
         elif not checks["term_lineage"]["passed"]:
             results.append(_fail("TERM_LINEAGE_MISMATCH", checks["term_lineage"]["detail"], clause, checks))
+        elif "reread" in checks and not checks["reread"]["passed"]:
+            results.append(_fail("ROUNDTRIP_MISMATCH", checks["reread"]["detail"], clause, checks))
         elif len(sentence) > MAX_CHARS:
             results.append(_fail("BUDGET", "output character budget exceeded", clause, checks))
         else:
@@ -467,8 +827,8 @@ def _merge_pair(left_clause: Clause, left: Realized,
 
 def summarize_entity(view: Any, entity: str, limit: int = 8,
                      style: str = "plain") -> Realized | RealizedGroup | Refused:
-    if style not in ("plain", "polite"):
-        return _fail("INVALID_STYLE", "style must be plain or polite")
+    if style not in load_forms()["styles"]:
+        return _fail("INVALID_STYLE", _style_detail(load_forms()))
     if view is None or not hasattr(view, "clauses") or not hasattr(view, "sources"):
         return _fail("NO_SOURCE_VIEW", "semantic source View is unavailable")
     if type(limit) is not int or limit < 0 or limit > MAX_CLAUSES:
@@ -661,8 +1021,8 @@ def _answer_roles(result: dict[str, Any]) -> set[Any]:
 def realize_answer(view: Any, request_text_or_result: Any,
                    style: str = "plain") -> Realized | RealizedGroup | Refused:
     """Realize only source clauses embedded in a verified public ANSWER proof."""
-    if style not in ("plain", "polite"):
-        return _fail("INVALID_STYLE", "style must be plain or polite")
+    if style not in load_forms()["styles"]:
+        return _fail("INVALID_STYLE", _style_detail(load_forms()))
     if not isinstance(request_text_or_result, dict):
         return _fail("NO_ANSWER_RESULT", "a public Vera.ask result with a proof is required")
     result = request_text_or_result
@@ -964,13 +1324,269 @@ def _observed_clause(center: Any, arms: Any, cell_id: Any, lang: Any, rule: Any)
     return clause, None
 
 
-def realize_observed(center: Any, arms: Any, lang: Any, *, cell_id: Any, rule: Any = None) -> Realized | Refused:
-    """One sentence for an observed cross, or a typed refusal. `rule` is the reader rule of the clause the cross came from."""
+# ---------------------------------------------------------------------------------------------------------------------------------
+# W3-d1: typed crosses and the reread with the SAME placement (K312, K314, K315).
+#
+# A typed cross is what `semantic_read.read(text, "ja", placement=...)["clauses"][i]` returns (a dict that may carry `role_basis` / `predicate_basis`) or an
+# `event_cross.EventCross`. The placement information (the bases, the types, the fillers' `place`) never changes the sentence (K314); it is used for ONE
+# thing: a cross that was read with a placement is only checked again with a placement (`REREAD_MISMATCH:NEEDS_PLACEMENT` when none is passed).
+# The check (K312) reads the sentence with the placement that is passed (explicitly: VERA_PLACEMENT is never read on this path) and compares the five
+# things the realization stands for: the set of roles with each filler's surface (NFKC), the polarity, the tense and the dictionary form of the predicate
+# (plus voice and modality, which the realizer fixes to active / asserted). The way the reread got there (`role_basis`, `predicate_basis`, types) is not compared.
+# ---------------------------------------------------------------------------------------------------------------------------------
+_TYPED_KEYS = frozenset(("predicate", "roles", "polarity", "tense", "modality", "voice", "predicate_basis", "role_basis", "role_flags",
+                         "comparison", "quantifiers", "scope", "rule"))
+_IR_TO_OBSERVED_ROLE = {ir: observed for observed, ir in _OBSERVED_ROLE_TO_IR.items()}
+
+
+def _is_typed_cross(obj: Any) -> bool:
+    if isinstance(obj, dict):
+        return True
+    from . import event_cross
+    return isinstance(obj, event_cross.EventCross)
+
+
+def _basis_strings(value: Any) -> Iterable[str]:
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, dict):
+        for item in value.values():
+            yield from _basis_strings(item)
+    elif isinstance(value, (list, tuple)):
+        for item in value:
+            yield from _basis_strings(item)
+
+
+def _typed_parts(obj: Any) -> tuple[Any, ...] | Refused:
+    """(center, arms, rule, needs_placement) of a typed cross, or a typed refusal. `arms` has the shape of EventCross arm dicts."""
+    from . import event_cross
+
+    if isinstance(obj, event_cross.EventCross):
+        center = dict(obj.center)
+        arms = {role: arm.to_dict() for role, arm in obj.arms.items()}
+        for arm in obj.arms.values():
+            if any(f.embedded is not None for f in arm.fillers):
+                return Refused("ROLE_NOT_REALIZABLE", "an embedded cross is not realized", ())
+        needs = any(f.place.state != "NO_PLACEMENT" for arm in obj.arms.values() for f in arm.fillers)
+        return center, arms, obj.provenance.get("rule"), needs
+    unknown = sorted(set(obj) - _TYPED_KEYS, key=str)
+    if unknown:
+        return Refused("ROLE_NOT_REALIZABLE", "a typed clause has keys outside the known set: " + ", ".join(map(str, unknown)), ())
+    roles = obj.get("roles")
+    if not isinstance(roles, dict) or not roles:
+        return Refused("ROLE_NOT_REALIZABLE", "a typed clause needs a roles object", ())
+    arms: dict[str, Any] = {}
+    for role, surface in roles.items():
+        if not isinstance(surface, str) or not surface:
+            return Refused("ROLE_NOT_REALIZABLE", "role " + str(role) + " is not a single surface string", ())
+        arms[str(role)] = {"kind": "FILLER", "fillers": [{"surface": surface}]}
+    center = {key: obj.get(key) for key in ("predicate", "polarity", "tense", "modality", "voice")}
+    for key in _OBSERVED_CENTRE_NOT_EXPRESSED:
+        if key in obj:
+            center[key] = obj[key]
+    needs = any(item.startswith("placement") for key in ("role_basis", "predicate_basis") for item in _basis_strings(obj.get(key)))
+    return center, arms, obj.get("rule"), needs
+
+
+def _ordered_arms(arms: Any) -> list[tuple[str, Any]]:
+    from . import event_cross
+
+    names = list(getattr(event_cross, "ROLE_NAMES", ()))
+    index = {name: i for i, name in enumerate(names)}
+    return sorted(dict(arms).items(), key=lambda item: (index.get(item[0], len(index)), item[0]))
+
+
+def _typed_cell_key(center: Any, arms: Any) -> str:
+    from . import observe
+
+    return observe.cell_key_of_content({
+        "center": copy.deepcopy(dict(center)),
+        "arms": [{"role": role, "kind": arm.get("kind"), "surfaces": [f["surface"] for f in arm.get("fillers", ())]}
+                 for role, arm in _ordered_arms(arms)]})
+
+
+def _nfkc(text: Any) -> Any:
+    return unicodedata.normalize("NFKC", text) if isinstance(text, str) else text
+
+
+def _cross_facts(center: Any, arms: Any) -> dict[str, Any]:
+    """The five things K312 compares (plus voice and modality), from the dict form of a cross."""
+    facts: dict[str, Any] = {key: dict(center).get(key) for key in ("predicate", "polarity", "tense", "voice", "modality")}
+    facts["predicate"] = _nfkc(facts["predicate"])
+    facts["roles"] = {str(role): tuple(_nfkc(f.get("surface")) for f in arm.get("fillers", ())) for role, arm in dict(arms).items()}
+    return facts
+
+
+def _facts_diff(expected: dict[str, Any], actual: dict[str, Any]) -> str:
+    """A deterministic description of how the reread differs ('' when it does not)."""
+    def pairs(facts: dict[str, Any]) -> set[str]:
+        return {role + "=" + "+".join(map(str, surfaces)) for role, surfaces in facts["roles"].items()}
+
+    exp, act = pairs(expected), pairs(actual)
+    parts: list[str] = []
+    if exp != act:
+        parts.append("roles:" + ",".join(["-" + x for x in sorted(exp - act)] + ["+" + x for x in sorted(act - exp)]))
+    for key in ("polarity", "tense", "predicate", "voice", "modality"):
+        if expected[key] != actual[key]:
+            parts.append("%s:%s->%s" % (key, expected[key], actual[key]))
+    return ";".join(parts)
+
+
+def _reread_check(sentence: str, center: Any, arms: Any, placement: Any) -> dict[str, Any]:
+    """Read `sentence` with `placement` (None: explicitly no placement) and require exactly one cross with the same facts (K312)."""
+    from . import event_cross, semantic_read
+
+    def no(diff: str, crosses: int = 0) -> dict[str, Any]:
+        return {"passed": False, "detail": "REREAD_MISMATCH:" + diff, "diff": diff, "crosses": crosses}
+
+    try:
+        path = os.fspath(placement) if placement is not None else None
+        out = semantic_read.read(sentence, "ja", placement=path)
+        lookup = event_cross.default_lookup(path) if path is not None and path.strip() else event_cross.StubLookup()
+        got = event_cross.build_crosses(out, lookup)
+    except Exception as exc:
+        return no("READ_ERROR:" + type(exc).__name__)
+    if got.status != "CROSSED":
+        return no("NOT_CROSSED:" + str(got.status))
+    if len(got.crosses) != 1:
+        return no("NOT_ONE_CROSS:" + str(len(got.crosses)), len(got.crosses))
+    cross = got.crosses[0].to_dict()
+    diff = _facts_diff(_cross_facts(center, arms), _cross_facts(cross["center"], cross["arms"]))
+    if diff:
+        return no(diff, 1)
+    return {"passed": True, "detail": "single-cross facts match with the same placement", "diff": "", "crosses": 1}
+
+
+def _realize_cross(clause: Clause, center: Any, arms: Any, ids: tuple[str, ...], cell_id: Any, style: str, placement: Any,
+                   table: FormsTable, derivation: str) -> Realized | Refused:
+    """K315: with a placement, the topic particles of the table are tried in the table's order. A candidate is returned only if its OWN sentence
+    passes the reread (K312) and the lineage check; every attempt is recorded. The sentence is never rewritten to make a check pass."""
+    topics = tuple(table["topic_particles"])
+    attempts: list[dict[str, Any]] = []
+    last: Refused | None = None
+    for topic in topics:
+        sentence, detail = _surface_text(clause, style, topic=topic, forms=table)
+        if sentence is None:
+            reason = "CONJUGATION_UNKNOWN" if "conjugation" in detail else "ROLE_NOT_REALIZABLE"
+            return Refused(reason, detail, ids)
+        reread = _reread_check(sentence, center, arms, placement)
+        checks = {"roundtrip": reread, "reread": reread,
+                  "term_lineage": check_observed_lineage(sentence, clause.predicate, _observed_arm_surfaces(arms))}
+        if reread["passed"] and checks["term_lineage"]["passed"]:
+            if len(sentence) > MAX_CHARS:
+                return Refused("BUDGET", "output character budget exceeded", ids, checks=checks)
+            checks["topic_attempts"] = attempts + [{"topic": topic, "passed": True, "reason": None}]
+            return Realized(sentence, str(cell_id), (), style, derivation, checks)
+        if not reread["passed"]:
+            last = Refused("ROUNDTRIP_MISMATCH", reread["detail"], ids, checks=checks)
+        else:
+            last = Refused("TERM_LINEAGE_MISMATCH", checks["term_lineage"]["detail"], ids, checks=checks)
+        attempts.append({"topic": topic, "passed": False, "text": sentence, "reason": last.detail})
+    assert last is not None and last.checks is not None
+    return Refused(last.reason, last.detail, ids, checks={**last.checks, "topic_attempts": attempts})
+
+
+def _typed_clause(obj: Any) -> tuple[Any, Clause | None, Refused | None]:
+    """(parts, clause, refusal) for a typed cross."""
+    parts = _typed_parts(obj)
+    if isinstance(parts, Refused):
+        return None, None, parts
+    center, arms, rule, _needs = parts
+    if rule is None:
+        return None, None, Refused("UNSUPPORTED_RULE", "a typed cross carries no reader rule (key `rule` / provenance rule); it is not realized", ())
+    cell_id = _typed_cell_key(center, arms)
+    clause, refused = _observed_clause(center, arms, cell_id, "ja", rule)
+    return (center, arms, rule, _needs, cell_id), clause, refused
+
+
+def _realize_typed(obj: Any, style: str, placement: Any, table: FormsTable) -> Realized | Refused:
+    parts, clause, refused = _typed_clause(obj)
+    if refused is not None:
+        return refused
+    center, arms, _rule, needs, cell_id = parts
+    ids = (cell_id,)
+    if placement is None and needs:
+        diff = "NEEDS_PLACEMENT"
+        reread = {"passed": False, "detail": "REREAD_MISMATCH:" + diff, "diff": diff, "crosses": 0}
+        return Refused("ROUNDTRIP_MISMATCH", reread["detail"], ids, checks={"roundtrip": reread, "reread": reread})
+    if placement is None:
+        sentence, detail = _surface_text(clause, style, forms=table)
+        if sentence is None:
+            reason = "CONJUGATION_UNKNOWN" if "conjugation" in detail else "ROLE_NOT_REALIZABLE"
+            return Refused(reason, detail, ids)
+        reread = _reread_check(sentence, center, arms, None)
+        checks = {"roundtrip": reread, "reread": reread,
+                  "term_lineage": check_observed_lineage(sentence, clause.predicate, _observed_arm_surfaces(arms)),
+                  "topic_attempts": [{"topic": table["topic_particles"][0], "passed": reread["passed"], "reason": None if reread["passed"] else reread["detail"]}]}
+        if not reread["passed"]:
+            return Refused("ROUNDTRIP_MISMATCH", reread["detail"], ids, checks=checks)
+        if not checks["term_lineage"]["passed"]:
+            return Refused("TERM_LINEAGE_MISMATCH", checks["term_lineage"]["detail"], ids, checks=checks)
+        if len(sentence) > MAX_CHARS:
+            return Refused("BUDGET", "output character budget exceeded", ids, checks=checks)
+        return Realized(sentence, cell_id, (), style, "typed-cross", checks)
+    return _realize_cross(clause, center, arms, ids, cell_id, style, placement, table, "typed-cross")
+
+
+def _verify_typed(obj: Any, sentence: str, placement: Any, forms: Any) -> dict[str, Any]:
+    """verify_sentence for a placement or a typed cross: the reread with the placement, and the lineage check, reported separately (K312)."""
+    result: dict[str, Any]
+    if isinstance(obj, Clause):
+        result = {"roundtrip": check_round_trip(obj, sentence), "term_lineage": check_term_lineage(obj, sentence)}
+        if obj.rule != "frame":
+            diff = "RULE_NOT_FRAME"
+            reread = {"passed": False, "detail": "REREAD_MISMATCH:" + diff, "diff": diff, "crosses": 0}
+        else:
+            center = {"predicate": obj.predicate, "polarity": obj.polarity, "tense": obj.time, "modality": None, "voice": "active"}
+            arms = {}
+            for role in obj.roles:
+                name = _IR_TO_OBSERVED_ROLE.get(role.name, role.name)
+                arms[name] = {"kind": "FILLER", "fillers": [{"surface": role.span.text}]}
+            reread = _reread_check(sentence, center, arms, placement)
+        result["reread"] = reread
+    else:
+        parts = _typed_parts(obj) if _is_typed_cross(obj) else Refused("INVALID_PROVENANCE", "a source Clause or a typed cross is required", ())
+        if isinstance(parts, Refused):
+            reread = {"passed": False, "detail": "REREAD_MISMATCH:" + parts.reason, "diff": parts.reason, "crosses": 0}
+            result = {"roundtrip": reread, "term_lineage": {"passed": False, "detail": parts.detail, "extra_lemmas": [], "unexpected_tokens": []},
+                      "reread": reread}
+        else:
+            center, arms, rule, needs = parts
+            if rule != "frame":
+                diff = "RULE_NOT_FRAME" if rule is not None else "RULE_UNKNOWN"
+                reread = {"passed": False, "detail": "REREAD_MISMATCH:" + diff, "diff": diff, "crosses": 0}
+            elif placement is None and needs:
+                reread = {"passed": False, "detail": "REREAD_MISMATCH:NEEDS_PLACEMENT", "diff": "NEEDS_PLACEMENT", "crosses": 0}
+            else:
+                reread = _reread_check(sentence, center, arms, placement)
+            predicate = center.get("predicate") if isinstance(center.get("predicate"), str) else ""
+            surfaces = [f["surface"] for _r, arm in dict(arms).items() for f in arm.get("fillers", ())]
+            result = {"roundtrip": reread, "reread": reread,
+                      "term_lineage": check_observed_lineage(sentence, predicate, surfaces)}
+    if not result["reread"]["passed"]:
+        result["status"] = "REFUSED:" + result["reread"]["detail"]
+    elif not result["term_lineage"]["passed"]:
+        result["status"] = "REFUSED:TERM_LINEAGE_MISMATCH"
+    elif not result["roundtrip"]["passed"]:
+        result["status"] = "REFUSED:ROUNDTRIP_MISMATCH"
+    else:
+        result["status"] = "REALIZED"
+    return result
+
+
+def realize_observed(center: Any, arms: Any, lang: Any, *, cell_id: Any, rule: Any = None, placement: Any = None,
+                     forms: Any = None) -> Realized | Refused:
+    """One sentence for an observed cross, or a typed refusal. `rule` is the reader rule of the clause the cross came from.
+    `placement=None`: the original path, unchanged (the sentence is read again exactly as before). With a `placement`: the reread uses it, and the
+    topic particles are tried in the table's order (K312, K315)."""
+    table = load_forms(forms)
     clause, refused = _observed_clause(center, arms, cell_id, lang, rule)
     if refused is not None:
         return refused
     ids = (str(cell_id),) if isinstance(cell_id, str) and cell_id else ()
-    sentence, detail = _surface_text(clause, "plain")
+    if placement is not None:
+        return _realize_cross(clause, center, arms, ids, cell_id, "plain", placement, table, "observed-cross")
+    sentence, detail = _surface_text(clause, "plain", forms=table)
     if sentence is None:
         reason = "CONJUGATION_UNKNOWN" if "conjugation" in detail else "ROLE_NOT_REALIZABLE"
         return Refused(reason, detail, ids)
@@ -985,28 +1601,39 @@ def realize_observed(center: Any, arms: Any, lang: Any, *, cell_id: Any, rule: A
     return Realized(sentence, str(cell_id), (), "plain", "observed-cross", checks)
 
 
-def observed_variants(center: Any, arms: Any, lang: Any, *, cell_id: Any, rule: Any = None) -> tuple[Realized | Refused, ...]:
-    """The other verified ways of saying the same cross (polite style, が as the agent particle, reversed role order). Listed, never chosen.
-    The canonical sentence of `realize_observed` is not repeated here."""
+def observed_variants(center: Any, arms: Any, lang: Any, *, cell_id: Any, rule: Any = None, placement: Any = None,
+                      forms: Any = None) -> tuple[Realized | Refused, ...]:
+    """The other verified ways of saying the same cross (every style of the forms table, every topic particle, reversed role order). Listed, never chosen.
+    The canonical sentence of `realize_observed` is not repeated here. With a `placement` the reread uses it; without one the call is unchanged."""
+    table = load_forms(forms)
     clause, refused = _observed_clause(center, arms, cell_id, lang, rule)
     if refused is not None:
         return (refused,)
     ids = (str(cell_id),) if isinstance(cell_id, str) and cell_id else ()
     names = [r.name for r in clause.roles]
-    first = tuple(_ordered_frame_roles({n: None for n in names}))
+    first = tuple(_ordered_frame_roles({n: None for n in names}, None, table))
     orderings = [first] if len(first) < 2 else [first, tuple(reversed(first))]
-    canonical, _ = _surface_text(clause, "plain")
+    canonical, _ = _surface_text(clause, "plain", forms=table)
+    canonicals = {canonical}
+    if placement is not None:
+        chosen = _realize_cross(clause, center, arms, ids, cell_id, "plain", placement, table, "observed-cross")
+        if isinstance(chosen, Realized):
+            canonicals.add(chosen.text)
     results: list[Realized | Refused] = []
     seen: set[str] = set()
-    for style, topic, order in itertools.product(("plain", "polite"), ("は", "が"), orderings):
-        sentence, detail = _surface_text(clause, style, topic=topic, role_order=order)
+    for style, topic, order in itertools.product(_style_names(table), tuple(table["topic_particles"]), orderings):
+        sentence, detail = _surface_text(clause, style, topic=topic, role_order=order, forms=table)
         if sentence is None:
             results.append(Refused("ROLE_NOT_REALIZABLE", detail, ids))
             continue
-        if sentence == canonical or sentence in seen:
+        if sentence in canonicals or sentence in seen:
             continue
         seen.add(sentence)
-        checks = {"roundtrip": _observed_roundtrip(sentence, center, arms),
+        if placement is None:
+            roundtrip = _observed_roundtrip(sentence, center, arms)
+        else:
+            roundtrip = _reread_check(sentence, center, arms, placement)
+        checks = {"roundtrip": roundtrip,
                   "term_lineage": check_observed_lineage(sentence, clause.predicate, _observed_arm_surfaces(arms)),
                   "variant": {"style": style, "topic": topic, "role_order": list(order)}}
         if not checks["roundtrip"]["passed"]:
@@ -1018,5 +1645,6 @@ def observed_variants(center: Any, arms: Any, lang: Any, *, cell_id: Any, rule: 
     return tuple(results)
 
 
-# `__all__` above is left as it was; the W3-c names are added to it here.
-__all__.extend(["check_observed_lineage", "observed_variants", "realize_observed"])
+# `__all__` above is left as it was; the W3-c and W3-d1 names are added to it here.
+__all__.extend(["check_observed_lineage", "observed_variants", "realize_observed", "REALIZE_FORMS_VERSION", "FormsError", "FormsTable",
+                "load_forms", "base_forms", "conjugate_by_style"])

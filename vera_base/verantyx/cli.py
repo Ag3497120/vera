@@ -713,6 +713,212 @@ def cmd_read_events(args) -> int:
     return semantic_read.main(argv)
 
 
+def cmd_read(args) -> int:
+    """W10-f04 (docs/FUSION.md section 6, J1): `vera read --text T [--lang L] [--placement DIR]` is `python -m verantyx.semantic_read` (byte for byte); with `--holes` the sentence a reader abstains
+    on because of a filler's placement is returned with its typed holes (`semantic_read.read_with_holes`) and a `display` of them."""
+    from . import semantic_read
+
+    if not getattr(args, "holes", False):
+        argv = []
+        if args.text is not None:
+            argv.append("--text=" + args.text)
+        if args.lang is not None:
+            argv.append("--lang=" + args.lang)
+        if args.placement is not None:
+            argv.append("--placement=" + args.placement)
+        mode = _read_mode(args)
+        if mode is None:
+            _print({"error": {"type": "BAD_READ_MODE", "detail": "VERA_READ_MODE must be strict or assume"}})
+            return 2
+        if mode == "strict":
+            return semantic_read.main(argv)
+        return _read_assume(args, argv, semantic_read)
+    from . import observe
+    try:
+        out = semantic_read.read_with_holes(args.text, args.lang, placement=semantic_read._UNSET if args.placement is None else args.placement,
+                                            max_holes=args.max_holes)
+        out["display"] = observe.describe_holes(out, args.text)
+        code = 0
+    except semantic_read.ReadError as err:
+        out, code = {"error": {"type": err.type, "detail": err.detail}}, 2
+    sys.stdout.write(json.dumps(out, ensure_ascii=False) + "\n")
+    return code
+
+
+def _chat_read(args, text) -> int:
+    """W3-e2 (D3): `/read` of the chat: in the assume mode (the default; `--strict-read` / VERA_READ_MODE=strict turn it off) a sentence that stops only on a premise is printed as an assumed reading (or with the
+    reason of stage E2 at the end); every other sentence goes through `cmd_read_events` exactly as before."""
+    from . import semantic_read
+
+    mode = _read_mode(args)
+    plain = argparse.Namespace(text=text, lang=None)
+    if mode is None:
+        _print({"error": {"type": "BAD_READ_MODE", "detail": "VERA_READ_MODE must be strict or assume"}})
+        return 2
+    if mode == "strict":
+        return cmd_read_events(plain)
+    try:
+        out = semantic_read.read_in_mode(text, None, mode="assume", assume=semantic_read.AssumeConfig())
+    except semantic_read.ReadError:
+        return cmd_read_events(plain)
+    reasons = (out.get("abstain") or {}).get("reasons") or []
+    if out.get("read_mode") == "assumed" or any(str(r).startswith(("ASSUMPTION_UNDETERMINED", "ASSUMPTION_BACKEND_FAILED")) for r in reasons):
+        sys.stdout.write(json.dumps(out, ensure_ascii=False) + "\n")
+        return 0
+    return cmd_read_events(plain)
+
+
+def _read_mode(args):
+    """W3-e2 (K333): the mode of a product entry that reads a sentence. `--strict-read` -> strict; else VERA_READ_MODE (strict | assume; anything else -> None, a typed refusal of the caller); else assume.
+    Only the entries (vera read / chat / serve) call this: the library reads no variable (`semantic_read.read_in_mode`)."""
+    import os
+
+    if getattr(args, "strict_read", False):
+        return "strict"
+    v = os.environ.get("VERA_READ_MODE")
+    if v is None or v.strip() == "":
+        return "assume"
+    return v.strip() if v.strip() in ("strict", "assume") else None
+
+
+def _assume_config(args, ledger=None):
+    """W3-e2: the `AssumeConfig` of an entry: the layer is the environment's (`--layer` sets VERA_PLACEMENT_LAYER); the ledger when `--ledger-file` is given; the back end (source (e)) only when
+    `--backend` and `--model` are given (never by default: nothing leaves the machine unasked)."""
+    from . import llm_backend
+    from . import semantic_read
+
+    chat, model = None, None
+    backend = getattr(args, "assume_backend", None)
+    if backend:
+        model = getattr(args, "assume_model", None)
+        chat = llm_backend.make_chat(backend, timeout=getattr(args, "llm_timeout", 180.0))
+    return semantic_read.AssumeConfig(ledger=ledger, chat=chat, model=model, backend_name=backend or "fake")
+
+
+def _read_assume(args, argv, semantic_read) -> int:
+    """W3-e2 (D3): `vera read` in the assume mode prints what `semantic_read.main` prints byte for byte whenever stage E2 changed nothing; only an assumed reading, or a strict abstention with a
+    reason of the stage at the end, is printed in the form of `read_in_mode`."""
+    from .llm_choice import LedgerIntegrityError
+    from .testimony_ledger import TestimonyLedger
+
+    ledger = None
+    if getattr(args, "ledger_file", None):
+        try:
+            ledger = TestimonyLedger(args.ledger_file)
+        except LedgerIntegrityError as exc:
+            _print({"error": {"type": "LEDGER_INTEGRITY", "detail": "%s line %s %s" % (exc.kind, exc.line_no, exc.detail)}})
+            return 2
+    try:
+        out = semantic_read.read_in_mode(args.text, args.lang, placement=semantic_read._UNSET if args.placement is None else args.placement, mode="assume",
+                                         assume=_assume_config(args, ledger))
+    except semantic_read.ReadError:
+        return semantic_read.main(argv)
+    reasons = (out.get("abstain") or {}).get("reasons") or []
+    if out.get("read_mode") == "assumed" or any(str(r).startswith(("ASSUMPTION_UNDETERMINED", "ASSUMPTION_BACKEND_FAILED")) for r in reasons):
+        sys.stdout.write(json.dumps(out, ensure_ascii=False) + "\n")
+        return 0
+    return semantic_read.main(argv)
+
+
+def _ledger_promote(args, led) -> int:
+    """W10-f05 (O3, docs/COARSE_PLACEMENT.md section 12.19): `vera ledger promote --layer L [--placement BASE] [--promote-n N]` writes the promotable rows of the ledger into the layer: a human's
+    confirmation as `layer_human` (direct), a re-reading agreement alone as `layer_estimated` (never direct); every write is a `promoted_to_layer` row of the ledger first. A word the base already decides
+    is skipped; running it again writes nothing new. One JSON line: what was written (per origin) and why the rest was not."""
+    import os
+    from collections import Counter
+    from . import coarse_place, placement_layer
+
+    def refuse(verdict: str, reason: str = "") -> int:
+        _print({"kind": "unknown", "verdict": verdict, "reason": reason})
+        return 2
+
+    if not args.layer:
+        return refuse("LAYER_REQUIRED", "ledger promote needs --layer")
+    layer_path, layer_name, why = placement_layer.resolve(args.layer)
+    if layer_path is None:
+        return refuse("LAYER_UNAVAILABLE:%s" % why, args.layer)
+    placement = args.placement or os.environ.get("VERA_PLACEMENT") or None
+    pl, nop = coarse_place._open(placement)
+    if pl is None:
+        return refuse("NO_PLACEMENT", nop[0] if nop else "UNSET")
+    plan = led.promotion_plan(layer_name, lambda w: coarse_place.query(w, placement=placement, layer=False))
+    written, skipped, items = Counter(), Counter(), []
+    for it in plan:
+        if it["origin"] is None:
+            skipped[it["skip"]] += 1
+            items.append({"word": it["word"], "type": it["declared_type"], "skip": it["skip"]})
+            continue
+        try:
+            res = placement_layer.write_entry(layer_path, led, base_sha256=pl.sha, word=it["word"], type=it["declared_type"], origin=it["origin"], decided_by=it["decided_by"],
+                                              evidence=it["evidence"], role_frame=it["role_frame"], key=it["key"], fill_id=it["fill_id"], candidate=it["candidate"], from_seq=it["from_seq"])
+        except placement_layer.LayerError as exc:
+            return refuse(exc.type, exc.detail)
+        written[it["origin"]] += 1
+        items.append({"word": it["word"], "type": it["declared_type"], "origin": it["origin"], "ledger_seq": res["ledger_seq"]})
+    _print({"kind": "promoted", "layer": layer_name, "written": {o: written.get(o, 0) for o in placement_layer.ORIGINS}, "skipped": dict(sorted(skipped.items())), "items": items})
+    return 0
+
+
+def cmd_ledger(args) -> int:
+    """W10-f04 (O2, docs/FUSION.md section 6.2 K284): the testimony ledger. `list` (one line per adopted candidate: id, word -> candidate, declared type, state, promotable), `show <id>` (every row of
+    that testimony and its folded state), `confirm <id>` (a human confirms: writes `human_confirmed` with the ledger's store_id and a new confirm_id). Never changes a placement. Exit 2: a bad
+    argument or no such id; 3: the ledger is broken (nothing is appended)."""
+    from .llm_choice import LedgerIntegrityError
+    from .testimony_ledger import LedgerError, TestimonyLedger
+
+    path = Path(args.ledger_file)
+    if args.ledger_op not in ("list", "promote") and not args.id:
+        _print({"kind": "unknown", "verdict": "ID_REQUIRED", "reason": "ledger %s needs an id" % args.ledger_op})
+        return 2
+    if not path.exists():
+        _print({"kind": "unknown", "verdict": "LEDGER_NOT_FOUND", "reason": str(path)})
+        return 2
+    try:
+        led = TestimonyLedger(path, promote_n=args.promote_n)
+        if args.ledger_op == "promote":
+            return _ledger_promote(args, led)
+        if args.ledger_op == "list":
+            rows = led.listing()
+            if args.json:
+                _print({"store_id": led.store_id, "promote_n": led.promote_n, "testimonies": rows})
+            else:
+                print("store_id=%s promote_n=%d testimonies=%d" % (led.store_id, led.promote_n, len(rows)))
+                for r in rows:
+                    print("%s  %s -> %s  type=%s role=%s  state=%s  promotable=%s%s" % (r["fill_id"], r["word"], r["candidate"], r["declared_type"], r["role"], r["state"],
+                                                                                   "yes" if r["promotable"] else "no", "  (%s)" % r["blocked_by"] if r["blocked_by"] else ""))
+            return 0
+        if args.ledger_op == "show":
+            shown = led.show(args.id)
+            if shown is None:
+                _print({"kind": "unknown", "verdict": "NO_SUCH_ID", "reason": args.id})
+                return 2
+            _print(shown)
+            return 0
+        _print(dict(led.confirm(args.id), kind="human_confirmed"))
+        return 0
+    except LedgerIntegrityError as exc:
+        _print({"kind": "unknown", "verdict": "LEDGER_INTEGRITY", "reason": "%s line %s %s" % (exc.kind, exc.line_no, exc.detail)})
+        return 3
+    except LedgerError as exc:
+        _print({"kind": "unknown", "verdict": exc.type, "reason": exc.detail})
+        return 2
+
+
+def cmd_realize(args) -> int:
+    """十字トークン列を検証し、Vera の既存実現器で文に戻す。"""
+    from .cross_tokens import realize_tokens
+
+    tokens = sys.stdin.read() if args.tokens == "-" else args.tokens
+    if args.tokens == "-" and tokens.endswith("\n"):
+        tokens = tokens[:-1]
+        if tokens.endswith("\r"):
+            tokens = tokens[:-1]
+    # W3-d1: `--forms` lays a user's forms table (added styles / endings) over the base table; a refused table is a typed result and exit code 2.
+    result = realize_tokens(tokens, args.lang, placement=args.placement, forms=args.forms)
+    _print(result)
+    return 2 if result.get("reason") in ("FORMS_OVERRIDE_REFUSED", "FORMS_INVALID", "FORMS_NOT_FOUND") else 0
+
+
 def cmd_observe(args) -> int:
     """視点(錨・向き・範囲・状態)から構造を観測し、見えた十字を実現器で文にして json で 1 行返す(docs/OBSERVATION.md)。
 
@@ -1187,7 +1393,7 @@ def cmd_chat(args) -> int:
                 task_argument = route_match.group(4).strip()
                 cmd_route(argparse.Namespace(explanation=explanation, task=task_argument))
             elif command == "/read":
-                cmd_read_events(argparse.Namespace(text=argument, lang=None))
+                _chat_read(args, argument)
             else:
                 bad_command("UNKNOWN_COMMAND", command=command)
 
@@ -1530,6 +1736,92 @@ def cmd_self_evolve(args) -> int:
     return 0
 
 
+def _cmd_placement_layer(args) -> int:
+    """W10-f05: `vera placement grow --documents f... --layer L --backend ollama|openai|fake --ledger-file F [--placement BASE]` (document-driven growth of a placement layer) and
+    `vera placement growth --layer L [--ledger-file F] [--list]` (its indicators). One JSON line. Exit 0: grew / measured; 2: a typed refusal (nothing was written)."""
+    import os
+    from . import llm_backend, placement_grow, placement_layer
+
+    def refuse(verdict: str, reason: str = "") -> int:
+        _print({"verdict": verdict, "reason": reason})
+        return 2
+
+    if not args.layer:
+        return refuse("LAYER_REQUIRED", "placement %s needs --layer" % args.store)
+    placement = args.placement or os.environ.get("VERA_PLACEMENT") or None
+    if args.store == "growth":
+        from . import coarse_place
+        from .llm_choice import LedgerIntegrityError
+        from .testimony_ledger import TestimonyLedger
+        led = None
+        if args.ledger_file:
+            if not Path(args.ledger_file).exists():
+                return refuse("LEDGER_NOT_FOUND", args.ledger_file)
+            try:
+                led = TestimonyLedger(args.ledger_file)
+            except LedgerIntegrityError as exc:
+                return refuse("LEDGER_INTEGRITY", "%s line %s %s" % (exc.kind, exc.line_no, exc.detail))
+        base_pl, _why = coarse_place._open(placement) if placement else (None, None)
+        out = placement_layer.growth(args.layer, led, getattr(base_pl, "sha", None), with_list=args.list)
+        if out.get("layer_status", "").startswith("LAYER_UNAVAILABLE"):
+            return refuse(out["layer_status"], args.layer)
+        if led is not None:
+            out = _growth_with_assumption(out, led)
+        _print(out)
+        return 0
+    if not args.documents:
+        return refuse("DOCUMENTS_REQUIRED", "placement grow needs --documents")
+    if not args.ledger_file:
+        return refuse("LEDGER_REQUIRED", "placement grow needs --ledger-file (every answer is a testimony)")
+    if not args.backend:
+        return refuse("BACKEND_REQUIRED", "placement grow needs --backend ollama|openai|fake")
+    for item in args.documents:
+        if not Path(item).exists():
+            return refuse("DOCUMENT_NOT_FOUND", item)
+    model = args.model or ("fake" if args.backend == "fake" else None)
+    if not model:
+        return refuse("MODEL_REQUIRED", "--backend %s needs --model" % args.backend)
+    chat = None
+    fake_version = None
+    if args.backend == "fake":
+        if bool(args.fake_table) == bool(args.fake_script):
+            return refuse("FAKE_NEEDS_ONE_OF", "--backend fake needs exactly one of --fake-table and --fake-script")
+        if args.fake_table:
+            fake = placement_grow.TableBackend(json.loads(Path(args.fake_table).read_text(encoding="utf-8")))
+            fake_version = "fake-table:%s" % hashlib.sha256(Path(args.fake_table).read_bytes()).hexdigest()[:12]
+        else:
+            fake = llm_backend.FakeBackend([json.loads(line) for line in Path(args.fake_script).read_text(encoding="utf-8").splitlines() if line.strip()])
+            fake_version = "fake-script:%s" % hashlib.sha256(Path(args.fake_script).read_bytes()).hexdigest()[:12]
+        chat = lambda m, msgs, fmt: fake(m, msgs, fmt)
+    elif args.backend == "openai":
+        if not (args.api_base or os.environ.get("VERA_LLM_API_BASE")):
+            return refuse("API_BASE_REQUIRED", "--backend openai needs --api-base or VERA_LLM_API_BASE")
+        chat = llm_backend.make_chat("openai", timeout=args.llm_timeout, api_base=args.api_base, api_key=os.environ.get("VERA_LLM_API_KEY"))
+    out = placement_grow.grow(args.documents, args.layer, backend=args.backend, model=model, ledger_path=args.ledger_file, placement=placement, chat=chat,
+                              min_sources=args.min_sources, max_words=args.max_words, batch_size=args.batch_size, send_sentences=args.send_sentences,
+                              timeout=args.llm_timeout, ollama_url=args.ollama_url, dump_sent=args.dump_sent, model_version=fake_version)
+    _print(out)
+    return 0 if out.get("verdict") == "GREW" else 2
+
+
+def _growth_with_assumption(out, led):
+    """W3-e2 (K334): with at least one `assumption` row in the ledger, the last key `assumption` = {rows, words, promoted_words, assumption_rate}: `assumption_rate` is the share of the assumed words that
+    have no `promoted_to_layer` row for this layer (null with no word). The more a layer grows, the fewer words are assumed."""
+    import unicodedata
+
+    nf = lambda w: unicodedata.normalize("NFKC", str(w)).strip()
+    entries = led.entries()
+    rows = [e for e in entries if e.get("type") == "assumption"]
+    if not rows:
+        return out
+    words = {nf(e["word"]) for e in rows}
+    promoted = {nf(e["word"]) for e in entries if e.get("type") == "promoted_to_layer" and e.get("layer_name") == out.get("layer")}
+    left = words - promoted
+    res = dict(out)
+    res["assumption"] = {"rows": len(rows), "words": len(words), "promoted_words": len(words & promoted), "assumption_rate": (len(left) / len(words)) if words else None}
+    return res
+
+
 def cmd_placement(args) -> int:
     """Decide which facts occupy an arm's four faces — once, before shipping.
 
@@ -1538,6 +1830,8 @@ def cmd_placement(args) -> int:
     engine that reads it stays as deterministic as it was. Refuses to write
     unless the placement is measured better on held-out questions.
     """
+    if args.store in ("grow", "growth"):          # W10-f05: `vera placement grow|growth` (docs/COARSE_PLACEMENT.md section 12.19); any other first argument is a store, as before
+        return _cmd_placement_layer(args)
     from .placement import main as _placement_main
 
     argv = [args.store, "--n-queries", str(args.n_queries),
@@ -1649,23 +1943,73 @@ def cmd_serve(args) -> int:
     def save() -> None:
         st.save(store_path)
 
+    if getattr(args, "no_llm", False):               # W12-c1: the entrance that never calls an LLM (a new function; the branches below are unchanged)
+        return _serve_no_llm(args, st, save, store_path)
+    if getattr(args, "profile", None) is not None or getattr(args, "tier", None):
+        _print({"kind": "unknown", "verdict": "PROFILE_NEEDS_NO_LLM" if getattr(args, "profile", None) is not None else "TIER_NEEDS_NO_LLM",
+                "reason": "--profile and --tier belong to `serve --no-llm`; without it the entrance is unchanged"})
+        return 2
     if getattr(args, "backend", None) is None:      # W10-f01: without --backend this is exactly the daemon it was
         return serve_http(st, save, port=args.port, default_model=model,
                            jgen_endpoint=args.jgen_endpoint, store_path=store_path)
     return _serve_fusion(args, st, save, store_path)
 
 
-def _serve_fusion(args, st, save, store_path) -> int:
-    """W10-f01: `vera serve --backend ollama --model M [--document f ...] [--strict]` -- one entrance, OpenAI- and Ollama-compatible (docs/FUSION.md)."""
+def _serve_no_llm(args, st, save, store_path) -> int:
+    """W12-c1 (docs/INITIAL_LAYERS.md section 6): `vera serve --no-llm [--profile strict|assume] [--tier NAME=SPEC ...] [--document f ...] [--placement P] [--layer L]`.
+    No LLM is ever called: a record answers (QUESTION_CROSS), everything else is a typed abstention. `vera.confidence_tiers` says how many stages of Vera's own structure agreed."""
     import os
+    from . import confidence_tiers as CT
     from .vera_server import FusionConfig, serve as serve_http
 
     def refuse(verdict: str, reason: str) -> int:
         _print({"kind": "unknown", "verdict": verdict, "reason": reason})
         return 2
 
+    for flag, given in (("--backend", args.backend is not None), ("--model", args.model is not None), ("--strict", bool(args.strict)), ("--free", bool(args.free)),
+                        ("--fill", bool(args.fill))):
+        if given:
+            return refuse("NO_LLM_WITH_BACKEND", "--no-llm never calls an LLM; it cannot be combined with %s" % flag)
+    profile = args.profile or "strict"
+    documents = list(args.document or [])
+    for item in documents:
+        if not Path(item).exists():
+            return refuse("DOCUMENT_NOT_FOUND", item)
+    if bool(args.sovereign_root) != bool(args.sovereign_store):
+        return refuse("SOVEREIGN_NEEDS_BOTH", "--sovereign-root and --sovereign-store go together")
+    if args.sovereign_root:
+        os.environ["VERA_SOVEREIGN_ROOT"] = args.sovereign_root
+        os.environ["VERA_SOVEREIGN_STORE"] = args.sovereign_store
+    if args.placement:
+        os.environ["VERA_PLACEMENT"] = args.placement
+    try:
+        tiers = [CT.parse_tier(t) for t in (args.tier or [])]
+        if args.layer and not any(n == "layer" for n, _ in tiers):
+            tiers.append(("layer", args.layer))          # the user's own layer given with --layer is one more stage after the base; the base stage never sees it
+        runner = CT.TierRunner(tiers, documents, profile=profile, order=("base", "vocab", "law", "law+user") if args.tier else ("base",), with_default_missing=bool(args.tier))
+    except CT.TierError as exc:
+        return refuse(exc.error, exc.detail)
+    fusion = FusionConfig(model="vera-no-llm", documents=documents, records=None, strict=False)
+    fusion.no_llm, fusion.tiers = True, runner
+    _print({"serve": {"no_llm": True, "profile": profile, "tiers": [{"name": s.name, "kind": s.kind} for s in runner.stages], "documents": len(documents)}})
+    return serve_http(st, save, port=args.port, default_model="vera-no-llm", jgen_endpoint=args.jgen_endpoint, store_path=store_path, fusion=fusion)
+
+
+def _serve_fusion(args, st, save, store_path) -> int:
+    """W10-f01: `vera serve --backend ollama --model M [--document f ...] [--strict]` -- one entrance, OpenAI- and Ollama-compatible (docs/FUSION.md)."""
+    import os
+    from .vera_server import FusionBadRequest, FusionConfig, serve as serve_http
+
+    def refuse(verdict: str, reason: str) -> int:
+        _print({"kind": "unknown", "verdict": verdict, "reason": reason})
+        return 2
+
     if not args.model:
-        return refuse("MODEL_REQUIRED", "--backend ollama needs --model")
+        return refuse("MODEL_REQUIRED", "--backend %s needs --model" % args.backend)
+    if args.backend == "openai" and not (args.api_base or os.environ.get("VERA_LLM_API_BASE")):
+        return refuse("API_BASE_REQUIRED", "--backend openai needs --api-base or VERA_LLM_API_BASE")
+    if args.fill and not args.ledger_file:
+        return refuse("LEDGER_REQUIRED", "--fill needs --ledger-file (the testimony ledger)")
     if args.strict and args.free:
         return refuse("STRICT_AND_FREE", "--strict (layer 1) and --free (layer 0) cannot be combined")
     documents = list(args.document or [])
@@ -1679,7 +2023,27 @@ def _serve_fusion(args, st, save, store_path) -> int:
         os.environ["VERA_SOVEREIGN_STORE"] = args.sovereign_store
     if args.placement:
         os.environ["VERA_PLACEMENT"] = args.placement
-    fusion = FusionConfig.load(model=args.model, documents=documents, strict=args.strict, ollama_url=args.ollama_url, timeout=args.llm_timeout)
+    read_mode = _read_mode(args)
+    if read_mode is None:
+        return refuse("BAD_READ_MODE", "VERA_READ_MODE must be strict or assume")
+    fill = None
+    if args.fill:
+        from . import fill_candidates as FC
+        from .llm_choice import LedgerIntegrityError
+        from .testimony_ledger import TestimonyLedger
+        try:
+            ledger = TestimonyLedger(args.ledger_file)
+        except LedgerIntegrityError as exc:
+            return refuse("LEDGER_INTEGRITY", "%s line %s %s" % (exc.kind, exc.line_no, exc.detail))
+        fill = FC.FillConfig(ledger=ledger, model=args.fill_model, backend_name=args.backend, mask_user_text=not args.no_mask_user_text, max_doc_holes=args.fill_max_holes)
+    try:
+        fusion = FusionConfig.load(model=args.model, documents=documents, strict=args.strict, ollama_url=args.ollama_url, timeout=args.llm_timeout,
+                                   backend=args.backend, api_base=args.api_base, api_key=os.environ.get("VERA_LLM_API_KEY"), fill=fill, layer=args.layer,
+                                   read_mode=read_mode, assume_ledger=(fill.ledger if fill is not None else None))
+    except FusionBadRequest as exc:
+        return refuse(exc.error, exc.detail)
+    if fill is not None:
+        _print({"fill": {"ledger": args.ledger_file, "mask_user_text": fill.mask_user_text, "documents": fusion.fill_stats}})
     return serve_http(st, save, port=args.port, default_model=args.model, jgen_endpoint=args.jgen_endpoint, store_path=store_path, fusion=fusion)
 
 
@@ -2106,6 +2470,7 @@ def main(argv: Optional[list] = None) -> int:
                    help="参考欄(生成コーパス由来・事実の証拠ではない)を別の鍵で出す。既定は出さない")
     p.add_argument("--confirm", nargs=2, metavar=("ID", "yes|no"), default=None,
                    help="問い返しへの答え。yes は人が書いた記録としてソブリンに追記する")
+    p.add_argument("--layer", default=None, help="W10-f05: a placement layer (a name in $VERA_PLACEMENT_LAYER_ROOT, or a path) put on the base placement: it answers only for the words the base leaves undecided. Sets VERA_PLACEMENT_LAYER.")
     p.set_defaults(fn=cmd_ask)
 
     p = sub.add_parser(
@@ -2126,6 +2491,46 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--text", default=None)
     p.add_argument("--lang", default=None)
     p.set_defaults(fn=cmd_read_events)
+
+    p = sub.add_parser(
+        "read",
+        help="read one sentence (same output as `python -m verantyx.semantic_read`); with --holes a sentence the reader "
+             "abstains on because of a filler's placement is returned with its typed holes (docs/FUSION.md section 6)")
+    p.add_argument("--text", default=None)
+    p.add_argument("--lang", default=None)
+    p.add_argument("--placement", default=None, help="the placement directory (without it: VERA_PLACEMENT)")
+    p.add_argument("--holes", action="store_true", help="W10-f04: add holes_status / holes / partial / display")
+    p.add_argument("--max-holes", type=int, default=2, dest="max_holes", help="W10-f04: at most this many holes in one sentence (default 2)")
+    p.add_argument("--layer", default=None, help="W10-f05: a placement layer (a name in $VERA_PLACEMENT_LAYER_ROOT, or a path) put on the base placement: it answers only for the words the base leaves undecided. Sets VERA_PLACEMENT_LAYER.")
+    p.add_argument("--strict-read", action="store_true", dest="strict_read", help="W3-e2: read strictly (no assumed reading). Without it, VERA_READ_MODE=strict|assume; the default is assume: a sentence that stops only on a premise (a name's type, a coined verb, an unplaced noun's type) is read with the assumption put out in the answer")
+    p.add_argument("--ledger-file", default=None, dest="ledger_file", help="W3-e2: the testimony ledger: every assumption is written to it (kind assumption), and its promotable rows are a source of an assumption")
+    p.add_argument("--backend", default=None, dest="assume_backend", choices=["ollama", "openai"], help="W3-e2: source (e) of an assumption: ask this back end twice (the sentence is never sent). Needs --model")
+    p.add_argument("--model", default=None, dest="assume_model", help="W3-e2: the model of --backend")
+    p.set_defaults(fn=cmd_read)
+
+    p = sub.add_parser(
+        "ledger",
+        help="W10-f04: the testimony ledger of LLM candidates (append-only, hash-chained): list | show <id> | confirm <id> (a human confirms)")
+    p.add_argument("ledger_op", choices=["list", "show", "confirm", "promote"])
+    p.add_argument("id", nargs="?", default=None)
+    p.add_argument("--ledger-file", required=True, dest="ledger_file")
+    p.add_argument("--promote-n", type=int, default=3, dest="promote_n", help="reread_agreed rows needed to be promotable (default 3)")
+    p.add_argument("--json", action="store_true", help="list as one json line")
+    p.add_argument("--layer", default=None, help="W10-f05: promote: the placement layer (a name or a path) the promotable rows are written into")
+    p.add_argument("--placement", default=None, help="W10-f05: promote: the base placement directory (without it: VERA_PLACEMENT); a word it already decides is not promoted")
+    p.set_defaults(fn=cmd_ledger)
+
+    p = sub.add_parser(
+        "realize",
+        help="validate a cross-token line and realize one supported event cross as a sentence",
+    )
+    p.add_argument("tokens", nargs="?", default="-",
+                   help="one canonical line from `verantyx.cross_tokens` (default: stdin)")
+    p.add_argument("--lang", choices=["ja", "en"], default="ja")
+    p.add_argument("--placement", default=None, help="placement used for the required reread check")
+    p.add_argument("--forms", default=None,
+                   help="a user's forms table laid over the base table (VERA_REALIZE_FORMS is read too); it may only add styles/roles/order entries")
+    p.set_defaults(fn=cmd_realize)
 
     p = sub.add_parser(
         "observe",
@@ -2289,6 +2694,7 @@ def main(argv: Optional[list] = None) -> int:
     p.set_defaults(fn=cmd_review_ai_facts)
 
     p = sub.add_parser("chat", help="interactive REPL (lab | hybrid | round5)")
+    p.add_argument("--strict-read", action="store_true", dest="strict_read", help="W3-e2: `/read` reads strictly (no assumed reading); the default is assume (VERA_READ_MODE=strict|assume)")
     p.add_argument("--mode", choices=["lab", "hybrid", "round5"], default="lab",
                    help="lab: deterministic only; hybrid: local LLM; round5: explicit experimental one.Vera.ask route")
     p.add_argument("--document", action="append", default=[],
@@ -2313,6 +2719,7 @@ def main(argv: Optional[list] = None) -> int:
                         "連合は起動時に一度だけ読む。自動記憶は既定で切れる")
     p.add_argument("--federation", default="",
                    help="公開連合の場所(既定 $VERA_CORPUS_ROOT/build/vera.db)")
+    p.add_argument("--layer", default=None, help="W10-f05: a placement layer (a name in $VERA_PLACEMENT_LAYER_ROOT, or a path) put on the base placement: it answers only for the words the base leaves undecided. Sets VERA_PLACEMENT_LAYER.")
     p.set_defaults(fn=cmd_chat)
 
     p = sub.add_parser("math", help="wire arithmetic / typed equations")
@@ -2397,6 +2804,24 @@ def main(argv: Optional[list] = None) -> int:
                    help="measure the weight instead of using it")
     p.add_argument("--write", metavar="OUT",
                    help="bake the placement into a copy of the store")
+    # W10-f05: `vera placement grow|growth` (the first argument is then `grow` or `growth`, not a store)
+    p.add_argument("--documents", nargs="+", default=None, help="W10-f05 grow: the documents (files or folders) whose vocabulary grows the layer")
+    p.add_argument("--layer", default=None, help="W10-f05 grow|growth: the placement layer (a name in $VERA_PLACEMENT_LAYER_ROOT, or a path)")
+    p.add_argument("--backend", choices=["ollama", "openai", "fake"], default=None, help="W10-f05 grow: the back end that is asked for declarations")
+    p.add_argument("--model", default=None, help="W10-f05 grow: the model (not needed for --backend fake)")
+    p.add_argument("--ledger-file", default=None, dest="ledger_file", help="W10-f05 grow|growth: the testimony ledger every declaration is written to")
+    p.add_argument("--placement", default=None, help="W10-f05 grow|growth: the BASE placement directory (without it: VERA_PLACEMENT)")
+    p.add_argument("--min-sources", type=int, default=1, dest="min_sources", help="W10-f05 grow: documents that must back a declaration (default 1; the thresholds themselves are not lowered)")
+    p.add_argument("--max-words", type=int, default=200, dest="max_words", help="W10-f05 grow: candidate words asked (more are counted as skipped_budget)")
+    p.add_argument("--batch-size", type=int, default=10, dest="batch_size", help="W10-f05 grow: words per question")
+    p.add_argument("--send-sentences", action="store_true", dest="send_sentences", help="W10-f05 grow: send the sentences themselves to the back end (default: only typed shapes; the ledger marks it)")
+    p.add_argument("--fake-table", default=None, dest="fake_table", help="W10-f05 grow --backend fake: a JSON table word -> declaration")
+    p.add_argument("--fake-script", default=None, dest="fake_script", help="W10-f05 grow --backend fake: a jsonl script (llm_backend.FakeBackend)")
+    p.add_argument("--dump-sent", default=None, dest="dump_sent", help="W10-f05 grow: write what was sent to the back end (jsonl)")
+    p.add_argument("--ollama-url", default="http://127.0.0.1:11434", dest="ollama_url", help="W10-f05 grow: the Ollama server (local only)")
+    p.add_argument("--llm-timeout", type=float, default=180.0, dest="llm_timeout", help="W10-f05 grow: seconds to wait for the back end")
+    p.add_argument("--api-base", default=None, dest="api_base", help="W10-f05 grow --backend openai: the API base (else VERA_LLM_API_BASE)")
+    p.add_argument("--list", action="store_true", help="W10-f05 growth: list the words of the layer")
     p.set_defaults(fn=cmd_placement)
 
     p = sub.add_parser(
@@ -2497,7 +2922,7 @@ def main(argv: Optional[list] = None) -> int:
                          "only needed if a request sets \"backend\": \"jgen\"")
     # W10-f01: one entrance for OpenAI-compatible (/v1/chat/completions) and Ollama-compatible (/api/chat) clients (docs/FUSION.md).
     # NOT `--store`: the top-level --store (CrossStore path) would be overwritten by a sub-parser default (D1); the sovereign is named by the two options below.
-    p.add_argument("--backend", choices=["ollama"], default=None,
+    p.add_argument("--backend", choices=["ollama", "openai"], default=None,
                    help="W10-f01: put Vera in front of a local LLM (layer 0: the LLM answers, every sentence is typed record/testimony/constructed/unread)")
     p.add_argument("--model", default=None, help="W10-f01: the Ollama model the entrance calls (required with --backend)")
     p.add_argument("--document", action="append", default=None, help="W10-f01: a document (file or folder) that is the record; repeatable")
@@ -2508,6 +2933,19 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--placement", default=None, help="W10-f01: sets VERA_PLACEMENT (the placement directory; without it a factual question has no typed candidate)")
     p.add_argument("--ollama-url", default="http://127.0.0.1:11434", dest="ollama_url", help="W10-f01: the Ollama server")
     p.add_argument("--llm-timeout", type=float, default=180.0, dest="llm_timeout", help="W10-f01: seconds to wait for the LLM before LLM_UNAVAILABLE (TIMEOUT)")
+    p.add_argument("--api-base", default=None, dest="api_base", help="W10-f04: the OpenAI-compatible API base for --backend openai (else VERA_LLM_API_BASE); the key is VERA_LLM_API_KEY")
+    # W10-f04 (docs/FUSION.md section 6): the candidate mouth. Off unless --fill: without it nothing in any output changes.
+    p.add_argument("--fill", action="store_true", help="W10-f04: ask the LLM for candidates for typed holes (testimony only, written to --ledger-file; never a record)")
+    p.add_argument("--ledger-file", default=None, dest="ledger_file", help="W10-f04: the testimony ledger (append-only, hash-chained); required with --fill")
+    p.add_argument("--fill-model", default=None, dest="fill_model", help="W10-f04: the model that proposes candidates (default: --model)")
+    p.add_argument("--no-mask-user-text", action="store_true", dest="no_mask_user_text", help="W10-f04: send the user's sentence to the backend (the default is to send only the hole, the types and the roles)")
+    p.add_argument("--fill-max-holes", type=int, default=30, dest="fill_max_holes", help="W10-f04: holes asked when the documents are loaded (more are counted as skipped_holes)")
+    p.add_argument("--layer", default=None, help="W10-f05: a placement layer (a name in $VERA_PLACEMENT_LAYER_ROOT, or a path) put on the base placement: it answers only for the words the base leaves undecided. Sets VERA_PLACEMENT_LAYER." + " `vera.placement_layer` is added to each response.")
+    p.add_argument("--strict-read", action="store_true", dest="strict_read", help="W3-e2: re-read the sentences of the LLM's reply strictly (no assumed reading). Without it (and VERA_READ_MODE) the default is assume: a sentence that stops only on a premise is read with the assumption put out in `vera.provenance` (an arm of kind `assumed`; never a record). NOT the layer-1 `--strict`")
+    # W12-c1 (docs/INITIAL_LAYERS.md section 6): the entrance that never calls an LLM. Without --no-llm none of these does anything (--profile and --tier are refused).
+    p.add_argument("--no-llm", action="store_true", dest="no_llm", help="W12-c1: never call an LLM: a record answers, everything else is a typed abstention; `vera.confidence_tiers` is added to each response")
+    p.add_argument("--profile", choices=["strict", "assume"], default=None, help="W12-c1 (with --no-llm): strict (default) or assume (the assumed reading arrives with W3-e3: until then the answer is strict's and says assumptions_status)")
+    p.add_argument("--tier", action="append", default=None, help="W12-c1 (with --no-llm): NAME=SPEC, a stage of the staircase (vocab=<vocab.sqlite>, law=<layer>, law+user=<layer>); repeatable. The base stage is implicit.")
     p.set_defaults(fn=cmd_serve)
 
     p = sub.add_parser("setup", help="interactive settings (LLM, allocation)")
@@ -2557,6 +2995,9 @@ def main(argv: Optional[list] = None) -> int:
     p.set_defaults(fn=cmd_push_store)
 
     args = ap.parse_args(argv)
+    if getattr(args, "cmd", None) in ("read", "ask", "chat", "serve") and getattr(args, "layer", None):
+        import os
+        os.environ["VERA_PLACEMENT_LAYER"] = args.layer       # W10-f05: read before any placement or document is read, like --sovereign-root
     # resolve store: --store > config > default
     if getattr(args, "store", None) is None:
         from .config import VeraConfig

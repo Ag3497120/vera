@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import concurrent.futures
 import json
+import os
 import queue
 import threading
 import time
@@ -88,8 +89,30 @@ class FusionConfig:
     """`vera serve --backend ollama` の設定。`records` は起動時に 1 回読んだ文書。`llm_chat` を差し込むと LLM を差し替えられる（テスト）。"""
 
     def __init__(self, *, model: str, documents, records, strict: bool = False, ollama_url: str = "http://127.0.0.1:11434",
-                 timeout: float = 180.0, llm_chat: Optional[Callable] = None) -> None:
+                 timeout: float = 180.0, llm_chat: Optional[Callable] = None, backend: str = "ollama", api_base: Optional[str] = None,
+                 api_key: Optional[str] = None, fill: Any = None, layer: Optional[str] = None, read_mode: str = "assume", assume_ledger: Any = None) -> None:
         self.model = model
+        if read_mode not in ("strict", "assume"):
+            raise FusionBadRequest("BAD_READ_MODE", "read_mode must be strict or assume")
+        self.read_mode = read_mode            # W3-e2 (K333): the sentences of the LLM's reply are re-read with stage E2 in `assume`; the RECORD's sentences are always read strictly (D15)
+        self.assume_ledger = assume_ledger    # W3-e2: a testimony ledger every assumption is written to (and whose promotable rows are a source), or None
+        self.layer = None                     # W10-f05: a placement layer (a name or a path) or None (nothing in any output changes)
+        if layer is not None and str(layer).strip() != "":
+            from . import placement_layer as PL
+            env = PL.spec_from_env()
+            if env is not None and env != layer:
+                raise FusionBadRequest("LAYER_ENV_CONFLICT", "layer %r and %s=%r disagree" % (layer, PL.ENV_LAYER, env))
+            os.environ[PL.ENV_LAYER] = str(layer)     # the reader reaches the layer through coarse_place.query, which reads this variable (K297: unset = the base alone)
+            self.layer = str(layer)
+        else:                                 # no --layer: the environment alone (VERA_PLACEMENT_LAYER) also makes the layer work for the reader, so the answer must say so (unset: nothing changes, K297)
+            from . import placement_layer as PL
+            env = PL.spec_from_env()
+            if env is not None:
+                self.layer = str(env)
+        self.backend = backend                # W10-f04 (O6): "ollama" (default, as before) or "openai" (llm_backend)
+        self.api_base, self.api_key = api_base, api_key
+        self.fill = fill                      # W10-f04: a fill_candidates.FillConfig, or None (the candidate mouth is off: nothing in the output changes)
+        self.fill_stats: Dict[str, Any] = {}
         self.documents = list(documents)
         self.records = records
         self.strict = bool(strict)
@@ -100,18 +123,57 @@ class FusionConfig:
         # （coarse_place は禁止ファイル）、ThreadingHTTPServer はリクエストごとにスレッドを作るため。LLM の呼び出しはこのスレッドの外。
         self._vera_thread = concurrent.futures.ThreadPoolExecutor(max_workers=1, thread_name_prefix="vera-fusion")
 
+    def assume_config(self) -> Any:
+        """W3-e2: the `AssumeConfig` of stage E2 for the sentences of a reply: the documents (source (c)), the ledger when there is one, NO back end (serve never asks a model for a type: the reply
+        is already a model's, and a testimony would be asked about a testimony). None in strict mode."""
+        if self.read_mode != "assume":
+            return None
+        from . import semantic_read
+        return semantic_read.AssumeConfig(documents=self.documents, ledger=self.assume_ledger)
+
     def run_vera(self, fn: Callable, *args: Any, **kwargs: Any) -> Any:
         """Vera の側の処理を専用スレッドで実行して結果を返す（例外はそのまま呼び出し側に出る）。"""
         return self._vera_thread.submit(fn, *args, **kwargs).result()
 
     @classmethod
     def load(cls, *, model: str, documents, strict: bool = False, ollama_url: str = "http://127.0.0.1:11434",
-             timeout: float = 180.0, llm_chat: Optional[Callable] = None) -> "FusionConfig":
+             timeout: float = 180.0, llm_chat: Optional[Callable] = None, backend: str = "ollama", api_base: Optional[str] = None,
+             api_key: Optional[str] = None, fill: Any = None, layer: Optional[str] = None, read_mode: str = "assume", assume_ledger: Any = None) -> "FusionConfig":
         """文書の読み込み（各文の再読）も専用スレッドで行う入口。本番の起動（cli）はこれを使う。"""
         from . import decode_grammar as G
-        self = cls(model=model, documents=documents, records=None, strict=strict, ollama_url=ollama_url, timeout=timeout, llm_chat=llm_chat)
+        self = cls(model=model, documents=documents, records=None, strict=strict, ollama_url=ollama_url, timeout=timeout, llm_chat=llm_chat,
+                   backend=backend, api_base=api_base, api_key=api_key, fill=fill, layer=layer, read_mode=read_mode, assume_ledger=assume_ledger)
         self.records = self.run_vera(G.load_records, list(documents))
+        if fill is not None:                  # W10-f04 (8): the unread sentences of the documents get the candidate mouth; the record is NOT changed (only the ledger is written)
+            self.run_vera(self._fill_documents)
         return self
+
+    def backend_chat(self, max_tokens: Optional[int] = None) -> Callable:
+        """`(model, messages, fmt) -> {ok, content, usage, error}` of the entrance's backend (an injected `llm_chat` first)."""
+        if self.llm_chat is not None:
+            return self.llm_chat
+        if self.backend == "openai":
+            from .llm_backend import make_chat
+            return make_chat("openai", timeout=self.timeout, max_tokens=max_tokens, api_base=self.api_base, api_key=self.api_key)
+        return lambda model, msgs, f: _ollama_chat(self.ollama_url, model, msgs, f, self.timeout, max_tokens)
+
+    def _fill_documents(self) -> None:
+        from . import fill_candidates as FC
+        fill = self.fill
+        chat, model = fill.chat or self.backend_chat(), fill.model or self.model
+        budget = [fill.max_doc_holes]
+        stats = {"sentences_with_holes": 0, "holes_asked": 0, "adopted": 0, "skipped_holes": 0, "not_adopted": 0, "backend_failed": 0}
+        for rec in self.records.records:
+            if self.records.crosses.get(rec["id"]) is not None:
+                continue
+            res = FC.fill_sentence(rec["text"], fill, chat, model, records=self.records, doc_id=self.records.where[rec["id"]]["source"], budget=budget)
+            stats["skipped_holes"] += res["skipped"]
+            if res["decisions"]:
+                stats["sentences_with_holes"] += 1
+            for d in res["decisions"]:
+                stats["holes_asked"] += 1
+                stats["adopted" if d.status == "ADOPTED" else "backend_failed" if d.status == "BACKEND_FAILED" else "not_adopted"] += 1
+        self.fill_stats = stats
 
 
 class FusionBadRequest(Exception):
@@ -120,48 +182,7 @@ class FusionBadRequest(Exception):
         self.error, self.detail = error, detail
 
 
-def _ollama_chat(url: str, model: str, messages, fmt, timeout: float = 180.0, max_tokens: Optional[int] = None) -> Dict[str, Any]:
-    """Ollama の /api/chat を標準ライブラリで呼ぶ。失敗は型つき: TIMEOUT・CONNECT_FAILED・HTTP_ERROR・BAD_RESPONSE。"""
-    import socket
-    import urllib.error
-    import urllib.request
-
-    body: Dict[str, Any] = {"model": model, "messages": list(messages), "stream": False, "think": False, "options": {"temperature": 0}}
-    if fmt is not None:
-        body["format"] = fmt
-    elif max_tokens is not None:                  # a grammar bounds its own output; only the free answer of layer 0 is cut here
-        body["options"]["num_predict"] = max_tokens
-    req = urllib.request.Request(url.rstrip("/") + "/api/chat", data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
-                                 headers={"Content-Type": "application/json"})
-
-    def fail(kind: str, detail: str) -> Dict[str, Any]:
-        return {"ok": False, "content": None, "error": {"type": kind, "detail": detail}}
-
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            raw = resp.read()
-    except urllib.error.HTTPError as exc:
-        return fail("HTTP_ERROR", "%s %s" % (exc.code, exc.read()[:200].decode("utf-8", "replace")))
-    except (socket.timeout, TimeoutError) as exc:
-        return fail("TIMEOUT", str(exc) or "timed out")
-    except urllib.error.URLError as exc:
-        if isinstance(exc.reason, (socket.timeout, TimeoutError)):
-            return fail("TIMEOUT", str(exc.reason) or "timed out")
-        return fail("CONNECT_FAILED", str(exc.reason))
-    except OSError as exc:
-        return fail("CONNECT_FAILED", "%s: %s" % (type(exc).__name__, exc))
-    try:
-        data = json.loads(raw)
-        content = data["message"]["content"]
-    except (ValueError, KeyError, TypeError):
-        return fail("BAD_RESPONSE", raw[:200].decode("utf-8", "replace"))
-    if not isinstance(content, str):
-        return fail("BAD_RESPONSE", "message.content is not a string")
-    usage = {}
-    if isinstance(data.get("prompt_eval_count"), int) and isinstance(data.get("eval_count"), int):
-        usage = {"prompt_tokens": data["prompt_eval_count"], "completion_tokens": data["eval_count"],
-                 "total_tokens": data["prompt_eval_count"] + data["eval_count"]}
-    return {"ok": True, "content": content, "error": None, "usage": usage}
+from .llm_backend import _ollama_chat      # W10-f04 (O6): the body moved to llm_backend.py; the name stays here (fusion_turn and the tests look it up in this module at call time)
 
 
 def _last_user_text(messages) -> str:
@@ -174,6 +195,8 @@ def _last_user_text(messages) -> str:
 
 def fusion_turn(messages, vera_opts, cfg: FusionConfig, max_tokens: Optional[int] = None) -> Dict[str, Any]:
     """1 ターン（設計書 §5 の (1)〜(6)）。{"content","vera","usage"}。入力が不正なら FusionBadRequest。"""
+    if getattr(cfg, "tiers", None) is not None:       # W12-c1: `serve --no-llm --tier ...` -- the staircase runs each stage through this same function (confidence_tiers.TierRunner)
+        return cfg.tiers.turn(messages, vera_opts, cfg, max_tokens)
     from . import basis_policy as bp
     from . import decode_grammar as G
     if not isinstance(messages, list) or not all(isinstance(m, dict) for m in messages):
@@ -195,21 +218,101 @@ def fusion_turn(messages, vera_opts, cfg: FusionConfig, max_tokens: Optional[int
         t = G.plan_turn(question, rk, cfg.records, cfg.documents, strict=cfg.strict)
         return t, (G.llm_messages(t, messages, cfg.records) if t["call_llm"] else None)
     turn, llm_msgs = cfg.run_vera(_plan)
+    if getattr(cfg, "no_llm", False):                 # W12-c1: the entrance that never calls an LLM (confidence_tiers.no_llm_plan)
+        from . import confidence_tiers as CT
+        turn, llm_msgs = CT.no_llm_plan(turn), None
     llm = None
     llm_ms = 0.0
     if turn["call_llm"]:
         fmt = turn["grammar"]["json_schema"] if turn["grammar"] else None
         t1 = time.perf_counter()
-        chat = cfg.llm_chat or (lambda model, msgs, f: _ollama_chat(cfg.ollama_url, model, msgs, f, cfg.timeout, max_tokens))
+        chat = cfg.llm_chat or (cfg.backend_chat(max_tokens) if cfg.backend != "ollama" else (lambda model, msgs, f: _ollama_chat(cfg.ollama_url, model, msgs, f, cfg.timeout, max_tokens)))
         try:
             llm = chat(cfg.model, llm_msgs, fmt)
         except Exception as exc:       # 差し込まれた LLM も本物も、落とさずに型で返す
             llm = {"ok": False, "content": None, "error": {"type": "CONNECT_FAILED", "detail": "%s: %s" % (type(exc).__name__, exc)}}
         llm_ms = (time.perf_counter() - t1) * 1000.0
-    content, vera = cfg.run_vera(G.conclude, turn, llm, cfg.records, model=cfg.model, human_present=human)
+    content, vera = cfg.run_vera(G.conclude, turn, llm, cfg.records, model=cfg.model, human_present=human, read_mode=cfg.read_mode, assume=cfg.assume_config())
+    fill_llm_ms = 0.0
+    if cfg.fill is not None:      # W10-f04 (7): the candidate mouth only ANNOTATES `vera` (provenance arms, holes, ledger ids); the content and the outcome are already decided
+        fill_llm_ms = cfg.run_vera(_fill_annotate, cfg, turn, vera)
     total_ms = (time.perf_counter() - t0) * 1000.0
-    vera["timing"] = {"vera_ms": round(total_ms - llm_ms, 3), "llm_ms": round(llm_ms, 3)}
+    if getattr(cfg, "no_llm", False):
+        CT.no_llm_annotate(turn, vera)
+    vera["timing"] = {"vera_ms": round(total_ms - llm_ms - fill_llm_ms, 3), "llm_ms": round(llm_ms, 3)}
+    if cfg.fill is not None:
+        vera["timing"]["fill_llm_ms"] = round(fill_llm_ms, 3)
+    if cfg.layer is not None:                 # W10-f05: the LAST key of `vera`; `vera.layer` (the fusion layer 0/1) is a different thing and stays as it was
+        vera["placement_layer"] = cfg.run_vera(_layer_summary, cfg)
     return {"content": content, "vera": vera, "usage": (llm or {}).get("usage") or {}}
+
+
+def _layer_summary(cfg: FusionConfig) -> Dict[str, Any]:
+    """W10-f05 (docs/FUSION.md section 7): `{name, status, growth: {words_direct, words_human, words_estimated, last_grown}}` of the layer the entrance was started with."""
+    from . import coarse_place
+    from . import placement_layer as PL
+    base_pl, _why = coarse_place._open(os.environ.get("VERA_PLACEMENT"))
+    g = PL.growth(cfg.layer, None, getattr(base_pl, "sha", None))
+    path, name, _w = PL.resolve(cfg.layer)
+    if g.get("layer_status") != "OK":
+        return {"name": name or cfg.layer, "status": g.get("layer_status"), "growth": None}
+    return {"name": g["layer"], "status": "OK", "growth": {"words_direct": g["words"]["direct"], "words_human": g["words"]["human"],
+                                                          "words_estimated": g["words"]["estimated"], "last_grown": g["last_grown"]}}
+
+
+def _fill_annotate(cfg: FusionConfig, turn: Dict[str, Any], vera: Dict[str, Any]) -> float:
+    """W10-f04 (7)(8): for each unread sentence of the LLM's output that has a typed hole, and for the declarative form of a question the reader could not read because of a filler, ask the candidate
+    mouth. An adopted candidate becomes the arm of that sentence in `vera.provenance` with kind `testimony_fill` (origin testimony; the sentence stays testimony / constructed: never a record); what stays
+    a hole is in `vera.holes`; every ledger row written is in `vera.ledger_ids`. Nothing here changes `content` or `outcome` (K283). Returns the milliseconds spent in the backend."""
+    from . import fill_candidates as FC
+    from . import semantic_read
+    fill = cfg.fill
+    chat, model = fill.chat or cfg.backend_chat(), fill.model or cfg.model
+    holes: list = []
+    ids: list = []
+    llm_ms = 0.0
+
+    def note(source: str, index: Optional[int], res: Dict[str, Any], text: str) -> None:
+        nonlocal llm_ms
+        for h in res["holes"]:
+            dec = h.get("decision")
+            if dec is not None:
+                ids.append(dec["fill_id"]); llm_ms += (dec.get("timing") or {}).get("llm_ms", 0.0)
+            if dec is None or dec["status"] != "ADOPTED":
+                holes.append({"source": source, "sentence_index": index, "particle": h["particle"], "head": h["head"], "arm": h["arm"], "expected_types": h["expected_types"],
+                              "role_candidates": h["role_candidates"], "status": None if dec is None else dec["status"], "reason": "HOLE_BUDGET_EXHAUSTED" if dec is None else dec["reason"],
+                              "ledger_id": None if dec is None else dec["fill_id"], "clarify": None})
+    prov = vera.get("provenance") or []
+    for i, item in enumerate(prov):
+        if item.get("read") or item.get("mark") != "UNREAD" or item.get("sentence_kind") == "record":
+            continue
+        res = FC.fill_sentence(item["text"], fill, chat, model, records=cfg.records, doc_id="llm_output")
+        note("llm_output", i, res, item["text"])
+        for h in res["holes"]:
+            dec = h.get("decision")
+            if dec is not None and dec["status"] == "ADOPTED":
+                role = h["arm"] or "?"
+                item.setdefault("arms", {})[role] = {"surface": dec["candidate"], "kind": "testimony_fill", "evidence": [], "hole_word": h["head"], "candidate": dec["candidate"],
+                                                     "basis": dec["basis"], "ledger_id": dec["fill_id"], "origin": "testimony"}
+    reading = turn.get("reading") or {}
+    if reading.get("type") in ("STRUCTURE_UNDETERMINED", "NO_RECORD") and turn.get("question"):
+        try:
+            q = semantic_read.read_question(turn["question"], placement=fill.placement)
+        except semantic_read.ReadError:
+            q = None
+        decl = ((q or {}).get("question") or {}).get("declarative")
+        if isinstance(decl, str) and decl:
+            res = FC.fill_sentence(decl, fill, chat, model, records=cfg.records, doc_id="question")
+            note("question", None, res, decl)
+            for h in res["holes"]:                                    # a clarifying candidate is shown beside the answer, never inside `content`
+                dec = h.get("decision")
+                if dec is not None and dec["status"] == "ADOPTED":
+                    holes.append({"source": "question", "sentence_index": None, "particle": h["particle"], "head": h["head"], "arm": h["arm"], "expected_types": h["expected_types"],
+                                  "role_candidates": h["role_candidates"], "status": "ADOPTED", "reason": "ADOPTED", "ledger_id": dec["fill_id"],
+                                  "clarify": "「%s」は「%s」のことですか？（証言: LLM の候補。記録の裏づけはありません）" % (h["head"], dec["candidate"])})
+    vera["holes"] = holes
+    vera["ledger_ids"] = ids
+    return llm_ms
 
 
 def _fusion_openai_body(cfg: FusionConfig, res: Dict[str, Any], rid: str, created: int) -> Dict[str, Any]:

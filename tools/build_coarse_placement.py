@@ -14,6 +14,7 @@ word segmentation and the coarse grammatical class (pos1 / pos2 / orthBase).
 from __future__ import annotations
 
 import argparse
+import datetime
 import hashlib
 import itertools
 import json
@@ -1109,11 +1110,23 @@ CREATE TABLE generated_frames(word TEXT PRIMARY KEY, model TEXT, effort TEXT, ba
   attempt INTEGER, ptype TEXT, frame TEXT) WITHOUT ROWID;
 """
 
+# W3-a6: optional tables are deliberately outside ``SCHEMA``.  A build without the
+# two new inputs keeps the table inventory and content hash of its earlier version.
+SCHEMA_GEN_NOUN_TYPES = """
+CREATE TABLE generated_noun_types(word TEXT PRIMARY KEY, model TEXT, effort TEXT, batch_id TEXT,
+  attempt INTEGER, definition TEXT, types TEXT) WITHOUT ROWID;
+"""
+SCHEMA_ROLE_FRAMES = """
+CREATE TABLE role_frames(word TEXT PRIMARY KEY, model TEXT, effort TEXT, batch_id TEXT,
+  attempt INTEGER, frame TEXT) WITHOUT ROWID;
+"""
+
 TABLE_ORDER = [("headwords", "word"), ("evidence", "word,arm,src,type"),
                ("unit_kin", "unit,pos,type"), ("unit_sample", "unit,pos"),
                ("atoms", "ch"), ("ctx", "src,particle,pred,type"),
                ("counters", "unit"), ("meta", "k"), ("generated", "word"),
-               ("generated_frames", "word")]
+               ("generated_frames", "word"), ("generated_noun_types", "word"),
+               ("role_frames", "word")]
 
 
 def _tables_of(con: sqlite3.Connection):
@@ -1552,6 +1565,7 @@ def _resolve_stage(ex: dict, cfg: dict, allow=None, use_gen: bool = False,
     funnel["words_with_a_met_arm_before_decision"] = 0
     placed_single: Dict[str, str] = {}
     gen_rows = ex.get("gen", {}) if use_gen else {}
+    gen_noun_type_rows = ex.get("gen_noun_types", {}) if use_gen else {}
     gstat: Counter = Counter()
     gen_typed: Dict[str, list] = {}
     gen_used: set = set()
@@ -1651,6 +1665,10 @@ def _resolve_stage(ex: dict, cfg: dict, allow=None, use_gen: bool = False,
                     gen_used.add(w)
                     for t_, n_ in sorted(cnt_.items()):
                         ev.append((w, ct.GEN_ARM, g_["src"], t_, n_, None))
+        if use_gen and w in gen_noun_type_rows and "RELATIVE_POSITION" in gen_noun_type_rows[w]["types"]:
+            if "N" in ns:
+                gnt = gen_noun_type_rows[w]
+                ev.append((w, ct.GEN_RELPOS_ARM, gnt["src"], "RELATIVE_POSITION", 1, None))
         n_votes = len(ev)
         if ns == "NP":
             funnel["ns_conflict_or_tied_words"] += 1
@@ -1825,6 +1843,77 @@ def resolve_all(ex: dict, cfg: dict) -> dict:
     return res
 
 
+def _generated_noun_types_table(rows: dict, headwords: Sequence[tuple], evidence: Sequence[tuple], cfg: dict):
+    """Keep all accepted generated noun claims in the material, and count their placement outcomes."""
+    head = {r[0]: r[1] for r in headwords}
+    by_word: Dict[str, list] = defaultdict(list)
+    for row in evidence:
+        by_word[row[0]].append(row)
+    outcomes: Counter = Counter()
+    table = []
+    for word, claim in sorted(rows.items()):
+        if "RELATIVE_POSITION" in claim["types"]:
+            outcomes["relpos_declared"] += 1
+        if word not in head:
+            outcomes["not_in_material"] += 1
+            continue
+        table.append((word, claim["model"], claim["effort"], claim["batch_id"], claim["attempt"],
+                      claim["definition"], stable_json(claim["types"])))
+        if "RELATIVE_POSITION" not in claim["types"]:
+            continue
+        if "N" not in head[word]:
+            outcomes["ns_not_noun"] += 1
+            continue
+        ev = [(r[1], r[2], r[3], r[4], r[5]) for r in by_word.get(word, ())]
+        dec = ct.decide_word(ev, cfg)
+        arm = dec["arms"].get(ct.GEN_RELPOS_ARM)
+        if arm and arm["why"] in ("RELPOS_ADDED", "GENERATED_NOT_DECIDING"):
+            outcomes[arm["why"]] += 1
+        if dec["state"] == "DECIDED" and dec["origin"] == "direct" and dec["tops"] == ["RELATIVE_POSITION"]:
+            outcomes["direct_relative_position"] += 1
+    for key in ("relpos_declared", "RELPOS_ADDED", "GENERATED_NOT_DECIDING", "direct_relative_position",
+                "ns_not_noun", "not_in_material"):
+        outcomes[key] += 0
+    return table, dict(outcomes)
+
+
+def _role_frames_table(rows: dict, headwords: Sequence[tuple], evidence: Sequence[tuple], cfg: dict):
+    """Keep predicate claims and summarize the same per-source checks used by query."""
+    head = {r[0]: r[1] for r in headwords}
+    by_word: Dict[str, list] = defaultdict(list)
+    for row in evidence:
+        by_word[row[0]].append(row)
+    outcomes: Dict[str, object] = {
+        "CONFIRMED": 0, "ESTIMATED": 0,
+        "confirmed_roles_by_particle": {p: 0 for p in ct.CASE_PARTICLES_9},
+        "confirmed_roles_by_role": {r: 0 for r in ct.ROLE_NAMES},
+        "unconfirmed_by_why": {w: 0 for w in ct.ROLE_UNCONFIRMED_WHY},
+        "split": 0, "not_in_material": 0, "ns_not_predicate": 0,
+    }
+    table = []
+    for word, claim in sorted(rows.items()):
+        if word not in head:
+            outcomes["not_in_material"] += 1
+            continue
+        if "P" not in head[word]:
+            outcomes["ns_not_predicate"] += 1
+            continue
+        table.append((word, claim["model"], claim["effort"], claim["batch_id"], claim["attempt"],
+                      stable_json(claim["frame"])))
+        ev = [(r[1], r[2], r[3], r[4], r[5]) for r in by_word.get(word, ())]
+        checked = ct.role_frame_check(claim["frame"], ev, cfg)
+        outcomes[checked["status"]] += 1
+        for particle, roles in checked["confirmed"].items():
+            for role in roles:
+                outcomes["confirmed_roles_by_particle"][particle] += 1
+                outcomes["confirmed_roles_by_role"][role["role"]] += 1
+        for roles in checked["unconfirmed"].values():
+            for role in roles:
+                outcomes["unconfirmed_by_why"][role["why"]] += 1
+        outcomes["split"] += sum(len(arm["split"]) for arm in checked["arms"].values())
+    return table, outcomes
+
+
 def read_generated(path: str, excl_terms: Sequence[str], tagger):
     """Read ``definitions.jsonl`` (written by tools/gen_coarse_evidence.py collect).
 
@@ -1982,6 +2071,176 @@ def _gen_frames_part(path: str, ledger: Optional[str], excl_terms: Sequence[str]
     info["models"] = sorted("%s:%s" % m for m in used_m)
     info["model"] = sorted({m for m, _e in used_m})[0] if used_m else None
     info["effort"] = sorted({e for _m, e in used_m})[0] if used_m else None
+    return rows, info
+
+
+def _generation_exclusion_pattern(excl_terms: Sequence[str]):
+    return (re.compile("|".join(re.escape(t) for t in sorted(excl_terms, key=len, reverse=True)))
+            if excl_terms else None)
+
+
+def _read_generated_unique(path: str, drops: Counter):
+    """Read JSONL rows and drop every occurrence of a duplicated word."""
+    raw: Dict[str, dict] = {}
+    dup = set()
+    lines = 0
+    for line in open(path, encoding="utf-8"):
+        line = line.strip()
+        if not line:
+            continue
+        lines += 1
+        item = json.loads(line)
+        if not isinstance(item, dict) or not isinstance(item.get("word"), str) or not item["word"]:
+            drops["invalid"] += 1
+            continue
+        word = item["word"]
+        if word in raw or word in dup:
+            dup.add(word)
+            raw.pop(word, None)
+        else:
+            raw[word] = item
+    drops["dup_word"] = len(dup)
+    return raw, lines
+
+
+def _generation_provenance(item: dict):
+    p = item.get("provenance")
+    return p if isinstance(p, dict) else {}
+
+
+def read_generated_noun_types(path: str, excl_terms: Sequence[str]):
+    """Read generated noun definitions and type claims; generated rows remain testimony."""
+    drops: Counter = Counter({"abstained": 0, "invalid": 0, "excluded_term": 0})
+    raw, lines = _read_generated_unique(path, drops)
+    rx = _generation_exclusion_pattern(excl_terms)
+    rows: Dict[str, dict] = {}
+    for word in sorted(raw):
+        item = raw[word]
+        definition, types = item.get("definition"), item.get("types")
+        if definition is None and types == []:
+            drops["abstained"] += 1
+            continue
+        if (not isinstance(definition, str) or not definition.strip() or not isinstance(types, list)
+                or len(types) > 2 or any(not isinstance(t, str) for t in types)
+                or len(types) != len(set(types))
+                or any(t not in ct.NOUN_TYPES for t in types)
+                or item.get("abstained") is True):
+            drops["invalid"] += 1
+            continue
+        if rx is not None and (rx.search(word) or rx.search(definition)):
+            drops["excluded_term"] += 1
+            continue
+        pv = _generation_provenance(item)
+        rows[word] = {"definition": definition, "types": sorted(types),
+                      "model": pv.get("model"), "effort": pv.get("effort"),
+                      "batch_id": pv.get("batch_id"), "attempt": pv.get("attempt"),
+                      "src": "generated:%s:%s" % (pv.get("model"), pv.get("effort"))}
+    return rows, drops, lines
+
+
+def read_role_frames(path: str, excl_terms: Sequence[str]):
+    """Read generated role frames, rejecting malformed entries without selecting a winner."""
+    drops: Counter = Counter({"abstained": 0, "invalid": 0, "excluded_term": 0})
+    raw, lines = _read_generated_unique(path, drops)
+    rx = _generation_exclusion_pattern(excl_terms)
+    rows: Dict[str, dict] = {}
+    for word in sorted(raw):
+        item = raw[word]
+        frame = item.get("frame")
+        if frame is None:
+            drops["abstained"] += 1
+            continue
+        if not isinstance(frame, dict) or item.get("abstained") is True:
+            drops["invalid"] += 1
+            continue
+        clean: Dict[str, list] = {}
+        valid = True
+        for particle, entries in frame.items():
+            if particle not in ct.CASE_PARTICLES_9 or not isinstance(entries, list):
+                valid = False
+                break
+            roles = set()
+            clean_entries = []
+            for entry in entries:
+                if not isinstance(entry, dict):
+                    valid = False
+                    break
+                role, types = entry.get("role"), entry.get("types")
+                if (role not in ct.ROLE_NAMES or role in roles or not isinstance(types, list) or not types
+                        or any(not isinstance(t, str) for t in types) or len(types) != len(set(types))
+                        or any(t not in ct.FRAME_NOUN_TYPES for t in types)):
+                    valid = False
+                    break
+                roles.add(role)
+                clean_entries.append({"role": role, "types": sorted(types)})
+            if not valid:
+                break
+            clean[particle] = sorted(clean_entries, key=lambda r: ct.ROLE_NAMES.index(r["role"]))
+        if not valid:
+            drops["invalid"] += 1
+            continue
+        if rx is not None and rx.search(word):
+            drops["excluded_term"] += 1
+            continue
+        pv = _generation_provenance(item)
+        ordered = {p: clean[p] for p in ct.CASE_PARTICLES_9 if p in clean}
+        rows[word] = {"frame": ordered, "model": pv.get("model"), "effort": pv.get("effort"),
+                      "batch_id": pv.get("batch_id"), "attempt": pv.get("attempt"),
+                      "src": "generated:%s:%s" % (pv.get("model"), pv.get("effort"))}
+    return rows, drops, lines
+
+
+def _generation_ledger_info(ledger: Optional[str], info: dict):
+    if not ledger:
+        info.update({"calls": None, "batches_ok": None, "batches_failed": None,
+                     "wall_sec": None, "sum_call_sec": None})
+        return
+    events = [json.loads(line) for line in open(ledger, encoding="utf-8") if line.strip()]
+    starts = [e for e in events if e.get("ev") == "start"]
+    ends = [e for e in events if e.get("ev") == "end"]
+    ok = {e.get("batch") for e in ends if e.get("status") == "ok"}
+    all_batches = {e.get("batch") for e in events if e.get("batch") is not None}
+    started = [datetime.datetime.fromisoformat(e["t"]).timestamp() for e in starts if e.get("t")]
+    ended = [datetime.datetime.fromisoformat(e["t"]).timestamp() for e in ends if e.get("t")]
+    info.update({"ledger_path": os.path.abspath(ledger), "ledger_sha256": sha256_file(ledger),
+                 "calls": len(starts), "batches_ok": len(ok), "batches_failed": len(all_batches - ok),
+                 "wall_sec": round(max(ended) - min(started), 1) if started and ended else None,
+                 "sum_call_sec": round(sum(float(e.get("sec") or 0) for e in ends), 1)})
+
+
+def _generated_part(path: str, ledger: Optional[str], excl_terms: Sequence[str], reader):
+    started = time.time()
+    rows, drops, lines = reader(path, excl_terms)
+    info = {"path": os.path.abspath(path), "sha256": sha256_file(path), "lines": lines,
+            "rows_read": len(rows), "dropped_by_reason": dict(drops),
+            "read_sec": round(time.time() - started, 1)}
+    _generation_ledger_info(ledger, info)
+    summary_path = os.path.join(os.path.dirname(os.path.abspath(path)), "summary.json")
+    if os.path.isfile(summary_path):
+        summary = json.load(open(summary_path, encoding="utf-8"))
+        summary_fields = (
+            "kind", "model", "effort", "words_requested", "words_answered",
+            "words_abstained", "words_missing", "words_invalid", "words_dup_dropped",
+            "words_foreign_dropped", "words_no_type", "words_frame_dup_particle",
+            "words_role_dup", "calls", "batches_total", "batches_ok", "batches_failed",
+            "wall_sec", "sum_call_sec",
+        )
+        info["generation_summary_path"] = os.path.abspath(summary_path)
+        info["generation_summary_sha256"] = sha256_file(summary_path)
+        info["generation_summary"] = {k: summary[k] for k in summary_fields if k in summary}
+        missing = summary.get("words_missing")
+        abstained = summary.get("words_abstained")
+        if isinstance(missing, int) and isinstance(abstained, int):
+            info["generation_summary"]["words_unavailable_total"] = missing + abstained
+        if not ledger:
+            for key in ("calls", "batches_total", "batches_ok", "batches_failed",
+                        "wall_sec", "sum_call_sec", "model", "effort"):
+                if key in summary:
+                    info[key] = summary[key]
+    models = {(row["model"], row["effort"]) for row in rows.values()}
+    info["models"] = sorted("%s:%s" % pair for pair in models)
+    info["model"] = sorted({model for model, _effort in models})[0] if models else None
+    info["effort"] = sorted({effort for _model, effort in models})[0] if models else None
     return rows, info
 
 
@@ -2324,10 +2583,31 @@ def cmd_build(args) -> int:
             gf_rows = dict(gf_rows, **add_rows)           # the two files share no word (checked before the build)
             gf_info = _merge_gen_frames_infos([gf_info, add_info])
         ex["gen_frames"] = gf_rows
+    # ---- optional W3-a6 claims (kept out of the extraction cache)
+    ex["gen_noun_types"] = {}
+    generated_noun_types_info = None
+    if args.generated_noun_types:
+        ntype_rows, generated_noun_types_info = _generated_part(
+            args.generated_noun_types, args.generated_noun_types_ledger, excl_terms, read_generated_noun_types)
+        ex["gen_noun_types"] = ntype_rows
+    ex["role_frames"] = {}
+    role_frames_info = None
+    if args.role_frames:
+        role_rows, role_frames_info = _generated_part(
+            args.role_frames, args.role_frames_ledger, excl_terms, read_role_frames)
+        ex["role_frames"] = role_rows
     # ---- resolve
     t3 = time.time()
     res = resolve_all(ex, cfg)
     stage_t["resolve_sec"] = round(time.time() - t3, 1)
+    ntype_table, ntype_outcomes = [], None
+    if generated_noun_types_info is not None:
+        ntype_table, ntype_outcomes = _generated_noun_types_table(
+            ex["gen_noun_types"], res["headwords"], res["evidence"], cfg)
+    role_table, role_outcomes = [], None
+    if role_frames_info is not None:
+        role_table, role_outcomes = _role_frames_table(
+            ex["role_frames"], res["headwords"], res["evidence"], cfg)
     # ---- write sqlite
     t4 = time.time()
     os.makedirs(args.out, exist_ok=True)
@@ -2338,6 +2618,10 @@ def cmd_build(args) -> int:
             os.remove(p)
     con = sqlite3.connect(tmp)
     con.executescript(SCHEMA)
+    if generated_noun_types_info is not None:
+        con.executescript(SCHEMA_GEN_NOUN_TYPES)
+    if role_frames_info is not None:
+        con.executescript(SCHEMA_ROLE_FRAMES)
     con.executemany("INSERT INTO headwords VALUES (?,?,?,?,?,?,?,?)", res["headwords"])
     con.executemany("INSERT INTO evidence VALUES (?,?,?,?,?,?)", sorted(set(res["evidence"])))
     con.executemany("INSERT INTO unit_kin VALUES (?,?,?,?)", res["unit_kin"])
@@ -2347,6 +2631,10 @@ def cmd_build(args) -> int:
     con.executemany("INSERT INTO counters VALUES (?,?)", res["counters"])
     con.executemany("INSERT INTO generated VALUES (?,?,?,?,?,?,?,?)", res["gen_table"])
     con.executemany("INSERT INTO generated_frames VALUES (?,?,?,?,?,?,?)", res["gen_frame_table"])
+    if generated_noun_types_info is not None:
+        con.executemany("INSERT INTO generated_noun_types VALUES (?,?,?,?,?,?,?)", ntype_table)
+    if role_frames_info is not None:
+        con.executemany("INSERT INTO role_frames VALUES (?,?,?,?,?,?)", role_table)
     meta = {"config": cfg_text, "types_version": ct.TYPES_VERSION,
             "schema_version": "1", "ctx_global": stable_json(res["ctx_global"])}
     con.executemany("INSERT INTO meta VALUES (?,?)", sorted(meta.items()))
@@ -2416,6 +2704,17 @@ def cmd_build(args) -> int:
         {"name": "unidic-lite via fugashi", "use": "word segmentation, the coarse word class (pos1, pos2) and orthBase ONLY; no finer dictionary sense labels"},
     ]
     materials = [m for m in materials if m]
+    if generated_noun_types_info is not None:
+        materials.append({"name": "generated noun definitions and types (a model wrote them; not a testimony)",
+                          "path": args.generated_noun_types, "origin": "generated",
+                          "model": generated_noun_types_info.get("model"),
+                          "effort": generated_noun_types_info.get("effort"),
+                          "role": "a gen_relpos row only narrows a PLACE decision; never a donor"})
+    if role_frames_info is not None:
+        materials.append({"name": "generated predicate role frames (a model wrote them; not a testimony)",
+                          "path": args.role_frames, "origin": "generated",
+                          "model": role_frames_info.get("model"), "effort": role_frames_info.get("effort"),
+                          "role": "role names are checked against the role_distribution arms per source"})
     manifest = {
         "build_started_at_utc": started, "build_finished_at_utc": now_utc(),
         "duration_sec": round(time.time() - t_start, 1),
@@ -2428,6 +2727,11 @@ def cmd_build(args) -> int:
                  "generated_ledger": args.generated_ledger,
                  "generated_frames": args.generated_frames,
                  "generated_frames_ledger": args.generated_frames_ledger,
+                 **({"generated_noun_types": args.generated_noun_types,
+                     "generated_noun_types_ledger": args.generated_noun_types_ledger}
+                    if args.generated_noun_types else {}),
+                 **({"role_frames": args.role_frames,
+                     "role_frames_ledger": args.role_frames_ledger} if args.role_frames else {}),
                  **({"generated_frames_add": args.generated_frames_add,
                      "generated_frames_add_ledger": args.generated_frames_add_ledger}
                     if args.generated_frames_add else {}),
@@ -2474,6 +2778,18 @@ def cmd_build(args) -> int:
         "types_version": ct.TYPES_VERSION,
         "no_weights_no_models": True,
     }
+    if generated_noun_types_info is not None:
+        manifest["generated_noun_types"] = dict(
+            generated_noun_types_info, used=len(ntype_table),
+            dropped_by_reason=dict(generated_noun_types_info["dropped_by_reason"],
+                                   **{k: ntype_outcomes[k] for k in ("ns_not_noun", "not_in_material")}),
+            outcomes=ntype_outcomes)
+    if role_frames_info is not None:
+        manifest["role_frames"] = dict(
+            role_frames_info, used=len(role_table),
+            dropped_by_reason=dict(role_frames_info["dropped_by_reason"],
+                                   **{k: role_outcomes[k] for k in ("ns_not_predicate", "not_in_material")}),
+            outcomes=role_outcomes)
     if args.compare_to:
         tc = time.time()
         sahen_words = {w for c_ in ex.get("sahen_verb", {}).values() for w in c_}
@@ -2624,6 +2940,14 @@ def main(argv=None) -> int:
                    help="a second frames.jsonl (W3-a4); a word that is in both files stops the build")
     b.add_argument("--generated-frames-add-ledger", default=None,
                    help="the ledger.jsonl of the second frames file")
+    b.add_argument("--generated-noun-types", default=None,
+                   help="noun type claims made by tools/gen_coarse_evidence.py collect --kind ntype")
+    b.add_argument("--generated-noun-types-ledger", default=None,
+                   help="the noun type generator's ledger.jsonl")
+    b.add_argument("--role-frames", default=None,
+                   help="role-frame claims made by tools/gen_coarse_evidence.py collect --kind role")
+    b.add_argument("--role-frames-ledger", default=None,
+                   help="the role-frame generator's ledger.jsonl")
     b.add_argument("--compare-to", default=None,
                    help="a placement directory (read only): the manifest gets the differences to it")
     b.add_argument("--stage-cache", default=None,

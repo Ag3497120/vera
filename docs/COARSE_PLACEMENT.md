@@ -2551,3 +2551,315 @@ def test_all_r6_generated_frame_upgrades():
 - r7（4,788 語）: 重ねた複製（`ov`）と `$W` の答えはバイト一致、R1 の有無（`ov` と `ov0`）でもバイト一致（`$T/q` の `cmp`。このツリーの `h5_frames.jsonl` との一致は上のとおり）。
 - **W3-a4（df4f001）の統合後に効く**: 統合後に r8 で `frame_unconfirmed["へ"] == ["PLACE"]` の 14 語を確かめてほしい。
 <!-- w5e2-r1-measured:end -->
+
+## 12.18 W3-a6: 役割つきの枠・相対位置の語・配置 r9
+
+基点 dev `0041606`、配置 r8/run2 が土台。配置側だけを変える（読解器・方針・cli は触らない。読解器が役割つきの枠を使うのは次のチケット）。
+
+<!-- w3a6-prereg:begin -->
+### 12.18.1 事前登録（測る前に固定。登録の時刻は `artifacts/w3-a6/prereg_time.txt` の前後 2 行）
+
+**目的**: (1) 述語ごとに「助詞 → 役割（と型）」を生成コーパスから申告させる（`role_frame`）。(2) 申告した (助詞, 型) が分布の腕に裏づけられる役割だけを確認する。(3) 名詞の型に `RELATIVE_POSITION` を足し、生成で「相対位置・方向を表す語」と申告された語を、場所と分ける。(4) 配置 r9/run1 を作り r8 との差を数える。
+
+**D1 型の一覧**: `NOUN_TYPES` の末尾に `RELATIVE_POSITION`（名称「相対位置・方向」）を 1 つ足す（既存の 17 個の id と並びは変えない。17 → 18）。`FRAME_NOUN_TYPES` は `NOUN_TYPES` から `RELATIVE_POSITION` を除いた 17 型（並びは同じ）で、述語の枠（W3-a3）と役割つきの枠の充填物の型はこの 17 型。`NOUN_TYPE_NOTES["RELATIVE_POSITION"]` の定義文は「他の物や場所を基準にした位置・方向を表す語。それ自体は場所ではない」。語の一覧は製品のどこにも置かない（生成の定義文と分布で決める）。`K62_FRAMES`・`DEFAULT_CONFIG`・既存の閾値・`ARMS`・`GEN_ARMS`・`AGREEMENT_ONLY_ARMS`・`NON_VOTE_ARMS` は変えない。
+
+**D2 役割名**: `ROLE_NAMES` は `docs/READING_CONVENTIONS.md` §2 の表の 1 列目の 20 個を表の順に並べた閉じた一覧（`event_cross.ROLE_NAMES` と同じ値の写し。試験で照合）。`ROLE_DESCRIPTIONS` は §2 の「何を入れるか」から例の語・例の動詞を除いて書いた短い説明。
+
+**D3 相対位置の生成（`gen_coarse_evidence.py --kind ntype`。W3-a2 の名詞の経路と同じ台帳・束・再開・上限）**: 名詞の形（定義文と上位語だけ聞く）は 1 バイトも変えず、新しい形で「定義文 1 文 ＋ 名詞の型（18 型から 1〜2 個）」を申告させる。対象の一覧 = r8 の見出し語のうち origin が direct・top に PLACE を含み・ns に名詞を含み・by の腕の名前に定義系の腕（definition・definition_recovered・title_qualifier・alias・paren_alias・seed）を含まない語。n_seen の降順、境界の同点は全部。検査データを読まない。プロンプトは型の一覧と補足を `ct` から機械的に並べ、例の語・語の一覧を書かない。モデル `gpt-6-luna`・effort `low`。
+
+**D4 役割つきの枠の生成（`--kind role`）**: 対象の一覧 = r8 の `generated_frames` の全語 ∪ `SEEDS_PRED` の語のうち、見出し語で ns に述語を含む語。申告は `{助詞: [{"role", "types"}]}`（助詞は格助詞 9 種、役割は `ROLE_NAMES`、型は `FRAME_NOUN_TYPES`）。同じ助詞に役割が 2 つ以上あるときはそれぞれの型を分けて書かせる。判断できない語は null（棄権）。が の項は人・動物・組織なら agent、それ以外は entity（規約 §2 の機械的な規則）。プロンプトに役割の一覧・型の一覧・助詞を `ct` から機械的に並べ、例の語・例文・語の一覧を書かない。`effort low`。読みの捨て方（enum の外・型が空・同じ助詞の 2 回・同じ助詞の中の同じ役割の 2 回・型の重複）は語ごとに採らず理由別に数える。第8ラウンドでは監査役判断4（2026-10-04 20:35 +0900）により、9助詞ごとの典型的な役割と付加格の指示を追加する。詳細は §12.18.1.2 に記録する。
+
+**D5 相対位置の判定（`decide_word` の新しい分岐。既存の行は変えない）**: 生成の行 `gen_relpos` を取り分けて残りで判定し、行があれば最後に適用する。判定が DECIDED か MULTIPLE で PLACE を含む → MULTIPLE（型に `RELATIVE_POSITION` を足す。origin は元のまま）。生成でない腕が自分の閾値を満たして `RELATIVE_POSITION` だけを指すときに限り direct の RELATIVE_POSITION にする（この配置にはそういう腕が無いので 0 語）。それ以外（PLACE を含まない・UNPLACED）は判定を変えない。帰結: 生成の申告は判定を狭める方向にだけ効く。PLACE の語を相対位置の単独の型にはしない。`why` に `RELPOS_ADDED` と `GENERATED_NOT_DECIDING` を足す。
+
+**D6 役割つきの枠の確認（`role_frame_check`。builder と問い合わせが同じ関数）**: 分布の腕（`role_distribution` の出所ごと）に `rd_analyze` を適用し（W3-a3 §12.4 の閾値 `rd_*` をそのまま。新しい閾値は作らない）、有意な (助詞 p, 型 t) について、p の申告した役割のうち t を型に含むものの集合 R を取る。|R| = 1 → その役割に腕の票。|R| ≥ 2 → 割れ（同点は棄権。票にしない）。|R| = 0 → 申告に無い型（表示だけ）。票を入れた腕の数が `role_frame_min_sources`（既定は `rd_min_sources`）以上の役割が確認される。確認された役割の型は「申告した型 ∩ 票の型」。確認された役割が 1 つ以上で `CONFIRMED`、それ以外は `ESTIMATED`（生成だけ）。未確認の理由は `NOT_BACKED`・`SPLIT`・`PARTLY_BACKED` の閉じた一覧。
+
+**D7 builder**: 新しい引数 `--generated-noun-types`・`--generated-noun-types-ledger`・`--role-frames`・`--role-frames-ledger`。引数がないときの動作・manifest の形・表は今のまま。新しい表 `generated_noun_types`・`role_frames` は入力があるときだけ作る。
+
+**D8 問い合わせ**: 配置が `role_frames` の表を持つときだけ、答えの末尾に `role_frame_status`・`role_frame`・`role_frame_unconfirmed` の 3 鍵をこの順で足す（表の無い配置と配置なしは鍵が無く、答えは基点と byte 一致）。`role_frame_status` の閉じた一覧は `CONFIRMED`・`ESTIMATED`・`NO_ROLE_FRAME`。`role_frame` が null でない ⇔ CONFIRMED。
+
+**D9 設定**: `role_frame_min_sources` の既定は 1（= r8 の `rd_min_sources`）。事前評価で、確認された役割の明らかな誤りが 1 割を超えたら 2、それでも超えたら 3 に上げる（上げる方向だけ）。3 でも超えたら 3 のまま N4 を満たせないものとして報告する。決めたら凍結する。
+
+**測り方（受入基準）**: N1 = r7・r8 の全見出し語の `query` の答え全体（`json.dumps(ensure_ascii=False)` の sha256）と配置なしの固定の語の答え、読解の入口の出力が基点と byte 一致。N2 = 10述語・11役割行（試験データにだけ置く）の `role_frame` が期待の役割を含み、CONFIRMED の役割は `backed_by` の腕の有意な (助詞, 型) に裏づけられる。N3 = 相対位置の語 15 語（試験データにだけ置く）が PLACE 単独の direct でない、PLACE から変わった名詞の全件の目視で明らかな誤りが 1 割以下。N4 = 無作為 60 語（`random.Random(20261004)`）の CONFIRMED の役割の明らかな誤りが 1 割以下。N5 = seed の判定が r8 と同じ。N7 = 既存テストの失敗集合が基線から増えない。
+
+**目視の基準**: 役割は「正しい（その述語の最も普通の意味で、その助詞の項がその役割に当たる文が普通に作れ、規約 §2・§4.1 に合い、型もその役割で来る名詞として当てはまる）／明らかな誤り（その助詞がその役割を取らない、規約が別の役割を指す、型がその役割に来ない）／疑わしい」。相対位置は「正しい（その語の最も普通の意味が他の物や場所を基準にした位置・方向）／明らかな誤り（本当の場所・施設・地名のようにそれ自体が場所の語を相対位置にした）／疑わしい」。**目視は実装役の読みで、正解データではない**。表は集計の前に sha256 を取る。役割の目視は確認の結果を見ずに申告だけを見て書く。
+
+**生成の上限**: 2 つの形の合計で 1,500 回以内。2 つの形を同時に走らせない。試しの束の後にプロンプトを変えない（変えたら新しい台帳）。
+<!-- w3a6-prereg:end -->
+
+### 12.18.1.1 監査役判断2による事前登録修正（2026-10-04 17:18:27 +0900）
+
+監査役の追加指示（2026-10-04 17:15 +0900）に基づき、検査期待と生成契約を次のように改める。この記録を期待データ・生成対象一覧・プロンプトの更新より先に置き、旧版は `artifacts/w3-a6/current-r1/freeze_pre_r6.sha256` と `freeze_final_pre_r6.sha256` に保存する。
+
+**N2「集める」の期待**
+
+- 変更前: `{"pred": "集める", "particle": "に", "role": "place"}`
+- 変更後: `{"pred": "集める", "particle": "に", "role": "goal"}`
+- 理由: 独立検査文「学芸員が展示室に資料を集めた」では、資料が移る到達点を「に」が表す。`READING_CONVENTIONS.md` §2 の `goal` と §4.1 の「に＋場所・物で、物がそこに移る」規則に合うため、期待を `goal` に合わせる。
+
+**役割枠生成の型重複契約**
+
+- 変更前のプロンプト規則: 「同じ助詞に役割が 2 つ以上あるときは、それぞれの役割で来る名詞の型を役割ごとに分けて書く（同じ型を 2 つの役割に書かない）。types は空にしない。」
+- 変更後の規則: 「同じ助詞に役割が 2 つ以上あるときは、役割ごとの型をそれぞれ申告する。同じ型を複数の役割に申告してよい。types は空にしない。」
+- 理由: 型の重なりを禁止すると、モデルに曖昧な型を片方の役割へ押しつけることになる。重複型は保持し、確認器が `SPLIT` として数えて票にしない。
+
+**期待データの件数注記**
+
+- 変更前: `nine predicates`
+- 変更後: `10 predicates, 11 role rows`
+- 理由: 期待一覧の実際の内容と監査役が指定した件数を一致させる。期待行は上記「集める」の役割だけを変更し、一覧の語や行数は変えない。
+
+この修正に合わせ、r8/run2 から D3・D4 の規則で `needs_ntype.jsonl` と `needs_role.jsonl` を再生成する。`generate_and_collect.sh` はこの2一覧を作った後に生成・回収を行う手順へ更新する。プロンプトの再生成・hash 凍結と対象一覧の再生成までは行うが、このラウンドでは codex を起動せず、r9/run1 および N2〜N5 は次ラウンドに残す。
+
+### 12.18.1.2 第8ラウンド・監査役判断4の事前登録（2026-10-04 20:38:46 +0900）
+
+監査役判断4（2026-10-04 20:35 +0900）と第7ラウンドレビューのN2・N7指摘に基づく。次の規則・目標は試行出力を見る前に固定し、試しの束と本番の生成は監査役が外で実行する。この節の追記時点で第8ラウンドのモデル呼び出しは0回。
+
+**役割枠プロンプトの一般化**: `ROLE_NAMES` と `FRAME_NOUN_TYPES` は既存どおり `coarse_types` から列挙する。9助詞の典型的な役割をモデルに明示する対応表は、が＝`agent`/`entity`（規約の主語規則。使役の `causer`、述語の意味に合う `experiencer`/`attribute` もありうる）、を＝`patient`/`causee`（経路・起点など他の通常用法は述語に応じた役割）、に＝`recipient`/`goal`/`result`/`place`/`time`/`beneficiary`/`causee`/受身動作主の `agent`（述語の意味に合う `experiencer`/`attribute` もありうる）、で＝`place`/`instrument`/`cause`（通常伴う `companion` もありうる）、へ＝`goal`、と＝`companion`/`quotation`/`standard`/`value`、から＝`source`/`cause`/`time`/受身動作主の `agent`、まで＝`time`/`goal`/`place`（範囲の終端）、より＝`source`/`standard`/受身動作主の `agent` とする。これは典型の対応であり、助詞だけで役割を決める規則ではない。入力語の普通の意味で述語に通常伴う格を、項だけでなく場所・時・原因・手段・同行・起点・終点・比較基準などの付加格も含めて申告させる。付加格は、その述語に普通に伴わないなら足さない。役割と型は別々に判断させる。語・述語・例文の一覧はプロンプトに加えない。試行後にこのプロンプトを変更しない。変更する場合は新しい台帳名を使い、試行結果を同一版の評価に混ぜない。
+
+**役割対応表の事前登録補足（2026-10-04 20:51:13 +0900）**: 20:38:46版の対応表には `causer`・`causee`・`beneficiary`・`value` と `に`・`から`・`より` の受身動作主 `agent` を明記していなかった。更新版は、が＝`agent`/`entity`/`causer`（述語の意味に合う `experiencer`/`attribute` も含む）、を＝`patient`/`causee`、に＝`recipient`/`goal`/`result`/`place`/`time`/`beneficiary`/`causee`/受身動作主の `agent`（規約に合う `experiencer`・`attribute` もありうる）、で＝`place`/`instrument`/`cause`（普通に伴う `companion` もありうる）、へ＝`goal`、と＝`companion`/`quotation`/`standard`/`value`、から＝`source`/`cause`/`time`/受身動作主の `agent`、まで＝`time`/`goal`/`place`、より＝`source`/`standard`/受身動作主の `agent` を明示する。理由は、9助詞の典型だけでなく、閉じた規約にある通常の役割をモデルに省略させないため。語の一覧や述語の例は加えず、同じ「通常伴う付加格も含める」規則を保つ。この追記も試行出力を見る前の登録であり、プロンプトhash・スクリプトhash・needsと試行束のhashを更新して再凍結する。
+
+**試行束の抽出と判定**: 母集団は凍結した `needs_role.jsonl`（r8/run2由来の8,311語）。語を辞書順にした列に対し `random.Random(20261004).sample(words, 40)` を使い、抽出順で40語を1束にする。欠落・棄権・無効回答も分母40に含め、`parse_output_role` で有効に回収された各語の枠に各助詞を少なくとも1つ申告した異なる語の数を率の分子とする。run1の申告率は で 4.5%、へ 2.1%、から 5.0%（監査役判断4に付された第8ラウンド指示。入力記録とSHA-256は `artifacts/w3-a6/current-r2/auditor_run1_rates.txt`）。40語束では、でが2語以上（5.0%）、へが1語以上（2.5%）、からが3語以上（7.5%）で、3条件を同時に満たした場合にだけ「試行束の申告率がrun1から上がった」と判定する。からは2/40がちょうど5.0%で改善にならないため、3語を下限とする。達成はプロンプトの適合性や申告の正しさの証拠ではなく、監査役が本番生成へ進むか決めるための事前登録した通過条件である。試行出力のない現時点では未測定である。
+
+**run1率の出典表記訂正（2026-10-04 20:56:18 +0900）**: 変更前は上記の出典を第7ラウンドレビューと記した。変更後は、これらの3値を実際に指定した監査役判断4付きの第8ラウンド指示と記録する。第7ラウンドレビュー本文にはこの3値が掲載されていなかったためで、数値・判定基準は変えない。指示ファイルのSHA-256は `auditor_run1_rates.txt` に残す。
+
+**新しい台帳と範囲**: needs一覧を `artifacts/w3-a6/current-r2/needs_role_v2.jsonl` に凍結し、試行40語を `trial_needs_role.jsonl` に凍結する。試しの束は別出力先の `gen_role_v2_trial` に1束・最大1呼出・再試行なしで作る。本番用 `generate_and_collect.sh` は `--kind role` だけを `build/coarse-W3a/full/r9/gen_role_v2/` に実行・回収・要約する。名詞型（`--kind ntype`）と `gen_ntype` は実行しない。どちらのスクリプトも `gpt-6-luna`・`effort low` を使い、needs・prompt/schema・試行一覧・両スクリプトのhashを同じディレクトリの凍結ファイルで照合してから呼び出す。呼出回数の上限は試行1回、本番は40語束に対し最大624回（208束×最大3試行）とし、台帳・summaryで実数を記録する。ここでは両スクリプトを作成・hash凍結するだけで、実行しない。
+
+**既存テストの固定値更新（監査役判断4、2026-10-04 20:35 +0900）**:
+
+- `tests/coarse_place/test_coarse_place_types.py::test_inventory_only_grows`: 変更前は `17 == len(ct.NOUN_TYPES)`、変更後は `18 == len(ct.NOUN_TYPES)`。理由は `RELATIVE_POSITION` を名詞型に追加するチケット契約。既存17型のidは保ち、述語枠と役割枠では `FRAME_NOUN_TYPES` の17型を使い続ける。
+- `tests/test_gen_coarse_evidence_pred.py::test_the_predicate_prompt_lists_the_closed_inventories_from_coarse_types_and_no_test_word`: 変更前は `ct.NOUN_TYPES` の一覧と13+17の総数を期待、変更後は `ct.FRAME_NOUN_TYPES` の一覧と13+17を期待する。述語プロンプトは新しい名詞型を含まないため、従来の述語プロンプトhashを維持する。
+- `tests/test_gen_coarse_evidence_pred.py::test_the_schema_is_closed_and_its_enums_are_the_inventories`: 変更前は述語frame enumを `list(ct.NOUN_TYPES)` と17型で期待、変更後は `list(ct.FRAME_NOUN_TYPES)` と17型で期待する。`NOUN_TYPES` 自体は18型、述語frame schemaは17型のまま。
+
+3件ともテスト名は維持し、データ・条件の削除や弱体化はしない。テストdocstringにも変更日時・変更前後・契約上の理由を記録する。
+
+### 12.18.1.3 第9ラウンド・run2測定の事前登録（2026-10-04 22:38:09 +0900）
+
+監査役の追加指示に基づき、完了済みの `gen_role_v2` 生成を再実行せず、その `role_frames.jsonl` と既存の `gen_ntype/noun_types.jsonl` を使って `r9/run2` を構築し `verify` する。`gen_role_v2`・`gen_ntype` の生成台帳と生成物は読み取り専用とし、`r9/run1` は比較用に保持する。
+
+- **N2**: 凍結期待 `tests/coarse_place/data/w3a6_expect.json` の10述語・11役割行ごとに、run1・run2それぞれの申告、確認状態、未確認状態、および確認を支える分布の腕と有意な型を表にする。run2の確認済み役割は `backed_by` に列挙された腕が有意な `(助詞, 型)` を示すことを照合する。
+- **N3**: 既存の凍結相対位置語と相対位置目視ラベルを再利用し、run2で再問い合わせする。r8からPLACE判定が変わった全名詞について、run2の `state/origin/top` と既登録目視ラベルを出す。目視は正解データではない。
+- **N4/D9**: 固定標本は `artifacts/w3-a6/n4_claims_prefreeze.jsonl` の60語を使う。`gen_role_v2` のこの標本に対する申告を取り出し、確認結果を見ずに全申告を既登録の目視基準で「正しい／疑わしい／誤り」に分類する。申告とラベルを結合したファイルのSHA-256を、確認結果との結合より先に記録する。run2の実分布に対し `role_frame_min_sources` 候補1、2、3を評価し、確認済み役割行中の明らかな誤り率が10%以下となる最小候補を選ぶ。3でも超過したら3を固定しN4未達とする。確認役割が0行なら誤り率は未測定として合格扱いしない。選択値を凍結設定に記録してrun2を構築する。
+- **N5**: 凍結された281述語seedの `namespace/state/origin/top` をrun2とr8で比較し、相違があれば全件と理由を列挙する。
+- **申告率・manifest**: run1（旧 `gen_role`）とv2の粒子別申告率は、各助詞について、少なくとも1役割を申告した異なる述語語数 ÷ 凍結対象8,311語で算出する。欠落・棄権も分母に含め、申告率は正しさの根拠としない。別の測定manifestにrun1/run2双方の配置SHA-256・構築時間、gen_ntypeと両role生成のモデル・effort・呼出数・所要時間、粒子別run1→v2申告率を記録する。測定物とN2/N3/N4/N5の集計は `artifacts/w3-a6/r9/` に保存する。
+
+<!-- w3a6-measured:begin -->
+測定日: 2026-10-04（事前登録・期待凍結・製品差分の時刻は `artifacts/w3-a6/prereg_timeline.txt`）。開始時の差分は指示書 §0.1 の想定と異なり、既存の途中作業を保持して続行した（`artifacts/w3-a6/initial_state.txt`）。
+
+- 生成対象一覧は r8/run2 の読み取り専用配置から作った。名詞型は 2,721 語、役割枠は 8,311 語で、凍結期待にある位置語と述語はすべて一覧に含まれた（`artifacts/w3-a6/needs_ntype.meta.json`、`needs_role.meta.json`、`needs_check.txt`）。40語束・3回/束の上限は各207回・624回（`artifacts/w3-a6/gen_plan.txt`）。
+- N1 の全体回答は r7 1,758,845行、r8 1,766,903行で前後一致した。配置なし200語と読解入口の配置なし・r8（各4,149行）も前後一致した（`artifacts/w3-a6/n1/n1_cmp.txt`）。
+- W3-a6 の生成器・型・判定・builder・query の追加試験を含む確認は48件通過した（`artifacts/w3-a6/tests_core.txt`）。構築前の関連試験は1,055件通過し、失敗5件は C1 に記録した5件のみだった（`artifacts/w3-a6/tests_pre_gen.txt`）。述語プロンプトとschemaの既存hash、および名詞プロンプトhashは維持された（`artifacts/w3-a6/prompt_sha.txt`）。
+- 実装依頼のネットワーク禁止に従い、モデル生成・試しの束・本番生成は行っていない（実呼び出し0回、`artifacts/w3-a6/gen_plan.txt`）。`role_frame_min_sources` の事前評価と凍結、config、r9/run1 の構築は未実施。したがって N2〜N5、r8→r9 全差分、不変条件、r9の生成・構築時間とcontent hashは未測定である。
+- 目視判定は行っていない。人工テストと偽codexの通過は、生成回答の正確さを示すものではない。
+
+- 最終全体テストは 189 failed, 15,115 passed, 46 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed で終了した（`artifacts/w3-a6/pytest_full.txt`）。基線115件に対し新規74件・解消0件（`failure_delta.txt`）。新規は C1 の5件、原因を個別確認できていない conduct系68件、指示書の環境由来候補にある `test_s6_two_runs_agree_except_timing_and_recount_matches` 1件に分かれる。conduct系のrun台帳55件にsandbox-execの `Operation not permitted` が記録されたが、全体コマンドが `--tb=no` のため68件それぞれとの因果対応は未確認（`sandbox_full_evidence.txt`、`new_failures_explained.txt`）。N7 は未達。
+- 最終の読み取り専用hash照合、モジュール由来確認、status確認と作業報告は `artifacts/w3-a6/impl.r1.md`、`readonly_after.txt`、`check_modules_final.txt` に記録する。
+
+### 第2ラウンドの再確認（2026-10-04）
+
+- N1 を基点 `0041606` と現在のツリーで再計算した。r7/run1 は双方 1,758,845 行・SHA-256 `3feb7651ac8dcccac12e430e68fc32233e6792a3a7bc88823a0cd6cf6de79764`、r8/run2 は双方 1,766,903 行・`5db28ae6e323bfe10e107bd47550c657958818b15f962705a2567952eb6d941a`、配置なしは双方200行・`a506a76cf8a262dbc4047444d4363b7486d56032eff77fa57b458cfa38ee2c27`。読解入口の配置なし・r8 は各4,149行でそれぞれ `84b2c118d271153e92eb5c189b16867bc5da01992d2745673a9b3866e16e99c7`・`ce351ef41bd9cb3ee67867025911720d0214924f2ec662a56a4e7347801c7924`。5比較はすべて `cmp` 一致（`artifacts/w3-a6/r2/n1/query_results.txt`、`cmp_all.txt`、`entry_hashes.txt`）。N1関連試験40件も通過（`artifacts/w3-a6/r2/tests_n1.txt`）。
+- W3-a6の追加試験を含む確認は48件通過（`artifacts/w3-a6/r2/tests_core.txt`）。凍結期待のhashは `bea8c8a1dd97dbb6b1f5c4bd7d44c44ac7b322036cc2366027e714b37814af33` のままで、実測ファイルには10述語・11役割行・15語がある（`expect_inventory.txt`）。「9述語」という見出しとの差は変えていない。
+- 全体試験は `189 failed, 15123 passed, 38 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 572.56s`。基線115件との差は新規74・解消0（`artifacts/w3-a6/r2/pytest_full_r2.txt`、`failure_delta.txt`）。新規74件は計画済みC1の5件、sandbox自己検査で失敗したconduct系68件、未コミットの作業差分を検出した `test_s6_two_runs_agree_except_timing_and_recount_matches` 1件。conduct系68件はtraceback付き単独実行でも同じID集合で失敗し、`sandbox-exec` の単独プローブはexit 71・`Operation not permitted`（`conduct_tracebacks.txt`、`conduct_full_compare.txt`、`sandbox_probe.txt`）。S6 のrun metadata は `verantyx_untouched: false`（`bt-triage` の出力）。停止signal試験は全体実行では失敗IDに含まれなかったが、単独では基点と現在の双方で20秒timeoutを再現した（`triage_tests.txt`、`base_stop_test.txt`）。N7は未達。
+- 全体試験後の攻撃用 `r6_48_queries.jsonl` は48行すべて `frame_generated` 鍵だけがHEADと異なっていた。HEADの内容へ戻し、SHA-256 `556436a80a9d521af1826722dc789b25773f01d0d6e41d6422530498b1bbb642` を確認した（`attack_side_effect.txt`、`attack_hashes_before_full.txt`、`attack_hashes_after_full.txt`）。
+- 第2ラウンドはユーザーの明示したネットワーク禁止に従い、本物の生成呼び出しは行わなかった。共有ビルドにr9/run1はなく、生成後のN2〜N5・N6用測定は未実施（`r9_availability.txt`）。したがって生成とr9を求めた前回レビューの必須項目は未解決で、`role_frame_min_sources` も凍結していない。
+
+### 第3ラウンドの再確認（2026-10-04）
+
+- 前回レビューの必須修正3に従い、基点の `coarse_types.py` を `git show` からメモリ上で読み込むよう比較試験を変更した。基点履歴が無ければ失敗し、`skip`・`tempfile`・`mkdtemp` を使わない。対象6件は通過した（`artifacts/w3-a6/r3/tests_decide.txt`）。W3-a6関連48件とN1関連40件も通過（`tests_core.txt`、`tests_n1.txt`）。W3-a6関連試験の初回実行はbasetempの親ディレクトリ未作成でsetup errorになったため、親を作成して再実行した。初回出力は保存していないため、対象は再実行結果だけを採用する。
+- 全体試験の最終行は `189 failed, 15123 passed, 38 skipped, 75 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 438.51s`。基線との差は新規74・解消0（`artifacts/w3-a6/r3/after_failures.txt`、`new_failures.txt`、`fixed_failures.txt`）。内訳はC1の5件、conduct系68件、S6 1件。conduct系とS6を環境由来として除外しておらず、N7は未達（`new_failures_explained.txt`）。
+- 全体試験が攻撃用 `r6_48_queries.jsonl` を48行更新した。HEADとの差の変更は `frame_generated` キーのみで、実行前SHA-256 `556436a80a9d521af1826722dc789b25773f01d0d6e41d6422530498b1bbb642` に復元した。他の2出力は前後でSHA-256が一致した（`attack_side_effect.txt`）。
+- このラウンドでは製品コード・生成器・builder・配置を変更せず、ユーザーのネットワーク禁止を守って本物の生成を行わなかった。共有ビルドのr9/run1は無く、N2〜N6、閾値の事前評価、生成台帳と構築時間は未確認。第2ラウンドの全数N1比較を根拠として保持し、このラウンドは関連40試験で再確認した。
+- 指定venvから読み込んだ `verantyx` モジュールの作業ツリー外一覧は空（`check_modules_final.txt`）。作業ツリーに `__pycache__` と `.pytest_cache` は見つからなかった。
+
+### 第1レビュー指摘に基づく事前登録の訂正（2026-10-04 16:00:24 +0900）
+
+本物の生成と新しい受入測定の前に、レビュー指摘に基づき、未承認のN7例外を除き、凍結期待に記録された述語数・役割行数にN2を合わせた。テスト期待と凍結データは変更していない。測り方段落の訂正前後を全文で記録する。
+
+**訂正前**:
+
+> **測り方（受入基準）**: N1 = r7・r8 の全見出し語の `query` の答え全体（`json.dumps(ensure_ascii=False)` の sha256）と配置なしの固定の語の答え、読解の入口の出力が基点と byte 一致。N2 = 述語 9 個（試験データにだけ置く）の `role_frame` が期待の役割を含み、CONFIRMED の役割は `backed_by` の腕の有意な (助詞, 型) に裏づけられる。N3 = 相対位置の語 15 個（試験データにだけ置く）が PLACE 単独の direct でない、PLACE から変わった名詞の全件の目視で明らかな誤りが 1 割以下。N4 = 無作為 60 語（`random.Random(20261004)`）の CONFIRMED の役割の明らかな誤りが 1 割以下。N5 = seed の判定が r8 と同じ。N7 = 既存テストの失敗集合が基線から増えない（`NOUN_TYPES` の追加による避けられない衝突は別に宣言する）。
+
+**訂正後**:
+
+> **測り方（受入基準）**: N1 = r7・r8 の全見出し語の `query` の答え全体（`json.dumps(ensure_ascii=False)` の sha256）と配置なしの固定の語の答え、読解の入口の出力が基点と byte 一致。N2 = 10述語・11役割行（試験データにだけ置く）の `role_frame` が期待の役割を含み、CONFIRMED の役割は `backed_by` の腕の有意な (助詞, 型) に裏づけられる。N3 = 相対位置の語 15 語（試験データにだけ置く）が PLACE 単独の direct でない、PLACE から変わった名詞の全件の目視で明らかな誤りが 1 割以下。N4 = 無作為 60 語（`random.Random(20261004)`）の CONFIRMED の役割の明らかな誤りが 1 割以下。N5 = seed の判定が r8 と同じ。N7 = 既存テストの失敗集合が基線から増えない。
+
+N7は例外のない基準として扱う。既存テストとの契約衝突が残る場合も、N7は未達と記録する。
+
+### 生成前の凍結（2026-10-04 16:00 +0900）
+
+- r8/run2 から同じ規則で生成対象一覧を作り直し、従前の凍結一覧と両方とも `cmp` 一致した。名詞型 2,721 語、役割枠 8,311 語。SHA-256 と対象 meta は `artifacts/w3-a6/current-r1/freeze.sha256`、`needs_ntype.meta.json`、`needs_role.meta.json`。
+- 役割枠の 8,030 語は r8 の `generated_frames` 全数、seed 281 語は重複なし。r8 のサ変生成枠 3,485 語のうち direct の P_COMMUNICATE/P_MOVE 70 語すべてが、この 8,030 語内に入っている（`artifacts/w3-a6/current-r1/sahen_role_coverage.txt`）。
+- 訂正後の型プロンプトは template/schema SHA-256 `a22e217ad80fc6bd043864b6ee414ef931d3b174a08f1522ce6555b6a9496a29` / `e3db31ed9adba39b1a53979cbe84f5113bd778c90c1437a753ce8a67e995825e`。役割プロンプトは `681af73d25ac03a21afe840c7d9bc953d587f0ae4bc67ba8945460f89b77117d` / `2d5a9ed449bfdd4899e13048c4e40ddce895ffaa72b2b77f0702773159ddf5f1`（保存先 `artifacts/w3-a6/current-r1/prompt_ntype.txt`、`prompt_role.txt`）。
+- 期待ファイル `tests/coarse_place/data/w3a6_expect.json` は SHA-256 `bea8c8a1dd97dbb6b1f5c4bd7d44c44ac7b322036cc2366027e714b37814af33` のまま。生成対象、期待ファイル、プロンプトの凍結hashは `artifacts/w3-a6/current-r1/freeze.sha256`。
+
+### 最終役割プロンプトの凍結（2026-10-04 16:02:15 +0900）
+
+最初の生成前凍結後、役割説明を規約 §2 にさらに揃えた（`agent` は授受表現で実際に動作した人、`time` は期限と助詞の有無、`causer` は動作をさせた側、`beneficiary` は恩恵・利益を受ける人を明記）。この修正までにモデル呼び出しは0回。名詞型・役割枠の入力一覧と期待ファイルは変わっていない。最終役割プロンプトの template/schema SHA-256 は `ade8ca7d2752d7547711e6613b5f7d00d5adb7656ae9183100938ed5c9e8c4d8` / `2d5a9ed449bfdd4899e13048c4e40ddce895ffaa72b2b77f0702773159ddf5f1`。生成には `prompt_role_v2.txt` と `freeze_final.sha256` の版を使い、生成後は変更しない。
+
+### 生成結果の目視前登録（2026-10-04 16:05:58 +0900）
+
+- N3は、凍結済み `needs_ntype` のうち生成回答が `RELATIVE_POSITION` を申告した語を全数対象にする。目視ラベルは語と生成定義文だけを使い、r9の判定結果を見る前に表を作ってhashを固定する。その後、r8/r9のstate・origin・topの全差分と突き合わせる。
+- N4の標本母集団は凍結済み `needs_role` の語集合。辞書順に並べた重複なし一覧から `random.Random(20261004).sample(words, 60)` で非復元抽出する。回答欠落・null棄権も抽出結果に残し、別理由で数える。
+- N4の目視表には各標本語の全申告助詞・役割・型を載せ、確認状態を見ずに正しい／疑わしい／明らかな誤りを付け、表hashを先に固定する。その後にCONFIRMED結果と結合し、明らかな誤り数／CONFIRMEDされた役割数を計算する。CONFIRMED役割が0件なら率を作らず未測定とする。
+- これらの目視は実装役の読みで正解データではない。数えとハッシュは `artifacts/w3-a6/current-r1/` に保存する。
+
+### 実装役の再実行記録（2026-10-04）
+
+- N4の標本語は `needs_role` 8,311語から60語を抽出した。SHA-256 `a134ac9c47060072911630ee8de7f9fadaca3f1c480a3afe9c7710af983da198`（`artifacts/w3-a6/current-r1/role_sample_meta.json`、一覧は `role_sample_words.jsonl`）。役割生成の回答が得られなかったため目視表は作らず、N4は未測定。
+- 関連試験 `tests/coarse_place`、`tests/test_gen_coarse_evidence.py`、`tests/test_gen_coarse_evidence_pred.py` は `356 passed, 3 failed in 22.65s`（`artifacts/w3-a6/current-r1/tests_related.txt`）。失敗は `test_inventory_only_grows` と述語プロンプト・schemaの17型固定の2件。NOUN_TYPESを18型にするチケット要件との契約衝突で、テスト期待は変更していない。全体テストは監査役指定に従い実行していない。
+- Codexの監視実行は `2026-10-04 16:13:22 +0900` から `16:14:09 +0900`。名詞型は207プロセス試行／69束、役割枠は624プロセス試行／208束、各 `gpt-6-luna`・effort `low` 指定だったが、すべて `EXIT_1`、成果物出力0件。各エラー末尾は `failed to initialize in-process app-server client: Operation not permitted (os error 1)`（`generation_failure_counts.txt`）。summaryの `wall_sec` は名詞型11.6秒・役割枠35.3秒、`sum_call_sec` は45.8秒・140.2秒。モデル応答は一件も得ていない。出力とledgerは `build/coarse-W3a/full/r9/gen_ntype/`、`gen_role/` に保存されている。
+- N1の全数query再計算は `2026-10-04 16:19:51` から `16:29:43 +0900`。r7は1,758,845語・293.9秒・SHA-256 `3feb7651ac8dcccac12e430e68fc32233e6792a3a7bc88823a0cd6cf6de79764`、r8は1,766,903語・297.1秒・`5db28ae6e323bfe10e107bd47550c657958818b15f962705a2567952eb6d941a`、配置なし200語・0.0秒・`a506a76cf8a262dbc4047444d4363b7486d56032eff77fa57b458cfa38ee2c27`。3値とも以前の基点ハッシュと一致（`n1_r7_current.txt`、`n1_r8_current.txt`、`n1_none_current.txt`、比較記録 `n1_comparison.txt`）。読解入口の4149文は本作業では再実行していないが、前回レビューが配置なし・r8をともに基点とcmp一致と報告している（`/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W3-a6/review.r1.md` §N1）。その後読解器のコードは変更していない。
+- detached起動の1回は開始記録だけで監視プロセスが残らず、ledger・raw応答・終了記録を作らなかった（`generation_attempt1.started`）。その後の監視実行は生成器のledger開始記録前にCodexを起動するので、モデル呼び出しに至っていないと判断した。再試行前後の記録は `generation.log`、`generation.started`、`generation.finished` と各summary/ledger。
+- 実生成回答が0件のため、`role_frame_min_sources` は評価・凍結できず、r9/run1は構築していない。N2・N3・N4・N5は未測定。N6は監査役の測定項目で、実装役は隠しバンクを開いていない。N7全体失敗集合は監査役の測定待ち。
+### 第7ラウンドの事前登録と実測（事前登録 2026-10-04 19:01:32 +0900、測定 2026-10-04）
+
+監査役の追加指示に従い、生成済みr9を再実行せず、生成summaryと回答JSONLから測定した。N3/N4の申告・目視表とN5の語一覧はr9判定と比較を行う前に作成してsha256を固定した。凍結出力は `artifacts/w3-a6/r7_prefreeze_output.txt`、`r7_prefreeze.sha256`、`r7_visual_freeze.sha256`、`r7_n5_freeze.sha256`。
+
+- `role_frame_min_sources` はD9の「誤り率が基準を超えたとき上げる方向だけ」の規則で候補1・2・3を評価した。60語の閾値1はCONFIRMED役割17行中、正しい15・疑わしい1・明らかな誤り1、1/17=5.88%。閾値2は1/7=14.29%、閾値3は1/6=16.67%。よって1のままにした（`n4_d9_thresholds_r7.json`、`n4_d9_measure_r7_final.txt`）。
+- **N2**: 凍結期待10述語・11助詞役割行のうち、期待役割を申告した行は4、確認された期待役割は1、未確認は4（部分確認された型も未確認に計上）。述語行のstatusはCONFIRMED 8、ESTIMATED 3。`連絡する/に/recipient` はPERSONが `role_distribution@codex:narrative`・`paraphrase_entail`・`pro` の3腕で裏づけられCONFIRMED、GROUP_ORGはPARTLY_BACKED。`停泊する/に/place`、`通報する/に/recipient`、`分ける/に/result` は申告があるが裏づけなし。`確認する/で/place` にはinstrumentの申告だけで、その他の未申告期待行もある。backed_by検査は通ったが期待役割の申告が未達のためN2は未達。全表は `n2_predicate_role_rows_r7.jsonl`、集計は `n2_predicate_role_summary_r7.json`。
+- **N3**: 必須15語は全てPLACE単独のdirectではなかった。r8からPLACE判定が変化した名詞292件を全件列挙し、目視は正しい253、疑わしい37、明らかな誤り2、未評価0。誤り率2/292=0.685%で基準内。全差分・目視表・集計は `n3_place_changes_r7.jsonl`、`n3_relpos_visual_labels_r7.jsonl`、`n3_summary_r7.json`。目視は実装役の判断で正解データではない。
+- **N4**: `random.Random(20261004)` で8,311語から60語を抽出。81申告行を目視し、正しい57・疑わしい17・明らかな誤り7、回答棄権2語・欠落0語。閾値1では語statusがCONFIRMED 14、ESTIMATED 44、NO_ROLE_FRAME 2。CONFIRMED役割17行中の誤りは1（5.88%）で基準内。申告・目視・確認結合・集計は `n4_claims_prefreeze.jsonl`、`n4_visual_labels_r7.jsonl`、`n4_d9_confirmed_roles_r7.jsonl`、`n4_visual_labels_r7_summary.json`、`n4_d9_thresholds_r7.json`。目視は正解データではない。
+- **N5**: 述語seed 281語のnamespace/state/origin/topを比較し、同一281・差分0。凍結語一覧hashは `n5_seed_words_prefreeze.meta.json`、比較表・空の差分一覧・集計は `n5_seed_comparison_r7.jsonl`、`n5_seed_differences_r7.jsonl`、`n5_summary_r7.json`。
+- **N1**: query全数を再実行。配置なし200語は0.0秒、SHA-256 `a506a76cf8a262dbc4047444d4363b7486d56032eff77fa57b458cfa38ee2c27`。r7 1,758,845語は284.2秒・`3feb7651ac8dcccac12e430e68fc32233e6792a3a7bc88823a0cd6cf6de79764`、r8 1,766,903語は289.6秒・`5db28ae6e323bfe10e107bd47550c657958818b15f962705a2567952eb6d941a`。3値とも過去の基点hashと一致（`n1_current_none_r7.txt`、`n1_current_r7_r7.txt`、`n1_current_r8_r7.txt`）。読解入口の出力比較はこのラウンドで再実行しておらず、r2の `artifacts/w3-a6/r2/n1/cmp_all.txt`・`entry_hashes.txt` を参照した。
+- **r9/run1・manifest**: `sh artifacts/w3-a6/scripts/build_r9_run1.sh` で構築し、`tools/build_coarse_placement.py verify --placement build/coarse-W3a/full/r9/run1` は `state: OK`・`bad: []`。headwords 1,766,903、evidence 1,948,020、generated_frames 8,030、generated_noun_types 2,704、role_frames 8,024、direct placement 992,773。構築268.2秒、content SHA-256 `72945370d9299600e1beca212fc2ed286940506d47fdd0fb50e403ee7bacb5a9`（`r9_verify_final.txt`、`r9_build_run1_summary_only.log`、`build/coarse-W3a/full/r9/run1/manifest.json`）。
+- manifestは `summary.json` のsha256と生成量を保存した。名詞型は2,721要求・2,721回答、69呼出、effort low / gpt-6-luna、wall 461.4秒・sum_call 1,822.6秒、棄権17・欠落0。役割枠は8,311要求・8,266回答、208呼出、effort low / gpt-6-luna、wall 2,083.9秒・sum_call 8,263.8秒、欠落32・棄権242を別々に記録し未利用合計274。invalid 8、重複助詞5。総呼出277。
+- **N6/N7**: 監査役の測定項目のため未実行。関連試験は358 passed、3 failed。失敗は `test_inventory_only_grows` と、述語prompt/schemaが旧17型を固定する2件（`tests_related_r7_final.txt`）。既存期待変更は監査役の明示許可が必要なため触れず、N7の契約衝突として残した。builder試験2件はpass（`tests_w3a6_build_r7_final.txt`）。
+- **手順逸脱**: 初回buildは抽出stage cacheなしで全抽出を開始後、Ctrl-Cで終了コード130（`r9_build_run1_interrupted.log`）。r8抽出cacheをr9にコピーし、SHA-256 `7972cc236bae2953b06915eabe82a037dfce47a314877edb5a63ce43df1eef49` の一致を確認して再構築した。また候補buildではledger引数を付けてしまい、builderがr9 ledgerを読み取った。書換えはしていないが「ledgerに触らない」に反した。候補manifest/logを保存し、最終buildはledger引数を外し `summary.json` のみで記録した（`r9_manifest_candidate_with_ledger.json`、`r9_build_run1_with_ledger.log`、`r9_build_run1_summary_only.log`）。生成自体は再実行していない。
+- module import 6件は全て作業ツリー内で `outside_tree []`（`check_modules_final_r7.txt`）。試験後の `__pycache__` / `.pytest_cache` は見つからなかった。主要実測のhash照合は `r7_final_hashes.sha256`。
+
+### 第9ラウンド・run2実測（2026-10-04、詳細は `artifacts/w3-a6/r9/`）
+
+- **N1**: 現行queryでr7全1,758,845語は285.8秒・SHA-256 `3feb7651ac8dcccac12e430e68fc32233e6792a3a7bc88823a0cd6cf6de79764`、r8全1,766,903語は288.9秒・`5db28ae6e323bfe10e107bd47550c657958818b15f962705a2567952eb6d941a`、配置なし200語は0.0秒・`a506a76cf8a262dbc4047444d4363b7486d56032eff77fa57b458cfa38ee2c27`。基点の凍結回答と3件とも `cmp` exit 0。読解入口の配置なし・r8の凍結出力も4,149行ずつで `cmp` exit 0（入口自体は再実行せず、保存済み前後出力を比較）。記録は `n1_*_current.txt` と `n1_cmp_final.txt`。
+- **N2**: 10述語・11役割行の期待申告はrun1 4/11からrun2 10/11へ増加。期待役割の確認はrun1 1/11、run2 2/11。run2の確認済み期待役割は `連絡する/に/recipient`（PERSON、3腕）と `運ぶ/へ/goal`（PLACE、narrative腕）で、双方の有意型の照合は通過した。`待つ/で/place`はrun2で申告されず、他の期待役割も未確認が残るためN2は未達。全11行・run1比較・腕と有意型は `n2_table_run1_vs_run2.md` と `n2_run1_vs_run2.jsonl`。
+- **N3**: 必須の相対位置語15/15がPLACE単独directでない。r8からPLACE判定が変わった名詞292件を全件列挙し、目視は正しい253・疑わしい37・明らかな誤り2・未評価0、明らかな誤り率2/292=0.6849%。目視は正解データではない。詳細は `n3_required_words_run2.jsonl`、`n3_place_changes_run2.jsonl`、`n3_summary_run2.json`。
+- **N4/D9**: 凍結60語のうちv2で採択された申告は58語・152役割行。目視ラベルは正しい129・疑わしい17・明らかな誤り6。D9候補1/2/3の確認済み役割行はそれぞれ21/6/6、明らかな誤りは各0行で、明らかな誤り率はいずれも0%。最小候補の `role_frame_min_sources=1` をrun2設定に固定した。閾値1では語状態がCONFIRMED 16、ESTIMATED 42、NO_ROLE_FRAME 2。目視は正解データではない。申告・ラベル・先行SHA-256は `n4_claims_run2_prefreeze.jsonl`、`n4_visual_labels_run2.jsonl`、`n4_visual_freeze.sha256`、確認結果は `n4_d9_run2_final.json`。
+- **N5**: seed 281語はr8/run2とrun2で281/281一致、差分0。run1からrun2も281/281一致。全件は `n5_seed_comparison_run2.jsonl`、差分一覧は空の `n5_seed_differences_run2.jsonl`。
+- **生成・構築manifest**: gen_ntypeは69呼出・gpt-6-luna/low・wall 461.4秒・sum_call 1,822.6秒。run1のgen_roleは208呼出・low・wall 2,083.9秒・sum_call 8,263.8秒。run2のgen_role_v2は208呼出・失敗0・8,255回答・low・wall 3,109.9秒・sum_call 12,327.2秒。構築時間はrun1 268.2秒、run2 474.0秒。run1 content SHA-256 `72945370d9299600e1beca212fc2ed286940506d47fdd0fb50e403ee7bacb5a9`、run2 `e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21`。run2 verifyは `OK`、headwords 1,766,903・evidence 1,948,020・generated_noun_types 2,704・role_frames 8,095・direct placement 992,773。両runの配置manifest・ファイルhash、生成呼出数・effort・時間、粒子別申告率を `manifest.json` に収録した。
+
+|助詞|対象8,311語を分母にした申告率 run1→v2|採択済み枠を分母にした申告率 run1→v2|採択済み枠での増分（ポイント差）|
+|---|---:|---:|---:|
+|が|40.1% → 60.6%|41.5% → 62.2%|+20.7232|
+|を|61.9% → 65.0%|64.1% → 66.8%|+2.6495|
+|に|28.2% → 51.2%|29.2% → 52.6%|+23.4008|
+|で|4.4% → 38.0%|4.5% → 39.0%|+34.5125|
+|へ|2.0% → 4.8%|2.1% → 4.9%|+2.8478|
+|と|5.1% → 10.9%|5.3% → 11.2%|+5.9076|
+|から|4.8% → 15.9%|5.0% → 16.3%|+11.3213|
+|まで|0.2% → 3.6%|0.2% → 3.7%|+3.4695|
+|より|0.1% → 0.5%|0.1% → 0.5%|+0.4194|
+
+申告率は申告の正しさを示さない。事前登録した主指標は対象8,311語を分母とする率。追加の有効回答分母は、既存のrun1参照値（で4.5%、へ2.1%、から5.0%）が、run1採択済み8,024枠で計算した値を小数1桁に丸めた値と一致することを確認するため、比較用に併記した。最初の8,311語分母版manifestも `manifest_preregistered_8311_denominator.json` に保存した。
+
+- **関連テスト**: `tests/coarse_place tests/test_gen_coarse_evidence.py tests/test_gen_coarse_evidence_pred.py` は2回の全体実行とも360 passed・1 failed。失敗は `test_the_stop_signal_ends_the_run_with_an_interrupted_record` の `communicate(timeout=20)`。同テスト単独の再実行は1 passed in 0.49s。理由を確定できず、テストや期待は変更していない。出力は `tests_related.txt`、`tests_related_retry.txt`、`test_stop_signal_retry.txt`。全体テストとN6は監査役の担当範囲のため未実行。
+- **手順記録**: 最初のr7 `cmp`は別ラウンドのscratchpad出力を参照してexit 1だった。ファイル内容SHA-256がその前後ログに記された総hashと異なると分かり、N1スクリプトの正規凍結出力 `scratchpad/W3-a6-impl/n1/` に対して比較し直すとr7/r8/配置なし・読解入口の全cmpがexit 0。失敗出力も `n1_r7_comparison.txt` に残した。検査JSONを読み取る補助確認で一度だけ指定外のsystem `python3` を使ったが、`verantyx`を読み込まず書込みもしないコマンドであり、その後の生成・測定・テストは指定venvを使用した。
+
+<!-- w3a6-measured:end -->
+
+## 12.19 W10-f05: 配置の層と文書駆動の育成（事前登録）
+
+事前登録の日時は `artifacts/w10-f05/prereg_time.txt`（書く前と書いた後の 2 行）。検査データの凍結（`data_freeze_time.txt`）はこの節より後。以下の数値は閾値・件数の約束であり、測定値ではない（測定値は §12.19.M に出力ファイルつきで機械で貼る）。
+
+### K290〜K297（チケットから）
+- **K290 層は基底を上書きしない**: 基底が DECIDED（direct）の語は層を見ない。層の答えが使われるのは基底が UNPLACED／UNKNOWN／MULTIPLE のときだけ。MULTIPLE の場合、層の direct は基底の候補に含まれる型のときだけ使う（候補外なら `LAYER_TYPE_NOT_AMONG_CANDIDATES` で基底のまま）。
+- **K291 direct の条件**: 層で direct になるのは (a) 生成×分布の一致（W3-a2/W3-a6 と同じ規則・閾値。分布の出所の数は文書の数で、`min_sources` は設定（既定 1）。文書が 1 本なら 1 本の中で `rd_*` の閾値を満たすこと）、(b) 人の確認、のどちらか。LLM の申告だけ・再読一致だけは `ESTIMATED` 止まり。
+- **K292 分布は与えた文書だけ**: 文書群以外（生成コーパス・Web）を分布に混ぜない。文書ごとに出所を分け、同じ文書を 2 回数えない（本文の sha で重複を除く）。
+- **K293 記録は変えない**: 文書の本文は 1 文字も変えない。層と台帳は記録とは別のファイル。層を外せば基点の振る舞いに戻る。
+- **K294 台帳の連鎖**: 層への書き込みはすべて台帳の行（`promoted_to_layer`）として連鎖に残る。層の SQLite から台帳の行 id を引ける。
+- **K295 後段**: `fake`（台本）で全規則をテスト、本物は Ollama のローカル接続だけ。後段の失敗は型つき失敗で、層に何も書かない。
+- **K296 秘匿**: 既定で LLM へ渡すのは候補の語と、その語を含む文の型つきの穴の形。文の全文を渡す `--send-sentences` は明示のときだけ（台帳に印）。
+- **K297 不変**: 層なし・`VERA_PLACEMENT_LAYER` 未設定のとき、`vera read/ask/serve` と `coarse_place.query` の出力は基点と byte 一致。
+
+### 設計の確定（指示書 §1.1〜§1.9 の写し）
+1. **層のファイル**（`verantyx/placement_layer.py`）: 1 層 = SQLite 1 ファイル。`spec` が `/` を含むか `.sqlite` で終われば **パス**、それ以外は **名前**（`^[A-Za-z0-9_.-]{1,64}$`）で `$VERA_PLACEMENT_LAYER_ROOT/<name>.sqlite`（ROOT が無ければ `LAYER_UNAVAILABLE:ROOT_UNSET`。ホームなどを探さない）。表 `meta(k,v)`（`schema=verantyx.placement_layer/1`・`name`・`base_content_sha256`・`created_ts`）と `entries(id, word(NFKC), ns, type, origin ∈ {layer_confirmed, layer_estimated, layer_human}, decided_by, evidence, role_frame, ledger_store_id, ledger_seq, ledger_key, ts)`。**追記のみ**（UPDATE・DELETE をしない）。書き込みは `write_entry` 1 つだけ: 先に台帳へ `promoted_to_layer` 行 → その `seq` を層の行に書く。層の `base_content_sha256` と基底の sha が違えば `LAYER_BASE_MISMATCH` で何も書かない。
+2. **層の答え**: `coarse_place.query(term, …, placement=…, layer=None)`。`layer` も環境変数 `VERA_PLACEMENT_LAYER` も無い（空を含む）ときは今の答えをそのまま返す（鍵を足さない・`placement_layer` を import もしない）。層ありのとき、基底の `state` と層の行の畳み込み（direct の型の集合 D、推定の型の集合 E）で `layer`（`base`|`overlay:<name>`|`none`）と `layer_status`（閉じた一覧）を決める。
+   - NO_PLACEMENT → `none`／`BASE_NO_PLACEMENT`。DECIDED（estimated 含む）→ `base`／`BASE_DECIDED`（層を見ない）。
+   - UNPLACED/UNKNOWN/MULTIPLE: 層が開けない → `LAYER_UNAVAILABLE:<MISSING|UNREADABLE|ROOT_UNSET|BAD_NAME|BASE_MISMATCH>`、行なし → `LAYER_HAS_NO_ENTRY`、|D|≥2 → `LAYER_CONFLICT`（同点は棄権）、D 空・E あり → `LAYER_ESTIMATED_NOT_USED`（答えの核は変えない）。いずれも基底のまま。
+   - UNPLACED/UNKNOWN で D={T} → 層の direct（`LAYER_DIRECT_USED`）。MULTIPLE で D={T}、T∈基底の `top` → 層の direct。T∉`top` → 基底のまま `LAYER_TYPE_NOT_AMONG_CANDIDATES`。
+   - 層の direct の答えは基点の direct と同じ鍵・同じ順＋末尾に `layer`・`layer_status`。`decided_by` は `decide_word` の `by` そのまま（`gen_definition` を消さない）、人の確認は `["layer_human"]`。`frame_status` は名詞 `NOT_PREDICATE`・述語 `NOT_CONFIRMED`（`frame` は null）。`role_frame_*` は基底の答えにその鍵があるときだけ。`origin` に `layer_*` は入れない（契約で `ORIGIN_UNKNOWN`）。
+3. **育成**（`verantyx/placement_grow.py`）: 文書を `document_loaders` で読み、本文の NFKC の sha で重複を除く。文は `cli._qc_records` で切る。builder の `tokenize`/`analyze` を **import して**数える。候補 = 基底（層なし）が UNPLACED／UNKNOWN／MULTIPLE の語（名詞と述語の両方に出る語は `KIND_SPLIT` で問わない）。LLM へは閉じた enum の JSON schema で、名詞は定義文・上位語・18 型、述語は述語の型と役割つきの枠。バッチの失敗・無効は `backend_failed`／`declaration_invalid:*` として台帳に残し層に書かない。既定で送るのは候補の語・種類と、その語を含む文（最大 3）の型つきの穴の形だけ。
+4. **文書を分布の腕に**: 各文書は別の出所 `doc:<本文 sha の先頭 12>`。述語は `role_distribution`、名詞は `hearst`（builder と同じ数え方。充填物の型は **基底の型だけ**）。ほかの腕は作らず `ARM_NOT_BUILT:<腕>` と数える。設定は基底の `cfg` を写し `rd_min_sources=role_frame_min_sources=--min-sources` だけ置き換える（閾値は下げない）。判定は `coarse_types.decide_word`。直 direct かつ生成の腕が `by` に入る → `layer_confirmed`。文書の腕だけで決まり型が申告と同じ → `layer_confirmed`、違う → 書かない `GEN_DISAGREES_WITH_DOCUMENTS`。生成だけ（DECIDED/estimated）→ `layer_estimated`。それ以外は書かない（理由を数える）。上位語の基底の型が申告の型と違えば生成の票にしない（`HYPERNYM_TYPE_DISAGREES`）。
+5. **昇格** `vera ledger promote --layer`: `fold()` の `promotable` の行について。`human_confirmed` → `layer_human`。`reread_agreed ≥ N` だけ → `layer_estimated`（direct にしない）。基底が DECIDED → `SKIP_BASE_DECIDED`。既に同じ (key, 層, origin) の行がある → `SKIP_ALREADY_PROMOTED`（何度流しても同じ）。`distribution_backed` だけは fill の証言なら基底が DECIDED なので skip、grow の証言なら育成の時に書いてある（`SKIP_ALREADY_IN_LAYER`）。`promoted_to_layer` 行 = `{type, key, word, candidate, declared_type, layer_name, layer_base_sha256, origin, decided_by, evidence, fill_id, from_seq}`。
+6. **門 (c) のソブリン**: `VERA_SOVEREIGN_ROOT`・`VERA_SOVEREIGN_STORE` が **両方とも無い** → 今と同じ（`gate_log` に鍵を足さない・`sovereign_checked=False`）。あるとき `basis_policy._read_sovereign(True)` で読み、`ACTIVE_CONSENTED` の発話（`payload.text`／`payload.phrase`）を `decode_grammar.cross_of` で十字にして、同じ `_gate_c` を別の `records` で呼ぶ。矛盾 → `GATE_C_CONTRADICTS_SOVEREIGN:<event_id>`。`sovereign_checked=True` は実際に 1 件以上比べた（n>0）ときだけ。`c_sovereign={state, compared, note}` を `gate_log` に足す。`_gate_c` の戻り値は変えない。
+7. **入口**: `vera read/ask/serve/chat --layer <name|path>`（= 環境変数 `VERA_PLACEMENT_LAYER`）。`FusionConfig.layer` があれば `vera` 欄の最後に `placement_layer = {name, status, growth}`（`vera.layer`（融合の層 0/1）とは別の鍵。J12）。
+8. **育ちの指標** `vera placement growth --layer`: 語数（direct・human・estimated・conflict）、行数、最後に育った時刻、`--ledger-file` があれば台帳の行数（種類ごと）・この層への `promoted_to_layer` 行数・`chain_ok`。
+
+### 判断の記録（指示書 §1.9）
+J1 層の鍵は層が指定されたときだけ付く。J2 K290 は `state` だけで読む。J3 層の ESTIMATED は答えの核を変えない。J4 `decided_by` は `by` そのまま（名詞の生成×文書の一致は基点と同じく読解器に読まれない: `PLACEMENT_DIRECT_VIA_GENERATED`）。J5 文書の腕は `role_distribution`（述語）と `hearst`（名詞）だけ・充填物の型は基底だけ。J6 名詞・述語の両方に出る語は問わない。J7 上位語の基底の型が申告と違えば生成の票にしない。J8 文書だけで決まった型が申告と違えば書かない。J9 grow の証言は `ADOPTED`・`candidate=語自身`。J10 promote の規則。J11 direct の型が 2 つ以上 → `LAYER_CONFLICT`。J12 serve の鍵は `placement_layer`。J13 ソブリンは `ACTIVE_CONSENTED` の発話だけを比べる。J14 層の名前の解き方。J15 基点の CONFIRMED の役割枠は読解器に `ROLE_FRAME_INVALID:ENTRY_KEYS` で拒まれる既存の不整合（直さない・報告）。J16 層の述語の `frame_status` は `NOT_CONFIRMED`。
+
+### 採点の定義（R5。検査データより前に登録）
+文書 QA の問い 30（答えが文書にある 20・無い 10）を `vera ask --mode round5 --document <doc> [--layer <spec>] -- <問い>` で別プロセスで流す。`verdict == "ANSWER"` かつ `sorted(values) == sorted(expect.values)` → **正答**。`verdict == "ANSWER"` でそれ以外（`expect == "ABSTAIN"` の問いへの ANSWER を含む）→ **誤答**。それ以外 → **棄権**。出た verdict の種類はすべて数える。ANSWER 以外で `values` が空でないものは「要確認」として列挙する。条件: 3 条件（層なし・fake の層・本物の層）とも誤答 0。正答の増分を報告し、増えなければ理由を型（`READER_NOT_REACHED`・`LAYER_WORD_NOT_IN_QUESTION`・`LAYER_NO_DIRECT`）で機械的に出す。
+
+### 検査データの仕様（実装より前に凍結）
+主題は **自転車の整備**。`tests/fusion/w10f05/domain_bicycle.txt`（1 行 1 文、60〜100 文。読解器が読める平叙文中心＋`AやBなどのY` の文を数文）。基底 r9 で UNPLACED／MULTIPLE の語が 30 以上含まれること（`artifacts/w10-f05/candidates_r9.txt`）。`domain_bicycle_qa.jsonl`（30 行、`{id, question, expect}`。20 問は文書の 1 文に答え、うち 10 問以上は候補の語が問いか答えの文に入る。10 問は答えが文書に無く `expect="ABSTAIN"`）。`fake_declarations_bicycle.json`（候補の語ごとの fake の申告。わざと誤った型を 5 語以上、`_intended_wrong` に列挙）。`synthetic/`（3 経路を必ず働かせる証拠の行の組と、`hearst` を 2 回以上起こす短い文書 1 本）。隠しバンクの文は使わない。
+
+### 12.19.M W10-f05 の測定（出力は `artifacts/w10-f05/`。数値は各ファイルから）
+- **検査データ**（凍結 `data_freeze.sha256` / `data_freeze_time.txt`。事前登録 `prereg_time.txt` の後）: 自転車の整備の文書 79 文、基底 r9 で UNPLACED／UNKNOWN／MULTIPLE の語 69（`candidates_r9.txt`。述語は 1 のみ。断片語を含む）、問い 30（答えあり 20・なし 10）、fake の申告に誤り 6 語（`_intended_wrong`）。
+- **R1（K297）**: 入口 4,149 文は none・r8・r9 とも基点と byte 一致（`r1_entry.txt`）。`query` の全数（1,766,903 語）は r8・r9 とも一致（`r1_query.txt`）。serve 310 行一致（`r1_serve.txt`）。z1 の 12 case 一致（`r1_z1_cmp.txt`）。
+- **R2（K290）**: 基底 direct 50 語は層で別の型を書いても 2 鍵を除き byte 一致・`BASE_DECIDED`、MULTIPLE の候補内 10 語は `LAYER_DIRECT_USED`、候補外 10 語は `LAYER_TYPE_NOT_AMONG_CANDIDATES`（`r2_k290.json`）。
+- **R3（fake）**: 候補 69、申告 64（名詞 63・述語 1）、`layer_confirmed` 2・`layer_estimated` 61・書かない 6（`DECLARATION_NULL` 5・`HYPERNYM_TYPE_DISAGREES` 1）（`r3_grow_fake.json`）。誤りを入れた 6 語のうち direct になった語は 0、estimated 5、書かれず 1（`r3_wrong_check.txt`）。`growth` の `chain_ok: true`（`r3_growth_fake.txt`）。台帳の証言 69 行はすべて `context.doc_id` が文書 id・`provenance.version` が `fake-table:3aa3348232be`（表の sha256 の先頭 12）。K291 の 3 経路（生成×文書・生成のみ・人の確認）は合成の証拠の行 10 件と `tests/test_w10f05_grow.py` で働く。
+- **R4（本物 qwen3.5:4b）**（第 2 ラウンドで取り直し。第 1 ラウンドの出力は `r1_r4_*` に残す）: 候補 69、申告 68（名詞 68・述語 0）、`layer_confirmed` 3・`layer_estimated` 65・書かない 1（`DECLARATION_INVALID:DUPLICATE`）（`r4_grow_real.json`）。遅延は後段 84,535 ms（8 呼び出し、1 語あたり約 1,225 ms）・Vera 2,552 ms。計測の前後の負荷は `r4_uptime_before.txt`（1 分平均 4.42）・`r4_uptime_after.txt`（5.36）。**この計測は自分の全体テストとは並走していないが、他チケットの pytest 等が同じ機械で動いていた**（`r4_ps_pytest_before.txt`）。台帳の証言 69 行はすべて `context.doc_id` が文書 id、`provenance.version` が `ollama-digest:2a654d98e6fb…`（ローカルの `/api/tags`）。目視（正解データではない）: direct 3 語の誤り 0、estimated の明らかな誤り 8・割れる 3（`r4_visual_review.md`。層の中身は r1 と語・型・origin が完全に一致）。
+- **R5（文書 QA 30）**: 層なし・fake の層・本物の層とも 正答 8・誤答 0・棄権 22（`r5_qa.txt`）。**正答は増えなかった**。答えのある 20 問のうち層なしで正答 8、残り 12 の理由は本物の層で `READER_NOT_REACHED` 5（読解器の理由は `ambiguous case role: で` 4・`unsupported source quantifier/exception/time` 1）、`LAYER_NO_DIRECT` 6、`LAYER_WORD_NOT_IN_QUESTION` 1（`r5_why_not_gained_real.txt`、fake は `r5_why_not_gained_fake.txt`）。
+- **R6**: `tests/test_w10f05_sovereign.py`（7 件）と `tests/test_w10f04_fill.py` が通る。
+- **R9**: 全体テスト `pytest_full.txt`（第 3 ラウンドの取り直し）。失敗 116 件（passed 15596）、基線に無い失敗 1（`test_s6_…`。チケットが未コミットの間の環境由来と名指し。基点の木でも失敗。`pytest_new_failures_check.txt`）。W10-f05 のテストの失敗は 0。
+
+### 12.19.J 実装役の判断（J17 以降）
+J17 `vera placement` は既存の面の配置コマンド（先頭の引数が store）なので、先頭が `grow`／`growth` のときだけ新しい口にした（その名の store は使えない）。J18 `coarse_place.query(layer=False)` は環境変数も効かない「基底だけ」（層の育成と昇格が使う）。J19 `HYPERNYM_TYPE_DISAGREES`（上位語の基底の型が申告の型と違う）のときは文書の腕が一致していても書かない（狭める方向）。J20 `DISTRIBUTION_DISAGREES`（文書の分布が別の述語の型に投票）は estimated にも書かない。J21 文書の腕だけで決まり型が申告と同じ名詞は `layer_confirmed`（`decided_by` は `hearst@doc:…`）。この経路の名詞は読解器に読まれる（`gen_definition` が `by` に入らないため）。J22 `FusionConfig(layer=)` は環境変数を自分で設定する（食い違えば `LAYER_ENV_CONFLICT`）。J23 `--min-sources` は `rd_min_sources` と `role_frame_min_sources` だけを置き換え、ほかの閾値は変えない。 J24（第 2 ラウンド）台帳の証言の `provenance.version` は空文字にしない: ollama はローカルの `/api/tags` の digest、fake は表／台本の sha256 先頭 12、取れないときは `VERSION_UNKNOWN:<理由>`（注入された chat 関数・ローカル以外の host・openai は取りに行かない）。`context.doc_id` は候補の語の初出の文書の出所、`context.doc_ids` は出現した出所の一覧。J25 `FusionConfig` は `layer` が無くても `VERA_PLACEMENT_LAYER` があればその層を `vera.placement_layer` に報告する（無ければ鍵なし）。
+
+### 12.20 W3-a7 r10 の事前登録（2026-10-05 07:19:46 +0900。検査データ・テスト・生成前）
+
+**対象と変更境界**: r10 はデータで到達を伸ばす実験である。実装コードの変更は `tools/gen_coarse_evidence.py run` の `--effort {low,medium,high}` と、その値を既存の生成呼び出し・`batches.json` の `meta.effort`・`summary.json`・回収行の `provenance.effort` に渡す処理だけとする。省略時は `low`。モデル名、役割プロンプト v2、schema、語の順序、束の大きさ、再試行、確認・配置・読解の規則は変えない。努力値は生成の台帳の `argv` にある `model_reasoning_effort` でも照合できるようにする。既定 `low` の互換性は、実装前に固定した同一 needs・同一引数から作った決定的な `batches.json` と比較し、役割プロンプト v2 の出力も凍結済み v2 と `cmp` する。基準ファイルと sha256 は `artifacts/w3-a7/current-r1/` に保存する。
+
+**K320（努力値だけを変える比較）**: プロンプトの出力・template hash・schema hash、閾値、needs の語集合・順序、束の条件を v2 と同じに保つ。比較するのは effort `low` と `medium` だけ。申告率は凍結した同一40語を分母とし、格助詞9種それぞれについて `frame` に非空の型付き申告がある語数 / 40 を計算する。棄権・欠落・不正行を分母から外さず、別々に報告する。v2 の基準値は、同じ40語について凍結済み `artifacts/w3-a6/r9/n4_claims_run2_prefreeze.jsonl` の `source_status == ACCEPTED` な枠から同じ式で得る。各助詞で r10 が v2 以上なら申告率条件を満たす。同点を解消する順序は設けない。
+
+**試しの束と U2**: 入力は `artifacts/w3-a6/current-r2/trial_needs_role_v2.jsonl` と同じ語・同じ順序の40語とし、全件を1束・1呼び出しで実行する。試しの束の40語は凍結済みN4標本60語の一部である。申告率条件は上記 K320 の9助詞すべてで比較する。明らかな誤り条件は、同じ40語の出力枠を、N4の人手ラベル `artifacts/w3-a6/r9/n4_visual_labels_run2.jsonl` の `(word, particle, role, types)` と完全一致で照合し、`明らかな誤り` の数が v2 の同一40語における数を超えないこととする。回答欠落・棄権は別記する。v3 の申告に完全一致する人手ラベルが無い場合は `UNCLASSIFIED` と記録し、ラベルの不在を正しさや誤りに読み替えず、U2 の誤り条件を `UNKNOWN` とする。U2 は9助詞の比較と誤り条件がともに判定可能で、かつ条件を満たす場合だけ `PASS`。1助詞でも v2 を下回る場合は `FAIL`。人手ラベルの不足で判定できない場合は `UNKNOWN` とし、本番生成の許可条件にしない。
+
+**K321（規則コード不変）**: effort 引数の追加・伝播以外に生成器の処理・builder・型確認・問い合わせ・読解器を変更しない。差分レビューでは製品変更がこの引数の追加・伝播だけであることを確認し、`tools/build_coarse_placement.py` および配置・読解側の既存ファイルの実装前後 SHA-256 が一致する記録を残す。生成データ・LLMの返答は `generated` で、真偽の証拠として扱わない。
+
+**K322（D9の保守的な変更）**: N4の目視標本で CONFIRMED 役割に占める明らかな誤りが10%を超えた場合だけ、既存D9の `role_frame_min_sources` を上げる方向で扱う。努力値を低く戻すことでは補正しない。既存の確認規則を狭める必要がある場合は別台帳・別測定として残す。明らかな誤りが10%以下ならD9を変更しない。人手ラベルは `testimony` として扱い、正解データとは呼ばない。
+
+**後続の測定範囲**: この第1ラウンドでは `--effort` の受入確認、needs・生成スクリプト・試行スクリプトの凍結までを行い、試しの束・本番生成は実行しない。監査役の生成後に r10/run1 の verify、N2〜N5、全60語のN4誤り率、分布被覆表、r9/run2との差分、U5、基線失敗集合をそれぞれ別出力で判定する。未実行を達成扱いにしない。
+
+### 12.20.1 W3-a7 r10 試行判定・再試行ゲートの追補（2026-10-05 08:13:45 +0900。状態・ゲートの規則を試行データ・テスト・コード変更前に登録。ラベル文字列の対応は2026-10-05 08:16:15 +0900に同じくデータ・テスト・コード変更前に追記）
+
+**40語の状態記録**: 試しの束の各語を、raw 応答と同じ試行の collector 出力に照らして、`response`（1つの妥当な非null frame。空 frame も応答として数える）、`abstain_null`（妥当な null frame）、`missing`（raw items に語がない）、`invalid_or_duplicate`（重複応答、型不正、助詞重複、役割重複、または raw 応答と collector 行の不一致）のいずれか1状態にする。40語すべての語別状態、各状態数、invalid/duplicate の内訳を結果へ記録する。判定は collector の行数だけから missing と invalid を推定しない。ラベルの無い申告は引き続き `UNCLASSIFIED` である。
+
+**U2 の保守的な扱い**: `missing` または `invalid_or_duplicate` が1語以上あれば U2 は `UNKNOWN`（監査役に戻す）。この場合、欠落・不正の語を無申告や棄権と数えて PASS / FAIL の比較へ混ぜない。全40語が `response` または `abstain_null` の場合だけ、固定分母40で既登録の助詞別率と明らかな誤り数の規則を適用する。ラベル不在も従来どおり `UNKNOWN`、率の低下または明らかな誤りの増加は `FAIL` とする。
+
+**凍結ラベルの文字列**: N4ラベルの `visual_label` にある文字列 `誤り` は、§12.19の定義上の「明らかな誤り」として数える。`正しい` と `疑わしい` は明らかな誤りに数えない。未知の文字列や同じ申告キーに対する重複ラベルは `UNCLASSIFIED` とする。
+
+**追記専用の試行記録と本番ゲート**: それぞれの試行は一意な ID で始め、開始と完了を同じ append-only JSONL 台帳へ記録する。記録には参照した `freeze.sha256` の SHA-256、その manifest が列挙する凍結ファイルの hash、完了状態、固有の判定結果ファイルとその hash を含める。試行ごとの出力ディレクトリと判定結果ファイルは別 ID にする。途中失敗は trap で完了 `FAIL` を記録し、trap が動かず未完了になった場合もゲートは拒否する。生成ゲートは、現在の凍結 manifest と一致する最新開始試行が完了済み `PASS` で、結果ファイルの内容と hash も一致するときだけ通す。後の未完了・失敗・`UNKNOWN` の試行が過去の PASS を再利用することはできない。既存の固定名 `trial_threshold.result` はゲート根拠にしない。
+
+**LLM を呼ばない判定器確認**: 凍結済み試行 needs 40語、N4 claims、N4 visual labels から組み立てた機械判定用入力について、1語の raw 行を除いたケースは `missing=1`、棄権数とは別に記録され、U2 `UNKNOWN` でなければならない。状態分類の fixture は4状態を別々に確認する。ゲート検査は PASS の後に次の試行を開始した状態・FAIL 完了状態で拒否し、同じ凍結入力に結び付く直近の完了 PASS だけを許可する。これらは実際の生成性能を主張しない。生成と本番実行は監査役の許可を待ち、このラウンドでは実行しない。
+
+### 12.20.2 W3-a7 判定テストの harness 修正（2026-10-05 08:29:52 +0900。期待 fixture は変更せず再凍結前）
+
+初回の LLM-free テスト出力 `artifacts/w3-a7/current-r2/tests_trial_gate.txt` では3件中2件が失敗した。1件は、欠落数と棄権数がどちらも1になり得るのに数値が異なることを要求した harness の誤りだった。固定した期待 fixture の状態名・各状態数・U2 `UNKNOWN` は変更せず、別名の状態カウンターを個別に検査する。もう1件は4状態 fixture の元データに含まれる第5語目の null 棄権も残していた（位置は `trial_source_state.txt`）。fixture の期待を変えず、4状態ケースの構成時に明示した null 以外の基準 null 行を空 frame の有効応答へ置き換え、状態数が狙った4分類だけを表すようにする。変更後のテストコードと同じ期待 fixture・凍結入力を再ハッシュしてから再実行する。
+
+### 12.20.3 W3-a7 第3ラウンド測定と U2 逸脱の記録（2026-10-05 10:10:38 +0900。r10/run1 の構築・N2〜N5・被覆測定データ作成前）
+
+**U2 の裁定と逸脱**: 凍結された試行結果 `artifacts/w3-a7/current-r1/trial_results/4f6b0bb9-22e7-40a5-96dd-361a2f3d6297.json` は `status=FAIL`、`reason=particle_claim_rate_below_v2` であり、`を` は同一40語中 v2 が30語、試行出力が28語だった。事前登録の規則では本番生成のゲートを通らない。監査役がこの2語を訂正と裁定して本番生成へ進めたため、これは事前登録からの逸脱として記録する。監査役の裁定は U2 の PASS に読み替えず、第3ラウンドの U2 は `FAIL (override)` として報告する。試行の入力・結果を変更せず、本番 `gen_role_v3` の再生成・追記・修復は行わない。
+
+**使用入力と凍結**: r10/run1 は凍結済み r9 の名詞型生成入力（`gen_ntype`）と監査役が完了した `build/coarse-W3a/full/r10/gen_role_v3/` の生成データを使う。構築前に `gen_role_v3/role_frames.jsonl`・`summary.json`・`batches.json`・`schema.json`、r9/run2 の manifest と配置、r9 の設定、N2 の期待11行、N4の標本60語・既存ラベル、N5のseed一覧、関連する builder・配置コードの SHA-256 を `artifacts/w3-a7/current-r3/input_freeze.sha256` に記録する。gen_role_v3 の台帳は変更しない。検査結果は同じディレクトリに書き、生成物を根拠や正解データとして扱わない。
+
+**N2**: `tests/coarse_place/data/w3a6_expect.json` の役割期待11行をそのまま使い、各述語・助詞・期待役割について、r9/run2 と r10/run1 の申告有無、`CONFIRMED` / `unconfirmed`、役割の `backed_by` と各出所の `(助詞, 型)` の票を並べる。出所を横断して票を合算しない。期待11行・述語数・根拠の腕を全行保存する。
+
+**N3・N5 と全差分**: N3 は凍結した相対位置の期待語を r10 で再照会し、PLACE 単独 direct の有無を全件記録する。N5 は凍結した281 seed語の `(namespace, state, origin, top)` を r9/run2 と r10/run1 で比較し、異なる行をすべて保存する。別に r9/run2 から r10/run1 への `direct` 配置（`namespace, word, state, origin, top`）の変化を全件列挙し、`CONFIRMED` 役割は `(word, particle, role, types, backed_by)` の追加・除去・変更を全件列挙する。変更が0件でも0件と記録する。
+
+**N4 と U4（分布の被覆）**: 凍結した同じ60語について r10 の申告を抽出し、Codex 実装役が再目視したラベルを別ファイルに記録する。ラベルの状態は `正しい` / `疑わしい` / `誤り` / `UNCLASSIFIED` とし、判定は `testimony` であって正解データではない。N4 の明らかな誤り率は r10 で `CONFIRMED` となった役割を分母にし、`誤り` 件数と未分類件数を別々に数える。上限（誤り＋未分類）も10%以下の場合だけ N4 を PASS とする。U4 は N2 の11行と N4 の60語について、助詞ごとに `role_distribution` の各出所が持つ有意な型・申告役割への票・型の分割を出所ごとに保存する。原因は同時に複数を記録できる。`CLAIM_ABSENT`（助詞または期待役割の申告なし）、`DISTRIBUTION_NO_ARM`（その助詞に有意な型を持つ腕なし）、`NO_SHARED_TYPE`（有意型はあるが申告型と交わらない）、`TYPE_SPLIT`（同じ助詞・型が同一出所内で複数役割へ割れ、票にならない）、`SUPPORTED`、`UNCLASSIFIED`、`SOURCE_ABSENT` を別の型として扱い、型不一致や出所欠落を偽・不支持と読み替えない。
+
+**率と manifest**: v2 は r9/manifest の `gen_role_v2`、v3 は r10 の `gen_role_v3/summary.json` と構築入力から数える。全8,311要求語を分母とする率と、各世代の有効な異なる非null role-frame 語を分母とする率の両方を格助詞ごとに出し、分母・分子・effort・calls・成功／失敗バッチ・申告出所・入力 hash を残す。非null枠内での分子は、その助詞に少なくとも1つの型付き役割を申告した異なる語数とする。r9の manifest と同じ9助詞・同じ式を使う。率の比較は記述統計で、生成申告を事実の証拠にしない。
+
+**実行境界**: 実装側は試行も本番の生成器も再実行しない。r10/run1 の構築と verify、N2〜N5、被覆・差分・manifest の生成に限る。U5 の隠し評価は監査役の範囲であり実行しない。受入基準 U6 は `tests/` 全体を最後に一度実行し、基線失敗集合と照合する。
+
+### 12.20.4 W3-a7 第4ラウンド N4 盲検再測定の事前登録（2026-10-05 12:04:07 +0900。旧ラベルを読み替えず、新ラベル・結合・集計前）
+
+第3ラウンドの `label_n4_v3.py` は固定語を誤り・疑わしいとし、残りを既定で正しいとしたうえ、確認状態を含む claims を参照していた。前回レビューでこのN4測定は盲検でないと判定されたため、旧ラベル・旧PASS・旧率は有効な判定に使わず、全て保持して履歴として扱う。本節の手順で新しい測定を別ファイルに作る。
+
+**標本とラベル前凍結**: 標本は同じ凍結60語、対象は r10/run1 の v3 申告全件。ラベル前入力は `(word, particle, role, types)` の申告内容と60語の標本一覧に限り、`confirmed`、`confirmed_types`、`backed_by`、`unconfirmed_why`、旧目視ラベル、出所ごとの確認結果を含めない。1行は1つの申告役割。語の申告が無い場合も標本一覧には残す。申告行と標本一覧、抽出手順の hash を目視前に固定する。
+
+**目視基準**: §12.19 の既登録基準を適用する。最も普通の語義で、その助詞の項が役割に当たる普通の文が作れ、規約§2・§4.1と型にも合う場合を `正しい`、助詞がその役割を取らない・規約が別役割を指す・型が役割に来ない場合を `誤り`、多義・言い切れない場合を `疑わしい`、標本語だけでは判断できない場合を `UNCLASSIFIED` とする。ラベルは `testimony` であり正解データではない。目視中は確認状態、確認の根拠、分布、旧ラベルを参照しない。全申告に個別ラベルを明示し、欠落・重複・未登録キーを既定の正しさにせず `UNCLASSIFIED` として数える。ラベル全件と hash を確認結果との結合前に固定する。
+
+**後結合と率**: ラベルファイルの凍結が済んでから、同一 `(word, particle, role, types)` の r10/run1 `CONFIRMED` 役割だけを結合する。分母は結合できた `CONFIRMED` 申告役割数、明らかな誤りは `誤り` 数、未分類は別数で報告する。`誤り + UNCLASSIFIED` の保守的上限も分母で割り、これが10%以下で、結合・ラベルの欠落や重複が無い場合だけN4をPASSとする。分母0、結合不能、または上限が10%を超える場合はN4をPASSにしない。閾値超過時のD9は既登録K322どおり、`role_frame_min_sources` を上げる方向でのみ扱う。
+
+**U4分類**: N2 11行・N4 60語×9助詞の出所別表を作り、登録済み原因だけを主表に使う: `CLAIM_ABSENT`、`DISTRIBUTION_NO_ARM`、`NO_SHARED_TYPE`、`TYPE_SPLIT`、`SUPPORTED`、`UNCLASSIFIED`、`SOURCE_ABSENT`。複数原因は同時に記録可能で、出所を横断して票を足さない。第3ラウンドの補助分類 `PARTLY_BACKED` は登録済み原因へ混ぜず、旧表の履歴に残す。
+
+**第4ラウンドの境界**: 監査役が生成を終えた `gen_role_v3`、生成台帳、既存r10/run1は読み取り専用とし、生成・台帳更新・配置再構築は行わない。試行FAILはFAILのまま維持し、監査役の裁定をPASSに読み替えない。N4盲検再測定とU4主表は `artifacts/w3-a7/current-r4/` に別出力し、旧出力は変更しない。

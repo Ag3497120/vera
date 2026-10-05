@@ -28,3 +28,10 @@
 - 開発ツリーの git 履歴（基点コミットの `git show`）に依存する検査は公開リポジトリでは成り立たないので外した: `test_event_cross_entry.py`、`test_semantic_read_w3b1.py`、`test_semantic_read_w3b1_r3.py`、`test_semantic_read_w3b1_r4.py`（開発ツリーでは通っている）。
 - `test_contract_lower.py` の 9 件は `/opt/homebrew/bin/node` を固定パスで呼ぶため、node がそこに無い環境で落ちる（同期前から）。
 - 開発ツリーの基線に含まれる既知の失敗 14 件（開発側の `baselines/dev_237a43b_failures.txt` と同じ）はそのまま。
+
+## 2026-10-05 の同期
+- 同期元: 開発ブランチ `dev` の `a288792`（51 チケット）。`vera_base/verantyx/`（新規モジュール: `cross_tokens`・`fill_candidates`・`llm_backend`・`testimony_ledger`・`placement_layer`・`placement_grow`・`confidence_tiers`、`data/realize_forms_ja.json`）、`docs/`、`tools/`（既存ファイルの更新のみ）、`docs/decisions/`（オーナーの決定の記録）を同期した。公開側のテストは `tests/test_question_cross.py` だけ更新（`_read_ja` の固定ハッシュが複文 v1 で変わったため）。
+- 公開テストの結果（公開パッケージの venv、配置なし）: 同期前 43 件失敗 → 同期後 42 件失敗（新規 0、直った 2）。失敗の内訳は従来どおり（node の固定パス 9 件、開発の基線に含まれる既知の失敗、配置が無い環境で成り立たない検査）。
+- **既知の欠陥（最優先で修正中、W3-f1）**: 文書 QA が 2 字の親族名詞の主語を 1 字目だけで答える（叔父→叔、祖母→祖）。読解器は正しく読み、QA の経路で切れる。
+- 配置 r9 は今回も同梱していない（約 300 MB の SQLite）。配布資産として置く計画（MVP の作業）。
+- 開発側で approve 済みだが未統合のもの: W13-h1（知の層 v0。個人情報の保証が型依存で、白リスト方式に締めてから）。中断中（WIP の commit あり）: W3-f1・W6-v1（文書の版と出典の指定）・W14-bench・W14-ide・W8-shadow-2。

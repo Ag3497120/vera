@@ -2854,6 +2854,19 @@ typed_plan_u_w3b2_v1_ja = typed_plan_u_w3b2_ja          # the plan of W3-b2 (row
 # semantic_read.py is not changed: the entry looks up `R.typed_plan_u_w3b2_ja` each time it runs, so paths U and U3 read with v2 once the name is this plan
 typed_plan_u_w3b2_ja = typed_plan_u_w3b4_ja
 
+# W3-b6 (docs/READING_SOUNDNESS.md section 10I, K270, H270): stage R. The plan of W3-b4/W3-b5 stays, body unchanged, under a name of its own; the name the round-4 gate below wraps
+# becomes "that plan, then stage R" (stage R itself is at the end of this file and is looked up when it is called).
+import functools as _w3b6_functools
+typed_plan_u_w3b4_body_ja = typed_plan_u_w3b4_ja
+
+
+def _typed_plan_u_w3b6_ja(clause, toks, query, *, voice, written, strip, role_map):
+    """K270: the plan of W3-b4 (`typed_plan_u_w3b4_body_ja`), then stage R on what it decided or refused (`typed_plan_u_w3b6_stage_r_ja`)."""
+    return typed_plan_u_w3b6_stage_r_ja(typed_plan_u_w3b4_body_ja, clause, toks, query, voice=voice, written=written, strip=strip, role_map=role_map)
+
+
+typed_plan_u_w3b4_ja = _w3b6_functools.update_wrapper(_typed_plan_u_w3b6_ja, typed_plan_u_w3b4_body_ja)
+
 
 # ===================================================================================================================================
 # W3-b4 round 4 (docs 10D K186, the auditor's decision 2): the gate of a focus particle right after a case particle, on the plans of paths U and U3 (the plan of
@@ -3330,3 +3343,489 @@ def w1a5_explain_ja(text, placement=None):
     from . import semantic_read as E
     E.read(text, 'ja', placement=placement)
     return {k: (dict(v) if isinstance(v, dict) else list(v) if isinstance(v, list) else v) for k, v in W1A5_LAST.items()}
+
+
+# ===================================================================================================================================
+# W3-b6: the role frame of a predicate as the way to read what the table of K62 has no opinion about (docs/READING_SOUNDNESS.md section 10I, K270-K277).
+# The answer of a predicate may carry `role_frame_status` and `role_frame` ({particle: [{"role", "types"}]}, contract of W3-a6 D8); `role_frame_unconfirmed` is never read.
+# Stage R runs after the plan of W3-b4 (the wiring is above, next to `typed_plan_u_w3b2_ja = typed_plan_u_w3b4_ja`) and only on what that plan left to the table: a filler
+# the plan decided is checked against the frame (K274), a filler the table has no opinion about is read when exactly one role declared for its particle holds its type (K273).
+# No word and no surface rule: the reasons are a closed list, the kinds of the roles a closed table.
+# ===================================================================================================================================
+W3B6_REASON_NAMES = ('ROLE_FRAME_NOT_CONFIRMED', 'ROLE_FRAME_FILLER_NOT_DIRECT', 'ROLE_FRAME_FILLER_RELATIVE_POSITION', 'ROLE_FRAME_TYPE_NOT_DECLARED', 'ROLE_FRAME_SPLIT',
+                     'ROLE_FRAME_PARTICLE_NOT_DECLARED', 'ROLE_FRAME_INVALID', 'ROLE_FRAME_TABLE_CONFLICT', 'ROLE_FRAME_MULTIPLE_FILLERS')
+W3B6_ROLE_KINDS = {'agent': 'arg', 'patient': 'arg', 'goal': 'arg', 'source': 'arg', 'place': 'adjunct', 'time': 'adjunct',
+                   'recipient': 'arg', 'result': 'arg', 'quotation': 'arg', 'entity': 'arg', 'value': 'arg', 'attribute': 'arg', 'causer': 'arg', 'causee': 'arg', 'experiencer': 'arg',
+                   'instrument': 'adjunct', 'companion': 'adjunct', 'cause': 'adjunct', 'standard': 'adjunct', 'beneficiary': 'adjunct'}
+
+
+def predicate_role_frame(answer):
+    """K273, the only reader of the role frame of the answer of a predicate (it reads `role_frame_status` and `role_frame`, nothing else of the answer):
+    ('absent', None) when there is no `role_frame_status`; ('not_confirmed', status) for ESTIMATED / NO_ROLE_FRAME with a null frame; ('confirmed', {particle: ((role, frozenset(types)), ...)})
+    for a CONFIRMED frame that keeps the contract; else (None, 'ROLE_FRAME_INVALID:<problem>')."""
+    if not isinstance(answer, dict) or 'role_frame_status' not in answer: return 'absent', None
+
+    def bad(problem): return None, 'ROLE_FRAME_INVALID:' + problem
+    status = answer['role_frame_status']
+    if status not in ('CONFIRMED', 'ESTIMATED', 'NO_ROLE_FRAME'): return bad('STATUS_UNKNOWN')
+    if 'role_frame' not in answer: return bad('MISSING_ROLE_FRAME')
+    frame = answer['role_frame']
+    if status != 'CONFIRMED':
+        if frame is not None: return bad('FRAME_WITHOUT_CONFIRMED')
+        return 'not_confirmed', status
+    if not isinstance(frame, dict): return bad('NOT_A_MAPPING')
+    from .coarse_types import FRAME_NOUN_TYPES as NOUN_TYPES      # integration of W3-a6 (auditor, 2026-10-05): a role frame may declare only the 17 frame types (D1); RELATIVE_POSITION in a frame stays invalid
+    from .event_cross import ROLE_NAMES
+    out = {}
+    for particle, entries in frame.items():
+        if particle not in _CASE_PARTICLES_9: return bad('PARTICLE_NOT_CASE:%s' % (particle,))
+        if not (isinstance(entries, list) and entries): return bad('ENTRIES_NOT_A_LIST:%s' % (particle,))
+        rows, seen = [], set()
+        for entry in entries:
+            if not isinstance(entry, dict): return bad('ENTRY_NOT_A_MAPPING:%s' % (particle,))
+            if set(entry) != {'role', 'types'}: return bad('ENTRY_KEYS:%s' % (particle,))
+            role, types = entry['role'], entry['types']
+            if not (isinstance(role, str) and role in ROLE_NAMES): return bad('ROLE_NOT_IN_CONVENTION:%s:%s' % (particle, role))
+            if not (isinstance(types, list) and types and all(isinstance(t, str) and t for t in types)): return bad('TYPES_NOT_A_LIST:%s' % (particle,))
+            for t in types:
+                if t not in NOUN_TYPES: return bad('TYPE_NOT_NOUN:%s:%s' % (particle, t))
+            if role in seen: return bad('ROLE_DUPLICATED:%s:%s' % (particle, role))
+            seen.add(role)
+            rows.append((role, frozenset(types)))
+        out[particle] = tuple(rows)
+    return 'confirmed', out
+
+
+def _w3b6_conflict(toks, pairs, basis, frame):
+    """K274: the reason of a disagreement between a role the other paths decided (`pairs` of (name, role), `basis` of the plan) and the frame, else None. A disagreement is: for a type
+    of the filler the frame of the particle holds in one or more roles and the role of the table is none of them (review r1 M1; the roles are joined with '+', sorted). The frame is looked up for every particle that has one (the particles of the
+    subject and the object too: they are not READ by stage R, they are only CHECKED here)."""
+    for name, role in pairs:
+        particle = _particle_after(toks, role.span.end)
+        if particle not in frame or name not in basis or basis[name].startswith('role_frame:'): continue
+        for typ in _basis_types(basis[name]):
+            holding = [r for r, types in frame[particle] if typ in types]
+            if holding and name not in holding: return 'ROLE_FRAME_TABLE_CONFLICT:%s:%s:%s' % (particle, name, '+'.join(sorted(holding)))
+    return None
+
+
+def typed_plan_u_w3b6_stage_r_ja(body, clause, toks, query, *, voice, written, strip, role_map):
+    """K270-K277, stage R: (typed, None) or (None, reason), the same as the plan `body` (the plan of W3-b4, called first, unchanged). What `body` refused for a reason that is not "the table has
+    no opinion" is returned as it is, with no question asked; with no `role_frame_status` in the answer of the predicate nothing is done (the object `body` returned is returned)."""
+    no_opinion = ('PLACEMENT_FRAME_NOT_READ:', 'PLACEMENT_PARTICLE_NOT_IN_FRAME:', 'PLACEMENT_TYPE_MISMATCH:')
+    typed, why = body(clause, toks, query, voice=voice, written=written, strip=strip, role_map=role_map)
+    if typed is None and not why.startswith(no_opinion): return None, why
+    answer_p = query.query(written)
+    if 'role_frame_status' not in answer_p: return typed, why
+    kind, info = predicate_role_frame(answer_p)
+    if kind is None: return None, info
+    if kind == 'not_confirmed':
+        return (typed, why) if typed is not None else (None, 'ROLE_FRAME_NOT_CONFIRMED:' + info)
+    frame = info
+    if typed is not None:                                                    # case A: the table read it; stage R only checks (K274)
+        conflict = _w3b6_conflict(toks, typed['roles'], typed['role_basis'], frame)
+        return (None, conflict) if conflict else (typed, why)
+    ptype, _ = placement_type(answer_p)                                       # case B: the table had no opinion about something (the gates of the predicate are passed)
+    fkind, finfo = predicate_frame(answer_p)
+    if fkind is None: return None, finfo
+    read_particles = _CASE_PARTICLES_9[2:]                                    # K271: the particles of the subject and of the object (the first two keys) are not read
+    chosen, basis, by_frame = [], {}, 0
+    for role in clause.roles:
+        particle = _particle_after(toks, role.span.end)
+        one, why1 = body(replace(clause, roles=(role,)), toks, query, voice=voice, written=written, strip=strip, role_map=role_map)
+        if one is not None:                                                   # the table read this filler: what it decided stays; K274 against the frame
+            name = one['roles'][0][0]
+            if name in basis: return None, 'PLACEMENT_DUPLICATE_ROLE:' + name
+            conflict = _w3b6_conflict(toks, one['roles'], one['role_basis'], frame)
+            if conflict: return None, conflict
+            chosen.append((name, role)); basis[name] = one['role_basis'][name]
+            continue
+        if not why1.startswith(no_opinion): return None, why1               # a gate of the filler or of the predicate: not overridden
+        named = role.name not in ('recipient', 'ambiguous')
+        decided = None
+        if named:
+            decided = 'agent' if role.name == 'agent' else role_map.get(role.name)
+            if decided is None: return None, why
+        else:
+            if particle not in read_particles: return None, why
+            if sum(1 for r in clause.roles if _particle_after(toks, r.span.end) == particle) > 1: return None, 'ROLE_FRAME_MULTIPLE_FILLERS:' + particle
+        value = strip(role)
+        if not value: return None, 'PLACEMENT_INVALID:EMPTY_TERM:%s' % (particle,)
+        question = _w3b2_not_demonstrative(toks, role)
+        if question: return None, question
+        head, relational = no_phrase_head(toks, role.span.end - len(value), role.span.end)
+        if relational: return None, relational
+        typ, why2 = placement_type(query.query(head or value))
+        if why2: return None, 'ROLE_FRAME_FILLER_NOT_DIRECT:%s:%s' % (particle, why2)
+        if typ == 'RELATIVE_POSITION': return None, 'ROLE_FRAME_FILLER_RELATIVE_POSITION:' + particle
+        if particle not in frame: return None, 'ROLE_FRAME_PARTICLE_NOT_DECLARED:' + particle
+        holding = [r for r, types in frame[particle] if typ in types]
+        if not holding: return None, 'ROLE_FRAME_TYPE_NOT_DECLARED:%s:%s' % (particle, typ)
+        if len(holding) > 1: return None, 'ROLE_FRAME_SPLIT:%s:%s' % (particle, typ)
+        found = holding[0]
+        if named and found != decided: return None, 'ROLE_FRAME_TABLE_CONFLICT:%s:%s:%s' % (particle, decided, found)
+        if fkind == 'confirmed':
+            if particle not in finfo: return None, 'PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:%s:%s' % (ptype, particle)
+            if typ not in finfo[particle]: return None, 'PLACEMENT_FRAME_TYPE_NOT_CONFIRMED:%s:%s:%s' % (ptype, particle, typ)
+        if W3B6_ROLE_KINDS[found] == 'adjunct':
+            _, why3 = placement_type(query.query(head or value), adjunct=True)
+            if why3: return None, 'ROLE_FRAME_FILLER_NOT_DIRECT:%s:%s' % (particle, why3)
+        if found in basis: return None, 'PLACEMENT_DUPLICATE_ROLE:' + found
+        chosen.append((found, role)); basis[found] = 'role_frame:%s:%s:%s' % (written, particle, typ)
+        by_frame += 1
+    if by_frame == 0: return None, why
+    return {'mode': 'override', 'roles': chosen, 'predicate_basis': 'placement_direct:' + ptype, 'role_basis': basis, 'clause': replace(clause, unsupported=())}, None
+
+# W3-c7: compound sentences v1 (docs/READING_SOUNDNESS.md section 10K, K300-K307). Nothing above this line is changed.
+# The stage runs after W3-b3 gave up on a sentence (semantic_read._read_ja): 3-4 clauses cut by the finite cuts of the table w3b3_cuts, 2 clauses cut by a te or a continuative
+# (both clauses with a subject of their own), 2 clauses of a quotation (a case-marking to + a predicate of a quoting type). Decisions that need no question are taken on a snapshot
+# of the tokens by the pure functions of W3-b3 (called, not copied; their bodies and tables are not changed); the clauses are read by the entry itself. A sentence this stage does not
+# read gets back the output it was handed (the same object); the reason is in the diagnosis (w3c7_explain_ja), never in the output.
+# ===================================================================================================================================
+import sys as _w3c7_sys
+
+W3C7_MAX_CLAUSES = 4
+# K303 / table w3c7_edges of docs 10K: (kind, relation of the output, route, tense of the left clause). The relation of a finite edge is the row of w3b3_cuts.
+W3C7_EDGES = (
+    ('finite', 'by_cut', 'M', 'by_cut'),
+    ('relative', 'relative', 'M', 'kept'),
+    ('te', 'sequence', 'T', 'null'),
+    ('parallel', 'sequence', 'T', 'null'),
+    ('quote', 'quote', 'Q', 'kept'),
+)
+W3C7_REASON_NAMES = ('W3C7_NOT_TRIGGERED', 'CLAUSES_OVER_LIMIT', 'ANAPHORA_NOT_READ', 'CLAUSE_SCOPE_NOT_LISTED', 'CUT_KIND_NOT_READ', 'CLAUSE_SCOPE_AMBIGUOUS', 'CLAUSE_FORM_NOT_READ',
+                     'CLAUSE_TOKENS_DIFFER', 'CLAUSE_UNREAD', 'RELATIVE_NESTED_NOT_READ', 'SUBJECT_SHARING_NOT_READ', 'ROLE_SHARING_NOT_READ', 'QUOTE_CONTENT_NOT_READ',
+                     'QUOTE_PREDICATE_NOT_READ', 'HEAD_ROLE_UNDETERMINED', 'HEAD_NOT_IN_HOST', 'RELATION_TYPE_UNDETERMINED')
+_W3C7_ADJUNCTS = ('goal', 'source', 'place', 'recipient', 'instrument', 'companion', 'time')
+
+
+def _w3c7_blank():
+    return {'triggered': False, 'path': None, 'cuts': [], 'clause_texts': [], 'clause_reads': [], 'edges': [], 'reason': 'W3C7_NOT_TRIGGERED:not_reached', 'read': False}
+
+
+def _w3c7_self():
+    return _w3c7_sys.modules[__name__]
+
+
+def _w3c7_quotes(snap, groups):
+    """K306 / G0q: the indices of a case-marking to (not a conjunctive particle) right after a verb or an auxiliary in the final form, right before the head of the second group."""
+    out = []
+    if len(groups) != 2: return out
+    for i, t in enumerate(snap):
+        if i == 0 or not (t.pos1 == '助詞' and t.pos2 == '格助詞' and t.surface == 'と'): continue
+        prev = snap[i - 1]
+        if prev.pos1 in ('動詞', '助動詞') and prev.cform.startswith('終止形') and groups[0][-1] < i and groups[1][0] == i + 1: out.append(i)
+    return out
+
+
+def _w3c7_quote_shaped(snap, groups):
+    """True when a case-marking to stands in the form of a quotation (right after a final-form verb or auxiliary, right before the head of a group) anywhere in the sentence."""
+    heads = {g[0] for g in groups}
+    for i, t in enumerate(snap):
+        if i and t.pos1 == '助詞' and t.pos2 == '格助詞' and t.surface == 'と' and snap[i - 1].pos1 in ('動詞', '助動詞') and snap[i - 1].cform.startswith('終止形') and (i + 1) in heads: return True
+    return False
+
+
+def _w3c7_anaphora(snap):
+    """K305: the surface of the first token whose part of speech is pronoun or adnominal, else None. The part of speech decides; no list of words."""
+    for t in snap:
+        if t.pos1 in ('代名詞', '連体詞'): return t.surface
+    return None
+
+
+def _w3c7_merged_cut(cuts):
+    """A stand-in `cut` for the whole-sentence gates of W3-b3 (they read only `tokens` and `comma`): every token of every cut and every comma set aside."""
+    tokens = set()
+    for c in cuts:
+        tokens.update(c['tokens'])
+        if c['comma'] is not None: tokens.add(c['comma'])
+    return {'tokens': tuple(sorted(tokens)), 'comma': None}
+
+
+def _w3c7_alternatives(lists, topic_first):
+    """G5 (K116 3-5 generalised). `lists[i]` are the phrases of clause i. The phrases of clause i < n-1 (but the topic of clause 0) may belong to clause i or to a later one; within a clause an earlier
+    phrase goes at least as far as a later one (a non-increasing target). The reason (CLAUSE_SCOPE_AMBIGUOUS:...) or None. With 2 clauses this is the decision of `w3b3_unique`."""
+    n = len(lists)
+    movable = []
+    for i in range(n - 1):
+        ps = lists[i][1:] if (i == 0 and topic_first) else lists[i]
+        movable.append(ps)
+
+    def sequences(m, lo, hi):
+        if m == 0:
+            yield ()
+            return
+        for t in range(hi, lo - 1, -1):
+            for rest in sequences(m - 1, lo, t): yield (t,) + rest
+    options = [list(sequences(len(movable[i]), i, n - 1)) for i in range(n - 1)]
+    own = [list(lists[i]) for i in range(n)]
+    if any(_w3b3_broken(own[i]) for i in range(n)): return 'CLAUSE_SCOPE_AMBIGUOUS:noncontiguous'
+    total = 1
+    for o in options: total *= max(1, len(o))
+    if total > 200000: return 'CLAUSE_SCOPE_AMBIGUOUS:too_many_cuts'
+
+    def walk(i, assigned):
+        if i == n - 1:
+            yield assigned
+            return
+        for seq in options[i]: yield from walk(i + 1, assigned + [seq])
+    for combo in walk(0, []):
+        if all(all(t == i for t in combo[i]) for i in range(n - 1)): continue
+        groups = [[] for _ in range(n)]
+        for i in range(n):
+            if i == 0 and topic_first and lists[0]: groups[0].append(lists[0][0])
+            if i < n - 1:
+                for p, t in zip(movable[i], combo[i]): groups[t].append(p)
+            else:
+                groups[i].extend(lists[i])
+        if not any(_w3b3_broken(g) for g in groups): return 'CLAUSE_SCOPE_AMBIGUOUS:alternative_cut'
+    return None
+
+
+def _w3c7_tokens_match(ref, clause_snap, relaxed_last):
+    """G6 (K117 3 generalised): None, or CLAUSE_TOKENS_DIFFER:<position>. `ref` are the tokens of the sentence that the clause text stands for; only the last token of a clause that is not the last
+    of the sentence may differ (attributive -> final)."""
+    end = clause_snap[-1] if clause_snap else None
+    if end is None or not (end.pos1 == '補助記号' and end.pos2 == '句点'): return 'CLAUSE_TOKENS_DIFFER:end'
+    body = list(clause_snap[:-1])
+    if len(body) != len(ref): return 'CLAUSE_TOKENS_DIFFER:%d' % min(len(body), len(ref))
+    for i, (x, y) in enumerate(zip(ref, body)):
+        if _w3b3_same_token(x, y): continue
+        if relaxed_last and i == len(ref) - 1 and (x.surface, x.pos1, x.pos2, x.lemma) == (y.surface, y.pos1, y.pos2, y.lemma) and x.cform.startswith('連体形') and y.cform.startswith('終止形'): continue
+        return 'CLAUSE_TOKENS_DIFFER:%d' % i
+    return None
+
+
+def _w3c7_roles(clauses, skip_patient=None):
+    """G11 (H304, H308): the object and adjunct checks of `_w3b3_ellipsis`, over every ordered pair of clauses. `skip_patient` is the index of a clause whose object is not asked (the quoting clause)."""
+    for ci, c in enumerate(clauses):
+        for oi, other in enumerate(clauses):
+            if oi == ci: continue
+            if (ci != skip_patient and c['voice'] == 'active' and 'patient' not in c['roles'] and _transitivity(c['predicate']) != 'intrans'
+                    and any(value != c['roles'].get('agent') for value in other['roles'].values())):
+                return 'ROLE_SHARING_NOT_READ:patient'
+    for ci, c in enumerate(clauses):
+        for oi, other in enumerate(clauses):
+            if oi == ci: continue
+            for role in _W3C7_ADJUNCTS:
+                if role in other['roles'] and role not in c['roles']:
+                    if c['predicate'] == other['predicate'] or (role in ('goal', 'source') and (c['predicate'] in _GOAL_PREDICATES or c['predicate'] in _w3c7_path_verbs())):
+                        return 'ROLE_SHARING_NOT_READ:' + role
+    return None
+
+
+def _w3c7_path_verbs():
+    from . import semantic_read as SR
+    return SR._PATH_VERBS
+
+
+def _w3c7_clause_string(text, snap, lo, hi):
+    return text[snap[lo].start:snap[hi].end] + '。'
+
+
+def w3c7_read_ja(text, placement, out, report):
+    """K300-K307. Returns a reading when the whole chain of gates lets the sentence through, else `out` itself (the refusal it was given). The decisions are written to
+    `placement.w3c7_trace` when the placement has one (the diagnosis)."""
+    from . import semantic_read as SR
+    R = _w3c7_self()
+    note = getattr(placement, 'w3c7_trace', None)
+    if note is None: note = {}
+    note.update(_w3c7_blank())
+
+    def stop(why):
+        note['reason'] = why
+        return out
+    if SR._W3B3_DEPTH[0]: return stop('W3C7_NOT_TRIGGERED:depth')
+    if len(list(_sentences(text))) != 1: return stop('W3C7_NOT_TRIGGERED:sentences')
+    snap = SR._w3b3_snapshot(text, R)
+    groups = w3b3_groups(snap)
+    n = len(groups)
+    if n < 2: return stop('W3C7_NOT_TRIGGERED:groups=%d' % n)
+    if n > W3C7_MAX_CLAUSES: return stop('CLAUSES_OVER_LIMIT:%d' % n)
+    cuts_all = sorted(w3b3_cuts(snap), key=lambda c: (c['a_end'], c['b_start']))
+    quotes = _w3c7_quotes(snap, groups)
+    if n == 2:
+        if len(cuts_all) == 1 and cuts_all[0]['relation'] in ('TE_UNDETERMINED', 'PARALLEL_UNDETERMINED'): path = 'T'
+        elif not cuts_all and len(quotes) == 1: path = 'Q'
+        else: return stop('W3C7_NOT_TRIGGERED:w3b3_range')
+    else:
+        path = 'M'
+    note['triggered'] = True
+    note['path'] = path
+    word = _w3c7_anaphora(snap)
+    if word is not None: return stop('ANAPHORA_NOT_READ:' + word)
+    last = _w3b3_body_end(snap)
+    # ---- the cut(s), the clause texts and the gates that need no question (G2-G6)
+    if path == 'M':
+        unlisted = w3b3_unlisted(snap)
+        if unlisted: return stop('CLAUSE_SCOPE_NOT_LISTED:' + unlisted[0])
+        cuts = cuts_all
+        if len(cuts) != n - 1: return stop('CLAUSE_SCOPE_AMBIGUOUS:cuts=%d' % len(cuts))
+        for i, c in enumerate(cuts):
+            if not (groups[i][-1] <= c['a_end'] and c['b_start'] <= groups[i + 1][0]): return stop('CLAUSE_SCOPE_AMBIGUOUS:cuts=%d' % len(cuts))
+        note['cuts'] = [c['kind'] for c in cuts]
+        for c in cuts:
+            if c['clause_kind'] != 'finite': return stop('CUT_KIND_NOT_READ:' + c['kind'])
+        # H309 (round 2, review M1): a finite cut followed by a relative cut leaves the finite clause's attachment split (the relative clause or its head clause): refuse before any question
+        for i in range(n - 2):
+            if cuts[i]['relation'] != 'relative' and cuts[i + 1]['relation'] == 'relative': return stop('RELATIVE_NESTED_NOT_READ:attachment')
+        if _w3c7_quote_shaped(snap, groups): return stop('QUOTE_CONTENT_NOT_READ:multi_clause')
+        why = w3b3_form_gate(snap, _w3c7_merged_cut(cuts))
+        if why: return stop(why)
+        los = [0] + [c['b_start'] for c in cuts]
+        his = [c['a_end'] for c in cuts] + [last]
+        lists = [w3b3_phrases(snap, los[i], groups[i][0]) for i in range(n)]
+        topics = [[k for k, p in enumerate(ps) if _w3b3_topic(p)] for ps in lists]
+        topic_first = bool(topics[0]) and topics[0] == [0]
+        if any(topics[i] for i in range(1, n)) or (topics[0] and (not topic_first or cuts[0]['relation'] == 'relative')): return stop('CLAUSE_SCOPE_AMBIGUOUS:topic_position')
+        why = _w3c7_alternatives(lists, topic_first)
+        if why: return stop(why)
+        strings = [_w3c7_clause_string(text, snap, los[i], his[i]) for i in range(n)]
+        spans = [(snap[groups[i][0]].start, snap[his[i]].end) for i in range(n)]
+        note['clause_texts'] = list(strings)
+        for i in range(n):
+            why = _w3c7_tokens_match(list(snap[los[i]:his[i] + 1]), SR._w3b3_snapshot(strings[i], R), i < n - 1)
+            if why: return stop(why)
+        cut_dicts = [dict(cuts[i], groups=(groups[i], groups[i + 1])) for i in range(n - 1)]
+    elif path == 'T':
+        cut, why = w3b3_scope(snap)
+        if cut is None: return stop(why)
+        note['cuts'] = [cut['kind']]
+        why = w3b3_form_gate(snap, cut) or w3b3_unique(snap, cut)
+        if why: return stop(why)
+        texts, why = w3b3_texts(snap, text, cut)
+        if why: return stop(why)
+        strings = [texts['a'], texts['b']]
+        spans = [texts['a_span'], texts['b_span']]
+        note['clause_texts'] = list(strings)
+        for which in ('a', 'b'):
+            why = w3b3_tokens_match(snap, SR._w3b3_snapshot(texts[which], R), cut, which)
+            if why: return stop(why)
+        cuts, cut_dicts = [cut], [cut]
+    else:
+        q = quotes[0]
+        unlisted = w3b3_unlisted(snap)
+        if unlisted: return stop('CLAUSE_SCOPE_NOT_LISTED:' + unlisted[0])
+        why = w3b3_form_gate(snap, None)
+        if why: return stop(why)
+        if any(t.pos1 == '補助記号' and t.pos2 == '読点' for t in snap): return stop('QUOTE_CONTENT_NOT_READ:comma')
+        phrases = w3b3_phrases(snap, 0, groups[0][0])
+        topic_idx = [k for k, p in enumerate(phrases) if _w3b3_topic(p)]
+        if topic_idx and topic_idx != [0]: return stop('QUOTE_CONTENT_NOT_READ:topic_in_content')
+        first = 1 if topic_idx else 0
+        pa = phrases[first:]
+        found = []
+        for k in range(len(pa) + 1):
+            comm_ph = phrases[:first] + pa[:k]
+            cont_ph = pa[k:]
+            if _w3b3_broken(comm_ph) or _w3b3_broken(cont_ph): continue
+            if not any(p['particle'] == 'が' for p in cont_ph): continue
+            if not (topic_idx or any(p['particle'] == 'が' for p in comm_ph)): continue
+            found.append(k)
+        if len(found) != 1: return stop('QUOTE_CONTENT_NOT_READ:split=%d' % len(found))
+        k = found[0]
+        cut_hi = phrases[first + k - 1]['hi'] if (first + k) > 0 else 0
+        content_lo = cut_hi
+        content_str = text[snap[content_lo].start:snap[q - 1].end]
+        comm_str = text[snap[0].start:snap[cut_hi - 1].end] + text[snap[groups[1][0]].start:snap[last].end] + '。'
+        cont_text = content_str + '。'
+        strings = [cont_text, comm_str]
+        spans = [(snap[groups[0][0]].start, snap[q - 1].end), (snap[groups[1][0]].start, snap[last].end)]
+        note['cuts'] = ['quote']
+        note['clause_texts'] = list(strings)
+        why = _w3c7_tokens_match(list(snap[content_lo:q]), SR._w3b3_snapshot(cont_text, R), False)
+        if why: return stop(why)
+        why = _w3c7_tokens_match(list(snap[:cut_hi]) + list(snap[groups[1][0]:last + 1]), SR._w3b3_snapshot(comm_str, R), False)
+        if why: return stop(why)
+        cuts, cut_dicts = [], []
+    # ---- from here on the placement is asked: one cache for the whole path (G7)
+    query = SR._CachedQuery(placement)
+    reads = []
+    for i, string in enumerate(strings):
+        got, why = SR._w3b3_clause(string, query, R, i)
+        if got is None:
+            note['clause_reads'].append({'text': string, 'readable': False, 'clause': None, 'reason': why})
+            return stop(why)
+        reads.append(got)
+        note['clause_reads'].append({'text': string, 'readable': True, 'clause': dict(got['clauses'][0]), 'reason': None})
+    cl = [dict(r['clauses'][0]) for r in reads]
+    rels = []
+    edges = []
+    # ---- G8 the edges, G9 the tense
+    if path == 'M':
+        for i in range(n - 1):
+            if cuts[i]['relation'] == 'relative' and i > 0 and cuts[i - 1]['relation'] == 'relative': return stop('RELATIVE_NESTED_NOT_READ:nested')
+        for i in range(n - 1):
+            cut = cut_dicts[i]
+            if cut['relation'] == 'relative':
+                head_note = {}
+                c_new, rel, why = SR._w3b3_head_arm(snap, cut, text, {'a': strings[i]}, reads[i], reads[i + 1], query, R, head_note)
+                if why: return stop(why)
+                cl[i] = c_new
+                rel = dict(rel, **{'from': i, 'to': i + 1})
+                edges.append({'kind': 'relative', 'type': 'relative', 'from': i, 'to': i + 1})
+            else:
+                rel, why = SR._w3b3_relation(cut, cl[i + 1], query, R)
+                if why: return stop(why)
+                rel = {'type': rel['type'], 'from': i, 'to': i + 1}
+                edges.append({'kind': 'finite', 'type': rel['type'], 'from': i, 'to': i + 1})
+            rels.append(rel)
+            if not cuts[i]['tense_kept']: cl[i] = dict(cl[i], tense=None)
+        targets = [(r['to'], r['head']['to_role']) for r in rels if 'head' in r]
+        if len(set(targets)) != len(targets): return stop('RELATIVE_NESTED_NOT_READ:duplicate_target')
+    elif path == 'T':
+        te = cuts[0]['relation'] == 'TE_UNDETERMINED'
+        edges.append({'kind': 'te' if te else 'parallel', 'type': 'sequence', 'from': 0, 'to': 1})
+        rels.append({'type': 'sequence', 'from': 0, 'to': 1})
+        cl[0] = dict(cl[0], tense=None)
+    else:
+        ptype, why = placement_type(query.query(cl[1]['predicate']))
+        if why: return stop('QUOTE_PREDICATE_NOT_READ:' + why)
+        if ptype not in W3B3_QUOTE_TYPES: return stop('QUOTE_PREDICATE_NOT_READ:' + ptype)
+        edges.append({'kind': 'quote', 'type': 'quote', 'from': 1, 'to': 0})
+        rels.append({'type': 'quote', 'from': 1, 'to': 0})
+    for i, c in enumerate(cl): note['clause_reads'][i]['clause'] = dict(c)
+    # ---- G10 subject (K304), G11 roles (H304, H308), G12 focus particle
+    for i, c in enumerate(cl):
+        if not SR._w3b3_has_subject(c): return stop('SUBJECT_SHARING_NOT_READ:%d' % i)
+    why = _w3c7_roles(cl, skip_patient=1 if path == 'Q' else None)
+    if why: return stop(why)
+    why = w3b3_focus_gate(snap, cuts[0] if path == 'T' else (_w3c7_merged_cut(cuts) if path == 'M' else {'tokens': (quotes[0],), 'comma': None}))
+    if why: return stop(why)
+    # ---- G13 the quoting clause: nothing but the speaker (and the hearer); the quotation is the content as written
+    if path == 'Q':
+        if set(cl[1]['roles']) - {'agent', 'recipient'}: return stop('QUOTE_CONTENT_NOT_READ:main_roles')
+        cl[1] = dict(cl[1], roles=dict(cl[1]['roles'], quotation=content_str), role_basis=dict(cl[1].get('role_basis') or {}, quotation='w3c7_quote'))
+        note['clause_reads'][1]['clause'] = dict(cl[1])
+    meta = [{'rule': reads[i]['clause_meta'][0]['rule'], 'span': [spans[i][0], spans[i][1]]} for i in range(len(cl))]
+    note['edges'] = edges
+    note['reason'] = None
+    note['read'] = True
+    return SR._answer('ja', cl, rels, meta, report)
+
+
+class _W3C7Probe:
+    """W3-c7: wraps a placement for `w3c7_explain_ja`: the same questions go through, and `w3c7_trace` is where `w3c7_read_ja` writes what each gate decided."""
+    def __init__(self, inner):
+        self.inner, self.w3c7_trace = inner, {}
+
+    def query(self, term):
+        return self.inner.query(term)
+
+    @property
+    def id(self):
+        return getattr(self.inner, 'id', None)
+
+
+def w3c7_explain_ja(text, placement):
+    """W3-c7, for tests and measurements: what stage C7 decided for an input; the output of `read` is unchanged. {'triggered', 'path': 'M'|'T'|'Q'|None, 'cuts': [kinds], 'clause_texts',
+    'clause_reads': [{text, readable, clause, reason}], 'edges': [{kind, type, from, to}] (kind parallel is only here, never in the output), 'reason', 'read'}. When the stage was not reached
+    (no placement, English, the entry or W3-b3 read the input) the reason is W3C7_NOT_TRIGGERED:not_reached. It runs `read` itself: no second decision is written here."""
+    from . import semantic_read as SR
+    blank = _w3c7_blank()
+    chosen = SR.check_input(text, None)
+    query = SR._placement_query(placement)
+    if chosen != 'ja' or query is None: return blank
+    probe = _W3C7Probe(query)
+    SR._read_ja(text, probe)
+    return dict(blank, **probe.w3c7_trace) if probe.w3c7_trace else blank

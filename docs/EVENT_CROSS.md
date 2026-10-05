@@ -610,3 +610,7 @@ NOT_CHECKED の理由別: ARM_TIE 0, ESTIMATED_GENERATED 0, ESTIMATED_NEAR 0, LO
 <!-- w5e-b-event-measured:begin -->
 測定の時刻: 2026-10-04 04:10:06 +0900。`tests/test_event_cross_w5e.py` は `22 passed`（`artifacts/w5-e/new_tests_run.txt`。凍結 `frozen_b.sha256`、直す前に落ちる記録 `b_before_fail.txt`: 6 件が失敗、形の検査・`determiner` だけの入力・表層の字面で拒まないことの 16 件は直す前から通る）。`determiner` だけの入力は変更前と同じ判定（既存の `tests/test_semantic_read_w3b2_events.py` の `role_flags` のテストは無傷）。製品の経路で `COORDINATION_UNMARKED` が出ないこと: 読解器は並立・選言の節を `unsupported` に入れて棄権するので `role_flags` に `coordination` を書かない。変更は `event_cross.py` の定数 1 つ・`_flag_well_formed`（新設）・`_check` の `role_flags` の検査の 3 か所だけ。
 <!-- w5e-b-event-measured:end -->
+
+### W3-c7 の追記（2026-10-05 07:28）
+- `RELATION_TYPES`（11 種）は変えない。`sequence`・`quote` は既にある。連用中止の種類 `parallel` は関係の型にしない（採点器の `REL_TYPES` に無く、W3-b3 の凍結データの正解は `sequence`）。種類は診断と表 `w3c7_edges`（`docs/READING_SOUNDNESS.md` §10K）にだけ書く。
+- 段 C7 の出力（3〜4 節・て・連用中止・引用）は既存の `_check`・`_embed` をそのまま通る。入れ子の head は作らない（ある節が head を受け、かつ自分も次の relative の左にある文、同じ役割への 2 つの head は段 C7 が棄権する。`_check_heads` が `nested`・`duplicate_target` を拒むため）。

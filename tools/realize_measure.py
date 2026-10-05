@@ -18,7 +18,7 @@ from verantyx.semantic_realize import (
 )
 from verantyx.typed_edges import _tagger
 
-PATH = Path(__import__("os").environ.get("VERA_LEADS", "jawiki_leads.full.jsonl"))
+PATH = Path("/Users/motonishikoudai/Projects/vera-corpus/build/round4/jawiki_leads.full.jsonl")
 RULES = ("frame", "copula", "measure")
 MUTATION_TYPES = ("flip_polarity", "swap_tense", "swap_roles", "replace_term")
 CONTENT_POS = frozenset(("名詞", "動詞", "形容詞", "形状詞", "接頭辞", "接尾辞"))

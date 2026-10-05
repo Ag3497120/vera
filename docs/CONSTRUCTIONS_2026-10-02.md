@@ -89,7 +89,7 @@ Run with the configured train-lead corpus:
 
 ```sh
 VERA_CORPUS_ROOT=/tmp/vera-empty-materials PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. \
-  python -B tools/read_coverage.py --n 1500 --stride 200
+  /Users/motonisihikoudai/vera-wiring/env/bin/python -B tools/read_coverage.py --n 1500 --stride 200
 ```
 
 The run for this change reported **780 supported sentences out of 1,500 train

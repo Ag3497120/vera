@@ -6,6 +6,12 @@
 # Decisions use `ID: subject => choice` or `ID: KIND | condition | answer` with KIND CHOICE, CONFIRM, or SCOPE.
 # Vocabulary uses `alias => canonical`; escalation uses `ID: condition => reason => missing => scope`.
 # Escalation scope is `ANY` or a conductor question kind; protected actions use `action => reason => missing`.
+# Optional sections (each may be omitted; `none: none` states an explicit empty list) are used by `python -m verantyx.cli conduct`:
+# [write_allowlist] `ID: relative/path` lists what an agent may write. Entries are directory or file prefixes: no globs (* ? [ ]), no absolute path, no `..`, no `.git`.
+# [forbidden_actions] `action => reason` lists operations that stay forbidden even when a human approves; [protected_actions] lists operations a human approval can unlock. One action cannot be in both.
+# [conflict_precedence] `ID: HIGHER > LOWER: reason` orders rule families when they collide; families are forbidden_actions, philosophy_invariants, completion_criteria, protected_actions. Pairs left unordered stay unordered. The declaration is kept as typed records (and in action_authority) only: the conductor does not read it yet, and escalating a collision or refusing a forbidden action at run time is not implemented. protected_actions never outranks forbidden_actions, directly or through a chain of rules.
+# [agent_settings] `key: value` with key codex_model, codex_effort, claude_model, claude_effort or max_concurrency (an upper bound; the conductor runs one agent at a time). A command-line option overrides the frame.
+# A machine-checkable completion criterion is `ID: text | {"kind":"command_exit","command":["cmd","arg"],"expected_exit":0}`; conduct refuses a frame whose criteria are all `human-judged`.
 
 [goal]
 project: Vera
@@ -26,6 +32,7 @@ C2: General QA and dialogue handle unseen wording and relations instead of relyi
 C3: Code generation preserves requested inputs outputs conditions side effects and boundary cases | human-judged
 C4: Complex document QA preserves facts conditions exceptions comparisons counts negation and citation scope | human-judged
 C5: Text generation composes from structure and distinguishes supported facts from introduced creative content | human-judged
+C6: The covenant guard and standalone device self-check pass | {"kind":"command_exit","command":["python","-m","verantyx.cli","doctor"],"expected_exit":0}
 
 [phases]
 P1: Write and review the human-owned design and completion frame
@@ -63,3 +70,15 @@ delete => Human approval is required before removing records or files => human
 spend money => Human approval is required before spending => human
 enter credentials => Credentials must remain under direct human control => human
 access evaluation-only material => Human approval is required before accessing restricted evaluation material => human
+
+[write_allowlist]
+W1: verantyx
+W2: tests
+W3: docs
+W4: tools
+
+# Agent routing sections (optional, see docs/AGENT_ROUTING.md; this note sits at the end so that the line numbers above stay as they were):
+# [agents] `ID: adapter=<codex|claude|fake> model=<m> effort=<e> roles=<implement|verify|review|generate|read|answer,...> kinds=<small_fix|feature|large_refactor|test_authoring|review|verification|attack|bulk_generation|read_large_file|closed_choice,...> lineage=<name> concurrency=<n> [note=<identifier>]` declares one agent per line; the values are what the human says about the agent (testimony), not measurements. See docs/AGENT_ROUTING.md.
+# [routing] `ID: role=<role> [& kind=<kind>] [& size=<small|medium|large>] [& independent_of=<role|none>] => AGENT, AGENT: reason` says who does which job (the first agent in the list that nothing excludes); every used role needs a `DEFAULT: role=<role> => AGENT, ...: reason` row. A verify rule is independent of implement unless it says independent_of=none. Needs [agents]; with both, `conduct` takes no --adapter.
+# [routing_precedence] `ID: HIGHER_RULE_ID > LOWER_RULE_ID: reason` resolves two routing rules that name different agents (same shape as [conflict_precedence]; DEFAULT cannot be named).
+# [agent_settings] task_kind: <small_fix|feature|large_refactor|test_authoring|review|verification|attack|bulk_generation|read_large_file|closed_choice> says what kind of job the frame is (needed with [agents]; --task-kind overrides). With [agents], codex_model, codex_effort, claude_model, claude_effort and verifier_adapter, verifier_model, verifier_effort are not allowed.

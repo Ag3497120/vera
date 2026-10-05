@@ -4219,3 +4219,854 @@ def test_the_misread_sentences_of_round_1_and_of_the_plan_are_refused():
      assert explain_of(text, {**ok, '駅': noun('PLACE', ('role@jawiki',))})['w3b2'] == 'READ'            # an argument (goal) is not asked for evidence beyond role@: the gate is for adjuncts
      out = SR.read(text, placement=F.MapQuery(ok))
 ```
+
+## 10H. W5-f: 攻撃第 6 波の修正（読解の側） — 引用符の中の係助詞・方向の語・繋辞の値の並立と「とも…とも」（事前登録 K260〜）
+
+<!-- w5f-prereg:begin -->
+登録日時: 2026-10-04 08:40:13 +0900（`date '+%F %T %z'` の出力。記録は `artifacts/w5-f/prereg_time.txt`）。直前のコミットは `0041606`（dev。W3-b5 統合済み）。
+この時点で `tests/reading_soundness/w5f_gates.jsonl`・`w5f_gates_check.py`・`tests/test_semantic_read_w5f.py`・`tests/attack/` の W5-f の写しは存在しない（製品コードも基点のまま）。この登録より前に作ったのは、品詞の実測（`artifacts/w5-f/pos_tags.txt`。`scripts/pos.py` の出力）と変更前の測定（`artifacts/w5-f/before/`）だけ。
+出典: 中間職の指示書 `.claude/vera-audit/review-impl/W5-f/plan.md` §2 D1〜D3・D5・D8 と、チケット `W5-f_attack_fixes_6.prompt.md`、攻撃の報告（`attacks/reports/W3-b4/`・`W5-e/`・`W3-c4/`、`WAVE6_SUMMARY.md`）。番号は K260〜（事前登録・測定・既知の穴）、判断記録は H260〜。
+
+### K260 F-1: 格助詞の直後の、引用符で括った 1〜2 字（係助詞の門の補い）
+- 命中: 「兄が荷車を倉庫へ「も」押した。」。引用符で括った も・は は形態素が `記号` になり、K186 の門（格助詞の直後の `係助詞`／`副助詞`。`補助記号`・`空白` だけを飛ばす）を抜けて、`goal=倉庫` と読まれる。
+- 規則（新しい関数 `typed_quoted_focus_after_case_ja(toks, clause)`。品詞と隣接だけ。語の一覧なし）: 節の範囲のトークンで、`助詞/格助詞` のトークンごとに
+  - (a) その後ろで品詞の大分類が `補助記号`・`空白`・`記号` でない最初のトークンが `助詞/係助詞` か `助詞/副助詞` → `PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:<格助詞>:<助詞>`（K186 と同じ理由の形。飛ばすものに `記号` を足しただけ）。
+  - (b) その後ろを `空白` と `補助記号`（`括弧開`・`括弧閉` 以外）だけ飛ばした最初のトークンが `補助記号/括弧開` で、その後ろの最初の `補助記号/括弧閉` までの中身が **1〜2 字**（文字数。トークンの数・品詞は問わない。引用符の中身を読む規則は足さない）→ `PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:<格助詞>`。括られた断片が格助詞に続く形は読まない、という狭め。
+- 置き場所: `typed_focus_after_case_ja`（K186。本体の文字列定数を `tests/test_semantic_read_w3b4.py` が閉じた集合で固定しているので **書き換えない**）の直後、`_typed_plan_focus_gated` の前に新しい関数として足し、`_typed_plan_focus_gated` の内側の `gated` が K186 の門のあとに呼ぶ。名前の差し替えは足さない（W3-b4・W3-b5 のテストが末尾の代入・`ungated`・`__name__` を固定）。
+- 掛かる範囲: 型の段（経路 U・U3。`typed_plan_u_ja`・`typed_plan_u_w3b2_ja`）の読みだけ。経路 S4 は K186 と同じく門の外（K188 と同じ既知の穴）。
+- 代価（正読の減少。誤読ではない）: 「が「はい」と」「を「倉庫」へ」のように格助詞の直後に 1〜2 字の括弧があると、中身が何であれ棄権する。
+
+### K261 F-2: 方向・位置の語と から・へ・で（読解器の門。品詞だけ）
+- 命中: 「弟が右から倉庫へ打った。」で `source=右`（r8 では 右＝PLACE direct）。W3-b4 の で（手段）・W3-b5 の に の反例も同じ種類の語（相対位置・方向の語）に集中する。
+- 規則（新しい関数 `typed_relational_filler_ja(toks, typed)`。配置の側ではなく、型の段が読みを決めたあとの門）: 型の読みの `roles`（`(役割名, role)` の並び）のうち、役割名が `place`・`goal`・`source` のいずれか、または役割の直後の助詞が `で` であるものについて、充填物の主辞（役割の終わりで終わるトークン）の品詞が `名詞/普通名詞/副詞可能`（UniDic の細分類 `pos1/pos2/pos3`。`lemma`・`goshu`・表層は見ない）なら `RELATIONAL_NOUN_FILLER:<役割名>` で棄権する。語の一覧は作らない。
+- 「候補にしない」を「計画が決めたあとに棄権」で作る理由: 計画は役割ごとに行をちょうど 1 つ選ぶので、その充填物を候補から外せば行が残らず棄権になり、結果は同じ。計画の本体・W3-b5 の行・表を変えずに済む（チケットが禁止）。`time`／`に` の行は対象外（チケットの列挙に無い。時の語の多くが 副詞可能 なので入れると時の読みを全部止める）。
+- **品詞の実測（`artifacts/w5-f/pos_tags.txt`。fugashi＋UniDic。`scripts/pos.py` の出力そのまま）**: `副詞可能` なのは 前・上・中・先・朝 など。**右・左・後ろ・下・横・隣・向こう・東・北・外・奥・手前・側・裏・表・脇・正面・背後・内側、および 段差・坂・口 はすべて `名詞/普通名詞/一般`**（店・倉庫・畑と同じ分類）。UniDic の素性（pos1〜pos4）に方向・位置の区別は無い。
+- **宣言 K-F2**: したがって、チケットの規則（品詞の細分類だけ・語の一覧を作らない）では **右・左・後ろ などは捕まらない**。W3-b4 の D10（弟が右から倉庫へ打った。）・束 d（右で…）・W3-b5 の反例（右・段差・坂 など）は、この門では棄権しない。I1 の D10 と I2 の「F-2 の門で束 d（右）・W3-b5 の反例の型が棄権する」は **このチケットの規則では満たせない**。捕まらない語を一覧で足すことはしない（`AGENTS.md`・チケットの禁止）。棄権の範囲は 副詞可能 に狭く保つ。直す道は監査役の判断（(i) K165 の作法で `P_ACT` の `source/から` 行を外す。表を触る。(ii) 配置側の W3-a6: 相対位置の語に `RELATIONAL_PLACE` の型を立てる／MULTIPLE にする。このチケットでは `$T` の複製で測るだけ）。右 が通ることをテストで固定しない。
+- 配置側の恒久策は別チケット W3-a6 への申し送り。
+
+### K262 F-3: 繋辞の値の並立と「NP とも NP とも」
+- 命中: 「犯人は太郎と花子だ。」が `value=太郎と花子` と読まれる（並立の門は役割の値だけを見て、繋辞の value を見ない）。「太郎とも花子とも話した。」が 1 つの値に畳まれる。
+- 規則（W5-e の区画。`_coordination_marks`・`document_view` は変えない。`_coordination_gate` の本体に検査を 2 つ足す）:
+  - 新しい関数 `_coordination_in_value(sentence)`: と・や・か の助詞トークン（複合助詞の中は除く）で、直前が名詞類（`_COORDINATION_BEFORE`）、直後が名詞類（`_COORDINATION_RUN`）のもの。並びの終わりの品詞は問わない（繋辞の値は だ・です で終わる）。`_coordination_gate` で、その位置が **役割名 `value`・`entity` の役割の span の中** にあれば `COORDINATION_UNDETERMINED`（か なら `DISJUNCTION_UNDETERMINED`。対応表 `_COORDINATING_PARTICLES`）。
+  - 新しい関数 `_coordination_tomo(sentence)`: 名詞類の直後の「と（助詞）＋も（係助詞）」か「とも（接尾辞）」の位置。節の本文（`body_span`）の中に 2 つ以上あれば `COORDINATION_UNDETERMINED`。1 つ（太郎とも話した。）は今どおり。UniDic に並立助詞は無く、1 つ目の「とも」は 1 トークンで `接尾辞/名詞的/副詞可能`、2 つ目は `と/助詞/格助詞`＋`も/助詞/係助詞`（`pos_tags.txt`）。
+- 代価: 繋辞の value・entity の中に、並立に見える と・や・か があれば（括弧の中のかな読みを含む）棄権する。読めたものが棄権に変わるだけで、誤読は増やさない。
+
+### K263 宣言（実装役は解かない。判断は監査役）
+- **K-F2**: 上のとおり（右 が捕まらない）。
+- **K-HE**: W3-b4 の D01・D03（偽配置で「店へ注文した」「店へ電話した」の `goal=店`）にはチケットの規則が無い。表は触らない約束なので何もしない。材料は `artifacts/w5-f/proposals/k_he.md`（測るだけ）。
+- **K-W3B4-GATE**: 攻撃の写し `test_the_gate_catches…` は K186 の関数だけを呼ぶので、F-1 の新しい関数の効き目はその写しには出ない。新しいテストで、K186＋F-1 の 2 関数の素通りを数えて記録する（形態素の分割で、格助詞や焦点の助詞がトークンとして無い文が残る。なんか＝`なん/代名詞`＋`か`、`で/助動詞`＋`も`、`さえ/動詞` など）。
+- **K-P**: W3-b4 の写しの `test_the_twelve_examples…` の P02・P03・P10・P11 は、読解器だけで読む文（型の段の外）の穴。範囲外。
+- **K-C4**: 後述（`docs/OBSERVATION.md`・`docs/BASIS_POLICY.md` の W5-f）。
+
+### K264 F-6（docs のみ）
+W5-e の既知の穴「UNPLACED の普通名詞（課・部門・メンバー・外注先）が名前として振られる」は、配置 r9 以降で UNPLACED が減るまで **既知の穴として残す**（このチケットでは触らない）。
+
+### K265 検査データと判定（実装に通す前に書いて凍結）
+- `tests/reading_soundness/w5f_gates.jsonl`: 各行 `{id, group, text, expect, roles?, placement}`。`group` は F1・F2・F3、各群 20 行以上で読む／棄権が半々。`expect` は `abstain`（読めたら誤読）か `read_or_abstain`（読むなら `roles` のとおり。棄権してもよい）。`placement` は F1・F2 では語→型の辞書（偽配置）、F3 は `null`。文は攻撃役の文・この節に出てくる文・既存の検査データの文を使わず、期待は文の設計から先に書く（出力を見て決めない）。F2 の棄権の行には 右・左 などの一般の名詞を入れない（K-F2。入れると定義上誤読になる）。
+- 判定器 `tests/reading_soundness/w5f_gates_check.py`（`--mode fake|none|r8`）: `abstain` の行が読めたら MISREAD、`read_or_abstain` の行が読めて節が 1 つでないか役割が違えば MISREAD、棄権は ABSTAIN、期待どおりは CORRECT。合格は **MISREAD 0**。
+- 時刻の順: 登録 < 凍結 < 落ちる記録 < 製品コード < 既存テストの改訂。
+<!-- w5f-prereg:end -->
+
+### 10H.a K266: F-2 の `で` 行を戻したときの副詞可能／一般の境界（補助検査）
+<!-- w5f-supp-prereg:begin -->
+登録日時: 2026-10-04 09:12:06 +0900（`date '+%F %T %z'` の出力）。本文の検査データと製品コードはまだ変えない。出典: W5-f 指示書 §2 D2・§3 S3。
+
+- 補助検査データ `tests/reading_soundness/w5f_f2_de_cases.jsonl` は、型段の P_ACT に `('place', ('で',), ('PLACE',), 'adjunct')` を一時的に戻した場合の境界だけを測る。3 型すべての行をメモリ上で戻すが、検査文の述語型は P_ACT。
+- 期待を文の設計から先に固定する。`上`・`前`・`中`（実測品詞 `名詞/普通名詞/副詞可能`）は `RELATIONAL_NOUN_FILLER:place` で棄権。`広場`・`倉庫`・`校庭`（実測品詞 `名詞/普通名詞/一般`）はこの理由で棄権せず、読むなら `agent`・`place`・`patient` の値が登録どおり。配置は `職員`・`店員`・`先生`=PERSON、`荷車`・`台車`・`箱`=ARTIFACT、場所=PLACE、`押す`=P_ACT。
+- 凍結後に測定し、製品規則を直すための語の一覧には使わない。この追加検査は K265 の本文データを変更しない。
+<!-- w5f-supp-prereg:end -->
+
+追加判断 K266-1（2026-10-04 09:12 +0900 の測定記録）: `w5f_f2_de_cases.jsonl` は製品変更前の既定表で測るのではなく、登録どおり P_ACT の `place/で` 行を一時復元してから全件を実行する。既定表での到達結果は `artifacts/w5-f/w5f_f2_de_reach.txt` に保存した。既定表では復元対象の行が無いため、同ファイルで U3 に到達しない対照がある。
+
+## 10H.b K267: W5-f の見出し＋リンク文書 QA 入力
+<!-- w5f-doc-prereg:begin -->
+登録日時: 2026-10-04 09:19:10 +0900（`date '+%F %T %z'` の出力）。検査入力ファイルと製品コードはまだ変えない。出典: W5-f 指示書 D6・S3 F-5。
+
+- `tests/reading_soundness/w5f_document.md` の全文は `# 読書記録`、空行、`## 先生は[本](https://example.org/book)を読んだ。` の 3 行。質問は `tests/reading_soundness/w5f_document_ask.json` の `先生は何を読んだ？`。
+- 期待: r8 の `ask --mode round5 --document` が ANSWER を返す。`sources[].text` は `document_loaders.load_paths` の `Document.text` の部分文字列であり `#` と `](` を含まず、`line` はその本文上の該当行（3）。
+- 凍結は K266 の補助入力と別の `frozen_doc.sha256`・`frozen_doc_at.txt` に記録する。元ファイルの逐字照合は期待しない（K-C4）。
+<!-- w5f-doc-prereg:end -->
+
+## 10H.c W5-f 実測結果
+測定記録: 2026-10-04 10:01:23 +0900（`artifacts/w5-f/s6_docs_time.txt`）。数値は同ディレクトリの実行出力から転記した。
+
+- K265 の 94 行は fake・none・r8 の各モードで誤読 0（`artifacts/w5-f/i2_gates_fake.txt`・`artifacts/w5-f/i2_gates_none.txt`・`artifacts/w5-f/i2_gates_r8.txt`）。fake の F1 は CORRECT 16 / ABSTAIN 14、F2 は 16 / 18、F3 は 11 / 19。none は F1 全 30・F2 全 34 が棄権し、F3 は CORRECT 11 / ABSTAIN 19。r8 は F1 CORRECT 8 / ABSTAIN 22、F2 7 / 27、F3 11 / 19。
+- 既存の凍結読解データは 500 文で変更 0、誤読 0（`artifacts/w5-f/i2_soundness_compare.txt`）。4,149 入力の入口は、none が読める 286→286、r8 が 458→458。両モードとも変更 9 件。全件で `unsupported[].reasons` に `COORDINATION_UNDETERMINED` が加わり、最終 abstain reason は `NO_SUPPORTED_CLAUSE`（`artifacts/w5-f/i2_entry_reason_changes.txt`、行別は `artifacts/w5-f/i2_entry_changed_none.tsv`・`artifacts/w5-f/i2_entry_changed_r8.tsv`）。
+- W3-b4 は 339 行、誤読・未判定・期待不一致 0、読解 4/4（`artifacts/w5-f/i2_w3b4_rows.txt`）。W3-b5 は 649 行、誤読・未判定・期待不一致 0、読解 6/6（`artifacts/w5-f/i2_w3b5_rows.txt`）。
+- `f2probe.py` の行復元測定では、`上`・`前`・`中`が `RELATIONAL_NOUN_FILLER` で棄権し、`右`・`畑`・`校庭`は読解された（`artifacts/w5-f/k_f2_right.txt`）。K-F2 のとおり、右をこの品詞規則で止めることはできない。
+- 参考測定として scratch clone で `P_ACT` の `source/から/PLACE` 行を外した。fake と実配置 r8 の両方で D10（右）は読解から棄権になった一方、D06（東）は読解のまま、D08（受身）は変更前から棄権。4,149 件では読める数 458→458、追加の変更 0（`artifacts/w5-f/proposals/k_f2.md`・`artifacts/w5-f/proposals/k_f2_current_vs_proposal.txt`）。W3-b5 登録行の比較は基点・実装後とも誤読 171/649、選択した出力欄の差 0（`artifacts/w5-f/proposals/k_f2_w3b5_registered_compare.txt`）。この表変更は製品には適用していない。
+- K-HE の参考測定として scratch clone で `P_ACT` の `goal/へ/PLACE` 行を外した結果、W3-b4 の P_ACT 64 行が全て棄権し、読解 4→0、入口期待不一致 4、型期待不一致 12（`artifacts/w5-f/proposals/k_he.md`）。製品の表は変更していない。
+- W5-d 凍結探り 31 件は失敗 0（`artifacts/w5-f/i3_b_check_r2.txt`）。既存の型読解固定群と W5-f のゲートテストは 2,746 件通過（`artifacts/w5-f/reader_related_acceptance.txt`）。補助データの復元境界を含む W5-f 単独テストは 11 件通過（`artifacts/w5-f/semantic_w5f_step_tests_final.txt`）。
+- W3-b4 攻撃の 5 テストと W3-c4 の 1 テストは残る（合計 6 failed, 32 passed; `artifacts/w5-f/i1_attack.txt`）。宣言 K-F2・K-HE・K-W3B4-GATE・K-P・K-C4 の範囲で、攻撃写しの期待は変更していない。
+- 中間職の未公開文は開かず、I5 の B1/B6/B7 測定は行っていない。
+
+追加判断 K267-1（2026-10-04 10:07:20 +0900）: 上の K267 登録には `frozen_doc.sha256`・`frozen_doc_at.txt` と記したが、実際の K266/K267 補助入力は 3 ファイルまとめて `artifacts/w5-f/frozen_sup.sha256`・`frozen_sup_at.txt` にコード変更前の時刻で記録した。K267 の Markdown と質問 JSON の hash も同 manifest にある。専用ファイル名の記載はこの追記で訂正する。
+
+### 10H.d W5-f 第2ラウンドの再検査登録
+登録日時: 2026-10-04 11:35:49 +0900。製品コード・新しい検査入力はまだ変更しない。出典: Codex 独立レビュー r1 の必須修正 1〜3、既存の K265/K266/K267 登録。
+
+- F-1 はレビュー r1 が実装差分の確認前に凍結した `/private/tmp/w5f_review_r1/holdout.r1.jsonl` の F1_A01,A02,A03,A04,A07,A09,A11,A12,A13,A14,A20 を用いる。期待は各公開入口（配置なし・fake・r8）で棄権し、理由に `PLACEMENT_QUOTED_PARTICLE_AFTER_CASE` を含むこと。入力の登録・凍結はレビュー側の `PREREG.r1.md`・`FREEZE.r1.md` にあり、以後変更しない。
+- F-2 は同じ凍結入力の F2_A01〜F2_A32 と F2_R01〜F2_R32 を再検査する。方向語の棄権と具体的な場所名の読み対照の両方をそのまま判定する。品詞・語彙素・表記で同じ一般名詞を語ごとに区別する追加規則は作らない。両方を同時に満たせる根拠が見つからない場合は構成を `undetermined` と記録し、要件を満たしたとは扱わない。
+- I6 は全体テストを最後に一度実行し、保存した `FAILED`/`ERROR` 行を基線ファイルと比較する。基線外の失敗は実行できた失敗ごとに詳細を確認し、原因の裏付けがない限り環境由来へ分類しない。テスト期待の変更・skip/xfail 化は行わない。
+- 出力は `artifacts/w5-f/` に保存する。数値や分類は実行出力からだけ報告する。
+
+### 10H.e W5-f 第 3 ラウンド（監査役の判断 2026-10-04 13:30:13 +0900 を受けて）
+<!-- w5f-r3-prereg:begin -->
+登録日時: 2026-10-04 13:51:14 +0900。製品コード・検査データはまだ変更しない。
+
+**K260 v2（F-1 の門の作り直し。規則は品詞・隣接・文字数だけ。語の一覧・表層の語の判定は持たない）**
+範囲 [lo, hi) のトークン列で、助詞/格助詞 の各トークン p について:
+- 括られた断片: p の直後から、大分類が 補助記号・空白・記号 のトークンが続く間、各トークン o が「開き」になれる（記号、または補助記号で細分類が 読点・句点・括弧閉 でない）なら閉じを探す。o の細分類が 括弧開 なら次の 補助記号/括弧閉、そうでなければ o と同じ表層の次のトークン（"…"・'…'・★…★ のような対の記号）。閉じがあり、開きの終わり〜閉じの始まりの文字列を引数なしの strip() した長さが 1〜2 なら PLACEMENT_QUOTED_PARTICLE_AFTER_CASE:<p> で棄権する。
+- 隔てた係助詞/副助詞: p の直後の 補助記号・空白・記号 を全部飛ばした最初のトークン t が 助詞/係助詞 または 助詞/副助詞 なら PLACEMENT_FOCUS_PARTICLE_AFTER_CASE:<p>:<t> で棄権する。引数 separated_only=True のときは、隔てがあるとき（飛ばしたトークンが 1 つ以上、または t の始まりが直前のトークンの終わりより後。半角空白はトークンにならないので文字位置の隙間で見る）だけ。
+- 呼び方: 型の段 typed_quoted_focus_after_case_ja は separated_only=False（隣接も止める）、公開の入口 _quoted_focus_public_gate は separated_only=True。
+
+代価（登録）: (1) 「なんか」（3 字）は捕まらない（K-W3B4-GATE の 15 文は不変の見込み）。(2) 括弧の中の 1〜2 字は中身が何でも棄権する。(3) 公開の入口で隔てのない「では」「でも」は止めない（止めると正しい読みが消える。件数は S6 の自分の測定で後から書く）。
+
+**K261 撤回（F-2）**: 監査役の判断（2026-10-04 13:30）により F-2 の門を外す。gated からの typed_relational_filler_ja の呼び出しだけを外し（削除行 0）、関数は呼ばない形で残す（K261 の記録）。チケットの「_relational_noun_filler_reason」はツリーの実名 typed_relational_filler_ja のこと。K-F2 は「このチケットでは塞がない。W3-a6 の RELATIVE_POSITION 型（配置側）で塞ぎ、W3-b6 で棄権を確かめる」に書き換える（10H の既存の K261・K-F2 の文は消さない）。F-2 のテストは名前を test_the_retracted_relational_filler_gate_is_kept_but_never_called に変える。
+
+**検査データ（D3）**: w5f_gates.jsonl の F2 の棄権 18 行は expect を deferred_w3b6 に変え deferred_by を足す（ほかは 1 バイトも変えない）。deferred_w3b6 は DEFERRED_READ／DEFERRED_ABSTAIN と数え、誤読に数えない。追加は w5f_gates_r3.jsonl（F1: 棄権 12 以上・対照 12 以上、追記のみ）。凍結は新しい manifest frozen_r3.sha256（既存の frozen.sha256・frozen_sup.sha256 は書き換えない）。
+
+**既存テストの改訂（D4、1 件）**: tests/test_semantic_read_w3b4.py::test_the_focus_gate_closes_the_hole_of_v1_with_the_real_placement_r7 に monkeypatch 1 行を足す（公開の門も外して型の段の門の効き目を確かめるため）。前後の全文は S5 で貼る。
+
+**宣言の再掲（D6、裁定待ち）**: I1 の残り 6 本（K-F2、K-HE の D01・D03、K-W3B4-GATE、K-P、K-C4）。K-HE・K-P・K-W3B4-GATE・K-C4 は監査役の裁定待ちで、実装役は解かない。I5 と全体テストは監査役が測る。
+<!-- w5f-r3-prereg:end -->
+
+#### 10H.e 記録 1: 既存・追加テストの前後の全文（日時 2026-10-04 14:00:57 +0900）
+**D4（既存テスト 1 件の改訂。名前不変。追加は 1 行）** 前:
+```python
+def test_the_focus_gate_closes_the_hole_of_v1_with_the_real_placement_r7(monkeypatch):
+    if not os.path.isdir(R7): pytest.skip('the placement r7 is not on this machine')
+    cases = (('兄が倉庫へさえ走った。', 'さえ'), ('兄が倉庫へすら走った。', 'すら'), ('兄が倉庫へまで走った。', 'まで'), ('兄が倉庫へ、さえ走った。', 'さえ'))
+    for text, part in cases:
+        out = SR.read(text, placement=R.CoarseQuery(R7))
+        ex = SR.typed_explain_ja(text, R.CoarseQuery(R7))
+        assert out['readable'] is False, text
+        assert ex['w3b1'] == ex['w3b2'] == GATE_PREFIX + 'へ:' + part, (text, ex)
+        assert out['abstain']['reasons'][1] == GATE_PREFIX + 'へ:' + part, out['abstain']
+    ungate(monkeypatch)
+    for text, part in cases:
+        out = SR.read(text, placement=R.CoarseQuery(R7))
+        assert out['readable'] is True and out['clauses'][0]['roles'] == {'agent': '兄', 'goal': '倉庫'}, (text, out)
+        assert b1.judge(X_REFUSED, 'ja', out)['verdict'] == 'misread', (text, out)
+        assert SR.typed_explain_ja(text, R.CoarseQuery(R7))['w3b1'] == 'READ'
+```
+後:
+```python
+def test_the_focus_gate_closes_the_hole_of_v1_with_the_real_placement_r7(monkeypatch):
+    if not os.path.isdir(R7): pytest.skip('the placement r7 is not on this machine')
+    cases = (('兄が倉庫へさえ走った。', 'さえ'), ('兄が倉庫へすら走った。', 'すら'), ('兄が倉庫へまで走った。', 'まで'), ('兄が倉庫へ、さえ走った。', 'さえ'))
+    for text, part in cases:
+        out = SR.read(text, placement=R.CoarseQuery(R7))
+        ex = SR.typed_explain_ja(text, R.CoarseQuery(R7))
+        assert out['readable'] is False, text
+        assert ex['w3b1'] == ex['w3b2'] == GATE_PREFIX + 'へ:' + part, (text, ex)
+        assert out['abstain']['reasons'][1] == GATE_PREFIX + 'へ:' + part, out['abstain']
+    ungate(monkeypatch)
+    monkeypatch.setattr(R, '_quoted_focus_public_gate', lambda entry, text, out: out)  # W5-f r3（F-1 の公開の門。docs 10H.e）: 型の段の門の効き目を確かめるため、公開の門も外す
+    for text, part in cases:
+        out = SR.read(text, placement=R.CoarseQuery(R7))
+        assert out['readable'] is True and out['clauses'][0]['roles'] == {'agent': '兄', 'goal': '倉庫'}, (text, out)
+        assert b1.judge(X_REFUSED, 'ja', out)['verdict'] == 'misread', (text, out)
+        assert SR.typed_explain_ja(text, R.CoarseQuery(R7))['w3b1'] == 'READ'
+```
+
+**D2（この ticket で足したテストの改名と本体の差し替え。基点には無いテスト）** 前（名前 test_relational_filler_boundary_with_the_place_de_rows_temporarily_restored）:
+```python
+def test_relational_filler_boundary_with_the_place_de_rows_temporarily_restored(monkeypatch):
+    fakes = _load_fakes()
+    rows = _read_jsonl(TREE / "tests" / "reading_soundness" / "w5f_f2_de_cases.jsonl")
+    de_row = ("place", ("で",), ("PLACE",), "adjunct")
+    for pred_type in ("P_ACT", "P_CREATE", "P_EMOTION"):
+        monkeypatch.setitem(R.TYPED_FRAMES_W3B4, pred_type,
+                           tuple(R.TYPED_FRAMES_W3B4[pred_type]) + (de_row,))
+
+    for row in rows:
+        query = fakes.MapQuery({term: fakes.answer(kind, term=term) for term, kind in row["placement"].items()})
+        out = SR.read(row["text"], "ja", placement=query)
+        explanation = SR.typed_explain_ja(row["text"], query)
+        if row["expect"] == "abstain":
+            assert explanation["w3b2_trigger"] is not None, (row["id"], explanation)
+            assert not out["readable"], (row["id"], out)
+            assert explanation["w3b2"] == row["gate_reason"], (row["id"], explanation)
+        else:
+            assert explanation["w3b2"] != row["gate_reason"], (row["id"], explanation)
+            if out["readable"]:
+                assert out["clauses"][0]["roles"] == row["roles"], (row["id"], out)
+```
+後:
+```python
+def test_the_retracted_relational_filler_gate_is_kept_but_never_called(monkeypatch):
+    # W5-f r3: the auditor retracted F-2 (2026-10-04 13:30); the function is kept as the K261 record and is never called.
+    assert callable(R.typed_relational_filler_ja)
+    calls = []
+    real = R.typed_relational_filler_ja
+    monkeypatch.setattr(R, "typed_relational_filler_ja", lambda *args, **kwargs: calls.append(args) or real(*args, **kwargs))
+    fakes = _load_fakes()
+    rows = _read_jsonl(TREE / "tests" / "reading_soundness" / "w5f_f2_de_cases.jsonl")
+    de_row = ("place", ("で",), ("PLACE",), "adjunct")
+    for pred_type in ("P_ACT", "P_CREATE", "P_EMOTION"):
+        monkeypatch.setitem(R.TYPED_FRAMES_W3B4, pred_type,
+                            tuple(R.TYPED_FRAMES_W3B4[pred_type]) + (de_row,))
+
+    for row in rows:
+        query = fakes.MapQuery({term: fakes.answer(kind, term=term) for term, kind in row["placement"].items()})
+        SR.read(row["text"], "ja", placement=query)
+        explanation = SR.typed_explain_ja(row["text"], query)
+        assert not str(explanation["w3b2"]).startswith("RELATIONAL_NOUN_FILLER"), (row["id"], explanation)
+    assert calls == []
+```
+
+**D3（test_registered_data_is_frozen_and_balanced と _assert_frozen。この ticket で足したテスト）** 前:
+```python
+def _assert_frozen():
+    for manifest in (TREE / "artifacts" / "w5-f" / "frozen.sha256",
+                     TREE / "artifacts" / "w5-f" / "frozen_sup.sha256"):
+        for line in manifest.read_text(encoding="utf-8").splitlines():
+            digest, relative = line.split(None, 1)
+            assert hashlib.sha256((TREE / relative.strip()).read_bytes()).hexdigest() == digest, relative
+```
+```python
+def test_registered_data_is_frozen_and_balanced():
+    _assert_frozen()
+    rows = _read_jsonl(DATA)
+    groups = sorted({row["group"] for row in rows})
+    assert groups == ["F1", "F2", "F3"]
+    for group in groups:
+        expectations = [row["expect"] for row in rows if row["group"] == group]
+        assert len(expectations) >= 20
+        assert abs(expectations.count("abstain") - expectations.count("read_or_abstain")) <= 2
+```
+後:
+```python
+def _assert_frozen():
+    # later manifests win for the same path (W5-f r3 appended frozen_r3.sha256; the older ones are history)
+    digests = {}
+    for name in ("frozen.sha256", "frozen_sup.sha256", "frozen_r3.sha256"):
+        for line in (TREE / "artifacts" / "w5-f" / name).read_text(encoding="utf-8").splitlines():
+            digest, relative = line.split(None, 1)
+            digests[relative.strip()] = digest
+    for relative, digest in digests.items():
+        assert hashlib.sha256((TREE / relative).read_bytes()).hexdigest() == digest, relative
+```
+```python
+def test_registered_data_is_frozen_and_balanced():
+    _assert_frozen()
+    rows = _read_jsonl(DATA) + _read_jsonl(DATA_R3)
+    assert len({row["id"] for row in rows}) == len(rows)
+    groups = sorted({row["group"] for row in rows})
+    assert groups == ["F1", "F2", "F3"]
+    for group in groups:
+        expectations = [row["expect"] for row in rows if row["group"] == group]
+        if group == "F2":
+            deferred = [row["id"] for row in rows if row["group"] == "F2" and row["expect"] == "deferred_w3b6"]
+            assert deferred == ["W5F-F2-%03d" % number for number in range(1, 19)]
+            assert expectations.count("read_or_abstain") >= 16
+            continue
+        judged = expectations.count("abstain") + expectations.count("read_or_abstain")
+        assert judged >= 20
+        assert abs(expectations.count("abstain") - expectations.count("read_or_abstain")) <= 2
+```
+
+#### 10H.e 記録 2: r3 の実測（数は出力ファイルからそのまま）
+- 検査データ（凍結 frozen_r3.sha256。w5f_gates.jsonl 94 行＋w5f_gates_r3.jsonl 32 行 = 126 行。出力 artifacts/w5-f/r3/i2_gates_{fake,none,r8}.txt）。誤読は fake=0、none=0、r8=0。群ごと: fake: F1 {"ABSTAIN": 30, "CORRECT": 32} / F2 {"CORRECT": 16, "DEFERRED_READ": 18} / F3 {"ABSTAIN": 19, "CORRECT": 11}。F2 の 18 行は DEFERRED_* と数える（誤読ではない）。
+- 凍結の経緯: w5f_gates_r3.jsonl は最初 30 行（棄権 14・対照 16）で凍結した（frozen_r3_first.sha256・frozen_r3_at_first.txt）。F1 の均衡の規則（|棄権 − 読む| ≤ 2、2 ファイル合算）が 4 になったので、**追記のみ** で棄権 2 行（W5F-F1-131, 132）を足して凍結し直した（最初の 30 行は cmp で同一）。追記の前に棄権の行の出力は見ていない。
+- 届く確かめ（r2 のコードの公開の入口、none と fake。対照の 16 行すべて readable=True）: artifacts/w5-f/r3/r3_gates_reach.txt。null 配置の最初の案（へ・goal）は none で読めなかった（対照が届かない）ため、から・source の対照に書き直した（棄権の行の出力は見ていない）。
+- harness 500 文: 変化 0・誤読 0（i2_soundness_compare.txt）。入口の 4,149 入力: none・r8 とも r2 の出力とバイト一致（ENTRY_SAME_AS_R2）。W3-b4 の 339 行・W3-b5 の 649 行（偽配置）: misread=0（i2_w3b4_rows.txt・i2_w3b5_rows.txt）。
+- 代価 (3) の実測（cost_unseparated.txt。自分の関数を直接呼ぶ）: 4,149 入力のうち読める出力は none で 286・r8 で 458。separated_only=True で止まる件数は none・r8 とも 0。separated_only=False なら none・r8 とも 2 件（「山田さんは学生ではない。」「中野区最東端の駅でもある。」）が止まる。だから公開の入口は隔てがあるときだけ止める。
+- 公開の入口の限界（既知の穴）: 「広場で、さえ」は fugashi が で を 助動詞 と読むため格助詞の門に入らず、門では止まらない（W5F-F1-114。入口は別の理由で棄権し誤読 0）。
+- I1: 6 failed, 32 passed。落ちる 6 本は r2 と同じ名前で、id の出現も r2 と同一（i1_attack.txt、i1_ids.txt）。I3: 59 passed, 1 skipped、CLASSIFY_VERSION=5（i3_tests.txt・i3_versions.txt）。I4: aq 111 問・extra2 42 問とも changed=0、cross テスト 73 passed（i4_*.txt）。
+- 関係するテスト（related_tests.txt。全体テストは流していない）: 106 failed。基線に無い失敗は写しの宣言 6 本だけ（related_new_failures.txt）。
+
+K-F2（10H の既存の K261・K-F2 の文は消さない。追記）: このチケットでは塞がない。W3-a6 の RELATIVE_POSITION 型（配置側）で塞ぎ、W3-b6 で棄権を確かめる。F-2 の検査データ 18 行は deferred_w3b6 として DEFERRED_READ／DEFERRED_ABSTAIN の数だけを出す。
+
+#### 10H.e 記録 3: r3 レビュー r1 の修正（追記。上の記録は書き換えない）
+- 記録 2 の「門の関数が 12 行以上」に相当する記述は実測と違った。棄権 16 行（w5f_gates_r3.jsonl）のうち、公開の入口の出力に門の理由（PLACEMENT_FOCUS_/QUOTED_PARTICLE_AFTER_CASE）が出るのは 8 行（101・102・104・105・107・110・131・132）。残り 8 行（103・106・108・109・111・112・113・114）は別の理由で先に止まり、その行は tests/reading_soundness/w5f_gates_r3_narrowed.json に id ごとに記録した（114 は門の関数が None＝で を 助動詞 と読む既知の穴）。テストはしきい値をやめ、集合の等号で確かめる。
+- 門が決め手になる格助詞は、既存の行では から だけだった。w5f_gates_r3b.jsonl（W5F-F1-133〜146、追記のみ）で で 4 行・に 4 行を足し、公開の入口の出力に門の理由が出る棄権行は から 8・で 4・に 4（計 16。none・fake・r8 とも同じ。artifacts/w5-f/r3/r3b_gate_kinds.txt）。公開の門を素通しにすると、記録に無い棄権 16 行がすべて読める（tests の test_r3_without_the_public_gate_…）。
+- 検査データは 140 行（w5f_gates.jsonl 94＋w5f_gates_r3.jsonl 32＋w5f_gates_r3b.jsonl 14）。誤読は fake=0・none=0・r8=0（artifacts/w5-f/r3/r3b_gates_{fake,none,r8}.txt）。F1: fake {"ABSTAIN": 38, "CORRECT": 38}、none {"ABSTAIN": 58, "CORRECT": 18}、r8 {"ABSTAIN": 50, "CORRECT": 26}。
+
+#### 10H.e 記録 4: r3 レビュー r2 の修正（追記。上の記録は書き換えない。日時 2026-10-04 14:37 +0900）
+- **D3 の取り下げ（検査データは追記のみ）**: 記録の上の D3 は w5f_gates.jsonl の F2 の 18 行（W5F-F2-001〜018）の expect を deferred_w3b6 に書き換えるとしたが、監査役の実行上の注意（凍結済みの行は書き換えず、期待を外す行は narrowed の記録で）に反するので取り下げた。w5f_gates.jsonl は凍結時（frozen.sha256 の 3edf7cae…）のバイト列に戻した（`shasum -a 256 -c artifacts/w5-f/frozen.sha256` が全行 OK、`grep -c deferred_w3b6 tests/reading_soundness/w5f_gates.jsonl` が 0）。18 行は expect=abstain のままで、棄権の期待を外したことは新しいファイル `tests/reading_soundness/w5f_gates_f2_narrowed.json`（ちょうど 18 行、各行 expect_was=abstain・now=deferred_w3b6・deferred_by）に記録した。判定器 `w5f_gates_check.py` はこの記録の id を DEFERRED_READ／DEFERRED_ABSTAIN と数え（誤読に数えない）、記録の id がデータにあり group=F2・expect=abstain であることを assert する。凍結は新しい manifest `artifacts/w5-f/frozen_r3c.sha256`（時刻 `frozen_r3c_at.txt` はテストと測定の前）。既存の manifest は書き換えない（同じパスは後の manifest が勝つ）。
+- **テストの前後（名前不変）** `tests/test_semantic_read_w5f.py::test_registered_data_is_frozen_and_balanced` の F2 の枝。前:
+```python
+            deferred = [row["id"] for row in rows if row["group"] == "F2" and row["expect"] == "deferred_w3b6"]
+            assert deferred == ["W5F-F2-%03d" % number for number in range(1, 19)]
+            assert expectations.count("read_or_abstain") >= 16
+            continue
+```
+  後:
+```python
+            # W5-f r3 review r2: the frozen rows are not rewritten; the narrowing is a separate record
+            assert not [row for row in rows if row["expect"] == "deferred_w3b6"]
+            recorded = sorted(json.loads(NARROWED_F2.read_text(encoding="utf-8"))["rows"])
+            assert recorded == ["W5F-F2-%03d" % number for number in range(1, 19)]
+            by_id = {row["id"]: row for row in rows}
+            assert all(by_id[row_id]["group"] == "F2" and by_id[row_id]["expect"] == "abstain" for row_id in recorded)
+            assert expectations.count("read_or_abstain") >= 16
+            continue
+```
+  `_assert_frozen` の manifest の並びに `frozen_r3c.sha256` を末尾に 1 つ足した。
+- **F-2 の撤回で変えた製品コードの前後（呼び出しを外しただけ。削除行 0）** `verantyx/semantic_reader.py` の `_typed_plan_focus_gated` の `gated`。前（r2）:
+```python
+    def gated(clause, toks, query, *, voice, written, strip, role_map):
+        typed, why = plan(clause, toks, query, voice=voice, written=written, strip=strip, role_map=role_map)
+        if typed is None: return typed, why
+        focus = typed_focus_after_case_ja(toks, clause)
+        if focus: return None, focus
+        focus = typed_quoted_focus_after_case_ja(toks, clause) or typed_relational_filler_ja(toks, typed)
+        if focus: return None, focus
+        return typed, why
+```
+  後（r3）:
+```python
+    def gated(clause, toks, query, *, voice, written, strip, role_map):
+        typed, why = plan(clause, toks, query, voice=voice, written=written, strip=strip, role_map=role_map)
+        if typed is None: return typed, why
+        focus = typed_focus_after_case_ja(toks, clause)
+        if focus: return None, focus
+        focus = typed_quoted_focus_after_case_ja(toks, clause)
+        if focus: return None, focus
+        return typed, why
+```
+  `typed_relational_filler_ja` の docstring 1 行。前: `"""W5-f (docs 10H): refuse place, goal, source or で fillers whose head is 名詞/普通名詞/副詞可能."""` 後: `"""W5-f r3: retracted by the auditor (2026-10-04 13:30); not called. Kept as the record of K261 (docs 10H.e)."""` 本体は変わっていない（関数は残り、どこからも呼ばれない）。基点 0041606 からの `semantic_reader.py` の削除行は 0（`git diff 0041606 -- verantyx/semantic_reader.py | grep -c '^-[^-]'`）。
+- 注記（回帰データの独立性）: w5f_gates_r3.jsonl と w5f_gates_r3b.jsonl の F1 の文は、門が決め手になる形を探って選んだ（棄権の行の出力を見たうえで選んだ）。期待は文の設計どおりの abstain なので回帰データとしては有効だが、独立した証拠になるのは中間職・監査役の未公開の文のほうである。
+
+
+## 10I. W3-b6: 読解器が述語の役割つきの枠を使う（事前登録 K270〜）
+
+<!-- w3b6-prereg:begin -->
+起票 2026-10-04（基点 dev `51c9693`）。チケット `review-impl/prompts/W3-b6_reader_role_frames.prompt.md`、中間職の指示書 `review-impl/W3-b6/plan.md`。この節は、検査データ（`tests/reading_soundness/ja_r13.jsonl`）・テスト・実装より **前** に書く（時刻は `artifacts/w3-b6/prereg_time.txt`）。
+
+### 目的
+充填物の型でも述語の型の枠でも、で・に・へ・から の役割は決まらない（K183・K220）。述語ごとには役割はほぼ決まる。配置側の W3-a6（r9、未統合）は述語ごとに `role_frame = {助詞: [{"role", "types"}]}` を分布の腕で確認した役割だけ `role_frame_status: CONFIRMED` で出す。読解器は、問い合わせの答えの **契約** にだけ依存して、その枠を読む段 R を持つ。配置 r9 がまだ無いので、検査は偽の答え（`synthetic_contract`）で行い、r9 での実測（O5）は W3-a6 統合後に監査役が行う。
+
+### 問い合わせの答えの契約（W3-a6 §12.18 D8。読解器はこれだけを前提にする）
+- 配置が `role_frames` の表を持つときだけ、答えの末尾に 3 鍵がこの順で付く: `role_frame_status` ∈ {`CONFIRMED`, `ESTIMATED`, `NO_ROLE_FRAME`}、`role_frame`（CONFIRMED のときだけ `{助詞: [{"role", "types"}]}`、他は null）、`role_frame_unconfirmed`（読解器は **読まない**）。
+- 表の無い配置（r7・r8）と配置なしでは 3 鍵は無い。鍵が無ければ段 R は何もしない（K277）。
+- 役割名は `event_cross.ROLE_NAMES`（20）、型は `coarse_types.NOUN_TYPES` の id、助詞は格助詞 9 種（`_CASE_PARTICLES_9`）。
+
+### 規則
+- **K270 入口**: 段 R は W3-b4 の経路 U/U3 と同じ入口（能動態・述語が正規化されていない・K186 の係助詞の門・W5-f の引用の門・並立の門・埋め込みの十字の門を通った後、単一の述語の節）でだけ呼ぶ。新しい入口は作らない。述語の答えの `role_frame_status` が無い → 基点と同じ出力（理由も出さない）。`ESTIMATED`・`NO_ROLE_FRAME` で表が読めなかった文 → `ROLE_FRAME_NOT_CONFIRMED:<status>`。
+- **K271 読む助詞**: に・で・へ・から・と・まで・より（`_CASE_PARTICLES_9` から が・を を除いた 7 つ。関数の中で導く）。が・を は段 R で「読む」対象でない（既存の経路が決める）。枠が が/を に別の役割を宣言していても、読む材料には使わない。ただし K274 の食い違いの検査と、表が確かめていない既存の名前の確認（H271）には使う。
+- **K272 充填物**: 充填物の主辞の配置の答えが direct の 1 型（`placement_type` の門をそのまま通す。MULTIPLE・UNPLACED・UNKNOWN・推定・候補のみ → `ROLE_FRAME_FILLER_NOT_DIRECT:<助詞>:<理由>`）。型が `RELATIVE_POSITION` → `ROLE_FRAME_FILLER_RELATIVE_POSITION:<助詞>`（枠は宣言できない型。理由を分けて数える）。
+- **K273 決め方**: `role_frame[助詞]` の役割のうち `types` が充填物の型を含むものを数える。1 → その役割で読む（`role_basis` は `role_frame:<述語>:<助詞>:<型>`、`predicate_basis` は `placement_direct:<述語の型>`）。0 → `ROLE_FRAME_TYPE_NOT_DECLARED:<助詞>:<型>`。2 以上 → `ROLE_FRAME_SPLIT:<助詞>:<型>`。助詞が枠に無い → `ROLE_FRAME_PARTICLE_NOT_DECLARED:<助詞>`。枠の形が契約を外れる → `ROLE_FRAME_INVALID:<problem>`（文全体を棄権。黙って読まない。problem は下の閉じた一覧）。
+- **K274 表との関係**: 既存の経路（規約の表・K62 v2・W3-b1〜b5）が同じ充填物に既に役割を与えているとき、枠の役割と一致すれば既存の読みをそのまま返す（`role_basis` は既存のまま。段 R は何も足さない）。食い違えば文を棄権 `ROLE_FRAME_TABLE_CONFLICT:<助詞>:<既存の役割>:<枠の役割>`（「食い違い」= 既存の役割の型の充填物 T について、その助詞の枠で T を含む役割がちょうど 1 つあり、それが既存と違う）。段 R が新しく読めるのは、既存の経路がその充填物を未対応に残したときだけ（`recipient`・`ambiguous`、または表が「型を読まない／助詞の行が無い／型の行が無い」と言った充填物）。枠は表を上書きしない。
+- **K275 kind（項か付加か）**: 枠は kind を持たない。段 R で読んだ役割の kind は、表の値（agent・patient・goal・source = arg、place・time = adjunct）か、表に無い役割は H274 の事前登録（`table:w3b6_role_kinds`）。kind の効き目は付加の門（`role@` の腕だけの direct を使わない）だけで、出力には出ない。
+- **K276 複数の充填物**: 同じ助詞の（未対応の）充填物が節に 2 つ以上あれば段 R は読まない（`ROLE_FRAME_MULTIPLE_FILLERS:<助詞>`）。並立は既存の門が先に棄権する。
+- **K277 不変**: 配置なし・r7・r8（3 鍵なし）では読解の出力が基点と byte 一致。既存の凍結データはすべて不変。新しい定数は理由名の閉じた一覧 `W3B6_REASON_NAMES` と K275 の kind の表 `W3B6_ROLE_KINDS` だけ。語の一覧・表層の規則は作らない。
+
+### 段 R の手順（指示書 2.3 の具体）
+`NO_OPINION` = 計画（W3-b4）の拒否理由が `PLACEMENT_FRAME_NOT_READ:`・`PLACEMENT_PARTICLE_NOT_IN_FRAME:`・`PLACEMENT_TYPE_MISMATCH:` で始まる（表が意見を持たないだけで、充填物や述語の門で止まったのではない）。
+1. 計画の本体（`typed_plan_u_w3b4_body_ja`、W3-b4/W3-b5 の関数。変えない）を呼ぶ。拒否で `NO_OPINION` でない → そのまま返す（段 R の外。問い合わせもしない）。
+2. `role_frame_status` の鍵が答えに無い → 計画の戻り値のオブジェクトをそのまま返す。`predicate_role_frame` が INVALID → `(None, 'ROLE_FRAME_INVALID:…')`（読めた文でも棄権）。`not_confirmed` → 読めた文はそのまま、読めなかった文は `ROLE_FRAME_NOT_CONFIRMED:<status>`。
+3. 場合 A（計画が読んだ）: K274 の食い違いだけを見て、無ければ読みをそのまま返す。場合 B（`NO_OPINION`）: 役割を節の順に 1 つずつ見る。(1) その役割だけで計画に問うて表が読んだ → その役割と basis（K274 の検査）。(2) 表が `NO_OPINION` 以外の理由で止まった → その理由で棄権。(3) 表が意見を持たない → 未対応の名前（`recipient`・`ambiguous`）は助詞が K271 の 7 つで K276・充填物の門・K272・K273 を通るとき、読解器が名前を与えていた役割（agent・patient・source など）は **枠が同じ役割を一意に宣言するときだけ** 残す（H271）。枠で 1 つも読めなかったときは計画の理由のまま。
+
+### 契約外の形の problem（`ROLE_FRAME_INVALID:<problem>` の閉じた一覧。検査の順）
+`STATUS_UNKNOWN`（3 値の外）、`MISSING_ROLE_FRAME`（status があり `role_frame` の鍵が無い）、`FRAME_WITHOUT_CONFIRMED`（CONFIRMED でないのに `role_frame` が null でない）、`NOT_A_MAPPING`（CONFIRMED で dict でない。null を含む）、`PARTICLE_NOT_CASE:<助詞>`、`ENTRIES_NOT_A_LIST:<助詞>`（空でない list でない）、`ENTRY_NOT_A_MAPPING:<助詞>`、`ENTRY_KEYS:<助詞>`（鍵が `role`・`types` ちょうどでない）、`ROLE_NOT_IN_CONVENTION:<助詞>:<役割>`、`TYPES_NOT_A_LIST:<助詞>`（空でない文字列の list でない）、`TYPE_NOT_NOUN:<助詞>:<型>`（`RELATIVE_POSITION` は今の `NOUN_TYPES` に無いので枠に書けば INVALID）、`ROLE_DUPLICATED:<助詞>:<役割>`（同じ助詞に同じ役割が 2 つ）。読む鍵は `role_frame_status` と `role_frame` の 2 つだけ（`role_frame_unconfirmed` は読まない。コードに現れない）。
+
+### 理由名（`W3B6_REASON_NAMES` の順。段 R の理由は出力に出ない: `typed_explain_ja(...)['w3b2']` と計画の戻り値で見る）
+<!-- BEGIN table:w3b6_reasons -->
+| 理由 | 書式 | 規則 |
+|---|---|---|
+| `ROLE_FRAME_NOT_CONFIRMED` | `ROLE_FRAME_NOT_CONFIRMED:<status>` | K270 |
+| `ROLE_FRAME_FILLER_NOT_DIRECT` | `ROLE_FRAME_FILLER_NOT_DIRECT:<助詞>:<placement_type の理由>` | K272, K275 |
+| `ROLE_FRAME_FILLER_RELATIVE_POSITION` | `ROLE_FRAME_FILLER_RELATIVE_POSITION:<助詞>` | K272 |
+| `ROLE_FRAME_TYPE_NOT_DECLARED` | `ROLE_FRAME_TYPE_NOT_DECLARED:<助詞>:<型>` | K273 |
+| `ROLE_FRAME_SPLIT` | `ROLE_FRAME_SPLIT:<助詞>:<型>` | K273 |
+| `ROLE_FRAME_PARTICLE_NOT_DECLARED` | `ROLE_FRAME_PARTICLE_NOT_DECLARED:<助詞>` | K273 |
+| `ROLE_FRAME_INVALID` | `ROLE_FRAME_INVALID:<problem>` | K273 |
+| `ROLE_FRAME_TABLE_CONFLICT` | `ROLE_FRAME_TABLE_CONFLICT:<助詞>:<既存の役割>:<枠の役割>` | K274 |
+| `ROLE_FRAME_MULTIPLE_FILLERS` | `ROLE_FRAME_MULTIPLE_FILLERS:<助詞>` | K276 |
+<!-- END table:w3b6_reasons -->
+
+再利用する既存の理由（名前を変えない）: `PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED`・`PLACEMENT_FRAME_TYPE_NOT_CONFIRMED`・`PLACEMENT_DUPLICATE_ROLE`・`PLACEMENT_INVALID:EMPTY_TERM`・`PLACEMENT_HEAD_RELATIONAL`・`PLACEMENT_DETERMINER_NOT_READ`。
+
+### K275 の kind の表（`W3B6_ROLE_KINDS`。20 役割）
+<!-- BEGIN table:w3b6_role_kinds -->
+| 役割 | kind | 出所 |
+|---|---|---|
+| agent | arg | 表 |
+| patient | arg | 表 |
+| goal | arg | 表 |
+| source | arg | 表 |
+| place | adjunct | 表 |
+| time | adjunct | 表 |
+| recipient | arg | H274 |
+| result | arg | H274 |
+| quotation | arg | H274 |
+| entity | arg | H274 |
+| value | arg | H274 |
+| attribute | arg | H274 |
+| causer | arg | H274 |
+| causee | arg | H274 |
+| experiencer | arg | H274 |
+| instrument | adjunct | H274 |
+| companion | adjunct | H274 |
+| cause | adjunct | H274 |
+| standard | adjunct | H274 |
+| beneficiary | adjunct | H274 |
+<!-- END table:w3b6_role_kinds -->
+
+### 判断記録（事前登録）
+- **H270 配線の位置**: チケットは「末尾に追記」「`typed_plan_u_w3b4_ja` の呼び出し元 1 箇所」と言うが、末尾で `typed_plan_u_w3b2_ja` を包み直すと既存の凍結テスト 3 本（`w3b4::test_the_name_the_entry_calls…`・`w3b5::test_the_plan_of_w3b4_only_gains_lines…`・`w1a5::test_the_function_of_the_base_entry…`）が落ちる。そこで挿入 2 か所（削除行 0）: A = `typed_plan_u_w3b2_ja = typed_plan_u_w3b4_ja` の直後に、元の関数を `typed_plan_u_w3b4_body_ja` として残し、`typed_plan_u_w3b4_ja` を「その計画、次に段 R」の包みに差し替える（`functools.update_wrapper`）。B = 段 R の本体・契約の読み手・定数をファイル末尾に追記。意味はチケットどおり。
+- **H271 表が確かめていない既存の名前（チケットより厳しい側）**: 読まない型・行の無い助詞では、表は が・を の充填物を確かめておらず、override の読み直しでは読解器自身の型の検査も走らない。そこで、読解器が名前を与えていた役割は、枠が同じ役割を一意に宣言するときだけ残し（basis は `role_frame:…`）、それ以外は K272/K273 の理由で棄権する。枠が別の役割を言えば K274 の食い違い。数を減らす方向。
+- **H272**: `recipient`・`ambiguous` を「未対応に残った充填物」とするのは、W3-b4 の計画が同じ 2 つを「表に任せる名前」として扱っている（`PLACEMENT_READER_DISAGREES` の検査）のに合わせる。
+- **H273**: 段 R に入るのは計画の理由が `NO_OPINION` のときだけ。`FRAME_GENERATED_DOES_NOT_LICENSE` や充填物の門（`PLACEMENT_MULTIPLE:…`・`PLACEMENT_ESTIMATED_*:…` など）は上書きしない。したがって、助詞が表に行を持つ型で MULTIPLE の充填物は、段 R の理由でなく計画の理由で棄権する。
+- **H274**: 表に無い 14 役割の kind は中間職の決定として上の表に事前登録した。
+- **H275**: チケットの「表が読まない述語型（11 型）」は W3-b1 の v1 表 `TYPED_FRAMES_NOT_READ` の数。今の計画（W3-b4/b5）が使う表は `TYPED_FRAMES_NOT_READ_W3B4` の 8 型。
+- **H276 到達の事実（`artifacts/w3-b6/reach_base.txt`、コードを触る前に測定）**: W3-a6 N2 の 11 行のうち、基点の読解器がすでに読むのは 通報する・連絡する・待つ・運ぶ（へ・から）。段 R に届くのは 停泊する（U）・打つ（U3）・驚く（U3）・確認する（で が曖昧な文。U3）・集める（U）。分ける の に は計画の引き金がどちらも掛からない（`PLACEMENT_W3B2_NOT_TRIGGERED`）。K270 が新しい入口を禁じているので引き金は足さない: 分ける の行は `NOT_REACHED:TRIGGER_NONE` として未達と報告する。K274 は、基点の読解器と W3-b1 の経路 U が読んだ文を見ない（段 R はそれらの後ろの W3-b2 の計画の中にある）: 既知の穴。K271 の と・まで・より は、段 R を呼ぶ入口の文に現れない（と は並立で、まで・より は読解器が「表せない内容」とする）: 機構は持つが入口から届かない（既知の穴）。
+- **H277**: 検査の枠はすべて作り物（`frame_source: synthetic_contract`）。r9 の実物の枠は無い。普通名詞の型と述語の型は r8 の答えを写し、r8 で estimated の述語を direct にした行には `placement_source: synthetic` と note を付ける。
+<!-- w3b6-prereg:end -->
+
+<!-- w3b6-results:begin -->
+### 検査データの変更記録（凍結後。元の凍結ファイルは消さない）
+凍結（`artifacts/w3-b6/bank_freeze.sha256`、`bank_freeze_time.txt`）は実装の開始（`impl_start_time.txt`）より前。実装を通した最初の実行で、**実装の誤りでなく期待（データ・道具・テスト）の側の誤り** が見つかったので、次を直した（元のファイルは `artifacts/w3-b6/*.frozen_r1.*` に残す。全文の差分は `ja_r13.frozen_r1.jsonl` と `tests/reading_soundness/ja_r13.jsonl` の比較）。直した後の sha256 は `bank_freeze.r3.sha256`（時刻 `bank_freeze.r3_time.txt`）。`r2` は実装の前にテストの 2 点（表 `w3b6_role_kinds` の行の順の比較、凍結ファイルの探し方）を直した記録。
+1. `W3B6-K272-A-2D02`・`2M03`（店員が左に昇った。）の期待の理由を `ROLE_FRAME_FILLER_RELATIVE_POSITION:に` / `PLACEMENT_MULTIPLE:に:左` から `PLACEMENT_SLOT_EVIDENCE_ONLY:に:左` に変更。理由: P_MOVE の に の行は time（付加）で、表の付加の門（腕が `role@` だけ）が NO_OPINION より前に止める（H273）。どちらも棄権のままで、誤読の問題ではない。代わりに、表が に の行を持たない P_ACT で相対位置の語の に を確かめる行を **追加**（`W3B6-K272-A-2D04`・`2M05`: 兄が箱を右に押した。）。
+2. `W3B6-K274-A-003`・`004` の `path` を `W3-b4` から `U` に変更（棄権する行の `path` は引き金の名前と決めたのに、基点の経路名を書いていた）。
+3. 道具 `run_rows.py` と生成器 `make_bank.py`: 引き金が掛からず計画が呼ばれない行（`PLACEMENT_W3B2_NOT_TRIGGERED`）の計画の期待を `NOT_CALLED` と導く（4 行。以前は診断の理由と同じ文字列を計画の期待に写していた）。
+4. テスト: 棄権する行の judge の判定は `correct`（読めない行を読まなかった）なので比較を直した。INVALID の problem の数え方（`split(':')[1]`）を直した。相対位置のテストを 15 行（追加 2）に合わせて直した。
+5. r4（O4 の `-k` で選ばれるようにテストの名前を直し、K274 の食い違いのテストを 1 つ追加）: 下の「r4」。
+r4（実装の後、検査データ・期待・コードは変えない。テストだけ）: O4 の `-k "relative_position or invalid or conflict or unconfirmed"` で K274 の食い違いと INVALID のテストが選ばれるよう、テスト 3 本の名前を変え（`test_an_invalid_frame_…` ×2、`test_when_the_frame_agrees_the_table_is_not_touched_…`）、K274 の食い違いのテストを 1 つ追加し、スコープのテストが、全体テストの実行中に既存のテストが書き換える `tests/attack/w3a3/r6_48_queries.jsonl`（このチケットの変更ではない。実行後に `git checkout` で戻した）を数えないようにした。sha256 は `bank_freeze.r4.sha256`（`bank_freeze.r4_time.txt`）。データ `ja_r13.jsonl` の sha256 は r3 から変わらない。
+
+### 測定結果（コマンドと出力。すべて `artifacts/w3-b6/` の下）
+- **O1（配置なし・r8 で基点 `51c9693` と byte 一致）**: 基点の出力は `before/`（取得時刻 `before/taken_time.txt`）。実装後の同じ道具の出力 `entry_none.after.jsonl`・`entry_r8.after.jsonl`（4,149 文）。`entry_none_compare.txt`: `readable_before=286 readable_after=286 changed=0`、`entry_r8_compare.txt`: `readable_before=458 readable_after=458 changed=0`。`cmp` はすべて 0: 配置なし・r8 の出力・r8 の問い合わせの記録（`entry_r8_queries.after.json`＝問い合わせの数と語が同じ）・`soundness.after.json`（`harness.py`）・`w3b4_rows.after.json`（ja_r10_w3b4）・`w3b5_rows.after.json`（ja_r11）が `before/` と一致。
+- **O2（凍結データ ja_r13.jsonl、93 行）**: `data_check.txt`（`run_rows.py`）: `rows=93 read=28 abstain=65 misread=0 incomplete=0 unjudged=0 mismatches={}`、`read rows judged correct: 28 of 28 read`。経路の内訳（実測）: R 23 行（読む 23）、R-blocked 1 行（計画は読むが入口の読み直しの門が止める: 集める）、U 19・U3 41・none 4（棄権）、W3-b4 1 行・base 4 行（読む）。規則ごとの行数（読む／棄権）: K270 6／9、K271 4／4、K272 0／21、K273 14／20、K274 2／4、K275 2／3、K276 0／4。r8 の語だけの行 57、作り物の語を含む行 36（`placement_source`・`synthetic_words`・`note` に書いてある）。テスト `pytest_w3b6.txt`: `50 passed`。
+- **11 行（W3-a6 N2。出力 `data_check.json` の `path`・`diag`・`role_basis` から）**:
+
+| N2 の行 | 文（行 id） | 経路（実測） | 結果 |
+|---|---|---|---|
+| 停泊する に=place | 船が港に停泊した。（N2-R-001） | R | 読む（agent 船・place 港。基点では `SUBJECT_TYPE_UNDETERMINED:船` で棄権） |
+| 通報する に=recipient | 住民が警察に通報した。（N2-R-002） | base | 読む（基点が読む。枠を付けても出力は同じ。段 R の手柄ではない） |
+| 連絡する に=recipient | 社員が上司に連絡した。（N2-R-003） | base | 読む（同上） |
+| 打つ で=instrument | 大工が金槌で板を打った。（N2-R-004） | R | 読む（instrument 金槌） |
+| 驚く で=cause | 妹が地震で驚いた。（N2-R-005） | R | 読む（cause 地震。原文の 物音 は r8 で UNPLACED: K272-A-001 で棄権） |
+| 確認する で=place | 係員が校庭で書類を確認した。（N2-R-006） | R | 読む（place 校庭。原文の 受付 は r8 で MULTIPLE: K272-A-002 で棄権） |
+| 集める に=goal | 先生が生徒を校庭に集めた。（N2-X-007） | R-blocked | **出力は棄権**（計画は goal と読む: `plan=READ`。入口の読み直しの K63 の門 `PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行` が止める。この門は変えない）。同じ構成を押す で読む行 N2-R-007b（兄が箱を工場に押した。経路 R・goal 工場）を置いた。未達: `NOT_READ:HEAD_DERIVED_GATE` |
+| 分ける に=result | 店員が商品を箱に分けた。（N2-A-008） | none | **未達 `NOT_REACHED:TRIGGER_NONE`**（計画の引き金が掛からない。K270 により引き金は足さない） |
+| 待つ で=place | 友人が駅で待った。（N2-R-009） | base | 読む（基点が読む） |
+| 運ぶ へ=goal・から=source | 業者が倉庫から工場へ荷物を運んだ。（N2-R-010） | base | 読む（基点が読む） |
+
+  したがって、段 R が新しく読んだのは 停泊する・打つ・驚く・確認する（と、集める の代わりの 押す）。基点が読む 4 述語（5 行）は変わらず、集める と 分ける の 2 行は読めていない（原因は上の表）。
+- **O4**: `pytest_o4.txt`: `8 passed`（相対位置 右＝RELATIVE_POSITION direct と MULTIPLE [PLACE, RELATIVE_POSITION] の両方で、W3-b4 の束 d の 5 文と W3-b5 の反例の型の文が棄権: `W3B6-K272-A-1D01〜1M05`・`2D01〜2M05`。`role_frame` の形を 12 通りの problem で壊すと `ROLE_FRAME_INVALID:<problem>`（データ 13 行・単体 19 件）。表との食い違いは `ROLE_FRAME_TABLE_CONFLICT`（場合 A・場合 B、K274 の 5 行）。`role_frame_unconfirmed` を壊しても出力・診断は不変）。
+- **O6（既存テストの失敗集合）**: `pytest_full.txt`（全体、1 回目＝r4 の前）: `117 failed, 15372 passed`。基線との差 `pytest_new_failures.txt`: 2 件 = `tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches`（指示書にある、未コミットの間だけ失敗する環境由来の 1 件）と、このチケットの `test_the_change_is_two_insertions_…`（全体テストの実行中に既存のテストが `tests/attack/w3a3/r6_48_queries.jsonl` を書き換えるのを数えて落ちた。r4 で直した）。基線にあって今回無い失敗: 0 件。r4 の後の全体テスト（`pytest_full.r4.txt`、基線との差 `pytest_new_failures.r4.txt`）: `116 failed, 15374 passed`。基線との差は `test_s6_two_runs_agree_except_timing_and_recount_matches` の 1 件だけ（指示書が環境由来と書いている、未コミットの間だけ失敗する 1 件）。基線の 115 件に対して基線にあって今回無い失敗は 0 件（`pytest_fixed_vs_baseline.r4.txt`）。このチケットのテストは全体の実行でも通る。
+- 関係するテスト `pytest_related.after.txt`: `3049 passed, 1 skipped`（基点 `before/pytest_related.txt` は `3000 passed, 1 skipped`。差 49 = 新しいテスト）。
+
+### 既知の穴（隠さない）
+1. **O5 は未測定**: 枠はすべて作り物（`synthetic_contract`）。r9 の実物の枠・実物の `role_frame` の形（W3-a6 統合後）での B1 の誤読・誤答・正読の増分は、監査役が測る。契約の形（役割名・型・助詞・3 鍵の順）を読解器が正しく読めることは偽の答えでしか確かめていない。
+2. **O3（中間職の未公開の文 40 文以上）は未実施**: 実装役は流さない。`artifacts/w3-b6/tools/run_rows.py --data FILE --out JSON` が、`ja_r13.jsonl` と同じ形（`input`・`expect`・`placement` があればよい。他の鍵は付いているものだけ検査）の任意の jsonl を流す。
+3. **K274 は基点の読解器と W3-b1 の経路 U が読んだ文を見ない**（段 R は W3-b2/W3-b4 の計画の中にある。基点が読む 4 述語がその例）。
+4. **集める は入口の門で読めない**（K63 の head 派生の門）。N2 の 集める の行は計画の戻り値でのみ goal。**分ける は計画の引き金が掛からず読めない**（K270 で引き金を足さない約束）。
+5. **K271 の と・まで・より は入口から届かない**: と は並立で、まで・より は読解器が表せない内容として別の経路（S4）に回り、段 R を呼ぶ計画（U・U3）に入らない（`reach_particles.txt`、道具 `tools/reach_particles.py`）。機構は持つが、届く文が無いので文では確かめていない（読む 7 つのうち文で確かめたのは に・で・へ・から）。
+6. **K276（同じ助詞の充填物 2 つ）は、1 つ目が recipient・2 つ目が ambiguous の に のときにしか入口に届かない**（で が 2 つの文は `duplicate role in clause` で引き金が掛からない）。データの 4 行は すべて に。
+7. **表が に の行（付加の time）を持つ型（P_MOVE・P_COMMUNICATE）では、相対位置の語の に は表の付加の門 `PLACEMENT_SLOT_EVIDENCE_ONLY` が先に止める**（H273。段 R の理由 `ROLE_FRAME_FILLER_RELATIVE_POSITION:に` は表に に の行が無い P_ACT でのみ出る）。どちらも棄権で誤読ではない。
+8. 偽の答えの `role_frame_unconfirmed` の形（`{助詞: [{role, reason}]}`）は W3-a6 の契約の写しではなく推測（読まないので影響しない）。
+9. 作り物の語を含む行（36 行）は r8 の状態と違う（`synthetic_words`）。とくに、r8 で estimated の述語（停泊する・確認する・分ける・通報する・連絡する）と、K272 の機構の行（金槌 を UNKNOWN／MULTIPLE／NO_PLACEMENT にした行）。r9 の状態は未知。
+10. H271（表が確かめていない名前は、枠の一意の確認が無ければ残さない）により、チケットの文言（「が・を は既存の経路が決める」）より厳しく棄権する。例: 停泊する の が・確認する の が・を は、枠が宣言しなければ読まない。数は減る方向。
+### レビュー r1 による K274 の変更記録（第 2 ラウンド。登録部分 `w3b6-prereg` は書き換えない）
+- **時刻**: 検査データ・テストの凍結 2026-10-04 18:43:52 +0900（`bank_freeze.r5_time.txt`、sha256 は `bank_freeze.r5.sha256`）。コードを直したのはその後（凍結の時点で新しい行・テストが落ちることを `tests_before_fix.r2.txt`・`data_check.before_fix.r2.txt` に記録: 4 failed、K274-A-007・008 が `misread`）。元の凍結ファイルは `ja_r13.frozen_r4.jsonl`・`make_bank.frozen_r4.py`・`test_semantic_read_w3b6.frozen_r4.py` に残した。
+- **前の定義（登録の K274、r1 の実装）**: 「食い違い」= 既存の役割の型の充填物 T について、その助詞の枠で T を含む役割が **ちょうど 1 つ** あり、それが既存と違う（`len(holding) == 1 and holding[0] != name`）。
+- **後の定義（r2）**: 「食い違い」= 既存の役割の型の充填物 T について、その助詞の枠で T を含む役割が **1 つ以上** あり、**既存の役割がそのどれでもない**（`holding and name not in holding`）。理由の書式は `ROLE_FRAME_TABLE_CONFLICT:<助詞>:<既存の役割>:<枠の役割>` のまま、枠の役割が 2 つ以上のときは `'+'.join(sorted(holding))`（`:` で 4 つに分かれることは変わらない）。T を含む役割が 0 のとき（枠がその型を宣言しない）は食い違いとしない（変更なし）。
+- **理由**: チケット K274「食い違えば棄権」「枠は表を上書きしない」に合わせる。登録の「ちょうど 1 つ」はチケットより狭く、2 つ以上の役割を宣言しそのどれも既存の役割でない枠（どう解釈しても食い違う）を通した。中間職の指示書 §2.3 の誤り（レビュー r1 M1）。例（r1 の実装で読んでしまった）: 姉がナイフで肉を切った。（枠 が: patient|experiencer）が、表の agent を残したまま instrument を足して読んだ。
+- **方向**: 棄権が増える方向のみ（読む→棄権）。棄権→読む は起こりえない（条件を広げただけで、読む側の分岐は触っていない）。
+- **既存の行への影響**: 実測 `rows_changed.r2.txt`: 旧 93 行のうち結果（`data_check.json` の行の内容）が変わった行は 0。旧 93 行はすべて同じ結果（読む 28・棄権 65）。
+- **追加した行（3）**: `W3B6-K274-A-007`（場合 B、`ROLE_FRAME_TABLE_CONFLICT:が:agent:experiencer+patient`、棄権）・`W3B6-K274-A-008`（場合 A、基点では読める文。`ROLE_FRAME_TABLE_CONFLICT:へ:goal:place+source`、棄権）・`W3B6-K274-R-009`（対照: 枠の 2 役割に表の agent を含めると読む。棄権が増えすぎないこと）。テスト `test_a_conflict_between_…` の行数 5 → 7、場合 A の対照に K274-A-008 を追加、新しいテスト `test_r2_a_frame_with_two_roles_…` を追加（既存の期待は弱めていない）。
+- **r2 の実測**（コマンドは `impl.r2.md`）: `pytest_w3b6.r2.txt` 51 passed。`data_check.r2.txt`: `rows=96 read=29 abstain=67 misread=0 incomplete=0 unjudged=0 mismatches={}`、読んだ 29 行すべて正。規則ごと（読む／棄権）: K270 6/9、K271 4/4、K272 0/21、K273 14/20、K274 3/6、K275 2/3、K276 0/4。作り物の行 36・r8 の行 60。**O1**: `entry_none.r2.jsonl`・`entry_r8.r2.jsonl`・`entry_r8_queries.r2.json` が `before/` と byte 一致（4,149 文）。harness・W3-b4 の行・W3-b5 の行も `before/` と byte 一致。関係するテスト `pytest_related.r2.txt`: 3000 passed, 1 skipped（基点と同じ）。
+- 上の「O2（… 93 行）」ほかの r1 の数値はそのまま残す（r1 の時点の実測）。r2 の数値はこの節が正。
+<!-- w3b6-results:end -->
+
+## 10J. W10-f04: 穴つきの十字（読解が充填物の配置で棄権する文を、文ごと捨てずに「穴の型」つきで返す）（事前登録 K280〜K287）
+
+事前登録の全文は `docs/FUSION.md` §6（2026-10-04、実装・検査データの凍結より前）。ここには読解の側の規則だけを再掲する。**読解器（`semantic_reader.py`）の規則は変えない**: `read()`・`read_question()` の出力は基点と byte 一致で、新しい入口 `semantic_read.read_with_holes` が `read()` の出力の末尾に `holes_status`・`holes`・`partial` を足す。
+- K280 穴の条件: 棄権理由が充填物の配置（UNPLACED・MULTIPLE・UNKNOWN、助詞は 9 つの格助詞）に由来するときだけ。述語・構成・係助詞・引用・並立・照応・複文・`part` は従来どおり棄権（穴にしない）。`expected_types` = 探針（その語だけを DECIDED/direct の型 T に差し替えて再読）で読める T の集合 ∩ 読解器の表（K62 v2・段 R の枠）がその助詞に許す型。空なら穴にしない。穴の腕以外が型で変わるなら穴にしない。1 文の穴は最大 2、探針の組み合わせは 17×17 以内。
+- 第 3 ラウンドの裁定（`docs/FUSION.md` §6.6）: 候補が選ぶのは **語** だけで、**構造**（助詞の役割）は Vera が決める。穴の語の配置が型を与えない（UNPLACED／UNKNOWN）なら `GATE_A_HOLE_WORD_UNPLACED`、配置の型がこの文で 1 つの役割に落ちない（ある型で読めない／役割が違う）なら `GATE_A_ROLE_SPLIT`（門 (a4)）、型を注入した元の文の再読が穴の腕・中心・他の腕で元と合わなければ `GATE_B_REREAD_MISMATCH`（門 (b')）で採用しない。1 穴の文は構造上 (a4) で採用されない（K95 が読める語はそもそも穴にならない）。
+- 穴は「この語はここに入る語が足りない」という位置の申告であって、型の推定ではない。型を決めるのは配置と表、候補を出すのは後段の LLM、採用するのは再読の門（`docs/FUSION.md` §6.2 K282）。
+- 測定結果は `artifacts/w10-f04/` の出力から機械で貼る（下の結果欄）。
+
+### 10J 結果欄
+穴の抽出の測定は `docs/FUSION.md` §6.5（出力 `artifacts/w10-f04/p2_holes.txt`）:
+```
+rows=138 hole_expected=62 hole_got=62 wrong_hole=0 missed=0 types_outside_table=0 empty_types=0 status_mismatch=0 expected_types_differ_from_oracle=0
+status_counts {'HOLES_FOUND': 62, 'NOT_A_FILLER_CAUSE': 52, 'HOLE_NOT_PROBE_READABLE': 14, 'LANG_NOT_SUPPORTED': 4, 'READ': 3, 'NO_PLACEMENT': 3}
+```
+
+## 10K. W3-c7: 複文 v1（事前登録 K300〜）
+
+<!-- w3c7-prereg:begin -->
+事前登録の時刻: 2026-10-05 07:28:46 +0900（`artifacts/w3-c7/prereg_time.txt`）。検査データの凍結・実装より前。基点は dev `6bc410d`。設計: `ops/decisions/2026-10-04_VERA_BASE_V1.md` §2 A2・A3。土台: §10C（W3-b3: 2 述語・1 切れ目、表 `w3b3_cuts`）。**表 `w3b3_cuts` と W3-b3 の関数・テストは変えない**。新しい表は `w3c7_edges`（辺の種類と条件）と `w3c7_reasons`（理由の閉じた一覧）だけ。
+
+### 範囲
+- 段 C7 は W3-b3 が棄権した文にだけ掛かる（順序: W3-b3 → C7）。読む方向は 棄権 → 正読 だけで、既存の正読は増減しない。
+- 3〜4 節（定形・連体だけ）、2 節の て・連用中止（両節が自分の主語を持つとき）、2 節の引用（と＋発話・思考の述語）を読む。
+- 読まないもの: 節をまたぐ格の共有（主語の省略の復元）、照応（それ・彼・この…）、5 節以上、非定形の切れ目を含む 3 節以上、括弧つきの引用。すべて型つきの棄権。
+
+### K300 入口
+W3-b3 と同じ引き金（配置あり・和文・1 区間・深さ 0）。述語のまとまりの数 n が 2 を超える（3〜4 → 経路 M）か、n が 2 で切れ目がちょうど 1 つの て／並列（経路 T）か、n が 2 で切れ目が 0 かつ引用の と がちょうど 1 つ（経路 Q）のとき段 C7 に入る。n > 4 は `CLAUSES_OVER_LIMIT`。n が 2 でそれ以外（ので・から・連体などの 2 節）は段 C7 は読まない（W3-b3 の判断のまま）。
+
+### K301 切れ目
+表 `w3b3_cuts` の検出（`R.w3b3_cuts`）をそのまま使う。経路 M は切れ目が n-1 個で、i 番目が群 i と群 i+1 の間にあり、すべて定形か連体（`clause_kind == 'finite'`）のときだけ読む。非定形が 1 つでもあれば `CUT_KIND_NOT_READ:<種類>`。
+
+### K302 節の読み
+各節を `_w3b3_clause`（W3-b3 と同じ。`_read_ja` で単独に読み、既存の 2 つの門を掛ける）で読む。1 つでも読めなければ文ごと棄権（理由に節の理由）。
+
+### K303 辺
+隣り合う節 (i, i+1) の辺の種類と出力の関係は表 `w3c7_edges` のとおり。て・連用中止は出力の関係を `sequence` にする（H301）。引用は `{"type":"quote","from":<伝達>,"to":<内容>}`（H302）。
+
+### K304 主語
+どの節も 主語（`agent`・`entity`、受身では `patient`）を持つこと。持たない節があれば `SUBJECT_SHARING_NOT_READ`。主題で埋めるのは W3-b3 の範囲（連体・閉じた接続語の 2 節）だけで、段 C7 は埋めない。
+
+### K305 照応
+トークンの品詞が 代名詞 か 連体詞 のものが 1 つでもあれば `ANAPHORA_NOT_READ:<表層>`（文ごと。問い合わせの前）。語の一覧は使わない（H305）。
+
+### K306 引用
+格助詞の と（接続助詞ではない）の直前が動詞か助動詞の終止形で、直後が 2 つ目の述語の群の先頭のとき引用の候補。主節の述語の配置の型が `R.W3B3_QUOTE_TYPES` のどれか（理由なし）のときだけ `quote`。`W3B3_QUOTE_VERBS`（語の一覧）は使わない。中身が読めなければ `QUOTE_CONTENT_NOT_READ`。括弧のある文は W3-b3 の形の門で棄権。
+
+### K307 不変
+配置なしの出力、W3-b3 が読む文の出力、段 C7 が読まなかった文の出力（W3-b3 が返したオブジェクトそのもの）、既存の凍結データは byte 不変。理由は診断（`w3c7_explain_ja`）にだけ書き、出力には書かない。
+
+### 表 `w3c7_edges`（辺の種類と条件の閉じた一覧）
+<!-- BEGIN table:w3c7_edges -->
+| 辺の種類 | どこから | 出力の関係 | from→to | 左の節の tense | 経路 | 条件 |
+|---|---|---|---|---|---|---|
+| `finite` | 表 `w3b3_cuts` の ので・から・が・けれど・と・なら | 表の行の関係（cause・contrast・condition） | i→i+1 | 行の値（なら は null） | M | `_w3b3_relation` の判定をそのまま使う |
+| `relative` | 表 `w3b3_cuts` の relative | `relative`（鍵 `head`） | i→i+1 | 保つ | M | `_w3b3_head_arm` の判定をそのまま使う。入れ子・同じ役割への 2 つの head は棄権 |
+| `te` | 表 `w3b3_cuts` の て | `sequence` | 0→1 | null | T | 両節が自分の主語を持つ |
+| `parallel` | 表 `w3b3_cuts` の 並列（連用中止） | `sequence`（H301。種類 `parallel` は診断にだけ書く） | 0→1 | null | T | 両節が自分の主語を持つ |
+| `quote` | 格助詞 と ＋ 述語型が `W3B3_QUOTE_TYPES` | `quote` | 伝達→内容（H302） | 内容の tense は保つ | Q | 伝達の節に `quotation` を足す（H303） |
+<!-- END table:w3c7_edges -->
+
+### 理由の閉じた一覧 `w3c7_reasons`（診断にだけ書く。出力には書かない）
+<!-- BEGIN table:w3c7_reasons -->
+| 理由 | 書式 | 規則 |
+|---|---|---|
+| `W3C7_NOT_TRIGGERED` | `W3C7_NOT_TRIGGERED:<depth・sentences・groups=n・w3b3_range・not_reached>` | K300 |
+| `CLAUSES_OVER_LIMIT` | `CLAUSES_OVER_LIMIT:<n>` | K300 |
+| `ANAPHORA_NOT_READ` | `ANAPHORA_NOT_READ:<表層>` | K305 |
+| `CLAUSE_SCOPE_NOT_LISTED` | `CLAUSE_SCOPE_NOT_LISTED:<形>` | K301 |
+| `CUT_KIND_NOT_READ` | `CUT_KIND_NOT_READ:<種類>` | K301 |
+| `CLAUSE_SCOPE_AMBIGUOUS` | `CLAUSE_SCOPE_AMBIGUOUS:<…>` | K301 |
+| `CLAUSE_FORM_NOT_READ` | `CLAUSE_FORM_NOT_READ:<…>` | K301 |
+| `CLAUSE_TOKENS_DIFFER` | `CLAUSE_TOKENS_DIFFER:<位置>` | K302 |
+| `CLAUSE_UNREAD` | `CLAUSE_UNREAD:<節>:<理由>` | K302 |
+| `RELATIVE_NESTED_NOT_READ` | `RELATIVE_NESTED_NOT_READ:<nested・duplicate_target>` | K303 |
+| `SUBJECT_SHARING_NOT_READ` | `SUBJECT_SHARING_NOT_READ:<節>` | K304 |
+| `ROLE_SHARING_NOT_READ` | `ROLE_SHARING_NOT_READ:<役割>` | H304 |
+| `QUOTE_CONTENT_NOT_READ` | `QUOTE_CONTENT_NOT_READ:<…>` | K306 |
+| `QUOTE_PREDICATE_NOT_READ` | `QUOTE_PREDICATE_NOT_READ:<理由か型>` | K306 |
+| `HEAD_ROLE_UNDETERMINED` | W3-b3 の関数が返すまま | K303 |
+| `HEAD_NOT_IN_HOST` | W3-b3 の関数が返すまま | K303 |
+| `RELATION_TYPE_UNDETERMINED` | W3-b3 の関数が返すまま | K303 |
+<!-- END table:w3c7_reasons -->
+
+### 判断記録 H300〜（実装前に、指示書 `review-impl/W3-c7/plan.md` §0 の決着を写す）
+- **H300 `RELATION_TYPES` を変えない（D1）**: `sequence`・`quote` は `event_cross.RELATION_TYPES`（11 種）と §1.2 の表に既にある。確認: `verantyx/event_cross.py` の `RELATION_TYPES`、`docs/READING_CONVENTIONS.md` §1.2 の表。
+- **H301 連用中止・て の出力の関係は `sequence`（D2）**: 採点器 `tools/bank_score/v2/b1.py` の `REL_TYPES` に `parallel` が無く、W3-b3 の凍結データの連用中止の正解は `["sequence"]`、`tests/test_event_cross.py::test_convention_relation_types_equal_the_table_of_section_1_2` が §1.2 の表 11 行を固定する。種類 `parallel` は診断と表 `w3c7_edges` にだけ書く。て の関係の正解は `["sequence","manner","cause"]` のどれか。
+- **H302 引用の向きは 伝達→内容（D3）**: 規約 §1.2・§4.7 は `from=伝達の節`。節は述語の出現順なので内容 0・伝達 1、出力は `{"type":"quote","from":1,"to":0}`。K303 の「左→右」は既存の型の意味を変えないためこの型に当てはめない。
+- **H303 伝達の節は `quotation` を持つ（D4）**: §4.7。`clause_equal` が役割の集合の一致を見るので必須。値は内容の区間の文字列（と と引用符を除く）。
+- **H304 目的語・付加の共有は棄権（D5）**: 規約 §4.10「共有された目的語は各節に同じ値で入れる」と、チケット (4)「右の節は空のまま」が衝突する。主語は K304 で棄権、目的語・付加は W3-b3 の `_w3b3_ellipsis` の 2 つ目・3 つ目の判定を全ての節の組に一般化して棄権（`ROLE_SHARING_NOT_READ:<役割>`）。それに掛からない空の腕はそのまま空。
+- **H305 照応は品詞だけ・広く棄権（D6）**: unidic に 連体詞-指示 の細分類は無い（pos2 以下は `*`）。語の一覧を作らないので `連体詞` は全部（大きな・同じ も）、`代名詞` は全部（私・あなた も）棄権する。代価として記録する。指示の副詞（そう・こう）は品詞が 副詞 で区別できず門の外（既知の穴）。
+- **H306 引用の述語型は `W3B3_QUOTE_TYPES`（D7）**: P_COMMUNICATE・P_COGNITION・P_CREATE・P_PERCEIVE を再利用する。`W3B3_QUOTE_VERBS` は使わない。
+- **H307 括弧つきの文は W3-b3 の形の門で棄権（D8）**: 中身の読みは足さない。
+- **H308 引用の伝達の節には目的語の共有の判定（`patient`）を掛けない（実装前の追記。2026-10-05）**: 指示書 G11 の文言のまま Q に掛けると、伝達の節（言う・思う・聞く・書く…）は `frames.transitivity` が `trans` で `patient` が無く、内容の節の `agent`（伝達の節の主語と違う値）が「共有の疑い」に当たるため、引用は常に棄権して規則 (3) が空になる（確認: `frames.transitivity` が 言う・思う・聞く・書く を `trans` と返す）。伝達の節の目的語は引用そのもの（`quotation`）なので、**伝達の節の目的語の判定だけを外す**。内容の節の判定（目的語を取れる述語で `patient` が無く、伝達の節に値がある → `ROLE_SHARING_NOT_READ:patient`）と付加の判定は両方の向きにそのまま掛ける。
+
+### 既知の穴と代価（事前に書く）
+- 指示の副詞（そう・こう・ああ）は品詞が 副詞 のため照応の門の外。
+- 連体詞（大きな・同じ・あらゆる など）と 代名詞（私・あなた など）を一律に棄権する代価。
+- 3 節以上で隣り合う組ごとに辺を張る（規約 §1.2）ため、「A が、B ので C」の A の掛かり先が意味の上では C のことがあるが、出力は規約どおり隣り合う組。
+- 引用の分割は、主語の句を持たない中身を数えない前提（主語の無い中身は棄権）。
+<!-- w3c7-prereg:end -->
+
+<!-- w3c7-results:begin -->
+### 10K 結果欄（第 1 ラウンドの欄を第 2 ラウンドの再測定の値に更新。測定の出力は `artifacts/w3-c7/`）
+- 時刻: 事前登録 2026-10-05 07:28:46 +0900（`prereg_time.txt`）→ 検査データの凍結 2026-10-05 07:38:30 +0900（`data_freeze_time.txt`、sha256 は `data_freeze.sha256`）→ 実装。H308 は登録ブロックに凍結の前に追記した。
+- **S1（K307 byte 一致）**: 配置なし 4,149 文 `cmp_exit=0`（`entry_none_cmp.txt`）。r8・r9 は 4,149 文すべて `same`（`changed=0`。`entry_r8_compare.txt`・`entry_r9_compare.txt`）、問い合わせの列も前後で一致（`entry_queries_cmp.txt`）。この 4,149 文には段 C7 が読む文が 0（`newly_read=0`）。W3-b3 の凍結データ 203 文の入口の判定は、変わった行が 15（`W3B3-PAR-*` の て・連用中止。棄権 → 正読 `correct`。`w3b3_fixture_delta.txt`）、ほかは同じ。
+- **S2（凍結データ 130 文）**: `data_check_frozen.txt`。`misread=0 incomplete=0 unjudged=0`。棄権の期待 65 行は 65 行とも棄権（理由の接頭辞が期待どおり 56 行）。読む期待 65 行のうち 33 行が期待の十字と辺で正読（`correct`）、**32 行は読まれなかった**（誤読ではなく棄権）。実物と記録した配置（`w3c7_placement_r9.jsonl`）の出力は同じ（`data_check_frozen.fixture.txt`）。（第 4 ラウンドで裁定 1 により期待を改訂。下の『S2（第 4 ラウンド）』）
+- **S2 の未達の原因（事前に気づけなかった）**: 凍結データの 41 行（読む期待 32・棄権の期待で理由が違うもの 9）は、W3-b3 の節の門（`typed_head_derived_ja`: 派生の疑い。下一段の動詞を全部止める）が段 C7 の節の読みで先に止める。動詞 食べる・開ける・閉める・寝る・考える・答える・伝える が当たる。この門は §10C K117 5 が登録した広い棄権で、段 C7 の範囲外（変えない）。**凍結した期待は変えない**。前後の全文は下の変更記録。（第 4 ラウンドで裁定 1 により期待を改訂。下の『S2（第 4 ラウンド）』）
+- **S2（第 4 ラウンド）**: 期待の改訂（裁定 1。下の変更記録）の後で取り直した。`data_check_frozen.r4.txt`（実物の配置 r9）と `data_check_frozen.r4.fixture.txt`（記録した配置）の TOTAL の行: `TOTAL rows=130 out_read=33 out_abstain=97 v_correct=130 v_abstain=0 v_misread=0 v_incomplete=0 v_UNJUDGED=0 entry_mismatch=0 expect_mismatch=0 structure_mismatch=0`。2 つの出力 JSON は `cmp` で一致（`data_check_frozen.r4.json`・`data_check_frozen.r4.fixture.json`）。読む期待 33 行はすべて期待の十字と辺で `correct`、棄権の期待 97 行はすべて期待の理由の接頭辞で棄権。うち 41 行は改訂で K117 5 の門を期待にしたもの（**読めた数は 33 のまま増えていない**。`v_correct=130` は正読 130 ではない）。`r4_pytest_w3c7.txt`: 185 passed（`r4_s4_pytest.txt`: `-k "w1a4 or anaphora"` 2 passed）。
+- **実装後に足した補助データ（凍結の対象外・事後）**: `w3c7_sup.jsonl` 34 行（種 300702。その門を通る動詞だけ。第 2 ラウンドで 32 行から 34 行。H309）。読む 25 行はすべて正読（期待の十字と辺）、棄権 9 行は期待の理由どおり。`data_check_sup.txt`。事後に書いたものなので予測の証拠ではない。
+- **S4**: `tests/test_semantic_read_w3c7.py` 184 passed（`-k "w1a4 or anaphora"` は `s4_pytest.txt`）。W1-a4 の 53 文は段 C7 で読まれず、段 C7 を外した出力と同じ。照応の棄権 13 行はすべて `ANAPHORA_NOT_READ:` で、問い合わせの前に止まる。
+- **新しく読めた文**: 凍結＋補助の 164 行のうち 58 行（`newly_read_data_r9.jsonl`。文・経路・辺・節・十字。58 行すべて `CROSSED`。第 2 ラウンドで補助の SUP-026 が棄権に変わり 59 行から 58 行）。4,149 文には 0 行（`newly_read_r9.jsonl` は空）。
+- **B1 見本 118 文**（自作。`b1_samples_r9.txt` と、段 C7 を外した `b1_samples_r9.before.txt`）: 誤読 0・不完全 0、前後で出力の変わった行は 0。
+
+- **S6（全体テスト）**: `pytest_full.txt`（151 failed・15668 passed（第 2 ラウンドの再実測））。基線（116）に無い失敗は 36（`new_failures.txt`）。すべて `artifacts/w3-c7/frozen_conflicts.md` に載せた（`_read_ja` の本文の固定 1・`semantic_read.py` の `-` 行 0 の要求 1・W3-b6 の末尾走査 3・W3-b3 の凍結データの て・連用中止 15 行の 2 つのテスト 30・環境由来の `test_s6_…` 1）。それ以外の新しい失敗は 0。
+
+### 10K 変更記録（登録部分 `w3c7-prereg` は書き換えない）
+- **第 1 ラウンド・凍結後の気づき（期待の変更の提案。自分では変えない）**: 上の 41 行。各行の前後（凍結の全文は `tests/reading_soundness/w3c7_*.jsonl`、実測は `data_check_frozen.json`、提案は `proposed_expectation_changes.tsv`）。提案は、読む期待の 32 行は `entry_expect=abstain`・`w3c7_expect=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED`（`expect` は正解の十字のまま）、棄権の期待の 9 行は理由を `CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED` に変える。監査役の判断を待つ。テスト `test_semantic_read_w3c7.py` はこの 41 行を `DERIVED_GATE_ROWS` として列挙し、それぞれがその理由で止まることを要求している（ほかの不一致は失敗）。
+- `W3C7-MULTI-002` 妹が戸を閉めると、弟が寝るが、兄が飯を食べる。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行
+- `W3C7-MULTI-004` 生徒が窓を開けるなら、妹が来るから、先生が残った。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行
+- `W3C7-MULTI-006` 生徒が本を買うが、先生が寝るが、母が来る。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行
+- `W3C7-MULTI-007` 妹が歌を歌ったので、姉が落ちるから、生徒が戸を閉めた。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行
+- `W3C7-MULTI-008` 先生が飯を食べるから、生徒が絵を描くから、弟が帰る。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行
+- `W3C7-MULTI-009` 弟が薬を飲んだけれど、兄が来るので、妹が絵を描いたけれど、姉が飯を食べる。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行
+- `W3C7-MULTI-011` 妹が絵を描くと、姉が来るので、先生が寝ると、弟が戸を閉める。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行
+- `W3C7-MULTI-012` 姉が薬を飲むが、弟が本を買うけれど、母が絵を描くので、先生が寝る。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行
+- `W3C7-MULTI-013` 母が弟に話した人を兄が呼んだので、姉が窓を開けた。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行
+- `W3C7-TE-001` 先生が飯を食べて、姉が落ちる。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行
+- `W3C7-TE-008` 妹が戸を閉め、先生が座った。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行
+- `W3C7-TE-011` 先生が戸を閉め、妹が起きた。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行
+- `W3C7-TE-016` 母は窓を開け、戸を閉めた。: 凍結 entry_expect=abstain w3c7_expect=SUBJECT_SHARING_NOT_READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行
+- `W3C7-TE-024` 先生が食べて、生徒が窓を開けた。: 凍結 entry_expect=abstain w3c7_expect=ROLE_SHARING_NOT_READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行
+- `W3C7-QUOTE-003` 先生が弟が絵を描いたと伝えた。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行
+- `W3C7-QUOTE-004` 弟が先生が窓を開けたと叫んだ。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行
+- `W3C7-QUOTE-005` 弟が兄が窓を開けたと話した。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行
+- `W3C7-QUOTE-006` 母が先生が落ちたと考えた。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行
+- `W3C7-QUOTE-011` 母は兄が帰ったと答えた。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行
+- `W3C7-QUOTE-012` 先生は生徒が本を読んだと答えた。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行
+- `W3C7-QUOTE-013` 姉は妹が歌を歌ったと答えた。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行
+- `W3C7-SHARE-001` 先生が寝たが、弟が残ったので、妹が窓を開けた。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行
+- `W3C7-SHARE-002` 弟が窓を開けるが、生徒が寝るが、妹が立つ。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行
+- `W3C7-SHARE-003` 生徒が本を読むから、妹が寝るので、先生が来る。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行
+- `W3C7-SHARE-004` 生徒が立つが、妹が飯を食べるけれど、弟が本を読んだ。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行
+- `W3C7-SHARE-005` 母が来るから、姉が歌を歌うので、妹が窓を開けた。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行
+- `W3C7-SHARE-006` 生徒が帰ったから、母が戸を閉めたので、兄が残る。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行
+- `W3C7-SHARE-007` 弟が窓を開けて、兄が座った。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行
+- `W3C7-SHARE-010` 兄が来て、先生が戸を閉めた。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行
+- `W3C7-SHARE-011` 弟が座って、先生が窓を開けた。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行
+- `W3C7-SHARE-014` 兄は本を読んだので、歌を歌ったが、弟が窓を開けた。: 凍結 entry_expect=abstain w3c7_expect=SUBJECT_SHARING_NOT_READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行
+- `W3C7-SHARE-015` 母は薬を飲んだから、戸を閉めたけれど、姉が飯を食べた。: 凍結 entry_expect=abstain w3c7_expect=SUBJECT_SHARING_NOT_READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行
+- `W3C7-SHARE-016` 先生は絵を描いたが、本を買ったので、生徒が窓を開けた。: 凍結 entry_expect=abstain w3c7_expect=SUBJECT_SHARING_NOT_READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行
+- `W3C7-SHARE-017` 姉は飯を食べて、薬を飲んだ。: 凍結 entry_expect=abstain w3c7_expect=SUBJECT_SHARING_NOT_READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行
+- `W3C7-SHARE-018` 妹は戸を閉めて、窓を開けた。: 凍結 entry_expect=abstain w3c7_expect=SUBJECT_SHARING_NOT_READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行
+- `W3C7-SHARE-019` 歌を歌って、母が飯を食べた。: 凍結 entry_expect=abstain w3c7_expect=SUBJECT_SHARING_NOT_READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行
+- `W3C7-SHARE-025` 生徒が窓を開けたので、妹が帰ったが、母が喜んだ。: 凍結 entry_expect=abstain w3c7_expect=ROLE_SHARING_NOT_READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行
+- `W3C7-ANA-003` 姉が本を読んだから、妹が寝たけれど、先生が立った。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行
+- `W3C7-ANA-009` 妹が立ったから、弟が飯を食べたので、兄が寝た。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行
+- `W3C7-ANA-015` 先生が帰って、生徒が飯を食べた。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行
+- `W3C7-ANA-025` 先生が窓を開けたから、生徒が帰ったが、母が立った。: 凍結 entry_expect=read w3c7_expect=READ → 実測 readable=False reason=CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行
+- **H309（第 2 ラウンド。中間職のレビュー M1。2026-10-05）定形の切れ目の直後に連体の切れ目が来る 3〜4 節は `RELATIVE_NESTED_NOT_READ:attachment` で棄権する**: 切れ目 i が定形（ので・が など）で切れ目 i+1 が連体のとき、節 i+1 は節 i+2 の名詞を修飾する関係節で、定形の節 i の掛かり先は「関係節 i+1」と「その主節 i+2」のどちらにも読める（掛かり先の割れ）。隣り合う組の規約の `i→i+1` はその 1 つを選んだことになるので、問い合わせの前（G3 の切れ目の種類の検査の後）で棄権する。新しい理由名は足さず既存の `RELATIVE_NESTED_NOT_READ` の書式に `attachment` を足した（登録時の書式は `<nested・duplicate_target>`。登録ブロックの表の行は登録時のままで、書式の追加はこの変更記録だけに書く）。連体→定形（`母が弟に話した人を兄が呼んだので、姉が絵を描いた。`）は変えず読む。凍結 5 ファイル（sha256 は `data_freeze.sha256` と一致）は書き換えていない。登録部分 `w3c7-prereg` は、第 2 ラウンドの途中で理由の表の書式欄に `attachment` を書き足したが、レビュー R2-M1 の指摘で第 3 ラウンドに元の書式へ戻し、書式の追加を上のとおり変更記録に移した（第 2 ラウンドの報告と、この項の最初の版の「書き換えていない」は事実と違っていた）。登録ブロックの現在の全文の sha256 は `artifacts/w3-c7/prereg_block.sha256`（第 3 ラウンドの記録。第 1 ラウンドの全文の写しは残っておらず、`attachment` 以外に変えた文字が無いことは機械では確かめられない）（中間職の走査で、定形→連体の組を持つ行は凍結 130 行に 0 件）。
+- **H309 に伴う補助データ（事後）の変更記録（前後の全文）**: `W3C7-SUP-026` `兄が帰ったので、母が弟に話した人を姉が呼んだが、妹が絵を描いた。`: 前 `behavior=read`・`entry_expect=read`・`w3c7_expect=READ`・正解の辺 `[cause 0→1, relative 1→2, contrast 2→3]`（節: 帰る{agent:兄}・話す{agent:母, recipient:弟, patient:人}・呼ぶ{agent:姉, patient:人}・描く{agent:妹, patient:絵}）→ 後 `behavior=abstain`・`entry_expect=abstain`・`w3c7_expect=RELATIVE_NESTED_NOT_READ`（`abstain_why=attachment`）。あわせて棄権の行を 2 つ足した: `W3C7-SUP-033` `兄が帰ったので、母が弟に話した人を姉が呼んだ。`、`W3C7-SUP-034` `兄が来たが、母が弟に話した人を姉が呼んだ。`（どちらも `RELATIVE_NESTED_NOT_READ:attachment`）。ほかの補助 31 行は第 1 ラウンドと byte 同一（`mk_data.py --sup` で再生成して `diff` 確認）。
+- **第 2 ラウンドの追記（既知の穴。レビューの任意の改善 2・4・5）**: (a) H308 は登録ブロックの中で事前登録の時刻（07:28:46）より後・凍結（07:38:30）より前に足した（07:28:46〜07:38:30 の間。正確な時刻は記録していない）。(b) 経路 M で連体が先頭の文は、連体の頭の句（例 `手紙を`）も後ろの節へ動かせる句として数えるため、最後の節に を が無いとほぼ必ず `CLAUSE_SCOPE_AMBIGUOUS:alternative_cut` で棄権する（安全側）。(c) 規則 (3) の主な形である、伝達の節が は の主題の引用（チケットの例文 `兄は弟が来たと言った。`）は読めない（`CLAUSE_UNREAD:1:NO_SUPPORTED_CLAUSE`）。読めるのは が の主語の形だけ。
+
+#### 第 4 ラウンド（監査役の判断 2026-10-05 09:03:42 +0900）
+- **裁定 1 による期待の改訂（r4）**: 凍結データを書くとき §10C K117 5 の門（下一段の動詞を「派生の疑い」で止める）を見落とした **データの誤り**であり、段 C7 の誤りではない。改訂の時刻 2026-10-05 09:10:09 +0900（`data_freeze_time.r4.txt` の実測）。変えた鍵と値: 凍結で読む期待だった 32 行は `behavior`=`abstain`・`entry_expect`=`abstain`・`w3c7_expect`=`CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED`・`structure_expect`=`null`・`expect`=`{"readable": false, "clauses": [], "relations": [], "must_not": <前の値のまま>}`・`abstain_why`=`derived_gate_k117_5`。凍結で棄権の期待だが理由が違った 9 行は `w3c7_expect` と `abstain_why` だけを変えた。`id`・`input`・`text` と鍵の順序、ほかの 89 行は byte 同一。
+- `expect` も棄権にした理由: `tools/bank_score/v2/b1.validate_item` が `behavior` と `expect.readable` の一致を要求するため。これで 32 行の judge の判定は `abstain` から `correct` に変わるが、**読めた証拠ではない**（門による被覆の損失を期待に写しただけ）。読めた数は 33 のまま。
+- 前の凍結の写し: `artifacts/w3-c7/frozen_r1/`（sha256 は `data_freeze.sha256` と同じ）。新しい凍結: `data_freeze.r4.sha256`:
+  - `c5c05e19323cef8ae520864dd2f5db28cf1ea67a6db28f4be9a072ce4f331971  tests/reading_soundness/w3c7_multi.jsonl`
+  - `49a79dbecad308beaa09b2214d5a4e40e4e1280d0051a3445f302634f698d72f  tests/reading_soundness/w3c7_te.jsonl`
+  - `665eef39e8c159dc5f1aef38b9c37681fd2e0b4be9b3b1d80f5e046860f0b45a  tests/reading_soundness/w3c7_quote.jsonl`
+  - `866a60e1614cecab2df911a83a01165ce43d6a1d85eade50f87cc86dbc78857e  tests/reading_soundness/w3c7_sharing.jsonl`
+  - `79c4d67a454870287b45ee0e5d9397bd22dc89be2c75a760f5261f0a9f3d66f3  tests/reading_soundness/w3c7_anaphora.jsonl`
+- 前後の全文の記録: `artifacts/w3-c7/expectation_changes.r4.jsonl`。生成脚本: `artifacts/w3-c7/tools/revise_r4.py`（写しから作る。`--check` で現行ファイルとの一致を見る）。
+- テストの変更（`tests/test_semantic_read_w3c7.py`。弱めていない）: (1) docstring と `DERIVED_GATE_ROWS` の上のコメントを事実に合わせた（41 個の ID は変えない）。(2) 定数 `FROZEN_R1`・`DERIVED_REASON`・`REVISED_KEYS`・`RULING_1` を足した。(3) `test_the_data_has_the_registered_size_and_is_the_frozen_one` は、旧ハッシュと「読む＝棄権（半々）」の検査を写し `frozen_r1/` に移し、現行ファイルに対しては `data_freeze.r4.sha256` を確かめる。(4) 新しいテスト `test_the_r4_revision_changes_only_the_41_rows_and_only_their_expectation`（41 行以外は byte 同一、変わった行の集合と鍵、32 と 9 の内訳）。(5) `test_no_row_is_misread_or_incomplete_and_the_fixture_holds_every_word` から `DERIVED_GATE_ROWS` の例外の分岐を消した（41 行も一般の検査を通る）。(6) `test_the_prereg_is_before_the_freeze` に `prereg < freeze < 裁定 1 < freeze.r4` の順を足した。
+<!-- w3c7-r4-revision:begin -->
+- `W3C7-MULTI-002`（`w3c7_multi.jsonl`）`妹が戸を閉めると、弟が寝るが、兄が飯を食べる。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "閉める", "roles": {"agent": "妹", "patient": "戸"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "弟"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "食べる", "roles": {"agent": "兄", "patient": "飯"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [{"type": "condition", "from": 0, "to": 1}, {"type": "contrast", "from": 1, "to": 2}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "閉める", "roles": {"agent": "妹", "patient": "戸"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "弟"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "食べる", "roles": {"agent": "兄", "patient": "飯"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "condition", "from": 0, "to": 1}, {"kind": "finite", "type": "contrast", "from": 1, "to": 2}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-MULTI-004`（`w3c7_multi.jsonl`）`生徒が窓を開けるなら、妹が来るから、先生が残った。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "開ける", "roles": {"agent": "生徒", "patient": "窓"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "来る", "roles": {"agent": "妹"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "残る", "roles": {"agent": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "condition", "from": 0, "to": 1}, {"type": "cause", "from": 1, "to": 2}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "開ける", "roles": {"agent": "生徒", "patient": "窓"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "来る", "roles": {"agent": "妹"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "残る", "roles": {"agent": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "condition", "from": 0, "to": 1}, {"kind": "finite", "type": "cause", "from": 1, "to": 2}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-MULTI-006`（`w3c7_multi.jsonl`）`生徒が本を買うが、先生が寝るが、母が来る。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "買う", "roles": {"agent": "生徒", "patient": "本"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "先生"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "来る", "roles": {"agent": "母"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [{"type": "contrast", "from": 0, "to": 1}, {"type": "contrast", "from": 1, "to": 2}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "買う", "roles": {"agent": "生徒", "patient": "本"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "先生"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "来る", "roles": {"agent": "母"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "contrast", "from": 0, "to": 1}, {"kind": "finite", "type": "contrast", "from": 1, "to": 2}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-MULTI-007`（`w3c7_multi.jsonl`）`妹が歌を歌ったので、姉が落ちるから、生徒が戸を閉めた。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "歌う", "roles": {"agent": "妹", "patient": "歌"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "落ちる", "roles": {"agent": "姉"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "閉める", "roles": {"agent": "生徒", "patient": "戸"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "cause", "from": 0, "to": 1}, {"type": "cause", "from": 1, "to": 2}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "歌う", "roles": {"agent": "妹", "patient": "歌"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "落ちる", "roles": {"agent": "姉"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "閉める", "roles": {"agent": "生徒", "patient": "戸"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "cause", "from": 0, "to": 1}, {"kind": "finite", "type": "cause", "from": 1, "to": 2}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-MULTI-008`（`w3c7_multi.jsonl`）`先生が飯を食べるから、生徒が絵を描くから、弟が帰る。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "食べる", "roles": {"agent": "先生", "patient": "飯"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "描く", "roles": {"agent": "生徒", "patient": "絵"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "帰る", "roles": {"agent": "弟"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [{"type": "cause", "from": 0, "to": 1}, {"type": "cause", "from": 1, "to": 2}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "食べる", "roles": {"agent": "先生", "patient": "飯"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "描く", "roles": {"agent": "生徒", "patient": "絵"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "帰る", "roles": {"agent": "弟"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "cause", "from": 0, "to": 1}, {"kind": "finite", "type": "cause", "from": 1, "to": 2}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-MULTI-009`（`w3c7_multi.jsonl`）`弟が薬を飲んだけれど、兄が来るので、妹が絵を描いたけれど、姉が飯を食べる。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "飲む", "roles": {"agent": "弟", "patient": "薬"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "来る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "描く", "roles": {"agent": "妹", "patient": "絵"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "食べる", "roles": {"agent": "姉", "patient": "飯"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [{"type": "contrast", "from": 0, "to": 1}, {"type": "cause", "from": 1, "to": 2}, {"type": "contrast", "from": 2, "to": 3}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "飲む", "roles": {"agent": "弟", "patient": "薬"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "来る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "描く", "roles": {"agent": "妹", "patient": "絵"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "食べる", "roles": {"agent": "姉", "patient": "飯"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "contrast", "from": 0, "to": 1}, {"kind": "finite", "type": "cause", "from": 1, "to": 2}, {"kind": "finite", "type": "contrast", "from": 2, "to": 3}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-MULTI-011`（`w3c7_multi.jsonl`）`妹が絵を描くと、姉が来るので、先生が寝ると、弟が戸を閉める。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "描く", "roles": {"agent": "妹", "patient": "絵"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "来る", "roles": {"agent": "姉"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "先生"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "閉める", "roles": {"agent": "弟", "patient": "戸"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [{"type": "condition", "from": 0, "to": 1}, {"type": "cause", "from": 1, "to": 2}, {"type": "condition", "from": 2, "to": 3}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "描く", "roles": {"agent": "妹", "patient": "絵"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "来る", "roles": {"agent": "姉"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "先生"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "閉める", "roles": {"agent": "弟", "patient": "戸"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "condition", "from": 0, "to": 1}, {"kind": "finite", "type": "cause", "from": 1, "to": 2}, {"kind": "finite", "type": "condition", "from": 2, "to": 3}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-MULTI-012`（`w3c7_multi.jsonl`）`姉が薬を飲むが、弟が本を買うけれど、母が絵を描くので、先生が寝る。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "飲む", "roles": {"agent": "姉", "patient": "薬"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "買う", "roles": {"agent": "弟", "patient": "本"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "描く", "roles": {"agent": "母", "patient": "絵"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "先生"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [{"type": "contrast", "from": 0, "to": 1}, {"type": "contrast", "from": 1, "to": 2}, {"type": "cause", "from": 2, "to": 3}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "飲む", "roles": {"agent": "姉", "patient": "薬"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "買う", "roles": {"agent": "弟", "patient": "本"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "描く", "roles": {"agent": "母", "patient": "絵"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "先生"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "contrast", "from": 0, "to": 1}, {"kind": "finite", "type": "contrast", "from": 1, "to": 2}, {"kind": "finite", "type": "cause", "from": 2, "to": 3}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-MULTI-013`（`w3c7_multi.jsonl`）`母が弟に話した人を兄が呼んだので、姉が窓を開けた。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "話す", "roles": {"agent": "母", "recipient": "弟", "patient": "人"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "呼ぶ", "roles": {"agent": "兄", "patient": "人"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "開ける", "roles": {"agent": "姉", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "relative", "from": 0, "to": 1}, {"type": "cause", "from": 1, "to": 2}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "話す", "roles": {"agent": "母", "recipient": "弟", "patient": "人"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "呼ぶ", "roles": {"agent": "兄", "patient": "人"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "開ける", "roles": {"agent": "姉", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "relative", "type": "relative", "from": 0, "to": 1}, {"kind": "finite", "type": "cause", "from": 1, "to": 2}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-TE-001`（`w3c7_te.jsonl`）`先生が飯を食べて、姉が落ちる。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "食べる", "roles": {"agent": "先生", "patient": "飯"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "落ちる", "roles": {"agent": "姉"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [{"type": ["sequence", "manner", "cause"], "from": 0, "to": 1}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "食べる", "roles": {"agent": "先生", "patient": "飯"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "落ちる", "roles": {"agent": "姉"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "edges": [{"kind": "te", "type": "sequence", "from": 0, "to": 1}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-TE-008`（`w3c7_te.jsonl`）`妹が戸を閉め、先生が座った。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "閉める", "roles": {"agent": "妹", "patient": "戸"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "座る", "roles": {"agent": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": ["sequence"], "from": 0, "to": 1}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "閉める", "roles": {"agent": "妹", "patient": "戸"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "座る", "roles": {"agent": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "parallel", "type": "sequence", "from": 0, "to": 1}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-TE-011`（`w3c7_te.jsonl`）`先生が戸を閉め、妹が起きた。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "閉める", "roles": {"agent": "先生", "patient": "戸"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "起きる", "roles": {"agent": "妹"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": ["sequence"], "from": 0, "to": 1}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "閉める", "roles": {"agent": "先生", "patient": "戸"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "起きる", "roles": {"agent": "妹"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "parallel", "type": "sequence", "from": 0, "to": 1}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-TE-016`（`w3c7_te.jsonl`）`母は窓を開け、戸を閉めた。`: 前 `{"w3c7_expect": "SUBJECT_SHARING_NOT_READ", "abstain_why": "subject_missing_right"}` → 後 `{"w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-TE-024`（`w3c7_te.jsonl`）`先生が食べて、生徒が窓を開けた。`: 前 `{"w3c7_expect": "ROLE_SHARING_NOT_READ", "abstain_why": "role_sharing"}` → 後 `{"w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-QUOTE-003`（`w3c7_quote.jsonl`）`先生が弟が絵を描いたと伝えた。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "描く", "roles": {"agent": "弟", "patient": "絵"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "伝える", "roles": {"agent": "先生", "quotation": "弟が絵を描いた"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "quote", "from": 1, "to": 0}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "描く", "roles": {"agent": "弟", "patient": "絵"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "伝える", "roles": {"agent": "先生", "quotation": "弟が絵を描いた"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "quote", "type": "quote", "from": 1, "to": 0}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-QUOTE-004`（`w3c7_quote.jsonl`）`弟が先生が窓を開けたと叫んだ。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "開ける", "roles": {"agent": "先生", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "叫ぶ", "roles": {"agent": "弟", "quotation": "先生が窓を開けた"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "quote", "from": 1, "to": 0}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "開ける", "roles": {"agent": "先生", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "叫ぶ", "roles": {"agent": "弟", "quotation": "先生が窓を開けた"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "quote", "type": "quote", "from": 1, "to": 0}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-QUOTE-005`（`w3c7_quote.jsonl`）`弟が兄が窓を開けたと話した。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "開ける", "roles": {"agent": "兄", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "話す", "roles": {"agent": "弟", "quotation": "兄が窓を開けた"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "quote", "from": 1, "to": 0}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "開ける", "roles": {"agent": "兄", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "話す", "roles": {"agent": "弟", "quotation": "兄が窓を開けた"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "quote", "type": "quote", "from": 1, "to": 0}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-QUOTE-006`（`w3c7_quote.jsonl`）`母が先生が落ちたと考えた。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "落ちる", "roles": {"agent": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "考える", "roles": {"agent": "母", "quotation": "先生が落ちた"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "quote", "from": 1, "to": 0}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "落ちる", "roles": {"agent": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "考える", "roles": {"agent": "母", "quotation": "先生が落ちた"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "quote", "type": "quote", "from": 1, "to": 0}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-QUOTE-011`（`w3c7_quote.jsonl`）`母は兄が帰ったと答えた。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "帰る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "答える", "roles": {"agent": "母", "quotation": "兄が帰った"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "quote", "from": 1, "to": 0}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "帰る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "答える", "roles": {"agent": "母", "quotation": "兄が帰った"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "quote", "type": "quote", "from": 1, "to": 0}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-QUOTE-012`（`w3c7_quote.jsonl`）`先生は生徒が本を読んだと答えた。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "読む", "roles": {"agent": "生徒", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "答える", "roles": {"agent": "先生", "quotation": "生徒が本を読んだ"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "quote", "from": 1, "to": 0}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "読む", "roles": {"agent": "生徒", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "答える", "roles": {"agent": "先生", "quotation": "生徒が本を読んだ"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "quote", "type": "quote", "from": 1, "to": 0}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-QUOTE-013`（`w3c7_quote.jsonl`）`姉は妹が歌を歌ったと答えた。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "歌う", "roles": {"agent": "妹", "patient": "歌"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "答える", "roles": {"agent": "姉", "quotation": "妹が歌を歌った"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "quote", "from": 1, "to": 0}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "歌う", "roles": {"agent": "妹", "patient": "歌"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "答える", "roles": {"agent": "姉", "quotation": "妹が歌を歌った"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "quote", "type": "quote", "from": 1, "to": 0}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-001`（`w3c7_sharing.jsonl`）`先生が寝たが、弟が残ったので、妹が窓を開けた。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "寝る", "roles": {"agent": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "残る", "roles": {"agent": "弟"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "開ける", "roles": {"agent": "妹", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "contrast", "from": 0, "to": 1}, {"type": "cause", "from": 1, "to": 2}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "寝る", "roles": {"agent": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "残る", "roles": {"agent": "弟"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "開ける", "roles": {"agent": "妹", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "contrast", "from": 0, "to": 1}, {"kind": "finite", "type": "cause", "from": 1, "to": 2}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-002`（`w3c7_sharing.jsonl`）`弟が窓を開けるが、生徒が寝るが、妹が立つ。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "開ける", "roles": {"agent": "弟", "patient": "窓"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "生徒"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "立つ", "roles": {"agent": "妹"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [{"type": "contrast", "from": 0, "to": 1}, {"type": "contrast", "from": 1, "to": 2}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "開ける", "roles": {"agent": "弟", "patient": "窓"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "生徒"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "立つ", "roles": {"agent": "妹"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "contrast", "from": 0, "to": 1}, {"kind": "finite", "type": "contrast", "from": 1, "to": 2}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-003`（`w3c7_sharing.jsonl`）`生徒が本を読むから、妹が寝るので、先生が来る。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "読む", "roles": {"agent": "生徒", "patient": "本"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "妹"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "来る", "roles": {"agent": "先生"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [{"type": "cause", "from": 0, "to": 1}, {"type": "cause", "from": 1, "to": 2}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "読む", "roles": {"agent": "生徒", "patient": "本"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "妹"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "来る", "roles": {"agent": "先生"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "cause", "from": 0, "to": 1}, {"kind": "finite", "type": "cause", "from": 1, "to": 2}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-004`（`w3c7_sharing.jsonl`）`生徒が立つが、妹が飯を食べるけれど、弟が本を読んだ。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "立つ", "roles": {"agent": "生徒"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "食べる", "roles": {"agent": "妹", "patient": "飯"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "読む", "roles": {"agent": "弟", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "contrast", "from": 0, "to": 1}, {"type": "contrast", "from": 1, "to": 2}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "立つ", "roles": {"agent": "生徒"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "食べる", "roles": {"agent": "妹", "patient": "飯"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "読む", "roles": {"agent": "弟", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "contrast", "from": 0, "to": 1}, {"kind": "finite", "type": "contrast", "from": 1, "to": 2}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-005`（`w3c7_sharing.jsonl`）`母が来るから、姉が歌を歌うので、妹が窓を開けた。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "来る", "roles": {"agent": "母"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "歌う", "roles": {"agent": "姉", "patient": "歌"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "開ける", "roles": {"agent": "妹", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "cause", "from": 0, "to": 1}, {"type": "cause", "from": 1, "to": 2}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "来る", "roles": {"agent": "母"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "歌う", "roles": {"agent": "姉", "patient": "歌"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}, {"predicate": "開ける", "roles": {"agent": "妹", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "cause", "from": 0, "to": 1}, {"kind": "finite", "type": "cause", "from": 1, "to": 2}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-006`（`w3c7_sharing.jsonl`）`生徒が帰ったから、母が戸を閉めたので、兄が残る。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "帰る", "roles": {"agent": "生徒"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "閉める", "roles": {"agent": "母", "patient": "戸"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "残る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "relations": [{"type": "cause", "from": 0, "to": 1}, {"type": "cause", "from": 1, "to": 2}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "帰る", "roles": {"agent": "生徒"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "閉める", "roles": {"agent": "母", "patient": "戸"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "残る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "cause", "from": 0, "to": 1}, {"kind": "finite", "type": "cause", "from": 1, "to": 2}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-007`（`w3c7_sharing.jsonl`）`弟が窓を開けて、兄が座った。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "開ける", "roles": {"agent": "弟", "patient": "窓"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "座る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": ["sequence", "manner", "cause"], "from": 0, "to": 1}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "開ける", "roles": {"agent": "弟", "patient": "窓"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "座る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "te", "type": "sequence", "from": 0, "to": 1}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-010`（`w3c7_sharing.jsonl`）`兄が来て、先生が戸を閉めた。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "来る", "roles": {"agent": "兄"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "閉める", "roles": {"agent": "先生", "patient": "戸"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": ["sequence", "manner", "cause"], "from": 0, "to": 1}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "来る", "roles": {"agent": "兄"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "閉める", "roles": {"agent": "先生", "patient": "戸"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "te", "type": "sequence", "from": 0, "to": 1}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-011`（`w3c7_sharing.jsonl`）`弟が座って、先生が窓を開けた。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "座る", "roles": {"agent": "弟"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "開ける", "roles": {"agent": "先生", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": ["sequence", "manner", "cause"], "from": 0, "to": 1}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "座る", "roles": {"agent": "弟"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "開ける", "roles": {"agent": "先生", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "te", "type": "sequence", "from": 0, "to": 1}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-014`（`w3c7_sharing.jsonl`）`兄は本を読んだので、歌を歌ったが、弟が窓を開けた。`: 前 `{"w3c7_expect": "SUBJECT_SHARING_NOT_READ", "abstain_why": "subject_missing_middle"}` → 後 `{"w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-015`（`w3c7_sharing.jsonl`）`母は薬を飲んだから、戸を閉めたけれど、姉が飯を食べた。`: 前 `{"w3c7_expect": "SUBJECT_SHARING_NOT_READ", "abstain_why": "subject_missing_middle"}` → 後 `{"w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-016`（`w3c7_sharing.jsonl`）`先生は絵を描いたが、本を買ったので、生徒が窓を開けた。`: 前 `{"w3c7_expect": "SUBJECT_SHARING_NOT_READ", "abstain_why": "subject_missing_middle"}` → 後 `{"w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-017`（`w3c7_sharing.jsonl`）`姉は飯を食べて、薬を飲んだ。`: 前 `{"w3c7_expect": "SUBJECT_SHARING_NOT_READ", "abstain_why": "subject_missing_right"}` → 後 `{"w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-018`（`w3c7_sharing.jsonl`）`妹は戸を閉めて、窓を開けた。`: 前 `{"w3c7_expect": "SUBJECT_SHARING_NOT_READ", "abstain_why": "subject_missing_right"}` → 後 `{"w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-019`（`w3c7_sharing.jsonl`）`歌を歌って、母が飯を食べた。`: 前 `{"w3c7_expect": "SUBJECT_SHARING_NOT_READ", "abstain_why": "subject_missing_left"}` → 後 `{"w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-SHARE-025`（`w3c7_sharing.jsonl`）`生徒が窓を開けたので、妹が帰ったが、母が喜んだ。`: 前 `{"w3c7_expect": "ROLE_SHARING_NOT_READ", "abstain_why": "role_sharing"}` → 後 `{"w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-ANA-003`（`w3c7_anaphora.jsonl`）`姉が本を読んだから、妹が寝たけれど、先生が立った。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "読む", "roles": {"agent": "姉", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "妹"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "立つ", "roles": {"agent": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "cause", "from": 0, "to": 1}, {"type": "contrast", "from": 1, "to": 2}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "読む", "roles": {"agent": "姉", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "妹"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "立つ", "roles": {"agent": "先生"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "cause", "from": 0, "to": 1}, {"kind": "finite", "type": "contrast", "from": 1, "to": 2}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-ANA-009`（`w3c7_anaphora.jsonl`）`妹が立ったから、弟が飯を食べたので、兄が寝た。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "立つ", "roles": {"agent": "妹"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "食べる", "roles": {"agent": "弟", "patient": "飯"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "cause", "from": 0, "to": 1}, {"type": "cause", "from": 1, "to": 2}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "立つ", "roles": {"agent": "妹"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "食べる", "roles": {"agent": "弟", "patient": "飯"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "寝る", "roles": {"agent": "兄"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "cause", "from": 0, "to": 1}, {"kind": "finite", "type": "cause", "from": 1, "to": 2}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-ANA-015`（`w3c7_anaphora.jsonl`）`先生が帰って、生徒が飯を食べた。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "帰る", "roles": {"agent": "先生"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "食べる", "roles": {"agent": "生徒", "patient": "飯"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": ["sequence", "manner", "cause"], "from": 0, "to": 1}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "帰る", "roles": {"agent": "先生"}, "polarity": "+", "tense": null, "modality": null, "voice": "active"}, {"predicate": "食べる", "roles": {"agent": "生徒", "patient": "飯"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "te", "type": "sequence", "from": 0, "to": 1}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+- `W3C7-ANA-025`（`w3c7_anaphora.jsonl`）`先生が窓を開けたから、生徒が帰ったが、母が立った。`: 前 `{"behavior": "read", "expect": {"readable": true, "clauses": [{"predicate": "開ける", "roles": {"agent": "先生", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "帰る", "roles": {"agent": "生徒"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "立つ", "roles": {"agent": "母"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "relations": [{"type": "cause", "from": 0, "to": 1}, {"type": "contrast", "from": 1, "to": 2}], "must_not": []}, "entry_expect": "read", "w3c7_expect": "READ", "structure_expect": {"clauses": [{"predicate": "開ける", "roles": {"agent": "先生", "patient": "窓"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "帰る", "roles": {"agent": "生徒"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}, {"predicate": "立つ", "roles": {"agent": "母"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "edges": [{"kind": "finite", "type": "cause", "from": 0, "to": 1}, {"kind": "finite", "type": "contrast", "from": 1, "to": 2}]}, "abstain_why": null}` → 後 `{"behavior": "abstain", "expect": {"readable": false, "clauses": [], "relations": [], "must_not": []}, "entry_expect": "abstain", "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED", "structure_expect": null, "abstain_why": "derived_gate_k117_5"}`
+<!-- w3c7-r4-revision:end -->
+- **裁定 2**: H308（引用の伝達の節の目的語の共有判定を外す）は監査役が追認（2026-10-05 09:03:42 +0900）。て は常に `sequence`（連接。原因・様態を主張しない型）と `docs/READING_CONVENTIONS.md` §1.2 に明記した。伝達の節が は の主題の引用（兄は弟が来たと言った）が読めないことは、既知の穴として記録した（監査役の裁定 2 で既知の穴として記録。下の既知の穴の箇条）。
+- **申し送り（W3-b7 候補）**: K117 5 は下一段の動詞を一律に止めて複文の到達を大きく削る。配置 r9 で述語として direct に置かれていれば「派生の疑い」は消せる見込み。別チケットで狭める方向だけで直す。正解の十字は `frozen_r1/` に残っているので、その時に期待を戻せる。
+
+### 10K 実測で分かった既知の穴（隠さない）
+- 下一段の動詞（食べる・開ける・閉める・寝る・考える・答える・伝える など）は W3-b3 の節の門（K117 5）が全部止めるので、それを含む複文は段 C7 も読めない（凍結データの 41 行。被覆の損失）。（第 4 ラウンドで凍結の期待をこの門の棄権に改訂。W3-b7 候補）
+- 引用の伝達の節が は の主題（「兄は弟が来たと言った」）だと、伝達の節の文字列（「兄は言った。」）を基点の入口が読めず（`NO_SUPPORTED_CLAUSE`）、`CLAUSE_UNREAD` で棄権する。読めるのは が の主語の形（「兄が弟が来たと言った」）だけ。チケットの例文の形は読まない。（監査役の裁定 2 で既知の穴として記録）
+- て の関係は常に `sequence`（正解が cause・manner だけの文は誤答になりうる。H301）。連用中止も `sequence`。（監査役の裁定 2: て は常に sequence。規約 §1.2）
+- 目的語を取れる述語（笑う・泣く・喜ぶ など `frames.transitivity` が `intrans` でないもの）で目的語が無い節は、ほかの節に別の主語があるだけで `ROLE_SHARING_NOT_READ:patient`（W3-b3 の `_w3b3_ellipsis` の判定の一般化。広い棄権）。
+- 連体詞は全部、代名詞は全部（私・あなた も）、品詞で `ANAPHORA_NOT_READ`。指示の副詞（そう・こう）は品詞が副詞で門の外（基点の入口や節の読みが止める場合がある）。
+- 3 節以上の隣り合う組ごとの辺（「A が、B ので C」の A の掛かり先が C のとき）は規約どおりで意味の上の掛かり先は問わない。
+- 引用の「主語の句を持たない中身」は数えない（`split=0` で棄権）。括弧つきの引用は W3-b3 の形の門で棄権。
+- 3 節以上で形が引用の と が混ざる文は、切れ目の数の不一致（`CLAUSE_SCOPE_AMBIGUOUS:cuts=`）が先に止めるので、`QUOTE_CONTENT_NOT_READ:multi_clause` は 3 節以上では実際には到達しない（防御として残した）。
+<!-- w3c7-results:end -->
+
+
+## 10L. W3-e2: 仮定つきの読み（事前登録 K330〜K336）
+
+<!-- BEGIN w3e2-prereg -->
+事前登録の時刻: 2026-10-05 12:33 +0900（検査データの凍結 `artifacts/w3-e2/data_freeze_time.txt`・実装の最初の変更より前。時刻は `artifacts/w3-e2/prereg_time.txt`）。
+
+### 仮定を立ててよい前提（オーナーの決定 2026-10-05: B を既定にする・前提は 3 つに限る）
+- **K330**: 仮定を立ててよい前提は閉じた 3 つ。P1 名前の型（PERSON・GROUP_ORG・PLACE のどれか 1 つ）／P2 造語の述語（型の無い動詞）／P3 未知の名詞の型（18 型のどれか 1 つ）。
+  - K330.1 P1 の理由の表: 最初の理由が `RECIPIENT_TYPE_UNDETERMINED:<語>`・`GOAL_TYPE_UNDETERMINED:<語>`・`PLACE_TYPE_UNDETERMINED:<語>`・`SUBJECT_TYPE_UNDETERMINED:<語>`（`object or path:` の形は除く）・`AGENT_EVIDENCE_MISSING:<語>` で、語が単一トークンの充填物（述語でない）のとき。および W10-f04 の穴（`PLACEMENT_(UNPLACED|UNKNOWN):<助詞>:<語>`）で主辞が固有名の形のとき。
+  - K330.2 固有名の形の判定は品詞と文字種だけ: 1 トークンで品詞が 名詞-固有名詞、または 名詞-普通名詞 で見出し語が表層と食い違う（見出し語無しを含む）、かつ表層がカタカナ・漢字だけ。語の一覧は作らない。
+  - K330.3 P2 の語尾の表（トークンの品詞・活用型・活用形・見出し語。`artifacts/w3-e2/s1_p2_tokens.txt` の実測）: た（助動詞-タ、直前が っ か、語幹の末尾の っ）／る（助動詞・文語下二段-ラ行・見出し語 れる）／ら＋ない（接尾辞 ら・形容詞 無い）／ら＋なかっ＋た／り（文語助動詞-リ）＋ます／り＋まし＋た。られ・られる（受身・可能・尊敬が割れる）は読まない。語幹は 助詞の後ろ・語尾の前の 1〜2 トークン（名詞・副詞・感動詞）。
+  - K330.4 代役の表（P1 の読み直し、出力には出ない）: PERSON=田中、GROUP_ORG=国連、PLACE=京都（`artifacts/w3-e2/s1_standins.txt`: r8・r9 とも DECIDED でその型、`_is_person_phrase`／`_is_place_phrase` がその型どおり）。門 (i) 語が文に 1 回・1 トークン (ii) 置換後の解析で他のトークン列が同じで代役が 1 トークン (iii) 置換後の文が strict で読め、代役がちょうど 1 つの役割の値と一致 (iv) span を長さの差で元の文に戻して 元の語を指す。
+- **K331**: 出所の順は (a) 利用者の層 → (b) 台帳の `promotable` → (c) 文書の分布 → (d) 表層 → (e) LLM（2 回問うて一致、秘匿オン）。
+  - K331.1 情報のある出所が割れている、またはその型が「読める候補」に無いときは次へ進まず `ASSUMPTION_UNDETERMINED:<語>:<助詞>` で棄権（下位が上位の衝突を上書きしない）。
+  - K331.2 (d) は P1・P2 だけ。助詞が が／は／を で、読める候補の型すべてで十字が同じとき。に・へ・で・から・と は決めない。P3 は (d) 無し。
+- **K332**: 出力。仮定なしの文は `read()` の dict の最後に `read_mode: 'strict'` を足すだけ。仮定つきは読んだ十字の後ろに `read_mode: 'assumed'`・`assumptions`・`strict: {readable:false, abstain}`・`assumption_note` をこの順で。役割の `role_basis` は `assumed:<型>`（P2 は `particle_default:<助詞>`、`predicate_basis: 'assumed:nonce_predicate'`）。決まらなかった文は strict の理由の末尾に `ASSUMPTION_UNDETERMINED:<語>:<助詞>` か `ASSUMPTION_BACKEND_FAILED:<語>:<型>` を 1 つ足す。仮定は 1 文に 1 つ（前提が 2 つ以上は働かない）。
+- **K333**: `semantic_read.read()` は 1 字も変えず、新しい入口 `read_in_mode(text, lang, *, placement, mode='strict'|'assume', assume=None)` を足す。ライブラリの既定は strict。製品の入口（`vera read`・`vera chat`・`vera serve`・`fusion_turn`）の既定は assume、`--strict-read`／`VERA_READ_MODE=strict` で strict。
+- **K334**: 台帳（O2）の行 `assumption`（語・仮定・出所・文脈・文の sha）。昇格は W10-f04/f05 の規則のまま。畳み込みに入るのは型が `NOUN_TYPES` の 1 つのものだけ（`UNTYPED_VERB`・`+` つきの型は入らない）。`vera placement growth` に `assumption`（`assumption_rate`）。
+- **K335**: 採点の階級 `assumed_correct`・`assumed_wrong`・`assumed_abstain`（strict で棄権の項目だけが対象）。誤読 0・誤答 0 は strict の階級にだけ掛ける。`assumed_wrong / (assumed_correct + assumed_wrong)` を報告し、1 割を超えたら出所を狭める方向だけで直す。
+- **K336**: 仮定しないもの: 役割が割れる助詞の役割・節の掛かり先・述語の型・照応・省略された主語。
+
+### 判断記録（中間職の裁定 D1〜D17。チケットの文言からの逸脱を含む）
+- J-E2-1 (D1) `read()` を変えず新しい入口 `read_in_mode`: `tests/test_semantic_read_w3b2.py::test_the_functions_of_the_entry_that_are_not_the_typed_reread_are_the_base_commits`、`tests/test_semantic_read_w3b3.py::test_semantic_read_changes_only_read_ja_and_semantic_reader_only_adds`（トップレベルの代入も名前で拾う）。
+- J-E2-2 (D2) 段 E2 の本体は `semantic_read.py` の新しい節（`semantic_reader.py` は変えない）: `tests/test_semantic_read_w3c7.py::_section` が `# W3-c7:` から末尾までの文字列を検査するため。
+- J-E2-3 (D3) `vera read` は段 E2 が働かなかった文では従来の `semantic_read.main(argv)` と同じバイト: `tests/test_w10f05_cli.py::test_read_without_holes_is_byte_identical_without_a_layer`。
+- J-E2-4 (D4) 仮定の明示の形は `realize_forms_ja.json` ではなく節の定数 `W3E2_NOTE_FORMS`: `verantyx/semantic_realize.py` の `_check_table`（最上位の鍵が完全一致）と `tests/test_w3d1_forms.py`。
+- J-E2-5 (D5) 台帳 `ROW_TYPES` の末尾に `assumption`、メソッド `record_assumption`、畳み込みの `type == "testimony"` を `("testimony","assumption")` に広げる。
+- J-E2-6 (D6) P1 の読み直しは代役（K330.4）。配置で ミナ を PERSON に固定しても `_recipient_ja` が `_is_person_phrase`（配置を見ない）で決めるため読めない。
+- J-E2-7 (D7) P1・P3 の配置由来の棄権は `read_with_holes` と `_HoleProbe`。J-E2-8 (D8) 仮定は 1 文に 1 つ。J-E2-9 (D9) 基底の配置は候補を狭めるだけで出所ではない。J-E2-10 (D10) 表層は P1・P2 のみ。J-E2-11 (D11) 出所の順と衝突は棄権。J-E2-12 (D12) 表層の判定は が／は／を。J-E2-13 (D13) LLM は `fill_candidates.ask_assumption_type`（2 回一致・秘匿オン・失敗は `ASSUMPTION_BACKEND_FAILED`）。
+- J-E2-14 (D14) (c) 文書の分布は `placement_grow.grow()` の内部に直書きで関数でない。薄い関数を書き、grow の `doc_rows` と一致しなければ `SOURCE_UNAVAILABLE:documents` で使わない（結果は §10L の結果欄）。
+- J-E2-15 (D15) serve の記録の再読は strict のまま、assume は LLM の返答の再読だけ。仮定の腕は `kind: 'assumed'`・`evidence: []`。J-E2-16 (D16) `vera ask` は読む経路が無く（問いは `read_question`・K336/V5）、`--strict-read` を足さない。J-E2-17 (D17) `FusionConfig.read_mode` の既定は S8 の前提確認の結果で決める（結果欄に書く）。
+<!-- END w3e2-prereg -->
+
+
+### 10L.1 結果（出力は `artifacts/w3-e2/` のファイルを機械で貼ったもの。手で書いた数値は無い）
+- **V1 strict の byte 一致**（`v1_entry.txt`・`v1_frozen.txt`・`v1_serve.txt`）: entry none SAME / entry r8 SAME / entry r9 SAME / frozen none SAME / frozen r9 SAME / b1pub SAME / serve strict SAME。参考（合否に使わない）: `--read-mode assume` の serve と before の差: rows 310 310 differing rows 0（`v1_serve_assume_diff.txt`）。
+- **V2 凍結データ（第 3 ラウンド、データ v3）**（`v2_check_r3.txt`・`v2_check_r3.json`。v2 から 7 行を直し 29 行を足した v3。変更は 10L.6、v2 までの結果は第 2 ラウンドの `v2_check.txt`）:
+  - `w3e2_p1.jsonl rows=49 assumed_expected=19 assumed_ok=19 abstain_expected=30 abstain_ok=30 wrong_assumption=0 wrong_source=0 documents_rows=6 documents_ok=6`
+  - `w3e2_p2.jsonl rows=33 assumed_expected=15 assumed_ok=15 abstain_expected=18 abstain_ok=18 wrong_assumption=0 wrong_source=0 documents_rows=0 documents_ok=0`
+  - `w3e2_p3.jsonl rows=29 assumed_expected=13 assumed_ok=13 abstain_expected=16 abstain_ok=16 wrong_assumption=0 wrong_source=0 documents_rows=5 documents_ok=5`
+  FAIL の行は 0（`grep -c FAIL v2_check_r3.txt` = 0）。裁定 1 で、凍結の documents の 3 行（P1-014・P3-012・P3-013）の期待は「棄権（ASSUMPTION_UNDETERMINED）」に直った（10L.6）。実装の前の判定は `v3_preimpl_check.txt`（FAIL はちょうど 23 行。実装の後に 0 行）。
+  事後の行（凍結データとは別。`w3e2_c_posthoc.jsonl`、時刻 `data_posthoc_time.txt`、`v2_posthoc_check.txt`）: `w3e2_c_posthoc.jsonl rows=5 assumed_expected=3 assumed_ok=3 abstain_expected=2 abstain_ok=2 wrong_assumption=0 wrong_source=0 documents_rows=5 documents_ok=5`
+- **V3**: 中間職の未公開 60 文は実装役は流していない（見ていない）。
+- **V4（第 3 ラウンド。実機 qwen3.5:4b、各 2 回。`v4_real_llm_r3.txt`・`v4_cycle_r3.txt`）**: r9 の `ハルはミナに本を渡した。` → 後段に問う候補は基底の候補の全体 [PERSON, QUANTITY]（第 2 ラウンドは狭めた PERSON の 1 つだけを問うていた）。2 回とも QUANTITY と答え、QUANTITY は読める型でないので `ASSUMPTION_UNDETERMINED:ミナ:に`（第 2 ラウンドは仮定 PERSON・出所 llm）。r9 の `ハルはリクに手紙を送った。` → PERSON・出所 `llm:qwen3.5:4b`・alternatives [ANIMAL]。r9 の `モモが落ちた。` → trace に `BASE_OUTSIDE_P1_TYPES`、後段が 2 回 PERSON と答え PERSON・出所 llm（alternatives [ANIMAL]。目視では桃かもしれず、仮定の誤りの可能性がある例）。配置なしの `ハルはナギに住んでいる。` → PLACE・出所 llm。配置なしの `ハルはミナに本を渡した。` と `リンゴが落ちた。`（trace に `WEAK_NAME_FORM`）→ 後段は PLACE と答え、読めない型なので棄権。cycle: case H は昇格のあと strict で読めて `read_mode` が付かない（`assumption_rate` 0.5 → 0.0）、case S は昇格後も出所 layer の仮定のまま（0.5 → 0.0。第 2 ラウンドと同じ）。
+- **V5**: `tests/test_semantic_read_w3e2_serve.py`（事実の問いで仮定の腕しか無い返答は `ANSWER_HUMAN_BASIS` にならない・記録にならない、`origin: assumed` は人に数えられない、`vera.provenance[].arms[*].kind == 'assumed'`、`--strict-read` では出ない）。
+- **V6（公開の B1 の見本。正解データではない。第 3 ラウンド）**（`v6_b1pub_r9_r3/summary.json`）: 項目 83、strict で読めた 33・棄権 50（階級は第 2 ラウンドの `v6_b1pub_r9/summary.json` と同じ: `diff` で一致）。assume の `assumed_correct` 0・`assumed_wrong` 0・`assumed_abstain` 50（率は分母 0 で null）。
+- **V7（第 3 ラウンドの最終のコード）**（`pytest_full_r3.txt`・`failures_r3.sorted.txt`・`new_failures_r3.txt`）: 最後の行 `117 failed, 16063 passed, 38 skipped, 81 xfailed, 75 xpassed, 1 warning, 37 subtests passed in 611.87s (0:10:11)`。基線 `dev_bfb17b8_failures.txt` に無い失敗は 3 件（`test_s6_two_runs_agree…`・`test_default_low_keeps_the_preregistered_role_batches…`・`test_speech_act_drafts_fill_new_roles_and_reread`）で、第 2 ラウンドと同じ 3 件（第 2 ラウンドで基点 bfb17b8 でも同じく失敗することを `new_failures_check.txt` で確認済み。今回は基点で再確認していない）。`test_the_stop_signal_…` は今回は基線の外に出なかった。全体テストの副作用で書き換わる `tests/attack/w3a3/r6_48_queries.jsonl` は `git checkout` で戻した。
+- S1-5（`s1_serve_fake_sentences.txt`）: serve 系のテストの文を assume で読んだ結果 `sentences 41 touched_by_stage_E2 0`。これが `FusionConfig` の既定を `assume` に置いてよい根拠（D17: 既存の期待が変わらない。serve 系の 150 テストも通った）。
+
+### 10L.2 実装したこと
+- `semantic_read.read_in_mode`・`AssumeConfig`・`assumption_explain_ja`・`assumption_note_ja`（`semantic_read.py` の新しい節。`read()`・`_read_ja`・既存の段・`semantic_reader.py` は 1 字も変えていない）。
+- `fill_candidates.ask_assumption_type`、`testimony_ledger.record_assumption`（`ROW_TYPES` の末尾に `assumption`）、`cli._read_mode`・`_read_assume`・`_chat_read`・`_growth_with_assumption`、`decode_grammar.cross_of/verify/conclude` の `read_mode`・`assume`（キーワード専用・既定は従来）、`FusionConfig.read_mode`（既定 `assume`）、`tools/bank_score/v2/assumed.py`。
+
+### 10L.3 変更記録（事前登録の区間の外。事前登録の区間は書き換えていない）
+- **データの v1 → v2**（`artifacts/w3-e2/data_amendment.txt`、v1 は `artifacts/w3-e2/frozen_v1/`、v1 の sha・時刻は `data_freeze.v1.sha256`・`data_freeze_time.v1.txt`）: v1 は実装の前に凍結した。実行して、データ側の書き間違い（D9 の狭めの適用漏れ・2 トークンの複合語・複数の未知語がある文）が 9 行で見つかり（行を 2 つ足した）、v2 は **実装の後に** その行だけを直した（実装を期待に合わせたのではない）。変更した行と理由は `data_amendment.txt`。
+- **K330.2 の追加**: 名詞-数詞（ナナ=七）で表層がカタカナ・見出し語が表層と食い違うものを固有名の形に足した。見出し語に `-`（辞書の語釈。フレーム-frame）がある普通名詞は固有名の形ではない（P3 に回る）。
+- **K330.4 の代役の表**: P3 は 4 型（PERSON=田中・GROUP_ORG=国連・PLACE=京都・ANIMAL=犬。`s1_standins.txt`）。P3 は 18 型の仮定が可能という文言だが、読解器の規則（受け手・行き先・場所・主語の判定）が配置を見ず表層の規則で決まるため、代役の無い型は読みを変えられない。
+- **K330.3 の語幹**: 助詞の後ろの 1 トークン（名詞・副詞・感動詞）、または 2 トークンで両方が名詞。副詞＋語幹（そっとザクった）は読まない。
+- **D13**: 後段には候補の型の全部（P1 は 3 型、P3 は 4 型、穴の経路は expected_types）を番号で示して 2 回問い、答えが「読める型」でなければ決めない（読める型が 1 つだけのときに後段に確認を求めても情報が増えないため）。秘匿オンでも語（と助詞・述語の見出し語）は送る（語を送らないと型を問えない）。文と他の語は送らない。
+- **検査データの fake の後段**: 別ファイル `w3e2_fake_llm.jsonl` は作らず、各行の `sources.llm`（`{answers: [..]}` か `{error: ..}`）に置いた。
+- **D7 の穴の経路**: 実装した（`test_the_hole_path_...`: r8 の `兄が土間で歩いた。`）。凍結データの行は代役の経路のものだけ。
+- **D16**: `vera ask` に `--strict-read` を足していない（利用者の文を `read()` で読む経路が無い。問いは `read_question`・K336）。
+
+### 10L.4 既知の穴（隠さない）
+- **出所 (c) 文書は、`XなどのY`（hearst）の行がある語にだけ働く**（第 2 ラウンドで実装。10L.5 必須 4）: W10-f05 が文書から作る名詞の行は hearst だけなので、文書に `XなどのY` の形が無い語では行が 0 で、(c) は何も言わず次の出所に進む（凍結の P1-014・P3-012・P3-013 の期待は第 3 ラウンドの裁定 1 で棄権に直った: 10L.6）。**配置なしでは文書の型の基底が無く、(c) は文書を読めない（`SOURCE_UNAVAILABLE:documents`）ので、文書が別の型を示していても見えない（裁定 4 の弱い反証が働かない）。** 直していない。
+- **名前の型の仮定は、層に昇格しても strict では読めないまま**: P1（ミナ など）の読みは代役の経路で、読解器の `_recipient_ja` などが `_is_person_phrase`（配置を見ない）で決めるため、層に PERSON と書いても strict の読みは変わらない。昇格した語は出所 `layer` の仮定として残る（`v4_cycle.txt` の case S）。「使うほど仮定が減る」が実際に成り立つのは配置を見る枠（穴の経路。case H: 昇格のあと strict で読めて `read_mode` が付かない）だけ。`assumption_rate` は昇格した語を数えるので、case S では 0.0 でも仮定は残る。
+- P3 の仮定は 4 型（上）。他の型は代役が無く読みを変えられないので、読めずに棄権のまま。
+- 出所 (d) の表層は が・は・を だけ。読める型が 2 つ以上あるときの仮定は `T1+T2`（「（ソラを集団・組織または人として）」と、仮定した型を全部名指して出す。他の型は外している）で、台帳の畳み込みには入らず昇格しない。
+- 後段（実機）は決まらないことがある（2 回の答えの一致が要る）。再現性の保証は無い（`v4_real_llm_more.txt` は 1 回の実行）。
+- P2 の `られた`・`られる`・他の格助詞・副詞・読点・複文は読まない（読める文の範囲は狭い）。serve の P2 の文は `_w3b3_gates` の形の門で再読の十字にならないことがある。
+- 申し送り 1〜4（カタカナの普通名詞・MULTIPLE の狭め・文書の弱い反証・P2 の が）は第 3 ラウンドで閉じた（上と 10L.6）。
+- D9 の狭め: 基底の配置が MULTIPLE で型の候補に PLACE が無い語（ミナ は r9 で PERSON／QUANTITY）は、層や後段が PLACE と言っても仮定しない（配置は情報を増やせない）。
+- V3（中間職の未公開 60 文）と V6（B1 の r9 の隠しバンク）は実装役が測っていない。公開の見本の assumed は 0 件で、assumed_wrong の率は測れていない。
+- **P1 の「名前の形」（第 3 ラウンドで閉じた）**: 第 2 ラウンドはカタカナの普通名詞を広く拾い `リンゴが落ちた。` を仮定して読んでいた。裁定 2 で、P1 の候補になる形のうち出所 (d) 表層で決めてよいのは強い名前の形（固有名詞・未知語の印・見出し語が表層のひらがな）だけになった。辞書に普通名詞として載るカタカナ語（リンゴ・ミカン・ヒカリ・リク・ソラ・モモ）は (d) では仮定しない（層・台帳・文書・後段なら可）。**残る穴: 強い・弱いの判定は解析器の辞書に依る。辞書にない普通名詞（カタカナの新語・外来語）は未知語の印が付くので強い扱いになり、`ヨモが走った。` のように表層で名前と仮定される。**
+- **P2 の が（第 3 ラウンドで閉じた）**: 裁定 5 で、が の句を動作主にするのは充填物が基底か層で ANIMAL・GROUP_ORG・PERSON の型を持つときだけになった。`本がザクった。` は棄権（`P2_GA_FILLER_NOT_TYPED`）。
+- **台帳の自己強化（第 3 ラウンドで閉じた）**: 出所 `surface` の仮定の再読の一致は N に数えない（`reread_agreed` の数と `state` には出る。N に届かないときは `blocked_by: SURFACE_ASSUMPTION`）。分布か人の確認で昇格する。**残る穴: 出所 `layer`・`llm:*` の仮定の再読は今までどおり数える。`promotion_plan` の `origin` の式（`reread_agreed >= N` → `layer_estimated`）は変えていないので、分布で `promotable` になった鍵に出所 surface の再読が N 以上あれば、origin は `layer_estimated` になる（人の確認があれば `layer_human`）。**
+- **人と場所が割れる に を後段が決める例は作れていない**（上の V4）。
+
+### 10L.5 第 2 ラウンドの変更記録（レビュー r1 への対応。事前登録の区間は書き換えていない）
+- **必須 1（D9 からの逸脱の訂正）**: 第 1 ラウンドは、基底の配置が **推定**（`PLACEMENT_ESTIMATED_*`・生成定義・`PLACEMENT_INVALID:ESTIMATE_BASIS_UNKNOWN`）で型を持つ語を「情報なし」と扱い、`ミカンが腐った。`（r9 は ミカン を `SUBSTANCE_FOOD` と推定）に P1 を立てて `agent: ミカン` と読んでいた（strict の `SUBJECT_TYPE_UNDETERMINED` を仮定で越えた）。直し: 基底が型を持つが読解器が使えないときは P1 も P3 も立てない（`BASE_HAS_UNUSABLE_TYPE`、答えの欄は読まず `placement_fit` の門の理由だけを見る）。`test_a_word_the_base_types_by_an_estimate_gets_no_premise`。
+- **必須 2**: P2 は は を、を の句があるときだけ動作主にする（は だけの文は topic で動作主か対象が割れる。strict が既知の動詞の同じ形を `NO_SUPPORTED_CLAUSE` で棄権するのと揃えた）。`本はザクった。`・`ハルはザクった。` は strict のまま（`P2_FORM_NOT_READ`）。凍結データは変わらない。`test_p2_reads_wa_as_an_agent_only_beside_wo`。
+- **必須 3**: 後段に述語の見出し語を送る（読めた候補がすべて同じ述語のとき。`述語: 渡す`）。文・他の語は送らない。`test_the_masked_message_does_not_hold_the_sentence` に追記。
+- **必須 4**: 出所 (c) を実装した。`_w3e2_documents`・`_w3e2_document_rows`・`_w3e2_document_types`: grow と同じ呼び出し（`bcp.tokenize`→`bcp.analyze`→`acc['hearst']`→`bcp.type_of`）で語の行を作り、18 型それぞれを `decide_candidate(word, {kind: noun, type: T}, rows, cfg)` に掛けて `layer_confirmed`（direct）で通った型が **1 つだけ** で、それが読める型なら出所 `documents`。2 つ以上、または読めない型なら棄権（D11）。direct の型が無ければ（行が無い・行が足りない）何も言わず次へ。文書は、存在するファイルのパスなら 1 ファイル 1 文書（`read_documents`、出所 `doc:<sha12>`）、それ以外の文字列は全部まとめて 1 文書。`test_the_document_rows_are_those_grow_writes`: 自転車の文書で grow が台帳に書いた `doc_rows` と、薄い関数の行が一致する（ディレイラー・チェーンリング。`['hearst', 'doc:c2d800d37937', 'ARTIFACT', 2, null]`）。凍結の 3 行は期待を書き換えず、上の V2 のとおり読めていない（テストの関数から外した理由と代わりの測定を V2 の欄に書いた）。事後の行 5 件（`w3e2_c_posthoc.jsonl`。凍結データと混ぜない。(c) が働く 3 行と棄権 2 行）は期待どおり。
+- **必須 5**: `cycle.py` で層を先に作ってから測る語を昇格する形に直し、`assumption_rate` を前後で出した（V4 の欄）。
+- **必須 6**: 注記は仮定した型を全部名指す。`（ミナを人として）`・`（ソラを集団・組織または人として）`（順は `assumed` の文字列の順）。事前登録の K332 と D12 の「型は決めずに」は、この記述が置き換える（`W3E2_NOTE_FORMS['untyped']` は型名が表に無いときの保険だけ）。`test_the_note_names_every_type_that_was_assumed`。
+- 任意の改善 4（docstring の位置・死んだ行）は直した。1〜3 は直していない（`vera serve --strict-read` の CLI での 310 行は取っていない。関数の経路 `FusionConfig.load(read_mode='strict')` で SAME）。
+
+### 10L.6 第 3 ラウンドの変更記録（監査役の裁定 1〜5、2026-10-05 14:17:28 +0900。事前登録の区間は書き換えていない。製品は狭める方向だけ）
+- **順序**: データ v3 の凍結（2026-10-05 14:30:47 +0900、`data_freeze_time.txt`、sha `data_freeze.sha256`）は製品コードの変更の前。凍結の時点の `semantic_read.py`・`testimony_ledger.py` の sha は `r3_freeze_product_sha.txt`（第 2 ラウンドの終わりと同じ）。実装の前の判定 `v3_preimpl_check.txt` の FAIL はちょうど 23 行（P1-004・006・031・032・034〜041・043〜047、P2-010・012・027・028・029、P3-027）、実装の後は 0 行（`v2_check_r3.txt`）。7 行の置き換えと 29 行の追加は中間職が用意した行で、1 行ずつ読んで期待が裁定と D-r3-* から導けることを確かめた。
+- **裁定 1（D-r3-1）**: P1-014・P3-012・P3-013 の期待を「棄権（`added_reason: ASSUMPTION_UNDETERMINED:<語>:<助詞>`）」に改訂し、(c) の結果を `expect.documents_result` に書いた。P1-014 は配置なしなので実際の (c) は `SOURCE_UNAVAILABLE:documents`（裁定の文言の NOT_DECISIVE ではない。書き換えずに実際の値を書いた）、P3-012・P3-013 は `NOT_DECISIVE`。事後の行 `W3E2-C-005` は v3 の P3-013 と同じ入力・同じ期待（`v2_posthoc_check_r3.txt` の `documents_ok=5` の 1 件はこの行）。
+- **裁定 2（D-r3-2）**: `_w3e2_name_form_strong`（固有名詞・`is_unk`・見出し語＝表層のひらがな）。`_w3e2_name_form` は変えない。弱い形は P1 の候補だが (d) では決めない。`_w3e2_tokens` の末尾（添字 8）に `is_unk`。リク（陸）・ソラ（空）・モモ（桃）も弱い（辞書の普通名詞）。
+- **裁定 3（D-r3-3）**: 基底が `TYPES` で候補が P1 の型に収まらないとき (d) では決めず（trace `BASE_OUTSIDE_P1_TYPES`）、後段には基底の候補の全体を問う。`alternatives` は問うた候補 − 採った型。読む・採るのは `reads` の中だけ。（指示書は「`surface_block` が未設定なら」と書いたが、指示書の確かめ方（モモの trace に `BASE_OUTSIDE_P1_TYPES`）に合わせ、より具体的な理由として `WEAK_NAME_FORM` より優先して名付けた。どちらでも (d) は飛ばされ、動きは同じ。）
+- **裁定 4（D-r3-4）**: (c) が決め手にならないとき、文書の行の型に読める型（`reads`）の外のものが 1 つでもあれば、その場で棄権（trace `NOT_DECISIVE_COUNTER`、(d)・(e) に進まない）。行の型がすべて読める型の中なら `NOT_DECISIVE` で次へ。
+- **裁定 5a（D-r3-5a）**: P2 の が は、句の基底の型（候補が空でなく ANIMAL・GROUP_ORG・PERSON の中）か層の型がその集合の中のときだけ動作主。それ以外は `P2_GA_FILLER_NOT_TYPED`（strict の棄権のまま）。`W3E2_P2_GA_TYPES`。
+- **裁定 5b（D-r3-5b）**: `TestimonyLedger.fold()`: 出所 `surface` の assumption 行の `fill_id` を持つ `reread_agreed` は N に数えない。`fold` の dict に鍵は足していない（局所変数）。
+- **データ v2 → v3**: 変えた 7 行（P1-004・P1-006・P1-014・P2-010・P2-012・P3-012・P3-013）の前後の全文と理由、足した 29 行（P1-031〜049、P2-027〜033、P3-027〜029）は `artifacts/w3-e2/data_amendment.txt` の末尾（v2 は `frozen_v2/`）。変えた行の理由の要旨: P1-004（r9 は ミナ を PERSON/QUANTITY とするので基底が P1 の型に収まらず (d) で決めない、裁定 3）、P1-006（リクは弱い形、r8 は ANIMAL/PERSON、裁定 2・3）、P1-014・P3-012・P3-013（裁定 1）、P2-010・P2-012（配置も層も無く ハル に型が無い、裁定 5）。足した行は リンゴ・ミカン・ヒカリ・モモ・ヨモ（都市の文書）・本がザクった・型のある が・層・後段で読める反対側を含む。
+
+  以下は `artifacts/w3-e2/data_amendment.txt` の該当行をそのまま写したもの（裁定 1 の「前後の全文を §10L の変更記録に」。BEFORE が v2、AFTER が v3。時刻は凍結 2026-10-05 14:30:47 +0900）。
+
+  変えた 7 行（前後の全文）:
+
+```text
+[W3E2-P1-004] reason: r3 ruling 3: r9 gives PERSON/QUANTITY, not inside the P1 types -> no (d)
+BEFORE: {"id": "W3E2-P1-004", "premise": "P1", "input": "ミナが走った。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "ミナ", "kind": "name_type", "assumed": "PERSON", "source": "surface"}], "clauses": [{"predicate": "走る", "roles": {"agent": "ミナ"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "SUBJECT_TYPE_UNDETERMINED:ミナ", "added_reason": null}, "note": "d: surface, が; v2: r9 knows ミナ as PERSON/QUANTITY, so D9 narrows the candidates to PERSON (v1 expected GROUP_ORG+PERSON: a slip against D9)"}
+AFTER:  {"id": "W3E2-P1-004", "premise": "P1", "input": "ミナが走った。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "SUBJECT_TYPE_UNDETERMINED:ミナ", "added_reason": "ASSUMPTION_UNDETERMINED:ミナ:が"}, "note": "d: surface, が; v2: r9 knows ミナ as PERSON/QUANTITY, so D9 narrows the candidates to PERSON (v1 expected GROUP_ORG+PERSON: a slip against D9) | v3: r3 ruling 3: r9 gives PERSON/QUANTITY, not inside the P1 types -> no (d)"}
+[W3E2-P1-006] reason: r3 ruling 2+3: リク (lemma 陸) is not a name form for (d); r8 gives ANIMAL/PERSON
+BEFORE: {"id": "W3E2-P1-006", "premise": "P1", "input": "リクが本を読んだ。", "placement": "r8", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "リク", "kind": "name_type", "assumed": "PERSON", "source": "surface"}], "clauses": [{"predicate": "読む", "roles": {"agent": "リク", "patient": "本"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "AGENT_EVIDENCE_MISSING:リク", "added_reason": null}, "note": "d: AGENT_EVIDENCE_MISSING; v2: r8 knows リク as ANIMAL/PERSON, D9 narrows to PERSON (v1 slip)"}
+AFTER:  {"id": "W3E2-P1-006", "premise": "P1", "input": "リクが本を読んだ。", "placement": "r8", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "AGENT_EVIDENCE_MISSING:リク", "added_reason": "ASSUMPTION_UNDETERMINED:リク:が"}, "note": "d: AGENT_EVIDENCE_MISSING; v2: r8 knows リク as ANIMAL/PERSON, D9 narrows to PERSON (v1 slip) | v3: r3 ruling 2+3: リク (lemma 陸) is not a name form for (d); r8 gives ANIMAL/PERSON"}
+[W3E2-P2-010] reason: r3 ruling 5: no placement and no layer: ハル has no type -> が is not read
+BEFORE: {"id": "W3E2-P2-010", "premise": "P2", "input": "ハルがザクった。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "ザク", "kind": "nonce_predicate", "assumed": "UNTYPED_VERB", "source": "surface"}], "clauses": [{"predicate": "ザクる", "roles": {"agent": "ハル"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "NO_PREDICATE_TOKEN", "added_reason": null}, "note": ""}
+AFTER:  {"id": "W3E2-P2-010", "premise": "P2", "input": "ハルがザクった。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "NO_PREDICATE_TOKEN", "added_reason": null}, "note": " | v3: r3 ruling 5: no placement and no layer: ハル has no type -> が is not read"}
+[W3E2-P2-012] reason: r3 ruling 5
+BEFORE: {"id": "W3E2-P2-012", "premise": "P2", "input": "ハルがヨモります。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "ヨモ", "kind": "nonce_predicate", "assumed": "UNTYPED_VERB", "source": "surface"}], "clauses": [{"predicate": "ヨモる", "roles": {"agent": "ハル"}, "polarity": "+", "tense": "nonpast", "modality": null, "voice": "active"}], "abstain_reason": "NO_PREDICATE_TOKEN", "added_reason": null}, "note": ""}
+AFTER:  {"id": "W3E2-P2-012", "premise": "P2", "input": "ハルがヨモります。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": null, "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "NO_PREDICATE_TOKEN", "added_reason": null}, "note": " | v3: r3 ruling 5"}
+[W3E2-P1-014] reason: r3 ruling 1: no placement -> the documents cannot be read (SOURCE_UNAVAILABLE:documents); に splits -> abstain
+BEFORE: {"id": "W3E2-P1-014", "premise": "P1", "input": "ハルはミナに本を渡した。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["ミナはよく本を読んだ。", "先生がミナに本を渡した。"], "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "ミナ", "kind": "name_type", "assumed": "PERSON", "source": "documents"}], "clauses": [{"predicate": "渡す", "roles": {"agent": "ハル", "patient": "本", "recipient": "ミナ"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "RECIPIENT_TYPE_UNDETERMINED:ミナ", "added_reason": null}, "note": "c: documents (may be SOURCE_UNAVAILABLE:documents)"}
+AFTER:  {"id": "W3E2-P1-014", "premise": "P1", "input": "ハルはミナに本を渡した。", "placement": "none", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["ミナはよく本を読んだ。", "先生がミナに本を渡した。"], "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "RECIPIENT_TYPE_UNDETERMINED:ミナ", "added_reason": "ASSUMPTION_UNDETERMINED:ミナ:に", "documents_result": "SOURCE_UNAVAILABLE:documents"}, "note": "c: documents (may be SOURCE_UNAVAILABLE:documents) | v3: r3 ruling 1: no placement -> the documents cannot be read (SOURCE_UNAVAILABLE:documents); に splits -> abstain"}
+[W3E2-P3-012] reason: r3 ruling 1: the documents hold no XなどのY row for the word (NOT_DECISIVE) -> abstain
+BEFORE: {"id": "W3E2-P3-012", "premise": "P3", "input": "ハルはケーシングに手紙を送った。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["店主がケーシングを発注した。", "ケーシングは店にある。"], "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "ケーシング", "kind": "noun_type", "assumed": "GROUP_ORG", "source": "documents"}], "clauses": [{"predicate": "送る", "roles": {"agent": "ハル", "patient": "手紙", "recipient": "ケーシング"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "RECIPIENT_TYPE_UNDETERMINED:ケーシング", "added_reason": null}, "note": "c (may be SOURCE_UNAVAILABLE:documents)"}
+AFTER:  {"id": "W3E2-P3-012", "premise": "P3", "input": "ハルはケーシングに手紙を送った。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["店主がケーシングを発注した。", "ケーシングは店にある。"], "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "RECIPIENT_TYPE_UNDETERMINED:ケーシング", "added_reason": "ASSUMPTION_UNDETERMINED:ケーシング:に", "documents_result": "NOT_DECISIVE"}, "note": "c (may be SOURCE_UNAVAILABLE:documents) | v3: r3 ruling 1: the documents hold no XなどのY row for the word (NOT_DECISIVE) -> abstain"}
+[W3E2-P3-013] reason: r3 ruling 1: as P3-012
+BEFORE: {"id": "W3E2-P3-013", "premise": "P3", "input": "ハルはフルードへ荷物を運んだ。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["フルードの工房がある。", "客がフルードへ行った。"], "llm": "none"}, "expect": {"mode": "assumed", "assumptions": [{"word": "フルード", "kind": "noun_type", "assumed": "PLACE", "source": "documents"}], "clauses": [{"predicate": "運ぶ", "roles": {"agent": "ハル", "patient": "荷物", "goal": "フルード"}, "polarity": "+", "tense": "past", "modality": null, "voice": "active"}], "abstain_reason": "GOAL_TYPE_UNDETERMINED:フルード", "added_reason": null}, "note": "c"}
+AFTER:  {"id": "W3E2-P3-013", "premise": "P3", "input": "ハルはフルードへ荷物を運んだ。", "placement": "r9", "sources": {"layer_rows": null, "ledger_rows": null, "documents": ["フルードの工房がある。", "客がフルードへ行った。"], "llm": "none"}, "expect": {"mode": "abstain", "assumptions": [], "clauses": null, "abstain_reason": "GOAL_TYPE_UNDETERMINED:フルード", "added_reason": "ASSUMPTION_UNDETERMINED:フルード:へ", "documents_result": "NOT_DECISIVE"}, "note": "c | v3: r3 ruling 1: as P3-012"}
+```
+
+  足した 29 行（id・入力・期待・理由）:
+
+```text
+W3E2-P1-031  none リンゴが落ちた。  expect=abstain  | r3 ruling 2: a dictionary katakana common noun (lemma 林檎) is not a name form for (d)
+W3E2-P1-032  none リンゴが本を読んだ。  expect=abstain  | r3 ruling 2
+W3E2-P1-033  none リンゴが落ちた。  expect=assumed  | r3 ruling 2: (a) layer may still assume
+W3E2-P1-034  none リンゴが落ちた。  expect=assumed  | r3 ruling 2: (e) may still assume
+W3E2-P1-035  none ミカンが腐った。  expect=abstain  | r3 ruling 2 (lemma 蜜柑)
+W3E2-P1-036  none ミカンが本を読んだ。  expect=abstain  | r3 ruling 2
+W3E2-P1-037  none ミカンが腐った。  expect=assumed  | r3 ruling 2: (e) may still assume
+W3E2-P1-038  none ヒカリが消えた。  expect=abstain  | r3 ruling 2 (lemma 光)
+W3E2-P1-039  r9 モモが落ちた。  expect=abstain  | r3 ruling 3: r9 gives ANIMAL/PERSON; not inside the P1 types -> no (d)
+W3E2-P1-040  r9 モモが本を読んだ。  expect=abstain  | r3 ruling 3
+W3E2-P1-041  r9 モモが落ちた。  expect=assumed  | r3 ruling 3: (e) may assume; asked among the base candidates
+W3E2-P1-042  r9 モモが落ちた。  expect=assumed  | r3 ruling 3: (a) may assume
+W3E2-P1-043  r9 モモが落ちた。  expect=abstain  | r3 ruling 3: the back end says ANIMAL, which does not read
+W3E2-P1-044  r9 ヨモが走った。  expect=abstain  | r3 ruling 4: one weak document row says PLACE -> no (d)
+W3E2-P1-045  r9 ヨモが本を読んだ。  expect=abstain  | r3 ruling 4
+W3E2-P1-046  r8 ヨモが走った。  expect=abstain  | r3 ruling 4
+W3E2-P1-047  r9 ヨモが走った。  expect=abstain  | r3 ruling 4 (D-r3-4): the weak counter-evidence stops the search, (e) is not asked
+W3E2-P1-048  r9 ヨモが走った。  expect=assumed  | r3 ruling 4 contrast: no documents -> (d)
+W3E2-P1-049  r9 ヨモが走った。  expect=assumed  | r3 ruling 4 contrast: the weak row is a type that reads -> not a counter, (d) as before
+W3E2-P2-027  none 本がザクった。  expect=abstain  | r3 ruling 5: が with a filler of no animate type
+W3E2-P2-028  r9 本がザクった。  expect=abstain  | r3 ruling 5: 本 is INFO_LANGUAGE at r9
+W3E2-P2-029  r9 机がザクった。  expect=abstain  | r3 ruling 5: 机 is ARTIFACT/PLACE at r9
+W3E2-P2-030  r9 ハルがザクった。  expect=assumed  | r3 ruling 5: ハル is ANIMAL/GROUP_ORG/PERSON at r9
+W3E2-P2-031  r9 先生がザクった。  expect=assumed  | r3 ruling 5: 先生 PERSON
+W3E2-P2-032  r9 犬がザクった。  expect=assumed  | r3 ruling 5: 犬 ANIMAL
+W3E2-P2-033  none ハルがザクった。  expect=assumed  | r3 ruling 5: the layer gives the type
+W3E2-P3-027  r9 ハルはグリスへ荷物を運んだ。  expect=abstain  | r3 ruling 4: one weak document row says ARTIFACT -> stop (also for P3)
+W3E2-P3-028  r9 ハルはグリスへ荷物を運んだ。  expect=assumed  | r3 ruling 4 contrast: the weak row is a type that reads
+W3E2-P3-029  r9 ハルはグリスへ荷物を運んだ。  expect=assumed  | r3 ruling 4: (a) is above (c)
+```
+- **第 3 ラウンドのレビュー対応（r1）**: `test_the_documents_result_of_a_frozen_row_is_the_registered_one` を足した（`expect.documents_result` を持つ 10 行の trace の documents の項を登録値と突き合わせる）。`test_r3_the_name_form_strength_is_from_the_tagger_only` の空の assert を `_w3e2_name_form(t)`（弱い形は P1 の候補のまま）に直した。上の 7 行・29 行の全文を写した。製品コードは変えていない。
+- **テストの変更**（このチケットの自作テストだけ。期待を弱めたのではなく、裁定で動きが狭まったことに合わせた）: `test_p2_reads_wa_as_an_agent_only_beside_wo` の `ナナがザクった。`（配置なし）を、r9 では assumed・配置なしでは strict（`P2_GA_FILLER_NOT_TYPED`）の 2 つの assert に。`test_the_note_names_every_type_that_was_assumed` の `ソラが走った。` を `ミナが走った。` に（ソラは弱い形）、注記は `（ミナを集団・組織または人として）`。`test_frozen_row` は全行を判定する（`FROZEN_DOCUMENT_ROWS` の除外を外した）。`..._have_no_document_row_for_the_word` は語を `added_reason` から取る（v3 では期待が棄権で `assumptions` が空）。
+## W12-c1 → W3-e2/W3-e3 申し送り（§10L 向け）
+
+規則の事前登録だけ。実装はしない（W3-e2 の後の W3-e3）。全文と根拠は `docs/INITIAL_LAYERS.md` §3・§4。§10L はこの木にまだ無いので、既存の節の中には書かない。
+
+- **仮定の不変性ゲート**: 段 E2（仮定つきの読み）は、同じ証拠で並ぶ別の仮定（同点の崩し方）のすべてに替えても十字が変わらないときだけ採用する。変われば `ASSUMPTION_UNDETERMINED` で棄権。vera1 の配置の不変性（「配置は情報を増やせない」）と同じ論法。決定論の同点崩しは一致を捏造する（`CLAUDE.md`: 73.3% → 23.7%）。
+- **粒度の階段を未知語の出所に（出所 d'）**: 名前・造語を 2 字／1 字の段で見て、既知の形態素と繋がるか（ザクる ← ザク？、カタカナ列の人名の形）。型は繋がれば `ASSUMPTION_SOURCE_D_PRIME`、繋がらなければ `UNKNOWN_NO_EVIDENCE`。対照は `granularity.control`（同じ字の無作為な組み合わせ）。採用は不変性ゲートを通ったときだけ。
+- **語彙層の出所 (c) の使い方**: 語彙層（`build/initial-layers/vocab/vocab.sqlite`、スキーマ `verantyx.vocab_layer/1`）は独立出現 ≥3 の語だけ。`origin_class` が `human`（jawiki）の語を先に使い（`attested_human`）、`generated` だけの語は別の型 `attested_generated` として申告して **合算しない**。`in_base_material: true` の語は r9 の素材にも入っている。

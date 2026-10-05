@@ -105,7 +105,8 @@ EXIT_OK, EXIT_NO_PLACEMENT, EXIT_BAD_ARGS = 0, 2, 64
 _CACHE: Dict[str, "_Placement"] = {}
 #: the tables of a placement (a manifest may name only these)
 _TABLES = frozenset(("headwords", "evidence", "unit_kin", "unit_sample", "atoms",
-                     "ctx", "counters", "meta", "generated", "generated_frames"))
+                     "ctx", "counters", "meta", "generated", "generated_frames",
+                     "generated_noun_types", "role_frames"))
 
 
 def cuts_for(n: int) -> Tuple[Tuple[int, int], ...]:
@@ -152,6 +153,10 @@ class _Placement:
         # ... and one made before the ``generated_frames`` table existed (W3-a3): it cannot confirm a frame
         self.has_generated_frames = con.execute(
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='generated_frames'").fetchone() is not None
+        self.has_generated_noun_types = con.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='generated_noun_types'").fetchone() is not None
+        self.has_role_frames = con.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='role_frames'").fetchone() is not None
 
     # --- lookups ---------------------------------------------------------------
     def head(self, w: str):
@@ -199,6 +204,20 @@ class _Placement:
         except ValueError:
             fr = {}
         return (r[0], r[1], r[2], r[3], r[4], fr)
+
+    def role_frame(self, w: str):
+        """(model, effort, batch_id, attempt, {particle: [{role, types}]}) or None."""
+        if not self.has_role_frames:
+            return None
+        r = self.con.execute(
+            "SELECT model, effort, batch_id, attempt, frame FROM role_frames WHERE word=?", (w,)).fetchone()
+        if r is None:
+            return None
+        try:
+            frame = json.loads(r[4])
+        except (TypeError, ValueError):
+            return None
+        return (r[0], r[1], r[2], r[3], frame)
 
     def kin(self, unit: str, pos: str):
         return self.con.execute(
@@ -714,12 +733,38 @@ def _insert_frame_generated(term: str, r: Dict[str, Any], placement: Optional[st
     return dict(items[:cut] + [("frame_generated", fg)] + items[cut:])
 
 
+def _append_role_frame(term: str, r: Dict[str, Any], placement: Optional[str]) -> Dict[str, Any]:
+    """Append the W3-a6 role-frame fields only when the opened placement has that table."""
+    pl, _why = _open(placement)
+    if pl is None or not pl.has_role_frames:
+        return r
+    word = (r.get("spelling") or {}).get("normalized") or unicodedata.normalize("NFKC", term.strip()).strip()
+    row = pl.role_frame(word)
+    if row is None:
+        values = ("NO_ROLE_FRAME", None, None)
+    else:
+        checked = ct.role_frame_check(row[4], pl.evidence(word), pl.cfg)
+        if checked["status"] == "CONFIRMED":
+            values = ("CONFIRMED", checked["confirmed"], checked["unconfirmed"])
+        else:
+            values = ("ESTIMATED", None, checked["unconfirmed"])
+    keys = ("role_frame_status", "role_frame", "role_frame_unconfirmed")
+    return dict(list(r.items()) + list(zip(keys, values)))
+
+
 def query(term: str, *, context_role: Optional[str] = None,
           context_predicate: Optional[str] = None,
-          placement: Optional[str] = None) -> Dict[str, Any]:
+          placement: Optional[str] = None,
+          layer: Optional[str] = None) -> Dict[str, Any]:
     """The coarse type(s) of ``term`` (``_query_inner`` below holds the steps and the full description) with
     the W3-a3 keys appended LAST to every answer: ``frame_status`` and ``frame`` (see the module docstring
-    and docs section 12.10).  The steps themselves are not touched by W3-a3."""
+    and docs section 12.10).  The steps themselves are not touched by W3-a3.
+
+    W10-f05 (docs section 12.19): ``layer`` (a placement layer: a path or a name; without it the variable
+    ``VERA_PLACEMENT_LAYER``) puts a domain overlay on the base answer -- used only for a word the base leaves
+    UNPLACED / UNKNOWN / MULTIPLE (K290) -- and appends the two keys ``layer`` and ``layer_status`` at the very end.
+    Without a layer (and with the variable unset or empty) the answer is returned exactly as before, no key added.
+    ``layer=False`` is the base alone whatever the variable says (what the layer's own growth uses: a layer never props itself up)."""
     r = _query_inner(term, context_role=context_role, context_predicate=context_predicate,
                      placement=placement)
     if "frame_status" not in r:
@@ -734,6 +779,12 @@ def query(term: str, *, context_role: Optional[str] = None,
             items = list(r.items()); cut = next(i for i, (k, _) in enumerate(items) if k == tail[0])
             r = dict(items[:cut] + [("spelling", sp)] + items[cut:])
     r = _insert_frame_generated(term, r, placement)       # W3-b5: one key more, before W3-a3's tail
+    r = _append_role_frame(term, r, placement)             # W3-a6: the role frame is the final query field group
+    spec = (None if layer is False else layer if layer is not None and str(layer).strip() != "" else os.environ.get("VERA_PLACEMENT_LAYER"))
+    if spec is not None and str(spec).strip() != "":       # W10-f05: the layer is looked at only when one was asked for (K297)
+        from . import placement_layer
+        base_pl, _why = _open(placement)
+        r = placement_layer.apply(r, str(spec), base_pl)
     return r
 
 

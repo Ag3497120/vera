@@ -1492,3 +1492,30 @@ def observe_question_records(question: str, records: Iterable[Mapping[str, Any]]
     no index, no ledger; the type of a filler is asked of `EC.default_lookup()`, i.e. VERA_PLACEMENT, as on the command line without --placement)."""
     vp = build_viewpoint(anchor_text=question, anchor_kind='question', lang=lang)
     return json.loads(to_json(observe(vp, structure_from_records(records))))
+
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# W10-f04: the display of the holes of `semantic_read.read_with_holes` (a pure function; the output of `observe`/`run_entry` is not changed; docs/FUSION.md section 6, J8)
+# ---------------------------------------------------------------------------------------------------------------------------------
+HOLE_DISPLAY_MARK = 'Ｘ'
+
+
+def describe_holes(read_output: Mapping[str, Any], text: Optional[str] = None) -> Dict[str, Any]:
+    """{'status', 'display', 'arms'}: the sentence with each hole written as the mark (`Ｘ`, or `Ｘ1`/`Ｘ2` for two) and, per hole, the arm / particle / head / expected types / role candidates.
+    A reading without holes gives `display: None`."""
+    status = read_output.get('holes_status')
+    holes = list(read_output.get('holes') or [])
+    if not holes:
+        return {'status': status, 'display': None, 'arms': []}
+    arms = [{'index': i, 'arm': h.get('arm'), 'particle': h.get('particle'), 'head': h.get('head'), 'expected_types': list(h.get('expected_types') or []),
+             'role_candidates': list(h.get('role_candidates') or []), 'why': h.get('why')} for i, h in enumerate(holes)]
+    display = None
+    if isinstance(text, str):
+        marks = [HOLE_DISPLAY_MARK] if len(holes) == 1 else [HOLE_DISPLAY_MARK + str(i + 1) for i in range(len(holes))]
+        out, at = [], 0
+        for h, mark in sorted(zip(holes, marks), key=lambda hm: hm[0]['span'][0]):
+            s, e = h['span']
+            out.append(text[at:s]); out.append(mark); at = e
+        out.append(text[at:])
+        display = ''.join(out)
+    return {'status': status, 'display': display, 'arms': arms}

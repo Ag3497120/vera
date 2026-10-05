@@ -8,7 +8,7 @@ Run the acceptance suite from the worktree root:
 
 ```sh
 VERA_CORPUS_ROOT=/tmp/vera-empty-materials PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. \
-  python -B -m pytest -q tests/test_semantic_route_follow.py
+  /Users/motonisihikoudai/vera-wiring/env/bin/python -B -m pytest -q tests/test_semantic_route_follow.py
 ```
 
 The run for this note passed **37 tests**.

@@ -13,8 +13,8 @@ import time
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PYTHON = "python"
-GOLD_PROBE = "phase2/gold_probe.py"
+PYTHON = "/Users/motonisihikoudai/vera-wiring/env/bin/python"
+GOLD_PROBE = "/Users/motonisihikoudai/vera-wiring/phase2/gold_probe.py"
 START = time.monotonic()
 DEMO_LIMIT = 58.0
 

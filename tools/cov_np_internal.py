@@ -19,7 +19,7 @@ import verantyx.semantic_realize as realize
 import verantyx.semantic_verify as verify
 
 
-GOLD_PROBE = "phase2/gold_probe.py"
+GOLD_PROBE = "/Users/motonisihikoudai/vera-wiring/phase2/gold_probe.py"
 LIMIT = 60
 
 

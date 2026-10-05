@@ -13,7 +13,7 @@ import time
 
 
 ROOT = Path(__file__).resolve().parents[1]
-GOLD_PROBE = Path("phase2/gold_probe.py")
+GOLD_PROBE = Path("/Users/motonisihikoudai/vera-wiring/phase2/gold_probe.py")
 sys.path.insert(0, str(ROOT))
 
 

@@ -773,3 +773,7 @@ ee6bb1c5d1beabe4a5eb29957cf728e8794d9c91efee5f5a965bbdd27de96acd  tests/bank_sco
   df418c1e45a39d88f396337b0bac1f9dd97cd517b4ca23293c933634146bf857  tests/bank_score/fixtures/B7/items.jsonl
   ```
 - **T7**（隠しバンク B7 での測定）は監査役が行う。実装役は開かない。再現コマンド: `python -m tools.bank_score --profile v2 --bank B7 --items <B7 の items.jsonl> --tree <Vera のツリー> --out <出力> --python <python>`。
+
+
+## 14. W3-e2: 仮定つきの読みの階級（`tools/bank_score/v2/assumed.py`）
+strict で棄権した項目だけを対象に、`read_in_mode(mode='assume')` の出力を `b1.judge` で判定する: 読めて `correct` → `assumed_correct`、読めてそれ以外（期待が棄権の項目を読んだ場合を含む）→ `assumed_wrong`、読めない → `assumed_abstain`。strict で読めた項目は階級を持たない（誤読 0・誤答 0 は strict の階級にだけ掛ける）。`assumed_wrong / (assumed_correct + assumed_wrong)`（分母 0 は null）を出し、1 割を超えたら出所を狭める方向だけで直す（表層を外す／後段を必須にする）。`python -m tools.bank_score.v2.assumed --items F [--items F2 ...] --placement DIR --out DIR`。既存の `score.py`・`classify.py`・`adapters.py` と既存の階級の判定は変えていない。見本 `tests/bank_score/fixtures/W3E2_assumed/items.jsonl`（自作・正解データではない）。

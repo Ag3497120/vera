@@ -45,6 +45,18 @@ NOUN_TYPES: Dict[str, str] = {
     "NATURAL_PHENOMENON": "自然現象",
     "WORK": "作品",
     "IDENTIFIER": "識別子",
+    # W3-a6 (appended): a word that names a position or direction relative to something else
+    "RELATIVE_POSITION": "相対位置・方向",
+}
+
+#: W3-a6: the 17 noun types the predicate frames (W3-a3) and the role frames (W3-a6) are made of: the inventory above
+#: without the relative-position type, in the same order.  (The prompt and the schema of the predicate frame are built
+#: from this tuple, so that adding a type to NOUN_TYPES does not change what the earlier ledgers were asked.)
+FRAME_NOUN_TYPES: Dict[str, str] = {k: v for k, v in NOUN_TYPES.items() if k != "RELATIVE_POSITION"}
+
+#: W3-a6: a note per noun type that a generation prompt prints after the inventory.
+NOUN_TYPE_NOTES: Dict[str, str] = {
+    "RELATIVE_POSITION": "他の物や場所を基準にした位置・方向を表す語。それ自体は場所ではない",
 }
 
 PRED_TYPES: Dict[str, str] = {
@@ -359,6 +371,9 @@ GEN_ARM = "gen_definition"
 GEN_FRAME_ARM = "gen_frame"
 #: ... and every arm a model wrote.  A word one of these decided is never lent to another word.
 GEN_ARMS = (GEN_ARM, GEN_FRAME_ARM)
+#: W3-a6: the arm of a generated noun type "relative position" (one row per word, type RELATIVE_POSITION).  Deliberately
+#: not a member of ``ARMS`` / ``GEN_ARMS`` (tests pin those): ``decide_word`` sets its rows apart (``_apply_gen_relpos``).
+GEN_RELPOS_ARM = "gen_relpos"
 #: the nine case particles a predicate's frame and the argument chains are made of
 CASE_PARTICLES_9: Tuple[str, ...] = ("が", "を", "に", "で", "へ", "と", "から", "まで", "より")
 #: W3-a4: the values of ``frame_cover_rule`` (see ``_apply_gen_frame``), the particle a place
@@ -619,6 +634,8 @@ def decide_word(ev, cfg: dict) -> Dict[str, object]:
     ``OUTRANKED`` (``definition_outranks_role``), ``AGREEMENT_ONLY`` (``role_distribution`` and
     ``slot`` never decide alone) or ``FRAME_NOT_DECIDING`` (``frame_decides`` is off).  Counts of
     different arms and different sources are never added."""
+    rp_rows = [r for r in ev if r[0] == GEN_RELPOS_ARM]
+    ev = [r for r in ev if r[0] != GEN_RELPOS_ARM]
     gen_rows = [r for r in ev if r[0] == GEN_ARM]
     gf_rows = [r for r in ev if r[0] == GEN_FRAME_ARM]
     base_dec = _decide_base([r for r in ev if r[0] not in GEN_ARMS], cfg)
@@ -627,6 +644,8 @@ def decide_word(ev, cfg: dict) -> Dict[str, object]:
         dec = _apply_gen_definition(base_dec, gen_rows, cfg)
     if gf_rows:
         dec = _apply_gen_frame(dec, gf_rows, [r for r in ev if r[0] == "gen_frame_slot"], cfg)
+    if rp_rows:
+        dec = _apply_gen_relpos(dec, rp_rows, cfg)
     return dec
 
 
@@ -788,3 +807,144 @@ def _decide_base(ev, cfg: dict) -> Dict[str, object]:
                 "origin": None, "estimate_basis": None}
     return {"arms": out_arms, "state": comb[0], "tops": comb[1], "by": comb[2],
             "origin": "direct", "estimate_basis": None}
+
+
+# --- W3-a6: relative-position words, role names and the role frame ----------------------------------------------------
+
+#: The closed list of role names of docs/READING_CONVENTIONS.md section 2 (column 1 of its table, in that order).  A copy:
+#: this module does not import the reading modules; a test compares it with ``event_cross.ROLE_NAMES`` and with the table.
+ROLE_NAMES: Tuple[str, ...] = (
+    "agent", "patient", "recipient", "goal", "result", "source", "place", "time", "instrument", "companion",
+    "cause", "quotation", "entity", "value", "attribute", "standard", "causer", "causee", "beneficiary",
+    "experiencer")
+
+#: What each role holds, shortened from the column "what goes in" of the same table (no example words, no example verbs).
+ROLE_DESCRIPTIONS: Dict[str, str] = {
+    "agent": "他動詞の主語、人・動物・組織が主語の自動詞の主語、受身の動作主、授受表現の与え手、恩恵表現で実際に動作した人",
+    "patient": "動作の対象、直接受身の主語",
+    "recipient": "物や情報を受け取る人・組織",
+    "goal": "移動・設置の到達点（場所・物）",
+    "result": "変化・変換の結果",
+    "source": "起点・出どころ・材料・入手元の人",
+    "place": "出来事・存在の場所",
+    "time": "時点・期間・期限を表す語句（助詞の有無は問わない）",
+    "instrument": "道具・手段・言語・材料",
+    "companion": "一緒に行う人",
+    "cause": "名詞句で表された原因（節の原因は含めない）",
+    "quotation": "発言・思考・記載の内容の文字列",
+    "entity": "人・動物・組織以外が主語の自動詞の主語、形容詞・名詞述語・存在文の主語、比較される側",
+    "value": "名詞述語の述部、比較の差分量",
+    "attribute": "「A は B が 形容詞」の B（側面）",
+    "standard": "比較の基準、最上級の範囲",
+    "causer": "使役で元の動作をさせた側",
+    "causee": "使役で実際に元の動作をした人",
+    "beneficiary": "恩恵や利益を受ける人",
+    "experiencer": "間接受身で影響を受ける人",
+}
+
+#: closed ``role_frame_status`` values; ``role_frame_check`` returns the first two, query adds ``NO_ROLE_FRAME``.
+ROLE_FRAME_STATUSES: Tuple[str, ...] = ("CONFIRMED", "ESTIMATED", "NO_ROLE_FRAME")
+ROLE_UNCONFIRMED_WHY: Tuple[str, ...] = ("NOT_BACKED", "SPLIT", "PARTLY_BACKED")
+
+
+def _apply_gen_relpos(dec, rows, cfg: dict) -> Dict[str, object]:
+    """W3-a6 (docs 12.18, D5): the noun type a model wrote for a word (``gen_relpos`` rows: type RELATIVE_POSITION).
+    It only ever NARROWS: a DECIDED or MULTIPLE decision that has PLACE among its tops becomes MULTIPLE with
+    RELATIVE_POSITION added (origin and estimate basis stay what they were; the word is never a PLACE-only direct).
+    The one exception is a word that an arm that is not a model's (and not this one) also names RELATIVE_POSITION
+    alone, at its own threshold: that is a DECIDED direct RELATIVE_POSITION.  Anything else (no PLACE among the tops,
+    UNPLACED) is left as it was (``GENERATED_NOT_DECIDING``)."""
+    arms_ = dec["arms"]
+    arm = {"arm": GEN_RELPOS_ARM, "src": rows[0][1], "counts": {"RELATIVE_POSITION": 1},
+           "top": ["RELATIVE_POSITION"], "threshold_met": True, "met": False, "why": None}
+    arms_[GEN_RELPOS_ARM] = arm
+    if dec["state"] not in ("DECIDED", "MULTIPLE", "UNPLACED"):
+        arm["why"] = "GENERATED_NOT_DECIDING"
+        return dec
+    agree = sorted(k for k, a in arms_.items()
+                   if a["arm"] not in GEN_ARMS and a["arm"] != GEN_RELPOS_ARM
+                   and a["threshold_met"] and a["top"] == ["RELATIVE_POSITION"])
+    if agree and dec["state"] in ("DECIDED", "MULTIPLE"):
+        for k in agree:
+            arms_[k]["met"] = True
+            arms_[k]["why"] = None
+        arm["met"] = True
+        return {"arms": arms_, "state": "DECIDED", "tops": ["RELATIVE_POSITION"],
+                "by": sorted(agree + [GEN_RELPOS_ARM]), "origin": "direct", "estimate_basis": None}
+    if dec["state"] in ("DECIDED", "MULTIPLE") and "PLACE" in dec["tops"]:
+        arm["met"] = True
+        arm["why"] = "RELPOS_ADDED"
+        out = dict(dec)
+        out["state"] = "MULTIPLE"
+        out["tops"] = sorted(set(dec["tops"]) | {"RELATIVE_POSITION"})
+        out["by"] = sorted(set(dec["by"]) | {GEN_RELPOS_ARM})
+        return out
+    arm["why"] = "GENERATED_NOT_DECIDING"
+    return dec
+
+
+def role_frame_check(role_frame, ev, cfg: dict) -> Dict[str, object]:
+    """W3-a6 (docs 12.18, D6): confirm the roles of a predicate's declared role frame against the distribution arms.
+
+    ``role_frame`` is ``{particle: [{"role": a ROLE_NAMES entry, "types": [FRAME_NOUN_TYPES ids]}, ...]}``, ``ev`` the evidence
+    rows ``(arm, src, type, n, base)`` of the word.  Each ``role_distribution`` source is read with ``rd_analyze`` (the
+    thresholds ``rd_*`` of ``cfg``, nothing new).  For every significant (particle p, noun type t) of a source, R = the roles
+    the frame declares for p whose types contain t.  |R| = 1: the source votes for (p, that role).  |R| >= 2: a split
+    (the same type is declared by two roles of one particle): nobody votes (a tie abstains) and it is counted.  |R| = 0: the
+    distribution holds a type the frame does not declare (shown only).  A role is CONFIRMED when the sources that voted for
+    it are at least ``role_frame_min_sources`` (default ``rd_min_sources``); its types are then the declared types that a
+    source voted for (sources are never added up).  Sources never share one vote: the voting is per source and per (p, t)."""
+    min_src = int(cfg.get("role_frame_min_sources", cfg["rd_min_sources"]))
+    per_src: Dict[str, Dict[str, int]] = {}
+    base_of: Dict[str, Optional[int]] = {}
+    for arm, src, typ, n, base in ev:
+        if arm != "role_distribution":
+            continue
+        k = arm_key(arm, src)
+        per_src.setdefault(k, {})[typ] = n
+        if base is not None:
+            base_of[k] = base
+    declared: Dict[str, List[dict]] = {}
+    for p in CASE_PARTICLES_9:
+        rows = (role_frame or {}).get(p)
+        if rows:
+            declared[p] = sorted(rows, key=lambda r: ROLE_NAMES.index(r["role"]))
+    votes: Dict[Tuple[str, str], Dict[str, set]] = {}     # (particle, role) -> {source key: voted types}
+    split_seen: Dict[Tuple[str, str], set] = {}           # (particle, role) -> types that were split
+    arms_out: Dict[str, dict] = {}
+    for k in sorted(per_src):
+        a = rd_analyze(per_src[k], cfg, base_of.get(k))
+        if not a["sig"]:
+            continue
+        info = {"sig": list(a["sig"]), "types": {p: list(a["types"][p]) for p in a["sig"]},
+                "votes": {}, "split": [], "undeclared": []}
+        for p in a["sig"]:
+            for t in a["types"][p]:
+                roles = [r for r in declared.get(p, []) if t in r["types"]]
+                if len(roles) == 1:
+                    r = roles[0]["role"]
+                    votes.setdefault((p, r), {}).setdefault(k, set()).add(t)
+                    info["votes"].setdefault(p, {}).setdefault(r, []).append(t)
+                elif len(roles) >= 2:
+                    info["split"].append({"particle": p, "type": t, "roles": [r["role"] for r in roles]})
+                    for r in roles:
+                        split_seen.setdefault((p, r["role"]), set()).add(t)
+                else:
+                    info["undeclared"].append("%s|%s" % (p, t))
+        arms_out[k] = info
+    confirmed: Dict[str, List[dict]] = {}
+    unconfirmed: Dict[str, List[dict]] = {}
+    for p, rows in declared.items():
+        for r in rows:
+            by_src = votes.get((p, r["role"]), {})
+            if len(by_src) >= min_src:
+                voted = sorted({t for ts in by_src.values() for t in ts} & set(r["types"]))
+                confirmed.setdefault(p, []).append({"role": r["role"], "types": voted, "backed_by": sorted(by_src)})
+                rest = sorted(set(r["types"]) - set(voted))
+                if rest:
+                    unconfirmed.setdefault(p, []).append({"role": r["role"], "types": rest, "why": "PARTLY_BACKED"})
+            else:
+                why = "SPLIT" if (not by_src and split_seen.get((p, r["role"]))) else "NOT_BACKED"
+                unconfirmed.setdefault(p, []).append({"role": r["role"], "types": sorted(r["types"]), "why": why})
+    return {"status": "CONFIRMED" if confirmed else "ESTIMATED", "confirmed": confirmed,
+            "unconfirmed": unconfirmed, "arms": arms_out}

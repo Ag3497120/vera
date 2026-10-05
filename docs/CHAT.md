@@ -158,3 +158,17 @@ def test_round5_chat_keeps_other_unread_question_typed(tmp_path, monkeypatch, ca
 - R4: 新規 chat テスト 13/13、指定された質問十字・observe を含む関連テスト 230/230 合格。後者の出力は [r2-related-tests.log](/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W7-chat/codex_r1/r2-related-tests.log)。全体テストと基線失敗集合比較は監査役の担当として未実施。
 
 既知の穴: 同じ実演文書に対し、`vera observe` は `人` を FILLED と観測した一方、質問の十字を通る「兄は誰を呼んだ？」は棄権する。監査役判断2に従いこのラウンドでは読解経路を変更しない。隠しバンクも実行していない。
+
+
+## W10-f04: `vera read --holes` と `vera ledger`（docs/FUSION.md §6）
+- `vera read --text 文 --placement DIR`（`--holes` なし）は `python -m verantyx.semantic_read` と 1 バイトも違わない。`--holes` を付けると、充填物の配置が理由で棄権した文に `holes_status`・`holes`（腕・助詞・語・許す型・役割・位置 `span`）・`partial`・`display`（穴を `Ｘ` で示した文）が付く。
+- `vera serve --backend ollama|openai --model M [--api-base URL] [--fill --ledger-file F [--fill-model M] [--no-mask-user-text] [--fill-max-holes N]]`: `--fill` のときだけ候補の口が働き（既定は利用者の文を後段へ渡さない）、`vera.holes`・`vera.ledger_ids`・`testimony_fill` の腕が付く。候補は証言で、記録にも事実の根拠にもならない。
+- 候補の不採用の理由（`vera.holes[i].reason`・台帳の `not_adopted` 行）に第 3 ラウンドで `GATE_A_HOLE_WORD_UNPLACED`（穴の語の配置が型を与えない）・`GATE_A_ROLE_SPLIT`（配置の型が 1 つの役割に落ちない。`gate_log` の `split_kind` が `TYPE_NOT_READ`／`ROLES_DIFFER`）・`GATE_B_REREAD_MISMATCH`（型注入の再読が戻らない）を足した（`docs/FUSION.md` §6.6）。1 穴の文は採用されない。
+- `vera ledger list|show <id>|confirm <id> --ledger-file F`: 証言の台帳（追記のみ・ハッシュ連鎖）。`confirm` は人が呼ぶ（`store_id`・`confirm_id` を発行）。`promotable` の印までで、配置は変えない。
+
+## W10-f05: `vera chat --layer`
+`vera chat --layer <名前|パス>` は環境変数 `VERA_PLACEMENT_LAYER` を設定する（配置の層。docs/COARSE_PLACEMENT.md §12.19）。層が答えるのは基底が決めていない語だけで、`--layer` なし・変数が空のときの出力は変わらない。
+
+
+## W3-e2: `/read` と `--strict-read`
+`vera chat` の `/read <文>` は、既定で段 E2（仮定つきの読み）を使う: 前提（名前の型・造語の述語・未知の名詞の型）だけで止まった文は仮定を明示して読み、それ以外の文は従来の出力のまま。`--strict-read`（または `VERA_READ_MODE=strict`）で従来どおり strict だけで読む。`VERA_READ_MODE` が `strict`／`assume` 以外なら `BAD_READ_MODE`。

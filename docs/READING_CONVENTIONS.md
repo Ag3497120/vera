@@ -63,6 +63,12 @@
 - 接続語も構文も無い 2 文の間には `relations` を書かない。接続語（それで・だから・then など）が書かれているときだけ書く。
 
 - 追記(W3-b3): `relative` の関係は、W3-b3 の経路（配置あり。`docs/READING_SOUNDNESS.md` §10C）では鍵 `head`（`from_role`・`to_role`）を持つことがある。採点は読まない（`type`・`from`・`to` だけを見る）。規約の鍵の表は変えない。
+- 追記(W3-c7。2026-10-05 07:28): 段 C7（`docs/READING_SOUNDNESS.md` §10K）は、て形と連用中止（両節が自分の主語を持つ 2 節）の関係を `sequence` で書く（`parallel` は関係の型にしない。種類は診断にだけ書く）。引用は `quote`（伝達の節→内容の節。節は述語の出現順なので内容が 0・伝達が 1 で `from: 1, to: 0`）で、伝達の節に `quotation` を足す。3〜4 節の文は隣り合う組ごとに辺を書く（上の箇条どおり）。型の表は変えない。
+- 追記(W3-c7 第 4 ラウンド。監査役の裁定 2、2026-10-05 09:03:42 +0900): 段 C7 は て形の節の関係を常に `sequence` で書く。ここでの `sequence` は「連接」（前の節と後の節が続けて述べられていること）であり、原因（`cause`）・様態（`manner`）を主張しない。正解側が `cause` や `manner` だけを持つ文では誤答になりうる（既知。docs/READING_SOUNDNESS.md §10K）。型の表は変えない。
+
+
+### 1.3 仮定つきの読み（W3-e2。`read_in_mode(mode='assume')`・製品の入口の既定。`read()` の出力の形は変わらない）
+仮定を立てて読んだ文は、読んだ十字の **後ろに** 次の 4 鍵をこの順で足す: `read_mode: 'assumed'`・`assumptions`（`[{word, kind: name_type|nonce_predicate|noun_type, assumed, alternatives, source: layer|ledger|documents|surface|llm:<model>, ledger_id}]`）・`strict: {readable: false, abstain: <strict の棄権>}`・`assumption_note`（「（ミナを人として）」の形。型を 1 つに決めない仮定は仮定した型を全部名指す: 「（ソラを集団・組織または人として）」）。仮定の入った役割の `role_basis` は `assumed:<型>`（造語の述語は `particle_default:<助詞>` と `predicate_basis: 'assumed:nonce_predicate'`）。仮定なしの文は従来どおりの出力の最後に `read_mode: 'strict'` だけを足す。決まらなかった文は strict の `abstain.reasons` の末尾に `ASSUMPTION_UNDETERMINED:<語>:<助詞>`（または `ASSUMPTION_BACKEND_FAILED:<語>:<型>`）を 1 つ足す。仮定を立ててよい前提は 3 つだけ（名前の型・造語の述語・未知の名詞の型）。第 3 ラウンド（監査役の裁定 2〜5）: 出所 `surface` は **強い名前の形**（解析器が固有名詞とする・未知語の印がある・見出し語が表層のひらがなと同じ: ミナ→みな）にだけ働く。辞書に普通名詞として載るカタカナ語（リンゴ・リク・ソラ）は P1 の候補だが `surface` では決めない（層・台帳・文書・後段なら可）。基底の候補が P1 の型（GROUP_ORG・PERSON・PLACE）に収まらない語（モモ: ANIMAL／PERSON）も `surface` では決めず、後段には基底の候補の全体を問う。文書が読める型の外の型を 1 件でも示せば（ヨモやサキなどの都市）その場で棄権する。P2 の が は、充填物が基底か層で ANIMAL・GROUP_ORG・PERSON の型を持つときだけ動作主（それ以外は strict の棄権のまま）。表層の出所の仮定は再読の一致だけでは台帳の `promotable` にならない。説明用の `assumption_explain_ja` の `trace.sources` に `WEAK_NAME_FORM`・`BASE_OUTSIDE_P1_TYPES`・`NOT_DECISIVE_COUNTER`、`why` に `P2_GA_FILLER_NOT_TYPED` が出る（出力の十字には出ない）。詳細は docs/READING_SOUNDNESS.md §10L。
 
 ## 2. 役割名（閉じた一覧）
 
