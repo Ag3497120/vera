@@ -1,0 +1,1 @@
+/Users/motonisihikoudai/vera-wiring/env/bin/python -m pip wheel --no-index --no-deps --no-build-isolation --wheel-dir /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W16-t11/smoke-out2/wheel <SMOKE_TMP>/source

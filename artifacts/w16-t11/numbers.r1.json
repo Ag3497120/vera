@@ -1,0 +1,1183 @@
+[
+ {
+  "id": "N-01",
+  "label_ja": "伏せた試験 T6: attest の判定が期待と一致",
+  "label_en": "held-out T6: attest verdicts equal the expected ones",
+  "value": "72",
+  "denominator": "72",
+  "set": "伏せた試験 T6（72 件: 定型文 36・JSON 36、正しい申告 36・偽の申告 36）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "`vera attest`（T6） \\| (\\d+)（定型文 (\\d+)・JSON (\\d+)、正しい申告 (\\d+)・偽の申告 (\\d+)） \\| \\*\\*(\\d+)/(\\d+)\\*\\*、偽の申告の見逃し (\\d+)、正しい申告の誤検出 (\\d+)",
+   "groups": {
+    "value": 6,
+    "denominator": 7
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "verified",
+  "aux": [
+   "36"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-02",
+  "label_ja": "伏せた試験 T6: 偽の申告の見逃し",
+  "label_en": "held-out T6: false claims missed",
+  "value": "0",
+  "denominator": "36",
+  "set": "伏せた試験 T6 の偽の申告 36 件",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "`vera attest`（T6） \\| (\\d+)（定型文 (\\d+)・JSON (\\d+)、正しい申告 (\\d+)・偽の申告 (\\d+)） \\| \\*\\*(\\d+)/(\\d+)\\*\\*、偽の申告の見逃し (\\d+)、正しい申告の誤検出 (\\d+)",
+   "groups": {
+    "value": 8,
+    "denominator": 5
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "verified",
+  "aux": [
+   "72"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-03",
+  "label_ja": "伏せた試験 T6: 正しい申告の誤検出",
+  "label_en": "held-out T6: correct claims flagged by mistake",
+  "value": "0",
+  "denominator": "36",
+  "set": "伏せた試験 T6 の正しい申告 36 件",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "`vera attest`（T6） \\| (\\d+)（定型文 (\\d+)・JSON (\\d+)、正しい申告 (\\d+)・偽の申告 (\\d+)） \\| \\*\\*(\\d+)/(\\d+)\\*\\*、偽の申告の見逃し (\\d+)、正しい申告の誤検出 (\\d+)",
+   "groups": {
+    "value": 9,
+    "denominator": 4
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "verified",
+  "aux": [
+   "72"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-04",
+  "label_ja": "伏せた試験 T7: 記録の判定が期待と一致",
+  "label_en": "held-out T7: ledger checks equal the expected ones",
+  "value": "40",
+  "denominator": "40",
+  "set": "伏せた試験 T7（40 件）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "記録（T7） \\| (\\d+) \\| \\*\\*(\\d+)/(\\d+)\\*\\*",
+   "groups": {
+    "value": 2,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "verified",
+  "aux": [],
+  "note": ""
+ },
+ {
+  "id": "N-05",
+  "label_ja": "伏せた試験 T2: ask・chat・serve の誤答",
+  "label_en": "held-out T2: wrong answers on ask, chat and serve",
+  "value": "0",
+  "denominator": "40",
+  "set": "伏せた試験 T2（40 件: 答えあり 20・答えなし 20）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "回答経路（T2） \\| (\\d+)（答えあり 20・答えなし 20） \\| ask・chat・serve とも \\*\\*誤答 (\\d+)\\*\\*。ask の正答 (\\d+)・正しい棄権 (\\d+)（基点と同じ）、serve の表示した正答 (\\d+)（基点 (\\d+)）",
+   "groups": {
+    "value": 2,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "measurement-only",
+  "aux": [
+   "20"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-06",
+  "label_ja": "伏せた試験 T2: ask の正答",
+  "label_en": "held-out T2: ask correct answers",
+  "value": "5",
+  "denominator": "40",
+  "set": "伏せた試験 T2（40 件: 答えあり 20・答えなし 20）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "回答経路（T2） \\| (\\d+)（答えあり 20・答えなし 20） \\| ask・chat・serve とも \\*\\*誤答 (\\d+)\\*\\*。ask の正答 (\\d+)・正しい棄権 (\\d+)（基点と同じ）、serve の表示した正答 (\\d+)（基点 (\\d+)）",
+   "groups": {
+    "value": 3,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "measurement-only",
+  "aux": [
+   "20"
+  ],
+  "note": "出所は答えあり・答えなしごとの分母を書いていないので全体の 40 を分母にした"
+ },
+ {
+  "id": "N-07",
+  "label_ja": "伏せた試験 T2: ask の正しい棄権",
+  "label_en": "held-out T2: ask correct abstentions",
+  "value": "19",
+  "denominator": "40",
+  "set": "伏せた試験 T2（40 件: 答えあり 20・答えなし 20）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "回答経路（T2） \\| (\\d+)（答えあり 20・答えなし 20） \\| ask・chat・serve とも \\*\\*誤答 (\\d+)\\*\\*。ask の正答 (\\d+)・正しい棄権 (\\d+)（基点と同じ）、serve の表示した正答 (\\d+)（基点 (\\d+)）",
+   "groups": {
+    "value": 4,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "measurement-only",
+  "aux": [
+   "20"
+  ],
+  "note": "同上"
+ },
+ {
+  "id": "N-08",
+  "label_ja": "伏せた試験 T2: serve が表示した正答（基点は 0）",
+  "label_en": "held-out T2: serve displayed correct answers (base was 0)",
+  "value": "4",
+  "denominator": "40",
+  "set": "伏せた試験 T2（40 件: 答えあり 20・答えなし 20）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "回答経路（T2） \\| (\\d+)（答えあり 20・答えなし 20） \\| ask・chat・serve とも \\*\\*誤答 (\\d+)\\*\\*。ask の正答 (\\d+)・正しい棄権 (\\d+)（基点と同じ）、serve の表示した正答 (\\d+)（基点 (\\d+)）",
+   "groups": {
+    "value": 5,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "measurement-only",
+  "aux": [
+   "20",
+   "0"
+  ],
+  "note": "同上"
+ },
+ {
+  "id": "N-09",
+  "label_ja": "伏せた試験 T8: 確認の無い文の出力が層なしと一致",
+  "label_en": "held-out T8: outputs for unconfirmed sentences equal the no-layer output",
+  "value": "36",
+  "denominator": "36",
+  "set": "伏せた試験 T8 の確認の無い文 36 文（全 60 文のうち）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "人の確認（T8） \\| (\\d+)（正解の読みつき） \\| 確認の無い文の出力は \\*\\*(\\d+)/(\\d+) で層なしと一致\\*\\*、確認で新しく読めた文 \\*\\*(\\d+)\\*\\*、誤読 \\*\\*(\\d+)\\*\\*",
+   "groups": {
+    "value": 2,
+    "denominator": 3
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "measurement-only",
+  "aux": [
+   "60"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-10",
+  "label_ja": "伏せた試験 T8: 人の確認で新しく読めた文",
+  "label_en": "held-out T8: sentences newly read thanks to a human confirmation",
+  "value": "0",
+  "denominator": "60",
+  "set": "伏せた試験 T8（60 文、正解の読みつき）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "人の確認（T8） \\| (\\d+)（正解の読みつき） \\| 確認の無い文の出力は \\*\\*(\\d+)/(\\d+) で層なしと一致\\*\\*、確認で新しく読めた文 \\*\\*(\\d+)\\*\\*、誤読 \\*\\*(\\d+)\\*\\*",
+   "groups": {
+    "value": 4,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "measurement-only",
+  "aux": [],
+  "note": ""
+ },
+ {
+  "id": "N-11",
+  "label_ja": "伏せた試験 T8: 誤読",
+  "label_en": "held-out T8: misreads",
+  "value": "0",
+  "denominator": "60",
+  "set": "伏せた試験 T8（60 文、正解の読みつき）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "人の確認（T8） \\| (\\d+)（正解の読みつき） \\| 確認の無い文の出力は \\*\\*(\\d+)/(\\d+) で層なしと一致\\*\\*、確認で新しく読めた文 \\*\\*(\\d+)\\*\\*、誤読 \\*\\*(\\d+)\\*\\*",
+   "groups": {
+    "value": 5,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "measurement-only",
+  "aux": [],
+  "note": ""
+ },
+ {
+  "id": "N-12",
+  "label_ja": "伏せた試験 T8: 基底の読解器が読む文",
+  "label_en": "held-out T8: sentences the base reader reads",
+  "value": "22",
+  "denominator": "60",
+  "set": "伏せた試験 T8（60 文）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "基底の読解器はこの (\\d+) 文のうち (\\d+) 文しか読まない",
+   "groups": {
+    "value": 2,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "negative",
+  "provenance": "measurement-only",
+  "aux": [],
+  "note": ""
+ },
+ {
+  "id": "N-13",
+  "label_ja": "伏せた試験 T3: 期待どおりの印",
+  "label_en": "held-out T3: marks equal the expected ones",
+  "value": "37",
+  "denominator": "40",
+  "set": "伏せた試験 T3（40 件: 正答 20・誤答 20）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "引用の照合（T3） \\| (\\d+)（正答 20・誤答 20） \\| serve を通して \\*\\*(\\d+)/(\\d+)\\*\\*。誤答 (\\d+) 件はすべて検出（錨あり (\\d+)）",
+   "groups": {
+    "value": 2,
+    "denominator": 3
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "held-marked",
+  "aux": [
+   "20"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-14",
+  "label_ja": "伏せた試験 T3: 誤答のうち錨ありと印が付いたもの",
+  "label_en": "held-out T3: wrong answers marked anchored",
+  "value": "0",
+  "denominator": "20",
+  "set": "伏せた試験 T3 の誤答 20 件",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "引用の照合（T3） \\| (\\d+)（正答 20・誤答 20） \\| serve を通して \\*\\*(\\d+)/(\\d+)\\*\\*。誤答 (\\d+) 件はすべて検出（錨あり (\\d+)）",
+   "groups": {
+    "value": 5,
+    "denominator": 4
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "held-marked",
+  "aux": [
+   "40"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-15",
+  "label_ja": "隠しバンク B1: 正答",
+  "label_en": "hidden bank B1: correct answers",
+  "value": "11",
+  "denominator": "296",
+  "set": "隠しバンク B1（読解、配置 r9、296 件）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "B1（読解、配置 r9） \\| (\\d+) \\| (\\d+) \\| (\\d+) \\|",
+   "groups": {
+    "value": 2,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "measurement-only",
+  "aux": [
+   "9"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-16",
+  "label_ja": "隠しバンク B1: 誤答",
+  "label_en": "hidden bank B1: wrong answers",
+  "value": "0",
+  "denominator": "296",
+  "set": "隠しバンク B1（読解、配置 r9、296 件）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "B1（読解、配置 r9） \\| (\\d+) \\| (\\d+) \\| (\\d+) \\|",
+   "groups": {
+    "value": 3,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "measurement-only",
+  "aux": [
+   "9"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-17",
+  "label_ja": "隠しバンク B2: 正答",
+  "label_en": "hidden bank B2: correct answers",
+  "value": "0",
+  "denominator": "286",
+  "set": "隠しバンク B2（文書の問い、ask round5、286 件）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "B2（文書の問い、ask round5） \\| (\\d+) \\| (\\d+) \\| (\\d+) \\|",
+   "groups": {
+    "value": 2,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "negative",
+  "provenance": "measurement-only",
+  "aux": [
+   "5"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-18",
+  "label_ja": "隠しバンク B2: 誤答",
+  "label_en": "hidden bank B2: wrong answers",
+  "value": "0",
+  "denominator": "286",
+  "set": "隠しバンク B2（文書の問い、ask round5、286 件）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "B2（文書の問い、ask round5） \\| (\\d+) \\| (\\d+) \\| (\\d+) \\|",
+   "groups": {
+    "value": 3,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "measurement-only",
+  "aux": [
+   "5"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-19",
+  "label_ja": "全体テストの既知の失敗（基線と同じ集合）",
+  "label_en": "full test suite: known failures (same set as the baseline)",
+  "value": "115",
+  "denominator": "n/a",
+  "set": "全体テスト（総数は出所に無い。環境に由来する既知の失敗の一覧）",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "失敗は毎回 \\*\\*(\\d+) 件で基線",
+   "groups": {
+    "value": 1
+   },
+   "flags": ""
+  },
+  "kind": "negative",
+  "provenance": "measurement-only",
+  "aux": [],
+  "note": "分母（全体の件数）が出所に無いので n/a。創作しない"
+ },
+ {
+  "id": "N-20",
+  "label_ja": "自作 40 件の完了申告: Vera の読みが偽の事実を検出",
+  "label_en": "self-made 40 reports: false facts caught by Vera's reader (V)",
+  "value": "22",
+  "denominator": "22",
+  "set": "自作 40 件の偽の事実 22 件（自作の集合。証拠にならない）",
+  "source": "artifacts/w16-t6/compare/compare_table.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "\\| V \\| (\\d+) \\| (\\d+) \\| (\\d+) \\| 1\\.0000 \\|",
+   "groups": {
+    "value": 3,
+    "denominator": 2
+   },
+   "flags": ""
+  },
+  "kind": "negative",
+  "provenance": "verified",
+  "aux": [
+   "40"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-21",
+  "label_ja": "自作 40 件の完了申告: JSON・正規表現の抽出器 a が偽の事実を検出",
+  "label_en": "self-made 40 reports: false facts caught by the plain-regex extractor (a)",
+  "value": "22",
+  "denominator": "22",
+  "set": "自作 40 件の偽の事実 22 件（自作の集合。証拠にならない）",
+  "source": "artifacts/w16-t6/compare/compare_table.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "\\| a \\| (\\d+) \\| (\\d+) \\| (\\d+) \\| 1\\.0000 \\|",
+   "groups": {
+    "value": 3,
+    "denominator": 2
+   },
+   "flags": ""
+  },
+  "kind": "negative",
+  "provenance": "verified",
+  "aux": [
+   "40"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-22",
+  "label_ja": "自作 40 件の完了申告: Vera の読みの上乗せ（V − a の件数）",
+  "label_en": "self-made 40 reports: added detections from Vera's reader (V minus a)",
+  "value": "0",
+  "denominator": "22",
+  "set": "自作 40 件の偽の事実 22 件（自作の集合）",
+  "source": "artifacts/w16-t6/compare/compare_table.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "\\| V \\| \\d+ \\| (\\d+) \\| \\d+ \\| 1\\.0000 \\|.*- V-a: 0\\.0000（(\\d+)）",
+   "groups": {
+    "value": 2,
+    "denominator": 1
+   },
+   "flags": "S"
+  },
+  "kind": "negative",
+  "provenance": "measurement-only",
+  "aux": [
+   "40"
+  ],
+  "note": "分母 22 は V の行の偽の事実数。V-a の件数は同じ表の 上乗せ の節"
+ },
+ {
+  "id": "N-23",
+  "label_ja": "自作 40 件の完了申告: LLM 判定器 c が正しい事実に「いいえ」を返した",
+  "label_en": "self-made 40 reports: correct facts the local LLM judge answered 'no' to",
+  "value": "17",
+  "denominator": "53",
+  "set": "自作 40 件の正しい事実 53 件（qwen 系ローカルモデル。自作の集合）",
+  "source": "docs/ATTEST.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "正しい事実 (\\d+) 件のうち (\\d+) 件に「いいえ」",
+   "groups": {
+    "value": 2,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "negative",
+  "provenance": "measurement-only",
+  "aux": [
+   "40"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-24",
+  "label_ja": "W14 run1: D（Vera strict）の機械判定の正答",
+  "label_en": "W14 run1: Vera strict (D) machine-judged correct answers",
+  "value": "0",
+  "denominator": "64",
+  "set": "W14 公開ベンチマーク v1 run1、答えのある問い 64 問",
+  "source": "docs/BENCHMARK_PUBLIC.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "\\| D（Vera strict） \\| (\\d+)/(\\d+) \\(0\\.0%\\) \\| (\\d+)/(\\d+) \\(100\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| (\\d+)/(\\d+) \\(100\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| (?:\\d+/\\d+ \\(0\\.0%\\)|-) \\| \\d+/\\d+ \\|",
+   "groups": {
+    "value": 1,
+    "denominator": 2
+   },
+   "flags": ""
+  },
+  "kind": "negative",
+  "provenance": "measurement-only",
+  "aux": [
+   "1",
+   "256"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-25",
+  "label_ja": "W14 run1: D（Vera strict）の棄権",
+  "label_en": "W14 run1: Vera strict (D) abstentions",
+  "value": "64",
+  "denominator": "64",
+  "set": "W14 公開ベンチマーク v1 run1、答えのある問い 64 問",
+  "source": "docs/BENCHMARK_PUBLIC.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "\\| D（Vera strict） \\| (\\d+)/(\\d+) \\(0\\.0%\\) \\| (\\d+)/(\\d+) \\(100\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| (\\d+)/(\\d+) \\(100\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| (?:\\d+/\\d+ \\(0\\.0%\\)|-) \\| \\d+/\\d+ \\|",
+   "groups": {
+    "value": 3,
+    "denominator": 4
+   },
+   "flags": ""
+  },
+  "kind": "negative",
+  "provenance": "measurement-only",
+  "aux": [
+   "1",
+   "256"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-26",
+  "label_ja": "W14 run1: D の答えの無い問いで止めた数",
+  "label_en": "W14 run1: Vera strict (D) held back on unanswerable questions",
+  "value": "48",
+  "denominator": "48",
+  "set": "W14 公開ベンチマーク v1 run1、答えの無い問い 48 問",
+  "source": "docs/BENCHMARK_PUBLIC.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "\\| D（Vera strict） \\| (\\d+)/(\\d+) \\(0\\.0%\\) \\| (\\d+)/(\\d+) \\(100\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| (\\d+)/(\\d+) \\(100\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| (?:\\d+/\\d+ \\(0\\.0%\\)|-) \\| \\d+/\\d+ \\|",
+   "groups": {
+    "value": 5,
+    "denominator": 6
+   },
+   "flags": ""
+  },
+  "kind": "negative",
+  "provenance": "measurement-only",
+  "aux": [
+   "1",
+   "256"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-27",
+  "label_ja": "W14 run1: Z（常に棄権）の機械判定の正答",
+  "label_en": "W14 run1: always-abstain baseline (Z) machine-judged correct answers",
+  "value": "0",
+  "denominator": "64",
+  "set": "W14 公開ベンチマーク v1 run1、答えのある問い 64 問",
+  "source": "docs/BENCHMARK_PUBLIC.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "\\| Z（常に棄権） \\| (\\d+)/(\\d+) \\(0\\.0%\\) \\| (\\d+)/(\\d+) \\(100\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| (\\d+)/(\\d+) \\(100\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| (?:\\d+/\\d+ \\(0\\.0%\\)|-) \\| \\d+/\\d+ \\|",
+   "groups": {
+    "value": 1,
+    "denominator": 2
+   },
+   "flags": ""
+  },
+  "kind": "negative",
+  "provenance": "measurement-only",
+  "aux": [
+   "1",
+   "256"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-28",
+  "label_ja": "W14 run1: Z の棄権",
+  "label_en": "W14 run1: always-abstain baseline (Z) abstentions",
+  "value": "64",
+  "denominator": "64",
+  "set": "W14 公開ベンチマーク v1 run1、答えのある問い 64 問",
+  "source": "docs/BENCHMARK_PUBLIC.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "\\| Z（常に棄権） \\| (\\d+)/(\\d+) \\(0\\.0%\\) \\| (\\d+)/(\\d+) \\(100\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| (\\d+)/(\\d+) \\(100\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| (?:\\d+/\\d+ \\(0\\.0%\\)|-) \\| \\d+/\\d+ \\|",
+   "groups": {
+    "value": 3,
+    "denominator": 4
+   },
+   "flags": ""
+  },
+  "kind": "negative",
+  "provenance": "measurement-only",
+  "aux": [
+   "1",
+   "256"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-29",
+  "label_ja": "W14 run1: Z の答えの無い問いで止めた数",
+  "label_en": "W14 run1: always-abstain baseline (Z) held back on unanswerable questions",
+  "value": "48",
+  "denominator": "48",
+  "set": "W14 公開ベンチマーク v1 run1、答えの無い問い 48 問",
+  "source": "docs/BENCHMARK_PUBLIC.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "\\| Z（常に棄権） \\| (\\d+)/(\\d+) \\(0\\.0%\\) \\| (\\d+)/(\\d+) \\(100\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| (\\d+)/(\\d+) \\(100\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| (?:\\d+/\\d+ \\(0\\.0%\\)|-) \\| \\d+/\\d+ \\|",
+   "groups": {
+    "value": 5,
+    "denominator": 6
+   },
+   "flags": ""
+  },
+  "kind": "negative",
+  "provenance": "measurement-only",
+  "aux": [
+   "1",
+   "256"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-30",
+  "label_ja": "W14 run1: C（Vera 既定）の機械判定の正答（LLM の文を含む）",
+  "label_en": "W14 run1: Vera default (C) machine-judged correct answers (the LLM's sentences included)",
+  "value": "37",
+  "denominator": "64",
+  "set": "W14 公開ベンチマーク v1 run1、答えのある問い 64 問",
+  "source": "docs/BENCHMARK_PUBLIC.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "\\| C（Vera 既定） \\| (\\d+)/(\\d+) \\(\\d+\\.\\d%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| \\d+/\\d+ \\(\\d+\\.\\d%\\) \\| \\d+/\\d+ \\(\\d+\\.\\d%\\) \\| \\d+/\\d+ \\(\\d+\\.\\d%\\) \\| (\\d+)/(\\d+) \\(0\\.0%\\) \\| \\d+/\\d+ \\|",
+   "groups": {
+    "value": 1,
+    "denominator": 2
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "measurement-only",
+  "aux": [
+   "256"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-31",
+  "label_ja": "W14 run1: C の答えの無い問いで Vera 自身が断定した数",
+  "label_en": "W14 run1: Vera default (C) assertions made by Vera itself on unanswerable questions",
+  "value": "0",
+  "denominator": "48",
+  "set": "W14 公開ベンチマーク v1 run1、答えの無い問い 48 問",
+  "source": "docs/BENCHMARK_PUBLIC.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "\\| C（Vera 既定） \\| (\\d+)/(\\d+) \\(\\d+\\.\\d%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| \\d+/\\d+ \\(0\\.0%\\) \\| \\d+/\\d+ \\(\\d+\\.\\d%\\) \\| \\d+/\\d+ \\(\\d+\\.\\d%\\) \\| \\d+/\\d+ \\(\\d+\\.\\d%\\) \\| (\\d+)/(\\d+) \\(0\\.0%\\) \\| \\d+/\\d+ \\|",
+   "groups": {
+    "value": 3,
+    "denominator": 4
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "measurement-only",
+  "aux": [
+   "256"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-32",
+  "label_ja": "W14 run1: 同じ問いのローカル 27B モデル単体（A'）の機械判定の正答",
+  "label_en": "W14 run1: the plain local 27B model (A') machine-judged correct answers",
+  "value": "49",
+  "denominator": "64",
+  "set": "W14 公開ベンチマーク v1 run1、答えのある問い 64 問",
+  "source": "docs/BENCHMARK_PUBLIC.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "\\| A'（qwen3\\.8 27B ローカル） \\| (\\d+)/(\\d+) \\(\\d+\\.\\d%\\) \\| 0/64 \\(0\\.0%\\) \\| 0/64 \\(0\\.0%\\) \\| \\d+/\\d+ \\(\\d+\\.\\d%\\) \\| \\d+/\\d+ \\(\\d+\\.\\d%\\) \\| \\d+/\\d+ \\(\\d+\\.\\d%\\) \\| - \\| \\d+/\\d+ \\|",
+   "groups": {
+    "value": 1,
+    "denominator": 2
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "measurement-only",
+  "aux": [
+   "27",
+   "256"
+  ],
+  "note": "A' は LLM 単体。Vera が付け加えたものではない"
+ },
+ {
+  "id": "N-33",
+  "label_ja": "W14 run1: C の答えの無い問いで LLM の文に証言の印が付いた",
+  "label_en": "W14 run1: Vera default (C) unanswerable questions where the LLM's text carried the testimony mark",
+  "value": "48",
+  "denominator": "48",
+  "set": "W14 公開ベンチマーク v1 run1、答えの無い問い 48 問",
+  "source": "docs/BENCHMARK_PUBLIC.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "\\| C（Vera 既定） \\| (\\d+)/(\\d+) \\(100\\.0%\\) \\|$",
+   "groups": {
+    "value": 1,
+    "denominator": 2
+   },
+   "flags": "M"
+  },
+  "kind": "measured",
+  "provenance": "held-marked",
+  "aux": [
+   "256"
+  ],
+  "note": ""
+ },
+ {
+  "id": "N-34",
+  "label_ja": "W14 run1 の旧の物差しで Vera が確かめた出典のある行",
+  "label_en": "W14 run1, old yardstick: rows with a source Vera verified",
+  "value": "0",
+  "denominator": "256",
+  "set": "W14 run1 の C 系 256 行（旧の物差し）",
+  "source": "artifacts/w16-t3/r3/t32_result.txt",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "  run1: 出所の数の合計 \\d+、1 つ以上ある行 (\\d+) / (\\d+)",
+   "groups": {
+    "value": 1,
+    "denominator": 2
+   },
+   "flags": ""
+  },
+  "kind": "negative",
+  "provenance": "verified",
+  "aux": [],
+  "note": "旧の物差し。T3 の後の新の物差し（N-36）とは定義が違うので比べない"
+ },
+ {
+  "id": "N-35",
+  "label_ja": "T3 の後の W14 C 系: quote_check のある行",
+  "label_en": "after T3, W14 C rows carrying a quote_check",
+  "value": "255",
+  "denominator": "256",
+  "set": "W14 の C 系 256 行（T3 の後、第 3 ラウンドの保存結果）",
+  "source": "artifacts/w16-t3/r3/t32_result.txt",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "行数: run1 (\\d+)、今回 \\d+.*?vera\\.quote_check がある行: (\\d+) / (\\d+)",
+   "groups": {
+    "value": 2,
+    "denominator": 3
+   },
+   "flags": "S"
+  },
+  "kind": "measured",
+  "provenance": "held-marked",
+  "aux": [],
+  "note": ""
+ },
+ {
+  "id": "N-36",
+  "label_ja": "T3 の後の W14 C 系: 新の物差しで実在の引用（exact・relocated）の位置のある行",
+  "label_en": "after T3, W14 C rows with at least one existing quote (new yardstick)",
+  "value": "153",
+  "denominator": "256",
+  "set": "W14 の C 系 256 行（T3 の後。新の物差し。旧の物差しとは定義が違う）",
+  "source": "artifacts/w16-t3/r3/t32_result.txt",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "行ごとに重複を除いた位置の数の合計: \\d+（1 つ以上ある行 (\\d+) / (\\d+)）",
+   "groups": {
+    "value": 1,
+    "denominator": 2
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "held-marked",
+  "aux": [],
+  "note": "Vera が存在を確かめたのは引用の逐語の一致だけ。答えが正しいことの確認ではない"
+ },
+ {
+  "id": "N-37",
+  "label_ja": "T3 の後の W14 C 系: 錨ありの印（保存結果）",
+  "label_en": "after T3, W14 C rows marked anchored (saved run)",
+  "value": "144",
+  "denominator": "256",
+  "set": "W14 の C 系 256 行（T3 の後、第 3 ラウンドの保存結果）",
+  "source": "artifacts/w16-t3/r3/t32_result.txt",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "行数: run1 (\\d+)、今回 \\d+.*?印の分布（行）: \\{\\\"anchored\\\": (\\d+),",
+   "groups": {
+    "value": 2,
+    "denominator": 1
+   },
+   "flags": "S"
+  },
+  "kind": "measured",
+  "provenance": "held-marked",
+  "aux": [],
+  "note": ""
+ },
+ {
+  "id": "N-38",
+  "label_ja": "T3 の後の W14 C 系: 錨ありのうち答えの要素が 0 個の行",
+  "label_en": "after T3, anchored rows whose answer had no checkable element",
+  "value": "31",
+  "denominator": "144",
+  "set": "W14 C 系の錨あり 144 行（保存結果）",
+  "source": "artifacts/w16-t3/r3/t32_result.txt",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "anchored のうち答えの要素が 0 個の行: (\\d+) / (\\d+)",
+   "groups": {
+    "value": 1,
+    "denominator": 2
+   },
+   "flags": ""
+  },
+  "kind": "negative",
+  "provenance": "held-marked",
+  "aux": [],
+  "note": ""
+ },
+ {
+  "id": "N-39",
+  "label_ja": "T3 の後の W14 C 系: 最終の照合器で保存結果を再評価した錨あり",
+  "label_en": "after T3, anchored rows when the saved run is re-checked with the final checker",
+  "value": "140",
+  "denominator": "255",
+  "set": "quote_check のある 255 行（最終の照合器で再評価）",
+  "source": "artifacts/w16-t3/r5/t32_recheck.txt",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "今の印の分布（(\\d+) 行すべて）: \\{'anchored': (\\d+),",
+   "groups": {
+    "value": 2,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "measured",
+  "provenance": "held-marked",
+  "aux": [],
+  "note": ""
+ },
+ {
+  "id": "N-40",
+  "label_ja": "自作の集合 T3-1: 誤答のうち錨ありのまま見逃したもの",
+  "label_en": "self-made T3-1: wrong answers left marked anchored",
+  "value": "5",
+  "denominator": "30",
+  "set": "自作の集合 T3-1 の誤答 30 件（自作。証拠にならない）",
+  "source": "artifacts/w16-t3/r5/t31_result.txt",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "検出 (\\d+)/(\\d+) = [\\d.]+%\\n上乗せ.*?誤答なのに anchored（見逃し）: (\\d+) = ",
+   "groups": {
+    "value": 3,
+    "denominator": 2
+   },
+   "flags": "S"
+  },
+  "kind": "negative",
+  "provenance": "held-marked",
+  "aux": [],
+  "note": "T3-1 の (b) の行の分母 30"
+ },
+ {
+  "id": "N-41",
+  "label_ja": "W14 の人の採点（A'・A・B・C）",
+  "label_en": "W14 human grading (A', A, B, C)",
+  "value": "未測定",
+  "denominator": "n/a",
+  "set": "W14 公開ベンチマーク v1（人の採点は未了）",
+  "source": "docs/BENCHMARK_PUBLIC.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "unmeasured",
+   "needle": "未採点"
+  },
+  "kind": "unmeasured",
+  "provenance": "not-measured",
+  "aux": [],
+  "note": ""
+ },
+ {
+  "id": "N-42",
+  "label_ja": "API の強い LLM（A'）の測定",
+  "label_en": "strong hosted-LLM baseline",
+  "value": "未測定",
+  "denominator": "n/a",
+  "set": "W14 公開ベンチマーク v1（ネットワーク不可）",
+  "source": "docs/BENCHMARK_PUBLIC.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "unmeasured",
+   "needle": "UNKNOWN_NOT_PERMITTED"
+  },
+  "kind": "unmeasured",
+  "provenance": "not-measured",
+  "aux": [],
+  "note": ""
+ },
+ {
+  "id": "N-43",
+  "label_ja": "serve 層 0 を本物の LLM で通した誤答率",
+  "label_en": "serve layer 0 wrong-answer rate with a real LLM",
+  "value": "未測定",
+  "denominator": "n/a",
+  "set": "伏せた試験 T3 は偽の LLM の項目を含む",
+  "source": "docs/AUDIT_2026-10-06.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "unmeasured",
+   "needle": "偽の LLM の項目"
+  },
+  "kind": "unmeasured",
+  "provenance": "not-measured",
+  "aux": [],
+  "note": ""
+ },
+ {
+  "id": "N-51",
+  "label_ja": "旧: 公開開発セットの誤答",
+  "label_en": "old: public dev set wrong answers",
+  "value": "0",
+  "denominator": "80",
+  "set": "公開開発セット（80 件、監査済み、伏せていない。自分たちの測定）",
+  "source": "public_overlay/README.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "Public dev set \\((\\d+) items, audited, not sealed\\): \\*\\*(\\d+) correct, (\\d+) wrong\\*\\*",
+   "groups": {
+    "value": 3,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "historical",
+  "provenance": "measurement-only",
+  "aux": [],
+  "in_readme": false,
+  "note": "履歴（d25a73a 以前）。再計算していない。出所の文面（ecde332 の旧ファイル）と一致するだけ。"
+ },
+ {
+  "id": "N-52",
+  "label_ja": "旧: 公開開発セットの正答",
+  "label_en": "old: public dev set correct answers",
+  "value": "17",
+  "denominator": "80",
+  "set": "公開開発セット（80 件、監査済み、伏せていない。自分たちの測定）",
+  "source": "public_overlay/README.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "Public dev set \\((\\d+) items, audited, not sealed\\): \\*\\*(\\d+) correct, (\\d+) wrong\\*\\*",
+   "groups": {
+    "value": 2,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "historical",
+  "provenance": "measurement-only",
+  "aux": [],
+  "in_readme": false,
+  "note": "履歴（d25a73a 以前）。再計算していない。出所の文面（ecde332 の旧ファイル）と一致するだけ。"
+ },
+ {
+  "id": "N-53",
+  "label_ja": "旧: 指揮者（台本の担当者）の誤答",
+  "label_en": "old: conductor, scripted agent, wrong answers",
+  "value": "0",
+  "denominator": "103",
+  "set": "台本の担当者に 103 問（偽の質問者の正解率 100/80/50%）",
+  "source": "public_overlay/README.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "Scripted agent, (\\d+) questions: \\*\\*(\\d+) wrong\\*\\*",
+   "groups": {
+    "value": 2,
+    "denominator": 1
+   },
+   "flags": ""
+  },
+  "kind": "historical",
+  "provenance": "measurement-only",
+  "aux": [],
+  "in_readme": false,
+  "note": "履歴（d25a73a 以前）。再計算していない。出所の文面（ecde332 の旧ファイル）と一致するだけ。"
+ },
+ {
+  "id": "N-54",
+  "label_ja": "旧: 実際の質問での誤答（答えた件数が 0 なので 0 は当然）",
+  "label_en": "old: real agent questions, wrong answers (trivially 0 because 0 were answered)",
+  "value": "0",
+  "denominator": "72",
+  "set": "実際にエージェントが人に尋ねた 130 問のうち、人の答えのついた 72 問",
+  "source": "public_overlay/README.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "Real questions \\((\\d+) an agent really asked a human, (\\d+) with the human's answer\\): (\\d+) answered, (\\d+) escalated, (\\d+) wrong\\*\\*",
+   "groups": {
+    "value": 5,
+    "denominator": 2
+   },
+   "flags": ""
+  },
+  "kind": "historical",
+  "provenance": "measurement-only",
+  "aux": [],
+  "in_readme": false,
+  "note": "履歴（d25a73a 以前）。再計算していない。出所の文面（ecde332 の旧ファイル）と一致するだけ。答えた件数が 0（N-55）なので誤答 0 は空虚"
+ },
+ {
+  "id": "N-55",
+  "label_ja": "旧: 実際の質問で答えた件数",
+  "label_en": "old: real agent questions answered",
+  "value": "0",
+  "denominator": "72",
+  "set": "実際にエージェントが人に尋ねた 130 問のうち、人の答えのついた 72 問",
+  "source": "public_overlay/README.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "Real questions \\((\\d+) an agent really asked a human, (\\d+) with the human's answer\\): (\\d+) answered, (\\d+) escalated, (\\d+) wrong\\*\\*",
+   "groups": {
+    "value": 3,
+    "denominator": 2
+   },
+   "flags": ""
+  },
+  "kind": "historical",
+  "provenance": "measurement-only",
+  "aux": [],
+  "in_readme": false,
+  "note": "履歴（d25a73a 以前）。再計算していない。出所の文面（ecde332 の旧ファイル）と一致するだけ。"
+ },
+ {
+  "id": "N-56",
+  "label_ja": "旧: 比喩の答えの被覆（元の 100% の資料の大きさでの語数）",
+  "label_en": "old: metaphor-answer coverage at 100% of the sources",
+  "value": "28",
+  "denominator": "30",
+  "set": "比喩の語 30 語（資料の大きさ 10/30/60/100%）",
+  "source": "public_overlay/EVAL.md",
+  "commit": "ecde332",
+  "extract": {
+   "kind": "regex",
+   "pattern": "metaphor-answer coverage 14/19/24/(28) of (30) words",
+   "groups": {
+    "value": 1,
+    "denominator": 2
+   },
+   "flags": ""
+  },
+  "kind": "historical",
+  "provenance": "measurement-only",
+  "aux": [],
+  "in_readme": false,
+  "note": "履歴（d25a73a 以前）。再計算していない。出所の文面（ecde332 の旧ファイル）と一致するだけ。"
+ }
+]

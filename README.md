@@ -1,5 +1,7 @@
 # Verantyx Vera α
 
+The public README is `public_overlay/README.md` (positioning, what Vera does and does not do, measured numbers with denominators, install). This README is for developers of this tree.
+
 **A model-free knowledge and reasoning research engine with source evidence and typed refusals.**
 
 Run the round5 interactive CLI with `vera chat --mode round5`; see [docs/CHAT.md](docs/CHAT.md) for commands and limits.

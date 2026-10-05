@@ -1,0 +1,35 @@
+# 突然変異の確認（R-1・R-2・R-4 が赤になること）
+## 仕様の値を 71 に変える → R-1 の再計算
+仕様 49 行を出所から再計算: 不一致 1
+NG SPEC_VALUE N-01: 仕様 '71' / 出所 '72' (docs/AUDIT_2026-10-06.md)
+FAIL
+exit=
+## README の表の値を 71 に変える → R-1
+仕様 49 行を出所から再計算: 不一致 0
+README (/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W16-t11/mut/readme_num.md) の照合: 不一致 2
+NG README_NUMBER_NOT_IN_SPEC L140: '71' は N-01 の値・分母・補助のどれでもない: | N-01 | held-out T6: attest verdicts equal the expected ones | 71 | 72 | held-out T6: 72 reports (3
+NG TABLE_VALUE[en] N-01: 表 '71' / 仕様 '72'
+FAIL
+exit=
+## 印の無い「誤答 0。」を足す → R-2
+言い切りの語を含む文 4 件、分母・集合名のある印の無いもの 1 件（対象 1 ファイル）
+NG CLAIM_WITHOUT_DENOMINATOR /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W16-t11/mut/readme_claim.md:184: 語 ['誤答\
+FAIL
+exit=
+## 絶対パスを足す → R-4
+対象 1 ファイル、型 17 種
+  ABS_PATH_Users: 1
+NG ABS_PATH_Users /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W16-t11/mut/readme_path.md:196 See /Users/x/y for details
+合計 1 件
+FAIL
+exit=
+## 存在しない commit → 2
+NG SOURCE_UNREADABLE 0000000000000000000000000000000000000000:docs/AUDIT_2026-10-06.md: fatal: path 'docs/AUDIT_2026-10-06.md' exists on disk, but not in '0000000000000000000000000000000000000000'
+FAIL
+exit=
+# 終了コード（上の突然変異の確認の再実行）
+仕様の値の変更: exit=1
+README の値の変更: exit=1
+印の無い言い切り: exit=1
+絶対パス: exit=1
+存在しない commit: exit=2

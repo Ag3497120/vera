@@ -1,0 +1,23 @@
+対象 2 ファイル、型 17 種
+  ABS_PATH_Users: 0
+  ABS_PATH_home: 0
+  ABS_PATH_private_tmp: 0
+  EMAIL: 0
+  GIT_ACCOUNT_NAME: 2
+  INTERNAL_codex_corpus: 0
+  INTERNAL_hidden: 0
+  INTERNAL_vera_impl: 0
+  INTERNAL_vera_wiring: 0
+  LOCAL_USER_NAME: 0
+  SECRET_aws: 0
+  SECRET_ghp: 0
+  SECRET_github_pat: 0
+  SECRET_hf: 0
+  SECRET_privkey: 0
+  SECRET_sk: 0
+  SECRET_slack: 0
+NG GIT_ACCOUNT_NAME public_overlay/pyproject.toml:15 Homepage = "https://github.com/Ag3497120/vera"
+NG GIT_ACCOUNT_NAME public_overlay/vera_base/corpus.py:11 URL = os.environ.get("VERA_CORPUS_URL", "https://github.com/Ag3497120/vera/relea
+合計 2 件
+FAIL
+exit=1

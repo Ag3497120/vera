@@ -1,0 +1,12 @@
+release build exit=0
+wheel member 数: 362
+release venv exit=0
+release smoke-deps exit=0
+release install exit=0
+release wheel-import exit=0
+release document-fixture exit=0
+release help exit=0
+release read exit=0
+release ask exit=0
+release serve exit=0
+結果ディレクトリ: /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W16-t11/smoke-out2
