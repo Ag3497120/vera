@@ -119,7 +119,17 @@ vera serve --backend ollama --model qwen3.5:4b --document guide.txt --port 11500
 ```
 
 <!-- AUDITOR_RUNS: serve-layer0 -->
-The output of this example is **not pasted yet**: it needs a real LLM and a local socket, which the implementer's sandbox did not have. The auditor pastes the output printed by the development tree here (replay: `artifacts/w16-t11/examples/replay_serve.sh`). Nothing is shown in its place on purpose.
+Run by the auditor on the development tree with a local LLM (replay: `artifacts/w16-t11/examples/replay_serve.sh`, which also writes the two-line rental guide used as `guide.txt`). An LLM's wording can differ between runs, so this is one recorded run, not a byte-replayed example. The first line of the reply says what was checked: the quoted sentence exists in the record and the answer's number appears in it — not that the answer is correct.
+
+```text
+run:      dev 0d4bc6f, 2026-10-06 06:41 +0900, ollama qwen3.5:4b (digest 2a654d98e6fb), one run
+question: 一人で何冊まで借りられますか。
+reply:
+［証言: LLM の答えです。引用した文は記録にあります（確かめたのは、引用の実在と、答えの数値・日付・固有名・内容語が引用に現れることだけで、答えの正しさではありません）］
+5冊
+（引用の出典: guide.txt:1）
+vera.quote_check: verdict anchored; quote guide.txt line 1 found exact; element number 5冊 found in guide.txt:1
+```
 
 ## Held or marked, versus checked
 
@@ -373,7 +383,17 @@ $ vera hooks print --claude-code --vera-cmd vera
 vera serve --backend ollama --model qwen3.5:4b --document guide.txt --port 11500
 ```
 
-この例の出力は **まだ貼っていません**。本物の LLM とローカルのソケットが要り、実装役の sandbox には無かったためです。監査役が開発ツリーで流した出力は、英語の節の同じ例の枠（`AUDITOR_RUNS` の印）に貼り、この節にも写します（再生: `artifacts/w16-t11/examples/replay_serve.sh`）。代わりの出力は意図して置いていません。
+監査役が開発ツリーでローカルの LLM を使って一度だけ流した記録です（再生: `artifacts/w16-t11/examples/replay_serve.sh`。`guide.txt` の貸出の案内もこの台本が書きます）。LLM の言い回しは回ごとに変わりうるので、byte で再生する例ではありません。応答の最初の行が、確かめたことの範囲を言います（引用した文が記録にあり、答えの数値がその文に現れること。答えの正しさではありません）。
+
+```text
+run:      dev 0d4bc6f, 2026-10-06 06:41 +0900, ollama qwen3.5:4b (digest 2a654d98e6fb), one run
+question: 一人で何冊まで借りられますか。
+reply:
+［証言: LLM の答えです。引用した文は記録にあります（確かめたのは、引用の実在と、答えの数値・日付・固有名・内容語が引用に現れることだけで、答えの正しさではありません）］
+5冊
+（引用の出典: guide.txt:1）
+vera.quote_check: verdict anchored; quote guide.txt line 1 found exact; element number 5冊 found in guide.txt:1
+```
 
 ## 「保持・印付け」と「確かめた」
 
