@@ -1,2 +1,12 @@
 2026-10-05 16:27:25 run1 Ap uptime-load1=11.60 (try 1)
 2026-10-05 16:32:25 run1 Ap uptime-load1=6.68 (try 2)
+2026-10-05 17:16:19 run1 Ap finished rc=0
+2026-10-05 17:16:19 run1 A uptime-load1=6.56 (try 1)
+2026-10-05 17:41:01 run1 A finished rc=0
+2026-10-05 17:41:01 run1 B uptime-load1=4.05 (try 1)
+2026-10-05 17:48:35 run1 B finished rc=0
+2026-10-05 17:48:35 run1 C uptime-load1=6.82 (try 1)
+2026-10-05 18:10:51 run1 C finished rc=0
+2026-10-05 18:10:51 run1 D uptime-load1=4.06 (try 1)
+2026-10-05 18:12:15 run1 D finished rc=0
+2026-10-05 18:12:15 run1 ALL DONE
