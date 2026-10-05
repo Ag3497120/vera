@@ -1,0 +1,5 @@
+RO Counter({'unanchored': 4, 'anchored': 2})
+TE Counter({'unanchored': 4, 'anchored': 2})
+SP Counter({'unanchored': 4, 'anchored': 1})
+SR Counter({'anchored': 6})
+H Counter({'unanchored': 3, 'anchored': 1})

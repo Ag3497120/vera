@@ -1,0 +1,4 @@
+1791229421 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/artifacts/w16-t3b/prereg2.txt
+1791229433 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/artifacts/w16-t3b/cases_c.jsonl
+1791229455 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/artifacts/w16-t3b/cases_c_before.txt
+1791229460 verantyx/quote_check.py

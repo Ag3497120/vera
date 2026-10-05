@@ -1,0 +1,10 @@
+1791228225 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/artifacts/w16-t3b/prereg.txt
+1791228318 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/artifacts/w16-t3b/cases.jsonl
+1791228328 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/artifacts/w16-t3b/cases_before.txt
+1791228345 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/verantyx/quote_check.py
+1791228381 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3b-S/artifacts/w16-t3b/cases_b.jsonl
+2026-10-06 04:23:45 artifacts/w16-t3b/prereg.txt
+2026-10-06 04:25:18 artifacts/w16-t3b/cases.jsonl
+2026-10-06 04:25:28 artifacts/w16-t3b/cases_before.txt
+2026-10-06 04:25:45 verantyx/quote_check.py
+2026-10-06 04:26:21 artifacts/w16-t3b/cases_b.jsonl

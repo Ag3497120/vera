@@ -1,0 +1,10 @@
+     310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3b-impl/serve_base.jsonl
+     310 /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t3b-impl/serve_new2.jsonl
+     620 total
+rows base 310 new 310
+rows where change is allowed (layer 0, FACTUAL, LLM called, not QUESTION_CROSS): 87
+  of which actually changed: 0 ; of which carry vera.quote_check: 0
+rows outside that set: 223
+rows outside that set that changed (pass = 0): 0
+違う行: 0 / 310
+quote_check・本文の最後の 1 行以外も違う行: 0
