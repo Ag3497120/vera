@@ -1,0 +1,2620 @@
+{
+ "summary": {
+  "w3c7_multi.jsonl": {
+   "rows": 26,
+   "out_read": 4,
+   "v_correct": 26,
+   "entry_mismatch": 0,
+   "expect_mismatch": 0,
+   "structure_mismatch": 0,
+   "out_abstain": 22
+  },
+  "w3c7_te.jsonl": {
+   "rows": 26,
+   "out_abstain": 16,
+   "v_correct": 26,
+   "entry_mismatch": 0,
+   "expect_mismatch": 0,
+   "structure_mismatch": 0,
+   "out_read": 10
+  },
+  "w3c7_quote.jsonl": {
+   "rows": 26,
+   "out_read": 6,
+   "v_correct": 26,
+   "entry_mismatch": 0,
+   "expect_mismatch": 0,
+   "structure_mismatch": 0,
+   "out_abstain": 20
+  },
+  "w3c7_sharing.jsonl": {
+   "rows": 26,
+   "out_abstain": 22,
+   "v_correct": 26,
+   "entry_mismatch": 0,
+   "expect_mismatch": 0,
+   "structure_mismatch": 0,
+   "out_read": 4
+  },
+  "w3c7_anaphora.jsonl": {
+   "rows": 26,
+   "out_read": 9,
+   "v_correct": 26,
+   "entry_mismatch": 0,
+   "expect_mismatch": 0,
+   "structure_mismatch": 0,
+   "out_abstain": 17
+  }
+ },
+ "total": {
+  "rows": 130,
+  "out_read": 33,
+  "v_correct": 130,
+  "entry_mismatch": 0,
+  "expect_mismatch": 0,
+  "structure_mismatch": 0,
+  "out_abstain": 97
+ },
+ "words_missing_from_the_fixture": [],
+ "rows": [
+  {
+   "id": "W3C7-MULTI-001",
+   "file": "w3c7_multi.jsonl",
+   "input": "弟が起きるから、兄が座るけれど、生徒が絵を描く。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "contrast",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-MULTI-002",
+   "file": "w3c7_multi.jsonl",
+   "input": "妹が戸を閉めると、弟が寝るが、兄が飯を食べる。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-003",
+   "file": "w3c7_multi.jsonl",
+   "input": "兄が絵を描いたから、姉が起きるが、母が来る。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "contrast",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-MULTI-004",
+   "file": "w3c7_multi.jsonl",
+   "input": "生徒が窓を開けるなら、妹が来るから、先生が残った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-005",
+   "file": "w3c7_multi.jsonl",
+   "input": "兄が立ったけれど、妹が本を読むから、弟が座った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "contrast",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-MULTI-006",
+   "file": "w3c7_multi.jsonl",
+   "input": "生徒が本を買うが、先生が寝るが、母が来る。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-007",
+   "file": "w3c7_multi.jsonl",
+   "input": "妹が歌を歌ったので、姉が落ちるから、生徒が戸を閉めた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-008",
+   "file": "w3c7_multi.jsonl",
+   "input": "先生が飯を食べるから、生徒が絵を描くから、弟が帰る。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-009",
+   "file": "w3c7_multi.jsonl",
+   "input": "弟が薬を飲んだけれど、兄が来るので、妹が絵を描いたけれど、姉が飯を食べる。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-010",
+   "file": "w3c7_multi.jsonl",
+   "input": "弟が立つので、先生が残るなら、姉が薬を飲むなら、兄が帰る。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "condition",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "kind": "finite",
+     "type": "condition",
+     "from": 2,
+     "to": 3
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-MULTI-011",
+   "file": "w3c7_multi.jsonl",
+   "input": "妹が絵を描くと、姉が来るので、先生が寝ると、弟が戸を閉める。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-012",
+   "file": "w3c7_multi.jsonl",
+   "input": "姉が薬を飲むが、弟が本を買うけれど、母が絵を描くので、先生が寝る。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-013",
+   "file": "w3c7_multi.jsonl",
+   "input": "母が弟に話した人を兄が呼んだので、姉が窓を開けた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-014",
+   "file": "w3c7_multi.jsonl",
+   "input": "兄が本を読んで、弟が帰ったので、妹が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CUT_KIND_NOT_READ",
+   "path": "M",
+   "reason": "CUT_KIND_NOT_READ:て",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-015",
+   "file": "w3c7_multi.jsonl",
+   "input": "兄が本を読み、弟が帰ったので、妹が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CUT_KIND_NOT_READ",
+   "path": "M",
+   "reason": "CUT_KIND_NOT_READ:並列",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-016",
+   "file": "w3c7_multi.jsonl",
+   "input": "兄が帰れば、弟が来たので、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CUT_KIND_NOT_READ",
+   "path": "M",
+   "reason": "CUT_KIND_NOT_READ:ば",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-017",
+   "file": "w3c7_multi.jsonl",
+   "input": "兄が帰ったら、弟が来たが、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CUT_KIND_NOT_READ",
+   "path": "M",
+   "reason": "CUT_KIND_NOT_READ:たら",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-018",
+   "file": "w3c7_multi.jsonl",
+   "input": "兄が帰っても、弟が来たので、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CUT_KIND_NOT_READ",
+   "path": "M",
+   "reason": "CUT_KIND_NOT_READ:ても",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-019",
+   "file": "w3c7_multi.jsonl",
+   "input": "兄が本を読みながら、弟が来たが、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CUT_KIND_NOT_READ",
+   "path": "M",
+   "reason": "CUT_KIND_NOT_READ:ながら",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-020",
+   "file": "w3c7_multi.jsonl",
+   "input": "兄が帰ったので、弟が来たが、母が座ったけれど、姉が立ったから、妹が寝た。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSES_OVER_LIMIT",
+   "path": null,
+   "reason": "CLAUSES_OVER_LIMIT:5",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-021",
+   "file": "w3c7_multi.jsonl",
+   "input": "兄が帰ったので、弟は来たが、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_SCOPE_AMBIGUOUS",
+   "path": "M",
+   "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-022",
+   "file": "w3c7_multi.jsonl",
+   "input": "本を兄が読んだので、弟が帰ったが、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_SCOPE_AMBIGUOUS",
+   "path": "M",
+   "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-023",
+   "file": "w3c7_multi.jsonl",
+   "input": "兄が帰ると、母が言うので、姉が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "RELATION_TYPE_UNDETERMINED",
+   "path": "M",
+   "reason": "RELATION_TYPE_UNDETERMINED:quote_possible",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-024",
+   "file": "w3c7_multi.jsonl",
+   "input": "兄が帰ると、弟が来たので、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "RELATION_TYPE_UNDETERMINED",
+   "path": "M",
+   "reason": "RELATION_TYPE_UNDETERMINED:condition_past_main",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-025",
+   "file": "w3c7_multi.jsonl",
+   "input": "兄が帰ったので、弟が来たが、母が座ったか。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:question",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W3C7-MULTI-026",
+   "file": "w3c7_multi.jsonl",
+   "input": "兄が帰ったのに、弟が来たので、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_SCOPE_NOT_LISTED",
+   "path": "M",
+   "reason": "CLAUSE_SCOPE_NOT_LISTED:のに",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-TE-001",
+   "file": "w3c7_te.jsonl",
+   "input": "先生が飯を食べて、姉が落ちる。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "T",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-TE-002",
+   "file": "w3c7_te.jsonl",
+   "input": "母が本を読んで姉が落ちる。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "te",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-TE-003",
+   "file": "w3c7_te.jsonl",
+   "input": "生徒が残って、母が立った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "te",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-TE-004",
+   "file": "w3c7_te.jsonl",
+   "input": "兄が来て、生徒が起きる。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "te",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-TE-005",
+   "file": "w3c7_te.jsonl",
+   "input": "弟が座って生徒が残った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "te",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-TE-006",
+   "file": "w3c7_te.jsonl",
+   "input": "妹が歌を歌って、先生が立った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "te",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-TE-007",
+   "file": "w3c7_te.jsonl",
+   "input": "妹が本を読んで姉が残った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "te",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-TE-008",
+   "file": "w3c7_te.jsonl",
+   "input": "妹が戸を閉め、先生が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "T",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-TE-009",
+   "file": "w3c7_te.jsonl",
+   "input": "姉が帰り、生徒が本を読む。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "parallel",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-TE-010",
+   "file": "w3c7_te.jsonl",
+   "input": "妹が立ち、兄が落ちる。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "parallel",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-TE-011",
+   "file": "w3c7_te.jsonl",
+   "input": "先生が戸を閉め、妹が起きた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "T",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-TE-012",
+   "file": "w3c7_te.jsonl",
+   "input": "先生が残り、母が落ちる。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "parallel",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-TE-013",
+   "file": "w3c7_te.jsonl",
+   "input": "母が起き、兄が歌を歌う。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "parallel",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-TE-014",
+   "file": "w3c7_te.jsonl",
+   "input": "兄は本を読んで、歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "SUBJECT_SHARING_NOT_READ",
+   "path": "T",
+   "reason": "SUBJECT_SHARING_NOT_READ:1",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-TE-015",
+   "file": "w3c7_te.jsonl",
+   "input": "弟は絵を描いて、薬を飲んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "SUBJECT_SHARING_NOT_READ",
+   "path": "T",
+   "reason": "SUBJECT_SHARING_NOT_READ:1",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-TE-016",
+   "file": "w3c7_te.jsonl",
+   "input": "母は窓を開け、戸を閉めた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "T",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-TE-017",
+   "file": "w3c7_te.jsonl",
+   "input": "本を読んで、弟が歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "SUBJECT_SHARING_NOT_READ",
+   "path": "T",
+   "reason": "SUBJECT_SHARING_NOT_READ:0",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-TE-018",
+   "file": "w3c7_te.jsonl",
+   "input": "絵を描き、姉が薬を飲んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "SUBJECT_SHARING_NOT_READ",
+   "path": "T",
+   "reason": "SUBJECT_SHARING_NOT_READ:0",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-TE-019",
+   "file": "w3c7_te.jsonl",
+   "input": "兄が本を読んで、弟は歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_SCOPE_AMBIGUOUS",
+   "path": "T",
+   "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-TE-020",
+   "file": "w3c7_te.jsonl",
+   "input": "姉が絵を描き、母は薬を飲んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_SCOPE_AMBIGUOUS",
+   "path": "T",
+   "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-TE-021",
+   "file": "w3c7_te.jsonl",
+   "input": "妹が飯を食べて、先生は窓を開けた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_SCOPE_AMBIGUOUS",
+   "path": "T",
+   "reason": "CLAUSE_SCOPE_AMBIGUOUS:topic_position",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-TE-022",
+   "file": "w3c7_te.jsonl",
+   "input": "兄が読んで、弟が歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ROLE_SHARING_NOT_READ",
+   "path": "T",
+   "reason": "ROLE_SHARING_NOT_READ:patient",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-TE-023",
+   "file": "w3c7_te.jsonl",
+   "input": "姉が描き、母が薬を飲んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ROLE_SHARING_NOT_READ",
+   "path": "T",
+   "reason": "ROLE_SHARING_NOT_READ:patient",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-TE-024",
+   "file": "w3c7_te.jsonl",
+   "input": "先生が食べて、生徒が窓を開けた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "T",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-TE-025",
+   "file": "w3c7_te.jsonl",
+   "input": "本を兄が読んで、弟が帰った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_SCOPE_AMBIGUOUS",
+   "path": "T",
+   "reason": "CLAUSE_SCOPE_AMBIGUOUS:alternative_cut=1",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-TE-026",
+   "file": "w3c7_te.jsonl",
+   "input": "兄が本を読んで、弟が歌を歌ったか。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ",
+   "path": "T",
+   "reason": "CLAUSE_FORM_NOT_READ:question",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-001",
+   "file": "w3c7_quote.jsonl",
+   "input": "姉が生徒が絵を描いたと言った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-QUOTE-002",
+   "file": "w3c7_quote.jsonl",
+   "input": "兄が母が本を読んだと思った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-QUOTE-003",
+   "file": "w3c7_quote.jsonl",
+   "input": "先生が弟が絵を描いたと伝えた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "Q",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-004",
+   "file": "w3c7_quote.jsonl",
+   "input": "弟が先生が窓を開けたと叫んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "Q",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-005",
+   "file": "w3c7_quote.jsonl",
+   "input": "弟が兄が窓を開けたと話した。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "Q",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-006",
+   "file": "w3c7_quote.jsonl",
+   "input": "母が先生が落ちたと考えた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "Q",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-007",
+   "file": "w3c7_quote.jsonl",
+   "input": "母が弟が薬を飲んだと知った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-QUOTE-008",
+   "file": "w3c7_quote.jsonl",
+   "input": "姉が兄が本を買ったと書いた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-QUOTE-009",
+   "file": "w3c7_quote.jsonl",
+   "input": "母が妹が帰ると言う。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-QUOTE-010",
+   "file": "w3c7_quote.jsonl",
+   "input": "母が先生が座ると思う。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-QUOTE-011",
+   "file": "w3c7_quote.jsonl",
+   "input": "母は兄が帰ったと答えた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "Q",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-012",
+   "file": "w3c7_quote.jsonl",
+   "input": "先生は生徒が本を読んだと答えた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "Q",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-013",
+   "file": "w3c7_quote.jsonl",
+   "input": "姉は妹が歌を歌ったと答えた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "Q",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ア行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-014",
+   "file": "w3c7_quote.jsonl",
+   "input": "兄が本を読んだと言った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "QUOTE_CONTENT_NOT_READ",
+   "path": "Q",
+   "reason": "QUOTE_CONTENT_NOT_READ:split=0",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-015",
+   "file": "w3c7_quote.jsonl",
+   "input": "母が手紙を書いたと思った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "QUOTE_CONTENT_NOT_READ",
+   "path": "Q",
+   "reason": "QUOTE_CONTENT_NOT_READ:split=0",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-016",
+   "file": "w3c7_quote.jsonl",
+   "input": "姉が絵を描いたと伝えた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "QUOTE_CONTENT_NOT_READ",
+   "path": "Q",
+   "reason": "QUOTE_CONTENT_NOT_READ:split=0",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-017",
+   "file": "w3c7_quote.jsonl",
+   "input": "先生が薬を飲んだと話した。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "QUOTE_CONTENT_NOT_READ",
+   "path": "Q",
+   "reason": "QUOTE_CONTENT_NOT_READ:split=0",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-018",
+   "file": "w3c7_quote.jsonl",
+   "input": "兄は母に弟が来たと言った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "QUOTE_CONTENT_NOT_READ",
+   "path": "Q",
+   "reason": "QUOTE_CONTENT_NOT_READ:split=2",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-019",
+   "file": "w3c7_quote.jsonl",
+   "input": "姉は先生に妹が帰ったと伝えた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "QUOTE_CONTENT_NOT_READ",
+   "path": "Q",
+   "reason": "QUOTE_CONTENT_NOT_READ:split=2",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-020",
+   "file": "w3c7_quote.jsonl",
+   "input": "母は兄に姉が残ったと話した。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "QUOTE_CONTENT_NOT_READ",
+   "path": "Q",
+   "reason": "QUOTE_CONTENT_NOT_READ:split=2",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-021",
+   "file": "w3c7_quote.jsonl",
+   "input": "兄が弟が来たと喜んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "QUOTE_PREDICATE_NOT_READ",
+   "path": "Q",
+   "reason": "QUOTE_PREDICATE_NOT_READ:P_EMOTION",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-022",
+   "file": "w3c7_quote.jsonl",
+   "input": "姉が妹が帰ったと喜んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "QUOTE_PREDICATE_NOT_READ",
+   "path": "Q",
+   "reason": "QUOTE_PREDICATE_NOT_READ:P_EMOTION",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-023",
+   "file": "w3c7_quote.jsonl",
+   "input": "兄が、弟が来たと言った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "QUOTE_CONTENT_NOT_READ",
+   "path": "Q",
+   "reason": "QUOTE_CONTENT_NOT_READ:comma",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-024",
+   "file": "w3c7_quote.jsonl",
+   "input": "母が、姉が帰ったと思った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "QUOTE_CONTENT_NOT_READ",
+   "path": "Q",
+   "reason": "QUOTE_CONTENT_NOT_READ:comma",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-025",
+   "file": "w3c7_quote.jsonl",
+   "input": "兄が弟が来たと言ったか。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ",
+   "path": "Q",
+   "reason": "CLAUSE_FORM_NOT_READ:question",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNREAD_SPAN:interrogative source does not assert a fact"
+   ]
+  },
+  {
+   "id": "W3C7-QUOTE-026",
+   "file": "w3c7_quote.jsonl",
+   "input": "兄が弟が来たと言ったので、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_SCOPE_AMBIGUOUS",
+   "path": "M",
+   "reason": "CLAUSE_SCOPE_AMBIGUOUS:cuts=1",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-001",
+   "file": "w3c7_sharing.jsonl",
+   "input": "先生が寝たが、弟が残ったので、妹が窓を開けた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-002",
+   "file": "w3c7_sharing.jsonl",
+   "input": "弟が窓を開けるが、生徒が寝るが、妹が立つ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-003",
+   "file": "w3c7_sharing.jsonl",
+   "input": "生徒が本を読むから、妹が寝るので、先生が来る。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-004",
+   "file": "w3c7_sharing.jsonl",
+   "input": "生徒が立つが、妹が飯を食べるけれど、弟が本を読んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-005",
+   "file": "w3c7_sharing.jsonl",
+   "input": "母が来るから、姉が歌を歌うので、妹が窓を開けた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-006",
+   "file": "w3c7_sharing.jsonl",
+   "input": "生徒が帰ったから、母が戸を閉めたので、兄が残る。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-007",
+   "file": "w3c7_sharing.jsonl",
+   "input": "弟が窓を開けて、兄が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "T",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-008",
+   "file": "w3c7_sharing.jsonl",
+   "input": "先生が絵を描いて、弟が起きた。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "te",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SHARE-009",
+   "file": "w3c7_sharing.jsonl",
+   "input": "妹が本を読んで、生徒が残った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "te",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SHARE-010",
+   "file": "w3c7_sharing.jsonl",
+   "input": "兄が来て、先生が戸を閉めた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "T",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-011",
+   "file": "w3c7_sharing.jsonl",
+   "input": "弟が座って、先生が窓を開けた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "T",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-012",
+   "file": "w3c7_sharing.jsonl",
+   "input": "生徒が先生が座ったと言った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SHARE-013",
+   "file": "w3c7_sharing.jsonl",
+   "input": "妹が母が帰ったと言った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-SHARE-014",
+   "file": "w3c7_sharing.jsonl",
+   "input": "兄は本を読んだので、歌を歌ったが、弟が窓を開けた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-015",
+   "file": "w3c7_sharing.jsonl",
+   "input": "母は薬を飲んだから、戸を閉めたけれど、姉が飯を食べた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-016",
+   "file": "w3c7_sharing.jsonl",
+   "input": "先生は絵を描いたが、本を買ったので、生徒が窓を開けた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-017",
+   "file": "w3c7_sharing.jsonl",
+   "input": "姉は飯を食べて、薬を飲んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "T",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-018",
+   "file": "w3c7_sharing.jsonl",
+   "input": "妹は戸を閉めて、窓を開けた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "T",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-マ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-019",
+   "file": "w3c7_sharing.jsonl",
+   "input": "歌を歌って、母が飯を食べた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "T",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-020",
+   "file": "w3c7_sharing.jsonl",
+   "input": "兄が泣いたので、弟が帰ったが、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ROLE_SHARING_NOT_READ",
+   "path": "M",
+   "reason": "ROLE_SHARING_NOT_READ:patient",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-021",
+   "file": "w3c7_sharing.jsonl",
+   "input": "姉が帰ったので、母が笑ったが、妹が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ROLE_SHARING_NOT_READ",
+   "path": "M",
+   "reason": "ROLE_SHARING_NOT_READ:patient",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-022",
+   "file": "w3c7_sharing.jsonl",
+   "input": "先生が喜んだから、弟が来たけれど、母が立った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ROLE_SHARING_NOT_READ",
+   "path": "M",
+   "reason": "ROLE_SHARING_NOT_READ:patient",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-023",
+   "file": "w3c7_sharing.jsonl",
+   "input": "兄が笑って、弟が本を読んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ROLE_SHARING_NOT_READ",
+   "path": "T",
+   "reason": "ROLE_SHARING_NOT_READ:patient",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-024",
+   "file": "w3c7_sharing.jsonl",
+   "input": "母が泣き、姉が歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ROLE_SHARING_NOT_READ",
+   "path": "T",
+   "reason": "ROLE_SHARING_NOT_READ:patient",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-025",
+   "file": "w3c7_sharing.jsonl",
+   "input": "生徒が窓を開けたので、妹が帰ったが、母が喜んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-SHARE-026",
+   "file": "w3c7_sharing.jsonl",
+   "input": "兄が弟が笑ったと言った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ROLE_SHARING_NOT_READ",
+   "path": "Q",
+   "reason": "ROLE_SHARING_NOT_READ:patient",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-001",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "兄が帰ったので、弟が来たが、母が座った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "contrast",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-ANA-002",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "彼が帰ったので、弟が来たが、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ANAPHORA_NOT_READ",
+   "path": "M",
+   "reason": "ANAPHORA_NOT_READ:彼",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-003",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "姉が本を読んだから、妹が寝たけれど、先生が立った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-ナ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-004",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "姉がそれを読んだから、妹が寝たけれど、先生が立った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ANAPHORA_NOT_READ",
+   "path": "M",
+   "reason": "ANAPHORA_NOT_READ:それ",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-005",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "弟が帰ったので、母が薬を飲んだが、生徒が残った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "contrast",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-ANA-006",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "弟が帰ったので、母があれを飲んだが、生徒が残った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ANAPHORA_NOT_READ",
+   "path": "M",
+   "reason": "ANAPHORA_NOT_READ:あれ",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-007",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "先生が来たが、兄が本を買ったので、姉が座った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "contrast",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-ANA-008",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "先生が来たが、兄がこれを買ったので、姉が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ANAPHORA_NOT_READ",
+   "path": "M",
+   "reason": "ANAPHORA_NOT_READ:これ",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-009",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "妹が立ったから、弟が飯を食べたので、兄が寝た。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-010",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "妹が立ったから、彼女が飯を食べたので、兄が寝た。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ANAPHORA_NOT_READ",
+   "path": "M",
+   "reason": "ANAPHORA_NOT_READ:彼女",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-011",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "兄が本を読んで、弟が歌を歌った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "te",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-ANA-012",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "彼が本を読んで、弟が歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ANAPHORA_NOT_READ",
+   "path": "T",
+   "reason": "ANAPHORA_NOT_READ:彼",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-013",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "姉が絵を描いて、母が薬を飲んだ。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "te",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-ANA-014",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "姉がそれを描いて、母が薬を飲んだ。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ANAPHORA_NOT_READ",
+   "path": "T",
+   "reason": "ANAPHORA_NOT_READ:それ",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-015",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "先生が帰って、生徒が飯を食べた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "T",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-バ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "RELATION_NOT_MAPPED:frame"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-016",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "彼女が帰って、生徒が飯を食べた。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ANAPHORA_NOT_READ",
+   "path": "T",
+   "reason": "ANAPHORA_NOT_READ:彼女",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-017",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "兄が弟が帰ったと言った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-ANA-018",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "兄が彼が帰ったと言った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ANAPHORA_NOT_READ",
+   "path": "Q",
+   "reason": "ANAPHORA_NOT_READ:彼",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-019",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "母が姉が座ったと思った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "Q",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "quote",
+     "type": "quote",
+     "from": 1,
+     "to": 0
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-ANA-020",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "母がこの姉が座ったと思った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ANAPHORA_NOT_READ",
+   "path": "Q",
+   "reason": "ANAPHORA_NOT_READ:この",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-021",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "兄が大きな本を読んだので、弟が帰ったが、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ANAPHORA_NOT_READ",
+   "path": "M",
+   "reason": "ANAPHORA_NOT_READ:大きな",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-022",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "姉が同じ薬を飲んで、妹が歌を歌った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ANAPHORA_NOT_READ",
+   "path": "T",
+   "reason": "ANAPHORA_NOT_READ:同じ",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "UNSUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-023",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "先生がその窓を開けたから、生徒が帰ったが、母が座った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "ANAPHORA_NOT_READ",
+   "path": "M",
+   "reason": "ANAPHORA_NOT_READ:その",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-024",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "兄が絵を描いたので、弟が帰ったが、母が座った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "M",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "finite",
+     "type": "cause",
+     "from": 0,
+     "to": 1
+    },
+    {
+     "kind": "finite",
+     "type": "contrast",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  },
+  {
+   "id": "W3C7-ANA-025",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "先生が窓を開けたから、生徒が帰ったが、母が立った。",
+   "verdict": "correct",
+   "readable": false,
+   "entry_expect": "abstain",
+   "w3c7_expect": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED",
+   "path": "M",
+   "reason": "CLAUSE_FORM_NOT_READ:PLACEMENT_PREDICATE_POSSIBLY_DERIVED:下一段-カ行",
+   "edges": [],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": [
+    "NO_SUPPORTED_CLAUSE"
+   ]
+  },
+  {
+   "id": "W3C7-ANA-026",
+   "file": "w3c7_anaphora.jsonl",
+   "input": "姉が薬を飲んで、妹が歌を歌った。",
+   "verdict": "correct",
+   "readable": true,
+   "entry_expect": "read",
+   "w3c7_expect": "READ",
+   "path": "T",
+   "reason": null,
+   "edges": [
+    {
+     "kind": "te",
+     "type": "sequence",
+     "from": 0,
+     "to": 1
+    }
+   ],
+   "entry_mismatch": false,
+   "expect_mismatch": false,
+   "structure_mismatch": false,
+   "reasons": null
+  }
+ ]
+}

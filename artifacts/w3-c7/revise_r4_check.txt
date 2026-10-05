@@ -1,0 +1,8 @@
+gate ids 41
+multi 26 26
+te 26 26
+quote 26 26
+sharing 26 26
+anaphora 26 26
+changed 41 set==gate True read32? 32
+check_exit=0

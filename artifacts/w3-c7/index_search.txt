@@ -1,0 +1,45 @@
+### 複文 節の分割 関係の辺
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "複文 節の分割 関係の辺",
+  "searched": 695,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 56,
+    "module": 294,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 引用 quote 節
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "引用 quote 節",
+  "searched": 695,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 56,
+    "module": 294,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 照応 ANAPHORA
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "照応 ANAPHORA",
+  "searched": 695,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 56,
+    "module": 294,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

@@ -1,0 +1,11 @@
+w3c7_anaphora.jsonl rows=26 read=13 abstain=13 errors=0
+  by_w3c7_expect={"ANAPHORA_NOT_READ": 13, "READ": 13}
+w3c7_multi.jsonl rows=26 read=13 abstain=13 errors=0
+  by_w3c7_expect={"CLAUSES_OVER_LIMIT": 1, "CLAUSE_FORM_NOT_READ": 1, "CLAUSE_SCOPE_AMBIGUOUS": 2, "CLAUSE_SCOPE_NOT_LISTED": 1, "CUT_KIND_NOT_READ": 6, "READ": 13, "RELATION_TYPE_UNDETERMINED": 2}
+w3c7_quote.jsonl rows=26 read=13 abstain=13 errors=0
+  by_w3c7_expect={"CLAUSE_FORM_NOT_READ": 1, "CLAUSE_SCOPE_AMBIGUOUS": 1, "QUOTE_CONTENT_NOT_READ": 9, "QUOTE_PREDICATE_NOT_READ": 2, "READ": 13}
+w3c7_sharing.jsonl rows=26 read=13 abstain=13 errors=0
+  by_w3c7_expect={"READ": 13, "ROLE_SHARING_NOT_READ": 7, "SUBJECT_SHARING_NOT_READ": 6}
+w3c7_te.jsonl rows=26 read=13 abstain=13 errors=0
+  by_w3c7_expect={"CLAUSE_FORM_NOT_READ": 1, "CLAUSE_SCOPE_AMBIGUOUS": 4, "READ": 13, "ROLE_SHARING_NOT_READ": 3, "SUBJECT_SHARING_NOT_READ": 5}
+total rows=130 errors=0

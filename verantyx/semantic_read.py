@@ -263,7 +263,8 @@ def _read_ja(text, placement=None):
     except _Abstain as stop:
         if placement is not None:
             out = _typed_reread_ja(text, toks, view, R, placement, stop, unsupported_report)
-            return out if out['readable'] else _w3b3_read_ja(text, R, placement, out, unsupported_report)
+            out = out if out['readable'] else _w3b3_read_ja(text, R, placement, out, unsupported_report)
+            return out if out['readable'] else R.w3c7_read_ja(text, placement, out, unsupported_report)
         return _refusal('ja', stop.kind, [stop.reason], unsupported_report)
     return _answer('ja', clauses, relations, meta, unsupported_report)
 

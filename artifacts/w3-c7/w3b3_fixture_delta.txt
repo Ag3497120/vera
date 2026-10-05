@@ -1,0 +1,17 @@
+CHANGED W3B3-PAR-001 兄が本を読んで、弟が歌を歌った。 before=abstain/False after=correct/True  (before reasons=['RELATION_NOT_MAPPED:frame'])
+CHANGED W3B3-PAR-002 母が絵を描いて、姉が手紙を書いた。 before=abstain/False after=correct/True  (before reasons=['RELATION_NOT_MAPPED:frame'])
+CHANGED W3B3-PAR-003 先生が本を読んで、生徒が薬を飲んだ。 before=abstain/False after=correct/True  (before reasons=['RELATION_NOT_MAPPED:frame'])
+CHANGED W3B3-PAR-004 兄が来て弟が帰った。 before=abstain/False after=correct/True  (before reasons=['RELATION_NOT_MAPPED:frame'])
+CHANGED W3B3-PAR-005 姉が着いて母が座った。 before=abstain/False after=correct/True  (before reasons=['RELATION_NOT_MAPPED:frame'])
+CHANGED W3B3-PAR-006 父が起きて、祖父が立った。 before=abstain/False after=correct/True  (before reasons=['RELATION_NOT_MAPPED:frame'])
+CHANGED W3B3-PAR-007 弟が転んで、兄が来た。 before=abstain/False after=correct/True  (before reasons=['RELATION_NOT_MAPPED:frame'])
+CHANGED W3B3-PAR-008 母が戻って、姉が着いた。 before=abstain/False after=correct/True  (before reasons=['RELATION_NOT_MAPPED:frame'])
+CHANGED W3B3-PAR-016 兄が本を読み、弟が歌を歌った。 before=abstain/False after=correct/True  (before reasons=['RELATION_NOT_MAPPED:frame'])
+CHANGED W3B3-PAR-017 母が絵を描き、姉が手紙を書いた。 before=abstain/False after=correct/True  (before reasons=['RELATION_NOT_MAPPED:frame'])
+CHANGED W3B3-PAR-018 先生が本を読み、生徒が薬を飲んだ。 before=abstain/False after=correct/True  (before reasons=['RELATION_NOT_MAPPED:frame'])
+CHANGED W3B3-PAR-019 兄が着き、弟が帰った。 before=abstain/False after=correct/True  (before reasons=['RELATION_NOT_MAPPED:frame'])
+CHANGED W3B3-PAR-020 姉が戻り、母が座った。 before=abstain/False after=correct/True  (before reasons=['RELATION_NOT_MAPPED:frame'])
+CHANGED W3B3-PAR-021 父が起き、祖父が立った。 before=abstain/False after=correct/True  (before reasons=['RELATION_NOT_MAPPED:frame'])
+CHANGED W3B3-PAR-022 弟が転び、兄が来た。 before=abstain/False after=correct/True  (before reasons=['RELATION_NOT_MAPPED:frame'])
+rows=203 changed=15
+changed_but_not_correct=[]
