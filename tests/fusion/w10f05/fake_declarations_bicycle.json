@@ -1,0 +1,388 @@
+{
+ "_intended_wrong": [
+  "スプロケット",
+  "フレーム",
+  "ペダル",
+  "ホイール",
+  "午前",
+  "客"
+ ],
+ "アウターケーシング": {
+  "definition": "アウターケーシングはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "エアロスポーク": {
+  "definition": "エアロスポークはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "エア抜き": {
+  "definition": "エア抜きはEVENT_ACTである。",
+  "hypernym": "EVENT_ACT",
+  "type": "EVENT_ACT"
+ },
+ "カセットスプロケット": {
+  "definition": "カセットスプロケットはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "キャリパー": {
+  "definition": "キャリパーはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "クイック": {
+  "definition": null,
+  "hypernym": null,
+  "type": null
+ },
+ "グリス": {
+  "definition": "グリスはSUBSTANCE_FOODである。",
+  "hypernym": "SUBSTANCE_FOOD",
+  "type": "SUBSTANCE_FOOD"
+ },
+ "ケーシング": {
+  "definition": "ケーシングはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "シー": {
+  "definition": null,
+  "hypernym": null,
+  "type": null
+ },
+ "シート": {
+  "definition": "シートはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "シートチューブ": {
+  "definition": "シートチューブはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "シートポスト": {
+  "definition": "シートポストはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "シーラント": {
+  "definition": "シーラントはSUBSTANCE_FOODである。",
+  "hypernym": "SUBSTANCE_FOOD",
+  "type": "SUBSTANCE_FOOD"
+ },
+ "シール": {
+  "definition": "シールはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "ステム": {
+  "definition": "ステムはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "スプロケット": {
+  "definition": "スプロケットはPLANTである。",
+  "hypernym": "PLANT",
+  "type": "PLANT"
+ },
+ "スルーアクスル": {
+  "definition": "スルーアクスルはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "ダウンチューブ": {
+  "definition": "ダウンチューブはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "チェーンチェッカー": {
+  "definition": "チェーンチェッカーはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "チェーンリング": {
+  "definition": "チェーンリングはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "チューブ": {
+  "definition": "チューブはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "テープ": {
+  "definition": "テープはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "ディスクローター": {
+  "definition": "ディスクローターはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "ディレイラー": {
+  "definition": "ディレイラーはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "トップチューブ": {
+  "definition": "トップチューブはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "トルク": {
+  "definition": "トルクはABSTRACTである。",
+  "hypernym": "ABSTRACT",
+  "type": "ABSTRACT"
+ },
+ "ハンドル": {
+  "definition": "ハンドルはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "バー": {
+  "definition": "バーはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "バーテープ": {
+  "definition": "バーテープはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "パッド": {
+  "definition": "パッドはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "フォーク": {
+  "definition": "フォークはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "フリー": {
+  "definition": null,
+  "hypernym": null,
+  "type": null
+ },
+ "フリーホイール": {
+  "definition": "フリーホイールはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "フルード": {
+  "definition": "フルードはSUBSTANCE_FOODである。",
+  "hypernym": "SUBSTANCE_FOOD",
+  "type": "SUBSTANCE_FOOD"
+ },
+ "フレーム": {
+  "definition": "フレームはPERSONである。",
+  "hypernym": "PERSON",
+  "type": "PERSON"
+ },
+ "フロントディレイラー": {
+  "definition": "フロントディレイラーはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "ブラケット": {
+  "definition": "ブラケットはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "ブレーキ": {
+  "definition": "ブレーキはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "ブレーキキャリパー": {
+  "definition": "ブレーキキャリパーはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "ペダル": {
+  "definition": "ペダルはEVENT_ACTである。",
+  "hypernym": "EVENT_ACT",
+  "type": "EVENT_ACT"
+ },
+ "ホイール": {
+  "definition": "ホイールはPLACEである。",
+  "hypernym": "PLACE",
+  "type": "PLACE"
+ },
+ "ボルト": {
+  "definition": "ボルトはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "ポスト": {
+  "definition": "ポストはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "ラント": {
+  "definition": null,
+  "hypernym": null,
+  "type": null
+ },
+ "リアディレイラー": {
+  "definition": "リアディレイラーはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "リムテープ": {
+  "definition": "リムテープはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "リング": {
+  "definition": "リングはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "レス": {
+  "definition": null,
+  "hypernym": null,
+  "type": null
+ },
+ "位置": {
+  "definition": "位置はABSTRACTである。",
+  "hypernym": "ABSTRACT",
+  "type": "ABSTRACT"
+ },
+ "作業": {
+  "definition": "作業はEVENT_ACTである。",
+  "hypernym": "EVENT_ACT",
+  "type": "EVENT_ACT"
+ },
+ "作業台": {
+  "definition": "作業台はARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "修理": {
+  "definition": "修理はEVENT_ACTである。",
+  "hypernym": "EVENT_ACT",
+  "type": "EVENT_ACT"
+ },
+ "傷": {
+  "definition": "傷はSTATE_PROPERTYである。",
+  "hypernym": "STATE_PROPERTY",
+  "type": "STATE_PROPERTY"
+ },
+ "午前": {
+  "definition": "午前はPLACEである。",
+  "hypernym": "PLACE",
+  "type": "PLACE"
+ },
+ "午後": {
+  "definition": "午後はTIMEである。",
+  "hypernym": "TIME",
+  "type": "TIME"
+ },
+ "圧": {
+  "definition": "圧はSTATE_PROPERTYである。",
+  "hypernym": "STATE_PROPERTY",
+  "type": "STATE_PROPERTY"
+ },
+ "完成": {
+  "definition": "完成はEVENT_ACTである。",
+  "hypernym": "EVENT_ACT",
+  "type": "EVENT_ACT"
+ },
+ "客": {
+  "definition": "客はARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "店頭": {
+  "definition": "店頭はPLACEである。",
+  "hypernym": "PLACE",
+  "type": "PLACE"
+ },
+ "振れ取り": {
+  "definition": "振れ取りはEVENT_ACTである。",
+  "hypernym": "EVENT_ACT",
+  "type": "EVENT_ACT"
+ },
+ "整理": {
+  "definition": "整理はEVENT_ACTである。",
+  "hypernym": "EVENT_ACT",
+  "type": "EVENT_ACT"
+ },
+ "朝": {
+  "definition": "朝はTIMEである。",
+  "hypernym": "TIME",
+  "type": "TIME"
+ },
+ "棚": {
+  "definition": "棚はARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "歪み": {
+  "definition": "歪みはSTATE_PROPERTYである。",
+  "hypernym": "STATE_PROPERTY",
+  "type": "STATE_PROPERTY"
+ },
+ "油圧": {
+  "definition": "油圧はABSTRACTである。",
+  "hypernym": "ABSTRACT",
+  "type": "ABSTRACT"
+ },
+ "油圧ブレーキ": {
+  "definition": "油圧ブレーキはARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "注油する": {
+  "frame": [
+   {
+    "particle": "を",
+    "roles": [
+     {
+      "role": "patient",
+      "types": [
+       "ARTIFACT"
+      ]
+     }
+    ]
+   },
+   {
+    "particle": "に",
+    "roles": [
+     {
+      "role": "goal",
+      "types": [
+       "ARTIFACT"
+      ]
+     }
+    ]
+   },
+   {
+    "particle": "で",
+    "roles": [
+     {
+      "role": "instrument",
+      "types": [
+       "SUBSTANCE_FOOD"
+      ]
+     }
+    ]
+   }
+  ],
+  "ptype": "P_ACT"
+ },
+ "消耗品": {
+  "definition": "消耗品はARTIFACTである。",
+  "hypernym": "ARTIFACT",
+  "type": "ARTIFACT"
+ },
+ "空気": {
+  "definition": "空気はSUBSTANCE_FOODである。",
+  "hypernym": "SUBSTANCE_FOOD",
+  "type": "SUBSTANCE_FOOD"
+ }
+}

@@ -2753,3 +2753,53 @@ N7は例外のない基準として扱う。既存テストとの契約衝突が
 - **手順記録**: 最初のr7 `cmp`は別ラウンドのscratchpad出力を参照してexit 1だった。ファイル内容SHA-256がその前後ログに記された総hashと異なると分かり、N1スクリプトの正規凍結出力 `scratchpad/W3-a6-impl/n1/` に対して比較し直すとr7/r8/配置なし・読解入口の全cmpがexit 0。失敗出力も `n1_r7_comparison.txt` に残した。検査JSONを読み取る補助確認で一度だけ指定外のsystem `python3` を使ったが、`verantyx`を読み込まず書込みもしないコマンドであり、その後の生成・測定・テストは指定venvを使用した。
 
 <!-- w3a6-measured:end -->
+
+## 12.19 W10-f05: 配置の層と文書駆動の育成（事前登録）
+
+事前登録の日時は `artifacts/w10-f05/prereg_time.txt`（書く前と書いた後の 2 行）。検査データの凍結（`data_freeze_time.txt`）はこの節より後。以下の数値は閾値・件数の約束であり、測定値ではない（測定値は §12.19.M に出力ファイルつきで機械で貼る）。
+
+### K290〜K297（チケットから）
+- **K290 層は基底を上書きしない**: 基底が DECIDED（direct）の語は層を見ない。層の答えが使われるのは基底が UNPLACED／UNKNOWN／MULTIPLE のときだけ。MULTIPLE の場合、層の direct は基底の候補に含まれる型のときだけ使う（候補外なら `LAYER_TYPE_NOT_AMONG_CANDIDATES` で基底のまま）。
+- **K291 direct の条件**: 層で direct になるのは (a) 生成×分布の一致（W3-a2/W3-a6 と同じ規則・閾値。分布の出所の数は文書の数で、`min_sources` は設定（既定 1）。文書が 1 本なら 1 本の中で `rd_*` の閾値を満たすこと）、(b) 人の確認、のどちらか。LLM の申告だけ・再読一致だけは `ESTIMATED` 止まり。
+- **K292 分布は与えた文書だけ**: 文書群以外（生成コーパス・Web）を分布に混ぜない。文書ごとに出所を分け、同じ文書を 2 回数えない（本文の sha で重複を除く）。
+- **K293 記録は変えない**: 文書の本文は 1 文字も変えない。層と台帳は記録とは別のファイル。層を外せば基点の振る舞いに戻る。
+- **K294 台帳の連鎖**: 層への書き込みはすべて台帳の行（`promoted_to_layer`）として連鎖に残る。層の SQLite から台帳の行 id を引ける。
+- **K295 後段**: `fake`（台本）で全規則をテスト、本物は Ollama のローカル接続だけ。後段の失敗は型つき失敗で、層に何も書かない。
+- **K296 秘匿**: 既定で LLM へ渡すのは候補の語と、その語を含む文の型つきの穴の形。文の全文を渡す `--send-sentences` は明示のときだけ（台帳に印）。
+- **K297 不変**: 層なし・`VERA_PLACEMENT_LAYER` 未設定のとき、`vera read/ask/serve` と `coarse_place.query` の出力は基点と byte 一致。
+
+### 設計の確定（指示書 §1.1〜§1.9 の写し）
+1. **層のファイル**（`verantyx/placement_layer.py`）: 1 層 = SQLite 1 ファイル。`spec` が `/` を含むか `.sqlite` で終われば **パス**、それ以外は **名前**（`^[A-Za-z0-9_.-]{1,64}$`）で `$VERA_PLACEMENT_LAYER_ROOT/<name>.sqlite`（ROOT が無ければ `LAYER_UNAVAILABLE:ROOT_UNSET`。ホームなどを探さない）。表 `meta(k,v)`（`schema=verantyx.placement_layer/1`・`name`・`base_content_sha256`・`created_ts`）と `entries(id, word(NFKC), ns, type, origin ∈ {layer_confirmed, layer_estimated, layer_human}, decided_by, evidence, role_frame, ledger_store_id, ledger_seq, ledger_key, ts)`。**追記のみ**（UPDATE・DELETE をしない）。書き込みは `write_entry` 1 つだけ: 先に台帳へ `promoted_to_layer` 行 → その `seq` を層の行に書く。層の `base_content_sha256` と基底の sha が違えば `LAYER_BASE_MISMATCH` で何も書かない。
+2. **層の答え**: `coarse_place.query(term, …, placement=…, layer=None)`。`layer` も環境変数 `VERA_PLACEMENT_LAYER` も無い（空を含む）ときは今の答えをそのまま返す（鍵を足さない・`placement_layer` を import もしない）。層ありのとき、基底の `state` と層の行の畳み込み（direct の型の集合 D、推定の型の集合 E）で `layer`（`base`|`overlay:<name>`|`none`）と `layer_status`（閉じた一覧）を決める。
+   - NO_PLACEMENT → `none`／`BASE_NO_PLACEMENT`。DECIDED（estimated 含む）→ `base`／`BASE_DECIDED`（層を見ない）。
+   - UNPLACED/UNKNOWN/MULTIPLE: 層が開けない → `LAYER_UNAVAILABLE:<MISSING|UNREADABLE|ROOT_UNSET|BAD_NAME|BASE_MISMATCH>`、行なし → `LAYER_HAS_NO_ENTRY`、|D|≥2 → `LAYER_CONFLICT`（同点は棄権）、D 空・E あり → `LAYER_ESTIMATED_NOT_USED`（答えの核は変えない）。いずれも基底のまま。
+   - UNPLACED/UNKNOWN で D={T} → 層の direct（`LAYER_DIRECT_USED`）。MULTIPLE で D={T}、T∈基底の `top` → 層の direct。T∉`top` → 基底のまま `LAYER_TYPE_NOT_AMONG_CANDIDATES`。
+   - 層の direct の答えは基点の direct と同じ鍵・同じ順＋末尾に `layer`・`layer_status`。`decided_by` は `decide_word` の `by` そのまま（`gen_definition` を消さない）、人の確認は `["layer_human"]`。`frame_status` は名詞 `NOT_PREDICATE`・述語 `NOT_CONFIRMED`（`frame` は null）。`role_frame_*` は基底の答えにその鍵があるときだけ。`origin` に `layer_*` は入れない（契約で `ORIGIN_UNKNOWN`）。
+3. **育成**（`verantyx/placement_grow.py`）: 文書を `document_loaders` で読み、本文の NFKC の sha で重複を除く。文は `cli._qc_records` で切る。builder の `tokenize`/`analyze` を **import して**数える。候補 = 基底（層なし）が UNPLACED／UNKNOWN／MULTIPLE の語（名詞と述語の両方に出る語は `KIND_SPLIT` で問わない）。LLM へは閉じた enum の JSON schema で、名詞は定義文・上位語・18 型、述語は述語の型と役割つきの枠。バッチの失敗・無効は `backend_failed`／`declaration_invalid:*` として台帳に残し層に書かない。既定で送るのは候補の語・種類と、その語を含む文（最大 3）の型つきの穴の形だけ。
+4. **文書を分布の腕に**: 各文書は別の出所 `doc:<本文 sha の先頭 12>`。述語は `role_distribution`、名詞は `hearst`（builder と同じ数え方。充填物の型は **基底の型だけ**）。ほかの腕は作らず `ARM_NOT_BUILT:<腕>` と数える。設定は基底の `cfg` を写し `rd_min_sources=role_frame_min_sources=--min-sources` だけ置き換える（閾値は下げない）。判定は `coarse_types.decide_word`。直 direct かつ生成の腕が `by` に入る → `layer_confirmed`。文書の腕だけで決まり型が申告と同じ → `layer_confirmed`、違う → 書かない `GEN_DISAGREES_WITH_DOCUMENTS`。生成だけ（DECIDED/estimated）→ `layer_estimated`。それ以外は書かない（理由を数える）。上位語の基底の型が申告の型と違えば生成の票にしない（`HYPERNYM_TYPE_DISAGREES`）。
+5. **昇格** `vera ledger promote --layer`: `fold()` の `promotable` の行について。`human_confirmed` → `layer_human`。`reread_agreed ≥ N` だけ → `layer_estimated`（direct にしない）。基底が DECIDED → `SKIP_BASE_DECIDED`。既に同じ (key, 層, origin) の行がある → `SKIP_ALREADY_PROMOTED`（何度流しても同じ）。`distribution_backed` だけは fill の証言なら基底が DECIDED なので skip、grow の証言なら育成の時に書いてある（`SKIP_ALREADY_IN_LAYER`）。`promoted_to_layer` 行 = `{type, key, word, candidate, declared_type, layer_name, layer_base_sha256, origin, decided_by, evidence, fill_id, from_seq}`。
+6. **門 (c) のソブリン**: `VERA_SOVEREIGN_ROOT`・`VERA_SOVEREIGN_STORE` が **両方とも無い** → 今と同じ（`gate_log` に鍵を足さない・`sovereign_checked=False`）。あるとき `basis_policy._read_sovereign(True)` で読み、`ACTIVE_CONSENTED` の発話（`payload.text`／`payload.phrase`）を `decode_grammar.cross_of` で十字にして、同じ `_gate_c` を別の `records` で呼ぶ。矛盾 → `GATE_C_CONTRADICTS_SOVEREIGN:<event_id>`。`sovereign_checked=True` は実際に 1 件以上比べた（n>0）ときだけ。`c_sovereign={state, compared, note}` を `gate_log` に足す。`_gate_c` の戻り値は変えない。
+7. **入口**: `vera read/ask/serve/chat --layer <name|path>`（= 環境変数 `VERA_PLACEMENT_LAYER`）。`FusionConfig.layer` があれば `vera` 欄の最後に `placement_layer = {name, status, growth}`（`vera.layer`（融合の層 0/1）とは別の鍵。J12）。
+8. **育ちの指標** `vera placement growth --layer`: 語数（direct・human・estimated・conflict）、行数、最後に育った時刻、`--ledger-file` があれば台帳の行数（種類ごと）・この層への `promoted_to_layer` 行数・`chain_ok`。
+
+### 判断の記録（指示書 §1.9）
+J1 層の鍵は層が指定されたときだけ付く。J2 K290 は `state` だけで読む。J3 層の ESTIMATED は答えの核を変えない。J4 `decided_by` は `by` そのまま（名詞の生成×文書の一致は基点と同じく読解器に読まれない: `PLACEMENT_DIRECT_VIA_GENERATED`）。J5 文書の腕は `role_distribution`（述語）と `hearst`（名詞）だけ・充填物の型は基底だけ。J6 名詞・述語の両方に出る語は問わない。J7 上位語の基底の型が申告と違えば生成の票にしない。J8 文書だけで決まった型が申告と違えば書かない。J9 grow の証言は `ADOPTED`・`candidate=語自身`。J10 promote の規則。J11 direct の型が 2 つ以上 → `LAYER_CONFLICT`。J12 serve の鍵は `placement_layer`。J13 ソブリンは `ACTIVE_CONSENTED` の発話だけを比べる。J14 層の名前の解き方。J15 基点の CONFIRMED の役割枠は読解器に `ROLE_FRAME_INVALID:ENTRY_KEYS` で拒まれる既存の不整合（直さない・報告）。J16 層の述語の `frame_status` は `NOT_CONFIRMED`。
+
+### 採点の定義（R5。検査データより前に登録）
+文書 QA の問い 30（答えが文書にある 20・無い 10）を `vera ask --mode round5 --document <doc> [--layer <spec>] -- <問い>` で別プロセスで流す。`verdict == "ANSWER"` かつ `sorted(values) == sorted(expect.values)` → **正答**。`verdict == "ANSWER"` でそれ以外（`expect == "ABSTAIN"` の問いへの ANSWER を含む）→ **誤答**。それ以外 → **棄権**。出た verdict の種類はすべて数える。ANSWER 以外で `values` が空でないものは「要確認」として列挙する。条件: 3 条件（層なし・fake の層・本物の層）とも誤答 0。正答の増分を報告し、増えなければ理由を型（`READER_NOT_REACHED`・`LAYER_WORD_NOT_IN_QUESTION`・`LAYER_NO_DIRECT`）で機械的に出す。
+
+### 検査データの仕様（実装より前に凍結）
+主題は **自転車の整備**。`tests/fusion/w10f05/domain_bicycle.txt`（1 行 1 文、60〜100 文。読解器が読める平叙文中心＋`AやBなどのY` の文を数文）。基底 r9 で UNPLACED／MULTIPLE の語が 30 以上含まれること（`artifacts/w10-f05/candidates_r9.txt`）。`domain_bicycle_qa.jsonl`（30 行、`{id, question, expect}`。20 問は文書の 1 文に答え、うち 10 問以上は候補の語が問いか答えの文に入る。10 問は答えが文書に無く `expect="ABSTAIN"`）。`fake_declarations_bicycle.json`（候補の語ごとの fake の申告。わざと誤った型を 5 語以上、`_intended_wrong` に列挙）。`synthetic/`（3 経路を必ず働かせる証拠の行の組と、`hearst` を 2 回以上起こす短い文書 1 本）。隠しバンクの文は使わない。
+
+### 12.19.M W10-f05 の測定（出力は `artifacts/w10-f05/`。数値は各ファイルから）
+- **検査データ**（凍結 `data_freeze.sha256` / `data_freeze_time.txt`。事前登録 `prereg_time.txt` の後）: 自転車の整備の文書 79 文、基底 r9 で UNPLACED／UNKNOWN／MULTIPLE の語 69（`candidates_r9.txt`。述語は 1 のみ。断片語を含む）、問い 30（答えあり 20・なし 10）、fake の申告に誤り 6 語（`_intended_wrong`）。
+- **R1（K297）**: 入口 4,149 文は none・r8・r9 とも基点と byte 一致（`r1_entry.txt`）。`query` の全数（1,766,903 語）は r8・r9 とも一致（`r1_query.txt`）。serve 310 行一致（`r1_serve.txt`）。z1 の 12 case 一致（`r1_z1_cmp.txt`）。
+- **R2（K290）**: 基底 direct 50 語は層で別の型を書いても 2 鍵を除き byte 一致・`BASE_DECIDED`、MULTIPLE の候補内 10 語は `LAYER_DIRECT_USED`、候補外 10 語は `LAYER_TYPE_NOT_AMONG_CANDIDATES`（`r2_k290.json`）。
+- **R3（fake）**: 候補 69、申告 64（名詞 63・述語 1）、`layer_confirmed` 2・`layer_estimated` 61・書かない 6（`DECLARATION_NULL` 5・`HYPERNYM_TYPE_DISAGREES` 1）（`r3_grow_fake.json`）。誤りを入れた 6 語のうち direct になった語は 0、estimated 5、書かれず 1（`r3_wrong_check.txt`）。`growth` の `chain_ok: true`（`r3_growth_fake.txt`）。台帳の証言 69 行はすべて `context.doc_id` が文書 id・`provenance.version` が `fake-table:3aa3348232be`（表の sha256 の先頭 12）。K291 の 3 経路（生成×文書・生成のみ・人の確認）は合成の証拠の行 10 件と `tests/test_w10f05_grow.py` で働く。
+- **R4（本物 qwen3.5:4b）**（第 2 ラウンドで取り直し。第 1 ラウンドの出力は `r1_r4_*` に残す）: 候補 69、申告 68（名詞 68・述語 0）、`layer_confirmed` 3・`layer_estimated` 65・書かない 1（`DECLARATION_INVALID:DUPLICATE`）（`r4_grow_real.json`）。遅延は後段 84,535 ms（8 呼び出し、1 語あたり約 1,225 ms）・Vera 2,552 ms。計測の前後の負荷は `r4_uptime_before.txt`（1 分平均 4.42）・`r4_uptime_after.txt`（5.36）。**この計測は自分の全体テストとは並走していないが、他チケットの pytest 等が同じ機械で動いていた**（`r4_ps_pytest_before.txt`）。台帳の証言 69 行はすべて `context.doc_id` が文書 id、`provenance.version` が `ollama-digest:2a654d98e6fb…`（ローカルの `/api/tags`）。目視（正解データではない）: direct 3 語の誤り 0、estimated の明らかな誤り 8・割れる 3（`r4_visual_review.md`。層の中身は r1 と語・型・origin が完全に一致）。
+- **R5（文書 QA 30）**: 層なし・fake の層・本物の層とも 正答 8・誤答 0・棄権 22（`r5_qa.txt`）。**正答は増えなかった**。答えのある 20 問のうち層なしで正答 8、残り 12 の理由は本物の層で `READER_NOT_REACHED` 5（読解器の理由は `ambiguous case role: で` 4・`unsupported source quantifier/exception/time` 1）、`LAYER_NO_DIRECT` 6、`LAYER_WORD_NOT_IN_QUESTION` 1（`r5_why_not_gained_real.txt`、fake は `r5_why_not_gained_fake.txt`）。
+- **R6**: `tests/test_w10f05_sovereign.py`（7 件）と `tests/test_w10f04_fill.py` が通る。
+- **R9**: 全体テスト `pytest_full.txt`（第 3 ラウンドの取り直し）。失敗 116 件（passed 15596）、基線に無い失敗 1（`test_s6_…`。チケットが未コミットの間の環境由来と名指し。基点の木でも失敗。`pytest_new_failures_check.txt`）。W10-f05 のテストの失敗は 0。
+
+### 12.19.J 実装役の判断（J17 以降）
+J17 `vera placement` は既存の面の配置コマンド（先頭の引数が store）なので、先頭が `grow`／`growth` のときだけ新しい口にした（その名の store は使えない）。J18 `coarse_place.query(layer=False)` は環境変数も効かない「基底だけ」（層の育成と昇格が使う）。J19 `HYPERNYM_TYPE_DISAGREES`（上位語の基底の型が申告の型と違う）のときは文書の腕が一致していても書かない（狭める方向）。J20 `DISTRIBUTION_DISAGREES`（文書の分布が別の述語の型に投票）は estimated にも書かない。J21 文書の腕だけで決まり型が申告と同じ名詞は `layer_confirmed`（`decided_by` は `hearst@doc:…`）。この経路の名詞は読解器に読まれる（`gen_definition` が `by` に入らないため）。J22 `FusionConfig(layer=)` は環境変数を自分で設定する（食い違えば `LAYER_ENV_CONFLICT`）。J23 `--min-sources` は `rd_min_sources` と `role_frame_min_sources` だけを置き換え、ほかの閾値は変えない。 J24（第 2 ラウンド）台帳の証言の `provenance.version` は空文字にしない: ollama はローカルの `/api/tags` の digest、fake は表／台本の sha256 先頭 12、取れないときは `VERSION_UNKNOWN:<理由>`（注入された chat 関数・ローカル以外の host・openai は取りに行かない）。`context.doc_id` は候補の語の初出の文書の出所、`context.doc_ids` は出現した出所の一覧。J25 `FusionConfig` は `layer` が無くても `VERA_PLACEMENT_LAYER` があればその層を `vera.placement_layer` に報告する（無ければ鍵なし）。

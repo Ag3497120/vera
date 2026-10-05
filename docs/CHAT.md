@@ -165,3 +165,6 @@ def test_round5_chat_keeps_other_unread_question_typed(tmp_path, monkeypatch, ca
 - `vera serve --backend ollama|openai --model M [--api-base URL] [--fill --ledger-file F [--fill-model M] [--no-mask-user-text] [--fill-max-holes N]]`: `--fill` のときだけ候補の口が働き（既定は利用者の文を後段へ渡さない）、`vera.holes`・`vera.ledger_ids`・`testimony_fill` の腕が付く。候補は証言で、記録にも事実の根拠にもならない。
 - 候補の不採用の理由（`vera.holes[i].reason`・台帳の `not_adopted` 行）に第 3 ラウンドで `GATE_A_HOLE_WORD_UNPLACED`（穴の語の配置が型を与えない）・`GATE_A_ROLE_SPLIT`（配置の型が 1 つの役割に落ちない。`gate_log` の `split_kind` が `TYPE_NOT_READ`／`ROLES_DIFFER`）・`GATE_B_REREAD_MISMATCH`（型注入の再読が戻らない）を足した（`docs/FUSION.md` §6.6）。1 穴の文は採用されない。
 - `vera ledger list|show <id>|confirm <id> --ledger-file F`: 証言の台帳（追記のみ・ハッシュ連鎖）。`confirm` は人が呼ぶ（`store_id`・`confirm_id` を発行）。`promotable` の印までで、配置は変えない。
+
+## W10-f05: `vera chat --layer`
+`vera chat --layer <名前|パス>` は環境変数 `VERA_PLACEMENT_LAYER` を設定する（配置の層。docs/COARSE_PLACEMENT.md §12.19）。層が答えるのは基底が決めていない語だけで、`--layer` なし・変数が空のときの出力は変わらない。

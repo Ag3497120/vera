@@ -1882,3 +1882,12 @@ W10-f04 の J10（門 (b) の実現 → 再読が、実現器が型つきの十�
 - `fill_candidates._gate_b` の呼び出しは変えていない（docstring だけ更新）。既定 `require_realize=False` も変えていない。オンにするかは監査役の判断。
 - 実測（`artifacts/w3-d1/`）: `母が図書館へ歩いた。` ＋ `駅`/PLACE は `(None,'REALIZED')`（以前は `REFUSED`）。W10-f04 の台本と同じ型の表（`tests/test_w3d1_gate_b.py`）で、通る行 7・実現の段で落ちる行 6（`t4_pytest.txt`）。
 - 期待の変更が要るテスト 1 件（`tests/test_w10f04_fill.py::test_realize_is_recorded_and_can_be_required`、197・198 行）は編集していない。旧い期待・新しい期待・実測は `artifacts/w3-d1/j10_expectation_change.md`。
+
+## 7. W10-f05: 文書駆動の配置（口 O3・J13）（事前登録）
+
+詳細な規則・設計は `docs/COARSE_PLACEMENT.md` §12.19（K290〜K297・J1〜J16）。ここでは入口と口の約束だけを事前登録する。
+
+- **O3（台帳から層へ）**: `vera ledger promote --layer <name> --ledger-file L [--placement 基底] [--promote-n N]`。`promotable` の行を層へ。人の確認 → `layer_human`（direct）、再読一致だけ → `layer_estimated`（direct にしない・K291）、基底が DECIDED → `SKIP_BASE_DECIDED`、同じ (key, 層, origin) → `SKIP_ALREADY_PROMOTED`。層への書き込みは 1 件ごとに台帳へ `promoted_to_layer` 行（K294）。`vera ledger confirm`（人が呼ぶ CLI）が `layer_human` の唯一の入口。
+- **文書駆動の育成**: `vera placement grow --documents f… --layer <name> --backend ollama|openai|fake --ledger-file L [--placement 基底]`。`vera placement growth --layer <name> [--ledger-file L] [--list]` が育ちの指標（§7: 層の語数・台帳の行数・昇格数・最後に育った時刻・`chain_ok`）。既存の `vera placement <store>`（面の配置のシミュレーション）は変えない（先頭の引数が `grow`／`growth` のときだけ新しい口）。
+- **入口**: `vera read/ask/serve/chat --layer`（`VERA_PLACEMENT_LAYER`）。`vera serve` の `vera` 欄は、層を指定したとき（`--layer`、または環境変数 `VERA_PLACEMENT_LAYER` だけでもよい。どちらも無い・空なら鍵なし）だけ最後に `placement_layer = {name, status, growth: {words_direct, words_human, words_estimated, last_grown}}` を足す。既存の `vera.layer`（融合の層 0/1）は変えない。
+- **門 (c) のソブリン（J13）**: `VERA_SOVEREIGN_*` が設定されているとき、門 (c) は文書の記録に加えて、`ACTIVE_CONSENTED` のソブリンの発話（十字にできたもの）とも矛盾を比べる。矛盾 → `GATE_C_CONTRADICTS_SOVEREIGN:<event_id>`。`sovereign_checked` は実際に 1 件以上比べたときだけ True。同意なし・設定なし・比べた数 0 は False。設定なしでは `gate_log` に鍵を足さない。

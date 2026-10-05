@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import concurrent.futures
 import json
+import os
 import queue
 import threading
 import time
@@ -89,8 +90,21 @@ class FusionConfig:
 
     def __init__(self, *, model: str, documents, records, strict: bool = False, ollama_url: str = "http://127.0.0.1:11434",
                  timeout: float = 180.0, llm_chat: Optional[Callable] = None, backend: str = "ollama", api_base: Optional[str] = None,
-                 api_key: Optional[str] = None, fill: Any = None) -> None:
+                 api_key: Optional[str] = None, fill: Any = None, layer: Optional[str] = None) -> None:
         self.model = model
+        self.layer = None                     # W10-f05: a placement layer (a name or a path) or None (nothing in any output changes)
+        if layer is not None and str(layer).strip() != "":
+            from . import placement_layer as PL
+            env = PL.spec_from_env()
+            if env is not None and env != layer:
+                raise FusionBadRequest("LAYER_ENV_CONFLICT", "layer %r and %s=%r disagree" % (layer, PL.ENV_LAYER, env))
+            os.environ[PL.ENV_LAYER] = str(layer)     # the reader reaches the layer through coarse_place.query, which reads this variable (K297: unset = the base alone)
+            self.layer = str(layer)
+        else:                                 # no --layer: the environment alone (VERA_PLACEMENT_LAYER) also makes the layer work for the reader, so the answer must say so (unset: nothing changes, K297)
+            from . import placement_layer as PL
+            env = PL.spec_from_env()
+            if env is not None:
+                self.layer = str(env)
         self.backend = backend                # W10-f04 (O6): "ollama" (default, as before) or "openai" (llm_backend)
         self.api_base, self.api_key = api_base, api_key
         self.fill = fill                      # W10-f04: a fill_candidates.FillConfig, or None (the candidate mouth is off: nothing in the output changes)
@@ -112,11 +126,11 @@ class FusionConfig:
     @classmethod
     def load(cls, *, model: str, documents, strict: bool = False, ollama_url: str = "http://127.0.0.1:11434",
              timeout: float = 180.0, llm_chat: Optional[Callable] = None, backend: str = "ollama", api_base: Optional[str] = None,
-             api_key: Optional[str] = None, fill: Any = None) -> "FusionConfig":
+             api_key: Optional[str] = None, fill: Any = None, layer: Optional[str] = None) -> "FusionConfig":
         """文書の読み込み（各文の再読）も専用スレッドで行う入口。本番の起動（cli）はこれを使う。"""
         from . import decode_grammar as G
         self = cls(model=model, documents=documents, records=None, strict=strict, ollama_url=ollama_url, timeout=timeout, llm_chat=llm_chat,
-                   backend=backend, api_base=api_base, api_key=api_key, fill=fill)
+                   backend=backend, api_base=api_base, api_key=api_key, fill=fill, layer=layer)
         self.records = self.run_vera(G.load_records, list(documents))
         if fill is not None:                  # W10-f04 (8): the unread sentences of the documents get the candidate mouth; the record is NOT changed (only the ledger is written)
             self.run_vera(self._fill_documents)
@@ -209,7 +223,22 @@ def fusion_turn(messages, vera_opts, cfg: FusionConfig, max_tokens: Optional[int
     vera["timing"] = {"vera_ms": round(total_ms - llm_ms - fill_llm_ms, 3), "llm_ms": round(llm_ms, 3)}
     if cfg.fill is not None:
         vera["timing"]["fill_llm_ms"] = round(fill_llm_ms, 3)
+    if cfg.layer is not None:                 # W10-f05: the LAST key of `vera`; `vera.layer` (the fusion layer 0/1) is a different thing and stays as it was
+        vera["placement_layer"] = cfg.run_vera(_layer_summary, cfg)
     return {"content": content, "vera": vera, "usage": (llm or {}).get("usage") or {}}
+
+
+def _layer_summary(cfg: FusionConfig) -> Dict[str, Any]:
+    """W10-f05 (docs/FUSION.md section 7): `{name, status, growth: {words_direct, words_human, words_estimated, last_grown}}` of the layer the entrance was started with."""
+    from . import coarse_place
+    from . import placement_layer as PL
+    base_pl, _why = coarse_place._open(os.environ.get("VERA_PLACEMENT"))
+    g = PL.growth(cfg.layer, None, getattr(base_pl, "sha", None))
+    path, name, _w = PL.resolve(cfg.layer)
+    if g.get("layer_status") != "OK":
+        return {"name": name or cfg.layer, "status": g.get("layer_status"), "growth": None}
+    return {"name": g["layer"], "status": "OK", "growth": {"words_direct": g["words"]["direct"], "words_human": g["words"]["human"],
+                                                          "words_estimated": g["words"]["estimated"], "last_grown": g["last_grown"]}}
 
 
 def _fill_annotate(cfg: FusionConfig, turn: Dict[str, Any], vera: Dict[str, Any]) -> float:
