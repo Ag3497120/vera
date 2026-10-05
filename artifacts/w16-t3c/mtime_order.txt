@@ -1,0 +1,4 @@
+1791235619 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3c-S/artifacts/w16-t3c/prereg_time.txt
+1791235660 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3c-S/artifacts/w16-t3c/tests.sha256
+1791235661 /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3c-S/artifacts/w16-t3c/m1_before.txt
+1791235668 verantyx/decode_grammar.py

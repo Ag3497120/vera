@@ -1,0 +1,50 @@
+FF.......F                                                               [100%]
+=================================== FAILURES ===================================
+_ test_the_constant_is_the_ticket_wording_and_starts_with_the_testimony_prefix _
+
+    def test_the_constant_is_the_ticket_wording_and_starts_with_the_testimony_prefix():
+>       assert G.MARK_ANCHORED_TESTIMONY == NEW
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'verantyx.decode_grammar' has no attribute 'MARK_ANCHORED_TESTIMONY'
+
+tests/test_w16t3c_mark.py:62: AttributeError
+_________ test_anchored_reply_has_the_anchored_mark_on_the_first_line __________
+
+place = <verantyx.observe.FilePlacement object at 0x11b07a6d0>
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2348/test_anchored_reply_has_the_an0')
+
+    def test_anchored_reply_has_the_anchored_mark_on_the_first_line(place, tmp_path):
+        out = turn(cfg_for(tmp_path, FakeLLM(reply("3,000円", GOOD))))
+>       assert out["content"] == NEW + "\n3,000円\n（引用の出典: d.txt:2）"
+E       AssertionError: assert '［証言: LLM の答え...の出典: d.txt:2）' == '［証言: LLM の答え...の出典: d.txt:2）'
+E         
+E         - ［証言: LLM の答えです。引用した文は記録にあります（確かめたのは、引用の実在と、答えの数値・日付・固有名・内容語が引用に現れることだけで、答えの正しさではありません）］
+E         + ［証言: LLM の答えです。記録の裏づけはありません］
+E           3,000円
+E           （引用の出典: d.txt:2）
+
+tests/test_w16t3c_mark.py:69: AssertionError
+____ test_only_the_prefix_is_replaced_when_the_answer_contains_the_old_mark ____
+
+place = <verantyx.observe.FilePlacement object at 0x11b09c9d0>
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2348/test_only_the_prefix_is_replac0')
+
+    def test_only_the_prefix_is_replaced_when_the_answer_contains_the_old_mark(place, tmp_path):
+        line = "注記: ［証言: LLM の答えです。記録の裏づけはありません］ 参加費は3,000円である。"
+        doc = "会議は2026年4月1日に開く。\n" + line + "\n"
+        quotes = [{"source": "d.txt", "line": 2, "text": line}]
+        out = turn(cfg_for(tmp_path, FakeLLM(reply(line, quotes)), doc_text=doc))
+        assert out["vera"]["quote_check"]["verdict"] == "anchored"
+        lines = out["content"].split("\n")
+>       assert lines[0] == NEW
+E       AssertionError: assert '［証言: LLM の答えです。記録の裏づけはありません］' == '［証言: LLM の答え...の正しさではありません）］'
+E         
+E         - ［証言: LLM の答えです。引用した文は記録にあります（確かめたのは、引用の実在と、答えの数値・日付・固有名・内容語が引用に現れることだけで、答えの正しさではありません）］
+E         + ［証言: LLM の答えです。記録の裏づけはありません］
+
+tests/test_w16t3c_mark.py:130: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w16t3c_mark.py::test_the_constant_is_the_ticket_wording_and_starts_with_the_testimony_prefix
+FAILED tests/test_w16t3c_mark.py::test_anchored_reply_has_the_anchored_mark_on_the_first_line
+FAILED tests/test_w16t3c_mark.py::test_only_the_prefix_is_replaced_when_the_answer_contains_the_old_mark
+3 failed, 7 passed in 0.71s

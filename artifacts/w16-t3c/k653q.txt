@@ -1,0 +1,50 @@
+     310 <scratch>/serveq_base.jsonl
+     310 <scratch>/serveq_new.jsonl
+     620 total
+rows base 310 new 310
+quote_check verdict (new): {None: 239, 'anchored': 36, 'unanchored': 35}
+changed rows: 36
+  CHANGED row=10 id=Q006 layer=0 verdict=anchored
+  CHANGED row=14 id=Q008 layer=0 verdict=anchored
+  CHANGED row=34 id=Q018 layer=0 verdict=anchored
+  CHANGED row=66 id=Q034 layer=0 verdict=anchored
+  CHANGED row=90 id=Q046 layer=0 verdict=anchored
+  CHANGED row=100 id=Q051 layer=0 verdict=anchored
+  CHANGED row=104 id=Q053 layer=0 verdict=anchored
+  CHANGED row=108 id=Q055 layer=0 verdict=anchored
+  CHANGED row=112 id=Q057 layer=0 verdict=anchored
+  CHANGED row=116 id=Q059 layer=0 verdict=anchored
+  CHANGED row=120 id=Q061 layer=0 verdict=anchored
+  CHANGED row=124 id=Q063 layer=0 verdict=anchored
+  CHANGED row=128 id=Q065 layer=0 verdict=anchored
+  CHANGED row=132 id=Q067 layer=0 verdict=anchored
+  CHANGED row=136 id=Q069 layer=0 verdict=anchored
+  CHANGED row=140 id=Q071 layer=0 verdict=anchored
+  CHANGED row=144 id=Q073 layer=0 verdict=anchored
+  CHANGED row=148 id=Q075 layer=0 verdict=anchored
+  CHANGED row=152 id=Q077 layer=0 verdict=anchored
+  CHANGED row=156 id=Q079 layer=0 verdict=anchored
+  CHANGED row=160 id=Q081 layer=0 verdict=anchored
+  CHANGED row=164 id=Q083 layer=0 verdict=anchored
+  CHANGED row=168 id=Q085 layer=0 verdict=anchored
+  CHANGED row=172 id=Q087 layer=0 verdict=anchored
+  CHANGED row=176 id=Q089 layer=0 verdict=anchored
+  CHANGED row=180 id=Q091 layer=0 verdict=anchored
+  CHANGED row=184 id=Q093 layer=0 verdict=anchored
+  CHANGED row=188 id=Q095 layer=0 verdict=anchored
+  CHANGED row=192 id=Q097 layer=0 verdict=anchored
+  CHANGED row=196 id=Q099 layer=0 verdict=anchored
+  CHANGED row=240 id=fx-ja-human layer=0 verdict=anchored
+  CHANGED row=244 id=fx-ja-form layer=0 verdict=anchored
+  CHANGED row=264 id=fx-ja-content-fail layer=0 verdict=anchored
+  CHANGED row=276 id=fx-ja-human-from-form layer=0 verdict=anchored
+  CHANGED row=286 id=fx-en-over-abstain layer=0 verdict=anchored
+  CHANGED row=294 id=fx-en-missing-null layer=0 verdict=anchored
+changed rows that are not 'anchored, first line only' (pass = 0): 0
+anchored rows that did not change (pass = 0): 0
+rc=0
+rows base 310 new 310
+rows where change is allowed (layer 0, FACTUAL, LLM called, not QUESTION_CROSS): 87
+  of which actually changed: 36 ; of which carry vera.quote_check: 36
+rows outside that set: 223
+rows outside that set that changed (pass = 0): 0

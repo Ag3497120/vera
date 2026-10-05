@@ -3318,3 +3318,147 @@ FAILED tests/test_w16t3_quote_check.py::test_source_is_matched_by_basename_and_n
 ```
 
 既存試験 3 件との衝突の提案（§10.10）は第 2 ラウンドで差分を自己完結に作り直した。写しの確認: `209 passed in 1.42s`
+
+## 11. W16-t3c: 錨ありの証言の印（K655・K656）（事前登録 2026-10-06 06:26:59 +0900）
+
+起票: 監査役 2026-10-06 06:18:37 +0900（基点 dev d1942e2）。README の serve の層 0 の実例で、錨ありの応答の本文の頭が「記録の裏づけはありません」と言い、末尾の「引用の出典」と矛盾して見えた。
+
+### 11.1 仕様（事前登録）
+- **K655**: `_attach_quote_check` で `qc.verdict == QC.ANCHORED` のときだけ、受け取った本文の先頭が `MARK_TESTIMONY + "\n"` なら、その先頭の `MARK_TESTIMONY` を `MARK_ANCHORED_TESTIMONY` に置き換える。末尾の `（引用の出典: …）` 行は今のまま。
+- `MARK_ANCHORED_TESTIMONY = "［証言: LLM の答えです。引用した文は記録にあります（確かめたのは、引用の実在と、答えの数値・日付・固有名・内容語が引用に現れることだけで、答えの正しさではありません）］"`（`MARK_TESTIMONY` の直後に置く。先頭は `［証言` のまま。公開ベンチの採点器 `benchmarks/public_v1/score.py` が 1 行目を外す条件のため）。
+- unanchored・conflict、quote_mode が偽の経路（層 1・`--strict`・非 factual・文書なし・LLM を呼ばない・記録が答える）、固定文は **byte 不変**（K656）。`vera` 欄（`quote_check`・`provenance`・`outcome`・`basis_policy`）は変えない。`outcome` は `TESTIMONY`、`origin` は `testimony` のまま（根拠の方針は変えない）。
+
+### 11.2 判断（事前登録）
+- **J-t3c-1**: 置き換えは接頭辞の一致だけ（`str.replace` で本文全体を置換しない。LLM の答えの中に旧い印の文字列があっても触らない）。先頭が `MARK_TESTIMONY + "\n"` でない本文が来たら置き換えない（保守側）。
+- **J-t3c-2**: §9.4 J3「`MARK_TESTIMONY` は錨ありでも残す。」を **錨ありについて退役** する。旧い文（§9 K652・84 行目の本文の説明・J3）は書き換えず残す。unanchored・conflict については J3 のまま有効。
+- **J-t3c-3**: 既存試験との衝突（11.4）は書き換えず、旧・新案の全文を本節と `artifacts/w16-t3c/proposed/` に残して監査役に渡す（W16-t3b の J5 と同じ扱い）。
+
+### 11.3 受入基準の測り方（事前登録）
+- **M1**: 偽の LLM で錨あり・食い違い・錨なしの 3 種を作る試験 `tests/test_w16t3c_mark.py`。コードより先に凍結（`artifacts/w16-t3c/tests.sha256`）し、直す前の赤（錨ありの試験だけ赤）を `m1_before.txt` に取る。
+- **M2**: K653（`k287_serve.py`、310 行）と **K653q**（k287 の偽の LLM に、quote_mode の呼び出しにだけ引用つきの答えを返す枝を足した版。`artifacts/w16-t3c/scripts/k653q_serve.py`）の両方。K653 の偽の LLM は quote_mode の呼び出しに `{"answer": ["x"]}` を返すため quote_check が全行 unanchored になり、**錨ありの行が 0 行**。したがって K653 の「変化 0」は空の一致で、何も確かめていない。M2 の実質は K653q（奇数回目の呼び出しは引用つき=錨ありになりうる、偶数回目は quotes 空=錨なし）で、`k656_compare.py` が「変わった行は anchored で 1 行目だけ・変わらない anchored 行 0」を全件列挙で確かめる。K653q の偽の LLM では conflict が作れないので、conflict は M1 の試験で確かめる。T3・T3b の関係試験の期待は変えない。
+- **M3**: 基線から増えない（監査役）。
+
+### 11.4 既存試験との衝突の見込み（事前登録）
+1. `tests/test_w16t3_serve.py::test_documents_reach_the_llm_with_the_quote_schema_and_the_reply_is_checked`: 錨ありの本文に旧い印を求めている（`assert out["content"] == G.MARK_TESTIMONY + "\n3,000円\n（引用の出典: d.txt:2）"`）。K655 の目的そのものと衝突し、落ちる見込み。許可パスの外なので書き換えず、案を `proposed/` に置く。
+2. `tests/test_serve_fusion_ollama.py::test_real_default_marks_the_llm_answer_as_testimony`: 本物の Ollama が動いているときだけ走り、`startswith(G.MARK_TESTIMONY)` を求める。本物の LLM の答えが錨ありになれば落ちる（非決定的な潜在の衝突）。
+
+### 11.5 測定結果（artifacts/w16-t3c/ の出力を機械で貼った）
+
+#### 順序（`mtime_order.txt`: prereg_time → tests.sha256 → m1_before.txt → decode_grammar.py）
+```
+1791235619 artifacts/w16-t3c/prereg_time.txt
+1791235660 artifacts/w16-t3c/tests.sha256
+1791235661 artifacts/w16-t3c/m1_before.txt
+1791235668 verantyx/decode_grammar.py
+```
+
+#### M1（`m1_before.txt`・`m1_after.txt`）
+直す前:
+```
+FAILED tests/test_w16t3c_mark.py::test_the_constant_is_the_ticket_wording_and_starts_with_the_testimony_prefix
+FAILED tests/test_w16t3c_mark.py::test_anchored_reply_has_the_anchored_mark_on_the_first_line
+FAILED tests/test_w16t3c_mark.py::test_only_the_prefix_is_replaced_when_the_answer_contains_the_old_mark
+3 failed, 7 passed in 0.71s
+```
+直した後: `10 passed in 0.67s`（`tests.sha256` は凍結のまま OK）。
+
+#### K653（`k653.txt`。錨ありが 0 行なので、変化 0 は空の一致で何も確かめていない）
+```
+     310 <scratch>/serve_base.jsonl
+     310 <scratch>/serve_new.jsonl
+     620 total
+K653 SAME (cmp)
+rows base 310 new 310
+rows where change is allowed (layer 0, FACTUAL, LLM called, not QUESTION_CROSS): 87
+  of which actually changed: 0 ; of which carry vera.quote_check: 0
+rows outside that set: 223
+rows outside that set that changed (pass = 0): 0
+rows base 310 new 310
+quote_check verdict (new): {None: 239, 'unanchored': 71}
+changed rows: 0
+changed rows that are not 'anchored, first line only' (pass = 0): 0
+anchored rows that did not change (pass = 0): 0
+```
+
+#### K653q（`k653q.txt`。M2 の実質。CHANGED を全件列挙）
+```
+     310 <scratch>/serveq_base.jsonl
+     310 <scratch>/serveq_new.jsonl
+     620 total
+rows base 310 new 310
+quote_check verdict (new): {None: 239, 'anchored': 36, 'unanchored': 35}
+changed rows: 36
+  CHANGED row=10 id=Q006 layer=0 verdict=anchored
+  CHANGED row=14 id=Q008 layer=0 verdict=anchored
+  CHANGED row=34 id=Q018 layer=0 verdict=anchored
+  CHANGED row=66 id=Q034 layer=0 verdict=anchored
+  CHANGED row=90 id=Q046 layer=0 verdict=anchored
+  CHANGED row=100 id=Q051 layer=0 verdict=anchored
+  CHANGED row=104 id=Q053 layer=0 verdict=anchored
+  CHANGED row=108 id=Q055 layer=0 verdict=anchored
+  CHANGED row=112 id=Q057 layer=0 verdict=anchored
+  CHANGED row=116 id=Q059 layer=0 verdict=anchored
+  CHANGED row=120 id=Q061 layer=0 verdict=anchored
+  CHANGED row=124 id=Q063 layer=0 verdict=anchored
+  CHANGED row=128 id=Q065 layer=0 verdict=anchored
+  CHANGED row=132 id=Q067 layer=0 verdict=anchored
+  CHANGED row=136 id=Q069 layer=0 verdict=anchored
+  CHANGED row=140 id=Q071 layer=0 verdict=anchored
+  CHANGED row=144 id=Q073 layer=0 verdict=anchored
+  CHANGED row=148 id=Q075 layer=0 verdict=anchored
+  CHANGED row=152 id=Q077 layer=0 verdict=anchored
+  CHANGED row=156 id=Q079 layer=0 verdict=anchored
+  CHANGED row=160 id=Q081 layer=0 verdict=anchored
+  CHANGED row=164 id=Q083 layer=0 verdict=anchored
+  CHANGED row=168 id=Q085 layer=0 verdict=anchored
+  CHANGED row=172 id=Q087 layer=0 verdict=anchored
+  CHANGED row=176 id=Q089 layer=0 verdict=anchored
+  CHANGED row=180 id=Q091 layer=0 verdict=anchored
+  CHANGED row=184 id=Q093 layer=0 verdict=anchored
+  CHANGED row=188 id=Q095 layer=0 verdict=anchored
+  CHANGED row=192 id=Q097 layer=0 verdict=anchored
+  CHANGED row=196 id=Q099 layer=0 verdict=anchored
+  CHANGED row=240 id=fx-ja-human layer=0 verdict=anchored
+  CHANGED row=244 id=fx-ja-form layer=0 verdict=anchored
+  CHANGED row=264 id=fx-ja-content-fail layer=0 verdict=anchored
+  CHANGED row=276 id=fx-ja-human-from-form layer=0 verdict=anchored
+  CHANGED row=286 id=fx-en-over-abstain layer=0 verdict=anchored
+  CHANGED row=294 id=fx-en-missing-null layer=0 verdict=anchored
+changed rows that are not 'anchored, first line only' (pass = 0): 0
+anchored rows that did not change (pass = 0): 0
+rc=0
+rows base 310 new 310
+rows where change is allowed (layer 0, FACTUAL, LLM called, not QUESTION_CROSS): 87
+  of which actually changed: 36 ; of which carry vera.quote_check: 36
+rows outside that set: 223
+rows outside that set that changed (pass = 0): 0
+```
+jsonl の sha256 は `serve_sha256.txt`。試作との cmp: 一致（中間職の `serveq_proto.jsonl`）。
+
+#### 関係試験（`related_before.txt`・`related_after.txt`・`related_new_failures.txt`）
+```
+変更前: 273 passed in 14.71s
+変更後: 1 failed, 282 passed in 14.45s
+新しい失敗:
+FAILED tests/test_w16t3_serve.py::test_documents_reach_the_llm_with_the_quote_schema_and_the_reply_is_checked
+```
+Ollama の試験（11.4 の 2）はこの走行では落ちなかった（本物の LLM の答えが錨ありにならなかったため。潜在の衝突は残る）。
+
+#### 既存試験との衝突（11.4 の 1）
+試験: `tests/test_w16t3_serve.py::test_documents_reach_the_llm_with_the_quote_schema_and_the_reply_is_checked`（書き換えていない）。
+旧い期待（73 行）:
+```
+    assert out["content"] == G.MARK_TESTIMONY + "\n3,000円\n（引用の出典: d.txt:2）"
+```
+新案（`proposed/test_w16t3_serve.diff`。写しに当てて `test_w16t3_serve.py` が通ることを `proposed_check.txt` に残した: 17 passed in 0.72s）:
+```
+    assert out["content"] == G.MARK_ANCHORED_TESTIMONY + "\n3,000円\n（引用の出典: d.txt:2）"
+```
+理由: K655 の目的そのもの（錨ありの本文の頭を替える）。
+
+#### 既知の穴
+- K653q の偽の LLM では conflict の行が作れない（M1 の試験で確かめた）。
+- /api/chat・streaming の経路を通した試験は置いていない（`conclude` の本文は同じ関数を通る）。
+- Ollama の本物の LLM の試験は、答えが錨ありになれば落ちる（非決定的）。
+- 公開ベンチ採点器 `benchmarks/public_v1/score.py` は新しい印でも 1 行目が `［証言` で始まるので動くはずだが、この票では走らせていない。
+- J3 の退役（錨ありについて）: 旧い文は残してある。§9.4 J3 は unanchored・conflict について有効。
