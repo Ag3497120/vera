@@ -2,7 +2,11 @@
 
 A layer is ONE SQLite file (append only).  ``coarse_place.query(term, placement=<base>, layer=<spec>)`` asks the base first and uses the layer only for a word the base
 leaves undecided (UNPLACED / UNKNOWN / MULTIPLE; K290).  A word the base decided (DECIDED, direct or estimated) is never changed by the layer: the layer adds, it never
-corrects (correcting the public placement is the job of the r series).  The module never writes the base and never reads anything but the one layer file.
+corrects (correcting the public placement is the job of the r series).  K290 is revised by K680 (W16-t8, docs/COARSE_PLACEMENT.md 12.21) for ONE kind of row only: a human's
+confirmation row (``origin layer_human`` with ``evidence.confirm_id`` in the W10-f04 form (16 lowercase hex digits) and ``decided_by == ["human:<confirm_id>"]``, written by ``vera confirm``) acts ABOVE the base,
+even for a word the base decided; the answer says ``decided_by: human:<confirm_id>`` and ``axes.layer.overrode_base`` keeps the base's value.  A human's ``set`` changes the TYPE only: the base's section 12.10
+frame and role frame stay (r3, 12.21.7: only ``vera confirm frame`` adds to the role frame).  Every other row stays under K290; a row that has the SHAPE of a confirmation (a ``human:`` arm, a
+``confirm_id`` / ``undoes``, a type / frame / undo ``kind``) but is not backed by a real confirm id is treated as ``layer_estimated`` (r3, 12.21.7).  The module never writes the base and never reads anything but the one layer file.
 
 ``spec`` is a path (it has a ``/`` or ends with ``.sqlite``) or a name (``[A-Za-z0-9_.-]{1,64}``) that lives in ``$VERA_PLACEMENT_LAYER_ROOT/<name>.sqlite`` (no home directory
 and no other place is searched).  An empty ``VERA_PLACEMENT_LAYER`` is the same as an unset one.
@@ -33,7 +37,9 @@ ORIGINS = ("layer_confirmed", "layer_estimated", "layer_human")
 DIRECT_ORIGINS = ("layer_confirmed", "layer_human")
 UNAVAILABLE_REASONS = ("MISSING", "UNREADABLE", "ROOT_UNSET", "BAD_NAME", "BASE_MISMATCH")
 STATUSES = ("BASE_NO_PLACEMENT", "BASE_DECIDED", "LAYER_HAS_NO_ENTRY", "LAYER_CONFLICT", "LAYER_ESTIMATED_NOT_USED", "LAYER_DIRECT_USED",
-            "LAYER_TYPE_NOT_AMONG_CANDIDATES") + tuple("LAYER_UNAVAILABLE:" + r for r in UNAVAILABLE_REASONS)
+            "LAYER_TYPE_NOT_AMONG_CANDIDATES") + tuple("LAYER_UNAVAILABLE:" + r for r in UNAVAILABLE_REASONS) + ("HUMAN_CONFIRMED_USED", "HUMAN_CONFLICT")
+CONFIRM_KINDS = ("type", "frame", "undo")
+CONFIRM_ID_RE = re.compile(r"^[0-9a-f]{16}$")             # the W10-f04 form of an id: ``TestimonyLedger._new_id`` = ``uuid4().hex[:16]``
 _NAME = re.compile(r"^[A-Za-z0-9_.-]{1,64}$")
 _CACHE: Dict[str, "Layer"] = {}
 
@@ -130,11 +136,60 @@ def open_layer(spec: str, base_sha: Optional[str] = None) -> Tuple[Optional[Laye
     return got, None
 
 
+def is_confirm_row(e: Dict[str, Any]) -> bool:
+    """K680: a human's confirmation row (written by ``vera confirm`` only): ``layer_human`` + ``evidence.kind`` in type / frame / undo + ``evidence.confirm_id`` in the W10-f04 form
+    (``CONFIRM_ID_RE``; for an undo row ``evidence.undoes`` too) + ``decided_by == ["human:<id>"]``.  A ``layer_human`` row made by ``vera ledger promote`` has no confirm_id and is NOT one
+    (it stays under K290); neither is a row that has a confirm_id of another form (r3, 12.21.7)."""
+    ev = e.get("evidence")
+    if e.get("origin") != "layer_human" or not isinstance(ev, dict) or ev.get("kind") not in CONFIRM_KINDS:
+        return False
+    cid = ev.get("confirm_id")
+    if not (isinstance(cid, str) and CONFIRM_ID_RE.match(cid)) or e.get("decided_by") != ["human:" + cid]:
+        return False
+    if ev["kind"] == "undo":
+        und = ev.get("undoes")
+        return isinstance(und, str) and bool(CONFIRM_ID_RE.match(und))
+    return True
+
+
+def is_unbacked_human_row(e: Dict[str, Any]) -> bool:
+    """r3 (the auditor's ruling of 2026-10-06 00:24, narrowed; docs/COARSE_PLACEMENT.md 12.21.7): a ``layer_human`` row that is NOT a confirmation row (``is_confirm_row``) but has its shape: a ``human:`` arm in
+    ``decided_by``, or the keys ``confirm_id`` / ``undoes``, or a ``kind`` of type / frame / undo in ``evidence`` (or in ``evidence.from_evidence``, where ``tools/build_initial_layers.py combine`` wraps it).
+    Such a row (a copy with a wrong id, or one whose evidence was wrapped) is read as ``layer_estimated``: it never acts as a human's confirmation.  A plain ``decided_by == ["layer_human"]`` row of
+    ``vera ledger promote`` has none of these and stays what it was (K290: a direct row)."""
+    if e.get("origin") != "layer_human" or is_confirm_row(e):
+        return False
+    if any(isinstance(b, str) and b.startswith("human:") for b in (e.get("decided_by") or [])):
+        return True
+    ev = e.get("evidence")
+    if not isinstance(ev, dict):
+        return False
+    for d in (ev, ev.get("from_evidence") if isinstance(ev.get("from_evidence"), dict) else None):
+        if d is not None and ("confirm_id" in d or "undoes" in d or d.get("kind") in CONFIRM_KINDS):
+            return True
+    return False
+
+
+def active_confirm_rows(entries: Sequence[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
+    """K680: ``{"type": [rows], "frame": [rows]}`` of the confirmation rows that are not undone (an undo row, and the row it undoes, are left out; id order)."""
+    conf = [e for e in entries if is_confirm_row(e)]
+    undone = {e["evidence"].get("undoes") for e in conf if e["evidence"]["kind"] == "undo"}
+    return {"type": [e for e in conf if e["evidence"]["kind"] == "type" and e["evidence"]["confirm_id"] not in undone],
+            "frame": [e for e in conf if e["evidence"]["kind"] == "frame" and e["evidence"]["confirm_id"] not in undone]}
+
+
 def fold(entries: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
-    """One word's rows -> ``{"direct": {type: [rows]}, "estimated": {type: [rows]}}`` (a row list is in id order)."""
+    """One word's rows -> ``{"direct": {type: [rows]}, "estimated": {type: [rows]}}`` (a row list is in id order).  K680: an undo row, a row that was undone and a frame row of a
+    human's confirmation are left out first (they are not a type of the word); with no confirmation row the result is what it was.  r3: an unbacked human-shaped row (``is_unbacked_human_row``) is put under
+    ``estimated`` whatever its origin says."""
+    conf = [e for e in entries if is_confirm_row(e)]
+    if conf:
+        undone = {e["evidence"].get("undoes") for e in conf if e["evidence"]["kind"] == "undo"}
+        entries = [e for e in entries if not (is_confirm_row(e) and (e["evidence"]["kind"] in ("undo", "frame") or e["evidence"]["confirm_id"] in undone))]
     out: Dict[str, Any] = {"direct": {}, "estimated": {}}
     for e in entries:
-        out["direct" if e["origin"] in DIRECT_ORIGINS else "estimated"].setdefault(e["type"], []).append(e)
+        direct = e["origin"] in DIRECT_ORIGINS and not is_unbacked_human_row(e)          # r3: an unbacked human-shaped row is a layer_estimated row (the dict itself is not changed)
+        out["direct" if direct else "estimated"].setdefault(e["type"], []).append(e)
     return out
 
 
@@ -143,17 +198,29 @@ def _add(r: Dict[str, Any], layer: str, status: str) -> Dict[str, Any]:
 
 
 def apply(r: Dict[str, Any], spec: str, base_pl: Any) -> Dict[str, Any]:
-    """The answer ``r`` of the base placement (every key already there) -> the answer with the layer's keys ``layer`` and ``layer_status`` at the END (docs section 12.19, K290)."""
+    """The answer ``r`` of the base placement (every key already there) -> the answer with the layer's keys ``layer`` and ``layer_status`` at the END (docs section 12.19, K290; K680 in 12.21:
+    a human's confirmation row acts above the base)."""
     state = r.get("state")
     if state == "NO_PLACEMENT":
         return _add(r, "none", "BASE_NO_PLACEMENT")
-    if state == "DECIDED":                                   # direct or estimated: the layer does not look (K290)
-        return _add(r, "base", "BASE_DECIDED")
     layer, why = open_layer(spec, getattr(base_pl, "sha", None))
     if layer is None:
+        if state == "DECIDED":
+            return _add(r, "base", "BASE_DECIDED")           # no layer to look at: what it was (K290)
         return _add(r, "base", "LAYER_UNAVAILABLE:%s" % why)
     word = ((r.get("spelling") or {}).get("normalized")) or _nfkc(r.get("term", ""))
     rows = layer.entries(word)
+    if any(is_confirm_row(e) for e in rows):                 # K680: a human's confirmation of this word
+        act = active_confirm_rows(rows)
+        types = {e["type"] for e in act["type"]}
+        if len(types) >= 2:
+            return _add(r, "base", "HUMAN_CONFLICT")          # two human types: a tie abstains, the base answer stays
+        if types:
+            t = next(iter(types))
+            return _human_answer(r, layer, t, [e for e in act["type"] if e["type"] == t], [e for e in act["frame"] if e["type"] == t], base_pl)
+        rows = [e for e in rows if not is_confirm_row(e)]     # nothing active: the rest is judged by K290 as before
+    if state == "DECIDED":                                   # direct or estimated: the layer does not look (K290)
+        return _add(r, "base", "BASE_DECIDED")
     if not rows:
         return _add(r, "base", "LAYER_HAS_NO_ENTRY")
     f = fold(rows)
@@ -166,6 +233,100 @@ def apply(r: Dict[str, Any], spec: str, base_pl: Any) -> Dict[str, Any]:
     if state == "MULTIPLE" and t not in (r.get("top") or []):
         return _add(r, "base", "LAYER_TYPE_NOT_AMONG_CANDIDATES")
     return _direct_answer(r, layer, t, d[t], rows, base_pl)
+
+
+def _human_role_frame(frame_rows: Sequence[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+    """The role frame a human gave: ``{particle: [{"role", "types"}]}`` (two keys only: the reader refuses any other key), particles in the order of the nine case particles, roles by name, the
+    types of one (particle, role) joined; None when there is no frame row."""
+    from .semantic_reader import _CASE_PARTICLES_9
+    acc: Dict[str, Dict[str, set]] = {}
+    for e in frame_rows:
+        fr = e["evidence"].get("frame") or {}
+        acc.setdefault(fr.get("particle"), {}).setdefault(fr.get("role"), set()).update(fr.get("types") or [])
+    if not acc:
+        return None
+    return {p: [{"role": role, "types": sorted(acc[p][role])} for role in sorted(acc[p])] for p in _CASE_PARTICLES_9 if p in acc}
+
+
+def _overlay_role_frame(base_rf: Dict[str, Any], frame_rows: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
+    """r3 (12.21.7): the base's CONFIRMED role frame with a human's (particle, role, types) laid over it.  The base's entries are copied as they are (``backed_by`` too: J15 is not fixed here, so the
+    reader still refuses such a frame), a human's types are joined (union, sorted) into the entry of the same particle and role, or added as ``{"role", "types"}`` after the particle's base entries in
+    role-name order.  Particles in the order of the nine case particles."""
+    import copy
+    from .semantic_reader import _CASE_PARTICLES_9
+    human = _human_role_frame(frame_rows) or {}
+    out: Dict[str, Any] = {}
+    for p in _CASE_PARTICLES_9:
+        if p not in base_rf and p not in human:
+            continue
+        items = copy.deepcopy(base_rf.get(p) or [])
+        for h in human.get(p, []):
+            same = [x for x in items if x.get("role") == h["role"]]
+            if same:
+                same[0]["types"] = sorted(set(same[0].get("types") or []) | set(h["types"]))
+            else:
+                items.append({"role": h["role"], "types": list(h["types"])})
+        out[p] = items
+    return out
+
+
+def _human_answer(r: Dict[str, Any], layer: Layer, t: str, type_rows: List[Dict[str, Any]], frame_rows: List[Dict[str, Any]], base_pl: Any) -> Dict[str, Any]:
+    """K680: the answer when a human confirmed type ``t`` (one type among the active rows).  The same keys in the same order as ``_direct_answer``.
+
+    r3 (12.21.7): a human's ``set`` changes the TYPE only; what the human did not confirm stays the base's.  A predicate type keeps the base's section 12.10 frame as it was when the base CONFIRMED it
+    (``frame_status``, ``frame``, ``frame_unconfirmed`` unchanged, and ``gen_frame`` after the human's id in ``decided_by``: the reader asks for it); a base frame that is NOT_CONFIRMED / NO_FRAME_TABLE stays so;
+    anything else (no confirmed frame) is NOT_CONFIRMED with no frame.  The role frame is the base's, byte for byte, unless the human gave frame rows (``vera confirm frame``): then it is the base's
+    CONFIRMED role frame with the human's entries laid over it, or, when the base has none, the human's own.  A human never changes the 12.10 frame (``gen_frame`` is a mark of provenance)."""
+    import copy
+    by = [e["decided_by"][0] for e in type_rows]
+    is_pred = t.startswith("P_")
+    base_fs = r.get("frame_status")
+    keep_1210 = is_pred and base_fs == "CONFIRMED"
+    if keep_1210:
+        by = by + [ct.GEN_FRAME_ARM]
+    axes = dict(r.get("axes") or {})
+    axes["layer"] = {"name": layer.name, "origin": "layer_human", "entry_ids": [e["id"] for e in type_rows], "ledger_seq": [e["ledger_seq"] for e in type_rows],
+                     "evidence": _evidence_summary(type_rows[-1]["evidence"]), "confirm_ids": [e["evidence"]["confirm_id"] for e in type_rows],
+                     "frame_confirm_ids": [e["evidence"]["confirm_id"] for e in frame_rows],
+                     "overrode_base": {"state": r.get("state"), "top": list(r.get("top") or []), "origin": r.get("origin"), "decided_by": list(r.get("decided_by") or [])},
+                     "base_frame": {"frame_status": base_fs, "role_frame_status": r.get("role_frame_status")}}
+    out: Dict[str, Any] = {
+        "term": r["term"], "namespace": ct.type_namespace(t), "state": "DECIDED", "origin": "direct", "estimate_basis": None, "constructed": False,
+        "top": [t], "candidates": [{"type": t, "axes": {"layer": 1}}], "axes": axes, "neighbors": [],
+        "seen_in_material": r.get("seen_in_material"), "context": r.get("context"), "placement": r.get("placement"),
+        "decided_by": by, "generated": any(b in ("gen_definition", "gen_frame") for b in by), "generated_definition": ct.GEN_ARM in by}
+    if "spelling" in r:
+        out["spelling"] = r["spelling"]
+    if "frame_generated" in r:
+        out["frame_generated"] = r["frame_generated"]
+    out["generated_frame"] = ct.GEN_FRAME_ARM in by
+    if keep_1210:
+        out["frame_status"], out["frame"] = "CONFIRMED", copy.deepcopy(r.get("frame"))
+        if "frame_unconfirmed" in r:
+            out["frame_unconfirmed"] = copy.deepcopy(r["frame_unconfirmed"])
+    elif is_pred and base_fs in ("NOT_CONFIRMED", "NO_FRAME_TABLE"):
+        out["frame_status"], out["frame"] = base_fs, None
+        if "frame_disagreement" in r:
+            out["frame_disagreement"] = copy.deepcopy(r["frame_disagreement"])
+    else:
+        out["frame_status"] = "NOT_CONFIRMED" if is_pred else "NOT_PREDICATE"
+        out["frame"] = None
+    if "role_frame_status" in r:
+        if not is_pred:
+            out["role_frame_status"], out["role_frame"], out["role_frame_unconfirmed"] = "NO_ROLE_FRAME", None, None
+        else:
+            human_rf = _human_role_frame(frame_rows)
+            base_rf = r.get("role_frame") if r.get("role_frame_status") == "CONFIRMED" and isinstance(r.get("role_frame"), dict) else None
+            if human_rf is None:                                  # no frame row: the base's role frame, as it was
+                out["role_frame_status"], out["role_frame"], out["role_frame_unconfirmed"] = (r.get("role_frame_status"), copy.deepcopy(r.get("role_frame")),
+                                                                                              copy.deepcopy(r.get("role_frame_unconfirmed")))
+            else:
+                out["role_frame_status"] = "CONFIRMED"
+                out["role_frame"] = _overlay_role_frame(base_rf, frame_rows) if base_rf is not None else human_rf
+                out["role_frame_unconfirmed"] = copy.deepcopy(r.get("role_frame_unconfirmed"))
+    out["layer"] = "overlay:%s" % layer.name
+    out["layer_status"] = "HUMAN_CONFIRMED_USED"
+    return out
 
 
 def _direct_answer(r: Dict[str, Any], layer: Layer, t: str, rows: List[Dict[str, Any]], all_rows: List[Dict[str, Any]], base_pl: Any) -> Dict[str, Any]:
@@ -279,7 +440,9 @@ def growth(spec: str, ledger: Any = None, base_sha: Optional[str] = None, with_l
     listing = []
     for w, es in sorted(by_word.items()):
         f = fold(es)
-        if len(f["direct"]) >= 2:
+        if not f["direct"] and not f["estimated"]:             # K680: only an undone / frame row of a human's confirmation: no type of the word
+            state = "none"
+        elif len(f["direct"]) >= 2:
             words["conflict"] += 1
             state = "conflict"
         elif f["direct"]:

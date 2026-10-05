@@ -1,0 +1,15 @@
+sentence_id	text	status	op	word	particle	role	candidates	reason	reachable	why
+t82_sentences.txt#1:1	田中が学校へ移動した。	READ								
+t82_sentences.txt#2:1	鈴木が会社へ移動した。	READ								
+t82_sentences.txt#3:1	太郎が学校へ移動した。	READ								
+t82_sentences.txt#4:1	整備士が会社へ移動した。	READ								
+t82_sentences.txt#5:1	山田が学校へ移動した。	ABSTAIN	set	山田			PERSON+PLACE	PLACEMENT_MULTIPLE	true	
+t82_sentences.txt#6:1	田中が駅へ移動した。	READ								
+t82_sentences.txt#7:1	鈴木が倉庫へ移動した。	READ								
+t82_sentences.txt#8:1	太郎が病院へ移動した。	READ								
+t82_sentences.txt#9:1	田中が本を読んだ。	READ								
+t82_sentences.txt#10:1	鈴木が手紙を書いた。	READ								
+t82_sentences.txt#11:1	太郎が走った。	READ								
+t82_sentences.txt#12:1	整備士が倉庫で点検した。	READ								
+# sentences=12 read=11 abstained=1 refused_input=0 abstained_with_reachable_candidate=1 abstained_unreachable_only=0
+# blocks	set	山田	1 sentence(s)

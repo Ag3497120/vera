@@ -1,0 +1,196 @@
+[
+ {
+  "word": "整備室",
+  "type": "PLACE",
+  "base_state": "UNPLACED",
+  "base_top": [],
+  "base_origin": null,
+  "base_decided_by": null,
+  "layer_status": "HUMAN_CONFIRMED_USED",
+  "top": [
+   "PLACE"
+  ],
+  "decided_by": [
+   "human:401f19f2bd3d417b"
+  ]
+ },
+ {
+  "word": "実験棟",
+  "type": "PLACE",
+  "base_state": "UNPLACED",
+  "base_top": [],
+  "base_origin": null,
+  "base_decided_by": null,
+  "layer_status": "HUMAN_CONFIRMED_USED",
+  "top": [
+   "PLACE"
+  ],
+  "decided_by": [
+   "human:7a5385fc9cf142a9"
+  ]
+ },
+ {
+  "word": "図書館",
+  "type": "PLACE",
+  "base_state": "MULTIPLE",
+  "base_top": [
+   "GROUP_ORG",
+   "PLACE"
+  ],
+  "base_origin": "direct",
+  "base_decided_by": [
+   "definition",
+   "hearst@jawiki",
+   "role@codex:conversation",
+   "role@codex:figurative_commonsense",
+   "role@codex:general_qa",
+   "role@codex:narrative",
+   "role@codex:paraphrase_entail",
+   "role@codex:pro"
+  ],
+  "layer_status": "HUMAN_CONFIRMED_USED",
+  "top": [
+   "PLACE"
+  ],
+  "decided_by": [
+   "human:79b9b0b736124ce1"
+  ]
+ },
+ {
+  "word": "学校",
+  "type": "PLACE",
+  "base_state": "DECIDED",
+  "base_top": [
+   "GROUP_ORG"
+  ],
+  "base_origin": "direct",
+  "base_decided_by": [
+   "seed"
+  ],
+  "layer_status": "HUMAN_CONFIRMED_USED",
+  "top": [
+   "PLACE"
+  ],
+  "decided_by": [
+   "human:459cf9d55eda4904"
+  ]
+ },
+ {
+  "word": "会社",
+  "type": "PLACE",
+  "base_state": "DECIDED",
+  "base_top": [
+   "GROUP_ORG"
+  ],
+  "base_origin": "direct",
+  "base_decided_by": [
+   "seed"
+  ],
+  "layer_status": "HUMAN_CONFIRMED_USED",
+  "top": [
+   "PLACE"
+  ],
+  "decided_by": [
+   "human:0c97085901044e1e"
+  ]
+ },
+ {
+  "word": "移動する",
+  "type": "P_MOVE",
+  "base_state": "DECIDED",
+  "base_top": [
+   "P_MOVE"
+  ],
+  "base_origin": "direct",
+  "base_decided_by": [
+   "gen_frame",
+   "role_distribution@codex:general_qa",
+   "role_distribution@codex:narrative",
+   "role_distribution@codex:paraphrase_entail",
+   "role_distribution@codex:pro"
+  ],
+  "layer_status": "BASE_DECIDED",
+  "top": [
+   "P_MOVE"
+  ],
+  "decided_by": [
+   "gen_frame",
+   "role_distribution@codex:general_qa",
+   "role_distribution@codex:narrative",
+   "role_distribution@codex:paraphrase_entail",
+   "role_distribution@codex:pro"
+  ]
+ },
+ {
+  "word": "移住する",
+  "type": "P_MOVE",
+  "base_state": "DECIDED",
+  "base_top": [
+   "P_MOVE"
+  ],
+  "base_origin": "estimated",
+  "base_decided_by": [
+   "gen_frame"
+  ],
+  "layer_status": "HUMAN_CONFIRMED_USED",
+  "top": [
+   "P_MOVE"
+  ],
+  "decided_by": [
+   "human:6c98361fac514f31"
+  ]
+ },
+ {
+  "word": "出向く",
+  "type": "P_MOVE",
+  "base_state": "DECIDED",
+  "base_top": [
+   "P_MOVE"
+  ],
+  "base_origin": "estimated",
+  "base_decided_by": [
+   "gen_frame"
+  ],
+  "layer_status": "HUMAN_CONFIRMED_USED",
+  "top": [
+   "P_MOVE"
+  ],
+  "decided_by": [
+   "human:1dca769d4478471b"
+  ]
+ },
+ {
+  "word": "赴く",
+  "type": "P_MOVE",
+  "base_state": "DECIDED",
+  "base_top": [
+   "P_MOVE"
+  ],
+  "base_origin": "estimated",
+  "base_decided_by": [
+   "gen_frame"
+  ],
+  "layer_status": "HUMAN_CONFIRMED_USED",
+  "top": [
+   "P_MOVE"
+  ],
+  "decided_by": [
+   "human:34374090140f45af"
+  ]
+ },
+ {
+  "word": "参上する",
+  "type": "P_MOVE",
+  "base_state": "UNKNOWN",
+  "base_top": [],
+  "base_origin": null,
+  "base_decided_by": null,
+  "layer_status": "HUMAN_CONFIRMED_USED",
+  "top": [
+   "P_MOVE"
+  ],
+  "decided_by": [
+   "human:02182454d9904efe"
+  ]
+ }
+]

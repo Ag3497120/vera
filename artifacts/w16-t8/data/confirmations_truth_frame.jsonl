@@ -1,0 +1,2 @@
+{"op": "set", "word": "移動する", "type": "P_MOVE", "reason": "prerequisite of the frame (base DECIDED, a human type is needed first)"}
+{"op": "frame", "predicate": "移動する", "particle": "へ", "role": "goal", "types": ["GROUP_ORG"], "reason": "goal of 移動する may be an organisation (学校・会社)"}

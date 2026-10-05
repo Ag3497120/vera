@@ -1,0 +1,12 @@
+{"id": "re01", "text": "整備士が倉庫へ出動した。", "expect": [{"predicate": "出動する", "roles": {"agent": "整備士", "goal": "倉庫"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "re02", "text": "技師が港へ到達した。", "expect": [{"predicate": "到達する", "roles": {"agent": "技師", "goal": "港"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "re03", "text": "田中が農場へ疎開した。", "expect": [{"predicate": "疎開する", "roles": {"agent": "田中", "goal": "農場"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "re04", "text": "鈴木が市場へ通勤した。", "expect": [{"predicate": "通勤する", "roles": {"agent": "鈴木", "goal": "市場"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "re05", "text": "ハルがミナに話した。", "expect": "ABSTAIN"}
+{"id": "re06", "text": "田中が土間に荷物を置いた。", "expect": "ABSTAIN"}
+{"id": "re07", "text": "ミナがザクった。", "expect": "ABSTAIN"}
+{"id": "re08", "text": "太郎が駅から出発した。", "expect": null}
+{"id": "re09", "text": "鈴木が書庫で本を書いた。", "expect": null}
+{"id": "re10", "text": "整備士がチェーンにグリスを塗った。", "expect": "ABSTAIN"}
+{"id": "re11", "text": "技師が病院へ上京した。", "expect": [{"predicate": "上京する", "roles": {"agent": "技師", "goal": "病院"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "re12", "text": "田中が本を読んだ。", "expect": null}

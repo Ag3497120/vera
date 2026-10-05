@@ -1,0 +1,29 @@
+[
+ {
+  "word": "移動する",
+  "type": "P_MOVE",
+  "base_state": "DECIDED",
+  "base_top": [
+   "P_MOVE"
+  ],
+  "base_origin": "direct",
+  "base_decided_by": [
+   "gen_frame",
+   "role_distribution@codex:general_qa",
+   "role_distribution@codex:narrative",
+   "role_distribution@codex:paraphrase_entail",
+   "role_distribution@codex:pro"
+  ],
+  "layer_status": "BASE_DECIDED",
+  "top": [
+   "P_MOVE"
+  ],
+  "decided_by": [
+   "gen_frame",
+   "role_distribution@codex:general_qa",
+   "role_distribution@codex:narrative",
+   "role_distribution@codex:paraphrase_entail",
+   "role_distribution@codex:pro"
+  ]
+ }
+]

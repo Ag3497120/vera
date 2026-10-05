@@ -1,0 +1,44 @@
+sentence_id	text	status	op	word	particle	role	candidates	reason	reachable	why
+pool1.txt#1:1	田中が整備室へ向かった。	READ								
+pool1.txt#2:1	鈴木が実験棟へ行った。	ABSTAIN	none					NO_SUPPORTED_CLAUSE	false	NOT_REACHABLE_BY_CONFIRMATION
+pool1.txt#3:1	太郎が実験棟に入った。	ABSTAIN	none					NO_SUPPORTED_CLAUSE	false	NOT_REACHABLE_BY_CONFIRMATION
+pool1.txt#4:1	整備士が整備室から出た。	READ								
+pool1.txt#5:1	技師が整備室へ戻った。	READ								
+pool1.txt#6:1	田中が図書館へ向かった。	READ								
+pool1.txt#7:1	鈴木が図書館へ行った。	READ								
+pool1.txt#8:1	山田が倉庫へ行った。	READ								
+pool1.txt#9:1	ミナが工房へ行った。	ABSTAIN	none					NO_SUPPORTED_CLAUSE	false	NOT_REACHABLE_BY_CONFIRMATION
+pool1.txt#10:1	ハルが書庫へ入った。	READ								
+pool1.txt#11:1	田中が工房へ移動した。	ABSTAIN	frame	移動する	が			PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	true	PREDICATE_TYPE_SET_FIRST:P_MOVE (vera confirm frame needs a confirmed type of the predicate)
+pool1.txt#12:1	鈴木が倉庫へ移動した。	ABSTAIN	frame	移動する	が			PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	true	PREDICATE_TYPE_SET_FIRST:P_MOVE (vera confirm frame needs a confirmed type of the predicate)
+pool1.txt#13:1	太郎が駅へ移動した。	ABSTAIN	frame	移動する	が			PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	true	PREDICATE_TYPE_SET_FIRST:P_MOVE (vera confirm frame needs a confirmed type of the predicate)
+pool1.txt#14:1	田中が駅から出発した。	READ								
+pool1.txt#15:1	鈴木が学校へ通った。	READ								
+pool1.txt#16:1	田中が会社へ向かった。	READ								
+pool1.txt#17:1	鈴木が会社へ行った。	READ								
+pool1.txt#18:1	太郎が学校へ戻った。	READ								
+pool1.txt#19:1	技師が会社から帰った。	READ								
+pool1.txt#20:1	整備士が学校へ歩いた。	ABSTAIN	frame	歩く	へ		GROUP_ORG	PLACEMENT_TYPE_MISMATCH:P_MOVE:へ:GROUP_ORG	true	PREDICATE_TYPE_SET_FIRST:P_MOVE (vera confirm frame needs a confirmed type of the predicate)
+pool1.txt#21:1	田中が荷物を倉庫へ運んだ。	READ								
+pool1.txt#22:1	鈴木が荷物を工房へ運んだ。	ABSTAIN	none	工房				GOAL_TYPE_UNDETERMINED:工房	false	NOT_REACHABLE_BY_CONFIRMATION
+pool1.txt#23:1	田中が本を倉庫へ運んだ。	READ								
+pool1.txt#24:1	鈴木が本を学校へ届けた。	ABSTAIN	none	学校				RECIPIENT_TYPE_UNDETERMINED:学校	false	NOT_REACHABLE_BY_CONFIRMATION
+pool1.txt#25:1	太郎が荷物を会社へ送った。	ABSTAIN	none	会社				RECIPIENT_TYPE_UNDETERMINED:会社	false	NOT_REACHABLE_BY_CONFIRMATION
+pool1.txt#26:1	田中が実験棟で働いた。	ABSTAIN	none					NO_SUPPORTED_CLAUSE	false	NOT_REACHABLE_BY_CONFIRMATION
+pool1.txt#27:1	鈴木が整備室で働いた。	READ								
+pool1.txt#28:1	太郎が会社で働いた。	READ								
+pool1.txt#29:1	技師が学校で働いた。	READ								
+pool1.txt#30:1	整備士が工房で本を読んだ。	ABSTAIN	none					NO_SUPPORTED_CLAUSE	false	NOT_REACHABLE_BY_CONFIRMATION
+pool1.txt#31:1	田中が書庫で本を書いた。	READ								
+pool1.txt#32:1	鈴木が倉庫で点検した。	READ								
+pool1.txt#33:1	太郎が温室で働いた。	READ								
+pool1.txt#34:1	田中が整備室に住んだ。	READ								
+pool1.txt#35:1	鈴木が会社に住んだ。	READ								
+pool1.txt#36:1	山田が駅へ向かった。	READ								
+pool1.txt#37:1	ミナが駅へ行った。	ABSTAIN	none	ミナ				SUBJECT_TYPE_UNDETERMINED:ミナ	false	NOT_REACHABLE_BY_CONFIRMATION
+pool1.txt#38:1	ソラが駅へ行った。	ABSTAIN	none	ソラ				SUBJECT_TYPE_UNDETERMINED:ソラ	false	NOT_REACHABLE_BY_CONFIRMATION
+pool1.txt#39:1	ソラが倉庫へ向かった。	ABSTAIN	none	ソラ				SUBJECT_TYPE_UNDETERMINED:ソラ	false	NOT_REACHABLE_BY_CONFIRMATION
+pool1.txt#40:1	ソラが整備室へ向かった。	ABSTAIN	none	ソラ				SUBJECT_TYPE_UNDETERMINED:ソラ	false	NOT_REACHABLE_BY_CONFIRMATION
+# sentences=40 read=24 abstained=16 refused_input=0 abstained_with_reachable_candidate=4 abstained_unreachable_only=12
+# blocks	frame	移動する	3 sentence(s)
+# blocks	frame	歩く	1 sentence(s)
