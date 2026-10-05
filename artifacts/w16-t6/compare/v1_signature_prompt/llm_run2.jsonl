@@ -1,0 +1,85 @@
+{"case": "S01", "sig": "exit:pytest -q tests/test_a.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S01", "sig": "file_sha:out/t1.txt", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S02", "sig": "exit:python -m pytest -q -x tests/test_b.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S02", "sig": "file_sha:out/t2.txt", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S03", "sig": "exit:python3 -m pytest -q tests/test_c.py::test_k1", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S04", "sig": "exit:pytest -q tests/test_f.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S04", "sig": "file_sha:out/t4.txt", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S05", "sig": "exit:python -m pytest -q tests/test_a.py", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S05", "sig": "file_sha:out/t5.txt", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S06", "sig": "exit:python -m verantyx.tool run", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S07", "sig": "file_sha:pkg/a.py", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S07", "sig": "changed:pkg/a.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S08", "sig": "file_sha:pkg/b.py", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S08", "sig": "changed:pkg/b.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S08", "sig": "file_sha:pkg/new.py", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S08", "sig": "changed:pkg/new.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S09", "sig": "test_exists:tests/test_d.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S09", "sig": "test_count:tests/test_d.py", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S09", "sig": "test_passed:tests/test_d.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S10", "sig": "test_exists:tests/test_e.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S10", "sig": "test_count:tests/test_e.py", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S10", "sig": "test_passed:tests/test_e.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S11", "sig": "number:1,234 行を処理@out/m.txt", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S12", "sig": "number:精度 0.95、3 件を除外@out/m2.txt", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S13", "sig": "exit:pytest -q tests/test_g.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S13", "sig": "file_sha:out/g.txt", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S13", "sig": "file_sha:pkg/g.py", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S13", "sig": "changed:pkg/g.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S13", "sig": "test_exists:tests/test_g.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S13", "sig": "test_count:tests/test_g.py", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S13", "sig": "test_passed:tests/test_g.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S13", "sig": "number:12 passed@out/g.txt", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S14", "sig": "exit:pytest -q tests/test_a.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S14", "sig": "file_sha:out/x.txt", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S15", "sig": "exit:pytest -q tests/test_a.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S15", "sig": "file_sha:out/y.txt", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S16", "sig": "file_sha:pkg/c.py", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S16", "sig": "changed:pkg/c.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S17", "sig": "file_sha:pkg/d.py", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S17", "sig": "changed:pkg/d.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S18", "sig": "test_exists:tests/test_h.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S18", "sig": "test_count:tests/test_h.py", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S18", "sig": "test_passed:tests/test_h.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S19", "sig": "test_exists:tests/test_i.py", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S19", "sig": "test_count:tests/test_i.py", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S19", "sig": "test_passed:tests/test_i.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S20", "sig": "test_exists:tests/test_j.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S20", "sig": "test_count:tests/test_j.py", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S20", "sig": "test_passed:tests/test_j.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S21", "sig": "test_exists:tests/test_k.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S21", "sig": "test_count:tests/test_k.py", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S21", "sig": "test_passed:tests/test_k.py", "truth": "unknown", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S22", "sig": "test_exists:tests/test_ghost1.py", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S23", "sig": "test_exists:tests/test_ghost2.py", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S24", "sig": "test_exists:tests/test_reel.py", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S25", "sig": "test_exists:tests/sub/test_ghost4.py", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S26", "sig": "exit:python -m pytest -q tests/test_a.py", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S27", "sig": "exit:python -m verantyx.tool run", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S28", "sig": "exit:pytest -q tests/test_f.py", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S29", "sig": "exit:pytest -q tests/test_a.py", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S30", "sig": "number:98 件を処理@out/n1.txt", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S31", "sig": "number:12 件@out/n2.txt", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S32", "sig": "number:失敗 0 件@out/n3.txt", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S33", "sig": "number:経過 3.5 秒@out/n4.txt", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S34", "sig": "exit:pytest -q tests/test_m.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S34", "sig": "file_sha:out/m.txt", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S34", "sig": "file_sha:pkg/m.py", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S34", "sig": "changed:pkg/m.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S34", "sig": "test_exists:tests/test_m.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S34", "sig": "test_count:tests/test_m.py", "truth": "false", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S34", "sig": "test_passed:tests/test_m.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S34", "sig": "number:3 passed@out/m.txt", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S35", "sig": "exit:pytest -q tests/test_a.py", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S36", "sig": "file_sha:/etc/hosts", "truth": "unknown", "answer": "LLM_UNKNOWN", "raw": "不明", "ok": true, "type": "generated"}
+{"case": "S36", "sig": "changed:/etc/hosts", "truth": "unknown", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S36", "sig": "exit:pytest -q tests/test_a.py", "truth": "unknown", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S36", "sig": "file_sha:../outside.txt", "truth": "unknown", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S37", "sig": "exit:pytest -q tests/test_a.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S37", "sig": "file_sha:out/short.txt", "truth": "unknown", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S38", "sig": "exit:pytest -q tests/test_a.py", "truth": "unknown", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S38", "sig": "test_exists:tests/test_n.py", "truth": "true", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S38", "sig": "test_count:tests/test_n.py", "truth": "true", "answer": "LLM_YES", "raw": "はい", "ok": true, "type": "generated"}
+{"case": "S38", "sig": "test_passed:tests/test_n.py", "truth": "unknown", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S40", "sig": "exit:bash -c \"echo hi\"", "truth": "unknown", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}
+{"case": "S40", "sig": "exit:pytest -q tests/test_a.py; rm -rf /", "truth": "unknown", "answer": "LLM_NO", "raw": "いいえ", "ok": true, "type": "generated"}

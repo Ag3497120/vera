@@ -2989,6 +2989,23 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--file", default=None, help="obfuscated .obf file, required for identify")
     p.set_defaults(fn=cmd_watermark)
 
+    # W16-t6 (K601): vera attest
+    p = sub.add_parser("attest", help="check a report's completion claims against what actually happened (sha256, collected tests, exit codes, numbers)")
+    p.add_argument("report", help="the report (the completion section and/or an attest JSON block)")
+    p.add_argument("--tree", required=True, help="the work tree to check the claims against")
+    p.add_argument("--ledger", default=None, help="a T7 events ledger (jsonl): test_run / process_exit events give exit codes")
+    p.add_argument("--rerun", action="store_true", help="re-run an allowed form (pytest / python -m pytest on tests/*.py) when no ledger event exists")
+    p.add_argument("--base", default=None, help="git rev: a 'changed' claim must differ from it")
+    p.add_argument("--rev", default=None, help="git rev: check file sha256 against that revision instead of the work tree")
+    p.add_argument("--record", default=None, help="append the results to this testimony ledger as kind: attestation")
+    p.add_argument("--extractor", choices=["structured", "V", "a", "b", "all"], default="structured")
+    p.add_argument("--partial-tree", dest="partial_tree", action="store_true", help="a file missing from the tree is evidence-not-in-tree, not a mismatch (replay)")
+    p.add_argument("--search-dir", dest="search_dir", action="append", default=None, help="where to look for a bare file name (relative to the tree); repeatable")
+    p.add_argument("--history", action="store_true", help="a sha256 that matches a past git version is MATCHES_PAST_VERSION, not a mismatch")
+    p.add_argument("--timeout", type=float, default=600.0)
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(fn=lambda a: __import__("verantyx.attest", fromlist=["cli_main"]).cli_main(a))
+
     p = sub.add_parser("push-store", help="upload the store to HuggingFace")
     p.add_argument("--repo", default=None)
     p.add_argument("--private", action="store_true")

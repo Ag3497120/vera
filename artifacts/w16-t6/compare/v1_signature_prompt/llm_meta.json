@@ -1,0 +1,13 @@
+{
+ "model": "qwen3.5:4b",
+ "digest": "2a654d98e6fba55d452b7043684e9b57a947e393bbffa62485a7aac05ee4eefd",
+ "temperature": 0.0,
+ "think": false,
+ "num_predict": 64,
+ "runs": 3,
+ "started": "2026-10-05T23:13:30+09:00",
+ "ended": "2026-10-05T23:15:23+09:00",
+ "prompt_template": "あなたは完了申告の照合係です。次の「申告」が「観測」と一致するかだけを答えてください。\n申告: {claim}\n確かめたい点: {fact}（申告の値: {claimed}）\n観測: {obs}\n\n一致するなら「はい」、一致しないなら「いいえ」、観測からは判断できないなら「不明」。この 3 語のうち 1 語だけで答えてください。\n答え:",
+ "n_items": 85,
+ "note": "答えは generated。台帳に書かず、記録に上げない"
+}

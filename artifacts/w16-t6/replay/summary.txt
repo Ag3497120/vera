@@ -1,0 +1,24 @@
+T6-3 再生: 対象の報告 173 本（manifest.json。凍結 2026-10-05T23:14:27+09:00）。凍結後に変わった報告: 0 本
+
+[V] 申告 0 件（申告のある報告 0 本）: 記録 0 / 証言 0 / 食い違い 0
+    照合できた申告の割合 =（記録+食い違い）/全数 = n/a（申告 0 件）
+    事実 0 件: 記録 0 / 証言 0 / 食い違い 0。照合できた事実の割合 = n/a
+    申告の理由の内訳: 
+    事実の理由の内訳: 
+    種類: 
+
+[a] 申告 0 件（申告のある報告 0 本）: 記録 0 / 証言 0 / 食い違い 0
+    照合できた申告の割合 =（記録+食い違い）/全数 = n/a（申告 0 件）
+    事実 0 件: 記録 0 / 証言 0 / 食い違い 0。照合できた事実の割合 = n/a
+    申告の理由の内訳: 
+    事実の理由の内訳: 
+    種類: 
+
+[b] 申告 443 件（申告のある報告 148 本）: 記録 36 / 証言 328 / 食い違い 79
+    照合できた申告の割合 =（記録+食い違い）/全数 = 115/443 = 0.2596
+    事実 673 件: 記録 199 / 証言 395 / 食い違い 79。照合できた事実の割合 = 278/673 = 0.4131
+    申告の理由の内訳: MISMATCH:COUNT_DIFFERS=67, MISMATCH:NUMBER_NOT_IN_OUTPUT=12, RECORD:MATCH=36, TESTIMONY:AMBIGUOUS_CLAIM=78, TESTIMONY:EVIDENCE_NOT_IN_TREE=79, TESTIMONY:NO_COMMAND=6, TESTIMONY:NO_EVENT=141, TESTIMONY:NO_NUMBER_IN_TEXT=24
+    事実の理由の内訳: MISMATCH:COUNT_DIFFERS=67, MISMATCH:NUMBER_NOT_IN_OUTPUT=12, RECORD:MATCH=199, TESTIMONY:AMBIGUOUS_CLAIM=78, TESTIMONY:EVIDENCE_NOT_IN_TREE=79, TESTIMONY:NO_COMMAND=6, TESTIMONY:NO_EVENT=208, TESTIMONY:NO_NUMBER_IN_TEXT=24
+    種類: acceptance=99, file_sha=8, number=137, tests_added=199
+
+labels.tsv: 443 申告 + 見出し、label 列は空（正解ラベルはオーナーが付ける）。mismatches.tsv: 食い違いの事実 79 件。
