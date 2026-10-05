@@ -1,0 +1,4 @@
+SessionStart	rc=0	ledger_rows=5	stderr_tail=
+SessionEnd	rc=0	ledger_rows=6	stderr_tail=
+codex_notify	rc=0	ledger_rows=7	stderr_tail=
+ALL_RC [0, 0, 0, 0, 0, 0, 0]

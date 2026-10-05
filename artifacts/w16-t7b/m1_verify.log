@@ -1,0 +1,9 @@
+# M1 verification
+python+code-root rc=0
+vera-cmd+code-root rc=2
+vera-cmd+python rc=2
+PIN_UNRESOLVABLE_FROZEN
+PIN_UNRESOLVABLE_FROZEN
+PIN_UNRESOLVABLE_FROZEN
+dash_P
+NON_CWD []

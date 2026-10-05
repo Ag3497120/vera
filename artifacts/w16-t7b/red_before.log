@@ -1,0 +1,9 @@
+sha256 red_before.py: 52170645de8c34bd37450ed1c34761995b56fc83d4841457e38ec650308d8f60
+UserPromptSubmit	rc=2	ledger_rows=0	stderr_tail=
+PostToolUse	rc=2	ledger_rows=0	stderr_tail=
+Stop	rc=2	ledger_rows=0	stderr_tail=
+SubagentStop	rc=2	ledger_rows=0	stderr_tail=
+SessionStart	rc=2	ledger_rows=0	stderr_tail=
+SessionEnd	rc=2	ledger_rows=0	stderr_tail=
+codex_notify	rc=2	ledger_rows=0	stderr_tail=
+ALL_RC [2, 2, 2, 2, 2, 2, 2]

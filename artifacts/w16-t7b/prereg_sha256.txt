@@ -1,0 +1,2 @@
+62c32779be15cf02c1e79fa5223cdd03a00c8b0559ab242760ad0bf295fe44ea  tests/test_w16t7b_hook_pinning.py
+c7e7af46634af1d0ce26d8917e2ba9bc7c53b4a0bed63991ac4d936ff6cfa253  tests/test_w16t7b_hook_pinning.py (after round 2 additions)
