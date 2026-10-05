@@ -507,11 +507,26 @@ def test_the_condition_of_to_needs_a_main_predicate_whose_type_is_known_and_not_
     assert SR.read('兄が来れば、弟が帰る。', placement=F.MapQuery({}))['readable'] is True
 
 
+
+
+# Integration of W3-c7 (auditor, 2026-10-05): stage C7 runs AFTER W3-b3 gave up and reads the te / continuative sentences whose both clauses have a subject (K303 'sequence').
+# For those sentences the output is no longer the base's: the two tests below keep attesting W3-b3's own discipline (W3-b3 did not read them, the edge is only in the diagnosis)
+# and hand the output itself to W3-c7's tests (tests/test_semantic_read_w3c7.py).
+def _c7_reads(text, query):
+    from verantyx import semantic_reader as _R
+    try:
+        return bool(_R.w3c7_explain_ja(text, query)['read'])
+    except Exception:
+        return False
+
 @pytest.mark.parametrize('row', ROWS['parallel'], ids=lambda r: r['id'])
 def test_te_and_the_continuative_are_not_in_the_output_and_the_edge_is_in_the_diagnosis(row):
     q = F.FixtureQuery(); bq = F.FixtureQuery()
     out = SR.read(row['input'], placement=q)
-    assert out == BASE.read(row['input'], placement=bq) and out['readable'] is False, row['input']
+    if _c7_reads(row['input'], F.FixtureQuery()):
+        assert out['readable'] is True and explain(row['input'])['read'] is False, row['input']      # read by stage C7, not by W3-b3
+    else:
+        assert out == BASE.read(row['input'], placement=bq) and out['readable'] is False, row['input']
     ex = explain(row['input'])
     if row['behavior'] == 'read':
         edge = row['structure_expect']['edges'][0]
@@ -627,6 +642,8 @@ def test_when_the_path_does_not_read_the_output_is_the_bases_and_the_questions_a
     assert q.calls[:len(bq.calls)] == bq.calls, text
     if ex['read']:
         assert out['readable'] is True and bout['readable'] is False, text
+    elif _c7_reads(text, F.FixtureQuery()):
+        assert out['readable'] is True and bout['readable'] is False, text        # integration of W3-c7: read by stage C7 after W3-b3 gave up
     else:
         assert out == bout or (W1A5.touched(text, F.FixtureQuery()) and W1A5.documented(bout, out)), (text, ex['reason'])      # W1-a5 (10G K210): its reason stands behind the base's
         if ex['reason'].startswith(BEFORE_ANY_QUESTION): assert q.calls == bq.calls, (text, ex['reason'])

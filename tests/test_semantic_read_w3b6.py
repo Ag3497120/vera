@@ -359,7 +359,8 @@ def test_the_problems_of_the_reader_are_the_registered_list():
 def test_the_reader_of_the_contract_reads_two_keys_and_the_code_never_names_role_frame_unconfirmed():
     src = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
     i = src.index('# W3-b6:')
-    tree = ast.parse(src[i:])
+    j = src.index('# W3-c7:') if '# W3-c7:' in src else len(src)
+    tree = ast.parse(src[i:j])
     fn = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == 'predicate_role_frame')
     keys = set()
     for node in ast.walk(fn):
@@ -407,7 +408,7 @@ def test_the_reasons_and_the_kinds_of_the_docs_are_the_constants_of_the_code():
 
 def test_the_reason_names_of_stage_r_are_the_closed_list_and_the_gate_reasons_are_reused_by_name():
     src = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
-    section = src[src.index('# W3-b6:'):]
+    section = src[src.index('# W3-b6:'):src.index('# W3-c7:')] if '# W3-c7:' in src else src[src.index('# W3-b6:'):]
     used = set(re.findall(r"'(ROLE_FRAME_[A-Z_]+)", section))
     assert used <= set(R.W3B6_REASON_NAMES) and used >= set(R.W3B6_REASON_NAMES) - set()
     reused = set(re.findall(r"'(PLACEMENT_[A-Z_]+)", section))
@@ -418,9 +419,10 @@ def test_the_reason_names_of_stage_r_are_the_closed_list_and_the_gate_reasons_ar
 # ===================================================================================================================================
 # the particles, K276, K274: mechanism checks beyond the data
 # ===================================================================================================================================
+# Integration of W3-c7 (auditor, 2026-10-05): stage C7 is appended AFTER the W3-b6 block; the W3-b6 section is the text between '# W3-b6:' and '# W3-c7:' (the block of W3-c7 is attested by its own tests).
 def test_the_particles_stage_r_reads_are_the_seven_without_ga_and_wo():
     src = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
-    section = src[src.index('# W3-b6:'):]
+    section = src[src.index('# W3-b6:'):src.index('# W3-c7:')] if '# W3-c7:' in src else src[src.index('# W3-b6:'):]
     assert '_CASE_PARTICLES_9' in section
     assert all(ord(ch) < 128 for ch in section)
     assert [p for p in R._CASE_PARTICLES_9 if p not in ('が', 'を')] == ['に', 'で', 'へ', 'と', 'から', 'まで', 'より']
@@ -533,7 +535,8 @@ def test_the_top_level_definitions_of_the_base_are_unchanged_and_the_new_constan
         return out
     b, n = defs(base), defs(now)
     assert {k: v for k, v in n.items() if k in b} == b
-    assert set(n) - set(b) == {'_typed_plan_u_w3b6_ja', 'predicate_role_frame', 'typed_plan_u_w3b6_stage_r_ja'} | {k for k in n if k.startswith('_w3b6_')}
+    # Integration of W3-c7 (auditor, 2026-10-05): the definitions of stage C7 (names starting with '_w3c7_' or containing 'w3c7') are added by a later ticket and are attested by its own tests
+    assert {k for k in set(n) - set(b) if 'w3c7' not in k.lower()} == {'_typed_plan_u_w3b6_ja', 'predicate_role_frame', 'typed_plan_u_w3b6_stage_r_ja'} | {k for k in n if k.startswith('_w3b6_')}
 
     def assigned(tree):
         out = set()
@@ -543,7 +546,7 @@ def test_the_top_level_definitions_of_the_base_are_unchanged_and_the_new_constan
                     if isinstance(t, ast.Name): out.add(t.id)
             elif isinstance(node, (ast.AnnAssign, ast.AugAssign)) and isinstance(node.target, ast.Name): out.add(node.target.id)
         return out
-    new_names = assigned(now) - assigned(base)
+    new_names = {k for k in assigned(now) - assigned(base) if 'w3c7' not in k.lower()}      # integration of W3-c7: its constants are attested by its own tests
     assert new_names == {'W3B6_REASON_NAMES', 'W3B6_ROLE_KINDS', 'typed_plan_u_w3b4_body_ja', 'typed_plan_u_w3b4_ja'}, new_names     # the last is the wrapped plan (H270): a def in the base, assigned again here
     consts = [name for name in new_names if not callable(getattr(R, name))]
     assert sorted(consts) == ['W3B6_REASON_NAMES', 'W3B6_ROLE_KINDS']
@@ -552,7 +555,8 @@ def test_the_top_level_definitions_of_the_base_are_unchanged_and_the_new_constan
 def test_the_end_of_the_reader_has_no_word_of_a_sentence_and_assigns_none_of_the_names_of_the_entry():
     src = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
     i = src.index('# W3-b6:')
-    tree = ast.parse(src[i:])
+    j = src.index('# W3-c7:') if '# W3-c7:' in src else len(src)
+    tree = ast.parse(src[i:j])
     for node in ast.walk(tree):
         if isinstance(node, ast.Constant) and isinstance(node.value, str):
             assert all(ord(ch) < 128 for ch in node.value), node.value

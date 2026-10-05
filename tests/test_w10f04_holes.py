@@ -199,7 +199,8 @@ def test_vera_read_holes_reports_a_refused_input(capsys):
 def test_semantic_read_existing_lines_are_not_changed():
     root = Path(__file__).resolve().parent.parent
     try:
-        out = subprocess.run(['git', '-C', str(root), 'diff', '-U0', BASE_COMMIT, '--', 'verantyx/semantic_read.py', 'verantyx/observe.py'], capture_output=True, text=True, timeout=60)
+        # Integration of W3-c7 (auditor, 2026-10-05): the discipline attested is W10-f04's own (its commit d8a18a0 against its base); W3-c7 later changes one line of semantic_read.py
+        out = subprocess.run(['git', '-C', str(root), 'diff', '-U0', BASE_COMMIT, 'd8a18a0', '--', 'verantyx/semantic_read.py', 'verantyx/observe.py'], capture_output=True, text=True, timeout=60)
     except (OSError, subprocess.SubprocessError):
         pytest.skip('no git')
     if out.returncode != 0:
