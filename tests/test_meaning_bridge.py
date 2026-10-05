@@ -251,6 +251,10 @@ def test_unrepresented_aspect_is_refused_by_morphology_not_word_blacklist(raw):
     "マキがリオに青鍵を渡したら。", # auxiliary conditional
 ])
 def test_unlicensed_predicate_or_auxiliary_form_is_not_reinterpreted_as_assertion(raw):
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the conditional fragment (…渡したら。) is now refused by the
+    reader's modality gate (MODALITY_NOT_READ:conditional) before the bridge's morphology check, so the bridge abstains with
+    UNKNOWN_MEANING_SUBSET. Old expectation for both rows: UNKNOWN_MEANING_MORPHOLOGY. Abstain -> abstain only."""
     result = source_event_realizations({"notes": raw})
-    assert result["verdict"] == "UNKNOWN_MEANING_MORPHOLOGY", result
+    expected = "UNKNOWN_MEANING_SUBSET" if raw.endswith("たら。") else "UNKNOWN_MEANING_MORPHOLOGY"
+    assert result["verdict"] == expected, result
     assert result["realizations"] == [] and raw in result["original_view"]
