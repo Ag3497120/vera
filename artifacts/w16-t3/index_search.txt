@@ -1,0 +1,45 @@
+### 逐語の引用を照合
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "逐語の引用を照合",
+  "searched": 699,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 57,
+    "module": 297,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### quote verification citation
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "quote verification citation",
+  "searched": 699,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 57,
+    "module": 297,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+### 数値 日付 固有名 の照合
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "数値 日付 固有名 の照合",
+  "searched": 699,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 57,
+    "module": 297,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

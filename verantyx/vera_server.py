@@ -224,7 +224,7 @@ def fusion_turn(messages, vera_opts, cfg: FusionConfig, max_tokens: Optional[int
     llm = None
     llm_ms = 0.0
     if turn["call_llm"]:
-        fmt = turn["grammar"]["json_schema"] if turn["grammar"] else None
+        fmt = turn["grammar"]["json_schema"] if turn["grammar"] else G.quote_format(turn, cfg.records)
         t1 = time.perf_counter()
         chat = cfg.llm_chat or (cfg.backend_chat(max_tokens) if cfg.backend != "ollama" else (lambda model, msgs, f: _ollama_chat(cfg.ollama_url, model, msgs, f, cfg.timeout, max_tokens)))
         try:

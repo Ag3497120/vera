@@ -1,0 +1,15 @@
+        d = res.to_dict()
+>       assert d["verdict"] == case["expect"], (d, case["note"])
+E       AssertionError: ({'verdict': 'anchored', 'quotes': [{'source': 'a.txt', 'line': 9, 'text': '定員は40名である。', 'relocated_to': ['a.txt:1', '....txt:1']}], 'conflicts': []}, 'R6′: 引用 A は a.txt と b.txt に一致（候補 {a, b}）、引用 B は {c}。候補が交わらず 40名 と 60名 が違う -> conflict。')
+E       assert 'anchored' == 'conflict'
+E         
+E         - conflict
+E         + anchored
+
+tests/test_w16t3_content.py:41: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w16t3_content.py::test_case[R6-2] - AssertionError: ({'verd...
+FAILED tests/test_w16t3_content.py::test_case[N1-01] - AssertionError: ({'ver...
+FAILED tests/test_w16t3_content.py::test_case[N1-02] - AssertionError: ({'ver...
+FAILED tests/test_w16t3_content.py::test_case[N3-01] - AssertionError: ({'ver...
+4 failed, 57 passed in 0.45s

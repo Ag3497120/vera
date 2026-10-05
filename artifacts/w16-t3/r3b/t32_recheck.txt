@@ -1,0 +1,4 @@
+保存された結果: /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3-S/artifacts/w16-t3/r3/w14/C/results.jsonl
+quote_check のある行: 255
+今の QC.check の to_dict が保存と同一: 255
+違う行: 0

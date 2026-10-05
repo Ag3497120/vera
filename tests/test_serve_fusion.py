@@ -254,7 +254,7 @@ def test_default_llm_answer_without_record_is_testimony_never_an_answer(place, t
     res = run(make_cfg(tmp_path, FakeLLM('次郎が地図を渡した。'), strict=False), '太郎は何を買った？')
     v = res['vera']
     assert v['outcome']['outcome'] == 'TESTIMONY' and v['outcome']['outcome'] not in G.ANSWER_OUTCOMES
-    assert res['content'] == G.MARK_TESTIMONY + '\n次郎が地図を渡した。'
+    assert res['content'] == G.MARK_TESTIMONY + '\n次郎が地図を渡した。\n（記録で確かめられません）'
     assert v['provenance'][0]['sentence_kind'] == 'testimony' and v['provenance'][0]['origin'] == 'testimony'
     assert v['provenance'][0]['source'] == {'family': 'llm', 'origin': 'testimony', 'model': 'fake-model'}
     assert v['outcome']['basis_policy']['outcome'] != 'ANSWER_HUMAN_BASIS' and v['llm']['raw'] == '次郎が地図を渡した。'
@@ -369,7 +369,8 @@ def test_list_content_is_read_and_only_the_last_user_message_is_the_question(pla
             {'role': 'user', 'content': [{'type': 'text', 'text': '太郎は何を'}, {'type': 'text', 'text': '買った？'}]}]
     res = VS.fusion_turn(msgs, None, cfg)
     assert res['vera']['reading']['type'] == 'NO_RECORD' and len(llm.calls) == 1
-    assert [m['role'] for m in llm.calls[0]['messages']] == ['user', 'assistant', 'user']        # layer 0 hands the whole conversation to the LLM
+    assert [m['role'] for m in llm.calls[0]['messages']] == ['system', 'user', 'assistant', 'user']        # layer 0 hands the whole conversation to the LLM, behind the document system message (W16-t3 K650)
+    assert llm.calls[0]['messages'][1:] == [{'role': 'user', 'content': '誰が地図を渡した？'}, {'role': 'assistant', 'content': '太郎です'}, {'role': 'user', 'content': '太郎は何を買った？'}]
 
 
 # ---- HTTP ----------------------------------------------------------------------------------------------------------------------------------
@@ -418,7 +419,7 @@ def test_http_openai_stream_ends_with_done_and_carries_vera(server, tmp_path):
     assert st == 200 and h['Content-Type'] == 'text/event-stream' and events[-1] == 'data: [DONE]'
     chunks = [json.loads(e[len('data: '):]) for e in events[:-1]]
     assert all(c['object'] == 'chat.completion.chunk' for c in chunks)
-    assert chunks[0]['choices'][0]['delta']['content'] == G.MARK_TESTIMONY + '\n次郎が本を読んだ。'
+    assert chunks[0]['choices'][0]['delta']['content'] == G.MARK_TESTIMONY + '\n次郎が本を読んだ。\n（記録で確かめられません）'
     assert chunks[-1]['choices'][0]['finish_reason'] == 'stop' and chunks[-1]['vera']['outcome']['outcome'] == 'TESTIMONY'
 
 
@@ -427,7 +428,7 @@ def test_http_ollama_default_is_ndjson(server, tmp_path):
     st, raw, _h = post(url, '/api/chat', {'model': 'x', 'messages': msg('太郎は何を買った？')})
     lines = [json.loads(x) for x in raw.splitlines()]
     assert st == 200 and lines[-1]['done'] is True and 'vera' in lines[-1] and lines[0]['done'] is False
-    assert lines[0]['message']['content'].endswith('次郎が本を読んだ。') and lines[-1]['done_reason'] == 'stop'
+    assert lines[0]['message']['content'].endswith('次郎が本を読んだ。\n（記録で確かめられません）') and lines[-1]['done_reason'] == 'stop'
 
 
 def test_http_ollama_stream_false_is_one_object(server, tmp_path):
@@ -616,7 +617,7 @@ def test_max_tokens_is_validated_and_reaches_the_llm_call(place, tmp_path, monke
     monkeypatch.setattr(VS, '_ollama_chat', fake_ollama)
     plain = VS.FusionConfig.load(model='m', documents=[docfile(tmp_path)])
     VS.fusion_turn(msg('太郎は何を買った？'), None, plain, 50)
-    assert seen == [(None, 50)]
+    assert seen == [(G.QUOTE_SCHEMA, 50)]
     for bad in (0, -1, '5', True, 1.5):
         with pytest.raises(VS.FusionBadRequest) as e:
             VS.fusion_turn(msg('x'), None, plain, bad)
@@ -760,7 +761,7 @@ ARM_KEYS = {'surface', 'kind', 'evidence'}
 
 def test_vera_field_keys_are_the_documented_ones_layer0_and_layer1(place, tmp_path):
     l0 = run(make_cfg(tmp_path, FakeLLM('太郎は本を買った。')), '太郎は何を買った？')['vera']
-    assert set(l0) == VERA_KEYS and set(l0['reading']) == READING_KEYS and set(l0['llm']) == LLM_KEYS
+    assert set(l0) == VERA_KEYS | {'quote_check'} and set(l0['reading']) == READING_KEYS and set(l0['llm']) == LLM_KEYS
     assert set(l0['grammar_check']) == GCHECK_KEYS and set(l0['outcome']) == OUTCOME_KEYS and l0['grammar'] is None
     p = l0['provenance'][0]
     assert set(p) == PROV_COMMON | PROV_READ | PROV_TESTIMONY and set(p['source']) == {'family', 'origin', 'model'}

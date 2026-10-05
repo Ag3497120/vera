@@ -1,0 +1,4 @@
+印か reason が変わった行: 0 / 60
+誤答で anchored -> 非 anchored になった数: 0
+正しい ANS（wrong=false, cat=ANS）で anchored -> 非 anchored（偽の錨なしの増加）: 0
+anchored 以外 -> anchored（あってはならない）: 0

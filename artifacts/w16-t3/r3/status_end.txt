@@ -1,0 +1,20 @@
+ M docs/FUSION.md
+ M tests/test_serve_fusion.py
+ M tests/test_w10f04_serve.py
+ M tests/test_w10f05_cli.py
+ M verantyx/decode_grammar.py
+ M verantyx/llm_backend.py
+ M verantyx/vera_server.py
+?? artifacts/w16-t3/
+?? tests/test_w16t3_content.py
+?? tests/test_w16t3_quote_check.py
+?? tests/test_w16t3_serve.py
+?? verantyx/quote_check.py
+ docs/FUSION.md             | 550 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/test_serve_fusion.py |  13 +-
+ tests/test_w10f04_serve.py |   2 +-
+ tests/test_w10f05_cli.py   |   2 +-
+ verantyx/decode_grammar.py |  81 ++++++-
+ verantyx/llm_backend.py    |   9 +
+ verantyx/vera_server.py    |   2 +-
+ 7 files changed, 649 insertions(+), 10 deletions(-)

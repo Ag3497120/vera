@@ -17,6 +17,11 @@ OLLAMA_URL = "http://127.0.0.1:11434"
 _SHOWN_LINE = re.compile(r"^(\d+): (\{.*\})$")
 
 
+def _is_quote_schema(fmt) -> bool:
+    from .decode_grammar import QUOTE_SCHEMA            # imported late: decode_grammar does not import this module
+    return fmt is QUOTE_SCHEMA
+
+
 def _ollama_chat(url: str, model: str, messages, fmt, timeout: float = 180.0, max_tokens: Optional[int] = None) -> Dict[str, Any]:
     """Ollama の /api/chat を標準ライブラリで呼ぶ。失敗は型つき: TIMEOUT・CONNECT_FAILED・HTTP_ERROR・BAD_RESPONSE。（W10-f01 の `vera_server._ollama_chat` をそのまま移したもの）"""
     import socket
@@ -26,6 +31,8 @@ def _ollama_chat(url: str, model: str, messages, fmt, timeout: float = 180.0, ma
     body: Dict[str, Any] = {"model": model, "messages": list(messages), "stream": False, "think": False, "options": {"temperature": 0}}
     if fmt is not None:
         body["format"] = fmt
+        if max_tokens is not None and _is_quote_schema(fmt):   # W16-t3: the quote-mode JSON is not bounded by a grammar, so it is cut here too
+            body["options"]["num_predict"] = max_tokens
     elif max_tokens is not None:                  # a grammar bounds its own output; only the free answer of layer 0 is cut here
         body["options"]["num_predict"] = max_tokens
     req = urllib.request.Request(url.rstrip("/") + "/api/chat", data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
@@ -70,6 +77,8 @@ def _openai_chat(api_base: str, api_key: Optional[str], model: str, messages, fm
     body: Dict[str, Any] = {"model": model, "messages": list(messages), "stream": False, "temperature": 0}
     if fmt is not None:
         body["response_format"] = {"type": "json_schema", "json_schema": {"name": "vera", "schema": fmt, "strict": True}}
+        if max_tokens is not None and _is_quote_schema(fmt):
+            body["max_tokens"] = max_tokens
     elif max_tokens is not None:
         body["max_tokens"] = max_tokens
     headers = {"Content-Type": "application/json"}

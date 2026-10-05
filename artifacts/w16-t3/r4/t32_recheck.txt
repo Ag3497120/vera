@@ -1,0 +1,11 @@
+保存された結果: /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t3-S/artifacts/w16-t3/r3/w14/C/results.jsonl
+quote_check のある行: 255
+今の QC.check の to_dict が保存と同一: 252
+違う行: 3
+S2-ANS-06 rep=0 cat=ANS anchored -> unanchored reason=YESNO_NOT_CHECKED 答え=いいえ 引用=1人だけで確認した結果は、依頼者へ送らない。 問い=1人だけで確認した結果を依頼者へ送りますか。
+S3-ANS-07 rep=0 cat=ANS anchored -> unanchored reason=YESNO_NOT_CHECKED 答え=いいえ 引用=役員でない会員には、議事録を配らない。 問い=役員でない会員に議事録を配りますか。
+S4-ANS-05 rep=0 cat=ANS anchored -> unanchored reason=POLARITY_DIFFERS 答え=設けない 引用=返却が遅れた利用者には、延滞の罰則を設ける。 問い=予約の取り消しについて、利用者に罰則を設けますか。
+保存の印の分布（255 行すべて）: {'anchored': 144, 'unanchored': 108, 'conflict': 3}
+今の印の分布（255 行すべて）: {'anchored': 141, 'unanchored': 111, 'conflict': 3}
+anchored 以外 -> anchored: 0
+reason の分布（今）: {None: 251, 'YESNO_NOT_CHECKED': 2, 'POLARITY_DIFFERS': 1, 'ANSWER_CONTENT_NOT_IN_QUOTE:行わ': 1}
