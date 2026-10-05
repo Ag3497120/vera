@@ -70,7 +70,7 @@ def test_documents_reach_the_llm_with_the_quote_schema_and_the_reply_is_checked(
     qc = v["quote_check"]
     assert qc["verdict"] == "anchored" and qc["quotes"][0]["found"] == "exact"
     assert qc["elements"] == [{"kind": "number", "value": "3000円", "found_in": ["d.txt:2"]}]
-    assert out["content"] == G.MARK_TESTIMONY + "\n3,000円\n（引用の出典: d.txt:2）"
+    assert out["content"] == G.MARK_ANCHORED_TESTIMONY + "\n3,000円\n（引用の出典: d.txt:2）"
     assert v["outcome"]["outcome"] == "TESTIMONY"
     prov = [p for p in v["provenance"] if p["sentence_kind"] != "record"]
     assert prov and all(p["origin"] == "testimony" and p["anchored_testimony"] == {"quotes": ["d.txt:2"]} for p in prov)

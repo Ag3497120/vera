@@ -44,7 +44,10 @@ def test_r4_prepublish_scan_is_empty():
 
 
 def test_r5_product_code_is_unchanged():
-    out = subprocess.run(["git", "-C", str(ROOT), "diff", "--stat", "4c2a2e5", "--", "verantyx/", "public_overlay/vera_base/", "public_overlay/pyproject.toml"],
+    """Integration (auditor, 2026-10-06): R-5 is a property of the W16-t11 commits, so it compares the fixed range
+    4c2a2e5..699c88a (the ticket's base and its last commit) instead of the working tree; later product changes on dev
+    (W16-t3c and on) must not make this test fail. Old form: `git diff --stat 4c2a2e5 -- …` against the working tree."""
+    out = subprocess.run(["git", "-C", str(ROOT), "diff", "--stat", "4c2a2e5", "699c88a", "--", "verantyx/", "public_overlay/vera_base/", "public_overlay/pyproject.toml"],
                          capture_output=True, text=True, check=True).stdout
     assert out.strip() == ""
 

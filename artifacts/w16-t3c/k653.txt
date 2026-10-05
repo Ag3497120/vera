@@ -1,0 +1,14 @@
+     310 <scratch>/serve_base.jsonl
+     310 <scratch>/serve_new.jsonl
+     620 total
+K653 SAME (cmp)
+rows base 310 new 310
+rows where change is allowed (layer 0, FACTUAL, LLM called, not QUESTION_CROSS): 87
+  of which actually changed: 0 ; of which carry vera.quote_check: 0
+rows outside that set: 223
+rows outside that set that changed (pass = 0): 0
+rows base 310 new 310
+quote_check verdict (new): {None: 239, 'unanchored': 71}
+changed rows: 0
+changed rows that are not 'anchored, first line only' (pass = 0): 0
+anchored rows that did not change (pass = 0): 0

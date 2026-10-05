@@ -23,6 +23,7 @@ SCHEMA = "verantyx.fusion/1"
 
 MARK_CONSTRUCTED = "［構成: 事実の主張ではありません］"
 MARK_TESTIMONY = "［証言: LLM の答えです。記録の裏づけはありません］"
+MARK_ANCHORED_TESTIMONY = "［証言: LLM の答えです。引用した文は記録にあります（確かめたのは、引用の実在と、答えの数値・日付・固有名・内容語が引用に現れることだけで、答えの正しさではありません）］"
 
 #: 型ごとの固定文（LLM の文は本文に出さない）
 FIXED_TEXT = {
@@ -580,6 +581,8 @@ def _attach_quote_check(content: str, parsed: Tuple[Optional[str], Any, Optional
     qc = QC.check(ans if ans is not None else "", quotes, records, reason=reason, question=question)
     if qc.verdict == QC.ANCHORED:
         line = "（引用の出典: %s）" % "、".join(qc.anchor_positions)
+        if content.startswith(MARK_TESTIMONY + "\n"):     # W16-t3c (K655): 錨ありのときだけ先頭の印を替える（接頭辞だけ。docs/FUSION.md §11）
+            content = MARK_ANCHORED_TESTIMONY + content[len(MARK_TESTIMONY):]
         for p in provenance:
             if p.get("sentence_kind") != "record":
                 p["anchored_testimony"] = {"quotes": list(qc.anchor_positions)}
