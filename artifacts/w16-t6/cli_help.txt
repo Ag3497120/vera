@@ -1,0 +1,20 @@
+usage: vera attest [-h] --tree TREE [--ledger LEDGER] [--rerun] [--base BASE]
+                   [--rev REV] [--record RECORD]
+                   [--extractor {structured,V,a,b,all}] [--partial-tree]
+                   [--search-dir SEARCH_DIR] [--history] [--timeout TIMEOUT]
+                   [--json]
+                   report
+
+positional arguments:
+  report                the report (the completion section and/or an attest
+                        JSON block)
+
+options:
+  -h, --help            show this help message and exit
+  --tree TREE           the work tree to check the claims against
+  --ledger LEDGER       a T7 events ledger (jsonl): test_run / process_exit
+                        events give exit codes
+  --rerun               re-run an allowed form (pytest / python -m pytest on
+                        tests/*.py) when no ledger event exists
+  --base BASE           git rev: a 'changed' claim must differ from it
+  --rev REV             git rev: check file sha256 against that revision

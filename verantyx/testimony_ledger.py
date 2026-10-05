@@ -21,10 +21,13 @@ from typing import Any, Callable, Dict, List, Optional, Sequence
 from .llm_choice import ChoiceLedger, LedgerIntegrityError
 
 SCHEMA = "verantyx.testimony_ledger/1"
-ROW_TYPES = ("header", "testimony", "not_adopted", "backend_failed", "reread_agreed", "distribution_backed", "human_confirmed", "promotable", "promoted_to_layer", "assumption")
+ROW_TYPES = ("header", "testimony", "not_adopted", "backend_failed", "reread_agreed", "distribution_backed", "human_confirmed", "promotable", "promoted_to_layer", "human_confirmation", "human_confirmation_undone", "assumption")
 TESTIMONY_TYPES = ("testimony", "assumption")       # W3-e2 (K334): an assumption row is folded, confirmed and promoted like a testimony (only when its declared type is ONE noun type)
 STATES = ("unconfirmed", "reread_agreed", "distribution_backed", "human_confirmed")
 DEFAULT_PROMOTE_N = 3
+ATTESTATION_ROW_TYPES = ("attestation",)           # W16-t6 (K603 (5)): kept OUT of ROW_TYPES on purpose (an existing test pins ROW_TYPES); an attestation row has no fill_id/key/word, so fold() never sees it
+ATTESTATION_MARKS = ("RECORD", "TESTIMONY", "MISMATCH")
+ATTESTATION_EXTRACTORS = ("V", "a", "b")           # the LLM judge (c) is generated: it is never written here
 
 
 def foldable(e: Dict[str, Any]) -> bool:
@@ -215,6 +218,21 @@ class TestimonyLedger:
                              "layer_base_sha256": layer_base_sha256, "origin": origin, "decided_by": list(decided_by), "evidence": evidence, "fill_id": fill_id,
                              "from_seq": list(from_seq)})
 
+    # ---- W16-t8 (K681): a human's confirmation made through `vera confirm` (docs/COARSE_PLACEMENT.md 12.21) ---------------------------------------------------------------
+    def record_human_confirmation(self, *, kind: str, word: str, type: str, frame: Optional[Dict[str, Any]], by: str, reason: Optional[str], layer_name: str) -> Dict[str, Any]:
+        """Appends a `human_confirmation` row (`kind`: type | frame) with a new `confirm_id`; the layer row follows (`placement_layer.write_entry` appends `promoted_to_layer` and names this row's seq). Appends only."""
+        confirm_id = self._new_id()
+        row = self._append({"type": "human_confirmation", "kind": kind, "word": _nfkc(word), "declared_type": type, "frame": frame, "by": by, "reason": reason, "layer_name": layer_name,
+                            "store_id": self.store_id, "confirm_id": confirm_id})
+        return {"row": row, "confirm_id": confirm_id}
+
+    def record_human_confirmation_undone(self, *, undoes: str, word: str, by: str, reason: Optional[str], layer_name: str) -> Dict[str, Any]:
+        """Appends a `human_confirmation_undone` row naming the `confirm_id` it undoes (a new `confirm_id` of its own). The earlier rows are never changed."""
+        confirm_id = self._new_id()
+        row = self._append({"type": "human_confirmation_undone", "undoes": undoes, "word": _nfkc(word), "by": by, "reason": reason, "layer_name": layer_name,
+                            "store_id": self.store_id, "confirm_id": confirm_id})
+        return {"row": row, "confirm_id": confirm_id}
+
     def promotion_plan(self, layer_name: str, base_query: Optional[Callable[[str], Dict[str, Any]]] = None) -> List[Dict[str, Any]]:
         """What `vera ledger promote --layer <name>` would write, one item per key of the folded view; changes neither a layer nor the ledger. Item keys: `key, word, candidate, declared_type,
         fill_id, origin` (the layer origin, or None) `skip` (a closed reason, or None), `decided_by, evidence, role_frame, from_seq`. The rules (docs/COARSE_PLACEMENT.md section 12.19, K290/K291, J10):
@@ -277,3 +295,19 @@ class TestimonyLedger:
                 k = key_of(e["word"], e["candidate"], e["declaration"]["type"], e["declaration"].get("role"))
                 fold = self.fold().get(k)
         return {"fill_id": fill_id, "rows": rows, "fold": fold}
+
+    # ---- W16-t6 (T6): `vera attest` results ---------------------------------------------------------------------------------------
+    def record_attestation(self, result: Dict[str, Any]) -> Dict[str, Any]:
+        """One checked claim of `vera attest` -> one `attestation` row (`kind: attestation`): {attest_id, claim_id, extractor (V|a|b), mark, reason, facts, report, tree, flags}.
+        The row has no fill_id / key / word, so `fold()`, `listing()`, `show()` and `promotion_plan()` do not change. An LLM judge's answer is generated, not evidence: it is refused."""
+        if result.get("extractor") not in ATTESTATION_EXTRACTORS:
+            raise LedgerError("ATTESTATION_EXTRACTOR_NOT_RECORDABLE", str(result.get("extractor")))
+        if result.get("mark") not in ATTESTATION_MARKS:
+            raise LedgerError("ATTESTATION_BAD_MARK", str(result.get("mark")))
+        facts = [dict(f, observation=str(f.get("observation") or "")[:300]) for f in (result.get("facts") or [])]
+        row = {"type": "attestation", "kind": "attestation"}
+        for k in ("attest_id", "claim_id", "extractor", "mark", "reason", "report", "tree", "flags", "claim_text", "line"):
+            if k in result:
+                row[k] = result[k]
+        row["facts"] = facts
+        return self._append(row)

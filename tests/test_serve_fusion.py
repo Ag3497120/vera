@@ -159,7 +159,7 @@ def test_strict_does_not_call_the_llm_when_nothing_is_readable_or_recorded(place
 
 def test_strict_no_placement_is_no_record_and_no_call(noplace, tmp_path):
     llm = FakeLLM()
-    v = run(make_cfg(tmp_path, llm, strict=True), '誰が地図を渡した？')['vera']
+    v = run(make_cfg(tmp_path, llm, strict=True), '太郎は何を渡した？')['vera']
     assert llm.calls == [] and v['reading']['type'] == 'NO_RECORD' and v['reading']['state'] == 'NO_TYPED_CANDIDATE'
 
 
@@ -584,6 +584,7 @@ def test_cli_without_backend_calls_serve_exactly_as_before(tmp_path, fake_serve,
 
 def test_cli_fusion_options_and_refusals(tmp_path, fake_serve, capsys, monkeypatch):
     monkeypatch.delenv('VERA_PLACEMENT', raising=False)
+    monkeypatch.setenv('VERA_PLACEMENT', '')     # isolation only (W16-t2): serve writes VERA_PLACEMENT; the undo of this setenv removes it at teardown
     monkeypatch.delenv('VERA_SOVEREIGN_ROOT', raising=False)
     monkeypatch.delenv('VERA_SOVEREIGN_STORE', raising=False)
     st = str(tmp_path / 'Z.json')
@@ -710,7 +711,7 @@ def test_concurrent_http_requests_read_on_the_one_vera_thread(thread_bound_place
 def test_thread_bound_placement_really_fails_off_the_vera_thread(thread_bound_place, tmp_path):
     """対照: 偽の配置が本当に別スレッドで落とす（上のテストが空振りでないことの確認）。"""
     cfg = make_cfg(tmp_path, FakeLLM())
-    reading, _qc = G.read_turn('誰が地図を渡した？', 'factual', cfg.records, cfg.documents)      # main thread, not the vera thread
+    reading, _qc = G.read_turn('太郎は何を買った？', 'factual', cfg.records, cfg.documents)      # main thread, not the vera thread
     assert reading['type'] == 'STRUCTURE_UNDETERMINED' and reading['state'] == 'ERROR' and 'ProgrammingError' in reading['reason']
 
 

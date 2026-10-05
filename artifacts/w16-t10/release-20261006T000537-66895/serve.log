@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t10-smoke.cYJlrq/venv/bin/vera", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t10-smoke.cYJlrq/venv/lib/python3.11/site-packages/verantyx/cli.py", line 2998, in main
+    p = sub.add_parser("placement", help="配置資産を扱う")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/argparse.py", line 1197, in add_parser
+    raise ArgumentError(self, _('conflicting subparser: %s') % name)
+argparse.ArgumentError: argument cmd: conflicting subparser: placement

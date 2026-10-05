@@ -1,0 +1,13 @@
+ M verantyx/cli.py
+ M verantyx/testimony_ledger.py
+?? artifacts/w16-t6/
+?? docs/ATTEST.md
+?? tests/test_w16t6_basis.py
+?? tests/test_w16t6_cli.py
+?? tests/test_w16t6_compare.py
+?? tests/test_w16t6_ledger.py
+?? tests/test_w16t6_parse.py
+?? tests/test_w16t6_rerun.py
+?? tests/test_w16t6_synth.py
+?? tests/test_w16t6_verify.py
+?? verantyx/attest.py

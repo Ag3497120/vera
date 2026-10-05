@@ -1,0 +1,44 @@
+sentence_id	text	status	op	word	particle	role	candidates	reason	reachable	why
+t82_sentences.txt#1:1	田中が整備室へ移動した。	ABSTAIN	frame	移動する	が			PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	false	BASE_FRAME_1210_KEPT
+t82_sentences.txt#2:1	鈴木が実験棟へ移動した。	ABSTAIN	frame	移動する	が			PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	false	BASE_FRAME_1210_KEPT
+t82_sentences.txt#3:1	太郎が図書館へ移動した。	ABSTAIN	frame	移動する	が			PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	false	BASE_FRAME_1210_KEPT
+t82_sentences.txt#4:1	整備士が学校へ移動した。	ABSTAIN	frame	移動する	が			PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	false	BASE_FRAME_1210_KEPT
+t82_sentences.txt#5:1	田中が工房へ移動した。	ABSTAIN	frame	移動する	が			PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	false	BASE_FRAME_1210_KEPT
+t82_sentences.txt#6:1	鈴木が倉庫へ移動した。	ABSTAIN	frame	移動する	が			PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	false	BASE_FRAME_1210_KEPT
+t82_sentences.txt#7:1	太郎が駅へ移動した。	ABSTAIN	frame	移動する	が			PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	false	BASE_FRAME_1210_KEPT
+t82_sentences.txt#8:1	整備士が書庫へ移動した。	ABSTAIN	frame	移動する	が			PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	false	BASE_FRAME_1210_KEPT
+t82_sentences.txt#9:1	鈴木が会社へ移動した。	ABSTAIN	frame	移動する	が			PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	false	BASE_FRAME_1210_KEPT
+t82_sentences.txt#10:1	田中が整備室へ移住した。	READ								
+t82_sentences.txt#11:1	鈴木が実験棟へ移住した。	READ								
+t82_sentences.txt#12:1	太郎が図書館へ移住した。	READ								
+t82_sentences.txt#13:1	整備士が学校へ移住した。	READ								
+t82_sentences.txt#14:1	田中が工房へ移住した。	READ								
+t82_sentences.txt#15:1	太郎が会社へ移住した。	READ								
+t82_sentences.txt#16:1	鈴木が整備室へ出向いた。	READ								
+t82_sentences.txt#17:1	太郎が学校へ出向いた。	READ								
+t82_sentences.txt#18:1	整備士が工房へ出向いた。	READ								
+t82_sentences.txt#19:1	田中が図書館へ出向いた。	READ								
+t82_sentences.txt#20:1	鈴木が実験棟へ赴いた。	READ								
+t82_sentences.txt#21:1	太郎が学校へ赴いた。	READ								
+t82_sentences.txt#22:1	整備士が工房へ赴いた。	READ								
+t82_sentences.txt#23:1	田中が会社へ赴いた。	READ								
+t82_sentences.txt#24:1	田中が整備室へ参上した。	READ								
+t82_sentences.txt#25:1	鈴木が工房へ参上した。	READ								
+t82_sentences.txt#26:1	太郎が学校へ歩いた。	READ								
+t82_sentences.txt#27:1	田中が本を読んだ。	READ								
+t82_sentences.txt#28:1	鈴木が倉庫へ向かった。	READ								
+t82_sentences.txt#29:1	太郎が駅から出発した。	READ								
+t82_sentences.txt#30:1	田中が荷物を倉庫へ運んだ。	READ								
+t82_sentences.txt#31:1	鈴木が工房で本を読んだ。	ABSTAIN	none					NO_SUPPORTED_CLAUSE	false	NOT_REACHABLE_BY_CONFIRMATION
+t82_sentences.txt#32:1	ソラが駅へ行った。	ABSTAIN	none	ソラ				SUBJECT_TYPE_UNDETERMINED:ソラ	false	NOT_REACHABLE_BY_CONFIRMATION
+t82_sentences.txt#33:1	鈴木が荷物を工房へ運んだ。	ABSTAIN	none	工房				GOAL_TYPE_UNDETERMINED:工房	false	NOT_REACHABLE_BY_CONFIRMATION
+t82_sentences.txt#34:1	ハルがミナに話した。	ABSTAIN	none	ミナ				RECIPIENT_TYPE_UNDETERMINED:ミナ	false	NOT_REACHABLE_BY_CONFIRMATION
+t82_sentences.txt#35:1	技師が駅から帰った。	READ								
+t82_sentences.txt#36:1	整備士が倉庫で点検した。	READ								
+t82_sentences.txt#37:1	山田が駅へ向かった。	READ								
+t82_sentences.txt#38:1	太郎が温室で働いた。	READ								
+t82_sentences.txt#39:1	鈴木が書庫で本を書いた。	READ								
+t82_sentences.txt#40:1	太郎が工房へ転勤した。	ABSTAIN	set	転勤する			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+# sentences=40 read=26 abstained=14 refused_input=0 abstained_with_reachable_candidate=1 abstained_unreachable_only=13
+# blocks	frame	移動する	9 sentence(s)
+# blocks	set	転勤する	1 sentence(s)

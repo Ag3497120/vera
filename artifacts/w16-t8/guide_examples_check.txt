@@ -1,0 +1,33 @@
+# 手引きの例文を今の挙動で確かめた（suggest、層なし）。r3 で追加: 出向く 2 文と 移動する 1 文（BASE_FRAME_1210_KEPT）
+text	status	op	word	particle	role	candidates	reason	reachable	why
+田中が倉庫へ向かった。	READ								
+鈴木が荷物を倉庫へ運んだ。	READ								
+太郎が本を読んだ。	READ								
+整備士が書庫で本を書いた。	READ								
+技師が駅から帰った。	READ								
+昨日、田中さんは倉庫のほうへ向かったみたいです。	ABSTAIN	none					NO_SUPPORTED_CLAUSE	false	NOT_REACHABLE_BY_CONFIRMATION
+荷物を運んでおいた。	READ								
+倉庫に着いたら連絡してください。	ABSTAIN	none					NO_SUPPORTED_CLAUSE	false	NOT_REACHABLE_BY_CONFIRMATION
+田中が整備室へ移動した。	ABSTAIN	set	整備室				PLACEMENT_UNPLACED	true	
+太郎が会社で働いた。	READ								
+田中が整備室へ出向いた。	ABSTAIN	set	出向く			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+田中が学校へ出向いた。	ABSTAIN	set	出向く			P_MOVE	PLACEMENT_ESTIMATED_GENERATED	true	
+田中が駅へ移動した。	ABSTAIN	frame	移動する	が			PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が	false	BASE_FRAME_1210_KEPT
+# sentences=13 read=7 abstained=6 refused_input=0 abstained_with_reachable_candidate=3 abstained_unreachable_only=3
+set	出向く	2 sentence(s)
+frame	移動する	1 sentence(s)
+set	整備室	1 sentence(s)
+# 手引きの 2 段（set 出向く P_MOVE のあとの suggest --layer）
+text	status	op	word	particle	role	candidates	reason	reachable	why
+田中が整備室へ出向いた。	ABSTAIN	set	整備室				PLACEMENT_UNPLACED	true	
+田中が学校へ出向いた。	ABSTAIN	frame	出向く	へ		GROUP_ORG	PLACEMENT_TYPE_MISMATCH:P_MOVE:へ:GROUP_ORG	true	
+田中が学校へ出向いた。	ABSTAIN	set	学校	へ			PLACEMENT_TYPE_MISMATCH:P_MOVE:へ:GROUP_ORG	true	FILLER_TYPE_REFUSED:GROUP_ORG
+# sentences=2 read=0 abstained=2 refused_input=0 abstained_with_reachable_candidate=2 abstained_unreachable_only=0
+frame	出向く	1 sentence(s)
+set	学校	1 sentence(s)
+set	整備室	1 sentence(s)
+# 手引きの 3 段（set 整備室 PLACE と frame 出向く へ goal GROUP_ORG のあと）
+text	status	op	word	particle	role	candidates	reason	reachable	why
+田中が整備室へ出向いた。	READ								
+田中が学校へ出向いた。	READ								
+# sentences=2 read=2 abstained=0 refused_input=0 abstained_with_reachable_candidate=0 abstained_unreachable_only=0

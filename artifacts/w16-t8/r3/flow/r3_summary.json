@@ -1,0 +1,198 @@
+{
+ "schema": "verantyx.r3_check/1",
+ "mode": "apply",
+ "rows": "synthetic_r3.jsonl",
+ "truth_rows": 8,
+ "confirmations_refused": [],
+ "suggest_before": {
+  "rc": 0,
+  "reachable_words": [
+   "出向く",
+   "赴く",
+   "転勤する"
+  ],
+  "frame_rows_not_reachable": [
+   "移動する:BASE_FRAME_1210_KEPT",
+   "避難する:BASE_FRAME_1210_KEPT"
+  ]
+ },
+ "groups": {
+  "control": {
+   "n": 6,
+   "readable_before": 6,
+   "readable_after": 6,
+   "changed_output": [],
+   "misread": [],
+   "abstained_after": {}
+  },
+  "frame_kept": {
+   "n": 8,
+   "readable_before": 0,
+   "readable_after": 0,
+   "changed_output": [],
+   "misread": [],
+   "abstained_after": {
+    "k01": [
+     "RECIPIENT_TYPE_UNDETERMINED:移動する",
+     "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が"
+    ],
+    "k02": [
+     "RECIPIENT_TYPE_UNDETERMINED:移動する",
+     "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が"
+    ],
+    "k13": [
+     "RECIPIENT_TYPE_UNDETERMINED:移動する",
+     "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が"
+    ],
+    "k14": [
+     "RECIPIENT_TYPE_UNDETERMINED:移動する",
+     "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が"
+    ],
+    "k15": [
+     "RECIPIENT_TYPE_UNDETERMINED:避難する",
+     "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が"
+    ],
+    "k16": [
+     "RECIPIENT_TYPE_UNDETERMINED:避難する",
+     "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が"
+    ],
+    "k17": [
+     "RECIPIENT_TYPE_UNDETERMINED:避難する",
+     "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が"
+    ],
+    "k18": [
+     "RECIPIENT_TYPE_UNDETERMINED:避難する",
+     "PLACEMENT_FRAME_PARTICLE_NOT_CONFIRMED:P_MOVE:が"
+    ]
+   }
+  },
+  "frame_reach": {
+   "n": 5,
+   "readable_before": 0,
+   "readable_after": 5,
+   "changed_output": [
+    "r01",
+    "r02",
+    "r04",
+    "r05",
+    "r08"
+   ],
+   "misread": [],
+   "abstained_after": {}
+  }
+ },
+ "confirmed_words": [
+  {
+   "word": "移動する",
+   "type": "P_MOVE",
+   "base_state": "DECIDED",
+   "base_origin": "direct",
+   "base_top": [
+    "P_MOVE"
+   ],
+   "layer_status": "HUMAN_CONFIRMED_USED",
+   "decided_by_first": "human",
+   "decided_by_ends_with_gen_frame": true,
+   "frame_status": [
+    "CONFIRMED",
+    "CONFIRMED"
+   ],
+   "frame_same_as_base": true,
+   "role_frame_status": [
+    "CONFIRMED",
+    "CONFIRMED"
+   ],
+   "role_frame_same_as_base": true
+  },
+  {
+   "word": "避難する",
+   "type": "P_MOVE",
+   "base_state": "DECIDED",
+   "base_origin": "direct",
+   "base_top": [
+    "P_MOVE"
+   ],
+   "layer_status": "HUMAN_CONFIRMED_USED",
+   "decided_by_first": "human",
+   "decided_by_ends_with_gen_frame": true,
+   "frame_status": [
+    "CONFIRMED",
+    "CONFIRMED"
+   ],
+   "frame_same_as_base": true,
+   "role_frame_status": [
+    "CONFIRMED",
+    "CONFIRMED"
+   ],
+   "role_frame_same_as_base": true
+  },
+  {
+   "word": "出向く",
+   "type": "P_MOVE",
+   "base_state": "DECIDED",
+   "base_origin": "estimated",
+   "base_top": [
+    "P_MOVE"
+   ],
+   "layer_status": "HUMAN_CONFIRMED_USED",
+   "decided_by_first": "human",
+   "decided_by_ends_with_gen_frame": false,
+   "frame_status": [
+    "ESTIMATED",
+    "NOT_CONFIRMED"
+   ],
+   "frame_same_as_base": true,
+   "role_frame_status": [
+    "NO_ROLE_FRAME",
+    "CONFIRMED"
+   ],
+   "role_frame_same_as_base": false
+  },
+  {
+   "word": "赴く",
+   "type": "P_MOVE",
+   "base_state": "DECIDED",
+   "base_origin": "estimated",
+   "base_top": [
+    "P_MOVE"
+   ],
+   "layer_status": "HUMAN_CONFIRMED_USED",
+   "decided_by_first": "human",
+   "decided_by_ends_with_gen_frame": false,
+   "frame_status": [
+    "ESTIMATED",
+    "NOT_CONFIRMED"
+   ],
+   "frame_same_as_base": true,
+   "role_frame_status": [
+    "ESTIMATED",
+    "CONFIRMED"
+   ],
+   "role_frame_same_as_base": false
+  },
+  {
+   "word": "転勤する",
+   "type": "P_MOVE",
+   "base_state": "DECIDED",
+   "base_origin": "estimated",
+   "base_top": [
+    "P_MOVE"
+   ],
+   "layer_status": "HUMAN_CONFIRMED_USED",
+   "decided_by_first": "human",
+   "decided_by_ends_with_gen_frame": false,
+   "frame_status": [
+    "ESTIMATED",
+    "NOT_CONFIRMED"
+   ],
+   "frame_same_as_base": true,
+   "role_frame_status": [
+    "ESTIMATED",
+    "CONFIRMED"
+   ],
+   "role_frame_same_as_base": false
+  }
+ ],
+ "data_freeze_mismatch": [],
+ "note": "the whole truth list is written (not chosen by suggest); a pass shows that the tools do what the rulings say, not that the reader generalizes"
+}

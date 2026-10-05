@@ -1,0 +1,35 @@
+{
+ "conflict_words": [],
+ "growth": {
+  "base_content_sha256": "e58908eb4eba8820fed9eafcd1ff42a5a70cdfdf4c35a9646b5dd49aaa002a21",
+  "last_grown": "2026-10-06T00:48:11+0900",
+  "layer": "r3_combined",
+  "layer_status": "OK",
+  "ledger": {
+   "by_type": {
+    "header": 1,
+    "promoted_to_layer": 8
+   },
+   "chain_mismatch": 0,
+   "chain_mismatch_ids": [],
+   "chain_ok": true,
+   "promoted_to_layer": 8,
+   "rows": 9,
+   "store_id": "edd2020b6d63436c"
+  },
+  "rows": 8,
+  "words": {
+   "conflict": 0,
+   "direct": 0,
+   "estimated": 5,
+   "human": 0
+  },
+  "words_total": 5
+ },
+ "note": "a word with two direct types abstains at query time (LAYER_CONFLICT); it is counted here, not resolved",
+ "out": "/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t8-S/artifacts/w16-t8/r3/combine_r3/r3_combined.sqlite",
+ "out_sha256": "85a437018393a619cf3973e7442e31d7173c40819820f858052dc5d551a699a6",
+ "sources": {
+  "r3_layer": 8
+ }
+}

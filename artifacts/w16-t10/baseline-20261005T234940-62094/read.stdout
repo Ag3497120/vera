@@ -1,0 +1,1 @@
+{"schema": "verantyx.semantic_read/1", "lang": "ja", "readable": false, "clauses": [], "relations": [], "abstain": {"kind": "not_supported", "reasons": ["RECIPIENT_TYPE_UNDETERMINED:ミナ", "ASSUMPTION_UNDETERMINED:ミナ:に"]}, "unsupported": [], "clause_meta": [], "read_mode": "strict"}

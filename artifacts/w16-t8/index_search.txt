@@ -1,0 +1,108 @@
+## 人の確認 層 優先
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "人の確認 層 優先",
+  "searched": 699,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 57,
+    "module": 297,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## confirm suggest 確認の候補
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "confirm suggest 確認の候補",
+  "searched": 699,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 57,
+    "module": 297,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+## layer_human
+{
+  "verdict": "ANSWER",
+  "query": "layer_human",
+  "searched": 699,
+  "hits": [
+    {
+      "kind": "module",
+      "name": "placement_layer",
+      "about": "W10-f05 (A11, O3, docs/COARSE_PLACEMENT.md section 12.19): the placement layer -- a domain / user overlay that sits on top of a base placement.",
+      "where": "verantyx/placement_layer.py"
+    },
+    {
+      "kind": "module",
+      "name": "agent_routing",
+      "about": "Which agent does which job: typed records, and a router that only reads records.",
+      "where": "verantyx/agent_routing.py"
+    },
+    {
+      "kind": "module",
+      "name": "cognitive_interventions",
+      "about": "Milestone P5 — automatic closed-loop hidden-state intervention.",
+      "where": "verantyx/cognitive_interventions.py"
+    },
+    {
+      "kind": "module",
+      "name": "conduct_ask",
+      "about": "Answer an agent's question from a human-written project frame, or hand it up to a human.",
+      "where": "verantyx/conduct_ask.py"
+    },
+    {
+      "kind": "module",
+      "name": "covenant",
+      "about": "What the user already settled, and whether the reply still honours it.",
+      "where": "verantyx/covenant.py"
+    },
+    {
+      "kind": "module",
+      "name": "coverage",
+      "about": "Which shelf would close this refusal — the atlas read for humans.",
+      "where": "verantyx/coverage.py"
+    },
+    {
+      "kind": "module",
+      "name": "gap_graph",
+      "about": "Milestone O — GapNode: a persistent, typed \"this is missing\" state.",
+      "where": "verantyx/gap_graph.py"
+    },
+    {
+      "kind": "module",
+      "name": "placement_grow",
+      "about": "W10-f05 (A11, docs/COARSE_PLACEMENT.md section 12.19): document-driven growth of a placement layer -- \"read the documents and the domain's vocabulary grows into",
+      "where": "verantyx/placement_grow.py"
+    },
+    {
+      "kind": "module",
+      "name": "routing_from_text",
+      "about": "Routing from a human's free-text explanation (W2-h2).",
+      "where": "verantyx/routing_from_text.py"
+    }
+  ],
+  "total_hits": 9
+}
+## 決着試験 測定 傾き
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "決着試験 測定 傾き",
+  "searched": 699,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 57,
+    "module": 297,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

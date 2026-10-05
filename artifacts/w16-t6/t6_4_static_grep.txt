@@ -1,0 +1,1 @@
+82:        p = subprocess.run(list(argv), cwd=cwd, env=env, capture_output=True, timeout=timeout, shell=False)

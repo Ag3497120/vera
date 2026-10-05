@@ -1,0 +1,20 @@
+# paths check (round 2)
+## git status --short | awk | grep -vE <allowed> (empty = ok)
+## untouched files diff --stat 3a1677c (empty = ok)
+## existing tests changed (U0 lines)
+-    rc, out = _ask(tmp_path, capsys, "こんにちは", "--document", "x.txt", "--confirm", "abc", "maybe")
++    rc, out = _ask(tmp_path, capsys, "こんにちは", "--mode", "legacy", "--document", "x.txt", "--confirm", "abc", "maybe")
+-        "ask", RAW,
++        "ask", RAW, "--mode", "legacy",
+-    r = VS.fusion_turn([{'role': 'user', 'content': '誰が走りましたか。'}], {'request_kind': kind, 'human_present': False}, cfg)
++    r = VS.fusion_turn([{'role': 'user', 'content': '誰が来ましたか。'}], {'request_kind': kind, 'human_present': False}, cfg)
+-    v = run(make_cfg(tmp_path, llm, strict=True), '誰が地図を渡した？')['vera']
++    v = run(make_cfg(tmp_path, llm, strict=True), '太郎は何を渡した？')['vera']
++    monkeypatch.setenv('VERA_PLACEMENT', '')     # isolation only (W16-t2): serve writes VERA_PLACEMENT; the undo of this setenv removes it at teardown
+-    reading, _qc = G.read_turn('誰が地図を渡した？', 'factual', cfg.records, cfg.documents)      # main thread, not the vera thread
++    reading, _qc = G.read_turn('太郎は何を買った？', 'factual', cfg.records, cfg.documents)      # main thread, not the vera thread
+## cli import in decode_grammar/doc_answer/vera_server (1 docstring line only)
+verantyx/doc_answer.py:10:run (default `later_stage`): cli passes its own name so that its module-level hook stays the one the tests patch. This module does not import cli.
+## _has_placement / _BASE_UNKNOWN (empty = ok)
+## default_lookup/StubLookup in decode_grammar (empty = ok)
+## mkdtemp in artifacts/*.py (empty = ok)

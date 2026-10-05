@@ -1,0 +1,27 @@
+{
+  "all_smoke_checks_pass": false,
+  "checks": {
+    "ask": {
+      "exit_code": 1,
+      "pass": false,
+      "registered_output_shape": false
+    },
+    "help": {
+      "exit_code": 0,
+      "pass": true,
+      "required_text_present": true
+    },
+    "read": {
+      "exit_code": 0,
+      "pass": true,
+      "registered_output_shape": true
+    },
+    "serve": {
+      "exit_code": 0,
+      "pass": true,
+      "registered_output_shape": true
+    }
+  },
+  "mode": "baseline",
+  "verdict": "FAIL"
+}

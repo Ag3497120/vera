@@ -1,0 +1,9 @@
+........................................................................ [ 40%]
+........................................................................ [ 80%]
+...................................                                      [100%]
+=============================== warnings summary ===============================
+tests/test_sovereign_cli.py::test_the_entrance_is_found_by_the_capability_index
+  <unknown>:96: DeprecationWarning: invalid escape sequence '\d'
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+179 passed, 1 warning in 9.95s

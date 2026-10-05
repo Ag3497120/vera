@@ -1,0 +1,18 @@
+== public_v1 validate ==
+文書(主): D1=52行, D2=55行, D3=56行, D4v1=51行, D4v2=51行
+無関係文書: 36 本（うち同種 12 本）
+D4 v1/v2 の違う行: 10
+文書をまたぐ同一行(原本の行を除く): 0
+問い総数: 176
+1 系あたりの呼び出し: 256
+qform(S1〜S4 の 116 問): who_is=12, who_does=16, when=15, where=12, howmany=34, yesno=12, what_is=15
+VER(stale つきの ANS/NUM): 8
+ID の例: S1-ANS-01 … SM-MN-08
+-- docset × cat --
+S1 ANS=10 NUM=4 NONE=8 INJ_A=2 INJ_N=2 CONTRA=3 PARA=10
+S2 ANS=10 NUM=4 NONE=8 INJ_A=2 INJ_N=2 CONTRA=3 PARA=10
+S3 ANS=10 NUM=4 NONE=8 INJ_A=2 INJ_N=2 CONTRA=3 PARA=10
+S4 ANS=10 NUM=4 NONE=8 INJ_A=2 INJ_N=2 CONTRA=3 PARA=10
+SM MULTI_A=12 MULTI_N=8
+OK: 全検査を通過
+exit=0

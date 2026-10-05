@@ -1855,3 +1855,175 @@ def test_the_new_names_are_at_the_end_of_the_closed_lists():
 - **テスト**: 関係テストは 3 failed, 1780 passed, 3 xfailed, 6 xpassed で失敗の集合が第 2 ラウンドと同一（`ext3_related_after.txt`）。frames 回帰は同一。全体テストは 116 failed, 16198 passed（`ext3_pytest_full.txt`）。失敗の集合は第 2 ラウンドと同一（`ext3_after_failures.txt`）、基線 115 件に対する新しい 2 件（`test_s6_…`・`test_p4_abilities::test_speech_act_drafts…`）も同じ（`ext3_new_failures.txt`、分類は `ext2_new_failures_classified.txt`）。passed が 48 増えたのは新しいテストの分（47 行＋凍結検査 1）。
 - **既知の穴（基点からの誤答、このチケットの範囲外、別チケットの候補）**: 時の語の語彙。「山田さんが再来週東京で働く。」→ `ANSWER ['再来週東京']`。再来週・再来年・再来月・先々週・先々月・一昨年・毎夕・夕べ・昨夕・昨晩・明晩・宵・隔週・おととし が `_vt_is_time` で時と判定されず、時の語と場所の融合の検査に入らない（`ext3_time_lexicon_gap.txt`。基点でも同じ答え）。直すには接頭辞 `再来`／`先々`／`一昨` ＋ 助数詞可能の 週・月・年と、普通名詞・一般の時の語を読解器・検証器で同じ形態素の条件に揃える（別チケット）。
 - **その他の既知の穴**: 撥音便の丁寧形の根は frame の読み（`semantic_reader.py`）が本動詞を肯定で返すことで、検証器での棄権は対症（読解器の禁止の読みは別チケット）。`verdict.PROHIBIT` に丁寧形が無いことの申し送りは DECISIONS 14 のまま。時の語の切り出し（明日 = time・東京 = place）は未実施（棄権）。
+
+
+## W16-t2: 文書に答える経路の統一（事前登録。2026-10-05 23:06、実装役。製品の差分を書く前に記す。凍結ファイルの時刻は `artifacts/w16-t2/freeze.sha256`）
+
+（配置の注記: この小節は文書の末尾に追記した。チケットの指定は W3-c4 の節の直後だが、節の間に挿すと既存の見出しの順が変わるため末尾に置く。）
+
+### AnswerResult の定義（D3）
+`verantyx/doc_answer.py: answer()` の返り値（基点の `vera ask --mode round5 --document` が `apply_to_ask` に渡していた dict と同じ鍵）の `verdict`・`values`・`evidence` の 3 つ。比較は `json.dumps({"verdict":..,"values":..,"evidence":..}, ensure_ascii=False, sort_keys=True)` の byte 一致。
+
+### T2-1 の比較式
+同じ文書・同じ問い・同じ配置で、入口 ask（`cli.main`）・serve（`decode_grammar.read_turn`、no-llm の読み）・chat round5 が `doc_answer.answer` から受け取った AnswerResult の上の文字列が **入口間で全問一致**（不一致 0）。serve が AnswerResult の ANSWER を見せずに棄権する行は全件、型つきの理由で `t2_1_serve_withheld.tsv` に列挙する。
+
+### T2-2 の判定（行ごと）
+各行を 正答（verdict が ANSWER で、答えの表層が gold.values のどれかと NFKC で等しい）／誤答（ANSWER だが一致しない。または gold が ABSTAIN なのに ANSWER）／棄権（ANSWER でない）に分ける。「旧各経路の最大以上」は **行ごと**: 旧 ask・旧 serve のどちらかが正答だった行は、新でも正答。正答 → 棄権の行 0、誤答 0（新）。変わった行は全件列挙。gold.values は「受け入れる表層の別名の一覧」（どれか 1 つ）。
+
+### 使う集合
+1. `artifacts/w16-t2/sets/u4/`（U4 の 11 問。gold は文の意味から人手で付けた）。
+2. `artifacts/w16-t2/sets/own60/`（自作 60 問。文書 6 本。gold は製品を走らせる前に人手で書き、凍結した）。
+3. W3-c4 の検査データ（`tests/observe/question_ask/questions.jsonl` と `docs/`・`b2like/`、配置 `placement_ask.json`）、W5-c・W3-f1 の既存テスト（`tests/test_ask_question_cross*.py`・`tests/test_w3f1_*`・`tests/test_basis_policy_w5c*.py`）、B2・B7 の公開の写し（`tests/bank_score/fixtures`）。
+自作の集合で通ることは証拠にならない。凍結後に gold の誤りに気づいたら凍結ファイルは変えず `corrections.jsonl` を足す。
+
+### W16-t2 実測結果（実装役。数は `artifacts/w16-t2/` のファイルから。判定は上の事前登録のとおり）
+- **経路**: `vera ask --mode round5 --document`・`vera chat --mode round5`・`vera serve`（`decode_grammar.read_turn`）は `verantyx/doc_answer.py: answer()` を通る。後段（旧 `cli._qc_run` など）は `doc_answer` に移した（本体はそのまま）。`cli.py` には、テストが import・差し替える名前（`_qc_records`・`_qc_predicate_form`・`_round5_question_cross`・`_QC_TRIGGER`）だけが 1 行の薄い層として残る。`decode_grammar` は `cli` を import しない（`tests/test_w16t2_layers.py`）。
+- **T2-1**（`t2_compare.txt`、`tests/test_w16t2_one_path.py`）: U4 11 問・自作 60 問・W3-c4 111 問・b2like 47 問の 229 行で、3 入口の AnswerResult の不一致 0（各入口が `doc_answer.answer` を 1 回ずつ呼んだことも検査）（訂正: 第 2 ラウンドの記述を見よ）。serve が答えを見せずに棄権した行は 4 行（`t2_1_serve_withheld.tsv`。諾否 3・複数値 1。型 `ROUND5_ANSWER_NOT_MAPPED`）。
+- **T2-2**: 行ごとに旧 ask・旧 serve のどちらかが正答の行数 → 新の正答（3 入口とも同数）。U4: 7 → 7（旧 serve だけでは 2）。own60: 24 → 24。W3-c4: 53 → 51（旧 serve のみ正答だった AQ021・AQ022 が棄権: 後段の引き金 `UNKNOWN_UNSUPPORTED_EVIDENCE` が閉じた集合の外のため。**正答→棄権 2 行**）。b2like: 25 → 25。誤答: 新 ask の誤答は旧 ask と同じ 2 行（own60 O38・b2like BQ002。どちらも読解器の答え）。新 serve はこの 2 行を ask と同じく答える（旧 serve は棄権）。
+- **T2-4**: `artifacts/w16-t2/loc.txt`。総行数は基点より増えた（理由は報告）。
+- **B2・B7 の公開の写し**（`bs_B2_*`・`bs_B7_*`、`bs_semantic_compare.txt`）: 前後で時計の鍵・一時ディレクトリ名・読み込んだモジュール数を除いて同一（差 0）。
+
+## W16-t2 第 2 ラウンド（実装役。監査役の裁定 1・2・4・5・6 による。日時 2026-10-06 00:39、測定の前に記す）
+
+### 事前登録の変更（裁定 1・2・5 による。上の「T2-2 の判定（行ごと）」は消さず、第 2 ラウンドの測定からこの式で判定する）
+- **T2-2（入口ごとの遷移）**: 集合ごとと合計で、(a) 各入口（ask・serve・chat）の新の誤答の行の id の集合 ⊆ 旧 ask の誤答の行の id の集合（新しい誤答 0。既知: own60 `O38`、b2like `BQ002`）。(b) 各入口の新の正答の数 ≥ max(旧 ask, 旧 serve, 旧 chat の正答の数)（合計で判定。行ごとには要求しない）。(c) 入口ごとに「自分の旧 → 新」の遷移（correct/wrong/abstain/notjudged の全組合せ）を数え、`abstain→wrong`・`correct→abstain`・`correct→wrong`・`wrong→*` の行は全件列挙する（AQ021・AQ022 の correct→abstain は serve で出る見込み。裁定 2: 後段の引き金は広げない）。(d) w3f1 の NOT_JUDGED の行は、新 ask の (verdict, values, evidence) が旧 ask と全行で一致すること。
+- **配置なしの流しを足す**（裁定 5。合否の門にはしない）: 同じ 5 集合を配置なし（`VERA_PLACEMENT` なし・`--fileplacement` なし）で旧・新とも流し、「配置なしで旧経路だけが答えていた行」「新で初めて答えた行」を全件列挙し、誤答は (a) と同じく数える。
+- **w3f1 の集合を足す**（E7）: `tests/reading_soundness/w3f1_*.jsonl` 6 ファイル 324 行を `artifacts/w16-t2/sets/w3f1/` に写す（`sets/make_w3f1_set.py`、verantyx を import しない）。gold は `expect_values` がある行だけ `{"verdict": "ANSWER", "values": expect_values}`（116 行）、無い行は `NOT_JUDGED`（208 行。行ごとの期待を推測で作らない）。凍結: `artifacts/w16-t2/freeze_r2.sha256`（製品を流す前に作成）。配置は R9。
+- **旧 chat も流す**: 旧の流しにも chat（round5）を足し、入口ごとの「自分の旧」と比べられるようにする。
+- 文書なしの行（W3-c4 の AQ020・AQ030）は serve が `answer` を呼ばない（基点から）。呼び出し回数は「3 入口が 1 回ずつ」の行と「文書なしで serve 0 回」の行に分けて数える。
+
+### 監査役の裁定 4 による既存テストの変更（D1。`vera ask --document` の既定を round5 に）
+`--mode` の既定を `None` にし、`mode = args.mode or ("round5" if documents else "legacy")`。明示の `--mode legacy` と `--document` は従来どおり `UNKNOWN_ROUTE_CONFIGURATION`。
+1. `tests/test_basis_policy_entry.py::test_an_existing_configuration_error_keeps_its_place_before_the_new_ones`
+   - 前: `_ask(tmp_path, capsys, "こんにちは", "--document", "x.txt", "--confirm", "abc", "maybe")`
+   - 後: `_ask(tmp_path, capsys, "こんにちは", "--mode", "legacy", "--document", "x.txt", "--confirm", "abc", "maybe")`
+   - 期待（rc 2・`UNKNOWN_ROUTE_CONFIGURATION`・`--document requires --mode round5`）は同じ。
+2. `tests/test_one_request_goal_route.py::test_cli_rejects_source_documents_when_default_legacy_mode_was_selected`
+   - 前: `"ask", RAW, "--document", str(source),`
+   - 後: `"ask", RAW, "--mode", "legacy", "--document", str(source),`
+   - 期待は同じ。
+`tests/test_one_chat_round5.py`（chat の `--document` の既定 lab の拒否）は変えない。
+
+### 監査役の裁定 5・6 による既存テストの変更（E1・E2。前後の関数全文。assert・名前・fixture は変えない）
+裁定 5（配置が無いときの 2 本目の経路 `_has_placement`・`_BASE_UNKNOWN` を消した）で、配置なしでも round5 の本読みが答える問い（`誰が地図を渡した？` → 太郎、`誰が走りましたか。` → ミナ）が記録の答えになる。この問いを使っていた既存テスト 5 本は、問いの文字列だけを替える。替えた問いでは、新しい経路の reading は、基点で元の問いが返していた reading と同じ（`太郎は何を渡した？` → `NO_RECORD/NO_TYPED_CANDIDATE`、`太郎は何を買った？` → 別スレッドで `ERROR`・`ProgrammingError`、`誰が来ましたか。` → `STRUCTURE_UNDETERMINED/QUESTION_NOT_READ`（基点の serve は元の `誰が走りましたか。` に同じ型を返していた））。元の問いで起きる新しい振る舞い（配置なしでも記録が答える）は `tests/test_w16t2_one_path.py` の新しいテストで固定した。
+
+#### `tests/test_serve_fusion.py::test_strict_no_placement_is_no_record_and_no_call`
+前:
+```python
+def test_strict_no_placement_is_no_record_and_no_call(noplace, tmp_path):
+    llm = FakeLLM()
+    v = run(make_cfg(tmp_path, llm, strict=True), '誰が地図を渡した？')['vera']
+    assert llm.calls == [] and v['reading']['type'] == 'NO_RECORD' and v['reading']['state'] == 'NO_TYPED_CANDIDATE'
+```
+後:
+```python
+def test_strict_no_placement_is_no_record_and_no_call(noplace, tmp_path):
+    llm = FakeLLM()
+    v = run(make_cfg(tmp_path, llm, strict=True), '太郎は何を渡した？')['vera']
+    assert llm.calls == [] and v['reading']['type'] == 'NO_RECORD' and v['reading']['state'] == 'NO_TYPED_CANDIDATE'
+```
+
+#### `tests/test_serve_fusion.py::test_thread_bound_placement_really_fails_off_the_vera_thread`
+前:
+```python
+def test_thread_bound_placement_really_fails_off_the_vera_thread(thread_bound_place, tmp_path):
+    """対照: 偽の配置が本当に別スレッドで落とす（上のテストが空振りでないことの確認）。"""
+    cfg = make_cfg(tmp_path, FakeLLM())
+    reading, _qc = G.read_turn('誰が地図を渡した？', 'factual', cfg.records, cfg.documents)      # main thread, not the vera thread
+    assert reading['type'] == 'STRUCTURE_UNDETERMINED' and reading['state'] == 'ERROR' and 'ProgrammingError' in reading['reason']
+```
+後:
+```python
+def test_thread_bound_placement_really_fails_off_the_vera_thread(thread_bound_place, tmp_path):
+    """対照: 偽の配置が本当に別スレッドで落とす（上のテストが空振りでないことの確認）。"""
+    cfg = make_cfg(tmp_path, FakeLLM())
+    reading, _qc = G.read_turn('太郎は何を買った？', 'factual', cfg.records, cfg.documents)      # main thread, not the vera thread
+    assert reading['type'] == 'STRUCTURE_UNDETERMINED' and reading['state'] == 'ERROR' and 'ProgrammingError' in reading['reason']
+```
+
+#### `tests/test_serve_fusion.py::test_cli_fusion_options_and_refusals`
+前:
+```python
+def test_cli_fusion_options_and_refusals(tmp_path, fake_serve, capsys, monkeypatch):
+    monkeypatch.delenv('VERA_PLACEMENT', raising=False)
+    monkeypatch.delenv('VERA_SOVEREIGN_ROOT', raising=False)
+    monkeypatch.delenv('VERA_SOVEREIGN_STORE', raising=False)
+    st = str(tmp_path / 'Z.json')
+    base = ['--store', st, 'serve', '--backend', 'ollama']
+    rc, out = cli_run(capsys, *base)
+    assert rc == 2 and json.loads(out)['verdict'] == 'MODEL_REQUIRED'
+    rc, out = cli_run(capsys, *base, '--model', 'm', '--strict', '--free')
+    assert rc == 2 and json.loads(out)['verdict'] == 'STRICT_AND_FREE'
+    rc, out = cli_run(capsys, *base, '--model', 'm', '--document', str(tmp_path / 'nope.txt'))
+    assert rc == 2 and json.loads(out)['verdict'] == 'DOCUMENT_NOT_FOUND'
+    rc, out = cli_run(capsys, *base, '--model', 'm', '--sovereign-root', str(tmp_path))
+    assert rc == 2 and json.loads(out)['verdict'] == 'SOVEREIGN_NEEDS_BOTH'
+    assert fake_serve == []
+    d = docfile(tmp_path)
+    rc, _ = cli_run(capsys, *base, '--model', 'm', '--document', d, '--strict', '--placement', str(tmp_path), '--sovereign-root', str(tmp_path), '--sovereign-store', 'S1')
+    import os
+    assert rc == 0 and fake_serve[0]['fusion'].strict is True and fake_serve[0]['fusion'].documents == [d] and fake_serve[0]['fusion'].records.n_loaded == 1
+    assert os.environ['VERA_PLACEMENT'] == str(tmp_path) and os.environ['VERA_SOVEREIGN_STORE'] == 'S1'
+    monkeypatch.delenv('VERA_PLACEMENT'), monkeypatch.delenv('VERA_SOVEREIGN_ROOT'), monkeypatch.delenv('VERA_SOVEREIGN_STORE')
+```
+後:
+```python
+def test_cli_fusion_options_and_refusals(tmp_path, fake_serve, capsys, monkeypatch):
+    monkeypatch.delenv('VERA_PLACEMENT', raising=False)
+    monkeypatch.setenv('VERA_PLACEMENT', '')     # isolation only (W16-t2): serve writes VERA_PLACEMENT; the undo of this setenv removes it at teardown
+    monkeypatch.delenv('VERA_SOVEREIGN_ROOT', raising=False)
+    monkeypatch.delenv('VERA_SOVEREIGN_STORE', raising=False)
+    st = str(tmp_path / 'Z.json')
+    base = ['--store', st, 'serve', '--backend', 'ollama']
+    rc, out = cli_run(capsys, *base)
+    assert rc == 2 and json.loads(out)['verdict'] == 'MODEL_REQUIRED'
+    rc, out = cli_run(capsys, *base, '--model', 'm', '--strict', '--free')
+    assert rc == 2 and json.loads(out)['verdict'] == 'STRICT_AND_FREE'
+    rc, out = cli_run(capsys, *base, '--model', 'm', '--document', str(tmp_path / 'nope.txt'))
+    assert rc == 2 and json.loads(out)['verdict'] == 'DOCUMENT_NOT_FOUND'
+    rc, out = cli_run(capsys, *base, '--model', 'm', '--sovereign-root', str(tmp_path))
+    assert rc == 2 and json.loads(out)['verdict'] == 'SOVEREIGN_NEEDS_BOTH'
+    assert fake_serve == []
+    d = docfile(tmp_path)
+    rc, _ = cli_run(capsys, *base, '--model', 'm', '--document', d, '--strict', '--placement', str(tmp_path), '--sovereign-root', str(tmp_path), '--sovereign-store', 'S1')
+    import os
+    assert rc == 0 and fake_serve[0]['fusion'].strict is True and fake_serve[0]['fusion'].documents == [d] and fake_serve[0]['fusion'].records.n_loaded == 1
+    assert os.environ['VERA_PLACEMENT'] == str(tmp_path) and os.environ['VERA_SOVEREIGN_STORE'] == 'S1'
+    monkeypatch.delenv('VERA_PLACEMENT'), monkeypatch.delenv('VERA_SOVEREIGN_ROOT'), monkeypatch.delenv('VERA_SOVEREIGN_STORE')
+```
+
+#### `tests/test_semantic_read_w3e2_serve.py::turn`
+前:
+```python
+def turn(doc, reply, mode, strict=False, kind='factual'):
+    cfg = VS.FusionConfig.load(model='fake', documents=[doc], llm_chat=chat_for(reply), read_mode=mode, strict=strict)
+    r = VS.fusion_turn([{'role': 'user', 'content': '誰が走りましたか。'}], {'request_kind': kind, 'human_present': False}, cfg)
+    r['vera'].pop('timing', None)
+    return r
+```
+後:
+```python
+def turn(doc, reply, mode, strict=False, kind='factual'):
+    cfg = VS.FusionConfig.load(model='fake', documents=[doc], llm_chat=chat_for(reply), read_mode=mode, strict=strict)
+    r = VS.fusion_turn([{'role': 'user', 'content': '誰が来ましたか。'}], {'request_kind': kind, 'human_present': False}, cfg)
+    r['vera'].pop('timing', None)
+    return r
+```
+
+`test_semantic_read_w3e2_serve.py` の `turn()` を使う 3 本（`test_the_assumed_arm_is_marked_in_the_provenance_and_strict_read_has_none`・`test_the_arm_keys_do_not_grow`・`test_a_factual_question_is_not_answered_from_an_assumed_arm`）は `turn()` の問い 1 か所の差し替えで通る。`test_serve_fusion.py::test_cli_fusion_options_and_refusals` の 1 行（`monkeypatch.setenv('VERA_PLACEMENT', '')`）は漏れの隔離（裁定 6）。
+
+### テストの環境変数の漏れの隔離（E2、裁定 6）
+`coarse_place._open(None)` が `VERA_PLACEMENT` も読むようになったので、テストの間で `VERA_PLACEMENT` が漏れると他のテストが変わる。漏れの出所は 1 か所: `tests/test_serve_fusion.py::test_cli_fusion_options_and_refusals`。冒頭の `monkeypatch.delenv('VERA_PLACEMENT', raising=False)` は変数が無いと何も記録しない（pytest の仕様）。serve が `--placement` で `os.environ['VERA_PLACEMENT']` を書き（基点から同じ。テストも assert している）、末尾の `monkeypatch.delenv('VERA_PLACEMENT')` がその値を記録し、片づけで書き戻していた。直後に `monkeypatch.setenv('VERA_PLACEMENT', '')` を 1 行足すと、`setenv` の記録は「無かった」なので片づけの最後に消える。`placement_from_env` は空を未設定と読むので、このテストの期待は変わらない。確認: 漏れ検出プラグイン付きの実行で `LEAK_CHANGE` は最初の 1 行（`(None, None)`）だけ（`artifacts/w16-t2/leak_check_r2.txt`）。
+
+### W16-t2 第 2 ラウンドの実測結果（実装役。数は `artifacts/w16-t2/*_r2*` から。第 1 ラウンドの記述は消していない）
+- **経路**: 配置の有無で経路を分けない（`decode_grammar.read_turn` の `_has_placement`・`_BASE_UNKNOWN` を消した。裁定 5）。`coarse_place._open(None)` も入口と同じに環境を解決する（正 `VERA_PLACEMENT`、互換名、食い違いは `PLACEMENT_ENV_CONFLICT`。`NO_PLACEMENT_REASONS` に足した。`_layer_summary` も型で返す。裁定 6）。`ask --document` の既定は round5（裁定 4）。
+- **T2-1**（`t2_compare_r2.txt`・`t2_compare_noplace_r2.txt`）: 5 集合（U4 11・own60 60・W3-c4 111・b2like 47・w3f1 324 = 553 行）を配置あり・配置なしの両方で、3 入口の AnswerResult の不一致 **0**。呼び出し: 文書のある 551 行は 3 入口が `doc_answer.answer` を 1 回ずつ呼んだ。文書なしの 2 行（W3-c4 の AQ020・AQ030）は ask と chat が 1 回、serve は `NO_RECORD/DOCUMENTS_NOT_LOADED` を返して関数を呼ばない（基点から同じ）。第 1 ラウンドの「各入口が 1 回ずつ呼んだ」（229 行）は、この 2 行が含まれるので不正確だった（訂正）。serve が答えを見せない行（`ROUND5_ANSWER_NOT_MAPPED`）: 配置あり 21 行・配置なし 21 行（`t2_1_serve_withheld_r2.tsv`・`..._noplace_r2.tsv`。w3f1 の諾否 17 行、W3-c4 の 3 行、b2like の 1 行。全部の AnswerResult は ask・chat と一致）。
+- **T2-2（入口ごとの遷移。事前登録の変更の式）**:
+  - (a) 各入口の新の誤答の行 ⊆ 旧 ask の誤答の行: 3 入口とも PASS（誤答は own60 `O38`・b2like `BQ002` の 2 行だけ。どちらも旧 ask の誤答の行）。新しい誤答の行は 0。
+  - 遷移（配置あり、合計）: ask と chat は自分の旧と同じ（`wrong->wrong` 2、`correct->correct` 223、ほか abstain/notjudged のまま。`correct->abstain` 0）。serve は `abstain->wrong` **2**（O38・BQ002。旧 serve は棄権だった）、`abstain->correct` 88、`abstain->notjudged` 1、`correct->abstain` **2**（W3-c4 の AQ021・AQ022。裁定 2 により列挙で可。引き金は広げていない）、`correct->correct` 120。`correct->wrong` は 0。
+  - (b) 各入口の新の正答 ≥ max(旧 ask, 旧 serve, 旧 chat)（合計）: ask 223・chat 223 は旧の最大 223 と同じで PASS。**serve は 208 で FAIL**（旧の最大 = 旧 ask の 223）。差の 15 行はすべて w3f1 の諾否の問い（`田中は本を読む？` に `いいえ` など。ask と chat は gold のとおり答え、serve は `ROUND5_ANSWER_NOT_MAPPED` で見せない。AnswerResult は 3 入口で一致。T2-2b-info: AnswerResult の上では serve も 223）。W3-c4 の旧 serve の正答は旧 ask の 51 以下（旧 serve 50）なので、AQ021・AQ022 は合計の判定に響かない。serve で諾否を見せるには読みの型を足す必要があり、チケットの許可パスと設計の外なので実装していない。
+  - (d) w3f1 の NOT_JUDGED 208 行: 新 ask の (verdict, values, evidence) が旧 ask と全行一致（PASS）。
+- **配置なし**（裁定 5。門にはしない。`t2_compare_noplace_r2.txt`）: 「配置なしで旧経路だけが答えていた行」は 0 行（ONLY-OLD なし）。新で初めて答えた行は 155（すべて serve。旧 serve は配置なしで 0 行しか答えなかった）: 正答 152・誤答 2（O38・BQ002）・NOT_JUDGED 1（`ext_range:multi-1`）。ask と chat は配置なしでも旧と同じ（遷移なし）。配置なしの新の誤答は配置ありと同じ 2 行で、旧 ask の誤答の行の範囲内。
+- **B2・B7 の公開の写し**（`bs_B2_*_r2.txt`・`bs_B7_*_r2.txt`、`bs_B2_semantic_compare_r2.txt`・`bs_B7_semantic_compare_r2.txt`）: 前後で時計の鍵・一時ディレクトリ名・読み込んだモジュール数を除いて同一（差 0。生の `tools.bank_score.compare` は第 1 ラウンドと同じく 24 件・35 件の不一致を出す。時計の鍵などの差で、意味のある差ではないことを `bank_compare.py` で確かめた）。公開の写しは前後とも correct=0 なので弱い証拠。
+- **再現**: `artifacts/w16-t2/COMMANDS.md`。W3-c4（配置あり）の new を別名で流し直し、`new_w3c4_r2.jsonl` と 111 行すべてで ask・serve・chat が一致（`rerun_check_r2.txt`）。
+- **行数**（`loc_r2.txt`）: `verantyx/` の総行数 152,897（基点 152,712、差 +185。裁定 3 の枠 +202 以内）。

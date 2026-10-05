@@ -1,0 +1,12 @@
+{"id": "f01", "text": "田中が学校へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "田中", "goal": "学校"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "f02", "text": "鈴木が会社へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "鈴木", "goal": "会社"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "f03", "text": "太郎が学校へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "太郎", "goal": "学校"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "f04", "text": "整備士が会社へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "整備士", "goal": "会社"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "f05", "text": "山田が学校へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "山田", "goal": "学校"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "target"}
+{"id": "n01", "text": "田中が駅へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "田中", "goal": "駅"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "frame_not_restrictive"}
+{"id": "n02", "text": "鈴木が倉庫へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "鈴木", "goal": "倉庫"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "frame_not_restrictive"}
+{"id": "n03", "text": "太郎が病院へ移動した。", "expect": [{"predicate": "移動する", "roles": {"agent": "太郎", "goal": "病院"}, "polarity": "+", "tense": "past", "voice": "active"}], "group": "frame_not_restrictive"}
+{"id": "c01", "text": "田中が本を読んだ。", "expect": null, "group": "control"}
+{"id": "c02", "text": "鈴木が手紙を書いた。", "expect": null, "group": "control"}
+{"id": "c03", "text": "太郎が走った。", "expect": null, "group": "control"}
+{"id": "c04", "text": "整備士が倉庫で点検した。", "expect": null, "group": "control"}

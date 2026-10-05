@@ -1,0 +1,6 @@
+opened	builtins.open	external/SystemVersion.plist
+opened	builtins.open	external/version
+opened	io.open	package:verantyx/lang_data/ja_grammar.json
+opened	io.open	package:verantyx/lang_data/roles_learned.json
+opened	io.open	package:verantyx/lang_data/transitivity.json
+opened	io.open	scratch/document.txt

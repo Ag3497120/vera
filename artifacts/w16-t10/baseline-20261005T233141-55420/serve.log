@@ -1,0 +1,15 @@
+{
+  "serve": {
+    "no_llm": true,
+    "profile": "strict",
+    "tiers": [
+      {
+        "name": "base",
+        "kind": "base"
+      }
+    ],
+    "documents": 0
+  }
+}
+[vera serve] listening on http://127.0.0.1:60724 (model=vera-no-llm, jgen_endpoint=(none))
+[vera serve] fusion layer 0 (default): model=vera-no-llm, documents=0, ollama=http://127.0.0.1:11434 -- POST /v1/chat/completions, POST /api/chat

@@ -1,0 +1,1 @@
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t10-smoke.EsyitB/venv/bin/python -m pip install --no-index --no-deps /Users/motonisihikoudai/Projects/vera-impl/wt/W16-t10-S/artifacts/w16-t10/baseline-20261006T000253-65711/wheel/verantyx_vera-0.1.0a1-py3-none-any.whl

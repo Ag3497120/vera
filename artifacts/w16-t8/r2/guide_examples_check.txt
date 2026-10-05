@@ -1,0 +1,13 @@
+text	status	op	word	reason	reachable	why
+田中が倉庫へ向かった。	READ					
+鈴木が荷物を倉庫へ運んだ。	READ					
+太郎が本を読んだ。	READ					
+整備士が書庫で本を書いた。	READ					
+技師が駅から帰った。	READ					
+昨日、田中さんは倉庫のほうへ向かったみたいです。	ABSTAIN	none		NO_SUPPORTED_CLAUSE	false	NOT_REACHABLE_BY_CONFIRMATION
+荷物を運んでおいた。	READ					
+倉庫に着いたら連絡してください。	ABSTAIN	none		NO_SUPPORTED_CLAUSE	false	NOT_REACHABLE_BY_CONFIRMATION
+田中が整備室へ移動した。	ABSTAIN	set	整備室	PLACEMENT_UNPLACED	true	
+太郎が会社で働いた。	READ					
+# sentences=10 read=7 abstained=3 refused_input=0 abstained_with_reachable_candidate=1 abstained_unreachable_only=2
+set	整備室	1 sentence(s)

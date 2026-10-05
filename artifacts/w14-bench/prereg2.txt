@@ -1,0 +1,10 @@
+2026-10-05 15:45:38 +0900
+public_v1
+
+/Users/motonisihikoudai/Projects/vera-impl/wt/W14-bench-S/benchmarks/public_v1:
+data
+
+/Users/motonisihikoudai/Projects/vera-impl/wt/W14-bench-S/benchmarks/public_v1/data:
+docs
+
+/Users/motonisihikoudai/Projects/vera-impl/wt/W14-bench-S/benchmarks/public_v1/data/docs:

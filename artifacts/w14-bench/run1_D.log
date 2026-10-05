@@ -1,0 +1,6 @@
+D S1 done rows=59 fail=0
+D S2 done rows=118 fail=0
+D S3 done rows=177 fail=0
+D S4 done rows=236 fail=0
+D SM done rows=256 fail=0
+wrote /Users/motonisihikoudai/Projects/vera-impl/wt/W14-bench-S/artifacts/w14-bench/run1/D/results.jsonl (256 rows, 0 failures)

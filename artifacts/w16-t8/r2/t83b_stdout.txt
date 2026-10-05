@@ -1,0 +1,1 @@
+{"kind": "t8_measure", "out": "/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t8-S/artifacts/w16-t8/t83b", "steps_run": [0, 5, 10, 15, 20], "slopes": {"train": 2.0, "test": 0.0, "real": 0.26}, "test_verdict": "TEST_DISJOINT_FROM_CONFIRMED", "misread_total": 0}

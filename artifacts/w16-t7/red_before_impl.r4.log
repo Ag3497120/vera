@@ -1,0 +1,14 @@
+FAILED tests/test_w16t7_redact.py::test_r4_redact_after_alnum_escape_urlenc_japanese[case0]
+FAILED tests/test_w16t7_redact.py::test_r4_redact_after_alnum_escape_urlenc_japanese[case1]
+FAILED tests/test_w16t7_redact.py::test_r4_redact_after_alnum_escape_urlenc_japanese[case2]
+FAILED tests/test_w16t7_redact.py::test_r4_redact_after_alnum_escape_urlenc_japanese[case3]
+FAILED tests/test_w16t7_redact.py::test_r4_redact_after_alnum_escape_urlenc_japanese[case4]
+FAILED tests/test_w16t7_redact.py::test_r4_redact_after_alnum_escape_urlenc_japanese[case5]
+FAILED tests/test_w16t7_redact.py::test_r4_redact_after_alnum_escape_urlenc_japanese[case6]
+FAILED tests/test_w16t7_redact.py::test_r4_fuzz_single_all_combinations - Ass...
+FAILED tests/test_w16t7_redact.py::test_r4_fuzz_pairs_all_combinations - Asse...
+FAILED tests/test_w16t7_redact.py::test_r4_specific_name_wins_on_overlap - As...
+FAILED tests/test_w16t7_redact.py::test_r4_ledger_run_keep_args_after_escape
+FAILED tests/test_w16t7_redact.py::test_r4_ledger_hook_posttooluse_after_escape
+FAILED tests/test_w16t7_redact.py::test_r4_ledger_owner_utterance_japanese_bearer_verbatim_rest
+13 failed, 1 passed, 16 deselected in 1.95s

@@ -28,8 +28,11 @@
 
 1. 入力: `messages` の最後の `role == "user"` の `content`（配列形式なら `type == "text"` をつなぐ）。それ以前の会話は読解に使わない（層 0 の LLM には渡す）。依頼の種類は本文の `vera.request_kind`（`factual`（既定）／`creative`／`paraphrase`／`style`／`example`）と `vera.human_present`（既定 false）。**自然文から依頼の種類を推定しない**。不正な値は 400 `BAD_REQUEST_KIND`。
 2. 読む・記録に当てる:
-   - `factual`: `cli._qc_run`（質問の十字の後段）を呼ぶ。文書 0 本は `NO_RECORD`。
-   - 非 factual: 質問の十字は使わない。記録 = 渡された文書の文（`cli._qc_records` と同じ切り方）。
+   - `factual`: `doc_answer.answer`（`vera ask --mode round5`・`vera chat --mode round5` と同じ 1 つの関数。W16-t2）を呼ぶ。round5 の本読み（`one.Vera.ask`）→ 止まったときだけ質問の十字の後段。文書 0 本は `NO_RECORD`。
+     本読みが ANSWER のとき（door `semantic_document`）の写し方は閉じている: `answer_values` がちょうど 1 組 `[role, value]`、`values == [value]`、`sources` の各文が文書の文にちょうど 1 つ（同じ文書）で当たる → `QUESTION_CROSS`（`state=FILLED`、`reason` は door、`hole_role=role`、`filler=value`、`sources` は 4 鍵）。それ以外（諾否・複数の値・出所が文に 1 つに当たらない）は `STRUCTURE_UNDETERMINED`（`state=ROUND5_ANSWER_NOT_MAPPED`、`reason` に型つきの理由）。同点・疑いは棄権。
+     配置が使えないとき（未設定・開けない）も経路は同じ（W16-t2 第 2 ラウンド、監査役の裁定 5。配置の有無で 2 本目の経路を持たない）: 本読みが答える問いは配置なしでも記録が答える。後段だけで答える問い（型つきの穴を要る）は配置が無いと `NO_TYPED_CANDIDATE`。問いの形（`か`・`ましたか`・`？`の有無）は round5 の質問の読み（`question.read_semantic`）が吸収する。serve 側に表層の一致の規則は持たない。
+     数: `artifacts/w16-t2/t2_compare_r2.txt`（配置なしは `t2_compare_noplace_r2.txt`）、serve が答えを見せずに棄権した行は `artifacts/w16-t2/t2_1_serve_withheld_r2.tsv`（第 1 ラウンドの `t2_compare.txt`・`t2_1_serve_withheld.tsv` は残してある）。
+   - 非 factual: 質問の十字は使わない。記録 = 渡された文書の文（`doc_answer.records` と同じ切り方）。
 3. 層 1 のみ: 文法を作る（§1.4）。作れなければ LLM を呼ばず型で返す。
 4. LLM を呼ぶ（Ollama `/api/chat`、`think: false`、`stream: false`、`temperature: 0`。層 1 は `format` に JSON schema）。層 0 で記録が答えを持つとき（`QUESTION_CROSS`）は **呼ばない**（記録が答えなので。判断記録 D10）。
 5. 検証（§1.5）: 本文を文に分け、各文を再読し、腕ごとに出所の型を付ける。
@@ -39,7 +42,7 @@
 
 | `vera.reading.type` | 条件 | 層 0 の LLM | 層 1 の LLM |
 |---|---|---|---|
-| `QUESTION_CROSS` | factual で `_qc_run` が ANSWER | 呼ばない（記録が答え） | 呼ぶ（文法つき） |
+| `QUESTION_CROSS` | factual で `doc_answer.answer` が ANSWER（door `question_cross`、または door `semantic_document` で上の写し方を満たす） | 呼ばない（記録が答え） | 呼ぶ（文法つき） |
 | `RECORDS` | 非 factual（文書の有無を問わない。層 1 は文書 1 本以上・語彙が空でない） | 呼ぶ | 呼ぶ（文書 0 本・語彙空・英語だけの文書は呼ばない） |
 | `NO_RECORD` | 文書 0 本、または `question_cross.state ∈ {NO_ATTESTED_CELL, NO_TYPED_CANDIDATE, TYPE_EXCLUDED_ALL, DOCUMENTS_NOT_LOADED}` | 呼ぶ（証言の印） | 呼ばない |
 | `STRUCTURE_UNDETERMINED` | 上以外のすべて（`QUESTION_NOT_READ`・`NOT_A_QUESTION`・`STRUCTURE_INVALID`・`HOLE_TYPE_UNDETERMINED`・`POLAR_QUESTION`・`TIE`・`AMBIGUOUS_QUESTION_CROSS_TIE`・述語の形・`ERROR`・候補の検証で 0・未知の state） | 呼ぶ（証言の印） | 呼ばない |
@@ -92,7 +95,7 @@
 - **D5** 依頼の種類は本文の `vera.request_kind` で明示。推定しない。
 - **D6** 構成・証言の本文には固定の印を前に付ける（クライアントを変えずに、人が事実と読み違えないため）。
 - **D7** `--backend` は `ollama` だけ。GBNF は応答に出すが llama.cpp では測らない（生成に使える gguf が手元に無い）。
-- **D8** `--placement DIR` は起動時に `VERA_PLACEMENT` を設定するだけ。配置が無ければ factual は `NO_RECORD`（`NO_TYPED_CANDIDATE`）になる（正しい振る舞い）。
+- **D8** `--placement DIR` は起動時に `VERA_PLACEMENT` を設定するだけ。配置が無ければ factual は `NO_RECORD`（`NO_TYPED_CANDIDATE`）になる（正しい振る舞い）。 W16-t2（2026-10-06）: 配置なしでも round5 の本読みが答える問いは記録が答える。後段だけで答える問いは従来どおり `NO_TYPED_CANDIDATE`（元の文は歴史として残す）。
 - **D9（オーナー追記を受けて）** 既定は層 0、層 1 は `--strict`。指示書の `--free` は層 0 の別名に読み替える。
 - **D10** 層 0 で記録が答えを持つとき LLM は呼ばない。答えは記録の文（証拠つき）で、LLM の言い回しを混ぜない（混ぜると記録の印と証言の印が一つの文に入る）。LLM の価値は、記録が答えを持たない問い・依頼で出る。
 - **D11** 層 0 の `TESTIMONY` は事実の答えの outcome ではない（`ANSWER_*` ではない）。Z2 の「誤答」には数えないが、記録の印が付いた文の数は別に数える。
@@ -176,7 +179,7 @@
 
 ## できないこと（実装と一致させて書く）
 - **GBNF を本物の llama.cpp で動かしていない**。応答の `vera.grammar.gbnf` に出すだけ。手元の `.gguf` は語彙だけのもので生成に使えず、モデルをダウンロードしない約束のため。JSON schema（Ollama `format`）は `qwen3.8:27b-mlx` で測った（§4）。
-- 読解器が読めない問いは、記録に答えがあっても答えにならない（層 0 は LLM の証言、層 1 は `STRUCTURE_UNDETERMINED`）。検査データでは ONE 50 問のうち層 0 で 21 問、層 1 で 18 問だけが記録の答えになった（`score_layer*.txt`）。到達は読解器の到達で決まる。配置が無いと事実の問いは答えにならない（`NO_TYPED_CANDIDATE`）。
+- 読解器が読めない問いは、記録に答えがあっても答えにならない（層 0 は LLM の証言、層 1 は `STRUCTURE_UNDETERMINED`）。検査データでは ONE 50 問のうち層 0 で 21 問、層 1 で 18 問だけが記録の答えになった（`score_layer*.txt`）。到達は読解器の到達で決まる。配置が無いと事実の問いは答えにならない（`NO_TYPED_CANDIDATE`）。（W16-t2 の後: 本読みが答える問いは配置なしでも答える。この一文は後段だけで答える問いについて残る。）
 - 層 1 の文法は単文の充填物の問い（質問の十字が FILLED で 1 種）だけ。はい／いいえ・なぜ・どうやって・複文・複数の充填物は作れず棄権。
 - ソブリンの記録（確認済みの claim）は文法の候補の源にしない。根拠の方針の参照だけ。
 - トークン単位の流しは無い。`stream: true` は本文を 1 塊で送る（検証が全文を要る）。

@@ -1,0 +1,8 @@
+opened	builtins.open	external/SystemVersion.plist
+opened	io.open	external/argparse.py
+opened	io.open	package:verantyx/cli.py
+opened	io.open	package:verantyx/lang_data/ja_grammar.json
+opened	io.open	package:verantyx/lang_data/roles_learned.json
+opened	io.open	package:verantyx/lang_data/transitivity.json
+opened	io.open	scratch/venv/bin/vera
+opened	io.open	worktree/tests/test_semantic_reader.py

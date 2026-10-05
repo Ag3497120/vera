@@ -1,0 +1,8 @@
+{"op": "set", "word": "移動する", "type": "P_MOVE", "reason": "the base's own type (frame_kept: a human type alone must not drop the base's frame)"}
+{"op": "set", "word": "避難する", "type": "P_MOVE", "reason": "the base's own type (frame_kept: a human type alone must not drop the base's frame)"}
+{"op": "set", "word": "出向く", "type": "P_MOVE", "reason": "frame_reach: the base has no confirmed type frame"}
+{"op": "frame", "predicate": "出向く", "particle": "へ", "role": "goal", "types": ["GROUP_ORG"], "reason": "goal may be an organisation (学校・会社)"}
+{"op": "set", "word": "赴く", "type": "P_MOVE", "reason": "frame_reach: the base has no confirmed type frame"}
+{"op": "frame", "predicate": "赴く", "particle": "へ", "role": "goal", "types": ["GROUP_ORG"], "reason": "goal may be an organisation (学校・会社)"}
+{"op": "set", "word": "転勤する", "type": "P_MOVE", "reason": "frame_reach: the base has no confirmed type frame"}
+{"op": "frame", "predicate": "転勤する", "particle": "へ", "role": "goal", "types": ["GROUP_ORG"], "reason": "goal may be an organisation (学校・会社)"}

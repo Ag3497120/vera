@@ -1,0 +1,16 @@
+{"id": "te01", "text": "太郎が倉庫へ突入した。", "expect": [{"predicate": "突入する", "roles": {"agent": "太郎", "goal": "倉庫"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "te02", "text": "整備士が駅へ突入した。", "expect": [{"predicate": "突入する", "roles": {"agent": "整備士", "goal": "駅"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "te03", "text": "整備士が市場へ接近した。", "expect": [{"predicate": "接近する", "roles": {"agent": "整備士", "goal": "市場"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "te04", "text": "技師が港へ接近した。", "expect": [{"predicate": "接近する", "roles": {"agent": "技師", "goal": "港"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "te05", "text": "技師が病院へ集合した。", "expect": [{"predicate": "集合する", "roles": {"agent": "技師", "goal": "病院"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "te06", "text": "田中が工房へ集合した。", "expect": [{"predicate": "集合する", "roles": {"agent": "田中", "goal": "工房"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "te07", "text": "田中が駅へ巡回した。", "expect": [{"predicate": "巡回する", "roles": {"agent": "田中", "goal": "駅"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "te08", "text": "鈴木が書庫へ巡回した。", "expect": [{"predicate": "巡回する", "roles": {"agent": "鈴木", "goal": "書庫"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "te09", "text": "鈴木が港へ往復した。", "expect": [{"predicate": "往復する", "roles": {"agent": "鈴木", "goal": "港"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "te10", "text": "太郎が農場へ往復した。", "expect": [{"predicate": "往復する", "roles": {"agent": "太郎", "goal": "農場"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "te11", "text": "太郎が工房へ飛来した。", "expect": [{"predicate": "飛来する", "roles": {"agent": "太郎", "goal": "工房"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "te12", "text": "整備士が倉庫へ飛来した。", "expect": [{"predicate": "飛来する", "roles": {"agent": "整備士", "goal": "倉庫"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "te13", "text": "整備士が書庫へ転勤した。", "expect": [{"predicate": "転勤する", "roles": {"agent": "整備士", "goal": "書庫"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "te14", "text": "技師が市場へ転勤した。", "expect": [{"predicate": "転勤する", "roles": {"agent": "技師", "goal": "市場"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "te15", "text": "技師が農場へ進出した。", "expect": [{"predicate": "進出する", "roles": {"agent": "技師", "goal": "農場"}, "polarity": "+", "tense": "past", "voice": "active"}]}
+{"id": "te16", "text": "田中が病院へ進出した。", "expect": [{"predicate": "進出する", "roles": {"agent": "田中", "goal": "病院"}, "polarity": "+", "tense": "past", "voice": "active"}]}

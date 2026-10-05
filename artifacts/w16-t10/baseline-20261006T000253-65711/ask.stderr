@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t10-smoke.EsyitB/venv/bin/vera", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t10-smoke.EsyitB/venv/lib/python3.11/site-packages/verantyx/cli.py", line 3006, in main
+    return args.fn(args)
+           ^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t10-smoke.EsyitB/venv/lib/python3.11/site-packages/verantyx/cli.py", line 442, in cmd_ask
+    v.load_documents(documents)
+  File "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t10-smoke.EsyitB/venv/lib/python3.11/site-packages/verantyx/one.py", line 129, in load_documents
+    self._index_bot()
+  File "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t10-smoke.EsyitB/venv/lib/python3.11/site-packages/verantyx/one.py", line 158, in _index_bot
+    if self.mode in ('semantic', 'round5'): self._make_semantic_view()
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t10-smoke.EsyitB/venv/lib/python3.11/site-packages/verantyx/one.py", line 222, in _make_semantic_view
+    self._semantic_view = document_view(originals, sovereigns=getattr(self.bot, 'original_sovereigns', {}))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t10-smoke.EsyitB/venv/lib/python3.11/site-packages/verantyx/semantic_reader.py", line 1533, in document_view
+    constructed, readings = _read_constructions(source, raw, start, end, (*clauses, *cs))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/w16t10-smoke.EsyitB/venv/lib/python3.11/site-packages/verantyx/semantic_reader.py", line 1212, in _read_constructions
+    from .constructions import ConstructionContext, Reading, TokenSpan, TypedNote, enabled
+ModuleNotFoundError: No module named 'verantyx.constructions'

@@ -1,0 +1,11 @@
+confirmations_truth.jsonl: OK
+measure_confirmations.jsonl: OK
+measure_real.jsonl: OK
+measure_test.jsonl: OK
+measure_train.jsonl: OK
+synthetic_40.jsonl: OK
+synthetic_frame.jsonl: OK
+confirmations_truth_frame.jsonl: OK
+synthetic_r3.jsonl: OK
+confirmations_truth_r3.jsonl: OK
+make_synthetic_r3.py: OK

@@ -1,0 +1,1 @@
+{"kind": "unknown", "reason": "tar は manifest.json と placement.sqlite のみを含めてください", "verdict": "UNKNOWN_UNSAFE_ARCHIVE"}

@@ -419,3 +419,71 @@ venv311 は出力をパスに入れないと外部の別物 `verantyx` に届く
 4. 任意依存の欠落時の扱い（公開 `pyproject.toml` の必須依存の見直し、`Bot` などへのガードの拡張、`connective_rel` / `te_chain` の遅延 import 化）は `verantyx/` の変更を伴うので、別チケットで扱う。
 5. CI に、サブパッケージを含めた全モジュール import（`pkgutil.walk_packages`）と、公開レイアウトの組み立て＋ `check_public.py` を足すことを検討する。
 
+## 9. W16-t10 配布 smoke と実測ファイル表（事前登録、2026-10-06 00:00 Asia/Tokyo）
+
+この節と `artifacts/w16-t10/preregistration.md` は smoke fixture を用いた基線再測定と wheel 実行の前に登録した。期待契約は同ファイルの SHA-256 で凍結する。測定値は run 別 artifacts に残す。最初の草稿（22:58）は英語で、`read` の現行 parser 構文も反映していなかったため `preregistration.r0.md` に保存した。23:05・23:11・23:54 の訂正版は `preregistration.r1.md`〜`r3.md` に保存した。00:00 に ask document を既存 semantic reader テストの fixture に変更し、これを有効な登録とした。先行 run が欠落 package を迂回し得る環境だったと判明したため、実装着手後の登録訂正と測定のやり直しを作業報告に記録する。
+
+### 9.1 固定する確認と期待形
+
+| 確認 | 固定した入力 | 合格条件 |
+|---|---|---|
+| wheel 構築・導入 | この開発ツリーから作る wheel、新規 venv、作業ツリー外の空 cwd | build と install が終了コード 0。起動した `vera` が新規 venv の `site-packages` 配下から `verantyx` を読み込む |
+| `vera --help` | 引数なし | 終了コード 0、標準出力に `usage: vera` を含む |
+| `vera read --text` | `ハルはミナに本を渡した。` | 終了コード 0、標準出力が JSON object で `schema=verantyx.semantic_read/1`、`lang=ja`、`readable` が bool、`clauses` が list |
+| `vera ask` | `誰が肥料を運んだ？`、既存 `tests/test_semantic_reader.py` の `test_condition_source_and_unresolved_exception_retained` fixture を `--document` に指定、`--mode round5` | 終了コード 0、標準出力が JSON object で `verdict` が文字列。fixture は `constructed` であり、値の意味や答えの正しさはこの smoke で採点しない |
+| `vera serve --no-llm` | 隔離した store、loopback の空き port | 子プロセスが起動した状態で GET `/v1/models` が HTTP 200 の JSON object を返し、`data` が list、その先頭の `id` が `vera-no-llm`。子プロセスは終了コード 0 で停止 |
+| wheel 内容 | 上記 smoke で作成した wheel | zip member に `verantyx/constructions/` と `verantyx/data/` がある |
+| 読込ファイルの照合 | smoke の全 CLI 子プロセスで計測した読み込み path | `site-packages/verantyx/` 配下の読み込みファイルを wheel member と相対 path で照合し、未収録件数 0。外部文書・隔離 store・ログ・venv 内の Python 標準ライブラリは package-data の照合対象外として別記録 |
+| 配置資産往復 | `pack_placement.sh` の出力 tar と sha256 を `file://` で `placement fetch` に渡す | sha256 一致、tar 展開成功、出力に設定先 `VERA_PLACEMENT=<dir>` を含む。配置ありの `vera read` の比較は、利用可能な配置資産で別に記録し、未実行なら未達とする |
+
+### 9.2 実測表の作り方
+
+各 smoke 子プロセスで Python の `builtins.open`、`io.open`、read-capable `os.open`、`sqlite3.connect` を計測し、成否と path を JSONL に記録する。package-data 判定表は成功した package 配下の読み込みと失敗した package-data 候補を相対化して作る。存在確認だけの `stat`、書き込み、ユーザー入力文書、隔離 store、外部資産、Python module import は「runtime data open」表へ混ぜない。wheel member との比較はパスの完全一致で行い、大小文字・名前・ハッシュで代替一致させない。
+
+実測表の各行は `source_path | wheel_relative_path | wheel_member_present` とし、観測されなかったファイルを推測で足さない。トレースで捕捉できない OS/native library 内部の読み込みはこの表の対象外で、限界として報告する。wheel と smoke の出力は `artifacts/w16-t10/` に残す。
+
+### 9.3 凍結した期待
+
+以下は実測結果ではなく、このチケットの受入契約である。事前登録ファイルのハッシュが対応する固定期待を示す。
+
+- P1: 全 smoke 項目の終了コード 0 と上記出力形。
+- P2: `constructions` と `data` が wheel にあり、実測 package runtime data open の未収録数 0。
+- P3: pack/fetch の SHA-256 が一致し、配置を与えた read が配置ありの結果を返す。
+- P4: 基線の全体比較は監査役の責務。本実装役は全体テストを実行しない。
+
+### 9.4 直す前の基線測定
+
+基点コミット `3a1677c` のソースを `git archive` から scratch に展開し、配布設定の修正前に煙試験した。採用する基線測定は `artifacts/w16-t10/baseline-20261006T000253-65711/`。通常の新規 venv に wheel を入れ、smoke 用の `fugashi` と `unidic_lite` だけを個別に symlink した。P1 は `help`・`read`・`serve` が通り、非空文書を使った `ask` が終了コード 1 で失敗した。`ask.stderr` は `semantic_reader.py:1212` の `ModuleNotFoundError: No module named 'verantyx.constructions'` を記録している。P2 は `constructions_present=false` と `data_present=false` で不合格。`package-open-paths.txt` に記録された package path はすべて基線 wheel に存在し、`p2-verification.json` の未収録 open 数は 0 だった。欠けていた constructions は Python import であり、open tracer の data file 数だけでは見つからない。
+
+| source path | wheel-relative path | wheel member |
+|---|---|---|
+| installed package code | `verantyx/cli.py` | present |
+| installed package code | `verantyx/one.py` | present |
+| installed package code | `verantyx/semantic_reader.py` | present |
+| installed package data | `verantyx/lang_data/ja_grammar.json` | present |
+| installed package data | `verantyx/lang_data/roles_learned.json` | present |
+| installed package data | `verantyx/lang_data/transitivity.json` | present |
+
+`verantyx/data/` 内の JSON はこの smoke で開かなかった。wheel に含めるのは受入基準の明示要件であり、open 実測の発見とは分けて扱う。23:31 run は検査器自身の open が混ざり、23:49 run は system site-packages を通じて別の editable package を参照し得たため、どちらも根拠に使わない。23:57 run は空でない基本文を渡したものの construction reader を通った証拠がなく、P1 根拠から外す。これらのログは監査可能性のため残す。
+
+### 9.5 修正版 wheel smoke の測定
+
+修正版の全 smoke 結果は `artifacts/w16-t10/release-20261006T000833-67881/` に保存した。`p1-verification.json` の全コマンドが終了コード 0 で出力形を満たす。wheel には `constructions` と `data` があり、`p2-verification.json` は成功した package open 5 件、未収録 0 件を記録する。open された package data は次のとおり。`wheel-members.txt` が wheel 全 member、`package-open-paths.txt` と `package-missing-members.txt` が実測との照合。
+
+| source path | wheel-relative path | wheel member |
+|---|---|---|
+| installed package data | `verantyx/data/case_frames.json` | present |
+| installed package data | `verantyx/data/realize_forms_ja.json` | present |
+| installed package data | `verantyx/lang_data/ja_grammar.json` | present |
+| installed package data | `verantyx/lang_data/roles_learned.json` | present |
+| installed package data | `verantyx/lang_data/transitivity.json` | present |
+
+`verantyx/data/realize_variants.json` は smoke 中に観測されていないが、明示要件の `data/*.json` として wheel に含まれる。Python import のうち tracer が捕捉しなかった経路は完全な実測と称さず、既知の限界に記録する。
+
+### 9.6 構成 fixture を使った pack/fetch の転送確認
+
+配置そのものは変更せず、in-tree schema から空の SQLite と table count 0 の manifest を scratch に構成して transport のみを確認した。入力の SHA-256 は `artifacts/w16-t10/constructed-placement-inputs.sha256` に pack より前に固定した。
+
+最初の `pack_placement.sh` 出力では macOS `tar` が `._manifest.json` と `._placement.sqlite` も格納し、fetch は `UNKNOWN_UNSAFE_ARCHIVE` を返した（member 一覧: `constructed-placement-initial-members.txt`、応答: `constructed-fetch.json`）。梱包時に `COPYFILE_DISABLE=1` を指定して再生成した tar は manifest と SQLite だけを含み、`constructed-placement-fixed-members.txt` に記録した。`file://` fetch は `PLACEMENT_FETCHED` と tar SHA-256 `c1f86423745c7f732abcdf5145b79f498e3d0a967b5c3cbfcc2aba74f8629c6f` を返し、`constructed-placement-inputs.sha256` と `constructed-placement-fetch-hashes.sha256` の diff は差分なしだった。tar、sidecar、CLI 応答、展開後の hash は `artifacts/w16-t10/` に保存した。
+
+これは `constructed` な空 fixture の転送確認に限られる。r9 配置に対する `vera read` は実行しておらず、P3 は未達。r9 の実体がある別の `wt/` クローンは共通指示により開いていない。

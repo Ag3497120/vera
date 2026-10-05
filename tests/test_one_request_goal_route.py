@@ -268,7 +268,7 @@ def test_cli_rejects_source_documents_when_default_legacy_mode_was_selected(tmp_
     source.write_text(SOURCE, encoding="utf-8")
     result = main([
         "--store", str(tmp_path / "unused-store.json"),
-        "ask", RAW,
+        "ask", RAW, "--mode", "legacy",
         "--document", str(source),
     ])
     output = json.loads(capsys.readouterr().out)

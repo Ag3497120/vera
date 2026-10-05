@@ -408,7 +408,7 @@ def test_confirm_with_a_request_that_claims_no_fact_is_refused(tmp_path, capsys)
 
 
 def test_an_existing_configuration_error_keeps_its_place_before_the_new_ones(tmp_path, capsys):
-    rc, out = _ask(tmp_path, capsys, "こんにちは", "--document", "x.txt", "--confirm", "abc", "maybe")
+    rc, out = _ask(tmp_path, capsys, "こんにちは", "--mode", "legacy", "--document", "x.txt", "--confirm", "abc", "maybe")
     assert rc == 2 and out["verdict"] == "UNKNOWN_ROUTE_CONFIGURATION"
     assert out["reason"] == "--document requires --mode round5"
 

@@ -1,0 +1,9 @@
+Processing <SMOKE_TMP>/source
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: verantyx-vera
+  Building wheel for verantyx-vera (pyproject.toml): started
+  Building wheel for verantyx-vera (pyproject.toml): finished with status 'done'
+  Created wheel for verantyx-vera: filename=verantyx_vera-0.1.0a1-py3-none-any.whl size=2633287 sha256=32bdd77a49b9331873bd68b81c61b7cb5d1f12caecae0f051acc1ccf5d046ab1
+  Stored in directory: /private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pip-ephem-wheel-cache-bbvbelde/wheels/bf/72/ea/4e7a715580066f74a11912258a070d222d98d1508b1550600d
+Successfully built verantyx-vera

@@ -1,0 +1,23 @@
+vera attest  report=/Users/motonisihikoudai/Projects/Verantyx-Vera-alpha/.claude/vera-audit/review-impl/W16-t6/impl.r1.md  tree=/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t6-S
+[V] 申告 7 件: 記録 7 / 証言 0 / 食い違い 0（読み飛ばした形外れの行 0）
+  V-1 行74 記録 MATCH [acceptance] - 受入 T6-4: `pytest -q tests/test_w16t6_rerun.py` を実行し、終了コード 0、出力 artifacts/w16-t6/t6_4_rer
+      記録 MATCH exit:pytest -q tests/test_w16t6_rerun.py  申告=0 実際=0
+      記録 MATCH file_sha:artifacts/w16-t6/t6_4_rerun.txt  申告="edac76b59a2cb5e360e8259c33e1c49c7228831011e9b34db00d2929b293a76f" 実際="edac76b59a2cb5e360e8259c33e1c49c7228831011e9b34db00d2929b293a76f"
+  V-2 行75 記録 MATCH [changed] - 変更: verantyx/cli.py(sha256 20c9cf2f6f68099052b4e095b07ad11fdf69f06d3bd345e12329c86cecbc1
+      記録 MATCH file_sha:verantyx/cli.py  申告="20c9cf2f6f68099052b4e095b07ad11fdf69f06d3bd345e12329c86cecbc179f" 実際="20c9cf2f6f68099052b4e095b07ad11fdf69f06d3bd345e12329c86cecbc179f"
+      記録 MATCH changed:verantyx/cli.py  申告="changed" 実際="base と違う"
+  V-3 行75 記録 MATCH [changed] - 変更: verantyx/cli.py(sha256 20c9cf2f6f68099052b4e095b07ad11fdf69f06d3bd345e12329c86cecbc1
+      記録 MATCH file_sha:verantyx/testimony_ledger.py  申告="50c73b69a0a3b64586c9ff5f9a995ed44083c36434e40614d0e5ce7630ff98d9" 実際="50c73b69a0a3b64586c9ff5f9a995ed44083c36434e40614d0e5ce7630ff98d9"
+      記録 MATCH changed:verantyx/testimony_ledger.py  申告="changed" 実際="base と違う"
+  V-4 行76 記録 MATCH [tests_added] - 追加したテスト: tests/test_w16t6_rerun.py の 50 件が通った。
+      記録 MATCH test_exists:tests/test_w16t6_rerun.py  申告="exists" 実際="ある"
+      記録 MATCH test_count:tests/test_w16t6_rerun.py  申告=50 実際=50
+      記録 MATCH test_passed:tests/test_w16t6_rerun.py  申告="passed" 実際=0
+  V-5 行77 記録 MATCH [tests_added] - 追加したテスト: tests/test_w16t6_synth.py の 5 件が通った。
+      記録 MATCH test_exists:tests/test_w16t6_synth.py  申告="exists" 実際="ある"
+      記録 MATCH test_count:tests/test_w16t6_synth.py  申告=5 実際=5
+      記録 MATCH test_passed:tests/test_w16t6_synth.py  申告="passed" 実際=0
+  V-6 行78 記録 MATCH [number] - 数値 T6-1: 「検出 22、見逃し 0、誤検出 0」は artifacts/w16-t6/t6_1_synth.txt にある。
+      記録 MATCH number:検出 22、見逃し 0、誤検出 0@artifacts/w16-t6/t6_1_synth.txt  申告=["22", "0"] 実際={"found": ["22", "0"]}
+  V-7 行79 記録 MATCH [number] - 数値 T6-3: 「申告 443 件」は artifacts/w16-t6/replay/summary.txt にある。
+      記録 MATCH number:申告 443 件@artifacts/w16-t6/replay/summary.txt  申告=["443"] 実際={"found": ["443"]}

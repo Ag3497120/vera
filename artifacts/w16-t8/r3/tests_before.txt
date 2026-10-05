@@ -1,0 +1,108 @@
+# ---- tests/test_w16t8_layer.py::test_a_human_predicate_answer_has_no_twelve_ten_frame_and_a_frame_row_makes_a_role_frame (r2, before the r3 rewrite)
+def test_a_human_predicate_answer_has_no_twelve_ten_frame_and_a_frame_row_makes_a_role_frame(tmp_path):
+    L = Layer(tmp_path)
+    L.human('移動する', 'P_MOVE')
+    base = base_answer('DECIDED', ['P_MOVE'], term='移動する', decided_by=('gen_frame',))
+    base['role_frame_status'], base['role_frame'] = 'CONFIRMED', {'を': [{'role': 'patient', 'types': ['ARTIFACT'], 'backed_by': ['x']}]}
+    a = PL.apply(base, L.path, BASE)
+    assert (a['frame_status'], a['frame']) == ('NOT_CONFIRMED', None)
+    assert (a['role_frame_status'], a['role_frame']) == ('NO_ROLE_FRAME', None)        # the base's role frame (it has backed_by) is not carried over
+    assert R._placement_answer_problems(a) == [] and R.predicate_role_frame(a) == ('not_confirmed', 'NO_ROLE_FRAME')
+    L.human('移動する', 'P_MOVE', kind='frame', frame={'particle': 'へ', 'role': 'goal', 'types': ['PLACE']})
+    L.human('移動する', 'P_MOVE', kind='frame', frame={'particle': 'が', 'role': 'agent', 'types': ['PERSON']})
+    L.human('移動する', 'P_MOVE', kind='frame', frame={'particle': 'が', 'role': 'agent', 'types': ['GROUP_ORG']})
+    a = PL.apply(base, L.path, BASE)
+    assert a['role_frame_status'] == 'CONFIRMED' and a['axes']['layer']['frame_confirm_ids'] == ['c2', 'c3', 'c4']
+    assert a['role_frame'] == {'が': [{'role': 'agent', 'types': ['GROUP_ORG', 'PERSON']}], 'へ': [{'role': 'goal', 'types': ['PLACE']}]}
+    kind, info = R.predicate_role_frame(a)
+    assert kind == 'confirmed' and set(info) == {'が', 'へ'}
+    assert R.placement_type(a) == ('P_MOVE', None)
+    assert R.predicate_frame(a) == ('table', None)                                         # the 12.10 frame is not used for a human answer
+
+# ---- tests/test_w16t8_confirm_cli.py::test_frame_needs_a_confirmed_predicate_type_first_and_then_makes_a_role_frame (r2, before the r3 rewrite)
+def test_frame_needs_a_confirmed_predicate_type_first_and_then_makes_a_role_frame(env):
+    rc, out = env.write('frame', '移動する', 'が', 'agent', 'PERSON')
+    assert (rc, out['verdict']) == (2, 'PREDICATE_TYPE_NOT_CONFIRMED') and not Path(env.layer).exists() and not Path(env.ledger).exists()
+    env.write('set', '移動する', 'P_MOVE')
+    rc, out = env.write('frame', '移動する', 'が', 'agent', 'PERSON', 'GROUP_ORG', '--reason', 'r')
+    assert rc == 0 and out['frame'] == {'particle': 'が', 'role': 'agent', 'types': ['GROUP_ORG', 'PERSON']}
+    a = CP.query('移動する', placement=R9, layer=env.layer)
+    assert a['layer_status'] == 'HUMAN_CONFIRMED_USED' and a['role_frame_status'] == 'CONFIRMED'
+    assert a['role_frame'] == {'が': [{'role': 'agent', 'types': ['GROUP_ORG', 'PERSON']}]} and a['frame_status'] == 'NOT_CONFIRMED'
+    assert PL.is_confirm_row(PL.open_layer(env.layer)[0].entries('移動する')[-1])
+
+# ---- tests/test_w16t8_synthetic.py::test_the_confirmations_suggest_named_make_more_targets_readable (r2, before the r3 rewrite)
+def test_the_confirmations_suggest_named_make_more_targets_readable(flow):
+    s, _ = flow
+    t = s['groups']['target']
+    assert t['readable_before'] < t['readable_after']
+    assert t['readable_after'] == t['n'] and t['abstained_after'] == []
+    assert s['confirmations_written'] == s['confirmations_in_truth'] and s['truth_not_named'] == []
+    assert len(s['rounds']) <= 3
+
+# ---- tests/test_w16t8_synthetic.py::test_suggest_names_the_frame_and_the_frame_row_is_written (r2, before the r3 rewrite)
+def test_suggest_names_the_frame_and_the_frame_row_is_written(flow_frame):
+    s, out = flow_frame
+    first = (Path(out) / 't82_suggest_round1.tsv').read_text(encoding='utf-8').splitlines()
+    head = first[0].split('\t')
+    rows = [dict(zip(head, ln.split('\t'))) for ln in first[1:] if ln and not ln.startswith('#')]
+    assert any(r['op'] == 'frame' and r['word'] == '移動する' and r['particle'] == 'へ' for r in rows)
+    listed = json.loads((Path(out) / 't82_list.json').read_text())['confirmations']
+    assert [c['kind'] for c in listed] == ['type', 'frame'] and listed[1]['frame'] == {'particle': 'へ', 'role': 'goal', 'types': ['GROUP_ORG']}
+    assert s['truth_not_named'] == [] and s['confirmations_written'] == 2
+
+# ---- tests/test_w16t8_synthetic.py::test_the_frame_makes_the_organisation_goal_sentences_readable_as_the_frame_says (r2, before the r3 rewrite)
+def test_the_frame_makes_the_organisation_goal_sentences_readable_as_the_frame_says(flow_frame):
+    s, out = flow_frame
+    t = s['groups']['target']
+    assert t['readable_before'] == 0 and t['readable_after'] == 4 and t['misread'] == []
+    assert t['abstained_after'] == ['f05']                                          # 山田 is a MULTIPLE name (PLACEMENT_MULTIPLE:が:山田): suggest named `set 山田`, the truth list has no row for it
+    assert s['groups']['control']['changed_output'] == [] and s['groups']['control']['misread'] == []
+    assert '移動する' in s['overrode_decided']
+
+# ---- tests/test_w16t8_synthetic.py::test_the_set_alone_does_not_read_the_organisation_goal_sentences (r2, before the r3 rewrite)
+def test_the_set_alone_does_not_read_the_organisation_goal_sentences(tmp_path):
+    rows = [json.loads(x) for x in open(Path(DATA) / 'synthetic_frame.jsonl', encoding='utf-8')]
+    layer, ledger = str(tmp_path / 'l.sqlite'), str(tmp_path / 'g.jsonl')
+    rc, _ = F._cli(['confirm', 'set', '移動する', 'P_MOVE', '--by', 't', '--layer', layer, '--ledger-file', ledger, '--placement', R9])
+    assert rc == 0
+    after = F._read_all(rows, R9, layer)
+    for r, rd in zip(rows, after):
+        if r['group'] == 'target':
+            assert not rd.get('readable'), r['text']                                # without the frame the type table refuses the goal (GROUP_ORG)
+        if r['group'] == 'frame_not_restrictive':
+            assert rd.get('readable'), r['text']
+
+# ---- tests/test_w16t8_synthetic.py::test_a_human_frame_adds_but_does_not_restrict (r2, before the r3 rewrite)
+def test_a_human_frame_adds_but_does_not_restrict(flow_frame):
+    s, out = flow_frame
+    g = s['groups']['frame_not_restrictive']
+    assert g['n'] == 3 and g['not_stopped'] == 3 and g['misread'] == []            # the frame lists GROUP_ORG only; the PLACE goals are read all the same (K274, not changeable here)
+
+# ---- tests/test_w16t8_confirm_cli.py::test_suggest_with_a_layer_reads_with_it_and_restores_the_environment (r2, before the r3 rewrite; only the first assertion on the layer's reading changed)
+def test_suggest_with_a_layer_reads_with_it_and_restores_the_environment(env, tmp_path, monkeypatch):
+    text = tmp_path / 't.txt'
+    text.write_text('田中が整備室へ移動した。\n', encoding='utf-8')
+    env.write('set', '整備室', 'PLACE')
+    env.write('set', '移動する', 'P_MOVE')
+    monkeypatch.setenv(PL.ENV_LAYER, 'sentinel')
+    rc, out = env.run('suggest', '--text', str(text), '--layer', env.layer)
+    assert [l.split('\t')[2] for l in out.splitlines()[1:2]] == ['READ']
+    import os
+    assert os.environ[PL.ENV_LAYER] == 'sentinel'
+    rc, out = env.run('suggest', '--text', str(text))                                                    # without the layer (the variable is 'sentinel': a name without a root): not read
+    assert 'ABSTAIN' in out
+
+# ---- tests/test_w16t8_synthetic.py::test_three_or_more_decided_words_were_overridden_by_a_human (r2, before the r3 rewrite)
+def test_three_or_more_decided_words_were_overridden_by_a_human(flow):
+    s, out = flow
+    assert len(s['overrode_decided']) >= 3
+    over = json.loads((Path(out) / 't82_base_decided.json').read_text())
+    for o in over:
+        assert o['layer_status'] == 'HUMAN_CONFIRMED_USED' and o['decided_by'][0].startswith('human:')
+    decided = [o for o in over if o['base_state'] == 'DECIDED']
+    assert len(decided) >= 3 and {o['word'] for o in decided} == set(s['overrode_decided'])
+    assert any(o['base_origin'] == 'direct' for o in decided) and any(o['base_origin'] == 'estimated' for o in decided)
+
+# ---- tests/test_w16t8_layer.py: the helper `Layer.human` (r2)
+#     cid = cid or 'c%d' % self.n

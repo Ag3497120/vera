@@ -1,0 +1,221 @@
+{
+  "frozen_at": "2026-10-05 15:59:21 +0900",
+  "frozen_by": "Claude Sonnet 5.5（実装役。人ではない）",
+  "checked_by": "pending: 中間職",
+  "excluded": [
+    "FROZEN.json",
+    "corrections.jsonl"
+  ],
+  "files": [
+    {
+      "path": "docs/D1_bihin_kitei.txt",
+      "sha256": "4efa95c7979890b4919459f99896e873ffd74dd39638dd0ed30b4426e6d6483c",
+      "bytes": 4409
+    },
+    {
+      "path": "docs/D2_shiryo_tejun.txt",
+      "sha256": "9c12a76615eca1958299bc21fb438c2163e3b9aeab90c8d0497b72d3f940f04d",
+      "bytes": 4441
+    },
+    {
+      "path": "docs/D3_gijiroku.txt",
+      "sha256": "2c1264a04d0487ad6ac5b103132c45277ce74350250e2d3cf70fc2664b0b6c34",
+      "bytes": 3988
+    },
+    {
+      "path": "docs/D4_shiyou_v1.txt",
+      "sha256": "83484054afe7312d81232a4f1b5681cab1960730e46b033b3920e0b5939dc782",
+      "bytes": 3898
+    },
+    {
+      "path": "docs/D4_shiyou_v2.txt",
+      "sha256": "4705a7d88702a90d9df5016ae10a8476a677579300a06c65d7ddd70d15f606a6",
+      "bytes": 3922
+    },
+    {
+      "path": "docs_unrelated/U01.txt",
+      "sha256": "65e279c98d9728759648dc884d4f40f8d3b4a5d8b056952d853aeccdb92fd8ad",
+      "bytes": 889
+    },
+    {
+      "path": "docs_unrelated/U02.txt",
+      "sha256": "dd5db328f324bcf850c6ced1f6c2eff134883063b8f8dc14728ad398358e3987",
+      "bytes": 884
+    },
+    {
+      "path": "docs_unrelated/U03.txt",
+      "sha256": "5c1b37ebfa1850a4997db549241de5763f6708882f27d2461c08f3caa361fbdd",
+      "bytes": 878
+    },
+    {
+      "path": "docs_unrelated/U04.txt",
+      "sha256": "df86087f14a401f94d3c40aa7cbf8ccf1c381252da4aed5db75a311ef545b11b",
+      "bytes": 829
+    },
+    {
+      "path": "docs_unrelated/U05.txt",
+      "sha256": "46bd9628903978c286330986297838376eb4d1d7c084bf283f2f9fb5cc1c5bcb",
+      "bytes": 848
+    },
+    {
+      "path": "docs_unrelated/U06.txt",
+      "sha256": "2fa58e58485d869ba3c8a16c052ee37ba04bac219c578696d0bce09f9894d83a",
+      "bytes": 818
+    },
+    {
+      "path": "docs_unrelated/U07.txt",
+      "sha256": "5d4a5f47a65796aec62456407e85bd1a79b029dcd40344a19c6f353aa2a8c4a8",
+      "bytes": 753
+    },
+    {
+      "path": "docs_unrelated/U08.txt",
+      "sha256": "065ea5d807e3cdf3a56f7eb5bfd39022bdcda5cbca61c57b20fe1ccd015955e4",
+      "bytes": 734
+    },
+    {
+      "path": "docs_unrelated/U09.txt",
+      "sha256": "ff0d07f1ba12ae258e34440f238e05faa46dfd8e5e1dba7901aa56ca1875fa80",
+      "bytes": 708
+    },
+    {
+      "path": "docs_unrelated/U10.txt",
+      "sha256": "b802fdc90788c0270ebe33ebdd8f20a9e08da3ed3cf9d8efb09338b89a4becfe",
+      "bytes": 982
+    },
+    {
+      "path": "docs_unrelated/U11.txt",
+      "sha256": "c42926665139dafc47da8fe16c81970063e27057506026b6a9a27e63693c11f8",
+      "bytes": 973
+    },
+    {
+      "path": "docs_unrelated/U12.txt",
+      "sha256": "7f53ccae87a9e94e3b82285ff9c02d41dcc9c034451e0ade43ad3b9bec425cee",
+      "bytes": 978
+    },
+    {
+      "path": "docs_unrelated/U13.txt",
+      "sha256": "015f0bb9b1f0f4bc84e8c6725317bfbad7c6fb8398e38fa8705bd9f179d088d6",
+      "bytes": 786
+    },
+    {
+      "path": "docs_unrelated/U14.txt",
+      "sha256": "3f6a06f95e759676f5977e8e5f9e5926709aa42620f6bd34c58bce7f834af3c8",
+      "bytes": 791
+    },
+    {
+      "path": "docs_unrelated/U15.txt",
+      "sha256": "51daaf65418d766ba82db9b2c59ac59f7a7b6e948efe10150506b02437b9f5b6",
+      "bytes": 792
+    },
+    {
+      "path": "docs_unrelated/U16.txt",
+      "sha256": "2e1bdb9138d2d35c48d1ba976b76249c6a34a6ae41737da84855ec7148ded746",
+      "bytes": 809
+    },
+    {
+      "path": "docs_unrelated/U17.txt",
+      "sha256": "95aa54c7f6b5df80a8cb51671e8fca4173a31de23dc5d3f6fa98ff4003115fcb",
+      "bytes": 778
+    },
+    {
+      "path": "docs_unrelated/U18.txt",
+      "sha256": "a04122ec0621cd36d728c43fc32b0236a159d56c5bfacab05f0819c719d501cc",
+      "bytes": 731
+    },
+    {
+      "path": "docs_unrelated/U19.txt",
+      "sha256": "f4b594e9ea807914e18e60559b5bab2937489521aee0d4abb28f8316d43b4869",
+      "bytes": 789
+    },
+    {
+      "path": "docs_unrelated/U20.txt",
+      "sha256": "4723ccf0bb35fd877e589271607b478b451892c8650bfe9d07d9484ab785f60a",
+      "bytes": 765
+    },
+    {
+      "path": "docs_unrelated/U21.txt",
+      "sha256": "4ebcfb4adb04f7b93f332a2bde2dbff553a084dea0e579004a5afd8ed119a2c8",
+      "bytes": 735
+    },
+    {
+      "path": "docs_unrelated/U22.txt",
+      "sha256": "acddbe88b47a863635f20e730613ee91d0c0dfc65e3b81ab0bbd82debba1373f",
+      "bytes": 744
+    },
+    {
+      "path": "docs_unrelated/U23.txt",
+      "sha256": "db70ed1ea48b2d5d482db112aea38e932b5dceb6419a0c51544f3d395fd4d674",
+      "bytes": 714
+    },
+    {
+      "path": "docs_unrelated/U24.txt",
+      "sha256": "aa0f49bff519db4cb44806a4ae74ad1f7ace1e9c2b585984e69ea0bdf05bb911",
+      "bytes": 759
+    },
+    {
+      "path": "docs_unrelated/U25.txt",
+      "sha256": "1ba13b931062e7e9636bdcdbf096dc53afa4a2f30d93ecd7fead00874475b5c8",
+      "bytes": 692
+    },
+    {
+      "path": "docs_unrelated/U26.txt",
+      "sha256": "9859ccf17f49b695ae9b715baa4e2e3d9212bd80ba0f960368a90380fa700d2b",
+      "bytes": 685
+    },
+    {
+      "path": "docs_unrelated/U27.txt",
+      "sha256": "393665337c1fb6a2924743830876baff3e4ca051849af6835d5309b53c79ee2b",
+      "bytes": 730
+    },
+    {
+      "path": "docs_unrelated/U28.txt",
+      "sha256": "d8d7e334edd38facd18493d43cd6b8c134b356d861da859a9398860ce8241af4",
+      "bytes": 679
+    },
+    {
+      "path": "docs_unrelated/U29.txt",
+      "sha256": "79b2d2f2248e364bc8fba1ef5a753b1c75fef3406d9612dffe2c9c650157177f",
+      "bytes": 654
+    },
+    {
+      "path": "docs_unrelated/U30.txt",
+      "sha256": "6e0f0586d3119211971b39514f57cadbffc845fa025377e93a639195e1c6125c",
+      "bytes": 725
+    },
+    {
+      "path": "docs_unrelated/U31.txt",
+      "sha256": "efc39ba68fd8e273eed8d103c20c4bec91444339b1bdf68ba23784fe132e3d3f",
+      "bytes": 756
+    },
+    {
+      "path": "docs_unrelated/U32.txt",
+      "sha256": "91b6a87eb991be8b5b44e3aa04fddbb44715a3b31ef3f1b633b16d3a48cd227b",
+      "bytes": 759
+    },
+    {
+      "path": "docs_unrelated/U33.txt",
+      "sha256": "399f041107663e505cbdd1f5d2567f95e82bb77e10a16ed3e40cfe39bbac4251",
+      "bytes": 688
+    },
+    {
+      "path": "docs_unrelated/U34.txt",
+      "sha256": "26dd8b5986b48c47d9b7062303110cc59a5961531ff5655d46d5156186ca7a11",
+      "bytes": 709
+    },
+    {
+      "path": "docs_unrelated/U35.txt",
+      "sha256": "e1f50af82a67f38b8e18c3aa2cbb6a03c8454185e62f2064b6b963eab4cd32e6",
+      "bytes": 769
+    },
+    {
+      "path": "docs_unrelated/U36.txt",
+      "sha256": "4c3af39f5010454a7ae1882c72625c77601e715caf6d83a3cdc22bd94a838f36",
+      "bytes": 714
+    },
+    {
+      "path": "questions.jsonl",
+      "sha256": "94cad72f4bc98ab3d278508f46077c0eada3d7349de755c2eb4f345221ecc8a9",
+      "bytes": 80240
+    }
+  ]
+}
