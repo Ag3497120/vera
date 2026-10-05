@@ -1,0 +1,97 @@
+# 語 / _vt_tokens / _vt_is_time / _vt_time_unit
+再来週 [('再来', '接頭辞', '*', '*', 0, 2, '再来'), ('週', '名詞', '普通名詞', '助数詞可能', 2, 3, '週')] False False
+再来年 [('再来', '接頭辞', '*', '*', 0, 2, '再来'), ('年', '名詞', '普通名詞', '助数詞可能', 2, 3, '年')] False False
+再来月 [('再来', '接頭辞', '*', '*', 0, 2, '再来'), ('月', '名詞', '普通名詞', '助数詞可能', 2, 3, '月')] False False
+再々来週 [('再々', '名詞', '普通名詞', '副詞可能', 0, 2, '再々'), ('来週', '名詞', '普通名詞', '副詞可能', 2, 4, '来週')] True True
+再来日 [('再', '接頭辞', '*', '*', 0, 1, '再'), ('来日', '名詞', '普通名詞', 'サ変可能', 1, 3, '来日')] False False
+毎夕 [('毎夕', '名詞', '普通名詞', '一般', 0, 2, '毎夕')] False False
+夕べ [('夕べ', '名詞', '普通名詞', '一般', 0, 2, '夕べ')] False False
+毎夜 [('毎夜', '名詞', '普通名詞', '副詞可能', 0, 2, '毎夜')] True True
+毎週 [('毎週', '名詞', '普通名詞', '副詞可能', 0, 2, '毎週')] True True
+今春 [('今春', '名詞', '普通名詞', '副詞可能', 0, 2, '今春')] True True
+明後日 [('明後日', '名詞', '普通名詞', '副詞可能', 0, 3, '明後日')] True True
+深夜 [('深夜', '名詞', '普通名詞', '副詞可能', 0, 2, '深夜')] True True
+来週 [('来週', '名詞', '普通名詞', '副詞可能', 0, 2, '来週')] True True
+未明 [('未明', '名詞', '普通名詞', '副詞可能', 0, 2, '未明')] True True
+晩 [('晩', '名詞', '普通名詞', '副詞可能', 0, 1, '晩')] True True
+昨夕 [('昨夕', '名詞', '普通名詞', '一般', 0, 2, '昨夕')] False False
+今夕 [('今夕', '名詞', '普通名詞', '副詞可能', 0, 2, '今夕')] True True
+宵 [('宵', '名詞', '普通名詞', '一般', 0, 1, '宵')] False False
+毎昼 [('毎', '接頭辞', '*', '*', 0, 1, '毎'), ('昼', '名詞', '普通名詞', '副詞可能', 1, 2, '昼')] True True
+毎月 [('毎月', '名詞', '普通名詞', '副詞可能', 0, 2, '毎月')] True True
+毎年 [('毎年', '名詞', '普通名詞', '副詞可能', 0, 2, '毎年')] True True
+翌週 [('翌週', '名詞', '普通名詞', '副詞可能', 0, 2, '翌週')] True True
+翌月 [('翌月', '名詞', '普通名詞', '副詞可能', 0, 2, '翌月')] True True
+翌年 [('翌年', '名詞', '普通名詞', '副詞可能', 0, 2, '翌年')] True True
+隔週 [('隔週', '名詞', '普通名詞', '一般', 0, 2, '隔週')] False False
+先々週 [('先々', '名詞', '普通名詞', '副詞可能', 0, 2, '先々'), ('週', '名詞', '普通名詞', '助数詞可能', 2, 3, '週')] False False
+先々月 [('先々', '名詞', '普通名詞', '副詞可能', 0, 2, '先々'), ('月', '名詞', '普通名詞', '助数詞可能', 2, 3, '月')] False False
+一昨年 [('一昨', '名詞', '普通名詞', '一般', 0, 2, '一昨'), ('年', '名詞', '普通名詞', '助数詞可能', 2, 3, '年')] False False
+おととし [('おととし', '名詞', '普通名詞', '副詞可能', 0, 4, 'おととし')] False False
+さ来週 [('さ', '副詞', '*', '*', 0, 1, 'さ'), ('来週', '名詞', '普通名詞', '副詞可能', 1, 3, '来週')] False False
+さ来月 [('さ', '副詞', '*', '*', 0, 1, 'さ'), ('来月', '名詞', '普通名詞', '副詞可能', 1, 3, '来月')] False False
+さ来年 [('さ', '副詞', '*', '*', 0, 1, 'さ'), ('来年', '名詞', '普通名詞', '副詞可能', 1, 3, '来年')] False False
+今朝 [('今朝', '名詞', '普通名詞', '副詞可能', 0, 2, '今朝')] True True
+昨晩 [('昨晩', '名詞', '普通名詞', '一般', 0, 2, '昨晩')] False False
+明朝 [('明朝', '名詞', '普通名詞', '副詞可能', 0, 2, '明朝')] True True
+今宵 [('今宵', '名詞', '普通名詞', '副詞可能', 0, 2, '今宵')] True True
+明晩 [('明晩', '名詞', '普通名詞', '一般', 0, 2, '明晩')] False False
+
+# ask の答え（文書「山田さんが<語>東京で働く。」問い「どこで働く？」）。時と判定されない語で融合値が ANSWER になるものが誤答（基点・範囲外）
+再来週 is_time= False ANSWER ['再来週東京'] 
+再来年 is_time= False ANSWER ['再来年東京'] 
+再来月 is_time= False ANSWER ['再来月東京'] 
+再々来週 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+再来日 is_time= False ANSWER ['再来日東京'] 
+毎夕 is_time= False ANSWER ['毎夕東京'] 
+夕べ is_time= False ANSWER ['夕べ東京'] 
+毎夜 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+毎週 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+今春 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+明後日 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+深夜 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+来週 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+未明 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+晩 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+昨夕 is_time= False ANSWER ['昨夕東京'] 
+今夕 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+宵 is_time= False ANSWER ['宵東京'] 
+毎昼 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+毎月 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+毎年 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+翌週 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+翌月 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+翌年 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+隔週 is_time= False ANSWER ['隔週東京'] 
+先々週 is_time= False ANSWER ['先々週東京'] 
+先々月 is_time= False ANSWER ['先々月東京'] 
+一昨年 is_time= False ANSWER ['一昨年東京'] 
+おととし is_time= False ANSWER ['おととし東京'] 
+さ来週 is_time= False UNKNOWN_UNSUPPORTED_EVIDENCE [] unrepresented source content; unrepresented source
+さ来月 is_time= False UNKNOWN_UNSUPPORTED_EVIDENCE [] unrepresented source content; unrepresented source
+さ来年 is_time= False UNKNOWN_UNSUPPORTED_EVIDENCE [] unrepresented source content; unrepresented source
+今朝 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+昨晩 is_time= False ANSWER ['昨晩東京'] 
+明朝 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+今宵 is_time= True UNKNOWN_INVALID_PROOF [] ill-typed role: time phrase fused with place/goal/
+明晩 is_time= False ANSWER ['明晩東京'] 
+
+# 基点（HEAD 6109988 の git archive の写し。第 3 ラウンドの変更も第 1・2 ラウンドの製品変更も入らない）での同じ問い
+/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W3-f1-r3/base/verantyx/__init__.py
+再来週 ANSWER ['再来週東京']
+再来年 ANSWER ['再来年東京']
+再来月 ANSWER ['再来月東京']
+毎夕 ANSWER ['毎夕東京']
+夕べ ANSWER ['夕べ東京']
+昨夕 ANSWER ['昨夕東京']
+宵 ANSWER ['宵東京']
+隔週 ANSWER ['隔週東京']
+先々週 ANSWER ['先々週東京']
+先々月 ANSWER ['先々月東京']
+一昨年 ANSWER ['一昨年東京']
+おととし ANSWER ['おととし東京']
+昨晩 ANSWER ['昨晩東京']
+明晩 ANSWER ['明晩東京']
+明日 ANSWER ['明日東京']
+
+# 注: 再来日（来日の再）は時の語ではない（外国人の来日の再）ので誤答の表に数えない。時の語として時と判定されず融合値が ANSWER になる語（W）: 再来週・再来年・再来月・毎夕・夕べ・昨夕・宵・隔週・先々週・先々月・一昨年・おととし・昨晩・明晩。さ来週・さ来月・さ来年は別の理由で棄権（誤答でない）。

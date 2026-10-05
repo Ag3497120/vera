@@ -1,0 +1,47 @@
+{"id": "nde-main-0-0", "kind": "main_polar", "form": "んではいけません", "document": "運転手は酒を飲んではいけません。", "question": "運転手は酒を飲む？"}
+{"id": "nde-aux-0-0", "kind": "aux_polar", "form": "んではいけません", "document": "運転手は酒を飲んではいけません。", "question": "運転手はいけません？"}
+{"id": "nde-main-0-1", "kind": "main_polar", "form": "んではなりません", "document": "運転手は酒を飲んではなりません。", "question": "運転手は酒を飲む？"}
+{"id": "nde-main-0-2", "kind": "main_polar", "form": "んでもいけません", "document": "運転手は酒を飲んでもいけません。", "question": "運転手は酒を飲む？"}
+{"id": "nde-aux-0-2", "kind": "aux_polar", "form": "んでもいけません", "document": "運転手は酒を飲んでもいけません。", "question": "運転手はいけません？"}
+{"id": "nde-aux-0-4", "kind": "aux_polar", "form": "んではなりませんでした", "document": "運転手は酒を飲んではなりませんでした。", "question": "運転手はなりませんでした？"}
+{"id": "nde-main-1-0", "kind": "main_polar", "form": "んではいけません", "document": "作業員は荷物を運んではいけません。", "question": "作業員は荷物を運ぶ？"}
+{"id": "nde-aux-1-0", "kind": "aux_polar", "form": "んではいけません", "document": "作業員は荷物を運んではいけません。", "question": "作業員はいけません？"}
+{"id": "nde-main-1-1", "kind": "main_polar", "form": "んではなりません", "document": "作業員は荷物を運んではなりません。", "question": "作業員は荷物を運ぶ？"}
+{"id": "nde-main-1-2", "kind": "main_polar", "form": "んでもいけません", "document": "作業員は荷物を運んでもいけません。", "question": "作業員は荷物を運ぶ？"}
+{"id": "nde-aux-1-2", "kind": "aux_polar", "form": "んでもいけません", "document": "作業員は荷物を運んでもいけません。", "question": "作業員はいけません？"}
+{"id": "nde-aux-1-4", "kind": "aux_polar", "form": "んではなりませんでした", "document": "作業員は荷物を運んではなりませんでした。", "question": "作業員はなりませんでした？"}
+{"id": "nde-main-2-0", "kind": "main_polar", "form": "んではいけません", "document": "生徒は手紙を読んではいけません。", "question": "生徒は手紙を読む？"}
+{"id": "nde-aux-2-0", "kind": "aux_polar", "form": "んではいけません", "document": "生徒は手紙を読んではいけません。", "question": "生徒はいけません？"}
+{"id": "nde-main-2-1", "kind": "main_polar", "form": "んではなりません", "document": "生徒は手紙を読んではなりません。", "question": "生徒は手紙を読む？"}
+{"id": "nde-main-2-2", "kind": "main_polar", "form": "んでもいけません", "document": "生徒は手紙を読んでもいけません。", "question": "生徒は手紙を読む？"}
+{"id": "nde-aux-2-2", "kind": "aux_polar", "form": "んでもいけません", "document": "生徒は手紙を読んでもいけません。", "question": "生徒はいけません？"}
+{"id": "nde-aux-2-4", "kind": "aux_polar", "form": "んではなりませんでした", "document": "生徒は手紙を読んではなりませんでした。", "question": "生徒はなりませんでした？"}
+{"id": "nde-main-3-0", "kind": "main_polar", "form": "んではいけません", "document": "受付は友人を呼んではいけません。", "question": "受付は友人を呼ぶ？"}
+{"id": "nde-aux-3-0", "kind": "aux_polar", "form": "んではいけません", "document": "受付は友人を呼んではいけません。", "question": "受付はいけません？"}
+{"id": "nde-main-3-2", "kind": "main_polar", "form": "んでもいけません", "document": "受付は友人を呼んでもいけません。", "question": "受付は友人を呼ぶ？"}
+{"id": "nde-aux-3-2", "kind": "aux_polar", "form": "んでもいけません", "document": "受付は友人を呼んでもいけません。", "question": "受付はいけません？"}
+{"id": "nde-aux-3-4", "kind": "aux_polar", "form": "んではなりませんでした", "document": "受付は友人を呼んではなりませんでした。", "question": "受付はなりませんでした？"}
+{"id": "nde-main-4-0", "kind": "main_polar", "form": "んではいけません", "document": "委員は候補者を選んではいけません。", "question": "委員は候補者を選ぶ？"}
+{"id": "nde-aux-4-0", "kind": "aux_polar", "form": "んではいけません", "document": "委員は候補者を選んではいけません。", "question": "委員はいけません？"}
+{"id": "nde-main-4-1", "kind": "main_polar", "form": "んではなりません", "document": "委員は候補者を選んではなりません。", "question": "委員は候補者を選ぶ？"}
+{"id": "nde-main-4-2", "kind": "main_polar", "form": "んでもいけません", "document": "委員は候補者を選んでもいけません。", "question": "委員は候補者を選ぶ？"}
+{"id": "nde-aux-4-2", "kind": "aux_polar", "form": "んでもいけません", "document": "委員は候補者を選んでもいけません。", "question": "委員はいけません？"}
+{"id": "nde-aux-4-4", "kind": "aux_polar", "form": "んではなりませんでした", "document": "委員は候補者を選んではなりませんでした。", "question": "委員はなりませんでした？"}
+{"id": "nde-main-5-0", "kind": "main_polar", "form": "んではいけません", "document": "店員は財布を盗んではいけません。", "question": "店員は財布を盗む？"}
+{"id": "nde-aux-5-0", "kind": "aux_polar", "form": "んではいけません", "document": "店員は財布を盗んではいけません。", "question": "店員はいけません？"}
+{"id": "nde-main-5-1", "kind": "main_polar", "form": "んではなりません", "document": "店員は財布を盗んではなりません。", "question": "店員は財布を盗む？"}
+{"id": "nde-main-5-2", "kind": "main_polar", "form": "んでもいけません", "document": "店員は財布を盗んでもいけません。", "question": "店員は財布を盗む？"}
+{"id": "nde-aux-5-2", "kind": "aux_polar", "form": "んでもいけません", "document": "店員は財布を盗んでもいけません。", "question": "店員はいけません？"}
+{"id": "nde-main-6-0", "kind": "main_polar", "form": "んではいけません", "document": "医者は薬を頼んではいけません。", "question": "医者は薬を頼む？"}
+{"id": "nde-aux-6-0", "kind": "aux_polar", "form": "んではいけません", "document": "医者は薬を頼んではいけません。", "question": "医者はいけません？"}
+{"id": "nde-main-6-1", "kind": "main_polar", "form": "んではなりません", "document": "医者は薬を頼んではなりません。", "question": "医者は薬を頼む？"}
+{"id": "nde-main-6-2", "kind": "main_polar", "form": "んでもいけません", "document": "医者は薬を頼んでもいけません。", "question": "医者は薬を頼む？"}
+{"id": "nde-aux-6-2", "kind": "aux_polar", "form": "んでもいけません", "document": "医者は薬を頼んでもいけません。", "question": "医者はいけません？"}
+{"id": "nde-aux-6-4", "kind": "aux_polar", "form": "んではなりませんでした", "document": "医者は薬を頼んではなりませんでした。", "question": "医者はなりませんでした？"}
+{"id": "nde-ctl-0", "kind": "control", "form": "ない", "document": "運転手は酒を飲まない。", "question": "運転手は酒を飲む？", "expect_values": ["いいえ"]}
+{"id": "nde-ctl-1", "kind": "control", "form": "ない", "document": "作業員は荷物を運ばない。", "question": "作業員は荷物を運ぶ？", "expect_values": ["いいえ"]}
+{"id": "nde-ctl-2", "kind": "control", "form": "ない", "document": "生徒は手紙を読まない。", "question": "生徒は手紙を読む？", "expect_values": ["いいえ"]}
+{"id": "nde-ctl-3", "kind": "control", "form": "ない", "document": "受付は友人を呼ばない。", "question": "受付は友人を呼ぶ？", "expect_values": ["いいえ"]}
+{"id": "nde-ctl-4", "kind": "control", "form": "ない", "document": "委員は候補者を選ばない。", "question": "委員は候補者を選ぶ？", "expect_values": ["いいえ"]}
+{"id": "nde-ctl-5", "kind": "control", "form": "ない", "document": "店員は財布を盗まない。", "question": "店員は財布を盗む？", "expect_values": ["いいえ"]}
+{"id": "nde-ctl-6", "kind": "control", "form": "ない", "document": "医者は薬を頼まない。", "question": "医者は薬を頼む？", "expect_values": ["いいえ"]}

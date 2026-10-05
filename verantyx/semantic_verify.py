@@ -277,6 +277,27 @@ def _vt_time_fused(phrase):
     return False
 
 
+def _vt_te_auxiliary(words):
+    """True when a word list holds <conjunctive て/で/ちゃ/じゃ> [は/も] + the auxiliary なる/いける (the function word of the prohibition / obligation forms). Morphology only."""
+    from .typed_edges import _base
+    for k, word in enumerate(words):
+        if word.feature.pos2 != '非自立可能' or _base(word) not in ('なる', 'いける'): continue
+        j = k - 1
+        if j >= 0 and words[j].feature.pos1 == '助詞' and words[j].surface in ('は', 'も'): j -= 1
+        if j >= 0 and words[j].feature.pos2 == '接続助詞' and words[j].surface in ('て', 'で', 'ちゃ', 'じゃ'): return True
+    return False
+
+
+def _vt_time_suffix_fused(phrase):
+    """A time word fused onto a place the tagger splits as <time word> + <suffix token>. `_vt_time_fused` skips every suffix
+    boundary (a suffix can continue a time word: next-week + end), so a whole-phrase time is excluded first and only the boundary BEFORE a suffix is read here."""
+    compact = phrase.replace(' ', '').replace('　', '')
+    if re.search(r'[、,]', compact) or _vt_is_time(compact): return False
+    toks = _vt_tokens(compact)
+    if len(toks) < 2 or any(t[1] not in ('名詞', '接尾辞', '接頭辞', '連体詞') for t in toks): return False
+    return any(toks[k][1] == '接尾辞' and _vt_time_unit(compact[:toks[k][4]]) for k in range(1, len(toks)))
+
+
 def _vt_is_place(phrase):
     compact = phrase.replace(' ', '').replace('　', '')
     segments = compact.split('の'); head = segments[-1]
@@ -489,6 +510,8 @@ def _vt_check_roles(clause):
                 if len(stem) >= 2 and clause.predicate.startswith(stem): raise Rejected('ill-typed role: participant repeats the predicate')
         elif role.name in _VT_TIME_ADJUNCT_ROLES and _vt_is_time(text):
             raise Rejected('ill-typed role: time phrase as place/goal/direction/result')
+        elif role.name in _VT_TIME_ADJUNCT_ROLES and (_vt_time_fused(text) or _vt_time_suffix_fused(text)):
+            raise Rejected('ill-typed role: time phrase fused with place/goal/direction')
         elif role.name == 'source' and mark == 'から' and clause_passive and not _vt_is_origin_spot(text):
             raise Rejected('ill-typed role: the から-phrase of a passive is the agent or the origin, and nothing shows it is a spot')
         elif (role.name in ('goal', 'direction') and mark in ('に', 'へ') and clause.predicate in _VT_GOAL_VERBS
@@ -1063,6 +1086,9 @@ def license_clause(clause, view, ranges=None):
                         or (role.span.start - body.start, role.span.end - body.start) != topic
                         or own_subject_phrase(tagged, c_first, c_last)):
                     raise Rejected('unlicensed role borrowing')
+        if _vt_te_auxiliary(words):
+            # V-te/de [wa/mo] naranai/ikenai (any politeness; frame.negated is not required: the polite forms read the main verb as an affirmative): the clause is a prohibition / obligation, not an event
+            raise Rejected('PROHIBITION_NOT_READ: negated auxiliary naru/ikeru after a conjunctive te/de')
         normalized = _clause_kind(raw, 'record', frame.negated)
         if not quoted and clause.modality not in ('quote', 'hedge', 'instruction'):
             expected = 'assert' if normalized == 'fact' else normalized

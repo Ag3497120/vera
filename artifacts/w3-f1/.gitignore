@@ -1,0 +1,2 @@
+# auditor 2026-10-05: per-question outputs are regenerable (93MB); kept out of git
+*.jsonl.d/

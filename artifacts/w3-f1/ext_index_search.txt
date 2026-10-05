@@ -1,0 +1,29 @@
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "prohibition てはならない negation auxiliary",
+  "searched": 698,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 57,
+    "module": 296,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}
+------
+{
+  "verdict": "UNKNOWN_NOT_FOUND",
+  "query": "time phrase fused place role",
+  "searched": 698,
+  "counts": {
+    "door": 132,
+    "fork": 89,
+    "command": 57,
+    "module": 296,
+    "prereg": 80,
+    "results": 44
+  },
+  "note": "nothing in the code or the papers matches; this is an answer, not a failure — it means the thing is not there yet"
+}

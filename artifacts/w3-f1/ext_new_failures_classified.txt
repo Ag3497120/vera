@@ -1,0 +1,7 @@
+# ext_new_failures.txt の 2 件の分類（基線 dev_bfb17b8_failures.txt に無い 2 件）
+1. tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread
+   分類: 基点でも落ちる。
+   根拠: 基点のコピー（git archive HEAD、製品を変える前）で単独実行して落ちる（ext_new_failures_base_check.txt）。第 2 ラウンドの git 付きの clean な基点の写しでも同じテストが落ちている（new_failures_classified.txt の「基点 3 件」）。チケットが環境由来として名指ししている失敗。
+2. tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+   分類: verantyx_untouched による（verantyx/ に未コミットの変更がある間は必ず落ちる）。
+   根拠: tools/bank_score/cli.py:335 の meta["verantyx_untouched"] = (git status --porcelain -- verantyx が空)。W には未コミットの verantyx/ の変更（negation.py・semantic_verify.py・verdict.py）がある。第 2 ラウンドの git 付きの clean な基点の写しでは通っている（new_failures_classified.txt の「基点 3 件」の ..F の 2 つ目）。ext_new_failures_base_check.txt の基点の写し（git 無し）では別の理由でも落ちるため、この写しは根拠にしない。コミット後に再確認が必要（申し送り）。
