@@ -8,20 +8,19 @@ PASS = "def test_a():\n    assert True\n"
 FAIL = "def test_a():\n    assert False\n"
 
 
-def _row(kind, data, prev):
-    r = {"ts": "t", "kind": kind, "actor": "x", "data": data, "prev": prev}
-    r["sha"] = hashlib.sha256(json.dumps(r, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
-    return r
+import itertools
+
+from verantyx import ledger_events as LE
+
+_N = itertools.count()
 
 
 def ledger(tmp_path, runs):
-    rows, prev = [], None
+    """A T7-layout ledger (<dir>/events.jsonl + HEAD) made by T7's own append; a fresh dir per call."""
+    d = tmp_path / ("led%d" % next(_N))
     for argv, code in runs:
-        rows.append(_row("test_run", {"argv": argv, "exit_code": code}, prev))
-        prev = rows[-1]["sha"]
-    p = tmp_path / "ev.jsonl"
-    p.write_text("".join(json.dumps(r) + "\n" for r in rows))
-    return str(p)
+        LE.append(d, "test_run", {"type": "agent", "id": "x"}, {"argv": argv, "exit_code": code})
+    return str(d / "events.jsonl")
 
 
 def tree(tmp_path, files):

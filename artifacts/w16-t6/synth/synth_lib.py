@@ -48,8 +48,12 @@ def materialize(case, root):
         (tree / p).write_text(c, encoding="utf-8")
     led = None
     if case["ledger"] is not None:
-        led = Path(root) / (case["id"] + ".ledger.jsonl")
-        led.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in case["ledger"]), encoding="utf-8")
+        from verantyx import ledger_events as LE
+        ldir = Path(root) / (case["id"] + ".ledger")
+        for r in case["ledger"]:
+            kind = r["kind"] if r["kind"] in LE.KINDS else "owner_utterance"          # "note" is not a T7 kind
+            LE.append(ldir, kind, {"type": "agent", "id": "synth"}, r["data"])
+        led = ldir / "events.jsonl"
     return tree, led
 
 

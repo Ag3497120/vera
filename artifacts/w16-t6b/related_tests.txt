@@ -1,0 +1,20 @@
+        assert x["false_facts"] >= 20
+        assert x["missed"] == 0 and x["claim_missed"] == 0
+        assert x["false_positive"] == 0 and x["claim_false_positive"] == 0
+>       assert x["detected"] == x["false_facts"]
+E       assert 20 == 22
+
+tests/test_w16t6_synth.py:47: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w16t6_basis.py::test_collect_only_event_is_not_a_basis_for_passed
+FAILED tests/test_w16t6_basis.py::test_node_only_and_k_only_events_are_not_a_basis
+FAILED tests/test_w16t6_basis.py::test_two_file_event_failing_cannot_be_pinned_on_one_file
+FAILED tests/test_w16t6_basis.py::test_two_file_event_passing_backs_each_file
+FAILED tests/test_w16t6_basis.py::test_single_file_event_failing_is_a_mismatch
+FAILED tests/test_w16t6_basis.py::test_unknown_flag_makes_event_unusable - As...
+FAILED tests/test_w16t6_basis.py::test_exit_evidence_for_ledger_and_rerun - A...
+FAILED tests/test_w16t6_ledger.py::test_events_ledger_valid_tampered_and_split
+FAILED tests/test_w16t6_ledger.py::test_ledger_event_beats_rerun_and_unverified_falls_back_to_rerun
+FAILED tests/test_w16t6_synth.py::test_no_false_claim_is_recorded_and_no_true_claim_is_flagged[V]
+FAILED tests/test_w16t6_synth.py::test_no_false_claim_is_recorded_and_no_true_claim_is_flagged[a]
+11 failed, 183 passed in 32.24s

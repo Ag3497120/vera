@@ -1,0 +1,722 @@
+FFFFFFFFFFFF.FFFFFFF.FF...FFF.                                           [100%]
+=================================== FAILURES ===================================
+____________________ test_a16_null_genesis_is_not_a_record _____________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_a16_null_genesis_is_not_a0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_a16_null_genesis_is_not_a0')
+
+    def test_a16_null_genesis_is_not_a_record(tree, tmp_path):
+        d = a16(tmp_path)
+        assert LE.verify(d)["status"] == "TAMPERED"
+>       f = unverified(fact(tree, d, CMD_B, 0), "BAD_SHAPE", "PREV_MISMATCH")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_w16t6b_ledger_verify.py:114: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+types = ('BAD_SHAPE', 'PREV_MISMATCH')
+
+    def unverified(f, *types):
+>       assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+E       AssertionError: {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+E       assert ('RECORD', 'MATCH') == ('TESTIMONY',...R_UNVERIFIED')
+E         
+E         At index 0 diff: 'RECORD' != 'TESTIMONY'
+E         Use -v to get more diff
+
+tests/test_w16t6b_ledger_verify.py:92: AssertionError
+________________ test_a16_variants_are_not_records[prev_empty] _________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_a16_variants_are_not_reco0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_a16_variants_are_not_reco0')
+variant = 'prev_empty'
+
+    @pytest.mark.parametrize("variant", ["prev_empty", "actor_str", "kind_note", "extra_key", "prev_zero_but_actor_str"])
+    def test_a16_variants_are_not_records(tree, tmp_path, variant):
+        d = a16(tmp_path, "v_" + variant)
+        r = rows_of(d)[0]
+        if variant == "prev_empty":
+            r["prev"] = ""
+        elif variant == "actor_str":
+            r["actor"] = "synth"
+        elif variant == "kind_note":
+            r["kind"] = "note"
+            r["data"] = {"cmd": CMD_B, "exit_code": 0}
+        elif variant == "extra_key":
+            r["extra"] = 1
+        elif variant == "prev_zero_but_actor_str":
+            r["prev"] = LE.GENESIS
+            r["actor"] = "x"
+        r["sha"] = hashlib.sha256(json.dumps({k: v for k, v in r.items() if k != "sha"}, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
+        write_rows(d, [r])
+        assert LE.verify(d)["status"] != "OK"
+        f = fact(tree, d, CMD_B, 0)
+>       unverified(f)
+
+tests/test_w16t6b_ledger_verify.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+types = ()
+
+    def unverified(f, *types):
+>       assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+E       AssertionError: {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+E       assert ('RECORD', 'MATCH') == ('TESTIMONY',...R_UNVERIFIED')
+E         
+E         At index 0 diff: 'RECORD' != 'TESTIMONY'
+E         Use -v to get more diff
+
+tests/test_w16t6b_ledger_verify.py:92: AssertionError
+_________________ test_a16_variants_are_not_records[actor_str] _________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_a16_variants_are_not_reco1/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_a16_variants_are_not_reco1')
+variant = 'actor_str'
+
+    @pytest.mark.parametrize("variant", ["prev_empty", "actor_str", "kind_note", "extra_key", "prev_zero_but_actor_str"])
+    def test_a16_variants_are_not_records(tree, tmp_path, variant):
+        d = a16(tmp_path, "v_" + variant)
+        r = rows_of(d)[0]
+        if variant == "prev_empty":
+            r["prev"] = ""
+        elif variant == "actor_str":
+            r["actor"] = "synth"
+        elif variant == "kind_note":
+            r["kind"] = "note"
+            r["data"] = {"cmd": CMD_B, "exit_code": 0}
+        elif variant == "extra_key":
+            r["extra"] = 1
+        elif variant == "prev_zero_but_actor_str":
+            r["prev"] = LE.GENESIS
+            r["actor"] = "x"
+        r["sha"] = hashlib.sha256(json.dumps({k: v for k, v in r.items() if k != "sha"}, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
+        write_rows(d, [r])
+        assert LE.verify(d)["status"] != "OK"
+        f = fact(tree, d, CMD_B, 0)
+>       unverified(f)
+
+tests/test_w16t6b_ledger_verify.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+types = ()
+
+    def unverified(f, *types):
+>       assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+E       AssertionError: {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+E       assert ('RECORD', 'MATCH') == ('TESTIMONY',...R_UNVERIFIED')
+E         
+E         At index 0 diff: 'RECORD' != 'TESTIMONY'
+E         Use -v to get more diff
+
+tests/test_w16t6b_ledger_verify.py:92: AssertionError
+_________________ test_a16_variants_are_not_records[kind_note] _________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_a16_variants_are_not_reco2/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_a16_variants_are_not_reco2')
+variant = 'kind_note'
+
+    @pytest.mark.parametrize("variant", ["prev_empty", "actor_str", "kind_note", "extra_key", "prev_zero_but_actor_str"])
+    def test_a16_variants_are_not_records(tree, tmp_path, variant):
+        d = a16(tmp_path, "v_" + variant)
+        r = rows_of(d)[0]
+        if variant == "prev_empty":
+            r["prev"] = ""
+        elif variant == "actor_str":
+            r["actor"] = "synth"
+        elif variant == "kind_note":
+            r["kind"] = "note"
+            r["data"] = {"cmd": CMD_B, "exit_code": 0}
+        elif variant == "extra_key":
+            r["extra"] = 1
+        elif variant == "prev_zero_but_actor_str":
+            r["prev"] = LE.GENESIS
+            r["actor"] = "x"
+        r["sha"] = hashlib.sha256(json.dumps({k: v for k, v in r.items() if k != "sha"}, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
+        write_rows(d, [r])
+        assert LE.verify(d)["status"] != "OK"
+        f = fact(tree, d, CMD_B, 0)
+>       unverified(f)
+
+tests/test_w16t6b_ledger_verify.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'exit:python -m x run', 'mark': 'TESTIMONY', 'reason': 'NO_EVENT', 'claimed': 0, ...}
+types = ()
+
+    def unverified(f, *types):
+>       assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+E       AssertionError: {'fact': 'exit:python -m x run', 'mark': 'TESTIMONY', 'reason': 'NO_EVENT', 'claimed': 0, ...}
+E       assert ('TESTIMONY', 'NO_EVENT') == ('TESTIMONY',...R_UNVERIFIED')
+E         
+E         At index 1 diff: 'NO_EVENT' != 'LEDGER_UNVERIFIED'
+E         Use -v to get more diff
+
+tests/test_w16t6b_ledger_verify.py:92: AssertionError
+_________________ test_a16_variants_are_not_records[extra_key] _________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_a16_variants_are_not_reco3/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_a16_variants_are_not_reco3')
+variant = 'extra_key'
+
+    @pytest.mark.parametrize("variant", ["prev_empty", "actor_str", "kind_note", "extra_key", "prev_zero_but_actor_str"])
+    def test_a16_variants_are_not_records(tree, tmp_path, variant):
+        d = a16(tmp_path, "v_" + variant)
+        r = rows_of(d)[0]
+        if variant == "prev_empty":
+            r["prev"] = ""
+        elif variant == "actor_str":
+            r["actor"] = "synth"
+        elif variant == "kind_note":
+            r["kind"] = "note"
+            r["data"] = {"cmd": CMD_B, "exit_code": 0}
+        elif variant == "extra_key":
+            r["extra"] = 1
+        elif variant == "prev_zero_but_actor_str":
+            r["prev"] = LE.GENESIS
+            r["actor"] = "x"
+        r["sha"] = hashlib.sha256(json.dumps({k: v for k, v in r.items() if k != "sha"}, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
+        write_rows(d, [r])
+        assert LE.verify(d)["status"] != "OK"
+        f = fact(tree, d, CMD_B, 0)
+>       unverified(f)
+
+tests/test_w16t6b_ledger_verify.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+types = ()
+
+    def unverified(f, *types):
+>       assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+E       AssertionError: {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+E       assert ('RECORD', 'MATCH') == ('TESTIMONY',...R_UNVERIFIED')
+E         
+E         At index 0 diff: 'RECORD' != 'TESTIMONY'
+E         Use -v to get more diff
+
+tests/test_w16t6b_ledger_verify.py:92: AssertionError
+__________ test_a16_variants_are_not_records[prev_zero_but_actor_str] __________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_a16_variants_are_not_reco4/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_a16_variants_are_not_reco4')
+variant = 'prev_zero_but_actor_str'
+
+    @pytest.mark.parametrize("variant", ["prev_empty", "actor_str", "kind_note", "extra_key", "prev_zero_but_actor_str"])
+    def test_a16_variants_are_not_records(tree, tmp_path, variant):
+        d = a16(tmp_path, "v_" + variant)
+        r = rows_of(d)[0]
+        if variant == "prev_empty":
+            r["prev"] = ""
+        elif variant == "actor_str":
+            r["actor"] = "synth"
+        elif variant == "kind_note":
+            r["kind"] = "note"
+            r["data"] = {"cmd": CMD_B, "exit_code": 0}
+        elif variant == "extra_key":
+            r["extra"] = 1
+        elif variant == "prev_zero_but_actor_str":
+            r["prev"] = LE.GENESIS
+            r["actor"] = "x"
+        r["sha"] = hashlib.sha256(json.dumps({k: v for k, v in r.items() if k != "sha"}, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
+        write_rows(d, [r])
+        assert LE.verify(d)["status"] != "OK"
+        f = fact(tree, d, CMD_B, 0)
+>       unverified(f)
+
+tests/test_w16t6b_ledger_verify.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+types = ()
+
+    def unverified(f, *types):
+>       assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+E       AssertionError: {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+E       assert ('RECORD', 'MATCH') == ('TESTIMONY',...R_UNVERIFIED')
+E         
+E         At index 0 diff: 'RECORD' != 'TESTIMONY'
+E         Use -v to get more diff
+
+tests/test_w16t6b_ledger_verify.py:92: AssertionError
+____________________ test_replace_recomputed_head_untouched ____________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_replace_recomputed_head_u0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_replace_recomputed_head_u0')
+
+    def test_replace_recomputed_head_untouched(tree, tmp_path):
+        d = three(tmp_path)
+        orig_head = head_of(d)
+        rows = rows_of(d)
+        rows[1]["data"] = {"cmd": CMD_B, "exit_code": 0}
+        write_rows(d, recompute(rows), head=None)
+        assert head_of(d) == orig_head
+>       f = unverified(fact(tree, d, CMD_B, 0), "HEAD_MISMATCH")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_w16t6b_ledger_verify.py:150: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+types = ('HEAD_MISMATCH',)
+
+    def unverified(f, *types):
+>       assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+E       AssertionError: {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+E       assert ('RECORD', 'MATCH') == ('TESTIMONY',...R_UNVERIFIED')
+E         
+E         At index 0 diff: 'RECORD' != 'TESTIMONY'
+E         Use -v to get more diff
+
+tests/test_w16t6b_ledger_verify.py:92: AssertionError
+____________________ test_delete_recomputed_head_untouched _____________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_delete_recomputed_head_un0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_delete_recomputed_head_un0')
+
+    def test_delete_recomputed_head_untouched(tree, tmp_path):
+        d = three(tmp_path)
+        rows = rows_of(d)
+        del rows[1]
+        write_rows(d, recompute(rows), head=None)
+>       f = unverified(fact(tree, d, CMD_A, 0), "HEAD_MISMATCH")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_w16t6b_ledger_verify.py:159: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'exit:python -m pytest -q tests/test_a.py -p no:cacheprovider', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+types = ('HEAD_MISMATCH',)
+
+    def unverified(f, *types):
+>       assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+E       AssertionError: {'fact': 'exit:python -m pytest -q tests/test_a.py -p no:cacheprovider', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+E       assert ('RECORD', 'MATCH') == ('TESTIMONY',...R_UNVERIFIED')
+E         
+E         At index 0 diff: 'RECORD' != 'TESTIMONY'
+E         Use -v to get more diff
+
+tests/test_w16t6b_ledger_verify.py:92: AssertionError
+____________________ test_reorder_recomputed_head_untouched ____________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_reorder_recomputed_head_u0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_reorder_recomputed_head_u0')
+
+    def test_reorder_recomputed_head_untouched(tree, tmp_path):
+        d = three(tmp_path)
+        rows = rows_of(d)
+        rows[0], rows[1] = rows[1], rows[0]
+        write_rows(d, recompute(rows), head=None)
+>       unverified(fact(tree, d, CMD_B, 3), "HEAD_MISMATCH")
+
+tests/test_w16t6b_ledger_verify.py:168: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 3, ...}
+types = ('HEAD_MISMATCH',)
+
+    def unverified(f, *types):
+>       assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+E       AssertionError: {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 3, ...}
+E       assert ('RECORD', 'MATCH') == ('TESTIMONY',...R_UNVERIFIED')
+E         
+E         At index 0 diff: 'RECORD' != 'TESTIMONY'
+E         Use -v to get more diff
+
+tests/test_w16t6b_ledger_verify.py:92: AssertionError
+______________________ test_truncate_tail_head_untouched _______________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_truncate_tail_head_untouc0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_truncate_tail_head_untouc0')
+
+    def test_truncate_tail_head_untouched(tree, tmp_path):
+        d = three(tmp_path)
+        rows = rows_of(d)[:-1]
+        write_rows(d, rows, head=None)
+>       f = unverified(fact(tree, d, CMD_B, 3), "HEAD_MISMATCH")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_w16t6b_ledger_verify.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 3, ...}
+types = ('HEAD_MISMATCH',)
+
+    def unverified(f, *types):
+>       assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+E       AssertionError: {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 3, ...}
+E       assert ('RECORD', 'MATCH') == ('TESTIMONY',...R_UNVERIFIED')
+E         
+E         At index 0 diff: 'RECORD' != 'TESTIMONY'
+E         Use -v to get more diff
+
+tests/test_w16t6b_ledger_verify.py:92: AssertionError
+__________ test_truncate_with_head_rewritten_is_caught_by_pinned_head __________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_truncate_with_head_rewrit0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_truncate_with_head_rewrit0')
+
+    def test_truncate_with_head_rewritten_is_caught_by_pinned_head(tree, tmp_path):
+        d = three(tmp_path)
+        pinned = head_of(d)
+        rows = rows_of(d)[:-1]
+        write_rows(d, rows, head="last")
+        assert LE.verify(d)["status"] == "OK"
+>       f = unverified(fact(tree, d, CMD_B, 3, head=pinned), "EXPECTED_HEAD_MISMATCH")
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_w16t6b_ledger_verify.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_truncate_with_head_rewrit0/tree'
+d = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_truncate_with_head_rewrit0/led')
+cmd = 'python -m x run', code = 3
+head = 'dd60f776289b19f267aa8a06710365b54390f8ab22b6e22f3b560cdae1530cdf'
+path = None
+
+    def fact(tree, d, cmd, code, head=None, path=None):
+        kw = {"ledger": path or evpath(d)}
+        if head is not None:
+            kw["ledger_head"] = head
+>       return Verifier(tree, **kw).exit_fact(cmd, code)
+               ^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Verifier.__init__() got an unexpected keyword argument 'ledger_head'
+
+tests/test_w16t6b_ledger_verify.py:88: TypeError
+_____ test_replace_recomputed_with_head_rewritten_is_caught_by_pinned_head _____
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_replace_recomputed_with_h0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_replace_recomputed_with_h0')
+
+    def test_replace_recomputed_with_head_rewritten_is_caught_by_pinned_head(tree, tmp_path):
+        d = three(tmp_path)
+        pinned = head_of(d)
+        rows = rows_of(d)
+        rows[1]["data"] = {"cmd": CMD_B, "exit_code": 0}
+        write_rows(d, recompute(rows), head="last")
+        assert LE.verify(d)["status"] == "OK"
+>       unverified(fact(tree, d, CMD_B, 0, head=pinned), "EXPECTED_HEAD_MISMATCH")
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_w16t6b_ledger_verify.py:196: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_replace_recomputed_with_h0/tree'
+d = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_replace_recomputed_with_h0/led')
+cmd = 'python -m x run', code = 0
+head = '9f81219f50c44ffaf24bbdee73672502edbacd8c03666de779f8c4e5da4eca62'
+path = None
+
+    def fact(tree, d, cmd, code, head=None, path=None):
+        kw = {"ledger": path or evpath(d)}
+        if head is not None:
+            kw["ledger_head"] = head
+>       return Verifier(tree, **kw).exit_fact(cmd, code)
+               ^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Verifier.__init__() got an unexpected keyword argument 'ledger_head'
+
+tests/test_w16t6b_ledger_verify.py:88: TypeError
+_______________ test_naive_edit_without_recompute_is_unverified ________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_naive_edit_without_recomp0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_naive_edit_without_recomp0')
+
+    def test_naive_edit_without_recompute_is_unverified(tree, tmp_path):
+        d = three(tmp_path)
+        rows = rows_of(d)
+        rows[1]["data"] = {"cmd": CMD_B, "exit_code": 0}
+        write_rows(d, rows, head=None)
+>       unverified(fact(tree, d, CMD_B, 0), "SHA_MISMATCH")
+
+tests/test_w16t6b_ledger_verify.py:214: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'exit:python -m x run', 'mark': 'TESTIMONY', 'reason': 'LEDGER_UNVERIFIED', 'claimed': 0, ...}
+types = ('SHA_MISMATCH',)
+
+    def unverified(f, *types):
+        assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+>       got = {p["type"] for p in f["evidence"]["problems"]}
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+tests/test_w16t6b_ledger_verify.py:93: TypeError
+_____________________ test_missing_head_file_is_unverified _____________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_missing_head_file_is_unve0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_missing_head_file_is_unve0')
+
+    def test_missing_head_file_is_unverified(tree, tmp_path):
+        d = three(tmp_path)
+        (d / "HEAD").unlink()
+>       unverified(fact(tree, d, CMD_B, 3), "HEAD_MISSING")
+
+tests/test_w16t6b_ledger_verify.py:220: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 3, ...}
+types = ('HEAD_MISSING',)
+
+    def unverified(f, *types):
+>       assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+E       AssertionError: {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 3, ...}
+E       assert ('RECORD', 'MATCH') == ('TESTIMONY',...R_UNVERIFIED')
+E         
+E         At index 0 diff: 'RECORD' != 'TESTIMONY'
+E         Use -v to get more diff
+
+tests/test_w16t6b_ledger_verify.py:92: AssertionError
+______________ test_file_not_named_events_jsonl_is_not_verifiable ______________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_file_not_named_events_jso0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_file_not_named_events_jso0')
+
+    def test_file_not_named_events_jsonl_is_not_verifiable(tree, tmp_path):
+        d = three(tmp_path)
+        copy = tmp_path / "ev.jsonl"
+        copy.write_bytes((d / "events.jsonl").read_bytes())
+>       f = unverified(fact(tree, d, CMD_B, 3, path=str(copy)), "LEDGER_PATH_NOT_T7")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_w16t6b_ledger_verify.py:227: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 3, ...}
+types = ('LEDGER_PATH_NOT_T7',)
+
+    def unverified(f, *types):
+>       assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+E       AssertionError: {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 3, ...}
+E       assert ('RECORD', 'MATCH') == ('TESTIMONY',...R_UNVERIFIED')
+E         
+E         At index 0 diff: 'RECORD' != 'TESTIMONY'
+E         Use -v to get more diff
+
+tests/test_w16t6b_ledger_verify.py:92: AssertionError
+____________ test_decoy_dir_verified_but_other_file_read_is_refused ____________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_decoy_dir_verified_but_ot0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_decoy_dir_verified_but_ot0')
+
+    def test_decoy_dir_verified_but_other_file_read_is_refused(tree, tmp_path):
+        """A different file in a good ledger's dir must not be read as if it were verified."""
+        d = three(tmp_path)
+        other = d / "S05.ledger.jsonl"
+        other.write_bytes(a16(tmp_path, "decoy_src").joinpath("events.jsonl").read_bytes())
+>       unverified(fact(tree, d, CMD_B, 0, path=str(other)), "LEDGER_PATH_NOT_T7")
+
+tests/test_w16t6b_ledger_verify.py:236: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+types = ('LEDGER_PATH_NOT_T7',)
+
+    def unverified(f, *types):
+>       assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+E       AssertionError: {'fact': 'exit:python -m x run', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 0, ...}
+E       assert ('RECORD', 'MATCH') == ('TESTIMONY',...R_UNVERIFIED')
+E         
+E         At index 0 diff: 'RECORD' != 'TESTIMONY'
+E         Use -v to get more diff
+
+tests/test_w16t6b_ledger_verify.py:92: AssertionError
+_____________ test_dir_argument_is_accepted_for_a_verified_ledger ______________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_dir_argument_is_accepted_0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_dir_argument_is_accepted_0')
+
+    def test_dir_argument_is_accepted_for_a_verified_ledger(tree, tmp_path):
+        d = three(tmp_path)
+        f = fact(tree, d, CMD_B, 3, path=str(d))
+>       assert (f["mark"], f["reason"], f["actual"]) == (RECORD, "MATCH", 3)
+E       AssertionError: assert ('TESTIMONY',...RIFIED', None) == ('RECORD', 'MATCH', 3)
+E         
+E         At index 0 diff: 'TESTIMONY' != 'RECORD'
+E         Use -v to get more diff
+
+tests/test_w16t6b_ledger_verify.py:242: AssertionError
+_____________ test_dir_argument_of_a_tampered_ledger_is_unverified _____________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_dir_argument_of_a_tampere0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_dir_argument_of_a_tampere0')
+
+    def test_dir_argument_of_a_tampered_ledger_is_unverified(tree, tmp_path):
+        d = a16(tmp_path)
+>       unverified(fact(tree, d, CMD_B, 0, path=str(d)), "BAD_SHAPE")
+
+tests/test_w16t6b_ledger_verify.py:248: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'exit:python -m x run', 'mark': 'TESTIMONY', 'reason': 'LEDGER_UNVERIFIED', 'claimed': 0, ...}
+types = ('BAD_SHAPE',)
+
+    def unverified(f, *types):
+        assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+>       got = {p["type"] for p in f["evidence"]["problems"]}
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+tests/test_w16t6b_ledger_verify.py:93: TypeError
+______________________ test_empty_ledger_is_not_verified _______________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_empty_ledger_is_not_verif0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_empty_ledger_is_not_verif0')
+
+    def test_empty_ledger_is_not_verified(tree, tmp_path):
+        d = tmp_path / "empty"
+        d.mkdir()
+        (d / "events.jsonl").write_text("")
+        f = fact(tree, d, CMD_B, 0)
+>       assert f["mark"] == TESTIMONY and f["reason"] == "LEDGER_UNVERIFIED" and f["evidence"]["status"] == "EMPTY"
+E       AssertionError: assert ('TESTIMONY' == 'TESTIMONY'
+E         
+E           TESTIMONY and 'NO_EVENT' == 'LEDGER_UNVERIFIED'
+E         
+E         - LEDGER_UNVERIFIED
+E         + NO_EVENT)
+
+tests/test_w16t6b_ledger_verify.py:256: AssertionError
+_________________________ test_torn_tail_is_unverified _________________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_torn_tail_is_unverified0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_torn_tail_is_unverified0')
+
+    def test_torn_tail_is_unverified(tree, tmp_path):
+        d = three(tmp_path)
+        with open(d / "events.jsonl", "ab") as fh:
+            fh.write(b'{"ts":')
+        f = fact(tree, d, CMD_B, 3)
+>       assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED") and f["evidence"]["status"] == "TORN_TAIL"
+                                                                                ^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+tests/test_w16t6b_ledger_verify.py:269: TypeError
+__________________ test_passed_fact_from_a16_is_not_a_record ___________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_passed_fact_from_a16_is_n0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_passed_fact_from_a16_is_n0')
+
+    def test_passed_fact_from_a16_is_not_a_record(tree, tmp_path):
+        d = a16(tmp_path, "a16p", cmd="pytest -q tests/test_a.py", code=0)
+        v = Verifier(tree, ledger=evpath(d))
+        ev = v.exit_code_for([], lambda a: attest._is_pytest_argv(a) is not None, "pytest -q tests/test_a.py", attest._passed_event_match("tests/test_a.py"))
+        f = v._exit_result("test_passed:tests/test_a.py", "passed", ev, passed=True)
+>       unverified(f, "BAD_SHAPE")
+
+tests/test_w16t6b_ledger_verify.py:277: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = {'fact': 'test_passed:tests/test_a.py', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 'passed', ...}
+types = ('BAD_SHAPE',)
+
+    def unverified(f, *types):
+>       assert (f["mark"], f["reason"]) == (TESTIMONY, "LEDGER_UNVERIFIED"), f
+E       AssertionError: {'fact': 'test_passed:tests/test_a.py', 'mark': 'RECORD', 'reason': 'MATCH', 'claimed': 'passed', ...}
+E       assert ('RECORD', 'MATCH') == ('TESTIMONY',...R_UNVERIFIED')
+E         
+E         At index 0 diff: 'RECORD' != 'TESTIMONY'
+E         Use -v to get more diff
+
+tests/test_w16t6b_ledger_verify.py:92: AssertionError
+____________ test_unverified_ledger_with_rerun_falls_back_to_rerun _____________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_unverified_ledger_with_re0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_unverified_ledger_with_re0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10aac5b50>
+
+    def test_unverified_ledger_with_rerun_falls_back_to_rerun(tree, tmp_path, monkeypatch):
+        d = a16(tmp_path, "a16r", cmd="pytest -q tests/test_a.py", code=1)
+        calls = []
+        monkeypatch.setattr(attest, "_spawn", lambda *a, **k: (calls.append(a) or (0, b"", b"")))
+        f = Verifier(tree, ledger=evpath(d), rerun=True).exit_fact("pytest -q tests/test_a.py", 0)
+>       assert f["mark"] == RECORD and len(calls) == 1 and "stdout_sha256" in f["evidence"]
+E       AssertionError: assert ('MISMATCH' == 'RECORD'
+E         
+E         - RECORD
+E         + MISMATCH)
+
+tests/test_w16t6b_ledger_verify.py:315: AssertionError
+________________ test_flags_keys_unchanged_when_no_pinned_head _________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_flags_keys_unchanged_when0/tree'
+
+    def test_flags_keys_unchanged_when_no_pinned_head(tree):
+        out = attest.run_attest("完了:\n- x\n", tree)
+        assert set(out["flags"]) == {"ledger", "rerun", "base", "rev", "extractors", "partial_tree", "search_dirs", "history"}
+>       out = attest.run_attest("完了:\n- x\n", tree, ledger_head="a" * 64)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: run_attest() got an unexpected keyword argument 'ledger_head'
+
+tests/test_w16t6b_ledger_verify.py:321: TypeError
+_______________________ test_cli_a16_is_testimony_exit_4 _______________________
+
+tree = '/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_cli_a16_is_testimony_exit0/tree'
+tmp_path = PosixPath('/private/var/folders/8k/9894fz8d6yx7yd6jg_5l3pmh0000gn/T/pytest-of-motonisihikoudai/pytest-2242/test_cli_a16_is_testimony_exit0')
+
+    def test_cli_a16_is_testimony_exit_4(tree, tmp_path):
+        d = a16(tmp_path, "cli16", cmd=CMD_A, code=0)
+        p = _cli(tmp_path, tree, evpath(d))
+>       assert p.returncode == 4, p.stderr[-400:] + p.stdout[-400:]
+E       AssertionError: nts": {
+E             "RECORD": 1,
+E             "TESTIMONY": 0,
+E             "MISMATCH": 0
+E            },
+E            "offform": [],
+E            "facts": {
+E             "RECORD": 1,
+E             "TESTIMONY": 0,
+E             "MISMATCH": 0
+E            }
+E           },
+E           "a": {
+E            "claims": [],
+E            "counts": {
+E             "RECORD": 0,
+E             "TESTIMONY": 0,
+E             "MISMATCH": 0
+E            },
+E            "offform": [],
+E            "facts": {
+E             "RECORD": 0,
+E             "TESTIMONY": 0,
+E             "MISMATCH": 0
+E            }
+E           }
+E          },
+E          "notes": [],
+E          "exit_code": 0
+E         }
+E         
+E       assert 0 == 4
+E        +  where 0 = CompletedProcess(args=['/Users/motonisihikoudai/vera-wiring/env/bin/python', '-P', '-m', 'verantyx.cli', 'attest', '/p... "RECORD": 0,\n    "TESTIMONY": 0,\n    "MISMATCH": 0\n   }\n  }\n },\n "notes": [],\n "exit_code": 0\n}\n', stderr='').returncode
+
+tests/test_w16t6b_ledger_verify.py:349: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w16t6b_ledger_verify.py::test_a16_null_genesis_is_not_a_record
+FAILED tests/test_w16t6b_ledger_verify.py::test_a16_variants_are_not_records[prev_empty]
+FAILED tests/test_w16t6b_ledger_verify.py::test_a16_variants_are_not_records[actor_str]
+FAILED tests/test_w16t6b_ledger_verify.py::test_a16_variants_are_not_records[kind_note]
+FAILED tests/test_w16t6b_ledger_verify.py::test_a16_variants_are_not_records[extra_key]
+FAILED tests/test_w16t6b_ledger_verify.py::test_a16_variants_are_not_records[prev_zero_but_actor_str]
+FAILED tests/test_w16t6b_ledger_verify.py::test_replace_recomputed_head_untouched
+FAILED tests/test_w16t6b_ledger_verify.py::test_delete_recomputed_head_untouched
+FAILED tests/test_w16t6b_ledger_verify.py::test_reorder_recomputed_head_untouched
+FAILED tests/test_w16t6b_ledger_verify.py::test_truncate_tail_head_untouched
+FAILED tests/test_w16t6b_ledger_verify.py::test_truncate_with_head_rewritten_is_caught_by_pinned_head
+FAILED tests/test_w16t6b_ledger_verify.py::test_replace_recomputed_with_head_rewritten_is_caught_by_pinned_head
+FAILED tests/test_w16t6b_ledger_verify.py::test_naive_edit_without_recompute_is_unverified
+FAILED tests/test_w16t6b_ledger_verify.py::test_missing_head_file_is_unverified
+FAILED tests/test_w16t6b_ledger_verify.py::test_file_not_named_events_jsonl_is_not_verifiable
+FAILED tests/test_w16t6b_ledger_verify.py::test_decoy_dir_verified_but_other_file_read_is_refused
+FAILED tests/test_w16t6b_ledger_verify.py::test_dir_argument_is_accepted_for_a_verified_ledger
+FAILED tests/test_w16t6b_ledger_verify.py::test_dir_argument_of_a_tampered_ledger_is_unverified
+FAILED tests/test_w16t6b_ledger_verify.py::test_empty_ledger_is_not_verified
+FAILED tests/test_w16t6b_ledger_verify.py::test_torn_tail_is_unverified - Typ...
+FAILED tests/test_w16t6b_ledger_verify.py::test_passed_fact_from_a16_is_not_a_record
+FAILED tests/test_w16t6b_ledger_verify.py::test_unverified_ledger_with_rerun_falls_back_to_rerun
+FAILED tests/test_w16t6b_ledger_verify.py::test_flags_keys_unchanged_when_no_pinned_head
+FAILED tests/test_w16t6b_ledger_verify.py::test_cli_a16_is_testimony_exit_4
+24 failed, 6 passed in 0.98s

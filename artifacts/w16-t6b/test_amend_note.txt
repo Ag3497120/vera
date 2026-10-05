@@ -1,0 +1,1 @@
+(red_before.txt のあとにテストを 1 か所修正: a16v の期待を変種ごとに具体化（prev_empty は PREV_MISMATCH、他は BAD_SHAPE）。弱体化ではなく厳密化。修正前の sha256 は tests_freeze.sha256 の 96e812a7…、修正後は tests_freeze_final.sha256)
