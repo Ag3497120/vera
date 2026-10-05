@@ -1,0 +1,21 @@
+対象 22 ファイル、型 17 種
+  ABS_PATH_Users: 0
+  ABS_PATH_home: 0
+  ABS_PATH_private_tmp: 0
+  EMAIL: 0
+  GIT_ACCOUNT_NAME: 0
+  INTERNAL_codex_corpus: 0
+  INTERNAL_hidden: 0
+  INTERNAL_vera_impl: 0
+  INTERNAL_vera_wiring: 0
+  LOCAL_USER_NAME: 0
+  SECRET_aws: 0
+  SECRET_ghp: 0
+  SECRET_github_pat: 0
+  SECRET_hf: 0
+  SECRET_privkey: 0
+  SECRET_sk: 0
+  SECRET_slack: 0
+合計 0 件
+OK
+exit=0

@@ -1,0 +1,1 @@
+<SMOKE_TMP>/venv/bin/python -m pip install --no-index --no-deps /private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/W16-t11/smoke-out2/wheel/verantyx_vera-0.1.0a1-py3-none-any.whl

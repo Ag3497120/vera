@@ -1,0 +1,7 @@
+仕様 49 行を出所から再計算: 不一致 0
+README (public_overlay/README.md) の照合: 不一致 0
+OK
+exit=0
+numbers.json: OK
+numbers.r1.json: OK
+claim_words.json: OK

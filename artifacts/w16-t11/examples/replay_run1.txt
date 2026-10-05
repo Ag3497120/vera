@@ -1,0 +1,5 @@
+a_attest exit=1 stdout_bytes=    1639
+b_run exit=0 stdout_bytes=       2
+b_verify exit=0 stdout_bytes=     117
+b_verify_tampered exit=1 stdout_bytes=     158
+b_hooks exit=0 stdout_bytes=    1827

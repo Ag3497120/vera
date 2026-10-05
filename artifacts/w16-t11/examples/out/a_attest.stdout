@@ -1,0 +1,16 @@
+vera attest  report=report.md  tree=./demo
+[V] 申告 4 件: 記録 1 / 証言 2 / 食い違い 1（読み飛ばした形外れの行 0）
+  V-1 行6 証言 NO_BASE [changed] - 変更: calc.py(sha256 af626eb7a9c3d865bc4d7d84f96982d7349f4931c403286d23603d85e6552442)。
+      記録 MATCH file_sha:calc.py  申告="af626eb7a9c3d865bc4d7d84f96982d7349f4931c403286d23603d85e6552442" 実際="af626eb7a9c3d865bc4d7d84f96982d7349f4931c403286d23603d85e6552442"
+      証言 NO_BASE changed:calc.py  申告="changed" 実際=null
+  V-2 行7 記録 MATCH [tests_added] - 追加したテスト: tests/test_calc.py の 2 件が通った。
+      記録 MATCH test_exists:tests/test_calc.py  申告="exists" 実際="ある"
+      記録 MATCH test_count:tests/test_calc.py  申告=2 実際=2
+      記録 MATCH test_passed:tests/test_calc.py  申告="passed" 実際=0
+  V-3 行8 食い違い COUNT_DIFFERS [tests_added] - 追加したテスト: tests/test_extra.py の 4 件が通った。
+      記録 MATCH test_exists:tests/test_extra.py  申告="exists" 実際="ある"
+      食い違い COUNT_DIFFERS test_count:tests/test_extra.py  申告=4 実際=1
+      記録 MATCH test_passed:tests/test_extra.py  申告="passed" 実際=0
+  V-4 行9 証言 COMMAND_NOT_ALLOWED [acceptance] - 受入 A-1: `make deploy` を実行し、終了コード 0。
+      証言 COMMAND_NOT_ALLOWED exit:make deploy  申告=0 実際=null
+[a] 申告 0 件: 記録 0 / 証言 0 / 食い違い 0（読み飛ばした形外れの行 0）
