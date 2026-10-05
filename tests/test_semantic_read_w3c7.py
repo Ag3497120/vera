@@ -345,8 +345,12 @@ def test_the_closed_tables_of_the_docs_are_the_constants_of_the_code():
 
 
 def _section():
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the section ends before the next ticket's mark `# W16-t1b:` (the modality gate appended at the end of the reader, attested by
+    tests/test_w16t1b_*.py); old expectation: the section runs from `# W3-c7:` to the end of the file."""
     src = (TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8')
-    return src[src.index('# W3-c7:'):]
+    i = src.index('# W3-c7:')
+    j = src.index('# W16-t1b:') if '# W16-t1b:' in src else len(src)
+    return src[i:j]
 
 
 def test_every_reason_the_stage_writes_is_in_the_closed_list():

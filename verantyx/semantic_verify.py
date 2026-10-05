@@ -1287,6 +1287,27 @@ def _repair_replaces(prior, later, ranges):
     return len(changed) == 1 and changed[0] in ('agent', 'patient', 'recipient')
 
 
+def _w16t1b_written(plan, view, basis, op, answer):
+    """W16-t1b K801 (written separately from the producer): a string answer is the written form of the source filler, not its canonical key.
+    Two different written forms for one answer are rejected."""
+    from .frames import canonical
+    names = {}
+    for node in plan.nodes:
+        if node.op == 'Bind' and node.pattern is not None:
+            for role_name, term in node.pattern.roles:
+                if isinstance(term, Variable): names.setdefault(term.name, set()).add(role_name)
+    out = []
+    for (label, value), o in zip(answer, op.outputs):
+        if isinstance(o.term, Variable) and not o.unit and isinstance(value, str):
+            wanted = names.get(o.term.name, set())
+            forms = {r.span.text for ident in basis if ident in view.by_id for r in view.by_id[ident].roles
+                     if r.name in wanted and r.term == value and canonical(r.span.text) == r.term}
+            if len(forms) > 1: raise Rejected('answer written forms differ')
+            if len(forms) == 1: value = next(iter(forms))
+        out.append((label, value))
+    return tuple(out)
+
+
 @dataclass
 class State:
     env: dict
@@ -1473,6 +1494,7 @@ class Checker:
                     self.meter.spend()
                     if op.op == 'Project' and (a.conditions or a.exceptions): continue
                     result = _calc(op, a.env)
+                    if result and op.op == 'Project': result = (result[0], _w16t1b_written(plan, self.view, a.basis, op, result[1]))
                     if result: out.append(State(result[0], a.covers | set(op.obligations), a.basis, a.conditions, a.exceptions, answer=result[1]))
             unique = {}
             for a in out:
@@ -1546,6 +1568,7 @@ class Checker:
                     a = parents[0]
                     if op.op == 'Project' and (a.conditions or a.exceptions): raise Rejected('unresolved ancestor scope')
                     result = _calc(op, a.env)
+                    if result is not None and op.op == 'Project': result = (result[0], _w16t1b_written(plan, self.view, a.basis, op, result[1]))
                     if result is None: raise Rejected('false filter')
                     state = State(result[0], a.covers | set(op.obligations), a.basis, a.conditions, a.exceptions, answer=result[1])
             if tuple(sorted(state.env.items())) != node.bindings or tuple(sorted(state.covers)) != node.covers or state.answer != node.answer:

@@ -352,11 +352,15 @@ def test_path_u_a_gate_five_adjunct_is_read_only_with_more_than_slot_evidence():
 
 
 def test_path_u_does_not_touch_voice_polarity_tense_or_modality():
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the desire sentence 猫が庭へ歩きたい。 is stopped by the modality gate before the placement is asked, so its reasons are
+    ['NO_SUPPORTED_CLAUSE'] with MODALITY_NOT_READ:desire in the unsupported list (abstention -> abstention, only the reason changes); old expectation:
+    reasons(modal)[1].startswith('PLACEMENT_REREAD_ABSTAINS:'). The negation row is unchanged."""
     base = F.MapQuery(base_map())
     neg = read('猫が庭へ歩かなかった。', base)
     assert neg['readable'] and neg['clauses'][0]['polarity'] == '-'
     modal = read('猫が庭へ歩きたい。', F.MapQuery(base_map()))
-    assert modal['readable'] is False and reasons(modal)[1].startswith('PLACEMENT_REREAD_ABSTAINS:')
+    assert modal['readable'] is False and reasons(modal) == ['NO_SUPPORTED_CLAUSE']
+    assert 'MODALITY_NOT_READ:desire' in [r for u in modal['unsupported'] for r in u['reasons']]
     q = read('猫が庭へ歩いたか。', F.MapQuery(base_map()))
     assert q['readable'] is False
 
@@ -502,7 +506,11 @@ def test_every_row_of_the_new_data_with_the_fixture(row):
             assert len(rs) >= 2 and rs[1].startswith(row['expect_reason_prefix']), rs
 
 
+K800_ROWS = {'W3B1-U-064': 'desire'}      # Integration (auditor ruling 2026-10-06, W16-t1b K800): the rows of the data whose input carries a modal auxiliary, and the kind
+
+
 def test_declared_exceptions_are_real_and_each_has_a_reason():
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): W3B1-U-064 (兄が弟に名乗りたい。, a desire sentence) is stopped by the modality gate: abstention -> abstention with a new reason. Old expectation: the observed reasons of the data file."""
     ids = {r['id']: r for r in DATA}
     assert len({e['id'] for e in EXCEPTIONS}) == len(EXCEPTIONS)
     for e in EXCEPTIONS:
@@ -511,7 +519,12 @@ def test_declared_exceptions_are_real_and_each_has_a_reason():
         out = read(row['input'], F.FixtureQuery(), row['lang'])
         # the exact output is pinned: a change of behaviour (better or worse) shows here
         assert out['readable'] == e['observed']['readable']
-        if not out['readable']:
+        if e['id'] in K800_ROWS:
+            # Integration (auditor ruling 2026-10-06, W16-t1b K800): the input carries a desire auxiliary (名乗りたい), so the modality gate stops it first: the reasons are
+            # ['NO_SUPPORTED_CLAUSE'] with MODALITY_NOT_READ:<kind> in the unsupported list; old expectation: the pinned reasons of the data file (RECIPIENT_TYPE_UNDETERMINED:名乗る, ...)
+            assert out['abstain']['reasons'] == ['NO_SUPPORTED_CLAUSE'], e['id']
+            assert 'MODALITY_NOT_READ:' + K800_ROWS[e['id']] in [r for u in out['unsupported'] for r in u['reasons']], e['id']
+        elif not out['readable']:
             assert out['abstain']['reasons'] == e['observed']['reasons'], e['id']
         else:
             assert [c['roles'] for c in out['clauses']] == e['observed']['roles'], e['id']

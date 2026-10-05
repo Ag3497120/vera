@@ -98,3 +98,36 @@
    - 安全網は actor（`session_id`・`thread-id`・`model`）を伏せずに拒否する。境界を外したので、actor に鍵の形の文字列が入ると、その行は台帳に入らず `rejects.jsonl` に回ることが前より起きやすい。変えていない。
    - 残り滓の規則（伏せた印の直後の長い英数字を落とす）による過剰な伏せ。
 5. **§12 の既知の穴の解消**: `password: password: <値>` は `_spans` が重なりを許すため第 4 ラウンドで解消した（残る限界ではない）。実測: `redact("pass"+"word: pass"+"word: hunter2hunter2")` → `('password: [REDACTED:kv_secret] [REDACTED:kv_secret]', 2)`、鍵語が 3 つ重なる形 → 件数 3 で値は残らない。試験 `test_r4_password_password_value_redacted`（第 3 ラウンドの `ledger_events.py` では値が `password: [REDACTED:kv_secret] hunter2hunter2` と残って落ちる。`artifacts/w16-t7/red_before_impl.r4b.log`）。
+
+## 14. W16-t7b: hook のコマンドの固定・終了コード 2 を返さない・導入前の自己検査
+2026-10-06（起票: 監査役。再現: 雛形のコマンドを偽の/古い `verantyx/` のある cwd で実行すると `events` が無く終了 2。Claude Code の hook で終了 2 は「入力を止める」特別な値）。
+既存の節は書き換えない。§4 の「常に終了コード 0」は、本節の表で補う。
+
+### 14.1 読み込むコードの固定（K710）
+- `hooks print`／`install` は、実行中の `vera` 自身の解決を既定で埋め込む。`python = sys.executable`（`absolute()` のみ。`resolve()` しない: venv の `bin/python` はシンボリックリンクで、辿ると venv の外の Python になり site-packages を失う）、`code_root =` 読み込まれた `verantyx` パッケージの親ディレクトリ。`--python <path>` と `--code-root <dir>` で上書き（2 つは同時に指定できる。`--vera-cmd` はそのどちらとも同時に指定できず、指定すると終了 2）。
+- 形 1（Python 3.11 以上、`dash_P`）: `PYTHONPATH=<root> <python> -P -m verantyx.cli events add …`。`-P` は cwd を `sys.path` に置かない。Codex は `["/usr/bin/env", "PYTHONPATH=<root>", <python>, "-P", "-m", "verantyx.cli", …]`（シェルを通らない）。
+- 形 2（3.10 以下／版が読めない、`dash_c_syspath`）: `<python> -c "import sys,runpy; sys.path[0]=<root>; runpy.run_module('verantyx.cli', run_name='__main__', alter_sys=True)" events add …`。版は `sys.version_info`（自分自身）か、`--python` の子プロセス 1 回（5 秒）で読む。読めなければ `UNKNOWN_PROBE_FAILED` で形 2 に倒す。3.10 そのものでの実行はしていない（3.11 上で形 2 が動くことだけをテストで確認）。
+- 引用は `shlex.quote`（空白・`$` を含むパスでも展開されない）。
+- 凍結された実行物（`sys.frozen`）で `--python` と `--code-root` の **どちらか片方でも** 欠けるときは `PIN_UNRESOLVABLE_FROZEN`（終了 2、何も出さない）。凍結物の動作は検証していない。
+- **`_vera` の置き場所**（チケットは「出力の JSON の注記」）: 既存テスト `validate_claude_hooks` が `hooks print --claude-code` の標準出力を `{"hooks": …}` だけに閉じているため、標準出力は変えず、**標準エラーに 1 行 `{"_vera": {…}}`**。`hooks install` の結果の JSON（標準出力）には `_vera` を入れる。`settings.json` には入れない（Claude Code の設定に未知のキーを足さない）。`print --codex` は TOML のコメント行 `# _vera: {…}`（利用者の config.toml のキーにしない）。
+
+### 14.2 終了コード（K711）
+| 呼び出し | 失敗の種類 | 終了コード |
+|---|---|---|
+| hook のコマンド（` … || exit 1`） | 非 0 になるあらゆる失敗（python が無い、モジュールが無い、引数の誤り） | 1 |
+| `events add --from claude-code` | 引数の誤り（kind の不正、未知のオプション） | 1（今まで 2） |
+| `events add --from claude-code|codex` | 取り込みの失敗（JSON でない、台帳に書けない等。rejects.jsonl／標準エラーに残す） | 0（変えない） |
+| `events add`（`--from` 無し・`--from codex`）、他のサブコマンド | 引数の誤り | 2（変えない） |
+- **チケットの H2（読み取り専用の台帳で各 hook が終了 1）の字面は満たしていない**: 既存テスト `test_hook_unwritable_ledger_still_exits_zero` と `test_hook_never_fails_and_logs_rejects` が 0 を要求し、既存の期待は変えない裁定のため、`ingest_cli` が 0 を返す経路は 0 のまま。実測は 0（`tests/test_w16t7b_hook_pinning.py::test_h2a_readonly_ledger_not_two`。2 ではないことは満たす）。監査役の裁定待ち（`H2_LITERAL_CONFLICTS_WITH_W16T7_TEST`）。
+
+### 14.3 導入前の自己検査（K712）
+- `hooks install --project <dir> --write` は、書く前に 6 つのコマンドを `<dir>` を cwd・偽の入力で 1 回ずつ実行する（台帳と `CLAUDE_PROJECT_DIR` は一時ディレクトリ。環境から `PYTHONPATH`・`PYTHONHOME`・`PYTHONSAFEPATH` を除く）。合格 = 終了 0・標準出力が空・`events.jsonl` がちょうど 1 行増える・`rejects.jsonl` が増えない。timeout は hook と同じ 10 秒。
+- 1 つでも落ちたら何も書かず `REFUSED_HOOK_SELFTEST`（終了 2、`selftest.cases` に各コマンドの `returncode`・`stderr_tail`（秘匿済み）・`rows_added`）。`--write` が無いときは自己検査もしない。
+- 既存の古い雛形（` || exit 1` の無い T7 のコマンド）は消さない・書き換えない。結果の `stale_vera_hooks` にその数を出す。
+
+### 14.4 既知の穴
+- 読み取り専用の台帳（`events.jsonl` が既にある状態）では、行は書かれるが HEAD の更新だけ失敗し、終了 0 になる（W16-t7 の既存の挙動。K713 のため直していない）。次の追記で HEAD は追いつく。
+- 固定した `code_root` は絶対パス。そのクローンを動かす・消すと hook は全部落ちる（` || exit 1` で 1。止めないが記録されない）。再実行で作り直す。
+- `hooks print`／`install` を別の場所の `vera` から実行すると、その場所のコードが固定される。`print` は実行する `vera` を確かめない。
+- 自己検査は固定が効くこと・終了 0・台帳 1 行までを見る。Claude Code 実機の hook の環境（PATH 等）は再現しない。
+- 数値の根拠: `artifacts/w16-t7b/`（`red_before.log`: 修正前 7 つすべて終了 2、`manual_repro_after.log`: 修正後すべて 0、`tests_w16t7b.log`、`regress_w16t7.log`、`time_per_hook.log`）。

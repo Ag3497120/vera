@@ -424,19 +424,42 @@ def cmd_events(args) -> int:
     return 2
 
 
+def _is_claude_code_argv(argv) -> bool:
+    argv = list(argv)
+    return any(a == "--from=claude-code" or (a == "--from" and i + 1 < len(argv) and argv[i + 1] == "claude-code")
+               for i, a in enumerate(argv))
+
+
 class _Intermixed(argparse.ArgumentParser):
-    """オプションと位置引数の混在を許す（Codex の notify は JSON を最後の argv に付ける。argparse は既定だと任意の位置引数を取り損ねる）。"""
+    """オプションと位置引数の混在を許す（Codex の notify は JSON を最後の argv に付ける。argparse は既定だと任意の位置引数を取り損ねる）。
+
+    W16-t7b: `events add` で解析中の引数列に `--from claude-code` があるときだけ、引数の誤りを終了 1 にする
+    （Claude Code の hook で 2 は入力を止める特別な値）。他の場合は従来どおり 2。"""
 
     _inner = False
+    _hook_exit1 = False
+    _exit1_when_claude_code = False
+
+    def error(self, message):
+        if self._hook_exit1:
+            self.print_usage(sys.stderr)
+            self.exit(1, f"{self.prog}: error: {message}\n")
+        super().error(message)
 
     def parse_known_args(self, args=None, namespace=None):
         if self._inner:                        # parse_known_intermixed_args が内側から呼ぶ
             return super().parse_known_args(args, namespace)
+        argv = sys.argv[1:] if args is None else list(args)
         self._inner = True
+        self._hook_exit1 = self._exit1_when_claude_code and _is_claude_code_argv(argv)
         try:
-            return self.parse_known_intermixed_args(args, namespace)
+            ns, extras = self.parse_known_intermixed_args(argv, namespace)
+            if extras and self._hook_exit1:    # 最上位のパーサに返すと cli.py の error（終了 2）になる
+                self.error("unrecognized arguments: " + " ".join(extras))
+            return ns, extras
         finally:
             self._inner = False
+            self._hook_exit1 = False
 
 
 # ---- 登録（cli.py からはこれだけ呼ぶ）-----------------------------------------
@@ -465,6 +488,7 @@ def register_cli(sub) -> None:
     q.add_argument("--head", default=None, help="externally pinned HEAD sha (e.g. git show HEAD:.vera/ledger/HEAD)")
     es.add_parser("sweep", parents=[common])
     q = es.add_parser("add", parents=[common])
+    q._exit1_when_claude_code = True
     q.add_argument("kind", choices=list(L.KINDS) + ["auto"])
     q.add_argument("--from", dest="src", choices=["claude-code", "codex"], default=None)
     q.add_argument("--stdin", action="store_true")
@@ -485,17 +509,68 @@ def register_cli(sub) -> None:
     g = q.add_mutually_exclusive_group(required=True)
     g.add_argument("--claude-code", action="store_true")
     g.add_argument("--codex", action="store_true")
-    q.add_argument("--vera-cmd", default=None)
     q.add_argument("--keep-args", action="store_true")
+    _pin_args(q)
     q.add_argument("--project", default=None, help="codex only: project dir used for the absolute --ledger-dir (default: cwd)")
     q = hs.add_parser("install")
     q.add_argument("--project", required=True)
     q.add_argument("--write", action="store_true", help="without this flag nothing is written")
-    q.add_argument("--vera-cmd", default=None)
     q.add_argument("--keep-args", action="store_true")
+    _pin_args(q)
     p.set_defaults(fn=_cmd_hooks)
+
+
+def _pin_args(q) -> None:
+    # --vera-cmd は --python/--code-root と同時に指定できない（cmd_hooks の入口で終了 2）。
+    # --python と --code-root は同時に指定できる。
+    q.add_argument("--vera-cmd", default=None, help="command prefix used as-is (not pinned; exclusive with --python/--code-root)")
+    q.add_argument("--python", default=None, help="python embedded in the hook commands (default: the running interpreter)")
+    q.add_argument("--code-root", default=None, help="directory that contains the verantyx package to load (default: where the running vera loaded it)")
 
 
 def _cmd_hooks(args) -> int:
     from . import hooks_templates as H
     return H.cmd_hooks(args)
+
+
+# ---- hooks install の自己検査（W16-t7b / K712）---------------------------------
+_SELFTEST_STRIP_ENV = ("PYTHONPATH", "PYTHONHOME", "PYTHONSAFEPATH")
+
+
+def _count_lines(path: Path) -> int:
+    try:
+        with open(path, "rb") as f:
+            return sum(1 for _ in f)
+    except FileNotFoundError:
+        return 0
+
+
+def run_hook_selftest(project: Path, cases: list, timeout: int = 10) -> dict:
+    """各コマンドを cwd=<project>・偽の入力で 1 回ずつ実行する。台帳は一時ディレクトリ（<project> の下には何も作らない）。
+    環境から PYTHONPATH などを除く（呼び出し元の設定を引き継ぐと固定の誤りを隠す）。
+    合格 = 終了 0・標準出力が空・events.jsonl がちょうど 1 行増える・rejects.jsonl が増えない。"""
+    import tempfile
+    out = []
+    with tempfile.TemporaryDirectory(prefix="vera-hook-selftest-") as td:
+        led = Path(td) / ".vera" / "ledger"
+        env = {k: v for k, v in os.environ.items() if k not in _SELFTEST_STRIP_ENV}
+        env["CLAUDE_PROJECT_DIR"] = td
+        env["PYTHONDONTWRITEBYTECODE"] = "1"
+        for event, command, payload in cases:
+            ev0, rj0 = _count_lines(led / "events.jsonl"), _count_lines(led / "rejects.jsonl")
+            rec = {"event": event, "returncode": None, "timed_out": False, "stdout_bytes": 0, "stderr_tail": "", "rows_added": 0, "rejects_added": 0}
+            try:
+                r = subprocess.run(["/bin/sh", "-c", command], input=payload, capture_output=True, text=True,
+                                   cwd=str(project), env=env, timeout=timeout)
+                rec["returncode"] = r.returncode
+                rec["stdout_bytes"] = len(r.stdout.encode("utf-8", "replace"))
+                rec["stderr_tail"] = L.redact(r.stderr.strip()[-300:])[0]
+            except subprocess.TimeoutExpired:
+                rec["timed_out"] = True
+            except Exception as e:
+                rec["stderr_tail"] = f"{type(e).__name__}"
+            rec["rows_added"] = _count_lines(led / "events.jsonl") - ev0
+            rec["rejects_added"] = _count_lines(led / "rejects.jsonl") - rj0
+            rec["pass"] = bool(rec["returncode"] == 0 and rec["stdout_bytes"] == 0 and rec["rows_added"] == 1 and rec["rejects_added"] == 0)
+            out.append(rec)
+    return {"ok": all(c["pass"] for c in out) and bool(out), "cases": out}

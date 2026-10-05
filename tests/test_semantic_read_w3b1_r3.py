@@ -154,6 +154,9 @@ def test_a_typed_reading_with_a_plain_ending_is_still_read_and_the_polarity_and_
         assert (c['polarity'], c['tense'], c['modality']) == (pol, tense, None) and c['role_basis'] == {'time': 'placement_direct:TIME'}
 
 
+K800_KIND = {'弟が港へ走りたかった。': 'desire'}     # Integration (auditor ruling 2026-10-06, W16-t1b K800): the rows of the list below that the modality gate stops first
+
+
 @pytest.mark.parametrize('text,mapping', [
     ('姉が昼、本を読んでいない。', s4_map()), ('姉が昼、本を読んでいなかった。', s4_map()), ('姉が昼、本を読んでいません。', s4_map()),
     ('姉が昼、本を読むな。', s4_map()), ('姉が昼、本を読むまい。', s4_map()), ('姉が昼、本を読みたかった。', s4_map()), ('姉が昼、本を読め。', s4_map()),
@@ -161,17 +164,26 @@ def test_a_typed_reading_with_a_plain_ending_is_still_read_and_the_polarity_and_
     ('猫が庭へ走るな。', u_map()), ('兄が駅へ歩け。', u_map()), ('弟が港へ走りたかった。', u_map()), ('姉が島へ飛ぶまい。', u_map()),
 ])
 def test_the_thirteen_misreads_of_the_review_are_abstentions_now_with_the_readers_reason_first(text, mapping):
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): for 弟が港へ走りたかった。 (a desire sentence) the modality gate stops the clause before the placement is asked, so the reasons are
+    ['NO_SUPPORTED_CLAUSE'] with MODALITY_NOT_READ:desire in the unsupported list (abstention -> abstention, only the reason changes); old expectation: len(rs) == 2 and rs[1].startswith(TAIL + ':').
+    The other twelve rows are unchanged."""
     out = SR.read(text, placement=F.MapQuery(mapping))
     rs = reasons(out)
     plain = SR.read(text, placement=None)
     assert plain['readable'] is False                          # the base commit refuses them
+    if text in K800_KIND:
+        assert rs == ['NO_SUPPORTED_CLAUSE'] and 'MODALITY_NOT_READ:' + K800_KIND[text] in [r for u in out['unsupported'] for r in u['reasons']], rs
+        assert out['clauses'] == []
+        return
     assert rs[0] == plain['abstain']['reasons'][0] and len(rs) == 2 and rs[1].startswith(TAIL + ':'), rs
     assert out['clauses'] == []
 
 
 def test_the_gate_is_after_the_reread_so_an_earlier_refusal_keeps_its_reason():
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): 猫が庭へ歩きたい。 (a desire sentence) is stopped by the modality gate first: ['NO_SUPPORTED_CLAUSE'] with MODALITY_NOT_READ:desire in the
+    unsupported list; old expectation: reasons(out)[1].startswith('PLACEMENT_REREAD_ABSTAINS:'). The second row (a sentence without a modal auxiliary) is unchanged."""
     out = SR.read('猫が庭へ歩きたい。', placement=F.MapQuery(u_map()))
-    assert reasons(out)[1].startswith('PLACEMENT_REREAD_ABSTAINS:')           # the frozen test of round 1 asks for exactly this
+    assert reasons(out) == ['NO_SUPPORTED_CLAUSE'] and 'MODALITY_NOT_READ:desire' in [r for u in out['unsupported'] for r in u['reasons']]
     out = SR.read('猫は庭へ歩いた。', placement=F.MapQuery(u_map()))
     assert len(reasons(out)) == 1                                              # a trigger the typed paths do not answer: no placement reason at all
 

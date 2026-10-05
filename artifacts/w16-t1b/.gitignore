@@ -1,0 +1,19 @@
+# W16-t1b M6 (implementer): per-question output directories are not committed
+*.jsonl.d/
+# auditor 2026-10-06: per-row run outputs over 1 MB are not committed (reproducible from COMMANDS.md); sha256 in large_outputs.sha256
+/after/aq.jsonl
+/after/b2like.jsonl
+/after/w3c2.jsonl
+/after_r2/aq.jsonl
+/after_r2/b2like.jsonl
+/after_r2/w3c2.jsonl
+/before/aq.jsonl
+/before/b2like.jsonl
+/before/w3c2.jsonl
+/before2/aq.jsonl
+/entry_none.after.jsonl
+/entry_none.after_r2.jsonl
+/entry_none.before.jsonl
+/entry_r9.after.jsonl
+/entry_r9.after_r2.jsonl
+/entry_r9.before.jsonl

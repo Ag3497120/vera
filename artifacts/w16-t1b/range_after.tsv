@@ -1,0 +1,260 @@
+id	kind	document	question	verdict	values	reason	readable	unsupported_reasons
+mod-desire-00	modal	次郎は小説を読みたかった。	誰が小説を読んだ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+mod-desire-00	modal	次郎は小説を読みたかった。	次郎は小説を読んだ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+mod-desire-01	modal	花子は新聞を買いたい。	誰が新聞を買う？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+mod-desire-01	modal	花子は新聞を買いたい。	花子は新聞を買う？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+mod-desire-02	modal	太郎が弁当を作りたいです。	誰が弁当を作る？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+mod-desire-02	modal	太郎が弁当を作りたいです。	太郎は弁当を作る？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+mod-desire-03	modal	美咲は弁当を食べたがっていた。	誰が弁当を食べた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+mod-desire-03	modal	美咲は弁当を食べたがっていた。	美咲は弁当を食べた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+mod-desire-04	modal	健太は窓を開けたかったです。	誰が窓を開けた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+mod-desire-04	modal	健太は窓を開けたかったです。	健太は窓を開けた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+mod-desire-05	modal	由美は誠に手紙を届けてもらいたかった。	誰が手紙を届けた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	ill-typed role: a phrase that cannot act (not a person/organisation) as agent	False	ill-typed role: a phrase that cannot act (not a person/organisation) as agent
+mod-desire-05	modal	由美は誠に手紙を届けてもらいたかった。	由美は手紙を届けた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	ill-typed role: a phrase that cannot act (not a person/organisation) as agent
+mod-desire-06	modal	大輔は真理に手紙を書いてほしかった。	誰が手紙を書いた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	ambiguous case role: に; unrepresented source content	False	ambiguous case role: に,unrepresented source content
+mod-desire-06	modal	大輔は真理に手紙を書いてほしかった。	大輔は手紙を書いた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	ambiguous case role: に; unrepresented source content	False	ambiguous case role: に,unrepresented source content
+mod-desire-07	modal	次郎は車を洗いたかった。	誰が車を洗った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+mod-desire-07	modal	次郎は車を洗いたかった。	次郎は車を洗った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+mod-desire-08	modal	花子は荷物を運びたい。	誰が荷物を運ぶ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+mod-desire-08	modal	花子は荷物を運びたい。	花子は荷物を運ぶ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+mod-desire-09	modal	太郎は地図を見たがっていた。	誰が地図を見た？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+mod-desire-09	modal	太郎は地図を見たがっていた。	太郎は地図を見た？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+modc-desire-0	modal_control	太郎は手紙を書いた。	誰が手紙を書いた？	ANSWER	["太郎"]	None	True	
+modc-desire-0	modal_control	太郎は手紙を書いた。	太郎は手紙を書いた？	ANSWER	["はい"]	None	True	
+modc-desire-1	modal_control	美咲は新聞を買った。	誰が新聞を買った？	ANSWER	["美咲"]	None	True	
+modc-desire-1	modal_control	美咲は新聞を買った。	美咲は新聞を買った？	ANSWER	["はい"]	None	True	
+modc-desire-2	modal_control	健太は皿を洗った。	誰が皿を洗った？	ANSWER	["健太"]	None	True	
+modc-desire-2	modal_control	健太は皿を洗った。	健太は皿を洗った？	ANSWER	["はい"]	None	True	
+mod-potential-00	modal	花子は地図を見られた。	誰が地図を見た？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+mod-potential-00	modal	花子は地図を見られた。	花子は地図を見た？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+mod-potential-01	modal	太郎が地図を調べられる。	誰が地図を調べる？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+mod-potential-01	modal	太郎が地図を調べられる。	太郎は地図を調べる？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+mod-potential-02	modal	美咲も弁当を食べられた。	誰が弁当を食べた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-potential-02	modal	美咲も弁当を食べられた。	美咲は弁当を食べた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-potential-03	modal	健太は窓を開けられた。	誰が窓を開けた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+mod-potential-03	modal	健太は窓を開けられた。	健太は窓を開けた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+mod-potential-04	modal	由美が手紙を届けられる。	誰が手紙を届ける？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+mod-potential-04	modal	由美が手紙を届けられる。	由美は手紙を届ける？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:potential	False	MODALITY_NOT_READ:potential
+mod-potential-05	modal	大輔も写真を見られた。	誰が写真を見た？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-potential-05	modal	大輔も写真を見られた。	大輔は写真を見た？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-potential-06	modal	次郎は報告書を書けた。	誰が報告書を書いた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	True	
+mod-potential-06	modal	次郎は報告書を書けた。	次郎は報告書を書いた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	True	
+mod-potential-07	modal	花子は弁当を作ることができた。	誰が弁当を作った？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	multiple predicates need explicit clause scope,unrepresented source content,ambiguous frame role,multiple predicates need explicit clause scope,unlicensed role borrowing,unrepresented source content,event without participant or content word
+mod-potential-07	modal	花子は弁当を作ることができた。	花子は弁当を作った？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	multiple predicates need explicit clause scope,unrepresented source content,ambiguous frame role,multiple predicates need explicit clause scope,unlicensed role borrowing,unrepresented source content,event without participant or content word
+mod-potential-08	modal	太郎は箱を運べた。	誰が箱を運んだ？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	True	
+mod-potential-08	modal	太郎は箱を運べた。	太郎は箱を運んだ？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	True	
+mod-potential-09	modal	美咲は窓を開けることができた。	誰が窓を開けた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	multiple predicates need explicit clause scope,unrepresented source content,ambiguous frame role,multiple predicates need explicit clause scope,unlicensed role borrowing,unrepresented source content,event without participant or content word
+mod-potential-09	modal	美咲は窓を開けることができた。	美咲は窓を開けた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	multiple predicates need explicit clause scope,unrepresented source content,ambiguous frame role,multiple predicates need explicit clause scope,unlicensed role borrowing,unrepresented source content,event without participant or content word
+modc-potential-0	modal_control	健太は資料を作った。	誰が資料を作った？	ANSWER	["健太"]	None	True	
+modc-potential-0	modal_control	健太は資料を作った。	健太は資料を作った？	ANSWER	["はい"]	None	True	
+modc-potential-1	modal_control	由美は荷物を運んだ。	誰が荷物を運んだ？	ANSWER	["由美"]	None	True	
+modc-potential-1	modal_control	由美は荷物を運んだ。	由美は荷物を運んだ？	ANSWER	["はい"]	None	True	
+modc-potential-2	modal_control	大輔は弁当を食べた。	誰が弁当を食べた？	ANSWER	["大輔"]	None	True	
+modc-potential-2	modal_control	大輔は弁当を食べた。	大輔は弁当を食べた？	ANSWER	["はい"]	None	True	
+mod-conjecture-00	modal	太郎は傘を買うだろう。	誰が傘を買う？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-conjecture-00	modal	太郎は傘を買うだろう。	太郎は傘を買う？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-conjecture-01	modal	美咲は資料を作っただろう。	誰が資料を作った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-conjecture-01	modal	美咲は資料を作っただろう。	美咲は資料を作った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-conjecture-02	modal	健太はみかんを食べるでしょう。	誰がみかんを食べる？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-conjecture-02	modal	健太はみかんを食べるでしょう。	健太はみかんを食べる？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-conjecture-03	modal	由美は箱を開けるかもしれない。	誰が箱を開ける？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	interrogative source does not assert a fact
+mod-conjecture-03	modal	由美は箱を開けるかもしれない。	由美は箱を開ける？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	interrogative source does not assert a fact
+mod-conjecture-04	modal	大輔は荷物を届けたかもしれません。	誰が荷物を届けた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	interrogative source does not assert a fact
+mod-conjecture-04	modal	大輔は荷物を届けたかもしれません。	大輔は荷物を届けた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	interrogative source does not assert a fact
+mod-conjecture-05	modal	次郎は報告書を書くだろう。	誰が報告書を書く？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-conjecture-05	modal	次郎は報告書を書くだろう。	次郎は報告書を書く？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-conjecture-06	modal	花子は皿を洗っただろう。	誰が皿を洗った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-conjecture-06	modal	花子は皿を洗っただろう。	花子は皿を洗った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-conjecture-07	modal	太郎は箱を運ぶでしょう。	誰が箱を運ぶ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-conjecture-07	modal	太郎は箱を運ぶでしょう。	太郎は箱を運ぶ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-conjecture-08	modal	美咲は写真を見るかもしれない。	誰が写真を見る？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	interrogative source does not assert a fact
+mod-conjecture-08	modal	美咲は写真を見るかもしれない。	美咲は写真を見る？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	interrogative source does not assert a fact
+mod-conjecture-09	modal	健太は資料を調べたかもしれません。	誰が資料を調べた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	interrogative source does not assert a fact
+mod-conjecture-09	modal	健太は資料を調べたかもしれません。	健太は資料を調べた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	interrogative source does not assert a fact
+modc-conjecture-0	modal_control	大輔は写真を見た。	誰が写真を見た？	ANSWER	["大輔"]	None	True	
+modc-conjecture-0	modal_control	大輔は写真を見た。	大輔は写真を見た？	ANSWER	["はい"]	None	True	
+modc-conjecture-1	modal_control	次郎は箱を開けた。	誰が箱を開けた？	ANSWER	["次郎"]	None	True	
+modc-conjecture-1	modal_control	次郎は箱を開けた。	次郎は箱を開けた？	ANSWER	["はい"]	None	True	
+modc-conjecture-2	modal_control	花子は地図を調べた。	誰が地図を調べた？	ANSWER	["花子"]	None	True	
+modc-conjecture-2	modal_control	花子は地図を調べた。	花子は地図を調べた？	ANSWER	["はい"]	None	True	
+mod-appearance-00	modal	美咲は車を洗いそうだ。	誰が車を洗う？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-00	modal	美咲は車を洗いそうだ。	美咲は車を洗う？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-01	modal	健太は荷物を運ぶようだ。	誰が荷物を運ぶ？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-01	modal	健太は荷物を運ぶようだ。	健太は荷物を運ぶ？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-02	modal	由美は地図を見たようだ。	誰が地図を見た？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-02	modal	由美は地図を見たようだ。	由美は地図を見た？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-03	modal	大輔は地図を調べるみたいだ。	誰が地図を調べる？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-03	modal	大輔は地図を調べるみたいだ。	大輔は地図を調べる？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-04	modal	次郎は地図を読みそうです。	誰が地図を読む？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-04	modal	次郎は地図を読みそうです。	次郎は地図を読む？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-05	modal	花子は傘を買いそうだ。	誰が傘を買う？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-05	modal	花子は傘を買いそうだ。	花子は傘を買う？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-06	modal	太郎は資料を作るようだ。	誰が資料を作る？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-06	modal	太郎は資料を作るようだ。	太郎は資料を作る？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-07	modal	美咲はみかんを食べたようだ。	誰がみかんを食べた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-07	modal	美咲はみかんを食べたようだ。	美咲はみかんを食べた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-08	modal	健太は箱を開けるみたいだ。	誰が箱を開ける？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-08	modal	健太は箱を開けるみたいだ。	健太は箱を開ける？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-09	modal	由美は荷物を届けそうです。	誰が荷物を届ける？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-appearance-09	modal	由美は荷物を届けそうです。	由美は荷物を届ける？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+modc-appearance-0	modal_control	花子は手紙を届けた。	誰が手紙を届けた？	ANSWER	["花子"]	None	True	
+modc-appearance-0	modal_control	花子は手紙を届けた。	花子は手紙を届けた？	ANSWER	["はい"]	None	True	
+modc-appearance-1	modal_control	太郎は小説を読んだ。	誰が小説を読んだ？	ANSWER	["太郎"]	None	True	
+modc-appearance-1	modal_control	太郎は小説を読んだ。	太郎は小説を読んだ？	ANSWER	["はい"]	None	True	
+modc-appearance-2	modal_control	美咲は日記を書いた。	誰が日記を書いた？	ANSWER	["美咲"]	None	True	
+modc-appearance-2	modal_control	美咲は日記を書いた。	美咲は日記を書いた？	ANSWER	["はい"]	None	True	
+mod-conditional-00	modal	健太が弁当を作れば、	誰が弁当を作る？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	unsupported clause grammar
+mod-conditional-00	modal	健太が弁当を作れば、	健太は弁当を作る？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	unsupported clause grammar
+mod-conditional-01	modal	由美がパンを食べたら、	誰がパンを食べた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+mod-conditional-01	modal	由美がパンを食べたら、	由美はパンを食べた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+mod-conditional-02	modal	もし大輔が窓を開けたら、真理は喜ぶ。	誰が窓を開けた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	multiple predicates need explicit clause scope,unrepresented source content,unrepresented source content,multiple predicates need explicit clause scope,unrepresented source content,ambiguous frame role
+mod-conditional-02	modal	もし大輔が窓を開けたら、真理は喜ぶ。	大輔は窓を開けた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	multiple predicates need explicit clause scope,unrepresented source content,unrepresented source content,multiple predicates need explicit clause scope,unrepresented source content,ambiguous frame role
+mod-conditional-03	modal	次郎が手紙を届けるなら、隆は喜ぶ。	誰が手紙を届ける？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	ambiguous frame role
+mod-conditional-03	modal	次郎が手紙を届けるなら、隆は喜ぶ。	次郎は手紙を届ける？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	ambiguous frame role
+mod-conditional-04	modal	花子が日記を書けば、	誰が日記を書く？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+mod-conditional-04	modal	花子が日記を書けば、	花子は日記を書く？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+mod-conditional-05	modal	太郎が車を洗ったら、	誰が車を洗った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+mod-conditional-05	modal	太郎が車を洗ったら、	太郎は車を洗った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+mod-conditional-06	modal	美咲が荷物を運べば、	誰が荷物を運ぶ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+mod-conditional-06	modal	美咲が荷物を運べば、	美咲は荷物を運ぶ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+mod-conditional-07	modal	健太が地図を見たら、	誰が地図を見た？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+mod-conditional-07	modal	健太が地図を見たら、	健太は地図を見た？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:conditional	False	MODALITY_NOT_READ:conditional
+mod-conditional-08	modal	もし由美が地図を調べたら、和子は喜ぶ。	誰が地図を調べた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	multiple predicates need explicit clause scope,unrepresented source content,unrepresented source content,multiple predicates need explicit clause scope,unrepresented source content,ambiguous frame role
+mod-conditional-08	modal	もし由美が地図を調べたら、和子は喜ぶ。	由美は地図を調べた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	multiple predicates need explicit clause scope,unrepresented source content,unrepresented source content,multiple predicates need explicit clause scope,unrepresented source content,ambiguous frame role
+mod-conditional-09	modal	大輔が手紙を読むなら、誠は喜ぶ。	誰が手紙を読む？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	ambiguous frame role
+mod-conditional-09	modal	大輔が手紙を読むなら、誠は喜ぶ。	大輔は手紙を読む？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	ambiguous frame role
+modc-conditional-0	modal_control	美咲は新聞を買った。	誰が新聞を買った？	ANSWER	["美咲"]	None	True	
+modc-conditional-0	modal_control	美咲は新聞を買った。	美咲は新聞を買った？	ANSWER	["はい"]	None	True	
+modc-conditional-1	modal_control	健太は車を洗った。	誰が車を洗った？	ANSWER	["健太"]	None	True	
+modc-conditional-1	modal_control	健太は車を洗った。	健太は車を洗った？	ANSWER	["はい"]	None	True	
+modc-conditional-2	modal_control	由美は弁当を作った。	誰が弁当を作った？	ANSWER	["由美"]	None	True	
+modc-conditional-2	modal_control	由美は弁当を作った。	由美は弁当を作った？	ANSWER	["はい"]	None	True	
+mod-volition-00	modal	由美は箱を運ぼう。	誰が箱を運ぶ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-volition-00	modal	由美は箱を運ぼう。	由美は箱を運ぶ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-volition-01	modal	大輔は写真を見るつもりだ。	誰が写真を見る？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+mod-volition-01	modal	大輔は写真を見るつもりだ。	大輔は写真を見る？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+mod-volition-02	modal	次郎は資料を調べるつもりでした。	誰が資料を調べる？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+mod-volition-02	modal	次郎は資料を調べるつもりでした。	次郎は資料を調べる？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+mod-volition-03	modal	花子は小説を読もうと思った。	誰が小説を読む？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-volition-03	modal	花子は小説を読もうと思った。	花子は小説を読む？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-volition-04	modal	太郎は切符を買おう。	誰が切符を買う？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-volition-04	modal	太郎は切符を買おう。	太郎は切符を買う？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-volition-05	modal	美咲は弁当を作るつもりだ。	誰が弁当を作る？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+mod-volition-05	modal	美咲は弁当を作るつもりだ。	美咲は弁当を作る？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+mod-volition-06	modal	健太はパンを食べるつもりでした。	誰がパンを食べる？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+mod-volition-06	modal	健太はパンを食べるつもりでした。	健太はパンを食べる？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+mod-volition-07	modal	由美は窓を開けようと思った。	誰が窓を開ける？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-volition-07	modal	由美は窓を開けようと思った。	由美は窓を開ける？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-volition-08	modal	大輔は手紙を届けよう。	誰が手紙を届ける？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-volition-08	modal	大輔は手紙を届けよう。	大輔は手紙を届ける？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	source clauses remain unread	False	volitional source does not assert a fact
+mod-volition-09	modal	次郎は日記を書くつもりだ。	誰が日記を書く？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+mod-volition-09	modal	次郎は日記を書くつもりだ。	次郎は日記を書く？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+modc-volition-0	modal_control	由美は箱を運んだ。	誰が箱を運んだ？	ANSWER	["由美"]	None	True	
+modc-volition-0	modal_control	由美は箱を運んだ。	由美は箱を運んだ？	ANSWER	["はい"]	None	True	
+modc-volition-1	modal_control	大輔は弁当を食べた。	誰が弁当を食べた？	ANSWER	["大輔"]	None	True	
+modc-volition-1	modal_control	大輔は弁当を食べた。	大輔は弁当を食べた？	ANSWER	["はい"]	None	True	
+modc-volition-2	modal_control	次郎は地図を見た。	誰が地図を見た？	ANSWER	["次郎"]	None	True	
+modc-volition-2	modal_control	次郎は地図を見た。	次郎は地図を見た？	ANSWER	["はい"]	None	True	
+mod-hearsay-00	modal	大輔は弁当を食べたらしかった。	誰が弁当を食べた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:hearsay	False	MODALITY_NOT_READ:hearsay
+mod-hearsay-00	modal	大輔は弁当を食べたらしかった。	大輔は弁当を食べた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:hearsay	False	MODALITY_NOT_READ:hearsay
+mod-hearsay-01	modal	次郎は箱を開けたらしい。	誰が箱を開けた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	
+mod-hearsay-01	modal	次郎は箱を開けたらしい。	次郎は箱を開けた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	
+mod-hearsay-02	modal	花子は荷物を届けるそうだ。	誰が荷物を届ける？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-hearsay-02	modal	花子は荷物を届けるそうだ。	花子は荷物を届ける？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-hearsay-03	modal	太郎は手紙を書いたそうだ。	誰が手紙を書いた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+mod-hearsay-03	modal	太郎は手紙を書いたそうだ。	太郎は手紙を書いた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+mod-hearsay-04	modal	美咲は皿を洗ったらしかった。	誰が皿を洗った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:hearsay	False	MODALITY_NOT_READ:hearsay
+mod-hearsay-04	modal	美咲は皿を洗ったらしかった。	美咲は皿を洗った？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:hearsay	False	MODALITY_NOT_READ:hearsay
+mod-hearsay-05	modal	健太は箱を運んだらしい。	誰が箱を運んだ？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	
+mod-hearsay-05	modal	健太は箱を運んだらしい。	健太は箱を運んだ？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	
+mod-hearsay-06	modal	由美は写真を見るそうだ。	誰が写真を見る？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-hearsay-06	modal	由美は写真を見るそうだ。	由美は写真を見る？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content
+mod-hearsay-07	modal	大輔は資料を調べたそうだ。	誰が資料を調べた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+mod-hearsay-07	modal	大輔は資料を調べたそうだ。	大輔は資料を調べた？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+mod-hearsay-08	modal	次郎は新聞を読んだらしかった。	誰が新聞を読んだ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:hearsay	False	MODALITY_NOT_READ:hearsay
+mod-hearsay-08	modal	次郎は新聞を読んだらしかった。	次郎は新聞を読んだ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:hearsay	False	MODALITY_NOT_READ:hearsay
+mod-hearsay-09	modal	花子は切符を買うそうだ。	誰が切符を買う？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+mod-hearsay-09	modal	花子は切符を買うそうだ。	花子は切符を買う？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	unrepresented source content,ambiguous frame role
+modc-hearsay-0	modal_control	次郎は窓を開けた。	誰が窓を開けた？	ANSWER	["次郎"]	None	True	
+modc-hearsay-0	modal_control	次郎は窓を開けた。	次郎は窓を開けた？	ANSWER	["はい"]	None	True	
+modc-hearsay-1	modal_control	花子は資料を調べた。	誰が資料を調べた？	ANSWER	["花子"]	None	True	
+modc-hearsay-1	modal_control	花子は資料を調べた。	花子は資料を調べた？	ANSWER	["はい"]	None	True	
+modc-hearsay-2	modal_control	太郎は荷物を届けた。	誰が荷物を届けた？	ANSWER	["太郎"]	None	True	
+modc-hearsay-2	modal_control	太郎は荷物を届けた。	太郎は荷物を届けた？	ANSWER	["はい"]	None	True	
+modr-00	range	次郎は小説を読むべきだ。	誰が小説を読む？	ANSWER	["次郎"]	None	False	
+modr-01	range	花子は手紙を書くべきだった。	誰が手紙を書いた？	ANSWER	["花子"]	None	False	
+modr-02	range	太郎は荷物を運ぶべきです。	誰が荷物を運ぶ？	ANSWER	["太郎"]	None	False	
+modr-03	range	次郎は先生に小説を読まれた。	誰が小説を読んだ？	ANSWER	["先生"]	None	False	
+modr-04	range	花子は友人に手紙を書かれた。	誰が手紙を書いた？	ANSWER	["友人"]	None	False	
+modr-05	range	太郎は社長に荷物を運ばれた。	誰が荷物を運んだ？	ANSWER	["社長"]	None	False	
+modr-06	range	次郎は本を読み、絵を描きたかった。	誰が本を読んだ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire,MODALITY_NOT_READ:desire
+modr-07	range	花子は手紙を書き、荷物を運びたかった。	誰が手紙を書いた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire,MODALITY_NOT_READ:desire
+modr-08	range	次郎は本を読んで、花子は絵を描きたかった。	誰が本を読んだ？	ANSWER	["次郎"]	None	False	MODALITY_NOT_READ:desire
+modr-09	range	太郎は窓を開けて、美咲は箱を運びたかった。	誰が窓を開けた？	ANSWER	["太郎"]	None	False	MODALITY_NOT_READ:desire
+modr-10	range	次郎は小説が読めた。	誰が小説を読んだ？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	
+modr-11	range	花子は手紙を書くことができる。	誰が手紙を書く？	UNKNOWN_NO_EVIDENCE	[]	no complete supported derivation	False	multiple predicates need explicit clause scope,unrepresented source content,ambiguous frame role,multiple predicates need explicit clause scope,unlicensed role borrowing,unrepresented source content,event without participant or content word
+modr-12	range	次郎は小説を読みたかった。花子は手紙を書いた。	誰が手紙を書いた？	ANSWER	["花子"]	None	False	MODALITY_NOT_READ:desire
+modr-13	range	次郎は小説を読みたかった。花子は手紙を書いた。	誰が小説を読んだ？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+modr-14	range	太郎は荷物を運んだ。美咲は箱を開けたかった。	誰が荷物を運んだ？	ANSWER	["太郎"]	None	False	MODALITY_NOT_READ:desire
+modr-15	range	太郎は荷物を運んだ。美咲は箱を開けたかった。	誰が箱を開けた？	UNKNOWN_UNSUPPORTED_EVIDENCE	[]	MODALITY_NOT_READ:desire	False	MODALITY_NOT_READ:desire
+modr-16	range	次郎は花子に褒められた。	誰が次郎を褒めた？	ANSWER	["花子"]	None	True	
+modr-17	range	太郎は先生に叱られた。	誰が太郎を叱った？	ANSWER	["先生"]	None	True	
+ttl-00	title	森田課長が書類を運んだ。	誰が書類を運んだ？	ANSWER	["森田課長"]	None	True	
+ttl-01	title	店員が山本課長に本を渡した。	店員は誰に本を渡した？	ANSWER	["山本課長"]	None	False	
+ttl-02	title	記者が中村課長を取材した。	記者が誰を取材した？	ANSWER	["中村課長"]	None	True	
+ttl-03	title	木村部長が書類を運んだ。	誰が書類を運んだ？	ANSWER	["木村部長"]	None	True	
+ttl-04	title	店員が小林部長に本を渡した。	店員は誰に本を渡した？	ANSWER	["小林部長"]	None	False	
+ttl-05	title	記者が加藤部長を取材した。	記者が誰を取材した？	ANSWER	["加藤部長"]	None	True	
+ttl-06	title	吉田社長が書類を運んだ。	誰が書類を運んだ？	ANSWER	["吉田社長"]	None	True	
+ttl-07	title	店員が斎藤社長に本を渡した。	店員は誰に本を渡した？	ANSWER	["斎藤社長"]	None	False	
+ttl-08	title	記者が森田社長を取材した。	記者が誰を取材した？	ANSWER	["森田社長"]	None	True	
+ttl-09	title	山本係長が書類を運んだ。	誰が書類を運んだ？	ANSWER	["山本係長"]	None	True	
+ttl-10	title	店員が中村係長に本を渡した。	店員は誰に本を渡した？	ANSWER	["中村係長"]	None	True	
+ttl-11	title	記者が木村係長を取材した。	記者が誰を取材した？	ANSWER	["木村係長"]	None	True	
+ttl-12	title	小林教授が書類を運んだ。	誰が書類を運んだ？	ANSWER	["小林教授"]	None	True	
+ttl-13	title	店員が加藤教授に本を渡した。	店員は誰に本を渡した？	ANSWER	["加藤教授"]	None	False	
+ttl-14	title	記者が吉田教授を取材した。	記者が誰を取材した？	ANSWER	["吉田教授"]	None	True	
+ttl-15	title	斎藤先生が書類を運んだ。	誰が書類を運んだ？	ANSWER	["斎藤先生"]	None	True	
+ttl-16	title	店員が森田先生に本を渡した。	店員は誰に本を渡した？	ANSWER	["森田先生"]	None	False	
+ttl-17	title	記者が山本先生を取材した。	記者が誰を取材した？	ANSWER	["山本先生"]	None	True	
+ttl-18	title	中村監督が書類を運んだ。	誰が書類を運んだ？	ANSWER	["中村監督"]	None	True	
+ttl-19	title	店員が木村監督に本を渡した。	店員は誰に本を渡した？	ANSWER	["木村監督"]	None	False	
+ttl-20	title	記者が小林監督を取材した。	記者が誰を取材した？	ANSWER	["小林監督"]	None	True	
+ttl-21	title	加藤選手が書類を運んだ。	誰が書類を運んだ？	ANSWER	["加藤選手"]	None	True	
+ttl-22	title	店員が吉田選手に本を渡した。	店員は誰に本を渡した？	ANSWER	["吉田選手"]	None	False	
+ttl-23	title	記者が斎藤選手を取材した。	記者が誰を取材した？	ANSWER	["斎藤選手"]	None	True	
+ttl-24	title	森田店長が書類を運んだ。	誰が書類を運んだ？	ANSWER	["森田店長"]	None	True	
+ttl-25	title	店員が山本店長に本を渡した。	店員は誰に本を渡した？	ANSWER	["山本店長"]	None	False	
+ttl-26	title	記者が中村店長を取材した。	記者が誰を取材した？	ANSWER	["中村店長"]	None	True	
+ttl-27	title	木村医師が書類を運んだ。	誰が書類を運んだ？	ANSWER	["木村医師"]	None	True	
+ttl-28	title	店員が小林医師に本を渡した。	店員は誰に本を渡した？	ANSWER	["小林医師"]	None	False	
+ttl-29	title	記者が加藤医師を取材した。	記者が誰を取材した？	ANSWER	["加藤医師"]	None	True	
+ttl-30	title	吉田議員が書類を運んだ。	誰が書類を運んだ？	ANSWER	["吉田議員"]	None	True	
+ttl-31	title	店員が斎藤議員に本を渡した。	店員は誰に本を渡した？	ANSWER	["斎藤議員"]	None	False	
+ttl-32	title	記者が森田議員を取材した。	記者が誰を取材した？	ANSWER	["森田議員"]	None	True	
+ttl-33	title	山本弁護士が書類を運んだ。	誰が書類を運んだ？	ANSWER	["山本弁護士"]	None	True	
+ttl-34	title	店員が中村弁護士に本を渡した。	店員は誰に本を渡した？	ANSWER	["中村弁護士"]	None	True	
+ttl-35	title	記者が木村弁護士を取材した。	記者が誰を取材した？	ANSWER	["木村弁護士"]	None	True	
+ttlc-00-plain-agent	title_control	山本が書類を運んだ。	誰が書類を運んだ？	ANSWER	["山本"]	None	True	
+ttlc-01-plain-recipient	title_control	店員が小林に本を渡した。	店員は誰に本を渡した？	ANSWER	["小林"]	None	True	
+ttlc-02-plain-patient	title_control	記者が斎藤を取材した。	記者が誰を取材した？	ANSWER	["斎藤"]	None	True	
+ttlc-03-san-agent	title_control	中村さんが書類を運んだ。	誰が書類を運んだ？	ANSWER	["中村さん"]	None	True	
+ttlc-04-san-recipient	title_control	店員が加藤さんに本を渡した。	店員は誰に本を渡した？	ANSWER	["加藤さん"]	None	True	
+ttlc-05-san-patient	title_control	記者が森田さんを取材した。	記者が誰を取材した？	ANSWER	["森田さん"]	None	True	
+ttlc-06-noof-agent	title_control	課長の小林が書類を運んだ。	誰が書類を運んだ？	ANSWER	["課長の小林"]	None	False	unrepresented source content
+ttlc-07-noof-agent	title_control	医師の吉田が書類を運んだ。	誰が書類を運んだ？	ANSWER	["医師の吉田"]	None	False	unrepresented source content
+ttlc-08-noof-patient	title_control	記者が先生の森田を取材した。	記者が誰を取材した？	ANSWER	["先生の森田"]	None	False	unrepresented source content
+ttlm-00	title_mixed	中村課長が書類を運んだ。中村が書類を運んだ。	誰が書類を運んだ？	AMBIGUOUS	[]	distinct independently verified answers remain	False	
+ttlm-01	title_mixed	加藤部長が書類を運んだ。加藤が書類を運んだ。	誰が書類を運んだ？	AMBIGUOUS	[]	distinct independently verified answers remain	False	
+ttlm-02	title_mixed	森田社長が書類を運んだ。森田が書類を運んだ。	誰が書類を運んだ？	AMBIGUOUS	[]	distinct independently verified answers remain	False	
+ttlm-03	title_mixed	木村教授が書類を運んだ。木村が書類を運んだ。	誰が書類を運んだ？	AMBIGUOUS	[]	distinct independently verified answers remain	False	
+ttlm-04	title_mixed	吉田監督が書類を運んだ。吉田が書類を運んだ。	誰が書類を運んだ？	AMBIGUOUS	[]	distinct independently verified answers remain	False	
+ttlm-05	title_mixed	山本店長が書類を運んだ。山本が書類を運んだ。	誰が書類を運んだ？	AMBIGUOUS	[]	distinct independently verified answers remain	False	
+ttlr-00	range	技師ユンが書類を運んだ。	誰が書類を運んだ？	ANSWER	["ユン"]	None	True	
+ttlr-01	range	部長田中が書類を運んだ。	誰が書類を運んだ？	ANSWER	["部長田中"]	None	True	
+ttlr-02	range	新人マキが書類を運んだ。	誰が書類を運んだ？	ANSWER	["マキ"]	None	True	
+ttlr-03	range	医師の小林が書類を運んだ。	誰が書類を運んだ？	ANSWER	["医師の小林"]	None	False	unrepresented source content
+ttlr-04	range	課長の森田が書類を運んだ。部長の山本が書類を届けた。	誰が書類を運んだ？	ANSWER	["課長の森田"]	None	False	unrepresented source content,unrepresented source content
+ttlr-05	range	森田課長は店員に本を渡した。	森田課長は誰に本を渡した？	ANSWER	["店員"]	None	True	
+ttlr-06	range	森田課長は店員に本を渡した。	森田は誰に本を渡した？	ANSWER	["店員"]	None	True	
+ttlr-07	range	加藤社長が山本さんに本を渡した。	誰が山本さんに本を渡した？	ANSWER	["加藤社長"]	None	True	

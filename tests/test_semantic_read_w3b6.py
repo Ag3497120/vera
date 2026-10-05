@@ -525,6 +525,8 @@ def test_the_change_is_two_insertions_in_the_reader_and_nothing_else_outside_the
 
 
 def test_the_top_level_definitions_of_the_base_are_unchanged_and_the_new_constants_are_the_two_registered():
+    """Integration (auditor ruling 2026-10-06, W16-t1b K800): the names of the W16-t1b section (containing 'w16t1b') and the second assignment of `document_view` are registered; old expectation: the sets
+    without them (the registered names of W3-b6 only)."""
     base = ast.parse(git('show', '%s:verantyx/semantic_reader.py' % BASE_COMMIT))
     now = ast.parse((TREE / 'verantyx' / 'semantic_reader.py').read_text(encoding='utf-8'))
 
@@ -536,7 +538,9 @@ def test_the_top_level_definitions_of_the_base_are_unchanged_and_the_new_constan
     b, n = defs(base), defs(now)
     assert {k: v for k, v in n.items() if k in b} == b
     # Integration of W3-c7 (auditor, 2026-10-05): the definitions of stage C7 (names starting with '_w3c7_' or containing 'w3c7') are added by a later ticket and are attested by its own tests
-    assert {k for k in set(n) - set(b) if 'w3c7' not in k.lower()} == {'_typed_plan_u_w3b6_ja', 'predicate_role_frame', 'typed_plan_u_w3b6_stage_r_ja'} | {k for k in n if k.startswith('_w3b6_')}
+    # Integration of W16-t1b (auditor ruling 2026-10-06, K800): the definitions of the modality gate (names containing 'w16t1b': `_w16t1b_tokens`, `_w16t1b_in_chain`, `_w16t1b_kind`, `_w16t1b_subject`,
+    # `_w16t1b_gate`, `_w16t1b_document_view`) are added at the end of the reader by that ticket and are attested by its own tests (tests/test_w16t1b_*.py, the wrapper in test_semantic_read_w3b3.py)
+    assert {k for k in set(n) - set(b) if 'w3c7' not in k.lower() and 'w16t1b' not in k.lower()} == {'_typed_plan_u_w3b6_ja', 'predicate_role_frame', 'typed_plan_u_w3b6_stage_r_ja'} | {k for k in n if k.startswith('_w3b6_')}
 
     def assigned(tree):
         out = set()
@@ -546,8 +550,9 @@ def test_the_top_level_definitions_of_the_base_are_unchanged_and_the_new_constan
                     if isinstance(t, ast.Name): out.add(t.id)
             elif isinstance(node, (ast.AnnAssign, ast.AugAssign)) and isinstance(node.target, ast.Name): out.add(node.target.id)
         return out
-    new_names = {k for k in assigned(now) - assigned(base) if 'w3c7' not in k.lower()}      # integration of W3-c7: its constants are attested by its own tests
-    assert new_names == {'W3B6_REASON_NAMES', 'W3B6_ROLE_KINDS', 'typed_plan_u_w3b4_body_ja', 'typed_plan_u_w3b4_ja'}, new_names     # the last is the wrapped plan (H270): a def in the base, assigned again here
+    new_names = {k for k in assigned(now) - assigned(base) if 'w3c7' not in k.lower() and 'w16t1b' not in k.lower()}      # integration of W3-c7: its constants are attested by its own tests; integration of W16-t1b (auditor ruling 2026-10-06): its five constants `_W16T1B_*` likewise
+    # W16-t1b (K800) also assigns the name `document_view` again at the end of the reader (the wrapper `document_view = _w16t1b_document_view`; a def in the base, like the wrapped plan below); old expectation: the set without it
+    assert new_names == {'W3B6_REASON_NAMES', 'W3B6_ROLE_KINDS', 'typed_plan_u_w3b4_body_ja', 'typed_plan_u_w3b4_ja', 'document_view'}, new_names     # the last but one is the wrapped plan (H270): a def in the base, assigned again here
     consts = [name for name in new_names if not callable(getattr(R, name))]
     assert sorted(consts) == ['W3B6_REASON_NAMES', 'W3B6_ROLE_KINDS']
 

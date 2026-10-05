@@ -1,0 +1,5 @@
+claude-code bogus kind rc=1 (期待 1)
+claude-code --bogus rc=1 (期待 1)
+manual bogus rc=2 (期待 2)
+codex bogus rc=2 (期待 2)
+tail --bogus rc=2 (期待 2)

@@ -1,0 +1,16 @@
+6c6
+< mod-desire-05 True
+---
+> mod-desire-05 False
+16c16
+< mod-potential-02 True
+---
+> mod-potential-02 False
+19c19
+< mod-potential-05 True
+---
+> mod-potential-05 False
+53c53
+< mod-conditional-00 True
+---
+> mod-conditional-00 False
