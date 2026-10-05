@@ -1,0 +1,156 @@
+{
+ "w3e2_p1.jsonl": {
+  "rows": 49,
+  "assumed_expected": 19,
+  "assumed_ok": 16,
+  "abstain_expected": 30,
+  "abstain_ok": 16,
+  "wrong_assumption": 16,
+  "wrong_source": 1,
+  "documents_rows": 6,
+  "documents_ok": 2,
+  "failures": [
+   {
+    "id": "W3E2-P1-004",
+    "input": "ミナが走った。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P1-006",
+    "input": "リクが本を読んだ。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P1-031",
+    "input": "リンゴが落ちた。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P1-032",
+    "input": "リンゴが本を読んだ。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P1-034",
+    "input": "リンゴが落ちた。",
+    "why": "assumption [{'word': 'リンゴ', 'kind': 'name_type', 'assumed': 'GROUP_ORG+PERSON', 'source': 'surface'}] != [{'word': 'リンゴ', 'kind': 'name_type', 'assumed': 'PERSON', 'source': 'llm:fake-model'}]"
+   },
+   {
+    "id": "W3E2-P1-035",
+    "input": "ミカンが腐った。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P1-036",
+    "input": "ミカンが本を読んだ。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P1-037",
+    "input": "ミカンが腐った。",
+    "why": "assumption [{'word': 'ミカン', 'kind': 'name_type', 'assumed': 'GROUP_ORG+PERSON', 'source': 'surface'}] != [{'word': 'ミカン', 'kind': 'name_type', 'assumed': 'PERSON', 'source': 'llm:fake-model'}]"
+   },
+   {
+    "id": "W3E2-P1-038",
+    "input": "ヒカリが消えた。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P1-039",
+    "input": "モモが落ちた。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P1-040",
+    "input": "モモが本を読んだ。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P1-041",
+    "input": "モモが落ちた。",
+    "why": "assumption [{'word': 'モモ', 'kind': 'name_type', 'assumed': 'PERSON', 'source': 'surface'}] != [{'word': 'モモ', 'kind': 'name_type', 'assumed': 'PERSON', 'source': 'llm:fake-model'}]"
+   },
+   {
+    "id": "W3E2-P1-043",
+    "input": "モモが落ちた。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P1-044",
+    "input": "ヨモが走った。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P1-045",
+    "input": "ヨモが本を読んだ。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P1-046",
+    "input": "ヨモが走った。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P1-047",
+    "input": "ヨモが走った。",
+    "why": "read although the expectation is an abstention"
+   }
+  ]
+ },
+ "w3e2_p2.jsonl": {
+  "rows": 33,
+  "assumed_expected": 15,
+  "assumed_ok": 15,
+  "abstain_expected": 18,
+  "abstain_ok": 13,
+  "wrong_assumption": 5,
+  "wrong_source": 0,
+  "documents_rows": 0,
+  "documents_ok": 0,
+  "failures": [
+   {
+    "id": "W3E2-P2-010",
+    "input": "ハルがザクった。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P2-012",
+    "input": "ハルがヨモります。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P2-027",
+    "input": "本がザクった。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P2-028",
+    "input": "本がザクった。",
+    "why": "read although the expectation is an abstention"
+   },
+   {
+    "id": "W3E2-P2-029",
+    "input": "机がザクった。",
+    "why": "read although the expectation is an abstention"
+   }
+  ]
+ },
+ "w3e2_p3.jsonl": {
+  "rows": 29,
+  "assumed_expected": 13,
+  "assumed_ok": 13,
+  "abstain_expected": 16,
+  "abstain_ok": 15,
+  "wrong_assumption": 1,
+  "wrong_source": 0,
+  "documents_rows": 5,
+  "documents_ok": 4,
+  "failures": [
+   {
+    "id": "W3E2-P3-027",
+    "input": "ハルはグリスへ荷物を運んだ。",
+    "why": "read although the expectation is an abstention"
+   }
+  ]
+ }
+}

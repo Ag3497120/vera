@@ -1,0 +1,6 @@
+tests/test_p4_abilities.py:290: AssertionError
+=========================== short test summary info ============================
+FAILED tests/bank_score/test_bs_end_to_end.py::test_s6_two_runs_agree_except_timing_and_recount_matches
+FAILED tests/test_gen_coarse_evidence.py::test_default_low_keeps_the_preregistered_role_batches_and_schema_byte_identical
+FAILED tests/test_p4_abilities.py::test_speech_act_drafts_fill_new_roles_and_reread
+3 failed, 1 passed in 4.53s

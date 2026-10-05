@@ -726,7 +726,13 @@ def cmd_read(args) -> int:
             argv.append("--lang=" + args.lang)
         if args.placement is not None:
             argv.append("--placement=" + args.placement)
-        return semantic_read.main(argv)
+        mode = _read_mode(args)
+        if mode is None:
+            _print({"error": {"type": "BAD_READ_MODE", "detail": "VERA_READ_MODE must be strict or assume"}})
+            return 2
+        if mode == "strict":
+            return semantic_read.main(argv)
+        return _read_assume(args, argv, semantic_read)
     from . import observe
     try:
         out = semantic_read.read_with_holes(args.text, args.lang, placement=semantic_read._UNSET if args.placement is None else args.placement,
@@ -737,6 +743,81 @@ def cmd_read(args) -> int:
         out, code = {"error": {"type": err.type, "detail": err.detail}}, 2
     sys.stdout.write(json.dumps(out, ensure_ascii=False) + "\n")
     return code
+
+
+def _chat_read(args, text) -> int:
+    """W3-e2 (D3): `/read` of the chat: in the assume mode (the default; `--strict-read` / VERA_READ_MODE=strict turn it off) a sentence that stops only on a premise is printed as an assumed reading (or with the
+    reason of stage E2 at the end); every other sentence goes through `cmd_read_events` exactly as before."""
+    from . import semantic_read
+
+    mode = _read_mode(args)
+    plain = argparse.Namespace(text=text, lang=None)
+    if mode is None:
+        _print({"error": {"type": "BAD_READ_MODE", "detail": "VERA_READ_MODE must be strict or assume"}})
+        return 2
+    if mode == "strict":
+        return cmd_read_events(plain)
+    try:
+        out = semantic_read.read_in_mode(text, None, mode="assume", assume=semantic_read.AssumeConfig())
+    except semantic_read.ReadError:
+        return cmd_read_events(plain)
+    reasons = (out.get("abstain") or {}).get("reasons") or []
+    if out.get("read_mode") == "assumed" or any(str(r).startswith(("ASSUMPTION_UNDETERMINED", "ASSUMPTION_BACKEND_FAILED")) for r in reasons):
+        sys.stdout.write(json.dumps(out, ensure_ascii=False) + "\n")
+        return 0
+    return cmd_read_events(plain)
+
+
+def _read_mode(args):
+    """W3-e2 (K333): the mode of a product entry that reads a sentence. `--strict-read` -> strict; else VERA_READ_MODE (strict | assume; anything else -> None, a typed refusal of the caller); else assume.
+    Only the entries (vera read / chat / serve) call this: the library reads no variable (`semantic_read.read_in_mode`)."""
+    import os
+
+    if getattr(args, "strict_read", False):
+        return "strict"
+    v = os.environ.get("VERA_READ_MODE")
+    if v is None or v.strip() == "":
+        return "assume"
+    return v.strip() if v.strip() in ("strict", "assume") else None
+
+
+def _assume_config(args, ledger=None):
+    """W3-e2: the `AssumeConfig` of an entry: the layer is the environment's (`--layer` sets VERA_PLACEMENT_LAYER); the ledger when `--ledger-file` is given; the back end (source (e)) only when
+    `--backend` and `--model` are given (never by default: nothing leaves the machine unasked)."""
+    from . import llm_backend
+    from . import semantic_read
+
+    chat, model = None, None
+    backend = getattr(args, "assume_backend", None)
+    if backend:
+        model = getattr(args, "assume_model", None)
+        chat = llm_backend.make_chat(backend, timeout=getattr(args, "llm_timeout", 180.0))
+    return semantic_read.AssumeConfig(ledger=ledger, chat=chat, model=model, backend_name=backend or "fake")
+
+
+def _read_assume(args, argv, semantic_read) -> int:
+    """W3-e2 (D3): `vera read` in the assume mode prints what `semantic_read.main` prints byte for byte whenever stage E2 changed nothing; only an assumed reading, or a strict abstention with a
+    reason of the stage at the end, is printed in the form of `read_in_mode`."""
+    from .llm_choice import LedgerIntegrityError
+    from .testimony_ledger import TestimonyLedger
+
+    ledger = None
+    if getattr(args, "ledger_file", None):
+        try:
+            ledger = TestimonyLedger(args.ledger_file)
+        except LedgerIntegrityError as exc:
+            _print({"error": {"type": "LEDGER_INTEGRITY", "detail": "%s line %s %s" % (exc.kind, exc.line_no, exc.detail)}})
+            return 2
+    try:
+        out = semantic_read.read_in_mode(args.text, args.lang, placement=semantic_read._UNSET if args.placement is None else args.placement, mode="assume",
+                                         assume=_assume_config(args, ledger))
+    except semantic_read.ReadError:
+        return semantic_read.main(argv)
+    reasons = (out.get("abstain") or {}).get("reasons") or []
+    if out.get("read_mode") == "assumed" or any(str(r).startswith(("ASSUMPTION_UNDETERMINED", "ASSUMPTION_BACKEND_FAILED")) for r in reasons):
+        sys.stdout.write(json.dumps(out, ensure_ascii=False) + "\n")
+        return 0
+    return semantic_read.main(argv)
 
 
 def _ledger_promote(args, led) -> int:
@@ -1312,7 +1393,7 @@ def cmd_chat(args) -> int:
                 task_argument = route_match.group(4).strip()
                 cmd_route(argparse.Namespace(explanation=explanation, task=task_argument))
             elif command == "/read":
-                cmd_read_events(argparse.Namespace(text=argument, lang=None))
+                _chat_read(args, argument)
             else:
                 bad_command("UNKNOWN_COMMAND", command=command)
 
@@ -1684,6 +1765,8 @@ def _cmd_placement_layer(args) -> int:
         out = placement_layer.growth(args.layer, led, getattr(base_pl, "sha", None), with_list=args.list)
         if out.get("layer_status", "").startswith("LAYER_UNAVAILABLE"):
             return refuse(out["layer_status"], args.layer)
+        if led is not None:
+            out = _growth_with_assumption(out, led)
         _print(out)
         return 0
     if not args.documents:
@@ -1719,6 +1802,24 @@ def _cmd_placement_layer(args) -> int:
                               timeout=args.llm_timeout, ollama_url=args.ollama_url, dump_sent=args.dump_sent, model_version=fake_version)
     _print(out)
     return 0 if out.get("verdict") == "GREW" else 2
+
+
+def _growth_with_assumption(out, led):
+    """W3-e2 (K334): with at least one `assumption` row in the ledger, the last key `assumption` = {rows, words, promoted_words, assumption_rate}: `assumption_rate` is the share of the assumed words that
+    have no `promoted_to_layer` row for this layer (null with no word). The more a layer grows, the fewer words are assumed."""
+    import unicodedata
+
+    nf = lambda w: unicodedata.normalize("NFKC", str(w)).strip()
+    entries = led.entries()
+    rows = [e for e in entries if e.get("type") == "assumption"]
+    if not rows:
+        return out
+    words = {nf(e["word"]) for e in rows}
+    promoted = {nf(e["word"]) for e in entries if e.get("type") == "promoted_to_layer" and e.get("layer_name") == out.get("layer")}
+    left = words - promoted
+    res = dict(out)
+    res["assumption"] = {"rows": len(rows), "words": len(words), "promoted_words": len(words & promoted), "assumption_rate": (len(left) / len(words)) if words else None}
+    return res
 
 
 def cmd_placement(args) -> int:
@@ -1876,6 +1977,9 @@ def _serve_fusion(args, st, save, store_path) -> int:
         os.environ["VERA_SOVEREIGN_STORE"] = args.sovereign_store
     if args.placement:
         os.environ["VERA_PLACEMENT"] = args.placement
+    read_mode = _read_mode(args)
+    if read_mode is None:
+        return refuse("BAD_READ_MODE", "VERA_READ_MODE must be strict or assume")
     fill = None
     if args.fill:
         from . import fill_candidates as FC
@@ -1888,7 +1992,8 @@ def _serve_fusion(args, st, save, store_path) -> int:
         fill = FC.FillConfig(ledger=ledger, model=args.fill_model, backend_name=args.backend, mask_user_text=not args.no_mask_user_text, max_doc_holes=args.fill_max_holes)
     try:
         fusion = FusionConfig.load(model=args.model, documents=documents, strict=args.strict, ollama_url=args.ollama_url, timeout=args.llm_timeout,
-                                   backend=args.backend, api_base=args.api_base, api_key=os.environ.get("VERA_LLM_API_KEY"), fill=fill, layer=args.layer)
+                                   backend=args.backend, api_base=args.api_base, api_key=os.environ.get("VERA_LLM_API_KEY"), fill=fill, layer=args.layer,
+                                   read_mode=read_mode, assume_ledger=(fill.ledger if fill is not None else None))
     except FusionBadRequest as exc:
         return refuse(exc.error, exc.detail)
     if fill is not None:
@@ -2351,6 +2456,10 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--holes", action="store_true", help="W10-f04: add holes_status / holes / partial / display")
     p.add_argument("--max-holes", type=int, default=2, dest="max_holes", help="W10-f04: at most this many holes in one sentence (default 2)")
     p.add_argument("--layer", default=None, help="W10-f05: a placement layer (a name in $VERA_PLACEMENT_LAYER_ROOT, or a path) put on the base placement: it answers only for the words the base leaves undecided. Sets VERA_PLACEMENT_LAYER.")
+    p.add_argument("--strict-read", action="store_true", dest="strict_read", help="W3-e2: read strictly (no assumed reading). Without it, VERA_READ_MODE=strict|assume; the default is assume: a sentence that stops only on a premise (a name's type, a coined verb, an unplaced noun's type) is read with the assumption put out in the answer")
+    p.add_argument("--ledger-file", default=None, dest="ledger_file", help="W3-e2: the testimony ledger: every assumption is written to it (kind assumption), and its promotable rows are a source of an assumption")
+    p.add_argument("--backend", default=None, dest="assume_backend", choices=["ollama", "openai"], help="W3-e2: source (e) of an assumption: ask this back end twice (the sentence is never sent). Needs --model")
+    p.add_argument("--model", default=None, dest="assume_model", help="W3-e2: the model of --backend")
     p.set_defaults(fn=cmd_read)
 
     p = sub.add_parser(
@@ -2539,6 +2648,7 @@ def main(argv: Optional[list] = None) -> int:
     p.set_defaults(fn=cmd_review_ai_facts)
 
     p = sub.add_parser("chat", help="interactive REPL (lab | hybrid | round5)")
+    p.add_argument("--strict-read", action="store_true", dest="strict_read", help="W3-e2: `/read` reads strictly (no assumed reading); the default is assume (VERA_READ_MODE=strict|assume)")
     p.add_argument("--mode", choices=["lab", "hybrid", "round5"], default="lab",
                    help="lab: deterministic only; hybrid: local LLM; round5: explicit experimental one.Vera.ask route")
     p.add_argument("--document", action="append", default=[],
@@ -2785,6 +2895,7 @@ def main(argv: Optional[list] = None) -> int:
     p.add_argument("--no-mask-user-text", action="store_true", dest="no_mask_user_text", help="W10-f04: send the user's sentence to the backend (the default is to send only the hole, the types and the roles)")
     p.add_argument("--fill-max-holes", type=int, default=30, dest="fill_max_holes", help="W10-f04: holes asked when the documents are loaded (more are counted as skipped_holes)")
     p.add_argument("--layer", default=None, help="W10-f05: a placement layer (a name in $VERA_PLACEMENT_LAYER_ROOT, or a path) put on the base placement: it answers only for the words the base leaves undecided. Sets VERA_PLACEMENT_LAYER." + " `vera.placement_layer` is added to each response.")
+    p.add_argument("--strict-read", action="store_true", dest="strict_read", help="W3-e2: re-read the sentences of the LLM's reply strictly (no assumed reading). Without it (and VERA_READ_MODE) the default is assume: a sentence that stops only on a premise is read with the assumption put out in `vera.provenance` (an arm of kind `assumed`; never a record). NOT the layer-1 `--strict`")
     p.set_defaults(fn=cmd_serve)
 
     p = sub.add_parser("setup", help="interactive settings (LLM, allocation)")

@@ -1,0 +1,55 @@
+{
+ "w3e2_p1.jsonl": {
+  "rows": 30,
+  "assumed_expected": 15,
+  "assumed_ok": 14,
+  "abstain_expected": 15,
+  "abstain_ok": 15,
+  "wrong_assumption": 0,
+  "wrong_source": 0,
+  "documents_rows": 1,
+  "documents_ok": 0,
+  "failures": [
+   {
+    "id": "W3E2-P1-014",
+    "input": "ハルはミナに本を渡した。",
+    "why": "not assumed: ['RECIPIENT_TYPE_UNDETERMINED:ミナ', 'ASSUMPTION_UNDETERMINED:ミナ:に']"
+   }
+  ]
+ },
+ "w3e2_p2.jsonl": {
+  "rows": 26,
+  "assumed_expected": 13,
+  "assumed_ok": 13,
+  "abstain_expected": 13,
+  "abstain_ok": 13,
+  "wrong_assumption": 0,
+  "wrong_source": 0,
+  "documents_rows": 0,
+  "documents_ok": 0,
+  "failures": []
+ },
+ "w3e2_p3.jsonl": {
+  "rows": 26,
+  "assumed_expected": 13,
+  "assumed_ok": 11,
+  "abstain_expected": 13,
+  "abstain_ok": 13,
+  "wrong_assumption": 0,
+  "wrong_source": 0,
+  "documents_rows": 2,
+  "documents_ok": 0,
+  "failures": [
+   {
+    "id": "W3E2-P3-012",
+    "input": "ハルはケーシングに手紙を送った。",
+    "why": "not assumed: ['RECIPIENT_TYPE_UNDETERMINED:ケーシング', 'ASSUMPTION_UNDETERMINED:ケーシング:に']"
+   },
+   {
+    "id": "W3E2-P3-013",
+    "input": "ハルはフルードへ荷物を運んだ。",
+    "why": "not assumed: ['GOAL_TYPE_UNDETERMINED:フルード', 'ASSUMPTION_UNDETERMINED:フルード:へ']"
+   }
+  ]
+ }
+}

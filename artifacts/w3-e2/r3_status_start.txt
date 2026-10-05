@@ -1,0 +1,100 @@
+ M docs/BANK_SCORE.md
+ M docs/CHAT.md
+ M docs/FUSION.md
+ M docs/READING_CONVENTIONS.md
+ M docs/READING_SOUNDNESS.md
+ M verantyx/cli.py
+ M verantyx/decode_grammar.py
+ M verantyx/fill_candidates.py
+ M verantyx/semantic_read.py
+ M verantyx/testimony_ledger.py
+ M verantyx/vera_server.py
+?? artifacts/w3-e2/after/b1pub_r9.jsonl
+?? artifacts/w3-e2/after/entry_none.jsonl
+?? artifacts/w3-e2/after/entry_r8.jsonl
+?? artifacts/w3-e2/after/entry_r9.jsonl
+?? artifacts/w3-e2/after/frozen_none.jsonl
+?? artifacts/w3-e2/after/frozen_r9.jsonl
+?? artifacts/w3-e2/after/serve_assume.jsonl
+?? artifacts/w3-e2/after/serve_strict.jsonl
+?? artifacts/w3-e2/baseline.sorted.txt
+?? artifacts/w3-e2/before/b1pub_r9.jsonl
+?? artifacts/w3-e2/before/entry_dump.log
+?? artifacts/w3-e2/before/entry_none.jsonl
+?? artifacts/w3-e2/before/entry_r8.jsonl
+?? artifacts/w3-e2/before/entry_r9.jsonl
+?? artifacts/w3-e2/before/frozen_none.jsonl
+?? artifacts/w3-e2/before/frozen_r9.jsonl
+?? artifacts/w3-e2/before/serve.jsonl
+?? artifacts/w3-e2/before/sha256.txt
+?? artifacts/w3-e2/data_amendment.txt
+?? artifacts/w3-e2/data_freeze.sha256
+?? artifacts/w3-e2/data_freeze.v1.sha256
+?? artifacts/w3-e2/data_freeze_time.txt
+?? artifacts/w3-e2/data_freeze_time.v1.txt
+?? artifacts/w3-e2/data_posthoc.sha256
+?? artifacts/w3-e2/data_posthoc_time.txt
+?? artifacts/w3-e2/failures.sorted.txt
+?? artifacts/w3-e2/frozen_v1/w3e2_p1.jsonl
+?? artifacts/w3-e2/frozen_v1/w3e2_p2.jsonl
+?? artifacts/w3-e2/frozen_v1/w3e2_p3.jsonl
+?? artifacts/w3-e2/index_search.txt
+?? artifacts/w3-e2/new_failures.txt
+?? artifacts/w3-e2/new_failures_check.txt
+?? artifacts/w3-e2/prereg.sha256
+?? artifacts/w3-e2/prereg_time.txt
+?? artifacts/w3-e2/pytest_full.txt
+?? artifacts/w3-e2/r2_probes.txt
+?? artifacts/w3-e2/r3_status_start.txt
+?? artifacts/w3-e2/s0_modules.txt
+?? artifacts/w3-e2/s1_ollama.txt
+?? artifacts/w3-e2/s1_p1_reasons.txt
+?? artifacts/w3-e2/s1_p2_tokens.txt
+?? artifacts/w3-e2/s1_p3_words.txt
+?? artifacts/w3-e2/s1_serve_fake_sentences.txt
+?? artifacts/w3-e2/s1_standins.txt
+?? artifacts/w3-e2/scripts/b1pub_dump.py
+?? artifacts/w3-e2/scripts/cycle.py
+?? artifacts/w3-e2/scripts/e2_check.py
+?? artifacts/w3-e2/scripts/frozen_dump.py
+?? artifacts/w3-e2/scripts/mk_data.py
+?? artifacts/w3-e2/scripts/mk_data.v1.py
+?? artifacts/w3-e2/scripts/real_llm.py
+?? artifacts/w3-e2/scripts/s1_p3.py
+?? artifacts/w3-e2/scripts/s1_p3b.py
+?? artifacts/w3-e2/scripts/s1_probe.py
+?? artifacts/w3-e2/scripts/s1_serve_sentences.py
+?? artifacts/w3-e2/scripts/serve_dump.py
+?? artifacts/w3-e2/v1_entry.txt
+?? artifacts/w3-e2/v1_frozen.txt
+?? artifacts/w3-e2/v1_serve.txt
+?? artifacts/w3-e2/v1_serve_assume_diff.txt
+?? artifacts/w3-e2/v2_check.json
+?? artifacts/w3-e2/v2_check.txt
+?? artifacts/w3-e2/v2_freeze_check.txt
+?? artifacts/w3-e2/v2_posthoc_check.json
+?? artifacts/w3-e2/v2_posthoc_check.txt
+?? artifacts/w3-e2/v4_cycle.txt
+?? artifacts/w3-e2/v4_no_backend.json
+?? artifacts/w3-e2/v4_real_llm.json
+?? artifacts/w3-e2/v4_real_llm_more.txt
+?? artifacts/w3-e2/v4_real_llm_r2.txt
+?? artifacts/w3-e2/v4_tags.json
+?? artifacts/w3-e2/v4_uptime_after.txt
+?? artifacts/w3-e2/v4_uptime_before.txt
+?? artifacts/w3-e2/v6_b1pub_r9/rows.jsonl
+?? artifacts/w3-e2/v6_b1pub_r9/summary.json
+?? artifacts/w3-e2/v6_b1pub_summary.txt
+?? artifacts/w3-e2/v6_b1pub_visual.md
+?? tests/bank_score/fixtures/W3E2_assumed/items.jsonl
+?? tests/bank_score/test_bs_w3e2_assumed.py
+?? tests/reading_soundness/w3e2_c_posthoc.jsonl
+?? tests/reading_soundness/w3e2_p1.jsonl
+?? tests/reading_soundness/w3e2_p2.jsonl
+?? tests/reading_soundness/w3e2_p3.jsonl
+?? tests/test_semantic_read_w3e2.py
+?? tests/test_semantic_read_w3e2_cli.py
+?? tests/test_semantic_read_w3e2_ledger.py
+?? tests/test_semantic_read_w3e2_llm.py
+?? tests/test_semantic_read_w3e2_serve.py
+?? tools/bank_score/v2/assumed.py

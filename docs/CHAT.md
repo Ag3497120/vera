@@ -168,3 +168,7 @@ def test_round5_chat_keeps_other_unread_question_typed(tmp_path, monkeypatch, ca
 
 ## W10-f05: `vera chat --layer`
 `vera chat --layer <名前|パス>` は環境変数 `VERA_PLACEMENT_LAYER` を設定する（配置の層。docs/COARSE_PLACEMENT.md §12.19）。層が答えるのは基底が決めていない語だけで、`--layer` なし・変数が空のときの出力は変わらない。
+
+
+## W3-e2: `/read` と `--strict-read`
+`vera chat` の `/read <文>` は、既定で段 E2（仮定つきの読み）を使う: 前提（名前の型・造語の述語・未知の名詞の型）だけで止まった文は仮定を明示して読み、それ以外の文は従来の出力のまま。`--strict-read`（または `VERA_READ_MODE=strict`）で従来どおり strict だけで読む。`VERA_READ_MODE` が `strict`／`assume` 以外なら `BAD_READ_MODE`。

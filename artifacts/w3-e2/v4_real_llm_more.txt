@@ -1,0 +1,8 @@
+== ハルはミナに本を渡した。 (no placement, real llm)
+strict None ['RECIPIENT_TYPE_UNDETERMINED:ミナ', 'ASSUMPTION_UNDETERMINED:ミナ:に']
+== ハルはリクへ荷物を運んだ。 (no placement, real llm)
+assumed [{'word': 'リク', 'kind': 'name_type', 'assumed': 'PLACE', 'alternatives': ['GROUP_ORG', 'PERSON'], 'source': 'llm:qwen3.5:4b', 'ledger_id': None}] None
+== ハルはフレームに本を渡した。 (no placement, real llm)
+None None ['RECIPIENT_TYPE_UNDETERMINED:フレーム']
+== ハルはナナへ荷物を運んだ。 (no placement, real llm)
+assumed [{'word': 'ナナ', 'kind': 'name_type', 'assumed': 'PLACE', 'alternatives': ['GROUP_ORG', 'PERSON'], 'source': 'llm:qwen3.5:4b', 'ledger_id': None}] None
