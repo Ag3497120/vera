@@ -1,0 +1,3 @@
+仕様 65 行を出所から再計算: 不一致 0
+README (public_overlay/README.md) の照合: 不一致 0
+OK

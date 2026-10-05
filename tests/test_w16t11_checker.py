@@ -197,3 +197,29 @@ def test_r1_version_exclusion_does_not_hide_decimals_and_percentages():
 def test_unmarked_decimal_percentage_in_prose_fails(tmp_path):
     assert _numbers(tmp_path, GOOD_README + "\nVera is right 100.0% of the time.\n") == 1
     assert _numbers(tmp_path / "z", GOOD_README + "\nVera is right 57.8% of the time.\n") == 1
+
+
+def test_default_public_files_include_the_legacy_readme():
+    sys.path.insert(0, str(ROOT / "tests"))
+    import test_w16t11_readme as R
+    assert set(C.DEFAULT_PUBLIC_FILES) == set(R.PUBLIC_FILES)
+    assert "public_overlay/docs/README_LEGACY_d25a73a.md" in C.DEFAULT_PUBLIC_FILES
+
+
+def test_claims_and_prepublish_without_arguments_cover_the_legacy_readme():
+    chk = ROOT / "tools" / "readme_numbers_check.py"
+    r = subprocess.run([sys.executable, str(chk), "claims", "--repo", str(ROOT)], capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout
+    assert "（対象 5 ファイル）" in r.stdout
+    r = subprocess.run([sys.executable, str(chk), "prepublish", "--repo", str(ROOT)], capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout
+    assert "対象 5 ファイル" in r.stdout
+
+
+def test_changelog_lists_the_same_files_as_the_default():
+    text = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    i = text.index("### Before publishing")
+    j = text.find("\n###", i + 5)
+    para = text[i:j if j != -1 else len(text)]
+    for f in C.DEFAULT_PUBLIC_FILES:
+        assert Path(f).name in para, f

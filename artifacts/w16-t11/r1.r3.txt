@@ -1,0 +1,11 @@
+仕様 65 行を出所から再計算: 不一致 0
+README (public_overlay/README.md) の照合: 不一致 0
+OK
+exit=0
+仕様 65 行を出所から再計算: 不一致 0
+README (public_overlay/README.md) の照合: 不一致 0
+OK
+exit=0
+artifacts/w16-t11/numbers.r3.json: OK
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t11-S/artifacts/w16-t11/numbers.r2.json: OK
+/Users/motonisihikoudai/Projects/vera-impl/wt/W16-t11-S/artifacts/w16-t11/claim_words.r1.json: OK

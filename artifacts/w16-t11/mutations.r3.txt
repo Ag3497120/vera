@@ -1,0 +1,28 @@
+== 変異 1: 写しの DEFAULT_PUBLIC_FILES から README_LEGACY を外す
+
+tests/test_w16t11_checker.py:213: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_w16t11_checker.py::test_default_public_files_include_the_legacy_readme
+FAILED tests/test_w16t11_checker.py::test_claims_and_prepublish_without_arguments_cover_the_legacy_readme
+2 failed, 1 passed, 20 deselected in 0.11s
+== 変異 2: README_LEGACY に /Users/ の行を足した写しで、引数なしの prepublish
+  SECRET_privkey: 0
+  SECRET_sk: 0
+  SECRET_slack: 0
+NG ABS_PATH_Users public_overlay/docs/README_LEGACY_d25a73a.md:97 see /Users/x/y
+合計 1 件
+FAIL
+exit=1 0
+exit=1
+== m1
+NG README_NUMBER_NOT_IN_SPEC L188: '2' は N-60 の値・分母・補助のどれでもない: | N-60 | first attack wave, attest group: broken (tried is the denominator) | 2 | 16 | the 16 attack
+NG TABLE_VALUE[en] N-60: 表 '2' / 仕様 '1'
+FAIL
+== m2
+README (/private/tmp/claude-501/-Users-motonisihikoudai-Projects-Verantyx-Vera-alpha/516c6003-3687-4f5e-a07a-ae6b080c15b8/scratchpad/m3b/m2.md) の照合: 不一致 1
+NG README_UNMARKED_NUMBER L247: 印の無い文に数値 ['1']: This was attack wave 1.
+FAIL
+== m3 spec N-66 分母 42
+仕様 65 行を出所から再計算: 不一致 1
+NG SPEC_DENOMINATOR N-66: 仕様 '42' / 出所 '41' (docs/AUDIT_2026-10-06.md)
+FAIL

@@ -14,3 +14,5 @@ push・タグ・資産のアップロードは **していない**（オーナ�
 - `release_assets.sha256` の wheel の行は `cd <scratch> && shasum -a 256 -c <この木>/artifacts/w16-t11/release_assets.sha256` で、実物に対して確かめる（実装役が通した。出力は `release_assets_check.txt`）。
 - **配布物が 2 つある**: dev の `pyproject.toml` は `verantyx_vera 0.1.0a1`、公開の木の `public_overlay/pyproject.toml` は `vera-ja 0.2.0a1`（`vera_base`）。v0.9-preview の資産をどちらにするかは **監査役・オーナーの判断待ち**。実装役は版番号も pyproject も変えていない。上の wheel は前者（T10 で煙試験を通った経路）。
 - 煙試験の結果: 2 回目の走行（`artifacts/w16-t11/smoke/`、終了 0、help・read・ask・serve の段がすべて 0。serve の段は `--no-llm` の探針で、本物の LLM の層 0 の確認ではない）。1 回目の走行（`artifacts/w16-t11/smoke_run1_bg_failed/`）は serve の段が終了 1（`serve process did not stop after SIGINT`、HTTP は 200）。原因は未確認だが、1 回目だけ `&` でバックグラウンドから流した（非対話のシェルのバックグラウンドのジョブは SIGINT を無視する）ことが疑わしい。前景で流し直した 2 回目は通った。失敗を成功と書き換えていない。
+
+- **第 3 ラウンドの注**: 上の wheel は `ecde332` の製品コードから作ったもので、`d1942e2` の製品コード（attest・quote_check・ledger_events・cli）を含まない。作り直していない。公開の前に作り直して sha256 を取り直し、この表と CHANGELOG を更新する。

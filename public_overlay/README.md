@@ -13,7 +13,7 @@ pipeline_tag: text-generation
 
 # Vera — a trustworthy record and verdict for the work AI agents do in Japanese
 
-*Status: preview (`v0.9-preview`, not yet published). Base: the development tree `Verantyx-Vera-alpha` at commit `ecde332`.*
+*Status: preview (`v0.9-preview`, not yet published). Base: the development tree `Verantyx-Vera-alpha` at commit `d1942e2`.*
 
 Vera is **not** a language model and does not compete with one at reading, answering or writing. It sits next to an AI agent (or an LLM) and does three things with what the agent says and does:
 
@@ -29,7 +29,7 @@ Vera is **not** a language model and does not compete with one at reading, answe
 
 ## What you can do today
 
-All commands below were run in the tree at `ecde332`. `vera ...` stands for `python -m verantyx.cli ...` of that tree (or the `vera` command of an installed wheel). The output is pasted as printed, with exactly two normalizations: in the first line of `attest`, the absolute path of the working directory after `tree=` is replaced by `.`; in `events verify`, the hexadecimal `head` value is replaced by `<sha256>`. Counts, states, types and exit codes are never replaced. The replay script is `artifacts/w16-t11/examples/replay.sh` in the development tree (added after `ecde332`).
+All commands below were run in the tree at `ecde332`. `vera ...` stands for `python -m verantyx.cli ...` of that tree (or the `vera` command of an installed wheel). The output is pasted as printed, with exactly two normalizations: in the first line of `attest`, the absolute path of the working directory after `tree=` is replaced by `.`; in `events verify`, the hexadecimal `head` value is replaced by `<sha256>`. Counts, states, types and exit codes are never replaced. The replay script is `artifacts/w16-t11/examples/replay.sh` in the development tree (added after `ecde332`). The examples were run at `ecde332`; the replay was then run again in a tree that contains the product code of `d1942e2` (the integration commit `4c2a2e5`) and the normalized output is byte-identical to the pasted one (`artifacts/w16-t11/r3.r3.txt`).
 
 ### 1. Check a completion report: `vera attest <report> --tree <repo>`
 
@@ -145,6 +145,8 @@ One row, one number, always with its denominator and the set it was measured on.
 
 Two cautions that matter when reading the table. The W14 strict mode asserts nothing, so on the machine judgement it is indistinguishable from a system that always abstains [N-24] [N-25] [N-27] [N-28]. The old yardstick for "sources Vera verified" [N-34] and the new yardstick after T3 [N-36] are **different definitions**; they are listed in two rows and are not to be compared with each other.
 
+The quote-check counts did not change when the checker was tightened in W16-t3b (the fix described under the attack results): on the self-made T3-1 set the checker detected 25 of 30 wrong answers and left 5 marked `anchored` [N-70], moved 0 of 20 correct answers off `anchored` [N-71], and on the saved W14 C run it still marks 140 of 255 rows `anchored` [N-72]. These are marks (held / marked only), not confirmations.
+
 Every number can be recomputed from the cited file at the cited commit: `python tools/readme_numbers_check.py numbers` in the development tree does it and fails on any mismatch.
 
 | id | item | value | denominator | set | source (tree@commit:path) | what Vera did |
@@ -195,6 +197,19 @@ Every number can be recomputed from the cited file at the cited commit: `python 
 | N-41 | W14 human grading (A', A, B, C) | 未測定 (not measured) | n/a | W14 public benchmark v1 (human grading not done) | `Verantyx-Vera-alpha@ecde332:docs/BENCHMARK_PUBLIC.md` | not measured |
 | N-42 | strong hosted-LLM baseline | 未測定 (not measured) | n/a | W14 public benchmark v1 (no network) | `Verantyx-Vera-alpha@ecde332:docs/BENCHMARK_PUBLIC.md` | not measured |
 | N-43 | rate of wrong answers of serve layer 0 with a real LLM | 未測定 (not measured) | n/a | held-out T3 includes scripted-LLM items | `Verantyx-Vera-alpha@ecde332:docs/AUDIT_2026-10-06.md` | not measured |
+| N-60 | first attack wave, attest group: broken (tried is the denominator) | 1 | 16 | the 16 attacks tried on the attest group | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | measurement (not a Vera judgment) |
+| N-61 | first attack wave, quote-check group: broken | 4 | 11 | the 11 attacks tried on the quote-check group | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | measurement (not a Vera judgment) |
+| N-62 | first attack wave, ledger-and-records group: broken | 4 | 17 | the 17 attacks tried on the ledger-and-records group | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | measurement (not a Vera judgment) |
+| N-63 | first attack wave, answer-path group: broken | 0 | 4 | the 4 attacks tried on the answer-path group | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | measurement (not a Vera judgment) |
+| N-64 | first attack wave, human-confirmation group: broken | 0 | 2 | the 2 attacks tried on the human-confirmation group | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | measurement (not a Vera judgment) |
+| N-65 | ledger-and-records group: broken kinds fixed in W16-t7c (denominator: broken) | 3 | 4 | the 4 broken kinds of the ledger-and-records group | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | measurement (not a Vera judgment) |
+| N-66 | after the fixes: secret variants redacted | 41 | 41 | the 41 secret variants made by the attacker (rerun after the fixes) | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | measurement (not a Vera judgment) |
+| N-67 | after the fixes: attack inputs for quote-check that became unanchored | 3 | 4 | the 4 attack inputs that had broken quote-check (rerun after the fixes) | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | held / marked only |
+| N-68 | after the fixes: held-out T6, attest verdicts equal to the expected ones | 72 | 72 | held-out T6: 72 reports | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | checked against records |
+| N-69 | after the fixes: held-out T3, marks equal to the expected ones | 37 | 40 | held-out T3: 40 items | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | held / marked only |
+| N-70 | after W16-t3b, self-made T3-1: wrong answers left marked anchored | 5 | 30 | the 30 wrong answers of the self-made T3-1 set (self-made set: not evidence) | `Verantyx-Vera-alpha@d1942e2:artifacts/w16-t3b/t31/t31_result.txt` | held / marked only |
+| N-71 | after W16-t3b, self-made T3-1: correct answers moved off anchored (false alarms) | 0 | 20 | the 20 correct answers of the self-made T3-1 set (self-made set: not evidence) | `Verantyx-Vera-alpha@d1942e2:artifacts/w16-t3b/t31/t31_result.txt` | held / marked only |
+| N-72 | after W16-t3b, W14 C rows: anchored when the saved run is re-checked | 140 | 255 | the 255 rows with a quote_check, re-scored | `Verantyx-Vera-alpha@d1942e2:artifacts/w16-t3b/t32_recheck.txt` | held / marked only |
 
 ## Install
 
@@ -222,9 +237,26 @@ An install that pulls the dependencies from a package index was not tested for t
 
 ## Known holes and limits
 
-The full list is in `KNOWN_ISSUES.md`. The main ones: `anchored` does not confirm correctness; Vera's reading adds no detections over a plain extractor in the completion-claim check [N-22]; the base reader reads few sentences [N-12]; the human grading of the W14 benchmark is not done [N-41]; the real-LLM error rate of layer 0 is not measured [N-43]; the full test suite has known environment-related failures [N-19].
+The full list is in `KNOWN_ISSUES.md`. The main ones: `anchored` does not confirm correctness; Vera's reading adds no detections over a plain extractor in the completion-claim check [N-22]; the base reader reads few sentences [N-12]; the human grading of the W14 benchmark is not done [N-41]; the real-LLM error rate of layer 0 is not measured [N-43]; the full test suite has known environment-related failures [N-19]. The kinds that remain open after the attack are listed in `KNOWN_ISSUES.md` and under the attack results below.
 
-**Attack results: the auditor adds them here** (independent attacker waves; nothing is claimed in this version).
+**Attack results.** A model of a different family attacked a copy of the integrated development tree in a first attack wave, using the product only by reading and running it; the record is `docs/AUDIT_2026-10-06.md` in the development tree at `d1942e2`. For each group, the number tried is the denominator and the number that broke is the value. These are counts of the attacker's results, not a Vera judgment, and they are not totalled here.
+
+- attest (a false claim must not become a record): 1 of 16 broke [N-60]. Broken: the exit code of a tampered ledger (`TAMPERED` under `events verify`) was taken as a record. **Fixed** in W16-t6b: attest uses only a ledger that passed the verification, and the CLI has `--ledger-head`.
+- quote check (an unchecked answer must not be `anchored`): 4 of 11 broke [N-61]. Broken: a swap of subject and object, a difference of tense, and a composite of two lines were `anchored`; a forged source path matched exactly. **Fixed** in W16-t3b: role particles, tense, support by a single quote, and a source name that differs is shown as `relocated`. A quote under a forged path stays `anchored` when the sentence is in the record (shown as `relocated`); this is disclosed, not fixed.
+- ledger and records (hide secrets, detect tampering, record child processes): 4 of 17 broke [N-62]. Broken: full-width characters, URL encoding, base64 and a key split across two fields were not redacted. Of the 4 broken kinds, 3 were **fixed** in W16-t7c, which also checks each variant of a token and redacts the original token whole [N-65]. The key split across two fields is not fixed and is disclosed.
+- answer path (`ask`, `serve` and `chat` give the same answer): 0 of 4 broke [N-63]. Human confirmation (a row without a confirmation id has no effect): 0 of 2 broke [N-64].
+
+Checks after the fixes: all 41 of 41 secret variants were redacted [N-66]. Of the 4 attack inputs that had broken the quote check, 3 became `unanchored` and 1 became `relocated`; the 6 control inputs did not change [N-67]. The held-out tests give the same result as before the fixes: attest 72 of 72, with missed false claims 0 and false alarms 0 [N-68]; quote check 37 of 40, with 0 wrong answers marked `anchored` [N-69].
+
+**What the marks mean.** `anchored` is not a proof that an answer is correct. Redaction is not a guarantee that nothing leaks: it is a best effort that errs on the side of redacting too much.
+
+**Kinds that remain open (disclosed, from the audit record).**
+- Quote check: a paraphrase that drops the key word; a surface match of a noun and a verb; an answer such as "that is right" when the quote contains the word for "right" (`docs/FUSION.md` §9.8); a forged source path, when the quoted sentence is in the record (`found` is shown as `relocated`).
+- Redaction: a key split across two fields; a superposition of variants (full-width characters mixed with URL encoding); `U+2010` and zero-width characters; hexadecimal; base64 wrapped over lines; certain sequences with many delimiters (`docs/RECORDER.md` §15.4, §15.5); and when one token holds a large number of short base64-like runs, the processing time grows with the square of the length (§15.5).
+- attest: unless `--ledger-head` is given, a forgery that recomputes every row and the HEAD of the ledger is not detected (a property of the T7 verification).
+- `vera run`: a descendant that was born and detached between two samplings is not recorded.
+
+The next attack wave is not scheduled.
 
 The measurement history of earlier snapshots (2026-09-28 to 2026-10-03) was moved, with its wording unchanged, to `EVAL.md` ("History") and `docs/README_LEGACY_d25a73a.md`. It was not recomputed.
 
@@ -236,7 +268,7 @@ The measurement history of earlier snapshots (2026-09-28 to 2026-10-03) was move
 
 # Vera — 日本語で行われる AI エージェントの仕事の、信頼できる記録と判定
 
-*状態: プレビュー（`v0.9-preview`、未公開）。基点: 開発ツリー `Verantyx-Vera-alpha` のコミット `ecde332`。*
+*状態: プレビュー（`v0.9-preview`、未公開）。基点: 開発ツリー `Verantyx-Vera-alpha` のコミット `d1942e2`。*
 
 Vera は言語モデルではなく、読む・答える・書くことで LLM と競いません。AI エージェント（や LLM）の隣に置いて、エージェントが言ったこと・したことについて、次の三つをします。
 
@@ -252,7 +284,7 @@ Vera は言語モデルではなく、読む・答える・書くことで LLM �
 
 ## 今日できること
 
-以下のコマンドはすべて `ecde332` の木で実際に流したものです。`vera ...` はその木の `python -m verantyx.cli ...`（またはインストールした wheel の `vera` コマンド）の略です。出力は印字されたまま貼ってあり、正規化は次の二つだけです。`attest` の最初の行で `tree=` の後の作業ディレクトリの絶対パスを `.` に置き換える。`events verify` の `head` の十六進の値を `<sha256>` に置き換える。件数・状態・型・終了コードは置き換えません。再生の手順は開発ツリーの `artifacts/w16-t11/examples/replay.sh`（`ecde332` より後に追加）です。
+以下のコマンドはすべて `ecde332` の木で実際に流したものです。`vera ...` はその木の `python -m verantyx.cli ...`（またはインストールした wheel の `vera` コマンド）の略です。出力は印字されたまま貼ってあり、正規化は次の二つだけです。`attest` の最初の行で `tree=` の後の作業ディレクトリの絶対パスを `.` に置き換える。`events verify` の `head` の十六進の値を `<sha256>` に置き換える。件数・状態・型・終了コードは置き換えません。再生の手順は開発ツリーの `artifacts/w16-t11/examples/replay.sh`（`ecde332` より後に追加）です。例は `ecde332` で流しました。その後 `d1942e2` の製品コードを含む木（統合のコミット `4c2a2e5`）で再生し、正規化した出力が貼った出力と byte 一致することを確かめました（`artifacts/w16-t11/r3.r3.txt`）。
 
 ### 完了の申告を照合する: `vera attest <report> --tree <repo>`
 
@@ -367,6 +399,8 @@ Vera は次の二つを分けて扱い、出力の型の名前でどちらかが
 
 表の読み方で大事な注意が二つあります。W14 の strict は何も断定しないので、機械判定では「常に棄権」と区別できません [N-24] [N-25] [N-27] [N-28]。「Vera が確かめた出典」の旧の物差し [N-34] と T3 の後の新の物差し [N-36] は **定義が違います**。二行に分けてあり、互いに比べてはいけません。
 
+引用の照合の数は、W16-t3b で照合器を締めた後（直した内容は攻撃の結果の節）も変わりません。自作の集合 T3-1 では、誤答 30 件のうち 25 件を検出し、5 件が `anchored` のまま残りました [N-70]。正しい答え 20 件のうち、`anchored` 以外にしたものは 0 件でした [N-71]。W14 の C 系の保存結果では、255 行のうち 140 行が今も `anchored` です [N-72]。これらは印付けであって、確認ではありません（保持・印付けだけ）。
+
 どの数値も、引用したコミットの引用したファイルから再計算できます。開発ツリーで `python tools/readme_numbers_check.py numbers` を流すと再計算し、一件でも合わなければ失敗します。
 
 | id | 項目 | 値 | 分母 | 集合 | 出所（木@commit:パス） | Vera がしたこと |
@@ -417,6 +451,19 @@ Vera は次の二つを分けて扱い、出力の型の名前でどちらかが
 | N-41 | W14 の人の採点（A'・A・B・C） | 未測定 | n/a | W14 公開ベンチマーク v1（人の採点は未了） | `Verantyx-Vera-alpha@ecde332:docs/BENCHMARK_PUBLIC.md` | 未測定 |
 | N-42 | API の強い LLM（A'）の測定 | 未測定 | n/a | W14 公開ベンチマーク v1（ネットワーク不可） | `Verantyx-Vera-alpha@ecde332:docs/BENCHMARK_PUBLIC.md` | 未測定 |
 | N-43 | serve 層 0 を本物の LLM で通した誤答率 | 未測定 | n/a | 伏せた試験 T3 は偽の LLM の項目を含む | `Verantyx-Vera-alpha@ecde332:docs/AUDIT_2026-10-06.md` | 未測定 |
+| N-60 | 攻撃の最初の波: attest群で破れた数 | 1 | 16 | 攻撃の最初の波の「attest」群で試した 16 件 | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | 測定の結果（Vera の判定ではない） |
+| N-61 | 攻撃の最初の波: 引用の照合群で破れた数 | 4 | 11 | 攻撃の最初の波の「引用の照合」群で試した 11 件 | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | 測定の結果（Vera の判定ではない） |
+| N-62 | 攻撃の最初の波: 台帳と記録群で破れた数 | 4 | 17 | 攻撃の最初の波の「台帳と記録」群で試した 17 件 | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | 測定の結果（Vera の判定ではない） |
+| N-63 | 攻撃の最初の波: 回答経路群で破れた数 | 0 | 4 | 攻撃の最初の波の「回答経路」群で試した 4 件 | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | 測定の結果（Vera の判定ではない） |
+| N-64 | 攻撃の最初の波: 人の確認群で破れた数 | 0 | 2 | 攻撃の最初の波の「人の確認」群で試した 2 件 | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | 測定の結果（Vera の判定ではない） |
+| N-65 | 台帳と記録群: 破れた型のうち直した数（W16-t7c） | 3 | 4 | 攻撃の最初の波の台帳と記録群で破れた 4 件の型 | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | 測定の結果（Vera の判定ではない） |
+| N-66 | 修正の後: 伏せの変種のうち伏せた数 | 41 | 41 | 攻撃側が作った伏せの変種 41 件（修正の後に再実行） | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | 測定の結果（Vera の判定ではない） |
+| N-67 | 修正の後: 引用の照合の攻撃入力のうち錨なしになった数 | 3 | 4 | 攻撃で破れた引用の照合の 4 件の入力（再実行） | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | 保持・印付けだけ |
+| N-68 | 修正の後: 伏せた試験 T6 の attest の判定が期待と一致 | 72 | 72 | 伏せた試験 T6 の attest 72 件 | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | 記録と突き合わせて確かめた |
+| N-69 | 修正の後: 伏せた試験 T3 の期待どおりの印 | 37 | 40 | 伏せた試験 T3 の引用の照合 40 件 | `Verantyx-Vera-alpha@d1942e2:docs/AUDIT_2026-10-06.md` | 保持・印付けだけ |
+| N-70 | W16-t3b の後の自作 T3-1: 誤答のうち錨ありのまま見逃したもの | 5 | 30 | 自作の集合 T3-1 の誤答 30 件（自作。証拠にならない） | `Verantyx-Vera-alpha@d1942e2:artifacts/w16-t3b/t31/t31_result.txt` | 保持・印付けだけ |
+| N-71 | W16-t3b の後の自作 T3-1: 正しい答えを錨あり以外にした数（誤検出） | 0 | 20 | 自作の集合 T3-1 の正しい答え 20 件（自作。証拠にならない） | `Verantyx-Vera-alpha@d1942e2:artifacts/w16-t3b/t31/t31_result.txt` | 保持・印付けだけ |
+| N-72 | W16-t3b の後の W14 C 系: 保存結果を再評価した錨あり | 140 | 255 | quote_check のある 255 行（再評価） | `Verantyx-Vera-alpha@d1942e2:artifacts/w16-t3b/t32_recheck.txt` | 保持・印付けだけ |
 
 ## 入れ方
 
@@ -444,9 +491,26 @@ vera placement fetch --from file:///path/to/placement.tar --dest <dir>
 
 ## 既知の穴と限界
 
-全体は `KNOWN_ISSUES.md` にあります。主なもの: `anchored` は正しさの確認ではない。完了申告の照合で Vera の読みは単純な抽出器に検出を足さない [N-22]。基底の読解器が読む文は少ない [N-12]。W14 ベンチマークの人の採点は未了 [N-41]。層 0 の本物の LLM での誤答率は未測定 [N-43]。全体テストには環境に由来する既知の失敗がある [N-19]。
+全体は `KNOWN_ISSUES.md` にあります。主なもの: `anchored` は正しさの確認ではない。完了申告の照合で Vera の読みは単純な抽出器に検出を足さない [N-22]。基底の読解器が読む文は少ない [N-12]。W14 ベンチマークの人の採点は未了 [N-41]。層 0 の本物の LLM での誤答率は未測定 [N-43]。全体テストには環境に由来する既知の失敗がある [N-19]。攻撃の後に残る型は `KNOWN_ISSUES.md` と下の「攻撃の結果」にあります。
 
-**攻撃の結果: 監査役が追記します**（別系統の攻撃役の波。この版では何も主張しません）。
+**攻撃の結果。** 別系統のモデルが、統合済みの開発ツリーの写しを、製品の読み取りと実行だけで攻めました（最初の攻撃の波）。記録は開発ツリーの `docs/AUDIT_2026-10-06.md`（`d1942e2`）にあります。群ごとに、試した数が分母、破れた数が値です。これは攻撃側の結果の数えであって Vera の判定ではなく、ここでは合計しません。
+
+- attest（偽の申告を記録にしない）: 16 件のうち 1 件が破れました [N-60]。破れた型: 改ざんされた台帳（`events verify` で `TAMPERED`）の終了コードが記録になりました。W16-t6b で**直しました**: attest は検証を通った台帳だけを使い、CLI に `--ledger-head` があります。
+- 引用の照合（確かめていない答えを `anchored` にしない）: 11 件のうち 4 件が破れました [N-61]。破れた型: 主体と対象の逆転、時制の違い、二行の合成が `anchored` になり、出典のパスの偽装が完全一致になりました。W16-t3b で**直しました**: 役割の助詞・時制・一つの引用で支えること・出典の名前が違えば `relocated`。偽装したパスの引用は、文が記録にあれば `anchored` のまま残ります（`relocated` と表示）。これは直さず開示します。
+- 台帳と記録（秘密を伏せる、改ざんを検出する、子プロセスを記録する）: 17 件のうち 4 件が破れました [N-62]。破れた型: 全角・URL エンコード・base64・二つの欄に分けた鍵が伏せられませんでした。破れた 4 つの型のうち 3 つを W16-t7c で**直しました**（各トークンの変形も照合し、元のトークンごと伏せる）[N-65]。二つの欄に分けた鍵は直さず開示します。
+- 回答経路（`ask`・`serve`・`chat` が同じ答え）: 4 件のうち 0 件が破れました [N-63]。人の確認（確認 id の無い行は効かない）: 2 件のうち 0 件が破れました [N-64]。
+
+修正の後の確かめ: 伏せの変種は 41/41 を伏せました [N-66]。引用の照合を破った攻撃の入力 4 件は、3 件が `unanchored`、1 件が `relocated` になり、対照の 6 件は変わりませんでした [N-67]。伏せた試験の結果は修正の前と同じです。attest は 72/72（偽の申告の見逃し 0・誤検出 0）[N-68]、引用の照合は 37/40（誤答で `anchored` になったもの 0）[N-69]。
+
+**印の意味。** `anchored` は答えが正しいことの証明ではありません。伏せは、何も漏れない保証ではありません。過剰に伏せる側に倒す最善の努力です。
+
+**残る型（開示。監査役の記録から）。**
+- 引用の照合: 要の語を落とした言い直し。名詞と動詞の表層の一致。「その通り」で引用に「通り」がある場合（開発ツリーの `docs/FUSION.md` §9.8）。偽装したパスでも、引用の文が記録にあれば `anchored`（`found` は `relocated` と表示）。
+- 伏せ: 二つの欄に分けた鍵。変形の重ね合わせ（全角と URL エンコードの混在など）。`U+2010` とゼロ幅の字。十六進。改行で折り返した base64。区切り字が多い特定の並び（`docs/RECORDER.md` §15.4・§15.5）。一つのトークンに短い base64 らしい列が大量にあると、処理の時間が長さの二乗に伸びます（§15.5）。
+- attest: `--ledger-head` を渡さないと、台帳の全行と HEAD を計算し直した偽造は検出できません（T7 の検証の性質）。
+- `vera run`: 標本化の間に生まれて切り離された子孫は記録しません。
+
+次の攻撃の波は未定です。
 
 以前の版（2026-09-28〜2026-10-03）の測定の履歴は、文面を変えずに `EVAL.md`（「History」）と `docs/README_LEGACY_d25a73a.md` に移しました。再計算はしていません。
 

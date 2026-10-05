@@ -17,3 +17,15 @@
 - 突然変異の確認: `mutations.txt`（仕様の値・README の値の変更で R-1 が赤、印の無い言い切りで R-2 が赤、絶対パスで R-4 が赤、存在しない commit で exit 2）。
 - 自分の試験: `$PY -m pytest -q -p no:cacheprovider tests/test_w16t11_checker.py tests/test_w16t11_readme.py` → `tests_w16t11.txt`（30 件通過。`LC_ALL=C` でも通過を確認）。
 - 全体テストは流していない（チケットの指示）。既存の `tests/test_conduct_ask_cli.py`（README.md のパスを使う）だけ流して 21 件通過。
+
+## 第 3 ラウンドの実行コマンド（出力は `*.r3.txt`）
+前置き: `export PYTHONPATH=$PWD PYTHONDONTWRITEBYTECODE=1; PY=/Users/motonisihikoudai/vera-wiring/env/bin/python`
+- 隔離・基点: `isolation.r3.txt`（`[]`）、`base_commit.r3.txt`
+- 仕様: `$PY tools/readme_numbers_check.py numbers --spec artifacts/w16-t11/numbers.r3.json --spec-only` → `spec_only.r3.txt`
+- R-1: `... numbers`、`... numbers --spec numbers.r3.json --readme public_overlay/README.md`、`shasum -c` → `r1.r3.txt`
+- R-2: `... claims`（引数なし）と 5 ファイル明示 → `r2.r3.txt`
+- R-3: `pytest -q -p no:cacheprovider tests/test_w16t11_readme.py -k examples` → `r3.r3.txt`
+- R-4: `... prepublish` → `r4.r3.txt`
+- R-5: `git diff --stat 4c2a2e5 -- verantyx/ public_overlay/vera_base/ public_overlay/pyproject.toml`、`git status --short` → `r5.r3.txt`
+- 全試験: `pytest -q -p no:cacheprovider tests/test_w16t11_checker.py tests/test_w16t11_readme.py` → `tests_w16t11.r3.txt`
+- 突然変異（scratchpad の写し）: `mutations.r3.txt`

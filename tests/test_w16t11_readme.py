@@ -44,7 +44,7 @@ def test_r4_prepublish_scan_is_empty():
 
 
 def test_r5_product_code_is_unchanged():
-    out = subprocess.run(["git", "-C", str(ROOT), "diff", "--stat", "ecde332", "--", "verantyx/", "public_overlay/vera_base/", "public_overlay/pyproject.toml"],
+    out = subprocess.run(["git", "-C", str(ROOT), "diff", "--stat", "4c2a2e5", "--", "verantyx/", "public_overlay/vera_base/", "public_overlay/pyproject.toml"],
                          capture_output=True, text=True, check=True).stdout
     assert out.strip() == ""
 

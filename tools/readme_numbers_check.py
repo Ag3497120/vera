@@ -23,13 +23,14 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_REPO = HERE.parent
-DEFAULT_SPEC = DEFAULT_REPO / "artifacts" / "w16-t11" / "numbers.r2.json"
+DEFAULT_SPEC = DEFAULT_REPO / "artifacts" / "w16-t11" / "numbers.r3.json"
 DEFAULT_WORDS = DEFAULT_REPO / "artifacts" / "w16-t11" / "claim_words.r1.json"
 DEFAULT_README = "public_overlay/README.md"
 DEFAULT_PUBLIC_FILES = [
     "public_overlay/README.md",
     "public_overlay/KNOWN_ISSUES.md",
     "public_overlay/EVAL.md",
+    "public_overlay/docs/README_LEGACY_d25a73a.md",
     "CHANGELOG.md",
 ]
 
