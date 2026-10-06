@@ -7,8 +7,11 @@ Binding decisions (ops/decisions/2026-10-06_line3_faithful_build.md):
         CHAR = single characters.
   I-02  NO centre is chosen at ingestion.  Stored: units, the sentences each unit
         occurs in (postings), same-sentence co-occurrence counts, word order.
-  I-22 / N-15  function words and question words ARE units in all three tiers;
-        punctuation and symbols are NOT units.
+  I-22 / N-15  function words are units in all three tiers; punctuation and symbols
+        are NOT units.  Question words: units in WORD and CHAR; in the RUN tier they
+        are NOT separate units but are absorbed into the neighbouring string
+        (units_run('半田岩はどこにありますか') -> ['半田岩', 'はどこにありますか']).
+        This is the actual behaviour and an OPEN owner question (not changed here).
   I-06  initial energy ratio r0(u) = n(u) / N, an exact Fraction (L-02: no floats).
 
 Local choices (new, listed in the T1 report):
@@ -42,6 +45,9 @@ T1b additions (new local labels):
   L-42  `postings_union(tier, units)` = sorted distinct sids of the union of the units'
         postings (M-1(c): a bundled state's quantity).  A unit not in the tier
         raises KeyError (no silent skip); an empty set gives ().
+  L-44  `strip_attribution` is applied to every sentence text BEFORE it is split
+        into units (build_space, Space.append); the stored sentence text keeps the
+        original, only the units are computed from the stripped text.
   L-43  FORMAT bumped to line3.space.v2 because every sentence entry now carries
         "kind"; the serialisation of the unchanged part is otherwise untouched.
 """
@@ -187,7 +193,7 @@ class TierSpace:
         """v -> n(u,v) for every v sharing a sentence with u (v != u)."""
         out: Dict[str, int] = {}
         for sid in self.postings[u]:
-            for v in set(self.sentence_units[sid]):
+            for v in dict.fromkeys(self.sentence_units[sid]):   # ordered: key order is hash-seed independent
                 if v != u:
                     out[v] = out.get(v, 0) + 1
         return out
@@ -278,6 +284,19 @@ def build_space(rows: Iterable[Mapping[str, str]]) -> Space:
     return Space(sentences, {n: build_tier(n, texts) for n in TIERS}, kinds)
 
 
+def tier_counts(space: Space) -> Dict[str, object]:
+    """Acceptance report: number of distinct units per tier and number of sentences."""
+    return {"sentences": space.N, **{t: len(space.tiers[t].postings) for t in TIERS}}
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    import sys
+    args = list(sys.argv[1:] if argv is None else argv)
+    for path in args:
+        print(path, json.dumps(tier_counts(build_from_jsonl(path)), sort_keys=True))
+    return 0
+
+
 def load_jsonl(path: str) -> List[dict]:
     with open(path, encoding="utf-8") as f:
         return [json.loads(line) for line in f if line.strip()]
@@ -285,3 +304,7 @@ def load_jsonl(path: str) -> List[dict]:
 
 def build_from_jsonl(path: str) -> Space:
     return build_space(load_jsonl(path))
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

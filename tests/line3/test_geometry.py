@@ -1,5 +1,6 @@
 """T2 geometry acceptance (docs/LINE3_DESIGN.md §9 T2)."""
 import itertools
+import os
 import sys
 
 import pytest
@@ -18,7 +19,8 @@ def _filled(L=4):
 
 
 def test_loaded_from_clone():
-    assert G.__file__.startswith("/Users/motonisihikoudai/Projects/vera-impl/wt/line3/")
+    root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    assert G.__file__.startswith(root + "/verantyx/line3/")
 
 
 def test_axes_match_current_cross_module():

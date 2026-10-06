@@ -11,7 +11,7 @@ Paths (one result row per question per path):
       in THIS condition's data (empty = no document); upper bound, not a fair comparison.
 Run from anywhere with PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<clone> venv python.
 """
-import contextlib, io, json, os, re, sys, time, types
+import contextlib, hashlib, io, json, os, re, sys, time, types
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CLONE = os.path.abspath(os.path.join(HERE, '..', '..'))
@@ -31,8 +31,23 @@ man = json.load(open(os.path.join(HERE, 'data_manifest.json')))['files']
 Q = G.load_questions(os.path.join(HERE, 'questions.tsv'))
 
 
+def _sha256_file(p):
+    h = hashlib.sha256()
+    with open(p, 'rb') as f:
+        for b in iter(lambda: f.read(1 << 20), b''):
+            h.update(b)
+    return h.hexdigest()
+
+
 def path_of(c):
-    return man[c if c == 'S0' else 'S' + c]['path']
+    """Data path for condition c; the file's sha256 must equal the manifest's (T0)."""
+    ent = man[c if c == 'S0' else 'S' + c]
+    p = ent['path']
+    if p is not None:
+        got = _sha256_file(p)
+        if got != ent['sha256']:
+            raise SystemExit('DATA HASH MISMATCH %s: manifest %s, file %s' % (p, ent['sha256'], got))
+    return p
 
 
 def articles():

@@ -48,13 +48,42 @@ def test_byte_identical_two_builds(sp):
     assert build_from_jsonl(S300).to_bytes() == sp.to_bytes()
 
 
-@pytest.mark.parametrize("seed", ["0", "1"])
+@pytest.mark.parametrize("seed", ["0", "1", "12345"])
 def test_hashseed_independent(sp, seed):
     code = ("from verantyx.line3.space import build_from_jsonl;"
             "print(build_from_jsonl(%r).sha256())" % S300)
     env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONPATH=ROOT, PYTHONDONTWRITEBYTECODE="1")
     out = subprocess.run([PY, "-c", code], env=env, capture_output=True, text=True, check=True).stdout.strip()
     assert out == sp.sha256()
+
+
+def test_cooccurrence_key_order_hashseed_independent(sp):
+    code = ("from verantyx.line3.space import build_from_jsonl, WORD;"
+            "s=build_from_jsonl(%r).tiers[WORD];"
+            "import json;print(json.dumps([list(s.cooccurrence(u)) for u in s.units()[:150]]))" % S300)
+    outs = set()
+    for seed in ("0", "1", "12345"):
+        env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONPATH=ROOT, PYTHONDONTWRITEBYTECODE="1")
+        outs.add(subprocess.run([PY, "-c", code], env=env, capture_output=True, text=True,
+                                check=True).stdout)
+    assert len(outs) == 1
+
+
+def test_tier_counts_acceptance(sp):
+    assert S.tier_counts(sp) == {"sentences": 300, RUN: 2175, WORD: 2444, CHAR: 1164}
+    assert S.tier_counts(build_from_jsonl(S3000)) == {"sentences": 3000, RUN: 16193, WORD: 13132, CHAR: 2428}
+
+
+def test_tier_counts_cli():
+    env = dict(os.environ, PYTHONPATH=ROOT, PYTHONDONTWRITEBYTECODE="1")
+    out = subprocess.run([PY, "-m", "verantyx.line3.space", S300], env=env, capture_output=True,
+                         text=True, check=True).stdout
+    assert json.loads(out.split(" ", 1)[1]) == {"sentences": 300, RUN: 2175, WORD: 2444, CHAR: 1164}
+
+
+def test_run_tier_question_word_absorbed():
+    # documents the actual behaviour (OPEN owner question): not a separate RUN unit
+    assert S.units_run("半田岩はどこにありますか") == ["半田岩", "はどこにありますか"]
 
 
 # ---- I-22 / N-15: function words, question words, no punctuation -------------
@@ -97,6 +126,15 @@ def test_r0_exact_fractions(sp):
         for e in doc["tiers"][t]["units"]:
             assert re.fullmatch(r"\d+(/\d+)?", e["r0"]), e
             assert Fraction(e["r0"]) == Fraction(e["n"], 300)
+
+
+def test_r0_hand_computed_tiny_space():
+    # 3 sentences in the CHAR tier: "ab", "ac", "a" -> n(a)=3, n(b)=1, n(c)=1, N=3
+    t = build_space([{"sent": "ab"}, {"sent": "ac"}, {"sent": "a"}]).tiers[CHAR]
+    assert {u: (t.n(u), t.r0(u)) for u in t.units()} == {
+        "a": (3, Fraction(1)), "b": (1, Fraction(1, 3)), "c": (1, Fraction(1, 3))}
+    assert t.n_pair("a", "b") == 1 and t.n_pair("b", "c") == 0
+    assert list(t.cooccurrence("a")) == ["b", "c"] and t.cooccurrence("a") == {"b": 1, "c": 1}
 
 
 def test_no_floats_in_module():
