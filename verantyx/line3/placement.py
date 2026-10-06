@@ -67,10 +67,24 @@ Local decisions (docs/LINE3_LOCAL_DECISIONS.md; L-60.. kept, L-62 superseded, L-
        the centre empty are not moves, so no class contains one; the lone seed's class is
        the seed at the centre only.  (Owner point (3), reading all members of a class and
        adopting the query-stable one, belongs to the query stage; not implemented.)
+  L-90 TWINS (owner after T4c: 「入れ替えても同じ語どうしは並べ方を数えない」): two units u, v of
+       the candidate pool P (the seed and every unit sharing a sentence with it) are
+       INTERCHANGEABLE iff the transposition (u v) is an automorphism of the I-04 weights on P:
+       w(u,z) == w(v,z) and w(z,u) == w(z,v) for every z in P other than u, v (w = (n, p)
+       of an edge, outer -> inner), and w(u,v) == w(v,u).  Then swapping u and v can never
+       change the key of any arrangement of units of P.  This is an equivalence relation
+       (the transposition (u x) = (u v)(v x)(u v)).  Twins are held as ONE interchangeable
+       group: the search runs on arrangements of LABELS (one label per twin class) so
+       arrangements differing only by permuting twins are not enumerated separately.  The
+       stability values and the set of states do not change; only the counting.
+  L-91 The quotient state is a class of label arrangements; the expanded class (the T4c
+       class) is all assignments of the actual units to the label slots (up to arm
+       assignment).  build_cross(quotient=False) is the T4c search byte for byte.
 Everything is exact (int / Fraction), deterministic, and hash-seed independent.
 """
 from __future__ import annotations
 
+import itertools
 import json
 from dataclasses import dataclass
 from fractions import Fraction
@@ -251,6 +265,76 @@ class Weights:
         return v
 
 
+# --------------------------------------------------------------------------
+# L-90: interchangeable units (twins)
+# --------------------------------------------------------------------------
+def find_twins(w: Weights, pool: Sequence[str]) -> Dict[str, str]:
+    """L-90: partition `pool` into interchangeable classes.  Returns {unit: representative}
+    (representative = the smallest unit of its class; singletons map to themselves).
+    u ~ v  iff  w(u,z) == w(v,z) and w(z,u) == w(z,v) for all z in pool \\ {u, v} and
+    w(u,v) == w(v,u)  (the transposition (u v) leaves every edge weight on the pool
+    invariant, so it leaves the I-04 key of every arrangement invariant)."""
+    pool = sorted(pool)
+    vec: Dict[str, Dict[str, Tuple[Score, Score]]] = {
+        u: {z: (w(u, z), w(z, u)) for z in pool if z != u} for u in pool}
+    buckets: Dict[Tuple, List[str]] = {}
+    for u in pool:
+        buckets.setdefault(tuple(sorted(vec[u].values())), []).append(u)
+    rep: Dict[str, str] = {u: u for u in pool}
+    for b in buckets.values():
+        reps: List[str] = []
+        for u in b:                                   # b is sorted: reps hold the minima
+            for r in reps:
+                if are_interchangeable(w, pool, r, u, vec):
+                    rep[u] = r
+                    break
+            else:
+                reps.append(u)
+    return rep
+
+
+def are_interchangeable(w: Weights, pool: Sequence[str], u: str, v: str,
+                        vec: Optional[Dict[str, Dict[str, Tuple[Score, Score]]]] = None) -> bool:
+    """L-90 definition, checked directly: swapping u and v leaves w invariant on `pool`."""
+    if u == v:
+        return True
+    if w(u, v) != w(v, u):
+        return False
+    for z in pool:
+        if z == u or z == v:
+            continue
+        if vec is not None:
+            if vec[u][z] != vec[v][z]:
+                return False
+        elif w(u, z) != w(v, z) or w(z, u) != w(z, v):
+            return False
+    return True
+
+
+class QWeights(Weights):
+    """Edge weight on LABELS (L-90): label = representative of a twin class.  Two slots with
+    the same label hold two different twins: weight w(u, v) of any two distinct members."""
+
+    def __init__(self, base: Weights, rep: Mapping[str, str]) -> None:
+        self.tier = base.tier
+        self._c = base._c
+        self._same: Dict[str, Score] = {}
+        by: Dict[str, List[str]] = {}
+        for u, r in rep.items():
+            by.setdefault(r, []).append(u)
+        for r, ms in by.items():
+            if len(ms) > 1:
+                ms.sort()
+                self._same[r] = base(ms[0], ms[1])
+
+    def __call__(self, x: Optional[str], y: Optional[str]) -> Score:
+        if x is None or y is None:
+            return ZERO2
+        if x == y:
+            return self._same.get(x, ZERO2)
+        return Weights.__call__(self, x, y)
+
+
 def _add(a: Score, b: Score) -> Score:
     return (a[0] + b[0], a[1] + b[1])
 
@@ -403,7 +487,7 @@ def _insert_group(w: Weights, bases: Sequence[Flat], L: int, members: Sequence[s
             work.moves(len(rem) * len(empties))
             best: Optional[Score] = None
             picks: List[Tuple[str, int]] = []
-            for u in rem:
+            for u in sorted(set(rem)):          # L-90: equal labels = one choice
                 for e in empties:
                     g = ZERO2
                     for ei in lay.inc[e]:
@@ -416,7 +500,8 @@ def _insert_group(w: Weights, bases: Sequence[Flat], L: int, members: Sequence[s
             for u, e in picks:
                 f = list(st)
                 f[e] = u
-                nxt[(canon(tuple(f), L), tuple(x for x in rem if x != u))] = None
+                k = rem.index(u)                      # remove ONE occurrence (labels may repeat)
+                nxt[(canon(tuple(f), L), rem[:k] + rem[k + 1:])] = None
         frontier = nxt
         if len(frontier) + len(done) > budget.max_states:
             raise _Over("max_states")
@@ -555,6 +640,7 @@ class Step:
     size_after: Optional[int]        # units in the cross if this step was kept
     class_size: Optional[int]        # arrangements in the class after this step
     reason: Optional[str] = None     # budget that was exceeded ("max_class" | "max_states")
+    expanded_size: Optional[int] = None   # L-91: arrangements of the expanded (T4c) class
 
 
 @dataclass(frozen=True)
@@ -572,6 +658,8 @@ class Placement:
     steps: Tuple[Step, ...]
     candidates: int                  # units with n(seed,v) > 0
     budget: Budget
+    twin_sets: Tuple[Tuple[str, ...], ...] = ()   # L-90: placed twin classes with >= 2 units (sorted; [0] = the label shown in members)
+    quotient: bool = True            # False = the T4c search (no twins)
 
     @property
     def centre(self) -> Optional[str]:
@@ -580,32 +668,96 @@ class Placement:
 
     @property
     def class_size(self) -> int:
+        """Arrangements in the held (quotient) class."""
         return len(self.members)
+
+    @property
+    def expanded_size(self) -> int:
+        """L-91: arrangements of the expanded class (== the T4c class size)."""
+        return expanded_count(self.members, self.L, _twin_counts(self.twin_sets))
+
+    def expanded_members(self) -> Tuple[Flat, ...]:
+        """L-91: the T4c class: every assignment of the placed units to the label slots
+        (canonical sorted order).  Can be astronomically large: use expanded_size first."""
+        return tuple(sorted(set(expand_flats(self.members, self.L, self.twin_sets)),
+                            key=_flat_sort_key))
 
     @property
     def centre_moved(self) -> bool:
         return self.centres != (self.seed,)
 
     def crosses(self) -> Tuple[Cross, ...]:
-        return tuple(to_cross(m, self.L) for m in self.members)
+        """Crosses of the EXPANDED class (see expanded_members)."""
+        return tuple(to_cross(m, self.L) for m in self.expanded_members())
 
     def to_json_obj(self) -> dict:
         def st(s: Optional[Step]):
             return None if s is None else {"share": s.share, "units": list(s.units),
                                            "status": s.status, "explored": s.explored,
                                            "size_after": s.size_after,
-                                           "class_size": s.class_size, "reason": s.reason}
+                                           "class_size": s.class_size, "reason": s.reason,
+                                           "expanded_size": s.expanded_size}
         return {"seed": self.seed, "L": self.L, "centres": list(self.centres),
                 "size": self.size, "capacity": self.capacity, "score": list(self.score),
                 "stop": self.stop, "class_size": self.class_size,
                 "members": [list(m) for m in self.members],
                 "cells": json.loads(self.cross.serialize().decode("ascii")),
                 "broke_on": st(self.broke_on), "steps": [st(s) for s in self.steps],
-                "candidates": self.candidates, "budget": self.budget.to_json_obj()}
+                "candidates": self.candidates, "budget": self.budget.to_json_obj(),
+                "quotient": self.quotient, "twin_sets": [list(t) for t in self.twin_sets],
+                "expanded_size": self.expanded_size}
 
     def to_bytes(self) -> bytes:
         return json.dumps(self.to_json_obj(), sort_keys=True, separators=(",", ":"),
                           ensure_ascii=False).encode("utf-8")
+
+
+def _twin_counts(twin_sets: Sequence[Sequence[str]]) -> Dict[str, int]:
+    return {t[0]: len(t) for t in twin_sets}
+
+
+def expanded_count(members: Sequence[Flat], L: int, counts: Mapping[str, int]) -> int:
+    """L-91: number of arrangements the label arrangements `members` stand for.  `counts`
+    = label -> number of placed twins (default 1).  Per member: prod k! over labels, divided
+    by prod m! over groups of m identical NON-EMPTY legs (arm assignment is not
+    distinguished, L-61; identical legs permute freely and act freely on distinct units)."""
+    from math import factorial
+    total = 0
+    for f in members:
+        n = 1
+        seen: Dict[str, int] = {}
+        for x in f:
+            if x is not None:
+                seen[x] = seen.get(x, 0) + 1
+        for x in seen:
+            n *= factorial(counts.get(x, 1))
+        legs: Dict[Tuple[str, ...], int] = {}
+        for a in range(N_ARMS):
+            g = f[1 + a * L: 1 + (a + 1) * L]
+            if any(c is not None for c in g):
+                legs[_leg_key(g)] = legs.get(_leg_key(g), 0) + 1
+        for m in legs.values():
+            n //= factorial(m)
+        total += n
+    return total
+
+
+def expand_flats(members: Sequence[Flat], L: int, twin_sets: Sequence[Sequence[str]]):
+    """L-91: generator of arrangements (canonical, may repeat across members never; within
+    one member distinct up to arm assignment after the caller's set())."""
+    units = {t[0]: tuple(t) for t in twin_sets}
+    for f in members:
+        pos: Dict[str, List[int]] = {}
+        for i, x in enumerate(f):
+            if x in units:
+                pos.setdefault(x, []).append(i)
+        labels = sorted(pos)
+        for combo in itertools.product(*[itertools.permutations(units[l]) for l in labels]):
+            g = list(f)
+            for l, perm in zip(labels, combo):
+                for i, u in zip(pos[l], perm):
+                    g[i] = u
+            yield canon(tuple(g), L)
 
 
 def _groups(tier: TierSpace, seed: str) -> List[Tuple[int, Tuple[str, ...]]]:
@@ -624,16 +776,23 @@ def _centres(members: Sequence[Flat]) -> Tuple[Optional[str], ...]:
 
 
 def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
-                max_groups: Optional[int] = None, budget: Budget = Budget()) -> Placement:
-    """Build the stable CLASS around `seed` by search, growing group by group (L-72)."""
+                max_groups: Optional[int] = None, budget: Budget = Budget(),
+                quotient: bool = True) -> Placement:
+    """Build the stable CLASS around `seed` by search, growing group by group (L-72).
+    quotient=True (L-90): interchangeable units are held as one group (labels);
+    quotient=False: the T4c search (every unit its own label)."""
     if seed not in tier.postings:
         raise KeyError(seed)
     w = w or Weights(tier)
+    groups = _groups(tier, seed)
+    pool = [seed] + [u for _, g in groups for u in g]
+    rep = find_twins(w, pool) if quotient else {u: u for u in pool}
+    qw = QWeights(w, rep) if quotient else w
     L = 1
     work0 = _Work(budget)
-    state = _settle(w, [canon((seed,) + (None,) * 6, 1)], 1, work0, budget)   # L-63, L-70
+    state = _settle(qw, [canon((rep[seed],) + (None,) * 6, 1)], 1, work0, budget)   # L-63, L-70
     size = 1
-    groups = _groups(tier, seed)
+    counts: Dict[str, int] = {rep[seed]: 1}          # placed twins per label
     steps: List[Step] = []
     stop, broke = "exhausted", None
     for gi, (share, members) in enumerate(groups):
@@ -644,33 +803,56 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
         bases = [extend(s, L, L2) if L2 > L else s for s in state]
         work = _Work(budget)
         try:
-            starts = _insert_group(w, bases, L2, members, work, budget)
-            new = _settle(w, starts, L2, work, budget)
+            starts = _insert_group(qw, bases, L2, [rep[u] for u in members], work, budget)
+            new = _settle(qw, starts, L2, work, budget)
         except _Over as e:
             broke = Step(share, members, BUDGET, work.n, None, None, str(e))
             steps.append(broke)
             stop = BUDGET                                    # N-05: restore `state`
             break
         state, L, size = new, L2, size + len(members)
-        steps.append(Step(share, members, STABLE, work.n, size, len(new)))
-    return Placement(seed, to_cross(state[0], L), state, L, _centres(state), size, size,
-                     score_flat(w, state[0], L), stop, broke, tuple(steps),
-                     sum(len(g) for _, g in groups), budget)
+        for u in members:
+            counts[rep[u]] = counts.get(rep[u], 0) + 1
+        steps.append(Step(share, members, STABLE, work.n, size, len(new), None,
+                          expanded_count(new, L, counts)))
+    score = score_flat(qw, state[0], L)
+    # display names: the smallest PLACED unit of each class (a label, L-90)
+    placed = {seed}
+    for st in steps:
+        if st.status == STABLE:
+            placed.update(st.units)
+    by_rep: Dict[str, List[str]] = {}
+    for u in sorted(placed):
+        by_rep.setdefault(rep[u], []).append(u)
+    name = {r: us[0] for r, us in by_rep.items()}
+    twin_sets = tuple(sorted(tuple(us) for us in by_rep.values() if len(us) > 1))
+    if any(r != n for r, n in name.items()):
+        state = tuple(sorted({canon(tuple(None if x is None else name[x] for x in f), L)
+                              for f in state}, key=_flat_sort_key))
+    tsets = {t[0]: t for t in twin_sets}
+    cent = sorted({u for m in state for u in tsets.get(m[0], (m[0],))},
+                  key=lambda c: ("", "") if c is None else (c, "x"))
+    rep_cross = next(expand_flats(state[:1], L, twin_sets), state[0])
+    return Placement(seed, to_cross(rep_cross, L), state, L, tuple(cent), size, size,
+                     score, stop, broke, tuple(steps),
+                     sum(len(g) for _, g in groups), budget, twin_sets, quotient)
 
 
 class Placer:
     """On-demand placement with a cache (L-07): results never depend on the cache."""
 
-    def __init__(self, tier: TierSpace, budget: Budget = Budget()) -> None:
+    def __init__(self, tier: TierSpace, budget: Budget = Budget(), quotient: bool = True) -> None:
         self.tier = tier
         self.budget = budget
+        self.quotient = quotient
         self.w = Weights(tier)
         self._done: Dict[str, Placement] = {}
 
     def cross_for(self, seed: str) -> Placement:
         p = self._done.get(seed)
         if p is None:
-            p = self._done[seed] = build_cross(self.tier, seed, self.w, budget=self.budget)
+            p = self._done[seed] = build_cross(self.tier, seed, self.w, budget=self.budget,
+                                               quotient=self.quotient)
         return p
 
     def precompute_all(self, seeds: Optional[Iterable[str]] = None) -> Dict[str, Placement]:
