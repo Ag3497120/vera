@@ -1,0 +1,3493 @@
+[
+ {
+  "id": "a01",
+  "kind": "what",
+  "question": "遊眠とは何ですか",
+  "verdict": "UNKNOWN_NO_FIXED_POINT",
+  "Q": [
+   "遊眠"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_FIXED_POINT",
+  "per_unit": [
+   {
+    "u": "遊眠",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "ゆうみん",
+     "漫画家",
+     "遊眠"
+    ],
+    "n_crosses_holding": 3,
+    "own": {
+     "capacity": 4,
+     "size": 4,
+     "stop": "exhausted",
+     "candidates": 3,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "ゆうみん",
+   "漫画家",
+   "遊眠"
+  ],
+  "n_holding": 3,
+  "caps": {
+   "ゆうみん": [
+    4,
+    "exhausted"
+   ],
+   "漫画家": [
+    7,
+    "exhausted"
+   ],
+   "遊眠": [
+    4,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "4": 2,
+   "7": 1
+  },
+  "stop_hist": {
+   "exhausted": 3
+  },
+  "involved": [
+   "ゆうみん",
+   "漫画家",
+   "遊眠"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "ゆうみん",
+   "漫画家",
+   "遊眠"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a03",
+  "kind": "where",
+  "question": "厚田聚富はどこにありますか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "厚田聚富"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_EVIDENCE",
+  "per_unit": [
+   {
+    "u": "厚田聚富",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "あつたしっぷ",
+     "北海道石狩市厚田地域",
+     "厚田聚富",
+     "最南端"
+    ],
+    "n_crosses_holding": 4,
+    "own": {
+     "capacity": 5,
+     "size": 5,
+     "stop": "exhausted",
+     "candidates": 4,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "あつたしっぷ",
+   "北海道石狩市厚田地域",
+   "厚田聚富",
+   "最南端"
+  ],
+  "n_holding": 4,
+  "caps": {
+   "あつたしっぷ": [
+    5,
+    "exhausted"
+   ],
+   "北海道石狩市厚田地域": [
+    5,
+    "exhausted"
+   ],
+   "厚田聚富": [
+    5,
+    "exhausted"
+   ],
+   "最南端": [
+    5,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "5": 4
+  },
+  "stop_hist": {
+   "exhausted": 4
+  },
+  "involved": [
+   "あつたしっぷ",
+   "北海道石狩市厚田地域",
+   "厚田聚富",
+   "最南端"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "あつたしっぷ",
+   "北海道石狩市厚田地域",
+   "厚田聚富",
+   "最南端"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a04",
+  "kind": "what",
+  "question": "HONEY BADGERとは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "BADGER",
+   "HONEY"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_EVIDENCE",
+  "per_unit": [
+   {
+    "u": "BADGER",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "BADGER",
+     "HONEY",
+     "ハニーバジャー"
+    ],
+    "n_crosses_holding": 3,
+    "own": {
+     "capacity": 5,
+     "size": 5,
+     "stop": "exhausted",
+     "candidates": 4,
+     "reason": null,
+     "own_contains_u": true
+    }
+   },
+   {
+    "u": "HONEY",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "BADGER",
+     "HONEY",
+     "ハニーバジャー"
+    ],
+    "n_crosses_holding": 3,
+    "own": {
+     "capacity": 5,
+     "size": 5,
+     "stop": "exhausted",
+     "candidates": 4,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "BADGER",
+   "HONEY",
+   "ハニーバジャー"
+  ],
+  "n_holding": 3,
+  "caps": {
+   "BADGER": [
+    5,
+    "exhausted"
+   ],
+   "HONEY": [
+    5,
+    "exhausted"
+   ],
+   "ハニーバジャー": [
+    5,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "5": 3
+  },
+  "stop_hist": {
+   "exhausted": 3
+  },
+  "involved": [
+   "BADGER",
+   "HONEY",
+   "ハニーバジャー"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "BADGER",
+   "HONEY",
+   "ハニーバジャー"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a06",
+  "kind": "who",
+  "question": "舞浜地ビール工房ハーヴェスト・ムーンを経営しているのは誰ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "ムーン",
+   "工房ハーヴェスト",
+   "経営",
+   "舞浜地ビール"
+  ],
+  "category": "ii",
+  "sub": "",
+  "per_unit": [
+   {
+    "u": "ムーン",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "ムーン"
+    ],
+    "n_crosses_holding": 1,
+    "own": {
+     "capacity": 1,
+     "size": 1,
+     "stop": "budget",
+     "candidates": 10,
+     "reason": "max_states",
+     "own_contains_u": true
+    }
+   },
+   {
+    "u": "工房ハーヴェスト",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "工房ハーヴェスト"
+    ],
+    "n_crosses_holding": 1,
+    "own": {
+     "capacity": 1,
+     "size": 1,
+     "stop": "budget",
+     "candidates": 10,
+     "reason": "max_states",
+     "own_contains_u": true
+    }
+   },
+   {
+    "u": "経営",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "経営"
+    ],
+    "n_crosses_holding": 1,
+    "own": {
+     "capacity": 1,
+     "size": 1,
+     "stop": "budget",
+     "candidates": 10,
+     "reason": "max_moves",
+     "own_contains_u": true
+    }
+   },
+   {
+    "u": "舞浜地ビール",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "舞浜地ビール"
+    ],
+    "n_crosses_holding": 1,
+    "own": {
+     "capacity": 1,
+     "size": 1,
+     "stop": "budget",
+     "candidates": 10,
+     "reason": "max_moves",
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "ムーン",
+   "工房ハーヴェスト",
+   "経営",
+   "舞浜地ビール"
+  ],
+  "n_holding": 4,
+  "caps": {
+   "ムーン": [
+    1,
+    "budget"
+   ],
+   "工房ハーヴェスト": [
+    1,
+    "budget"
+   ],
+   "経営": [
+    1,
+    "budget"
+   ],
+   "舞浜地ビール": [
+    1,
+    "budget"
+   ]
+  },
+  "cap_hist": {
+   "1": 4
+  },
+  "stop_hist": {
+   "budget": 4
+  },
+  "involved": [
+   "ムーン",
+   "工房ハーヴェスト",
+   "経営",
+   "舞浜地ビール"
+  ],
+  "budget_limited": [
+   "ムーン",
+   "工房ハーヴェスト",
+   "経営",
+   "舞浜地ビール"
+  ],
+  "exhausted": [],
+  "rebuilt": {
+   "ムーン": {
+    "high": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    },
+    "max": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    }
+   },
+   "工房ハーヴェスト": {
+    "high": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    },
+    "max": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    }
+   },
+   "経営": {
+    "high": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    },
+    "max": {
+     "capacity": 11,
+     "stop": "exhausted",
+     "size": 11,
+     "contains_Q": true
+    }
+   },
+   "舞浜地ビール": {
+    "high": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    },
+    "max": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    }
+   }
+  },
+  "reask": {
+   "high": {
+    "verdict": "UNKNOWN_NO_EVIDENCE",
+    "states_adopted": 0,
+    "crosses_read": 4,
+    "secs": 0.01
+   },
+   "max": {
+    "verdict": "ANSWER",
+    "states_adopted": 8523,
+    "crosses_read": 4,
+    "secs": 23.43
+   }
+  }
+ },
+ {
+  "id": "a08",
+  "kind": "what",
+  "question": "世俗教育とは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "世俗教育"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_EVIDENCE",
+  "per_unit": [
+   {
+    "u": "世俗教育",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "せぞくきょういく",
+     "世俗教育",
+     "学校教育",
+     "非宗教"
+    ],
+    "n_crosses_holding": 4,
+    "own": {
+     "capacity": 5,
+     "size": 5,
+     "stop": "exhausted",
+     "candidates": 4,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "せぞくきょういく",
+   "世俗教育",
+   "学校教育",
+   "非宗教"
+  ],
+  "n_holding": 4,
+  "caps": {
+   "せぞくきょういく": [
+    5,
+    "exhausted"
+   ],
+   "世俗教育": [
+    5,
+    "exhausted"
+   ],
+   "学校教育": [
+    5,
+    "exhausted"
+   ],
+   "非宗教": [
+    5,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "5": 4
+  },
+  "stop_hist": {
+   "exhausted": 4
+  },
+  "involved": [
+   "せぞくきょういく",
+   "世俗教育",
+   "学校教育",
+   "非宗教"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "せぞくきょういく",
+   "世俗教育",
+   "学校教育",
+   "非宗教"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a09",
+  "kind": "what",
+  "question": "寅ヤスとは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "寅ヤス"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_EVIDENCE",
+  "per_unit": [
+   {
+    "u": "寅ヤス",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "とら",
+     "ヤス",
+     "寅ヤス",
+     "漫画家"
+    ],
+    "n_crosses_holding": 4,
+    "own": {
+     "capacity": 5,
+     "size": 5,
+     "stop": "exhausted",
+     "candidates": 4,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "とら",
+   "ヤス",
+   "寅ヤス",
+   "漫画家"
+  ],
+  "n_holding": 4,
+  "caps": {
+   "とら": [
+    5,
+    "exhausted"
+   ],
+   "ヤス": [
+    5,
+    "exhausted"
+   ],
+   "寅ヤス": [
+    5,
+    "exhausted"
+   ],
+   "漫画家": [
+    7,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "5": 3,
+   "7": 1
+  },
+  "stop_hist": {
+   "exhausted": 4
+  },
+  "involved": [
+   "とら",
+   "ヤス",
+   "寅ヤス",
+   "漫画家"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "とら",
+   "ヤス",
+   "寅ヤス",
+   "漫画家"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a10",
+  "kind": "what",
+  "question": "フェミニズムとは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "フェミニズム"
+  ],
+  "category": "ii",
+  "sub": "",
+  "per_unit": [
+   {
+    "u": "フェミニズム",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "フェミニズム"
+    ],
+    "n_crosses_holding": 1,
+    "own": {
+     "capacity": 1,
+     "size": 1,
+     "stop": "budget",
+     "candidates": 14,
+     "reason": "max_moves",
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "フェミニズム"
+  ],
+  "n_holding": 1,
+  "caps": {
+   "フェミニズム": [
+    1,
+    "budget"
+   ]
+  },
+  "cap_hist": {
+   "1": 1
+  },
+  "stop_hist": {
+   "budget": 1
+  },
+  "involved": [
+   "フェミニズム"
+  ],
+  "budget_limited": [
+   "フェミニズム"
+  ],
+  "exhausted": [],
+  "rebuilt": {
+   "フェミニズム": {
+    "high": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    },
+    "max": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    }
+   }
+  },
+  "reask": {
+   "high": {
+    "verdict": "UNKNOWN_NO_EVIDENCE",
+    "states_adopted": 0,
+    "crosses_read": 1,
+    "secs": 0.01
+   },
+   "max": {
+    "verdict": "UNKNOWN_NO_EVIDENCE",
+    "states_adopted": 0,
+    "crosses_read": 1,
+    "secs": 0.01
+   }
+  }
+ },
+ {
+  "id": "a14",
+  "kind": "where",
+  "question": "伊勢原断層はどこにありますか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "伊勢原断層"
+  ],
+  "category": "ii",
+  "sub": "",
+  "per_unit": [
+   {
+    "u": "伊勢原断層",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "伊勢原断層"
+    ],
+    "n_crosses_holding": 1,
+    "own": {
+     "capacity": 1,
+     "size": 1,
+     "stop": "budget",
+     "candidates": 12,
+     "reason": "max_moves",
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "伊勢原断層"
+  ],
+  "n_holding": 1,
+  "caps": {
+   "伊勢原断層": [
+    1,
+    "budget"
+   ]
+  },
+  "cap_hist": {
+   "1": 1
+  },
+  "stop_hist": {
+   "budget": 1
+  },
+  "involved": [
+   "伊勢原断層"
+  ],
+  "budget_limited": [
+   "伊勢原断層"
+  ],
+  "exhausted": [],
+  "rebuilt": {
+   "伊勢原断層": {
+    "high": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    },
+    "max": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    }
+   }
+  },
+  "reask": {
+   "high": {
+    "verdict": "UNKNOWN_NO_EVIDENCE",
+    "states_adopted": 0,
+    "crosses_read": 1,
+    "secs": 0.01
+   },
+   "max": {
+    "verdict": "UNKNOWN_NO_EVIDENCE",
+    "states_adopted": 0,
+    "crosses_read": 1,
+    "secs": 0.0
+   }
+  }
+ },
+ {
+  "id": "a19",
+  "kind": "where",
+  "question": "ジェラーチェはどこの国にありますか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "ジェラーチェ",
+   "国"
+  ],
+  "category": "ii",
+  "sub": "",
+  "per_unit": [
+   {
+    "u": "ジェラーチェ",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "ジェラーチェ"
+    ],
+    "n_crosses_holding": 1,
+    "own": {
+     "capacity": 1,
+     "size": 1,
+     "stop": "budget",
+     "candidates": 9,
+     "reason": "max_states",
+     "own_contains_u": true
+    }
+   },
+   {
+    "u": "国",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [
+   "ジェラーチェ"
+  ],
+  "n_holding": 1,
+  "caps": {
+   "ジェラーチェ": [
+    1,
+    "budget"
+   ]
+  },
+  "cap_hist": {
+   "1": 1
+  },
+  "stop_hist": {
+   "budget": 1
+  },
+  "involved": [
+   "ジェラーチェ"
+  ],
+  "budget_limited": [
+   "ジェラーチェ"
+  ],
+  "exhausted": [],
+  "rebuilt": {
+   "ジェラーチェ": {
+    "high": {
+     "capacity": 10,
+     "stop": "exhausted",
+     "size": 10,
+     "contains_Q": true
+    },
+    "max": {
+     "capacity": 10,
+     "stop": "exhausted",
+     "size": 10,
+     "contains_Q": true
+    }
+   }
+  },
+  "reask": {
+   "high": {
+    "verdict": "ANSWER",
+    "states_adopted": 1366,
+    "crosses_read": 1,
+    "secs": 17.72
+   },
+   "max": {
+    "verdict": "ANSWER",
+    "states_adopted": 1366,
+    "crosses_read": 1,
+    "secs": 17.74
+   }
+  }
+ },
+ {
+  "id": "a21",
+  "kind": "where",
+  "question": "近江八幡郵便局はどこにありますか",
+  "verdict": "UNKNOWN_NO_FIXED_POINT",
+  "Q": [
+   "近江八幡郵便局"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_FIXED_POINT",
+  "per_unit": [
+   {
+    "u": "近江八幡郵便局",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "おうみはちまんゆうびんきょく",
+     "滋賀県近江八幡市",
+     "近江八幡郵便局",
+     "郵便局"
+    ],
+    "n_crosses_holding": 4,
+    "own": {
+     "capacity": 4,
+     "size": 4,
+     "stop": "exhausted",
+     "candidates": 3,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "おうみはちまんゆうびんきょく",
+   "滋賀県近江八幡市",
+   "近江八幡郵便局",
+   "郵便局"
+  ],
+  "n_holding": 4,
+  "caps": {
+   "おうみはちまんゆうびんきょく": [
+    4,
+    "exhausted"
+   ],
+   "滋賀県近江八幡市": [
+    4,
+    "exhausted"
+   ],
+   "近江八幡郵便局": [
+    4,
+    "exhausted"
+   ],
+   "郵便局": [
+    4,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "4": 4
+  },
+  "stop_hist": {
+   "exhausted": 4
+  },
+  "involved": [
+   "おうみはちまんゆうびんきょく",
+   "滋賀県近江八幡市",
+   "近江八幡郵便局",
+   "郵便局"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "おうみはちまんゆうびんきょく",
+   "滋賀県近江八幡市",
+   "近江八幡郵便局",
+   "郵便局"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a23",
+  "kind": "where",
+  "question": "竜游県はどこにありますか",
+  "verdict": "UNKNOWN_NO_FIXED_POINT",
+  "Q": [
+   "竜游県"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_FIXED_POINT",
+  "per_unit": [
+   {
+    "u": "竜游県",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "中華人民共和国浙江省",
+     "省直轄",
+     "竜游県",
+     "衢州市"
+    ],
+    "n_crosses_holding": 4,
+    "own": {
+     "capacity": 1,
+     "size": 1,
+     "stop": "budget",
+     "candidates": 10,
+     "reason": "max_moves",
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "中華人民共和国浙江省",
+   "省直轄",
+   "竜游県",
+   "衢州市"
+  ],
+  "n_holding": 4,
+  "caps": {
+   "中華人民共和国浙江省": [
+    13,
+    "exhausted"
+   ],
+   "省直轄": [
+    11,
+    "exhausted"
+   ],
+   "竜游県": [
+    1,
+    "budget"
+   ],
+   "衢州市": [
+    13,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "1": 1,
+   "11": 1,
+   "13": 2
+  },
+  "stop_hist": {
+   "exhausted": 3,
+   "budget": 1
+  },
+  "involved": [
+   "中華人民共和国浙江省",
+   "省直轄",
+   "竜游県",
+   "衢州市"
+  ],
+  "budget_limited": [
+   "竜游県"
+  ],
+  "exhausted": [
+   "中華人民共和国浙江省",
+   "省直轄",
+   "衢州市"
+  ],
+  "rebuilt": {
+   "竜游県": {
+    "high": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    },
+    "max": {
+     "capacity": 11,
+     "stop": "exhausted",
+     "size": 11,
+     "contains_Q": true
+    }
+   }
+  },
+  "reask": {
+   "high": {
+    "verdict": "UNKNOWN_NO_FIXED_POINT",
+    "states_adopted": 0,
+    "crosses_read": 4,
+    "secs": 2.34
+   },
+   "max": {
+    "verdict": "UNKNOWN_NO_FIXED_POINT",
+    "states_adopted": 0,
+    "crosses_read": 4,
+    "secs": 4.16
+   }
+  }
+ },
+ {
+  "id": "a25",
+  "kind": "where",
+  "question": "市川町はどこにありますか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "市川町"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_EVIDENCE",
+  "per_unit": [
+   {
+    "u": "市川町",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "いちかわちょう",
+     "中央部",
+     "兵庫県神崎郡",
+     "市川町"
+    ],
+    "n_crosses_holding": 4,
+    "own": {
+     "capacity": 6,
+     "size": 6,
+     "stop": "exhausted",
+     "candidates": 5,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "いちかわちょう",
+   "中央部",
+   "兵庫県神崎郡",
+   "市川町"
+  ],
+  "n_holding": 4,
+  "caps": {
+   "いちかわちょう": [
+    6,
+    "exhausted"
+   ],
+   "中央部": [
+    6,
+    "exhausted"
+   ],
+   "兵庫県神崎郡": [
+    6,
+    "exhausted"
+   ],
+   "市川町": [
+    6,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "6": 4
+  },
+  "stop_hist": {
+   "exhausted": 4
+  },
+  "involved": [
+   "いちかわちょう",
+   "中央部",
+   "兵庫県神崎郡",
+   "市川町"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "いちかわちょう",
+   "中央部",
+   "兵庫県神崎郡",
+   "市川町"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a26",
+  "kind": "where",
+  "question": "中之嶽神社はどこにありますか",
+  "verdict": "UNKNOWN_NO_FIXED_POINT",
+  "Q": [
+   "中之嶽神社"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_FIXED_POINT",
+  "per_unit": [
+   {
+    "u": "中之嶽神社",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "なかのたけじんじゃ",
+     "中之嶽神社",
+     "群馬県甘楽郡下仁田町上小坂"
+    ],
+    "n_crosses_holding": 3,
+    "own": {
+     "capacity": 4,
+     "size": 4,
+     "stop": "exhausted",
+     "candidates": 3,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "なかのたけじんじゃ",
+   "中之嶽神社",
+   "群馬県甘楽郡下仁田町上小坂"
+  ],
+  "n_holding": 3,
+  "caps": {
+   "なかのたけじんじゃ": [
+    4,
+    "exhausted"
+   ],
+   "中之嶽神社": [
+    4,
+    "exhausted"
+   ],
+   "群馬県甘楽郡下仁田町上小坂": [
+    4,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "4": 3
+  },
+  "stop_hist": {
+   "exhausted": 3
+  },
+  "involved": [
+   "なかのたけじんじゃ",
+   "中之嶽神社",
+   "群馬県甘楽郡下仁田町上小坂"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "なかのたけじんじゃ",
+   "中之嶽神社",
+   "群馬県甘楽郡下仁田町上小坂"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a29",
+  "kind": "what",
+  "question": "博文館とは何ですか",
+  "verdict": "UNKNOWN_NO_FIXED_POINT",
+  "Q": [
+   "博文館"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_FIXED_POINT",
+  "per_unit": [
+   {
+    "u": "博文館",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "はくぶんかん",
+     "出版社",
+     "博文館"
+    ],
+    "n_crosses_holding": 3,
+    "own": {
+     "capacity": 4,
+     "size": 4,
+     "stop": "exhausted",
+     "candidates": 3,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "はくぶんかん",
+   "出版社",
+   "博文館"
+  ],
+  "n_holding": 3,
+  "caps": {
+   "はくぶんかん": [
+    4,
+    "exhausted"
+   ],
+   "出版社": [
+    4,
+    "exhausted"
+   ],
+   "博文館": [
+    4,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "4": 3
+  },
+  "stop_hist": {
+   "exhausted": 3
+  },
+  "involved": [
+   "はくぶんかん",
+   "出版社",
+   "博文館"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "はくぶんかん",
+   "出版社",
+   "博文館"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a30",
+  "kind": "where",
+  "question": "花園町駅はどこにありますか",
+  "verdict": "AMBIGUOUS",
+  "Q": [
+   "花園町駅"
+  ],
+  "category": "iii",
+  "sub": "AMBIGUOUS",
+  "per_unit": [
+   {
+    "u": "花園町駅",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "Metro",
+     "四",
+     "橋線",
+     "花園町駅"
+    ],
+    "n_crosses_holding": 4,
+    "own": {
+     "capacity": 1,
+     "size": 1,
+     "stop": "budget",
+     "candidates": 8,
+     "reason": "max_moves",
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "Metro",
+   "四",
+   "橋線",
+   "花園町駅"
+  ],
+  "n_holding": 4,
+  "caps": {
+   "Metro": [
+    9,
+    "exhausted"
+   ],
+   "四": [
+    9,
+    "exhausted"
+   ],
+   "橋線": [
+    9,
+    "exhausted"
+   ],
+   "花園町駅": [
+    1,
+    "budget"
+   ]
+  },
+  "cap_hist": {
+   "1": 1,
+   "9": 3
+  },
+  "stop_hist": {
+   "exhausted": 3,
+   "budget": 1
+  },
+  "involved": [
+   "Metro",
+   "四",
+   "橋線",
+   "花園町駅"
+  ],
+  "budget_limited": [
+   "花園町駅"
+  ],
+  "exhausted": [
+   "Metro",
+   "四",
+   "橋線"
+  ],
+  "rebuilt": {
+   "花園町駅": {
+    "high": {
+     "capacity": 9,
+     "stop": "exhausted",
+     "size": 9,
+     "contains_Q": true
+    },
+    "max": {
+     "capacity": 9,
+     "stop": "exhausted",
+     "size": 9,
+     "contains_Q": true
+    }
+   }
+  },
+  "reask": {
+   "high": {
+    "verdict": "AMBIGUOUS",
+    "states_adopted": 0,
+    "crosses_read": 4,
+    "secs": 66.75
+   },
+   "max": {
+    "verdict": "AMBIGUOUS",
+    "states_adopted": 0,
+    "crosses_read": 4,
+    "secs": 66.41
+   }
+  }
+ },
+ {
+  "id": "a31",
+  "kind": "where",
+  "question": "富岡八幡宮はどこにありますか",
+  "verdict": "UNKNOWN_NO_FIXED_POINT",
+  "Q": [
+   "富岡八幡宮"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_FIXED_POINT",
+  "per_unit": [
+   {
+    "u": "富岡八幡宮",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "とみおかはちまんぐう",
+     "八幡神社",
+     "富岡八幡宮",
+     "東京都江東区富岡"
+    ],
+    "n_crosses_holding": 4,
+    "own": {
+     "capacity": 4,
+     "size": 4,
+     "stop": "exhausted",
+     "candidates": 3,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "とみおかはちまんぐう",
+   "八幡神社",
+   "富岡八幡宮",
+   "東京都江東区富岡"
+  ],
+  "n_holding": 4,
+  "caps": {
+   "とみおかはちまんぐう": [
+    4,
+    "exhausted"
+   ],
+   "八幡神社": [
+    4,
+    "exhausted"
+   ],
+   "富岡八幡宮": [
+    4,
+    "exhausted"
+   ],
+   "東京都江東区富岡": [
+    4,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "4": 4
+  },
+  "stop_hist": {
+   "exhausted": 4
+  },
+  "involved": [
+   "とみおかはちまんぐう",
+   "八幡神社",
+   "富岡八幡宮",
+   "東京都江東区富岡"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "とみおかはちまんぐう",
+   "八幡神社",
+   "富岡八幡宮",
+   "東京都江東区富岡"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a32",
+  "kind": "who",
+  "question": "叱らない母親の作者は誰ですか",
+  "verdict": "AMBIGUOUS",
+  "Q": [
+   "らない",
+   "作者",
+   "叱",
+   "母親"
+  ],
+  "category": "iii",
+  "sub": "AMBIGUOUS",
+  "per_unit": [
+   {
+    "u": "らない",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "しからないははおや",
+     "らない",
+     "レディースコミック",
+     "叱",
+     "小野拓実",
+     "母親"
+    ],
+    "n_crosses_holding": 6,
+    "own": {
+     "capacity": 8,
+     "size": 8,
+     "stop": "exhausted",
+     "candidates": 7,
+     "reason": null,
+     "own_contains_u": true
+    }
+   },
+   {
+    "u": "作者",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "作者"
+    ],
+    "n_crosses_holding": 1,
+    "own": {
+     "capacity": 1,
+     "size": 1,
+     "stop": "budget",
+     "candidates": 9,
+     "reason": "max_states",
+     "own_contains_u": true
+    }
+   },
+   {
+    "u": "叱",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "しからないははおや",
+     "らない",
+     "レディースコミック",
+     "叱",
+     "小野拓実",
+     "母親"
+    ],
+    "n_crosses_holding": 6,
+    "own": {
+     "capacity": 8,
+     "size": 8,
+     "stop": "exhausted",
+     "candidates": 7,
+     "reason": null,
+     "own_contains_u": true
+    }
+   },
+   {
+    "u": "母親",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "しからないははおや",
+     "らない",
+     "レディースコミック",
+     "叱",
+     "小野拓実",
+     "母親"
+    ],
+    "n_crosses_holding": 6,
+    "own": {
+     "capacity": 8,
+     "size": 8,
+     "stop": "exhausted",
+     "candidates": 7,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "しからないははおや",
+   "らない",
+   "レディースコミック",
+   "作者",
+   "叱",
+   "小野拓実",
+   "母親"
+  ],
+  "n_holding": 7,
+  "caps": {
+   "しからないははおや": [
+    8,
+    "exhausted"
+   ],
+   "らない": [
+    8,
+    "exhausted"
+   ],
+   "レディースコミック": [
+    8,
+    "exhausted"
+   ],
+   "作者": [
+    1,
+    "budget"
+   ],
+   "叱": [
+    8,
+    "exhausted"
+   ],
+   "小野拓実": [
+    8,
+    "exhausted"
+   ],
+   "母親": [
+    8,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "1": 1,
+   "8": 6
+  },
+  "stop_hist": {
+   "exhausted": 6,
+   "budget": 1
+  },
+  "involved": [
+   "しからないははおや",
+   "らない",
+   "レディースコミック",
+   "作者",
+   "叱",
+   "小野拓実",
+   "母親"
+  ],
+  "budget_limited": [
+   "作者"
+  ],
+  "exhausted": [
+   "しからないははおや",
+   "らない",
+   "レディースコミック",
+   "叱",
+   "小野拓実",
+   "母親"
+  ],
+  "rebuilt": {
+   "作者": {
+    "high": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    },
+    "max": {
+     "capacity": 10,
+     "stop": "exhausted",
+     "size": 10,
+     "contains_Q": true
+    }
+   }
+  },
+  "reask": {
+   "high": {
+    "verdict": "AMBIGUOUS",
+    "states_adopted": 0,
+    "crosses_read": 7,
+    "secs": 18.75
+   },
+   "max": {
+    "verdict": "CHOICE",
+    "states_adopted": 1890,
+    "crosses_read": 7,
+    "secs": 44.46
+   }
+  }
+ },
+ {
+  "id": "a34",
+  "kind": "what",
+  "question": "奉天派とは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "奉天派"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_EVIDENCE",
+  "per_unit": [
+   {
+    "u": "奉天派",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "ほうてんは",
+     "中華民国",
+     "大陸統治期",
+     "奉天派",
+     "軍閥"
+    ],
+    "n_crosses_holding": 5,
+    "own": {
+     "capacity": 6,
+     "size": 6,
+     "stop": "exhausted",
+     "candidates": 5,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "ほうてんは",
+   "中華民国",
+   "大陸統治期",
+   "奉天派",
+   "軍閥"
+  ],
+  "n_holding": 5,
+  "caps": {
+   "ほうてんは": [
+    6,
+    "exhausted"
+   ],
+   "中華民国": [
+    6,
+    "exhausted"
+   ],
+   "大陸統治期": [
+    6,
+    "exhausted"
+   ],
+   "奉天派": [
+    6,
+    "exhausted"
+   ],
+   "軍閥": [
+    6,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "6": 5
+  },
+  "stop_hist": {
+   "exhausted": 5
+  },
+  "involved": [
+   "ほうてんは",
+   "中華民国",
+   "大陸統治期",
+   "奉天派",
+   "軍閥"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "ほうてんは",
+   "中華民国",
+   "大陸統治期",
+   "奉天派",
+   "軍閥"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a35",
+  "kind": "where",
+  "question": "水戸東照宮はどこにありますか",
+  "verdict": "UNKNOWN_NO_FIXED_POINT",
+  "Q": [
+   "水戸東照宮"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_FIXED_POINT",
+  "per_unit": [
+   {
+    "u": "水戸東照宮",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "みととうしょうぐう",
+     "水戸東照宮",
+     "茨城県水戸市"
+    ],
+    "n_crosses_holding": 3,
+    "own": {
+     "capacity": 4,
+     "size": 4,
+     "stop": "exhausted",
+     "candidates": 3,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "みととうしょうぐう",
+   "水戸東照宮",
+   "茨城県水戸市"
+  ],
+  "n_holding": 3,
+  "caps": {
+   "みととうしょうぐう": [
+    4,
+    "exhausted"
+   ],
+   "水戸東照宮": [
+    4,
+    "exhausted"
+   ],
+   "茨城県水戸市": [
+    4,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "4": 3
+  },
+  "stop_hist": {
+   "exhausted": 3
+  },
+  "involved": [
+   "みととうしょうぐう",
+   "水戸東照宮",
+   "茨城県水戸市"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "みととうしょうぐう",
+   "水戸東照宮",
+   "茨城県水戸市"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a36",
+  "kind": "what",
+  "question": "互先とは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "互先"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_EVIDENCE",
+  "per_unit": [
+   {
+    "u": "互先",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "たがいせん",
+     "互先",
+     "囲碁",
+     "手合割"
+    ],
+    "n_crosses_holding": 4,
+    "own": {
+     "capacity": 5,
+     "size": 5,
+     "stop": "exhausted",
+     "candidates": 4,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "たがいせん",
+   "互先",
+   "囲碁",
+   "手合割"
+  ],
+  "n_holding": 4,
+  "caps": {
+   "たがいせん": [
+    5,
+    "exhausted"
+   ],
+   "互先": [
+    5,
+    "exhausted"
+   ],
+   "囲碁": [
+    5,
+    "exhausted"
+   ],
+   "手合割": [
+    5,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "5": 4
+  },
+  "stop_hist": {
+   "exhausted": 4
+  },
+  "involved": [
+   "たがいせん",
+   "互先",
+   "囲碁",
+   "手合割"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "たがいせん",
+   "互先",
+   "囲碁",
+   "手合割"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a38",
+  "kind": "where",
+  "question": "シリヤン湖はどこの国にありますか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "シリヤン",
+   "国",
+   "湖"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_EVIDENCE",
+  "per_unit": [
+   {
+    "u": "シリヤン",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "シリヤン",
+     "ダーラナ",
+     "中部",
+     "湖"
+    ],
+    "n_crosses_holding": 4,
+    "own": {
+     "capacity": 6,
+     "size": 6,
+     "stop": "exhausted",
+     "candidates": 5,
+     "reason": null,
+     "own_contains_u": true
+    }
+   },
+   {
+    "u": "国",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   },
+   {
+    "u": "湖",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "シリヤン",
+     "ダーラナ",
+     "中部",
+     "湖"
+    ],
+    "n_crosses_holding": 4,
+    "own": {
+     "capacity": 6,
+     "size": 6,
+     "stop": "exhausted",
+     "candidates": 5,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "シリヤン",
+   "ダーラナ",
+   "中部",
+   "湖"
+  ],
+  "n_holding": 4,
+  "caps": {
+   "シリヤン": [
+    6,
+    "exhausted"
+   ],
+   "ダーラナ": [
+    6,
+    "exhausted"
+   ],
+   "中部": [
+    6,
+    "exhausted"
+   ],
+   "湖": [
+    6,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "6": 4
+  },
+  "stop_hist": {
+   "exhausted": 4
+  },
+  "involved": [
+   "シリヤン",
+   "ダーラナ",
+   "中部",
+   "湖"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "シリヤン",
+   "ダーラナ",
+   "中部",
+   "湖"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a40",
+  "kind": "where",
+  "question": "千葉神社はどこにありますか",
+  "verdict": "UNKNOWN_NO_FIXED_POINT",
+  "Q": [
+   "千葉神社"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_FIXED_POINT",
+  "per_unit": [
+   {
+    "u": "千葉神社",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "ちばじんじゃ",
+     "千葉県千葉市中央区",
+     "千葉神社"
+    ],
+    "n_crosses_holding": 3,
+    "own": {
+     "capacity": 4,
+     "size": 4,
+     "stop": "exhausted",
+     "candidates": 3,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "ちばじんじゃ",
+   "千葉県千葉市中央区",
+   "千葉神社"
+  ],
+  "n_holding": 3,
+  "caps": {
+   "ちばじんじゃ": [
+    4,
+    "exhausted"
+   ],
+   "千葉県千葉市中央区": [
+    4,
+    "exhausted"
+   ],
+   "千葉神社": [
+    4,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "4": 3
+  },
+  "stop_hist": {
+   "exhausted": 3
+  },
+  "involved": [
+   "ちばじんじゃ",
+   "千葉県千葉市中央区",
+   "千葉神社"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "ちばじんじゃ",
+   "千葉県千葉市中央区",
+   "千葉神社"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a42",
+  "kind": "what",
+  "question": "破局噴火とは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "破局噴火"
+  ],
+  "category": "ii",
+  "sub": "",
+  "per_unit": [
+   {
+    "u": "破局噴火",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "破局噴火"
+    ],
+    "n_crosses_holding": 1,
+    "own": {
+     "capacity": 1,
+     "size": 1,
+     "stop": "budget",
+     "candidates": 10,
+     "reason": "max_moves",
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "破局噴火"
+  ],
+  "n_holding": 1,
+  "caps": {
+   "破局噴火": [
+    1,
+    "budget"
+   ]
+  },
+  "cap_hist": {
+   "1": 1
+  },
+  "stop_hist": {
+   "budget": 1
+  },
+  "involved": [
+   "破局噴火"
+  ],
+  "budget_limited": [
+   "破局噴火"
+  ],
+  "exhausted": [],
+  "rebuilt": {
+   "破局噴火": {
+    "high": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    },
+    "max": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    }
+   }
+  },
+  "reask": {
+   "high": {
+    "verdict": "UNKNOWN_NO_EVIDENCE",
+    "states_adopted": 0,
+    "crosses_read": 1,
+    "secs": 0.01
+   },
+   "max": {
+    "verdict": "UNKNOWN_NO_EVIDENCE",
+    "states_adopted": 0,
+    "crosses_read": 1,
+    "secs": 0.0
+   }
+  }
+ },
+ {
+  "id": "a44",
+  "kind": "what",
+  "question": "善五郎とは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "善五郎"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_EVIDENCE",
+  "per_unit": [
+   {
+    "u": "善五郎",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "ぜんごろう",
+     "京焼",
+     "善五郎",
+     "家元"
+    ],
+    "n_crosses_holding": 4,
+    "own": {
+     "capacity": 5,
+     "size": 5,
+     "stop": "exhausted",
+     "candidates": 4,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "ぜんごろう",
+   "京焼",
+   "善五郎",
+   "家元"
+  ],
+  "n_holding": 4,
+  "caps": {
+   "ぜんごろう": [
+    5,
+    "exhausted"
+   ],
+   "京焼": [
+    5,
+    "exhausted"
+   ],
+   "善五郎": [
+    5,
+    "exhausted"
+   ],
+   "家元": [
+    5,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "5": 4
+  },
+  "stop_hist": {
+   "exhausted": 4
+  },
+  "involved": [
+   "ぜんごろう",
+   "京焼",
+   "善五郎",
+   "家元"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "ぜんごろう",
+   "京焼",
+   "善五郎",
+   "家元"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a50",
+  "kind": "where",
+  "question": "犂神社はどこにありますか",
+  "verdict": "UNKNOWN_NO_FIXED_POINT",
+  "Q": [
+   "犂神社"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_FIXED_POINT",
+  "per_unit": [
+   {
+    "u": "犂神社",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "からすきじんじゃ",
+     "犂神社",
+     "福井県福井市"
+    ],
+    "n_crosses_holding": 3,
+    "own": {
+     "capacity": 4,
+     "size": 4,
+     "stop": "exhausted",
+     "candidates": 3,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "からすきじんじゃ",
+   "犂神社",
+   "福井県福井市"
+  ],
+  "n_holding": 3,
+  "caps": {
+   "からすきじんじゃ": [
+    4,
+    "exhausted"
+   ],
+   "犂神社": [
+    4,
+    "exhausted"
+   ],
+   "福井県福井市": [
+    4,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "4": 3
+  },
+  "stop_hist": {
+   "exhausted": 3
+  },
+  "involved": [
+   "からすきじんじゃ",
+   "犂神社",
+   "福井県福井市"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "からすきじんじゃ",
+   "犂神社",
+   "福井県福井市"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a56",
+  "kind": "where",
+  "question": "蠑螺島はどこにありますか",
+  "verdict": "UNKNOWN_NO_FIXED_POINT",
+  "Q": [
+   "蠑螺島"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_FIXED_POINT",
+  "per_unit": [
+   {
+    "u": "蠑螺島",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "さざえしま",
+     "島",
+     "蠑螺島",
+     "長崎県五島市"
+    ],
+    "n_crosses_holding": 4,
+    "own": {
+     "capacity": 4,
+     "size": 4,
+     "stop": "exhausted",
+     "candidates": 3,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "さざえしま",
+   "島",
+   "蠑螺島",
+   "長崎県五島市"
+  ],
+  "n_holding": 4,
+  "caps": {
+   "さざえしま": [
+    4,
+    "exhausted"
+   ],
+   "島": [
+    4,
+    "exhausted"
+   ],
+   "蠑螺島": [
+    4,
+    "exhausted"
+   ],
+   "長崎県五島市": [
+    4,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "4": 4
+  },
+  "stop_hist": {
+   "exhausted": 4
+  },
+  "involved": [
+   "さざえしま",
+   "島",
+   "蠑螺島",
+   "長崎県五島市"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "さざえしま",
+   "島",
+   "蠑螺島",
+   "長崎県五島市"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "a57",
+  "kind": "what",
+  "question": "ハッシュテーブルとは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "ハッシュテーブル"
+  ],
+  "category": "ii",
+  "sub": "",
+  "per_unit": [
+   {
+    "u": "ハッシュテーブル",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "ハッシュテーブル"
+    ],
+    "n_crosses_holding": 1,
+    "own": {
+     "capacity": 1,
+     "size": 1,
+     "stop": "budget",
+     "candidates": 13,
+     "reason": "max_moves",
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "ハッシュテーブル"
+  ],
+  "n_holding": 1,
+  "caps": {
+   "ハッシュテーブル": [
+    1,
+    "budget"
+   ]
+  },
+  "cap_hist": {
+   "1": 1
+  },
+  "stop_hist": {
+   "budget": 1
+  },
+  "involved": [
+   "ハッシュテーブル"
+  ],
+  "budget_limited": [
+   "ハッシュテーブル"
+  ],
+  "exhausted": [],
+  "rebuilt": {
+   "ハッシュテーブル": {
+    "high": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    },
+    "max": {
+     "capacity": 1,
+     "stop": "budget",
+     "size": 1,
+     "contains_Q": true
+    }
+   }
+  },
+  "reask": {
+   "high": {
+    "verdict": "UNKNOWN_NO_EVIDENCE",
+    "states_adopted": 0,
+    "crosses_read": 1,
+    "secs": 0.01
+   },
+   "max": {
+    "verdict": "UNKNOWN_NO_EVIDENCE",
+    "states_adopted": 0,
+    "crosses_read": 1,
+    "secs": 0.0
+   }
+  }
+ },
+ {
+  "id": "u01",
+  "kind": "fict",
+  "question": "翠壇とは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "翠壇"
+  ],
+  "category": "i",
+  "sub": "all query units absent from the tier",
+  "per_unit": [
+   {
+    "u": "翠壇",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [],
+  "n_holding": 0,
+  "caps": {},
+  "cap_hist": {},
+  "stop_hist": {},
+  "involved": [],
+  "budget_limited": [],
+  "exhausted": [],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u02",
+  "kind": "fict",
+  "question": "霧鉄湾はどこにありますか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "霧鉄湾"
+  ],
+  "category": "i",
+  "sub": "all query units absent from the tier",
+  "per_unit": [
+   {
+    "u": "霧鉄湾",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [],
+  "n_holding": 0,
+  "caps": {},
+  "cap_hist": {},
+  "stop_hist": {},
+  "involved": [],
+  "budget_limited": [],
+  "exhausted": [],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u05",
+  "kind": "fict",
+  "question": "蒼嶺大学とは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "蒼嶺大学"
+  ],
+  "category": "i",
+  "sub": "all query units absent from the tier",
+  "per_unit": [
+   {
+    "u": "蒼嶺大学",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [],
+  "n_holding": 0,
+  "caps": {},
+  "cap_hist": {},
+  "stop_hist": {},
+  "involved": [],
+  "budget_limited": [],
+  "exhausted": [],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u06",
+  "kind": "fict",
+  "question": "クワンタムフラックス炉とは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "クワンタムフラックス",
+   "炉"
+  ],
+  "category": "i",
+  "sub": "all query units absent from the tier",
+  "per_unit": [
+   {
+    "u": "クワンタムフラックス",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   },
+   {
+    "u": "炉",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [],
+  "n_holding": 0,
+  "caps": {},
+  "cap_hist": {},
+  "stop_hist": {},
+  "involved": [],
+  "budget_limited": [],
+  "exhausted": [],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u07",
+  "kind": "fict",
+  "question": "ぷにゃぷにゃ理論とは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "ぷにゃぷにゃ",
+   "理論"
+  ],
+  "category": "i",
+  "sub": "all query units absent from the tier",
+  "per_unit": [
+   {
+    "u": "ぷにゃぷにゃ",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   },
+   {
+    "u": "理論",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [],
+  "n_holding": 0,
+  "caps": {},
+  "cap_hist": {},
+  "stop_hist": {},
+  "involved": [],
+  "budget_limited": [],
+  "exhausted": [],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u08",
+  "kind": "fict",
+  "question": "銀鱗神社はどこにありますか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "銀鱗神社"
+  ],
+  "category": "i",
+  "sub": "all query units absent from the tier",
+  "per_unit": [
+   {
+    "u": "銀鱗神社",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [],
+  "n_holding": 0,
+  "caps": {},
+  "cap_hist": {},
+  "stop_hist": {},
+  "involved": [],
+  "budget_limited": [],
+  "exhausted": [],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u10",
+  "kind": "fict",
+  "question": "黒曜電鉄とは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "黒曜電鉄"
+  ],
+  "category": "i",
+  "sub": "all query units absent from the tier",
+  "per_unit": [
+   {
+    "u": "黒曜電鉄",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [],
+  "n_holding": 0,
+  "caps": {},
+  "cap_hist": {},
+  "stop_hist": {},
+  "involved": [],
+  "budget_limited": [],
+  "exhausted": [],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u11",
+  "kind": "fict",
+  "question": "星砂村はどこにありますか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "星砂村"
+  ],
+  "category": "i",
+  "sub": "all query units absent from the tier",
+  "per_unit": [
+   {
+    "u": "星砂村",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [],
+  "n_holding": 0,
+  "caps": {},
+  "cap_hist": {},
+  "stop_hist": {},
+  "involved": [],
+  "budget_limited": [],
+  "exhausted": [],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u12",
+  "kind": "fict",
+  "question": "ザルヴェク症候群とは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "ザルヴェク",
+   "症候群"
+  ],
+  "category": "i",
+  "sub": "all query units absent from the tier",
+  "per_unit": [
+   {
+    "u": "ザルヴェク",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   },
+   {
+    "u": "症候群",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [],
+  "n_holding": 0,
+  "caps": {},
+  "cap_hist": {},
+  "stop_hist": {},
+  "involved": [],
+  "budget_limited": [],
+  "exhausted": [],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u13",
+  "kind": "fict",
+  "question": "朱雀橋駅はどこにありますか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "朱雀橋駅"
+  ],
+  "category": "i",
+  "sub": "all query units absent from the tier",
+  "per_unit": [
+   {
+    "u": "朱雀橋駅",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [],
+  "n_holding": 0,
+  "caps": {},
+  "cap_hist": {},
+  "stop_hist": {},
+  "involved": [],
+  "budget_limited": [],
+  "exhausted": [],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u14",
+  "kind": "fict",
+  "question": "鉄琴草とは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "鉄琴草"
+  ],
+  "category": "i",
+  "sub": "all query units absent from the tier",
+  "per_unit": [
+   {
+    "u": "鉄琴草",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [],
+  "n_holding": 0,
+  "caps": {},
+  "cap_hist": {},
+  "stop_hist": {},
+  "involved": [],
+  "budget_limited": [],
+  "exhausted": [],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u16",
+  "kind": "fict",
+  "question": "白狐山はどこにありますか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "白狐山"
+  ],
+  "category": "i",
+  "sub": "all query units absent from the tier",
+  "per_unit": [
+   {
+    "u": "白狐山",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [],
+  "n_holding": 0,
+  "caps": {},
+  "cap_hist": {},
+  "stop_hist": {},
+  "involved": [],
+  "budget_limited": [],
+  "exhausted": [],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u17",
+  "kind": "fict",
+  "question": "月影亭事件とは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "月影亭事件"
+  ],
+  "category": "i",
+  "sub": "all query units absent from the tier",
+  "per_unit": [
+   {
+    "u": "月影亭事件",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [],
+  "n_holding": 0,
+  "caps": {},
+  "cap_hist": {},
+  "stop_hist": {},
+  "involved": [],
+  "budget_limited": [],
+  "exhausted": [],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u18",
+  "kind": "fict",
+  "question": "雲海町議会とは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "雲海町議会"
+  ],
+  "category": "i",
+  "sub": "all query units absent from the tier",
+  "per_unit": [
+   {
+    "u": "雲海町議会",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [],
+  "n_holding": 0,
+  "caps": {},
+  "cap_hist": {},
+  "stop_hist": {},
+  "involved": [],
+  "budget_limited": [],
+  "exhausted": [],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u20",
+  "kind": "fict",
+  "question": "青藍窯とは何ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "青藍窯"
+  ],
+  "category": "i",
+  "sub": "all query units absent from the tier",
+  "per_unit": [
+   {
+    "u": "青藍窯",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [],
+  "n_holding": 0,
+  "caps": {},
+  "cap_hist": {},
+  "stop_hist": {},
+  "involved": [],
+  "budget_limited": [],
+  "exhausted": [],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u21",
+  "kind": "attr",
+  "question": "遊眠の代表作は何ですか",
+  "verdict": "UNKNOWN_NO_FIXED_POINT",
+  "Q": [
+   "代表作",
+   "遊眠"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_FIXED_POINT",
+  "per_unit": [
+   {
+    "u": "代表作",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   },
+   {
+    "u": "遊眠",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "ゆうみん",
+     "漫画家",
+     "遊眠"
+    ],
+    "n_crosses_holding": 3,
+    "own": {
+     "capacity": 4,
+     "size": 4,
+     "stop": "exhausted",
+     "candidates": 3,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "ゆうみん",
+   "漫画家",
+   "遊眠"
+  ],
+  "n_holding": 3,
+  "caps": {
+   "ゆうみん": [
+    4,
+    "exhausted"
+   ],
+   "漫画家": [
+    7,
+    "exhausted"
+   ],
+   "遊眠": [
+    4,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "4": 2,
+   "7": 1
+  },
+  "stop_hist": {
+   "exhausted": 3
+  },
+  "involved": [
+   "ゆうみん",
+   "漫画家",
+   "遊眠"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "ゆうみん",
+   "漫画家",
+   "遊眠"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u23",
+  "kind": "attr",
+  "question": "博文館を創業したのは誰ですか",
+  "verdict": "UNKNOWN_NO_FIXED_POINT",
+  "Q": [
+   "創業",
+   "博文館"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_FIXED_POINT",
+  "per_unit": [
+   {
+    "u": "創業",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   },
+   {
+    "u": "博文館",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "はくぶんかん",
+     "出版社",
+     "博文館"
+    ],
+    "n_crosses_holding": 3,
+    "own": {
+     "capacity": 4,
+     "size": 4,
+     "stop": "exhausted",
+     "candidates": 3,
+     "reason": null,
+     "own_contains_u": true
+    }
+   }
+  ],
+  "holding": [
+   "はくぶんかん",
+   "出版社",
+   "博文館"
+  ],
+  "n_holding": 3,
+  "caps": {
+   "はくぶんかん": [
+    4,
+    "exhausted"
+   ],
+   "出版社": [
+    4,
+    "exhausted"
+   ],
+   "博文館": [
+    4,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "4": 3
+  },
+  "stop_hist": {
+   "exhausted": 3
+  },
+  "involved": [
+   "はくぶんかん",
+   "出版社",
+   "博文館"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "はくぶんかん",
+   "出版社",
+   "博文館"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u24",
+  "kind": "attr",
+  "question": "千葉神社の祭神は何ですか",
+  "verdict": "UNKNOWN_NO_FIXED_POINT",
+  "Q": [
+   "千葉神社",
+   "祭神"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_FIXED_POINT",
+  "per_unit": [
+   {
+    "u": "千葉神社",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "ちばじんじゃ",
+     "千葉県千葉市中央区",
+     "千葉神社"
+    ],
+    "n_crosses_holding": 3,
+    "own": {
+     "capacity": 4,
+     "size": 4,
+     "stop": "exhausted",
+     "candidates": 3,
+     "reason": null,
+     "own_contains_u": true
+    }
+   },
+   {
+    "u": "祭神",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [
+   "ちばじんじゃ",
+   "千葉県千葉市中央区",
+   "千葉神社"
+  ],
+  "n_holding": 3,
+  "caps": {
+   "ちばじんじゃ": [
+    4,
+    "exhausted"
+   ],
+   "千葉県千葉市中央区": [
+    4,
+    "exhausted"
+   ],
+   "千葉神社": [
+    4,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "4": 3
+  },
+  "stop_hist": {
+   "exhausted": 3
+  },
+  "involved": [
+   "ちばじんじゃ",
+   "千葉県千葉市中央区",
+   "千葉神社"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "ちばじんじゃ",
+   "千葉県千葉市中央区",
+   "千葉神社"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u25",
+  "kind": "attr",
+  "question": "奉天派の旗は何色ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "何色",
+   "奉天派",
+   "旗"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_EVIDENCE",
+  "per_unit": [
+   {
+    "u": "何色",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   },
+   {
+    "u": "奉天派",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "ほうてんは",
+     "中華民国",
+     "大陸統治期",
+     "奉天派",
+     "軍閥"
+    ],
+    "n_crosses_holding": 5,
+    "own": {
+     "capacity": 6,
+     "size": 6,
+     "stop": "exhausted",
+     "candidates": 5,
+     "reason": null,
+     "own_contains_u": true
+    }
+   },
+   {
+    "u": "旗",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [
+   "ほうてんは",
+   "中華民国",
+   "大陸統治期",
+   "奉天派",
+   "軍閥"
+  ],
+  "n_holding": 5,
+  "caps": {
+   "ほうてんは": [
+    6,
+    "exhausted"
+   ],
+   "中華民国": [
+    6,
+    "exhausted"
+   ],
+   "大陸統治期": [
+    6,
+    "exhausted"
+   ],
+   "奉天派": [
+    6,
+    "exhausted"
+   ],
+   "軍閥": [
+    6,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "6": 5
+  },
+  "stop_hist": {
+   "exhausted": 5
+  },
+  "involved": [
+   "ほうてんは",
+   "中華民国",
+   "大陸統治期",
+   "奉天派",
+   "軍閥"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "ほうてんは",
+   "中華民国",
+   "大陸統治期",
+   "奉天派",
+   "軍閥"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u28",
+  "kind": "attr",
+  "question": "LaMDAが公開されたのはいつですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "LaMDA",
+   "公開"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_EVIDENCE",
+  "per_unit": [
+   {
+    "u": "LaMDA",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "LaMDA",
+     "ファミリー",
+     "ラムダ",
+     "会話型大規模言語モデル"
+    ],
+    "n_crosses_holding": 4,
+    "own": {
+     "capacity": 6,
+     "size": 6,
+     "stop": "exhausted",
+     "candidates": 5,
+     "reason": null,
+     "own_contains_u": true
+    }
+   },
+   {
+    "u": "公開",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [
+   "LaMDA",
+   "ファミリー",
+   "ラムダ",
+   "会話型大規模言語モデル"
+  ],
+  "n_holding": 4,
+  "caps": {
+   "LaMDA": [
+    6,
+    "exhausted"
+   ],
+   "ファミリー": [
+    6,
+    "exhausted"
+   ],
+   "ラムダ": [
+    6,
+    "exhausted"
+   ],
+   "会話型大規模言語モデル": [
+    6,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "6": 4
+  },
+  "stop_hist": {
+   "exhausted": 4
+  },
+  "involved": [
+   "LaMDA",
+   "ファミリー",
+   "ラムダ",
+   "会話型大規模言語モデル"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "LaMDA",
+   "ファミリー",
+   "ラムダ",
+   "会話型大規模言語モデル"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ },
+ {
+  "id": "u29",
+  "kind": "attr",
+  "question": "互先で白を持つのは誰ですか",
+  "verdict": "UNKNOWN_NO_EVIDENCE",
+  "Q": [
+   "互先",
+   "持つ",
+   "白"
+  ],
+  "category": "iii",
+  "sub": "UNKNOWN_NO_EVIDENCE",
+  "per_unit": [
+   {
+    "u": "互先",
+    "in_tier": true,
+    "n": 1,
+    "crosses_holding": [
+     "たがいせん",
+     "互先",
+     "囲碁",
+     "手合割"
+    ],
+    "n_crosses_holding": 4,
+    "own": {
+     "capacity": 5,
+     "size": 5,
+     "stop": "exhausted",
+     "candidates": 4,
+     "reason": null,
+     "own_contains_u": true
+    }
+   },
+   {
+    "u": "持つ",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   },
+   {
+    "u": "白",
+    "in_tier": false,
+    "n": 0,
+    "crosses_holding": [],
+    "n_crosses_holding": 0,
+    "own": null
+   }
+  ],
+  "holding": [
+   "たがいせん",
+   "互先",
+   "囲碁",
+   "手合割"
+  ],
+  "n_holding": 4,
+  "caps": {
+   "たがいせん": [
+    5,
+    "exhausted"
+   ],
+   "互先": [
+    5,
+    "exhausted"
+   ],
+   "囲碁": [
+    5,
+    "exhausted"
+   ],
+   "手合割": [
+    5,
+    "exhausted"
+   ]
+  },
+  "cap_hist": {
+   "5": 4
+  },
+  "stop_hist": {
+   "exhausted": 4
+  },
+  "involved": [
+   "たがいせん",
+   "互先",
+   "囲碁",
+   "手合割"
+  ],
+  "budget_limited": [],
+  "exhausted": [
+   "たがいせん",
+   "互先",
+   "囲碁",
+   "手合割"
+  ],
+  "rebuilt": {},
+  "reask": {}
+ }
+]

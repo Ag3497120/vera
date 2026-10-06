@@ -60,7 +60,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from fractions import Fraction
 from itertools import permutations
 from math import factorial
@@ -316,6 +316,10 @@ class AnswerPath:
     section: int
     attached: Optional[str]
     words: Tuple[str, ...]
+    # L-160: the sentences each step of the path traces to: (from, to, sids) in walk order; the
+    # first step of a leg is (attached query unit, first word), every other step (previous word,
+    # word); sids = every sentence holding both units (empty = none).  Not part of the item key.
+    edges: Tuple[Tuple[str, str, Tuple[int, ...]], ...] = ()
 
     @property
     def text(self) -> str:
@@ -337,6 +341,10 @@ class AnswerItem:
     def path_texts(self) -> Tuple[str, ...]:
         return tuple(p.text for p in self.paths)
 
+    @property
+    def source_sids(self) -> Tuple[int, ...]:
+        return tuple(sorted({sid for p in self.paths for _, _, ss in p.edges for sid in ss}))
+
 
 @dataclass(frozen=True)
 class PathAnswer:
@@ -348,6 +356,8 @@ class PathAnswer:
     states_without_path: int
     too_many: bool
     too_many_limit: int
+    # sid -> the tier's unit list of that sentence (display of the source sentences; L-160)
+    _sentence_units: Mapping[int, Tuple[str, ...]] = field(default_factory=dict, compare=False, repr=False)
 
     @property
     def centre(self) -> Optional[str]:
@@ -357,13 +367,23 @@ class PathAnswer:
     def answer_obj(self) -> dict:
         def item(it: AnswerItem) -> dict:
             return {"centre": it.centre, "stability": _fs(it.stability), "origins": list(it.origins),
-                    "paths": [{"section": p.section, "attached": p.attached, "words": list(p.words)}
+                    "source_sids": list(it.source_sids),
+                    "paths": [{"section": p.section, "attached": p.attached, "words": list(p.words),
+                               "edges": [{"from": a, "to": b, "sids": list(ss)} for a, b, ss in p.edges]}
                               for p in it.paths]}
-        o = {"form": "centre_paths", "verdict": self.verdict, "listed": len(self.items),
+        items = [item(it) for it in self.items]
+        one = self.verdict == cy.ANSWER
+        o = {"form": "path_words", "verdict": self.verdict, "listed": len(self.items),
              "too_many": self.too_many,
-             "centre": self.items[0].centre if self.verdict == cy.ANSWER else None,
-             "paths": item(self.items[0])["paths"] if self.verdict == cy.ANSWER else None,
-             "items": [item(it) for it in self.items]}
+             # L-160 (owner: "経路の語を答えとし、中心は参考として付ける"): the answer = the path words with the
+             # sentences they trace to; the centre is attached as reference only.
+             "answer": ({"path_words": [p.text for p in self.items[0].paths],
+                         "source_sids": list(self.items[0].source_sids),
+                         "reference_centre": self.items[0].centre} if one else None),
+             "centre": self.items[0].centre if one else None,
+             "paths": items[0]["paths"] if one else None,
+             "items": items,
+             "sentences": {str(i): "".join(u) for i, u in sorted(self._sentence_units.items())}}
         return o
 
     def thought_obj(self) -> dict:
@@ -395,6 +415,27 @@ def read_answer(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[
     reader = cy.Reader(facts, ctx.attached, ctx.energy_units, window)
     tier = states[0].tier if states else facts.tier.name
     reads = tuple(StateRead(s, section_paths(reader, s.flat, s.L)) for s in states)
+    tier_space = facts.tier
+    post = tier_space.postings
+    memo: Dict[Tuple[str, str], Tuple[int, ...]] = {}
+
+    def common(a: str, b: str) -> Tuple[int, ...]:
+        k = (a, b) if a <= b else (b, a)
+        r = memo.get(k)
+        if r is None:
+            r = memo[k] = tuple(sorted(set(post.get(a, ())) & set(post.get(b, ()))))
+        return r
+
+    def edges_of(flat: Flat, p: SectionPath) -> Tuple[Tuple[str, str, Tuple[int, ...]], ...]:
+        seen: Dict[Tuple[str, str], Tuple[int, ...]] = {}
+        for seg in p.segments:
+            for j, seat in enumerate(seg):
+                a = p.attached if j == 0 else flat[seg[j - 1]]
+                if a is None:
+                    continue
+                seen.setdefault((a, flat[seat]), common(a, flat[seat]))
+        return tuple((a, b, ss) for (a, b), ss in seen.items())
+
     acc: Dict[tuple, dict] = {}
     for si, sr in enumerate(reads):
         if not sr.paths:
@@ -405,15 +446,18 @@ def read_answer(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[
         key = (centre, tuple(p.words for p in sr.paths))
         e = acc.get(key)
         if e is None:
-            e = acc[key] = {"paths": tuple(AnswerPath(p.section, p.attached, p.words) for p in sr.paths),
+            e = acc[key] = {"paths": tuple(AnswerPath(p.section, p.attached, p.words, edges_of(sr.ref.flat, p))
+                                           for p in sr.paths),
                             "stab": sr.ref.stability, "origins": []}
         elif sr.ref.stability > e["stab"]:
             e["stab"] = sr.ref.stability
         e["origins"].append(si)
     items = tuple(AnswerItem(k[0], e["paths"], e["stab"], tuple(e["origins"])) for k, e in sorted(acc.items()))
     verdict = UNKNOWN_NO_PATH if not items else (cy.ANSWER if len(items) == 1 else cy.CHOICE)
+    used = {sid for it in items for sid in it.source_sids}
     return PathAnswer(question, tier, reads, items, verdict, sum(1 for r in reads if not r.paths),
-                      len(items) > too_many, too_many)
+                      len(items) > too_many, too_many,
+                      {sid: tier_space.sentence_units[sid] for sid in sorted(used)})
 
 
 def read_out(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[StateRef], *,

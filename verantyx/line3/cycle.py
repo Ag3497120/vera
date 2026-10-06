@@ -813,7 +813,8 @@ class ReadPlan:
 
 
 def plan_read(tier: TierSpace, facts: TierFacts, ctx: QueryContext,
-              placements, amount: Optional[int] = None, query_crosses_only: bool = False) -> ReadPlan:
+              placements, amount: Optional[int] = None, query_crosses_only: bool = False,
+              share_crosses: bool = False) -> ReadPlan:
     """I-08 / M-2(a): all crosses by default; with an amount, the order is: crosses of query
     units, crosses holding a unit that shares a sentence with a query unit, the rest; inside a
     group by E_Q(seed) descending; equal values are read together or not at all."""
@@ -825,6 +826,7 @@ def plan_read(tier: TierSpace, facts: TierFacts, ctx: QueryContext,
         if amount is not None:
             raise ValueError("query_crosses_only cannot be combined with amount")
         keep = []
+        shared = []
         for s_ in seeds:
             p = placements.cross_for(s_)
             units = {c for c in from_cross(p.cross) if c is not None}
@@ -832,10 +834,14 @@ def plan_read(tier: TierSpace, facts: TierFacts, ctx: QueryContext,
                 units.update(t)
             if units & q:
                 keep.append(s_)
-        ks = set(keep)
+            elif share_crosses and any(facts.npair(x, u) > 0 for x in q for u in units):
+                # T6x (M-2 group 2): a cross that holds a unit sharing >= 1 sentence with a query unit
+                shared.append(s_)
+        ks = set(keep) | set(shared)
         unread = tuple(s_ for s_ in seeds if s_ not in ks)
-        return ReadPlan((("contains_query_unit", tuple(keep)),), tuple(keep), unread, len(seeds), None,
-                        bool(unread), 0)
+        groups = (("contains_query_unit", tuple(keep)),) + ((("shares_sentence_with_query_unit", tuple(shared)),)
+                                                           if share_crosses else ())
+        return ReadPlan(groups, tuple(keep) + tuple(shared), unread, len(seeds), None, bool(unread), 0)
     reader_q = lambda u: facts.n[u] + sum(facts.npair(x, u) for x in ctx.energy_units)
     groups: Dict[str, Dict[int, List[str]]] = {"query_unit": {}, "shares_with_query": {}, "rest": {}}
     for s in seeds:
@@ -1150,8 +1156,8 @@ def ask_tier(tier: TierSpace, question: str, placements, *, units: Optional[Sequ
     facts = facts or TierFacts(tier)
     if read_rule is None:
         read_rule = "whole" if amount is not None else "query_crosses"
-    if read_rule not in ("whole", "query_crosses") or state_rule not in ("stability", "query_share"):
-        raise ValueError("read_rule: whole | query_crosses; state_rule: stability | query_share")
+    if read_rule not in ("whole", "query_crosses", "query_share_crosses") or state_rule not in ("stability", "query_share"):
+        raise ValueError("read_rule: whole | query_crosses | query_share_crosses; state_rule: stability | query_share")
     q = tuple(units) if units is not None else split_question(tier.name, question)
     if isinstance(unit_filter, str):                 # "default": the function-word rule of this tier (L-150)
         if unit_filter != "default":
@@ -1162,7 +1168,8 @@ def ask_tier(tier: TierSpace, question: str, placements, *, units: Optional[Sequ
         q = tuple(u for u in q if not unit_filter(u))
     ctx = make_context(q, scope)
     reader = Reader(facts, ctx.attached, ctx.energy_units)
-    plan = plan_read(tier, facts, ctx, placements, amount, read_rule == "query_crosses")
+    plan = plan_read(tier, facts, ctx, placements, amount, read_rule in ("query_crosses", "query_share_crosses"),
+                     read_rule == "query_share_crosses")
     reads: List[SeedRead] = []
     for seed in sorted(plan.read):                  # canonical order; the result never depends on it
         reads.append(read_cross(reader, placements.cross_for(seed), budget, member_cap))

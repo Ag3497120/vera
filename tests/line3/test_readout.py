@@ -369,7 +369,7 @@ def test_default_form_is_centre_and_the_words_of_each_section_path_in_section_or
     assert all(p.words[-1] == "c" for p in it.paths)
     o = a.answer_obj()
     assert o["verdict"] == cy.ANSWER and o["centre"] == "c" and o["paths"] == o["items"][0]["paths"]
-    assert o["form"] == "centre_paths" and "sentences" not in o
+    assert o["form"] == "path_words" and o["answer"]["reference_centre"] == "c"
     # no orderings are enumerated or counted any more
     assert "orderings" not in a.thought_obj()["counts"]
 
