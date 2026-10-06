@@ -1,0 +1,206 @@
+"""T1 space acceptance (docs/LINE3_DESIGN.md section 9 T1)."""
+import hashlib
+import itertools
+import json
+import os
+import random
+import re
+import subprocess
+import sys
+import unicodedata
+from fractions import Fraction
+
+import pytest
+
+from verantyx.line3 import space as S
+from verantyx.line3.space import CHAR, RUN, TIERS, WORD, build_from_jsonl, build_space
+
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+S300 = os.path.join(ROOT, "experiments/line3/data/S300.jsonl")
+S3000 = os.path.join(ROOT, "experiments/line3/data/S3000.jsonl")
+PY = sys.executable
+
+
+@pytest.fixture(scope="module")
+def sp():
+    return build_from_jsonl(S300)
+
+
+def test_loaded_from_clone():
+    assert S.__file__.startswith(ROOT + "/verantyx/line3/")
+    import verantyx.lang
+    assert verantyx.lang.__file__.startswith(ROOT + "/")
+
+
+def test_data_is_manifest_file():
+    m = json.load(open(os.path.join(ROOT, "experiments/line3/data_manifest.json")))
+    for k, p in (("S300", S300), ("S3000", S3000)):
+        assert hashlib.sha256(open(p, "rb").read()).hexdigest() == m["files"][k]["sha256"]
+
+
+def test_three_tiers_independent(sp):
+    assert tuple(sp.tiers) == TIERS == (RUN, WORD, CHAR)
+    assert sp.N == 300 and all(sp.tiers[t].N == 300 for t in TIERS)
+
+
+# ---- determinism ------------------------------------------------------------
+def test_byte_identical_two_builds(sp):
+    assert build_from_jsonl(S300).to_bytes() == sp.to_bytes()
+
+
+@pytest.mark.parametrize("seed", ["0", "1"])
+def test_hashseed_independent(sp, seed):
+    code = ("from verantyx.line3.space import build_from_jsonl;"
+            "print(build_from_jsonl(%r).sha256())" % S300)
+    env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONPATH=ROOT, PYTHONDONTWRITEBYTECODE="1")
+    out = subprocess.run([PY, "-c", code], env=env, capture_output=True, text=True, check=True).stdout.strip()
+    assert out == sp.sha256()
+
+
+# ---- I-22 / N-15: function words, question words, no punctuation -------------
+def test_function_and_question_words_are_units():
+    s = build_space([{"sent": "遊眠は日本の漫画家。"}, {"sent": "遊眠はどこにある。"}])
+    w = s.tiers[WORD]
+    for u in ("は", "の", "どこ"):
+        assert u in w.postings
+    assert s.tiers[WORD].postings["は"] == (0, 1)
+    assert "は" in s.tiers[RUN].postings and "の" in s.tiers[RUN].postings
+    assert "どこ" in s.tiers[CHAR].postings or "ど" in s.tiers[CHAR].postings
+    assert "は" in s.tiers[CHAR].postings and "の" in s.tiers[CHAR].postings
+
+
+def test_no_punctuation_or_symbols_in_any_tier(sp):
+    for t in TIERS:
+        for u in sp.tiers[t].postings:
+            assert any(unicodedata.category(c)[0] in "LNM" for c in u), (t, u)
+    s = build_space([{"sent": "遊眠（ゆうみん）は、日本の漫画家。"}])
+    for t in TIERS:
+        assert not any(set("（）、。") & set(u) for u in s.tiers[t].postings)
+
+
+def test_char_tier_is_every_letter_char():
+    s = build_space([{"sent": "遊眠は日本の漫画家。"}])
+    assert s.tiers[CHAR].sentence_units[0] == tuple("遊眠は日本の漫画家")
+
+
+# ---- I-06 --------------------------------------------------------------------
+def test_r0_exact_fractions(sp):
+    for t in TIERS:
+        ts = sp.tiers[t]
+        for u in ts.units():
+            r = ts.r0(u)
+            assert type(r) is Fraction
+            assert r == Fraction(len(ts.postings[u]), sp.N)
+            assert 0 < r <= 1
+    doc = json.loads(sp.to_bytes())
+    for t in TIERS:
+        for e in doc["tiers"][t]["units"]:
+            assert re.fullmatch(r"\d+(/\d+)?", e["r0"]), e
+            assert Fraction(e["r0"]) == Fraction(e["n"], 300)
+
+
+def test_no_floats_in_module():
+    src = open(S.__file__, encoding="utf-8").read()
+    assert "float(" not in src and "math." not in src
+
+
+def test_r0_values_on_tiny_space():
+    s = build_space([{"sent": "遊眠は日本の漫画家。"}, {"sent": "遊眠は何ですか。"}])
+    w = s.tiers[WORD]
+    assert w.r0("は") == Fraction(1, 1) and w.r0("遊") == 1
+    assert w.r0("の") == Fraction(1, 2)
+
+
+# ---- trace: every unit goes back to a stored sentence containing it -----------
+@pytest.mark.parametrize("t", TIERS)
+def test_trace_all_units_S300(sp, t):
+    ts = sp.tiers[t]
+    assert ts.postings
+    for u in ts.units():
+        tr = sp.trace(t, u)
+        assert len(tr) >= 1
+        for sid, text in tr:
+            assert text == sp.sentences[sid][0]
+            assert u in ts.sentence_units[sid]
+            assert u in text                    # independent of the splitter
+    # converse: every unit occurrence is registered
+    for sid, us in enumerate(ts.sentence_units):
+        for u in us:
+            assert sid in ts.postings[u]
+
+
+def test_source_and_text_kept(sp):
+    rows = S.load_jsonl(S300)
+    assert [r["sent"] for r in rows] == [x[0] for x in sp.sentences]
+    assert [r["source"] for r in rows] == [x[1] for x in sp.sentences]
+
+
+# ---- counts ---------------------------------------------------------------
+@pytest.mark.parametrize("t", TIERS)
+def test_count_rules(sp, t):
+    ts = sp.tiers[t]
+    rnd = random.Random(7)
+    us = ts.units()
+    sets = [set(x) for x in ts.sentence_units]
+    # postings recomputed from sentences
+    for u in rnd.sample(us, min(60, len(us))):
+        assert ts.n(u) == sum(1 for s in sets if u in s)
+    pairs = [tuple(rnd.sample(us, 2)) for _ in range(300)]
+    for u, v in pairs:
+        n_uv = sum(1 for s in sets if u in s and v in s)
+        assert ts.n_pair(u, v) == n_uv == ts.n_pair(v, u)          # symmetric, recomputed
+        assert n_uv <= min(ts.n(u), ts.n(v))
+        p_uv = sum(1 for x in ts.sentence_units
+                   if u in x and v in x and x.index(u) < x.index(v))
+        assert ts.p_pair(u, v) == p_uv
+        assert ts.p_pair(u, v) + ts.p_pair(v, u) == n_uv            # firsts differ => equality, which is <= n
+        assert ts.p_pair(u, v) + ts.p_pair(v, u) <= n_uv
+
+
+def test_cooccurrence_matches_pair_counts(sp):
+    ts = sp.tiers[WORD]
+    for u in ts.units()[:40:3]:
+        co = ts.cooccurrence(u)
+        assert u not in co
+        for v, c in co.items():
+            assert c == ts.n_pair(u, v) == ts.n_pair(v, u)
+    u = "は"
+    co = ts.cooccurrence(u)
+    assert all(ts.n_pair(u, v) == c for v, c in co.items())
+
+
+def test_n_pair_self_is_n(sp):
+    ts = sp.tiers[WORD]
+    for u in ts.units()[:30]:
+        assert ts.n_pair(u, u) == ts.n(u)
+
+
+def test_exhaustive_counts_small_space():
+    rows = [{"sent": x} for x in ("遊眠は日本の漫画家。", "日本の首都は東京。", "東京は日本にある。", "何ですか。")]
+    s = build_space(rows)
+    for t in TIERS:
+        ts = s.tiers[t]
+        for u, v in itertools.permutations(ts.units(), 2):
+            sets = [set(x) for x in ts.sentence_units]
+            assert ts.n_pair(u, v) == sum(1 for z in sets if u in z and v in z)
+
+
+# ---- no centre chosen (I-02) -------------------------------------------------
+def test_no_centre_stored(sp):
+    doc = json.loads(sp.to_bytes())
+    assert set(doc) == {"format", "sentences", "tiers"}
+    for t in TIERS:
+        assert set(doc["tiers"][t]) == {"N", "sentence_units", "units"}
+        assert all(set(e) == {"u", "n", "r0", "sids"} for e in doc["tiers"][t]["units"])
+
+
+# ---- scale -------------------------------------------------------------------
+def test_build_S3000():
+    s = build_from_jsonl(S3000)
+    assert s.N == 3000
+    for t in TIERS:
+        ts = s.tiers[t]
+        assert ts.N == 3000
+        for u in ts.units()[:200]:
+            assert len(ts.postings[u]) >= 1
+    assert s.sha256() == build_from_jsonl(S3000).sha256()
