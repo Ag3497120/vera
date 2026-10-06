@@ -61,6 +61,12 @@ Local decisions (docs/LINE3_LOCAL_DECISIONS.md; L-60.. kept, L-62 superseded, L-
   L-67 Energy log record per placed unit: r0, E_Q, E_Q/r0 (None if r0 = 0), seat order
        centre, AXES order, k ascending; plus the three-ratio verdict.  It is taken on the
        representative of the class; observe_class() takes it on every member.
+  L-76 Budget LEVELS low / mid-low / mid / high / max (each 4x the previous in max_moves,
+       max_states, max_class); mid == the T4b default; max is a compromise, still finite.
+  L-77 An arrangement with an EMPTY CENTRE is not a state (owner): moves that would leave
+       the centre empty are not moves, so no class contains one; the lone seed's class is
+       the seed at the centre only.  (Owner point (3), reading all members of a class and
+       adopting the query-stable one, belongs to the query stage; not implemented.)
 Everything is exact (int / Fraction), deterministic, and hash-seed independent.
 """
 from __future__ import annotations
@@ -83,6 +89,8 @@ MAX_CLASS = 1000           # L-73
 MAX_STATES = 20000         # L-73
 MAX_MOVES = 400000         # L-73
 
+CENTER_IDX = 0             # flat index of the centre seat
+
 Score = Tuple[int, int]
 Flat = Tuple[Optional[str], ...]     # [centre, arm0 k=0..L-1, arm1 ..., ...]
 ZERO2: Score = (0, 0)
@@ -98,6 +106,31 @@ class Budget:
     def to_json_obj(self) -> dict:
         return {"max_class": self.max_class, "max_states": self.max_states,
                 "max_moves": self.max_moves}
+
+
+# L-76: the five named budget levels (owner: "lowからmaxまでの五段階"; max is a COMPROMISE
+# point, still finite).  Each level is 4x the previous in max_moves (and in the other two).
+LEVELS: Dict[str, Budget] = {
+    "low": Budget(max_class=63, max_states=1250, max_moves=25000),
+    "mid-low": Budget(max_class=250, max_states=5000, max_moves=100000),
+    "mid": Budget(max_class=1000, max_states=20000, max_moves=400000),     # == the T4b default
+    "high": Budget(max_class=4000, max_states=80000, max_moves=1600000),
+    "max": Budget(max_class=16000, max_states=320000, max_moves=6400000),
+}
+LEVEL_ORDER = ("low", "mid-low", "mid", "high", "max")
+
+
+def budget_level(name: str) -> Budget:
+    """L-76: the Budget of a named level (KeyError for an unknown name)."""
+    return LEVELS[name]
+
+
+def level_name(b: Budget) -> Optional[str]:
+    """The level name a Budget equals, or None for a custom budget."""
+    for n in LEVEL_ORDER:
+        if LEVELS[n] == b:
+            return n
+    return None
 
 
 class _Over(Exception):
@@ -278,6 +311,8 @@ def _scan(w: Weights, s: Flat, L: int) -> Tuple[List[Flat], List[Flat], int]:
         for j in range(i + 1, lay.n):
             if s[i] == s[j]:
                 continue
+            if i == CENTER_IDX and s[j] is None:
+                continue                  # L-77: an empty centre is not an arrangement
             tested += 1
             d = _swap_delta(w, s, lay, i, j)
             if d > best:
@@ -394,6 +429,8 @@ def settle_class(tier: TierSpace, starts: Sequence[Cross], budget: Budget = Budg
     best-key class closed under equal-key moves (L-70/L-71)."""
     w = w or Weights(tier)
     L = starts[0].L
+    if any(c.center is None for c in starts):
+        raise ValueError("an arrangement with an empty centre is not a state (L-77)")
     work = _Work(budget)
     try:
         members = _settle(w, [from_cross(c) for c in starts], L, work, budget)
@@ -449,6 +486,8 @@ def verify_fixed_point(tier: TierSpace, cross: Cross) -> FixedPointReport:
             noop += 1
             continue
         c2 = swap(cross, p, q)
+        if c2.center is None:
+            continue                  # L-77: not an arrangement
         s2 = cross_score(w, c2)
         if s2 > base:
             improving += 1
@@ -469,6 +508,7 @@ class ClassReport:
     closed: bool                    # every equal-key single move stays inside the class
     swaps_tested: int
     is_stable_class: bool
+    centres_nonempty: bool = True   # L-77: every member has a unit at the centre
 
 
 def verify_class(tier: TierSpace, members: Sequence[Cross]) -> ClassReport:
@@ -486,8 +526,11 @@ def verify_class(tier: TierSpace, members: Sequence[Cross]) -> ClassReport:
         for p, q in moves_swap(L):
             if c.get(p) == c.get(q):
                 continue
+            c2 = swap(c, p, q)
+            if c2.center is None:
+                continue              # L-77: not an arrangement
             tested += 1
-            s2 = cross_score(w, swap(c, p, q))
+            s2 = cross_score(w, c2)
             if s2 > base:
                 fixed = False
             elif s2 == base and canon(from_cross(swap(c, p, q)), L) not in here:
@@ -495,7 +538,9 @@ def verify_class(tier: TierSpace, members: Sequence[Cross]) -> ClassReport:
         if any(cross_score(w, rotate(c, r)) != base for r in moves_rotate()):
             fixed = False
     one = len(keys) == 1
-    return ClassReport(len(here), one, fixed, closed, tested, one and fixed and closed)
+    nonempty = all(c.center is not None for c in members)
+    return ClassReport(len(here), one, fixed, closed, tested,
+                       one and fixed and closed and nonempty, nonempty)
 
 
 # --------------------------------------------------------------------------

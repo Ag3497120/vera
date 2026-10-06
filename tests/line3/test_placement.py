@@ -142,12 +142,14 @@ def test_budget_is_explicit_and_recorded():
     assert p.budget == tiny and p.to_json_obj()["budget"] == {"max_class": 3, "max_states": 10,
                                                       "max_moves": pl.MAX_MOVES}
     assert p.capacity == p.size == 1                      # the previous class restored (N-05)
-    assert pl.settle_class(t, [Cross.make(L=1, center="A", arms=[(None,)] * 6)],
-                           pl.Budget(max_class=1, max_states=10)).status == pl.BUDGET
+    t2 = tier(["A B", "B A"])             # A, B interchangeable: the class has 2 members
+    st = Cross.make(L=1, center="A", arms=[("B",)] + [(None,)] * 5)
+    assert pl.settle_class(t2, [st], pl.Budget(max_class=1, max_states=10)).status == pl.BUDGET
+    assert pl.settle_class(t2, [st], pl.Budget(max_class=2, max_states=10)).status == pl.STABLE
     # a larger budget is a different, recorded result — never silently cut
-    # 7 units of EQUAL share: the tied class (7! orderings ...) exceeds the default budget:
+    # 9 units of EQUAL share in one sentence: the tied class exceeds the default budget:
     # typed BUDGET, previous class restored, never a silent cut
-    d = pl.build_cross(t, "A")
+    d = pl.build_cross(tier(["A B C D E F G H I J"]), "A")
     assert d.stop == "budget" and d.capacity == 1 and d.broke_on.reason in (
         "max_class", "max_states", "max_moves")
 
@@ -327,3 +329,56 @@ def test_observe_logs_each_query_from_the_stable_arrangement():
     logs = pl.observe(t, p, [["B"], ["C", "D"], ["B"]])
     assert len(logs) == 3 and logs[0] == logs[2] and logs[0] != logs[1]
     assert [r.r0 for r in logs[0].records] == [r.r0 for r in logs[1].records]   # the base never moves
+
+
+# ---------------- L-77: an empty centre is not a state
+def test_lone_seed_class_has_no_seed_at_arm_end_member():
+    p = pl.build_cross(tier(["A"]), "A")
+    assert p.class_size == 1 and p.centres == ("A",) and p.members[0][0] == "A"
+    lone = pl.settle_class(tier(["A"]), [Cross.make(L=1, center="A", arms=[(None,)] * 6)])
+    assert len(lone.members) == 1 and lone.members[0].center == "A"
+    with pytest.raises(ValueError):
+        pl.settle_class(tier(["A"]), [Cross.make(L=1, center=None, arms=[("A",)] + [(None,)] * 5)])
+
+
+@pytest.mark.parametrize("sents", TOYS)
+def test_no_member_has_an_empty_centre(sents):
+    t = tier(sents)
+    for u in t.units():
+        p = pl.build_cross(t, u)
+        assert all(m[0] is not None for m in p.members)
+        assert None not in p.centres
+        assert pl.verify_class(t, p.crosses()).centres_nonempty
+
+
+def test_verify_class_flags_an_empty_centre():
+    t = tier(["A B"])
+    bad = Cross.make(L=1, center=None, arms=[("A",), ("B",)] + [(None,)] * 4)
+    r = pl.verify_class(t, [bad])
+    assert not r.centres_nonempty and not r.is_stable_class
+
+
+@pytest.mark.skipif(not os.path.exists(S300), reason="S300 not present")
+def test_s300_slice_has_no_empty_centre():
+    t = build_space(load_jsonl(S300)).tiers["WORD"]
+    placer = pl.Placer(t, SMALL)
+    for u in t.units()[:12]:
+        assert all(m[0] is not None for m in placer.cross_for(u).members)
+
+
+# ---------------- L-76: five named budget levels
+def test_budget_levels():
+    assert pl.LEVEL_ORDER == ("low", "mid-low", "mid", "high", "max")
+    bs = [pl.budget_level(n) for n in pl.LEVEL_ORDER]
+    for a, b in zip(bs, bs[1:]):
+        assert b.max_moves == 4 * a.max_moves
+        assert b.max_states >= 3 * a.max_states and b.max_class >= 3 * a.max_class
+    assert pl.budget_level("mid") == pl.Budget()          # the T4b default
+    assert [pl.level_name(b) for b in bs] == list(pl.LEVEL_ORDER)
+    assert pl.level_name(pl.Budget(1, 2, 3)) is None
+    with pytest.raises(KeyError):
+        pl.budget_level("huge")
+    # a higher level never gives a smaller capacity on a toy that hits the low budget
+    t = tier(["A B C D E F G H"])
+    caps = [pl.build_cross(t, "A", budget=b).capacity for b in bs[:2]]
+    assert caps == sorted(caps)

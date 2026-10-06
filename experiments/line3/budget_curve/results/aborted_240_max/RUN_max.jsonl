@@ -1,0 +1,25 @@
+{"seed": "0", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 24, "secs": 4.665, "reason": "max_moves", "steps": [[1, 24, null, "budget", 18710, null]]}
+{"seed": "1400ページ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 15, "secs": 7.242, "reason": "max_states", "steps": [[1, 15, null, "budget", 191758, null]]}
+{"seed": "1965年の", "capacity": 12, "stop": "exhausted", "class_size": 630, "candidates": 11, "secs": 3.733, "reason": null, "steps": [[1, 11, 12, "stable", 26694, 630]]}
+{"seed": "1991年11月18日に", "capacity": 7, "stop": "exhausted", "class_size": 1, "candidates": 6, "secs": 0.001, "reason": null, "steps": [[1, 6, 7, "stable", 21, 1]]}
+{"seed": "2008年に", "capacity": 13, "stop": "exhausted", "class_size": 1890, "candidates": 12, "secs": 14.784, "reason": null, "steps": [[1, 12, 13, "stable", 113892, 1890]]}
+{"seed": "2022年の", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 16, "secs": 7.534, "reason": "max_moves", "steps": [[1, 16, null, "budget", 48362, null]]}
+{"seed": "20世紀初頭", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 17, "secs": 8.038, "reason": "max_moves", "steps": [[1, 17, null, "budget", 130988, null]]}
+{"seed": "36は", "capacity": 9, "stop": "exhausted", "class_size": 75, "candidates": 8, "secs": 0.975, "reason": null, "steps": [[1, 8, 9, "stable", 6844, 75]]}
+{"seed": "5号線", "capacity": 12, "stop": "exhausted", "class_size": 24, "candidates": 11, "secs": 1.774, "reason": null, "steps": [[1, 11, 12, "stable", 12793, 24]]}
+{"seed": "AK", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 20, "secs": 5.828, "reason": "max_moves", "steps": [[1, 20, null, "budget", 20549, null]]}
+{"seed": "BD-RE", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 17, "secs": 4.762, "reason": "max_states", "steps": [[1, 17, null, "budget", 57616, null]]}
+{"seed": "Document", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 21, "secs": 4.266, "reason": "max_moves", "steps": [[1, 21, null, "budget", 33819, null]]}
+{"seed": "Ferguson", "capacity": 9, "stop": "exhausted", "class_size": 65, "candidates": 8, "secs": 0.615, "reason": null, "steps": [[1, 8, 9, "stable", 4165, 65]]}
+{"seed": "IE", "capacity": 6, "stop": "exhausted", "class_size": 1, "candidates": 5, "secs": 0.002, "reason": null, "steps": [[1, 5, 6, "stable", 34, 1]]}
+{"seed": "JUKE", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 12, "secs": 11.82, "reason": "max_moves", "steps": [[1, 12, null, "budget", 267864, null]]}
+{"seed": "Magisk", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 18, "secs": 6.81, "reason": "max_moves", "steps": [[1, 18, null, "budget", 38577, null]]}
+{"seed": "PDF-XChange", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 21, "secs": 4.607, "reason": "max_moves", "steps": [[1, 21, null, "budget", 20595, null]]}
+{"seed": "Shem", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 16, "secs": 6.674, "reason": "max_moves", "steps": [[1, 16, null, "budget", 61563, null]]}
+{"seed": "The", "capacity": 12, "stop": "exhausted", "class_size": 408, "candidates": 11, "secs": 9.244, "reason": null, "steps": [[1, 11, 12, "stable", 56189, 408]]}
+{"seed": "YAMAMORIラジオ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 16, "secs": 4.571, "reason": "max_moves", "steps": [[1, 16, null, "budget", 42645, null]]}
+{"seed": "m", "capacity": 3, "stop": "budget", "class_size": 1, "candidates": 30, "secs": 6.161, "reason": "max_moves", "steps": [[2, 2, 3, "stable", 6, 1], [1, 28, null, "budget", 19342, null]]}
+{"seed": "topjohnwu", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 18, "secs": 7.525, "reason": "max_moves", "steps": [[1, 18, null, "budget", 90530, null]]}
+{"seed": "あぼうとうげどうろ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 14, "secs": 7.421, "reason": "max_moves", "steps": [[1, 14, null, "budget", 78455, null]]}
+{"seed": "う", "capacity": 8, "stop": "budget", "class_size": 1, "candidates": 62, "secs": 4.539, "reason": "max_moves", "steps": [[5, 1, 2, "stable", 3, 1], [4, 1, 3, "stable", 4, 1], [3, 1, 4, "stable", 3, 1], [2, 4, 8, "stable", 7, 1], [1, 55, null, "budget", 2775, null]]}
+{"seed": "えることである", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 34, "secs": 6.417, "reason": "max_moves", "steps": [[1, 34, null, "budget", 6197, null]]}

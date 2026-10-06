@@ -1,0 +1,241 @@
+{"seed": "0", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 28, "secs": 0.016, "reason": "max_moves", "steps": [[1, 28, null, "budget", 47, null]]}
+{"seed": "1315", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 23, "secs": 0.016, "reason": "max_moves", "steps": [[1, 23, null, "budget", 66, null]]}
+{"seed": "1938", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 22, "secs": 0.015, "reason": "max_moves", "steps": [[1, 22, null, "budget", 85, null]]}
+{"seed": "1979", "capacity": 9, "stop": "budget", "class_size": 10, "candidates": 51, "secs": 0.047, "reason": "max_moves", "steps": [[2, 8, 9, "stable", 263, 10], [1, 43, null, "budget", 13, null]]}
+{"seed": "2002", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 29, "secs": 0.032, "reason": "max_moves", "steps": [[1, 29, null, "budget", 32, null]]}
+{"seed": "2017", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 37, "secs": 0.018, "reason": "max_moves", "steps": [[2, 16, null, "budget", 131, null]]}
+{"seed": "25", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 27, "secs": 0.015, "reason": "max_moves", "steps": [[1, 27, null, "budget", 35, null]]}
+{"seed": "4", "capacity": 7, "stop": "budget", "class_size": 1, "candidates": 71, "secs": 0.014, "reason": "max_moves", "steps": [[3, 3, 4, "stable", 7, 1], [2, 3, 7, "stable", 5, 1], [1, 65, null, "budget", 7, null]]}
+{"seed": "62", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 28, "secs": 0.017, "reason": "max_moves", "steps": [[1, 28, null, "budget", 34, null]]}
+{"seed": "ATACS", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 17, "secs": 0.022, "reason": "max_moves", "steps": [[1, 17, null, "budget", 105, null]]}
+{"seed": "Co", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 26, "secs": 0.013, "reason": "max_moves", "steps": [[1, 26, null, "budget", 38, null]]}
+{"seed": "Ferguson", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 9, "secs": 0.044, "reason": "max_moves", "steps": [[1, 9, null, "budget", 816, null]]}
+{"seed": "IE", "capacity": 6, "stop": "exhausted", "class_size": 1, "candidates": 5, "secs": 0.008, "reason": null, "steps": [[1, 5, 6, "stable", 34, 1]]}
+{"seed": "Jan", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 18, "secs": 0.017, "reason": "max_moves", "steps": [[1, 18, null, "budget", 104, null]]}
+{"seed": "Mulki", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 19, "secs": 0.016, "reason": "max_moves", "steps": [[1, 19, null, "budget", 100, null]]}
+{"seed": "Porn", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 28, "secs": 0.014, "reason": "max_moves", "steps": [[1, 28, null, "budget", 33, null]]}
+{"seed": "Sunwolves", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 24, "secs": 0.014, "reason": "max_moves", "steps": [[1, 24, null, "budget", 62, null]]}
+{"seed": "Web", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 28, "secs": 0.015, "reason": "max_moves", "steps": [[1, 28, null, "budget", 34, null]]}
+{"seed": "km", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 28, "secs": 0.024, "reason": "max_moves", "steps": [[1, 28, null, "budget", 33, null]]}
+{"seed": "topjohnwu", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 26, "secs": 0.015, "reason": "max_moves", "steps": [[1, 26, null, "budget", 48, null]]}
+{"seed": "あたえ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 27, "secs": 0.014, "reason": "max_moves", "steps": [[1, 27, null, "budget", 38, null]]}
+{"seed": "いからし", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 14, "secs": 0.022, "reason": "max_moves", "steps": [[1, 14, null, "budget", 219, null]]}
+{"seed": "いる", "capacity": 27, "stop": "budget", "class_size": 1, "candidates": 228, "secs": 0.036, "reason": "max_moves", "steps": [[12, 2, 3, "stable", 6, 1], [11, 1, 4, "stable", 4, 1], [9, 1, 5, "stable", 3, 1], [7, 1, 6, "stable", 3, 1], [6, 1, 7, "stable", 3, 1], [5, 4, 11, "stable", 9, 1], [4, 2, 13, "stable", 5, 1], [3, 3, 16, "stable", 7, 1], [2, 11, 27, "stable", 34, 1], [1, 202, null, "budget", 1, null]]}
+{"seed": "うわ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 15, "secs": 0.014, "reason": "max_moves", "steps": [[1, 15, null, "budget", 195, null]]}
+{"seed": "おく", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 31, "secs": 0.014, "reason": "max_moves", "steps": [[1, 31, null, "budget", 31, null]]}
+{"seed": "かいづか", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 21, "secs": 0.013, "reason": "max_moves", "steps": [[1, 21, null, "budget", 63, null]]}
+{"seed": "かまち", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 23, "secs": 0.014, "reason": "max_moves", "steps": [[1, 23, null, "budget", 65, null]]}
+{"seed": "がお", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 9, "secs": 0.075, "reason": "max_moves", "steps": [[1, 9, null, "budget", 480, null]]}
+{"seed": "きょく", "capacity": 3, "stop": "budget", "class_size": 1, "candidates": 34, "secs": 0.02, "reason": "max_moves", "steps": [[2, 2, 3, "stable", 5, 1], [1, 32, null, "budget", 67, null]]}
+{"seed": "くら", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 31, "secs": 0.018, "reason": "max_moves", "steps": [[1, 31, null, "budget", 27, null]]}
+{"seed": "けいかく", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 21, "secs": 0.014, "reason": "max_moves", "steps": [[1, 21, null, "budget", 66, null]]}
+{"seed": "こう", "capacity": 13, "stop": "budget", "class_size": 1, "candidates": 95, "secs": 0.02, "reason": "max_moves", "steps": [[7, 1, 2, "stable", 4, 1], [5, 1, 3, "stable", 3, 1], [4, 1, 4, "stable", 3, 1], [3, 2, 6, "stable", 4, 1], [2, 7, 13, "stable", 14, 1], [1, 83, null, "budget", 4, null]]}
+{"seed": "ごう", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 21, "secs": 0.017, "reason": "max_moves", "steps": [[1, 21, null, "budget", 91, null]]}
+{"seed": "ざん", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 21, "secs": 0.017, "reason": "max_moves", "steps": [[1, 21, null, "budget", 63, null]]}
+{"seed": "しゃ", "capacity": 2, "stop": "budget", "class_size": 1, "candidates": 26, "secs": 0.026, "reason": "max_moves", "steps": [[2, 1, 2, "stable", 4, 1], [1, 25, null, "budget", 166, null]]}
+{"seed": "じく", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 21, "secs": 0.013, "reason": "max_moves", "steps": [[1, 21, null, "budget", 91, null]]}
+{"seed": "じんじゃ", "capacity": 7, "stop": "budget", "class_size": 1, "candidates": 31, "secs": 0.02, "reason": "max_moves", "steps": [[4, 2, 3, "stable", 5, 1], [3, 3, 6, "stable", 5, 1], [2, 1, 7, "stable", 3, 1], [1, 25, null, "budget", 72, null]]}
+{"seed": "せつ", "capacity": 5, "stop": "budget", "class_size": 1, "candidates": 40, "secs": 0.021, "reason": "max_moves", "steps": [[2, 4, 5, "stable", 11, 1], [1, 36, null, "budget", 34, null]]}
+{"seed": "た", "capacity": 43, "stop": "budget", "class_size": 1, "candidates": 1133, "secs": 0.221, "reason": "max_moves", "steps": [[103, 1, 2, "stable", 3, 1], [81, 1, 3, "stable", 4, 1], [66, 1, 4, "stable", 3, 1], [61, 1, 5, "stable", 3, 1], [43, 1, 6, "stable", 3, 1], [40, 1, 7, "stable", 3, 1], [39, 1, 8, "stable", 5, 1], [36, 2, 10, "stable", 8, 1], [32, 1, 11, "stable", 4, 1], [31, 1, 12, "stable", 5, 1], [28, 2, 14, "stable", 6, 1], [25, 1, 15, "stable", 3, 1], [20, 1, 16, "stable", 3, 1], [19, 2, 18, "stable", 5, 1], [17, 1, 19, "stable", 3, 1], [16, 1, 20, "stable", 6, 1], [15, 2, 22, "stable", 4, 1], [13, 2, 24, "stable", 9, 1], [11, 2, 26, "stable", 17, 1], [10, 1, 27, "stable", 5, 1], [9, 5, 32, "stable", 9, 1], [8, 2, 34, "stable", 4, 1], [7, 4, 38, "stable", 10, 1], [6, 5, 43, "stable", 32, 1], [5, 9, null, "budget", 60, null]]}
+{"seed": "たる", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 11, "secs": 0.023, "reason": "max_moves", "steps": [[1, 11, null, "budget", 478, null]]}
+{"seed": "ちろ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 24, "secs": 0.014, "reason": "max_moves", "steps": [[1, 24, null, "budget", 74, null]]}
+{"seed": "づる", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 7, "secs": 0.042, "reason": "max_class", "steps": [[1, 7, null, "budget", 298, null]]}
+{"seed": "と", "capacity": 29, "stop": "budget", "class_size": 1, "candidates": 988, "secs": 0.11, "reason": "max_moves", "steps": [[80, 1, 2, "stable", 3, 1], [60, 1, 3, "stable", 4, 1], [55, 1, 4, "stable", 3, 1], [46, 1, 5, "stable", 3, 1], [40, 1, 6, "stable", 3, 1], [36, 2, 8, "stable", 6, 1], [28, 2, 10, "stable", 4, 1], [23, 1, 11, "stable", 3, 1], [22, 1, 12, "stable", 4, 1], [21, 1, 13, "stable", 8, 1], [20, 1, 14, "stable", 4, 1], [11, 1, 15, "stable", 3, 1], [10, 2, 17, "stable", 7, 1], [9, 2, 19, "stable", 4, 1], [8, 1, 20, "stable", 6, 1], [7, 5, 25, "stable", 13, 1], [6, 4, 29, "stable", 16, 1], [5, 9, null, "budget", 66, null]]}
+{"seed": "どうろ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 32, "secs": 0.014, "reason": "max_moves", "steps": [[1, 32, null, "budget", 24, null]]}
+{"seed": "なっ", "capacity": 5, "stop": "budget", "class_size": 1, "candidates": 41, "secs": 0.018, "reason": "max_moves", "steps": [[2, 4, 5, "stable", 18, 1], [1, 37, null, "budget", 40, null]]}
+{"seed": "の", "capacity": 35, "stop": "budget", "class_size": 1, "candidates": 2060, "secs": 0.149, "reason": "max_moves", "steps": [[224, 1, 2, "stable", 3, 1], [135, 1, 3, "stable", 4, 1], [120, 1, 4, "stable", 3, 1], [100, 1, 5, "stable", 3, 1], [66, 1, 6, "stable", 3, 1], [60, 1, 7, "stable", 3, 1], [56, 1, 8, "stable", 3, 1], [52, 1, 9, "stable", 3, 1], [47, 1, 10, "stable", 5, 1], [43, 1, 11, "stable", 3, 1], [42, 1, 12, "stable", 5, 1], [40, 1, 13, "stable", 4, 1], [39, 1, 14, "stable", 3, 1], [38, 1, 15, "stable", 4, 1], [36, 1, 16, "stable", 3, 1], [34, 1, 17, "stable", 3, 1], [31, 1, 18, "stable", 4, 1], [24, 1, 19, "stable", 3, 1], [23, 2, 21, "stable", 7, 1], [22, 2, 23, "stable", 7, 2], [21, 1, 24, "stable", 7, 1], [20, 1, 25, "stable", 6, 1], [17, 2, 27, "stable", 11, 1], [15, 3, 30, "stable", 6, 1], [14, 1, 31, "stable", 3, 1], [13, 2, 33, "stable", 7, 1], [12, 2, 35, "stable", 13, 1], [11, 5, null, "budget", 39, null]]}
+{"seed": "はなぞの", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 26, "secs": 0.014, "reason": "max_moves", "steps": [[1, 26, null, "budget", 53, null]]}
+{"seed": "ひ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 24, "secs": 0.015, "reason": "max_moves", "steps": [[1, 24, null, "budget", 69, null]]}
+{"seed": "ぶつ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 25, "secs": 0.018, "reason": "max_moves", "steps": [[1, 25, null, "budget", 44, null]]}
+{"seed": "ほう", "capacity": 8, "stop": "budget", "class_size": 1, "candidates": 50, "secs": 0.014, "reason": "max_moves", "steps": [[4, 1, 2, "stable", 4, 1], [3, 1, 3, "stable", 3, 1], [2, 5, 8, "stable", 7, 1], [1, 43, null, "budget", 18, null]]}
+{"seed": "まじ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 26, "secs": 0.015, "reason": "max_moves", "steps": [[1, 26, null, "budget", 37, null]]}
+{"seed": "み", "capacity": 2, "stop": "budget", "class_size": 1, "candidates": 37, "secs": 0.014, "reason": "max_moves", "steps": [[2, 1, 2, "stable", 4, 1], [1, 36, null, "budget", 45, null]]}
+{"seed": "むら", "capacity": 14, "stop": "budget", "class_size": 3, "candidates": 72, "secs": 0.03, "reason": "max_moves", "steps": [[8, 6, 7, "stable", 20, 1], [5, 1, 8, "stable", 7, 2], [3, 1, 9, "stable", 8, 2], [2, 5, 14, "stable", 44, 3], [1, 59, null, "budget", 8, null]]}
+{"seed": "やくし", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 12, "secs": 0.035, "reason": "max_moves", "steps": [[1, 12, null, "budget", 608, null]]}
+{"seed": "よく", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 25, "secs": 0.019, "reason": "max_moves", "steps": [[1, 25, null, "budget", 44, null]]}
+{"seed": "らん", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 19, "secs": 0.026, "reason": "max_moves", "steps": [[1, 19, null, "budget", 74, null]]}
+{"seed": "わ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 23, "secs": 0.015, "reason": "max_moves", "steps": [[1, 23, null, "budget", 53, null]]}
+{"seed": "アウディ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 14, "secs": 0.027, "reason": "max_moves", "steps": [[1, 14, null, "budget", 137, null]]}
+{"seed": "アム", "capacity": 6, "stop": "budget", "class_size": 1, "candidates": 36, "secs": 0.015, "reason": "max_moves", "steps": [[2, 5, 6, "stable", 19, 1], [1, 31, null, "budget", 68, null]]}
+{"seed": "アンド", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 17, "secs": 0.02, "reason": "max_moves", "steps": [[1, 17, null, "budget", 103, null]]}
+{"seed": "イヤーズ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 19, "secs": 0.014, "reason": "max_moves", "steps": [[1, 19, null, "budget", 74, null]]}
+{"seed": "ウガンダ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 12, "secs": 0.023, "reason": "max_states", "steps": [[1, 12, null, "budget", 564, null]]}
+{"seed": "エアウェイズ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 7, "secs": 0.077, "reason": "max_moves", "steps": [[1, 7, null, "budget", 767, null]]}
+{"seed": "オ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 16, "secs": 0.022, "reason": "max_moves", "steps": [[1, 16, null, "budget", 113, null]]}
+{"seed": "オリンピック", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 24, "secs": 0.012, "reason": "max_moves", "steps": [[1, 24, null, "budget", 56, null]]}
+{"seed": "カウントダウン", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 11, "secs": 0.031, "reason": "max_moves", "steps": [[1, 11, null, "budget", 337, null]]}
+{"seed": "カロリーヌ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 7, "secs": 0.072, "reason": "max_moves", "steps": [[1, 7, null, "budget", 703, null]]}
+{"seed": "キューバ", "capacity": 3, "stop": "budget", "class_size": 1, "candidates": 20, "secs": 0.015, "reason": "max_moves", "steps": [[2, 2, 3, "stable", 5, 1], [1, 18, null, "budget", 174, null]]}
+{"seed": "クラレ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 24, "secs": 0.033, "reason": "max_moves", "steps": [[1, 24, null, "budget", 50, null]]}
+{"seed": "グロタンディーク", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 26, "secs": 0.015, "reason": "max_moves", "steps": [[1, 26, null, "budget", 35, null]]}
+{"seed": "コケ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 8, "secs": 0.075, "reason": "max_moves", "steps": [[1, 8, null, "budget", 474, null]]}
+{"seed": "コンストラクター", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 24, "secs": 0.025, "reason": "max_moves", "steps": [[1, 24, null, "budget", 51, null]]}
+{"seed": "ゴンクール", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 10, "secs": 0.033, "reason": "max_moves", "steps": [[1, 10, null, "budget", 565, null]]}
+{"seed": "シェイフ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 23, "secs": 0.015, "reason": "max_moves", "steps": [[1, 23, null, "budget", 77, null]]}
+{"seed": "シリ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 10, "secs": 0.028, "reason": "max_moves", "steps": [[1, 10, null, "budget", 513, null]]}
+{"seed": "ジャパン", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 35, "secs": 0.012, "reason": "max_moves", "steps": [[1, 35, null, "budget", 23, null]]}
+{"seed": "ストップ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 22, "secs": 0.014, "reason": "max_moves", "steps": [[1, 22, null, "budget", 81, null]]}
+{"seed": "スーツケース", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 32, "secs": 0.018, "reason": "max_moves", "steps": [[1, 32, null, "budget", 24, null]]}
+{"seed": "ソフトウェア", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 44, "secs": 0.058, "reason": "max_moves", "steps": [[2, 8, null, "budget", 626, null]]}
+{"seed": "タイプ", "capacity": 8, "stop": "budget", "class_size": 1, "candidates": 35, "secs": 0.034, "reason": "max_moves", "steps": [[2, 7, 8, "stable", 65, 1], [1, 28, null, "budget", 67, null]]}
+{"seed": "ダムジ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 11, "secs": 0.047, "reason": "max_moves", "steps": [[1, 11, null, "budget", 400, null]]}
+{"seed": "ツァスタバ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 28, "secs": 0.016, "reason": "max_moves", "steps": [[1, 28, null, "budget", 33, null]]}
+{"seed": "ディスク", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 27, "secs": 0.023, "reason": "max_moves", "steps": [[1, 27, null, "budget", 35, null]]}
+{"seed": "トイ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 30, "secs": 0.015, "reason": "max_moves", "steps": [[1, 30, null, "budget", 30, null]]}
+{"seed": "トローラー", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 11, "secs": 0.03, "reason": "max_moves", "steps": [[1, 11, null, "budget", 331, null]]}
+{"seed": "ナウ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 27, "secs": 0.015, "reason": "max_moves", "steps": [[1, 27, null, "budget", 38, null]]}
+{"seed": "ニーン", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 42, "secs": 0.014, "reason": "max_moves", "steps": [[2, 15, null, "budget", 159, null]]}
+{"seed": "ハニ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 26, "secs": 0.013, "reason": "max_moves", "steps": [[1, 26, null, "budget", 47, null]]}
+{"seed": "バジャー", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 7, "secs": 0.096, "reason": "max_moves", "steps": [[1, 7, null, "budget", 702, null]]}
+{"seed": "バーチャル", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 14, "secs": 0.039, "reason": "max_moves", "steps": [[1, 14, null, "budget", 265, null]]}
+{"seed": "ヒューレット", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 40, "secs": 0.012, "reason": "max_moves", "steps": [[1, 40, null, "budget", 16, null]]}
+{"seed": "ピアノ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 21, "secs": 0.024, "reason": "max_moves", "steps": [[1, 21, null, "budget", 58, null]]}
+{"seed": "フォ・ユンツィア", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 16, "secs": 0.034, "reason": "max_moves", "steps": [[1, 16, null, "budget", 188, null]]}
+{"seed": "ブルック", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 21, "secs": 0.015, "reason": "max_moves", "steps": [[1, 21, null, "budget", 60, null]]}
+{"seed": "プラン", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 22, "secs": 0.013, "reason": "max_moves", "steps": [[1, 22, null, "budget", 58, null]]}
+{"seed": "プロモーション", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 20, "secs": 0.035, "reason": "max_moves", "steps": [[1, 20, null, "budget", 61, null]]}
+{"seed": "ベスト", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 19, "secs": 0.014, "reason": "max_moves", "steps": [[1, 19, null, "budget", 65, null]]}
+{"seed": "ペン", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 16, "secs": 0.026, "reason": "max_moves", "steps": [[1, 16, null, "budget", 110, null]]}
+{"seed": "ポルトープランス", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 13, "secs": 0.021, "reason": "max_moves", "steps": [[1, 13, null, "budget", 163, null]]}
+{"seed": "マッキルベイン", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 15, "secs": 0.038, "reason": "max_moves", "steps": [[1, 15, null, "budget", 125, null]]}
+{"seed": "ムニシピ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 8, "secs": 0.047, "reason": "max_states", "steps": [[1, 8, null, "budget", 1251, null]]}
+{"seed": "メンバー", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 37, "secs": 0.025, "reason": "max_moves", "steps": [[1, 37, null, "budget", 17, null]]}
+{"seed": "ヤス", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 7, "secs": 0.063, "reason": "max_moves", "steps": [[1, 7, null, "budget", 840, null]]}
+{"seed": "ユーラシア", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 23, "secs": 0.016, "reason": "max_moves", "steps": [[1, 23, null, "budget", 54, null]]}
+{"seed": "リオ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 11, "secs": 0.025, "reason": "max_moves", "steps": [[1, 11, null, "budget", 329, null]]}
+{"seed": "リーグ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 18, "secs": 0.015, "reason": "max_moves", "steps": [[1, 18, null, "budget", 113, null]]}
+{"seed": "レベ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 24, "secs": 0.014, "reason": "max_moves", "steps": [[1, 24, null, "budget", 50, null]]}
+{"seed": "ロンバルディア", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 20, "secs": 0.013, "reason": "max_moves", "steps": [[1, 20, null, "budget", 83, null]]}
+{"seed": "ヴェーザー", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 42, "secs": 0.02, "reason": "max_moves", "steps": [[2, 15, null, "budget", 128, null]]}
+{"seed": "一連", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 25, "secs": 0.017, "reason": "max_moves", "steps": [[1, 25, null, "budget", 38, null]]}
+{"seed": "上下", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 16, "secs": 0.021, "reason": "max_moves", "steps": [[1, 16, null, "budget", 117, null]]}
+{"seed": "世界", "capacity": 30, "stop": "budget", "class_size": 1, "candidates": 101, "secs": 0.039, "reason": "max_moves", "steps": [[7, 3, 4, "stable", 6, 1], [6, 4, 8, "stable", 11, 1], [5, 5, 13, "stable", 12, 1], [4, 2, 15, "stable", 6, 2], [3, 2, 17, "stable", 17, 1], [2, 13, 30, "stable", 31, 1], [1, 72, null, "budget", 6, null]]}
+{"seed": "中華", "capacity": 19, "stop": "budget", "class_size": 1, "candidates": 125, "secs": 0.107, "reason": "max_moves", "steps": [[11, 2, 3, "stable", 5, 1], [9, 3, 6, "stable", 6, 1], [8, 1, 7, "stable", 3, 1], [7, 2, 9, "stable", 10, 1], [6, 3, 12, "stable", 10, 1], [4, 2, 14, "stable", 19, 2], [3, 5, 19, "stable", 36, 1], [2, 8, null, "budget", 64, null]]}
+{"seed": "亀井", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 14, "secs": 0.019, "reason": "max_moves", "steps": [[1, 14, null, "budget", 156, null]]}
+{"seed": "五", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 29, "secs": 0.024, "reason": "max_moves", "steps": [[1, 29, null, "budget", 31, null]]}
+{"seed": "人", "capacity": 11, "stop": "budget", "class_size": 1, "candidates": 182, "secs": 0.075, "reason": "max_moves", "steps": [[12, 1, 2, "stable", 3, 1], [11, 1, 3, "stable", 4, 1], [9, 1, 4, "stable", 3, 1], [8, 1, 5, "stable", 3, 1], [7, 3, 8, "stable", 7, 1], [6, 2, 10, "stable", 5, 1], [5, 1, 11, "stable", 6, 1], [4, 12, null, "budget", 470, null]]}
+{"seed": "代表", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 28, "secs": 0.033, "reason": "max_moves", "steps": [[2, 9, null, "budget", 1034, null]]}
+{"seed": "会", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 32, "secs": 0.017, "reason": "max_moves", "steps": [[1, 32, null, "budget", 26, null]]}
+{"seed": "位相", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 26, "secs": 0.017, "reason": "max_moves", "steps": [[1, 26, null, "budget", 37, null]]}
+{"seed": "作っ", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 11, "secs": 0.03, "reason": "max_moves", "steps": [[1, 11, null, "budget", 378, null]]}
+{"seed": "例", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 21, "secs": 0.017, "reason": "max_moves", "steps": [[1, 21, null, "budget", 58, null]]}
+{"seed": "個", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 22, "secs": 0.017, "reason": "max_moves", "steps": [[1, 22, null, "budget", 56, null]]}
+{"seed": "元号", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 17, "secs": 0.028, "reason": "max_moves", "steps": [[1, 17, null, "budget", 102, null]]}
+{"seed": "八幡", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 17, "secs": 0.023, "reason": "max_moves", "steps": [[1, 17, null, "budget", 119, null]]}
+{"seed": "公開", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 23, "secs": 0.032, "reason": "max_moves", "steps": [[1, 23, null, "budget", 63, null]]}
+{"seed": "内容", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 31, "secs": 0.018, "reason": "max_moves", "steps": [[1, 31, null, "budget", 24, null]]}
+{"seed": "函数", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 11, "secs": 0.041, "reason": "max_moves", "steps": [[1, 11, null, "budget", 985, null]]}
+{"seed": "判決", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 32, "secs": 0.021, "reason": "max_moves", "steps": [[1, 32, null, "budget", 23, null]]}
+{"seed": "創世", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 12, "secs": 0.038, "reason": "max_moves", "steps": [[1, 12, null, "budget", 949, null]]}
+{"seed": "北", "capacity": 3, "stop": "budget", "class_size": 1, "candidates": 47, "secs": 0.014, "reason": "max_moves", "steps": [[3, 1, 2, "stable", 3, 1], [2, 1, 3, "stable", 4, 1], [1, 45, null, "budget", 18, null]]}
+{"seed": "北道", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 33, "secs": 0.017, "reason": "max_moves", "steps": [[2, 20, null, "budget", 65, null]]}
+{"seed": "協力", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 44, "secs": 0.021, "reason": "max_moves", "steps": [[1, 44, null, "budget", 13, null]]}
+{"seed": "南海", "capacity": 2, "stop": "budget", "class_size": 2, "candidates": 28, "secs": 0.022, "reason": "max_moves", "steps": [[2, 1, 2, "stable", 4, 2], [1, 27, null, "budget", 48, null]]}
+{"seed": "原", "capacity": 2, "stop": "budget", "class_size": 1, "candidates": 32, "secs": 0.028, "reason": "max_moves", "steps": [[2, 1, 2, "stable", 4, 1], [1, 31, null, "budget", 63, null]]}
+{"seed": "受け", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 32, "secs": 0.019, "reason": "max_moves", "steps": [[1, 32, null, "budget", 23, null]]}
+{"seed": "史観", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 25, "secs": 0.013, "reason": "max_moves", "steps": [[1, 25, null, "budget", 39, null]]}
+{"seed": "同一", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 25, "secs": 0.017, "reason": "max_moves", "steps": [[1, 25, null, "budget", 38, null]]}
+{"seed": "君主", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 11, "secs": 0.033, "reason": "max_moves", "steps": [[1, 11, null, "budget", 325, null]]}
+{"seed": "和歌山", "capacity": 6, "stop": "budget", "class_size": 1, "candidates": 35, "secs": 0.02, "reason": "max_moves", "steps": [[2, 5, 6, "stable", 12, 1], [1, 30, null, "budget", 67, null]]}
+{"seed": "唯物", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 25, "secs": 0.014, "reason": "max_moves", "steps": [[1, 25, null, "budget", 37, null]]}
+{"seed": "固め", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 41, "secs": 0.016, "reason": "max_moves", "steps": [[1, 41, null, "budget", 16, null]]}
+{"seed": "国際", "capacity": 11, "stop": "budget", "class_size": 1, "candidates": 52, "secs": 0.014, "reason": "max_moves", "steps": [[3, 2, 3, "stable", 5, 1], [2, 8, 11, "stable", 10, 1], [1, 42, null, "budget", 21, null]]}
+{"seed": "地位", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 16, "secs": 0.015, "reason": "max_moves", "steps": [[1, 16, null, "budget", 139, null]]}
+{"seed": "城市", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 18, "secs": 0.018, "reason": "max_moves", "steps": [[1, 18, null, "budget", 96, null]]}
+{"seed": "増強", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 35, "secs": 0.026, "reason": "max_moves", "steps": [[1, 35, null, "budget", 21, null]]}
+{"seed": "夜行", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 21, "secs": 0.019, "reason": "max_moves", "steps": [[1, 21, null, "budget", 58, null]]}
+{"seed": "大戦", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 31, "secs": 0.015, "reason": "max_moves", "steps": [[1, 31, null, "budget", 25, null]]}
+{"seed": "大陸", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 15, "secs": 0.019, "reason": "max_moves", "steps": [[1, 15, null, "budget", 138, null]]}
+{"seed": "女子", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 19, "secs": 0.015, "reason": "max_moves", "steps": [[1, 19, null, "budget", 160, null]]}
+{"seed": "安八", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 15, "secs": 0.015, "reason": "max_moves", "steps": [[1, 15, null, "budget", 150, null]]}
+{"seed": "定期", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 22, "secs": 0.02, "reason": "max_moves", "steps": [[1, 22, null, "budget", 56, null]]}
+{"seed": "宮城", "capacity": 9, "stop": "budget", "class_size": 2, "candidates": 58, "secs": 0.013, "reason": "max_moves", "steps": [[3, 3, 4, "stable", 7, 1], [2, 5, 9, "stable", 9, 2], [1, 50, null, "budget", 11, null]]}
+{"seed": "審議", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 32, "secs": 0.014, "reason": "max_moves", "steps": [[1, 32, null, "budget", 25, null]]}
+{"seed": "就役", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 18, "secs": 0.018, "reason": "max_moves", "steps": [[1, 18, null, "budget", 96, null]]}
+{"seed": "層", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 18, "secs": 0.022, "reason": "max_moves", "steps": [[1, 18, null, "budget", 107, null]]}
+{"seed": "岡垣", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 23, "secs": 0.014, "reason": "max_moves", "steps": [[1, 23, null, "budget", 53, null]]}
+{"seed": "崇拝", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 23, "secs": 0.015, "reason": "max_moves", "steps": [[1, 23, null, "budget", 54, null]]}
+{"seed": "市", "capacity": 37, "stop": "budget", "class_size": 1, "candidates": 640, "secs": 0.17, "reason": "max_moves", "steps": [[60, 1, 2, "stable", 3, 1], [54, 1, 3, "stable", 4, 1], [44, 1, 4, "stable", 3, 1], [36, 2, 6, "stable", 4, 1], [26, 1, 7, "stable", 3, 1], [16, 1, 8, "stable", 4, 1], [14, 1, 9, "stable", 3, 1], [13, 1, 10, "stable", 3, 1], [12, 1, 11, "stable", 3, 1], [11, 2, 13, "stable", 4, 1], [9, 2, 15, "stable", 9, 1], [8, 7, 22, "stable", 13, 1], [7, 1, 23, "stable", 4, 1], [6, 8, 31, "stable", 33, 1], [5, 6, 37, "stable", 41, 1], [4, 16, null, "budget", 212, null]]}
+{"seed": "幕岩", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 17, "secs": 0.019, "reason": "max_moves", "steps": [[1, 17, null, "budget", 105, null]]}
+{"seed": "広", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 19, "secs": 0.025, "reason": "max_moves", "steps": [[1, 19, null, "budget", 66, null]]}
+{"seed": "座", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 11, "secs": 0.039, "reason": "max_moves", "steps": [[1, 11, null, "budget", 986, null]]}
+{"seed": "当地", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 12, "secs": 0.027, "reason": "max_moves", "steps": [[1, 12, null, "budget", 289, null]]}
+{"seed": "従う", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 22, "secs": 0.013, "reason": "max_moves", "steps": [[1, 22, null, "budget", 62, null]]}
+{"seed": "急行", "capacity": 3, "stop": "budget", "class_size": 1, "candidates": 29, "secs": 0.024, "reason": "max_moves", "steps": [[2, 2, 3, "stable", 5, 1], [1, 27, null, "budget", 203, null]]}
+{"seed": "態", "capacity": 5, "stop": "exhausted", "class_size": 1, "candidates": 4, "secs": 0.001, "reason": null, "steps": [[1, 4, 5, "stable", 18, 1]]}
+{"seed": "所在", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 14, "secs": 0.027, "reason": "max_moves", "steps": [[1, 14, null, "budget", 135, null]]}
+{"seed": "指す", "capacity": 12, "stop": "budget", "class_size": 2, "candidates": 79, "secs": 0.022, "reason": "max_moves", "steps": [[5, 2, 3, "stable", 6, 1], [4, 1, 4, "stable", 4, 1], [2, 8, 12, "stable", 18, 2], [1, 68, null, "budget", 6, null]]}
+{"seed": "搗", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 41, "secs": 0.013, "reason": "max_moves", "steps": [[1, 41, null, "budget", 16, null]]}
+{"seed": "放送", "capacity": 18, "stop": "budget", "class_size": 6, "candidates": 68, "secs": 0.086, "reason": "max_moves", "steps": [[3, 9, 10, "stable", 388, 3], [2, 8, 18, "stable", 96, 6], [1, 51, null, "budget", 10, null]]}
+{"seed": "敷地", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 41, "secs": 0.017, "reason": "max_moves", "steps": [[1, 41, null, "budget", 16, null]]}
+{"seed": "方", "capacity": 4, "stop": "budget", "class_size": 1, "candidates": 51, "secs": 0.013, "reason": "max_moves", "steps": [[2, 3, 4, "stable", 10, 1], [1, 48, null, "budget", 14, null]]}
+{"seed": "日産", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 23, "secs": 0.014, "reason": "max_moves", "steps": [[1, 23, null, "budget", 52, null]]}
+{"seed": "明るい", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 22, "secs": 0.017, "reason": "max_moves", "steps": [[1, 22, null, "budget", 55, null]]}
+{"seed": "最", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 17, "secs": 0.021, "reason": "max_moves", "steps": [[1, 17, null, "budget", 103, null]]}
+{"seed": "朝廷", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 17, "secs": 0.026, "reason": "max_moves", "steps": [[1, 17, null, "budget", 110, null]]}
+{"seed": "本社", "capacity": 6, "stop": "budget", "class_size": 1, "candidates": 35, "secs": 0.018, "reason": "max_moves", "steps": [[2, 5, 6, "stable", 19, 1], [1, 30, null, "budget", 79, null]]}
+{"seed": "東京", "capacity": 15, "stop": "budget", "class_size": 1, "candidates": 113, "secs": 0.035, "reason": "max_moves", "steps": [[7, 1, 2, "stable", 3, 1], [6, 1, 3, "stable", 3, 1], [5, 1, 4, "stable", 4, 1], [4, 3, 7, "stable", 5, 1], [3, 1, 8, "stable", 9, 2], [2, 7, 15, "stable", 37, 1], [1, 99, null, "budget", 3, null]]}
+{"seed": "枚", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 21, "secs": 0.016, "reason": "max_moves", "steps": [[1, 21, null, "budget", 76, null]]}
+{"seed": "株", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 23, "secs": 0.023, "reason": "max_moves", "steps": [[1, 23, null, "budget", 61, null]]}
+{"seed": "植物", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 8, "secs": 0.059, "reason": "max_moves", "steps": [[1, 8, null, "budget", 692, null]]}
+{"seed": "標高", "capacity": 6, "stop": "budget", "class_size": 1, "candidates": 40, "secs": 0.018, "reason": "max_moves", "steps": [[2, 5, 6, "stable", 19, 1], [1, 35, null, "budget", 40, null]]}
+{"seed": "機能", "capacity": 5, "stop": "budget", "class_size": 1, "candidates": 41, "secs": 0.019, "reason": "max_moves", "steps": [[2, 4, 5, "stable", 9, 1], [1, 37, null, "budget", 30, null]]}
+{"seed": "武寧", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 16, "secs": 0.031, "reason": "max_moves", "steps": [[1, 16, null, "budget", 121, null]]}
+{"seed": "民国", "capacity": 13, "stop": "budget", "class_size": 2, "candidates": 72, "secs": 0.015, "reason": "max_moves", "steps": [[5, 2, 3, "stable", 5, 1], [4, 2, 5, "stable", 5, 1], [3, 2, 7, "stable", 4, 1], [2, 6, 13, "stable", 13, 2], [1, 60, null, "budget", 8, null]]}
+{"seed": "水球", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 16, "secs": 0.034, "reason": "max_moves", "steps": [[1, 16, null, "budget", 121, null]]}
+{"seed": "河川", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 30, "secs": 0.064, "reason": "max_moves", "steps": [[2, 11, null, "budget", 898, null]]}
+{"seed": "流れる", "capacity": 8, "stop": "budget", "class_size": 3, "candidates": 47, "secs": 0.016, "reason": "max_moves", "steps": [[3, 2, 3, "stable", 6, 1], [2, 5, 8, "stable", 22, 3], [1, 40, null, "budget", 18, null]]}
+{"seed": "海", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 23, "secs": 0.014, "reason": "max_moves", "steps": [[1, 23, null, "budget", 52, null]]}
+{"seed": "清潔", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 25, "secs": 0.024, "reason": "max_moves", "steps": [[1, 25, null, "budget", 38, null]]}
+{"seed": "湯", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 25, "secs": 0.016, "reason": "max_moves", "steps": [[1, 25, null, "budget", 38, null]]}
+{"seed": "漫画", "capacity": 5, "stop": "budget", "class_size": 1, "candidates": 25, "secs": 0.024, "reason": "max_moves", "steps": [[3, 3, 4, "stable", 6, 1], [2, 1, 5, "stable", 4, 1], [1, 21, null, "budget", 86, null]]}
+{"seed": "熊祭り", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 23, "secs": 0.013, "reason": "max_moves", "steps": [[1, 23, null, "budget", 57, null]]}
+{"seed": "物語", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 17, "secs": 0.047, "reason": "max_moves", "steps": [[1, 17, null, "budget", 102, null]]}
+{"seed": "王", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 17, "secs": 0.017, "reason": "max_moves", "steps": [[1, 17, null, "budget", 102, null]]}
+{"seed": "甘楽", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 19, "secs": 0.013, "reason": "max_moves", "steps": [[1, 19, null, "budget", 68, null]]}
+{"seed": "田川", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 27, "secs": 0.013, "reason": "max_moves", "steps": [[1, 27, null, "budget", 36, null]]}
+{"seed": "略", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 25, "secs": 0.018, "reason": "max_moves", "steps": [[1, 25, null, "budget", 38, null]]}
+{"seed": "療法", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 17, "secs": 0.041, "reason": "max_moves", "steps": [[1, 17, null, "budget", 114, null]]}
+{"seed": "皋陶", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 9, "secs": 0.04, "reason": "max_moves", "steps": [[1, 9, null, "budget", 637, null]]}
+{"seed": "相模原", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 28, "secs": 0.015, "reason": "max_moves", "steps": [[1, 28, null, "budget", 34, null]]}
+{"seed": "着陸", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 37, "secs": 0.023, "reason": "max_moves", "steps": [[1, 37, null, "budget", 17, null]]}
+{"seed": "研二", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 23, "secs": 0.016, "reason": "max_moves", "steps": [[1, 23, null, "budget", 55, null]]}
+{"seed": "神奈川", "capacity": 6, "stop": "budget", "class_size": 1, "candidates": 39, "secs": 0.018, "reason": "max_moves", "steps": [[2, 5, 6, "stable", 10, 1], [1, 34, null, "budget", 44, null]]}
+{"seed": "私立", "capacity": 6, "stop": "exhausted", "class_size": 1, "candidates": 5, "secs": 0.001, "reason": null, "steps": [[1, 5, 6, "stable", 34, 1]]}
+{"seed": "空間", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 26, "secs": 0.012, "reason": "max_moves", "steps": [[1, 26, null, "budget", 41, null]]}
+{"seed": "第", "capacity": 27, "stop": "budget", "class_size": 9, "candidates": 141, "secs": 0.061, "reason": "max_moves", "steps": [[9, 4, 5, "stable", 8, 1], [8, 1, 6, "stable", 3, 1], [7, 2, 8, "stable", 9, 2], [6, 2, 10, "stable", 14, 1], [5, 4, 14, "stable", 11, 1], [4, 6, 20, "stable", 31, 1], [3, 7, 27, "stable", 30, 9], [2, 14, null, "budget", 310, null]]}
+{"seed": "糸", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 27, "secs": 0.024, "reason": "max_moves", "steps": [[1, 27, null, "budget", 35, null]]}
+{"seed": "経済", "capacity": 9, "stop": "budget", "class_size": 1, "candidates": 71, "secs": 0.012, "reason": "max_moves", "steps": [[3, 2, 3, "stable", 5, 1], [2, 6, 9, "stable", 8, 1], [1, 63, null, "budget", 7, null]]}
+{"seed": "総合", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 13, "secs": 0.023, "reason": "max_moves", "steps": [[1, 13, null, "budget", 368, null]]}
+{"seed": "縄文", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 21, "secs": 0.017, "reason": "max_moves", "steps": [[1, 21, null, "budget", 59, null]]}
+{"seed": "群馬", "capacity": 6, "stop": "budget", "class_size": 1, "candidates": 37, "secs": 0.014, "reason": "max_moves", "steps": [[2, 5, 6, "stable", 19, 1], [1, 32, null, "budget", 47, null]]}
+{"seed": "職人", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 13, "secs": 0.034, "reason": "max_moves", "steps": [[1, 13, null, "budget", 147, null]]}
+{"seed": "自治", "capacity": 17, "stop": "budget", "class_size": 24, "candidates": 106, "secs": 0.148, "reason": "max_moves", "steps": [[10, 1, 2, "stable", 3, 1], [8, 5, 7, "stable", 12, 1], [7, 1, 8, "stable", 5, 1], [6, 2, 10, "stable", 10, 2], [5, 1, 11, "stable", 8, 1], [4, 6, 17, "stable", 195, 24], [3, 5, null, "budget", 313, null]]}
+{"seed": "艦", "capacity": 5, "stop": "budget", "class_size": 1, "candidates": 25, "secs": 0.027, "reason": "max_moves", "steps": [[2, 4, 5, "stable", 11, 1], [1, 21, null, "budget", 110, null]]}
+{"seed": "著名", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 19, "secs": 0.021, "reason": "max_moves", "steps": [[1, 19, null, "budget", 66, null]]}
+{"seed": "行わ", "capacity": 15, "stop": "budget", "class_size": 1, "candidates": 82, "secs": 0.086, "reason": "max_moves", "steps": [[6, 2, 3, "stable", 5, 1], [5, 5, 8, "stable", 12, 1], [4, 5, 13, "stable", 9, 1], [3, 2, 15, "stable", 14, 1], [2, 14, null, "budget", 311, null]]}
+{"seed": "装甲", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 18, "secs": 0.029, "reason": "max_moves", "steps": [[1, 18, null, "budget", 176, null]]}
+{"seed": "西山", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 17, "secs": 0.019, "reason": "max_moves", "steps": [[1, 17, null, "budget", 158, null]]}
+{"seed": "要田", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 27, "secs": 0.014, "reason": "max_moves", "steps": [[1, 27, null, "budget", 34, null]]}
+{"seed": "言う", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 16, "secs": 0.018, "reason": "max_moves", "steps": [[1, 16, null, "budget", 110, null]]}
+{"seed": "記述", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 49, "secs": 0.015, "reason": "max_moves", "steps": [[3, 18, null, "budget", 96, null]]}
+{"seed": "該当", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 31, "secs": 0.024, "reason": "max_moves", "steps": [[1, 31, null, "budget", 25, null]]}
+{"seed": "調査", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 32, "secs": 0.018, "reason": "max_moves", "steps": [[1, 32, null, "budget", 23, null]]}
+{"seed": "豊根", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 32, "secs": 0.015, "reason": "max_moves", "steps": [[1, 32, null, "budget", 23, null]]}
+{"seed": "赤尾", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 19, "secs": 0.013, "reason": "max_moves", "steps": [[1, 19, null, "budget", 65, null]]}
+{"seed": "身分", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 16, "secs": 0.016, "reason": "max_moves", "steps": [[1, 16, null, "budget", 121, null]]}
+{"seed": "辺縁", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 29, "secs": 0.013, "reason": "max_moves", "steps": [[1, 29, null, "budget", 32, null]]}
+{"seed": "連合", "capacity": 8, "stop": "budget", "class_size": 1, "candidates": 48, "secs": 0.02, "reason": "max_moves", "steps": [[2, 7, 8, "stable", 69, 1], [1, 41, null, "budget", 24, null]]}
+{"seed": "運航", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 24, "secs": 0.014, "reason": "max_moves", "steps": [[1, 24, null, "budget", 51, null]]}
+{"seed": "郊外", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 13, "secs": 0.025, "reason": "max_moves", "steps": [[1, 13, null, "budget", 154, null]]}
+{"seed": "都", "capacity": 13, "stop": "budget", "class_size": 2, "candidates": 104, "secs": 0.012, "reason": "max_moves", "steps": [[6, 2, 3, "stable", 6, 1], [5, 1, 4, "stable", 4, 1], [4, 1, 5, "stable", 3, 1], [3, 2, 7, "stable", 4, 1], [2, 6, 13, "stable", 21, 2], [1, 92, null, "budget", 3, null]]}
+{"seed": "金田", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 27, "secs": 0.013, "reason": "max_moves", "steps": [[1, 27, null, "budget", 35, null]]}
+{"seed": "銀河", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 11, "secs": 0.033, "reason": "max_moves", "steps": [[1, 11, null, "budget", 325, null]]}
+{"seed": "長野", "capacity": 8, "stop": "budget", "class_size": 2, "candidates": 66, "secs": 0.015, "reason": "max_moves", "steps": [[3, 1, 2, "stable", 3, 1], [2, 6, 8, "stable", 24, 2], [1, 59, null, "budget", 8, null]]}
+{"seed": "閲覧", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 26, "secs": 0.025, "reason": "max_moves", "steps": [[1, 26, null, "budget", 36, null]]}
+{"seed": "雄勝", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 29, "secs": 0.013, "reason": "max_moves", "steps": [[1, 29, null, "budget", 31, null]]}
+{"seed": "青海", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 16, "secs": 0.02, "reason": "max_moves", "steps": [[1, 16, null, "budget", 127, null]]}
+{"seed": "須木", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 11, "secs": 0.035, "reason": "max_moves", "steps": [[1, 11, null, "budget", 383, null]]}
+{"seed": "首相", "capacity": 5, "stop": "budget", "class_size": 1, "candidates": 18, "secs": 0.019, "reason": "max_states", "steps": [[2, 4, 5, "stable", 9, 1], [1, 14, null, "budget", 624, null]]}
+{"seed": "高家", "capacity": 1, "stop": "budget", "class_size": 1, "candidates": 25, "secs": 0.018, "reason": "max_moves", "steps": [[1, 25, null, "budget", 38, null]]}
+{"summary": true, "tier": "WORD", "level": "low", "n_seeds": 240, "total_secs": 6.4}

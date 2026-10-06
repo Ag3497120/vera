@@ -87,6 +87,41 @@ Owner's decisions after the T4 measurement (binding): tied arrangements are kept
 What the numbers mean: stability is now always reached (no step "breaks"); capacity is limited only by the explicit budget. A first group of many units with the same share (typical for RUN/WORD: 15-24 units with n(seed,v)=1) has an astronomically large tied class (units without mutual edges may float to any seat; the class is closed under those moves), so it cannot be enumerated and the step ends as BUDGET with the lone-seed class restored (class size 2 = seed at the centre or at an arm end; capacity 1). Symmetric toys grow (e.g. "A B C": capacity 3; "A B"/"B A": class of 2, centres A and B). Class sizes of kept states are reported per Step.class_size and Placement.class_size.
 
 
+## Placement T4c: five budget levels, no empty centre (verantyx/line3/placement.py)
+
+Owner's decisions after the T4b measurement (binding): (1) the search budget is selectable in five levels low..max, max is a compromise (finite); (2) an arrangement with an EMPTY CENTRE is not a state; (3) (query stage, NOT implemented) all members of a class are read and the one most stable after the query is adopted.
+
+| id | decision | location |
+|---|---|---|
+| L-76 | Named levels `placement.LEVELS` / `LEVEL_ORDER` / `budget_level(name)` / `level_name(Budget)`, each 4x the previous in max_moves, max_states and max_class: low 63/1250/25000, mid-low 250/5000/100000, mid 1000/20000/400000 (== the T4b default `Budget()`), high 4000/80000/1600000, max 16000/320000/6400000 (max_class/max_states/max_moves). The status BUDGET stays explicit at every level; the Budget used is recorded in every Placement (to_json_obj "budget" unchanged: three numbers; the level name is derived by `level_name`). max is a compromise, not infinity. | placement.py |
+| L-77 | A swap that would leave the centre empty is not a move; no arrangement with an empty centre exists in any class. The lone seed's class is the seed at the centre only (class size 1, was 2). `settle_class` rejects a start with an empty centre (ValueError); `verify_fixed_point` / `verify_class` ignore such swaps and `ClassReport.centres_nonempty` (part of `is_stable_class`) checks every member. | placement.py |
+
+### T4c measurement (S300; experiments/line3/budget_curve/; same 240 evenly spaced seeds per tier as T4b = units[(i*n)//240])
+
+max was NOT run on 240 seeds (it would exceed 15 min per tier: RUN ~24, WORD ~25, CHAR ~38 min extrapolated): RUN/WORD max on 48 seeds (every 5th of the 240), CHAR max on 20 (every 12th). Paired table = every level restricted to those seeds.
+
+| tier | level | seeds | capacity min / median / mean / max | exhausted / budget | class size median / mean / max | wall s |
+|---|---|---|---|---|---|---|
+| RUN | low | 240 | 1 / 1 / 2.10 / 16 | 32 / 208 | 1 / 1.08 / 11 | 6 |
+| RUN | mid-low | 240 | 1 / 1 / 2.32 / 16 | 39 / 201 | 1 / 1.85 / 100 | 25 |
+| RUN | mid | 240 | 1 / 1 / 2.92 / 16 | 56 / 184 | 1 / 10.8 / 807 | 102 |
+| RUN | high | 240 | 1 / 1 / 4.02 / 16 | 82 / 158 | 1 / 26.8 / 945 | 433 |
+| RUN | max | 48 | 1 / 1 / 5.10 / 28 | 18 / 30 | 1 / 131 / 5385 | 285 |
+| WORD | low | 240 | 1 / 1 / 3.23 / 43 | 3 / 237 | 1 / 1.23 / 24 | 6 |
+| WORD | mid-low | 240 | 1 / 1 / 3.58 / 44 | 11 / 229 | 1 / 2.47 / 91 | 21 |
+| WORD | mid | 240 | 1 / 1 / 3.91 / 56 | 12 / 228 | 1 / 4.53 / 358 | 88 |
+| WORD | high | 240 | 1 / 1 / 4.47 / 56 | 21 / 219 | 1 / 7.76 / 363 | 372 |
+| WORD | max | 48 | 1 / 1 / 5.42 / 56 | 3 / 45 | 1 / 9.31 / 178 | 303 |
+| CHAR | low | 240 | 1 / 9 / 14.77 / 70 | 1 / 239 | 1 / 1.28 / 7 | 13 |
+| CHAR | mid-low | 240 | 1 / 11 / 18.81 / 89 | 1 / 239 | 1 / 1.44 / 16 | 44 |
+| CHAR | mid | 240 | 1 / 11 / 21.65 / 108 | 1 / 239 | 1 / 1.41 / 16 | 152 |
+| CHAR | high | 240 | 1 / 12.5 / 23.82 / 129 | 2 / 238 | 1 / 1.45 / 16 | 599 |
+| CHAR | max | 20 | 1 / 16 / 20.40 / 99 | 1 / 19 | 1 / 1.55 / 3 | 188 |
+
+Paired mean capacity (low, mid-low, mid, high, max; same seeds): RUN 2.29, 2.58, 3.04, 4.38, 5.10 (n=48); WORD 3.46, 3.98, 4.90, 5.42, 5.42 (n=48); CHAR 14.65, 18.85, 19.90, 20.40, 20.40 (n=20). Seeds whose capacity rose from the previous level: RUN 2, 3, 6, 3 of 48; WORD 3, 3, 2, 0 of 48; CHAR 4, 1, 1, 0 of 20. Ceiling (units sharing a sentence with the seed + 1; the capacity an unlimited budget gives, since a step never breaks): paired means RUN 26.0, WORD 77.6, CHAR 109.8. Every budget-stopped seed (RUN 30/30, WORD 45/45, CHAR 19/19 at max) stops at a step whose group has >= 2 equal-share units (median 17 / 23 / 45). Full table and trajectories: experiments/line3/budget_curve/results/curve.md.
+
+Reading: a 4x budget costs ~4x time at every level (e.g. RUN 1.4, 5.0, 22, 83, 285 s on the paired seeds) but moves only a few seeds (0-6 of 48) up. WORD and CHAR show no gain from high to max (paired); RUN still gains (4.38 to 5.10) with the gain coming from 3 seeds. Mean class size grows steeply with budget in RUN (1.04 to 131; max 5385) while capacity grows slowly: the budget is spent on holding big classes of tied arrangements (RUN, WORD), not on adding units. CHAR classes stay small (mean 1.5): there the budget goes (max_moves) into the growth of an already large cross. Nothing here says anything about answer quality (needs the query stage). Compared with T4b at the same budget (= mid) after excluding empty centres: RUN mean 2.92 (T4b 2.90), WORD 3.91 (3.80), CHAR 21.65 (25.17, lower; not explained).
+
 ## Other local labels in the design (docs/LINE3_DESIGN.md §8.2)
 
 L-01 to L-14, L-19 (kind; also used as L-40 in space.py), L-20 (observation record; a different item from geometry L-20) and L-21 to L-23 are design defaults, not yet recorded by code. Note the number clash: design L-19/L-20 (kind, observation record) versus geometry L-19/L-20 (serialisation, swap identity).
@@ -94,5 +129,7 @@ L-01 to L-14, L-19 (kind; also used as L-40 in space.py), L-20 (observation reco
 ## OPEN POINTS (owner questions; behaviour not changed)
 
 - RUN tier: question words are not separate units (`units_run('半田岩はどこにありますか')` gives `['半田岩', 'はどこにありますか']`), unlike the WORD and CHAR tiers. The T1 docstring now states this; whether the RUN tier should split them is the owner's decision.
-- T4b (class growth): (a) With the owner's rule, "stable" is always reachable, so capacity is decided only by the budget; for groups of many equal-share units the full tied class cannot be enumerated (RUN/WORD median capacity is still 1, now because of BUDGET, not because of a tie). Whether to (i) raise the budget, (ii) represent the class implicitly (e.g. also treat arrangements that differ only by permuting interchangeable units - same share and same pair weights to every cross member - as one arrangement), or (iii) restrict the class to arrangements where every placed unit has a non-zero edge, is a meaning-level choice left to the owner. (b) The class includes the lone seed at an arm end with an empty centre (equal key 0); whether an empty centre counts as an arrangement is not decided. (c) The energy log / three ratios are taken on the representative (or every member via observe_class); which member the later stages read is not decided. (d) The class members have different centres, so "the centre" is a set (I-02, centres). 
+- T4b (class growth): (a) With the owner's rule, "stable" is always reachable, so capacity is decided only by the budget; for groups of many equal-share units the full tied class cannot be enumerated (RUN/WORD median capacity is still 1, now because of BUDGET, not because of a tie). Whether to (i) raise the budget, (ii) represent the class implicitly (e.g. also treat arrangements that differ only by permuting interchangeable units - same share and same pair weights to every cross member - as one arrangement), or (iii) restrict the class to arrangements where every placed unit has a non-zero edge, is a meaning-level choice left to the owner. (b) RESOLVED by the owner (T4c, L-77): empty centre is not an arrangement. (c) Owner: read all members, adopt the one most stable after the query (query stage; the energy log is still taken on the representative / observe_class until then). (d) The class members have different centres, so "the centre" is a set (I-02, centres). 
 - T4 placement (see report): (1) leg-to-leg arrangement: the I-04 key is identical for all 30 rotation classes of leg permutations, so the stability definition does not fix which arm holds which leg; sections (I-09 windows) do see adjacency. Left undetermined (L-61). (2) Budget values (L-66) change the capacity of some seeds (CHAR, S300: 2 of 233 sampled). (3) Design 3.4 "pool の外の単位とも" replacement not implemented (L-60). (4) Order anchor of M-1(b) is the fixed seed although the search may move the centre (L-63/L-68). (5) A lone seed is declared stable by definition (L-63); with moves into empty seats it has equal-key alternatives.
+
+- T4c: (a) Per-tier reachability: even at max, 62-95% of RUN/WORD/CHAR seeds (30/48, 45/48, 19/20) stop by BUDGET with a capacity far below the ceiling (candidates+1); whether a different representation of the tied group (e.g. interchangeable units as one arrangement, option (ii) above) is wanted, or the ceiling-limited small capacity is acceptable, is the owner's choice. (b) CHAR mid capacity fell from T4b (mean 25.17 to 21.65) after the empty-centre exclusion at identical budget; the cause is not analysed. (c) The "stable after the query" comparison for owner point (3) needs a definition of query stability over a class (which energy / ratio; ties among members) - left to the query stage. (d) Default `Budget()` is "mid"; which level is the product default is undecided.
