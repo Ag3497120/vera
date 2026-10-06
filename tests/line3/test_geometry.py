@@ -250,3 +250,45 @@ def test_determinism_across_hash_seeds():
 
 def test_moves_rotate_count():
     assert len(moves_rotate()) == 23 and IDENTITY not in moves_rotate()
+
+
+# ---- v3 (L-04 / N-09): capacity decided elsewhere; rebuild with longer arms ---
+def _rebuild(c, L2, fill=None):
+    """Same centre and arm contents, arms lengthened to L2 with `fill` appended at the
+    centre-side end (k grows towards the centre; k=0 stays the outer end, I-03)."""
+    arms = [list(a) + [fill] * (L2 - c.L) for a in c.arms]
+    return Cross.make(L2, c.center, arms, c.orientation)
+
+
+def test_longer_arms_rebuild_keeps_group_swaps_windows():
+    for L in (1, 2, 4):
+        for L2 in (L + 1, L + 3):
+            c = _rebuild(_filled(L), L2)
+            base = _filled(L)
+            assert (c.L, len(seats(L2))) == (L2, 6 * L2 + 1)
+            # the old contents are intact at the old seats
+            for s in seats(L):
+                assert c.get(s) == base.get(s)
+            # 24 rotations, byte-identical restore, one orbit
+            assert len({rotate(c, r).canonical_key() for r in G24}) == 1
+            assert len({r.perm for r in G24}) == 24
+            for r in G24:
+                back = rotate(rotate(c, r), r.inverse())
+                assert back == c and back.serialize() == c.serialize()
+            # swaps: involution for every pair, exactly two seats change
+            assert len(moves_swap(L2)) == (6 * L2 + 1) * (6 * L2) // 2
+            for p, q in moves_swap(L2):
+                once = swap(c, p, q)
+                assert swap(once, p, q) == c
+                assert [s for s in seats(L2) if once.get(s) != c.get(s)] in ([], [p, q])
+            # graph
+            assert len(edges(L2)) == 6 * L2
+            # windows do not depend on L and still cover every arm
+            for r in G24:
+                for sec in range(6):
+                    assert len(visible_arms(r, sec)) == 3
+                assert {a for s in range(6) for a in visible_arms(r, s)} == set(AXES)
+            # rotation moves the orientation, not contents, at the new length too
+            r = next(r for r in G24 if r != IDENTITY)
+            d = rotate(c, r)
+            assert d.arms == c.arms and all(d.world_arms()[r(i)] == c.arms[i] for i in range(6))

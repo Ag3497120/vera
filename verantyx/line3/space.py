@@ -29,6 +29,21 @@ Local choices (new, listed in the T1 report):
   L-35  Serialisation = canonical JSON (sorted keys, compact, UTF-8, units sorted by
         code point; sorting is for byte identity, never to pick a winner).
   L-36  A sentence with no unit in a tier stays a sentence (counts in N).
+
+T1b additions (new local labels):
+  L-40  Every sentence has a `kind` in KINDS (base / memory_query / memory_answer /
+        memory_user, design L-19) and a `source`.  Missing kind = "base"; an unknown
+        kind raises ValueError (no silent coercion).  `Space.sentences` stays
+        (text, source) pairs; kinds live in the parallel tuple `Space.kinds`.
+  L-41  Append (`Space.append`, `TierSpace.append`) returns a NEW immutable object;
+        old sids, old postings (as prefixes) and old sentence_units are unchanged, new
+        sentences get sids N..N+k-1.  Appending == building from scratch on all
+        sentences, byte for byte (tested).
+  L-42  `postings_union(tier, units)` = sorted distinct sids of the union of the units'
+        postings (M-1(c): a bundled state's quantity).  A unit not in the tier
+        raises KeyError (no silent skip); an empty set gives ().
+  L-43  FORMAT bumped to line3.space.v2 because every sentence entry now carries
+        "kind"; the serialisation of the unchanged part is otherwise untouched.
 """
 from __future__ import annotations
 
@@ -43,7 +58,9 @@ from verantyx.lang import ja_content_runs, strip_attribution
 
 RUN, WORD, CHAR = "RUN", "WORD", "CHAR"
 TIERS: Tuple[str, ...] = (RUN, WORD, CHAR)          # I-01
-FORMAT = "line3.space.v1"
+FORMAT = "line3.space.v2"                           # L-43
+BASE, MEMORY_QUERY, MEMORY_ANSWER, MEMORY_USER = "base", "memory_query", "memory_answer", "memory_user"
+KINDS: Tuple[str, ...] = (BASE, MEMORY_QUERY, MEMORY_ANSWER, MEMORY_USER)   # L-40
 
 _tagger = None
 
@@ -117,6 +134,27 @@ class TierSpace:
     def N(self) -> int:
         return len(self.sentence_units)
 
+    def append(self, texts: Sequence[str]) -> "TierSpace":     # L-41
+        """New TierSpace with `texts` (already attribution-stripped) added as sids N.."""
+        split = _SPLITTERS[self.name]
+        new = tuple(tuple(split(t)) for t in texts)
+        post: Dict[str, List[int]] = {}
+        base = self.N
+        for i, us in enumerate(new):
+            for u in dict.fromkeys(us):
+                post.setdefault(u, []).append(base + i)
+        merged = dict(self.postings)
+        for u, v in post.items():
+            merged[u] = tuple(merged.get(u, ())) + tuple(v)
+        return TierSpace(self.name, self.sentence_units + new, merged)
+
+    def postings_union(self, units: Iterable[str]) -> Tuple[int, ...]:   # L-42
+        """Combined sorted distinct sentence ids of the given units (M-1(c))."""
+        acc: set = set()
+        for u in units:
+            acc.update(self.postings[u])
+        return tuple(sorted(acc))
+
     def units(self) -> List[str]:
         return sorted(self.postings)                 # L-35: canonical order only
 
@@ -159,10 +197,33 @@ class TierSpace:
 class Space:
     sentences: Tuple[Tuple[str, str], ...]           # sid -> (text, source)
     tiers: Mapping[str, TierSpace]
+    kinds: Tuple[str, ...] = ()                      # sid -> kind (L-40); () = all base
+
+    def __post_init__(self) -> None:
+        if not self.kinds:
+            object.__setattr__(self, "kinds", (BASE,) * len(self.sentences))
+        if len(self.kinds) != len(self.sentences):
+            raise ValueError("kinds and sentences differ in length")
+        for k in self.kinds:
+            if k not in KINDS:
+                raise ValueError("unknown kind: %r" % (k,))
 
     @property
     def N(self) -> int:
         return len(self.sentences)
+
+    def append(self, rows: Iterable[Mapping[str, str]]) -> "Space":     # L-41
+        """New Space with the rows added after the existing sentences."""
+        new, kinds = _rows(rows)
+        if not new:
+            return self
+        texts = [strip_attribution(t) for t, _ in new]
+        return Space(self.sentences + new,
+                     {n: self.tiers[n].append(texts) for n in TIERS},
+                     self.kinds + kinds)
+
+    def postings_union(self, tier: str, units: Iterable[str]) -> Tuple[int, ...]:   # L-42
+        return self.tiers[tier].postings_union(units)
 
     def trace(self, tier: str, u: str) -> List[Tuple[int, str]]:
         """Every stored sentence (sid, text) that contains unit u (I-02 provenance)."""
@@ -172,7 +233,8 @@ class Space:
     def to_bytes(self) -> bytes:                     # L-35
         doc = {
             "format": FORMAT,
-            "sentences": [{"sid": i, "text": t, "source": s} for i, (t, s) in enumerate(self.sentences)],
+            "sentences": [{"sid": i, "text": t, "source": s, "kind": self.kinds[i]}
+                          for i, (t, s) in enumerate(self.sentences)],
             "tiers": {},
         }
         for name in TIERS:
@@ -199,11 +261,21 @@ def build_tier(name: str, texts: Sequence[str]) -> TierSpace:
     return TierSpace(name, su, {u: tuple(v) for u, v in post.items()})
 
 
+def _rows(rows: Iterable[Mapping[str, str]]):
+    rows = list(rows)
+    sentences = tuple((r["sent"], r.get("source") or "") for r in rows)   # L-33
+    kinds = tuple(r.get("kind") or BASE for r in rows)                    # L-40
+    for k in kinds:
+        if k not in KINDS:
+            raise ValueError("unknown kind: %r" % (k,))
+    return sentences, kinds
+
+
 def build_space(rows: Iterable[Mapping[str, str]]) -> Space:
     """rows: dicts with 'sent' (sentence) and optional 'source'.  No centre is chosen (I-02)."""
-    sentences = tuple((r["sent"], r.get("source") or "") for r in rows)   # L-33
+    sentences, kinds = _rows(rows)
     texts = [strip_attribution(t) for t, _ in sentences]
-    return Space(sentences, {n: build_tier(n, texts) for n in TIERS})
+    return Space(sentences, {n: build_tier(n, texts) for n in TIERS}, kinds)
 
 
 def load_jsonl(path: str) -> List[dict]:

@@ -204,3 +204,99 @@ def test_build_S3000():
         for u in ts.units()[:200]:
             assert len(ts.postings[u]) >= 1
     assert s.sha256() == build_from_jsonl(S3000).sha256()
+
+
+# ---- T1b: append, kind/source, postings union -------------------------------
+_ROWS = [
+    {"sent": "遊眠は日本の漫画家。", "source": "a"},
+    {"sent": "遊眠はどこにある。", "source": "b"},
+    {"sent": "東京は日本の首都。", "source": "c"},
+]
+_NEW = [
+    {"sent": "遊眠は何をした。", "source": "mem", "kind": "memory_query"},
+    {"sent": "日本の漫画家。", "source": "mem", "kind": "memory_answer"},
+    {"sent": "私は東京にいる。", "source": "user", "kind": "memory_user"},
+]
+
+
+def test_append_keeps_existing_and_equals_scratch():
+    old = build_space(_ROWS)
+    new = old.append(_NEW)
+    scratch = build_space(_ROWS + _NEW)
+    assert new.to_bytes() == scratch.to_bytes() and new.sha256() == scratch.sha256()
+    assert old.N == 3 and new.N == 6                      # old object untouched
+    assert new.sentences[:3] == old.sentences
+    for t in TIERS:
+        o, n = old.tiers[t], new.tiers[t]
+        assert n.sentence_units[:3] == o.sentence_units
+        for u, v in o.postings.items():                   # old postings are a prefix
+            assert n.postings[u][:len(v)] == v
+            assert all(s >= 3 for s in n.postings[u][len(v):])
+        assert set(o.postings) <= set(n.postings)
+
+
+def test_append_unchanged_part_of_serialisation():
+    old = build_space(_ROWS)
+    new = old.append(_NEW)
+    do, dn = json.loads(old.to_bytes()), json.loads(new.to_bytes())
+    assert dn["sentences"][:3] == do["sentences"]
+    for t in TIERS:
+        assert dn["tiers"][t]["sentence_units"][:3] == do["tiers"][t]["sentence_units"]
+        un = {e["u"]: e for e in dn["tiers"][t]["units"]}
+        for e in do["tiers"][t]["units"]:
+            assert un[e["u"]]["sids"][:len(e["sids"])] == e["sids"]
+
+
+def test_append_in_chunks_and_empty():
+    one = build_space(_ROWS)
+    chunked = one.append(_NEW[:1]).append([]).append(_NEW[1:])
+    assert chunked.to_bytes() == build_space(_ROWS + _NEW).to_bytes()
+    assert one.append([]) is one
+
+
+def test_append_on_s300_equals_scratch(sp):
+    rows = S.load_jsonl(S300)
+    head, tail = build_space(rows[:250]), rows[250:]
+    assert head.append(tail).to_bytes() == sp.to_bytes()
+
+
+def test_kind_and_source(sp):
+    assert set(sp.kinds) == {"base"} and len(sp.kinds) == sp.N
+    new = build_space(_ROWS).append(_NEW)
+    assert new.kinds == ("base",) * 3 + ("memory_query", "memory_answer", "memory_user")
+    assert [s for _, s in new.sentences][3:] == ["mem", "mem", "user"]
+    doc = json.loads(new.to_bytes())
+    assert [e["kind"] for e in doc["sentences"]] == list(new.kinds)
+    assert [e["source"] for e in doc["sentences"]][:3] == ["a", "b", "c"]
+    assert S.KINDS == ("base", "memory_query", "memory_answer", "memory_user")
+
+
+def test_unknown_kind_rejected():
+    with pytest.raises(ValueError):
+        build_space([{"sent": "あ", "kind": "bogus"}])
+    with pytest.raises(ValueError):
+        build_space(_ROWS).append([{"sent": "あ", "kind": "bogus"}])
+
+
+def test_kind_changes_bytes_but_not_postings():
+    a = build_space([{"sent": "遊眠は日本の漫画家。"}])
+    b = build_space([{"sent": "遊眠は日本の漫画家。", "kind": "memory_user"}])
+    assert a.sha256() != b.sha256()
+    for t in TIERS:
+        assert a.tiers[t].postings == b.tiers[t].postings
+
+
+def test_postings_union():
+    s = build_space(_ROWS).append(_NEW)
+    w = s.tiers[WORD]
+    for t in TIERS:
+        ts = s.tiers[t]
+        us = ts.units()
+        for a, b, c in itertools.islice(itertools.combinations(us, 3), 0, 400, 7):
+            got = s.postings_union(t, [a, b, c])
+            assert got == tuple(sorted(set(ts.postings[a]) | set(ts.postings[b]) | set(ts.postings[c])))
+            assert got == s.postings_union(t, [c, a, b, a])        # order / repeats irrelevant
+    assert s.postings_union(WORD, ["は"]) == w.postings["は"]
+    assert s.postings_union(WORD, []) == ()
+    with pytest.raises(KeyError):
+        s.postings_union(WORD, ["は", "存在しない語zzz"])
