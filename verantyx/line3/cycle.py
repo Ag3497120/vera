@@ -813,12 +813,29 @@ class ReadPlan:
 
 
 def plan_read(tier: TierSpace, facts: TierFacts, ctx: QueryContext,
-              placements, amount: Optional[int] = None) -> ReadPlan:
+              placements, amount: Optional[int] = None, query_crosses_only: bool = False) -> ReadPlan:
     """I-08 / M-2(a): all crosses by default; with an amount, the order is: crosses of query
     units, crosses holding a unit that shares a sentence with a query unit, the rest; inside a
     group by E_Q(seed) descending; equal values are read together or not at all."""
     q = set(ctx.energy_units)
     seeds = tier.units()
+    if query_crosses_only:
+        # T6v V1 (option; default off = I-08 whole space): only the crosses that hold at least one
+        # query unit (centre or any seat, twins included).  `amount` is not combined with it.
+        if amount is not None:
+            raise ValueError("query_crosses_only cannot be combined with amount")
+        keep = []
+        for s_ in seeds:
+            p = placements.cross_for(s_)
+            units = {c for c in from_cross(p.cross) if c is not None}
+            for t in p.twin_sets:
+                units.update(t)
+            if units & q:
+                keep.append(s_)
+        ks = set(keep)
+        unread = tuple(s_ for s_ in seeds if s_ not in ks)
+        return ReadPlan((("contains_query_unit", tuple(keep)),), tuple(keep), unread, len(seeds), None,
+                        bool(unread), 0)
     reader_q = lambda u: facts.n[u] + sum(facts.npair(x, u) for x in ctx.energy_units)
     groups: Dict[str, Dict[int, List[str]]] = {"query_unit": {}, "shares_with_query": {}, "rest": {}}
     for s in seeds:
@@ -972,6 +989,7 @@ class TierResult:
     state_version: int = 0
     ms: int = 0                               # wall time in milliseconds (not part of the output bytes)
     state: Optional[dict] = None              # M-3: the full search state (only when asked for)
+    variant: Optional[dict] = None            # T6v: set only when a variant option is on (else None: bytes unchanged)
 
     def answer_obj(self) -> dict:
         part = None
@@ -1003,6 +1021,7 @@ class TierResult:
             "energy_log": list(self.energy_logs),
             "state_version": self.state_version,
             "search_state_digest": self.state_digest,
+            **({"variant": self.variant} if self.variant is not None else {}),
         }
 
     def to_json_obj(self) -> dict:
@@ -1063,27 +1082,88 @@ def _verdict_from(reads: Sequence[SeedRead], rule: str, grounded_possible: bool 
     return UNKNOWN_NO_EVIDENCE, (), None, ()
 
 
+def _verdict_query_share(reads: Sequence[SeedRead], facts: TierFacts, ctx: QueryContext):
+    """T6v V3 (option): the candidate states = the end states (fixed points) of every answering
+    member of every cross read; the adopted ones are those sharing the most sentences with the
+    query units (|sentences holding a unit of the state  AND  sentences holding a query unit|,
+    exact integers), instead of the post-query stability rule.  Ties -> all kept (a list).
+    The same flat state reached from several crosses is one candidate (first origin in seed /
+    member order is kept as its Candidate).  Verdict: one answer unit -> ANSWER, several ->
+    CHOICE, no candidate -> the L-108 failure typing.  Returns (verdict, units, stability, cands,
+    info) with stability = the best stability among the adopted states (reporting only)."""
+    post = facts.tier.postings
+    mask: Dict[str, int] = {}
+
+    def m(u: str) -> int:
+        v = mask.get(u)
+        if v is None:
+            v = 0
+            for sid in post.get(u, ()):
+                v |= 1 << sid
+            mask[u] = v
+        return v
+
+    qm = 0
+    for u in ctx.energy_units:
+        qm |= m(u)
+    seen: Dict[Flat, Tuple[int, Candidate]] = {}
+    for sr in sorted(reads, key=lambda r: r.seed):
+        for mo in sr.members:
+            if mo.kind != CANDIDATE:
+                continue
+            for e in mo.settled.ends:
+                if e.answer is None or e.flat in seen:
+                    continue
+                sm = 0
+                for u in set(c for c in e.flat if c is not None):
+                    sm |= m(u)
+                seen[e.flat] = (bin(sm & qm).count("1"), Candidate(e.answer, e.inv, sr.seed, mo.member, e))
+    if not seen:
+        v = _verdict_from(reads, "stable_any", True)
+        return v[0], v[1], v[2], v[3], {"states": 0, "best_share": None}
+    best = max(sc for sc, _ in seen.values())
+    top = [c for sc, c in seen.values() if sc == best]
+    units = tuple(sorted({c.unit for c in top}))
+    top.sort(key=lambda c: (c.unit, c.seed, c.member))
+    stab = max(c.inv for c in top)
+    return (ANSWER if len(units) == 1 else CHOICE), units, stab, tuple(top), \
+        {"states": len(seen), "best_share": best, "tied_states": len(top)}
+
+
 def ask_tier(tier: TierSpace, question: str, placements, *, units: Optional[Sequence[str]] = None,
              facts: Optional[TierFacts] = None, amount: Optional[int] = None,
              budget: QueryBudget = QueryBudget(), member_cap: Optional[int] = None,
              scope: str = "first_layer", member_rule: str = "stable_any",
-             with_state: bool = False, clock=None) -> TierResult:
+             with_state: bool = False, clock=None,
+             read_rule: str = "whole", state_rule: str = "stability", unit_filter=None) -> TierResult:
     """One question on one tier: read the whole space (or `amount` crosses, marked partial),
     every member of every cross, settle, aggregate.  `placements` has cross_for(seed)."""
     import time
     t0 = time.monotonic_ns()
     facts = facts or TierFacts(tier)
+    if read_rule not in ("whole", "query_crosses") or state_rule not in ("stability", "query_share"):
+        raise ValueError("read_rule: whole | query_crosses; state_rule: stability | query_share")
     q = tuple(units) if units is not None else split_question(tier.name, question)
+    if unit_filter is not None:                      # T6v V2: question words / function words are not units either
+        q = tuple(u for u in q if not unit_filter(u))
     ctx = make_context(q, scope)
     reader = Reader(facts, ctx.attached, ctx.energy_units)
-    plan = plan_read(tier, facts, ctx, placements, amount)
+    plan = plan_read(tier, facts, ctx, placements, amount, read_rule == "query_crosses")
     reads: List[SeedRead] = []
     for seed in sorted(plan.read):                  # canonical order; the result never depends on it
         reads.append(read_cross(reader, placements.cross_for(seed), budget, member_cap))
     gp = any(facts.n.get(u, 0) > 0 for u in ctx.attached if u is not None)
-    verdict, vunits, stab, cands = _verdict_from(reads, member_rule, gp)
+    vinfo = None
+    if state_rule == "query_share":
+        verdict, vunits, stab, cands, vinfo = _verdict_query_share(reads, facts, ctx)
+    else:
+        verdict, vunits, stab, cands = _verdict_from(reads, member_rule, gp)
     other = "answering_only" if member_rule == "stable_any" else "stable_any"
     av = _verdict_from(reads, other, gp)
+    variant = None
+    if read_rule != "whole" or state_rule != "stability" or unit_filter is not None:
+        variant = {"read_rule": read_rule, "state_rule": state_rule, "unit_filter": unit_filter is not None,
+                   "query_after_filter": list(q), "state_choice": vinfo}
     counts: Dict[str, int] = {"crosses_read": len(reads)}
     mread = mtot = 0
     stack: List[dict] = []
@@ -1111,7 +1191,8 @@ def ask_tier(tier: TierSpace, question: str, placements, *, units: Optional[Sequ
     sobj = search_state_obj(tier.name, ctx, reads)
     return TierResult(tier.name, question, ctx, plan, verdict, vunits, stab, cands, tuple(reads), counts,
                       mread, mtot, tuple(stack), tuple(logs), member_rule, (av[0], av[1]), budget,
-                      _digest(sobj), 0, (time.monotonic_ns() - t0) // 1000000, sobj if with_state else None)
+                      _digest(sobj), 0, (time.monotonic_ns() - t0) // 1000000, sobj if with_state else None,
+                      variant)
 
 
 def _L_of(flat: Flat) -> int:

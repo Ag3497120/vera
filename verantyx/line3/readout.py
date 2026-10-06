@@ -242,7 +242,7 @@ class Readout:
 
 def read_out(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[StateRef], *,
              question: str = "", too_many: int = TOO_MANY_DEFAULT,
-             window: int = DEFAULT_WINDOW) -> Readout:
+             window: int = DEFAULT_WINDOW, by_stability: bool = True) -> Readout:
     """Read the words of the adopted states out along their section -> centre paths and form the
     sentence candidates (every ordering of whole section paths of every state)."""
     reader = cy.Reader(facts, ctx.attached, ctx.energy_units, window)
@@ -265,9 +265,11 @@ def read_out(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[Sta
                 e["stab"] = sr.ref.stability
             e["origins"].append((si, tuple(sr.paths[o].section for o in order)))
     best = max((e["stab"] for e in acc.values()), default=None)
+    # T6v V3 passes by_stability=False: the states were chosen by another rule (sharing with the
+    # query), so every sentence of every given state is listed whatever its stability.
     listed = [Sentence(t, e["words"], e["stab"], tuple(e["origins"]))
-              for t, e in sorted(acc.items()) if e["stab"] == best]
-    below = sum(1 for e in acc.values() if e["stab"] != best)
+              for t, e in sorted(acc.items()) if (not by_stability) or e["stab"] == best]
+    below = 0 if not by_stability else sum(1 for e in acc.values() if e["stab"] != best)
     if not listed:
         verdict = UNKNOWN_NO_PATH
     elif len(listed) == 1:
@@ -279,10 +281,11 @@ def read_out(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[Sta
 
 
 def read_out_result(tier_space, tr: "cy.TierResult", facts: Optional["cy.TierFacts"] = None, *,
-                    too_many: int = TOO_MANY_DEFAULT) -> Readout:
+                    too_many: int = TOO_MANY_DEFAULT, by_stability: bool = True) -> Readout:
     """Convenience: read out the adopted states of an in-memory cycle result."""
     facts = facts or cy.TierFacts(tier_space)
-    return read_out(facts, tr.ctx, states_from_result(tr), question=tr.question, too_many=too_many)
+    return read_out(facts, tr.ctx, states_from_result(tr), question=tr.question, too_many=too_many,
+                    by_stability=by_stability)
 
 
 def read_out_stored(facts: "cy.TierFacts", question: str, ans: Mapping, *, scope: str = "first_layer",

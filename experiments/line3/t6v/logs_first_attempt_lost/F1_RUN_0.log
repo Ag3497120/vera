@@ -1,0 +1,14 @@
+a01 {'base': (375.58, 'ANSWER', 'CHOICE'), 'V1': (0.01, 'AMBIGUOUS', None), 'V3': (5.26, 'CHOICE', 'CHOICE')}
+a03 {'base': (379.91, 'ANSWER', 'CHOICE'), 'V1': (0.01, 'AMBIGUOUS', None), 'V3': (5.36, 'CHOICE', 'CHOICE')}
+a05 {'base': (395.13, 'CHOICE', 'CHOICE'), 'V1': (0.06, 'ANSWER', 'CHOICE'), 'V3': (2.39, 'CHOICE', 'CHOICE')}
+a07 {'base': (398.12, 'ANSWER', 'CHOICE'), 'V1': (0.01, 'UNKNOWN_RATIO_DISAGREEMENT', None), 'V3': (5.75, 'CHOICE', 'CHOICE')}
+a09 {'base': (398.17, 'ANSWER', 'CHOICE'), 'V1': (0.02, 'AMBIGUOUS', None), 'V3': (5.71, 'CHOICE', 'CHOICE')}
+a11 {'base': (387.39, 'ANSWER', 'CHOICE'), 'V1': (0.02, 'ANSWER', 'CHOICE'), 'V3': (9.09, 'CHOICE', 'CHOICE')}
+a13 {'base': (447.06, 'ANSWER', 'CHOICE'), 'V1': (0.01, 'UNKNOWN_NO_FIXED_POINT', None), 'V3': (8.72, 'CHOICE', 'CHOICE')}
+a15 {'base': (424.75, 'ANSWER', 'CHOICE'), 'V1': (0.02, 'ANSWER', 'CHOICE'), 'V3': (5.8, 'CHOICE', 'CHOICE')}
+a17 {'base': (478.37, 'CHOICE', 'CHOICE'), 'V1': (0.02, 'ANSWER', 'CHOICE'), 'V3': (0.78, 'CHOICE', 'CHOICE')}
+a19 {'base': (453.51, 'ANSWER', 'CHOICE'), 'V1': (0.01, 'UNKNOWN_NO_EVIDENCE', None), 'V3': (7.58, 'CHOICE', 'CHOICE')}
+a21 {'base': (434.96, 'ANSWER', 'CHOICE'), 'V1': (0.01, 'UNKNOWN_NO_EVIDENCE', None), 'V3': (5.94, 'CHOICE', 'CHOICE')}
+a23 {'base': (440.12, 'ANSWER', 'CHOICE'), 'V1': (0.01, 'UNKNOWN_NO_EVIDENCE', None), 'V3': (6.02, 'CHOICE', 'CHOICE')}
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 6 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

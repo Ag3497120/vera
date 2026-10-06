@@ -257,9 +257,17 @@ class Space:
         return hashlib.sha256(self.to_bytes()).hexdigest()
 
 
-def build_tier(name: str, texts: Sequence[str]) -> TierSpace:
+def build_tier(name: str, texts: Sequence[str], unit_filter=None) -> TierSpace:
+    """`unit_filter` (T6v, variant V2; default None = I-22 unchanged): a predicate on a unit
+    surface; units for which it is True are NOT units of this space (they are removed from the
+    sentence unit lists, so they have no posting and no word-order slot).  Sentences stay."""
     split = _SPLITTERS[name]
-    su = tuple(tuple(split(t)) for t in texts)
+    if isinstance(unit_filter, Mapping):            # per-tier predicates {tier name: predicate}
+        unit_filter = unit_filter.get(name)
+    if unit_filter is None:
+        su = tuple(tuple(split(t)) for t in texts)
+    else:
+        su = tuple(tuple(u for u in split(t) if not unit_filter(u)) for t in texts)
     post: Dict[str, List[int]] = {}
     for sid, us in enumerate(su):
         for u in dict.fromkeys(us):                  # distinct, sid ascending by construction
@@ -277,11 +285,12 @@ def _rows(rows: Iterable[Mapping[str, str]]):
     return sentences, kinds
 
 
-def build_space(rows: Iterable[Mapping[str, str]]) -> Space:
-    """rows: dicts with 'sent' (sentence) and optional 'source'.  No centre is chosen (I-02)."""
+def build_space(rows: Iterable[Mapping[str, str]], unit_filter=None) -> Space:
+    """rows: dicts with 'sent' (sentence) and optional 'source'.  No centre is chosen (I-02).
+    `unit_filter`: see build_tier (T6v V2 only; Space.append of such a space is not supported)."""
     sentences, kinds = _rows(rows)
     texts = [strip_attribution(t) for t, _ in sentences]
-    return Space(sentences, {n: build_tier(n, texts) for n in TIERS}, kinds)
+    return Space(sentences, {n: build_tier(n, texts, unit_filter) for n in TIERS}, kinds)
 
 
 def tier_counts(space: Space) -> Dict[str, object]:

@@ -334,7 +334,8 @@ def test_no_float_in_source(name):
 
 
 def test_readout_does_not_change_the_committed_modules():
-    r = subprocess.run(["git", "status", "--porcelain", "verantyx/line3/space.py", "verantyx/line3/geometry.py",
-                        "verantyx/line3/energy.py", "verantyx/line3/placement.py", "verantyx/line3/cycle.py"],
+    # T6v: space.py / cycle.py got optional parameters (defaults proved byte-identical in test_variants.py)
+    r = subprocess.run(["git", "status", "--porcelain", "verantyx/line3/geometry.py",
+                        "verantyx/line3/energy.py", "verantyx/line3/placement.py"],
                        cwd=ROOT, capture_output=True, text=True)
     assert r.stdout.strip() == ""

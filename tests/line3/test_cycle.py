@@ -456,7 +456,8 @@ def test_no_float_in_source():
 
 def test_cycle_does_not_change_the_committed_modules():
     import subprocess as sp
-    r = sp.run(["git", "status", "--porcelain", "verantyx/line3/space.py", "verantyx/line3/geometry.py",
+    # T6v: space.py got the optional unit_filter (defaults proved byte-identical in test_variants.py)
+    r = sp.run(["git", "status", "--porcelain", "verantyx/line3/geometry.py",
                 "verantyx/line3/energy.py", "verantyx/line3/placement.py"], cwd=ROOT, capture_output=True, text=True)
     assert r.stdout.strip() == ""
 
