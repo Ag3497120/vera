@@ -47,6 +47,20 @@ Note: L-44 is the number given to the `strip_attribution`-before-splitting step 
 | L-58 | A maximum must be strictly positive to point at a unit: an all-zero quantity carries no evidence and points nowhere. | energy.py module docstring |
 | L-59 | A section's energy is E_q when a query unit q is attached to it (I-07, design 4.1) and E_Q otherwise. | energy.py module docstring |
 
+## Placement (verantyx/line3/placement.py, module docstring)
+
+| id | decision | location |
+|---|---|---|
+| L-60 | Pool = the units admitted to the cross. Moves = the 23 non-identity rotations and the swap of any two seats (empty seats included, geometry.moves_swap). No replacement by units outside the cross (design 3.4 "pool の外の単位とも" is NOT implemented; the T4 brief says rotations + seat swaps). | placement.py module docstring |
+| L-61 | State identity for ties = (centre, multiset of legs read outer to inner, empty seats kept). The key cannot see which leg is which, so leg permutations are one state; rotations only change orientation (key is rotation-invariant). The concrete Cross puts the legs in canonical sorted order with identity orientation (a label, not a winner). | placement.py |
+| L-62 | Result status: STABLE = exactly one terminal state and no single move gives a different state of equal key; TIED = several terminals; PLATEAU = one terminal but a different state of equal key is one move away; BUDGET = branch budget exceeded. Only STABLE lets a cross grow (N-05). | placement.py |
+| L-63 | Growth starts from the seed alone at the centre (L=1), stable by definition. Candidates = units v != seed with n(seed,v) > 0, grouped by n(seed,v) descending (M-1(b)); the anchor of the order is the SEED, not the current centre. | placement.py |
+| L-64 | A group is inserted simultaneously and order-free: every step scores all (member, empty seat) pairs, best gain wins, ties branch; then local search to fixed points branching on all tied best improving moves. | placement.py |
+| L-65 | L = minimal with 6L+1 >= units; growing L prepends an empty outer seat to every leg (edges unchanged, empties toward the outer end, design L-09). | placement.py |
+| L-66 | Budget (design L-05): 8 distinct tied branches at one tie point, 64 distinct states per growth step; beyond that BUDGET (typed, recorded). | placement.py |
+| L-67 | Energy log record per placed unit: r0, E_Q, E_Q/r0 (None if r0 = 0), in seat order (centre, AXES, k ascending), plus the three-ratio verdict; query as a set (L-51). | placement.py |
+| L-68 | Placement.capacity = number of units in the last stable state (== size); stop reason and the breaking group (units, share, status) are recorded. The same unit set may sit in the cross with a different centre than the seed (recorded: centre, centre_moved). | placement.py |
+
 ## Other local labels in the design (docs/LINE3_DESIGN.md §8.2)
 
 L-01 to L-14, L-19 (kind; also used as L-40 in space.py), L-20 (observation record; a different item from geometry L-20) and L-21 to L-23 are design defaults, not yet recorded by code. Note the number clash: design L-19/L-20 (kind, observation record) versus geometry L-19/L-20 (serialisation, swap identity).
@@ -54,3 +68,4 @@ L-01 to L-14, L-19 (kind; also used as L-40 in space.py), L-20 (observation reco
 ## OPEN POINTS (owner questions; behaviour not changed)
 
 - RUN tier: question words are not separate units (`units_run('半田岩はどこにありますか')` gives `['半田岩', 'はどこにありますか']`), unlike the WORD and CHAR tiers. The T1 docstring now states this; whether the RUN tier should split them is the owner's decision.
+- T4 placement (see report): (1) leg-to-leg arrangement: the I-04 key is identical for all 30 rotation classes of leg permutations, so the stability definition does not fix which arm holds which leg; sections (I-09 windows) do see adjacency. Left undetermined (L-61). (2) Budget values (L-66) change the capacity of some seeds (CHAR, S300: 2 of 233 sampled). (3) Design 3.4 "pool の外の単位とも" replacement not implemented (L-60). (4) Order anchor of M-1(b) is the fixed seed although the search may move the centre (L-63/L-68). (5) A lone seed is declared stable by definition (L-63); with moves into empty seats it has equal-key alternatives.
