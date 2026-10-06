@@ -1,0 +1,86 @@
+{
+ "CHAR": {
+  "n": 10,
+  "secs": 0.2,
+  "strict": {
+   "abstain": 7,
+   "answered_unanswerable": 0,
+   "attr_answered": 0,
+   "correct": 0,
+   "fict_answered": 0,
+   "gold_held": 0,
+   "loose": 0,
+   "n_answerable": 7,
+   "n_unanswerable": 3,
+   "wrong": 0
+  },
+  "t5_unit_answer": {
+   "abstain": 0,
+   "answered_unanswerable": 3,
+   "attr_answered": 1,
+   "correct": 0,
+   "fict_answered": 2,
+   "gold_held": 0,
+   "loose": 0,
+   "n_answerable": 7,
+   "n_unanswerable": 3,
+   "wrong": 7
+  }
+ },
+ "RUN": {
+  "n": 90,
+  "secs": 6.5,
+  "strict": {
+   "abstain": 60,
+   "answered_unanswerable": 0,
+   "attr_answered": 0,
+   "correct": 0,
+   "fict_answered": 0,
+   "gold_held": 0,
+   "loose": 0,
+   "n_answerable": 60,
+   "n_unanswerable": 30,
+   "wrong": 0
+  },
+  "t5_unit_answer": {
+   "abstain": 12,
+   "answered_unanswerable": 8,
+   "attr_answered": 5,
+   "correct": 0,
+   "fict_answered": 3,
+   "gold_held": 0,
+   "loose": 0,
+   "n_answerable": 60,
+   "n_unanswerable": 30,
+   "wrong": 48
+  }
+ },
+ "WORD": {
+  "n": 30,
+  "secs": 0.8,
+  "strict": {
+   "abstain": 20,
+   "answered_unanswerable": 0,
+   "attr_answered": 0,
+   "correct": 0,
+   "fict_answered": 0,
+   "gold_held": 0,
+   "loose": 0,
+   "n_answerable": 20,
+   "n_unanswerable": 10,
+   "wrong": 0
+  },
+  "t5_unit_answer": {
+   "abstain": 0,
+   "answered_unanswerable": 10,
+   "attr_answered": 3,
+   "correct": 0,
+   "fict_answered": 7,
+   "gold_held": 0,
+   "loose": 0,
+   "n_answerable": 20,
+   "n_unanswerable": 10,
+   "wrong": 20
+  }
+ }
+}
