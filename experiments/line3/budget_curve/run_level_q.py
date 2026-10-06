@@ -20,7 +20,7 @@ from verantyx.line3.space import build_space, load_jsonl        # noqa: E402
 
 tn, level = sys.argv[1], sys.argv[2]
 nseeds = int(sys.argv[3]) if len(sys.argv) > 3 else 240
-sp = build_space(load_jsonl(os.path.join(ROOT, "experiments/line3/data/S300.jsonl")))
+sp = build_space(load_jsonl(os.path.join(ROOT, "experiments/line3/data/S300.jsonl")), unit_filter=None)
 t = sp.tiers[tn]
 us = t.units()
 seeds = [us[(i * len(us)) // nseeds] for i in range(nseeds)]

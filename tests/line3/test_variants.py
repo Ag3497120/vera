@@ -1,4 +1,7 @@
-"""T6v tests: the three diagnostic variants are OPTIONS and the defaults keep every output
+"""T6v / T6w tests.  Since T6w (owner decision after T6v, L-150) V1, V2 and V3 are the NEW DEFAULTS;
+the old behaviour is available as the explicit options (read_rule="whole", state_rule="stability",
+unit_filter=None, read-out form="sentences") and is byte-identical to the T6v-era code (GOLDEN).
+(T6v wording follows.)  The three variants are OPTIONS and the old defaults kept every output
 byte-identical.
   V1 read_rule="query_crosses"  only crosses holding a query unit are read (instead of I-08)
   V2 build_space(unit_filter=)  function / question words are not units (instead of I-22)
@@ -42,30 +45,70 @@ def h(b):
     return hashlib.sha256(b).hexdigest()
 
 
-def run_defaults(**flags):
+OLD = dict(read_rule="whole", state_rule="stability", unit_filter=None)
+
+
+def run_old(**flags):
     t = tier(TOY2)
     P = pl.Placer(t)
     out = []
     for q in (("E", "F"), ("A", "B", "C"), ("Z",), ("C",)):
-        r = cy.ask_tier(t, "", P, units=q, **flags)
+        r = cy.ask_tier(t, "", P, units=q, **dict(OLD, **flags))
         out.append(h(r.to_bytes()))
         if r.candidates:
-            out.append(h(ro.read_out_result(t, r).to_bytes()))
-    out.append(build_space([{"sent": s} for s in JA]).sha256())
+            out.append(h(ro.read_out_result(t, r, form="sentences").to_bytes()))
+    out.append(build_space([{"sent": s} for s in JA], unit_filter=None).sha256())
     return out
 
 
-def test_defaults_are_byte_identical_to_before_the_options():
-    assert run_defaults() == GOLDEN
+def test_old_behaviour_through_explicit_options_is_byte_identical_to_before():
+    assert run_old() == GOLDEN
 
 
-def test_explicit_default_flags_equal_no_flags():
-    assert run_defaults(read_rule="whole", state_rule="stability", unit_filter=None) == GOLDEN
+def test_new_defaults_equal_the_explicit_new_options_and_the_old_ones_are_not_the_defaults():
+    t = tier(TOY2)
+    P = pl.Placer(t)
+    new = dict(read_rule="query_crosses", state_rule="query_share", unit_filter="default")
+    for q in (("E", "F"), ("A", "B", "C"), ("C",)):
+        assert cy.ask_tier(t, "", P, units=q).to_bytes() == cy.ask_tier(t, "", P, units=q, **new).to_bytes()
+    r = cy.ask_tier(t, "", P, units=("E", "F"))
+    v = r.thought_obj()["variant"]
+    assert (v["read_rule"], v["state_rule"]) == ("query_crosses", "query_share")
+    assert "variant" not in cy.ask_tier(t, "", P, units=("C",), **OLD).thought_obj()      # old: no variant record
+    assert r.to_bytes() != cy.ask_tier(t, "", P, units=("E", "F"), **OLD).to_bytes()
     sp1 = build_space([{"sent": s} for s in JA])
-    sp2 = build_space([{"sent": s} for s in JA], unit_filter=None)
-    assert sp1.to_bytes() == sp2.to_bytes()
-    assert build_tier("RUN", JA).sentence_units == build_tier("RUN", JA, None).sentence_units
-    assert "variant" not in cy.ask_tier(tier(TOY2), "", pl.Placer(tier(TOY2)), units=("C",)).thought_obj()
+    assert sp1.to_bytes() == build_space([{"sent": s} for s in JA], unit_filter="default").to_bytes()
+    assert sp1.to_bytes() != build_space([{"sent": s} for s in JA], unit_filter=None).to_bytes()
+    assert build_tier("RUN", JA).sentence_units == build_tier("RUN", JA, "default").sentence_units
+    assert build_tier("RUN", JA).sentence_units != build_tier("RUN", JA, None).sentence_units
+
+
+def test_an_explicit_amount_selects_the_ordered_whole_space_read():
+    t = tier(TOY2)
+    P = pl.Placer(t)
+    r = cy.ask_tier(t, "", P, units=("E", "F"), amount=3)
+    assert r.thought_obj()["variant"]["read_rule"] == "whole" and r.answer_obj()["partial_read"] is not None
+
+
+def test_default_answer_is_byte_identical_across_hash_seeds_in_a_subprocess():
+    import os
+    import subprocess
+    import sys
+    root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    code = ("from verantyx.line3 import cycle as cy, placement as pl, readout as ro, trace_check as tc\n"
+            "from verantyx.line3.space import build_space, load_jsonl\n"
+            "import hashlib\n"
+            "sp=build_space(load_jsonl(%r)[:60]);t=sp.tiers['RUN'];P=pl.Placer(t,pl.Budget(40,200))\n"
+            "h=hashlib.sha256(sp.to_bytes())\n"
+            "r=cy.ask_tier(t,'半田岩はどこにありますか',P,budget=cy.QueryBudget(32,8));h.update(r.to_bytes())\n"
+            "if r.candidates:\n"
+            "    a=ro.read_out_result(t,r);h.update(a.to_bytes());h.update(repr(tc.trace_readout(t,a)[1]).encode())\n"
+            "print(h.hexdigest())" % os.path.join(root, "experiments/line3/data/S300.jsonl"))
+    outs = set()
+    for seed in ("0", "1", "12345"):
+        env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONPATH=root, PYTHONDONTWRITEBYTECODE="1")
+        outs.add(subprocess.run([sys.executable, "-c", code], env=env, capture_output=True, text=True, check=True).stdout.strip())
+    assert len(outs) == 1
 
 
 def test_unknown_option_values_are_refused():
@@ -118,7 +161,7 @@ def test_v1_cannot_be_combined_with_amount():
 def test_v1_reads_are_the_same_per_cross_as_the_whole_read():
     t = tier(TOY2)
     P = pl.Placer(t)
-    whole = cy.ask_tier(t, "", P, units=("E", "F"))
+    whole = cy.ask_tier(t, "", P, units=("E", "F"), read_rule="whole")
     v1 = cy.ask_tier(t, "", P, units=("E", "F"), read_rule="query_crosses")
     wh = {sr.seed: sr for sr in whole.reads}
     for sr in v1.reads:
@@ -127,7 +170,7 @@ def test_v1_reads_are_the_same_per_cross_as_the_whole_read():
 
 # ------------------------------------------------------------------ V2
 def test_v2_filter_removes_units_not_sentences():
-    full = build_space([{"sent": s} for s in JA])
+    full = build_space([{"sent": s} for s in JA], unit_filter=None)
     func = lambda u: u in ("は", "に", "ある", "である", "です")
     sp = build_space([{"sent": s} for s in JA], unit_filter=func)
     assert sp.N == full.N and sp.sentences == full.sentences
@@ -137,7 +180,7 @@ def test_v2_filter_removes_units_not_sentences():
         for sid, us in enumerate(b.sentence_units):
             assert us == tuple(u for u in a.sentence_units[sid] if not func(u))
     # a per-tier mapping is accepted
-    sp2 = build_space([{"sent": s} for s in JA], unit_filter={"WORD": func})
+    sp2 = build_space([{"sent": s} for s in JA], unit_filter={"WORD": func, "RUN": None, "CHAR": None})
     assert sp2.tiers["RUN"].sentence_units == full.tiers["RUN"].sentence_units
     assert sp2.tiers["WORD"].sentence_units == sp.tiers["WORD"].sentence_units
 
@@ -149,6 +192,13 @@ def test_v2_query_units_that_are_filtered_are_dropped():
     assert r.ctx.query == ("E", "F")
     assert r.thought_obj()["variant"]["query_after_filter"] == ["E", "F"]
     assert r.verdict == cy.ask_tier(t, "", P, units=("E", "F")).verdict
+    # the default filter of the question is the function-word rule of the tier (RUN / WORD / CHAR)
+    sp = build_space([{"sent": s} for s in JA])
+    tr = sp.tiers["RUN"]
+    q = cy.ask_tier(tr, "半田岩はどこにありますか", pl.Placer(tr)).ctx.query
+    assert q and "はどこにありますか" not in q and "半田岩" in q
+    q_old = cy.ask_tier(tr, "半田岩はどこにありますか", pl.Placer(tr), unit_filter=None).ctx.query
+    assert "はどこにありますか" in q_old
 
 
 # ------------------------------------------------------------------ V3
@@ -182,7 +232,7 @@ def test_v3_adopts_the_states_sharing_most_with_the_query(q):
 def test_v3_differs_from_the_stability_rule_where_they_disagree():
     t = tier(TOY2)
     P = pl.Placer(t)
-    a = cy.ask_tier(t, "", P, units=("E", "F"))
+    a = cy.ask_tier(t, "", P, units=("E", "F"), state_rule="stability")
     b = cy.ask_tier(t, "", P, units=("E", "F"), state_rule="query_share")
     assert a.units == ("C",) and b.units == ("E",)          # the toy: stability picks C, sharing picks E
 
@@ -203,8 +253,8 @@ def test_v3_readout_lists_every_state_regardless_of_stability():
     t = tier(TOY2)
     P = pl.Placer(t)
     r = cy.ask_tier(t, "", P, units=("E", "F"), state_rule="query_share")
-    rd_all = ro.read_out_result(t, r, by_stability=False)
-    rd_def = ro.read_out_result(t, r)
+    rd_all = ro.read_out_result(t, r, form="sentences", by_stability=False)
+    rd_def = ro.read_out_result(t, r, form="sentences")
     assert rd_all.below_best == 0
     assert {s.text for s in rd_def.sentences} <= {s.text for s in rd_all.sentences}
     assert rd_all.distinct_total == len(rd_all.sentences)

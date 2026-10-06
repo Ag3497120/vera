@@ -13,7 +13,20 @@ from fractions import Fraction
 import pytest
 
 from verantyx.line3 import space as S
-from verantyx.line3.space import CHAR, RUN, TIERS, WORD, build_from_jsonl, build_space
+from verantyx.line3.space import CHAR, RUN, TIERS, WORD
+from verantyx.line3.space import build_from_jsonl as _build_from_jsonl
+from verantyx.line3.space import build_space as _build_space
+
+
+# Since L-150 the default space drops function / question words (V2).  The tests below describe the
+# OLD space (I-22: function words are units) and run it through the explicit option unit_filter=None;
+# the tests of the default space are at the end of this file.
+def build_space(rows, unit_filter=None):
+    return _build_space(rows, unit_filter)
+
+
+def build_from_jsonl(path, unit_filter=None):
+    return _build_from_jsonl(path, unit_filter)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 S300 = os.path.join(ROOT, "experiments/line3/data/S300.jsonl")
@@ -51,7 +64,7 @@ def test_byte_identical_two_builds(sp):
 @pytest.mark.parametrize("seed", ["0", "1", "12345"])
 def test_hashseed_independent(sp, seed):
     code = ("from verantyx.line3.space import build_from_jsonl;"
-            "print(build_from_jsonl(%r).sha256())" % S300)
+            "print(build_from_jsonl(%r, None).sha256())" % S300)
     env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONPATH=ROOT, PYTHONDONTWRITEBYTECODE="1")
     out = subprocess.run([PY, "-c", code], env=env, capture_output=True, text=True, check=True).stdout.strip()
     assert out == sp.sha256()
@@ -59,7 +72,7 @@ def test_hashseed_independent(sp, seed):
 
 def test_cooccurrence_key_order_hashseed_independent(sp):
     code = ("from verantyx.line3.space import build_from_jsonl, WORD;"
-            "s=build_from_jsonl(%r).tiers[WORD];"
+            "s=build_from_jsonl(%r, None).tiers[WORD];"
             "import json;print(json.dumps([list(s.cooccurrence(u)) for u in s.units()[:150]]))" % S300)
     outs = set()
     for seed in ("0", "1", "12345"):
@@ -76,9 +89,12 @@ def test_tier_counts_acceptance(sp):
 
 def test_tier_counts_cli():
     env = dict(os.environ, PYTHONPATH=ROOT, PYTHONDONTWRITEBYTECODE="1")
+    out = subprocess.run([PY, "-m", "verantyx.line3.space", S300, "--keep-function-words"], env=env,
+                         capture_output=True, text=True, check=True).stdout
+    assert json.loads(out.split(" ", 1)[1]) == {"sentences": 300, RUN: 2175, WORD: 2444, CHAR: 1164}   # old space
     out = subprocess.run([PY, "-m", "verantyx.line3.space", S300], env=env, capture_output=True,
                          text=True, check=True).stdout
-    assert json.loads(out.split(" ", 1)[1]) == {"sentences": 300, RUN: 2175, WORD: 2444, CHAR: 1164}
+    assert json.loads(out.split(" ", 1)[1]) == {"sentences": 300, RUN: 2033, WORD: 2278, CHAR: 1094}   # default
 
 
 def test_run_tier_question_word_absorbed():
@@ -338,3 +354,50 @@ def test_postings_union():
     assert s.postings_union(WORD, []) == ()
     with pytest.raises(KeyError):
         s.postings_union(WORD, ["は", "存在しない語zzz"])
+
+
+# ---------------------------------------------------------------- the default space (L-150)
+JA2 = [{"sent": "半田岩は徳島県にある。"}, {"sent": "遊眠は漫画家である。"}, {"sent": "半田岩はどこにありますか。"},
+       {"sent": "遊眠は何ですか。"}]
+
+
+def test_default_space_drops_function_and_question_words_old_option_keeps_them():
+    new = _build_space(JA2)
+    old = _build_space(JA2, unit_filter=None)
+    assert new.N == old.N and new.sentences == old.sentences           # sentences stay and count in N
+    for tn in ("RUN", "WORD"):
+        assert "は" in old.tiers[tn].postings and "は" not in new.tiers[tn].postings
+    assert "どこ" in old.tiers["WORD"].postings and "どこ" not in new.tiers["WORD"].postings
+    assert "半田岩" in new.tiers["RUN"].postings and "遊眠" in new.tiers["RUN"].postings
+    assert "はどこにありますか" in old.tiers["RUN"].postings and "はどこにありますか" not in new.tiers["RUN"].postings
+    assert "は" not in new.tiers["CHAR"].postings and "半" in new.tiers["CHAR"].postings
+    for tn in TIERS:                                                    # a filtered unit is in no sentence's list
+        ps = new.tiers[tn].postings
+        assert all(u in ps for us in new.tiers[tn].sentence_units for u in us)
+        assert new.tiers[tn].unit_filter is not None and old.tiers[tn].unit_filter is None
+
+
+def test_default_space_append_equals_building_from_scratch():
+    a, b = JA2[:2], JA2[2:]
+    chunked = _build_space(a).append(b)
+    assert chunked.to_bytes() == _build_space(a + b).to_bytes()
+    assert "は" not in chunked.tiers["WORD"].postings and "どこ" not in chunked.tiers["WORD"].postings
+
+
+def test_default_space_is_hashseed_independent():
+    code = ("from verantyx.line3.space import build_from_jsonl;"
+            "print(build_from_jsonl(%r).sha256())" % S300)
+    outs = set()
+    for seed in ("0", "1", "12345"):
+        env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONPATH=ROOT, PYTHONDONTWRITEBYTECODE="1")
+        outs.add(subprocess.run([PY, "-c", code], env=env, capture_output=True, text=True, check=True).stdout.strip())
+    assert len(outs) == 1
+
+
+def test_default_space_filter_rule_is_funcwords_and_unknown_string_refused():
+    from verantyx.line3 import funcwords as fw
+    assert fw.is_function_unit("は", "RUN") and fw.is_function_unit("どこ", "WORD") and not fw.is_function_unit("半田岩", "RUN")
+    assert fw.is_function_unit("あ", "CHAR") and not fw.is_function_unit("半", "CHAR")
+    assert fw.default_filter("T") is None
+    with pytest.raises(ValueError):
+        _build_space(JA2, unit_filter="bogus")

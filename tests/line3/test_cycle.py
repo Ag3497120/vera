@@ -328,7 +328,7 @@ def test_partial_read_is_marked_with_counts_and_ties_are_not_split():
     t = tier(TOY2)
     P = pl.Placer(t)
     facts = cy.TierFacts(t)
-    whole = cy.ask_tier(t, "", P, units=("E", "F"), facts=facts)
+    whole = cy.ask_tier(t, "", P, units=("E", "F"), facts=facts, read_rule="whole")   # old option (I-08)
     total = len(t.units())
     part = cy.ask_tier(t, "", P, units=("E", "F"), facts=facts, amount=3)
     a = part.answer_obj()
@@ -399,8 +399,8 @@ def test_answer_and_thought_are_separate_and_json_exact():
 def test_member_rule_flag_changes_only_the_pool():
     t = tier(TOY2)
     P = pl.Placer(t)
-    a = cy.ask_tier(t, "", P, units=("E", "F"), member_rule="stable_any")
-    b = cy.ask_tier(t, "", P, units=("E", "F"), member_rule="answering_only")
+    a = cy.ask_tier(t, "", P, units=("E", "F"), member_rule="stable_any", state_rule="stability")   # old rule: the pool matters
+    b = cy.ask_tier(t, "", P, units=("E", "F"), member_rule="answering_only", state_rule="stability")
     assert a.state_digest == b.state_digest                           # the search is the same
     assert (b.alt_verdict[0], b.alt_verdict[1]) == (a.verdict, a.units)
     with pytest.raises(ValueError):
@@ -463,12 +463,13 @@ def test_cycle_does_not_change_the_committed_modules():
 
 
 def test_s300_small_tier_whole_read_runs_and_end_states_verify():
-    sp = build_space(load_jsonl(S300)[:8])
+    sp = build_space(load_jsonl(S300)[:8], unit_filter=None)           # the old space, explicit option
     t = sp.tiers["WORD"]
     P = pl.Placer(t, pl.Budget(60, 400))
     q = cy.split_question("WORD", "半田岩はどこにありますか")
     assert len(q) == 8
-    res = cy.ask_tier(t, "", P, units=q, budget=cy.QueryBudget(32, 8))
+    res = cy.ask_tier(t, "", P, units=q, budget=cy.QueryBudget(32, 8),
+                      read_rule="whole", state_rule="stability", unit_filter=None)
     assert res.thought_obj()["read"]["crosses_read"] == len(t.units())
     assert res.thought_obj()["inner_layers_pending"] == [list(q[6:])]
     ctx = cy.make_context(q)

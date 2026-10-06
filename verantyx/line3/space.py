@@ -12,6 +12,8 @@ Binding decisions (ops/decisions/2026-10-06_line3_faithful_build.md):
         are NOT separate units but are absorbed into the neighbouring string
         (units_run('半田岩はどこにありますか') -> ['半田岩', 'はどこにありますか']).
         This is the actual behaviour and an OPEN owner question (not changed here).
+        CHANGED after T6v (owner decision, L-150): function / question words are no longer
+        units by default (funcwords.py); `unit_filter=None` builds the old space.
   I-06  initial energy ratio r0(u) = n(u) / N, an exact Fraction (L-02: no floats).
 
 Local choices (new, listed in the T1 report):
@@ -56,9 +58,9 @@ from __future__ import annotations
 import hashlib
 import json
 import unicodedata
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from fractions import Fraction
-from typing import Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
+from typing import Callable, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
 from verantyx.lang import ja_content_runs, strip_attribution
 
@@ -135,6 +137,9 @@ class TierSpace:
     name: str
     sentence_units: Tuple[Tuple[str, ...], ...]      # sid -> units in order of occurrence
     postings: Mapping[str, Tuple[int, ...]]          # unit -> sorted distinct sids  (I-02)
+    # L-150: the predicate that removed function / question words when the tier was built (None =
+    # the old I-22 space); `append` applies the same predicate.  Not part of equality.
+    unit_filter: Optional[Callable[[str], bool]] = field(default=None, compare=False, repr=False)
 
     @property
     def N(self) -> int:
@@ -143,7 +148,8 @@ class TierSpace:
     def append(self, texts: Sequence[str]) -> "TierSpace":     # L-41
         """New TierSpace with `texts` (already attribution-stripped) added as sids N.."""
         split = _SPLITTERS[self.name]
-        new = tuple(tuple(split(t)) for t in texts)
+        flt = self.unit_filter
+        new = tuple(tuple(split(t)) if flt is None else tuple(u for u in split(t) if not flt(u)) for t in texts)
         post: Dict[str, List[int]] = {}
         base = self.N
         for i, us in enumerate(new):
@@ -152,7 +158,7 @@ class TierSpace:
         merged = dict(self.postings)
         for u, v in post.items():
             merged[u] = tuple(merged.get(u, ())) + tuple(v)
-        return TierSpace(self.name, self.sentence_units + new, merged)
+        return TierSpace(self.name, self.sentence_units + new, merged, flt)
 
     def postings_union(self, units: Iterable[str]) -> Tuple[int, ...]:   # L-42
         """Combined sorted distinct sentence ids of the given units (M-1(c))."""
@@ -257,13 +263,28 @@ class Space:
         return hashlib.sha256(self.to_bytes()).hexdigest()
 
 
-def build_tier(name: str, texts: Sequence[str], unit_filter=None) -> TierSpace:
-    """`unit_filter` (T6v, variant V2; default None = I-22 unchanged): a predicate on a unit
-    surface; units for which it is True are NOT units of this space (they are removed from the
-    sentence unit lists, so they have no posting and no word-order slot).  Sentences stay."""
-    split = _SPLITTERS[name]
-    if isinstance(unit_filter, Mapping):            # per-tier predicates {tier name: predicate}
+DEFAULT_FILTER = "default"      # L-150: the function-word predicate of funcwords.py (V2 is the default)
+
+
+def _resolve_filter(name: str, unit_filter):
+    if isinstance(unit_filter, Mapping):            # per-tier predicates {tier name: predicate | "default" | None}
         unit_filter = unit_filter.get(name)
+    if isinstance(unit_filter, str):
+        if unit_filter != DEFAULT_FILTER:
+            raise ValueError("unit_filter: a predicate, None, or %r" % DEFAULT_FILTER)
+        from verantyx.line3.funcwords import default_filter
+        return default_filter(name)
+    return unit_filter
+
+
+def build_tier(name: str, texts: Sequence[str], unit_filter=DEFAULT_FILTER) -> TierSpace:
+    """`unit_filter` (default: the function-word predicate, L-150; T6v V2 became the default):
+    a predicate on a unit surface; units for which it is True are NOT units of this space (they
+    are removed from the sentence unit lists, so they have no posting and no word-order slot).
+    Sentences stay.  `unit_filter=None` builds the old I-22 space (every unit kept), for
+    reproducing the earlier measurements."""
+    split = _SPLITTERS[name]
+    unit_filter = _resolve_filter(name, unit_filter)
     if unit_filter is None:
         su = tuple(tuple(split(t)) for t in texts)
     else:
@@ -272,7 +293,7 @@ def build_tier(name: str, texts: Sequence[str], unit_filter=None) -> TierSpace:
     for sid, us in enumerate(su):
         for u in dict.fromkeys(us):                  # distinct, sid ascending by construction
             post.setdefault(u, []).append(sid)
-    return TierSpace(name, su, {u: tuple(v) for u, v in post.items()})
+    return TierSpace(name, su, {u: tuple(v) for u, v in post.items()}, unit_filter)
 
 
 def _rows(rows: Iterable[Mapping[str, str]]):
@@ -285,9 +306,10 @@ def _rows(rows: Iterable[Mapping[str, str]]):
     return sentences, kinds
 
 
-def build_space(rows: Iterable[Mapping[str, str]], unit_filter=None) -> Space:
+def build_space(rows: Iterable[Mapping[str, str]], unit_filter=DEFAULT_FILTER) -> Space:
     """rows: dicts with 'sent' (sentence) and optional 'source'.  No centre is chosen (I-02).
-    `unit_filter`: see build_tier (T6v V2 only; Space.append of such a space is not supported)."""
+    `unit_filter`: see build_tier (default: function / question words are not units; None = the
+    old space).  Space.append applies the space's own filter to the new sentences."""
     sentences, kinds = _rows(rows)
     texts = [strip_attribution(t) for t, _ in sentences]
     return Space(sentences, {n: build_tier(n, texts, unit_filter) for n in TIERS}, kinds)
@@ -301,8 +323,9 @@ def tier_counts(space: Space) -> Dict[str, object]:
 def main(argv: Optional[Sequence[str]] = None) -> int:
     import sys
     args = list(sys.argv[1:] if argv is None else argv)
-    for path in args:
-        print(path, json.dumps(tier_counts(build_from_jsonl(path)), sort_keys=True))
+    old = "--keep-function-words" in args           # the old I-22 space (L-150 option)
+    for path in (a for a in args if a != "--keep-function-words"):
+        print(path, json.dumps(tier_counts(build_from_jsonl(path, None if old else DEFAULT_FILTER)), sort_keys=True))
     return 0
 
 
@@ -311,8 +334,8 @@ def load_jsonl(path: str) -> List[dict]:
         return [json.loads(line) for line in f if line.strip()]
 
 
-def build_from_jsonl(path: str) -> Space:
-    return build_space(load_jsonl(path))
+def build_from_jsonl(path: str, unit_filter=DEFAULT_FILTER) -> Space:
+    return build_space(load_jsonl(path), unit_filter)
 
 
 if __name__ == "__main__":

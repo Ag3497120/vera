@@ -1,4 +1,6 @@
-"""T6 tests: read-out along section -> centre paths, orderings of whole section paths (I-13, N-13),
+"""T6 tests (the sentence-candidate read-out, now the option form="sentences") and T6w tests (the new
+default answer form: the agreed centre + the words of each section path; see the end of the file).
+T6: read-out along section -> centre paths, orderings of whole section paths (I-13, N-13),
 adopt / list (I-14, N-14), stability (I-15), list without a cap and the too-many flag (N-20), the
 intake of the user's choice (M-4 (a)), trace check 100%, determinism, exact arithmetic."""
 import dataclasses
@@ -51,6 +53,13 @@ def ref(flat, stab=Fr(1, 2), seed="s", member=0, unit="c", tier_name="T"):
 
 
 def do(states, window=0, **kw):
+    """The T6 sentence read-out (explicit option since L-150)."""
+    t = tier(HUB)
+    return t, ro.read_out(cy.TierFacts(t), ctx_for(), states, question="q", window=window, form="sentences", **kw)
+
+
+def doa(states, window=0, **kw):
+    """The default answer form."""
     t = tier(HUB)
     return t, ro.read_out(cy.TierFacts(t), ctx_for(), states, question="q", window=window, **kw)
 
@@ -252,16 +261,16 @@ def test_trace_check_catches_an_edge_no_sentence_evidences():
 def test_end_to_end_cycle_result_to_readout_with_trace_100_percent():
     t = tier(["A B C", "A B C", "B C", "B C", "C D", "D E", "E D C", "E D C", "A B", "F E", "F A", "G F"])
     P = pl.Placer(t)
-    res = cy.ask_tier(t, "", P, units=("E", "F"))
+    res = cy.ask_tier(t, "", P, units=("E", "F"), state_rule="stability")        # old rule: one stability
     assert res.candidates
-    r = ro.read_out_result(t, res)
+    r = ro.read_out_result(t, res, form="sentences")
     assert len(r.states) == len(res.candidates)
     assert all(s.ref.stability == res.stability for s in r.states)
     assert r.orderings_total == sum(factorial(s.k) for s in r.states)
     _, rep = tc.trace_readout(t, r)
     assert rep.ok and rep.fraction == 1 and rep.words_checked > 0
     # the stored-object route gives the same read-out as the in-memory route
-    r2 = ro.read_out_stored(cy.TierFacts(t), "", res.answer_obj(), units=("E", "F"))
+    r2 = ro.read_out_stored(cy.TierFacts(t), "", res.answer_obj(), units=("E", "F"), form="sentences")
     assert r2.to_json_obj() == dataclasses.replace(r, question="").to_json_obj()
     # output is plain data: answer / thought
     o = r.to_json_obj()
@@ -274,9 +283,9 @@ def test_stored_t5_result_reads_out_with_trace_100_percent():
     import json
     from verantyx.line3.space import build_space, load_jsonl
     row = json.loads(open(T5_WORD, encoding="utf-8").readline())
-    sp = build_space(load_jsonl(os.path.join(ROOT, "experiments", "line3", "data", "S300.jsonl")))
+    sp = build_space(load_jsonl(os.path.join(ROOT, "experiments", "line3", "data", "S300.jsonl")), unit_filter=None)
     t = sp.tiers["CHAR"]
-    r = ro.read_out_stored(cy.TierFacts(t), row["question"], row["answer"])
+    r = ro.read_out_stored(cy.TierFacts(t), row["question"], row["answer"], form="sentences")
     assert r.states and all(s.k == 6 for s in r.states)
     assert r.orderings_total == 720 * len(r.states)
     _, rep = tc.trace_readout(t, r)
@@ -298,8 +307,14 @@ def tier(ss):
 h=hashlib.sha256()
 t=tier(%r); P=pl.Placer(t)
 for q in (("E","F"),("A","B","C")):
-    res=cy.ask_tier(t,"",P,units=q)
-    r=ro.read_out_result(t,res)
+    res=cy.ask_tier(t,"",P,units=q)                                   # new defaults
+    a=ro.read_out_result(t,res)                                       # new default answer form
+    h.update(res.to_bytes()); h.update(a.to_bytes())
+    h.update(repr(tc.trace_readout(t,a)[1]).encode())
+    if a.verdict==cy.CHOICE:
+        h.update(ro.choose_item(a,0).to_bytes())
+    res=cy.ask_tier(t,"",P,units=q,read_rule="whole",state_rule="stability",unit_filter=None)   # old options
+    r=ro.read_out_result(t,res,form="sentences")
     h.update(r.to_bytes())
     h.update(repr(tc.trace_readout(t,r)[1]).encode())
     if r.verdict==cy.CHOICE:
@@ -339,3 +354,138 @@ def test_readout_does_not_change_the_committed_modules():
                         "verantyx/line3/energy.py", "verantyx/line3/placement.py"],
                        cwd=ROOT, capture_output=True, text=True)
     assert r.stdout.strip() == ""
+
+
+# ================================================================ T6w: the default answer form (L-150..L-154)
+def test_default_form_is_centre_and_the_words_of_each_section_path_in_section_order():
+    t, a = doa([ref(flat_with(set(range(4))))])
+    assert isinstance(a, ro.PathAnswer) and a.verdict == cy.ANSWER and len(a.items) == 1
+    it = a.items[0]
+    assert it.centre == "c"
+    # the paths as read: section order, each path outer -> inner, end unit last; nothing is reordered
+    st = a.states[0]
+    assert [p.words for p in it.paths] == [p.words for p in st.paths]
+    assert [p.section for p in it.paths] == sorted(p.section for p in it.paths)
+    assert all(p.words[-1] == "c" for p in it.paths)
+    o = a.answer_obj()
+    assert o["verdict"] == cy.ANSWER and o["centre"] == "c" and o["paths"] == o["items"][0]["paths"]
+    assert o["form"] == "centre_paths" and "sentences" not in o
+    # no orderings are enumerated or counted any more
+    assert "orderings" not in a.thought_obj()["counts"]
+
+
+def test_default_form_k_sections_never_blow_up_into_k_factorial():
+    for k in (1, 3, 6):
+        _, a = doa([ref(flat_with(set(range(k))))])
+        assert len(a.items) == 1 and a.verdict == cy.ANSWER            # (T6: 720 sentences for k = 6)
+
+
+def test_identical_states_are_one_item_and_a_list_only_when_states_genuinely_differ():
+    f = flat_with({0, 1})
+    _, a = doa([ref(f, seed="s1"), ref(f, Fr(2, 3), "s2")])
+    assert a.verdict == cy.ANSWER and len(a.items) == 1 and a.items[0].origins == (0, 1)
+    assert a.items[0].stability == Fr(2, 3) and isinstance(a.items[0].stability, Fr)
+    _, b = doa([ref(flat_with({0}), seed="s1"), ref(flat_with({1}), seed="s2")])
+    assert b.verdict == cy.CHOICE and len(b.items) == 2 and not b.too_many
+    assert [i.paths[0].words for i in b.items] == [("a0", "c"), ("a1", "c")]       # sorted label, no winner
+    assert b.centre is None and b.answer_obj()["centre"] is None and b.answer_obj()["paths"] is None
+    assert b.answer_obj()["listed"] == 2 and len(b.answer_obj()["items"]) == 2
+
+
+def test_no_working_section_gives_unknown_no_path_for_the_default_form():
+    _, a = doa([ref(("c",) + (None,) * 6)])
+    assert a.verdict == ro.UNKNOWN_NO_PATH and a.items == () and a.states_without_path == 1 and a.centre is None
+    _, a0 = doa([])
+    assert a0.verdict == ro.UNKNOWN_NO_PATH
+    with pytest.raises(ValueError):
+        ro.adopt_item(a)
+    with pytest.raises(ValueError):
+        ro.choose_item(a, 0)
+
+
+def test_the_list_is_never_shortened_and_too_many_is_a_flag():
+    states = [ref(flat_with({p}), seed="s%d" % p) for p in range(6)] + [ref(flat_with({0, 1}), seed="x"),
+                                                                       ref(flat_with({0, 2}), seed="y")]
+    _, a = doa(states, too_many=3)
+    assert len(a.items) == 8 and a.too_many and a.too_many_limit == 3
+    _, a2 = doa(states)
+    assert len(a2.items) == 8 and not a2.too_many
+
+
+def test_default_form_intake_of_the_users_choice():
+    _, a = doa([ref(flat_with({0}), seed="s1"), ref(flat_with({1}), seed="s2")])
+    ad = ro.choose_item(a, 1)
+    rec = ad.memory_record()
+    assert rec["kind"] == "memory_answer" and rec["source"] == "user_choice" and rec["centre"] == "c"
+    assert rec["paths"][0]["words"] == ["a1", "c"] and rec["offered"] == 2 and rec["base_changed"] is False
+    assert ad.to_bytes() == ro.choose_item(a, 1).to_bytes()
+    for bad in (2, -1):
+        with pytest.raises(IndexError):
+            ro.choose_item(a, bad)
+    for bad in (True, "a1c", 1.0):
+        with pytest.raises(TypeError):
+            ro.choose_item(a, bad)
+    _, one = doa([ref(flat_with({0}))])
+    assert ro.adopt_item(one).memory_record()["source"] == "auto"
+    with pytest.raises(ValueError):
+        ro.adopt_item(a)
+
+
+def test_read_out_form_option():
+    t = tier(HUB)
+    args = (cy.TierFacts(t), ctx_for(), [ref(flat_with({0, 1}))])
+    assert isinstance(ro.read_out(*args, window=0), ro.PathAnswer)
+    assert isinstance(ro.read_out(*args, window=0, form="centre_paths"), ro.PathAnswer)
+    assert isinstance(ro.read_out(*args, window=0, form="sentences"), ro.Readout)
+    with pytest.raises(ValueError):
+        ro.read_out(*args, form="poem")
+
+
+def test_default_form_trace_is_100_percent_and_catches_errors():
+    t, a = doa([ref(flat_with(set(range(5))), seed="sX", member=2)])
+    traces, rep = tc.trace_readout(t, a)               # trace_readout dispatches on the form
+    assert rep.ok and rep.fraction == 1 and rep.words_checked == rep.words_traced == 10
+    assert rep.sentences_checked == rep.sentences_ok == 1
+    assert {w.seed for w in traces} == {"sX"} and all(w.ok for w in traces)
+    st = a.states[0]
+    # a word that is not held at its seat
+    p0 = dataclasses.replace(st.paths[0], words=("a0x", "c"))
+    bad = dataclasses.replace(a, states=(dataclasses.replace(st, paths=(p0,) + st.paths[1:]),))
+    assert not tc.trace_answer(t, bad)[1].ok
+    # an item whose words are not what the origin state reads
+    it = a.items[0]
+    wrong = dataclasses.replace(it, paths=(dataclasses.replace(it.paths[0], words=("zz", "c")),) + it.paths[1:])
+    assert not tc.trace_answer(t, dataclasses.replace(a, items=(wrong,)))[1].ok
+    # a centre that is not a unit of the tier / not where the paths end
+    assert not tc.trace_answer(t, dataclasses.replace(a, items=(dataclasses.replace(it, centre="nope"),)))[1].ok
+
+
+def test_end_to_end_defaults_to_default_form_with_trace_100_percent():
+    t = tier(TOY2)
+    P = pl.Placer(t)
+    res = cy.ask_tier(t, "", P, units=("E", "F"))                       # new defaults
+    v = res.thought_obj()["variant"]
+    assert v["read_rule"] == "query_crosses" and v["state_rule"] == "query_share"
+    assert res.candidates
+    a = ro.read_out_result(t, res)
+    assert isinstance(a, ro.PathAnswer) and len(a.states) == len(res.candidates)
+    assert {i.centre for i in a.items} <= set(res.units)
+    _, rep = tc.trace_readout(t, a)
+    assert rep.ok and rep.fraction == 1 and rep.words_checked > 0
+    a2 = ro.read_out_stored(cy.TierFacts(t), "", res.answer_obj(), units=("E", "F"))
+    assert a2.to_json_obj() == dataclasses.replace(a, question="").to_json_obj()
+    assert set(a.to_json_obj()) == {"answer", "thought"}
+
+
+def test_default_form_on_a_real_space_traces_100_percent():
+    import json
+    from verantyx.line3.space import build_space, load_jsonl
+    sp = build_space(load_jsonl(os.path.join(ROOT, "experiments", "line3", "data", "S300.jsonl"))[:60])
+    t = sp.tiers["RUN"]                                                  # default (function-word-free) space
+    assert "は" not in t.postings
+    P = pl.Placer(t, pl.Budget(60, 400))
+    res = cy.ask_tier(t, "半田岩はどこにありますか", P, budget=cy.QueryBudget(32, 8))
+    assert "は" not in res.ctx.query and "はどこにありますか" not in res.ctx.query     # V2 on the question
+    if res.candidates:
+        a = ro.read_out_result(t, res)
+        assert tc.trace_readout(t, a)[1].ok

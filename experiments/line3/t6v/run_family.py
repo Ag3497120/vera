@@ -28,8 +28,10 @@ workers = int(sys.argv[3])
 si, sn = (int(x) for x in sys.argv[4].split("/"))
 variants = sys.argv[5].split(",") if len(sys.argv) > 5 else {"F1": ["base", "V1", "V3"], "F2": ["V2", "V123"]}[fam]
 BUDGET = cy.QueryBudget(64, 8)
-FLAGS = {"base": {}, "V1": {"read_rule": "query_crosses"}, "V3": {"state_rule": "query_share"},
-         "V2": {"unit_filter": True}, "V123": {"read_rule": "query_crosses", "state_rule": "query_share", "unit_filter": True}}
+OLD = {"read_rule": "whole", "state_rule": "stability", "unit_filter": None}      # since L-150 the old behaviour is explicit
+FLAGS = {"base": dict(OLD), "V1": dict(OLD, read_rule="query_crosses"), "V3": dict(OLD, state_rule="query_share"),
+         "V2": dict(OLD, unit_filter=True),
+         "V123": {"read_rule": "query_crosses", "state_rule": "query_share", "unit_filter": True}}
 G = {}
 SAMPLE_CAP = 30
 
@@ -129,8 +131,10 @@ def _work(row):
     facts = G["facts"]
     for v in variants:
         fl = dict(FLAGS[v])
-        if fl.pop("unit_filter", False):
+        if fl.pop("unit_filter"):
             fl["unit_filter"] = G["filt"]
+        else:
+            fl["unit_filter"] = None
         t0 = time.time()
         res = cy.ask_tier(G["t"], question, G["pl"], facts=facts, budget=BUDGET, **fl)
         secs = round((time.time() - t0) * 100) / 100
@@ -144,7 +148,8 @@ def _work(row):
             rec["matches_stored_T5"] = (t5["verdict"] == res.verdict and t5["units"] == list(res.units)
                                         and t5["trace"] == res.answer_obj()["trace"])
         if res.candidates:
-            rd = ro.read_out_result(G["t"], res, facts, by_stability=(FLAGS[v].get("state_rule") != "query_share"))
+            rd = ro.read_out_result(G["t"], res, facts, form="sentences",
+                                    by_stability=(FLAGS[v].get("state_rule") != "query_share"))
             rec["readout"] = rd.answer_obj(with_sentences=False)
             rec["sentences_sample"] = [s.text for s in rd.sentences[:SAMPLE_CAP]]
             rec["counts"] = rd.thought_obj()["counts"]

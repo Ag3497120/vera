@@ -28,28 +28,7 @@ COND = sys.argv[1] if len(sys.argv) > 1 else "S300"
 LEVEL = sys.argv[2] if len(sys.argv) > 2 else "mid_64x8"
 SAMPLE_CAP = 30                      # sentences stored per question in the jsonl (the module output is complete)
 
-FUNC_POS1 = {"助詞", "助動詞", "接続詞", "連体詞", "代名詞", "補助記号", "感動詞", "接頭辞", "副詞"}
-FUNC_COMPOUNDS = {"における", "について", "として", "による", "により", "によって", "に対して", "において",
-                  "にとって", "とともに", "に関する", "に関して"}
-_fc = {}
-
-
-def func_pos(u, tier):
-    """A unit is a function unit iff every token of it is a particle, auxiliary, conjunction,
-    adnominal, pronoun/interrogative, adverb, symbol, or a light verb/adjective (UniDic 非自立可能);
-    a few fixed compounds are listed.  CHAR: a hiragana character.  (A reading, see OPEN POINTS.)"""
-    k = (u, tier)
-    if k in _fc:
-        return _fc[k]
-    if tier == "CHAR":
-        r = all("぀" <= c <= "ゟ" for c in u)
-    elif u in FUNC_COMPOUNDS:
-        r = True
-    else:
-        toks = list(_get_tagger()(u))
-        r = bool(toks) and all(t.feature.pos1 in FUNC_POS1 or t.feature.pos2 == "非自立可能" for t in toks)
-    _fc[k] = r
-    return r
+from verantyx.line3.funcwords import FUNC_COMPOUNDS, FUNC_POS1, is_function_unit as func_pos   # noqa: E402,F401  (L-130 -> funcwords.py)
 
 
 def hira_only(u):
@@ -59,7 +38,7 @@ def hira_only(u):
 def main():
     rows_q = [l.rstrip("\n").split("\t") for l in open(os.path.join(ROOT, "experiments/line3/questions.tsv"), encoding="utf-8")][1:]
     Q = {r[0]: r for r in rows_q}
-    sp = build_space(load_jsonl(os.path.join(ROOT, "experiments/line3/data/%s.jsonl" % COND)))
+    sp = build_space(load_jsonl(os.path.join(ROOT, "experiments/line3/data/%s.jsonl" % COND)), unit_filter=None)
     os.makedirs(os.path.join(HERE, "results"), exist_ok=True)
     summary = {}
     for tn in ("RUN", "WORD", "CHAR"):
@@ -80,7 +59,7 @@ def main():
                        "t5_units": ans["units"], "t5_stability": ans["stability"]}
                 states = ro.states_from_answer_obj(ans)
                 if states:
-                    rd = ro.read_out_stored(facts, question, ans)
+                    rd = ro.read_out_stored(facts, question, ans, form="sentences")
                     traces, rep = tc.trace_readout(tier, rd)
                     sent_texts = [s.text for s in rd.sentences]
                     path_texts = sorted({p.text for st in rd.states for p in st.paths})

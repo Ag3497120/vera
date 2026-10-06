@@ -47,6 +47,10 @@ Local decisions (docs/LINE3_LOCAL_DECISIONS.md, L-120..):
         sorted by text, a label), UNKNOWN_NO_PATH (no sentence could be read out).
   L-126 "Too many" = list size > `too_many` (default 20, L-21), a display flag; the output never
         shortens the list.
+  L-150.. (after T6v, owner decision): the DEFAULT answer form is `PathAnswer` (below):  per adopted
+        state the agreed centre and the ordered word list of each section path, as read -- no
+        sentence is built and nothing is reordered.  The sentence-candidate read-out of T6
+        (everything above) is kept as the option `form="sentences"`.  See the PathAnswer docs.
   L-127 Intake: `choose(readout, which)` accepts an index into the list or the exact text; anything
         else is an error.  `adopt(readout)` is the automatic ANSWER.  Both return an `Adoption`
         whose `memory_record()` is a `memory_answer` sentence (design L-19 kind) with `source`
@@ -240,10 +244,10 @@ class Readout:
                           ensure_ascii=False).encode("utf-8")
 
 
-def read_out(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[StateRef], *,
-             question: str = "", too_many: int = TOO_MANY_DEFAULT,
-             window: int = DEFAULT_WINDOW, by_stability: bool = True) -> Readout:
-    """Read the words of the adopted states out along their section -> centre paths and form the
+def read_sentences(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[StateRef], *,
+                   question: str = "", too_many: int = TOO_MANY_DEFAULT,
+                   window: int = DEFAULT_WINDOW, by_stability: bool = True) -> Readout:
+    """(T6 form, option `form="sentences"`)  Read the words of the adopted states out along their section -> centre paths and form the
     sentence candidates (every ordering of whole section paths of every state)."""
     reader = cy.Reader(facts, ctx.attached, ctx.energy_units, window)
     tier = states[0].tier if states else facts.tier.name
@@ -280,20 +284,157 @@ def read_out(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[Sta
                    sum(1 for r in reads if not r.paths), len(listed) > too_many, too_many)
 
 
-def read_out_result(tier_space, tr: "cy.TierResult", facts: Optional["cy.TierFacts"] = None, *,
-                    too_many: int = TOO_MANY_DEFAULT, by_stability: bool = True) -> Readout:
-    """Convenience: read out the adopted states of an in-memory cycle result."""
-    facts = facts or cy.TierFacts(tier_space)
-    return read_out(facts, tr.ctx, states_from_result(tr), question=tr.question, too_many=too_many,
-                    by_stability=by_stability)
-
-
 def read_out_stored(facts: "cy.TierFacts", question: str, ans: Mapping, *, scope: str = "first_layer",
-                    too_many: int = TOO_MANY_DEFAULT, units: Optional[Sequence[str]] = None) -> Readout:
+                    too_many: int = TOO_MANY_DEFAULT, units: Optional[Sequence[str]] = None,
+                    form: str = "centre_paths") -> Union[PathAnswer, Readout]:
     """Convenience: read out a stored T5 `answer` object (its trace holds the adopted states)."""
     q = tuple(units) if units is not None else cy.split_question(facts.tier.name, question)
     ctx = cy.make_context(q, scope)
-    return read_out(facts, ctx, states_from_answer_obj(ans), question=question, too_many=too_many)
+    return read_out(facts, ctx, states_from_answer_obj(ans), question=question, too_many=too_many, form=form)
+
+
+# --------------------------------------------------------------------------
+# the default answer form after T6v: the agreed centre and the words of each section path
+# --------------------------------------------------------------------------
+# L-150  Answer form (owner: "断面が一致した中心と経路の語を答えにする"): for every adopted state an
+#        ITEM = (centre, paths).  centre = the unit the working sections agreed on (the cycle's
+#        answer unit of the state; the end unit of every section path); paths = for each working
+#        section in section order, the ordered words of its path exactly as read (L-120/L-121).
+#        Nothing is reordered into sentences; no ordering is chosen or enumerated.
+# L-151  Items are DISTINCT by (centre, the word lists of the paths in section order): adopted
+#        states that read out the same are one item (all origin states kept), so a list appears
+#        only when the states genuinely differ.  Item order in the list = sorted by (centre,
+#        words) (a label, never a winner).  Stability of an item = the best stability among its
+#        origin states (information only; the states were already chosen by L-142).
+# L-152  Verdict: ANSWER (exactly one item), CHOICE (a list of several items, N-20: the list is
+#        never shortened, `too_many` is a display flag), UNKNOWN_NO_PATH (no adopted state has a
+#        working section path).  `answer_obj()["centre"]`/["paths"] are set only for ANSWER.
+# L-153  Trace: trace_check.trace_answer() checks every word of every path of every item (seat,
+#        sentence, edge) and that every path ends at the centre; 100% required.
+@dataclass(frozen=True)
+class AnswerPath:
+    section: int
+    attached: Optional[str]
+    words: Tuple[str, ...]
+
+    @property
+    def text(self) -> str:
+        return "".join(self.words)
+
+
+@dataclass(frozen=True)
+class AnswerItem:
+    centre: str
+    paths: Tuple[AnswerPath, ...]
+    stability: Fraction
+    origins: Tuple[int, ...]                 # indexes into PathAnswer.states (all that read out the same)
+
+    @property
+    def key(self) -> Tuple[str, Tuple[Tuple[str, ...], ...]]:
+        return (self.centre, tuple(p.words for p in self.paths))
+
+    @property
+    def path_texts(self) -> Tuple[str, ...]:
+        return tuple(p.text for p in self.paths)
+
+
+@dataclass(frozen=True)
+class PathAnswer:
+    question: str
+    tier: str
+    states: Tuple[StateRead, ...]            # every adopted state with its section paths (the thought)
+    items: Tuple[AnswerItem, ...]
+    verdict: str
+    states_without_path: int
+    too_many: bool
+    too_many_limit: int
+
+    @property
+    def centre(self) -> Optional[str]:
+        return self.items[0].centre if self.verdict == cy.ANSWER else None
+
+    # ---- output (N-10) ----
+    def answer_obj(self) -> dict:
+        def item(it: AnswerItem) -> dict:
+            return {"centre": it.centre, "stability": _fs(it.stability), "origins": list(it.origins),
+                    "paths": [{"section": p.section, "attached": p.attached, "words": list(p.words)}
+                              for p in it.paths]}
+        o = {"form": "centre_paths", "verdict": self.verdict, "listed": len(self.items),
+             "too_many": self.too_many,
+             "centre": self.items[0].centre if self.verdict == cy.ANSWER else None,
+             "paths": item(self.items[0])["paths"] if self.verdict == cy.ANSWER else None,
+             "items": [item(it) for it in self.items]}
+        return o
+
+    def thought_obj(self) -> dict:
+        return {
+            "question": self.question, "tier": self.tier,
+            "counts": {"states": len(self.states), "states_without_path": self.states_without_path,
+                       "listed": len(self.items)},
+            "too_many_limit": self.too_many_limit,
+            "states": [{"seed": st.ref.seed, "member": st.ref.member, "stability": _fs(st.ref.stability),
+                        "state": list(st.ref.flat), "version": st.ref.version, "k": st.k,
+                        "paths": [{"section": p.section, "attached": p.attached, "unit": p.unit,
+                                   "words": list(p.words), "seats": list(p.seats),
+                                   "segments": [list(g) for g in p.segments]} for p in st.paths]}
+                       for st in self.states],
+        }
+
+    def to_json_obj(self) -> dict:
+        return {"answer": self.answer_obj(), "thought": self.thought_obj()}
+
+    def to_bytes(self) -> bytes:
+        return json.dumps(self.to_json_obj(), sort_keys=True, separators=(",", ":"),
+                          ensure_ascii=False).encode("utf-8")
+
+
+def read_answer(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[StateRef], *,
+                question: str = "", too_many: int = TOO_MANY_DEFAULT,
+                window: int = DEFAULT_WINDOW) -> PathAnswer:
+    """L-150..L-152: the agreed centre and the section-path words of every adopted state."""
+    reader = cy.Reader(facts, ctx.attached, ctx.energy_units, window)
+    tier = states[0].tier if states else facts.tier.name
+    reads = tuple(StateRead(s, section_paths(reader, s.flat, s.L)) for s in states)
+    acc: Dict[tuple, dict] = {}
+    for si, sr in enumerate(reads):
+        if not sr.paths:
+            continue
+        centre = sr.ref.unit if sr.ref.unit is not None else sr.paths[0].unit
+        if any(p.unit != centre for p in sr.paths):                       # cannot happen for an agreed state
+            raise AssertionError("sections of state %d do not agree on the centre %r" % (si, centre))
+        key = (centre, tuple(p.words for p in sr.paths))
+        e = acc.get(key)
+        if e is None:
+            e = acc[key] = {"paths": tuple(AnswerPath(p.section, p.attached, p.words) for p in sr.paths),
+                            "stab": sr.ref.stability, "origins": []}
+        elif sr.ref.stability > e["stab"]:
+            e["stab"] = sr.ref.stability
+        e["origins"].append(si)
+    items = tuple(AnswerItem(k[0], e["paths"], e["stab"], tuple(e["origins"])) for k, e in sorted(acc.items()))
+    verdict = UNKNOWN_NO_PATH if not items else (cy.ANSWER if len(items) == 1 else cy.CHOICE)
+    return PathAnswer(question, tier, reads, items, verdict, sum(1 for r in reads if not r.paths),
+                      len(items) > too_many, too_many)
+
+
+def read_out(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[StateRef], *,
+             form: str = "centre_paths", **kw) -> Union[PathAnswer, Readout]:
+    """Read the adopted states out.  Default form (L-150): `PathAnswer`.  `form="sentences"` =
+    the T6 sentence-candidate read-out (`Readout`; extra keywords: window, by_stability, too_many)."""
+    if form == "sentences":
+        return read_sentences(facts, ctx, states, **kw)
+    if form != "centre_paths":
+        raise ValueError("form: centre_paths | sentences")
+    kw.pop("by_stability", None)
+    return read_answer(facts, ctx, states, **kw)
+
+
+def read_out_result(tier_space, tr: "cy.TierResult", facts: Optional["cy.TierFacts"] = None, *,
+                    too_many: int = TOO_MANY_DEFAULT, form: str = "centre_paths",
+                    by_stability: bool = True) -> Union[PathAnswer, Readout]:
+    """Convenience: read out the adopted states of an in-memory cycle result."""
+    facts = facts or cy.TierFacts(tier_space)
+    return read_out(facts, tr.ctx, states_from_result(tr), question=tr.question, too_many=too_many,
+                    form=form, by_stability=by_stability)
 
 
 # --------------------------------------------------------------------------
@@ -351,3 +492,51 @@ def choose(readout: Readout, which: Union[int, str]) -> Adoption:
         raise TypeError("choice must be an index or a text")
     return Adoption(readout.question, readout.tier, readout.sentences[i], "user_choice",
                     len(readout.sentences), readout.too_many, i)
+
+
+# --------------------------------------------------------------------------
+# intake for the default answer form (M-4 (a), N-20; L-154)
+# --------------------------------------------------------------------------
+@dataclass(frozen=True)
+class AnswerAdoption:
+    question: str
+    tier: str
+    item: AnswerItem
+    source: str                              # "auto" | "user_choice"
+    listed: int
+    too_many: bool
+    choice_index: Optional[int]
+
+    def memory_record(self) -> dict:
+        """L-154: the adopted answer item as a memory record (kind `memory_answer`, base unchanged).
+        T11 writes it; here only the form."""
+        return {"kind": RECORD_KIND, "source": self.source, "tier": self.tier, "question": self.question,
+                "form": "centre_paths", "centre": self.item.centre,
+                "paths": [{"section": p.section, "attached": p.attached, "words": list(p.words)}
+                          for p in self.item.paths],
+                "stability": _fs(self.item.stability), "origins": list(self.item.origins),
+                "offered": self.listed, "too_many": self.too_many, "choice_index": self.choice_index,
+                "base_changed": False}
+
+    def to_bytes(self) -> bytes:
+        return json.dumps(self.memory_record(), sort_keys=True, separators=(",", ":"),
+                          ensure_ascii=False).encode("utf-8")
+
+
+def adopt_item(ans: PathAnswer) -> AnswerAdoption:
+    """The single item is adopted (automatically)."""
+    if ans.verdict != cy.ANSWER:
+        raise ValueError("nothing to adopt automatically: verdict %s" % ans.verdict)
+    return AnswerAdoption(ans.question, ans.tier, ans.items[0], "auto", 1, False, None)
+
+
+def choose_item(ans: PathAnswer, which: int) -> AnswerAdoption:
+    """The user's choice: an index into the list of items; anything else is refused."""
+    if ans.verdict not in (cy.CHOICE, cy.ANSWER):
+        raise ValueError("no list to choose from: verdict %s" % ans.verdict)
+    if isinstance(which, bool) or not isinstance(which, int):
+        raise TypeError("choice must be an index")
+    if not 0 <= which < len(ans.items):
+        raise IndexError("choice %d outside the list of %d" % (which, len(ans.items)))
+    return AnswerAdoption(ans.question, ans.tier, ans.items[which], "user_choice", len(ans.items),
+                          ans.too_many, which)

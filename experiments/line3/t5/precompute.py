@@ -24,7 +24,7 @@ _W = None
 
 def _init():
     global _T, _W
-    sp = build_space(load_jsonl(os.path.join(ROOT, "experiments/line3/data/%s.jsonl" % cond)))
+    sp = build_space(load_jsonl(os.path.join(ROOT, "experiments/line3/data/%s.jsonl" % cond)), unit_filter=None)
     _T = sp.tiers[tn]
     _W = pl.Weights(_T)
 
@@ -39,7 +39,7 @@ def _work(seeds):
 
 
 if __name__ == "__main__":
-    sp = build_space(load_jsonl(os.path.join(ROOT, "experiments/line3/data/%s.jsonl" % cond)))
+    sp = build_space(load_jsonl(os.path.join(ROOT, "experiments/line3/data/%s.jsonl" % cond)), unit_filter=None)
     units = sp.tiers[tn].units()
     chunks = [units[i:i + 4] for i in range(0, len(units), 4)]
     t0 = time.time()

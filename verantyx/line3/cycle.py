@@ -1135,15 +1135,29 @@ def ask_tier(tier: TierSpace, question: str, placements, *, units: Optional[Sequ
              budget: QueryBudget = QueryBudget(), member_cap: Optional[int] = None,
              scope: str = "first_layer", member_rule: str = "stable_any",
              with_state: bool = False, clock=None,
-             read_rule: str = "whole", state_rule: str = "stability", unit_filter=None) -> TierResult:
-    """One question on one tier: read the whole space (or `amount` crosses, marked partial),
-    every member of every cross, settle, aggregate.  `placements` has cross_for(seed)."""
+             read_rule: Optional[str] = None, state_rule: str = "query_share",
+             unit_filter="default") -> TierResult:
+    """One question on one tier: read the crosses that hold a query unit (V1; `read_rule="whole"`
+    = I-08, every cross, or `amount` crosses marked partial), every member of every cross, settle,
+    adopt the states by the sentences they share with the query (V3; `state_rule="stability"` =
+    the post-query stability rule).  Function / question words of the question are dropped (V2;
+    `unit_filter=None` = keep them; a predicate = own rule).  Since L-150 these three are the
+    defaults; the old behaviour stays available as the explicit options.  `placements` has
+    cross_for(seed).  `read_rule=None` = "query_crosses", except that an explicit `amount` (M-2
+    amount of inference, an ordered partial read of the whole space) selects "whole"."""
     import time
     t0 = time.monotonic_ns()
     facts = facts or TierFacts(tier)
+    if read_rule is None:
+        read_rule = "whole" if amount is not None else "query_crosses"
     if read_rule not in ("whole", "query_crosses") or state_rule not in ("stability", "query_share"):
         raise ValueError("read_rule: whole | query_crosses; state_rule: stability | query_share")
     q = tuple(units) if units is not None else split_question(tier.name, question)
+    if isinstance(unit_filter, str):                 # "default": the function-word rule of this tier (L-150)
+        if unit_filter != "default":
+            raise ValueError("unit_filter: a predicate, None, or 'default'")
+        from verantyx.line3.funcwords import default_filter
+        unit_filter = default_filter(tier.name)
     if unit_filter is not None:                      # T6v V2: question words / function words are not units either
         q = tuple(u for u in q if not unit_filter(u))
     ctx = make_context(q, scope)

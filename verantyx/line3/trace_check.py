@@ -26,7 +26,7 @@ from fractions import Fraction
 from typing import Dict, List, Optional, Sequence, Tuple
 
 from verantyx.line3.geometry import N_ARMS
-from verantyx.line3.readout import Adoption, Readout, SectionPath, StateRead
+from verantyx.line3.readout import Adoption, PathAnswer, Readout, SectionPath, StateRead
 from verantyx.line3.space import TierSpace
 
 
@@ -154,10 +154,58 @@ def _fail(t: WordTrace, reason: str) -> WordTrace:
                      t.n_sentences, t.edge_sid, t.edge_sentences, False, reason)
 
 
-def trace_readout(tier: TierSpace, readout: Readout) -> Tuple[Tuple[WordTrace, ...], TraceReport]:
+def trace_answer(tier: TierSpace, ans: PathAnswer) -> Tuple[Tuple[WordTrace, ...], TraceReport]:
+    """L-153: trace every word of every path of every item of the default answer form: seat, sentence
+    and edge exactly as for sentences (_trace_path), and every path of an item ends at the item's
+    centre.  `words_checked` counts the path words of the items; an item is ok iff all its words
+    trace (an item that several states read out is checked on its first origin state, and every
+    other origin must hold the same words)."""
+    ptrace: Dict[Tuple[int, int, int], WordTrace] = {}
+    all_traces: List[WordTrace] = []
+    failures: List[str] = []
+    for si, st in enumerate(ans.states):
+        for p in st.paths:
+            for t in _trace_path(tier, si, st, p):
+                ptrace[(si, p.section, t.pos)] = t
+                all_traces.append(t)
+                if not t.ok:
+                    failures.append("state %d section %d pos %d %r: %s" % (si, p.section, t.pos, t.word, t.reason))
+    words_checked = words_traced = items_ok = 0
+    for it in ans.items:
+        n = sum(len(p.words) for p in it.paths)
+        words_checked += n
+        good = bool(it.origins)
+        traced = 0
+        for k, si in enumerate(it.origins):
+            st = ans.states[si]
+            if tuple(p.words for p in st.paths) != tuple(p.words for p in it.paths):
+                good = False
+                failures.append("item %r: origin state %d does not reproduce the words" % (it.centre, si))
+            if any(p.unit != it.centre or (p.words and p.words[-1] != it.centre) for p in st.paths):
+                good = False
+                failures.append("item %r: a path of state %d does not end at the centre" % (it.centre, si))
+            if k == 0:
+                traced = sum(1 for p in st.paths for i in range(len(p.words)) if ptrace[(si, p.section, i)].ok)
+        if it.centre not in tier.postings:
+            good = False
+            failures.append("item %r: the centre is not a unit of the tier" % it.centre)
+        words_traced += traced if good else 0
+        if good and traced == n:
+            items_ok += 1
+        elif good:
+            failures.append("item %r: a path word does not trace" % it.centre)
+    rep = TraceReport(words_checked, words_traced, len(ans.items), items_ok,
+                      len(ptrace), sum(1 for t in ptrace.values() if t.ok), tuple(failures))
+    return tuple(all_traces), rep
+
+
+def trace_readout(tier: TierSpace, readout) -> Tuple[Tuple[WordTrace, ...], TraceReport]:
     """Trace every word of every listed sentence; returns (word traces of the section paths used,
     report).  A word occurrence counts as traced iff its path word traces (a)-(c) and its sentence
-    reproduces (d) for every origin."""
+    reproduces (d) for every origin.  A `PathAnswer` (the default answer form) is traced by
+    `trace_answer`."""
+    if isinstance(readout, PathAnswer):
+        return trace_answer(tier, readout)
     ptrace: Dict[Tuple[int, int, int], WordTrace] = {}
     all_traces: List[WordTrace] = []
     failures: List[str] = []

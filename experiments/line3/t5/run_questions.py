@@ -27,7 +27,7 @@ G = {}
 
 
 def _init():
-    sp = build_space(load_jsonl(os.path.join(ROOT, "experiments/line3/data/%s.jsonl" % cond)))
+    sp = build_space(load_jsonl(os.path.join(ROOT, "experiments/line3/data/%s.jsonl" % cond)), unit_filter=None)
     t = sp.tiers[tn]
     d = pickle.load(open(os.path.join(SCRATCH, "placements_%s_%s_%s.pkl" % (cond, tn, level)), "rb"))
     G["t"], G["facts"], G["pl"] = t, cy.TierFacts(t), cy.PlacementStore(d["placements"])
@@ -36,7 +36,8 @@ def _init():
 def _work(row):
     qid, kind, _subj, question = row[0], row[1], row[2], row[3]
     t0 = time.time()
-    r = cy.ask_tier(G["t"], question, G["pl"], facts=G["facts"], budget=cy.QueryBudget(ms, me))
+    r = cy.ask_tier(G["t"], question, G["pl"], facts=G["facts"], budget=cy.QueryBudget(ms, me),
+                    read_rule="whole", state_rule="stability", unit_filter=None)   # the T5 behaviour (explicit since L-150)
     return {"id": qid, "kind": kind, "question": question, "secs": round((time.time() - t0) * 100) / 100,
             "answer": r.answer_obj(), "thought": r.thought_obj()}
 
