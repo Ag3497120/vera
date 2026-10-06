@@ -178,7 +178,9 @@ def trace_answer(tier: TierSpace, ans: PathAnswer) -> Tuple[Tuple[WordTrace, ...
         traced = 0
         for k, si in enumerate(it.origins):
             st = ans.states[si]
-            if tuple(p.words for p in st.paths) != tuple(p.words for p in it.paths):
+            same = (sorted(p.words for p in st.paths) == sorted(p.words for p in it.paths)) if ans.merge_sections \
+                else (tuple(p.words for p in st.paths) == tuple(p.words for p in it.paths))
+            if not same:
                 good = False
                 failures.append("item %r: origin state %d does not reproduce the words" % (it.centre, si))
             if any(p.unit != it.centre or (p.words and p.words[-1] != it.centre) for p in st.paths):

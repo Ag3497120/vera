@@ -358,6 +358,8 @@ class PathAnswer:
     too_many_limit: int
     # sid -> the tier's unit list of that sentence (display of the source sentences; L-160)
     _sentence_units: Mapping[int, Tuple[str, ...]] = field(default_factory=dict, compare=False, repr=False)
+    # L-170: True when items that differ only by which section carries which path were merged
+    merge_sections: bool = False
 
     @property
     def centre(self) -> Optional[str]:
@@ -384,6 +386,8 @@ class PathAnswer:
              "paths": items[0]["paths"] if one else None,
              "items": items,
              "sentences": {str(i): "".join(u) for i, u in sorted(self._sentence_units.items())}}
+        if self.merge_sections:                      # L-170: only when the option is on (default bytes unchanged)
+            o["merge_sections"] = True
         return o
 
     def thought_obj(self) -> dict:
@@ -410,8 +414,11 @@ class PathAnswer:
 
 def read_answer(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[StateRef], *,
                 question: str = "", too_many: int = TOO_MANY_DEFAULT,
-                window: int = DEFAULT_WINDOW) -> PathAnswer:
-    """L-150..L-152: the agreed centre and the section-path words of every adopted state."""
+                window: int = DEFAULT_WINDOW, merge_sections: bool = False) -> PathAnswer:
+    """L-150..L-152: the agreed centre and the section-path words of every adopted state.
+    L-170 `merge_sections=True` (owner: items that differ ONLY by which section reads which words are
+    one item): the item key is (centre, the multiset of section paths = their word sequences); the
+    first state in key order keeps its paths (trace / sources), all origin states are kept."""
     reader = cy.Reader(facts, ctx.attached, ctx.energy_units, window)
     tier = states[0].tier if states else facts.tier.name
     reads = tuple(StateRead(s, section_paths(reader, s.flat, s.L)) for s in states)
@@ -444,6 +451,8 @@ def read_answer(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[
         if any(p.unit != centre for p in sr.paths):                       # cannot happen for an agreed state
             raise AssertionError("sections of state %d do not agree on the centre %r" % (si, centre))
         key = (centre, tuple(p.words for p in sr.paths))
+        if merge_sections:
+            key = (centre, tuple(sorted(p.words for p in sr.paths)))
         e = acc.get(key)
         if e is None:
             e = acc[key] = {"paths": tuple(AnswerPath(p.section, p.attached, p.words, edges_of(sr.ref.flat, p))
@@ -457,7 +466,7 @@ def read_answer(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[
     used = {sid for it in items for sid in it.source_sids}
     return PathAnswer(question, tier, reads, items, verdict, sum(1 for r in reads if not r.paths),
                       len(items) > too_many, too_many,
-                      {sid: tier_space.sentence_units[sid] for sid in sorted(used)})
+                      {sid: tier_space.sentence_units[sid] for sid in sorted(used)}, merge_sections)
 
 
 def read_out(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[StateRef], *,
@@ -474,11 +483,11 @@ def read_out(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[Sta
 
 def read_out_result(tier_space, tr: "cy.TierResult", facts: Optional["cy.TierFacts"] = None, *,
                     too_many: int = TOO_MANY_DEFAULT, form: str = "centre_paths",
-                    by_stability: bool = True) -> Union[PathAnswer, Readout]:
+                    by_stability: bool = True, **kw) -> Union[PathAnswer, Readout]:
     """Convenience: read out the adopted states of an in-memory cycle result."""
     facts = facts or cy.TierFacts(tier_space)
     return read_out(facts, tr.ctx, states_from_result(tr), question=tr.question, too_many=too_many,
-                    form=form, by_stability=by_stability)
+                    form=form, by_stability=by_stability, **kw)
 
 
 # --------------------------------------------------------------------------

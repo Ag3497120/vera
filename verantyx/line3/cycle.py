@@ -79,7 +79,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from fractions import Fraction
 from math import gcd
 from typing import Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
@@ -1136,7 +1136,7 @@ def _verdict_query_share(reads: Sequence[SeedRead], facts: TierFacts, ctx: Query
         {"states": len(seen), "best_share": best, "tied_states": len(top)}
 
 
-def ask_tier(tier: TierSpace, question: str, placements, *, units: Optional[Sequence[str]] = None,
+def _ask_tier_once(tier: TierSpace, question: str, placements, *, units: Optional[Sequence[str]] = None,
              facts: Optional[TierFacts] = None, amount: Optional[int] = None,
              budget: QueryBudget = QueryBudget(), member_cap: Optional[int] = None,
              scope: str = "first_layer", member_rule: str = "stable_any",
@@ -1214,6 +1214,72 @@ def ask_tier(tier: TierSpace, question: str, placements, *, units: Optional[Sequ
                       mread, mtot, tuple(stack), tuple(logs), member_rule, (av[0], av[1]), budget,
                       _digest(sobj), 0, (time.monotonic_ns() - t0) // 1000000, sobj if with_state else None,
                       variant)
+
+
+class _OverlayPlacements:
+    """L-171: the stored placements with some crosses replaced (rebuilt at a higher budget level)."""
+
+    def __init__(self, base, repl: Mapping[str, Placement]) -> None:
+        self._base, self._repl = base, dict(repl)
+
+    def cross_for(self, seed: str) -> Placement:
+        return self._repl[seed] if seed in self._repl else self._base.cross_for(seed)
+
+
+RAISE_LEVELS_DEFAULT = ("high", "max")
+
+
+def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Optional[str] = None,
+             raise_levels: Sequence[str] = RAISE_LEVELS_DEFAULT, weights=None, **kw) -> TierResult:
+    """`_ask_tier_once` (all its keywords) plus T6y option `raise_budget="on_demand"` (L-171, owner:
+    "問いで必要になったときだけ上げる"): the placement budget of a cross is raised only when a query needs
+    it.  "Needs" = the question has no adopted state and a cross it read stopped by budget (stop ==
+    "budget"; an "exhausted" cross cannot grow).  Those crosses are rebuilt (placement.build_cross) at
+    each level of `raise_levels` above their own, in order, and the question is asked again with the
+    rebuilt crosses in place of the stored ones, until a state is adopted or the levels run out.  What
+    was raised is recorded in thought_obj()["variant"]["budget_raise"] (the stored placements are
+    not changed).  Default None: exactly `_ask_tier_once`."""
+    res = _ask_tier_once(tier, question, placements, **kw)
+    if raise_budget is None:
+        return res
+    if raise_budget != "on_demand":
+        raise ValueError("raise_budget: None | on_demand")
+    from verantyx.line3 import placement as pl
+    order = pl.LEVEL_ORDER
+    for lv in raise_levels:
+        if lv not in order:
+            raise ValueError("raise_levels: names of placement levels")
+    steps: List[dict] = []
+    repl: Dict[str, Placement] = {}
+    cur = res
+    w = weights
+    for lv in raise_levels:
+        if cur.candidates:
+            break
+        def lvl(sd: str) -> int:        # level index of the cross now in place (a custom budget counts as below "low")
+            nm = pl.level_name(repl.get(sd, placements.cross_for(sd)).budget)
+            return order.index(nm) if nm is not None else -1
+
+        limited = sorted(sd for sd in cur.plan.read
+                         if repl.get(sd, placements.cross_for(sd)).stop == "budget" and lvl(sd) < order.index(lv))
+        if not limited:
+            break
+        w = w or pl.Weights(tier)
+        rec = []
+        for sd in limited:
+            before = repl.get(sd, placements.cross_for(sd))
+            nb = pl.build_cross(tier, sd, w, budget=pl.budget_level(lv))
+            repl[sd] = nb
+            rec.append({"seed": sd, "capacity_before": before.capacity, "capacity_after": nb.capacity,
+                        "stop_after": nb.stop})
+        cur = _ask_tier_once(tier, question, _OverlayPlacements(placements, repl), **kw)
+        steps.append({"level": lv, "raised": rec, "verdict": cur.verdict, "states_adopted": len(cur.candidates),
+                      "crosses_read": len(cur.plan.read)})
+    info = {"mode": "on_demand", "levels": list(raise_levels), "needed": bool(steps), "steps": steps,
+            "final_level": steps[-1]["level"] if steps else None}
+    var = dict(cur.variant or {})
+    var["budget_raise"] = info
+    return replace(cur, variant=var)
 
 
 def _L_of(flat: Flat) -> int:

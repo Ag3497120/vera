@@ -268,3 +268,40 @@ def test_v123_together_runs():
     assert r.ctx.query == ("E", "F")
     v = r.thought_obj()["variant"]
     assert v["read_rule"] == "query_crosses" and v["state_rule"] == "query_share" and v["unit_filter"]
+
+
+# ---- T6y: raise_budget="on_demand" (L-171) ----
+EIGHT = ["A B C D E F G H"]          # 8 units of equal share: the tied class exceeds level "low" (stop = budget, capacity 1)
+
+
+class _LowStore:
+    def __init__(self, t):
+        w = pl.Weights(t)
+        self.p = {u: pl.build_cross(t, u, w, budget=pl.budget_level("low")) for u in t.postings}
+
+    def cross_for(self, seed):
+        return self.p[seed]
+
+
+def test_on_demand_budget_raise_only_when_a_query_needs_it():
+    t = tier(EIGHT)
+    low = _LowStore(t)
+    assert all(p.stop == "budget" and p.capacity == 1 for p in low.p.values())
+    base = cy.ask_tier(t, "", low, units=("A",))
+    assert not base.candidates and "budget_raise" not in base.thought_obj()["variant"]
+    assert base.to_bytes() == cy._ask_tier_once(t, "", low, units=("A",)).to_bytes()      # default untouched
+    r = cy.ask_tier(t, "", low, units=("A",), raise_budget="on_demand")
+    br = r.thought_obj()["variant"]["budget_raise"]
+    assert br["needed"] and br["steps"][0]["level"] == "high"
+    assert [x["seed"] for x in br["steps"][0]["raised"]] == ["A"]
+    assert br["steps"][0]["raised"][0]["capacity_before"] == 1 and br["steps"][0]["raised"][0]["capacity_after"] == 8
+    assert r.candidates and br["final_level"] == "high" and br["steps"][-1]["states_adopted"] == len(r.candidates)
+    # stored placements unchanged
+    assert all(p.capacity == 1 for p in low.p.values())
+    # not needed when the question already has a state: nothing is rebuilt, the thought says so
+    ok = pl.Placer(tier(TOY2))
+    r2 = cy.ask_tier(tier(TOY2), "", ok, units=("E", "F"), raise_budget="on_demand")
+    assert r2.candidates and r2.thought_obj()["variant"]["budget_raise"] == {
+        "mode": "on_demand", "levels": ["high", "max"], "needed": False, "steps": [], "final_level": None}
+    with pytest.raises(ValueError):
+        cy.ask_tier(t, "", low, units=("A",), raise_budget="always")
