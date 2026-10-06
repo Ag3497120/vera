@@ -1,54 +1,66 @@
-"""T4 placement: the deliberately built stable initial arrangement + energy log.
+"""T4b placement: the deliberately built stable arrangement (a CLASS of tied
+arrangements) + energy log.
 
-Binding decisions (ops/decisions/2026-10-06_line3_faithful_build.md):
+Binding decisions (ops/decisions/2026-10-06_line3_faithful_build.md, incl. "T4 の測定後の決定"):
   decision 8 + I-04  placement = the arrangement where the space's energy is stable,
         measured first by the sentences shared by neighbouring units, then by word
         order.  Key (lexicographic, larger is better; the design's key is its negation):
           (1) sum over cross edges of n(x,y)
           (2) sum over cross edges, outer -> inner, of p(x,y)
+        Keys are totally ordered, so two different keys never tie.
   N-02 + M-1(a)  the stable initial arrangement is built deliberately by SEARCHING with
-        that stability definition; from it each query's energy changes are logged
-        (energy_log).
-  M-1(b)  units are added to a cross in order of how many sentences they share with the
-        centre; units with equal shares are added together.
+        that stability definition; from it each query's energy changes are logged.
+  M-1(b)  units are added in order of how many sentences they share with the ORIGINAL
+        SEED (owner: "最初の種の語"); units with equal shares are added together.
   I-05  a state is a fixed point when no single move (24 rotations + seat swaps)
-        improves it.  verify_fixed_point() checks this against ALL single moves with
-        code independent of the search.
-  I-02  no centre is chosen at ingestion: every unit is a seed; the centre of the final
-        arrangement is whatever the search leaves in the centre seat.
-  N-09/N-05  capacity is decided only by stability: when adding a group breaks
-        stability, the state that was stable just before is restored and its size is the
-        cross's capacity (recorded: Placement.capacity / stop / broke_on).
-  design 0.2 rule 4  ties are never broken by order: ties are explored in full and a
-        tied result is typed (TIED / PLATEAU / BUDGET), never resolved.
+        improves it.  verify_fixed_point() / verify_class() check this against ALL single
+        moves with code independent of the search.
+  I-02  no centre is chosen at ingestion; the centre(s) of the final class are whatever
+        the search leaves in the centre seat.
+  N-09/N-05  capacity is decided only by stability; when a step cannot be completed (the
+        only way now: the explicit budget), the state that was stable just before is
+        restored and its size is the capacity.
+  Owner's decisions after the T4 measurement (binding):
+    (1) 「同点の並びをまとめて 1 つの状態として育てる」: all arrangements of equal key are
+        kept TOGETHER as ONE state and that state is grown; none is picked by order.
+    (2) 「区別しない（同じ状態として扱う）」: which arm holds which leg is not
+        distinguished; arrangements equal up to arm assignment are the same arrangement.
+    (3) no replacement with units outside the cross: moves = rotations + seat swaps.
+    (4) growth order = shares with the original seed unit.
 
-Local decisions (docs/LINE3_LOCAL_DECISIONS.md, L-60 ..):
+Local decisions (docs/LINE3_LOCAL_DECISIONS.md; L-60.. kept, L-62 superseded, L-70..):
   L-60 pool = the units admitted to the cross; moves are the 23 non-identity rotations
-       and the swap of any two seats (empty seats included, geometry.moves_swap).  No
-       replacement by units outside the cross.
-  L-61 State identity for ties = (centre, multiset of legs) (legs read outer -> inner,
-       empty seats kept): the key cannot see which leg is which (every permutation of
-       the 6 legs has the same key), so such states are one state.  Rotations only
-       change orientation (the key is rotation-invariant).  The concrete Cross places
-       the legs in canonical sorted order (a label, not a winner) with identity
-       orientation.  Which of the leg permutations to use is NOT decided here.
-  L-62 Status of a search result: STABLE = exactly one terminal state and no single move
-       gives a different state of equal key; TIED = several terminals; PLATEAU = one
-       terminal but a different state of equal key is one move away; BUDGET = more
-       branches than the budget.  Only STABLE lets a cross grow.
-  L-63 Growth: seed alone at the centre (L=1) is stable by definition (no pair exists).
-       Candidates = units v != seed with n(seed,v) > 0, grouped by n(seed,v) descending.
-       The anchor of the order is the SEED (fixed), not the current centre.
-  L-64 A group is inserted simultaneously and order-free: at every step all
-       (member, empty seat) pairs are scored, the best gain wins, ties branch.  Then the
-       result is searched to a fixed point with all tied best improving moves branched.
-  L-65 L is the minimal leg length with 6L+1 >= units; growing L prepends an empty
-       outer seat to every leg (edges unchanged, empty seats toward the outer end,
-       design L-09).
-  L-66 Budget (design L-05): at most 8 distinct tied branches at one tie point and 64
-       distinct states per growth step; beyond that BUDGET (typed, counts recorded).
+       and the swap of any two seats (empty seats included).  (kept)
+  L-61 arrangement identity = (centre, multiset of legs read outer -> inner, empty seats
+       kept).  Rotations only change orientation (the key is rotation-invariant).  This is
+       exactly decision (2).  (kept)  The concrete Cross used as a representative places
+       the legs in canonical sorted order with identity orientation (a label, not a winner).
+  L-63 growth starts from the seed alone (L=1); the order anchor is the SEED.  (kept; the
+       lone seed is no longer "stable by definition": its class is built like any other.)
+  L-65 L = minimal with 6L+1 >= units; growing L prepends an empty outer seat to every
+       leg.  (kept)
+  L-70 A STATE is a CLASS: a set of arrangements, all of one key, CLOSED under single moves
+       that keep the key (equal-key swaps), and containing no member from which a single
+       move improves the key.  "Stable" = that fixed point of the class.
+  L-71 Settling: from any set of start arrangements, level by level, every state moves by
+       ALL its best improving single moves (all tied best results kept); terminals of the
+       best key are taken; their closure under equal-key swaps is the class.  If any
+       member of the closure has an improving move, the results of those moves (from every
+       member) are climbed again, until the closure has none.  Different branches with the
+       same key end up in the same class (their union).
+  L-72 Growth adds the next share-group to EVERY member of the class (L-64 greedy insertion
+       with all tied placements kept), settles all results (L-71) and keeps the best-key
+       class.  The step never "breaks": stability is always reached; a step stops only by
+       BUDGET.
+  L-73 Budget (explicit, never a silent cut): max_class = most arrangements in one class,
+       max_states = most distinct states handled in one growth step (insertion + climbing
+       + closure), max_moves = most single moves tested / placements scored in one growth
+       step (a large cross costs more per state).  Exceeding either = BUDGET: the growth stops, the previous class is
+       restored (N-05) and Placement.stop == "budget"; the budget values are recorded in
+       every Placement and Step.
   L-67 Energy log record per placed unit: r0, E_Q, E_Q/r0 (None if r0 = 0), seat order
-       centre, AXES order, k ascending; plus the three-ratio verdict.
+       centre, AXES order, k ascending; plus the three-ratio verdict.  It is taken on the
+       representative of the class; observe_class() takes it on every member.
 Everything is exact (int / Fraction), deterministic, and hash-seed independent.
 """
 from __future__ import annotations
@@ -65,16 +77,49 @@ from verantyx.line3.geometry import (
 from verantyx.line3.space import TierSpace
 
 STABLE = "stable"
-TIED = "tied"
-PLATEAU = "plateau"
 BUDGET = "budget"
 
-MAX_TIED_BRANCHES = 8      # L-66
-MAX_STATES = 64            # L-66
+MAX_CLASS = 1000           # L-73
+MAX_STATES = 20000         # L-73
+MAX_MOVES = 400000         # L-73
 
 Score = Tuple[int, int]
 Flat = Tuple[Optional[str], ...]     # [centre, arm0 k=0..L-1, arm1 ..., ...]
 ZERO2: Score = (0, 0)
+
+
+@dataclass(frozen=True)
+class Budget:
+    """L-73: the explicit budget; recorded in every result that used it."""
+    max_class: int = MAX_CLASS
+    max_states: int = MAX_STATES
+    max_moves: int = MAX_MOVES
+
+    def to_json_obj(self) -> dict:
+        return {"max_class": self.max_class, "max_states": self.max_states,
+                "max_moves": self.max_moves}
+
+
+class _Over(Exception):
+    """Internal: a budget was exceeded (always surfaced as a BUDGET result)."""
+
+
+class _Work:
+    def __init__(self, budget: Budget) -> None:
+        self.budget = budget
+        self.n = 0
+        self.tested = 0
+
+    def tick(self, k: int = 1) -> None:
+        self.n += k
+        if self.n > self.budget.max_states:
+            raise _Over("max_states")
+
+    def moves(self, k: int) -> None:
+        """Cost in single moves / placements scored (a large cross costs more per state)."""
+        self.tested += k
+        if self.tested > self.budget.max_moves:
+            raise _Over("max_moves")
 
 
 # --------------------------------------------------------------------------
@@ -215,96 +260,112 @@ def _swapped(flat: Flat, L: int, i: int, j: int) -> Flat:
 
 
 # --------------------------------------------------------------------------
-# search: local search to fixed points, branching on tied best moves (I-05, L-62)
+# classes: settle to a fixed point, close under equal-key moves (L-70, L-71)
 # --------------------------------------------------------------------------
-@dataclass(frozen=True)
-class SearchResult:
-    status: str
-    terminals: Tuple[Flat, ...]            # distinct terminal states, canonical order
-    plateau: Tuple[Flat, ...]              # distinct equal-key different states one move away
-    explored: int                          # distinct states visited
-    moves_tested: int
-    score: Optional[Score]                 # key of the (single) terminal, else None
-
-
 def _flat_sort_key(f: Flat) -> Tuple[Tuple[str, ...], ...]:
     return (_leg_key(f),)
 
 
-def _plateau_of(w: Weights, flat: Flat, L: int) -> Tuple[List[Flat], int]:
+def _scan(w: Weights, s: Flat, L: int) -> Tuple[List[Flat], List[Flat], int]:
+    """All single seat swaps of `s`.  Returns (results of the best improving moves,
+    results of the equal-key moves giving a different arrangement, moves tested)."""
     lay = _layout(L)
-    out: Dict[Flat, None] = {}
+    best = ZERO2
+    best_moves: List[Tuple[int, int]] = []
+    equal: Dict[Flat, None] = {}
     tested = 0
     for i in range(lay.n):
         for j in range(i + 1, lay.n):
-            if flat[i] == flat[j]:
+            if s[i] == s[j]:
                 continue
             tested += 1
-            if _swap_delta(w, flat, lay, i, j) == ZERO2:
-                s = _swapped(flat, L, i, j)
-                if s != flat:
-                    out[s] = None
-    return sorted(out, key=_flat_sort_key), tested
+            d = _swap_delta(w, s, lay, i, j)
+            if d > best:
+                best, best_moves = d, [(i, j)]
+            elif d == best and d > ZERO2:
+                best_moves.append((i, j))
+            elif d == ZERO2:
+                t = _swapped(s, L, i, j)
+                if t != s:
+                    equal[t] = None
+    improved = sorted({_swapped(s, L, i, j): None for i, j in best_moves}, key=_flat_sort_key)
+    return improved, sorted(equal, key=_flat_sort_key), tested
 
 
-def _search(w: Weights, starts: Sequence[Flat], L: int, state_budget: int) -> SearchResult:
-    """All tied best improving moves are branched; terminals are fixed points."""
-    lay = _layout(L)
-    seen: Dict[Flat, None] = {}
-    stack = [canon(s, L) for s in starts]
-    terminals: Dict[Flat, None] = {}
-    tested = 0
-    while stack:
-        s = stack.pop()
-        if s in seen:
-            continue
-        seen[s] = None
-        if len(seen) > state_budget:
-            return SearchResult(BUDGET, (), (), len(seen), tested, None)
-        best = ZERO2
-        best_moves: List[Tuple[int, int]] = []
-        for i in range(lay.n):
-            for j in range(i + 1, lay.n):
-                if s[i] == s[j]:
+@dataclass(frozen=True)
+class ClassResult:
+    status: str                         # STABLE | BUDGET
+    members: Tuple[Flat, ...]           # the class, canonical sorted order
+    score: Optional[Score]
+    work: int                           # distinct states handled
+    moves_tested: int
+
+
+def _settle(w: Weights, starts: Iterable[Flat], L: int, work: _Work, budget: Budget) -> Tuple[Flat, ...]:
+    """L-71.  Raises _Over."""
+    cur = sorted({canon(s, L) for s in starts}, key=_flat_sort_key)
+    while True:
+        seen: Dict[Flat, None] = {}
+        terminals: Dict[Flat, None] = {}
+        level = cur
+        while level:
+            nxt: Dict[Flat, None] = {}
+            for s in level:
+                if s in seen:
                     continue
-                tested += 1
-                d = _swap_delta(w, s, lay, i, j)
-                if d > best:
-                    best, best_moves = d, [(i, j)]
-                elif d == best and d > ZERO2:
-                    best_moves.append((i, j))
-        if not best_moves:
-            terminals[s] = None
-            continue
-        nxt = {_swapped(s, L, i, j): None for i, j in best_moves}
-        if len(nxt) > MAX_TIED_BRANCHES:
-            return SearchResult(BUDGET, (), (), len(seen), tested, None)
-        stack.extend(sorted(nxt, key=_flat_sort_key, reverse=True))
-    terms = tuple(sorted(terminals, key=_flat_sort_key))
-    if len(terms) != 1:
-        return SearchResult(TIED, terms, (), len(seen), tested, None)
-    plat, t2 = _plateau_of(w, terms[0], L)
-    sc = score_flat(w, terms[0], L)
-    return SearchResult(PLATEAU if plat else STABLE, terms, tuple(plat), len(seen), tested + t2, sc)
+                seen[s] = None
+                work.tick()
+                improved, _eq, t = _scan(w, s, L)
+                work.moves(t)
+                if not improved:
+                    terminals[s] = None
+                else:
+                    for x in improved:
+                        if x not in seen:
+                            nxt[x] = None
+            level = sorted(nxt, key=_flat_sort_key)
+        kbest = max(score_flat(w, t, L) for t in terminals)
+        comp: Dict[Flat, None] = {t: None for t in terminals if score_flat(w, t, L) == kbest}
+        queue = sorted(comp, key=_flat_sort_key)
+        escapes: Dict[Flat, None] = {}
+        qi = 0
+        while qi < len(queue):
+            s = queue[qi]
+            qi += 1
+            work.tick()
+            improved, eq, t = _scan(w, s, L)
+            work.moves(t)
+            for x in improved:
+                escapes[x] = None
+            for x in eq:
+                if x not in comp:
+                    comp[x] = None
+                    queue.append(x)
+                    if len(comp) > budget.max_class:
+                        raise _Over("max_class")
+        if not escapes:
+            return tuple(sorted(comp, key=_flat_sort_key))
+        cur = sorted(escapes, key=_flat_sort_key)
 
 
-# --------------------------------------------------------------------------
-# group insertion (L-64)
-# --------------------------------------------------------------------------
-def _insert_group(w: Weights, flat: Flat, L: int, members: Sequence[str],
-                  state_budget: int) -> Optional[List[Flat]]:
-    """Insert all members order-free; returns the complete states or None on budget."""
+def _insert_group(w: Weights, bases: Sequence[Flat], L: int, members: Sequence[str],
+                  work: _Work, budget: Budget) -> List[Flat]:
+    """L-64/L-72: insert all members order-free into EVERY base arrangement; at every
+    step all (member, empty seat) pairs are scored, the best gain wins, ties branch (all
+    kept).  Raises _Over."""
     lay = _layout(L)
-    frontier: Dict[Tuple[Flat, Tuple[str, ...]], None] = {(flat, tuple(sorted(members))): None}
+    rem0 = tuple(sorted(members))
+    frontier: Dict[Tuple[Flat, Tuple[str, ...]], None] = {(b, rem0): None for b in bases}
     done: Dict[Flat, None] = {}
-    steps = 0
     while frontier:
         nxt: Dict[Tuple[Flat, Tuple[str, ...]], None] = {}
-        for st, rem in frontier:
+        for st, rem in sorted(frontier, key=lambda x: (_flat_sort_key(x[0]), x[1])):
             if not rem:
                 done[st] = None
                 continue
+            work.tick()
             empties = [e for e in range(lay.n) if st[e] is None]
+            work.moves(len(rem) * len(empties))
             best: Optional[Score] = None
             picks: List[Tuple[str, int]] = []
             for u in rem:
@@ -317,42 +378,37 @@ def _insert_group(w: Weights, flat: Flat, L: int, members: Sequence[str],
                         best, picks = g, [(u, e)]
                     elif g == best:
                         picks.append((u, e))
-            branches: Dict[Tuple[Flat, Tuple[str, ...]], None] = {}
             for u, e in picks:
                 f = list(st)
                 f[e] = u
-                r2 = tuple(x for x in rem if x != u)
-                branches[(canon(tuple(f), L), r2)] = None
-            if len(branches) > MAX_TIED_BRANCHES:
-                return None
-            for b in branches:
-                nxt[b] = None
-            steps += 1
+                nxt[(canon(tuple(f), L), tuple(x for x in rem if x != u))] = None
         frontier = nxt
-        if len(frontier) + len(done) > state_budget:
-            return None
+        if len(frontier) + len(done) > budget.max_states:
+            raise _Over("max_states")
     return sorted(done, key=_flat_sort_key)
 
 
-# --------------------------------------------------------------------------
-# classification of an arbitrary cross
-# --------------------------------------------------------------------------
+def settle_class(tier: TierSpace, starts: Sequence[Cross], budget: Budget = Budget(),
+                 w: Optional[Weights] = None) -> "ClassStability":
+    """Public: climb from the given crosses (all of one L) to fixed points and return the
+    best-key class closed under equal-key moves (L-70/L-71)."""
+    w = w or Weights(tier)
+    L = starts[0].L
+    work = _Work(budget)
+    try:
+        members = _settle(w, [from_cross(c) for c in starts], L, work, budget)
+    except _Over:
+        return ClassStability(BUDGET, (), None, work.n)
+    return ClassStability(STABLE, tuple(to_cross(m, L) for m in members),
+                          score_flat(w, members[0], L), work.n)
+
+
 @dataclass(frozen=True)
-class Stability:
+class ClassStability:
     status: str
-    terminals: Tuple[Cross, ...]
-    plateau: Tuple[Cross, ...]
-    explored: int
+    members: Tuple[Cross, ...]
     score: Optional[Score]
-
-
-def classify(tier: TierSpace, cross: Cross, state_budget: int = MAX_STATES) -> Stability:
-    """Search from `cross` to fixed points (all tied best moves branched) and type the
-    outcome (L-62).  A symmetric start is TIED/PLATEAU, never resolved by order."""
-    w = Weights(tier)
-    r = _search(w, [from_cross(cross)], cross.L, state_budget)
-    return Stability(r.status, tuple(to_cross(t, cross.L) for t in r.terminals),
-                     tuple(to_cross(t, cross.L) for t in r.plateau), r.explored, r.score)
+    explored: int
 
 
 # --------------------------------------------------------------------------
@@ -405,46 +461,102 @@ def verify_fixed_point(tier: TierSpace, cross: Cross) -> FixedPointReport:
                             plateau, rot_changed == 0 and improving == 0)
 
 
+@dataclass(frozen=True)
+class ClassReport:
+    size: int
+    one_key: bool                   # every member has the same key
+    members_fixed_points: bool      # no member has an improving single move (all moves)
+    closed: bool                    # every equal-key single move stays inside the class
+    swaps_tested: int
+    is_stable_class: bool
+
+
+def verify_class(tier: TierSpace, members: Sequence[Cross]) -> ClassReport:
+    """L-70: independent check (geometry's swap / edges, not the search's code) that a
+    class is one key, a fixed point at every member, and closed under equal-key moves."""
+    w = Weights(tier)
+    L = members[0].L
+    here = {canon(from_cross(c), L) for c in members}
+    keys = {cross_score(w, c) for c in members}
+    base = next(iter(keys))
+    fixed = True
+    closed = True
+    tested = 0
+    for c in members:
+        for p, q in moves_swap(L):
+            if c.get(p) == c.get(q):
+                continue
+            tested += 1
+            s2 = cross_score(w, swap(c, p, q))
+            if s2 > base:
+                fixed = False
+            elif s2 == base and canon(from_cross(swap(c, p, q)), L) not in here:
+                closed = False
+        if any(cross_score(w, rotate(c, r)) != base for r in moves_rotate()):
+            fixed = False
+    one = len(keys) == 1
+    return ClassReport(len(here), one, fixed, closed, tested, one and fixed and closed)
+
+
 # --------------------------------------------------------------------------
-# growth of one cross (M-1(b), N-05, N-09)
+# growth of one cross (M-1(b), N-05, N-09, L-72)
 # --------------------------------------------------------------------------
 @dataclass(frozen=True)
 class Step:
     share: int                       # n(seed, v) shared by every unit of the group
     units: Tuple[str, ...]           # the group (canonical sorted label order)
-    status: str                      # STABLE | TIED | PLATEAU | BUDGET
-    explored: int                    # distinct states visited for this step
+    status: str                      # STABLE | BUDGET
+    explored: int                    # distinct states handled for this step
     size_after: Optional[int]        # units in the cross if this step was kept
+    class_size: Optional[int]        # arrangements in the class after this step
+    reason: Optional[str] = None     # budget that was exceeded ("max_class" | "max_states")
 
 
 @dataclass(frozen=True)
 class Placement:
     seed: str
-    cross: Cross                     # the last stable state (N-05)
+    cross: Cross                     # representative of the class (first in canonical order; a label)
+    members: Tuple[Flat, ...]        # the class: all tied arrangements, one state (L-70)
     L: int
-    centre: Optional[str]            # what the search left in the centre seat (I-02)
+    centres: Tuple[Optional[str], ...]   # distinct centres over the class (I-02)
     size: int                        # units placed
-    capacity: int                    # N-09: size of the last stable state (== size)
+    capacity: int                    # N-09: size of the last stable class (== size)
     score: Score
-    stop: str                        # "exhausted" | "tied" | "plateau" | "budget"
-    broke_on: Optional[Step]         # the step that broke stability (restored away)
-    steps: Tuple[Step, ...]          # all attempted steps, kept ones then the failed one
+    stop: str                        # "exhausted" | "budget" | "max_groups"
+    broke_on: Optional[Step]         # the step that hit the budget (restored away)
+    steps: Tuple[Step, ...]
     candidates: int                  # units with n(seed,v) > 0
+    budget: Budget
+
+    @property
+    def centre(self) -> Optional[str]:
+        """The centre when every member has the same one, else None."""
+        return self.centres[0] if len(self.centres) == 1 else None
+
+    @property
+    def class_size(self) -> int:
+        return len(self.members)
 
     @property
     def centre_moved(self) -> bool:
-        return self.centre != self.seed
+        return self.centres != (self.seed,)
+
+    def crosses(self) -> Tuple[Cross, ...]:
+        return tuple(to_cross(m, self.L) for m in self.members)
 
     def to_json_obj(self) -> dict:
         def st(s: Optional[Step]):
             return None if s is None else {"share": s.share, "units": list(s.units),
                                            "status": s.status, "explored": s.explored,
-                                           "size_after": s.size_after}
-        return {"seed": self.seed, "L": self.L, "centre": self.centre, "size": self.size,
-                "capacity": self.capacity, "score": list(self.score), "stop": self.stop,
+                                           "size_after": s.size_after,
+                                           "class_size": s.class_size, "reason": s.reason}
+        return {"seed": self.seed, "L": self.L, "centres": list(self.centres),
+                "size": self.size, "capacity": self.capacity, "score": list(self.score),
+                "stop": self.stop, "class_size": self.class_size,
+                "members": [list(m) for m in self.members],
                 "cells": json.loads(self.cross.serialize().decode("ascii")),
                 "broke_on": st(self.broke_on), "steps": [st(s) for s in self.steps],
-                "candidates": self.candidates}
+                "candidates": self.candidates, "budget": self.budget.to_json_obj()}
 
     def to_bytes(self) -> bytes:
         return json.dumps(self.to_json_obj(), sort_keys=True, separators=(",", ":"),
@@ -460,14 +572,21 @@ def _groups(tier: TierSpace, seed: str) -> List[Tuple[int, Tuple[str, ...]]]:
     return [(c, tuple(sorted(by[c]))) for c in sorted(by, reverse=True)]
 
 
+
+
+def _centres(members: Sequence[Flat]) -> Tuple[Optional[str], ...]:
+    return tuple(sorted({m[0] for m in members}, key=lambda c: ("", "") if c is None else (c, "x")))
+
+
 def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
-                max_groups: Optional[int] = None) -> Placement:
-    """Build the stable arrangement around `seed` by search, growing group by group."""
+                max_groups: Optional[int] = None, budget: Budget = Budget()) -> Placement:
+    """Build the stable CLASS around `seed` by search, growing group by group (L-72)."""
     if seed not in tier.postings:
         raise KeyError(seed)
     w = w or Weights(tier)
     L = 1
-    state: Flat = canon((seed,) + (None,) * 6, 1)          # L-63
+    work0 = _Work(budget)
+    state = _settle(w, [canon((seed,) + (None,) * 6, 1)], 1, work0, budget)   # L-63, L-70
     size = 1
     groups = _groups(tier, seed)
     steps: List[Step] = []
@@ -477,37 +596,36 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
             stop = "max_groups"
             break
         L2 = min_L(size + len(members))
-        base = extend(state, L, L2) if L2 > L else state
-        starts = _insert_group(w, base, L2, members, MAX_STATES)
-        if starts is None:
-            res = SearchResult(BUDGET, (), (), 0, 0, None)
-        else:
-            res = _search(w, starts, L2, MAX_STATES)
-        if res.status == STABLE:
-            state, L, size = res.terminals[0], L2, size + len(members)
-            steps.append(Step(share, members, STABLE, res.explored, size))
-        else:
-            broke = Step(share, members, res.status, res.explored, None)
+        bases = [extend(s, L, L2) if L2 > L else s for s in state]
+        work = _Work(budget)
+        try:
+            starts = _insert_group(w, bases, L2, members, work, budget)
+            new = _settle(w, starts, L2, work, budget)
+        except _Over as e:
+            broke = Step(share, members, BUDGET, work.n, None, None, str(e))
             steps.append(broke)
-            stop = res.status                               # N-05: restore `state`
+            stop = BUDGET                                    # N-05: restore `state`
             break
-    cross = to_cross(state, L)
-    return Placement(seed, cross, L, state[0], size, size, score_flat(w, state, L),
-                     stop, broke, tuple(steps), sum(len(g) for _, g in groups))
+        state, L, size = new, L2, size + len(members)
+        steps.append(Step(share, members, STABLE, work.n, size, len(new)))
+    return Placement(seed, to_cross(state[0], L), state, L, _centres(state), size, size,
+                     score_flat(w, state[0], L), stop, broke, tuple(steps),
+                     sum(len(g) for _, g in groups), budget)
 
 
 class Placer:
     """On-demand placement with a cache (L-07): results never depend on the cache."""
 
-    def __init__(self, tier: TierSpace) -> None:
+    def __init__(self, tier: TierSpace, budget: Budget = Budget()) -> None:
         self.tier = tier
+        self.budget = budget
         self.w = Weights(tier)
         self._done: Dict[str, Placement] = {}
 
     def cross_for(self, seed: str) -> Placement:
         p = self._done.get(seed)
         if p is None:
-            p = self._done[seed] = build_cross(self.tier, seed, self.w)
+            p = self._done[seed] = build_cross(self.tier, seed, self.w, budget=self.budget)
         return p
 
     def precompute_all(self, seeds: Optional[Iterable[str]] = None) -> Dict[str, Placement]:
@@ -571,3 +689,11 @@ def energy_log(tier: TierSpace, cross: Cross, query: Iterable[str]) -> EnergyLog
 def observe(tier: TierSpace, placement: Placement, queries: Iterable[Iterable[str]]) -> List[EnergyLog]:
     """N-02: the energy changes of the stable arrangement under each query, in query order."""
     return [energy_log(tier, placement.cross, q) for q in queries]
+
+
+def observe_class(tier: TierSpace, placement: Placement,
+                  queries: Iterable[Iterable[str]]) -> List[List[EnergyLog]]:
+    """L-67: the energy changes under each query on EVERY member of the class
+    (members in canonical order, then query order)."""
+    qs = [tuple(q) for q in queries]
+    return [[energy_log(tier, c, q) for q in qs] for c in placement.crosses()]

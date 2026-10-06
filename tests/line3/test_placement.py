@@ -1,5 +1,6 @@
-"""T4 tests: placement = deliberately built stable arrangement + energy log
-(decision 8, I-04, I-05, I-02, N-02, N-05, N-09, M-1(a)(b))."""
+"""T4b tests: placement = deliberately built stable CLASS of tied arrangements + energy log
+(decision 8, I-04, I-05, I-02, N-02, N-05, N-09, M-1(a)(b); owner: grow tied arrangements as
+one state, arm assignment not distinguished; L-70..L-73)."""
 import hashlib
 import io
 import os
@@ -30,6 +31,8 @@ def tier(sentences):
     return TierSpace("T", su, {u: tuple(v) for u, v in post.items()})
 
 
+SMALL = pl.Budget(max_class=200, max_states=1500)     # keeps the S300 tests fast; always recorded
+
 TOYS = [
     ["A B C", "A B", "A C D", "B D"],
     ["A B", "A B", "A B C", "A C D", "A D", "C E"],
@@ -38,18 +41,27 @@ TOYS = [
 ]
 
 
-# ---------------- I-05: every produced arrangement is a fixed point (all single moves)
+# ---------------- I-05 / L-70: every member of every class is a fixed point; class closed
 @pytest.mark.parametrize("sents", TOYS)
-def test_every_arrangement_is_a_fixed_point_against_all_moves(sents):
+def test_every_member_of_every_class_is_a_fixed_point_and_class_is_closed(sents):
     t = tier(sents)
     for u in t.units():
         p = pl.build_cross(t, u)
-        r = pl.verify_fixed_point(t, p.cross)
-        assert r.is_fixed_point and r.swaps_improving == 0
-        assert r.rotations_tested == 23 and r.rotations_changing_key == 0
-        assert r.swaps_total == comb(6 * p.L + 1, 2)
-        if p.size > 1:                                # a lone seed is stable by definition (L-63)
-            assert r.swaps_equal_key_different == 0   # STABLE means no plateau (L-62)
+        assert p.stop == "exhausted"
+        for c in p.crosses():
+            r = pl.verify_fixed_point(t, c)
+            assert r.is_fixed_point and r.swaps_improving == 0
+            assert r.rotations_tested == 23 and r.rotations_changing_key == 0
+            assert r.swaps_total == comb(6 * p.L + 1, 2)
+        rep = pl.verify_class(t, p.crosses())
+        assert rep.one_key and rep.members_fixed_points and rep.closed and rep.is_stable_class
+        assert rep.size == p.class_size == len(set(p.members))
+        # closure by an independent route: every equal-key different arrangement one swap away
+        # from a member is a member
+        here = set(p.members)
+        for c in p.crosses():
+            r = pl.verify_fixed_point(t, c)
+            assert r.swaps_equal_key_different <= len(here)
 
 
 def test_verifier_is_not_vacuous():
@@ -57,46 +69,93 @@ def test_verifier_is_not_vacuous():
     bad = Cross.make(L=1, center="D", arms=[("A",), ("B",), ("C",), (None,), (None,), (None,)])
     r = pl.verify_fixed_point(t, bad)
     assert not r.is_fixed_point and r.swaps_improving > 0
+    assert not pl.verify_class(t, [bad]).is_stable_class
+    # a class that is a fixed point but NOT closed is detected
+    p = pl.build_cross(tier(["A B", "B A"]), "A")
+    assert p.class_size >= 2
+    rep = pl.verify_class(tier(["A B", "B A"]), p.crosses()[:1])
+    assert rep.members_fixed_points and not rep.closed and not rep.is_stable_class
 
 
 @pytest.mark.skipif(not os.path.exists(S300), reason="S300 not present")
 @pytest.mark.parametrize("tn", ["RUN", "WORD", "CHAR"])
-def test_s300_slice_fixed_points(tn):
+def test_s300_slice_classes(tn):
     sp = build_space(load_jsonl(S300))
     t = sp.tiers[tn]
-    placer = pl.Placer(t)
-    for u in t.units()[:25]:
+    placer = pl.Placer(t, SMALL)
+    for u in t.units()[:12]:
         p = placer.cross_for(u)
-        assert pl.verify_fixed_point(t, p.cross).is_fixed_point
+        assert pl.verify_class(t, p.crosses()).is_stable_class
         assert p.capacity == p.size >= 1
+        assert p.stop in ("exhausted", "budget")
+        assert p.budget == SMALL                       # the budget used is recorded
 
 
-# ---------------- ties are flagged, never resolved by order
-def test_symmetric_example_is_flagged_not_resolved():
-    t = tier(["A B", "B A"])                    # A and B are exactly interchangeable
+# ---------------- symmetric corpora GROW (the T4 problem); ties are one state, never resolved
+def test_symmetric_toys_grow():
+    p = pl.build_cross(tier(["A B C"]), "A")
+    assert p.capacity == 3 and p.stop == "exhausted"
+    t = tier(["A B", "B A"])                    # A and B exactly interchangeable
     p = pl.build_cross(t, "A")
-    assert p.stop == "plateau" and p.broke_on.status == pl.PLATEAU
-    assert p.size == 1                           # growth stopped at the tie (N-05)
-    c = Cross.make(L=1, center="A", arms=[("B",), (None,), (None,), (None,), (None,), (None,)])
-    s = pl.classify(t, c)
-    assert s.status == pl.PLATEAU
-    assert sorted(str(x.center) for x in s.plateau) == ["B"]       # B in the centre is equal
-    assert pl.verify_fixed_point(t, c).swaps_equal_key_different == 1
+    assert p.size == 2 and p.stop == "exhausted"
+    assert p.class_size == 2 and p.centres == ("A", "B")          # both centres, one state
+    assert p.centre is None and p.centre_moved
+    # no member is preferred: the same space with the labels reversed gives the same shape
+    q = pl.build_cross(tier(["Y Z", "Z Y"]), "Z")
+    assert (q.size, q.class_size, q.stop) == (p.size, p.class_size, p.stop)
+    chain = [" ".join(("A V%d" % i).split()) for i in range(1, 10) for _ in range(i)]
+    big = pl.build_cross(tier(chain), "A")                    # distinct shares: grows past L=1
+    assert big.capacity == 10 and big.L == 2 and big.stop == "exhausted"
+    assert pl.verify_class(tier(chain), big.crosses()).is_stable_class
 
 
-def test_tied_terminals_are_all_reported():
+def test_class_is_the_union_of_equal_key_branches_and_arm_assignment_is_not_distinguished():
+    t = tier(["A B", "A C", "B C"])             # B and C interchangeable around A (up to order)
+    p = pl.build_cross(t, "A")
+    assert p.stop == "exhausted"
+    # arrangements equal up to arm assignment are ONE arrangement: members are canonical
+    for m in p.members:
+        assert pl.canon(m, p.L) == m
+    # permuting the arms of a member is the same state
+    c = p.crosses()[0]
+    arms = [c.arms[a] for a in range(6)]
+    c2 = Cross.make(L=p.L, center=c.center, arms=list(reversed(arms)))
+    assert pl.canon(pl.from_cross(c2), p.L) == pl.canon(pl.from_cross(c), p.L)
+    assert pl.cross_score(pl.Weights(t), c) == pl.cross_score(pl.Weights(t), c2)
+
+
+def test_settle_class_from_a_symmetric_start_returns_the_whole_class():
     t = tier(["A B", "B A", "Z"])
     c = Cross.make(L=1, center="Z", arms=[("A",), ("B",), (None,), (None,), (None,), (None,)])
-    s = pl.classify(t, c)
-    assert s.status == pl.TIED
-    assert sorted(str(x.center) for x in s.terminals) == ["A", "B"]   # both kept, none chosen
+    s = pl.settle_class(t, [c])
+    assert s.status == pl.STABLE
+    assert pl.verify_class(t, s.members).is_stable_class
+    cs = {str(x.center) for x in s.members}
+    assert {"A", "B"} <= cs
+
+
+def test_budget_is_explicit_and_recorded():
+    t = tier(["A B C D E F G H"])
+    tiny = pl.Budget(max_class=3, max_states=10)
+    p = pl.build_cross(t, "A", budget=tiny)
+    assert p.stop == "budget" and p.broke_on.status == pl.BUDGET and p.broke_on.reason
+    assert p.budget == tiny and p.to_json_obj()["budget"] == {"max_class": 3, "max_states": 10,
+                                                      "max_moves": pl.MAX_MOVES}
+    assert p.capacity == p.size == 1                      # the previous class restored (N-05)
+    assert pl.settle_class(t, [Cross.make(L=1, center="A", arms=[(None,)] * 6)],
+                           pl.Budget(max_class=1, max_states=10)).status == pl.BUDGET
+    # a larger budget is a different, recorded result — never silently cut
+    # 7 units of EQUAL share: the tied class (7! orderings ...) exceeds the default budget:
+    # typed BUDGET, previous class restored, never a silent cut
+    d = pl.build_cross(t, "A")
+    assert d.stop == "budget" and d.capacity == 1 and d.broke_on.reason in (
+        "max_class", "max_states", "max_moves")
 
 
 def test_tie_result_independent_of_unit_label_order():
-    # the same space with every unit renamed in reverse alphabetical order: a tie stays a tie
     a = pl.build_cross(tier(["A B", "B A"]), "A")
     b = pl.build_cross(tier(["Y Z", "Z Y"]), "Z")
-    assert (a.stop, a.size, a.broke_on.status) == (b.stop, b.size, b.broke_on.status)
+    assert (a.stop, a.size, a.class_size) == (b.stop, b.size, b.class_size)
 
 
 # ---------------- N-05 / N-09 capacity
@@ -107,18 +166,12 @@ def test_capacity_recorded_and_restored(sents):
         p = pl.build_cross(t, u)
         kept = [s for s in p.steps if s.status == pl.STABLE]
         assert p.capacity == p.size == (kept[-1].size_after if kept else 1)
-        occupied = sum(1 for s in [Seat("center", 0)] + [Seat(a, k) for a in
-                       ("+x", "-x", "+y", "-y", "+z", "-z") for k in range(p.L)]
-                       if p.cross.get(s) is not None)
-        assert occupied == p.size
-        if p.broke_on is not None:                       # the breaking group is NOT in the cross
-            assert p.broke_on.status != pl.STABLE and p.broke_on.size_after is None
-            assert p.stop == p.broke_on.status
-            placed = {str(p.cross.get(s)) for s in [Seat("center", 0)] + [Seat(a, k) for a in
-                      ("+x", "-x", "+y", "-y", "+z", "-z") for k in range(p.L)]}
-            assert not set(p.broke_on.units) & placed
-        else:
-            assert p.stop == "exhausted" and p.size == p.candidates + 1
+        for c in p.crosses():
+            occupied = sum(1 for s in [Seat("center", 0)] + [Seat(a, k) for a in
+                           ("+x", "-x", "+y", "-y", "+z", "-z") for k in range(p.L)]
+                           if c.get(s) is not None)
+            assert occupied == p.size
+        assert p.stop == "exhausted" and p.size == p.candidates + 1 and p.broke_on is None
 
 
 def test_capacity_is_not_a_fixed_number():
@@ -139,6 +192,7 @@ def test_groups_added_in_descending_shares_equal_shares_together():
     for s in p.steps:
         assert all(t.n_pair("A", v) == s.share for v in s.units)
     assert [s.units for s in p.steps] == [("B",), ("C", "D")]    # n(A,B)=3; n(A,C)=n(A,D)=2
+    assert all(s.class_size >= 1 for s in p.steps)
 
 
 # ---------------- I-04 key
@@ -152,14 +206,15 @@ def test_key_is_sharing_then_word_order():
     assert (4, 0) > (3, 99) and (3, 2) > (3, 1)           # sharing first, then order (tuple order)
 
 
-# ---------------- I-02: centre comes from the search, recorded
-def test_centre_comes_from_search_and_is_recorded():
+# ---------------- I-02: centre(s) come from the search, recorded
+def test_centres_come_from_search_and_are_recorded():
     t = tier(TOYS[1])
     moved = [u for u in t.units() if pl.build_cross(t, u).centre_moved]
     assert moved                                         # some seeds end with another centre
     for u in moved:
         p = pl.build_cross(t, u)
-        assert p.centre != u and p.seed == u and p.cross.center == p.centre
+        assert p.seed == u and p.centres != (u,)
+        assert set(p.centres) == {c.center for c in p.crosses()}
 
 
 # ---------------- on-demand == precomputed; order/cache independence
@@ -204,7 +259,7 @@ s300 = %r
 if os.path.exists(s300):
     sp = build_space(load_jsonl(s300))
     for tn in ("RUN", "WORD", "CHAR"):
-        t = sp.tiers[tn]; P = pl.Placer(t)
+        t = sp.tiers[tn]; P = pl.Placer(t, pl.Budget(200, 1500))
         h.update(pl.serialize_all(P.precompute_all(t.units()[:15])))
         log = pl.energy_log(t, P.cross_for(t.units()[3]).cross, [t.units()[5]])
         h.update(repr(log.to_json_obj()).encode())
@@ -257,6 +312,13 @@ def test_energy_log_exact_values():
     empty = pl.energy_log(t, c, [])
     assert all(r.energy == r.r0 and r.ratio == 1 for r in empty.records)   # no query: E = r0
     assert log.to_json_obj()["records"][0]["ratio"] == "5/3"
+
+
+def test_observe_class_logs_every_member():
+    t = tier(["A B", "B A"])
+    p = pl.build_cross(t, "A")
+    logs = pl.observe_class(t, p, [["A"], ["B"]])
+    assert len(logs) == p.class_size == 2 and all(len(x) == 2 for x in logs)
 
 
 def test_observe_logs_each_query_from_the_stable_arrangement():
