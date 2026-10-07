@@ -50,7 +50,7 @@ LAYER_FORMAT = "line3.layers.v1"
 VARIANTS = ("A", "B")                       # I-20: A = initial query + the lower answer, B = the lower answer only
 GRANULARITIES = ("same", "compress")        # M-2
 DOWN_QUERIES = ("question", "seed+question")  # L-252: what the lower cross is read under
-CANDIDATES = ("path", "bag")                # L-250: what an upper-layer candidate shows (path words read under the question / N-19 bag)
+CANDIDATES = ("path", "bag", "stable")       # L-250: what an upper-layer candidate shows (path words read under the question / N-19 bag); L-340: "stable" = the path words of the last stable state
 FEEDBACKS = ("none", "down")                # N-12 re-read: see L-239
 UNKNOWN_NOTHING_TO_PASS = "UNKNOWN_NOTHING_TO_PASS"
 UNKNOWN_NO_FIXED_POINT_LAYERS = "UNKNOWN_NO_FIXED_POINT_LAYERS"
@@ -304,6 +304,8 @@ class LayerEntry:
     word_sources: Optional[Tuple[Tuple[str, Tuple[int, ...]], ...]] = None
     path_from: Tuple[dict, ...] = ()
     path_answers: Tuple[Tuple[int, ro.PathAnswer], ...] = field(default=(), compare=False, repr=False)   # (layer, read) for the trace
+    stable: bool = False                   # L-340: the words are the path words of restored / last stable states
+    restored: Tuple[Tuple[int, "cy.TierResult"], ...] = field(default=(), compare=False, repr=False)    # (layer, read at the last stable step) for the fixed-point check
 
     def key(self) -> Tuple[str, int, str, Tuple[str, ...], Tuple[str, ...]]:
         return (self.tier, self.layer, self.variant, self.words, self.bundles)
@@ -313,7 +315,7 @@ class LayerEntry:
              "bundles": list(self.bundles), "centres": list(self.centres), "stability": _fs(self.stability),
              "arrangements": self.arrangements, "source_sids": list(self.source_sids)}
         if self.word_sources is not None:
-            o["candidate"] = "path"
+            o["candidate"] = "stable" if self.stable else "path"
             o["word_sources"] = {w: list(ss) for w, ss in self.word_sources}
             o["path_from"] = [dict(d) for d in self.path_from]
         return o
@@ -347,12 +349,15 @@ class LayerRun:
     up_bundles: Optional[Tuple[str, ...]] = None     # L-251: the bundles of the answer passed to the next layer (path mode)
     candidate: str = "bag"
     without_path_words: int = 0                       # L-251: upper entries from whose lower crosses the question read no path
+    boundaries: Tuple[dict, ...] = ()                 # L-342: per bundle read down (stable mode): the boundary record
 
     def to_json_obj(self) -> dict:
         o = self._json()
-        if self.candidate == "path":
-            o["candidate"] = "path"
+        if self.candidate in ("path", "stable"):
+            o["candidate"] = self.candidate
             o["entries_without_path_words"] = self.without_path_words
+        if self.candidate == "stable":
+            o["boundaries"] = [dict(d) for d in self.boundaries]
         return o
 
     def _json(self) -> dict:
@@ -446,6 +451,7 @@ class _Acc:
         self.words: Dict[str, set] = {}
         self.reads: List[dict] = []
         self.answers: List[Tuple[int, ro.PathAnswer]] = []
+        self.restored: List[Tuple[int, "cy.TierResult"]] = []     # L-340 (stable mode)
         self.seen: set = set()
 
 
@@ -495,10 +501,127 @@ def down_read(stack: "LayerStack", chain: Sequence[Layer], k: int, b: str, ul: S
 
 
 # --------------------------------------------------------------------------
+# T8c (L-340..): candidate="stable".  The question is applied to a lower cross UNIT BY UNIT (prefixes of the units
+# the question gives, exactly the units and energy `down_read` applies at once: the first 6 attach to sections, all
+# carry energy).  The boundary = the last prefix at which every member of the cross still settles to a fixed point and the
+# first prefix at which one does not.  The state of the last stable prefix is the backup; when the cross becomes
+# unstable it is RESTORED and read (paths, centre) instead of the unstable full-question read.
+# (owner 2026-10-07: "安定状態と不安定な状態の境目を記録しておいて不安定状態になった場合に安定状態までバックアップ的なものから復元して
+#  そこから束ねて安定状態のまま束ねる")
+# --------------------------------------------------------------------------
+def _prefix_read(space, facts, plc, X: str, units: Tuple[str, ...], bounds: LayerBounds, budget: cy.QueryBudget) -> cy.TierResult:
+    plan = cy.ReadPlan((("under_the_bundle", (X,)),), (X,), (), 1, None, False, 0, None, 0, 1)
+    return cy._ask_tier_once(space, "", plc, units=units, facts=facts, budget=budget, scope="whole", unit_filter=None,
+                             plan_override=plan, member_cap=bounds.members, observe=False, lazy_members=True)
+
+
+def _is_stable_read(res: cy.TierResult) -> bool:
+    """Stable = every member read reached a fixed point (none is NOFIX) and there is at least one member."""
+    return res.members_read > 0 and not res.stack_points
+
+
+def backup_digest(res: Optional[cy.TierResult], plc, X: str, bounds: LayerBounds) -> dict:
+    """The backup = the exact end states (fixed points) of every member at the restored step; at step 0 (no unit applied)
+    the members of the stored cross itself.  Recorded as counts and a sha256 of the exact flats (labels, no float)."""
+    import hashlib
+    if res is None:
+        flats, _ = cy.members_of(plc.cross_for(X), bounds.members, True)
+        rows = [[list(f)] for f in flats]
+        kind = "stored_cross"
+    else:
+        rows = [[list(e.flat) for e in m.settled.ends] for sr in res.reads for m in sr.members]
+        kind = "fixed_points"
+    blob = json.dumps(rows, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    return {"kind": kind, "members": len(rows), "states": sum(len(r) for r in rows), "sha256": hashlib.sha256(blob).hexdigest()}
+
+
+def stable_boundary(space, facts, plc, X: str, units: Tuple[str, ...], bounds: LayerBounds, budget: cy.QueryBudget,
+                    cache: dict) -> dict:
+    """Apply `units` one at a time to the cross of X; stop at the first prefix that is not stable.  Pure (cached)."""
+    key = ("stable", X, units, bounds.members, repr(budget))
+    hit = cache.get(key)
+    if hit is not None:
+        return hit
+    n = len(units)
+    last, first_bad, res_last = 0, None, None
+    for j in range(1, n + 1):
+        res = _prefix_read(space, facts, plc, X, units[:j], bounds, budget)
+        if _is_stable_read(res):
+            last, res_last = j, res
+        else:
+            first_bad = j
+            break
+    ans = ro.read_out_result(space, res_last, facts) if res_last is not None and res_last.candidates else None
+    rec = {"res": res_last, "ans": ans, "mem": (res_last.members_read, res_last.members_total) if res_last is not None else (0, 0),
+           "boundary": {"query_units": n, "last_stable_step": last, "first_unstable_step": first_bad,
+                        "unstable_unit": units[first_bad - 1] if first_bad is not None else None,
+                        "unstable_unit_attached": (first_bad <= 6) if first_bad is not None else None,
+                        "restored": first_bad is not None,
+                        "read_at_step": last, "backup": backup_digest(res_last, plc, X, bounds)}}
+    if len(cache) > 4000:
+        cache.clear()
+    cache[key] = rec
+    return rec
+
+
+def down_read_stable(stack: "LayerStack", chain: Sequence[Layer], k: int, b: str, ul: Sequence[Tuple[str, ...]],
+                     bounds: LayerBounds, budget: cy.QueryBudget, acc: _Acc, down_query: str = "question") -> None:
+    """As `down_read`, but the lower cross of the bundle b is read at its LAST STABLE step of the question (L-340..L-343)."""
+    j = k - 1
+    X = _strip(b)
+    if j == 0:
+        space, facts, plc, cache = stack.base, stack.facts, stack.store, stack._down
+    else:
+        lay = chain[j - 1]
+        space, facts, plc, cache = lay.space, lay.facts, lay, lay._down
+    units = tuple(ul[j])
+    if down_query == "seed+question":
+        units = (X,) + tuple(u for u in units if u != X)
+    rec = stable_boundary(space, facts, plc, X, units, bounds, budget, cache)
+    ans = rec["ans"]
+    if (j, X) not in acc.seen:
+        acc.seen.add((j, X))
+        acc.reads.append({"bundle": b, "layer": j, "seed": X, "units": len(units),
+                          "listed": len(ans.entries) if ans is not None else 0,
+                          "members_read": rec["mem"][0], "members_total": rec["mem"][1],
+                          "words": sorted({w for e in ans.entries for w in e.words}) if ans is not None else [],
+                          "boundary": rec["boundary"]})
+        if ans is not None:
+            acc.answers.append((j, ans))
+        if rec["res"] is not None:
+            acc.restored.append((j, rec["res"]))
+    if ans is None:
+        return
+    for e in ans.entries:
+        for w in e.words:
+            if j == 0:
+                acc.words.setdefault(w, set()).update(ro.entry_word_sources(e, w))
+            else:
+                down_read_stable(stack, chain, j, w, ul, bounds, budget, acc, down_query)
+
+
+def check_fixed_points(facts: cy.TierFacts, res: cy.TierResult) -> Tuple[int, List[str]]:
+    """Independent of `settle`: with a fresh Reader, every member read is not NOFIX and no single move improves any of its
+    end states (I-05).  Returns (end states checked, failures)."""
+    reader = cy.Reader(facts, res.ctx.attached, res.ctx.energy_units)
+    n, fails = 0, []
+    for sr in res.reads:
+        for m in sr.members:
+            if m.kind == cy.NOFIX or not m.settled.ends:
+                fails.append("member %d of %s has no fixed point" % (m.member, sr.seed))
+                continue
+            for e in m.settled.ends:
+                n += 1
+                if cy._scan(reader, e.flat, cy._L_of(e.flat))[5]:
+                    fails.append("an end state of member %d of %s is not a fixed point" % (m.member, sr.seed))
+    return n, fails
+
+
+# --------------------------------------------------------------------------
 # trace through the layers (100%)
 # --------------------------------------------------------------------------
 def trace_run(tier_space: TierSpace, chain: Sequence[Layer], layer: Layer, answer: Optional[ro.PathAnswer],
-              entries: Sequence[LayerEntry], store) -> dict:
+              entries: Sequence[LayerEntry], store, facts0: Optional[cy.TierFacts] = None) -> dict:
     """Every word of every entry traces (a) at bundle level: tc.trace_answer on the layer's space (seat, edge sentence),
     (b) down: the base word belongs to a bundle of the entry, which holds it through a lower unit of every layer under it,
     down to a unit placed in the stable state of a base seed that shares a sentence with it (or is it)."""
@@ -512,7 +635,16 @@ def trace_run(tier_space: TierSpace, chain: Sequence[Layer], layer: Layer, answe
         failures.extend("bundle-level: " + f for f in rep.failures)
     post = tier_space.postings
     seen_reads: set = set()
+    fp_checked = 0
+    seen_res: set = set()
     for e in entries:
+        for j, res in e.restored:                     # L-343: every restored state is a fixed point for all its members
+            if id(res) in seen_res:
+                continue
+            seen_res.add(id(res))
+            n_fp, ff = check_fixed_points(chain[j - 1].facts if j else (facts0 or cy.TierFacts(tier_space)), res)
+            fp_checked += n_fp
+            failures.extend("restored state (layer %d): %s" % (j, f) for f in ff)
         for j, pa in e.path_answers:                  # L-251: every lower read an entry's words came from is traced too
             if id(pa) in seen_reads:
                 continue
@@ -543,8 +675,12 @@ def trace_run(tier_space: TierSpace, chain: Sequence[Layer], layer: Layer, answe
             else:
                 failures.append("word %r of an entry of layer %d has no path down to a base state" % (w, e.layer))
     f = Fraction(traced, checked) if checked else Fraction(1)
-    return {"words_checked": checked, "words_traced": traced, "fraction": _fs(f), "ok": f == 1 and not failures,
-            "failures": failures[:5]}
+    out = {"words_checked": checked, "words_traced": traced, "fraction": _fs(f), "ok": f == 1 and not failures,
+           "failures": failures[:5]}
+    if seen_res:
+        out["restored_states_checked"] = len(seen_res)
+        out["fixed_point_end_states_checked"] = fp_checked
+    return out
 
 
 def _descends(chain: Sequence[Layer], k: int, b: str, w: str, tier_space: TierSpace, store) -> bool:
@@ -592,9 +728,11 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
     entries: List[LayerEntry] = []
     up_bundles: Optional[Tuple[str, ...]] = None
     without = 0
-    if ans is not None and candidate == "path":
+    bnds: List[dict] = []
+    if ans is not None and candidate in ("path", "stable"):
         if stack is None:
             raise ValueError("candidate='path' needs the layer stack")
+        reader_fn = down_read_stable if candidate == "stable" else down_read
         ul: List[Tuple[str, ...]] = [()] * layer.k            # ul[j] = the question's units in layer j (0 = base words)
         cur = units
         for j in range(layer.k - 1, -1, -1):
@@ -607,7 +745,10 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
                 order.setdefault(b, None)
             acc = _Acc()
             for b in e.words:
-                down_read(stack, chain, layer.k, b, ul, bounds, budget, acc, down_query)
+                reader_fn(stack, chain, layer.k, b, ul, bounds, budget, acc, down_query)
+            for d in (acc.reads if candidate == "stable" else ()):
+                if d not in bnds:
+                    bnds.append(d)
             if not acc.words:
                 without += 1
                 continue
@@ -616,7 +757,7 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
                             tuple(sorted({_centre_word(layer, c) for c in e.centres})), e.stability, e.count,
                             tuple(sorted({sid for ss in acc.words.values() for sid in ss})),
                             tuple((w, tuple(sorted(acc.words[w]))) for w in ws), tuple(acc.reads),
-                            tuple(acc.answers))
+                            tuple(acc.answers), candidate == "stable", tuple(acc.restored))
             grp.setdefault(ws, []).append(le)
         up_bundles = tuple(order)
         for ws in sorted(grp):                       # entries whose path-word SET is the same are one entry (L-235)
@@ -626,6 +767,7 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
                 for w, ss in x.word_sources:
                     src[w].update(ss)
             pf: List[dict] = []
+            rs: List[Tuple[int, cy.TierResult]] = []
             pa: List[Tuple[int, ro.PathAnswer]] = []
             for x in g:
                 for d in x.path_from:
@@ -634,10 +776,14 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
                 for it in x.path_answers:
                     if not any(it[1] is y[1] for y in pa):
                         pa.append(it)
+                for it in x.restored:
+                    if not any(it[1] is y[1] for y in rs):
+                        rs.append(it)
             entries.append(LayerEntry(tier, layer.k, variant, ws, tuple(sorted({b for x in g for b in x.bundles})),
                                       tuple(sorted({c for x in g for c in x.centres})), max(x.stability for x in g),
                                       sum(x.arrangements for x in g), tuple(sorted({s_ for ss in src.values() for s_ in ss})),
-                                      tuple((w, tuple(sorted(src[w]))) for w in ws), tuple(pf), tuple(pa)))
+                                      tuple((w, tuple(sorted(src[w]))) for w in ws), tuple(pf), tuple(pa),
+                                      candidate == "stable", tuple(rs)))
     elif ans is not None:
         grp = {}
         for e in ans.entries:
@@ -652,11 +798,12 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
                                       sum(x.arrangements for x in g), tuple(sorted({s for x in g for s in x.source_sids}))))
     full = tuple(sorted(s for s in read if layer.cross_for(s).stop == "budget"))
     verdict = ans.verdict if ans is not None else res.verdict
-    tr = trace_run(tier_space, list(chain) + [layer], layer, ans, entries, store)
+    tr = trace_run(tier_space, list(chain) + [layer], layer, ans, entries, store, stack.facts if stack is not None else None)
     return LayerRun(tier, variant, layer.k, granularity, layer.n_bundles(), units, tuple(passed_words), passed_left,
                     tuple(sorted(read)), left, left > 0 or res.members_read < res.members_total, verdict,
                     res.members_read, res.members_total, res, ans, tuple(entries), full,
-                    len(res.stack_points), False, tr, (time.monotonic_ns() - t0) // 1000000, up_bundles, candidate, without)
+                    len(res.stack_points), False, tr, (time.monotonic_ns() - t0) // 1000000, up_bundles, candidate, without,
+                    tuple(bnds))
 
 
 def _variant_chain(stack: LayerStack, res0: cy.TierResult, ans0: Optional[ro.PathAnswer], variant: str,
@@ -960,7 +1107,7 @@ def ask_layered(index: "A.Index", question: str, tiers: Optional[Sequence[str]] 
 
         out.append(run_layers(st, o.result, o.answer, opts, budget=budget, reask=reask))
     extra: Dict[int, tuple] = {}
-    if opts.candidate == "path":
+    if opts.candidate in ("path", "stable"):
         for tl in out:
             for e in tl.entries:
                 for sid in e.source_sids:

@@ -703,3 +703,187 @@ def test_cli_defaults_are_layers_on_compress_a_path_and_flags_restore_the_old_ou
     oo = json.loads(old.stdout)["thought"]["layers"]["options"]
     assert oo["variants"] == ["A", "B"] and oo["granularity"] == "same" and "candidate" not in oo
     assert cli(base + ["--layer-candidate", "all"]).returncode == 2
+
+
+# ======================================================================================================================
+# T8c (L-340..L-345): candidate="stable": the question is applied to a lower cross unit by unit; the boundary between
+# stable and unstable is recorded; an unstable cross is restored to its last stable state, and the candidate words are the
+# path words of that state
+# ======================================================================================================================
+GOLDEN_PATH = {     # sha256 of to_bytes() of the T8b tree (dad327f), toy, BOUNDS, RUN+WORD, effort full: path mode must not move
+    "path-default": "2814fd9cf01d1d0b0beff0e033ad28347013c183de5f64ab0e62859d379f7477",
+    "path-both-same": "4ed78fc7d684fa760f160fd9349b5e62e026ca568842ebb2db6200d578a6a77b",
+    "path-seed+question": "9aa13270934750599349e50348f4603ffe07c7fefbfc10e25ce6a8359c7fab2e",
+}
+
+
+@pytest.fixture(scope="module")
+def stabled(small_index):
+    return M.ask_layered(small_index, QUESTION, TIERS, effort="full", options=M.LayerOptions(bounds=BOUNDS, candidate="stable"))
+
+
+def test_the_t8b_path_mode_and_the_default_are_byte_identical_after_t8c(small_index):
+    h = lambda o: hashlib.sha256(M.ask_layered(small_index, QUESTION, TIERS, effort="full", options=o).to_bytes()).hexdigest()
+    assert M.LayerOptions().candidate == "path"
+    assert h(M.LayerOptions(bounds=BOUNDS)) == GOLDEN_PATH["path-default"]
+    assert h(M.LayerOptions(bounds=BOUNDS, variants=("A", "B"), granularity="same")) == GOLDEN_PATH["path-both-same"]
+    assert h(M.LayerOptions(bounds=BOUNDS, down_query="seed+question")) == GOLDEN_PATH["path-seed+question"]
+
+
+def _stable_runs(c):
+    return [(tl, r) for tl in c.layers for r in tl.runs if r.candidate == "stable"]
+
+
+def test_the_boundary_is_recorded_per_bundle_with_the_unit_that_broke_it(stabled):
+    runs = _stable_runs(stabled)
+    assert runs
+    obj = stabled.to_json_obj()
+    restored = kept = 0
+    for tl in obj["thought"]["layers"]["per_tier"].values():
+        for r in tl["runs"]:
+            assert r["candidate"] == "stable" and r["boundaries"]
+            for d in r["boundaries"]:
+                b = d["boundary"]
+                n, last, bad = b["query_units"], b["last_stable_step"], b["first_unstable_step"]
+                assert 0 <= last <= n and b["read_at_step"] == last
+                if bad is None:                                  # stable through the whole question: nothing to restore
+                    assert last == n and b["restored"] is False and b["unstable_unit"] is None
+                    kept += 1
+                else:                                            # the first unit that made it unstable; the step before is the backup
+                    assert bad == last + 1 and b["restored"] is True and b["unstable_unit"] is not None
+                    assert b["unstable_unit_attached"] == (bad <= 6)
+                    restored += 1
+                assert set(b["backup"]) == {"kind", "members", "states", "sha256"}
+                assert b["backup"]["kind"] == ("stored_cross" if last == 0 else "fixed_points")
+    assert restored > 0 and kept > 0
+
+
+def test_the_recorded_boundary_is_the_real_one_by_an_independent_prefix_scan(small_index, stabled):
+    n = 0
+    for tl, r in _stable_runs(stabled):
+        for e in r.entries:
+            for d in e.path_from:
+                b = d["boundary"]
+                if d["layer"] != 0:
+                    continue
+                st = M.stack_of(small_index, tl.tier)
+                units = None
+                # re-derive the question units of this lower read: the upper run's query bundles mapped one layer down (layer 1)
+                if r.k == 1:
+                    units = M.lower_units(r.query_units)
+                    if r.passed_words:
+                        pass
+                if units is None or len(units) != b["query_units"]:
+                    continue
+                for j in range(1, len(units) + 1):
+                    res = M._prefix_read(st.base, st.facts, st.store, d["seed"], units[:j], BOUNDS, A.DEFAULT_BUDGET)
+                    stable = M._is_stable_read(res)
+                    assert stable == (j <= b["last_stable_step"]) or j > b["last_stable_step"] + 1
+                    if not stable:
+                        assert j == b["first_unstable_step"]
+                        break
+                n += 1
+    assert n > 0
+
+
+def test_a_restored_state_is_a_fixed_point_for_all_its_members(small_index, stabled):
+    n = 0
+    for tl, r in _stable_runs(stabled):
+        st = M.stack_of(small_index, tl.tier)
+        assert r.trace["ok"]
+        for e in r.entries:
+            assert e.stable and e.restored
+            for j, res in e.restored:
+                facts = st.facts if j == 0 else None
+                if facts is None:
+                    continue
+                assert res.members_read > 0 and not res.stack_points
+                reader = cy.Reader(facts, res.ctx.attached, res.ctx.energy_units)
+                for sr in res.reads:
+                    for m in sr.members:
+                        assert m.kind != cy.NOFIX and m.settled.ends and m.settled.budget_hit is None
+                        for end in m.settled.ends:                       # no single move improves it (I-05), checked afresh
+                            assert cy._scan(reader, end.flat, cy._L_of(end.flat))[5] == []
+                            n += 1
+    assert n > 0
+
+
+def test_the_candidate_words_are_path_words_of_the_restored_states_and_nothing_else(small_index, stabled):
+    seen = 0
+    for tl, r in _stable_runs(stabled):
+        for e in r.entries:
+            seen += 1
+            assert dict(e.word_sources).keys() == set(e.words) and e.path_from
+            base_reads = [d for d in e.path_from if d["layer"] == 0]
+            assert base_reads and all(d["boundary"]["read_at_step"] == d["boundary"]["last_stable_step"] for d in e.path_from)
+            fresh = set()
+            for j, pa in e.path_answers:
+                if j == 0:
+                    fresh |= _path_words_of(pa)
+            assert set(e.words) <= fresh
+            for d in base_reads:
+                assert set(d["words"]) <= fresh
+            for w, ss in e.word_sources:                                  # provenance: every word keeps its source sentences
+                assert ss and all(w in small_index.space.tiers[tl.tier].sentence_units[s] for s in ss)
+            # the restored state has no path at step 0 (no unit applied -> no working section): such a bundle gives no word
+            for d in e.path_from:
+                if d["boundary"]["last_stable_step"] == 0:
+                    assert d["words"] == [] and d["listed"] == 0
+        assert r.trace["fraction"] == "1/1" and r.trace["restored_states_checked"] > 0
+    assert seen > 0
+
+
+def test_a_layer_two_stable_candidate_is_read_down_through_layer_one(space, monkeypatch):
+    monkeypatch.setitem(pl.LEVELS, "low", pl.Budget(max_class=2, max_states=30, max_moves=300))
+    idx = make_index(space, SMALL)
+    b3 = M.LayerBounds(3, 6, 8, 3, 6, "low", 2)
+    c = M.ask_layered(idx, QUESTION, ["RUN", "WORD"], effort="full", options=M.LayerOptions(bounds=b3, candidate="stable"))
+    for tl in c.layers:
+        for r in tl.runs:
+            assert r.trace["ok"]
+            for e in r.entries:
+                assert set(e.words) <= set(idx.space.tiers[r.tier].postings)
+                assert all("boundary" in d for d in e.path_from)
+
+
+def test_stable_mode_is_exact_and_labelled(stabled):
+    def walk(o):
+        if isinstance(o, dict):
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+        else:
+            assert not isinstance(o, float)
+
+    walk(stabled.to_json_obj())
+    obj = json.loads(stabled.to_bytes())
+    assert obj["thought"]["layers"]["options"]["candidate"] == "stable"
+    assert all(e["candidate"] == "stable" for e in obj["answer"]["entries"] if e["layer"] > 0)
+
+
+def _digest_script_stable():
+    return _digest_script().replace("M.LayerOptions(bounds=b,feedback='down')", "M.LayerOptions(bounds=b,candidate='stable')")
+
+
+def test_stable_mode_output_is_byte_identical_across_hash_seeds():
+    outs = []
+    for seed in ("0", "1", "12345"):
+        env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONDONTWRITEBYTECODE="1", PYTHONPATH=ROOT)
+        r = subprocess.run([sys.executable, "-c", _digest_script_stable()], capture_output=True, text=True, env=env, cwd=ROOT,
+                           timeout=900, stdin=subprocess.DEVNULL)
+        assert r.returncode == 0, r.stderr
+        outs.append(r.stdout.strip())
+    assert outs[0] == outs[1] == outs[2] and int(outs[0].split()[1]) > 1000
+
+
+def test_cli_accepts_layer_candidate_stable(tmp_path):
+    p = tmp_path / "toy.jsonl"
+    with open(p, "w", encoding="utf-8") as f:
+        for s in DATA:
+            f.write(json.dumps({"sent": s, "source": "toy"}, ensure_ascii=False) + "\n")
+    r = cli(["ask", "--data", str(p), "--question", QUESTION, "--tiers", "RUN,WORD", "--effort", "fast", "--format", "json",
+             "--show-thought", "--layer-candidate", "stable"])
+    assert r.returncode == 0, r.stderr
+    assert json.loads(r.stdout)["thought"]["layers"]["options"]["candidate"] == "stable"
