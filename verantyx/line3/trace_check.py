@@ -26,7 +26,7 @@ from fractions import Fraction
 from typing import Dict, List, Optional, Sequence, Tuple
 
 from verantyx.line3.geometry import N_ARMS
-from verantyx.line3.readout import Adoption, PathAnswer, Readout, SectionPath, StateRead
+from verantyx.line3.readout import Adoption, PathAnswer, Readout, SectionPath, StateRead, entry_word_sources
 from verantyx.line3.space import TierSpace
 
 
@@ -158,6 +158,55 @@ def item_words_of(it) -> frozenset:
     return frozenset(w for p in it.paths for w in p.words) | {it.centre}
 
 
+def _trace_common(tier: TierSpace, ans: PathAnswer, failures: List[str]) -> None:
+    """L-190: the common answer of a list.  It exists iff the option is on and the list has >= 2 entries.
+    Checked: the intersection is exactly the words common to all entries' word sets; every attached unit of the states' paths is among the query units; the centres are exactly
+    the union of the entries' centres; the common words are exactly intersection - query units - centres;
+    every common word has, in EVERY entry, a non-empty set of source sentences that is exactly the one the
+    entry's arrangements used (edges into or out of the word) and each such sentence holds the word."""
+    c = ans.common
+    if ans.common_mode is None:
+        if c is not None:
+            failures.append("common answer present without the option")
+        return
+    if len(ans.entries) < 2:
+        if c is not None:
+            failures.append("common answer present for a result that is not a list")
+        return
+    if c is None:
+        failures.append("the list has no common answer record")
+        return
+    inter = frozenset(ans.entries[0].words)
+    for e in ans.entries[1:]:
+        inter &= frozenset(e.words)
+    if c.intersection != tuple(sorted(inter)):
+        failures.append("common: the intersection is not the words common to every entry")
+    if c.centres != tuple(sorted({x for e in ans.entries for x in e.centres})):
+        failures.append("common: the centres are not the union of the entries' centres")
+    att = {p.attached for st in ans.states for p in st.paths if p.attached is not None}
+    if not att <= set(c.query_units):
+        failures.append("common: a unit attached in a state is not among the query units")
+    if c.words != tuple(sorted(inter - set(c.query_units) - set(c.centres))):
+        failures.append("common: the answer words are not intersection - query units - centres")
+    if tuple(w for w, _ in c.sources) != c.words:
+        failures.append("common: sources do not list exactly the answer words")
+        return
+    for w, per in c.sources:
+        if len(per) != len(ans.entries):
+            failures.append("common word %r: sources are not one per entry" % w)
+            continue
+        for k, (e, ss) in enumerate(zip(ans.entries, per)):
+            if w not in e.words:
+                failures.append("common word %r: not in entry %d" % (w, k))
+            if not ss:
+                failures.append("common word %r: no source sentence in entry %d" % (w, k))
+            if tuple(ss) != entry_word_sources(e, w):
+                failures.append("common word %r: entry %d sources differ from its arrangements' edges" % (w, k))
+            post = tier.postings.get(w, ())
+            if any(sid not in post for sid in ss):
+                failures.append("common word %r: a source sentence of entry %d does not hold the word" % (w, k))
+
+
 def trace_answer(tier: TierSpace, ans: PathAnswer) -> Tuple[Tuple[WordTrace, ...], TraceReport]:
     """L-153: trace every word of every path of every item of the default answer form: seat, sentence
     and edge exactly as for sentences (_trace_path), and every path of an item ends at the item's
@@ -241,6 +290,7 @@ def trace_answer(tier: TierSpace, ans: PathAnswer) -> Tuple[Tuple[WordTrace, ...
         entries_ok += good
     if sorted(seen) != list(range(len(ans.items))):
         failures.append("the entries do not cover every item exactly once")
+    _trace_common(tier, ans, failures)
     rep = TraceReport(words_checked, words_traced, len(ans.entries), entries_ok,
                       len(ptrace), sum(1 for t in ptrace.values() if t.ok), tuple(failures))
     return tuple(all_traces), rep

@@ -38,11 +38,11 @@ def test_defaults_are_the_new_ones_and_the_old_ones_are_explicit_options():
     assert a.merge_sections is True and a.similar == "word_set"
     _, b = run([X, Y, W], merge_sections=True, similar="word_set")
     assert a.to_bytes() == b.to_bytes()
-    _, old = run([X, Y, W], merge_sections=False, similar=None)
+    _, old = run([X, Y, W], merge_sections=False, similar=None, common=None)
     assert len(old.items) == len(old.entries) == 3 and old.similar is None and not old.merge_sections
     o = old.answer_obj()
     assert "entries" not in o and "similar" not in o and "merge_sections" not in o        # the previous object
-    _, t6y = run([X, Y, W], merge_sections=True, similar=None)
+    _, t6y = run([X, Y, W], merge_sections=True, similar=None, common=None)
     assert t6y.answer_obj()["merge_sections"] is True and "entries" not in t6y.answer_obj()
     with pytest.raises(ValueError):
         run([X], similar="jaccard")
@@ -59,7 +59,9 @@ def test_same_word_set_items_are_one_entry_with_all_arrangements_and_the_union_o
     o = a.answer_obj()
     assert o["listed"] == 2 and o["arrangements"] == 3 and len(o["entries"]) == 2
     assert o["entries"][0]["count"] == 2 and len(o["entries"][0]["arrangements"]) == 2
-    assert o["answer"] is None and o["centre"] is None
+    assert o["answer"]["form"] == "common_words" and o["centre"] is None            # L-190: the list's common answer
+    _, nc = run([X, Y, W], common=None)
+    assert nc.answer_obj()["answer"] is None
     assert a.thought_obj()["counts"]["listed"] == 2
 
 
@@ -83,7 +85,7 @@ def test_a_list_that_collapses_to_one_entry_becomes_an_answer():
                            "reference_centre": "c", "reference_centres": ["c"]}
     assert o["centre"] == "c" and o["paths"] is None                 # two arrangements: no single path list
     assert a.centre == "c"
-    _, old = run([X, Y], similar=None)
+    _, old = run([X, Y], similar=None, common=None)
     assert old.verdict == cy.CHOICE and len(old.items) == 2
     # one arrangement: the paths are given
     _, single = run([X])
@@ -116,7 +118,7 @@ def test_intake_of_an_entry_is_the_whole_group():
     r1 = ro.adopt_item(one).memory_record()
     assert r1["source"] == "auto" and r1["offered"] == 1 and len(r1["arrangements"]) == 2
     # old options: the old record form
-    _, old = run([X, Y, W], merge_sections=False, similar=None)
+    _, old = run([X, Y, W], merge_sections=False, similar=None, common=None)
     assert ro.choose_item(old, 0).memory_record()["form"] == "centre_paths"
 
 
@@ -137,7 +139,7 @@ def test_trace_check_on_entries_is_100_percent_and_catches_tampering():
     assert not tc.trace_readout(t, dataclasses.replace(a, entries=(bad_org, a.entries[1])))[1].ok
     assert not tc.trace_readout(t, dataclasses.replace(a, entries=(a.entries[1],)))[1].ok                  # items not covered
     # the old options trace as before
-    _, old = run([X, Y, W], merge_sections=False, similar=None)
+    _, old = run([X, Y, W], merge_sections=False, similar=None, common=None)
     assert tc.trace_readout(t, old)[1].ok
 
 

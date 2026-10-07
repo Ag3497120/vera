@@ -64,6 +64,7 @@ def doa(states, window=0, **kw):
     t = tier(HUB)
     kw.setdefault("merge_sections", False)
     kw.setdefault("similar", None)
+    kw.setdefault("common", None)
     return t, ro.read_out(cy.TierFacts(t), ctx_for(), states, question="q", window=window, **kw)
 
 

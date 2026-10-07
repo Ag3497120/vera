@@ -388,6 +388,49 @@ def _make_entry(arr: Sequence["AnswerItem"]) -> AnswerEntry:
 
 
 @dataclass(frozen=True)
+class CommonAnswer:
+    """L-190: the answer of a LIST (owner, after T6z: "全項目に共通する語を答えにし、一覧は選択用に残す").
+    intersection   = the words that occur in the word set of EVERY entry of the list (sorted by code point);
+    query_units    = the question's own units: the units of the first layer (after the function-word filter)
+                     that the cycle attached to the sections (QueryContext.attached);
+    centres        = the reference centres of the entries (the union of every entry's centres);
+    words          = the common answer = intersection minus query_units minus centres (sorted by code point);
+    sources        = for every common word, one tuple of sentence ids per entry (entry order): the sentences
+                     of the tier that the entry's arrangements used for a step into or out of that word
+                     (the union over the entry's arrangements).  The union over entries is `source_sids`.
+    An empty `words` means the result stays a plain list (abstention for grading)."""
+    intersection: Tuple[str, ...]
+    query_units: Tuple[str, ...]
+    centres: Tuple[str, ...]
+    words: Tuple[str, ...]
+    sources: Tuple[Tuple[str, Tuple[Tuple[int, ...], ...]], ...]
+
+    @property
+    def source_sids(self) -> Tuple[int, ...]:
+        return tuple(sorted({sid for _, per in self.sources for ss in per for sid in ss}))
+
+    def word_sources(self, w: str) -> Tuple[Tuple[int, ...], ...]:
+        return dict(self.sources)[w]
+
+
+def entry_word_sources(e: "AnswerEntry", w: str) -> Tuple[int, ...]:
+    """L-190: the sentences the arrangements of an entry used for a step into or out of the word `w`."""
+    return tuple(sorted({sid for a in e.arrangements for p in a.paths for x, y, ss in p.edges
+                         if x == w or y == w for sid in ss}))
+
+
+def make_common(entries: Sequence["AnswerEntry"], query_units: Sequence[str]) -> CommonAnswer:
+    inter = frozenset(entries[0].words)
+    for e in entries[1:]:
+        inter &= frozenset(e.words)
+    centres = frozenset(c for e in entries for c in e.centres)
+    qu = frozenset(query_units)
+    words = tuple(sorted(inter - qu - centres))
+    return CommonAnswer(tuple(sorted(inter)), tuple(sorted(qu)), tuple(sorted(centres)), words,
+                        tuple((w, tuple(entry_word_sources(e, w) for e in entries)) for w in words))
+
+
+@dataclass(frozen=True)
 class PathAnswer:
     question: str
     tier: str
@@ -404,6 +447,9 @@ class PathAnswer:
     # L-180: the list shown to the user (entries); similar = None | "word_set"
     entries: Tuple[AnswerEntry, ...] = ()
     similar: Optional[str] = None
+    # L-190: the common answer of a list (None: option off, or not a list)
+    common: Optional[CommonAnswer] = None
+    common_mode: Optional[str] = None
 
     @property
     def centre(self) -> Optional[str]:
@@ -437,6 +483,18 @@ class PathAnswer:
                  "centre": self.centre,
                  "paths": ents[0]["arrangements"][0]["paths"] if one and e0.count == 1 else None,
                  "entries": ents, "sentences": sentences}
+            if self.common_mode is not None:          # L-190: only when the option is on (default)
+                o["common_mode"] = self.common_mode
+                c = self.common
+                if c is not None:
+                    o["common"] = {"intersection": list(c.intersection), "query_units": list(c.query_units),
+                                   "centres": list(c.centres), "words": list(c.words),
+                                   "sources": {w: [list(ss) for ss in per] for w, per in c.sources},
+                                   "source_sids": list(c.source_sids)}
+                    if c.words:                       # the list is kept (entries); the answer = the common words
+                        o["answer"] = {"form": "common_words", "path_words": list(c.words),
+                                       "source_sids": list(c.source_sids),
+                                       "reference_centres": list(c.centres), "entries": len(self.entries)}
             return o
         items = [item(it) for it in self.items]
         o = {"form": "path_words", "verdict": self.verdict, "listed": len(self.items),
@@ -479,7 +537,8 @@ class PathAnswer:
 def read_answer(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[StateRef], *,
                 question: str = "", too_many: int = TOO_MANY_DEFAULT,
                 window: int = DEFAULT_WINDOW, merge_sections: bool = True,
-                similar: Optional[str] = "word_set") -> PathAnswer:
+                similar: Optional[str] = "word_set",
+                common: Optional[str] = "intersection") -> PathAnswer:
     """L-150..L-152: the agreed centre and the section-path words of every adopted state.
     L-170 `merge_sections=True` (owner: items that differ ONLY by which section reads which words are
     one item): the item key is (centre, the multiset of section paths = their word sequences); the
@@ -487,7 +546,12 @@ def read_answer(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[
     L-180 (owner, T6z): `merge_sections=True` and `similar="word_set"` are the DEFAULTS; the old
     behaviour is `merge_sections=False, similar=None` (byte-identical to T6x).  `similar="word_set"`
     collapses items that use the same set of words (path words + centre) into one list entry that
-    carries all its arrangements (no representative is chosen)."""
+    carries all its arrangements (no representative is chosen).
+    L-190 (owner, after T6z): `common="intersection"` is the DEFAULT; `common=None` is the T6z behaviour
+    (byte-identical).  When the result is a list of >= 2 entries, its answer is the set of words common
+    to ALL entries (see CommonAnswer); the list stays for the user's choice."""
+    if common not in (None, "intersection"):
+        raise ValueError("common: None | intersection")
     reader = cy.Reader(facts, ctx.attached, ctx.energy_units, window)
     tier = states[0].tier if states else facts.tier.name
     reads = tuple(StateRead(s, section_paths(reader, s.flat, s.L)) for s in states)
@@ -495,7 +559,7 @@ def read_answer(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[
     post = tier_space.postings
     memo: Dict[Tuple[str, str], Tuple[int, ...]] = {}
 
-    def common(a: str, b: str) -> Tuple[int, ...]:
+    def common_sids(a: str, b: str) -> Tuple[int, ...]:
         k = (a, b) if a <= b else (b, a)
         r = memo.get(k)
         if r is None:
@@ -509,7 +573,7 @@ def read_answer(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[
                 a = p.attached if j == 0 else flat[seg[j - 1]]
                 if a is None:
                     continue
-                seen.setdefault((a, flat[seat]), common(a, flat[seat]))
+                seen.setdefault((a, flat[seat]), common_sids(a, flat[seat]))
         return tuple((a, b, ss) for (a, b), ss in seen.items())
 
     acc: Dict[tuple, dict] = {}
@@ -542,10 +606,14 @@ def read_answer(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[
         raise ValueError("similar: None | word_set")
     verdict = UNKNOWN_NO_PATH if not entries else (cy.ANSWER if len(entries) == 1 else cy.CHOICE)
     used = {sid for it in items for sid in it.source_sids}
+    cm = None
+    if common is not None and len(entries) > 1:
+        cm = make_common(entries, sorted({u for u in ctx.attached if u is not None}))
+        used |= set(cm.source_sids)
     return PathAnswer(question, tier, reads, items, verdict, sum(1 for r in reads if not r.paths),
                       len(entries) > too_many, too_many,
                       {sid: tier_space.sentence_units[sid] for sid in sorted(used)}, merge_sections,
-                      entries, similar)
+                      entries, similar, cm, common)
 
 
 def read_out(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[StateRef], *,
