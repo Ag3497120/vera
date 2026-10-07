@@ -2318,6 +2318,37 @@ def cmd_guard(args) -> int:
     return 0
 
 
+def cmd_line3(args) -> int:
+    """T7: `line3 build` / `line3 ask` (verantyx.line3.ask).  No other command reaches this code."""
+    import sys
+    from .line3 import ask as l3
+
+    try:
+        idx = l3.Index.from_jsonl(args.data, args.cache, args.level, args.tiers)
+    except (OSError, ValueError) as e:
+        print(f"line3: {e}", file=sys.stderr)
+        return 2
+    if args.l3_op == "build":
+        if not args.cache:
+            print("line3 build: --cache is required", file=sys.stderr)
+            return 2
+        rep = idx.precompute(args.cache, args.workers, log=lambda m: print(m, file=sys.stderr))
+        print(json.dumps(rep, ensure_ascii=False, sort_keys=True))
+        return 0
+    if not args.question:
+        print("line3 ask: --question is required", file=sys.stderr)
+        return 2
+    res = l3.ask(idx, args.question)
+    if args.format == "json":
+        obj = res.to_json_obj()
+        if not args.show_thought:
+            obj = {"answer": obj["answer"]}
+        print(json.dumps(obj, ensure_ascii=False, sort_keys=True, indent=2))
+    else:
+        print(l3.format_text(res, args.show_thought))
+    return 0
+
+
 def main(argv: Optional[list] = None) -> int:
     ap = argparse.ArgumentParser(prog="vera", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -2920,6 +2951,19 @@ def main(argv: Optional[list] = None) -> int:
 
     from .run_recorder import register_cli as _w16t7_register   # W16-t7: run / events / hooks
     _w16t7_register(sub)
+
+    # line3 T7: the faithful line-3 build (verantyx/line3/ask.py); legacy / round5 are untouched
+    p = sub.add_parser("line3", help="line-3 build: `line3 build` (cache the placements) / `line3 ask` (all tiers, answer + thought)")
+    p.add_argument("l3_op", choices=["build", "ask"])
+    p.add_argument("--data", required=True, help="jsonl of sentences ({\"sent\": ..., \"source\": ...} per line)")
+    p.add_argument("--cache", default=None, help="directory of the placement cache (build writes it, ask reads it; a missing tier is built on demand)")
+    p.add_argument("--level", default="mid", choices=["low", "mid-low", "mid", "high", "max"], help="placement budget level")
+    p.add_argument("--tiers", default="RUN,WORD,CHAR", help="comma-separated tiers to run (I-25: all by default)")
+    p.add_argument("--workers", type=int, default=1, help="build: processes")
+    p.add_argument("--question", default=None, help="ask: the question")
+    p.add_argument("--show-thought", dest="show_thought", action="store_true", help="ask: also show the thought (internal state; N-08, N-10)")
+    p.add_argument("--format", choices=["text", "json"], default="text", help="ask: text (default) or json {answer, thought}")
+    p.set_defaults(fn=cmd_line3)
 
     args = ap.parse_args(argv)
     if getattr(args, "cmd", None) in ("read", "ask", "chat", "serve") and getattr(args, "layer", None):
