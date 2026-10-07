@@ -945,10 +945,22 @@ class SeedRead:
     members: Tuple[MemberOutcome, ...]    # the members read
 
 
-def members_of(placement: Placement, cap: Optional[int] = None):
+def members_of(placement: Placement, cap: Optional[int] = None, lazy: bool = False):
     """L-111: the members of the class (expanded), canonical order, at most `cap`; returns
-    (flats, total)."""
+    (flats, total).  `lazy` (T8, L-236; default off = the above, unchanged): with a cap and twins, do not expand the
+    whole class (it can hold millions of arrangements): take the first `cap` DISTINCT arrangements in the order the
+    twin permutations are generated (a fixed label order), then list them in canonical order."""
     total = placement.expanded_size
+    if lazy and cap is not None and placement.twin_sets and total > cap:
+        import itertools
+        from verantyx.line3.placement import expand_flats, _flat_sort_key
+        seen: Dict[Flat, None] = {}
+        for f in expand_flats(placement.members, placement.L, placement.twin_sets):
+            if f not in seen:
+                seen[f] = None
+                if len(seen) >= cap:
+                    break
+        return tuple(sorted(seen, key=_flat_sort_key)), total
     if placement.twin_sets:
         flats = placement.expanded_members()
     else:
@@ -959,8 +971,8 @@ def members_of(placement: Placement, cap: Optional[int] = None):
 
 
 def read_cross(reader: Reader, placement: Placement, budget: QueryBudget = QueryBudget(),
-               member_cap: Optional[int] = None) -> SeedRead:
-    flats, total = members_of(placement, member_cap)
+               member_cap: Optional[int] = None, lazy_members: bool = False) -> SeedRead:
+    flats, total = members_of(placement, member_cap, lazy_members)
     outs = tuple(member_outcome(i, settle(reader, f, placement.L, budget)) for i, f in enumerate(flats))
     return SeedRead(placement.seed, total, outs)
 
@@ -1175,7 +1187,9 @@ def _ask_tier_once(tier: TierSpace, question: str, placements, *, units: Optiona
              scope: str = "first_layer", member_rule: str = "stable_any",
              with_state: bool = False, clock=None,
              read_rule: Optional[str] = None, state_rule: str = "query_share",
-             unit_filter="default", read_cap: Optional[int] = None) -> TierResult:
+             unit_filter="default", read_cap: Optional[int] = None,
+             plan_override: Optional["ReadPlan"] = None, observe: bool = True,
+             lazy_members: bool = False) -> TierResult:
     """One question on one tier: read the crosses that hold a query unit (V1; `read_rule="whole"`
     = I-08, every cross, or `amount` crosses marked partial), every member of every cross, settle,
     adopt the states by the sentences they share with the query (V3; `state_rule="stability"` =
@@ -1203,11 +1217,14 @@ def _ask_tier_once(tier: TierSpace, question: str, placements, *, units: Optiona
     reader = Reader(facts, ctx.attached, ctx.energy_units)
     if read_cap is not None and read_rule == "whole":
         raise ValueError("read_cap is a node budget on the query-crosses read; with read_rule='whole' use amount")
-    plan = plan_read(tier, facts, ctx, placements, amount, read_rule in ("query_crosses", "query_share_crosses"),
-                     read_rule == "query_share_crosses", read_cap)
+    if plan_override is not None:       # T8 (L-232): the caller names the crosses to read (an upper layer)
+        plan = plan_override
+    else:
+        plan = plan_read(tier, facts, ctx, placements, amount, read_rule in ("query_crosses", "query_share_crosses"),
+                         read_rule == "query_share_crosses", read_cap)
     reads: List[SeedRead] = []
     for seed in sorted(plan.read):                  # canonical order; the result never depends on it
-        reads.append(read_cross(reader, placements.cross_for(seed), budget, member_cap))
+        reads.append(read_cross(reader, placements.cross_for(seed), budget, member_cap, lazy_members))
     gp = any(facts.n.get(u, 0) > 0 for u in ctx.attached if u is not None)
     vinfo = None
     if state_rule == "query_share":
@@ -1241,7 +1258,7 @@ def _ask_tier_once(tier: TierSpace, question: str, placements, *, units: Optiona
     # observation record L-20 on the adopted end states
     logs: List[dict] = []
     from verantyx.line3.placement import energy_log
-    for c in cands:
+    for c in (cands if observe else ()):      # T8 (L-236): an upper layer does not log (a layer's cost)
         cr = to_cross(c.end.flat, _L_of(c.end.flat))
         logs.append({"seed": c.seed, "member": c.member, **energy_log(tier, cr, ctx.energy_units).to_json_obj()})
     sobj = search_state_obj(tier.name, ctx, reads)

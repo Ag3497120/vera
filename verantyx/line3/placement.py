@@ -777,14 +777,21 @@ def _centres(members: Sequence[Flat]) -> Tuple[Optional[str], ...]:
 
 def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
                 max_groups: Optional[int] = None, budget: Budget = Budget(),
-                quotient: bool = True) -> Placement:
+                quotient: bool = True, pool_groups: Optional[int] = None) -> Placement:
     """Build the stable CLASS around `seed` by search, growing group by group (L-72).
     quotient=True (L-90): interchangeable units are held as one group (labels);
-    quotient=False: the T4c search (every unit its own label)."""
+    quotient=False: the T4c search (every unit its own label).
+    pool_groups (T8, L-231; default None = unchanged): only the first `pool_groups` share-groups of
+    M-1(b) enter the pool (a node budget of an upper layer: whole groups only, a tie is never split);
+    when groups were left out the result's stop is "max_groups" unless the budget stopped it first."""
     if seed not in tier.postings:
         raise KeyError(seed)
     w = w or Weights(tier)
     groups = _groups(tier, seed)
+    total_candidates = sum(len(g) for _, g in groups)
+    cut = pool_groups is not None and len(groups) > pool_groups
+    if cut:
+        groups = groups[:pool_groups]
     pool = [seed] + [u for _, g in groups for u in g]
     rep = find_twins(w, pool) if quotient else {u: u for u in pool}
     qw = QWeights(w, rep) if quotient else w
@@ -833,9 +840,11 @@ def build_cross(tier: TierSpace, seed: str, w: Optional[Weights] = None,
     cent = sorted({u for m in state for u in tsets.get(m[0], (m[0],))},
                   key=lambda c: ("", "") if c is None else (c, "x"))
     rep_cross = next(expand_flats(state[:1], L, twin_sets), state[0])
+    if cut and stop == "exhausted":
+        stop = "max_groups"
     return Placement(seed, to_cross(rep_cross, L), state, L, tuple(cent), size, size,
                      score, stop, broke, tuple(steps),
-                     sum(len(g) for _, g in groups), budget, twin_sets, quotient)
+                     total_candidates, budget, twin_sets, quotient)
 
 
 class Placer:
