@@ -887,3 +887,206 @@ def test_cli_accepts_layer_candidate_stable(tmp_path):
              "--show-thought", "--layer-candidate", "stable"])
     assert r.returncode == 0, r.stderr
     assert json.loads(r.stdout)["thought"]["layers"]["options"]["candidate"] == "stable"
+
+
+# ======================================================================================================================
+# T8d (L-390..L-399): candidate="stable-seats" (the restored stable state laid out by seats) and candidate="stable-seated"
+# (the L-341 boundary scan counting only the question units that take a seat)
+# ======================================================================================================================
+GOLDEN_STABLE = {   # sha256 of to_bytes() of the T8c tree (505b2e9), toy, SMALL budget, BOUNDS, RUN+WORD, effort full: stable must not move
+    "stable-A": "a488c4d11a4a1ad5cc4afa9486a045815c25dfe4373dbb8e2d1fe075f22b594b",
+    "stable-B": "c6890f9976b596f03f815606a83ddc96e8f38b2fe1b1655904d675d0ed45a439",
+    "stable-both-same": "89e39214b70f20eb64185baff432712868bc2c1c02ddb5719fc14160034a494e",
+    "stable-seed+question": "8dba85cf575ae977000c5bdd6895187e17a2c490c544a1babfa924c571a2847c",
+}
+
+
+@pytest.fixture(scope="module")
+def seated_run(small_index):
+    return M.ask_layered(small_index, QUESTION, TIERS, effort="full", options=M.LayerOptions(bounds=BOUNDS, candidate="stable-seated"))
+
+
+@pytest.fixture(scope="module")
+def seats_run(small_index):
+    return M.ask_layered(small_index, QUESTION, TIERS, effort="full", options=M.LayerOptions(bounds=BOUNDS, candidate="stable-seats"))
+
+
+def test_defaults_path_bag_and_stable_stay_byte_identical_after_t8d(small_index):
+    h = lambda o: hashlib.sha256(M.ask_layered(small_index, QUESTION, TIERS, effort="full", options=o).to_bytes()).hexdigest()
+    assert M.LayerOptions().candidate == "path"
+    assert h(M.LayerOptions(bounds=BOUNDS)) == GOLDEN_PATH["path-default"]
+    assert h(M.LayerOptions(bounds=BOUNDS, variants=("A", "B"), granularity="same")) == GOLDEN_PATH["path-both-same"]
+    assert h(M.LayerOptions(bounds=BOUNDS, candidate="stable")) == GOLDEN_STABLE["stable-A"]
+    assert h(M.LayerOptions(bounds=BOUNDS, candidate="stable", variants=("B",))) == GOLDEN_STABLE["stable-B"]
+    assert h(M.LayerOptions(bounds=BOUNDS, candidate="stable", variants=("A", "B"), granularity="same")) == GOLDEN_STABLE["stable-both-same"]
+    assert h(M.LayerOptions(bounds=BOUNDS, candidate="stable", down_query="seed+question")) == GOLDEN_STABLE["stable-seed+question"]
+    assert h(M.LayerOptions(bounds=BOUNDS, candidate="bag", variants=M.VARIANTS, granularity="same")) == \
+        hashlib.sha256(M.ask_layered(small_index, QUESTION, TIERS, effort="full",
+                                     options=opts()).to_bytes()).hexdigest()
+
+
+def _independent_layout(small_index, tier, r, d):
+    """The laid-out restored state of the lower read d of the upper run r, re-derived with a fresh prefix scan."""
+    st = M.stack_of(small_index, tier)
+    units = M.lower_units(r.query_units)
+    j = d["boundary"]["last_stable_step"]
+    X = d["seed"]
+    if j == 0:
+        flats, _ = cy.members_of(st.store.cross_for(X), BOUNDS.members, True)
+    else:
+        res = M._prefix_read(st.base, st.facts, st.store, X, units[:j], BOUNDS, A.DEFAULT_BUDGET)
+        assert M._is_stable_read(res)
+        flats = [e.flat for sr in res.reads for m in sr.members for e in m.settled.ends]
+    flats = sorted(dict.fromkeys(flats), key=pl._flat_sort_key)
+    return M.layout_of(flats[0], lambda c: c), len(flats), st
+
+
+def test_stable_seats_is_the_restored_state_laid_out_by_seats_exactly(small_index, seats_run):
+    checked = step0 = 0
+    for tl in seats_run.layers:
+        for r in tl.runs:
+            assert r.candidate == "stable-seats" and r.entries and r.trace["ok"] and r.trace["fraction"] == "1/1"
+            assert r.without_path_words == 0                       # no path is needed: every bundle gives its state
+            for e in r.entries:
+                assert e.mode == "stable-seats" and e.seats is not None
+                centre, arms = e.seats
+                assert len(arms) == 6 and centre is not None
+                assert e.words == tuple(sorted({centre} | {c for leg in arms for c in leg if c is not None}))
+                assert dict(e.word_sources).keys() == set(e.words) and all(ss for _, ss in e.word_sources)
+                for w, ss in e.word_sources:
+                    assert all(w in small_index.space.tiers[tl.tier].sentence_units[s] for s in ss)
+                assert r.k == 1
+                for d in e.path_from:
+                    lay, n_flats, st = _independent_layout(small_index, tl.tier, r, d)
+                    assert lay == e.seats                           # the same seats as the restored state, nothing else
+                    assert set(e.words) == set(M.placed_units(st.store.cross_for(d["seed"])))   # a move only permutes seats
+                    assert d["seats"] == sum(1 for leg in lay[1] for c in leg if c is not None)
+                    assert d["boundary"]["restored"] in (True, False)
+                    checked += 1
+                    step0 += d["boundary"]["last_stable_step"] == 0
+    assert checked > 0 and step0 > 0                               # a state restored to step 0 still gives a candidate
+
+
+def test_stable_seats_equal_structures_are_one_entry_and_counts_are_recorded(seats_run):
+    obj = seats_run.to_json_obj()
+    for tl in obj["thought"]["layers"]["per_tier"].values():
+        for r in tl["runs"]:
+            keys = [json.dumps(e["seats"], sort_keys=True) for e in r["entries"]]
+            assert len(keys) == len(set(keys))
+            for e in r["entries"]:
+                s = e["seats"]
+                assert e["candidate"] == "stable-seats" and e["words"] == sorted(e["words"])
+                assert s["n_words"] == len(e["words"]) and s["n_seats"] == s["n_words"] - 1 == sum(1 for leg in s["arms"] for c in leg if c is not None)
+                assert e["word_sources"].keys() == set(e["words"]) and e["path_from"]
+    assert json.loads(seats_run.to_bytes())["thought"]["layers"]["options"]["candidate"] == "stable-seats"
+
+
+def test_stable_seats_candidates_are_not_a_flat_bag(seats_run):
+    # the layout carries the seat of each word: two entries with the same word set but another layout stay two entries
+    ents = [e for tl in seats_run.layers for r in tl.runs for e in r.entries]
+    assert any(any(c is not None for leg in e.seats[1] for c in leg) for e in ents)
+    assert all(len([c for leg in e.seats[1] for c in leg if c is not None]) + 1 == len(e.words) for e in ents)
+
+
+def test_stable_seated_never_puts_the_boundary_at_an_energy_only_unit(seated_run):
+    n = 0
+    for tl in seated_run.layers:
+        for r in tl.runs:
+            assert r.candidate == "stable-seated" and r.trace["ok"]
+            for d in r.boundaries:
+                b = d["boundary"]
+                assert b["mode"] == "seated" and b["seated_units"] == min(b["query_units"], 6)
+                if b["restored"]:
+                    assert b["first_unstable_step"] <= 6 and b["unstable_unit_attached"] is True
+                    assert b["last_stable_step"] == b["first_unstable_step"] - 1 and b["state_stable"] is True
+                else:
+                    assert b["first_unstable_step"] is None and b["last_stable_step"] == b["query_units"]
+                n += 1
+    assert n > 0
+
+
+def test_stable_seated_skips_a_break_made_by_an_energy_only_unit(small_index, monkeypatch):
+    st = M.stack_of(small_index, "RUN")
+    units = tuple(sorted(st.base.postings))[:9]
+    orig = M._is_stable_read
+    monkeypatch.setattr(M, "_is_stable_read", lambda res: orig(res) and len(res.ctx.query) != 8)      # the 8th unit breaks the cross
+    for X in ("東京", "日本"):
+        plain = M.stable_boundary(st.base, st.facts, st.store, X, units, BOUNDS, A.DEFAULT_BUDGET, {})
+        seated = M.stable_boundary(st.base, st.facts, st.store, X, units, BOUNDS, A.DEFAULT_BUDGET, {}, seated=True)
+        assert plain["boundary"]["first_unstable_step"] == 8 and plain["boundary"]["last_stable_step"] == 7
+        b = seated["boundary"]
+        assert b["first_unstable_step"] is None and b["restored"] is False and b["last_stable_step"] == 9   # applied, never a boundary
+        assert b["seated_units"] == 6 and b["unstable_unit"] is None
+    # a break at a seated unit is the same boundary in both modes
+    monkeypatch.setattr(M, "_is_stable_read", lambda res: orig(res) and len(res.ctx.query) != 3)
+    a = M.stable_boundary(st.base, st.facts, st.store, "東京", units, BOUNDS, A.DEFAULT_BUDGET, {})["boundary"]
+    s = M.stable_boundary(st.base, st.facts, st.store, "東京", units, BOUNDS, A.DEFAULT_BUDGET, {}, seated=True)["boundary"]
+    assert a["first_unstable_step"] == s["first_unstable_step"] == 3 and a["last_stable_step"] == s["last_stable_step"] == 2
+    assert a["backup"] == s["backup"]
+
+
+def test_t8d_modes_are_exact_and_equal_across_hash_seeds():
+    def walk(o):
+        if isinstance(o, dict):
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+        else:
+            assert not isinstance(o, float)
+
+    for cand in ("stable-seats", "stable-seated"):
+        script = _digest_script().replace("M.LayerOptions(bounds=b,feedback='down')", "M.LayerOptions(bounds=b,candidate=%r)" % cand)
+        outs = []
+        for seed in ("0", "1", "12345"):
+            env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONDONTWRITEBYTECODE="1", PYTHONPATH=ROOT)
+            r = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True, env=env, cwd=ROOT,
+                               timeout=900, stdin=subprocess.DEVNULL)
+            assert r.returncode == 0, r.stderr
+            outs.append(r.stdout.strip())
+        assert outs[0] == outs[1] == outs[2] and int(outs[0].split()[1]) > 1000
+
+
+def test_t8d_json_has_no_float(seats_run, seated_run):
+    def walk(o):
+        if isinstance(o, dict):
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+        else:
+            assert not isinstance(o, float)
+
+    walk(seats_run.to_json_obj())
+    walk(seated_run.to_json_obj())
+    obj = json.loads(seated_run.to_bytes())
+    assert obj["thought"]["layers"]["options"]["candidate"] == "stable-seated"
+    assert all(e["candidate"] == "stable-seated" for e in obj["answer"]["entries"] if e["layer"] > 0)
+
+
+def test_cli_accepts_the_t8d_layer_candidates(tmp_path):
+    p = tmp_path / "toy.jsonl"
+    with open(p, "w", encoding="utf-8") as f:
+        for s in DATA:
+            f.write(json.dumps({"sent": s, "source": "toy"}, ensure_ascii=False) + "\n")
+    for cand in ("stable-seats", "stable-seated"):
+        r = cli(["ask", "--data", str(p), "--question", QUESTION, "--tiers", "RUN,WORD", "--effort", "fast", "--format", "json",
+                 "--show-thought", "--layer-candidate", cand])
+        assert r.returncode == 0, r.stderr
+        assert json.loads(r.stdout)["thought"]["layers"]["options"]["candidate"] == cand
+
+
+def test_a_layer_two_seats_or_seated_candidate_traces_down_to_base_words(space, monkeypatch):
+    monkeypatch.setitem(pl.LEVELS, "low", pl.Budget(max_class=2, max_states=30, max_moves=300))
+    idx = make_index(space, SMALL)
+    b3 = M.LayerBounds(3, 6, 8, 3, 6, "low", 2)
+    for cand in ("stable-seats", "stable-seated"):
+        c = M.ask_layered(idx, QUESTION, ["RUN", "WORD"], effort="full", options=M.LayerOptions(bounds=b3, candidate=cand))
+        for tl in c.layers:
+            for r in tl.runs:
+                assert r.trace["ok"]
+                for e in r.entries:
+                    assert set(e.words) <= set(idx.space.tiers[r.tier].postings)
+                    assert e.word_sources is not None and all(ss for _, ss in e.word_sources)

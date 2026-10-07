@@ -50,7 +50,9 @@ LAYER_FORMAT = "line3.layers.v1"
 VARIANTS = ("A", "B")                       # I-20: A = initial query + the lower answer, B = the lower answer only
 GRANULARITIES = ("same", "compress")        # M-2
 DOWN_QUERIES = ("question", "seed+question")  # L-252: what the lower cross is read under
-CANDIDATES = ("path", "bag", "stable")       # L-250: what an upper-layer candidate shows (path words read under the question / N-19 bag); L-340: "stable" = the path words of the last stable state
+CANDIDATES = ("path", "bag", "stable", "stable-seats", "stable-seated")       # L-250: what an upper-layer candidate shows (path words read under the question / N-19 bag); L-340: "stable" = the path words of the last stable state
+PATHLIKE = ("path", "stable", "stable-seats", "stable-seated")   # modes that read the lower crosses down (L-251, L-340, L-390..)
+N_SEATED = cy.N_ARMS                        # L-391: the question units that take a seat = the first 6 attached
 FEEDBACKS = ("none", "down")                # N-12 re-read: see L-239
 UNKNOWN_NOTHING_TO_PASS = "UNKNOWN_NOTHING_TO_PASS"
 UNKNOWN_NO_FIXED_POINT_LAYERS = "UNKNOWN_NO_FIXED_POINT_LAYERS"
@@ -306,6 +308,8 @@ class LayerEntry:
     path_answers: Tuple[Tuple[int, ro.PathAnswer], ...] = field(default=(), compare=False, repr=False)   # (layer, read) for the trace
     stable: bool = False                   # L-340: the words are the path words of restored / last stable states
     restored: Tuple[Tuple[int, "cy.TierResult"], ...] = field(default=(), compare=False, repr=False)    # (layer, read at the last stable step) for the fixed-point check
+    seats: Optional[tuple] = None          # L-390 (stable-seats): (centre, arms) = the restored state as laid out; arms = 6 legs, outer seat first, None = empty seat
+    mode: str = ""                         # L-390 / L-391: "stable-seats" | "stable-seated" ("" = the T8b / T8c modes)
 
     def key(self) -> Tuple[str, int, str, Tuple[str, ...], Tuple[str, ...]]:
         return (self.tier, self.layer, self.variant, self.words, self.bundles)
@@ -315,9 +319,11 @@ class LayerEntry:
              "bundles": list(self.bundles), "centres": list(self.centres), "stability": _fs(self.stability),
              "arrangements": self.arrangements, "source_sids": list(self.source_sids)}
         if self.word_sources is not None:
-            o["candidate"] = "stable" if self.stable else "path"
+            o["candidate"] = self.mode or ("stable" if self.stable else "path")
             o["word_sources"] = {w: list(ss) for w, ss in self.word_sources}
             o["path_from"] = [dict(d) for d in self.path_from]
+        if self.seats is not None:
+            o["seats"] = seats_obj(self.seats)
         return o
 
 
@@ -353,10 +359,10 @@ class LayerRun:
 
     def to_json_obj(self) -> dict:
         o = self._json()
-        if self.candidate in ("path", "stable"):
+        if self.candidate in PATHLIKE:
             o["candidate"] = self.candidate
             o["entries_without_path_words"] = self.without_path_words
-        if self.candidate == "stable":
+        if self.candidate in ("stable", "stable-seats", "stable-seated"):
             o["boundaries"] = [dict(d) for d in self.boundaries]
         return o
 
@@ -452,6 +458,7 @@ class _Acc:
         self.reads: List[dict] = []
         self.answers: List[Tuple[int, ro.PathAnswer]] = []
         self.restored: List[Tuple[int, "cy.TierResult"]] = []     # L-340 (stable mode)
+        self.seats: List[dict] = []                               # L-390 (stable-seats): the laid-out state of each bundle read
         self.seen: set = set()
 
 
@@ -536,21 +543,30 @@ def backup_digest(res: Optional[cy.TierResult], plc, X: str, bounds: LayerBounds
 
 
 def stable_boundary(space, facts, plc, X: str, units: Tuple[str, ...], bounds: LayerBounds, budget: cy.QueryBudget,
-                    cache: dict) -> dict:
-    """Apply `units` one at a time to the cross of X; stop at the first prefix that is not stable.  Pure (cached)."""
-    key = ("stable", X, units, bounds.members, repr(budget))
+                    cache: dict, seated: bool = False) -> dict:
+    """Apply `units` one at a time to the cross of X; stop at the first prefix that is not stable.  Pure (cached).
+    seated=True (L-391): only the first N_SEATED units take a seat; the later units only add energy: they are applied
+    but are never a boundary step.  The boundary is the step before the first SEATED unit that makes the cross unstable;
+    if none does, no state is restored and the state read is the full-question read (all units applied)."""
+    key = (("stable-seated" if seated else "stable"), X, units, bounds.members, repr(budget))
     hit = cache.get(key)
     if hit is not None:
         return hit
     n = len(units)
     last, first_bad, res_last = 0, None, None
-    for j in range(1, n + 1):
+    top = min(n, N_SEATED) if seated else n
+    for j in range(1, top + 1):
         res = _prefix_read(space, facts, plc, X, units[:j], bounds, budget)
         if _is_stable_read(res):
             last, res_last = j, res
         else:
             first_bad = j
             break
+    state_stable = True
+    if seated and first_bad is None and n > top:
+        res_last = _prefix_read(space, facts, plc, X, units, bounds, budget)       # the energy-only units, applied
+        last = n
+        state_stable = _is_stable_read(res_last)
     ans = ro.read_out_result(space, res_last, facts) if res_last is not None and res_last.candidates else None
     rec = {"res": res_last, "ans": ans, "mem": (res_last.members_read, res_last.members_total) if res_last is not None else (0, 0),
            "boundary": {"query_units": n, "last_stable_step": last, "first_unstable_step": first_bad,
@@ -558,6 +574,9 @@ def stable_boundary(space, facts, plc, X: str, units: Tuple[str, ...], bounds: L
                         "unstable_unit_attached": (first_bad <= 6) if first_bad is not None else None,
                         "restored": first_bad is not None,
                         "read_at_step": last, "backup": backup_digest(res_last, plc, X, bounds)}}
+    if seated:
+        rec["boundary"].update({"mode": "seated", "seated_units": top, "state_stable": state_stable})
+        rec["res_stable"] = state_stable
     if len(cache) > 4000:
         cache.clear()
     cache[key] = rec
@@ -565,7 +584,8 @@ def stable_boundary(space, facts, plc, X: str, units: Tuple[str, ...], bounds: L
 
 
 def down_read_stable(stack: "LayerStack", chain: Sequence[Layer], k: int, b: str, ul: Sequence[Tuple[str, ...]],
-                     bounds: LayerBounds, budget: cy.QueryBudget, acc: _Acc, down_query: str = "question") -> None:
+                     bounds: LayerBounds, budget: cy.QueryBudget, acc: _Acc, down_query: str = "question",
+                     seated: bool = False) -> None:
     """As `down_read`, but the lower cross of the bundle b is read at its LAST STABLE step of the question (L-340..L-343)."""
     j = k - 1
     X = _strip(b)
@@ -577,7 +597,7 @@ def down_read_stable(stack: "LayerStack", chain: Sequence[Layer], k: int, b: str
     units = tuple(ul[j])
     if down_query == "seed+question":
         units = (X,) + tuple(u for u in units if u != X)
-    rec = stable_boundary(space, facts, plc, X, units, bounds, budget, cache)
+    rec = stable_boundary(space, facts, plc, X, units, bounds, budget, cache, seated)
     ans = rec["ans"]
     if (j, X) not in acc.seen:
         acc.seen.add((j, X))
@@ -588,7 +608,7 @@ def down_read_stable(stack: "LayerStack", chain: Sequence[Layer], k: int, b: str
                           "boundary": rec["boundary"]})
         if ans is not None:
             acc.answers.append((j, ans))
-        if rec["res"] is not None:
+        if rec["res"] is not None and rec.get("res_stable", True):
             acc.restored.append((j, rec["res"]))
     if ans is None:
         return
@@ -597,7 +617,100 @@ def down_read_stable(stack: "LayerStack", chain: Sequence[Layer], k: int, b: str
             if j == 0:
                 acc.words.setdefault(w, set()).update(ro.entry_word_sources(e, w))
             else:
-                down_read_stable(stack, chain, j, w, ul, bounds, budget, acc, down_query)
+                down_read_stable(stack, chain, j, w, ul, bounds, budget, acc, down_query, seated)
+
+
+# --------------------------------------------------------------------------
+# T8d (L-390..): candidate="stable-seats".  The restored stable state of a bundle's lower cross (L-341 boundary, whatever
+# step it was restored to, step 0 included) is shown AS IS, laid out by seats: the centre and the six arms with their
+# words in seat order.  No section path is needed, so a state restored to step 0 still gives a candidate.
+# --------------------------------------------------------------------------
+def layout_of(flat, label: Callable[[str], str]) -> tuple:
+    """(centre, arms): the six legs of the flat, outer seat first, empty OUTER seats (padding of a shorter cross) dropped,
+    None = an empty seat inside the leg; the legs in label order (the arms 1..6 of the candidate)."""
+    L = (len(flat) - 1) // cy.N_ARMS
+    legs = []
+    for a in range(cy.N_ARMS):
+        leg = [None if c is None else label(c) for c in flat[1 + a * L: 1 + (a + 1) * L]]
+        i = 0
+        while i < len(leg) and leg[i] is None:
+            i += 1
+        legs.append(tuple(leg[i:]))
+    legs.sort(key=lambda g: tuple("" if c is None else c for c in g))
+    return (label(flat[0]), tuple(legs))
+
+
+def seats_key(seats: tuple) -> tuple:
+    centre, arms = seats
+    return (centre, tuple(tuple("" if c is None else c for c in leg) for leg in arms))
+
+
+def seats_words(seats: tuple) -> Tuple[str, ...]:
+    centre, arms = seats
+    return tuple(sorted({centre} | {c for leg in arms for c in leg if c is not None}))
+
+
+def seats_obj(seats: tuple) -> dict:
+    centre, arms = seats
+    return {"centre": centre, "arms": [list(leg) for leg in arms], "n_words": len(seats_words(seats)),
+            "n_seats": sum(1 for leg in arms for c in leg if c is not None)}
+
+
+def state_flats(rec: dict, plc, X: str, bounds: LayerBounds) -> Tuple[tuple, ...]:
+    """The distinct arrangements (flats) of the restored stable state: the end states of the members at the restored step;
+    at step 0 the members of the stored cross.  Canonical order."""
+    res = rec["res"]
+    if res is None:
+        flats, _ = cy.members_of(plc.cross_for(X), bounds.members, True)
+    else:
+        flats = [e.flat for sr in res.reads for m in sr.members for e in m.settled.ends]
+    return tuple(sorted(dict.fromkeys(flats), key=pl._flat_sort_key))
+
+
+def seat_sources(base: TierSpace, seats: tuple) -> Dict[str, Tuple[int, ...]]:
+    """Per word of the layout the sentences that evidence a step between it and a neighbouring occupied seat (along its
+    leg; the inner end of a leg touches the centre); a word with no such sentence keeps all its own sentences."""
+    centre, arms = seats
+    post, su = base.postings, base.sentence_units
+    src: Dict[str, set] = {w: set() for w in seats_words(seats)}
+    for leg in arms:
+        row = tuple(leg) + (centre,)
+        for a, c in zip(row, row[1:]):
+            if a is None or c is None:
+                continue
+            for sid in set(post.get(a, ())) & set(post.get(c, ())):
+                if a in su[sid] and c in su[sid]:
+                    src[a].add(sid)
+                    src[c].add(sid)
+    return {w: tuple(sorted(ss if ss else post.get(w, ()))) for w, ss in src.items()}
+
+
+def down_read_seats(stack: "LayerStack", chain: Sequence[Layer], k: int, b: str, ul: Sequence[Tuple[str, ...]],
+                    bounds: LayerBounds, budget: cy.QueryBudget, acc: _Acc, down_query: str = "question") -> None:
+    """The restored stable state (L-341 boundary) of the lower cross packed in the bundle b, laid out by seats (L-390).
+    At layer >= 1 the seats hold bundles; a seat shows the base seed word of its bundle (L-393)."""
+    j = k - 1
+    X = _strip(b)
+    if j == 0:
+        space, facts, plc, cache = stack.base, stack.facts, stack.store, stack._down
+    else:
+        lay = chain[j - 1]
+        space, facts, plc, cache = lay.space, lay.facts, lay, lay._down
+    units = tuple(ul[j])
+    if down_query == "seed+question":
+        units = (X,) + tuple(u for u in units if u != X)
+    rec = stable_boundary(space, facts, plc, X, units, bounds, budget, cache)
+    flats = state_flats(rec, plc, X, bounds)
+    if not flats:
+        return
+    label = (lambda c: c) if j == 0 else (lambda c: _centre_word(None, c))
+    lay_out = layout_of(flats[0], label)
+    src = seat_sources(stack.base, lay_out)
+    n_seats = seats_obj(lay_out)["n_seats"]
+    acc.reads.append({"bundle": b, "layer": j, "seed": X, "units": len(units), "listed": 1,
+                      "members_read": rec["mem"][0], "members_total": rec["mem"][1], "words": sorted(src),
+                      "boundary": rec["boundary"], "seats": n_seats, "arrangements": len(flats)})
+    acc.seats.append({"layout": lay_out, "src": src, "arr": len(flats), "res": rec["res"], "j": j})
 
 
 def check_fixed_points(facts: cy.TierFacts, res: cy.TierResult) -> Tuple[int, List[str]]:
@@ -729,10 +842,63 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
     up_bundles: Optional[Tuple[str, ...]] = None
     without = 0
     bnds: List[dict] = []
-    if ans is not None and candidate in ("path", "stable"):
+    if ans is not None and candidate == "stable-seats":
+        if stack is None:
+            raise ValueError("candidate='stable-seats' needs the layer stack")
+        ul = [()] * layer.k
+        cur = units
+        for j in range(layer.k - 1, -1, -1):
+            cur = lower_units(cur)
+            ul[j] = cur
+        grp = {}
+        order = {}
+        for e in ans.entries:
+            for b in e.words:
+                order.setdefault(b, None)
+            for b in e.words:
+                acc = _Acc()
+                down_read_seats(stack, chain, layer.k, b, ul, bounds, budget, acc, down_query)
+                for d in acc.reads:
+                    if d not in bnds:
+                        bnds.append(d)
+                for st in acc.seats:
+                    lay_out = st["layout"]
+                    ws = seats_words(lay_out)
+                    le = LayerEntry(tier, layer.k, variant, ws, (b,),
+                                    tuple(sorted({_centre_word(layer, c) for c in e.centres})), e.stability, st["arr"],
+                                    tuple(sorted({sid for ss in st["src"].values() for sid in ss})),
+                                    tuple((w, st["src"][w]) for w in ws), tuple(acc.reads), (), True,
+                                    ((st["j"], st["res"]),) if st["res"] is not None else (), lay_out, candidate)
+                    grp.setdefault(seats_key(lay_out), []).append(le)
+        up_bundles = tuple(order)
+        for key in sorted(grp):                      # equal structured candidates are one entry (L-390)
+            g = grp[key]
+            src = {}
+            for x in g:
+                for w, ss in x.word_sources:
+                    src.setdefault(w, set()).update(ss)
+            pf: List[dict] = []
+            rs: List[Tuple[int, cy.TierResult]] = []
+            for x in g:
+                for d in x.path_from:
+                    if d not in pf:
+                        pf.append(d)
+                for it in x.restored:
+                    if not any(it[1] is y[1] for y in rs):
+                        rs.append(it)
+            ws = g[0].words
+            entries.append(LayerEntry(tier, layer.k, variant, ws, tuple(sorted({b for x in g for b in x.bundles})),
+                                      tuple(sorted({c for x in g for c in x.centres})), max(x.stability for x in g),
+                                      sum(x.arrangements for x in g), tuple(sorted({s_ for ss in src.values() for s_ in ss})),
+                                      tuple((w, tuple(sorted(src[w]))) for w in ws), tuple(pf), (), True, tuple(rs),
+                                      g[0].seats, candidate))
+    elif ans is not None and candidate in ("path", "stable", "stable-seated"):
         if stack is None:
             raise ValueError("candidate='path' needs the layer stack")
-        reader_fn = down_read_stable if candidate == "stable" else down_read
+        if candidate == "stable-seated":
+            reader_fn = lambda *a: down_read_stable(*a, seated=True)
+        else:
+            reader_fn = down_read_stable if candidate == "stable" else down_read
         ul: List[Tuple[str, ...]] = [()] * layer.k            # ul[j] = the question's units in layer j (0 = base words)
         cur = units
         for j in range(layer.k - 1, -1, -1):
@@ -746,7 +912,7 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
             acc = _Acc()
             for b in e.words:
                 reader_fn(stack, chain, layer.k, b, ul, bounds, budget, acc, down_query)
-            for d in (acc.reads if candidate == "stable" else ()):
+            for d in (acc.reads if candidate in ("stable", "stable-seated") else ()):
                 if d not in bnds:
                     bnds.append(d)
             if not acc.words:
@@ -757,7 +923,8 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
                             tuple(sorted({_centre_word(layer, c) for c in e.centres})), e.stability, e.count,
                             tuple(sorted({sid for ss in acc.words.values() for sid in ss})),
                             tuple((w, tuple(sorted(acc.words[w]))) for w in ws), tuple(acc.reads),
-                            tuple(acc.answers), candidate == "stable", tuple(acc.restored))
+                            tuple(acc.answers), candidate in ("stable", "stable-seated"), tuple(acc.restored), None,
+                            candidate if candidate == "stable-seated" else "")
             grp.setdefault(ws, []).append(le)
         up_bundles = tuple(order)
         for ws in sorted(grp):                       # entries whose path-word SET is the same are one entry (L-235)
@@ -783,7 +950,8 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
                                       tuple(sorted({c for x in g for c in x.centres})), max(x.stability for x in g),
                                       sum(x.arrangements for x in g), tuple(sorted({s_ for ss in src.values() for s_ in ss})),
                                       tuple((w, tuple(sorted(src[w]))) for w in ws), tuple(pf), tuple(pa),
-                                      candidate == "stable", tuple(rs)))
+                                      candidate in ("stable", "stable-seated"), tuple(rs), None,
+                                      candidate if candidate == "stable-seated" else ""))
     elif ans is not None:
         grp = {}
         for e in ans.entries:
@@ -1107,7 +1275,7 @@ def ask_layered(index: "A.Index", question: str, tiers: Optional[Sequence[str]] 
 
         out.append(run_layers(st, o.result, o.answer, opts, budget=budget, reask=reask))
     extra: Dict[int, tuple] = {}
-    if opts.candidate in ("path", "stable"):
+    if opts.candidate in PATHLIKE:
         for tl in out:
             for e in tl.entries:
                 for sid in e.source_sids:
