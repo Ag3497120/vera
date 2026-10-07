@@ -56,6 +56,41 @@ Local choices (design numbers where the design already numbered them; new ones f
   L-335 Ledger values are dict / list / str / int / bool / None only; floats and Fractions raise.
   L-336 `pack()` has no default origin: the caller states "new" (a child pack in its parent unit)
         or "inherited" (a woken carry), so a pack is never marked by a default (design 3.2).
+
+C2 (black unit acceptance and closing; new local choices from L-350; docs/LINE3_LOCAL_DECISIONS.md "C2"):
+  L-350 `Black` = one open unit as an immutable value (local space, settled class, L, budget).  `admit`
+        returns a NEW Black or raises `Collapse`; a failed admission therefore changes nothing and the
+        restore point is simply the earlier value (N-05).  The stream driver `BlackStream` holds the
+        mutable parts (open black, ledger, closed blacks).
+  L-351 The first element of an empty black, and any black that holds exactly one element after the
+        admission, is placed WITHOUT search (a one-element cross is trivially a fixed point, centre
+        non-empty L-77) and is never charged to the budget.  This is the progress guarantee L-308.
+  L-352 One `_Work` per admission, shared by the re-settle (L-71) and the insertion (L-64) (L-306); the
+        ledger records its two counters (states, moves).
+  L-353 An occurrence of a word that already sits in the black is an admission too: the scope grows, the
+        weights change, the class is re-settled (design 3.6 step 2).  (C0 skipped it, so its closed
+        classes were not always fixed points for the final scope.)
+  L-354 A `backup` event is written at the start of every sentence (the stable boundary the black can go
+        back to, owner's T8b answer); every collapse writes one `rollback` event whose `to` is the seq of
+        the restore point (the sentence's `backup`, or, for a split, the last `admit`); seq numbers every
+        event (owner after C1).  New field `to`; new kind `backup`.
+  L-355 Collapse on a sentence whose black held earlier sentences: restore the sentence boundary, close,
+        pack, open, replay the WHOLE sentence into the new black (OP-2 b).  Collapse inside an empty-at-
+        sentence-start black: `split` event, restore the last stable state, close from it, continue the
+        sentence in the new black from the word that did not fit.
+  L-356 Pack vocab = the union of the vocabs of the elements that are NEW in the black when it closes,
+        frozen at that moment (owner after C1); inherited elements add no words (L-312).
+  L-357 First group of two or more elements into an empty black (C3 carry hook): each element in turn is
+        the centre (L-304), the rest is inserted order-free, the results are pooled and settled together.
+        If that collapses and some of the group is an activation, the activation is deferred
+        (`activation_deferred` event, L-308) and the occurrence is admitted alone.
+  L-358 An admission that fails in a black that holds no element cannot happen (L-351); if it ever does,
+        RuntimeError, never a silent skip.  A sentence without any unit writes no event.
+  L-359 The time of every SUCCESSFUL admission (by the caller's `clock`; c2.py passes CPU time) is kept in
+        `BlackStream.event_secs` (admit seq, seconds) OUTSIDE the ledger, so the ledger stays byte-identical
+        across runs.  A collapsed attempt has no admit seq and its time is not in `event_secs`.
+  L-360 `stream_header` builds the ledger header (admission = OP-2 b, instability = OP-3 a); a custom
+        budget is written as "max_class=..,max_states=..,max_moves=..".
 """
 from __future__ import annotations
 
@@ -65,6 +100,7 @@ from dataclasses import dataclass, field
 from fractions import Fraction
 from typing import Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
+from verantyx.line3 import placement as pl
 from verantyx.line3.space import TierSpace
 
 LEDGER_FORMAT = "line3.carry.ledger.v1"                       # design 3.7
@@ -73,9 +109,9 @@ ORIGINS: Tuple[str, ...] = (ORIGIN_NEW, ORIGIN_INHERITED)
 STATUS_OPEN, STATUS_CLOSED = "open", "closed"                 # design 3.1 (C2/C3 hook: unit status)
 ORDER_KINDS: Tuple[str, ...] = ("file", "shuffle", "reverse")  # design 3.7 header.order.kind
 EVENT_KINDS: Tuple[str, ...] = ("admit", "rollback", "close", "pack", "open", "activate", "carry",
-                                "split", "activation_deferred")   # L-331
+                                "split", "activation_deferred", "backup")   # L-331, L-354 (backup)
 EVENT_FIELDS: Tuple[str, ...] = ("seq", "kind", "level", "unit", "item", "occ", "group", "activated",
-                                 "class_size", "L", "stop", "budget_reason", "work")   # design 3.7
+                                 "class_size", "L", "stop", "budget_reason", "work", "to")   # design 3.7; "to" = L-354
 HEADER_FIELDS: Tuple[str, ...] = ("format", "data_sha256", "tier", "unit_filter", "order", "order_sha256",
                                   "build_level", "admission", "copy", "instability", "code_commit")
 
@@ -481,3 +517,254 @@ def _check_inputs(scope: Sequence[Occ], elements: Sequence[Element], new_occs: S
     for e in tuple(elements) + tuple(new_elems):
         if e.kind == "pack" and e.id in words:
             raise ValueError("pack id %r equals a word surface (L-325)" % e.id)
+
+
+# ==========================================================================
+# C2: black unit acceptance and closing (design 3.6, 4.1, 4.2; OP-2 b, OP-3 a)
+# ==========================================================================
+# The only contact with placement's search is this adapter layer (`_settle`, `_insert_group`, `_Work`,
+# `canon`, `extend`, `min_L`, `Weights`, `verify_class` are placement's; placement.py is not modified).
+_NOCENTRE = (None,) * 6                                        # six empty arm seats at L = 1
+
+
+class Collapse(Exception):
+    """OP-3 (a): the black cannot settle to a tied class within the budget (L-72).  `reason` is the
+    budget limit that was exceeded ("max_states" | "max_moves" | "max_class"); states / moves are the
+    work counters at that moment."""
+
+    def __init__(self, reason: str, states: int, moves: int) -> None:
+        super().__init__(reason)
+        self.reason, self.states, self.moves = reason, states, moves
+
+
+def _work_obj(states: int, moves: int) -> dict:
+    return {"states": states, "moves": moves}
+
+
+@dataclass(frozen=True)
+class Black:                                                    # L-350
+    """One open unit of level `level`: its local space, the settled class (`state`: canonical flats of
+    element ids, the whole tied class, no twin quotient L-303), the arm length `L`."""
+    unit: str
+    level: int
+    space: LocalSpace
+    state: Tuple[pl.Flat, ...]
+    L: int
+    budget: pl.Budget
+
+    @staticmethod
+    def new(unit: str, tier: str, budget: pl.Budget, level: int = 0) -> "Black":
+        return Black(unit, level, LocalSpace.empty(tier), (), 1, budget)
+
+    @property
+    def n_elements(self) -> int:
+        return len(self.space.elements)
+
+    @property
+    def is_empty(self) -> bool:
+        return not self.space.elements
+
+    def admit(self, occs: Iterable[Occ], elements: Iterable[Element] = ()) -> Tuple["Black", dict]:
+        """Design 3.6 steps 1-3 for one item: add the occurrences to the scope (step 1), re-settle the
+        class under the new weights (step 2), insert the new elements as one group and settle (step 3).
+        Returns (new Black, work) or raises `Collapse` (step 4).  Nothing is changed on failure (L-350)."""
+        occs, elements = tuple(occs), tuple(elements)
+        space = self.space.with_occurrences(occs).with_elements(elements)
+        group = tuple(sorted(e.id for e in elements))           # a label order; the insert is order-free
+        work = pl._Work(self.budget)
+        try:
+            state, L = self._settle_into(space, group, work)
+        except pl._Over as e:
+            raise Collapse(str(e.args[0]) if e.args else "budget", work.n, work.tested) from None
+        return Black(self.unit, self.level, space, state, L, self.budget), _work_obj(work.n, work.tested)
+
+    def _settle_into(self, space: LocalSpace, group: Tuple[str, ...], work) -> Tuple[Tuple[pl.Flat, ...], int]:
+        size, total = self.n_elements, self.n_elements + len(group)
+        if total == 0:
+            raise ValueError("an admission must bring at least one element")
+        if total == 1:                                           # L-351: trivially stable, no budget
+            only = group[0] if group else space.elements[0].id
+            return (pl.canon((only,) + _NOCENTRE, 1),), 1
+        w = pl.Weights(space.to_tier())
+        b = self.budget
+        if size == 0:                                            # L-357 (L-304): first group, >= 2 elements
+            L = pl.min_L(len(group))
+            pool: Dict[pl.Flat, None] = {}
+            for c in group:
+                rest = tuple(g for g in group if g != c)
+                base = pl.extend(pl.canon((c,) + _NOCENTRE, 1), 1, L)
+                for f in pl._insert_group(w, [base], L, rest, work, b):
+                    pool[f] = None
+            return pl._settle(w, list(pool), L, work, b), L
+        base = list(pl._settle(w, list(self.state), self.L, work, b))   # step 2 (L-71)
+        L = self.L
+        if group:                                                # step 3 (L-64): one group, order-free
+            L3 = pl.min_L(total)
+            if L3 > L:
+                base = [pl.extend(x, L, L3) for x in base]
+            base = list(pl._settle(w, pl._insert_group(w, base, L3, group, work, b), L3, work, b))
+            L = L3
+        return tuple(base), L
+
+    def crosses(self):
+        return tuple(pl.to_cross(f, self.L) for f in self.state)
+
+    def verify(self) -> "pl.ClassReport":
+        """Independent check (placement.verify_class: geometry's moves, not the search's code) that the
+        settled class is one key, a fixed point at every member and closed under equal-key moves."""
+        return pl.verify_class(self.space.to_tier(), self.crosses())
+
+
+@dataclass(frozen=True)
+class Pack:                                                     # design 3.3 (level k+1 element of a closed unit k)
+    id: str
+    unit: str                                                   # the unit it was made from (condition 1)
+    level: int                                                  # level of the pack (= unit level + 1)
+    own_occ: Tuple[Occ, ...]                                    # provenance: the scope of `unit`
+    vocab: frozenset                                            # L-356: frozen at close time
+    state: Tuple[pl.Flat, ...]
+    L: int
+    close_seq: int
+    closed_by: str                                              # the budget reason that collapsed the black
+
+    def as_element(self, origin: str) -> Element:               # L-336: the caller states the origin
+        return pack(self.id, self.vocab, origin)
+
+
+@dataclass(frozen=True)
+class ClosedBlack:
+    black: Black
+    pack: Pack
+    close_seq: int
+    pack_seq: int
+    reason: str
+
+    @property
+    def unit(self) -> str:
+        return self.black.unit
+
+    def verify(self) -> "pl.ClassReport":
+        return self.black.verify()
+
+
+def stream_header(tier: str, sids: Sequence[int], budget: pl.Budget, *, data_sha256: Optional[str] = None,
+                  unit_filter: Optional[str] = None, order_kind: str = "file", order_seed: Optional[int] = None,
+                  code_commit: Optional[str] = None) -> dict:   # L-360
+    lv = pl.level_name(budget)
+    return {"format": LEDGER_FORMAT, "data_sha256": data_sha256, "tier": tier, "unit_filter": unit_filter,
+            "order": {"kind": order_kind, "seed": order_seed}, "order_sha256": order_sha256(sids),
+            "build_level": lv if lv is not None else "max_class=%d,max_states=%d,max_moves=%d" % (
+                budget.max_class, budget.max_states, budget.max_moves),
+            "admission": "OP-2(b): close only at sentence boundaries; a sentence that does not fit an empty black is split",
+            "copy": "OP-1(a): carried packs stay asleep (C3)",
+            "instability": "OP-3(a): no tied class within the budget",
+            "code_commit": code_commit}
+
+
+class BlackStream:
+    """The stream feed of level 0 (design 4.2 `admit_sentence`).  Sentences are fed in the recorded
+    order; the black accepts one occurrence at a time (a word); it closes only at sentence boundaries
+    (OP-2 b) when an admission collapses (OP-3 a), after restoring the last stable state (N-05, owner's
+    T8b answer).  C3 hooks: `wake(black, occ)` (elements to wake with an occurrence; default none) and
+    `_after_close(closed)` (carry / carry-up; default nothing)."""
+
+    def __init__(self, tier: str, budget: pl.Budget, ledger: Ledger,
+                 wake=None, clock=None) -> None:
+        self.tier, self.budget, self.ledger = tier, budget, ledger
+        self.wake = wake
+        self.clock = clock                                       # L-359: e.g. time.process_time
+        self.event_secs: List[Tuple[int, float]] = []
+        self.closed: List[ClosedBlack] = []
+        self.split_sids: List[int] = []                          # a sid per `split` event (a sentence split twice appears twice)
+        self._j = 0
+        self.black = Black.new("U0:0", tier, budget)
+        self._stable_seq = self.ledger.append("open", level=0, unit=self.black.unit, L=1, class_size=0)
+
+    # -- one sentence ------------------------------------------------------
+    def feed_sentence(self, sid: int, occs: Iterable[Occ]) -> None:
+        occs = tuple(occs)
+        if not occs:                                             # L-358
+            return
+        if any(o.sid != sid for o in occs):
+            raise ValueError("every occurrence must belong to sentence %d" % sid)
+        mark = self.black
+        self._stable_seq = self.ledger.append("backup", level=0, unit=mark.unit, item=sid,
+                                              class_size=len(mark.state), L=mark.L)
+        mark_seq = self._stable_seq
+        k, why = self._run(occs, 0)
+        if k is not None and not mark.is_empty:                  # OP-2 (b): back to the sentence boundary, close
+            self.black = mark
+            self._stable_seq = mark_seq
+            self.ledger.append("rollback", level=0, unit=mark.unit, occ=[occs[k].sid, occs[k].pos],
+                               item=occs[k].unit, stop="budget", budget_reason=why[0], work=why[1], to=mark_seq,
+                               class_size=len(mark.state), L=mark.L)
+            self._close(why[0], occs[k])
+            k, why = self._run(occs, 0)                          # the whole sentence into the new black
+        while k is not None:                                     # does not fit an empty black: split here
+            o = occs[k]
+            if self.black.is_empty:
+                raise RuntimeError("an empty black refused an element (L-308 violated)")   # L-358
+            self.ledger.append("rollback", level=0, unit=self.black.unit, occ=[o.sid, o.pos], item=o.unit,
+                               stop="budget", budget_reason=why[0], work=why[1], to=self._stable_seq,
+                               class_size=len(self.black.state), L=self.black.L)
+            self.ledger.append("split", level=0, unit=self.black.unit, occ=[o.sid, o.pos], item=o.unit,
+                               budget_reason=why[0])
+            self.split_sids.append(sid)
+            self._close(why[0], o)
+            k, why = self._run(occs, k)
+
+    def feed_tier(self, tier: TierSpace, sids: Iterable[int]) -> None:
+        for s in sids:
+            self.feed_sentence(s, occurrences_of(tier, s))
+
+    # -- one occurrence ----------------------------------------------------
+    def _run(self, occs: Tuple[Occ, ...], start: int):
+        """Admit occs[start:] one by one into the open black.  Returns (None, None) when all went in, or
+        (index, (reason, work)) of the first occurrence that collapsed the black (nothing of it kept)."""
+        for k in range(start, len(occs)):
+            o = occs[k]
+            known = {e.id for e in self.black.space.elements}
+            new = [] if o.unit in known else [word(o.unit)]
+            act = tuple(self.wake(self.black, o)) if self.wake is not None else ()
+            t0 = self.clock() if self.clock else 0.0
+            try:
+                try:
+                    nb, work = self.black.admit([o], new + list(act))
+                except Collapse as c:
+                    if not (self.black.is_empty and act):
+                        raise
+                    # L-308 / L-357: deferred activation; the occurrence alone is trivially stable
+                    self.ledger.append("activation_deferred", level=0, unit=self.black.unit, occ=[o.sid, o.pos],
+                                       item=o.unit, group=sorted(e.id for e in act), budget_reason=c.reason)
+                    act = ()
+                    nb, work = self.black.admit([o], new)
+            except Collapse as c:
+                return k, (c.reason, _work_obj(c.states, c.moves))
+            self.black = nb
+            self._stable_seq = self.ledger.append(
+                "admit", level=0, unit=nb.unit, item=o.unit, occ=[o.sid, o.pos],
+                group=sorted(e.id for e in new) + sorted(e.id for e in act),
+                activated=sorted(e.id for e in act), class_size=len(nb.state), L=nb.L, stop="stable", work=work)
+            if self.clock:
+                self.event_secs.append((self._stable_seq, self.clock() - t0))
+        return None, None
+
+    # -- closing (design 4.2 close_and_carry, level 0 part) ----------------
+    def _close(self, reason: str, occ: Occ) -> None:
+        b = self.black
+        vocab = frozenset(w for e in b.space.elements if e.origin == ORIGIN_NEW for w in e.vocab)   # L-356
+        cseq = self.ledger.append("close", level=0, unit=b.unit, occ=[occ.sid, occ.pos], class_size=len(b.state),
+                                  L=b.L, stop="budget", budget_reason=reason, to=self._stable_seq)
+        pk = Pack("P1:%d" % self._j, b.unit, b.level + 1, b.space.scope, vocab, b.state, b.L, cseq, reason)
+        pseq = self.ledger.append("pack", level=1, unit=b.unit, item=pk.id, group=sorted(vocab),
+                                  class_size=len(b.state), L=b.L)
+        cb = ClosedBlack(b, pk, cseq, pseq, reason)
+        self.closed.append(cb)
+        self._j += 1
+        self.black = Black.new("U0:%d" % self._j, self.tier, self.budget)
+        self._stable_seq = self.ledger.append("open", level=0, unit=self.black.unit, L=1, class_size=0)
+        self._after_close(cb)
+
+    def _after_close(self, closed: ClosedBlack) -> None:
+        """C3 hook: carry-up of the pack to level 1 and the carry copy into the new black.  Nothing in C2."""
+        return None
