@@ -1,0 +1,367 @@
+# Trivial keyword baselines (see baselines.py docstring)
+# units: fulllead sentences=592, s3000 sentences=3000
+# unans: every query returns a non-empty candidate set (keyword lookup never abstains).
+
+## bank2.tsv [all]  (128 items)
+### tokenizer=mecab
+kind            n   B1 gold-in-cand   B2 gold-in-cand   mean|cand| B1/B2   returned B1/B2
+intra2          69   47/69 (68%)       57/69 (83%)         2.0/  2.8    69/69 , 69/69
+cross2           9   2/9 (22%)         8/9 (89%)           7.9/  9.2    9/9 , 9/9
+unans-fulllead  25   -                 -                   4.5/  6.6    25/25 , 25/25
+unans-s3000     25   -                 -                  11.8/ 13.1    25/25 , 25/25
+
+### tokenizer=bigram
+kind            n   B1 gold-in-cand   B2 gold-in-cand   mean|cand| B1/B2   returned B1/B2
+intra2          69   38/69 (55%)       54/69 (78%)         1.2/  1.9    69/69 , 69/69
+cross2           9   1/9 (11%)         9/9 (100%)          2.1/  3.2    9/9 , 9/9
+unans-fulllead  25   -                 -                   3.5/  5.5    25/25 , 25/25
+unans-s3000     25   -                 -                   1.3/  2.0    25/25 , 25/25
+
+per-item (tokenizer id B1 B2 |c1| |c2| topscore) for answerable items:
+  mecab I2-001 0 1 2 3 2
+  mecab I2-002 1 1 1 1 4
+  mecab I2-003 1 1 5 5 2
+  mecab I2-004 1 1 5 5 2
+  mecab I2-005 0 1 1 2 3
+  mecab I2-006 0 1 2 3 3
+  mecab I2-007 1 1 3 3 2
+  mecab I2-008 1 1 2 3 2
+  mecab I2-009 1 1 1 1 4
+  mecab I2-010 1 1 2 2 2
+  mecab I2-011 0 0 3 5 2
+  mecab I2-012 1 1 3 4 2
+  mecab I2-013 1 1 1 2 3
+  mecab I2-014 0 0 1 2 3
+  mecab I2-015 1 1 2 2 4
+  mecab I2-016 1 1 1 2 5
+  mecab I2-017 0 1 1 2 2
+  mecab I2-018 1 1 1 1 4
+  mecab I2-019 0 1 1 2 2
+  mecab I2-020 1 1 34 42 1
+  mecab I2-021 1 1 1 2 4
+  mecab I2-022 1 1 1 2 5
+  mecab I2-023 1 1 1 1 2
+  mecab I2-024 1 1 1 1 5
+  mecab I2-025 0 1 1 2 4
+  mecab I2-026 0 1 1 2 3
+  mecab I2-027 1 1 1 2 3
+  mecab I2-028 1 1 1 1 3
+  mecab I2-029 0 0 1 2 5
+  mecab I2-030 1 1 1 2 4
+  mecab I2-031 0 0 1 2 4
+  mecab I2-032 1 1 1 1 5
+  mecab I2-033 0 0 1 1 2
+  mecab I2-034 1 1 1 2 4
+  mecab I2-035 1 1 2 2 3
+  mecab I2-036 0 1 3 4 2
+  mecab I2-037 0 0 1 2 2
+  mecab I2-038 1 1 2 4 2
+  mecab I2-039 0 0 1 2 2
+  mecab I2-040 1 1 1 1 3
+  mecab I2-041 1 1 2 2 3
+  mecab I2-042 1 1 1 1 5
+  mecab I2-043 1 1 1 1 4
+  mecab I2-044 1 1 1 1 3
+  mecab I2-045 1 1 8 12 2
+  mecab I2-046 0 1 1 2 4
+  mecab I2-047 0 1 1 2 7
+  mecab I2-048 1 1 1 1 8
+  mecab I2-050 1 1 1 2 4
+  mecab C2-006 0 1 2 3 6
+  mecab C2-018 0 1 1 2 7
+  mecab C2-020 0 0 3 4 3
+  mecab C2-021 0 1 1 2 4
+  mecab C2-022 0 1 1 3 3
+  mecab C2-024 0 1 1 2 4
+  mecab C2-026 0 1 1 2 5
+  mecab C2-029 1 1 29 30 3
+  mecab R2-I001 1 1 2 3 3
+  mecab R2-I002 1 1 1 1 5
+  mecab R2-I003 0 0 1 2 4
+  mecab R2-I004 1 1 1 1 5
+  mecab R2-I005 1 1 1 1 7
+  mecab R2-I006 0 0 1 2 3
+  mecab R2-I007 1 1 2 4 2
+  mecab R2-I008 1 1 1 2 4
+  mecab R2-I009 1 1 1 1 5
+  mecab R2-I010 1 1 1 1 7
+  mecab R2-I011 1 1 1 1 4
+  mecab R2-I012 0 0 1 1 3
+  mecab R2-I013 0 0 1 2 4
+  mecab R2-I014 1 1 4 6 2
+  mecab R2-I015 1 1 1 1 8
+  mecab R2-I016 1 1 2 3 6
+  mecab R2-I017 1 1 1 1 5
+  mecab R2-I018 1 1 1 2 4
+  mecab R2-I019 1 1 1 2 6
+  mecab R2-I020 0 0 1 2 8
+  mecab R2-C006 1 1 32 35 1
+  bigram I2-001 0 1 2 3 7
+  bigram I2-002 1 1 1 1 11
+  bigram I2-003 0 1 1 2 4
+  bigram I2-004 0 1 1 2 4
+  bigram I2-005 0 1 1 2 4
+  bigram I2-006 1 1 5 5 3
+  bigram I2-007 1 1 2 2 6
+  bigram I2-008 1 1 2 3 3
+  bigram I2-009 1 1 1 2 7
+  bigram I2-010 0 1 1 2 13
+  bigram I2-011 0 0 1 1 2
+  bigram I2-012 1 1 2 2 4
+  bigram I2-013 1 1 1 2 4
+  bigram I2-014 0 0 1 2 3
+  bigram I2-015 1 1 1 1 7
+  bigram I2-016 1 1 1 2 15
+  bigram I2-017 0 1 1 2 4
+  bigram I2-018 1 1 1 1 9
+  bigram I2-019 0 1 1 2 8
+  bigram I2-020 0 0 1 1 3
+  bigram I2-021 1 1 1 2 8
+  bigram I2-022 1 1 1 2 9
+  bigram I2-023 1 1 1 1 6
+  bigram I2-024 1 1 2 2 6
+  bigram I2-025 0 1 1 2 7
+  bigram I2-026 0 1 1 2 5
+  bigram I2-027 1 1 1 2 12
+  bigram I2-028 1 1 1 1 5
+  bigram I2-029 0 0 1 2 10
+  bigram I2-030 1 1 1 2 6
+  bigram I2-031 0 0 1 2 6
+  bigram I2-032 1 1 1 1 13
+  bigram I2-033 0 0 1 2 9
+  bigram I2-034 0 1 1 2 7
+  bigram I2-035 0 1 1 2 4
+  bigram I2-036 0 1 1 2 3
+  bigram I2-037 1 1 2 4 4
+  bigram I2-038 1 1 1 2 6
+  bigram I2-039 0 0 1 2 2
+  bigram I2-040 1 1 1 1 4
+  bigram I2-041 0 1 1 2 10
+  bigram I2-042 1 1 1 1 6
+  bigram I2-043 1 1 1 1 5
+  bigram I2-044 1 1 1 1 5
+  bigram I2-045 0 0 1 2 5
+  bigram I2-046 0 1 1 2 13
+  bigram I2-047 0 1 1 2 21
+  bigram I2-048 1 1 1 1 18
+  bigram I2-050 1 1 1 2 15
+  bigram C2-006 0 1 1 2 5
+  bigram C2-018 0 1 1 2 15
+  bigram C2-020 0 1 4 6 3
+  bigram C2-021 0 1 1 2 15
+  bigram C2-022 0 1 1 3 7
+  bigram C2-024 0 1 1 2 6
+  bigram C2-026 0 1 1 2 7
+  bigram C2-029 1 1 2 2 5
+  bigram R2-I001 0 0 1 2 12
+  bigram R2-I002 1 1 1 1 7
+  bigram R2-I003 0 0 1 2 5
+  bigram R2-I004 1 1 1 1 8
+  bigram R2-I005 1 1 1 1 16
+  bigram R2-I006 0 0 1 2 4
+  bigram R2-I007 1 1 2 4 3
+  bigram R2-I008 1 1 1 2 7
+  bigram R2-I009 1 1 1 1 4
+  bigram R2-I010 1 1 1 1 8
+  bigram R2-I011 1 1 1 1 8
+  bigram R2-I012 0 1 2 3 7
+  bigram R2-I013 0 0 1 2 8
+  bigram R2-I014 0 0 1 2 6
+  bigram R2-I015 1 1 1 1 19
+  bigram R2-I016 0 0 1 2 19
+  bigram R2-I017 1 1 1 1 18
+  bigram R2-I018 1 1 1 2 8
+  bigram R2-I019 0 0 1 2 8
+  bigram R2-I020 1 1 2 4 14
+  bigram R2-C006 0 1 7 8 3
+
+## bank2.tsv [round 1]  (97 items)
+### tokenizer=mecab
+kind            n   B1 gold-in-cand   B2 gold-in-cand   mean|cand| B1/B2   returned B1/B2
+intra2          49   32/49 (65%)       42/49 (86%)         2.3/  3.1    49/49 , 49/49
+cross2           8   1/8 (12%)         7/8 (88%)           4.9/  6.0    8/8 , 8/8
+unans-fulllead  20   -                 -                   2.8/  4.5    20/20 , 20/20
+unans-s3000     20   -                 -                  14.1/ 15.7    20/20 , 20/20
+
+### tokenizer=bigram
+kind            n   B1 gold-in-cand   B2 gold-in-cand   mean|cand| B1/B2   returned B1/B2
+intra2          49   26/49 (53%)       41/49 (84%)         1.2/  1.9    49/49 , 49/49
+cross2           8   1/8 (12%)         8/8 (100%)          1.5/  2.6    8/8 , 8/8
+unans-fulllead  20   -                 -                   1.4/  2.5    20/20 , 20/20
+unans-s3000     20   -                 -                   1.4/  2.1    20/20 , 20/20
+
+per-item (tokenizer id B1 B2 |c1| |c2| topscore) for answerable items:
+  mecab I2-001 0 1 2 3 2
+  mecab I2-002 1 1 1 1 4
+  mecab I2-003 1 1 5 5 2
+  mecab I2-004 1 1 5 5 2
+  mecab I2-005 0 1 1 2 3
+  mecab I2-006 0 1 2 3 3
+  mecab I2-007 1 1 3 3 2
+  mecab I2-008 1 1 2 3 2
+  mecab I2-009 1 1 1 1 4
+  mecab I2-010 1 1 2 2 2
+  mecab I2-011 0 0 3 5 2
+  mecab I2-012 1 1 3 4 2
+  mecab I2-013 1 1 1 2 3
+  mecab I2-014 0 0 1 2 3
+  mecab I2-015 1 1 2 2 4
+  mecab I2-016 1 1 1 2 5
+  mecab I2-017 0 1 1 2 2
+  mecab I2-018 1 1 1 1 4
+  mecab I2-019 0 1 1 2 2
+  mecab I2-020 1 1 34 42 1
+  mecab I2-021 1 1 1 2 4
+  mecab I2-022 1 1 1 2 5
+  mecab I2-023 1 1 1 1 2
+  mecab I2-024 1 1 1 1 5
+  mecab I2-025 0 1 1 2 4
+  mecab I2-026 0 1 1 2 3
+  mecab I2-027 1 1 1 2 3
+  mecab I2-028 1 1 1 1 3
+  mecab I2-029 0 0 1 2 5
+  mecab I2-030 1 1 1 2 4
+  mecab I2-031 0 0 1 2 4
+  mecab I2-032 1 1 1 1 5
+  mecab I2-033 0 0 1 1 2
+  mecab I2-034 1 1 1 2 4
+  mecab I2-035 1 1 2 2 3
+  mecab I2-036 0 1 3 4 2
+  mecab I2-037 0 0 1 2 2
+  mecab I2-038 1 1 2 4 2
+  mecab I2-039 0 0 1 2 2
+  mecab I2-040 1 1 1 1 3
+  mecab I2-041 1 1 2 2 3
+  mecab I2-042 1 1 1 1 5
+  mecab I2-043 1 1 1 1 4
+  mecab I2-044 1 1 1 1 3
+  mecab I2-045 1 1 8 12 2
+  mecab I2-046 0 1 1 2 4
+  mecab I2-047 0 1 1 2 7
+  mecab I2-048 1 1 1 1 8
+  mecab I2-050 1 1 1 2 4
+  mecab C2-006 0 1 2 3 6
+  mecab C2-018 0 1 1 2 7
+  mecab C2-020 0 0 3 4 3
+  mecab C2-021 0 1 1 2 4
+  mecab C2-022 0 1 1 3 3
+  mecab C2-024 0 1 1 2 4
+  mecab C2-026 0 1 1 2 5
+  mecab C2-029 1 1 29 30 3
+  bigram I2-001 0 1 2 3 7
+  bigram I2-002 1 1 1 1 11
+  bigram I2-003 0 1 1 2 4
+  bigram I2-004 0 1 1 2 4
+  bigram I2-005 0 1 1 2 4
+  bigram I2-006 1 1 5 5 3
+  bigram I2-007 1 1 2 2 6
+  bigram I2-008 1 1 2 3 3
+  bigram I2-009 1 1 1 2 7
+  bigram I2-010 0 1 1 2 13
+  bigram I2-011 0 0 1 1 2
+  bigram I2-012 1 1 2 2 4
+  bigram I2-013 1 1 1 2 4
+  bigram I2-014 0 0 1 2 3
+  bigram I2-015 1 1 1 1 7
+  bigram I2-016 1 1 1 2 15
+  bigram I2-017 0 1 1 2 4
+  bigram I2-018 1 1 1 1 9
+  bigram I2-019 0 1 1 2 8
+  bigram I2-020 0 0 1 1 3
+  bigram I2-021 1 1 1 2 8
+  bigram I2-022 1 1 1 2 9
+  bigram I2-023 1 1 1 1 6
+  bigram I2-024 1 1 2 2 6
+  bigram I2-025 0 1 1 2 7
+  bigram I2-026 0 1 1 2 5
+  bigram I2-027 1 1 1 2 12
+  bigram I2-028 1 1 1 1 5
+  bigram I2-029 0 0 1 2 10
+  bigram I2-030 1 1 1 2 6
+  bigram I2-031 0 0 1 2 6
+  bigram I2-032 1 1 1 1 13
+  bigram I2-033 0 0 1 2 9
+  bigram I2-034 0 1 1 2 7
+  bigram I2-035 0 1 1 2 4
+  bigram I2-036 0 1 1 2 3
+  bigram I2-037 1 1 2 4 4
+  bigram I2-038 1 1 1 2 6
+  bigram I2-039 0 0 1 2 2
+  bigram I2-040 1 1 1 1 4
+  bigram I2-041 0 1 1 2 10
+  bigram I2-042 1 1 1 1 6
+  bigram I2-043 1 1 1 1 5
+  bigram I2-044 1 1 1 1 5
+  bigram I2-045 0 0 1 2 5
+  bigram I2-046 0 1 1 2 13
+  bigram I2-047 0 1 1 2 21
+  bigram I2-048 1 1 1 1 18
+  bigram I2-050 1 1 1 2 15
+  bigram C2-006 0 1 1 2 5
+  bigram C2-018 0 1 1 2 15
+  bigram C2-020 0 1 4 6 3
+  bigram C2-021 0 1 1 2 15
+  bigram C2-022 0 1 1 3 7
+  bigram C2-024 0 1 1 2 6
+  bigram C2-026 0 1 1 2 7
+  bigram C2-029 1 1 2 2 5
+
+## bank2.tsv [round 2]  (31 items)
+### tokenizer=mecab
+kind            n   B1 gold-in-cand   B2 gold-in-cand   mean|cand| B1/B2   returned B1/B2
+intra2          20   15/20 (75%)       15/20 (75%)         1.3/  1.9    20/20 , 20/20
+cross2           1   1/1 (100%)        1/1 (100%)         32.0/ 35.0    1/1 , 1/1
+unans-fulllead   5   -                 -                  11.6/ 15.4    5/5 , 5/5
+unans-s3000      5   -                 -                   2.4/  3.0    5/5 , 5/5
+
+### tokenizer=bigram
+kind            n   B1 gold-in-cand   B2 gold-in-cand   mean|cand| B1/B2   returned B1/B2
+intra2          20   12/20 (60%)       13/20 (65%)         1.1/  1.9    20/20 , 20/20
+cross2           1   0/1 (0%)          1/1 (100%)          7.0/  8.0    1/1 , 1/1
+unans-fulllead   5   -                 -                  11.6/ 17.2    5/5 , 5/5
+unans-s3000      5   -                 -                   1.0/  1.4    5/5 , 5/5
+
+per-item (tokenizer id B1 B2 |c1| |c2| topscore) for answerable items:
+  mecab R2-I001 1 1 2 3 3
+  mecab R2-I002 1 1 1 1 5
+  mecab R2-I003 0 0 1 2 4
+  mecab R2-I004 1 1 1 1 5
+  mecab R2-I005 1 1 1 1 7
+  mecab R2-I006 0 0 1 2 3
+  mecab R2-I007 1 1 2 4 2
+  mecab R2-I008 1 1 1 2 4
+  mecab R2-I009 1 1 1 1 5
+  mecab R2-I010 1 1 1 1 7
+  mecab R2-I011 1 1 1 1 4
+  mecab R2-I012 0 0 1 1 3
+  mecab R2-I013 0 0 1 2 4
+  mecab R2-I014 1 1 4 6 2
+  mecab R2-I015 1 1 1 1 8
+  mecab R2-I016 1 1 2 3 6
+  mecab R2-I017 1 1 1 1 5
+  mecab R2-I018 1 1 1 2 4
+  mecab R2-I019 1 1 1 2 6
+  mecab R2-I020 0 0 1 2 8
+  mecab R2-C006 1 1 32 35 1
+  bigram R2-I001 0 0 1 2 12
+  bigram R2-I002 1 1 1 1 7
+  bigram R2-I003 0 0 1 2 5
+  bigram R2-I004 1 1 1 1 8
+  bigram R2-I005 1 1 1 1 16
+  bigram R2-I006 0 0 1 2 4
+  bigram R2-I007 1 1 2 4 3
+  bigram R2-I008 1 1 1 2 7
+  bigram R2-I009 1 1 1 1 4
+  bigram R2-I010 1 1 1 1 8
+  bigram R2-I011 1 1 1 1 8
+  bigram R2-I012 0 1 2 3 7
+  bigram R2-I013 0 0 1 2 8
+  bigram R2-I014 0 0 1 2 6
+  bigram R2-I015 1 1 1 1 19
+  bigram R2-I016 0 0 1 2 19
+  bigram R2-I017 1 1 1 1 18
+  bigram R2-I018 1 1 1 2 8
+  bigram R2-I019 0 0 1 2 8
+  bigram R2-I020 1 1 2 4 14
+  bigram R2-C006 0 1 7 8 3
+

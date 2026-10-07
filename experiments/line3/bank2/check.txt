@@ -1,0 +1,14 @@
+bank: /Users/motonisihikoudai/Projects/vera-impl/wt/line3/experiments/line3/bank2/bank2.tsv
+corpora: /Users/motonisihikoudai/Projects/vera-impl/wt/line3/experiments/line3/data
+Questions: 128  (round 1: 97, round 2: 31)
+Kinds: intra2=69, cross2=9, unans=50
+Unans split: fulllead=25, s3000=25
+Audit: valid=90, fixed=38
+Cross2 A sentences with >=2 other S3000 titles: 1/9
+Unique IDs: 128/128
+Constraint errors: 0
+Warnings: 4
+WARN C2-022: B title 'テニス' occurs in the question
+WARN C2-022: A title contains B title 'テニス'
+WARN US-020: subject mentioned in other articles: ['2020年東京オリンピックのレバノン選手団'] (checked by hand)
+WARN R2-U010: subject mentioned in other articles: ['2020年東京オリンピックのレバノン選手団'] (checked by hand)

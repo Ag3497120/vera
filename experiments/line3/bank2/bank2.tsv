@@ -1,0 +1,129 @@
+#id	kind	corpus	subject	question	gold	evidence	audit
+I2-001	intra2	fulllead	ハッシュテーブル	ハッシュテーブルの別名は何ですか	ハッシュ表	ハッシュテーブル#1	valid
+I2-002	intra2	fulllead	連結グラフ	連結グラフで、極大で連結な部分グラフは何と呼ばれますか	連結成分	連結グラフ#2	fixed
+I2-003	intra2	fulllead	川原石駅	川原石駅の駅番号は何ですか	JR-Y13	川原石駅#1	valid
+I2-004	intra2	fulllead	花園町駅	花園町駅の駅番号は何ですか	Y17	花園町駅#1	valid
+I2-005	intra2	fulllead	海老津駅	海老津駅の駅番号は何ですか	JA16	海老津駅#1	valid
+I2-006	intra2	fulllead	海浦駅	海浦駅の駅番号は何ですか	OR08	海浦駅#1	valid
+I2-007	intra2	fulllead	沢辺駅	沢辺駅が廃駅となったのは何に伴うものですか	路線の廃止	沢辺駅#1	valid
+I2-008	intra2	fulllead	唯物史観	唯物史観を唱えた人物は誰ですか	カール・マルクス	唯物史観#1	valid
+I2-009	intra2	fulllead	ビー・ジーズ	ビー・ジーズのメンバー全員が共通して担当する役割は何ですか	ボーカル	ビー・ジーズ#1	valid
+I2-010	intra2	fulllead	ブリティッシュ・エアウェイズ	ブリティッシュ・エアウェイズはヨーロッパで何位の規模ですか	3位	ブリティッシュ・エアウェイズ#1	valid
+I2-011	intra2	fulllead	改名	「改名」と同じ意味の語は何ですか	改称	改名#1	valid
+I2-012	intra2	fulllead	富岡八幡宮	富岡八幡宮は通称で何と呼ばれますか	深川八幡宮	富岡八幡宮#1	valid
+I2-013	intra2	fulllead	千葉神社	千葉神社の旧社格は何ですか	県社	千葉神社#1	valid
+I2-014	intra2	fulllead	千葉神社	千葉神社の社紋は何ですか	九曜紋	千葉神社#2	valid
+I2-015	intra2	fulllead	七里村	七里村の地域は現在、どの市のどの区の一部にあたりますか	さいたま市見沼区	七里村#1	valid
+I2-016	intra2	fulllead	ヒルフィギュア	ヒルフィギュアは、どこから見ることを意識して作られていますか	地上から	ヒルフィギュア#3	valid
+I2-017	intra2	fulllead	IEEE 488	IEEE 488の通称は何ですか	GPIB	IEEE 488#1	valid
+I2-018	intra2	fulllead	水戸東照宮	水戸東照宮は一般に何と呼ばれていますか	権現さん	水戸東照宮#2	valid
+I2-019	intra2	fulllead	CUBE JUICE	CUBE JUICEのマスコットの名前は何ですか	BAN BAN	CUBE JUICE#1	valid
+I2-020	intra2	fulllead	善五郎	善五郎の当代は何代目ですか	17代目	善五郎#2	valid
+I2-021	intra2	fulllead	善五郎	善五郎の初代から9代までは何姓を名乗っていましたか	西村姓|西村	善五郎#3	fixed
+I2-022	intra2	fulllead	善五郎	善五郎の10代以降は何姓を名乗っていますか	永樂	善五郎#4	fixed
+I2-023	intra2	fulllead	博文館	博文館はどのような時代風潮に乗って事業を広げましたか	富国強兵	博文館#1	fixed
+I2-024	intra2	fulllead	近江八幡郵便局	近江八幡郵便局は民営化前、どのような分類の郵便局でしたか	集配普通郵便局	近江八幡郵便局#1	valid
+I2-025	intra2	fulllead	レッド計画	レッド計画ではアメリカを何色としていましたか	青	レッド計画#1	fixed
+I2-026	intra2	fulllead	アワディー語	アワディー語の別名は何ですか	アワド語	アワディー語#1	valid
+I2-027	intra2	fulllead	フットチョーク	フットチョークはブラジリアン柔術では何と呼ばれますか	ゴゴプラッタ	フットチョーク#1	fixed
+I2-028	intra2	fulllead	大曲輪貝塚	大曲輪貝塚は別名で何と呼ばれますか	大曲輪遺跡	大曲輪貝塚#1	valid
+I2-029	intra2	fulllead	サウスウェーブ号	和歌山バスではサウスウェーブ号を何線と案内していますか	和歌山千葉線	サウスウェーブ号#2	valid
+I2-030	intra2	fulllead	中之嶽神社	中之嶽神社では日本武尊のほか、祭神は何柱ですか	16柱	中之嶽神社#1	valid
+I2-031	intra2	fulllead	IEEE 488	IEEE 488の後継規格にはどのような通信方式が使われていますか	USB|イーサネット|LXI	IEEE 488#2	fixed
+I2-032	intra2	fulllead	千里馬区域	千里馬区域で千里馬運動の発祥の地とされた施設は何ですか	製鋼所	千里馬区域#1	fixed
+I2-033	intra2	fulllead	ニュクティーモス	ニュクティーモスの父である王は誰ですか	リュカーオーン	ニュクティーモス#2	fixed
+I2-034	intra2	fulllead	サンゴーカメラ	サンゴーカメラは何年に設立されましたか	1981年	サンゴーカメラ#1	fixed
+I2-035	intra2	fulllead	ライ麦パン	ライ麦パンの別名は何ですか	黒パン|ライパン	ライ麦パン#1	fixed
+I2-036	intra2	fulllead	NGC 36	NGC 36を発見したのはいつですか	1785年10月25日	NGC 36#1	valid
+I2-037	intra2	fulllead	シリヤン	シリヤン湖畔で最も大きな街はどこですか	ムーラ	シリヤン#3	valid
+I2-038	intra2	fulllead	シリヤン	シリヤン湖にある最大の島は何ですか	ソレローン島	シリヤン#4	valid
+I2-039	intra2	fulllead	寅ヤス	寅ヤスの出身地はどこですか	愛知県	寅ヤス#2	valid
+I2-040	intra2	fulllead	寅ヤス	寅ヤスが卒業した専門学校はどこですか	トライデントデザイン専門学校	寅ヤス#3	valid
+I2-041	intra2	fulllead	ソル・クバーノ	ソル・クバーノというカクテル名はどういう意味ですか	キューバの太陽	ソル・クバーノ#1	fixed
+I2-042	intra2	fulllead	五十嵐浜村	五十嵐浜村が消滅した後、その地域は現在どの区の一部ですか	新潟市西区	五十嵐浜村#1	valid
+I2-043	intra2	fulllead	宮床村	宮床村は現在のどの町にあたりますか	大和町	宮床村#1	fixed
+I2-044	intra2	fulllead	古浄瑠璃	古浄瑠璃の人形芝居の特徴は何ですか	素朴な力強さ|宗教色	古浄瑠璃#2	fixed
+I2-045	intra2	fulllead	トランス女性	トランス女性は英語の略称で何と表現されますか	MtF	トランス女性#2	fixed
+I2-046	intra2	fulllead	2025 UEFAスーパーカップ	2025 UEFAスーパーカップの試合会場となったスタジアムはどこですか	スタディオ・フリウーリ	2025 UEFAスーパーカップ#1	valid
+I2-047	intra2	fulllead	2022年アジア競技大会におけるビーチバレーボール競技	2022年アジア競技大会のビーチバレーボール競技では、男子競技に何か国の選手が参加しましたか	16の国	2022年アジア競技大会におけるビーチバレーボール競技#1	fixed
+I2-048	intra2	fulllead	2017 FIFA U-17ワールドカップ	2017 FIFA U-17ワールドカップで初優勝した国はどこですか	イングランド	2017 FIFA U-17ワールドカップ#2	valid
+I2-050	intra2	fulllead	LaMDA	LaMDAが意識を持ったという主張は、何の有効性についての議論につながりましたか	チューリング・テスト	LaMDA#3	fixed
+C2-006	cross2	s3000	城站駅	城站駅がある市は、浙江省でどのような位置づけの都市ですか	省都	城站駅;杭州市	fixed
+C2-018	cross2	s3000	2005年アジア野球選手権大会	2005年アジア野球選手権大会の開幕日は、年始から何日目にあたりますか	139日目	2005年アジア野球選手権大会;5月19日	fixed
+C2-020	cross2	s3000	臥竜寺	臥竜寺がある区は、行政区分上どのような区ですか	市轄区	臥竜寺;碑林区	fixed
+C2-021	cross2	s3000	オーガノイドシステム	オーガノイドシステムが登場するシリーズは、どんな種類の商品ですか	玩具シリーズ|玩具	オーガノイドシステム;ゾイド	fixed
+C2-022	cross2	s3000	タッチテニス	タッチテニスの元になった競技は、何人で行う球技ですか	二人または二組|二人	タッチテニス;テニス	fixed
+C2-024	cross2	s3000	プチヴリ公国	プチヴリ公国の首都は、現在どの国にありますか	ウクライナ	プチヴリ公国;プティーウリ	fixed
+C2-026	cross2	s3000	石巻神社	石巻神社がある市は、愛知県のどの地域にありますか	東三河	石巻神社;豊橋市	fixed
+C2-029	cross2	s3000	古賀志町	古賀志町がある県は、日本の何地方にありますか	関東地方|関東	古賀志町;栃木県	fixed
+UF-001	unans	fulllead	ハッシュテーブル	ハッシュテーブルで衝突したキーを処理する代表的な方式は何ですか		ハッシュテーブル#0	valid
+UF-002	unans	fulllead	デニム	デニム生地の国内生産量は年間どれくらいですか		デニム#0	valid
+UF-003	unans	fulllead	川原石駅	川原石駅は何年に開業しましたか		川原石駅#0	valid
+UF-004	unans	fulllead	花園町駅	花園町駅のホームは何面何線ですか		花園町駅#0	valid
+UF-005	unans	fulllead	海老津駅	海老津駅の駅舎はどのような構造ですか		海老津駅#0	valid
+UF-006	unans	fulllead	海浦駅	海浦駅のホームの長さは何メートルですか		海浦駅#0	valid
+UF-007	unans	fulllead	沢辺駅	沢辺駅の隣にあった駅の名前は何ですか		沢辺駅#0	valid
+UF-008	unans	fulllead	YAMAMORIラジオ!	YAMAMORIラジオ!のテーマ曲の題名は何ですか		YAMAMORIラジオ!#0	valid
+UF-009	unans	fulllead	天満橋	天満橋が最初に架けられたのは何年ですか		天満橋#0	valid
+UF-010	unans	fulllead	大邱FC	大邱FCのホームスタジアムの名称は何ですか		大邱FC#0	valid
+UF-011	unans	fulllead	千葉神社	千葉神社で最も大きな祭礼は何月に行われますか		千葉神社#0	valid
+UF-012	unans	fulllead	七里村	七里村の村役場はどこに置かれていましたか		七里村#0	valid
+UF-013	unans	fulllead	CUBE JUICE	CUBE JUICEが最初に発売したアルバムの題名は何ですか		CUBE JUICE#0	valid
+UF-014	unans	fulllead	善五郎	善五郎の現当主の生年はいつですか		善五郎#0	valid
+UF-015	unans	fulllead	レッド計画	レッド計画を最初に立案した軍人は誰ですか		レッド計画#0	valid
+UF-016	unans	fulllead	イクシード	イクシードは何年に結成されましたか		イクシード#0	fixed
+UF-017	unans	fulllead	ニューツーリズム	「ニューツーリズム」という語を最初に提唱した人物は誰ですか		ニューツーリズム#0	valid
+UF-018	unans	fulllead	数河高原	数河高原で最寄りとなる鉄道駅はどこですか		数河高原#0	valid
+UF-019	unans	fulllead	ナショナル交通	ナショナル交通が創業した年はいつですか		ナショナル交通#0	valid
+UF-020	unans	fulllead	トランス女性	「トランス女性」という語が初めて使われたのは何年ですか		トランス女性#0	valid
+US-001	unans	s3000	遊眠	遊眠の代表作として知られる漫画の題名は何ですか		遊眠	valid
+US-002	unans	s3000	メルボルン事件	メルボルン事件で有罪判決を受けた日本人の氏名は何ですか		メルボルン事件	fixed
+US-003	unans	s3000	ゴンクール	「ゴンクール」という姓の語源は何ですか		ゴンクール	valid
+US-004	unans	s3000	海外ドラマ	日本で最初に放送された海外ドラマの作品名は何ですか		海外ドラマ	valid
+US-005	unans	s3000	トチロー	トチローを最初に演じた声優は誰ですか		トチロー	valid
+US-006	unans	s3000	カン・エア	カン・エアが運航していた航空機は何機ですか		カン・エア	valid
+US-007	unans	s3000	城站駅	城站駅は何年に開業しましたか		城站駅	valid
+US-008	unans	s3000	2005年アジア野球選手権大会	2005年アジア野球選手権大会で優勝した国はどこですか		2005年アジア野球選手権大会	fixed
+US-009	unans	s3000	ITT 2020	ITT 2020の発売時の価格はいくらでしたか		ITT 2020	valid
+US-010	unans	s3000	Visual Studio Application Lifecycle Management	Visual Studio Application Lifecycle Managementが最初に発売されたのはいつですか		Visual Studio Application Lifecycle Management	fixed
+US-011	unans	s3000	タッチテニス	タッチテニスの公式コートの長さは何メートルですか		タッチテニス	valid
+US-012	unans	s3000	東宝レコード	東宝レコードが発売した最初のシングル曲は何ですか		東宝レコード	valid
+US-013	unans	s3000	プラガティ急行	プラガティ急行の列車番号は何ですか		プラガティ急行	valid
+US-014	unans	s3000	HONEY BADGER	HONEY BADGERのメンバーは誰ですか		HONEY BADGER	valid
+US-015	unans	s3000	マルティン・ゴルダン	マルティン・ゴルダンは何年何月何日に生まれましたか		マルティン・ゴルダン	valid
+US-016	unans	s3000	ニューツーリズム	ニューツーリズムを初めて実践した旅行商品は何ですか		ニューツーリズム	valid
+US-017	unans	s3000	SL函館大沼号	SL函館大沼号の牽引機として使われた機関車の形式は何ですか		SL函館大沼号	valid
+US-018	unans	s3000	乙葉	乙葉の芸能界デビュー作は何ですか		乙葉	valid
+US-019	unans	s3000	富士山ライブ配信滑落死事故	富士山ライブ配信滑落死事故が起きた地点の標高は何メートルですか		富士山ライブ配信滑落死事故	fixed
+US-020	unans	s3000	レバノン	レバノンの現在の人口は何人ですか		レバノン	valid
+R2-I001	intra2	fulllead	ビースティ・ボーイズ	ビースティ・ボーイズでベリーが抜けた後、新たにメンバーとなったのは誰ですか	ホロヴィッツ	ビースティ・ボーイズ#2	fixed
+R2-I002	intra2	fulllead	内浦町	内浦町の地域は現在、どの自治体の一部になっていますか	能登町	内浦町#2	valid
+R2-I003	intra2	fulllead	市川町	市川町を管轄する兵庫県の出先機関はどこですか	中播磨県民センター	市川町#2	valid
+R2-I004	intra2	fulllead	風藤松原	風藤松原は2021年10月からどの団体に所属していますか	落語協会	風藤松原#2	valid
+R2-I005	intra2	fulllead	サウスウェーブ号	サウスウェーブ号は、京成バス千葉イーストでは何線と案内されていますか	和歌山線	サウスウェーブ号#2	valid
+R2-I006	intra2	fulllead	シリヤン	シリヤン湖の最深部は何メートルですか	120 m|120	シリヤン#2	fixed
+R2-I007	intra2	fulllead	数河高原	数河高原はどの気候区分に属しますか	日本海側気候|日本海側	数河高原#2	fixed
+R2-I008	intra2	fulllead	破局噴火	破局噴火の正式な学術用語は何ですか	ウルトラプリニー式噴火	破局噴火#2	valid
+R2-I009	intra2	fulllead	赤尾ダム	赤尾ダムから水を受ける発電所は、最大でどれほど発電しますか	3万2,500キロワット	赤尾ダム#2	valid
+R2-I010	intra2	fulllead	中之嶽神社	中之嶽神社で、もともと山の主として祀られていた神は誰ですか	波胡曽神	中之嶽神社#2	valid
+R2-I011	intra2	fulllead	ちょん掛け	ちょん掛けは、1901年の相撲書ではどのような表記の技名で載っていますか	丁斧掛け	ちょん掛け#4	fixed
+R2-I012	intra2	fulllead	コィンスコヴォラ	2004年時点で、コィンスコヴォラには何人ほど住んでいましたか	2188人	コィンスコヴォラ#2	valid
+R2-I013	intra2	fulllead	アワディー語	アワディー語はインドのほかに、どこの国で使われていますか	ネパール	アワディー語#2	valid
+R2-I014	intra2	fulllead	スパイケニッセ	2007年のスパイケニッセの住民数はどれほどでしたか	73,921人	スパイケニッセ#2	valid
+R2-I015	intra2	fulllead	2017 FIFA U-17ワールドカップ	2017 FIFA U-17ワールドカップで優勝した国はどこですか	イングランド	2017 FIFA U-17ワールドカップ#2	fixed
+R2-I016	intra2	fulllead	ユニバーシアード自転車競技	ユニバーシアード自転車競技では、2011年にマウンテンバイクとともに追加された別種目は何ですか	BMX	ユニバーシアード自転車競技#2	valid
+R2-I017	intra2	fulllead	グロタンディーク位相	グロタンディーク位相は、もともと何を定義するために導入されましたか	エタール・コホモロジー	グロタンディーク位相#2	fixed
+R2-I018	intra2	fulllead	テレゴ県	2014年国勢調査でのテレゴ県の住民数は何人でしたか	20万人	テレゴ県#2	valid
+R2-I019	intra2	fulllead	岡崎建設	岡崎建設の薪ストーブは、2013年ごろ年間何台ほど受注生産されていましたか	15台程度|15台	岡崎建設#2	fixed
+R2-I020	intra2	fulllead	Porn 2.0	Porn 2.0と対照的とされる従来のポルノサイトは、どのようなコンテンツを提供していましたか	一方向のコンテンツ|一方向	Porn 2.0#2	fixed
+R2-C006	cross2	s3000	共在説	共在説が扱う儀礼的な食事は、何の出来事を再現するものですか	最後の晩餐	共在説;聖餐	valid
+R2-U001	unans	fulllead	市川町	市川町の人口は何人ですか		市川町#0	valid
+R2-U002	unans	fulllead	内浦町	内浦町が廃止されたのは何年ですか		内浦町#0	valid
+R2-U003	unans	fulllead	赤尾ダム	赤尾ダムの総貯水容量は何立方メートルですか		赤尾ダム#0	valid
+R2-U004	unans	fulllead	中之嶽神社	中之嶽神社の例祭は毎年何月何日に行われますか		中之嶽神社#0	valid
+R2-U005	unans	fulllead	岡崎建設	岡崎建設は何年に創業しましたか		岡崎建設#0	valid
+R2-U006	unans	s3000	HONEY BADGER	HONEY BADGERの所属レーベルはどこですか		HONEY BADGER	valid
+R2-U007	unans	s3000	プラガティ急行	プラガティ急行は一日に何本運行されていますか		プラガティ急行	valid
+R2-U008	unans	s3000	マルティン・ゴルダン	マルティン・ゴルダンの身長は何センチメートルですか		マルティン・ゴルダン	valid
+R2-U009	unans	s3000	タッチテニス	タッチテニスのネットの高さは何センチメートルですか		タッチテニス	valid
+R2-U010	unans	s3000	レバノン	レバノンの通貨単位は何ですか		レバノン	valid
