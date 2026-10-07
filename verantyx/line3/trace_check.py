@@ -154,6 +154,10 @@ def _fail(t: WordTrace, reason: str) -> WordTrace:
                      t.n_sentences, t.edge_sid, t.edge_sentences, False, reason)
 
 
+def item_words_of(it) -> frozenset:
+    return frozenset(w for p in it.paths for w in p.words) | {it.centre}
+
+
 def trace_answer(tier: TierSpace, ans: PathAnswer) -> Tuple[Tuple[WordTrace, ...], TraceReport]:
     """L-153: trace every word of every path of every item of the default answer form: seat, sentence
     and edge exactly as for sentences (_trace_path), and every path of an item ends at the item's
@@ -170,8 +174,9 @@ def trace_answer(tier: TierSpace, ans: PathAnswer) -> Tuple[Tuple[WordTrace, ...
                 all_traces.append(t)
                 if not t.ok:
                     failures.append("state %d section %d pos %d %r: %s" % (si, p.section, t.pos, t.word, t.reason))
-    words_checked = words_traced = items_ok = 0
-    for it in ans.items:
+    words_checked = words_traced = 0
+    item_ok: Dict[int, bool] = {}
+    for ii, it in enumerate(ans.items):
         n = sum(len(p.words) for p in it.paths)
         words_checked += n
         good = bool(it.origins)
@@ -192,11 +197,51 @@ def trace_answer(tier: TierSpace, ans: PathAnswer) -> Tuple[Tuple[WordTrace, ...
             good = False
             failures.append("item %r: the centre is not a unit of the tier" % it.centre)
         words_traced += traced if good else 0
-        if good and traced == n:
-            items_ok += 1
-        elif good:
+        item_ok[ii] = bool(good and traced == n)
+        if good and traced != n:
             failures.append("item %r: a path word does not trace" % it.centre)
-    rep = TraceReport(words_checked, words_traced, len(ans.items), items_ok,
+    # L-181: the list entries.  An entry is ok iff every arrangement it carries is an item that traced
+    # (each is checked above), the arrangements are exactly the items of its word set (no item of the
+    # set is missing from or outside the entry), its word set is the union of the arrangements'
+    # path words and centres, every word of the set occurs in some traced arrangement, and its
+    # origins / sources are the unions of the arrangements'.
+    idx = {id(it): ii for ii, it in enumerate(ans.items)}
+    seen: List[int] = []
+    entries_ok = 0
+    by_set: Dict[frozenset, List[int]] = {}
+    if ans.similar == "word_set":
+        for ii, it in enumerate(ans.items):
+            by_set.setdefault(item_words_of(it), []).append(ii)
+    for e in ans.entries:
+        good = bool(e.arrangements)
+        for a in e.arrangements:
+            ii = idx.get(id(a))
+            if ii is None or not item_ok.get(ii, False):
+                good = False
+                failures.append("entry %r: an arrangement is not a traced item" % (e.words,))
+            else:
+                seen.append(ii)
+        ws = set()
+        for a in e.arrangements:
+            ws |= {w for p in a.paths for w in p.words} | {a.centre}
+        if tuple(sorted(ws)) != e.words:
+            good = False
+            failures.append("entry %r: the word set is not the union of its arrangements' words" % (e.words,))
+        if ans.similar == "word_set":
+            same = by_set.get(frozenset(ws), [])
+            if sorted(same) != sorted(idx[id(a)] for a in e.arrangements if id(a) in idx):
+                good = False
+                failures.append("entry %r: its arrangements are not all the items of the word set" % (e.words,))
+        if tuple(sorted({o for a in e.arrangements for o in a.origins})) != e.origins:
+            good = False
+            failures.append("entry %r: origins are not the union of the arrangements'" % (e.words,))
+        if e.stability != max((a.stability for a in e.arrangements), default=None):
+            good = False
+            failures.append("entry %r: stability is not the best of its arrangements" % (e.words,))
+        entries_ok += good
+    if sorted(seen) != list(range(len(ans.items))):
+        failures.append("the entries do not cover every item exactly once")
+    rep = TraceReport(words_checked, words_traced, len(ans.entries), entries_ok,
                       len(ptrace), sum(1 for t in ptrace.values() if t.ok), tuple(failures))
     return tuple(all_traces), rep
 

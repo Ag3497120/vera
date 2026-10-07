@@ -51,6 +51,7 @@ Local decisions (docs/LINE3_LOCAL_DECISIONS.md, L-120..):
         state the agreed centre and the ordered word list of each section path, as read -- no
         sentence is built and nothing is reordered.  The sentence-candidate read-out of T6
         (everything above) is kept as the option `form="sentences"`.  See the PathAnswer docs.
+  L-180.. (T6z, owner): defaults merge_sections=True, similar="word_set" (entries), see PathAnswer.
   L-127 Intake: `choose(readout, which)` accepts an index into the list or the exact text; anything
         else is an error.  `adopt(readout)` is the automatic ANSWER.  Both return an `Adoption`
         whose `memory_record()` is a `memory_answer` sentence (design L-19 kind) with `source`
@@ -346,6 +347,46 @@ class AnswerItem:
         return tuple(sorted({sid for p in self.paths for _, _, ss in p.edges for sid in ss}))
 
 
+def item_words(it: "AnswerItem") -> frozenset:
+    """L-180: the word set of an item = the words of all its section paths together with the centre
+    (order, section and path structure ignored)."""
+    return frozenset(w for p in it.paths for w in p.words) | {it.centre}
+
+
+@dataclass(frozen=True)
+class AnswerEntry:
+    """L-180: one entry of the list shown to the user.  With similar="word_set" it is the group of
+    all items that use the SAME SET of words (they differ only in arrangement); it carries every
+    arrangement (no representative is picked, so no order bias), the union of their origin states
+    and sources, and the word set.  With similar=None it wraps exactly one item."""
+    words: Tuple[str, ...]                   # the word set, sorted by code point (a label)
+    arrangements: Tuple["AnswerItem", ...]   # in item-key order (a label)
+    stability: Fraction                      # the best among the arrangements (information only)
+    origins: Tuple[int, ...]                 # union of the arrangements' origin states, sorted
+
+    @property
+    def count(self) -> int:
+        return len(self.arrangements)
+
+    @property
+    def centres(self) -> Tuple[str, ...]:
+        return tuple(sorted({a.centre for a in self.arrangements}))
+
+    @property
+    def source_sids(self) -> Tuple[int, ...]:
+        return tuple(sorted({sid for a in self.arrangements for sid in a.source_sids}))
+
+    @property
+    def text(self) -> str:
+        return "\n".join(self.words)
+
+
+def _make_entry(arr: Sequence["AnswerItem"]) -> AnswerEntry:
+    ws = frozenset().union(*(item_words(a) for a in arr))
+    return AnswerEntry(tuple(sorted(ws)), tuple(arr), max(a.stability for a in arr),
+                       tuple(sorted({o for a in arr for o in a.origins})))
+
+
 @dataclass(frozen=True)
 class PathAnswer:
     question: str
@@ -360,10 +401,16 @@ class PathAnswer:
     _sentence_units: Mapping[int, Tuple[str, ...]] = field(default_factory=dict, compare=False, repr=False)
     # L-170: True when items that differ only by which section carries which path were merged
     merge_sections: bool = False
+    # L-180: the list shown to the user (entries); similar = None | "word_set"
+    entries: Tuple[AnswerEntry, ...] = ()
+    similar: Optional[str] = None
 
     @property
     def centre(self) -> Optional[str]:
-        return self.items[0].centre if self.verdict == cy.ANSWER else None
+        if self.verdict != cy.ANSWER:
+            return None
+        cs = self.entries[0].centres
+        return cs[0] if len(cs) == 1 else None
 
     # ---- output (N-10) ----
     def answer_obj(self) -> dict:
@@ -373,8 +420,25 @@ class PathAnswer:
                     "paths": [{"section": p.section, "attached": p.attached, "words": list(p.words),
                                "edges": [{"from": a, "to": b, "sids": list(ss)} for a, b, ss in p.edges]}
                               for p in it.paths]}
-        items = [item(it) for it in self.items]
         one = self.verdict == cy.ANSWER
+        sentences = {str(i): "".join(u) for i, u in sorted(self._sentence_units.items())}
+        if self.similar is not None:                 # L-180: the list is of entries (word sets)
+            ents = [{"words": list(e.words), "count": e.count, "centres": list(e.centres),
+                     "stability": _fs(e.stability), "origins": list(e.origins),
+                     "source_sids": list(e.source_sids), "arrangements": [item(a) for a in e.arrangements]}
+                    for e in self.entries]
+            e0 = self.entries[0] if one else None
+            o = {"form": "path_words", "verdict": self.verdict, "listed": len(self.entries),
+                 "arrangements": len(self.items), "too_many": self.too_many, "similar": self.similar,
+                 "merge_sections": self.merge_sections,
+                 "answer": ({"path_words": list(e0.words), "arrangements": e0.count,
+                             "source_sids": list(e0.source_sids), "reference_centre": self.centre,
+                             "reference_centres": list(e0.centres)} if one else None),
+                 "centre": self.centre,
+                 "paths": ents[0]["arrangements"][0]["paths"] if one and e0.count == 1 else None,
+                 "entries": ents, "sentences": sentences}
+            return o
+        items = [item(it) for it in self.items]
         o = {"form": "path_words", "verdict": self.verdict, "listed": len(self.items),
              "too_many": self.too_many,
              # L-160 (owner: "経路の語を答えとし、中心は参考として付ける"): the answer = the path words with the
@@ -385,8 +449,8 @@ class PathAnswer:
              "centre": self.items[0].centre if one else None,
              "paths": items[0]["paths"] if one else None,
              "items": items,
-             "sentences": {str(i): "".join(u) for i, u in sorted(self._sentence_units.items())}}
-        if self.merge_sections:                      # L-170: only when the option is on (default bytes unchanged)
+             "sentences": sentences}
+        if self.merge_sections:                      # L-170: only when the option is on
             o["merge_sections"] = True
         return o
 
@@ -394,7 +458,7 @@ class PathAnswer:
         return {
             "question": self.question, "tier": self.tier,
             "counts": {"states": len(self.states), "states_without_path": self.states_without_path,
-                       "listed": len(self.items)},
+                       "listed": len(self.entries) if self.entries else len(self.items)},
             "too_many_limit": self.too_many_limit,
             "states": [{"seed": st.ref.seed, "member": st.ref.member, "stability": _fs(st.ref.stability),
                         "state": list(st.ref.flat), "version": st.ref.version, "k": st.k,
@@ -414,11 +478,16 @@ class PathAnswer:
 
 def read_answer(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[StateRef], *,
                 question: str = "", too_many: int = TOO_MANY_DEFAULT,
-                window: int = DEFAULT_WINDOW, merge_sections: bool = False) -> PathAnswer:
+                window: int = DEFAULT_WINDOW, merge_sections: bool = True,
+                similar: Optional[str] = "word_set") -> PathAnswer:
     """L-150..L-152: the agreed centre and the section-path words of every adopted state.
     L-170 `merge_sections=True` (owner: items that differ ONLY by which section reads which words are
     one item): the item key is (centre, the multiset of section paths = their word sequences); the
-    first state in key order keeps its paths (trace / sources), all origin states are kept."""
+    first state in key order keeps its paths (trace / sources), all origin states are kept.
+    L-180 (owner, T6z): `merge_sections=True` and `similar="word_set"` are the DEFAULTS; the old
+    behaviour is `merge_sections=False, similar=None` (byte-identical to T6x).  `similar="word_set"`
+    collapses items that use the same set of words (path words + centre) into one list entry that
+    carries all its arrangements (no representative is chosen)."""
     reader = cy.Reader(facts, ctx.attached, ctx.energy_units, window)
     tier = states[0].tier if states else facts.tier.name
     reads = tuple(StateRead(s, section_paths(reader, s.flat, s.L)) for s in states)
@@ -462,11 +531,21 @@ def read_answer(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[
             e["stab"] = sr.ref.stability
         e["origins"].append(si)
     items = tuple(AnswerItem(k[0], e["paths"], e["stab"], tuple(e["origins"])) for k, e in sorted(acc.items()))
-    verdict = UNKNOWN_NO_PATH if not items else (cy.ANSWER if len(items) == 1 else cy.CHOICE)
+    if similar is None:
+        entries = tuple(_make_entry((it,)) for it in items)
+    elif similar == "word_set":
+        grp: Dict[frozenset, List[AnswerItem]] = {}
+        for it in items:
+            grp.setdefault(item_words(it), []).append(it)
+        entries = tuple(sorted((_make_entry(a) for a in grp.values()), key=lambda e: e.words))
+    else:
+        raise ValueError("similar: None | word_set")
+    verdict = UNKNOWN_NO_PATH if not entries else (cy.ANSWER if len(entries) == 1 else cy.CHOICE)
     used = {sid for it in items for sid in it.source_sids}
     return PathAnswer(question, tier, reads, items, verdict, sum(1 for r in reads if not r.paths),
-                      len(items) > too_many, too_many,
-                      {sid: tier_space.sentence_units[sid] for sid in sorted(used)}, merge_sections)
+                      len(entries) > too_many, too_many,
+                      {sid: tier_space.sentence_units[sid] for sid in sorted(used)}, merge_sections,
+                      entries, similar)
 
 
 def read_out(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[StateRef], *,
@@ -554,15 +633,27 @@ def choose(readout: Readout, which: Union[int, str]) -> Adoption:
 class AnswerAdoption:
     question: str
     tier: str
-    item: AnswerItem
+    item: AnswerItem                         # similar=None: the item; word_set: the first arrangement (label only)
     source: str                              # "auto" | "user_choice"
     listed: int
     too_many: bool
     choice_index: Optional[int]
+    entry: Optional[AnswerEntry] = None      # L-180: set when the list is of word-set entries
 
     def memory_record(self) -> dict:
         """L-154: the adopted answer item as a memory record (kind `memory_answer`, base unchanged).
-        T11 writes it; here only the form."""
+        T11 writes it; here only the form.  L-180: for a word-set entry the record carries the word
+        set and every arrangement (no representative)."""
+        if self.entry is not None:
+            e = self.entry
+            return {"kind": RECORD_KIND, "source": self.source, "tier": self.tier, "question": self.question,
+                    "form": "word_set", "words": list(e.words), "centres": list(e.centres),
+                    "arrangements": [{"centre": a.centre,
+                                      "paths": [{"section": p.section, "attached": p.attached, "words": list(p.words)}
+                                                for p in a.paths]} for a in e.arrangements],
+                    "stability": _fs(e.stability), "origins": list(e.origins),
+                    "offered": self.listed, "too_many": self.too_many, "choice_index": self.choice_index,
+                    "base_changed": False}
         return {"kind": RECORD_KIND, "source": self.source, "tier": self.tier, "question": self.question,
                 "form": "centre_paths", "centre": self.item.centre,
                 "paths": [{"section": p.section, "attached": p.attached, "words": list(p.words)}
@@ -576,20 +667,26 @@ class AnswerAdoption:
                           ensure_ascii=False).encode("utf-8")
 
 
+def _adoption(ans: PathAnswer, i: int, source: str, listed: int, choice: Optional[int]) -> AnswerAdoption:
+    e = ans.entries[i]
+    return AnswerAdoption(ans.question, ans.tier, e.arrangements[0], source, listed,
+                          ans.too_many if source == "user_choice" else False, choice,
+                          e if ans.similar is not None else None)
+
+
 def adopt_item(ans: PathAnswer) -> AnswerAdoption:
-    """The single item is adopted (automatically)."""
+    """The single entry is adopted (automatically)."""
     if ans.verdict != cy.ANSWER:
         raise ValueError("nothing to adopt automatically: verdict %s" % ans.verdict)
-    return AnswerAdoption(ans.question, ans.tier, ans.items[0], "auto", 1, False, None)
+    return _adoption(ans, 0, "auto", 1, None)
 
 
 def choose_item(ans: PathAnswer, which: int) -> AnswerAdoption:
-    """The user's choice: an index into the list of items; anything else is refused."""
+    """The user's choice: an index into the list (of entries); anything else is refused."""
     if ans.verdict not in (cy.CHOICE, cy.ANSWER):
         raise ValueError("no list to choose from: verdict %s" % ans.verdict)
     if isinstance(which, bool) or not isinstance(which, int):
         raise TypeError("choice must be an index")
-    if not 0 <= which < len(ans.items):
-        raise IndexError("choice %d outside the list of %d" % (which, len(ans.items)))
-    return AnswerAdoption(ans.question, ans.tier, ans.items[which], "user_choice", len(ans.items),
-                          ans.too_many, which)
+    if not 0 <= which < len(ans.entries):
+        raise IndexError("choice %d outside the list of %d" % (which, len(ans.entries)))
+    return _adoption(ans, which, "user_choice", len(ans.entries), which)

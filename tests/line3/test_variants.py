@@ -45,7 +45,7 @@ def h(b):
     return hashlib.sha256(b).hexdigest()
 
 
-OLD = dict(read_rule="whole", state_rule="stability", unit_filter=None)
+OLD = dict(read_rule="whole", state_rule="stability", unit_filter=None, raise_budget=None)   # T6z: raise_budget=None is the old default
 
 
 def run_old(**flags):
@@ -68,7 +68,7 @@ def test_old_behaviour_through_explicit_options_is_byte_identical_to_before():
 def test_new_defaults_equal_the_explicit_new_options_and_the_old_ones_are_not_the_defaults():
     t = tier(TOY2)
     P = pl.Placer(t)
-    new = dict(read_rule="query_crosses", state_rule="query_share", unit_filter="default")
+    new = dict(read_rule="query_crosses", state_rule="query_share", unit_filter="default", raise_budget="on_demand")
     for q in (("E", "F"), ("A", "B", "C"), ("C",)):
         assert cy.ask_tier(t, "", P, units=q).to_bytes() == cy.ask_tier(t, "", P, units=q, **new).to_bytes()
     r = cy.ask_tier(t, "", P, units=("E", "F"))
@@ -287,10 +287,11 @@ def test_on_demand_budget_raise_only_when_a_query_needs_it():
     t = tier(EIGHT)
     low = _LowStore(t)
     assert all(p.stop == "budget" and p.capacity == 1 for p in low.p.values())
-    base = cy.ask_tier(t, "", low, units=("A",))
+    base = cy.ask_tier(t, "", low, units=("A",), raise_budget=None)           # the previous default
     assert not base.candidates and "budget_raise" not in base.thought_obj()["variant"]
     assert base.to_bytes() == cy._ask_tier_once(t, "", low, units=("A",)).to_bytes()      # default untouched
-    r = cy.ask_tier(t, "", low, units=("A",), raise_budget="on_demand")
+    r = cy.ask_tier(t, "", low, units=("A",))                                  # T6z: on demand is the default
+    assert r.to_bytes() == cy.ask_tier(t, "", low, units=("A",), raise_budget="on_demand").to_bytes()
     br = r.thought_obj()["variant"]["budget_raise"]
     assert br["needed"] and br["steps"][0]["level"] == "high"
     assert [x["seed"] for x in br["steps"][0]["raised"]] == ["A"]

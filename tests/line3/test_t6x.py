@@ -49,10 +49,10 @@ def test_defaults_are_byte_identical_except_the_answer_object_additions():
     P = pl.Placer(t)
     out = []
     for q in QS:
-        r = cy.ask_tier(t, "", P, units=q)
+        r = cy.ask_tier(t, "", P, units=q, raise_budget=None)                  # T6z: the old options, explicit
         out.append(h(r.to_bytes()))
         if r.candidates:
-            a = ro.read_out_result(t, r)
+            a = ro.read_out_result(t, r, merge_sections=False, similar=None)
             out.append(_sha(a.thought_obj()))
             out.append(_sha(_old_answer_fields(a.answer_obj())))
     assert out == DEFAULT_BEFORE
@@ -112,7 +112,7 @@ def test_answer_object_is_path_words_with_source_sentences_and_the_centre_as_ref
         r = cy.ask_tier(t, "", P, units=q)
         if not r.candidates:
             continue
-        a = ro.read_out_result(t, r)
+        a = ro.read_out_result(t, r, merge_sections=False, similar=None)
         o = a.answer_obj()
         assert o["form"] == "path_words"
         if a.verdict == cy.ANSWER:

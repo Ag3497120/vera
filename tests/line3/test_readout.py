@@ -59,8 +59,11 @@ def do(states, window=0, **kw):
 
 
 def doa(states, window=0, **kw):
-    """The default answer form."""
+    """The answer form (T6w semantics): since T6z the old behaviour is the explicit options
+    merge_sections=False, similar=None (the defaults are merge_sections=True, similar="word_set")."""
     t = tier(HUB)
+    kw.setdefault("merge_sections", False)
+    kw.setdefault("similar", None)
     return t, ro.read_out(cy.TierFacts(t), ctx_for(), states, question="q", window=window, **kw)
 
 
@@ -501,17 +504,17 @@ def test_merge_sections_option_merges_only_section_assignment_differences():
     t = tier(HUB)
     sts = [ref(flat_with({0, 1}), seed="s1"), ref(_swapped_flat(), seed="s2"), ref(flat_with({0, 2}), seed="s3")]
     args = (cy.TierFacts(t), ctx_for(), sts)
-    plain = ro.read_out(*args, window=0)
-    merged = ro.read_out(*args, window=0, merge_sections=True)
+    plain = ro.read_out(*args, window=0, merge_sections=False, similar=None)
+    merged = ro.read_out(*args, window=0, merge_sections=True, similar=None)
     assert len(plain.items) == 3 and plain.verdict == cy.CHOICE
     assert len(merged.items) == 2 and merged.verdict == cy.CHOICE
     both = [it for it in merged.items if len(it.origins) == 2]
     assert len(both) == 1 and both[0].paths == plain.items[0].paths or both[0].paths == plain.items[1].paths
     # default object unchanged (no new key), option object marked
     assert "merge_sections" not in plain.answer_obj() and merged.answer_obj()["merge_sections"] is True
-    assert ro.read_out(*args, window=0, merge_sections=False).answer_obj() == plain.answer_obj()
+    assert ro.read_out(*args, window=0, merge_sections=False, similar=None).answer_obj() == plain.answer_obj()
     # trace check still 100 %
     assert tc.trace_readout(t, merged)[1].ok
     # a list that collapses to one item is an ANSWER
-    one = ro.read_out(cy.TierFacts(t), ctx_for(), sts[:2], window=0, merge_sections=True)
+    one = ro.read_out(cy.TierFacts(t), ctx_for(), sts[:2], window=0, merge_sections=True, similar=None)
     assert len(one.items) == 1 and one.verdict == cy.ANSWER and one.answer_obj()["answer"] is not None

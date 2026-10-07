@@ -1229,7 +1229,7 @@ class _OverlayPlacements:
 RAISE_LEVELS_DEFAULT = ("high", "max")
 
 
-def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Optional[str] = None,
+def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Optional[str] = "on_demand",
              raise_levels: Sequence[str] = RAISE_LEVELS_DEFAULT, weights=None, **kw) -> TierResult:
     """`_ask_tier_once` (all its keywords) plus T6y option `raise_budget="on_demand"` (L-171, owner:
     "問いで必要になったときだけ上げる"): the placement budget of a cross is raised only when a query needs
@@ -1238,7 +1238,8 @@ def ask_tier(tier: TierSpace, question: str, placements, *, raise_budget: Option
     each level of `raise_levels` above their own, in order, and the question is asked again with the
     rebuilt crosses in place of the stored ones, until a state is adopted or the levels run out.  What
     was raised is recorded in thought_obj()["variant"]["budget_raise"] (the stored placements are
-    not changed).  Default None: exactly `_ask_tier_once`."""
+    not changed).  T6z (owner): "on_demand" is the DEFAULT; `raise_budget=None` is exactly
+    `_ask_tier_once` (the previous default, byte-identical)."""
     res = _ask_tier_once(tier, question, placements, **kw)
     if raise_budget is None:
         return res
