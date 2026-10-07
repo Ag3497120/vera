@@ -538,7 +538,7 @@ def read_answer(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[
                 question: str = "", too_many: int = TOO_MANY_DEFAULT,
                 window: int = DEFAULT_WINDOW, merge_sections: bool = True,
                 similar: Optional[str] = "word_set",
-                common: Optional[str] = "intersection") -> PathAnswer:
+                common: Optional[str] = None) -> PathAnswer:
     """L-150..L-152: the agreed centre and the section-path words of every adopted state.
     L-170 `merge_sections=True` (owner: items that differ ONLY by which section reads which words are
     one item): the item key is (centre, the multiset of section paths = their word sequences); the
@@ -547,8 +547,8 @@ def read_answer(facts: "cy.TierFacts", ctx: "cy.QueryContext", states: Sequence[
     behaviour is `merge_sections=False, similar=None` (byte-identical to T6x).  `similar="word_set"`
     collapses items that use the same set of words (path words + centre) into one list entry that
     carries all its arrangements (no representative is chosen).
-    L-190 (owner, after T6z): `common="intersection"` is the DEFAULT; `common=None` is the T6z behaviour
-    (byte-identical).  When the result is a list of >= 2 entries, its answer is the set of words common
+    L-190 (owner, after T6z): `common="intersection"` is an OPTION; L-200 (owner, after T6aa): the DEFAULT
+    is again `common=None` = the T6z behaviour (byte-identical).  When the result is a list of >= 2 entries, its answer is the set of words common
     to ALL entries (see CommonAnswer); the list stays for the user's choice."""
     if common not in (None, "intersection"):
         raise ValueError("common: None | intersection")

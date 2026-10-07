@@ -17,6 +17,7 @@ from test_t6z import X, Y, W, S
 
 
 def run(states, units=("zz",), **kw):
+    kw.setdefault("common", "intersection")          # L-200: the option (the default is None again)
     t = tier(HUB)
     return t, ro.read_out(cy.TierFacts(t), ctx_for(units), states, question="q", window=0, **kw)
 
@@ -121,7 +122,7 @@ def test_real_space_common_answer_traces_100_percent():
     t = sp.tiers["RUN"]
     res = cy.ask_tier(t, "半田岩はどこにありますか", pl.Placer(t, pl.Budget(40, 200)), budget=cy.QueryBudget(32, 8))
     if res.candidates:
-        a = ro.read_out_result(t, res)
+        a = ro.read_out_result(t, res, common="intersection")
         assert tc.trace_readout(t, a)[1].ok
         assert a.common_mode == "intersection"
         assert ro.read_out_result(t, res, common=None).common is None

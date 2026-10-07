@@ -59,9 +59,9 @@ def test_same_word_set_items_are_one_entry_with_all_arrangements_and_the_union_o
     o = a.answer_obj()
     assert o["listed"] == 2 and o["arrangements"] == 3 and len(o["entries"]) == 2
     assert o["entries"][0]["count"] == 2 and len(o["entries"][0]["arrangements"]) == 2
-    assert o["answer"]["form"] == "common_words" and o["centre"] is None            # L-190: the list's common answer
-    _, nc = run([X, Y, W], common=None)
-    assert nc.answer_obj()["answer"] is None
+    assert o["answer"] is None and o["centre"] is None                               # L-200: default = T6z again
+    _, nc = run([X, Y, W], common="intersection")
+    assert nc.answer_obj()["answer"]["form"] == "common_words"
     assert a.thought_obj()["counts"]["listed"] == 2
 
 
