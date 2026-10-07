@@ -1220,3 +1220,149 @@ def test_a_layer_two_stable_seats_path_candidate_traces_down_to_base_words(space
             for e in r.entries:
                 assert set(e.words) <= set(idx.space.tiers[r.tier].postings)
                 assert e.word_sources is not None and all(ss for _, ss in e.word_sources)
+
+
+# ======================================================================================================================
+# T8f (L-440..): candidate="stable-seats-qpath" / "stable-seats-qword" = stable-seats-path restricted to the bundles tied
+# to the question: qpath = bundles on section paths starting at a question unit's seat (+ the centre if a question unit);
+# qword = bundles whose restored stable state holds a question word (question units mapped down to base words)
+# ======================================================================================================================
+@pytest.fixture(scope="module")
+def qpath_run(small_index):
+    return M.ask_layered(small_index, QUESTION, TIERS, effort="full", options=M.LayerOptions(bounds=BOUNDS, candidate="stable-seats-qpath"))
+
+
+@pytest.fixture(scope="module")
+def qword_run(small_index):
+    return M.ask_layered(small_index, QUESTION, TIERS, effort="full", options=M.LayerOptions(bounds=BOUNDS, candidate="stable-seats-qword"))
+
+
+def test_defaults_and_old_modes_stay_byte_identical_after_t8f(small_index):
+    h = lambda o: hashlib.sha256(M.ask_layered(small_index, QUESTION, TIERS, effort="full", options=o).to_bytes()).hexdigest()
+    assert M.LayerOptions().candidate == "path"
+    assert h(M.LayerOptions(bounds=BOUNDS)) == GOLDEN_PATH["path-default"]
+    assert h(M.LayerOptions(bounds=BOUNDS, variants=("A", "B"), granularity="same")) == GOLDEN_PATH["path-both-same"]
+    assert h(M.LayerOptions(bounds=BOUNDS, candidate="stable")) == GOLDEN_STABLE["stable-A"]
+    assert h(M.LayerOptions(bounds=BOUNDS, candidate="stable", variants=("A", "B"), granularity="same")) == GOLDEN_STABLE["stable-both-same"]
+
+
+def test_entry_qpath_bundles_keeps_exactly_the_paths_of_question_units():
+    from types import SimpleNamespace as NS
+    P = lambda attached, *words: NS(attached=attached, words=words)
+    e = NS(arrangements=(NS(paths=(P("q1", "a", "b"), P("x", "c"), P("q2", "d", "a")), centre="m"),
+                         NS(paths=(P("q2", "e"), P(None, "f")), centre="q1")))
+    assert M.entry_qpath_bundles(e, {"q1", "q2"}) == ("a", "b", "d", "e", "q1")      # the centre m is not a question unit; c, f dropped
+    assert M.entry_qpath_bundles(e, {"q2"}) == ("d", "a", "e")
+    assert M.entry_qpath_bundles(e, {"m"}) == ("m",)
+    assert M.entry_qpath_bundles(e, set()) == ()
+
+
+def _seats_by(seats_run):
+    d = {}
+    for tl in seats_run.layers:
+        for r in tl.runs:
+            for e in r.entries:
+                for b in e.bundles:
+                    d.setdefault((tl.tier, r.k, r.variant, b), set()).add(e.seats)
+    return d
+
+
+def _is_subsequence(sub, full):
+    it = iter(full)
+    return all(any(x == y for y in it) for x in sub)
+
+
+def _check_subset_mode(small_index, run, seats_run, seatspath_run, keep, name):
+    seats_by = _seats_by(seats_run)
+    keyed = lambda L: tuple((b, M.seats_key(l)) for b, l in L)
+    full_by = {(tl.tier, r.k, r.variant): [keyed(e.layouts) for e in r.entries] for tl in seatspath_run.layers for r in tl.runs}
+    n = strict = 0
+    for tl in run.layers:
+        for r in tl.runs:
+            assert r.candidate == name and r.trace["ok"] and r.trace["fraction"] == "1/1" and r.without_kept >= 0
+            expected = set()
+            for ae in r.answer.entries:
+                order = [b for b in _order_independent(ae) if (tl.tier, r.k, r.variant, b) in seats_by]
+                lays = tuple((b, sorted(seats_by[(tl.tier, r.k, r.variant, b)], key=M.seats_key)[0]) for b in order)
+                kept = tuple((b, l) for b, l in lays if keep(r, ae, b, l))
+                if kept:
+                    expected.add(keyed(kept))
+            got = [keyed(e.layouts) for e in r.entries]
+            assert sorted(expected) == sorted(got) and len(set(got)) == len(got)          # exactly the defined subset
+            for e in r.entries:
+                assert e.mode == name and e.seats is None and e.layouts
+                assert e.words == tuple(sorted({w for _, l in e.layouts for w in M.seats_words(l)}))
+                assert set(e.bundles) == {b for b, _ in e.layouts}
+                assert dict(e.word_sources).keys() == set(e.words) and all(ss for _, ss in e.word_sources)
+                # a subset (in the same order) of one stable-seats-path candidate of the same run
+                k = keyed(e.layouts)
+                assert any(_is_subsequence(k, f) for f in full_by[(tl.tier, r.k, r.variant)])
+                strict += any(len(k) < len(f) and _is_subsequence(k, f) for f in full_by[(tl.tier, r.k, r.variant)])
+                n += 1
+    return n, strict
+
+
+def test_stable_seats_qpath_keeps_only_bundles_on_question_unit_paths(small_index, qpath_run, seats_run, seatspath_run):
+    def keep(r, ae, b, l):
+        qs = set(r.query_units)
+        on = {w for a in ae.arrangements for p in a.paths if p.attached in qs for w in p.words}
+        on |= {a.centre for a in ae.arrangements if a.centre in qs}
+        return b in on
+    n, _ = _check_subset_mode(small_index, qpath_run, seats_run, seatspath_run, keep, "stable-seats-qpath")
+    assert n > 0
+
+
+def test_stable_seats_qword_keeps_only_bundles_whose_state_holds_a_question_word(small_index, qword_run, seats_run, seatspath_run):
+    def keep(r, ae, b, l):
+        qw = set(r.query_units)
+        for _ in range(r.k):
+            qw = set(M.lower_units(qw))
+        return bool(set(M.seats_words(l)) & qw)
+    n, _ = _check_subset_mode(small_index, qword_run, seats_run, seatspath_run, keep, "stable-seats-qword")
+    assert n > 0
+
+
+def test_t8f_json_counts_no_float_and_cli(tmp_path, qpath_run, qword_run):
+    for run, name in ((qpath_run, "stable-seats-qpath"), (qword_run, "stable-seats-qword")):
+        obj = run.to_json_obj()
+        seen = 0
+        for tl in obj["thought"]["layers"]["per_tier"].values():
+            for r in tl["runs"]:
+                assert r["candidate"] == name and r["entries_without_path_words"] >= 0 and r["entries_without_kept_bundles"] >= 0
+                for e in r["entries"]:
+                    assert e["candidate"] == name and e["n_bundles"] == len(e["layouts"]) and "seats" not in e
+                    seen += 1
+
+        def walk(o):
+            if isinstance(o, dict):
+                for v in o.values():
+                    walk(v)
+            elif isinstance(o, list):
+                for v in o:
+                    walk(v)
+            else:
+                assert not isinstance(o, float)
+        walk(obj)
+        assert json.loads(run.to_bytes())["thought"]["layers"]["options"]["candidate"] == name
+    p = tmp_path / "toy.jsonl"
+    with open(p, "w", encoding="utf-8") as f:
+        for s in DATA:
+            f.write(json.dumps({"sent": s, "source": "toy"}, ensure_ascii=False) + "\n")
+    for name in ("stable-seats-qpath", "stable-seats-qword"):
+        r = cli(["ask", "--data", str(p), "--question", QUESTION, "--tiers", "RUN,WORD", "--effort", "fast", "--format", "json",
+                 "--show-thought", "--layer-candidate", name])
+        assert r.returncode == 0, r.stderr
+        assert json.loads(r.stdout)["thought"]["layers"]["options"]["candidate"] == name
+
+
+@pytest.mark.parametrize("name", ["stable-seats-qpath", "stable-seats-qword"])
+def test_t8f_modes_are_equal_across_hash_seeds(name):
+    script = _digest_script().replace("M.LayerOptions(bounds=b,feedback='down')", "M.LayerOptions(bounds=b,candidate='%s')" % name)
+    outs = []
+    for seed in ("0", "1", "12345"):
+        env = dict(os.environ, PYTHONHASHSEED=seed, PYTHONDONTWRITEBYTECODE="1", PYTHONPATH=ROOT)
+        r = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True, env=env, cwd=ROOT,
+                           timeout=900, stdin=subprocess.DEVNULL)
+        assert r.returncode == 0, r.stderr
+        outs.append(r.stdout.strip())
+    assert outs[0] == outs[1] == outs[2]

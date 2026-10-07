@@ -50,8 +50,9 @@ LAYER_FORMAT = "line3.layers.v1"
 VARIANTS = ("A", "B")                       # I-20: A = initial query + the lower answer, B = the lower answer only
 GRANULARITIES = ("same", "compress")        # M-2
 DOWN_QUERIES = ("question", "seed+question")  # L-252: what the lower cross is read under
-CANDIDATES = ("path", "bag", "stable", "stable-seats", "stable-seated", "stable-seats-path")       # L-250: what an upper-layer candidate shows (path words read under the question / N-19 bag); L-340: "stable" = the path words of the last stable state
-PATHLIKE = ("path", "stable", "stable-seats", "stable-seated", "stable-seats-path")   # modes that read the lower crosses down (L-251, L-340, L-390..)
+CANDIDATES = ("path", "bag", "stable", "stable-seats", "stable-seated", "stable-seats-path", "stable-seats-qpath", "stable-seats-qword")       # L-250: what an upper-layer candidate shows (path words read under the question / N-19 bag); L-340: "stable" = the path words of the last stable state
+SEATSPATH = ("stable-seats-path", "stable-seats-qpath", "stable-seats-qword")   # L-430 / L-440: one candidate per upper entry
+PATHLIKE = ("path", "stable", "stable-seats", "stable-seated") + SEATSPATH   # modes that read the lower crosses down (L-251, L-340, L-390..)
 N_SEATED = cy.N_ARMS                        # L-391: the question units that take a seat = the first 6 attached
 FEEDBACKS = ("none", "down")                # N-12 re-read: see L-239
 UNKNOWN_NOTHING_TO_PASS = "UNKNOWN_NOTHING_TO_PASS"
@@ -309,7 +310,7 @@ class LayerEntry:
     stable: bool = False                   # L-340: the words are the path words of restored / last stable states
     restored: Tuple[Tuple[int, "cy.TierResult"], ...] = field(default=(), compare=False, repr=False)    # (layer, read at the last stable step) for the fixed-point check
     seats: Optional[tuple] = None          # L-390 (stable-seats): (centre, arms) = the restored state as laid out; arms = 6 legs, outer seat first, None = empty seat
-    mode: str = ""                         # L-390 / L-391 / L-430: "stable-seats" | "stable-seated" | "stable-seats-path" ("" = the T8b / T8c modes)
+    mode: str = ""                         # L-390 / L-391 / L-430: "stable-seats" | "stable-seated" | "stable-seats-path" | "stable-seats-qpath" | "stable-seats-qword" ("" = the T8b / T8c modes)
     layouts: Tuple[tuple, ...] = ()        # L-430 (stable-seats-path): ((bundle, (centre, arms)), ...) in the upper path's section order
 
     def key(self) -> Tuple[str, int, str, Tuple[str, ...], Tuple[str, ...]]:
@@ -362,14 +363,17 @@ class LayerRun:
     candidate: str = "bag"
     without_path_words: int = 0                       # L-251: upper entries from whose lower crosses the question read no path
     boundaries: Tuple[dict, ...] = ()                 # L-342: per bundle read down (stable mode): the boundary record
+    without_kept: int = 0                             # L-443 (qpath / qword): upper entries none of whose bundles was kept
 
     def to_json_obj(self) -> dict:
         o = self._json()
         if self.candidate in PATHLIKE:
             o["candidate"] = self.candidate
             o["entries_without_path_words"] = self.without_path_words
-        if self.candidate in ("stable", "stable-seats", "stable-seated", "stable-seats-path"):
+        if self.candidate in ("stable", "stable-seats", "stable-seated") + SEATSPATH:
             o["boundaries"] = [dict(d) for d in self.boundaries]
+        if self.candidate in SEATSPATH[1:]:
+            o["entries_without_kept_bundles"] = self.without_kept
         return o
 
     def _json(self) -> dict:
@@ -706,6 +710,22 @@ def entry_bundle_order(e) -> Tuple[str, ...]:
     return tuple(out)
 
 
+def entry_qpath_bundles(e, qs) -> Tuple[str, ...]:
+    """L-440 (stable-seats-qpath): the bundles of an upper entry that lie on a section path starting at a question unit's
+    seat (the path's `attached` unit, as the upper read attached it, is a question unit), in the order of L-431
+    (arrangements in item order, section paths in section order, each path's words as read); an arrangement's centre
+    only if the centre is itself a question unit.  Bundles of other sections are dropped."""
+    out: Dict[str, None] = {}
+    for a in e.arrangements:
+        for p in a.paths:
+            if p.attached in qs:
+                for w in p.words:
+                    out.setdefault(w, None)
+        if a.centre in qs:
+            out.setdefault(a.centre, None)
+    return tuple(out)
+
+
 def down_read_seats(stack: "LayerStack", chain: Sequence[Layer], k: int, b: str, ul: Sequence[Tuple[str, ...]],
                     bounds: LayerBounds, budget: cy.QueryBudget, acc: _Acc, down_query: str = "question") -> None:
     """The restored stable state (L-341 boundary) of the lower cross packed in the bundle b, laid out by seats (L-390).
@@ -863,15 +883,18 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
     up_bundles: Optional[Tuple[str, ...]] = None
     without = 0
     bnds: List[dict] = []
-    if ans is not None and candidate == "stable-seats-path":
+    without_kept = 0
+    if ans is not None and candidate in SEATSPATH:
         # L-430: ONE candidate per upper entry = the ordered list of its bundles, each with the seat layout of its restored state
+        # L-440 / L-441: qpath / qword keep only a subset of those bundles
         if stack is None:
-            raise ValueError("candidate='stable-seats-path' needs the layer stack")
+            raise ValueError("candidate='%s' needs the layer stack" % candidate)
         ul = [()] * layer.k
         cur = units
         for j in range(layer.k - 1, -1, -1):
             cur = lower_units(cur)
             ul[j] = cur
+        qwords = set(ul[0])                          # L-441: the question units mapped down to base words
         grp = {}
         order = {}
         for e in ans.entries:
@@ -879,17 +902,28 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
                 order.setdefault(b, None)
             acc = _Acc()
             lay_of = []
-            for b in entry_bundle_order(e):
+            any_layout = False
+            bl = entry_qpath_bundles(e, qs) if candidate == "stable-seats-qpath" else entry_bundle_order(e)
+            for b in bl:
                 a1 = _Acc()
                 down_read_seats(stack, chain, layer.k, b, ul, bounds, budget, a1, down_query)
                 for d in a1.reads:
                     if d not in bnds:
                         bnds.append(d)
-                    acc.reads.append(d)
+                kept = False
                 for st in a1.seats:
+                    any_layout = True
+                    if candidate == "stable-seats-qword" and not (set(seats_words(st["layout"])) & qwords):
+                        continue
                     lay_of.append((b, st))
+                    kept = True
+                if kept:
+                    acc.reads.extend(a1.reads)
             if not lay_of:
-                without += 1
+                if any_layout or (candidate == "stable-seats-qpath" and not bl):
+                    without_kept += 1
+                else:
+                    without += 1
                 continue
             src: Dict[str, set] = {}
             rs: List[Tuple[int, cy.TierResult]] = []
@@ -1057,7 +1091,7 @@ def _read_layer(tier: str, variant: str, layer: Layer, chain: Sequence[Layer], a
                     tuple(sorted(read)), left, left > 0 or res.members_read < res.members_total, verdict,
                     res.members_read, res.members_total, res, ans, tuple(entries), full,
                     len(res.stack_points), False, tr, (time.monotonic_ns() - t0) // 1000000, up_bundles, candidate, without,
-                    tuple(bnds))
+                    tuple(bnds), without_kept)
 
 
 def _variant_chain(stack: LayerStack, res0: cy.TierResult, ans0: Optional[ro.PathAnswer], variant: str,

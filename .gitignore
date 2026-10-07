@@ -54,3 +54,6 @@ experiments/line3/t8d/results/*.jsonl
 
 # T8e raw sweeps (large; the summaries are kept)
 experiments/line3/t8e/results/*.jsonl
+
+# T8f raw sweeps (large; the summaries are kept)
+experiments/line3/t8f/results/*.jsonl
