@@ -91,11 +91,52 @@ C2 (black unit acceptance and closing; new local choices from L-350; docs/LINE3_
         across runs.  A collapsed attempt has no admit seq and its time is not in `event_secs`.
   L-360 `stream_header` builds the ledger header (admission = OP-2 b, instability = OP-3 a); a custom
         budget is written as "max_class=..,max_states=..,max_moves=..".
+
+C3 (the tower: carry-up, copying, waking; new local choices from L-370; docs/LINE3_LOCAL_DECISIONS.md "C3"):
+  L-370 `CarryTower(BlackStream)` adds levels k >= 1.  A level-k unit is a `Black` of level k fed one CHILD
+        PACK at a time (the item); its scope = the own_occ of its new children in arrival order; the
+        restore point is the state after the previous item.  Same budget at every level (L-305).
+  L-371 Frontier F(k) = the NEW packs of the open units of levels > k (level ascending, arrival order inside
+        a unit).  When a unit opens (after the carry-up that its own closing caused) it gets a copy of
+        F(k): a tuple of immutable `Pack` objects stored under the unit id and never changed (L-309).
+        # OP-1 (a): all levels are copied.
+  L-372 Dormant = carry minus the ids seated in the black: DERIVED from the black's elements, no mutable
+        state, so a rollback needs no repair.  An item wakes a carried pack iff one of the item's scope
+        units (an occurrence's unit at level 0; the units of the child pack's own_occ at level k) is in the
+        carried pack's FROZEN vocab.  Nothing else wakes a pack.  # OP-1 (a), condition 2
+  L-373 Event order: close, pack, open (new unit), [carry-up of the pack, recursively], carry (group = the
+        copied pack ids, possibly empty; exactly one per `open`, before the unit's first admit), then the
+        admit of the item.  A level-k admit has item = child pack id, group = [pack] + woken ids,
+        activated = woken ids; rollback / activation_deferred likewise.  There is no separate `activate`
+        event (the woken ids are in `admit.activated`).
+  L-374 The first unit of a new level is created when the level below closes a unit; its carry is empty
+        (F of the top level is empty).
+  L-375 `Pack` gets provenance fields with defaults: `children` (ids of its new child packs; () at level 1),
+        `inherited` (woken carried packs seated when it closed), `carry` (ids copied at its unit's opening).
+        vocab = union of the vocab of the NEW children = the units of own_occ (L-356 at every level).
+  L-376 Test-only injection `inject(level, unit, item) -> reason | None` (constructor argument): a reason
+        string forces a collapse of a NON-EMPTY black before the real admission (an empty black always
+        accepts its first element, L-351); the reason is written as the ledger's budget_reason and must start
+        with "injected" (ValueError otherwise), so an injected ledger is never taken for a budget one.  Default
+        none; used to fix the collapse points of the design 4.5 example instead of the budget.
+  L-377 `replay_ledger(ledger)` rebuilds every unit (scope, new elements, woken, carry, status, pack) from
+        the ledger alone: a rollback undoes the unit's admits with seq greater than its `to`.
+        `ledger_mismatches(tower)` compares it with the tower (O-2, net of rollbacks), and each pack's vocab
+        with its `pack` event and with the units of its unit's replayed scope.
+  L-378 Cache key (L-320): `check_cache_key(header, ...)` raises ValueError unless tier, order_sha256,
+        build_level and (when given) data_sha256 agree; `replay_tower` rebuilds and compares bytes (O-1, O-3).
+  L-379 `CarryTower.to_bytes()` = canonical JSON of every unit (carry ids, elements with origin, scope,
+        class, L, local-space sha) and every pack plus the ledger sha: the byte string O-1 compares.
+  L-380 A deferred activation (L-357 / L-308) at a level >= 1 behaves as at level 0.
+  L-381 `ordered_sids(sids, kind, seed)`: file (as given) / reverse / shuffle (random.Random(seed), which does
+        not depend on the hash seed); the header records kind and seed (condition 3).
+  L-382 The end of the stream closes nothing (L-310): every level keeps its open unit.
 """
 from __future__ import annotations
 
 import hashlib
 import json
+import random
 from dataclasses import dataclass, field
 from fractions import Fraction
 from typing import Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
@@ -537,6 +578,14 @@ class Collapse(Exception):
         self.reason, self.states, self.moves = reason, states, moves
 
 
+def _injected(reason) -> str:
+    """L-376: a test-only forced collapse must say so in the ledger (budget_reason starts with "injected"), so
+    an injected ledger can never pass for a budget one (a budget reason is max_states / max_moves / max_class)."""
+    if not isinstance(reason, str) or not reason.startswith("injected"):
+        raise ValueError("an injected collapse reason must start with 'injected' (L-376), got %r" % (reason,))
+    return reason
+
+
 def _work_obj(states: int, moves: int) -> dict:
     return {"states": states, "moves": moves}
 
@@ -626,6 +675,9 @@ class Pack:                                                     # design 3.3 (le
     L: int
     close_seq: int
     closed_by: str                                              # the budget reason that collapsed the black
+    children: Tuple[str, ...] = ()                              # L-375: ids of the new child packs (level >= 2 packs)
+    inherited: Tuple[str, ...] = ()                             # L-375: woken carried packs seated at close time
+    carry: Tuple[str, ...] = ()                                 # L-375: ids copied when the unit opened
 
     def as_element(self, origin: str) -> Element:               # L-336: the caller states the origin
         return pack(self.id, self.vocab, origin)
@@ -649,14 +701,14 @@ class ClosedBlack:
 
 def stream_header(tier: str, sids: Sequence[int], budget: pl.Budget, *, data_sha256: Optional[str] = None,
                   unit_filter: Optional[str] = None, order_kind: str = "file", order_seed: Optional[int] = None,
-                  code_commit: Optional[str] = None) -> dict:   # L-360
+                  code_commit: Optional[str] = None, copy: Optional[str] = None) -> dict:   # L-360
     lv = pl.level_name(budget)
     return {"format": LEDGER_FORMAT, "data_sha256": data_sha256, "tier": tier, "unit_filter": unit_filter,
             "order": {"kind": order_kind, "seed": order_seed}, "order_sha256": order_sha256(sids),
             "build_level": lv if lv is not None else "max_class=%d,max_states=%d,max_moves=%d" % (
                 budget.max_class, budget.max_states, budget.max_moves),
             "admission": "OP-2(b): close only at sentence boundaries; a sentence that does not fit an empty black is split",
-            "copy": "OP-1(a): carried packs stay asleep (C3)",
+            "copy": copy if copy is not None else "OP-1(a): carried packs stay asleep (C3)",
             "instability": "OP-3(a): no tied class within the budget",
             "code_commit": code_commit}
 
@@ -669,9 +721,10 @@ class BlackStream:
     `_after_close(closed)` (carry / carry-up; default nothing)."""
 
     def __init__(self, tier: str, budget: pl.Budget, ledger: Ledger,
-                 wake=None, clock=None) -> None:
+                 wake=None, clock=None, inject=None) -> None:
         self.tier, self.budget, self.ledger = tier, budget, ledger
         self.wake = wake
+        self.inject = inject                                     # L-376: test-only forced collapse
         self.clock = clock                                       # L-359: e.g. time.process_time
         self.event_secs: List[Tuple[int, float]] = []
         self.closed: List[ClosedBlack] = []
@@ -729,6 +782,9 @@ class BlackStream:
             t0 = self.clock() if self.clock else 0.0
             try:
                 try:
+                    inj = self.inject(0, self.black.unit, o) if (self.inject is not None and not self.black.is_empty) else None
+                    if inj is not None:                          # L-376
+                        raise Collapse(_injected(inj), 0, 0)
                     nb, work = self.black.admit([o], new + list(act))
                 except Collapse as c:
                     if not (self.black.is_empty and act):
@@ -755,7 +811,9 @@ class BlackStream:
         vocab = frozenset(w for e in b.space.elements if e.origin == ORIGIN_NEW for w in e.vocab)   # L-356
         cseq = self.ledger.append("close", level=0, unit=b.unit, occ=[occ.sid, occ.pos], class_size=len(b.state),
                                   L=b.L, stop="budget", budget_reason=reason, to=self._stable_seq)
-        pk = Pack("P1:%d" % self._j, b.unit, b.level + 1, b.space.scope, vocab, b.state, b.L, cseq, reason)
+        inh = tuple(e.id for e in b.space.elements if e.origin == ORIGIN_INHERITED)
+        pk = Pack("P1:%d" % self._j, b.unit, b.level + 1, b.space.scope, vocab, b.state, b.L, cseq, reason,
+                  (), inh, self._carry_ids(b.unit))
         pseq = self.ledger.append("pack", level=1, unit=b.unit, item=pk.id, group=sorted(vocab),
                                   class_size=len(b.state), L=b.L)
         cb = ClosedBlack(b, pk, cseq, pseq, reason)
@@ -768,3 +826,314 @@ class BlackStream:
     def _after_close(self, closed: ClosedBlack) -> None:
         """C3 hook: carry-up of the pack to level 1 and the carry copy into the new black.  Nothing in C2."""
         return None
+
+    def _carry_ids(self, unit: str) -> Tuple[str, ...]:
+        """C3 hook (L-375): the ids copied into `unit` when it opened.  Nothing in C2."""
+        return ()
+
+
+# ==========================================================================
+# C3: the tower (design 3.4, 4.2; OP-1 a; conditions 1-3)
+# ==========================================================================
+TOWER_COPY = ("OP-1(a): the frontier of all levels is copied; packs sleep and seat only when a new "
+              "sentence contains a word of their vocab (frozen at copy time)")
+
+
+def ordered_sids(sids: Sequence[int], kind: str = "file", seed: Optional[int] = None) -> List[int]:   # L-381
+    sids = list(sids)
+    if kind == "file":
+        return sids
+    if kind == "reverse":
+        return sids[::-1]
+    if kind == "shuffle":
+        if seed is None:
+            raise ValueError("shuffle needs a seed")
+        random.Random(seed).shuffle(sids)
+        return sids
+    raise ValueError("order kind: %s" % " | ".join(ORDER_KINDS))
+
+
+class _Upper:
+    """A level k >= 1: the open unit, the closed ones, the next unit number, the restore point (seq)."""
+    __slots__ = ("level", "black", "closed", "j", "stable_seq")
+
+    def __init__(self, level: int, black: Black, stable_seq: int) -> None:
+        self.level, self.black, self.closed, self.j, self.stable_seq = level, black, [], 0, stable_seq
+
+
+class CarryTower(BlackStream):
+    """The whole tower (design 4.2 `build`): level 0 is `BlackStream`; a closed unit's pack is admitted as one
+    item into the open unit of the next level (carry-up, recursive); a unit that opens gets an immutable copy
+    of the frontier (OP-1 a) whose packs wake only through new sentences (condition 2)."""
+
+    def __init__(self, tier: str, budget: pl.Budget, ledger: Ledger, clock=None, inject=None) -> None:
+        self.carry: Dict[str, Tuple[Pack, ...]] = {}              # L-371: unit id -> copied packs (immutable)
+        self.packs: Dict[str, Pack] = {}                          # pack id -> Pack (all levels)
+        self.uppers: List[_Upper] = []                            # uppers[k-1] = level k
+        self.upper_secs: List[Tuple[int, float]] = []             # (admit seq, seconds) of successful upper admits
+        self.upper_attempt_secs: Dict[int, float] = {}            # level -> seconds of every attempt (also collapsed)
+        super().__init__(tier, budget, ledger, wake=self._wake, clock=clock, inject=inject)
+        self._new_carry(self.black)                               # U0:0 opens with an empty copy
+
+    # -- frontier and copy (L-371) -------------------------------------------
+    def frontier(self, k: int) -> Tuple[Pack, ...]:
+        out: List[Pack] = []
+        for st in self.uppers[k:]:                                # levels k+1 ..
+            for e in st.black.space.elements:
+                if e.origin == ORIGIN_NEW:
+                    out.append(self.packs[e.id])
+        return tuple(out)
+
+    def _new_carry(self, black: Black) -> None:
+        fr = self.frontier(black.level)
+        self.carry[black.unit] = fr
+        self.ledger.append("carry", level=black.level, unit=black.unit, group=[p.id for p in fr])
+
+    def _carry_ids(self, unit: str) -> Tuple[str, ...]:
+        return tuple(p.id for p in self.carry.get(unit, ()))
+
+    # -- waking (L-372) -------------------------------------------------------
+    def _woken(self, black: Black, units) -> List[Element]:
+        seated = {e.id for e in black.space.elements}
+        return [p.as_element(ORIGIN_INHERITED) for p in self.carry.get(black.unit, ())
+                if p.id not in seated and any(u in p.vocab for u in units)]
+
+    def _wake(self, black: Black, occ: Occ) -> List[Element]:       # BlackStream.wake hook (level 0)
+        return self._woken(black, (occ.unit,))
+
+    # -- level 0 closed: carry up, then copy to the new black ----------------
+    def _after_close(self, closed: ClosedBlack) -> None:
+        self.packs[closed.pack.id] = closed.pack
+        self._carry_up(0, closed.pack)
+        self._new_carry(self.black)
+
+    def _carry_up(self, k: int, pk: Pack) -> None:
+        lv = k + 1
+        if len(self.uppers) < lv:                                  # L-374: a new top level
+            b = Black.new("U%d:0" % lv, self.tier, self.budget, level=lv)
+            seq = self.ledger.append("open", level=lv, unit=b.unit, L=1, class_size=0)
+            self.uppers.append(_Upper(lv, b, seq))
+            self._new_carry(b)
+        self._admit_item(lv, pk)
+
+    # -- one item into a level >= 1 unit (design 3.6, 4.2 `admit` / `close_and_carry`) ----
+    def _admit_item(self, lv: int, pk: Pack) -> None:
+        st = self.uppers[lv - 1]
+        units = frozenset(o.unit for o in pk.own_occ)
+        for _ in range(2):                                         # a collapse closes the unit; the new one accepts
+            b = st.black
+            act = self._woken(b, units)
+            el = pk.as_element(ORIGIN_NEW)
+            t0 = self.clock() if self.clock else 0.0
+            try:
+                try:
+                    inj = self.inject(lv, b.unit, pk.id) if (self.inject is not None and not b.is_empty) else None
+                    if inj is not None:                            # L-376
+                        raise Collapse(_injected(inj), 0, 0)
+                    nb, work = b.admit(pk.own_occ, [el] + act)
+                except Collapse as c:
+                    if not (b.is_empty and act):
+                        raise
+                    self.ledger.append("activation_deferred", level=lv, unit=b.unit, item=pk.id,    # L-380
+                                       group=sorted(e.id for e in act), budget_reason=c.reason)
+                    act = []
+                    nb, work = b.admit(pk.own_occ, [el])
+            except Collapse as c:
+                if self.clock:
+                    self.upper_attempt_secs[lv] = self.upper_attempt_secs.get(lv, 0.0) + (self.clock() - t0)
+                if b.is_empty:
+                    raise RuntimeError("an empty unit refused an element (L-308 violated)") from None
+                self.ledger.append("rollback", level=lv, unit=b.unit, item=pk.id, stop="budget",
+                                   budget_reason=c.reason, work=_work_obj(c.states, c.moves), to=st.stable_seq,
+                                   class_size=len(b.state), L=b.L)
+                self._close_upper(st, c.reason)
+                continue
+            st.black = nb
+            st.stable_seq = self.ledger.append(
+                "admit", level=lv, unit=nb.unit, item=pk.id, group=[pk.id] + sorted(e.id for e in act),
+                activated=sorted(e.id for e in act), class_size=len(nb.state), L=nb.L, stop="stable", work=work)
+            if self.clock:
+                dt = self.clock() - t0
+                self.upper_secs.append((st.stable_seq, dt))
+                self.upper_attempt_secs[lv] = self.upper_attempt_secs.get(lv, 0.0) + dt
+            return
+        raise RuntimeError("an empty unit refused an element twice (L-308 violated)")
+
+    def _close_upper(self, st: _Upper, reason: str) -> None:
+        b, lv = st.black, st.level
+        cseq = self.ledger.append("close", level=lv, unit=b.unit, class_size=len(b.state), L=b.L, stop="budget",
+                                  budget_reason=reason, to=st.stable_seq)
+        news = [e for e in b.space.elements if e.origin == ORIGIN_NEW]
+        vocab = frozenset(w for e in news for w in e.vocab)         # L-356 at every level
+        inh = tuple(e.id for e in b.space.elements if e.origin == ORIGIN_INHERITED)
+        pk = Pack("P%d:%d" % (lv + 1, st.j), b.unit, lv + 1, b.space.scope, vocab, b.state, b.L, cseq, reason,
+                  tuple(e.id for e in news), inh, self._carry_ids(b.unit))
+        pseq = self.ledger.append("pack", level=lv + 1, unit=b.unit, item=pk.id, group=sorted(vocab),
+                                  class_size=len(b.state), L=b.L)
+        st.closed.append(ClosedBlack(b, pk, cseq, pseq, reason))
+        self.packs[pk.id] = pk
+        st.j += 1
+        st.black = Black.new("U%d:%d" % (lv, st.j), self.tier, self.budget, level=lv)
+        st.stable_seq = self.ledger.append("open", level=lv, unit=st.black.unit, L=1, class_size=0)
+        self._carry_up(lv, pk)                                      # recursion: the pack goes one level up
+        self._new_carry(st.black)                                   # the copy is taken AFTER the carry-up
+
+    # -- views ------------------------------------------------------------------
+    def units(self) -> List[Tuple[Black, str]]:
+        """Every unit as (black, "closed"|"open"): level 0 closed then open, then level 1, ..."""
+        out = [(cb.black, STATUS_CLOSED) for cb in self.closed] + [(self.black, STATUS_OPEN)]
+        for st in self.uppers:
+            out += [(cb.black, STATUS_CLOSED) for cb in st.closed] + [(st.black, STATUS_OPEN)]
+        return out
+
+    def level_sizes(self) -> List[int]:
+        return [len(self.closed) + 1] + [len(st.closed) + 1 for st in self.uppers]
+
+    def covered_occurrences(self) -> List[Tuple[int, int, str]]:
+        """P-1: the open level-0 black's scope plus the own_occ of every packs of F(0).  After a sentence is
+        fed this lists every fed occurrence exactly once."""
+        occ = [(o.sid, o.pos, o.unit) for p in self.frontier(0) for o in p.own_occ]
+        return occ + [(o.sid, o.pos, o.unit) for o in self.black.space.scope]
+
+    def level_covered(self, k: int) -> List[Tuple[int, int, str]]:
+        """P-1 per level: the scopes of every unit of level k plus the scopes of the open units BELOW level k
+        (their packs have not been carried up yet).  Every event exactly once, after a sentence is fed."""
+        occ = []
+        for b, st in self.units():
+            if b.level == k or (st == STATUS_OPEN and b.level < k):
+                occ += [(o.sid, o.pos, o.unit) for o in b.space.scope]
+        return occ
+
+    def to_bytes(self) -> bytes:                                     # L-379
+        units = []
+        for b, status in self.units():
+            units.append({"id": b.unit, "level": b.level, "status": status,
+                          "carry": [p.id for p in self.carry.get(b.unit, ())],
+                          "elements": [[e.id, e.origin] for e in b.space.elements],
+                          "scope": [[o.sid, o.pos, o.unit] for o in b.space.scope],
+                          "state": [list(f) for f in b.state], "L": b.L, "space": b.space.sha256()})
+        packs = [{"id": p.id, "unit": p.unit, "level": p.level, "vocab": sorted(p.vocab), "children": list(p.children),
+                  "inherited": list(p.inherited), "carry": list(p.carry), "close_seq": p.close_seq,
+                  "closed_by": p.closed_by, "own_occ": [[o.sid, o.pos, o.unit] for o in p.own_occ]}
+                 for p in self.packs.values()]
+        return canonical_json({"format": "line3.carry.tower.v1", "units": units, "packs": packs,
+                               "ledger": self.ledger.sha256()})
+
+    def sha256(self) -> str:
+        return hashlib.sha256(self.to_bytes()).hexdigest()
+
+
+def build_tower(tier: str, tier_space: TierSpace, sids: Sequence[int], budget: pl.Budget, *, data_sha256=None,
+                unit_filter=None, order_kind: str = "file", order_seed: Optional[int] = None, code_commit=None,
+                clock=None, inject=None, after_sentence=None) -> CarryTower:
+    """Feed `sids` (the recorded stream order) into a new tower.  `after_sentence(tower, sid)` is called after
+    each sentence (P-1 checks etc.)."""
+    sids = list(sids)
+    led = Ledger(stream_header(tier, sids, budget, data_sha256=data_sha256, unit_filter=unit_filter,
+                               order_kind=order_kind, order_seed=order_seed, code_commit=code_commit, copy=TOWER_COPY))
+    tw = CarryTower(tier, budget, led, clock=clock, inject=inject)
+    for s in sids:
+        tw.feed_sentence(s, occurrences_of(tier_space, s))
+        if after_sentence is not None:
+            after_sentence(tw, s)
+    return tw
+
+
+# --------------------------------------------------------------------------
+# cache key and replay (O-1, O-3), ledger-only reconstruction (O-2)
+# --------------------------------------------------------------------------
+def check_cache_key(header: Mapping, tier: str, sids: Sequence[int], budget: pl.Budget,
+                    data_sha256: Optional[str] = None, order_kind: Optional[str] = None,
+                    order_seed: Optional[int] = None) -> None:       # L-378, L-320
+    want = stream_header(tier, sids, budget, data_sha256=data_sha256, order_kind=order_kind or header["order"]["kind"],
+                         order_seed=order_seed if order_kind is not None else header["order"]["seed"], copy=TOWER_COPY)
+    bad = [k for k in ("tier", "order_sha256", "build_level", "copy", "admission", "instability")
+           if header.get(k) != want[k]]
+    if data_sha256 is not None and header.get("data_sha256") != data_sha256:
+        bad.append("data_sha256")
+    if order_kind is not None and header.get("order") != want["order"]:
+        bad.append("order")
+    if bad:
+        raise ValueError("cache key mismatch (%s): refusing to reuse this ledger / tower" % ", ".join(bad))
+
+
+def replay_tower(ledger_bytes: bytes, tier_space: TierSpace, tier: str, sids: Sequence[int],
+                 budget: pl.Budget, **kw) -> CarryTower:               # O-1 + O-3
+    """Check the key, rebuild the tower from (data, order, budget) and require the same ledger bytes."""
+    led = Ledger.from_bytes(ledger_bytes)
+    check_cache_key(led.header, tier, sids, budget, kw.get("data_sha256"))
+    tw = build_tower(tier, tier_space, sids, budget, data_sha256=led.header["data_sha256"],
+                     unit_filter=led.header["unit_filter"], order_kind=led.header["order"]["kind"],
+                     order_seed=led.header["order"]["seed"], code_commit=led.header["code_commit"])
+    if tw.ledger.to_bytes() != ledger_bytes:
+        raise ValueError("replay does not reproduce the ledger bytes (O-1)")
+    return tw
+
+
+def replay_ledger(led: Ledger) -> Dict[str, dict]:                  # L-377
+    """Every unit rebuilt from the ledger alone: {unit: {level, status, carry, scope, new, active, pack}}.
+    A rollback removes the unit's admits whose seq is greater than its `to`; `activation_deferred` and
+    `split` change nothing by themselves."""
+    units: Dict[str, dict] = {}
+    packs: Dict[str, dict] = {}
+    for e in led.events():
+        k, u = e["kind"], e.get("unit")
+        if k == "open":
+            units[u] = {"level": e["level"], "status": STATUS_OPEN, "carry": None, "adm": [], "pack": None}
+        elif k == "carry":
+            units[u]["carry"] = list(e["group"])
+        elif k == "admit":
+            units[u]["adm"].append(e)
+        elif k == "rollback":
+            units[u]["adm"] = [a for a in units[u]["adm"] if a["seq"] <= e["to"]]
+        elif k == "close":
+            units[u]["status"] = STATUS_CLOSED
+        elif k == "pack":
+            packs[e["item"]] = {"unit": u, "vocab": list(e["group"]), "level": e["level"]}
+            units[u]["pack"] = e["item"]
+    for u in sorted(units, key=lambda x: (units[x]["level"], int(x.split(":")[1]))):   # label order of a dependency walk
+        d = units[u]
+        if d["level"] == 0:
+            d["scope"] = [[a["occ"][0], a["occ"][1], a["item"]] for a in d["adm"]]
+            d["new"] = [g for a in d["adm"] for g in a["group"] if g not in a["activated"]]
+        else:
+            d["new"] = [a["item"] for a in d["adm"]]
+            d["scope"] = [o for pid in d["new"] for o in units[packs[pid]["unit"]]["scope"]]
+        d["active"] = sorted({g for a in d["adm"] for g in a["activated"]})
+    for u in units.values():
+        del u["adm"]
+    return units
+
+
+def ledger_mismatches(tw: CarryTower) -> List[str]:                 # O-2
+    """Differences between the tower and what `replay_ledger` rebuilds from its ledger (empty = complete)."""
+    rep = replay_ledger(tw.ledger)
+    bad: List[str] = []
+    live = {b.unit: (b, st) for b, st in tw.units()}
+    if set(rep) != set(live):
+        bad.append("unit sets differ")
+    for u, (b, st) in live.items():
+        d = rep.get(u)
+        if d is None:
+            continue
+        if d["level"] != b.level or d["status"] != st:
+            bad.append("%s level/status" % u)
+        if d["scope"] != [[o.sid, o.pos, o.unit] for o in b.space.scope]:
+            bad.append("%s scope" % u)
+        if d["new"] != [e.id for e in b.space.elements if e.origin == ORIGIN_NEW]:
+            bad.append("%s new elements" % u)
+        if d["active"] != sorted(e.id for e in b.space.elements if e.origin == ORIGIN_INHERITED):
+            bad.append("%s woken" % u)
+        if d["carry"] != [p.id for p in tw.carry.get(u, ())]:
+            bad.append("%s carry" % u)
+    pack_ev = {e["item"]: e for e in tw.ledger.events() if e["kind"] == "pack"}
+    for p in tw.packs.values():
+        if rep.get(p.unit, {}).get("pack") != p.id:
+            bad.append("%s pack" % p.id)
+        # L-356 / L-375: the vocab written in the ledger = the pack's vocab = the units of its unit's replayed scope
+        pe, d = pack_ev.get(p.id), rep.get(p.unit)
+        if pe is None or pe["group"] != sorted(p.vocab) or pe["level"] != p.level:
+            bad.append("%s pack event" % p.id)
+        if d is not None and sorted({o[2] for o in d["scope"]}) != sorted(p.vocab):
+            bad.append("%s vocab vs replayed scope" % p.id)
+    return bad
